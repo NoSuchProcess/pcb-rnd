@@ -1,0 +1,896 @@
+@c key options
+@menu
+* General Options::
+* General GUI Options::
+* GTK+ GUI Options::
+* lesstif GUI Options::
+* Colors::
+* Layer Names::
+* Paths::
+* Sizes::
+* Commands::
+* DRC Options::
+* BOM Creation::
+* Gerber Export::
+* Postscript Export::
+* Encapsulated Postscript Export::
+* PNG Options::
+* lpr Printing Options::
+* nelma Options::
+@end menu
+@c options General Options
+@node General Options
+@section General Options
+@c ./../src/main.c 434
+@ftable @code
+@item --help
+Show help on command line options.
+@end ftable
+@c ./../src/main.c 439
+@ftable @code
+@item --version
+Show version.
+@end ftable
+@c ./../src/main.c 443
+@ftable @code
+@item --verbose
+Be verbose on stdout.
+@end ftable
+@c ./../src/main.c 448
+@ftable @code
+@item --copyright
+Show copyright.
+@end ftable
+@c ./../src/main.c 453
+@ftable @code
+@item --show-defaults
+Show option defaults.
+@end ftable
+@c ./../src/main.c 458
+@ftable @code
+@item --show-actions
+Show available actions and exit.
+@end ftable
+@c ./../src/main.c 463
+@ftable @code
+@item --dump-actions
+Dump actions (for documentation).
+@end ftable
+@c ./../src/main.c 468
+@ftable @code
+@item --grid-units-mm <string>
+Set default grid units. Can be mm or mil. Defaults to mil.
+@end ftable
+@c ./../src/main.c 686
+@ftable @code
+@item --backup-interval
+Time between automatic backups in seconds. Set to @code{0} to disable.
+The default value is @code{60}.
+@end ftable
+@c ./../src/main.c 723
+@ftable @code
+@item --groups <string>
+Layer group string. Defaults to @code{"1,c:2:3:4:5:6,s:7:8"}.
+@end ftable
+@c ./../src/main.c 788
+@ftable @code
+@item --route-styles <string>
+A string that defines the route styles. Defaults to @*
+@code{"Signal,1000,3600,2000,1000:Power,2500,6000,3500,1000
+	:Fat,4000,6000,3500,1000:Skinny,600,2402,1181,600"}
+@end ftable
+@c ./../src/main.c 807
+@ftable @code
+@item --element-path <string>
+A colon separated list of directories or commands (starts with '|').
+The path is passed to the program specified in @option{--element-command}.
+@end ftable
+@c ./../src/main.c 817
+@ftable @code
+@item --action-script <string>
+If set, this file is executed at startup.
+@end ftable
+@c ./../src/main.c 822
+@ftable @code
+@item --action-string <string>
+If set, this string of actions is executed at startup.
+@end ftable
+@c ./../src/main.c 827
+@ftable @code
+@item --fab-author <string>
+Name of author to be put in the Gerber files.
+@end ftable
+@c ./../src/main.c 832
+@ftable @code
+@item --layer-stack <string>
+Initial layer stackup, for setting up an export. A comma separated list of layer
+names, layer numbers and layer groups.
+@end ftable
+@c ./../src/main.c 883
+@ftable @code
+@item --save-last-command
+If set, the last user command is saved.
+@end ftable
+@c ./../src/main.c 887
+@ftable @code
+@item --save-in-tmp
+If set, all data which would otherwise be lost are saved in a temporary file
+@file{/tmp/PCB.%i.save} . Sequence @samp{%i} is replaced by the process ID.
+@end ftable
+@c ./../src/main.c 901
+@ftable @code
+@item --reset-after-element
+If set, all found connections are reset before a new component is scanned.
+@end ftable
+@c ./../src/main.c 906
+@ftable @code
+@item --ring-bell-finished
+Execute the bell command when all rats are routed.
+@end ftable
+@c options General GUI Options
+@node General GUI Options
+@section General GUI Options
+@c ./../src/main.c 842
+@ftable @code
+@item --pinout-offset-x <num>
+Horizontal offset of the pin number display. Defaults to @code{100mil}.
+@end ftable
+@c ./../src/main.c 847
+@ftable @code
+@item --pinout-offset-y <num>
+Vertical offset of the pin number display. Defaults to @code{100mil}.
+@end ftable
+@c ./../src/main.c 852
+@ftable @code
+@item --pinout-text-offset-x <num>
+Horizontal offset of the pin name display. Defaults to @code{800mil}.
+@end ftable
+@c ./../src/main.c 857
+@ftable @code
+@item --pinout-text-offset-y <num>
+Vertical offset of the pin name display. Defaults to @code{-100mil}.
+@end ftable
+@c ./../src/main.c 862
+@ftable @code
+@item --draw-grid
+If set, draw the grid at start-up.
+@end ftable
+@c ./../src/main.c 866
+@ftable @code
+@item --clear-line
+If set, new lines clear polygons.
+@end ftable
+@c ./../src/main.c 870
+@ftable @code
+@item --full-poly
+If set, new polygons are full ones.
+@end ftable
+@c ./../src/main.c 874
+@ftable @code
+@item --unique-names
+If set, you will not be permitted to change the name of an component to match that
+of another component.
+@end ftable
+@c ./../src/main.c 878
+@ftable @code
+@item --snap-pin
+If set, pin centers and pad end points are treated as additional grid points
+that the cursor can snap to.
+@end ftable
+@c ./../src/main.c 892
+@ftable @code
+@item --all-direction-lines
+Allow all directions, when drawing new lines.
+@end ftable
+@c ./../src/main.c 897
+@ftable @code
+@item --show-number
+Pinout shows number.
+@end ftable
+@c options GTK+ GUI Options
+@node GTK+ GUI Options
+@section GTK+ GUI Options
+@c ./../src/hid/gtk/gui-top-window.c 1615
+@ftable @code
+@item --listen
+Listen for actions on stdin.
+@end ftable
+@c ./../src/hid/gtk/gui-top-window.c 1621
+@ftable @code
+@item --bg-image <string>
+File name of an image to put into the background of the GUI canvas. The image must
+be a color PPM image, in binary (not ASCII) format. It can be any size, and will be
+automatically scaled to fit the canvas.
+@end ftable
+@c ./../src/hid/gtk/gui-top-window.c 1627
+@ftable @code
+@item --pcb-menu <string>
+Location of the @file{gpcb-menu.res} file which defines the menu for the GTK+ GUI.
+@end ftable
+@c options lesstif GUI Options
+@node lesstif GUI Options
+@section lesstif GUI Options
+@c ./../src/hid/lesstif/main.c 201
+@ftable @code
+@item --listen
+Listen for actions on stdin.
+@end ftable
+@c ./../src/hid/lesstif/main.c 207
+@ftable @code
+@item --bg-image <string>
+File name of an image to put into the background of the GUI canvas. The image must
+be a color PPM image, in binary (not ASCII) format. It can be any size, and will be
+automatically scaled to fit the canvas.
+@end ftable
+@c ./../src/hid/lesstif/main.c 213
+@ftable @code
+@item --pcb-menu <string>
+Location of the @file{pcb-menu.res} file which defines the menu for the lesstif GUI.
+@end ftable
+@c options Colors
+@node Colors
+@section Colors
+@c ./../src/main.c 473
+@ftable @code
+@item --black-color <string>
+Color value for black. Default: @samp{#000000}
+@end ftable
+@c ./../src/main.c 477
+@ftable @code
+@item --black-color <string>
+Color value for white. Default: @samp{#ffffff}
+@end ftable
+@c ./../src/main.c 481
+@ftable @code
+@item --background-color <string>
+Background color of the canvas. Default: @samp{#e5e5e5}
+@end ftable
+@c ./../src/main.c 486
+@ftable @code
+@item --crosshair-color <string>
+Color of the crosshair. Default: @samp{#ff0000}
+@end ftable
+@c ./../src/main.c 491
+@ftable @code
+@item --cross-color <string>
+Color of the cross. Default: @samp{#cdcd00}
+@end ftable
+@c ./../src/main.c 495
+@ftable @code
+@item --via-color <string>
+Color of vias. Default: @samp{#7f7f7f}
+@end ftable
+@c ./../src/main.c 499
+@ftable @code
+@item --via-selected-color <string>
+Color of selected vias. Default: @samp{#00ffff}
+@end ftable
+@c ./../src/main.c 504
+@ftable @code
+@item --pin-color <string>
+Color of pins. Default: @samp{#4d4d4d}
+@end ftable
+@c ./../src/main.c 508
+@ftable @code
+@item --pin-selected-color <string>
+Color of selected pins. Default: @samp{#00ffff}
+@end ftable
+@c ./../src/main.c 513
+@ftable @code
+@item --pin-name-color <string>
+Color of pin names and pin numbers. Default: @samp{#ff0000}
+@end ftable
+@c ./../src/main.c 518
+@ftable @code
+@item --element-color <string>
+Color of components. Default: @samp{#000000}
+@end ftable
+@c ./../src/main.c 522
+@ftable @code
+@item --rat-color <string>
+Color of ratlines. Default: @samp{#b8860b}
+@end ftable
+@c ./../src/main.c 526
+@ftable @code
+@item --invisible-objects-color <string>
+Color of invisible objects. Default: @samp{#cccccc}
+@end ftable
+@c ./../src/main.c 531
+@ftable @code
+@item --invisible-mark-color <string>
+Color of invisible marks. Default: @samp{#cccccc}
+@end ftable
+@c ./../src/main.c 536
+@ftable @code
+@item --element-selected-color <string>
+Color of selected components. Default: @samp{#00ffff}
+@end ftable
+@c ./../src/main.c 541
+@ftable @code
+@item --rat-selected-color <string>
+Color of selected rats. Default: @samp{#00ffff}
+@end ftable
+@c ./../src/main.c 546
+@ftable @code
+@item --connected-color <string>
+Color to indicate connections. Default: @samp{#00ff00}
+@end ftable
+@c ./../src/main.c 551
+@ftable @code
+@item --off-limit-color <string>
+Color of off-canvas area. Default: @samp{#cccccc}
+@end ftable
+@c ./../src/main.c 556
+@ftable @code
+@item --grid-color <string>
+Color of the grid. Default: @samp{#ff0000}
+@end ftable
+@c ./../src/main.c 560
+@ftable @code
+@item --layer-color-<n> <string>
+Color of layer @code{<n>}, where @code{<n>} is an integer from 1 to 16.
+@end ftable
+@c ./../src/main.c 578
+@ftable @code
+@item --layer-selected-color-<n> <string>
+Color of layer @code{<n>}, when selected. @code{<n>} is an integer from 1 to 16.
+@end ftable
+@c ./../src/main.c 597
+@ftable @code
+@item --warn-color <string>
+Color of offending objects during DRC. Default value is @code{"#ff8000"}
+@end ftable
+@c ./../src/main.c 601
+@ftable @code
+@item --mask-color <string>
+Color of the mask layer. Default value is @code{"#ff0000"}
+@end ftable
+@c options Layer Names
+@node Layer Names
+@section Layer Names
+@c ./../src/main.c 691
+@ftable @code
+@item --layer-name-1 <string>
+Name of the 1st Layer. Default is @code{"top"}.
+@end ftable
+@c ./../src/main.c 695
+@ftable @code
+@item --layer-name-2 <string>
+Name of the 2nd Layer. Default is @code{"ground"}.
+@end ftable
+@c ./../src/main.c 699
+@ftable @code
+@item --layer-name-3 <string>
+Name of the 3nd Layer. Default is @code{"signal2"}.
+@end ftable
+@c ./../src/main.c 703
+@ftable @code
+@item --layer-name-4 <string>
+Name of the 4rd Layer. Default is @code{"signal3"}.
+@end ftable
+@c ./../src/main.c 707
+@ftable @code
+@item --layer-name-5 <string>
+Name of the 5rd Layer. Default is @code{"power"}.
+@end ftable
+@c ./../src/main.c 711
+@ftable @code
+@item --layer-name-6 <string>
+Name of the 6rd Layer. Default is @code{"bottom"}.
+@end ftable
+@c ./../src/main.c 715
+@ftable @code
+@item --layer-name-7 <string>
+Name of the 7rd Layer. Default is @code{"outline"}.
+@end ftable
+@c ./../src/main.c 719
+@ftable @code
+@item --layer-name-8 <string>
+Name of the 8rd Layer. Default is @code{"spare"}.
+@end ftable
+@c options Paths
+@node Paths
+@section Paths
+@c ./../src/main.c 769
+@ftable @code
+@item --lib-newlib <string>
+Top level directory for the newlib style library.
+@end ftable
+@c ./../src/main.c 778
+@ftable @code
+@item --lib-name <string>
+The default filename for the library.
+@end ftable
+@c ./../src/main.c 783
+@ftable @code
+@item --default-font <string>
+The name of the default font.
+@end ftable
+@c ./../src/main.c 794
+@ftable @code
+@item --file-path <string>
+A colon separated list of directories or commands (starts with '|'). The path
+is passed to the program specified in @option{--file-command} together with the selected
+filename.
+@end ftable
+@c ./../src/main.c 802
+@ftable @code
+@item --font-path <string>
+A colon separated list of directories to search the default font. Defaults to
+the default library path.
+@end ftable
+@c ./../src/main.c 812
+@ftable @code
+@item --lib-path <string>
+A colon separated list of directories that will be passed to the commands specified
+by @option{--element-command} and @option{--element-contents-command}.
+@end ftable
+@c options Sizes
+@node Sizes
+@section Sizes
+@c ./../src/main.c 606
+All parameters should be given with an unit. If no unit is given, 1/100 mil
+(cmil) will be used. Write units without space to the
+number like @code{3mm}, not @code{3 mm}.
+Valid Units are:
+ @table @samp
+   @item km
+    Kilometer
+   @item m
+    Meter
+   @item cm
+    Centimeter
+   @item mm
+    Millimeter
+   @item um
+    Micrometer
+   @item nm
+    Nanometer
+   @item in
+    Inch (1in = 0.0254m)
+   @item mil
+    Mil (1000mil = 1in)
+   @item cmil
+    Centimil (1/100 mil)
+@end table
+
+@ftable @code
+@item --via-thickness <num>
+Default diameter of vias. Default value is @code{60mil}.
+@end ftable
+@c ./../src/main.c 611
+@ftable @code
+@item --via-drilling-hole <num>
+Default diameter of holes. Default value is @code{28mil}.
+@end ftable
+@c ./../src/main.c 616
+@ftable @code
+@item --line-thickness <num>
+Default thickness of new lines. Default value is @code{10mil}.
+@end ftable
+@c ./../src/main.c 621
+@ftable @code
+@item --rat-thickness <num>
+Thickness of rats. Values from 1 to 19 are fixed width in screen pixels.
+Anything larger means PCB units (i.e. 100 means "1 mil"). Default value
+is @code{10mil}.
+@end ftable
+@c ./../src/main.c 625
+@ftable @code
+@item --keepaway <num>
+Default minimum distance between a track and adjacent copper.
+Default value is @code{10mil}.
+@end ftable
+@c ./../src/main.c 629
+@ftable @code
+@item --default-PCB-width <num>
+Default width of the canvas. Default value is @code{6000mil}.
+@end ftable
+@c ./../src/main.c 634
+@ftable @code
+@item --default-PCB-height <num>
+Default height of the canvas. Default value is @code{5000mil}.
+@end ftable
+@c ./../src/main.c 639
+@ftable @code
+@item --text-scale <num>
+Default text scale. This value is in percent. Default value is @code{100}.
+@end ftable
+@c ./../src/main.c 643
+@ftable @code
+@item --alignment-distance <num>
+Specifies the distance between the board outline and alignment targets.
+Default value is @code{2mil}.
+@end ftable
+@c ./../src/main.c 677
+@ftable @code
+@item --grid <num>
+Initial grid size. Default value is @code{10mil}.
+@end ftable
+@c ./../src/main.c 681
+@ftable @code
+@item --minimum polygon area <num>
+Minimum polygon area.
+@end ftable
+@c options Commands
+@node Commands
+@section Commands
+@c ./../src/main.c 728
+pcb uses external commands for input output operations. These commands can be
+configured at start-up to meet local requirements. The command string may include
+special sequences @code{%f}, @code{%p} or @code{%a}. These are replaced when the
+command is called. The sequence @code{%f} is replaced by the file name,
+@code{%p} gets the path and @code{%a} indicates a package name.
+@c ./../src/main.c 731
+@ftable @code
+@item --font-command <string>
+Command to load a font.
+@end ftable
+@c ./../src/main.c 735
+@ftable @code
+@item --file-command <string>
+Command to read a file.
+@end ftable
+@c ./../src/main.c 739
+@ftable @code
+@item --element-command <string>
+Command to read a footprint. @*
+Defaults to @code{"M4PATH='%p';export M4PATH;echo 'include(%f)' | m4"}
+@end ftable
+@c ./../src/main.c 745
+@ftable @code
+@item --print-file <string>
+Command to print to a file.
+@end ftable
+@c ./../src/main.c 749
+@ftable @code
+@item --lib-command-dir <string>
+Path to the command that queries the library.
+@end ftable
+@c ./../src/main.c 754
+@ftable @code
+@item --lib-command <string>
+Command to query the library. @*
+Defaults to @code{"QueryLibrary.sh '%p' '%f' %a"}
+@end ftable
+@c ./../src/main.c 759
+@ftable @code
+@item --lib-contents-command <string>
+Command to query the contents of the library. @*
+Defaults to @code{"ListLibraryContents.sh %p %f"} or,
+on Windows builds, an empty string (to disable this feature).
+@end ftable
+@c ./../src/main.c 774
+@ftable @code
+@item --save-command <string>
+Command to save to a file.
+@end ftable
+@c ./../src/main.c 798
+@ftable @code
+@item --rat-command <string>
+Command for reading a netlist. Sequence @code{%f} is replaced by the netlist filename.
+@end ftable
+@c options DRC Options
+@node DRC Options
+@section DRC Options
+@c ./../src/main.c 648
+All parameters should be given with an unit. If no unit is given, 1/100 mil
+(cmil) will be used for backward compability. Valid units are given in section
+@ref{Sizes}.
+@c ./../src/main.c 652
+@ftable @code
+@item --bloat <num>
+Minimum spacing. Default value is @code{10mil}.
+@end ftable
+@c ./../src/main.c 656
+@ftable @code
+@item --shrink <num>
+Minimum touching overlap. Default value is @code{10mil}.
+@end ftable
+@c ./../src/main.c 660
+@ftable @code
+@item --min-width <num>
+Minimum width of copper. Default value is @code{10mil}.
+@end ftable
+@c ./../src/main.c 664
+@ftable @code
+@item --min-silk <num>
+Minimum width of lines in silk. Default value is @code{10mil}.
+@end ftable
+@c ./../src/main.c 668
+@ftable @code
+@item --min-drill <num>
+Minimum diameter of holes. Default value is @code{15mil}.
+@end ftable
+@c ./../src/main.c 672
+@ftable @code
+@item --min-ring <num>
+Minimum width of annular ring. Default value is @code{10mil}.
+@end ftable
+@c options BOM Creation
+@node BOM Creation
+@section BOM Creation
+@c ./../src/hid/bom/bom.c 30
+@ftable @code
+@item --bomfile <string>
+Name of the BOM output file.
+@end ftable
+@c ./../src/hid/bom/bom.c 35
+@ftable @code
+@item --xyfile <string>
+Name of the XY output file.
+@end ftable
+@c ./../src/hid/bom/bom.c 41
+@ftable @code
+@item --xy-unit <unit>
+Unit of XY dimensions. Defaults to mil.
+@end ftable
+@c options Gerber Export
+@node Gerber Export
+@section Gerber Export
+@c ./../src/hid/gerber/gerber.c 338
+@ftable @code
+@item --gerberfile <string>
+Gerber output file prefix. Can include a path.
+@end ftable
+@c ./../src/hid/gerber/gerber.c 344
+@ftable @code
+@item --all-layers
+Output contains all layers, even empty ones.
+@end ftable
+@c ./../src/hid/gerber/gerber.c 350
+@ftable @code
+@item --verbose
+Print file names and aperture counts on stdout.
+@end ftable
+@c options Postscript Export
+@node Postscript Export
+@section Postscript Export
+@c ./../src/hid/ps/ps.c 149
+@ftable @code
+@item --psfile <string>
+Name of the postscript output file. Can contain a path.
+@end ftable
+@c ./../src/hid/ps/ps.c 155
+@ftable @code
+@cindex drill-helper
+@item --drill-helper
+Print a centering target in large drill holes.
+@end ftable
+@c ./../src/hid/ps/ps.c 161
+@ftable @code
+@cindex align-marks
+@item --align-marks
+Print alignment marks on each sheet. This is meant to ease alignment during exposure.
+@end ftable
+@c ./../src/hid/ps/ps.c 167
+@ftable @code
+@item --outline
+Print the contents of the outline layer on each sheet.
+@end ftable
+@c ./../src/hid/ps/ps.c 172
+@ftable @code
+@item --mirror
+Print mirror image.
+@end ftable
+@c ./../src/hid/ps/ps.c 178
+@ftable @code
+@item --fill-page
+Scale output to make the board fit the page.
+@end ftable
+@c ./../src/hid/ps/ps.c 184
+@ftable @code
+@item --auto-mirror
+Print mirror image of appropriate layers.
+@end ftable
+@c ./../src/hid/ps/ps.c 190
+@ftable @code
+@item --ps-color
+Postscript output in color.
+@end ftable
+@c ./../src/hid/ps/ps.c 196
+@ftable @code
+@cindex ps-bloat
+@item --ps-bloat <num>
+Amount to add to trace/pad/pin edges.
+@end ftable
+@c ./../src/hid/ps/ps.c 202
+@ftable @code
+@cindex ps-invert
+@item --ps-invert
+Draw objects as white-on-black.
+@end ftable
+@c ./../src/hid/ps/ps.c 208
+@ftable @code
+@item --media <media-name>
+Size of the media, the postscript is fitted to. The parameter
+@code{<media-name>} can be any of the standard names for paper size: @samp{A0}
+to @samp{A10}, @samp{B0} to @samp{B10}, @samp{Letter}, @samp{11x17},
+@samp{Ledger}, @samp{Legal}, @samp{Executive}, @samp{A-Size}, @samp{B-size},
+@samp{C-Size}, @samp{D-size}, @samp{E-size}, @samp{US-Business_Card},
+@samp{Intl-Business_Card}.
+@end ftable
+@c ./../src/hid/ps/ps.c 214
+@ftable @code
+@cindex psfade
+@item --psfade <num>
+Fade amount for assembly drawings (0.0=missing, 1.0=solid).
+@end ftable
+@c ./../src/hid/ps/ps.c 220
+@ftable @code
+@item --scale <num>
+Scale value to compensate for printer sizing errors (1.0 = full scale).
+@end ftable
+@c ./../src/hid/ps/ps.c 226
+@ftable @code
+@cindex multi-file
+@item --multi-file
+Produce multiple files, one per page, instead of a single multi page file.
+@end ftable
+@c ./../src/hid/ps/ps.c 232
+@ftable @code
+@item --xcalib <num>
+Paper width. Used for x-Axis calibration.
+@end ftable
+@c ./../src/hid/ps/ps.c 238
+@ftable @code
+@item --ycalib <num>
+Paper height. Used for y-Axis calibration.
+@end ftable
+@c ./../src/hid/ps/ps.c 244
+@ftable @code
+@item --drill-copper
+Draw drill holes in pins / vias, instead of leaving solid copper.
+@end ftable
+@c ./../src/hid/ps/ps.c 250
+@ftable @code
+@cindex show-legend
+@item --show-legend
+Print file name and scale on printout.
+@end ftable
+@c options Encapsulated Postscript Export
+@node Encapsulated Postscript Export
+@section Encapsulated Postscript Export
+@c ./../src/hid/ps/eps.c 78
+@ftable @code
+@item --eps-file <string>
+Name of the encapsulated postscript output file. Can contain a path.
+@end ftable
+@c ./../src/hid/ps/eps.c 84
+@ftable @code
+@item --eps-scale <num>
+Scale EPS output by the parameter @samp{num}.
+@end ftable
+@c ./../src/hid/ps/eps.c 90
+@ftable @code
+@cindex as-shown (EPS)
+@item --as-shown
+Export layers as shown on screen.
+@end ftable
+@c ./../src/hid/ps/eps.c 96
+@ftable @code
+@item --monochrome
+Convert output to monochrome.
+@end ftable
+@c ./../src/hid/ps/eps.c 102
+@ftable @code
+@cindex only-visible
+@item --only-visible
+Limit the bounds of the EPS file to the visible items.
+@end ftable
+@c options PNG Options
+@node PNG Options
+@section PNG Options
+@c ./../src/hid/png/png.c 168
+@ftable @code
+@item --outfile <string>
+Name of the file to be exported to. Can contain a path.
+@end ftable
+@c ./../src/hid/png/png.c 174
+@ftable @code
+@item --dpi
+Scale factor in pixels/inch. Set to 0 to scale to size specified in the layout.
+@end ftable
+@c ./../src/hid/png/png.c 180
+@ftable @code
+@item --x-max
+Width of the png image in pixels. No constraint, when set to 0.
+@end ftable
+@c ./../src/hid/png/png.c 186
+@ftable @code
+@item --y-max
+Height of the png output in pixels. No constraint, when set to 0.
+@end ftable
+@c ./../src/hid/png/png.c 192
+@ftable @code
+@item --xy-max
+Maximum width and height of the PNG output in pixels. No constraint, when set to 0.
+@end ftable
+@c ./../src/hid/png/png.c 198
+@ftable @code
+@item --as-shown
+Export layers as shown on screen.
+@end ftable
+@c ./../src/hid/png/png.c 204
+@ftable @code
+@item --monochrome
+Convert output to monochrome.
+@end ftable
+@c ./../src/hid/png/png.c 210
+@ftable @code
+@item --only-vivible
+Limit the bounds of the exported PNG image to the visible items.
+@end ftable
+@c ./../src/hid/png/png.c 216
+@ftable @code
+@item --use-alpha
+Make the background and any holes transparent.
+@end ftable
+@c ./../src/hid/png/png.c 222
+@ftable @code
+@item --format <string>
+File format to be exported. Parameter @code{<string>} can be @samp{PNG},
+@samp{GIF}, or @samp{JPEG}.
+@end ftable
+@c ./../src/hid/png/png.c 228
+@ftable @code
+@item --png-bloat <num><dim>
+Amount of extra thickness to add to traces, pads, or pin edges. The parameter
+@samp{<num><dim>} is a number, appended by a dimension @samp{mm}, @samp{mil}, or
+@samp{pix}. If no dimension is given, the default dimension is 1/100 mil.
+@end ftable
+@c ./../src/hid/png/png.c 234
+@ftable @code
+@cindex photo-mode
+@item --photo-mode
+Export a photo realistic image of the layout.
+@end ftable
+@c ./../src/hid/png/png.c 240
+@ftable @code
+@item --photo-flip-x
+In photo-realistic mode, export the reverse side of the layout. Left-right flip.
+@end ftable
+@c ./../src/hid/png/png.c 246
+@ftable @code
+@item --photo-flip-y
+In photo-realistic mode, export the reverse side of the layout. Up-down flip.
+@end ftable
+@c options lpr Printing Options
+@node lpr Printing Options
+@section lpr Printing Options
+@c ./../src/hid/lpr/lpr.c 33
+@ftable @code
+@item --lprcommand <string>
+Command to use for printing. Defaults to @code{lpr}. This can be used to produce
+PDF output with a virtual PDF printer. Example: @*
+@code{--lprcommand "lp -d CUPS-PDF-Printer"}.
+@end ftable
+@noindent In addition, all @ref{Postscript Export} options are valid.
+@c options nelma Options
+@node nelma Options
+@section nelma Options
+@c ./../src/hid/nelma/nelma.c 157
+@ftable @code
+@item -- basename <string>
+File name prefix.
+@end ftable
+@c ./../src/hid/nelma/nelma.c 163
+@ftable @code
+@item --dpi <num>
+Horizontal scale factor (grid points/inch).
+@end ftable
+@c ./../src/hid/nelma/nelma.c 169
+@ftable @code
+@item --copper-height <num>
+Copper layer height (um).
+@end ftable
+@c ./../src/hid/nelma/nelma.c 175
+@ftable @code
+@item --substrate-height <num>
+Substrate layer height (um).
+@end ftable
+@c ./../src/hid/nelma/nelma.c 181
+@ftable @code
+@item --substrate-epsilon <num>
+Substrate relative epsilon.
+@end ftable

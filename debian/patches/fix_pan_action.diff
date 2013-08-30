@@ -1,0 +1,28 @@
+Description: Fix Pan action to stop after button release outside window master
+ Previously, we required in-view coordinates to stop and start the
+ pan-action, and when the button was released outside the viewport,
+ the code was querying the user to click at a particular location.
+
+ Since the pan action doesn't even use the passed in coordinates,
+ simply remove the requirement for the x-y coordinates from this
+ action.
+Origin: http://git.gpleda.org/?p=pcb.git;a=commit;h=ed9a9d0cd9d054e6fc4a075ec1b8d9a12f1cb376
+Author: Peter Clifton <pcjc2@cam.ac.uk> [Mon, 19 Sep 2011 10:16:49 +0000 (11:16 +0100)]
+Bug: https://launchpad.net/bugs/699307
+Bug-Debian: http://bugs.debian.org/562641
+
+--- a/src/hid/gtk/gtkhid-main.c
++++ b/src/hid/gtk/gtkhid-main.c
+@@ -2030,7 +2030,7 @@
+   {"LayerGroupsChanged", 0, LayerGroupsChanged},
+   {"LibraryChanged", 0, LibraryChanged},
+   {"Load", 0, Load},
+-  {"Pan", N_("Click on a place to pan"), PanAction, pan_help, pan_syntax},
++  {"Pan", 0, PanAction, pan_help, pan_syntax},
+   {"PCBChanged", 0, PCBChanged},
+   {"PointCursor", 0, PointCursor},
+   {"Popup", 0, Popup, popup_help, popup_syntax},
+--- /dev/null
++++ b/po/POTFILES.skip
+@@ -0,0 +1 @@
++.pc/fix_pan_action.diff/src/hid/gtk/gtkhid-main.c

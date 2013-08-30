@@ -1,0 +1,55 @@
+Description: Set default path in GTK file choosers to cwd
+Author: أحمد المحمودي (Ahmed El-Mahmoudy) <aelmahmoudy@sabily.org>
+Bug: https://bugs.launchpad.net/pcb/+bug/855621
+Bug-Debian: http://bugs.debian.org/642060
+Forwarded: https://bugs.launchpad.net/pcb/+bug/855621/+attachment/2436146/+files/default_GtkFileChooser_cwd.diff
+
+--- a/src/hid/gtk/gtkhid-main.c
++++ b/src/hid/gtk/gtkhid-main.c
+@@ -11,6 +11,7 @@
+ #endif
+ #include <math.h>
+ #include <time.h>
++#include <unistd.h>
+ 
+ 
+ #include "action.h"
+@@ -1230,6 +1231,13 @@
+   static gchar *current_layout_dir = NULL;
+   static gchar *current_netlist_dir = NULL;
+ 
++  if(!current_element_dir)
++    current_element_dir = get_current_dir_name();
++  if(!current_layout_dir)
++    current_layout_dir = get_current_dir_name();
++  if(!current_netlist_dir)
++    current_netlist_dir = get_current_dir_name();
++
+   /* we've been given the file name */
+   if (argc > 1)
+     return hid_actionv ("LoadFrom", argc, argv);
+@@ -1303,6 +1311,9 @@
+ 
+   static gchar *current_dir = NULL;
+ 
++  if(!current_dir)
++    current_dir = get_current_dir_name();
++
+   if (argc > 1)
+     return hid_actionv ("SaveTo", argc, argv);
+ 
+@@ -1986,6 +1997,9 @@
+     static int I_am_recursing = 0; 
+     int rv;
+ 
++    if(!current_layout_dir)
++      current_layout_dir = get_current_dir_name();
++
+     if (I_am_recursing)
+ 	return 1;
+ 
+--- a/po/POTFILES.skip
++++ b/po/POTFILES.skip
+@@ -1 +1,2 @@
+ .pc/fix_pan_action.diff/src/hid/gtk/gtkhid-main.c
++.pc/default_GtkFileChooser_cwd.diff/src/hid/gtk/gtkhid-main.c

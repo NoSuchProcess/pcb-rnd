@@ -1,0 +1,16 @@
+Description: Disable hid_png3 test
+ According to upstream, the problem is in the hid_png3 test
+Author: أحمد المحمودي (Ahmed El-Mahmoudy) <aelmahmoudy@sabily.org>
+Forwarded: not-needed
+Bug: https://bugs.launchpad.net/bugs/860037
+Bug-Debian: http://bugs.debian.org/642923
+--- a/tests/tests.list
++++ b/tests/tests.list
+@@ -161,6 +161,6 @@
+ #
+ hid_png1 | gerber_oneline.pcb | png | | | png:gerber_oneline.png
+ hid_png2 | gerber_oneline.pcb | png | --outfile myfile.png | | png:myfile.png
+-hid_png3 | gerber_oneline.pcb | png | --dpi 300 | | png:gerber_oneline.png
++#hid_png3 | gerber_oneline.pcb | png | --dpi 300 | | png:gerber_oneline.png
+ #
+ 
