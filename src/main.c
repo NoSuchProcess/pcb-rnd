@@ -1333,7 +1333,7 @@ If set, draw the grid at start-up.
 @end ftable
 %end-doc
 */
-  BSET (DrawGrid, 0, "draw-grid", "If set, draw the grid at start-up"),
+  BSET (DrawGrid, 1, "draw-grid", "If set, draw the grid at start-up"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
