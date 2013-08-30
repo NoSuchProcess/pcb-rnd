@@ -1,0 +1,26 @@
+Description: Append input CPPFLAGS for lesstif target
+Author: أحمد المحمودي (Ahmed El-Mahmoudy) <aelmahmoudy@sabily.org>
+Bug: https://bugs.launchpad.net/pcb/+bug/1003355
+Forwarded: https://bugs.launchpad.net/pcb/+bug/1003355/+attachment/3159260/+files/fix_CPPFLAGS.diff
+--- a/configure
++++ b/configure
+@@ -15260,7 +15260,7 @@
+ 
+ fi
+ 
+-	CPPFLAGS="$CFLAGS $X_CFLAGS"
++	CPPFLAGS="$CPPFLAGS $CFLAGS $X_CFLAGS"
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for XOpenDisplay in -lX11" >&5
+ $as_echo_n "checking for XOpenDisplay in -lX11... " >&6; }
+ if test "${ac_cv_lib_X11_XOpenDisplay+set}" = set; then :
+--- a/configure.ac
++++ b/configure.ac
+@@ -710,7 +710,7 @@
+     case $e in
+       lesstif )
+ 	AC_PATH_XTRA
+-	CPPFLAGS="$CFLAGS $X_CFLAGS"
++	CPPFLAGS="$CPPFLAGS $CFLAGS $X_CFLAGS"
+ 	AC_CHECK_LIB(X11, XOpenDisplay, , , $X_LIBS)
+ 	AC_CHECK_LIB(ICE, main, , , $X_LIBS)
+ 	AC_CHECK_LIB(SM, main, , , $X_LIBS)

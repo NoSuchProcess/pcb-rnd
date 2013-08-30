@@ -1,0 +1,9 @@
+fix_typo.diff
+outdated_config.diff
+fix_pan_action.diff
+pcbtest_paths.diff
+default_GtkFileChooser_cwd.diff
+disable_hid_png3_test.diff
+0001-Fixed-command-line-batch-output-for-some-exporters.patch
+drop_check_global_included.patch
+fix_CPPFLAGS.diff
