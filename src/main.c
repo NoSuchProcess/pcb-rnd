@@ -940,11 +940,11 @@ Minimum width of annular ring. Default value is @code{10mil}.
 /* %start-doc options "5 Sizes"
 @ftable @code
 @item --grid <num>
-Initial grid size. Default value is @code{10mil}.
+Initial grid size. Default value is @code{25mil}.
 @end ftable
 %end-doc
 */
-  CSET (Grid, MIL_TO_COORD(10), "grid", "Initial grid size in 1/100 mil"),
+  CSET (Grid, MIL_TO_COORD(25), "grid", "Initial grid size in 1/100 mil"),
 
 /* %start-doc options "5 Sizes"
 @ftable @code
