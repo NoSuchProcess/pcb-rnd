@@ -380,31 +380,45 @@ void square_pin_factors(int style, double *xm, double *ym)
 
 
 POLYAREA *
-OctagonPoly (Coord x, Coord y, Coord radius)
+OctagonPoly (Coord x, Coord y, Coord radius, int style)
 {
   PLINE *contour = NULL;
   Vector v;
 	double xm[8], ym[8];
 
+	square_pin_factors(style, xm, ym);
+
+#warning TODO: rewrite this to use the same table as the square/oct pin draw function
+	/* point 7 */
   v[0] = x + ROUND (radius * 0.5);
   v[1] = y + ROUND (radius * TAN_22_5_DEGREE_2);
   if ((contour = poly_NewContour (v)) == NULL)
     return NULL;
+	/* point 6 */
   v[0] = x + ROUND (radius * TAN_22_5_DEGREE_2);
   v[1] = y + ROUND (radius * 0.5);
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
-  v[0] = x - (v[0] - x);
+	/* point 5 */
+  v[0] = x - ROUND (radius * TAN_22_5_DEGREE_2);
+  v[1] = y + ROUND (radius * 0.5);
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
+	/* point 4 */
   v[0] = x - ROUND (radius * 0.5);
   v[1] = y + ROUND (radius * TAN_22_5_DEGREE_2);
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
-  v[1] = y - (v[1] - y);
+	/* point 3 */
+  v[0] = x - ROUND (radius * 0.5);
+  v[1] = y - ROUND (radius * TAN_22_5_DEGREE_2);
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
+	/* point 2 */
   v[0] = x - ROUND (radius * TAN_22_5_DEGREE_2);
   v[1] = y - ROUND (radius * 0.5);
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
-  v[0] = x - (v[0] - x);
+	/* point 1 */
+  v[0] = x + ROUND (radius * TAN_22_5_DEGREE_2);
+  v[1] = y - ROUND (radius * 0.5);
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
+	/* point 0 */
   v[0] = x + ROUND (radius * 0.5);
   v[1] = y - ROUND (radius * TAN_22_5_DEGREE_2);
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
@@ -794,7 +808,7 @@ PinPoly (PinType * pin, Coord thick, Coord clear)
       size = (thick + clear + 1) / 2;
       if (TEST_FLAG (OCTAGONFLAG, pin))
         {
-          return OctagonPoly (pin->X, pin->Y, size + size);
+          return OctagonPoly (pin->X, pin->Y, size + size, GET_SQUARE(pin));
         }
     }
   return CirclePoly (pin->X, pin->Y, size);

@@ -770,7 +770,7 @@ LOCtoPVpoly_callback (const BoxType * b, void *cl)
         }
       else if (TEST_FLAG (OCTAGONFLAG, &i->pv))
         {
-          POLYAREA *oct = OctagonPoly (i->pv.X, i->pv.Y, i->pv.Thickness / 2);
+          POLYAREA *oct = OctagonPoly (i->pv.X, i->pv.Y, i->pv.Thickness / 2, GET_SQUARE(&i->pv));
           if (isects (oct, polygon, true)
               && ADD_POLYGON_TO_LIST (i->layer, polygon))
             longjmp (i->env, 1);
@@ -1120,7 +1120,7 @@ pv_poly_callback (const BoxType * b, void *cl)
         }
       else if (TEST_FLAG (OCTAGONFLAG, pv))
         {
-          POLYAREA *oct = OctagonPoly (pv->X, pv->Y, PIN_SIZE (pv) / 2);
+          POLYAREA *oct = OctagonPoly (pv->X, pv->Y, PIN_SIZE (pv) / 2, GET_SQUARE(pv));
           if (isects (oct, &i->polygon, true) && ADD_PV_TO_LIST (pv))
             longjmp (i->env, 1);
         }

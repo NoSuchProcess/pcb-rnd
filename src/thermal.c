@@ -366,8 +366,8 @@ oct_therm (PinTypePtr pin, Cardinal style)
   Coord t = 0.5 * pcb->ThermScale * pin->Clearance;
   Coord w = pin->Thickness + pin->Clearance;
 
-  p = OctagonPoly (pin->X, pin->Y, w);
-  p2 = OctagonPoly (pin->X, pin->Y, pin->Thickness);
+  p = OctagonPoly (pin->X, pin->Y, w, GET_SQUARE(pin));
+  p2 = OctagonPoly (pin->X, pin->Y, pin->Thickness, GET_SQUARE(pin));
   /* make full clearance ring */
   poly_Boolean_free (p, p2, &m, PBO_SUB);
   switch (style)
