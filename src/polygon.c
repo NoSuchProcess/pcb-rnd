@@ -827,6 +827,16 @@ BoxPolyBloated (BoxType *box, Coord bloat)
   return RectPoly (box->X1 - bloat, box->X2 + bloat,
                    box->Y1 - bloat, box->Y2 + bloat);
 }
+/* return the clearence polygon for a pin */
+static POLYAREA *pin_clearance_poly(Cardinal  layernum, PCBTypePtr *pcb, PinType * pin)
+{
+  POLYAREA *np;
+	if (TEST_THERM (layernum, pin))
+		np = ThermPoly (pcb, pin, layernum);
+	else
+		np = PinPoly (pin, PIN_SIZE (pin), pin->Clearance);
+	return np;
+}
 
 /* remove the pin clearance from the polygon */
 static int
@@ -838,18 +848,17 @@ SubtractPin (DataType * d, PinType * pin, LayerType * l, PolygonType * p)
   if (pin->Clearance == 0)
     return 0;
   i = GetLayerNumber (d, l);
-  if (TEST_THERM (i, pin))
-    {
-      np = ThermPoly ((PCBTypePtr) (d->pcb), pin, i);
-      if (!np)
-        return 0;
-    }
-  else
-    {
-      np = PinPoly (pin, PIN_SIZE (pin), pin->Clearance);
-      if (!np)
-        return -1;
-    }
+	np = pin_clearance_poly(i, d->pcb, pin);
+
+	if (TEST_THERM (i, pin)) {
+		if (!np)
+			return 0;
+	}
+	else {
+		if (!np)
+			return -1;
+	}
+
   return Subtract (np, p, TRUE);
 }
 
@@ -1169,13 +1178,14 @@ UnsubtractPin (PinType * pin, LayerType * l, PolygonType * p)
   POLYAREA *np;
 
   /* overlap a bit to prevent gaps from rounding errors */
-  np = BoxPolyBloated (&pin->BoundingBox, UNSUBTRACT_BLOAT);
+  np = BoxPolyBloated (&pin->BoundingBox, UNSUBTRACT_BLOAT*400000);
 
   if (!np)
     return 0;
   if (!Unsubtract (np, p))
     return 0;
-  clearPoly (PCB->Data, l, p, (const BoxType *) pin, 2 * UNSUBTRACT_BLOAT);
+
+  clearPoly (PCB->Data, l, p, (const BoxType *) pin, 2 * UNSUBTRACT_BLOAT*400000);
   return 1;
 }
 
