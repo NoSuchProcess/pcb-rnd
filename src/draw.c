@@ -177,11 +177,18 @@ _draw_pv_name (PinType *pv)
   BoxType box;
   bool vert;
   TextType text;
+	char buff[128], *pn;
 
   if (!pv->Name || !pv->Name[0])
-    text.TextString = EMPTY (pv->Number);
+    pn = EMPTY (pv->Number);
   else
-    text.TextString = EMPTY (TEST_FLAG (SHOWNUMBERFLAG, PCB) ? pv->Number : pv->Name);
+    pn = EMPTY (TEST_FLAG (SHOWNUMBERFLAG, PCB) ? pv->Number : pv->Name);
+
+  if (GET_INTCONN(pv) > 0)
+    snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pv));
+  else
+    strcpy(buff, pn);
+  text.TextString = buff;
 
   vert = TEST_FLAG (EDGE2FLAG, pv);
 
@@ -258,11 +265,20 @@ draw_pad_name (PadType *pad)
   BoxType box;
   bool vert;
   TextType text;
+	char buff[128], *pn;
+
+
 
   if (!pad->Name || !pad->Name[0])
-    text.TextString = EMPTY (pad->Number);
+    pn = EMPTY (pad->Number);
   else
-    text.TextString = EMPTY (TEST_FLAG (SHOWNUMBERFLAG, PCB) ? pad->Number : pad->Name);
+    pn = EMPTY (TEST_FLAG (SHOWNUMBERFLAG, PCB) ? pad->Number : pad->Name);
+
+  if (GET_INTCONN(pad) > 0)
+    snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pad));
+  else
+    strcpy(buff, pn);
+  text.TextString = buff;
 
   /* should text be vertical ? */
   vert = (pad->Point1.X == pad->Point2.X);
