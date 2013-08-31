@@ -370,7 +370,7 @@ CheckShorts (LibraryMenuTypePtr theNet)
   *menu = theNet;
   ALLPIN_LOOP (PCB->Data);
   {
-    if (TEST_FLAG (DRCFLAG, pin))
+    if ((TEST_FLAG (DRCFLAG, pin)) && (TEST_FLAG(NONETLISTFLAG, (ElementType *)pin->Element)))
       {
 	warn = true;
 	if (!pin->Spare)
@@ -406,7 +406,7 @@ CheckShorts (LibraryMenuTypePtr theNet)
   ENDALL_LOOP;
   ALLPAD_LOOP (PCB->Data);
   {
-    if (TEST_FLAG (DRCFLAG, pad))
+    if ((TEST_FLAG (DRCFLAG, pad)) && (TEST_FLAG(NONETLISTFLAG, (ElementType *)pad->Element)))
       {
 	warn = true;
 	if (!pad->Spare)
