@@ -89,4 +89,7 @@ void NoHolesPolygonDicer (PolygonType *p, const BoxType *clip,
                           void (*emit) (PLINE *, void *), void *user_data);
 void PolyToPolygonsOnLayer (DataType *, LayerType *, POLYAREA *, FlagType);
 
+void square_pin_factors(int style, double *xm, double *ym);
+
+
 #endif

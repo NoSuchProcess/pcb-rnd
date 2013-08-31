@@ -319,21 +319,6 @@ typedef struct
 }
 FloatPolyType;
 
-
-/* ---------------------------------------------------------------------------
- * draws one 'square' polygon distorted depending on the style
- * x and y are already in display coordinates
- * the points are numbered:
- *
- *          5 --- 6
- *         /       \
- *        4         7
- *        |         |
- *        3         0
- *         \       /
- *          2 --- 1
- */
-
 static void
 draw_square_pin_poly (hidGC gc, Coord X, Coord Y,
                    Coord Thickness, Coord thin_draw, int style)
@@ -354,24 +339,9 @@ draw_square_pin_poly (hidGC gc, Coord X, Coord Y,
   Coord polygon_x[9];
   Coord polygon_y[9];
   double xm[8], ym[8];
-  const double factor = 2.0;
   int i;
 
-	/* reset multipliers */
-	for (i = 0; i < 8; i++) {
-		xm[i] = 1;
-		ym[i] = 1;
-	}
-
-	style--;
-	if (style & 1)
-		xm[0] = xm[1] = xm[6] = xm[7] = factor;
-	if (style & 2)
-		xm[2] = xm[3] = xm[4] = xm[5] = factor;
-	if (style & 4)
-		ym[4] = ym[5] = ym[6] = ym[7] = factor;
-	if (style & 8)
-		ym[0] = ym[1] = ym[2] = ym[3] = factor;
+	square_pin_factors(style, xm, ym);
 
   if (Thickness != special_size)
     {
