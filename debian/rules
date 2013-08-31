@@ -3,9 +3,9 @@
 # debian/rules file for the Debian/GNU Linux pcb package
 # Copyright 1997-99 by Hartmut Koptein <koptein@debian.org>
 
-package = pcb
+package = pcb-rnd
 
-CONFIGURE_OPTS=--disable-rpath --enable-dbus --disable-update-desktop-database --disable-update-mime-database --enable-dependency-tracking --enable-coord64 LDFLAGS="$(LDFLAGS) -Wl,--as-needed"
+CONFIGURE_OPTS=--disable-gl --disable-rpath --disable-dbus --disable-update-desktop-database --disable-update-mime-database --enable-dependency-tracking --disable-coord64 LDFLAGS="$(LDFLAGS) -Wl,--as-needed"
 
 %:
 	dh $@

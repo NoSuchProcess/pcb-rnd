@@ -1,4 +1,4 @@
-Source: pcb
+Source: pcb-rnd
 Section: electronics
 Priority: optional
 Maintainer: Debian Electronics Team <pkg-electronics-devel@lists.alioth.debian.org>
@@ -11,7 +11,7 @@ Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-electronics/pcb.git
 
 Package: pcb
 Architecture: all
-Depends: ${misc:Depends}, pcb-gtk | pcb-lesstif, pcb-common
+Depends: ${misc:Depends}, pcb-rnd-gtk, pcb-rnd-common
 Description: printed circuit board (pcb) design program - meta-package
  PCB is an interactive printed circuit board editor for the X11 window 
  system. PCB includes a rats nest feature, design rule checking, and can 
@@ -23,7 +23,7 @@ Description: printed circuit board (pcb) design program - meta-package
 Package: pcb-common
 Architecture: all
 Replaces: pcb
-Depends: ${misc:Depends}, m4, tk8.5 | wish, tcl8.5 | tclsh, pcb-gtk | pcb-lesstif
+Depends: ${misc:Depends}, m4, tk8.5 | wish, tcl8.5 | tclsh, pcb-rnd-gtk
 Recommends: extra-xdg-menus
 Description: printed circuit board (pcb) design program - common files
  PCB is an interactive printed circuit board editor for the X11 window 
@@ -35,9 +35,9 @@ Description: printed circuit board (pcb) design program - common files
  .
  This package contains the common files.
 
-Package: pcb-gtk
+Package: pcb-rnd-gtk
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-common
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-common
 Description: printed circuit board (pcb) design program - GTK+ interface
  PCB is an interactive printed circuit board editor for the X11 window 
  system. PCB includes a rats nest feature, design rule checking, and can 
@@ -48,9 +48,9 @@ Description: printed circuit board (pcb) design program - GTK+ interface
  .
  This package contains the GTK+ user-interface for pcb.
 
-Package: pcb-lesstif
+Package: pcb-rnd-lesstif
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-common
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-common
 Description: printed circuit board (pcb) design program - LessTif interface
  PCB is an interactive printed circuit board editor for the X11 window 
  system. PCB includes a rats nest feature, design rule checking, and can 
