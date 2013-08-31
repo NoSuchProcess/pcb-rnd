@@ -2365,8 +2365,10 @@ LookupLOConnectionsToPad (PadTypePtr Pad, Cardinal LayerGroup)
 			PAD_LOOP (e);
 			{
 				if ((orig_pad != pad) && (ic == GET_INTCONN(pad))) {
-					if (!TEST_FLAG (TheFlag, pad))
+					if (!TEST_FLAG (TheFlag, pad)) {
 						ADD_PAD_TO_LIST (LayerGroup, pad);
+						return LookupLOConnectionsToPad(pad, LayerGroup);
+					}
 				}
 			}
 			END_LOOP;
