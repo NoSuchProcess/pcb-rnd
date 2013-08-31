@@ -319,58 +319,6 @@ typedef struct
 }
 FloatPolyType;
 
-static void
-draw_octagon_poly (hidGC gc, Coord X, Coord Y,
-                   Coord Thickness, Coord thin_draw)
-{
-  static FloatPolyType p[8] = {
-    { 0.5,               -TAN_22_5_DEGREE_2},
-    { TAN_22_5_DEGREE_2, -0.5              },
-    {-TAN_22_5_DEGREE_2, -0.5              },
-    {-0.5,               -TAN_22_5_DEGREE_2},
-    {-0.5,                TAN_22_5_DEGREE_2},
-    {-TAN_22_5_DEGREE_2,  0.5              },
-    { TAN_22_5_DEGREE_2,  0.5              },
-    { 0.5,                TAN_22_5_DEGREE_2}
-  };
-  static int special_size = 0;
-  static int scaled_x[8];
-  static int scaled_y[8];
-  Coord polygon_x[9];
-  Coord polygon_y[9];
-  int i;
-
-  if (Thickness != special_size)
-    {
-      special_size = Thickness;
-      for (i = 0; i < 8; i++)
-        {
-          scaled_x[i] = p[i].X * special_size;
-          scaled_y[i] = p[i].Y * special_size;
-        }
-    }
-  /* add line offset */
-  for (i = 0; i < 8; i++)
-    {
-      polygon_x[i] = X + scaled_x[i];
-      polygon_y[i] = Y + scaled_y[i];
-    }
-
-  if (thin_draw)
-    {
-      int i;
-      gui->set_line_cap (gc, Round_Cap);
-      gui->set_line_width (gc, 0);
-      polygon_x[8] = X + scaled_x[0];
-      polygon_y[8] = Y + scaled_y[0];
-      for (i = 0; i < 8; i++)
-        gui->draw_line (gc, polygon_x[i    ], polygon_y[i    ],
-                            polygon_x[i + 1], polygon_y[i + 1]);
-    }
-  else
-    gui->fill_polygon (gc, 8, polygon_x, polygon_y);
-}
-
 
 /* ---------------------------------------------------------------------------
  * draws one 'square' polygon distorted depending on the style
@@ -425,8 +373,6 @@ draw_square_pin_poly (hidGC gc, Coord X, Coord Y,
 	if (style & 8)
 		ym[0] = ym[1] = ym[2] = ym[3] = factor;
 
-
-
   if (Thickness != special_size)
     {
       special_size = Thickness;
@@ -456,6 +402,13 @@ draw_square_pin_poly (hidGC gc, Coord X, Coord Y,
     }
   else
     gui->fill_polygon (gc, 8, polygon_x, polygon_y);
+}
+
+static void
+draw_octagon_poly (hidGC gc, Coord X, Coord Y,
+                   Coord Thickness, Coord thin_draw)
+{
+	draw_square_pin_poly (gc, X, Y, Thickness, thin_draw, 17);
 }
 
 
