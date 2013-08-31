@@ -4856,18 +4856,20 @@ ActionChangeSquare (int argc, char **argv, Coord x, Coord y)
 
 	    gui->get_coords (_("Select an Object"), &x, &y);
 
+		ptr3 = NULL;
 		type = SearchScreen (x, y, CHANGESQUARE_TYPES,
 			       &ptr1, &ptr2, &ptr3);
-		{
-		int qstyle = GET_SQUARE ((PinTypePtr) ptr3);
-		qstyle++;
-		if (qstyle > 17)
-		  qstyle = 0;
-		if (type != NO_TYPE)
-			if (ChangeObjectSquare (type, ptr1, ptr2, ptr3, qstyle))
-				SetChangedFlag (true);
+		/* TODO: ptr3 is NULL when a VIA is found */
+		if (ptr3 != NULL) {
+			int qstyle = GET_SQUARE ((PinTypePtr) ptr3);
+			qstyle++;
+			if (qstyle > 17)
+			  qstyle = 0;
+			if (type != NO_TYPE)
+				if (ChangeObjectSquare (type, ptr1, ptr2, ptr3, qstyle))
+					SetChangedFlag (true);
 		}
-	    break;
+	  break;
 	  }
 
 	case F_SelectedElements:
