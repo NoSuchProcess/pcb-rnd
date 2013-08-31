@@ -121,6 +121,7 @@ typedef struct
   unsigned long f;		/* generic flags */
   unsigned char t[(MAX_LAYER + 1) / 2];	/* thermals */
   unsigned char q;	/* square geometry flag */
+  unsigned char int_conn_grp;
 } FlagType, *FlagTypePtr;
 
 #ifndef __GNUC__

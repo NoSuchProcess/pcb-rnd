@@ -421,6 +421,11 @@ common_string_to_flags (const char *flagstring,
 		rv.Flags.q=atoi(fp+6);
 	}
       else
+      if (flen == 7 && memcmp (fp, "intconn", 7) == 0)
+	{
+		rv.Flags.int_conn_grp=atoi(fp+8);
+	}
+      else
 	{
 	  for (i = 0; i < n_flagbits; i++)
 	    if (flagbits[i].nlen == flen
@@ -529,6 +534,15 @@ common_flags_to_string (FlagType flags,
 				len+=2;
     }
 
+  if (flags.int_conn_grp > 0)
+    {
+      len += sizeof ("intconn(.)");
+			if (flags.q > 9)
+				len++;
+			if (flags.q > 99)
+				len++;
+    }
+
   bp = buf = alloc_buf (len + 2);
 
   *bp++ = '"';
@@ -564,6 +578,13 @@ common_flags_to_string (FlagType flags,
 			if (bp != buf + 1)
 				*bp++ = ',';
 			bp += sprintf(bp, "shape(%d)", flags.q);
+    }
+
+  if (flags.int_conn_grp > 0)
+    {
+			if (bp != buf + 1)
+				*bp++ = ',';
+			bp += sprintf(bp, "intconn(%d)", flags.int_conn_grp);
     }
 
   *bp++ = '"';
