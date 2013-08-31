@@ -416,6 +416,11 @@ common_string_to_flags (const char *flagstring,
 	      ASSIGN_THERM (i, layers[i], &rv);
 	}
       else
+      if (flen == 5 && memcmp (fp, "shape", 5) == 0)
+	{
+		rv.Flags.q=atoi(fp+6);
+	}
+      else
 	{
 	  for (i = 0; i < n_flagbits; i++)
 	    if (flagbits[i].nlen == flen
@@ -517,6 +522,13 @@ common_flags_to_string (FlagType flags,
 	  len += printed_int_length (i, GET_THERM (i, &fh)) + 1;
     }
 
+  if (flags.q > 0)
+    {
+      len += sizeof ("shape(.)");
+			if (flags.q > 9)
+				len+=2;
+    }
+
   bp = buf = alloc_buf (len + 2);
 
   *bp++ = '"';
@@ -545,6 +557,13 @@ common_flags_to_string (FlagType flags,
 	  set_layer_list (i, GET_THERM (i, &fh));
       strcpy (bp, print_layer_list ());
       bp += strlen (bp);
+    }
+
+  if (flags.q > 0)
+    {
+			if (bp != buf + 1)
+				*bp++ = ',';
+			bp += sprintf(bp, "shape(%d)", flags.q);
     }
 
   *bp++ = '"';
