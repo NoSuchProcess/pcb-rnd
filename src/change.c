@@ -1453,6 +1453,7 @@ ChangePinSquare (ElementTypePtr Element, PinTypePtr Pin)
 		CLEAR_FLAG (SQUAREFLAG, Pin);
 	else
 		SET_FLAG (SQUAREFLAG, Pin);
+	SetPinBoundingBox (Pin);
   AddObjectToClearPolyUndoList (PIN_TYPE, Element, Pin, Pin, true);
   ClearFromPolygon (PCB->Data, PIN_TYPE, Element, Pin);
   DrawPin (Pin);

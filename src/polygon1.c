@@ -3241,6 +3241,26 @@ poly_ChkContour (PLINE * a)
   return FALSE;
 }
 
+void
+poly_bbox (POLYAREA *p, BoxType *b)
+{
+	PLINE *n;
+	int cnt;
+
+	n = p->contours;
+	b->X1 = b->X2 = n->xmin;
+	b->Y1 = b->Y2 = n->ymin;
+
+	for(cnt = 0; /*cnt < 2*/ n != NULL; n = n->next) {
+		if (n->xmin < b->X1) b->X1 = n->xmin;
+		if (n->ymin < b->Y1) b->Y1 = n->ymin;
+		if (n->xmax > b->X2) b->X2 = n->xmax;
+		if (n->ymax > b->Y2) b->Y2 = n->ymax;
+/*		if (n == p->contours)
+			cnt++;*/
+	}
+}
+
 
 BOOLp
 poly_Valid (POLYAREA * p)

@@ -232,6 +232,12 @@ SetPinBoundingBox (PinTypePtr Pin)
 {
   Coord width;
 
+	if ((GET_SQUARE(Pin) > 1) && (TEST_FLAG (SQUAREFLAG, Pin))) {
+		POLYAREA *p = PinPoly(Pin, PIN_SIZE(Pin), Pin->Clearance);
+		poly_bbox (p, &Pin->BoundingBox);
+		return;
+	}
+
   /* the bounding box covers the extent of influence
    * so it must include the clearance values too
    */

@@ -183,6 +183,10 @@ int poly_Boolean(const POLYAREA * a, const POLYAREA * b, POLYAREA ** res, int ac
 int poly_Boolean_free(POLYAREA * a, POLYAREA * b, POLYAREA ** res, int action);
 int poly_AndSubtract_free(POLYAREA * a, POLYAREA * b, POLYAREA ** aandb, POLYAREA ** aminusb);
 int SavePOLYAREA( POLYAREA *PA, char * fname);
+
+/* calculate the bounding box of a POLYAREA and save result in b */
+void poly_bbox (POLYAREA *p, BoxType *b);
+
 #ifdef __cplusplus
 }
 #endif
