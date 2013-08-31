@@ -111,7 +111,8 @@ static FlagBitsType object_flagbits[] = {
   { LOCKFLAG, N ("lock"), ALL_TYPES },
   { EDGE2FLAG, N ("edge2"), ALL_TYPES },
   { FULLPOLYFLAG, N ("fullpoly"), POLYGON_TYPE},
-  { NOPASTEFLAG, N ("nopaste"), PAD_TYPE }
+  { NOPASTEFLAG, N ("nopaste"), PAD_TYPE },
+  { NONETLISTFLAG, N ("nonetlist"), ALL_TYPES }
 };
 
 static FlagBitsType pcb_flagbits[] = {
@@ -511,10 +512,13 @@ common_flags_to_string (FlagType flags,
   savef = fh;
 
   len = 3;			/* for "()\0" */
+
   for (i = 0; i < n_flagbits; i++)
+
     if ((flagbits[i].object_types & object_type)
 	&& (TEST_FLAG (flagbits[i].mask, &fh)))
       {
+
 	len += flagbits[i].nlen + 1;
 	CLEAR_FLAG (flagbits[i].mask, &fh);
       }

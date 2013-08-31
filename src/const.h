@@ -215,6 +215,8 @@ pad.  Primarily used for pads used as fiducials.
 #define EDGE2FLAG               0x4000	/* Padr.Point2 is closer to outside edge */
 					/* also pinout text for pins is vertical */
 #define VISITFLAG		0x8000  /* marker to avoid re-visiting an object */
+#define	NONETLISTFLAG		0x10000	/* element is not on the netlist and should not interfere with the netlist */
+
 /* ---------------------------------------------------------------------------
  * PCB flags
  */
