@@ -124,6 +124,8 @@
 #define ASSIGN_SQUARE(V,P)	(P)->Flags.q = V
 
 
+#define GET_INTCONN(P)		((P)->Flags.int_conn_grp)
+
 extern int mem_any_set (unsigned char *, int);
 #define TEST_ANY_THERMS(P)	mem_any_set((P)->Flags.t, sizeof((P)->Flags.t))
 
