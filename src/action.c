@@ -4855,11 +4855,18 @@ ActionChangeSquare (int argc, char **argv, Coord x, Coord y)
 	    void *ptr1, *ptr2, *ptr3;
 
 	    gui->get_coords (_("Select an Object"), &x, &y);
-	    if ((type =
-		 SearchScreen (x, y, CHANGESQUARE_TYPES,
-			       &ptr1, &ptr2, &ptr3)) != NO_TYPE)
-	      if (ChangeObjectSquare (type, ptr1, ptr2, ptr3))
-		SetChangedFlag (true);
+
+		type = SearchScreen (x, y, CHANGESQUARE_TYPES,
+			       &ptr1, &ptr2, &ptr3);
+		{
+		int qstyle = GET_SQUARE ((PinTypePtr) ptr3);
+		qstyle++;
+		if (qstyle > 17)
+		  qstyle = 0;
+		if (type != NO_TYPE)
+			if (ChangeObjectSquare (type, ptr1, ptr2, ptr3, qstyle))
+				SetChangedFlag (true);
+		}
 	    break;
 	  }
 

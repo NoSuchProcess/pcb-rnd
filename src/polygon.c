@@ -360,6 +360,7 @@ OctagonPoly (Coord x, Coord y, Coord radius)
 {
   PLINE *contour = NULL;
   Vector v;
+	double xm[8], ym[8];
 
   v[0] = x + ROUND (radius * 0.5);
   v[1] = y + ROUND (radius * TAN_22_5_DEGREE_2);

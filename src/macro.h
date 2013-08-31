@@ -118,6 +118,12 @@
 #define CLEAR_THERM(L,P)	(P)->Flags.t[(L)/2] &= ~THERMFLAG(L)
 #define ASSIGN_THERM(L,V,P)	(P)->Flags.t[(L)/2] = ((P)->Flags.t[(L)/2] & ~THERMFLAG(L)) | ((V)  << (4 * ((L) % 2)))
 
+
+#define GET_SQUARE(P)		((P)->Flags.q)
+#define CLEAR_SQUARE(P)		(P)->Flags.q = 0
+#define ASSIGN_SQUARE(V,P)	(P)->Flags.q = V
+
+
 extern int mem_any_set (unsigned char *, int);
 #define TEST_ANY_THERMS(P)	mem_any_set((P)->Flags.t, sizeof((P)->Flags.t))
 

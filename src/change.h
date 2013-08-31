@@ -98,7 +98,7 @@ bool ChangeObjectMaskSize (int, void *, void *, void *, Coord,
 bool ChangeObjectJoin (int, void *, void *, void *);
 bool SetObjectJoin (int, void *, void *, void *);
 bool ClrObjectJoin (int, void *, void *, void *);
-bool ChangeObjectSquare (int, void *, void *, void *);
+bool ChangeObjectSquare (int, void *, void *, void *, int);
 bool SetObjectSquare (int, void *, void *, void *);
 bool ClrObjectSquare (int, void *, void *, void *);
 bool ChangeObjectOctagon (int, void *, void *, void *);

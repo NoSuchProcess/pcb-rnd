@@ -371,6 +371,94 @@ draw_octagon_poly (hidGC gc, Coord X, Coord Y,
     gui->fill_polygon (gc, 8, polygon_x, polygon_y);
 }
 
+
+/* ---------------------------------------------------------------------------
+ * draws one 'square' polygon distorted depending on the style
+ * x and y are already in display coordinates
+ * the points are numbered:
+ *
+ *          5 --- 6
+ *         /       \
+ *        4         7
+ *        |         |
+ *        3         0
+ *         \       /
+ *          2 --- 1
+ */
+
+static void
+draw_square_pin_poly (hidGC gc, Coord X, Coord Y,
+                   Coord Thickness, Coord thin_draw, int style)
+{
+  static FloatPolyType p[8] = {
+    { 0.5,               -TAN_22_5_DEGREE_2},
+    { TAN_22_5_DEGREE_2, -0.5              },
+    {-TAN_22_5_DEGREE_2, -0.5              },
+    {-0.5,               -TAN_22_5_DEGREE_2},
+    {-0.5,                TAN_22_5_DEGREE_2},
+    {-TAN_22_5_DEGREE_2,  0.5              },
+    { TAN_22_5_DEGREE_2,  0.5              },
+    { 0.5,                TAN_22_5_DEGREE_2}
+  };
+  static int special_size = 0;
+  static int scaled_x[8];
+  static int scaled_y[8];
+  Coord polygon_x[9];
+  Coord polygon_y[9];
+  double xm[8], ym[8];
+  const double factor = 2.0;
+  int i;
+
+	/* reset multipliers */
+	for (i = 0; i < 8; i++) {
+		xm[i] = 1;
+		ym[i] = 1;
+	}
+
+	style--;
+	if (style & 1)
+		xm[0] = xm[1] = xm[6] = xm[7] = factor;
+	if (style & 2)
+		xm[2] = xm[3] = xm[4] = xm[5] = factor;
+	if (style & 4)
+		ym[4] = ym[5] = ym[6] = ym[7] = factor;
+	if (style & 8)
+		ym[0] = ym[1] = ym[2] = ym[3] = factor;
+
+
+
+  if (Thickness != special_size)
+    {
+      special_size = Thickness;
+      for (i = 0; i < 8; i++)
+        {
+          scaled_x[i] = p[i].X * special_size;
+          scaled_y[i] = p[i].Y * special_size;
+        }
+    }
+  /* add line offset */
+  for (i = 0; i < 8; i++)
+    {
+      polygon_x[i] = X + scaled_x[i]*xm[i];
+      polygon_y[i] = Y + scaled_y[i]*ym[i];
+    }
+
+  if (thin_draw)
+    {
+      int i;
+      gui->set_line_cap (gc, Round_Cap);
+      gui->set_line_width (gc, 0);
+      polygon_x[8] = X + scaled_x[0]*xm[0];
+      polygon_y[8] = Y + scaled_y[0]*ym[0];
+      for (i = 0; i < 8; i++)
+        gui->draw_line (gc, polygon_x[i    ], polygon_y[i    ],
+                            polygon_x[i + 1], polygon_y[i + 1]);
+    }
+  else
+    gui->fill_polygon (gc, 8, polygon_x, polygon_y);
+}
+
+
 void
 common_fill_pcb_pv (hidGC fg_gc, hidGC bg_gc, PinType *pv, bool drawHole, bool mask)
 {
@@ -393,12 +481,16 @@ common_fill_pcb_pv (hidGC fg_gc, hidGC bg_gc, PinType *pv, bool drawHole, bool m
 
   if (TEST_FLAG (SQUAREFLAG, pv))
     {
-      Coord l = pv->X - r;
-      Coord b = pv->Y - r;
-      Coord r = l + w;
-      Coord t = b + w;
-
-      gui->fill_rect (fg_gc, l, b, r, t);
+			/* use the original code for now */
+			if ((GET_SQUARE(pv) == 0) || (GET_SQUARE(pv) == 1)) {
+				Coord l = pv->X - r;
+				Coord b = pv->Y - r;
+				Coord r = l + w;
+				Coord t = b + w;
+				gui->fill_rect (fg_gc, l, b, r, t);
+			}
+			else
+				draw_square_pin_poly (fg_gc, pv->X, pv->Y, w, false, GET_SQUARE(pv));
     }
   else if (TEST_FLAG (OCTAGONFLAG, pv))
     draw_octagon_poly (fg_gc, pv->X, pv->Y, w, false);

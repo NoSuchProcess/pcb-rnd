@@ -1448,7 +1448,11 @@ ChangePinSquare (ElementTypePtr Element, PinTypePtr Pin)
   AddObjectToClearPolyUndoList (PIN_TYPE, Element, Pin, Pin, false);
   RestoreToPolygon (PCB->Data, PIN_TYPE, Element, Pin);
   AddObjectToFlagUndoList (PIN_TYPE, Element, Pin, Pin);
-  TOGGLE_FLAG (SQUAREFLAG, Pin);
+	ASSIGN_SQUARE(Absolute, Pin);
+	if (Absolute == 0)
+		CLEAR_FLAG (SQUAREFLAG, Pin);
+	else
+		SET_FLAG (SQUAREFLAG, Pin);
   AddObjectToClearPolyUndoList (PIN_TYPE, Element, Pin, Pin, true);
   ClearFromPolygon (PCB->Data, PIN_TYPE, Element, Pin);
   DrawPin (Pin);
@@ -2159,8 +2163,9 @@ ClrObjectJoin (int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * Returns true if anything is changed
  */
 bool
-ChangeObjectSquare (int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+ChangeObjectSquare (int Type, void *Ptr1, void *Ptr2, void *Ptr3, int style)
 {
+  Absolute = style;
   if (ObjectOperation (&ChangeSquareFunctions, Type, Ptr1, Ptr2, Ptr3) !=
       NULL)
     {
