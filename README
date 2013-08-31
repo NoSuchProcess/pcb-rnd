@@ -1,3 +1,6 @@
+Pcb-rnd is a fork of PCB, adding a lot of random features and patches,
+hosted at http://repo.hu/projects/pcb-rnd (src: svn://repo.hu/pcb-rnd/trunk).
+
 Pcb is a CAD (computer aided design) program for the physical
 design of printed circuit boards.
 
