@@ -390,37 +390,37 @@ OctagonPoly (Coord x, Coord y, Coord radius, int style)
 
 #warning TODO: rewrite this to use the same table as the square/oct pin draw function
 	/* point 7 */
-  v[0] = x + ROUND (radius * 0.5);
-  v[1] = y + ROUND (radius * TAN_22_5_DEGREE_2);
+  v[0] = x + ROUND (radius * 0.5) * xm[7];
+  v[1] = y + ROUND (radius * TAN_22_5_DEGREE_2) * ym[7];
   if ((contour = poly_NewContour (v)) == NULL)
     return NULL;
 	/* point 6 */
-  v[0] = x + ROUND (radius * TAN_22_5_DEGREE_2);
-  v[1] = y + ROUND (radius * 0.5);
+  v[0] = x + ROUND (radius * TAN_22_5_DEGREE_2) * xm[6];
+  v[1] = y + ROUND (radius * 0.5) * ym[6];
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
 	/* point 5 */
-  v[0] = x - ROUND (radius * TAN_22_5_DEGREE_2);
-  v[1] = y + ROUND (radius * 0.5);
+  v[0] = x - ROUND (radius * TAN_22_5_DEGREE_2) * xm[5];
+  v[1] = y + ROUND (radius * 0.5) * ym[5];
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
 	/* point 4 */
-  v[0] = x - ROUND (radius * 0.5);
-  v[1] = y + ROUND (radius * TAN_22_5_DEGREE_2);
+  v[0] = x - ROUND (radius * 0.5) * xm[4];
+  v[1] = y + ROUND (radius * TAN_22_5_DEGREE_2) * ym[4];
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
 	/* point 3 */
-  v[0] = x - ROUND (radius * 0.5);
-  v[1] = y - ROUND (radius * TAN_22_5_DEGREE_2);
+  v[0] = x - ROUND (radius * 0.5) * xm[3];
+  v[1] = y - ROUND (radius * TAN_22_5_DEGREE_2) * ym[3];
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
 	/* point 2 */
-  v[0] = x - ROUND (radius * TAN_22_5_DEGREE_2);
-  v[1] = y - ROUND (radius * 0.5);
+  v[0] = x - ROUND (radius * TAN_22_5_DEGREE_2) * xm[2];
+  v[1] = y - ROUND (radius * 0.5) * ym[2];
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
 	/* point 1 */
-  v[0] = x + ROUND (radius * TAN_22_5_DEGREE_2);
-  v[1] = y - ROUND (radius * 0.5);
+  v[0] = x + ROUND (radius * TAN_22_5_DEGREE_2) * xm[1];
+  v[1] = y - ROUND (radius * 0.5) * ym[1];
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
 	/* point 0 */
-  v[0] = x + ROUND (radius * 0.5);
-  v[1] = y - ROUND (radius * TAN_22_5_DEGREE_2);
+  v[0] = x + ROUND (radius * 0.5) * xm[0];
+  v[1] = y - ROUND (radius * TAN_22_5_DEGREE_2) * xm[0];
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
   return ContourToPoly (contour);
 }
@@ -799,9 +799,16 @@ PinPoly (PinType * pin, Coord thick, Coord clear)
 
   if (TEST_FLAG (SQUAREFLAG, pin))
     {
+      if (GET_SQUARE(pin) <= 1) {
       size = (thick + 1) / 2;
-      return RoundRect (pin->X - size, pin->X + size, pin->Y - size,
-                        pin->Y + size, (clear + 1) / 2);
+	      return RoundRect (pin->X - size, pin->X + size, pin->Y - size,
+	                        pin->Y + size, (clear + 1) / 2);
+	    }
+	    else {
+	      size = (thick + clear + 1) / 2;
+       return OctagonPoly (pin->X, pin->Y, size + size, GET_SQUARE(pin));
+      }
+
     }
   else
     {
