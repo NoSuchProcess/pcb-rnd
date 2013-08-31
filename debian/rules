@@ -12,22 +12,22 @@ CONFIGURE_OPTS=--disable-doc --disable-gl --disable-rpath --disable-dbus --disab
 
 override_dh_auto_configure:
 	dh_auto_configure --builddirectory build_gtk -- $(CONFIGURE_OPTS) --with-gui=gtk
-	dh_auto_configure --builddirectory build_lesstif -- $(CONFIGURE_OPTS) --with-gui=lesstif
+#	dh_auto_configure --builddirectory build_lesstif -- $(CONFIGURE_OPTS) --with-gui=lesstif
 
 override_dh_auto_build:
 	dh_auto_build --builddirectory build_gtk
-	dh_auto_build --builddirectory build_lesstif
+#	dh_auto_build --builddirectory build_lesstif
 
 override_dh_auto_test:
 	dh_auto_test --builddirectory build_gtk
-	dh_auto_test --builddirectory build_lesstif
+#	dh_auto_test --builddirectory build_lesstif
 
 override_dh_auto_install:
 	dh_auto_install --builddirectory build_gtk
 
 override_dh_auto_clean:
 	dh_auto_clean --builddirectory build_gtk
-	dh_auto_clean --builddirectory build_lesstif
+#	dh_auto_clean --builddirectory build_lesstif
 
 override_dh_install:
 	# Remove needlessly installed static library and header file before
@@ -40,7 +40,7 @@ override_dh_install:
 	install build_gtk/src/pcb debian/$(package)-gtk/usr/bin/pcb-gtk
 
 	# Install pcb-lesstif binary:
-	install build_lesstif/src/pcb debian/$(package)-lesstif/usr/bin/pcb-lesstif
+#	install build_lesstif/src/pcb debian/$(package)-lesstif/usr/bin/pcb-lesstif
 
 	# Set executable bit for pcb tools:
 	-[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb/tools/MergePCBPS
