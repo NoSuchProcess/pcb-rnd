@@ -1,0 +1,4 @@
+#!/bin/sh
+./configure --prefix=/usr --disable-dbus --disable-gl \
+ --disable-update-desktop-database --enable-jpeg --enable-png
+ 
