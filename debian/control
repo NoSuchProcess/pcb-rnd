@@ -9,7 +9,7 @@ Homepage: http://pcb.gpleda.org/
 Vcs-Git: git://anonscm.debian.org/pkg-electronics/pcb.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-electronics/pcb.git
 
-Package: pcb
+Package: pcb-rnd
 Architecture: all
 Depends: ${misc:Depends}, pcb-rnd-gtk, pcb-rnd-common
 Description: printed circuit board (pcb) design program - meta-package

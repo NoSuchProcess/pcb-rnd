@@ -5,7 +5,7 @@
 
 package = pcb-rnd
 
-CONFIGURE_OPTS=--disable-gl --disable-rpath --disable-dbus --disable-update-desktop-database --disable-update-mime-database --enable-dependency-tracking --disable-coord64 LDFLAGS="$(LDFLAGS) -Wl,--as-needed"
+CONFIGURE_OPTS=--disable-doc --disable-gl --disable-rpath --disable-dbus --disable-update-desktop-database --disable-update-mime-database --enable-dependency-tracking --disable-coord64 LDFLAGS="$(LDFLAGS) -Wl,--as-needed"
 
 %:
 	dh $@
@@ -43,10 +43,10 @@ override_dh_install:
 	install build_lesstif/src/pcb debian/$(package)-lesstif/usr/bin/pcb-lesstif
 
 	# Set executable bit for pcb tools:
-	[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb/tools/MergePCBPS
-	[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb/tools/Merge_dimPCBPS
-	[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb/tools/tgo2pcb.tcl
-	[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb/tools/PCB2HPGL
+	-[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb/tools/MergePCBPS
+	-[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb/tools/Merge_dimPCBPS
+	-[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb/tools/tgo2pcb.tcl
+	-[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb/tools/PCB2HPGL
 
 	# Remove empty dirs:
 	[ ! -d debian/$(package)-common ] || find debian/$(package)-common -type d -empty -delete
@@ -54,8 +54,8 @@ override_dh_install:
 override_dh_fixperms:
 	dh_fixperms
 	# Fix permissions of a couple of example files:
-	[ ! -d debian/$(package)-common ] || chmod -x debian/$(package)-common/usr/share/doc/$(package)-common/examples/LED.pcb
-	[ ! -d debian/$(package)-common ] || chmod -x debian/$(package)-common/usr/share/doc/$(package)-common/examples/LED.net
+	-[ ! -d debian/$(package)-common ] || chmod -x debian/$(package)-common/usr/share/doc/$(package)-common/examples/LED.pcb
+	-[ ! -d debian/$(package)-common ] || chmod -x debian/$(package)-common/usr/share/doc/$(package)-common/examples/LED.net
 
 override_dh_installexamples:
 	dh_installexamples -XMakefile
