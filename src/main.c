@@ -615,6 +615,16 @@ Color of components. Default: @samp{#000000}
 */
   COLOR (ElementColor, "#000000", "element-color", "color of components"),
 
+
+/* %start-doc options "3 Colors"
+@ftable @code
+@item --element-color-nonetlist <string>
+Color of components. Default: @samp{#777777}
+@end ftable
+%end-doc
+*/
+  COLOR (ElementColor_nonetlist, "#777777", "element-color-nonetlist", "color of components not part of the netlist"),
+
 /* %start-doc options "3 Colors"
 @ftable @code
 @item --rat-color <string>

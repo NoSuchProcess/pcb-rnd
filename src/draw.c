@@ -369,11 +369,18 @@ draw_element_name (ElementType *element)
     gui->set_color (Output.fgGC, PCB->ElementColor);
   else if (TEST_FLAG (SELECTEDFLAG, &ELEMENT_TEXT (PCB, element)))
     gui->set_color (Output.fgGC, PCB->ElementSelectedColor);
-  else if (FRONT (element))
-    gui->set_color (Output.fgGC, PCB->ElementColor);
+  else if (FRONT (element)) {
+/* TODO: why do we test for Name's flag here? */
+    if (TEST_FLAG (NONETLISTFLAG, &element->Name[1]))
+      gui->set_color (Output.fgGC, PCB->ElementColor_nonetlist);
+    else
+      gui->set_color (Output.fgGC, PCB->ElementColor);
+  }
   else
     gui->set_color (Output.fgGC, PCB->InvisibleObjectsColor);
+
   DrawTextLowLevel (&ELEMENT_TEXT (PCB, element), PCB->minSlk);
+
 }
 
 static int
