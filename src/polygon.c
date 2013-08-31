@@ -420,7 +420,7 @@ OctagonPoly (Coord x, Coord y, Coord radius, int style)
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
 	/* point 0 */
   v[0] = x + ROUND (radius * 0.5) * xm[0];
-  v[1] = y - ROUND (radius * TAN_22_5_DEGREE_2) * xm[0];
+  v[1] = y - ROUND (radius * TAN_22_5_DEGREE_2) * ym[0];
   poly_InclVertex (contour->head.prev, poly_CreateNode (v));
   return ContourToPoly (contour);
 }
