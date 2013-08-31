@@ -21,7 +21,7 @@ Description: printed circuit board (pcb) design program - meta-package
  PCB offers high end features such as an autorouter and trace optimizer 
  which can tremendously reduce layout time.
 
-Package: pcb-common
+Package: pcb-rnd-common
 Architecture: all
 Replaces: pcb
 Depends: ${misc:Depends}, m4, tk8.5 | wish, tcl8.5 | tclsh, pcb-rnd-gtk
