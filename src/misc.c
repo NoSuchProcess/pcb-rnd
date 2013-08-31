@@ -2192,11 +2192,13 @@ GetInfoString (void)
   if (first_time)
     {
       first_time = 0;
-      DSAddString (&info, "This is PCB, an interactive\n");
+      DSAddString (&info, "This is PCB-rnd, an interactive\n");
       DSAddString (&info, "printed circuit board editor\n");
-      DSAddString (&info, "version ");
+      DSAddString (&info, "forked from PCB version ");
       DSAddString (&info, VERSION);
-      DSAddString (&info, "\n\n");
+      DSAddString (&info, "\nPCB-rnd adds a collection of\n");
+      DSAddString (&info, "useful-looking random patches.\n");
+      DSAddString (&info, "\n");
       DSAddString (&info, "Compiled on " __DATE__ " at " __TIME__);
       DSAddString (&info, "\n\n" "by harry eaton\n\n");
       DSAddString (&info,
@@ -2211,6 +2213,7 @@ GetInfoString (void)
       DSAddString (&info, "General Public License version 2\n");
       DSAddString (&info, "See the LICENSE file for more information\n\n");
       DSAddString (&info, "For more information see:\n\n");
+      DSAddString (&info, "PCB-rnd homepage: http://repo.hu/projects/pcb-rnd\n");
       DSAddString (&info, "PCB homepage: http://pcb.gpleda.org\n");
       DSAddString (&info, "gEDA homepage: http://www.gpleda.org\n");
       DSAddString (&info,
