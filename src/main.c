@@ -41,6 +41,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <time.h> /* Seed for srand() */
+#include <locale.h>
 
 #include "global.h"
 #include "data.h"
