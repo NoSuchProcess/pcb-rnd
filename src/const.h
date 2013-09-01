@@ -216,6 +216,7 @@ pad.  Primarily used for pads used as fiducials.
 					/* also pinout text for pins is vertical */
 #define VISITFLAG		0x8000  /* marker to avoid re-visiting an object */
 #define	NONETLISTFLAG		0x10000	/* element is not on the netlist and should not interfere with the netlist */
+#define MINCUTFLAG			0x20000 /* used by the mincut short find code */
 
 /* ---------------------------------------------------------------------------
  * PCB flags

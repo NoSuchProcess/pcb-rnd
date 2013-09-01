@@ -392,9 +392,14 @@ static void proc_short(PinType *pin, PadType *pad)
 		}
 	}
 
+	/* perform a search using MINCUTFLAG, calling back proc_short_cb() with the connections */
 	old_cb = find_callback;
 	find_callback = proc_short_cb;
-	LookupConnection (x, y, false, 1, FOUNDFLAG);
+	SaveFindFlag(MINCUTFLAG);
+	LookupConnection (x, y, false, 1, MINCUTFLAG);
+	ResetFoundLinesAndPolygons(false);
+	ResetFoundPinsViasAndPads(false);
+	RestoreFindFlag();
 	find_callback = old_cb;
 }
 
