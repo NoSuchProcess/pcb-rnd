@@ -1,0 +1,23 @@
+<html>
+<body>
+<h1> pcb-rnd - the [flagcomp] patch </h1>
+
+Many of the patches in this fork, and in possible future branches/forks
+may introduce new pin, pad or element flags. PCB loads and saves flags
+by converting the text representation to an in-memory binary format. Any
+flag not understood is lost.
+<p>
+This patch adds a linked list of string flags, filled in with the unknown
+flags while loading a PCB. On save, these flags are appended to the normal
+flag list. This preserves all unknown flags (but not order of flags) in
+a load/save cycle.
+
+<h2> save/load and compatibility </h2>
+This patch ensures compatibility in save/load cycles with flags introduced
+by later versions of vanilla PCB or different branches/forks of PCB by
+not removing flags they introduced.
+
+<h2> plans </h2>
+No plans - this feature is fully implemented.
+</body>
+</html>
