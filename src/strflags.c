@@ -439,9 +439,35 @@ common_string_to_flags (const char *flagstring,
 	  if (!found)
 	    {
 	      const char *fmt = "Unknown flag: \"%.*s\" ignored";
-	      char *msg = alloc_buf (strlen (fmt) + flen);
+	      unknown_flag_t *u;
+	      char *msg, *s;
+
+	      /* include () */
+	      s = fp + flen;
+	      if (*s == '(') {
+	      	while(*s != ')') {
+	      		flen++;
+	      		s++;
+	      	}
+	      }
+	      if (*s == ')')
+	      	flen++;
+
+	      msg = alloc_buf (strlen (fmt) + flen);
 	      sprintf (msg, fmt, flen, fp);
 	      error (msg);
+
+	      u = malloc(sizeof(unknown_flag_t));
+	      u->str = strndup(fp, flen);
+	      u->next = NULL;
+	      /* need to append, to keep order of flags */
+	      if (rv.Flags.unknowns != NULL) {
+	      	unknown_flag_t *n;
+	      	for(n = rv.Flags.unknowns; n->next != NULL; n = n->next) ;
+	      	n->next = u;
+	      }
+	      else
+	      	rv.Flags.unknowns = u;
 	    }
 	}
       fp = ep + 1;
@@ -491,6 +517,7 @@ common_flags_to_string (FlagType flags,
   int i;
   FlagHolder fh, savef;
   char *buf, *bp;
+  unknown_flag_t *u;
 
   fh.Flags = flags;
 
@@ -547,6 +574,9 @@ common_flags_to_string (FlagType flags,
 				len++;
     }
 
+	for(u = flags.unknowns; u != NULL; u = u->next)
+		len += strlen(u->str)+1;
+
   bp = buf = alloc_buf (len + 2);
 
   *bp++ = '"';
@@ -590,6 +620,15 @@ common_flags_to_string (FlagType flags,
 				*bp++ = ',';
 			bp += sprintf(bp, "intconn(%d)", flags.int_conn_grp);
     }
+
+	for(u = flags.unknowns; u != NULL; u = u->next) {
+		int len;
+		len = strlen(u->str);
+		if (bp != buf + 1)
+			*bp++ = ',';
+		memcpy(bp, u->str, len);
+		bp += len;
+	}
 
   *bp++ = '"';
   *bp = 0;
