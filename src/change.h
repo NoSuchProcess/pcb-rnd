@@ -50,6 +50,9 @@
 #define CHANGECLEARSIZE_TYPES	\
 	(PIN_TYPE | PAD_TYPE | VIA_TYPE | LINE_TYPE | ARC_TYPE | POLYGON_TYPE)
 
+#define	CHANGENONETLIST_TYPES     \
+	(ELEMENT_TYPE)
+
 #define	CHANGESQUARE_TYPES     \
 	(ELEMENT_TYPE | PIN_TYPE | PAD_TYPE)
 
@@ -74,6 +77,7 @@ bool ChangeSelectedMaskSize (int, Coord, bool);
 bool ChangeSelectedJoin (int);
 bool SetSelectedJoin (int);
 bool ClrSelectedJoin (int);
+bool ChangeSelectedNonetlist (int);
 bool ChangeSelectedSquare (int);
 bool SetSelectedSquare (int);
 bool ClrSelectedSquare (int);
@@ -98,6 +102,7 @@ bool ChangeObjectMaskSize (int, void *, void *, void *, Coord,
 bool ChangeObjectJoin (int, void *, void *, void *);
 bool SetObjectJoin (int, void *, void *, void *);
 bool ClrObjectJoin (int, void *, void *, void *);
+bool ChangeObjectNonetlist (int Type, void *Ptr1, void *Ptr2, void *Ptr3);
 bool ChangeObjectSquare (int, void *, void *, void *, int);
 bool SetObjectSquare (int, void *, void *, void *);
 bool ClrObjectSquare (int, void *, void *, void *);

@@ -104,6 +104,9 @@ MainMenu =
     {"CurrentLayer" Attributes(Layer)}
     {"Element" Attributes(Element)}
    }
+   {"Change flags"
+    {"Nonetlist" ChangeNonetlist(Element) a={"Alt-N" "Alt<Key>n"}}
+   }
    -
    {"Route Styles" @routestyles
     -

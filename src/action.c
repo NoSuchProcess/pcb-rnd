@@ -4824,6 +4824,59 @@ ActionChangeJoin (int argc, char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
+static const char changenonetlist_syntax[] =
+  "ChangeNonetlist(ToggleObject)\n"
+  "ChangeNonetlist(SelectedElements)\n"
+  "ChangeNonetlist(Selected|SelectedObjects)";
+
+static const char changenonetlist_help[] =
+  "Changes the nonetlist flag of elements.";
+
+/* %start-doc actions ChangeNonetlist
+
+Note that @code{Pins} means both pins and pads.
+
+@pinshapes
+
+%end-doc */
+
+static int
+ActionChangeNonetlist (int argc, char **argv, Coord x, Coord y)
+{
+  char *function = ARG (0);
+  if (function)
+    {
+      switch (GetFunctionID (function))
+	{
+	case F_ToggleObject:
+	case F_Object:
+	case F_Element:
+	  {
+	    int type;
+	    void *ptr1, *ptr2, *ptr3;
+	    gui->get_coords (_("Select an Element"), &x, &y);
+
+		ptr3 = NULL;
+		type = SearchScreen (x, y, CHANGENONETLIST_TYPES,
+			       &ptr1, &ptr2, &ptr3);
+		if (ChangeObjectNonetlist (type, ptr1, ptr2, ptr3))
+			SetChangedFlag (true);
+			break;
+		}
+	case F_SelectedElements:
+	case F_Selected:
+	case F_SelectedObjects:
+	  if (ChangeSelectedNonetlist (ELEMENT_TYPE))
+	    SetChangedFlag (true);
+	  break;
+	}
+	}
+  return 0;
+}
+
+
+/* --------------------------------------------------------------------------- */
+
 static const char changesquare_syntax[] =
   "ChangeSquare(ToggleObject)\n"
   "ChangeSquare(SelectedElements|SelectedPins)\n"
@@ -8021,6 +8074,9 @@ HID_Action action_action_list[] = {
   ,
   {"ChangeSize", 0, ActionChangeSize,
    changesize_help, changesize_syntax}
+  ,
+  {"ChangeNonetlist", 0, ActionChangeNonetlist,
+   changenonetlist_help, changenonetlist_syntax}
   ,
   {"ChangeSquare", 0, ActionChangeSquare,
    changesquare_help, changesquare_syntax}
