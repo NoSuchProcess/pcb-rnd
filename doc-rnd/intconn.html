@@ -22,6 +22,12 @@ connection (equivalent to the case when intconn(0) is omitted).
 When pin numbers are displayed (key 'd'), internal connection groups are
 written in square brackets, e.g. "2 [9]" means "pin 2, internally connected
 to group 9".
+<p>
+Combined with <a href="nonetlist.html">the [nonetlist]></a> patch, this
+solves the "0-ohm 1206 jumper" problem: the element should be marked
+as nonetlist, with both pins set intconn(1) - this will result in a 2
+pad element, pads internally connected, that can be part of any one network
+without causing short.
 
 <h2> save/load and compatibility </h2>
 This patch introduces a new pin flag. In the following example

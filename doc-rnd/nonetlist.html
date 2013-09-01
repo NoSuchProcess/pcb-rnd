@@ -1,0 +1,52 @@
+<html>
+<body>
+<h1> pcb-rnd - the [nonetlist] patch </h1>
+
+The [nonetlist] patch adds an element flag that makes PCB ignore the marked
+element when dealing with netlists. This means connecting a net to a pin of
+a nonetlist element will not cause a short. The refdes of a nonetlist
+part is drawn with color element-color-nonetlist (ElementColor_nonetlist
+in the source; default value #777777, grey).
+<p>
+Uses of the nonetlist feature:
+<ul>
+	<li> smd jumper: Combined with <a href="intconn.html">the [intconn]></a> patch, this
+	     solves the "0-ohm 1206 jumper" problem: the element should be marked
+	     as nonetlist, with both pins set intconn(1) - this will result in a 2
+	     pad element, pads internally connected, that can be part of any one network
+	     without causing short.
+	<li> mechanical parts that should not show up on the schematics:
+		<ul>
+			<li> mounting hole elements: single pin holes with silk marking the head of the screw
+			<li> chassis (often with mounting holes or keep-out areas)
+			<li> logos in footprints (no poly support in footprint - yet?)
+			<li> mechanical parts which do not have solderable pins (plastic spacers, extra connector shields)
+			<li> "spare parts", e.g. unused/disconnected DIP sockets or pin grids or connectors in a corner of the PCB for prototyping (dev-board style)
+		</ul>
+</ul>
+
+<h2> save/load and compatibility </h2>
+This patch introduces a new element flag. The following example demonstrates
+a <a href="jumper_1206.fp">1206 jumper footprint</a>:
+<pre>
+Element[0x00000000 "1206 jumper, 0 ohm" "" "1206" 0 0 -3150 -3150 0 100 "nonetlist"]
+(
+	Pad[-5905 -1181 -5905 1181 5118 2000 5718 "1" "1" "square,intconn(1)"]
+	Pad[5905 -1181 5905 1181 5118 2000 5718 "2" "2" "square,intconn(1)"]
+	ElementLine[-2362 -3740 2362 -3740 800]
+	ElementLine[-2362 3740 2362 3740 800]
+)
+</pre>
+Vanilla PCB will load the design ignoring internal connections and nonetlist
+flag - this will cause shorts on all connected pins/pads and will break
+the connection.
+<p>
+Vanilla PCB doesn't save nonetlist and elements are embedded in the file -
+once the design is loaded and saved with vanilla PCB, the flag is lost.
+After reloading the file in pcb-rnd, the element causes the same shorts
+as in vanilla PCB.
+
+<h2> plans </h2>
+Implement change/action/hotkey for toggling this flag.
+</body>
+</html>
