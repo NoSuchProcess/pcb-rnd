@@ -372,7 +372,7 @@ CheckShorts (LibraryMenuTypePtr theNet)
   {
 		ElementType * e=pin->Element;
 /* TODO: should be: !TEST_FLAG(NONETLISTFLAG, (ElementType *)pin->Element)*/
-    if ((TEST_FLAG (DRCFLAG, pin)) && (!(e->Name[1].Flags.f & NONETLISTFLAG)))
+    if ((TEST_FLAG (DRCFLAG, pin)) && (!(e->Flags.f & NONETLISTFLAG)))
       {
 	warn = true;
 	if (!pin->Spare)
@@ -410,7 +410,7 @@ CheckShorts (LibraryMenuTypePtr theNet)
   {
 		ElementType * e=pad->Element;
 /* TODO: should be: !TEST_FLAG(NONETLISTFLAG, (ElementType *)pad->Element)*/
-    if ((TEST_FLAG (DRCFLAG, pad)) && (!(e->Name[1].Flags.f & NONETLISTFLAG)))
+    if ((TEST_FLAG (DRCFLAG, pad)) && (!(e->Flags.f & NONETLISTFLAG)))
       {
 	warn = true;
 	if (!pad->Spare)
