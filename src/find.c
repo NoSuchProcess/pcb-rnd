@@ -296,6 +296,14 @@ static int TheFlag = FOUNDFLAG;
 static int OldFlag = FOUNDFLAG;
 static void *thing_ptr1, *thing_ptr2, *thing_ptr3;
 static int thing_type;
+find_callback_t find_callback = NULL;
+#define make_callback(type, ptr) 
+#if 0
+	do { \
+		if (find_callback != NULL) \
+			find_callback(type, ptr); \
+	} while(0)
+#endif
 static bool User = false;    /* user action causing this */
 static bool drc = false;     /* whether to stop if finding something not found */
 static bool IsBad = false;
@@ -364,6 +372,7 @@ ADD_PV_TO_LIST (PinTypePtr Pin)
     AddObjectToFlagUndoList (Pin->Element ? PIN_TYPE : VIA_TYPE,
                              Pin->Element ? Pin->Element : Pin, Pin, Pin);
   SET_FLAG (TheFlag, Pin);
+  make_callback(PIN_TYPE, Pin);
   PVLIST_ENTRY (PVList.Number) = Pin;
   PVList.Number++;
 #ifdef DEBUG
@@ -382,6 +391,7 @@ ADD_PAD_TO_LIST (Cardinal L, PadTypePtr Pad)
   if (User)
     AddObjectToFlagUndoList (PAD_TYPE, Pad->Element, Pad, Pad);
   SET_FLAG (TheFlag, Pad);
+  make_callback(PAD_TYPE, Pad);
   PADLIST_ENTRY ((L), PadList[(L)].Number) = Pad;
   PadList[(L)].Number++;
 #ifdef DEBUG
@@ -400,6 +410,7 @@ ADD_LINE_TO_LIST (Cardinal L, LineTypePtr Ptr)
   if (User)
     AddObjectToFlagUndoList (LINE_TYPE, LAYER_PTR (L), (Ptr), (Ptr));
   SET_FLAG (TheFlag, (Ptr));
+  make_callback(LINE_TYPE, Ptr);
   LINELIST_ENTRY ((L), LineList[(L)].Number) = (Ptr);
   LineList[(L)].Number++;
 #ifdef DEBUG
@@ -418,6 +429,7 @@ ADD_ARC_TO_LIST (Cardinal L, ArcTypePtr Ptr)
   if (User)
     AddObjectToFlagUndoList (ARC_TYPE, LAYER_PTR (L), (Ptr), (Ptr));
   SET_FLAG (TheFlag, (Ptr));
+  make_callback(ARC_TYPE, Ptr);
   ARCLIST_ENTRY ((L), ArcList[(L)].Number) = (Ptr);
   ArcList[(L)].Number++;
 #ifdef DEBUG
@@ -436,6 +448,7 @@ ADD_RAT_TO_LIST (RatTypePtr Ptr)
   if (User)
     AddObjectToFlagUndoList (RATLINE_TYPE, (Ptr), (Ptr), (Ptr));
   SET_FLAG (TheFlag, (Ptr));
+  make_callback(RATLINE_TYPE, Ptr);
   RATLIST_ENTRY (RatList.Number) = (Ptr);
   RatList.Number++;
 #ifdef DEBUG
@@ -454,6 +467,7 @@ ADD_POLYGON_TO_LIST (Cardinal L, PolygonTypePtr Ptr)
   if (User)
     AddObjectToFlagUndoList (POLYGON_TYPE, LAYER_PTR (L), (Ptr), (Ptr));
   SET_FLAG (TheFlag, (Ptr));
+  make_callback(POLYGON_TYPE, Ptr);
   POLYGONLIST_ENTRY ((L), PolygonList[(L)].Number) = (Ptr);
   PolygonList[(L)].Number++;
 #ifdef DEBUG

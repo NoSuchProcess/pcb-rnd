@@ -34,6 +34,14 @@
 #include <stdio.h>		/* needed to define 'FILE *' */
 #include "global.h"
 
+typedef void (*find_callback_t)(int type, void *ptr);
+
+/* if not NULL, this function is called whenever something is found
+   (in LookupConnections for example). The caller should save the original
+   value and set that back around the call, if the callback needs to be changed.
+   */
+find_callback_t find_callback;
+
 /* ---------------------------------------------------------------------------
  * some local defines
  */
