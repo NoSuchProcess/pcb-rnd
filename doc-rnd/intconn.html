@@ -8,7 +8,7 @@ leaving the following options:
 <ul>
 	<li> connect both pins to the net from the schematics - this works if all the internally connected pins are required to connect to copper (common with GND or power pins) but is very inconvenient for signal pins where only one of them needs to be connected
 	<li> back-annotate which pin is connected - there's no easy back annotation
-	<li> one pin connected, the other is closer to the next target; PCB doesn't understand that they are alreayd connected internally; normally one shouldn't use the internal connection of a component instead of copper; except for the common practice to use 0 ohm SMD resistors for jumping wires
+	<li> one pin connected, the other is closer to the next target; PCB doesn't understand that they are already connected internally; normally one shouldn't use the internal connection of a component instead of copper; except for the common practice to use 0 ohm SMD resistors for jumping wires
 </ul>
 <p>
 The patch introduces a new pin flag <i>intconn(g)</i> which marks the pin
@@ -41,6 +41,6 @@ info is lost.
 
 <h2> plans </h2>
 No plans - this feature is fully implemented. There is no plan for implementing
-a gui, internal connections should be hand-edited into the element.
+a GUI, internal connections should be hand-edited into the element.
 </body>
 </html>
