@@ -1,0 +1,46 @@
+<html>
+<body>
+<h1> pcb-rnd - the [intconn] patch </h1>
+
+There are parts with internal connections (e.g. pin 2 and 4 of a SO8
+package are internally connected). Vanilla PCB can not handle this,
+leaving the following options:
+<ul>
+	<li> connect both pins to the net from the schematics - this works if all the internally connected pins are required to connect to copper (common with GND or power pins) but is very inconvenient for signal pins where only one of them needs to be connected
+	<li> back-annotate which pin is connected - there's no easy back annotation
+	<li> one pin connected, the other is closer to the next target; PCB doesn't understand that they are alreayd connected internally; normally one shouldn't use the internal connection of a component instead of copper; except for the common practice to use 0 ohm SMD resistors for jumping wires
+</ul>
+<p>
+The patch introduces a new pin flag <i>intconn(g)</i> which marks the pin
+to have internal connections in group <i>g</i>. If there
+are multiple pins using the same <i>g</i> value within a single element, they
+are internally connected. In other words, <i>g</i> is a group (or net name)
+within the element and pins can join to one of the numbered groups (or internal
+nets). The value of <i>g</i> shall be between 1 and 255, 0 means no internal
+connection (equivalent to the case when intconn(0) is omitted).
+<p>
+When pin numbers are displayed (key 'd'), internal connection groups are
+written in square brackets, e.g. "2 [9]" means "pin 2, internally connected
+to group 9".
+
+<h2> save/load and compatibility </h2>
+This patch introduces a new pin flag. In the following example
+pin 2 and 4 are connected internally as group 9, while pin 3
+does not have any internal connections:
+<pre>
+Pin[40000 60000 6000 3000 6600 2800 "2" "2" "square,intconn(9)"]
+Pin[40000 50000 6000 3000 6600 2800 "3" "3" "square"]
+Pin[40000 40000 6000 3000 6600 2800 "4" "4" "square,intconn(9)"]
+</pre>
+Vanilla PCB will load the design ignoring internal connections -
+this may introduce new rats.
+<p>
+Vanilla PCB doesn't save intconn() and elements are embedded in the file -
+once the design is loaded and saved with vanilla PCB, internal connection
+info is lost.
+
+<h2> plans </h2>
+No plans - this feature is fully implemented. There is no plan for implementing
+a gui, internal connections should be hand-edited into the element.
+</body>
+</html>
