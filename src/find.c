@@ -297,13 +297,12 @@ static int OldFlag = FOUNDFLAG;
 static void *thing_ptr1, *thing_ptr2, *thing_ptr3;
 static int thing_type;
 find_callback_t find_callback = NULL;
-#define make_callback(type, ptr) 
-#if 0
+#define make_callback(type, ptr) \
 	do { \
 		if (find_callback != NULL) \
 			find_callback(type, ptr); \
 	} while(0)
-#endif
+
 static bool User = false;    /* user action causing this */
 static bool drc = false;     /* whether to stop if finding something not found */
 static bool IsBad = false;
