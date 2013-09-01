@@ -2355,6 +2355,7 @@ LookupLOConnectionsToPad (PadTypePtr Pad, Cardinal LayerGroup)
   Cardinal entry;
   struct lo_info info;
   int ic;
+  bool retv = false;
 
 	/* Internal connection: if pads in the same element have the same
 	   internal connection group number, they are connected */
@@ -2367,7 +2368,8 @@ LookupLOConnectionsToPad (PadTypePtr Pad, Cardinal LayerGroup)
 				if ((orig_pad != pad) && (ic == GET_INTCONN(pad))) {
 					if (!TEST_FLAG (TheFlag, pad)) {
 						ADD_PAD_TO_LIST (LayerGroup, pad);
-						return LookupLOConnectionsToPad(pad, LayerGroup);
+						if (LookupLOConnectionsToPad(pad, LayerGroup))
+							retv = true;
 					}
 				}
 			}
@@ -2429,7 +2431,7 @@ LookupLOConnectionsToPad (PadTypePtr Pad, Cardinal LayerGroup)
         }
 
     }
-  return (false);
+  return retv;
 }
 
 static int
