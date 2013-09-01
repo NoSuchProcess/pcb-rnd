@@ -1,0 +1,9 @@
+- distorted square pin bugs:
+	- large clearance with octagon
+	- why q doesn't work on vias (new comment about this in action.c)
+- 1206 jumpers:
+	- gsch2pcb patch
+- mincut shorts: better highlight of shorts
+- merge pcb-gpmi in pcb-rnd
+- rethink/rewrite the action/change infrastructure - too many void *ptr1
+  pointers, too many code duplication
