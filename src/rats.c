@@ -358,9 +358,10 @@ TransferNet (NetListTypePtr Netl, NetTypePtr SourceNet, NetTypePtr DestNet)
   memset (&Netl->Net[Netl->NetN], 0, sizeof (NetType));
 }
 
-static void proc_short_cb(int type, void *obj)
+static void proc_short_cb(int current_type, void *current_obj, int from_type, void *from_obj, found_conn_type_t type)
 {
-	printf(" found %d %p\n", type, obj);
+	AnyObjectType *curr = current_obj, *from = from_obj;
+	printf(" found %d %d/%p type %d from %d\n", current_type, curr->ID, current_obj, type, from == NULL ? -1 : from->ID);
 }
 
 static void proc_short(PinType *pin, PadType *pad)

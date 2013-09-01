@@ -34,7 +34,16 @@
 #include <stdio.h>		/* needed to define 'FILE *' */
 #include "global.h"
 
-typedef void (*find_callback_t)(int type, void *ptr);
+typedef enum {
+	FCT_COPPER = 1,       /* copper connection */
+	FCT_INTERNAL = 2,     /* element-internal connection */
+	FCT_RAT = 4,          /* connected by a rat line */
+	FCT_ELEMENT = 8,      /* pin/pad is part of an element whose pins/pads are being listed */
+	FCT_START = 16,       /* starting object of a query */
+} found_conn_type_t;
+
+typedef void (*find_callback_t)(int current_type, void *current_ptr, int from_type, void *from_ptr, found_conn_type_t conn_type);
+
 
 /* if not NULL, this function is called whenever something is found
    (in LookupConnections for example). The caller should save the original
