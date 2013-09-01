@@ -1,0 +1,54 @@
+<html>
+<body>
+<H1> pcb-rnd motivation </H1>
+I use PCB a lot on various computers. I used to try to join the mainstream
+development with small contribution (minor patches) and was active on
+IRC and the mailing lists for a while. However, it didn't work out well,
+and:
+<ul>
+	<li> PCB already knew 95% of everything I'd ever need years ago
+	<li> the remaining 5% was not on the TODO list of developers and generally no one shown much interest in getting patches for those
+	<li> meanwhile a lot of new features have been added, from which most I find totally useless:
+		<ul>
+			<li> dbus
+			<li> gl - transparency makes even simple 2 sided boards unusable; slower than the classic version sw render on all my computers
+			<li> preparation for a C++ transition
+		</ul>
+	<li> the official Debian package enables (requires, depends on) both dbus and gl
+	<li> DVCS - it almost always results in chaos, and has no benefit for such a small group of developers; there are posts from time to time on the mailing list about how to handle the chaos; my choice is to stick with a simple, centralized version control system
+	<li> DVCS <b>always</b> results in increased administration, which I hate to spend my time on - I'd rather invest the time in bugfixing, documentation or implementing new features
+	<li> it's nearly impossible to get small patches applied:
+		<ul>
+			<li> often no one has the time to revise and commit them
+			<li> communication requires web2.0
+			<li> there are too many cycles of "please fix this and change that first"
+			<li> with the chaos VCS, it's too likely that new feature patches would require ongoing maintenance to avoid that a large scale merge (or rebase, whatever) of another feature branch breaks it
+		</ul>
+	<li> I don't even dream about getting larger patches
+	<li> no stable release for years; can't maintain a set of patches (like pcb-gpmi) and port them to new releases
+</ul>
+I was pondering a for for years. The trigger was that one day I've upgraded
+Debian on my lab computer and the new version of PCB came with gl enabled; this
+made PCB absolutely unusable (had to wait like 10 seconds for a scroll) while
+all the transparent polys over traces made the whole screen a mess. I should
+have recompiled everything and built a new Debian package with gl disabled or
+install from source (but I have too many computers for that). My decision
+was to set up my own .deb but then build it from a fork (it's not much of
+an extra effort), so I can add some of the features I miss in daily use.
+My plans with this fork:
+<ul>
+	<li> I will stick with my fork and will use it on all my computers for all my designs
+	<li> Because of that, there's no emphasis on keeping the file formats compatible
+	<li> I won't actively seek ways to get my changes into the mainstream; I will keep on using my svn repo in a manner that (as a side effect) makes such merges easier, tho. If PCB developers decide to pick them up from svn and merge them in the official repo, it's fine (but I personally will keep using my fork anyway).
+	<li> Most probably I won't merge anything from the mainstream to my fork - the past few years showed that it's unlikely there would be new features I'd need
+	<li> plans for new features:
+		<ul>
+			<li> pin shapes (a <a href="square.html">preliminary version</a> is already implemented
+			<li> 1206 jumpers without having to add them on the schematics/netlist (mostly done; <a href="intconn.html">[intconn]</a> and <a href="nonetlist.html"> [nonetlist] </a> are the PCB-side features for this)
+			<li> merge pcb-gpmi; GPMI would be an optional addon, it'd probably stay a plugin, but there should not be a separate repo
+		</ul>
+</ul>
+
+
+</html>
+</body>
