@@ -158,7 +158,11 @@ PCB_SRCS = \
 	hid/common/draw_helpers.h \
 	hid/common/hid_resource.c \
 	hid/common/hid_resource.h \
-	hid/hidint.h 
+	hid/hidint.h \
+	pcb-mincut/graph.c \
+	pcb-mincut/graph.h \
+	pcb-mincut/solve.c \
+	pcb-mincut/solve.h
 
 EXTRA_pcb_SOURCES = ${DBUS_SRCS} ${GL_SRCS} toporouter.c toporouter.h
 DBUS_SRCS= \
