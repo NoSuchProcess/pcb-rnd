@@ -1,0 +1,46 @@
+<html>
+<body>
+<h1> pcb-rnd - the [mincut] patch </h1>
+
+The original code was highlighting pins/pads only when a short came around
+after rats nest optimization. This was not very helpful on a complex board.
+There had been a long discussion on the mailing list about the best solutions.
+There were a few very good ideas, including:
+<ul>
+	<li> manual tagging of objects (lines, polys, arcs, vias) with net and warn
+	     where two differently tagged net connects
+	<li> automatic tagging based on "where it was connected first", then the same
+	     warning mechanism as above
+	<li> trace history (using the undo buffer?) and go back until when it was
+	     not broken, check what exactly broke it
+	<li> history combined with tagging
+	<li> calculate minimal cut
+</ul>
+<p>
+I choose minimal cut for my patch because it doesn't require tracing the
+full history or any manual administration of nets vs. objects (which I
+would find inevitable even with manual tagging - directly or indirectly
+the user needs to be able to change net tags).
+<p>
+The minimal cut is the least amount of object whose removal would resolve
+the short. It is best demonstrated on an example:
+<p>
+<img src="mincut.pcb">
+<p>
+Removing all the marked lines/polys/vias would surely resolve the short
+(sometimes leaving rat lines behind). Minimal cut is better than randomly
+removing objects, tho: it guarantees that the minimal amount of objects
+are to be removed. On a complex board, this plave is likely to be close
+to the place where the problem really is - much closer than the pins/pads.
+
+
+<h2> save/load and compatibility </h2>
+This patch does not affect the file format.
+
+<h2> plans </h2>
+Set different edge weights, probably increasing weight on edges which
+connect two objects that each have only 2 connections; this would orient
+mincut towards cutting at junctions instead of cutting randomly a long
+string of lines.
+</body>
+</html>
