@@ -540,7 +540,7 @@ short_conns_maxid = 0;
 		s = lut_by_gid[solution[i]];
 		printf("%d %p", solution[i], s);
 		if (s != NULL) {
-			SET_FLAG (FOUNDFLAG, s->to);
+			SET_FLAG (WARNFLAG, s->to);
 			printf("  -> %d", s->to->ID);
 		}
 		printf("\n");
