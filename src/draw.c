@@ -494,7 +494,9 @@ _draw_line (LineType *line)
 static void
 draw_line (LayerType *layer, LineType *line)
 {
-  if (TEST_FLAG (SELECTEDFLAG | FOUNDFLAG, line))
+  if (TEST_FLAG (WARNFLAG, line))
+    gui->set_color(Output.fgGC, PCB->WarnColor);
+  else if (TEST_FLAG (SELECTEDFLAG | FOUNDFLAG, line))
     {
       if (TEST_FLAG (SELECTEDFLAG, line))
         gui->set_color (Output.fgGC, layer->SelectedColor);
@@ -566,7 +568,9 @@ _draw_arc (ArcType *arc)
 static void
 draw_arc (LayerType *layer, ArcType *arc)
 {
-  if (TEST_FLAG (SELECTEDFLAG | FOUNDFLAG, arc))
+  if (TEST_FLAG (WARNFLAG, arc))
+    gui->set_color(Output.fgGC, PCB->WarnColor);
+  else if (TEST_FLAG (SELECTEDFLAG | FOUNDFLAG, arc))
     {
       if (TEST_FLAG (SELECTEDFLAG, arc))
         gui->set_color (Output.fgGC, layer->SelectedColor);
@@ -908,7 +912,9 @@ poly_callback (const BoxType * b, void *cl)
   if (!polygon->Clipped)
     return 0;
 
-  if (TEST_FLAG (SELECTEDFLAG, polygon))
+  if (TEST_FLAG (WARNFLAG, polygon))
+    color = PCB->WarnColor;
+  else if (TEST_FLAG (SELECTEDFLAG, polygon))
     color = i->layer->SelectedColor;
   else if (TEST_FLAG (FOUNDFLAG, polygon))
     color = PCB->ConnectedColor;
