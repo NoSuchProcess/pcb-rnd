@@ -383,7 +383,7 @@ CheckShorts (LibraryMenuTypePtr theNet)
 		     &theNet->Name[2],
 		     UNKNOWN (NAMEONPCB_NAME (element)),
 		     UNKNOWN (pin->Number));
-	    rat_found_short(pin, NULL);
+	    rat_found_short(pin, NULL, &theNet->Name[2]);
 	    continue;
 	  }
 	newone = true;
@@ -403,7 +403,7 @@ CheckShorts (LibraryMenuTypePtr theNet)
 	    Message (_("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 		     &theNet->Name[2],
 		     &((LibraryMenuTypePtr) (pin->Spare))->Name[2]);
-	    rat_found_short(pin, NULL);
+	    rat_found_short(pin, NULL, &theNet->Name[2]);
 	  }
       }
   }
@@ -421,7 +421,7 @@ CheckShorts (LibraryMenuTypePtr theNet)
 		     &theNet->Name[2],
 		     UNKNOWN (NAMEONPCB_NAME (element)),
 		     UNKNOWN (pad->Number));
-	    rat_found_short(NULL, pad);
+	    rat_found_short(NULL, pad, &theNet->Name[2]);
 	    continue;
 	  }
 	newone = true;
@@ -441,7 +441,7 @@ CheckShorts (LibraryMenuTypePtr theNet)
 	    Message (_("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 		     &theNet->Name[2],
 		     &((LibraryMenuTypePtr) (pad->Spare))->Name[2]);
-	    rat_found_short(NULL, pad);
+	    rat_found_short(NULL, pad, &theNet->Name[2]);
 	  }
       }
   }

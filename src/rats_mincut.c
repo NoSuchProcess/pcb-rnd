@@ -234,29 +234,48 @@ short_conns_maxid = 0;
 
 typedef struct pinpad_s pinpad_t;
 struct pinpad_s {
+	int ignore;             /* if 1, changed our mind, do not check */
 	PinType *pin;
 	PadType *pad;
+	const char *with_net;   /* the name of the net this pin/pad is in short with */
 	pinpad_t *next;
 };
 
 static pinpad_t *shorts = NULL;
 
-void rat_found_short(PinType *pin, PadType *pad)
+void rat_found_short(PinType *pin, PadType *pad, const char *with_net)
 {
 	pinpad_t *pp;
 	pp = malloc(sizeof(pinpad_t));
+	pp->ignore = 0;
 	pp->pin = pin;
 	pp->pad = pad;
+	pp->with_net = with_net;
 	pp->next = shorts;
 	shorts = pp;
 }
 
 void rat_proc_shorts(void)
 {
-	pinpad_t *n, *next;
+	pinpad_t *n, *i, *next;
 	for(n = shorts; n != NULL; n = next) {
 		next = n->next;
-		proc_short(n->pin, n->pad);
+
+		/* run only if net is not ignored */
+		if (!n->ignore)
+			proc_short(n->pin, n->pad);
+
+		/* check if the rest of the shorts affect the same nets - ignore them if so */
+		for(i = n->next; i != NULL; i = i->next) {
+			LibraryMenuType *spn, *spi;
+			spn = (n->pin != NULL) ? n->pin->Spare : n->pad->Spare;
+			spi = (i->pin != NULL) ? i->pin->Spare : i->pad->Spare;
+
+			/* can compare by pointer - names are never strdup()'d */
+			if ((&spn->Name[2] == i->with_net) || (&spi->Name[2] == n->with_net))
+				i->ignore = 1;
+		}
+
 		free(n);
 	}
 	shorts = NULL;
