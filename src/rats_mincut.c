@@ -29,6 +29,8 @@
 #include "rats.h"
 #include "pcb-mincut/graph.h"
 
+#define debprintf(x...)
+
 typedef struct short_conn_s short_conn_t;
 struct short_conn_s {
 	int gid; /* id in the graph */
@@ -51,8 +53,6 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 	short_conn_t *s;
 
 	s = malloc(sizeof(short_conn_t));
-/*	s->from_type = from_type;
-	s->from = from;*/
 	s->from_id = from == NULL ? -1 : from->ID;
 	s->to_type = current_type;
 	s->to = curr;
@@ -63,12 +63,7 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 		short_conns_maxid = curr->ID;
 	num_short_conns++;
 
-
-
-
-	printf(" found %d %d/%p type %d from %d\n", current_type, curr->ID, current_obj, type, from == NULL ? -1 : from->ID);
-
-
+	debprintf(" found %d %d/%p type %d from %d\n", current_type, curr->ID, current_obj, type, from == NULL ? -1 : from->ID);
 }
 
 static void proc_short(PinType *pin, PadType *pad)
@@ -87,13 +82,13 @@ static void proc_short(PinType *pin, PadType *pad)
 	assert((pin == NULL) || (pad == NULL));
 
 	if (pin != NULL) {
-		printf("short on pin!\n");
+		debprintf("short on pin!\n");
 		SET_FLAG (WARNFLAG, pin);
 		x = pin->X;
 		y = pin->Y;
 	}
 	else if (pad != NULL) {
-		printf("short on pad!\n");
+		debprintf("short on pad!\n");
 		SET_FLAG (WARNFLAG, pad);
 		if (TEST_FLAG (EDGE2FLAG, pad)) {
 			x = pad->Point2.X;
@@ -115,7 +110,7 @@ short_conns_maxid = 0;
 	SaveFindFlag(MINCUTFLAG);
 	LookupConnection (x, y, false, 1, MINCUTFLAG);
 
-	printf("- alloced for %d\n", (short_conns_maxid+1));
+	debprintf("- alloced for %d\n", (short_conns_maxid+1));
 	lut_by_oid = calloc(sizeof(short_conn_t *), (short_conns_maxid+1));
 	lut_by_gid = calloc(sizeof(short_conn_t *), (num_short_conns+3));
 
@@ -127,7 +122,7 @@ short_conns_maxid = 0;
 	for(n = short_conns, gids=2; n != NULL; n = n->next, gids++) {
 		char *s, *typ;
 		n->gid = gids;
-		printf(" {%d} found %d %d/%p type %d from %d\n", n->gid, n->to_type, n->to->ID, n->to, n->type, n->from_id);
+		debprintf(" {%d} found %d %d/%p type %d from %d\n", n->gid, n->to_type, n->to->ID, n->to, n->type, n->from_id);
 		lut_by_oid[n->to->ID] = n;
 		lut_by_gid[n->gid] = n;
 		
@@ -158,13 +153,13 @@ short_conns_maxid = 0;
 			spare = ((PadType *)n->to)->Spare;
 		if (spare != NULL) {
 			void *net = &(((LibraryMenuTypePtr)spare)->Name[2]);
-			printf(" net=%s\n", net);
+			debprintf(" net=%s\n", net);
 			if (S == NULL) {
-				printf(" -> became S\n");
+				debprintf(" -> became S\n");
 				S = net;
 			}
 			else if ((T == NULL) && (net != S)) {
-				printf(" -> became T\n");
+				debprintf(" -> became T\n");
 				T = net;
 			}
 
@@ -184,35 +179,35 @@ short_conns_maxid = 0;
 				weight = 10000;
 			if (from != NULL) {
 				gr_add_(g, n->gid, from->gid, weight);
-				printf(" CONN %d %d\n", n->gid, from->gid);
+				debprintf(" CONN %d %d\n", n->gid, from->gid);
 			}
 		}
 	}
 
-	static int drw = 0;
-	char gfn[256];
-	drw++;
-	sprintf(gfn, "A_%d_a", drw);
-	printf("gfn=%s\n", gfn);
-	gr_draw(g, gfn, "png");
+#ifdef MINCUT_DRAW
+	{
+		static int drw = 0;
+		char gfn[256];
+		drw++;
+		sprintf(gfn, "A_%d_a", drw);
+		debprintf("gfn=%s\n", gfn);
+		gr_draw(g, gfn, "png");
+	}
+#endif
 
 	solution = solve(g);
 
-/*	sprintf(gfn, "A_%d_b", drw);
-	printf("gfn=%s\n", gfn);
-	gr_draw(g, gfn, "png");*/
-
-	printf("Would cut:\n");
+	debprintf("Would cut:\n");
 	for(i = 0; solution[i] != -1; i++) {
 		short_conn_t *s;
-		printf("%d:", i);
+		debprintf("%d:", i);
 		s = lut_by_gid[solution[i]];
-		printf("%d %p", solution[i], s);
+		debprintf("%d %p", solution[i], s);
 		if (s != NULL) {
 			SET_FLAG (WARNFLAG, s->to);
-			printf("  -> %d", s->to->ID);
+			debprintf("  -> %d", s->to->ID);
 		}
-		printf("\n");
+		debprintf("\n");
 	}
 
 	free(solution);
