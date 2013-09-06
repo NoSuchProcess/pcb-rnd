@@ -592,6 +592,15 @@ ClearWarnings ()
       }
   }
   ENDALL_LOOP;
+  VIA_LOOP (PCB->Data);
+  {
+    if (TEST_FLAG (WARNFLAG, via))
+      {
+	CLEAR_FLAG (WARNFLAG, via);
+	DrawVia (via);
+      }
+  }
+  END_LOOP;
   ALLPAD_LOOP (PCB->Data);
   {
     if (TEST_FLAG (WARNFLAG, pad))
@@ -601,6 +610,34 @@ ClearWarnings ()
       }
   }
   ENDALL_LOOP;
+  ALLLINE_LOOP (PCB->Data);
+  {
+    if (TEST_FLAG (WARNFLAG, line))
+      {
+	CLEAR_FLAG (WARNFLAG, line);
+	DrawLine (layer, line);
+      }
+  }
+  ENDALL_LOOP;
+  ALLARC_LOOP (PCB->Data);
+  {
+    if (TEST_FLAG (WARNFLAG, arc))
+      {
+	CLEAR_FLAG (WARNFLAG, arc);
+	DrawArc (layer, arc);
+      }
+  }
+  ENDALL_LOOP;
+  ALLPOLYGON_LOOP (PCB->Data);
+  {
+    if (TEST_FLAG (WARNFLAG, polygon))
+      {
+	CLEAR_FLAG (WARNFLAG, polygon);
+	DrawPolygon (layer, polygon);
+      }
+  }
+  ENDALL_LOOP;
+
   Draw ();
 }
 
