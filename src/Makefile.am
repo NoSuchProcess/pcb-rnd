@@ -116,6 +116,7 @@ PCB_SRCS = \
 	print.c \
 	print.h \
 	rats.c \
+	rats_mincut.c \
 	rats.h \
 	remove.c \
 	remove.h \
