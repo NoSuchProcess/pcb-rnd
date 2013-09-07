@@ -1,6 +1,8 @@
-pcb-rnd (20110918-r36) unstable; urgency=low
+pcb-rnd (1.0.0-r84) unstable; urgency=low
 
-  * First release of the fork
+  * First release (1.0.0) of the fork
 
- -- Tibor Palinkas <pcb_nospam@repo.hu>  Sat, 31 Aug 2013 13:35:05 +0000
+ -- Tibor Palinkas <pcb_nospam@repo.hu>  Sat, 07 Sep 2013 05:35:02 +0200
+
+
 
