@@ -1,0 +1,25 @@
+#DBUS_SRCS= \
+#	dbus-pcbmain.c \
+#	dbus-pcbmain.h \
+#	dbus.h \
+#	dbus.c
+#LIBGTK_GL_SRCS= \
+#	hid/gtk/gtkhid-gl.c
+#GL_SRCS= \
+#	hid/common/hidgl.c \
+#	hid/common/hidgl.h
+
+
+# If we are building with dbus support, we need some extra files
+if WITH_DBUS
+dbus-introspect.h : dbus.xml Makefile
+	echo '/* AUTOMATICALLY GENERATED FROM dbus.xml DO NOT EDIT */' > $@.tmp
+	echo "static char *pcb_dbus_introspect_xml ="  > $@.tmp
+	sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$$/"/' < $(srcdir)/dbus.xml >> $@.tmp
+	echo ";" >> $@.tmp
+	mv $@.tmp $@
+
+PCB_SRCS+=	${DBUS_SRCS}
+BUILT_SOURCES+=	dbus-introspect.h
+
+endif

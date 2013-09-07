@@ -1,0 +1,19 @@
+liblesstif_a_CPPFLAGS = -I./hid/lesstif
+LIBLESSTIF_SRCS = \
+	dolists.h \
+	hid/hidint.h \
+	hid/lesstif/dialogs.c \
+	hid/lesstif/lesstif.h \
+	hid/lesstif/library.c \
+	hid/lesstif/main.c \
+	hid/lesstif/menu.c \
+	hid/lesstif/netlist.c \
+	hid/lesstif/styles.c \
+	hid/lesstif/xincludes.h 
+liblesstif_a_SOURCES = ${LIBLESSTIF_SRCS} hid/lesstif/lesstif_lists.h
+
+hid/lesstif/lesstif_lists.h : ${LIBLESSTIF_SRCS} Makefile
+	$(MKDIR_P) hid/lesstif
+	true > $@
+	(for f in ${LIBLESSTIF_SRCS} ; do cat $(srcdir)/$$f ; done) | grep "^REGISTER" > $@.tmp
+	mv $@.tmp $@

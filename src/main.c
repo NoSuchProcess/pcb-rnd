@@ -1778,10 +1778,12 @@ main (int argc, char *argv[])
   setbuf (stdout, 0);
   InitPaths (argv[0]);
 
+#ifdef LOCALEDIR
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
   textdomain(GETTEXT_PACKAGE);
   bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
   setlocale(LC_ALL,"");
+#endif
 
   srand ( time(NULL) ); /* Set seed for rand() */
 

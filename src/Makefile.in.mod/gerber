@@ -1,0 +1,4 @@
+libgerber_a_SOURCES = \
+	hid/hidint.h \
+	hid/gerber/gerber.c
+

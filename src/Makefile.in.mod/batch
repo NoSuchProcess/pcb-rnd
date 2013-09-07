@@ -1,0 +1,12 @@
+libbatch_a_CPPFLAGS = -I./hid/batch
+LIBBATCH_SRCS = \
+	hid/hidint.h \
+	hid/batch/batch.c 
+libbatch_a_SOURCES = ${LIBBATCH_SRCS} hid/batch/batch_lists.h
+
+hid/batch/batch_lists.h : ${LIBBATCH_SRCS} Makefile
+	$(MKDIR_P) hid/batch
+	true > $@
+	(for f in ${LIBBATCH_SRCS} ; do cat $(srcdir)/$$f ; done) | grep "^REGISTER" > $@.tmp
+	mv $@.tmp $@
+

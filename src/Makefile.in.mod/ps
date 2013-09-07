@@ -1,0 +1,15 @@
+libps_a_CPPFLAGS = -I./hid/ps
+LIBPS_SRCS = \
+	dolists.h \
+	hid/hidint.h \
+	hid/ps/ps.c \
+	hid/ps/ps.h \
+	hid/ps/eps.c 
+libps_a_SOURCES = ${LIBPS_SRCS} hid/ps/ps_lists.h
+
+hid/ps/ps_lists.h : ${LIBPS_SRCS} Makefile
+	$(MKDIR_P) hid/ps
+	true > $@
+	(for f in ${LIBPS_SRCS} ; do cat $(srcdir)/$$f ; done) | grep "^REGISTER" > $@.tmp
+	mv $@.tmp $@
+

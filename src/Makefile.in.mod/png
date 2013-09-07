@@ -1,0 +1,13 @@
+libpng_a_CPPFLAGS = -I./hid/png
+LIBPNG_SRCS = \
+	dolists.h \
+	hid/hidint.h \
+	hid/png/png.c \
+	hid/png/png.h 
+libpng_a_SOURCES = ${LIBPNG_SRCS} hid/png/png_lists.h
+
+hid/png/png_lists.h : ${LIBPNG_SRCS} Makefile
+	$(MKDIR_P) hid/png
+	true > $@
+	(for f in ${LIBPNG_SRCS} ; do cat $(srcdir)/$$f ; done) | grep "^REGISTER" > $@.tmp
+	mv $@.tmp $@

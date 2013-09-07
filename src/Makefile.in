@@ -1,0 +1,196 @@
+HIDLIST = gtk
+# lpr bom gcode gerber nelma png ps
+###put /local/pcb/CFLAGS -std=gnu99 -I. -I.. -Iicons -DHAVE_CONFIG_H -g ###
+###append /local/pcb/OBJS   
+	action.o
+	autoplace.o
+	autoroute.o
+	buffer.o
+	change.o
+	clip.o
+	command.o
+	compat.o
+	copy.o
+	create.o
+	crosshair.o
+	data.o
+	djopt.o
+	draw.o
+	drill.o
+	error.o
+	file.o
+	find.o
+	flags.o
+	fontmode.o
+	free_atexit.o
+	heap.o
+	insert.o
+	intersect.o
+	line.o
+	lrealpath.o
+	main.o
+	mirror.o
+	misc.o
+	move.o
+	mtspace.o
+	mymem.o
+	netlist.o
+	pcb-printf.o
+	polygon.o
+	polygon1.o
+	puller.o
+	print.o
+	rats.o
+	rats_mincut.o
+	remove.o
+	report.o
+	rotate.o
+	rtree.o
+	rubberband.o
+	search.o
+	select.o
+	set.o
+	strflags.o
+	thermal.o
+	undo.o
+	vector.o
+	vendor.o
+	hid/common/actions.o
+	hid/common/flags.o
+	hid/common/hidinit.o
+	hid/common/hidnogui.o
+	hid/common/extents.o
+	hid/common/draw_helpers.o
+	hid/common/hid_resource.o
+	pcb-mincut/graph.o
+	pcb-mincut/solve.o
+	res_parse.o
+	res_lex.o
+	edif.o
+	parse_y.o
+	parse_l.o
+###
+
+###append /local/pcb/YACC edif res_parse parse_y###
+###append /local/pcb/LEX  res_parse.l parse_l.l###
+
+
+
+###include Makefile.in.mod/gtk-gdk###
+###include Makefile.in.mod/toporouter###
+
+
+OBJS=###gsub /local/pcb/OBJS [\
+	\ ]+  ###
+CFLAGS=###gsub /local/pcb/CFLAGS [\
+	\ ]+  ###
+LDFLAGS=###gsub /local/pcb/LDFLAGS [\
+	\ ]+  ###
+LIBS=###gsub /local/pcb/LIBS [\
+	\ ]+  ###
+
+all: pcb
+
+pcb: $(OBJS)
+	$(CC) $(LDFLAGS) $(OBJS) -o pcb $(LIBS)
+
+#--------
+
+
+pcblib_DATA= \
+	default_font \
+	gpcb-menu.res \
+	pcb-menu.res
+
+#CFLAGS += -DNDEBUG
+
+
+
+###foreach /local/n /local/pcb/YACC###
+###/local/n###.c ###/local/n###.h: ###/local/n###.y
+	bison -d ###/local/n###.y
+	mv ###/local/n###.tab.h ###/local/n###.h
+	mv ###/local/n###.tab.c ###/local/n###.c
+###done###
+
+###foreach /local/n /local/pcb/LEX###
+###/local/n###.c: ###/local/n###.l
+	flex -d ###/local/n###.l
+	mv lex.yy.c ###/local/n###.tab.h ###/local/n###.c
+###done###
+
+
+
+EXTRA_DIST= \
+	check_icon.data \
+	default_font \
+	hid/batch/hid.conf \
+	hid/bom/hid.conf \
+	hid/gcode/hid.conf \
+	hid/gerber/hid.conf \
+	hid/gtk/gui-icons-misc.data \
+	hid/gtk/gui-icons-mode-buttons.data \
+	hid/gtk/hid.conf \
+	hid/gtk/pcb.rc \
+	hid/lesstif/hid.conf \
+	hid/lpr/hid.conf \
+	hid/png/hid.conf \
+	hid/nelma/hid.conf \
+	hid/ps/hid.conf \
+	gpcb-menu.res.in \
+	pcb-menu.res.in \
+	pcbtest.sh.in \
+	dbus.xml
+
+all-local: pcbtest.sh
+
+pcb-menu.res : pcb-menu.res.in
+	echo '/* AUTOMATICALLY GENERATED FROM pcb-menu.res.in DO NOT EDIT */' > $@
+	cat pcb-menu.res.in >> $@
+
+pcb-menu.h : pcb-menu.res
+	echo '/* AUTOMATICALLY GENERATED FROM pcb-menu.res DO NOT EDIT */' > $@
+	echo 'const char *pcb_menu_default[] = {' >> $@
+	sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$$/",/' < pcb-menu.res >> $@
+	echo '0};' >> $@
+
+gpcb-menu.res : gpcb-menu.res.in
+	echo '/* AUTOMATICALLY GENERATED FROM gpcb-menu.res.in DO NOT EDIT */' > $@
+	cat gpcb-menu.res.in >> $@
+
+gpcb-menu.h : gpcb-menu.res
+	echo '/* AUTOMATICALLY GENERATED FROM gpcb-menu.res DO NOT EDIT */' > $@
+	echo 'const char *gpcb_menu_default[] = {' >> $@
+	sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$$/",/' < gpcb-menu.res >> $@
+	echo '0};' >> $@
+
+hid/common/hidlist.h : Makefile
+	###fstools/mkdir### hid/common
+	true > $@
+	for e in ${HIDLIST}; do \
+	  echo "HID_DEF($${e})" >> $@; \
+	done
+
+
+hid/gtk/gtk_lists.h : ${LIBGTK_SRCS} Makefile
+	$(MKDIR_P) hid/gtk
+	true > $@
+	(for f in ${LIBGTK_SRCS} ; do cat $$f ; done) | grep "^REGISTER" > $@.tmp
+	mv $@.tmp $@
+
+DISTCLEANFILES= pcbtest.sh gpcb-menu.h pcb-menu.h \
+	hid/batch/batch_lists.h \
+	hid/common/hidlist.h \
+	hid/gtk/gtk_lists.h \
+	hid/lesstif/lesstif_lists.h \
+	hid/png/png_lists.h \
+	hid/gcode/gcode_lists.h \
+	hid/nelma/nelma_lists.h \
+	hid/ps/ps_lists.h \
+	core_lists.h \
+	dbus-introspect.h \
+	gpcb-menu.res \
+	pcb-menu.res
+
+clean:
+	-rm pcb $(OBJS)

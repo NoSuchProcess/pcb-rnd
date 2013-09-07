@@ -39,7 +39,7 @@ int hook_detect_host()
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	/* if there was no custom requirement from the command line, run all requirements in non-fatal mode */
+	require("fstools/mkdir", 0, 1);
 	require("libs/gui/gtk2", 0, 1);
 	require("libs/gui/gd", 0, 1);
 	return 0;
@@ -57,7 +57,11 @@ void generator_callback(char *cmd, char *args)
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
 int hook_generate()
 {
-	printf("Generation (A.in -> A.out): %d\n", generate("A.in", "A.out"));
+	db_mkdir("/local");
+
+#warning TODO: need a better include search path mechanism
+	chdir("../src");
+	printf("Generating pcb/Makefile\n", generate("Makefile.in", "Makefile"));
 	return 0;
 }
 

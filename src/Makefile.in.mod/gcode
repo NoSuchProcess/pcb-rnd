@@ -1,0 +1,24 @@
+libgcode_a_CPPFLAGS = -I./hid/gcode
+LIBGCODE_SRCS = \
+	dolists.h \
+	hid/hidint.h \
+	hid/gcode/gcode.c \
+	hid/gcode/gcode.h \
+	hid/gcode/decompose.c \
+	hid/gcode/decompose.h \
+	hid/gcode/trace.c \
+	hid/gcode/trace.h \
+	hid/gcode/curve.c \
+	hid/gcode/curve.h \
+	hid/gcode/auxiliary.h \
+	hid/gcode/bitmap.h \
+	hid/gcode/lists.h \
+	hid/gcode/potracelib.h 
+libgcode_a_SOURCES = ${LIBGCODE_SRCS} hid/gcode/gcode_lists.h
+
+hid/gcode/gcode_lists.h : ${LIBGCODE_SRCS} Makefile
+	$(MKDIR_P) hid/gcode
+	true > $@
+	(for f in ${LIBGCODE_SRCS} ; do cat $(srcdir)/$$f ; done) | grep "^REGISTER" > $@.tmp
+	mv $@.tmp $@
+

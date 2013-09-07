@@ -1,0 +1,4 @@
+libbom_a_SOURCES = \
+	hid/hidint.h \
+	hid/bom/bom.c
+

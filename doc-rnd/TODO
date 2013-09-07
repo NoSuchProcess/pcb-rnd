@@ -6,3 +6,6 @@
 - merge pcb-gpmi in pcb-rnd
 - rethink/rewrite the action/change infrastructure - too many void *ptr1
   pointers, too many code duplication
+- scconfig:
+	- generate makefile for gts
+	- when gpcb menu res is empty, pcb segfaults on startup
