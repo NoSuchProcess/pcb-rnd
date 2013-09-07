@@ -26,7 +26,7 @@ include src/c99/Makefile.plugin
 include src/scripts/Makefile.plugin
 
 #  Comment this line if you do not need parser libs to be detected
-include src/parser/Makefile.plugin
+# include src/parser/Makefile.plugin
 
 #  Comment this line if you do not need to detect parser generators
 include src/parsgen/Makefile.plugin
@@ -35,10 +35,10 @@ include src/parsgen/Makefile.plugin
 include src/math/Makefile.plugin
 
 #  Comment this line if you do not need socket/networking
-include src/socket/Makefile.plugin
+# include src/socket/Makefile.plugin
 
 #  Comment this line if you do not need user/password API detection
-include src/userpass/Makefile.plugin
+# include src/userpass/Makefile.plugin
 
 #  Comment this line if you do not need gui (X11, toolkits)
 include src/gui/Makefile.plugin
