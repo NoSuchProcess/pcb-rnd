@@ -207,9 +207,13 @@ short_conns_maxid = 0;
 			from = lut_by_oid[n->from_id];
 			/* weight: 1 for connections we can break, large value for connections we shall not break */
 			if ((n->type == FCT_COPPER) || (n->type == FCT_START)) {
-				weight = maxedges*2 - n->edges - from->edges + 1;
+				/* connection to a pin/pad is slightly stronger than the
+				   strongest obj-obj conn; obj-obj conns are weaker at junctions where many
+				   objects connect */
 				if ((n->from_type == PIN_TYPE) || (n->from_type == PAD_TYPE) || (n->to_type == PIN_TYPE) || (n->to_type == PAD_TYPE))
-					weight *= 16;
+					weight = maxedges*2 + 2;
+				else
+					weight = maxedges*2 - n->edges - from->edges + 1;
 			}
 			else
 				weight = 10000;
