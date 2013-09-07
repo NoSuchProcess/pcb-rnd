@@ -66,7 +66,7 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 	debprintf(" found %d %d/%p type %d from %d\n", current_type, curr->ID, current_obj, type, from == NULL ? -1 : from->ID);
 }
 
-static void proc_short(PinType *pin, PadType *pad)
+static void proc_short(PinType *pin, PadType *pad, int ignore)
 {
 	find_callback_t old_cb;
 	Coord x, y;
@@ -99,6 +99,10 @@ static void proc_short(PinType *pin, PadType *pad)
 			y = pad->Point1.Y;
 		}
 	}
+
+		/* run only if net is not ignored */
+	if (ignore)
+		return;
 
 short_conns = NULL;
 num_short_conns = 0;
@@ -257,8 +261,7 @@ void rat_proc_shorts(void)
 		next = n->next;
 
 		/* run only if net is not ignored */
-		if (!n->ignore)
-			proc_short(n->pin, n->pad);
+		proc_short(n->pin, n->pad, n->ignore);
 
 		/* check if the rest of the shorts affect the same nets - ignore them if so */
 		for(i = n->next; i != NULL; i = i->next) {
