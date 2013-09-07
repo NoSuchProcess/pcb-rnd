@@ -1,0 +1,7 @@
+pcb-rnd 1.0.0
+~~~~~~~~~~~~~
+This initial release already has some of the major features planned. The
+new code is somewhat crude and a lot of cleanup is required on the original
+code as well. New features include shaped pins, improved warnings for shorts,
+internal connections of elements and nonetlist flag.
+
