@@ -2192,7 +2192,7 @@ GetInfoString (void)
   if (first_time)
     {
       first_time = 0;
-      DSAddString (&info, "This is PCB-rnd, an interactive\n");
+      DSAddString (&info, "This is PCB-rnd 1.0.0, an interactive\n");
       DSAddString (&info, "printed circuit board editor\n");
       DSAddString (&info, "forked from PCB version ");
       DSAddString (&info, VERSION);
@@ -2209,6 +2209,8 @@ GetInfoString (void)
                    "Copyright (C) DJ Delorie 2003, 2004, 2005, 2006, 2007, 2008\n");
       DSAddString (&info,
                    "Copyright (C) Dan McMahill 2003, 2004, 2005, 2006, 2007, 2008\n\n");
+      DSAddString (&info,
+                   "Copyright (C) Tibor Palinkas 2013 (pcb-rnd patches)\n\n");
       DSAddString (&info, "It is licensed under the terms of the GNU\n");
       DSAddString (&info, "General Public License version 2\n");
       DSAddString (&info, "See the LICENSE file for more information\n\n");
