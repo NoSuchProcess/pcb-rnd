@@ -34,10 +34,11 @@
 typedef struct short_conn_s short_conn_t;
 struct short_conn_s {
 	int gid; /* id in the graph */
-/*	int from_type;
-	AnyObjectType *from;*/
+	int from_type;
+/*	AnyObjectType *from;*/
 	int from_id;
 	int to_type;
+	int edges;                /* number of edges */
 	AnyObjectType *to;
 	found_conn_type_t type;
 	short_conn_t *next;
@@ -53,10 +54,18 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 	short_conn_t *s;
 
 	s = malloc(sizeof(short_conn_t));
-	s->from_id = from == NULL ? -1 : from->ID;
+	if (from != NULL) {
+		s->from_type = from_type;
+		s->from_id = from->ID;
+	}
+	else {
+		s->from_type = 0;
+		s->from_id = -1;
+	}
 	s->to_type = current_type;
 	s->to = curr;
 	s->type = type;
+	s->edges = 0;
 	s->next = short_conns;
 	short_conns = s;
 	if (curr->ID > short_conns_maxid)
@@ -75,7 +84,7 @@ static void proc_short(PinType *pin, PadType *pad, int ignore)
 	gr_t *g;
 	void *S, *T;
 	int *solution;
-	int i;
+	int i, maxedges;
 
 	/* only one should be set, but one must be set */
 	assert((pin != NULL) || (pad != NULL));
@@ -122,7 +131,7 @@ short_conns_maxid = 0;
 
 	g->node2name = calloc(sizeof(char *), (num_short_conns+2));
 
-	/* conn 0 is S and conn 1 is T */
+	/* conn 0 is S and conn 1 is T and set up lookup arrays */
 	for(n = short_conns, gids=2; n != NULL; n = n->next, gids++) {
 		char *s, *typ;
 		n->gid = gids;
@@ -143,6 +152,24 @@ short_conns_maxid = 0;
 	}
 	g->node2name[0] = strdup("S");
 	g->node2name[1] = strdup("T");
+
+	/* calculate how many edges each node has and the max edge count */
+	maxedges = 0;
+	for(n = short_conns; n != NULL; n = n->next) {
+		short_conn_t *from;
+
+		n->edges++;
+		if (n->edges > maxedges)
+			maxedges = n->edges;
+
+		if (n->from_id >= 0) {
+			from = lut_by_oid[n->from_id];
+			from->edges++;
+			if (from->edges > maxedges)
+				maxedges = from->edges;
+		}
+	}
+
 
 	S = NULL;
 	T = NULL;
@@ -175,10 +202,15 @@ short_conns_maxid = 0;
 		/* if we have a from object, look it up and make a connection between the two gids */
 		if (n->from_id >= 0) {
 			int weight;
+			short_conn_t *from = lut_by_oid[n->from_id];
+
 			from = lut_by_oid[n->from_id];
 			/* weight: 1 for connections we can break, large value for connections we shall not break */
-			if ((n->type == FCT_COPPER) || (n->type == FCT_START))
-				weight = 1;
+			if ((n->type == FCT_COPPER) || (n->type == FCT_START)) {
+				weight = maxedges*2 - n->edges - from->edges + 1;
+				if ((n->from_type == PIN_TYPE) || (n->from_type == PAD_TYPE) || (n->to_type == PIN_TYPE) || (n->to_type == PAD_TYPE))
+					weight *= 16;
+			}
 			else
 				weight = 10000;
 			if (from != NULL) {
