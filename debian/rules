@@ -28,7 +28,7 @@ override_dh_auto_install:
 override_dh_auto_clean:
 	dh_auto_clean --builddirectory build_gtk
 #	dh_auto_clean --builddirectory build_lesstif
-	make distclean
+	-make distclean
 
 override_dh_install:
 	# Remove needlessly installed static library and header file before
