@@ -4,4 +4,4 @@
 ###append /local/pcb/OBJS  hid/png/png.o###
 ###append /local/pcb/LIBS  ###
 ###nappend /local/pcb/LIBS libs/gui/gd/ldflags###
-###append /local/pcb/HIDREG  hid/png/png.c###
+###append /local/pcb/ACTION_REG_SRC  hid/png/png.c###

@@ -5,7 +5,7 @@
 	hid/ps/eps.o
 ###
 
-###append /local/pcb/HIDREG  
+###append /local/pcb/ACTION_REG_SRC  
 	hid/ps/ps.c
 	hid/ps/eps.c
 ###

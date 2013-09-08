@@ -8,7 +8,7 @@
 	hid/lesstif/styles.o
 ###
 
-###append /local/pcb/HIDREG  
+###append /local/pcb/ACTION_REG_SRC  
 hid/lesstif/library.o
 hid/lesstif/menu.o
 hid/lesstif/main.o

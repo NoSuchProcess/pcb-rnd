@@ -28,7 +28,7 @@
 	hid/gtk/gtkhid-gdk.o
 ###
 
-###append /local/pcb/HIDREG  
+###append /local/pcb/ACTION_REG_SRC  
 hid/gtk/gui-top-window.c
 hid/gtk/gui-netlist-window.c
 hid/gtk/gui-log-window.c

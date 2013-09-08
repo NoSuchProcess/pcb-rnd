@@ -72,7 +72,7 @@
 
 ###append /local/pcb/YACC edif res_parse parse_y###
 ###append /local/pcb/LEX  res_parse.l parse_l.l###
-###append /local/pcb/HIDREG  action.c buffer.c command.c djopt.c flags.c main.c misc.c move.c netlist.c puller.c report.c toporouter.c vendor.c###
+###append /local/pcb/ACTION_REG_SRC  action.c buffer.c command.c djopt.c flags.c main.c misc.c move.c netlist.c puller.c report.c toporouter.c vendor.c###
 
 ###include Makefile.in.mod/gtk-gdk###
 ###include Makefile.in.mod/toporouter###
@@ -96,7 +96,7 @@
 	\ ]+  ###
 ###puteval /local/pcb/HIDS gsub /local/pcb/HIDS [\
 	\ ]+  ###
-###puteval /local/pcb/HIDREG gsub /local/pcb/HIDREG [\
+###puteval /local/pcb/ACTION_REG_SRC gsub /local/pcb/ACTION_REG_SRC [\
 	\ ]+  ###
 ###puteval /local/pcb/SRCS gsub /local/pcb/OBJS [.]o\  .c ###
 ###puteval /local/pcb/SRCS gsub /local/pcb/SRCS [.]o$ .c###
@@ -190,8 +190,8 @@ hid/common/hidlist.h : Makefile
 	  echo "HID_DEF($${e})" >> $@; \
 	done
 
-action_list.h: ###/local/pcb/HIDREG### Makefile
-	Makefile.in.mod/gen_core_lists.sh ###/local/pcb/HIDREG### > action_list.h
+action_list.h: ###/local/pcb/ACTION_REG_SRC### Makefile
+	Makefile.in.mod/gen_core_lists.sh ###/local/pcb/ACTION_REG_SRC### > action_list.h
 
 
 hid/gtk/gtk_lists.h : ${LIBGTK_SRCS} Makefile
