@@ -1,9 +1,6 @@
 ###append /local/pcb/OBJS  dbus-pcbmain.o dbus.o###
+###append /local/pcb/RULES  
 
-
-###append /local/pcb/RULES 
-
-# We are building with dbus support, we need some extra files
 dbus-introspect.h : dbus.xml Makefile
 	echo '/* AUTOMATICALLY GENERATED FROM dbus.xml DO NOT EDIT */' > $@.tmp
 	echo "static char *pcb_dbus_introspect_xml ="  > $@.tmp
