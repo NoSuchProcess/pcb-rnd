@@ -71,7 +71,7 @@
 ###
 
 ###append /local/pcb/YACC edif res_parse parse_y###
-###append /local/pcb/LEX  res_parse.l parse_l.l###
+###append /local/pcb/LEX  res_lex parse_l###
 ###append /local/pcb/ACTION_REG_SRC  action.c buffer.c command.c djopt.c flags.c main.c misc.c move.c netlist.c puller.c report.c toporouter.c vendor.c###
 
 ###include Makefile.in.mod/gtk-gdk###
@@ -116,15 +116,22 @@ pcb: $(OBJS)
 
 ###foreach /local/n /local/pcb/YACC###
 ###/local/n###.c ###/local/n###.h: ###/local/n###.y
-	bison -d ###/local/n###.y
-	mv ###/local/n###.tab.h ###/local/n###.h
-	mv ###/local/n###.tab.c ###/local/n###.c
+	mkdir tmp.###/local/n###.y
+	cp ###/local/n###.y tmp.###/local/n###.y
+	cd tmp.###/local/n###.y && bison -d ###/local/n###.y
+	mv tmp.###/local/n###.y/###/local/n###.tab.h ###/local/n###.h
+	mv tmp.###/local/n###.y/###/local/n###.tab.c ###/local/n###.c
+	-mv tmp.###/local/n###.y/###/local/n###.output ###/local/n###.output
+	rm -rf tmp.###/local/n###.y
 ###done###
 
 ###foreach /local/n /local/pcb/LEX###
 ###/local/n###.c: ###/local/n###.l
-	flex -d ###/local/n###.l
-	mv lex.yy.c ###/local/n###.tab.h ###/local/n###.c
+	mkdir tmp.###/local/n###.l
+	cp ###/local/n###.l tmp.###/local/n###.l
+	cd tmp.###/local/n###.l && flex ###/local/n###.l
+	mv tmp.###/local/n###.l/lex.yy.c ###/local/n###.c
+	rm -rf tmp.###/local/n###.l
 ###done###
 
 # module rules
