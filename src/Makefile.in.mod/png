@@ -1,3 +1,4 @@
+###append /local/pcb/HIDS  png###
 ###append /local/pcb/CFLAGS  -I./hid/png###
 ###append /local/pcb/OBJS  hid/png/png.o###
 

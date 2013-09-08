@@ -1,3 +1,4 @@
+###append /local/pcb/HIDS  ps###
 ###append /local/pcb/CFLAGS  -I./hid/ps###
 ###append /local/pcb/OBJS  
 	hid/ps/ps.o
