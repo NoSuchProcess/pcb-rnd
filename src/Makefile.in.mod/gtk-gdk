@@ -1,4 +1,5 @@
 # gtk option
+###append /local/pcb/HIDS  gtk###
 ###append /local/pcb/CFLAGS  -I./hid/gtk###
 ###nappend /local/pcb/CFLAGS /target/libs/gui/gtk2/cflags###
 ###nappend /local/pcb/LIBS /target/libs/gui/gtk2/ldflags###

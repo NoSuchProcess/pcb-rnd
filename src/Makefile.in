@@ -1,4 +1,3 @@
-HIDLIST = gtk
 # lpr bom gcode gerber nelma png ps
 ###put /local/pcb/CFLAGS -std=gnu99 -I. -I.. -Iicons -DHAVE_CONFIG_H -g -DNDEBUG ###
 ###append /local/pcb/OBJS   
@@ -74,10 +73,10 @@ HIDLIST = gtk
 ###append /local/pcb/YACC edif res_parse parse_y###
 ###append /local/pcb/LEX  res_parse.l parse_l.l###
 
-
-
 ###include Makefile.in.mod/gtk-gdk###
 ###include Makefile.in.mod/toporouter###
+###include Makefile.in.mod/batch###
+###include Makefile.in.mod/bom###
 
 
 OBJS=###gsub /local/pcb/OBJS [\
@@ -88,23 +87,14 @@ LDFLAGS=###gsub /local/pcb/LDFLAGS [\
 	\ ]+  ###
 LIBS=###gsub /local/pcb/LIBS [\
 	\ ]+  ###
+HIDLIST=###gsub /local/pcb/HIDS [\
+	\ ]+  ###
+
 
 all: pcb
 
 pcb: $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o pcb $(LIBS)
-
-#--------
-
-
-pcblib_DATA= \
-	default_font \
-	gpcb-menu.res \
-	pcb-menu.res
-
-#CFLAGS += -DNDEBUG
-
-
 
 ###foreach /local/n /local/pcb/YACC###
 ###/local/n###.c ###/local/n###.h: ###/local/n###.y
@@ -119,6 +109,17 @@ pcblib_DATA= \
 	mv lex.yy.c ###/local/n###.tab.h ###/local/n###.c
 ###done###
 
+# module rules
+###/local/pcb/RULES###
+
+
+#--------
+
+
+pcblib_DATA= \
+	default_font \
+	gpcb-menu.res \
+	pcb-menu.res
 
 
 EXTRA_DIST= \
