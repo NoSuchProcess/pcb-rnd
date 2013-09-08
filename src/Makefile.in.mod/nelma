@@ -1,13 +1,12 @@
-libnelma_a_CPPFLAGS = -I./hid/nelma
-LIBNELMA_SRCS = \
-	dolists.h \
-	hid/hidint.h \
-	hid/nelma/nelma.c
-libnelma_a_SOURCES = ${LIBNELMA_SRCS} hid/nelma/nelma_lists.h
+###append /local/pcb/CFLAGS  -I./hid/nelma###
+###append /local/pcb/OBJS  hid/nelma/nelma.o###
 
+###append /local/pcb/RULES 
+LIBNELMA_SRCS = 
 hid/nelma/nelma_lists.h : ${LIBNELMA_SRCS} Makefile
 	$(MKDIR_P) hid/nelma
 	true > $@
-	(for f in ${LIBNELMA_SRCS} ; do cat $(srcdir)/$$f ; done) | grep "^REGISTER" > $@.tmp
+	(for f in ${LIBNELMA_SRCS} ; do cat $$f ; done) | grep "^REGISTER" > $@.tmp
 	mv $@.tmp $@
+###
 

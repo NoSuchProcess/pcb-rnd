@@ -1,7 +1,6 @@
-# If we are building with GL support, we need some extra files
-if USE_GL
-PCB_SRCS+=	${GL_SRCS}
-LIBGTK_SRCS+=	${LIBGTK_GL_SRCS}
-else
-LIBGTK_SRCS+=	${LIBGTK_GDK_SRCS}
-endif
+#LIBGTK_GL_SRCS= \
+#	hid/gtk/gtkhid-gl.c
+
+#GL_SRCS= \
+#	hid/common/hidgl.c \
+#	hid/common/hidgl.h

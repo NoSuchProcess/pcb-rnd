@@ -1,4 +1,3 @@
-liblpr_a_SOURCES = \
-	hid/hidint.h \
-	hid/lpr/lpr.c
+###append /local/pcb/OBJS  hid/lpr/lpr.o###
+
 

@@ -1,4 +1,3 @@
-libgerber_a_SOURCES = \
-	hid/hidint.h \
-	hid/gerber/gerber.c
+###append /local/pcb/OBJS  hid/gerber/gerber.o###
+
 
