@@ -1,6 +1,6 @@
 HIDLIST = gtk
 # lpr bom gcode gerber nelma png ps
-###put /local/pcb/CFLAGS -std=gnu99 -I. -I.. -Iicons -DHAVE_CONFIG_H -g ###
+###put /local/pcb/CFLAGS -std=gnu99 -I. -I.. -Iicons -DHAVE_CONFIG_H -g -DNDEBUG ###
 ###append /local/pcb/OBJS   
 	action.o
 	autoplace.o
