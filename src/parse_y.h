@@ -1,9 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.4.3.  */
+/* A Bison parser, made by GNU Bison 2.7.12-4996.  */
 
-/* Skeleton interface for Bison's Yacc-like parsers in C
+/* Bison interface for Yacc-like parsers in C
    
-      Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
-   2009, 2010 Free Software Foundation, Inc.
+      Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -31,6 +30,15 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+#ifndef YY_YY_PARSE_Y_TAB_H_INCLUDED
+# define YY_YY_PARSE_Y_TAB_H_INCLUDED
+/* Enabling traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+#if YYDEBUG
+extern int yydebug;
+#endif
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -84,60 +92,12 @@
      T_KM = 301
    };
 #endif
-/* Tokens.  */
-#define FLOATING 258
-#define INTEGER 259
-#define CHAR_CONST 260
-#define STRING 261
-#define T_FILEVERSION 262
-#define T_PCB 263
-#define T_LAYER 264
-#define T_VIA 265
-#define T_RAT 266
-#define T_LINE 267
-#define T_ARC 268
-#define T_RECTANGLE 269
-#define T_TEXT 270
-#define T_ELEMENTLINE 271
-#define T_ELEMENT 272
-#define T_PIN 273
-#define T_PAD 274
-#define T_GRID 275
-#define T_FLAGS 276
-#define T_SYMBOL 277
-#define T_SYMBOLLINE 278
-#define T_CURSOR 279
-#define T_ELEMENTARC 280
-#define T_MARK 281
-#define T_GROUPS 282
-#define T_STYLES 283
-#define T_POLYGON 284
-#define T_POLYGON_HOLE 285
-#define T_NETLIST 286
-#define T_NET 287
-#define T_CONN 288
-#define T_AREA 289
-#define T_THERMAL 290
-#define T_DRC 291
-#define T_ATTRIBUTE 292
-#define T_UMIL 293
-#define T_CMIL 294
-#define T_MIL 295
-#define T_IN 296
-#define T_NM 297
-#define T_UM 298
-#define T_MM 299
-#define T_M 300
-#define T_KM 301
-
-
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
 {
-
-/* Line 1685 of yacc.c  */
+/* Line 2053 of yacc.c  */
 #line 111 "parse_y.y"
 
 	int		integer;
@@ -147,9 +107,8 @@ typedef union YYSTYPE
 	PLMeasure	measure;
 
 
-
-/* Line 1685 of yacc.c  */
-#line 153 "parse_y.h"
+/* Line 2053 of yacc.c  */
+#line 112 "parse_y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -158,4 +117,18 @@ typedef union YYSTYPE
 
 extern YYSTYPE yylval;
 
+#ifdef YYPARSE_PARAM
+#if defined __STDC__ || defined __cplusplus
+int yyparse (void *YYPARSE_PARAM);
+#else
+int yyparse ();
+#endif
+#else /* ! YYPARSE_PARAM */
+#if defined __STDC__ || defined __cplusplus
+int yyparse (void);
+#else
+int yyparse ();
+#endif
+#endif /* ! YYPARSE_PARAM */
 
+#endif /* !YY_YY_PARSE_Y_TAB_H_INCLUDED  */
