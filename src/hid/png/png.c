@@ -1671,6 +1671,5 @@ hid_png_init ()
 #ifdef HAVE_SOME_FORMAT
   hid_register_hid (&png_hid);
 
-#include "png_lists.h"
 #endif
 }

@@ -378,5 +378,4 @@ hid_batch_init ()
   batch_hid.show_item             = batch_show_item;
 
   hid_register_hid (&batch_hid);
-#include "batch_lists.h"
 }

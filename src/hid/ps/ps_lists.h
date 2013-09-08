@@ -1,2 +1,0 @@
-REGISTER_ATTRIBUTES (ps_attribute_list)
-REGISTER_ATTRIBUTES (eps_attribute_list)

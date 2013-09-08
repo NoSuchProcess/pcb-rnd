@@ -27,3 +27,11 @@
 	hid/gtk/gui-utils.o
 	hid/gtk/gtkhid-gdk.o
 ###
+
+###append /local/pcb/HIDREG  
+hid/gtk/gui-top-window.c
+hid/gtk/gui-netlist-window.c
+hid/gtk/gui-log-window.c
+hid/gtk/gtkhid-main.c
+###
+

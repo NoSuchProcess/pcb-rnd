@@ -1031,7 +1031,5 @@ hid_gcode_init ()
   gcode_hid.set_crosshair       = gcode_set_crosshair;
 
   hid_register_hid (&gcode_hid);
-
-#include "gcode_lists.h"
 }
 

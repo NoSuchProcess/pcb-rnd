@@ -7,13 +7,5 @@
 	hid/gcode/curve.o
 ###
 
-###append /local/pcb/RULES  
+###append /local/pcb/HIDREG  hid/gcode/gcode.c###
 
-LIBGCODE_SRCS = hid/gcode/gcode_lists.h
-hid/gcode/gcode_lists.h : ${LIBGCODE_SRCS} Makefile
-	$(MKDIR_P) hid/gcode
-	true > $@
-	(for f in ${LIBGCODE_SRCS} ; do cat $$f ; done) | grep "^REGISTER" > $@.tmp
-	mv $@.tmp $@
-
-###

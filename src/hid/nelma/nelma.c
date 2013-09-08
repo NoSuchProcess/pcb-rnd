@@ -1100,6 +1100,4 @@ hid_nelma_init()
   nelma_hid.set_crosshair       = nelma_set_crosshair;
 
   hid_register_hid (&nelma_hid);
-
-#include "nelma_lists.h"
 }

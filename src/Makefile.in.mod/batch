@@ -1,14 +1,4 @@
 ###append /local/pcb/HIDS  batch###
 ###append /local/pcb/CFLAGS  -I./hid/batch###
 ###append /local/pcb/OBJS  hid/batch/batch.o###
-
-###append /local/pcb/RULES  
-
-LIBBATCH_SRCS=hid/hid_init.h hid/batch/batch.c
-hid/batch/batch_lists.h : ${LIBBATCH_SRCS} Makefile
-	$(MKDIR_P) hid/batch
-	true > $@
-	(for f in ${LIBBATCH_SRCS} ; do cat $(srcdir)/$$f ; done) | grep "^REGISTER" > $@.tmp
-	mv $@.tmp $@
-
-###
+###append /local/pcb/HIDREG  hid/batch/batch.c###

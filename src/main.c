@@ -1774,7 +1774,7 @@ main (int argc, char *argv[])
    * - register 'call on exit()' function
    */
 
-#include "core_lists.h"
+#include "action_list.h"
   setbuf (stdout, 0);
   InitPaths (argv[0]);
 

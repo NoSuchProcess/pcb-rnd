@@ -2200,5 +2200,4 @@ hid_gtk_init ()
   ghid_hid.notify_filename_changed  = ghid_notify_filename_changed;
 
   hid_register_hid (&ghid_hid);
-#include "gtk_lists.h"
 }

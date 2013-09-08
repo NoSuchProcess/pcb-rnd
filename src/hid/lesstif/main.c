@@ -4107,5 +4107,4 @@ hid_lesstif_init ()
   lesstif_hid.finish_debug_draw       = lesstif_finish_debug_draw;
 
   hid_register_hid (&lesstif_hid);
-#include "lesstif_lists.h"
 }

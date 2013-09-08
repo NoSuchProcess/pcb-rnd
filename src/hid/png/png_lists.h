@@ -1,1 +1,0 @@
-REGISTER_ATTRIBUTES (png_attribute_list)

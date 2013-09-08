@@ -5,12 +5,8 @@
 	hid/ps/eps.o
 ###
 
-
-###append /local/pcb/RULES  
-LIBPS_SRCS =
-hid/ps/ps_lists.h : ${LIBPS_SRCS} Makefile
-	$(MKDIR_P) hid/ps
-	true > $@
-	(for f in ${LIBPS_SRCS} ; do cat $(srcdir)/$$f ; done) | grep "^REGISTER" > $@.tmp
-	mv $@.tmp $@
+###append /local/pcb/HIDREG  
+	hid/ps/ps.c
+	hid/ps/eps.c
 ###
+

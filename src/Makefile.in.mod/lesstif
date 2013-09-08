@@ -8,11 +8,13 @@
 	hid/lesstif/styles.o
 ###
 
-###append /local/pcb/RULES  
-LIBLESSTIF_SRCS = hid/lesstif/lesstif_lists.h
-hid/lesstif/lesstif_lists.h : ${LIBLESSTIF_SRCS} Makefile
-	$(MKDIR_P) hid/lesstif
-	true > $@
-	(for f in ${LIBLESSTIF_SRCS} ; do cat $(srcdir)/$$f ; done) | grep "^REGISTER" > $@.tmp
-	mv $@.tmp $@
+###append /local/pcb/HIDREG  
+hid/lesstif/library.o
+hid/lesstif/menu.o
+hid/lesstif/main.o
+hid/lesstif/main.o
+hid/lesstif/main.o
+hid/lesstif/styles.o
+hid/lesstif/dialogs.o
+hid/lesstif/netlist.o
 ###

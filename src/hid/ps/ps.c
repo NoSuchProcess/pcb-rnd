@@ -1535,5 +1535,4 @@ hid_ps_init ()
   hid_register_hid (&ps_hid);
 
   hid_eps_init ();
-#include "ps_lists.h"
 }
