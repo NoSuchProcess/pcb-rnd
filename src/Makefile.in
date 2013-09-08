@@ -79,17 +79,26 @@
 ###include Makefile.in.mod/bom###
 
 
-OBJS=###gsub /local/pcb/OBJS [\
+###puteval /local/pcb/OBJS gsub /local/pcb/OBJS [\
 	\ ]+  ###
-CFLAGS=###gsub /local/pcb/CFLAGS [\
+###puteval /local/pcb/CFLAGS gsub /local/pcb/CFLAGS [\
 	\ ]+  ###
-LDFLAGS=###gsub /local/pcb/LDFLAGS [\
+###puteval /local/pcb/LDFLAGS gsub /local/pcb/LDFLAGS [\
 	\ ]+  ###
-LIBS=###gsub /local/pcb/LIBS [\
+###puteval /local/pcb/LIBS gsub /local/pcb/LIBS [\
 	\ ]+  ###
-HIDLIST=###gsub /local/pcb/HIDS [\
+###puteval /local/pcb/HIDS gsub /local/pcb/HIDS [\
 	\ ]+  ###
+###puteval /local/pcb/SRCS gsub /local/pcb/OBJS [.]o\  .c ###
+###puteval /local/pcb/SRCS gsub /local/pcb/SRCS [.]o$ .c###
 
+
+OBJS=###/local/pcb/OBJS###
+SRCS=###/local/pcb/SRCS###
+CFLAGS=###/local/pcb/CFLAGS###
+LDFLAGS=###/local/pcb/LDFLAGS###
+LIBS=###/local/pcb/LIBS###
+HIDLIST=###/local/pcb/HIDS###
 
 all: pcb
 
