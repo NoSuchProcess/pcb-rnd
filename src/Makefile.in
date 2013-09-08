@@ -77,6 +77,12 @@
 ###include Makefile.in.mod/toporouter###
 ###include Makefile.in.mod/batch###
 ###include Makefile.in.mod/bom###
+###include Makefile.in.mod/ps###
+###include Makefile.in.mod/png###
+###include Makefile.in.mod/gerber###
+###include Makefile.in.mod/gcode###
+###include Makefile.in.mod/nelma###
+###include Makefile.in.mod/lpr###
 
 
 ###puteval /local/pcb/OBJS gsub /local/pcb/OBJS [\
