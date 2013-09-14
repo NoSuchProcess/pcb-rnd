@@ -1,6 +1,7 @@
 - distorted square pin bugs:
 	- large clearance with octagon
 	- why q doesn't work on vias (new comment about this in action.c)
+	- r tree breaks!!!
 - 1206 jumpers:
 	- gsch2pcb patch
 - merge pcb-gpmi in pcb-rnd
@@ -9,3 +10,9 @@
 - scconfig:
 	- generate makefile for gts
 	- when gpcb menu res is empty, pcb segfaults on startup
+- drill adjust:
+	- set drill and/or ring to current style
+	- set all pins (drill and/or ring) to current style for a component
+- clear poly should be a per layer flag
+- zero width copper lines to split polys
+- be able to manually change text line width
