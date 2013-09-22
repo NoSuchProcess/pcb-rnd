@@ -1,4 +1,3 @@
-###append /local/pcb/HIDS  gerber###
-###append /local/pcb/OBJS  hid/gerber/gerber.o###
-
+append /local/pcb/HIDS {gerber}
+append /local/pcb/OBJS {hid/gerber/gerber.o}
 

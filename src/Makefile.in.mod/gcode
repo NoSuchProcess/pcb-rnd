@@ -1,11 +1,12 @@
-###append /local/pcb/HIDS  gcode###
-###append /local/pcb/CFLAGS  -I./hid/gcode###
-###append /local/pcb/OBJS  
+append /local/pcb/HIDS    {gcode}
+append /local/pcb/CFLAGS  {-I./hid/gcode}
+append /local/pcb/OBJS [@
 	hid/gcode/gcode.o
 	hid/gcode/decompose.o
 	hid/gcode/trace.o
 	hid/gcode/curve.o
-###
+@]
 
-###append /local/pcb/ACTION_REG_SRC  hid/gcode/gcode.c###
+append /local/pcb/ACTION_REG_SRC {hid/gcode/gcode.c}
+
 

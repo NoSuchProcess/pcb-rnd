@@ -1,4 +1,4 @@
-###append /local/pcb/HIDS  nelma###
-###append /local/pcb/CFLAGS  -I./hid/nelma###
-###append /local/pcb/OBJS  hid/nelma/nelma.o###
-###append /local/pcb/ACTION_REG_SRC  hid/nelma/nelma.c###
+append /local/pcb/HIDS            {nelma}
+append /local/pcb/CFLAGS          {-I./hid/nelma}
+append /local/pcb/OBJS            {hid/nelma/nelma.o}
+append /local/pcb/ACTION_REG_SRC  {hid/nelma/nelma.c}

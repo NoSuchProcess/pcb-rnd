@@ -1,20 +1,19 @@
-###append /local/pcb/CFLAGS  -I./hid/lesstif###
-###append /local/pcb/OBJS  
+append /local/pcb/CFLAGS {-I./hid/lesstif}
+append /local/pcb/OBJS  [@
 	hid/lesstif/dialogs.o
 	hid/lesstif/library.o
 	hid/lesstif/main.o
 	hid/lesstif/menu.o
 	hid/lesstif/netlist.o
 	hid/lesstif/styles.o
-###
+@]
 
-###append /local/pcb/ACTION_REG_SRC  
-hid/lesstif/library.o
-hid/lesstif/menu.o
-hid/lesstif/main.o
-hid/lesstif/main.o
-hid/lesstif/main.o
-hid/lesstif/styles.o
-hid/lesstif/dialogs.o
-hid/lesstif/netlist.o
-###
+append /local/pcb/ACTION_REG_SRC  [@
+	hid/lesstif/library.c
+	hid/lesstif/menu.c
+	hid/lesstif/main.c
+	hid/lesstif/styles.c
+	hid/lesstif/dialogs.c
+	hid/lesstif/netlist.c
+@]
+

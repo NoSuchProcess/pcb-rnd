@@ -1,14 +1,14 @@
 # We are building on win32; compile in some icons for the
 # desktop and application toolbar
 
-###append /local/pcb/OBJS  pcb_icon.o###
+append /local/pcb/OBJS  {pcb_icon.o}
 
-###append /local/pcb/RULES  
-
+append /local/pcb/RULES  [@
+# win32
 pcb_icon.o : pcb_icon.ico $(srcdir)/hid/gtk/pcb.rc
 	$(WINDRES) $(srcdir)/hid/gtk/pcb.rc $@
 
 pcb_icon.ico: $(top_srcdir)/data/pcb_icon.ico
 	cp $(top_srcdir)/data/pcb_icon.ico $@
 
-###
+@]

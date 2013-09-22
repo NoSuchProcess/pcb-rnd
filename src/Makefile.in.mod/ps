@@ -1,12 +1,13 @@
-###append /local/pcb/HIDS  ps###
-###append /local/pcb/CFLAGS  -I./hid/ps###
-###append /local/pcb/OBJS  
+append /local/pcb/HIDS    {ps}
+append /local/pcb/CFLAGS  {-I./hid/ps}
+append /local/pcb/OBJS    [@
 	hid/ps/ps.o
 	hid/ps/eps.o
-###
+@]
 
-###append /local/pcb/ACTION_REG_SRC  
+append /local/pcb/ACTION_REG_SRC  [@
 	hid/ps/ps.c
 	hid/ps/eps.c
-###
+@]
+
 
