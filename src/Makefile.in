@@ -1,6 +1,4 @@
 # lpr bom gcode gerber nelma png ps
-# temp hack:
-put /local/make_target {$@}
 
 # TODO default compiler flags
 put /local/pcb/CFLAGS {-std=gnu99 -I. -I.. -Iicons -DHAVE_CONFIG_H -g -DNDEBUG}
@@ -199,42 +197,42 @@ EXTRA_DIST= \
 
 all-local: pcbtest.sh
 
-pcb-menu.res : pcb-menu.res.in
-	echo '/* AUTOMATICALLY GENERATED FROM pcb-menu.res.in DO NOT EDIT */' > @/local/make_target@
-	cat pcb-menu.res.in >> @/local/make_target@
+pcb-menu.res: pcb-menu.res.in
+	echo '/* AUTOMATICALLY GENERATED FROM pcb-menu.res.in DO NOT EDIT */' > pcb-menu.res
+	cat pcb-menu.res.in >> pcb-menu.res
 
-pcb-menu.h : pcb-menu.res
-	echo '/* AUTOMATICALLY GENERATED FROM pcb-menu.res DO NOT EDIT */' > @/local/make_target@
-	echo 'const char *pcb_menu_default[] = {' >> @/local/make_target@
-	sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$$/",/' < pcb-menu.res >> @/local/make_target@
-	echo '0};' >> @/local/make_target@
+pcb-menu.h: pcb-menu.res
+	echo '/* AUTOMATICALLY GENERATED FROM pcb-menu.res DO NOT EDIT */' > pcb-menu.h
+	echo 'const char *pcb_menu_default[] = {' >> pcb-menu.h
+	sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$$/",/' < pcb-menu.res >> pcb-menu.h
+	echo '0};' >> pcb-menu.h
 
-gpcb-menu.res : gpcb-menu.res.in
-	echo '/* AUTOMATICALLY GENERATED FROM gpcb-menu.res.in DO NOT EDIT */' > @/local/make_target@
-	cat gpcb-menu.res.in >> @/local/make_target@
+gpcb-menu.res: gpcb-menu.res.in
+	echo '/* AUTOMATICALLY GENERATED FROM gpcb-menu.res.in DO NOT EDIT */' > gpcb-menu.res
+	cat gpcb-menu.res.in >> gpcb-menu.res
 
-gpcb-menu.h : gpcb-menu.res
-	echo '/* AUTOMATICALLY GENERATED FROM gpcb-menu.res DO NOT EDIT */' > @/local/make_target@
-	echo 'const char *gpcb_menu_default[] = {' >> @/local/make_target@
-	sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$$/",/' < gpcb-menu.res >> @/local/make_target@
-	echo '0};' >> @/local/make_target@
+gpcb-menu.h: gpcb-menu.res
+	echo '/* AUTOMATICALLY GENERATED FROM gpcb-menu.res DO NOT EDIT */' > gpcb-menu.h
+	echo 'const char *gpcb_menu_default[] = {' >> gpcb-menu.h
+	sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$$/",/' < gpcb-menu.res >> gpcb-menu.h
+	echo '0};' >> gpcb-menu.h
 
 hid/common/hidlist.h : Makefile
-	###fstools/mkdir### hid/common
-	true > @/local/make_target@
+	@fstools/mkdir@ hid/common
+	true > hid/common/hidlist.h
 	for e in ${HIDLIST}; do \
-	  echo "HID_DEF($${e})" >> @/local/make_target@; \
+	  echo "HID_DEF($${e})" >> hid/common/hidlist.h; \
 	done
 
 action_list.h: ###/local/pcb/ACTION_REG_SRC### Makefile
 	Makefile.in.mod/gen_core_lists.sh ###/local/pcb/ACTION_REG_SRC### > action_list.h
 
 
-hid/gtk/gtk_lists.h : ${LIBGTK_SRCS} Makefile
+hid/gtk/gtk_lists.h: ${LIBGTK_SRCS} Makefile
 	$(MKDIR_P) hid/gtk
-	true > @/local/make_target@
-	(for f in ${LIBGTK_SRCS} ; do cat $$f ; done) | grep "^REGISTER" > @/local/make_target@.tmp
-	mv @/local/make_target@.tmp @/local/make_target@
+	true > hid/gtk/gtk_lists.h
+	(for f in ${LIBGTK_SRCS} ; do cat $$f ; done) | grep "^REGISTER" > hid/gtk/gtk_lists.h.tmp
+	mv hid/gtk/gtk_lists.h.tmp hid/gtk/gtk_lists.h
 
 DISTCLEANFILES= pcbtest.sh gpcb-menu.h pcb-menu.h \
 	hid/batch/batch_lists.h \
