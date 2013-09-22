@@ -1,8 +1,11 @@
 # lpr bom gcode gerber nelma png ps
+# temp hack:
 put /local/make_target {$@}
-put /local/pcb/CFLAGS {-std=gnu99 -I. -I.. -Iicons -DHAVE_CONFIG_H -g -DNDEBUG}
-put /local/pcb/RULES {}
 
+# TODO default compiler flags
+put /local/pcb/CFLAGS {-std=gnu99 -I. -I.. -Iicons -DHAVE_CONFIG_H -g -DNDEBUG}
+
+# main: objects
 put /local/pcb/OBJS [@
 	action.o
 	autoplace.o
@@ -73,12 +76,19 @@ put /local/pcb/OBJS [@
 	parse_l.o
 @]
 
+# main: language generator files
 put /local/pcb/YACC {edif res_parse parse_y}
 put /local/pcb/LEX  {res_lex parse_l}
+
+# main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
 	action.c buffer.c command.c djopt.c flags.c main.c misc.c move.c netlist.c
 	puller.c report.c toporouter.c vendor.c
 }
+
+#---- modules ----#
+# extra rules for modules
+put /local/pcb/RULES {}
 
 include {Makefile.in.mod/gtk-gdk}
 include {Makefile.in.mod/toporouter}
@@ -91,6 +101,9 @@ include {Makefile.in.mod/gcode}
 include {Makefile.in.mod/nelma}
 include {Makefile.in.mod/lpr}
 
+# ---- logic ----
+
+# Clean up variables
 put /tmpasm/OFS { }
 uniq /local/pcb/OBJS
 uniq /local/pcb/CFLAGS
@@ -120,6 +133,9 @@ pcb: $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o pcb $(LIBS)
 @]
 
+# explicit rules: .y -> .c
+#  do not assume old yacc to work to different file names, do the generation
+#  in a separate directory to allow parallel compilation with -j
 foreach /local/n in /local/pcb/YACC
 print [@
 @/local/n@.c @/local/n@.h: @/local/n@.y
@@ -133,6 +149,9 @@ print [@
 @]
 end
 
+# explicit rules: .l -> .c
+#  do not assume old lex to work to different file names, do the generation
+#  in a separate directory to allow parallel compilation with -j
 foreach /local/n in /local/pcb/LEX
 print [@
 @/local/n@.c: @/local/n@.l
@@ -143,6 +162,7 @@ print [@
 	rm -rf tmp.@/local/n@.l
 @]
 end
+
 
 print [@
 # module rules
