@@ -224,8 +224,8 @@ hid/common/hidlist.h : Makefile
 	  echo "HID_DEF($${e})" >> hid/common/hidlist.h; \
 	done
 
-action_list.h: ###/local/pcb/ACTION_REG_SRC### Makefile
-	Makefile.in.mod/gen_core_lists.sh ###/local/pcb/ACTION_REG_SRC### > action_list.h
+action_list.h: @/local/pcb/ACTION_REG_SRC@ Makefile
+	Makefile.in.mod/gen_core_lists.sh @/local/pcb/ACTION_REG_SRC@ > action_list.h
 
 
 hid/gtk/gtk_lists.h: ${LIBGTK_SRCS} Makefile
