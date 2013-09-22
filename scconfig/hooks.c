@@ -2,7 +2,7 @@
 #include "arg.h"
 #include "log.h"
 #include "dep.h"
-#include "generator.h"
+#include "tmpasm.h"
 
 /* Runs when a custom command line argument is found
  returns true if no furhter argument processing should be done */
@@ -61,7 +61,7 @@ int hook_generate()
 
 #warning TODO: need a better include search path mechanism
 	chdir("../src");
-	printf("Generating pcb/Makefile\n", generate("Makefile.in", "Makefile"));
+	printf("Generating pcb/Makefile\n", tmpasm("Makefile.in", "Makefile"));
 	return 0;
 }
 
