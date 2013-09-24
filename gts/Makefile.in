@@ -1,6 +1,5 @@
-# plain old Makefile for now - should be scconfig generated for explicit rules
-
-CFLAGS = -I.. -DG_LOG_DOMAIN=\"Gts\" $(shell pkg-config --cflags glib-2.0)
+print [@
+CFLAGS = -I.. -DG_LOG_DOMAIN=\"Gts\" @libs/sul/glib/cflags@
 
 OBJS = \
 	object.o \
@@ -40,3 +39,5 @@ OBJS = \
 
 libgts.a: $(OBJS)
 	ar rvu libgts.a $(OBJS)
+
+@]
