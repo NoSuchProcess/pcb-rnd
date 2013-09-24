@@ -64,22 +64,7 @@ print [@
 @]
 end
 
-print [@
-
-### generate dependencies (requires gcc) ###
-FORCE:
-
-include Makefile.dep
-
-dep: FORCE
-	echo "### Generated file, do not edit, run make dep ###" > Makefile.dep
-	echo "" >> Makefile.dep
-@]
-
-put /local/cf /local/gts/CFLAGS
-gsub /local/cf {-I} {-isystem }
-foreach /local/c in /local/gts/SRCS
-	print [@	gcc -MM @/local/c@ @/local/cf@ >> Makefile.dep
-@]
-end
-
+# generate deps
+put /local/dep/CFLAGS /local/gts/CFLAGS
+put /local/dep/SRCS /local/gts/SRCS
+include {../scconfig/Makefile.dep.inc}
