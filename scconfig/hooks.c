@@ -42,6 +42,10 @@ int hook_detect_target()
 	require("fstools/mkdir", 0, 1);
 	require("libs/gui/gtk2", 0, 1);
 	require("libs/gui/gd", 0, 1);
+
+	/* for the toporouter: */
+	require("libs/sul/glib", 0, 1);
+
 	return 0;
 }
 
@@ -59,8 +63,11 @@ int hook_generate()
 {
 	db_mkdir("/local");
 
+	chdir("..");
+	printf("Generating gts/Makefile\n", tmpasm("gts/Makefile.in", "gts/Makefile"));
+
 #warning TODO: need a better include search path mechanism
-	chdir("../src");
+	chdir("src");
 	printf("Generating pcb/Makefile\n", tmpasm("Makefile.in", "Makefile"));
 	return 0;
 }
