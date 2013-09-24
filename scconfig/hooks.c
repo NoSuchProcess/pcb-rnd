@@ -66,12 +66,8 @@ int hook_generate()
 {
 	db_mkdir("/local");
 
-	chdir("..");
-	printf("Generating gts/Makefile\n", tmpasm("gts/Makefile.in", "gts/Makefile"));
-
-#warning TODO: need a better include search path mechanism
-	chdir("src");
-	printf("Generating pcb/Makefile\n", tmpasm("Makefile.in", "Makefile"));
+	printf("Generating gts/Makefile\n", tmpasm("../gts", "Makefile.in", "Makefile"));
+	printf("Generating pcb/Makefile\n", tmpasm("../src", "Makefile.in", "Makefile"));
 	return 0;
 }
 
