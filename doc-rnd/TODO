@@ -1,4 +1,5 @@
 - distorted square pin bugs:
+	- rtree assert failure when NDEBUG is turned off
 	- large clearance with octagon
 	- why q doesn't work on vias (new comment about this in action.c)
 	- r tree breaks!!!
@@ -8,6 +9,8 @@
 - rethink/rewrite the action/change infrastructure - too many void *ptr1
   pointers, too many code duplication
 - scconfig:
+	- clean up central Makefile.in rules:
+		- remove cat, sed, grep where possible, use scconfig instead
 	- generate makefile for gts
 	- when gpcb menu res is empty, pcb segfaults on startup
 - drill adjust:
