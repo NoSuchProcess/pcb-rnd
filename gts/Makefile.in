@@ -1,41 +1,47 @@
+put /local/gts/OBJS [@
+	object.o
+	point.o
+	vertex.o
+	segment.o
+	edge.o
+	triangle.o
+	face.o
+	kdtree.o
+	bbtree.o
+	misc.o
+	predicates.o
+	heap.o
+	eheap.o
+	fifo.o
+	matrix.o
+	surface.o
+	stripe.o
+	vopt.o
+	refine.o
+	iso.o
+	isotetra.o
+	split.o
+	psurface.o
+	hsurface.o
+	cdt.o
+	boolean.o
+	named.o
+	oocs.o
+	container.o
+	graph.o
+	pgraph.o
+	partition.o
+	curvature.o
+	tribox3.o
+@]
+
+put /tmpasm/OFS { }
+uniq /local/gts/OBJS
+
 print [@
 CFLAGS = -I.. -DG_LOG_DOMAIN=\"Gts\" @libs/sul/glib/cflags@
 
-OBJS = \
-	object.o \
-	point.o \
-	vertex.o \
-	segment.o \
-	edge.o \
-	triangle.o \
-	face.o \
-	kdtree.o \
-	bbtree.o \
-	misc.o \
-	predicates.o \
-	heap.o \
-	eheap.o \
-	fifo.o \
-	matrix.o \
-	surface.o \
-	stripe.o \
-	vopt.o \
-	refine.o \
-	iso.o \
-	isotetra.o \
-	split.o \
-	psurface.o \
-	hsurface.o \
-	cdt.o \
-	boolean.o \
-	named.o \
-	oocs.o \
-	container.o \
-	graph.o \
-	pgraph.o \
-	partition.o \
-	curvature.o \
-	tribox3.o
+OBJS = @/local/gts/OBJS@
 
 libgts.a: $(OBJS)
 	@fstools/ar@ rvu libgts.a $(OBJS)
@@ -43,4 +49,14 @@ libgts.a: $(OBJS)
 clean:
 	-@fstools/rm@ $(OBJS) libgts.a
 
+### explicit rules for .c -> .o ###
 @]
+
+foreach /local/o in /local/gts/OBJS
+put /local/c /local/o
+sub /local/c {.o$} {.c}
+print [@
+@/local/o@: @/local/c@
+	$(CC) -c $(CFLAGS) -o @/local/o@ $<
+@]
+end
