@@ -38,6 +38,9 @@ OBJS = \
 	tribox3.o
 
 libgts.a: $(OBJS)
-	ar rvu libgts.a $(OBJS)
+	@fstools/ar@ rvu libgts.a $(OBJS)
+
+clean:
+	-@fstools/rm@ $(OBJS) libgts.a
 
 @]
