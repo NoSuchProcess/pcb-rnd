@@ -1,3 +1,4 @@
+put /local/gts/CFLAGS [@-I.. -DG_LOG_DOMAIN=\"Gts\" @libs/sul/glib/cflags@@]
 put /local/gts/OBJS [@
 	object.o
 	point.o
@@ -37,9 +38,11 @@ put /local/gts/OBJS [@
 
 put /tmpasm/OFS { }
 uniq /local/gts/OBJS
+put /local/gts/SRCS /local/gts/OBJS
+gsub /local/gts/SRCS {.o } {.c }
 
 print [@
-CFLAGS = -I.. -DG_LOG_DOMAIN=\"Gts\" @libs/sul/glib/cflags@
+CFLAGS = @/local/gts/CFLAGS@
 
 OBJS = @/local/gts/OBJS@
 
@@ -60,3 +63,23 @@ print [@
 	$(CC) -c $(CFLAGS) -o @/local/o@ $<
 @]
 end
+
+print [@
+
+### generate dependencies (requires gcc) ###
+FORCE:
+
+include Makefile.dep
+
+dep: FORCE
+	echo "### Generated file, do not edit, run make dep ###" > Makefile.dep
+	echo "" >> Makefile.dep
+@]
+
+put /local/cf /local/gts/CFLAGS
+gsub /local/cf {-I} {-isystem }
+foreach /local/c in /local/gts/SRCS
+	print [@	gcc -MM @/local/c@ @/local/cf@ >> Makefile.dep
+@]
+end
+
