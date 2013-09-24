@@ -46,6 +46,9 @@ int hook_detect_target()
 	/* for the toporouter: */
 	require("libs/sul/glib", 0, 1);
 
+	/* generic utils for Makefiles */
+	require("fstools/rm", 0, 1);
+	require("fstools/ar", 0, 1);
 	return 0;
 }
 
