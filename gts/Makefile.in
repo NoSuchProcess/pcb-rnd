@@ -43,7 +43,6 @@ gsub /local/gts/SRCS {.o } {.c }
 
 print [@
 CFLAGS = @/local/gts/CFLAGS@
-
 OBJS = @/local/gts/OBJS@
 
 libgts.a: $(OBJS)
@@ -51,18 +50,11 @@ libgts.a: $(OBJS)
 
 clean:
 	-@fstools/rm@ $(OBJS) libgts.a
-
-### explicit rules for .c -> .o ###
 @]
 
-foreach /local/o in /local/gts/OBJS
-put /local/c /local/o
-sub /local/c {.o$} {.c}
-print [@
-@/local/o@: @/local/c@
-	$(CC) -c $(CFLAGS) -o @/local/o@ $<
-@]
-end
+# generate explicit rules for .c -> .o
+put /local/comp/OBJS /local/gts/OBJS
+include {../scconfig/Makefile.comp.inc}
 
 # generate deps
 put /local/dep/CFLAGS /local/gts/CFLAGS
