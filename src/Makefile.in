@@ -251,3 +251,12 @@ DISTCLEANFILES= pcbtest.sh gpcb-menu.h pcb-menu.h \
 clean:
 	-rm pcb $(OBJS)
 @]
+
+# generate explicit rules for .c -> .o
+put /local/comp/OBJS /local/pcb/OBJS
+include {../scconfig/Makefile.comp.inc}
+
+# generate deps
+put /local/dep/CFLAGS /local/pcb/CFLAGS
+put /local/dep/SRCS /local/pcb/SRCS
+include {../scconfig/Makefile.dep.inc}

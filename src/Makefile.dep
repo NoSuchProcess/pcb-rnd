@@ -1,0 +1,274 @@
+### Generated file, do not edit, run make dep ###
+
+action.o: action.c global.h const.h macro.h hid.h polyarea.h action.h \
+ autoplace.h autoroute.h buffer.h change.h command.h copy.h create.h \
+ crosshair.h data.h draw.h error.h file.h find.h insert.h line.h mymem.h \
+ misc.h mirror.h move.h polygon.h rats.h remove.h report.h rotate.h \
+ rubberband.h search.h select.h set.h thermal.h undo.h rtree.h \
+ pcb-printf.h
+autoplace.o: autoplace.c global.h const.h macro.h hid.h polyarea.h \
+ autoplace.h box.h misc.h mymem.h compat.h data.h draw.h error.h \
+ intersect.h rtree.h mirror.h move.h rats.h remove.h rotate.h
+autoroute.o: autoroute.c global.h const.h macro.h hid.h polyarea.h data.h \
+ autoroute.h box.h misc.h mymem.h create.h draw.h error.h find.h heap.h \
+ rtree.h mtspace.h vector.h polygon.h rats.h remove.h thermal.h undo.h \
+ pcb-printf.h
+buffer.o: buffer.c global.h const.h macro.h hid.h polyarea.h buffer.h \
+ copy.h create.h crosshair.h data.h error.h mymem.h mirror.h misc.h \
+ parse_l.h polygon.h rats.h rotate.h remove.h rtree.h search.h select.h \
+ set.h
+change.o: change.c global.h const.h macro.h hid.h polyarea.h change.h \
+ create.h crosshair.h data.h draw.h error.h mymem.h misc.h mirror.h \
+ polygon.h rats.h remove.h rtree.h search.h select.h set.h thermal.h \
+ undo.h
+clip.o: clip.c global.h const.h macro.h hid.h polyarea.h data.h draw.h \
+ mymem.h
+command.o: command.c global.h const.h macro.h hid.h polyarea.h action.h \
+ buffer.h command.h data.h djopt.h error.h file.h mymem.h misc.h rats.h \
+ set.h vendor.h
+compat.o: compat.c compat.h global.h const.h macro.h hid.h polyarea.h
+copy.o: copy.c global.h const.h macro.h hid.h polyarea.h copy.h create.h \
+ data.h draw.h mymem.h mirror.h misc.h move.h polygon.h rats.h rtree.h \
+ select.h undo.h
+create.o: create.c global.h const.h macro.h hid.h polyarea.h create.h \
+ data.h draw.h error.h mymem.h misc.h parse_l.h pcb-printf.h polygon.h \
+ rtree.h search.h set.h undo.h vendor.h
+crosshair.o: crosshair.c global.h const.h macro.h hid.h polyarea.h \
+ crosshair.h data.h draw.h error.h line.h misc.h mymem.h search.h \
+ polygon.h
+data.o: data.c data.h global.h const.h macro.h hid.h polyarea.h
+djopt.o: djopt.c global.h const.h macro.h hid.h polyarea.h data.h \
+ create.h remove.h move.h draw.h undo.h strflags.h find.h pcb-printf.h
+draw.o: draw.c global.h const.h macro.h hid.h polyarea.h compat.h \
+ crosshair.h data.h draw.h error.h mymem.h misc.h rotate.h rtree.h \
+ search.h select.h print.h
+drill.o: drill.c data.h global.h const.h macro.h hid.h polyarea.h error.h \
+ mymem.h
+error.o: error.c global.h const.h macro.h hid.h polyarea.h data.h error.h \
+ file.h misc.h mymem.h
+file.o: file.c global.h const.h macro.h hid.h polyarea.h buffer.h \
+ change.h create.h crosshair.h data.h edif_parse.h error.h file.h misc.h \
+ mymem.h move.h parse_l.h pcb-printf.h polygon.h rats.h remove.h set.h \
+ strflags.h
+find.o: find.c global.h const.h macro.h hid.h polyarea.h crosshair.h \
+ data.h draw.h error.h find.h mymem.h misc.h rtree.h polygon.h \
+ pcb-printf.h search.h set.h undo.h rats.h
+flags.o: flags.c global.h const.h macro.h hid.h polyarea.h data.h \
+ pcb-printf.h
+fontmode.o: fontmode.c global.h const.h macro.h hid.h polyarea.h create.h \
+ data.h draw.h misc.h mymem.h move.h remove.h rtree.h strflags.h undo.h \
+ pcb-printf.h
+free_atexit.o: free_atexit.c
+heap.o: heap.c global.h const.h macro.h hid.h polyarea.h heap.h
+insert.o: insert.c global.h const.h macro.h hid.h polyarea.h copy.h \
+ create.h crosshair.h data.h draw.h insert.h line.h misc.h mymem.h move.h \
+ polygon.h rtree.h search.h select.h set.h undo.h
+intersect.o: intersect.c global.h const.h macro.h hid.h polyarea.h data.h \
+ intersect.h mymem.h
+line.o: line.c global.h const.h macro.h hid.h polyarea.h data.h \
+ crosshair.h find.h line.h misc.h mymem.h rtree.h
+lrealpath.o: lrealpath.c lrealpath.h
+main.o: main.c global.h const.h macro.h hid.h polyarea.h data.h buffer.h \
+ create.h crosshair.h draw.h error.h file.h set.h action.h misc.h mymem.h \
+ lrealpath.h free_atexit.h polygon.h pcb-printf.h hid/common/actions.h \
+ hid/hidint.h dolists.h action_list.h
+mirror.o: mirror.c global.h const.h macro.h hid.h polyarea.h data.h \
+ draw.h mirror.h misc.h mymem.h polygon.h search.h select.h set.h
+misc.o: misc.c global.h const.h macro.h hid.h polyarea.h box.h misc.h \
+ mymem.h crosshair.h create.h data.h draw.h file.h error.h move.h \
+ pcb-printf.h polygon.h remove.h rtree.h rotate.h rubberband.h search.h \
+ set.h undo.h action.h
+move.o: move.c global.h const.h macro.h hid.h polyarea.h create.h \
+ crosshair.h data.h draw.h error.h misc.h mymem.h move.h polygon.h \
+ rtree.h search.h select.h thermal.h undo.h
+mtspace.o: mtspace.c global.h const.h macro.h hid.h polyarea.h box.h \
+ misc.h mymem.h heap.h rtree.h mtspace.h vector.h
+mymem.o: mymem.c global.h const.h macro.h hid.h polyarea.h data.h error.h \
+ mymem.h misc.h rats.h rtree.h
+netlist.o: netlist.c global.h const.h macro.h hid.h polyarea.h action.h \
+ buffer.h command.h data.h djopt.h error.h file.h find.h mymem.h misc.h \
+ rats.h set.h vendor.h create.h
+pcb-printf.o: pcb-printf.c global.h const.h macro.h hid.h polyarea.h \
+ pcb-printf.h
+polygon.o: polygon.c global.h const.h macro.h hid.h polyarea.h box.h \
+ misc.h mymem.h create.h crosshair.h data.h draw.h error.h find.h move.h \
+ pcb-printf.h polygon.h remove.h rtree.h search.h set.h thermal.h undo.h
+polygon1.o: polygon1.c global.h const.h macro.h hid.h polyarea.h rtree.h \
+ heap.h
+puller.o: puller.c global.h const.h macro.h hid.h polyarea.h create.h \
+ data.h draw.h misc.h mymem.h move.h pcb-printf.h remove.h rtree.h \
+ strflags.h undo.h
+print.o: print.c global.h const.h macro.h hid.h polyarea.h data.h draw.h \
+ drill.h file.h find.h error.h misc.h mymem.h print.h polygon.h rtree.h \
+ search.h
+rats.o: rats.c global.h const.h macro.h hid.h polyarea.h create.h data.h \
+ draw.h error.h file.h find.h misc.h mymem.h polygon.h rats.h search.h \
+ set.h undo.h rats_mincut.h
+rats_mincut.o: rats_mincut.c global.h const.h macro.h hid.h polyarea.h \
+ create.h data.h draw.h error.h file.h find.h misc.h mymem.h polygon.h \
+ rats.h search.h set.h undo.h pcb-mincut/graph.h
+remove.o: remove.c global.h const.h macro.h hid.h polyarea.h data.h \
+ draw.h error.h misc.h mymem.h move.h polygon.h rats.h remove.h rtree.h \
+ search.h select.h set.h undo.h
+report.o: report.c report.h global.h const.h macro.h hid.h polyarea.h \
+ crosshair.h data.h drill.h error.h search.h misc.h mymem.h rats.h \
+ rtree.h strflags.h undo.h find.h draw.h pcb-printf.h
+rotate.o: rotate.c global.h const.h macro.h hid.h polyarea.h crosshair.h \
+ data.h draw.h error.h misc.h mymem.h polygon.h rotate.h rtree.h \
+ rubberband.h search.h select.h set.h undo.h
+rtree.o: rtree.c global.h const.h macro.h hid.h polyarea.h mymem.h \
+ rtree.h
+rubberband.o: rubberband.c global.h const.h macro.h hid.h polyarea.h \
+ create.h data.h error.h misc.h mymem.h polygon.h rubberband.h rtree.h \
+ search.h
+search.o: search.c global.h const.h macro.h hid.h polyarea.h box.h misc.h \
+ mymem.h data.h draw.h error.h find.h polygon.h rtree.h search.h
+select.o: select.c global.h const.h macro.h hid.h polyarea.h data.h \
+ draw.h error.h search.h select.h undo.h rats.h misc.h mymem.h find.h
+set.o: set.c global.h const.h macro.h hid.h polyarea.h action.h buffer.h \
+ compat.h crosshair.h data.h draw.h error.h find.h misc.h mymem.h set.h \
+ undo.h
+strflags.o: strflags.c global.h const.h macro.h hid.h polyarea.h compat.h \
+ strflags.h
+thermal.o: thermal.c global.h const.h macro.h hid.h polyarea.h create.h \
+ data.h draw.h error.h misc.h mymem.h move.h polygon.h rtree.h thermal.h \
+ undo.h
+undo.o: undo.c global.h const.h macro.h hid.h polyarea.h buffer.h \
+ change.h create.h data.h draw.h error.h insert.h misc.h mymem.h mirror.h \
+ move.h polygon.h remove.h rotate.h rtree.h search.h set.h undo.h \
+ strflags.h
+vector.o: vector.c global.h const.h macro.h hid.h polyarea.h vector.h
+vendor.o: vendor.c change.h global.h const.h macro.h hid.h polyarea.h \
+ data.h draw.h error.h resource.h set.h undo.h vendor.h
+actions.o: hid/common/actions.c hid/common/../hidint.h
+flags.o: hid/common/flags.c hid/common/../hidint.h
+hidinit.o: hid/common/hidinit.c hid/common/hidnogui.h \
+ hid/common/../hidint.h
+hidnogui.o: hid/common/hidnogui.c
+extents.o: hid/common/extents.c hid/common/../hidint.h
+draw_helpers.o: hid/common/draw_helpers.c
+hid_resource.o: hid/common/hid_resource.c
+graph.o: pcb-mincut/graph.c pcb-mincut/graph.h
+solve.o: pcb-mincut/solve.c pcb-mincut/solve.h pcb-mincut/graph.h
+res_parse.o: res_parse.c global.h const.h macro.h hid.h polyarea.h \
+ resource.h res_parse.h
+res_lex.o: res_lex.c global.h const.h macro.h hid.h polyarea.h resource.h \
+ res_parse.h
+edif.o: edif.c global.h const.h macro.h hid.h polyarea.h data.h
+parse_y.o: parse_y.c global.h const.h macro.h hid.h polyarea.h create.h \
+ data.h error.h file.h mymem.h misc.h parse_l.h polygon.h remove.h \
+ rtree.h strflags.h thermal.h parse_y.h
+parse_l.o: parse_l.c global.h const.h macro.h hid.h polyarea.h \
+ crosshair.h data.h error.h file.h mymem.h misc.h strflags.h parse_l.h \
+ parse_y.h create.h
+ghid-cell-renderer-visibility.o: hid/gtk/ghid-cell-renderer-visibility.c \
+ hid/gtk/gtkhid.h hid/gtk/gui.h hid/gtk/ghid-coord-entry.h \
+ hid/gtk/ghid-main-menu.h hid/gtk/ghid-layer-selector.h \
+ hid/gtk/ghid-route-style-selector.h hid/gtk/gui-pinout-preview.h \
+ hid/gtk/ghid-cell-renderer-visibility.h
+ghid-coord-entry.o: hid/gtk/ghid-coord-entry.c hid/gtk/gtkhid.h \
+ hid/gtk/gui.h hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h
+ghid-layer-selector.o: hid/gtk/ghid-layer-selector.c hid/gtk/gtkhid.h \
+ hid/gtk/gui.h hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h hid/gtk/ghid-cell-renderer-visibility.h
+ghid-main-menu.o: hid/gtk/ghid-main-menu.c hid/gtk/gtkhid.h hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h
+ghid-route-style-selector.o: hid/gtk/ghid-route-style-selector.c \
+ hid/gtk/gtkhid.h hid/gtk/gui.h hid/gtk/ghid-coord-entry.h \
+ hid/gtk/ghid-main-menu.h hid/gtk/ghid-layer-selector.h \
+ hid/gtk/ghid-route-style-selector.h hid/gtk/gui-pinout-preview.h
+gtkhid-main.o: hid/gtk/gtkhid-main.c hid/gtk/../hidint.h hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h
+gui-command-window.o: hid/gtk/gui-command-window.c hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h
+gui-config.o: hid/gtk/gui-config.c hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h hid/gtk/../hidint.h hid/gtk/gtkhid.h
+gui-dialog-print.o: hid/gtk/gui-dialog-print.c hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h
+gui-dialog.o: hid/gtk/gui-dialog.c hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h
+gui-drc-window.o: hid/gtk/gui-drc-window.c hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h hid/gtk/gui-drc-window.h
+gui-keyref-window.o: hid/gtk/gui-keyref-window.c hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h
+gui-library-window.o: hid/gtk/gui-library-window.c hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h hid/gtk/gui-library-window.h
+gui-log-window.o: hid/gtk/gui-log-window.c hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h
+gui-misc.o: hid/gtk/gui-misc.c hid/gtk/gui.h hid/gtk/ghid-coord-entry.h \
+ hid/gtk/ghid-main-menu.h hid/gtk/ghid-layer-selector.h \
+ hid/gtk/ghid-route-style-selector.h hid/gtk/gui-pinout-preview.h
+gui-netlist-window.o: hid/gtk/gui-netlist-window.c hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h
+gui-output-events.o: hid/gtk/gui-output-events.c hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h hid/gtk/gtkhid.h
+gui-pinout-preview.o: hid/gtk/gui-pinout-preview.c hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h
+gui-pinout-window.o: hid/gtk/gui-pinout-window.c hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h
+gui-top-window.o: hid/gtk/gui-top-window.c hid/gtk/ghid-layer-selector.h \
+ hid/gtk/ghid-route-style-selector.h hid/gtk/gtkhid.h hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/gui-pinout-preview.h hid/gtk/../hidint.h \
+ hid/gtk/gui-icons-mode-buttons.data hid/gtk/gui-icons-misc.data
+gui-utils.o: hid/gtk/gui-utils.c hid/gtk/gui.h hid/gtk/ghid-coord-entry.h \
+ hid/gtk/ghid-main-menu.h hid/gtk/ghid-layer-selector.h \
+ hid/gtk/ghid-route-style-selector.h hid/gtk/gui-pinout-preview.h
+gtkhid-gdk.o: hid/gtk/gtkhid-gdk.c hid/gtk/../hidint.h hid/gtk/gui.h \
+ hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
+ hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
+ hid/gtk/gui-pinout-preview.h
+toporouter.o: toporouter.c toporouter.h data.h global.h const.h macro.h \
+ hid.h polyarea.h autoroute.h box.h misc.h mymem.h create.h draw.h \
+ error.h find.h heap.h rtree.h polygon.h rats.h remove.h thermal.h undo.h \
+ pcb-printf.h
+batch.o: hid/batch/batch.c hid/batch/../hidint.h
+bom.o: hid/bom/bom.c hid/bom/../hidint.h
+ps.o: hid/ps/ps.c hid/ps/../hidint.h hid/ps/../ps/ps.h \
+ hid/ps/../../print.h hid/ps/../../global.h
+eps.o: hid/ps/eps.c hid/ps/../hidint.h hid/ps/../ps/ps.h
+png.o: hid/png/png.c hid/png/../hidint.h hid/png/png.h
+gerber.o: hid/gerber/gerber.c hid/gerber/../hidint.h
+gcode.o: hid/gcode/gcode.c hid/gcode/../hidint.h hid/gcode/gcode.h \
+ hid/gcode/bitmap.h hid/gcode/potracelib.h hid/gcode/curve.h \
+ hid/gcode/auxiliary.h hid/gcode/trace.h hid/gcode/decompose.h
+decompose.o: hid/gcode/decompose.c hid/gcode/potracelib.h \
+ hid/gcode/curve.h hid/gcode/auxiliary.h hid/gcode/lists.h \
+ hid/gcode/bitmap.h hid/gcode/decompose.h
+trace.o: hid/gcode/trace.c hid/gcode/potracelib.h hid/gcode/curve.h \
+ hid/gcode/auxiliary.h hid/gcode/lists.h hid/gcode/trace.h
+curve.o: hid/gcode/curve.c hid/gcode/potracelib.h hid/gcode/lists.h \
+ hid/gcode/curve.h hid/gcode/auxiliary.h
+nelma.o: hid/nelma/nelma.c hid/nelma/../hidint.h
+lpr.o: hid/lpr/lpr.c hid/lpr/../hidint.h hid/lpr/../ps/ps.h
