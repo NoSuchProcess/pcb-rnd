@@ -8,6 +8,7 @@
  returns true if no furhter argument processing should be done */
 int hook_custom_arg(const char *key, const char *value)
 {
+	if (strcmp(key, "prefix") == 0)   put("/local/prefix", strclone(value));
 	return 0;
 }
 
@@ -21,6 +22,8 @@ int hook_preinit()
 /* Runs after initialization */
 int hook_postinit()
 {
+	db_mkdir("/local");
+	put("/local/prefix", "/usr/local");
 	return 0;
 }
 
@@ -67,7 +70,6 @@ void generator_callback(char *cmd, char *args)
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
 int hook_generate()
 {
-	db_mkdir("/local");
 
 	printf("Generating Makefile.conf\n", tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
 
