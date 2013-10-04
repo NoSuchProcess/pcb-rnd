@@ -47,8 +47,11 @@ int hook_detect_target()
 	require("libs/sul/glib", 0, 1);
 
 	/* generic utils for Makefiles */
-	require("fstools/rm", 0, 1);
-	require("fstools/ar", 0, 1);
+	require("fstools/rm",  0, 1);
+	require("fstools/ar",  0, 1);
+	require("fstools/cp",  0, 1);
+	require("fstools/ln",  0, 1);
+	require("sys/ext_exe", 0, 1);
 	return 0;
 }
 
@@ -65,6 +68,8 @@ void generator_callback(char *cmd, char *args)
 int hook_generate()
 {
 	db_mkdir("/local");
+
+	printf("Generating Makefile.conf\n", tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
 
 	printf("Generating gts/Makefile\n", tmpasm("../gts", "Makefile.in", "Makefile"));
 	printf("Generating pcb/Makefile\n", tmpasm("../src", "Makefile.in", "Makefile"));
