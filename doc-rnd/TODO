@@ -9,9 +9,14 @@
 - rethink/rewrite the action/change infrastructure - too many void *ptr1
   pointers, too many code duplication
 - scconfig:
+	- switch over from automake:
+		- doc/
+		- example/
+		- lib/
+		- newlib/
+		- w32/
 	- clean up central Makefile.in rules:
 		- remove cat, sed, grep where possible, use scconfig instead
-	- generate makefile for gts
 	- when gpcb menu res is empty, pcb segfaults on startup
 - drill adjust:
 	- set drill and/or ring to current style
