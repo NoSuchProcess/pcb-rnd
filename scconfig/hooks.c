@@ -54,6 +54,7 @@ int hook_detect_target()
 	require("fstools/ar",  0, 1);
 	require("fstools/cp",  0, 1);
 	require("fstools/ln",  0, 1);
+	require("fstools/mkdir",  0, 1);
 	require("sys/ext_exe", 0, 1);
 	return 0;
 }

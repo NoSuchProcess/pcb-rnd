@@ -7,4 +7,5 @@ ETCDIR=$(install_root)/etc
 RM=@fstools/rm@
 CP=@fstools/cp@
 LN=@fstools/ln@
+MKDIR=@fstools/mkdir@
 @]
