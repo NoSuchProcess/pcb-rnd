@@ -164,7 +164,7 @@ top_srcdir=${top_srcdir:-.}
 #
 # by default we will be running it from $(top_builddir)/tests/outputs/testname
 # so we need to look 3 levels up and then down to src
-PCB=${PCB:-../../../src/pcbtest.sh}
+PCB=${PCB:-../../../src/pcb}
 
 # The gerbv executible 
 GERBV=${GERBV:-gerbv}
