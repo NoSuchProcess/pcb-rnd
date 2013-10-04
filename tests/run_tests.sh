@@ -23,6 +23,18 @@
 # but the copyright holder (Dan McMahill) has re-released the code under
 # the GPL.
 
+if test -z `which gerbv`
+then
+	echo "Please install gerbv before running the tests." >&2
+	exit 1
+fi
+
+if test -z `which convert`
+then
+	echo "Please install imagemagick before running the tests." >&2
+	exit 1
+fi
+
 magic_test_skip=${PCB_MAGIC_TEST_SKIP:-no}
 
 if test "x${magic_test_skip}" = "xyes" ; then
