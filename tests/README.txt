@@ -51,7 +51,7 @@ to examine all differences.  If you are generating a graphics file
 such as a PNG, then I suggest saving off a copy and using ImageMagick
 to look for the differences visually.  The run_tests.sh script has
 examples of comparing .png files.  Make sure the changes are only
-the expected ones and then check the new files back into git.  Do
+the expected ones and then check the new files back into svn.  Do
 not blindly update these files as that defeats the purpose of the tests.
 
 **********************************************************************
@@ -100,7 +100,7 @@ files.  If you added new Makefile.am's then be sure to also update
 configure.ac at the top level of the source tree.
 
 ----------------------------------------------------------------------
-Add the new files to git
+Add the new files to svn
 ----------------------------------------------------------------------
 
 
