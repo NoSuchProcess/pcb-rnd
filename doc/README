@@ -1,3 +1,11 @@
-This is the original doc dir of pcb.
+This is the original doc dir of pcb. Currently it does not compile.
 
 For the modifications introduced by pcb-rnd, check ../doc-rnd
+
+
+Most of the original documentation is in texi; makeinfo fails to
+produce pdf from pcb.texi and even generating html throws
+a large amount of warnings.
+
+It may be that pcb-rnd will switch from texi to html for documentation
+source format.
