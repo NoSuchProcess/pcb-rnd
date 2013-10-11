@@ -4,6 +4,7 @@ DOCDIR=$(install_root)@/local/prefix@/share/doc/pcb
 LIBDIR=$(install_root)@/local/prefix@/lib/pcb
 BINDIR=$(install_root)@/local/prefix@/bin
 ETCDIR=$(install_root)/etc
+DATADIR=$(install_root)@/local/prefix@/share/pcb
 RM=@fstools/rm@
 CP=@fstools/cp@
 LN=@fstools/ln@
