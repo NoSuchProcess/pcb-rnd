@@ -387,6 +387,7 @@ ADD_PV_TO_LIST (PinTypePtr Pin, int from_type, void *from_ptr, found_conn_type_t
 static bool
 ADD_PAD_TO_LIST (Cardinal L, PadTypePtr Pad, int from_type, void *from_ptr, found_conn_type_t type)
 {
+//fprintf(stderr, "ADD_PAD_TO_LIST cardinal %d %p %d\n", L, Pad, from_type);
   if (User)
     AddObjectToFlagUndoList (PAD_TYPE, Pad->Element, Pad, Pad);
   SET_FLAG (TheFlag, Pad);
@@ -616,6 +617,7 @@ FreeLayoutLookupMemory (void)
 void
 FreeComponentLookupMemory (void)
 {
+//fprintf(stderr, "PadList free both\n");
   free (PadList[0].Data);
   PadList[0].Data = NULL;
   free (PadList[1].Data);
@@ -645,6 +647,8 @@ InitComponentLookup (void)
   ENDALL_LOOP;
   for (i = 0; i < 2; i++)
     {
+//fprintf(stderr, "PadList alloc %d: %d\n", i, NumberOfPads[i]);
+
       /* allocate memory for working list */
       PadList[i].Data = (void **)calloc (NumberOfPads[i], sizeof (PadTypePtr));
 
@@ -2376,17 +2380,37 @@ LookupLOConnectionsToPad (PadTypePtr Pad, Cardinal LayerGroup)
 		if ((Pad->Element != NULL) && (ic > 0)) {
 			ElementType *e = Pad->Element;
 			PadTypePtr orig_pad = Pad;
+			int tlayer = -1;
+
+//fprintf(stderr, "lg===\n");
+			for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
+				Cardinal layer;
+				layer = PCB->LayerGroups.Entries[LayerGroup][entry];
+//fprintf(stderr, "lg: %d\n", layer);
+				if (layer == COMPONENT_LAYER)
+					tlayer = COMPONENT_LAYER;
+				else if (layer == SOLDER_LAYER)
+					tlayer = SOLDER_LAYER;
+			}
+
+//fprintf(stderr, "tlayer=%d\n", tlayer);
+
+			if (tlayer >= 0) {
 			PAD_LOOP (e);
 			{
 				if ((orig_pad != pad) && (ic == GET_INTCONN(pad))) {
-					if (!TEST_FLAG (TheFlag, pad)) {
-						ADD_PAD_TO_LIST (LayerGroup, pad, PAD_TYPE, orig_pad, FCT_INTERNAL);
+					int padlayer = TEST_FLAG (ONSOLDERFLAG, pad) ? SOLDER_LAYER : COMPONENT_LAYER;
+//fprintf(stderr, "layergroup1: %d {%d %d %d} %d \n", tlayer, TEST_FLAG(ONSOLDERFLAG, pad), SOLDER_LAYER, COMPONENT_LAYER, padlayer);
+					if ((!TEST_FLAG (TheFlag, pad)) && (tlayer != padlayer)) {
+//fprintf(stderr, "layergroup2\n");
+						ADD_PAD_TO_LIST (padlayer, pad, PAD_TYPE, orig_pad, FCT_INTERNAL);
 						if (LookupLOConnectionsToPad(pad, LayerGroup))
 							retv = true;
 					}
 				}
 			}
 			END_LOOP;
+			}
 		}
 
 
