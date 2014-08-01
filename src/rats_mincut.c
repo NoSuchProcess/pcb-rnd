@@ -75,7 +75,8 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 	debprintf(" found %d %d/%p type %d from %d\n", current_type, curr->ID, current_obj, type, from == NULL ? -1 : from->ID);
 }
 
-static void proc_short(PinType *pin, PadType *pad, int ignore)
+/* returns 0 on succes */
+static int proc_short(PinType *pin, PadType *pad, int ignore)
 {
 	find_callback_t old_cb;
 	Coord x, y;
@@ -85,6 +86,7 @@ static void proc_short(PinType *pin, PadType *pad, int ignore)
 	void *S, *T;
 	int *solution;
 	int i, maxedges;
+	int bad_gr = 0;
 
 	/* only one should be set, but one must be set */
 	assert((pin != NULL) || (pad != NULL));
@@ -111,7 +113,7 @@ static void proc_short(PinType *pin, PadType *pad, int ignore)
 
 		/* run only if net is not ignored */
 	if (ignore)
-		return;
+		return 0;
 
 short_conns = NULL;
 num_short_conns = 0;
@@ -147,7 +149,7 @@ short_conns_maxid = 0;
 			case LINE_TYPE: typ = "line"; break;
 			default: typ="other"; break;
 		}
-		sprintf(s, "%s #%d", typ, n->to->ID);
+		sprintf(s, "%s #%d", typ);
 		g->node2name[n->gid] = s;
 	}
 	g->node2name[0] = strdup("S");
@@ -164,6 +166,11 @@ short_conns_maxid = 0;
 
 		if (n->from_id >= 0) {
 			from = lut_by_oid[n->from_id];
+			if (from == NULL) {
+				fprintf(stderr, "rats_mincut.c error: graph has multiple components, bug in find.c!\n");
+				bad_gr = 1;
+				continue;
+			}
 			from->edges++;
 			if (from->edges > maxedges)
 				maxedges = from->edges;
@@ -224,6 +231,7 @@ short_conns_maxid = 0;
 		}
 	}
 
+#define MINCUT_DRAW
 #ifdef MINCUT_DRAW
 	{
 		static int drw = 0;
@@ -235,6 +243,7 @@ short_conns_maxid = 0;
 	}
 #endif
 
+	if (!bad_gr) {
 	solution = solve(g);
 
 	debprintf("Would cut:\n");
@@ -251,6 +260,7 @@ short_conns_maxid = 0;
 	}
 
 	free(solution);
+	}
 	free(lut_by_oid);
 	free(lut_by_gid);
 
@@ -265,6 +275,7 @@ short_conns_maxid = 0;
 	RestoreFindFlag();
 
 	find_callback = old_cb;
+	return bad_gr;
 }
 
 typedef struct pinpad_s pinpad_t;
@@ -293,12 +304,23 @@ void rat_found_short(PinType *pin, PadType *pad, const char *with_net)
 void rat_proc_shorts(void)
 {
 	pinpad_t *n, *i, *next;
+	int bad_gr = 0;
 	for(n = shorts; n != NULL; n = next) {
 		next = n->next;
 
-		/* run only if net is not ignored */
-		proc_short(n->pin, n->pad, n->ignore);
+			if (n->pin != NULL)
+				SET_FLAG (WARNFLAG, n->pin);
+			if (n->pad != NULL)
+				SET_FLAG (WARNFLAG, n->pad);
 
+
+		/* run only if net is not ignored */
+		if ((!bad_gr) && (proc_short(n->pin, n->pad, n->ignore) != 0)) {
+			fprintf(stderr, "Can't run mincut :(\n");
+			bad_gr = 1;
+		}
+
+		if (!bad_gr) {
 		/* check if the rest of the shorts affect the same nets - ignore them if so */
 		for(i = n->next; i != NULL; i = i->next) {
 			LibraryMenuType *spn, *spi;
@@ -309,7 +331,7 @@ void rat_proc_shorts(void)
 			if ((&spn->Name[2] == i->with_net) || (&spi->Name[2] == n->with_net))
 				i->ignore = 1;
 		}
-
+		}
 		free(n);
 	}
 	shorts = NULL;
