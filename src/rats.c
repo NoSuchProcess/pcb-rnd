@@ -412,7 +412,7 @@ CheckShorts (LibraryMenuTypePtr theNet)
   {
 		ElementType * e=pad->Element;
 /* TODO: should be: !TEST_FLAG(NONETLISTFLAG, (ElementType *)pad->Element)*/
-    if ((TEST_FLAG (DRCFLAG, pad)) && (!(e->Flags.f & NONETLISTFLAG)))
+    if ((TEST_FLAG (DRCFLAG, pad)) && (!(e->Flags.f & NONETLISTFLAG)) && (!(e->Name->Flags.f & NONETLISTFLAG)))
       {
 	warn = true;
 	if (!pad->Spare)
