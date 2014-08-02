@@ -28,6 +28,7 @@
 
 #include "rats.h"
 #include "pcb-mincut/graph.h"
+#include "pcb-mincut/solve.h"
 
 #define debprintf(x...)
 
@@ -136,20 +137,31 @@ short_conns_maxid = 0;
 	/* conn 0 is S and conn 1 is T and set up lookup arrays */
 	for(n = short_conns, gids=2; n != NULL; n = n->next, gids++) {
 		char *s, *typ;
+		ElementType *parent;
 		n->gid = gids;
 		debprintf(" {%d} found %d %d/%p type %d from %d\n", n->gid, n->to_type, n->to->ID, n->to, n->type, n->from_id);
 		lut_by_oid[n->to->ID] = n;
 		lut_by_gid[n->gid] = n;
 		
 		s = malloc(256);
+		parent = NULL;
 		switch(n->to_type) {
-			case PIN_TYPE: typ = "pin"; break;
-			case VIA_TYPE: typ = "via"; break;
-			case PAD_TYPE: typ = "pad"; break;
+			case PIN_TYPE: typ = "pin"; parent = ((PinType *)(n->to))->Element; break;
+			case VIA_TYPE: typ = "via"; parent = ((PinType *)(n->to))->Element; break;
+			case PAD_TYPE: typ = "pad"; parent = ((PadType *)(n->to))->Element; break;
 			case LINE_TYPE: typ = "line"; break;
 			default: typ="other"; break;
 		}
-		sprintf(s, "%s #%d", typ);
+		if (parent != NULL) {
+			TextType *name;
+			name = &parent->Name[1];
+			if ((name->TextString == NULL) || (*name->TextString == '\0'))
+				sprintf(s, "%s #%d \\nof #%d", typ, n->to->ID, parent->ID);
+			else
+				sprintf(s, "%s #%d \\nof %s", typ, n->to->ID, name->TextString);
+		}
+		else
+			sprintf(s, "%s #%d", typ, n->to->ID);
 		g->node2name[n->gid] = s;
 	}
 	g->node2name[0] = strdup("S");
@@ -167,8 +179,11 @@ short_conns_maxid = 0;
 		if (n->from_id >= 0) {
 			from = lut_by_oid[n->from_id];
 			if (from == NULL) {
-				fprintf(stderr, "rats_mincut.c error: graph has multiple components, bug in find.c!\n");
-				bad_gr = 1;
+				/* no from means broken graph (multiple components) */
+				if (n->from_id >= 2) { /* ID 0 and 1 are start/stop, there won't be from for them */
+					fprintf(stderr, "rats_mincut.c error: graph has multiple components, bug in find.c (n->from_id=%d)!\n", n->from_id);
+					bad_gr = 1;
+				}
 				continue;
 			}
 			from->edges++;
@@ -246,20 +261,26 @@ short_conns_maxid = 0;
 	if (!bad_gr) {
 	solution = solve(g);
 
-	debprintf("Would cut:\n");
-	for(i = 0; solution[i] != -1; i++) {
-		short_conn_t *s;
-		debprintf("%d:", i);
-		s = lut_by_gid[solution[i]];
-		debprintf("%d %p", solution[i], s);
-		if (s != NULL) {
-			SET_FLAG (WARNFLAG, s->to);
-			debprintf("  -> %d", s->to->ID);
+	if (solution != NULL) {
+		debprintf("Would cut:\n");
+		for(i = 0; solution[i] != -1; i++) {
+			short_conn_t *s;
+			debprintf("%d:", i);
+			s = lut_by_gid[solution[i]];
+			debprintf("%d %p", solution[i], s);
+			if (s != NULL) {
+				SET_FLAG (WARNFLAG, s->to);
+				debprintf("  -> %d", s->to->ID);
+			}
+			debprintf("\n");
 		}
-		debprintf("\n");
-	}
 
-	free(solution);
+		free(solution);
+	}
+	else {
+		fprintf(stderr, "mincut didn't find a solution, falling back to the old warn\n");
+		bad_gr=1;
+	}
 	}
 	free(lut_by_oid);
 	free(lut_by_gid);
