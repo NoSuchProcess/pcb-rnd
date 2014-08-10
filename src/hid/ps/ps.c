@@ -1261,15 +1261,13 @@ do { \
 
 #define lsegs_append(x1_, y1_, x2_, y2_) \
 do { \
-	if (y1_ == y2_) \
-		break; \
 	if (y1_ < y2_) { \
 		lsegs[lsegs_used].x1 = x1_; \
 		lsegs[lsegs_used].y1 = y1_; \
 		lsegs[lsegs_used].x2 = x2_; \
 		lsegs[lsegs_used].y2 = y2_; \
 	} \
-	else if (y1_ > y2_) { \
+	else { \
 		lsegs[lsegs_used].x2 = x1_; \
 		lsegs[lsegs_used].y2 = y1_; \
 		lsegs[lsegs_used].x1 = x2_; \
@@ -1368,9 +1366,9 @@ ps_fill_pcb_polygon (hidGC gc, PolygonType * poly, const BoxType * clip_box)
 
 		for(y = lsegs_ymin; y < lsegs_ymax; y+= POLYGRID) {
 			int pts = 0, n;
-		pcb_fprintf(global.f, "%% gridline at %mi\n", y);
+//		pcb_fprintf(global.f, "%% gridline at y %mi\n", y);
 			for(n = 0; n < lsegs_used; n++) {
-				if ((lsegs[n].y1 <= y) && (lsegs[n].y2 >= y)) {
+				if ((lsegs[n].y1 <= y) && (lsegs[n].y2 >= y) && (lsegs[n].y2 != lsegs[n].y1))  {
 					x = lsegs[n].x1+(lsegs[n].x2-lsegs[n].x1)*(y-lsegs[n].y1)/(lsegs[n].y2-lsegs[n].y1);
 					lpoints[pts] = x;
 					pts++;
@@ -1382,6 +1380,24 @@ ps_fill_pcb_polygon (hidGC gc, PolygonType * poly, const BoxType * clip_box)
 					lseg_line(lpoints[n], y, lpoints[n+1], y);
 			}
 		}
+
+		for(x = lsegs_xmin; x < lsegs_xmax; x+= POLYGRID) {
+			int pts = 0, n;
+//		pcb_fprintf(global.f, "%% gridline at y %mi\n", y);
+			for(n = 0; n < lsegs_used; n++) {
+				if ((((lsegs[n].x1 <= x) && (lsegs[n].x2 >= x)) || ((lsegs[n].x1 >= x) && (lsegs[n].x2 <= x))) && (lsegs[n].x2 != lsegs[n].x1)) {
+					y = lsegs[n].y1+(lsegs[n].y2-lsegs[n].y1)*(x-lsegs[n].x1)/(lsegs[n].x2-lsegs[n].x1);
+					lpoints[pts] = y;
+					pts++;
+				}
+			}
+			if (pts > 1) {
+				qsort(lpoints, pts, sizeof(Coord), coord_comp);
+				for(n = 0; n < pts; n+=2)
+					lseg_line(x, lpoints[n], x, lpoints[n+1]);
+			}
+		}
+
 
 		fprintf(global.f, "grestore\nnewpath\n");
 	}
