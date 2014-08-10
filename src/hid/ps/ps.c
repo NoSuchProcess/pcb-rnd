@@ -1245,6 +1245,57 @@ ps_fill_polygon (hidGC gc, int n_coords, Coord *x, Coord *y)
   fprintf (global.f, "fill\n");
 }
 
+typedef struct {
+	Coord x1,y1,x2,y2;
+} lseg_t;
+
+typedef struct {
+	Coord x,y;
+} lpoint_t;
+
+#define minmax(val, min, max) \
+do { \
+	if (val < min) min = val; \
+	if (val > max) max = val; \
+} while(0)
+
+#define lsegs_append(x1_, y1_, x2_, y2_) \
+do { \
+	if (y1_ == y2_) \
+		break; \
+	if (y1_ < y2_) { \
+		lsegs[lsegs_used].x1 = x1_; \
+		lsegs[lsegs_used].y1 = y1_; \
+		lsegs[lsegs_used].x2 = x2_; \
+		lsegs[lsegs_used].y2 = y2_; \
+	} \
+	else if (y1_ > y2_) { \
+		lsegs[lsegs_used].x2 = x1_; \
+		lsegs[lsegs_used].y2 = y1_; \
+		lsegs[lsegs_used].x1 = x2_; \
+		lsegs[lsegs_used].y1 = y2_; \
+	} \
+	lsegs_used++; \
+	minmax(y1_, lsegs_ymin, lsegs_ymax); \
+	minmax(y2_, lsegs_ymin, lsegs_ymax); \
+	minmax(x1_, lsegs_xmin, lsegs_xmax); \
+	minmax(x2_, lsegs_xmin, lsegs_xmax); \
+} while(0)
+
+#define lseg_line(x1_, y1_, x2_, y2_) \
+	do { \
+			fprintf(global.f, "newpath\n"); \
+			pcb_fprintf(global.f, "%mi %mi moveto\n", x1_, y1_); \
+			pcb_fprintf(global.f, "%mi %mi lineto\n", x2_, y2_); \
+			fprintf (global.f, "stroke\n"); \
+	} while(0)
+
+int coord_comp(const void *c1_, const void *c2_)
+{
+	const Coord *c1 = c1_, *c2 = c2_;
+	return *c1 < *c2;
+}
+
 static void
 ps_fill_pcb_polygon (hidGC gc, PolygonType * poly, const BoxType * clip_box)
 {
@@ -1253,25 +1304,89 @@ ps_fill_pcb_polygon (hidGC gc, PolygonType * poly, const BoxType * clip_box)
   VNODE *v;
   PLINE *pl;
   char *op;
+  int len;
 
   use_gc (gc);
 
   pl = poly->Clipped->contours;
+	len = 0;
+
+#define POLYGRID 500000
 
   do
     {
       v = pl->head.next;
+			if (POLYGRID)
+				fprintf (global.f, "closepath\n");
       op = "moveto";
       do
 	{
 	  pcb_fprintf (global.f, "%mi %mi %s\n", v->point[0], v->point[1], op);
 	  op = "lineto";
+		len++;
 	}
       while ((v = v->next) != pl->head.next);
+		len++;
     }
   while ((pl = pl->next) != NULL);
 
-  fprintf (global.f, "fill\n");
+	if (POLYGRID) {
+		Coord y, x, lx, ly, fx, fy, lsegs_xmin, lsegs_xmax, lsegs_ymin, lsegs_ymax;
+		lseg_t *lsegs = alloca(sizeof(lseg_t) * len);
+		Coord *lpoints = alloca(sizeof(Coord) * len);
+		int lsegs_used = 0;
+
+		lsegs_xmin = -1000000000;
+		lsegs_ymin = -1000000000;
+		lsegs_xmax = +1000000000;
+		lsegs_ymax = +1000000000;
+
+		/* save all line segs in an array */
+	  pl = poly->Clipped->contours;
+		do {
+			v = pl->head.next;
+			fx = v->point[0];
+			fy = v->point[1];
+			goto start1;
+			do {
+				lsegs_append(lx, ly, v->point[0], v->point[1]);
+				start1:;
+				lx = v->point[0];
+				ly = v->point[1];
+			} while ((v = v->next) != pl->head.next);
+			lsegs_append(lx, ly, fx, fy);
+		} while ((pl = pl->next) != NULL);
+
+
+
+
+		fprintf(global.f, "%% POLYGRID2\n");
+		fprintf(global.f, "gsave\n");
+		fprintf (global.f, "0.0015 setlinewidth\n");
+		fprintf (global.f, "closepath\n");
+		fprintf (global.f, "stroke\n");
+
+		for(y = lsegs_ymin; y < lsegs_ymax; y+= POLYGRID) {
+			int pts = 0, n;
+		pcb_fprintf(global.f, "%% gridline at %mi\n", y);
+			for(n = 0; n < lsegs_used; n++) {
+				if ((lsegs[n].y1 <= y) && (lsegs[n].y2 >= y)) {
+					x = lsegs[n].x1+(lsegs[n].x2-lsegs[n].x1)*(y-lsegs[n].y1)/(lsegs[n].y2-lsegs[n].y1);
+					lpoints[pts] = x;
+					pts++;
+				}
+			}
+			if (pts > 1) {
+				qsort(lpoints, pts, sizeof(Coord), coord_comp);
+				for(n = 0; n < pts; n+=2)
+					lseg_line(lpoints[n], y, lpoints[n+1], y);
+			}
+		}
+
+		fprintf(global.f, "grestore\nnewpath\n");
+	}
+	else
+	  fprintf (global.f, "fill\n");
 }
 
 static void
