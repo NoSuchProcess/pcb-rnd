@@ -1381,14 +1381,26 @@ ps_fill_pcb_polygon (hidGC gc, PolygonType * poly, const BoxType * clip_box)
 		fprintf (global.f, "stroke\n");
 
 		for(y = lsegs_ymin; y < lsegs_ymax; y+= POLYGRID) {
-			int pts = 0, n;
+			int pts, n;
 //		pcb_fprintf(global.f, "%% gridline at y %mi\n", y);
+			retry1:;
+			if (y > lsegs_ymax)
+				break;
+			pts = 0;
 			for(n = 0; n < lsegs_used; n++) {
-				if ((lsegs[n].y1 <= y) && (lsegs[n].y2 >= y) && (lsegs[n].y2 != lsegs[n].y1))  {
+				if ((lsegs[n].y1 <= y) && (lsegs[n].y2 >= y))  {
+					if ((lsegs[n].y2 == lsegs[n].y1) || (lsegs[n].y1 == y) || (lsegs[n].y2 == y)) {
+						y+=POLYGRID/100.0;
+						goto retry1;
+					}
 					x = lsegs[n].x1+(lsegs[n].x2-lsegs[n].x1)*(y-lsegs[n].y1)/(lsegs[n].y2-lsegs[n].y1);
 					lpoints[pts] = x;
 					pts++;
 				}
+			}
+			if ((pts % 2) != 0) {
+				y+=POLYGRID/100.0;
+				goto retry1;
 			}
 			if (pts > 1) {
 				qsort(lpoints, pts, sizeof(Coord), coord_comp);
@@ -1398,16 +1410,28 @@ ps_fill_pcb_polygon (hidGC gc, PolygonType * poly, const BoxType * clip_box)
 		}
 
 		for(x = lsegs_xmin; x < lsegs_xmax; x+= POLYGRID) {
-			int pts = 0, n;
+			int pts, n;
 //		pcb_fprintf(global.f, "%% gridline at y %mi\n", y);
+			retry2:;
+			if (x > lsegs_xmax)
+				break;
+			pts = 0;
 			for(n = 0; n < lsegs_used; n++) {
-				if ((((lsegs[n].x1 <= x) && (lsegs[n].x2 >= x)) || ((lsegs[n].x1 >= x) && (lsegs[n].x2 <= x))) && (lsegs[n].x2 != lsegs[n].x1)) {
+				if (((lsegs[n].x1 <= x) && (lsegs[n].x2 >= x)) || ((lsegs[n].x1 >= x) && (lsegs[n].x2 <= x))) {
+					if ((lsegs[n].x2 == lsegs[n].x1) || (lsegs[n].x1 == x) || (lsegs[n].x2 == x)) {
+						x += POLYGRID/100.0;
+						goto retry2;
+					}
 					y = lsegs[n].y1+(lsegs[n].y2-lsegs[n].y1)*(x-lsegs[n].x1)/(lsegs[n].x2-lsegs[n].x1);
 					lpoints[pts] = y;
 					pts++;
 				}
 			}
-			if (pts > 1) {
+			if ((pts % 2) != 0) {
+				x += POLYGRID/100.0;
+				goto retry2;
+			}
+			if ((pts > 1) ) {
 				qsort(lpoints, pts, sizeof(Coord), coord_comp);
 				for(n = 0; n < pts; n+=2)
 					lseg_line(x, lpoints[n], x, lpoints[n+1]);
