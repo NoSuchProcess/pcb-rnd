@@ -354,6 +354,18 @@ Print file name and scale on printout.
   {"show-legend", "Print file name and scale on printout",
    HID_Boolean, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_legend 17
+
+/* %start-doc options "91 Postscript Export"
+@ftable @code
+@item --polygrid <num>
+If non-zero grid polygons instead of filling them with gridlines spaced as specified.
+@end ftable
+%end-doc
+*/
+  {"polygrid", "When non-zero: grid polygons instead of filling  with gridlines spaced as specified",
+   HID_Real, 0, 0, {0, 0, 0.0}, 0, 0},
+#define HA_polygrid 18
+
 };
 
 #define NUM_OPTIONS (sizeof(ps_attribute_list)/sizeof(ps_attribute_list[0]))
@@ -401,6 +413,8 @@ static struct {
   bool is_assy;
   bool is_copper;
   bool is_paste;
+
+  double polygrid;
 } global;
 
 static HID_Attribute *
@@ -626,6 +640,7 @@ ps_hid_export_to_file (FILE * the_file, HID_Attr_Val * options)
   global.calibration_y = options[HA_ycalib].real_value;
   global.drillcopper  = options[HA_drillcopper].int_value;
   global.legend       = options[HA_legend].int_value;
+  global.polygrid     = options[HA_polygrid].real_value;
 
   if (the_file)
     ps_start_file (the_file);
@@ -1303,13 +1318,14 @@ ps_fill_pcb_polygon (hidGC gc, PolygonType * poly, const BoxType * clip_box)
   PLINE *pl;
   char *op;
   int len;
+  double POLYGRID = ps_attribute_list[HA_polygrid].default_val.real_value;
 
   use_gc (gc);
 
   pl = poly->Clipped->contours;
 	len = 0;
-
-#define POLYGRID 500000
+	if (POLYGRID != 0)
+		POLYGRID *= 1000000.0;
 
   do
     {
