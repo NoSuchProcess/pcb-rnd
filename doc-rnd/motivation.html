@@ -17,7 +17,7 @@ and:
 	<li> the official Debian package enables (requires, depends on) both dbus and gl
 	<li> DVCS - it almost always results in chaos, and has no benefit for such a small group of developers; there are posts from time to time on the mailing list about how to handle the chaos; my choice is to stick with a simple, centralized version control system
 	<li> DVCS <b>always</b> results in increased administration, which I hate to spend my time on - I'd rather invest the time in bugfixing, documentation or implementing new features
-	<li> it's nearly impossible to get small patches applied:
+	<li> it's nearly impossible to get small patches applied^1:
 		<ul>
 			<li> often no one has the time to revise and commit them
 			<li> communication requires web2.0
@@ -25,10 +25,10 @@ and:
 			<li> with the chaos VCS, it's too likely that new feature patches would require ongoing maintenance to avoid that a large scale merge (or rebase, whatever) of another feature branch breaks it
 			<li> there are too much pondering and too less prototyping; there are features that are being considered for years (for example back annotation, internal connections) with multiple concurrent ideas, but no code. Instead, I'd like to implement some code from the early phase of the idea, test it, and deprecate it if it didn't work out well.
 		</ul>
-	<li> I don't even dream about getting larger patches
-	<li> no stable release for years; can't maintain a set of patches (like pcb-gpmi) and port them to new releases
+	<li> I don't even dream about getting larger patches in the official release^1
+	<li> no stable release for years; maintaining a set of patches (like pcb-gpmi) and porting them to new releases is too much hassle
 </ul>
-I was pondering a for for years. The trigger was that one day I've upgraded
+I was pondering a fork for years. The trigger was that one day I've upgraded
 Debian on my lab computer and the new version of PCB came with gl enabled; this
 made PCB absolutely unusable (had to wait like 10 seconds for a scroll) while
 all the transparent polys over traces made the whole screen a mess. I should
@@ -38,16 +38,21 @@ was to set up my own .deb but then build it from a fork (it's not much of
 an extra effort), so I can add some of the features I miss in daily use.
 My plans with this fork:
 <ul>
-	<li> I will stick with my fork and will use it on all my computers for all my designs
+	<li> I stick with my fork and will use it on all my computers for all my designs
 	<li> Because of that, there's no emphasis on keeping the file formats compatible
 	<li> I won't actively seek ways to get my changes into the mainstream; I will keep on using my svn repo in a manner that (as a side effect) makes such merges easier, tho. If PCB developers decide to pick them up from svn and merge them in the official repo, it's fine (but I personally will keep using my fork anyway).
-	<li> Most probably I won't merge anything from the mainstream to my fork - the past few years showed that it's unlikely there would be new features I'd need
+	<li> Most probably I won't merge anything back from the mainstream to my fork - the past few years showed that it's unlikely there would be new features I'd need
 	<li> plans for new features:
 		<ul>
 			<li> pin shapes (a <a href="square.html">preliminary version</a> is already implemented
 			<li> 1206 jumpers without having to add them on the schematics/netlist (mostly done; <a href="intconn.html">[intconn]</a> and <a href="nonetlist.html"> [nonetlist] </a> are the PCB-side features for this)
 			<li> merge pcb-gpmi; GPMI would be an optional addon, it'd probably stay a plugin, but there should not be a separate repo
 		</ul>
+</ul>
+<p>
+Footnotes:
+<ul>
+	<li> ^1: this may have changed lately and pcb developers are more open to newcomers
 </ul>
 </html>
 </body>
