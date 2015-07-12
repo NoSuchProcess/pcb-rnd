@@ -1561,12 +1561,16 @@ InitPaths (char *argv0)
    * just get back pcb again.
    */
 
+#ifdef FAKE_BINDIR
+	haspath = 1;
+#else
   haspath = 0;
   for (i = 0; i < strlen (argv0) ; i++)
     {
       if (argv0[i] == PCB_DIR_SEPARATOR_C) 
 	haspath = 1;
     }
+#endif
 
 #ifdef DEBUG
   printf ("InitPaths (%s): haspath = %d\n", argv0, haspath);
@@ -1574,7 +1578,11 @@ InitPaths (char *argv0)
 
   if (haspath)
     {
+#ifdef FAKE_BINDIR
+      bindir = strdup(FAKE_BINDIR "/");
+#else
       bindir = strdup (lrealpath (argv0));
+#endif
       found_bindir = 1;
     }
   else
