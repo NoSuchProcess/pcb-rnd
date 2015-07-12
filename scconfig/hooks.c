@@ -45,7 +45,6 @@ int hook_detect_target()
 	require("fstools/mkdir", 0, 1);
 	require("libs/gui/gtk2", 0, 1);
 	require("libs/gui/gd", 0, 1);
-
 	/* for the toporouter: */
 	require("libs/sul/glib", 0, 1);
 
@@ -56,6 +55,12 @@ int hook_detect_target()
 	require("fstools/ln",  0, 1);
 	require("fstools/mkdir",  0, 1);
 	require("sys/ext_exe", 0, 1);
+
+	/* options for config.h */
+	require("cc/alloca/presents", 0, 0);
+	require("libs/env/putenv/presents", 0, 0);
+	require("libs/env/setenv/presents", 0, 0);
+
 	return 0;
 }
 
