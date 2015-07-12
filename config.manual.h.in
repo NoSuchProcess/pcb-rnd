@@ -1,0 +1,28 @@
+print [@
+/**** User preferences. ****/
+
+#define PCBLIBDIR "/usr/share/pcb"
+#define PCBTREEPATH ".:/usr/share/pcb/newlib:/usr/share/pcb/pcblib-newlib"
+#define BINDIR "/usr/bin"
+
+/* Fake binary path, bypassing the clever heuristics that determine it
+   using the real path of the binary. The heuristics fails if the binary
+   is a symlink to the source, taking the source dir instead of /usr/bin. */
+/* #define FAKE_BINDIR BINDIR */
+
+/* Relative path from bindir to exec_prefix */
+#define BINDIR_TO_EXECPREFIX ".."
+
+/* Relative path from bindir to pcblibdir */
+#define BINDIR_TO_PCBLIBDIR "../share/pcb"
+
+/* Relative path from bindir to pcbtreedir */
+#define BINDIR_TO_PCBTREEDIR "../share/pcb/newlib"
+
+/* Maximum value of coordinate type */
+#define COORD_MAX LONG_MAX
+
+/* C type for Coordinates */
+#define COORD_TYPE long
+
+@]
