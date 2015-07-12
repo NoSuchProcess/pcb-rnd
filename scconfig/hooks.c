@@ -1,8 +1,12 @@
 #include <stdio.h>
+#include <string.h>
 #include "arg.h"
 #include "log.h"
 #include "dep.h"
+#include "libs.h"
+#include "db.h"
 #include "tmpasm.h"
+#include "tmpasm_scconfig.h"
 
 /* Runs when a custom command line argument is found
  returns true if no furhter argument processing should be done */
@@ -57,9 +61,13 @@ int hook_detect_target()
 	require("sys/ext_exe", 0, 1);
 
 	/* options for config.h */
+	require("sys/path_sep", 0, 1);
 	require("cc/alloca/presents", 0, 0);
 	require("libs/env/putenv/presents", 0, 0);
 	require("libs/env/setenv/presents", 0, 0);
+	require("libs/snprintf", 0, 0);
+	require("libs/vsnprintf", 0, 0);
+
 
 	return 0;
 }
