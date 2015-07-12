@@ -1,9 +1,16 @@
 print [@
-/**** User preferences. ****/
+/**** User preferences - feel free to edit this file any time ****/
 
-#define PCBLIBDIR "/usr/share/pcb"
-#define PCBTREEPATH ".:/usr/share/pcb/newlib:/usr/share/pcb/pcblib-newlib"
-#define BINDIR "/usr/bin"
+#define PCB_PREFIX "@/local/prefix@"
+#define PCBLIBDIR PCB_PREFIX "/share/pcb"
+#define PCBTREEPATH \
+	"." \
+	":" \
+	PCB_PREFIX  "/share/pcb/newlib"\
+	":"\
+	PCB_PREFIX  "/share/pcb/pcblib-newlib"
+
+#define BINDIR PCB_PREFIX "/bin"
 
 /* Fake binary path, bypassing the clever heuristics that determine it
    using the real path of the binary. The heuristics fails if the binary
