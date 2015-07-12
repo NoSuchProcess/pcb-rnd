@@ -16,6 +16,8 @@ dep: FORCE
 @]
 
 gsub /local/dep/CFLAGS {-I} {-isystem }
+gsub /local/dep/CFLAGS {-isystem [.][.]} {-I ..}
+gsub /local/dep/CFLAGS {-isystem [.]} {-I .}
 foreach /local/c in /local/dep/SRCS
 	print [@	gcc -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep
 @]
