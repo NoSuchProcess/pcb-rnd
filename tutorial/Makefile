@@ -16,4 +16,6 @@ linstall:
 uninstall:
 	$(RM) $(DOCDIR)/examples/tut1.pcb
 
+clean:
+
 include ../Makefile.conf
