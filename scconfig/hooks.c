@@ -71,11 +71,18 @@ void generator_callback(char *cmd, char *args)
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
 int hook_generate()
 {
+	printf("Generating Makefile.conf (%d)\n", tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
 
-	printf("Generating Makefile.conf\n", tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
+	printf("Generating gts/Makefile (%d)\n", tmpasm("../gts", "Makefile.in", "Makefile"));
+	printf("Generating pcb/Makefile (%d)\n", tmpasm("../src", "Makefile.in", "Makefile"));
 
-	printf("Generating gts/Makefile\n", tmpasm("../gts", "Makefile.in", "Makefile"));
-	printf("Generating pcb/Makefile\n", tmpasm("../src", "Makefile.in", "Makefile"));
+	printf("Generating config.auto.h (%d)\n", tmpasm("..", "config.auto.h.in", "config.auto.h"));
+
+	if (!exists("../config.manual.h")) {
+		printf("Generating config.manual.h (%d)\n", tmpasm("..", "config.manual.h.in", "config.manual.h"));
+		printf(" * NOTE: you may want to edit config.manual.h (user preferences) *\n");
+	}
+
 	return 0;
 }
 
