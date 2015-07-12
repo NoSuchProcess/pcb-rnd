@@ -1,3 +1,14 @@
+Run ./configure.
+
+You may want to edit config.manual.h and globalconst.h to change
+user preference defaults.
+
+Run make.
+
+Run make install.
+
+--
+
 PCB is organized into a core program that deals with all of the
 internal database procedures and a collection of Human Interface
 Devices (HID's).  The HID's provide exporting/printing capability
