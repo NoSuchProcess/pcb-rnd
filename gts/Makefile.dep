@@ -9,8 +9,10 @@ triangle.o: triangle.c gts.h
 face.o: face.c gts.h
 kdtree.o: kdtree.c gts.h
 bbtree.o: bbtree.c gts.h
-misc.o: misc.c gts.h gts-private.h
-predicates.o: predicates.c predicates.h rounding.h
+misc.o: misc.c gts.h gts-private.h ../config.h ../config.manual.h \
+ ../config.auto.h
+predicates.o: predicates.c predicates.h rounding.h ../config.h \
+ ../config.manual.h ../config.auto.h
 heap.o: heap.c gts.h
 eheap.o: eheap.c gts.h
 fifo.o: fifo.c gts.h
