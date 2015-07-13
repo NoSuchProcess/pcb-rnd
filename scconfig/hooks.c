@@ -67,6 +67,8 @@ int hook_detect_target()
 	require("libs/env/setenv/presents", 0, 0);
 	require("libs/snprintf", 0, 0);
 	require("libs/vsnprintf", 0, 0);
+	require("libs/fs/getcwd", 0, 0);
+	require("libs/math/expf", 0, 0);
 
 
 	return 0;
