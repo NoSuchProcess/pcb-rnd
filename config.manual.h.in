@@ -32,4 +32,7 @@ print [@
 /* C type for Coordinates */
 #define COORD_TYPE long
 
+/* Define to 1 if you have the `dmalloc' library (-ldmalloc);
+   (memory debugging without valgrind) */
+/* #undef HAVE_LIBDMALLOC */
 @]
