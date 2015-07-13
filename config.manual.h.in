@@ -35,4 +35,8 @@ print [@
 /* Define to 1 if you have the `dmalloc' library (-ldmalloc);
    (memory debugging without valgrind) */
 /* #undef HAVE_LIBDMALLOC */
+
+/* Define to 1 to enable toporouter graphical output */
+#define TOPO_OUTPUT_ENABLED 0
+
 @]
