@@ -70,6 +70,7 @@ int hook_detect_target()
 	require("libs/fs/getcwd", 0, 0);
 	require("libs/math/expf", 0, 0);
 	require("libs/math/logf", 0, 0);
+	require("libs/script/m4/bin/*", 0, 0);
 	require("libs/gui/gd/gdImagePng/*", 0, 0);
 	require("libs/gui/gd/gdImageGif/*", 0, 0);
 	require("libs/gui/gd/gdImageJpeg/*", 0, 0);
