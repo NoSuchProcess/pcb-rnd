@@ -1,6 +1,9 @@
 print [@
 /**** User preferences - feel free to edit this file any time ****/
 
+/* library file name */
+#define LIBRARYFILENAME "pcblib"
+
 #define PCB_PREFIX "@/local/prefix@"
 #define PCBLIBDIR PCB_PREFIX "/share/pcb"
 #define PCBTREEPATH \
