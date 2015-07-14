@@ -3,14 +3,12 @@
 	- large clearance with octagon
 	- why q doesn't work on vias (new comment about this in action.c)
 	- r tree breaks!!!
+	- rotate should rotate pin shape as well
 - 1206 jumpers:
 	- gsch2pcb patch
 - merge pcb-gpmi in pcb-rnd
-- rethink/rewrite the action/change infrastructure - too many void *ptr1
-  pointers, too many code duplication
 - scconfig:
 	- switch over from automake:
-		- doc/
 		- example/
 		- lib/
 		- newlib/
@@ -24,3 +22,8 @@
 - clear poly should be a per layer flag
 - zero width copper lines to split polys
 - be able to manually change text line width
+
+Low prio:
+- decide what to do with old doc - texi doesn't seem to work at all
+- rethink/rewrite the action/change infrastructure - too many void *ptr1
+  pointers, too many code duplication
