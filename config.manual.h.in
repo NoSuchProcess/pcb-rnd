@@ -3,7 +3,10 @@ print [@
 
 /* Fake binary path, bypassing the clever heuristics that determine it
    using the real path of the binary. The heuristics fails if the binary
-   is a symlink to the source, taking the source dir instead of /usr/bin. */
+   is a symlink to the source, taking the source dir instead of /usr/bin.
+
+   You need this if you want to use make linstall.
+*/
 /* #define FAKE_BINDIR BINDIR */
 
 /* Maximum value of coordinate type */
