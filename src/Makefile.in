@@ -250,6 +250,27 @@ DISTCLEANFILES= pcbtest.sh gpcb-menu.h pcb-menu.h \
 
 clean:
 	-rm pcb $(OBJS)
+
+include ../Makefile.conf
+
+install_:
+	$(MKDIR) $(BINDIR) $(DATADIR)
+	$(CPC) `pwd`/pcb $(BINDIR)/pcb
+	$(CPC) `pwd`/default_font $(DATADIR)/default_font
+	$(CPC) `pwd`/gpcb-menu.res $(DATADIR)/gpcb-menu.res
+	$(CPC) `pwd`/pcb-menu.res $(DATADIR)/pcb-menu.res
+
+install:
+	make install_ CPC="$(CP)"
+
+linstall:
+	make install_ CPC="$(LN)"
+
+uninstall:
+	$(RM) $(BINDIR)/pcb
+	$(RM) $(DATADIR)/gpcb-menu.res
+	$(RM) $(DATADIR)/pcb-menu.res
+
 @]
 
 # generate explicit rules for .c -> .o
