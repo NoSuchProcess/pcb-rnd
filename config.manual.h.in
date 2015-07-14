@@ -1,33 +1,10 @@
 print [@
 /**** User preferences - feel free to edit this file any time ****/
 
-/* library file name */
-#define LIBRARYFILENAME "pcblib"
-
-#define PCB_PREFIX "@/local/prefix@"
-#define PCBLIBDIR PCB_PREFIX "/share/pcb"
-#define PCBTREEPATH \
-	"." \
-	":" \
-	PCB_PREFIX  "/share/pcb/newlib"\
-	":"\
-	PCB_PREFIX  "/share/pcb/pcblib-newlib"
-
-#define BINDIR PCB_PREFIX "/bin"
-
 /* Fake binary path, bypassing the clever heuristics that determine it
    using the real path of the binary. The heuristics fails if the binary
    is a symlink to the source, taking the source dir instead of /usr/bin. */
 /* #define FAKE_BINDIR BINDIR */
-
-/* Relative path from bindir to exec_prefix */
-#define BINDIR_TO_EXECPREFIX ".."
-
-/* Relative path from bindir to pcblibdir */
-#define BINDIR_TO_PCBLIBDIR "../share/pcb"
-
-/* Relative path from bindir to pcbtreedir */
-#define BINDIR_TO_PCBTREEDIR "../share/pcb/newlib"
 
 /* Maximum value of coordinate type */
 #define COORD_MAX LONG_MAX
