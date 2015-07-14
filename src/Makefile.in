@@ -190,26 +190,16 @@ EXTRA_DIST= \
 	hid/png/hid.conf \
 	hid/nelma/hid.conf \
 	hid/ps/hid.conf \
-	gpcb-menu.res.in \
-	pcb-menu.res.in \
 	pcbtest.sh.in \
 	dbus.xml
 
 all-local: pcbtest.sh
-
-pcb-menu.res: pcb-menu.res.in
-	echo '/* AUTOMATICALLY GENERATED FROM pcb-menu.res.in DO NOT EDIT */' > pcb-menu.res
-	cat pcb-menu.res.in >> pcb-menu.res
 
 pcb-menu.h: pcb-menu.res
 	echo '/* AUTOMATICALLY GENERATED FROM pcb-menu.res DO NOT EDIT */' > pcb-menu.h
 	echo 'const char *pcb_menu_default[] = {' >> pcb-menu.h
 	sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$$/",/' < pcb-menu.res >> pcb-menu.h
 	echo '0};' >> pcb-menu.h
-
-gpcb-menu.res: gpcb-menu.res.in
-	echo '/* AUTOMATICALLY GENERATED FROM gpcb-menu.res.in DO NOT EDIT */' > gpcb-menu.res
-	cat gpcb-menu.res.in >> gpcb-menu.res
 
 gpcb-menu.h: gpcb-menu.res
 	echo '/* AUTOMATICALLY GENERATED FROM gpcb-menu.res DO NOT EDIT */' > gpcb-menu.h
