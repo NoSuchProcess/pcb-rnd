@@ -1324,13 +1324,13 @@ ps_fill_pcb_polygon (hidGC gc, PolygonType * poly, const BoxType * clip_box)
 
   pl = poly->Clipped->contours;
 	len = 0;
-	if (POLYGRID != 0)
+	if (POLYGRID > 0.1)
 		POLYGRID *= 1000000.0;
 
   do
     {
       v = pl->head.next;
-			if (POLYGRID)
+			if (POLYGRID > 0.1)
 				fprintf (global.f, "closepath\n");
       op = "moveto";
       do
@@ -1344,7 +1344,7 @@ ps_fill_pcb_polygon (hidGC gc, PolygonType * poly, const BoxType * clip_box)
     }
   while ((pl = pl->next) != NULL);
 
-	if (POLYGRID) {
+	if (POLYGRID > 0.1) {
 		Coord y, x, lx, ly, fx, fy, lsegs_xmin, lsegs_xmax, lsegs_ymin, lsegs_ymax;
 		lseg_t *lsegs = alloca(sizeof(lseg_t) * len);
 		Coord *lpoints = alloca(sizeof(Coord) * len);
