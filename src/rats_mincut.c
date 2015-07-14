@@ -89,6 +89,8 @@ static int proc_short(PinType *pin, PadType *pad, int ignore)
 	int i, maxedges;
 	int bad_gr = 0;
 
+	return bad_gr;
+
 	/* only one should be set, but one must be set */
 	assert((pin != NULL) || (pad != NULL));
 	assert((pin == NULL) || (pad == NULL));
@@ -347,6 +349,9 @@ void rat_proc_shorts(void)
 			LibraryMenuType *spn, *spi;
 			spn = (n->pin != NULL) ? n->pin->Spare : n->pad->Spare;
 			spi = (i->pin != NULL) ? i->pin->Spare : i->pad->Spare;
+
+			if ((spn == NULL) || (spi == NULL))
+				continue;
 
 			/* can compare by pointer - names are never strdup()'d */
 			if ((&spn->Name[2] == i->with_net) || (&spi->Name[2] == n->with_net))
