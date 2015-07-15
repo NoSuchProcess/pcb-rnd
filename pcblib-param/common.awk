@@ -14,8 +14,6 @@ function either(a, b)
 	return a != "" ? a : b
 }
 
-Element["" "" "" "" 85000 145000 0 0 0 100 ""]
-
 function element_begin(desc, name, value, cent_x, cent_y, text_x, text_y, text_dir, text_scale)
 {
 	print "Element[" q q, q desc q, q name q, q value q, 
@@ -65,4 +63,40 @@ function element_rectangle(x1, y1, x2, y2, thickness)
 function mil(coord)
 {
 	return coord * 100
+}
+
+function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
+{
+	sub(" ", "", arg_names)
+	sub(" ", "", mandatory)
+	split(arg_names, N, ",")
+	v = split(args, A, ",")
+
+	pos = 1
+	for(n = 1; n <= v; n++) {
+		if (A[n] ~ "=") {
+			key=A[n]
+			val=A[n]
+			sub("=.*", "", key)
+			sub("^[^=]*=", "", val)
+			OUT[key] = val
+		}
+		else {
+			if (N[pos] == "") {
+				print "Error: too many positional arguments at " A[n] > "/dev/stderr"
+				exit 1
+			}
+			while(N[pos] in OUT) pos++
+			OUT[N[pos]] = A[n]
+			pos++
+		}
+	}
+
+	v = split(mandatory, M, ",")
+	for(n = 1; n <= v; n++) {
+		if (!(M[n] in OUT)) {
+			print "Error: missing argument", M[n], "(or positional " n ")"  > "/dev/stderr"
+			exit 1
+		}
+	}
 }

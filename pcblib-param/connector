@@ -1,4 +1,4 @@
 #!/bin/sh
 
-awk -f common.awk -f connector.awk -v "nx=$1" -v "ny=$2"
+awk -f common.awk -f connector.awk -v "args=$*"
 
