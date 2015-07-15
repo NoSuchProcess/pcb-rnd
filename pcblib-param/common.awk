@@ -9,11 +9,13 @@ BEGIN {
 	line_thickness = 1500
 }
 
+# return a if it is not empty, else return b
 function either(a, b)
 {
 	return a != "" ? a : b
 }
 
+# generate an element header line; any argument may be empty
 function element_begin(desc, name, value, cent_x, cent_y, text_x, text_y, text_dir, text_scale)
 {
 	print "Element[" q q, q desc q, q name q, q value q, 
@@ -23,12 +25,14 @@ function element_begin(desc, name, value, cent_x, cent_y, text_x, text_y, text_d
 	print "("
 }
 
+# generate an element footer line
 function element_end()
 {
 	print ")"
 }
 
-function element_pin(x, y, ringdia, clearance, mask, drill, name, number, flags)
+# generate a pin; arguments from ringdia are optional (defaults are in global vars pin_*)
+function element_pin(x, y,   ringdia, clearance, mask, drill, name, number, flags)
 {
 	if (number == "")
 		number = ++pin_number
@@ -47,12 +51,14 @@ function element_pin(x, y, ringdia, clearance, mask, drill, name, number, flags)
 		either(drill, pin_drill), q name q, q number q, q flags q "]"
 }
 
-function element_line(x1, y1, x2, y2, thickness)
+# draw a line on silk; thickness is optional (default: line_thickness)
+function element_line(x1, y1, x2, y2,   thickness)
 {
 	print "	ElementLine[" x1, y1, x2, y2, either(thickness, line_thickness) "]"
 }
 
-function element_rectangle(x1, y1, x2, y2, thickness)
+# draw a rectangle of silk lines 
+function element_rectangle(x1, y1, x2, y2,    thickness)
 {
 	element_line(x1, y1, x1, y2, thickness)
 	element_line(x1, y1, x2, y1, thickness)
@@ -60,11 +66,17 @@ function element_rectangle(x1, y1, x2, y2, thickness)
 	element_line(x2, y2, x2, y1, thickness)
 }
 
+# convert coord given in mils to footprint units
 function mil(coord)
 {
 	return coord * 100
 }
 
+
+# Process a generator argument list from arg_names. Save the result in
+# array OUT. If mandatory is specified, check whether all mandatory
+# parameters are specified
+# Both arg_names and mandatory are comma separated list of argument names
 function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 {
 	sub(" ", "", arg_names)
@@ -72,9 +84,11 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 	split(arg_names, N, ",")
 	v = split(args, A, ",")
 
+# fill in all named and positional arguments
 	pos = 1
 	for(n = 1; n <= v; n++) {
 		if (A[n] ~ "=") {
+#			named
 			key=A[n]
 			val=A[n]
 			sub("=.*", "", key)
@@ -82,6 +96,7 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 			OUT[key] = val
 		}
 		else {
+#			positional
 			if (N[pos] == "") {
 				print "Error: too many positional arguments at " A[n] > "/dev/stderr"
 				exit 1
@@ -92,6 +107,7 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 		}
 	}
 
+# check whether all mandatory arguments are specified
 	v = split(mandatory, M, ",")
 	for(n = 1; n <= v; n++) {
 		if (!(M[n] in OUT)) {
