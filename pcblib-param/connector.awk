@@ -13,6 +13,13 @@ BEGIN {
 	else
 		step = mil(step)
 
+	if (pin_ringdia > step*0.9)
+		pin_ringdia = step*0.9
+
+	if (pin_drill > pin_ringdia*0.9)
+		pin_drill = pin_ringdia*0.9
+
+
 	half=step/2
 
 	element_begin(spacing " mil connector", "CONN1", P["nx"] "*" P["ny"]    ,0,0, 0, -step)
