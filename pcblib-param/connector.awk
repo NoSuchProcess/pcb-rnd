@@ -2,7 +2,7 @@ BEGIN {
 	P["spacing"] = 100
 	P["silkmark"] = "square"
 
-	proc_args(P, "nx,ny,spacing", "nx,ny")
+	proc_args(P, "nx,ny,spacing,silkmark", "nx,ny")
 
 	step=P["spacing"]
 
