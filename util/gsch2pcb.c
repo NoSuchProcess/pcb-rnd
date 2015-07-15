@@ -280,7 +280,7 @@ run_gnetlist (gchar * pins_file, gchar * net_file, gchar * pcb_file,
 }
 
 static gchar *
-token (gchar * string, gchar ** next, gboolean * quoted_ret)
+token (gchar * string, gchar ** next, gboolean * quoted_ret, gboolean parenth)
 {
   static gchar *str;
   gchar *s, *ret;
@@ -301,6 +301,12 @@ token (gchar * string, gchar ** next, gboolean * quoted_ret)
       *quoted_ret = TRUE;
     ++str;
     for (s = str; *s && *s != '"' && *s != '\n'; ++s);
+  } else if ((*str == '(') && (parenth)) {
+    quoted = TRUE;
+    if (quoted_ret)
+      *quoted_ret = TRUE;
+    ++str;
+    for (s = str; *s && *s != ')' && *s != '\n'; ++s);
   } else {
     if (quoted_ret)
       *quoted_ret = FALSE;
@@ -368,13 +374,13 @@ pcb_element_line_parse (gchar * line)
   el->res_char = el->hi_res_format ? '[' : '(';
   close_char = el->hi_res_format ? ']' : ')';
 
-  el->flags = token (s + 1, NULL, &el->quoted_flags);
-  el->description = token (NULL, NULL, NULL);
-  el->refdes = token (NULL, NULL, NULL);
-  el->value = token (NULL, NULL, NULL);
+  el->flags = token (s + 1, NULL, &el->quoted_flags, 0);
+  el->description = token (NULL, NULL, NULL, 0);
+  el->refdes = token (NULL, NULL, NULL, 0);
+  el->value = token (NULL, NULL, NULL, 0);
 
-  el->x = token (NULL, NULL, NULL);
-  el->y = token (NULL, &t, NULL);
+  el->x = token (NULL, NULL, NULL, 0);
+  el->y = token (NULL, &t, NULL, 0);
 
   el->tail = g_strdup (t ? t : "");
   if ((s = strrchr (el->tail, (gint) '\n')) != NULL)
@@ -600,21 +606,35 @@ static PcbElement *
 pkg_to_element (FILE * f, gchar * pkg_line)
 {
   PcbElement *el;
-  gchar **args, *s;
+  gchar *args[4], *s, *end;
   gint n, n_extra_args, n_dashes;
 
   if (strncmp (pkg_line, "PKG_", 4)
       || (s = strchr (pkg_line, (gint) '(')) == NULL)
     return NULL;
 
-  args = g_strsplit (s + 1, ",", 12);
+/* remove trailing ")" */
+  end = s+strlen(s)-2;
+  if (*end == ')') *end = '\0';
+
+/* tokenize the line keeping () */
+  args[0] = token(s+1, NULL, NULL, 1);
+  args[1] = token(NULL, NULL, NULL, 1);
+  args[2] = token(NULL, NULL, NULL, 1);
+  args[3] = NULL;
+
   if (!args[0] || !args[1] || !args[2]) {
     fprintf (stderr, "Bad package line: %s\n", pkg_line);
     return NULL;
   }
+
   fix_spaces (args[0]);
   fix_spaces (args[1]);
   fix_spaces (args[2]);
+
+	printf("args:\n");
+	for(n = 0; n < 4; n++)
+		printf(" '%s'\n", args[n]);
 
   el = g_new0 (PcbElement, 1);
   el->description = g_strdup (args[0]);
@@ -661,7 +681,6 @@ pkg_to_element (FILE * f, gchar * pkg_line)
     if ((s = strchr (el->pkg_name_fix, (gint) ')')) != NULL)
       *s = '\0';
   }
-  g_strfreev (args);
 
   if (empty_footprint_name && !strcmp (el->description, empty_footprint_name)) {
     if (verbose)
