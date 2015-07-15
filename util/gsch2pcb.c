@@ -61,7 +61,7 @@ typedef struct
 ElementMap;
 
 static GList *pcb_element_list,
-  *element_directory_list, *extra_gnetlist_list, *extra_gnetlist_arg_list;
+  *extra_gnetlist_list, *extra_gnetlist_arg_list;
 
 static gchar *sch_basename;
 
@@ -549,82 +549,12 @@ insert_element (FILE * f_out, gchar * element_file,
 
 
 gchar *
-find_element (gchar * dir_path, gchar * element)
-{
-  GDir *dir;
-  gchar *path, *name, *s, *found = NULL;
-
-  if ((dir = g_dir_open (dir_path, 0, NULL)) == NULL) {
-    s = g_strdup_printf ("find_element can't open dir \"%s\"", dir_path);
-    perror (s);
-    g_free (s);
-    return NULL;
-  }
-  if (verbose > 1)
-    printf ("\t  Searching: \"%s\" for \"%s\"\n", dir_path, element);
-  while ((name = (gchar *) g_dir_read_name (dir)) != NULL) {
-    path = g_strconcat (dir_path, "/", name, NULL);
-    found = NULL;
-
-    /* if we got a directory name, then recurse down into it */
-    if (g_file_test (path, G_FILE_TEST_IS_DIR))
-      found = find_element (path, element);
-
-    /* otherwise assume it is a file and see if it is the one we want */
-    else {
-      if (verbose > 1)
-        printf ("\t           : %s\t", name);
-      if (!strcmp (name, element))
-        found = g_strdup (path);
-      else {
-        gchar *tmps;
-        tmps = g_strconcat (element, ".fp", NULL);
-        if (!strcmp (name, tmps))
-          found = g_strdup (path);
-        g_free (tmps);
-      }
-      if (verbose > 1)
-        printf ("%s\n", found ? "Yes" : "No");
-    }
-    g_free (path);
-    if (found)
-      break;
-  }
-  g_dir_close (dir);
-  return found;
-}
-
-gchar *
-search_element_directories (PcbElement * el)
+search_element (PcbElement * el)
 {
   GList *list;
   gchar *s, *elname = NULL, *dir_path, *path = NULL;
   gint n1, n2;
 
-  /* See comment before pkg_to_element() */
-  if (el->pkg_name_fix) {
-    if (strchr (el->description, '-')) {
-      n1 = strlen (el->description);
-      n2 = strlen (el->pkg_name_fix);
-      s = el->description + n1 - n2 - 1;
-
-// printf("n1=%d n2=%d desc:%s fix:%s s:%s\n",
-//  n1, n2, el->description, el->pkg_name_fix, s);
-
-      if (n1 > 0 && n2 < n1 && *s == '-' && *(s + 1) == *el->pkg_name_fix) {
-        s = g_strndup (el->description, n1 - n2 - 1);
-        elname = g_strconcat (s, " ", el->pkg_name_fix, NULL);
-        g_free (s);
-      }
-    }
-    if (!elname) {
-      printf ("Warning: argument passing may have been confused by\n");
-      printf ("         a comma in a component value:\n");
-      printf ("         Check %s %s %s\n",
-              el->refdes, el->description, el->value);
-      printf ("         Maybe just use a space instead of a comma?\n");
-    }
-  }
   if (!elname)
     elname = g_strdup (el->description);
 
@@ -634,17 +564,6 @@ search_element_directories (PcbElement * el)
   }
   if (verbose > 1)
     printf ("\tSearching directories looking for file element: %s\n", elname);
-  for (list = element_directory_list; list; list = g_list_next (list)) {
-    dir_path = (gchar *) list->data;
-    if (verbose > 1)
-      printf ("\tLooking in directory: \"%s\"\n", dir_path);
-    path = find_element (dir_path, elname);
-    if (path) {
-      if (verbose)
-        printf ("\tFound: %s\n", path);
-      break;
-    }
-  }
   g_free (elname);
   return path;
 }
@@ -814,10 +733,10 @@ add_elements (gchar * pcb_file)
 /* TODO */
     {
       if (verbose)
-        printf ("%s: need new file element for footprint  %s (value=%s)\n",
+        printf ("%s: need new element for footprint  %s (value=%s)\n",
                 el->refdes, el->description, el->value);
 
-      p = search_element_directories (el);
+      p = search_element (el);
       if (!p && verbose)
         printf ("\tNo file element found.\n");
 
@@ -1075,11 +994,7 @@ parse_config (gchar * config, gchar * arg)
     return 0;
   }
   if (!strcmp (config, "elements-dir") || !strcmp (config, "d")) {
-    if (verbose > 1)
-      printf ("\tAdding directory to file element directory list: %s\n",
-              expand_dir (arg));
-    element_directory_list =
-      g_list_prepend (element_directory_list, expand_dir (arg));
+/* TODO */
   } else if (!strcmp (config, "output-name") || !strcmp (config, "o"))
     sch_basename = g_strdup (arg);
   else if (!strcmp (config, "schematics"))
@@ -1286,27 +1201,6 @@ main (gint argc, gchar ** argv)
 
   if (!schematics)
     usage ();
-
-
-  /* Defaults for the search path if not configured in the project file */
-  if (g_file_test ("packages", G_FILE_TEST_IS_DIR))
-    element_directory_list = g_list_append (element_directory_list, "packages");
-
-#define PCB_PATH_DELIMETER ":"
-  if (verbose)
-    printf ("Processing PCBLIBPATH=\"%s\"\n", PCBLIBPATH);
-
-  path = g_strdup (PCBLIBPATH);
-  for (p = strtok (path, PCB_PATH_DELIMETER); p && *p;
-       p = strtok (NULL, PCB_PATH_DELIMETER)) {
-    if (g_file_test (p, G_FILE_TEST_IS_DIR)) {
-      if (verbose)
-        printf ("Adding %s to the newlib search path\n", p);
-      element_directory_list = g_list_append (element_directory_list,
-                                              g_strdup (p));
-    }
-  }
-  g_free (path);
 
   pins_file_name = g_strconcat (sch_basename, ".cmd", NULL);
   net_file_name = g_strconcat (sch_basename, ".net", NULL);
