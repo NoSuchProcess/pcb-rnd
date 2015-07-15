@@ -49,7 +49,7 @@ int hook_detect_target()
 	require("fstools/mkdir", 0, 1);
 	require("libs/gui/gtk2", 0, 1);
 	require("libs/gui/gd", 0, 1);
-	/* for the toporouter: */
+	/* for the toporouter and gsch2pcb: */
 	require("libs/sul/glib", 0, 1);
 
 	/* generic utils for Makefiles */
@@ -95,6 +95,7 @@ int hook_generate()
 
 	printf("Generating gts/Makefile (%d)\n", tmpasm("../gts", "Makefile.in", "Makefile"));
 	printf("Generating pcb/Makefile (%d)\n", tmpasm("../src", "Makefile.in", "Makefile"));
+	printf("Generating util/Makefile (%d)\n", tmpasm("../util", "Makefile.in", "Makefile"));
 
 	printf("Generating config.auto.h (%d)\n", tmpasm("..", "config.auto.h.in", "config.auto.h"));
 

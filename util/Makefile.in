@@ -1,0 +1,13 @@
+print [@
+
+CFLAGS=@libs/sul/glib/cflags@
+LDFLAGS=@libs/sul/glib/ldflags@
+EXE=@sys/ext_exe@
+
+gsch2pcb$(EXE): gsch2pcb.o
+	$(CC) gsch2pcb.o -o gsch2pcb$(EXE) $(LDFLAGS)
+
+gsch2pcb.o: gsch2pcb.c
+	$(CC) -c $(CFLAGS) gsch2pcb.c -o gsch2pcb.o
+
+@]
