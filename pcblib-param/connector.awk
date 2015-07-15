@@ -1,5 +1,7 @@
 BEGIN {
 	P["spacing"] = 100
+	P["silkmark"] = "square"
+
 	proc_args(P, "nx,ny,spacing", "nx,ny")
 
 	step=P["spacing"]
@@ -21,7 +23,18 @@ BEGIN {
 
 	element_rectangle(-half, -half, P["nx"] * step-half, P["ny"] * step-half)
 
-	element_line(0, -half,  -half, 0)
+	if (P["silkmark"] == "angled") {
+		element_line(0, -half,  -half, 0)
+	}
+	else if (P["silkmark"] == "square") {
+		element_line(-half, half,  half, half)
+		element_line(half, -half,  half, half)
+	}
+	else if (P["silkmark"] == "external") {
+		element_line(-half, 0,        -step, -half/2)
+		element_line(-half, 0,        -step, +half/2)
+		element_line(-step, -half/2,  -step, +half/2)
+	}
 
 	element_end()
 }
