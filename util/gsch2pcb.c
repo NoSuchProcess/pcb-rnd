@@ -67,10 +67,6 @@ static gchar *sch_basename;
 
 static GList *schematics;
 
-static gchar *m4_pcbdir, *default_m4_pcbdir, *m4_files, *m4_override_file;
-
-static gboolean use_m4 = TRUE;
-
 static gchar *empty_footprint_name;
 
 static gint verbose,
@@ -84,37 +80,8 @@ static gint verbose,
 
 static gboolean remove_unfound_elements = TRUE,
   quiet_mode = FALSE,
-  force_element_files, preserve, fix_elements, bak_done, need_PKG_purge;
+  preserve, fix_elements, bak_done, need_PKG_purge;
 
-
-static void
-create_m4_override_file ()
-{
-  FILE *f;
-
-  m4_override_file = "gnet-gsch2pcb-tmp.scm";
-  f = fopen (m4_override_file, "wb");
-  if (!f) {
-    m4_override_file = NULL;
-    return;
-  }
-  if (m4_pcbdir)
-    fprintf (f, "(define gsch2pcb:pcb-m4-dir \"%s\")\n", m4_pcbdir);
-  if (m4_files)
-    fprintf (f, "(define gsch2pcb:m4-files \"%s\")\n", m4_files);
-  fprintf (f, "(define gsch2pcb:use-m4 %s)\n", use_m4 == TRUE ? "#t" : "#f");
-
-  fclose (f);
-  if (verbose) {
-    printf ("Default m4-pcbdir: %s\n", default_m4_pcbdir);
-    printf ("--------\ngnet-gsch2pcb-tmp.scm override file:\n");
-    if (m4_pcbdir)
-      printf ("    (define gsch2pcb:pcb-m4-dir \"%s\")\n", m4_pcbdir);
-    if (m4_files)
-      printf ("    (define gsch2pcb:m4-files \"%s\")\n", m4_files);
-    printf ("    (define gsch2pcb:use-m4 %s)\n", use_m4 == TRUE ? "#t" : "#f");
-  }
-}
 
 /**
  * Build and run a command. No redirection or error handling is
@@ -261,12 +228,6 @@ run_gnetlist (gchar * pins_file, gchar * net_file, gchar * pcb_file,
 			      extra_gnetlist_arg_list,
 			      largs))
     return FALSE;
-  create_m4_override_file ();
-
-  if (m4_override_file) {
-    args1 = g_list_append (args1, "-m");
-    args1 = g_list_append (args1, m4_override_file);
-  }
 
   mtime = (stat (pcb_file, &st) == 0) ? st.st_mtime : 0;
 
@@ -282,16 +243,10 @@ run_gnetlist (gchar * pins_file, gchar * net_file, gchar * pcb_file,
                    "gsch2pcb: gnetlist command failed, `%s' not updated\n",
                    pcb_file
                    );
-          if (m4_override_file)
-              fprintf (stderr,
-                       "    At least gnetlist 20030901 is required for m4-xxx options.\n");
           return FALSE;
       }
       return FALSE;
   }
-
-  if (m4_override_file)
-    unlink (m4_override_file);
 
   for (list = extra_gnetlist_list; list; list = g_list_next (list)) {
     const gchar *s = (gchar *) list->data;
@@ -531,8 +486,6 @@ pcb_element_exists (PcbElement * el_test, gboolean record)
  * element creator was concerned with a sane initial element
  * placement.  Unless someone has a better idea?  Don't bother with
  * pre PCB 1.7 formats as that would require parsing the mark().
- * Current m4 elements use the old format but they seem to have a
- * reasonable initial mark().
  */
 static void
 simple_translate (PcbElement * el)
@@ -826,7 +779,7 @@ add_elements (gchar * pcb_file)
   PcbElement *el = NULL;
   gchar *command, *p, *tmp_file, *s, buf[1024];
   gint total, paren_level = 0;
-  gboolean is_m4, skipping = FALSE;
+  gboolean skipping = FALSE;
 
   if ((f_in = fopen (pcb_file, "r")) == NULL)
     return 0;
@@ -845,13 +798,8 @@ add_elements (gchar * pcb_file)
         skipping = FALSE;
       continue;
     }
-    is_m4 = FALSE;
-    if ((el = pcb_element_line_parse (s)) != NULL)
-      is_m4 = TRUE;
-    else
-      el = pkg_to_element (f_out, s);
+    el = pkg_to_element (f_out, s);
     if (el && pcb_element_exists (el, TRUE)) {
-      skipping = is_m4;
       pcb_element_free (el);
       continue;
     }
@@ -862,27 +810,24 @@ add_elements (gchar * pcb_file)
         fputs (buf, f_out);
       continue;
     }
-    if (!is_m4 || (is_m4 && force_element_files)) {
-      if (verbose && !is_m4)
+
+/* TODO */
+    {
+      if (verbose)
         printf ("%s: need new file element for footprint  %s (value=%s)\n",
                 el->refdes, el->description, el->value);
-      if (verbose && is_m4 && force_element_files)
-        printf
-          ("%s: have m4 element %s, but trying to replace with a file element.\n",
-           el->refdes, el->description);
+
       p = search_element_directories (el);
-      if (!p && verbose && is_m4 && force_element_files)
+      if (!p && verbose)
         printf ("\tNo file element found.\n");
 
       if (p && insert_element (f_out, p,
                                el->description, el->refdes, el->value)) {
-        skipping = is_m4;
-        is_m4 = FALSE;
         ++n_added_ef;
         if (verbose)
           printf ("%s: added new file element for footprint %s (value=%s)\n",
                   el->refdes, el->description, el->value);
-      } else if (!is_m4) {
+      } else {
         fprintf (stderr,
                  "%s: can't find PCB element for footprint %s (value=%s)\n",
                  el->refdes, el->description, el->value);
@@ -897,13 +842,7 @@ add_elements (gchar * pcb_file)
       }
       g_free (p);
     }
-    if (is_m4) {
-      fputs (buf, f_out);
-      ++n_added_m4;
-      if (verbose)
-        printf ("%s: added new m4 element for footprint   %s (value=%s)\n",
-                el->refdes, el->description, el->value);
-    }
+
     pcb_element_free (el);
     if (verbose)
       printf ("----\n");
@@ -911,7 +850,7 @@ add_elements (gchar * pcb_file)
   fclose (f_in);
   fclose (f_out);
 
-  total = n_added_ef + n_added_m4 + n_not_found;
+  total = n_added_ef + n_not_found;
   if (total == 0)
     build_and_run_command ("rm %s", tmp_file);
   else
@@ -1058,20 +997,6 @@ prune_elements (gchar * pcb_file, gchar * bak)
   g_free (tmp);
 }
 
-static void
-add_m4_file (gchar * arg)
-{
-  gchar *s;
-
-  if (!m4_files)
-    m4_files = g_strdup (arg);
-  else {
-    s = m4_files;
-    m4_files = g_strconcat (m4_files, " ", arg, NULL);
-    g_free (s);
-  }
-}
-
 static gchar *
 expand_dir (gchar * dir)
 {
@@ -1082,22 +1007,6 @@ expand_dir (gchar * dir)
   else
     s = g_strdup (dir);
   return s;
-}
-
-static void
-add_default_m4_files (void)
-{
-  gchar *path;
-
-  path = g_build_filename ((gchar *) g_get_home_dir (),
-                           ".pcb", DEFAULT_PCB_INC, NULL);
-  if (g_file_test (path, G_FILE_TEST_IS_REGULAR))
-    add_m4_file (path);
-  g_free (path);
-
-  if (g_file_test (DEFAULT_PCB_INC, G_FILE_TEST_IS_REGULAR))
-    add_m4_file (DEFAULT_PCB_INC);
-
 }
 
 static void
@@ -1165,14 +1074,6 @@ parse_config (gchar * config, gchar * arg)
     preserve = TRUE;
     return 0;
   }
-  if (!strcmp (config, "use-files") || !strcmp (config, "f")) {
-    force_element_files = TRUE;
-    return 0;
-  }
-  if (!strcmp (config, "skip-m4") || !strcmp (config, "s")) {
-    use_m4 = FALSE;
-    return 0;
-  }
   if (!strcmp (config, "elements-dir") || !strcmp (config, "d")) {
     if (verbose > 1)
       printf ("\tAdding directory to file element directory list: %s\n",
@@ -1183,11 +1084,6 @@ parse_config (gchar * config, gchar * arg)
     sch_basename = g_strdup (arg);
   else if (!strcmp (config, "schematics"))
     add_multiple_schematics (arg);
-  else if (!strcmp (config, "m4-pcbdir")) {
-    g_free (m4_pcbdir);
-    m4_pcbdir = g_strdup (arg);
-  } else if (!strcmp (config, "m4-file"))
-    add_m4_file (arg);
   else if (!strcmp (config, "gnetlist"))
     extra_gnetlist_list = g_list_append (extra_gnetlist_list, g_strdup (arg));
   else if (!strcmp (config, "empty-footprint"))
@@ -1246,10 +1142,11 @@ static gchar *usage_string0 =
   "Generate a PCB layout file from a set of gschem schematics.\n"
   "   gnetlist -g PCB is run to generate foo.net from the schematics.\n"
   "\n"
-  "   gnetlist -g gsch2pcb is run to get PCB m4 derived elements which\n"
+/* TODO */
+/*  "   gnetlist -g gsch2pcb is run to get PCB elements which\n"
   "   match schematic footprints.  For schematic footprints which don't match\n"
-  "   any PCB m4 layout elements, search a set of file element directories in\n"
-  "   an attempt to find matching PCB file elements.\n"
+  "   any PCB layout elements, search a set of file element directories in\n"
+  "   an attempt to find matching PCB file elements.\n"*/
   "   Output to foo.pcb if it doesn't exist.  If there is a current foo.pcb,\n"
   "   output only new elements to foo.new.pcb.\n"
   "   If any elements with a non-empty element name in the current foo.pcb\n"
@@ -1274,9 +1171,6 @@ static gchar *usage_string0 =
   "   -o, --output-name N   Use output file names N.net, N.pcb, and N.new.pcb\n"
   "                         instead of foo.net, ... where foo is the basename\n"
   "                         of the first command line .sch file.\n"
-  "   -f, --use-files       Force using file elements over m4 PCB elements\n"
-  "                         for new footprints even though m4 elements are\n"
-  "                         searched for first and may have been found.\n"
   "   -r, --remove-unfound  Don't include references to unfound elements in\n"
   "                         the generated .pcb files.  Use if you want PCB to\n"
   "                         be able to load the (incomplete) .pcb file.\n"
@@ -1290,13 +1184,7 @@ static gchar *usage_string0 =
   "                         element name (schematic refdes) are never deleted,\n"
   "                         so you really shouldn't need this option.\n"
   "   -q, --quiet           Don't tell the user what to do next after running gsch2pcb.\n"
-  "\n"
-  "   -s, --skip-m4         Skip m4 when looking for footprints.  The default is to use\n"
-  "                         m4 (which is what previous versions did).\n"
-  "       --m4-file F.inc   Use m4 file F.inc in addition to the default m4\n"
-  "                         files ./pcb.inc and ~/.pcb/pcb.inc.\n"
-  "       --m4-pcbdir D     Use D as the PCB m4 files install directory\n"
-  "                         instead of the default:\n";
+  "\n";
 
 static gchar *usage_string1 =
   "   --gnetlist backend    A convenience run of extra gnetlist -g commands.\n"
@@ -1327,7 +1215,6 @@ static void
 usage ()
 {
   puts (usage_string0);
-  printf ("                         %s\n\n", default_m4_pcbdir);
   puts (usage_string1);
   exit (0);
 }
@@ -1389,26 +1276,6 @@ main (gint argc, gchar ** argv)
   gboolean initial_pcb = TRUE;
   gboolean created_pcb_file = TRUE;
   char *path, *p;
-  const char *pcbdata_path;
-  const char *configure_m4_pcbdir = PCBM4DIR; /* do not free it */
-
-  pcbdata_path = g_getenv ("PCBDATA");  /* do not free return value */
-  if (pcbdata_path != NULL) {
-    /* If PCBDATA is set, use the value */
-    m4_pcbdir = g_strconcat (pcbdata_path, "/m4", NULL);
-  } else if (configure_m4_pcbdir != NULL) {
-    /* Use the default value passed in from the configure script
-     * instead of trying to hard code a value which is very
-     * likely wrong
-     */
-    m4_pcbdir = g_strdup (configure_m4_pcbdir);
-  } else {
-    /* Neither PCBDATA was set nor PCBM4DIR has been configured */
-    /* Fall back to using the "m4" subdirectory in the current directory */
-    m4_pcbdir = g_strdup ("./m4");
-  }
-
-  default_m4_pcbdir = g_strdup (m4_pcbdir);
 
   if (argc < 2)
     usage ();
@@ -1416,7 +1283,6 @@ main (gint argc, gchar ** argv)
   get_args (argc, argv);
 
   load_extra_project_files ();
-  add_default_m4_files ();
 
   if (!schematics)
     usage ();
@@ -1489,9 +1355,9 @@ main (gint argc, gchar ** argv)
   if (pcb_element_list && n_deleted > 0)
     printf ("%d elements deleted from %s.\n", n_deleted, pcb_file_name);
 
-  if (n_added_ef + n_added_m4 > 0)
-    printf ("%d file elements and %d m4 elements added to %s.\n",
-            n_added_ef, n_added_m4, pcb_new_file_name);
+  if (n_added_ef > 0)
+    printf ("%d file elements added to %s.\n",
+            n_added_ef, pcb_new_file_name);
   else if (n_not_found == 0) {
     printf ("No elements to add so not creating %s\n", pcb_new_file_name);
     created_pcb_file = FALSE;
@@ -1537,7 +1403,7 @@ main (gint argc, gchar ** argv)
   if (verbose)
     printf ("\n");
 
-  if (n_added_ef + n_added_m4 > 0) {
+  if (n_added_ef > 0) {
     if (initial_pcb) {
       printf ("\nNext step:\n");
       printf ("1.  Run pcb on your file %s.\n", pcb_file_name);
