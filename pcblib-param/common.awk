@@ -19,9 +19,9 @@ function either(a, b)
 function element_begin(desc, name, value, cent_x, cent_y, text_x, text_y, text_dir, text_scale)
 {
 	print "Element[" q q, q desc q, q name q, q value q, 
-	either(cent_x, 0), either(cent_y, 0),
-	either(text_x, 0), either(text_y, 0),
-	either(text_dir, 0), either(text_scale, 100), q q "]"
+	int(either(cent_x, 0)), int(either(cent_y, 0)),
+	int(either(text_x, 0)), int(either(text_y, 0)),
+	int(either(text_dir, 0)), int(either(text_scale, 100)), q q "]"
 	print "("
 }
 
@@ -46,15 +46,15 @@ function element_pin(x, y,   ringdia, clearance, mask, drill, name, number, flag
 			flags = ""
 	}
 
-	print "	Pin[" x, y,
-		either(ringdia, pin_ringdia), either(clearance, pin_clearance), either(mask, pin_mask),
-		either(drill, pin_drill), q name q, q number q, q flags q "]"
+	print "	Pin[" int(x), int(y),
+		int(either(ringdia, pin_ringdia)), int(either(clearance, pin_clearance)), int(either(mask, pin_mask)),
+		int(either(drill, pin_drill)), q name q, q number q, q flags q "]"
 }
 
 # draw a line on silk; thickness is optional (default: line_thickness)
 function element_line(x1, y1, x2, y2,   thickness)
 {
-	print "	ElementLine[" x1, y1, x2, y2, either(thickness, line_thickness) "]"
+	print "	ElementLine[" int(x1), int(y1), int(x2), int(y2), int(either(thickness, line_thickness)) "]"
 }
 
 # draw a rectangle of silk lines 
