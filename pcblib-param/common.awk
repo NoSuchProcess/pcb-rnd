@@ -75,7 +75,7 @@ function mil(coord)
 # convert coord given in mm to footprint units
 function mm(coord)
 {
-	return coord/25.4*10000
+	return coord*3937
 }
 
 
