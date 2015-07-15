@@ -49,7 +49,7 @@ typedef struct
   gchar *pkg_name_fix;
   gchar res_char;
 
-  gboolean still_exists, new_format, hi_res_format, quoted_flags, omit_PKG;
+  gboolean still_exists, new_format, hi_res_format, quoted_flags, omit_PKG, nonetlist;
 }
 PcbElement;
 
@@ -391,8 +391,12 @@ pcb_element_line_parse (gchar * line)
     } else
       state = 0;
   }
-  if (elcount > 4)
+  el->nonetlist = 0;
+  if (elcount > 4) {
     el->new_format = TRUE;
+    if (strstr(el->tail, "nonetlist") != NULL)
+      el->nonetlist = 1;
+  }
 
   fix_spaces (el->description);
   fix_spaces (el->refdes);
@@ -846,11 +850,12 @@ prune_elements (gchar * pcb_file, gchar * bak)
   for (list = pcb_element_list; list; list = g_list_next (list)) {
     el = (PcbElement *) list->data;
     if (!el->still_exists) {
-      if (preserve) {
+      if ((preserve) || (el->nonetlist)) {
         ++n_preserved;
-        fprintf (stderr,
-                 "Preserving PCB element not in the schematic:    %s (element   %s)\n",
-                 el->refdes, el->description);
+        if (verbose > 1)
+          fprintf (stderr,
+                 "Preserving PCB element not in the schematic:    %s (element   %s) %s\n",
+                 el->refdes, el->description, el->nonetlist ? "nonetlist" : "");
       } else
         ++n_deleted;
     } else if (el->changed_value)
@@ -879,7 +884,7 @@ prune_elements (gchar * pcb_file, gchar * bak)
     el_exists = NULL;
     if ((el = pcb_element_line_parse (s)) != NULL
         && (el_exists = pcb_element_exists (el, FALSE)) != NULL
-        && !el_exists->still_exists && !preserve) {
+        && !el_exists->still_exists && !preserve && !el->nonetlist) {
       skipping = TRUE;
       if (verbose)
         printf ("%s: deleted element %s (value=%s)\n",
