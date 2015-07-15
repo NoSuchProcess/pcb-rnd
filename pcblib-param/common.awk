@@ -72,6 +72,12 @@ function mil(coord)
 	return coord * 100
 }
 
+# convert coord given in mm to footprint units
+function mm(coord)
+{
+	return coord/25.4*10000
+}
+
 
 # Process a generator argument list from arg_names. Save the result in
 # array OUT. If mandatory is specified, check whether all mandatory
