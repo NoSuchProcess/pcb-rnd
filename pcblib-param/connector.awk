@@ -13,7 +13,7 @@ BEGIN {
 
 	half=step/2
 
-	element_begin(spacing " mil connector", "CONN1", P["nx"] "*" P["ny"]    ,0,0, 0,mil(-100))
+	element_begin(spacing " mil connector", "CONN1", P["nx"] "*" P["ny"]    ,0,0, 0, -step)
 
 	for(x = 0; x < P["nx"]; x++)
 		for(y = 0; y < P["ny"]; y++)
