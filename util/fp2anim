@@ -5,7 +5,6 @@ awk '
 BEGIN {
 	photo=1
 
-	print "macro fp"
 	q="\""
 
 	clr_board = "darkgreen"
@@ -14,6 +13,9 @@ BEGIN {
 	clr_annotation = "red"
 	clr_silk = "white"
 	clr_solderstop = "green"
+	clr_grid = "blue"
+
+	marg=100000
 }
 
 
@@ -39,7 +41,6 @@ function rline(x1, y1, x2, y2, width    ,nx,ny, len)
 	len=sqrt(nx*nx+ny*ny)
 	nx /= len
 	ny /= len
-
 
 	print "poly", x1+nx*width/2, y1+ny*width/2, x2+nx*width/2, y2+ny*width/2, x2-nx*width/2, y2-ny*width/2, x1-nx*width/2, y1-ny*width/2
 	print "fillcircle", x1, y1, width/2, width/10
@@ -82,16 +83,27 @@ function flash(x, y, dia, square, roundr)
 
 function hole(x, y, ring, clr, mask, drill, name, square)
 {
+	print "macro push mask"
 	if (photo) {
 		print "color", clr_board
 		flash(x, y, (ring+clr), square, (ring+clr)/10)
 	}
+	print "endmacro"
+
+	print "macro push copper"
 	print "color", clr_plated
 	flash(x, y, ring, square)
+	print "endmacro"
+
+	print "macro push hole"
 	print "color", clr_hole
-	flash(x, y, drill, square)
+	flash(x, y, drill, 0)
+	print "endmacro"
+
+	print "macro push annotation"
 	print "color", clr_annotation
 	print "text", x, y, name
+	print "endmacro"
 
 	edges(x-(ring+clr)/2, y-(ring+clr)/2)
 	edges(x+(ring+clr)/2, y+(ring+clr)/2)
@@ -103,8 +115,12 @@ function hole(x, y, ring, clr, mask, drill, name, square)
 /ElementLine[[]/ {
 	sub(".*ElementLine[[]", "", $0)
 	sub("]$", "", $0)
+
+	print "macro push silk"
 	print "color", clr_silk
 	rline($1, $2, $3, $4, $5)
+	print "endmacro"
+
 	next
 }
 
@@ -118,7 +134,6 @@ function hole(x, y, ring, clr, mask, drill, name, square)
 END {
 
 
-	print "endmacro"
 	print "frame"
 
 	sx = xmax-xmin
@@ -130,7 +145,25 @@ END {
 	if (photo)
 		print "bg", clr_solderstop
 	print "scale 0.7"
-	print "invoke fp"
+
+	print "dash 0xaaaa"
+	print "color", clr_grid
+	for(x = 0-marg; x < size+marg; x+=10000) {
+		print "line", x, ymin-marg, x, ymin+size+marg
+		print "line", xmin-marg, x, xmin+size+marg, x
+		print "text center center", x, ymin+size+marg/20, q x/100 "\\nmil" q
+		print "text center center", xmin+size+marg/20, x, q x/100 "\\nmil" q
+	}
+
+	print "dash 0xffff"
+
+
+
+	print "invoke mask"
+	print "invoke copper"
+	print "invoke hole"
+	print "invoke silk"
+	print "invoke annotation"
 	print "flush"
 	print "screenshot \"fp.png\""
 }
