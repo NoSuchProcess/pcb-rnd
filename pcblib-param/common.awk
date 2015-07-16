@@ -15,6 +15,14 @@ function either(a, b)
 	return a != "" ? a : b
 }
 
+# strip leading/trailing whitespaces
+function strip(s)
+{
+	sub("^[ \t\r\n]*", "", s)
+	sub("[ \t\r\n]*$", "", s)
+	return s
+}
+
 # generate an element header line; any argument may be empty
 function element_begin(desc, name, value, cent_x, cent_y, text_x, text_y, text_dir, text_scale)
 {
@@ -95,14 +103,15 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 	for(n = 1; n <= v; n++) {
 		if (A[n] ~ "=") {
 #			named
-			key=A[n]
-			val=A[n]
+			key=strip(A[n])
+			val=strip(A[n])
 			sub("=.*", "", key)
 			sub("^[^=]*=", "", val)
 			OUT[key] = val
 		}
 		else {
 #			positional
+			A[n] = strip(A[n])
 			if (N[pos] == "") {
 				print "Error: too many positional arguments at " A[n] > "/dev/stderr"
 				exit 1
