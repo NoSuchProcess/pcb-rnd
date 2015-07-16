@@ -3,17 +3,29 @@
 awk '
 
 BEGIN {
-	photo=1
+	photo=0
+	grid_unit = "mil"
 
 	q="\""
 
-	clr_board = "darkgreen"
-	clr_plated = "gray"
-	clr_hole = "black"
-	clr_annotation = "red"
-	clr_silk = "white"
-	clr_solderstop = "green"
-	clr_grid = "blue"
+	if (photo) {
+		clr_board = "darkgreen"
+		clr_plated = "gray"
+		clr_hole = "black"
+		clr_annotation = "red"
+		clr_silk = "white"
+		clr_solderstop = "green"
+		clr_grid = "blue"
+	}
+	else {
+		clr_board = "darkgreen"
+		clr_plated = "#777777"
+		clr_hole = "white"
+		clr_annotation = "red"
+		clr_silk = "black"
+		clr_solderstop = "white"
+		clr_grid = "blue"
+	}
 
 	marg=100000
 }
@@ -83,12 +95,12 @@ function flash(x, y, dia, square, roundr)
 
 function hole(x, y, ring, clr, mask, drill, name, square)
 {
-	print "macro push mask"
 	if (photo) {
+		print "macro push mask"
 		print "color", clr_board
 		flash(x, y, (ring+clr), square, (ring+clr)/10)
+		print "endmacro"
 	}
-	print "endmacro"
 
 	print "macro push copper"
 	print "color", clr_plated
@@ -142,24 +154,35 @@ END {
 	size = sx > sy ? sx : sy
 
 	print "viewport", xmin, ymin, "-", xmin+size, ymin+size
-	if (photo)
-		print "bg", clr_solderstop
+	print "bg", clr_solderstop
 	print "scale 0.7"
 
 	print "dash 0xaaaa"
 	print "color", clr_grid
-	for(x = 0-marg; x < size+marg; x+=10000) {
+
+	if (grid_unit == "mil") {
+		gstep = 10000
+		gmul = 1/100
+	}
+	else {
+		gstep = 3937
+		gmul = 1/3937
+	}
+
+	while ((size/gstep) > 10)
+		gstep=gstep*2
+
+	for(x = 0 - int(marg/gstep)*gstep; x < size+marg; x+=gstep) {
 		print "line", x, ymin-marg, x, ymin+size+marg
 		print "line", xmin-marg, x, xmin+size+marg, x
-		print "text center center", x, ymin+size+marg/20, q x/100 "\\nmil" q
-		print "text center center", xmin+size+marg/20, x, q x/100 "\\nmil" q
+		print "text", x, ymin+size+1000, q x*gmul "\\n" grid_unit q
+		print "text", xmin+size+1000, x, q x*gmul "\\n" grid_unit q
 	}
 
 	print "dash 0xffff"
 
-
-
-	print "invoke mask"
+	if (photo)
+		print "invoke mask"
 	print "invoke copper"
 	print "invoke hole"
 	print "invoke silk"
