@@ -151,27 +151,32 @@ echo "	<li><input type=\"checkbox\" name=\"mm\" value=\"1\" `checked $QS_mm`> dr
 echo "	<li><input type=\"checkbox\" name=\"photo\" value=\"1\" `checked $QS_photo`> draw in \"photo mode\""
 echo "</ul>"
 echo "<p>"
-echo "<input type=\"submit\">"
+echo "<input type=\"submit\" value=\"Generate my footprint!\">"
 echo "</form>"
 
-echo "<p>"
+
 
 QS_format=${QS_cmd##*_}
 QS_cmd_=${QS_cmd%%_*}
 
 if test ! -z "$QS_cmd"
 then
+echo "<h2> Result </h2>"
 	echo "<h3> $QS_cmd </H3>"
 
+	echo "<table border=0>"
+	echo "<tr><td valign=top>"
 	echo "<img src=\"$CGI?$QUERY_STRING&output=png\">"
 
+	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
-	echo "<h4> footprint </h4>"
+	echo "<td valign=top>"
 	echo "<pre>"
 	gen
 	echo "</pre>"
-	echo "Download: <a href=\"$CGI?$QUERY_STRING&output=text\">footprint file</a>"
-
+	echo "<p>Downloads:"
+	echo "<br> <a href=\"$CGI?$QUERY_STRING&output=text\">footprint file</a>"
+	echo "</table>"
 fi
 
 
