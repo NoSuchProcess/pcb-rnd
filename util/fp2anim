@@ -1,11 +1,23 @@
 #!/bin/sh
 
-awk '
+photo=0
+grid_unit="mil"
+
+while test $# -gt 0
+do
+	case $1 in
+		--photo|p) photo=1;;
+		--grid-unit|--grid_unit|g) grid_unit=$2;;
+		--mm) grid_unit="mm";;
+	esac
+	shift 1
+done
+
+
+
+awk -v "photo=$photo" -v "grid_unit=$grid_unit" '
 
 BEGIN {
-	photo=0
-	grid_unit = "mil"
-
 	q="\""
 
 	if (photo) {
