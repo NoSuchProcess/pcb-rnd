@@ -4,12 +4,97 @@ ulimit -t 5
 ulimit -v 80000
 
 CGI=/cgi-bin/pcblib-param.cgi
+gendir=/home/igor2/C/pcb-rnd/pcblib-param/
 
 gen()
 {
-	cd /home/igor2/C/pcb-rnd/pcblib-param/
+	cd $gendir
 	params=`echo $QS_cmd | sed "s/.*[(]//;s/[)]//" `
 	./connector "$params"
+}
+
+help()
+{
+	echo "
+<html>
+<body>
+<h1> pcblib-param help for $QS_cmd() </h1>
+"
+awk  -v "CGI=$CGI" '
+BEGIN {
+	prm=0
+	q="\""
+}
+(match($0, "@@desc") || match($0, "@@params") || match($0, "@@purpose") || match($0, "@@example")) {
+	txt=$0
+	key=substr($0, RSTART, RLENGTH)
+	sub(".*" key "[ \t]*", "", txt)
+	HELP[key] = HELP[key] " " txt
+	next
+}
+
+/@@param:/ {
+	sub(".*@@param:", "", $0)
+	p=$1
+	sub(p "[\t ]*", "", $0)
+	PARAM[prm] = "<tr><td>" p "<td>" $0
+	prm++
+}
+
+END {
+	print "<b>" HELP["@@purpose"] "</b>"
+	print "<p>"
+	print HELP["@@desc"]
+	print "<p>Parameters: " HELP["@@params"]
+	print "<p>"
+	print "<table border=1 cellspacing=0 cellpadding=10>"
+	for(p = 0; p < prm; p++)
+		print "<br>" PARAM[p]
+	print "</table>"
+	print "<p>Example: "
+	print "<a href=" q CGI "?cmd=" HELP["@@example"] q ">"
+	print HELP["@@example"]
+	print "</a>"
+	print "</body></html>"
+}
+
+' < $gendir/$gen
+}
+
+error()
+{
+	echo "Content-type: text/plain"
+	echo ""
+	echo "Error: $*"
+	exit 0
+}
+
+list_gens()
+{
+	awk -v "CGI=$CGI" '
+		BEGIN {
+			q="\""
+		}
+		/@@purpose/ {
+			sub(".*@@purpose", "", $0)
+			PURPOSE[FILENAME] = PURPOSE[FILENAME] $0
+			next
+		}
+		/@@example/ {
+			sub(".*@@example", "", $0)
+			EXAMPLE[FILENAME] = EXAMPLE[FILENAME] $0
+			next
+		}
+		
+		END {
+			for(fn in PURPOSE) {
+				gn=fn
+				sub(".*/", "", gn)
+				print "<li> <a href=" q CGI "?cmd=" EXAMPLE[fn] q ">" gn "() </a> - " PURPOSE[fn]
+				print "- <a href=" q CGI "?cmd=" gn "&output=help"  q "> HELP </a>"
+			}
+		}
+	' $gendir/*
 }
 
 radio()
@@ -48,6 +133,31 @@ export QS_cmd=`echo "$QS_cmd" | /home/igor2/C/libporty/trunk/src/porty/c99tree/u
 if test -z "$QS_cmd"
 then
 	export QS_cmd='connector(2,3)'
+else
+	gen=`awk -v "n=$QS_cmd" '
+	BEGIN {
+		sub("[(].*", "", n)
+		sub("[^a-zA-Z0-9_]", "", n)
+		print n
+	}
+	'`
+	
+	case "$gen" in
+	*/|*/*) error "Invalid generator \"$gen\" (name)" ;;
+	*)
+		if test -z `grep "@@purpose" $gendir/$gen`
+		then
+			error "Invalid generator \"$gen\" (file)"
+		fi
+	esac
+fi
+
+if test "$QS_output" = "help"
+then
+	echo "Content-type: text/html"
+	echo ""
+	help
+	exit
 fi
 
 if test "$QS_output" = "text"
@@ -133,10 +243,10 @@ calls will output the same 2*3 pin, 100 mil footprint:
 <td valign=top bgcolor="#eefeee">
 <h3>Generators available</h3>
 <ul>
-	<li> connector()
+'
+list_gens
+echo '
 </ul>
-<P>
-TODO
 </table>
 '
 
