@@ -1,0 +1,138 @@
+#!/bin/sh
+
+awk '
+
+BEGIN {
+	photo=1
+
+	print "macro fp"
+	q="\""
+
+	clr_board = "darkgreen"
+	clr_plated = "gray"
+	clr_hole = "black"
+	clr_annotation = "red"
+	clr_silk = "white"
+	clr_solderstop = "green"
+}
+
+
+function edges(x, y)
+{
+	if ((xmin == "") || (x < xmin))
+		xmin = x
+	if ((ymin == "") || (y < ymin))
+		ymin = y
+	if ((xmax == "") || (x > xmax))
+		xmax = x
+	if ((ymax == "") || (y > ymax))
+		ymax = y
+}
+
+# draw a line with rounded ends
+function rline(x1, y1, x2, y2, width    ,nx,ny, len)
+{
+
+	nx = y2-y1
+	ny = -(x2-x1)
+
+	len=sqrt(nx*nx+ny*ny)
+	nx /= len
+	ny /= len
+
+
+	print "poly", x1+nx*width/2, y1+ny*width/2, x2+nx*width/2, y2+ny*width/2, x2-nx*width/2, y2-ny*width/2, x1-nx*width/2, y1-ny*width/2
+	print "fillcircle", x1, y1, width/2, width/10
+	print "fillcircle", x2, y2, width/2, width/10
+	edges(x1, y1)
+	edges(x2, y2)
+}
+
+function rsquare(x1, y1, x2, y2, r   ,tmp)
+{
+	if (x1 < x2) {
+		tmp=x1
+		x1 = x2
+		x2 = tmp
+	}
+	if (y1 < y2) {
+		tmp=y1
+		y1 = y2
+		y2 = tmp
+	}
+
+	print "poly", x1, y1-r,x1-r, y1,  x2+r,y1, x2, y1-r,    x2, y2+r,   x2+r,y2,     x1-r, y2,  x1, y2+r
+	print "fillcircle", x1-r, y1-r, r, r/10
+	print "fillcircle", x2+r, y2+r, r, r/10
+	print "fillcircle", x2+r, y1-r, r, r/10
+	print "fillcircle", x1-r, y2+r, r, r/10
+}
+
+function flash(x, y, dia, square, roundr)
+{
+	if (square) {
+		if (roundr != "")
+			rsquare(x-dia/2, y-dia/2, x+dia/2, y+dia/2, roundr)
+		else
+			print "fillrect", x-dia/2, y-dia/2, dia, dia
+	}
+	else
+		print "fillcircle", x, y, dia/2, dia/10
+}
+
+function hole(x, y, ring, clr, mask, drill, name, square)
+{
+	if (photo) {
+		print "color", clr_board
+		flash(x, y, (ring+clr), square, (ring+clr)/10)
+	}
+	print "color", clr_plated
+	flash(x, y, ring, square)
+	print "color", clr_hole
+	flash(x, y, drill, square)
+	print "color", clr_annotation
+	print "text", x, y, name
+
+	edges(x-(ring+clr)/2, y-(ring+clr)/2)
+	edges(x+(ring+clr)/2, y+(ring+clr)/2)
+}
+
+
+/^[ \t]*#/ { next }
+
+/ElementLine[[]/ {
+	sub(".*ElementLine[[]", "", $0)
+	sub("]$", "", $0)
+	print "color", clr_silk
+	rline($1, $2, $3, $4, $5)
+	next
+}
+
+#	Pin[0 0 8000 5000 8600 3937 "" "1" "square"]
+/Pin[[]/ {
+	sub(".*Pin[[]", "", $0)
+	sub("]$", "", $0)
+	hole($1, $2, $3, $4, $5, $6, $8, ($9 ~ "square"))
+}
+
+END {
+
+
+	print "endmacro"
+	print "frame"
+
+	sx = xmax-xmin
+	sy = ymax-ymin
+
+	size = sx > sy ? sx : sy
+
+	print "viewport", xmin, ymin, "-", xmin+size, ymin+size
+	if (photo)
+		print "bg", clr_solderstop
+	print "scale 0.7"
+	print "invoke fp"
+	print "flush"
+	print "screenshot \"fp.png\""
+}
+
+'
