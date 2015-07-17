@@ -59,7 +59,7 @@ function edges(x, y)
 }
 
 # draw a line with rounded ends
-function rline(x1, y1, x2, y2, width    ,nx,ny, len)
+function rline(x1, y1, x2, y2, width    ,omit_ends    ,nx,ny, len)
 {
 
 	nx = y2-y1
@@ -70,10 +70,35 @@ function rline(x1, y1, x2, y2, width    ,nx,ny, len)
 	ny /= len
 
 	print "poly", x1+nx*width/2, y1+ny*width/2, x2+nx*width/2, y2+ny*width/2, x2-nx*width/2, y2-ny*width/2, x1-nx*width/2, y1-ny*width/2
-	print "fillcircle", x1, y1, width/2, width/10
-	print "fillcircle", x2, y2, width/2, width/10
+	if (!omit_ends) {
+		print "fillcircle", x1, y1, width/2, width/10
+		print "fillcircle", x2, y2, width/2, width/10
+	}
 	edges(x1, y1)
 	edges(x2, y2)
+}
+
+function deg2rad(d)
+{
+	return d/180*3.141592654
+}
+
+function rarc(cx, cy, rx, ry, a_start, a_delta, width   ,a1, a2)
+{
+	step = a_delta * 100 * 2 / (((rx > ry) ? rx : ry) + 1)
+	for(a1 = a_start; a1 < a_start + a_delta - step; a1 += step) {
+		a2 = a1+step
+		rline( cx + rx * cos(deg2rad(a1)), cy + ry * sin(deg2rad(a1)),
+		       cx + rx * cos(deg2rad(a2)), cy + ry * sin(deg2rad(a2)),
+		       width, 0)
+	}
+
+	a1 = a2;
+	a2 = a_start+a_delta
+	rline( cx + rx * cos(deg2rad(a1)), cy + ry * sin(deg2rad(a1)),
+	       cx + rx * cos(deg2rad(a2)), cy + ry * sin(deg2rad(a2)),
+	       width, 0)
+
 }
 
 function rsquare(x1, y1, x2, y2, r   ,tmp)
@@ -146,6 +171,20 @@ function hole(x, y, ring, clr, mask, drill, name, square)
 	print "macro push silk"
 	print "color", clr_silk
 	rline($1, $2, $3, $4, $5)
+	print "endmacro"
+
+	next
+}
+
+
+
+/ElementArc[[]/ {
+	sub(".*ElementArc[[]", "", $0)
+	sub("]$", "", $0)
+
+	print "macro push silk"
+	print "color", clr_silk
+	rarc($1, $2,  $3, $4,  $5, $6,  $7)
 	print "endmacro"
 
 	next
