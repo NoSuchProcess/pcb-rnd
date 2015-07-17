@@ -8,7 +8,7 @@
 #@@desc evenly spaced pins, a plain frame and some optional pin marks
 #@@desc on the silk layer.
 
-#@@params nx, ny, spacing, silkmark
+#@@params nx, ny, spacing, silkmark, eshift, etrunc
 
 #@@param:nx number of pins in the X direction (mandatory, no default)
 #@@param:ny number of pins in the Y direction (mandatory, no default)
