@@ -105,6 +105,13 @@ function element_rectangle(x1, y1, x2, y2,    omit,   thickness)
 		element_line(x2, y2, x2, y1, thickness)
 }
 
+# draw a line on silk; thickness is optional (default: line_thickness)
+function element_arc(cx, cy, rx, ry, a_start, a_delta,   thickness)
+{
+	print "	ElementArc[" int(cx), int(cy), int(rx), int(ry), int(a_start), int(a_delta), int(either(thickness, DEFAULT["line_thickness"])) "]"
+}
+
+
 # convert coord given in mils to footprint units
 function mil(coord)
 {
