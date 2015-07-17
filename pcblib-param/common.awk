@@ -159,8 +159,8 @@ function set_arg(OUT, key, value     ,strength)
 # Both arg_names and mandatory are comma separated list of argument names
 function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 {
-	sub(" ", "", arg_names)
-	sub(" ", "", mandatory)
+	gsub(" ", "", arg_names)
+	gsub(" ", "", mandatory)
 	split(arg_names, N, ",")
 	v = split(args, A, ",")
 
