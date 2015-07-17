@@ -1,8 +1,9 @@
 BEGIN {
-	P["spacing"] = 100
-	P["silkmark"] = "square"
 
 	proc_args(P, "nx,ny,spacing,silkmark,eshift,etrunc", "nx,ny")
+
+	set_arg(P, "?spacing", 100)
+	set_arg(P, "?silkmark", "square")
 
 	step=P["spacing"]
 
