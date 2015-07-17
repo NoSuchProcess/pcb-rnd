@@ -1,3 +1,9 @@
+#@@param:pin_ringdia pin's copper ring (annulus) diameter (in mil by default, mm suffix can be used)
+#@@param:pin_clearance pin's copper clearance diameter (in mil by default, mm suffix can be used)
+#@@param:pin_mask copper pin's solder mask diameter (in mil by default, mm suffix can be used)
+#@@param:pin_drill copper pin's drill diameter (in mil by default, mm suffix can be used)
+#@@param:line_thickness silk line thickness (in mil by default, mm suffix can be used)
+
 BEGIN {
 	q="\""
 

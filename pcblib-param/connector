@@ -17,5 +17,7 @@
 #@@param:eshift shift even rows or columns by half spacing; values: x (shift columns), y (shift rows) (optional; default: don't shift)
 #@@param:etrunc truncate the last pin of a shifted row or column (optional boolean, defaults to false)
 
+#@@include common.awk
+
 awk -f `dirname $0`/common.awk -f `dirname $0`/connector.awk -v "args=$*"
 
