@@ -67,7 +67,7 @@ function element_end()
 }
 
 # generate a pin; arguments from ringdia are optional (defaults are in global vars pin_*)
-function element_pin(x, y,   ringdia, clearance, mask, drill, name, number, flags)
+function element_pin(x, y,  number,   ringdia, clearance, mask, drill, name, flags)
 {
 	if (number == "")
 		number = ++pin_number
@@ -93,12 +93,16 @@ function element_line(x1, y1, x2, y2,   thickness)
 }
 
 # draw a rectangle of silk lines 
-function element_rectangle(x1, y1, x2, y2,    thickness)
+function element_rectangle(x1, y1, x2, y2,    omit,   thickness)
 {
-	element_line(x1, y1, x1, y2, thickness)
-	element_line(x1, y1, x2, y1, thickness)
-	element_line(x2, y2, x1, y2, thickness)
-	element_line(x2, y2, x2, y1, thickness)
+	if (!(omit ~ "left"))
+		element_line(x1, y1, x1, y2, thickness)
+	if (!(omit ~ "top"))
+		element_line(x1, y1, x2, y1, thickness)
+	if (!(omit ~ "right"))
+		element_line(x2, y2, x1, y2, thickness)
+	if (!(omit ~ "bottom"))
+		element_line(x2, y2, x2, y1, thickness)
 }
 
 # convert coord given in mils to footprint units
