@@ -1,12 +1,12 @@
 BEGIN {
 	q="\""
 
-	pin_ringdia = 8000
-	pin_clearance = 5000
-	pin_mask = 8600
-	pin_drill = 3937
-	pin_flags = "__auto"
-	line_thickness = 1500
+	DEFAULT["pin_ringdia"] = 8000
+	DEFAULT["pin_clearance"] = 5000
+	DEFAULT["pin_mask"] = 8600
+	DEFAULT["pin_drill"] = 3937
+	DEFAULT["pin_flags"] = "__auto"
+	DEFAULT["line_thickness"] = 1500
 }
 
 # Throw an error and exit
@@ -52,7 +52,7 @@ function element_pin(x, y,   ringdia, clearance, mask, drill, name, number, flag
 	if (number == "")
 		number = ++pin_number
 
-	flags = either(flags, pin_flags)
+	flags = either(flags, DEFAULT["pin_flags"])
 
 	if (flags == "__auto") {
 		if (number == 1)
@@ -62,14 +62,14 @@ function element_pin(x, y,   ringdia, clearance, mask, drill, name, number, flag
 	}
 
 	print "	Pin[" int(x), int(y),
-		int(either(ringdia, pin_ringdia)), int(either(clearance, pin_clearance)), int(either(mask, pin_mask)),
-		int(either(drill, pin_drill)), q name q, q number q, q flags q "]"
+		int(either(ringdia, DEFAULT["pin_ringdia"])), int(either(clearance, DEFAULT["pin_clearance"])), int(either(mask, DEFAULT["pin_mask"])),
+		int(either(drill, DEFAULT["pin_drill"])), q name q, q number q, q flags q "]"
 }
 
 # draw a line on silk; thickness is optional (default: line_thickness)
 function element_line(x1, y1, x2, y2,   thickness)
 {
-	print "	ElementLine[" int(x1), int(y1), int(x2), int(y2), int(either(thickness, line_thickness)) "]"
+	print "	ElementLine[" int(x1), int(y1), int(x2), int(y2), int(either(thickness, DEFAULT["line_thickness"])) "]"
 }
 
 # draw a rectangle of silk lines 
