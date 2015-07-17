@@ -13,7 +13,7 @@
 #@@param:nx number of pins in the X direction (mandatory, no default)
 #@@param:ny number of pins in the Y direction (mandatory, no default)
 #@@param:spacing spacing between the pins (in mil, or in mm using the mm suffix; optional, default is 100 mil)
-#@@param:silkmark how to mark pin 1; values: square, external, angled (optional; default is square)
+#@@param:silkmark how to mark pin 1; values: square, external, angled, none (optional; default is square)
 
 awk -f `dirname $0`/common.awk -f `dirname $0`/connector.awk -v "args=$*"
 

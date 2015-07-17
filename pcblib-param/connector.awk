@@ -42,6 +42,9 @@ BEGIN {
 		element_line(-half, 0,        -step, +half/2)
 		element_line(-step, -half/2,  -step, +half/2)
 	}
-
+	else if (P["silkmark"] != "none") {
+		error("invalid silkmark parameter: " P["silkmark"])
+	}
+	
 	element_end()
 }
