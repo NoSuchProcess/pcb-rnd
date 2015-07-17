@@ -10,7 +10,7 @@ gen()
 {
 	cd $gendir
 	params=`echo $QS_cmd | sed "s/.*[(]//;s/[)]//" `
-	./connector "$params"
+	./$gen "$params"
 }
 
 help()
@@ -133,30 +133,39 @@ export QS_cmd=`echo "$QS_cmd" | /home/igor2/C/libporty/trunk/src/porty/c99tree/u
 if test -z "$QS_cmd"
 then
 	export QS_cmd='connector(2,3)'
+	export QS_diamond=1
+	gen=connector
 else
 	gen=`awk -v "n=$QS_cmd" '
 	BEGIN {
 		sub("[(].*", "", n)
-		sub("[^a-zA-Z0-9_]", "", n)
+		gsub("[^a-zA-Z0-9_]", "", n)
 		print n
 	}
 	'`
 	
-	case "$gen" in
-	*/|*/*) error "Invalid generator \"$gen\" (name)" ;;
-	*)
-		if test -z `grep "@@purpose" $gendir/$gen`
-		then
-			error "Invalid generator \"$gen\" (file)"
-		fi
-	esac
+	if test -z `grep "@@purpose" $gendir/$gen`
+	then
+		error "Invalid generator \"$gen\" (file)"
+	fi
 fi
+
 
 if test "$QS_output" = "help"
 then
 	echo "Content-type: text/html"
 	echo ""
 	help
+	exit
+fi
+
+fptext=`gen`
+if test ! "$?" = 0
+then
+	echo "Content-type: text/plain"
+	echo ""
+	echo "Error generating the footprint:"
+	gen 2>&1 | grep -i error
 	exit
 fi
 
@@ -177,11 +186,15 @@ then
 	then
 		cparm="$cparm --mm"
 	fi
+	if test ! -z "$QS_diamond"
+	then
+		cparm="$cparm --diamond"
+	fi
 	if test ! -z "$QS_photo"
 	then
 		cparm="$cparm --photo"
 	fi
-	(gen | /home/igor2/C/pcb-rnd/util/fp2anim $cparm; echo 'screenshot "/dev/stdout"') | /usr/local/bin/animator -H
+	(echo "$fptext" | /home/igor2/C/pcb-rnd/util/fp2anim $cparm; echo 'screenshot "/dev/stdout"') | /usr/local/bin/animator -H
 	exit
 fi
 
@@ -259,6 +272,7 @@ echo "<textarea id=\"cmd\" name=\"cmd\" cols=80 rows=3>$QS_cmd</textarea>"
 echo "<ul>"
 echo "	<li><input type=\"checkbox\" name=\"mm\" value=\"1\" `checked $QS_mm`> draw grid in mm"
 echo "	<li><input type=\"checkbox\" name=\"photo\" value=\"1\" `checked $QS_photo`> draw in \"photo mode\""
+echo "	<li><input type=\"checkbox\" name=\"diamond\" value=\"1\" `checked $QS_diamond`> diamond at 0;0"
 echo "</ul>"
 echo "<p>"
 echo "<input type=\"submit\" value=\"Generate my footprint!\">"
@@ -282,7 +296,7 @@ echo "<h2> Result </h2>"
 
 	echo "<td valign=top>"
 	echo "<pre>"
-	gen
+	echo "$fptext"
 	echo "</pre>"
 	echo "<p>Downloads:"
 	echo "<br> <a href=\"$CGI?$QUERY_STRING&output=text\">footprint file</a>"
