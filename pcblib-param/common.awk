@@ -132,7 +132,7 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 	v = split(mandatory, M, ",")
 	for(n = 1; n <= v; n++) {
 		if (!(M[n] in OUT)) {
-			error("missing argument", M[n], "(or positional " n ")")
+			error("missing argument " M[n] " (or positional " n ")")
 			exit 1
 		}
 	}
