@@ -2,11 +2,25 @@ BEGIN {
 	q="\""
 
 	DEFAULT["pin_ringdia"] = 8000
+	DEFAULT["pin_ringdia", "dim"] = 1
+
 	DEFAULT["pin_clearance"] = 5000
+	DEFAULT["pin_clearance", "dim"] = 1
+
 	DEFAULT["pin_mask"] = 8600
+	DEFAULT["pin_mask", "dim"] = 1
+
 	DEFAULT["pin_drill"] = 3937
-	DEFAULT["pin_flags"] = "__auto"
+	DEFAULT["pin_drill", "dim"] = 1
+
 	DEFAULT["line_thickness"] = 1500
+	DEFAULT["line_thickness", "dim"] = 1
+
+	DEFAULT["pin_flags"] = "__auto"
+
+	s_default=1
+	s_weak=2
+	s_explicit=3
 }
 
 # Throw an error and exit
@@ -94,6 +108,41 @@ function mm(coord)
 }
 
 
+function set_arg_(OUT, key, value, strength)
+{
+	if (OUT[key, "strength"] > strength)
+		return
+
+	OUT[key] = value
+	OUT[key, "strength"] = strength
+}
+
+# set parameter key=value with optioal strength (s_* consts) in array OUT[]
+# set only if current strength is stronger than the original value
+# if key starts with a "?", use s_weak
+# if key is in DEFAULT[], use DEFAULT[] instead of OUT[]
+function set_arg(OUT, key, value     ,strength)
+{
+	if (strength == "")
+		strength = s_explicit
+	if (key ~ "^[?]") {
+		sub("^[?]", "", key)
+		strength = s_weak
+	}
+
+	if (key in DEFAULT) {
+		if (DEFAULT[key, "dim"]) {
+			if (value ~ "mm")
+				value = mm(value)
+			else
+				value = mil(value)
+		}
+		set_arg_(DEFAULT, key, value, strength)
+	}
+	else
+		set_arg_(OUT, key, value, strength)
+}
+
 # Process a generator argument list from arg_names. Save the result in
 # array OUT. If mandatory is specified, check whether all mandatory
 # parameters are specified
@@ -114,7 +163,7 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 			val=strip(A[n])
 			sub("=.*", "", key)
 			sub("^[^=]*=", "", val)
-			OUT[key] = val
+			set_arg(OUT, key, val, s_explicit)
 		}
 		else {
 #			positional
@@ -123,7 +172,7 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 				error("too many positional arguments at " A[n])
 			}
 			while(N[pos] in OUT) pos++
-			OUT[N[pos]] = A[n]
+			set_arg(OUT, N[pos], A[n], s_explicit)
 			pos++
 		}
 	}
