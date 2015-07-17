@@ -9,6 +9,13 @@ BEGIN {
 	line_thickness = 1500
 }
 
+# Throw an error and exit
+function error(msg)
+{
+	print "Error: " msg > "/dev/stderr"
+	exit 1
+}
+
 # return a if it is not empty, else return b
 function either(a, b)
 {
@@ -113,8 +120,7 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 #			positional
 			A[n] = strip(A[n])
 			if (N[pos] == "") {
-				print "Error: too many positional arguments at " A[n] > "/dev/stderr"
-				exit 1
+				error("too many positional arguments at " A[n])
 			}
 			while(N[pos] in OUT) pos++
 			OUT[N[pos]] = A[n]
@@ -126,7 +132,7 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 	v = split(mandatory, M, ",")
 	for(n = 1; n <= v; n++) {
 		if (!(M[n] in OUT)) {
-			print "Error: missing argument", M[n], "(or positional " n ")"  > "/dev/stderr"
+			error("missing argument", M[n], "(or positional " n ")")
 			exit 1
 		}
 	}
