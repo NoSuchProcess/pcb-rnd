@@ -26,7 +26,7 @@ BEGIN {
 	if ((eshift != "x") && (eshift != "y") && (eshift != ""))
 		error("eshift must be x or y (got: ", eshift ")");
 
-	element_begin(spacing " mil connector", "CONN1", P["nx"] "*" P["ny"]    ,0,0, 0, -step)
+	element_begin(P["spacing"] " mil connector", "CONN1", P["nx"] "*" P["ny"]    ,0,0, 0, -step)
 
 	for(x = 0; x < P["nx"]; x++) {
 		if ((eshift == "x") && ((x % 2) == 1))
@@ -71,7 +71,7 @@ BEGIN {
 		element_line(-half, 0,        -step, +half/2)
 		element_line(-step, -half/2,  -step, +half/2)
 	}
-	else if (P["silkmark"] != "none") {
+	else if ((P["silkmark"] != "none") && (P["silkmark"] != "")) {
 		error("invalid silkmark parameter: " P["silkmark"])
 	}
 	
