@@ -9,16 +9,19 @@ do
 		--photo|p) photo=1;;
 		--grid-unit|--grid_unit|g) grid_unit=$2;;
 		--mm) grid_unit="mm";;
+		--diamond) diamond=1;;
 	esac
 	shift 1
 done
 
 
 
-awk -v "photo=$photo" -v "grid_unit=$grid_unit" '
+awk -v "photo=$photo" -v "grid_unit=$grid_unit" -v "diamond=$diamond" '
 
 BEGIN {
 	q="\""
+
+	ds = 100*20
 
 	if (photo) {
 		clr_board = "darkgreen"
@@ -193,14 +196,23 @@ END {
 
 	print "dash 0xffff"
 
+	if (diamond) {
+		print "macro push annotation"
+		print "lines", -ds,0,   0,ds,   ds,0,   0,-ds,   -ds,0
+		print "endmacro"
+	}
+
+
 	if (photo)
 		print "invoke mask"
+
+
+
 	print "invoke copper"
 	print "invoke hole"
 	print "invoke silk"
 	print "invoke annotation"
 	print "flush"
-	print "screenshot \"fp.png\""
 }
 
 '
