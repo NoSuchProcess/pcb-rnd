@@ -3,6 +3,9 @@ BEGIN {
 
 	set_arg(P, "?spacing", 300)
 
+	if ((P["n"] < 2) || ((P["n"] % 2) != 0))
+		error("Number of pins have to be an even positive number")
+
 	spacing=P["spacing"]
 
 	if (spacing ~ "mm") {
