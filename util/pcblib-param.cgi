@@ -13,14 +13,9 @@ gen()
 	./$gen "$params"
 }
 
-help()
+help_params()
 {
-	echo "
-<html>
-<body>
-<h1> pcblib-param help for $QS_cmd() </h1>
-"
-awk  -v "CGI=$CGI" '
+awk  -v "CGI=$CGI" "$@" '
 BEGIN {
 	prm=0
 	q="\""
@@ -42,23 +37,47 @@ BEGIN {
 }
 
 END {
-	print "<b>" HELP["@@purpose"] "</b>"
-	print "<p>"
-	print HELP["@@desc"]
-	print "<p>Parameters: " HELP["@@params"]
-	print "<p>"
-	print "<table border=1 cellspacing=0 cellpadding=10>"
-	for(p = 0; p < prm; p++)
-		print "<br>" PARAM[p]
-	print "</table>"
-	print "<p>Example: "
-	print "<a href=" q CGI "?cmd=" HELP["@@example"] q ">"
-	print HELP["@@example"]
-	print "</a>"
-	print "</body></html>"
+	if (header) {
+		print "<b>" HELP["@@purpose"] "</b>"
+		print "<p>"
+		print HELP["@@desc"]
+	}
+
+	if (content) {
+		print "<h4>" content "</h4>"
+		if (HELP["@@params"] != "")
+			print "<p>Ordered list (positions): " HELP["@@params"]
+		print "<table border=1 cellspacing=0 cellpadding=10>"
+		for(p = 0; p < prm; p++)
+			print "<br>" PARAM[p]
+		print "</table>"
+	}
+
+	if (footer) {
+		print "<p>Example: "
+		print "<a href=" q CGI "?cmd=" HELP["@@example"] q ">"
+		print HELP["@@example"]
+		print "</a>"
+		print "</body></html>"
+	}
 }
 
-' < $gendir/$gen
+'
+}
+
+help()
+{
+	echo "
+<html>
+<body>
+<h1> pcblib-param help for $QS_cmd() </h1>
+"
+ help_params -v "header=1" -v "content=$gen parameters" < $gendir/$gen
+
+ help_params -v "content=common parameters" < $gendir/common.awk
+
+ help_params -v "footer=1" < $gendir/$gen
+
 }
 
 error()
