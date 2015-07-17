@@ -2,7 +2,7 @@ BEGIN {
 	P["spacing"] = 100
 	P["silkmark"] = "square"
 
-	proc_args(P, "nx,ny,spacing,silkmark", "nx,ny")
+	proc_args(P, "nx,ny,spacing,silkmark,eshift,etrunc", "nx,ny")
 
 	step=P["spacing"]
 
@@ -19,16 +19,45 @@ BEGIN {
 	if (pin_drill > pin_ringdia*0.9)
 		pin_drill = pin_ringdia*0.9
 
-
 	half=step/2
+
+	eshift=tolower(P["eshift"])
+	etrunc=tolower(P["etrunc"])
+	if ((eshift != "x") && (eshift != "y") && (eshift != ""))
+		error("eshift must be x or y (got: ", eshift ")");
 
 	element_begin(spacing " mil connector", "CONN1", P["nx"] "*" P["ny"]    ,0,0, 0, -step)
 
-	for(x = 0; x < P["nx"]; x++)
-		for(y = 0; y < P["ny"]; y++)
-			element_pin(x * step, y * step)
+	for(x = 0; x < P["nx"]; x++) {
+		if ((eshift == "x") && ((x % 2) == 1))
+			yo = step/2
+		else
+			yo = 0
+		for(y = 0; y < P["ny"]; y++) {
+			if ((eshift == "y") && ((y % 2) == 1)) {
+				xo = step/2
+				if ((etrunc) && (x == P["nx"]-1))
+					continue
+			}
+			else {
+				xo = 0
+				if ((etrunc) && (y == P["ny"]-1) && (yo != 0))
+					continue
+			}
+			element_pin(x * step + xo, y * step + yo)
+		}
+	}
 
-	element_rectangle(-half, -half, P["nx"] * step-half, P["ny"] * step-half)
+	xo = 0
+	yo = 0
+	if (!etrunc) {
+		if (eshift == "y")
+			xo = step/2
+		if (eshift == "x")
+			yo = step/2
+	}
+
+	element_rectangle(-half, -half, P["nx"] * step - half + xo, P["ny"] * step - half + yo)
 
 	if (P["silkmark"] == "angled") {
 		element_line(0, -half,  -half, 0)
