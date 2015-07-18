@@ -371,12 +371,12 @@ tree_row_key_pressed (GtkTreeView *tree_view,
   return TRUE;
 }
 
-static void library_window_preview_refresh(GhidLibraryWindow *library_window, LibraryEntryType *entry)
+static void library_window_preview_refresh(GhidLibraryWindow *library_window, const char *name, LibraryEntryType *entry)
 {
   /* -1 flags this is an element file part and the file path is in
      |  entry->AllocateMemory.
    */
-      if (LoadElementToBuffer (PASTEBUFFER, entry->AllocatedMemory))
+      if (LoadElementToBuffer (PASTEBUFFER, name == NULL ? entry->AllocatedMemory : name))
 	SetMode (PASTEBUFFER_MODE);
 
   /* update the preview with new symbol data */
@@ -417,7 +417,7 @@ library_window_callback_tree_selection_changed (GtkTreeSelection * selection,
   if (entry == NULL)
     return;
 
-	library_window_preview_refresh(library_window, entry);
+	library_window_preview_refresh(library_window, NULL, entry);
 }
 
 /*! \brief Requests re-evaluation of the filter.
@@ -450,11 +450,20 @@ library_window_filter_timeout (gpointer data)
         {
           /* filter text not-empty */
           gtk_tree_view_expand_all (library_window->libtreeview);
+
+          /* parametric footprints need to be refreshed on edit */
+          if (strchr(text, ')') != NULL)
+            library_window_preview_refresh(library_window, text, NULL);
+
         } else {
           /* filter text is empty, collapse expanded tree */
           gtk_tree_view_collapse_all (library_window->libtreeview);
         }
+
+
+
     }
+
 
   /* return FALSE to remove the source */
   return FALSE;
