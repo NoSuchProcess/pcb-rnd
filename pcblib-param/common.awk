@@ -22,6 +22,13 @@ BEGIN {
 	DEFAULT["line_thickness"] = 1500
 	DEFAULT["line_thickness", "dim"] = 1
 
+	DEFAULT["pad_thickness"] = 2000
+	DEFAULT["pad_thickness", "dim"] = 1
+	DEFAULT["pad_clearance"] = 1000
+	DEFAULT["pad_clearance", "dim"] = 1
+	DEFAULT["pad_mask"] = 3000
+	DEFAULT["pad_mask", "dim"] = 1
+
 	DEFAULT["pin_flags"] = "__auto"
 
 	s_default=1
@@ -67,7 +74,7 @@ function element_end()
 }
 
 # generate a pin; arguments from ringdia are optional (defaults are in global vars pin_*)
-function element_pin(x, y,  number,   ringdia, clearance, mask, drill, name, flags)
+function element_pin(x, y,  number, flags,   ringdia, clearance, mask, drill, name)
 {
 	if (number == "")
 		number = ++pin_number
@@ -84,6 +91,14 @@ function element_pin(x, y,  number,   ringdia, clearance, mask, drill, name, fla
 	print "	Pin[" int(x), int(y),
 		int(either(ringdia, DEFAULT["pin_ringdia"])), int(either(clearance, DEFAULT["pin_clearance"])), int(either(mask, DEFAULT["pin_mask"])),
 		int(either(drill, DEFAULT["pin_drill"])), q name q, q number q, q flags q "]"
+}
+
+# draw element pad
+function element_pad(x1, y1, x2, y2, thickness,   number, flags,   clearance, mask, name)
+{
+	print "	Pad[", int(x1), int(y1), int(x2), int(y2), int(either(thickness, DEFAULT["pad_thickness"])),
+		int(either(clearance, DEFAULT["pad_clearance"])), int(either(mask, DEFAULT["pad_mask"])),
+		q name q, q number q, q flags q "]"
 }
 
 # draw a line on silk; thickness is optional (default: line_thickness)
