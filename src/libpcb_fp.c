@@ -155,7 +155,7 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn)
  * it finds all newlib footprints in that dir and sticks them into the
  * library menu structure named entry.
  */
-int pcb_fp_list(char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type),
+int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type),
 								void *cookie)
 {
 	char olddir[MAXPATHLEN + 1];	/* The directory we start out in (cwd) */
@@ -194,6 +194,8 @@ int pcb_fp_list(char *subdir, int recurse, int (*cb) (void *cookie, const char *
 		return 0;
 	}
 
+printf("SUBDIR='%s'\n", subdir);
+
 	/* First try opening the directory specified by path */
 	if ((subdirobj = opendir(subdir)) == NULL) {
 		OpendirErrorMessage(subdir);
@@ -217,7 +219,7 @@ int pcb_fp_list(char *subdir, int recurse, int (*cb) (void *cookie, const char *
 		 * index of the library.
 		 */
 		l = strlen(subdirentry->d_name);
-		if (!stat(subdirentry->d_name, &buffer) && S_ISREG(buffer.st_mode)
+		if (!stat(subdirentry->d_name, &buffer)
 				&& subdirentry->d_name[0] != '.'
 				&& NSTRCMP(subdirentry->d_name, "CVS") != 0
 				&& NSTRCMP(subdirentry->d_name, "Makefile") != 0
@@ -230,10 +232,9 @@ int pcb_fp_list(char *subdir, int recurse, int (*cb) (void *cookie, const char *
 /*	printf("...  Found a footprint %s ... \n", subdirentry->d_name); */
 #endif
 			strcpy(fn_end, subdirentry->d_name);
-			if ((subdirentry->d_type == DT_REG) || (subdirentry->d_type == DT_LNK)) {
+			if ((S_ISREG(buffer.st_mode)) || (S_ISLNK(buffer.st_mode))) {
 				pcb_fp_type_t ty;
 				ty = pcb_fp_file_type(subdirentry->d_name);
-printf("TY: %s -> %d\n", subdirentry->d_name, ty);
 				if ((ty == PCB_FP_FILE) || (ty == PCB_FP_PARAMETRIC)) {
 					n_footprints++;
 					if (cb(cookie, subdir, subdirentry->d_name, ty))
@@ -242,7 +243,7 @@ printf("TY: %s -> %d\n", subdirentry->d_name, ty);
 				}
 			}
 
-			if ((subdirentry->d_type == DT_DIR) || (subdirentry->d_type == DT_LNK)) {
+			if ((S_ISDIR(buffer.st_mode)) || (S_ISLNK(buffer.st_mode))) {
 				cb(cookie, subdir, subdirentry->d_name, PCB_FP_DIR);
 				if (recurse) {
 					n_footprints += pcb_fp_list(fn, recurse, cb, cookie);

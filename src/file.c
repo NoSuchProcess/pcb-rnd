@@ -128,8 +128,8 @@ static int WritePCB (FILE *);
 static int WritePCBFile (char *);
 static int WritePipe (char *, bool);
 static int ParseLibraryTree (void);
-static int LoadNewlibFootprintsFromDir(char *path, char *toppath);
-static char *pcb_basename (char *p);
+static int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath);
+static const char *pcb_basename (const char *p);
 
 /* ---------------------------------------------------------------------------
  * Flag helper functions
@@ -1153,11 +1153,9 @@ RemoveTMPData (void)
  * Parse the directory tree where newlib footprints are found
  */
 
-/* TODO */
-
 /* Helper function for ParseLibraryTree */
-static char *
-pcb_basename (char *p)
+static const char *
+pcb_basename (const char *p)
 {
   char *rv = strrchr (p, '/');
   if (rv)
@@ -1165,16 +1163,40 @@ pcb_basename (char *p)
   return p;
 }
 
+typedef struct list_dir_s list_dir_t;
+
+struct list_dir_s {
+	char *parent;
+	char *subdir;
+	list_dir_t *next;
+};
+
+typedef struct {
+	LibraryMenuTypePtr menu;
+	list_dir_t *subdirs;
+} list_st_t;
+
+
 static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_type_t type)
 {
-	LibraryMenuTypePtr menu = (LibraryMenuTypePtr)cookie;
+	list_st_t *l = (list_st_t *)cookie;
 	LibraryEntryTypePtr entry;      /* Pointer to individual menu entry */
 	size_t len;
 
-	if (type == PCB_FP_DIR)
+	if (type == PCB_FP_DIR) {
+		list_dir_t *d;
+		/* can not recurse directly from here because that would ruin the menu
+		   pointer: GetLibraryMenuMemory (&Library) calls realloc()! 
+		   Build a list of directories to be visited later, instead. */
+		d = malloc(sizeof(list_dir_t));
+		d->subdir = strdup(name);
+		d->parent = strdup(subdir);
+		d->next = l->subdirs;
+		l->subdirs = d;
 		return 0;
+	}
 
-	entry = GetLibraryEntryMemory (menu);
+	entry = GetLibraryEntryMemory (l->menu);
 
 	/* 
 	 * entry->AllocatedMemory points to abs path to the footprint.
@@ -1200,17 +1222,14 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_ty
 	return 0;
 }
 
-static int LoadNewlibFootprintsFromDir(char *libpath, char *toppath)
+static int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath)
 {
 	LibraryMenuTypePtr menu = NULL; /* Pointer to PCB's library menu structure */
-	char subdir[MAXPATHLEN + 1];    /* The directory holding footprints to load */
+	list_st_t l;
+	list_dir_t *d, *nextd;
+  char working[MAXPATHLEN + 1];    /* String holding abs path to working dir */
 
-  memset (subdir, 0, sizeof subdir);
-
-  if (strcmp (libpath, "(local)") == 0)
-    strcpy (subdir, ".");
-  else
-    strcpy (subdir, libpath);
+  sprintf(working, "%s%c%s", toppath, PCB_DIR_SEPARATOR_C, subdir);
 
   /* Get pointer to memory holding menu */
   menu = GetLibraryMenuMemory (&Library);
@@ -1219,7 +1238,20 @@ static int LoadNewlibFootprintsFromDir(char *libpath, char *toppath)
   menu->Name = strdup (pcb_basename(subdir));
   menu->directory = strdup (pcb_basename(toppath));
 
-	pcb_fp_list(subdir, 0, list_cb, menu);
+  l.menu = menu;
+  l.subdirs = NULL;
+
+  pcb_fp_list(working, 0, list_cb, &l);
+
+	/* now recurse to each subdirectory mapped in the previous call;
+	   by now we don't care if menu is ruined by the realloc() in GetLibraryMenuMemory() */
+	for(d = l.subdirs; d != NULL; d = nextd) {
+		LoadNewlibFootprintsFromDir(d->subdir, d->parent);
+		nextd = d->next;
+		free(d->subdir);
+		free(d->parent);
+		free(d);
+	}
 }
 
 
@@ -1235,7 +1267,6 @@ static int
 ParseLibraryTree (void)
 {
   char toppath[MAXPATHLEN + 1];    /* String holding abs path to top level library dir */
-  char working[MAXPATHLEN + 1];    /* String holding abs path to working dir */
   char *libpaths;                  /* String holding list of library paths to search */
   char *p;                         /* Helper string used in iteration */
   DIR *dirobj;                     /* Iterable directory object */
@@ -1245,16 +1276,6 @@ ParseLibraryTree (void)
 
   /* Initialize path, working by writing 0 into every byte. */
   memset (toppath, 0, sizeof toppath);
-  memset (working, 0, sizeof working);
-
-  /* Save the current working directory as an absolute path.
-   * This fcn writes the abs path into the memory pointed to by the input arg.
-   */
-  if (GetWorkingDirectory (working) == NULL)
-    {
-      Message (_("ParseLibraryTree: Could not determine initial working directory\n"));
-      return 0;
-    }
 
   /* Additional loop to allow for multiple 'newlib' style library directories 
    * called out in Settings.LibraryTree
@@ -1265,75 +1286,14 @@ ParseLibraryTree (void)
       /* remove trailing path delimeter */
       strncpy (toppath, p, sizeof (toppath) - 1);
 
-      /* start out in the working directory in case the path is a
-       * relative path 
-       */
-      if (chdir (working))
-        {
-          ChdirErrorMessage (working);
-          free (libpaths);
-          return 0;
-        }
-
-      /*
-       * Next change to the directory which is the top of the library tree
-       * and extract its abs path.
-       */
-      if (chdir (toppath))
-        {
-          ChdirErrorMessage (toppath);
-          continue;
-        }
-
-      if (GetWorkingDirectory (toppath) == NULL)
-        {
-          Message (_("ParseLibraryTree: Could not determine new working directory\n"));
-          continue;
-        }
-
 #ifdef DEBUG
       printf("In ParseLibraryTree, looking for newlib footprints inside top level directory %s ... \n", 
 	     toppath);
 #endif
 
       /* Next read in any footprints in the top level dir */
-      n_footprints += LoadNewlibFootprintsFromDir("(local)", toppath);
-
-      /* Then open this dir so we can loop over its contents. */
-      if ((dirobj = opendir (toppath)) == NULL)
-	{
-	  OpendirErrorMessage (toppath);
-	  continue;
-	}
-
-      /* Now loop over files in this directory looking for subdirs.
-       * For each direntry which is a valid subdirectory,
-       * try to load newlib footprints inside it.
-       */
-      while ((direntry = readdir (dirobj)) != NULL)
-	{
-#ifdef DEBUG
-	  printf("In ParseLibraryTree loop examining 2nd level direntry %s ... \n", direntry->d_name);
-#endif
-	  /* Find subdirectories.  Ignore entries beginning with "." and CVS
-	   * directories.
-	   */
-	  if (!stat (direntry->d_name, &buffer)
-	      && S_ISDIR (buffer.st_mode) 
-	      && direntry->d_name[0] != '.'
-	      && NSTRCMP (direntry->d_name, "CVS") != 0)
-	    {
-	      /* Found a valid subdirectory.  Try to load footprints from it.
-	       */
-	      n_footprints += LoadNewlibFootprintsFromDir(direntry->d_name, toppath);
-	    }
-	}
-      closedir (dirobj);
+      n_footprints += LoadNewlibFootprintsFromDir(".", toppath);
     }
-
-  /* restore the original working directory */
-  if (chdir (working))
-    ChdirErrorMessage (working);
 
 #ifdef DEBUG
   printf("Leaving ParseLibraryTree, found %d footprints.\n", n_footprints);
