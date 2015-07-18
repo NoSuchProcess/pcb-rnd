@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#@@example dip(18)
+#@@example so(14)
 
 #@@purpose Generate classic DIP packages.
 
