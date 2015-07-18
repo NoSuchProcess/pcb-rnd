@@ -428,7 +428,7 @@ FreeElement (ElementType *data)
  * get next slot for a library menu, allocates memory if necessary
  */
 LibraryMenuTypePtr
-GetLibraryMenuMemory (LibraryTypePtr lib)
+GetLibraryMenuMemory (LibraryTypePtr lib, int *idx)
 {
   LibraryMenuTypePtr menu = lib->Menu;
 
@@ -441,7 +441,18 @@ GetLibraryMenuMemory (LibraryTypePtr lib)
       memset (menu + lib->MenuN, 0,
 	      STEP_LIBRARYMENU * sizeof (LibraryMenuType));
     }
+  if (idx != NULL)
+    *idx = lib->MenuN;
   return (menu + lib->MenuN++);
+}
+
+void
+DeleteLibraryMenuMemory (LibraryTypePtr lib, int menuidx)
+{
+	LibraryMenuTypePtr menu = lib->Menu;
+	lib->MenuN--;
+	memmove(menu + menuidx, menu + menuidx+1, sizeof (LibraryMenuType) * (lib->MenuN-menuidx));
+	
 }
 
 /* ---------------------------------------------------------------------------

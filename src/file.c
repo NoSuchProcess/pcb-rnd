@@ -1174,6 +1174,7 @@ struct list_dir_s {
 typedef struct {
 	LibraryMenuTypePtr menu;
 	list_dir_t *subdirs;
+	int children;
 } list_st_t;
 
 
@@ -1196,6 +1197,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_ty
 		return 0;
 	}
 
+	l->children++;
 	entry = GetLibraryEntryMemory (l->menu);
 
 	/* 
@@ -1227,12 +1229,14 @@ static int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath)
 	LibraryMenuTypePtr menu = NULL; /* Pointer to PCB's library menu structure */
 	list_st_t l;
 	list_dir_t *d, *nextd;
-  char working[MAXPATHLEN + 1];    /* String holding abs path to working dir */
+	char working[MAXPATHLEN + 1];    /* String holding abs path to working dir */
+	int menuidx;
 
   sprintf(working, "%s%c%s", toppath, PCB_DIR_SEPARATOR_C, subdir);
 
   /* Get pointer to memory holding menu */
-  menu = GetLibraryMenuMemory (&Library);
+  menu = GetLibraryMenuMemory (&Library, &menuidx);
+
 
   /* Populate menuname and path vars */
   menu->Name = strdup (pcb_basename(subdir));
@@ -1240,18 +1244,23 @@ static int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath)
 
   l.menu = menu;
   l.subdirs = NULL;
+	l.children = 0;
 
   pcb_fp_list(working, 0, list_cb, &l);
 
 	/* now recurse to each subdirectory mapped in the previous call;
 	   by now we don't care if menu is ruined by the realloc() in GetLibraryMenuMemory() */
 	for(d = l.subdirs; d != NULL; d = nextd) {
-		LoadNewlibFootprintsFromDir(d->subdir, d->parent);
+		l.children+=LoadNewlibFootprintsFromDir(d->subdir, d->parent);
 		nextd = d->next;
 		free(d->subdir);
 		free(d->parent);
 		free(d);
 	}
+	if (l.children == 0) {
+		DeleteLibraryMenuMemory (&Library, menuidx);
+	}
+	return l.children;
 }
 
 
@@ -1414,7 +1423,7 @@ ReadNetlist (char *filename)
 	    i++;
 	  if (kind == 0)
 	    {
-	      menu = GetLibraryMenuMemory (&PCB->NetlistLib);
+	      menu = GetLibraryMenuMemory (&PCB->NetlistLib, NULL);
 	      menu->Name = strdup (temp);
 	      menu->flag = 1;
 	      kind++;

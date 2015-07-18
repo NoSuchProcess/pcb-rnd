@@ -1001,7 +1001,7 @@ AddNet (void)
       sprintf (ratname, "  ratDrawn%i", ++ratDrawn);
     }
 
-  menu = GetLibraryMenuMemory (&PCB->NetlistLib);
+  menu = GetLibraryMenuMemory (&PCB->NetlistLib, NULL);
   menu->Name = strdup (ratname);
   entry = GetLibraryEntryMemory (menu);
   entry->ListEntry = strdup (name1);
