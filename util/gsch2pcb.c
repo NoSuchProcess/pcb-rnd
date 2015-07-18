@@ -591,7 +591,7 @@ static PcbElement *
 pkg_to_element (FILE * f, gchar * pkg_line)
 {
   PcbElement *el;
-  gchar *args[4], *s, *end;
+  gchar *s, *end, *refdes, *fp, *value;
   gint n, n_extra_args, n_dashes;
 
 fprintf(stderr, "--- %s\n", pkg_line);
@@ -605,74 +605,32 @@ fprintf(stderr, "--- %s\n", pkg_line);
   if (*end == ')') *end = '\0';
 
 /* tokenize the line keeping () */
-  args[0] = token(s+1, NULL, NULL, 1);
-  args[1] = token(NULL, NULL, NULL, 1);
-  args[2] = token(NULL, NULL, NULL, 1);
-  args[3] = NULL;
-
-fprintf(stderr, "refdes: %s\n", args[1]);
-fprintf(stderr, "    fp: %s\n", args[0]);
-fprintf(stderr, "   val: %s\n", args[2]);
+  fp = token(s+1, NULL, NULL, 1);
+  refdes = token(NULL, NULL, NULL, 1);
+  value = token(NULL, NULL, NULL, 1);
 
 
-  if (!args[0] || !args[1] || !args[2]) {
+fprintf(stderr, "refdes: %s\n", refdes);
+fprintf(stderr, "    fp: %s\n", fp);
+fprintf(stderr, "   val: %s\n", value);
+
+
+  if (!refdes || !fp || !value) {
     fprintf (stderr, "Bad package line: %s\n", pkg_line);
     return NULL;
   }
 
-  fix_spaces (args[0]);
-  fix_spaces (args[1]);
-  fix_spaces (args[2]);
-
-	printf("args:\n");
-	for(n = 0; n < 4; n++)
-		printf(" '%s'\n", args[n]);
+  fix_spaces (refdes);
+  fix_spaces (value);
 
   el = g_new0 (PcbElement, 1);
-  el->description = g_strdup (args[0]);
-  el->refdes = g_strdup (args[1]);
-  el->value = g_strdup (args[2]);
-  if ((s = strchr (el->value, (gint) ')')) != NULL)
-    *s = '\0';
+  el->description = g_strdup (fp);
+  el->refdes = g_strdup (refdes);
+  el->value = g_strdup (value);
 
-  /* If the component value has a comma, eg "1k, 1%", the gnetlist generated
-   * PKG line will be
-   *
-   *   PKG_XXX(`R0w8',`R100',`1k, 1%'),
-   *
-   * but after processed by m4, the input to gsch2pcb will be
-   *
-   *   PKG_XXX(R0w8,R100,1k, 1%).
-   *
-   * So the quoting info has been lost when processing for file
-   * elements.  So here try to detect and fix this.  But I can't
-   * handle the situation where the description has a '-' and the
-   * value has a comma because gnet-gsch2pcb.scm munges the
-   * description with '-' when there are extra args.
-   */
-  for (n_extra_args = 0; args[3 + n_extra_args] != NULL; ++n_extra_args);
-  s = el->description;
-  for (n_dashes = 0; (s = strchr (s + 1, '-')) != NULL; ++n_dashes);
-
-  n = 3;
-  if (n_extra_args == n_dashes + 1) { /* Assume there was a comma in the value, eg "1K, 1%" */
-    s = el->value;
-    el->value = g_strconcat (s, ",", fix_spaces (args[n]), NULL);
-    g_free (s);
-    if ((s = strchr (el->value, (gint) ')')) != NULL)
-      *s = '\0';
-    n = 4;
-  }
-  if (args[n]) {
-    el->pkg_name_fix = g_strdup (args[n]);
-    for (n += 1; args[n] != NULL; ++n) {
-      s = el->pkg_name_fix;
-      el->pkg_name_fix = g_strconcat (s, " ", args[n], NULL);
-      g_free (s);
-    }
-    if ((s = strchr (el->pkg_name_fix, (gint) ')')) != NULL)
-      *s = '\0';
-  }
+// wtf?
+//  if ((s = strchr (el->value, (gint) ')')) != NULL)
+//    *s = '\0';
 
   if (empty_footprint_name && !strcmp (el->description, empty_footprint_name)) {
     if (verbose)
