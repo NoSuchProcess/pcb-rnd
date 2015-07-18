@@ -73,6 +73,7 @@
 #include "set.h"
 #include "undo.h"
 #include "action.h"
+#include "portability.h"
 
 #ifdef HAVE_LIBDMALLOC
 #include <dmalloc.h>
@@ -1162,55 +1163,6 @@ EvaluateFilename (char *Template, char *Path, char *Filename, char *Parameter)
 }
 
 /* ---------------------------------------------------------------------------
- * concatenates directory and filename if directory != NULL,
- * expands them with a shell and returns the found name(s) or NULL
- */
-char *
-ExpandFilename (char *Dirname, char *Filename)
-{
-  static DynamicStringType answer;
-  char *command;
-  FILE *pipe;
-  int c;
-
-  /* allocate memory for commandline and build it */
-  DSClearString (&answer);
-  if (Dirname)
-    {
-      command = (char *)calloc (strlen (Filename) + strlen (Dirname) + 7,
-                        sizeof (char));
-      sprintf (command, "echo %s/%s", Dirname, Filename);
-    }
-  else
-    {
-      command = (char *)calloc (strlen (Filename) + 6, sizeof (char));
-      sprintf (command, "echo %s", Filename);
-    }
-
-  /* execute it with shell */
-  if ((pipe = popen (command, "r")) != NULL)
-    {
-      /* discard all but the first returned line */
-      for (;;)
-        {
-          if ((c = fgetc (pipe)) == EOF || c == '\n' || c == '\r')
-            break;
-          else
-            DSAddCharacter (&answer, c);
-        }
-
-      free (command);
-      return (pclose (pipe) ? NULL : answer.Data);
-    }
-
-  /* couldn't be expanded by the shell */
-  PopenErrorMessage (command);
-  free (command);
-  return (NULL);
-}
-
-
-/* ---------------------------------------------------------------------------
  * returns the layer number for the passed pointer
  */
 int
@@ -2207,19 +2159,14 @@ GetInfoString (void)
   return info.Data;
 }
 
-/* ---------------------------------------------------------------------------
- * mkdir() implentation, mostly for plugins, which don't have our config.h.
- */
-
-#ifdef MKDIR_IS_PCBMKDIR
-#error "Don't know how to create a directory on this system."
-#endif
-
-int
-pcb_mkdir (const char *path, int mode)
+char *pcb_author (void)
 {
-  return MKDIR (path, mode);
+	if (Settings.FabAuthor && Settings.FabAuthor[0])
+		return Settings.FabAuthor;
+	else
+	return get_user_name();
 }
+
 
 /* ---------------------------------------------------------------------------
  * Returns a best guess about the orientation of an element.  The

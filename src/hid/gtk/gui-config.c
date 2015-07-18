@@ -45,7 +45,8 @@
 #include "file.h"
 #include "error.h"
 #include "draw.h"
-#include "misc.h" /* MKDIR() */
+#include "misc.h"
+#include "portability.h" /* MKDIR() */
 #include "pcb-printf.h"
 #include "set.h"
 

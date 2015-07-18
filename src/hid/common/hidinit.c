@@ -32,6 +32,7 @@
 #include "error.h"
 #include "global.h"
 #include "misc.h"
+#include "portability.h" /* MKDIR() */
 #include "pcb-printf.h"
 
 #ifdef HAVE_LIBDMALLOC

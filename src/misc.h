@@ -46,6 +46,8 @@ typedef struct {
 double Distance (double x1, double y1, double x2, double y2);
 Angle  NormalizeAngle (Angle a);
 
+char *pcb_author (void);
+
 void r_delete_element (DataTypePtr, ElementTypePtr);
 void SetLineBoundingBox (LineTypePtr);
 void SetArcBoundingBox (ArcTypePtr);
@@ -68,7 +70,6 @@ int ParseGroupString (char *, LayerGroupTypePtr, int /* LayerN */);
 int ParseRouteString (char *, RouteStyleTypePtr, const char *);
 void QuitApplication (void);
 char *EvaluateFilename (char *, char *, char *, char *);
-char *ExpandFilename (char *, char *);
 void SetTextBoundingBox (FontTypePtr, TextTypePtr);
 
 void SaveOutputWindow (void);
@@ -141,30 +142,6 @@ int ElementOrientation (ElementType *e);
 /* These are in netlist.c */
 
 void NetlistChanged (int force_unfreeze);
-
-/*
- * Check whether mkdir() is mkdir or _mkdir, and whether it takes one
- * or two arguments.  WIN32 mkdir takes one argument and POSIX takes
- * two.
- */
-#if HAVE_MKDIR
-        #if MKDIR_TAKES_ONE_ARG
-         /* MinGW32 */
-#include <io.h> /* mkdir under MinGW only takes one argument */
-         #define MKDIR(a, b) mkdir(a)
-        #else
-         #define MKDIR(a, b) mkdir(a, b)
-        #endif
-#else
-        #if HAVE__MKDIR
-         /* plain Windows 32 */
-         #define MKDIR(a, b) _mkdir(a)
-        #else
-         #define MKDIR(a, b) pcb_mkdir(a, b)
-         #define MKDIR_IS_PCBMKDIR 1
-         int pcb_mkdir (const char *path, int mode);
-        #endif
-#endif
 
 
 #endif /* PCB_MISC_H */

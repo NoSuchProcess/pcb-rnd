@@ -56,26 +56,8 @@
 
 #include "global.h"
 
-#include "box.h"
-#include "crosshair.h"
-#include "create.h"
-#include "data.h"
-#include "draw.h"
-#include "file.h"
 #include "error.h"
 #include "mymem.h"
-#include "misc.h"
-#include "move.h"
-#include "pcb-printf.h"
-#include "polygon.h"
-#include "remove.h"
-#include "rtree.h"
-#include "rotate.h"
-#include "rubberband.h"
-#include "search.h"
-#include "set.h"
-#include "undo.h"
-#include "action.h"
 
 /* ----------------------------------------------------------------------
  * returns pointer to current working directory.  If 'path' is not
@@ -94,21 +76,13 @@ GetWorkingDirectory (char *path)
 
 }
 
-
-char *pcb_author (void)
+const char *get_user_name(void)
 {
 #ifdef HAVE_GETPWUID
   static struct passwd *pwentry;
-  static char *fab_author = 0;
 
-  if (!fab_author)
-    {
-      if (Settings.FabAuthor && Settings.FabAuthor[0])
-        fab_author = Settings.FabAuthor;
-      else
-        {
           int len;
-          char *comma, *gecos;
+          char *comma, *gecos, *fab_author;
 
           /* ID the user. */
           pwentry = getpwuid (getuid ());
@@ -126,10 +100,60 @@ char *pcb_author (void)
             }
           memcpy (fab_author, gecos, len);
           fab_author[len] = 0;
-        }
-    }
-  return fab_author;
 #else
   return "Unknown";
 #endif
+
 }
+
+char *ExpandFilename (char *Dirname, char *Filename)
+{
+  static DynamicStringType answer;
+  char *command;
+  FILE *pipe;
+  int c;
+
+  /* allocate memory for commandline and build it */
+  DSClearString (&answer);
+  if (Dirname)
+    {
+      command = (char *)calloc (strlen (Filename) + strlen (Dirname) + 7,
+                        sizeof (char));
+      sprintf (command, "echo %s/%s", Dirname, Filename);
+    }
+  else
+    {
+      command = (char *)calloc (strlen (Filename) + 6, sizeof (char));
+      sprintf (command, "echo %s", Filename);
+    }
+
+  /* execute it with shell */
+  if ((pipe = popen (command, "r")) != NULL)
+    {
+      /* discard all but the first returned line */
+      for (;;)
+        {
+          if ((c = fgetc (pipe)) == EOF || c == '\n' || c == '\r')
+            break;
+          else
+            DSAddCharacter (&answer, c);
+        }
+
+      free (command);
+      return (pclose (pipe) ? NULL : answer.Data);
+    }
+
+  /* couldn't be expanded by the shell */
+  PopenErrorMessage (command);
+  free (command);
+  return (NULL);
+}
+
+
+#ifdef MKDIR_IS_PCBMKDIR
+#error "Don't know how to create a directory on this system."
+int pcb_mkdir (const char *path, int mode)
+{
+  return MKDIR (path, mode);
+}
+#endif
