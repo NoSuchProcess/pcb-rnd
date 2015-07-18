@@ -153,9 +153,8 @@ static const char le_help[] = "Loads an element into the current buffer.";
 
 /* %start-doc actions le
 
-The filename and the searchpath (@emph{elementPath}) are passed to the
-command defined by @emph{elementCommand}.  If no filename is specified
-a file select box will popup.
+The filename and the searchpath (@emph{elementSearchPaths}) are passed to the
+element loader.  If no filename is specified a file select box will popup.
 
 @colonaction
 

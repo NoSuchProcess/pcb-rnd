@@ -738,8 +738,7 @@ LoadFootprintByName (BufferTypePtr Buffer, char *Footprint)
 #ifdef DEBUG
   {
     int j;
-    printf("Library path: %s\n", Settings.LibraryPath);
-    printf("Library tree: %s\n", Settings.LibraryTree);
+    printf("Library search paths: %s\n", Settings.LibrarySearchPaths);
 
     printf("Library:\n");
     for (i=0; i<Library.MenuN; i++)

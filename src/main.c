@@ -1089,18 +1089,6 @@ Command to read a file.
 
 /* %start-doc options "6 Commands"
 @ftable @code
-@item --element-command <string>
-Command to read a footprint. @*
-Defaults to @code{"M4PATH='%p';export M4PATH;echo 'include(%f)' | m4"}
-@end ftable
-%end-doc
-*/
-  SSET (ElementCommand,
-	"M4PATH='%p';export M4PATH;echo 'include(%f)' | " GNUM4,
-	"element-command", "Command to read a footprint"),
-
-/* %start-doc options "6 Commands"
-@ftable @code
 @item --print-file <string>
 Command to print to a file.
 @end ftable
@@ -1108,53 +1096,27 @@ Command to print to a file.
 */
   SSET (PrintFile, "%f.output", "print-file", "Command to print to a file"),
 
-/* %start-doc options "6 Commands"
-@ftable @code
-@item --lib-command-dir <string>
-Path to the command that queries the library.
-@end ftable
-%end-doc
-*/
-  SSET (LibraryCommandDir, PCBLIBDIR, "lib-command-dir",
-       "Path to the command that queries the library"),
-
-/* %start-doc options "6 Commands"
-@ftable @code
-@item --lib-command <string>
-Command to query the library. @*
-Defaults to @code{"QueryLibrary.sh '%p' '%f' %a"}
-@end ftable
-%end-doc
-*/
-  SSET (LibraryCommand, "QueryLibrary.sh '%p' '%f' %a",
-       "lib-command", "Command to query the library"),
-
-/* %start-doc options "6 Commands"
-@ftable @code
-@item --lib-contents-command <string>
-Command to query the contents of the library. @*
-Defaults to @code{"ListLibraryContents.sh %p %f"} or,
-on Windows builds, an empty string (to disable this feature).
-@end ftable
-%end-doc
-*/
-  SSET (LibraryContentsCommand,
-#ifdef __WIN32__
-	"",
-#else
-	"ListLibraryContents.sh '%p' '%f'",
-#endif
-	"lib-contents-command", "Command to query the contents of the library"),
-
 /* %start-doc options "5 Paths"
 @ftable @code
-@item --lib-newlib <string>
-Top level directory for the newlib style library.
+@item --lib-search-paths <string>
+A list of (footprint) library search paths, separated by colons.
 @end ftable
 %end-doc
 */
-  SSET (LibraryTree, PCBTREEPATH, "lib-newlib",
-	"Top level directory for the newlib style library"),
+  SSET (LibrarySearchPaths, PCB_LIBRARY_SEARCH_PATHS, "lib-newlib",
+	"A list of paths to be searched for footprints."),
+
+/* %start-doc options "6 Commands"
+@ftable @code
+@item --lib-shell <string>
+A shell command that should be used as a prefix before executing
+parametric library commands. On UNIX it is safe to leave this empty,
+on windows a POSIX shell should be specified with -c (e.g. "bash.exe -c").
+@end ftable
+%end-doc
+*/
+  SSET (LibraryShell, PCB_LIBRARY_SHELL, "lib-shell",
+	"Optional shell command to be used for running parametric footprint generators"),
 
 /* %start-doc options "6 Commands"
 @ftable @code
@@ -1239,17 +1201,6 @@ The path is passed to the program specified in @option{--element-command}.
 */
   SSET(ElementPath, PCBLIBPATH, "element-path",
       "A colon separated list of directories or commands (starts with '|')"),
-
-/* %start-doc options "5 Paths"
-@ftable @code
-@item --lib-path <string>
-A colon separated list of directories that will be passed to the commands specified
-by @option{--element-command} and @option{--element-contents-command}.
-@end ftable
-%end-doc
-*/
-  SSET (LibraryPath, PCBLIBPATH, "lib-path",
-       "A colon separated list of directories"),
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -1452,28 +1403,6 @@ REGISTER_ATTRIBUTES (main_attribute_list)
      static void settings_post_process ()
 {
   char *tmps;
-
-  if (Settings.LibraryCommand != NULL &&
-      Settings.LibraryCommand[0] != '\0' &&
-      Settings.LibraryCommand[0] != PCB_DIR_SEPARATOR_C &&
-      Settings.LibraryCommand[0] != '.')
-    {
-      Settings.LibraryCommand
-	=
-	Concat (Settings.LibraryCommandDir, PCB_DIR_SEPARATOR_S, 
-		Settings.LibraryCommand,
-		NULL);
-    }
-  if (Settings.LibraryContentsCommand != NULL &&
-      Settings.LibraryContentsCommand[0] != '\0' &&
-      Settings.LibraryContentsCommand[0] != PCB_DIR_SEPARATOR_C &&
-      Settings.LibraryContentsCommand[0] != '.')
-    {
-      Settings.LibraryContentsCommand
-	=
-	Concat (Settings.LibraryCommandDir, PCB_DIR_SEPARATOR_S,
-		Settings.LibraryContentsCommand, NULL);
-    }
 
   if (Settings.LineThickness > MAX_LINESIZE
       || Settings.LineThickness < MIN_LINESIZE)
@@ -1965,16 +1894,14 @@ main (int argc, char *argv[])
   EnableAutosave ();
 
 #ifdef DEBUG
-  printf ("Settings.LibraryCommandDir = \"%s\"\n",
-          Settings.LibraryCommandDir);
-  printf ("Settings.FontPath          = \"%s\"\n", 
+  printf ("Settings.FontPath            = \"%s\"\n", 
           Settings.FontPath);
-  printf ("Settings.ElementPath       = \"%s\"\n", 
+  printf ("Settings.ElementPath         = \"%s\"\n", 
           Settings.ElementPath);
-  printf ("Settings.LibraryPath       = \"%s\"\n", 
-          Settings.LibraryPath);
-  printf ("Settings.LibraryTree       = \"%s\"\n", 
-          Settings.LibraryTree);
+  printf ("Settings.LibrarySearchPaths  = \"%s\"\n", 
+          Settings.LibrarySearchPaths);
+  printf ("Settings.LibraryShell        = \"%s\"\n", 
+          Settings.LibraryShell);
   printf ("Settings.MakeProgram = \"%s\"\n",
           UNKNOWN (Settings.MakeProgram));
   printf ("Settings.GnetlistProgram = \"%s\"\n",

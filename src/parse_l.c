@@ -2401,7 +2401,7 @@ int ParseElement(DataTypePtr Ptr, char *name)
 	yyFont = &PCB->Font;
 	yyElement = NULL;
 
-	f = pcb_fp_fopen(Settings.LibraryCommand, Settings.LibraryPath, name, &st);
+	f = pcb_fp_fopen(Settings.LibraryShell, Settings.LibrarySearchPaths, name, &st);
 
 	if (f == NULL)
 		return -1;

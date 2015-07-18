@@ -1280,7 +1280,7 @@ ParseLibraryTree (void)
   /* Additional loop to allow for multiple 'newlib' style library directories 
    * called out in Settings.LibraryTree
    */
-  libpaths = strdup (Settings.LibraryTree);
+  libpaths = strdup (Settings.LibrarySearchPaths);
   for (p = strtok (libpaths, PCB_PATH_DELIMETER); p && *p; p = strtok (NULL, PCB_PATH_DELIMETER))
     {
       /* remove trailing path delimeter */
@@ -1322,8 +1322,6 @@ ReadLibraryContents (void)
   
   return (1);
 }
-
-/* TODO */
 
 #define BLANK(x) ((x) == ' ' || (x) == '\t' || (x) == '\n' \
 		|| (x) == '\0')

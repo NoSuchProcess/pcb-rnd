@@ -282,14 +282,8 @@ print [@
 
 #define PCB_PREFIX "@/local/prefix@"
 #define PCBLIBDIR PCB_PREFIX "/share/pcb"
-#define PCBTREEPATH \
-	"." \
-	":" \
-	PCB_PREFIX  "/share/pcb/newlib"\
-	":"\
-	PCB_PREFIX  "/share/pcb/pcblib-newlib"
-
-#define PCB_FP_PATH \
+#define PCB_LIBRARY_SHELL NULL
+#define PCB_LIBRARY_SEARCH_PATHS \
 	"." \
 	":" \
 	"./pcblib"\

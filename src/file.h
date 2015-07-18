@@ -43,7 +43,7 @@ void Backup (void);
 void SaveInTMP (void);
 void EmergencySave (void);
 void DisableEmergencySave (void);
-int ReadLibraryContents (void);
+int ReadLibraryContents (void); /* walk through all lib paths and build the library menu */
 int ImportNetlist (char *);
 int SaveBufferElements (char *);
 void PreLoadElementPCB (void);

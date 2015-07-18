@@ -739,9 +739,9 @@ ghid_config_files_read (gint * argc, gchar *** argv)
 
   for (list = lib_newlib_list; list; list = list->next)
     {
-      str = Settings.LibraryTree;
+      str = Settings.LibrarySearchPaths;
       dir = expand_dir ((gchar *) list->data);
-      Settings.LibraryTree = g_strconcat (str, PCB_PATH_DELIMETER, dir, NULL);
+      Settings.LibrarySearchPaths = g_strconcat (str, PCB_PATH_DELIMETER, dir, NULL);
       g_free (dir);
       g_free (str);
     }

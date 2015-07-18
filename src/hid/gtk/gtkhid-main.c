@@ -1254,7 +1254,7 @@ Load (int argc, char **argv, Coord x, Coord y)
     {
       name = ghid_dialog_file_select_open (_("Load element to buffer"),
 					   &current_element_dir,
-					   Settings.LibraryTree);
+					   Settings.LibrarySearchPaths);
     }
   else if (strcasecmp (function, "LayoutToBuffer") == 0)
     {
