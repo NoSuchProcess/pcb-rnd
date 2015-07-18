@@ -492,13 +492,11 @@ AddSelectedToBuffer (BufferTypePtr Buffer, Coord X, Coord Y, bool LeaveSelected)
  * if successful, update some other stuff and reposition the pastebuffer
  */
 bool
-LoadElementToBuffer (BufferTypePtr Buffer, char *Name, bool FromFile)
+LoadElementToBuffer (BufferTypePtr Buffer, char *Name)
 {
   ElementTypePtr element;
 
   ClearBuffer (Buffer);
-  if (FromFile)
-    {
       if (!ParseElement (Buffer->Data, Name))
 	{
 	  if (Settings.ShowSolderSide)
@@ -517,26 +515,7 @@ LoadElementToBuffer (BufferTypePtr Buffer, char *Name, bool FromFile)
 	    }
 	  return (true);
 	}
-    }
-  else
-    {
-      if (!ParseElement(Buffer->Data, Name)
-	  && Buffer->Data->ElementN != 0)
-	{
-	  element = Buffer->Data->Element->data;
 
-	  /* always add elements using top-side coordinates */
-	  if (Settings.ShowSolderSide)
-	    MirrorElementCoordinates (Buffer->Data, element, 0);
-	  SetElementBoundingBox (Buffer->Data, element, &PCB->Font);
-
-	  /* set buffer offset to 'mark' position */
-	  Buffer->X = element->MarkX;
-	  Buffer->Y = element->MarkY;
-	  SetBufferBoundingBox (Buffer);
-	  return (true);
-	}
-    }
   /* release memory which might have been acquired */
   ClearBuffer (Buffer);
   return (false);
@@ -730,7 +709,7 @@ LoadFootprintByName (BufferTypePtr Buffer, char *Footprint)
   menu = & Library.Menu[fpe->menu_idx];
   entry = & menu->Entry[fpe->entry_idx];
 
-      i = LoadElementToBuffer (Buffer, entry->AllocatedMemory, true);
+      i = LoadElementToBuffer (Buffer, entry->AllocatedMemory);
       if (with_fp)
 	free (with_fp);
       return i ? 0 : 1;

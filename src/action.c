@@ -5913,7 +5913,7 @@ ActionLoadFrom (int argc, char **argv, Coord x, Coord y)
   if (strcasecmp (function, "ElementToBuffer") == 0)
     {
       notify_crosshair_change (false);
-      if (LoadElementToBuffer (PASTEBUFFER, name, true))
+      if (LoadElementToBuffer (PASTEBUFFER, name))
 	SetMode (PASTEBUFFER_MODE);
       notify_crosshair_change (true);
     }

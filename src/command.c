@@ -169,7 +169,7 @@ CommandLoadElementToBuffer (int argc, char **argv, Coord x, Coord y)
     {
     case 1:			/* filename is passed in commandline */
       filename = argv[0];
-      if (filename && LoadElementToBuffer (PASTEBUFFER, filename, true))
+      if (filename && LoadElementToBuffer (PASTEBUFFER, filename))
 	SetMode (PASTEBUFFER_MODE);
       break;
 

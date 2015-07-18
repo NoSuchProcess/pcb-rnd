@@ -39,7 +39,7 @@
 void SetBufferBoundingBox (BufferTypePtr);
 void ClearBuffer (BufferTypePtr);
 void AddSelectedToBuffer (BufferTypePtr, Coord, Coord, bool);
-bool LoadElementToBuffer (BufferTypePtr, char *, bool);
+bool LoadElementToBuffer (BufferTypePtr, char *);
 bool ConvertBufferToElement (BufferTypePtr);
 bool SmashBufferElement (BufferTypePtr);
 bool LoadLayoutToBuffer (BufferTypePtr, char *);

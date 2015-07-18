@@ -376,7 +376,7 @@ static void library_window_preview_refresh(GhidLibraryWindow *library_window, Li
   /* -1 flags this is an element file part and the file path is in
      |  entry->AllocateMemory.
    */
-      if (LoadElementToBuffer (PASTEBUFFER, entry->AllocatedMemory, true))
+      if (LoadElementToBuffer (PASTEBUFFER, entry->AllocatedMemory))
 	SetMode (PASTEBUFFER_MODE);
 
   /* update the preview with new symbol data */
