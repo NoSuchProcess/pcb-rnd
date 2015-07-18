@@ -1103,7 +1103,7 @@ A list of (footprint) library search paths, separated by colons.
 @end ftable
 %end-doc
 */
-  SSET (LibrarySearchPaths, PCB_LIBRARY_SEARCH_PATHS, "lib-newlib",
+  SSET (LibrarySearchPaths, PCB_LIBRARY_SEARCH_PATHS, "lib-search-paths",
 	"A list of paths to be searched for footprints."),
 
 /* %start-doc options "6 Commands"
