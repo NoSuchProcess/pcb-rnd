@@ -184,19 +184,19 @@ int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const 
 		return 0;
 	}
 
-	l = strlen(subdir);
-	memcpy(fn, subdir, l);
-	fn[l] = PCB_DIR_SEPARATOR_C;
-	fn_end = fn+l+1;
 
-
-	/* Determine subdir is abs path */
+	/* Determine subdir's abs path */
 	if (GetWorkingDirectory(subdir) == NULL) {
 		Message(_("pcb_fp_list(): Could not determine new working directory\n"));
 		if (chdir(olddir))
 			ChdirErrorMessage(olddir);
 		return 0;
 	}
+
+	l = strlen(subdir);
+	memcpy(fn, subdir, l);
+	fn[l] = PCB_DIR_SEPARATOR_C;
+	fn_end = fn+l+1;
 
 	/* First try opening the directory specified by path */
 	if ((subdirobj = opendir(subdir)) == NULL) {
