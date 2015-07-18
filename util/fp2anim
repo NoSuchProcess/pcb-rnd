@@ -179,7 +179,7 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 
 	print "macro push annotation"
 	print "color", clr_annotation
-	print "text", x1, y1, name
+	print "text", (x2+x1)/2, (y2+y1)/2, name
 	print "endmacro"
 
 }
