@@ -87,6 +87,11 @@
 RCSID("$Id$");
 
 
+/* Decide about the type of a footprint file:
+   - it is a file element if the first non-comment is "Element(" or "Element["
+   - else it is a parametric element (footprint generator) if it contains @@purpose
+   - else it's not an element.
+*/
 pcb_fp_type_t pcb_fp_file_type(const char *fn)
 {
 	int c;
@@ -151,10 +156,6 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn)
 	return PCB_FP_INVALID;
 }
 
-/* This is a helper function for ParseLibrary Tree.   Given a char *path,
- * it finds all newlib footprints in that dir and sticks them into the
- * library menu structure named entry.
- */
 int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type),
 								void *cookie)
 {
@@ -193,8 +194,6 @@ int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const 
 			ChdirErrorMessage(olddir);
 		return 0;
 	}
-
-printf("SUBDIR='%s'\n", subdir);
 
 	/* First try opening the directory specified by path */
 	if ((subdirobj = opendir(subdir)) == NULL) {
