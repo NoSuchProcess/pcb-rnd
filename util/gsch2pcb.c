@@ -231,7 +231,7 @@ run_gnetlist (gchar * pins_file, gchar * net_file, gchar * pcb_file,
 
   mtime = (stat (pcb_file, &st) == 0) ? st.st_mtime : 0;
 
-  if (!build_and_run_command ("%s %l -g gsch2pcb -o %s %l %l %l",
+  if (!build_and_run_command ("%s %l -g gsch2pcb-rnd -o %s %l %l %l",
 			      gnetlist,
 			      verboseList,
 			      pcb_file,
@@ -295,23 +295,27 @@ token (gchar * string, gchar ** next, gboolean * quoted_ret, gboolean parenth)
   }
   while (*str == ' ' || *str == '\t' || *str == ',' || *str == '\n')
     ++str;
+
   if (*str == '"') {
     quoted = TRUE;
     if (quoted_ret)
       *quoted_ret = TRUE;
     ++str;
     for (s = str; *s && *s != '"' && *s != '\n'; ++s);
-  } else if ((*str == '(') && (parenth)) {
-    quoted = TRUE;
-    if (quoted_ret)
-      *quoted_ret = TRUE;
-    ++str;
-    for (s = str; *s && *s != ')' && *s != '\n'; ++s);
   } else {
     if (quoted_ret)
       *quoted_ret = FALSE;
-    for (s = str;
-         *s && (*s != ' ' && *s != '\t' && *s != ',' && *s != '\n'); ++s);
+    for (s = str; *s != '\0'; ++s) {
+      if ((parenth) && (*s == '(')) {
+        quoted = TRUE;
+        if (quoted_ret)
+          *quoted_ret = TRUE;
+        for (; *s && *s != ')' && *s != '\n'; ++s);
+        break;
+      }
+      if (*s == ' ' || *s == '\t' || *s == ',' || *s == '\n')
+        break;
+    }
   }
   ret = g_strndup (str, s - str);
   str = (quoted && *s) ? s + 1 : s;
@@ -580,27 +584,8 @@ search_element (PcbElement * el)
 
 /* The gnetlist backend gnet-gsch2pcb.scm generates PKG_ lines:
  *
- *        PKG_footprint(footprint{-fp0-fp1},refdes,value{,fp0,fp1})
+ *        PKG_footprint(footprint,refdes,value)
  *
- * where fp1 and fp2 (if they exist) are the extra footprint
- * components when specifying footprints like "DIL 14 300".  This is
- * needed for m4 macros.
- *
- * A complication is if the footprint references a file element with
- * spaces embedded in the name.  The gnetlist backend will interpret
- * these as fp0, fp1, ... args and the footprint will in this case
- * incorrectly have '-' inserted where the spaces should be.  So, if
- * there are additional args, reconstruct the portion of the name
- * given by the args with spaces for later use.  Eg. if the footprint
- * is "100 Pin jack", we will have
- *
- *      PKG_100-Pin-jack(100-Pin-jack,refdes,value,Pin,jack)
- *
- *  So put "Pin jack" into pkg_name_fix so if this element is searched
- *  as a file element we can munge the description to what it should
- *  be, eg:
- *
- *      100-Pin-jack -> 100 Pin jack
  */
 static PcbElement *
 pkg_to_element (FILE * f, gchar * pkg_line)
@@ -609,7 +594,9 @@ pkg_to_element (FILE * f, gchar * pkg_line)
   gchar *args[4], *s, *end;
   gint n, n_extra_args, n_dashes;
 
-  if (strncmp (pkg_line, "PKG_", 4)
+fprintf(stderr, "--- %s\n", pkg_line);
+
+  if (strncmp (pkg_line, "PKG", 3)
       || (s = strchr (pkg_line, (gint) '(')) == NULL)
     return NULL;
 
@@ -622,6 +609,11 @@ pkg_to_element (FILE * f, gchar * pkg_line)
   args[1] = token(NULL, NULL, NULL, 1);
   args[2] = token(NULL, NULL, NULL, 1);
   args[3] = NULL;
+
+fprintf(stderr, "refdes: %s\n", args[1]);
+fprintf(stderr, "    fp: %s\n", args[0]);
+fprintf(stderr, "   val: %s\n", args[2]);
+
 
   if (!args[0] || !args[1] || !args[2]) {
     fprintf (stderr, "Bad package line: %s\n", pkg_line);
