@@ -371,6 +371,24 @@ tree_row_key_pressed (GtkTreeView *tree_view,
   return TRUE;
 }
 
+static void library_window_preview_refresh(GhidLibraryWindow *library_window, LibraryEntryType *entry)
+{
+  /* -1 flags this is an element file part and the file path is in
+     |  entry->AllocateMemory.
+   */
+      if (LoadElementToBuffer (PASTEBUFFER, entry->AllocatedMemory, true))
+	SetMode (PASTEBUFFER_MODE);
+
+  /* update the preview with new symbol data */
+	if ((PASTEBUFFER->Data != NULL) && (PASTEBUFFER->Data->Element != NULL) && (PASTEBUFFER->Data->Element->data != NULL))
+		g_object_set (library_window->preview,
+			"element-data", PASTEBUFFER->Data->Element->data, NULL);
+	else {
+		g_object_set (library_window->preview,
+			"element-data", NULL, NULL);
+	}
+}
+
 /*! \brief Handles changes in the treeview selection.
  *  \par Function Description
  *  This is the callback function that is called every time the user
@@ -390,7 +408,6 @@ library_window_callback_tree_selection_changed (GtkTreeSelection * selection,
   GtkTreeIter iter;
   GhidLibraryWindow *library_window = (GhidLibraryWindow *) user_data;
   LibraryEntryType *entry = NULL;
-  gchar *m4_args;
 
   if (!gtk_tree_selection_get_selected (selection, &model, &iter))
     return;
@@ -400,21 +417,7 @@ library_window_callback_tree_selection_changed (GtkTreeSelection * selection,
   if (entry == NULL)
     return;
 
-  /* -1 flags this is an element file part and the file path is in
-     |  entry->AllocateMemory.
-   */
-      if (LoadElementToBuffer (PASTEBUFFER, entry->AllocatedMemory, true))
-	SetMode (PASTEBUFFER_MODE);
-
-  /* update the preview with new symbol data */
-	if ((PASTEBUFFER->Data != NULL) && (PASTEBUFFER->Data->Element != NULL) && (PASTEBUFFER->Data->Element->data != NULL))
-		g_object_set (library_window->preview,
-			"element-data", PASTEBUFFER->Data->Element->data, NULL);
-	else {
-		g_object_set (library_window->preview,
-			"element-data", NULL, NULL);
-
-	}
+	library_window_preview_refresh(library_window, entry);
 }
 
 /*! \brief Requests re-evaluation of the filter.
