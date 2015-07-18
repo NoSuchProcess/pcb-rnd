@@ -902,10 +902,7 @@ UndoNetlistChange (UndoListTypePtr Entry)
 	
 	if (lib->Menu[i].Entry[j].AllocatedMemory)
 	  free (lib->Menu[i].Entry[j].AllocatedMemory);
-	
-	if (lib->Menu[i].Entry[j].Template)
-	  free (lib->Menu[i].Entry[j].Template);
-	
+
 	if (lib->Menu[i].Entry[j].Package)
 	  free (lib->Menu[i].Entry[j].Package);
 	
@@ -1696,11 +1693,6 @@ AddNetlistLibToUndoList (LibraryTypePtr lib)
 	    old->Menu[i].Entry[j].AllocatedMemory = 
 	      lib->Menu[i].Entry[j].AllocatedMemory ? 
 	      strdup (lib->Menu[i].Entry[j].AllocatedMemory) :
-	      NULL;
-
-	    old->Menu[i].Entry[j].Template = 
-	      lib->Menu[i].Entry[j].Template ? 
-	      strdup (lib->Menu[i].Entry[j].Template) :
 	      NULL;
 
 	    old->Menu[i].Entry[j].Package = 

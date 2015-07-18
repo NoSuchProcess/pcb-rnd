@@ -1195,8 +1195,6 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_ty
 	if (type == PCB_FP_PARAMETRIC)
 		strcat(entry->AllocatedMemory, "()");
 
-	/* mark as directory tree (newlib) library */
-	entry->Template = (char *) -1;
 	return 0;
 }
 
@@ -1355,91 +1353,6 @@ ReadLibraryContents (void)
   FILE *resultFP = NULL;
   LibraryMenuTypePtr menu = NULL;
   LibraryEntryTypePtr entry;
-
-  /* If we don't have a command to execute to find the library contents,
-   * skip this. This is used by default on Windows builds (set in main.c),
-   * as we can't normally run shell scripts or expect to have m4 present.
-   */
-  if (Settings.LibraryContentsCommand != NULL &&
-      Settings.LibraryContentsCommand[0] != '\0')
-    {
-      /*  First load the M4 stuff.  The variable Settings.LibraryPath
-       *  points to it.
-       */
-      free (command);
-      command = EvaluateFilename (Settings.LibraryContentsCommand,
-				  Settings.LibraryPath, Settings.LibraryFilename,
-				  NULL);
-
-#ifdef DEBUG
-      printf("In ReadLibraryContents, about to execute command %s\n", command);
-#endif
-
-      /* This uses a pipe to execute a shell script which provides the names of
-       * all M4 libs and footprints.  The results are placed in resultFP.
-       */
-      if (command && *command && (resultFP = popen (command, "r")) == NULL)
-	{
-	  PopenErrorMessage (command);
-	}
-
-      /* the M4 library contents are separated by colons;
-       * template : package : name : description
-       */
-      while (resultFP != NULL && fgets (inputline, MAX_LIBRARY_LINE_LENGTH, resultFP))
-	{
-	  size_t len = strlen (inputline);
-
-	  /* check for maximum linelength */
-	  if (len)
-	    {
-	      len--;
-	      if (inputline[len] != '\n')
-		Message
-		  ("linelength (%i) exceeded; following characters will be ignored\n",
-		   MAX_LIBRARY_LINE_LENGTH);
-	      else
-		inputline[len] = '\0';
-	    }
-
-	  /* if the line defines a menu */
-	  if (!strncmp (inputline, "TYPE=", 5))
-	    {
-	      menu = GetLibraryMenuMemory (&Library);
-	      menu->Name = strdup (UNKNOWN (&inputline[5]));
-	      menu->directory = strdup (Settings.LibraryFilename);
-	    }
-	  else
-	    {
-	      /* allocate a new menu entry if not already done */
-	      if (!menu)
-		{
-		  menu = GetLibraryMenuMemory (&Library);
-		  menu->Name = strdup (UNKNOWN ((char *) NULL));
-		  menu->directory = strdup (Settings.LibraryFilename);
-		}
-	      entry = GetLibraryEntryMemory (menu);
-	      entry->AllocatedMemory = strdup (inputline);
-
-	      /* now break the line into pieces separated by colons */
-	      if ((entry->Template = strtok (entry->AllocatedMemory, ":")) !=
-		  NULL)
-		if ((entry->Package = strtok (NULL, ":")) != NULL)
-		  if ((entry->Value = strtok (NULL, ":")) != NULL)
-		    entry->Description = strtok (NULL, ":");
-
-	      /* create the list entry */
-	      len = strlen (EMPTY (entry->Value)) +
-		strlen (EMPTY (entry->Description)) + 4;
-	      entry->ListEntry = (char *)calloc (len, sizeof (char));
-	      sprintf (entry->ListEntry,
-		       "%s, %s", EMPTY (entry->Value),
-		       EMPTY (entry->Description));
-	    }
-	}
-      if (resultFP != NULL)
-	pclose (resultFP);
-    }
 
   /* Now after reading in the M4 libs, call a function to
    * read the newlib footprint libraries.  Then sort the whole

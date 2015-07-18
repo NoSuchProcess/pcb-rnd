@@ -384,25 +384,8 @@ library_window_callback_tree_selection_changed (GtkTreeSelection * selection,
   /* -1 flags this is an element file part and the file path is in
      |  entry->AllocateMemory.
    */
-  if (entry->Template == (char *) -1)
-    {
       if (LoadElementToBuffer (PASTEBUFFER, entry->AllocatedMemory, true))
 	SetMode (PASTEBUFFER_MODE);
-      goto out;
-    }
-
-  /* Otherwise, it's a m4 element and we need to create a string of
-     |  macro arguments to be passed to the library command in
-     |  LoadElementToBuffer()
-   */
-  m4_args = g_strdup_printf ("'%s' '%s' '%s'", EMPTY (entry->Template),
-			     EMPTY (entry->Value), EMPTY (entry->Package));
-
-  if (LoadElementToBuffer (PASTEBUFFER, m4_args, false))
-    SetMode (PASTEBUFFER_MODE);
-  g_free (m4_args);
-
-out:
 
   /* update the preview with new symbol data */
   g_object_set (library_window->preview,

@@ -452,7 +452,6 @@ typedef struct
   char *ListEntry;		/* the string for the selection box */
   char *AllocatedMemory,	/* pointer to allocated memory; all others */
     /* point to parts of the string */
-   *Template,			/* m4 template name */
    *Package,			/* package */
    *Value,			/* the value field */
    *Description;		/* some descritional text */

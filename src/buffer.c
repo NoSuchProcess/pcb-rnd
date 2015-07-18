@@ -631,9 +631,11 @@ make_footprint_hash ()
 	{
 	  footprint_hash[num_entries].menu_idx = i;
 	  footprint_hash[num_entries].entry_idx = j;
+/*
 	  if (Library.Menu[i].Entry[j].Template == (char *) -1) 
-          /* file */
 	    {
+        file */
+
 #ifdef DEBUG
 /*	      printf(" ... Examining file %s\n", Library.Menu[i].Entry[j].AllocatedMemory); */
 #endif
@@ -653,26 +655,6 @@ make_footprint_hash ()
 	        
 	      footprint_hash[num_entries].footprint = fp;
 	      footprint_hash[num_entries].footprint_allocated = 0;
-	    }
-	  else 
-          /* m4 */
-	    {
-	      fp = strrchr (Library.Menu[i].Entry[j].Description, '[');
-	      if (fp)
-		{
-		  footprint_hash[num_entries].footprint = strdup (fp+1);
-		  footprint_hash[num_entries].footprint_allocated = 1;
-		  fp = strchr (footprint_hash[num_entries].footprint, ']');
-		  if (fp)
-		    *fp = 0;
-		}
-	      else
-		{
-		  fp = Library.Menu[i].Entry[j].Description;
-		  footprint_hash[num_entries].footprint = fp;
-		  footprint_hash[num_entries].footprint_allocated = 0;
-		}
-	    }
 	  num_entries ++;
 	}
     }
@@ -748,26 +730,10 @@ LoadFootprintByName (BufferTypePtr Buffer, char *Footprint)
   menu = & Library.Menu[fpe->menu_idx];
   entry = & menu->Entry[fpe->entry_idx];
 
-  if (entry->Template == (char *) -1)
-    {
       i = LoadElementToBuffer (Buffer, entry->AllocatedMemory, true);
       if (with_fp)
 	free (with_fp);
       return i ? 0 : 1;
-    }
-  else
-    {
-      char *args;
-
-      args = Concat("'", EMPTY (entry->Template), "' '",
-		    EMPTY (entry->Value), "' '", EMPTY (entry->Package), "'", NULL);
-      i = LoadElementToBuffer (Buffer, args, false);
-
-      free (args);
-      if (with_fp)
-	free (with_fp);
-      return i ? 0 : 1;
-    }
 
 #ifdef DEBUG
   {

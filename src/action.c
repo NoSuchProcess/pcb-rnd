@@ -1953,20 +1953,8 @@ ActionDumpLibrary (int argc, char **argv, Coord x, Coord y)
       for (j = 0; j < Library.Menu[i].EntryN; j++)
 	{
 	  printf ("    #%4d: ", j);
-	  if (Library.Menu[i].Entry[j].Template == (char *) -1)
-	    {
 	      printf ("newlib: \"%s\"\n",
 		      UNKNOWN (Library.Menu[i].Entry[j].ListEntry));
-	    }
-	  else
-	    {
-	      printf ("\"%s\", \"%s\", \"%s\", \"%s\", \"%s\"\n",
-		      UNKNOWN (Library.Menu[i].Entry[j].ListEntry),
-		      UNKNOWN (Library.Menu[i].Entry[j].Template),
-		      UNKNOWN (Library.Menu[i].Entry[j].Package),
-		      UNKNOWN (Library.Menu[i].Entry[j].Value),
-		      UNKNOWN (Library.Menu[i].Entry[j].Description));
-	    }
 	}
     }
 

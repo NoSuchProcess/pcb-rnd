@@ -73,16 +73,8 @@ libnode_select (Widget w, void *v, XmListCallbackStruct * cbs)
   LibraryEntryType *e =
     Library.Menu[last_pick].Entry + cbs->item_position - 1;
 
-  if (e->Template == (char *) -1)
-    {
       if (LoadElementToBuffer (PASTEBUFFER, e->AllocatedMemory, true))
 	SetMode (PASTEBUFFER_MODE);
-      return;
-    }
-  args = Concat("'", EMPTY (e->Template), "' '",
-		EMPTY (e->Value), "' '", EMPTY (e->Package), "'", NULL);
-  if (LoadElementToBuffer (PASTEBUFFER, args, false))
-    SetMode (PASTEBUFFER_MODE);
 }
 
 static int
