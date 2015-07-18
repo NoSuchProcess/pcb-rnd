@@ -89,7 +89,8 @@ RCSID("$Id$");
 
 /* Decide about the type of a footprint file:
    - it is a file element if the first non-comment is "Element(" or "Element["
-   - else it is a parametric element (footprint generator) if it contains @@purpose
+   - else it is a parametric element (footprint generator) if it contains 
+     "@@" "purpose"
    - else it's not an element.
 */
 pcb_fp_type_t pcb_fp_file_type(const char *fn)
@@ -140,7 +141,7 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn)
 					state = ST_WS;
 				if (c == '@') {
 					char s[10];
-					/* #@@purpose */
+					/* "@@" "purpose" */
 					fgets(s, 9, f);
 					s[8] = '\0';
 					if (strcmp(s, "@purpose") == 0) {
