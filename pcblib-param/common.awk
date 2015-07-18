@@ -218,3 +218,14 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 		}
 	}
 }
+
+# Assume h is a dimension; if it has an "mm" suffix, convert it from mm,
+# else convert it from mil.
+function parse_dim(h)
+{
+	if (h ~ "mm") {
+		sub("mm", "", h)
+		return mm(h)
+	}
+	return mil(h)
+}

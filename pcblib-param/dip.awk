@@ -6,14 +6,7 @@ BEGIN {
 	if ((P["n"] < 2) || ((P["n"] % 2) != 0))
 		error("Number of pins have to be an even positive number")
 
-	spacing=P["spacing"]
-
-	if (spacing ~ "mm") {
-		sub("mm", "", spacing)
-		spacing = mm(spacing)
-	}
-	else
-		spacing = mil(spacing)
+	spacing=parse_dim(P["spacing"])
 
 	element_begin(P["n"] "*" P["spacing"] " DIP socket", "U1", P["n"] "*" P["spacing"]    ,0,0, 0, mil(-100))
 

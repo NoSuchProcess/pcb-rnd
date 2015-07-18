@@ -5,14 +5,8 @@ BEGIN {
 	set_arg(P, "?spacing", 100)
 	set_arg(P, "?silkmark", "square")
 
-	step=P["spacing"]
 
-	if (step ~ "mm") {
-		sub("mm", "", step)
-		step = mm(step)
-	}
-	else
-		step = mil(step)
+	step = parse_dim(P["spacing"])
 
 	if (pin_ringdia > step*0.9)
 		pin_ringdia = step*0.9
