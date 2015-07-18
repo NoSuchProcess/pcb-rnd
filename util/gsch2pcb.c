@@ -71,7 +71,6 @@ static gchar *empty_footprint_name;
 
 static gint verbose,
   n_deleted,
-  n_added_m4,
   n_added_ef,
   n_fixed,
   n_PKG_removed_new,
@@ -585,9 +584,9 @@ search_element (PcbElement * el)
   return path;
 }
 
-/* The gnetlist backend gnet-gsch2pcb.scm generates PKG_ lines:
+/* The gnetlist backend gnet-gsch2pcb-rnd.scm generates PKG lines:
  *
- *        PKG_footprint(footprint,refdes,value)
+ *        PKG(footprint,refdes,value)
  *
  */
 static PcbElement *
@@ -597,7 +596,7 @@ pkg_to_element (FILE * f, gchar * pkg_line)
   gchar *s, *end, *refdes, *fp, *value;
   gint n, n_extra_args, n_dashes;
 
-fprintf(stderr, "--- %s\n", pkg_line);
+/*fprintf(stderr, "--- %s\n", pkg_line);*/
 
   if (strncmp (pkg_line, "PKG", 3)
       || (s = strchr (pkg_line, (gint) '(')) == NULL)
@@ -613,9 +612,9 @@ fprintf(stderr, "--- %s\n", pkg_line);
   value = token(NULL, NULL, NULL, 1);
 
 
-fprintf(stderr, "refdes: %s\n", refdes);
+/*fprintf(stderr, "refdes: %s\n", refdes);
 fprintf(stderr, "    fp: %s\n", fp);
-fprintf(stderr, "   val: %s\n", value);
+fprintf(stderr, "   val: %s\n", value);*/
 
 
   if (!refdes || !fp || !value) {
@@ -659,13 +658,11 @@ fprintf(stderr, "   val: %s\n", value);
 }
 
 /* Process the newly created pcb file which is the output from
- *     gnetlist -g gsch2pcb ...
+ *     gnetlist -g gsch2pcb-rnd ...
  *
- * It will have elements found via the m4 interface and PKG_ lines for
- * elements not found.  Insert pcb file elements for PKG_ lines if
- * file elements can be found.  If there was an existing pcb file,
- * strip out any elements if they are already present so that the new
- * pcb file will only have new elements.
+ * Insert elements for PKG_ lines if they be found by external element query.
+ * If there was an existing pcb file, strip out any elements if they are
+ * already present so that the new pcb file will only have new elements.
  */
 static gint
 add_elements (gchar * pcb_file)
