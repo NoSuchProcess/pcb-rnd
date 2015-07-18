@@ -84,82 +84,76 @@
 #include <dmalloc.h>
 #endif
 
-RCSID ("$Id$");
+RCSID("$Id$");
 
 /* This is a helper function for ParseLibrary Tree.   Given a char *path,
  * it finds all newlib footprints in that dir and sticks them into the
  * library menu structure named entry.
  */
-int pcb_fp_list(char *subdir, int recurse,  int (*cb)(void *cookie, const char *subdir, const char *name, pcb_fp_type_t type), void *cookie)
+int pcb_fp_list(char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type),
+								void *cookie)
 {
-  char olddir[MAXPATHLEN + 1];    /* The directory we start out in (cwd) */
-  DIR *subdirobj;                 /* Interable object holding all subdir entries */
-  struct dirent *subdirentry;     /* Individual subdir entry */
-  struct stat buffer;             /* Buffer used in stat */
-  size_t l;
-  size_t len;
-  int n_footprints = 0;           /* Running count of footprints found in this subdir */
+	char olddir[MAXPATHLEN + 1];	/* The directory we start out in (cwd) */
+	DIR *subdirobj;								/* Interable object holding all subdir entries */
+	struct dirent *subdirentry;		/* Individual subdir entry */
+	struct stat buffer;						/* Buffer used in stat */
+	size_t l;
+	size_t len;
+	int n_footprints = 0;					/* Running count of footprints found in this subdir */
 	char *full_path;
 
-  /* Cache old dir, then cd into subdir because stat is given relative file names. */
-  memset (olddir, 0, sizeof olddir);
-  if (GetWorkingDirectory (olddir) == NULL)
-    {
-      Message (_("pcb_fp_list(): Could not determine initial working directory\n"));
-      return 0;
-    }
+	/* Cache old dir, then cd into subdir because stat is given relative file names. */
+	memset(olddir, 0, sizeof olddir);
+	if (GetWorkingDirectory(olddir) == NULL) {
+		Message(_("pcb_fp_list(): Could not determine initial working directory\n"));
+		return 0;
+	}
 
-  if (chdir (subdir))
-    {
-      ChdirErrorMessage (subdir);
-      return 0;
-    }
+	if (chdir(subdir)) {
+		ChdirErrorMessage(subdir);
+		return 0;
+	}
 
-  /* Determine subdir is abs path */
-  if (GetWorkingDirectory (subdir) == NULL)
-    {
-      Message (_("pcb_fp_list(): Could not determine new working directory\n"));
-      if (chdir (olddir))
-        ChdirErrorMessage (olddir);
-      return 0;
-    }
+	/* Determine subdir is abs path */
+	if (GetWorkingDirectory(subdir) == NULL) {
+		Message(_("pcb_fp_list(): Could not determine new working directory\n"));
+		if (chdir(olddir))
+			ChdirErrorMessage(olddir);
+		return 0;
+	}
 
-  /* First try opening the directory specified by path */
-  if ( (subdirobj = opendir (subdir)) == NULL )
-    {
-      OpendirErrorMessage (subdir);
-      if (chdir (olddir))
-        ChdirErrorMessage (olddir);
-      return 0;
-    }
+	/* First try opening the directory specified by path */
+	if ((subdirobj = opendir(subdir)) == NULL) {
+		OpendirErrorMessage(subdir);
+		if (chdir(olddir))
+			ChdirErrorMessage(olddir);
+		return 0;
+	}
 
 
-  /* Now loop over files in this directory looking for files.
-   * We ignore certain files which are not footprints.
-   */
-  while ((subdirentry = readdir (subdirobj)) != NULL)
-  {
+	/* Now loop over files in this directory looking for files.
+	 * We ignore certain files which are not footprints.
+	 */
+	while ((subdirentry = readdir(subdirobj)) != NULL) {
 #ifdef DEBUG
 /*    printf("...  Examining file %s ... \n", subdirentry->d_name); */
 #endif
 
 
-    /* Ignore non-footprint files found in this directory
-     * We're skipping .png and .html because those
-     * may exist in a library tree to provide an html browsable
-     * index of the library.
-     */
-    l = strlen (subdirentry->d_name);
-    if (!stat (subdirentry->d_name, &buffer) && S_ISREG (buffer.st_mode)
-      && subdirentry->d_name[0] != '.'
-      && NSTRCMP (subdirentry->d_name, "CVS") != 0
-      && NSTRCMP (subdirentry->d_name, "Makefile") != 0
-      && NSTRCMP (subdirentry->d_name, "Makefile.am") != 0
-      && NSTRCMP (subdirentry->d_name, "Makefile.in") != 0
-      && (l < 4 || NSTRCMP(subdirentry->d_name + (l - 4), ".png") != 0) 
-      && (l < 5 || NSTRCMP(subdirentry->d_name + (l - 5), ".html") != 0)
-      && (l < 4 || NSTRCMP(subdirentry->d_name + (l - 4), ".pcb") != 0) )
-      {
+		/* Ignore non-footprint files found in this directory
+		 * We're skipping .png and .html because those
+		 * may exist in a library tree to provide an html browsable
+		 * index of the library.
+		 */
+		l = strlen(subdirentry->d_name);
+		if (!stat(subdirentry->d_name, &buffer) && S_ISREG(buffer.st_mode)
+				&& subdirentry->d_name[0] != '.'
+				&& NSTRCMP(subdirentry->d_name, "CVS") != 0
+				&& NSTRCMP(subdirentry->d_name, "Makefile") != 0
+				&& NSTRCMP(subdirentry->d_name, "Makefile.am") != 0
+				&& NSTRCMP(subdirentry->d_name, "Makefile.in") != 0 && (l < 4 || NSTRCMP(subdirentry->d_name + (l - 4), ".png") != 0)
+				&& (l < 5 || NSTRCMP(subdirentry->d_name + (l - 5), ".html") != 0)
+				&& (l < 4 || NSTRCMP(subdirentry->d_name + (l - 4), ".pcb") != 0)) {
 
 #ifdef DEBUG
 /*	printf("...  Found a footprint %s ... \n", subdirentry->d_name); */
@@ -176,14 +170,14 @@ int pcb_fp_list(char *subdir, int recurse,  int (*cb)(void *cookie, const char *
 			}
 			if ((subdirentry->d_type == DT_REG) || (subdirentry->d_type == DT_LNK)) {
 				n_footprints++;
-        if (cb(cookie, subdir, subdirentry->d_name, PCB_FP_FILE))
-        	break;
-     	}
-  	}
-  }
-  /* Done.  Clean up, cd back into old dir, and return */
-  closedir (subdirobj);
-  if (chdir (olddir))
-    ChdirErrorMessage (olddir);
-  return n_footprints;
+				if (cb(cookie, subdir, subdirentry->d_name, PCB_FP_FILE))
+					break;
+			}
+		}
+	}
+	/* Done.  Clean up, cd back into old dir, and return */
+	closedir(subdirobj);
+	if (chdir(olddir))
+		ChdirErrorMessage(olddir);
+	return n_footprints;
 }
