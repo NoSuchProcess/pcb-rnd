@@ -6,6 +6,7 @@ BEGIN {
 	set_arg(P, "?ext_bloat", 10)
 	set_arg(P, "?int_bloat", 55)
 
+	P["n"] = int(P["n"])
 	if ((P["n"] < 2) || ((P["n"] % 2) != 0))
 		error("Number of pins have to be an even positive number")
 
