@@ -94,6 +94,7 @@ int pcb_fp_list(char *subdir, int recurse, int (*cb) (void *cookie, const char *
 								void *cookie)
 {
 	char olddir[MAXPATHLEN + 1];	/* The directory we start out in (cwd) */
+	char fn[MAXPATHLEN + 1], *fn_end;
 	DIR *subdirobj;								/* Interable object holding all subdir entries */
 	struct dirent *subdirentry;		/* Individual subdir entry */
 	struct stat buffer;						/* Buffer used in stat */
@@ -114,6 +115,12 @@ int pcb_fp_list(char *subdir, int recurse, int (*cb) (void *cookie, const char *
 		return 0;
 	}
 
+	l = strlen(subdir);
+	memcpy(fn, subdir, l);
+	fn[l] = PCB_DIR_SEPARATOR_C;
+	fn_end = fn+l+1;
+
+
 	/* Determine subdir is abs path */
 	if (GetWorkingDirectory(subdir) == NULL) {
 		Message(_("pcb_fp_list(): Could not determine new working directory\n"));
@@ -129,7 +136,6 @@ int pcb_fp_list(char *subdir, int recurse, int (*cb) (void *cookie, const char *
 			ChdirErrorMessage(olddir);
 		return 0;
 	}
-
 
 	/* Now loop over files in this directory looking for files.
 	 * We ignore certain files which are not footprints.
@@ -158,13 +164,11 @@ int pcb_fp_list(char *subdir, int recurse, int (*cb) (void *cookie, const char *
 #ifdef DEBUG
 /*	printf("...  Found a footprint %s ... \n", subdirentry->d_name); */
 #endif
-
+			strcpy(fn_end, subdirentry->d_name);
 			if (subdirentry->d_type == DT_DIR) {
 				cb(cookie, subdir, subdirentry->d_name, PCB_FP_DIR);
 				if (recurse) {
-					char newdir[MAXPATHLEN + 1];
-					sprintf(newdir, "%s/%s", subdir, subdirentry->d_name);
-					n_footprints += pcb_fp_list(newdir, recurse, cb, cookie);
+					n_footprints += pcb_fp_list(fn, recurse, cb, cookie);
 				}
 				continue;
 			}
