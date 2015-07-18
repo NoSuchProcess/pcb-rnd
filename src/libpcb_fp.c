@@ -258,3 +258,76 @@ int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const 
 		ChdirErrorMessage(olddir);
 	return n_footprints;
 }
+
+int pcb_fp_dupname(const char *name, char **basename, char **params)
+{
+	char *newname, *s;
+
+	*basename = newname = strdup(name);
+	s = strchr(newname, '(');
+	if (s == NULL) {
+		*params = NULL;
+		return 0;
+	}
+
+	/* split at '(' */
+	*s = '\0';
+	*params = s+1;
+	s = *params + strlen(*params)-1;
+
+	/* strip ')' */
+	if (*s == ')')
+		*s = '\0';
+
+	return 1;
+}
+
+char *pcb_fp_search(const char *search_path, const char *basename, int parametric)
+{
+	if ((*basename == '/') || (*basename == PCB_DIR_SEPARATOR_C))
+		return strdup(basename);
+#warning TODO
+	abort();
+}
+
+FILE *pcb_fp_fopen(const char *libshell, const char *path, const char *name, int *is_parametric)
+{
+	char *basename, *params, *fullname;
+	FILE *f = NULL;
+
+	*is_parametric = pcb_fp_dupname(name, &basename, &params);
+	if (basename == NULL)
+		return NULL;
+
+	fullname = pcb_fp_search(path, basename, *is_parametric);
+
+	printf("pcb_fp_fopen: %d '%s' '%s' fullname='%s'\n", *is_parametric, basename, params, fullname);
+
+	if (fullname != NULL) {
+		if (*is_parametric) {
+			char *cmd, *sep = " ";
+			if (libshell == NULL) {
+				libshell = "";
+				sep = "";
+			}
+			cmd = malloc(strlen(libshell) + strlen(fullname) + strlen(params) + 16);
+			sprintf(cmd, "%s%s%s %s", libshell, sep, fullname, params);
+			f = popen(cmd, "r");
+			free(cmd);
+		}
+		else
+			f = fopen(fullname, "r");
+		free(fullname);
+	}
+
+	free(basename);
+	return f;
+}
+
+void pcb_fp_fclose(FILE *f, int *is_parametric)
+{
+	if (*is_parametric)
+		pclose(f);
+	else
+		fclose(f);
+}

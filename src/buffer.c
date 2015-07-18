@@ -499,7 +499,7 @@ LoadElementToBuffer (BufferTypePtr Buffer, char *Name, bool FromFile)
   ClearBuffer (Buffer);
   if (FromFile)
     {
-      if (!ParseElementFile (Buffer->Data, Name))
+      if (!ParseElement (Buffer->Data, Name))
 	{
 	  if (Settings.ShowSolderSide)
 	    SwapBuffer (Buffer);
@@ -520,7 +520,7 @@ LoadElementToBuffer (BufferTypePtr Buffer, char *Name, bool FromFile)
     }
   else
     {
-      if (!ParseLibraryEntry (Buffer->Data, Name)
+      if (!ParseElement(Buffer->Data, Name)
 	  && Buffer->Data->ElementN != 0)
 	{
 	  element = Buffer->Data->Element->data;

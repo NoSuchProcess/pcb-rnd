@@ -687,7 +687,7 @@ int	yyparse(void);
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static	int		Parse(char *, char *, char *, char *);
+static	int		Parse(FILE *, char *, char *, char *, char *);
 
 #line 693 "lex.yy.c"
 
@@ -2287,7 +2287,7 @@ void yyfree (void * ptr )
 /* ---------------------------------------------------------------------------
  * sets up the preprocessor command
  */
-static int Parse(char *Executable, char *Path, char *Filename, char *Parameter)
+static int Parse(FILE *Pipe, char *Executable, char *Path, char *Filename, char *Parameter)
 {
 	static	char	*command = NULL;
 	int		returncode;
@@ -2298,6 +2298,7 @@ static int Parse(char *Executable, char *Path, char *Filename, char *Parameter)
 	static	bool	firsttime = true;
 #endif
 
+	if (Pipe == NULL) {
 	if (EMPTY_STRING_P (Executable))
 	  {
 	    l = 2;
@@ -2341,6 +2342,10 @@ static int Parse(char *Executable, char *Path, char *Filename, char *Parameter)
 		return(1);
 	      }
 	  }
+	}
+	else {
+		yyin = Pipe;
+	}
 
 #ifdef FLEX_SCANNER
 		/* reset parser if not called the first time */
@@ -2374,6 +2379,9 @@ static int Parse(char *Executable, char *Path, char *Filename, char *Parameter)
 
 	CreateBeLenient (false);
 
+	if (Pipe != NULL)
+		return returncode;
+
 	if (used_popen)
 	  return(pclose(yyin) ? 1 : returncode);
 	return(fclose(yyin) ? 1 : returncode);
@@ -2382,26 +2390,27 @@ static int Parse(char *Executable, char *Path, char *Filename, char *Parameter)
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a single element file
  */
-int ParseElementFile(DataTypePtr Ptr, char *Filename)
+int ParseElement(DataTypePtr Ptr, char *name)
 {
-	yyPCB = NULL;
-	yyData = Ptr;
-	yyFont = &PCB->Font;
-	yyElement = NULL;
-	return(Parse(NULL,NULL,Filename,NULL));
-}
+	FILE *f;
+	int ret;
+	int st;
 
-/* ---------------------------------------------------------------------------
- * initializes LEX and calls parser for a single library entry
- */
-int ParseLibraryEntry(DataTypePtr Ptr, char *Template)
-{
 	yyPCB = NULL;
 	yyData = Ptr;
 	yyFont = &PCB->Font;
 	yyElement = NULL;
-	return(Parse(Settings.LibraryCommand, Settings.LibraryPath,
-		Settings.LibraryFilename, Template));
+
+	f = pcb_fp_fopen(Settings.LibraryCommand, Settings.LibraryPath, name, &st);
+
+	if (f == NULL)
+		return -1;
+
+	ret = Parse(f, NULL,NULL,NULL,NULL);
+
+	pcb_fp_fclose(f, &st);
+
+	return(ret);
 }
 
 /* ---------------------------------------------------------------------------
@@ -2413,7 +2422,7 @@ int ParsePCB(PCBTypePtr Ptr, char *Filename)
 	yyData = NULL;
 	yyFont = NULL;
 	yyElement = NULL;
-	return(Parse(Settings.FileCommand, Settings.FilePath, Filename, NULL));
+	return(Parse(NULL, Settings.FileCommand, Settings.FilePath, Filename, NULL));
 }
 
 /* ---------------------------------------------------------------------------
@@ -2436,7 +2445,7 @@ int ParseFont(FontTypePtr Ptr, char *Filename)
 #ifdef DEBUG
             Message ("Looking for %s in %s\n", Filename, p);
 #endif
-	    r = Parse(Settings.FontCommand, p, Filename, NULL);
+	    r = Parse(NULL, Settings.FontCommand, p, Filename, NULL);
             if (r == 0)
               {
 #ifdef DEBUG

@@ -289,6 +289,17 @@ print [@
 	":"\
 	PCB_PREFIX  "/share/pcb/pcblib-newlib"
 
+#define PCB_FP_PATH \
+	"." \
+	":" \
+	"./pcblib"\
+	":" \
+	"./footprints"\
+	":" \
+	PCB_PREFIX  "/share/pcb/pcblib-file"\
+	":"\
+	PCB_PREFIX  "/share/pcb/pcblib-param"
+
 #define BINDIR PCB_PREFIX "/bin"
 
 /* Relative path from bindir to exec_prefix */
