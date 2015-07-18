@@ -363,7 +363,7 @@ If non-zero grid polygons instead of filling them with gridlines spaced as speci
 %end-doc
 */
   {"polygrid", "When non-zero: grid polygons instead of filling  with gridlines spaced as specified",
-   HID_Real, 0, 0, {0, 0, 0.0}, 0, 0},
+   HID_Real, 0, 10, {0, 0, 0.0}, 0, 0},
 #define HA_polygrid 18
 
 };
