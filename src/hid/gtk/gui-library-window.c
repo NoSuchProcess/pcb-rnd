@@ -231,16 +231,32 @@ lib_model_filter_visible_func (GtkTreeModel * model,
   GhidLibraryWindow *library_window = (GhidLibraryWindow *) data;
   const gchar *compname;
   gchar *compname_upper, *text_upper, *pattern;
-  const gchar *text;
+  const gchar *text_;
+  char text[128];
   gboolean ret;
+	char *p;
+	int len, is_para = 0;
 
   g_assert (GHID_IS_LIBRARY_WINDOW (data));
 
-  text = gtk_entry_get_text (library_window->entry_filter);
-  if (g_ascii_strcasecmp (text, "") == 0)
+  text_ = gtk_entry_get_text (library_window->entry_filter);
+  if (g_ascii_strcasecmp (text_, "") == 0)
     {
       return TRUE;
     }
+
+	p = strchr(text_, '(');
+	if (p != NULL) {
+		len = p - text_;
+		is_para = 1;
+	}
+	else
+		len = sizeof(text)-1;
+
+
+	strncpy(text, text_, len);
+	text[len] = '\0';
+
 
   /* If this is a source, only display it if it has children that
    * match */
@@ -267,7 +283,10 @@ lib_model_filter_visible_func (GtkTreeModel * model,
          to uppercase */
       compname_upper = g_ascii_strup (compname, -1);
       text_upper = g_ascii_strup (text, -1);
-      pattern = g_strconcat ("*", text_upper, "*", NULL);
+			if (is_para)
+				pattern = g_strconcat ("*", text_upper, "(*", NULL);
+			else
+				pattern = g_strconcat ("*", text_upper, "*", NULL);
       ret = g_pattern_match_simple (pattern, compname_upper);
       g_free (compname_upper);
       g_free (text_upper);
