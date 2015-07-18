@@ -236,7 +236,7 @@ int pcb_fp_list(char *subdir, int recurse, int (*cb) (void *cookie, const char *
 printf("TY: %s -> %d\n", subdirentry->d_name, ty);
 				if ((ty == PCB_FP_FILE) || (ty == PCB_FP_PARAMETRIC)) {
 					n_footprints++;
-					if (cb(cookie, subdir, subdirentry->d_name, PCB_FP_FILE))
+					if (cb(cookie, subdir, subdirentry->d_name, ty))
 						break;
 					continue;
 				}

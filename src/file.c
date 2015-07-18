@@ -1180,7 +1180,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_ty
 	 * entry->AllocatedMemory points to abs path to the footprint.
 	 * entry->ListEntry points to fp name itself.
 	 */
-	len = strlen(subdir) + strlen("/") + strlen(name) + 1;
+	len = strlen(subdir) + strlen("/") + strlen(name) + 8;
 	entry->AllocatedMemory = (char *)calloc (1, len);
 	strcat (entry->AllocatedMemory, subdir);
 	strcat (entry->AllocatedMemory, PCB_DIR_SEPARATOR_S);
@@ -1191,6 +1191,9 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_ty
 
 	/* Now place footprint name into AllocatedMemory */
 	strcat (entry->AllocatedMemory, name);
+
+	if (type == PCB_FP_PARAMETRIC)
+		strcat(entry->AllocatedMemory, "()");
 
 	/* mark as directory tree (newlib) library */
 	entry->Template = (char *) -1;
