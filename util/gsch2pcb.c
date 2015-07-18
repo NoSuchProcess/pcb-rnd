@@ -311,6 +311,9 @@ token (gchar * string, gchar ** next, gboolean * quoted_ret, gboolean parenth)
         if (quoted_ret)
           *quoted_ret = TRUE;
         for (; *s && *s != ')' && *s != '\n'; ++s);
+        /* preserve closing ')' */
+        if (*s == ')')
+          s++;
         break;
       }
       if (*s == ' ' || *s == '\t' || *s == ',' || *s == '\n')
