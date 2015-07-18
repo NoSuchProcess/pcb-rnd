@@ -70,6 +70,7 @@ put /local/pcb/OBJS [@
 	res_parse.o
 	res_lex.o
 	edif.o
+	portability.o
 	parse_y.o
 	parse_l.o
 @]

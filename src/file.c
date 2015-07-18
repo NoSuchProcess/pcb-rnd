@@ -95,6 +95,7 @@
 #include "remove.h"
 #include "set.h"
 #include "strflags.h"
+#include "portability.h"
 
 #ifdef HAVE_LIBDMALLOC
 #include <dmalloc.h>

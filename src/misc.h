@@ -84,7 +84,6 @@ BoxTypePtr GetObjectBoundingBox (int, void *, void *, void *);
 void ResetStackAndVisibility (void);
 void SaveStackAndVisibility (void);
 void RestoreStackAndVisibility (void);
-char *GetWorkingDirectory (char *);
 void CreateQuotedString (DynamicStringTypePtr, char *);
 BoxTypePtr GetArcEnds (ArcTypePtr);
 void ChangeArcAngles (LayerTypePtr, ArcTypePtr, Angle, Angle);

@@ -50,9 +50,6 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
 
 #include "global.h"
 
@@ -1636,23 +1633,6 @@ RestoreStackAndVisibility (void)
   SavedStack.cnt--;
 }
 
-/* ----------------------------------------------------------------------
- * returns pointer to current working directory.  If 'path' is not
- * NULL, then the current working directory is copied to the array
- * pointed to by 'path'
- */
-char *
-GetWorkingDirectory (char *path)
-{
-#ifdef HAVE_GETCWD
-  return getcwd (path, MAXPATHLEN);
-#else
-  /* seems that some BSD releases lack of a prototype for getwd() */
-  return getwd (path);
-#endif
-
-}
-
 /* ---------------------------------------------------------------------------
  * writes a string to the passed file pointer
  * some special characters are quoted
@@ -2025,47 +2005,6 @@ LayerGroupsToString (LayerGroupTypePtr lg)
   *cp++ = 0;
   return buf;
 }
-
-char *
-pcb_author (void)
-{
-#ifdef HAVE_GETPWUID
-  static struct passwd *pwentry;
-  static char *fab_author = 0;
-
-  if (!fab_author)
-    {
-      if (Settings.FabAuthor && Settings.FabAuthor[0])
-        fab_author = Settings.FabAuthor;
-      else
-        {
-          int len;
-          char *comma, *gecos;
-
-          /* ID the user. */
-          pwentry = getpwuid (getuid ());
-          gecos = pwentry->pw_gecos;
-          comma = strchr (gecos, ',');
-          if (comma)
-            len = comma - gecos;
-          else
-            len = strlen (gecos);
-          fab_author = (char *)malloc (len + 1);
-          if (!fab_author)
-            {
-              perror ("pcb: out of memory.\n");
-              exit (-1);
-            }
-          memcpy (fab_author, gecos, len);
-          fab_author[len] = 0;
-        }
-    }
-  return fab_author;
-#else
-  return "Unknown";
-#endif
-}
-
 
 char *
 AttributeGetFromList (AttributeListType *list, char *name)
