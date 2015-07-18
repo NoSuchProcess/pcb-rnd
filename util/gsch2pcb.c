@@ -34,6 +34,8 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "../src/libpcb_fp.h"
+#include "../config.h"
 
 #define GSC2PCB_VERSION "1.6"
 

@@ -4,10 +4,13 @@ CFLAGS=@libs/sul/glib/cflags@
 LDFLAGS=@libs/sul/glib/ldflags@
 EXE=@sys/ext_exe@
 
-gsch2pcb$(EXE): gsch2pcb.o
+gsch2pcb$(EXE): gsch2pcb.o ../src/libpcb_fp.o
 	$(CC) gsch2pcb.o -o gsch2pcb$(EXE) $(LDFLAGS)
 
-gsch2pcb.o: gsch2pcb.c
+gsch2pcb.o: gsch2pcb.c ../src/libpcb_fp.h ../config.h  ../config.manual.h  ../config.auto.h
 	$(CC) -c $(CFLAGS) gsch2pcb.c -o gsch2pcb.o
+
+../src/libpcb_fp.o:
+	cd ../src && make libpcb_fp.o
 
 @]
