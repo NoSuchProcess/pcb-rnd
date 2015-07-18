@@ -1195,6 +1195,8 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_ty
 	if (type == PCB_FP_PARAMETRIC)
 		strcat(entry->AllocatedMemory, "()");
 
+	entry->Type = type;
+
 	return 0;
 }
 

@@ -444,6 +444,7 @@ typedef struct
   int index;
 } RouteStyleType, *RouteStyleTypePtr;
 
+#include "libpcb_fp.h"
 /* ---------------------------------------------------------------------------
  * structure used by library routines
  */
@@ -455,6 +456,7 @@ typedef struct
    *Package,			/* package */
    *Value,			/* the value field */
    *Description;		/* some descritional text */
+  pcb_fp_type_t Type;
 } LibraryEntryType, *LibraryEntryTypePtr;
 //typedef LibraryEntryType *LibraryEntryTypePtr;
 
