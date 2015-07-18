@@ -159,7 +159,7 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn)
 	return PCB_FP_INVALID;
 }
 
-int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type), void *cookie)
+int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type), void *cookie, int subdir_may_not_exist)
 {
 	char olddir[MAXPATHLEN + 1];	/* The directory we start out in (cwd) */
 	char fn[MAXPATHLEN + 1], *fn_end;
@@ -179,7 +179,8 @@ int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const 
 	}
 
 	if (chdir(subdir)) {
-		ChdirErrorMessage(subdir);
+		if (!subdir_may_not_exist)
+			ChdirErrorMessage(subdir);
 		return 0;
 	}
 
@@ -247,7 +248,7 @@ int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const 
 			if ((S_ISDIR(buffer.st_mode)) || (S_ISLNK(buffer.st_mode))) {
 				cb(cookie, subdir, subdirentry->d_name, PCB_FP_DIR);
 				if (recurse) {
-					n_footprints += pcb_fp_list(fn, recurse, cb, cookie);
+					n_footprints += pcb_fp_list(fn, recurse, cb, cookie, 0);
 				}
 				continue;
 			}
@@ -320,7 +321,7 @@ char *pcb_fp_search(const char *search_path, const char *basename, int parametri
 		memcpy(path, p, end-p);
 		path[end-p] = '\0';
 /*		printf(" in '%s'\n", path);*/
-		pcb_fp_list(path, 1, pcb_fp_search_cb, &ctx);
+		pcb_fp_list(path, 1, pcb_fp_search_cb, &ctx, 1);
 		if (ctx.path != NULL) {
 			sprintf(path, "%s%c%s", ctx.path, PCB_DIR_SEPARATOR_C, basename);
 			free(ctx.path);

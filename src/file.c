@@ -128,7 +128,7 @@ static int WritePCB (FILE *);
 static int WritePCBFile (char *);
 static int WritePipe (char *, bool);
 static int ParseLibraryTree (void);
-static int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath);
+static int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath, int is_root);
 static const char *pcb_basename (const char *p);
 
 /* ---------------------------------------------------------------------------
@@ -1224,7 +1224,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_ty
 	return 0;
 }
 
-static int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath)
+static int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath, int is_root)
 {
 	LibraryMenuTypePtr menu = NULL; /* Pointer to PCB's library menu structure */
 	list_st_t l;
@@ -1246,12 +1246,12 @@ static int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath)
   l.subdirs = NULL;
 	l.children = 0;
 
-  pcb_fp_list(working, 0, list_cb, &l);
+  pcb_fp_list(working, 0, list_cb, &l, is_root);
 
 	/* now recurse to each subdirectory mapped in the previous call;
 	   by now we don't care if menu is ruined by the realloc() in GetLibraryMenuMemory() */
 	for(d = l.subdirs; d != NULL; d = nextd) {
-		l.children+=LoadNewlibFootprintsFromDir(d->subdir, d->parent);
+		l.children+=LoadNewlibFootprintsFromDir(d->subdir, d->parent, 0);
 		nextd = d->next;
 		free(d->subdir);
 		free(d->parent);
@@ -1301,7 +1301,7 @@ ParseLibraryTree (void)
 #endif
 
       /* Next read in any footprints in the top level dir */
-      n_footprints += LoadNewlibFootprintsFromDir(".", toppath);
+      n_footprints += LoadNewlibFootprintsFromDir(".", toppath, 1);
     }
 
 #ifdef DEBUG
