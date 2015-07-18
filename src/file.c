@@ -1302,11 +1302,6 @@ ParseLibraryTree (void)
   return n_footprints;
 }
 
-/* ---------------------------------------------------------------------------
- * Read contents of the library description file (for M4)
- * and then read in M4 libs.  Then call a fcn to read the newlib
- * footprints.
- */
 int
 ReadLibraryContents (void)
 {
@@ -1316,8 +1311,7 @@ ReadLibraryContents (void)
   LibraryMenuTypePtr menu = NULL;
   LibraryEntryTypePtr entry;
 
-  /* Now after reading in the M4 libs, call a function to
-   * read the newlib footprint libraries.  Then sort the whole
+  /* List all footprint libraries.  Then sort the whole
    * library.
    */
   if (ParseLibraryTree () > 0 || resultFP != NULL)
