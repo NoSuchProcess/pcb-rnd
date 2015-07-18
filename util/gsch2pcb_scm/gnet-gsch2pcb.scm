@@ -49,6 +49,8 @@
 
 (define (gsch2pcb output-filename)
   (begin
-    (set-current-output-port (gnetlist:output-port output-filename))
+;;    (set-current-output-port (gnetlist:output-port output-filename))
+    (set-current-output-port (open-output-file output-filename))
+
     ;; don't use m4
     (gsch2pcb:write-value-footprints (current-output-port) packages)))
