@@ -1,0 +1,20 @@
+#!/bin/sh
+
+#@@example dip(18)
+
+#@@purpose Generate classic DIP packages.
+
+#@@desc Generate SO packages with variable number of pins and
+#@@desc row spacing
+#@@params n, row_spacing, pad_spacing
+
+#@@param:n number of pins
+#@@param:row_spacing spacing between the two rows of pads: distance between the end of the first and last pins (in mil, or in mm using the mm suffix; optional, default is 100 mil)
+#@@param:pad_spacing spacing between the centerline of two pads (in mil, or in mm using the mm suffix; optional, default is 100 mil)
+#@@param:ext_bloat how much longer the pad should extend outwards from the end-point of the pin (in mil, or in mm using the mm suffix; optional)
+#@@param:int_bloat how much longer the pad should extend inwards from the end-point of the pin (in mil, or in mm using the mm suffix; optional)
+
+#@@include common.awk
+
+awk -f `dirname $0`/common.awk -f `dirname $0`/so.awk -v "args=$*"
+
