@@ -165,7 +165,6 @@ function hole(x, y, ring, clr, mask, drill, name, square)
 
 function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 {
-print "pad: ", x1, y1, x2, y2, thicnkess > "/dev/stderr"
 	if (photo) {
 		print "macro push mask"
 		print "color", clr_board
