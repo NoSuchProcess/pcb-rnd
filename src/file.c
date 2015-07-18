@@ -1171,7 +1171,9 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_ty
 	LibraryEntryTypePtr entry;      /* Pointer to individual menu entry */
 	size_t len;
 
-//	n_footprints++;
+	if (type == PCB_FP_DIR)
+		return 0;
+
 	entry = GetLibraryEntryMemory (menu);
 
 	/* 
@@ -1192,6 +1194,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_ty
 
 	/* mark as directory tree (newlib) library */
 	entry->Template = (char *) -1;
+	return 0;
 }
 
 static int LoadNewlibFootprintsFromDir(char *libpath, char *toppath)

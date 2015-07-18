@@ -143,6 +143,7 @@ int pcb_fp_list(char *subdir, int recurse,  int (*cb)(void *cookie, const char *
 /*    printf("...  Examining file %s ... \n", subdirentry->d_name); */
 #endif
 
+
     /* Ignore non-footprint files found in this directory
      * We're skipping .png and .html because those
      * may exist in a library tree to provide an html browsable
@@ -159,13 +160,26 @@ int pcb_fp_list(char *subdir, int recurse,  int (*cb)(void *cookie, const char *
       && (l < 5 || NSTRCMP(subdirentry->d_name + (l - 5), ".html") != 0)
       && (l < 4 || NSTRCMP(subdirentry->d_name + (l - 4), ".pcb") != 0) )
       {
+
 #ifdef DEBUG
 /*	printf("...  Found a footprint %s ... \n", subdirentry->d_name); */
 #endif
+
+			if (subdirentry->d_type == DT_DIR) {
+				cb(cookie, subdir, subdirentry->d_name, PCB_FP_DIR);
+				if (recurse) {
+					char newdir[MAXPATHLEN + 1];
+					sprintf(newdir, "%s/%s", subdir, subdirentry->d_name);
+					n_footprints += pcb_fp_list(newdir, recurse, cb, cookie);
+				}
+				continue;
+			}
+			if ((subdirentry->d_type == DT_REG) || (subdirentry->d_type == DT_LNK)) {
+				n_footprints++;
         if (cb(cookie, subdir, subdirentry->d_name, PCB_FP_FILE))
         	break;
-				n_footprints++;
-      }
+     	}
+  	}
   }
   /* Done.  Clean up, cd back into old dir, and return */
   closedir (subdirobj);
