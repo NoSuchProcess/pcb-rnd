@@ -5,6 +5,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996,1997,1998,2005,2006 Thomas Nau
+ *  Copyright (C) 2015 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -96,6 +97,7 @@
 #include "set.h"
 #include "strflags.h"
 #include "portability.h"
+#include "libpcb_fp.h"
 
 #ifdef HAVE_LIBDMALLOC
 #include <dmalloc.h>
@@ -1151,6 +1153,8 @@ RemoveTMPData (void)
  * Parse the directory tree where newlib footprints are found
  */
 
+/* TODO */
+
 /* Helper function for ParseLibraryTree */
 static char *
 pcb_basename (char *p)
@@ -1161,104 +1165,20 @@ pcb_basename (char *p)
   return p;
 }
 
-/* This is a helper function for ParseLibrary Tree.   Given a char *path,
- * it finds all newlib footprints in that dir and sticks them into the
- * library menu structure named entry.
- */
-static int
-LoadNewlibFootprintsFromDir(char *libpath, char *toppath)
+static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_type_t type)
 {
-  char olddir[MAXPATHLEN + 1];    /* The directory we start out in (cwd) */
-  char subdir[MAXPATHLEN + 1];    /* The directory holding footprints to load */
-  DIR *subdirobj;                 /* Interable object holding all subdir entries */
-  struct dirent *subdirentry;     /* Individual subdir entry */
-  struct stat buffer;             /* Buffer used in stat */
-  LibraryMenuTypePtr menu = NULL; /* Pointer to PCB's library menu structure */
-  LibraryEntryTypePtr entry;      /* Pointer to individual menu entry */
-  size_t l;
-  size_t len;
-  int n_footprints = 0;           /* Running count of footprints found in this subdir */
+	LibraryMenuTypePtr menu = (LibraryMenuTypePtr)cookie;
+	LibraryEntryTypePtr entry;      /* Pointer to individual menu entry */
+	size_t len;
 
-  /* Cache old dir, then cd into subdir because stat is given relative file names. */
-  memset (subdir, 0, sizeof subdir);
-  memset (olddir, 0, sizeof olddir);
-  if (GetWorkingDirectory (olddir) == NULL)
-    {
-      Message (_("LoadNewlibFootprintsFromDir: Could not determine initial working directory\n"));
-      return 0;
-    }
-
-  if (strcmp (libpath, "(local)") == 0)
-    strcpy (subdir, ".");
-  else
-    strcpy (subdir, libpath);
-
-  if (chdir (subdir))
-    {
-      ChdirErrorMessage (subdir);
-      return 0;
-    }
-
-  /* Determine subdir is abs path */
-  if (GetWorkingDirectory (subdir) == NULL)
-    {
-      Message (_("LoadNewlibFootprintsFromDir: Could not determine new working directory\n"));
-      if (chdir (olddir))
-        ChdirErrorMessage (olddir);
-      return 0;
-    }
-
-  /* First try opening the directory specified by path */
-  if ( (subdirobj = opendir (subdir)) == NULL )
-    {
-      OpendirErrorMessage (subdir);
-      if (chdir (olddir))
-        ChdirErrorMessage (olddir);
-      return 0;
-    }
-
-  /* Get pointer to memory holding menu */
-  menu = GetLibraryMenuMemory (&Library);
-  /* Populate menuname and path vars */
-  menu->Name = strdup (pcb_basename(subdir));
-  menu->directory = strdup (pcb_basename(toppath));
-
-  /* Now loop over files in this directory looking for files.
-   * We ignore certain files which are not footprints.
-   */
-  while ((subdirentry = readdir (subdirobj)) != NULL)
-  {
-#ifdef DEBUG
-/*    printf("...  Examining file %s ... \n", subdirentry->d_name); */
-#endif
-
-    /* Ignore non-footprint files found in this directory
-     * We're skipping .png and .html because those
-     * may exist in a library tree to provide an html browsable
-     * index of the library.
-     */
-    l = strlen (subdirentry->d_name);
-    if (!stat (subdirentry->d_name, &buffer) && S_ISREG (buffer.st_mode)
-      && subdirentry->d_name[0] != '.'
-      && NSTRCMP (subdirentry->d_name, "CVS") != 0
-      && NSTRCMP (subdirentry->d_name, "Makefile") != 0
-      && NSTRCMP (subdirentry->d_name, "Makefile.am") != 0
-      && NSTRCMP (subdirentry->d_name, "Makefile.in") != 0
-      && (l < 4 || NSTRCMP(subdirentry->d_name + (l - 4), ".png") != 0) 
-      && (l < 5 || NSTRCMP(subdirentry->d_name + (l - 5), ".html") != 0)
-      && (l < 4 || NSTRCMP(subdirentry->d_name + (l - 4), ".pcb") != 0) )
-      {
-#ifdef DEBUG
-/*	printf("...  Found a footprint %s ... \n", subdirentry->d_name); */
-#endif
-	n_footprints++;
+//	n_footprints++;
 	entry = GetLibraryEntryMemory (menu);
 
 	/* 
 	 * entry->AllocatedMemory points to abs path to the footprint.
 	 * entry->ListEntry points to fp name itself.
 	 */
-	len = strlen(subdir) + strlen("/") + strlen(subdirentry->d_name) + 1;
+	len = strlen(subdir) + strlen("/") + strlen(name) + 1;
 	entry->AllocatedMemory = (char *)calloc (1, len);
 	strcat (entry->AllocatedMemory, subdir);
 	strcat (entry->AllocatedMemory, PCB_DIR_SEPARATOR_S);
@@ -1268,18 +1188,34 @@ LoadNewlibFootprintsFromDir(char *libpath, char *toppath)
 	    + strlen (entry->AllocatedMemory);
 
 	/* Now place footprint name into AllocatedMemory */
-	strcat (entry->AllocatedMemory, subdirentry->d_name);
+	strcat (entry->AllocatedMemory, name);
 
 	/* mark as directory tree (newlib) library */
 	entry->Template = (char *) -1;
-      }
-  }
-  /* Done.  Clean up, cd back into old dir, and return */
-  closedir (subdirobj);
-  if (chdir (olddir))
-    ChdirErrorMessage (olddir);
-  return n_footprints;
 }
+
+static int LoadNewlibFootprintsFromDir(char *libpath, char *toppath)
+{
+	LibraryMenuTypePtr menu = NULL; /* Pointer to PCB's library menu structure */
+	char subdir[MAXPATHLEN + 1];    /* The directory holding footprints to load */
+
+  memset (subdir, 0, sizeof subdir);
+
+  if (strcmp (libpath, "(local)") == 0)
+    strcpy (subdir, ".");
+  else
+    strcpy (subdir, libpath);
+
+  /* Get pointer to memory holding menu */
+  menu = GetLibraryMenuMemory (&Library);
+
+  /* Populate menuname and path vars */
+  menu->Name = strdup (pcb_basename(subdir));
+  menu->directory = strdup (pcb_basename(toppath));
+
+	pcb_fp_list(subdir, 0, list_cb, menu);
+}
+
 
 
 /* This function loads the newlib footprints into the Library.
@@ -1511,6 +1447,8 @@ ReadLibraryContents (void)
   
   return (1);
 }
+
+/* TODO */
 
 #define BLANK(x) ((x) == ' ' || (x) == '\t' || (x) == '\n' \
 		|| (x) == '\0')
