@@ -229,3 +229,19 @@ function parse_dim(h)
 	}
 	return mil(h)
 }
+
+# Draw a DIP outline: useful for any rectangular package with a little
+# half circle centered on the top line
+#  arcr: radius of the half circle
+#  xhalf: optional coordinate where the circle should be put
+function dip_outline(x1, y1, x2, y2, arcr   ,xhalf)
+{
+	if (xhalf == "")
+		xhalf=(x1+x2)/2
+
+	element_rectangle(x1, y1, x2, y2, "top")
+	element_line(x1, y1, xhalf-arcr, y1)
+	element_line(xhalf+arcr, y1, x2, y1)
+
+	element_arc(xhalf, y1,  arcr, arcr,  0, 180)
+}

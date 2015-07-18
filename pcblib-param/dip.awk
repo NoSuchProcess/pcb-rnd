@@ -17,10 +17,7 @@ BEGIN {
 		element_pin(spacing, (n-1) * mil(100), P["n"] - n + 1)
 	}
 
-	element_rectangle(-half, -half, spacing + half , (n-2) * mil(100) + half, "top")
-	element_line(-half, -half,            spacing/2-half, -half)
-	element_line(spacing/2+half, -half,   spacing + half, -half)
-	element_arc(spacing/2, -half,  half, half,  0, 180)
+	dip_outline(-half, -half, spacing + half , (n-2) * mil(100) + half,  half)
 
 	element_end()
 }
