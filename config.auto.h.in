@@ -290,9 +290,11 @@ print [@
 	":" \
 	"./footprints"\
 	":" \
-	PCB_PREFIX  "/share/pcb/pcblib-file"\
+	PCB_PREFIX  "/share/pcb/pcblib"\
 	":"\
-	PCB_PREFIX  "/share/pcb/pcblib-param"
+	PCB_PREFIX  "/share/pcb/pcblib-newlib"
+
+/* NOTE: /share/pcb/pcblib-newlib is kept as a temporary hack for compatibility */
 
 #define BINDIR PCB_PREFIX "/bin"
 
