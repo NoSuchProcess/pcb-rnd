@@ -1,0 +1,31 @@
+<html>
+<body>
+<h1> pcb-rnd - the [pcb-fp] patch </h1>
+
+Pcb-fp is an effort to clean up the footprint situation:
+<ul>
+	<li> replace lib and newlib with pcblib, a library that tries to provide common footprints only
+	<li> clear the syntax: if a footprint name contains parenthesis, it's generated (parametric footprint), else it's the name of a static footprint file
+	<li> parametric footprints: replace m4 with a generic, language-independent footprint generator framework
+	<ul>
+		<li> implement libpcb_fp, which centralizes searching and loading footprints
+		<li> fork gsch2pcb to gsch2pcb-rnd that uses libpcb_fp (and does not have any m4 references hardwired)
+		<li> fork gnet_gsch2pcb.scm (the gnetlist backend) to remove m4 heuristics
+	</ul>
+</ul>
+
+
+<h2> save/load and compatibility </h2>
+Save/load files are not affected. If a schematics is written for the new
+library and depends on parametric footprints:
+<ul>
+	<li> vanilla gsch2pcb won't find those footprints
+	<li> vanilla pcb won't show those footprints in the footprint selection dialog
+</ul>
+
+<h2> plans </h2>
+<!--No plans - this feature is fully implemented.-->
+Finish gsch2pcb-rnd.
+
+</body>
+</html>
