@@ -148,6 +148,7 @@ function hole(x, y, ring, clr, mask, drill, name, square)
 	flash(x, y, ring, square)
 	print "endmacro"
 
+	has_hole=1
 	print "macro push hole"
 	print "color", clr_hole
 	flash(x, y, drill, 0)
@@ -162,6 +163,27 @@ function hole(x, y, ring, clr, mask, drill, name, square)
 	edges(x+(ring+clr)/2, y+(ring+clr)/2)
 }
 
+function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
+{
+print "pad: ", x1, y1, x2, y2, thicnkess > "/dev/stderr"
+	if (photo) {
+		print "macro push mask"
+		print "color", clr_board
+		rline(x1, y1, x2, y2, thickness+clr, square)
+		print "endmacro"
+	}
+
+
+	print "macro push copper"
+	rline(x1, y1, x2, y2, thickness, square)
+	print "endmacro"
+
+	print "macro push annotation"
+	print "color", clr_annotation
+	print "text", x1, y1, name
+	print "endmacro"
+
+}
 
 /^[ \t]*#/ { next }
 
@@ -196,6 +218,14 @@ function hole(x, y, ring, clr, mask, drill, name, square)
 	sub(".*Pin[[]", "", $0)
 	sub("]$", "", $0)
 	hole($1, $2, $3, $4, $5, $6, $8, ($9 ~ "square"))
+}
+
+#	Pad[ 0 0 0 0 0 5000 8600 "" "4" ""]
+/Pad[[]/ {
+	sub(".*Pad[[]", "", $0)
+	sub("]$", "", $0)
+
+	pad($1, $2, $3, $4, $5, $6, $7, $9,   1)
 }
 
 END {
@@ -250,7 +280,8 @@ END {
 
 
 	print "invoke copper"
-	print "invoke hole"
+	if (has_hole)
+		print "invoke hole"
 	print "invoke silk"
 	print "invoke annotation"
 	print "flush"
