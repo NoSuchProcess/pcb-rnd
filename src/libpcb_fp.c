@@ -157,8 +157,7 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn)
 	return PCB_FP_INVALID;
 }
 
-int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type),
-								void *cookie)
+int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type), void *cookie)
 {
 	char olddir[MAXPATHLEN + 1];	/* The directory we start out in (cwd) */
 	char fn[MAXPATHLEN + 1], *fn_end;
@@ -283,13 +282,55 @@ int pcb_fp_dupname(const char *name, char **basename, char **params)
 	return 1;
 }
 
+typedef struct {
+	char *target;
+	int parametric;
+	char *path;
+} pcb_fp_search_t;
+
+static int pcb_fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_fp_type_t type)
+{
+	pcb_fp_search_t *ctx = (pcb_fp_search_t *)cookie;
+	if ((strcmp(ctx->target, name) == 0) && ((!!ctx->parametric) == (type == PCB_FP_PARAMETRIC))) {
+		ctx->path = strdup(subdir);
+		return 1;
+	}
+	return 0;
+}
+
 char *pcb_fp_search(const char *search_path, const char *basename, int parametric)
 {
+	int found;
+	char *p, *end;
+	char path[MAXPATHLEN + 1];
+	pcb_fp_search_t ctx;
+
 	if ((*basename == '/') || (*basename == PCB_DIR_SEPARATOR_C))
 		return strdup(basename);
-#warning TODO
-	abort();
+
+	ctx.target = basename;
+	ctx.parametric = parametric;
+	ctx.path = NULL;
+
+/*	printf("Looking for %s\n", ctx.target);*/
+
+	for(p = search_path; end = strchr(p, ':'); p = end+1) {
+		memcpy(path, p, end-p);
+		path[end-p] = '\0';
+/*		printf(" in '%s'\n", path);*/
+		pcb_fp_list(path, 1, pcb_fp_search_cb, &ctx);
+		if (ctx.path != NULL) {
+			sprintf(path, "%s%c%s", ctx.path, PCB_DIR_SEPARATOR_C, basename);
+			free(ctx.path);
+/*			printf("  found '%s'\n", path);*/
+			return strdup(path);
+		}
+		if (end == NULL)
+			break;
+	}
+	return NULL;
 }
+
 
 FILE *pcb_fp_fopen(const char *libshell, const char *path, const char *name, int *is_parametric)
 {
