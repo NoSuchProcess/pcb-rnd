@@ -391,6 +391,11 @@ library_window_callback_tree_selection_changed (GtkTreeSelection * selection,
 	if ((PASTEBUFFER->Data != NULL) && (PASTEBUFFER->Data->Element != NULL) && (PASTEBUFFER->Data->Element->data != NULL))
 		g_object_set (library_window->preview,
 			"element-data", PASTEBUFFER->Data->Element->data, NULL);
+	else {
+		g_object_set (library_window->preview,
+			"element-data", NULL, NULL);
+
+	}
 }
 
 /*! \brief Requests re-evaluation of the filter.
