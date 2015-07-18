@@ -86,6 +86,71 @@
 
 RCSID("$Id$");
 
+
+pcb_fp_type_t pcb_fp_file_type(const char *fn)
+{
+	int c;
+	int first_element = 1;
+	FILE *f;
+	enum {
+		ST_WS,
+		ST_COMMENT,
+		ST_ELEMENT,
+	} state = ST_WS;
+
+	f = fopen(fn, "r");
+	if (f == NULL)
+		return PCB_FP_INVALID;
+
+	while((c = fgetc(f)) != EOF) {
+		switch(state) {
+			case ST_ELEMENT:
+				if (isspace(c))
+					break;
+				if ((c == '(') || (c == '[')) {
+					fclose(f);
+					return PCB_FP_FILE;
+				}
+			case ST_WS:
+				if (isspace(c))
+					break;
+				if (c == '#') {
+					state = ST_COMMENT;
+					break;
+				}
+				else if ((first_element) && (c == 'E')) {
+					char s[8];
+					/* Element */
+					fgets(s, 7, f);
+					s[6] = '\0';
+					if (strcmp(s, "lement") == 0) {
+						state = ST_ELEMENT;
+						break;
+					}
+				}
+				first_element = 0;
+				/* fall-thru for detecting @ */
+			case ST_COMMENT:
+				if ((c == '\r') || (c == '\n'))
+					state = ST_WS;
+				if (c == '@') {
+					char s[10];
+					/* #@@purpose */
+					fgets(s, 9, f);
+					s[8] = '\0';
+					if (strcmp(s, "@purpose") == 0) {
+						fclose(f);
+						return PCB_FP_PARAMETRIC;
+					}
+				}
+				break;
+		}
+	}
+
+	fclose(f);
+	return PCB_FP_INVALID;
+}
+
 /* This is a helper function for ParseLibrary Tree.   Given a char *path,
  * it finds all newlib footprints in that dir and sticks them into the
  * library menu structure named entry.
@@ -165,18 +230,26 @@ int pcb_fp_list(char *subdir, int recurse, int (*cb) (void *cookie, const char *
 /*	printf("...  Found a footprint %s ... \n", subdirentry->d_name); */
 #endif
 			strcpy(fn_end, subdirentry->d_name);
-			if (subdirentry->d_type == DT_DIR) {
+			if ((subdirentry->d_type == DT_REG) || (subdirentry->d_type == DT_LNK)) {
+				pcb_fp_type_t ty;
+				ty = pcb_fp_file_type(subdirentry->d_name);
+printf("TY: %s -> %d\n", subdirentry->d_name, ty);
+				if ((ty == PCB_FP_FILE) || (ty == PCB_FP_PARAMETRIC)) {
+					n_footprints++;
+					if (cb(cookie, subdir, subdirentry->d_name, PCB_FP_FILE))
+						break;
+					continue;
+				}
+			}
+
+			if ((subdirentry->d_type == DT_DIR) || (subdirentry->d_type == DT_LNK)) {
 				cb(cookie, subdir, subdirentry->d_name, PCB_FP_DIR);
 				if (recurse) {
 					n_footprints += pcb_fp_list(fn, recurse, cb, cookie);
 				}
 				continue;
 			}
-			if ((subdirentry->d_type == DT_REG) || (subdirentry->d_type == DT_LNK)) {
-				n_footprints++;
-				if (cb(cookie, subdir, subdirentry->d_name, PCB_FP_FILE))
-					break;
-			}
+
 		}
 	}
 	/* Done.  Clean up, cd back into old dir, and return */

@@ -1,4 +1,5 @@
 typedef enum {
+	PCB_FP_INVALID,
 	PCB_FP_DIR,
 	PCB_FP_FILE,
 	PCB_FP_PARAMETRIC
