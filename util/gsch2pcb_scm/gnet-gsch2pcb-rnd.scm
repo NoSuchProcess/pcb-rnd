@@ -28,29 +28,29 @@
 
 ;; Splits a string with space separated words and returns a list
 ;; of the words (still as strings).
-(define (gsch2pcb:split-to-list the-string)
+(define (gsch2pcb-rnd:split-to-list the-string)
   (filter!
    (lambda (x) (not (string=? "" x)))
    (string-split the-string #\space)))
 
 ;; Write the footprint for the package `refdes' to `port'.
-(define (gsch2pcb:write-value-footprint refdes port)
+(define (gsch2pcb-rnd:write-value-footprint refdes port)
 
   (let ((value (gnetlist:get-package-attribute refdes "value"))
-         (footprint (gsch2pcb:split-to-list
+         (footprint (gsch2pcb-rnd:split-to-list
                      (gnetlist:get-package-attribute refdes "footprint"))))
 
     (format port "PKG(~A,~A,~A)\n" (string-join footprint " ") refdes value)))
 
 ;; Write the footprints for all the refdes' in `lst'.
-(define (gsch2pcb:write-value-footprints port lst)
-  (for-each (lambda (x) (gsch2pcb:write-value-footprint x port)) lst))
+(define (gsch2pcb-rnd:write-value-footprints port lst)
+  (for-each (lambda (x) (gsch2pcb-rnd:write-value-footprint x port)) lst))
 
 
-(define (gsch2pcb output-filename)
+(define (gsch2pcb-rnd output-filename)
   (begin
 ;;    (set-current-output-port (gnetlist:output-port output-filename))
     (set-current-output-port (open-output-file output-filename))
 
     ;; don't use m4
-    (gsch2pcb:write-value-footprints (current-output-port) packages)))
+    (gsch2pcb-rnd:write-value-footprints (current-output-port) packages)))

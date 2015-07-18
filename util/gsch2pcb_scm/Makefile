@@ -11,7 +11,7 @@ $(diffs): %.diff: %.net golden/%.net
 	diff $^ > $@
 
 $(netlists): %.net: %.sch
-	gnetlist -g gsch2pcb -o $@ -m gnet-gsch2pcb.scm $<
+	gnetlist -g gsch2pcb-rnd -o $@ -m gnet-gsch2pcb-rnd.scm $<
 
 clean: 
 	-rm -rf $(diffs) $(netlists)
