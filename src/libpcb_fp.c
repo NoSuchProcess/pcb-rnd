@@ -286,17 +286,24 @@ int pcb_fp_dupname(const char *name, char **basename, char **params)
 }
 
 typedef struct {
-	char *target;
+	const char *target;
+	int target_len;
 	int parametric;
 	char *path;
+	char *real_name;
 } pcb_fp_search_t;
 
 static int pcb_fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_fp_type_t type)
 {
 	pcb_fp_search_t *ctx = (pcb_fp_search_t *)cookie;
-	if ((strcmp(ctx->target, name) == 0) && ((!!ctx->parametric) == (type == PCB_FP_PARAMETRIC))) {
-		ctx->path = strdup(subdir);
-		return 1;
+	if ((strncmp(ctx->target, name, ctx->target_len) == 0) && ((!!ctx->parametric) == (type == PCB_FP_PARAMETRIC))) {
+		const char *suffix = name + ctx->target_len;
+		/* ugly heuristics: footprint names may end in .fp or .ele */
+		if ((*suffix == '\0') || (strcasecmp(suffix, ".fp") == 0) || (strcasecmp(suffix, ".ele") == 0)) {
+			ctx->path = strdup(subdir);
+			ctx->real_name = strdup(name);
+			return 1;
+		}
 	}
 	return 0;
 }
@@ -304,7 +311,7 @@ static int pcb_fp_search_cb(void *cookie, const char *subdir, const char *name, 
 char *pcb_fp_search(const char *search_path, const char *basename, int parametric)
 {
 	int found;
-	char *p, *end;
+	const char *p, *end;
 	char path[MAXPATHLEN + 1];
 	pcb_fp_search_t ctx;
 
@@ -312,6 +319,7 @@ char *pcb_fp_search(const char *search_path, const char *basename, int parametri
 		return strdup(basename);
 
 	ctx.target = basename;
+	ctx.target_len = strlen(ctx.target);
 	ctx.parametric = parametric;
 	ctx.path = NULL;
 
@@ -323,8 +331,9 @@ char *pcb_fp_search(const char *search_path, const char *basename, int parametri
 /*		printf(" in '%s'\n", path);*/
 		pcb_fp_list(path, 1, pcb_fp_search_cb, &ctx, 1);
 		if (ctx.path != NULL) {
-			sprintf(path, "%s%c%s", ctx.path, PCB_DIR_SEPARATOR_C, basename);
+			sprintf(path, "%s%c%s", ctx.path, PCB_DIR_SEPARATOR_C, ctx.real_name);
 			free(ctx.path);
+			free(ctx.real_name);
 /*			printf("  found '%s'\n", path);*/
 			return strdup(path);
 		}
@@ -346,7 +355,7 @@ FILE *pcb_fp_fopen(const char *libshell, const char *path, const char *name, int
 
 	fullname = pcb_fp_search(path, basename, *is_parametric);
 
-	printf("pcb_fp_fopen: %d '%s' '%s' fullname='%s'\n", *is_parametric, basename, params, fullname);
+/*	printf("pcb_fp_fopen: %d '%s' '%s' fullname='%s'\n", *is_parametric, basename, params, fullname);*/
 
 	if (fullname != NULL) {
 		if (*is_parametric) {
