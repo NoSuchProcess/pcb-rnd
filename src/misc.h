@@ -33,6 +33,7 @@
 
 #include <stdlib.h>
 #include "global.h"
+#include "ds.h"
 #include "mymem.h"
 
 enum unitflags { UNIT_PERCENT = 1 };

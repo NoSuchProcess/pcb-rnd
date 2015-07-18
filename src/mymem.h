@@ -59,11 +59,6 @@
 /* ---------------------------------------------------------------------------
  * some memory types
  */
-typedef struct
-{
-  size_t MaxLength;
-  char *Data;
-} DynamicStringType, *DynamicStringTypePtr;
 
 RubberbandTypePtr GetRubberbandMemory (void);
 PinTypePtr GetPinMemory (ElementTypePtr);
@@ -98,9 +93,6 @@ void FreeDataMemory (DataTypePtr);
 void FreeLibraryMemory (LibraryTypePtr);
 void FreePointerListMemory (PointerListTypePtr);
 void DeleteLibraryMenuMemory (LibraryTypePtr lib, int menuidx);
-void DSAddCharacter (DynamicStringTypePtr, char);
-void DSAddString (DynamicStringTypePtr, const char *);
-void DSClearString (DynamicStringTypePtr);
 char *StripWhiteSpaceAndDup (const char *);
 
 #ifdef NEED_STRDUP

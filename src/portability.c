@@ -34,6 +34,8 @@
 #include "config.h"
 #endif
 
+#include "ds.h"
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <math.h>
