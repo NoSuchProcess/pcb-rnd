@@ -847,10 +847,7 @@ struct drc_violation_st
  * at runtime to allow pcb to be relocatable
  */
 extern char *bindir;       /* The dir in which PCB installation was found */
-extern char *pcblibdir;    /* The system M4 fp directory */
-extern char *pcblibpath;   /* The search path for M4 fps */
-extern char *pcbtreedir;   /* The system newlib fp directory */
-extern char *pcbtreepath;  /* The search path for newlib fps */
+extern char *pcblibdir;
 extern char *exec_prefix;
 extern char *homedir;
 

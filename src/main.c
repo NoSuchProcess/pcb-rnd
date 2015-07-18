@@ -1469,9 +1469,6 @@ print_version ()
 char *bindir = NULL;
 char *exec_prefix = NULL;
 char *pcblibdir = NULL;
-char *pcblibpath = NULL;
-char *pcbtreedir = NULL;
-char *pcbtreepath = NULL;
 char *homedir = NULL;
 
 static void
@@ -1606,43 +1603,9 @@ InitPaths (char *argv0)
   sprintf (pcblibdir, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, 
 	   BINDIR_TO_PCBLIBDIR);
 
-  /* and the path to PCBTREEDIR */
-  l = strlen (bindir) + 1 + strlen (BINDIR_TO_PCBTREEDIR) + 1;
-  if ( (pcbtreedir = (char *) malloc (l * sizeof (char) )) == NULL )
-    {
-      fprintf (stderr, "InitPaths():  malloc failed\n");
-      exit (1);
-    }
-  sprintf (pcbtreedir, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, 
-	   BINDIR_TO_PCBTREEDIR);
-
-  /* and the search path including PCBLIBDIR */
-  l = strlen (pcblibdir) + 3;
-  if ( (pcblibpath = (char *) malloc (l * sizeof (char) )) == NULL )
-    {
-      fprintf (stderr, "InitPaths():  malloc failed\n");
-      exit (1);
-    }
-  sprintf (pcblibpath, ".%s%s", PCB_PATH_DELIMETER, pcblibdir);
-
-  /* and the newlib search path */
-  l = strlen (pcblibdir) + 1 + strlen (pcbtreedir) 
-    + strlen ("pcblib-newlib") + 2;
-  if ( (pcbtreepath = (char *) malloc (l * sizeof (char) )) == NULL )
-    {
-      fprintf (stderr, "InitPaths():  malloc failed\n");
-      exit (1);
-    }
-  sprintf (pcbtreepath, "%s%s%s%spcblib-newlib", pcbtreedir, 
-	PCB_PATH_DELIMETER, pcblibdir,
-	PCB_DIR_SEPARATOR_S);
-  
 #ifdef DEBUG
   printf ("bindir      = %s\n", bindir);
   printf ("pcblibdir   = %s\n", pcblibdir);
-  printf ("pcblibpath  = %s\n", pcblibpath);
-  printf ("pcbtreedir  = %s\n", pcbtreedir);
-  printf ("pcbtreepath = %s\n", pcbtreepath);
 #endif
 
   l = sizeof (main_attribute_list) / sizeof (main_attribute_list[0]);
@@ -1657,12 +1620,7 @@ InitPaths (char *argv0)
 	   || (NSTRCMP (main_attribute_list[i].name, "element-path") == 0)
 	   || (NSTRCMP (main_attribute_list[i].name, "lib-path") == 0) )
 	{
-	  main_attribute_list[i].default_val.str_value = pcblibpath;
-	}
-
-      if (NSTRCMP (main_attribute_list[i].name, "lib-newlib") == 0)
-	{
-	  main_attribute_list[i].default_val.str_value = pcbtreepath;
+	  main_attribute_list[i].default_val.str_value = pcblibdir;
 	}
 
     }
