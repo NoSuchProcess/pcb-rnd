@@ -85,6 +85,7 @@ static gboolean remove_unfound_elements = TRUE,
 
 static char *element_search_path = NULL;
 static char *element_shell = PCB_LIBRARY_SHELL;
+static char *DefaultPcbFile = PCB_DEFAULT_PCB_FILE;
 
 void ChdirErrorMessage (char *DirName)
 {
@@ -660,6 +661,29 @@ fprintf(stderr, "   val: %s\n", value);*/
   return el;
 }
 
+/* Copies the content of fn to fout and returns 0 on success. */
+static int CatPCB(FILE *fout, const char *fn)
+{
+	FILE *fin;
+	fin = fopen(fn, "r");
+	if (fin == NULL)
+		return -1;
+
+	for(;;) {
+		char buff[1024];
+		int len;
+
+		len = fread(buff, 1, sizeof(buff), fin);
+		if (len <= 0)
+			break;
+
+		fwrite(buff, len, 1, fout);
+	}
+
+	fclose(fin);
+	return 0;
+}
+
 /* Process the newly created pcb file which is the output from
  *     gnetlist -g gsch2pcb-rnd ...
  *
@@ -685,6 +709,12 @@ add_elements (gchar * pcb_file)
     g_free (tmp_file);
     return 0;
   }
+
+  if ((CatPCB(f_out, DefaultPcbFile) != 0) && (CatPCB(f_out, "../src/" PCB_DEFAULT_PCB_FILE_SRC) != 0)) {
+    fprintf(stderr, "ERROR: can't load default pcb (%s)\n", DefaultPcbFile);
+    exit(1);
+  }
+
   while ((fgets (buf, sizeof (buf), f_in)) != NULL) {
     for (s = buf; *s == ' ' || *s == '\t'; ++s);
     if (skipping) {
@@ -995,6 +1025,8 @@ parse_config (gchar * config, gchar * arg)
     element_search_path = s;
   } else if (!strcmp (config, "output-name") || !strcmp (config, "o"))
     sch_basename = g_strdup (arg);
+  else if (!strcmp (config, "default-pcb") || !strcmp (config, "P"))
+    DefaultPcbFile = g_strdup(arg);
   else if (!strcmp (config, "schematics"))
     add_multiple_schematics (arg);
   else if (!strcmp (config, "gnetlist"))
@@ -1085,6 +1117,9 @@ static gchar *usage_string0 =
   "                           generators. It is useful on systems where popen()\n"
   "                           doesn't do the right thing or the process should\n"
   "                           be wrapped. Example -s \"/bin/sh -c\"\n"
+  "   -P, --default-pcb       Change the default PCB file's name; this file is\n"
+  "                           inserted on top of the *.new.pcb generated, for\n"
+  "                           PCB default settings\n"
   "   -o, --output-name N     Use output file names N.net, N.pcb, and N.new.pcb\n"
   "                           instead of foo.net, ... where foo is the basename\n"
   "                           of the first command line .sch file.\n"
