@@ -83,6 +83,29 @@ static gboolean remove_unfound_elements = TRUE,
   quiet_mode = FALSE,
   preserve, fix_elements, bak_done, need_PKG_purge;
 
+static char *element_search_path = PCB_LIBRARY_SEARCH_PATHS;
+static char *libshell = PCB_LIBRARY_SHELL;
+
+void ChdirErrorMessage (char *DirName)
+{
+	fprintf(stderr, "gsch2pcb-rnd: warning: can't cd to %s\n", DirName);
+}
+
+void OpendirErrorMessage (char *DirName)
+{
+	fprintf(stderr, "gsch2pcb-rnd: warning: can't opendir %s\n", DirName);
+}
+
+void PopenErrorMessage (char *cmd)
+{
+	fprintf(stderr, "gsch2pcb-rnd: warning: can't popen %s\n", cmd);
+}
+
+void Message (char *err)
+{
+	fprintf(stderr, "gsch2pcb-rnd: %s\n", err);
+}
+
 
 /**
  * Build and run a command. No redirection or error handling is
@@ -514,38 +537,17 @@ simple_translate (PcbElement * el)
 }
 
 static gboolean
-insert_element (FILE * f_out, gchar * element_file,
+insert_element (FILE * f_out, FILE *f_elem,
                 gchar * footprint, gchar * refdes, gchar * value)
 {
-  FILE *f_in;
   PcbElement *el;
   gchar *fmt, *s, buf[1024];
   gboolean retval = FALSE;
 
-  if ((f_in = fopen (element_file, "r")) == NULL) {
-    s = g_strdup_printf ("insert_element() can't open %s", element_file);
-    perror (s);
-    g_free (s);
-    return FALSE;
-  }
-  /* Scan the file to detect whether it's actually a PCB
-   * layout. Assumes that a PCB layout will have a "PCB" line. */
-  while ((fgets (buf, sizeof (buf), f_in)) != NULL) {
-    for (s = buf; *s == ' ' || *s == '\t'; ++s);
-    s[3] = 0;                   /* Truncate line */
-    if (strncmp ("PCB", s, sizeof (buf)) == 0) {
-      printf ("Warning: %s appears to be a PCB layout file. Skipping.\n",
-              element_file);
-      fclose (f_in);
-      return FALSE;
-    }
-  }
-  rewind (f_in);
-
   /* Copy the file element lines.  Substitute new parameters into the
    * Element() or Element[] line and strip comments.
    */
-  while ((fgets (buf, sizeof (buf), f_in)) != NULL) {
+  while ((fgets (buf, sizeof (buf), f_elem)) != NULL) {
     for (s = buf; *s == ' ' || *s == '\t'; ++s);
     if ((el = pcb_element_line_parse (s)) != NULL) {
       simple_translate (el);
@@ -561,7 +563,6 @@ insert_element (FILE * f_out, gchar * element_file,
       fputs (buf, f_out);
     pcb_element_free (el);
   }
-  fclose (f_in);
   return retval;
 }
 
@@ -669,11 +670,12 @@ fprintf(stderr, "   val: %s\n", value);*/
 static gint
 add_elements (gchar * pcb_file)
 {
-  FILE *f_in, *f_out;
+  FILE *f_in, *f_out, *fp;
   PcbElement *el = NULL;
-  gchar *command, *p, *tmp_file, *s, buf[1024];
+  gchar *command, *tmp_file, *s, buf[1024];
   gint total, paren_level = 0;
   gboolean skipping = FALSE;
+  int st;
 
   if ((f_in = fopen (pcb_file, "r")) == NULL)
     return 0;
@@ -705,21 +707,21 @@ add_elements (gchar * pcb_file)
       continue;
     }
 
-/* TODO */
     {
       if (verbose)
         printf ("%s: need new element for footprint  %s (value=%s)\n",
                 el->refdes, el->description, el->value);
 
-      p = search_element (el);
-      if (!p && verbose)
+      fp = pcb_fp_fopen(libshell, element_search_path, el->description, &st);
+
+      if (fp == NULL && verbose)
         printf ("\tNo file element found.\n");
 
-      if (p && insert_element (f_out, p,
+      if ((fp != NULL) && insert_element (f_out, fp,
                                el->description, el->refdes, el->value)) {
         ++n_added_ef;
         if (verbose)
-          printf ("%s: added new file element for footprint %s (value=%s)\n",
+          printf ("%s: added new element for footprint %s (value=%s)\n",
                   el->refdes, el->description, el->value);
       } else {
         fprintf (stderr,
@@ -734,7 +736,8 @@ add_elements (gchar * pcb_file)
           fputs (buf, f_out);   /* Copy PKG_ line */
         }
       }
-      g_free (p);
+      if (fp != NULL)
+        pcb_fp_fclose(fp, &st);
     }
 
     pcb_element_free (el);
