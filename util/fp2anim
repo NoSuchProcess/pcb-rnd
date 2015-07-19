@@ -59,7 +59,9 @@ function edges(x, y)
 }
 
 # draw a line with rounded ends
-function rline(x1, y1, x2, y2, width    ,omit_ends    ,nx,ny, len)
+# do not draw end circles if omit_ends is non-zero
+# extend both ends by length_bloat
+function rline(x1, y1, x2, y2, width    ,omit_ends , length_bloat    ,nx,ny,vx,vy, len)
 {
 
 	nx = y2-y1
@@ -69,6 +71,14 @@ function rline(x1, y1, x2, y2, width    ,omit_ends    ,nx,ny, len)
 	if (len != 0) {
 		nx /= len
 		ny /= len
+		if (length_bloat != 0) {
+			vx = -ny
+			vy = nx
+			x1 -= length_bloat * vx
+			x2 += length_bloat * vx
+			y1 -= length_bloat * vy
+			y2 += length_bloat * vy
+		}
 		print "poly", x1+nx*width/2, y1+ny*width/2, x2+nx*width/2, y2+ny*width/2, x2-nx*width/2, y2-ny*width/2, x1-nx*width/2, y1-ny*width/2
 	}
 	if (!omit_ends) {
@@ -168,7 +178,7 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 	if (photo) {
 		print "macro push mask"
 		print "color", clr_board
-		rline(x1, y1, x2, y2, thickness+clr, square)
+		rline(x1, y1, x2, y2, thickness+clr, square, clr/2)
 		print "endmacro"
 	}
 
