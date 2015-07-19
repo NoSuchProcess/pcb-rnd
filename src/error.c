@@ -44,6 +44,9 @@
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
+#ifdef HAVE_STDARG_H
+#include <stdarg.h>
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -93,6 +96,12 @@ Message (const char *Format, ...)
   va_start (args, Format);
   gui->logv (Format, args);
   va_end (args);
+
+#ifdef HAVE_STDARG_H
+  va_start (args, Format);
+  vfprintf(stderr, Format, args);
+  va_end (args);
+#endif
 }
 
 
