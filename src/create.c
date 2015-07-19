@@ -220,7 +220,8 @@ CreateNewPCB ()
 	PCBTypePtr old, nw;
 
 	old = PCB;
-	
+
+	PCB = NULL;
 	if ((LoadPCB(Settings.DefaultPcbFile) == 0) || (LoadPCB(PCB_DEFAULT_PCB_FILE_SRC) == 0)) {
 		nw = PCB;
 		if (nw->Filename != NULL) {
