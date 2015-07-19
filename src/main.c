@@ -1585,7 +1585,6 @@ main (int argc, char *argv[])
    * - register 'call on exit()' function
    */
 
-#include "action_list.h"
   setbuf (stdout, 0);
   InitPaths (argv[0]);
 
@@ -1647,6 +1646,11 @@ main (int argc, char *argv[])
   /* Exit with error if GUI failed to start. */
   if (!gui)
     exit (1);
+
+/* Initialize actions only when the gui is already known so only the right
+   one is registered (there can be only one GUI). */
+#include "action_list.h"
+
 
   /* Set up layers. */
   for (i = 0; i < MAX_LAYER; i++)
