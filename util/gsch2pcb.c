@@ -83,8 +83,8 @@ static gboolean remove_unfound_elements = TRUE,
   quiet_mode = FALSE,
   preserve, fix_elements, bak_done, need_PKG_purge;
 
-static char *element_search_path = PCB_LIBRARY_SEARCH_PATHS;
-static char *libshell = PCB_LIBRARY_SHELL;
+static char *element_search_path = NULL;
+static char *element_shell = PCB_LIBRARY_SHELL;
 
 void ChdirErrorMessage (char *DirName)
 {
@@ -712,7 +712,7 @@ add_elements (gchar * pcb_file)
         printf ("%s: need new element for footprint  %s (value=%s)\n",
                 el->refdes, el->description, el->value);
 
-      fp = pcb_fp_fopen(libshell, element_search_path, el->description, &st);
+      fp = pcb_fp_fopen(element_shell, element_search_path, el->description, &st);
 
       if (fp == NULL && verbose)
         printf ("\tNo file element found.\n");
@@ -972,8 +972,27 @@ parse_config (gchar * config, gchar * arg)
     preserve = TRUE;
     return 0;
   }
-  if (!strcmp (config, "elements-dir") || !strcmp (config, "d")) {
-/* TODO */
+  if (!strcmp (config, "elements-dir-clr") || !strcmp (config, "c")) {
+    free(element_search_path);
+    element_search_path = strdup("");
+    return 0;
+  }
+
+  if (!strcmp (config, "elements-shell") || !strcmp (config, "s")) {
+    element_shell = g_strdup(arg);
+  }
+  else if (!strcmp (config, "elements-dir") || !strcmp (config, "d")) {
+    char *s;
+    int la, lp;
+
+    lp = strlen(element_search_path);
+    la = strlen(arg);
+    s = malloc(la+lp+2);
+    memcpy(s, arg, la);
+    s[la] = ':';
+    memcpy(s+la+1, element_search_path, lp+1);
+    free(element_search_path);
+    element_search_path = s;
   } else if (!strcmp (config, "output-name") || !strcmp (config, "o"))
     sch_basename = g_strdup (arg);
   else if (!strcmp (config, "schematics"))
@@ -1057,27 +1076,32 @@ static gchar *usage_string0 =
   "       output-name myproject\n"
   "\n"
   "options (may be included in a project file):\n"
-  "   -d, --elements-dir D  Search D for PCB file elements.  These defaults\n"
-  "                         are searched if they exist: ./packages,\n"
-  "                         /usr/local/share/pcb/newlib, /usr/share/pcb/newlib,\n"
-  "                         (old pcb) /usr/local/lib/pcb_lib, /usr/lib/pcb_lib,\n"
-  "                         (old pcb) /usr/local/pcb_lib\n"
-  "   -o, --output-name N   Use output file names N.net, N.pcb, and N.new.pcb\n"
-  "                         instead of foo.net, ... where foo is the basename\n"
-  "                         of the first command line .sch file.\n"
-  "   -r, --remove-unfound  Don't include references to unfound elements in\n"
-  "                         the generated .pcb files.  Use if you want PCB to\n"
-  "                         be able to load the (incomplete) .pcb file.\n"
-  "                         This is the default behavior.\n"
-  "   -k, --keep-unfound    Keep include references to unfound elements in\n"
-  "                         the generated .pcb files.  Use if you want to hand\n"
-  "                         edit or otherwise preprocess the generated .pcb file\n"
-  "                         before running pcb.\n"
-  "   -p, --preserve        Preserve elements in PCB files which are not found\n"
-  "                         in the schematics.  Note that elements with an empty\n"
-  "                         element name (schematic refdes) are never deleted,\n"
-  "                         so you really shouldn't need this option.\n"
-  "   -q, --quiet           Don't tell the user what to do next after running gsch2pcb.\n"
+  "   -d, --elements-dir D    Search D for PCB file elements.  These defaults\n"
+  "                           are searched if they exist. See the default\n"
+  "                           search paths at the end of this text." 
+  "   -c, --elements-dir-clr  Clear the elements dir. Useful before a series\n"
+  "                           if -d's to flush defaults.\n"
+  "   -s, --elements-shell S  Use S as a prefix for running parametric footrint\n"
+  "                           generators. It is useful on systems where popen()\n"
+  "                           doesn't do the right thing or the process should\n"
+  "                           be wrapped. Example -s \"/bin/sh -c\"\n"
+  "   -o, --output-name N     Use output file names N.net, N.pcb, and N.new.pcb\n"
+  "                           instead of foo.net, ... where foo is the basename\n"
+  "                           of the first command line .sch file.\n"
+  "   -r, --remove-unfound    Don't include references to unfound elements in\n"
+  "                           the generated .pcb files.  Use if you want PCB to\n"
+  "                           be able to load the (incomplete) .pcb file.\n"
+  "                           This is the default behavior.\n"
+  "   -k, --keep-unfound      Keep include references to unfound elements in\n"
+  "                           the generated .pcb files.  Use if you want to hand\n"
+  "                           edit or otherwise preprocess the generated .pcb file\n"
+  "                           before running pcb.\n"
+  "   -p, --preserve          Preserve elements in PCB files which are not found\n"
+  "                           in the schematics.  Note that elements with an empty\n"
+  "                           element name (schematic refdes) are never deleted,\n"
+  "                           so you really shouldn't need this option.\n"
+  "   -q, --quiet             Don't tell the user what to do next after running\n"
+  "                           gsch2pcb-rnd.\n"
   "\n";
 
 static gchar *usage_string1 =
@@ -1099,6 +1123,11 @@ static gchar *usage_string1 =
   "   GNETLIST              If set, this specifies the name of the gnetlist program\n"
   "                         to execute.\n"
   "\n"
+  "Defaults:\n"
+  "   Element search paths:\n"
+  " " PCB_LIBRARY_SEARCH_PATHS "\n"
+  "   Element shell paths: %s\n"
+  "\n"
   "Additional Resources:\n"
   "\n"
   "  gnetlist user guide:  http://wiki.geda-project.org/geda:gnetlist_ug\n"
@@ -1109,7 +1138,7 @@ static void
 usage ()
 {
   puts (usage_string0);
-  puts (usage_string1);
+  printf(usage_string1, (PCB_LIBRARY_SHELL == NULL ? "<empty>" : PCB_LIBRARY_SHELL) );
   exit (0);
 }
 
@@ -1173,6 +1202,8 @@ main (gint argc, gchar ** argv)
 
   if (argc < 2)
     usage ();
+
+  element_search_path = strdup(PCB_LIBRARY_SEARCH_PATHS);
 
   get_args (argc, argv);
 
