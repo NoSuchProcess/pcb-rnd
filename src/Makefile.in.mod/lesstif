@@ -15,5 +15,6 @@ append /local/pcb/ACTION_REG_SRC  [@
 	hid/lesstif/styles.c
 	hid/lesstif/dialogs.c
 	hid/lesstif/netlist.c
+	hid/lesstif/hid.conf
 @]
 

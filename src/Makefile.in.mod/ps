@@ -8,6 +8,7 @@ append /local/pcb/OBJS    [@
 append /local/pcb/ACTION_REG_SRC  [@
 	hid/ps/ps.c
 	hid/ps/eps.c
+	hid/ps/hid.conf
 @]
 
 

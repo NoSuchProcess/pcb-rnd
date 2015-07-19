@@ -33,6 +33,7 @@ append /local/pcb/ACTION_REG_SRC  [@
 	hid/gtk/gui-netlist-window.c
 	hid/gtk/gui-log-window.c
 	hid/gtk/gtkhid-main.c
+	hid/gtk/hid.conf
 @]
 
 

@@ -7,6 +7,6 @@ append /local/pcb/OBJS [@
 	hid/gcode/curve.o
 @]
 
-append /local/pcb/ACTION_REG_SRC {hid/gcode/gcode.c}
+append /local/pcb/ACTION_REG_SRC {hid/gcode/gcode.c hid/gcode/hid.conf}
 
 
