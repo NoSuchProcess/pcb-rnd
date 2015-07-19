@@ -901,8 +901,12 @@ IsPointInPad (Coord X, Coord Y, Coord Radius, PadTypePtr Pad)
 {
   double r, Sin, Cos;
   Coord x; 
+
+  /* Also used from line_callback with line type smaller than pad type;
+    use the smallest common subset; ->Thickness is still ok. */
   Coord t2 = (Pad->Thickness + 1) / 2, range;
-  PadType pad = *Pad;
+  AnyLineObjectType pad = *(AnyLineObjectType *)Pad;
+
 
   /* series of transforms saving range */
   /* move Point1 to the origin */
