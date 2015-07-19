@@ -34,6 +34,9 @@ BEGIN {
 	s_default=1
 	s_weak=2
 	s_explicit=3
+	
+	offs_x = 0
+	offs_y = 0
 }
 
 # Throw an error and exit
@@ -56,6 +59,10 @@ function strip(s)
 	sub("[ \t\r\n]*$", "", s)
 	return s
 }
+
+# translate coordinates
+function coord_x(x) { return int(x + offs_x) }
+function coord_y(y) { return int(y + offs_y) }
 
 # generate an element header line; any argument may be empty
 function element_begin(desc, name, value, cent_x, cent_y, text_x, text_y, text_dir, text_scale)
@@ -88,7 +95,7 @@ function element_pin(x, y,  number, flags,   ringdia, clearance, mask, drill, na
 			flags = ""
 	}
 
-	print "	Pin[" int(x), int(y),
+	print "	Pin[" coord_x(x), coord_y(y),
 		int(either(ringdia, DEFAULT["pin_ringdia"])), int(either(clearance, DEFAULT["pin_clearance"])), int(either(mask, DEFAULT["pin_mask"])),
 		int(either(drill, DEFAULT["pin_drill"])), q name q, q number q, q flags q "]"
 }
@@ -96,7 +103,7 @@ function element_pin(x, y,  number, flags,   ringdia, clearance, mask, drill, na
 # draw element pad
 function element_pad(x1, y1, x2, y2, thickness,   number, flags,   clearance, mask, name)
 {
-	print "	Pad[", int(x1), int(y1), int(x2), int(y2), int(either(thickness, DEFAULT["pad_thickness"])),
+	print "	Pad[", coord_x(x1), coord_y(y1), coord_x(x2), coord_y(y2), int(either(thickness, DEFAULT["pad_thickness"])),
 		int(either(clearance, DEFAULT["pad_clearance"])), int(either(mask, DEFAULT["pad_mask"])),
 		q name q, q number q, q flags q "]"
 }
@@ -104,7 +111,7 @@ function element_pad(x1, y1, x2, y2, thickness,   number, flags,   clearance, ma
 # draw a line on silk; thickness is optional (default: line_thickness)
 function element_line(x1, y1, x2, y2,   thickness)
 {
-	print "	ElementLine[" int(x1), int(y1), int(x2), int(y2), int(either(thickness, DEFAULT["line_thickness"])) "]"
+	print "	ElementLine[" coord_x(x1), coord_y(y1), coord_x(x2), coord_y(y2), int(either(thickness, DEFAULT["line_thickness"])) "]"
 }
 
 # draw a rectangle of silk lines 
@@ -123,7 +130,7 @@ function element_rectangle(x1, y1, x2, y2,    omit,   thickness)
 # draw a line on silk; thickness is optional (default: line_thickness)
 function element_arc(cx, cy, rx, ry, a_start, a_delta,   thickness)
 {
-	print "	ElementArc[" int(cx), int(cy), int(rx), int(ry), int(a_start), int(a_delta), int(either(thickness, DEFAULT["line_thickness"])) "]"
+	print "	ElementArc[" coord_x(cx), coord_y(cy), int(rx), int(ry), int(a_start), int(a_delta), int(either(thickness, DEFAULT["line_thickness"])) "]"
 }
 
 
