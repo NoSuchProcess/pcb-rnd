@@ -15,6 +15,10 @@ BEGIN {
 	ext_bloat=parse_dim(P["ext_bloat"])
 	int_bloat=parse_dim(P["int_bloat"])
 
+# translate origin to the middle (int() and -0.5 rounds it for odd number of pins)
+	offs_x = -(row_spacing/2)
+	offs_y = -int((P["n"]/4-0.5) * pad_spacing)
+
 	element_begin(P["n"] "*" P["row_spacing"] " DIP socket", "U1", P["n"] "*" P["row_spacing"]    ,0,0, 0, mil(-100))
 
 	for(n = 1; n <= P["n"]/2; n++) {
