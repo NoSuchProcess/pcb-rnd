@@ -1170,7 +1170,8 @@ PCBChanged (int argc, char **argv, Coord x, Coord y)
   if (!ghidgui)
     return 0;
 
-  ghid_window_set_name_label (PCB->Name);
+  if (PCB != NULL)
+    ghid_window_set_name_label (PCB->Name);
 
   if (!gport->pixmap)
     return 0;
