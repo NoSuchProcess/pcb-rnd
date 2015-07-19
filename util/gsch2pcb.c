@@ -1132,7 +1132,10 @@ static gchar *usage_string1 =
   "\n"
   "  gnetlist user guide:  http://wiki.geda-project.org/geda:gnetlist_ug\n"
   "  gEDA homepage:        http://www.geda-project.org\n"
-  "  PCB homepage:         http://pcb.geda-project.org\n"  "\n";
+  "  PCB homepage:         http://pcb.geda-project.org\n"
+  "  pcb-rnd homepage:     http://repo.hu/projects/pcb-rnd\n"
+  "\n";
+
 
 static void
 usage ()
