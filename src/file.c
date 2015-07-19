@@ -395,7 +395,7 @@ real_load_pcb (char *Filename, bool revert)
 {
   const char *unit_suffix;
   char *new_filename;
-  PCBTypePtr newPCB = CreateNewPCB (false);
+  PCBTypePtr newPCB = CreateNewPCB_ (false);
   PCBTypePtr oldPCB;
 #ifdef DEBUG
   double elapsed;

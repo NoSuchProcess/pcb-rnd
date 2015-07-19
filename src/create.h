@@ -40,7 +40,8 @@ void CreateBeLenient (bool);
 
 DataTypePtr CreateNewBuffer (void);
 void pcb_colors_from_settings (PCBTypePtr);
-PCBTypePtr CreateNewPCB (bool);
+PCBTypePtr CreateNewPCB_ (bool);
+PCBTypePtr CreateNewPCB ();
 /* Called after PCB->Data->LayerN is set.  Returns zero if no errors,
    else nonzero.  */
 int CreateNewPCBPost (PCBTypePtr, int /* set defaults */);

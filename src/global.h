@@ -667,6 +667,7 @@ typedef struct			/* some resources... */
   char *DefaultLayerName[MAX_LAYER], *FontCommand,	/* commands for file loading... */
    *FileCommand, *PrintFile, *LibraryShell, *LibrarySearchPaths,
    *SaveCommand, *LibraryFilename, *FontFile,	/* name of default font file */
+   *DefaultPcbFile,
    *Groups,			/* string with layergroups */
    *Routes,			/* string with route styles */
    *FilePath, *RatPath, *RatCommand, *FontPath, *PinoutFont, *ElementPath, *Size,	/* geometry string for size */

@@ -173,6 +173,7 @@ print [@
 
 pcblib_DATA= \
 	default_font \
+	default.pcb \
 	gpcb-menu.res \
 	pcb-menu.res
 
@@ -180,6 +181,7 @@ pcblib_DATA= \
 EXTRA_DIST= \
 	check_icon.data \
 	default_font \
+	default.pcb \
 	hid/batch/hid.conf \
 	hid/bom/hid.conf \
 	hid/gcode/hid.conf \
@@ -249,6 +251,7 @@ include ../Makefile.conf
 install_:
 	$(MKDIR) $(BINDIR) $(DATADIR)
 	$(CPC) `pwd`/pcb $(BINDIR)/pcb
+	$(CPC) `pwd`/default.pcb $(DATADIR)/default.pcb
 	$(CPC) `pwd`/default_font $(DATADIR)/default_font
 	$(CPC) `pwd`/gpcb-menu.res $(DATADIR)/gpcb-menu.res
 	$(CPC) `pwd`/pcb-menu.res $(DATADIR)/pcb-menu.res
@@ -261,6 +264,8 @@ linstall:
 
 uninstall:
 	$(RM) $(BINDIR)/pcb
+	$(RM) $(DATADIR)/default.pcb
+	$(RM) $(DATADIR)/default_font
 	$(RM) $(DATADIR)/gpcb-menu.res
 	$(RM) $(DATADIR)/pcb-menu.res
 

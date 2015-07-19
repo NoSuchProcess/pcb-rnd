@@ -144,7 +144,7 @@ pcb_colors_from_settings (PCBTypePtr ptr)
  * creates a new PCB
  */
 PCBTypePtr
-CreateNewPCB (bool SetDefaultNames)
+CreateNewPCB_ (bool SetDefaultNames)
 {
   PCBTypePtr ptr;
   int i;
@@ -214,6 +214,23 @@ CreateNewPCB (bool SetDefaultNames)
   return (ptr);
 }
 
+PCBTypePtr
+CreateNewPCB ()
+{
+	PCBTypePtr old, nw;
+
+	old = PCB;
+	
+	if ((LoadPCB(Settings.DefaultPcbFile) == 0) || (LoadPCB(PCB_DEFAULT_PCB_FILE_SRC) == 0))
+		nw = PCB;
+	else
+		nw = NULL;
+	
+	PCB = old;
+	return nw;
+}
+
+
 /* This post-processing step adds the top and bottom silk layers to a
  * pre-existing PCB.
  */
@@ -223,14 +240,6 @@ CreateNewPCBPost (PCBTypePtr pcb, int use_defaults)
   /* copy default settings */
   pcb_colors_from_settings (pcb);
 
-  if (use_defaults)
-    {
-      if (ParseGroupString (Settings.Groups, &pcb->LayerGroups, DEF_LAYER))
-	return 1;
-
-      pcb->Data->Layer[component_silk_layer].Name = strdup ("silk");
-      pcb->Data->Layer[solder_silk_layer].Name = strdup ("silk");
-    }
   return 0;
 }
 

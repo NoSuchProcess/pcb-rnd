@@ -978,88 +978,6 @@ The default value is @code{60}.
   ISET (BackupInterval, 60, "backup-interval",
   "Time between automatic backups in seconds. Set to 0 to disable"),
 
-/* %start-doc options "4 Layer Names"
-@ftable @code
-@item --layer-name-1 <string>
-Name of the 1st Layer. Default is @code{"top"}.
-@end ftable
-%end-doc
-*/
-  LAYERNAME (1, "top"),
-
-/* %start-doc options "4 Layer Names"
-@ftable @code
-@item --layer-name-2 <string>
-Name of the 2nd Layer. Default is @code{"ground"}.
-@end ftable
-%end-doc
-*/
-  LAYERNAME (2, "ground"),
-
-/* %start-doc options "4 Layer Names"
-@ftable @code
-@item --layer-name-3 <string>
-Name of the 3nd Layer. Default is @code{"signal2"}.
-@end ftable
-%end-doc
-*/
-  LAYERNAME (3, "signal2"),
-
-/* %start-doc options "4 Layer Names"
-@ftable @code
-@item --layer-name-4 <string>
-Name of the 4rd Layer. Default is @code{"signal3"}.
-@end ftable
-%end-doc
-*/
-  LAYERNAME (4, "signal3"),
-
-/* %start-doc options "4 Layer Names"
-@ftable @code
-@item --layer-name-5 <string>
-Name of the 5rd Layer. Default is @code{"power"}.
-@end ftable
-%end-doc
-*/
-  LAYERNAME (5, "power"),
-
-/* %start-doc options "4 Layer Names"
-@ftable @code
-@item --layer-name-6 <string>
-Name of the 6rd Layer. Default is @code{"bottom"}.
-@end ftable
-%end-doc
-*/
-  LAYERNAME (6, "bottom"),
-
-/* %start-doc options "4 Layer Names"
-@ftable @code
-@item --layer-name-7 <string>
-Name of the 7rd Layer. Default is @code{"outline"}.
-@end ftable
-%end-doc
-*/
-  LAYERNAME (7, "outline"),
-
-/* %start-doc options "4 Layer Names"
-@ftable @code
-@item --layer-name-8 <string>
-Name of the 8rd Layer. Default is @code{"spare"}.
-@end ftable
-%end-doc
-*/
-  LAYERNAME (8, "spare"),
-
-/* %start-doc options "1 General Options"
-@ftable @code
-@item --groups <string>
-Layer group string. Defaults to @code{"1,c:2:3:4:5:6,s:7:8"}.
-@end ftable
-%end-doc
-*/
-  SSET (Groups, "1,c:2:3:4:5:6,s:7:8", "groups", "Layer group string"),
-
-
 /* %start-doc options "6 Commands"
 pcb uses external commands for input output operations. These commands can be
 configured at start-up to meet local requirements. The command string may include
@@ -1147,18 +1065,15 @@ The name of the default font.
   SSET (FontFile, "default_font", "default-font",
 	"File name of default font"),
 
-/* %start-doc options "1 General Options"
+/* %start-doc options "5 Paths"
 @ftable @code
-@item --route-styles <string>
-A string that defines the route styles. Defaults to @*
-@code{"Signal,1000,3600,2000,1000:Power,2500,6000,3500,1000
-	:Fat,4000,6000,3500,1000:Skinny,600,2402,1181,600"}
+@item --default-pcb <string>
+The name of the default font.
 @end ftable
 %end-doc
 */
-  SSET (Routes, "Signal,1000,3600,2000,1000:Power,2500,6000,3500,1000"
-	":Fat,4000,6000,3500,1000:Skinny,600,2402,1181,600", "route-styles",
-	"A string that defines the route styles"),
+  SSET (DefaultPcbFile, PCB_DEFAULT_PCB_FILE, "default-pcb",
+	"File name of default pcb file (layer and style settings)"),
 
 /* %start-doc options "5 Paths"
 @ftable @code
@@ -1419,7 +1334,8 @@ REGISTER_ATTRIBUTES (main_attribute_list)
   Settings.MaxWidth  = CLAMP (Settings.MaxWidth, MIN_SIZE, MAX_COORD);
   Settings.MaxHeight = CLAMP (Settings.MaxHeight, MIN_SIZE, MAX_COORD);
 
-  ParseRouteString (Settings.Routes, &Settings.RouteStyle[0], "cmil");
+  if (Settings.Routes != NULL)
+    ParseRouteString (Settings.Routes, &Settings.RouteStyle[0], "cmil");
 
   /*
    * Make sure we have settings for some various programs we may wish
@@ -1770,9 +1686,13 @@ main (int argc, char *argv[])
     }
 
   /* Create a new PCB object in memory */
-  PCB = CreateNewPCB (true);
-  PCB->Data->LayerN = DEF_LAYER;
-  ParseGroupString (Settings.Groups, &PCB->LayerGroups, DEF_LAYER);
+  PCB = CreateNewPCB ();
+
+	if (PCB == NULL) {
+		Message("Can't load the default pcb (%s) for creating an empty layout\n", Settings.DefaultPcbFile);
+		exit(1);
+	}
+
   /* Add silk layers to newly created PCB */
   CreateNewPCBPost (PCB, 1);
   if (argc > 1)
