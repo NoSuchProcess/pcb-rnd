@@ -8,7 +8,7 @@
 #@@params spacing,pol,dia
 
 #@@param:spacing spacing between the two pins
-#@@pol: how to mark polarity (optional; default: do not mark polarity)
+#@@pol: how to mark polarity: none, sign, bar (optional; default: do not mark polarity)
 #@@dia: body diameter - affects the silk rectangle (optional; default: spacing/12)
 
 #@@include common.awk
