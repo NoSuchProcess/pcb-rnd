@@ -216,7 +216,7 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 			if (N[pos] == "") {
 				error("too many positional arguments at " A[n])
 			}
-			while(N[pos] in OUT) pos++
+			while((N[pos] in OUT) && (N[pos, "strength"] == s_explicit)) pos++
 			set_arg(OUT, N[pos], A[n], s_explicit)
 			pos++
 		}
