@@ -256,7 +256,7 @@ run_gnetlist (gchar * pins_file, gchar * net_file, gchar * pcb_file,
 
   mtime = (stat (pcb_file, &st) == 0) ? st.st_mtime : 0;
 
-  if (!build_and_run_command ("%s %l -g gsch2pcb-rnd -o %s %l %l %l",
+  if (!build_and_run_command ("%s %l -L " SCMDIR " -g gsch2pcb-rnd -o %s %l %l %l",
 			      gnetlist,
 			      verboseList,
 			      pcb_file,
