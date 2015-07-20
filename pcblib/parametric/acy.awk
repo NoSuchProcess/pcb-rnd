@@ -12,6 +12,7 @@ BEGIN {
 	element_pin(-spacing/2, 0, 1)
 	element_pin(+spacing/2, 0, 2)
 
+# silk rectangle and pins
 	element_rectangle(-spacing/4, -dia, +spacing/4, +dia)
 	element_line(-spacing/2, 0, -spacing/4, 0)
 	element_line(+spacing/4, 0, +spacing/2, 0)

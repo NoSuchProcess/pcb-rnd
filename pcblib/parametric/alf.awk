@@ -19,13 +19,16 @@ print "dia=", P["dia"] > "/dev/stderr"
 	element_pin(-spacing/2, 0, 1)
 	element_pin(+spacing/2, 0, 2)
 
+# pins
 	element_line(-spacing/2, 0, -spacing/aspect, 0)
 	element_line(+spacing/aspect, 0, +spacing/2, 0)
 
+# triangle
 	element_line(+spacing/aspect, -dia, +spacing/aspect, +dia)
 	element_line(+spacing/aspect, -dia, -spacing/aspect, 0)
 	element_line(+spacing/aspect, +dia, -spacing/aspect, 0)
 
+# front cross line with decoration
 	r = dia*0.3
 	if (P["type"] == "normal") {
 		element_line(-spacing/aspect, -dia, -spacing/aspect, +dia)
