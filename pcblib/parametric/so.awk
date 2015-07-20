@@ -27,10 +27,9 @@ BEGIN {
 		element_pad(row_spacing-int_bloat, y,  row_spacing+ext_bloat, y, pad_width,     P["n"] - n + 1, "square")
 	}
 
-	silk_dist_x = either(P["silk_ext_x"], pad_spacing/2)
-	silk_dist_y = either(P["silk_ext_y"], pad_spacing/2)
-
-	rarc = pad_spacing/2
+	silk_dist_x = either(parse_dim(P["silk_ext_x"]), pad_spacing/2)
+	silk_dist_y = either(parse_dim(P["silk_ext_y"]), pad_spacing/2)
+	rarc = either(parse_dim(P["rarc"]), pad_spacing/2)
 
 	dip_outline(-silk_dist_x-ext_bloat, -silk_dist_y, row_spacing + silk_dist_x+ext_bloat , (n-2) * pad_spacing + silk_dist_y,  rarc)
 
