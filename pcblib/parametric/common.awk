@@ -41,6 +41,8 @@ BEGIN {
 	
 	offs_x = 0
 	offs_y = 0
+
+	pi=3.141592654
 }
 
 # Throw an error and exit

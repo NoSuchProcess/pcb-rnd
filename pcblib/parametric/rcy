@@ -1,0 +1,17 @@
+#!/bin/sh
+
+#@@example rcy(300,bar+)
+
+#@@purpose Generate radial lead tru-hole component
+
+#@@desc Generate radial lead tru-hole component with 2 pins (typical use: electrolytic caps)
+#@@params spacing,pol,dia
+
+#@@param:spacing spacing between the two pins
+#@@param:pol how to mark polarity: none, sign, bar, bar+, bar- (optional; default: sign)
+#@@param:dia body diameter - affects the silk circle (optional; default: spacing*2)
+
+#@@include common.awk
+
+awk -f `dirname $0`/common.awk -f `dirname $0`/rcy.awk -v "args=$*"
+
