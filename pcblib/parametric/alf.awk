@@ -5,9 +5,6 @@ BEGIN {
 
 	proc_args(P, "spacing,type,dia,aspect", "spacing")
 
-print "type=", P["type"] > "/dev/stderr"
-print "dia=", P["dia"] > "/dev/stderr"
-
 	spacing = parse_dim(P["spacing"])
 	dia = either(parse_dim(P["dia"]), spacing/6)
 	aspect = P["aspect"]

@@ -10,6 +10,7 @@
 #@@param:spacing spacing between the two pins
 #@@param:type normal, schottky, zener, tunnel, varactor (optional; default: normal)
 #@@param:dia body diameter - affects the silk symbol (optional; default: spacing/12)
+#@@param:aspect silk symbol aspect: total width (optional; default: spacing/6)
 
 
 #@@include common.awk
