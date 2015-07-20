@@ -19,7 +19,7 @@ BEGIN {
 	DEFAULT["pin_drill"] = 3937
 	DEFAULT["pin_drill", "dim"] = 1
 
-	DEFAULT["line_thickness"] = 1500
+	DEFAULT["line_thickness"] = 1000
 	DEFAULT["line_thickness", "dim"] = 1
 
 	DEFAULT["pad_thickness"] = 2000
@@ -230,6 +230,8 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 # else convert it from mil.
 function parse_dim(h)
 {
+	if (h == "")
+		return ""
 	if (h ~ "mm") {
 		sub("mm", "", h)
 		return mm(h)
