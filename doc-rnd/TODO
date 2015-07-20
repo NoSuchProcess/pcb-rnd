@@ -10,8 +10,6 @@
 - scconfig:
 	- switch over from automake:
 		- example/
-		- lib/
-		- newlib/
 		- w32/
 	- clean up central Makefile.in rules:
 		- remove cat, sed, grep where possible, use scconfig instead
