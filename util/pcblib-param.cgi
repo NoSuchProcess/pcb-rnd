@@ -4,7 +4,7 @@ ulimit -t 5
 ulimit -v 80000
 
 CGI=/cgi-bin/pcblib-param.cgi
-gendir=/home/igor2/C/pcb-rnd/pcblib-param/
+gendir=/home/igor2/C/pcb-rnd/pcblib/parametric/
 
 gen()
 {
