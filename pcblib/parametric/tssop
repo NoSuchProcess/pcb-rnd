@@ -2,9 +2,9 @@
 
 # Reference: Microchip Packaging Specification DS00000049BX (en012702.pdf), MSOP
 
-#@@example msop(8)
+#@@example tssop(8)
 
-#@@purpose Generate classic DIP packages.
+#@@purpose Generate TSSOP packages.
 
 #@@desc Generate TSSOP 4.4mm body packages with variable number of pins and
 #@@desc row spacing

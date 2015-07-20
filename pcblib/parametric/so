@@ -2,7 +2,7 @@
 
 #@@example so(14)
 
-#@@purpose Generate classic DIP packages.
+#@@purpose Generate SO and SO-like packages.
 
 #@@desc Generate SO packages with variable number of pins and
 #@@desc row spacing

@@ -4,7 +4,7 @@
 
 #@@example msop(8)
 
-#@@purpose Generate classic DIP packages.
+#@@purpose Generate MSOP packages.
 
 #@@desc Generate MSOP packages with variable number of pins and
 #@@desc row spacing
