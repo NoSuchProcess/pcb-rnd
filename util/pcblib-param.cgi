@@ -20,6 +20,11 @@ BEGIN {
 	prm=0
 	q="\""
 }
+
+/@@include/ {
+	print $2 > "/dev/stderr"
+}
+
 (match($0, "@@desc") || match($0, "@@params") || match($0, "@@purpose") || match($0, "@@example")) {
 	txt=$0
 	key=substr($0, RSTART, RLENGTH)
@@ -43,40 +48,53 @@ END {
 		print HELP["@@desc"]
 	}
 
-	if (content) {
+	if (content)
 		print "<h4>" content "</h4>"
-		if (HELP["@@params"] != "")
-			print "<p>Ordered list (positions): " HELP["@@params"]
+
+	if ((print_params) && (HELP["@@params"] != ""))
+		print "<p>Ordered list (positions): " HELP["@@params"]
+
+
+	if (content) {
 		print "<table border=1 cellspacing=0 cellpadding=10>"
 		for(p = 0; p < prm; p++)
-			print "<br>" PARAM[p]
+			print PARAM[p]
 		print "</table>"
 	}
 
 	if (footer) {
-		print "<p>Example: "
+		print "<h3>Example</h3>"
 		print "<a href=" q CGI "?cmd=" HELP["@@example"] q ">"
 		print HELP["@@example"]
 		print "</a>"
 		print "</body></html>"
 	}
 }
-
 '
 }
 
 help()
 {
+	local incl n
 	echo "
 <html>
 <body>
 <h1> pcblib-param help for $QS_cmd() </h1>
 "
- help_params -v "header=1" -v "content=$gen parameters" < $gendir/$gen
 
- help_params -v "content=common parameters" < $gendir/common.awk
+	incl=`tempfile`
 
- help_params -v "footer=1" < $gendir/$gen
+
+	help_params -v "header=1" -v "content=$gen parameters" -v "print_params=1" < $gendir/$gen 2>$incl
+
+	for n in `cat $incl`
+	do
+		help_params -v "content=parameters (by $n)" < $gendir/$n 2>/dev/null
+	done
+
+	rm $incl
+
+	help_params -v "footer=1" < $gendir/$gen 2>/dev/null
 
 }
 
