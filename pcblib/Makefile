@@ -13,9 +13,12 @@ install_:
 install:
 	make install_ CPC="$(CP)"
 
+# hack: pcb's chdir() based approach gets fooled on symlinks because of "cd .."
+# returns to the wrong dir
 linstall:
 	make uninstall
-	make install_ CPC="$(LN)"
+	$(MKDIR) $(DATADIR)
+	$(LN) `pwd` $(DATADIR)/pcblib
 
 uninstall:
 	$(RM) $(DATADIR)/pcblib
