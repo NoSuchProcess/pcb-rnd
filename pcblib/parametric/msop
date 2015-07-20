@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# Reference: Microchip Packaging Specification DS00000049BX (en012702.pdf), MSOP
+
+#@@example msop(8)
+
+#@@purpose Generate classic DIP packages.
+
+#@@desc Generate SSOP packages with variable number of pins and
+#@@desc row spacing
+#@@params n, row_spacing, pad_spacing
+
+#@@include common.awk
+#@@include so
+
+defaults='
+?pad_spacing=0.65mm,
+?row_spacing=4.9mm,
+?int_bloat=0.6mm,
+?ext_bloat=0.4mm,
+?rarc=25,
+?silk_ext_x=18,
+?silk_ext_y=22,
+?pad_thickness=0.45mm
+'
+
+awk -f `dirname $0`/common.awk -f `dirname $0`/so.awk -v "args=$defaults,$*"
+
