@@ -1,9 +1,8 @@
 BEGIN {
-
-	proc_args(P, "nx,ny,spacing,silkmark,eshift,etrunc", "nx,ny")
-
 	set_arg(P, "?spacing", 100)
 	set_arg(P, "?silkmark", "square")
+
+	proc_args(P, "nx,ny,spacing,silkmark,eshift,etrunc", "nx,ny")
 
 
 	step = parse_dim(P["spacing"])

@@ -1,7 +1,7 @@
 BEGIN {
-	proc_args(P, "n,spacing", "n")
-
 	set_arg(P, "?spacing", 300)
+
+	proc_args(P, "n,spacing", "n")
 
 	P["n"] = int(P["n"])
 	if ((P["n"] < 2) || ((P["n"] % 2) != 0))
