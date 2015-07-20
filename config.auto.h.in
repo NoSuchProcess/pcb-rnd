@@ -287,8 +287,6 @@ print [@
 #define PCBLIBDIR PCB_PREFIX "/share/pcb"
 #define PCB_LIBRARY_SHELL NULL
 #define PCB_LIBRARY_SEARCH_PATHS \
-	"." \
-	":" \
 	"./pcblib"\
 	":" \
 	"./footprints"\
