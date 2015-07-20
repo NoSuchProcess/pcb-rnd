@@ -14,21 +14,18 @@ clean:
 
 install:
 	cd src && make install
-	cd lib && make install
 	cd util && make install
 	cd pcblib && make install
 	cd tutorial && make install
 
 linstall:
 	cd src && make linstall
-	cd lib && make linstall
 	cd util && make linstall
 	cd pcblib && make linstall
 	cd tutorial && make linstall
 
 uninstall:
 	cd src && make uninstall
-	cd lib && make uninstall
 	cd util && make uninstall
 	cd pcblib && make uninstall
 	cd tutorial && make uninstall
