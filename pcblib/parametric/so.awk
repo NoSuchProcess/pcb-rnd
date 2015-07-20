@@ -1,10 +1,10 @@
 BEGIN {
-	proc_args(P, "n,row_spacing,pad_spacing,ext_bloat,int_bloat", "n")
-
 	set_arg(P, "?row_spacing", 250)
 	set_arg(P, "?pad_spacing", 50)
 	set_arg(P, "?ext_bloat", 10)
 	set_arg(P, "?int_bloat", 55)
+
+	proc_args(P, "n,row_spacing,pad_spacing,ext_bloat,int_bloat", "n")
 
 	P["n"] = int(P["n"])
 	if ((P["n"] < 2) || ((P["n"] % 2) != 0))
@@ -27,10 +27,12 @@ BEGIN {
 		element_pad(row_spacing-int_bloat, y,  row_spacing+ext_bloat, y, pad_width,     P["n"] - n + 1, "square")
 	}
 
-	silk_dist = pad_spacing/2
+	silk_dist_x = either(P["silk_ext_x"], pad_spacing/2)
+	silk_dist_y = either(P["silk_ext_y"], pad_spacing/2)
+
 	rarc = pad_spacing/2
 
-	dip_outline(-silk_dist-ext_bloat, -silk_dist, row_spacing + silk_dist+ext_bloat , (n-2) * pad_spacing + silk_dist,  rarc)
+	dip_outline(-silk_dist_x-ext_bloat, -silk_dist_y, row_spacing + silk_dist_x+ext_bloat , (n-2) * pad_spacing + silk_dist_y,  rarc)
 
 
 	element_end()
