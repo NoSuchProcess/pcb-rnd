@@ -196,17 +196,19 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 # fill in all named and positional arguments
 	pos = 1
 	for(n = 1; n <= v; n++) {
+		A[n] = strip(A[n])
+		if (A[n] == "")
+			continue
 		if (A[n] ~ "=") {
 #			named
-			key=strip(A[n])
-			val=strip(A[n])
+			key=A[n]
+			val=A[n]
 			sub("=.*", "", key)
 			sub("^[^=]*=", "", val)
 			set_arg(OUT, key, val, s_explicit)
 		}
 		else {
 #			positional
-			A[n] = strip(A[n])
 			if (N[pos] == "") {
 				error("too many positional arguments at " A[n])
 			}
