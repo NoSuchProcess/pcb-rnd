@@ -1,0 +1,18 @@
+#!/bin/sh
+
+#@@example alf(300, schottky)
+
+#@@purpose Generate ALF: axial lead tru-hole component for diodes
+
+#@@desc Generate axial lead tru-hole component with 2 pin diodes
+#@@params spacing,type,dia
+
+#@@param:spacing spacing between the two pins
+#@@param:type normal, schottky, zener, tunnel, varactor (optional; default: normal)
+#@@param:dia body diameter - affects the silk symbol (optional; default: spacing/12)
+
+
+#@@include common.awk
+
+awk -f `dirname $0`/common.awk -f `dirname $0`/alf.awk -v "args=$*"
+
