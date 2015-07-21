@@ -120,6 +120,30 @@ function element_line(x1, y1, x2, y2,   thickness)
 	print "	ElementLine[" coord_x(x1), coord_y(y1), coord_x(x2), coord_y(y2), int(either(thickness, DEFAULT["line_thickness"])) "]"
 }
 
+function element_arrow(x1, y1, x2, y2,  asize,  thickness   ,vx,vy,nx,ny,len,xb,yb)
+{
+	element_line(x1, y1, x2,y2, thickness)
+
+	if (asize == 0)
+		asize = mil(20)
+
+	vx = x2-x1
+	vy = y2-y1
+	len = sqrt(vx*vx+vy*vy)
+	if (len != 0) {
+		vx /= len
+		vy /= len
+		nx = vy
+		ny = -vx
+		xb = x2 - vx*asize
+		yb = y2 - vy*asize
+#		element_line(x2, y2, xb + 1000, yb + 1000)
+		element_line(x2, y2, xb + nx*asize/2, yb + ny*asize/2)
+		element_line(x2, y2, xb - nx*asize/2, yb - ny*asize/2)
+		element_line(xb - nx*asize/2, yb - ny*asize/2, xb + nx*asize/2, yb + ny*asize/2)
+	}
+}
+
 # draw a rectangle of silk lines 
 function element_rectangle(x1, y1, x2, y2,    omit,   thickness)
 {
