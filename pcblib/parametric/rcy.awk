@@ -1,3 +1,19 @@
+function pol_sign(   ox,oy)
+{
+	ox = offs_x
+	
+		size=mil(20)
+
+		offs_x = spacing/2 +dia/2+size*2
+		element_line(-size, 0, +size, 0)
+
+		offs_x = spacing/2 -dia/2-size*2
+		element_line(-size, 0, +size, 0)
+		element_line(0, -size, 0, +size)
+
+	offs_x = ox
+}
+
 BEGIN {
 	
 	set_arg(P, "?pol", "sign")
@@ -17,19 +33,16 @@ BEGIN {
 	element_arc(0, 0, dia/2, dia/2, 0, 360)
 
 	if (P["pol"] == "sign") {
-		size=mil(20)
-
-		offs_x = spacing/2 +dia/2+size*2
-		element_line(-size, 0, +size, 0)
-
-		offs_x = spacing/2 -dia/2-size*2
-		element_line(-size, 0, +size, 0)
-		element_line(0, -size, 0, +size)
+		pol_sign()
 	}
 	else if (P["pol"] ~ "^bar") {
 # determine bar side (default to -)
 		side=P["pol"]
 		sub("^bar", "", side)
+		if (side ~ "sign") {
+			pol_sign()
+			sub("sign", "", side)
+		}
 		if (side == "")
 			side = "-"
 		side = int(side "1") * -1
@@ -67,7 +80,6 @@ BEGIN {
 				}
 			}
 		}
-
 	}
 	else if ((P["pol"] != "") && (P["pol"] != "none")) {
 		error("Invalid pol")

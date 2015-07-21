@@ -8,7 +8,7 @@
 #@@params spacing,pol,dia
 
 #@@param:spacing spacing between the two pins
-#@@param:pol how to mark polarity: none, sign, bar, bar+, bar- (optional; default: sign)
+#@@param:pol how to mark polarity: none, sign, bar, bar+, bar-, bar+sign, bar-sign (optional; default: sign)
 #@@param:dia body diameter - affects the silk circle (optional; default: spacing*2)
 
 #@@include common.awk
