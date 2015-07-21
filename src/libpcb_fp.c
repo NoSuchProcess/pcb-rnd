@@ -234,7 +234,7 @@ int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const 
 /*	printf("...  Found a footprint %s ... \n", subdirentry->d_name); */
 #endif
 			strcpy(fn_end, subdirentry->d_name);
-			if ((S_ISREG(buffer.st_mode)) || (S_ISLNK(buffer.st_mode))) {
+			if ((S_ISREG(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
 				pcb_fp_type_t ty;
 				ty = pcb_fp_file_type(subdirentry->d_name);
 				if ((ty == PCB_FP_FILE) || (ty == PCB_FP_PARAMETRIC)) {
@@ -245,7 +245,7 @@ int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const 
 				}
 			}
 
-			if ((S_ISDIR(buffer.st_mode)) || (S_ISLNK(buffer.st_mode))) {
+			if ((S_ISDIR(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
 				cb(cookie, subdir, subdirentry->d_name, PCB_FP_DIR);
 				if (recurse) {
 					n_footprints += pcb_fp_list(fn, recurse, cb, cookie, 0);

@@ -1,5 +1,3 @@
-- check S_ISLNK() from config and fix the code!
-
 - distorted square pin bugs:
 	- rtree assert failure when NDEBUG is turned off
 	- large clearance with octagon

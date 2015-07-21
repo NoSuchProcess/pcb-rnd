@@ -29,3 +29,9 @@ uninstall:
 	cd util && make uninstall
 	cd pcblib && make uninstall
 	cd tutorial && make uninstall
+
+deb:
+	fakeroot debian/rules binary
+
+debclean:
+	fakeroot debian/rules clean

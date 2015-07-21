@@ -12,7 +12,10 @@
  returns true if no furhter argument processing should be done */
 int hook_custom_arg(const char *key, const char *value)
 {
-	if (strcmp(key, "prefix") == 0)   put("/local/prefix", strclone(value));
+	if (strcmp(key, "prefix") == 0) {
+		put("/local/prefix", strclone(value));
+		return 1;
+	}
 	return 0;
 }
 
@@ -74,8 +77,8 @@ int hook_detect_target()
 	require("libs/gui/gd/gdImagePng/*", 0, 0);
 	require("libs/gui/gd/gdImageGif/*", 0, 0);
 	require("libs/gui/gd/gdImageJpeg/*", 0, 0);
-
-
+	require("libs/fs/stat/macros/*", 0, 0);
+	
 	return 0;
 }
 
