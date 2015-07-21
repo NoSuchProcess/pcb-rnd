@@ -1,6 +1,6 @@
 - distorted square pin bugs:
 	- rtree assert failure when NDEBUG is turned off
-	- large clearance with octagon
+	- there's larger clearance with shaped pins on the enlarged sides
 	- why q doesn't work on vias (new comment about this in action.c)
 	- r tree breaks!!!
 	- rotate should rotate pin shape as well
