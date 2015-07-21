@@ -11,11 +11,11 @@ CONFIGURE_OPTS=--disable-doc --disable-gl --disable-rpath --disable-dbus --disab
 	dh $@
 
 override_dh_auto_configure:
-	dh_auto_configure --builddirectory build_gtk -- $(CONFIGURE_OPTS) --with-gui=gtk
-#	dh_auto_configure --builddirectory build_lesstif -- $(CONFIGURE_OPTS) --with-gui=lesstif
+	./configure --prefix=/usr
 
 override_dh_auto_build:
-	dh_auto_build --builddirectory build_gtk
+	make
+#	dh_auto_build --builddirectory build_gtk
 #	dh_auto_build --builddirectory build_lesstif
 
 override_dh_auto_test:
@@ -23,7 +23,7 @@ override_dh_auto_test:
 #	dh_auto_test --builddirectory build_lesstif
 
 override_dh_auto_install:
-	dh_auto_install --builddirectory build_gtk
+	make install install_root=`pwd`/debian/tmp
 
 override_dh_auto_clean:
 	dh_auto_clean --builddirectory build_gtk
@@ -38,7 +38,8 @@ override_dh_install:
 	dh_install -Xusr/bin -Xusr/share/pcb- -Xusr/share/doc -Xexamples -Xtutorial -Xusr/share/info
 
 	# Install pcb-gtk binary:
-	install build_gtk/src/pcb debian/$(package)-gtk/usr/bin/pcb-gtk
+	install debian/tmp/usr/bin/pcb debian/$(package)-gtk/usr/bin/pcb-gtk
+
 
 	# Install pcb-lesstif binary:
 #	install build_lesstif/src/pcb debian/$(package)-lesstif/usr/bin/pcb-lesstif
