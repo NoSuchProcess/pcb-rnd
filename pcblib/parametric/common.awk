@@ -151,9 +151,9 @@ function element_rectangle(x1, y1, x2, y2,    omit,   thickness)
 		element_line(x1, y1, x1, y2, thickness)
 	if (!(omit ~ "top"))
 		element_line(x1, y1, x2, y1, thickness)
-	if (!(omit ~ "right"))
-		element_line(x2, y2, x1, y2, thickness)
 	if (!(omit ~ "bottom"))
+		element_line(x2, y2, x1, y2, thickness)
+	if (!(omit ~ "right"))
 		element_line(x2, y2, x2, y1, thickness)
 }
 
