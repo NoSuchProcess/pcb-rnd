@@ -103,15 +103,15 @@ function rarc(cx, cy, rx, ry, a_start, a_delta, width   ,a1, a2)
 	step = a_delta * 100 * 2 / (((rx > ry) ? rx : ry) + 1)
 	for(a1 = a_start; a1 < a_start + a_delta - step; a1 += step) {
 		a2 = a1+step
-		rline( cx + rx * cos(deg2rad(a1)), cy + ry * sin(deg2rad(a1)),
-		       cx + rx * cos(deg2rad(a2)), cy + ry * sin(deg2rad(a2)),
+		rline( cx - rx * cos(deg2rad(a1)), cy + ry * sin(deg2rad(a1)),
+		       cx - rx * cos(deg2rad(a2)), cy + ry * sin(deg2rad(a2)),
 		       width, 0)
 	}
 
 	a1 = a2;
 	a2 = a_start+a_delta
-	rline( cx + rx * cos(deg2rad(a1)), cy + ry * sin(deg2rad(a1)),
-	       cx + rx * cos(deg2rad(a2)), cy + ry * sin(deg2rad(a2)),
+	rline( cx - rx * cos(deg2rad(a1)), cy + ry * sin(deg2rad(a1)),
+	       cx - rx * cos(deg2rad(a2)), cy + ry * sin(deg2rad(a2)),
 	       width, 0)
 
 }
