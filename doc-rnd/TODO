@@ -23,3 +23,7 @@ Low prio:
 - decide what to do with old doc - texi doesn't seem to work at all
 - rethink/rewrite the action/change infrastructure - too many void *ptr1
   pointers, too many code duplication
+- double sided board, poly on both layers; grab existing lines on one layer and
+  move then around. If all layers are visible, redraw of the far side layer
+  is slow and causes flickering elements from that layer until the front is
+  redrawn. Maybe we should have less flushes?
