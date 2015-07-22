@@ -48,6 +48,23 @@ BEGIN {
 	else if (P["type"] == "coil") {
 		wave(1, 4)
 	}
+	else if (P["type"] == "endcap") {
+		cl1 = len/9
+		cl2 = len/8
+		y1 = dia*1.2
+		y2 = dia
+		rarc = dia/5
+		element_line(sx1+cl2, y2, sx2-cl2, y2)
+		element_line(sx1+cl2, y2, sx1+cl1, y1)
+		element_line(sx2-cl2, y2, sx2-cl1, y1)
+		
+		element_line(sx1+cl2, -y2, sx2-cl2, -y2)
+		element_line(sx1+cl2, -y2, sx1+cl1, -y1)
+		element_line(sx2-cl2, -y2, sx2-cl1, -y1)
+
+		element_rectangle(sx1, y1, sx1+cl1, -y1, "right,NE,SE", rarc)
+		element_rectangle(sx2-cl1, y1, sx2, -y1, "left,NW,SW", rarc)
+	}
 	else if (P["type"] ~ "^core") {
 		wave(1, 4)
 		nlines = P["type"]
