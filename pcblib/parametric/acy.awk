@@ -20,7 +20,10 @@ BEGIN {
 	proc_args(P, "spacing,type,pol,dia", "spacing")
 
 	spacing = parse_dim(P["spacing"])
-	dia = either(parse_dim(P["dia"]), spacing/12)
+	dia = either(parse_dim(P["dia"]), spacing/6)
+
+# oops, dia is a radius rather
+	dia=dia/2
 
 	offs_x = +spacing/2
 
@@ -80,6 +83,13 @@ BEGIN {
 		}
 	}
 	else if (P["type"] == "line") {
+		element_line(-spacing/2, 0, +spacing/2, 0)
+	}
+	else if (P["type"] == "standing") {
+		r = dia*2
+		if (r < DEFAULT["pin_ringdia"]/2*1.2)
+			r = DEFAULT["pin_ringdia"]/2*1.2
+		element_arc(-spacing/2, 0, r, r, 0, 360)
 		element_line(-spacing/2, 0, +spacing/2, 0)
 	}
 	else {
