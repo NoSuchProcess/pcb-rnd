@@ -145,16 +145,66 @@ function element_arrow(x1, y1, x2, y2,  asize,  thickness   ,vx,vy,nx,ny,len,xb,
 }
 
 # draw a rectangle of silk lines 
-function element_rectangle(x1, y1, x2, y2,    omit,   thickness)
+# omit sides as requested in omit
+# if r is non-zero, round corners - omit applies as NW, NW, SW, SE
+# if omit includes "arc", corners are "rounded" with lines
+function element_rectangle(x1, y1, x2, y2,    omit,  r, thickness   ,tmp,r1,r2)
 {
-	if (!(omit ~ "left"))
-		element_line(x1, y1, x1, y2, thickness)
-	if (!(omit ~ "top"))
-		element_line(x1, y1, x2, y1, thickness)
-	if (!(omit ~ "bottom"))
-		element_line(x2, y2, x1, y2, thickness)
-	if (!(omit ~ "right"))
-		element_line(x2, y2, x2, y1, thickness)
+# order coords for round corners
+	if (x1 > x2) {
+		tmp = x1
+		x1 = x2
+		x2 = tmp
+	}
+	if (y1 > y2) {
+		tmp = y1
+		y1 = y2
+		y2 = tmp
+	}
+
+	if (!(omit ~ "left")) {
+		r1 = (omit ~ "NW") ? 0 : r
+		r2 = (omit ~ "SW") ? 0 : r
+		element_line(x1, y1+r1, x1, y2-r2, thickness)
+	}
+	if (!(omit ~ "top")) {
+		r1 = (omit ~ "NW") ? 0 : r
+		r2 = (omit ~ "NE") ? 0 : r
+		element_line(x1+r1, y1, x2-r2, y1, thickness)
+	}
+	if (!(omit ~ "bottom")) {
+		r1 = (omit ~ "SE") ? 0 : r
+		r2 = (omit ~ "SW") ? 0 : r
+		element_line(x2-r1, y2, x1+r2, y2, thickness)
+	}
+	if (!(omit ~ "right")) {
+		r1 = (omit ~ "SE") ? 0 : r
+		r2 = (omit ~ "NE") ? 0 : r
+		element_line(x2, y2-r1, x2, y1+r2, thickness)
+	}
+
+	if (r > 0) {
+		if (omit ~ "arc") {
+			if (!(omit ~ "NW"))
+				element_line(x1, y1+r, x1+r, y1)
+			if (!(omit ~ "SW"))
+				element_line(x1, y2-r, x1+r, y2)
+			if (!(omit ~ "NE"))
+				element_line(x2, y1+r, x2-r, y1)
+			if (!(omit ~ "SE"))
+				element_line(x2, y2-r, x2-r, y2)
+		}
+		else {
+			if (!(omit ~ "NW"))
+				element_arc(x1+r, y1+r, r, r, 270, 90)
+			if (!(omit ~ "SW"))
+				element_arc(x1+r, y2-r, r, r, 0, 90)
+			if (!(omit ~ "NE"))
+				element_arc(x2-r, y1+r, r, r, 180, 90)
+			if (!(omit ~ "SE"))
+				element_arc(x2-r, y2-r, r, r, 90, 90)
+		}
+	}
 }
 
 # draw a line on silk; thickness is optional (default: line_thickness)
