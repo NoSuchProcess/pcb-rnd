@@ -24,22 +24,33 @@ BEGIN {
 	ds = 100*20
 
 	if (photo) {
-		clr_board = "darkgreen"
-		clr_plated = "gray"
-		clr_hole = "black"
-		clr_annotation = "red"
-		clr_silk = "white"
-		clr_solderstop = "green"
-		clr_grid = "blue"
+		clr_board[-1] = "#003300"
+		clr_board[0]  = "#006600"
+		clr_board[1]  = "#22AA22"
+
+		clr_plated[-1] = "#555555"
+		clr_plated[0]  = "#777777"
+		clr_plated[1]  = "#999999"
+
+		clr_silk[-1] = "#AAAAAA"
+		clr_silk[0] = "#CCCCCC"
+		clr_silk[1] = "#FFFFFF"
+
+		clr_solderstop[0] = "#00BB00"
+
+
+		clr_hole[0] = "black"
+		clr_annotation[0] = "red"
+		clr_grid[0] = "blue"
 	}
 	else {
-		clr_board = "darkgreen"
-		clr_plated = "#777777"
-		clr_hole = "white"
-		clr_annotation = "red"
-		clr_silk = "black"
-		clr_solderstop = "white"
-		clr_grid = "blue"
+		clr_board[0] = "darkgreen"
+		clr_plated[0] = "#777777"
+		clr_hole[0] = "white"
+		clr_annotation[0] = "red"
+		clr_silk[0] = "black"
+		clr_solderstop[0] = "white"
+		clr_grid[0] = "blue"
 	}
 
 	marg=100000
@@ -233,9 +244,37 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 	pad($1, $2, $3, $4, $5, $6, $7, $9,   1)
 }
 
+function layer_3d(name, color,  offs)
+{
+	if ((offs == "") || (offs == 1))
+		offs = 150
+	else if (offs == -1)
+		offs = -150
+
+	if (1 in color) {
+		print "push"
+		print "shift", (-1*offs), (-1*offs)
+		print "color", color[1]
+		print "invoke ", name
+		print "pop"
+	}
+
+	if (-1 in color) {
+		print "push"
+		print "shift", (offs), (offs)
+		print "color", color[-1]
+		print "invoke ", name
+		print "pop"
+	}
+
+	if (0 in color) {
+		print "color", color[0]
+		print "invoke ", name
+	}
+
+}
+
 END {
-
-
 	print "frame"
 
 	sx = xmax-xmin
@@ -245,11 +284,11 @@ END {
 
 	print "scale 1 -1"
 	print "viewport", xmin, ymin, "-", xmin+size, ymin+size
-	print "bg", clr_solderstop
+	print "bg", clr_solderstop[0]
 	print "scale 0.7"
 
 	print "dash 0xaaaa"
-	print "color", clr_grid
+	print "color", clr_grid[0]
 
 	if (grid_unit == "mil") {
 		gstep = 10000
@@ -280,23 +319,21 @@ END {
 
 
 	if (photo) {
-		print "color", clr_board
-		print "invoke mask"
+		layer_3d("mask", clr_board, -1)
 	}
 
 
-	print "color", clr_plated
+	print "color", clr_plated[0]
 	print "invoke copper"
+	layer_3d("copper", clr_plated, 1)
 	if (has_hole) {
-		print "color", clr_hole
-		print "invoke hole"
+		layer_3d("hole", clr_hole, -1)
 	}
 
 
-	print "color", clr_silk
-	print "invoke silk"
+	layer_3d("silk", clr_silk)
 
-	print "color", clr_annotation
+	print "color", clr_annotation[0]
 	print "invoke annotation"
 
 	print "flush"
