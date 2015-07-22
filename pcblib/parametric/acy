@@ -10,7 +10,7 @@
 #@@param:spacing spacing between the two pins
 #@@param:type silk symbol type: block, endcap, standing, coil, core, core2, zigzag, line (optinal; default: block)
 #@@param:pol how to mark polarity: none, sign, bar, dot (optional; default: do not mark polarity)
-#@@param:dia body diameter - affects the silk rectangle (optional; default: spacing/12)
+#@@param:dia body diameter - affects the silk rectangle (optional; default: spacing/6)
 #@@param:wiper silk symbol wiper type: none, parrow, aarrow, looparrow, thermistor (optinal; default: none)
 
 
