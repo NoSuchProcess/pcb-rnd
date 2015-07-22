@@ -152,24 +152,20 @@ function hole(x, y, ring, clr, mask, drill, name, square)
 {
 	if (photo) {
 		print "macro push mask"
-		print "color", clr_board
 		flash(x, y, (ring+clr), square, (ring+clr)/10)
 		print "endmacro"
 	}
 
 	print "macro push copper"
-	print "color", clr_plated
 	flash(x, y, ring, square)
 	print "endmacro"
 
 	has_hole=1
 	print "macro push hole"
-	print "color", clr_hole
 	flash(x, y, drill, 0)
 	print "endmacro"
 
 	print "macro push annotation"
-	print "color", clr_annotation
 	print "text", x, y, name
 	print "endmacro"
 
@@ -181,19 +177,16 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 {
 	if (photo) {
 		print "macro push mask"
-		print "color", clr_board
 		rline(x1, y1, x2, y2, thickness+clr, square, clr/2)
 		print "endmacro"
 	}
 
 
 	print "macro push copper"
-	print "color", clr_plated
 	rline(x1, y1, x2, y2, thickness, square)
 	print "endmacro"
 
 	print "macro push annotation"
-	print "color", clr_annotation
 	print "text", (x2+x1)/2, (y2+y1)/2, name
 	print "endmacro"
 
@@ -206,7 +199,6 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 	sub("]$", "", $0)
 
 	print "macro push silk"
-	print "color", clr_silk
 	rline($1, $2, $3, $4, $5)
 	print "endmacro"
 
@@ -220,7 +212,6 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 	sub("]$", "", $0)
 
 	print "macro push silk"
-	print "color", clr_silk
 	rarc($1, $2,  $3, $4,  $5, $6,  $7)
 	print "endmacro"
 
@@ -288,16 +279,26 @@ END {
 	}
 
 
-	if (photo)
+	if (photo) {
+		print "color", clr_board
 		print "invoke mask"
+	}
 
 
-
+	print "color", clr_plated
 	print "invoke copper"
-	if (has_hole)
+	if (has_hole) {
+		print "color", clr_hole
 		print "invoke hole"
+	}
+
+
+	print "color", clr_silk
 	print "invoke silk"
+
+	print "color", clr_annotation
 	print "invoke annotation"
+
 	print "flush"
 }
 
