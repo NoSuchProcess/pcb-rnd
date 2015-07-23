@@ -290,8 +290,8 @@ function draw_grid()
 	for(x = 0 - int(marg/gstep)*gstep; x < size+marg; x+=gstep) {
 		print "line", x, ymin-marg, x, ymin+size+marg
 		print "line", xmin-marg, x, xmin+size+marg, x
-		print "text", x, ymin+size+1000, q x*gmul "\\n" grid_unit q
-		print "text", xmin+size+1000, x, q x*gmul "\\n" grid_unit q
+		print "text", x, ymax+gstep/2, q x*gmul "\\n" grid_unit q
+		print "text", xmax+gstep/2, x, q x*gmul "\\n" grid_unit q
 	}
 
 }
@@ -307,7 +307,9 @@ END {
 	print "scale 1 -1"
 	print "viewport", xmin, ymin, "-", xmin+size, ymin+size
 	print "bg", clr_solderstop[0]
-	print "scale 0.7"
+	print "shift", (size-sx)/2, (size-sy)/2
+	print "scale 0.85"
+
 
 	print "dash 0xaaaa"
 	print "color", clr_grid[0]
