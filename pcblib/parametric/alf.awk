@@ -11,7 +11,7 @@ BEGIN {
 
 	offs_x = +spacing/2
 
-	element_begin("acy" P["spacing"], "R1", "acy" P["spacing"]    ,0,0, 2.2*spacing/3,-mil(50))
+	element_begin("acy" P["spacing"], "D1", "acy" P["spacing"]    ,0,0, 2.2*spacing/3,-mil(50))
 
 	element_pin(-spacing/2, 0, 1)
 	element_pin(+spacing/2, 0, 2)
