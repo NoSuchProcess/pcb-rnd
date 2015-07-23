@@ -2,6 +2,7 @@
 	                             # 82 for SOT23
 	      # 41 for SOT23
 	               # 34 for SOT23, 24 for SOT25
+# alias sc70-6
 Element(0x00 "SMT transistor, 6 pins" "" "SOT326" 100 0 3 100 0x00)
 (
 	ElementLine(0 0 0 119 10)
