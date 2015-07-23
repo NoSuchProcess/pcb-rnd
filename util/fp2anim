@@ -271,6 +271,28 @@ function layer_3d(name, color,  offs)
 		print "color", color[0]
 		print "invoke ", name
 	}
+}
+
+function draw_grid()
+{
+	if (grid_unit == "mil") {
+		gstep = 10000
+		gmul = 1/100
+	}
+	else {
+		gstep = 3937
+		gmul = 1/3937
+	}
+
+	while ((size/gstep) > 10)
+		gstep=gstep*2
+
+	for(x = 0 - int(marg/gstep)*gstep; x < size+marg; x+=gstep) {
+		print "line", x, ymin-marg, x, ymin+size+marg
+		print "line", xmin-marg, x, xmin+size+marg, x
+		print "text", x, ymin+size+1000, q x*gmul "\\n" grid_unit q
+		print "text", xmin+size+1000, x, q x*gmul "\\n" grid_unit q
+	}
 
 }
 
@@ -290,24 +312,8 @@ END {
 	print "dash 0xaaaa"
 	print "color", clr_grid[0]
 
-	if (grid_unit == "mil") {
-		gstep = 10000
-		gmul = 1/100
-	}
-	else {
-		gstep = 3937
-		gmul = 1/3937
-	}
-
-	while ((size/gstep) > 10)
-		gstep=gstep*2
-
-	for(x = 0 - int(marg/gstep)*gstep; x < size+marg; x+=gstep) {
-		print "line", x, ymin-marg, x, ymin+size+marg
-		print "line", xmin-marg, x, xmin+size+marg, x
-		print "text", x, ymin+size+1000, q x*gmul "\\n" grid_unit q
-		print "text", xmin+size+1000, x, q x*gmul "\\n" grid_unit q
-	}
+	if (grid_unit != "")
+		draw_grid()
 
 	print "dash 0xffff"
 
