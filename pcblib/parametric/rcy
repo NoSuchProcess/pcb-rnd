@@ -13,5 +13,5 @@
 
 #@@include common.awk
 
-awk -f `dirname $0`/common.awk -f `dirname $0`/rcy.awk -v "args=$*"
+awk -f `dirname $0`/common.awk -f `dirname $0`/rcy.awk -v "args=$*" -v gen=`basename $0`
 

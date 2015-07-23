@@ -19,7 +19,7 @@ BEGIN {
 	offs_x = -(row_spacing/2)
 	offs_y = -int((P["n"]/4-0.5) * pad_spacing)
 
-	element_begin(P["n"] "*" P["row_spacing"] " SO", "U1", P["n"] "*" P["row_spacing"]    ,0,0, 0, mil(-100))
+	element_begin("", "U1", P["n"] "*" P["row_spacing"]    ,0,0, 0, mil(-100))
 
 	for(n = 1; n <= P["n"]/2; n++) {
 		y = (n-1) * pad_spacing

@@ -73,6 +73,11 @@ function coord_y(y) { return int(y + offs_y) }
 # generate an element header line; any argument may be empty
 function element_begin(desc, name, value, cent_x, cent_y, text_x, text_y, text_dir, text_scale)
 {
+	if (desc == "") {
+		desc = gen "(" args ")"
+		gsub("[\r\n\t ]*[?][^,]*,[\r\n\t ]*", "", desc)
+		gsub("[\r\n\t]", " ", desc)
+	}
 	print "Element[" q q, q desc q, q name q, q value q, 
 	int(either(cent_x, 0)), int(either(cent_y, 0)),
 	int(either(text_x, 0)), int(either(text_y, 0)),

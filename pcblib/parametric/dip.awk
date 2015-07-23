@@ -9,7 +9,7 @@ BEGIN {
 
 	spacing=parse_dim(P["spacing"])
 
-	element_begin(P["n"] "*" P["spacing"] " DIP socket", "U1", P["n"] "*" P["spacing"]    ,0,0, 0, mil(-100))
+	element_begin("", "U1", P["n"] "*" P["spacing"]    ,0,0, 0, mil(-100))
 
 	half = mil(50)
 

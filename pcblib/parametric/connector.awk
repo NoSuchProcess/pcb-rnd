@@ -23,7 +23,7 @@ BEGIN {
 	if ((eshift != "x") && (eshift != "y") && (eshift != ""))
 		error("eshift must be x or y (got: ", eshift ")");
 
-	element_begin(P["spacing"] " mil connector", "CONN1", P["nx"] "*" P["ny"]    ,0,0, 0, -step)
+	element_begin("", "CONN1", P["nx"] "*" P["ny"]    ,0,0, 0, -step)
 
 	for(x = 0; x < P["nx"]; x++) {
 		if ((eshift == "x") && ((x % 2) == 1))

@@ -27,7 +27,7 @@ BEGIN {
 
 	offs_x = +spacing/2
 
-	element_begin("acy" P["spacing"], "R1", "acy" P["spacing"]    ,0,0, spacing/2-spacing/5,-mil(20))
+	element_begin("", "R1", "acy" P["spacing"]    ,0,0, spacing/2-spacing/5,-mil(20))
 
 	element_pin(-spacing/2, 0, 1)
 	element_pin(+spacing/2, 0, 2)

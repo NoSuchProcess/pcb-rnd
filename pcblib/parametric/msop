@@ -25,5 +25,5 @@ defaults='
 ?pad_thickness=0.45mm
 '
 
-awk -f `dirname $0`/common.awk -f `dirname $0`/so.awk -v "args=$defaults,$*"
+awk -f `dirname $0`/common.awk -f `dirname $0`/so.awk -v "args=$defaults,$*" -v gen=`basename $0`
 
