@@ -15,6 +15,9 @@ BEGIN {
 
 	half=step/2
 
+	P["nx"] = int(P["nx"])
+	P["ny"] = int(P["ny"])
+
 	eshift=tolower(P["eshift"])
 	etrunc=tolower(P["etrunc"])
 	if ((eshift != "x") && (eshift != "y") && (eshift != ""))
