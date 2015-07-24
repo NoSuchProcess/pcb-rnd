@@ -1,3 +1,8 @@
+##from:pcb
+##for:transistor
+##for:linear
+##for:stabilizer
+##geo:standing
 	Element(0x00 "Transistor" "" "TO220SW" 0 10 0 100 0x00)
 (
 	Pin(100 200 90 60 "1" 0x101)

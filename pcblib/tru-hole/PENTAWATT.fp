@@ -1,3 +1,5 @@
+##from:pcb
+##for:IC
 Element(0x00 "Power IC, as in MULTIWATT15" "" "PENTAWATT" 469 50 3 100 0x00)
 (
        Pin(70 334 90 60 "1" 0x101)

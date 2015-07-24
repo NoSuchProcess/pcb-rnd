@@ -1,3 +1,7 @@
+##from:pcb
+##for:capacitor
+##for:tantal
+
 	# how much to grow the pads by for soldermask
 	# clearance from planes
 Element(0x00 "Tantalum SMT capacitor (pin 1 is +)" "" "TANT_B" 0 0 132 0 3 100 0x00)

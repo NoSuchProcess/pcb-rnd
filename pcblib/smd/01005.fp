@@ -1,3 +1,8 @@
+##from:pcb
+##for:resistor
+##for:capacitor
+##for:led
+
 	# grab the input values and convert to 1/100 mil
 	# how much to grow the pads by for soldermask [1/100 mil]
 	# clearance from planes [1/100 mil]

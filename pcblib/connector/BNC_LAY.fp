@@ -1,3 +1,7 @@
+##from:pcb
+##geo:90
+##geo:female
+
 Element(0x00 "right angle BNC" "" "BNC_LAY" 200 0 3 100 0x00)
 (
 	ElementLine(-60 -290 490 -290 10)

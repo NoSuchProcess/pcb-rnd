@@ -1,3 +1,7 @@
+##from:pcb
+##for:diode
+##geo:standing
+
 Element(0x00 "diode in TO220" "" "TO264" 860 50 3 100 0x00)
 (
        Pin(181 130 100 60 "1" 0x101)

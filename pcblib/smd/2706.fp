@@ -1,3 +1,8 @@
+##from:pcb
+##for:resistor
+##for:capacitor
+##for:led
+
 	# how much to grow the pads by for soldermask
 	# clearance from planes
 Element(0x00 "Standard SMT resistor, capacitor etc" "" "2706" 0 0 179 0 3 100 0x00)

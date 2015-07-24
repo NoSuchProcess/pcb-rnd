@@ -1,3 +1,6 @@
+##from:pcb
+##for:transistor
+
 	                             # 78 for SOT23
 	                             # 82 for SOT23
 	      # 41 for SOT23

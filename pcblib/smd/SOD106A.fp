@@ -1,3 +1,6 @@
+##from:pcb
+##for:diode
+
 	# how much to grow the pads by for soldermask
 	# clearance from planes
 Element(0x00 "SMT diode (pin 1 is cathode)" "" "SOD106A" 0 0 166 0 3 100 0x00)

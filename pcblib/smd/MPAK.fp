@@ -1,3 +1,8 @@
+##from:pcb
+##for:transistor
+##for:stabilizer
+##for:linear
+
 Element(0x00 "Pressure transducer" "" "MPAK" 235 0 3 100 0x00)
 (
 	ElementLine(0 0 0 558 10)

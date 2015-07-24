@@ -1,3 +1,9 @@
+##from:pcb
+##for:transistor
+##for:stabilizer
+##for:linear
+
+
 	                             # 78 for SOT23
 	                             # 82 for SOT23
 	      # 41 for SOT23

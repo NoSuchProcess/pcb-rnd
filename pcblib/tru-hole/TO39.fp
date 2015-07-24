@@ -1,3 +1,8 @@
+##from:pcb
+##for:transistor
+##for:linear
+##for:stabilizer
+
 	Element["" "Transistor" "" "TO39" 18800 18800 6000 7000 0 100 ""]
 (
 # The JEDEC drawing shows a pin diameter of 16-21 mils

@@ -1,3 +1,7 @@
+##from:pcb
+##geo:90
+##geo:male
+
 Element(0x00 "DSUB connector, female/male" "" "DB15M" 1000 2026 1 150 0x00)
 (
 	# Gehaeuse (schmaler Kasten incl. Bohrungen)

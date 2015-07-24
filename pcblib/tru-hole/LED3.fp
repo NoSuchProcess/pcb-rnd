@@ -1,3 +1,7 @@
+##from:pcb
+##for:crystal
+##for:led
+##ref:http://www.lumex.com
 Element(0x00 "LED, size in mm (pin 1 is +, 2 is -)" "" "LED3" 100 70 0 100 0x00)
 (
 # typical LED is 0.5 mm or 0.020" square pin.  See for example

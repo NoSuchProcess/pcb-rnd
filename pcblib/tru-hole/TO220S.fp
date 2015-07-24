@@ -1,3 +1,8 @@
+##from:pcb
+##for:transistor
+##for:linear
+##for:stabilizer
+##geo:stadning
 	Element(0x00 "Transistor" "" "TO220S" 50 570 1 100 0x00)
 (
 	Pin(100 800 90 60 "1" 0x101)

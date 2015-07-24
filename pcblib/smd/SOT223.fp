@@ -1,3 +1,6 @@
+##from:pcb
+##for:transistor
+
 Element(0x00 "SMT transistor, 4 pins" "" "SOT223" 305 0 3 100 0x00)
 (
 	ElementLine(0 0 0 414 10)

@@ -1,3 +1,9 @@
+##from:pcb
+##for:transistor
+##for:linear
+##for:stabilizer
+##geo:standing
+
 	Element(0x00 "Transistor" "" "TO92" 60 70 0 100 0x00)
 (
 # The JEDEC drawing shows a pin diameter of 16-21 mils

@@ -1,3 +1,6 @@
+##from:pcb
+##for:crystal
+##for:xtal
 Element(0x00 "Crystals" "" "HC51U" 0 -60 0 100 0x00)
 (
 	Pin(136 176 80 40 "1" 0x101)

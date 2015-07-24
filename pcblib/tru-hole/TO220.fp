@@ -1,3 +1,9 @@
+##from:pcb
+##for:transistor
+##for:linear
+##for:stabilizer
+##geo:laying
+##ref:http://www.zetex.com/3.0/pdf/TO220.pdf
 	Element(0x00 "Transistor" "" "TO220" 50 570 1 100 0x00)
 (
 # I have been unable to locate the JEDEC drawing.  However, refering

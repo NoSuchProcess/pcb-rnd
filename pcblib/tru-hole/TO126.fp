@@ -1,3 +1,8 @@
+##from:pcb
+##for:transistor
+##for:linear
+##for:stabilizer
+##geo:laying
 	Element(0x00 "Transistor" "" "TO126" 80 480 1 100 0x00)
 (
 # From the JEDEC drawing, the pins are rectangular with dimensions

@@ -1,3 +1,6 @@
+##from:pcb
+##for:oscillator
+##for:xtal
 	Element(0x00 "Crystal oscillator" "" "OSC14" 270 300 3 100 0x00)
 (
 	Pin(100 100 50 28 "NC" 0x01)
