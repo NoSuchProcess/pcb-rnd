@@ -4937,7 +4937,7 @@ ActionChangeSquare (int argc, char **argv, Coord x, Coord y)
 		ptr3 = NULL;
 		type = SearchScreen (x, y, CHANGESQUARE_TYPES,
 			       &ptr1, &ptr2, &ptr3);
-		/* TODO: ptr3 is NULL when a VIA is found */
+
 		if (ptr3 != NULL) {
 			int qstyle = GET_SQUARE ((PinTypePtr) ptr3);
 			qstyle++;

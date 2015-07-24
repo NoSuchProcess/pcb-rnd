@@ -101,6 +101,7 @@ static void *ClrElementSquare (ElementTypePtr);
 static void *ChangeElementOctagon (ElementTypePtr);
 static void *SetElementOctagon (ElementTypePtr);
 static void *ClrElementOctagon (ElementTypePtr);
+static void *ChangeViaSquare (PinTypePtr);
 static void *ChangePinSquare (ElementTypePtr, PinTypePtr);
 static void *SetPinSquare (ElementTypePtr, PinTypePtr);
 static void *ClrPinSquare (ElementTypePtr, PinTypePtr);
@@ -206,7 +207,7 @@ static ObjectFunctionType ChangeSquareFunctions = {
   NULL,
   NULL,
   NULL,
-  NULL,
+  ChangeViaSquare,
   ChangeElementSquare,
   NULL,
   ChangePinSquare,
@@ -1460,6 +1461,29 @@ ClrPadSquare (ElementTypePtr Element, PadTypePtr Pad)
 }
 
 
+/* ---------------------------------------------------------------------------
+ * changes the square flag of a via
+ */
+static void *
+ChangeViaSquare (PinTypePtr Via)
+{
+  if (TEST_FLAG (LOCKFLAG, Via))
+    return (NULL);
+  EraseVia (Via);
+  AddObjectToClearPolyUndoList (VIA_TYPE, NULL, Via, Via, false);
+  RestoreToPolygon (PCB->Data, VIA_TYPE, NULL, Via);
+  AddObjectToFlagUndoList (VIA_TYPE, NULL, Via, Via);
+	ASSIGN_SQUARE(Absolute, Via);
+	if (Absolute == 0)
+		CLEAR_FLAG (SQUAREFLAG, Via);
+	else
+		SET_FLAG (SQUAREFLAG, Via);
+	SetPinBoundingBox (Via);
+  AddObjectToClearPolyUndoList (VIA_TYPE, NULL, Via, Via, true);
+  ClearFromPolygon (PCB->Data, VIA_TYPE, NULL, Via);
+  DrawVia (Via);
+  return (Via);
+}
 /* ---------------------------------------------------------------------------
  * changes the square flag of a pin
  */
