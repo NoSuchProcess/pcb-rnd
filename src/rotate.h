@@ -52,8 +52,38 @@
 			default:	break;						\
 		}											\
 	}
-#define	ROTATE_VIA_LOWLEVEL(v,x0,y0,n)	ROTATE((v)->X,(v)->Y,(x0),(y0),(n))
-#define	ROTATE_PIN_LOWLEVEL(p,x0,y0,n)	ROTATE((p)->X,(p)->Y,(x0),(y0),(n))
+
+/* Rotate pin shape style by n_in * 90 degress */
+#define PIN_ROTATE(p,n_in) \
+do { \
+	int _n_; \
+	for(_n_ = n_in;_n_>0;_n_--) { \
+		int _old_, _nw_ = 0; \
+		_old_ = GET_SQUARE(p)-1; \
+		if (_old_ & 1) \
+			_nw_ |= 8; \
+		if (_old_ & 8) \
+			_nw_ |= 2; \
+		if (_old_ & 2) \
+			_nw_ |= 4; \
+		if (_old_ & 4) \
+			_nw_ |= 1; \
+		GET_SQUARE(p) = _nw_+1; \
+	} \
+} while(0)
+
+#define	ROTATE_VIA_LOWLEVEL(v,x0,y0,n)	\
+do { \
+	ROTATE((v)->X,(v)->Y,(x0),(y0),(n)); \
+	PIN_ROTATE(v, (n)); \
+} while(0)
+
+#define	ROTATE_PIN_LOWLEVEL(p,x0,y0,n)	\
+do { \
+	ROTATE((p)->X,(p)->Y,(x0),(y0),(n)); \
+	PIN_ROTATE((p), (n)); \
+} while(0)
+
 #define	ROTATE_PAD_LOWLEVEL(p,x0,y0,n)	\
 	RotateLineLowLevel(((LineTypePtr) (p)),(x0),(y0),(n))
 
