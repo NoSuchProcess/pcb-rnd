@@ -1,8 +1,13 @@
 #!/bin/sh
-png=map.png
-pcb=map.pcb
+pcb=$1.pcb
+
+pcb -x png --dpi 300 --photo-mode $pcb
+png=$1.png
+html=$1.html
 
 png_dims=`file $png | awk -F "[,]" '{ sub("x", " ", $2); print $2}'`
+
+
 
 awk -v "png_dims=$png_dims" -v "png_url=$png" '
 BEGIN {
@@ -40,6 +45,7 @@ function bump(idx, x, y)
 	E[ne, "cmd"] = P[2]
 	E[ne, "cx"] = A[1]
 	E[ne, "cy"] = A[2]
+	E[ne, "file"] = P[4]
 	ne++
 	next
 }
@@ -76,7 +82,7 @@ function bump(idx, x, y)
 END {
 	scale_x = png_sx/pcb_sx
 	scale_y = png_sy/pcb_sy
-
+	print "<html><body>"
 	print "<img src=" q png_url q " usemap=\"#fpmap\">"
 	print "<map name=\"fpmap\">"
 	for(n = 0; n < ne; n++) {
@@ -104,13 +110,18 @@ END {
 		x2 += 5
 		y2 += 5
 #		print n, x1, y1, x2, y2, E[n, "cmd"]
-		url="http://igor2.repo.hu/cgi-bin/pcblib-param.cgi?cmd=" E[n, "cmd"]
+		cmd =  E[n, "cmd"]
+		if (cmd ~ "[(]")
+			url="http://igor2.repo.hu/cgi-bin/pcblib-param.cgi?cmd=" cmd
+		else
+			url="http://igor2.repo.hu/cgi-bin/pcblib-static.cgi?fp=" E[n, "file"]
 		gsub(" ", "+", url)
 		print "<area shape=\"rect\" coords=" q x1 "," y1 "," x2 "," y2 q " href=" q url q " alt=" q E[n, "cmd"] q ">"
 	}
 	print "</map>"
+	print "</body></html>"
 }
 
-' < $pcb > a.html
+' < $pcb > $html
 
 

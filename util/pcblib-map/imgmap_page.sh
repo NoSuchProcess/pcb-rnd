@@ -1,6 +1,8 @@
 #!/bin/sh
-png=map.png
-pcb=map.pcb
+pcb=$1.pcb
+
+pcb -x png --dpi 100 --photo-mode $pcb
+png=$1.png
 
 png_dims=`file $png | awk -F "[,]" '{ sub("x", " ", $2); print $2}'`
 
@@ -68,6 +70,7 @@ END {
 	scale_x = png_sx/pcb_sx
 	scale_y = png_sy/pcb_sy
 
+	print "<html><body>"
 	print "<img src=" q png_url q " usemap=\"#fpmap\">"
 	print "<map name=\"fpmap\">"
 	for(n = 0; n < ne; n++) {
@@ -120,6 +123,7 @@ END {
 		T[t, "text"] = "-"
 	}
 	print "</map>"
+	print "</body></html>"
 }
 
 ' < $pcb > map.html
