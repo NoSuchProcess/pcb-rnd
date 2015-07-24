@@ -3,10 +3,10 @@
 # To read pcb files, the pcb version (or the git source date) must be >= the file version
 FileVersion[20070407]
 
-PCB["" 2227330 2227330]
+PCB["" 540000 1120030]
 
 Grid[2500.0 0 0 1]
-Cursor[120000 0 0.000000]
+Cursor[0 0 0.000000]
 PolyArea[3100.006200]
 Thermal[0.500000]
 DRC[1200 900 1000 700 1500 1000]
@@ -787,8 +787,7 @@ Symbol['~' 1200]
 	SymbolLine[2000 3500 2500 3000 800]
 )
 Attribute("PCB::grid::unit" "mil")
-Via[270000 810000 7874 4000 0 3150 "" ""]
-Via[460000 1060000 7874 4000 0 3150 "" ""]
+Via[540000 1120000 7874 4000 0 3150 "" ""]
 
 Element["" "DSUB connector, female/male" "" "DB15F" 30000 50000 5600 0 3 150 ""]
 (
