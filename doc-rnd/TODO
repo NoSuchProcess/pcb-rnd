@@ -1,23 +1,31 @@
+- scconfig:
+		- example/
+
+BUGS
 - distorted square pin bugs:
 	- rtree assert failure when NDEBUG is turned off
 	- there's larger clearance with shaped pins on the enlarged sides
 	- why q doesn't work on vias (new comment about this in action.c)
 	- r tree breaks!!!
 	- rotate should rotate pin shape as well
-- merge pcb-gpmi in pcb-rnd
-- scconfig:
-	- switch over from automake:
-		- example/
-		- w32/
+	- when gpcb menu res is empty, pcb segfaults on startup
+
+FEATURES
+- merge pcb-gpmi in pcb-rnd {large}
+- win32 port {large}
 	- clean up central Makefile.in rules:
 		- remove cat, sed, grep where possible, use scconfig instead
-	- when gpcb menu res is empty, pcb segfaults on startup
-- drill adjust:
+- UI: drill adjust: {small}
 	- set drill and/or ring to current style
 	- set all pins (drill and/or ring) to current style for a component
-- clear poly should be a per layer flag
-- zero width copper lines to split polys
-- be able to manually change text line width
+- UI: trace length calculation {small}
+- UI: be able to manually change text line width {small}
+- CORE: clear poly should be a per layer flag (on each objects) {?}
+
+
+CHECK
+- UI: draw and indicate zero width copper lines to split polys; poly holes 
+
 
 Low prio:
 - decide what to do with old doc - texi doesn't seem to work at all
