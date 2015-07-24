@@ -5,7 +5,7 @@ FileVersion[20070407]
 
 PCB["" 170000 160000]
 
-Grid[5000.0 0 0 1]
+Grid[2500.0 0 0 1]
 Cursor[0 0 0.000000]
 PolyArea[3100.006200]
 Thermal[0.500000]
@@ -882,7 +882,7 @@ Element["" "Standard SMT resistor, capacitor etc" "" "2706" 70000 35000 -17900 0
 
 	)
 
-Element["" "SMT diode (pin 1 is cathode)" "" "DO214" 120000 25000 0 22100 2 100 ""]
+Element["" "SMT diode (pin 1 is cathode)" "" "DO214" 145000 85000 0 22100 2 100 ""]
 (
 	Pad[-1900 -10600 1900 -10600 14000 2000 14600 "1" "1" "square"]
 	Pad[-1900 10600 1900 10600 14000 2000 14600 "2" "2" "square"]
@@ -895,7 +895,7 @@ Element["" "SMT diode (pin 1 is cathode)" "" "DO214" 120000 25000 0 22100 2 100 
 
 	)
 
-Element["" "SMT diode (pin 1 is cathode)" "" "DO214AB" 150000 25000 0 22700 2 100 ""]
+Element["" "SMT diode (pin 1 is cathode)" "" "DO214AB" 145000 135000 0 22700 2 100 ""]
 (
 	Pad[-2000 -10900 2000 -10900 14500 2000 15100 "1" "1" "square"]
 	Pad[-2000 10900 2000 10900 14500 2000 15100 "2" "2" "square"]
@@ -1037,6 +1037,15 @@ Element["" "Tantalum SMT capacitor (pin 1 is +)" "" "TANT_D" 18500 131500 0 2290
 	ElementLine [15000 -15800 11700 -21900 1000]
 
 	)
+
+Element["" "" "" "" 130000 22500 12913 3720 1 70 ""]
+(
+	Pad[-984 -7087 984 -7087 5118 5000 7618 "" "1" "square"]
+	Pad[-984 7087 984 7087 5118 5000 7618 "" "2" "square"]
+	ElementLine [-3150 -3937 -3150 3937 787]
+	ElementLine [3150 -3937 3150 3937 787]
+
+	)
 Layer(1 "component")
 (
 )
@@ -1066,11 +1075,12 @@ Layer(9 "silk")
 )
 Layer(10 "silk")
 (
-	Line[0 55000 130000 55000 1000 4000 "clearline"]
+	Line[0 55000 170000 55000 1000 4000 "clearline"]
 	Line[0 100000 130000 100000 1000 4000 "clearline"]
 	Line[95000 0 95000 55000 1000 4000 "clearline"]
 	Line[130000 55000 130000 160000 1000 4000 "clearline"]
 	Text[115000 145000 1 200 "TANT" "clearline"]
 	Text[115000 90000 1 200 "SOD" "clearline"]
-	Text[140000 50000 0 200 "DO" "clearline"]
+	Text[157500 115000 1 200 "DO" "clearline"]
+	Text[112500 37500 0 200 "minimelf" "clearline"]
 )
