@@ -122,12 +122,21 @@ list_gens()
 			EXAMPLE[FILENAME] = EXAMPLE[FILENAME] $0
 			next
 		}
+
+		/@@params/ {
+			sub(".*@@params", "", $0)
+			PARAMS[FILENAME] = PARAMS[FILENAME] $0
+			next
+		}
 		
 		END {
 			for(fn in PURPOSE) {
 				gn=fn
 				sub(".*/", "", gn)
-				print "<li> <a href=" q CGI "?cmd=" EXAMPLE[fn] q ">" gn "() </a> - " PURPOSE[fn]
+				params=PARAMS[fn]
+				sub("^[ \t]*", "", params)
+				sub("[ \t]*$", "", params)
+				print "<li> <a href=" q CGI "?cmd=" EXAMPLE[fn] q ">" gn "(<small>" params "</small>) </a> - " PURPOSE[fn]
 				print "- <a href=" q CGI "?cmd=" gn "&output=help"  q "> HELP </a>"
 			}
 		}
