@@ -28,6 +28,18 @@ solves the "0-ohm 1206 jumper" problem: the element should be marked
 as nonetlist, with both pins set intconn(1) - this will result in a 2
 pad element, pads internally connected, that can be part of any one network
 without causing short.
+<h2> Example </h2>
+Crossing traces resolved using a 0 Ohm 1206 resistor called J1. The footprint
+has an intconn between the two pads which resolves the final rat line.
+<p>
+<img src="intconn1.png">
+<p>
+<img src="intconn2.png">
+<p>
+<img src="intconn3.png">
+<p>
+
+
 
 <h2> save/load and compatibility </h2>
 This patch introduces a new pin flag. In the following example
