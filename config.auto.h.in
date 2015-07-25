@@ -310,11 +310,8 @@ print [@
 /* Relative path from bindir to exec_prefix */
 #define BINDIR_TO_EXECPREFIX ".."
 
-/* Relative path from bindir to pcblibdir */
+/* Relative path from bindir to pcblibdir TODO: do we still need this? */
 #define BINDIR_TO_PCBLIBDIR "../share/pcb"
-
-/* Relative path from bindir to pcbtreedir */
-#define BINDIR_TO_PCBTREEDIR "../share/pcb/newlib"
 
 @]
 
