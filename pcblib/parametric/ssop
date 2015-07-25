@@ -8,7 +8,6 @@
 
 #@@desc Generate SSOP packages with variable number of pins and
 #@@desc row spacing
-#@@params n, row_spacing, pad_spacing
 
 #@@include so
 #@@include common.awk

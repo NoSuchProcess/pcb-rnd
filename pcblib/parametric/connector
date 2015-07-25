@@ -10,12 +10,31 @@
 
 #@@params nx, ny, spacing, silkmark, eshift, etrunc
 
-#@@param:nx number of pins in the X direction (mandatory, no default)
-#@@param:ny number of pins in the Y direction (mandatory, no default)
-#@@param:spacing spacing between the pins (in mil, or in mm using the mm suffix; optional, default is 100 mil)
-#@@param:silkmark how to mark pin 1; values: square, external, angled, none (optional; default is square)
-#@@param:eshift shift even rows or columns by half spacing; values: x (shift columns), y (shift rows) (optional; default: don't shift)
-#@@param:etrunc truncate the last pin of a shifted row or column (optional boolean, defaults to false)
+#@@param:nx number of pins in the X direction
+#@@param:ny number of pins in the Y direction
+#@@param:spacing spacing between the pins
+#@@dim:spacing
+#@@default:100 mil
+
+#@@param:silkmark how to mark pin 1 on the silk layer
+#@@enum:silkmark:square a rectangle around pin 1
+#@@enum:silkmark:external a little trinagle placed outside of the box
+#@@enum:silkmark:angled an angled line in the corner
+#@@enum:silkmark:none no mark
+#@@optional:silkmark
+#@@default:silkmark square
+
+#@@param:eshift shift even rows or columns by half spacing (optional; default: don't shift)
+#@@enum:eshift:x shift columns
+#@@enum:eshift:y shift rows
+#@@enum:eshift:none do not shift anything
+#@@default:eshift none
+#@@optional:eshift
+
+#@@param:etrunc truncate the last pin of a shifted row or column
+#@@bool:etrunc
+#@@default:etrunc false
+#@@optional:etrunc
 
 #@@include common.awk
 

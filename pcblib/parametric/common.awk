@@ -1,12 +1,34 @@
 #@@param:pin_ringdia pin's copper ring (annulus) outer diameter (in mil by default, mm suffix can be used)
-#@@param:pin_clearance pin's copper clearance diameter (in mil by default, mm suffix can be used)
-#@@param:pin_mask pin's solder mask diameter (in mil by default, mm suffix can be used)
-#@@param:pin_drill copper pin's drill diameter (in mil by default, mm suffix can be used)
-#@@param:pad_thickness width of pads (in mil by default, mm suffix can be used)
-#@@param:pad_clearance copper clearance around the pad (in mil by default, mm suffix can be used)
-#@@param:pad_mask pin's solder mask (in mil by default, mm suffix can be used)
-#@@param:line_thickness silk line thickness (in mil by default, mm suffix can be used)
+#@@optional:pin_ringdia
+#@@dim:pin_ringdia
 
+#@@param:pin_clearance pin's copper clearance diameter (in mil by default, mm suffix can be used)
+#@@optional:pin_clearance
+#@@dim:pin_clearance
+
+#@@param:pin_mask pin's solder mask diameter (in mil by default, mm suffix can be used)
+#@@optional:pin_mask
+#@@dim:pin_mask
+
+#@@param:pin_drill copper pin's drill diameter (in mil by default, mm suffix can be used)
+#@@optional:pin_drill
+#@@dim:pin_drill
+
+#@@param:pad_thickness width of pads (in mil by default, mm suffix can be used)
+#@@optional:pad_thickness
+#@@dim:pad_thickness
+
+#@@param:pad_clearance copper clearance around the pad (in mil by default, mm suffix can be used)
+#@@optional:pad_clearance
+#@@dim:pad_clearance
+
+#@@param:pad_mask pin's solder mask (in mil by default, mm suffix can be used)
+#@@optional:pad_mask
+#@@dim:pad_mask
+
+#@@param:line_thickness silk line thickness (in mil by default, mm suffix can be used)
+#@@optional:line_thickness
+#@@dim:line_thickness
 
 BEGIN {
 	q="\""

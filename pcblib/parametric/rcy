@@ -8,8 +8,22 @@
 #@@params spacing,pol,dia
 
 #@@param:spacing spacing between the two pins
-#@@param:pol how to mark polarity: none, sign, bar, bar+, bar-, bar+sign, bar-sign (optional; default: sign)
-#@@param:dia body diameter - affects the silk circle (optional; default: spacing*2)
+#@@dim:spacing
+
+#@@param:pol how to mark polarity:  (optional; default: sign)
+#@@enum:pol:none no marking
+#@@enum:pol:sign print + next to pin 1 and - next to pin 2
+#@@enum:pol:bar+ draw a bar inside the circle, around pin 2
+#@@enum:pol:bar- draw a bar inside the circle, around pin 1
+#@@enum:pol:bar same as bar+
+#@@enum:pol:bar+sign bar+ and sign combined
+#@@enum:pol:bar-sign bar- and sign combined
+#@@optional:pol
+#@@default:sign
+
+#@@param:dia body diameter - affects the silk circle
+#@@optional:dia
+#@@default:dia spacing*2
 
 #@@include common.awk
 

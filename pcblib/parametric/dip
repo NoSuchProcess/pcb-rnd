@@ -9,7 +9,11 @@
 #@@params n, spacing
 
 #@@param:n number of pins
-#@@param:spacing spacing between the two rows of pins (in mil, or in mm using the mm suffix; optional, default is 100 mil)
+
+#@@param:spacing spacing between the two rows of pins
+#@@dim:spacing
+#@@optional:spacing
+#@@default:spacing 100 mil
 
 #@@include common.awk
 
