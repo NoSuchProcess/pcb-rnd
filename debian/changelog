@@ -1,8 +1,8 @@
-pcb-rnd (1.0.1-r419) unstable; urgency=low
+pcb-rnd (1.0.1-r431) unstable; urgency=low
 
   * New upstream release (1.0.1)
 
- -- Tibor Palinkas <pcb-rnd[removethis]@repo.hu>  Sat, 25 Jul 2015 08:59:44 +0200
+ -- Tibor Palinkas <pcb-rnd[removethis]@repo.hu>  Sat, 25 Jul 2015 11:46:44 +0200
 
 
 pcb-rnd (1.0.0-r84) unstable; urgency=low
