@@ -17,9 +17,9 @@
 
 
 #@@param:pad_spacing spacing between the centerline of two pads
-#@@dim:row_spacing
-#@@optional:row_spacing
-#@@default:row_spacing 250 mil
+#@@dim:pad_spacing
+#@@optional:pad_spacing
+#@@default:pad_spacing 250 mil
 
 
 #@@param:ext_bloat how much longer the pad should extend outwards from the end-point of the pin
