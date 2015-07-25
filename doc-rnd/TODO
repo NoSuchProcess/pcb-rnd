@@ -3,12 +3,8 @@
 
 BUGS
 - distorted square pin bugs:
-	- rtree assert failure when NDEBUG is turned off
+	- rtree assert failure when NDEBUG is turned off and 'q' is pressed on a pin twice
 	- there's larger clearance with shaped pins on the enlarged sides
-	- why q doesn't work on vias (new comment about this in action.c)
-	- r tree breaks!!!
-	- rotate should rotate pin shape as well
-	- when gpcb menu res is empty, pcb segfaults on startup
 
 FEATURES
 - merge pcb-gpmi in pcb-rnd {large}
@@ -20,11 +16,10 @@ FEATURES
 	- set all pins (drill and/or ring) to current style for a component
 - UI: trace length calculation {small}
 - UI: be able to manually change text line width {small}
+- UI: component filter by tags
 - CORE: clear poly should be a per layer flag (on each objects) {?}
-
-
-CHECK
-- UI: draw and indicate zero width copper lines to split polys; poly holes 
+- CORE: inverse text {medium}
+- BUILD: menuconfig and a config file for scconfig
 
 
 Low prio:
