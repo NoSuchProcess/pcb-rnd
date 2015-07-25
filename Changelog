@@ -1,3 +1,62 @@
+pcb-rnd 1.0.1
+~~~~~~~~~~~~~
+	[core]
+		-Fix: don't read beyond the common part of the struct in IsPointInPad (since it's called for lines too, and those have much less fields)
+		-Fix: where stdarg is avaialble, also print messages to stderr - useful if things go wrong before a GUI is working
+
+	[gtk]
+		-Fix: don't crash but write error message and exit if gpcb-menu.res is empty 
+
+	[square]
+		-Fix: 90 deg rotation rotates shape style
+		-Add: action.c and change.c code to get shaped vias
+		-Fix: don't change pin shape for square and octagon in rotation
+
+	[mincut]
+		-Add: command line setting --enable-mincut (0 or 1) as mincut can be slow
+		      it is a global disbale setting and make a local, per pcb setting
+		      for enabling mincut; also add a per pcb setting/flag
+		-Fix: disable debug draw by default
+		-Fix: fall back to the old short warn method when mincut fails
+		-Fix: avoid segfaults by detecting broken graph early
+		-Workaround: if mincut sees a graph with multiple unconnected components, doesn't try to solve but falls back to randomly highlight something
+
+	[intconn]
+		-Workaround: find intconn pads only on the same layer
+
+	[nonetlist]
+		-Workaround: ignore nonetlist pads even if the flag is in the element name
+
+	[scconfig]
+		-Add: scconfig/ - switch over from autotools to scconfig
+
+	[pcblib]
+		-Cleanup: new, trimmed back pcblib/ with essential footprints only
+
+ [pcblib-param]
+		-Add: new parametric footprints - no more m4-hardwiring, use your
+		      preferred language!
+		-Add: acy(), alf(), rcy(), connector(), dip()
+		-Add: so(), tssop(), msop(), ssop()
+
+	[pcb-fp]
+		-Add: central lib for footprint search and load in pcb and gsch2pcb
+
+	[util]
+		-Add: gsch2pcb fork to support [nonetlist] and [pcblib-param]
+
+	[fp2anim]
+		-Add: fp to animator script for fast preview
+
+	[polygrid]
+		-Add: ps output: draw grid in polys instead of fill (doesn't fully work)
+		-Fix: set proper max value so the control is enabled
+
+
+	[debian]
+		-Update: build the package with scconfig and footprint changes
+
+
 pcb-rnd 1.0.0
 ~~~~~~~~~~~~~
 	[square] -Add: initial implementation

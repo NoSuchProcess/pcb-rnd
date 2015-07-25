@@ -1,7 +1,39 @@
-pcb-rnd 1.0.0
+pcb-rnd 1.0.1
 ~~~~~~~~~~~~~
-This initial release already has some of the major features planned. The
-new code is somewhat crude and a lot of cleanup is required on the original
-code as well. New features include shaped pins, improved warnings for shorts,
-internal connections of elements and nonetlist flag.
+There are two major changes for release 1.0.1:
+ 1. autotools replaced with scconfig
+ 2. rework of the footprint infrastructure
+
+Other changes are minor bug fixes.
+
+1. Scconfig
+
+Autotools is big, slow, hard to maintain and often fails badly
+on any non-mainstream system. Scconfig is small, simple, and fast.
+It supports many systems. It may still fail on some exotic systems,
+but at least it's much easier to fix it when it fails.
+
+2. Footprint infrastructure rework
+
+Pcb-rnd features new mini-library written in C that is responsible for
+searching and loading footprints. Search is done on a simple search
+path - a lot of heuristics based on base directories and library names
+are removed in favor of the flat list of paths. Both pcb-rnd and
+gsch2pcb-rnd uses the same code so their footprint search mechanism
+always match.
+
+Generated footprints are not m4-specific anymore. A lot of code has been
+removed from both pcb-rnd and gsch2pcb-rnd. Now they both call external
+programs using the shell to generate the footprint, without assuming they
+are written in m4.
+
+The syntax of generated footprints changed: if a footprint name
+(footprint gschem attribute) contains parenthesis, it is to be generated,
+else it's just the name of a file footprint.
+
+New default footprint library shipped with pcb-rnd. Newlib/ and lib/
+has been removed in favor of pcblib/, which is a minimalistic footprint
+library containing essential footprints only. Most footprints are imported
+from Newlib (geda/) and some from openhw on repo.hu.
+
 
