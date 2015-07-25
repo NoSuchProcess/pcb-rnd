@@ -31,6 +31,7 @@ uninstall:
 	cd tutorial && make uninstall
 
 deb:
+	fakeroot debian/rules clean
 	fakeroot debian/rules binary
 
 debclean:
