@@ -1,10 +1,6 @@
-- scconfig:
-		- example/
-
 BUGS
 - distorted square pin bugs:
 	- rtree assert failure when NDEBUG is turned off and 'q' is pressed on a pin twice
-	- there's larger clearance with shaped pins on the enlarged sides
 
 FEATURES
 - merge pcb-gpmi in pcb-rnd {large}
@@ -23,6 +19,10 @@ FEATURES
 
 
 Low prio:
+- rotate shaped vias don't rotate the shape (is via rotated at all?)
+- new examples
+	- blinking led with parametric footprints
+	- example of nonetlist: 1206 jumpers and logos
 - decide what to do with old doc - texi doesn't seem to work at all
 - rethink/rewrite the action/change infrastructure - too many void *ptr1
   pointers, too many code duplication
