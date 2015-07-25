@@ -341,3 +341,15 @@ function dip_outline(x1, y1, x2, y2, arcr   ,xhalf)
 
 	element_arc(xhalf, y1,  arcr, arcr,  0, 180)
 }
+
+# decide whether x is true or false
+# returns 1 if true
+# returns 0 if false
+function tobool(x)
+{
+	if (x == int(x))
+		return (int(x) != 0)
+
+	x = tolower(x)
+	return (x == "true") || (x == "yes") || (x == "on")
+}

@@ -19,9 +19,9 @@ BEGIN {
 	P["ny"] = int(P["ny"])
 
 	eshift=tolower(P["eshift"])
-	etrunc=tolower(P["etrunc"])
-	if ((eshift != "x") && (eshift != "y") && (eshift != ""))
-		error("eshift must be x or y (got: ", eshift ")");
+	etrunc=tobool(P["etrunc"])
+	if ((eshift != "x") && (eshift != "y") && (eshift != "") && (eshift != "none"))
+		error("eshift must be x or y or none (got: ", eshift ")");
 
 	element_begin("", "CONN1", P["nx"] "*" P["ny"]    ,0,0, 0, -step)
 
