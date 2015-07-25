@@ -2084,15 +2084,13 @@ GetInfoString (void)
   if (first_time)
     {
       first_time = 0;
-      DSAddString (&info, "This is PCB-rnd 1.0.0, an interactive\n");
+      DSAddString (&info, "This is PCB-rnd " VERSION " (" REVISION ")" "\n an interactive\n");
       DSAddString (&info, "printed circuit board editor\n");
-      DSAddString (&info, "forked from PCB version ");
-      DSAddString (&info, VERSION);
+      DSAddString (&info, "PCB-rnd forked from PCB version.");
+      DSAddString (&info, "\n\n" "PCB is by harry eaton and others\n\n");
       DSAddString (&info, "\nPCB-rnd adds a collection of\n");
       DSAddString (&info, "useful-looking random patches.\n");
       DSAddString (&info, "\n");
-      DSAddString (&info, "Compiled on " __DATE__ " at " __TIME__);
-      DSAddString (&info, "\n\n" "by harry eaton\n\n");
       DSAddString (&info,
                    "Copyright (C) Thomas Nau 1994, 1995, 1996, 1997\n");
       DSAddString (&info, "Copyright (C) harry eaton 1998-2007\n");
@@ -2102,7 +2100,7 @@ GetInfoString (void)
       DSAddString (&info,
                    "Copyright (C) Dan McMahill 2003, 2004, 2005, 2006, 2007, 2008\n\n");
       DSAddString (&info,
-                   "Copyright (C) Tibor Palinkas 2013 (pcb-rnd patches)\n\n");
+                   "Copyright (C) Tibor Palinkas 2013-2015 (pcb-rnd patches)\n\n");
       DSAddString (&info, "It is licensed under the terms of the GNU\n");
       DSAddString (&info, "General Public License version 2\n");
       DSAddString (&info, "See the LICENSE file for more information\n\n");

@@ -293,6 +293,8 @@ print [@
 	":" \
 	"./footprints"\
 	":" \
+	"../pcblib"\
+	":" \
 	PCB_PREFIX  "/share/pcb-rnd/pcblib"\
 	":"\
 	PCB_PREFIX  "/share/pcb/pcblib-newlib"
