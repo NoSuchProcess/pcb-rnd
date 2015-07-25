@@ -110,8 +110,9 @@ END {
 				print "<td> yes"
 			print "<td>" PDESC[p]
 			print "<td>"
+			vdone=0
 			if (PDATAN[name] > 0) {
-				print "<table border=1>"
+				print "<table border=1 cellpadding=10 cellspacing=0>"
 				for(v = 0; v < PDATAN[name]; v++) {
 					print "<tr><td>"
 					isdef = (PDATA[name, "default"] == PDATAK[name, v])
@@ -124,12 +125,16 @@ END {
 					print "<td>" PDATAV[name, v]
 				}
 				print "</table>"
+				vdone++
 			}
 			if (PPROP[name, "dim"]) {
 				print "Dimension: a number with an optional unit (mm or mil, default is mil)"
 				if (PDATA[name, "default"] != "")
 				print "<br>Default: <b>" PDATA[name, "default"] "</b>"
+				vdone++
 			}
+			if (!vdone)
+				print "&nbsp;"
 		}
 		print "</table>"
 	}
