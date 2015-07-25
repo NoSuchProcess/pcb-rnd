@@ -1309,6 +1309,16 @@ Execute the bell command when all rats are routed.
 */
   BSET (RingBellWhenFinished, 0, "ring-bell-finished",
        "Execute the bell command when all rats are routed"),
+
+/* %start-doc options "1 General Options"
+@ftable @code
+@item --enable-mincut <num>
+Whether to enable mincut (1=yes, 0=no)
+@end ftable
+%end-doc
+*/
+  ISET (EnableMincut, 1, "enable-mincut", "whether to enable mincut (1=yes, 0=no)"),
+
 };
 
 REGISTER_ATTRIBUTES (main_attribute_list)

@@ -705,8 +705,9 @@ typedef struct			/* some resources... */
     RingBellWhenFinished,	/* flag if a signal should be */
     /* produced when searching of */
     /* connections is done */
-    AutoPlace;			/* flag which says we should force placement of the
+    AutoPlace,			/* flag which says we should force placement of the
 				   windows on startup */
+    EnableMincut;  /* Enable calculating mincut on shorts (rats_mincut.c) when non-zero */
 }
 SettingType, *SettingTypePtr;
 

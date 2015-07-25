@@ -89,7 +89,8 @@ static int proc_short(PinType *pin, PadType *pad, int ignore)
 	int i, maxedges;
 	int bad_gr = 0;
 
-	return bad_gr;
+	if (!Settings.EnableMincut)
+		return bad_gr;
 
 	/* only one should be set, but one must be set */
 	assert((pin != NULL) || (pad != NULL));
