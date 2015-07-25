@@ -1608,7 +1608,7 @@ ghid_create_listener (void)
 /* ------------------------------------------------------------ */
 
 static int stdin_listen = 0;
-static char *pcbmenu_path = "gpcb-menu.res";
+static char *pcbmenu_paths[] = {"gpcb-menu.res", "gpcb-menu.res", PCBLIBDIR "/gpcb-menu.res", NULL};
 
 HID_Attribute ghid_attribute_list[] = {
 
@@ -1644,7 +1644,7 @@ Location of the @file{gpcb-menu.res} file which defines the menu for the GTK+ GU
 %end-doc
 */
 {"pcb-menu", "Location of gpcb-menu.res file",
-   HID_String, 0, 0, {0, PCBLIBDIR "/gpcb-menu.res", 0}, 0, &pcbmenu_path}
+   HID_String, 0, 0, {0, "gpcb-menu.res", 0}, 0, &pcbmenu_paths[0]}
 #define HA_pcbmenu 2
 };
 
@@ -2014,7 +2014,7 @@ ghid_check_special_key (const char *accel, GtkAction *action,
 char *
 get_menu_filename (void)
 {
-  char *rv = NULL;
+  char **s, *rv = NULL;
   char *home_pcbmenu = NULL;
 
   /* homedir is set by the core */
@@ -2027,12 +2027,13 @@ get_menu_filename (void)
   else
     Message (_("Warning:  could not determine home directory\n"));
 
-  if (access ("gpcb-menu.res", R_OK) == 0)
-    rv = strdup ("gpcb-menu.res");
-  else if (home_pcbmenu != NULL && (access (home_pcbmenu, R_OK) == 0) )
+  for(s = pcbmenu_paths; *s != NULL; s++) {
+    if (access (*s, R_OK) == 0)
+      return strdup (*s);
+  }
+
+  if (home_pcbmenu != NULL && (access (home_pcbmenu, R_OK) == 0) )
     rv = home_pcbmenu;
-  else if (access (pcbmenu_path, R_OK) == 0)
-    rv = strdup (pcbmenu_path);
 
   return rv;
 }
