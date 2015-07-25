@@ -247,6 +247,7 @@ HID_Flag flags_flag_list[] = {
   {"onlynames", FlagTESTFLAG, ONLYNAMESFLAG},
   {"newfullpoly", FlagTESTFLAG, NEWFULLPOLYFLAG},
   {"hidenames", FlagTESTFLAG, HIDENAMESFLAG},
+  {"enablemincut", FlagTESTFLAG, ENABLEMINCUTFLAG},
 
   {"fullpoly", FlagSETTINGS, OffsetOf (SettingType, FullPoly)},
   {"grid_units_mm", FlagUnitsMm, -1},

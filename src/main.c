@@ -1313,11 +1313,12 @@ Execute the bell command when all rats are routed.
 /* %start-doc options "1 General Options"
 @ftable @code
 @item --enable-mincut <num>
-Whether to enable mincut (1=yes, 0=no)
+Whether to enable mincut (1=yes, 0=no); when disabled, it overrides the setting
+read from the pcb.
 @end ftable
 %end-doc
 */
-  ISET (EnableMincut, 1, "enable-mincut", "whether to enable mincut (1=yes, 0=no)"),
+  ISET (EnableMincut, 1, "enable-mincut", "global enable mincut (1=yes, 0=no)"),
 
 };
 

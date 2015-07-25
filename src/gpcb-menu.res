@@ -206,6 +206,7 @@ MainMenu =
    {"Lock Names" checked=locknames Display(ToggleLockNames)}
    {"Only Names" checked=onlynames Display(ToggleOnlyNames)}
    {"Hide Names" checked=hidenames Display(ToggleHideNames)}
+   {"Mincut on shorts" checked=enablemincut Display(ToggleMinCut)}
    -
    {"Rubber band mode" checked=rubberband Display(ToggleRubberBandMode)}
    {"Require unique element names" checked=uniquename Display(ToggleUniqueNames)}
