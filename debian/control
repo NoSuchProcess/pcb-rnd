@@ -12,7 +12,6 @@ Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-electronics/pcb.git
 Package: pcb-rnd
 Architecture: all
 Depends: ${misc:Depends}, pcb-rnd-gtk, pcb-rnd-common
-Conflicts: pcb
 Description: printed circuit board (pcb) design program - meta-package
  PCB is an interactive printed circuit board editor for the X11 window 
  system. PCB includes a rats nest feature, design rule checking, and can 
@@ -38,7 +37,6 @@ Description: printed circuit board (pcb) design program - common files
 
 Package: pcb-rnd-gtk
 Architecture: any
-Conflicts: pcb-gtk
 Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-common
 Description: printed circuit board (pcb) design program - GTK+ interface
  PCB is an interactive printed circuit board editor for the X11 window 

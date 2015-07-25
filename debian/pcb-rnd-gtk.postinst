@@ -3,7 +3,8 @@ set -e
 
 case "$1" in
     configure)
-        update-alternatives --quiet --install /usr/bin/pcb pcb /usr/bin/pcb-gtk 20
+        update-alternatives --quiet --install /usr/bin/pcb pcb /usr/bin/pcb-rnd-gtk 20
+        update-alternatives --quiet --install /usr/bin/gsch2pcb gsch2pcb /usr/bin/gsch2pcb-rnd 20
 	;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
