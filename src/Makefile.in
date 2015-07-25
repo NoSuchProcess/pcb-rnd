@@ -128,10 +128,10 @@ LDFLAGS=@/local/pcb/LDFLAGS@
 LIBS=@/local/pcb/LIBS@ -lm -ldl
 HIDLIST=@/local/pcb/HIDS@
 
-all: pcb
+all: pcb-rnd
 
-pcb: $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) -o pcb $(LIBS)
+pcb-rnd: $(OBJS)
+	$(CC) $(LDFLAGS) $(OBJS) -o pcb-rnd $(LIBS)
 @]
 
 # explicit rules: .y -> .c
@@ -250,7 +250,7 @@ include ../Makefile.conf
 
 install_:
 	$(MKDIR) $(BINDIR) $(DATADIR)
-	$(CPC) `pwd`/pcb $(BINDIR)/pcb
+	$(CPC) `pwd`/pcb-rnd $(BINDIR)/pcb-rnd
 	$(CPC) `pwd`/default.pcb $(DATADIR)/default.pcb
 	$(CPC) `pwd`/default_font $(DATADIR)/default_font
 	$(CPC) `pwd`/gpcb-menu.res $(DATADIR)/gpcb-menu.res
@@ -263,7 +263,7 @@ linstall:
 	make install_ CPC="$(LN)"
 
 uninstall:
-	$(RM) $(BINDIR)/pcb
+	$(RM) $(BINDIR)/pcb-rnd
 	$(RM) $(DATADIR)/default.pcb
 	$(RM) $(DATADIR)/default_font
 	$(RM) $(DATADIR)/gpcb-menu.res

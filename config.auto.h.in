@@ -289,14 +289,14 @@ print [@
 #define LIBRARYFILENAME "pcblib"
 
 #define PCB_PREFIX "@/local/prefix@"
-#define PCBLIBDIR PCB_PREFIX "/share/pcb"
+#define PCBLIBDIR PCB_PREFIX "/share/pcb-rnd"
 #define PCB_LIBRARY_SHELL NULL
 #define PCB_LIBRARY_SEARCH_PATHS \
 	"./pcblib"\
 	":" \
 	"./footprints"\
 	":" \
-	PCB_PREFIX  "/share/pcb/pcblib"\
+	PCB_PREFIX  "/share/pcb-rnd/pcblib"\
 	":"\
 	PCB_PREFIX  "/share/pcb/pcblib-newlib"
 
@@ -311,7 +311,7 @@ print [@
 #define BINDIR_TO_EXECPREFIX ".."
 
 /* Relative path from bindir to pcblibdir TODO: do we still need this? */
-#define BINDIR_TO_PCBLIBDIR "../share/pcb"
+#define BINDIR_TO_PCBLIBDIR "../share/pcb-rnd"
 
 @]
 
