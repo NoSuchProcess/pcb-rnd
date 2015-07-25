@@ -1,0 +1,49 @@
+<html>
+<body>
+<h1> pcb-rnd - the [pcblib] and [pcblib-param] patches </h1>
+<table border=0>
+<tr><td valign=top>
+The footprint library shipped with vanilla pcb is cluttered with
+special puprose parts. I believe PCB encourages the user from
+an early stage to build his own library. Thus the purpose of
+the library shipped with PCB should be
+to provide a minimal collection of real essential footprints ...
+<ul>
+	<li> ... for the very beginning of the learning curve;
+	<li> ... and to be the core of the user's own library later.
+</ul>
+<p>
+[pcblib] is a replacement of newlib/ and lib/ and the m4 macros with
+such an essential core library of static footprints ("file elements")
+and easier-to-use parametric footprints.
+<p>
+There is an <a href="http://igor2.repo.hu/tmp/pcblib"> online map</a> of
+the library and <a href="http://igor2.repo.hu/cgi-bin/pcblib-param.cgi">
+an online interface to the parametric footprint generators. </a>
+
+<h2> Design decisions </h2>
+Parts are sorted only in a few directories: smd, tru-hole, connector and
+parametric. I believe there are so many orthogonal properties of footpritns
+that there's no obvious hierarchy. Also, pcblib contains much fewer footpritns
+than newlib so it should be still easy to navigate.
+<p>
+Parametric footprints are in a separate directory for now, even tho they
+would fit under smd, tru-hole or connector. The reason is purely historical
+and the layout may change in the future.
+
+<h2> Example </h2>
+To the right: Footprint selection dialog on pcblib, with the smd directory
+open. Note how few smd parts are there. Still, smd/ is the most crowded
+subdirectory!
+
+<h2> save/load and compatibility </h2>
+Not affected: elements are embedded in the PCB.
+
+<h2> plans </h2>
+None, the feature is complete.
+<td> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<td>
+<img src="pcblib.png">
+</table>
+</body>
+</html>
