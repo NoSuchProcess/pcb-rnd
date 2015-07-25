@@ -32,10 +32,14 @@ Removing all the marked lines/polys/vias would surely resolve the short
 removing objects, tho: it guarantees that the minimal amount of objects
 are to be removed. On a complex board, this place is likely to be close
 to the place where the problem really is - much closer than the pins/pads.
-
+<p>
+Since mincut can be expensive on large boards, the feature can be enabled
+per board (a new PCB flag) and can be disbaled globally (--enable-mincut 0
+when starting PCB).
 
 <h2> save/load and compatibility </h2>
-This patch does not affect the file format.
+New PCB flag enablemincut. Vanilla pcb ignores this flag but does not
+preserve it.
 
 <h2> plans </h2>
 Finished, no plans.
