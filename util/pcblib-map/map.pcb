@@ -2652,9 +2652,9 @@ Layer(1 "component")
 	Text[366338 349704 0 670 "SMD2" "clearline"]
 	Text[286338 499704 0 670 "SMD3" "clearline"]
 	Text[416338 499704 0 670 "SMDN" "clearline"]
-	Text[86338 819704 0 670 "THR3" "clearline"]
-	Text[376338 809704 0 670 "THRN" "clearline"]
-	Text[256338 1069704 0 670 "THR2" "clearline"]
+	Text[86338 819704 0 670 "TRH3" "clearline"]
+	Text[376338 809704 0 670 "TRHN" "clearline"]
+	Text[256338 1069704 0 670 "TRH2" "clearline"]
 )
 Layer(2 "solder")
 (

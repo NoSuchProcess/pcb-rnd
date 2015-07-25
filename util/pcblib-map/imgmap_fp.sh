@@ -111,7 +111,7 @@ END {
 		y2 += 5
 #		print n, x1, y1, x2, y2, E[n, "cmd"]
 		cmd =  E[n, "cmd"]
-		if (cmd ~ "[(]")
+		if (cmd ~ "^[^ ]*[(]")
 			url="http://igor2.repo.hu/cgi-bin/pcblib-param.cgi?cmd=" cmd
 		else
 			url="http://igor2.repo.hu/cgi-bin/pcblib-static.cgi?fp=" E[n, "file"]

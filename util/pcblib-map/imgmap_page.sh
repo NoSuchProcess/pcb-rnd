@@ -117,7 +117,7 @@ END {
 			x1 = 0
 		if (y1 < 0)
 			y1 = 0
-		url="http://igor2.repo.hu/pcblib/" tolower(T[t, "text"]) ".html"
+		url="http://igor2.repo.hu/tmp/pcblib/" tolower(T[t, "text"]) ".html"
 		gsub(" ", "+", url)
 		print "<area shape=\"rect\" coords=" q x1 "," y1 "," x2 "," y2 q " href=" q url q " alt=" q T[t, "text"] q ">"
 		T[t, "text"] = "-"
