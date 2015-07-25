@@ -252,7 +252,7 @@ short_conns_maxid = 0;
 		}
 	}
 
-#define MINCUT_DRAW
+/*#define MINCUT_DRAW*/
 #ifdef MINCUT_DRAW
 	{
 		static int drw = 0;
