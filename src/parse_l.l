@@ -352,9 +352,14 @@ int ParseFont(FontTypePtr Ptr, char *Filename)
 	yyFont = Ptr;
 	yyElement = NULL;
 
-	path = strdup (Settings.FontPath);
-
         /* search through the font path for a font file */
+	if ((Filename[0] == '/') || (strncmp(Filename, "./", 2) == 0) || (strncmp(Filename, "../", 2) == 0)) {
+		r = Parse(NULL, Settings.FontCommand, NULL, Filename, NULL);
+		if (r != "")
+			return r;
+	}
+
+	path = strdup (Settings.FontPath);
 	for (p = strtok (path, PCB_PATH_DELIMETER); p && *p;
 		p = strtok (NULL, PCB_PATH_DELIMETER))
 	  {

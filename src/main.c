@@ -86,6 +86,7 @@ RCSID ("$Id$");
 extern void stroke_init (void);
 #endif
 
+char *fontfile_paths[] = {"./default_font", PCBLIBDIR "/default_font", NULL};
 
 /* ----------------------------------------------------------------------
  * initialize signal and error handlers
@@ -1052,7 +1053,7 @@ The name of the default font.
 @end ftable
 %end-doc
 */
-  SSET (FontFile, "default_font", "default-font",
+  SSET (FontFile, NULL, "default-font",
 	"File name of default font"),
 
 /* %start-doc options "5 Paths"
@@ -1560,6 +1561,26 @@ InitPaths (char *argv0)
     }
 }
 
+static void set_fontfile(void)
+{
+  if (Settings.FontFile == NULL) {
+    char **s;
+    for(s = fontfile_paths; *s != NULL; s++) {
+fprintf(stderr, "font: '%s'\n", *s);
+      if (access (*s, R_OK) == 0) {
+        Settings.FontFile= *s;
+        break;
+      }
+    }
+  }
+
+  if (Settings.FontFile == NULL) {
+    Message("Error: no font file found");
+    exit(1);
+  }
+
+}
+
 /* ---------------------------------------------------------------------- 
  * main program
  */
@@ -1689,6 +1710,8 @@ main (int argc, char *argv[])
       dump_actions ();
       exit (0);
     }
+
+  set_fontfile();
 
   /* Create a new PCB object in memory */
   PCB = CreateNewPCB ();
