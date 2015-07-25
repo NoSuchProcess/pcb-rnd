@@ -8,6 +8,8 @@
 #include "tmpasm.h"
 #include "tmpasm_scconfig.h"
 
+#define version "1.0.1"
+
 /* Runs when a custom command line argument is found
  returns true if no furhter argument processing should be done */
 int hook_custom_arg(const char *key, const char *value)
@@ -78,7 +80,7 @@ int hook_detect_target()
 	require("libs/gui/gd/gdImageGif/*", 0, 0);
 	require("libs/gui/gd/gdImageJpeg/*", 0, 0);
 	require("libs/fs/stat/macros/*", 0, 0);
-	
+
 	return 0;
 }
 
@@ -94,6 +96,16 @@ void generator_callback(char *cmd, char *args)
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
 int hook_generate()
 {
+	char *rev = "non-svn", *tmp;
+
+	tmp = svn_info(0, "../src", "Revision:");
+	if (tmp != NULL) {
+		rev = str_concat("", "svn r", tmp, NULL);
+		free(tmp);
+	}
+	put("/local/revision", rev);
+	put("/local/version",  version);
+
 	printf("Generating Makefile.conf (%d)\n", tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
 
 	printf("Generating gts/Makefile (%d)\n", tmpasm("../gts", "Makefile.in", "Makefile"));
