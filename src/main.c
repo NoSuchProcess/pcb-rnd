@@ -1047,16 +1047,6 @@ Command to save to a file.
 
 /* %start-doc options "5 Paths"
 @ftable @code
-@item --lib-name <string>
-The default filename for the library.
-@end ftable
-%end-doc
-*/
-  SSET (LibraryFilename, LIBRARYFILENAME, "lib-name",
-				"The default filename for the library"),
-
-/* %start-doc options "5 Paths"
-@ftable @code
 @item --default-font <string>
 The name of the default font.
 @end ftable

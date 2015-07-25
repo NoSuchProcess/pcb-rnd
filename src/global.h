@@ -666,7 +666,7 @@ typedef struct			/* some resources... */
   int BackupInterval;		/* time between two backups in seconds */
   char *DefaultLayerName[MAX_LAYER], *FontCommand,	/* commands for file loading... */
    *FileCommand, *PrintFile, *LibraryShell, *LibrarySearchPaths,
-   *SaveCommand, *LibraryFilename, *FontFile,	/* name of default font file */
+   *SaveCommand, *FontFile,	/* name of default font file */
    *DefaultPcbFile,
    *Groups,			/* string with layergroups */
    *Routes,			/* string with route styles */
