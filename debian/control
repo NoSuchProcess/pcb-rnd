@@ -1,13 +1,10 @@
 Source: pcb-rnd
 Section: electronics
 Priority: optional
-Maintainer: Debian Electronics Team <pkg-electronics-devel@lists.alioth.debian.org>
-Uploaders: Hamish Moffatt <hamish@debian.org>, Wesley J. Landaker <wjl@icecavern.net>, Ramakrishnan Muthukrishnan <rkrishnan@debian.org>, أحمد المحمودي (Ahmed El-Mahmoudy) <aelmahmoudy@sabily.org>
+Maintainer: 
 Build-Depends: debhelper (>= 9), bison, flex, libgtkglext1-dev, tk8.5, libgd-dev, libdbus-1-dev, libmotif-dev, libxmu-dev, libxml-parser-perl, intltool, imagemagick, gerbv
-Standards-Version: 3.9.4
-Homepage: http://pcb.gpleda.org/
-Vcs-Git: git://anonscm.debian.org/pkg-electronics/pcb.git
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-electronics/pcb.git
+Homepage: http://repo.hu/projects/pcb-rnd
+Vcs-Svn: svn://repo.hu/pcb-rnd/trunk
 
 Package: pcb-rnd
 Architecture: all
