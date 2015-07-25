@@ -37,8 +37,51 @@ BEGIN {
 	sub(".*@@param:", "", $0)
 	p=$1
 	sub(p "[\t ]*", "", $0)
-	PARAM[prm] = "<tr><td>" p "<td>" $0
+	PARAM[prm] = p 
+	PDESC[prm] = $0
 	prm++
+	next
+}
+
+# build PPROP[paramname,propname], e.g. PPROP[pin_mask, dim]=1
+/@@optional:/ || /@@dim:/ {
+	key = $0
+	sub("^.*@@", "", key)
+	val = key
+	sub(":.*", "", key)
+	sub("^[^:]*:", "", val)
+	PPROP[val,key] = 1
+	next
+}
+
+# build PDATA[paramname,propname], e.g. PDATA[pin_mask, default]=123
+/@@default:/ {
+	key = $1
+	sub("^" key "[ \t]*", "", $0)
+	sub("^.*@@", "", key)
+	val = key
+	sub(":.*", "", key)
+	sub("^[^:]*:", "", val)
+	PDATA[val,key] = $0
+	next
+}
+
+# build:
+#  PDATAK[paramname,n]=key (name of the value)
+#  PDATAV[paramname,n]=description (of the given value)
+#  PDATAN[paramname]=n number of parameter values
+/@@enum:/ {
+	key = $1
+	sub("^" key "[ \t]*", "", $0)
+	sub("^.*@@enum:", "", key)
+	val = key
+	sub(":.*", "", key)
+	sub("^[^:]*:", "", val)
+	idx = int(PDATAN[key])
+	PDATAK[key,idx] = val
+	PDATAV[key,idx] = $0
+	PDATAN[key]++
+	next
 }
 
 END {
@@ -57,8 +100,37 @@ END {
 
 	if (content) {
 		print "<table border=1 cellspacing=0 cellpadding=10>"
-		for(p = 0; p < prm; p++)
-			print PARAM[p]
+		print "<tr><th align=left>name <th align=left>man<br>dat<br>ory<th align=left>description <th align=left>value (bold: default)"
+		for(p = 0; p < prm; p++) {
+			name=PARAM[p]
+			print "<tr><td>" name
+			if (PPROP[name, "optional"])
+				print "<td> &nbsp;"
+			else
+				print "<td> yes"
+			print "<td>" PDESC[p]
+			print "<td>"
+			if (PDATAN[name] > 0) {
+				print "<table border=1>"
+				for(v = 0; v < PDATAN[name]; v++) {
+					print "<tr><td>"
+					isdef = (PDATA[name, "default"] == PDATAK[name, v])
+					if (isdef)
+						print "<b>"
+					print PDATAK[name, v]
+					if (isdef)
+						print "</b>"
+
+					print "<td>" PDATAV[name, v]
+				}
+				print "</table>"
+			}
+			if (PPROP[name, "dim"]) {
+				print "Dimension: a number with an optional unit (mm or mil, default is mil)"
+				if (PDATA[name, "default"] != "")
+				print "<br>Default: <b>" PDATA[name, "default"] "</b>"
+			}
+		}
 		print "</table>"
 	}
 
@@ -170,8 +242,8 @@ qs=`echo "$QUERY_STRING" | tr "&" "\n"`
 
 for n in $qs
 do
-    exp="QS_$n"
-    export $exp
+	exp="QS_$n"
+	export $exp
 done
 
 export QS_cmd=`echo "$QS_cmd" | /home/igor2/C/libporty/trunk/src/porty/c99tree/url.sh`
