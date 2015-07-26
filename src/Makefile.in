@@ -103,6 +103,9 @@ include {Makefile.in.mod/gcode}
 include {Makefile.in.mod/nelma}
 include {Makefile.in.mod/lpr}
 
+append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags
+append /local/pcb/LIBS    /target/libs/sul/glib/ldflags
+
 # ---- logic ----
 
 # Clean up variables
