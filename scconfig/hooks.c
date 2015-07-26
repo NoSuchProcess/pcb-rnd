@@ -18,6 +18,16 @@ int hook_custom_arg(const char *key, const char *value)
 		put("/local/prefix", strclone(value));
 		return 1;
 	}
+
+	if (strcmp(key, "disable-gtk") == 0) {
+		put("libs/gui/gtk2/presents", sfalse);
+		return 1;
+	}
+
+	if (strcmp(key, "disable-lesstif") == 0) {
+		put("libs/gui/lesstif2/presents", sfalse);
+		return 1;
+	}
 	return 0;
 }
 
@@ -52,7 +62,9 @@ int hook_detect_host()
 int hook_detect_target()
 {
 	require("fstools/mkdir", 0, 1);
-	require("libs/gui/gtk2", 0, 1);
+	require("libs/gui/gtk2/presents", 0, 0);
+	require("libs/gui/lesstif2/presents", 0, 0);
+
 	require("libs/gui/gd", 0, 1);
 	/* for the toporouter and gsch2pcb: */
 	require("libs/sul/glib", 0, 1);
