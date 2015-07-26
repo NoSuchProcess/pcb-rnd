@@ -66,7 +66,7 @@ function directive(term     ,tmp)
 		}
 		$0 = $0 " " tmp
 	}
-	print "directive: |" term "|" $0 "|" > "/dev/stderr"
+#	print "directive: |" term "|" $0 "|" > "/dev/stderr"
 }
 
 function edges(x, y)
