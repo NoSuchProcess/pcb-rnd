@@ -216,13 +216,6 @@ gpcb-menu.h: gpcb-menu.res
 	sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$$/",/' < gpcb-menu.res >> gpcb-menu.h
 	echo '0};' >> gpcb-menu.h
 
-hid/common/hidlist.h : Makefile
-	@fstools/mkdir@ hid/common
-	true > hid/common/hidlist.h
-	for e in ${HIDLIST}; do \
-	  echo "HID_DEF($${e})" >> hid/common/hidlist.h; \
-	done
-
 action_list.h: @/local/pcb/ACTION_REG_SRC@ Makefile
 	Makefile.in.mod/gen_core_lists.sh @/local/pcb/ACTION_REG_SRC@ > action_list.h
 

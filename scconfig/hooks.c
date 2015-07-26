@@ -122,6 +122,10 @@ int hook_generate()
 
 	printf("Generating gts/Makefile (%d)\n", tmpasm("../gts", "Makefile.in", "Makefile"));
 	printf("Generating pcb/Makefile (%d)\n", tmpasm("../src", "Makefile.in", "Makefile"));
+
+	/* Has to be after pcb/Makefile so that all the modules are loaded. */
+	printf("Generating pcb/hidlist  (%d)\n", tmpasm("../src/hid/common", "hidlist.h.in", "hidlist.h"));
+
 	printf("Generating util/Makefile (%d)\n", tmpasm("../util", "Makefile.in", "Makefile"));
 
 	printf("Generating config.auto.h (%d)\n", tmpasm("..", "config.auto.h.in", "config.auto.h"));
