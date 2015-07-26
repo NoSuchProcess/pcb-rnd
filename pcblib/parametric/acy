@@ -15,7 +15,7 @@
 #@@enum:type:endcap block resistor with caps on the ends
 #@@enum:type:zigzag us-style zigzag resistor symbol
 #@@enum:type:line a single line (e.g. for jumper wires)
-#@@enum:type:standng vertically aligned, body standing on pin 1, pin 2 bent back
+#@@enum:type:standing vertically aligned, body standing on pin 1, pin 2 bent back
 #@@enum:type:coil wavy coil symbol
 #@@enum:type:core wavy coil symbol with a parallel line
 #@@enum:type:core2 wavy coil symbol with two parallel lines
