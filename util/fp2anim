@@ -358,6 +358,11 @@ function draw_grid()
 END {
 	print "frame"
 
+# make sure all macros exist even if the footprint does not use them
+	print "macro push silk\nendmacro"
+	print "macro push copper\nendmacro"
+	print "macro push mask\nendmacro"
+
 	sx = xmax-xmin
 	sy = ymax-ymin
 
