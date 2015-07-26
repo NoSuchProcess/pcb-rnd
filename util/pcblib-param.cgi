@@ -46,7 +46,7 @@ BEGIN {
 }
 
 # build PPROP[paramname,propname], e.g. PPROP[pin_mask, dim]=1
-/@@optional:/ || /@@dim:/ {
+/@@optional:/ || /@@dim:/ || /@@bool:/ {
 	key = $0
 	sub("^.*@@", "", key)
 	val = key
@@ -84,6 +84,11 @@ BEGIN {
 	PDATAV[key,idx] = $0
 	PDATAN[key]++
 	next
+}
+
+function thumb(prv)
+{
+	print "<img src=" q CGI "?cmd=" prv "&output=png&grid=none&annotation=none&thumb=1" q ">"
 }
 
 END {
@@ -127,7 +132,8 @@ END {
 					print "<td>" PDATAV[name, v]
 					if (PDATA[name, "preview_args"] != "") {
 						prv= fp_base "(" PDATA[name, "preview_args"] "," name "=" PDATAK[name, v] ")"
-						print "<td><img src=" q CGI "?cmd=" prv "&output=png&grid=none&annotation=none&thumb=1" q ">"
+						print "<td>"
+						thumb(prv)
 					}
 				}
 				print "</table>"
@@ -136,8 +142,22 @@ END {
 			if (PPROP[name, "dim"]) {
 				print "Dimension: a number with an optional unit (mm or mil, default is mil)"
 				if (PDATA[name, "default"] != "")
-				print "<br>Default: <b>" PDATA[name, "default"] "</b>"
+					print "<br>Default: <b>" PDATA[name, "default"] "</b>"
 				vdone++
+			}
+			if (PPROP[name, "bool"]) {
+				print "Boolean: yes/no, true/false, 1/0"
+				if (PDATA[name, "default"] != "")
+					print "; Default: <b>" PDATA[name, "default"] "</b>"
+				if (PDATA[name, "preview_args"] != "") {
+					print "<br>"
+					print "<table border=0>"
+					print "<tr><td>true:<td>"
+					thumb(fp_base "(" PDATA[name, "preview_args"] "," name "=" 1 ")")
+					print "<td>false:<td>"
+					thumb(fp_base "(" PDATA[name, "preview_args"] "," name "=" 0 ")")
+					print "</table>"
+				}
 			}
 			if (!vdone)
 				print "&nbsp;"
