@@ -217,9 +217,9 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 
 /^[ \t]*#/ { next }
 
-/ElementLine[[]/ {
+/ElementLine[ \t]*[[]/ {
 	directive("]")
-	sub(".*ElementLine[[]", "", $0)
+	sub(".*ElementLine[ \t]*[[]", "", $0)
 	sub("]$", "", $0)
 
 	print "macro push silk"
@@ -229,9 +229,9 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 	next
 }
 
-/ElementLine[(]/ {
+/ElementLine[ \t]*[(]/ {
 	directive(")")
-	sub(".*ElementLine[(]", "", $0)
+	sub(".*ElementLine[ \t]*[(]", "", $0)
 	sub(")$", "", $0)
 
 	print "macro push silk"
@@ -243,9 +243,9 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 
 
 
-/ElementArc[[]/ {
+/ElementArc[ \t]*[[]/ {
 	directive("]")
-	sub(".*ElementArc[[]", "", $0)
+	sub(".*ElementArc[ \t]*[[]", "", $0)
 	sub("]$", "", $0)
 
 	print "macro push silk"
@@ -256,9 +256,9 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 }
 
 #   ElementArc(0 0 59 59    45  90 10)
-/ElementArc[(]/ {
+/ElementArc[ \t]*[(]/ {
 	directive(")")
-	sub(".*ElementArc[(]", "", $0)
+	sub(".*ElementArc[ \t]*[(]", "", $0)
 	sub(")$", "", $0)
 
 	print "macro push silk"
@@ -270,33 +270,33 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 
 
 #	Pin[0 0 8000 5000 8600 3937 "" "1" "square"]
-/Pin[[]/ {
+/Pin[ \t]*[[]/ {
 	directive("]")
-	sub(".*Pin[[]", "", $0)
+	sub(".*Pin[ \t]*[[]", "", $0)
 	sub("]$", "", $0)
 	hole($1, $2, $3, $4, $5, $6, $8, ($9 ~ "square"))
 }
 
 #	Pin(300 800 90 60 "3" 0x01)
-/Pin[(]/ {
+/Pin[ \t]*[(]/ {
 	directive(")")
-	sub(".*Pin[(]", "", $0)
+	sub(".*Pin[ \t]*[(]", "", $0)
 	sub("]$", "", $0)
 	hole($1*100, $2*100, $3*100, $4*100, 3000, 2000, $5, ($6 ~ "0x10"))
 }
 
 #	Pad[ 0 0 0 0 0 5000 8600 "" "4" ""]
-/Pad[[]/ {
+/Pad[ \t]*[[]/ {
 	directive("]")
-	sub(".*Pad[[]", "", $0)
+	sub(".*Pad[ \t]*[[]", "", $0)
 	sub("]$", "", $0)
 
 	pad($1, $2, $3, $4, $5, $6, $7, $9,   1)
 }
 
-/Pad[(]/ {
+/Pad[ \t]*[(]/ {
 	directive(")")
-	sub(".*Pad[(]", "", $0)
+	sub(".*Pad[ \t]*[(]", "", $0)
 	sub(")$", "", $0)
 
 	pad($1*100, $2*100, $3*100, $4*100, $5*100, $6*100, $7*100, $9,   1)
