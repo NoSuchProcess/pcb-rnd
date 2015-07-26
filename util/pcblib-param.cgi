@@ -93,9 +93,13 @@ BEGIN {
 	next
 }
 
-function thumb(prv)
+function thumb(prv    ,lnk,lnk_gen)
 {
-	print "<img src=" q CGI "?cmd=" prv "&output=png&grid=none&annotation=none&thumb=" thumbsize q ">"
+	lnk=q CGI "?cmd=" prv "&output=png&grid=none&annotation=none&thumb=" thumbsize q
+	lnk_gen=q CGI "?cmd=" prv q
+	print "<a href=" lnk_gen ">"
+	print "<img src=" lnk ">"
+	print "</a>"
 }
 
 END {
