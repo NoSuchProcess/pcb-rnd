@@ -115,10 +115,17 @@ function rline(x1, y1, x2, y2, width    ,omit_ends , length_bloat    ,nx,ny,vx,v
 		}
 
 		print "poly", x1+nx*width/2, y1+ny*width/2, x2+nx*width/2, y2+ny*width/2, x2-nx*width/2, y2-ny*width/2, x1-nx*width/2, y1-ny*width/2
+		edges(x1+nx*width/2, y1+ny*width/2)
+		edges(x2+nx*width/2, y2+ny*width/2)
+		edges(x2-nx*width/2, y2-ny*width/2)
+		edges(x1-nx*width/2, y1-ny*width/2)
 	}
 	if (!omit_ends) {
 		print "fillcircle", x1, y1, width/2, width/10
 		print "fillcircle", x2, y2, width/2, width/10
+
+		edges(x1-width/2, y1-width/2)
+		edges(x2+width/2, y2+width/2)
 	}
 #	else {
 #		print "fillrect", x1-width/2, y1-width/2, width, width
