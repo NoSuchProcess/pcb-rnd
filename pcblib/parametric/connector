@@ -38,7 +38,7 @@
 #@@bool:etrunc
 #@@default:etrunc false
 #@@optional:etrunc
-#@@preview_args:silkmark 2,3,eshift=x
+#@@preview_args:etrunc 2,3,eshift=x
 
 
 #@@include common.awk
