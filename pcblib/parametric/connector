@@ -14,7 +14,7 @@
 #@@param:ny number of pins in the Y direction
 #@@param:spacing spacing between the pins
 #@@dim:spacing
-#@@default:100 mil
+#@@default:spacing 100 mil
 
 #@@param:silkmark how to mark pin 1 on the silk layer
 #@@enum:silkmark:square a rectangle around pin 1
