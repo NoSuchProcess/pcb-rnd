@@ -28,7 +28,49 @@ find_fp()
 
 list_fps()
 {
-	echo TODO
+	find $fpdir | awk -v "fpdir=$fpdir" -v "CGI=$CGI" '
+		/.svn/ { next }
+		/parametric/ { next }
+
+		{
+			name=$0
+			sub(fpdir, "", name)
+			if (!(name ~ "/"))
+				next
+			dir=name
+			fn=name
+			sub("/.*", "", dir)
+			sub("^[^/]*/", "", fn)
+			vfn = fn
+			sub(".fp$", "", vfn)
+
+			LLEN[dir] += length(vfn)
+			
+			vfn = "<a href=" q CGI "?fp=" vfn q ">" vfn "</a>"
+			
+			if (LLEN[dir] > 8) {
+				LLEN[dir] = 0
+				sep = "<br>"
+			}
+			else
+				sep = "&nbsp;"
+			if (DIR[dir] != "")
+				DIR[dir] = DIR[dir] sep vfn
+			else
+				DIR[dir] = vfn
+		}
+
+		END {
+			print "<table border=1 cellpadding=20>"
+			print "<tr>"
+			for(n in DIR)
+				print "<th>" n
+			print "<tr>"
+			for(n in DIR)
+				print "<td valign=top>" DIR[n]
+			print "</table>"
+		}
+	'
 }
 
 radio()
@@ -164,7 +206,7 @@ of pcblib users will use 90% of the footprints in their projects.
 '
 
 
-echo "TODO"
+list_fps
 
 echo '
 </ul>
