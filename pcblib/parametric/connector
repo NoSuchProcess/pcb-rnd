@@ -23,6 +23,8 @@
 #@@enum:silkmark:none no mark
 #@@optional:silkmark
 #@@default:silkmark square
+#@@preview_args:silkmark 2,3
+
 
 #@@param:eshift shift even rows or columns by half spacing (optional; default: don't shift)
 #@@enum:eshift:x shift columns
@@ -30,11 +32,14 @@
 #@@enum:eshift:none do not shift anything
 #@@default:eshift none
 #@@optional:eshift
+#@@preview_args:eshift 2,3
 
 #@@param:etrunc truncate the last pin of a shifted row or column
 #@@bool:etrunc
 #@@default:etrunc false
 #@@optional:etrunc
+#@@preview_args:silkmark 2,3,eshift=x
+
 
 #@@include common.awk
 
