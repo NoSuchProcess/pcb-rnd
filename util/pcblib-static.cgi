@@ -197,7 +197,7 @@ echo "<h2> Result </h2>"
 
 	echo "<table border=0>"
 	echo "<tr><td valign=top>"
-	echo "<img src=\"$CGI?fp=$QS_fp&output=png\">"
+	echo "<img src=\"$CGI?$QUERY_STRING&output=png\">"
 
 	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
