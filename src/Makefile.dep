@@ -426,6 +426,39 @@ gtkhid-gdk.o: hid/gtk/gtkhid-gdk.c ../config.h ../config.manual.h \
  hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
  hid/gtk/ghid-layer-selector.h hid/gtk/ghid-route-style-selector.h \
  hid/gtk/gui-pinout-preview.h hid/common/draw_helpers.h
+dialogs.o: hid/lesstif/dialogs.c ../config.h ../config.manual.h \
+ ../config.auto.h hid/lesstif/xincludes.h compat.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h \
+ global.h crosshair.h misc.h ds.h mymem.h pcb-printf.h hid.h \
+ hid/lesstif/../hidint.h hid/lesstif/lesstif.h
+library.o: hid/lesstif/library.c ../config.h ../config.manual.h \
+ ../config.auto.h hid/lesstif/xincludes.h compat.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h \
+ global.h misc.h ds.h mymem.h set.h buffer.h hid.h \
+ hid/lesstif/../hidint.h hid/lesstif/lesstif.h
+main.o: hid/lesstif/main.c ../config.h ../config.manual.h \
+ ../config.auto.h hid/lesstif/xincludes.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h \
+ global.h action.h crosshair.h mymem.h misc.h ds.h mymem.h pcb-printf.h \
+ resource.h clip.h error.h hid.h hid/lesstif/../hidint.h \
+ hid/common/hidnogui.h hid/common/draw_helpers.h \
+ hid/common/hid_resource.h hid/lesstif/lesstif.h dolists.h
+menu.o: hid/lesstif/menu.c ../config.h ../config.manual.h \
+ ../config.auto.h hid/lesstif/xincludes.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h \
+ global.h error.h misc.h ds.h mymem.h pcb-printf.h hid.h \
+ hid/lesstif/../hidint.h hid/common/hid_resource.h resource.h \
+ hid/lesstif/lesstif.h mymem.h pcb-menu.h
+netlist.o: hid/lesstif/netlist.c ../config.h ../config.manual.h \
+ ../config.auto.h hid/lesstif/xincludes.h compat.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h \
+ global.h find.h rats.h select.h undo.h remove.h crosshair.h draw.h hid.h \
+ hid/lesstif/../hidint.h hid/lesstif/lesstif.h
+styles.o: hid/lesstif/styles.c ../config.h ../config.manual.h \
+ ../config.auto.h hid/lesstif/xincludes.h compat.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h \
+ global.h set.h misc.h ds.h mymem.h mymem.h pcb-printf.h hid.h \
+ hid/lesstif/../hidint.h hid/lesstif/lesstif.h
 toporouter.o: toporouter.c toporouter.h data.h global.h ../config.h \
  ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
  macro.h hid.h polyarea.h libpcb_fp.h autoroute.h box.h misc.h ds.h \

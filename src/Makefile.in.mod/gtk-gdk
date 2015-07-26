@@ -1,4 +1,5 @@
 # gtk option
+if /target/libs/gui/gtk2/presents then
 append /local/pcb/HIDS    {gtk}
 append /local/pcb/CFLAGS  {-I./hid/gtk}
 append /local/pcb/CFLAGS  /target/libs/gui/gtk2/cflags
@@ -35,5 +36,6 @@ append /local/pcb/ACTION_REG_SRC  [@
 	hid/gtk/gtkhid-main.c
 	hid/gtk/hid.conf
 @]
+end
 
 

@@ -1,3 +1,5 @@
+# lesstif2 options
+if /target/libs/gui/lesstif2/presents then
 append /local/pcb/CFLAGS {-I./hid/lesstif}
 append /local/pcb/CFLAGS  /target/libs/gui/lesstif2/cflags
 append /local/pcb/LIBS    /target/libs/gui/lesstif2/ldflags
@@ -19,4 +21,4 @@ append /local/pcb/ACTION_REG_SRC  [@
 	hid/lesstif/netlist.c
 	hid/lesstif/hid.conf
 @]
-
+end

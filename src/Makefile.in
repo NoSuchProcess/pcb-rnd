@@ -92,6 +92,7 @@ put /local/pcb/ACTION_REG_SRC  {
 put /local/pcb/RULES {}
 
 include {Makefile.in.mod/gtk-gdk}
+include {Makefile.in.mod/lesstif}
 include {Makefile.in.mod/toporouter}
 include {Makefile.in.mod/batch}
 include {Makefile.in.mod/bom}
