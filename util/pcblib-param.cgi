@@ -66,12 +66,16 @@ BEGIN {
 # build PDATA[paramname,propname], e.g. PDATA[pin_mask, default]=123
 (/@@default:/) || (/@@preview_args:/) {
 	key = $1
-	sub("^" key "[ \t]*", "", $0)
+
+	txt = $0
+	txt = substr(txt, length(key)+1, length(txt))
+	sub("^[ \t]*", "", txt)
+
 	sub("^.*@@", "", key)
 	val = key
 	sub(":.*", "", key)
 	sub("^[^:]*:", "", val)
-	PDATA[val,key] = $0
+	PDATA[val,key] = txt
 	next
 }
 
@@ -81,14 +85,18 @@ BEGIN {
 #  PDATAN[paramname]=n number of parameter values
 /@@enum:/ {
 	key = $1
-	sub("^" key "[ \t]*", "", $0)
+
+	txt = $0
+	txt = substr(txt, length(key)+1, length(txt))
+	sub("^[ \t]*", "", txt)
+
 	sub("^.*@@enum:", "", key)
 	val = key
 	sub(":.*", "", key)
 	sub("^[^:]*:", "", val)
 	idx = int(PDATAN[key])
 	PDATAK[key,idx] = val
-	PDATAV[key,idx] = $0
+	PDATAV[key,idx] = txt
 	PDATAN[key]++
 	next
 }
