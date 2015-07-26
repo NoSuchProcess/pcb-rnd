@@ -20,6 +20,8 @@ done
 awk -v "photo=$photo" -v "grid_unit=$grid_unit" -v "diamond=$diamond" -v "annotation=$annotation" '
 
 BEGIN {
+	diamond_x = 0
+	diamond_y = 0
 	q="\""
 
 	ds = 100*20
@@ -321,6 +323,15 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 
 }
 
+/Mark[ \t]*[(]/ {
+	directive(")")
+	sub(".*Mark[ \t]*[(]", "", $0)
+	sub(")$", "", $0)
+
+	diamond_x = $1*100
+	diamond_y = $2*100
+}
+
 
 function layer_3d(name, color,  offs)
 {
@@ -404,7 +415,7 @@ END {
 
 	if (diamond) {
 		print "macro push annotation"
-		print "lines", -ds,0,   0,ds,   ds,0,   0,-ds,   -ds,0
+		print "lines", diamond_x-ds, diamond_y,   diamond_x,diamond_y+ds,   diamond_x+ds,diamond_y,   diamond_x,diamond_y-ds,   diamond_x-ds,diamond_y
 		print "endmacro"
 	}
 
