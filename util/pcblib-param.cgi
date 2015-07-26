@@ -19,6 +19,8 @@ awk  -v "CGI=$CGI" "$@" '
 BEGIN {
 	prm=0
 	q="\""
+	fp_base=fp
+	sub("[(].*", "", fp_base)
 }
 
 /@@include/ {
@@ -55,7 +57,7 @@ BEGIN {
 }
 
 # build PDATA[paramname,propname], e.g. PDATA[pin_mask, default]=123
-/@@default:/ {
+(/@@default:/) || (/@@preview_args:/) {
 	key = $1
 	sub("^" key "[ \t]*", "", $0)
 	sub("^.*@@", "", key)
@@ -123,6 +125,10 @@ END {
 						print "</b>"
 
 					print "<td>" PDATAV[name, v]
+					if (PDATA[name, "preview_args"] != "") {
+						prv= fp_base "(" PDATA[name, "preview_args"] "," name "=" PDATAK[name, v] ")"
+						print "<td><img src=" q CGI "?cmd=" prv "&output=png&grid=none&annotation=none" q ">"
+					}
 				}
 				print "</table>"
 				vdone++
@@ -162,16 +168,16 @@ help()
 	incl=`tempfile`
 
 
-	help_params -v "header=1" -v "content=$gen parameters" -v "print_params=1" < $gendir/$gen 2>$incl
+	help_params -v "fp=$QS_cmd" -v "header=1" -v "content=$gen parameters" -v "print_params=1" < $gendir/$gen 2>$incl
 
 	for n in `cat $incl`
 	do
-		help_params -v "content=parameters (by $n)" < $gendir/$n 2>/dev/null
+		help_params -v "fp=$QS_cmd" -v "content=parameters (by $n)" < $gendir/$n 2>/dev/null
 	done
 
 	rm $incl
 
-	help_params -v "footer=1" < $gendir/$gen 2>/dev/null
+	help_params -v "fp=$QS_cmd" -v "footer=1" < $gendir/$gen 2>/dev/null
 
 }
 
@@ -309,6 +315,14 @@ then
 	then
 		cparm="$cparm --mm"
 	fi
+	if test ! -z "$QS_grid"
+	then
+		cparm="$cparm --grid-unit $QS_grid"
+	fi
+	if test ! -z "$QS_annotation"
+	then
+		cparm="$cparm --annotation $QS_annotation"
+	fi
 	if test ! -z "$QS_diamond"
 	then
 		cparm="$cparm --diamond"
@@ -317,7 +331,13 @@ then
 	then
 		cparm="$cparm --photo"
 	fi
-	(echo "$fptext" | /home/igor2/C/pcb-rnd/util/fp2anim $cparm; echo 'screenshot "/dev/stdout"') | /usr/local/bin/animator -H
+	if test ! -z "$QS_thumb"
+	then
+		animarg="-x 128 -y 96"
+	else
+		animarg=""
+	fi
+	(echo "$fptext" | /home/igor2/C/pcb-rnd/util/fp2anim $cparm; echo 'screenshot "/dev/stdout"') | /usr/local/bin/animator -H $animarg
 	exit
 fi
 
