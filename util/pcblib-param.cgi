@@ -127,7 +127,7 @@ END {
 					print "<td>" PDATAV[name, v]
 					if (PDATA[name, "preview_args"] != "") {
 						prv= fp_base "(" PDATA[name, "preview_args"] "," name "=" PDATAK[name, v] ")"
-						print "<td><img src=" q CGI "?cmd=" prv "&output=png&grid=none&annotation=none" q ">"
+						print "<td><img src=" q CGI "?cmd=" prv "&output=png&grid=none&annotation=none&thumb=1" q ">"
 					}
 				}
 				print "</table>"
@@ -331,12 +331,12 @@ then
 	then
 		cparm="$cparm --photo"
 	fi
-	if test ! -z "$QS_thumb"
-	then
-		animarg="-x 128 -y 96"
-	else
-		animarg=""
-	fi
+	case "$QS_thumb"
+	in
+		1) animarg="-x 64 -y 48" ;;
+		2) animarg="-x 128 -y 96" ;;
+		*) animarg="" ;;
+	esac
 	(echo "$fptext" | /home/igor2/C/pcb-rnd/util/fp2anim $cparm; echo 'screenshot "/dev/stdout"') | /usr/local/bin/animator -H $animarg
 	exit
 fi
