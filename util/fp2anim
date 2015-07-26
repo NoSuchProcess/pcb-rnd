@@ -22,9 +22,11 @@ awk -v "photo=$photo" -v "grid_unit=$grid_unit" -v "diamond=$diamond" -v "annota
 BEGIN {
 	diamond_x = 0
 	diamond_y = 0
+
 	q="\""
 
 	ds = 100*20
+	offs_3d = 150
 
 	if (photo) {
 		clr_board[-1] = "#003300"
@@ -343,9 +345,9 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 function layer_3d(name, color,  offs)
 {
 	if ((offs == "") || (offs == 1))
-		offs = 150
+		offs = offs_3d
 	else if (offs == -1)
-		offs = -150
+		offs = -offs_3d
 
 	if (1 in color) {
 		print "push"
@@ -400,8 +402,16 @@ END {
 	print "macro push copper\nendmacro"
 	print "macro push mask\nendmacro"
 
+	if (photo) {
+		xmin -= offs_3d*2
+		ymin -= offs_3d*2
+		xmax += offs_3d*2
+		ymax += offs_3d*2
+	}
+
 	sx = xmax-xmin
 	sy = ymax-ymin
+
 
 	size = sx > sy ? sx : sy
 
