@@ -7,16 +7,17 @@ while test $# -gt 0
 do
 	case $1 in
 		--photo|p) photo=1;;
-		--grid-unit|--grid_unit|g) grid_unit=$2;;
+		--grid-unit|g) grid_unit=$2; shift 1;;
 		--mm) grid_unit="mm";;
 		--diamond) diamond=1;;
+		--annotation) annotation=$2; shift 1;;
 	esac
 	shift 1
 done
 
 
 
-awk -v "photo=$photo" -v "grid_unit=$grid_unit" -v "diamond=$diamond" '
+awk -v "photo=$photo" -v "grid_unit=$grid_unit" -v "diamond=$diamond" -v "annotation=$annotation" '
 
 BEGIN {
 	q="\""
@@ -346,7 +347,7 @@ END {
 	print "dash 0xaaaa"
 	print "color", clr_grid[0]
 
-	if (grid_unit != "")
+	if ((grid_unit != "") == (grid_unit != "none"))
 		draw_grid()
 
 	print "dash 0xffff"
@@ -373,8 +374,10 @@ END {
 
 	layer_3d("silk", clr_silk)
 
-	print "color", clr_annotation[0]
-	print "invoke annotation"
+	if (annotation != "none") {
+		print "color", clr_annotation[0]
+		print "invoke annotation"
+	}
 
 	print "flush"
 }
