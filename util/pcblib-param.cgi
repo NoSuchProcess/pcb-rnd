@@ -21,6 +21,7 @@ BEGIN {
 	q="\""
 	fp_base=fp
 	sub("[(].*", "", fp_base)
+	thumbsize=1
 }
 
 /@@include/ {
@@ -32,6 +33,12 @@ BEGIN {
 	key=substr($0, RSTART, RLENGTH)
 	sub(".*" key "[ \t]*", "", txt)
 	HELP[key] = HELP[key] " " txt
+	next
+}
+
+/@@thumbsize/ {
+	sub(".*@@thumbsize", "", $0)
+	thumbsize=$1
 	next
 }
 
@@ -88,7 +95,7 @@ BEGIN {
 
 function thumb(prv)
 {
-	print "<img src=" q CGI "?cmd=" prv "&output=png&grid=none&annotation=none&thumb=1" q ">"
+	print "<img src=" q CGI "?cmd=" prv "&output=png&grid=none&annotation=none&thumb=" thumbsize q ">"
 }
 
 END {
