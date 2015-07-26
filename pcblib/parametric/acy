@@ -21,7 +21,7 @@
 #@@enum:type:core2 wavy coil symbol with two parallel lines
 #@@optional:type
 #@@default:type block
-#@@preview_args:type 400
+#@@preview_args:type 300
 
 #@@param:pol how to mark polarity
 #@@enum:pol:none no marking
@@ -30,7 +30,7 @@
 #@@enum:pol:dot dot next to pin 1
 #@@optional:pol
 #@@default:pol none
-#@@preview_args:pol 200
+#@@preview_args:pol 300
 
 #@@param:dia body diameter - affects silk size
 #@@dim:dia 
@@ -46,7 +46,9 @@
 #@@enum:wiper:thermistor wiper of a thermistor symbol
 #@@optional:wiper
 #@@default:wiper none
-#@@preview_args:wiper 300
+#@@preview_args:wiper 400
+
+#@@thumbsize 2
 
 #@@include common.awk
 
