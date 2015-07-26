@@ -6,6 +6,7 @@
 
 #@@desc Generate axial lead tru-hole component with 2 pin diodes
 #@@params spacing,type,dia
+#@@thumbsize 2
 
 #@@param:spacing spacing between the two pins
 #@@dim:spacing
@@ -18,6 +19,7 @@
 #@@enum:type:varactor
 #@@optional:type
 #@@default:type normal
+#@@preview_args:type 300
 
 #@@param:dia body diameter - affects silk symbol size
 #@@dim:dia
