@@ -241,7 +241,7 @@ DISTCLEANFILES= pcbtest.sh gpcb-menu.h pcb-menu.h \
 	pcb-menu.res
 
 clean:
-	-rm pcb $(OBJS)
+	-rm pcb-rnd $(OBJS)
 
 include ../Makefile.conf
 
