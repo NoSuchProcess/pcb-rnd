@@ -277,7 +277,7 @@ usage (void)
 
   u ("PCB Printed Circuit Board editing program, http://pcb.gpleda.org");
   u ("%s [-h|-V|--copyright]\t\t\tHelp, version, copyright", Progname);
-  u ("%s [gui options] <pcb file>\t\tto edit", Progname);
+  u ("%s [--gui GUI] [gui options] <pcb file>\t\tto edit", Progname);
   u ("Available GUI hid%s:", n_gui == 1 ? "" : "s");
   for (i = 0; hl[i]; i++)
     if (hl[i]->gui)
@@ -1662,8 +1662,18 @@ main (int argc, char *argv[])
       argv += 2;
     }
     /* Otherwise start GUI. */
+  else if (argc > 2 && strcmp (argv[1], "--gui") == 0)
+  {
+    gui = hid_find_gui (argv[2]);
+    if (gui == NULL) {
+      Message("Can't find the gui requested.\n");
+      exit(1);
+    }
+    argc -= 2;
+    argv += 2;
+  }
   else
-    gui = hid_find_gui ();
+    gui = hid_find_gui (NULL);
 
   /* Exit with error if GUI failed to start. */
   if (!gui)

@@ -589,7 +589,7 @@ typedef enum
 /* When PCB runs in interactive mode, this is called to instantiate
    one GUI HID which happens to be the GUI.  This HID is the one that
    interacts with the mouse and keyboard.  */
-  HID *hid_find_gui ();
+  HID *hid_find_gui (const char *preference);
 
 /* Finds the one printer HID and instantiates it.  */
   HID *hid_find_printer (void);

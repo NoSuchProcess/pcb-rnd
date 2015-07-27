@@ -93,9 +93,12 @@ void
 Message (const char *Format, ...)
 {
   va_list args;
-  va_start (args, Format);
-  gui->logv (Format, args);
-  va_end (args);
+
+  if (gui != NULL) {
+    va_start (args, Format);
+    gui->logv (Format, args);
+    va_end (args);
+  }
 
 #ifdef HAVE_STDARG_H
   va_start (args, Format);

@@ -180,9 +180,17 @@ hid_register_hid (HID * hid)
 
 
 HID *
-hid_find_gui ()
+hid_find_gui (const char *preference)
 {
   int i;
+
+	if (preference != NULL) {
+		for (i = 0; i < hid_num_hids; i++)
+			if (!hid_list[i]->printer && !hid_list[i]->exporter && !strcmp(hid_list[i]->name, preference))
+				return hid_list[i];
+		Message("Error: can't find gui '%s' (requested by the user)\n", preference);
+		return NULL;
+	}
 
   for (i = 0; i < hid_num_hids; i++)
     if (!hid_list[i]->printer && !hid_list[i]->exporter)
