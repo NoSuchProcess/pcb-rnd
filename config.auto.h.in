@@ -258,10 +258,10 @@ switch /target/libs/fs/stat/macros/S_ISLNK
 end;
 
 print {\n\n/* Define to 1 if Xinerama is available */\n}
-print_ternary libs/gui/xinerama/presents {#define HAVE_XINERAMA 1} {#undef /* HAVE_XINERAMA 1 */}
+print_ternary libs/gui/xinerama/presents {#define HAVE_XINERAMA 1} {/*#undef HAVE_XINERAMA */}
 
 print {\n\n/* Define to 1 if Xrender is available */\n}
-print_ternary libs/gui/xrender/presents {#define HAVE_XRENDER 1} {#undef /* HAVE_XRENDER 1 */}
+print_ternary libs/gui/xrender/presents {#define HAVE_XRENDER 1} {/*#undef HAVE_XRENDER */}
 
 print [@
 
