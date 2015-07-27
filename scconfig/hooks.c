@@ -28,6 +28,21 @@ int hook_custom_arg(const char *key, const char *value)
 		put("libs/gui/lesstif2/presents", sfalse);
 		return 1;
 	}
+
+	if (strcmp(key, "disable-xrender") == 0) {
+		put("libs/gui/xrender/presents", sfalse);
+		put("libs/gui/xrender/cflags", "");
+		put("libs/gui/xrender/ldflags", "");
+		return 1;
+	}
+
+	if (strcmp(key, "disable-xinerama") == 0) {
+		put("libs/gui/xinerama/presents", sfalse);
+		put("libs/gui/xinerama/cflags", "");
+		put("libs/gui/xinerama/ldflags", "");
+		return 1;
+	}
+
 	return 0;
 }
 
