@@ -2,13 +2,13 @@
 
 # - generic configuration -
 #  what cflags to use to compile scconfig
-USER_CFLAGS = -Wall -g -DGENCALL
+USER_CFLAGS = -Wall -g -DGENCALL -Isrc
 
 #  what ldflags to use to link scconfig
 USER_LDFLAGS =
 
 #  in case hooks.c needs to link to something local
-USER_OBJS =
+USER_OBJS = src/util/arg_auto_set.o
 
 #  what to build - a ./configure
 all: configure

@@ -7,6 +7,7 @@
 #include "db.h"
 #include "tmpasm.h"
 #include "tmpasm_scconfig.h"
+#include "util/arg_auto_set.h"
 
 #define version "1.0.1"
 
@@ -14,36 +15,21 @@
  returns true if no furhter argument processing should be done */
 int hook_custom_arg(const char *key, const char *value)
 {
+	static const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
+		{"disable-gtk",       "libs/gui/gtk2",         arg_lib_nodes},
+		{"disable-lesstif",   "libs/gui/lesstif2",     arg_lib_nodes},
+		{"disable-xrender",   "libs/gui/xrender",      arg_lib_nodes},
+		{"disable-xinerama",  "libs/gui/xinerama",     arg_lib_nodes},
+		{NULL, NULL, NULL}
+	};
+
 	if (strcmp(key, "prefix") == 0) {
+		report(0, "Setting prefix to '%s'\n", value);
 		put("/local/prefix", strclone(value));
 		return 1;
 	}
 
-	if (strcmp(key, "disable-gtk") == 0) {
-		put("libs/gui/gtk2/presents", sfalse);
-		return 1;
-	}
-
-	if (strcmp(key, "disable-lesstif") == 0) {
-		put("libs/gui/lesstif2/presents", sfalse);
-		return 1;
-	}
-
-	if (strcmp(key, "disable-xrender") == 0) {
-		put("libs/gui/xrender/presents", sfalse);
-		put("libs/gui/xrender/cflags", "");
-		put("libs/gui/xrender/ldflags", "");
-		return 1;
-	}
-
-	if (strcmp(key, "disable-xinerama") == 0) {
-		put("libs/gui/xinerama/presents", sfalse);
-		put("libs/gui/xinerama/cflags", "");
-		put("libs/gui/xinerama/ldflags", "");
-		return 1;
-	}
-
-	return 0;
+	return arg_auto_set(key, value, disable_libs);
 }
 
 
