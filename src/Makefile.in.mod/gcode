@@ -1,3 +1,5 @@
+if /target/libs/gui/gd/presents then
+
 append /local/pcb/HIDS    {gcode}
 append /local/pcb/CFLAGS  {-I./hid/gcode}
 append /local/pcb/OBJS [@
@@ -9,4 +11,4 @@ append /local/pcb/OBJS [@
 
 append /local/pcb/ACTION_REG_SRC {hid/gcode/gcode.c hid/gcode/hid.conf}
 
-
+end

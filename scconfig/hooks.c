@@ -16,10 +16,15 @@
 int hook_custom_arg(const char *key, const char *value)
 {
 	static const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
-		{"disable-gtk",       "libs/gui/gtk2",         arg_lib_nodes},
-		{"disable-lesstif",   "libs/gui/lesstif2",     arg_lib_nodes},
-		{"disable-xrender",   "libs/gui/xrender",      arg_lib_nodes},
-		{"disable-xinerama",  "libs/gui/xinerama",     arg_lib_nodes},
+		{"disable-gtk",       "libs/gui/gtk2",           arg_lib_nodes},
+		{"disable-lesstif",   "libs/gui/lesstif2",       arg_lib_nodes},
+		{"disable-xrender",   "libs/gui/xrender",        arg_lib_nodes},
+		{"disable-xinerama",  "libs/gui/xinerama",       arg_lib_nodes},
+		{"disable-gd",        "libs/gui/gd",             arg_lib_nodes},
+		{"disable-gd-gif",    "libs/gui/gd/gdImageGif",  arg_lib_nodes},
+		{"disable-gd-png",    "libs/gui/gd/gdImagePng",  arg_lib_nodes},
+		{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg", arg_lib_nodes},
+
 		{NULL, NULL, NULL}
 	};
 
@@ -72,8 +77,15 @@ int hook_detect_target()
 	}
 
 	/* for the exporters */
-	/* TODO: make this optional */
-	require("libs/gui/gd", 0, 1);
+	require("libs/gui/gd/presents", 0, 0);
+
+	if (!istrue(get("libs/gui/gd/presents"))) {
+		report("Since there's no libgd, disabling raster output formats...\n");
+		hook_custom_arg("disable-gd-gif", NULL);
+		hook_custom_arg("disable-gd-png", NULL);
+		hook_custom_arg("disable-gd-jpg", NULL);
+	}
+
 
 	/* for core, the toporouter and gsch2pcb: */
 	require("libs/sul/glib", 0, 1);
@@ -97,9 +109,9 @@ int hook_detect_target()
 	require("libs/math/expf", 0, 0);
 	require("libs/math/logf", 0, 0);
 	require("libs/script/m4/bin/*", 0, 0);
-	require("libs/gui/gd/gdImagePng/*", 0, 0);
-	require("libs/gui/gd/gdImageGif/*", 0, 0);
-	require("libs/gui/gd/gdImageJpeg/*", 0, 0);
+	require("libs/gui/gd/gdImagePng/presents", 0, 0);
+	require("libs/gui/gd/gdImageGif/presents", 0, 0);
+	require("libs/gui/gd/gdImageJpeg/presents", 0, 0);
 	require("libs/fs/stat/macros/*", 0, 0);
 
 	return 0;
