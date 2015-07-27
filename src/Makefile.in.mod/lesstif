@@ -1,6 +1,8 @@
 # lesstif2 options
 if /target/libs/gui/lesstif2/presents then
 
+append /local/pcb/HIDS    {lesstif}
+
 append /local/pcb/CFLAGS [@
 	-I./hid/lesstif
 	@/target/libs/gui/lesstif2/cflags@
