@@ -36,6 +36,9 @@ uninstall:
 	$(RM) $(BINDIR)/fp2anim
 	$(RM) $(LIBDIR)/gnet-gsch2pcb-rnd.scm
 
+
+clean:
+
 include ../Makefile.conf
 
 @]
