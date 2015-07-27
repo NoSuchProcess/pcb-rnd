@@ -81,12 +81,15 @@ RCSID ("$Id$");
 
 #define PCBLIBPATH ".:" PCBLIBDIR
 
-
 #ifdef HAVE_LIBSTROKE
 extern void stroke_init (void);
 #endif
 
 char *fontfile_paths[] = {"./default_font", PCBLIBDIR "/default_font", NULL};
+
+/* Try gui libs in this order when not explicitly specified by the user
+   if there are multiple GUIs available this sets the order of preference */
+static const char *try_gui_hids[] = {"gtk", "lesstif", NULL};
 
 /* ----------------------------------------------------------------------
  * initialize signal and error handlers
@@ -1672,8 +1675,20 @@ main (int argc, char *argv[])
     argc -= 2;
     argv += 2;
   }
-  else
-    gui = hid_find_gui (NULL);
+  else {
+    const char **g;
+
+    gui = NULL;
+    for(g = try_gui_hids; (*g != NULL) && (gui == NULL); g++) {
+      gui = hid_find_gui (*g);
+    }
+
+    /* try anything */
+    if (gui == NULL) {
+      Message("Warning: can't find any of the preferred GUIs, falling back to anything available...\n");
+      gui = hid_find_gui (NULL);
+    }
+  }
 
   /* Exit with error if GUI failed to start. */
   if (!gui)
