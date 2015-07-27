@@ -65,8 +65,16 @@ int hook_detect_target()
 	require("libs/gui/gtk2/presents", 0, 0);
 	require("libs/gui/lesstif2/presents", 0, 0);
 
+	if (istrue(get("libs/gui/lesstif2/presents"))) {
+		require("libs/gui/xinerama/presents", 0, 0);
+		require("libs/gui/xrender/presents", 0, 0);
+	}
+
+	/* for the exporters */
+	/* TODO: make this optional */
 	require("libs/gui/gd", 0, 1);
-	/* for the toporouter and gsch2pcb: */
+
+	/* for core, the toporouter and gsch2pcb: */
 	require("libs/sul/glib", 0, 1);
 
 	/* generic utils for Makefiles */
