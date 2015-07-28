@@ -2,6 +2,9 @@ BUGS
 - distorted square pin bugs:
 	- rtree assert failure when NDEBUG is turned off and 'q' is pressed on a pin twice
 
+CLEANUP
+	- remove libstroke?
+
 FEATURES
 - merge pcb-gpmi in pcb-rnd {large}
 - win32 port {large}
