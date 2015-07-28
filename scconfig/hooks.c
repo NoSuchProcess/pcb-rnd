@@ -75,6 +75,11 @@ int hook_detect_target()
 		require("libs/gui/xinerama/presents", 0, 0);
 		require("libs/gui/xrender/presents", 0, 0);
 	}
+	else {
+		report("Since there's no lesstif2, disabling xinerama and xrender...\n");	
+		hook_custom_arg("disable-xinerama", NULL);
+		hook_custom_arg("disable-xrender", NULL);
+	}
 
 	/* for the exporters */
 	require("libs/gui/gd/presents", 0, 0);
