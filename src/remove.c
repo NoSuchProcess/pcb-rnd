@@ -30,9 +30,7 @@
 /* functions used to remove vias, pins ...
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <setjmp.h>
 #include <memory.h>

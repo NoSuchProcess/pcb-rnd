@@ -519,9 +519,7 @@ char *restext;
 /* $Id$ */
 #line 4 "res_lex.l"
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #ifdef HAVE_STRING_H
 #include <string.h>
@@ -547,7 +545,7 @@ RCSID("$Id$");
 extern int res_lineno;
 extern int res_parse_getchars(char *buf, int max_size);
 
-#line 551 "lex.yy.c"
+#line 549 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -734,10 +732,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 44 "res_lex.l"
+#line 42 "res_lex.l"
 
 
-#line 741 "lex.yy.c"
+#line 739 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -833,7 +831,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 46 "res_lex.l"
+#line 44 "res_lex.l"
 { reslval.sval = strdup(restext+1);
 		  reslval.sval[strlen(reslval.sval) - 1] = 0;
 		  return STRING; }
@@ -841,7 +839,7 @@ YY_RULE_SETUP
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 50 "res_lex.l"
+#line 48 "res_lex.l"
 { reslval.sval = strdup(restext+1);
 		  reslval.sval[strlen(reslval.sval) - 1] = 0;
 		  return STRING; }
@@ -849,39 +847,39 @@ YY_RULE_SETUP
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 54 "res_lex.l"
+#line 52 "res_lex.l"
 { res_lineno++; }
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 55 "res_lex.l"
+#line 53 "res_lex.l"
 { if (restext[0] == '\n') res_lineno++; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 57 "res_lex.l"
+#line 55 "res_lex.l"
 { reslval.sval = strdup(restext);
 		  	  return INCLUDE; }
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 60 "res_lex.l"
+#line 58 "res_lex.l"
 { reslval.sval = strdup(restext);
 		  	  return STRING; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 63 "res_lex.l"
+#line 61 "res_lex.l"
 { return restext[0]; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 65 "res_lex.l"
+#line 63 "res_lex.l"
 ECHO;
 	YY_BREAK
-#line 885 "lex.yy.c"
+#line 883 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1891,7 +1889,7 @@ void resfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 65 "res_lex.l"
+#line 63 "res_lex.l"
 
 
 

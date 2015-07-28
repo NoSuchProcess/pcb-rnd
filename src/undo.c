@@ -42,9 +42,7 @@
  * a lock flag ensures that no infinite loops occur
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <assert.h>
 #include <memory.h>

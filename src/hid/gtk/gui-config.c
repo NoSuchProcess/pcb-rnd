@@ -25,9 +25,7 @@
 /* This file written by Bill Wilson for the PCB Gtk port.
 */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 
 #ifdef HAVE_STDLIB_H

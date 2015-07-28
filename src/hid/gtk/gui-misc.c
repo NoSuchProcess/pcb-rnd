@@ -24,9 +24,7 @@
 
 /* This file was originally written by Bill Wilson for the PCB Gtk port */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include "global.h"
 #include "crosshair.h"

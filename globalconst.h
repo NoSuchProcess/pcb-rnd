@@ -33,9 +33,7 @@
 #ifndef	__GLOBALCONST_INCLUDED__
 #define	__GLOBALCONST_INCLUDED__
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <limits.h>
 

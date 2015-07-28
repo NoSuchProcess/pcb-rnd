@@ -27,11 +27,8 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
-
-
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
+
 
 #include "data.h"
 #include "error.h"

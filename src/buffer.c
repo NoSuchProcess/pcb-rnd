@@ -29,9 +29,7 @@
 /* functions used by paste- and move/copy buffer
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <stdlib.h>
 #include <memory.h>

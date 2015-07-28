@@ -30,9 +30,7 @@
 /* functions used to rotate pins, elements ...
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <stdlib.h>
 

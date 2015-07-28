@@ -30,9 +30,7 @@
 /* misc functions used by several modules
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include "ds.h"
 

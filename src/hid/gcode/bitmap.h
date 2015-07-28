@@ -5,9 +5,7 @@
 #ifndef BITMAP_H
 #define BITMAP_H
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <string.h>
 #include <stdlib.h>

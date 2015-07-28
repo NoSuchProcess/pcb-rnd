@@ -31,9 +31,7 @@
 #ifndef	PCB_MYMEM_H
 #define	PCB_MYMEM_H
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <stdlib.h>
 #include "global.h"

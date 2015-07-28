@@ -24,9 +24,7 @@
  */
 
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus.h>

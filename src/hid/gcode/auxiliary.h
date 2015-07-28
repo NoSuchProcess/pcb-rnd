@@ -8,9 +8,7 @@
 #ifndef AUXILIARY_H
 #define AUXILIARY_H
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 /* ---------------------------------------------------------------------- */
 /* point arithmetic */

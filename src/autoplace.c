@@ -35,9 +35,7 @@
 /* functions used to autoplace elements.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <assert.h>
 #include <math.h>

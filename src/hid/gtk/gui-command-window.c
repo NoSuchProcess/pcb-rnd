@@ -28,9 +28,7 @@
 
 /* This file written by Bill Wilson for the PCB Gtk port */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include "gui.h"
 #include <gdk/gdkkeysyms.h>

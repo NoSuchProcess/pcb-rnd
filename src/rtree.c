@@ -36,9 +36,7 @@
  * because the recursive search is much more efficient
  * and that's where the auto-router spends all its time.
  */
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include "global.h"
 

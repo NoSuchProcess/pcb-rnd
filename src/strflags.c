@@ -25,9 +25,7 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <stdio.h>
 #include <ctype.h>
@@ -680,7 +678,7 @@ mem_any_set (unsigned char *ptr, int bytes)
 /*
  * This exists for standalone testing of this file.
  *
- * Compile as: gcc -DHAVE_CONFIG_H -DFLAG_TEST strflags.c -o strflags.x -I..
+ * Compile as: gcc -DFLAG_TEST strflags.c -o strflags.x -I..
  * and then run it.
  */
 

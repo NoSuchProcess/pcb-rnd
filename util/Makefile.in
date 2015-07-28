@@ -1,6 +1,6 @@
 print [@
 
-CFLAGS=@libs/sul/glib/cflags@ -DSCMDIR="\"$(LIBDIR)\""
+CFLAGS=@libs/sul/glib/cflags@ -I.. -DSCMDIR="\"$(LIBDIR)\""
 LDFLAGS=@libs/sul/glib/ldflags@
 EXE=@sys/ext_exe@
 

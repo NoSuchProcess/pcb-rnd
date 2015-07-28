@@ -30,9 +30,7 @@
 /* lexical definitions to parse ASCII input of PCB and Element description
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>

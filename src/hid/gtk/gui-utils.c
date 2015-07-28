@@ -28,9 +28,7 @@
  * gstocks and are copied here for the Gtk PCB port.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include "gui.h"
 #include <gdk/gdkkeysyms.h>

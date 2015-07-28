@@ -29,9 +29,7 @@
 /* functions used to create vias, pins ...
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <assert.h>
 #include <memory.h>
