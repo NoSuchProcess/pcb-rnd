@@ -106,6 +106,7 @@ int hook_detect_target()
 	/* options for config.h */
 	require("sys/path_sep", 0, 1);
 	require("cc/alloca/presents", 0, 0);
+	require("cc/rdynamic", 0, 0);
 	require("libs/env/putenv/presents", 0, 0);
 	require("libs/env/setenv/presents", 0, 0);
 	require("libs/snprintf", 0, 0);
@@ -118,6 +119,9 @@ int hook_detect_target()
 	require("libs/gui/gd/gdImageGif/presents", 0, 0);
 	require("libs/gui/gd/gdImageJpeg/presents", 0, 0);
 	require("libs/fs/stat/macros/*", 0, 0);
+
+	if (get("cc/rdynamic") == NULL)
+		put("cc/rdynamic", "");
 
 	return 0;
 }
