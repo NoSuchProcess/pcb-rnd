@@ -1,7 +1,10 @@
 # lpr bom gcode gerber nelma png ps
 
 # TODO default compiler flags
-put /local/pcb/CFLAGS {-std=gnu99 -I. -I.. -Iicons -DHAVE_CONFIG_H -g -DNDEBUG}
+put /local/pcb/CFLAGS cc/rdynamic
+append /local/pcb/LDFLAGS cc/rdynamic
+append /local/pcb/CFLAGS {-std=gnu99 -I. -I.. -Iicons -DHAVE_CONFIG_H -g -DNDEBUG}
+
 
 # main: objects
 put /local/pcb/OBJS [@
