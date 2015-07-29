@@ -1,3 +1,39 @@
+pcb-rnd 1.0.2
+~~~~~~~~~~~~~
+	[pcblib-param]
+		-Fix: central bool handling (connector() etrunc), values: on/off, true/false, 1/0
+		-Fix: typo in so() parameter descriptions
+		-Fix: connector() typo in error()
+		-Add: more elaborate help syntax: easier to read with scripts
+
+	[fp2anim]
+		-Fix: read multiline directives properly - a newline after each directive is still needed, tho
+		-Fix: allow whitepsace between directive name and opening bracket
+		-Fix: create all layers in advance - this fixes the case when the fp doesn't draw on some layers (the macro still exists)
+		-Fix: rline() is extended by width/2 if there are no rounding; it seems this how pcb defines lines
+		-Fix: leave extra margin in photo mode for the 3d edges
+		-Add: support for old-style pad()
+		-Add: support for Mark() (relocate the diamond)
+		-Add: options to turn off the grid and annotation - useful for thumbnails
+
+	[scconfig]
+		-Fix: always have config.h, don't ifdef it
+		-Fix: glib is a core dependency that should be added even if the gtk hid is not used
+		-Fix: make clean removes pcb-rnd, not pcb (executable file name typo)
+		-Add: make clean in util/
+		-Add: options to disable gd and/or jpeg or png or gif
+		-Add: be able to detect and configure lesstif 
+		-Add: --disable-gtk and --disable-lesstif; --disable-xinerama and --disable-xrender for lesstif
+		-Add: use detected -rdynamic so that plugins can link against the executable
+		-Change: detect both gtk and lesstif as optional dependencies
+		-Cleanup: generate hidlist.h from tmpasm instead of shell to remove shell dependency
+		-Del: a bunch of obsolete #defines inherited from auto*
+
+	[core]
+		-Add: --gui explicitly selects a gui hid
+		-Add: don't leave preferred order of GUIs to the chance, make it explicit
+
+
 pcb-rnd 1.0.1
 ~~~~~~~~~~~~~
 	[core]
