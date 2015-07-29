@@ -7,15 +7,23 @@ CLEANUP
 
 FEATURES
 - merge pcb-gpmi in pcb-rnd {large}
-- win32 port {large}
-	- clean up central Makefile.in rules:
-		- remove cat, sed, grep where possible, use scconfig instead
+	- MENU:
+		- lesstif: add_resource_to_menu
+		- ghid_main_menu_real_add_resource
+	- action: call an existing action
+	- dialog: check and document if hid package can create these (+mini parser from text?)
+	- hid: hid_destroy (pair of hid_create)
+	- layout: more functions to list layers, id->layername function
 - UI: drill adjust: {small}
 	- set drill and/or ring to current style
 	- set all pins (drill and/or ring) to current style for a component
-- UI: trace length calculation {small}
-- UI: be able to manually change text line width {small}
 - UI: component filter by tags
+
+- UI: trace length calculation {small}
+- win32 port {large}
+	- clean up central Makefile.in rules:
+		- remove cat, sed, grep where possible, use scconfig instead
+- UI: be able to manually change text line width {small}
 - CORE: clear poly should be a per layer flag (on each objects) {?}
 - CORE: inverse text {medium}
 - BUILD: menuconfig and a config file for scconfig
