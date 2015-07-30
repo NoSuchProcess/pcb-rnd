@@ -167,38 +167,28 @@ check_unique_accel (const char *accelerator)
   return accelerator;
 }
 
-
-/*! \brief Translate a resource tree into a menu structure
- *
- *  \param [in] menu    The GHidMainMenu widget to be acted on
- *  \param [in] shall   The base menu shell (a menu bar or popup menu)
- *  \param [in] res     The base of the resource tree
- * */
 void
 ghid_main_menu_real_add_resource (GHidMainMenu *menu, GtkMenuShell *shell,
-                                  const Resource *res, const char *path)
+                                  const Resource *res, const char *path);
+
+
+static GtkAction *ghid_add_menu(GHidMainMenu *menu, GtkMenuShell *shell,
+                                  const Resource *sub_res, const char *path)
 {
-  int i, j;
+  const char *res_val;
   const Resource *tmp_res;
   gchar mnemonic = 0;
+  int j;
+  GtkAction *action = NULL;
+  const gchar *accel = NULL;
+  char *menu_label;
   char *npath;
 
-  for (i = 0; i < res->c; ++i)
-    {
-      const gchar *accel = NULL;
-      char *menu_label;
-      const char *res_val;
-      const Resource *sub_res = res->v[i].subres;
-      GtkAction *action = NULL;
-
-      switch (resource_type (res->v[i]))
-        {
-        case 101:   /* name, subres: passthrough */
-          ghid_main_menu_real_add_resource (menu, shell, sub_res, path);
-          break;
-        case   1:   /* no name, subres */
           tmp_res = resource_subres (sub_res, "a");  /* accelerator */
           res_val = resource_value (sub_res, "m");   /* mnemonic */
+
+
+
           if (res_val)
             mnemonic = res_val[0];
           /* The accelerator resource will have two values, like 
@@ -234,11 +224,14 @@ ghid_main_menu_real_add_resource (GHidMainMenu *menu, GtkMenuShell *shell,
                   menu_label = g_string_free (tmp, FALSE);
                 }
             }
+
+  npath = Concat(path, "/", res_val, NULL);
+
           /* If the subresource we're processing also has unnamed
            * subresources, it's a submenu, not a regular menuitem. */
           if (sub_res->flags & FLAG_S)
             {
-//fprintf(stderr, "menu path='%s' '%s' SUB\n", path, res_val);
+fprintf(stderr, "menu path='%s' SUB\n", npath);
               /* SUBMENU */
               GtkWidget *submenu = gtk_menu_new ();
               GtkWidget *item = gtk_menu_item_new_with_mnemonic (menu_label);
@@ -251,15 +244,13 @@ ghid_main_menu_real_add_resource (GHidMainMenu *menu, GtkMenuShell *shell,
               gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tearoff);
 
               /* recurse on the newly-added submenu */
-              npath = Concat(path, "/", res_val, NULL);
               ghid_main_menu_real_add_resource (menu,
                                                 GTK_MENU_SHELL (submenu),
                                                 sub_res, npath);
-              free(npath);
             }
           else
             {
-//fprintf(stderr, "menu path='%s' '%s' MAIN\n", path, res_val);
+fprintf(stderr, "menu path='%s' MAIN\n", npath, res_val);
               /* NON-SUBMENU: MENU ITEM */
               const char *checked = resource_value (sub_res, "checked");
               const char *label = resource_value (sub_res, "sensitive");
@@ -291,6 +282,7 @@ ghid_main_menu_real_add_resource (GHidMainMenu *menu, GtkMenuShell *shell,
                   action = gtk_action_new (name, menu_label, tip, NULL);
                 }
             }
+
           /* Connect accelerator, if there is one */
           if (action)
             {
@@ -308,6 +300,36 @@ ghid_main_menu_real_add_resource (GHidMainMenu *menu, GtkMenuShell *shell,
               menu->actions = g_list_append (menu->actions, action);
               menu->special_key_cb (accel, action, sub_res);
             }
+
+  free(npath);
+  return action;
+}
+
+
+/*! \brief Translate a resource tree into a menu structure
+ *
+ *  \param [in] menu    The GHidMainMenu widget to be acted on
+ *  \param [in] shall   The base menu shell (a menu bar or popup menu)
+ *  \param [in] res     The base of the resource tree
+ * */
+void
+ghid_main_menu_real_add_resource (GHidMainMenu *menu, GtkMenuShell *shell,
+                                  const Resource *res, const char *path)
+{
+  int i, j;
+  GtkAction *action = NULL;
+
+  for (i = 0; i < res->c; ++i)
+    {
+      const Resource *sub_res = res->v[i].subres;
+
+      switch (resource_type (res->v[i]))
+        {
+        case 101:   /* name, subres: passthrough */
+          ghid_main_menu_real_add_resource (menu, shell, sub_res, path);
+          break;
+        case   1:   /* no name, subres */
+          action = ghid_add_menu(menu, shell, sub_res, path);
           /* Scan rest of resource in case there is more work */
           for (j = 0; j < sub_res->c; j++)
             {
