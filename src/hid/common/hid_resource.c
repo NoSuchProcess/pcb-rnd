@@ -201,3 +201,62 @@ do_mouse_action (int button, int mod_mask)
       if (hid_parse_actions (action->v[i].value))
         return;
 }
+
+Resource *resource_create_menu(const char *name, const char *action, const char *mnemonic, const char *accel, const char *tip)
+{
+	Resource *resp, *res;
+	ResourceVal *rvp, *rv;
+	int next;
+
+	/* child */
+	res = calloc(sizeof(Resource), 1);
+	res->c = 1 + (action != NULL) + (mnemonic != NULL) + (accel != NULL) + (tip != NULL);
+	rv = malloc(sizeof(ResourceVal) * res->c);
+	res->v = rv;
+	res->flags = FLAG_NS | FLAG_NV | FLAG_V;
+
+	rv[0].name = NULL;
+	rv[0].value = strdup(name);
+	rv[0].subres = NULL;
+	next = 1;
+
+	if (action != NULL) {
+		rv[next].name = NULL;
+		rv[next].value = strdup(action);
+		rv[next].subres = NULL;
+		next++;
+	}
+
+	if (mnemonic != NULL) {
+		rv[next].name = "m";
+		rv[next].value = strdup(mnemonic);
+		rv[next].subres = NULL;
+		next++;
+	}
+
+	if (accel != NULL) {
+		rv[next].name = "a";
+		rv[next].value = strdup(accel);
+		rv[next].subres = NULL;
+		next++;
+	}
+
+	if (tip != NULL) {
+		rv[next].name = "tip";
+		rv[next].value = strdup(tip);
+		rv[next].subres = NULL;
+		next++;
+	}
+
+	/* parent */
+	resp = calloc(sizeof(Resource), 1);
+	rvp = malloc(sizeof(ResourceVal));
+
+	resp->v = rvp;
+	resp->c = 1;
+	rvp->name = NULL;
+	rvp->value = NULL;
+	rvp->subres = res;
+
+	return resp;
+}
