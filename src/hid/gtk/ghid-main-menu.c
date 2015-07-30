@@ -176,11 +176,12 @@ check_unique_accel (const char *accelerator)
  * */
 void
 ghid_main_menu_real_add_resource (GHidMainMenu *menu, GtkMenuShell *shell,
-                                  const Resource *res)
+                                  const Resource *res, const char *path)
 {
   int i, j;
   const Resource *tmp_res;
   gchar mnemonic = 0;
+  char *npath;
 
   for (i = 0; i < res->c; ++i)
     {
@@ -193,7 +194,7 @@ ghid_main_menu_real_add_resource (GHidMainMenu *menu, GtkMenuShell *shell,
       switch (resource_type (res->v[i]))
         {
         case 101:   /* name, subres: passthrough */
-          ghid_main_menu_real_add_resource (menu, shell, sub_res);
+          ghid_main_menu_real_add_resource (menu, shell, sub_res, path);
           break;
         case   1:   /* no name, subres */
           tmp_res = resource_subres (sub_res, "a");  /* accelerator */
@@ -237,6 +238,7 @@ ghid_main_menu_real_add_resource (GHidMainMenu *menu, GtkMenuShell *shell,
            * subresources, it's a submenu, not a regular menuitem. */
           if (sub_res->flags & FLAG_S)
             {
+//fprintf(stderr, "menu path='%s' '%s' SUB\n", path, res_val);
               /* SUBMENU */
               GtkWidget *submenu = gtk_menu_new ();
               GtkWidget *item = gtk_menu_item_new_with_mnemonic (menu_label);
@@ -247,13 +249,17 @@ ghid_main_menu_real_add_resource (GHidMainMenu *menu, GtkMenuShell *shell,
 
               /* add tearoff to menu */
               gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tearoff);
+
               /* recurse on the newly-added submenu */
+              npath = Concat(path, "/", res_val, NULL);
               ghid_main_menu_real_add_resource (menu,
                                                 GTK_MENU_SHELL (submenu),
-                                                sub_res);
+                                                sub_res, npath);
+              free(npath);
             }
           else
             {
+//fprintf(stderr, "menu path='%s' '%s' MAIN\n", path, res_val);
               /* NON-SUBMENU: MENU ITEM */
               const char *checked = resource_value (sub_res, "checked");
               const char *label = resource_value (sub_res, "sensitive");
@@ -466,7 +472,7 @@ ghid_main_menu_new (GCallback action_cb,
 void
 ghid_main_menu_add_resource (GHidMainMenu *menu, const Resource *res)
 {
-  ghid_main_menu_real_add_resource (menu, GTK_MENU_SHELL (menu), res);
+  ghid_main_menu_real_add_resource (menu, GTK_MENU_SHELL (menu), res, "");
 }
 
 /*! \brief Turn a pcb resource into a popup menu */
@@ -476,7 +482,7 @@ ghid_main_menu_add_popup_resource (GHidMainMenu *menu, const char *name,
 {
   GtkWidget *new_menu = gtk_menu_new ();
   g_object_ref_sink (new_menu);
-  ghid_main_menu_real_add_resource (menu, GTK_MENU_SHELL (new_menu), res);
+  ghid_main_menu_real_add_resource (menu, GTK_MENU_SHELL (new_menu), res, "");
   g_hash_table_insert (menu->popup_table, (gpointer) name, new_menu);
   gtk_widget_show_all (new_menu);
 }
