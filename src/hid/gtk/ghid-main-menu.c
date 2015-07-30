@@ -172,6 +172,8 @@ ghid_main_menu_real_add_resource (GHidMainMenu *menu, GtkMenuShell *shell,
                                   const Resource *res, const char *path);
 
 
+static GHashTable *menu_hash = NULL; /* path->GtkWidget */
+
 static GtkAction *ghid_add_menu(GHidMainMenu *menu, GtkMenuShell *shell,
                                   const Resource *sub_res, const char *path)
 {
@@ -183,6 +185,10 @@ static GtkAction *ghid_add_menu(GHidMainMenu *menu, GtkMenuShell *shell,
   const gchar *accel = NULL;
   char *menu_label;
   char *npath;
+
+  if (!menu_hash)
+    menu_hash = g_hash_table_new (g_str_hash, g_str_equal);
+
 
           tmp_res = resource_subres (sub_res, "a");  /* accelerator */
           res_val = resource_value (sub_res, "m");   /* mnemonic */
@@ -231,7 +237,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu *menu, GtkMenuShell *shell,
            * subresources, it's a submenu, not a regular menuitem. */
           if (sub_res->flags & FLAG_S)
             {
-fprintf(stderr, "menu path='%s' SUB\n", npath);
+/*fprintf(stderr, "menu path='%s' SUB\n", npath);*/
               /* SUBMENU */
               GtkWidget *submenu = gtk_menu_new ();
               GtkWidget *item = gtk_menu_item_new_with_mnemonic (menu_label);
@@ -247,10 +253,12 @@ fprintf(stderr, "menu path='%s' SUB\n", npath);
               ghid_main_menu_real_add_resource (menu,
                                                 GTK_MENU_SHELL (submenu),
                                                 sub_res, npath);
+
+              g_hash_table_insert (menu_hash, (gpointer)npath, (gpointer)submenu);
             }
           else
             {
-fprintf(stderr, "menu path='%s' MAIN\n", npath, res_val);
+/*fprintf(stderr, "menu path='%s' MAIN\n", npath, res_val);*/
               /* NON-SUBMENU: MENU ITEM */
               const char *checked = resource_value (sub_res, "checked");
               const char *label = resource_value (sub_res, "sensitive");
@@ -274,12 +282,14 @@ fprintf(stderr, "menu path='%s' MAIN\n", npath, res_val);
                   GtkWidget *item = gtk_menu_item_new_with_label (menu_label);
                   gtk_widget_set_sensitive (item, FALSE);
                   gtk_menu_shell_append (shell, item);
+                  g_hash_table_insert (menu_hash, (gpointer)npath, (gpointer)item);
                 }
               else
                 {
                   /* NORMAL ITEM */
                   gchar *name = g_strdup_printf ("MainMenuAction%d", action_counter++);
                   action = gtk_action_new (name, menu_label, tip, NULL);
+/*                  fprintf(stderr, " Action! '%s' '%s' '%s'\n", name, menu_label, tip);*/
                 }
             }
 
@@ -299,9 +309,11 @@ fprintf(stderr, "menu path='%s' MAIN\n", npath, res_val);
               gtk_menu_shell_append (shell, item);
               menu->actions = g_list_append (menu->actions, action);
               menu->special_key_cb (accel, action, sub_res);
+
+              g_hash_table_insert (menu_hash, (gpointer)npath, (gpointer)item);
             }
 
-  free(npath);
+/* keep npath for the hash so do not free(npath); */
   return action;
 }
 
@@ -630,4 +642,18 @@ ghid_main_menu_get_accel_group (GHidMainMenu *menu)
 
 void ghid_create_menu(const char *menu[3])
 {
+	GtkWidget *w;
+	char *path;
+	Resource *res;
+
+//	path = Concat("/", menu[0], NULL);
+	path=strdup("/File");
+	w = g_hash_table_lookup(menu_hash, path);
+
+	res = resource_create_menu("foobar", "About()", "b", NULL, "tip of the day");
+
+	ghid_main_menu_real_add_resource (GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w),
+                                  res, "/File");
+
+	free(path);
 }
