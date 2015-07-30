@@ -446,6 +446,11 @@ nogui_finish_debug_draw (void)
 {
 }
 
+static void
+nogui_create_menu(const char *menu[3])
+{
+}
+
 void
 common_nogui_init (HID *hid)
 {
@@ -501,6 +506,7 @@ common_nogui_init (HID *hid)
   hid->request_debug_draw =   nogui_request_debug_draw;
   hid->flush_debug_draw =     nogui_flush_debug_draw;
   hid->finish_debug_draw =    nogui_finish_debug_draw;
+  hid->create_menu =          nogui_create_menu;
 }
 
 static HID nogui_hid;

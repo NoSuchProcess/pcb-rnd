@@ -600,3 +600,6 @@ ghid_main_menu_get_accel_group (GHidMainMenu *menu)
   return menu->accel_group;
 }
 
+void ghid_create_menu(const char *menu[3])
+{
+}

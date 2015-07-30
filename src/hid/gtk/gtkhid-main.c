@@ -2198,5 +2198,7 @@ hid_gtk_init ()
   ghid_hid.notify_save_pcb          = ghid_notify_save_pcb;
   ghid_hid.notify_filename_changed  = ghid_notify_filename_changed;
 
+  ghid_hid.create_menu              = ghid_create_menu;
+
   hid_register_hid (&ghid_hid);
 }

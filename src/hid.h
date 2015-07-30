@@ -580,6 +580,9 @@ typedef enum
 
     /* Notification to the GUI that the PCB file has been renamed. */
     void (*notify_filename_changed) (void);
+
+    /* Create a new menu and/or submenus */
+    void (*create_menu)(const char *menu[3]);
   };
 
 /* Call this as soon as possible from main().  No other HID calls are

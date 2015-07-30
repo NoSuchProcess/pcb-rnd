@@ -4038,6 +4038,8 @@ lesstif_finish_debug_draw (void)
 
 #include "dolists.h"
 
+void lesstif_create_menu(const char *menu[3]);
+
 void
 hid_lesstif_init ()
 {
@@ -4103,6 +4105,8 @@ hid_lesstif_init ()
   lesstif_hid.request_debug_draw      = lesstif_request_debug_draw;
   lesstif_hid.flush_debug_draw        = lesstif_flush_debug_draw;
   lesstif_hid.finish_debug_draw       = lesstif_finish_debug_draw;
+
+  lesstif_hid.create_menu             = lesstif_create_menu;
 
   hid_register_hid (&lesstif_hid);
 }

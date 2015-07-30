@@ -324,6 +324,11 @@ batch_show_item (void *item)
 {
 }
 
+static void
+batch_create_menu (const char *menu[3])
+{
+}
+
 #include "dolists.h"
 
 static HID batch_hid;
@@ -374,6 +379,7 @@ hid_batch_init ()
   batch_hid.stop_block_hook       = batch_stop_block_hook;
   batch_hid.attribute_dialog      = batch_attribute_dialog;
   batch_hid.show_item             = batch_show_item;
+  batch_hid.create_menu           = batch_create_menu;
 
   hid_register_hid (&batch_hid);
 }
