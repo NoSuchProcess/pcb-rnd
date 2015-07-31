@@ -6,7 +6,7 @@ As described <a href="20150731a_menu.html"> in the previous post</a>,
 pcb-rnd will feature dynamic menus. I first implemented this in the
 gtk hid.
 <p>
-It turned out gtk was way too OOP for my taste. It took about 6
+It turned out gtk was way too OOP for my taste<sup>1</sup>. It took about 6
 hours total, to implement and debug the feature. (As a comparison, it
 took about 90 minutes to make the research related to
 the resource structs in PCB and implement the HID modifications for
@@ -27,3 +27,9 @@ Then I also printed allocated dimensions and coordinates - but the values
 were misleading. Finally I figured there was different flags like realization
 and visibility, so printed them too. This revealed that all my new menus were
 there in an invisible state.
+<hr>
+<h4>Footnotes</h4>
+<sup>1</sup>: not because of the show() call, but because of the way objects
+are stored in memory: too many generic pointers casted forth and back, makes it
+really hard to print all properties of a menu item (including its label)
+with gdb.
