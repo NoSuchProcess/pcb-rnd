@@ -1,0 +1,29 @@
+<HTML>
+<body>
+<h1> pcb-rnd devlog </h1>
+<h2> dynamic gtk menus </h2>
+As described <a href="20150731a_menu.html"> in the previous post</a>,
+pcb-rnd will feature dynamic menus. I first implemented this in the
+gtk hid.
+<p>
+It turned out gtk was way too OOP for my taste. It took about 6
+hours total, to implement and debug the feature. (As a comparison, it
+took about 90 minutes to make the research related to
+the resource structs in PCB and implement the HID modifications for
+the new hid command). The trickiest part was
+to figure the need of calling a show() on the menubar after adding
+the new items.
+<p>
+When I didn't have that, only plain action submenus showed up, but
+new menus and menu/submenu/submenus didn't. After many hours of gdb
+sessions I finally made sure (by printing all the widgets to stderr
+recursively) that:
+<ul>
+	<li> I am really adding the new widgets...
+	<li> ... under the right parent
+	<li> ... with the right properties
+</ul>
+Then I also printed allocated dimensions and coordinates - but the values
+were misleading. Finally I figured there was different flags like realization
+and visibility, so printed them too. This revealed that all my new menus were
+there in an invisible state.

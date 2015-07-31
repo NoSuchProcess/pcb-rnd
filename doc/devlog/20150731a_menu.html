@@ -1,0 +1,59 @@
+<HTML>
+<body>
+<h1> pcb-rnd devlog </h1>
+<h2> Dynamic menus </h2>
+<h3> Background </h3>
+Before integrating gpmi scripting, pcb-rnd needs to be prepared to
+interface with the scripts. The engine is pretty much ready since ages:
+the action interface is ideal for scripts to register their actions or
+execute existing actions. This also means the command line and batch
+UI are instantly connected with scripts.
+<p>
+The only largely visible remaining portion is the GUI. pcb-gpmi supports
+building dialog boxes using the current HID (so called attribute dialogs,
+originally invented for exporter settings) and calling some simpler predefined
+dialogs like a progress bar or alert.
+<p>
+What's really missing is a way to create new menus on the fly. The user
+loads a script and the script makes up a menu with submenus, all bound to
+the proper actions.
+<p>
+This introduces a nice dilemma, tho: there is a real cool menu configuration
+file that makes the user able to reconfigure the menu system, hot keys, tool
+tips and whatnot (I wish more applications had this feature!). What if a script
+comes in and trolls the whole thing creating random menus at surprising
+places in the menu system? How the user can control what the script could do
+with his preciously crafted menu setup tailored to his own preferences?
+<p>
+I believe in sharp tools and careful users. I indeed plan to allow scripts to
+do whatever they want with the menu system but I invent some conventions too.
+As long as scripts stick to these conventions, the user retain control over
+the menu layout.
+
+<h3> How it works </h3>
+
+PCB reads *menu.res and builds the gui on startup; the menu system is
+static after that point. pcb-rnd does the same on startup but also
+stores all menus (referenced by their paths, like "/File/Save as") in a
+hash table. Later on a call to a new hid function (create_menu()) can
+create new menus or submenus, extending the menu tree at any point.
+<p>
+When a new menu "/File/foo" is created, using the hash create_menu()
+finds out that /File already exists and doesn't create it but use the
+existing widget from the hash. This means if the user creates menus from
+the res file that are also created by the script, the res file sort of
+overrides the script's later actions as all those menus will already exist
+by the time the script tries to create them.
+<p>
+And here comes the <b>conventions</b> part:
+<ul>
+	<li> there will be a new menu, called "/Plugins"
+	<li> each plugin should have its own submenu there (gpmi for scripting: "/Plugins/gpmi")
+	<li> each script is just a child of the gpmi plugin so it should have its submenus under "Plugins/gpmi/scriptname"
+</ul>
+
+As long as plugins and scripts stick to this convention, the user can
+create all the menus  for all the plugins and scripts in advance. Stock
+menu res files will have the /Plugin menu at least, so its place is fixed.
+
+
