@@ -15,6 +15,6 @@ void load_mouse_resource (const Resource *res);
 void do_mouse_action (int button, int mods);
 
 /* Create a set of resources representing a single menu item */
-Resource *resource_create_menu(const char *name, const char *action, const char *mnemonic, const char *accel, const char *tip, int main_menu);
+Resource *resource_create_menu(const char *name, const char *action, const char *mnemonic, const char *accel, const char *tip, int flags);
 
 #endif

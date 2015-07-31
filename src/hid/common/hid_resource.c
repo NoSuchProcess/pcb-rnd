@@ -202,7 +202,7 @@ do_mouse_action (int button, int mod_mask)
         return;
 }
 
-Resource *resource_create_menu(const char *name, const char *action, const char *mnemonic, const char *accel, const char *tip, int main_menu)
+Resource *resource_create_menu(const char *name, const char *action, const char *mnemonic, const char *accel, const char *tip, int flags)
 {
 	Resource *resp, *res;
 	ResourceVal *rvp, *rv;
@@ -213,11 +213,7 @@ Resource *resource_create_menu(const char *name, const char *action, const char 
 	res->c = 1 + (action != NULL) + (mnemonic != NULL) + (accel != NULL) + (tip != NULL);
 	rv = malloc(sizeof(ResourceVal) * res->c);
 	res->v = rv;
-	if (main_menu)
-		res->flags = /*FLAG_S | FLAG_NV | FLAG_V*/ 7;
-	else
-		res->flags = FLAG_NS | FLAG_NV | FLAG_V;
-
+	res->flags = flags;
 
 	rv[0].name = NULL;
 	rv[0].value = strdup(name);
@@ -239,9 +235,27 @@ Resource *resource_create_menu(const char *name, const char *action, const char 
 	}
 
 	if (accel != NULL) {
+		Resource *ares;
+		ResourceVal *arv;
+
+		ares = calloc(sizeof(Resource), 1);
+		arv = malloc(sizeof(ResourceVal)*2);
+		ares->c = 2;
+		ares->v = arv;
+		ares->flags = 0;
+
+		arv[0].name = NULL;
+		arv[0].value = strdup(accel);
+		arv[0].subres = NULL;
+
+		arv[1].name = NULL;
+		arv[1].value = strdup(accel);
+		arv[1].subres = NULL;
+
 		rv[next].name = "a";
-		rv[next].value = strdup(accel);
-		rv[next].subres = NULL;
+		rv[next].value = NULL;
+		rv[next].subres = ares;
+
 		next++;
 	}
 
