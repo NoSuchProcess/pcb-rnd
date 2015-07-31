@@ -646,7 +646,7 @@ ghid_main_menu_get_accel_group (GHidMainMenu *menu)
 
 void d1() {}
 
-void ghid_create_menu(const char *menu_[3])
+void ghid_create_menu(const char *menu_[], const char *action, const char *mnemonic, const char *accel, const char *tip)
 {
 	char *path, *path_end;
 	int n, plen;

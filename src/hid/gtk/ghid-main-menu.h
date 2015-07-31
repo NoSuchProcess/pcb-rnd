@@ -41,7 +41,7 @@ void ghid_main_menu_install_layer_selector (GHidMainMenu *mm,
 void ghid_main_menu_install_route_style_selector (GHidMainMenu *mm,
                                                   GHidRouteStyleSelector *rss);
 
-void ghid_create_menu(const char *menu[3]);
+void ghid_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip);
 
 G_END_DECLS  /* keep c++ happy */
 #endif

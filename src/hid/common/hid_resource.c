@@ -202,7 +202,7 @@ do_mouse_action (int button, int mod_mask)
         return;
 }
 
-Resource *resource_create_menu(const char *name, const char *action, const char *mnemonic, const char *accel, const char *tip)
+Resource *resource_create_menu(const char *name, const char *action, const char *mnemonic, const char *accel, const char *tip, int main_menu)
 {
 	Resource *resp, *res;
 	ResourceVal *rvp, *rv;
@@ -213,7 +213,11 @@ Resource *resource_create_menu(const char *name, const char *action, const char 
 	res->c = 1 + (action != NULL) + (mnemonic != NULL) + (accel != NULL) + (tip != NULL);
 	rv = malloc(sizeof(ResourceVal) * res->c);
 	res->v = rv;
-	res->flags = FLAG_NS | FLAG_NV | FLAG_V;
+	if (main_menu)
+		res->flags = /*FLAG_S | FLAG_NV | FLAG_V*/ 7;
+	else
+		res->flags = FLAG_NS | FLAG_NV | FLAG_V;
+
 
 	rv[0].name = NULL;
 	rv[0].value = strdup(name);
