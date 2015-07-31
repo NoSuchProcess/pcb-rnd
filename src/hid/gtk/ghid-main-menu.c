@@ -231,17 +231,19 @@ static GtkAction *ghid_add_menu(GHidMainMenu *menu, GtkMenuShell *shell,
                 }
             }
 
-  npath = Concat(path, "/", res_val, NULL);
+           npath = Concat(path, "/", res_val, NULL);
 
           /* If the subresource we're processing also has unnamed
            * subresources, it's a submenu, not a regular menuitem. */
+/*fprintf(stderr, "menu path='%s' flag=%d\n", npath, sub_res->flags);*/
           if (sub_res->flags & FLAG_S)
             {
-/*fprintf(stderr, "menu path='%s' SUB\n", npath);*/
               /* SUBMENU */
               GtkWidget *submenu = gtk_menu_new ();
               GtkWidget *item = gtk_menu_item_new_with_mnemonic (menu_label);
               GtkWidget *tearoff = gtk_tearoff_menu_item_new ();
+
+/*fprintf(stderr, "menu path='%s' SUB submenu=%p\n", npath, submenu);*/
 
               gtk_menu_shell_append (shell, item);
               gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), submenu);
@@ -254,7 +256,9 @@ static GtkAction *ghid_add_menu(GHidMainMenu *menu, GtkMenuShell *shell,
                                                 GTK_MENU_SHELL (submenu),
                                                 sub_res, npath);
 
+/*fprintf(stderr, "     hi path='%s' item=%p\n", npath, (gpointer)submenu);*/
               g_hash_table_insert (menu_hash, (gpointer)npath, (gpointer)submenu);
+
             }
           else
             {
@@ -640,20 +644,60 @@ ghid_main_menu_get_accel_group (GHidMainMenu *menu)
   return menu->accel_group;
 }
 
-void ghid_create_menu(const char *menu[3])
+void d1() {}
+
+void ghid_create_menu(const char *menu_[3])
 {
-	GtkWidget *w;
-	char *path;
-	Resource *res;
+	char *path, *path_end;
+	int n, plen;
+	char *menu[10];
 
-//	path = Concat("/", menu[0], NULL);
-	path=strdup("/File");
-	w = g_hash_table_lookup(menu_hash, path);
+	menu[0] = "File";
+	menu[1] = "foo";
+//	menu[2] = "bar";
+	menu[2] = NULL;
 
-	res = resource_create_menu("foobar", "About()", "b", NULL, "tip of the day");
+	plen = 1;
+	for(n = 0; menu[n] != NULL; n++)
+		plen += strlen(menu[n]+1);
 
-	ghid_main_menu_real_add_resource (GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w),
-                                  res, "/File");
+	path = path_end = malloc(plen);
+	*path = '\0';
+
+	for(n = 0; menu[n] != NULL; n++) {
+		int last  = (menu[n+1] == NULL);
+		int first = (n == 0);
+		GtkWidget *w;
+		Resource *res;
+
+		d1();
+
+		*path_end = '/';
+		path_end++;
+		strcpy(path_end, menu[n]);
+		if (g_hash_table_lookup(menu_hash, path) != NULL) {
+			path_end += strlen(menu[n]);
+			continue;
+		}
+
+		path_end--;
+		*path_end = '\0';
+
+		if (first)
+			w = ghidgui->menu_bar;
+		else
+			w = g_hash_table_lookup(menu_hash, path);
+
+		if (last)
+			res = resource_create_menu(menu[n], "About()", "z", NULL, "tip of the day", first);
+		else
+			res = resource_create_menu(menu[n], NULL, NULL, NULL, NULL, first);
+
+		ghid_main_menu_real_add_resource (GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w), res, path);
+
+		*path_end = '/';
+		path_end += strlen(menu[n]);
+	}
 
 	free(path);
 }
