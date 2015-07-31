@@ -685,16 +685,10 @@ ghid_main_menu_get_accel_group (GHidMainMenu *menu)
 
 void d1() {}
 
-void ghid_create_menu(const char *menu_[], const char *action, const char *mnemonic, const char *accel, const char *tip)
+void ghid_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip)
 {
 	char *path, *path_end;
 	int n, plen;
-	char *menu[10];
-
-	menu[0] = "File";
-	menu[1] = "foo";
-	menu[2] = "bar";
-	menu[3] = NULL;
 
 	plen = 1; /* for the \0 */
 	for(n = 0; menu[n] != NULL; n++)
@@ -733,7 +727,7 @@ void ghid_create_menu(const char *menu_[], const char *action, const char *mnemo
 			res = resource_create_menu(menu[n], NULL, NULL, NULL, NULL, flags);
 		}
 		else
-			res = resource_create_menu(menu[n], "About()", "z", NULL, "tip of the day", FLAG_NS | FLAG_NV | FLAG_V);
+			res = resource_create_menu(menu[n], action, mnemonic, accel, tip, FLAG_NS | FLAG_NV | FLAG_V);
 
 /*
 	fprintf(stderr, "l1\n");
