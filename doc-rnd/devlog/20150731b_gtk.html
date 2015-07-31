@@ -14,8 +14,9 @@ the new hid command). The trickiest part was
 to figure the need of calling a show() on the menubar after adding
 the new items.
 <p>
-When I didn't have that, only plain action submenus showed up, but
-new menus and menu/submenu/submenus didn't. After many hours of gdb
+When I didn't have that, only plain action menu/submenus showed up
+(in already existing menu/ widgets), but
+new (main) menus and menu/submenu/submenus didn't. After many hours of gdb
 sessions I finally made sure (by printing all the widgets to stderr
 recursively) that:
 <ul>
