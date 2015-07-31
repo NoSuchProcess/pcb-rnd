@@ -131,6 +131,7 @@ translate_accelerator (const char *text)
                            "   Alt\n"
                            "Please note that case is important.\n"));
               }
+              text++;
             break;
           case KEY:
             g_string_append_c (ret_val, *text);
