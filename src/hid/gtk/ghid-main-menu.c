@@ -174,6 +174,28 @@ ghid_main_menu_real_add_resource (GHidMainMenu *menu, GtkMenuShell *shell,
 
 static GHashTable *menu_hash = NULL; /* path->GtkWidget */
 
+#ifdef DEBUG_GTK
+static void print_widget(GtkWidget *w)
+{
+	fprintf(stderr, " %p %d;%d %d;%d %d;%d\n", w, w->allocation.x, w->allocation.y, w->allocation.width, w->allocation.height, w->requisition.width, w->requisition.height);
+	fprintf(stderr, "  flags=%x typ=%d realized=%d vis=%d\n", GTK_WIDGET_FLAGS(w), GTK_WIDGET_TYPE(w), GTK_WIDGET_REALIZED(w), GTK_WIDGET_VISIBLE(w));
+}
+
+//#include <glib.h>
+static void print_menu_shell_cb(void *obj, void *ud)
+{
+	GtkWidget *w = obj;
+	print_widget(w);
+}
+
+static void print_menu_shell(GtkMenuShell *sh)
+{
+	GList *children;
+	children = gtk_container_get_children (GTK_CONTAINER (sh));
+	g_list_foreach(children, print_menu_shell_cb, NULL);
+}
+#endif
+
 static GtkAction *ghid_add_menu(GHidMainMenu *menu, GtkMenuShell *shell,
                                   const Resource *sub_res, const char *path)
 {
@@ -235,7 +257,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu *menu, GtkMenuShell *shell,
 
           /* If the subresource we're processing also has unnamed
            * subresources, it's a submenu, not a regular menuitem. */
-/*fprintf(stderr, "menu path='%s' flag=%d\n", npath, sub_res->flags);*/
+/* fprintf(stderr, "menu path='%s' label='%s' flag=%d\n", npath, menu_label, sub_res->flags); */
           if (sub_res->flags & FLAG_S)
             {
               /* SUBMENU */
@@ -251,13 +273,27 @@ static GtkAction *ghid_add_menu(GHidMainMenu *menu, GtkMenuShell *shell,
               /* add tearoff to menu */
               gtk_menu_shell_append (GTK_MENU_SHELL (submenu), tearoff);
 
+/*
+fprintf(stderr, "     hi1 path='%s' item=%p\n", npath, (gpointer)submenu);
+fprintf(stderr, "subm1:\n");
+print_widget(submenu);
+fprintf(stderr, "item1:\n");
+print_widget(item);
+*/
+
+              g_hash_table_insert (menu_hash, (gpointer)npath, (gpointer)submenu);
+
               /* recurse on the newly-added submenu */
               ghid_main_menu_real_add_resource (menu,
                                                 GTK_MENU_SHELL (submenu),
                                                 sub_res, npath);
 
-/*fprintf(stderr, "     hi path='%s' item=%p\n", npath, (gpointer)submenu);*/
-              g_hash_table_insert (menu_hash, (gpointer)npath, (gpointer)submenu);
+/*
+fprintf(stderr, "subm2:\n");
+print_widget(submenu);
+fprintf(stderr, "item2:\n");
+print_widget(item);
+*/
 
             }
           else
@@ -286,6 +322,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu *menu, GtkMenuShell *shell,
                   GtkWidget *item = gtk_menu_item_new_with_label (menu_label);
                   gtk_widget_set_sensitive (item, FALSE);
                   gtk_menu_shell_append (shell, item);
+/*fprintf(stderr, "     hi2 path='%s' item=%p\n", npath, (gpointer)item);*/
                   g_hash_table_insert (menu_hash, (gpointer)npath, (gpointer)item);
                 }
               else
@@ -314,6 +351,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu *menu, GtkMenuShell *shell,
               menu->actions = g_list_append (menu->actions, action);
               menu->special_key_cb (accel, action, sub_res);
 
+/*fprintf(stderr, "     hi3 path='%s' item=%p\n", npath, (gpointer)item);*/
               g_hash_table_insert (menu_hash, (gpointer)npath, (gpointer)item);
             }
 
@@ -644,6 +682,7 @@ ghid_main_menu_get_accel_group (GHidMainMenu *menu)
   return menu->accel_group;
 }
 
+
 void d1() {}
 
 void ghid_create_menu(const char *menu_[], const char *action, const char *mnemonic, const char *accel, const char *tip)
@@ -654,12 +693,12 @@ void ghid_create_menu(const char *menu_[], const char *action, const char *mnemo
 
 	menu[0] = "File";
 	menu[1] = "foo";
-//	menu[2] = "bar";
-	menu[2] = NULL;
+	menu[2] = "bar";
+	menu[3] = NULL;
 
-	plen = 1;
+	plen = 1; /* for the \0 */
 	for(n = 0; menu[n] != NULL; n++)
-		plen += strlen(menu[n]+1);
+		plen += strlen(menu[n])+1; /* +1 for the leading slash */
 
 	path = path_end = malloc(plen);
 	*path = '\0';
@@ -670,8 +709,7 @@ void ghid_create_menu(const char *menu_[], const char *action, const char *mnemo
 		GtkWidget *w;
 		Resource *res;
 
-		d1();
-
+		/* check if the current node exists */
 		*path_end = '/';
 		path_end++;
 		strcpy(path_end, menu[n]);
@@ -680,24 +718,42 @@ void ghid_create_menu(const char *menu_[], const char *action, const char *mnemo
 			continue;
 		}
 
+		/* if not, revert path to the parent's path */
 		path_end--;
 		*path_end = '\0';
 
+		/* look up the parent */
 		if (first)
 			w = ghidgui->menu_bar;
 		else
 			w = g_hash_table_lookup(menu_hash, path);
 
-		if (last)
-			res = resource_create_menu(menu[n], "About()", "z", NULL, "tip of the day", first);
+		if (!last) {
+			int flags = first ? (FLAG_S | FLAG_NV | FLAG_V) /* 7 */ : (FLAG_V | FLAG_S) /* 5 */;
+			res = resource_create_menu(menu[n], NULL, NULL, NULL, NULL, flags);
+		}
 		else
-			res = resource_create_menu(menu[n], NULL, NULL, NULL, NULL, first);
+			res = resource_create_menu(menu[n], "About()", "z", NULL, "tip of the day", FLAG_NS | FLAG_NV | FLAG_V);
+
+/*
+	fprintf(stderr, "l1\n");
+	print_menu_shell((GTK_MENU_SHELL(w)));
+	fprintf(stderr, "Add: '%s' (%p) -> '%s'\n", path, w, menu[n]);
+*/
 
 		ghid_main_menu_real_add_resource (GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w), res, path);
 
+/*
+	fprintf(stderr, "l2\n");
+	print_menu_shell((GTK_MENU_SHELL(w)));
+*/
+
 		*path_end = '/';
-		path_end += strlen(menu[n]);
+		path_end += strlen(menu[n])+1;
 	}
+
+/* make sure new menu items appear on screen */
+  gtk_widget_show_all (ghidgui->menu_bar);
 
 	free(path);
 }
