@@ -1,21 +1,6 @@
 Compilation and installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	1. you need to have PCB source (CVS head) in /usr/src/pcb/ or in src/pcb/ 
-	   (or anywhere else, but then you need to tell configure where it is)
-	2. you need to have GPMI (svn head) installed; get if from
-	   svn://svn.libgpmi.org/trunk
-	   Before you compile GPMI, note that GPMI itself doesn't contain script
-	   interpreters but depends on 3rd party libs. Depending on what languages
-	   you prefer, you will need to install their libs. Example scripts for
-	   pcb-gpmi are written in tcl and lua, so you should install libtcl8.4
-	   and/or liblua5.1 development packages before compiling GPMI.
-	3. cd src
-	4. run ./configure
-	5. run make
-	6. as root, run make install 
-	7. install the plugin: copy .pcb/ to ~/.pcb of the user who
-     will run pcb. Alternatively copy the plugin to /usr/lib/pcb/plugins
-     or any other directory PCB is looking for plugins in.
+<TODO>
 	8. run pcb; functionality provided by scripts should be accessible. With the
 	   test script:
 		- new exporters should show up in the export list
@@ -26,7 +11,7 @@ Installing new plugins
 	1. download the plugin script
 	2. if they are not installed yet, install the script interpreter and the
 	   gpmi module for that interpreter, depending on what language the script
-	   is written in
+	   is written in <TODO>
 	3. edit one of the pcb-gpmi.conf files you have in PCB's plugin search path
 
 Plugin search path
