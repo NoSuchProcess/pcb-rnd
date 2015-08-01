@@ -104,16 +104,15 @@ static char *asm_scriptname(const void *info, const char *file_name)
 static void load_cfg(void)
 {
 	char *home;
-  hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins/", HOST, NULL));
-  hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins", NULL));
-  home = getenv("HOME");
-  if (home != NULL)
-    {
-      hid_gpmi_load_dir (Concat (home, "/.pcb/plugins/", HOST, NULL));
-      hid_gpmi_load_dir (Concat (home, "/.pcb/plugins", NULL));
-    }
-  hid_gpmi_load_dir (Concat ("plugins/", HOST, NULL));
-  hid_gpmi_load_dir (Concat ("plugins", NULL));
+	hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins/", HOST, NULL));
+	hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins", NULL));
+	home = getenv("HOME");
+	if (home != NULL) {
+		hid_gpmi_load_dir (Concat (home, "/.pcb/plugins/", HOST, NULL));
+		hid_gpmi_load_dir (Concat (home, "/.pcb/plugins", NULL));
+	}
+	hid_gpmi_load_dir (Concat ("plugins/", HOST, NULL));
+	hid_gpmi_load_dir (Concat ("plugins", NULL));
 }
 
 static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
