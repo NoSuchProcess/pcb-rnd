@@ -357,6 +357,12 @@ MainMenu =
   }
 
 #
+# Plugins Menu
+#
+  {"Plugins" m=P
+   {"Manage plugins..." ManagePlugins() a={"Alt-R" "Alt<Key>p"}}
+  }
+#
 # Info Menu
 #
   {"Info" m=I

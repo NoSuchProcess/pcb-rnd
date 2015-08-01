@@ -332,6 +332,10 @@ MainMenu =
    {"Apply vendor drill mapping" ApplyVendor()}
   }
 
+  {"Plugins"
+   {"Manage plugins..." ManagePlugins() a={"Alt-R" "Alt<Key>p"}}
+  }
+
   {Info
    {"Generate object report" ReportObject() a={"Ctrl-R" "Ctrl<Key>r"}}
    {"Generate drill summary" Report(DrillReport)}
