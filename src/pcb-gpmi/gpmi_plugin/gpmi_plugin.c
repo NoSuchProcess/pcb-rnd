@@ -6,6 +6,8 @@
 #include "src/misc.h"
 #include "src/event.h"
 
+extern char *homedir; /* detected by pcn-rnd in InitPaths() */
+
 /* This function is used to print a detailed GPMI error message */
 static void print_gpmi_error(gpmi_err_stack_t *entry, char *string)
 {
@@ -73,15 +75,13 @@ void hid_gpmi_load_dir(const char *dir)
 static char *asm_scriptname(const void *info, const char *file_name)
 {
 	char buffer[1024];
-	char *home;
 
 	switch(*file_name) {
 		case '~':
 			file_name += 2;
-			home = getenv("HOME");
-			if (home != NULL) {
-				snprintf(buffer, sizeof(buffer), "%s/%s", home, file_name);
-				printf("FN=%s\n", buffer);
+			if (homedir != NULL) {
+				snprintf(buffer, sizeof(buffer), "%s/%s", homedir, file_name);
+				fprintf(stderr, "asm_scriptname FN=%s\n", buffer);
 				return strdup(buffer);
 			}
 			else {
@@ -103,13 +103,11 @@ static char *asm_scriptname(const void *info, const char *file_name)
 
 static void load_cfg(void)
 {
-	char *home;
 	hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins/", HOST, NULL));
 	hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins", NULL));
-	home = getenv("HOME");
-	if (home != NULL) {
-		hid_gpmi_load_dir (Concat (home, "/.pcb/plugins/", HOST, NULL));
-		hid_gpmi_load_dir (Concat (home, "/.pcb/plugins", NULL));
+	if (homedir != NULL) {
+		hid_gpmi_load_dir (Concat (homedir, "/.pcb/plugins/", HOST, NULL));
+		hid_gpmi_load_dir (Concat (homedir, "/.pcb/plugins", NULL));
 	}
 	hid_gpmi_load_dir (Concat ("plugins/", HOST, NULL));
 	hid_gpmi_load_dir (Concat ("plugins", NULL));
