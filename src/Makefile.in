@@ -24,6 +24,7 @@ put /local/pcb/OBJS [@
 	draw.o
 	drill.o
 	error.o
+	event.o
 	file.o
 	find.o
 	flags.o
