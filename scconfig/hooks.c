@@ -102,6 +102,7 @@ int hook_detect_target()
 	require("fstools/ln",  0, 1);
 	require("fstools/mkdir",  0, 1);
 	require("sys/ext_exe", 0, 1);
+	require("sys/sysid", 0, 1);
 
 	/* options for config.h */
 	require("sys/path_sep", 0, 1);
