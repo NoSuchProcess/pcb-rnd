@@ -7,9 +7,6 @@ CLEANUP
 
 FEATURES
 - merge pcb-gpmi in pcb-rnd {large}
-	- MENU:
-		- lesstif: add_resource_to_menu
-		- ghid_main_menu_real_add_resource
 	- action: call an existing action
 	- dialog: check and document if hid package can create these (+mini parser from text?)
 	- hid: hid_destroy (pair of hid_create)
@@ -41,3 +38,11 @@ Low prio:
   move then around. If all layers are visible, redraw of the far side layer
   is slow and causes flickering elements from that layer until the front is
   redrawn. Maybe we should have less flushes?
+- cleanup resources:
+	- better tree structs with less hidden properties (minor change in the res format: always require key=val pairs)
+	- gtk, lesstif: reorganize the code so that:
+		- menus are always created using a path (ghid_main_menu_real_add_resource)
+		- res->menu should be a common code
+- check whether local copy of gts is needed
+- move genht out of pcb-mincut
+
