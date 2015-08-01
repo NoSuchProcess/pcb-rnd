@@ -1089,8 +1089,8 @@ static GHashTable *menu_hash = NULL;	/* path->Widget */
 static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc callback, const char *path)
 {
 	int i, j;
-	char *v;
-	Widget sub, btn;
+	char *v, *menu_name = "*unknown*";
+	Widget sub, btn = NULL;
 	Resource *r;
 	char *npath;
 
@@ -1110,8 +1110,8 @@ static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc ca
 			btn = XmCreateCascadeButton(menu, node->v[i].name, args, n);
 			XtManageChild(btn);
 			npath = Concat(path, "/", node->v[i].name, NULL);
-			fprintf(stderr, "htsp_set1 %s %p\n", path, btn);
-			g_hash_table_insert(menu_hash, (gpointer) strdup(npath), (gpointer) btn);
+/*			fprintf(stderr, "htsp_set1 %s %p\n", path, sub);*/
+			g_hash_table_insert(menu_hash, (gpointer) strdup(npath), (gpointer) sub);
 			add_resource_to_menu(sub, node->v[i].subres, callback, npath);
 			break;
 
@@ -1148,6 +1148,8 @@ static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc ca
 					break;
 				}
 			stdarg(XmNlabelString, XmStringCreatePCB(v));
+			menu_name = v;
+
 			if (node->v[i].subres->flags & FLAG_S) {
 				int nn = n;
 				stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
@@ -1156,9 +1158,10 @@ static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc ca
 				stdarg(XmNsubMenuId, sub);
 				btn = XmCreateCascadeButton(menu, "menubutton", args, n);
 				XtManageChild(btn);
-/*	    npath = Concat(path, "/", node->v[i].name, NULL);
-fprintf(stderr, "htsp_set2 %s %p\n", path,btn);
-	    g_hash_table_insert (menu_hash, (gpointer)strdup(npath), (gpointer)btn);*/
+
+	    npath = Concat(path, "/", menu_name, NULL);
+/*fprintf(stderr, "htsp_set2 %s %p\n", npath,sub);*/
+	    g_hash_table_insert (menu_hash, (gpointer)strdup(npath), (gpointer)sub);
 				add_resource_to_menu(sub, node->v[i].subres, callback, npath);
 			}
 			else {
@@ -1180,11 +1183,6 @@ fprintf(stderr, "htsp_set2 %s %p\n", path,btn);
 					stdarg(XmNindicatorType, XmONE_OF_MANY);
 					btn = XmCreateToggleButton(menu, "menubutton", args, n);
 					ti->w = btn;
-
-					npath = Concat(path, "/", node->v[i].name, NULL);
-					printf("htsp_set3 %s %p\n", path, btn);
-					g_hash_table_insert(menu_hash, (gpointer) strdup(npath), (gpointer) btn);
-
 					XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) radio_callback, (XtPointer) ti);
 				}
 				else if (checked) {
@@ -1193,25 +1191,14 @@ fprintf(stderr, "htsp_set2 %s %p\n", path,btn);
 					else
 						stdarg(XmNindicatorType, XmN_OF_MANY);
 					btn = XmCreateToggleButton(menu, "menubutton", args, n);
-/*	    npath = Concat(path, "/", node->v[i].name, NULL);
-printf("htsp_set4 %s %p\n", path,btn);
-		g_hash_table_insert (menu_hash, (gpointer)strdup(npath), (gpointer)btn);*/
-
 					XtAddCallback(btn, XmNvalueChangedCallback, callback, (XtPointer) node->v[i].subres);
 				}
 				else if (label && strcmp(label, "false") == 0) {
 					stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
 					btn = XmCreateLabel(menu, "menulabel", args, n);
-/*	    npath = Concat(path, "/", node->v[i].name, NULL);
-printf("htsp_set5 %s %p\n", path,btn);
-		g_hash_table_insert (menu_hash, (gpointer)strdup(npath), (gpointer)btn);*/
-
 				}
 				else {
 					btn = XmCreatePushButton(menu, "menubutton", args, n);
-/*	    npath = Concat(path, "/", node->v[i].name, NULL);
-fprintf(stderr, "htsp_set6 %s %p\n", path,btn);
-		g_hash_table_insert (menu_hash, (gpointer)strdup(npath), (gpointer)btn);*/
 					XtAddCallback(btn, XmNactivateCallback, callback, (XtPointer) node->v[i].subres);
 				}
 
@@ -1245,6 +1232,10 @@ fprintf(stderr, "htsp_set6 %s %p\n", path,btn);
 			break;
 
 		case 10:										/* unnamed value */
+/*			if (i == 0) {
+				menu_name = node->v[i].value;
+				fprintf(stderr, "mn=%s btn=%p\n", menu_name, btn);
+			}*/
 			n = 0;
 			if (node->v[i].value[0] == '@') {
 				if (strcmp(node->v[i].value, "@layerview") == 0)
@@ -1260,9 +1251,9 @@ fprintf(stderr, "htsp_set6 %s %p\n", path,btn);
 			}
 			else if (i > 0) {
 				btn = XmCreatePushButton(menu, node->v[i].value, args, n);
-				npath = Concat(path, "/", node->v[i].name, NULL);
-				printf("htsp_set7 %s %p\n", path, btn);
-				g_hash_table_insert(menu_hash, (gpointer) strdup(npath), (gpointer) btn);
+/*				npath = Concat(path, "/", node->v[i].name, NULL);
+				fprintf(stderr, "htsp_set7 %s %p\n", path, btn);
+				g_hash_table_insert(menu_hash, (gpointer) strdup(npath), (gpointer) btn);*/
 				XtManageChild(btn);
 			}
 			break;
