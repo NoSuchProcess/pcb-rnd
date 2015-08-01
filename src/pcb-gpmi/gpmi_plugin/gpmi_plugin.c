@@ -32,12 +32,14 @@ void hid_gpmi_load_dir(const char *dir)
 	char line[1024], *module, *params, *s;
 	FILE *f;
 
-	printf("pcb-gpmi: opening config: %s\n", dir);
+	fprintf(stderr, "pcb-gpmi: opening config: %s\n", dir);
 	conf_dir = dir;
 	snprintf(line, sizeof(line), "%s/pcb-gpmi.conf", dir);
 	f = fopen(line, "r");
-	if (f == NULL)
+	if (f == NULL) {
+		fprintf(stderr, " ...failed\n");
 		return;
+	}
 
 	while(!(feof(f))) {
 		*line = '\0';
@@ -58,6 +60,7 @@ void hid_gpmi_load_dir(const char *dir)
 				}
 				s = strchr(params, '\n');
 				*s = '\0';
+				fprintf(stderr, " ...loading %s %s\n", module, params);
 				hid_gpmi_load_module(module, params);
 		}
 	}
@@ -98,6 +101,21 @@ static char *asm_scriptname(const void *info, const char *file_name)
 	return NULL;
 }
 
+static void load_cfg(void)
+{
+	char *home;
+  hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins/", HOST, NULL));
+  hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins", NULL));
+  home = getenv("HOME");
+  if (home != NULL)
+    {
+      hid_gpmi_load_dir (Concat (home, "/.pcb/plugins/", HOST, NULL));
+      hid_gpmi_load_dir (Concat (home, "/.pcb/plugins", NULL));
+    }
+  hid_gpmi_load_dir (Concat ("plugins/", HOST, NULL));
+  hid_gpmi_load_dir (Concat ("plugins", NULL));
+}
+
 static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 {
 	const char *menu[2];
@@ -111,7 +129,6 @@ static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 
 void pcb_plugin_init()
 {
-	char *home;
 	void **gpmi_asm_scriptname;
 	gpmi_package *scripts = NULL;
 
@@ -131,15 +148,6 @@ void pcb_plugin_init()
 	assert(gpmi_asm_scriptname != NULL);
 	*gpmi_asm_scriptname = asm_scriptname;
 
-  hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins/", HOST, NULL));
-  hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins", NULL));
-  home = getenv("HOME");
-  if (home != NULL)
-    {
-      hid_gpmi_load_dir (Concat (home, "/.pcb/plugins/", HOST, NULL));
-      hid_gpmi_load_dir (Concat (home, "/.pcb/plugins", NULL));
-    }
-  hid_gpmi_load_dir (Concat ("plugins/", HOST, NULL));
-  hid_gpmi_load_dir (Concat ("plugins", NULL));
 	event_bind(EVENT_GUI_INIT, ev_gui_init, NULL, pcb_plugin_init);
+	load_cfg();
 }
