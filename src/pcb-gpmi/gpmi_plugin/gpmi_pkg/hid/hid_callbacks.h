@@ -2,7 +2,7 @@ HID_Attribute *gpmi_hid_get_export_options(int *num);
 hidGC gpmi_hid_make_gc(void);
 void gpmi_hid_destroy_gc(hidGC gc);
 void gpmi_hid_do_export(HID_Attr_Val * options);
-void gpmi_hid_parse_arguments(int *argc, char ***argv);
+void gpmi_hid_parse_arguments(int *pcbargc, char ***pcbargv);
 void gpmi_hid_set_crosshair(int x, int y);
 int gpmi_hid_set_layer(const char *name, int group);
 void gpmi_hid_set_color(hidGC gc, const char *name);

@@ -31,6 +31,8 @@ hid_t *hid_create(char *hid_name, char *description)
 	h      = calloc(sizeof(hid_t), 1);
 	h->hid = calloc(sizeof(HID), 1);
 
+	common_nogui_init (h->hid);
+
 	h->module = gpmi_get_current_module();
 
 	h->hid->name        = strdup(hid_name);

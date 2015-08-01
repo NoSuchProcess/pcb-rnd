@@ -69,10 +69,10 @@ void gpmi_hid_do_export(HID_Attr_Val * options)
 	h->result = NULL;
 }
 
-void gpmi_hid_parse_arguments(int *argc, char ***argv)
+void gpmi_hid_parse_arguments(int *pcbargc, char ***pcbargv)
 {
 	/* Do nothing for now */
-	hid_parse_command_line(argc, argv);
+	hid_parse_command_line(pcbargc, pcbargv);
 }
 
 void gpmi_hid_set_crosshair(int x, int y)

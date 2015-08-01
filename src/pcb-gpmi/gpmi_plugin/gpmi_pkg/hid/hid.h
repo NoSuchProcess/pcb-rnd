@@ -13,12 +13,25 @@ typedef enum hid_attr_type_e {
 
 gpmi_keyword *kw_hid_attr_type_e; /* of hid_attr_type_t */
 
+
+/* TODO: these should not be here; GPMI needs to switch over to c99tree! */
 #ifndef FROM_PKG
 typedef void HID;
 typedef void HID_Attribute;
 typedef void* hidGC;
 typedef char* HID_Attr_Val;
+
+typedef enum EndCapStyle_e {
+ Trace_Cap,
+ Square_Cap,
+ Round_Cap,
+ Beveled_Cap
+} EndCapStyle;
+
+typedef void *PolygonType;
+typedef void *BoxType;
 #endif
+
 
 typedef struct hid_s {
 	gpmi_module *module;
