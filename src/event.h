@@ -1,5 +1,5 @@
 typedef enum {
-	EVENT_GUI_INIT,  /* finished initializing the GUI; args: (void) */
+	EVENT_GUI_INIT,  /* finished initializing the GUI called right before the main loop of the GUI; args: (void) */
 	EVENT_CLI_ENTER, /* the user pressed enter on a CLI command; args: (str commandline) */
 
 	EVENT_last       /* not a real event */
