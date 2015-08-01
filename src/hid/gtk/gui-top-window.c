@@ -117,6 +117,7 @@ a zoom in/out.
 #include "set.h"
 #include "undo.h"
 #include "vendor.h"
+#include "event.h"
 #include "free_atexit.h"
 
 #include "gui-icons-mode-buttons.data"
@@ -1765,6 +1766,8 @@ ghid_do_export (HID_Attr_Val * options)
     ghid_create_listener ();
 
   ghid_notify_gui_is_up ();
+
+  event(EVENT_GUI_INIT, NULL);
 
   gtk_main ();
   ghid_config_files_write ();

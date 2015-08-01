@@ -23,6 +23,7 @@
 #include "pcb-printf.h"
 #include "resource.h"
 #include "clip.h"
+#include "event.h"
 #include "error.h"
 
 #include "hid.h"
@@ -1957,9 +1958,10 @@ lesstif_do_export (HID_Attr_Val * options)
 
   PCBChanged (0, 0, 0, 0);
 
-  XtAppMainLoop (app_context);
-
   lesstif_menubar = menu;
+  event(EVENT_GUI_INIT, NULL);
+
+  XtAppMainLoop (app_context);
 }
 
 #if 0
