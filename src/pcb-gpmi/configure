@@ -10,8 +10,8 @@ else
 	echo "Found GPMI."
 fi
 
-pwd=`pwd`
-pcb_src_dirs="/usr/src/pcb* $pwd/pcb $pwd/../pcb `pwd`/pcb-rnd $*"
+pwd=`cd ../.. && pwd`
+pcb_src_dirs="$pwd"
 
 for n in $pcb_src_dirs
 do

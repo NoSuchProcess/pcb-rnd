@@ -66,11 +66,6 @@ void hid_gpmi_load_dir(const char *dir)
 	conf_dir = NULL;
 }
 
-/* TODO: temporary solution, need to export this from pcb */
-#warning TODO
-char *EXECPREFIXDIR = "/usr";
-char *PLUGIN_HOST="i386";
-
 /* Dummy script name generator allows loading from any path */
 static char *asm_scriptname(const void *info, const char *file_name)
 {
@@ -136,15 +131,15 @@ void pcb_plugin_init()
 	assert(gpmi_asm_scriptname != NULL);
 	*gpmi_asm_scriptname = asm_scriptname;
 
-  hid_gpmi_load_dir (Concat (EXECPREFIXDIR, "/lib/pcb/plugins/", PLUGIN_HOST, NULL));
-  hid_gpmi_load_dir (Concat (EXECPREFIXDIR, "/lib/pcb/plugins", NULL));
+  hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins/", HOST, NULL));
+  hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins", NULL));
   home = getenv("HOME");
   if (home != NULL)
     {
-      hid_gpmi_load_dir (Concat (home, "/.pcb/plugins/", PLUGIN_HOST, NULL));
+      hid_gpmi_load_dir (Concat (home, "/.pcb/plugins/", HOST, NULL));
       hid_gpmi_load_dir (Concat (home, "/.pcb/plugins", NULL));
     }
-  hid_gpmi_load_dir (Concat ("plugins/", PLUGIN_HOST, NULL));
+  hid_gpmi_load_dir (Concat ("plugins/", HOST, NULL));
   hid_gpmi_load_dir (Concat ("plugins", NULL));
 	event_bind(EVENT_GUI_INIT, ev_gui_init, NULL, pcb_plugin_init);
 }
