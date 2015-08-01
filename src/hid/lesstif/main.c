@@ -1797,6 +1797,8 @@ make_message (char *name, Widget left, int resizeable)
   return w;
 }
 
+extern Widget lesstif_menubar;
+
 static void
 lesstif_do_export (HID_Attr_Val * options)
 {
@@ -1956,6 +1958,8 @@ lesstif_do_export (HID_Attr_Val * options)
   PCBChanged (0, 0, 0, 0);
 
   XtAppMainLoop (app_context);
+
+  lesstif_menubar = menu;
 }
 
 #if 0
@@ -4038,7 +4042,7 @@ lesstif_finish_debug_draw (void)
 
 #include "dolists.h"
 
-void lesstif_create_menu(const char *menu[3]);
+void lesstif_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip);
 
 void
 hid_lesstif_init ()

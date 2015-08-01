@@ -24,12 +24,16 @@
 #include "mymem.h"
 
 #include "pcb-menu.h"
+#include "../../pcb-mincut/genht/htsp.h"
+#include "../../pcb-mincut/genht/hash.h"
 
 #ifdef HAVE_LIBDMALLOC
 #include <dmalloc.h>
 #endif
 
 RCSID ("$Id$");
+
+Widget lesstif_menubar;
 
 #ifndef R_OK
 /* Common value for systems that don't define it.  */
@@ -1213,15 +1217,22 @@ lesstif_key_event (XKeyEvent * e)
   return 1;
 }
 
+static GHashTable *menu_hash = NULL; /* path->Widget */
+
 static void
-add_resource_to_menu (Widget menu, Resource * node, XtCallbackProc callback)
+add_resource_to_menu (Widget menu, Resource * node, XtCallbackProc callback, const char *path)
 {
   int i, j;
   char *v;
   Widget sub, btn;
   Resource *r;
+  char *npath;
 
-  for (i = 0; i < node->c; i++)
+  if (!menu_hash)
+    menu_hash = g_hash_table_new (g_str_hash, g_str_equal);
+
+  for (i = 0; i < node->c; i++) {
+		npath = NULL;
     switch (resource_type (node->v[i]))
       {
       case 101:		/* named subnode */
@@ -1233,7 +1244,10 @@ add_resource_to_menu (Widget menu, Resource * node, XtCallbackProc callback)
 	stdarg (XmNsubMenuId, sub);
 	btn = XmCreateCascadeButton (menu, node->v[i].name, args, n);
 	XtManageChild (btn);
-	add_resource_to_menu (sub, node->v[i].subres, callback);
+	    npath = Concat(path, "/", node->v[i].name, NULL);
+fprintf(stderr, "htsp_set1 %s %p\n", path,btn);
+	g_hash_table_insert (menu_hash, (gpointer)strdup(npath), (gpointer)btn);
+	add_resource_to_menu (sub, node->v[i].subres, callback, npath);
 	break;
 
       case 1:			/* unnamed subres */
@@ -1286,7 +1300,10 @@ add_resource_to_menu (Widget menu, Resource * node, XtCallbackProc callback)
 	    stdarg (XmNsubMenuId, sub);
 	    btn = XmCreateCascadeButton (menu, "menubutton", args, n);
 	    XtManageChild (btn);
-	    add_resource_to_menu (sub, node->v[i].subres, callback);
+/*	    npath = Concat(path, "/", node->v[i].name, NULL);
+fprintf(stderr, "htsp_set2 %s %p\n", path,btn);
+	    g_hash_table_insert (menu_hash, (gpointer)strdup(npath), (gpointer)btn);*/
+	    add_resource_to_menu (sub, node->v[i].subres, callback, npath);
 	  }
 	else
 	  {
@@ -1310,6 +1327,11 @@ add_resource_to_menu (Widget menu, Resource * node, XtCallbackProc callback)
 		stdarg (XmNindicatorType, XmONE_OF_MANY);
 		btn = XmCreateToggleButton (menu, "menubutton", args, n);
 		ti->w = btn;
+
+	    npath = Concat(path, "/", node->v[i].name, NULL);
+printf("htsp_set3 %s %p\n", path,btn);
+		g_hash_table_insert (menu_hash, (gpointer)strdup(npath), (gpointer)btn);
+
 		XtAddCallback (btn, XmNvalueChangedCallback,
 			       (XtCallbackProc) radio_callback,
 			       (XtPointer) ti);
@@ -1321,6 +1343,10 @@ add_resource_to_menu (Widget menu, Resource * node, XtCallbackProc callback)
 		else
 		  stdarg (XmNindicatorType, XmN_OF_MANY);
 		btn = XmCreateToggleButton (menu, "menubutton", args, n);
+/*	    npath = Concat(path, "/", node->v[i].name, NULL);
+printf("htsp_set4 %s %p\n", path,btn);
+		g_hash_table_insert (menu_hash, (gpointer)strdup(npath), (gpointer)btn);*/
+
 		XtAddCallback (btn, XmNvalueChangedCallback,
 			       callback, (XtPointer) node->v[i].subres);
 	      }
@@ -1328,10 +1354,17 @@ add_resource_to_menu (Widget menu, Resource * node, XtCallbackProc callback)
 	      {
 		stdarg (XmNalignment, XmALIGNMENT_BEGINNING);
 		btn = XmCreateLabel (menu, "menulabel", args, n);
+/*	    npath = Concat(path, "/", node->v[i].name, NULL);
+printf("htsp_set5 %s %p\n", path,btn);
+		g_hash_table_insert (menu_hash, (gpointer)strdup(npath), (gpointer)btn);*/
+
 	      }
 	    else
 	      {
 		btn = XmCreatePushButton (menu, "menubutton", args, n);
+/*	    npath = Concat(path, "/", node->v[i].name, NULL);
+fprintf(stderr, "htsp_set6 %s %p\n", path,btn);
+		g_hash_table_insert (menu_hash, (gpointer)strdup(npath), (gpointer)btn);*/
 		XtAddCallback (btn, XmNactivateCallback,
 			       callback, (XtPointer) node->v[i].subres);
 	      }
@@ -1395,10 +1428,16 @@ add_resource_to_menu (Widget menu, Resource * node, XtCallbackProc callback)
 	else if (i > 0)
 	  {
 	    btn = XmCreatePushButton (menu, node->v[i].value, args, n);
+	    npath = Concat(path, "/", node->v[i].name, NULL);
+printf("htsp_set7 %s %p\n", path,btn);
+	    g_hash_table_insert (menu_hash, (gpointer)strdup(npath), (gpointer)btn);
 	    XtManageChild (btn);
 	  }
 	break;
       }
+		if (npath != NULL)
+			free(npath);
+	}
 }
 
 extern char *lesstif_pcbmenu_path;
@@ -1461,7 +1500,7 @@ lesstif_menu (Widget parent, char *name, Arg * margs, int mn)
   if (!mr)
     mr = resource_subres (bir, "MainMenu");
   if (mr)
-    add_resource_to_menu (mb, mr, (XtCallbackProc) callback);
+    add_resource_to_menu (mb, mr, (XtCallbackProc) callback, "");
 
   mr = resource_subres (r, "Mouse");
   if (!mr)
@@ -1478,5 +1517,53 @@ lesstif_menu (Widget parent, char *name, Arg * margs, int mn)
 
 void lesstif_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip)
 {
+	char *path, *path_end;
+	int n, plen;
 
+	plen = 1; /* for the \0 */
+	for(n = 0; menu[n] != NULL; n++)
+		plen += strlen(menu[n])+1; /* +1 for the leading slash */
+
+	path = path_end = malloc(plen);
+	*path = '\0';
+
+	for(n = 0; menu[n] != NULL; n++) {
+		int last  = (menu[n+1] == NULL);
+		int first = (n == 0);
+		Widget w;
+		Resource *res;
+
+		/* check if the current node exists */
+		*path_end = '/';
+		path_end++;
+		strcpy(path_end, menu[n]);
+		if (g_hash_table_lookup(menu_hash, path) != NULL) {
+			path_end += strlen(menu[n]);
+			continue;
+		}
+
+		/* if not, revert path to the parent's path */
+		path_end--;
+		*path_end = '\0';
+
+		/* look up the parent */
+		if (first)
+			w = lesstif_menubar;
+		else
+			w = g_hash_table_lookup(menu_hash, path);
+
+		if (!last) {
+			int flags = first ? (FLAG_S | FLAG_NV | FLAG_V) /* 7 */ : (FLAG_V | FLAG_S) /* 5 */;
+			res = resource_create_menu(menu[n], NULL, NULL, NULL, NULL, flags);
+		}
+		else
+			res = resource_create_menu(menu[n], action, mnemonic, accel, tip, FLAG_NS | FLAG_NV | FLAG_V);
+
+		add_resource_to_menu (w, res, (XtCallbackProc) callback, path);
+
+		*path_end = '/';
+		path_end += strlen(menu[n])+1;
+	}
+
+	free(path);
 }
