@@ -255,7 +255,8 @@ print [@
 #define LIBRARYFILENAME "pcblib"
 
 #define PCB_PREFIX "@/local/prefix@"
-#define PCBLIBDIR PCB_PREFIX "/share/pcb-rnd"
+#define PCBSHAREDIR PCB_PREFIX "/share/pcb-rnd"
+#define PCBLIBDIR PCB_PREFIX "/lib/pcb-rnd"
 #define PCB_LIBRARY_SHELL NULL
 #define PCB_LIBRARY_SEARCH_PATHS \
 	"./pcblib"\
@@ -270,7 +271,7 @@ print [@
 
 /* NOTE: /share/pcb/pcblib-newlib is kept as a temporary hack for compatibility */
 
-#define PCB_DEFAULT_PCB_FILE       PCBLIBDIR "/default.pcb"
+#define PCB_DEFAULT_PCB_FILE       PCBSHAREDIR "/default.pcb"
 #define PCB_DEFAULT_PCB_FILE_SRC   "./default.pcb"
 
 #define BINDIR PCB_PREFIX "/bin"
@@ -278,8 +279,8 @@ print [@
 /* Relative path from bindir to exec_prefix */
 #define BINDIR_TO_EXECPREFIX ".."
 
-/* Relative path from bindir to pcblibdir TODO: do we still need this? */
-#define BINDIR_TO_PCBLIBDIR "../share/pcb-rnd"
+/* Relative path from bindir to pcbsharedir TODO: do we still need this? */
+#define BINDIR_TO_PCBSHAREDIR "../share/pcb-rnd"
 
 /* Version number of package */
 #define VERSION "@/local/version@"

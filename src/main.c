@@ -77,13 +77,13 @@
 RCSID ("$Id$");
 
 
-#define PCBLIBPATH ".:" PCBLIBDIR
+#define PCBLIBPATH ".:" PCBSHAREDIR
 
 #ifdef HAVE_LIBSTROKE
 extern void stroke_init (void);
 #endif
 
-char *fontfile_paths[] = {"./default_font", PCBLIBDIR "/default_font", NULL};
+char *fontfile_paths[] = {"./default_font", PCBSHAREDIR "/default_font", NULL};
 
 /* Try gui libs in this order when not explicitly specified by the user
    if there are multiple GUIs available this sets the order of preference */
@@ -1512,15 +1512,15 @@ InitPaths (char *argv0)
   sprintf (exec_prefix, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, 
 	   BINDIR_TO_EXECPREFIX);
 
-  /* now find the path to PCBLIBDIR */
-  l = strlen (bindir) + 1 + strlen (BINDIR_TO_PCBLIBDIR) + 1;
+  /* now find the path to PCBSHAREDIR */
+  l = strlen (bindir) + 1 + strlen (BINDIR_TO_PCBSHAREDIR) + 1;
   if ( (pcblibdir = (char *) malloc (l * sizeof (char) )) == NULL )
     {
       fprintf (stderr, "InitPaths():  malloc failed\n");
       exit (1);
     }
   sprintf (pcblibdir, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, 
-	   BINDIR_TO_PCBLIBDIR);
+	   BINDIR_TO_PCBSHAREDIR);
 
 #ifdef DEBUG
   printf ("bindir      = %s\n", bindir);

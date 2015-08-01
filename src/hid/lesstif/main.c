@@ -229,7 +229,7 @@ Location of the @file{pcb-menu.res} file which defines the menu for the lesstif 
 %end-doc
 */
   {"pcb-menu", "Location of pcb-menu.res file",
-   HID_String, 0, 0, {0, PCBLIBDIR "/pcb-menu.res", 0}, 0, &lesstif_pcbmenu_path}
+   HID_String, 0, 0, {0, PCBSHAREDIR "/pcb-menu.res", 0}, 0, &lesstif_pcbmenu_path}
 #define HA_pcbmenu 3
 };
 
