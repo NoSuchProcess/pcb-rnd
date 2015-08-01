@@ -88,39 +88,40 @@ void event(event_id_t ev, const char *fmt, ...)
 	event_t *e;
 	int argc;
 
-	va_start(ap, fmt);
-
 	a = argv;
 	a->type = ARG_INT;
 	a->d.i = ev;
-	a++;
+	argc = 1;
 
-	for(argc = 0; *fmt != '\0'; fmt++,a++,argc++) {
-		if (argc >= EVENT_MAX_ARG) {
-			Message("event(): too many arguments\n");
-			break;
+	if (fmt != NULL) {
+		va_start(ap, fmt);
+		for(a++; *fmt != '\0'; fmt++,a++,argc++) {
+			if (argc >= EVENT_MAX_ARG) {
+				Message("event(): too many arguments\n");
+				break;
+			}
+			switch(*fmt) {
+				case 'i':
+					a->type = ARG_INT;
+					a->d.i = va_arg(ap, int);
+					break;
+				case 'd':
+					a->type = ARG_DOUBLE;
+					a->d.d = va_arg(ap, double);
+					break;
+				case 's':
+					a->type = ARG_STR;
+					a->d.s = va_arg(ap, const char *);
+					break;
+				default:
+					a->type = ARG_INT;
+					a->d.i = 0;
+					Message("event(): invalid argument type '%c'\n", *fmt);
+					break;
+			}
 		}
-		switch(*fmt) {
-			case 'i':
-				a->type = ARG_INT;
-				a->d.i = va_arg(ap, int);
-				break;
-			case 'd':
-				a->type = ARG_DOUBLE;
-				a->d.d = va_arg(ap, double);
-				break;
-			case 's':
-				a->type = ARG_STR;
-				a->d.s = va_arg(ap, const char *);
-				break;
-			default:
-				a->type = ARG_INT;
-				a->d.i = 0;
-				Message("event(): invalid argument type '%c'\n", *fmt);
-				break;
-		}
+		va_end(ap);
 	}
-	va_end(ap);
 
 	for(e = events[ev]; e != NULL; e = e->next)
 		e->handler(e->user_data, argc, (event_arg_t **)&argv);
