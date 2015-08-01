@@ -10,6 +10,7 @@
 #include "global.h"
 #include "data.h"
 #include "error.h"
+#include "event.h"
 
 #include "hid.h"
 #include "../hidint.h"
@@ -409,6 +410,7 @@ another:
 
 int hid_parse_command (const char *str_)
 {
+	event(EVENT_CLI_ENTER, "s", str_);
   return hid_parse_actionstring (str_, FALSE);
 }
 
