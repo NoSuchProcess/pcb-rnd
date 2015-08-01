@@ -1,0 +1,86 @@
+<HTML>
+<BODY>
+<H1> actions package </H1>
+
+The action package is used to register actions in PCB. In PCB actions
+are generated when the user selects a menu, presses a key or issues a
+command on the PCB command line. The script may register new actions
+using arbitrary action names. If any of the registered actions is
+detected, an ACTE_action event is sent to the script. If multiple
+actions are used in a script, argument <I>name</I> of the event handler
+can be used to identify the triggering action. <small>(This may be time consuming
+in scripting languages (a series of string comparison) - those scripts
+binding to frequent actions should not bind to too many different actions.)</small>
+pcb-gpmi guarantees that the event handler of a script is triggered only
+when an action is caught that previously was registered by the same script.
+<P>
+The process of binding an action:
+<OL>
+	<LI> create an event handler for event <I>ACTE_action</I>
+	<LI> register one or more actions using function <I>action_register</I>
+	<LI> optional: when the event handler is triggered, check argument <I>name</I> (for scripts with multiple actions registered)
+	<LI> optional: use argument <I>argc</I> and function <I>action_arg</I> to fetch action arguments
+	<LI> optional: use arguments <I>x, y</I> to learn the cursor position on the layout.
+</OL>
+
+Example (written in lua):
+<PRE>
+-- load the package
+PkgLoad("pcb-gpmi/actions", 0);
+
+-- action callback
+function ev_action(id, name, argc, x, y)
+	if name == "cake" then
+		size = action_arg(1);
+		-- put cake drawing code here
+	else
+		-- must be candy
+		amount = action_arg(1);
+		-- put candy drawing code here
+	end
+end
+
+-- register and bind action
+action_register("cake",  "cake center xy?", "cake service", "cake(size)", "");
+action_register("candy", "candy cloud center xy?", "cake service", "candy(amount)", "");
+Bind("ACTE_action", "ev_action");
+</PRE>
+
+<H2> event ACTE_action(const char *name, int argc, int x, int y) </H2>
+	Arguments:
+	<OL>
+		<LI> <a href="event_id.html">event_id</a>
+		<LI> const char *name: name of the action (as registed using function action_register())
+		<LI> int argc: number of arguments. Arguments can be accessed using function action_arg
+		<LI> int x, int y: optional coords, if need_xy was not empty at action_register
+	</OL>
+
+<H2> function action_register(const char *name, const char *need_xy, const char *description, const char *syntax, const char *context) </H2>
+	Arguments:
+	<OL>
+		<LI> const char *name: name of the action
+		<LI> const char *need_xy: the question the user is asked when he needs to choose a coordinate; if empty, no coordinate is asked
+		<LI> const char *description: description of the action (for the help)
+		<LI> const char *syntax: syntax of the action (for the help)
+		<LI> const char *context: this field is subject to remove - pass empty!
+	</OL>
+	Returns 0 on success.
+	<p>
+	Multiple actions can be registered. Any action registered by the script
+	will trigger an ACTE_event sent to the script.
+
+<H2> function const char *action_arg(int argn) </H2>
+	Extracts action argument <I>argn</I> for the current action
+	(makes sense only in an ACTE_action event handler).
+	Arguments:
+	<OL>
+		<LI> int N: return the Nth argument
+	</OL>
+	Returns an argument or empty string if N is out of range [0..argc-1].
+	<p>
+	PCB action optionally have arguments. 
+	The interface is "int argc, char *argv[]" based in PCB.
+	Due to syntax limitations the event handler does not receive argv directly,.
+	The script can access te argv[] array using action_arg().
+</BODY>
+</HTML>

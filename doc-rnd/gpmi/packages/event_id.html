@@ -1,0 +1,19 @@
+<html>
+<body>
+<H1> event_id </H1>
+
+The first argument passed to an event handler is always the event ID.
+It is useful if there are several GPMI events with the same arguments and
+the script wants to bind them all to the same event handler. In that case
+using event_id the event handler can determine which event triggered the
+call. This design is similar to the signal handler documented in 
+signal(2).
+
+<P>
+
+The above described case (dispatcher event handler) is rare - most users
+can safely ignore this argument, but it must present as the first argument
+on the event handler's argument list.
+
+</BODY>
+</HTML>

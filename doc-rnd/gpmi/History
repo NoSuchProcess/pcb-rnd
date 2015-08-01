@@ -1,0 +1,34 @@
+History
+~~~~~~~
+As of October 2006, PCB has native support for external (or dynamic
+loadable) HIDs. This project is plugin that provides scripting features.
+
+For a long time I believe that good applications should be scriptable,
+and real good ones should not restrict scripting to one or two languages.
+For this reason I have been working on GPMI with various other developers
+for years. GPMI provides a general way to split up big applications in
+smaller, usually dynamic loadable parts, and encourages that some of these
+parts should be written in a script language. For me, the ideal model
+of an application is a small core that knows how to manipulate the
+internal representation of the task and a lot of dynamic functionality
+plugins and support plugins that do all the high-level job for the user.
+
+PCB is an old and big software, with a stable user base. Restructuring the
+whole source to "GPMIize" it is no option. Instead, a nice compromise is
+implementing this functionality in a plugin that pcb can load for the users
+who are interested in such extras.
+
+From 2006 to 2009 spring the project was on hold, because I was nagging
+PCB developers to add support for customizable dialog boxes. In late March
+2009, PCB developers pointed out that the interface I was waiting for had been
+there for who-knows-how-long. With the help of DJ Delorie I extended the
+action handling of PCB to remember action contexts, which was another showstopper.
+After all obstacles removed, I allocated a 24 hour coding session where I
+finished the exporter functionality, added action binding, dialog box handling
+and layout manipulation functions.
+
+
+
+
+
+

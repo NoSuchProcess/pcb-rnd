@@ -1,0 +1,11 @@
+PCB features that would make this plugin system simpler
+	1. custom menus
+		The gui should have a menu somehwere and list all tool hids just
+		like it lists all exporters. As there would be much more tools than
+		exporters, it may make sense to use a tree structure instead of a
+		simple list.
+	
+	2. some compile-time settings should be exported from PCB:
+	    EXECPREFIXDIR
+	    HOST
+	    MAX_LAYER

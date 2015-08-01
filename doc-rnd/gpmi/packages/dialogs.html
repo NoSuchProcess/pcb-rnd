@@ -1,0 +1,92 @@
+<HTML>
+<BODY>
+	<H1> dialogs package </H1>
+	The purpose of this package is to expose the dialog box handling interface
+	of the active GUI hid. Using this package scripts can pop up dialog boxes
+	to inform or ask the user. If there is no active GUI, call logs are dumped
+	on stderr. Note: message arguments usually may contain newline (\n) characters
+	to split the message.
+
+	<H2> function void dialog_log(const char *msg) </H2>
+		Append a message to the log (log window and/or stderr). Arguments:
+		<OL>
+			<LI> const char *msg: the message
+		</OL>
+
+	<H2> function int dialog_confirm(const char *msg, const char *ok, const char *cancel) </H2>
+		Ask the user for confirmation. Returns 0 for cancel and 1 for ok. Arguments:
+		<OL>
+			<LI> const char *msg: message to the user
+			<LI> const char *ok: label of the OK button
+			<LI> const char *cancel: label of the cancel button
+		</OL>
+		Arguments <I>ok</I> and <I>cancel</I> may be empty (or NULL) in which
+		case the GUI will use the default (perhaps localized) labels for
+		those buttons.
+
+	<H2>function void dialog_report(const char *title, const char *msg) </H2>
+		Pop up a report dialog. Arguments:
+		<OL>
+			<LI> const char *title: title of the window
+			<LI> const char *msg: message
+		</OL>
+		No return value.
+
+	<H2> function char *dialog_prompt(const char *msg, const char *default_) </H2>
+		Prompt the user for a single line textual data. Arguments:
+		<OL>
+			<LI> const char *msg: message or question to the user
+			<LI> const char *default: default answer
+		</OL>
+		Returns what the user typed or NULL (empty) if the user choosed to cancel.
+
+	<H2> function void dialog_beep(void) </H2>
+		Beeps. No argument, no return value.
+
+	<H2> function int dialog_progress(int so_far, int total, const char *message) </H2>
+		Request the GUI hid to draw a progress bar. Arguments:
+		<OL>
+			<LI> int so_far: achieved state
+			<LI> int total: maximum state
+			<LI> const char *message: informs the users what they are waiting for
+		</OL>
+		If so_far is bigger than total, the progress bar is closed.
+		Return value: returns !!!TODO!!! if the user pressed cancel.
+		<p>
+		The script should call this periodicly from a loop that runs
+		time consuming calculations and check the return value and
+		break the loop on cancel. After the loop a call with so_far=total+1
+		should be made to make sure the window is closed.
+
+	<H2> function int dialog_attribute(hid_t *hid, const char *title, const char *descr) </H2>
+		Presents the user a custom dialog box, similar to those used by
+		the exporters.
+		<OL>
+			<LI> hid_t *hid: <a href="!!!TODO!!!">hid</a> that describes options
+			<LI> const char *title: window title
+			<LI> const char *descr: description
+		</OL>
+		Return value: !!!TODO!!!. Values selected by the user are accessed
+		using <a href="!!!TODO!!!">hid_get_attribute</a>.
+
+	<H2> function char *dialog_fileselect(const char *title, const char *descr, char *default_file_, char *default_ext, const char *history_tag, multiple dialog_fileselect_t flags)</H2>
+		Pops up a file selection dialog.
+		<OL>
+			<LI> const char *title: window title
+			<LI> const char *descr: description
+			<LI> char *default_file_
+			<LI> char *default_ext: default file name extension
+			<LI> const char *history_tag
+			<LI> dialog_fileselect_t flags: one or more flags (see below)
+		</OL>
+		Returns the selected file or NULL (empty).
+		<P>
+		dialog_fileselect_t flags:
+		<UL>
+			<LI> FS_READ: TODO
+			<LI> FS_NOT_EXIST: the function calling hid->fileselect will deal with the case where the selected file already exists.  If not given, then the gui will prompt with an "overwrite?" prompt.  Only used when writing.
+			<LI> FS_TEMPLATE: the call is supposed to return a file template (for gerber output for example) instead of an actual file.  Only used when writing.
+			<LI> FS_NONE: none of the above
+		</UL>
+</BODY>
+</HTML>

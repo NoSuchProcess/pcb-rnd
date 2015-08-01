@@ -1,0 +1,104 @@
+<HTML>
+<BODY>
+<H1> hid package </H1>
+
+The hid package has two purposes:
+<UL>
+	<LI> it is glue layer for exporter dialog boxes and attribute dialog boxes;
+	<LI> it can register exporter HIDs in PCB
+</UL>
+
+<H1> hid package - attribute dialog boxes</H1>
+	<H2>function hid_t *hid_create(char *hid_name, char *description); </H2>
+		Creates a new hid context. Name and description matters only
+		if the hid is registered as an exporter later. hid_t is an opaq
+		structure for the package that is used to describe attributes
+		of an attribute dialog or an exporter hid.
+
+	<H2>function int hid_add_attribute(hid_t *hid, char *attr_name, char *help, hid_attr_type_t type, int min, int max, char *default_val) </H2>
+		Append an attribute in a hid previously created using hid_create().
+		Arguments:
+		<OL>
+			<LI> hid: hid_t previously created using hid_create()
+			<LI> attr_name: name of the attribute
+			<LI> help: help text for the attribute
+			<LI> type: type of the attribute (input type - see later)
+			<LI> min: minimum value of the attribute, if type is integer or real)
+			<LI> max: maximum value of the attribute, if type is integer or real)
+			<LI> default_val: default value of the attribute
+		</OL>
+		The call returns an unique ID of the attribute the caller should store
+		for later reference. For example this ID is used when retrieving the value
+		of the attribute after the user finished entering data in the dialog.
+		<P>
+		Possible attribute types are defined in the hid_attr_type_t enum:
+		<UL>
+			<LI>HIDA_Label: non-editable label displayed on the GUI
+			<LI>HIDA_Integer: an integer value
+			<LI>HIDA_Real: a floating point value
+			<LI>HIDA_String: one line textual input
+			<LI>HIDA_Boolean: true/false boolean value
+			<LI>HIDA_Enum: [TODO]
+			<LI>HIDA_Mixed: [TODO]
+			<LI>HIDA_Path: path to a file or directory
+		</UL>
+
+	<H2>function char *hid_get_attribute(hid_t *hid, int attr_id) </H2>
+		Query an attribute from the hid after dialog_attributes() returned.
+		<OL>
+			<LI> hid: hid_t previously created using hid_create()
+			<LI> attr_id: the unique ID of the attribute (returned by hid_add_attribute())
+		</OL>
+		Returns the value set by the user.
+
+<H1> hid package - register an exporter</H1>
+	<H2> function int hid_register(hid_t *hid) </H2>
+		Register the hid as an exporter. Should be called after all attributes have been
+		added using hid_add_atrtibute(). The export is coordinated by pcb core;
+		when the user request an export using the
+		exporter, a series of events are delivered to the script:
+		<ol>
+			<li> envelope events to set up exporting
+			<li> many draw events to actually export the objects
+			<li> an envelope event to finish exporting
+		</ol>
+
+	<H2> Envelope: events generated before or after exporting </H2>
+		<UL>
+			<LI>HIDE_get_export_options(void *hid): TODO Generated before get_exporter_options returns the option list to the GUI hid
+			<LI>HIDE_do_export_start(void *hid): Generated before export redraw starts
+			<LI>HIDE_do_export_finish(void *hid): Generated after export redraw finihsed
+		</UL>
+
+	<H2> Drawing: events generated during exporting </H2>
+		Note: there may be multiple <I>gc</I>s (graphic contexts), each having its own color, line
+		properties, xor drawing and faded state. Graphic contexts are created
+		and destroyed by the following events:
+		<UL>
+			<LI>HIDE_make_gc(void *hid, void *gc);
+			<LI>HIDE_destroy_gc(void *hid, void *gc);
+		</UL>
+
+		<I>Gc</I> properties are changed by the following events:
+		<UL>
+			<LI>HIDE_set_layer(void *hid, const char *name, int group);
+			<LI>HIDE_set_color(void *hid, void *gc, const char *name);
+			<LI>HIDE_set_line_cap(void *hid, void *gc, EndCapStyle style);
+			<LI>HIDE_set_line_width(void *hid, void *gc, int width);
+			<LI>HIDE_set_draw_xor(void *hid, void *gc, int xor);
+			<LI>HIDE_set_draw_faded(void *hid, void *gc, int faded);
+		</UL>
+
+		Finally, the actual drawing operations:
+		<UL>
+			<LI>HIDE_draw_line(void *hid, void *gc, int x1, int y1, int x2, int y2);
+			<LI>HIDE_draw_arc(void *hid, void *gc, int cx, int cy, int xradius, int yradius, int start_angle, int delta_angle);
+			<LI>HIDE_draw_rect(void *hid, void *gc, int x1, int y1, int x2, int y2);
+			<LI>HIDE_fill_circle(void *hid, void *gc, int cx, int cy, int radius);
+			<LI>HIDE_fill_polygon(void *hid, void *gc, int n_coords, int *x, int *y);
+			<LI>HIDE_fill_rect(void *hid, void *gc, int x1, int y1, int x2, int y2);
+			<LI>HIDE_use_mask(void *hid, int use_it); [TODO]
+		</UL>
+
+</BODY>
+</HTML>

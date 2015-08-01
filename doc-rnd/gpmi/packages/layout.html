@@ -1,0 +1,216 @@
+<HTML>
+<BODY>
+<H1> layout package </H1>
+
+Layout package searches and manipulates the current layout. Dimension units
+are in 1/100 mil TODO unless otherwise mentioned.
+
+<H1> layout package - page </H1>
+	Functions used to query or set width and height of the drawing:
+	<UL>
+		<LI>int layout_get_page_width();
+		<LI>int layout_get_page_height();
+		<LI>void layout_set_page_size(int width, int height);
+	</UL>
+
+<H1> layout package - layer manipulation </H1>
+Most functions perform operations similar to user commands affecting
+the current layer.
+The following few calls can change the current layer. Warning: this is the
+same current layer as the user's; the script most probably wants to save
+the current layer before changing it and then restore it after the operation.
+	<UL>
+		<LI>int layout_resolve_layer(const char *name): resolve layer number by name (case sensitive); returns negative number if not found
+		<LI>int layout_get_current_layer(): returns the number of the current layer
+		<LI>void layout_switch_to_layer(int layer): switch to layer (further actions will take place there)
+	</UL>
+
+<H1> layout package - search layer(s) for objects </H1>
+	Search results are collected on lists identified by their name (search_ID).
+	If a new search is done with the same name, old search results for that
+	name are discarded.
+	Search functions return the number of objects found (size of the list) that can 
+	be then used while querying the results using layout_search_get().
+	Results should be freed using layout_search_free() when they are no
+	longer needed.
+	<p>
+	TODO: validity of a list in time
+
+	<P>
+	[todo] lists can be merged or copied. [todo]
+
+	<H2> function int layout_search_box(const char *search_ID, multiple layout_object_mask_t obj_types, int x1, int y1, int x2, int y2); </H2>
+		Creates a new search and adds all objects that matches obj_types mask within the given rectangle on the current layer.
+		Arguments:
+		<OL>
+			<LI> search_ID: unique name of the search (overwrites existing search on the same name)
+			<LI> obj_types: on or more object types or'd
+			<LI> x1, y1, x2, y2: box the search is done within
+		</OL>
+
+		layout_object_mask_t is an enum with the following values:
+		<UL>
+			<LI> OM_LINE
+			<LI> OM_TEXT
+			<LI> OM_POLYGON
+			<LI> OM_ARC
+			<LI> OM_VIA
+			<LI> OM_PIN
+		</UL>
+
+	<H2> function int layout_search_selected(const char *search_ID, multiple layout_object_mask_t obj_types) </H2>
+		Creates a new search and adds all selected objects.
+		Arguments:
+		<OL>
+			<LI> search_ID: unique name of the search (overwrites existing search on the same name)
+			<LI> obj_types: on or more object types or'd
+		</OL>
+
+	<H2> function int layout_search_found(const char *search_ID, multiple layout_object_mask_t obj_types) </H2>
+		Creates a new search and adds all "found" objects (found objects are highlighted in green on the GUI).
+		Arguments:
+		<OL>
+			<LI> search_ID: unique name of the search (overwrites existing search on the same name)
+			<LI> obj_types: on or more object types or'd
+		</OL>
+
+	<H2> function layout_object_t *layout_search_get(const char *search_ID, int n); </H2>
+		Returns the nth object of a search.
+		Arguments:
+		<OL>
+			<LI> search_ID: unique name of the search (requires an existing search)
+			<LI> n: number of the object; must be between 0 and (size of the list) - 1.
+		</OL>
+		Returns a pointer ot the object if the object is found or NULL if not.
+		Fields of the object structure can be accessed using the object
+		accessors (see below).
+
+	<H2> int layout_search_free(const char *search_ID) </H2>
+		Frees all memory related to a search. Returns 0 on success.
+		Argument:
+		<OL>
+			<LI> search_ID: unique name of the search (requires an existing search)
+		</OL>
+
+<H1> layout package - object accessors </H1>
+	The following functions may be used by the script to access fields of
+	an object structure. The object structure is most often obtained by
+	calling layout_search_get().
+
+	<H2> int layout_obj_coord(layout_object_t *obj, layout_object_coord_t coord) </H2>
+		Return the requested coord of an object.
+		Arguments:
+		<OL>
+			<LI>obj: object pointer
+			<LI>coord: coordinate name
+		</OL>
+
+		Coordinate names:
+		<UL>
+			<LI> OC_BX1: bounding box X1
+			<LI> OC_BX2: bounding box X2
+			<LI> OC_BY1: bounding box Y1
+			<LI> OC_BY2: bounding box Y2
+			<LI> OC_P1X: point 1 X
+			<LI> OC_P2X: point 2 X
+			<LI> OC_P1Y: point 1 Y
+			<LI> OC_P2Y: point 2 Y
+			<LI> OC_OBJ: the whole object
+			<LI> OC_P1: point 1 is P1X
+			<LI> OC_P2: point 2 is P2X
+		</UL>
+		Except for the bounding box coordinates, the meaning of coordinates are object-specific.
+		Point 1 and point 2 are usually endpoints of the object (line, arc), "the whole object" 
+		coordinate is a central point (TODO: what's this?).
+
+	<H2> layout_object_mask_t layout_obj_type(layout_object_t *obj) </H2>
+		Return the type of an object (always a single value of layout_object_mask_t).
+
+	<H2> int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, int dy) </H2>
+		Change location of an object or parts of the object (like move endpoint
+		of a line); returns 0 on success.
+		Arguments:
+		<OL>
+			<LI>obj: object pointer
+			<LI>coord: coordinate name to drag
+			<LI> dx, dy: relative x and y coordinates the selected coordinate is displaced by
+		</OL>
+
+
+	<H2> int layout_arc_angles(layout_object_t *obj, int relative, int start, int delta) </H2>
+		Change angles of an arc; start and delta are relative if <I>relative</I> is non-zero;
+		returns 0 on success.
+
+
+<H1> layout package - create new objects </H1>
+	These calls are used to create new objects on the current layer.
+	<H2>int layout_create_line(int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)</H2>
+		Creates a line.
+		Arguments:
+		<OL>
+			<LI> x1, y1, x2, y2: endpoints
+			<LI> thickness: thickness in 1/100 mil [todo?]
+			<LI> clearance: clearance in 1/100 mil [todo?]
+			<LI> flags: one or more of layout flags described below
+		</OL>
+
+		Layout flags:
+		<UL>
+			<LI> FL_NONE
+			<LI> FL_SHOWNUMBER    
+			<LI> FL_LOCALREF      
+			<LI> FL_CHECKPLANS    
+			<LI> FL_SHOWDRC       
+			<LI> FL_RUBBERBAND    
+			<LI> FL_DESCRIPTION   
+			<LI> FL_NAMEONPCB     
+			<LI> FL_AUTODRC       
+			<LI> FL_ALLDIRECTION  
+			<LI> FL_SWAPSTARTDIR  
+			<LI> FL_UNIQUENAME    
+			<LI> FL_CLEARNEW      
+			<LI> FL_SNAPPIN       
+			<LI> FL_SHOWMASK      
+			<LI> FL_THINDRAW      
+			<LI> FL_ORTHOMOVE     
+			<LI> FL_LIVEROUTE     
+			<LI> FL_THINDRAWPOLY  
+			<LI> FL_LOCKNAMES     
+			<LI> FL_ONLYNAMES     
+			<LI> FL_NEWFULLPOLY   
+			<LI> FL_HIDENAMES     
+			<LI> FL_THERMALSTYLE1 
+			<LI> FL_THERMALSTYLE2 
+			<LI> FL_THERMALSTYLE3 
+			<LI> FL_THERMALSTYLE4 
+			<LI> FL_THERMALSTYLE5 
+		</UL>
+
+	<H2> int layout_create_via(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags) </H2>
+		Create a named via.
+		Arguments:
+		<OL>
+			<LI> x, y: center coordinates
+			<LI> thickness: thickness in 1/100 mil [todo?]
+			<LI> clearance: clearance in 1/100 mil [todo?]
+			<LI> mask, hole: [TODO]
+			<LI> name: optional name (may be empty srting)
+			<LI> flags: one or more of layout flags
+		</OL>
+
+
+	<H2> int layout_create_arc(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags); </H2>
+		Create a new arc.
+		Arguments:
+		<OL>
+			<LI> x, y: center coordinates
+			<LI> width, height: in mil [TODO?]
+			<LI> sa: start angle (in degrees, TODO: where is 0?)
+			<LI> dir: delta angle
+			<LI> thickness: thickness in 1/100 mil [todo?]
+			<LI> clearance: clearance in 1/100 mil [todo?]
+			<LI> flags: one or more of layout flags
+		</OL>
+
+</BODY>
+</HTML>
