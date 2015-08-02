@@ -5,6 +5,7 @@
 #include "src/global.h"
 #include "src/hid.h"
 #include "src/hid/hidint.h"
+#include "src/pcb-printf.h"
 #define FROM_PKG
 #include "hid.h"
 #include "hid_callbacks.h"
@@ -104,6 +105,20 @@ dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 		case HIDA_Path:
 			res = v->str_value;
 			break;
+		case HIDA_Unit:
+			{
+				const Unit *u;
+				double fact;
+				u = get_unit_by_idx(v->int_value);
+				if (u == NULL)
+					fact = 0;
+				else
+					fact = unit_to_factor(u);
+				snprintf(buff, sizeof(buff), "%f", fact);
+				res = buff;
+				fprintf(stderr, "unit idx: %d %p res='%s'\n", v->int_value, u, res);
+			}
+			break;
 		case HIDA_Mixed:
 		default:
 			fprintf(stderr, "error: hid_string2val: can't handle type %d\n", hid->type[attr_id]);
@@ -128,6 +143,16 @@ HID_Attr_Val hid_string2val(const hid_attr_type_t type, const char *str)
 			break;
 		case HIDA_Integer:
 			v.int_value = atoi(str);
+			break;
+		case HIDA_Unit:
+			{
+				const Unit *u;
+				u = get_unit_struct(str);
+				if (u != NULL)
+					v.real_value = unit_to_factor(u);
+				else
+					v.real_value = 0;
+			}
 			break;
 		case HIDA_Real:
 			v.real_value = atof(str);
@@ -195,12 +220,21 @@ int hid_add_attribute(hid_t *hid, char *attr_name, char *help, hid_attr_type_t t
 	hid->attr[current].type         = type;
 	hid->attr[current].min_val      = min;
 	hid->attr[current].max_val      = max;
-	if (type != HIDA_Enum) {
-		hid->attr[current].default_val  = hid_string2val(type, default_val);
-		hid->attr[current].enumerations = NULL;
+	if (type == HIDA_Unit) {
+		const Unit *u, *all;
+		all = get_unit_list();
+		u = get_unit_struct(default_val);
+		if (u != NULL)
+			hid->attr[current].default_val.int_value = u-all;
+		else
+			hid->attr[current].default_val.int_value = -1;
+	}
+	else if (type == HIDA_Enum) {
+		hid->attr[current].enumerations = hid_string2enum(default_val, &(hid->attr[current].default_val));
 	}
 	else {
-		hid->attr[current].enumerations = hid_string2enum(default_val, &(hid->attr[current].default_val));
+		hid->attr[current].default_val  = hid_string2val(type, default_val);
+		hid->attr[current].enumerations = NULL;
 	}
 	hid->attr[current].hash         = 0;
 

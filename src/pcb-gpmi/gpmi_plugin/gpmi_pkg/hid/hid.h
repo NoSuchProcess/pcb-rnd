@@ -8,8 +8,9 @@ typedef enum hid_attr_type_e {
 	HIDA_Boolean,
 	HIDA_Enum,
 	HIDA_Mixed,
-	HIDA_Path
-#warning TODO: HID_Unit, HID_Coord
+	HIDA_Path,
+	HIDA_Unit,
+	HIDA_Coord
 } hid_attr_type_t;
 
 gpmi_keyword *kw_hid_attr_type_e; /* of hid_attr_type_t */
