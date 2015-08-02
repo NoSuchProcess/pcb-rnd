@@ -429,7 +429,7 @@ GtkTreeSelection *ghid_scrolled_selection (GtkTreeView * treeview,
 					   GtkPolicyType v_policy,
 					   void (*func_cb) (GtkTreeSelection *, gpointer), gpointer data);
 
-void ghid_dialog_report (gchar * title, gchar * message);
+void ghid_dialog_report (const gchar * title, const gchar * message);
 void ghid_label_set_markup (GtkWidget * label, const gchar * text);
 
 void ghid_set_cursor_position_labels (void);

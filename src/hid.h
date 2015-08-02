@@ -462,7 +462,7 @@ typedef enum
 #define HID_CLOSE_CONFIRM_OK     1
 
     /* Just prints text.  */
-    void (*report_dialog) (char *title_, char *msg_);
+    void (*report_dialog) (const char *title_, const char *msg_);
 
     /* Prompts the user to enter a string, returns the string.  If
        default_string isn't NULL, the form is pre-filled with this

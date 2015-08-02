@@ -3720,7 +3720,7 @@ extern int lesstif_confirm_dialog (const char *msg, ...);
 
 extern int lesstif_close_confirm_dialog ();
 
-extern void lesstif_report_dialog (char *title, char *msg);
+extern void lesstif_report_dialog (const char *title, const char *msg);
 
 extern int
 lesstif_attribute_dialog (HID_Attribute * attrs,

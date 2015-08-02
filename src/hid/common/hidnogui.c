@@ -360,7 +360,7 @@ nogui_close_confirm_dialog ()
 }
 
 static void
-nogui_report_dialog (char *title, char *msg)
+nogui_report_dialog (const char *title, const char *msg)
 {
   printf ("--- %s ---\n%s\n", title, msg);
 }

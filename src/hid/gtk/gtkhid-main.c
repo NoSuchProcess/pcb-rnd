@@ -627,7 +627,7 @@ ghid_close_confirm_dialog ()
 }
 
 void
-ghid_report_dialog (char *title, char *msg)
+ghid_report_dialog (const char *title, const char *msg)
 {
   ghid_dialog_report (title, msg);
 }

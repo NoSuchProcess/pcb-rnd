@@ -646,7 +646,7 @@ ghid_framed_notebook_page (GtkWidget * tabs, char *name, gint border,
 }
 
 void
-ghid_dialog_report (gchar * title, gchar * message)
+ghid_dialog_report (const gchar * title, const gchar * message)
 {
   GtkWidget *top_win;
   GtkWidget *dialog;
@@ -654,7 +654,7 @@ ghid_dialog_report (gchar * title, gchar * message)
   GtkWidget *scrolled;
   GtkWidget *vbox, *vbox1;
   GtkWidget *label;
-  gchar *s;
+  const gchar *s;
   gint nlines;
   GHidPort *out = &ghid_port;
 

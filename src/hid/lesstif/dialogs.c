@@ -487,7 +487,7 @@ lesstif_close_confirm_dialog ()
 static Widget report = 0, report_form;
 
 void
-lesstif_report_dialog (char *title, char *msg)
+lesstif_report_dialog (const char *title, const char *msg)
 {
   if (!report)
     {
@@ -515,7 +515,7 @@ lesstif_report_dialog (char *title, char *msg)
   n = 0;
   stdarg (XmNtitle, title);
   XtSetValues (report_form, args, n);
-  XmTextSetString (report, msg);
+  XmTextSetString (report, (char *)msg);
 
   XtManageChild (report_form);
 }
