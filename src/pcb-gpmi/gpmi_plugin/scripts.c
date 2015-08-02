@@ -127,3 +127,23 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 	return NULL;
 }
 
+
+int gpmi_hid_script_reload(script_info_t *i)
+{
+
+}
+
+int gpmi_hid_script_unload(script_info_t *i)
+{
+
+}
+
+int gpmi_hid_script_remove(script_info_t *i)
+{
+
+}
+
+int gpmi_hid_script_addcfg(script_info_t *i)
+{
+
+}

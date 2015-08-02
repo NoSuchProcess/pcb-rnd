@@ -17,3 +17,16 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name);
 
 /* Return the number of scripts (gpmi modules) loaded */
 int gpmi_hid_scripts_count();
+
+/* Reload a script - useful if the source of the script has changed */
+int gpmi_hid_script_reload(script_info_t *i);
+
+/* Unload a script (also removes i from the list) - temporary effect,
+   the script will be loaded again on the next startup */
+int gpmi_hid_script_unload(script_info_t *i);
+
+/* Remove a script from the config file (but do not unload it now) */
+int gpmi_hid_script_remove(script_info_t *i);
+
+/* Edit a config file so that the script is in it */
+int gpmi_hid_script_addcfg(script_info_t *i);
