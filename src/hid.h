@@ -449,7 +449,7 @@ typedef enum
        for ..., they are used instead of the default OK/Cancel ones, and
        the return value is the index of the label chosen.  You MUST pass
        NULL as the last parameter to this.  */
-    int (*confirm_dialog) (char *msg_, ...);
+    int (*confirm_dialog) (const char *msg_, ...);
 
     /* A close confirmation dialog for unsaved pages, for example, with
        options "Close without saving", "Cancel" and "Save". Returns zero

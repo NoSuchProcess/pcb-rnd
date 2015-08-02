@@ -3716,7 +3716,7 @@ lesstif_stop_block_hook (hidval mlpoll)
 
 extern void lesstif_logv (const char *fmt, va_list ap);
 
-extern int lesstif_confirm_dialog (char *msg, ...);
+extern int lesstif_confirm_dialog (const char *msg, ...);
 
 extern int lesstif_close_confirm_dialog ();
 

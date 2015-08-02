@@ -553,7 +553,7 @@ ghid_stop_block_hook (hidval mlpoll)
 }
 
 int
-ghid_confirm_dialog (char *msg, ...)
+ghid_confirm_dialog (const char *msg, ...)
 {
   int rv = 0;
   va_list ap;

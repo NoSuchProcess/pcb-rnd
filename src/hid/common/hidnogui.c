@@ -315,7 +315,7 @@ read_stdin_line (void)
 #undef MAX_LINE_LENGTH
 
 static int
-nogui_confirm_dialog (char *msg, ...)
+nogui_confirm_dialog (const char *msg, ...)
 {
   char *answer;
   int ret = 0;
