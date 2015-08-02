@@ -176,24 +176,35 @@ static void script_details(script_info_t *i)
 void gpmi_hid_manage_scripts(void)
 {
 	script_info_t *i;
+	static const char *err_no_script = "Error: you didn't select a script";
+#define CONSULT "Please consult the message log for details."
+
 	char *operations[] = {"show details...", "reload", "unload", "unload and remove from the config file", "load a new script...", "load a new script and add it in the config...", NULL};
 	int op = 0;
 	i = choose_script(operations, &op);
 	switch(op) {
 		case 0:
-			script_details(i);
+			if (i != NULL)
+				script_details(i);
+			else
+				gui->report_dialog("GPMI script details", err_no_script);
 			break;
 		case 1:
 			if (i != NULL) {
 				i = hid_gpmi_reload_module(i);
 				if (i == NULL)
-					gui->report_dialog("GPMI script load", "Error reloading the script.\nThe script is now unloaded.\nPlease consult the message log for details\n(e.g. there may be syntax errors in the script source).");
+					gui->report_dialog("GPMI script reload", "Error reloading the script.\nThe script is now unloaded.\n" CONSULT "\n(e.g. there may be syntax errors in the script source).");
 			}
+			else
+				gui->report_dialog("GPMI script reload", err_no_script);
 			break;
 		case 2:
-			if (i != NULL)
+			if (i != NULL) {
 				if (gpmi_hid_script_unload(i) != 0)
-					gui->report_dialog("GPMI script unload", "Error unloading the script.\nPlease consult the message log for details\n");
+					gui->report_dialog("GPMI script unload", "Error unloading the script.\n" CONSULT "\n");
+			}
+			else
+				gui->report_dialog("GPMI script unload", err_no_script);
 			break;
 		case 3:
 			if (i != NULL) {
@@ -205,10 +216,12 @@ void gpmi_hid_manage_scripts(void)
 					msg = Concat("Error:", 
 					             (r1 ? "couldnt't remove the script from the config file;" : ""), 
 					             (r2 ? "couldnt't unload the script;" : ""),
-					             "\nPlease consult the message log for details\n", NULL);
+					             "\n" CONSULT "\n", NULL);
 					gui->report_dialog("GPMI script unload and remove", msg);
 					free(msg);
 				}
+			else
+				gui->report_dialog("GPMI script unload and remove", err_no_script);
 			}
 			break;
 		case 4:
@@ -218,7 +231,7 @@ void gpmi_hid_manage_scripts(void)
 			i = load_script();
 			if (i != NULL) {
 				if (gpmi_hid_script_addcfg(i) != 0)
-					gui->report_dialog("GPMI script add to config", "Error adding the script in user configuration.\nPlease consult the message log for details\n");
+					gui->report_dialog("GPMI script add to config", "Error adding the script in user configuration.\n" CONSULT "\n");
 			}
 			break;
 	}
