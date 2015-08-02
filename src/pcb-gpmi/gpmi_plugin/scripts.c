@@ -6,10 +6,26 @@
 #include "src/misc.h"
 #include "src/event.h"
 #include "gpmi_plugin.h"
+#include "scripts.h"
+
+script_info_t *script_info = NULL;
+
+static void script_info_add(gpmi_module *module, const char *name, const char *module_name, const char *conffile_name)
+{
+	script_info_t *i;
+
+	i = malloc(sizeof(script_info_t));
+	i->module = module;
+	i->name = strdup(name);
+	i->module_name = strdup(module_name);
+	i->conffile_name = strdup(conffile_name);
+	i->next = script_info;
+	script_info = i;
+}
 
 static char *conf_dir = NULL;
 
-void hid_gpmi_load_module(const char *module_name, const char *params)
+gpmi_module *hid_gpmi_load_module(const char *module_name, const char *params, const char *config_file_name)
 {
 	gpmi_module *module;
 
@@ -20,6 +36,10 @@ void hid_gpmi_load_module(const char *module_name, const char *params)
 		gpmi_err_stack_process_str(gpmi_hid_print_error);
 	}
 	gpmi_err_stack_destroy(NULL);
+
+	script_info_add(module, params, module, config_file_name);
+
+	return module;
 }
 
 void hid_gpmi_load_dir(const char *dir)
@@ -31,8 +51,8 @@ void hid_gpmi_load_dir(const char *dir)
 	cfn = Concat(dir, "/pcb-rnd-gpmi.conf", NULL);
 	fprintf(stderr, "pcb-gpmi: opening config: %s\n", cfn);
 	f = fopen(cfn, "r");
-	free(cfn);
 	if (f == NULL) {
+		free(cfn);
 		fprintf(stderr, " ...failed\n");
 		return;
 	}
@@ -58,11 +78,12 @@ void hid_gpmi_load_dir(const char *dir)
 				s = strchr(params, '\n');
 				*s = '\0';
 				fprintf(stderr, " ...loading %s %s\n", module, params);
-				hid_gpmi_load_module(module, params);
+				hid_gpmi_load_module(module, params, cfn);
 		}
 	}
 
 	fclose(f);
+	free(cfn);
 	conf_dir = NULL;
 }
 

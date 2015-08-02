@@ -37,7 +37,7 @@ static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 static int action_gpmi_scripts(int argc, char **argv, Coord x, Coord y)
 {
 	if (argc == 0) {
-		printf("Manage!\n");
+		gpmi_hid_manage_scripts();
 		return;
 	}
 	Message("Invalid arguments in gpmi_scripts()\n");
