@@ -31,17 +31,19 @@ void hid_gpmi_load_module(const char *module_name, const char *params)
 
 void hid_gpmi_load_dir(const char *dir)
 {
-	char line[1024], *module, *params, *s;
+	char line[1024], *module, *params, *s, *pkg;
 	FILE *f;
 
 	fprintf(stderr, "pcb-gpmi: opening config: %s\n", dir);
 	conf_dir = dir;
-	snprintf(line, sizeof(line), "%s/pcb-gpmi.conf", dir);
+#warning TODO use path separator and Concat() instead
+	snprintf(line, sizeof(line), "%s/pcb-rnd-gpmi.conf", dir);
 	f = fopen(line, "r");
 	if (f == NULL) {
 		fprintf(stderr, " ...failed\n");
 		return;
 	}
+	gpmi_path_insert(GPMI_PATH_PACKAGES, dir);
 
 	while(!(feof(f))) {
 		*line = '\0';
@@ -115,11 +117,7 @@ static void load_cfg(void)
 
 static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 {
-	const char *menu[2];
-	menu[0] = "Plugins";
-	menu[1] = "GPMI scripting";
-	menu[2] = "Scripts";
-	menu[3] = NULL;
+	const char *menu[] = {"Plugins", "GPMI scripting", "Scripts", NULL};
 
 	gui->create_menu(menu, "gpmi_scripts()", "S", "Alt<Key>g", "Manage GPMI scripts");
 }

@@ -1,7 +1,7 @@
 include Makefile.gpmi
 include ../Makefile.config
 
-CFLAGS += -I$(PCB_SRC) $(PCB_CFLAGS)
+CFLAGS += -g -I$(PCB_SRC) $(PCB_CFLAGS)
 
 all: gpmi_plugin.so
 	cd gpmi_pkg; make
