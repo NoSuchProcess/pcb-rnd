@@ -51,10 +51,10 @@ script_info_t *hid_gpmi_load_module(script_info_t *i, const char *module_name, c
 {
 	gpmi_module *module;
 
-	printf("Loading GPMI module %s with params %s...\n", module_name, params);
+	Message("Loading GPMI module %s with params %s...\n", module_name, params);
 	module = gpmi_mod_load(module_name, params);
 	if (module == NULL) {
-		printf(" Failed. Details:\n");
+		Message(" Failed loading the script. Details:\n");
 		gpmi_err_stack_process_str(gpmi_hid_print_error);
 	}
 	gpmi_err_stack_destroy(NULL);
@@ -67,7 +67,32 @@ script_info_t *hid_gpmi_load_module(script_info_t *i, const char *module_name, c
 
 script_info_t *hid_gpmi_reload_module(script_info_t *i)
 {
-	return hid_gpmi_load_module(i, i->module_name, i->name, i->conffile_name);
+	script_info_t *r;
+	const char *old_cd;
+
+	conf_dir = old_cd;
+
+	if (i->conffile_name != NULL) {
+		char *end;
+		conf_dir = strdup(i->conffile_name);
+		end = strrchr(conf_dir, PCB_DIR_SEPARATOR_C);
+		if (end == NULL) {
+			free(conf_dir);
+			conf_dir = NULL;
+		}
+		else
+			*end = '\0';
+	}
+	else
+		conf_dir = NULL;
+
+	r = hid_gpmi_load_module(i, i->module_name, i->name, i->conffile_name);
+
+	if (conf_dir != NULL)
+		free(conf_dir);
+	conf_dir = old_cd;
+
+	return r;
 }
 
 void hid_gpmi_load_dir(const char *dir)
@@ -133,6 +158,7 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 				printf("FN=%s\n", file_name);
 				return strdup(file_name);
 			}
+#warning TODO: make this more portable
 		case '/': /* full path */
 			return strdup(file_name);
 		default: /* relative path - must be relative to the current conf_dir */
@@ -143,12 +169,6 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 			return strdup(buffer);
 	}
 	return NULL;
-}
-
-
-int gpmi_hid_script_reload(script_info_t *i)
-{
-
 }
 
 int gpmi_hid_script_unload(script_info_t *i)

@@ -65,6 +65,7 @@ static script_info_t *choose_script(char **operations, int *operation)
 	if (operations != NULL)
 		attr_make_enum(&attr[1],  "operation", "Choose what to do with the script", operations, *operation);
 
+#warning TODO: scrl should be free'd after gui->attribute_dialog()
 
 	if (gui->attribute_dialog(attr, 1 + (operations != NULL), result, "GPMI manage scripts - select script", "Select one of the scripts already loaded")) {
 		if (operation != NULL)
