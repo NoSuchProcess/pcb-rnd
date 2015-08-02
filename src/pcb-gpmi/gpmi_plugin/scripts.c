@@ -65,6 +65,11 @@ script_info_t *hid_gpmi_load_module(script_info_t *i, const char *module_name, c
 	return NULL;
 }
 
+script_info_t *hid_gpmi_reload_module(script_info_t *i)
+{
+	return hid_gpmi_load_module(i, i->module_name, i->name, i->conffile_name);
+}
+
 void hid_gpmi_load_dir(const char *dir)
 {
 	char line[1024], *module, *params, *s, *pkg, *cfn;

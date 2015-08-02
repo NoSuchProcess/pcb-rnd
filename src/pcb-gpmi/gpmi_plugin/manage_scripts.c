@@ -179,8 +179,11 @@ void gpmi_hid_manage_scripts(void)
 			script_details(i);
 			break;
 		case 1:
-			if (i != NULL)
-				gpmi_hid_script_reload(i);
+			if (i != NULL) {
+				i = hid_gpmi_reload_module(i);
+				if (i == NULL)
+					gui->report_dialog("GPMI script load", "Error reloading the script.\nThe script is now unloaded.\nPlease consult the message log for details\n(e.g. there may be syntax errors in the script source).");
+			}
 			break;
 		case 2:
 			if (i != NULL)

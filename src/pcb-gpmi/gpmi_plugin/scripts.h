@@ -15,14 +15,15 @@ extern script_info_t *script_info;
    i first and place the new module in place of i. */
 script_info_t *hid_gpmi_load_module(script_info_t *i, const char *module_name, const char *params, const char *config_file_name);
 
+/* Reload a script - useful if the source of the script has changed
+   Reloads a module already loaded; return NULL on error. */
+script_info_t *hid_gpmi_reload_module(script_info_t *i);
+
 void hid_gpmi_load_dir(const char *dir);
 char *gpmi_hid_asm_scriptname(const void *info, const char *file_name);
 
 /* Return the number of scripts (gpmi modules) loaded */
 int gpmi_hid_scripts_count();
-
-/* Reload a script - useful if the source of the script has changed */
-int gpmi_hid_script_reload(script_info_t *i);
 
 /* Unload a script (also removes i from the list) - temporary effect,
    the script will be loaded again on the next startup */
