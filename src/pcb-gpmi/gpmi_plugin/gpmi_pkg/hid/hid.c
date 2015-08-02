@@ -13,17 +13,14 @@
 
 void hid_gpmi_data_set(hid_t *h, void *data)
 {
-#warning TODO
-	/* Ugly workaround: as long as we don't have a data field in the hid,
-	   structure, exporters, gui and gadgets can abuse this field */
-	h->hid->calibrate = data;
+	h->hid->user_context = data;
 }
 
 hid_t *hid_gpmi_data_get(HID *h)
 {
 	if (h == NULL)
 		return NULL;
-	return (hid_t *)h->calibrate;
+	return (hid_t *)h->user_context;
 }
 
 hid_t *hid_create(char *hid_name, char *description)
