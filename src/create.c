@@ -255,7 +255,7 @@ PinTypePtr
 CreateNewVia (DataTypePtr Data,
 	      Coord X, Coord Y,
 	      Coord Thickness, Coord Clearance, Coord Mask,
-	      Coord DrillingHole, char *Name, FlagType Flags)
+	      Coord DrillingHole, const char *Name, FlagType Flags)
 {
   PinTypePtr Via;
 
