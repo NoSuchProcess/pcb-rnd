@@ -196,7 +196,8 @@ HID_Attr_Val hid_string2val(const hid_attr_type_t type, const char *str)
 
 char **hid_string2enum(const char *str, HID_Attr_Val *def)
 {
-	char **e, *s, *last;
+	char **e;
+	const char *s, *last;
 	int n, len;
 
 	for(n=0, s=str; *s != '\0'; s++)
@@ -254,7 +255,7 @@ int hid_add_attribute(hid_t *hid, char *attr_name, char *help, hid_attr_type_t t
 			hid->attr[current].default_val.int_value = -1;
 	}
 	else if (type == HIDA_Enum) {
-		hid->attr[current].enumerations = hid_string2enum(default_val, &(hid->attr[current].default_val));
+		hid->attr[current].enumerations = (const char **)hid_string2enum(default_val, &(hid->attr[current].default_val));
 	}
 	else {
 		hid->attr[current].default_val  = hid_string2val(type, default_val);
