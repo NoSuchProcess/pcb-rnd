@@ -34,6 +34,7 @@
  *  it.
  *
  * The new specifiers are:
+ *   %mi    outout a raw internal coordinate without any suffix
  *   %mm    output a measure in mm
  *   %mM    output a measure in scaled (mm/um) metric
  *   %ml    output a measure in mil
