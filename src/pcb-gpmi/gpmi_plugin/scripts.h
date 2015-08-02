@@ -11,7 +11,7 @@ struct script_info_s {
 
 extern script_info_t *script_info;
 
-gpmi_module *hid_gpmi_load_module(const char *module_name, const char *params, const char *config_file_name);
+script_info_t *hid_gpmi_load_module(const char *module_name, const char *params, const char *config_file_name);
 void hid_gpmi_load_dir(const char *dir);
 char *gpmi_hid_asm_scriptname(const void *info, const char *file_name);
 
