@@ -26,7 +26,7 @@ const char *action_arg(int argn)
 }
 
 
-int action_cb(int argc, char **argv, int x, int y)
+static int action_cb(int argc, char **argv, Coord x, Coord y)
 {
 	acontext_t *ctx = (acontext_t *)current_action;
 	int action_argc_old;
@@ -67,7 +67,7 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 	ctx->module = gpmi_get_current_module();
 	ctx->next   = NULL;
 
-	hid_register_action(ctx);
+	hid_register_action(&ctx->action);
 	printf("registered.\n");
 	return 0;
 }
