@@ -28,7 +28,7 @@ do { \
 	(attr)->default_val.int_value = default_item; \
 } while(0)
 
-static script_info_t *choose_script(void)
+static script_info_t *choose_script(char **operations, int *operation)
 {
 	HID_Attribute attr[10];
 	HID_Attr_Val result[10];
@@ -46,9 +46,13 @@ static script_info_t *choose_script(void)
 	}
 	scrl[n] = NULL;
 
-	attr_make_enum(&attr[0],  "", "Select an item from the list of scripts loaded", scrl, -1);
+	attr_make_enum(&attr[0],  "script", "Select an item from the list of scripts loaded", scrl, -1);
 
-	if (gui->attribute_dialog(attr, 1, result, "GPMI manage scripts - select script", "Select one of the scripts already loaded"))
+	if (operations != NULL)
+		attr_make_enum(&attr[1],  "operation", "Choose what to do with the script", operations, *operation);
+
+
+	if (gui->attribute_dialog(attr, 1 + (operations != NULL), result, "GPMI manage scripts - select script", "Select one of the scripts already loaded"))
 		return NULL;
 
 
@@ -65,5 +69,7 @@ static script_info_t *choose_script(void)
 void gpmi_hid_manage_scripts(void)
 {
 	script_info_t *i;
-	i = choose_script();
+	char *operations[] = {"reload", "remove from the config file", NULL};
+	int op = 0;
+	i = choose_script(operations, &op);
 }
