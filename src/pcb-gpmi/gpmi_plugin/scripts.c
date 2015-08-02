@@ -184,7 +184,7 @@ void hid_gpmi_load_dir(const char *dir, int add_pkg_path)
 	char *cfn;
 
 	conf_dir = dir;
-	cfn = Concat(dir, "/", CONFNAME,  NULL);
+	cfn = Concat(dir, PCB_DIR_SEPARATOR_S, CONFNAME,  NULL);
 	fprintf(stderr, "pcb-gpmi: opening config: %s\n", cfn);
 	f = fopen(cfn, "r");
 	if (f == NULL) {
@@ -212,7 +212,7 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 		case '~':
 			file_name += 2;
 			if (homedir != NULL) {
-				snprintf(buffer, sizeof(buffer), "%s/%s", homedir, file_name);
+				snprintf(buffer, sizeof(buffer), "%s%c%s", homedir, PCB_DIR_SEPARATOR_C, file_name);
 				fprintf(stderr, "asm_scriptname FN=%s\n", buffer);
 				return strdup(buffer);
 			}
@@ -221,13 +221,12 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 				printf("FN=%s\n", file_name);
 				return strdup(file_name);
 			}
-#warning TODO: make this more portable
-		case '/': /* full path */
+		case PCB_DIR_SEPARATOR_C: /* full path */
 			return strdup(file_name);
 		default: /* relative path - must be relative to the current conf_dir */
-			if ((file_name[0] == '.') && (file_name[1] == '/'))
+			if ((file_name[0] == '.') && (file_name[1] == PCB_DIR_SEPARATOR_C))
 				file_name += 2;
-			snprintf(buffer, sizeof(buffer), "%s/%s", conf_dir, file_name);
+			snprintf(buffer, sizeof(buffer), "%s%c%s", conf_dir, PCB_DIR_SEPARATOR_C, file_name);
 			printf("FN=%s\n", buffer);
 			return strdup(buffer);
 	}
@@ -293,18 +292,18 @@ int gpmi_hid_script_addcfg(script_info_t *i)
 	FILE *f;
 
 	if (homedir != NULL) {
-		fn = Concat(homedir, "/.pcb", NULL);
+		fn = Concat(homedir, PCB_DIR_SEPARATOR_S ".pcb", NULL);
 		mkdir(fn, 0755);
 		free(fn);
 
-		fn = Concat(homedir, "/.pcb/plugins", NULL);
+		fn = Concat(homedir, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL);
 		mkdir(fn, 0755);
 		free(fn);
 		
-		fn = Concat(homedir, "/.pcb/plugins/", CONFNAME, NULL);
+		fn = Concat(homedir, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, CONFNAME, NULL);
 	}
 	else
-		fn = Concat("plugins/", CONFNAME, NULL);
+		fn = Concat("plugins" PCB_DIR_SEPARATOR_S, CONFNAME, NULL);
 
 		f = fopen(fn, "a");
 	if (f == NULL) {
