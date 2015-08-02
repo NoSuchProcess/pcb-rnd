@@ -40,9 +40,17 @@ static script_info_t *choose_script(char **operations, int *operation)
 
 	scrl = malloc(sizeof(char *) * (n+1));
 	for(i = script_info, n = 0; i != NULL; i = i->next, n++) {
-/*		int len;
-		len = strlen(i->name);*/
-		scrl[n] = strdup(i->name);
+		char *basename, *cf;
+
+		basename = strrchr(i->name, PCB_DIR_SEPARATOR_C);
+		if (basename == NULL)
+			basename = i->name;
+		else
+			basename++;
+
+/*		cf = i->conffile_name == NULL ? "<none>" : i->conffile_name;*/
+
+		scrl[n] = Concat(basename, "\t", i->module_name, NULL);
 	}
 	scrl[n] = NULL;
 
@@ -130,38 +138,45 @@ static script_info_t *load_script(void)
 	if (result[0].int_value < 0)
 		return NULL;
 
-	printf("HAH %s %d %s\n", fn, result[0].int_value, modules[result[0].int_value]);
 	info = hid_gpmi_load_module(modules[result[0].int_value], fn, NULL);
 	if (info == NULL)
 		gui->report_dialog("GPMI script load", "Error loading the script.\nPlease consult the message log for details.");
 	return info;
 }
 
+static void script_details(script_info_t *i)
+{
+
+}
+
 void gpmi_hid_manage_scripts(void)
 {
 	script_info_t *i;
-	char *operations[] = {"reload", "unload", "unload and remove from the config file", "load a new script", "load a new script and add it in the config", NULL};
+	char *operations[] = {"show details...", "reload", "unload", "unload and remove from the config file", "load a new script...", "load a new script and add it in the config...", NULL};
 	int op = 0;
 	i = choose_script(operations, &op);
 	switch(op) {
 		case 0:
-			if (i != NULL)
-				gpmi_hid_script_reload(i);
+			script_details(i);
 			break;
 		case 1:
 			if (i != NULL)
-				gpmi_hid_script_unload(i);
+				gpmi_hid_script_reload(i);
 			break;
 		case 2:
+			if (i != NULL)
+				gpmi_hid_script_unload(i);
+			break;
+		case 3:
 			if (i != NULL) {
 				gpmi_hid_script_remove(i);
 				gpmi_hid_script_unload(i);
 			}
 			break;
-		case 3:
+		case 4:
 			load_script();
 			break;
-		case 4:
+		case 5:
 			i = load_script();
 			if (i != NULL) {
 				gpmi_hid_script_addcfg(i);

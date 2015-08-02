@@ -52,7 +52,7 @@ script_info_t *hid_gpmi_load_module(const char *module_name, const char *params,
 	gpmi_err_stack_destroy(NULL);
 
 	if (module != NULL)
-		return script_info_add(module, params, module, config_file_name);
+		return script_info_add(module, params, module_name, config_file_name);
 
 	return NULL;
 }
