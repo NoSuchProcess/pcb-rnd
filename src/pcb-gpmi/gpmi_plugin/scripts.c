@@ -120,16 +120,68 @@ script_info_t *hid_gpmi_reload_module(script_info_t *i)
 	r = hid_gpmi_load_module(i, i->module_name, i->name, i->conffile_name);
 
 	if (conf_dir != NULL)
-		free(conf_dir);
+		free((char *)conf_dir);
 	conf_dir = old_cd;
 
 	return r;
 }
 
+/* Read and parse gpmi config file fin;
+   if fout is NULL, take cfn as config name and load all modules, return number of modules loaded;
+   else write all lines to fout, but comment out the one whose second token matches cfn, return number of commented lines
+   
+*/
+
+static int cfgfile(FILE *fin, FILE *fout, char *cfn)
+{
+char line[1024], *module, *params, *s, *pkg;
+	int found = 0;
+
+	while(!(feof(fin))) {
+		*line = '\0';
+		fgets(line, sizeof(line), fin);
+		switch(*line) {
+			case '\0':
+			case '\n':
+			case '\r':
+			case '#':
+				/* Empty line or comment */
+				if (fout != NULL)
+					fprintf(fout, "%s", line);
+				break;
+			default:
+				module = strdup(line);
+				params = module + strcspn(module, "\t ");
+				while((*params == ' ') || (*params == '\t')) {
+					*(params) = '\0';
+					params++;
+				}
+				s = strchr(params, '\n');
+				*s = '\0';
+				if (fout == NULL) {
+					fprintf(stderr, " ...loading %s %s\n", module, params);
+					hid_gpmi_load_module(NULL, module, params, cfn);
+					found++;
+				}
+				else {
+					if (strcmp(params, cfn) == 0) {
+						fprintf(fout, "# removed from pcb-rnd GUI: ");
+						found++;
+					}
+					if (fout != NULL)
+						fprintf(fout, "%s", line);
+				}
+				free(module);
+		}
+	}
+
+	return found;
+}
+
 void hid_gpmi_load_dir(const char *dir, int add_pkg_path)
 {
-	char line[1024], *module, *params, *s, *pkg, *cfn;
 	FILE *f;
+	char *cfn;
 
 	conf_dir = dir;
 	cfn = Concat(dir, "/", CONFNAME,  NULL);
@@ -144,29 +196,7 @@ void hid_gpmi_load_dir(const char *dir, int add_pkg_path)
 	if (add_pkg_path)
 		gpmi_path_insert(GPMI_PATH_PACKAGES, dir);
 
-	while(!(feof(f))) {
-		*line = '\0';
-		fgets(line, sizeof(line), f);
-		switch(*line) {
-			case '\0':
-			case '\n':
-			case '\r':
-			case '#':
-				/* Empty line or comment */
-				break;
-			default:
-				module = line;
-				params = line + strcspn(line, "\t ");
-				while((*params == ' ') || (*params == '\t')) {
-					*(params) = '\0';
-					params++;
-				}
-				s = strchr(params, '\n');
-				*s = '\0';
-				fprintf(stderr, " ...loading %s %s\n", module, params);
-				hid_gpmi_load_module(NULL, module, params, cfn);
-		}
-	}
+	cfgfile(f, NULL, cfn);
 
 	fclose(f);
 	free(cfn);
@@ -211,6 +241,42 @@ int gpmi_hid_script_unload(script_info_t *i)
 
 int gpmi_hid_script_remove(script_info_t *i)
 {
+	FILE *fin, *fout;
+	int n;
+	char *tmpfn;
+
+	if (i->conffile_name == NULL) {
+		Message("gpmi_hid_script_remove(): can't remove script from configs, the script is not loaded from a config.\n");
+		return -1;
+	}
+
+	fin = fopen(i->conffile_name, "r");
+	if (fin == NULL) {
+		Message("gpmi_hid_script_remove(): can't remove script from configs, can't open %s for read.\n", i->conffile_name);
+		return -1;
+	}
+	tmpfn = Concat(i->conffile_name, ".tmp", NULL);
+	fout = fopen(tmpfn, "w");
+	if (fout == NULL) {
+		Message("gpmi_hid_script_remove(): can't remove script from configs, can't create %s.\n", tmpfn);
+		fclose(fin);
+		free(tmpfn);
+		return -1;
+	}
+
+	cfgfile(fin, fout, i->name);
+
+	fclose(fin);
+	fclose(fout);
+
+	if (rename(tmpfn, i->conffile_name) != 0) {
+		Message("gpmi_hid_script_remove(): can't remove script from configs, can't move %s to %s.\n", tmpfn, i->conffile_name);
+		free(tmpfn);
+		return -1;
+	}
+
+	free(tmpfn);
+	return 0;
 }
 
 int gpmi_hid_script_addcfg(script_info_t *i)
