@@ -237,6 +237,7 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 int gpmi_hid_script_unload(script_info_t *i)
 {
 	script_info_del(i);
+	return 0;
 }
 
 int gpmi_hid_script_remove(script_info_t *i)

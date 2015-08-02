@@ -188,12 +188,23 @@ void gpmi_hid_manage_scripts(void)
 			break;
 		case 2:
 			if (i != NULL)
-				gpmi_hid_script_unload(i);
+				if (gpmi_hid_script_unload(i) != 0)
+					gui->report_dialog("GPMI script unload", "Error unloading the script.\nPlease consult the message log for details\n");
 			break;
 		case 3:
 			if (i != NULL) {
-				gpmi_hid_script_remove(i);
-				gpmi_hid_script_unload(i);
+				int r1, r2;
+				r1 = gpmi_hid_script_remove(i);
+				r2 = gpmi_hid_script_unload(i);
+				if (r1 || r2) {
+					char *msg;
+					msg = Concat("Error:", 
+					             (r1 ? "couldnt't remove the script from the config file;" : ""), 
+					             (r2 ? "couldnt't unload the script;" : ""),
+					             "\nPlease consult the message log for details\n", NULL);
+					gui->report_dialog("GPMI script unload and remove", msg);
+					free(msg);
+				}
 			}
 			break;
 		case 4:
