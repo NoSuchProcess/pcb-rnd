@@ -160,7 +160,7 @@ int layout_search_free(const char *search_ID)
 	if (layout_searches == NULL)
 		return 1;
 
-	s = hash_find(layout_searches, search_ID);
+	s = (layout_search_t *)hash_find(layout_searches, search_ID);
 	if (s != NULL) {
 		hash_del_key(layout_searches, search_ID);
 		free(s->objects);
