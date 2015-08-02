@@ -22,6 +22,13 @@ int gpmi_hid_scripts_count()
 
 static script_info_t *script_info_add(script_info_t *i, gpmi_module *module, const char *name, const char *module_name, const char *conffile_name)
 {
+	/* make these copies before the free()'s because of reload calling us with
+	   the same pointers... */
+	name = strdup(name);
+	module_name = strdup(module_name);
+	if (conffile_name != NULL)
+		conffile_name = strdup(conffile_name);
+
 	if (i == NULL) {
 		i = malloc(sizeof(script_info_t));
 		i->next = script_info;
@@ -36,12 +43,9 @@ static script_info_t *script_info_add(script_info_t *i, gpmi_module *module, con
 	}
 
 	i->module = module;
-	i->name = strdup(name);
-	i->module_name = strdup(module_name);
-	if (conffile_name != NULL)
-		i->conffile_name = strdup(conffile_name);
-	else
-		i->conffile_name = NULL;
+	i->name = name;
+	i->module_name = module_name;
+	i->conffile_name = conffile_name;
 	return i;
 }
 
