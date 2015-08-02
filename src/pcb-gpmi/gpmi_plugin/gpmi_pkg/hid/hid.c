@@ -75,7 +75,7 @@ hid_t *hid_create(char *hid_name, char *description)
 dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 {
 	char *res;
-	char buff[64];
+	char buff[128];
 	HID_Attr_Val *v;
 
 	if ((hid == NULL) || (attr_id < 0) || (attr_id >= hid->attr_num) || (hid->result == NULL))
@@ -105,6 +105,10 @@ dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 		case HIDA_Path:
 			res = v->str_value;
 			break;
+		case HIDA_Coord:
+				pcb_sprintf(buff, "%mi", v->coord_value);
+				res = buff;
+				break;
 		case HIDA_Unit:
 			{
 				const Unit *u;
@@ -116,7 +120,7 @@ dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 					fact = unit_to_factor(u);
 				snprintf(buff, sizeof(buff), "%f", fact);
 				res = buff;
-				fprintf(stderr, "unit idx: %d %p res='%s'\n", v->int_value, u, res);
+/*				fprintf(stderr, "unit idx: %d %p res='%s'\n", v->int_value, u, res);*/
 			}
 			break;
 		case HIDA_Mixed:
@@ -143,6 +147,26 @@ HID_Attr_Val hid_string2val(const hid_attr_type_t type, const char *str)
 			break;
 		case HIDA_Integer:
 			v.int_value = atoi(str);
+			break;
+		case HIDA_Coord:
+			{
+				char *end;
+				double val;
+				val = strtod(str, &end);
+				while(isspace(*end)) end++;
+				if (*end != '\0') {
+					const Unit *u;
+					u = get_unit_struct(end);
+					if (u == NULL) {
+						Message("Invalid unit for HIDA_Coord in the script: '%s'\n", end);
+						v.coord_value = 0;
+					}
+					else
+						v.coord_value = unit_to_coord(u, val);
+				}
+				else 
+					v.coord_value = val;
+			}
 			break;
 		case HIDA_Unit:
 			{
