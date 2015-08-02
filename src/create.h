@@ -46,7 +46,7 @@ PCBTypePtr CreateNewPCB ();
    else nonzero.  */
 int CreateNewPCBPost (PCBTypePtr, int /* set defaults */);
 PinTypePtr CreateNewVia (DataTypePtr, Coord, Coord, Coord, Coord,
-			 Coord, Coord, char *, FlagType);
+			 Coord, Coord, const char *, FlagType);
 LineTypePtr CreateDrawnLineOnLayer (LayerTypePtr, Coord, Coord, Coord,
 				    Coord, Coord, Coord, FlagType);
 LineTypePtr CreateNewLineOnLayer (LayerTypePtr, Coord, Coord, Coord,
