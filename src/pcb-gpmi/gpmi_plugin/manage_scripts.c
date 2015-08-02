@@ -10,17 +10,33 @@
 
 extern HID *gui;
 
-void gpmi_hid_manage_scripts(void)
+#define attr_make_label(attr, name_, help_) \
+do { \
+	memset((attr), 0, sizeof(HID_Attribute)); \
+	(attr)->name         = name_; \
+	(attr)->help_text    = help_; \
+	(attr)->type         = HID_Label; \
+} while(0)
+
+#define attr_make_enum(attr, name_, help_, enum_vals) \
+do { \
+	memset((attr), 0, sizeof(HID_Attribute)); \
+	(attr)->name         = name_; \
+	(attr)->help_text    = help_; \
+	(attr)->type         = HID_Enum; \
+	(attr)->enumerations = enum_vals; \
+	(attr)->default_val.int_value = -1; \
+} while(0)
+
+static script_info_t *choose_script(void)
 {
-	HID *h;
 	HID_Attribute attr[10];
 	HID_Attr_Val result[10];
 	const char **scrl;
 	script_info_t *i;
 	int n;
 
-
-	for(i = script_info, n = 0; i != NULL; i = i->next, n++) ;
+	n = gpmi_hid_scripts_count();
 
 	scrl = malloc(sizeof(char *) * (n+1));
 	for(i = script_info, n = 0; i != NULL; i = i->next, n++) {
@@ -30,31 +46,22 @@ void gpmi_hid_manage_scripts(void)
 	}
 	scrl[n] = NULL;
 
-	memset(attr, 0, sizeof(attr));
+	attr_make_enum(&attr[0],  "", "Select an item from the list of scripts loaded", scrl);
 
-	attr[0].name         = "" ;
-	attr[0].help_text    = "HELP1";
-	attr[0].type         = HID_Label;
+	gui->attribute_dialog(attr, 1, result, "GPMI manage scripts - select script", "Select one of the scripts already loaded");
 
-	attr[1].name         = "" ;
-	attr[1].help_text    = "HELP2";
-	attr[1].type         = HID_Enum;
-	attr[1].enumerations = scrl;
-	attr[1].default_val.int_value = -1;
+/*	printf("res=%d\n", result[0].int_value);*/
 
-	result[0].str_value = NULL;
-	result[1].str_value = NULL;
-
-	gui->attribute_dialog(attr, 2, result, "GPMI manage scripts - select script", "Select one of the scripts already loaded");
-
-
-	printf("res=%d\n", result[1].int_value);
-
-	if (result[1].int_value != -1) {
-		for(i = script_info, n = result[1].int_value; i != NULL && n != 0; i = i->next, n--);
-
-		printf("name=%s\n", i->name);
+	if (result[0].int_value != -1) {
+		for(i = script_info, n = result[0].int_value; i != NULL && n != 0; i = i->next, n--);
+/*		printf("name=%s\n", i->name);*/
+		return i;
 	}
-
+	return NULL;
 }
 
+void gpmi_hid_manage_scripts(void)
+{
+	script_info_t *i;
+	i = choose_script();
+}

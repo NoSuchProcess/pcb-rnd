@@ -10,6 +10,16 @@
 
 script_info_t *script_info = NULL;
 
+int gpmi_hid_scripts_count()
+{
+	int n;
+	script_info_t *i;
+
+	for(i = script_info, n = 0; i != NULL; i = i->next, n++) ;
+
+	return n;
+}
+
 static void script_info_add(gpmi_module *module, const char *name, const char *module_name, const char *conffile_name)
 {
 	script_info_t *i;
