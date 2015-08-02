@@ -244,6 +244,7 @@ int gpmi_hid_script_remove(script_info_t *i)
 	FILE *fin, *fout;
 	int n;
 	char *tmpfn;
+	int res;
 
 	if (i->conffile_name == NULL) {
 		Message("gpmi_hid_script_remove(): can't remove script from configs, the script is not loaded from a config.\n");
@@ -264,10 +265,16 @@ int gpmi_hid_script_remove(script_info_t *i)
 		return -1;
 	}
 
-	cfgfile(fin, fout, i->name);
+	res = cfgfile(fin, fout, i->name);
 
 	fclose(fin);
 	fclose(fout);
+
+	if (res < 1) {
+		Message("gpmi_hid_script_remove(): can't remove script from configs, can't find the correspondign config line in %s\n", i->conffile_name);
+		free(tmpfn);
+		return -1;
+	}
 
 	if (rename(tmpfn, i->conffile_name) != 0) {
 		Message("gpmi_hid_script_remove(): can't remove script from configs, can't move %s to %s.\n", tmpfn, i->conffile_name);
