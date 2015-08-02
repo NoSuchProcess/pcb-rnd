@@ -142,3 +142,7 @@ int layout_resolve_layer(const char *name);
 int layout_get_page_width();
 int layout_get_page_height();
 void layout_set_page_size(int width, int height);
+
+/* -- coordinate system -- (coord.c) */
+double mil2pcb_multiplier();
+double mm2pcb_multiplier();
