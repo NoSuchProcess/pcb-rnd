@@ -122,6 +122,30 @@ static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 	gui->create_menu(menu, "gpmi_scripts()", "S", "Alt<Key>g", "Manage GPMI scripts");
 }
 
+static int action_gpmi_scripts(int argc, char **argv, Coord x, Coord y)
+{
+	if (argc == 0) {
+		printf("Manage!\n");
+		return;
+	}
+	Message("Invalid arguments in gpmi_scripts()\n");
+}
+
+static void register_actions()
+{
+	HID_Action *ctx;
+
+	ctx = malloc(sizeof(HID_Action));
+	ctx->name           = strdup("gpmi_scripts");
+	ctx->need_coord_msg = NULL;
+	ctx->description    = strdup("Manage gpmi scripts");
+	ctx->syntax         = strdup("TODO");
+	ctx->trigger_cb     = action_gpmi_scripts;
+
+	hid_register_action(ctx);
+}
+
+
 void pcb_plugin_init()
 {
 	void **gpmi_asm_scriptname;
@@ -143,6 +167,7 @@ void pcb_plugin_init()
 	assert(gpmi_asm_scriptname != NULL);
 	*gpmi_asm_scriptname = asm_scriptname;
 
+	register_actions();
 	event_bind(EVENT_GUI_INIT, ev_gui_init, NULL, pcb_plugin_init);
 	load_cfg();
 }
