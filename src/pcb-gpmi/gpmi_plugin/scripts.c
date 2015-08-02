@@ -20,6 +20,14 @@ int gpmi_hid_scripts_count()
 	return n;
 }
 
+static void script_info_free(script_info_t *i)
+{
+	gpmi_mod_unload(i->module);
+	free(i->name);
+	free(i->module_name);
+	free(i->conffile_name);
+}
+
 static script_info_t *script_info_add(script_info_t *i, gpmi_module *module, const char *name, const char *module_name, const char *conffile_name)
 {
 	/* make these copies before the free()'s because of reload calling us with
@@ -34,13 +42,8 @@ static script_info_t *script_info_add(script_info_t *i, gpmi_module *module, con
 		i->next = script_info;
 		script_info = i;
 	}
-	else {
-		gpmi_mod_unload(i->module);
-		free(i->name);
-		free(i->module_name);
-		if (conffile_name != NULL)
-			free(i->conffile_name);
-	}
+	else
+		script_info_free(i);
 
 	i->module = module;
 	i->name = name;
