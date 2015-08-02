@@ -17,14 +17,47 @@ void gpmi_hid_print_error(gpmi_err_stack_t *entry, char *string)
 
 static void load_cfg(void)
 {
-	hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins/", HOST, NULL));
-	hid_gpmi_load_dir (Concat (PCBLIBDIR, "/plugins", NULL));
+	char *dir, *libdirh, *wdir, *wdirh, *hdirh;
+
+	libdirh = Concat(PCBLIBDIR, "/plugins/", HOST, NULL);
+	wdirh = Concat ("plugins/", HOST, NULL);
+	wdir = Concat("plugins", NULL);
+	hdirh = Concat(homedir, "/.pcb/plugins/", HOST, NULL);
+
+	/* first add package search path to all host-specific plugin dirs
+	   This is needed because a script installed in ~/.pcb/plugins/*.conf
+	   (added automatically from, the gui)
+	   could depend on a package being anywhere else
+	*/
+	gpmi_path_insert(GPMI_PATH_PACKAGES, libdirh);
+	gpmi_path_insert(GPMI_PATH_PACKAGES, wdirh);
+	gpmi_path_insert(GPMI_PATH_PACKAGES, hdirh);
+
+	/* the final fallback - append this as loading anything from here is arch-unsafe */
+	gpmi_path_append(GPMI_PATH_PACKAGES, wdir);
+
+
+	hid_gpmi_load_dir(libdirh);
+	
+	dir = Concat(PCBLIBDIR, "/plugins", NULL);
+	hid_gpmi_load_dir(dir);
+	free(dir);
+
 	if (homedir != NULL) {
-		hid_gpmi_load_dir (Concat (homedir, "/.pcb/plugins/", HOST, NULL));
-		hid_gpmi_load_dir (Concat (homedir, "/.pcb/plugins", NULL));
+		hid_gpmi_load_dir (hdirh);
+
+		dir = Concat(homedir, "/.pcb/plugins", NULL);
+		hid_gpmi_load_dir(dir);
+		free(dir);
 	}
-	hid_gpmi_load_dir (Concat ("plugins/", HOST, NULL));
-	hid_gpmi_load_dir (Concat ("plugins", NULL));
+
+	hid_gpmi_load_dir (wdirh);
+	hid_gpmi_load_dir(wdir);
+
+	free(wdir);
+	free(wdirh);
+	free(libdirh);
+	free(hdirh);
 }
 
 static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
