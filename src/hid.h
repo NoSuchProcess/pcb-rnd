@@ -250,6 +250,9 @@ typedef enum
     /* Likewise, but allowed to be longer and more descriptive.  */
     const char *description;
 
+    /* The hid may use this field to store its context. */
+    void *user_context;
+
     /* If set, this is the GUI HID.  Exactly one of these three flags
        must be set; setting "gui" lets the expose callback optimize and
        coordinate itself.  */
