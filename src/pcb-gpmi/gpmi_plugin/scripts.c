@@ -8,6 +8,8 @@
 #include "gpmi_plugin.h"
 #include "scripts.h"
 
+#define CONFNAME "pcb-rnd-gpmi.conf"
+
 script_info_t *script_info = NULL;
 
 int gpmi_hid_scripts_count()
@@ -28,14 +30,17 @@ static void script_info_free(script_info_t *i)
 	free(i->conffile_name);
 }
 
-static script_info_t *script_info_add(script_info_t *i, gpmi_module *module, const char *name, const char *module_name, const char *conffile_name)
+static script_info_t *script_info_add(script_info_t *i, gpmi_module *module, const char *name_, const char *module_name_, const char *conffile_name_)
 {
+	char *name, *module_name, *conffile_name;
 	/* make these copies before the free()'s because of reload calling us with
 	   the same pointers... */
-	name = strdup(name);
-	module_name = strdup(module_name);
-	if (conffile_name != NULL)
-		conffile_name = strdup(conffile_name);
+	name = strdup(name_);
+	module_name = strdup(module_name_);
+	if (conffile_name_ != NULL)
+		conffile_name = strdup(conffile_name_);
+	else
+		conffile_name = NULL;
 
 	if (i == NULL) {
 		i = malloc(sizeof(script_info_t));
@@ -50,6 +55,25 @@ static script_info_t *script_info_add(script_info_t *i, gpmi_module *module, con
 	i->module_name = module_name;
 	i->conffile_name = conffile_name;
 	return i;
+}
+
+/* Unload a script and remove it from the list */
+static void script_info_del(script_info_t *inf)
+{
+	script_info_t *i, *prev;
+	prev = NULL;
+	for(i = script_info; i != NULL; prev = i, i = i->next) {
+		if (i == inf) {
+			/* unlink */
+			if (prev == NULL)
+				script_info = inf->next;
+			else
+				prev->next = inf->next;
+			script_info_free(inf);
+			free(inf);
+			return;
+		}
+	}
 }
 
 static const char *conf_dir = NULL;
@@ -84,7 +108,7 @@ script_info_t *hid_gpmi_reload_module(script_info_t *i)
 		conf_dir = strdup(i->conffile_name);
 		end = strrchr(conf_dir, PCB_DIR_SEPARATOR_C);
 		if (end == NULL) {
-			free(conf_dir);
+			free((char *)conf_dir);
 			conf_dir = NULL;
 		}
 		else
@@ -102,13 +126,13 @@ script_info_t *hid_gpmi_reload_module(script_info_t *i)
 	return r;
 }
 
-void hid_gpmi_load_dir(const char *dir)
+void hid_gpmi_load_dir(const char *dir, int add_pkg_path)
 {
 	char line[1024], *module, *params, *s, *pkg, *cfn;
 	FILE *f;
 
 	conf_dir = dir;
-	cfn = Concat(dir, "/pcb-rnd-gpmi.conf", NULL);
+	cfn = Concat(dir, "/", CONFNAME,  NULL);
 	fprintf(stderr, "pcb-gpmi: opening config: %s\n", cfn);
 	f = fopen(cfn, "r");
 	if (f == NULL) {
@@ -116,7 +140,9 @@ void hid_gpmi_load_dir(const char *dir)
 		fprintf(stderr, " ...failed\n");
 		return;
 	}
-	gpmi_path_insert(GPMI_PATH_PACKAGES, dir);
+
+	if (add_pkg_path)
+		gpmi_path_insert(GPMI_PATH_PACKAGES, dir);
 
 	while(!(feof(f))) {
 		*line = '\0';
@@ -180,15 +206,41 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 
 int gpmi_hid_script_unload(script_info_t *i)
 {
-
+	script_info_del(i);
 }
 
 int gpmi_hid_script_remove(script_info_t *i)
 {
-
 }
 
 int gpmi_hid_script_addcfg(script_info_t *i)
 {
+	char *fn;
+	FILE *f;
 
+	if (homedir != NULL) {
+		fn = Concat(homedir, "/.pcb", NULL);
+		mkdir(fn, 0755);
+		free(fn);
+
+		fn = Concat(homedir, "/.pcb/plugins", NULL);
+		mkdir(fn, 0755);
+		free(fn);
+		
+		fn = Concat(homedir, "/.pcb/plugins/", CONFNAME, NULL);
+	}
+	else
+		fn = Concat("plugins/", CONFNAME, NULL);
+
+		f = fopen(fn, "a");
+	if (f == NULL) {
+		Message("gpmi_hid_script_addcfg: can't open %s for write\n", fn);
+		return -1;
+	}
+
+	fprintf(f, "\n%s\t%s\n", i->module_name, i->name);
+	fclose(f);
+
+	free(fn);
+	return 0;
 }

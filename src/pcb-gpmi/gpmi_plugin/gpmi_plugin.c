@@ -37,22 +37,22 @@ static void load_cfg(void)
 	gpmi_path_append(GPMI_PATH_PACKAGES, wdir);
 
 
-	hid_gpmi_load_dir(libdirh);
+	hid_gpmi_load_dir(libdirh, 0);
 	
 	dir = Concat(PCBLIBDIR, "/plugins", NULL);
-	hid_gpmi_load_dir(dir);
+	hid_gpmi_load_dir(dir, 1);
 	free(dir);
 
 	if (homedir != NULL) {
-		hid_gpmi_load_dir (hdirh);
+		hid_gpmi_load_dir (hdirh, 0);
 
 		dir = Concat(homedir, "/.pcb/plugins", NULL);
-		hid_gpmi_load_dir(dir);
+		hid_gpmi_load_dir(dir, 1);
 		free(dir);
 	}
 
-	hid_gpmi_load_dir (wdirh);
-	hid_gpmi_load_dir(wdir);
+	hid_gpmi_load_dir(wdirh, 0);
+	hid_gpmi_load_dir(wdir, 0);
 
 	free(wdir);
 	free(wdirh);

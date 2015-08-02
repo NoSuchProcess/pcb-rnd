@@ -202,7 +202,8 @@ void gpmi_hid_manage_scripts(void)
 		case 5:
 			i = load_script();
 			if (i != NULL) {
-				gpmi_hid_script_addcfg(i);
+				if (gpmi_hid_script_addcfg(i) != 0)
+					gui->report_dialog("GPMI script add to config", "Error adding the script in user configuration.\nPlease consult the message log for details\n");
 			}
 			break;
 	}
