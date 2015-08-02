@@ -34,7 +34,7 @@ hidGC gpmi_hid_make_gc(void)
 	hid_t *h = hid_gpmi_data_get(exporter);
 
 	/* TODO: fix gc handling... */
-	h->new_gc = gcs++;
+	h->new_gc = (void *)(gcs++);
 	gpmi_event(h->module, HIDE_make_gc, h, h->new_gc);
 	ret = h->new_gc;
 	h->new_gc = NULL;
@@ -75,15 +75,15 @@ void gpmi_hid_parse_arguments(int *pcbargc, char ***pcbargv)
 	hid_parse_command_line(pcbargc, pcbargv);
 }
 
-void gpmi_hid_set_crosshair(int x, int y)
+void gpmi_hid_set_crosshair(int x, int y, int cursor_action)
 {
 	/* Do nothing */
 }
 
-int gpmi_hid_set_layer(const char *name, int group)
+int gpmi_hid_set_layer(const char *name, int group, int empty)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
-	gpmi_event(h->module, HIDE_set_layer, h, name, group);
+	gpmi_event(h->module, HIDE_set_layer, h, name, group, empty);
 	return 1;
 }
 
@@ -99,7 +99,7 @@ void gpmi_hid_set_line_cap(hidGC gc, EndCapStyle style)
 	gpmi_event(h->module, HIDE_set_line_cap, h, gc, style);
 }
 
-void gpmi_hid_set_line_width(hidGC gc, int width)
+void gpmi_hid_set_line_width(hidGC gc, Coord width)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_set_line_width, h, gc, width);
@@ -117,31 +117,31 @@ void gpmi_hid_set_draw_faded(hidGC gc, int faded)
 	gpmi_event(h->module, HIDE_set_draw_faded, h, gc, faded);
 }
 
-void gpmi_hid_draw_line(hidGC gc, int x1, int y1, int x2, int y2)
+void gpmi_hid_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_draw_line, h, gc, x1, y1, x2, y2);
 }
 
-void gpmi_hid_draw_arc(hidGC gc, int cx, int cy, int xradius, int yradius, int start_angle, int delta_angle)
+void gpmi_hid_draw_arc(hidGC gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_draw_arc, h, gc, cx, cy, xradius, yradius, start_angle, delta_angle);
 }
 
-void gpmi_hid_draw_rect(hidGC gc, int x1, int y1, int x2, int y2)
+void gpmi_hid_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_draw_rect, h, gc, x1, y1, x2, y2);
 }
 
-void gpmi_hid_fill_circle(hidGC gc, int cx, int cy, int radius)
+void gpmi_hid_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_fill_circle, h, gc, cx, cy, radius);
 }
 
-void gpmi_hid_fill_polygon(hidGC gc, int n_coords, int *x, int *y)
+void gpmi_hid_fill_polygon(hidGC gc, int n_coords, Coord *x, Coord *y)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	/* TODO: need accessor for these */
@@ -153,7 +153,7 @@ void gpmi_hid_fill_pcb_polygon(hidGC gc, PolygonType *poly, const BoxType *clip_
 	/* TODO */
 }
 
-void gpmi_hid_fill_rect(hidGC gc, int x1, int y1, int x2, int y2)
+void gpmi_hid_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_fill_rect, h, gc, x1, y1, x2, y2);

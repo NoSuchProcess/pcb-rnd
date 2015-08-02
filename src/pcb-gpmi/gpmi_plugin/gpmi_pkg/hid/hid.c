@@ -74,7 +74,7 @@ hid_t *hid_create(char *hid_name, char *description)
 
 dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 {
-	char *res;
+	const char *res;
 	char buff[128];
 	HID_Attr_Val *v;
 
