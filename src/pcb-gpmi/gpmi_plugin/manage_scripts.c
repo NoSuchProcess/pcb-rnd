@@ -144,7 +144,7 @@ static script_info_t *load_script(void)
 	if (result[0].int_value < 0)
 		return NULL;
 
-	info = hid_gpmi_load_module(modules[result[0].int_value], fn, NULL);
+	info = hid_gpmi_load_module(NULL, modules[result[0].int_value], fn, NULL);
 	if (info == NULL)
 		gui->report_dialog("GPMI script load", "Error loading the script.\nPlease consult the message log for details.");
 	return info;

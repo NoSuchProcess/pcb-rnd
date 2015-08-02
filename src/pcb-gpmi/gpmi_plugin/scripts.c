@@ -20,11 +20,21 @@ int gpmi_hid_scripts_count()
 	return n;
 }
 
-static script_info_t *script_info_add(gpmi_module *module, const char *name, const char *module_name, const char *conffile_name)
+static script_info_t *script_info_add(script_info_t *i, gpmi_module *module, const char *name, const char *module_name, const char *conffile_name)
 {
-	script_info_t *i;
+	if (i == NULL) {
+		i = malloc(sizeof(script_info_t));
+		i->next = script_info;
+		script_info = i;
+	}
+	else {
+		gpmi_mod_unload(i->module);
+		free(i->name);
+		free(i->module_name);
+		if (conffile_name != NULL)
+			free(i->conffile_name);
+	}
 
-	i = malloc(sizeof(script_info_t));
 	i->module = module;
 	i->name = strdup(name);
 	i->module_name = strdup(module_name);
@@ -32,14 +42,12 @@ static script_info_t *script_info_add(gpmi_module *module, const char *name, con
 		i->conffile_name = strdup(conffile_name);
 	else
 		i->conffile_name = NULL;
-	i->next = script_info;
-	script_info = i;
 	return i;
 }
 
-static char *conf_dir = NULL;
+static const char *conf_dir = NULL;
 
-script_info_t *hid_gpmi_load_module(const char *module_name, const char *params, const char *config_file_name)
+script_info_t *hid_gpmi_load_module(script_info_t *i, const char *module_name, const char *params, const char *config_file_name)
 {
 	gpmi_module *module;
 
@@ -52,7 +60,7 @@ script_info_t *hid_gpmi_load_module(const char *module_name, const char *params,
 	gpmi_err_stack_destroy(NULL);
 
 	if (module != NULL)
-		return script_info_add(module, params, module_name, config_file_name);
+		return script_info_add(i, module, params, module_name, config_file_name);
 
 	return NULL;
 }
@@ -93,7 +101,7 @@ void hid_gpmi_load_dir(const char *dir)
 				s = strchr(params, '\n');
 				*s = '\0';
 				fprintf(stderr, " ...loading %s %s\n", module, params);
-				hid_gpmi_load_module(module, params, cfn);
+				hid_gpmi_load_module(NULL, module, params, cfn);
 		}
 	}
 

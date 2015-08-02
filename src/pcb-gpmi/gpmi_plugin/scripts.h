@@ -11,7 +11,10 @@ struct script_info_s {
 
 extern script_info_t *script_info;
 
-script_info_t *hid_gpmi_load_module(const char *module_name, const char *params, const char *config_file_name);
+/* Load a GPMI module; if i is NULL, allocate a new slot on the list, else unload
+   i first and place the new module in place of i. */
+script_info_t *hid_gpmi_load_module(script_info_t *i, const char *module_name, const char *params, const char *config_file_name);
+
 void hid_gpmi_load_dir(const char *dir);
 char *gpmi_hid_asm_scriptname(const void *info, const char *file_name);
 
