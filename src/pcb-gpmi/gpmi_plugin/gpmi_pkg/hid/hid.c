@@ -152,7 +152,7 @@ char **hid_string2enum(const char *str, HID_Attr_Val *def)
 	for(n=0, s=str; *s != '\0'; s++)
 		if (*s == '|')
 			n++;
-	e = malloc(sizeof(char *) * (n+1));
+	e = malloc(sizeof(char *) * (n+2));
 
 	def->int_value = 0;
 	def->str_value = NULL;
