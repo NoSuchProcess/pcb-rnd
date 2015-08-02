@@ -28,7 +28,10 @@ static script_info_t *script_info_add(gpmi_module *module, const char *name, con
 	i->module = module;
 	i->name = strdup(name);
 	i->module_name = strdup(module_name);
-	i->conffile_name = strdup(conffile_name);
+	if (conffile_name != NULL)
+		i->conffile_name = strdup(conffile_name);
+	else
+		i->conffile_name = NULL;
 	i->next = script_info;
 	script_info = i;
 	return i;
