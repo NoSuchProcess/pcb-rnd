@@ -12,6 +12,7 @@
 
 void hid_gpmi_data_set(hid_t *h, void *data)
 {
+#warning TODO
 	/* Ugly workaround: as long as we don't have a data field in the hid,
 	   structure, exporters, gui and gadgets can abuse this field */
 	h->hid->calibrate = data;
