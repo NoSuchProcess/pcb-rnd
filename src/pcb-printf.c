@@ -198,6 +198,13 @@ const Unit *get_unit_list (void)
 {
 	return Units;
 }
+/* \brief Returns the unit by its index */
+const Unit *get_unit_by_idx (int idx)
+{
+	if ((idx < 0) || (idx >= N_UNITS))
+		return NULL;
+	return Units+idx;
+}
 /* \brief Returns the length of the master unit list. */
 int get_n_units (void)
 {
@@ -251,6 +258,17 @@ double coord_to_unit (const Unit *unit, Coord x)
 Coord unit_to_coord (const Unit *unit, double x)
 {
   return x / coord_to_unit (unit, 1);
+}
+
+/* \brief Return how many PCB-internal-Coord-unit a unit translates to
+ *
+ * \param [in] unit  The unit to convert
+ *
+ * \return The converted measure
+ */
+double unit_to_factor (const Unit *unit)
+{
+  return 1.0 / coord_to_unit (unit, 1);
 }
 
 static int min_sig_figs(double d)

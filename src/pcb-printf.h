@@ -141,8 +141,10 @@ void initialize_units();
 
 const Unit *get_unit_struct (const char *suffix);
 const Unit *get_unit_list (void);
+const Unit *get_unit_by_idx (int idx);
 int get_n_units (void);
 double coord_to_unit (const Unit *, Coord);
+double unit_to_factor (const Unit *unit);
 Coord  unit_to_coord (const Unit *, double);
 Increments *get_increments_struct (const char *suffix);
 
