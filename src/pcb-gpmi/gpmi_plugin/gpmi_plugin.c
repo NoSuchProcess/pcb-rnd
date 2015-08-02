@@ -31,14 +31,14 @@ void hid_gpmi_load_module(const char *module_name, const char *params)
 
 void hid_gpmi_load_dir(const char *dir)
 {
-	char line[1024], *module, *params, *s, *pkg;
+	char line[1024], *module, *params, *s, *pkg, *cfn;
 	FILE *f;
 
-	fprintf(stderr, "pcb-gpmi: opening config: %s\n", dir);
 	conf_dir = dir;
-#warning TODO use path separator and Concat() instead
-	snprintf(line, sizeof(line), "%s/pcb-rnd-gpmi.conf", dir);
-	f = fopen(line, "r");
+	cfn = Concat(dir, "/pcb-rnd-gpmi.conf", NULL);
+	fprintf(stderr, "pcb-gpmi: opening config: %s\n", cfn);
+	f = fopen(cfn, "r");
+	free(cfn);
 	if (f == NULL) {
 		fprintf(stderr, " ...failed\n");
 		return;
