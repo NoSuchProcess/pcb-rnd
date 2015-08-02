@@ -18,6 +18,14 @@ do { \
 	(attr)->type         = HID_Label; \
 } while(0)
 
+#define attr_make_label_str(attr, name1, name2, help_) \
+do { \
+	char *__names__; \
+	__names__ = Concat(name1, name2, NULL); \
+	attr_make_label(attr, __names__, help_); \
+} while(0)
+
+
 #define attr_make_enum(attr, name_, help_, enum_vals, default_item) \
 do { \
 	memset((attr), 0, sizeof(HID_Attribute)); \
@@ -40,15 +48,13 @@ static script_info_t *choose_script(char **operations, int *operation)
 
 	scrl = malloc(sizeof(char *) * (n+1));
 	for(i = script_info, n = 0; i != NULL; i = i->next, n++) {
-		char *basename, *cf;
+		char *basename;
 
 		basename = strrchr(i->name, PCB_DIR_SEPARATOR_C);
 		if (basename == NULL)
 			basename = i->name;
 		else
 			basename++;
-
-/*		cf = i->conffile_name == NULL ? "<none>" : i->conffile_name;*/
 
 		scrl[n] = Concat(basename, "\t", i->module_name, NULL);
 	}
@@ -146,7 +152,20 @@ static script_info_t *load_script(void)
 
 static void script_details(script_info_t *i)
 {
+	HID_Attribute attr[4];
+	HID_Attr_Val result[4];
+	char *cf;
 
+	cf = i->conffile_name == NULL ? "<none>" : i->conffile_name;
+
+
+	attr_make_label_str(&attr[0], "File name:   ", i->name, "File name of the script (if not absolute, it's relative to the config file)");
+	attr_make_label_str(&attr[1], "GPMI module: ", i->module_name, "Name of the GPMI module that is interpreting the script");
+	attr_make_label_str(&attr[2], "Config file: ", cf, "Name of config file that requested the script to be loaded ");
+	gui->attribute_dialog(attr, 3, result, "GPMI manage scripts - script details", "Displaying detailed info on a script already loaded");
+	free(attr[0].name);
+	free(attr[1].name);
+	free(attr[2].name);
 }
 
 void gpmi_hid_manage_scripts(void)
