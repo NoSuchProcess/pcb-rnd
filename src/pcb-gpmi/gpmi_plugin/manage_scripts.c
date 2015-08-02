@@ -18,14 +18,14 @@ do { \
 	(attr)->type         = HID_Label; \
 } while(0)
 
-#define attr_make_enum(attr, name_, help_, enum_vals) \
+#define attr_make_enum(attr, name_, help_, enum_vals, default_item) \
 do { \
 	memset((attr), 0, sizeof(HID_Attribute)); \
 	(attr)->name         = name_; \
 	(attr)->help_text    = help_; \
 	(attr)->type         = HID_Enum; \
 	(attr)->enumerations = enum_vals; \
-	(attr)->default_val.int_value = -1; \
+	(attr)->default_val.int_value = default_item; \
 } while(0)
 
 static script_info_t *choose_script(void)
@@ -46,9 +46,11 @@ static script_info_t *choose_script(void)
 	}
 	scrl[n] = NULL;
 
-	attr_make_enum(&attr[0],  "", "Select an item from the list of scripts loaded", scrl);
+	attr_make_enum(&attr[0],  "", "Select an item from the list of scripts loaded", scrl, -1);
 
-	gui->attribute_dialog(attr, 1, result, "GPMI manage scripts - select script", "Select one of the scripts already loaded");
+	if (gui->attribute_dialog(attr, 1, result, "GPMI manage scripts - select script", "Select one of the scripts already loaded"))
+		return NULL;
+
 
 /*	printf("res=%d\n", result[0].int_value);*/
 
