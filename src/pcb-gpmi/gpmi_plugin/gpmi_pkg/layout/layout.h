@@ -147,6 +147,12 @@ void layout_set_page_size(int width, int height);
 double mil2pcb_multiplier();
 double mm2pcb_multiplier();
 
+
+typedef struct dctx_s {
+	void *hid;
+	void *gc;
+} dctx_t;
+
 /* -- debug draw GC -- */
 /* Initialize debug drawing; returns 1 if worked, 0 if denied */
 int debug_draw_request(void);
@@ -155,9 +161,29 @@ int debug_draw_request(void);
 void debug_draw_flush(void);
 
 /* Finish (close) drawing */
-void debug_draw_finish(void);
+void debug_draw_finish(dctx_t *ctx);
 
-typedef void DGC;
-/* Get the graphic context of debug draw */
-DGC *debug_draw_gc(void);
+/* Get the draw context of debug draw */
+dctx_t *debug_draw_dctx(void);
 
+/* -- draw on a GC -- */
+void draw_set_color(dctx_t *ctx, const char *name);
+/*void set_line_cap(dctx_t *ctx, EndCapStyle style_);*/
+void draw_set_line_width(dctx_t *ctx, int width);
+void draw_set_draw_xor(dctx_t *ctx, int xor);
+void draw_set_draw_faded(dctx_t *ctx, int faded);
+void draw_line(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
+
+/*
+void draw_arc(dctx_t *ctx, int cx_, int cy_, int xradius_, int yradius_, double start_angle_, double delta_angle_);
+void draw_rect(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
+void fill_circle(dctx_t *ctx, int cx_, int cy_, int radius_);
+void fill_polygon(dctx_t *ctx, int n_ints_, int *x_, int *y_);
+void fill_pcb_polygon(dctx_t *ctx, PolygonType *poly, const BoxType *clip_box);
+void thindraw_pcb_polygon(dctx_t *ctx, PolygonType *poly, const BoxType *clip_box);
+void fill_pcb_pad(dctx_t *ctx, PadType *pad, bool clip, bool mask);
+void thindraw_pcb_pad(dctx_t *ctx, PadType *pad, bool clip, bool mask);
+void fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType *pv, bool drawHole, bool mask);
+void thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType *pv, bool drawHole, bool mask);
+void fill_rect(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
+*/

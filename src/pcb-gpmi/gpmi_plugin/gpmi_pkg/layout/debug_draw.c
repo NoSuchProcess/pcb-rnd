@@ -3,7 +3,7 @@
 #include "layout.h"
 #include "src/hid.h"
 
-static HID *ddh;
+static HID *ddh = NULL;
 
 #define need_ddh if (ddh == NULL) return
 
@@ -19,17 +19,30 @@ int debug_draw_request(void)
 void debug_draw_flush(void)
 {
 	need_ddh;
-	flush_debug_draw();
+	gui->flush_debug_draw();
 }
 
-void debug_draw_finish(void)
+void debug_draw_finish(dctx_t *ctx)
 {
 	need_ddh;
-	finish_debug_draw();
+	ddh->destroy_gc(ctx->gc);
+	gui->finish_debug_draw();
+	free(ctx);
+	ddh = NULL;
 }
 
-void *debug_draw_gc(void)
+dctx_t *debug_draw_dctx(void)
 {
+	dctx_t *ctx;
+	hidGC gc;
 	need_ddh(NULL);
-	return ddh->make_gc();
+	gc = ddh->make_gc();
+	if (gc == NULL) {
+		Message("debug_draw_dctx(): failed to make a new gc on ddh %p\n", ddh);
+		return NULL;
+	}
+
+	ctx = malloc(sizeof(dctx_t));
+	ctx->hid = ddh;
+	ctx->gc = gc;
 }
