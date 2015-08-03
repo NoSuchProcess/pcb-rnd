@@ -146,3 +146,18 @@ void layout_set_page_size(int width, int height);
 /* -- coordinate system -- (coord.c) */
 double mil2pcb_multiplier();
 double mm2pcb_multiplier();
+
+/* -- debug draw GC -- */
+/* Initialize debug drawing; returns 1 if worked, 0 if denied */
+int debug_draw_request(void);
+
+/* Flush the drawing */
+void debug_draw_flush(void);
+
+/* Finish (close) drawing */
+void debug_draw_finish(void);
+
+typedef void DGC;
+/* Get the graphic context of debug draw */
+DGC *debug_draw_gc(void);
+
