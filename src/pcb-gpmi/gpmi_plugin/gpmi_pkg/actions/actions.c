@@ -59,7 +59,7 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 
 	ctx = malloc(sizeof(acontext_t));
 	ctx->action.name           = strdup(name);
-	ctx->action.need_coord_msg = strdup(need_xy);
+	ctx->action.need_coord_msg = strdup_null(need_xy);
 	ctx->action.description    = strdup(description);
 	ctx->action.syntax         = strdup(syntax);
 	ctx->action.trigger_cb     = action_cb;
@@ -70,4 +70,9 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 	hid_register_action(&ctx->action);
 	printf("registered.\n");
 	return 0;
+}
+
+int action(const char *cmdline)
+{
+	return hid_parse_command(cmdline);
 }

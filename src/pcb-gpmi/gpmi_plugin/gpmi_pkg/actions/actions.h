@@ -7,3 +7,6 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 
 /* extract argument argn for the current action (makes sense only in an ACTE_action event handler */
 const char *action_arg(int argn);
+
+/* call an existing action */
+int action(const char *cmdline);
