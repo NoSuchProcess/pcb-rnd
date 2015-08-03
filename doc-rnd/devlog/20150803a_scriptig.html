@@ -1,0 +1,24 @@
+<HTML>
+<body>
+<h1> pcb-rnd devlog </h1>
+<h2> scripting </h2>
+Most of the infrastructure for a scriptable pcb had been there in pcb-gpmi.
+I had also finished some gpmi cleanup and pcb 
+(<a href="20150731a_menu.html">menu</a> and 
+<a href="20150801a_events.html"> events </a>) subprojects last week.
+These made it easier to get to reach the current status after a weekend
+coding marathon:
+<ul>
+	<li> (TODO:link video) dialog boxes for managing (loading/unloading) scripts
+	<li> import, test, extend the glue layer; scripts can:
+	<ul>
+		<li> register new actions
+		<li> execute existing actions
+		<li> pop up simple dialog boxes (message, report, progress bar, file selection)
+		<li> build and pop up custom dialog boxes (so called attribute dialogs)
+		<li> search for objects (lines, arc, polys, vias, etc.) on the layout
+		<li> create new objects on the layout
+		<li> change "page" properties (dimensions of the board)
+		<li> debug draw on the gui (slightly broken on gtk due to some gtk hid bugs)
+	</ul>
+</ul>
