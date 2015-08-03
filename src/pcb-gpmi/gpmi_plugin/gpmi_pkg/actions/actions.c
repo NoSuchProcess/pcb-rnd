@@ -76,3 +76,29 @@ int action(const char *cmdline)
 {
 	return hid_parse_command(cmdline);
 }
+
+void create_menu(const char *path_, const char *action, const char *mnemonic, const char *hotkey, const char *tooltip)
+{
+#define MENU_MAX 32
+	const char *menu[MENU_MAX];
+	int n;
+	char *s, *path = strdup(path_);
+
+	menu[0] = path;
+	for(n = 1, s = path; *s != '\0'; s++) {
+		if (*s == '/') {
+			*s = '\0';
+			s++;
+			menu[n] = s;
+			n++;
+			if (n == MENU_MAX-1) {
+				Message("create_menu(): menu path '%s' too long\n", path_);
+				break;
+			}
+		}
+	}
+	menu[n] = NULL;
+
+	gui->create_menu(menu, action, mnemonic, hotkey, tooltip);
+	free(path);
+}

@@ -62,9 +62,19 @@ static void load_cfg(void)
 
 static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 {
+	int ev;
+	char *ev_args;
+	script_info_t *i;
 	const char *menu[] = {"Plugins", "GPMI scripting", "Scripts", NULL};
 
 	gui->create_menu(menu, "gpmi_scripts()", "S", "Alt<Key>g", "Manage GPMI scripts");
+
+	ev = gpmi_event_find("ACTE_gui_init", &ev_args);
+	if (ev >= 0) {
+		for(i = script_info; i != NULL; i = i->next)
+			if (i->module != NULL)
+				gpmi_event(i->module, ev, argc, argv);
+	}
 }
 
 static int action_gpmi_scripts(int argc, char **argv, Coord x, Coord y)
