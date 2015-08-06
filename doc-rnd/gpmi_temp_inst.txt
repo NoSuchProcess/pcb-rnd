@@ -1,0 +1,79 @@
+GPMI manual install
+
+The installation process is somewhat manual at this early stage. Please 
+follow the steps below.
+
+First, you'll need libgpmi - it's a general purpose script glue interface.
+
+1. svn checkout svn://repo.hu/gpmi/trunk gpmi/trunk
+2. look at doc/languages.txt there; if you have preferred languages, 
+please install the -dev packages of those. My favorite is mawk, but I 
+think most of the example pcb scripts would be in lua. Versions should 
+match; it may be that gpmi works with a newer minor version out of the 
+box, tho.
+3. run ./configure
+4. check if it found the language(s) you wanted; if not, or anything 
+else breaks, please send me your scconfig/config.log
+5. make
+6. make install (as root, but see below)
+
+There are options to step 6:
+
+- if you want to check what it'd do, you could run this:
+
+   install_root=/tmp/foo make install
+
+   it's like DESTDIR for autotools: it will do everything but will use
+   /tmp/foo instead of / so you see what it'd do without using root or
+   messing with /usr
+
+- you can use make linstall instead of make install; this creates symlinks 
+(pointing to the binaries in your user checkout) instead of copying the 
+files. If gpmi changes and you need to update and recompile, you won't 
+need to reinstall (until the number of files change).
+
+- I don't have --prefix yet, so things go under /usr; if you want to 
+install under /usr/local or /opt or wherever, please let me know and I'll 
+add the option in ./configure
+
+- there's a make uninstall, but it's more or less untested (failed once 
+and worked once for me)
+
+Second, you need pcb-rnd:
+
+1. svn checkout svn://repo.hu/pcb-rnd/trunk pcb-rnd/trunk
+2. ./configure
+3. check the output; if anything went wrong, please send me 
+scconfig/config.log
+4. make
+5. you don't need to install it for testing: cd src; ./pcb-rnd
+
+Please test whether it works before moving on to the next steps.
+
+Third, the scripting stuff is a plugin which is already part of the source 
+tree but is not yet integrated (./configure doesn't know about it and it 
+needs some manual steps). So compile and "install" the plugin (all in 
+pcb-rnd/trunk):
+
+1. mkdir -p src/plugins/pcb-rnd-gpmi
+2. cd src/pcb-gpmi
+3. ./configure
+4. make
+5. copy all the .so and .h files from src/pcb-gpmi/gpmi_plugin/gpmi_pkg 
+to src/plugins/pcb-rnd-gpmi (you can symlink instead of cp so a recompile 
+won't need a "reinstall")
+6. copy (or symlink) src/pcb-gpmi/gpmi_plugin/gpmi_plugin.so to 
+src/plugins/gpmi_plugin.so
+7. run pcb-rnd from source; it will look for plugins in ./plugins (at the 
+end of the search list) and will find and load gpmi_plugin.so
+8. you should have a new menu donated by the plugin:
+    Plugins/GPMI scripting/Scripts
+
+Note: once we finish alpha testing and the major bugs are ironed out, I'd 
+make the installation process much simpler. Pcb-rnd's ./configure 
+would detect gpmi and if found, the plugin would be automatically compiled 
+(maybe even linked into pcb-rnd). There'd be an svn branch and probably 
+distribution tarballs that have both the relevant gpmi checkout and 
+pcb-rnd checkout in the same tree and single central ./configure and 
+make scripts to compile and install them both.
+
