@@ -128,6 +128,15 @@ int layout_create_via(int x, int y, int thickness, int clearance, int mask, int 
 int layout_create_arc(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags);
 
 /* -- layer manipulation -- (layers.c) */
+typedef enum layer_field_e {
+	LFLD_NUM_LINES,
+	LFLD_NUM_TEXTS,
+	LFLD_NUM_POLYS,
+	LFLD_NUM_ARCS,
+	LFLD_VISIBLE,
+	LFLD_NODRC
+} layer_field_t;
+
 /* switch to layer (further actions will take place there) */
 void layout_switch_to_layer(int layer);
 
@@ -136,6 +145,25 @@ int layout_get_current_layer();
 
 /* resolve layer number by name (case sensitive); returns negative number if not found */
 int layout_resolve_layer(const char *name);
+
+/* return the theoretical number of layers supported by PCB */
+int layout_get_max_possible_layer();
+
+/* return the actual number of copper layers on the current design */
+int layout_get_max_copper_layer();
+
+/* return the actual number of layers on the current design */
+int layout_get_max_layer();
+
+/* return the name of a layer */
+const char *layout_layer_name(int layer);
+
+/* return the color of a layer */
+const char *layout_layer_color(int layer);
+
+/* return an integer field of a layer */
+int layout_layer_field(int layer, layer_field_t fld);
+
 
 /* -- page manipulation -- (page.c) */
 /* query or set width and height of the drawing */
