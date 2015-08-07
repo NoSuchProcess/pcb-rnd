@@ -105,12 +105,26 @@ static int action_gpmi_scripts(int argc, char **argv, Coord x, Coord y)
 		else
 			cmd_reload(NULL);
 	}
-	if (strcasecmp(argv[0], "load") == 0) {
-		if (argc == 3)
+	else if (strcasecmp(argv[0], "load") == 0) {
+		if (argc == 3) {
 			if (hid_gpmi_load_module(NULL, argv[1], argv[2], NULL) == NULL)
 				Message("Failed to load %s %s\n", argv[1], argv[2]);
+		}
 		else
 			Message("Invalid number of arguments for load\n");
+	}
+	else if (strcasecmp(argv[0], "unload") == 0) {
+		if (argc == 2) {
+			script_info_t *i = hid_gpmi_lookup(argv[1]);
+			if (i != NULL) {
+				if (gpmi_hid_script_unload(i) != 0)
+					Message("Failed to unload %s\n", argv[1]);
+			}
+			else
+				Message("Failed to unload %s: not loaded\n", argv[1]);
+		}
+		else
+			Message("Invalid number of arguments for unload\n");
 	}
 	else
 		Message("Invalid arguments in gpmi_scripts()\n");
@@ -120,7 +134,6 @@ static int action_gpmi_rehash(int argc, char **argv, Coord x, Coord y)
 {
 	cmd_reload(NULL);
 }
-
 
 static void register_actions()
 {
