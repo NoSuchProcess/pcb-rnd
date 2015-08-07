@@ -218,6 +218,7 @@ void hid_gpmi_load_dir(const char *dir, int add_pkg_path)
 char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 {
 	char buffer[1024];
+	char *cd;
 
 	switch(*file_name) {
 		case '~':
@@ -237,7 +238,11 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 		default: /* relative path - must be relative to the current conf_dir */
 			if ((file_name[0] == '.') && (file_name[1] == PCB_DIR_SEPARATOR_C))
 				file_name += 2;
-			snprintf(buffer, sizeof(buffer), "%s%c%s", conf_dir, PCB_DIR_SEPARATOR_C, file_name);
+			if (conf_dir == NULL)
+				cd = ".";
+			else
+				cd = conf_dir;
+			snprintf(buffer, sizeof(buffer), "%s%c%s", cd, PCB_DIR_SEPARATOR_C, file_name);
 			printf("FN=%s\n", buffer);
 			return strdup(buffer);
 	}
