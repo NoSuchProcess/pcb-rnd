@@ -77,14 +77,43 @@ static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 	}
 }
 
+static void cmd_reload(char *name)
+{
+	script_info_t *i;
+	if (name != NULL) {
+		i = hid_gpmi_lookup(name);
+		if (i != NULL)
+			hid_gpmi_reload_module(i);
+		else
+			Message("Script %s not found\n", name);
+	}
+	else {
+		for(i = script_info; i != NULL; i = i->next)
+			hid_gpmi_reload_module(i);
+	}
+}
+
 static int action_gpmi_scripts(int argc, char **argv, Coord x, Coord y)
 {
 	if (argc == 0) {
 		gpmi_hid_manage_scripts();
 		return;
 	}
-	Message("Invalid arguments in gpmi_scripts()\n");
+	if (strcasecmp(argv[0], "reload") == 0) {
+		if (argc > 1)
+			cmd_reload(argv[1]);
+		else
+			cmd_reload(NULL);
+	}
+	else
+		Message("Invalid arguments in gpmi_scripts()\n");
 }
+
+static int action_gpmi_rehash(int argc, char **argv, Coord x, Coord y)
+{
+	cmd_reload(NULL);
+}
+
 
 static void register_actions()
 {
@@ -96,6 +125,15 @@ static void register_actions()
 	ctx->description    = strdup("Manage gpmi scripts");
 	ctx->syntax         = strdup("TODO");
 	ctx->trigger_cb     = action_gpmi_scripts;
+
+	hid_register_action(ctx);
+
+	ctx = malloc(sizeof(HID_Action));
+	ctx->name           = strdup("rehash");
+	ctx->need_coord_msg = NULL;
+	ctx->description    = strdup("Reload all gpmi scripts");
+	ctx->syntax         = strdup("TODO");
+	ctx->trigger_cb     = action_gpmi_rehash;
 
 	hid_register_action(ctx);
 }

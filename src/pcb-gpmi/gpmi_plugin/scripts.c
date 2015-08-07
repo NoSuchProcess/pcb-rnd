@@ -57,6 +57,17 @@ static script_info_t *script_info_add(script_info_t *i, gpmi_module *module, con
 	return i;
 }
 
+script_info_t *hid_gpmi_lookup(const char *name)
+{
+	script_info_t *i;
+	if (name == NULL)
+		return NULL;
+	for(i = script_info; i != NULL; i = i->next)
+		if (strcmp(name, i->name) == 0)
+			return i;
+	return NULL;
+}
+
 /* Unload a script and remove it from the list */
 static void script_info_del(script_info_t *inf)
 {

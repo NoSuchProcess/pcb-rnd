@@ -19,6 +19,9 @@ script_info_t *hid_gpmi_load_module(script_info_t *i, const char *module_name, c
    Reloads a module already loaded; return NULL on error. */
 script_info_t *hid_gpmi_reload_module(script_info_t *i);
 
+/* look up a module by name - slow linear search */
+script_info_t *hid_gpmi_lookup(const char *name);
+
 void hid_gpmi_load_dir(const char *dir, int add_pkg_path);
 char *gpmi_hid_asm_scriptname(const void *info, const char *file_name);
 
