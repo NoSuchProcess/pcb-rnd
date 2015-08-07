@@ -105,6 +105,13 @@ static int action_gpmi_scripts(int argc, char **argv, Coord x, Coord y)
 		else
 			cmd_reload(NULL);
 	}
+	if (strcasecmp(argv[0], "load") == 0) {
+		if (argc == 3)
+			if (hid_gpmi_load_module(NULL, argv[1], argv[2], NULL) == NULL)
+				Message("Failed to load %s %s\n", argv[1], argv[2]);
+		else
+			Message("Invalid number of arguments for load\n");
+	}
 	else
 		Message("Invalid arguments in gpmi_scripts()\n");
 }
