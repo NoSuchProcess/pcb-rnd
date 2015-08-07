@@ -146,7 +146,7 @@ void layout_set_page_size(int width, int height);
 /* -- coordinate system -- (coord.c) */
 double mil2pcb_multiplier();
 double mm2pcb_multiplier();
-
+const char *current_grid_unit();
 
 typedef struct dctx_s {
 	void *hid;
