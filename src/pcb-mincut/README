@@ -1,0 +1,21 @@
+This mini-project demonstrates a minimal cut implementation tailored
+to solve geda/pcb "how to highlight shorts" problem.
+
+It should compile out of the box on GNU/Linux using make. Running
+a test case:
+
+./main < test_cases/H3.in
+
+If graphviz is installed, input graphs are drawn. Changing the
+#defines in solve.c causes more debug messages printed and/or
+debug graphs drawn.
+
+The code is not portable at all, since it is a proof-of-concept
+prototype.
+
+load.c is for easier testing; if the code ever gets merge in PCB it
+would use something native and load.c would be omitted. genht is a
+dependency of load.c.
+
+
+

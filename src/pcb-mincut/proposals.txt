@@ -1,0 +1,99 @@
+I start to lose track of all the diverse ideas. This post is an effort to 
+structure the major directions. May it be incomplete, feel free to complete 
+it.
+
+In case there is a short...
+
+I. check whether we have history, since this way the qeustion is "what
+  user modification introduced the short" which might be more useful
+  than answer "which object(s) cause(s) the short at the moment".
+
+ 1. bisect using the undo buffer (as Kai-Martin Knaak does manually) -
+    does not work accross sessions (restart/load) and as Markus
+    Hitter pointed it out, fails when new netlist is loaded
+
+ 2. tag objects according to their first connection as suggested by Peter
+    Clifton. This info could be easily saved, making it immune to reload.
+    With further improvments by John Doty and Levente Kovacs with detailed
+    method described by Chris Smith.
+
+ 3. separate connection/netlist history (saved with the PCB). No details
+    yet. Might be the same as I/2.
+
+ 4. Markus Hitter's proposal of pinning down rat lines later converted to
+    to copper. (This is not strictly about keeping track of object
+    history, unless we consider pinned down rats as history of a later copper
+    trace)
+
+II. no history available, try to highlight objects that are most likely to
+    help the user resolving the short. Nodes of the graph include
+    junctions, thermals, etc., much more verbose then the netlist.
+
+ 1. propagate nets from all nodes as suggested by Peter Clifton. Doing
+    this in parallel may cause a collision close to the "real place
+    of the short"
+
+ 2. find a minimal cut in a way the resulting graphs will reflect the
+    netlist and highlight only those cutting edge. To the end user this
+    means we find the smallest modification (deletion) that would fix the
+    problem (with or without leaving new rat lines). Sounds like an NP
+    hard problem, no working solution has been proposed in the thread yet.
+ 
+ 3. Peter Clifton's remove-edges-and-see-how-that-improves-the-situation.
+    A good metric is needed to make sure we can measure small improvements
+    in cases where multiple edges must be removed to resolve the short.
+    Likely to select more edges than the minimum.
+
+ 4.
+   stage 1
+    classify nodes/edges: each belongs to one of the affected nets or is
+    neutral (could be in multiple nets or could be removed without
+    breaking only short, not legal redundant connection in a net). Assume
+    only neutral nodes/edges may participate in the short. Question is how
+    to do the classification properly:
+
+    a. A modified version of Peter Clifton's propagation idea might work,
+       needs more thoughts.
+    b. A similar problem may be known in graph theory; Finding Steiner
+       tree for a net and trying to fit our nodes/edges on it would keep
+       the minimal amount (or length) of objects to form the net properly,
+       and take the rest as neutral. This Breaks badly with redundant
+       connections in a net. Needs more work.
+
+   stage 2
+    from stage 1 we already have sections with multiple nodes/edges that
+    are neutral and can be blamed for the short. If the user breaks each
+    such section, the short is resolved.
+
+    a. highlight these sections and let the user break each wherever
+       (s)he wants (need a way to differentiate between sections)
+    b. try to find the best place to cut each section
+       A. middle of the section
+       B. smallest modification (however we measure that)
+       C. heat up the section with the modified verison of Joshua Lansford
+          idea; this may be used to highlight the shortest/smallest
+          object
+
+
+ 5. minimal cut (proposed by Britton Kerin) with the S->T modified
+    connection graph; creating the modified graph is trival and there
+    should be pseudo code and/or libraries available for calculating
+    minimal cut. With uniformly wieghted edges it could reliably find the
+    smallest amount of cuts resolving the short.
+
+ 6. pick a random path from a random pin/pad of net1 to another random
+    pin/pad of net2 and let the user resolve this short. Once this is done,
+    the process can be repeated until all shorts are eliminated. Proposed
+    by Russell Dill.
+
+III. manual net tagging
+
+ 1. Do not use I. or II., require(?) the user to manually select a net
+    for each object placed and highlight shorts, as proposed by John Doty
+    and Levente Kovacs.
+
+ 2. I/2 combined with III/1; by default it follows I/2 but the user can
+    chose to manually edit tags as in III/1.
+
+
+

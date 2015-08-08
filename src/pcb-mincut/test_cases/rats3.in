@@ -1,0 +1,9 @@
+# C---a---b---D
+
+net1 a b
+net2 C D
+conn C-a a-b b-D
+
+
+
+

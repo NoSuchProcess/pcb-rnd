@@ -1,0 +1,8 @@
+# a-1-b
+#   |
+# C-2-D
+
+net1 a b
+net2 C D
+neut 1 2
+conn C-2 D-2 a-1 b-1 1-2
