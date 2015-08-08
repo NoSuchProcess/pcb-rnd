@@ -49,11 +49,20 @@ BEGIN {
 				pinno = y * P["nx"] + x + 1
 			}
 			else if (P["sequence"] == "zigzag") {
-				if (x % 2)
+				if (x % 2) {
 					pinno = (x+1) * P["ny"] - y
-				else
+					if ((etrunc) && (eshift == "x"))
+						pinno -= int(x/2)+1
+					else if ((etrunc) && (eshift == "y"))
+						pinno += int(x/2)
+				}
+				else {
 					pinno = x * P["ny"] + y + 1
-
+					if ((etrunc) && (eshift == "x"))
+						pinno -= x/2
+					else if ((etrunc) && (eshift == "y"))
+						pinno += x/2-1
+				}
 			}
 			element_pin(x * step + xo, y * step + yo, pinno)
 		}
