@@ -40,6 +40,14 @@
 #@@optional:etrunc
 #@@preview_args:etrunc 2,3,eshift=x
 
+#@@param:sequence pin numbering sequence
+#@@enum:sequence:normal increase by y first, then by x
+#@@enum:sequence:pivot increase by x first, then by y
+#@@enum:sequence:zigzag "dip-style" numbering in zig-zag: number odd x rows by y ascending, even x rows by y descending
+#@@default:sequence normal
+#@@optional:sequence
+#@@preview_args:sequence 2,3
+
 
 #@@include common.awk
 

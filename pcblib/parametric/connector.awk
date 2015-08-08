@@ -1,6 +1,7 @@
 BEGIN {
 	set_arg(P, "?spacing", 100)
 	set_arg(P, "?silkmark", "square")
+	set_arg(P, "?sequence", "normal")
 
 	proc_args(P, "nx,ny,spacing,silkmark,eshift,etrunc", "nx,ny")
 
@@ -41,7 +42,20 @@ BEGIN {
 				if ((etrunc) && (y == P["ny"]-1) && (yo != 0))
 					continue
 			}
-			element_pin(x * step + xo, y * step + yo)
+			if (P["sequence"] == "normal") {
+				pinno++
+			}
+			else if (P["sequence"] == "pivot") {
+				pinno = y * P["nx"] + x + 1
+			}
+			else if (P["sequence"] == "zigzag") {
+				if (x % 2)
+					pinno = (x+1) * P["ny"] - y
+				else
+					pinno = x * P["ny"] + y + 1
+
+			}
+			element_pin(x * step + xo, y * step + yo, pinno)
 		}
 	}
 
