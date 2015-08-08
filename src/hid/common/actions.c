@@ -62,6 +62,11 @@ hid_register_actions (HID_Action * a, int n)
                      "action \"%s\" not registered.\n"), a[i].name);
           continue;
         }
+			if (htsp_get(all_actions, a[i].name) != NULL) {
+          Message (_("ERROR! Invalid action name, "
+                     "action \"%s\" is already registered.\n"), a[i].name);
+          continue;
+			}
       htsp_set(all_actions, a[i].name, a+i);
     }
 }
