@@ -47,7 +47,7 @@ static const char *check_action_name(const char *s)
 
 void hid_register_actions(HID_Action * a, int n)
 {
-	int i, count = 0;
+	int i;
 
 	if (all_actions == NULL)
 		all_actions = htsp_alloc(keyhash, keyeq);
@@ -68,6 +68,25 @@ void hid_register_actions(HID_Action * a, int n)
 void hid_register_action(HID_Action * a)
 {
 	hid_register_actions(a, 1);
+}
+
+void hid_remove_actions(HID_Action * a, int n)
+{
+	int i;
+
+	if (all_actions == NULL)
+		return;
+
+	for (i = 0; i < n; i++)
+		htsp_pop(all_actions, a[i].name);
+}
+
+HID_Action *hid_remove_action(HID_Action * a)
+{
+	if (all_actions == NULL)
+		return NULL;
+	
+	return htsp_pop(all_actions, a->name);
 }
 
 HID_Action *hid_find_action(const char *name)
