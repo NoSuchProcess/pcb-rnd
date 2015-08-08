@@ -48,10 +48,22 @@ static int action_cb(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
+static void cleanup_action(gpmi_module *mod, gpmi_cleanup *cl)
+{
+	acontext_t *ctx = cl->argv[0].p;
+	hid_remove_action(&ctx->action);
+	free(ctx->action.name);
+	if (ctx->action.need_coord_msg != NULL)
+		free((char *)ctx->action.need_coord_msg);
+	free((char *)ctx->action.description);
+	free((char *)ctx->action.syntax);
+	free(ctx);
+}
+
 int action_register(const char *name, const char *need_xy, const char *description, const char *syntax, const char *context)
 {
 	acontext_t *ctx;
-
+	
 
 	if ((need_xy != NULL) && (*need_xy == '\0'))
 		need_xy = NULL;
@@ -68,6 +80,9 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 	ctx->next   = NULL;
 
 	hid_register_action(&ctx->action);
+
+	gpmi_mod_cleanup_insert(ctx->module, cleanup_action, "p", ctx);
+
 	printf("registered.\n");
 	return 0;
 }
