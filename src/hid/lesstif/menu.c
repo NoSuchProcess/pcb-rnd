@@ -24,8 +24,8 @@
 #include "mymem.h"
 
 #include "pcb-menu.h"
-#include "../../pcb-mincut/genht/htsp.h"
-#include "../../pcb-mincut/genht/hash.h"
+#include "../../3rd/genht/htsp.h"
+#include "../../3rd/genht/hash.h"
 
 #ifdef HAVE_LIBDMALLOC
 #include <dmalloc.h>
