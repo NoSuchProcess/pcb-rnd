@@ -14,6 +14,8 @@
 
 #include "hid.h"
 #include "../hidint.h"
+#include "../../3rd/genht/hash.h"
+#include "../../3rd/genht/htsp.h"
 
 #ifdef HAVE_LIBDMALLOC
 #include <dmalloc.h>
@@ -21,11 +23,19 @@
 
 RCSID ("$Id$");
 
-static HID_Action **all_actions = 0;
-static int all_actions_sorted = 0;
-static int n_actions = 0;
-
+static htsp_t *all_actions = NULL;
 HID_Action *current_action = NULL;
+
+static int keyeq(char *a, char *b)
+{
+	return !strcmp(a, b);
+}
+
+static unsigned int keyhash(char *key)
+{
+	return jenhash(key, strlen(key));
+}
+
 
 static const char *
 check_action_name (const char *s)
@@ -40,9 +50,10 @@ void
 hid_register_actions (HID_Action * a, int n)
 {
   int i, count = 0;
-  
-  all_actions = (HID_Action **)realloc (all_actions,
-                         (n_actions + n) * sizeof (HID_Action*));
+
+	if (all_actions == NULL)
+		all_actions = htsp_alloc(keyhash, keyeq);
+
   for (i = 0; i < n; i++)
     {
       if (check_action_name (a[i].name))
@@ -51,10 +62,8 @@ hid_register_actions (HID_Action * a, int n)
                      "action \"%s\" not registered.\n"), a[i].name);
           continue;
         }
-      all_actions[n_actions + count++] = a + i;
+      htsp_set(all_actions, a[i].name, a+i);
     }
-  n_actions += count;
-  all_actions_sorted = 0;
 }
 
 void
@@ -63,49 +72,19 @@ hid_register_action (HID_Action * a)
   hid_register_actions (a, 1);
 }
 
-static int
-action_sort_compar (const void *va, const void *vb)
-{
-  HID_Action *a = *(HID_Action **) va;
-  HID_Action *b = *(HID_Action **) vb;
-  return strcmp (a->name, b->name);
-}
-
-static void
-sort_actions ()
-{
-  qsort (all_actions, n_actions, sizeof (HID_Action*), action_sort_compar);
-  all_actions_sorted = 1;
-}
-
-static int
-action_search_compar (const void *va, const void *vb)
-{
-  char *name = (char*)va;
-  HID_Action *action = *(HID_Action**)vb;
-  return strcmp (name, action->name);
-}
-
 HID_Action *
 hid_find_action (const char *name)
 {
-  HID_Action **action;
+  HID_Action *action;
   int i;
   
-  if (name == NULL)
+  if ((name == NULL) && (all_actions == NULL))
     return 0;
 
-  if (!all_actions_sorted)
-    sort_actions ();
+  action = htsp_get(all_actions, (char *)name);
 
-  action = (HID_Action **)bsearch (name, all_actions, n_actions, sizeof (HID_Action*),
-                    action_search_compar);
   if (action)
-    return *action;
-
-  for (i = 0; i < n_actions; i++)
-    if (strcasecmp (all_actions[i]->name, name) == 0)
-      return all_actions[i];
+    return action;
 
   printf ("unknown action `%s'\n", name);
   return 0;
@@ -114,23 +93,21 @@ hid_find_action (const char *name)
 void
 print_actions ()
 {
-  int i;
+	htsp_entry_t *e;
 
-  if (!all_actions_sorted)
-    sort_actions ();
-  
   fprintf (stderr, "Registered Actions:\n");
-  for (i = 0; i < n_actions; i++)
+	for (e = htsp_first(all_actions); e; e = htsp_next(all_actions, e))
     {
-      if (all_actions[i]->description)
-	fprintf (stderr, "  %s - %s\n", all_actions[i]->name,
-		 all_actions[i]->description);
+      HID_Action *action = e->value;
+      if (action->description)
+	fprintf (stderr, "  %s - %s\n", action->name,
+		 action->description);
       else
-	fprintf (stderr, "  %s\n", all_actions[i]->name);
-      if (all_actions[i]->syntax)
+	fprintf (stderr, "  %s\n", action->name);
+      if (action->syntax)
 	{
 	  const char *bb, *eb;
-	  bb = eb = all_actions[i]->syntax;
+	  bb = eb = action->syntax;
 	  while (1)
 	    {
 	      for (eb = bb; *eb && *eb != '\n'; eb++)
@@ -170,19 +147,19 @@ void
 dump_actions ()
 {
   int i;
+	htsp_entry_t *e;
 
-  if (!all_actions_sorted)
-    sort_actions ();
-
-  for (i = 0; i < n_actions; i++)
+  fprintf (stderr, "Registered Actions:\n");
+	for (e = htsp_first(all_actions); e; e = htsp_next(all_actions, e))
     {
-      const char *desc = all_actions[i]->description;
-      const char *synt = all_actions[i]->syntax;
+      HID_Action *action = e->value;
+      const char *desc = action->description;
+      const char *synt = action->syntax;
 
       desc = desc ? desc : "";
       synt = synt ? synt : "";
 
-      printf ("A%s\n", all_actions[i]->name);
+      printf ("A%s\n", action->name);
       dump_string ('D', desc);
       dump_string ('S', synt);
     }

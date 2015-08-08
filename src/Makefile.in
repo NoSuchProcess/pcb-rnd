@@ -79,6 +79,8 @@ put /local/pcb/OBJS [@
 	libpcb_fp.o
 	parse_y.o
 	parse_l.o
+	3rd/genht/hash.o
+	3rd/genht/htsp.o
 @]
 
 # main: language generator files
