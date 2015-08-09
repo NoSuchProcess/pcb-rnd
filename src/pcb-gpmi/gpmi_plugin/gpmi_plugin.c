@@ -10,7 +10,7 @@
 extern char *homedir; /* detected by pcn-rnd in InitPaths() */
 
 /* This function is used to print a detailed GPMI error message */
-void gpmi_hid_print_error(gpmi_err_stack_t *entry, char *string)
+static void gpmi_hid_print_error(gpmi_err_stack_t *entry, char *string)
 {
 	Message("[GPMI] %s\n", string);
 }
@@ -64,14 +64,14 @@ static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 {
 	int ev;
 	char *ev_args;
-	script_info_t *i;
+	hid_gpmi_script_info_t *i;
 	const char *menu[] = {"Plugins", "GPMI scripting", "Scripts", NULL};
 
 	gui->create_menu(menu, "gpmi_scripts()", "S", "Alt<Key>g", "Manage GPMI scripts");
 
 	ev = gpmi_event_find("ACTE_gui_init", &ev_args);
 	if (ev >= 0) {
-		for(i = script_info; i != NULL; i = i->next)
+		for(i = hid_gpmi_script_info; i != NULL; i = i->next)
 			if (i->module != NULL)
 				gpmi_event(i->module, ev, argc, argv);
 	}
@@ -79,7 +79,7 @@ static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 
 static void cmd_reload(char *name)
 {
-	script_info_t *i;
+	hid_gpmi_script_info_t *i;
 	if (name != NULL) {
 		i = hid_gpmi_lookup(name);
 		if (i != NULL)
@@ -88,7 +88,7 @@ static void cmd_reload(char *name)
 			Message("Script %s not found\n", name);
 	}
 	else {
-		for(i = script_info; i != NULL; i = i->next)
+		for(i = hid_gpmi_script_info; i != NULL; i = i->next)
 			hid_gpmi_reload_module(i);
 	}
 }
@@ -115,7 +115,7 @@ static int action_gpmi_scripts(int argc, char **argv, Coord x, Coord y)
 	}
 	else if (strcasecmp(argv[0], "unload") == 0) {
 		if (argc == 2) {
-			script_info_t *i = hid_gpmi_lookup(argv[1]);
+			hid_gpmi_script_info_t *i = hid_gpmi_lookup(argv[1]);
 			if (i != NULL) {
 				if (gpmi_hid_script_unload(i) != 0)
 					Message("Failed to unload %s\n", argv[1]);

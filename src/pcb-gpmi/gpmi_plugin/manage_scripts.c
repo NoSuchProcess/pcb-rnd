@@ -36,18 +36,18 @@ do { \
 	(attr)->default_val.int_value = default_item; \
 } while(0)
 
-static script_info_t *choose_script(char **operations, int *operation)
+static hid_gpmi_script_info_t *choose_script(char **operations, int *operation)
 {
 	HID_Attribute attr[3];
 	HID_Attr_Val result[3];
 	const char **scrl, **s;
-	script_info_t *i;
+	hid_gpmi_script_info_t *i;
 	int n, res;
 
 	n = gpmi_hid_scripts_count();
 
 	scrl = malloc(sizeof(char *) * (n+1));
-	for(i = script_info, n = 0; i != NULL; i = i->next, n++) {
+	for(i = hid_gpmi_script_info, n = 0; i != NULL; i = i->next, n++) {
 		char *basename;
 
 		basename = strrchr(i->name, PCB_DIR_SEPARATOR_C);
@@ -83,17 +83,17 @@ static script_info_t *choose_script(char **operations, int *operation)
 /*	printf("res=%d\n", result[0].int_value);*/
 
 	if (result[0].int_value != -1) {
-		for(i = script_info, n = result[0].int_value; i != NULL && n != 0; i = i->next, n--);
+		for(i = hid_gpmi_script_info, n = result[0].int_value; i != NULL && n != 0; i = i->next, n--);
 /*		printf("name=%s\n", i->name);*/
 		return i;
 	}
 	return NULL;
 }
 
-static script_info_t *load_script(void)
+static hid_gpmi_script_info_t *load_script(void)
 {
 	char *fn, *ext, *guess;
-	script_info_t *info;
+	hid_gpmi_script_info_t *info;
 	int default_mod = -1;
 	HID_Attribute attr[3];
 	HID_Attr_Val result[3];
@@ -155,7 +155,7 @@ static script_info_t *load_script(void)
 	return info;
 }
 
-static void script_details(script_info_t *i)
+static void script_details(hid_gpmi_script_info_t *i)
 {
 	HID_Attribute attr[4];
 	HID_Attr_Val result[4];
@@ -175,7 +175,7 @@ static void script_details(script_info_t *i)
 
 void gpmi_hid_manage_scripts(void)
 {
-	script_info_t *i;
+	hid_gpmi_script_info_t *i;
 	static const char *err_no_script = "Error: you didn't select a script";
 #define CONSULT "Please consult the message log for details."
 

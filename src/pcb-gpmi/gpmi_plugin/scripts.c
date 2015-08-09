@@ -10,19 +10,19 @@
 
 #define CONFNAME "pcb-rnd-gpmi.conf"
 
-script_info_t *script_info = NULL;
+hid_gpmi_script_info_t *hid_gpmi_script_info = NULL;
 
 int gpmi_hid_scripts_count()
 {
 	int n;
-	script_info_t *i;
+	hid_gpmi_script_info_t *i;
 
-	for(i = script_info, n = 0; i != NULL; i = i->next, n++) ;
+	for(i = hid_gpmi_script_info, n = 0; i != NULL; i = i->next, n++) ;
 
 	return n;
 }
 
-static void script_info_free(script_info_t *i)
+static void hid_gpmi_script_info_free(hid_gpmi_script_info_t *i)
 {
 	int ev;
 	char *ev_args;
@@ -36,7 +36,7 @@ static void script_info_free(script_info_t *i)
 	free(i->conffile_name);
 }
 
-static script_info_t *script_info_add(script_info_t *i, gpmi_module *module, const char *name_, const char *module_name_, const char *conffile_name_)
+static hid_gpmi_script_info_t *hid_gpmi_script_info_add(hid_gpmi_script_info_t *i, gpmi_module *module, const char *name_, const char *module_name_, const char *conffile_name_)
 {
 	char *name, *module_name, *conffile_name;
 	/* make these copies before the free()'s because of reload calling us with
@@ -49,12 +49,12 @@ static script_info_t *script_info_add(script_info_t *i, gpmi_module *module, con
 		conffile_name = NULL;
 
 	if (i == NULL) {
-		i = malloc(sizeof(script_info_t));
-		i->next = script_info;
-		script_info = i;
+		i = malloc(sizeof(hid_gpmi_script_info_t));
+		i->next = hid_gpmi_script_info;
+		hid_gpmi_script_info = i;
 	}
 	else
-		script_info_free(i);
+		hid_gpmi_script_info_free(i);
 
 	i->module = module;
 	i->name = name;
@@ -63,30 +63,30 @@ static script_info_t *script_info_add(script_info_t *i, gpmi_module *module, con
 	return i;
 }
 
-script_info_t *hid_gpmi_lookup(const char *name)
+hid_gpmi_script_info_t *hid_gpmi_lookup(const char *name)
 {
-	script_info_t *i;
+	hid_gpmi_script_info_t *i;
 	if (name == NULL)
 		return NULL;
-	for(i = script_info; i != NULL; i = i->next)
+	for(i = hid_gpmi_script_info; i != NULL; i = i->next)
 		if (strcmp(name, i->name) == 0)
 			return i;
 	return NULL;
 }
 
 /* Unload a script and remove it from the list */
-static void script_info_del(script_info_t *inf)
+static void hid_gpmi_script_info_del(hid_gpmi_script_info_t *inf)
 {
-	script_info_t *i, *prev;
+	hid_gpmi_script_info_t *i, *prev;
 	prev = NULL;
-	for(i = script_info; i != NULL; prev = i, i = i->next) {
+	for(i = hid_gpmi_script_info; i != NULL; prev = i, i = i->next) {
 		if (i == inf) {
 			/* unlink */
 			if (prev == NULL)
-				script_info = inf->next;
+				hid_gpmi_script_info = inf->next;
 			else
 				prev->next = inf->next;
-			script_info_free(inf);
+			hid_gpmi_script_info_free(inf);
 			free(inf);
 			return;
 		}
@@ -95,7 +95,7 @@ static void script_info_del(script_info_t *inf)
 
 static const char *conf_dir = NULL;
 
-script_info_t *hid_gpmi_load_module(script_info_t *i, const char *module_name, const char *params, const char *config_file_name)
+hid_gpmi_script_info_t *hid_gpmi_load_module(hid_gpmi_script_info_t *i, const char *module_name, const char *params, const char *config_file_name)
 {
 	gpmi_module *module;
 
@@ -108,14 +108,14 @@ script_info_t *hid_gpmi_load_module(script_info_t *i, const char *module_name, c
 	gpmi_err_stack_destroy(NULL);
 
 	if (module != NULL)
-		return script_info_add(i, module, params, module_name, config_file_name);
+		return hid_gpmi_script_info_add(i, module, params, module_name, config_file_name);
 
 	return NULL;
 }
 
-script_info_t *hid_gpmi_reload_module(script_info_t *i)
+hid_gpmi_script_info_t *hid_gpmi_reload_module(hid_gpmi_script_info_t *i)
 {
-	script_info_t *r;
+	hid_gpmi_script_info_t *r;
 	const char *old_cd;
 
 	conf_dir = old_cd;
@@ -255,13 +255,13 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 	return NULL;
 }
 
-int gpmi_hid_script_unload(script_info_t *i)
+int gpmi_hid_script_unload(hid_gpmi_script_info_t *i)
 {
-	script_info_del(i);
+	hid_gpmi_script_info_del(i);
 	return 0;
 }
 
-int gpmi_hid_script_remove(script_info_t *i)
+int gpmi_hid_script_remove(hid_gpmi_script_info_t *i)
 {
 	FILE *fin, *fout;
 	int n;
@@ -308,7 +308,7 @@ int gpmi_hid_script_remove(script_info_t *i)
 	return 0;
 }
 
-int gpmi_hid_script_addcfg(script_info_t *i)
+int gpmi_hid_script_addcfg(hid_gpmi_script_info_t *i)
 {
 	char *fn;
 	FILE *f;
