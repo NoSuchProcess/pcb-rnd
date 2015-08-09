@@ -39,7 +39,7 @@ add the option in ./configure
 - there's a make uninstall, but it's more or less untested (failed once 
 and worked once for me)
 
-Second, you need pcb-rnd:
+Second, you'll need pcb-rnd:
 
 1. svn checkout svn://repo.hu/pcb-rnd/trunk pcb-rnd/trunk
 2. ./configure
@@ -48,32 +48,10 @@ scconfig/config.log
 4. make
 5. you don't need to install it for testing: cd src; ./pcb-rnd
 
-Please test whether it works before moving on to the next steps.
 
-Third, the scripting stuff is a plugin which is already part of the source 
-tree but is not yet integrated (./configure doesn't know about it and it 
-needs some manual steps). So compile and "install" the plugin (all in 
-pcb-rnd/trunk):
+There are options in step 2: by default, if gpmi is found, it's compiled
+in "buildin" mode, which means script support is compiled into the pcb-rnd
+executable. An alternative is to have it as a plugin (dynamic linkable
+object). This can be done using the --plugin-gpmi argument for ./configure.
 
-1. mkdir -p src/plugins/pcb-rnd-gpmi
-2. cd src/pcb-gpmi
-3. ./configure
-4. make
-5. copy all the .so and .h files from src/pcb-gpmi/gpmi_plugin/gpmi_pkg 
-to src/plugins/pcb-rnd-gpmi (you can symlink instead of cp so a recompile 
-won't need a "reinstall")
-6. copy (or symlink) src/pcb-gpmi/gpmi_plugin/gpmi_plugin.so to 
-src/plugins/gpmi_plugin.so
-7. run pcb-rnd from source; it will look for plugins in ./plugins (at the 
-end of the search list) and will find and load gpmi_plugin.so
-8. you should have a new menu donated by the plugin:
-    Plugins/GPMI scripting/Scripts
-
-Note: once we finish alpha testing and the major bugs are ironed out, I'd 
-make the installation process much simpler. Pcb-rnd's ./configure 
-would detect gpmi and if found, the plugin would be automatically compiled 
-(maybe even linked into pcb-rnd). There'd be an svn branch and probably 
-distribution tarballs that have both the relevant gpmi checkout and 
-pcb-rnd checkout in the same tree and single central ./configure and 
-make scripts to compile and install them both.
 
