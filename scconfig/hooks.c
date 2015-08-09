@@ -139,10 +139,21 @@ void generator_callback(char *cmd, char *args)
 }
 #endif
 
+static void list_presents(const char *prefix, const char *nodes[])
+{
+	char **s;
+	printf("%s", prefix);
+	for(s = nodes; s[0] != NULL; s+=2)
+		if (node_istrue(s[1]))
+			printf(" %s", s[0]);
+	printf("\n");
+}
+
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
 int hook_generate()
 {
 	char *rev = "non-svn", *tmp;
+	int manual_config = 0;
 
 	tmp = svn_info(0, "../src", "Revision:");
 	if (tmp != NULL) {
@@ -164,8 +175,7 @@ int hook_generate()
 
 	printf("Generating config.auto.h (%d)\n", tmpasm("..", "config.auto.h.in", "config.auto.h"));
 
-	tmp = get("libs/script/gpmi/presents");
-	if ((tmp != NULL) && istrue(tmp)) {
+	if (node_istrue("libs/script/gpmi/presents")) {
 		printf("Configuring gpmi packages\n");
 		system("cd ../src/pcb-gpmi; ./configure");
 		printf("Finished configuring gpmi packages\n");
@@ -173,8 +183,42 @@ int hook_generate()
 
 	if (!exists("../config.manual.h")) {
 		printf("Generating config.manual.h (%d)\n", tmpasm("..", "config.manual.h.in", "config.manual.h"));
-		printf(" * NOTE: you may want to edit config.manual.h (user preferences) *\n");
+		manual_config = 1;
 	}
+
+	printf("\n\n");
+	printf("=====================\n");
+	printf("Configuration summary\n");
+	printf("=====================\n\n");
+	{
+		const char *guis[] = {
+			"GTK",     "libs/gui/gtk2/presents",
+			"lesstif", "libs/gui/lesstif2/presents",
+			NULL, NULL
+		};
+		list_presents("GUI hids: batch", guis);
+	}
+	{
+		const char *exps[] = {
+			"png",   "libs/gui/gd/gdImagePng/presents",
+			"gif",   "libs/gui/gd/gdImageGif/presents",
+			"jpg",   "libs/gui/gd/gdImageJpeg/presents",
+			"gcode", "libs/gui/gd/presents",
+			"nelma", "libs/gui/gd/presents",
+			
+			NULL, NULL
+		};
+		list_presents("Export hids: bom gerber lpr ps", exps);
+	}
+
+	printf("Scripting via GPMI: ");
+	if (node_istrue("libs/script/gpmi/presents"))
+		printf("yes\n");
+	else
+		printf("no\n");
+
+	if (manual_config)
+		printf("\n\n * NOTE: you may want to edit config.manual.h (user preferences) *\n");
 
 	return 0;
 }
