@@ -2,7 +2,7 @@
 
 gpmi_define_event(ACTE_action)(const char *name, int argc, int x, int y);
 gpmi_define_event(ACTE_gui_init)(int argc, char **argv);
-
+gpmi_define_event(ACTE_unload)(const char *conffile);
 
 /* register an action in PCB - will generate event ACTE_action */
 int action_register(const char *name, const char *need_xy, const char *description, const char *syntax, const char *context);

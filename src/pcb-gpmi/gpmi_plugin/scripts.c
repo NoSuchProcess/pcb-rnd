@@ -24,6 +24,12 @@ int gpmi_hid_scripts_count()
 
 static void script_info_free(script_info_t *i)
 {
+	int ev;
+	char *ev_args;
+	ev = gpmi_event_find("ACTE_unload", &ev_args);
+	if (ev >= 0)
+		gpmi_event(i->module, ev, i->conffile_name);
+
 	gpmi_mod_unload(i->module);
 	free(i->name);
 	free(i->module_name);
