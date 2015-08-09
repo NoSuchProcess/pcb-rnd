@@ -24,7 +24,10 @@ int hook_custom_arg(const char *key, const char *value)
 		{"disable-gd-gif",    "libs/gui/gd/gdImageGif",  arg_lib_nodes},
 		{"disable-gd-png",    "libs/gui/gd/gdImagePng",  arg_lib_nodes},
 		{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg", arg_lib_nodes},
+		{"disable-gpmi",      "libs/script/gpmi",        arg_lib_nodes},
 
+		{"buildin-gpmi",      "/local/pcb/gpmi/buildin", arg_true},
+		{"plugin-gpmi",       "/local/pcb/gpmi/buildin", arg_false},
 		{NULL, NULL, NULL}
 	};
 
@@ -48,6 +51,11 @@ int hook_preinit()
 int hook_postinit()
 {
 	db_mkdir("/local");
+	db_mkdir("/local/pcb");
+	db_mkdir("/local/pcb/gpmi");
+
+	/* DEFAULTS */
+	put("/local/pcb/gpmi/buildin", strue);
 	put("/local/prefix", "/usr/local");
 	return 0;
 }
@@ -121,7 +129,7 @@ int hook_detect_target()
 	require("libs/gui/gd/gdImageJpeg/presents", 0, 0);
 	require("libs/fs/stat/macros/*", 0, 0);
 
-	require("libs/script/gpmi/*", 0, 0);
+	require("libs/script/gpmi/presents", 0, 0);
 
 
 	if (get("cc/rdynamic") == NULL)
@@ -153,7 +161,7 @@ static void list_presents(const char *prefix, const char *nodes[])
 int hook_generate()
 {
 	char *rev = "non-svn", *tmp;
-	int manual_config = 0;
+	int manual_config = 0, generr = 0;
 
 	tmp = svn_info(0, "../src", "Revision:");
 	if (tmp != NULL) {
@@ -163,17 +171,18 @@ int hook_generate()
 	put("/local/revision", rev);
 	put("/local/version",  version);
 
-	printf("Generating Makefile.conf (%d)\n", tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
+	printf("Generating Makefile.conf (%d)\n", generr |= tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
 
-	printf("Generating gts/Makefile (%d)\n", tmpasm("../gts", "Makefile.in", "Makefile"));
-	printf("Generating pcb/Makefile (%d)\n", tmpasm("../src", "Makefile.in", "Makefile"));
+	printf("Generating gts/Makefile (%d)\n", generr |= tmpasm("../gts", "Makefile.in", "Makefile"));
+	printf("Generating pcb/Makefile (%d)\n", generr |= tmpasm("../src", "Makefile.in", "Makefile"));
 
 	/* Has to be after pcb/Makefile so that all the modules are loaded. */
-	printf("Generating pcb/hidlist  (%d)\n", tmpasm("../src/hid/common", "hidlist.h.in", "hidlist.h"));
+	printf("Generating pcb/hidlist  (%d)\n", generr |= tmpasm("../src/hid/common", "hidlist.h.in", "hidlist.h"));
+	printf("Generating pcb/buildin  (%d)\n", generr |= tmpasm("../src", "buildin.c.in", "buildin.c"));
 
-	printf("Generating util/Makefile (%d)\n", tmpasm("../util", "Makefile.in", "Makefile"));
+	printf("Generating util/Makefile (%d)\n", generr |= tmpasm("../util", "Makefile.in", "Makefile"));
 
-	printf("Generating config.auto.h (%d)\n", tmpasm("..", "config.auto.h.in", "config.auto.h"));
+	printf("Generating config.auto.h (%d)\n", generr |= tmpasm("..", "config.auto.h.in", "config.auto.h"));
 
 	if (node_istrue("libs/script/gpmi/presents")) {
 		printf("Configuring gpmi packages\n");
@@ -182,10 +191,11 @@ int hook_generate()
 	}
 
 	if (!exists("../config.manual.h")) {
-		printf("Generating config.manual.h (%d)\n", tmpasm("..", "config.manual.h.in", "config.manual.h"));
+		printf("Generating config.manual.h (%d)\n", generr |= tmpasm("..", "config.manual.h.in", "config.manual.h"));
 		manual_config = 1;
 	}
 
+	if (!generr) {
 	printf("\n\n");
 	printf("=====================\n");
 	printf("Configuration summary\n");
@@ -212,13 +222,22 @@ int hook_generate()
 	}
 
 	printf("Scripting via GPMI: ");
-	if (node_istrue("libs/script/gpmi/presents"))
-		printf("yes\n");
+	if (node_istrue("libs/script/gpmi/presents")) {
+		printf("yes ");
+		if (node_istrue("/local/pcb/gpmi/buildin"))
+			printf("(buildin)\n");
+		else
+			printf("(plugin)\n");
+	}
 	else
 		printf("no\n");
 
 	if (manual_config)
 		printf("\n\n * NOTE: you may want to edit config.manual.h (user preferences) *\n");
+	}
+	else
+		fprintf(stderr, "Error generating some of the files\n");
+
 
 	return 0;
 }
