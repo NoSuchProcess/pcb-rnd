@@ -10,7 +10,7 @@
 extern char *homedir; /* detected by pcn-rnd in InitPaths() */
 
 /* This function is used to print a detailed GPMI error message */
-static void gpmi_hid_print_error(gpmi_err_stack_t *entry, char *string)
+void gpmi_hid_print_error(gpmi_err_stack_t *entry, char *string)
 {
 	Message("[GPMI] %s\n", string);
 }
