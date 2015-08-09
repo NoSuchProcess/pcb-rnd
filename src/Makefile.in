@@ -99,7 +99,9 @@ put /local/pcb/ACTION_REG_SRC  {
 put /local/pcb/RULES {}
 put /local/pcb/CLEANFILES {}
 put /local/pcb/CLEANRULES {}
+put /local/pcb/EXEDEPS {}
 put /local/pcb/all {}
+put /local/pcb/buildin_init {}
 
 include {Makefile.in.mod/gtk-gdk}
 include {Makefile.in.mod/lesstif}
