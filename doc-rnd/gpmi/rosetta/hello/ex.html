@@ -1,0 +1,25 @@
+Load packages the script depends on:
+<ul>
+	<li> <ref>actions</ref> for registering the new action;
+	<li> <ref>dialogs</ref> for priting in the message log.
+</ul>
+<p>
+Create a function <i>ev_action</i> that will be called when any of
+the actions registered by the script is executed. The script registers
+only one action, so it does not need to check which action caused
+the function to be called.
+<p>
+When the action event is called, use <ref>dialog_log</ref> to append
+a log message.
+<p>
+In the "main" section of the script, bind event <ref>ACTE_action</ref> to
+our local function <i>ev_action</i> - this gets <i>ev_action</i> to
+be called when any of the actions registered by this script is executed.
+<p>
+Finally use <ref>action_register</ref> to register the action:
+<ul>
+	<li> first argument is the name of the action
+	<li> second is the xy query string; it is empty since this action won't need coordinates to operate on
+	<li> third is the description that shows up in dumps and helps
+	<li> fourth is the syntax description (also for helps)
+</ul>
