@@ -60,7 +60,7 @@ static void cleanup_action(gpmi_module *mod, gpmi_cleanup *cl)
 	free(ctx);
 }
 
-int action_register(const char *name, const char *need_xy, const char *description, const char *syntax, const char *context)
+int action_register(const char *name, const char *need_xy, const char *description, const char *syntax)
 {
 	acontext_t *ctx;
 	
