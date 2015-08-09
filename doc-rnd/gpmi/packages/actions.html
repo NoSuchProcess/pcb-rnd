@@ -112,14 +112,13 @@ first then registers one or more menu items executing those actions.
 		<LI> int x, int y: optional coords, if need_xy was not empty at action_register
 	</OL>
 
-<H3> function action_register(const char *name, const char *need_xy, const char *description, const char *syntax, const char *context) </H3>
+<H3> function action_register(const char *name, const char *need_xy, const char *description, const char *syntax) </H3>
 	Arguments:
 	<OL>
 		<LI> const char *name: name of the action
 		<LI> const char *need_xy: the question the user is asked when he needs to choose a coordinate; if empty, no coordinate is asked
 		<LI> const char *description: description of the action (for the help)
 		<LI> const char *syntax: syntax of the action (for the help)
-		<LI> const char *context: this field is subject to remove - pass empty!
 	</OL>
 	Returns 0 on success.
 	<p>
