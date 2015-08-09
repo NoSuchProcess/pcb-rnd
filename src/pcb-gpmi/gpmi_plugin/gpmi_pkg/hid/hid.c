@@ -265,8 +265,34 @@ int hid_add_attribute(hid_t *hid, char *attr_name, char *help, hid_attr_type_t t
 	return current;
 }
 
+static void cleanup_hid_reg(gpmi_module *mod, gpmi_cleanup *cl)
+{
+	hid_t *hid = cl->argv[0].p;
+	int n;
+
+	hid_remove_hid(hid->hid);
+
+	for(n = 0; n < hid->attr_num; n++) {
+		free(hid->attr[n].name);
+		free(hid->attr[n].help_text);
+	}
+
+	if (hid->attr != NULL)
+		free(hid->attr);
+	if (hid->type != NULL)
+		free(hid->type);
+
+	free((char *)hid->hid->name);
+	free((char *)hid->hid->description);
+	free(hid->hid);
+	free(hid);
+}
+
 int hid_register(hid_t *hid)
 {
 	hid_register_hid(hid->hid);
+
+	gpmi_mod_cleanup_insert(NULL, cleanup_hid_reg, "p", hid);
+
 	return 0;
 }
