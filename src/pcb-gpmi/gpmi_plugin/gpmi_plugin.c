@@ -158,8 +158,10 @@ static void register_actions()
 	hid_register_action(ctx);
 }
 
-
-void pcb_plugin_init()
+#ifndef PLUGIN_INIT_NAME
+#define PLUGIN_INIT_NAME pcb_plugin_init
+#endif
+void PLUGIN_INIT_NAME ()
 {
 	void **gpmi_asm_scriptname;
 	gpmi_package *scripts = NULL;
@@ -181,6 +183,6 @@ void pcb_plugin_init()
 	*gpmi_asm_scriptname = gpmi_hid_asm_scriptname;
 
 	register_actions();
-	event_bind(EVENT_GUI_INIT, ev_gui_init, NULL, pcb_plugin_init);
+	event_bind(EVENT_GUI_INIT, ev_gui_init, NULL, PLUGIN_INIT_NAME);
 	load_cfg();
 }
