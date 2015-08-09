@@ -176,6 +176,21 @@ hid_register_hid (HID * hid)
   hid_list[hid_num_hids] = 0;
 }
 
+void
+hid_remove_hid (HID * hid)
+{
+  int i;
+
+  for (i=0; i<hid_num_hids; i++) {
+    if (hid == hid_list[i]) {
+      hid_list[i] = hid_list[hid_num_hids - 1];
+      hid_list[hid_num_hids - 1] = 0;
+      hid_num_hids--;
+      return;
+    }
+  }
+}
+
 
 HID *
 hid_find_gui (const char *preference)

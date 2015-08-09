@@ -10,6 +10,8 @@
 
 /* Called by the init funcs, used to set up hid_list.  */
 extern void hid_register_hid (HID * hid);
+void hid_remove_hid (HID * hid);
+
 
 /* NULL terminated list of all static HID structures.  Built by
    hid_register_hid, used by hid_find_*() and hid_enumerate().  The
