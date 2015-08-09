@@ -121,6 +121,9 @@ int hook_detect_target()
 	require("libs/gui/gd/gdImageJpeg/presents", 0, 0);
 	require("libs/fs/stat/macros/*", 0, 0);
 
+	require("libs/script/gpmi/*", 0, 0);
+
+
 	if (get("cc/rdynamic") == NULL)
 		put("cc/rdynamic", "");
 
@@ -160,6 +163,13 @@ int hook_generate()
 	printf("Generating util/Makefile (%d)\n", tmpasm("../util", "Makefile.in", "Makefile"));
 
 	printf("Generating config.auto.h (%d)\n", tmpasm("..", "config.auto.h.in", "config.auto.h"));
+
+	tmp = get("libs/script/gpmi/presents");
+	if ((tmp != NULL) && istrue(tmp)) {
+		printf("Configuring gpmi packages\n");
+		system("cd ../src/pcb-gpmi; ./configure");
+		printf("Finished configuring gpmi packages\n");
+	}
 
 	if (!exists("../config.manual.h")) {
 		printf("Generating config.manual.h (%d)\n", tmpasm("..", "config.manual.h.in", "config.manual.h"));
