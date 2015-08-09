@@ -7,7 +7,7 @@ void dialog_log(const char *msg)
 	if (gui == NULL)
 		fprintf(stderr, "couldn't find gui for log: \"%s\"\n", msg);
 	else
-	gui->log("%s", msg);
+		Message("%s", msg);
 }
 
 #define empty(s) (((s) == NULL) || ((*s) == '\0'))
