@@ -79,6 +79,7 @@ put /local/pcb/OBJS [@
 	libpcb_fp.o
 	parse_y.o
 	parse_l.o
+	buildin.o
 	3rd/genht/hash.o
 	3rd/genht/htsp.o
 @]
@@ -96,6 +97,9 @@ put /local/pcb/ACTION_REG_SRC  {
 #---- modules ----#
 # extra rules for modules
 put /local/pcb/RULES {}
+put /local/pcb/CLEANFILES {}
+put /local/pcb/CLEANRULES {}
+put /local/pcb/all {}
 
 include {Makefile.in.mod/gtk-gdk}
 include {Makefile.in.mod/lesstif}
@@ -143,10 +147,13 @@ CFLAGS=@/local/pcb/CFLAGS@
 LDFLAGS=@/local/pcb/LDFLAGS@
 LIBS=@/local/pcb/LIBS@ -lm -ldl
 HIDLIST=@/local/pcb/HIDS@
+EXEDEPS=@/local/pcb/EXEDEPS@
+CLEANFILES=@/local/pcb/CLEANFILES@
+CLEANRULES=@/local/pcb/CLEANRULES@
 
 all: pcb-rnd @/local/pcb/all@
 
-pcb-rnd: $(OBJS)
+pcb-rnd: $(OBJS) $(EXEDEPS)
 	$(CC) $(LDFLAGS) $(OBJS) -o pcb-rnd $(LIBS)
 @]
 
@@ -249,8 +256,8 @@ DISTCLEANFILES= pcbtest.sh gpcb-menu.h pcb-menu.h \
 	gpcb-menu.res \
 	pcb-menu.res
 
-clean:
-	-rm pcb-rnd $(OBJS)
+clean: $(CLEANRULES)
+	-rm pcb-rnd $(OBJS) $(CLEANFILES)
 
 include ../Makefile.conf
 

@@ -56,6 +56,7 @@
 #include "free_atexit.h"
 #include "polygon.h"
 #include "pcb-printf.h"
+#include "buildin.h"
 
 #include "hid/common/actions.h"
 
@@ -1836,6 +1837,8 @@ main (int argc, char *argv[])
   printf ("Settings.GnetlistProgram = \"%s\"\n",
           UNKNOWN (Settings.GnetlistProgram));
 #endif
+
+	buildin_init();
 
   gui->do_export (0);
 #if HAVE_DBUS

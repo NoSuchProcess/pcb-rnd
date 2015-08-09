@@ -1,0 +1,7 @@
+print [@
+#include "buildin.h"
+void buildin_init(void)
+{
+@/local/pcb/buildin_init@
+}
+@]
