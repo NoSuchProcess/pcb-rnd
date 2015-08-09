@@ -3,9 +3,9 @@
 <H1> layout package </H1>
 
 Layout package searches and manipulates the current layout. Dimension units
-are in 1/100 mil TODO unless otherwise mentioned.
+are in nanometer unless otherwise mentioned.
 
-<H1> layout package - page </H1>
+<H2> layout package - page </H2>
 	Functions used to query or set width and height of the drawing:
 	<UL>
 		<LI>int layout_get_page_width();
@@ -13,7 +13,7 @@ are in 1/100 mil TODO unless otherwise mentioned.
 		<LI>void layout_set_page_size(int width, int height);
 	</UL>
 
-<H1> layout package - layer manipulation </H1>
+<H2> layer manipulation </H2>
 Most functions perform operations similar to user commands affecting
 the current layer.
 The following few calls can change the current layer. Warning: this is the
@@ -25,7 +25,7 @@ the current layer before changing it and then restore it after the operation.
 		<LI>void layout_switch_to_layer(int layer): switch to layer (further actions will take place there)
 	</UL>
 
-<H1> layout package - search layer(s) for objects </H1>
+<H2> API reference - search layer(s) for objects </H2>
 	Search results are collected on lists identified by their name (search_ID).
 	If a new search is done with the same name, old search results for that
 	name are discarded.
@@ -39,7 +39,7 @@ the current layer before changing it and then restore it after the operation.
 	<P>
 	[todo] lists can be merged or copied. [todo]
 
-	<H2> function int layout_search_box(const char *search_ID, multiple layout_object_mask_t obj_types, int x1, int y1, int x2, int y2); </H2>
+	<H3> function int layout_search_box(const char *search_ID, multiple layout_object_mask_t obj_types, int x1, int y1, int x2, int y2); </H3>
 		Creates a new search and adds all objects that matches obj_types mask within the given rectangle on the current layer.
 		Arguments:
 		<OL>
@@ -58,7 +58,7 @@ the current layer before changing it and then restore it after the operation.
 			<LI> OM_PIN
 		</UL>
 
-	<H2> function int layout_search_selected(const char *search_ID, multiple layout_object_mask_t obj_types) </H2>
+	<H3> function int layout_search_selected(const char *search_ID, multiple layout_object_mask_t obj_types) </H3>
 		Creates a new search and adds all selected objects.
 		Arguments:
 		<OL>
@@ -66,7 +66,7 @@ the current layer before changing it and then restore it after the operation.
 			<LI> obj_types: on or more object types or'd
 		</OL>
 
-	<H2> function int layout_search_found(const char *search_ID, multiple layout_object_mask_t obj_types) </H2>
+	<H3> function int layout_search_found(const char *search_ID, multiple layout_object_mask_t obj_types) </H3>
 		Creates a new search and adds all "found" objects (found objects are highlighted in green on the GUI).
 		Arguments:
 		<OL>
@@ -74,7 +74,7 @@ the current layer before changing it and then restore it after the operation.
 			<LI> obj_types: on or more object types or'd
 		</OL>
 
-	<H2> function layout_object_t *layout_search_get(const char *search_ID, int n); </H2>
+	<H3> function layout_object_t *layout_search_get(const char *search_ID, int n); </H3>
 		Returns the nth object of a search.
 		Arguments:
 		<OL>
@@ -85,19 +85,19 @@ the current layer before changing it and then restore it after the operation.
 		Fields of the object structure can be accessed using the object
 		accessors (see below).
 
-	<H2> int layout_search_free(const char *search_ID) </H2>
+	<H3> int layout_search_free(const char *search_ID) </H3>
 		Frees all memory related to a search. Returns 0 on success.
 		Argument:
 		<OL>
 			<LI> search_ID: unique name of the search (requires an existing search)
 		</OL>
 
-<H1> layout package - object accessors </H1>
+<H2> API reference - object accessors </H2>
 	The following functions may be used by the script to access fields of
 	an object structure. The object structure is most often obtained by
 	calling layout_search_get().
 
-	<H2> int layout_obj_coord(layout_object_t *obj, layout_object_coord_t coord) </H2>
+	<H3> int layout_obj_coord(layout_object_t *obj, layout_object_coord_t coord) </H3>
 		Return the requested coord of an object.
 		Arguments:
 		<OL>
@@ -123,10 +123,10 @@ the current layer before changing it and then restore it after the operation.
 		Point 1 and point 2 are usually endpoints of the object (line, arc), "the whole object" 
 		coordinate is a central point (TODO: what's this?).
 
-	<H2> layout_object_mask_t layout_obj_type(layout_object_t *obj) </H2>
+	<H3> layout_object_mask_t layout_obj_type(layout_object_t *obj) </H3>
 		Return the type of an object (always a single value of layout_object_mask_t).
 
-	<H2> int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, int dy) </H2>
+	<H3> int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, int dy) </H3>
 		Change location of an object or parts of the object (like move endpoint
 		of a line); returns 0 on success.
 		Arguments:
@@ -137,14 +137,14 @@ the current layer before changing it and then restore it after the operation.
 		</OL>
 
 
-	<H2> int layout_arc_angles(layout_object_t *obj, int relative, int start, int delta) </H2>
+	<H3> int layout_arc_angles(layout_object_t *obj, int relative, int start, int delta) </H3>
 		Change angles of an arc; start and delta are relative if <I>relative</I> is non-zero;
 		returns 0 on success.
 
 
-<H1> layout package - create new objects </H1>
+<H2> API reference - create new objects </H2>
 	These calls are used to create new objects on the current layer.
-	<H2>int layout_create_line(int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)</H2>
+	<H3>int layout_create_line(int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)</H3>
 		Creates a line.
 		Arguments:
 		<OL>
@@ -186,7 +186,7 @@ the current layer before changing it and then restore it after the operation.
 			<LI> FL_THERMALSTYLE5 
 		</UL>
 
-	<H2> int layout_create_via(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags) </H2>
+	<H3> int layout_create_via(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags) </H3>
 		Create a named via.
 		Arguments:
 		<OL>
@@ -199,7 +199,7 @@ the current layer before changing it and then restore it after the operation.
 		</OL>
 
 
-	<H2> int layout_create_arc(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags); </H2>
+	<H3> int layout_create_arc(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags); </H3>
 		Create a new arc.
 		Arguments:
 		<OL>
@@ -211,6 +211,12 @@ the current layer before changing it and then restore it after the operation.
 			<LI> clearance: clearance in 1/100 mil [todo?]
 			<LI> flags: one or more of layout flags
 		</OL>
+
+<H2> API reference - page, untis and coordinates </H2>
+TODO
+
+<H2> API reference - debug draw </H2>
+TODO
 
 </BODY>
 </HTML>

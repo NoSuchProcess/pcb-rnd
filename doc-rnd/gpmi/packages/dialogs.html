@@ -7,13 +7,38 @@
 	on stderr. Note: message arguments usually may contain newline (\n) characters
 	to split the message.
 
-	<H2> function void dialog_log(const char *msg) </H2>
+	<H2> Common conventions </H2>
+	Dialog boxes are blocking calls to the GUI HID: when the script
+	calls a dialog box, the script is suspended until the dialog box
+	is closed by the user. In other words, dialog boxes behave
+	as regular function calls from the scripts: when they return,
+	the dialog is over and the result is known.
+	<p>
+	The only exception is <i>dialog_progress()</i>, which opens or
+	updates or closes the already open progress dialog box, and 
+	returns immediately (even when the box is left open).
+
+	<H2> Simple dialogs vs. custom dialogs </H2>
+	Most of the calls will pop up a static dialog box. Static means
+	that widgets are predefined by the GUI HID. The script
+	is free to fill in data, but can not change the basic structure of
+	the dialog box. For example <i>dialog_confirm(), dialog_prompt(),
+	dialog_fileselect()</i> are static.
+	<p>
+	When the script needs a custom, dynamic dialog box, it needs to
+	create an <i>attribute dialog</i>. The script sets up a HID
+	structure using the hid package, builds up all the input fields
+	then calls <i>dialog_attribute()</i> with the hid.
+
+	<H2> API reference </H2>
+
+	<H3> function void dialog_log(const char *msg) </H3>
 		Append a message to the log (log window and/or stderr). Arguments:
 		<OL>
 			<LI> const char *msg: the message
 		</OL>
 
-	<H2> function int dialog_confirm(const char *msg, const char *ok, const char *cancel) </H2>
+	<H3> function int dialog_confirm(const char *msg, const char *ok, const char *cancel) </H3>
 		Ask the user for confirmation. Returns 0 for cancel and 1 for ok. Arguments:
 		<OL>
 			<LI> const char *msg: message to the user
@@ -24,7 +49,7 @@
 		case the GUI will use the default (perhaps localized) labels for
 		those buttons.
 
-	<H2>function void dialog_report(const char *title, const char *msg) </H2>
+	<H3>function void dialog_report(const char *title, const char *msg) </H3>
 		Pop up a report dialog. Arguments:
 		<OL>
 			<LI> const char *title: title of the window
@@ -32,7 +57,7 @@
 		</OL>
 		No return value.
 
-	<H2> function char *dialog_prompt(const char *msg, const char *default_) </H2>
+	<H3> function char *dialog_prompt(const char *msg, const char *default_) </H3>
 		Prompt the user for a single line textual data. Arguments:
 		<OL>
 			<LI> const char *msg: message or question to the user
@@ -40,10 +65,10 @@
 		</OL>
 		Returns what the user typed or NULL (empty) if the user choosed to cancel.
 
-	<H2> function void dialog_beep(void) </H2>
+	<H3> function void dialog_beep(void) </H3>
 		Beeps. No argument, no return value.
 
-	<H2> function int dialog_progress(int so_far, int total, const char *message) </H2>
+	<H3> function int dialog_progress(int so_far, int total, const char *message) </H3>
 		Request the GUI hid to draw a progress bar. Arguments:
 		<OL>
 			<LI> int so_far: achieved state
@@ -58,7 +83,7 @@
 		break the loop on cancel. After the loop a call with so_far=total+1
 		should be made to make sure the window is closed.
 
-	<H2> function int dialog_attribute(hid_t *hid, const char *title, const char *descr) </H2>
+	<H3> function int dialog_attribute(hid_t *hid, const char *title, const char *descr) </H3>
 		Presents the user a custom dialog box, similar to those used by
 		the exporters.
 		<OL>
@@ -69,7 +94,7 @@
 		Return value: !!!TODO!!!. Values selected by the user are accessed
 		using <a href="!!!TODO!!!">hid_get_attribute</a>.
 
-	<H2> function char *dialog_fileselect(const char *title, const char *descr, char *default_file_, char *default_ext, const char *history_tag, multiple dialog_fileselect_t flags)</H2>
+	<H3> function char *dialog_fileselect(const char *title, const char *descr, char *default_file_, char *default_ext, const char *history_tag, multiple dialog_fileselect_t flags)</H3>
 		Pops up a file selection dialog.
 		<OL>
 			<LI> const char *title: window title

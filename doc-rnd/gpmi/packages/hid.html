@@ -4,18 +4,18 @@
 
 The hid package has two purposes:
 <UL>
-	<LI> it is glue layer for exporter dialog boxes and attribute dialog boxes;
+	<LI> it is glue layer for exporter dialog boxes and <i>attribute dialog boxes</i>;
 	<LI> it can register exporter HIDs in PCB
 </UL>
 
-<H1> hid package - attribute dialog boxes</H1>
-	<H2>function hid_t *hid_create(char *hid_name, char *description); </H2>
+<H2> API reference - attribute dialog boxes</H1>
+	<H3>function hid_t *hid_create(char *hid_name, char *description); </H3>
 		Creates a new hid context. Name and description matters only
 		if the hid is registered as an exporter later. hid_t is an opaq
 		structure for the package that is used to describe attributes
 		of an attribute dialog or an exporter hid.
 
-	<H2>function int hid_add_attribute(hid_t *hid, char *attr_name, char *help, hid_attr_type_t type, int min, int max, char *default_val) </H2>
+	<H3>function int hid_add_attribute(hid_t *hid, char *attr_name, char *help, hid_attr_type_t type, int min, int max, char *default_val) </H3>
 		Append an attribute in a hid previously created using hid_create().
 		Arguments:
 		<OL>
@@ -43,7 +43,7 @@ The hid package has two purposes:
 			<LI>HIDA_Path: path to a file or directory
 		</UL>
 
-	<H2>function char *hid_get_attribute(hid_t *hid, int attr_id) </H2>
+	<H3>function char *hid_get_attribute(hid_t *hid, int attr_id) </H3>
 		Query an attribute from the hid after dialog_attributes() returned.
 		<OL>
 			<LI> hid: hid_t previously created using hid_create()
@@ -51,8 +51,8 @@ The hid package has two purposes:
 		</OL>
 		Returns the value set by the user.
 
-<H1> hid package - register an exporter</H1>
-	<H2> function int hid_register(hid_t *hid) </H2>
+<H2> API reference - register an exporter</H2>
+	<H3> function int hid_register(hid_t *hid) </H3>
 		Register the hid as an exporter. Should be called after all attributes have been
 		added using hid_add_atrtibute(). The export is coordinated by pcb core;
 		when the user request an export using the
@@ -63,14 +63,14 @@ The hid package has two purposes:
 			<li> an envelope event to finish exporting
 		</ol>
 
-	<H2> Envelope: events generated before or after exporting </H2>
+	<H3> Envelope: events generated before or after exporting </H3>
 		<UL>
 			<LI>HIDE_get_export_options(void *hid): TODO Generated before get_exporter_options returns the option list to the GUI hid
 			<LI>HIDE_do_export_start(void *hid): Generated before export redraw starts
 			<LI>HIDE_do_export_finish(void *hid): Generated after export redraw finihsed
 		</UL>
 
-	<H2> Drawing: events generated during exporting </H2>
+	<H3> Drawing: events generated during exporting </H3>
 		Note: there may be multiple <I>gc</I>s (graphic contexts), each having its own color, line
 		properties, xor drawing and faded state. Graphic contexts are created
 		and destroyed by the following events:
