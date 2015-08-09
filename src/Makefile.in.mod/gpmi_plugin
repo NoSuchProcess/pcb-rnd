@@ -1,0 +1,9 @@
+append /local/pcb/all  {pcb-gpmi/gpmi_plugin/gpmi_plugin.o}
+
+append /local/pcb/RULES [@
+
+# gpmi_plugin
+pcb-gpmi/gpmi_plugin/gpmi_plugin.o: FORCE
+	cd pcb-gpmi/gpmi_plugin && make
+
+@]

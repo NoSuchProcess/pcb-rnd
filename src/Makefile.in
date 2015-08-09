@@ -109,6 +109,12 @@ include {Makefile.in.mod/gcode}
 include {Makefile.in.mod/nelma}
 include {Makefile.in.mod/lpr}
 
+if /target/libs/script/gpmi/presents then
+include {Makefile.in.mod/gpmi_plugin}
+end
+
+
+
 append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags
 append /local/pcb/LIBS    /target/libs/sul/glib/ldflags
 
@@ -138,7 +144,7 @@ LDFLAGS=@/local/pcb/LDFLAGS@
 LIBS=@/local/pcb/LIBS@ -lm -ldl
 HIDLIST=@/local/pcb/HIDS@
 
-all: pcb-rnd
+all: pcb-rnd @/local/pcb/all@
 
 pcb-rnd: $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o pcb-rnd $(LIBS)
@@ -231,6 +237,9 @@ hid/gtk/gtk_lists.h: ${LIBGTK_SRCS} Makefile
 	true > hid/gtk/gtk_lists.h
 	(for f in ${LIBGTK_SRCS} ; do cat $$f ; done) | grep "^REGISTER" > hid/gtk/gtk_lists.h.tmp
 	mv hid/gtk/gtk_lists.h.tmp hid/gtk/gtk_lists.h
+
+FORCE:
+
 
 DISTCLEANFILES= pcbtest.sh gpcb-menu.h pcb-menu.h \
 	hid/batch/batch_lists.h \
