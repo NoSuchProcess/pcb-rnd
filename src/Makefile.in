@@ -182,10 +182,11 @@ end
 
 
 print [@
-# module rules
+##### module rules begin #####
+
 @/local/pcb/RULES@
 
-#--------
+##### module rules end #####
 
 pcblib_DATA= \
 	default_font \
@@ -230,13 +231,6 @@ gpcb-menu.h: gpcb-menu.res
 
 action_list.h: @/local/pcb/ACTION_REG_SRC@ Makefile
 	Makefile.in.mod/gen_core_lists.sh @/local/pcb/ACTION_REG_SRC@ > action_list.h
-
-
-hid/gtk/gtk_lists.h: ${LIBGTK_SRCS} Makefile
-	$(MKDIR_P) hid/gtk
-	true > hid/gtk/gtk_lists.h
-	(for f in ${LIBGTK_SRCS} ; do cat $$f ; done) | grep "^REGISTER" > hid/gtk/gtk_lists.h.tmp
-	mv hid/gtk/gtk_lists.h.tmp hid/gtk/gtk_lists.h
 
 FORCE:
 
