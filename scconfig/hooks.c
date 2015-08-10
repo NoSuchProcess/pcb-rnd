@@ -75,6 +75,8 @@ int hook_detect_host()
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
+
+	require("cc/fpic",  0, 1);
 	require("fstools/mkdir", 0, 1);
 	require("libs/gui/gtk2/presents", 0, 0);
 	require("libs/gui/lesstif2/presents", 0, 0);
@@ -135,6 +137,17 @@ int hook_detect_target()
 	if (get("cc/rdynamic") == NULL)
 		put("cc/rdynamic", "");
 
+
+	{
+		char *tmp, *fpic, *debug;
+		fpic = get("/target/cc/fpic");
+		if (fpic == NULL) fpic = "";
+		debug = get("/arg/debug");
+		if (debug == NULL) debug = "";
+		tmp = str_concat(" ", fpic, debug, NULL);
+		put("/local/global_cflags", tmp);
+	}
+
 	return 0;
 }
 
@@ -155,6 +168,30 @@ static void list_presents(const char *prefix, const char *nodes[])
 		if (node_istrue(s[1]))
 			printf(" %s", s[0]);
 	printf("\n");
+}
+
+static int gpmi_config(void)
+{
+	char *tmp;
+	const char *gcfg = get("libs/script/gpmi/gpmi-config");
+	int generr = 0;
+
+	printf("Generating pcb-gpmi/Makefile.conf (%d)\n", generr |= tmpasm("../src/pcb-gpmi", "Makefile.config.in", "Makefile.config"));
+
+
+	printf("Configuring gpmi packages...\n");
+	tmp = str_concat("", "cd ../src/pcb-gpmi/gpmi_plugin/gpmi_pkg && ", gcfg, " --pkggrp && ./configure", NULL);
+	generr |= system(tmp);
+	free(tmp);
+
+	printf("Configuring gpmi plugin \"app\"\n");
+	tmp = str_concat("", "cd ../src/pcb-gpmi/gpmi_plugin && ", gcfg, " --app", NULL);
+	generr |= system(tmp);
+	free(tmp);
+
+	printf("Finished configuring gpmi packages\n");
+
+	return generr;
 }
 
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
@@ -184,11 +221,8 @@ int hook_generate()
 
 	printf("Generating config.auto.h (%d)\n", generr |= tmpasm("..", "config.auto.h.in", "config.auto.h"));
 
-	if (node_istrue("libs/script/gpmi/presents")) {
-		printf("Configuring gpmi packages\n");
-		system("cd ../src/pcb-gpmi; ./configure");
-		printf("Finished configuring gpmi packages\n");
-	}
+	if (node_istrue("libs/script/gpmi/presents"))
+		gpmi_config();
 
 	if (!exists("../config.manual.h")) {
 		printf("Generating config.manual.h (%d)\n", generr |= tmpasm("..", "config.manual.h.in", "config.manual.h"));

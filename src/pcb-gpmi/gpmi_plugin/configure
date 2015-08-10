@@ -1,7 +1,0 @@
-#!/bin/sh
-echo "Configuring the gpmi hid..."
-gpmi-config --app  | grep -v "not going to overwrite"
-cd gpmi_pkg; ./configure
-
-
-

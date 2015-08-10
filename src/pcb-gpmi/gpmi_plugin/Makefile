@@ -20,7 +20,7 @@ gpmi_buildin.a: $(BUILDIN_OBJS)
 	ar rvu gpmi_buildin.a $(BUILDIN_OBJS)
 
 gpmi_plugin.so: $(PLUGIN_OBJS)
-	$(CC) $(LDFLAGS) -shared -rdynamic  -o gpmi_plugin.so $(PLUGIN_OBJS) -lgpmi
+	$(CC) $(LDFLAGS) -shared -rdynamic  -o gpmi_plugin.so $(PLUGIN_OBJS) $(PCB_LDFLAGS)
 
 gpmi_plugin.o: gpmi_plugin.c scripts.h
 
