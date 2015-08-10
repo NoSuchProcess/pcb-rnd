@@ -1,5 +1,6 @@
+PCB_GPMI_ROOT=..
 include Makefile.gpmi
-include ../Makefile.config
+include $(PCB_GPMI_ROOT)/Makefile.config
 
 CFLAGS += -g -I$(PCB_SRC) $(PCB_CFLAGS)
 

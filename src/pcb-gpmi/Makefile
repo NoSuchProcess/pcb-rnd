@@ -1,3 +1,5 @@
+PCB_GPMI_ROOT=.
+
 all:
 	cd gpmi_plugin; make all
 
