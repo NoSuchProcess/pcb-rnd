@@ -11,5 +11,6 @@ HEADER  = dialogs.h
 
 PKG_LDFLAGS = 
 
-include ../../../Makefile.config
+PCB_GPMI_ROOT=../../..
+include $(PCB_GPMI_ROOT)/Makefile.config
 INCLUDES = -I.. -I../.. -I $(PCB_SRC)
