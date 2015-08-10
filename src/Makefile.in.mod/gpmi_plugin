@@ -7,19 +7,18 @@ clean_gpmi: FORCE
 @]
 
 
+
 if /local/pcb/gpmi/buildin then
 
 append /local/pcb/LIBS        {pcb-gpmi/gpmi_plugin/gpmi_buildin.a}
 append /local/pcb/EXEDEPS     {pcb-gpmi/gpmi_plugin/gpmi_buildin.a}
+append /local/pcb/LDFLAGS      /target/libs/script/gpmi/ldflags
 
 append /local/pcb/buildin_init {hid_gpmi_init();}
 
 #append /local/pcb/CFLAGS   /target/libs/script/gpmi/cflags
 #append /local/pcb/LDFLAGS  /target/libs/script/gpmi/ldflags
 #append /local/pcb/LIBS     /target/libs/script/gpmi/libs
-
-append /local/pcb/LDFLAGS  {-lgpmi}
-
 
 append /local/pcb/RULES [@
 
