@@ -1,21 +1,22 @@
-GPMI manual install
+GPMI system-wide installation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The installation process is somewhat manual at this early stage. Please 
 follow the steps below.
 
 First, you'll need libgpmi - it's a general purpose script glue interface.
 
-1. svn checkout svn://repo.hu/gpmi/trunk gpmi/trunk
-2. look at doc/languages.txt there; if you have preferred languages, 
+A/1. svn checkout svn://repo.hu/gpmi/trunk gpmi/trunk
+A/2. look at doc/languages.txt there; if you have preferred languages, 
 please install the -dev packages of those. My favorite is mawk, but I 
 think most of the example pcb scripts would be in lua. Versions should 
 match; it may be that gpmi works with a newer minor version out of the 
 box, tho.
-3. run ./configure
-4. check if it found the language(s) you wanted; if not, or anything 
+A/3. run ./configure
+A/4. check if it found the language(s) you wanted; if not, or anything 
 else breaks, please send me your scconfig/config.log
-5. make
-6. make install (as root, but see below)
+A/5. make
+A/6. make install (as root, but see below)
 
 There are options to step 6:
 
@@ -32,21 +33,17 @@ There are options to step 6:
 files. If gpmi changes and you need to update and recompile, you won't 
 need to reinstall (until the number of files change).
 
-- I don't have --prefix yet, so things go under /usr; if you want to 
-install under /usr/local or /opt or wherever, please let me know and I'll 
-add the option in ./configure
-
 - there's a make uninstall, but it's more or less untested (failed once 
 and worked once for me)
 
 Second, you'll need pcb-rnd:
 
-1. svn checkout svn://repo.hu/pcb-rnd/trunk pcb-rnd/trunk
-2. ./configure
-3. check the output; if anything went wrong, please send me 
+B/1. svn checkout svn://repo.hu/pcb-rnd/trunk pcb-rnd/trunk
+B/2. ./configure
+B/3. check the output; if anything went wrong, please send me 
 scconfig/config.log
-4. make
-5. you don't need to install it for testing: cd src; ./pcb-rnd
+B/4. make
+B/5. you don't need to install it for testing: cd src; ./pcb-rnd
 
 
 There are options in step 2: by default, if gpmi is found, it's compiled
@@ -55,3 +52,14 @@ executable. An alternative is to have it as a plugin (dynamic linkable
 object). This can be done using the --plugin-gpmi argument for ./configure.
 
 
+GPMI local installation
+~~~~~~~~~~~~~~~~~~~~~~~
+GPMI can be installed without root, into a local user directory (typically
+under home). To achieve this, follow the above steps with the following
+modifications (assuming you want to install gpmi in ~/usr):
+
+A/3. ./configure --prefix=~/usr
+B/2. ./configure --gpmi-prefix=~/usr
+
+NOTE: you don't need to use install_root; gpmi will install under ~/usr as
+if it was /usr. 
