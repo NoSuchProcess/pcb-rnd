@@ -113,6 +113,11 @@ int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, i
 			}
 			/*TODO: move endpoints! */
 			break;
+		case OM_POLYGON:
+			if (obj->layer != -1) {
+				MoveObject (POLYGON_TYPE, PCB->Data->Layer + obj->layer, obj->obj.p, obj->obj.p, dx, dy);
+				return 0;
+			}
 	}
 	return -1;
 }

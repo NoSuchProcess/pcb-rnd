@@ -15,6 +15,7 @@ static inline void search_append(layout_search_t *s, void *obj)
 	o = s->objects + s->used;
 	s->used++;
 	o->type = s->searching;
+	o->layer = s->layer;
 	switch(s->searching) {
 		case OM_LINE:     o->obj.l   = obj; break;
 		case OM_TEXT:     o->obj.t   = obj; break;
@@ -60,6 +61,7 @@ int layout_search_box(const char *search_ID, layout_object_mask_t obj_types, int
 	spot.X2 = x2;
 	spot.Y2 = y2;
 
+	s->layer = -1;
 	if (obj_types & OM_LINE) {
 		s->searching = OM_LINE;
 		r_search (CURRENT->line_tree, &spot, NULL, search_callback, s);
@@ -86,10 +88,10 @@ int layout_search_box(const char *search_ID, layout_object_mask_t obj_types, int
 	}
 
 	if (obj_types & OM_POLYGON) {
-		int l;
 		s->searching = OM_POLYGON;
-		for (l = 0; l < MAX_LAYER + 2; l++)
-			r_search (PCB->Data->Layer[l].polygon_tree, &spot, NULL, search_callback, s);
+		for (s->layer = 0; s->layer < MAX_LAYER + 2; s->layer++)
+			r_search (PCB->Data->Layer[s->layer].polygon_tree, &spot, NULL, search_callback, s);
+		s->layer = -1;
 	}
 
 	return s->used;
@@ -127,6 +129,7 @@ static int layout_search_flag(const char *search_ID, multiple layout_object_mask
 	LayerType *layer = PCB->Data->Layer;
 
 	for (l =0; l < MAX_LAYER + 2; l++, layer++) {
+		s->layer = l;
 		select(s, OM_ARC,     flag, layer->Arc);
 		select(s, OM_LINE,    flag, layer->Line);
 		select(s, OM_TEXT,    flag, layer->Text);

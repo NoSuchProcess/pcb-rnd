@@ -81,6 +81,7 @@ typedef struct layout_object_s {
 		PinType     *v;
 		PinType     *pin;
 	} obj;
+	int layer;
 } layout_object_t;
 
 
@@ -88,6 +89,7 @@ typedef struct layout_search_s {
 	layout_object_mask_t searching; /* during the search, this field is used to communicate with the callback */
 	int used, alloced;
 	layout_object_t *objects;
+	int layer;
 } layout_search_t;
 
 /* -- search -- (search.c) */
