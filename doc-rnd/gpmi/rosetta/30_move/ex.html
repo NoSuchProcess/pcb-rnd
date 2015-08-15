@@ -1,0 +1,37 @@
+Load packages the script depends on:
+<ul>
+	<li> <ref>actions</ref> for registering the new action;
+	<li> <ref>dialogs</ref> for priting in the message log.
+	<li> <ref>layout</ref> for searching selected objects and moving objects.
+</ul>
+<p>
+Create a function <i>ev_action</i> that will be called when any of
+the actions registered by the script is executed. The script registers
+only one action, so it does not need to check which action caused
+the function to be called.
+<p>
+When the action event is called, first set up:
+<ul>
+	<li> fetch event argument 0 and 1 using <ref>action_arg</ref>;
+	<li> resolve the conversion rate from mm to PCB's units using <ref>mm2pcb_multiplier</ref>;
+	<li> perform a search for all selected object using <ref>layout_search_selected</ref> (return value is the number of objects found), name the resulting list "mv_search"
+</ul>
+A loop then iterates over the objects on the list:
+<ul>
+	<li> resolve the Nth element of the list using <ref>layout_search_get</ref>, referecing the list by name ("mv_search") and specifying which element to get (the Nth); the result is an object pointer;
+	<li> move the object using <ref>layout_obj_move</ref>; specify the object pointer, then which part of the object should be moved ("OC_OBJ" means the whole object) and relative offsets (dx and dy calculated earlier)
+</ul>
+Finally the search list shall be destroyed to reclaim memory, using <ref>layout_search_free</ref>.
+<p>
+
+In the "main" section of the script, bind event <ref>ACTE_action</ref> to
+our local function <i>ev_action</i> - this gets <i>ev_action</i> to
+be called when any of the actions registered by this script is executed.
+<p>
+Finally use <ref>action_register</ref> to register the action:
+<ul>
+	<li> first argument is the name of the action
+	<li> second is the xy query string; it is empty since this action won't need coordinates to operate on
+	<li> third is the description that shows up in dumps and helps
+	<li> fourth is the syntax description (also for helps)
+</ul>
