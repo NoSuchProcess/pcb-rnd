@@ -1,11 +1,27 @@
 #!/bin/sh
 
+clean_id()
+{
+	tr "\r\n" "~" | sed '
+s/~*$//;
+s/|/\&pipe;/g;
+s/&/\&amp;/g;
+s/</\&lt;/g;
+s/>/\&gt;/g;
+s/"/\&quot;/g;
+s/'\''/\&apos;/g;
+s/~\+/<br>/g;
+'
+	echo ""
+}
+
 genpage()
 {
 	local dir scripts name desc
 	
 	dir="$1"
-	scripts=`cd $dir && ls ex.*`
+	scripts="$2"
+
 	name=`cat $dir/ID.name`
 	desc=`cat $dir/ID.desc`
 	./tags < "$dir/ex.html" | awk -v "fn_ref=REF" -v "scripts=$scripts" -v "name=$name" -v "desc=$desc" '
@@ -21,8 +37,6 @@ genpage()
 		print "<H2> Example implementations </H2>"
 		v = split(scripts, S, "[\r\n]+")
 		for(n = 1; n <= v; n++) {
-			if (S[n] == "ex.html")
-				continue
 			lang=S[n]
 			sub("^ex[.]", "", lang)
 			if (n != 1)
@@ -51,13 +65,101 @@ genpage()
 	{ print $0 }
 
 	' > "$dir/index.html"
+}
+
+gen_index()
+{
+
+	awk -v "template=$1" '
+		BEGIN {
+			FS="[|]"
+			q = "\""
+			LANGS["rb"] = "ruby"
+			LANGS["pl"] = "perl"
+			LANGS["py"] = "python"
+			LANGS["stt"] = "stutter"
+			LANGS["scm"] = "scheme"
+		}
+
+		($1 == "scripts") {
+			s = $3
+			gsub("ex[.]", "", s)
+			v = split(s, S, " ")
+			s = ""
+			for(n = 1; n <= v; n++) {
+				if (S[n] in LANGS)
+					s = s " " LANGS[S[n]]
+				else
+					s = s " " S[n]
+			}
+			DATA[$2, $1] = s
+			next
+		}
+
+		($1 == "name") {
+			if (names == "")
+				names = $2
+			else
+				names = names "|" $2
+		}
+
+
+		{
+			# DATA[script, name] = "hello world"
+			DATA[$2, $1] = $3
+		}
+
+		function generate(cmd   ,N,n,v,name) {
+			if (cmd == "index") {
+				print "<table border=1>"
+				print "<tr><th>example <th> languages <th> description"
+				v = split(names, N, "[|]")
+				for(n = 1; n <= v; n++) {
+					name = N[n]
+					print "<tr>"
+					print " <td><a href=" q name "/index.html" q ">" DATA[name, "name"] "</a>"
+					print " <td>" DATA[name, "scripts"]
+					print " <td>" DATA[name, "desc"]
+				}
+				print "</table>"
+			}
+			else
+				print "Do not know how to generate " cmd > "/dev/stderr"
+		}
+
+		END {
+			FS=""
+			while((getline < template) > 0) {
+				if (match($0, "<rosetta[ \t][^>]*>")) {
+					print substr($0, 1, RSTART-1)
+					cmd=substr($0, RSTART+8, RLENGTH-9)
+					sub("^[ \t]*", "", cmd)
+					generate(cmd)
+					print substr($0, RSTART+RLENGTH)
+				}
+				else
+					print $0
+			}
+		}
+	'
 
 }
+
 
 for n in ../rosetta/*
 do
 	if test -d "$n"
 	then
-		genpage "$n"
+		bn=`basename $n`
+		scripts=`cd $n && ls ex.* | grep -v ".pyc$\|.html$" `
+		genpage "$n" "$scripts"
+		echo -n "desc|$bn|"
+		clean_id < $n/ID.desc
+		echo -n "name|$bn|"
+		clean_id < $n/ID.name
+		echo -n "scripts|$bn|"
+		echo $scripts
 	fi
-done
+done | gen_index ../rosetta/index.templ.html > ../rosetta/index.html
+
+
