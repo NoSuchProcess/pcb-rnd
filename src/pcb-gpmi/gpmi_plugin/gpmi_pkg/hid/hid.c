@@ -99,9 +99,12 @@ dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 			break;
 		case HIDA_String:
 		case HIDA_Label:
-		case HIDA_Enum:
 		case HIDA_Path:
 			res = v->str_value;
+			break;
+		case HIDA_Enum:
+			res = hid->attr[attr_id].enumerations[v->int_value];
+			printf("res='%s' %d\n", res, v->int_value);
 			break;
 		case HIDA_Coord:
 				pcb_sprintf(buff, "%mi", v->coord_value);
