@@ -1,5 +1,4 @@
 PkgLoad pcb-rnd-gpmi/actions 0
-PkgLoad pcb-rnd-gpmi/dialogs 0
 PkgLoad pcb-rnd-gpmi/layout 0
 
 proc ev_action {id, name, argc, x, y} {

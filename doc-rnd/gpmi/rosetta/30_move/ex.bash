@@ -3,7 +3,6 @@
 function load_packages()
 {
 	GPMI PkgLoad "pcb-rnd-gpmi/actions" 0
-	GPMI PkgLoad "pcb-rnd-gpmi/dialogs" 0
 	GPMI PkgLoad "pcb-rnd-gpmi/layout" 0
 }
 

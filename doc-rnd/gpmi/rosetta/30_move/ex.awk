@@ -1,6 +1,5 @@
 BEGIN {
 	PkgLoad("pcb-rnd-gpmi/actions", 0);
-	PkgLoad("pcb-rnd-gpmi/dialogs", 0);
 	PkgLoad("pcb-rnd-gpmi/layout", 0);
 }
 
