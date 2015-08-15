@@ -25,7 +25,9 @@ genpage()
 				continue
 			lang=S[n]
 			sub("^ex[.]", "", lang)
-			print "<a href=\"" S[n] "\">" lang "</a><br>"
+			if (n != 1)
+				print " | "
+			print "<a href=\"" S[n] "\">" lang "</a>"
 		}
 
 		print "<h2> Explanation, step by step </h2>"
