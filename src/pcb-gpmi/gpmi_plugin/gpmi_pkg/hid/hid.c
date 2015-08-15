@@ -59,6 +59,7 @@ hid_t *hid_create(char *hid_name, char *description)
 	h->hid->fill_polygon       = gpmi_hid_fill_polygon;
 	h->hid->fill_pcb_polygon   = gpmi_hid_fill_pcb_polygon;
 	h->hid->fill_rect          = gpmi_hid_fill_rect;
+	h->hid->fill_pcb_pv        = gpmi_hid_fill_pcb_pv;
 	h->hid->use_mask           = gpmi_hid_use_mask;
 
 	h->attr_num = 0;

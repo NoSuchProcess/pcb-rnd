@@ -24,4 +24,4 @@ gpmi_define_event(HIDE_fill_rect)(void *hid, void *gc, int x1, int y1, int x2, i
 gpmi_define_event(HIDE_use_mask)(void *hid, int use_it);
 gpmi_define_event(HIDE_make_gc)(void *hid, void *gc);
 gpmi_define_event(HIDE_destroy_gc)(void *hid, void *gc);
-
+gpmi_define_event(HIDE_fill_pcb_pv)(void *hid, void *fg_gc, void *bg_gc, void *pad, int drawHole, int mask);
