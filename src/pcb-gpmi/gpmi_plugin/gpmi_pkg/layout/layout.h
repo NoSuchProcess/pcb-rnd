@@ -10,7 +10,9 @@ typedef enum layout_object_mask_e {
 	OM_POLYGON  = 4,
 	OM_ARC      = 8,
 	OM_VIA      = 16,
-	OM_PIN      = 32
+	OM_PIN      = 32,
+
+	OM_ANY      = 0xffff
 } layout_object_mask_t;
 gpmi_keyword *kw_layout_object_mask_e; /* of layout_object_mask_t */
 
