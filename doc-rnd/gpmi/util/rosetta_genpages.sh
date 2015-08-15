@@ -110,14 +110,19 @@ gen_index()
 			DATA[$2, $1] = $3
 		}
 
-		function generate(cmd   ,N,n,v,name) {
+		function generate(cmd   ,N,n,v,name,level) {
 			if (cmd == "index") {
 				print "<table border=1>"
-				print "<tr><th>example <th> languages <th> description"
+				print "<tr><th>level<th>example <th> languages <th> description"
 				v = split(names, N, "[|]")
 				for(n = 1; n <= v; n++) {
 					name = N[n]
+					level = name
+					sub("_.*", "", lvl)
+					if (level ~ "[^0-9]")
+						level = "n/a"
 					print "<tr>"
+					print " <td>" level
 					print " <td><a href=" q name "/index.html" q ">" DATA[name, "name"] "</a>"
 					print " <td>" DATA[name, "scripts"]
 					print " <td>" DATA[name, "desc"]
