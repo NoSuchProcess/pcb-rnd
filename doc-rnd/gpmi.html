@@ -1,0 +1,41 @@
+<html>
+<body>
+<h1> pcb-rnd - the [gpmi] patch </h1>
+
+Thanks to gpmi, pcb-rnd is scriptable in about 10 scripting languages (e.g.
+lua, awk, ruby, python, scheme, tcl). Scripts are integrated in pcb-rnd and
+have access to most of the internals. Scripts
+are able to:
+	<ul>
+		<li> register new actions
+		<li> create new menus and submenus
+		<li> execute existing actions
+		<li> pop up simple dialog boxes (message, report, progress bar, file selection) -- <a href="https://archive.org/details/Pcb-rndCarcScript"> check out the video </a>
+		<li> build and pop up custom dialog boxes (so called <i>attribute dialogs</i>)
+		<li> search for objects (lines, arc, polys, vias, etc.) on the layout
+		<li> change and move existing objects on the layout
+		<li> create new objects on the layout
+		<li> change "page" properties (dimensions of the board)
+		<li> debug draw on the gui (slightly broken on gtk due to some gtk hid bugs)
+	</ul>
+</ul>
+<p>
+This feature has three options:
+<ul>
+	<li> <i>disabled</i>: not compiled at all - when gpmi is not installed (no gpmi scripting in PCB)
+	<li> <i>buildin</i>: compiled and linked in the executable - pcb-rnd always can load and run scripts
+	<li> <i>plugin</i>: compiled as a loadable plugin - pcb-rnd can load and run scripts if the plugin is installed
+</ul>
+
+<h3> Example </h3>
+Check out <a href="gpmi/rosetta/index.html">the Rosetta stone </a> of
+pcb-rnd.
+
+<h2> save/load and compatibility </h2>
+Save/load files are not affected.
+
+<h2> plans </h2>
+Expose more internals, write more example scripts and documentation.
+
+</body>
+</html>
