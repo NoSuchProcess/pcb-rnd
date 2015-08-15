@@ -85,6 +85,13 @@ int layout_search_box(const char *search_ID, layout_object_mask_t obj_types, int
 		r_search (PCB->Data->pin_tree, &spot, NULL, search_callback, s);
 	}
 
+	if (obj_types & OM_POLYGON) {
+		int l;
+		s->searching = OM_POLYGON;
+		for (l = 0; l < MAX_LAYER + 2; l++)
+			r_search (PCB->Data->Layer[l].polygon_tree, &spot, NULL, search_callback, s);
+	}
+
 	return s->used;
 }
 
@@ -120,9 +127,10 @@ static int layout_search_flag(const char *search_ID, multiple layout_object_mask
 	LayerType *layer = PCB->Data->Layer;
 
 	for (l =0; l < MAX_LAYER + 2; l++, layer++) {
-		select(s, OM_ARC,  flag, layer->Arc);
-		select(s, OM_LINE, flag, layer->Line);
-		select(s, OM_TEXT, flag, layer->Text);
+		select(s, OM_ARC,     flag, layer->Arc);
+		select(s, OM_LINE,    flag, layer->Line);
+		select(s, OM_TEXT,    flag, layer->Text);
+		select(s, OM_POLYGON, flag, layer->Polygon);
 	}
 	select(s, OM_VIA,  flag, PCB->Data->Via);
 //	select(s, OM_PIN,  flag, PCB->Data->Pin,  PCB->Data->PinN); /* TODO */
@@ -147,7 +155,7 @@ layout_object_t *layout_search_get(const char *search_ID, int n)
 
 	s = hash_find(layout_searches, search_ID);
 
-	printf("s=%p\n", s);
+/*	printf("s=%p\n", s);*/
 	if ((s == NULL) || (n < 0) || (n >= s->used))
 		return NULL;
 	return s->objects+n;
