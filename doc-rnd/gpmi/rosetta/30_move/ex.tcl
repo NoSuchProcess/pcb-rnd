@@ -16,4 +16,3 @@ proc ev_action {id, name, argc, x, y} {
 
 Bind ACTE_action ev_action
 action_register "mv"  ""  "move selected objects by dx and dy mm"  "mv(dx,dy)"
-
