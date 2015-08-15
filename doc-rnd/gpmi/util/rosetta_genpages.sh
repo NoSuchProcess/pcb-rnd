@@ -113,12 +113,12 @@ gen_index()
 		function generate(cmd   ,N,n,v,name,level) {
 			if (cmd == "index") {
 				print "<table border=1>"
-				print "<tr><th>level<th>example <th> languages <th> description"
+				print "<tr><th>lvl<th>example <th> languages <th> description"
 				v = split(names, N, "[|]")
 				for(n = 1; n <= v; n++) {
 					name = N[n]
 					level = name
-					sub("_.*", "", lvl)
+					sub("_.*", "", level)
 					if (level ~ "[^0-9]")
 						level = "n/a"
 					print "<tr>"
