@@ -85,20 +85,20 @@ steps:
 <H2> 2. GPMI intro </H2>
 
 <H3> 2.1. GPMI's place in the pcb-rnd world </H3>
+<table border=0 widht=100%><tr><td valign=top>
 GPMI is a plugin/buildin HID. Instead of doing actual work, it loads scripts
 and provides a glue layer between pcb-rnd and the scripts. The actual work
 is performed by the scripts.
-<p>
-<img src="gpmi_flow.png">
-<p>
 The glue layer comes in two kinds:
 <ul>
 	<li> gpmi module: dynamic lib written in C, knows how to load and interpret a script and how to deliver events to the script
 	<li> gpmi package: dynamic lib, provides C functions the script can directly call; package functions then know how to deal with PCB internals
 </ul>
 Arrows drawn with dashed line represents a slow, <i>string based communication</i>.
+<td><img src="gpmi_flow.png"></table>
 
 <H3> 2.2. Module, script, script context, packages </H3>
+<table border=0 widht=100%><tr><td valign=top>
 Each time a script needs to be loaded, first a module is loaded and the name
 of the script is passed to the module. During module initialization, the module
 sets up a script interpreter and script context and loads the script into the
@@ -108,8 +108,6 @@ If there are 3 separate lua scripts running in pcb-rnd, there are 3 separate
 lua modules loaded, each dealing with one of the scripts. The process of
 loading a script is illustrated by highligting the relevant paths with red
 for step 1 and green for step 2.
-<p>
-<img src="gpmi_flow_load.png">
 <p>
 Step 0: the <b>GPMI HID</b> finds a script has to be loaded. The idea comes
 from the config file (pcb-rnd-gpmi.conf) or from the GUI (manage scripts)
@@ -128,16 +126,16 @@ Step 1. The green arrows represent this path: the script executes PkgLoad()
 which in turns loads other package(s) into the GPMI hid.
 <p>
 Packages are loaded only once and are globally accessible for multiple modules.
+<td><img src="gpmi_flow_load.png"></table>
 
 <H3> 2.3. Binding events, registering actions, creating menus </H3>
+<table border=0 widht=100%><tr><td valign=top>
 Binding an event in a script is done by calling the Bind() function
 (this is implemented in a package automatically loaded). The first
 argument is the name of the event, the second argument is the name of
 the script function that should be called when the event is triggered. Both
 arguments are strings. The event binding mechanism is shown in red in the
-following map.
-<p>
-<img src="gpmi_flow_reg.png">
+map to the right.
 <p>
 The script can create new actions using the action_register() function
 (the actions package needs to be loaded first). A script may register multiple
@@ -148,34 +146,37 @@ is generated. This has two implications:
 	<li> a script that registers actions needs to bind the ACTE_action event to serve the action requiests
 	<li> if a script registers multiple actions, in the event handler it needs to check which action triggered the event (e.g. with a switch()-like contstruction on the event name)
 </ul>
-<p>
+<td><img src="gpmi_flow_reg.png"></table>
+
+<table border=0 widht=100%><tr><td valign=top>
 Menus are created using the create_menu() call. <b>Menus can be
 created only when the GUI is already set up - this may happen only
 after some of the scripts are already loaded</b>. Thus scripts shall
 create menus from an event handler bound to the ACTE_gui_init event.
 This event is triggered right after the GUI has been set up.
-On the following map the red arrows represent the path of ACTE_gui_init;
+On the map to the right the red arrows represent the path of ACTE_gui_init;
 the green arrows represent the reaction of the script, creating the new
 menu.
 <p>
-<img src="gpmi_flow_menu.png">
+<td><img src="gpmi_flow_menu.png"></table>
 
 <H3> 2.4. Exporting </H3>
+<table border=0 widht=100%><tr><td valign=top>
 Exporter scripts first have to set up an exporter hid. This typically
 happens from their on-load main part. Related calls are in the hid
 package. The following map shows this process with red arrows:
 <p>
-<img src="gpmi_flow_exp.png">
-<p>
 When the user chooses to use the exporter, among the green arrows,
 a series of events are triggered and the script can generate output
 directly to a file from event handlers bound to these exporting events.
+<td><img src="gpmi_flow_exp.png"></table>
 
 <H3> 2.5. Making modificaitons on the design </H3>
 The purpose of a script might be to manipulate the objects in the current design.
 Such a script registers actions, and implements the handler of the actions
 using the layout package. The layout package provides calls to query,
 change and create design objects.
+
 
 <H2> 3. How it works in practice </H2>
 

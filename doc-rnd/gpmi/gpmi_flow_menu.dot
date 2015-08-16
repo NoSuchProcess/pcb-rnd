@@ -54,10 +54,10 @@ digraph g {
 
 	gpmi_mod1 -> gpmi_scr1 [label="load and exec"]
 	gpmi_mod1 -> gpmi_scr1 [label="event" style=dashed color=red]
-	gpmi_scr1 -> gpmi_pkg [label="function calls" style=dashed]
+	gpmi_scr1 -> gpmi_pkg [label="function calls" style=dashed color=green]
 
 	gpmi_mod2 -> gpmi_scr2 [label="load and exec"]
 	gpmi_mod2 -> gpmi_scr2 [label="event" style=dashed]
-	gpmi_scr2 -> gpmi_pkg [label="function calls" style=dashed color=green]
+	gpmi_scr2 -> gpmi_pkg [label="function calls" style=dashed]
 
 }
