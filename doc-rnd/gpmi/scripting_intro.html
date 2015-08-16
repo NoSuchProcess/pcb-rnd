@@ -1,0 +1,225 @@
+<html>
+<body>
+<H1> Scripting intro </H1>
+This document is an introduction to GPMI for pcb-rnd users. It focuses on
+scripting pcb-rnd and doesn't discusses GPMI deeper than the minimum neccessary.
+GPMI is more generic than shown here.
+<p>
+The scope of the document is to describe the relations between pcb-rnd, 
+hids, GPMI, glue packages and scripts. Details on how specific glue
+packages access pcb-rnd internals (or how those internals work) are
+described in other documents.
+
+<H2> 1. pcb-rnd internals </H2>
+
+Since scripts are glued to pcb-rnd internals, scripters need to know
+the basic concepts of how pcb-rnd is structured.
+
+<H3> 1.1 pcb-rnd, HIDs, plugins and GPMI </h2>
+pcb-rnd consists of:
+<ul>
+	<li> a <b>core</b> that handles the file format, data structures, UI and exporter logics
+	<li> a <b>hid system</b> that is a layer between core and the HIDs
+	<li> a set of <b>GUI HIDs</b> which are responsible for interactive graphical display of the current design
+	<li> a set of <b>exporter HIDs</b> which are responsible for exporting offline representation of the current design
+	<li> a <b>plugin system</b> that can load HIDs from on the fly, from dynamic loadable libraries (.so or .dll)
+	<li> a <b>buildin system</b> which is the "static link" variant of the plugin system: some plugins can be selected to be statically linked into the pcb-rnd executable so they are "always loaded"
+</ul>
+<p>
+Note 1: at the moment GUI hids can not be plugins or buildins.
+<br>
+Note 2: plugins/buildins are always exporter HIDs technically, but in practice
+they do not have to offer exporting. This means such a HID plugin is loaded
+and registered as an exporter on paper, but it doesn't really create a
+new export facility, just sits there, interacting with pcb-rnd (creating
+menus, actions, etc). Most script plugins do this.
+<p>
+When pcb-rnd executable is compiled, the core, the defailt GUI and exporter HIDs
+and buildins are compiled into the executable. Later on 
+<p>
+The <i>GPMI hid</i> is an <i>optional plugin</i> that, by compile-time choice
+of the user, can be:
+<ul>
+	<li> left out alltogether - pcb-rnd does not have scripting
+	<li> compiled as a plugin - when the .so (or .dll) is put in the right directory, pcb-rnd loads it during statup and has scripting
+	<li> compiled as buildin - becomes part of the pcb-rnd executable so that scripting is always available
+</ul>
+
+<H3> 1.2. Actions, menus, exporters </h2>
+The core implements actions. An action is a command with custom arguments,
+e.g. Delete(Selected). These actions are the commands on the default command
+line in pcb-rnd. In batch mode the command language uses these actions as well.
+Remote controlling pcb-rnd using the --listen switch will read these actions
+on the standard input.
+<p>
+GUI menus are configured to execute actions too. This also means it is impossible
+to realize an user-accessible functionality that can be triggered from
+the GUI command line, menu or batch input without making it an action.
+<p>
+The only exception, where new functionality is not behind a new action is
+exporters. An exporter is a structured dialog box of options and a set of
+callback functions implementing a drawing API. Exporting works by the following
+steps:
+<ol>
+	<li> An exporter HID may register one or more exporters.
+	<li> When the user tries to export the desing, pcb-rnd lists all
+	     registered exporters.
+	<li> The user chooses one, and the preconfigured dialog box
+	     with the selected exporter's options are popped up.
+	<li> pcb-rnd core runs the dialog and saves the results if the user
+	     clicked on the ok button.
+	<li> pcb-rnd starts the exporting process: it calls the callbacks
+	     to draw the design layer by layer, object by object.
+</ol>
+
+<H3> 1.3. How a script can interact with the user </h2>
+<ul>
+	<li> The script may register <i>actions</i> - these actions are instantly accessible from the GUI command line, on stdin with --listen and in batch mode
+	<li> The script may <i>create menus</i> and bind them to actions - when the menu is selected, the action is executed
+	<li> The script may <i>bind to events</i> that will be generated asynchronously by pcb-rnd - when such an event is received, the script executes some code
+	<li> The script may <i>register new exporter(s)</i> - the user will be able to export the design using the script
+	<li> The script may run arbitrary code <i>"on load"</i> (when the script is loaded) - however, that time the design or even the GUI may not be loaded/initialized yet - this is useful for registering actions, bind to events or set up exporters
+</ul>
+
+
+<H2> 2. GPMI intro </H2>
+
+<H3> 2.1. GPMI's place in the pcb-rnd world </H3>
+GPMI is a plugin/buildin HID. Instead of doing actual work, it loads scripts
+and provides a glue layer between pcb-rnd and the scripts. The actual work
+is performed by the scripts.
+<p>
+<img src="gpmi_flow.png">
+<p>
+The glue layer comes in two kinds:
+<ul>
+	<li> gpmi module: dynamic lib written in C, knows how to load and interpret a script and how to deliver events to the script
+	<li> gpmi package: dynamic lib, provides C functions the script can directly call; package functions then know how to deal with PCB internals
+</ul>
+Arrows drawn with dashed line represents a slow, <i>string based communication</i>.
+
+<H3> 2.2. Module, script, script context, packages </H3>
+Each time a script needs to be loaded, first a module is loaded and the name
+of the script is passed to the module. During module initialization, the module
+sets up a script interpreter and script context and loads the script into the
+context.
+<p>
+If there are 3 separate lua scripts running in pcb-rnd, there are 3 separate
+lua modules loaded, each dealing with one of the scripts. The process of
+loading a script is illustrated by highligting the relevant paths with red
+for step 1 and green for step 2.
+<p>
+<img src="gpmi_flow_load.png">
+<p>
+Step 0: the <b>GPMI HID</b> finds a script has to be loaded. The idea comes
+from the config file (pcb-rnd-gpmi.conf) or from the GUI (manage scripts)
+or as a request from a script already loaded. 
+<p>
+Step 1: the <b>GPMI HID</b> loads the corresponding module which in turns
+loads the script. The script has a "main" part that is run on load. For
+most languages this is the global code sections; in some languages it is
+a specific function, usually called main. A few basic glue packages
+are already loaded before the script.
+<p>
+Step 2: the <b>script</b> can load glue packages. This usually happens
+from the on-load main part from the script. The actual mechanism is to
+call PkgLoad() from a glue package that was automatically loaded in
+Step 1. The green arrows represent this path: the script executes PkgLoad()
+which in turns loads other package(s) into the GPMI hid.
+<p>
+Packages are loaded only once and are globally accessible for multiple modules.
+
+<H3> 2.3. Binding events, registering actions, creating menus </H3>
+Binding an event in a script is done by calling the Bind() function
+(this is implemented in a package automatically loaded). The first
+argument is the name of the event, the second argument is the name of
+the script function that should be called when the event is triggered. Both
+arguments are strings. The event binding mechanism is shown in red in the
+following map.
+<p>
+<img src="gpmi_flow_reg.png">
+<p>
+The script can create new actions using the action_register() function
+(the actions package needs to be loaded first). A script may register multiple
+actions. This call is marked with green in the above map.
+If any of the actions registered by the script is called, the event "ACTE_action"
+is generated. This has two implications:
+<ul>
+	<li> a script that registers actions needs to bind the ACTE_action event to serve the action requiests
+	<li> if a script registers multiple actions, in the event handler it needs to check which action triggered the event (e.g. with a switch()-like contstruction on the event name)
+</ul>
+<p>
+Menus are created using the create_menu() call. <b>Menus can be
+created only when the GUI is already set up - this may happen only
+after some of the scripts are already loaded</b>. Thus scripts shall
+create menus from an event handler bound to the ACTE_gui_init event.
+This event is triggered right after the GUI has been set up.
+On the following map the red arrows represent the path of ACTE_gui_init;
+the green arrows represent the reaction of the script, creating the new
+menu.
+<p>
+<img src="gpmi_flow_menu.png">
+
+<H3> 2.4. Exporting </H3>
+Exporter scripts first have to set up an exporter hid. This typically
+happens from their on-load main part. Related calls are in the hid
+package. The following map shows this process with red arrows:
+<p>
+<img src="gpmi_flow_exp.png">
+<p>
+When the user chooses to use the exporter, among the green arrows,
+a series of events are triggered and the script can generate output
+directly to a file from event handlers bound to these exporting events.
+
+<H3> 2.5. Making modificaitons on the design </H3>
+The purpose of a script might be to manipulate the objects in the current design.
+Such a script registers actions, and implements the handler of the actions
+using the layout package. The layout package provides calls to query,
+change and create design objects.
+
+<H2> 3. How it works in practice </H2>
+
+<H3> 3.1. Loading the GPMI plugin </H3>
+Check the output of ./configure, it will tell if gpmi is compiled as buildin
+or plugin (or not at all).
+If the gpmi plugin is compiled as a buildin, it is already loaded, no
+further steps are required.
+<p>
+If gpmi is a plugin, gpmi_plugin.so (or gpmi_plugin.dll) needs to be
+copied in one of the plugin directories pcb-rnd is looking into on startup:
+<table border=1>
+	<tr><th> path <th> purpose
+	<tr><td>
+	<tr><td>$prefix/lib/plugins/$arch/  <td> system plugins, multihost
+	<tr><td>$prefix/lib/plugins/        <td> system plugins
+	<tr><td>~/.pcb/plugins/$arch/       <td> user plugins, multihost
+	<tr><td>~/.pcb/plugins/             <td> user plugins
+	<tr><td>./plugins/$arch/            <td> project plugins, multihost
+	<tr><td>./plugins/                  <td> project plugins
+</table>
+In the above table:
+<ul>
+	<li> $prefix is the installation prefix (normally /usr)
+	<li> $arch is the host arch triplet, e.g. i386-unknown-linux; this is useful if multiple architectures share the same NFS mounted plugin dir
+	<li> ~ is the user home directory, if exists, e.g. /home/jdoe
+	<li> ./ is the current working directory pcb has been started from; may be useful for project-local scripts
+</ul>
+
+<H3> 3.2. Loading scripts </H3>
+The gpmi plugin looks for a file called "pcb-rnd-gpmi.conf" in each of the
+plugin directories. Wherever the file is found, it is loaded and parsed.
+The file is plain text, each line describes a script to be loaded. Empty
+lines and lines starting with # are comments and are ignored.
+<p>
+Script load lines contain two words separated by a space: a module name
+and a script name. Relative paths in the the script name are relative to
+the directory the config file is found in.
+<p>
+Example config:
+<pre>
+# load the carc script (written in lua) from next to the config file:
+lua carc.lua
+
+# load foo.awk, whcih is a mawk script, from its installation path
+mawk /usr/lib/foo/foo.awk
+</pre>
