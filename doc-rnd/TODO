@@ -8,11 +8,6 @@ CLEANUP
 FEATURES
 - merge pcb-gpmi in pcb-rnd {large}
 	- high level document!
-	- cleanup on unload:
-		- needs some package-module infra?
-			- remove/unregister action
-			- unregister exporters
-			- remove menus
 		- an event so the script has a chance to clean up
 - UI: drill adjust: {small}
 	- set drill and/or ring to current style
@@ -47,9 +42,11 @@ Low prio:
 		- menus are always created using a path (ghid_main_menu_real_add_resource)
 		- res->menu should be a common code
 - check whether local copy of gts is needed
-- move genht out of pcb-mincut?
 - gpmi:
 	- dialog: attribute dialog: mini parser from text
 	- fix debug draw in the gtk hid
 	- ACTE_action(): coords should not be int but Coord
 	- hid: hid_destroy (pair of hid_create)
+	- cleanup on unload:
+			- remove menus
+	- get timers to work
