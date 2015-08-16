@@ -79,6 +79,9 @@ int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, i
 {
 	void *what = NULL;;
 
+	if (obj == NULL)
+		return -1;
+
 	switch(obj->type) {
 		case OM_LINE:
 			switch(coord) {
@@ -124,6 +127,8 @@ int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, i
 
 int layout_arc_angles(layout_object_t *obj, int relative, int start, int delta)
 {
+	if (obj == NULL)
+		return -1;
 	if (obj->type != OM_ARC)
 		return 1;
 	if (relative) {
