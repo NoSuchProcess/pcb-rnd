@@ -1,9 +1,11 @@
-Big thanx to DJ Delorie who added external HID support in PCB and commited
-many small patches needed to get this project working.
+2006...2009
+~~~~~~~~~~~
+Big thanks to DJ Delorie who added external HID support in PCB and commited
+many small patches needed to get this project working in the period
+when the whole project was a plugin to vanilla pcb.
 
 The following people helped the project with their valuable feedbacks
 in the early stage:
  John Griessen
  Carlos Nieves Onega
-
 
