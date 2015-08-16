@@ -2,7 +2,6 @@ PkgLoad pcb-rnd-gpmi/hid 0
 PkgLoad pcb-rnd-gpmi/layout 0
 PkgLoad pcb-rnd-gpmi/dialogs 0
 
-# register an exporter with filename setting
 set hid [hid_create "drill" "drill list export"]
 set attr_path   [hid_add_attribute $hid "filename" "name of the output file" "HIDA_Path" 0 0 "drill.txt"]
 set attr_format [hid_add_attribute $hid "format"   "file format" "HIDA_Enum" 0 0 "CSV|TSV|text"]
@@ -13,7 +12,6 @@ set conv [mm2pcb_multiplier]
 set channel -1
 set green_light 0
 
-# make and destroy GC
 proc make_gc {event_id hid gc} {
 	global channel attr_path attr_format fmt
 
@@ -37,6 +35,7 @@ proc destroy_gc {event_id hid gc} {
 
 proc set_layer {event_id hid name group empty} {
 	global green_light
+
 	if { $name eq "topassembly" } { set green_light 1 } { set green_light 0 }
 }
 
