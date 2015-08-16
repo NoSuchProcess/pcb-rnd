@@ -13,10 +13,10 @@ channel = nil
 green_light = 0
 
 function make_gc(event_id, hid, gc)
-	if (channel == nil)
+	if channel == nil
 	then
 		channel = io.open(hid_get_attribute(hid, attr_path), "w")
-		if (channel == nil)
+		if channel == nil
 		then
 			dialog_report("Error exporting drill", "Could not open file [hid_get_attribute $hid $attr_path] for\nwriting, exporting drill failed.")
 			return
