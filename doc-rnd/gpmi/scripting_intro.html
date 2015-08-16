@@ -2,7 +2,7 @@
 <body>
 <H1> Scripting intro </H1>
 This document is an introduction to GPMI for pcb-rnd users. It focuses on
-scripting pcb-rnd and doesn't discusses GPMI deeper than the minimum neccessary.
+scripting pcb-rnd and doesn't discusses GPMI deeper than the minimum necessary.
 GPMI is more generic than shown here.
 <p>
 The scope of the document is to describe the relations between pcb-rnd, 
@@ -34,14 +34,14 @@ and registered as an exporter on paper, but it doesn't really create a
 new export facility, just sits there, interacting with pcb-rnd (creating
 menus, actions, etc). Most script plugins do this.
 <p>
-When pcb-rnd executable is compiled, the core, the defailt GUI and exporter HIDs
+When pcb-rnd executable is compiled, the core, the default GUI and exporter HIDs
 and buildins are compiled into the executable. Later on 
 <p>
 The <i>GPMI hid</i> is an <i>optional plugin</i> that, by compile-time choice
 of the user, can be:
 <ul>
-	<li> left out alltogether - pcb-rnd does not have scripting
-	<li> compiled as a plugin - when the .so (or .dll) is put in the right directory, pcb-rnd loads it during statup and has scripting
+	<li> left out all-together - pcb-rnd does not have scripting
+	<li> compiled as a plugin - when the .so (or .dll) is put in the right directory, pcb-rnd loads it during startup and has scripting
 	<li> compiled as buildin - becomes part of the pcb-rnd executable so that scripting is always available
 </ul>
 
@@ -62,7 +62,7 @@ callback functions implementing a drawing API. Exporting works by the following
 steps:
 <ol>
 	<li> An exporter HID may register one or more exporters.
-	<li> When the user tries to export the desing, pcb-rnd lists all
+	<li> When the user tries to export the design, pcb-rnd lists all
 	     registered exporters.
 	<li> The user chooses one, and the preconfigured dialog box
 	     with the selected exporter's options are popped up.
@@ -106,7 +106,7 @@ context.
 <p>
 If there are 3 separate lua scripts running in pcb-rnd, there are 3 separate
 lua modules loaded, each dealing with one of the scripts. The process of
-loading a script is illustrated by highligting the relevant paths with red
+loading a script is illustrated by highlighting the relevant paths with red
 for step 1 and green for step 2.
 <p>
 Step 0: the <b>GPMI HID</b> finds a script has to be loaded. The idea comes
@@ -143,8 +143,8 @@ actions. This call is marked with green in the above map.
 If any of the actions registered by the script is called, the event "ACTE_action"
 is generated. This has two implications:
 <ul>
-	<li> a script that registers actions needs to bind the ACTE_action event to serve the action requiests
-	<li> if a script registers multiple actions, in the event handler it needs to check which action triggered the event (e.g. with a switch()-like contstruction on the event name)
+	<li> a script that registers actions needs to bind the ACTE_action event to serve the action requests
+	<li> if a script registers multiple actions, in the event handler it needs to check which action triggered the event (e.g. with a switch()-like construction on the event name)
 </ul>
 <td><img src="gpmi_flow_reg.png"></table>
 
@@ -171,7 +171,7 @@ a series of events are triggered and the script can generate output
 directly to a file from event handlers bound to these exporting events.
 <td><img src="gpmi_flow_exp.png"></table>
 
-<H3> 2.5. Making modificaitons on the design </H3>
+<H3> 2.5. Making modifications on the design </H3>
 The purpose of a script might be to manipulate the objects in the current design.
 Such a script registers actions, and implements the handler of the actions
 using the layout package. The layout package provides calls to query,
