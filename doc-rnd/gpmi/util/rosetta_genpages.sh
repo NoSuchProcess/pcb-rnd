@@ -112,7 +112,7 @@ gen_index()
 
 		function generate(cmd   ,N,n,v,name,level) {
 			if (cmd == "index") {
-				print "<table border=1>"
+				print "<table border=1 cellspacing=0 cellpadding=15>"
 				print "<tr><th>lvl<th>example <th> languages <th> description"
 				v = split(names, N, "[|]")
 				for(n = 1; n <= v; n++) {
