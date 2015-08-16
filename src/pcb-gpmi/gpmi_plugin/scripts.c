@@ -107,8 +107,19 @@ hid_gpmi_script_info_t *hid_gpmi_load_module(hid_gpmi_script_info_t *i, const ch
 	}
 	gpmi_err_stack_destroy(NULL);
 
-	if (module != NULL)
-		return hid_gpmi_script_info_add(i, module, params, module_name, config_file_name);
+	if (module != NULL) {
+		hid_gpmi_script_info_t *ri;
+		int ev;
+
+		ri = hid_gpmi_script_info_add(i, module, params, module_name, config_file_name);
+		if ((ri != NULL) && (gpmi_hid_gui_inited)) {
+			char *ev_args;
+			/* If a script is loaded with a GUI already inited, send the event right after the load */
+			ev = gpmi_event_find("ACTE_gui_init", &ev_args);
+			gpmi_event(ri->module, ev, 0, NULL);
+		}
+		return ri;
+	}
 
 	return NULL;
 }

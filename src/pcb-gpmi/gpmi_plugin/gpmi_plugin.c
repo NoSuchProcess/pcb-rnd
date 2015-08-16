@@ -60,6 +60,7 @@ static void load_cfg(void)
 	free(hdirh);
 }
 
+int gpmi_hid_gui_inited = 0;
 static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 {
 	int ev;
@@ -75,6 +76,7 @@ static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 			if (i->module != NULL)
 				gpmi_event(i->module, ev, argc, argv);
 	}
+	gpmi_hid_gui_inited = 1;
 }
 
 static void cmd_reload(char *name)
