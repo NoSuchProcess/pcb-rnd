@@ -27,8 +27,6 @@ After all obstacles removed, I allocated a 24 hour coding session where I
 finished the exporter functionality, added action binding, dialog box handling
 and layout manipulation functions.
 
-
-
-
-
+During the summer of 2015 I merged pcb-gpmi into pcb-rnd and made it
+the default scirpting engine for pcb-rnd.
 
