@@ -39,7 +39,7 @@
 #@@enum:sequence:normal increase by y first, then by x
 #@@enum:sequence:pivot increase by x first, then by y
 #@@enum:sequence:zigzag "dip-style" numbering in zig-zag: number odd x rows by y ascending, even x rows by y descending
-#@@preview_args:etrunc 2,4
+#@@preview_args:sequence 2,4
 #@@default:sequence normal
 #@@optional:sequence
 
