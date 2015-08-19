@@ -6,5 +6,5 @@
 #@@enum:silkmark:external shorthand for external
 #@@enum:silkmark:angled an angled line in the corner
 #@@enum:silkmark:arc an external 270 degree arc
-#@@enum:silkmark:arc a circle, 270 degrees external
+#@@enum:silkmark:circle a circle, 270 degrees external
 #@@enum:silkmark:none no mark
