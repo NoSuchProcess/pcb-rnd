@@ -141,6 +141,14 @@ function element_pad(x1, y1, x2, y2, thickness,   number, flags,   clearance, ma
 		q name q, q number q, q flags q "]"
 }
 
+# draw element pad circle
+function element_pad_circle(x1, y1, radius,   number,  clearance, mask, name)
+{
+	print "	Pad[", coord_x(x1), coord_y(y1), coord_x(x1), coord_y(y1), int(either(radius, DEFAULT["pad_thickness"])),
+		int(either(clearance, DEFAULT["pad_clearance"])), int(either(mask, DEFAULT["pad_mask"])),
+		q name q, q number q, q "" q "]"
+}
+
 # draw a line on silk; thickness is optional (default: line_thickness)
 function element_line(x1, y1, x2, y2,   thickness)
 {
