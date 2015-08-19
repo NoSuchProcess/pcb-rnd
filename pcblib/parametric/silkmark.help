@@ -1,0 +1,7 @@
+#@@param:silkmark how to mark pin 1 on the silk layer
+#@@enum:silkmark:square a rectangle around pin 1
+#@@enum:silkmark:externalx a little trinagle placed outside of the box pointing in line with the first x row
+#@@enum:silkmark:externaly a little trinagle placed outside of the box pointing in line with the first y row
+#@@enum:silkmark:external shorthand for external
+#@@enum:silkmark:angled an angled line in the corner
+#@@enum:silkmark:none no mark
