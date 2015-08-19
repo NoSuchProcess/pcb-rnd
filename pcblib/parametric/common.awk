@@ -380,26 +380,31 @@ function tobool(x)
 # style: mark style, ":" separated list
 # x,y: the coordinates of the origin corner (top-left)
 # half: half the stepping of the pin grid - the size of the mark
-function silkmark(style, x, y, half,   S,n,v)
+# step: optional size of the external arrow or square (defaults to 2*half)
+function silkmark(style, x, y, half,    step,   S,n,v)
 {
+	if (step == "")
+	step = half*2
+
 	v = split(style, S, ":")
+
 	for(n = 1; n <= v; n++) {
 		if (S[n] == "angled") {
-			element_line(x, y-half,  x-half, y)
+			element_line(x+half, y,  x, y+half)
 		}
 		else if (S[n] == "square") {
-			element_line(x-half, y+half,  x+half, y+half)
-			element_line(x+half, y-half,  x+half, y+half)
+			element_line(x, y+step,  x+2*half, y+step)
+			element_line(x+step, y,  x+2*half, y+step)
 		}
 		else if ((S[n] == "external") || (S[n] == "externalx")) {
-			element_line(x-half, y,         x-step, y-half/2)
-			element_line(x-half, y,         x-step, y+half/2)
-			element_line(x-step, y-half/2,  x-step, y+half/2)
+			element_line(x, y+half,         x-step+half, y+half/2)
+			element_line(x, y+half,         x-step+half, y+half*1.5)
+			element_line(x-step+half, y+half/2,         x-step+half, y+half*1.5)
 		}
 		else if (S[n] == "externaly") {
-			element_line(x, y-half,         x-half/2, y-step)
-			element_line(x, y-half,         x+half/2, y-step)
-			element_line(x-half/2, y-step,  x+half/2, y-step)
+			element_line(x+half, y,         x-half/2+half, y-step+half)
+			element_line(x+half, y,         x+half/2+half, y-step+half)
+			element_line(x-half/2+half, y-step+half,  x+half/2+half, y-step+half)
 		}
 		else if (S[n] == "external45") {
 			element_line(x, y,       x-half, y-half/3)

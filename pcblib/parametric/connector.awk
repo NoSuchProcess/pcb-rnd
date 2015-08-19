@@ -79,7 +79,7 @@ BEGIN {
 
 	element_rectangle(-half, -half, P["nx"] * step - half + xo, P["ny"] * step - half + yo)
 
-	silkmark(P["silkmark"], 0, 0, half)
+	silkmark(P["silkmark"], -half, -half, half)
 
 	element_end()
 }
