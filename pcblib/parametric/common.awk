@@ -375,3 +375,31 @@ function tobool(x)
 	x = tolower(x)
 	return (x == "true") || (x == "yes") || (x == "on")
 }
+
+# default pin1 mark on a box
+# style: mark style, "+" separated list (TODO)
+# x,y: the coordinates of the origin corner (top-left)
+# half: half the stepping of the pin grid - the size of the mark
+function silkmark(style, x, y, half)
+{
+	if (style == "angled") {
+		element_line(x, y-half,  x-half, y)
+	}
+	else if (style == "square") {
+		element_line(x-half, y+half,  x+half, y+half)
+		element_line(x+half, y-half,  x+half, y+half)
+	}
+	else if ((style == "external") || (style == "externalx")) {
+		element_line(x-half, y,         x-step, y-half/2)
+		element_line(x-half, y,         x-step, y+half/2)
+		element_line(x-step, y-half/2,  x-step, y+half/2)
+	}
+	else if (style == "externaly") {
+		element_line(x, y-half,         x-half/2, y-step)
+		element_line(x, y-half,         x+half/2, y-step)
+		element_line(x-half/2, y-step,  x+half/2, y-step)
+	}
+	else if ((style != "none") && (style != "")) {
+		error("invalid silkmark parameter: " style)
+	}
+}

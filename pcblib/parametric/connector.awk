@@ -79,26 +79,7 @@ BEGIN {
 
 	element_rectangle(-half, -half, P["nx"] * step - half + xo, P["ny"] * step - half + yo)
 
-	if (P["silkmark"] == "angled") {
-		element_line(0, -half,  -half, 0)
-	}
-	else if (P["silkmark"] == "square") {
-		element_line(-half, half,  half, half)
-		element_line(half, -half,  half, half)
-	}
-	else if ((P["silkmark"] == "external") || (P["silkmark"] == "externalx")) {
-		element_line(-half, 0,        -step, -half/2)
-		element_line(-half, 0,        -step, +half/2)
-		element_line(-step, -half/2,  -step, +half/2)
-	}
-	else if (P["silkmark"] == "externaly") {
-		element_line(0, -half,        -half/2, -step)
-		element_line(0, -half,        +half/2, -step)
-		element_line(-half/2, -step,  +half/2, -step)
-	}
-	else if ((P["silkmark"] != "none") && (P["silkmark"] != "")) {
-		error("invalid silkmark parameter: " P["silkmark"])
-	}
-	
+	silkmark(P["silkmark"], 0, 0, half)
+
 	element_end()
 }
