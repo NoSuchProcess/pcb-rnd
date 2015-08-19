@@ -43,6 +43,18 @@
 #@@default:height two columns higher than the array
 
 
+#@@param:automap assume a regular nx*ny array, automap (autonumber) the pins; multiple values separated by colons accepted (e.g. automap=alnum:pivot:reversx)
+#@@optional:automap
+#@@enum:automap:none do not autonumber pins
+#@@enum:automap:alnum number y rows from A..Z (then AA..AZ) from top to bottom, number x rows from 0..nx left to right
+#@@enum:automap:pivot swap x and y
+#@@enum:automap:reversex number x from right to left
+#@@enum:automap:reversey number y from bottom up
+#@@default:none
+#@@preview_args:silkmark 3,3
+#@@thumbsize:sequence 3
+
+
 
 #@@include common.awk
 

@@ -1,9 +1,38 @@
+function pinalpha(p,    s)
+{
+	if (p >= 26)
+		s = pinalpha(int(p/26)-1)
+	return s sprintf("%c", 65 + (p % 26))
+}
+
+function automap(algo, pivot, revx, revy   ,xx,yy)
+{
+	if (algo == 1) {
+		for(y = 0; y < ny; y++) {
+			if (revy)
+				yy = ny - y - 1
+			else
+				yy = y
+			for(x = 0; x < nx; x++) {
+				if (revx)
+					xx = nx - x - 1
+				else
+					xx = x
+				if (pivot)
+					MAP[x,y] = pinalpha(xx) yy+1
+				else
+					MAP[x,y] = pinalpha(yy) xx+1
+			}
+		}
+	}
+}
+
 BEGIN {
 	set_arg(P, "?spacing", "0.5mm")
 	set_arg(P, "?balldia", "0.35mm")
 	set_arg(P, "?silkmark", "arc")
 
-	proc_args(P, "nx,ny,spacing,balldia,silkmark,map,width,height", "")
+	proc_args(P, "nx,ny,spacing,balldia,silkmark,map,width,height,automap", "")
 
 	step = parse_dim(P["spacing"])
 
@@ -32,9 +61,16 @@ BEGIN {
 		}
 		ny++;
 	}
-	else
+	else {
 		if ((nx == "") || (ny == ""))
 			error("missing argument: need nx,ny or a map")
+		if (P["automap"] ~ "alnum")
+			automap(1, (P["automap"] ~ "pivot"), (P["automap"] ~ "reversex"), (P["automap"] ~ "reversey"))
+		else if ((P["automap"] ~ "none") || (P["automap"] == "")) {
+		}
+		else
+			error("automap should have a directive alnum or none")
+	}
 
 	balldia = parse_dim(P["balldia"])
 	bw  = parse_dim(P["width"])
