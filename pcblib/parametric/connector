@@ -40,6 +40,8 @@
 #@@enum:sequence:pivot increase by x first, then by y
 #@@enum:sequence:zigzag "dip-style" numbering in zig-zag: number odd x rows by y ascending, even x rows by y descending
 #@@preview_args:sequence 2,4
+#@@thumbsize:sequence 3
+#@@thumbnum:sequence 1
 #@@default:sequence normal
 #@@optional:sequence
 
