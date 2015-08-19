@@ -11,23 +11,41 @@
 
 #define version "1.0.1"
 
+static void help1(void)
+{
+	printf("./configure: configure pcn-rnd.\n");
+	printf("\n");
+	printf("Usage: ./configure [options]\n");
+	printf("\n");
+	printf("options are:\n");
+	printf(" --prefix=path       change installation prefix from /usr to path\n");
+}
+
+static void help2(void)
+{
+	printf("\n");
+	printf("The --disable options will make ./configure to skip detection of the");
+	printf("given feature and mark them \"not found\".");
+	printf("\n");
+}
+
 /* Runs when a custom command line argument is found
  returns true if no furhter argument processing should be done */
 int hook_custom_arg(const char *key, const char *value)
 {
 	static const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
-		{"disable-gtk",       "libs/gui/gtk2",           arg_lib_nodes},
-		{"disable-lesstif",   "libs/gui/lesstif2",       arg_lib_nodes},
-		{"disable-xrender",   "libs/gui/xrender",        arg_lib_nodes},
-		{"disable-xinerama",  "libs/gui/xinerama",       arg_lib_nodes},
-		{"disable-gd",        "libs/gui/gd",             arg_lib_nodes},
-		{"disable-gd-gif",    "libs/gui/gd/gdImageGif",  arg_lib_nodes},
-		{"disable-gd-png",    "libs/gui/gd/gdImagePng",  arg_lib_nodes},
-		{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg", arg_lib_nodes},
-		{"disable-gpmi",      "libs/script/gpmi",        arg_lib_nodes},
+		{"disable-gtk",       "libs/gui/gtk2",           arg_lib_nodes, "$do not compile the gtk HID"},
+		{"disable-lesstif",   "libs/gui/lesstif2",       arg_lib_nodes, "$do not compile the lesstif HID"},
+		{"disable-xrender",   "libs/gui/xrender",        arg_lib_nodes, "$do not use xrender for lesstif"},
+		{"disable-xinerama",  "libs/gui/xinerama",       arg_lib_nodes, "$do not use xinerama for lesstif"},
+		{"disable-gd",        "libs/gui/gd",             arg_lib_nodes, "$do not use gd (many exporters need it)"},
+		{"disable-gd-gif",    "libs/gui/gd/gdImageGif",  arg_lib_nodes, "$no gif support in the png exporter"},
+		{"disable-gd-png",    "libs/gui/gd/gdImagePng",  arg_lib_nodes, "$no png support in the png exporter"},
+		{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg", arg_lib_nodes, "$no jpeg support in the png exporter"},
+		{"disable-gpmi",      "libs/script/gpmi",        arg_lib_nodes, "$do not compile the gpmi (scripting) plugin"},
 
-		{"buildin-gpmi",      "/local/pcb/gpmi/buildin", arg_true},
-		{"plugin-gpmi",       "/local/pcb/gpmi/buildin", arg_false},
+		{"buildin-gpmi",      "/local/pcb/gpmi/buildin", arg_true,      "$static link the gpmi plugin into the executable"},
+		{"plugin-gpmi",       "/local/pcb/gpmi/buildin", arg_false,     "$the gpmi plugin is dynamic loadable"},
 		{NULL, NULL, NULL}
 	};
 
@@ -35,6 +53,12 @@ int hook_custom_arg(const char *key, const char *value)
 		report(0, "Setting prefix to '%s'\n", value);
 		put("/local/prefix", strclone(value));
 		return 1;
+	}
+	else if (strcmp(key, "help") == 0) {
+		help1();
+		arg_auto_print_options(stdout, " ", "                  ", disable_libs);
+		help2();
+		exit(0);
 	}
 
 	return arg_auto_set(key, value, disable_libs);
