@@ -32,7 +32,7 @@ BEGIN {
 	set_arg(P, "?balldia", "0.35mm")
 	set_arg(P, "?silkmark", "arc")
 
-	proc_args(P, "nx,ny,spacing,balldia,silkmark,map,width,height,automap", "")
+	proc_args(P, "nx,ny,spacing,balldia,silkmark,map,width,height,automap,automap2", "")
 
 	step = parse_dim(P["spacing"])
 
@@ -65,11 +65,11 @@ BEGIN {
 		if ((nx == "") || (ny == ""))
 			error("missing argument: need nx,ny or a map")
 		if (P["automap"] ~ "alnum")
-			automap(1, (P["automap"] ~ "pivot"), (P["automap"] ~ "reversex"), (P["automap"] ~ "reversey"))
+			automap(1, (P["automap2"] ~ "pivot"), (P["automap2"] ~ "reversex"), (P["automap2"] ~ "reversey"))
 		else if ((P["automap"] ~ "none") || (P["automap"] == "")) {
 		}
 		else
-			error("automap should have a directive alnum or none")
+			error("automap should be alnum or none")
 	}
 
 	balldia = parse_dim(P["balldia"])

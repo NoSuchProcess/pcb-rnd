@@ -6,7 +6,7 @@
 
 #@@desc Generate a grid of circular pads for BGA chips
 
-#@@params nx,ny,spacing,balldia,silkmark,map,width,height
+#@@params nx,ny,spacing,balldia,silkmark,map,width,height,automap,automap2
 
 #@@param:nx number of pins in the X direction
 #@@optional:nx
@@ -43,17 +43,22 @@
 #@@default:height two columns higher than the array
 
 
-#@@param:automap assume a regular nx*ny array, automap (autonumber) the pins; multiple values separated by colons accepted (e.g. automap=alnum:pivot:reversx)
+#@@param:automap assume a regular nx*ny array, automap (autonumber) the pins
 #@@optional:automap
 #@@enum:automap:none do not autonumber pins
 #@@enum:automap:alnum number y rows from A..Z (then AA..AZ) from top to bottom, number x rows from 0..nx left to right
-#@@enum:automap:pivot swap x and y
-#@@enum:automap:reversex number x from right to left
-#@@enum:automap:reversey number y from bottom up
 #@@default:none
-#@@preview_args:silkmark 3,3
-#@@thumbsize:sequence 3
+#@@preview_args:automap 3,3
+#@@thumbsize:automap 3
+#@@thumbnum:automap 1
 
+#@@param:automap2 change how automap behaves - multiple values separated by colon are accepted (e.g. automap2=pivot,reversex)
+#@@enum:automap2:pivot swap x and y
+#@@enum:automap2:reversex number x from right to left
+#@@enum:automap2:reversey number y from bottom up
+#@@preview_args:automap2 3,3,automap=alnum
+#@@thumbsize:automap2 3
+#@@thumbnum:automap2 1
 
 
 #@@include common.awk
