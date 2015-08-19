@@ -122,17 +122,15 @@ function rline(x1, y1, x2, y2, width    ,omit_ends , length_bloat    ,nx,ny,vx,v
 		edges(x2-nx*width/2, y2-ny*width/2)
 		edges(x1-nx*width/2, y1-ny*width/2)
 	}
+
 	if (!omit_ends) {
 		print "fillcircle", x1, y1, width/2, width/10
-		print "fillcircle", x2, y2, width/2, width/10
+		if ((x1 != x2) || (y1 != y2))
+			print "fillcircle", x2, y2, width/2, width/10
 
 		edges(x1-width/2, y1-width/2)
 		edges(x2+width/2, y2+width/2)
 	}
-#	else {
-#		print "fillrect", x1-width/2, y1-width/2, width, width
-#		print "fillrect", x2-width/2, y2-width/2, width, width
-#	}
 
 	edges(x1, y1)
 	edges(x2, y2)
@@ -317,7 +315,7 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 	sub(".*Pad[ \t]*[[]", "", $0)
 	sub("]$", "", $0)
 
-	pad($1, $2, $3, $4, $5, $6, $7, $9,   1)
+	pad($1, $2, $3, $4, $5, $6, $7, $9,   ($10 ~ "square"))
 }
 
 /Pad[ \t]*[(]/ {
