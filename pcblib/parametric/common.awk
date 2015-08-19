@@ -401,6 +401,11 @@ function silkmark(style, x, y, half,   S,n,v)
 			element_line(x, y-half,         x+half/2, y-step)
 			element_line(x-half/2, y-step,  x+half/2, y-step)
 		}
+		else if (S[n] == "external45") {
+			element_line(x, y,       x-half, y-half/3)
+			element_line(x, y,       x-half/3, y-half)
+			element_line(x-half, y-half/3, x-half/3, y-half)
+		}
 		else if ((S[n] != "none") && (S[n] != "")) {
 			error("invalid silkmark parameter: " S[n])
 		}
