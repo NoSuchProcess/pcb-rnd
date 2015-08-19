@@ -24,6 +24,12 @@ BEGIN {
 	thumbsize=1
 }
 
+function urlencode(s)
+{
+	gsub("[#]", "%23", s)
+	return s
+}
+
 function proc_include(fn)
 {
 	close(fn)
@@ -220,7 +226,7 @@ END {
 
 	if (footer) {
 		print "<h3>Example</h3>"
-		print "<a href=" q CGI "?cmd=" HELP["@@example"] q ">"
+		print "<a href=" q CGI "?cmd=" urlencode(HELP["@@example"]) q ">"
 		print HELP["@@example"]
 		print "</a>"
 		print "</body></html>"
@@ -279,7 +285,13 @@ list_gens()
 			PARAMS[FILENAME] = PARAMS[FILENAME] $0
 			next
 		}
-		
+
+		function urlencode(s)
+		{
+			gsub("[#]", "%23", s)
+			return s
+		}
+
 		END {
 			for(fn in PURPOSE) {
 				gn=fn
@@ -287,7 +299,7 @@ list_gens()
 				params=PARAMS[fn]
 				sub("^[ \t]*", "", params)
 				sub("[ \t]*$", "", params)
-				print "<li> <a href=" q CGI "?cmd=" EXAMPLE[fn] q ">" gn "(<small>" params "</small>) </a> - " PURPOSE[fn]
+				print "<li> <a href=" q CGI "?cmd=" urlencode(EXAMPLE[fn]) q ">" gn "(<small>" params "</small>) </a> - " PURPOSE[fn]
 				print "- <a href=" q CGI "?cmd=" gn "&output=help"  q "> HELP </a>"
 			}
 		}
