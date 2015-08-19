@@ -377,29 +377,32 @@ function tobool(x)
 }
 
 # default pin1 mark on a box
-# style: mark style, "+" separated list (TODO)
+# style: mark style, ":" separated list
 # x,y: the coordinates of the origin corner (top-left)
 # half: half the stepping of the pin grid - the size of the mark
-function silkmark(style, x, y, half)
+function silkmark(style, x, y, half,   S,n,v)
 {
-	if (style == "angled") {
-		element_line(x, y-half,  x-half, y)
-	}
-	else if (style == "square") {
-		element_line(x-half, y+half,  x+half, y+half)
-		element_line(x+half, y-half,  x+half, y+half)
-	}
-	else if ((style == "external") || (style == "externalx")) {
-		element_line(x-half, y,         x-step, y-half/2)
-		element_line(x-half, y,         x-step, y+half/2)
-		element_line(x-step, y-half/2,  x-step, y+half/2)
-	}
-	else if (style == "externaly") {
-		element_line(x, y-half,         x-half/2, y-step)
-		element_line(x, y-half,         x+half/2, y-step)
-		element_line(x-half/2, y-step,  x+half/2, y-step)
-	}
-	else if ((style != "none") && (style != "")) {
-		error("invalid silkmark parameter: " style)
+	v = split(style, S, ":")
+	for(n = 1; n <= v; n++) {
+		if (S[n] == "angled") {
+			element_line(x, y-half,  x-half, y)
+		}
+		else if (S[n] == "square") {
+			element_line(x-half, y+half,  x+half, y+half)
+			element_line(x+half, y-half,  x+half, y+half)
+		}
+		else if ((S[n] == "external") || (S[n] == "externalx")) {
+			element_line(x-half, y,         x-step, y-half/2)
+			element_line(x-half, y,         x-step, y+half/2)
+			element_line(x-step, y-half/2,  x-step, y+half/2)
+		}
+		else if (S[n] == "externaly") {
+			element_line(x, y-half,         x-half/2, y-step)
+			element_line(x, y-half,         x+half/2, y-step)
+			element_line(x-half/2, y-step,  x+half/2, y-step)
+		}
+		else if ((S[n] != "none") && (S[n] != "")) {
+			error("invalid silkmark parameter: " S[n])
+		}
 	}
 }

@@ -1,4 +1,4 @@
-#@@param:silkmark how to mark pin 1 on the silk layer
+#@@param:silkmark how to mark pin 1 on the silk layer; multiple values can be listed separated with colons, e.g. "silkmark=externalx:angled"
 #@@enum:silkmark:square a rectangle around pin 1
 #@@enum:silkmark:externalx a little trinagle placed outside of the box pointing in line with the first x row
 #@@enum:silkmark:externaly a little trinagle placed outside of the box pointing in line with the first y row
