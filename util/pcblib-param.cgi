@@ -24,82 +24,96 @@ BEGIN {
 	thumbsize=1
 }
 
-/@@include/ {
-	print $2 > "/dev/stderr"
+function proc_include(fn)
+{
+	close(fn)
+	while(getline < fn)
+		proc_line()
+	close(fn)
 }
 
-(match($0, "@@desc") || match($0, "@@params") || match($0, "@@purpose") || match($0, "@@example")) {
-	txt=$0
-	key=substr($0, RSTART, RLENGTH)
-	sub(".*" key "[ \t]*", "", txt)
-	HELP[key] = HELP[key] " " txt
-	next
-}
+function proc_line()
+{
+	if (/@@include/) {
+		proc_include(gendir $2)
+		return
+	}
 
-/@@thumbsize/ {
-	sub(".*@@thumbsize", "", $0)
-	thumbsize=$1
-	next
-}
+	if ((match($0, "@@desc") || match($0, "@@params") || match($0, "@@purpose") || match($0, "@@example"))) {
+		txt=$0
+		key=substr($0, RSTART, RLENGTH)
+		sub(".*" key "[ \t]*", "", txt)
+		HELP[key] = HELP[key] " " txt
+		next
+	}
 
-/@@param:/ {
-	sub(".*@@param:", "", $0)
-	p=$1
-	sub(p "[\t ]*", "", $0)
-	PARAM[prm] = p 
-	PDESC[prm] = $0
-	prm++
-	next
-}
+	if (/@@thumbsize/) {
+		sub(".*@@thumbsize", "", $0)
+		thumbsize=$1
+		retrun
+	}
+
+	if (/@@param:/) {
+		sub(".*@@param:", "", $0)
+		p=$1
+		sub(p "[\t ]*", "", $0)
+		PARAM[prm] = p 
+		PDESC[prm] = $0
+		prm++
+		return
+	}
 
 # build PPROP[paramname,propname], e.g. PPROP[pin_mask, dim]=1
-/@@optional:/ || /@@dim:/ || /@@bool:/ {
-	key = $0
-	sub("^.*@@", "", key)
-	val = key
-	sub(":.*", "", key)
-	sub("^[^:]*:", "", val)
-	PPROP[val,key] = 1
-	next
-}
+	if (/@@optional:/ || /@@dim:/ || /@@bool:/) {
+		key = $0
+		sub("^.*@@", "", key)
+		val = key
+		sub(":.*", "", key)
+		sub("^[^:]*:", "", val)
+		PPROP[val,key] = 1
+		return
+	}
 
 # build PDATA[paramname,propname], e.g. PDATA[pin_mask, default]=123
-(/@@default:/) || (/@@preview_args:/) {
-	key = $1
+	if ((/@@default:/) || (/@@preview_args:/)) {
+		key = $1
 
-	txt = $0
-	txt = substr(txt, length(key)+1, length(txt))
-	sub("^[ \t]*", "", txt)
+		txt = $0
+		txt = substr(txt, length(key)+1, length(txt))
+		sub("^[ \t]*", "", txt)
 
-	sub("^.*@@", "", key)
-	val = key
-	sub(":.*", "", key)
-	sub("^[^:]*:", "", val)
-	PDATA[val,key] = txt
-	next
-}
+		sub("^.*@@", "", key)
+		val = key
+		sub(":.*", "", key)
+		sub("^[^:]*:", "", val)
+		PDATA[val,key] = txt
+		return
+	}
 
 # build:
 #  PDATAK[paramname,n]=key (name of the value)
 #  PDATAV[paramname,n]=description (of the given value)
 #  PDATAN[paramname]=n number of parameter values
-/@@enum:/ {
-	key = $1
+	if (/@@enum:/) {
+		key = $1
 
-	txt = $0
-	txt = substr(txt, length(key)+1, length(txt))
-	sub("^[ \t]*", "", txt)
+		txt = $0
+		txt = substr(txt, length(key)+1, length(txt))
+		sub("^[ \t]*", "", txt)
 
-	sub("^.*@@enum:", "", key)
-	val = key
-	sub(":.*", "", key)
-	sub("^[^:]*:", "", val)
-	idx = int(PDATAN[key])
-	PDATAK[key,idx] = val
-	PDATAV[key,idx] = txt
-	PDATAN[key]++
-	next
+		sub("^.*@@enum:", "", key)
+		val = key
+		sub(":.*", "", key)
+		sub("^[^:]*:", "", val)
+		idx = int(PDATAN[key])
+		PDATAK[key,idx] = val
+		PDATAV[key,idx] = txt
+		PDATAN[key]++
+		return
+	}
 }
+
+{ proc_line() }
 
 function thumb(prv    ,lnk,lnk_gen)
 {
@@ -207,16 +221,11 @@ help()
 	incl=`tempfile`
 
 
-	help_params -v "fp=$QS_cmd" -v "header=1" -v "content=$gen parameters" -v "print_params=1" < $gendir/$gen 2>$incl
+# generate the table
+	help_params -v "fp=$QS_cmd" -v "header=1" -v "content=$gen parameters" -v "print_params=1" -v "gendir=$gendir" < $gendir/$gen
 
-	for n in `cat $incl`
-	do
-		help_params -v "fp=$QS_cmd" -v "content=parameters (by $n)" < $gendir/$n 2>/dev/null
-	done
-
-	rm $incl
-
-	help_params -v "fp=$QS_cmd" -v "footer=1" < $gendir/$gen 2>/dev/null
+# generate the footer
+	help_params -v "fp=$QS_cmd" -v "footer=1" -v "gendir=$gendir" < $gendir/$gen 2>/dev/null
 
 }
 
