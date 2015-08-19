@@ -49,7 +49,21 @@ function proc_line()
 
 	if (/@@thumbsize/) {
 		sub(".*@@thumbsize", "", $0)
-		thumbsize=$1
+		if ($1 ~ ":") {
+			sub("^:", "", $1)
+			PDATA[$1,"thumbsize"] = $2
+		}
+		else
+			thumbsize=$1
+		retrun
+	}
+
+	if (/@@thumbnum/) {
+		sub(".*@@thumbnum", "", $0)
+		if ($1 ~ ":") {
+			sub("^:", "", $1)
+			PDATA[$1,"thumbnum"] = $2
+		}
 		retrun
 	}
 
@@ -115,9 +129,15 @@ function proc_line()
 
 { proc_line() }
 
-function thumb(prv    ,lnk,lnk_gen)
+function thumb(prv, gthumbsize, lthumbsize, thumbnum    ,lnk,lnk_gen, thumbsize,ann)
 {
-	lnk=q CGI "?cmd=" prv "&output=png&grid=none&annotation=none&thumb=" thumbsize q
+	if (lthumbsize != "")
+		thumbsize = lthumbsize
+	else
+		thumbsize = gthumbsize
+	if (!thumbnum)
+		ann="&annotation=none"
+	lnk=q CGI "?cmd=" prv "&output=png&grid=none" ann "&thumb=" thumbsize q
 	lnk_gen=q CGI "?cmd=" prv q
 	print "<a href=" lnk_gen ">"
 	print "<img src=" lnk ">"
@@ -166,7 +186,7 @@ END {
 					if (PDATA[name, "preview_args"] != "") {
 						prv= fp_base "(" PDATA[name, "preview_args"] "," name "=" PDATAK[name, v] ")"
 						print "<td>"
-						thumb(prv)
+						thumb(prv, thumbsize, PDATA[name, "thumbsize"], PDATA[name, "thumbnum"])
 					}
 				}
 				print "</table>"
@@ -186,9 +206,9 @@ END {
 					print "<br>"
 					print "<table border=0>"
 					print "<tr><td>true:<td>"
-					thumb(fp_base "(" PDATA[name, "preview_args"] "," name "=" 1 ")")
+					thumb(fp_base "(" PDATA[name, "preview_args"] "," name "=" 1 ")", thumbsize, PDATA[name, "thumbsize"], PDATA[name, "thumbnum"])
 					print "<td>false:<td>"
-					thumb(fp_base "(" PDATA[name, "preview_args"] "," name "=" 0 ")")
+					thumb(fp_base "(" PDATA[name, "preview_args"] "," name "=" 0 ")", thumbsize, PDATA[name, "thumbsize"], PDATA[name, "thumbnum"])
 					print "</table>"
 				}
 			}
@@ -383,6 +403,7 @@ then
 	in
 		1) animarg="-x 64 -y 48" ;;
 		2) animarg="-x 128 -y 96" ;;
+		3) animarg="-x 192 -y 144" ;;
 		*) animarg="" ;;
 	esac
 	(echo "$fptext" | /home/igor2/C/pcb-rnd/util/fp2anim $cparm; echo 'screenshot "/dev/stdout"') | /usr/local/bin/animator -H $animarg
