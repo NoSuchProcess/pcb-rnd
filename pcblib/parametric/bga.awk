@@ -18,12 +18,12 @@ BEGIN {
 		y = 0
 		for(n = 1; n <= v; n++) {
 			if ((A[n] == "") || (A[n] == "#")) {
-				if (x > nx)
-					nx = x
 				x = 0
 				y++
 				continue;
 			}
+			if (x > nx)
+				nx = x
 			if (y > ny)
 				ny = y
 			print x,y,A[n] > "/dev/stderr"
