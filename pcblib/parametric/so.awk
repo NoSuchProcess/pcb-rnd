@@ -33,6 +33,16 @@ BEGIN {
 
 	dip_outline(-silk_dist_x-ext_bloat, -silk_dist_y, row_spacing + silk_dist_x+ext_bloat , (n-2) * pad_spacing + silk_dist_y,  rarc)
 
+	dimension(0, 0, 0, pad_spacing, "@" -silk_dist_x-ext_bloat-pad_spacing ";0", "pad_spacing")
+	dimension(0, 0, row_spacing, 0, (pad_spacing * 1.8), "row_spacing")
+	dimension(-ext_bloat, 0, 0, 0, (pad_spacing * 1.2), "ext_bloat")
+	dimension(row_spacing-int_bloat, 0, row_spacing, 0, (pad_spacing * 1.2), "int_bloat")
+
+	th=DEFAULT["pad_thickness"]
+	y = (n-2) * pad_spacing
+	dimension(-ext_bloat-th/2, y, +int_bloat+th/2, y, (pad_spacing * -1.2), "<auto>")
+
+#	dimension(-silk_dist_x-ext_bloat, -silk_dist_y, row_spacing + silk_dist_x+ext_bloat, -silk_dist_y, pad_spacing*2.5, "<auto>")
 
 	element_end()
 }
