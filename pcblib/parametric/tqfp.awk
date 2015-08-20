@@ -37,6 +37,7 @@ BEGIN {
 
 	pins=pins/4
 
+	args = args ",width=" S[1] " mm,height=" S[2] " mm"
 
 	S[1] += 1.45
 	S[2] += 1.45
@@ -47,4 +48,5 @@ BEGIN {
 		args = args ",cpad_width=" P["cpad_size"] "mm,cpad_height=" P["cpad_size"] "mm"
 
 	args = args ",int_bloat=0.5mm,ext_bloat=1.1mm"
+	args = args ",?fullrect=1"
 }
