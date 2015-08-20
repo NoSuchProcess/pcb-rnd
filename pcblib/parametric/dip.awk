@@ -20,5 +20,8 @@ BEGIN {
 
 	dip_outline(-half, -half, spacing + half , (n-2) * mil(100) + half,  half)
 
+
+	dimension(0, 0, spacing, 0, mil(100), "spacing")
+
 	element_end()
 }

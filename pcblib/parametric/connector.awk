@@ -81,5 +81,7 @@ BEGIN {
 
 	silkmark(P["silkmark"], -half, -half, half)
 
+	dimension(0, step, step, step, step*2, "spacing")
+
 	element_end()
 }
