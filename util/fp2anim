@@ -3,6 +3,8 @@
 photo=0
 grid_unit="mil"
 
+annotation=pins
+
 while test $# -gt 0
 do
 	case $1 in
@@ -22,6 +24,8 @@ awk -v "photo=$photo" -v "grid_unit=$grid_unit" -v "diamond=$diamond" -v "annota
 BEGIN {
 	diamond_x = 0
 	diamond_y = 0
+
+	dim_arrow_len = 2000
 
 	q="\""
 
@@ -59,6 +63,14 @@ BEGIN {
 	}
 
 	marg=100000
+
+	if (annotation != "none") {
+		allow_annot = 1
+		if (annotation ~ "pins")
+			allow_pinnum = 1
+		if (annotation ~ "dimensions")
+			allow_dims = 1
+	}
 }
 
 function directive(term     ,tmp)
@@ -219,9 +231,11 @@ function hole(x, y, ring, clr, mask, drill, name, square)
 	flash(x, y, drill, 0)
 	print "endmacro"
 
-	print "macro push annotation"
-	print "text", x, y, name
-	print "endmacro"
+	if (allow_pinnum) {
+		print "macro push annotation"
+		print "text", x, y, name
+		print "endmacro"
+	}
 
 	edges(x-(ring+clr)/2, y-(ring+clr)/2)
 	edges(x+(ring+clr)/2, y+(ring+clr)/2)
@@ -240,10 +254,80 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 	rline(x1, y1, x2, y2, thickness, square)
 	print "endmacro"
 
-	print "macro push annotation"
-	print "text", (x2+x1)/2, (y2+y1)/2, name
-	print "endmacro"
+	if (allow_pinnum) {
+		print "macro push annotation"
+		print "text", (x2+x1)/2, (y2+y1)/2, name
+		print "endmacro"
+	}
+}
 
+function dimension(x1, y1, x2, y2, dist, name     ,vx,vy,nx,ny,X1,Y1,X2,Y2,len,alen,awidth,tmp, ang,negdist)
+{
+	alen = dim_arrow_len
+	if (dist < 0) {
+		tmp = x1
+		x1 = x2
+		x2 = tmp
+		tmp = y1
+		y1 = y2
+		y2 = tmp
+		dist = -dist
+		negdist = 1
+	}
+	negdist=0
+
+	vx = x2-x1
+	vy = y2-y1
+	len = vx*vx+vy*vy
+	if (len == 0)
+		return
+	len = sqrt(len)
+	vx = vx/len
+	vy = vy/len
+	nx = vy
+	ny = -vx
+
+	if (alen > len/4)
+		alen=len/4
+
+	awidth=alen/6
+
+	ang = atan2(vx, vy)
+
+
+	X1 = x1+nx*dist
+	Y1 = y1+ny*dist
+	X2 = x2+nx*dist
+	Y2 = y2+ny*dist
+
+	print "macro push annotation"
+	print "line", x1, y1, X1+nx*awidth, Y1+ny*awidth
+	print "line", x2, y2, X2+nx*awidth, Y2+ny*awidth
+	print "line", X1, Y1, X2, Y2
+
+	print "poly", X1, Y1,  X1+vx*alen+nx*awidth, Y1+vy*alen+ny*awidth ,  X1+vx*alen-nx*awidth, Y1+vy*alen-ny*awidth
+	print "poly", X2, Y2,  X2-vx*alen+nx*awidth, Y2-vy*alen+ny*awidth ,  X2-vx*alen-nx*awidth, Y2-vy*alen-ny*awidth
+
+	if (ang < 0)
+		ang = -ang
+	if (ang < 3.1415*3/4) {
+		gsub("[|]", "", name)
+		print "text center top", (X1+X2)/2, (Y1+Y2)/2, q name q
+	}
+	else {
+		gsub("[|]", "\\n", name)
+		print "text", (negdist ? "right" : "left"), "center", (X1+X2)/2, (Y1+Y2)/2, q name q
+	}
+
+	edges(X1+nx*awidth, Y1+ny*awidth)
+	edges(X2+nx*awidth, Y2+ny*awidth)
+
+	print "endmacro"
+}
+
+/^[ \t]*#dimension/ {
+	if (allow_dims)
+		dimension($2, $3, $4, $5, $6, $7)
 }
 
 /^[ \t]*#/ { next }
@@ -457,7 +541,7 @@ END {
 
 	layer_3d("silk", clr_silk)
 
-	if (annotation != "none") {
+	if (allow_annot) {
 		print "color", clr_annotation[0]
 		print "invoke annotation"
 	}
