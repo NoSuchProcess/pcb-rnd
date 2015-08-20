@@ -1,0 +1,24 @@
+<HTML>
+<body>
+<h1> pcb-rnd devlog </h1>
+<h2> fp2anim dimensions </h2>
+After attacking the qfn()/qfp() parametric footprint problem today,
+I realized fp2anim lacked a very important feature: dimension lines.
+The footprint being generated is to match the datasheet. Checking the match
+requires visible dimensions.
+<p>
+The new feature of fp2anim is to optionally display custom dimensions on
+the preview. Generator scripts print #dimension comments in the footprint
+file (not breaking the file format). The generator passes on a dimension
+name along with the value. As a first attempt my conventions are:
+<ul>
+	<li> add dimension lines for dimension type input parameters
+	<li> add dimension lines for calculated dimensions if they are likely to be informative and be included in the datasheet
+</ul>
+
+<h2> fp2anim vector font </h2>
+While working on the dimensions, I realized I had to switch to vector fonts:
+the built-in pixel font of animator can not be rotated. The size of a vector
+font text can be calculated, which also enables fp2anim to optionally place
+semi-transparent bars behind the text to make it more visible on dark background
+(like pads).

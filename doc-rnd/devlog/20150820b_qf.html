@@ -1,0 +1,27 @@
+<html>
+<body>
+<h1> pcb-rnd devlog </h1>
+<h2> qf() </h2>
+The next group of footprints I decided to generate are qfn(), tqfp(), lqfp().
+The generic set of rules for these footprints is:
+<ul>
+	<li> there is a virtual rectangle that forms rows of pads
+	<li> pads are evenly spaced among the edges of that rectangle
+	<li> pin numbering is counter-clockwise
+	<li> the body of the part may be inside of the rectangle or may extend over the pads
+</ul>
+
+<h2> low level flexibility vs. high level comfort </h2>
+qf() currently has 14 arguments. It is flexible enough to generate qfn, tqfp,
+lqfp, and anything similar I've seen in the package datasheet of a major
+vendor. However, it is not straight forward to convert datasheet tables
+into qf() parameters.
+<p>
+On the other hand, in practice we need qfn() and tqfp(), which are special
+cases of qf(). To nail the common use cases, qfn() and tqfp() narrows down
+the number of parameters to 3..4. Even better, these parameters are exactly
+those that are in the name of a typical QFN or TQFP footprint or in the first
+few lines of the dimensions table. I call these scripts frontends to qf().
+<p>
+This makes the common footprints very easy to produce using frontends while
+leaves a (bit more complicated) plan B, qf(), for special cases.
