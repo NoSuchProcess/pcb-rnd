@@ -1,12 +1,18 @@
-BEGIN {
-	set_arg(P, "?pad_spacing", "0.5mm")
-	set_arg(P, "?ext_bloat", "0.37mm")
-	set_arg(P, "?int_bloat", "0.37mm")
-	set_arg(P, "?pad_thickness", "0.3mm")
-	set_arg(P, "?silkmark", "dot")
-	set_arg(P, "?line_thickness", "0.1mm")
+function qf_globals(extra_args)
+{
+	if (!qf_no_defaults) {
+		set_arg(P, "?pad_spacing", "0.5mm")
+		set_arg(P, "?ext_bloat", "0.37mm")
+		set_arg(P, "?int_bloat", "0.37mm")
+		set_arg(P, "?pad_thickness", "0.3mm")
+		set_arg(P, "?silkmark", "dot")
+		set_arg(P, "?line_thickness", "0.1mm")
+	}
 
-	proc_args(P, "nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,silkmark", "nx,ny")
+	if ((extra_args != "") && (!(extra_args ~ "^,")))
+		extra_args = "," extra_args
+
+	proc_args(P, "nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,silkmark" extra_args, "nx,ny")
 
 	nx = int(P["nx"])
 	ny = int(P["ny"])
@@ -45,6 +51,11 @@ BEGIN {
 		width = x_spacing
 	if (height == "")
 		height = y_spacing
+}
+
+BEGIN {
+	qf_globals()
+
 
 	element_begin("", "U1", 2*nx + 2*ny   ,0,0, -width/2 - mm(1), -height/2 - mm(2))
 
