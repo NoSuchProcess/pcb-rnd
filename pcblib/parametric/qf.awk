@@ -105,13 +105,17 @@ BEGIN {
 		dimension(cpad_width/2, -cpad_height/2, cpad_width/2, +cpad_height/2, "@" (width * 0.8+ext_bloat) ";0", "cpad_height")
 	}
 
+	wx = (width  - nx * pad_spacing) / 3.5
+	wy = (height - ny * pad_spacing) / 3.5
+
 	if (!tobool(P["fullrect"])) {
-		wx = (width  - nx * pad_spacing) / 3.5
-		wy = (height - ny * pad_spacing) / 3.5
 		element_rectangle_corners(-width/2, -height/2, width/2, height/2, wx, wy)
+		silkmark(P["silkmark"], -width/2 - wx/2, -height/2+wy*1.5, (wx+wy)/4)
 	}
-	else
+	else {
 		element_rectangle(-width/2, -height/2, width/2, height/2)
+		silkmark(P["silkmark"], -width/2 + wx*3, -height/2+wy*3, (wx+wy)/2)
+	}
 
 	dimension(-width/2, -height/2, +width/2, -height/2, "@0;" height*-0.8-ext_bloat,       "width")
 	dimension(+width/2, -height/2, +width/2, +height/2, "@" (width * 1+ext_bloat) ";0",  "height")
@@ -119,7 +123,6 @@ BEGIN {
 	dimension(-x_spacing/2, -height/2, +x_spacing/2, -height/2, "@0;" height*-1-ext_bloat,       "x_spacing")
 	dimension(+width/2, -y_spacing/2, +width/2, +y_spacing/2, "@" (width * 1.2+ext_bloat) ";0",  "y_spacing")
 
-	silkmark(P["silkmark"], -width/2 - wx/2, -height/2+wy*1.5, (wx+wy)/4)
 
 
 	element_end()
