@@ -267,6 +267,29 @@ function element_rectangle(x1, y1, x2, y2,    omit,  r, thickness   ,tmp,r1,r2)
 	}
 }
 
+# draw a rectangle corners of silk lines, wx and wy long in x and y directions
+# omit sides as requested in omit: NW, NW, SW, SE
+# corners are always sharp
+function element_rectangle_corners(x1, y1, x2, y2, wx, wy,    omit,  thickness   ,tmp)
+{
+	if (!(omit ~ "NW")) {
+		element_line(x1, y1,     x1+wx, y1,   thickness)
+		element_line(x1, y1,     x1, y1+wy,   thickness)
+	}
+	if (!(omit ~ "NE")) {
+		element_line(x2-wx, y1,  x2, y1,    thickness)
+		element_line(x2, y1,     x2, y1+wy, thickness)
+	}
+	if (!(omit ~ "SW")) {
+		element_line(x1, y2,     x1+wx, y2, thickness)
+		element_line(x1, y2-wy,  x1, y2,    thickness)
+	}
+	if (!(omit ~ "SE")) {
+		element_line(x2-wx, y2,  x2, y2,   thickness)
+		element_line(x2, y2-wy,  x2, y2,   thickness)
+	}
+}
+
 # draw a line on silk; thickness is optional (default: line_thickness)
 function element_arc(cx, cy, rx, ry, a_start, a_delta,   thickness)
 {
