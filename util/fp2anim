@@ -49,8 +49,6 @@ BEGIN {
 
 
 		clr_hole[0] = "black"
-		clr_annotation[0] = "red"
-		clr_annotationbg[0] = "white"
 		enable_annotbg = 1
 		clr_grid[0] = "blue"
 	}
@@ -58,13 +56,14 @@ BEGIN {
 		clr_board[0] = "darkgreen"
 		clr_plated[0] = "#777777"
 		clr_hole[0] = "white"
-		clr_annotation[0] = "red"
-		clr_annotationbg[0] = "white"
 		enable_annotbg = 1
 		clr_silk[0] = "black"
 		clr_solderstop[0] = "white"
 		clr_grid[0] = "blue"
 	}
+
+	clr_annotation[0] = "#ff0000"
+	clr_annotationbg[0] = "#ffffff"
 
 	marg=100000
 
@@ -297,7 +296,7 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 	}
 }
 
-function vf_text(x, y, txt, rot, elev   ,TXT,v,n,W,maxw,maxh,s,sep)
+function vf_text(x, y, txt, rot, elev   ,TXT,v,n,W,maxw,s,sep,bg)
 {
 #	gsub("[|]", "", name)
 
@@ -318,7 +317,6 @@ function vf_text(x, y, txt, rot, elev   ,TXT,v,n,W,maxw,maxh,s,sep)
 		W[n] = vf_textwidth("roman-simplex-mono", TXT[n])
 		if (W[n] > maxw)
 			maxw = W[n]
-		maxh++
 	}
 
 	if (rot)
@@ -327,10 +325,20 @@ function vf_text(x, y, txt, rot, elev   ,TXT,v,n,W,maxw,maxh,s,sep)
 	for(n = v; n > 0; n--) {
 		s = s "\n" "!TXT " TXT[n]
 		s = s "\n" "push"
+
 		s = s "\n" "shift " ((maxw - W[n])/(2)) - maxw/2 sep 0
+
+		if (enable_annotbg) {
+			s = s "\n" "color " clr_annotationbg[0]
+			s = s "\n" "alpha 0.5"
+			s = s "\n" "fillrect " W[n]*-0.1 sep 0 "-" sep W[n]*1.1 sep 1.1
+			s = s "\n" "alpha 1"
+			s = s "\n" "color " clr_annotation[0]
+		}
+
 		s = s "\n" vf_show("roman-simplex-mono", TXT[n])
 		s = s "\n" "pop"
-		s = s "\n" "shift 0 1"
+		s = s "\n" "shift 0 1.1"
 	}
 	s = s "\n" "pop"
 	return s
@@ -343,15 +351,6 @@ function annot(x, y, txt, rot, elev    ,sh)
 	sh = 50
 
 	annot_pend = annot_pend "\n" vf_text(x, y, txt, rot, elev)
-
-#	if (enable_annotbg) {
-#		print "macro push annotationbg"
-#		print "text", align, x-sh, y-sh, q txt q
-#		print "text", align, x-sh, y+sh, q txt q
-#		print "text", align, x+sh, y-sh, q txt q
-#		print "text", align, x+sh, y+sh, q txt q
-#		print "endmacro"
-#	}
 }
 
 
@@ -619,7 +618,6 @@ END {
 	print "macro push copper\nendmacro"
 	print "macro push mask\nendmacro"
 	print "macro push annotation\nendmacro"
-	print "macro push annotationbg\nendmacro"
 
 	if (photo) {
 		xmin -= offs_3d*2
@@ -673,14 +671,11 @@ END {
 
 	if (allow_annot) {
 		gsub("%textscale%", size/40, annot_pend)
+
 		print "macro push annotation"
 		print annot_pend
 		print "endmacro"
 
-		if (enable_annotbg) {
-			print "color", clr_annotationbg[0]
-			print "invoke annotationbg"
-		}
 		print "color", clr_annotation[0]
 		print "invoke annotation"
 	}
