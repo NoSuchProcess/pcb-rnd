@@ -473,6 +473,9 @@ function silkmark(style, x, y, half,    step,   S,n,v)
 		else if (S[n] == "circle") {
 			element_arc(x, y, step/2, step/2, 0, 360)
 		}
+		else if (S[n] == "dot") {
+			element_arc(x-step/2, y-step/2, step/4, step/4, 0, 360)
+		}
 		else if ((S[n] != "none") && (S[n] != "")) {
 			error("invalid silkmark parameter: " S[n])
 		}

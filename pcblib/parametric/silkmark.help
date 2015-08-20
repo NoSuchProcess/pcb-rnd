@@ -7,4 +7,5 @@
 #@@enum:silkmark:angled an angled line in the corner
 #@@enum:silkmark:arc an external 270 degree arc
 #@@enum:silkmark:circle a circle, 270 degrees external
+#@@enum:silkmark:dot a small external dot
 #@@enum:silkmark:none no mark
