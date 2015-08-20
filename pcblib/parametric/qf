@@ -5,9 +5,62 @@
 #@@purpose Generate generic *qf* (e.g. tqfp, qfn) packages
 
 #@@desc Generate *qf* (e.g. tqfp, qfn) packages: smd pads around a square; this is the generic implementation, end users may want to use the specific ones, e.g. tqfp(), qfn(), etc.
+#@@params nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,silkmark
 
-#TODO
+#@@param:nx number of pins along the horizontal sides
+#@@param:ny number of pins along the vertical sides
 
+#@@param:x_spacing spacing between the two vertical rows of pins
+#@@dim:x_spacing
+#@@optional:x_spacing
+#@@default:x_spacing calculated using nx and pad_spacing
+
+#@@param:y_spacing spacing between the two vertical rows of pins
+#@@dim:y_spacing
+#@@optional:y_spacing
+#@@default:y_spacing calculated using ny and pad_spacing
+
+#@@param:pad_spacing spacing between the centerlines of two adjacent pads (aka pitch)
+#@@dim:pad_spacing
+#@@optional:pad_spacing
+
+#@@param:ext_bloat how much longer the pad should extend outwards from the end-point of the pin
+#@@dim:ext_bloat
+#@@optional:ext_bloat
+#@@default:ext_bloat 0.37 mm
+
+#@@param:int_bloat how much longer the pad should extend inwards from the end-point of the pin
+#@@dim:int_bloat
+#@@optional:int_bloat
+#@@default:int_bloat 0.37 mm
+
+#@@param:width width (horizontal, x axis size) of the box drawn on silk
+#@@dim:width
+#@@optional:width
+#@@default:width calculated from the pad row geometry
+
+#@@param:height height (vertical, y axis size) of the box drawn on silk
+#@@dim:height
+#@@optional:height
+#@@default:height calculated from the pad row geometry
+
+#@@param:cpad_width width (horizontal, x axis size) of the central pad
+#@@dim:cpad_width
+#@@optional:cpad_width
+#@@default:cpad_width empty, no central pad
+
+#@@param:cpad_height height (vertical, y axis size) of the central pad
+#@@dim:cpad_height
+#@@optional:cpad_height
+#@@default:cpad_height empty, no central pad
+
+#@@param:cpad_auto when true, calculate central pad sizes automatically from the pad row geometry
+#@@bool:cpad_auto
+#@@optional:cpad_height
+#@@default:cpad_height false, no central pad
+
+#@@include silkmark.help
+#@@default:silkmark dot
 #@@include common.awk
 
 awk -f `dirname $0`/common.awk -f `dirname $0`/qf.awk -v "args=$*" -v gen=`basename $0`
