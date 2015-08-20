@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#@@example so(14)
+#@@example qf(nx=4,ny=4,cpad_auto=1)
 
 #@@purpose Generate generic *qf* (e.g. tqfp, qfn) packages
 

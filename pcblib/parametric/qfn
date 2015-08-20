@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#@@example so(14)
+#@@example qfn(16,3x3,0.5)
 
 #@@purpose Generate QFN packages
 #@@desc Generate QFN packages - a simplified frontend to qf() - 
