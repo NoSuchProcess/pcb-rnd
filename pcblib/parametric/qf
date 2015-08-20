@@ -8,7 +8,10 @@
 #@@params nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,silkmark
 
 #@@param:nx number of pins along the horizontal sides
+
 #@@param:ny number of pins along the vertical sides
+#@@optional:ny
+#@@default:ny assume ny=nx
 
 #@@param:x_spacing spacing between the two vertical rows of pins
 #@@dim:x_spacing
@@ -60,6 +63,10 @@
 #@@default:cpad_height false, no central pad
 
 #@@include silkmark.help
+#@@optional:silkmark
+#@@default:silkmark square
+#@@preview_args:silkmark 4,4
+
 #@@default:silkmark dot
 #@@include common.awk
 
