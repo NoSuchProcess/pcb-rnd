@@ -319,6 +319,12 @@ function mm(coord)
 	return coord*3937
 }
 
+# reverse mm()
+function rev_mm(coord)
+{
+	return coord/3937
+}
+
 
 function set_arg_(OUT, key, value, strength)
 {
