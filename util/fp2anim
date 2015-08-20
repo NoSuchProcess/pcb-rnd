@@ -270,7 +270,7 @@ function hole(x, y, ring, clr, mask, drill, name, square)
 
 	if (enable_pinnum) {
 		gsub("[\"]", "", name)
-		annot(x, y, name, 0, 0)
+		annot(x, y, name, 0, 0, 1)
 	}
 
 	edges(x-(ring+clr)/2, y-(ring+clr)/2)
@@ -292,11 +292,11 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 
 	if (enable_pinnum) {
 		gsub("[\"]", "", name)
-		annot((x2+x1)/2, (y2+y1)/2, name, 0, 0)
+		annot((x2+x1)/2, (y2+y1)/2, name, 0, 0, 1)
 	}
 }
 
-function vf_text(x, y, txt, rot, elev   ,TXT,v,n,W,maxw,s,sep,bg)
+function vf_text(x, y, txt, rot, elev, vcenter   ,TXT,v,n,W,maxw,s,sep,bg,maxh)
 {
 	gsub("[|]", "", txt)
 
@@ -317,7 +317,11 @@ function vf_text(x, y, txt, rot, elev   ,TXT,v,n,W,maxw,s,sep,bg)
 		W[n] = vf_textwidth("roman-simplex-mono", TXT[n])
 		if (W[n] > maxw)
 			maxw = W[n]
+		maxh++
 	}
+
+	if (vcenter)
+		s = s "\n" "shift 0 " (-maxh/2)
 
 	if (rot)
 		s = s "\n" "rotate 90"
@@ -350,11 +354,9 @@ function vf_text(x, y, txt, rot, elev   ,TXT,v,n,W,maxw,s,sep,bg)
 
 
 
-function annot(x, y, txt, rot, elev    ,sh)
+function annot(x, y, txt, rot, elev, hcenter)
 {
-	sh = 50
-
-	annot_pend = annot_pend "\n" vf_text(x, y, txt, rot, elev)
+	annot_pend = annot_pend "\n" vf_text(x, y, txt, rot, elev, hcenter)
 }
 
 
@@ -455,9 +457,9 @@ function dimension(x1, y1, x2, y2, dist, name, value     ,vx,vy,nx,ny,X1,Y1,X2,Y
 		if (ang < 0)
 			ang = -ang
 		if ((ang < 3.1415*3/4) && (ang > 3.1415*1/4))
-			annot((X1+X2)/2, (Y1+Y2)/2, name, 0, awidth*1.1)
+			annot((X1+X2)/2, (Y1+Y2)/2, name, 0, awidth*1.1,0)
 		else
-			annot((X1+X2)/2, (Y1+Y2)/2, name, 1, awidth*1.1)
+			annot((X1+X2)/2, (Y1+Y2)/2, name, 1, awidth*1.1,0)
 	}
 
 	edges(X1+nx*awidth, Y1+ny*awidth)
