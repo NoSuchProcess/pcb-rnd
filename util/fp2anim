@@ -143,11 +143,18 @@ function deg2rad(d)
 
 function rarc(cx, cy, rx, ry, a_start, a_delta, width   ,a1, a2)
 {
+	if ((rx < 0) || (ry < 0))
+		return
+
 	if (a_delta < 0) {
 		a_start = 180-a_start
 		a_delta = -a_delta
 	}
+
 	step = a_delta * 100 * 2 / (((rx > ry) ? rx : ry) + 1)
+	if (step > 45)
+		step = 45
+
 	for(a1 = a_start; a1 < a_start + a_delta - step; a1 += step) {
 		a2 = a1+step
 		rline( cx - rx * cos(deg2rad(a1)), cy + ry * sin(deg2rad(a1)),
