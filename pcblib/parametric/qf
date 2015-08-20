@@ -1,0 +1,14 @@
+#!/bin/sh
+
+#@@example so(14)
+
+#@@purpose Generate generic *qf* (e.g. tqfp, qfn) packages
+
+#@@desc Generate *qf* (e.g. tqfp, qfn) packages: smd pads around a square; this is the generic implementation, end users may want to use the specific ones, e.g. tqfp(), qfn(), etc.
+
+#TODO
+
+#@@include common.awk
+
+awk -f `dirname $0`/common.awk -f `dirname $0`/qf.awk -v "args=$*" -v gen=`basename $0`
+
