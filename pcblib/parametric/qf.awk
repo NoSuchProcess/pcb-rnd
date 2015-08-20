@@ -10,6 +10,10 @@ BEGIN {
 
 	nx = int(P["nx"])
 	ny = int(P["ny"])
+
+	if (P["ny"] == "")
+		ny = nx
+
 	if ((nx < 2) || (ny < 2))
 		error("Number of pins have to be more than 2 in both directions")
 
