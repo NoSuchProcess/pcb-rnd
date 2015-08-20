@@ -32,6 +32,7 @@
 #include "misc.h"
 #include "portability.h" /* MKDIR() */
 #include "pcb-printf.h"
+#include "plugins.h"
 
 #ifdef HAVE_LIBDMALLOC
 #include <dmalloc.h>
@@ -109,6 +110,7 @@ hid_load_dir (char *dirname)
 		  symv = (void (*)()) sym;
 		  symv();
 		}
+		plugin_register(basename, path, so, 1);
 	      free (symname);
 	    }
 	}

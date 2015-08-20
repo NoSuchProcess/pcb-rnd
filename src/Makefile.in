@@ -43,6 +43,7 @@ put /local/pcb/OBJS [@
 	mymem.o
 	netlist.o
 	pcb-printf.o
+	plugins.o
 	polygon.o
 	polygon1.o
 	puller.o

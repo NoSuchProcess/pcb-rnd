@@ -6,7 +6,7 @@ action.o: action.c ../config.h ../config.manual.h ../config.auto.h \
  copy.h create.h crosshair.h data.h draw.h error.h file.h find.h insert.h \
  line.h mymem.h misc.h ds.h mirror.h move.h polygon.h rats.h remove.h \
  report.h rotate.h rubberband.h search.h select.h set.h thermal.h undo.h \
- rtree.h pcb-printf.h
+ rtree.h pcb-printf.h plugins.h
 autoplace.o: autoplace.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h autoplace.h box.h misc.h ds.h mymem.h compat.h data.h draw.h \
@@ -131,6 +131,7 @@ netlist.o: netlist.c ../config.h ../config.manual.h ../config.auto.h \
 pcb-printf.o: pcb-printf.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  hid.h polyarea.h libpcb_fp.h pcb-printf.h
+plugins.o: plugins.c plugins.h
 polygon.o: polygon.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h box.h misc.h ds.h mymem.h create.h crosshair.h data.h draw.h \
@@ -221,7 +222,7 @@ hidinit.o: hid/common/hidinit.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  hid.h polyarea.h libpcb_fp.h hid.h hid/common/hidnogui.h \
  hid/common/../hidint.h compat.h error.h misc.h global.h ds.h mymem.h \
- portability.h pcb-printf.h hid/common/hidlist.h
+ portability.h pcb-printf.h plugins.h hid/common/hidlist.h
 hidnogui.o: hid/common/hidnogui.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  hid.h polyarea.h libpcb_fp.h hid.h
@@ -262,7 +263,7 @@ parse_l.o: parse_l.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h crosshair.h data.h error.h file.h mymem.h misc.h ds.h \
  strflags.h parse_l.h parse_y.h create.h
-buildin.o: buildin.c buildin.h
+buildin.o: buildin.c plugins.h buildin.h
 hash.o: 3rd/genht/hash.c
 htsp.o: 3rd/genht/htsp.c 3rd/genht/htsp.h 3rd/genht/ht.h \
  3rd/genht/ht_inlines.h 3rd/genht/ht.c
