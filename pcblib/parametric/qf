@@ -5,7 +5,7 @@
 #@@purpose Generate generic *qf* (e.g. tqfp, qfn) packages
 
 #@@desc Generate *qf* (e.g. tqfp, qfn) packages: smd pads around a square; this is the generic implementation, end users may want to use the specific ones, e.g. tqfp(), qfn(), etc.
-#@@params nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,silkmark
+#@@params nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,fullrect,silkmark
 
 #@@param:nx number of pins along the horizontal sides
 
@@ -62,6 +62,11 @@
 #@@optional:cpad_height
 #@@default:cpad_height false, no central pad
 
+#@@param:fullrect when true, draw a fill silk rectangle, not only the corners
+#@@bool:fullrect
+#@@optional:fullrect
+#@@default:fullrect false, only corners are drawn
+
 #@@include silkmark.help
 #@@optional:silkmark
 #@@default:silkmark square
@@ -69,6 +74,7 @@
 
 #@@default:silkmark dot
 #@@include common.awk
+
 
 awk -f `dirname $0`/common.awk -f `dirname $0`/qf.awk -v "args=$*" -v gen=`basename $0`
 

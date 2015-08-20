@@ -25,7 +25,7 @@ function qf_globals(pre_args, post_args    ,reqs)
 	if ((pre_args != "") && (!(pre_args ~ ",$")))
 		pre_args = pre_args ","
 
-	proc_args(P, pre_args "nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,silkmark" post_args, reqs)
+	proc_args(P, pre_args "nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,fullrect,silkmark" post_args, reqs)
 
 	nx = int(P["nx"])
 	ny = int(P["ny"])
@@ -105,10 +105,13 @@ BEGIN {
 		dimension(cpad_width/2, -cpad_height/2, cpad_width/2, +cpad_height/2, "@" (width * 0.8+ext_bloat) ";0", "cpad_height")
 	}
 
-	wx = (width  - nx * pad_spacing) / 3.5
-	wy = (height - ny * pad_spacing) / 3.5
-
-	element_rectangle_corners(-width/2, -height/2, width/2, height/2, wx, wy)
+	if (!tobool(P["fullrect"])) {
+		wx = (width  - nx * pad_spacing) / 3.5
+		wy = (height - ny * pad_spacing) / 3.5
+		element_rectangle_corners(-width/2, -height/2, width/2, height/2, wx, wy)
+	}
+	else
+		element_rectangle(-width/2, -height/2, width/2, height/2)
 
 	dimension(-width/2, -height/2, +width/2, -height/2, "@0;" height*-0.8-ext_bloat,       "width")
 	dimension(+width/2, -height/2, +width/2, +height/2, "@" (width * 1+ext_bloat) ";0",  "height")
