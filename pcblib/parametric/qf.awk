@@ -113,8 +113,8 @@ BEGIN {
 	dimension(-width/2, -height/2, +width/2, -height/2, "@0;" height*-0.8-ext_bloat,       "width")
 	dimension(+width/2, -height/2, +width/2, +height/2, "@" (width * 1+ext_bloat) ";0",  "height")
 
-	dimension(-width/2, -height/2, +width/2, -height/2, "@0;" height*-1-ext_bloat,       "x_spacing")
-	dimension(+width/2, -height/2, +width/2, +height/2, "@" (width * 1.2+ext_bloat) ";0",  "y_spacing")
+	dimension(-x_spacing/2, -height/2, +x_spacing/2, -height/2, "@0;" height*-1-ext_bloat,       "x_spacing")
+	dimension(+width/2, -y_spacing/2, +width/2, +y_spacing/2, "@" (width * 1.2+ext_bloat) ";0",  "y_spacing")
 
 	silkmark(P["silkmark"], -width/2 - wx/2, -height/2+wy*1.5, (wx+wy)/4)
 
