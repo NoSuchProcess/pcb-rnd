@@ -1,5 +1,10 @@
-function qf_globals(extra_args)
+function qf_globals(pre_args, post_args    ,reqs)
 {
+	if (hook_spc_conv == "")
+		hook_spc_conv = 1.8
+	if (hook_cpad_mult == "")
+		hook_cpad_mult = 1
+
 	if (!qf_no_defaults) {
 		set_arg(P, "?pad_spacing", "0.5mm")
 		set_arg(P, "?ext_bloat", "0.37mm")
@@ -9,10 +14,18 @@ function qf_globals(extra_args)
 		set_arg(P, "?line_thickness", "0.1mm")
 	}
 
-	if ((extra_args != "") && (!(extra_args ~ "^,")))
-		extra_args = "," extra_args
+	reqs = "nx,ny"
+	
+	if (pre_args != "")
+		reqs=""
 
-	proc_args(P, "nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,silkmark" extra_args, "nx,ny")
+	if ((post_args != "") && (!(post_args ~ "^,")))
+		post_args = "," post_args
+
+	if ((pre_args != "") && (!(pre_args ~ ",$")))
+		pre_args = pre_args ","
+
+	proc_args(P, pre_args "nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,silkmark" post_args, reqs)
 
 	nx = int(P["nx"])
 	ny = int(P["ny"])
@@ -33,19 +46,20 @@ function qf_globals(extra_args)
 	height=parse_dim(P["height"])
 
 	if (x_spacing == "")
-		x_spacing = (nx+1) * pad_spacing + 2*int_bloat
+		x_spacing = (nx+hook_spc_conv) * pad_spacing
 	if (y_spacing == "")
-		y_spacing = (ny+1) * pad_spacing + 2*int_bloat
+		y_spacing = (ny+hook_spc_conv) * pad_spacing
 
 	cpad_width=parse_dim(P["cpad_width"])
 	cpad_height=parse_dim(P["cpad_height"])
 
-	if (tobool(P["cpad_auto"])) {
+	if (tobool(P["cpad_auto"]) || hook_cpad_auto) {
 		if (cpad_width == "")
-			cpad_width = x_spacing - int_bloat*2 - pt - int_bloat*2
+			cpad_width = (x_spacing*0.85 - int_bloat*2 - pt) * hook_cpad_mult
 		if (cpad_height == "")
-			cpad_height = y_spacing - int_bloat*2 - pt - int_bloat*2
+			cpad_height = (y_spacing*0.85 - int_bloat*2 - pt) * hook_cpad_mult
 	}
+
 
 	if (width == "")
 		width = x_spacing
