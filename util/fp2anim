@@ -66,11 +66,11 @@ BEGIN {
 	marg=100000
 
 	if (annotation != "none") {
-		allow_annot = 1
+		enable_annot = 1
 		if (annotation ~ "pins")
-			allow_pinnum = 1
+			enable_pinnum = 1
 		if (annotation ~ "dimensions")
-			allow_dims = 1
+			enable_dims = 1
 		if (annotation ~ "background")
 			enable_annotbg = 1
 	}
@@ -266,7 +266,7 @@ function hole(x, y, ring, clr, mask, drill, name, square)
 	flash(x, y, drill, 0)
 	print "endmacro"
 
-	if (allow_pinnum) {
+	if (enable_pinnum) {
 		gsub("[\"]", "", name)
 		annot(x, y, name, 0, 0)
 	}
@@ -288,7 +288,7 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 	rline(x1, y1, x2, y2, thickness, square)
 	print "endmacro"
 
-	if (allow_pinnum) {
+	if (enable_pinnum) {
 		gsub("[\"]", "", name)
 		annot((x2+x1)/2, (y2+y1)/2, name, 0, 0)
 	}
@@ -454,7 +454,7 @@ function dimension(x1, y1, x2, y2, dist, name, value     ,vx,vy,nx,ny,X1,Y1,X2,Y
 }
 
 /^[ \t]*#dimension/ {
-	if (allow_dims)
+	if (enable_dims)
 		dimension($2, $3, $4, $5, $6, $7, $8)
 }
 
@@ -671,7 +671,7 @@ END {
 
 	layer_3d("silk", clr_silk)
 
-	if (allow_annot) {
+	if (enable_annot) {
 		gsub("%textscale%", size/40, annot_pend)
 #		gsub("%textthick%", size/15000, annot_pend)
 
