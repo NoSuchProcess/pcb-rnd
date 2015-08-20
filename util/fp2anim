@@ -50,6 +50,8 @@ BEGIN {
 
 		clr_hole[0] = "black"
 		clr_annotation[0] = "red"
+		clr_annotationbg[0] = "white"
+		enable_annotbg = 1
 		clr_grid[0] = "blue"
 	}
 	else {
@@ -57,6 +59,8 @@ BEGIN {
 		clr_plated[0] = "#777777"
 		clr_hole[0] = "white"
 		clr_annotation[0] = "red"
+		clr_annotationbg[0] = "white"
+		enable_annotbg = 1
 		clr_silk[0] = "black"
 		clr_solderstop[0] = "white"
 		clr_grid[0] = "blue"
@@ -71,7 +75,39 @@ BEGIN {
 		if (annotation ~ "dimensions")
 			allow_dims = 1
 	}
+	vf_data = vf_load("/usr/share/animator/romansimplexmono")
 }
+
+### vector font ###
+function vf_load(fn,       s)
+{
+	while((getline < fn) == 1) {
+		if ($1 == "!")
+			glyphw[$2] = $3
+		else if ($1 == "!font")
+			for(i=32; i<=127; i++)
+				font[$2 sprintf("%c", i)] = $(i-29)
+		else
+			s = s "\n" $0
+	}
+	close(fn)
+	return s
+}
+
+function vf_textwidth(fnt, text,                           x,k) {
+	x=0
+	for(k=1; k<=length(text); k+=1)
+		x += glyphw[font[fnt substr(text,k,1)]]
+	return x
+}
+
+function vf_show(fnt, text,                                  k,s) {
+	for(k=1; k<=length(text); k+=1)
+		s = s "\ninvoke hf" font[fnt substr(text,k,1)]
+	return s
+}
+
+###
 
 function directive(term     ,tmp)
 {
@@ -261,6 +297,64 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 	}
 }
 
+function vf_text(x, y, txt, rot, elev   ,TXT,v,n,W,maxw,maxh,s,sep)
+{
+#	gsub("[|]", "", name)
+
+	v = split(txt, TXT, "[|]")
+	sep = " "
+
+	s = s "\n" "push"
+	s = s "\n" "shift "  x sep y
+	if (rot)
+		s = s "\n" "shift " (-1*elev) sep 0
+	else
+		s = s "\n" "shift " 0 sep (-1*elev)
+
+	s = s "\n" "scale %textscale% %textscale%"
+	s = s "\n" "scale 1 -1"
+
+	for(n = 1; n <= v; n++) {
+		W[n] = vf_textwidth("roman-simplex-mono", TXT[n])
+		if (W[n] > maxw)
+			maxw = W[n]
+		maxh++
+	}
+
+	if (rot)
+		s = s "\n" "rotate 90"
+
+	for(n = v; n > 0; n--) {
+		s = s "\n" "!TXT " TXT[n]
+		s = s "\n" "push"
+		s = s "\n" "shift " ((maxw - W[n])/(2)) - maxw/2 sep 0
+		s = s "\n" vf_show("roman-simplex-mono", TXT[n])
+		s = s "\n" "pop"
+		s = s "\n" "shift 0 1"
+	}
+	s = s "\n" "pop"
+	return s
+}
+
+
+
+function annot(x, y, txt, rot, elev    ,sh)
+{
+	sh = 50
+
+	annot_pend = annot_pend "\n" vf_text(x, y, txt, rot, elev)
+
+#	if (enable_annotbg) {
+#		print "macro push annotationbg"
+#		print "text", align, x-sh, y-sh, q txt q
+#		print "text", align, x-sh, y+sh, q txt q
+#		print "text", align, x+sh, y-sh, q txt q
+#		print "text", align, x+sh, y+sh, q txt q
+#		print "endmacro"
+#	}
+}
+
+
 function dimension(x1, y1, x2, y2, dist, name, value     ,vx,vy,nx,ny,X1,Y1,X2,Y2,len,alen,awidth,tmp, ang,negdist)
 {
 	alen = dim_arrow_len
@@ -308,6 +402,7 @@ function dimension(x1, y1, x2, y2, dist, name, value     ,vx,vy,nx,ny,X1,Y1,X2,Y
 
 	print "poly", X1, Y1,  X1+vx*alen+nx*awidth, Y1+vy*alen+ny*awidth ,  X1+vx*alen-nx*awidth, Y1+vy*alen-ny*awidth
 	print "poly", X2, Y2,  X2-vx*alen+nx*awidth, Y2-vy*alen+ny*awidth ,  X2-vx*alen-nx*awidth, Y2-vy*alen-ny*awidth
+	print "endmacro"
 
 	if (value == "")
 		value = len
@@ -323,18 +418,15 @@ function dimension(x1, y1, x2, y2, dist, name, value     ,vx,vy,nx,ny,X1,Y1,X2,Y
 	if (ang < 0)
 		ang = -ang
 	if ((ang < 3.1415*3/4) && (ang > 3.1415*1/4)) {
-		gsub("[|]", "", name)
-		print "text center top", (X1+X2)/2, (Y1+Y2)/2, q name q
+		annot((X1+X2)/2, (Y1+Y2)/2, name, 0, awidth*1.5)
 	}
-	else {
-		gsub("[|]", "\\n", name)
-		print "text", (negdist ? "left" : "right"), "center", (X1+X2)/2, (Y1+Y2)/2, q name q
-	}
+	else
+		annot((X1+X2)/2, (Y1+Y2)/2, name, 1, awidth*1.5)
+
+#(negdist ? "left" : "right") " center", 
 
 	edges(X1+nx*awidth, Y1+ny*awidth)
 	edges(X2+nx*awidth, Y2+ny*awidth)
-
-	print "endmacro"
 }
 
 /^[ \t]*#dimension/ {
@@ -497,11 +589,14 @@ function draw_grid()
 
 END {
 	print "frame"
+	print vf_data
 
 # make sure all macros exist even if the footprint does not use them
 	print "macro push silk\nendmacro"
 	print "macro push copper\nendmacro"
 	print "macro push mask\nendmacro"
+	print "macro push annotation\nendmacro"
+	print "macro push annotationbg\nendmacro"
 
 	if (photo) {
 		xmin -= offs_3d*2
@@ -554,6 +649,15 @@ END {
 	layer_3d("silk", clr_silk)
 
 	if (allow_annot) {
+		gsub("%textscale%", size/40, annot_pend)
+		print "macro push annotation"
+		print annot_pend
+		print "endmacro"
+
+		if (enable_annotbg) {
+			print "color", clr_annotationbg[0]
+			print "invoke annotationbg"
+		}
 		print "color", clr_annotation[0]
 		print "invoke annotation"
 	}
