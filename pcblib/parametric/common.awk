@@ -141,6 +141,31 @@ function element_pad(x1, y1, x2, y2, thickness,   number, flags,   clearance, ma
 		q name q, q number q, q flags q "]"
 }
 
+# draw element pad - no thickness, but exact corner coordinates given
+function element_pad_rectangle(x1, y1, x2, y2,   number, flags,   clearance, mask, name,     th,dx,dy,cy)
+{
+	if (x2 < x1) {
+		th = x2
+		x2 = x1
+		x1 = th
+	}
+	if (y2 < y1) {
+		th = y2
+		y2 = y1
+		y1 = th
+	}
+
+	dx = x2-x1
+	dy = y2-y1
+
+	th = dy
+	cy = (y1+y2)/2
+
+	print "	Pad[", coord_x(x1)+th/2, coord_y(cy), coord_x(x2)-th/2, coord_y(cy), th,
+		int(either(clearance, DEFAULT["pad_clearance"])), int(either(mask, DEFAULT["pad_mask"])),
+		q name q, q number q, q flags q "]"
+}
+
 # draw element pad circle
 function element_pad_circle(x1, y1, radius,   number,  clearance, mask, name)
 {
