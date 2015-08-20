@@ -76,6 +76,16 @@ BEGIN {
 		if (annotation ~ "background")
 			enable_annotbg = 1
 	}
+
+	if (grid_unit == "mil") {
+		gstep = 10000
+		gmul = 1/100
+	}
+	else {
+		gstep = 3937
+		gmul = 1/3937
+	}
+
 	vf_data = vf_load("/usr/share/animator/romansimplexmono")
 }
 
@@ -603,15 +613,6 @@ function layer_3d(name, color,  offs)
 
 function draw_grid()
 {
-	if (grid_unit == "mil") {
-		gstep = 10000
-		gmul = 1/100
-	}
-	else {
-		gstep = 3937
-		gmul = 1/3937
-	}
-
 	while ((size/gstep) > 10)
 		gstep=gstep*2
 
