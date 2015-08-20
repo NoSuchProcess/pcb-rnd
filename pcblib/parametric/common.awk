@@ -500,5 +500,5 @@ function silkmark(style, x, y, half,    step,   S,n,v)
 # if dist starts with a "@", it's the absolute coordinate of the center of the dim line (text base), else it's relative distance from the measured line
 function dimension(x1, y1, x2, y2, dist, name,    value,    vx,vy)
 {
-	print "#dimension", x1, y1, x2, y2, dist, name, value
+	print "#dimension", coord_x(x1), coord_y(y1), coord_x(x2), coord_y(y2), dist, name, value
 }
