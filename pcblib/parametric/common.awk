@@ -481,3 +481,13 @@ function silkmark(style, x, y, half,    step,   S,n,v)
 		}
 	}
 }
+
+# output a dimension specification between x1;y1 and x2;y2, text distance at dist
+# for a name,value pair
+# if name is empty, only value is printed
+# if value is empty, it's calculated
+# if only name should be printed, value should be "!"
+function dimension(x1, y1, x2, y2, dist, name,    value,    vx,vy)
+{
+	print "#dimension", x1, y1, x2, y2, dist, name, value
+}
