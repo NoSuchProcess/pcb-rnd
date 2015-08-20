@@ -11,12 +11,18 @@ BEGIN {
 	PT["0.5"] = "0.3mm"
 	PT["0.4"] = "0.2mm"
 
-	proc_args(P, "pins,size,pitch,cpad_size", "pins,size,pitch")
+	proc_args(P, "pins,size,pitch,cpad_size,pad_thickness", "pins,size,pitch")
 
 	pitch = P["pitch"]
-	if (!(pitch in PT))
-		error("Unkown pitch, should be one of:" parri(PT))
-	pt = PT[pitch]
+	sub("0*$", "", pitch)
+
+	if (!(args ~ "pad_thickness=")) {
+		if (!(pitch in PT))
+			error("Unkown pitch, should be one of:" parri(PT))
+		pt = PT[pitch]
+	}
+	else
+		pt = rev_mm(DEFAULT["pad_thickness"])
 
 	split(P["size"], S, "x")
 	if (S[2] == "")
