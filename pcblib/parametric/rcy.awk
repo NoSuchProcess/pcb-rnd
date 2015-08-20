@@ -28,9 +28,13 @@ BEGIN {
 
 	element_pin(-spacing/2, 0, 1)
 	element_pin(+spacing/2, 0, 2)
+	dimension(-spacing/2, 0, +spacing/2, 0, dia*0.8, "spacing")
+
 
 # silk rectangle and pins
 	element_arc(0, 0, dia/2, dia/2, 0, 360)
+	dimension(-dia/2, 0, +dia/2, 0, dia*-0.8, "dia")
+
 
 	if (P["pol"] == "sign") {
 		pol_sign()
