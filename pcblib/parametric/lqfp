@@ -8,6 +8,7 @@
 #@@desc Generate LQFP packages - a simplified frontend to qf() - 
 #@@desc look up 3..4 data in the datasheet and get a regular LQFP footprint!
 #@@desc NOTE: some of the qf() parameters can be also used.
+#@@desc NOTE: lqfp() is an alias for tqfp()
 
 awk -f `dirname $0`/common.awk -f `dirname $0`/tqfp.awk -f `dirname $0`/qf.awk -v "args=$*" -v gen=`basename $0`
 
