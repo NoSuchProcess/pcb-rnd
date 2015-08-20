@@ -401,7 +401,7 @@ then
 	fi
 	if test ! -z "$QS_annotation"
 	then
-		cparm="$cparm --annotation $QS_annotation"
+		annot=$QS_annotation
 	fi
 	if test ! -z "$QS_diamond"
 	then
@@ -411,6 +411,22 @@ then
 	then
 		cparm="$cparm --photo"
 	fi
+	if test ! -z "$QS_dimvalue"
+	then
+		annot="$annot:dimvalue"
+	fi
+	if test ! -z "$QS_dimname"
+	then
+		annot="$annot:dimname"
+	fi
+	if test ! -z "$QS_pins"
+	then
+		annot="$annot:pins"
+	fi
+	if test ! -z "$QS_background"
+	then
+		annot="$annot:background"
+	fi
 	case "$QS_thumb"
 	in
 		1) animarg="-x 64 -y 48" ;;
@@ -418,6 +434,10 @@ then
 		3) animarg="-x 192 -y 144" ;;
 		*) animarg="" ;;
 	esac
+	if test ! -z  "$annot"
+	then
+			cparm="$cparm --annotation $annot"
+	fi
 	(echo "$fptext" | /home/igor2/C/pcb-rnd/util/fp2anim $cparm; echo 'screenshot "/dev/stdout"') | /usr/local/bin/animator -H $animarg
 	exit
 fi
@@ -497,6 +517,10 @@ echo "<ul>"
 echo "	<li><input type=\"checkbox\" name=\"mm\" value=\"1\" `checked $QS_mm`> draw grid in mm"
 echo "	<li><input type=\"checkbox\" name=\"photo\" value=\"1\" `checked $QS_photo`> draw in \"photo mode\""
 echo "	<li><input type=\"checkbox\" name=\"diamond\" value=\"1\" `checked $QS_diamond`> diamond at origin"
+echo "	<li><input type=\"checkbox\" name=\"pins\" value=\"1\" `checked $QS_pins`> annotate pin names"
+echo "	<li><input type=\"checkbox\" name=\"dimname\" value=\"1\" `checked $QS_dimname`> annotate dimension names"
+echo "	<li><input type=\"checkbox\" name=\"dimvalue\" value=\"1\" `checked $QS_dimvalue`> annotate dimension values (in grid units)"
+echo "	<li><input type=\"checkbox\" name=\"background\" value=\"1\" `checked $QS_background`> lighten annotataion background"
 echo "</ul>"
 echo "<p>"
 echo "<input type=\"submit\" value=\"Generate my footprint!\">"
