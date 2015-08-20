@@ -355,21 +355,9 @@ function annot(x, y, txt, rot, elev    ,sh)
 }
 
 
-function dimension(x1, y1, x2, y2, dist, name, value     ,vx,vy,nx,ny,X1,Y1,X2,Y2,len,alen,awidth,tmp, ang,negdist)
+function dimension(x1, y1, x2, y2, dist, name, value     ,vx,vy,nx,ny,X1,Y1,X2,Y2,len,alen,awidth,tmp, ang,negdist,cx,cy,dx,dy,D)
 {
 	alen = dim_arrow_len
-	if (dist < 0) {
-		tmp = x1
-		x1 = x2
-		x2 = tmp
-		tmp = y1
-		y1 = y2
-		y2 = tmp
-		dist = -dist
-		negdist = 1
-	}
-	else
-		negdist=0
 
 	vx = x2-x1
 	vy = y2-y1
@@ -382,18 +370,55 @@ function dimension(x1, y1, x2, y2, dist, name, value     ,vx,vy,nx,ny,X1,Y1,X2,Y
 	nx = vy
 	ny = -vx
 
+	if (dist ~ "^[@]") {
+		cx = (x1+x2)/2
+		cy = (y1+y2)/2
+		sub("@", "", dist)
+		split(dist, D, ";")
+		nx = D[1] - cx
+		ny = D[2] - cy
+
+		X1 = x1+nx
+		Y1 = y1+ny
+		X2 = x2+nx
+		Y2 = y2+ny
+
+		dist = nx*nx+ny*ny
+		if (dist > 0)
+			dist = sqrt(dist)
+
+		nx /= dist
+		ny /= dist
+	}
+	else {
+		if (dist < 0) {
+			tmp = x1
+			x1 = x2
+			x2 = tmp
+			tmp = y1
+			y1 = y2
+			y2 = tmp
+			dist = -dist
+
+			vx = -vx
+			vy = -vy
+			nx = -nx
+			ny = -ny
+		}
+
+		X1 = x1+nx*dist
+		Y1 = y1+ny*dist
+		X2 = x2+nx*dist
+		Y2 = y2+ny*dist
+	}
+
+
 	if (alen > len/4)
 		alen=len/4
 
 	awidth=alen/6
 
 	ang = atan2(vx, vy)
-
-
-	X1 = x1+nx*dist
-	Y1 = y1+ny*dist
-	X2 = x2+nx*dist
-	Y2 = y2+ny*dist
 
 	print "macro push annotation"
 	print "line", x1, y1, X1+nx*awidth, Y1+ny*awidth
@@ -422,8 +447,6 @@ function dimension(x1, y1, x2, y2, dist, name, value     ,vx,vy,nx,ny,X1,Y1,X2,Y
 	}
 	else
 		annot((X1+X2)/2, (Y1+Y2)/2, name, 1, awidth*1.5)
-
-#(negdist ? "left" : "right") " center", 
 
 	edges(X1+nx*awidth, Y1+ny*awidth)
 	edges(X2+nx*awidth, Y2+ny*awidth)
