@@ -49,14 +49,12 @@ BEGIN {
 
 
 		clr_hole[0] = "black"
-		enable_annotbg = 1
 		clr_grid[0] = "blue"
 	}
 	else {
 		clr_board[0] = "darkgreen"
 		clr_plated[0] = "#777777"
 		clr_hole[0] = "white"
-		enable_annotbg = 1
 		clr_silk[0] = "black"
 		clr_solderstop[0] = "white"
 		clr_grid[0] = "blue"
@@ -73,6 +71,8 @@ BEGIN {
 			allow_pinnum = 1
 		if (annotation ~ "dimensions")
 			allow_dims = 1
+		if (annotation ~ "background")
+			enable_annotbg = 1
 	}
 	vf_data = vf_load("/usr/share/animator/romansimplexmono")
 }
@@ -267,9 +267,8 @@ function hole(x, y, ring, clr, mask, drill, name, square)
 	print "endmacro"
 
 	if (allow_pinnum) {
-		print "macro push annotation"
-		print "text", x, y, name
-		print "endmacro"
+		gsub("[\"]", "", name)
+		annot(x, y, name, 0, 0)
 	}
 
 	edges(x-(ring+clr)/2, y-(ring+clr)/2)
@@ -290,9 +289,8 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 	print "endmacro"
 
 	if (allow_pinnum) {
-		print "macro push annotation"
-		print "text", (x2+x1)/2, (y2+y1)/2, name
-		print "endmacro"
+		gsub("[\"]", "", name)
+		annot((x2+x1)/2, (y2+y1)/2, name, 0, 0)
 	}
 }
 
@@ -330,15 +328,19 @@ function vf_text(x, y, txt, rot, elev   ,TXT,v,n,W,maxw,s,sep,bg)
 
 		if (enable_annotbg) {
 			s = s "\n" "color " clr_annotationbg[0]
-			s = s "\n" "alpha 0.5"
-			s = s "\n" "fillrect " W[n]*-0.1 sep 0 "-" sep W[n]*1.1 sep 1.1
+			s = s "\n" "alpha 0.2"
+			s = s "\n" "fillrect " W[n]*-0.1 sep -0.1 "-" sep W[n]*1.1 sep 1.1
+			s = s "\n" "alpha 0.1"
+			s = s "\n" "fillrect " W[n]*-0.17 sep -0.17 "-" sep W[n]*1.17 sep 1.17
 			s = s "\n" "alpha 1"
 			s = s "\n" "color " clr_annotation[0]
 		}
 
+#		s = s "\n" "thick %textthick%"
 		s = s "\n" vf_show("roman-simplex-mono", TXT[n])
+#		s = s "\n" "thick 1"
 		s = s "\n" "pop"
-		s = s "\n" "shift 0 1.1"
+		s = s "\n" "shift 0 1.15"
 	}
 	s = s "\n" "pop"
 	return s
@@ -671,6 +673,7 @@ END {
 
 	if (allow_annot) {
 		gsub("%textscale%", size/40, annot_pend)
+#		gsub("%textthick%", size/15000, annot_pend)
 
 		print "macro push annotation"
 		print annot_pend
