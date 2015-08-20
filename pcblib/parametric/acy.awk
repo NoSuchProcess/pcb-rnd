@@ -32,6 +32,8 @@ BEGIN {
 	element_pin(-spacing/2, 0, 1)
 	element_pin(+spacing/2, 0, 2)
 
+	dimension(-spacing/2, 0, +spacing/2, 0, dia*4, "spacing")
+
 # silk pins
 	if (P["type"] != "line") {
 		element_line(-spacing/2, 0, -spacing/4, 0)
@@ -95,6 +97,8 @@ BEGIN {
 	else {
 		error("Invalid type")
 	}
+
+	dimension(sx2, -dia, sx2, dia, spacing/2, "dia")
 
 # silk wiper
 	if (P["wiper"] == "thermistor") {
