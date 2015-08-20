@@ -59,6 +59,8 @@ BEGIN {
 			dimension(x1, y1, x1, y, (ext_bloat * -3), "pad_spacing")
 	}
 
+	dimension(x1, y-pt/2, x1, y+pt/2, (ext_bloat * -3), "pad_thickness")
+
 	for(n = 1; n <= nx; n++) {
 		x = (-cx + n) * pad_spacing
 		y1 = -y_spacing/2
