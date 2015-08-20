@@ -15,6 +15,7 @@ BEGIN {
 
 	element_pin(-spacing/2, 0, 1)
 	element_pin(+spacing/2, 0, 2)
+	dimension(-spacing/2, 0, +spacing/2, 0, dia*4, "spacing")
 
 # pins
 	element_line(-spacing/2, 0, -spacing/aspect, 0)
@@ -24,6 +25,9 @@ BEGIN {
 	element_line(+spacing/aspect, -dia, +spacing/aspect, +dia)
 	element_line(+spacing/aspect, -dia, -spacing/aspect, 0)
 	element_line(+spacing/aspect, +dia, -spacing/aspect, 0)
+
+	dimension(+spacing/aspect, -dia, +spacing/aspect, dia, "@" spacing*1.2 ";0", "dia")
+
 
 # front cross line with decoration
 	r = dia*0.3
