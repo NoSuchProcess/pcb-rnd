@@ -440,7 +440,7 @@ function dimension(x1, y1, x2, y2, dist, name, value     ,vx,vy,nx,ny,X1,Y1,X2,Y
 		else if (value == "!")
 			value = ""
 		if (value != "")
-			value /= 3937
+			value /= gstep
 	}
 	else
 		value = ""
