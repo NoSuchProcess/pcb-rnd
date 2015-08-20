@@ -64,7 +64,7 @@ BEGIN {
 		y1 = -y_spacing/2
 		y2 = y_spacing/2
 		element_pad(x, y1-ext_bloat, x, y1+int_bloat, pad_width, nx*2+ny*2-n+1, "square")
-		element_pad(x, y2-int_bloat, x, y2+ext_bloat, pad_width, n+nx, "square")
+		element_pad(x, y2-int_bloat, x, y2+ext_bloat, pad_width, n+ny, "square")
 	}
 
 
