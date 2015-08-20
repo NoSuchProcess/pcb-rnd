@@ -261,7 +261,7 @@ function pad(x1, y1, x2, y2, thickness, clr, mask, name, square)
 	}
 }
 
-function dimension(x1, y1, x2, y2, dist, name     ,vx,vy,nx,ny,X1,Y1,X2,Y2,len,alen,awidth,tmp, ang,negdist)
+function dimension(x1, y1, x2, y2, dist, name, value     ,vx,vy,nx,ny,X1,Y1,X2,Y2,len,alen,awidth,tmp, ang,negdist)
 {
 	alen = dim_arrow_len
 	if (dist < 0) {
@@ -274,7 +274,8 @@ function dimension(x1, y1, x2, y2, dist, name     ,vx,vy,nx,ny,X1,Y1,X2,Y2,len,a
 		dist = -dist
 		negdist = 1
 	}
-	negdist=0
+	else
+		negdist=0
 
 	vx = x2-x1
 	vy = y2-y1
@@ -308,15 +309,26 @@ function dimension(x1, y1, x2, y2, dist, name     ,vx,vy,nx,ny,X1,Y1,X2,Y2,len,a
 	print "poly", X1, Y1,  X1+vx*alen+nx*awidth, Y1+vy*alen+ny*awidth ,  X1+vx*alen-nx*awidth, Y1+vy*alen-ny*awidth
 	print "poly", X2, Y2,  X2-vx*alen+nx*awidth, Y2-vy*alen+ny*awidth ,  X2-vx*alen-nx*awidth, Y2-vy*alen-ny*awidth
 
+	if (value == "")
+		value = len
+	else if (value == "!")
+		value = ""
+
+	if (value != "")
+		value /= 3937
+
+	if ((name != "") && (value != ""))
+		name = name "=|" value
+
 	if (ang < 0)
 		ang = -ang
-	if (ang < 3.1415*3/4) {
+	if ((ang < 3.1415*3/4) && (ang > 3.1415*1/4)) {
 		gsub("[|]", "", name)
 		print "text center top", (X1+X2)/2, (Y1+Y2)/2, q name q
 	}
 	else {
 		gsub("[|]", "\\n", name)
-		print "text", (negdist ? "right" : "left"), "center", (X1+X2)/2, (Y1+Y2)/2, q name q
+		print "text", (negdist ? "left" : "right"), "center", (X1+X2)/2, (Y1+Y2)/2, q name q
 	}
 
 	edges(X1+nx*awidth, Y1+ny*awidth)
@@ -327,7 +339,7 @@ function dimension(x1, y1, x2, y2, dist, name     ,vx,vy,nx,ny,X1,Y1,X2,Y2,len,a
 
 /^[ \t]*#dimension/ {
 	if (allow_dims)
-		dimension($2, $3, $4, $5, $6, $7)
+		dimension($2, $3, $4, $5, $6, $7, $8)
 }
 
 /^[ \t]*#/ { next }
