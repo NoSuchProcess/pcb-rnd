@@ -313,13 +313,20 @@ function mil(coord)
 	return coord * 100
 }
 
+# reverse mil(): converts footprint units back to mil
+function rev_mil(coord)
+{
+	return coord/100
+}
+
+
 # convert coord given in mm to footprint units
 function mm(coord)
 {
 	return coord*3937
 }
 
-# reverse mm()
+# reverse mm(): converts footprint units back to mm
 function rev_mm(coord)
 {
 	return coord/3937
