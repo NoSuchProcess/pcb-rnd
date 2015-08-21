@@ -1,0 +1,45 @@
+<html>
+<body>
+<h1> Installation of the footprint CGIs </h1>
+<h2> system requirements, 3rd party software </h2>
+	The following software needs to be installed on the system
+	that will host the scripts:
+	<ul>
+		<li> /bin/bash (did not test with POSIX shell)
+		<li> awk (tested with gawk, may work with other modern implementation)
+		<li> common binutils, e.g. ls, find
+		<li> <a href="http://repo.hu/projects/animator">animator</a>, the svn HEAD version; NOTE: it is possible to manually compile animator into a static executable (useful on dedicated web servers)
+		<li> a web server that can execute plain old CGI scripts
+		<li> a full checkout of pcb-rnd/trunk from svn://repo.hu/pcb-rnd/trunk
+	</ul>
+
+<h2> Installation </h2>
+Since the CGIs are just demo scripts for repo.hu and are not really installed
+anywhere else normally, there is no install script but a manual installation
+process. For both the parametric and the static footprint CGI:
+<ol>
+	<li> check out pcb-rnd/trunk in a directory readable (but not writable) by www-data (or whatever user the CGI will run with)
+	<li> copy the config file pcblib.cgi.conf from pcb-rnd/trunk/util to /etc
+	<li> edit the config file; ignore setting sdir for now
+	<li> hardlink, copy, or wrap the cgi files from under pcb-rnd/trunk/util into the web server's CGI directory
+</ol>
+<p>
+For the static footprint CGI (set up the map cache):
+<ol>
+	<li> cd to trunk/util/pcblib-map in the checkout and run make - NOTE: some awk scripts have hardwired CGI paths yet (TODO)
+	<li> copy this directory to a web-accessible directory
+	<li> set sdir to the absolute path of the web-accessible copy in /etc/pcblib.cgi.conf
+</ol>
+
+<h2> Tips and tricks </h2>
+<h3> cgi wrapping </h3>
+Making the checkout directly into the cgi-bin dir is not a good idea. Using
+a hard link on each CGI between the checkout and the cgi-bin dir is better,
+but an svn up will silently break the link leaving the old version live.
+The most stable solution is placing a wrapper script in the cgi-bin dir:
+<pre>
+#!/bin/bash
+. /full/path/to/the/checkout/util/pcblib-param.cgi
+</pre>
+</body>
+</html>
