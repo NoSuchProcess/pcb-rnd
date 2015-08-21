@@ -99,11 +99,19 @@ BEGIN {
 		}
 	}
 
+	dimension(-xo, -yo, -xo+step, -yo, bw/2, "spacing")
+	dimension(-xo-balldia/2, +yo, -xo+balldia/2, +yo, -bw*0.75, "balldia")
+
+
 	xx = -1 * (bw/2)
 	yy = -1 * (bh/2)
 	element_rectangle(xx, yy, bw/2, bh/2)
 
+	dimension(xx, yy, bw/2, yy, bw/2, "width")
+	dimension(bw/2, yy, bw/2, bh/2, +bh/2, "height")
+
 	silkmark(P["silkmark"], xx, yy, half*1.5)
+
 
 	element_end()
 }
