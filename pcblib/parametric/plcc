@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#@@example plcc(20,390x390)
+#@@example plcc(20)
 
 #@@purpose Generate PLCC packages
 #@@desc Generate square PLCC packages - a simplified frontend to qf() - 
