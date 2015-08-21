@@ -38,6 +38,9 @@ BEGIN {
 
 	pins=pins/4
 
+	if ((pins % 2) != 1)
+		error("number of pins per side must be odd")
+
 	S[1] -= 60
 	S[2] -= 60
 	args = args ",nx=" pins ",ny=" pins ",x_spacing=" S[1] "mil,y_spacing=" S[2] "mil,pad_spacing=" pitch "mil,pad_thickness=" pt "mil"
