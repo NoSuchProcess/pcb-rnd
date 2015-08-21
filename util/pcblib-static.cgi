@@ -3,12 +3,19 @@
 ulimit -t 5
 ulimit -v 80000
 
+pcb_rnd_trunk=/home/igor2/C/pcb-rnd
+pcb_rnd_util=$pcb_rnd_trunk/util
+
 CGI=/cgi-bin/pcblib-static.cgi
-fpdir=/home/igor2/C/pcb-rnd/pcblib/
-sdir=/var/www/tmp/pcblib
-urldecode=/home/igor2/C/libporty/trunk/src/porty/c99tree/url.sh
-fp2anim=/home/igor2/C/pcb-rnd/util/fp2anim
+gendir=$pcb_rnd_trunk/pcblib/parametric/
 animator=/usr/local/bin/animator
+fp2anim=$pcb_rnd_util/fp2anim
+
+# import the lib
+. $pcb_rnd_util/cgi_common.sh
+
+fpdir=$pcb_rnd_trunk/pcblib/
+sdir=/var/www/tmp/pcblib
 
 find_fp()
 {
@@ -76,29 +83,6 @@ list_fps()
 	'
 }
 
-radio()
-{
-	local chk
-	if test "$3" = "$2"
-	then
-		chk=" checked=\"true\""
-	fi
-	echo "<input type=\"radio\" name=\"$1\" value=\"$2\"$chk>"
-}
-
-checked()
-{
-	if test ! -z "$1"
-	then
-		echo " checked=\"true\""
-	fi
-}
-
-fix_ltgt()
-{
-	sed "s/</\&lt;/g;s/>/\&gt;/g"
-}
-
 qs=`echo "$QUERY_STRING" | tr "&" "\n"`
 
 for n in $qs
@@ -107,7 +91,7 @@ do
     export $exp
 done
 
-export QS_cmd=`echo "$QS_cmd" | $urldecode`
+export QS_cmd=`echo "$QS_cmd" | url_decode`
 
 if test -z "$QS_fp"
 then

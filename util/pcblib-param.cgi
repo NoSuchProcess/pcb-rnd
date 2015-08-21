@@ -3,11 +3,16 @@
 ulimit -t 5
 ulimit -v 80000
 
+pcb_rnd_trunk=/home/igor2/C/pcb-rnd
+pcb_rnd_util=$pcb_rnd_trunk/util
+
 CGI=/cgi-bin/pcblib-param.cgi
-gendir=/home/igor2/C/pcb-rnd/pcblib/parametric/
+gendir=$pcb_rnd_trunk/pcblib/parametric/
 animator=/usr/local/bin/animator
-fp2anim=/home/igor2/C/pcb-rnd/util/fp2anim
-urldecode=/home/igor2/C/libporty/trunk/src/porty/c99tree/url.sh
+fp2anim=$pcb_rnd_util/fp2anim
+
+# import the lib
+. $pcb_rnd_util/cgi_common.sh
 
 gen()
 {
@@ -258,14 +263,6 @@ help()
 
 }
 
-error()
-{
-	echo "Content-type: text/plain"
-	echo ""
-	echo "Error: $*"
-	exit 0
-}
-
 list_gens()
 {
 	awk -v "CGI=$CGI" '
@@ -309,29 +306,6 @@ list_gens()
 	' $gendir/*
 }
 
-radio()
-{
-	local chk
-	if test "$3" = "$2"
-	then
-		chk=" checked=\"true\""
-	fi
-	echo "<input type=\"radio\" name=\"$1\" value=\"$2\"$chk>"
-}
-
-checked()
-{
-	if test ! -z "$1"
-	then
-		echo " checked=\"true\""
-	fi
-}
-
-fix_ltgt()
-{
-	sed "s/</\&lt;/g;s/>/\&gt;/g"
-}
-
 qs=`echo "$QUERY_STRING" | tr "&" "\n"`
 
 for n in $qs
@@ -340,7 +314,7 @@ do
 	export $exp
 done
 
-export QS_cmd=`echo "$QS_cmd" | $urldecode`
+export QS_cmd=`echo "$QS_cmd" | url_decode`
 
 if test -z "$QS_cmd"
 then
@@ -391,57 +365,7 @@ fi
 
 if test "$QS_output" = "png"
 then
-	echo "Content-type: image/png"
-	echo ""
-	cparm=""
-	if test ! -z "$QS_mm"
-	then
-		cparm="$cparm --mm"
-	fi
-	if test ! -z "$QS_grid"
-	then
-		cparm="$cparm --grid-unit $QS_grid"
-	fi
-	if test ! -z "$QS_annotation"
-	then
-		annot=$QS_annotation
-	fi
-	if test ! -z "$QS_diamond"
-	then
-		cparm="$cparm --diamond"
-	fi
-	if test ! -z "$QS_photo"
-	then
-		cparm="$cparm --photo"
-	fi
-	if test ! -z "$QS_dimvalue"
-	then
-		annot="$annot:dimvalue"
-	fi
-	if test ! -z "$QS_dimname"
-	then
-		annot="$annot:dimname"
-	fi
-	if test ! -z "$QS_pins"
-	then
-		annot="$annot:pins"
-	fi
-	if test ! -z "$QS_background"
-	then
-		annot="$annot:background"
-	fi
-	case "$QS_thumb"
-	in
-		1) animarg="-x 64 -y 48" ;;
-		2) animarg="-x 128 -y 96" ;;
-		3) animarg="-x 192 -y 144" ;;
-		*) animarg="" ;;
-	esac
-	if test ! -z  "$annot"
-	then
-			cparm="$cparm --annotation $annot"
-	fi
-	(echo "$fptext" | $fp2anim $cparm; echo 'screenshot "/dev/stdout"') | $animator -H $animarg
+	cgi_png
 	exit
 fi
 
