@@ -3,13 +3,9 @@
 ulimit -t 5
 ulimit -v 80000
 
-pcb_rnd_trunk=/home/igor2/C/pcb-rnd
-pcb_rnd_util=$pcb_rnd_trunk/util
-
-CGI=/cgi-bin/pcblib-param.cgi
-gendir=$pcb_rnd_trunk/pcblib/parametric/
-animator=/usr/local/bin/animator
-fp2anim=$pcb_rnd_util/fp2anim
+# read the config
+. /etc/pcblib.cgi.conf
+CGI=$CGI_param
 
 # import the lib
 . $pcb_rnd_util/cgi_common.sh
