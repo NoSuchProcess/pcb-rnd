@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#@@example plcc(32,7x7,0.8)
+#@@example plcc(20,390x390)
 
 #@@purpose Generate PLCC packages
 #@@desc Generate PLCC packages - a simplified frontend to qf() - 
@@ -12,7 +12,7 @@
 #@@param:pin total number of pins (leads); must be divisible by 4
 #@@param:size a single integer N or NxN or NxNxH; outmost dimensions (width or height of the package, leads included) in mil
 
-#@@param:pitch lead pitch (distance between the centerline of two adjacent leads), in mil; must be one of 0.4, 0.5, 0.65
+#@@param:pitch lead pitch (distance between the centerline of two adjacent leads), in mil; must be 50 for now
 #@@optional:pitch
 #@@default:pitch 50mil
 
