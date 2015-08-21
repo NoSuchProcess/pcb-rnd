@@ -1,0 +1,32 @@
+<html>
+<body>
+<h1> pcb-rnd devlog </h1>
+<h2> requirements for parametric footprint generation </h2>
+
+It's appealing to write parametric footprint generators for new footprint
+families: invest some time once, and have a tool that can spit out
+dozens of footprints. However, it is not always worth having a generator
+instead of static footprints. The minimal requirements for a generator are:
+
+<ul>
+
+<li> the footprint family is a series of footprints that can be generated 
+using the same code, with changing some base properties (e.g. number of 
+pins)
+
+<li> dimensions and other properties can be calculated from the base 
+properties with reasonable formulas and conditional code; e.g. sot* is not 
+a good candidate for generation, as sot23 or sot89 can not be generated 
+from some common anestor by varying one or two parameters, but would need 
+a large table that translates package name to a pattern - easier to keep 
+those in static footprint files
+
+<li> has a reasonable amount of existing variations; e.g. it is not worth 
+writing a generator for the dsub family because there are only a few of 
+them in common use (db9, db15, db25, and maybe db37).
+
+<li> preferably a link to a datasheet that shows at least 3 members of the 
+family; if that's not possible, separate datasheets describing at least 3 
+members of the family.
+
+</ul>
