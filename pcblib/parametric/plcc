@@ -1,0 +1,24 @@
+#!/bin/sh
+
+#@@example plcc(32,7x7,0.8)
+
+#@@purpose Generate PLCC packages
+#@@desc Generate PLCC packages - a simplified frontend to qf() - 
+#@@desc look up 3..4 data in the datasheet and get a regular PLCC footprint!
+#@@desc NOTE: some of the qf() parameters can be also used.
+
+#@@params:pins,size,pitch,cpad_size
+
+#@@param:pin total number of pins (leads); must be divisible by 4
+#@@param:size a single integer N or NxN or NxNxH; outmost dimensions (width or height of the package, leads included) in mil
+
+#@@param:pitch lead pitch (distance between the centerline of two adjacent leads), in mil; must be one of 0.4, 0.5, 0.65
+#@@optional:pitch
+#@@default:pitch 50mil
+
+#@@param:cpad_size width (and height) of the central pad, in mil
+#@@optional:cpad_size
+#@@default:cpad_size empty, there's no central pad
+
+awk -f `dirname $0`/common.awk -f `dirname $0`/plcc.awk -f `dirname $0`/qf.awk -v "args=$*" -v gen=`basename $0`
+

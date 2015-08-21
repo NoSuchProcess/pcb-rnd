@@ -48,5 +48,5 @@ BEGIN {
 		args = args ",cpad_width=" P["cpad_size"] "mm,cpad_height=" P["cpad_size"] "mm"
 
 	args = args ",int_bloat=0.5mm,ext_bloat=1.1mm"
-	args = args ",?fullrect=1,?silkmark=circle"
+	args = args ",?bodysilk=full,?silkmark=circle"
 }
