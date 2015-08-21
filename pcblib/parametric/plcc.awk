@@ -10,7 +10,7 @@ BEGIN {
 	PT["50"] = "26mil"
 	set_arg(P, "?pitch", "50")
 
-	proc_args(P, "pins,size,pitch,cpad_size,pad_thickness", "pins,size")
+	proc_args(P, "pins,size,pitch,cpad_size,pad_thickness", "pins")
 
 	pitch = P["pitch"]
 	sub("[.]0*$", "", pitch)
@@ -22,6 +22,9 @@ BEGIN {
 	}
 	else
 		pt = rev_mil(DEFAULT["pad_thickness"])
+
+	if (P["size"] == "")
+		P["size"] = int(P["pins"] * (pitch/4) + 140)
 
 	split(P["size"], S, "x")
 	if (S[2] == "")
