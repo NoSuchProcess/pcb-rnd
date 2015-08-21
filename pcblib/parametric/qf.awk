@@ -25,7 +25,7 @@ function qf_globals(pre_args, post_args    ,reqs)
 	if ((pre_args != "") && (!(pre_args ~ ",$")))
 		pre_args = pre_args ","
 
-	proc_args(P, pre_args "nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,fullrect,silkmark" post_args, reqs)
+	proc_args(P, pre_args "nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,bodysilk,silkmark" post_args, reqs)
 
 	nx = int(P["nx"])
 	ny = int(P["ny"])
@@ -108,14 +108,23 @@ BEGIN {
 	wx = (width  - nx * pad_spacing) / 3.5
 	wy = (height - ny * pad_spacing) / 3.5
 
-	if (!tobool(P["fullrect"])) {
+	bodysilk = P["bodysilk"]
+	if ((bodysilk == "corners") || (bodysilk == "")) {
 		element_rectangle_corners(-width/2, -height/2, width/2, height/2, wx, wy)
 		silkmark(P["silkmark"], -width/2 - wx/2, -height/2+wy*1.5, (wx+wy)/4)
 	}
-	else {
+	else if (bodysilk == "full") {
 		element_rectangle(-width/2, -height/2, width/2, height/2)
 		silkmark(P["silkmark"], -width/2 + wx*3, -height/2+wy*3, (wx+wy)/2)
 	}
+	else if (bodysilk == "plcc") {
+		r = (width+height)/10
+		element_rectangle(-width/2, -height/2, width/2, height/2, "arc,NE,SW,SE", r)
+		element_line(-width/2, -height/2+r, width/2, -height/2+r)
+		silkmark(P["silkmark"], 0, -height*0.2, height/40)
+	}
+	else if (bodysilk != "none")
+		error("invalid bodysilk parameter")
 
 	dimension(-width/2, -height/2, +width/2, -height/2, "@0;" height*-0.8-ext_bloat,       "width")
 	dimension(+width/2, -height/2, +width/2, +height/2, "@" (width * 1+ext_bloat) ";0",  "height")

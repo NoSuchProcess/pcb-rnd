@@ -5,7 +5,7 @@
 #@@purpose Generate generic *qf* (e.g. tqfp, qfn) packages
 
 #@@desc Generate *qf* (e.g. tqfp, qfn) packages: smd pads around a square; this is the generic implementation, end users may want to use the specific ones, e.g. tqfp(), qfn(), etc.
-#@@params nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,fullrect,silkmark
+#@@params nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,bodysilk,silkmark
 
 #@@param:nx number of pins along the horizontal sides
 
@@ -62,10 +62,13 @@
 #@@optional:cpad_height
 #@@default:cpad_height false, no central pad
 
-#@@param:fullrect when true, draw a fill silk rectangle, not only the corners
-#@@bool:fullrect
-#@@optional:fullrect
-#@@default:fullrect false, only corners are drawn
+#@@param:bodysilk how to draw body on the silk layer
+#@@enum:bodysilk:none no drawing
+#@@enum:bodysilk:corners draw the corners, silkmark is outside of the top-left corner
+#@@enum:bodysilk:full draw a full rectanlge, silkmark of the top-left corner
+#@@enum:bodysilk:plcc angled top-left corner, horizontal line on the top
+#@@optional:bodysilk
+#@@default:bodysilk corners
 
 #@@include silkmark.help
 #@@optional:silkmark
