@@ -5,6 +5,7 @@
 #@@purpose Generate QFN packages
 #@@desc Generate QFN packages - a simplified frontend to qf() - 
 #@@desc look up 3..4 data in the datasheet and get a regular QFN footprint!
+#@@desc Should work for QFN, TQFN, etc.
 #@@desc NOTE: some of the qf() parameters can be also used.
 
 #@@params:pins,size,pitch,cpad_size

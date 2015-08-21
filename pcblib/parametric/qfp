@@ -1,11 +1,12 @@
 #!/bin/sh
 
-#@@example tqfp(32,7x7,0.8)
+#@@example qfp(32,7x7,0.8)
 
-#@@purpose Generate TQFP packages
-#@@desc Generate TQFP packages - a simplified frontend to qf() - 
-#@@desc look up 3..4 data in the datasheet and get a regular TQFP footprint!
+#@@purpose Generate QFP packages
+#@@desc Generate QFP packages - a simplified frontend to qf() - 
+#@@desc look up 3..4 data in the datasheet and get a regular QFP footprint!
 #@@desc NOTE: some of the qf() parameters can be also used.
+#@@desc Should work for QFP, TQFP, LQFP, etc.
 
 #@@params:pins,size,pitch,cpad_size
 
@@ -17,5 +18,5 @@
 #@@optional:cpad_size
 #@@default:cpad_size empty, there's no central pad
 
-awk -f `dirname $0`/common.awk -f `dirname $0`/tqfp.awk -f `dirname $0`/qf.awk -v "args=$*" -v gen=`basename $0`
+awk -f `dirname $0`/common.awk -f `dirname $0`/qfp.awk -f `dirname $0`/qf.awk -v "args=$*" -v gen=`basename $0`
 
