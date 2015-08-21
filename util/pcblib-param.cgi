@@ -5,6 +5,9 @@ ulimit -v 80000
 
 CGI=/cgi-bin/pcblib-param.cgi
 gendir=/home/igor2/C/pcb-rnd/pcblib/parametric/
+animator=/usr/local/bin/animator
+fp2anim=/home/igor2/C/pcb-rnd/util/fp2anim
+urldecode=/home/igor2/C/libporty/trunk/src/porty/c99tree/url.sh
 
 gen()
 {
@@ -337,7 +340,7 @@ do
 	export $exp
 done
 
-export QS_cmd=`echo "$QS_cmd" | /home/igor2/C/libporty/trunk/src/porty/c99tree/url.sh`
+export QS_cmd=`echo "$QS_cmd" | $urldecode`
 
 if test -z "$QS_cmd"
 then
@@ -438,7 +441,7 @@ then
 	then
 			cparm="$cparm --annotation $annot"
 	fi
-	(echo "$fptext" | /home/igor2/C/pcb-rnd/util/fp2anim $cparm; echo 'screenshot "/dev/stdout"') | /usr/local/bin/animator -H $animarg
+	(echo "$fptext" | $fp2anim $cparm; echo 'screenshot "/dev/stdout"') | $animator -H $animarg
 	exit
 fi
 

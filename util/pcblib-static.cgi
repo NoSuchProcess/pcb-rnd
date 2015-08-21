@@ -6,6 +6,9 @@ ulimit -v 80000
 CGI=/cgi-bin/pcblib-static.cgi
 fpdir=/home/igor2/C/pcb-rnd/pcblib/
 sdir=/var/www/tmp/pcblib
+urldecode=/home/igor2/C/libporty/trunk/src/porty/c99tree/url.sh
+fp2anim=/home/igor2/C/pcb-rnd/util/fp2anim
+animator=/usr/local/bin/animator
 
 find_fp()
 {
@@ -104,7 +107,7 @@ do
     export $exp
 done
 
-export QS_cmd=`echo "$QS_cmd" | /home/igor2/C/libporty/trunk/src/porty/c99tree/url.sh`
+export QS_cmd=`echo "$QS_cmd" | $urldecode`
 
 if test -z "$QS_fp"
 then
@@ -156,7 +159,7 @@ then
 	then
 		cparm="$cparm --photo"
 	fi
-	(echo "$fptext" | /home/igor2/C/pcb-rnd/util/fp2anim $cparm; echo 'screenshot "/dev/stdout"') | /usr/local/bin/animator -H
+	(echo "$fptext" | $fp2anim $cparm; echo 'screenshot "/dev/stdout"') | $animator -H
 	exit
 fi
 
