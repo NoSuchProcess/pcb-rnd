@@ -5,7 +5,7 @@
 #@@purpose Generate generic *qf* (e.g. tqfp, qfn) packages
 
 #@@desc Generate *qf* (e.g. tqfp, qfn) packages: smd pads around a square; this is the generic implementation, end users may want to use the specific ones, e.g. tqfp(), qfn(), etc.
-#@@params nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,bodysilk,silkmark
+#@@params nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,bodysilk,pinoffs,silkmark
 
 #@@param:nx number of pins along the horizontal sides
 
@@ -69,6 +69,10 @@
 #@@enum:bodysilk:plcc angled top-left corner, horizontal line on the top
 #@@optional:bodysilk
 #@@default:bodysilk corners
+
+#@@param:pinoffs rotate pins by this amount, CW
+#@@optional:pinoffs
+#@@default:pinoffs 0
 
 #@@include silkmark.help
 #@@optional:silkmark
