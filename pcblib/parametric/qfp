@@ -8,7 +8,7 @@
 #@@desc NOTE: some of the qf() parameters can be also used.
 #@@desc Should work for QFP, TQFP, LQFP, etc.
 
-#@@params:pins,size,pitch,cpad_size
+#@@params pins,size,pitch,cpad_size
 
 #@@param:pin total number of pins (leads); must be divisible by 4
 #@@param:size a single integer N or NxN or NxNxH; body dimension (width or height of the plastic body) in mm

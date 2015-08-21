@@ -7,7 +7,7 @@
 #@@desc only the number of pins is really needed for a square PLCC footprint!
 #@@desc NOTE: some of the qf() parameters can be also used; PLCC32 is non-square, and can not be properly generated using this generator.
 
-#@@params:pins,size,pitch,cpad_size
+#@@params pins,size,pitch,cpad_size
 
 #@@param:pin total number of pins (leads); must be divisible by 4
 
