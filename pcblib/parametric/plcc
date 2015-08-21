@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Reference: Microchip Packaging Specification DS00000049BX (en012702.pdf), SSOP
+
 #@@example plcc(20)
 
 #@@purpose Generate PLCC packages

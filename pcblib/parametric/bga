@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Reference: Microchip Packaging Specification DS00000049BX (en012702.pdf), SSOP
+
 #@@example bga(map=a1:a2:a2:#:b1:!:b3:#:c1:c2:!)
 
 #@@purpose Generate ball grid array
