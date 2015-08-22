@@ -147,7 +147,7 @@ BEGIN {
 	if (TREE[events, C99F_CHILDREN] > 0) {
 	print "<h3> Events </h3>"
 	print "<dl>"
-	print "<p>Events do not have return value. The first argument is always <a href=\"event_id.html\">the even id</a>"
+	print "<p>Events do not have return value. The first argument is always <a href=\"event_id.html\">the even id</a>. Event handlers defined in scripts get all event arguments converted to string (types below are informational)."
 	for(r = 0; 1; r++) {
 		if (gtx_get_map(TREE, MAP, events, r) == "")
 			break
