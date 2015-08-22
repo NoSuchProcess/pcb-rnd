@@ -30,88 +30,18 @@
 	structure using the hid package, builds up all the input fields
 	then calls <i>dialog_attribute()</i> with the hid.
 
-	<H2> API reference </H2>
+	<H2> Progress dialogs </H2>
 
-	<H3> function void dialog_log(const char *msg) </H3>
-		Append a message to the log (log window and/or stderr). Arguments:
-		<OL>
-			<LI> const char *msg: the message
-		</OL>
+	The script should call dialog_progress() periodicly from a process that
+	runs time consuming calculations and check the return value and break
+	the loop on cancel. The process should have an idea of how long it
+	will take. This is passed on in argument <i>total</i>. As long as
+	argument <i>so_far</i> is less than <i>total</i>, the dialog is
+	open.
+	<p>
+	After the process has finished, a call with <i>so_far=total+1</i> should be
+	made to make sure the window is closed. If the call returns non-zero,
+	the process should be cancelled.
 
-	<H3> function int dialog_confirm(const char *msg, const char *ok, const char *cancel) </H3>
-		Ask the user for confirmation. Returns 0 for cancel and 1 for ok. Arguments:
-		<OL>
-			<LI> const char *msg: message to the user
-			<LI> const char *ok: label of the OK button
-			<LI> const char *cancel: label of the cancel button
-		</OL>
-		Arguments <I>ok</I> and <I>cancel</I> may be empty (or NULL) in which
-		case the GUI will use the default (perhaps localized) labels for
-		those buttons.
-
-	<H3>function void dialog_report(const char *title, const char *msg) </H3>
-		Pop up a report dialog. Arguments:
-		<OL>
-			<LI> const char *title: title of the window
-			<LI> const char *msg: message
-		</OL>
-		No return value.
-
-	<H3> function char *dialog_prompt(const char *msg, const char *default_) </H3>
-		Prompt the user for a single line textual data. Arguments:
-		<OL>
-			<LI> const char *msg: message or question to the user
-			<LI> const char *default: default answer
-		</OL>
-		Returns what the user typed or NULL (empty) if the user choosed to cancel.
-
-	<H3> function void dialog_beep(void) </H3>
-		Beeps. No argument, no return value.
-
-	<H3> function int dialog_progress(int so_far, int total, const char *message) </H3>
-		Request the GUI hid to draw a progress bar. Arguments:
-		<OL>
-			<LI> int so_far: achieved state
-			<LI> int total: maximum state
-			<LI> const char *message: informs the users what they are waiting for
-		</OL>
-		If so_far is bigger than total, the progress bar is closed.
-		Return value: returns !!!TODO!!! if the user pressed cancel.
-		<p>
-		The script should call this periodicly from a loop that runs
-		time consuming calculations and check the return value and
-		break the loop on cancel. After the loop a call with so_far=total+1
-		should be made to make sure the window is closed.
-
-	<H3> function int dialog_attribute(hid_t *hid, const char *title, const char *descr) </H3>
-		Presents the user a custom dialog box, similar to those used by
-		the exporters.
-		<OL>
-			<LI> hid_t *hid: <a href="!!!TODO!!!">hid</a> that describes options
-			<LI> const char *title: window title
-			<LI> const char *descr: description
-		</OL>
-		Return value: !!!TODO!!!. Values selected by the user are accessed
-		using <a href="!!!TODO!!!">hid_get_attribute</a>.
-
-	<H3> function char *dialog_fileselect(const char *title, const char *descr, char *default_file_, char *default_ext, const char *history_tag, multiple dialog_fileselect_t flags)</H3>
-		Pops up a file selection dialog.
-		<OL>
-			<LI> const char *title: window title
-			<LI> const char *descr: description
-			<LI> char *default_file_
-			<LI> char *default_ext: default file name extension
-			<LI> const char *history_tag
-			<LI> dialog_fileselect_t flags: one or more flags (see below)
-		</OL>
-		Returns the selected file or NULL (empty).
-		<P>
-		dialog_fileselect_t flags:
-		<UL>
-			<LI> FS_READ: TODO
-			<LI> FS_NOT_EXIST: the function calling hid->fileselect will deal with the case where the selected file already exists.  If not given, then the gui will prompt with an "overwrite?" prompt.  Only used when writing.
-			<LI> FS_TEMPLATE: the call is supposed to return a file template (for gerber output for example) instead of an actual file.  Only used when writing.
-			<LI> FS_NONE: none of the above
-		</UL>
 </BODY>
 </HTML>

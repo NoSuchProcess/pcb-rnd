@@ -1,0 +1,71 @@
+<html>
+<body>
+<h1>PCB GPMI</h1>
+<h2>Reference manual for package dialogs</h2>
+<small>Automatically generated from dialogs.h</small>
+
+<h3> Events </h3>
+<dl>
+<p>Events do not have return value. The first argument is always <a href="event_id.html">the even id</a>
+</dl>
+<h3> Functions </h3>
+<dl>
+<p>The following functions are registered in script context.
+<a id="dialog_log">
+<H4>  void dialog_log(char* msg)  </H4>
+<pre>
+ Append a msg to the log (log window and/or stderr). 
+</pre>
+<a id="dialog_confirm">
+<H4>  int dialog_confirm(char* msg,  char* ok,  char* cancel)  </H4>
+<pre>
+ Ask the user for confirmation (usually using a popup). Returns 0 for
+   cancel and 1 for ok.
+   Arguments:
+     msg: message to the user
+     ok: label of the OK button
+     cancel: label of the cancel button
+  Arguments "ok" and "cancel" may be empty (or NULL) in which
+  case the GUI will use the default (perhaps localized) labels for
+  those buttons. 
+</pre>
+<a id="dialog_report">
+<H4>  void dialog_report(char* title,  char* msg)  </H4>
+<pre>
+ Pop up a report dialog.
+   Arguments:
+     title: title of the window
+     msg: message 
+</pre>
+<a id="dialog_beep">
+<H4>  void dialog_beep(void)  </H4>
+<pre>
+ Audible beep 
+</pre>
+<a id="dialog_progress">
+<H4>  int dialog_progress(int so_far, int total,  char* message)  </H4>
+<pre>
+ Request the GUI hid to draw a progress bar.
+   Arguments:
+     int so_far: achieved state
+     int total: maximum state
+     const char *message: informs the users what they are waiting for
+   If so_far is bigger than total, the progress bar is closed.
+   Returns nonzero if the user wishes to cancel the operation.
+
+</pre>
+<a id="dialog_attribute">
+<H4>  int dialog_attribute(* hid,  char* title,  char* descr)  </H4>
+<pre>
+ Pop up an attribute dialog; content (widgets) of the dialog box are coming
+   from hid (see the hid package).
+   Arguments:
+     hid: widgets
+     title: title of the window
+     descr: descripting printed in the dialog 
+</pre>
+</dl>
+
+</body>
+</html>
+
