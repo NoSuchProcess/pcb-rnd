@@ -111,6 +111,7 @@ BEGIN {
 		sub("[(]", "(int event_id,", proto)
 # proto = getsrc(source, MAP["d"])
 
+		print "<a id=\"" id "\">"
 		print "<H4> " proto "</H4>"
 		print "<pre>"
 		print get_pre_comment(TREE, MAP["a"])
@@ -137,6 +138,7 @@ BEGIN {
 # proto = getsrc(source, MAP["d"])
 
 		gsub("[(][ \t]*", "(", proto)
+		print "<a id=\"" id "\">"
 		print "<H4>", proto, "</H4>"
 		print "<pre>"
 		print get_pre_comment(TREE, MAP["a"])
