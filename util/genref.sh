@@ -30,6 +30,7 @@ echo "<html>
 c99tree awk -I$root "$@" \
   --gtx 'events=([] /+  d=[type == DECL]) && (d / i=[name ~ "GPMI_EVENT"]) && (i .+ [type == TYPE] . a=[type  == ARGLIST] ) && (d : [loc_is_local == "1"])' \
   --gtx 'funcs=([] /+  d=[type == DECL]) && (d / i=[!name ~ "GPMI_EVENT"]) && (i .+ [type == TYPE] . a=[type  == ARGLIST] ) && (d : [loc_is_local == "1"])' \
+  --gtx 'enums=([] /+  i=[type == ENUM]) && (i : [loc_is_local == "1"])' \
   --paste "$prinit" $fn --awk-s '
 
 function load(fn,    s)
@@ -75,11 +76,16 @@ function to_c(TREE, uid   ,tr,line,all)
 	return all
 }
 
-function get_pre_comment(TREE, uid   ,cmt_uid,cmt)
+function get_any_comment(TREE, uid, bump_uid, dir   ,cmt_uid,cmt)
 {
 	cmt_uid = TREE[uid, C99F_TWIN_PARENT]
+	bump_uid = TREE[bump_uid, C99F_TWIN_PARENT]
 	while(cmt_uid != "") {
-		cmt_uid = TREE[cmt_uid, C99F_PREV]
+		cmt_uid = TREE[cmt_uid, dir]
+		if (cmt_uid == bump_uid) {
+			cmt = cmt "&lt;comment missing in the header&gt;"
+			break
+		}
 		if (TREE[cmt_uid, C99F_TYPE] == C99T_COMMENT) {
 			cmt = TREE[cmt_uid, C99F_NAME]
 			break
@@ -90,12 +96,51 @@ function get_pre_comment(TREE, uid   ,cmt_uid,cmt)
 	return cmt
 }
 
+function get_pre_comment(TREE, uid, bump_uid)
+{
+	return get_any_comment(TREE, uid, bump_uid, C99F_PREV)
+}
+
+function get_post_comment(TREE, uid, bump_uid)
+{
+	return get_any_comment(TREE, uid, bump_uid, C99F_NEXT)
+}
+
 BEGIN {
 	pkg="'$pkg'"
 	c99tree_unknown(TREE)
 	gtx_init(TREE)
 
 #	source=load("'$fn'")
+
+	print "<h3> Enums </h3>"
+	print "<dl>"
+	print "<p>Enum values should be passed on as strings."
+	enums = gtx_find_results(TREE, "enums")
+	for(r = 0; 1; r++) {
+		if (gtx_get_map(TREE, MAP, enums, r) == "")
+			break
+		id = TREE[MAP["i"], C99F_NAME]
+
+		print "<a id=\"" id "\">"
+		print "<H4> " id "</H4>"
+		print "<pre>"
+		print get_pre_comment(TREE, MAP["i"])
+		print "</pre>"
+
+		print "<table border=1>"
+		print "<tr><th>value <th>meaning"
+		for(c = 0; c < TREE[MAP["i"], C99F_CHILDREN]; c++) {
+			uid = TREE[MAP["i"], C99F_CHILD, c]
+			nuid = TREE[MAP["i"], C99F_CHILD, c+1]
+			if (nuid == "")
+				nuid=TREE[TREE[MAP["i"], C99F_PARENT], C99F_NEXT]
+			print "<tr><td>", TREE[uid, C99F_NAME], "<td>", get_post_comment(TREE, uid, nuid)
+		}
+		print "</table>"
+	}
+	print "</dl>"
+
 
 	print "<h3> Events </h3>"
 	print "<dl>"
