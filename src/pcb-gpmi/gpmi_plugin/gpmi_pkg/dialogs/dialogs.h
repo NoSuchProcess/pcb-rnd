@@ -3,9 +3,10 @@
 #define FROM_PKG
 #include "hid/hid.h"
 
+/* Filter on what files a file select dialog should list */
 typedef enum dialog_fileselect_e {
 	FS_NONE      = 0, /* none of the below */
-	FS_READ      = 1, /* TODO (HID_FILESELECT_READ) */
+	FS_READ      = 1, /* when the selected file will be read, not written (HID_FILESELECT_READ) */
 	FS_NOT_EXIST = 2, /* the function calling hid->fileselect will deal with the case when the selected file already exists.  If not given, then the gui will prompt with an "overwrite?" prompt.  Only used when writing. (HID_FILESELECT_MAY_NOT_EXIST)  */
 	FS_TEMPLATE  = 4  /* the call is supposed to return a file template (for gerber output for example) instead of an actual file.  Only used when writing. (HID_FILESELECT_IS_TEMPLATE) */
 } dialog_fileselect_t;
