@@ -8,64 +8,34 @@ The hid package has two purposes:
 	<LI> it can register exporter HIDs in PCB
 </UL>
 
-<H2> API reference - attribute dialog boxes</H1>
-	<H3>function hid_t *hid_create(char *hid_name, char *description); </H3>
-		Creates a new hid context. Name and description matters only
-		if the hid is registered as an exporter later. hid_t is an opaq
-		structure for the package that is used to describe attributes
-		of an attribute dialog or an exporter hid.
-
-	<H3>function int hid_add_attribute(hid_t *hid, char *attr_name, char *help, hid_attr_type_t type, int min, int max, char *default_val) </H3>
-		Append an attribute in a hid previously created using hid_create().
-		Arguments:
-		<OL>
-			<LI> hid: hid_t previously created using hid_create()
-			<LI> attr_name: name of the attribute
-			<LI> help: help text for the attribute
-			<LI> type: type of the attribute (input type - see later)
-			<LI> min: minimum value of the attribute, if type is integer or real)
-			<LI> max: maximum value of the attribute, if type is integer or real)
-			<LI> default_val: default value of the attribute
-		</OL>
-		The call returns an unique ID of the attribute the caller should store
-		for later reference. For example this ID is used when retrieving the value
-		of the attribute after the user finished entering data in the dialog.
-		<P>
-		Possible attribute types are defined in the hid_attr_type_t enum:
-		<UL>
-			<LI>HIDA_Label: non-editable label displayed on the GUI
-			<LI>HIDA_Integer: an integer value
-			<LI>HIDA_Real: a floating point value
-			<LI>HIDA_String: one line textual input
-			<LI>HIDA_Boolean: true/false boolean value
-			<LI>HIDA_Enum: [TODO]
-			<LI>HIDA_Mixed: [TODO]
-			<LI>HIDA_Path: path to a file or directory
-		</UL>
-
-	<H3>function char *hid_get_attribute(hid_t *hid, int attr_id) </H3>
-		Query an attribute from the hid after dialog_attributes() returned.
-		<OL>
-			<LI> hid: hid_t previously created using hid_create()
-			<LI> attr_id: the unique ID of the attribute (returned by hid_add_attribute())
-		</OL>
-		Returns the value set by the user.
-
-<H2> API reference - register an exporter</H2>
-	<H3> function int hid_register(hid_t *hid) </H3>
-		Register the hid as an exporter. Should be called after all attributes have been
-		added using hid_add_atrtibute(). The export is coordinated by pcb core;
-		when the user request an export using the
-		exporter, a series of events are delivered to the script:
-		<ol>
-			<li> envelope events to set up exporting
-			<li> many draw events to actually export the objects
-			<li> an envelope event to finish exporting
-		</ol>
+<H2> Building a custom dialog box</H2>
+First hid_create() needs to be called. It returns a new hid_t, which is
+an opaq structure for the package that is used to describe attributes of
+an attribute dialog or an exporter hid. Attributes are added using
+hid_add_attribute(), which returns an unique ID of the attribute. The
+attribute ID can be used later for querying attribute value set by the
+user using hid_get_attribute().
+<p>
+The process of building a dialog box is closed by a call to
+<ul>
+	<li> hid_register(), which registers a new exporter hid using the
+	     attributes of the dialog box; or 
+	<li> dialog_attribute() (of the dialog package) which pops up a custom
+	     dialog box immediately.
+<H2> Registering an exporter</H2>
+	Function hid_register() registers the hid as an exporter. Should be
+	called after all attributes have been added using hid_add_atrtibute().
+	The export is coordinated by pcb core; when the user request an export
+	using the exporter, a series of events are delivered to the script:
+	<ol>
+		<li> envelope events to set up exporting
+		<li> many draw events to actually export the objects
+		<li> an envelope event to finish exporting
+	</ol>
 
 	<H3> Envelope: events generated before or after exporting </H3>
 		<UL>
-			<LI>HIDE_get_export_options(void *hid): TODO Generated before get_exporter_options returns the option list to the GUI hid
+			<LI>HIDE_get_export_options(void *hid): Generated before get_exporter_options returns the option list to the GUI hid
 			<LI>HIDE_do_export_start(void *hid): Generated before export redraw starts
 			<LI>HIDE_do_export_finish(void *hid): Generated after export redraw finihsed
 		</UL>

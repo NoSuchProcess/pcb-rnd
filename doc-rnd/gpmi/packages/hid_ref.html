@@ -1,0 +1,200 @@
+<html>
+<body>
+<h1>PCB GPMI</h1>
+<h2>Reference manual for package hid</h2>
+<small>Automatically generated from hid.h</small>
+
+<h3> Enums </h3>
+<dl>
+<p>Enum values should be passed on as strings.
+<a id="hid_attr_type_e">
+<H4> hid_attr_type_e</H4>
+<pre>
+ Type of an HID attribute (usually a widget on an attribute dialog box) 
+</pre>
+<table border=1>
+<tr><th>value <th>meaning
+<tr><td> HIDA_Label <td>  non-editable label displayed on the GUI 
+<tr><td> HIDA_Integer <td>  a sugned integer value 
+<tr><td> HIDA_Real <td>  a floating point value 
+<tr><td> HIDA_String <td>  one line textual input 
+<tr><td> HIDA_Boolean <td>  true/false boolean value 
+<tr><td> HIDA_Enum <td>  select an item of a predefined list 
+<tr><td> HIDA_Mixed <td>  TODO 
+<tr><td> HIDA_Path <td>  path to a file or directory 
+<tr><td> HIDA_Unit <td>  select a dimension unit 
+<tr><td> HIDA_Coord <td>  enter a coordinate 
+</table>
+<a id="EndCapStyle_e">
+<H4> EndCapStyle_e</H4>
+<pre>
+ Line or arc ending style 
+</pre>
+<table border=1>
+<tr><th>value <th>meaning
+<tr><td> Trace_Cap <td>  filled circle (trace drawing) 
+<tr><td> Square_Cap <td>  rectangular lines (square pad) 
+<tr><td> Round_Cap <td>  round pins or round-ended pads, thermals 
+<tr><td> Beveled_Cap <td>  octagon pins or bevel-cornered pads 
+</table>
+</dl>
+<h3> Events </h3>
+<dl>
+<p>Events do not have return value. The first argument is always <a href="event_id.html">the even id</a>. Event handlers defined in scripts get all event arguments converted to string (types below are informational).
+<a id="HIDE_get_export_options">
+<H4> HIDE_get_export_options(int event_id, void* hid) </H4>
+<pre>
+ Called before get_exporter_options returns the option list to the GUI hid 
+</pre>
+<a id="HIDE_do_export_start">
+<H4> HIDE_do_export_start(int event_id, void* hid) </H4>
+<pre>
+ Called before export redraw starts 
+</pre>
+<a id="HIDE_do_export_finish">
+<H4> HIDE_do_export_finish(int event_id, void* hid) </H4>
+<pre>
+ Called after export redraw finihsed 
+</pre>
+<a id="HIDE_set_layer">
+<H4> HIDE_set_layer(int event_id, void* hid, const char* name, int group, int empty) </H4>
+<pre>
+ PCB callback events for drawing: change layer 
+</pre>
+<a id="HIDE_set_color">
+<H4> HIDE_set_color(int event_id, void* hid, void* gc, const char* name) </H4>
+<pre>
+ PCB callback events for drawing: change drawing color 
+</pre>
+<a id="HIDE_set_line_cap">
+<H4> HIDE_set_line_cap(int event_id, void* hid, void* gc, EndCapStyle style) </H4>
+<pre>
+ PCB callback events for drawing: change drawing line cap style
+</pre>
+<a id="HIDE_set_line_width">
+<H4> HIDE_set_line_width(int event_id, void* hid, void* gc, int width) </H4>
+<pre>
+ PCB callback events for drawing: change drawing line width 
+</pre>
+<a id="HIDE_set_draw_xor">
+<H4> HIDE_set_draw_xor(int event_id, void* hid, void* gc, int xor) </H4>
+<pre>
+ PCB callback events for drawing: toggle xor drawing method 
+</pre>
+<a id="HIDE_set_draw_faded">
+<H4> HIDE_set_draw_faded(int event_id, void* hid, void* gc, int faded) </H4>
+<pre>
+ PCB callback events for drawing: toggle faded drawing method 
+</pre>
+<a id="HIDE_draw_line">
+<H4> HIDE_draw_line(int event_id, void* hid, void* gc, int x1, int y1, int x2, int y2) </H4>
+<pre>
+ PCB callback events for drawing: draw a line 
+</pre>
+<a id="HIDE_draw_arc">
+<H4> HIDE_draw_arc(int event_id, void* hid, void* gc, int cx, int cy, int xradius, int yradius, double start_angle, double delta_angle) </H4>
+<pre>
+ PCB callback events for drawing: draw an arc from center cx;cy 
+</pre>
+<a id="HIDE_draw_rect">
+<H4> HIDE_draw_rect(int event_id, void* hid, void* gc, int x1, int y1, int x2, int y2) </H4>
+<pre>
+ PCB callback events for drawing: draw a rectangle 
+</pre>
+<a id="HIDE_fill_circle">
+<H4> HIDE_fill_circle(int event_id, void* hid, void* gc, int cx, int cy, int radius) </H4>
+<pre>
+ PCB callback events for drawing: draw a filled circle 
+</pre>
+<a id="HIDE_fill_polygon">
+<H4> HIDE_fill_polygon(int event_id, void* hid, void* gc, int n_coords, int* x, int* y) </H4>
+<pre>
+ PCB callback events for drawing: draw a filled ploygon 
+</pre>
+<a id="HIDE_fill_rect">
+<H4> HIDE_fill_rect(int event_id, void* hid, void* gc, int x1, int y1, int x2, int y2) </H4>
+<pre>
+ PCB callback events for drawing: draw a filled rectangle 
+</pre>
+<a id="HIDE_use_mask">
+<H4> HIDE_use_mask(int event_id, void* hid, int use_it) </H4>
+<pre>
+ PCB callback events for drawing: TODO 
+</pre>
+<a id="HIDE_make_gc">
+<H4> HIDE_make_gc(int event_id, void* hid, void* gc) </H4>
+<pre>
+ PCB callback events for drawing: create a new graphical context 
+</pre>
+<a id="HIDE_destroy_gc">
+<H4> HIDE_destroy_gc(int event_id, void* hid, void* gc) </H4>
+<pre>
+ PCB callback events for drawing: destroy a graphical context 
+</pre>
+<a id="HIDE_fill_pcb_pv">
+<H4> HIDE_fill_pcb_pv(int event_id, void* hid, void* fg_gc, void* bg_gc, void* pad, int drawHole, int mask) </H4>
+<pre>
+ PCB callback events for drawing: TODO 
+</pre>
+</dl>
+<h3> Functions </h3>
+<dl>
+<p>The following functions are registered in script context.
+<a id="hid_create">
+<H4>  hid_t* hid_create(char* hid_name, char* description)  </H4>
+<pre>
+ Creates a new hid context. Name and description matters only if the hid is
+registered as an exporter later. 
+</pre>
+<a id="hid_add_attribute">
+<H4>  int hid_add_attribute(hid_t* hid, char* attr_name, char* help, hid_attr_type_t type, int min, int max, char* default_val)  </H4>
+<pre>
+ Append an attribute in a hid previously created using hid_create().
+   Arguments:
+     hid: hid_t previously created using hid_create()
+     attr_name: name of the attribute
+     help: help text for the attribute
+     type: type of the attribute (input widget type)
+     min: minimum value of the attribute, if type is integer or real)
+     max: maximum value of the attribute, if type is integer or real)
+     default_val: default value of the attribute
+  Returns an unique ID of the attribute the caller should store for
+  later reference. For example this ID is used when retrieving the
+  value of the attribute after the user finished entering data in
+  the dialog. 
+</pre>
+<a id="hid_get_attribute">
+<H4>  char* hid_get_attribute(hid_t* hid, int attr_id)  </H4>
+<pre>
+ Query an attribute from the hid after dialog_attributes() returned.
+   Arguments:
+     hid: hid_t previously created using hid_create()
+     attr_id: the unique ID of the attribute (returned by hid_add_attribute())
+   Returns the value (converted to string) set by the user. 
+</pre>
+<a id="hid_register">
+<H4>  int hid_register(hid_t* hid)  </H4>
+<pre>
+ Register the hid; call it after a hid is created and its attributes
+   are all set up 
+</pre>
+<a id="hid_gpmi_data_set">
+<H4>  void hid_gpmi_data_set(hid_t* h, void* data)  </H4>
+<pre>
+ For internal use 
+</pre>
+<a id="hid_gpmi_data_get">
+<H4>  hid_t* hid_gpmi_data_get(HID* h)  </H4>
+<pre>
+ For internal use 
+</pre>
+<a id="hid_string2val">
+<H4>  HID_Attr_Val hid_string2val(const hid_attr_type_t type, const char* str)  </H4>
+<pre>
+ For internal use 
+</pre>
+</dl>
+
+</body>
+</html>
+
