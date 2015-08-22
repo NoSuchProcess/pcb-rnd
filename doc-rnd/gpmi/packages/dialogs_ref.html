@@ -24,12 +24,12 @@
 <dl>
 <p>The following functions are registered in script context.
 <a id="dialog_log">
-<H4>  void dialog_log(char* msg)  </H4>
+<H4>  void dialog_log(const char* msg)  </H4>
 <pre>
  Append a msg to the log (log window and/or stderr). 
 </pre>
 <a id="dialog_confirm">
-<H4>  int dialog_confirm(char* msg,  char* ok,  char* cancel)  </H4>
+<H4>  int dialog_confirm(const char* msg, const char* ok, const char* cancel)  </H4>
 <pre>
  Ask the user for confirmation (usually using a popup). Returns 0 for
    cancel and 1 for ok.
@@ -42,7 +42,7 @@
   those buttons. 
 </pre>
 <a id="dialog_report">
-<H4>  void dialog_report(char* title,  char* msg)  </H4>
+<H4>  void dialog_report(const char* title, const char* msg)  </H4>
 <pre>
  Pop up a report dialog.
    Arguments:
@@ -50,7 +50,7 @@
      msg: message 
 </pre>
 <a id="dialog_prompt">
-<H4>  char* dialog_prompt(char* msg,  char* default_)  </H4>
+<H4>  char* dialog_prompt(const char* msg, const char* default_)  </H4>
 <pre>
  Ask the user to input a string (usually in a popup).
    Arguments:
@@ -59,7 +59,7 @@
    Returns the answer. 
 </pre>
 <a id="dialog_fileselect">
-<H4>  char* dialog_fileselect(char* title,  char* descr, char* default_file_, char* default_ext,  char* history_tag,  flags)  </H4>
+<H4>  char* dialog_fileselect(const char* title, const char* descr, char* default_file_, char* default_ext, const char* history_tag, dialog_fileselect_t flags)  </H4>
 <pre>
  Pops up a file selection dialog.
    Arguments:
@@ -77,7 +77,7 @@
  Audible beep 
 </pre>
 <a id="dialog_progress">
-<H4>  int dialog_progress(int so_far, int total,  char* message)  </H4>
+<H4>  int dialog_progress(int so_far, int total, const char* message)  </H4>
 <pre>
  Request the GUI hid to draw a progress bar.
    Arguments:
@@ -89,7 +89,7 @@
 
 </pre>
 <a id="dialog_attribute">
-<H4>  int dialog_attribute(* hid,  char* title,  char* descr)  </H4>
+<H4>  int dialog_attribute(hid_t* hid, const char* title, const char* descr)  </H4>
 <pre>
  Pop up an attribute dialog; content (widgets) of the dialog box are coming
    from hid (see the hid package).

@@ -6,9 +6,9 @@
 
 <h3> Events </h3>
 <dl>
-<p>Events do not have return value. The first argument is always <a href="event_id.html">the even id</a>
+<p>Events do not have return value. The first argument is always <a href="event_id.html">the even id</a>. Event handlers defined in scripts get all event arguments converted to string (types below are informational).
 <a id="ACTE_action">
-<H4> ACTE_action(int event_id,  char* name, int argc, int x, int y) </H4>
+<H4> ACTE_action(int event_id, const char* name, int argc, int x, int y) </H4>
 <pre>
  Generated when an action registered by the script is executed.
    Arguments:
@@ -25,7 +25,7 @@
     argv[]: arguments the gui was initialized with - unaccessible for the scripts. 
 </pre>
 <a id="ACTE_unload">
-<H4> ACTE_unload(int event_id,  char* conffile) </H4>
+<H4> ACTE_unload(int event_id, const char* conffile) </H4>
 <pre>
  Generated right before unloading a script to give the script a chance
    to clean up.
@@ -37,7 +37,7 @@
 <dl>
 <p>The following functions are registered in script context.
 <a id="action_register">
-<H4>  int action_register(char* name,  char* need_xy,  char* description,  char* syntax)  </H4>
+<H4>  int action_register(const char* name, const char* need_xy, const char* description, const char* syntax)  </H4>
 <pre>
  Register an action in PCB - when the action is executed, event
    ACTE_action is generated with the action name.
@@ -52,19 +52,19 @@
  
 </pre>
 <a id="action_arg">
-<H4>   char* action_arg(int argn)  </H4>
+<H4>  const char* action_arg(int argn)  </H4>
 <pre>
  extract the (argn)th event argument for the current action (makes sense only in an ACTE_action event handler 
 </pre>
 <a id="action">
-<H4>  int action(char* cmdline)  </H4>
+<H4>  int action(const char* cmdline)  </H4>
 <pre>
  call an existing action using PCB syntax (e.g. foo(1, 2, 3))
    Returns non-zero on error; generally returns value of the action
    (which is also non-zero on error). 
 </pre>
 <a id="create_menu">
-<H4>  void create_menu(char* path,  char* action,  char* mnemonic,  char* hotkey,  char* tooltip)  </H4>
+<H4>  void create_menu(const char* path, const char* action, const char* mnemonic, const char* hotkey, const char* tooltip)  </H4>
 <pre>
  Create a new menu or submenu at path. Missing parents are created
    automatically with empty action, mnemonic, hotkey and tooltip.
