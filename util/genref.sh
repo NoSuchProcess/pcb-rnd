@@ -29,7 +29,7 @@ echo "<html>
 
 c99tree awk -I$root "$@" \
   --gtx 'events=([] /+  d=[type == DECL]) && (d / i=[name ~ "GPMI_EVENT"]) && (i .+ [type == TYPE] . a=[type  == ARGLIST] ) && (d : [loc_is_local == "1"])' \
-  --gtx 'funcs=([] /+  d=[type == DECL]) && (d / i=[!name ~ "GPMI_EVENT"]) && (i .+ [type == TYPE] . a=[type  == ARGLIST] ) && (d : [loc_is_local == "1"])' \
+  --gtx 'funcs=([] /+  d=[type == DECL]) && (d / i=[!name ~ "GPMI_EVENT"]) && (i .+ [type == TYPE] . [] >* a=[type  == ARGLIST] ) && (d : [loc_is_local == "1"])' \
   --gtx 'enums=([] /+  i=[type == ENUM]) && (i : [loc_is_local == "1"])' \
   --paste "$prinit" $fn --awk-s '
 
@@ -159,7 +159,8 @@ BEGIN {
 		print "<a id=\"" id "\">"
 		print "<H4> " proto "</H4>"
 		print "<pre>"
-		print get_pre_comment(TREE, MAP["a"])
+		luid=TREE[MAP["d"], C99F_PREV]
+		print get_pre_comment(TREE, MAP["a"], luid)
 		print "</pre>"
 	}
 	print "</dl>"
@@ -186,7 +187,8 @@ BEGIN {
 		print "<a id=\"" id "\">"
 		print "<H4>", proto, "</H4>"
 		print "<pre>"
-		print get_pre_comment(TREE, MAP["a"])
+		luid=TREE[MAP["d"], C99F_PREV]
+		print get_pre_comment(TREE, MAP["a"], luid)
 		print "</pre>"
 	}
 	print "</dl>"
