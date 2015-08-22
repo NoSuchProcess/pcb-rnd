@@ -113,10 +113,11 @@ BEGIN {
 
 #	source=load("'$fn'")
 
+	enums = gtx_find_results(TREE, "enums")
+	if (TREE[enums, C99F_CHILDREN] > 0) {
 	print "<h3> Enums </h3>"
 	print "<dl>"
 	print "<p>Enum values should be passed on as strings."
-	enums = gtx_find_results(TREE, "enums")
 	for(r = 0; 1; r++) {
 		if (gtx_get_map(TREE, MAP, enums, r) == "")
 			break
@@ -140,12 +141,13 @@ BEGIN {
 		print "</table>"
 	}
 	print "</dl>"
+	}
 
-
+	events = gtx_find_results(TREE, "events")
+	if (TREE[events, C99F_CHILDREN] > 0) {
 	print "<h3> Events </h3>"
 	print "<dl>"
 	print "<p>Events do not have return value. The first argument is always <a href=\"event_id.html\">the even id</a>"
-	events = gtx_find_results(TREE, "events")
 	for(r = 0; 1; r++) {
 		if (gtx_get_map(TREE, MAP, events, r) == "")
 			break
@@ -164,11 +166,13 @@ BEGIN {
 		print "</pre>"
 	}
 	print "</dl>"
+	}
 
+	funcs = gtx_find_results(TREE, "funcs")
+	if (TREE[funcs, C99F_CHILDREN] > 0) {
 	print "<h3> Functions </h3>"
 	print "<dl>"
 	print "<p>The following functions are registered in script context."
-	funcs = gtx_find_results(TREE, "funcs")
 	for(r = 0; 1; r++) {
 		if (gtx_get_map(TREE, MAP, funcs, r) == "")
 			break
@@ -193,11 +197,11 @@ BEGIN {
 		if (TREE[luid, C99F_TWIN_PARENT] == "")
 			luid = TREE[luid, C99F_CHILD, 0]
 
-print "Luid=", luid "::" TREE[luid, C99F_TWIN_PARENT] > "/dev/stderr"
 		print get_pre_comment(TREE, MAP["a"], luid)
 		print "</pre>"
 	}
 	print "</dl>"
+	}
 }
 '
 
