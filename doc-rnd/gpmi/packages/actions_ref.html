@@ -1,0 +1,77 @@
+<html>
+<body>
+<h1>PCB GPMI</h1>
+<h2>Reference manual for package actions</h2>
+<small>Automatically generated from actions.h</small>
+
+<h3> Events </h3>
+<dl>
+<p>Events do not have return value. The first argument is always <a href="event_id.html">the even id</a>
+<a id="ACTE_action">
+<H4> ACTE_action(int event_id,  char* name, int argc, int x, int y) </H4>
+<pre>
+ Generated when an action registered by the script is executed.
+   Arguments:
+    name: name of the action (as registed using function action_register())
+    argc: number of arguments. Arguments can be accessed using function action_arg
+    x, y: optional coords, if need_xy was not empty at action_register 
+</pre>
+<a id="ACTE_gui_init">
+<H4> ACTE_gui_init(int event_id, int argc, char** argv) </H4>
+<pre>
+ Generated right after gui initialization, before the gui main loop.
+   Arguments:
+    argc: number of arguments the gui was initialized with.
+    argv[]: arguments the gui was initialized with - unaccessible for the scripts. 
+</pre>
+<a id="ACTE_unload">
+<H4> ACTE_unload(int event_id,  char* conffile) </H4>
+<pre>
+ Generated right before unloading a script to give the script a chance
+   to clean up.
+   Arguments:
+    conffile: the name of the config file that originally triggered laoding the script, or empty if the script was loaded from the gui. 
+</pre>
+</dl>
+<h3> Functions </h3>
+<dl>
+<p>The following functions are registered in script context.
+<a id="action_register">
+<H4>  int action_register(char* name,  char* need_xy,  char* description,  char* syntax)  </H4>
+<pre>
+ Register an action in PCB - when the action is executed, event
+   ACTE_action is generated with the action name.
+   Multiple actions can be registered. Any action registered by the script
+   will trigger an ACTE_event sent to the script.
+   Arguments:
+    name: name of the action
+    need_xy: the question the user is asked when he needs to choose a coordinate; if empty, no coordinate is asked
+    description: description of the action (for the help)
+    syntax: syntax of the action (for the help)
+   Returns 0 on success.
+ 
+</pre>
+<a id="action">
+<H4>  int action(char* cmdline)  </H4>
+<pre>
+ call an existing action using PCB syntax (e.g. foo(1, 2, 3))
+   Returns non-zero on error; generally returns value of the action
+   (which is also non-zero on error). 
+</pre>
+<a id="create_menu">
+<H4>  void create_menu(char* path,  char* action,  char* mnemonic,  char* hotkey,  char* tooltip)  </H4>
+<pre>
+ Create a new menu or submenu at path. Missing parents are created
+   automatically with empty action, mnemonic, hotkey and tooltip.
+   Arguments:
+    path: the full path of the new menu
+    action: this action is executed when the user clicks on the menu
+    mnemonic: which letter to underline in the menu text (will be the fast-jump-there key once the menu is open)
+    hotkey: when this key is pressed in the main gui, the action is also triggered; the format is modifiers&lt;Key&gt;letter, where modifiers is Alt, Shift or Ctrl. This is the same syntax that is used in the .res files.
+    tooltip: short help text 
+</pre>
+</dl>
+
+</body>
+</html>
+
