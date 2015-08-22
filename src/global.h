@@ -179,7 +179,7 @@ typedef struct
 #define ANYOBJECTFIELDS			\
 	BoxType		BoundingBox;	\
 	long int	ID;		\
-	FlagType	Flags;		\
+	FlagType	Flags
 	//	struct LibraryEntryType *net
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
