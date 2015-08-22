@@ -14,8 +14,20 @@ prinit='
 '
 
 fn=$1
+root=$2
+shift 2
 
-c99tree awk \
+pkgfn=`basename $fn`
+pkg=${pkgfn%%.h}
+echo "<html>
+<body>
+<h1>PCB GPMI</h1>
+<h2>Reference manual for package $pkg</h2>
+<small>Automatically generated from $pkgfn</small>
+"
+
+
+c99tree awk -I$root "$@" \
   --gtx 'events=([] /+  d=[type == DECL]) && (d / i=[name ~ "GPMI_EVENT"]) && (i .+ [type == TYPE] . a=[type  == ARGLIST] ) && (d : [loc_is_local == "1"])' \
   --gtx 'funcs=([] /+  d=[type == DECL]) && (d / i=[!name ~ "GPMI_EVENT"]) && (i .+ [type == TYPE] . a=[type  == ARGLIST] ) && (d : [loc_is_local == "1"])' \
   --paste "$prinit" $fn --awk-s '
@@ -79,12 +91,15 @@ function get_pre_comment(TREE, uid   ,cmt_uid,cmt)
 }
 
 BEGIN {
+	pkg="'$pkg'"
 	c99tree_unknown(TREE)
 	gtx_init(TREE)
 
 #	source=load("'$fn'")
 
 	print "<h3> Events </h3>"
+	print "<dl>"
+	print "<p>Events do not have return value. The first argument is always <a href=\"event_id.html\">the even id</a>"
 	events = gtx_find_results(TREE, "events")
 	for(r = 0; 1; r++) {
 		if (gtx_get_map(TREE, MAP, events, r) == "")
@@ -93,6 +108,7 @@ BEGIN {
 		sub("^GPMI_EVENT__", "", id)
 		proto = to_c(TREE, MAP["d"])
 		sub("^[ \t]*void[ \t]*GPMI_EVENT__", "", proto)
+		sub("[(]", "(int event_id,", proto)
 # proto = getsrc(source, MAP["d"])
 
 		print "<H4> " proto "</H4>"
@@ -100,23 +116,39 @@ BEGIN {
 		print get_pre_comment(TREE, MAP["a"])
 		print "</pre>"
 	}
+	print "</dl>"
 
 	print "<h3> Functions </h3>"
+	print "<dl>"
+	print "<p>The following functions are registered in script context."
 	funcs = gtx_find_results(TREE, "funcs")
 	for(r = 0; 1; r++) {
 		if (gtx_get_map(TREE, MAP, funcs, r) == "")
 			break
 		id = TREE[MAP["i"], C99F_NAME]
+		if (id ~ "^package_" pkg "_")
+			continue
+		if (id ~ "^pkg_" pkg "_")
+			continue
+
 		sub("^GPMI_EVENT__", "", id)
 #		print "<i>" getsrc(source, MAP["d"]) "</i>"
 		proto = to_c(TREE, MAP["d"])
 # proto = getsrc(source, MAP["d"])
 
+		gsub("[(][ \t]*", "(", proto)
 		print "<H4>", proto, "</H4>"
 		print "<pre>"
 		print get_pre_comment(TREE, MAP["a"])
 		print "</pre>"
 	}
+	print "</dl>"
 }
 '
+
+echo "
+</body>
+</html>
+"
+
 
