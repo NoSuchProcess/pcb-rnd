@@ -4,9 +4,21 @@
 <h2>Reference manual for package dialogs</h2>
 <small>Automatically generated from dialogs.h</small>
 
-<h3> Events </h3>
+<h3> Enums </h3>
 <dl>
-<p>Events do not have return value. The first argument is always <a href="event_id.html">the even id</a>
+<p>Enum values should be passed on as strings.
+<a id="dialog_fileselect_e">
+<H4> dialog_fileselect_e</H4>
+<pre>
+ Filter on what files a file select dialog should list 
+</pre>
+<table border=1>
+<tr><th>value <th>meaning
+<tr><td> FS_NONE <td>  none of the below 
+<tr><td> FS_READ <td>  when the selected file will be read, not written (HID_FILESELECT_READ) 
+<tr><td> FS_NOT_EXIST <td>  the function calling hid->fileselect will deal with the case when the selected file already exists.  If not given, then the gui will prompt with an "overwrite?" prompt.  Only used when writing. (HID_FILESELECT_MAY_NOT_EXIST)  
+<tr><td> FS_TEMPLATE <td>  the call is supposed to return a file template (for gerber output for example) instead of an actual file.  Only used when writing. (HID_FILESELECT_IS_TEMPLATE) 
+</table>
 </dl>
 <h3> Functions </h3>
 <dl>
@@ -36,6 +48,28 @@
    Arguments:
      title: title of the window
      msg: message 
+</pre>
+<a id="dialog_prompt">
+<H4>  char* dialog_prompt(char* msg,  char* default_)  </H4>
+<pre>
+ Ask the user to input a string (usually in a popup).
+   Arguments:
+     msg: message or question text
+     default_: default answer (this may be filled in on start)
+   Returns the answer. 
+</pre>
+<a id="dialog_fileselect">
+<H4>  char* dialog_fileselect(char* title,  char* descr, char* default_file_, char* default_ext,  char* history_tag,  flags)  </H4>
+<pre>
+ Pops up a file selection dialog.
+   Arguments:
+     title: window title
+     descr: description
+     default_file_
+     default_ext: default file name extension
+     history_tag
+     flags: one or more flags (see below)
+   Returns the selected file or NULL (empty). 
 </pre>
 <a id="dialog_beep">
 <H4>  void dialog_beep(void)  </H4>
