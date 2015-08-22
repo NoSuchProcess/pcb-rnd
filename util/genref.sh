@@ -188,6 +188,12 @@ BEGIN {
 		print "<H4>", proto, "</H4>"
 		print "<pre>"
 		luid=TREE[MAP["d"], C99F_PREV]
+		if (TREE[luid, C99F_TWIN_PARENT] == "")
+			luid = TREE[luid, C99F_CHILD, 0]
+		if (TREE[luid, C99F_TWIN_PARENT] == "")
+			luid = TREE[luid, C99F_CHILD, 0]
+
+print "Luid=", luid "::" TREE[luid, C99F_TWIN_PARENT] > "/dev/stderr"
 		print get_pre_comment(TREE, MAP["a"], luid)
 		print "</pre>"
 	}
