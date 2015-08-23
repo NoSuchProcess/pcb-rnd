@@ -7,6 +7,12 @@ clean_gpmi: FORCE
 @]
 
 
+append /local/pcb/rules/install     {	cd pcb-gpmi && make install} {
+}
+append /local/pcb/rules/linstall    {	cd pcb-gpmi && make linstall} {
+}
+append /local/pcb/rules/uninstall   {	cd pcb-gpmi && make uninstall} {
+}
 
 if /local/pcb/gpmi/buildin then
 

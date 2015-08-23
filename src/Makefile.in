@@ -103,6 +103,12 @@ put /local/pcb/CLEANRULES {}
 put /local/pcb/EXEDEPS {}
 put /local/pcb/all {}
 put /local/pcb/buildin_init {}
+put /local/pcb/rules/install_ {}
+put /local/pcb/rules/install {}
+put /local/pcb/rules/linstall {}
+put /local/pcb/rules/uninstall {}
+
+
 
 include {Makefile.in.mod/gtk-gdk}
 include {Makefile.in.mod/lesstif}
@@ -270,21 +276,21 @@ install_:
 	$(CPC) `pwd`/default.pcb $(DATADIR)/default.pcb
 	$(CPC) `pwd`/default_font $(DATADIR)/default_font
 	$(CPC) `pwd`/gpcb-menu.res $(DATADIR)/gpcb-menu.res
-	$(CPC) `pwd`/pcb-menu.res $(DATADIR)/pcb-menu.res
+	$(CPC) `pwd`/pcb-menu.res $(DATADIR)/pcb-menu.res@/local/pcb/rules/install_@
 
 install:
-	make install_ CPC="$(CP)"
+	make install_ CPC="$(CP)"@/local/pcb/rules/install@
 
 linstall:
-	make install_ CPC="$(LN)"
+	make install_ CPC="$(LN)"@/local/pcb/rules/linstall@
+
 
 uninstall:
 	$(RM) $(BINDIR)/pcb-rnd
 	$(RM) $(DATADIR)/default.pcb
 	$(RM) $(DATADIR)/default_font
 	$(RM) $(DATADIR)/gpcb-menu.res
-	$(RM) $(DATADIR)/pcb-menu.res
-
+	$(RM) $(DATADIR)/pcb-menu.res@/local/pcb/rules/uninstall@
 @]
 
 # generate explicit rules for .c -> .o
