@@ -110,7 +110,7 @@ function get_post_comment(TREE, uid, bump_uid)
 function genid(type, id)
 {
 	print "<a id=\"" id "\">"
-	print type, id, refname > fn_ref
+	print type, id, refname "#" id > fn_ref
 }
 
 BEGIN {
