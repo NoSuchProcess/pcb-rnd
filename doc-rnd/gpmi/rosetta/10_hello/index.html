@@ -35,17 +35,17 @@ Load packages the script depends on:
 <i>ev_action</i>
  that will be called when any of the actions registered by the script is executed. The script registers only one action, so it does not need to check which action caused the function to be called. 
 <p> When the action event is called, use 
-<i><a href="../../packages/dialogs.html">dialog_log</a></i>
+<i><a href="../../packages/dialogs_ref.html#dialog_log">dialog_log</a></i>
  to append a log message. 
 <p> In the "main" section of the script, bind event 
-<i><a href="../../packages/actions.html">ACTE_action</a></i>
+<i><a href="../../packages/actions_ref.html#ACTE_action">ACTE_action</a></i>
  to our local function 
 <i>ev_action</i>
  - this gets 
 <i>ev_action</i>
  to be called when any of the actions registered by this script is executed. 
 <p> Finally use 
-<i><a href="../../packages/actions.html">action_register</a></i>
+<i><a href="../../packages/actions_ref.html#action_register">action_register</a></i>
  to register the action: 
 <ul> 	
 <li> first argument is the name of the action 	

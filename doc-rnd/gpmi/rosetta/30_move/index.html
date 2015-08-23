@@ -37,34 +37,34 @@ Load packages the script depends on:
 <p> When the action event is called, first set up: 
 <ul> 	
 <li> fetch event argument 0 and 1 using 
-<i><a href="../../packages/actions.html">action_arg</a></i>
+<i><a href="../../packages/actions_ref.html#action_arg">action_arg</a></i>
 ; 	
 <li> resolve the conversion rate from mm to PCB's units using 
-<i>mm2pcb_multiplier</i>
+<i><a href="../../packages/layout_ref.html#mm2pcb_multiplier">mm2pcb_multiplier</a></i>
 ; 	
 <li> perform a search for all selected object using 
-<i><a href="../../packages/layout.html">layout_search_selected</a></i>
+<i><a href="../../packages/layout_ref.html#layout_search_selected">layout_search_selected</a></i>
  (return value is the number of objects found), name the resulting list "mv_search" </ul>
  A loop then iterates over the objects on the list: 
 <ul> 	
 <li> resolve the Nth element of the list using 
-<i><a href="../../packages/layout.html">layout_search_get</a></i>
+<i><a href="../../packages/layout_ref.html#layout_search_get">layout_search_get</a></i>
 , referecing the list by name ("mv_search") and specifying which element to get (the Nth); the result is an object pointer; 	
 <li> move the object using 
-<i><a href="../../packages/layout.html">layout_obj_move</a></i>
+<i><a href="../../packages/layout_ref.html#layout_obj_move">layout_obj_move</a></i>
 ; specify the object pointer, then which part of the object should be moved ("OC_OBJ" means the whole object) and relative offsets (dx and dy calculated earlier) </ul>
  Finally the search list shall be destroyed to reclaim memory, using 
-<i><a href="../../packages/layout.html">layout_search_free</a></i>
+<i><a href="../../packages/layout_ref.html#layout_search_free">layout_search_free</a></i>
 . 
 <p>  In the "main" section of the script, bind event 
-<i><a href="../../packages/actions.html">ACTE_action</a></i>
+<i><a href="../../packages/actions_ref.html#ACTE_action">ACTE_action</a></i>
  to our local function 
 <i>ev_action</i>
  - this gets 
 <i>ev_action</i>
  to be called when any of the actions registered by this script is executed. 
 <p> Finally use 
-<i><a href="../../packages/actions.html">action_register</a></i>
+<i><a href="../../packages/actions_ref.html#action_register">action_register</a></i>
  to register the action: 
 <ul> 	
 <li> first argument is the name of the action 	
