@@ -150,6 +150,11 @@ int layout_arc_angles(layout_object_t *obj, int relative, int start, int delta);
 /* create a line */
 int layout_create_line(int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags);
 
+/* same as layout_create_line(), but appends the result to a list and
+   returns the index of the new object on the list (can be used as n for
+   layour_search_get)
+int layout_lcreate_line(const char *search_ID, int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags);*/
+
 /* create a named via */
 int layout_create_via(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags);
 
