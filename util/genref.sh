@@ -13,9 +13,10 @@ prinit='
 #define gpmi_define_event(name) void GPMI_EVENT__ ## name
 '
 
-fn=$1
-root=$2
-shift 2
+fn="$1"
+root="$2"
+refname="$3"
+shift 3
 
 pkgfn=`basename $fn`
 pkg=${pkgfn%%.h}
@@ -106,10 +107,22 @@ function get_post_comment(TREE, uid, bump_uid)
 	return get_any_comment(TREE, uid, bump_uid, C99F_NEXT)
 }
 
+function genid(type, id)
+{
+	print "<a id=\"" id "\">"
+	print type, id, refname > fn_ref
+}
+
 BEGIN {
 	pkg="'$pkg'"
 	c99tree_unknown(TREE)
 	gtx_init(TREE)
+	pkgfn="'$pkgfn'"
+	fn_ref = "'$pkgfn'"
+	sub(".h$", "", fn_ref)
+	fn_ref = "REF." fn_ref
+	refname="'$refname'"
+
 
 #	source=load("'$fn'")
 
@@ -123,7 +136,7 @@ BEGIN {
 			break
 		id = TREE[MAP["i"], C99F_NAME]
 
-		print "<a id=\"" id "\">"
+		genid("enum", id);
 		print "<H4> " id "</H4>"
 		print "<pre>"
 		print get_pre_comment(TREE, MAP["i"])
@@ -158,7 +171,7 @@ BEGIN {
 		sub("[(]", "(int event_id,", proto)
 # proto = getsrc(source, MAP["d"])
 
-		print "<a id=\"" id "\">"
+		genid("event", id);
 		print "<H4> " proto "</H4>"
 		print "<pre>"
 		luid=TREE[MAP["d"], C99F_PREV]
@@ -188,7 +201,7 @@ BEGIN {
 # proto = getsrc(source, MAP["d"])
 
 		gsub("[(][ \t]*", "(", proto)
-		print "<a id=\"" id "\">"
+		genid("function", id);
 		print "<H4>", proto, "</H4>"
 		print "<pre>"
 		luid=TREE[MAP["d"], C99F_PREV]
