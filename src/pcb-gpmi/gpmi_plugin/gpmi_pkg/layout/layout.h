@@ -158,20 +158,21 @@ int layout_lcreate_line(const char *search_ID, int x1, int y1, int x2, int y2, i
 /* create a named via */
 int layout_create_via(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags);
 
-/* create a new arc */
+/* create a new arc; sa is start angle, dir is delta angle */
 int layout_create_arc(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags);
 
 /* -- layer manipulation -- (layers.c) */
+/* Field name of the layer structure */
 typedef enum layer_field_e {
-	LFLD_NUM_LINES,
-	LFLD_NUM_TEXTS,
-	LFLD_NUM_POLYS,
-	LFLD_NUM_ARCS,
-	LFLD_VISIBLE,
-	LFLD_NODRC
+	LFLD_NUM_LINES,   /* number of lines on the layer */
+	LFLD_NUM_TEXTS,   /* number of texts on the layer */
+	LFLD_NUM_POLYS,   /* number of polygons on the layer */
+	LFLD_NUM_ARCS,    /* number of arcs on the layer */
+	LFLD_VISIBLE,     /* non-zero if the layer is visible */
+	LFLD_NODRC        /* non-zero if the layer doesn't use DRC */
 } layer_field_t;
 
-/* switch to layer (further actions will take place there) */
+/* switch to layer (further layer-specific actions will take place there) */
 void layout_switch_to_layer(int layer);
 
 /* returns the number of the current layer */
@@ -229,11 +230,21 @@ void debug_draw_finish(dctx_t *ctx);
 dctx_t *debug_draw_dctx(void);
 
 /* -- draw on a GC -- */
+
+/* Debug draw style: set drawing color */
 void draw_set_color(dctx_t *ctx, const char *name);
 /*void set_line_cap(dctx_t *ctx, EndCapStyle style_);*/
+
+/* Debug draw style: set line width */
 void draw_set_line_width(dctx_t *ctx, int width);
+
+/* Debug draw style: set whether drawing should happen in xor */
 void draw_set_draw_xor(dctx_t *ctx, int xor);
+
+/* Debug draw style: set whether drawing should happen in faded mode  */
 void draw_set_draw_faded(dctx_t *ctx, int faded);
+
+/* Debug draw: draw a line using the current style settings */
 void draw_line(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
 
 /*
