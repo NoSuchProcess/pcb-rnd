@@ -24,7 +24,7 @@ genpage()
 
 	name=`cat $dir/ID.name`
 	desc=`cat $dir/ID.desc`
-	./tags < "$dir/ex.html" | awk -v "fn_ref=REF" -v "scripts=$scripts" -v "name=$name" -v "desc=$desc" '
+	./tags < "$dir/ex.html" | awk -v "fn_ref=../packages/XREF" -v "scripts=$scripts" -v "name=$name" -v "desc=$desc" '
 	BEGIN {
 		while((getline < fn_ref) > 0) {
 			REF[$2] = $3
