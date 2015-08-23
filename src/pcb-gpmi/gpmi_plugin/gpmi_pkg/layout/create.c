@@ -58,33 +58,42 @@ static FlagType get_flags(int in)
 	return out;
 }
 
-int layout_create_line(int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)
+static void *layout_create_line_(int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)
 {
 	void *line;
 
 	line = CreateNewLineOnLayer (CURRENT, x1, y1, x2, y2, thickness, clearance, get_flags(flags));
 	if (line != NULL) {
 		AddObjectToCreateUndoList (LINE_TYPE, CURRENT, line, line);
-		return 0;
+		return line;
 	}
-	return 1;
+	return NULL;
 }
 
+int layout_create_line(int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)
+{
+	return layout_create_line_(x1, y1, x2, y2, thickness, clearance, flags) != NULL;
+}
 
-int layout_create_via(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags)
+static void *layout_create_via_(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags)
 {
 	void *pin;
 
 	pin = CreateNewVia (PCB->Data, x, y, thickness, clearance, mask, hole, name, get_flags(flags));
 
 	if (pin != NULL) {
-    AddObjectToCreateUndoList (VIA_TYPE, pin, pin, pin);
-		return 0;
+		AddObjectToCreateUndoList (VIA_TYPE, pin, pin, pin);
+		return pin;
 	}
-	return 1;
+	return NULL;
 }
 
-int layout_create_arc(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags)
+int layout_create_via(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags)
+{
+	return layout_create_via_(x, y, thickness, clearance, mask, hole, name, flags) != NULL;
+}
+
+static void *layout_create_arc_(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags)
 {
 	void *arc;
 	arc = CreateNewArcOnLayer (CURRENT, x, y, width, height, sa, dir, thickness, clearance, get_flags(flags));
@@ -92,5 +101,11 @@ int layout_create_arc(int x, int y, int width, int height, int sa, int dir, int 
 		AddObjectToCreateUndoList (ARC_TYPE, CURRENT, arc, arc);
 		return 0;
 	}
-	return 1;
+	return NULL;
 }
+
+int layout_create_arc(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags)
+{
+	return layout_create_arc_(x, y, width, height, sa, dir, thickness, clearance, flags) != NULL;
+}
+
