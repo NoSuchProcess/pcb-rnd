@@ -4,18 +4,20 @@
 #include "src/create.h"
 #include "src/data.h"
 
+/* Object type search mask bits */
 typedef enum layout_object_mask_e {
-	OM_LINE     = 1,
-	OM_TEXT     = 2,
-	OM_POLYGON  = 4,
-	OM_ARC      = 8,
-	OM_VIA      = 16,
-	OM_PIN      = 32,
+	OM_LINE     = 1,       /* lines (traces, silk lines, not font) */
+	OM_TEXT     = 2,       /* text written using the font */
+	OM_POLYGON  = 4,       /* polygons, including rectangles */
+	OM_ARC      = 8,       /* arcs, circles */
+	OM_VIA      = 16,      /* vias and holes which are not part of a footprint */
+	OM_PIN      = 32,      /* pins/pads of a footprint */
 
-	OM_ANY      = 0xffff
+	OM_ANY      = 0xffff   /* shorthand for "find anything" */
 } layout_object_mask_t;
 gpmi_keyword *kw_layout_object_mask_e; /* of layout_object_mask_t */
 
+/* Which coordinate of the object is referenced */
 typedef enum layout_object_coord_e {
 /* X/Y coords */
 	OC_BX1 = 1, /* bounding box X1 */
@@ -93,29 +95,52 @@ typedef struct layout_search_s {
 } layout_search_t;
 
 /* -- search -- (search.c) */
-/* creates a new search and adds all objects that matches obj_types mask within the given rectangle on the current layer */
-int layout_search_box(const char *search_ID, multiple layout_object_mask_t obj_types, int x1, int y1, int x2, int y2);
+/* creates a new search and adds all objects that matches obj_types mask within the given rectangle on the current layer
+   Arguments:
+     search_ID: unique name of the search (overwrites existing search on the same name)
+     obj_types: on or more object types
+     x1, y1, x2, y2: box the search is done within (PCB coords)
+   Returns the number of object on the search list. */
+int layout_search_box(const char *search_ID, layout_object_mask_t obj_types, int x1, int y1, int x2, int y2);
 
-/* creates a new search and adds all selected objects */
+/* creates a new search and adds all selected objects
+   Arguments:
+     search_ID: unique name of the search (overwrites existing search on the same name)
+     obj_types: on or more object types
+   Returns the number of object on the search list. */
 int layout_search_selected(const char *search_ID, multiple layout_object_mask_t obj_types);
 
-/* creates a new search and adds all found objects */
+/* creates a new search and adds all found objects (the green highlight)
+   Arguments:
+     search_ID: unique name of the search (overwrites existing search on the same name)
+     obj_types: on or more object types
+   Returns the number of object on the search list. */
 int layout_search_found(const char *search_ID, multiple layout_object_mask_t obj_types);
 
-/* returns the nth object of a search */
+/* Returns the nth object from a search list (or NULL pointer if n is beyond the list) */
 layout_object_t *layout_search_get(const char *search_ID, int n);
 
-/* returns 0 on success */
+/* Frees all memory related to a search. Returns 0 on success.
+   Argument:
+     search_ID: unique name of the search (requires an existing search) */
 int layout_search_free(const char *search_ID);
 
 /* -- object accessors -- (object.c) */
-/* return the requested coord of an object */
+/* Return the requested coord of an object; except for the bounding box
+    coordinates, the meaning of coordinates are object-specific.
+    Point 1 and point 2 are usually endpoints of the object (line, arc),
+    "the whole object" coordinate is a central point. */
 int layout_obj_coord(layout_object_t *obj, layout_object_coord_t coord);
 
-/* return the type of an object (always a single bit) */
+/* Return the type of an object (always a single bit) */
 layout_object_mask_t layout_obj_type(layout_object_t *obj);
 
-/* change location of an object or parts of the object (like move endpoint of a line); returns 0 on success */
+/* Change location of an object or parts of the object (like move endpoint of a line);
+   Arguments:
+     obj: the object
+     coord: which coordinate to drag (e.g. move only the endpoint)
+     dx, dy: relative x and y coordinates the selected coordinate is displaced by
+   Returns 0 on success */
 int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, int dy);
 
 /* change angles of an arc; start and delate are relative if relative is non-zero; returns 0 on success */
