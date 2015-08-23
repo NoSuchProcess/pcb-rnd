@@ -17,8 +17,9 @@ void gpmi_hid_print_error(gpmi_err_stack_t *entry, char *string)
 
 static void load_cfg(void)
 {
-	char *dir, *libdirh, *wdir, *wdirh, *hdirh;
+	char *dir, *libdirg, *libdirh, *wdir, *wdirh, *hdirh;
 
+	libdirg = Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL);
 	libdirh = Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL);
 	wdirh = Concat ("plugins" PCB_DIR_SEPARATOR_S, HOST, NULL);
 	wdir = Concat("plugins", NULL);
@@ -30,6 +31,7 @@ static void load_cfg(void)
 	   could depend on a package being anywhere else
 	*/
 	gpmi_path_insert(GPMI_PATH_PACKAGES, libdirh);
+	gpmi_path_insert(GPMI_PATH_PACKAGES, libdirg);
 	gpmi_path_insert(GPMI_PATH_PACKAGES, wdirh);
 	gpmi_path_insert(GPMI_PATH_PACKAGES, hdirh);
 
@@ -38,7 +40,8 @@ static void load_cfg(void)
 
 
 	hid_gpmi_load_dir(libdirh, 0);
-	
+	hid_gpmi_load_dir(libdirg, 0);
+
 	dir = Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL);
 	hid_gpmi_load_dir(dir, 1);
 	free(dir);
