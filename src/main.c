@@ -1395,7 +1395,6 @@ void resolve_paths(const char **in, char **out, int numpaths)
 					exit(1);
 				}
 				*out = Concat(homedir, (*in)+1, NULL);
-				printf("out='%s'\n", *out);
 			}
 			else 
 				*out = strdup(*in);
