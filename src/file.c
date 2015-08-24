@@ -402,9 +402,7 @@ real_load_pcb (char *Filename, bool revert)
   start = clock ();
 #endif
 
-//  new_filename = strdup (Filename);
 	resolve_path(Filename, &new_filename);
-	printf("JAJJ: '%s' -> '%s'\n", Filename, new_filename);
 
   oldPCB = PCB;
   PCB = newPCB;
