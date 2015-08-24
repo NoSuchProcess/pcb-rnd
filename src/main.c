@@ -84,7 +84,9 @@ RCSID ("$Id$");
 extern void stroke_init (void);
 #endif
 
-char *fontfile_paths[] = {"./default_font", PCBSHAREDIR "/default_font", NULL};
+static const char *fontfile_paths_in[] = {"./default_font", PCBSHAREDIR "/default_font", NULL};
+char **fontfile_paths = NULL;
+
 
 /* Try gui libs in this order when not explicitly specified by the user
    if there are multiple GUIs available this sets the order of preference */
@@ -1382,6 +1384,35 @@ print_version ()
   exit (0);
 }
 
+
+void resolve_paths(const char **in, const char **out, int numpaths)
+{
+	for(out; numpaths > 0; numpaths--,in++,out++) {
+		if (*in != NULL) {
+			if (*in == '~') {
+				if (homedir == NULL) {
+					Message("can't resolve home dir required for path %s\n", *in);
+					exit(1);
+				}
+				*out = Concat(homedir, in+1, NULL);
+			}
+			else 
+				*out = strdup(*in);
+		}
+		else
+			*out = NULL;
+	}
+}
+
+#define resolve_all_paths(in, out) \
+do { \
+	int __numpath__ = sizeof(in) / sizeof(char *); \
+	if (__numpath__ > 0) { \
+		out = malloc(sizeof(char *) * __numpath__); \
+		resolve_paths(in, out, __numpath__); \
+	} \
+} while(0)
+
 /* ----------------------------------------------------------------------
  * Figure out the canonical name of the executed program
  * and fix up the defaults for various paths
@@ -1559,8 +1590,9 @@ InitPaths (char *argv0)
       } else {
           homedir = NULL;
       }
-
     }
+
+  resolve_all_paths(fontfile_paths_in, fontfile_paths);
 }
 
 static void set_fontfile(void)
