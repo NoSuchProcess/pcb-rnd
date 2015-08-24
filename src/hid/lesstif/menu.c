@@ -1293,7 +1293,7 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 	else if (home_pcbmenu != NULL && (access(home_pcbmenu, R_OK) == 0))
 		filename = home_pcbmenu;
 	else if (access(lesstif_pcbmenu_path, R_OK) == 0)
-		filename = lesstif_pcbmenu_path;
+		resolve_path(lesstif_pcbmenu_path, &filename); /* TODO: memleak! */
 	else
 		filename = 0;
 

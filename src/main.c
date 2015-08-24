@@ -1385,7 +1385,7 @@ print_version ()
 }
 
 
-void resolve_paths(const char **in, const char **out, int numpaths)
+void resolve_paths(const char **in, char **out, int numpaths)
 {
 	for(out; numpaths > 0; numpaths--,in++,out++) {
 		if (*in != NULL) {
@@ -1404,15 +1404,6 @@ void resolve_paths(const char **in, const char **out, int numpaths)
 			*out = NULL;
 	}
 }
-
-#define resolve_all_paths(in, out) \
-do { \
-	int __numpath__ = sizeof(in) / sizeof(char *); \
-	if (__numpath__ > 0) { \
-		out = malloc(sizeof(char *) * __numpath__); \
-		resolve_paths(in, out, __numpath__); \
-	} \
-} while(0)
 
 void resolve_path(const char *in, char **out)
 {
