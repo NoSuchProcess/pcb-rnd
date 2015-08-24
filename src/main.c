@@ -1414,6 +1414,11 @@ do { \
 	} \
 } while(0)
 
+void resolve_path(const char *in, char **out)
+{
+	resolve_paths(&in, out, 1);
+}
+
 /* ----------------------------------------------------------------------
  * Figure out the canonical name of the executed program
  * and fix up the defaults for various paths

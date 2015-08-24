@@ -144,6 +144,8 @@ int ElementOrientation (ElementType *e);
 
 void NetlistChanged (int force_unfreeze);
 
+/* Allocate *out and copy the path from in to out, replacing ~ with homedir */
+void resolve_path(const char *in, char **out);
 
 #endif /* PCB_MISC_H */
 
