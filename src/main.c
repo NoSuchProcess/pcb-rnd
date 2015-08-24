@@ -1577,7 +1577,7 @@ fprintf(stderr, "font: '%s'\n", *s);
   }
 
   if (Settings.FontFile == NULL) {
-    Message("Error: no font file found");
+    Message("Error: no font file found\n");
     exit(1);
   }
 
