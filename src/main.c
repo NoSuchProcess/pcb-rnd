@@ -1389,12 +1389,13 @@ void resolve_paths(const char **in, const char **out, int numpaths)
 {
 	for(out; numpaths > 0; numpaths--,in++,out++) {
 		if (*in != NULL) {
-			if (*in == '~') {
+			if (**in == '~') {
 				if (homedir == NULL) {
 					Message("can't resolve home dir required for path %s\n", *in);
 					exit(1);
 				}
-				*out = Concat(homedir, in+1, NULL);
+				*out = Concat(homedir, (*in)+1, NULL);
+				printf("out='%s'\n", *out);
 			}
 			else 
 				*out = strdup(*in);
