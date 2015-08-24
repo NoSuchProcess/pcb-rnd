@@ -1273,6 +1273,7 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 	char *home_pcbmenu, *home;
 	int screen;
 	Resource *mr;
+	char *full_menu_path = NULL;
 
 	display = XtDisplay(mb);
 	screen = DefaultScreen(display);
@@ -1288,18 +1289,22 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 		home_pcbmenu = Concat(home, PCB_DIR_SEPARATOR_S, ".pcb", PCB_DIR_SEPARATOR_S, "pcb-menu.res", NULL);
 	}
 
+	resolve_path(lesstif_pcbmenu_path, &full_menu_path);
+
 	if (access("pcb-menu.res", R_OK) == 0)
 		filename = "pcb-menu.res";
 	else if (home_pcbmenu != NULL && (access(home_pcbmenu, R_OK) == 0))
 		filename = home_pcbmenu;
-	else if (access(lesstif_pcbmenu_path, R_OK) == 0)
-		resolve_path(lesstif_pcbmenu_path, &filename); /* TODO: memleak! */
+	else if (access(full_menu_path, R_OK) == 0)
+		filename = full_menu_path;
 	else
 		filename = 0;
 
 	bir = resource_parse(0, pcb_menu_default);
 	if (!bir) {
 		fprintf(stderr, "Error: internal menu resource didn't parse\n");
+		if (full_menu_path != NULL)
+			free(full_menu_path);
 		exit(1);
 	}
 
@@ -1328,6 +1333,9 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 
 	if (do_dump_keys)
 		DumpKeys2();
+
+	if (full_menu_path != NULL)
+		free(full_menu_path);
 
 	return mb;
 }
