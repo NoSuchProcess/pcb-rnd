@@ -19,11 +19,11 @@ static void load_cfg(void)
 {
 	char *dir, *libdirg, *libdirh, *wdir, *wdirh, *hdirh;
 
-	libdirg = Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL);
-	libdirh = Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL);
-	wdirh = Concat ("plugins" PCB_DIR_SEPARATOR_S, HOST, NULL);
+	libdirg = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL));
+	libdirh = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
+	wdirh = resolve_path_inplace(Concat ("plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
 	wdir = Concat("plugins", NULL);
-	hdirh = Concat(homedir, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL);
+	hdirh = resolve_path_inplace(Concat(homedir, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
 
 	/* first add package search path to all host-specific plugin dirs
 	   This is needed because a script installed in ~/.pcb/plugins/*.conf
@@ -49,7 +49,7 @@ static void load_cfg(void)
 	if (homedir != NULL) {
 		hid_gpmi_load_dir (hdirh, 0);
 
-		dir = Concat(homedir, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL);
+		dir = resolve_path_inplace(Concat(homedir, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL));
 		hid_gpmi_load_dir(dir, 1);
 		free(dir);
 	}
