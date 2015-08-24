@@ -1419,6 +1419,14 @@ void resolve_path(const char *in, char **out)
 	resolve_paths(&in, out, 1);
 }
 
+char *resolve_path_inplace(char *in)
+{
+	char *out;
+	resolve_path(in, &out);
+	free(in);
+	return out;
+}
+
 /* ----------------------------------------------------------------------
  * Figure out the canonical name of the executed program
  * and fix up the defaults for various paths

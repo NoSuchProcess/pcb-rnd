@@ -147,5 +147,9 @@ void NetlistChanged (int force_unfreeze);
 /* Allocate *out and copy the path from in to out, replacing ~ with homedir */
 void resolve_path(const char *in, char **out);
 
+/* Same as resolve_path, but it returns the pointer to the new path and calls
+   free() on in */
+char *resolve_path_inplace(char *in);
+
 #endif /* PCB_MISC_H */
 
