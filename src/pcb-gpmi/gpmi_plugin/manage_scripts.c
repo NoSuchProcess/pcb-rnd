@@ -114,7 +114,7 @@ static hid_gpmi_script_info_t *load_script(void)
 		".bash",   "cli",
 		NULL,      NULL
 	};
-	char *modules[] = { "tcl", "lua", "mawk", "python","scheme", "ruby",
+	char *modules[] = { "tcl", "lua", "mawk", "python","scheme", "mruby",
 	                    "stutter", "ghli", "perl", "php", "cli", NULL };
 
 
