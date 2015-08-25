@@ -104,16 +104,18 @@ static hid_gpmi_script_info_t *load_script(void)
 		".mawk",   "mawk",
 		".py",     "python",
 		".scm",    "scheme",
-		".rb",     "ruby",
-		".ruby",   "ruby",
+		".rb",     "mruby",
+		".ruby",   "mruby",
 		".st",     "stutter",
 		".pas",    "ghli",
-		".pl",     "pearl",
+		".pl",     "perl",
 		".php",    "php",
+		".sh",     "cli",
+		".bash",   "cli",
 		NULL,      NULL
 	};
 	char *modules[] = { "tcl", "lua", "mawk", "python","scheme", "ruby",
-	                    "stutter", "ghli", "pearl", "php", NULL };
+	                    "stutter", "ghli", "perl", "php", "cli", NULL };
 
 
 	fn = gui->fileselect("Load script", "Load a GPMI script", NULL, NULL, "gpmi_load_script", HID_FILESELECT_READ);
