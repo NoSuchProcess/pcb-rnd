@@ -213,11 +213,15 @@ void hid_gpmi_load_dir(const char *dir, int add_pkg_path)
 
 	conf_dir = dir;
 	cfn = Concat(dir, PCB_DIR_SEPARATOR_S, CONFNAME,  NULL);
+#ifdef CONFIG_DEBUG
 	fprintf(stderr, "pcb-gpmi: opening config: %s\n", cfn);
+#endif
 	f = fopen(cfn, "r");
 	if (f == NULL) {
 		free(cfn);
+#ifdef CONFIG_DEBUG
 		fprintf(stderr, " ...failed\n");
+#endif
 		return;
 	}
 
@@ -247,7 +251,9 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 			}
 			else {
 				fprintf(stderr, "pcb-gpmi error: can't access $HOME for substituting ~\n");
+#ifdef CONFIG_DEBUG
 				printf("FN=%s\n", file_name);
+#endif
 				return strdup(file_name);
 			}
 		case PCB_DIR_SEPARATOR_C: /* full path */
@@ -260,7 +266,9 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 			else
 				cd = conf_dir;
 			snprintf(buffer, sizeof(buffer), "%s%c%s", cd, PCB_DIR_SEPARATOR_C, file_name);
+#ifdef CONFIG_DEBUG
 			printf("FN=%s\n", buffer);
+#endif
 			return strdup(buffer);
 	}
 	return NULL;
