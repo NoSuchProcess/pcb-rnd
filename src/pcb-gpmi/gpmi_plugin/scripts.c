@@ -329,19 +329,23 @@ int gpmi_hid_script_remove(hid_gpmi_script_info_t *i)
 
 int gpmi_hid_script_addcfg(hid_gpmi_script_info_t *i)
 {
-	char *fn;
+	char *fn, *home;
 	FILE *f;
 
+	home = getenv ("PCB_RND_GPMI_HOME");
+	if (home == NULL)
+		home = homedir;
+
 	if (homedir != NULL) {
-		fn = Concat(homedir, PCB_DIR_SEPARATOR_S ".pcb", NULL);
+		fn = Concat(home, PCB_DIR_SEPARATOR_S ".pcb", NULL);
 		mkdir(fn, 0755);
 		free(fn);
 
-		fn = Concat(homedir, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL);
+		fn = Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL);
 		mkdir(fn, 0755);
 		free(fn);
 		
-		fn = Concat(homedir, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, CONFNAME, NULL);
+		fn = Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, CONFNAME, NULL);
 	}
 	else
 		fn = Concat("plugins" PCB_DIR_SEPARATOR_S, CONFNAME, NULL);
