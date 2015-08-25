@@ -1227,10 +1227,12 @@ static int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath, 
 	LibraryMenuTypePtr menu = NULL; /* Pointer to PCB's library menu structure */
 	list_st_t l;
 	list_dir_t *d, *nextd;
-	char working[MAXPATHLEN + 1];    /* String holding abs path to working dir */
+	char working_[MAXPATHLEN + 1]; 
+	char *working; /* String holding abs path to working dir */
 	int menuidx;
 
-  sprintf(working, "%s%c%s", toppath, PCB_DIR_SEPARATOR_C, subdir);
+  sprintf(working_, "%s%c%s", toppath, PCB_DIR_SEPARATOR_C, subdir);
+	resolve_path(working_, &working);
 
   /* Get pointer to memory holding menu */
   menu = GetLibraryMenuMemory (&Library, &menuidx);
@@ -1258,6 +1260,7 @@ static int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath, 
 	if (l.children == 0) {
 		DeleteLibraryMenuMemory (&Library, menuidx);
 	}
+	free(working);
 	return l.children;
 }
 

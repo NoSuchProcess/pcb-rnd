@@ -321,20 +321,26 @@ char *pcb_fp_search(const char *search_path, const char *basename, int parametri
 	ctx.parametric = parametric;
 	ctx.path = NULL;
 
-/*	printf("Looking for %s\n", ctx.target);*/
+/*	fprintf("Looking for %s\n", ctx.target);*/
 
 	for(p = search_path; end = strchr(p, ':'); p = end+1) {
+		char *fpath;
 		memcpy(path, p, end-p);
 		path[end-p] = '\0';
-/*		printf(" in '%s'\n", path);*/
-		pcb_fp_list(path, 1, pcb_fp_search_cb, &ctx, 1);
+
+		resolve_path(path, &fpath);
+/*		fprintf(stderr, " in '%s'\n", fpath);*/
+
+		pcb_fp_list(fpath, 1, pcb_fp_search_cb, &ctx, 1);
 		if (ctx.path != NULL) {
 			sprintf(path, "%s%c%s", ctx.path, PCB_DIR_SEPARATOR_C, ctx.real_name);
 			free(ctx.path);
 			free(ctx.real_name);
-/*			printf("  found '%s'\n", path);*/
+/*			fprintf("  found '%s'\n", path);*/
+			free(fpath);
 			return strdup(path);
 		}
+		free(fpath);
 		if (end == NULL)
 			break;
 	}
@@ -352,10 +358,12 @@ FILE *pcb_fp_fopen(const char *libshell, const char *path, const char *name, int
 		return NULL;
 
 	fullname = pcb_fp_search(path, basename, *is_parametric);
-
+/*	fprintf(stderr, "basename=%s fullname=%s\n", basename, fullname);*/
 /*	printf("pcb_fp_fopen: %d '%s' '%s' fullname='%s'\n", *is_parametric, basename, params, fullname);*/
 
+
 	if (fullname != NULL) {
+/*fprintf(stderr, "fullname=%s param=%d\n",  fullname, *is_parametric);*/
 		if (*is_parametric) {
 			char *cmd, *sep = " ";
 			if (libshell == NULL) {
@@ -364,6 +372,7 @@ FILE *pcb_fp_fopen(const char *libshell, const char *path, const char *name, int
 			}
 			cmd = malloc(strlen(libshell) + strlen(fullname) + strlen(params) + 16);
 			sprintf(cmd, "%s%s%s %s", libshell, sep, fullname, params);
+/*fprintf(stderr, " cmd=%s\n",  cmd);*/
 			f = popen(cmd, "r");
 			free(cmd);
 		}
