@@ -1392,7 +1392,6 @@ print_version ()
 char *bindir = NULL;
 char *exec_prefix = NULL;
 char *pcblibdir = NULL;
-char *homedir = NULL;
 
 static void
 InitPaths (char *argv0)
@@ -1548,21 +1547,7 @@ InitPaths (char *argv0)
 
     }
 
-    {
-      char *tmps;
-
-      tmps = getenv ("HOME");
-
-      if (tmps == NULL) {
-          tmps = getenv ("USERPROFILE");
-      }
-
-      if (tmps != NULL) {
-          homedir = strdup (tmps);
-      } else {
-          homedir = NULL;
-      }
-    }
+	paths_init_homedir();
 
   resolve_all_paths(fontfile_paths_in, fontfile_paths);
 }

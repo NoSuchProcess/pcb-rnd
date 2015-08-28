@@ -20,4 +20,7 @@ do { \
 	} \
 } while(0)
 
+extern char *homedir;
 
+/* set up global var homedir */
+void paths_init_homedir(void);
