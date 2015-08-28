@@ -1,5 +1,0 @@
-PCB features that would make this plugin system simpler
-	1. some compile-time settings should be exported from PCB:
-	    EXECPREFIXDIR
-	    HOST
-	    MAX_LAYER
