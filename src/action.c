@@ -5463,7 +5463,7 @@ ActionSelect (int argc, char **argv, Coord x, Coord y)
 
 	    if (pattern
 		|| (pattern =
-		    gui->prompt_for (_("Enter pattern:"), "")) != NULL)
+		    gui->prompt_for (_("Enter regex pattern:"), "")) != NULL)
 	      {
 		if (SelectObjectByName (type, pattern, true))
 		  SetChangedFlag (true);
@@ -5649,7 +5649,7 @@ ActionUnselect (int argc, char **argv, Coord x, Coord y)
 
 	    if (pattern
 		|| (pattern =
-		    gui->prompt_for (_("Enter pattern:"), "")) != NULL)
+		    gui->prompt_for (_("Enter regex pattern:"), "")) != NULL)
 	      {
 		if (SelectObjectByName (type, pattern, false))
 		  SetChangedFlag (true);
