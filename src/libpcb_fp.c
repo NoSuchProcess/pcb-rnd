@@ -160,6 +160,7 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn)
 int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type), void *cookie, int subdir_may_not_exist)
 {
 	char olddir[MAXPATHLEN + 1];	/* The directory we start out in (cwd) */
+	char new_subdir[MAXPATHLEN + 1];
 	char fn[MAXPATHLEN + 1], *fn_end;
 	DIR *subdirobj;								/* Interable object holding all subdir entries */
 	struct dirent *subdirentry;		/* Individual subdir entry */
@@ -184,21 +185,21 @@ int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const 
 
 
 	/* Determine subdir's abs path */
-	if (GetWorkingDirectory(subdir) == NULL) {
+	if (GetWorkingDirectory(new_subdir) == NULL) {
 		Message(_("pcb_fp_list(): Could not determine new working directory\n"));
 		if (chdir(olddir))
 			ChdirErrorMessage(olddir);
 		return 0;
 	}
 
-	l = strlen(subdir);
-	memcpy(fn, subdir, l);
+	l = strlen(new_subdir);
+	memcpy(fn, new_subdir, l);
 	fn[l] = PCB_DIR_SEPARATOR_C;
 	fn_end = fn+l+1;
 
 	/* First try opening the directory specified by path */
-	if ((subdirobj = opendir(subdir)) == NULL) {
-		OpendirErrorMessage(subdir);
+	if ((subdirobj = opendir(new_subdir)) == NULL) {
+		OpendirErrorMessage(new_subdir);
 		if (chdir(olddir))
 			ChdirErrorMessage(olddir);
 		return 0;
@@ -237,14 +238,14 @@ int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const 
 				ty = pcb_fp_file_type(subdirentry->d_name);
 				if ((ty == PCB_FP_FILE) || (ty == PCB_FP_PARAMETRIC)) {
 					n_footprints++;
-					if (cb(cookie, subdir, subdirentry->d_name, ty))
+					if (cb(cookie, new_subdir, subdirentry->d_name, ty))
 						break;
 					continue;
 				}
 			}
 
 			if ((S_ISDIR(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
-				cb(cookie, subdir, subdirentry->d_name, PCB_FP_DIR);
+				cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_DIR);
 				if (recurse) {
 					n_footprints += pcb_fp_list(fn, recurse, cb, cookie, 0);
 				}
