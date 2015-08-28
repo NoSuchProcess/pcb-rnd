@@ -15,58 +15,6 @@ void gpmi_hid_print_error(gpmi_err_stack_t *entry, char *string)
 	Message("[GPMI] %s\n", string);
 }
 
-static void load_cfg(void)
-{
-	char *dir, *libdirg, *libdirh, *wdir, *wdirh, *hdirh, *home;
-
-	libdirg = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL));
-	libdirh = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
-	wdirh = resolve_path_inplace(Concat ("plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
-	wdir = Concat("plugins", NULL);
-
-	home = getenv ("PCB_RND_GPMI_HOME");
-	if (home == NULL)
-		home = homedir;
-
-	hdirh = resolve_path_inplace(Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
-
-	/* first add package search path to all host-specific plugin dirs
-	   This is needed because a script installed in ~/.pcb/plugins/*.conf
-	   (added automatically from, the gui)
-	   could depend on a package being anywhere else
-	*/
-	gpmi_path_insert(GPMI_PATH_PACKAGES, libdirh);
-	gpmi_path_insert(GPMI_PATH_PACKAGES, libdirg);
-	gpmi_path_insert(GPMI_PATH_PACKAGES, wdirh);
-	gpmi_path_insert(GPMI_PATH_PACKAGES, hdirh);
-
-	/* the final fallback - append this as loading anything from here is arch-unsafe */
-	gpmi_path_append(GPMI_PATH_PACKAGES, wdir);
-
-
-	hid_gpmi_load_dir(libdirh, 0);
-	hid_gpmi_load_dir(libdirg, 0);
-
-	dir = Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL);
-	hid_gpmi_load_dir(dir, 1);
-	free(dir);
-
-	if (home != NULL) {
-		hid_gpmi_load_dir (hdirh, 0);
-
-		dir = resolve_path_inplace(Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL));
-		hid_gpmi_load_dir(dir, 1);
-		free(dir);
-	}
-
-	hid_gpmi_load_dir(wdirh, 0);
-	hid_gpmi_load_dir(wdir, 0);
-
-	free(wdir);
-	free(wdirh);
-	free(libdirh);
-	free(hdirh);
-}
 
 int gpmi_hid_gui_inited = 0;
 static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
@@ -171,13 +119,41 @@ static void register_actions()
 #ifndef PLUGIN_INIT_NAME
 #define PLUGIN_INIT_NAME pcb_plugin_init
 #endif
-void PLUGIN_INIT_NAME ()
+
+void PLUGIN_INIT_NAME ();
+
+static void load_base_and_cfg(void)
 {
+	char *dir, *libdirg, *libdirh, *wdir, *wdirh, *hdirh, *home;
 	void **gpmi_asm_scriptname;
 	gpmi_package *scripts = NULL;
 
-	printf("pcb-gpmi hid is loaded.\n");
-	gpmi_init();
+	libdirg = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL));
+	libdirh = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
+	wdirh = resolve_path_inplace(Concat ("plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
+	wdir = Concat("plugins", NULL);
+
+	home = getenv ("PCB_RND_GPMI_HOME");
+	if (home == NULL)
+		home = homedir;
+
+	hdirh = resolve_path_inplace(Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
+
+	fprintf(stderr, "gpmi dirs: lg=%s lh=%s wh=%s w=%s hh=%s\n", libdirg, libdirh, wdirh, wdir, hdirh);
+
+	/* first add package search path to all host-specific plugin dirs
+	   This is needed because a script installed in ~/.pcb/plugins/*.conf
+	   (added automatically from, the gui)
+	   could depend on a package being anywhere else
+	*/
+	gpmi_path_insert(GPMI_PATH_PACKAGES, libdirh);
+	gpmi_path_insert(GPMI_PATH_PACKAGES, libdirg);
+	gpmi_path_insert(GPMI_PATH_PACKAGES, wdirh);
+	gpmi_path_insert(GPMI_PATH_PACKAGES, hdirh);
+
+	/* the final fallback - append this as loading anything from here is arch-unsafe */
+	gpmi_path_append(GPMI_PATH_PACKAGES, wdir);
+
 
 	gpmi_err_stack_enable();
 	if (gpmi_pkg_load("gpmi_scripts", 0, NULL, NULL, &scripts))
@@ -194,5 +170,36 @@ void PLUGIN_INIT_NAME ()
 
 	register_actions();
 	event_bind(EVENT_GUI_INIT, ev_gui_init, NULL, PLUGIN_INIT_NAME);
-	load_cfg();
+
+	hid_gpmi_load_dir(libdirh, 0);
+	hid_gpmi_load_dir(libdirg, 0);
+
+	dir = Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL);
+	hid_gpmi_load_dir(dir, 1);
+	free(dir);
+
+	if (home != NULL) {
+		hid_gpmi_load_dir (hdirh, 0);
+
+		dir = resolve_path_inplace(Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL));
+		hid_gpmi_load_dir(dir, 1);
+		free(dir);
+	}
+
+	hid_gpmi_load_dir(wdirh, 0);
+	hid_gpmi_load_dir(wdir, 0);
+
+	free(wdir);
+	free(wdirh);
+	free(libdirh);
+	free(hdirh);
+}
+
+
+void PLUGIN_INIT_NAME ()
+{
+
+	printf("pcb-gpmi hid is loaded.\n");
+	gpmi_init();
+	load_base_and_cfg();
 }
