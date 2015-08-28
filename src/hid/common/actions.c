@@ -33,7 +33,7 @@ static int keyeq(char *a, char *b)
 
 static unsigned int keyhash(char *key)
 {
-	return jenhash(key, strlen(key));
+	return strhash(key);
 }
 
 
