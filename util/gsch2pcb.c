@@ -1239,6 +1239,8 @@ main (gint argc, gchar ** argv)
   if (argc < 2)
     usage ();
 
+	paths_init_homedir();
+
   element_search_path = strdup(PCB_LIBRARY_SEARCH_PATHS);
 
   get_args (argc, argv);
