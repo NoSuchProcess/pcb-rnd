@@ -813,12 +813,7 @@ static int
 regexec_match_all (const  regex_t  *preg,  const  char  *string)
 {
   regmatch_t match;
-
   if (regexec (preg, string, 1, &match, 0) != 0)
-    return 0;
-  if (match.rm_so != 0)
-    return 0;
-  if (match.rm_eo != strlen(string))
     return 0;
   return 1;
 }
