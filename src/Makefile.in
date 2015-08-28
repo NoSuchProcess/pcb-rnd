@@ -44,6 +44,7 @@ put /local/pcb/OBJS [@
 	mtspace.o
 	mymem.o
 	netlist.o
+	paths.o
 	pcb-printf.o
 	plugins.o
 	polygon.o

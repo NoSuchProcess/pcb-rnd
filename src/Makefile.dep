@@ -103,8 +103,8 @@ main.o: main.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h data.h buffer.h create.h crosshair.h draw.h error.h file.h \
  set.h action.h misc.h ds.h mymem.h lrealpath.h free_atexit.h polygon.h \
- pcb-printf.h buildin.h hid/common/actions.h hid/hidint.h dolists.h \
- action_list.h
+ pcb-printf.h buildin.h paths.h hid/common/actions.h hid/hidint.h \
+ dolists.h action_list.h
 mirror.o: mirror.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h data.h draw.h mirror.h misc.h ds.h mymem.h polygon.h \
@@ -128,6 +128,7 @@ netlist.o: netlist.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h action.h buffer.h command.h data.h djopt.h error.h file.h \
  find.h mymem.h misc.h ds.h rats.h set.h vendor.h create.h
+paths.o: paths.c paths.h
 pcb-printf.o: pcb-printf.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  hid.h polyarea.h libpcb_fp.h pcb-printf.h
@@ -418,7 +419,7 @@ gui-top-window.o: hid/gtk/gui-top-window.c ../config.h ../config.manual.h \
  autoroute.h buffer.h change.h command.h copy.h create.h crosshair.h \
  draw.h error.h file.h find.h gpcb-menu.h insert.h line.h mymem.h move.h \
  pcb-printf.h polygon.h rats.h remove.h report.h rotate.h rubberband.h \
- search.h select.h set.h undo.h vendor.h event.h free_atexit.h \
+ search.h select.h set.h undo.h vendor.h event.h free_atexit.h paths.h \
  hid/gtk/gui-icons-mode-buttons.data hid/gtk/gui-icons-misc.data
 gui-utils.o: hid/gtk/gui-utils.c ../config.h ../config.manual.h \
  ../config.auto.h hid/gtk/gui.h global.h const.h ../globalconst.h \

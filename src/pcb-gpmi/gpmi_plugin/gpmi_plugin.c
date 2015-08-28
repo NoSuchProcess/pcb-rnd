@@ -5,6 +5,7 @@
 #include <gpmi.h>
 #include "src/misc.h"
 #include "src/event.h"
+#include "src/paths.h"
 #include "scripts.h"
 
 extern char *homedir; /* detected by pcn-rnd in InitPaths() */
