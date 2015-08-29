@@ -440,6 +440,7 @@ MainMenu =
     {"Polygon PreviousPoint" a={"P" "<Key>p"} Polygon(PreviousPoint)}
     {"Polygon Close" a={"Shift-P" "Shift<Key>p"} Polygon(Close)}
     {"ChangeSquare Object" a={"Q" "<Key>q"} ChangeSquare(ToggleObject)}
+    {"ChangeSizes to Route style" a={"Y" "Shift<Key>y"} ChangeSizes(Object,style,mil);}
     {"ChangeSize +5 mil" a={"S" "<Key>s"} ChangeSize(Object,+5,mil)}
     {"ChangeSize -5 mil" a={"Shift-S" "Shift<Key>s"} ChangeSize(Object,-5,mil)}
     {"ChangeDrill +5 mil" a={"Alt-S" "Alt<Key>s"} ChangeDrillSize(Object,+5,mil)}
