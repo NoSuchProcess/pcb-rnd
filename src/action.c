@@ -4044,13 +4044,57 @@ ActionMarkCrosshair (int argc, char **argv, Coord x, Coord y)
 }
 
 /* --------------------------------------------------------------------------- */
+/* helper: get route style size for a function and selected object type.
+   size_id: 0=main size; 1=2nd size (drill); 2=clearance */
+static int get_style_size(int funcid, Coord *out, int type, int size_id)
+{
+	switch (funcid) {
+		case F_Object:
+			switch(type) {
+				case ELEMENT_TYPE:
+				case VIA_TYPE:
+				case PIN_TYPE:  return get_style_size(F_SelectedVias, out, 0, size_id);
+				case LINE_TYPE: return get_style_size(F_SelectedLines, out, 0, size_id);
+				case ARC_TYPE:  return get_style_size(F_SelectedArcs, out, 0, size_id);
+			}
+			Message (_("Sorry, can't fetch the style of that object tpye (%x)\n"), type);
+			return -1;
+		case F_SelectedVias:
+		case F_SelectedPins:
+		case F_SelectedElements:
+			if (size_id == 0)
+				*out = Settings.ViaThickness;
+			else if (size_id == 1)
+				*out = Settings.ViaDrillingHole;
+			else
+				*out = Settings.Keepaway;
+			break;
+		case F_SelectedArcs:
+		case F_SelectedLines:
+			if (size_id == 2)
+				*out = Settings.Keepaway;
+			else
+				*out = Settings.LineThickness;
+			return 0;
+		case F_SelectedPads:
+		case F_SelectedTexts:
+		case F_SelectedNames:
+		case F_SelectedObjects:
+		case F_Selected:
+			Message (_("Sorry, can't change style of every selected object\n"));
+	}
+	return 0;
+}
+
+
+/* --------------------------------------------------------------------------- */
 
 static const char changesize_syntax[] =
-  "ChangeSize(Object, delta)\n"
-  "ChangeSize(SelectedObjects|Selected, delta)\n"
-  "ChangeSize(SelectedLines|SelectedPins|SelectedVias, delta)\n"
-  "ChangeSize(SelectedPads|SelectedTexts|SelectedNames, delta)\n"
-  "ChangeSize(SelectedElements, delta)";
+  "ChangeSize(Object, delta|style)\n"
+  "ChangeSize(SelectedObjects|Selected, delta|style)\n"
+  "ChangeSize(SelectedLines|SelectedPins|SelectedVias, delta|style)\n"
+  "ChangeSize(SelectedPads|SelectedTexts|SelectedNames, delta|style)\n"
+  "ChangeSize(SelectedElements, delta|style)";
 
 static const char changesize_help[] = "Changes the size of objects.";
 
@@ -4072,20 +4116,29 @@ ActionChangeSize (int argc, char **argv, Coord x, Coord y)
   char *units = ARG (2);
   bool absolute;			/* indicates if absolute size is given */
   Coord value;
+  int type;
+  void *ptr1, *ptr2, *ptr3;
+
 
   if (function && delta)
     {
-      value = GetValue (delta, units, &absolute);
-      switch (GetFunctionID (function))
+      int funcid = GetFunctionID (function);
+
+      if (funcid == F_Object)
+        type = SearchScreen (Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+
+      if (strcmp(argv[1], "style") == 0) {
+        if (get_style_size(funcid, &value, type, 0) != 0)
+          return 1;
+        absolute = 1;
+      }
+      else
+        value = GetValue (delta, units, &absolute);
+      switch (funcid)
 	{
 	case F_Object:
 	  {
-	    int type;
-	    void *ptr1, *ptr2, *ptr3;
-
-	    if ((type =
-		 SearchScreen (Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES,
-			       &ptr1, &ptr2, &ptr3)) != NO_TYPE)
+	    if (type != NO_TYPE)
 	      if (TEST_FLAG (LOCKFLAG, (PinTypePtr) ptr2))
 		Message (_("Sorry, the object is locked\n"));
 	    if (ChangeObjectSize (type, ptr1, ptr2, ptr3, value, absolute))
@@ -4146,8 +4199,8 @@ ActionChangeSize (int argc, char **argv, Coord x, Coord y)
 /* --------------------------------------------------------------------------- */
 
 static const char changedrillsize_syntax[] =
-  "ChangeDrillSize(Object, delta)\n"
-  "ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, delta)";
+  "ChangeDrillSize(Object, delta|style)\n"
+  "ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, delta|style)";
 
 static const char changedrillsize_help[] =
   "Changes the drilling hole size of objects.";
@@ -4162,23 +4215,35 @@ ActionChange2ndSize (int argc, char **argv, Coord x, Coord y)
   char *function = ARG (0);
   char *delta = ARG (1);
   char *units = ARG (2);
+  int type;
+  void *ptr1, *ptr2, *ptr3;
+
   bool absolute;
   Coord value;
 
   if (function && delta)
     {
-      value = GetValue (delta, units, &absolute);
+      int funcid = GetFunctionID (function);
+
+      if (funcid == F_Object) {
+        gui->get_coords (_("Select an Object"), &x, &y);
+        type = SearchScreen (x, y, CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
+      }
+
+      if (strcmp(argv[1], "style") == 0) {
+        if (get_style_size(funcid, &value, type, 1) != 0)
+          return 1;
+        absolute = 1;
+      }
+      else
+        value = GetValue (delta, units, &absolute);
+
       switch (GetFunctionID (function))
 	{
 	case F_Object:
 	  {
-	    int type;
-	    void *ptr1, *ptr2, *ptr3;
 
-	    gui->get_coords (_("Select an Object"), &x, &y);
-	    if ((type =
-		 SearchScreen (x, y, CHANGE2NDSIZE_TYPES,
-			       &ptr1, &ptr2, &ptr3)) != NO_TYPE)
+	    if (type != NO_TYPE)
 	      if (ChangeObject2ndSize
 		  (type, ptr1, ptr2, ptr3, value, absolute, true))
 		SetChangedFlag (true);
@@ -4207,10 +4272,10 @@ ActionChange2ndSize (int argc, char **argv, Coord x, Coord y)
 /* --------------------------------------------------------------------------- */
 
 static const char changeclearsize_syntax[] =
-  "ChangeClearSize(Object, delta)\n"
-  "ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, delta)\n"
-  "ChangeClearSize(SelectedLines|SelectedArcs, delta\n"
-  "ChangeClearSize(Selected|SelectedObjects, delta)";
+  "ChangeClearSize(Object, delta|style)\n"
+  "ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, delta|style)\n"
+  "ChangeClearSize(SelectedLines|SelectedArcs, delta|style)\n"
+  "ChangeClearSize(Selected|SelectedObjects, delta|style)";
 
 static const char changeclearsize_help[] =
   "Changes the clearance size of objects.";
@@ -4231,22 +4296,34 @@ ActionChangeClearSize (int argc, char **argv, Coord x, Coord y)
   char *units = ARG (2);
   bool absolute;
   Coord value;
+  int type;
+  void *ptr1, *ptr2, *ptr3;
 
   if (function && delta)
     {
-      value = 2 * GetValue (delta, units, &absolute);
+      int funcid = GetFunctionID (function);
+
+      if (funcid == F_Object) {
+        gui->get_coords (_("Select an Object"), &x, &y);
+        type = SearchScreen (x, y, CHANGECLEARSIZE_TYPES, &ptr1, &ptr2, &ptr3);
+      }
+
+      if (strcmp(argv[1], "style") == 0) {
+        if ((type == NO_TYPE) || (type == POLYGON_TYPE)) /* workaround: SearchScreen(CHANGECLEARSIZE_TYPES) wouldn't return elements */
+          type = SearchScreen (x, y, CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
+        if (get_style_size(funcid, &value, type, 2) != 0)
+          return 1;
+        absolute = 1;
+        printf("VALUE: %d %d %d\n", value, value*2, Settings.Keepaway);
+        value *= 2;
+      }
+      else
+        value = 2 * GetValue (delta, units, &absolute);
       switch (GetFunctionID (function))
 	{
 	case F_Object:
 	  {
-	    int type;
-	    void *ptr1, *ptr2, *ptr3;
-
-	    gui->get_coords (_("Select an Object"), &x, &y);
-	    if ((type =
-		 SearchScreen (x, y,
-			       CHANGECLEARSIZE_TYPES, &ptr1, &ptr2,
-			       &ptr3)) != NO_TYPE)
+	    if (type != NO_TYPE)
 	      if (ChangeObjectClearSize (type, ptr1, ptr2, ptr3, value, absolute))
 		SetChangedFlag (true);
 	    break;
