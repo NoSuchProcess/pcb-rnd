@@ -4052,17 +4052,21 @@ static int get_style_size(int funcid, Coord *out, int type, int size_id)
 		case F_Object:
 			switch(type) {
 				case ELEMENT_TYPE:
+					if (size_id == 0) /* 1st size is silk line width for some reason - skip it in object mode */
+						return -1;
 				case VIA_TYPE:
-				case PAD_TYPE:
 				case PIN_TYPE:  return get_style_size(F_SelectedVias, out, 0, size_id);
+				case PAD_TYPE:  return get_style_size(F_SelectedPads, out, 0, size_id);
 				case LINE_TYPE: return get_style_size(F_SelectedLines, out, 0, size_id);
 				case ARC_TYPE:  return get_style_size(F_SelectedArcs, out, 0, size_id);
 			}
 			Message (_("Sorry, can't fetch the style of that object tpye (%x)\n"), type);
 			return -1;
+		case F_SelectedPads:
+			if (size_id != 2) /* don't mess with pad size */
+				return -1;
 		case F_SelectedVias:
 		case F_SelectedPins:
-		case F_SelectedPads:
 		case F_SelectedElements:
 			if (size_id == 0)
 				*out = Settings.ViaThickness;
