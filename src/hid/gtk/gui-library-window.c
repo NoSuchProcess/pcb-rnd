@@ -372,6 +372,8 @@ tree_row_key_pressed (GtkTreeView *tree_view,
 
 static void library_window_preview_refresh(GhidLibraryWindow *library_window, const char *name, LibraryEntryType *entry)
 {
+  GString *pt;
+
   /* -1 flags this is an element file part and the file path is in
      |  entry->AllocateMemory.
    */
@@ -386,6 +388,23 @@ static void library_window_preview_refresh(GhidLibraryWindow *library_window, co
 		g_object_set (library_window->preview,
 			"element-data", NULL, NULL);
 	}
+
+	/* update the text */
+  pt = g_string_new ("Tags:");
+	if (entry->Tags != NULL) {
+		void **t;
+		
+
+		for(t = entry->Tags; *t != NULL; t++) {
+			const char *name = pcb_fp_tagname(*t);
+			if (name != NULL) {
+				g_string_append (pt, "\n  ");
+				g_string_append (pt, name);
+			}
+		}
+	}
+	g_string_append (pt, "\n");
+	gtk_label_set_text(GTK_LABEL (library_window->preview_text), 	g_string_free(pt, FALSE));
 }
 
 /*! \brief Handles changes in the treeview selection.
