@@ -561,7 +561,7 @@ gchar *pcb_vprintf(const char *fmt, va_list args)
               count = 1;
               switch(*fmt)
                 {
-                case 'i': unit_str = CoordsToString(value, 1, spec->str, ALLOW_NM, NO_SUFFIX); break;
+                case 'I': unit_str = CoordsToString(value, 1, spec->str, ALLOW_NM, NO_SUFFIX); break;
                 case 's': unit_str = CoordsToString(value, 1, spec->str, ALLOW_MM | ALLOW_MIL, suffix); break;
                 case 'S': unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_ALL, suffix); break;
                 case 'M': unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_METRIC, suffix); break;

@@ -104,10 +104,10 @@ dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 			break;
 		case HIDA_Enum:
 			res = hid->attr[attr_id].enumerations[v->int_value];
-			printf("res='%s' %d\n", res, v->int_value);
+/*			printf("res='%s' %d\n", res, v->int_value);*/
 			break;
 		case HIDA_Coord:
-				pcb_sprintf(buff, "%mi", v->coord_value);
+				pcb_sprintf(buff, "%mI", v->coord_value);
 				res = buff;
 				break;
 		case HIDA_Unit:
