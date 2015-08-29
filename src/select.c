@@ -819,16 +819,27 @@ regexec_match_all (const  regex_t  *preg,  const  char  *string)
 }
 #endif
 
+/* case insensitive match of each element in the array pat against name 
+   returns 1 if any of them matched */
+static int strlst_match(const char **pat, const char *name)
+{
+	for(; *pat != NULL; pat++)
+		if (strcasecmp(*pat, name) == 0)
+			return 1;
+	return 0;
+}
+
 bool
-SelectObjectByName (int Type, char *Pattern, bool Flag)
+SelectObjectByName (int Type, char *Pattern, bool Flag, search_method_t method)
 {
   bool changed = false;
-
-#if defined(HAVE_REGCOMP)
-#define	REGEXEC(arg)	(regexec_match_all(&compiled, (arg)))
-
+  const char **pat = NULL;
   int result;
   regex_t compiled;
+
+	if (method == SM_REGEX) {
+#if defined(HAVE_REGCOMP)
+#define	REGEXEC(arg)	(method == SM_REGEX ? regexec_match_all(&compiled, (arg)) : strlst_match(pat, (arg)))
 
   /* compile the regular expression */
   result = regcomp (&compiled, Pattern, REG_EXTENDED | REG_ICASE);
@@ -842,7 +853,7 @@ SelectObjectByName (int Type, char *Pattern, bool Flag)
       return (false);
     }
 #else
-#define	REGEXEC(arg)	(re_exec((arg)) == 1)
+#define	REGEXEC(arg)	(method == SM_REGEX ? (re_exec((arg)) == 1) : strlst_match(pat, (arg)))
 
   char *compiled;
 
@@ -853,6 +864,34 @@ SelectObjectByName (int Type, char *Pattern, bool Flag)
       return (false);
     }
 #endif
+	}
+	else {
+		char *s,*next;
+		int n, w;
+
+		/* count the number of patterns */
+		for(s = Pattern, w=0; *s != '\0'; s++)
+			if (*s == '|')
+				w++;
+		pat = malloc((w+2) * sizeof(char *)); /* make room for the NULL too */
+		for(s = Pattern, n = 0; s != NULL; s = next) {
+			char *end;
+/*fprintf(stderr, "S: '%s'\n", s, next);*/
+			while(isspace(*s)) s++;
+			next = strchr(s, '|');
+			if (next != NULL) {
+				*next = '\0';
+				next++;
+			}
+			end = s + strlen(s)-1;
+			while((end >= s) && (isspace(*end))) { *end = '\0'; end--; }
+			if (*s != '\0') {
+				pat[n] = s;
+				n++;
+			}
+		}
+		pat[n] = NULL;
+	}
 
   /* loop over all visible objects with names */
   if (Type & TEXT_TYPE)
@@ -982,17 +1021,21 @@ SelectObjectByName (int Type, char *Pattern, bool Flag)
       FreeConnectionLookupMemory ();
     }
 
+  if (method == SM_REGEX) {
 #if defined(HAVE_REGCOMP)
 #if !defined(sgi)
-  regfree (&compiled);
+    regfree (&compiled);
 #endif
 #endif
+  }
 
   if (changed)
     {
       IncrementUndoSerialNumber ();
       Draw ();
     }
+  if (pat != NULL)
+    free(pat);
   return (changed);
 }
 #endif /* defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP) */

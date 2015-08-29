@@ -579,7 +579,7 @@ FinishStroke (void)
 
 /* --------------------------------------------------------------------------- */
 /* Ask the suer for a search pattern */
-static char *gui_get_pat()
+static char *gui_get_pat(search_method_t *method)
 {
 	const char *methods[] = { "regexp", "list of names", NULL };
 	HID_Attribute attrs[] = {
@@ -594,14 +594,7 @@ static char *gui_get_pat()
 
 	gui->attribute_dialog(attrs, nattr, results, "Find element", "Find element by name");
 
-	if (results[1].int_value == 1) {
-		int len = strlen(results[0].str_value);
-		char *rpat;
-		rpat = malloc(len + 8);
-		sprintf(rpat, "^(%s)$", results[0].str_value);
-		return rpat;
-	}
-
+	*method = results[1].int_value;
 	return strdup(results[0].str_value);
 #undef nattr
 }
@@ -5607,11 +5600,12 @@ ActionSelect (int argc, char **argv, Coord x, Coord y)
 	commonByName:
 	  {
 	    char *pattern = ARG (1);
+	    search_method_t method;
 
 	    if (pattern
-		|| (pattern = gui_get_pat()) != NULL)
+		|| (pattern = gui_get_pat(&method)) != NULL)
 	      {
-		if (SelectObjectByName (type, pattern, true))
+		if (SelectObjectByName (type, pattern, true, method))
 		  SetChangedFlag (true);
 		if (ARG (1) == NULL)
 		  free (pattern);
@@ -5792,11 +5786,12 @@ ActionUnselect (int argc, char **argv, Coord x, Coord y)
 	commonByName:
 	  {
 	    char *pattern = ARG (1);
+	    search_method_t method;
 
 	    if (pattern
-		|| (pattern = gui_get_pat()) != NULL)
+		|| (pattern = gui_get_pat(&method)) != NULL)
 	      {
-		if (SelectObjectByName (type, pattern, false))
+		if (SelectObjectByName (type, pattern, false, method))
 		  SetChangedFlag (true);
 		if (ARG (1) == NULL)
 		  free (pattern);

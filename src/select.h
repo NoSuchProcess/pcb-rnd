@@ -43,8 +43,13 @@ bool SelectedOperation (ObjectFunctionTypePtr, bool, int);
 void *ObjectOperation (ObjectFunctionTypePtr, int, void *, void *, void *);
 bool SelectConnection (bool);
 
+typedef enum {
+	SM_REGEX = 0,
+	SM_LIST  = 1
+} search_method_t;
+
 #if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
-bool SelectObjectByName (int, char *, bool);
+bool SelectObjectByName (int, char *, bool, search_method_t);
 #endif
 
 #endif
