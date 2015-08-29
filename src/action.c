@@ -4053,6 +4053,7 @@ static int get_style_size(int funcid, Coord *out, int type, int size_id)
 			switch(type) {
 				case ELEMENT_TYPE:
 				case VIA_TYPE:
+				case PAD_TYPE:
 				case PIN_TYPE:  return get_style_size(F_SelectedVias, out, 0, size_id);
 				case LINE_TYPE: return get_style_size(F_SelectedLines, out, 0, size_id);
 				case ARC_TYPE:  return get_style_size(F_SelectedArcs, out, 0, size_id);
@@ -4061,6 +4062,7 @@ static int get_style_size(int funcid, Coord *out, int type, int size_id)
 			return -1;
 		case F_SelectedVias:
 		case F_SelectedPins:
+		case F_SelectedPads:
 		case F_SelectedElements:
 			if (size_id == 0)
 				*out = Settings.ViaThickness;
@@ -4076,7 +4078,6 @@ static int get_style_size(int funcid, Coord *out, int type, int size_id)
 			else
 				*out = Settings.LineThickness;
 			return 0;
-		case F_SelectedPads:
 		case F_SelectedTexts:
 		case F_SelectedNames:
 		case F_SelectedObjects:
