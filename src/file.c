@@ -1176,7 +1176,7 @@ typedef struct {
 } list_st_t;
 
 
-static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_type_t type)
+static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_type_t type, void *tags[])
 {
 	list_st_t *l = (list_st_t *)cookie;
 	LibraryEntryTypePtr entry;      /* Pointer to individual menu entry */
@@ -1246,7 +1246,7 @@ static int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath, 
   l.subdirs = NULL;
 	l.children = 0;
 
-  pcb_fp_list(working, 0, list_cb, &l, is_root);
+  pcb_fp_list(working, 0, list_cb, &l, is_root, 1);
 
 	/* now recurse to each subdirectory mapped in the previous call;
 	   by now we don't care if menu is ruined by the realloc() in GetLibraryMenuMemory() */

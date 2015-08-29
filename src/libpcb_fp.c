@@ -102,11 +102,11 @@ const void *pcb_fp_tag(const char *tag, int alloc)
 
 	if (pcb_fp_tags == NULL)
 		pcb_fp_tags = htsp_alloc(strhash, keyeq);
-	e = htsp_getentry(pcb_fp_tags, tag);
+	e = htsp_getentry(pcb_fp_tags, (char *)tag);
 	if ((e == NULL) && alloc) {
-		htsp_set(pcb_fp_tags, strdup(tag), counter);
+		htsp_set(pcb_fp_tags, strdup(tag), (void *)counter);
 		counter++;
-		e = htsp_getentry(pcb_fp_tags, tag);
+		e = htsp_getentry(pcb_fp_tags, (char *)tag);
 	}
 	return e;
 }
@@ -117,8 +117,9 @@ const void *pcb_fp_tag(const char *tag, int alloc)
      "@@" "purpose"
    - else it's not an element.
    - if a line of a file element starts with ## and doesn't contain @, it's a tag
+   - if tags is not NULL, it's a pointer to a void *tags[] - an array of tag IDs
 */
-pcb_fp_type_t pcb_fp_file_type(const char *fn)
+pcb_fp_type_t pcb_fp_file_type(const char *fn, void ***tags)
 {
 	int c, comment_len;
 	int first_element = 1;
@@ -131,7 +132,11 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn)
 	} state = ST_WS;
 	char *tag = NULL;
 	int talloced = 0, tused = 0;
+	int Talloced = 0, Tused = 0;
 	pcb_fp_type_t ret = PCB_FP_INVALID;
+
+	if (tags != NULL)
+		*tags = NULL;
 
 	f = fopen(fn, "r");
 	if (f == NULL)
@@ -188,9 +193,17 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn)
 				break;
 			case ST_TAG:
 				if ((c == '\r') || (c == '\n')) { /* end of a tag */
-					tag[tused] = '\0';
-/*					printf("TAG: '%s' '%s'\n", fn, tag);*/
-					pcb_fp_tag(tag, 1);
+					if (tags != NULL) {
+						tag[tused] = '\0';
+						if (Tused >= Talloced) {
+							Talloced += 8;
+							*tags = realloc(*tags, (Talloced+1) * sizeof(void *));
+						}
+						(*tags)[Tused] = (void *)pcb_fp_tag(tag, 1);
+						Tused++;
+						(*tags)[Tused] = NULL;
+					}
+					
 					tused = 0;
 					state = ST_WS;
 					break;
@@ -213,7 +226,7 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn)
 	return ret;
 }
 
-int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type), void *cookie, int subdir_may_not_exist)
+int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type, void *tags[]), void *cookie, int subdir_may_not_exist, int need_tags)
 {
 	char olddir[MAXPATHLEN + 1];	/* The directory we start out in (cwd) */
 	char new_subdir[MAXPATHLEN + 1];
@@ -291,19 +304,20 @@ int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const 
 			strcpy(fn_end, subdirentry->d_name);
 			if ((S_ISREG(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
 				pcb_fp_type_t ty;
-				ty = pcb_fp_file_type(subdirentry->d_name);
+				void **tags = NULL;
+				ty = pcb_fp_file_type(subdirentry->d_name, (need_tags ? &tags : NULL));
 				if ((ty == PCB_FP_FILE) || (ty == PCB_FP_PARAMETRIC)) {
 					n_footprints++;
-					if (cb(cookie, new_subdir, subdirentry->d_name, ty))
+					if (cb(cookie, new_subdir, subdirentry->d_name, ty, tags))
 						break;
 					continue;
 				}
 			}
 
 			if ((S_ISDIR(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
-				cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_DIR);
+				cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_DIR, NULL);
 				if (recurse) {
-					n_footprints += pcb_fp_list(fn, recurse, cb, cookie, 0);
+					n_footprints += pcb_fp_list(fn, recurse, cb, cookie, 0, need_tags);
 				}
 				continue;
 			}
@@ -348,7 +362,7 @@ typedef struct {
 	char *real_name;
 } pcb_fp_search_t;
 
-static int pcb_fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_fp_type_t type)
+static int pcb_fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_fp_type_t type, void *tags[])
 {
 	pcb_fp_search_t *ctx = (pcb_fp_search_t *)cookie;
 	if ((strncmp(ctx->target, name, ctx->target_len) == 0) && ((!!ctx->parametric) == (type == PCB_FP_PARAMETRIC))) {
@@ -388,7 +402,7 @@ char *pcb_fp_search(const char *search_path, const char *basename, int parametri
 		resolve_path(path, &fpath);
 /*		fprintf(stderr, " in '%s'\n", fpath);*/
 
-		pcb_fp_list(fpath, 1, pcb_fp_search_cb, &ctx, 1);
+		pcb_fp_list(fpath, 1, pcb_fp_search_cb, &ctx, 1, 0);
 		if (ctx.path != NULL) {
 			sprintf(path, "%s%c%s", ctx.path, PCB_DIR_SEPARATOR_C, ctx.real_name);
 			free(ctx.path);

@@ -9,11 +9,13 @@ typedef enum {
 
 /* List all symbols, optionally recursively, from CWD/subdir. For each symbol
    or subdir, call the callback. Ignore file names starting with
-   If subdir_may_not_exist is non-zero, don't complain if the top subdir does not exist .*/
-int pcb_fp_list(const char *subdir, int recurse,  int (*cb)(void *cookie, const char *subdir, const char *name, pcb_fp_type_t type), void *cookie, int subdir_may_not_exist);
+   If subdir_may_not_exist is non-zero, don't complain if the top subdir does not exist.
+*/
+int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type, void *tags[]), void *cookie, int subdir_may_not_exist, int need_tags);
 
-/* Decide about the type of a footprint file by reading the content*/
-pcb_fp_type_t pcb_fp_file_type(const char *fn);
+/* Decide about the type of a footprint file by reading the content and
+   optionally extract tag IDs into a void *tags[] */
+pcb_fp_type_t pcb_fp_file_type(const char *fn, void ***tags);
 
 /* duplicates the name and splits it into a basename and params;
    params is NULL if the name is not parametric (and "" if parameter list is empty)
