@@ -1,0 +1,41 @@
+<html>
+<body>
+<h1> pcb-rnd - the [tostyle] patch </h1>
+
+Footprints bring their own hole sizes, copper ring sizes and clearances.
+These parameters often depend on the manufacturing process, and such a value
+coming from a footprint may differ much from the values used on the board already.
+<p>
+PCB has actions (and menus and hotkeys) to change sizes manually. In my practice,
+I try to stick to the sizes defined in my routing styles and try to avoid
+manually changing clearances or ring sizes. Still, the random values coming
+from various footprints should be changed.
+<p>
+After many years of struggling with this, I realized the feature I need is
+a way to change object sizes to not a relative or absolute <i>number</i> but
+to the current <i>routing style</i>. The [tostyle] patch does exactly this.
+It implements the following new features:
+<ul>
+	<li> change clearance size now works on elements: it changes the clearance of all pins/pads; this is the same as change drill has been working for a long time
+	<li> size change actions normally take a value and a unit; if the value is not a number but text <b>style</b>, the value is copied from the currently active routing style
+	<li> a new ChangeSizes() action that attempts to execute the other three change size actions with the same arguments and fails only if all of them failed; the three sizes are: main size, drill size, clearance size
+	<li> a menu item and hotkey binding to key 'r' (as routing style) that calls ChangeSizes() of the selected or current object(s) to resize them to the current routing style
+</ul>
+<p>
+The new route style set works on:
+<ul>
+	<li> lines and arcs: sets their line width and clearance
+	<li> vias and individual pins: sets their ring dia, drill dia and clearance
+	<li> individual pads: sets their clearance
+	<li> elements: set all their pins and pads 
+</ul>
+
+<h2> save/load and compatibility </h2>
+Not affected, since the patch introduces actions and UI changes, no change
+related to the data model.
+
+<h2> plans </h2>
+No plans, the feature is complete.
+
+</body>
+</html>
