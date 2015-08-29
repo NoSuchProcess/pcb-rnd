@@ -92,17 +92,22 @@ RCSID("$Id$");
    - else it is a parametric element (footprint generator) if it contains 
      "@@" "purpose"
    - else it's not an element.
+   - if a line of a file element starts with ## and doesn't contain @, it's a tag
 */
 pcb_fp_type_t pcb_fp_file_type(const char *fn)
 {
-	int c;
+	int c, comment_len;
 	int first_element = 1;
 	FILE *f;
 	enum {
 		ST_WS,
 		ST_COMMENT,
 		ST_ELEMENT,
+		ST_TAG,
 	} state = ST_WS;
+	char *tag = NULL;
+	int talloced = 0, tused = 0;
+	pcb_fp_type_t ret = PCB_FP_INVALID;
 
 	f = fopen(fn, "r");
 	if (f == NULL)
@@ -114,13 +119,14 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn)
 				if (isspace(c))
 					break;
 				if ((c == '(') || (c == '[')) {
-					fclose(f);
-					return PCB_FP_FILE;
+					ret = PCB_FP_FILE;
+					goto out;
 				}
 			case ST_WS:
 				if (isspace(c))
 					break;
 				if (c == '#') {
+					comment_len = 0;
 					state = ST_COMMENT;
 					break;
 				}
@@ -137,24 +143,49 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn)
 				first_element = 0;
 				/* fall-thru for detecting @ */
 			case ST_COMMENT:
+				comment_len++;
+				if ((c == '#') && (comment_len == 1)) {
+					state = ST_TAG;
+					break;
+				}
 				if ((c == '\r') || (c == '\n'))
 					state = ST_WS;
 				if (c == '@') {
 					char s[10];
+					maybe_purpose:;
 					/* "@@" "purpose" */
 					fgets(s, 9, f);
 					s[8] = '\0';
 					if (strcmp(s, "@purpose") == 0) {
-						fclose(f);
-						return PCB_FP_PARAMETRIC;
+						ret = PCB_FP_PARAMETRIC;
+						goto out;
 					}
 				}
 				break;
+			case ST_TAG:
+				if ((c == '\r') || (c == '\n')) { /* end of a tag */
+					tag[tused] = '\0';
+/*					printf("TAG: '%s' '%s'\n", fn, tag);*/
+					tused = 0;
+					state = ST_WS;
+					break;
+				}
+				if (c == '@')
+					goto maybe_purpose;
+				if (tused >= talloced) {
+					talloced += 64;
+					tag = realloc(tag, talloced+1); /* always make room for an extra \0 */
+				}
+				tag[tused] = c;
+				tused++;
 		}
 	}
 
+	out:;
+	if (tag != NULL)
+		free(tag);
 	fclose(f);
-	return PCB_FP_INVALID;
+	return ret;
 }
 
 int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type), void *cookie, int subdir_may_not_exist)
