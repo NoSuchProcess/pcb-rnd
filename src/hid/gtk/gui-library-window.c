@@ -285,6 +285,7 @@ lib_model_filter_visible_func (GtkTreeModel * model,
 				pattern = g_strconcat ("*", text_upper, "(*", NULL);
 			else
 				pattern = g_strconcat ("*", text_upper, "*", NULL);
+/* TODO: check for tags here */
       ret = g_pattern_match_simple (pattern, compname_upper);
       g_free (compname_upper);
       g_free (text_upper);
