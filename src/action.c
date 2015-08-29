@@ -4363,6 +4363,33 @@ ActionChangeClearSize (int argc, char **argv, Coord x, Coord y)
   return 0;
 }
 
+/* --------------------------------------------------------------------------- */
+
+static const char changesizes_syntax[] =
+  "ChangeSizes(Object, delta|style)\n"
+  "ChangeSizes(SelectedObjects|Selected, delta|style)\n"
+  "ChangeSizes(SelectedLines|SelectedPins|SelectedVias, delta|style)\n"
+  "ChangeSizes(SelectedPads|SelectedTexts|SelectedNames, delta|style)\n"
+  "ChangeSizes(SelectedElements, delta|style)";
+
+static const char changesizes_help[] = "Changes all sizes of objects.";
+
+/* %start-doc actions ChangeSize
+
+Call ActionChangeSize, ActionChangeDrillSize and ActionChangeClearSize
+with the same arguments. If any of them did not fail, return success.
+%end-doc */
+
+static int
+ActionChangeSizes (int argc, char **argv, Coord x, Coord y)
+{
+	int a, b, c;
+	a = ActionChangeSize(argc, argv, x, y);
+	b = ActionChange2ndSize(argc, argv, x, y);
+	c = ActionChangeClearSize(argc, argv, x, y);
+	return !(!a || !b || !c);
+}
+
 /* ---------------------------------------------------------------------------  */
 
 static const char minmaskgap_syntax[] =
@@ -8241,6 +8268,9 @@ HID_Action action_action_list[] = {
   ,
   {"ChangeSize", 0, ActionChangeSize,
    changesize_help, changesize_syntax}
+  ,
+  {"ChangeSizes", 0, ActionChangeSizes,
+   changesizes_help, changesizes_syntax}
   ,
   {"ChangeNonetlist", 0, ActionChangeNonetlist,
    changenonetlist_help, changenonetlist_syntax}
