@@ -6,12 +6,6 @@ CLEANUP
 	- remove libstroke?
 
 FEATURES
-- merge pcb-gpmi in pcb-rnd {large}
-	- high level document!
-		- an event so the script has a chance to clean up
-- UI: drill adjust: {small}
-	- set drill and/or ring to current style
-	- set all pins (drill and/or ring) to current style for a component
 - UI: component filter by tags
 
 - UI: trace length calculation {small}
