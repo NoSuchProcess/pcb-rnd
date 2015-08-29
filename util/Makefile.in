@@ -4,11 +4,16 @@ CFLAGS=@libs/sul/glib/cflags@ -I.. -DSCMDIR="\"$(LIBDIR)\""
 LDFLAGS=@libs/sul/glib/ldflags@
 EXE=@sys/ext_exe@
 
-gsch2pcb-rnd$(EXE): gsch2pcb.o ../src/libpcb_fp.o ../src/portability.o ../src/ds.o ../src/paths.o
-	$(CC) gsch2pcb.o ../src/libpcb_fp.o  ../src/portability.o ../src/ds.o ../src/paths.o  -o gsch2pcb-rnd$(EXE) $(LDFLAGS)
+HASHOBJ=../src/3rd/genht/hash.o ../src/3rd/genht/htsp.o
+
+gsch2pcb-rnd$(EXE): gsch2pcb.o ../src/libpcb_fp.o ../src/portability.o ../src/ds.o ../src/paths.o $(HASHOBJ)
+	$(CC) gsch2pcb.o ../src/libpcb_fp.o  ../src/portability.o ../src/ds.o ../src/paths.o $(HASHOBJ)  -o gsch2pcb-rnd$(EXE) $(LDFLAGS)
 
 gsch2pcb.o: gsch2pcb.c ../src/libpcb_fp.h ../config.h  ../config.manual.h  ../config.auto.h
 	$(CC) -c $(CFLAGS) gsch2pcb.c -o gsch2pcb.o
+
+$(HASHOBJ):
+	cd ../src/3rd/genht && make
 
 ../src/portability.o:
 	cd ../src && make portability.o
