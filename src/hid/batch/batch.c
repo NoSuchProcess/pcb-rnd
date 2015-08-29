@@ -43,7 +43,7 @@ batch_get_export_options (int *n_ret)
 
 /* ----------------------------------------------------------------------------- */
 
-static char *prompt = "pcb";
+static char *prompt = NULL;
 
 static int
 nop (int argc, char **argv, Coord x, Coord y)
@@ -54,6 +54,8 @@ nop (int argc, char **argv, Coord x, Coord y)
 static int
 PCBChanged (int argc, char **argv, Coord x, Coord y)
 {
+	if (prompt != NULL)
+		free(prompt);
   if (PCB && PCB->Filename)
     {
       prompt = strrchr(PCB->Filename, '/');
@@ -61,9 +63,11 @@ PCBChanged (int argc, char **argv, Coord x, Coord y)
 	prompt ++;
       else
 	prompt = PCB->Filename;
+			if (prompt != NULL)
+				prompt = strdup(prompt);
     }
   else
-    prompt = "no-board";
+    prompt = strdup("no-board");
   return 0;
 }
 
