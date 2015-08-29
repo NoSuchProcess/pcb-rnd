@@ -4387,9 +4387,14 @@ static int
 ActionChangeSizes (int argc, char **argv, Coord x, Coord y)
 {
 	int a, b, c;
+	SaveUndoSerialNumber();
 	a = ActionChangeSize(argc, argv, x, y);
+	RestoreUndoSerialNumber();
 	b = ActionChange2ndSize(argc, argv, x, y);
+	RestoreUndoSerialNumber();
 	c = ActionChangeClearSize(argc, argv, x, y);
+	RestoreUndoSerialNumber();
+	IncrementUndoSerialNumber();
 	return !(!a || !b || !c);
 }
 
