@@ -577,6 +577,35 @@ FinishStroke (void)
 }
 #endif
 
+/* --------------------------------------------------------------------------- */
+/* Ask the suer for a search pattern */
+static char *gui_get_pat()
+{
+	const char *methods[] = { "regexp", "list of names", NULL };
+	HID_Attribute attrs[] = {
+		{ .name = "Pattern", .help_text="Name/refdes pattern", .type=HID_String},
+		{ .name = "Method", .help_text="method of search: either regular expression or a list of full names separated by |", .type=HID_Enum, .enumerations=methods}
+	};
+#define nattr sizeof(attrs)/sizeof(attrs[0])
+	static HID_Attr_Val results[nattr] = {0};
+
+	attrs[0].default_val.str_value = results[0].str_value;
+	attrs[1].default_val.int_value = results[1].int_value;
+
+	gui->attribute_dialog(attrs, nattr, results, "Find element", "Find element by name");
+
+	if (results[1].int_value == 1) {
+		int len = strlen(results[0].str_value);
+		char *rpat;
+		rpat = malloc(len + 8);
+		sprintf(rpat, "^(%s)$", results[0].str_value);
+		return rpat;
+	}
+
+	return strdup(results[0].str_value);
+#undef nattr
+}
+
 /* ---------------------------------------------------------------------------
  * Clear warning color from pins/pads
  */
@@ -5580,8 +5609,7 @@ ActionSelect (int argc, char **argv, Coord x, Coord y)
 	    char *pattern = ARG (1);
 
 	    if (pattern
-		|| (pattern =
-		    gui->prompt_for (_("Enter regex pattern:"), "")) != NULL)
+		|| (pattern = gui_get_pat()) != NULL)
 	      {
 		if (SelectObjectByName (type, pattern, true))
 		  SetChangedFlag (true);
@@ -5766,8 +5794,7 @@ ActionUnselect (int argc, char **argv, Coord x, Coord y)
 	    char *pattern = ARG (1);
 
 	    if (pattern
-		|| (pattern =
-		    gui->prompt_for (_("Enter regex pattern:"), "")) != NULL)
+		|| (pattern = gui_get_pat()) != NULL)
 	      {
 		if (SelectObjectByName (type, pattern, false))
 		  SetChangedFlag (true);
