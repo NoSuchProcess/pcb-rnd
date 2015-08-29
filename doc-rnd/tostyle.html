@@ -30,6 +30,15 @@ The new route style set works on:
 	<li> elements: set all their pins and pads 
 </ul>
 
+<h2> Example </h2>
+GUI: select a routing style; hover above a line, a via, a pin/pad of an element
+or the silk of an element; press Shift+Y; undo if necessary.
+<p>
+CLI: select objects, execute action ChangeSizes(selected, style)
+<p>
+CLI: to adjust drill sizes only: select objects, execute action ChangeDrillSize(selected, style)
+
+
 <h2> save/load and compatibility </h2>
 Not affected, since the patch introduces actions and UI changes, no change
 related to the data model.
