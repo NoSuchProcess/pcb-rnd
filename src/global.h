@@ -455,6 +455,7 @@ typedef struct
    *Value,			/* the value field */
    *Description;		/* some descritional text */
   pcb_fp_type_t Type;
+  void **Tags;     /* an array of void * tag IDs; last tag ID is NULL */
 } LibraryEntryType, *LibraryEntryTypePtr;
 //typedef LibraryEntryType *LibraryEntryTypePtr;
 

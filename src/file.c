@@ -1219,6 +1219,8 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_ty
 
 	entry->Type = type;
 
+	entry->Tags = tags;
+
 	return 0;
 }
 
