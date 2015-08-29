@@ -84,8 +84,32 @@
 #include <dmalloc.h>
 #endif
 
+#include "3rd/genht/htsp.h"
+#include "3rd/genht/hash.h"
+
 RCSID("$Id$");
 
+static htsp_t *pcb_fp_tags = NULL;
+
+static int keyeq(char *a, char *b) {
+	return !strcmp(a,b);
+}
+
+const void *pcb_fp_tag(const char *tag, int alloc)
+{
+	htsp_entry_t *e;
+	static int counter = 0;
+
+	if (pcb_fp_tags == NULL)
+		pcb_fp_tags = htsp_alloc(strhash, keyeq);
+	e = htsp_getentry(pcb_fp_tags, tag);
+	if ((e == NULL) && alloc) {
+		htsp_set(pcb_fp_tags, strdup(tag), counter);
+		counter++;
+		e = htsp_getentry(pcb_fp_tags, tag);
+	}
+	return e;
+}
 
 /* Decide about the type of a footprint file:
    - it is a file element if the first non-comment is "Element(" or "Element["
@@ -166,6 +190,7 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn)
 				if ((c == '\r') || (c == '\n')) { /* end of a tag */
 					tag[tused] = '\0';
 /*					printf("TAG: '%s' '%s'\n", fn, tag);*/
+					pcb_fp_tag(tag, 1);
 					tused = 0;
 					state = ST_WS;
 					break;

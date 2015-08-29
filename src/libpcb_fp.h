@@ -36,4 +36,8 @@ FILE *pcb_fp_fopen(const char *libshell, const char *search_path, const char *na
 /* Close the footprint file opened by pcb_fp_fopen(). */
 void pcb_fp_fclose(FILE *f, int *st);
 
+/**** tag management ****/
+/* Resolve a tag name to an unique void * ID; create unknown tag if alloc != 0 */
+const void *pcb_fp_tag(const char *tag, int alloc);
+
 #endif
