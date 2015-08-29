@@ -4051,9 +4051,7 @@ static int get_style_size(int funcid, Coord *out, int type, int size_id)
 	switch (funcid) {
 		case F_Object:
 			switch(type) {
-				case ELEMENT_TYPE:
-					if (size_id == 0) /* 1st size is silk line width for some reason - skip it in object mode */
-						return -1;
+				case ELEMENT_TYPE: /* we'd set pin/pad properties, so fall thru */
 				case VIA_TYPE:
 				case PIN_TYPE:  return get_style_size(F_SelectedVias, out, 0, size_id);
 				case PAD_TYPE:  return get_style_size(F_SelectedPads, out, 0, size_id);
@@ -4121,7 +4119,7 @@ ActionChangeSize (int argc, char **argv, Coord x, Coord y)
   char *units = ARG (2);
   bool absolute;			/* indicates if absolute size is given */
   Coord value;
-  int type;
+  int type, tostyle = 0;
   void *ptr1, *ptr2, *ptr3;
 
 
@@ -4136,6 +4134,7 @@ ActionChangeSize (int argc, char **argv, Coord x, Coord y)
         if (get_style_size(funcid, &value, type, 0) != 0)
           return 1;
         absolute = 1;
+        tostyle = 1;
       }
       else
         value = GetValue (delta, units, &absolute);
@@ -4146,11 +4145,16 @@ ActionChangeSize (int argc, char **argv, Coord x, Coord y)
 	    if (type != NO_TYPE)
 	      if (TEST_FLAG (LOCKFLAG, (PinTypePtr) ptr2))
 		Message (_("Sorry, the object is locked\n"));
-	    if (ChangeObjectSize (type, ptr1, ptr2, ptr3, value, absolute))
-	      SetChangedFlag (true);
+			if (tostyle) {
+				if (ChangeObject1stSize (type, ptr1, ptr2, ptr3, value, absolute))
+	      	SetChangedFlag (true);
+			}
+			else {
+		    if (ChangeObjectSize (type, ptr1, ptr2, ptr3, value, absolute))
+		      SetChangedFlag (true);
+			}
 	    break;
 	  }
-
 	case F_SelectedVias:
 	  if (ChangeSelectedSize (VIA_TYPE, value, absolute))
 	    SetChangedFlag (true);
@@ -4319,7 +4323,6 @@ ActionChangeClearSize (int argc, char **argv, Coord x, Coord y)
         if (get_style_size(funcid, &value, type, 2) != 0)
           return 1;
         absolute = 1;
-        printf("VALUE: %d %d %d\n", value, value*2, Settings.Keepaway);
         value *= 2;
       }
       else

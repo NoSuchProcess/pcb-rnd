@@ -73,6 +73,7 @@ static void *ChangePadSize (ElementTypePtr, PadTypePtr);
 static void *ChangePadClearSize (ElementTypePtr, PadTypePtr);
 static void *ChangePadMaskSize (ElementTypePtr, PadTypePtr);
 static void *ChangePin2ndSize (ElementTypePtr, PinTypePtr);
+static void *ChangeElement1stSize (ElementTypePtr);
 static void *ChangeElement2ndSize (ElementTypePtr);
 static void *ChangeViaSize (PinTypePtr);
 static void *ChangeVia2ndSize (PinTypePtr);
@@ -138,6 +139,20 @@ static ObjectFunctionType ChangeSizeFunctions = {
   ChangePolyClear,
   ChangeViaSize,
   ChangeElementSize,		/* changes silk screen line width */
+  ChangeElementNameSize,
+  ChangePinSize,
+  ChangePadSize,
+  NULL,
+  NULL,
+  ChangeArcSize,
+  NULL
+};
+static ObjectFunctionType Change1stSizeFunctions = {
+  ChangeLineSize,
+  ChangeTextSize,
+  ChangePolyClear,
+  ChangeViaSize,
+  ChangeElement1stSize,
   ChangeElementNameSize,
   ChangePinSize,
   ChangePadSize,
@@ -655,6 +670,46 @@ ChangeElement2ndSize (ElementTypePtr Element)
 	ErasePin (pin);
 	RestoreToPolygon (PCB->Data, PIN_TYPE, Element, pin);
 	pin->DrillingHole = value;
+	if (TEST_FLAG (HOLEFLAG, pin))
+	  {
+	    AddObjectToSizeUndoList (PIN_TYPE, Element, pin, pin);
+	    pin->Thickness = value;
+	  }
+	ClearFromPolygon (PCB->Data, PIN_TYPE, Element, pin);
+	DrawPin (pin);
+      }
+  }
+  END_LOOP;
+  if (changed)
+    return (Element);
+  else
+    return (NULL);
+}
+
+/* ---------------------------------------------------------------------------
+ * changes ring dia of all pins of an element
+ * returns TRUE if changed
+ */
+static void *
+ChangeElement1stSize (ElementTypePtr Element)
+{
+  bool changed = false;
+  Coord value;
+
+  if (TEST_FLAG (LOCKFLAG, Element))
+    return (NULL);
+  PIN_LOOP (Element);
+  {
+    value = (Absolute) ? Absolute : pin->DrillingHole + Delta;
+    if (value <= MAX_PINORVIASIZE &&
+  value >= pin->DrillingHole + MIN_PINORVIACOPPER
+	&& value != pin->Thickness)
+      {
+	changed = true;
+	AddObjectTo2ndSizeUndoList (PIN_TYPE, Element, pin, pin);
+	ErasePin (pin);
+	RestoreToPolygon (PCB->Data, PIN_TYPE, Element, pin);
+	pin->Thickness = value;
 	if (TEST_FLAG (HOLEFLAG, pin))
 	  {
 	    AddObjectToSizeUndoList (PIN_TYPE, Element, pin, pin);
@@ -2143,7 +2198,7 @@ ChangeSelectedPaste (void)
 
 
 /* ---------------------------------------------------------------------------
- * changes the size of the passed object
+ * changes the size of the passed object; element size is silk size
  * Returns true if anything is changed
  */
 bool
@@ -2157,6 +2212,29 @@ ChangeObjectSize (int Type, void *Ptr1, void *Ptr2, void *Ptr3,
   Delta = Difference;
   change =
     (ObjectOperation (&ChangeSizeFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
+  if (change)
+    {
+      Draw ();
+      IncrementUndoSerialNumber ();
+    }
+  return (change);
+}
+
+/* ---------------------------------------------------------------------------
+ * changes the size of the passed object; element size is pin ring sizes
+ * Returns true if anything is changed
+ */
+bool
+ChangeObject1stSize (int Type, void *Ptr1, void *Ptr2, void *Ptr3,
+		  Coord Difference, bool fixIt)
+{
+  bool change;
+
+  /* setup identifier */
+  Absolute = (fixIt) ? Difference : 0;
+  Delta = Difference;
+  change =
+    (ObjectOperation (&Change1stSizeFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
   if (change)
     {
       Draw ();

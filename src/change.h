@@ -92,6 +92,7 @@ bool ChangeElementSide (ElementTypePtr, Coord);
 bool ChangeHole (PinTypePtr);
 bool ChangePaste (PadTypePtr);
 bool ChangeObjectSize (int, void *, void *, void *, Coord, bool);
+bool ChangeObject1stSize (int, void *, void *, void *, Coord, bool);
 bool ChangeObjectThermal (int, void *, void *, void *, int);
 bool ChangeObjectClearSize (int, void *, void *, void *, Coord,
 			       bool);
