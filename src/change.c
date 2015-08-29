@@ -706,7 +706,7 @@ ChangeElement1stSize (ElementTypePtr Element)
 	&& value != pin->Thickness)
       {
 	changed = true;
-	AddObjectTo2ndSizeUndoList (PIN_TYPE, Element, pin, pin);
+	AddObjectToSizeUndoList (PIN_TYPE, Element, pin, pin);
 	ErasePin (pin);
 	RestoreToPolygon (PCB->Data, PIN_TYPE, Element, pin);
 	pin->Thickness = value;
