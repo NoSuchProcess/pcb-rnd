@@ -230,9 +230,9 @@ lib_model_filter_visible_func (GtkTreeModel * model,
   const gchar *compname;
   gchar *compname_upper, *text_upper, *pattern;
   const gchar *text_;
-  char text[128];
+  char text[1024];
   gboolean ret;
-	char *p;
+	char *p, *tags;
 	int len, is_para = 0;
 
   g_assert (GHID_IS_LIBRARY_WINDOW (data));
@@ -243,6 +243,7 @@ lib_model_filter_visible_func (GtkTreeModel * model,
       return TRUE;
     }
 
+/* TODO: do these only once.... */
 	p = strchr(text_, '(');
 	if (p != NULL) {
 		len = p - text_;
@@ -251,10 +252,22 @@ lib_model_filter_visible_func (GtkTreeModel * model,
 	else
 		len = sizeof(text)-1;
 
-
 	strncpy(text, text_, len);
 	text[len] = '\0';
 
+	/* apply tags on non-parametrics */
+	if (!is_para) {
+		tags = strchr(text, ' ');
+		if (tags != NULL) {
+			*tags = '\0';
+			tags++;
+			while(isspace(*tags)) tags++;
+			if (*tags == '\0')
+				tags = NULL;
+		}
+	}
+	else
+		tags = NULL;
 
   /* If this is a source, only display it if it has children that
    * match */
@@ -285,8 +298,46 @@ lib_model_filter_visible_func (GtkTreeModel * model,
 				pattern = g_strconcat ("*", text_upper, "(*", NULL);
 			else
 				pattern = g_strconcat ("*", text_upper, "*", NULL);
-/* TODO: check for tags here */
+
       ret = g_pattern_match_simple (pattern, compname_upper);
+
+			if ((tags != NULL) && ret) {
+				LibraryEntryType *entry = NULL;
+				gtk_tree_model_get(model, iter, MENU_ENTRY_COLUMN, &entry, -1);
+				if ((entry != NULL) && (entry->Tags != NULL)) {
+					char *next, *tag, *need;
+					int found;
+					void **t;
+					for(tag = tags; tag != NULL; tag = next) {
+						next = strpbrk(tag, " \t\r\n");
+						if (next != NULL) {
+							*next = '\0';
+							next++;
+							while(isspace(*next)) next++;
+						}
+						need = pcb_fp_tag(tag, 0);
+						fprintf(stderr, "TAG: '%s' %p\n", tag, need);
+						if (need == NULL) {
+							ret = FALSE;
+							break;
+						}
+						found = 0;
+						for(t = entry->Tags; *t != NULL; t++) {
+							if (*t == need) {
+								found = 1;
+								break;
+							}
+						}
+						if (!found) {
+							ret = FALSE;
+							break;
+						}
+					}
+				}
+				else
+					ret = FALSE;
+			}
+
       g_free (compname_upper);
       g_free (text_upper);
       g_free (pattern);
