@@ -804,7 +804,7 @@ library_window_constructor (GType type,
   GtkWidget *content_area;
   GtkWidget *hpaned, *notebook;
   GtkWidget *libview;
-  GtkWidget *preview;
+  GtkWidget *preview, *preview_text;
   GtkWidget *alignment, *frame;
 
   /* chain up to constructor of parent class */
@@ -862,10 +862,21 @@ library_window_constructor (GType type,
 			  "element-data", NULL,
 			  /* GtkWidget */
 			  "width-request", 150, "height-request", 150, NULL);
-  gtk_container_add (GTK_CONTAINER (alignment), preview);
-  gtk_container_add (GTK_CONTAINER (frame), alignment);
+
+	preview_text = gtk_label_new ("");
+
+	{
+		GtkWidget *vbox = gtk_vbox_new (FALSE, 0);
+	  gtk_box_pack_start (GTK_BOX (vbox), preview, TRUE, TRUE, 0);
+	  gtk_box_pack_end (GTK_BOX (vbox), preview_text, FALSE, FALSE, 0);
+
+		gtk_container_add (GTK_CONTAINER (alignment), vbox);
+		gtk_container_add (GTK_CONTAINER (frame), alignment);
+	}
+
   /* set preview of library_window */
   library_window->preview = preview;
+  library_window->preview_text = preview_text;
 
   gtk_paned_pack2 (GTK_PANED (hpaned), frame, FALSE, FALSE);
 

@@ -49,6 +49,7 @@ struct _GhidLibraryWindow
   GtkTreeView *libtreeview;
   GtkNotebook *viewtabs;
   GtkWidget *preview;
+  GtkWidget *preview_text;
   GtkEntry *entry_filter;
   GtkButton *button_clear;
   guint filter_timeout;
