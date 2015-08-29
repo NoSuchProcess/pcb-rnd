@@ -4065,6 +4065,8 @@ static int get_style_size(int funcid, Coord *out, int type, int size_id)
 				return -1;
 		case F_SelectedVias:
 		case F_SelectedPins:
+		case F_SelectedObjects:
+		case F_Selected:
 		case F_SelectedElements:
 			if (size_id == 0)
 				*out = Settings.ViaThickness;
@@ -4082,9 +4084,8 @@ static int get_style_size(int funcid, Coord *out, int type, int size_id)
 			return 0;
 		case F_SelectedTexts:
 		case F_SelectedNames:
-		case F_SelectedObjects:
-		case F_Selected:
 			Message (_("Sorry, can't change style of every selected object\n"));
+			return -1;
 	}
 	return 0;
 }
