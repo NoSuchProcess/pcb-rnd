@@ -86,6 +86,7 @@ static void *ChangeArcClearSize (LayerTypePtr, ArcTypePtr);
 static void *ChangeTextSize (LayerTypePtr, TextTypePtr);
 static void *ChangeElementSize (ElementTypePtr);
 static void *ChangeElementNameSize (ElementTypePtr);
+static void *ChangeElementClearSize (ElementTypePtr);
 static void *ChangePinName (ElementTypePtr, PinTypePtr);
 static void *ChangePadName (ElementTypePtr, PadTypePtr);
 static void *ChangeViaName (PinTypePtr);
@@ -178,7 +179,7 @@ static ObjectFunctionType ChangeClearSizeFunctions = {
   NULL,
   ChangePolygonClearSize, /* just to tell the user not to :-) */
   ChangeViaClearSize,
-  NULL,
+  ChangeElementClearSize,
   NULL,
   ChangePinClearSize,
   ChangePadClearSize,
@@ -664,6 +665,77 @@ ChangeElement2ndSize (ElementTypePtr Element)
       }
   }
   END_LOOP;
+  if (changed)
+    return (Element);
+  else
+    return (NULL);
+}
+
+/* ---------------------------------------------------------------------------
+ * changes the clearance of all pins of an element
+ * returns TRUE if changed
+ */
+static void *
+ChangeElementClearSize (ElementTypePtr Element)
+{
+  bool changed = false;
+  Coord value;
+
+  if (TEST_FLAG (LOCKFLAG, Element))
+    return (NULL);
+  PIN_LOOP (Element);
+  {
+    value = (Absolute) ? Absolute : pin->Clearance + Delta;
+    if (value <= MAX_PINORVIASIZE &&
+	value >= MIN_PINORVIAHOLE && (TEST_FLAG (HOLEFLAG, pin) ||
+				      value <=
+				      pin->Thickness -
+				      MIN_PINORVIACOPPER)
+	&& value != pin->Clearance)
+      {
+	changed = true;
+	AddObjectToClearSizeUndoList (PIN_TYPE, Element, pin, pin);
+	ErasePin (pin);
+	RestoreToPolygon (PCB->Data, PIN_TYPE, Element, pin);
+	pin->Clearance = value;
+	if (TEST_FLAG (HOLEFLAG, pin))
+	  {
+	    AddObjectToSizeUndoList (PIN_TYPE, Element, pin, pin);
+	    pin->Thickness = value;
+	  }
+	ClearFromPolygon (PCB->Data, PIN_TYPE, Element, pin);
+	DrawPin (pin);
+      }
+  }
+  END_LOOP;
+
+  PAD_LOOP (Element);
+  {
+    value = (Absolute) ? Absolute : pad->Clearance + Delta;
+    if (value <= MAX_PINORVIASIZE &&
+	value >= MIN_PINORVIAHOLE
+	&& value != pad->Clearance)
+      {
+	changed = true;
+	AddObjectToClearSizeUndoList (PAD_TYPE, Element, pad, pad);
+	ErasePad (pad);
+	RestoreToPolygon (PCB->Data, PAD_TYPE, Element, pad);
+  r_delete_entry (PCB->Data->pad_tree, &pad->BoundingBox);
+  pad->Clearance = value;
+	if (TEST_FLAG (HOLEFLAG, pad))
+	  {
+	    AddObjectToSizeUndoList (PAD_TYPE, Element, pad, pad);
+	    pad->Thickness = value;
+	  }
+  /* SetElementBB updates all associated rtrees */
+  SetElementBoundingBox (PCB->Data, Element, &PCB->Font);
+
+	ClearFromPolygon (PCB->Data, PAD_TYPE, Element, pad);
+	DrawPad (pad);
+      }
+  }
+  END_LOOP;
+
   if (changed)
     return (Element);
   else
