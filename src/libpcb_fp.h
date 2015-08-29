@@ -42,4 +42,7 @@ void pcb_fp_fclose(FILE *f, int *st);
 /* Resolve a tag name to an unique void * ID; create unknown tag if alloc != 0 */
 const void *pcb_fp_tag(const char *tag, int alloc);
 
+/* Resolve a tag ID to a tag name */
+const char *pcb_fp_tagname(const void *tagid);
+
 #endif

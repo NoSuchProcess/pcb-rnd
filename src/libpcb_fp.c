@@ -108,7 +108,12 @@ const void *pcb_fp_tag(const char *tag, int alloc)
 		counter++;
 		e = htsp_getentry(pcb_fp_tags, (char *)tag);
 	}
-	return e;
+	return e->key;
+}
+
+const char *pcb_fp_tagname(const void *tagid)
+{
+	return (char *)tagid;
 }
 
 /* Decide about the type of a footprint file:
