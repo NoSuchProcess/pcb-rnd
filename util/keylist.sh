@@ -203,7 +203,7 @@ gen_html()
 	END {
 		print "<html><body>"
 		print "<h1> Key to action bindings </h1>"
-		print "<table border=1>"
+		print "<table border=1 colspacing=0>"
 		printf("<tr><th> key <th> modifiers")
 		for(h in HIDS)
 			printf(" <th>%s<br>%s", h, HIDNAMES[h])
@@ -215,6 +215,8 @@ gen_html()
 			print "<tr>"
 			if (base != last_base)
 				print "	<th rowspan=" ROWSPAN[base] ">" base
+			if (mods == "")
+				mods = "&nbsp;"
 			print "	<td>" mods
 			for(h in HIDS)
 				print "	<td>", ACTION[h, key]
