@@ -18,7 +18,7 @@ same bus wires. In this case connections should be swapped during pcb routing
 and annotated back to gschem so that the schematics can be updated. Both
 paths are illustrated below.
 <p>
-<img src="20150830b_annot.png" alt="annotation paths">
+<img src="res/20150830b_annot.png" alt="annotation paths">
 <p>
 Forward annotation passes on complete netlists along arrows forward1 and
 forward2. Back annotation would pass back netlists, changes or modification
@@ -108,15 +108,15 @@ Using the above example (n1=A1-B1 and n2=A2-B2 changed to n1=A1-B2 and n2=A2-B1)
 I believe the user would:
 <table border=1>
 	<tr><th> action <th> screenshot
-	<tr><td><ul><li> look at initial rats</ul><td> <img src="20150830b_s0.png" width="50%">
-	<tr><td><ul><li> first connect A1 to B1</ul> <td> <img src="20150830b_s1.png"  width="50%">
+	<tr><td><ul><li> look at initial rats</ul><td> <img src="res/20150830b_s0.png" width="50%">
+	<tr><td><ul><li> first connect A1 to B1</ul> <td> <img src="res/20150830b_s1.png"  width="50%">
 
 	<tr><td><ul>
 	<li> then realize it's very hard to connect A2 to B2 while the previous connection is there
 	<li> he would then revert the first connection
 	<li> and connect A1 to B2
 	<li> which would cause shorts
-	</ul><td> <img src="20150830b_s2.png"  width="50%">
+	</ul><td> <img src="res/20150830b_s2.png"  width="50%">
 
 	<tr><td><ul>
 	<li> then he would use the "approve netlist change" hotkey/action on the network;
@@ -124,19 +124,19 @@ I believe the user would:
 	     but would also keep the A1-B1 connection, which remains a rat; because
 	     of the new connection there'd be a rat between A1 and A2 or B1 and B2 too
 	     (all 4 pins connected together on the patched netlist at the moment!)
-	</ul><td> <img src="20150830b_s3.png" width="50%">
+	</ul><td> <img src="res/20150830b_s3.png" width="50%">
 
 	<tr><td><ul>
 	<li> the user would then use an action (maybe the same one?) on the rat line
 	     so that pcb-rnd would understand that rat is not needed anymore and
 	     would add a patch to remove the A1-B1 connection
 	<li> the same thing would need to happen to the A2-B2 rat
-	</ul><td> <img src="20150830b_s4.png" width="50%">
-	<tr><td><ul><li> the user then would connect A2 to B1, which again is a short</ul><td><img src="20150830b_s5.png" width="50%">
+	</ul><td> <img src="res/20150830b_s4.png" width="50%">
+	<tr><td><ul><li> the user then would connect A2 to B1, which again is a short</ul><td><img src="res/20150830b_s5.png" width="50%">
 	<tr><td><ul>
 	<li> the user would approve it as a new connection
 	<li> we have exactly 2 del_conn and 2 add_conn patches.
-	</ul><td><img src="20150830b_s6.png" width="50%">
+	</ul><td><img src="res/20150830b_s6.png" width="50%">
 </table>
 An experienced user may think a few steps in advance and
 chose to first remove the A1-B1 and A2-B2 rats and then create the A1-B2
