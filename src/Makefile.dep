@@ -255,7 +255,8 @@ portability.o: portability.c ../config.h ../config.manual.h \
 ds.o: ds.c ds.h
 libpcb_fp.o: libpcb_fp.c ds.h ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
- hid.h polyarea.h libpcb_fp.h error.h portability.h
+ hid.h polyarea.h libpcb_fp.h error.h portability.h 3rd/genht/htsp.h \
+ 3rd/genht/ht.h 3rd/genht/ht_inlines.h 3rd/genht/hash.h
 parse_y.o: parse_y.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h create.h data.h error.h file.h mymem.h misc.h ds.h parse_l.h \
