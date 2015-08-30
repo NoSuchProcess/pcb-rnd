@@ -55,6 +55,18 @@ test how it performs in mainline versions.
 If the feature is in line with the goals of pcb-rnd, fine, I'll ive
 you svn commit access from day 0.
 
+<h4> 1.7. Would you abandon the development of pcb-rnd and join the mainline, if... </H4>
+Unlikely. There are many things I have in pcb-rnd which I believe won't ever
+happen in mainline. There are a few which I find critical: if I'd need to
+give up any single item from this list, that would be a deal-breaker for me:
+<ul>
+	<li> simple, centralized VCS (not just the UI, the whole thing)
+	<li> VCS base, zero-administration release and publish interface
+	<li> sane build system instead of autotools
+	<li> the code won't switch to C++
+</ul>
+
+
 <H3> 2. git: did you know... </H3>
 
 Preface: I don't try to convince you not to use git in your project; in
@@ -68,18 +80,39 @@ case of small teams. A different UI or a good document won't help in that.
 <H4> 2.2. ... that there was this great document about git? </H4>
 See 2.1.
 
-<H4> 2.3. ... that DVCS is the future, anything centralized is bad? </H4>
-These are not facts, but slogens I don't believe in.
+<H4> 2.3. ... that DVCS is the future, anything centralized is bad, svn is obsolete? </H4>
+These are not facts, but slogans I don't believe in.
 
-<H4> 2.4. ... what if someone has to develop offline for long? </H4>
+<H4> 2.4. What if someone has to develop offline for long? </H4>
 In the 21th century, when we have cheap mobile internet even in eastern
 europe?
 
-<H4> 2.5. ... but feature X is harder with svn... </H4>
+<H4> 2.5. But feature X is harder with svn! </H4>
 Almost all those features are bad for team work in my experience. They
 are not even needed. Yes, some aspects of the development have to be
 done differently without those - but this is good for the project.
 
+<H4> 2.6. But there are no local repositories and you have to commit unfinished stuff and worry if anything breaks! And branching is hard </H4>
+This is the point. I do not branch. I do not attempt to work offline for long,
+whatever technical support the VCS may provide for that. I try to work in
+a team, on a common code base.
+<p>
+I commit small things. I make sure I do a big transition using
+these small commits in a way that the code stays compilable in between any
+two commits. It rarely breaks trunk/ for longer than a few minutes. I
+need a real branch once a decade.
+
+<H4> 2.7. But that's extra effort and makes life harder! </H4>
+Yes and no. It's certainly harder to design and carry out a big
+reorganization in small steps. This is an extra cost. However, the
+benefits outweight this: everyone working in the same repo,
+other developers see and comment what you are working on, if done right,
+merging is nearly never needed and conflicts are as rare as bugfree
+release of a multimillion line proprietary software.
+
+<h4> 2.8. I don't agree with any of this, git is better! </H4>
+Cool, so go on using git. I didn't try to convince you not to, I just
+explained why I won't.
 
 <H3> 3. opengl </H3>
 
@@ -141,8 +174,48 @@ the buffer or even the in-core footpritns on one end and connecting
 an sql database on the other end.
 
 
+<H3> 5. scconfig, autotools, build systems </H3>
 
+<h4> 5.1. scconfig doesn't support feature X that autotools does </h4>
+Are you sure? Maybe it does, just uses a different syntax. If not, did
+you try to send me a feature request?
 
+<h4> 5.2. scconfig's syntax is different </h4>
+Yes. Scconfig has a totally differnet internal model thus the UI differs
+too. Same as vim has a differet UI than emacs, while they are both text
+editors and the two communities are not trying too hard to unify the UIs.
+
+<h4> 5.3. But ./configure has to have the same UI as autotools </h4>
+False.
+
+<h4> 5.4. Most poeple know autotools, there are merits in supporting the same features or UI </h4>
+I do realize that. I've been working on scconfig since 2008. I've invested
+a lot of time in it. Believe me, I did think it over before I decided that
+the benefits would overweight the drawbacks of developing/using a custom
+config/build system.
+
+<h4> 5.5. But autotools is so much better! </H4>
+No, it isn't. My experience is that with random open source projects
+on anything different from Linux, modern BSD, and sometimes windows, it
+just breaks at least 8 times out of 10. Try it once on IRIX or minix.
+
+<h4> 5.6. So why don't you rather fix autotools? </H4>
+I believe there are multiple design problems in autotools and most of
+the practical problems I faced when using it were directly caused by those.
+In a sense, I did fix these design problems by using a different design.
+The different design is called scconfig and it was much easier to
+write it from scratch.
+
+<h4> 5.7. But scconfig doesn't do cross compilation! </H4>
+False. It does. It's been supported since May 2008. It's been added
+about 1.5 months after the very first file.
+
+<h4> 5.8. I just don't like scconfig. </H4>
+If you have something particular that makes you dislike scconfig,
+a missing feature for example, please let me know.
+<p>
+Else maybe you don't like using anything else than autotools. It's your
+choice; mine is that I do keep on using scconfig in my projects.
 
 
 
