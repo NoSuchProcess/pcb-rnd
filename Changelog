@@ -1,3 +1,72 @@
+pcb-rnd 1.0.3
+~~~~~~~~~~~~~
+	[gpmi]
+		-Add: GPMI plugin/buildin for scripiting (import of project pcb-gpmi)
+	
+	[tostyle]
+		-Add: new feature to adjust the sizes of object(s) to the values of the current routing style
+	
+	[pcb-fp]
+		-Add: support for parsing and caching footprint tags (file elements)
+		-Add: the gtk HID displays tags
+		-Add: the gtk HID can filter for tags
+	
+	[pcblib-param]
+		-Add: bga()
+		-Add: generic qf() generator
+		-Add: qfn() - based on qf()
+		-Add: qfp() - based on qf()
+		-Add: plcc() - based on qf()
+		-Add: qsop() - based on so()
+		-Add: silkmark: accept multiple values
+		-Add: silkmark: can be external
+		-Add: silkmark: new styles exteranl45, dot, circle, and arc
+		-Add: connector() has a sequence option to change pin numbering
+		-Add: some tunings for connector sequence=zigzag to do something usable with etrunc=1
+	
+	[hid]
+		-Add: dynamic menus: create_menu(), menu paths, runtime insertion of menus in core
+		-Add: dynamic menus in gtk
+		-Add: dynamic menus in lesstif
+		-Fix: more const correctness in dialog box code
+	
+	[scconfig]
+		-Add: ./configure --help
+		-Add: print configuration summary at the end
+		-Add: autodetect HOST (use sys/sysid)
+		-Add: src/3rd for central hosting of 3rd party software libs
+		-Add: support "buildins": plugins built into the code
+		-Change: move genht to src/3rd; policy: prefer genht over glib hash
+		-Fix: tests try to run pcb-rnd, not pcb
+		-Fix: central LDFLAGS and CFLAGS should contain the ldflags/cflags detected for generic use
+	
+	[pcb-mincut]
+		-Merge: pcb-mincut is imported in pcb-rnd, the extern repo will be removed
+	
+	[core]
+		-Add: event subsystem
+		-Add: gui_init event
+		-Add: generic plugin support: track plugins loaded, have a menu for managing them
+		-Add: more accessors to query unit details - for the gpmi scripts
+		-Add: pcb-printf %mI prints coordinate in internal coord format
+		-Add: calls for removing actions
+		-Add: calls for removing a hid (useful for removing exporter hids registered by scripts)
+		-Add: path resolution: support ~ in paths
+		-Add: real regex search and real string list search (in search by name actions)
+		-Change: switch over actions from bsearch() to a genht hash - simpler code, potentially also faster
+		-Fix: don't allow the registration of an action with a name that's already registered
+	
+	
+	[fp2anim]
+		-Add: optional dimension lines
+		-Add: more fine grained annotation control
+		-Change: switch over to vector fonts for better scaling
+		-Fix: draw rounded pads (new pad syntax only)
+		-Fix: make sure to generate sane arcs
+	
+	[doc-rnd]
+		-Add: official central key list
+
 pcb-rnd 1.0.2
 ~~~~~~~~~~~~~
 	[pcblib-param]

@@ -9,7 +9,7 @@
 #include "tmpasm_scconfig.h"
 #include "util/arg_auto_set.h"
 
-#define version "1.0.1"
+#define version "1.0.3"
 
 static void help1(void)
 {

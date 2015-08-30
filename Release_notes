@@ -1,15 +1,10 @@
-pcb-rnd 1.0.2
+pcb-rnd 1.0.3
 ~~~~~~~~~~~~~
-Version 1.0.2 is a minor cleanup release. While cleaning up more autotools
-leftover and switching over more parts to scconfig, it became possible
-to configure the lesstif HID.
+Version 1.0.3 is a major feature release with the following highlights:
+ - embedded GPMI scripting
+ - adjust object sizes to current routing style
+ - static footprint tags: display tags and search by tag on the gtk HID
+ - dynamic UI menus and actions (for the scripts)
+ - new parametric footprints: qfp(), qfn(), plcc(), qsop(), bga()
+ - better regex and stringlist based search-by-name
 
-Both the gtk and the lesstif HIDs are optional (so that they can be
---disabled in ./configure and it is not fatal if they are not found).
-Multiple GUI HIDs can be compiled into the same pcb-rnd executable.
-When starting pcb-rnd, there is a builtin list of GUI HID preferences:
-gtk, lesstif, <anything_else>. The user can explicitly set the preferred
-GUI with the --gui option (e.g. pcb-rnd --gui lesstif).
-
-The rest of the cleanup is about minor bugs in parametric footprints
-and the footprint preview script.
