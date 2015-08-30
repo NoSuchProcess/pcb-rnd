@@ -575,7 +575,7 @@ for t in $all_tests ; do
     # run PCB
     #
 
-    echo "${PCB} -x ${hid} ${pcb_flags} ${path_files}"
+    echo "cd ${rundir} && ${PCB} -x ${hid} ${pcb_flags} ${files}"
     (cd ${rundir} && ${PCB} -x ${hid} ${pcb_flags} ${files})
     pcb_rc=$?
 
