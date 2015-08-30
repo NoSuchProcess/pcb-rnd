@@ -1,0 +1,19 @@
+digraph annot {
+
+
+	gnetlist [shape=box]
+
+	{rank=same pcb gschem spacer1}
+
+	spacer1 [style=invisible]
+
+	foo [shape=box]
+
+	gschem -> gnetlist [label="forward1"]
+	pcb -> foo [label="back1"]
+
+	gschem->spacer1->pcb [style=invisible arrowhead=none]
+
+	gnetlist -> pcb [label="forward2"]
+	foo -> gschem [label="back2"]
+}

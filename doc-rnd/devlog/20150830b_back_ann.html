@@ -1,0 +1,165 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> back annotation </H2>
+
+<H3> netlists, annotations </H3>
+
+Pcb-rnd (and mainline pcb) maintains a netlist as part of the design. Pcb
+doesn't modify the netlist. The netlist is imported from an external source,
+typically from gschem. This process is called forward annotation.
+<p>
+Sometimes there are a set of connections which contain pin pairs that could
+be swapped. For example the data lines of an external parallel SRAM interface
+to an MCU: it doesn't matter if data bit 1 at the MCU is wired to data bit
+1 or 5 of the SRAM, as there is an 1:1 mapping and no one else is using the
+same bus wires. In this case connections should be swapped during pcb routing
+and annotated back to gschem so that the schematics can be updated. Both
+paths are illustrated below.
+<p>
+<img src="20150830b_annot.png" alt="annotation paths">
+<p>
+Forward annotation passes on complete netlists along arrows forward1 and
+forward2. Back annotation would pass back netlists, changes or modification
+requests on the back1, back2 path. Gnetlist takes sch files to extract
+and build a netlist in whatever format the receiver needs. There should be a
+glue layer, called <i>foo</i> on the drawing, that does the reverse: receives
+whatever format the sender has and generates something that gschem will
+understand.
+
+<H3> Support in pcb-rnd: core </H3>
+Pcb-rnd gets a complete netlist. If the user could change the netlist directly,
+there should be some sort of diff tool in <i>foo</i> that can explain the
+changes to gschem, or a diff tool in gschem. What is worse, forward annotation
+happens much more often than back annotation and pcb-rnd would need to be able
+to merge a new netlist with local changes. The simple "gsch2pcb overwrites the
+netlist in pcb from whatever gnetlist produced" approach would not work.
+<p>
+An alternative is to keep the netlist as-is, and maintain a separate list of
+changes. The form proposed hereby is a table of "operation,net,pinID" or
+"operation,net". Operation is one of "del_conn", "add_conn", "del_net" and
+"add_net". The table is called the <i>netlist patch</i>.
+<p>
+For example assume two components with pins A1, A2 and B1, B2, with connections
+n1=A1-B1 and n2=A2-B2. While routing the designer decides changing them to
+n1=A1-B2 and n2=A2-B1 would be easier and is acceptable by the design. The
+table of changes would contain this:
+<table border=1>
+	<tr><th>op        <th> net    <th> pinID
+	<tr><td>del_conn  <td> n1     <td> B1
+	<tr><td>del_conn  <td> n2     <td> B2
+	<tr><td>add_conn  <td> n1     <td> B2
+	<tr><td>add_conn  <td> n2     <td> B1
+</table>
+The first two lines would remove pins B1 and B2 from n1 and n2. The last
+two would put them back, swapped. New nets could be created or unused nets
+could be removed using the add_net and del_net commands that have empty pinID.
+The table is ordered, rows are strictly executed from top to bottom.
+<p>
+Pcb-rnd would store this table in memory. When some code calls the netlist
+code to find out the members of a net, or which net a given pin is connected to,
+after running the original netlist code, the result would be adjusted by the table.
+<p>
+The table would be normalized after operations. For example:
+<table border=1>
+	<tr><th>op        <th> net    <th> pinID
+	<tr><td>del_conn  <td> n1     <td> B1
+	<tr><td>add_conn  <td> n2     <td> B1
+	<tr><td>add_conn  <td> n3     <td> B1
+	<tr><td>del_conn  <td> n2     <td> B1
+</table>
+would be reduced to
+<table border=1>
+	<tr><th>op        <th> net    <th> pinID
+	<tr><td>del_conn  <td> n1     <td> B1
+	<tr><td>add_conn  <td> n3     <td> B1
+</table>
+Simple linear crawls on the table seems sufficient: it is expected that
+pcb designers will make netlist modifications rarely and they will back
+annotate them ASAP. In extreme cases there may be 64 bit wide bus systems that
+need total reordering; even a 4 such reorders will introduce about 1024 items
+on the list which seems not too big for O(1) algorithms. See section TODO
+for better approaches.
+<p>
+Pcb-rnd would save the normalized table in the pcb file in a new section.
+Upon a netlist change in pcb (import/load netlist or load the pcb), pcb-rnd
+would check each row of the table: it is easy to decide whether that row
+has been implemented in the netlist or not. Obsolete rows of the table would
+be deleted.
+<p>
+A corner case is when B1 is removed from n1 and then added to n2 by the table,
+while a new forward annotation removes B1 from n1 and adds it to n3. In this
+case the first row of the table is deleted, as B1 is already removed from n1,
+but pcb-rnd has no chance to decide if netlist adding B1 to n3 should affect
+the table adding B1 to n2, so that rule is kept.
+
+<H3> Support in pcb-rnd: GUI </H3>
+A trivial idea is to extend the netlist window so that pins can be moved in
+between nets or deleted or assigned to nets. Changes should be marked. This
+is not the preferred way of editing the netlist, tho: not much more convenient
+than making changes in gschem and doing forward annotation.
+<p>
+There should be a separate dialog box or a separate region of the netlist box
+showing the <i>netlist patch</i> with edit capabilities.
+<p>
+Finally, the most important feature would be new actions resolving shorts.
+Using the above example (n1=A1-B1 and n2=A2-B2 changed to n1=A1-B2 and n2=A2-B1),
+I believe the user would:
+<ul>
+	<li> first connect A1 to B1
+	<li> then realize it's very hard to connect A2 to B2 while the previous connection is there
+	<li> he would then revert the first connection
+	<li> and connect A1 to B2
+	<li> which would cause a short
+	<li> then he would use the "approve netlist change" hotkey/action on the network;
+	     this would add <i>netlist patch</i> commands for the A1-B2 connection,
+	     but would also keep the A1-B1 connection, which remains a rat; because
+	     of the new connection there'd be a rat between A1 and A2 or B1 and B2 too
+	     (all 4 pins connected together on the patched netlist at the moment!)
+	<li> the user would then use an action (maybe the same one?) on the rat line
+	     so that pcb-rnd would understand that rat is not needed anymore and
+	     would add a patch to remove the A1-B1 connection
+	<li> the same thing would need to happen to the A2-B2 rat
+	<li> the user then would connect A2 to B1, which again is a short
+	<li> the user would approve it as a new connection
+	<li> we have exactly 2 del_conn and 2 add_conn patches.
+</ul>
+An experienced user may think a few steps in advance and
+chose to first remove the A1-B1 and A2-B2 rats and then create the A1-B2
+and A2-B1 connections and then approve the two new connections.
+<p>
+These changes would live immediately, leaving the board free of shorts and
+rats. There should be, however, some warning in the "congratulation" message
+that tells the user a back annotation is still required.
+
+<H3> Support in gschem </H3>
+There are multiple ways pins can be connected to a net in gschem. It's
+probably not a good idea to have too much automatism in the gschem's side,
+trying to actually removing connections and adding new ones using the patch
+(or whatever info <i>foo</i> converted the patch into).
+<p>
+However, gschem should support four things natively:
+<ul>
+	<li> it should have a concept of an unwanted pin-network connection; a connection
+	     becomes unwanted only when the back annotation says so
+	<li> it should be able to mark unwanted connections on the active schematic page
+	<li> it should be able to tell the user if there are unwanted connections on
+	     any of the pages open
+	<li> it should be able to refresh its idea of unwanted connections while
+	     schematic pages are open
+</ul>
+<p>
+Displaying unwanted connections happen at:
+<ul>
+	<li> a pin of a component is connected to a net using a "blue line" net: mark the pin-net connection point
+	<li> a pin is directly connected to another pin, no net line in between: mark the connection point
+	<li> a pin is connected to a net using a pin attribute: mark the pin
+	<li> TODO: are there more?
+</ul>
+<p>
+TODO: there are a lot to think over about special cases related to
+multipage schematics, hierarchies, slots, split symbols.
+
+<H3> What <i>foo</i> does exactly </H3>
+... is not clear yet. It depends on what sort of support gschem would provide.
