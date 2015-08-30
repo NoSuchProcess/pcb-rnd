@@ -52,7 +52,7 @@ patches, make changes to get my code compatible with the mainline or
 test how it performs in mainline versions.
 
 <H4> 1.6. I'd like to merge something from mainline to pcb-rnd </H4>
-If the feature is in line with the goals of pcb-rnd, fine, I'll ive
+If the feature is in line with the goals of pcb-rnd, fine, I'll give
 you svn commit access from day 0.
 
 <h4> 1.7. Would you abandon the development of pcb-rnd and join the mainline, if... </H4>
@@ -85,7 +85,7 @@ These are not facts, but slogans I don't believe in.
 
 <H4> 2.4. What if someone has to develop offline for long? </H4>
 In the 21th century, when we have cheap mobile internet even in eastern
-europe?
+Europe?
 
 <H4> 2.5. But feature X is harder with svn! </H4>
 Almost all those features are bad for team work in my experience. They
@@ -108,7 +108,7 @@ reorganization in small steps. This is an extra cost. However, the
 benefits outweight this: everyone working in the same repo,
 other developers see and comment what you are working on, if done right,
 merging is nearly never needed and conflicts are as rare as bugfree
-release of a multimillion line proprietary software.
+release of a multi-million line proprietary software.
 
 <h4> 2.8. I don't agree with any of this, git is better! </H4>
 Cool, so go on using git. I didn't try to convince you not to, I just
@@ -139,16 +139,16 @@ Not for me: transparency made even a 2 layer board cryptic when I tried. See
 Nope. I prefer C.
 
 <H4> 4.2. but pcb-rnd doesn't compile with a C++ compiled </H4>
-Correct: pcb-rnd is written in C. It also doesn't compile with a pascal
+Correct: pcb-rnd is written in C. It also doesn't compile with a Pascal
 compiler.
 
 <H4> 4.3. but mainline already invested in preparing a C++ transition </H4>
 Good for them. If I didn't have a fork, I'd fork the day when the first
-C++ class is commited.
+C++ class is committed.
 
-<H4> 4.4. we need sql for the file format </H4>
+<H4> 4.4. we need SQL for the file format </H4>
 No, we don't. I prefer human readable text formats. No, converters won't
-solve that. No, I don't care if python has support for loading sql files.
+solve that. No, I don't care if python has support for loading SQL files.
 
 <H4> 4.3. we need to switch to xml/json (or python or perl arrays) </H4>
 No, we don't need to.
@@ -163,15 +163,15 @@ True. And that's because the internal model (the in-core representation
 and <b>all the code handling that</b>) doesn't support the feature either.
 Changing the file format won't help that. It's similar to point 4.4.: 95%
 of the effort is needed to get the code to support the feature, and by that
-time the cost of getting it into the file format is neglible. Costs
-are not justufied.
+time the cost of getting it into the file format is very small. Costs
+are not justified.
 
 <H4> 4.6. ... but I can't build a database of the current lib </h4>
 Too bad. Either figure how to do it, or just don't do it. pcb-rnd
-offers scripting, even in languages that have sql support. In theory
+offers scripting, even in languages that have SQL support. In theory
 it wouldn't be that hard to write scripts running in PCB manipulating
-the buffer or even the in-core footpritns on one end and connecting
-an sql database on the other end.
+the buffer or even the in-core footprints on one end and connecting
+an SQL database on the other end.
 
 
 <H3> 5. scconfig, autotools, build systems </H3>
@@ -181,14 +181,14 @@ Are you sure? Maybe it does, just uses a different syntax. If not, did
 you try to send me a feature request?
 
 <h4> 5.2. scconfig's syntax is different </h4>
-Yes. Scconfig has a totally differnet internal model thus the UI differs
-too. Same as vim has a differet UI than emacs, while they are both text
+Yes. Scconfig has a totally different internal model thus the UI differs
+too. Same as vim has a different UI than emacs, while they are both text
 editors and the two communities are not trying too hard to unify the UIs.
 
 <h4> 5.3. But ./configure has to have the same UI as autotools </h4>
 False.
 
-<h4> 5.4. Most poeple know autotools, there are merits in supporting the same features or UI </h4>
+<h4> 5.4. Most people know autotools, there are merits in supporting the same features or UI </h4>
 I do realize that. I've been working on scconfig since 2008. I've invested
 a lot of time in it. Believe me, I did think it over before I decided that
 the benefits would overweight the drawbacks of developing/using a custom
