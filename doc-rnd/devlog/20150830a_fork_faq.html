@@ -1,0 +1,148 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> Fork FAQ </H2>
+
+This document contains my short answers to questions commonly popping up
+in endless flamewars on the geda mailing list. <b>The purpose of this
+document is not to convince anyone about any of the questions</b>, only
+to save me typing the same answers when someone asks me
+one these questions for the 100th time. As I don't want to convince you
+that my answers are the best ones, please don't try to convince me that
+they are bad. Been there, done that, never worked in either way: e.g.
+I never convinced any git fanboy to switch to svn, and they never
+convince me to switch to git.
+
+<H3> 1. Why did you fork? </H3>
+
+<H4> 1.1. Fragmentation is bad, your fork is harmful! </H4>
+I agree that fragmentation is bad. I believe the some aspects of
+the current project management and especially the choice of VCS inevitably
+leads to forks (just look at how many git forks are out there!). Such
+fragmentation of developer and user resources may be bad for a project.
+However, these decisions are not mine: the project is set up like
+that, I can't change it
+<p>
+My fork is just a fork, just like any of the other forks. My fork happens to
+be in an svn repository. I don't think it changes anything important from the
+mainline's point of view.
+
+<H4> 1.2. ... but how will you get all these merged with mainline? </H4>
+I won't. I haven't really used the official, current mainline since like
+2011. I don't really care in what directions it evolves or whether it
+takes features, code or ideas from pcb-rnd or not.
+
+<H4> 1.3. ... but you are in the best position for a merge! </H4>
+I don't think so. I know my changes, but I don't know the changes happened
+in the mainline since ages. I am also not efficient with git. It wouldn't
+take me any less time than for mainline developers. Also please read point 1.2.:
+I have no motivation in spending any time on a merge.
+
+<H4> 1.4. Ok then, but you won't have too many users. </H4>
+Fine. My main intention was to produce a pcb editor for my own use. I am
+happy if it's also useful for others, so I publish it. Having users
+may increase code quality - but other than that, I don't get paid for having
+more users, the project doesn't die if I code it alone, so I am not worried
+about this.
+
+<H4> 1.5. I'd like to merge something from pcb-rnd to mainline </H4>
+Go ahead. I can help you by explaining my code. I won't generate
+patches, make changes to get my code compatible with the mainline or
+test how it performs in mainline versions.
+
+<H4> 1.6. I'd like to merge something from mainline to pcb-rnd </H4>
+If the feature is in line with the goals of pcb-rnd, fine, I'll ive
+you svn commit access from day 0.
+
+<H3> 2. git: did you know... </H3>
+
+Preface: I don't try to convince you not to use git in your project; in
+return, please don't try to convince me I should use git in mine.
+
+<H4> 2.1. ... that there was an svn frontend to git? </H4>
+Yes. 2/3 of my problems with git and DVCS in general are not of technical
+nature. I know the <b>concepts</b> of DVCS and I find them suboptimal in
+case of small teams. A different UI or a good document won't help in that.
+
+<H4> 2.2. ... that there was this great document about git? </H4>
+See 2.1.
+
+<H4> 2.3. ... that DVCS is the future, anything centralized is bad? </H4>
+These are not facts, but slogens I don't believe in.
+
+<H4> 2.4. ... what if someone has to develop offline for long? </H4>
+In the 21th century, when we have cheap mobile internet even in eastern
+europe?
+
+<H4> 2.5. ... but feature X is harder with svn... </H4>
+Almost all those features are bad for team work in my experience. They
+are not even needed. Yes, some aspects of the development have to be
+done differently without those - but this is good for the project.
+
+
+<H3> 3. opengl </H3>
+
+<H4> 3.1. But I need opengl! </H4>
+Use the mainline then. Or contribute the code for sane opengl support
+in pcb-rnd. I can live with a solution where opengl is a separate HID and
+is not the default one. 
+
+<H4> 3.2. ... good, then please make that opengl hid!</H4>
+No, thanks. I don't need it, I wouldn't use it, there's no point in spending
+my time on it. If you need it, I invite you to do it.
+
+<H4> 3.3. Did you know that opengl can be turned off in mainline? </H4>
+Yes. If I have a fork, I want its defaults to reflect my preferences.
+
+<H4> 3.4. But transparent renders are so good on a board with many layers! </H4>
+Not for me: transparency made even a 2 layer board cryptic when I tried. See
+3.1.
+
+
+<H3> 4. programming languages, file formats </H3>
+
+<H4> 4.1. switch to C++, it is so much better </H4>
+Nope. I prefer C.
+
+<H4> 4.2. but pcb-rnd doesn't compile with a C++ compiled </H4>
+Correct: pcb-rnd is written in C. It also doesn't compile with a pascal
+compiler.
+
+<H4> 4.3. but mainline already invested in preparing a C++ transition </H4>
+Good for them. If I didn't have a fork, I'd fork the day when the first
+C++ class is commited.
+
+<H4> 4.4. we need sql for the file format </H4>
+No, we don't. I prefer human readable text formats. No, converters won't
+solve that. No, I don't care if python has support for loading sql files.
+
+<H4> 4.3. we need to switch to xml/json (or python or perl arrays) </H4>
+No, we don't need to.
+
+<h4> 4.4. ... but they are easier to parse because of existing libs </h4>
+Yup, but in any real life task that part of the parsing is like 5%. The
+rest 95% needs to be programmed anyway. The costs of such a file format change
+is not justified by this minor gain.
+
+<h4> 4.5. ... but the current file format doesn't support feature X </h4>
+True. And that's because the internal model (the in-core representation
+and <b>all the code handling that</b>) doesn't support the feature either.
+Changing the file format won't help that. It's similar to point 4.4.: 95%
+of the effort is needed to get the code to support the feature, and by that
+time the cost of getting it into the file format is neglible. Costs
+are not justufied.
+
+<H4> 4.6. ... but I can't build a database of the current lib </h4>
+Too bad. Either figure how to do it, or just don't do it. pcb-rnd
+offers scripting, even in languages that have sql support. In theory
+it wouldn't be that hard to write scripts running in PCB manipulating
+the buffer or even the in-core footpritns on one end and connecting
+an sql database on the other end.
+
+
+
+
+
+
+
