@@ -229,8 +229,12 @@ gen_html()
 			if (mods == "")
 				mods = "&nbsp;"
 			print "	<td>" mods
-			for(h in HIDS)
-				print "	<td>", ACTION[h, key]
+			for(h in HIDS) {
+				act = ACTION[h, key]
+				if (act == "")
+					act = "&nbsp;"
+				print "	<td>", act
+			}
 			last_base = base
 		}
 		print "</table>"
