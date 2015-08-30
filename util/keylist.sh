@@ -1,5 +1,22 @@
 #!/bin/sh
-# parse the .res files for GUI HIDs and build a table of keys
+#   keylist - list hotkey->actions found in .res files in a html table, per HID
+#   Copyright (C) 2015 Tibor 'Igor2' Palinkas
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc.,
+#   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+#   http://repo.hu/projects/pcb-rnd
 
 if test -z "$*"
 then
@@ -23,17 +40,26 @@ tokenize()
 		BEGIN {
 			q = "\""
 		}
+
+# echo a character and remember if it was a newline
 		function echo(c) {
 			had_nl = (c == "\n")
 			printf "%s", c
 		}
+
+# echo a newline if the previous character written was not a newline
 		function nl() {
 			if (!had_nl)
 				echo("\n")
 		}
+
+# parse state machine: eats input character by character
 		function parse(c) {
+#			ignore comments
 			if (in_comment)
 				return
+
+#			quote state machine
 			if (in_quote) {
 				if (bslash) {
 					echo(c)
@@ -50,28 +76,39 @@ tokenize()
 				echo(c)
 				return
 			}
+
 			if (c == "#") {
 				in_comment = 1
 				return
 			}
+
+#			quote start
 			if (c == q) {
 				in_quote = 1
 				echo(c)
 				return
 			}
+
+#			whitespace are non-redundant newlines
 			if (c ~ "[ \t]") {
 				nl()
 				return
 			}
+
+#			"keywords"
 			if (c ~ "[{}=]") {
 				nl()
 				echo(c)
 				nl()
 				return
 			}
+
+#			anything else
 			echo(c)
 		}
-	
+
+# each new line of the input is a set of characters
+# reset comment first, as it spanned to the previous newline
 		{
 			in_comment = 0
 			l = length($0)
@@ -81,6 +118,10 @@ tokenize()
 	'
 }
 
+# "grammar": read tokens and output "key src action" where
+#   key is in base-modified-modifier format, modifiers ordered
+#   src is the source res file we are working from, passed as $1
+#   action is the action given right after the key or before the key
 extract_from_res()
 {
 	tokenize | awk -v "src=$1" '
@@ -130,7 +171,7 @@ extract_from_res()
 	'
 }
 
-
+# convert a "key src action" to a html table with rowspans for base keys
 gen_html()
 {
 	awk '
@@ -173,7 +214,7 @@ gen_html()
 			mods = to_mods(key)
 			print "<tr>"
 			if (base != last_base)
-				print "	<td rowspan=" ROWSPAN[base] ">" base
+				print "	<th rowspan=" ROWSPAN[base] ">" base
 			print "	<td>" mods
 			for(h in HIDS)
 				print "	<td>", ACTION[h, key]
