@@ -1752,7 +1752,7 @@ main (int argc, char *argv[])
       /* keep filename even if initial load command failed;
        * file might not exist
        */
-      if (LoadPCB (command_line_pcb))
+      if (LoadPCB (command_line_pcb, true))
 	PCB->Filename = strdup (command_line_pcb);
     }
 

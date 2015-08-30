@@ -36,7 +36,7 @@
 FILE *CheckAndOpenFile (char *, bool, bool, bool *, bool *);
 FILE *OpenConnectionDataFile (void);
 int SavePCB (char *);
-int LoadPCB (char *);
+int LoadPCB (char *, bool);
 int RevertPCB (void);
 void EnableAutosave (void);
 void Backup (void);

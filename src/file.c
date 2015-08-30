@@ -389,7 +389,7 @@ set_some_route_style ()
  * to the HID's PCBChanged action.
  */
 static int
-real_load_pcb (char *Filename, bool revert)
+real_load_pcb (char *Filename, bool revert, bool require_font)
 {
   const char *unit_suffix;
   char *new_filename;
@@ -428,7 +428,8 @@ real_load_pcb (char *Filename, bool revert)
       /* enable default font if necessary */
       if (!PCB->Font.Valid)
 	{
-	  Message (_
+		if (require_font)
+			Message (_
 		   ("File '%s' has no font information, using default font\n"),
 		   new_filename);
 	  PCB->Font.Valid = true;
@@ -479,9 +480,9 @@ real_load_pcb (char *Filename, bool revert)
  * Load PCB
  */
 int
-LoadPCB (char *file)
+LoadPCB (char *file, bool require_font)
 {
-  return real_load_pcb (file, false);
+  return real_load_pcb (file, false, require_font);
 }
 
 /* ---------------------------------------------------------------------------
@@ -490,7 +491,7 @@ LoadPCB (char *file)
 int
 RevertPCB (void)
 {
-  return real_load_pcb (PCB->Filename, true);
+  return real_load_pcb (PCB->Filename, true, true);
 }
 
 /* ---------------------------------------------------------------------------

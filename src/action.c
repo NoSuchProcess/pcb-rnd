@@ -6075,7 +6075,7 @@ ActionLoadFrom (int argc, char **argv, Coord x, Coord y)
     {
       if (!PCB->Changed ||
 	  gui->confirm_dialog (_("OK to override layout data?"), 0))
-	LoadPCB (name);
+	LoadPCB (name, true);
     }
 
   else if (strcasecmp (function, "Netlist") == 0)

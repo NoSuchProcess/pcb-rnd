@@ -138,7 +138,7 @@ CommandLoadLayout (int argc, char **argv, Coord x, Coord y)
     }
 
   if (!PCB->Changed || gui->confirm_dialog ("OK to override layout data?", 0))
-    LoadPCB (filename);
+    LoadPCB (filename, true);
   free (name);
   return (0);
 }
