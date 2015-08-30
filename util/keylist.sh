@@ -178,6 +178,9 @@ gen_html()
 	BEGIN {
 		HIDNAMES["gpcb-menu.res"] = "gtk"
 		HIDNAMES["pcb-menu.res"]  = "lesstif"
+		CLR[0] = "#FFFFFF"
+		CLR[1] = "#DDFFFF"
+		key_combos = 0
 	}
 	function to_base_key(combo)
 	{
@@ -194,10 +197,13 @@ gen_html()
 	}
 
 	{
-		ROWSPAN[to_base_key($1)]++
-		LIST[NR] = $1
+		if (last != $1) {
+			LIST[key_combos++] = $1
+			ROWSPAN[to_base_key($1)]++
+		}
 		ACTION[$2, $1] = $3
 		HIDS[$2]++
+		last = $1
 	}
 
 	END {
@@ -205,14 +211,19 @@ gen_html()
 		print "<h1> Key to action bindings </h1>"
 		print "<table border=1 cellspacing=0>"
 		printf("<tr><th> key <th> modifiers")
-		for(h in HIDS)
+		colspan = 2
+		for(h in HIDS) {
 			printf(" <th>%s<br>%s", h, HIDNAMES[h])
+			colspan++
+		}
 		print ""
-		for(n = 1; n <= NR; n++) {
+		for(n = 0; n < key_combos; n++) {
 			key = LIST[n]
 			base = to_base_key(key)
 			mods = to_mods(key)
-			print "<tr>"
+			if (base != last_base)
+				clr_cnt++
+			print "<tr bgcolor=" CLR[clr_cnt % 2] ">"
 			if (base != last_base)
 				print "	<th rowspan=" ROWSPAN[base] ">" base
 			if (mods == "")
@@ -220,7 +231,7 @@ gen_html()
 			print "	<td>" mods
 			for(h in HIDS)
 				print "	<td>", ACTION[h, key]
-			last_base = base;
+			last_base = base
 		}
 		print "</table>"
 		print "</body></html>"
