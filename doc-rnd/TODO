@@ -1,17 +1,14 @@
 BUGS
 - distorted square pin bugs:
 	- rtree assert failure when NDEBUG is turned off and 'q' is pressed on a pin twice
+- gpmi (and other buildings/plugins) not showing up in the about box
 
 CLEANUP
 	- remove libstroke?
 
 FEATURES
 - UI: component filter by tags
-
 - UI: trace length calculation {small}
-- win32 port {large}
-	- clean up central Makefile.in rules:
-		- remove cat, sed, grep where possible, use scconfig instead
 - UI: be able to manually change text line width {small}
 - CORE: clear poly should be a per layer flag (on each objects) {?}
 - CORE: inverse text {medium}
@@ -44,3 +41,6 @@ Low prio:
 	- cleanup on unload:
 			- remove menus
 	- get timers to work
+- win32 port {large}
+	- clean up central Makefile.in rules:
+		- remove cat, sed, grep where possible, use scconfig instead
