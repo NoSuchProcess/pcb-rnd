@@ -7,10 +7,11 @@
 #@@desc Generate a "single pin" screw with optional head shapes
 #@@params hole,head,shape,ring
 
-#@@param:hole hole diameter
+#@@param:hole hole diameter or name of a standard screw (e.g. M3)
 #@@dim:hole
 
-#@@param:head head outmost diameter
+
+#@@param:head head outmost diameter (or optional head name for a standard screw: pan, button, cheese, flat-washer, internal-lock-washer)
 #@@dim:head
 
 #@@param:ring copper ring outer diameter

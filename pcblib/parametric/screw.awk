@@ -41,14 +41,54 @@ function shp(r, edges, tx      ,a,x,y,xl,yl,step,x1,y1,x2,y2,tx1,tx2,txs)
 	}
 }
 
+function round_up(num, to)
+{
+	if ((num/to) == int(num/to))
+		return num
+	return int(num/to+1)*to
+}
+
 BEGIN {
 	set_arg(P, "?shape", "circle")
-	proc_args(P, "hole,head,shape,ring", "hole,head")
+	proc_args(P, "hole,head,shape,ring", "hole")
 
 	element_begin("", "S1", "screw:" P["hole"] "," P["head"]"," P["shape"]    ,0,0, 0, mil(-100))
 
-	hole = parse_dim(P["hole"])
-	head = parse_dim(P["head"])
+	if (P["hole"] ~ "^M") {
+		hole = P["hole"]
+		sub("^M", "", hole)
+		h = parse_dim(int(hole) "mm")
+		if ((hole ~ "tight") || (hole ~ "close.fit"))
+			hole = h * 1.05
+		else
+			hole = h * 1.1
+		hd = parse_dim(P["head"])
+		if (hd == 0) {
+			hd = P["head"]
+			if (hd == "button")
+				head = 1.9*h 
+			else if (hd == "button")
+				head = 1.9*h 
+			else if (hd == "cheese")
+				head = round_up(1.7*h, mm(0.5))
+			else if (hd ~ "flat.washer")
+				head = round_up(2.1*h, mm(1))
+			else if ((hd == "") || (hd == "pan") || (hd ~ "int.*.lock.washer"))
+				head = 2*h
+			else
+				error("Unknown standard head: " hd)
+		}
+		else
+			head = hd
+		print hole, head > "/dev/stderr"
+	}
+	else {
+		hole = parse_dim(P["hole"])
+		head = parse_dim(P["head"])
+	}
+
+	if (head == "")
+		error("need a standard screw name, e.g. M3, or a head diameter")
 
 	if (head < hole)
 		error("head diameter must be larger than hole diameter")
