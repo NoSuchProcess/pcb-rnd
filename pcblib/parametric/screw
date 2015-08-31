@@ -1,0 +1,35 @@
+#!/bin/sh
+
+#@@example so(14)
+
+#@@purpose Generic screw.
+
+#@@desc Generate a "single pin" screw with optional head shapes
+#@@params hole,head,shape,ring
+
+#@@param:hole hole diameter
+#@@dim:hole
+
+#@@param:head head outmost diameter
+#@@dim:head
+
+#@@param:ring copper ring outer diameter
+#@@dim:ring
+#@@optional:ring
+#@@default:ring 80% of head diameter
+
+
+#@@param:shape of the head; multiple values can be listed separated with colons, e.g. "shape=circle:hex"
+#@@enum:shape:circle circle
+#@@enum:shape:hex hexagon with straight line edges
+#@@enum:shape:tx "torx": hexagon with arced edges
+#@@enum:shape:xzn "triple square"
+#@@enum:shape:ph philips slot (cross)
+#@@enum:shape:slot a single straight line slot
+#@@default:shape circle
+
+
+#@@include common.awk
+
+awk -f `dirname $0`/common.awk -f `dirname $0`/screw.awk -v "args=$*" -v gen=`basename $0`
+
