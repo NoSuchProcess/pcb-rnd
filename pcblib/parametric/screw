@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#@@example so(14)
+#@@example screw(3.2mm, 6mm, circle:hex)
 
 #@@purpose Generic screw.
 
@@ -19,15 +19,15 @@
 #@@default:ring 80% of head diameter
 
 
-#@@param:shape of the head; multiple values can be listed separated with colons, e.g. "shape=circle:hex"
+#@@param:shape shape of the head drawn on silkmark; multiple values can be listed separated with colons, e.g. "shape=circle:hex"
 #@@enum:shape:circle circle
-#@@enum:shape:hex hexagon with straight line edges
+#@@enum:shape:hex hexagon with straight line edges, size is from corner to corner
 #@@enum:shape:tx "torx": hexagon with arced edges
 #@@enum:shape:xzn "triple square"
-#@@enum:shape:ph philips slot (cross)
-#@@enum:shape:slot a single straight line slot
+#@@enum:shape:ph philips slot (cross) - useful together with circle
+#@@enum:shape:slot a single straight line slot - useful together with circle
 #@@default:shape circle
-
+#@@preview_args:shape 3mm,6mm
 
 #@@include common.awk
 
