@@ -80,8 +80,8 @@ BEGIN {
 	if (shape ~ ":slot:")
 		element_line(-head/2, 0, head/2, 0)
 
-	dimension(-head/2, 0, head/2, 0, head*0.7)
-	dimension(-hole/2, 0, hole/2, 0, head*0.6)
+	dimension(-head/2, 0, head/2, 0, head*0.7, "head")
+	dimension(-hole/2, 0, hole/2, 0, head*0.6, "hole")
 
 	element_end()
 }
