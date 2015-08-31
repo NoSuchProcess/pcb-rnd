@@ -19,7 +19,7 @@
 #@@enum:pol:bar+sign bar+ and sign combined
 #@@enum:pol:bar-sign bar- and sign combined
 #@@optional:pol
-#@@default:sign
+#@@default:pol sign
 #@@preview_args:pol 300
 
 #@@param:dia body diameter - affects the silk circle
