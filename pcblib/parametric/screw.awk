@@ -63,7 +63,7 @@ BEGIN {
 		else
 			hole = h * 1.1
 		hd = parse_dim(P["head"])
-		if (hd == 0) {
+		if ((hd == 0) || (hd == "")) {
 			hd = P["head"]
 			if (hd == "button")
 				head = 1.9*h 
@@ -80,7 +80,7 @@ BEGIN {
 		}
 		else
 			head = hd
-		print hole, head > "/dev/stderr"
+#		print hole, head > "/dev/stderr"
 	}
 	else {
 		hole = parse_dim(P["hole"])
