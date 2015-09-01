@@ -1,0 +1,46 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> back annotation </H2>
+
+<H3> Conclusions of the first thread </H3>
+DJ has another <a href="http://www.delorie.com/pcb/pin-mapping.html"> model </a>
+where back annotation is only a subset of a bigger mechanism.
+<p>
+Many other users commented the thread, but no one else presented a
+plan that formed a <b>complete</b> system.
+<p>
+While there were some useful feedback about some details, no one explicitly
+said he'd be contributing the gschem part (... for any of the ideas floating
+around).
+<p>
+The thread is swamped in a chaotic set of random ideas and opinions - the
+same way as previous related threads usually did.
+
+<H3> Second thread </H3>
+In the second thread I will focus on actual contribution. For this,
+I'm narrowing down what exactly needs to be contributed:
+
+
+<ul>
+<li> 1. minor UI changes, most probably in the C part of the gschem code. 
+somehow ending up in the official repo; I'd prefer to avoid maintaining a 
+fork of gschem (no, having the fork in git doesn't help).
+
+<li> 2. a scheme script that can be plugged into gschem and do real simple 
+things like toggling flags for point 1, counting how many flags are 
+toggled, warn the user about the counter is being non-zero; this script 
+doesn't need to get into the official repo
+
+<li> 3. depending on whether we (me and my actual contributor who contributes 
+code) go for push or pull, we need: a new action or menu or whatever that 
+can trigger a pull or some means that can collect a change list pushed and 
+then indicate that something's happened. It's not really a third piece of 
+code, just a third piece of concept that is spread across 1 and 2.
+</ul>
+<p>
+First, I seek a contributor for exactly these 3 things. Alternatively if 
+there's someone who is really willing to contribute actual code and spend 
+time on this, I'm open to change parts of my plan if he has better ideas 
+as long as the new approach still solves the actual problems I have.
