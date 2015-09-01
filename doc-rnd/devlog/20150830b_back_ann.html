@@ -184,3 +184,41 @@ multipage schematics, hierarchies, slots, split symbols.
 
 <H3> What <i>foo</i> does exactly </H3>
 ... is not clear yet. It depends on what sort of support gschem would provide.
+
+<H3> Amendment 1: other parameters (1st sep)</H3>
+I originally forgot to mention my other intentions in the above document:
+back annotate non-netlist properites. It probably happened because netlist
+related stuff are the hardest to solve.
+<p>
+There are other parameters that sometimes change during routing. A common case
+for my 1 or 2 layer boards is when I originally intend to use 0603 parts but
+during routing I figure I need to pass a trace between the pads. I need to
+change the part to 0805 or 1206 (for two traces). I'd like to be able to
+do this <b>in-place</b> in pcb with an action that replaces the footprint
+but keeps the origin in place. This obviously still requires some manual
+fiddling afterwards, but would remove the long, tedious chain I have now:
+<ul>
+	<li>1. remember or note down which parts to change footprints for
+	<li>2. go back to gschem and change them
+	<li>3. get the changes in pcb (I use gsch2pcb and Makefiles, one step; the import menu is one step too, just another one)
+	<li>4. disperse the new elements
+	<li>5. find where they used to be
+	<li>6. and then do the fiddling to fit them in
+</ul>
+<p>
+The new process would be:
+<ul>
+	<li> 1. get the footprint replaced, in-place; this would already approve the
+	        change and there'd be a command for it in the patch table
+	<li> 2. do the fiddling to fit the new part in
+	<li> 3. do a back annotation
+	<li> (4. optionally, if we go for non-automatic change of attributes in gschem,
+	        change them manually in gschem, cycling through the affected
+	        items using some UI feature)
+</ul>
+<p>
+The same thing could work for values, which is the other attribute PCB also
+sees. The same mechanism could work from other programs as well, e.g. tuning
+the values of some parts in a simulator and then back annotating the changes
+to the schematics. The patch table format <i>foo</i> handles would be in the
+simplest plain text form.
