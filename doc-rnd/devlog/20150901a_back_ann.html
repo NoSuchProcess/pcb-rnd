@@ -4,6 +4,7 @@
 
 <H2> back annotation </H2>
 
+<a id="1">
 <H3> Conclusions of the first thread </H3>
 DJ has another <a href="http://www.delorie.com/pcb/pin-mapping.html"> model </a>
 where back annotation is only a subset of a bigger mechanism.
@@ -18,6 +19,7 @@ around).
 The thread is swamped in a chaotic set of random ideas and opinions - the
 same way as previous related threads usually did.
 
+<a id="2">
 <H3> Second thread </H3>
 In the second thread I will focus on actual contribution. For this,
 I'm narrowing down what exactly needs to be contributed:
@@ -44,3 +46,42 @@ First, I seek a contributor for exactly these 3 things. Alternatively if
 there's someone who is really willing to contribute actual code and spend 
 time on this, I'm open to change parts of my plan if he has better ideas 
 as long as the new approach still solves the actual problems I have.
+
+<a id="3">
+<H3> Preparing for the third phase (3rd sep)</H3>
+Options are being eliminated slowly. I couldn't find out who are currently the
+maintainers of gschem, so I couldn't ask their opinion about my back annotation
+plan directly. Last stable release is about 2 years old, last unstable is more
+than a year old.
+<p>
+The main options currently are:
+<ul>
+	<li> 1. Evan offered contribution on the gschem side; Markus offered him write
+	     access to the official git repo. We could have a branch there. We'd
+	     aim for a merge, so minimal changes and a lot of scheme hacking (...
+	     that still none of us want to do, afaik).
+	     Without positive feedback from maintainers, I believe this branch
+	     has a very low chance to get merged in mainline. <i>If it doesn't get
+	     merged, all the extra effort on scheme, git, and trying to
+	     do things in the gschem-way are just energy wasted.</i>
+
+	<li> 2. I start an svn repo and implement the stuff the better way (no
+	     scheme, bigger change, no worries about whether it gets merged). Keep
+	     changes on-topic and small, so later on if someone wants to merge,
+	     there's a chance to get it into a branch in the git repo first then
+	     do the merge. Has even lower chance to get merged, but certainly
+	     speeds up development and is much easier to work on, distribute and
+	     use than a bitrotting git branch. <i>If it doesn't get merged, 
+	     only a small amount of efforts wasted on trying to keep changes
+	     merge-friendly.</i>
+
+	<li> 3. I start an svn repo and implement the stuff the best I can - without
+	     considering any merging aspects. This is the option that'd grant
+	     the most development speed and efficiency. <i>It doesn't get merged,
+	     but no energy is wasted at all and the resulting code is better.</i>
+</ul>
+There are some other options, but those are just variants of the above three.
+Currently I think option 1 is unlikely to work, for I don't touch git,
+and noone wants to touch scheme. Both 2 or 3 could work, but the total lack
+of gschem maintainer feedback doesn't make option 2 look too good.
+
