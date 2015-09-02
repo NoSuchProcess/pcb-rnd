@@ -61,10 +61,23 @@ happen in mainline. There are a few which I find critical: if I'd need to
 give up any single item from this list, that would be a deal-breaker for me:
 <ul>
 	<li> simple, centralized VCS (not just the UI, the whole thing)
-	<li> VCS base, zero-administration release and publish interface
-	<li> sane build system instead of autotools
+	<li> VCS based, zero-administration release and publish interface
+	<li> a sane build system instead of autotools
 	<li> the code won't switch to C++
 </ul>
+
+
+<h4> 1.8. Would you join the development of gschem? </h4>
+Unlikely. See point 1.7. Gschem is not aiming to a C++ transition AFAIK,
+but has a lot of scheme. I don't consider joining or contributing to
+gschem until those points listed in 1.7. are fixed and a new scheme
+policy is introduced. The new policy should be: "from now on
+do not write new code in scheme, use C; while making changes and fixes,
+convert affected scheme code to C. Long term, explicit plan: convert all
+scheme code to C and remove the guile dependency."
+<p>
+I don't expect any of this to happen.
+
 
 
 <H3> 2. git: did you know... </H3>
