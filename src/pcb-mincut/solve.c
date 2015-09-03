@@ -31,14 +31,53 @@
 //#define DEBUG_TAGS
 //#define DEBUG_SOLVE
 
-/* clone graph and do a randon contraction */
-int solve_(gr_t *g_, int *cuts)
-{
+typedef struct {
 	gr_t *g;
 	int *avail;    /* nodes IDs still avaialble for merging */
 	int *neigh;    /* neighbor list */
 	int *tag;
 	int num_avail; /* number of nodes still avaialble for merging */
+} sstate_t;
+
+static int pick_del(sstate_t *st)
+{
+	int idx, ret, size;
+	idx = rand() % st->num_avail;
+	ret = st->avail[idx];
+	size = (st->num_avail-idx-1) * sizeof(int);
+	if (size > 0)
+		memmove(&st->avail[idx], &st->avail[idx+1], size);
+	st->num_avail--;
+	return ret;
+}
+
+static int pick_neigh(sstate_t *st, int node)
+{
+	int n, num_neigh;
+
+	num_neigh = 0;
+	for(n = 0; n < st->g->n; n++) {
+		if ((n != node) && (gr_get_(st->g, n, node) > 0)) {
+			st->neigh[num_neigh] = n;
+			num_neigh++;
+		}
+	}
+	return st->neigh[rand() % num_neigh];
+}
+
+static void retag(sstate_t *st, int from, int to)
+{
+	int n;
+	for(n = 0; n < st->g->n; n++)
+		if (st->tag[n] == from)
+			st->tag[n] = to;
+}
+
+
+/* clone graph and do a randon contraction */
+int solve_(gr_t *g_, int *cuts)
+{
+	sstate_t st;
 	int n, result, tags;
 	static int solution = -1;
 #ifdef DEBUG_MERGES
@@ -46,82 +85,48 @@ int solve_(gr_t *g_, int *cuts)
 	char fn[512];
 #endif
 
-	int pick_del(void)
-	{
-		int idx, ret, size;
-		idx = rand() % num_avail;
-		ret = avail[idx];
-		size = (num_avail-idx-1) * sizeof(int);
-		if (size > 0)
-			memmove(&avail[idx], &avail[idx+1], size);
-		num_avail--;
-		return ret;
-	}
-
-	int pick_neigh(int node)
-	{
-		int n, num_neigh;
-
-		num_neigh = 0;
-		for(n = 0; n < g->n; n++) {
-			if ((n != node) && (gr_get_(g, n, node) > 0)) {
-				neigh[num_neigh] = n;
-				num_neigh++;
-			}
-		}
-		return neigh[rand() % num_neigh];
-	}
-
-	void retag(int from, int to)
-	{
-		int n;
-		for(n = 0; n < g->n; n++)
-			if (tag[n] == from)
-				tag[n] = to;
-	}
-
 	solution++;
-	g = gr_clone(g_);
-	avail = alloca(sizeof(int) * g->n);
-	neigh = alloca(sizeof(int) * g->n);
-	tag = alloca(sizeof(int) * g->n);
-	for(n = 2; n < g->n; n++)
-		tag[n] = -1;
-	tag[0] = 0;
-	tag[1] = 1;
+	st.g = gr_clone(g_);
+	st.avail = alloca(sizeof(int) * st.g->n);
+	st.neigh = alloca(sizeof(int) * st.g->n);
+	st.tag = alloca(sizeof(int) * st.g->n);
+	for(n = 2; n < st.g->n; n++)
+		st.tag[n] = -1;
+	st.tag[0] = 0;
+	st.tag[1] = 1;
 	tags = 2;
 
-	num_avail = 0;
-	for(n = 0; n < g->n; n++) {
-		if (gr_node_edges(g, n) > 0) {
-			avail[num_avail] = n;
-			num_avail++;
+	st.num_avail = 0;
+	for(n = 0; n < st.g->n; n++) {
+		if (gr_node_edges(st.g, n) > 0) {
+			st.avail[st.num_avail] = n;
+			st.num_avail++;
 		}
 	}
 
-	while(num_avail > 2) {
+	while(st.num_avail > 2) {
 		int n1, n2;
-		n2 = pick_del();
-		n1 = pick_neigh(n2);
+		n2 = pick_del(&st);
+		n1 = pick_neigh(&st, n2);
 #ifndef DEBUG_MERGES
 #ifdef DEBUG_SOLVE
-			printf("Merge %d (%s) into %d (%s)\n", n2, g->node2name[n2], n1, g->node2name[n1]);
+			printf("Merge %d (%s) into %d (%s)\n", n2, st.g->node2name[n2], n1, st.g->node2name[n1]);
 #endif
 #endif
 		assert(n2 != n1);
 
 		/* propagate tags */
-		if ((tag[n1] != -1) && (tag[n2] == -1))
-			tag[n2] = tag[n1];
-		else if ((tag[n1] == -1) && (tag[n2] != -1))
-			tag[n1] = tag[n2];
-		else if ((tag[n1] == -1) && (tag[n2] == -1))
-			tag[n1] = tag[n2] = tags++;
-		else if ((tag[n1] != -1) && (tag[n2] != -1)) {
-			if ((tag[n1] > 1) && (tag[n2] <= 1))
-				retag(tag[n1], tag[n2]);
-			else if ((tag[n2] > 1) && (tag[n1] <= 1))
-				retag(tag[n2], tag[n1]);
+		if ((st.tag[n1] != -1) && (st.tag[n2] == -1))
+			st.tag[n2] = st.tag[n1];
+		else if ((st.tag[n1] == -1) && (st.tag[n2] != -1))
+			st.tag[n1] = st.tag[n2];
+		else if ((st.tag[n1] == -1) && (st.tag[n2] == -1))
+			st.tag[n1] = st.tag[n2] = tags++;
+		else if ((st.tag[n1] != -1) && (st.tag[n2] != -1)) {
+			if ((st.tag[n1] > 1) && (st.tag[n2] <= 1))
+				retag(&st, st.tag[n1], st.tag[n2]);
+			else if ((st.tag[n2] > 1) && (st.tag[n1] <= 1))
+				retag(&st, st.tag[n2], st.tag[n1]);
 			else {
 				/* tag collision means we won't be able to distinguish between our
 				   two groups and our cut won't resolve the short anyway */
@@ -132,13 +137,13 @@ int solve_(gr_t *g_, int *cuts)
 			}
 		}
 
-		gr_merge_nodes(g, n1, n2);
+		gr_merge_nodes(st.g, n1, n2);
 
 #ifdef DEBUG_MERGES
 			sprintf(fn, "contraction_%02d_%02d", solution, cnt);
 			cnt++;
-			gr_draw(g, fn, "png");
-			printf("Merge %d into %d, result in %s leaving %d available nodes\n", n2, n1, fn, num_avail);
+			gr_draw(st.g, fn, "png");
+			printf("Merge %d into %d, result in %s leaving %d available nodes\n", n2, n1, fn, st.num_avail);
 #endif
 	}
 
@@ -146,11 +151,11 @@ int solve_(gr_t *g_, int *cuts)
 	{
 		char fn[128];
 		sprintf(fn, "contraction_%02d", solution);
-		gr_draw(g, fn, "png");
+		gr_draw(st.g, fn, "png");
 	}
 #endif
 
-	result = gr_get(g, avail[0], avail[1]);
+	result = gr_get(st.g, st.avail[0], st.avail[1]);
 
 #ifdef DEBUG_TAGS
 	{
@@ -158,9 +163,9 @@ int solve_(gr_t *g_, int *cuts)
 		printf("Groups:\n");
 		for(t = 0; t < 2; t++) {
 			printf("  [%d] is", t);
-			for(n = 0; n < g->n; n++) {
-				if (tag[n] == t)
-					printf(" %s", g->node2name[n]);
+			for(n = 0; n < st.g->n; n++) {
+				if (st.tag[n] == t)
+					printf(" %s", st.g->node2name[n]);
 			}
 			printf("\n");
 		}
@@ -168,11 +173,11 @@ int solve_(gr_t *g_, int *cuts)
 #endif
 	{
 		int x, y, num_cuts = 0;
-		for(y = 0; y < g->n; y++)
-			for(x = y+1; x < g->n; x++)
-				if ((gr_get_(g_, x, y) > 0) && (tag[x] != tag[y])) {
+		for(y = 0; y < st.g->n; y++)
+			for(x = y+1; x < st.g->n; x++)
+				if ((gr_get_(g_, x, y) > 0) && (st.tag[x] != st.tag[y])) {
 #ifdef DEBUG_TAGS
-					printf("CUT %s-%s\n", g->node2name[x], g->node2name[y]);
+					printf("CUT %s-%s\n", st.g->node2name[x], st.g->node2name[y]);
 #endif
 					cuts[num_cuts*2+0] = x;
 					cuts[num_cuts*2+1] = y;
@@ -181,7 +186,7 @@ int solve_(gr_t *g_, int *cuts)
 		cuts[num_cuts*2+0] = -1;
 		cuts[num_cuts*2+1] = -1;
 	}
-	gr_free(g);
+	gr_free(st.g);
 	return result;
 }
 
