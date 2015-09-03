@@ -23,6 +23,8 @@
 #include "genht/htsi.h"
 #include "graph.h"
 
+//#define DEBUG_GR
+
 /* maximum number of nodes */
 #define MAXNODES 1024
 
@@ -229,8 +231,10 @@ gr_t *load(FILE *f)
 	}
 
 
+#ifdef DEBUG_GR
 	gr_print(g, stdout, "(input0) ");
 	gr_draw(g, "input0", "png");
+#endif
 
 	/* preprocessing nets */
 	{
@@ -257,8 +261,10 @@ gr_t *load(FILE *f)
 				gr_add_(g, net, nets[net][node], NET_EDGES);
 	}
 
+#ifdef DEBUG_GR
 	gr_print(g, stdout, "(input1) ");
 	gr_draw(g, "input1", "png");
+#endif
 
 	return g;
 }
