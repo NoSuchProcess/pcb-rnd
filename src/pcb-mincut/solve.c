@@ -29,6 +29,7 @@
 
 //#define DEBUG_MERGES
 //#define DEBUG_TAGS
+//#define DEBUG_SOLVE
 
 /* clone graph and do a randon contraction */
 int solve_(gr_t *g_, int *cuts)
@@ -142,8 +143,11 @@ int solve_(gr_t *g_, int *cuts)
 	}
 
 #ifdef DEBUG_SOLVE
-	sprintf(fn, "contraction_%02d", solution);
-	gr_draw(g, fn, "png");
+	{
+		char fn[128];
+		sprintf(fn, "contraction_%02d", solution);
+		gr_draw(g, fn, "png");
+	}
 #endif
 
 	result = gr_get(g, avail[0], avail[1]);
