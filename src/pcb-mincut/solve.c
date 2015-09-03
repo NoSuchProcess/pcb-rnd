@@ -87,9 +87,16 @@ int solve_(gr_t *g_, int *cuts)
 
 	solution++;
 	st.g = gr_clone(g_);
-	st.avail = alloca(sizeof(int) * st.g->n);
-	st.neigh = alloca(sizeof(int) * st.g->n);
-	st.tag = alloca(sizeof(int) * st.g->n);
+	st.avail = malloc(sizeof(int) * st.g->n);
+	st.neigh = malloc(sizeof(int) * st.g->n);
+	st.tag = malloc(sizeof(int) * st.g->n);
+
+#define FREE_ALL() \
+	gr_free(st.g); \
+	free(st.avail); \
+	free(st.neigh); \
+	free(st.tag);
+
 	for(n = 2; n < st.g->n; n++)
 		st.tag[n] = -1;
 	st.tag[0] = 0;
@@ -133,6 +140,7 @@ int solve_(gr_t *g_, int *cuts)
 #ifdef DEBUG_TAGS
 				printf("Tag collision!\n");
 #endif
+				FREE_ALL();
 				return BAD;
 			}
 		}
@@ -186,7 +194,7 @@ int solve_(gr_t *g_, int *cuts)
 		cuts[num_cuts*2+0] = -1;
 		cuts[num_cuts*2+1] = -1;
 	}
-	gr_free(st.g);
+	FREE_ALL();
 	return result;
 }
 
@@ -209,7 +217,7 @@ int *solve(gr_t *g)
 #endif
 
 	cuts_size = ((nd * nd) + 1) * sizeof(int);
-	cuts = alloca(cuts_size);
+	cuts = malloc(cuts_size);
 	best_cuts = malloc(cuts_size);
 
 	best = BAD;
@@ -235,8 +243,10 @@ int *solve(gr_t *g)
 #endif
 	if (best == BAD) {
 		free(best_cuts);
+		free(cuts);
 		return NULL;
 	}
+	free(cuts);
 	return best_cuts;
 }
 
