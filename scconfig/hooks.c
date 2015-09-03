@@ -50,7 +50,7 @@ int hook_custom_arg(const char *key, const char *value)
 	};
 
 	if (strcmp(key, "prefix") == 0) {
-		report(0, "Setting prefix to '%s'\n", value);
+		report("Setting prefix to '%s'\n", value);
 		put("/local/prefix", strclone(value));
 		return 1;
 	}
