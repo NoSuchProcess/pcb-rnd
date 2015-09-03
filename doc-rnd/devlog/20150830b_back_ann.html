@@ -222,3 +222,52 @@ sees. The same mechanism could work from other programs as well, e.g. tuning
 the values of some parts in a simulator and then back annotating the changes
 to the schematics. The patch table format <i>foo</i> handles would be in the
 simplest plain text form.
+
+<a id="a2">
+<H3> Amendment 2: examples from gschem's point of view (3rd Sep)</H3>
+<h4> netlist change </h4>
+<ul>
+	<li> The user creates the schematics and imports it in pcb; the original
+	     netlist contains a line "netname1 U1-1 CONN1-2"
+	<li> The user, as part of some pin swapping, decides that U1-1 should be
+	     connected to net "netname2" instead of "netname1". Changes are
+	     done in pcb-rnd as described above.
+	<li> The netlist patch generated for this single change by pcb-rnd would be:
+	<pre>
+		del_conn netname1 U1-1
+		add_conn netname2 U1-1
+	</pre>
+	<li> the user may need to load the netlist patch in ghscem
+	<li> In gschem there would be an indication that highlights any U1-1 pin or
+	U1 symbol that makes a connection to netname 1, graphically or using
+	attributes. When asked, gschem UI would also tell the user that U1-1 is
+	now connected to netname1 but should be connected to netname2 instead.
+	<li> The user would find this indication and would resolve the situation
+	by whatever changes he finds appropriate
+	<li> gschem would rerun the patch commands and would figure that the del_conn
+	fails to run because U1-1 is no longer connected to netname1 and the add_conn
+	fails too because U1-1 is connected to netname2. This leaves U1-1 without
+	any known issue, so the indication on U1-1 would be gone.
+</ul>
+
+<h4> attribute change: footprint change </h4>
+<ul>
+	<li> The user creates the schematics and imports it in pcb; originally
+	     U1 has an attribute footprint=DIP(8).
+	<li> during the layout the user figures using the footpritn SO(8) is
+	     more appropriate. He does the change in pcb-rnd.
+	<li> pcb-rnd emits the following netlist patch for this:
+	<pre>
+		change_attrib U1 footprint=DIP(8) footprint=SO(8)
+	</pre>
+	<p>
+	(or it could be a del_attrib and add_attrib pair, like with connections)
+	<li> the user may need to load the netlist patch in ghscem
+	<li> In gschem there would be an indication that highlights any U1 instances
+	     that has footprint=DIP(8)
+	<li> The user would find this indication and would resolve the situation
+	     by whatever changes he finds appropriate (e.g. change the attribute)
+	<li> gschem would rerun the patch commands and would figure the change is
+	     no longer requred and would remove the indication
+</ul>
+
