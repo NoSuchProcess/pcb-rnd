@@ -16,6 +16,8 @@ FEATURES
 
 
 Low prio:
+- display net names on pins, vias (and maybe tracks?) when zoomed in enough
+- DRC should wanr for thin poly hair
 - rotate shaped vias don't rotate the shape (is via rotated at all?)
 - new examples
 	- blinking led with parametric footprints
