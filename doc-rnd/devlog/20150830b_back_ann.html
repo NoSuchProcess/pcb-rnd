@@ -37,20 +37,20 @@ to merge a new netlist with local changes. The simple "gsch2pcb overwrites the
 netlist in pcb from whatever gnetlist produced" approach would not work.
 <p>
 An alternative is to keep the netlist as-is, and maintain a separate list of
-changes. The form proposed hereby is a table of "operation,net,pinID" or
-"operation,net". Operation is one of "del_conn", "add_conn", "del_net" and
-"add_net". The table is called the <i>netlist patch</i>.
+changes. The form proposed hereby is a table of "operation,pinID,net" or
+"operation,args...". Netlist operation is one of "del_conn", "add_conn" <!--, "del_net",
+"add_net"--> and "net_info". The table is called the <i>netlist patch</i>.
 <p>
 For example assume two components with pins A1, A2 and B1, B2, with connections
 n1=A1-B1 and n2=A2-B2. While routing the designer decides changing them to
 n1=A1-B2 and n2=A2-B1 would be easier and is acceptable by the design. The
 table of changes would contain this:
 <table border=1>
-	<tr><th>op        <th> net    <th> pinID
-	<tr><td>del_conn  <td> n1     <td> B1
-	<tr><td>del_conn  <td> n2     <td> B2
-	<tr><td>add_conn  <td> n1     <td> B2
-	<tr><td>add_conn  <td> n2     <td> B1
+	<tr><th>op          <th> pinID <th> net 
+	<tr><td>del_conn    <td> B1    <td> n1  
+	<tr><td>del_conn    <td> B2    <td> n2  
+	<tr><td>add_conn    <td> B2    <td> n1  
+	<tr><td>add_conn    <td> B1    <td> n2  
 </table>
 The first two lines would remove pins B1 and B2 from n1 and n2. The last
 two would put them back, swapped. New nets could be created or unused nets
@@ -63,17 +63,17 @@ after running the original netlist code, the result would be adjusted by the tab
 <p>
 The table would be normalized after operations. For example:
 <table border=1>
-	<tr><th>op        <th> net    <th> pinID
-	<tr><td>del_conn  <td> n1     <td> B1
-	<tr><td>add_conn  <td> n2     <td> B1
-	<tr><td>add_conn  <td> n3     <td> B1
-	<tr><td>del_conn  <td> n2     <td> B1
+	<tr><th>op          <th> pinID  <th> net 
+	<tr><td>del_conn    <td> B1     <td> n1  
+	<tr><td>add_conn    <td> B1     <td> n2  
+	<tr><td>add_conn    <td> B1     <td> n3  
+	<tr><td>del_conn    <td> B1     <td> n2  
 </table>
 would be reduced to
 <table border=1>
-	<tr><th>op        <th> net    <th> pinID
-	<tr><td>del_conn  <td> n1     <td> B1
-	<tr><td>add_conn  <td> n3     <td> B1
+	<tr><th>op          <th> pinID <th> net 
+	<tr><td>del_conn    <td> B1    <td> n1  
+	<tr><td>add_conn    <td> B1    <td> n3  
 </table>
 Simple linear crawls on the table seems sufficient: it is expected that
 pcb designers will make netlist modifications rarely and they will back
@@ -93,6 +93,9 @@ while a new forward annotation removes B1 from n1 and adds it to n3. In this
 case the first row of the table is deleted, as B1 is already removed from n1,
 but pcb-rnd has no chance to decide if netlist adding B1 to n3 should affect
 the table adding B1 to n2, so that rule is kept.
+<p>
+<b>net_info</b> is used to describe the <b>original</b> members of a net, in
+the state they were before any change on the netlist occured.
 
 <H3> Support in pcb-rnd: GUI </H3>
 A trivial idea is to extend the netlist window so that pins can be moved in
@@ -107,9 +110,9 @@ Finally, the most important feature would be new actions resolving shorts.
 Using the above example (n1=A1-B1 and n2=A2-B2 changed to n1=A1-B2 and n2=A2-B1),
 I believe the user would:
 <table border=1>
-	<tr><th> action <th> screenshot
-	<tr><td><ul><li> look at initial rats</ul><td> <img src="res/20150830b_s0.png" width="50%">
-	<tr><td><ul><li> first connect A1 to B1</ul> <td> <img src="res/20150830b_s1.png"  width="50%">
+	<tr><th> action <th> screenshot <th> patch list after the actions
+	<tr><td><ul><li> look at initial rats</ul><td> <img src="res/20150830b_s0.png" width="50%"> <td> (empty)
+	<tr><td><ul><li> first connect A1 to B1</ul> <td> <img src="res/20150830b_s1.png"  width="50%"> <td> (empty)
 
 	<tr><td><ul>
 	<li> then realize it's very hard to connect A2 to B2 while the previous connection is there
@@ -117,6 +120,7 @@ I believe the user would:
 	<li> and connect A1 to B2
 	<li> which would cause shorts
 	</ul><td> <img src="res/20150830b_s2.png"  width="50%">
+	<td>(empty)
 
 	<tr><td><ul>
 	<li> then he would use the "approve netlist change" hotkey/action on the network;
@@ -125,6 +129,13 @@ I believe the user would:
 	     of the new connection there'd be a rat between A1 and A2 or B1 and B2 too
 	     (all 4 pins connected together on the patched netlist at the moment!)
 	</ul><td> <img src="res/20150830b_s3.png" width="50%">
+	<td>
+<pre>
+net_info n1 A1 B1
+net_info n2 A2 B2
+del_conn B1 n1
+add_conn B1 n2
+</pre>
 
 	<tr><td><ul>
 	<li> the user would then use an action (maybe the same one?) on the rat line
@@ -132,11 +143,31 @@ I believe the user would:
 	     would add a patch to remove the A1-B1 connection
 	<li> the same thing would need to happen to the A2-B2 rat
 	</ul><td> <img src="res/20150830b_s4.png" width="50%">
+<td>
+<pre>
+net_info n1 A1 B1
+net_info n2 A2 B2
+del_conn B1 n1
+add_conn B1 n2
+del_conn B2 n2
+</pre>
+
+
 	<tr><td><ul><li> the user then would connect A2 to B1, which again is a short</ul><td><img src="res/20150830b_s5.png" width="50%">
 	<tr><td><ul>
 	<li> the user would approve it as a new connection
 	<li> we have exactly 2 del_conn and 2 add_conn patches.
 	</ul><td><img src="res/20150830b_s6.png" width="50%">
+<td>
+<pre>
+net_info n1 A1 B1
+net_info n2 A2 B2
+del_conn B1 n1
+add_conn B1 n2
+del_conn B2 n2
+add_conn B2 n1
+</pre>
+
 </table>
 An experienced user may think a few steps in advance and
 chose to first remove the A1-B1 and A2-B2 rats and then create the A1-B2
@@ -234,8 +265,8 @@ simplest plain text form.
 	     done in pcb-rnd as described above.
 	<li> The netlist patch generated for this single change by pcb-rnd would be:
 	<pre>
-		del_conn netname1 U1-1
-		add_conn netname2 U1-1
+del_conn netname1 U1-1
+add_conn netname2 U1-1
 	</pre>
 	<li> the user may need to load the netlist patch in ghscem
 	<li> In gschem there would be an indication that highlights any U1-1 pin or
@@ -258,7 +289,7 @@ simplest plain text form.
 	     more appropriate. He does the change in pcb-rnd.
 	<li> pcb-rnd emits the following netlist patch for this:
 	<pre>
-		change_attrib U1 footprint=DIP(8) footprint=SO(8)
+change_attrib U1 footprint=DIP(8) footprint=SO(8)
 	</pre>
 	<p>
 	(or it could be a del_attrib and add_attrib pair, like with connections)
