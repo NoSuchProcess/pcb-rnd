@@ -60,8 +60,8 @@ static void netlist_copy(LibraryTypePtr dst, LibraryTypePtr src)
 		for (p = 0; p < smenu->EntryN; p++) {
 			LibraryEntryTypePtr sentry = &smenu->Entry[p];
 			LibraryEntryTypePtr dentry = &dmenu->Entry[p];
-/*			fprintf (stderr, " '%s'", sentry->ListEntry);*/
 			dentry->ListEntry = strdup(sentry->ListEntry);
+/*			fprintf (stderr, " '%s'/%p", dentry->ListEntry, dentry->ListEntry);*/
 		}
 /*		fprintf(stderr, "\n");*/
 	}
@@ -78,10 +78,11 @@ int rats_patch_apply_conn(PCBTypePtr pcb, rats_patch_line_t *patch, int del)
 			int p;
 			for (p = 0; p < menu->EntryN; p++) {
 				LibraryEntryTypePtr entry = &menu->Entry[p];
+/*				fprintf (stderr, "C'%s'/%p '%s'/%p\n", entry->ListEntry, entry->ListEntry, patch->id, patch->id);*/
 				if (strcmp(entry->ListEntry, patch->id) == 0) {
 					if (del) {
 						/* want to delete and it's on the list */
-						memmove(&menu->Entry[p], &menu->Entry[p+1], menu->EntryN-p-1);
+						memmove(&menu->Entry[p], &menu->Entry[p+1], (menu->EntryN-p-1) * sizeof(LibraryEntryType));
 						menu->EntryN--;
 						return 0;
 					}
