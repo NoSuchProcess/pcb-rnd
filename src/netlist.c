@@ -245,6 +245,73 @@ netlist_style (LibraryMenuType *net, const char *style)
   net->Style = STRDUP ((char *)style);
 }
 
+
+static int
+netlist_swap ()
+{
+	char *pins[3] = {NULL, NULL, NULL};
+	int next = 0, n;
+	int ret = -1;
+	LibraryMenuTypePtr nets[2];
+
+	ELEMENT_LOOP (PCB->Data);
+	{
+		PIN_LOOP (element);
+		{
+			if (TEST_FLAG (SELECTEDFLAG, pin)) {
+				int le, lp;
+
+				if (next > 2) {
+					Message("Exactly two pins should be selected for swap (more than 2 selected at the moment)\n");
+					goto quit;
+				}
+
+				le = strlen(element->Name[1].TextString);
+				lp = strlen(pin->Number);
+				pins[next] = malloc(le+lp+2);
+				sprintf(pins[next], "%s-%s", element->Name[1].TextString, pin->Number);
+				next++;
+			}
+		}
+		END_LOOP;
+	}
+	END_LOOP;
+
+	if (next < 2) {
+		Message("Exactly two pins should be selected for swap (less than 2 selected at the moment)\n");
+		goto quit;
+	}
+
+
+	nets[0] = rats_patch_find_net4pin(PCB, pins[0]);
+	nets[1] = rats_patch_find_net4pin(PCB, pins[1]);
+	if ((nets[0] == NULL) || (nets[1] == NULL)) {
+		Message("That pin is not on a net.\n");
+		goto quit;
+	}
+	if (nets[0] == nets[1]) {
+		Message("Those two pins are on the same net, can't swap them.\n");
+		goto quit;
+	}
+
+
+	rats_patch_append(PCB, RATP_DEL_CONN, pins[0], nets[0]->Name+2);
+	rats_patch_append(PCB, RATP_DEL_CONN, pins[1], nets[1]->Name+2);
+	rats_patch_append(PCB, RATP_ADD_CONN, pins[0], nets[1]->Name+2);
+	rats_patch_append(PCB, RATP_ADD_CONN, pins[1], nets[0]->Name+2);
+
+	/* TODO: not very efficient to regenerate the whole list... */
+	rats_patch_make_edited(PCB);
+	ret = 0;
+
+	quit:;
+	for(n = 0; n < 3; n++)
+		if (pins[n] != NULL)
+			free(pins[n]);
+	return ret;
+}
+
+
 #ifdef BA_TODO
 /* The primary purpose of this action is to rebuild a netlist from a
    script, in conjunction with the clear action above.  */
@@ -286,6 +353,7 @@ netlist_add (const char *netname, const char *pinname)
 static const char netlist_syntax[] =
   "Net(find|select|rats|norats|clear[,net[,pin]])\n"
   "Net(freeze|thaw|forcethaw)\n"
+  "Net(swap)\n"
   "Net(add,net,pin)";
 
 static const char netlist_help[] = "Perform various actions on netlists.";
@@ -323,6 +391,9 @@ Clears the netlist.
 
 @item add
 Add the given pin to the given netlist, creating either if needed.
+
+@item swap
+Swap the connections one end of two selected rats and pins.
 
 @item sort
 Called after a list of add's, this sorts the netlist.
@@ -390,6 +461,8 @@ Netlist (int argc, char **argv, Coord x, Coord y)
     }
   else if (strcasecmp (argv[0], "style") == 0)
     func = (NFunc)netlist_style;
+  else if (strcasecmp (argv[0], "swap") == 0)
+    return netlist_swap ();
 #ifdef BA_TODO
   else if (strcasecmp (argv[0], "add") == 0)
     {
