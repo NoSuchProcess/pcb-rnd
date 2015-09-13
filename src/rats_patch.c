@@ -67,8 +67,17 @@ static void netlist_copy(LibraryTypePtr dst, LibraryTypePtr src)
 	}
 }
 
-void rats_patch_apply(PCBTypePtr pcb)
+int rats_patch_apply(PCBTypePtr pcb, rats_patch_line_t *patch)
 {
+	return 0;
+}
+
+void rats_patch_make_edited(PCBTypePtr pcb)
+{
+	rats_patch_line_t *n;
+
 	netlist_free(&(pcb->NetlistLib[NETLIST_EDITED]));
 	netlist_copy(&(pcb->NetlistLib[NETLIST_EDITED]), &(pcb->NetlistLib[NETLIST_INPUT]));
+	for(n = pcb->NetlistPatches; n != NULL; n = n->next)
+		rats_patch_apply(pcb, n);
 }
