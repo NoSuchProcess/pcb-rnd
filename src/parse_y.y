@@ -178,6 +178,7 @@ parsepcb
 				yyData = yyPCB->Data;
 				yyData->pcb = yyPCB;
 				yyData->LayerN = 0;
+				yyPCB->NetlistPatches = yyPCB->NetlistPatchLast = NULL;
 				layer_group_string = NULL;
 			}
 		  pcbfileversion
@@ -1932,9 +1933,9 @@ op (arg1 arg2 ...) (
 
 netpatch
 			/* name style pin pin ... */
-		: T_ADD_CONN      '(' STRING STRING ')'         { rats_patch_append(&yyPCB, RATP_ADD_CONN, $3, $4, NULL); }
-		| T_DEL_CONN      '(' STRING STRING ')'         { rats_patch_append(&yyPCB, RATP_DEL_CONN, $3, $4, NULL); }
-		| T_CHANGE_ATTRIB '(' STRING STRING STRING ')'  { rats_patch_append(&yyPCB, RATP_CHANGE_ATTRIB, $3, $4, $5); }
+		: T_ADD_CONN      '(' STRING STRING ')'         { rats_patch_append(yyPCB, RATP_ADD_CONN, $3, $4, NULL); }
+		| T_DEL_CONN      '(' STRING STRING ')'         { rats_patch_append(yyPCB, RATP_DEL_CONN, $3, $4, NULL); }
+		| T_CHANGE_ATTRIB '(' STRING STRING STRING ')'  { rats_patch_append(yyPCB, RATP_CHANGE_ATTRIB, $3, $4, $5); }
 		;
 
 
