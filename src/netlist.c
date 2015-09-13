@@ -245,6 +245,7 @@ netlist_style (LibraryMenuType *net, const char *style)
   net->Style = STRDUP ((char *)style);
 }
 
+#ifdef BA_TODO
 /* The primary purpose of this action is to rebuild a netlist from a
    script, in conjunction with the clear action above.  */
 static int
@@ -280,6 +281,7 @@ netlist_add (const char *netname, const char *pinname)
   NetlistChanged (0);
   return 0;
 }
+#endif
 
 static const char netlist_syntax[] =
   "Net(find|select|rats|norats|clear[,net[,pin]])\n"
@@ -388,11 +390,13 @@ Netlist (int argc, char **argv, Coord x, Coord y)
     }
   else if (strcasecmp (argv[0], "style") == 0)
     func = (NFunc)netlist_style;
+#ifdef BA_TODO
   else if (strcasecmp (argv[0], "add") == 0)
     {
       /* Add is different, because the net/pin won't already exist.  */
       return netlist_add (ARG(1), ARG(2));
     }
+#endif
   else if (strcasecmp (argv[0], "sort") == 0)
     {
       sort_netlist ();
