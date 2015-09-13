@@ -724,6 +724,26 @@ WritePCBNetlistData (FILE * FP)
 }
 
 /* ---------------------------------------------------------------------------
+ * writes netlist patch data
+ */
+static void
+WritePCBNetlistPatchData (FILE * FP)
+{
+	if (PCB->NetlistPatches != NULL) {
+		rats_patch_line_t *n;
+		fprintf (FP, "NetList()\n(\n");
+		for(n = PCB->NetlistPatches; n != NULL; n = n->next) {
+			switch(n->op) {
+				case RATP_ADD_CONN:      fprintf (FP, "\tadd_conn(\"%s\" \"%s\")\n", n->id, n->arg1.net_name); break;
+				case RATP_DEL_CONN:      fprintf (FP, "\tdel_conn(\"%s\" \"%s\")\n", n->id, n->arg1.net_name); break;
+				case RATP_CHANGE_ATTRIB: fprintf (FP, "\tchange_attrib(\"%s\" \"%s\" \"%s\")\n", n->id, n->arg1.attrib_name, n->arg2.attrib_val); break;
+			}
+		}
+		fprintf (FP, ")\n");
+	}
+}
+
+/* ---------------------------------------------------------------------------
  * writes element data
  */
 static void
@@ -918,6 +938,7 @@ WritePCB (FILE * FP)
   for (i = 0; i < max_copper_layer + 2; i++)
     WriteLayerData (FP, i, &(PCB->Data->Layer[i]));
   WritePCBNetlistData (FP);
+  WritePCBNetlistPatchData (FP);
 
   return (STATUS_OK);
 }
