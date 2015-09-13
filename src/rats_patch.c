@@ -67,8 +67,52 @@ static void netlist_copy(LibraryTypePtr dst, LibraryTypePtr src)
 	}
 }
 
+
+int rats_patch_apply_conn(PCBTypePtr pcb, rats_patch_line_t *patch, int del)
+{
+	int n;
+
+	for (n = 0; n < pcb->NetlistLib[NETLIST_EDITED].MenuN; n++) {
+		LibraryMenuTypePtr menu = &pcb->NetlistLib[NETLIST_EDITED].Menu[n];
+		if (strcmp(menu->Name+2, patch->arg1.net_name) == 0) {
+			int p;
+			for (p = 0; p < menu->EntryN; p++) {
+				LibraryEntryTypePtr entry = &menu->Entry[p];
+				if (strcmp(entry->ListEntry, patch->id) == 0) {
+					if (del) {
+						/* want to delete and it's on the list */
+						memmove(&menu->Entry[p], &menu->Entry[p+1], menu->EntryN-p-1);
+						menu->EntryN--;
+						return 0;
+					}
+					/* want to add, and pin is on the list -> already added */
+					return 1;
+				}
+			}
+			/* If we got here, pin is not on the list */
+			if (del)
+				return 1;
+
+			/* Wanted to add, let's add it */
+			CreateNewConnection(menu, (char *)patch->id);
+			return 0;
+		}
+	}
+
+	/* couldn't find the net */
+	return 1;
+}
+
+
 int rats_patch_apply(PCBTypePtr pcb, rats_patch_line_t *patch)
 {
+	switch(patch->op) {
+		case RATP_ADD_CONN: return rats_patch_apply_conn(pcb, patch, 0);
+		case RATP_DEL_CONN: return rats_patch_apply_conn(pcb, patch, 1);
+		case RATP_CHANGE_ATTRIB:
+#warning TODO: just check wheter it's still valid
+			break;
+	}
 	return 0;
 }
 
