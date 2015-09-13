@@ -53,6 +53,7 @@ put /local/pcb/OBJS [@
 	print.o
 	rats.o
 	rats_mincut.o
+	rats_patch.o
 	remove.o
 	report.o
 	rotate.o

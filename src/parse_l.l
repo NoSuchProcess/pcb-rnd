@@ -130,6 +130,10 @@ Arc		{ return(T_ARC); }
 NetList		{ return(T_NETLIST); }
 Net		{ return(T_NET); }
 Connect		{ return(T_CONN); }
+NetListPatch		{ return(T_NETLISTPATCH); }
+add_conn		{ return(T_ADD_CONN); }
+del_conn		{ return(T_DEL_CONN); }
+change_attrib		{ return(T_CHANGE_ATTRIB); }
 Attribute	{ return(T_ATTRIBUTE); }
 
 nm	{ return T_NM; }

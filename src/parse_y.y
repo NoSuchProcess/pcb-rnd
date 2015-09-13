@@ -53,6 +53,7 @@
 #include "rtree.h"
 #include "strflags.h"
 #include "thermal.h"
+#include "rats_patch.h"
 
 #ifdef HAVE_LIBDMALLOC
 # include <dmalloc.h> /* see http://dmalloc.com */
@@ -121,6 +122,7 @@ static Coord new_units (PLMeasure m);
 %token	T_FILEVERSION T_PCB T_LAYER T_VIA T_RAT T_LINE T_ARC T_RECTANGLE T_TEXT T_ELEMENTLINE
 %token	T_ELEMENT T_PIN T_PAD T_GRID T_FLAGS T_SYMBOL T_SYMBOLLINE T_CURSOR
 %token	T_ELEMENTARC T_MARK T_GROUPS T_STYLES T_POLYGON T_POLYGON_HOLE T_NETLIST T_NET T_CONN
+%token	T_NETLISTPATCH T_ADD_CONN T_DEL_CONN T_CHANGE_ATTRIB
 %token	T_AREA T_THERMAL T_DRC T_ATTRIBUTE
 %token	T_UMIL T_CMIL T_MIL T_IN T_NM T_UM T_MM T_M T_KM
 %type	<integer>	symbolid
@@ -191,6 +193,7 @@ parsepcb
 		  pcbfont
 		  pcbdata
 		  pcbnetlist
+		  pcbnetlistpatch
 			{
 			  PCBTypePtr pcb_save = PCB;
 
@@ -1826,6 +1829,7 @@ netdefs
 		| netdefs net
 		;
 
+
 /* %start-doc pcbfile Net
 
 @syntax
@@ -1886,6 +1890,53 @@ conn
 				free ($3);
 			}
 		;
+
+/* %start-doc pcbfile Netlistpatch
+
+@syntax
+NetListPatch ( ) (
+@ @ @ @dots{} netpatch @dots{}
+)
+@end syntax
+
+%end-doc */
+
+pcbnetlistpatch	: pcbnetpatchdef
+		|
+		;
+pcbnetpatchdef
+			/* net(...) net(...) ... */
+		: T_NETLISTPATCH '(' ')' '('
+		  netpatches ')'
+		;
+
+netpatches
+		: netpatchdefs
+		|
+		;
+
+netpatchdefs
+		: netpatch
+		| netpatchdefs netpatch
+		;
+
+/* %start-doc pcbfile NetPatch
+
+@syntax
+op (arg1 arg2 ...) (
+@ @ @ @dots{} netlist patch directive @dots{}
+)
+@end syntax
+
+%end-doc */
+
+netpatch
+			/* name style pin pin ... */
+		: T_ADD_CONN      '(' STRING STRING ')'         { rats_patch_append(&yyPCB, RATP_ADD_CONN, $3, $4, NULL); }
+		| T_DEL_CONN      '(' STRING STRING ')'         { rats_patch_append(&yyPCB, RATP_DEL_CONN, $3, $4, NULL); }
+		| T_CHANGE_ATTRIB '(' STRING STRING STRING ')'  { rats_patch_append(&yyPCB, RATP_CHANGE_ATTRIB, $3, $4, $5); }
+		;
+
 
 /* %start-doc pcbfile Attribute
 

@@ -76,19 +76,23 @@ extern int yydebug;
     T_NETLIST = 286,
     T_NET = 287,
     T_CONN = 288,
-    T_AREA = 289,
-    T_THERMAL = 290,
-    T_DRC = 291,
-    T_ATTRIBUTE = 292,
-    T_UMIL = 293,
-    T_CMIL = 294,
-    T_MIL = 295,
-    T_IN = 296,
-    T_NM = 297,
-    T_UM = 298,
-    T_MM = 299,
-    T_M = 300,
-    T_KM = 301
+    T_NETLISTPATCH = 289,
+    T_ADD_CONN = 290,
+    T_DEL_CONN = 291,
+    T_CHANGE_ATTRIB = 292,
+    T_AREA = 293,
+    T_THERMAL = 294,
+    T_DRC = 295,
+    T_ATTRIBUTE = 296,
+    T_UMIL = 297,
+    T_CMIL = 298,
+    T_MIL = 299,
+    T_IN = 300,
+    T_NM = 301,
+    T_UM = 302,
+    T_MM = 303,
+    T_M = 304,
+    T_KM = 305
   };
 #endif
 
@@ -97,7 +101,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 109 "parse_y.y" /* yacc.c:1909  */
+#line 110 "parse_y.y" /* yacc.c:1909  */
 
 	int		integer;
 	double		number;
@@ -105,7 +109,7 @@ union YYSTYPE
 	FlagType	flagtype;
 	PLMeasure	measure;
 
-#line 109 "parse_y.tab.h" /* yacc.c:1909  */
+#line 113 "parse_y.tab.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

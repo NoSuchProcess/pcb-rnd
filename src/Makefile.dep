@@ -158,6 +158,7 @@ rats_mincut.o: rats_mincut.c ../config.h ../config.manual.h \
  hid.h polyarea.h libpcb_fp.h create.h data.h draw.h error.h file.h \
  find.h misc.h ds.h mymem.h polygon.h rats.h search.h set.h undo.h \
  pcb-mincut/graph.h pcb-mincut/solve.h pcb-mincut/graph.h
+rats_patch.o: rats_patch.c rats_patch.h
 remove.o: remove.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h data.h draw.h error.h misc.h ds.h mymem.h move.h polygon.h \
@@ -260,7 +261,7 @@ libpcb_fp.o: libpcb_fp.c ds.h ../config.h ../config.manual.h \
 parse_y.o: parse_y.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h create.h data.h error.h file.h mymem.h misc.h ds.h parse_l.h \
- polygon.h remove.h rtree.h strflags.h thermal.h parse_y.h
+ polygon.h remove.h rtree.h strflags.h thermal.h rats_patch.h parse_y.h
 parse_l.o: parse_l.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h crosshair.h data.h error.h file.h mymem.h misc.h ds.h \

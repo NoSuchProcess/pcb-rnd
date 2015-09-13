@@ -65,6 +65,7 @@ typedef struct pin_st PinType, *PinTypePtr, **PinTypeHandle;
 typedef struct drc_violation_st DrcViolationType, *DrcViolationTypePtr;
 typedef struct rtree rtree_t;
 typedef struct AttributeListType AttributeListType, *AttributeListTypePtr;
+typedef struct rats_patch_line_s rats_patch_line_t;
 
 typedef struct unit Unit;
 typedef struct increments Increments;
@@ -532,6 +533,7 @@ typedef struct PCBType
   LayerGroupType LayerGroups;
   RouteStyleType RouteStyle[NUM_STYLES];
   LibraryType NetlistLib;
+  rats_patch_line_t *NetlistPatches;
   AttributeListType Attributes;
   DataTypePtr Data;		/* entire database */
 
@@ -791,6 +793,26 @@ struct drc_violation_st
   int object_count;
   long int *object_id_list;
   int *object_type_list;
+};
+
+typedef enum {
+	RATP_ADD_CONN,
+	RATP_DEL_CONN,
+	RATP_CHANGE_ATTRIB
+} rats_patch_op_t;
+
+struct rats_patch_line_s {
+	rats_patch_op_t op;
+	char *id;
+	union {
+		char *net_name;
+		char *attrib_name;
+	} arg1;
+	union {
+		char *attrib_val;
+	} arg2;
+
+	rats_patch_line_t *next;
 };
 
 /* ---------------------------------------------------------------------------
