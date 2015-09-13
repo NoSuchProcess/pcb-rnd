@@ -451,6 +451,7 @@ real_load_pcb (char *Filename, bool revert, bool require_font)
       AttributePut (PCB, "PCB::grid::unit", Settings.grid_unit->suffix);
  
       sort_netlist ();
+      rats_patch_apply(PCB);
 
       set_some_route_style ();
 
@@ -1481,6 +1482,7 @@ ReadNetlist (char *filename)
   else
     fclose (fp);
   sort_netlist ();
+  rats_patch_apply(PCB);
   return (0);
 }
 

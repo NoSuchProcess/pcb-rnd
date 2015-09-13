@@ -487,7 +487,7 @@ typedef struct
 
 enum {
 	NETLIST_INPUT = 0,                /* index of the original netlist as imported */
-	NETLIST_EDITED = 0,               /* index of the netlist produced by applying netlist patches on [NETLIST_INPUT] */
+	NETLIST_EDITED = 1,               /* index of the netlist produced by applying netlist patches on [NETLIST_INPUT] */
 	NUM_NETLISTS                  /* so that we know how many netlists we are dealing with */
 };
 
