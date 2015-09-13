@@ -485,6 +485,12 @@ typedef struct
   LibraryMenuTypePtr Menu;      /* the entries */
 } LibraryType, *LibraryTypePtr;
 
+enum {
+	NETLIST_INPUT = 0,                /* index of the original netlist as imported */
+	NETLIST_EDITED = 0,               /* index of the netlist produced by applying netlist patches on [NETLIST_INPUT] */
+	NUM_NETLISTS                  /* so that we know how many netlists we are dealing with */
+};
+
 
   /* The PCBType struct holds information about board layout most of which is
      |  saved with the layout.  A new PCB layout struct is first initialized
@@ -532,7 +538,7 @@ typedef struct PCBType
   FontType Font;
   LayerGroupType LayerGroups;
   RouteStyleType RouteStyle[NUM_STYLES];
-  LibraryType NetlistLib;
+  LibraryType NetlistLib[NUM_NETLISTS];
   rats_patch_line_t *NetlistPatches, *NetlistPatchLast;
   AttributeListType Attributes;
   DataTypePtr Data;		/* entire database */

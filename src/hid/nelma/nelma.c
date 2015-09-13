@@ -333,7 +333,7 @@ nelma_write_nets(FILE * out)
 
 	const char     *ext;
 
-	netlist = PCB->NetlistLib;
+	netlist = PCB->NetlistLib[NETLIST_EDITED];
 
 	fprintf(out, "\n/* **** Nets **** */\n\n");
 
@@ -387,7 +387,7 @@ nelma_write_layer(FILE * out, int z, int h,
 
 	if (full) {
 		fprintf(out, "\tobjects = {\n");
-		netlist = PCB->NetlistLib;
+		netlist = PCB->NetlistLib[NETLIST_EDITED];
 
 		for (n = 0; n < netlist.MenuN; n++) {
 			net = &netlist.Menu[n];
@@ -501,7 +501,7 @@ nelma_write_objects(FILE * out)
 
 	int             n, m;
 
-	netlist = PCB->NetlistLib;
+	netlist = PCB->NetlistLib[NETLIST_EDITED];
 
 	fprintf(out, "\n/* **** Objects **** */\n\n");
 

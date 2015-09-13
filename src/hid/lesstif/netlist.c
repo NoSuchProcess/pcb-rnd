@@ -48,7 +48,7 @@ static int LesstifNetlistChanged (int argc, char **argv, Coord x, Coord y);
 static void
 pick_net (int pick)
 {
-  LibraryMenuType *menu = PCB->NetlistLib.Menu + pick;
+  LibraryMenuType *menu = PCB->NetlistLib[NETLIST_EDITED].Menu + pick;
   int i;
 
   if (pick == last_pick)
@@ -72,7 +72,7 @@ netlist_select (Widget w, void *v, XmListCallbackStruct * cbs)
 {
   XmString str;
   int pos = cbs->item_position;
-  LibraryMenuTypePtr net = & (PCB->NetlistLib.Menu[pos - 1]);
+  LibraryMenuTypePtr net = & (PCB->NetlistLib[NETLIST_EDITED].Menu[pos - 1]);
   char *name = net->Name;
   if (name[0] == ' ')
     {
@@ -178,7 +178,7 @@ nbcb_std_callback (Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * cbs)
     hid_actionl ("connection", "reset", NULL);
   for (i=0; i<posc; i++)
     {
-      LibraryMenuTypePtr net = & (PCB->NetlistLib.Menu[posl[i] - 1]);
+      LibraryMenuTypePtr net = & (PCB->NetlistLib[NETLIST_EDITED].Menu[posl[i] - 1]);
       v(net, posl[i]);
     }
   n = 0;
@@ -224,7 +224,7 @@ nbcb_ripup (Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * cbs)
 static void
 netnode_browse (Widget w, XtPointer v, XmListCallbackStruct * cbs)
 {
-  LibraryMenuType *menu = PCB->NetlistLib.Menu + last_pick;
+  LibraryMenuType *menu = PCB->NetlistLib[NETLIST_EDITED].Menu + last_pick;
   char *name = menu->Entry[cbs->item_position - 1].ListEntry;
   char *ename, *pname;
 
@@ -386,7 +386,7 @@ static int
 LesstifNetlistChanged (int argc, char **argv, Coord x, Coord y)
 {
   int i;
-  if (!PCB->NetlistLib.MenuN)
+  if (!PCB->NetlistLib[NETLIST_EDITED].MenuN)
     return 0;
   if (build_netlist_dialog ())
     return 0;
@@ -394,13 +394,13 @@ LesstifNetlistChanged (int argc, char **argv, Coord x, Coord y)
   if (netlist_strings)
     free (netlist_strings);
   netlist_strings =
-    (XmString *) malloc (PCB->NetlistLib.MenuN * sizeof (XmString));
-  for (i = 0; i < PCB->NetlistLib.MenuN; i++)
+    (XmString *) malloc (PCB->NetlistLib[NETLIST_EDITED].MenuN * sizeof (XmString));
+  for (i = 0; i < PCB->NetlistLib[NETLIST_EDITED].MenuN; i++)
     netlist_strings[i] =
-      XmStringCreatePCB (PCB->NetlistLib.Menu[i].Name);
+      XmStringCreatePCB (PCB->NetlistLib[NETLIST_EDITED].Menu[i].Name);
   n = 0;
   stdarg (XmNitems, netlist_strings);
-  stdarg (XmNitemCount, PCB->NetlistLib.MenuN);
+  stdarg (XmNitemCount, PCB->NetlistLib[NETLIST_EDITED].MenuN);
   XtSetValues (netlist_list, args, n);
   pick_net (0);
   return 0;

@@ -608,10 +608,10 @@ ReportAllNetLengths (int argc, char **argv, Coord x, Coord y)
   ResetConnections (true);
   IncrementUndoSerialNumber ();
 
-  for (ni = 0; ni < PCB->NetlistLib.MenuN; ni++)
+  for (ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++)
     {
-      char *netname = PCB->NetlistLib.Menu[ni].Name + 2;
-      char *ename = PCB->NetlistLib.Menu[ni].Entry[0].ListEntry;
+      char *netname = PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Name + 2;
+      char *ename = PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Entry[0].ListEntry;
       char *pname;
       bool got_one = 0;
 
@@ -723,12 +723,12 @@ ReportNetLength (int argc, char **argv, Coord x, Coord y)
 	  if (ename && pname)
 	    {
 	      n = Concat (ename, "-", pname, NULL);
-	      for (ni = 0; ni < PCB->NetlistLib.MenuN; ni++)
-		for (nei = 0; nei < PCB->NetlistLib.Menu[ni].EntryN; nei++)
+	      for (ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++)
+		for (nei = 0; nei < PCB->NetlistLib[NETLIST_EDITED].Menu[ni].EntryN; nei++)
 		  {
-		    if (strcmp (PCB->NetlistLib.Menu[ni].Entry[nei].ListEntry, n) == 0)
+		    if (strcmp (PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Entry[nei].ListEntry, n) == 0)
 		      {
-			netname = PCB->NetlistLib.Menu[ni].Name + 2;
+			netname = PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Name + 2;
 			goto got_net_name; /* four for loops deep */
 		      }
 		  }
@@ -748,12 +748,12 @@ ReportNetLength (int argc, char **argv, Coord x, Coord y)
 	  if (ename && pname)
 	    {
 	      n = Concat (ename, "-", pname, NULL);
-	      for (ni = 0; ni < PCB->NetlistLib.MenuN; ni++)
-		for (nei = 0; nei < PCB->NetlistLib.Menu[ni].EntryN; nei++)
+	      for (ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++)
+		for (nei = 0; nei < PCB->NetlistLib[NETLIST_EDITED].Menu[ni].EntryN; nei++)
 		  {
-		    if (strcmp (PCB->NetlistLib.Menu[ni].Entry[nei].ListEntry, n) == 0)
+		    if (strcmp (PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Entry[nei].ListEntry, n) == 0)
 		      {
-			netname = PCB->NetlistLib.Menu[ni].Name + 2;
+			netname = PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Name + 2;
 			goto got_net_name; /* four for loops deep */
 		      }
 		  }
@@ -810,9 +810,9 @@ ReportNetLengthByName (char *tofind, int x, int y)
 
 #if defined(USE_RE)
       use_re = 1;
-      for (i = 0; i < PCB->NetlistLib.MenuN; i++)
+      for (i = 0; i < PCB->NetlistLib[NETLIST_EDITED].MenuN; i++)
 	{
-	  net = PCB->NetlistLib.Menu + i;
+	  net = PCB->NetlistLib[NETLIST_EDITED].Menu + i;
 	  if (strcasecmp (tofind, net->Name + 2) == 0)
 	    use_re = 0;
 	}
@@ -842,9 +842,9 @@ ReportNetLengthByName (char *tofind, int x, int y)
 	}
 #endif
 
-  for (i = 0; i < PCB->NetlistLib.MenuN; i++)
+  for (i = 0; i < PCB->NetlistLib[NETLIST_EDITED].MenuN; i++)
     {
-      net = PCB->NetlistLib.Menu + i;
+      net = PCB->NetlistLib[NETLIST_EDITED].Menu + i;
 
 #if defined(USE_RE)
 	  if (use_re)

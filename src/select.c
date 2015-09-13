@@ -998,7 +998,7 @@ SelectObjectByName (int Type, char *Pattern, bool Flag, search_method_t method)
       InitConnectionLookup ();
       changed = ResetConnections (true) || changed;
 
-      MENU_LOOP (&PCB->NetlistLib);
+      MENU_LOOP (&(PCB->NetlistLib[NETLIST_EDITED]));
       {
         Cardinal i;
         LibraryEntryType *entry;

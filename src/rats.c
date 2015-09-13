@@ -744,7 +744,7 @@ AddAllRats (bool SelectedOnly, void (*funcp) (register ConnectionTypePtr, regist
    * structure the way the final routing
    * is supposed to look
    */
-  Wantlist = ProcNetlist (&PCB->NetlistLib);
+  Wantlist = ProcNetlist (&(PCB->NetlistLib[NETLIST_EDITED]));
   if (!Wantlist)
     {
       Message (_("Can't add rat lines because no netlist is loaded.\n"));
@@ -840,7 +840,7 @@ CollectSubnets (bool SelectedOnly)
    * structure the way the final routing
    * is supposed to look
    */
-  Wantlist = ProcNetlist (&PCB->NetlistLib);
+  Wantlist = ProcNetlist (&(PCB->NetlistLib[NETLIST_EDITED]));
   if (!Wantlist)
     {
       Message (_("Can't add rat lines because no netlist is loaded.\n"));
@@ -895,7 +895,7 @@ rat_used (char *name)
   if (name == NULL)
     return -1;
 
-  MENU_LOOP (&PCB->NetlistLib);
+  MENU_LOOP (&(PCB->NetlistLib[NETLIST_EDITED]));
   {
     if (menu->Name && (strcmp (menu->Name, name) == 0))
       return 1;
@@ -999,7 +999,7 @@ AddNet (void)
       sprintf (ratname, "  ratDrawn%i", ++ratDrawn);
     }
 
-  menu = GetLibraryMenuMemory (&PCB->NetlistLib, NULL);
+  menu = GetLibraryMenuMemory (&(PCB->NetlistLib[NETLIST_EDITED]), NULL);
   menu->Name = strdup (ratname);
   entry = GetLibraryEntryMemory (menu);
   entry->ListEntry = strdup (name1);

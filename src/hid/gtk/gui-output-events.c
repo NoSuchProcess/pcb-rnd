@@ -419,7 +419,7 @@ describe_location (Coord X, Coord Y)
     return NULL;
 
   /* Find netlist entry */
-  MENU_LOOP (&PCB->NetlistLib);
+  MENU_LOOP (&PCB->NetlistLib[NETLIST_EDITED]);
   {
     if (!menu->Name)
     continue;

@@ -3283,6 +3283,7 @@ ActionRemoveSelected (int argc, char **argv, Coord x, Coord y)
   return 0;
 }
 
+#ifdef BA_TODO
 /* --------------------------------------------------------------------------- */
 
 static const char renumber_syntax[] = "Renumber()\n"
@@ -3637,7 +3638,7 @@ ActionRenumber (int argc, char **argv, Coord x, Coord y)
   free (cnt_list);
   return 0;
 }
-
+#endif
 
 /* --------------------------------------------------------------------------- */
 
@@ -6083,7 +6084,11 @@ ActionLoadFrom (int argc, char **argv, Coord x, Coord y)
       if (PCB->Netlistname)
 	free (PCB->Netlistname);
       PCB->Netlistname = StripWhiteSpaceAndDup (name);
-      FreeLibraryMemory (&PCB->NetlistLib);
+      {
+        int i;
+        for(i = 0; i < NUM_NETLISTS; i++)
+          FreeLibraryMemory (&(PCB->NetlistLib[i]));
+      }
       if (!ImportNetlist (PCB->Netlistname))
 	NetlistChanged (1);
     }
@@ -8375,9 +8380,11 @@ HID_Action action_action_list[] = {
   {"RemoveSelected", 0, ActionRemoveSelected,
    removeselected_help, removeselected_syntax}
   ,
+#ifdef BA_TODO
   {"Renumber", 0, ActionRenumber,
    renumber_help, renumber_syntax}
   ,
+#endif
   {"RipUp", 0, ActionRipUp,
    ripup_help, ripup_syntax}
   ,

@@ -246,7 +246,7 @@ void
 sort_netlist ()
 {
   netlist_sort_offset = 2;
-  sort_library (&(PCB->NetlistLib));
+  sort_library (&(PCB->NetlistLib[NETLIST_INPUT]));
   netlist_sort_offset = 0;
 }
 
@@ -697,14 +697,14 @@ static void
 WritePCBNetlistData (FILE * FP)
 {
   /* write out the netlist if it exists */
-  if (PCB->NetlistLib.MenuN)
+  if (PCB->NetlistLib[NETLIST_INPUT].MenuN)
     {
       int n, p;
       fprintf (FP, "NetList()\n(\n");
 
-      for (n = 0; n < PCB->NetlistLib.MenuN; n++)
+      for (n = 0; n < PCB->NetlistLib[NETLIST_INPUT].MenuN; n++)
 	{
-	  LibraryMenuTypePtr menu = &PCB->NetlistLib.Menu[n];
+	  LibraryMenuTypePtr menu = &PCB->NetlistLib[NETLIST_INPUT].Menu[n];
 	  fprintf (FP, "\tNet(");
 	  PrintQuotedString(FP, &menu->Name[2]);
 	  fprintf (FP, " ");
@@ -731,7 +731,7 @@ WritePCBNetlistPatchData (FILE * FP)
 {
 	if (PCB->NetlistPatches != NULL) {
 		rats_patch_line_t *n;
-		fprintf (FP, "NetList()\n(\n");
+		fprintf (FP, "NetListPatch()\n(\n");
 		for(n = PCB->NetlistPatches; n != NULL; n = n->next) {
 			switch(n->op) {
 				case RATP_ADD_CONN:      fprintf (FP, "\tadd_conn(\"%s\" \"%s\")\n", n->id, n->arg1.net_name); break;
@@ -1448,7 +1448,7 @@ ReadNetlist (char *filename)
 	    i++;
 	  if (kind == 0)
 	    {
-	      menu = GetLibraryMenuMemory (&PCB->NetlistLib, NULL);
+	      menu = GetLibraryMenuMemory (&PCB->NetlistLib[NETLIST_INPUT], NULL);
 	      menu->Name = strdup (temp);
 	      menu->flag = 1;
 	      kind++;

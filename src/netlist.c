@@ -72,14 +72,14 @@
 RCSID ("$Id$");
 
 /*
-  int    PCB->NetlistLib.MenuN
-  char * PCB->NetlistLib.Menu[i].Name
+  int    PCB->NetlistLib[n].MenuN
+  char * PCB->NetlistLib[n].Menu[i].Name
      [0] == '*' (ok for rats) or ' ' (skip for rats)
      [1] == unused
      [2..] actual name
-  char * PCB->NetlistLib.Menu[i].Style
-  int    PCB->NetlistLib.Menu[i].EntryN
-  char * PCB->NetlistLib.Menu[i].Entry[j].ListEntry
+  char * PCB->NetlistLib[n].Menu[i].Style
+  int    PCB->NetlistLib[n].Menu[i].EntryN
+  char * PCB->NetlistLib[n].Menu[i].Entry[j].ListEntry
 */
 
 typedef void (*NFunc) (LibraryMenuType *, LibraryEntryType *);
@@ -106,14 +106,14 @@ netnode_to_netname (char *nodename)
 {
   int i, j;
   /*printf("nodename [%s]\n", nodename);*/
-  for (i=0; i<PCB->NetlistLib.MenuN; i++)
+  for (i=0; i<PCB->NetlistLib[NETLIST_EDITED].MenuN; i++)
     {
-      for (j=0; j<PCB->NetlistLib.Menu[i].EntryN; j++)
+      for (j=0; j<PCB->NetlistLib[NETLIST_EDITED].Menu[i].EntryN; j++)
 	{
-	  if (strcmp (PCB->NetlistLib.Menu[i].Entry[j].ListEntry, nodename) == 0)
+	  if (strcmp (PCB->NetlistLib[NETLIST_EDITED].Menu[i].Entry[j].ListEntry, nodename) == 0)
 	    {
 	      /*printf(" in [%s]\n", PCB->NetlistLib.Menu[i].Name);*/
-	      return & (PCB->NetlistLib.Menu[i]);
+	      return & (PCB->NetlistLib[NETLIST_EDITED].Menu[i]);
 	    }
 	}
     }
@@ -130,11 +130,11 @@ netname_to_netname (char *netname)
       /* Looks like we were passed an internal netname, skip the prefix */
       netname += 2;
     }
-  for (i=0; i<PCB->NetlistLib.MenuN; i++)
+  for (i=0; i<PCB->NetlistLib[NETLIST_EDITED].MenuN; i++)
     {
-      if (strcmp (PCB->NetlistLib.Menu[i].Name + 2, netname) == 0)
+      if (strcmp (PCB->NetlistLib[NETLIST_EDITED].Menu[i].Name + 2, netname) == 0)
 	{
-	  return & (PCB->NetlistLib.Menu[i]);
+	  return & (PCB->NetlistLib[NETLIST_EDITED].Menu[i]);
 	}
     }
   return 0;
@@ -206,7 +206,8 @@ netlist_clear (LibraryMenuType * net, LibraryEntryType * pin)
   if (net == 0)
     {
       /* Clear the entire netlist. */
-      FreeLibraryMemory (&PCB->NetlistLib);
+      for(ni = 0; ni < NUM_NETLISTS; ni++)
+        FreeLibraryMemory (&(PCB->NetlistLib[ni]));
     }
   else if (pin == 0)
     {
@@ -250,7 +251,7 @@ static int
 netlist_add (const char *netname, const char *pinname)
 {
   int ni, pi;
-  LibraryType *netlist = &PCB->NetlistLib;
+  LibraryType *netlist = &PCB->NetlistLib[NETLIST_INPUT];
   LibraryMenuType *net = NULL;
   LibraryEntryType *pin = NULL;
 
@@ -430,9 +431,9 @@ Netlist (int argc, char **argv, Coord x, Coord y)
     {
       int result;
       use_re = 1;
-      for (i = 0; i < PCB->NetlistLib.MenuN; i++)
+      for (i = 0; i < PCB->NetlistLib[NETLIST_EDITED].MenuN; i++)
 	{
-	  net = PCB->NetlistLib.Menu + i;
+	  net = PCB->NetlistLib[NETLIST_EDITED].Menu + i;
 	  if (strcasecmp (argv[1], net->Name + 2) == 0)
 	    use_re = 0;
 	}
@@ -463,9 +464,9 @@ Netlist (int argc, char **argv, Coord x, Coord y)
     }
 #endif
 
-  for (i = PCB->NetlistLib.MenuN-1; i >= 0; i--)
+  for (i = PCB->NetlistLib[NETLIST_EDITED].MenuN-1; i >= 0; i--)
     {
-      net = PCB->NetlistLib.Menu + i;
+      net = PCB->NetlistLib[NETLIST_EDITED].Menu + i;
 
       if (argc > 1)
 	{

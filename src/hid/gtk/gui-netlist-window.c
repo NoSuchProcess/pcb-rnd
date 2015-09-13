@@ -353,7 +353,7 @@ net_model_create (void)
                                        (GDestroyNotify)
                                          gtk_tree_row_reference_free);
 
-  MENU_LOOP (&PCB->NetlistLib);
+  MENU_LOOP (&PCB->NetlistLib[NETLIST_EDITED]);
   {
     if (!menu->Name)
       continue;
@@ -705,7 +705,7 @@ ghid_netlist_window_create (GHidPort * out)
 
   /* No point in putting up the window if no netlist is loaded.
    */
-  if (!PCB->NetlistLib.MenuN)
+  if (!PCB->NetlistLib[NETLIST_EDITED].MenuN)
     return;
 
   if (netlist_window)
@@ -1008,7 +1008,7 @@ ghid_netlist_window_update (gboolean init_nodes)
 
   /* XXX Check if the select callback does this for us */
   if (init_nodes)
-    node_model_update ((&PCB->NetlistLib)->Menu);
+    node_model_update ((&PCB->NetlistLib[NETLIST_EDITED])->Menu);
 }
 
 static gint

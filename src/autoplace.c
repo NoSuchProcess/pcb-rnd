@@ -762,7 +762,7 @@ AutoPlaceSelected (void)
    * structure the way the final routing
    * is supposed to look
    */
-  Nets = ProcNetlist (&PCB->NetlistLib);
+  Nets = ProcNetlist (&(PCB->NetlistLib[NETLIST_EDITED]));
   if (!Nets)
     {
       Message (_("Can't add rat lines because no netlist is loaded.\n"));
