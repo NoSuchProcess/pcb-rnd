@@ -21,5 +21,8 @@ int main()
 	for(n = 0; best[n*2] != -1; n++)
 		printf("%s-%s\n", strempty(g->node2name[best[n*2+0]]), strempty(g->node2name[best[n*2+1]]));
 
+	gr_free(g);
+	free(best);
+
 	return 0;
 }
