@@ -23,11 +23,31 @@ void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const
 	n->next = NULL;
 }
 
+static void netlist_free(LibraryTypePtr dst)
+{
+	int n, p;
+
+	if (dst->Menu == NULL)
+		return;
+
+	for (n = 0; n < dst->MenuN; n++) {
+		LibraryMenuTypePtr dmenu = &dst->Menu[n];
+		free(dmenu->Name);
+		for (p = 0; p < dmenu->EntryN; p++) {
+			LibraryEntryTypePtr dentry = &dmenu->Entry[p];
+			free(dentry->ListEntry);
+		}
+		free(dmenu->Entry);
+	}
+	free(dst->Menu);
+	dst->Menu = NULL;
+}
+
 static void netlist_copy(LibraryTypePtr dst, LibraryTypePtr src)
 {
 	int n, p;
-	dst->MenuN = src->MenuN;
-	dst->MenuMax = dst->Menu = calloc(sizeof(LibraryMenuType), dst->MenuN);
+	dst->MenuMax = dst->MenuN = src->MenuN;
+	dst->Menu = calloc(sizeof(LibraryMenuType), dst->MenuN);
 	for (n = 0; n < src->MenuN; n++) {
 		LibraryMenuTypePtr smenu = &src->Menu[n];
 		LibraryMenuTypePtr dmenu = &dst->Menu[n];
@@ -49,6 +69,6 @@ static void netlist_copy(LibraryTypePtr dst, LibraryTypePtr src)
 
 void rats_patch_apply(PCBTypePtr pcb)
 {
-	/* netlist_free(&(PCB->NetlistLib[NETLIST_EDITED])) */
+	netlist_free(&(pcb->NetlistLib[NETLIST_EDITED]));
 	netlist_copy(&(pcb->NetlistLib[NETLIST_EDITED]), &(pcb->NetlistLib[NETLIST_INPUT]));
 }
