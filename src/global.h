@@ -533,7 +533,7 @@ typedef struct PCBType
   LayerGroupType LayerGroups;
   RouteStyleType RouteStyle[NUM_STYLES];
   LibraryType NetlistLib;
-  rats_patch_line_t *NetlistPatches;
+  rats_patch_line_t *NetlistPatches, *NetlistPatchLast;
   AttributeListType Attributes;
   DataTypePtr Data;		/* entire database */
 
