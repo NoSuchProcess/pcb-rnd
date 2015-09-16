@@ -354,6 +354,11 @@ MainMenu =
    {"Design Rule Checker" DRC()}
    -
    {"Apply vendor drill mapping" ApplyVendor()}
+   -
+   {"Design changes (back annotation)"
+    {"Swap nets on two selected pins" net(swap)  a={"Shift-x" "Shift<Key>x"}}
+    {"Replace footprint" net(swap)  a={"Alt-f" "Alt<Key>f"}}
+   }
   }
 
 #
