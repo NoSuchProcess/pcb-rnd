@@ -818,7 +818,7 @@ struct rats_patch_line_s {
 		char *attrib_val;
 	} arg2;
 
-	rats_patch_line_t *next;
+	rats_patch_line_t *prev, *next;
 };
 
 /* ---------------------------------------------------------------------------

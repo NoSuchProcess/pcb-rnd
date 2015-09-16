@@ -14,6 +14,8 @@ void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const
 	else
 		n->arg2.attrib_val = NULL;
 
+	/* link in */
+	n->prev = pcb->NetlistPatchLast;
 	if (pcb->NetlistPatches != NULL) {
 		pcb->NetlistPatchLast->next = n;
 		pcb->NetlistPatchLast = n;
