@@ -25,6 +25,32 @@ void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const
 	n->next = NULL;
 }
 
+/* Unlink n from the list; if do_free is non-zero, also free fields and n */
+static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t *n, int do_free)
+{
+	/* if we are the first or last... */
+	if (n == pcb->NetlistPatches)
+		pcb->NetlistPatches = n->next;
+	if (n == pcb->NetlistPatchLast)
+		pcb->NetlistPatchLast = n->prev;
+
+	/* extra ifs, just in case n is already unlinked */
+	if (n->prev != NULL)
+		n->prev->next = n->next;
+	if (n->next != NULL)
+		n->next->prev = n->prev;
+
+	if (do_free) {
+		if (n->id != NULL)
+			free(n->id);
+		if (n->arg1.net_name != NULL)
+			free(n->arg1.net_name);
+		if (n->arg2.attrib_val != NULL)
+			free(n->arg2.attrib_val);
+		free(n);
+	}
+}
+
 static void netlist_free(LibraryTypePtr dst)
 {
 	int n, p;
