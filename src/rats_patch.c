@@ -1,5 +1,7 @@
 #include "rats_patch.h"
 
+static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t *n, int do_free);
+
 void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2)
 {
 	rats_patch_line_t *n;
@@ -23,6 +25,40 @@ void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const
 	else
 		pcb->NetlistPatchLast = pcb->NetlistPatches = n;
 	n->next = NULL;
+}
+
+void rats_patch_append_optimize(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2)
+{
+	rats_patch_op_t seek_op;
+	rats_patch_line_t *n;
+
+	switch(op) {
+		case RATP_ADD_CONN:      seek_op = RATP_DEL_CONN; break;
+		case RATP_DEL_CONN:      seek_op = RATP_ADD_CONN; break;
+		case RATP_CHANGE_ATTRIB: seek_op = RATP_CHANGE_ATTRIB; break;
+	}
+
+	/* keep the list clean: remove the last operation that becomes obsolete by the new one */
+	for(n = pcb->NetlistPatchLast; n != NULL; n = n->prev) {
+		if ((n->op == seek_op) && (strcmp(n->id, id) == 0)) {
+			switch(op) {
+				case RATP_CHANGE_ATTRIB:
+					if (strcmp(n->arg1.attrib_name, a1) != 0)
+						break;
+					rats_patch_remove(pcb, n, 1);
+					goto quit;
+				case RATP_ADD_CONN:
+				case RATP_DEL_CONN:
+					if (strcmp(n->arg1.net_name, a1) != 0)
+						break;
+					rats_patch_remove(pcb, n, 1);
+					goto quit;
+			}
+		}
+	}
+
+	quit:;
+	rats_patch_append(pcb, op, id, a1, a2);
 }
 
 /* Unlink n from the list; if do_free is non-zero, also free fields and n */

@@ -295,10 +295,10 @@ netlist_swap ()
 	}
 
 
-	rats_patch_append(PCB, RATP_DEL_CONN, pins[0], nets[0]->Name+2);
-	rats_patch_append(PCB, RATP_DEL_CONN, pins[1], nets[1]->Name+2);
-	rats_patch_append(PCB, RATP_ADD_CONN, pins[0], nets[1]->Name+2);
-	rats_patch_append(PCB, RATP_ADD_CONN, pins[1], nets[0]->Name+2);
+	rats_patch_append_optimize(PCB, RATP_DEL_CONN, pins[0], nets[0]->Name+2);
+	rats_patch_append_optimize(PCB, RATP_DEL_CONN, pins[1], nets[1]->Name+2);
+	rats_patch_append_optimize(PCB, RATP_ADD_CONN, pins[0], nets[1]->Name+2);
+	rats_patch_append_optimize(PCB, RATP_ADD_CONN, pins[1], nets[0]->Name+2);
 
 	/* TODO: not very efficient to regenerate the whole list... */
 	rats_patch_make_edited(PCB);
