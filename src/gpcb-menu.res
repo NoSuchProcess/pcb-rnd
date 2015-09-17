@@ -357,7 +357,7 @@ MainMenu =
    -
    {"Design changes (back annotation)"
     {"Swap nets on two selected pins" net(swap)  a={"Shift-x" "Shift<Key>x"}}
-    {"Replace footprint" net(swap)  a={"Alt-f" "Alt<Key>f"}}
+    {"Replace footprint" ReplaceFootprint()  a={"Alt-Shift-f" "Alt Shift<Key>f"}}
    }
   }
 

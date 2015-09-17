@@ -8262,6 +8262,20 @@ ManagePlugins (int argc, char **argv, Coord x, Coord y)
 	free(str.Data);
 }
 
+/* ---------------------------------------------------------------- */
+static const char replacefootprint_syntax[] =
+  "ReplaceFootprint()\n";
+
+static const char replacefootprint_help[] = "Replace the footprint of the selected component with the footprint in the buffer.";
+
+static int
+ReplaceFootprint (int argc, char **argv, Coord x, Coord y)
+{
+	fprintf(stderr, "rp1\n");
+	hid_parse_command("DoWindows(Library)");
+	fprintf(stderr, "rp2\n");
+}
+
 
 /* --------------------------------------------------------------------------- */
 
@@ -8464,6 +8478,9 @@ HID_Action action_action_list[] = {
   ,
   {"ManagePlugins", 0, ManagePlugins,
    manageplugins_help, manageplugins_syntax}
+  ,
+  {"ReplaceFootprint", 0, ReplaceFootprint,
+   replacefootprint_help, replacefootprint_syntax}
   ,
 };
 
