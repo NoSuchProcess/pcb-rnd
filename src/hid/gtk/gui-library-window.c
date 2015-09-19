@@ -442,7 +442,7 @@ static void library_window_preview_refresh(GhidLibraryWindow *library_window, co
 
 	/* update the text */
   pt = g_string_new ("Tags:");
-	if (entry->Tags != NULL) {
+	if ((entry != NULL) && (entry->Tags != NULL)) {
 		void **t;
 		
 
