@@ -242,3 +242,20 @@ LibraryMenuTypePtr rats_patch_find_net4pin(PCBTypePtr pcb, const char *pin)
 	return NULL;
 }
 
+
+int rats_patch_fexport(PCBTypePtr pcb, FILE *f, int fmt_pcb)
+{
+	rats_patch_line_t *n;
+	const char *q = "\"";
+	const char *po = '(';
+	const char *pc = ')';
+	const char *line_prefix = "\t";
+
+	for(n = pcb->NetlistPatches; n != NULL; n = n->next) {
+		switch(n->op) {
+			case RATP_ADD_CONN:      fprintf(f, "%sadd_conn%c%s%s%s %s%s%s%c\n", line_prefix, po, q, n->id, q, q, n->arg1.net_name, q, pc); break;
+			case RATP_DEL_CONN:      fprintf(f, "%sdel_conn%c%s%s%s %s%s%s%c\n", line_prefix, po, q, n->id, q, q, n->arg1.net_name, q, pc); break;
+			case RATP_CHANGE_ATTRIB: fprintf(f, "%schange_attrib%c%s%s%s %s%s%s %s%s%s%c\n", line_prefix, po, q, n->id, q, q, n->arg1.attrib_name, q, q, n->arg2.attrib_val, q, pc); break;
+		}
+	}
+}

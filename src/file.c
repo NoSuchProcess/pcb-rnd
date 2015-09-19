@@ -731,15 +731,8 @@ static void
 WritePCBNetlistPatchData (FILE * FP)
 {
 	if (PCB->NetlistPatches != NULL) {
-		rats_patch_line_t *n;
 		fprintf (FP, "NetListPatch()\n(\n");
-		for(n = PCB->NetlistPatches; n != NULL; n = n->next) {
-			switch(n->op) {
-				case RATP_ADD_CONN:      fprintf (FP, "\tadd_conn(\"%s\" \"%s\")\n", n->id, n->arg1.net_name); break;
-				case RATP_DEL_CONN:      fprintf (FP, "\tdel_conn(\"%s\" \"%s\")\n", n->id, n->arg1.net_name); break;
-				case RATP_CHANGE_ATTRIB: fprintf (FP, "\tchange_attrib(\"%s\" \"%s\" \"%s\")\n", n->id, n->arg1.attrib_name, n->arg2.attrib_val); break;
-			}
-		}
+		rats_patch_fexport(PCB, FP, 1);
 		fprintf (FP, ")\n");
 	}
 }
