@@ -71,6 +71,7 @@
 #include "macro.h"
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "rats_patch.h"
 
 #include <assert.h>
 #include <stdlib.h> /* rand() */
@@ -8276,6 +8277,7 @@ ReplaceFootprint (int argc, char **argv, Coord x, Coord y)
 	char *fpname;
 	int found = 0;
 
+	/* check if we have elements selected and quit if not */
 	ELEMENT_LOOP (PCB->Data);
 	{
 		if (TEST_FLAG (SELECTEDFLAG, element)) {
@@ -8290,6 +8292,7 @@ ReplaceFootprint (int argc, char **argv, Coord x, Coord y)
 		return 1;
 	}
 
+	/* fetch the name of the new footprint */
 	if (argc == 0) {
 		fpname = gui->prompt_for ("Footprint name", "");
 		if (fpname == NULL) {
@@ -8308,8 +8311,8 @@ ReplaceFootprint (int argc, char **argv, Coord x, Coord y)
 		return 1;
 	}
 
-	fprintf(stderr, "rp1\n");
 
+	/* action: replace selected elements */
 	ELEMENT_LOOP (PCB->Data);
 	{
 		if (TEST_FLAG (SELECTEDFLAG, element)) {
@@ -8319,6 +8322,7 @@ ReplaceFootprint (int argc, char **argv, Coord x, Coord y)
 			a[3] = NULL;
 			LoadFootprint(3, a, element->MarkX, element->MarkY);
 			CopyPastebufferToLayout(element->MarkX, element->MarkY);
+			rats_patch_append_optimize(PCB, RATP_CHANGE_ATTRIB, a[1], "footprint", fpname);
 			RemoveElement(element);
 		}
 	}
