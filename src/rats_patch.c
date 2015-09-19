@@ -33,6 +33,8 @@
  */
 
 #include "rats_patch.h"
+#include "genht/htsp.h"
+#include "genht/hash.h"
 
 static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t *n, int do_free);
 
@@ -209,7 +211,7 @@ int rats_patch_apply(PCBTypePtr pcb, rats_patch_line_t *patch)
 		case RATP_ADD_CONN: return rats_patch_apply_conn(pcb, patch, 0);
 		case RATP_DEL_CONN: return rats_patch_apply_conn(pcb, patch, 1);
 		case RATP_CHANGE_ATTRIB:
-#warning TODO: just check wheter it's still valid
+#warning TODO: just check wheter it is still valid
 			break;
 	}
 	return 0;
@@ -242,11 +244,28 @@ LibraryMenuTypePtr rats_patch_find_net4pin(PCBTypePtr pcb, const char *pin)
 	return NULL;
 }
 
+static LibraryMenuTypePtr rats_patch_find_net(PCBTypePtr pcb, const char *netname, int listidx)
+{
+	int n;
+
+	for (n = 0; n < pcb->NetlistLib[listidx].MenuN; n++) {
+		LibraryMenuTypePtr menu = &pcb->NetlistLib[listidx].Menu[n];
+		if (strcmp(menu->Name+2, netname) == 0)
+			return menu;
+	}
+	return NULL;
+}
+
+
+static int keyeq(char *a, char *b) {
+	return !strcmp(a,b);
+}
 
 int rats_patch_fexport(PCBTypePtr pcb, FILE *f, int fmt_pcb)
 {
 	rats_patch_line_t *n;
-	const char *q, *po, *pc, *line_prefix;
+	const char *q, *line_prefix;
+	char po, pc;
 
 	if (fmt_pcb) {
 		q = "\"";
@@ -260,6 +279,38 @@ int rats_patch_fexport(PCBTypePtr pcb, FILE *f, int fmt_pcb)
 		pc = ' ';
 		line_prefix = "";
 	}
+
+	if (!fmt_pcb) {
+		htsp_t *seen;
+		seen = htsp_alloc(strhash, keyeq);
+
+		/* have to print net_info lines */
+		for(n = pcb->NetlistPatches; n != NULL; n = n->next) {
+			switch(n->op) {
+				case RATP_ADD_CONN:
+				case RATP_DEL_CONN:
+					if (htsp_get(seen, n->arg1.net_name) == NULL) {
+						LibraryMenuTypePtr net;
+						int p;
+
+						net = rats_patch_find_net(pcb, n->arg1.net_name, NETLIST_INPUT);
+						printf("net: '%s' %p\n", n->arg1.net_name, net);
+						if (net != NULL) {
+							htsp_set(seen, n->arg1.net_name, net);
+							fprintf(f, "%snet_info%c%s%s%s", line_prefix, po, q, n->arg1.net_name, q);
+							for (p = 0; p < net->EntryN; p++) {
+								LibraryEntryTypePtr entry = &net->Entry[p];
+								fprintf(f, " %s%s%s", q, entry->ListEntry, q);
+							}
+							fprintf(f, "%c\n", pc);
+						}
+					}
+				case RATP_CHANGE_ATTRIB: break;
+			}
+		}
+		htsp_free(seen);
+	}
+	
 
 	for(n = pcb->NetlistPatches; n != NULL; n = n->next) {
 		switch(n->op) {
