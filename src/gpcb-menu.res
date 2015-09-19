@@ -62,6 +62,7 @@ MainMenu =
      {" a single element" GetXY(Click to set the element mark <>) Save(ElementConnections)}
      {" all elements" Save(AllConnections)}
      {" unused pins" Save(AllUnusedPins)}
+     {" netlist patch for back annotation" SavePatch() a={"Alt-Ctrl-B" "Alt Ctrl<Key>b"}}
    }
    -
    {"Print layout..." Print()}

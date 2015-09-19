@@ -605,12 +605,68 @@ Netlist (int argc, char **argv, Coord x, Coord y)
   return 0;
 }
 
+
+static const char savepatch_syntax[] =
+  "SavePatch(filename)";
+
+static const char savepatch_help[] = "Save netlist patch for back annotation.";
+
+/* %start-doc actions SavePatch
+Save netlist patch for back annotation.
+%end-doc */
+static int
+SavePatch (int argc, char **argv, Coord x, Coord y)
+{
+	const char *fn;
+	FILE *f;
+
+	if (argc < 1) {
+		char *default_file;
+
+		if (PCB->Filename != NULL) {
+			char *end;
+			int len;
+			len = strlen(PCB->Filename);
+			default_file = malloc(len+8);
+			memcpy(default_file, PCB->Filename, len+1);
+			end = strrchr(default_file, '.');
+			if ((end == NULL) || (strcasecmp(end, ".pcb") != 0))
+				end = default_file+len;
+			strcpy(end, ".bap");
+		}
+		else
+			default_file = strdup("unnamed.bap");
+
+		fn = gui->fileselect (_("Save netlist patch as ..."),
+				      _("Choose a file to save netlist patch to\n"
+					"for back annotation\n"),
+				      default_file, ".bap", "patch",
+				      0);
+
+		free(default_file);
+	}
+	else
+		fn = argv[0];
+	f = fopen(fn, "w");
+	if (f == NULL) {
+		Message("Can't open netlist patch file %s for writing\n", fn);
+		return 1;
+	}
+	rats_patch_fexport(PCB, f, 0);
+	fclose(f);
+	return 0;
+}
+
 HID_Action netlist_action_list[] = {
   {"net", 0, Netlist,
    netlist_help, netlist_syntax}
   ,
   {"netlist", 0, Netlist,
    netlist_help, netlist_syntax}
+  ,
+
+  {"SavePatch", 0, SavePatch,
+   savepatch_help, savepatch_syntax}
 };
 
 REGISTER_ACTIONS (netlist_action_list)
