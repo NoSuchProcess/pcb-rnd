@@ -246,10 +246,20 @@ LibraryMenuTypePtr rats_patch_find_net4pin(PCBTypePtr pcb, const char *pin)
 int rats_patch_fexport(PCBTypePtr pcb, FILE *f, int fmt_pcb)
 {
 	rats_patch_line_t *n;
-	const char *q = "\"";
-	const char *po = '(';
-	const char *pc = ')';
-	const char *line_prefix = "\t";
+	const char *q, *po, *pc, *line_prefix;
+
+	if (fmt_pcb) {
+		q = "\"";
+		po = '(';
+		pc = ')';
+		line_prefix = "\t";
+	}
+	else {
+		q = "";
+		po = ' ';
+		pc = ' ';
+		line_prefix = "";
+	}
 
 	for(n = pcb->NetlistPatches; n != NULL; n = n->next) {
 		switch(n->op) {
