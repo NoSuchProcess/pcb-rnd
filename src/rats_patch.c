@@ -264,19 +264,18 @@ static int keyeq(char *a, char *b) {
 int rats_patch_fexport(PCBTypePtr pcb, FILE *f, int fmt_pcb)
 {
 	rats_patch_line_t *n;
-	const char *q, *line_prefix;
-	char po, pc;
+	const char *q, *po, *pc, *line_prefix;
 
 	if (fmt_pcb) {
 		q = "\"";
-		po = '(';
-		pc = ')';
+		po = "(";
+		pc = ")";
 		line_prefix = "\t";
 	}
 	else {
 		q = "";
-		po = ' ';
-		pc = ' ';
+		po = " ";
+		pc = "";
 		line_prefix = "";
 	}
 
@@ -297,12 +296,12 @@ int rats_patch_fexport(PCBTypePtr pcb, FILE *f, int fmt_pcb)
 						printf("net: '%s' %p\n", n->arg1.net_name, net);
 						if (net != NULL) {
 							htsp_set(seen, n->arg1.net_name, net);
-							fprintf(f, "%snet_info%c%s%s%s", line_prefix, po, q, n->arg1.net_name, q);
+							fprintf(f, "%snet_info%s%s%s%s", line_prefix, po, q, n->arg1.net_name, q);
 							for (p = 0; p < net->EntryN; p++) {
 								LibraryEntryTypePtr entry = &net->Entry[p];
 								fprintf(f, " %s%s%s", q, entry->ListEntry, q);
 							}
-							fprintf(f, "%c\n", pc);
+							fprintf(f, "%s\n", pc);
 						}
 					}
 				case RATP_CHANGE_ATTRIB: break;
@@ -314,9 +313,9 @@ int rats_patch_fexport(PCBTypePtr pcb, FILE *f, int fmt_pcb)
 
 	for(n = pcb->NetlistPatches; n != NULL; n = n->next) {
 		switch(n->op) {
-			case RATP_ADD_CONN:      fprintf(f, "%sadd_conn%c%s%s%s %s%s%s%c\n", line_prefix, po, q, n->id, q, q, n->arg1.net_name, q, pc); break;
-			case RATP_DEL_CONN:      fprintf(f, "%sdel_conn%c%s%s%s %s%s%s%c\n", line_prefix, po, q, n->id, q, q, n->arg1.net_name, q, pc); break;
-			case RATP_CHANGE_ATTRIB: fprintf(f, "%schange_attrib%c%s%s%s %s%s%s %s%s%s%c\n", line_prefix, po, q, n->id, q, q, n->arg1.attrib_name, q, q, n->arg2.attrib_val, q, pc); break;
+			case RATP_ADD_CONN:      fprintf(f, "%sadd_conn%s%s%s%s %s%s%s%s\n", line_prefix, po, q, n->id, q, q, n->arg1.net_name, q, pc); break;
+			case RATP_DEL_CONN:      fprintf(f, "%sdel_conn%s%s%s%s %s%s%s%s\n", line_prefix, po, q, n->id, q, q, n->arg1.net_name, q, pc); break;
+			case RATP_CHANGE_ATTRIB: fprintf(f, "%schange_attrib%s%s%s%s %s%s%s %s%s%s%s\n", line_prefix, po, q, n->id, q, q, n->arg1.attrib_name, q, q, n->arg2.attrib_val, q, pc); break;
 		}
 	}
 }
