@@ -8260,19 +8260,70 @@ ManagePlugins (int argc, char **argv, Coord x, Coord y)
 	DSAddString (&str, "\n\nNOTE: this is the alpha version, can only list plugins/buildins\n");
 	gui->report_dialog("Manage plugins", str.Data);
 	free(str.Data);
+	return 0;
 }
 
 /* ---------------------------------------------------------------- */
 static const char replacefootprint_syntax[] =
   "ReplaceFootprint()\n";
 
-static const char replacefootprint_help[] = "Replace the footprint of the selected component with the footprint in the buffer.";
+static const char replacefootprint_help[] = "Replace the footprint of the selected components with the footprint specified.";
 
 static int
 ReplaceFootprint (int argc, char **argv, Coord x, Coord y)
 {
+	char *a[4];
+	char *fpname;
+	int found = 0;
+
+	ELEMENT_LOOP (PCB->Data);
+	{
+		if (TEST_FLAG (SELECTEDFLAG, element)) {
+			found =1;
+			break;
+		}
+	}
+	END_LOOP;
+
+	if (!(found)) {
+		Message("ReplaceFootprint works on selected elements, please select elements first!\n");
+		return 1;
+	}
+
+	if (argc == 0) {
+		fpname = gui->prompt_for ("Footprint name", "");
+		if (fpname == NULL) {
+			Message("No footprint name supplied\n");
+			return 1;
+		}
+	}
+	else
+		fpname = argv[0];
+
+	/* check if the footprint is available */
+	a[0] = fpname;
+	a[1] = NULL;
+	if (LoadFootprint(1, a, x, y) != 0) {
+		Message("Can't load footprint %s\n", fpname);
+		return 1;
+	}
+
 	fprintf(stderr, "rp1\n");
-	hid_parse_command("DoWindows(Library)");
+
+	ELEMENT_LOOP (PCB->Data);
+	{
+		if (TEST_FLAG (SELECTEDFLAG, element)) {
+			a[0] = fpname;
+			a[1] = element->Name[1].TextString;
+			a[2] = element->Name[2].TextString;
+			a[3] = NULL;
+			LoadFootprint(3, a, element->MarkX, element->MarkY);
+			CopyPastebufferToLayout(element->MarkX, element->MarkY);
+			RemoveElement(element);
+		}
+	}
+	END_LOOP;
+
 	fprintf(stderr, "rp2\n");
 }
 
