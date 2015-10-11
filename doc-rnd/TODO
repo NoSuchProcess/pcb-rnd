@@ -1,3 +1,6 @@
+BACK ANNOTATION
+	- renumbering action disabled; grep for BA_TODO
+
 BUGS
 - distorted square pin bugs:
 	- rtree assert failure when NDEBUG is turned off and 'q' is pressed on a pin twice
@@ -7,7 +10,6 @@ CLEANUP
 	- remove libstroke?
 
 FEATURES
-- UI: component filter by tags
 - UI: trace length calculation {small}
 - UI: be able to manually change text line width {small}
 - CORE: clear poly should be a per layer flag (on each objects) {?}
@@ -18,6 +20,7 @@ FEATURES
 Low prio:
 - display net names on pins, vias (and maybe tracks?) when zoomed in enough
 - DRC should wanr for thin poly hair
+- prev grid size, next grid size
 - rotate shaped vias don't rotate the shape (is via rotated at all?)
 - new examples
 	- blinking led with parametric footprints
