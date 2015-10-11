@@ -1,3 +1,26 @@
+pcb-rnd 1.0.4
+~~~~~~~~~~~~~
+	[ba]
+		-Add: back annotation
+
+	[core]
+		-Fix: suppress no-font error message while loading default.pcb - the actual font is coming from the default font file
+
+	[pcblib-param]
+		-Add: screw(), low level
+		-Fix: typo in the help of rcy()
+
+	[mincut]
+		-Fix: solve debug works again
+		-Fix: make debug pngs during load optional
+		-Fix: don't use function-in-function - that's a gcc-specific feature
+		-Fix: don't use alloca(), use malloc() (C99)
+		-Add: Makefile to test against known refs
+
+	[pcb-fp]
+		-Fix: gtk lib window tag print doesn't segfault if there are no tags for a footprint
+		-Del: local hash and library search implementation for footprint names in buffer.c - libpcb_fp should handle this
+
 pcb-rnd 1.0.3
 ~~~~~~~~~~~~~
 	[gpmi]

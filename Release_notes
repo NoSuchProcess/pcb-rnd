@@ -1,10 +1,8 @@
-pcb-rnd 1.0.3
+pcb-rnd 1.0.4
 ~~~~~~~~~~~~~
-Version 1.0.3 is a major feature release with the following highlights:
- - embedded GPMI scripting
- - adjust object sizes to current routing style
- - static footprint tags: display tags and search by tag on the gtk HID
- - dynamic UI menus and actions (for the scripts)
- - new parametric footprints: qfp(), qfn(), plcc(), qsop(), bga()
- - better regex and stringlist based search-by-name
+This release is a minor feature release for back annotation.
 
+It also fixes portability issues around [mincut] and a few other minor bugs.
+
+The auto renumbering action is turned off until it is decided how to
+make it compatible with back annotation.
