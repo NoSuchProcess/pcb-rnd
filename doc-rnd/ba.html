@@ -1,0 +1,50 @@
+<html>
+<body>
+<h1> pcb-rnd - the [ba]  patches </h1>
+Back annotation was a long standing missing functionality. There has been
+different suggestions, including:
+<ul>
+	<li> back annotation is not needed at all, the user can do it manually
+	<li> pcb should generate a new netlist, the user should run diff on the netlists and manually edit the schematics
+	<li> gschem should be able to load netlists emitted by PCB; or gnetlist could reverse-process such a netlist
+</ul>
+<p>
+The current implementation allows pcb-rnd users to make deliberate pin
+swapping and footprint replacement. The changes can be saved in a
+"netlist patch" format. A modified gschem can load these and present them
+as search results pointing to parts of the schematics that need to be changed.
+There is a <a href="https://archive.org/details/pcb-rnd-back-annotation">
+demo video </a> about how this happens in practice.
+<p>
+The modified gschem can be checked out from svn://repo.hu/geda-gaf-ba/trunk
+<p>
+The underlying mechanism is versatile and potentially allows more changes
+to be back annotated. These are not yet accessible due to the lack of PCB
+actions and GUI.
+
+<h2> Design decisions </h2>
+This <a href="devlog/20150830b_back_ann.html"> devlog </a> entry functions
+as a design decision document.
+<a href="devlog/20150901a_back_ann.html"> Another entry </a> is a summary
+on how the feature ended up in a private feature-fork of gschem.
+
+<h2> save/load and compatibility </h2>
+Deliberate changes are tracked so that a new forward annotation from
+the old schematics won't break them. To do this, pcb-rnd saves a
+NetListPatch() section in the file. Mainline PCB can not handle this section.
+Compatibility, by use case:
+<ul>
+	<li> 1. No back annotation is made in pcb-rnd: the file <b>stays compatible</b>
+	<li> 2. Back annotation is made in pcb-rnd, then the changes are done on the schematics and a forward annotation is also done: the netlist patch in pcb-rnd becomes empty so the pcb file is <b>again compatible</b> with mainline pcb; this is called resolution of netlist patches
+	<li> 3. There are unresolved netlist patches saved in pcb-rnd and the user attempts to load the pcb file in mainline pcb: <b>syntax error</b> (but no data loss); solution: resolve the netlist patch as described in point 2.
+	<li> 4. Cheat for situation 3.: manually remove the NetListPatch() section from the save file. This way the back annotation info is lost, but mainline pcb can load the file again. This action is sort of "revert back annotation".
+	<li> 5. Any file saved by mainline PCB can be opened by pcb-rnd, back annotation does not affect that.
+
+</ul>
+
+
+<h2> plans </h2>
+Back annotation for further changes, e.g. value change, naming/renaming nets,
+etc.
+</body>
+</html>
