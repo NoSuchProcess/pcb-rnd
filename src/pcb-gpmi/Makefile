@@ -21,6 +21,6 @@ install:
 
 linstall:
 	-mkdir -p $(PLUGIN_DIR)/pcb-rnd-gpmi/
-	-ln -sf `pwd`/gpmi_plugin/gpmi_plugin.so $(PLUGIN_DIR)/gpmi_plugin.so
-	-for n in `ls gpmi_plugin/gpmi_pkg/*.h gpmi_plugin/gpmi_pkg/*.so`; do ln -sf `pwd`/$$n  $(PLUGIN_DIR)/pcb-rnd-gpmi/`basename $$n`; done
+	-ln -sf "`pwd`/gpmi_plugin/gpmi_plugin.so" "$(PLUGIN_DIR)/gpmi_plugin.so"
+	-for n in `ls gpmi_plugin/gpmi_pkg/*.h gpmi_plugin/gpmi_pkg/*.so`; do ln -sf "`pwd`/$$n"  "$(PLUGIN_DIR)/pcb-rnd-gpmi/`basename $$n`"; done
 

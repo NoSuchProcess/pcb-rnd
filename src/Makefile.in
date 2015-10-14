@@ -276,11 +276,11 @@ include ../Makefile.conf
 
 install_:
 	$(MKDIR) $(BINDIR) $(DATADIR)
-	$(CPC) `pwd`/pcb-rnd $(BINDIR)/pcb-rnd
-	$(CPC) `pwd`/default.pcb $(DATADIR)/default.pcb
-	$(CPC) `pwd`/default_font $(DATADIR)/default_font
-	$(CPC) `pwd`/gpcb-menu.res $(DATADIR)/gpcb-menu.res
-	$(CPC) `pwd`/pcb-menu.res $(DATADIR)/pcb-menu.res@/local/pcb/rules/install_@
+	$(CPC) "`pwd`/pcb-rnd" "$(BINDIR)/pcb-rnd"
+	$(CPC) "`pwd`/default.pcb" "$(DATADIR)/default.pcb"
+	$(CPC) "`pwd`/default_font" "$(DATADIR)/default_font"
+	$(CPC) "`pwd`/gpcb-menu.res" "$(DATADIR)/gpcb-menu.res"
+	$(CPC) "`pwd`/pcb-menu.res" "$(DATADIR)/pcb-menu.res@/local/pcb/rules/install_@"
 
 install:
 	make install_ CPC="$(CP)"@/local/pcb/rules/install@
