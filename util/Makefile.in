@@ -25,10 +25,10 @@ $(HASHOBJ):
 	cd ../src && make libpcb_fp.o
 
 install_:
-	$(MKDIR) $(BINDIR) $(LIBDIR)
-	$(CPC) `pwd`/gsch2pcb-rnd$(EXE) $(BINDIR)/gsch2pcb-rnd$(EXE)
-	$(CPC) `pwd`/fp2anim $(BINDIR)/fp2anim
-	$(CPC) `pwd`/gnet-gsch2pcb-rnd.scm $(LIBDIR)/gnet-gsch2pcb-rnd.scm
+	$(MKDIR) "$(BINDIR)" "$(LIBDIR)"
+	$(CPC) "`pwd`/gsch2pcb-rnd$(EXE)" "$(BINDIR)/gsch2pcb-rnd$(EXE)"
+	$(CPC) "`pwd`/fp2anim" "$(BINDIR)/fp2anim"
+	$(CPC) "`pwd`/gnet-gsch2pcb-rnd.scm" "$(LIBDIR)/gnet-gsch2pcb-rnd.scm"
 
 install:
 	make install_ CPC="$(CP)"
@@ -37,9 +37,9 @@ linstall:
 	make install_ CPC="$(LN)"
 
 uninstall:
-	$(RM) $(BINDIR)/gsch2pcb-rnd$(EXE)
-	$(RM) $(BINDIR)/fp2anim
-	$(RM) $(LIBDIR)/gnet-gsch2pcb-rnd.scm
+	$(RM) "$(BINDIR)/gsch2pcb-rnd$(EXE)"
+	$(RM) "$(BINDIR)/fp2anim"
+	$(RM) "$(LIBDIR)/gnet-gsch2pcb-rnd.scm"
 
 
 clean:

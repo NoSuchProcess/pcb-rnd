@@ -4,11 +4,11 @@
 all:
 
 install_:
-	$(MKDIR) $(DATADIR)/pcblib
-	$(CPC) `pwd`/connector $(DATADIR)/pcblib/connector
-	$(CPC) `pwd`/parametric $(DATADIR)/pcblib/parametric
-	$(CPC) `pwd`/smd $(DATADIR)/pcblib/smd
-	$(CPC) `pwd`/tru-hole $(DATADIR)/pcblib/tru-hole
+	$(MKDIR) "$(DATADIR)/pcblib"
+	$(CPC) "`pwd`/connector" "$(DATADIR)/pcblib/connector"
+	$(CPC) "`pwd`/parametric" "$(DATADIR)/pcblib/parametric"
+	$(CPC) "`pwd`/smd" "$(DATADIR)/pcblib/smd"
+	$(CPC) "`pwd`/tru-hole" "$(DATADIR)/pcblib/tru-hole"
 
 install:
 	make install_ CPC="$(CP)"
@@ -17,11 +17,11 @@ install:
 # returns to the wrong dir
 linstall:
 	make uninstall
-	$(MKDIR) $(DATADIR)
-	$(LN) `pwd` $(DATADIR)/pcblib
+	$(MKDIR) "$(DATADIR)"
+	$(LN) "`pwd`" "$(DATADIR)/pcblib"
 
 uninstall:
-	$(RM) $(DATADIR)/pcblib
+	$(RM) "$(DATADIR)/pcblib"
 
 clean:
 
