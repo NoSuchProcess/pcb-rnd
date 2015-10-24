@@ -1,8 +1,4 @@
-pcb-rnd 1.0.4
+pcb-rnd 1.0.5
 ~~~~~~~~~~~~~
-This release is a minor feature release for back annotation.
-
-It also fixes portability issues around [mincut] and a few other minor bugs.
-
-The auto renumbering action is turned off until it is decided how to
-make it compatible with back annotation.
+The main features are bugfixes in the build system and adaptation of
+Robert Drehmel's on-point patch.
