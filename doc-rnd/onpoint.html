@@ -1,0 +1,50 @@
+<html>
+<body>
+<h1> pcb-rnd - the [onpoint]  patches </h1>
+
+Robert Drehmel writes:
+<pre>
+When (e.g.) routing 5mm power traces on a small grid, it's not always easy to hit the
+point where the trace ended (which is the center of the semicircle at the end of the
+line) to start the next line.  If you have selected the line tool, finding the end of
+the line can become guesswork as the cursor doesn't change shape like it does with the
+select tool.
+I want my traces to consist of lines and arcs that are perfectly connected and I want
+to work as fast as possible.
+
+Attached is a small patch that
+
+  - makes it possible to deactivate snapping to "some sensible point along a line".
+    (that's what a comment in the code says). This snapping algorithm gets in the way
+    sometimes so you have to slowly go over a line to find out where it really ends,
+    bouncing back and forth between the points of the small grid, the end of the line
+    and these "sensible points", which is wasting time. The command is
+    "Display(ToggleSnapOffGridLine)". It is still activated by default to avoid
+    violating POLA.
+
+  - more importantly, introduces a new command called "Display(ToggleHighlightOnPoint)"
+    that highlights all lines and arcs which have (end)points exactly on the position
+    where the cross hair is currently snapped to. It therefore helps finding the end
+    points of lines and arcs, but sometimes also shows redundant traces, traces that
+    aren't perfectly connected to each other, traces that don't end directly on the
+    center of a via but should, etc. It works with thin draw too and I tested it with
+    gtk and lesstif.
+
+I use the second option mostly in conjunction with deactivating the first. Both commands
+have been added to the menu by means of (g)pcb-menu.res.in and are available as command
+line options as well.
+Caveats:
+  - The HID API expects all HIDs to make a copy of the color string when setting a color.
+  - The function that lightens up a color could be improved.
+  - I used it for a while, but after porting it from my local fork, it probably needs
+    more testing.
+</pre>
+
+<h2> save/load and compatibility </h2>
+Not affected.
+
+<h2> plans </h2>
+The feature is complete.
+
+</body>
+</html>
