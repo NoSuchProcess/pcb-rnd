@@ -828,6 +828,8 @@ onpoint_line_callback(const BoxType *box, void *cl)
     }
 }
 
+#define close_enough(v1, v2) (fabs((v1)-(v2)) < 10)
+
 static int
 onpoint_arc_callback(const BoxType *box, void *cl)
 {
@@ -841,9 +843,10 @@ onpoint_arc_callback(const BoxType *box, void *cl)
   p2x = arc->X - arc->Width * cos (TO_RADIANS (arc->StartAngle + arc->Delta));
   p2y = arc->Y + arc->Height * sin (TO_RADIANS (arc->StartAngle + arc->Delta));
 
+	/* printf("p1=%ld;%ld p2=%ld;%ld info=%ld;%ld\n", p1x, p1y, p2x, p2y, info->X, info->Y); */
 
-  if ((p1x == info->X && p1y == info->Y) ||
-      (p2x == info->X && p2y == info->Y))
+  if ((close_enough(p1x, info->X) && close_enough(p1y, info->Y)) ||
+      (close_enough(p2x, info->X) && close_enough(p2y, info->Y)))
     {
       crosshair->onpoint_objs =
         g_list_prepend(crosshair->onpoint_objs, arc);
