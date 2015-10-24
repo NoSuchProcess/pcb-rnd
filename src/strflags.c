@@ -95,6 +95,8 @@ static FlagBitsType object_flagbits[] = {
   { PININPOLYFLAG, N ("pininpoly"), PIN_TYPES | PAD_TYPE },
   { CLEARPOLYFLAG, N ("clearpoly"), POLYGON_TYPE },
   { HIDENAMEFLAG, N ("hidename"), ELEMENT_TYPE },
+  { SNAPOFFGRIDLINEFLAG, N ("snapoffgridline"), ALL_TYPES },
+  { HIGHLIGHTONPOINTFLAG, N ("highlightonpoint"), ALL_TYPES },
   { DISPLAYNAMEFLAG, N ("showname"), ELEMENT_TYPE },
   { CLEARLINEFLAG, N ("clearline"), LINE_TYPE | ARC_TYPE | TEXT_TYPE },
   { SELECTEDFLAG, N ("selected"), ALL_TYPES },

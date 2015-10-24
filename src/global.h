@@ -616,6 +616,8 @@ typedef struct			/* holds cursor information */
   PolygonType AttachedPolygon;
   AttachedObjectType AttachedObject;	/* data of attached objects */
   enum crosshair_shape shape; 	/* shape of crosshair */
+  GList *onpoint_objs;		/* list of associated lines/arc */
+  GList *onpoint_objs_types;	/* ..and a list of their respective types */
 } CrosshairType, *CrosshairTypePtr;
 
 typedef struct
@@ -694,6 +696,8 @@ typedef struct			/* some resources... */
   bool ClearLine, FullPoly,
     UniqueNames,		/* force unique names */
     SnapPin,			/* snap to pins and pads */
+    SnapOffGridLine, /*!< Snap to certain off-grid points along a line. */
+    HighlightOnPoint, /*!< Highlight if crosshair is on endpoints. */
     ShowSolderSide,		/* mirror output */
     SaveLastCommand,		/* save the last command entered by user */
     SaveInTMP,			/* always save data in /tmp */

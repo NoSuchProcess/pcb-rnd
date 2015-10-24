@@ -217,6 +217,9 @@ pad.  Primarily used for pads used as fiducials.
 #define VISITFLAG		0x8000  /* marker to avoid re-visiting an object */
 #define	NONETLISTFLAG		0x10000	/* element is not on the netlist and should not interfere with the netlist */
 #define MINCUTFLAG			0x20000 /* used by the mincut short find code */
+#define ONPOINTFLAG     0x40000  /*!< crosshair is on line point or arc point */
+
+#define NOCOPY_FLAGS (FOUNDFLAG | CONNECTEDFLAG | ONPOINTFLAG)
 
 /* ---------------------------------------------------------------------------
  * PCB flags
@@ -273,10 +276,14 @@ Everything but names are locked, the mouse cannot select anything else.
 New polygons are full polygons.
 @item 0x200000
 When set, element names are not drawn.
++@item 0x800000
++snap to certain off-grid points.
++@item 0x1000000
++highlight lines and arcs when the crosshair is on one of their endpoints.
 @end table
 %end-doc */
 
-#define	PCB_FLAGS		0x000fffff	/* all used flags */
+#define	PCB_FLAGS		0x01ffffff	/* all used flags */
 
 #define SHOWNUMBERFLAG          0x00000001
 #define LOCALREFFLAG            0x00000002
@@ -301,6 +308,8 @@ When set, element names are not drawn.
 #define NEWFULLPOLYFLAG         0x00100000
 #define HIDENAMESFLAG           0x00200000
 #define ENABLEMINCUTFLAG        0x00400000
+#define SNAPOFFGRIDLINEFLAG     0x00800000
+#define HIGHLIGHTONPOINTFLAG    0x01000000
 
 /* ---------------------------------------------------------------------------
  * object types

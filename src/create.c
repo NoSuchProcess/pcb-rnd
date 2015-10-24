@@ -170,6 +170,10 @@ CreateNewPCB_ (bool SetDefaultNames)
     SET_FLAG (UNIQUENAMEFLAG, ptr);
   if (Settings.SnapPin)
     SET_FLAG (SNAPPINFLAG, ptr);
+  if (Settings.SnapOffGridLine)
+    SET_FLAG (SNAPOFFGRIDLINEFLAG, ptr);
+  if (Settings.HighlightOnPoint)
+    SET_FLAG (HIGHLIGHTONPOINTFLAG, ptr);
   if (Settings.ClearLine)
     SET_FLAG (CLEARNEWFLAG, ptr);
   if (Settings.FullPoly)
