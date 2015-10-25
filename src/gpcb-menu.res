@@ -287,6 +287,8 @@ MainMenu =
     {"Elements" ChangeSquare(SelectedElements)}
     {"Pins" ChangeSquare(SelectedPins)}
    }
+
+   {"Cycle object being dragged" CycleDrag() a={"x" "<Key>x"}}
   }
 
 #

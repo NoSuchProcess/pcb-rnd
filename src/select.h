@@ -39,6 +39,7 @@
 
 bool SelectObject (void);
 bool SelectBlock (BoxTypePtr, bool);
+long int *ListBlock (BoxTypePtr Box, int *len);
 bool SelectedOperation (ObjectFunctionTypePtr, bool, int);
 void *ObjectOperation (ObjectFunctionTypePtr, int, void *, void *, void *);
 bool SelectConnection (bool);

@@ -618,6 +618,11 @@ typedef struct			/* holds cursor information */
   enum crosshair_shape shape; 	/* shape of crosshair */
   GList *onpoint_objs;		/* list of associated lines/arc */
   GList *onpoint_objs_types;	/* ..and a list of their respective types */
+
+  /* list of object IDs that could have been dragged so that they can be cycled */
+  long int *drags;
+  int drags_len, drags_current;
+  Coord dragx, dragy; /* the point where drag started */
 } CrosshairType, *CrosshairTypePtr;
 
 typedef struct
