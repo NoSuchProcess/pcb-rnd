@@ -1,0 +1,28 @@
+<html>
+<body>
+<h1> pcb-rnd - the [cycdrag]  patches </h1>
+
+A long standing misfeature of pcb (and pcb-rnd) has been that when dragging the
+end of connected traces, pcb chosen one of the traces "randomly". It often
+didn't pick the one the user wanted to move. The workaround was to move the
+one that pcb picked and then return and move the target trace then
+move the other trace back. This gets even more annoying if there are more than
+two objects connected in the given point: 3 traces and a via for example.
+<p>
+The cycdrag patch addresses this issue by defining an action that can cycle
+through objects that could be dragged in the given point while the left mouse
+button is pressed. This lets the user explicitly select the one object to
+work on.
+<p>
+This <a href="https://archive.org/details/pcb-rnd-cycdrag"> demo video </a>
+demonstrates how it works with three lines and a via.
+
+<h2> save/load and compatibility </h2>
+Not affected.
+
+<h2> plans </h2>
+It does not work with the lesstif HID. It does not work with the rubber band
+mode.
+
+</body>
+</html>
