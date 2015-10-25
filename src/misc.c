@@ -112,6 +112,17 @@ Distance (double x1, double y1, double x2, double y2)
   return sqrt(delta_x * delta_x + delta_y * delta_y);
 }
 
+/* Distance2() should be used so that there is only one
+ *  place to deal with overflow/precision errors
+ */
+double
+Distance2 (double x1, double y1, double x2, double y2)
+{
+  double delta_x = (x2 - x1);
+  double delta_y = (y2 - y1);
+  return delta_x * delta_x + delta_y * delta_y;
+}
+
 /* Bring an angle into [0, 360) range */
 Angle
 NormalizeAngle (Angle a)

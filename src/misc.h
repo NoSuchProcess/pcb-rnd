@@ -45,6 +45,7 @@ typedef struct {
 } UnitList[];
 
 double Distance (double x1, double y1, double x2, double y2);
+double Distance2 (double x1, double y1, double x2, double y2); /* distance square */
 Angle  NormalizeAngle (Angle a);
 
 char *pcb_author (void);
