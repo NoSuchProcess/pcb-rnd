@@ -46,6 +46,8 @@ int hook_custom_arg(const char *key, const char *value)
 
 		{"buildin-gpmi",      "/local/pcb/gpmi/buildin", arg_true,      "$static link the gpmi plugin into the executable"},
 		{"plugin-gpmi",       "/local/pcb/gpmi/buildin", arg_false,     "$the gpmi plugin is dynamic loadable"},
+		{"disable-toporouter","/local/pcb/toporouter/enable",arg_false, "$do not compile the toporouter"},
+
 		{NULL, NULL, NULL}
 	};
 
@@ -77,10 +79,12 @@ int hook_postinit()
 	db_mkdir("/local");
 	db_mkdir("/local/pcb");
 	db_mkdir("/local/pcb/gpmi");
+	db_mkdir("/local/pcb/toporouter");
 
 	/* DEFAULTS */
 	put("/local/pcb/gpmi/buildin", strue);
 	put("/local/prefix", "/usr/local");
+	put("/local/pcb/toporouter/enable", strue);
 	return 0;
 }
 
@@ -279,6 +283,12 @@ int hook_generate()
 		list_presents("Export hids: bom gerber lpr ps", exps);
 	}
 
+	printf("Toporouter: ");
+	if (node_istrue("/local/pcb/toporouter/enable"))
+		printf("enabled\n");
+	else
+		printf("disabled\n");
+
 	printf("Scripting via GPMI: ");
 	if (node_istrue("libs/script/gpmi/presents")) {
 		printf("yes ");
@@ -289,6 +299,7 @@ int hook_generate()
 	}
 	else
 		printf("no\n");
+
 
 	if (manual_config)
 		printf("\n\n * NOTE: you may want to edit config.manual.h (user preferences) *\n");
