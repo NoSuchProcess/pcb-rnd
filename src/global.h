@@ -854,6 +854,8 @@ struct rats_patch_line_s {
 #define	UNDO_LAYERCHANGE	       0x20000	/* layer new/delete/move */
 #define	UNDO_CLEAR		       0x40000	/* clear/restore to polygons */
 #define	UNDO_NETLISTCHANGE	       0x80000	/* netlist change */
+#define	UNDO_CHANGEPINNUM			0x100000	/* change of pin number */
+
 
 
 /* ---------------------------------------------------------------------------

@@ -149,6 +149,7 @@ MainMenu =
    -
    {"Edit Names..." foreground=grey50 sensitive=false}
    {" Change text on layout" ChangeName(Object) a={"N" "<Key>n"}}
+   {" Change text on layout" ChangeName(Object, Number) a={"Shift-Ctrl-N" "Shift Ctrl<Key>n"}}
    {" Edit name of layout" ChangeName(Layout)}
    {" Edit name of active layer" ChangeName(Layer)}
    {"Edit Attributes..." foreground=grey50 sensitive=false}

@@ -97,6 +97,7 @@ MainMenu =
    -
    {"Edit name of"
      {"text on layout" ChangeName(Object) a={"N" "<Key>n"}}
+     {"pin on layout" ChangeName(Object, Number) a={"Shift-Ctrl-N" "Shift Ctrl<Key>n"}}
      {"layout" ChangeName(Layout)}
      {"active layer" ChangeName(Layer)}
    }

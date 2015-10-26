@@ -90,6 +90,8 @@ static void *ChangeElementNameSize (ElementTypePtr);
 static void *ChangeElementClearSize (ElementTypePtr);
 static void *ChangePinName (ElementTypePtr, PinTypePtr);
 static void *ChangePadName (ElementTypePtr, PadTypePtr);
+static void *ChangePinNum (ElementTypePtr, PinTypePtr);
+static void *ChangePadNum (ElementTypePtr, PadTypePtr);
 static void *ChangeViaName (PinTypePtr);
 static void *ChangeLineName (LayerTypePtr, LineTypePtr);
 static void *ChangeElementName (ElementTypePtr);
@@ -212,6 +214,20 @@ static ObjectFunctionType ChangeNameFunctions = {
   NULL,
   ChangePinName,
   ChangePadName,
+  NULL,
+  NULL,
+  NULL,
+  NULL
+};
+static ObjectFunctionType ChangePinnumFunctions = {
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  ChangePinNum,
+  ChangePadNum,
   NULL,
   NULL,
   NULL,
@@ -1134,6 +1150,46 @@ ChangePadName (ElementTypePtr Element, PadTypePtr Pad)
     }
   else
     Pad->Name = NewName;
+  return (old);
+}
+
+/* ---------------------------------------------------------------------------
+ * changes the number of a pin
+ */
+static void *
+ChangePinNum (ElementTypePtr Element, PinTypePtr Pin)
+{
+  char *old = Pin->Name;
+
+  Element = Element;		/* get rid of 'unused...' warnings */
+  if (TEST_FLAG (DISPLAYNAMEFLAG, Pin))
+    {
+//      ErasePinName (Pin);
+      Pin->Number = NewName;
+//      DrawPinName (Pin);
+    }
+  else
+    Pin->Number = NewName;
+  return (old);
+}
+
+/* ---------------------------------------------------------------------------
+ * changes the number of a pad
+ */
+static void *
+ChangePadNum (ElementTypePtr Element, PadTypePtr Pad)
+{
+  char *old = Pad->Name;
+
+  Element = Element;		/* get rid of 'unused...' warnings */
+  if (TEST_FLAG (DISPLAYNAMEFLAG, Pad))
+    {
+//      ErasePadName (Pad);
+      Pad->Number = NewName;
+//      DrawPadName (Pad);
+    }
+  else
+    Pad->Number = NewName;
   return (old);
 }
 
@@ -2364,6 +2420,25 @@ ChangeObjectName (int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
 }
 
 /* ---------------------------------------------------------------------------
+ * changes the pin number of the passed object
+ * returns the old name
+ *
+ * The allocated memory isn't freed because the old string is used
+ * by the undo module.
+ */
+void *
+ChangeObjectPinnum (int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
+{
+  void *result;
+  /* setup identifier */
+  NewName = Name;
+  if ((result =
+       ObjectOperation (&ChangePinnumFunctions, Type, Ptr1, Ptr2, Ptr3)));
+  Draw ();
+  return (result);
+}
+
+/* ---------------------------------------------------------------------------
  * changes the clearance-flag of the passed object
  * Returns true if anything is changed
  */
@@ -2534,7 +2609,7 @@ ClrObjectOctagon (int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * by the undo module.
  */
 void *
-QueryInputAndChangeObjectName (int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+QueryInputAndChangeObjectName (int Type, void *Ptr1, void *Ptr2, void *Ptr3, int pinnum)
 {
   char *name = NULL;
   char msg[513];
@@ -2559,12 +2634,18 @@ QueryInputAndChangeObjectName (int Type, void *Ptr1, void *Ptr2, void *Ptr3)
       break;
 
     case PIN_TYPE:
-      sprintf (msg, _("%s Pin Name:"), EMPTY (((PinTypePtr) Ptr2)->Number));
+      if (pinnum) 
+        sprintf (msg, _("%s Pin Number:"), EMPTY (((PinTypePtr) Ptr2)->Number));
+      else
+        sprintf (msg, _("%s Pin Name:"), EMPTY (((PinTypePtr) Ptr2)->Number));
       name = gui->prompt_for (msg, EMPTY (((PinTypePtr) Ptr2)->Name));
       break;
 
     case PAD_TYPE:
-      sprintf (msg, _("%s Pad Name:"), EMPTY (((PadTypePtr) Ptr2)->Number));
+      if (pinnum) 
+        sprintf (msg, _("%s Pad Number:"), EMPTY (((PinTypePtr) Ptr2)->Number));
+      else
+        sprintf (msg, _("%s Pad Name:"), EMPTY (((PadTypePtr) Ptr2)->Number));
       name = gui->prompt_for (msg, EMPTY (((PadTypePtr) Ptr2)->Name));
       break;
 
@@ -2582,10 +2663,18 @@ QueryInputAndChangeObjectName (int Type, void *Ptr1, void *Ptr2, void *Ptr3)
   if (name)
     {
       /* NB: ChangeObjectName takes ownership of the passed memory */
-      char *old = (char *)ChangeObjectName (Type, Ptr1, Ptr2, Ptr3, name);
+      char *old;
+      if (pinnum)
+        old = (char *)ChangeObjectPinnum (Type, Ptr1, Ptr2, Ptr3, name);
+      else
+        old = (char *)ChangeObjectName (Type, Ptr1, Ptr2, Ptr3, name);
+
       if (old != (char *) -1)
 	{
-	  AddObjectToChangeNameUndoList (Type, Ptr1, Ptr2, Ptr3, old);
+	  if (pinnum)
+	    AddObjectToChangePinnumUndoList (Type, Ptr1, Ptr2, Ptr3, old);
+	  else
+	    AddObjectToChangeNameUndoList (Type, Ptr1, Ptr2, Ptr3, old);
 	  IncrementUndoSerialNumber ();
 	}
       Draw ();

@@ -240,6 +240,7 @@ GetUndoSlot (int CommandType, int ID, int Kind)
     switch (ptr->Type)
       {
       case UNDO_CHANGENAME:
+      case UNDO_CHANGEPINNUM:
 	free (ptr->Data.ChangeName.Name);
 	break;
       case UNDO_REMOVE:
@@ -349,6 +350,29 @@ UndoChangeName (UndoListTypePtr Entry)
     {
       Entry->Data.ChangeName.Name =
 	(char *)(ChangeObjectName (type, ptr1, ptr2, ptr3,
+			   Entry->Data.ChangeName.Name));
+      return (true);
+    }
+  return (false);
+}
+
+/* ---------------------------------------------------------------------------
+ * recovers an object from a 'change oinnum' operation
+ * returns true if anything has been recovered
+ */
+static bool
+UndoChangePinnum (UndoListTypePtr Entry)
+{
+  void *ptr1, *ptr2, *ptr3;
+  int type;
+
+  /* lookup entry by it's ID */
+  type =
+    SearchObjectByID (PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
+  if (type != NO_TYPE)
+    {
+      Entry->Data.ChangeName.Name =
+	(char *)(ChangeObjectPinnum (type, ptr1, ptr2, ptr3,
 			   Entry->Data.ChangeName.Name));
       return (true);
     }
@@ -1010,6 +1034,11 @@ PerformUndo (UndoListTypePtr ptr)
 	return (UNDO_CHANGENAME);
       break;
 
+    case UNDO_CHANGEPINNUM:
+      if (UndoChangePinnum (ptr))
+	return (UNDO_CHANGEPINNUM);
+      break;
+
     case UNDO_CREATE:
       if (UndoCopyOrCreate (ptr))
 	return (UNDO_CREATE);
@@ -1230,7 +1259,7 @@ ClearUndoList (bool Force)
       /* release memory allocated by objects in undo list */
       for (undo = UndoList; UndoN; undo++, UndoN--)
 	{
-	  if (undo->Type == UNDO_CHANGENAME)
+	  if ((undo->Type == UNDO_CHANGENAME) || (undo->Type == UNDO_CHANGEPINNUM))
 	    free (undo->Data.ChangeName.Name);
 	}
       free (UndoList);
@@ -1442,6 +1471,21 @@ AddObjectToChangeNameUndoList (int Type, void *Ptr1, void *Ptr2, void *Ptr3,
   if (!Locked)
     {
       undo = GetUndoSlot (UNDO_CHANGENAME, OBJECT_ID (Ptr3), Type);
+      undo->Data.ChangeName.Name = OldName;
+    }
+}
+/* ---------------------------------------------------------------------------
+ * adds an object to the list of objects with changed pinnums
+ */
+void
+AddObjectToChangePinnumUndoList (int Type, void *Ptr1, void *Ptr2, void *Ptr3,
+			       char *OldName)
+{
+  UndoListTypePtr undo;
+
+  if (!Locked)
+    {
+      undo = GetUndoSlot (UNDO_CHANGEPINNUM, OBJECT_ID (Ptr3), Type);
       undo->Data.ChangeName.Name = OldName;
     }
 }

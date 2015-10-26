@@ -4816,9 +4816,10 @@ ActionChangePinName (int argc, char **argv, Coord x, Coord y)
 
 static const char changename_syntax[] =
   "ChangeName(Object)\n"
+  "ChangeName(Object|\"Number\")\n"
   "ChangeName(Layout|Layer)";
 
-static const char changename_help[] = "Sets the name of objects.";
+static const char changename_help[] = "Sets the name (or pin number) of objects.";
 
 /* %start-doc actions ChangeName
 
@@ -4859,7 +4860,7 @@ ActionChangeName (int argc, char **argv, Coord x, Coord y)
 			       &ptr1, &ptr2, &ptr3)) != NO_TYPE)
 	      {
 		SaveUndoSerialNumber ();
-		if (QueryInputAndChangeObjectName (type, ptr1, ptr2, ptr3))
+		if (QueryInputAndChangeObjectName (type, ptr1, ptr2, ptr3, 0))
 		  {
 		    SetChangedFlag (true);
 		    if (type == ELEMENT_TYPE)

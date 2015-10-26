@@ -52,6 +52,7 @@ void AddObjectToInsertContourUndoList (int, LayerType *, PolygonType *);
 void AddObjectToMoveUndoList (int, void *, void *, void *,
 			      Coord, Coord);
 void AddObjectToChangeNameUndoList (int, void *, void *, void *, char *);
+void AddObjectToChangePinnumUndoList (int, void *, void *, void *, char *);
 void AddObjectToRotateUndoList (int, void *, void *, void *,
 				Coord, Coord, BYTE);
 void AddObjectToCreateUndoList (int, void *, void *, void *);

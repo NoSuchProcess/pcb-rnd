@@ -111,7 +111,7 @@ bool ChangeObjectOctagon (int, void *, void *, void *);
 bool SetObjectOctagon (int, void *, void *, void *);
 bool ClrObjectOctagon (int, void *, void *, void *);
 void *ChangeObjectName (int, void *, void *, void *, char *);
-void *QueryInputAndChangeObjectName (int, void *, void *, void *);
+void *QueryInputAndChangeObjectName (int, void *, void *, void *, int);
 void ChangePCBSize (Coord, Coord);
 
 /* Change the specified text on an element, either on the board (give
