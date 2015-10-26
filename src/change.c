@@ -1159,14 +1159,14 @@ ChangePadName (ElementTypePtr Element, PadTypePtr Pad)
 static void *
 ChangePinNum (ElementTypePtr Element, PinTypePtr Pin)
 {
-  char *old = Pin->Name;
+  char *old = Pin->Number;
 
   Element = Element;		/* get rid of 'unused...' warnings */
   if (TEST_FLAG (DISPLAYNAMEFLAG, Pin))
     {
-//      ErasePinName (Pin);
+      ErasePinName (Pin);
       Pin->Number = NewName;
-//      DrawPinName (Pin);
+      DrawPinName (Pin);
     }
   else
     Pin->Number = NewName;
@@ -1179,14 +1179,14 @@ ChangePinNum (ElementTypePtr Element, PinTypePtr Pin)
 static void *
 ChangePadNum (ElementTypePtr Element, PadTypePtr Pad)
 {
-  char *old = Pad->Name;
+  char *old = Pad->Number;
 
   Element = Element;		/* get rid of 'unused...' warnings */
   if (TEST_FLAG (DISPLAYNAMEFLAG, Pad))
     {
-//      ErasePadName (Pad);
+      ErasePadName (Pad);
       Pad->Number = NewName;
-//      DrawPadName (Pad);
+      DrawPadName (Pad);
     }
   else
     Pad->Number = NewName;
