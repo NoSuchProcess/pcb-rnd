@@ -1,3 +1,5 @@
 append /local/pcb/OBJS    {toporouter.o}
 append /local/pcb/LIBS    {../gts/libgts.a}
 append /local/pcb/CFLAGS  {-I../gts}
+append /local/pcb/ACTION_REG_SRC  { toporouter.c }
+

@@ -96,7 +96,7 @@ put /local/pcb/LEX  {res_lex parse_l}
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
 	action.c buffer.c command.c djopt.c flags.c main.c misc.c move.c netlist.c
-	puller.c report.c toporouter.c vendor.c
+	puller.c report.c vendor.c
 }
 
 #---- modules ----#
