@@ -4842,7 +4842,9 @@ int
 ActionChangeName (int argc, char **argv, Coord x, Coord y)
 {
   char *function = ARG (0);
+  char *pinnums = ARG (1);
   char *name;
+  int pinnum;
 
   if (function)
     {
@@ -4860,7 +4862,11 @@ ActionChangeName (int argc, char **argv, Coord x, Coord y)
 			       &ptr1, &ptr2, &ptr3)) != NO_TYPE)
 	      {
 		SaveUndoSerialNumber ();
-		if (QueryInputAndChangeObjectName (type, ptr1, ptr2, ptr3, 0))
+		if ((pinnums != NULL) && (strcasecmp(pinnums, "Number") == 0))
+			pinnum = 1;
+		else
+			pinnum = 0;
+		if (QueryInputAndChangeObjectName (type, ptr1, ptr2, ptr3, pinnum))
 		  {
 		    SetChangedFlag (true);
 		    if (type == ELEMENT_TYPE)
