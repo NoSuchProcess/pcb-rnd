@@ -44,6 +44,7 @@ gsub /local/gts/SRCS {.o } {.c }
 print [@
 CFLAGS = @/local/gts/CFLAGS@
 OBJS = @/local/gts/OBJS@
+CC=@cc/cc@
 
 libgts.a: $(OBJS)
 	@fstools/ar@ rvu libgts.a $(OBJS)

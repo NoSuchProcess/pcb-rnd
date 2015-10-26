@@ -3,6 +3,7 @@ print [@
 CFLAGS=@libs/sul/glib/cflags@ -I.. -DSCMDIR="\"$(LIBDIR)\""
 LDFLAGS=@libs/sul/glib/ldflags@
 EXE=@sys/ext_exe@
+CC=@cc/cc@
 
 HASHOBJ=../src/3rd/genht/hash.o ../src/3rd/genht/htsp.o
 

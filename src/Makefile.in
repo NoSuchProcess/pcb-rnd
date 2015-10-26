@@ -163,6 +163,7 @@ HIDLIST=@/local/pcb/HIDS@
 EXEDEPS=@/local/pcb/EXEDEPS@
 CLEANFILES=@/local/pcb/CLEANFILES@
 CLEANRULES=@/local/pcb/CLEANRULES@
+CC=@cc/cc@
 
 all: pcb-rnd @/local/pcb/all@
 
