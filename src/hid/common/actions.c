@@ -7,6 +7,9 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "../../3rd/genht/hash.h"
+#include "../../3rd/genht/htsp.h"
+
 #include "global.h"
 #include "data.h"
 #include "error.h"
@@ -14,8 +17,6 @@
 
 #include "hid.h"
 #include "../hidint.h"
-#include "../../3rd/genht/hash.h"
-#include "../../3rd/genht/htsp.h"
 
 #ifdef HAVE_LIBDMALLOC
 #include <dmalloc.h>
