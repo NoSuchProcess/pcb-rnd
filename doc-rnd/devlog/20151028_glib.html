@@ -1,0 +1,65 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> why glib is a bad idea </H2>
+
+Levente tried to compile pcb-rnd on bsd and used a different c compiler 
+than gcc. For this in the first step I fixed the build system so that it 
+doesn't have gcc --std=gnu99 but gcc --std=c99.
+<p>
+And then everything broke. A minilib I use for hashing,
+<a href="http://repo.hu/projects/genht">genht</a>, failed to 
+link against hid/common/action.c. I first thought it was a bug in genht: 
+genht was compiled without --std while the rest of the code compiled with 
+--std=gnu99 or --std=c99. Genht heavily depends on static inline 
+functions for performance, maybe that's why.
+<p>
+So I tried to reproduce the situation in a hello-world like program and 
+tried all combinaton of --std, -DNDEBUG, -rdynamic and all build flags 
+used in pcb-rnd for the genht lib and the test program, but all combination 
+worked. It looked like it broke only in pcb-rnd.
+<p>
+I gave up on the minimal test case and went back to pcb-rnd. I realized if 
+the build is the same, the only way it may break is that some header 
+included before genht's headers change some global state. I started to 
+shuffle the #includes. Long story short, it turned out if &lt;glib.h&gt; is 
+included before genht's headers, it breaks.
+<p>
+Some more tracing showed it was because glib over-#defines the keyword 
+<i>inline</i> in a public header that gets included from glib.h. It's all wrapped 
+in a complicated tree of #ifdefs, so it behaves differently depending on 
+the --std setting.
+<p>
+The morale of the story is... Well, I have multiple conclusions.
+<ul>
+<li> glib is not a lib that tries to solve something, it is a prorgamming 
+environment that tries to supersede C.
+
+<li> As such, it feels free to mess with the environment, redefine C 
+keywords as it sees fit, because once you use glib, why would you use 
+anything else? And once you use glib, you are programming in glib, not in 
+"plain C".
+
+<li> Grepping through the pcb-rnd code, I see that pcb-rnd does not try to 
+use glib as a programming environment, but needs only 2 and a half 
+features: hash, list and rarely dynamic strings. Any other glib call is 
+just a must that had to be done that way to get hashes and lists working.
+
+<li> genht is 510 sloc. I have a generic list implementation (which, by the 
+way, is more efficient than glib's) It costs 256 sloc. So having 
+type-independent hashes and lists in C89 costs less than 800 lines of code 
+if you pick the right libs. Glib's <b>include/ alone is over 24000 sloc!</b>
+And in return glib breaks inline...
+</ul>
+
+<p>
+In a nuthsell this is why I don't believe in glib-like solve-all megalibs. I 
+don't say size alone determines this, but size is a good indication of 
+potential problems.
+<p>
+If I need hash and lists and the offer is longer than 5k sloc, I know it 
+will bring a lot of unneeded bloat that likely to break things.
+
+</body>
+</html>
