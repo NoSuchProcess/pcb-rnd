@@ -161,7 +161,11 @@ extract_from_res()
 			}
 			else
 				mods = ""
-			print K[2] mods, src, action
+			key = K[2] mods
+			gsub("[ \t]", "", key)
+			gsub("[ \t]", "", src)
+			gsub("[ \t]", "", action)
+			print key, src, action
 			last_act = ""
 			next
 		}
