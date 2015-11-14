@@ -18,6 +18,8 @@
 #
 #   http://repo.hu/projects/pcb-rnd
 
+AWK=awk
+
 if test -z "$*"
 then
 	echo ""
@@ -36,7 +38,7 @@ fi
 #  - other words
 tokenize()
 {
-	awk '
+	$AWK '
 		BEGIN {
 			q = "\""
 		}
@@ -124,7 +126,7 @@ tokenize()
 #   action is the action given right after the key or before the key
 extract_from_res()
 {
-	tokenize | awk -v "src=$1" '
+	tokenize | $AWK -v "src=$1" '
 		BEGIN {
 			sub(".*/", "", src)
 		}
@@ -174,7 +176,7 @@ extract_from_res()
 # convert a "key src action" to a html table with rowspans for base keys
 gen_html()
 {
-	awk '
+	$AWK '
 	BEGIN {
 		HIDNAMES["gpcb-menu.res"] = "gtk"
 		HIDNAMES["pcb-menu.res"]  = "lesstif"
