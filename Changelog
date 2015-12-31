@@ -1,3 +1,30 @@
+pcb-rnd 1.0.6
+~~~~~~~~~~~~~
+	[cycdrag]
+		-Add: "negative sized" selection selects anything that touches
+		-Add: cycle drag object action
+
+	[scconfig]
+		-Fix: toporouter Makefile module adds its own action registration code,
+		      so the central Makefile is independent of toporouter
+		-Add: --disable-toporouter
+		-Fix: use cc/cc for c compiler (so that it can be overridden)
+		-Fix: remove -std=gnu99: -std=c99 breaks with new gcc and -std is not
+		      really portable
+		-Fix: include genht before glib.h because glib.h ruins inline
+
+	[pinnum]
+		-Add: action and key binding for changing pin numbers in a footprint
+
+	[gpmi]
+		-Fix: typo in hotkey name for manage plugins (reported by Bert Timmerman)
+
+	[util]
+		-Fix: keylist: tolerate whitepsace in key sequences
+		-Fix: keylist resets locale to avoid broken table when gawk tries to
+		      be too clever
+
+
 pcb-rnd 1.0.5
 ~~~~~~~~~~~~~
 	[onpoint]

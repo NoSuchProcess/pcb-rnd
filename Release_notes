@@ -1,4 +1,4 @@
-pcb-rnd 1.0.5
+pcb-rnd 1.0.6
 ~~~~~~~~~~~~~
-The main features are bugfixes in the build system and adaptation of
-Robert Drehmel's on-point patch.
+The new release features cycle drag and footprint pin renumbering, among
+with a set of bugfixes that removes some of the GNU and locale dependency.
