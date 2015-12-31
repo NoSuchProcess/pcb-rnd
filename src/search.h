@@ -43,7 +43,10 @@ int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord
  * some define to check for 'type' in box
  */
 #define	POINT_IN_BOX(x,y,b)	\
-	((x) >= (b)->X1 && (x) <= (b)->X2 && (y) >= (b)->Y1 && (y) <= (b)->Y2)
+	(IS_BOX_NEGATIVE(b) ?  \
+	((x) >= (b)->X2 && (x) <= (b)->X1 && (y) >= (b)->Y2 && (y) <= (b)->Y1) \
+	: \
+	((x) >= (b)->X1 && (x) <= (b)->X2 && (y) >= (b)->Y1 && (y) <= (b)->Y2))
 
 #define	VIA_OR_PIN_IN_BOX(v,b) \
 	POINT_IN_BOX((v)->X,(v)->Y,(b))
@@ -85,7 +88,8 @@ int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord
 	(    lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X1, (b)->Y1, (b)->X2, (b)->Y1) \
 	  || lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X1, (b)->Y1, (b)->X1, (b)->Y2) \
 	  || lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X2, (b)->Y2, (b)->X1, (b)->Y2) \
-	  || lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X2, (b)->Y2, (b)->X2, (b)->Y1))
+	  || lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X2, (b)->Y2, (b)->X2, (b)->Y1) \
+	  || LINE_IN_BOX((l), (b)))
 
 #define	PAD_TOUCHES_BOX(p,b)	LINE_TOUCHES_BOX((LineTypePtr)(p),(b))
 
