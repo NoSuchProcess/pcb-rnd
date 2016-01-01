@@ -1,0 +1,68 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> cschem </H2>
+
+Cschem is a project I plan to start within the next few years. It's goals
+and some design concepts are similar to gschem's and geda's, while it
+also breaks some traditions to fix shortcomings in the design of geda. It's
+named after gschem, not after geda, to emphasize that the editor needs to
+be connected more to the rest of the system (see details later).
+<p>
+Some concepts cschem will try to follow (marking with * where there's major
+difference to geda):
+<ul>
+	<li> 1. design
+		<ul>
+			<li> 1.1. modularity, aka. toolkit approach
+			<li> 1.2. flexibility (trough attributes)
+			<li> 1.3. one schematics file is one sheet
+			<li> 1.4. multi page projects (hierarchic, flat)
+			<li> 1.5. data is in structured text files (no builtin sql support in core)
+			<li> 1.6. * the concept of a "project"; it's optional, tools can work on a set of schematics files _or_ on a complete project
+			<li> 1.7. * nets and components are uniquely identifiable using the same identifiers by all projects
+			<li> 1.8. * no excess "smartness" in the GUI editor: no slotting, no pin numbering, no auto renumbering, etc; these all should be done in the netlist layer and results fed back to the editor
+			<li> 1.9. * direct, bidirectional communication between the editor (GUI) and the netlist layer <b>without</b> any integration of the two, through simple and clean API, keeping both parts replaceable
+			<li> 1.10. * less format-specific tricks built into the GUI code, more generic approaches (e.g. a search is a search, not a search-for-text-attribute and results on the result lists are any object of the design)
+			<li> 1.11. * slotting, pin mapping, device mapping are in backends
+			<li> 1.12. * back annotation should not be any harder than forward annotation
+			<li> 1.13. * since a lot of info is invented in backends, not in the GUI (e.g. pin numbers, when slotting), the GUI needs to be able to switch between "views": what (combination of) backend(s) to get these info from; Note: this would also provide an interactive DRC on the GUI with the DRC still implemented in the netlister!
+			<li> 1.14. * the scriptable plugin system is based on GPMI from the start to guarantee the tool is not tied to any one specific scripting engine or scripting language
+		</ul>
+	<li> 2. implementation
+		<ul>
+			<li> 2.1. a core library that does common things like figuring what objects are connected with net lines
+			<li> 2.2. the simple GUI editor should provide the frame; exotic functions should come from user plugins
+			<li> 2.3. a simple netlister that provides only generic (* absolutely no backend specific) queries; actual backends are implemented as plugins
+			<li> 2.4. * the core library and the netlister and the GUI core are all implemented in plain C:
+			<ul>
+				<li> 2.4.1. * no dependency on any specific scripting engine or scripting language; no core functionality implemented in anything else but C
+				<li> 2.4.2. * no dependency on big "solves-everything" libraries (e.g. no glib or cairo dependency)
+				<li> 2.4.3. * the actual GUI is behind the plugin system (like PCB's HIDs)
+				<li> 2.4.4. * the first gui, in accordance with the no big libraries, will not be gtk or qt but sdl2 based; this would guarantee to have a front end that doesn't need to be rewritten every 5 years just for the sake of the rewrite
+				<li> 2.4.5. * scconfig instead of autotools: smaller, easier to maintain, works better outside of the gnu-win32 world
+			</ul>
+	</ul>
+	<li> 3. project management
+		<ul>
+			<li> 3.1. automatic tests wherever possible, as early as possible
+			<li> 3.2. * VCS: simple, centralized svn with straight linear developement, actively trying to avoid branching
+			<li> 3.3. * near-zero-administration releases with svn commits 
+			<li> 3.4. * users should be able to submit bug reports anonymously, without having to register, without having to run javascript, java applet, flash, etc.
+		</ul>
+	</ul>
+</ul>
+
+<p>
+There are a lot of open questions:
+<ul>
+	<li> q1. how buses should work
+	<li> q2. how slotting should work (but at least we can have alternatives here)
+	<li> q3. how hierarchical design should work
+	<li> q4. * how the GUI should display large amount of attributes without making the whole page an unreadable mess
+	<li> q5. flat vs. non-flat netlists - if turns out it's not just an implementation detail in a netlister backend
+	<li> q6. * whether project file format is a custom format or just a top sch page referencing other sch pages
+	<li> q7. attribute conventions
+</ul>
+
