@@ -23,7 +23,7 @@ difference to geda):
 			<li> 1.6. * the concept of a "project"; it's optional, tools can work on a set of schematics files _or_ on a complete project
 			<li> 1.7. * nets and components are uniquely identifiable using the same identifiers by all projects
 			<li> 1.8. * no excess "smartness" in the GUI editor: no slotting, no pin numbering, no auto renumbering, etc; these all should be done in the netlist layer and results fed back to the editor
-			<li> 1.9. * direct, bidirectional communication between the editor (GUI) and the netlist layer <b>without</b> any integration of the two, through simple and clean API, keeping both parts replaceable
+			<li> 1.9. * direct, bidirectional communication between the editor (GUI) and the netlist layer <b>without</b> any integration of the two, through simple and clean API, keeping both parts replaceable; attributes cschem got back from the netlister are "volatile": not saved, do not override attributes provided by the user
 			<li> 1.10. * less format-specific tricks built into the GUI code, more generic approaches (e.g. a search is a search, not a search-for-text-attribute and results on the result lists are any object of the design)
 			<li> 1.11. * slotting, pin mapping, device mapping are in backends
 			<li> 1.12. * back annotation should not be any harder than forward annotation
