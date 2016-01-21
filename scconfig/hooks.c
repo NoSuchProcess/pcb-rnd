@@ -34,21 +34,21 @@ static void help2(void)
 int hook_custom_arg(const char *key, const char *value)
 {
 	static const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
-		{"disable-gtk",       "libs/gui/gtk2",           arg_lib_nodes, "$do not compile the gtk HID"},
-		{"disable-lesstif",   "libs/gui/lesstif2",       arg_lib_nodes, "$do not compile the lesstif HID"},
-		{"disable-xrender",   "libs/gui/xrender",        arg_lib_nodes, "$do not use xrender for lesstif"},
-		{"disable-xinerama",  "libs/gui/xinerama",       arg_lib_nodes, "$do not use xinerama for lesstif"},
-		{"disable-gd",        "libs/gui/gd",             arg_lib_nodes, "$do not use gd (many exporters need it)"},
-		{"disable-gd-gif",    "libs/gui/gd/gdImageGif",  arg_lib_nodes, "$no gif support in the png exporter"},
-		{"disable-gd-png",    "libs/gui/gd/gdImagePng",  arg_lib_nodes, "$no png support in the png exporter"},
-		{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg", arg_lib_nodes, "$no jpeg support in the png exporter"},
-		{"disable-gpmi",      "libs/script/gpmi",        arg_lib_nodes, "$do not compile the gpmi (scripting) plugin"},
+		{"disable-gtk",       "libs/gui/gtk2",                arg_lib_nodes, "$do not compile the gtk HID"},
+		{"disable-lesstif",   "libs/gui/lesstif2",            arg_lib_nodes, "$do not compile the lesstif HID"},
+		{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
+		{"disable-xinerama",  "libs/gui/xinerama",            arg_lib_nodes, "$do not use xinerama for lesstif"},
+		{"disable-gd",        "libs/gui/gd",                  arg_lib_nodes, "$do not use gd (many exporters need it)"},
+		{"disable-gd-gif",    "libs/gui/gd/gdImageGif",       arg_lib_nodes, "$no gif support in the png exporter"},
+		{"disable-gd-png",    "libs/gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png exporter"},
+		{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png exporter"},
+		{"disable-gpmi",      "libs/script/gpmi",             arg_lib_nodes, "$do not compile the gpmi (scripting) plugin"},
 
-		{"buildin-gpmi",      "/local/pcb/gpmi/buildin", arg_true,      "$static link the gpmi plugin into the executable"},
-		{"plugin-gpmi",       "/local/pcb/gpmi/buildin", arg_false,     "$the gpmi plugin is dynamic loadable"},
-		{"disable-toporouter","/local/pcb/toporouter/enable",arg_false, "$do not compile the toporouter"},
+		{"buildin-gpmi",      "/local/pcb/gpmi/buildin",      arg_true,      "$static link the gpmi plugin into the executable"},
+		{"plugin-gpmi",       "/local/pcb/gpmi/buildin",      arg_false,     "$the gpmi plugin is dynamic loadable"},
+		{"disable-toporouter","/local/pcb/toporouter/enable", arg_false,     "$do not compile the toporouter"},
 
-		{NULL, NULL, NULL}
+		{NULL, NULL, NULL, NULL}
 	};
 
 	if (strcmp(key, "prefix") == 0) {
