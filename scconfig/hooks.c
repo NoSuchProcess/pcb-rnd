@@ -18,7 +18,7 @@ static void help1(void)
 	printf("Usage: ./configure [options]\n");
 	printf("\n");
 	printf("options are:\n");
-	printf(" --prefix=path       change installation prefix from /usr to path\n");
+	printf(" --prefix=path        change installation prefix from /usr to path\n");
 }
 
 static void help2(void)
@@ -58,7 +58,7 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 	else if (strcmp(key, "help") == 0) {
 		help1();
-		arg_auto_print_options(stdout, " ", "                  ", disable_libs);
+		arg_auto_print_options(stdout, " ", "                   ", disable_libs);
 		help2();
 		exit(0);
 	}
