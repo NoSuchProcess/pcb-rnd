@@ -1,0 +1,11 @@
+1. How many of your boards REQUIRE burried or blind vias? [percentage]
+2. How many of your boards could BENEFIT burried or blind vias? [percentage]
+3. When your board REQUIRED them, do you more often find a workaround to stick with pcb instead of switching to another design tool? [yes/no]
+4. When your board could BENEFIT using them, do you more often find a workaround to stick with pcb instead of switching to another design tool? [yes/no]
+5. Have you ever tried pcb-rnd? [yes/no]
+6. Would you try pcb-rnd if it offered blind/burried vias? [yes/no]
+7. Would you consider switching to pcb-rnd if it offered blind/burried vias? [yes/no]
+8. Approximately how many boards have you done so far with pcb (pcb mainline/branches/forks included, using gschem/gnetlist not required)? "1 board done" means you had one or more physical copies of the board. [rough estimation, positive integer]
+9. Approximately how many boards have you done with other packages? [rough estimation, positive integer]
+10. What OS would you prefer to do your pcb layouts on (assuming your favorite layout tool is/would be available on it)? [one of: (GNU/)Linux, *BSD, OSX, windows, other; if you like more, select the one you would spend most time on!]
+
