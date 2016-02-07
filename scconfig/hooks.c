@@ -11,6 +11,40 @@
 
 #define version "1.0.6"
 
+const char *gui_list[] = {
+	"GTK",     "libs/gui/gtk2/presents",
+	"lesstif", "libs/gui/lesstif2/presents",
+	NULL, NULL
+};
+
+const char *exporter_list[] = {
+	"png",   "libs/gui/gd/gdImagePng/presents",
+	"gif",   "libs/gui/gd/gdImageGif/presents",
+	"jpg",   "libs/gui/gd/gdImageJpeg/presents",
+	"gcode", "libs/gui/gd/presents",
+	"nelma", "libs/gui/gd/presents",
+	NULL, NULL
+};
+
+const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
+	{"disable-gtk",       "libs/gui/gtk2",                arg_lib_nodes, "$do not compile the gtk HID"},
+	{"disable-lesstif",   "libs/gui/lesstif2",            arg_lib_nodes, "$do not compile the lesstif HID"},
+	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
+	{"disable-xinerama",  "libs/gui/xinerama",            arg_lib_nodes, "$do not use xinerama for lesstif"},
+	{"disable-gd",        "libs/gui/gd",                  arg_lib_nodes, "$do not use gd (many exporters need it)"},
+	{"disable-gd-gif",    "libs/gui/gd/gdImageGif",       arg_lib_nodes, "$no gif support in the png exporter"},
+	{"disable-gd-png",    "libs/gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png exporter"},
+	{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png exporter"},
+	{"disable-gpmi",      "libs/script/gpmi",             arg_lib_nodes, "$do not compile the gpmi (scripting) plugin"},
+
+	{"buildin-gpmi",      "/local/pcb/gpmi/buildin",      arg_true,      "$static link the gpmi plugin into the executable"},
+	{"plugin-gpmi",       "/local/pcb/gpmi/buildin",      arg_false,     "$the gpmi plugin is dynamic loadable"},
+	{"disable-toporouter","/local/pcb/toporouter/enable", arg_false,     "$do not compile the toporouter"},
+
+	{NULL, NULL, NULL, NULL}
+};
+
+
 static void help1(void)
 {
 	printf("./configure: configure pcn-rnd.\n");
@@ -33,24 +67,6 @@ static void help2(void)
  returns true if no furhter argument processing should be done */
 int hook_custom_arg(const char *key, const char *value)
 {
-	static const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
-		{"disable-gtk",       "libs/gui/gtk2",                arg_lib_nodes, "$do not compile the gtk HID"},
-		{"disable-lesstif",   "libs/gui/lesstif2",            arg_lib_nodes, "$do not compile the lesstif HID"},
-		{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
-		{"disable-xinerama",  "libs/gui/xinerama",            arg_lib_nodes, "$do not use xinerama for lesstif"},
-		{"disable-gd",        "libs/gui/gd",                  arg_lib_nodes, "$do not use gd (many exporters need it)"},
-		{"disable-gd-gif",    "libs/gui/gd/gdImageGif",       arg_lib_nodes, "$no gif support in the png exporter"},
-		{"disable-gd-png",    "libs/gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png exporter"},
-		{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png exporter"},
-		{"disable-gpmi",      "libs/script/gpmi",             arg_lib_nodes, "$do not compile the gpmi (scripting) plugin"},
-
-		{"buildin-gpmi",      "/local/pcb/gpmi/buildin",      arg_true,      "$static link the gpmi plugin into the executable"},
-		{"plugin-gpmi",       "/local/pcb/gpmi/buildin",      arg_false,     "$the gpmi plugin is dynamic loadable"},
-		{"disable-toporouter","/local/pcb/toporouter/enable", arg_false,     "$do not compile the toporouter"},
-
-		{NULL, NULL, NULL, NULL}
-	};
-
 	if (strcmp(key, "prefix") == 0) {
 		report("Setting prefix to '%s'\n", value);
 		put("/local/prefix", strclone(value));
@@ -262,26 +278,8 @@ int hook_generate()
 	printf("=====================\n");
 	printf("Configuration summary\n");
 	printf("=====================\n\n");
-	{
-		const char *guis[] = {
-			"GTK",     "libs/gui/gtk2/presents",
-			"lesstif", "libs/gui/lesstif2/presents",
-			NULL, NULL
-		};
-		list_presents("GUI hids: batch", guis);
-	}
-	{
-		const char *exps[] = {
-			"png",   "libs/gui/gd/gdImagePng/presents",
-			"gif",   "libs/gui/gd/gdImageGif/presents",
-			"jpg",   "libs/gui/gd/gdImageJpeg/presents",
-			"gcode", "libs/gui/gd/presents",
-			"nelma", "libs/gui/gd/presents",
-			
-			NULL, NULL
-		};
-		list_presents("Export hids: bom gerber lpr ps", exps);
-	}
+	list_presents("GUI hids: batch", gui_list);
+	list_presents("Export hids: bom gerber lpr ps", exporter_list);
 
 	printf("Toporouter: ");
 	if (node_istrue("/local/pcb/toporouter/enable"))
