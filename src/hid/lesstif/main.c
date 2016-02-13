@@ -1346,7 +1346,7 @@ mod_changed (XKeyEvent * e, int set)
 	  alt_pressed = set;
 	  break;
     default:
-	  // to include the Apple keyboard left and right command keys use XK_Meta_L and XK_Meta_R respectivly.
+	  /* to include the Apple keyboard left and right command keys use XK_Meta_L and XK_Meta_R respectivly. */
       return;
     }
   in_move_event = 1;
@@ -3634,7 +3634,7 @@ lesstif_watch_cb (XtPointer client_data, int *fid, XtInputId * id)
   poll( &fds, 1, 0 );
   condition = fds.revents;
 
-  // Should we only include those we were asked to watch?
+  /* Should we only include those we were asked to watch? */
   if (condition & POLLIN)
     pcb_condition |= PCB_WATCH_READABLE;
   if (condition & POLLOUT)

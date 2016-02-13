@@ -15,7 +15,7 @@
 #include "auxiliary.h"
 #include "bitmap.h"
 #include "decompose.h"
-//#include "progress.h"
+/*#include "progress.h"*/
 
 /* ---------------------------------------------------------------------- */
 /* auxiliary bitmap manipulations */
@@ -577,7 +577,7 @@ bm_to_pathlist (const potrace_bitmap_t * bm, path_t ** plistp,
 
       if (bm1->h > 0)
 	{			/* to be sure */
-	  //progress_update(1-y/(double)bm1->h, progress);
+	  /*progress_update(1-y/(double)bm1->h, progress);*/
 	}
     }
 
@@ -585,7 +585,7 @@ bm_to_pathlist (const potrace_bitmap_t * bm, path_t ** plistp,
   bm_free (bm1);
   *plistp = plist;
 
-//  progress_update(1.0, progress);
+/*  progress_update(1.0, progress);*/
 
   return 0;
 

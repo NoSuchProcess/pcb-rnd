@@ -136,7 +136,7 @@ static int layout_search_flag(const char *search_ID, multiple layout_object_mask
 		select(s, OM_POLYGON, flag, layer->Polygon);
 	}
 	select(s, OM_VIA,  flag, PCB->Data->Via);
-//	select(s, OM_PIN,  flag, PCB->Data->Pin,  PCB->Data->PinN); /* TODO */
+/*	select(s, OM_PIN,  flag, PCB->Data->Pin,  PCB->Data->PinN); /* TODO */
 
 	return s->used;
 }

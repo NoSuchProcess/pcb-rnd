@@ -2496,7 +2496,7 @@ poly_CreateNode (Vector v)
   res = (VNODE *) calloc (1, sizeof (VNODE));
   if (res == NULL)
     return NULL;
-  // bzero (res, sizeof (VNODE) - sizeof(Vector));
+  /* bzero (res, sizeof (VNODE) - sizeof(Vector)); */
   c = res->point;
   *c++ = *v++;
   *c = *v;
@@ -2736,7 +2736,7 @@ poly_CopyContour (PLINE ** dst, PLINE * src)
     {
       if ((newnode = poly_CreateNode (cur->point)) == NULL)
 	return FALSE;
-      // newnode->Flags = cur->Flags;
+      /* newnode->Flags = cur->Flags;*/
       poly_InclVertex ((*dst)->head.prev, newnode);
     }
   (*dst)->tree = (rtree_t *)make_edge_tree (*dst);

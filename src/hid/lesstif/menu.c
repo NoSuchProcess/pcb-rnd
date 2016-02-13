@@ -1,4 +1,4 @@
-//* $Id$ */
+/* $Id$ */
 
 #include "config.h"
 
@@ -710,7 +710,7 @@ void lesstif_get_xy(const char *message)
 	n = 0;
 	stdarg(XmNlabelString, ls);
 	XtSetValues(m_click, args, n);
-	//printf("need xy: msg `%s'\n", msg);
+	/*printf("need xy: msg `%s'\n", msg);*/
 	need_xy = 1;
 	XBell(display, 100);
 	while (!have_xy) {
@@ -755,7 +755,7 @@ static void callback(Widget w, Resource * node, XmPushButtonCallbackStruct * pbc
 			if (p == aw)
 				have_xy = 1;
 		}
-		//pcb_printf("have xy from %s: %$mD\n", XtName(aw), action_x, action_y);
+		/*pcb_printf("have xy from %s: %$mD\n", XtName(aw), action_x, action_y);*/
 	}
 
 	lesstif_need_idle_proc();
@@ -1027,7 +1027,7 @@ int lesstif_key_event(XKeyEvent * e)
 		cur_ntable = acc_num;
 	}
 
-	//printf("\nmods %x key %d str `%s' in %p/%d\n", mods, (int)sym, buf, cur_table, cur_ntable);
+	/*printf("\nmods %x key %d str `%s' in %p/%d\n", mods, (int)sym, buf, cur_table, cur_ntable);*/
 
 #define KM(m) ((m) & ~M_Multi)
 	for (i = 0; i < cur_ntable; i++) {
@@ -1138,7 +1138,7 @@ static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc ca
 			if ((r = resource_subres(node->v[i].subres, "a"))) {
 				XmString as = XmStringCreatePCB(r->v[0].value);
 				stdarg(XmNacceleratorText, as);
-				//stdarg(XmNaccelerator, r->v[1].value);
+				/*stdarg(XmNaccelerator, r->v[1].value);*/
 				note_accelerator(r->v[1].value, node->v[i].subres);
 			}
 			v = "button";

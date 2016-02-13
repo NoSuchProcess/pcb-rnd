@@ -9,11 +9,11 @@
 
 /* #define DEBUG_HID_RESOURCE */
 
-static int button_count;   // number of buttons we have actions for
-static int *button_nums;   // list of button numbers
-static int *mod_count;     // how many mods they have
-static unsigned *mods;     // mods, in order, one button after another
-static Resource** actions; // actions, in order, one button after another
+static int button_count;   /* number of buttons we have actions for */
+static int *button_nums;   /* list of button numbers */
+static int *mod_count;     /* how many mods they have */
+static unsigned *mods;     /* mods, in order, one button after another */
+static Resource** actions; /* actions, in order, one button after another */
 
 static Resource *
 res_wrap (char *value)
@@ -37,7 +37,7 @@ parse_mods (char *value)
   s = strstr(value, "mod");
   if (s)
     {
-      s += 3; // skip "mod" to get to number
+      s += 3; /* skip "mod" to get to number */
       errno = 0;
       mod_num = strtol(s, (char**) NULL, 0);
       if (!errno)
@@ -161,15 +161,15 @@ find_best_action (int button, int start, unsigned mod_mask)
   unsigned search_mask = mod_mask & ~M_Release;
   unsigned release_mask = mod_mask & M_Release;
 
-  // look for exact mod match
+  /* look for exact mod match */
   for (i=start; i<start+count; i++)
     if (mods[i] == mod_mask) {
       return actions[i];
     }
 
   for (j=search_mask-1; j>=0; j--)
-    if ((j & search_mask) == j) // this would work
-      for (i=start; i<start+count; i++) // search for it
+    if ((j & search_mask) == j) /* this would work */
+      for (i=start; i<start+count; i++) /* search for it */
         if (mods[i] == (j | release_mask))
           return actions[i];
 
@@ -182,7 +182,7 @@ do_mouse_action (int button, int mod_mask)
   Resource *action = NULL;
   int bi, i, a;
 
-  // find the right set of actions;
+  /* find the right set of actions; */
   a = 0;
   for (bi=0; bi<button_count && !action; bi++)
     if (button_nums[bi] == button)
@@ -191,7 +191,7 @@ do_mouse_action (int button, int mod_mask)
         break;
       }
     else
-      a += mod_count[bi]; // skip this buttons actions
+      a += mod_count[bi]; /* skip this buttons actions */
 
   if (!action)
     return;

@@ -318,7 +318,7 @@ check_externally_modified (void)
       !g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_TIME_MODIFIED))
     return false;
 
-  g_file_info_get_modification_time (info, &timeval); //&ghidgui->last_seen_mtime);
+  g_file_info_get_modification_time (info, &timeval); /*&ghidgui->last_seen_mtime);*/
   g_object_unref (info);
 
   /* Ignore when the file on disk is the same age as when we last looked */

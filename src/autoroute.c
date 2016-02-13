@@ -1986,7 +1986,7 @@ break_box_edge (const BoxType * original, direction_t which_edge,
   result.right.Y1 = result.center.Y1 = result.left.Y1 = origbox.Y1;
   result.right.Y2 = result.center.Y2 = result.left.Y2 = origbox.Y1 + 1;
   /* validity of breaker is not important because the boxes are marked invalid */
-  //assert (breakbox.X1 <= origbox.X2 && breakbox.X2 >= origbox.X1);
+  /*assert (breakbox.X1 <= origbox.X2 && breakbox.X2 >= origbox.X1);*/
   /* left edge piece */
   result.left.X1 = origbox.X1;
   result.left.X2 = breakbox.X1;
@@ -3066,8 +3066,8 @@ foib_rect_in_reg (const BoxType * box, void *cl)
   routebox_t *rb = (routebox_t *) box;
   if (rb->flags.touched)
     return 0;
-//  if (rb->type == EXPANSION_AREA && !rb->flags.is_via)
-  //   return 0;
+/*  if (rb->type == EXPANSION_AREA && !rb->flags.is_via)*/
+  /*   return 0; */
   rbox = bloat_routebox (rb);
   if (!box_intersect (&rbox, foib->box))
     return 0;
@@ -4191,7 +4191,7 @@ RouteOne (routedata_t * rd, routebox_t * from, routebox_t * to, int max_edges)
       /* we should never add edges on inactive layer groups to the heap. */
       assert (is_layer_group_active[e->rb->group]);
 #if defined(ROUTE_DEBUG) && defined(DEBUG_SHOW_EXPANSION_BOXES)
-      //showedge (e);
+      /*showedge (e);*/
 #endif
       if (e->rb->flags.is_thermal)
 	{
@@ -4574,7 +4574,7 @@ InitAutoRouteParameters (int pass,
   AutoRouteParameters.with_conflicts = with_conflicts;
   AutoRouteParameters.is_smoothing = is_smoothing;
   AutoRouteParameters.rip_always = is_smoothing;
-  AutoRouteParameters.last_smooth = 0;	//lastpass;
+  AutoRouteParameters.last_smooth = 0;	/*lastpass;*/
   AutoRouteParameters.pass = pass + 1;
 }
 

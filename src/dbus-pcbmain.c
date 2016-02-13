@@ -58,13 +58,13 @@ block_hook_cb (hidval data)
       DBUS_DISPATCH_DATA_REMAINS)
     return;
 
-  // TODO: IS THIS NEEDED?
-  // dbus_connection_ref (connection);
+  /* TODO: IS THIS NEEDED? */
+  /* dbus_connection_ref (connection); */
 
   /* Only dispatch once - we don't want to starve other mainloop users */
   dbus_connection_dispatch (connection);
 
-  // dbus_connection_unref (connection);
+  /* dbus_connection_unref (connection); */
   return;
 }
 
@@ -74,7 +74,7 @@ io_watch_handler_dbus_freed (void *data)
   IOWatchHandler *handler;
   handler = (IOWatchHandler *)data;
 
-  // Remove the watch registered with the HID
+  /* Remove the watch registered with the HID */
   gui->unwatch_file (handler->pcb_watch);
   free (handler);
 }
@@ -89,9 +89,9 @@ io_watch_handler_cb (hidval pcb_watch,
 
   handler = (IOWatchHandler *) data.ptr;
 
-  // TODO: IS THIS NEEDED?
-  //if (connection)
-  //  dbus_connection_ref (connection);
+  /* TODO: IS THIS NEEDED? */
+  /* if (connection)
+      dbus_connection_ref (connection); */
 
   if (condition & PCB_WATCH_READABLE)
     dbus_condition |= DBUS_WATCH_READABLE;
@@ -108,8 +108,8 @@ io_watch_handler_cb (hidval pcb_watch,
   dbus_watch_handle (handler->dbus_watch, dbus_condition);
   handler = NULL;
 
-  //if (connection)
-  //  dbus_connection_unref (connection);
+  /*if (connection)
+      dbus_connection_unref (connection);*/
 
   return;
 }
@@ -121,7 +121,7 @@ timeout_handler_dbus_freed (void *data)
   TimeoutHandler *handler;
   handler = (TimeoutHandler *)data;
 
-  // Remove the timeout registered with the HID
+  /* Remove the timeout registered with the HID */
   gui->stop_timer (handler->pcb_timer);
   free (handler);
 }
@@ -133,9 +133,9 @@ timeout_handler_cb (hidval data)
   TimeoutHandler *handler;
   handler = (TimeoutHandler *)data.ptr;
 
-  // Re-add the timeout, as PCB will remove the current one
-  // Do this before calling to dbus, incase DBus removes the timeout.
-  // We can't touch handler after libdbus has been run for this reason.
+  /* Re-add the timeout, as PCB will remove the current one
+     Do this before calling to dbus, incase DBus removes the timeout.
+     We can't touch handler after libdbus has been run for this reason. */
   handler->pcb_timer =
     gui->add_timer (timeout_handler_cb, handler->interval, data);
 
@@ -152,7 +152,7 @@ watch_add (DBusWatch * dbus_watch, void *data)
   unsigned int dbus_flags;
   hidval temp;
 
-  // We won't create a watch until it becomes enabled.
+  /* We won't create a watch until it becomes enabled. */
   if (!dbus_watch_get_enabled (dbus_watch))
     return TRUE;
 
@@ -183,7 +183,7 @@ watch_add (DBusWatch * dbus_watch, void *data)
 static void
 watch_remove (DBusWatch * dbus_watch, void *data)
 {
-  // Free the associated data. Its destroy callback removes the watch
+  /* Free the associated data. Its destroy callback removes the watch */
   dbus_watch_set_data (dbus_watch, NULL, NULL);
 }
 
@@ -204,13 +204,13 @@ timeout_add (DBusTimeout * timeout, void *data)
   TimeoutHandler *handler;
   hidval temp;
 
-  // We won't create a timeout until it becomes enabled.
+  /* We won't create a timeout until it becomes enabled. */
   if (!dbus_timeout_get_enabled (timeout))
     return TRUE;
 
-  //FIXME: Need to store the interval, as PCB requires us
-  //       to manually re-add the timer each time it expires.
-  //       This is non-ideal, and hopefully can be changed?
+  /*FIXME: Need to store the interval, as PCB requires us
+           to manually re-add the timer each time it expires.
+           This is non-ideal, and hopefully can be changed? */
 
   handler = (TimeoutHandler *)malloc (sizeof (TimeoutHandler));
   temp.ptr = (void *)handler;
@@ -226,7 +226,7 @@ timeout_add (DBusTimeout * timeout, void *data)
 static void
 timeout_remove (DBusTimeout * timeout, void *data)
 {
-  // Free the associated data. Its destroy callback removes the timer
+  /* Free the associated data. Its destroy callback removes the timer */
   dbus_timeout_set_data (timeout, NULL, NULL);
 }
 
@@ -244,11 +244,11 @@ void
 dispatch_status_changed (DBusConnection * conn, DBusDispatchStatus new_status,
 			 void *data)
 {
-  // TODO: Can use this eventually to add one-shot idle work-functions to dispatch
-  //       remaining IO. It could possibly replace the block_hook polling mechanism.
-  //       (We could use a one-shot block_book to dispatch the work though.)
-  //
-  //       *** NO DISPATCHING TO BE DONE INSIDE THIS FUNCTION ***
+  /* TODO: Can use this eventually to add one-shot idle work-functions to dispatch
+           remaining IO. It could possibly replace the block_hook polling mechanism.
+           (We could use a one-shot block_book to dispatch the work though.)
+
+           *** NO DISPATCHING TO BE DONE INSIDE THIS FUNCTION *** */
 }
 
 // END INTERNALS
@@ -263,15 +263,15 @@ dispatch_status_changed (DBusConnection * conn, DBusDispatchStatus new_status,
 void
 pcb_dbus_connection_setup_with_mainloop (DBusConnection * connection)
 {
-  //ConnectionSetup *cs;
+  /* ConnectionSetup *cs; */
   hidval temp;
 
   /* FIXME we never free the slot, so its refcount just keeps growing,
    * which is kind of broken.
    */
-  //dbus_connection_allocate_data_slot (&connection_slot);
-  //if (connection_slot < 0)
-  //  goto nomem;
+  /* dbus_connection_allocate_data_slot (&connection_slot);
+    if (connection_slot < 0)
+      goto nomem; */
 
 #if 0
   cs = connection_setup_new (connection);
@@ -285,20 +285,20 @@ pcb_dbus_connection_setup_with_mainloop (DBusConnection * connection)
 					    watch_add,
 					    watch_remove,
 					    watch_toggled, NULL, NULL))
-//                                            cs, NULL))
+/*                                            cs, NULL))*/
     goto nomem;
 
   if (!dbus_connection_set_timeout_functions (connection,
 					      timeout_add,
 					      timeout_remove,
 					      timeout_toggled, NULL, NULL))
-//                                              cs, NULL))
+/*                                              cs, NULL))*/
     goto nomem;
 
   dbus_connection_set_dispatch_status_function (connection,
 						dispatch_status_changed,
 						NULL, NULL);
-//                                                cs, NULL);
+/*                                                cs, NULL);*/
 
   /* Register a new mainloop hook to mop up any unfinished IO. */
   temp.ptr = (void *)connection;
@@ -313,15 +313,15 @@ nomem:
 void
 pcb_dbus_connection_finish_with_mainloop (DBusConnection * connection)
 {
-  //ConnectionSetup *cs;
+  /*ConnectionSetup *cs;
 
-  //cs = dbus_connection_get_data (connection, connection_slot );
+    cs = dbus_connection_get_data (connection, connection_slot );
 
-  // Replace the stored data with NULL, thus freeing the old data
-  // DBus will call the function connection_setup_free() which we registered earlier
-  //dbus_connection_set_data (connection, connection_slot, NULL, NULL );
+     Replace the stored data with NULL, thus freeing the old data
+     DBus will call the function connection_setup_free() which we registered earlier
+    dbus_connection_set_data (connection, connection_slot, NULL, NULL );
 
-  //dbus_connection_free_data_slot( &connection_slot );
+    dbus_connection_free_data_slot( &connection_slot );*/
 
   if (!dbus_connection_set_watch_functions (connection,
 					    NULL, NULL, NULL, NULL, NULL))

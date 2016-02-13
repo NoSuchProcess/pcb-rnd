@@ -55,7 +55,7 @@ handle_get_filename (DBusConnection * connection, DBusMessage * message,
 
   result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 
-  // TODO: Should check the message signature matches what we expect?
+  /* TODO: Should check the message signature matches what we expect? */
 
   reply = dbus_message_new_method_return (message);
   if (reply == NULL)
@@ -123,9 +123,9 @@ handle_exec_action (DBusConnection * connection, DBusMessage * message,
 
   result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 
-  // TODO: Should check the message signature matches what we expect?
+  /* TODO: Should check the message signature matches what we expect? */
 
-  // initialise the error struct
+  /* initialise the error struct */
   dbus_error_init (&err);
 
   /* DON'T FREE action_name, as it belongs to DBUS,
@@ -153,7 +153,7 @@ handle_exec_action (DBusConnection * connection, DBusMessage * message,
   fprintf (stderr, " )\n");
 #endif
 
-  // TODO: Proper return value from actions
+  /* TODO: Proper return value from actions */
   hid_actionv (action_name, argc, argv);
   retval = 0;
 
@@ -295,17 +295,17 @@ handle_dbus_message (DBusConnection * connection, DBusMessage * message,
 
     case DBUS_MESSAGE_TYPE_METHOD_RETURN:
       fprintf (stderr, "pcb_dbus: DBUG: Method return message\n");
-      // WON'T ACTUALLY BE ANY UNLESS WE MAKE AN ASYNCRONOUS CALL?
+      /* WON'T ACTUALLY BE ANY UNLESS WE MAKE AN ASYNCRONOUS CALL? */
       break;
 
     case DBUS_MESSAGE_TYPE_ERROR:
       fprintf (stderr, "pcb_dbus: DEBUG: Error message\n");
-      // HOPE NOT!
+      /* HOPE NOT! */
       break;
 
     case DBUS_MESSAGE_TYPE_SIGNAL:
       fprintf (stderr, "pcb_dbus: DEBUG: Signal message\n");
-      // NONE AT PRESENT
+      /* NONE AT PRESENT */
       break;
 
     default:
@@ -329,10 +329,10 @@ pcb_dbus_setup (void)
     NULL, NULL, NULL, NULL
   };
 
-  // Initialise the error variable
+  /* Initialise the error variable */
   dbus_error_init (&err);
 
-  // Connect to the bus
+  /* Connect to the bus */
   pcb_dbus_conn = dbus_bus_get_private (DBUS_BUS_SESSION, &err);
   if (dbus_error_is_set (&err))
     {
@@ -342,7 +342,7 @@ pcb_dbus_setup (void)
   if (pcb_dbus_conn == NULL)
     return;
 
-  // Request the canonical name for PCB on the bus
+  /* Request the canonical name for PCB on the bus */
   ret = dbus_bus_request_name (pcb_dbus_conn, PCB_DBUS_CANONICAL_NAME,
 			       DBUS_NAME_FLAG_REPLACE_EXISTING, &err);
   if (dbus_error_is_set (&err))
@@ -358,7 +358,7 @@ pcb_dbus_setup (void)
       return;
     }
 
-  if (!dbus_connection_register_object_path (pcb_dbus_conn, PCB_DBUS_OBJECT_PATH, &object_vtable, NULL	// void * user_data
+  if (!dbus_connection_register_object_path (pcb_dbus_conn, PCB_DBUS_OBJECT_PATH, &object_vtable, NULL	/* void * user_data */
       ))
     {
       fprintf (stderr, "pcb_dbus: Couldn't register DBUS handler for %s\n",
@@ -366,10 +366,10 @@ pcb_dbus_setup (void)
       return;
     }
 
-  // Setup intergration with the pcb mainloop
+  /* Setup intergration with the pcb mainloop */
   pcb_dbus_connection_setup_with_mainloop (pcb_dbus_conn);
 
-//  dbus_error_free(&err);
+/*  dbus_error_free(&err); */
   return;
 }
 
@@ -379,10 +379,10 @@ pcb_dbus_finish (void)
 {
   DBusError err;
 
-  // Initialise the error variable
+  /* Initialise the error variable */
   dbus_error_init (&err);
 
-  // TODO: Could emit a "goodbye" signal here?
+  /* TODO: Could emit a "goodbye" signal here? */
 
   dbus_connection_flush (pcb_dbus_conn);
 
@@ -398,9 +398,9 @@ pcb_dbus_finish (void)
   dbus_connection_close (pcb_dbus_conn);
   dbus_connection_unref (pcb_dbus_conn);
 
-  // Call DBus shutdown. This doesn't work with shared connections,
-  // only private ones (like we took out earlier).
-  // If any future module / plugin to PCB wants to use DBus too,
-  // we must remove this call. DBus will get shut-down when the app exits.
+  /* Call DBus shutdown. This doesn't work with shared connections,
+     only private ones (like we took out earlier).
+     If any future module / plugin to PCB wants to use DBus too,
+     we must remove this call. DBus will get shut-down when the app exits. */
   dbus_shutdown ();
 }

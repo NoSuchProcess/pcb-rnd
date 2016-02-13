@@ -848,7 +848,7 @@ png_do_export (HID_Attr_Val * options)
       if (photo_outline && have_outline) {
 	int black=gdImageColorResolve(photo_outline, 0x00, 0x00, 0x00);
 
-	// go all the way around the image, trying to fill the outline
+	/* go all the way around the image, trying to fill the outline */
 	for (x=0; x<gdImageSX(im); x++) {
 	  gdImageFillToBorder(photo_outline, x, 0, black, black);
 	  gdImageFillToBorder(photo_outline, x, gdImageSY(im)-1, black, black);

@@ -23,7 +23,7 @@
 #include "genht/htsi.h"
 #include "graph.h"
 
-//#define DEBUG_GR
+/*#define DEBUG_GR*/
 
 /* maximum number of nodes */
 #define MAXNODES 1024

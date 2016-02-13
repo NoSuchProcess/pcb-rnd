@@ -508,12 +508,12 @@ static void *
 MoveRatToLayer (RatType *Rat)
 {
   LineTypePtr newone;
-  //Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
-  //Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
-  // if VIAFLAG
-  //   if we're on a pin, add a thermal
-  //   else make a via and a wire, but 0-length wire not good
-  // else as before
+  /*Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
+    Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
+     if VIAFLAG
+       if we're on a pin, add a thermal
+       else make a via and a wire, but 0-length wire not good
+     else as before*/
 
   newone = CreateNewLineOnLayer (Dest, Rat->Point1.X, Rat->Point1.Y,
 			      Rat->Point2.X, Rat->Point2.Y,

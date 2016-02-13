@@ -27,9 +27,9 @@
 
 #define BAD 1000000
 
-//#define DEBUG_MERGES
-//#define DEBUG_TAGS
-//#define DEBUG_SOLVE
+/*#define DEBUG_MERGES*/
+/*#define DEBUG_TAGS*/
+/*#define DEBUG_SOLVE*/
 
 typedef struct {
 	gr_t *g;

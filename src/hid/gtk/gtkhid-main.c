@@ -292,7 +292,7 @@ ghid_mod1_is_pressed ()
   gdk_window_get_pointer (gtk_widget_get_window (out->drawing_area),
                           NULL, NULL, &mask);
 #ifdef __APPLE__
-  return (mask & ( 1 << 13 ) ) ? TRUE : FALSE;  // The option key is not MOD1, although it should be...
+  return (mask & ( 1 << 13 ) ) ? TRUE : FALSE;  /* The option key is not MOD1, although it should be...*/
 #else
   return (mask & GDK_MOD1_MASK) ? TRUE : FALSE;
 #endif
@@ -501,7 +501,7 @@ static GSourceFuncs ghid_block_hook_funcs = {
   ghid_block_hook_prepare,
   ghid_block_hook_check,
   ghid_block_hook_dispatch,
-  NULL // No destroy notification
+  NULL /* No destroy notification */
 };
 
 static gboolean

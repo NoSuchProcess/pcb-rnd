@@ -55,7 +55,7 @@ thindraw_contour (hidGC gc, PLINE *pl)
       this_y = v->point[1];
 
       gui->draw_line (gc, last_x, last_y, this_x, this_y);
-      // gui->fill_circle (gc, this_x, this_y, 30);
+      /* gui->fill_circle (gc, this_x, this_y, 30); */
 
       last_x = this_x;
       last_y = this_y;

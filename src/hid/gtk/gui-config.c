@@ -655,7 +655,7 @@ parse_optionv (gint * argc, gchar *** argv, gboolean from_cmd_line)
 	      exit (1);
 	    }
 	  else
-//                              ghid_log("unrecognized option: %s\n", (*argv)[0]);
+/*                              ghid_log("unrecognized option: %s\n", (*argv)[0]);*/
 	    fprintf (stderr, "unrecognized option: %s\n", (*argv)[0]);
 	}
     got_match:;

@@ -18,7 +18,7 @@ BEGIN {
 	type = $0
 	sub("^type=", "", type)
 	TYPE[basename] = type
-	print "// ", type, basename
+	print "/* ", type, basename " */"
 }
 
 

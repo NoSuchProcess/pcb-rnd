@@ -1380,7 +1380,7 @@ ps_fill_pcb_polygon (hidGC gc, PolygonType * poly, const BoxType * clip_box)
 
 		for(y = lsegs_ymin; y < lsegs_ymax; y+= POLYGRID) {
 			int pts, n;
-//		pcb_fprintf(global.f, "%% gridline at y %mi\n", y);
+/*		pcb_fprintf(global.f, "%% gridline at y %mi\n", y);*/
 			retry1:;
 			if (y > lsegs_ymax)
 				break;
@@ -1409,7 +1409,7 @@ ps_fill_pcb_polygon (hidGC gc, PolygonType * poly, const BoxType * clip_box)
 
 		for(x = lsegs_xmin; x < lsegs_xmax; x+= POLYGRID) {
 			int pts, n;
-//		pcb_fprintf(global.f, "%% gridline at y %mi\n", y);
+/*		pcb_fprintf(global.f, "%% gridline at y %mi\n", y); */
 			retry2:;
 			if (x > lsegs_xmax)
 				break;
