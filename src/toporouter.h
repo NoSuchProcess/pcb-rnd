@@ -71,7 +71,7 @@
 
 #define EPSILON 0.0001f
 
-//#define DEBUG_ROAR 1
+/*#define DEBUG_ROAR 1*/
 
 #define coord_distance(a,b,c,d) sqrt(pow(a-c,2)+pow(b-d,2))
 #define coord_distance2(a,b,c,d) (pow(a-c,2)+pow(b-d,2))
@@ -139,7 +139,7 @@ struct _toporouter_bbox_t {
   GtsPoint *point,
            *realpoint;
 
-//  char *netlist, *style;
+/*  char *netlist, *style;*/
 
   struct _toporouter_cluster_t *cluster;
 
@@ -160,7 +160,7 @@ typedef struct _toporouter_bbox_class_t toporouter_bbox_class_t;
 
 struct _toporouter_edge_t {
   GtsEdge e;
-  //NetListType *netlist;
+  /*NetListType *netlist;*/
 
   guint flags;
 
@@ -191,7 +191,7 @@ typedef struct _toporouter_edge_class_t toporouter_edge_class_t;
 
 struct _toporouter_vertex_t {
   GtsVertex v;
-  //GList *boxes;
+  /*GList *boxes;*/
   struct _toporouter_bbox_t *bbox;
 
   struct _toporouter_vertex_t *parent;
@@ -243,8 +243,8 @@ typedef struct _toporouter_constraint_class_t toporouter_constraint_class_t;
 
 typedef struct {
   GtsSurface *surface;
-//  GtsTriangle *t;
-//  GtsVertex *v1, *v2, *v3;
+/*  GtsTriangle *t;*/
+/*  GtsVertex *v1, *v2, *v3;*/
   
   GList *vertices;
   GList *constraints; 
@@ -462,23 +462,28 @@ typedef struct {
 } drawing_context_t;
 
 #define FOREACH_CLUSTER(clusters) do { \
-  for(toporouter_cluster_t **i = ((toporouter_cluster_t **)clusters->pdata) + clusters->len - 1; i >= (toporouter_cluster_t **)clusters->pdata && clusters->len > 0; --i) { \
+  toporouter_cluster_t **i; \
+  for(i = ((toporouter_cluster_t **)clusters->pdata) + clusters->len - 1; i >= (toporouter_cluster_t **)clusters->pdata && clusters->len > 0; --i) { \
     toporouter_cluster_t *cluster = *i; 
 
 #define FOREACH_BBOX(boxes) do { \
-  for(toporouter_bbox_t **i = ((toporouter_bbox_t **)boxes->pdata) + boxes->len - 1; i >= (toporouter_bbox_t **)boxes->pdata && boxes->len > 0; --i) { \
+  toporouter_bbox_t **i; \
+  for(i = ((toporouter_bbox_t **)boxes->pdata) + boxes->len - 1; i >= (toporouter_bbox_t **)boxes->pdata && boxes->len > 0; --i) { \
     toporouter_bbox_t *box = *i;
 
 #define FOREACH_ROUTE(routes) do { \
-  for(toporouter_route_t **i = ((toporouter_route_t **)routes->pdata) + routes->len - 1; i >= (toporouter_route_t **)routes->pdata && routes->len > 0; --i) { \
+  toporouter_route_t **i; \
+  for(i = ((toporouter_route_t **)routes->pdata) + routes->len - 1; i >= (toporouter_route_t **)routes->pdata && routes->len > 0; --i) { \
     toporouter_route_t *routedata = *i;
 
 #define FOREACH_NETSCORE(netscores) do { \
-  for(toporouter_netscore_t **i = ((toporouter_netscore_t **)netscores->pdata) + netscores->len - 1; i >= (toporouter_netscore_t **)netscores->pdata && netscores->len > 0; --i) { \
+  toporouter_netscore_t **i; \
+  for(i = ((toporouter_netscore_t **)netscores->pdata) + netscores->len - 1; i >= (toporouter_netscore_t **)netscores->pdata && netscores->len > 0; --i) { \
     toporouter_netscore_t *netscore = *i;
 
 #define FOREACH_NETLIST(netlists) do { \
-  for(toporouter_netlist_t **i = ((toporouter_netlist_t **)netlists->pdata) + netlists->len - 1; i >= (toporouter_netlist_t **)netlists->pdata && netlists->len > 0; --i) { \
+  toporouter_netlist_t **i; \
+  for(i = ((toporouter_netlist_t **)netlists->pdata) + netlists->len - 1; i >= (toporouter_netlist_t **)netlists->pdata && netlists->len > 0; --i) { \
     toporouter_netlist_t *netlist = *i;
 
 #define FOREACH_END }} while(0)
