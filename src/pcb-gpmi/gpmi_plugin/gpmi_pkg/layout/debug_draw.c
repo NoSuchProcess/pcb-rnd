@@ -2,6 +2,7 @@
 #include <assert.h>
 #include "layout.h"
 #include "src/hid.h"
+#include "src/error.h"
 
 static HID *ddh = NULL;
 

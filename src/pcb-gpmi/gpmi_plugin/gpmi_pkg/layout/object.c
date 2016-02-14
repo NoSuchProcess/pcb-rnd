@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "layout.h"
+#include "src/change.h"
+#include "src/misc.h"
+#include "src/move.h"
 
 int layout_obj_coord(layout_object_t *obj, layout_object_coord_t coord)
 {
