@@ -490,7 +490,7 @@ AddSelectedToBuffer (BufferTypePtr Buffer, Coord X, Coord Y, bool LeaveSelected)
  * if successful, update some other stuff and reposition the pastebuffer
  */
 bool
-LoadElementToBuffer (BufferTypePtr Buffer, char *Name)
+LoadElementToBuffer (BufferTypePtr Buffer, const char *Name)
 {
   ElementTypePtr element;
 

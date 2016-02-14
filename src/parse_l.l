@@ -308,7 +308,7 @@ static int Parse(FILE *Pipe, char *Executable, char *Path, char *Filename, char 
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a single element file
  */
-int ParseElement(DataTypePtr Ptr, char *name)
+int ParseElement(DataTypePtr Ptr, const char *name)
 {
 	FILE *f;
 	int ret;
