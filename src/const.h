@@ -283,20 +283,20 @@ When set, element names are not drawn.
 @end table
 %end-doc */
 
-#define	PCB_FLAGS		0x01ffffff	/* all used flags */
+#define PCB_FLAGS               0x01ffffff  /* all used flags */
 
 #define SHOWNUMBERFLAG          0x00000001
 #define LOCALREFFLAG            0x00000002
 #define CHECKPLANESFLAG         0x00000004
 #define SHOWDRCFLAG             0x00000008
-#define RUBBERBANDFLAG		0x00000010
-#define	DESCRIPTIONFLAG		0x00000020
-#define	NAMEONPCBFLAG		0x00000040
+#define RUBBERBANDFLAG          0x00000010
+#define	DESCRIPTIONFLAG         0x00000020
+#define	NAMEONPCBFLAG           0x00000040
 #define AUTODRCFLAG             0x00000080
-#define	ALLDIRECTIONFLAG	0x00000100
+#define	ALLDIRECTIONFLAG        0x00000100
 #define SWAPSTARTDIRFLAG        0x00000200
-#define UNIQUENAMEFLAG		0x00000400
-#define CLEARNEWFLAG		0x00000800
+#define UNIQUENAMEFLAG          0x00000400
+#define CLEARNEWFLAG            0x00000800
 #define SNAPPINFLAG             0x00001000
 #define SHOWMASKFLAG            0x00002000
 #define THINDRAWFLAG            0x00004000
