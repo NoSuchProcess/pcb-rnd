@@ -305,9 +305,11 @@ lib_model_filter_visible_func (GtkTreeModel * model,
 				LibraryEntryType *entry = NULL;
 				gtk_tree_model_get(model, iter, MENU_ENTRY_COLUMN, &entry, -1);
 				if ((entry != NULL) && (entry->Tags != NULL)) {
-					char *next, *tag, *need;
+					char *next, *tag;
 					int found;
 					void **t;
+					const void *need;
+
 					for(tag = tags; tag != NULL; tag = next) {
 						next = strpbrk(tag, " \t\r\n");
 						if (next != NULL) {
