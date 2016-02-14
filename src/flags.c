@@ -246,8 +246,8 @@ HID_Flag flags_flag_list[] = {
   {"newfullpoly", FlagTESTFLAG, NEWFULLPOLYFLAG},
   {"hidenames", FlagTESTFLAG, HIDENAMESFLAG},
   {"enablemincut", FlagTESTFLAG, ENABLEMINCUTFLAG},
-  {"snapoffgridline",      FlagTESTFLAG,     GINT_TO_POINTER (SNAPOFFGRIDLINEFLAG)},
-  {"highlightonpoint",     FlagTESTFLAG,     GINT_TO_POINTER (HIGHLIGHTONPOINTFLAG)},
+  {"snapoffgridline",      FlagTESTFLAG,     SNAPOFFGRIDLINEFLAG},
+  {"highlightonpoint",     FlagTESTFLAG,     HIGHLIGHTONPOINTFLAG},
 
   {"fullpoly", FlagSETTINGS, OffsetOf (SettingType, FullPoly)},
   {"grid_units_mm", FlagUnitsMm, -1},
