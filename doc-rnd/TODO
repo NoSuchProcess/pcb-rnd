@@ -13,7 +13,7 @@ FEATURES
 - CORE: clear poly should be a per layer flag (on each objects) {?}
 - CORE: inverse text {medium}
 - BUILD: menuconfig and a config file for scconfig
-
+- split line segment into two (insert line point in the middle)
 
 Low prio:
 - display net names on pins, vias (and maybe tracks?) when zoomed in enough
