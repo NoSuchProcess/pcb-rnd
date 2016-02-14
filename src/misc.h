@@ -48,7 +48,7 @@ double Distance (double x1, double y1, double x2, double y2);
 double Distance2 (double x1, double y1, double x2, double y2); /* distance square */
 Angle  NormalizeAngle (Angle a);
 
-char *pcb_author (void);
+const char *pcb_author (void);
 
 void r_delete_element (DataTypePtr, ElementTypePtr);
 void SetLineBoundingBox (LineTypePtr);
@@ -96,8 +96,6 @@ double GetValue (const char *, const char *, bool *);
 double GetValueEx (const char *, const char *, bool *, UnitList, const char *);
 int FileExists (const char *);
 char *Concat (const char *, ...);	/* end with NULL */
-
-char *pcb_author ();
 
 /* Returns NULL if the name isn't found, else the value for that named
    attribute.  */

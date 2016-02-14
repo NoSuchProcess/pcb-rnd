@@ -2165,7 +2165,7 @@ GetInfoString (void)
   return info.Data;
 }
 
-char *pcb_author (void)
+const char *pcb_author (void)
 {
 	if (Settings.FabAuthor && Settings.FabAuthor[0])
 		return Settings.FabAuthor;
