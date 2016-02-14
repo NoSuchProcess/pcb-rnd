@@ -1608,7 +1608,7 @@ ghid_create_listener (void)
 /* ------------------------------------------------------------ */
 
 static int stdin_listen = 0;
-static char *pcbmenu_paths_in[] = {"gpcb-menu.res", "gpcb-menu.res", PCBSHAREDIR "/gpcb-menu.res", NULL};
+static const char *pcbmenu_paths_in[] = {"gpcb-menu.res", "gpcb-menu.res", PCBSHAREDIR "/gpcb-menu.res", NULL};
 static char **pcbmenu_paths = NULL;
 
 HID_Attribute ghid_attribute_list[] = {
