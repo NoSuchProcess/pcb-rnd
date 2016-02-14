@@ -4,6 +4,7 @@
 #include <gpmi.h>
 #include "src/global.h"
 #include "src/hid.h"
+#include "src/error.h"
 #include "actions.h"
 
 typedef struct acontext_s  acontext_t;

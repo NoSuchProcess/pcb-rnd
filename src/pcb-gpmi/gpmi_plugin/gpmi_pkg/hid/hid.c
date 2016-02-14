@@ -3,7 +3,9 @@
 #include <string.h>
 #include <gpmi.h>
 #include "src/global.h"
+#include "src/error.h"
 #include "src/hid.h"
+#include "src/hid/common/hidnogui.h"
 #include "src/hid/hidint.h"
 #include "src/pcb-printf.h"
 #define FROM_PKG

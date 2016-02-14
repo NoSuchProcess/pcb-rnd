@@ -1,4 +1,5 @@
 #include "dialogs.h"
+#include "src/error.h"
 
 extern HID *gui;
 
