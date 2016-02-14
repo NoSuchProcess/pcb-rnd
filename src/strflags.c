@@ -441,7 +441,8 @@ common_string_to_flags (const char *flagstring,
 	    {
 	      const char *fmt = "Unknown flag: \"%.*s\" ignored";
 	      unknown_flag_t *u;
-	      char *msg, *s;
+	      char *msg;
+	      const char *s;
 
 	      /* include () */
 	      s = fp + flen;
