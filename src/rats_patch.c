@@ -35,6 +35,7 @@
 #include "rats_patch.h"
 #include "genht/htsp.h"
 #include "genht/hash.h"
+#include "create.h"
 
 static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t *n, int do_free);
 

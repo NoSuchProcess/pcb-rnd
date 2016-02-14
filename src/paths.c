@@ -1,6 +1,8 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "paths.h"
+#include "error.h"
 
 char *homedir;
 

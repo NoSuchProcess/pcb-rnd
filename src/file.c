@@ -96,6 +96,8 @@
 #include "strflags.h"
 #include "portability.h"
 #include "libpcb_fp.h"
+#include "paths.h"
+#include "rats_patch.h"
 
 #ifdef HAVE_LIBDMALLOC
 #include <dmalloc.h>

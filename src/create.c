@@ -52,6 +52,7 @@
 #include "set.h"
 #include "undo.h"
 #include "vendor.h"
+#include "file.h"
 
 #ifdef HAVE_LIBDMALLOC
 #include <dmalloc.h>

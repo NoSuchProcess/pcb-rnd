@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "plugins.h"
 
 plugin_info_t *plugins = NULL;
