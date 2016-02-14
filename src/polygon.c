@@ -826,7 +826,7 @@ BoxPolyBloated (BoxType *box, Coord bloat)
                    box->Y1 - bloat, box->Y2 + bloat);
 }
 /* return the clearence polygon for a pin */
-static POLYAREA *pin_clearance_poly(Cardinal  layernum, PCBTypePtr *pcb, PinType * pin)
+static POLYAREA *pin_clearance_poly(Cardinal  layernum, PCBTypePtr pcb, PinType * pin)
 {
   POLYAREA *np;
 	if (TEST_THERM (layernum, pin))
