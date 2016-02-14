@@ -84,6 +84,8 @@
 #include <dmalloc.h>
 #endif
 
+#include "paths.h"
+
 #include "3rd/genht/htsp.h"
 #include "3rd/genht/hash.h"
 

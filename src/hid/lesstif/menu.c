@@ -22,6 +22,7 @@
 #include "resource.h"
 #include "lesstif.h"
 #include "mymem.h"
+#include "paths.h"
 
 #include "pcb-menu.h"
 #include "../../3rd/genht/htsp.h"
