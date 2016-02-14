@@ -36,65 +36,65 @@ NOTE: in the special corner case when leaky_idx_t is wider than void * but
 not multiple of it, the alignment will be messed up, potentially causing slower
 memory access. */
 typedef union {
-  leaky_idx_t idx;
-  void *ptr;
+	leaky_idx_t idx;
+	void *ptr;
 } leaky_admin_t;
 
-static void         **free_list = NULL;
-static leaky_idx_t  free_size = 0;
+static void **free_list = NULL;
+static leaky_idx_t free_size = 0;
 
 
-void *leaky_malloc (size_t size)
+void *leaky_malloc(size_t size)
 {
-  void *new_memory = malloc(size + sizeof(leaky_admin_t));
+	void *new_memory = malloc(size + sizeof(leaky_admin_t));
 
-  free_list = (void **)realloc (free_list, (free_size + 1) * sizeof(void *));
-  free_list[free_size] = new_memory;
-  *(leaky_idx_t *)new_memory = free_size;
+	free_list = (void **) realloc(free_list, (free_size + 1) * sizeof(void *));
+	free_list[free_size] = new_memory;
+	*(leaky_idx_t *) new_memory = free_size;
 
-  free_size++;
-  return new_memory + sizeof(leaky_admin_t);
+	free_size++;
+	return new_memory + sizeof(leaky_admin_t);
 }
 
-void *leaky_calloc (size_t nmemb, size_t size)
+void *leaky_calloc(size_t nmemb, size_t size)
 {
-  size_t size_ = size * nmemb;
-  void *new_memory = leaky_malloc (size_);
+	size_t size_ = size * nmemb;
+	void *new_memory = leaky_malloc(size_);
 
-  memset (new_memory, 0, size_);
-  return new_memory;
+	memset(new_memory, 0, size_);
+	return new_memory;
 }
 
-void *leaky_realloc (void* old_memory, size_t size)
+void *leaky_realloc(void *old_memory, size_t size)
 {
-  void *new_memory;
-  leaky_idx_t i;
+	void *new_memory;
+	leaky_idx_t i;
 
-  if (old_memory == NULL)
-    return leaky_malloc (size);
+	if (old_memory == NULL)
+		return leaky_malloc(size);
 
-  old_memory -= sizeof(leaky_admin_t);
+	old_memory -= sizeof(leaky_admin_t);
 
-  i = *(leaky_idx_t *)old_memory;
+	i = *(leaky_idx_t *) old_memory;
 
-  new_memory = realloc (old_memory, size + sizeof(leaky_admin_t));
-  free_list[i] = new_memory;
+	new_memory = realloc(old_memory, size + sizeof(leaky_admin_t));
+	free_list[i] = new_memory;
 
-  return new_memory + sizeof(leaky_admin_t);
+	return new_memory + sizeof(leaky_admin_t);
 }
 
-void leaky_uninit (void)
+void leaky_uninit(void)
 {
-  int i;
+	int i;
 
-  for (i = 0; i < free_size; i++)
-    free (free_list[i]);
+	for (i = 0; i < free_size; i++)
+		free(free_list[i]);
 
-  free (free_list);
-  free_size = 0;
+	free(free_list);
+	free_size = 0;
 }
 
-void leaky_init (void)
+void leaky_init(void)
 {
-  atexit(leaky_uninit);
+	atexit(leaky_uninit);
 }

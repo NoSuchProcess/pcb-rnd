@@ -33,22 +33,22 @@
 
 #include "global.h"
 
-void SetTextScale (int);
-void SetGrid (Coord, bool);
-void SetZoom (double);
-void SetLineSize (Coord);
-void SetViaSize (Coord, bool);
-void SetViaDrillingHole (Coord, bool);
-void SetKeepawayWidth (Coord);
-void SetChangedFlag (bool);
-void SetBufferNumber (int);
-void SetMode (int);
-void SetCrosshairRangeToBuffer (void);
-void SetRouteStyle (char *);
-void SetLocalRef (Coord, Coord, bool);
-void RedrawZoom (Coord, Coord);
-void SaveMode (void);
-void RestoreMode (void);
-void pcb_use_route_style (RouteStyleType *);
+void SetTextScale(int);
+void SetGrid(Coord, bool);
+void SetZoom(double);
+void SetLineSize(Coord);
+void SetViaSize(Coord, bool);
+void SetViaDrillingHole(Coord, bool);
+void SetKeepawayWidth(Coord);
+void SetChangedFlag(bool);
+void SetBufferNumber(int);
+void SetMode(int);
+void SetCrosshairRangeToBuffer(void);
+void SetRouteStyle(char *);
+void SetLocalRef(Coord, Coord, bool);
+void RedrawZoom(Coord, Coord);
+void SaveMode(void);
+void RestoreMode(void);
+void pcb_use_route_style(RouteStyleType *);
 
 #endif

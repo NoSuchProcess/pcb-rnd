@@ -38,37 +38,35 @@
 
 											/* different layers */
 
-int Undo (bool);
-int Redo (bool);
-void IncrementUndoSerialNumber (void);
-void SaveUndoSerialNumber (void);
-void RestoreUndoSerialNumber (void);
-void ClearUndoList (bool);
-void MoveObjectToRemoveUndoList (int, void *, void *, void *);
-void AddObjectToRemovePointUndoList (int, void *, void *, Cardinal);
-void AddObjectToInsertPointUndoList (int, void *, void *, void *);
-void AddObjectToRemoveContourUndoList (int, LayerType *, PolygonType *);
-void AddObjectToInsertContourUndoList (int, LayerType *, PolygonType *);
-void AddObjectToMoveUndoList (int, void *, void *, void *,
-			      Coord, Coord);
-void AddObjectToChangeNameUndoList (int, void *, void *, void *, char *);
-void AddObjectToChangePinnumUndoList (int, void *, void *, void *, char *);
-void AddObjectToRotateUndoList (int, void *, void *, void *,
-				Coord, Coord, BYTE);
-void AddObjectToCreateUndoList (int, void *, void *, void *);
-void AddObjectToMirrorUndoList (int, void *, void *, void *, Coord);
-void AddObjectToMoveToLayerUndoList (int, void *, void *, void *);
-void AddObjectToFlagUndoList (int, void *, void *, void *);
-void AddObjectToSizeUndoList (int, void *, void *, void *);
-void AddObjectTo2ndSizeUndoList (int, void *, void *, void *);
-void AddObjectToClearSizeUndoList (int, void *, void *, void *);
-void AddObjectToMaskSizeUndoList (int, void *, void *, void *);
-void AddObjectToChangeAnglesUndoList (int, void *, void *, void *);
-void AddObjectToClearPolyUndoList (int, void *, void *, void *, bool);
-void AddLayerChangeToUndoList (int, int);
-void AddNetlistLibToUndoList (LibraryTypePtr);
-void LockUndo (void);
-void UnlockUndo (void);
-bool Undoing (void);
+int Undo(bool);
+int Redo(bool);
+void IncrementUndoSerialNumber(void);
+void SaveUndoSerialNumber(void);
+void RestoreUndoSerialNumber(void);
+void ClearUndoList(bool);
+void MoveObjectToRemoveUndoList(int, void *, void *, void *);
+void AddObjectToRemovePointUndoList(int, void *, void *, Cardinal);
+void AddObjectToInsertPointUndoList(int, void *, void *, void *);
+void AddObjectToRemoveContourUndoList(int, LayerType *, PolygonType *);
+void AddObjectToInsertContourUndoList(int, LayerType *, PolygonType *);
+void AddObjectToMoveUndoList(int, void *, void *, void *, Coord, Coord);
+void AddObjectToChangeNameUndoList(int, void *, void *, void *, char *);
+void AddObjectToChangePinnumUndoList(int, void *, void *, void *, char *);
+void AddObjectToRotateUndoList(int, void *, void *, void *, Coord, Coord, BYTE);
+void AddObjectToCreateUndoList(int, void *, void *, void *);
+void AddObjectToMirrorUndoList(int, void *, void *, void *, Coord);
+void AddObjectToMoveToLayerUndoList(int, void *, void *, void *);
+void AddObjectToFlagUndoList(int, void *, void *, void *);
+void AddObjectToSizeUndoList(int, void *, void *, void *);
+void AddObjectTo2ndSizeUndoList(int, void *, void *, void *);
+void AddObjectToClearSizeUndoList(int, void *, void *, void *);
+void AddObjectToMaskSizeUndoList(int, void *, void *, void *);
+void AddObjectToChangeAnglesUndoList(int, void *, void *, void *);
+void AddObjectToClearPolyUndoList(int, void *, void *, void *, bool);
+void AddLayerChangeToUndoList(int, int);
+void AddNetlistLibToUndoList(LibraryTypePtr);
+void LockUndo(void);
+void UnlockUndo(void);
+bool Undoing(void);
 
 #endif

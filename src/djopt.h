@@ -31,6 +31,6 @@
 
 #include "global.h"
 
-int ActionDJopt (int, char **, Coord, Coord);
-int djopt_set_auto_only (int, char **, Coord, Coord);
+int ActionDJopt(int, char **, Coord, Coord);
+int djopt_set_auto_only(int, char **, Coord, Coord);
 #endif

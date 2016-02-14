@@ -30,25 +30,25 @@
 #ifndef	PCB_FILE_H
 #define	PCB_FILE_H
 
-#include <stdio.h>		/* needed to define 'FILE *' */
+#include <stdio.h>							/* needed to define 'FILE *' */
 #include "global.h"
 
-FILE *CheckAndOpenFile (char *, bool, bool, bool *, bool *);
-FILE *OpenConnectionDataFile (void);
-int SavePCB (char *);
-int LoadPCB (char *, bool);
-int RevertPCB (void);
-void EnableAutosave (void);
-void Backup (void);
-void SaveInTMP (void);
-void EmergencySave (void);
-void DisableEmergencySave (void);
-int ReadLibraryContents (void); /* walk through all lib paths and build the library menu */
-int ImportNetlist (char *);
-int SaveBufferElements (char *);
-void PreLoadElementPCB (void);
-void PostLoadElementPCB (void);
-void sort_netlist (void);
+FILE *CheckAndOpenFile(char *, bool, bool, bool *, bool *);
+FILE *OpenConnectionDataFile(void);
+int SavePCB(char *);
+int LoadPCB(char *, bool);
+int RevertPCB(void);
+void EnableAutosave(void);
+void Backup(void);
+void SaveInTMP(void);
+void EmergencySave(void);
+void DisableEmergencySave(void);
+int ReadLibraryContents(void);	/* walk through all lib paths and build the library menu */
+int ImportNetlist(char *);
+int SaveBufferElements(char *);
+void PreLoadElementPCB(void);
+void PostLoadElementPCB(void);
+void sort_netlist(void);
 
 /* 
  * Whenever the pcb file format is modified, this version number
@@ -59,7 +59,7 @@ void sort_netlist (void);
  */
 
 /* This is the version needed by the file we're saving.  */
-int PCBFileVersionNeeded (void);
+int PCBFileVersionNeeded(void);
 
 /* This is the version we support.  */
 #define PCB_FILE_VERSION 20110603
@@ -67,10 +67,10 @@ int PCBFileVersionNeeded (void);
 
 #ifndef HAS_ATEXIT
 #ifdef HAS_ON_EXIT
-void GlueEmergencySave (int, caddr_t);
+void GlueEmergencySave(int, caddr_t);
 #else
-void SaveTMPData (void);
-void RemoveTMPData (void);
+void SaveTMPData(void);
+void RemoveTMPData(void);
 #endif
 #endif
 

@@ -83,25 +83,25 @@
 /* ---------------------------------------------------------------------------
  * modes
  */
-#define	NO_MODE			0	/* no mode selected */
-#define	VIA_MODE		1	/* draw vias */
-#define	LINE_MODE		2	/* draw lines */
-#define	RECTANGLE_MODE		3	/* create rectangles */
-#define	POLYGON_MODE		4	/* draw filled polygons */
-#define	PASTEBUFFER_MODE	5	/* paste objects from buffer */
-#define	TEXT_MODE		6	/* create text objects */
-#define	ROTATE_MODE		102	/* rotate objects */
-#define	REMOVE_MODE		103	/* remove objects */
-#define	MOVE_MODE		104	/* move objects */
-#define	COPY_MODE		105	/* copy objects */
-#define	INSERTPOINT_MODE	106	/* insert point into line/polygon */
+#define	NO_MODE			0						/* no mode selected */
+#define	VIA_MODE		1						/* draw vias */
+#define	LINE_MODE		2						/* draw lines */
+#define	RECTANGLE_MODE		3			/* create rectangles */
+#define	POLYGON_MODE		4				/* draw filled polygons */
+#define	PASTEBUFFER_MODE	5			/* paste objects from buffer */
+#define	TEXT_MODE		6						/* create text objects */
+#define	ROTATE_MODE		102				/* rotate objects */
+#define	REMOVE_MODE		103				/* remove objects */
+#define	MOVE_MODE		104					/* move objects */
+#define	COPY_MODE		105					/* copy objects */
+#define	INSERTPOINT_MODE	106		/* insert point into line/polygon */
 #define	RUBBERBANDMOVE_MODE	107	/* move objects and attached lines */
 #define THERMAL_MODE            108	/* toggle thermal layer flag */
 #define ARC_MODE                109	/* draw arcs */
-#define ARROW_MODE		110	/* selection with arrow mode */
+#define ARROW_MODE		110				/* selection with arrow mode */
 #define PAN_MODE                0	/* same as no mode */
 #define LOCK_MODE               111	/* lock/unlock objects */
-#define	POLYGONHOLE_MODE	112	/* cut holes in filled polygons */
+#define	POLYGONHOLE_MODE	112		/* cut holes in filled polygons */
 
 /* ---------------------------------------------------------------------------
  * object flags
@@ -183,13 +183,13 @@ pad.  Primarily used for pads used as fiducials.
 %end-doc */
 
 #define	NOFLAG			0x0000
-#define	PINFLAG			0x0001	/* is a pin */
-#define	VIAFLAG			0x0002	/* is a via */
-#define	FOUNDFLAG		0x0004	/* used by 'FindConnection()' */
-#define HOLEFLAG		0x0008	/* pin or via is only a hole */
-#define NOPASTEFLAG		0x0008  /* pad should not receive
-					   solderpaste.  This is to
-					   support fiducials */
+#define	PINFLAG			0x0001			/* is a pin */
+#define	VIAFLAG			0x0002			/* is a via */
+#define	FOUNDFLAG		0x0004			/* used by 'FindConnection()' */
+#define HOLEFLAG		0x0008			/* pin or via is only a hole */
+#define NOPASTEFLAG		0x0008		/* pad should not receive
+																   solderpaste.  This is to
+																   support fiducials */
 #define RATFLAG                 0x0010	/* indicates line is a rat line */
 #define PININPOLYFLAG           0x0010	/* pin found inside poly - same as */
 						/* rat line since not used on lines */
@@ -201,23 +201,23 @@ pad.  Primarily used for pads used as fiducials.
 #define FULLPOLYFLAG            0x0020	/* full polygon is drawn (i.e. all parts instead of only the biggest one) */
 #define	SELECTEDFLAG		0x0040	/* object has been selected */
 #define	ONSOLDERFLAG		0x0080	/* element is on bottom side */
-#define AUTOFLAG		0x0080	/* line/via created by auto-router */
-#define	SQUAREFLAG		0x0100	/* pin is square, not round */
+#define AUTOFLAG		0x0080			/* line/via created by auto-router */
+#define	SQUAREFLAG		0x0100		/* pin is square, not round */
 #define RUBBERENDFLAG		0x0200	/* indicates one end already rubber */
 					/* banding same as warn flag */
 					/* since pins/pads won't use it */
-#define WARNFLAG		0x0200	/* Warning for pin/via/pad */
+#define WARNFLAG		0x0200			/* Warning for pin/via/pad */
 #define USETHERMALFLAG		0x0400	/* draw pin, via with thermal fingers */
 #define ONSILKFLAG              0x0400	/* old files use this to indicate silk */
-#define OCTAGONFLAG		0x0800	/* draw pin/via as octagon instead of round */
-#define DRCFLAG			0x1000	/* flag like FOUND flag for DRC checking */
+#define OCTAGONFLAG		0x0800		/* draw pin/via as octagon instead of round */
+#define DRCFLAG			0x1000			/* flag like FOUND flag for DRC checking */
 #define LOCKFLAG                0x2000	/* object locked in place */
 #define EDGE2FLAG               0x4000	/* Padr.Point2 is closer to outside edge */
 					/* also pinout text for pins is vertical */
-#define VISITFLAG		0x8000  /* marker to avoid re-visiting an object */
+#define VISITFLAG		0x8000			/* marker to avoid re-visiting an object */
 #define	NONETLISTFLAG		0x10000	/* element is not on the netlist and should not interfere with the netlist */
-#define MINCUTFLAG			0x20000 /* used by the mincut short find code */
-#define ONPOINTFLAG     0x40000  /*!< crosshair is on line point or arc point */
+#define MINCUTFLAG			0x20000	/* used by the mincut short find code */
+#define ONPOINTFLAG     0x40000	/*!< crosshair is on line point or arc point */
 
 #define NOCOPY_FLAGS (FOUNDFLAG | CONNECTEDFLAG | ONPOINTFLAG)
 
@@ -283,7 +283,7 @@ When set, element names are not drawn.
 @end table
 %end-doc */
 
-#define PCB_FLAGS               0x01ffffff  /* all used flags */
+#define PCB_FLAGS               0x01ffffff	/* all used flags */
 
 #define SHOWNUMBERFLAG          0x00000001
 #define LOCALREFFLAG            0x00000002
@@ -314,7 +314,7 @@ When set, element names are not drawn.
 /* ---------------------------------------------------------------------------
  * object types
  */
-#define	NO_TYPE			0x00000	/* no object */
+#define	NO_TYPE			0x00000			/* no object */
 #define	VIA_TYPE		0x00001
 #define	ELEMENT_TYPE		0x00002
 #define	LINE_TYPE		0x00004
@@ -322,8 +322,8 @@ When set, element names are not drawn.
 #define	TEXT_TYPE		0x00010
 #define RATLINE_TYPE		0x00020
 
-#define	PIN_TYPE		0x00100	/* objects that are part */
-#define	PAD_TYPE		0x00200	/* 'pin' of SMD element */
+#define	PIN_TYPE		0x00100			/* objects that are part */
+#define	PAD_TYPE		0x00200			/* 'pin' of SMD element */
 #define	ELEMENTNAME_TYPE	0x00400	/* of others */
 #define	POLYGONPOINT_TYPE	0x00800
 #define	LINEPOINT_TYPE		0x01000
@@ -332,12 +332,12 @@ When set, element names are not drawn.
 #define ELEMENTARC_TYPE		0x08000
 
 #define LOCKED_TYPE 		0x10000	/* used to tell search to include locked items. */
-#define NET_TYPE		0x20000 /* used to select whole net. */
+#define NET_TYPE		0x20000			/* used to select whole net. */
 
 #define PIN_TYPES     (VIA_TYPE | PIN_TYPE)
 #define LOCK_TYPES    (VIA_TYPE | LINE_TYPE | ARC_TYPE | POLYGON_TYPE | ELEMENT_TYPE \
                       | TEXT_TYPE | ELEMENTNAME_TYPE | LOCKED_TYPE)
 
-#define	ALL_TYPES		(~0)	/* all bits set */
+#define	ALL_TYPES		(~0)				/* all bits set */
 
 #endif

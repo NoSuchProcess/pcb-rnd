@@ -145,19 +145,19 @@ int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-bool IsPointOnLine (Coord, Coord, Coord, LineTypePtr);
-bool IsPointOnPin (Coord, Coord, Coord, PinTypePtr);
-bool IsPointOnArc (Coord, Coord, Coord, ArcTypePtr);
-bool IsPointOnLineEnd (Coord, Coord, RatTypePtr);
-bool IsLineInRectangle (Coord, Coord, Coord, Coord, LineTypePtr);
-bool IsLineInQuadrangle (PointType p[4], LineTypePtr Line);
-bool IsArcInRectangle (Coord, Coord, Coord, Coord, ArcTypePtr);
-bool IsPointInPad (Coord, Coord, Coord, PadTypePtr);
-bool IsPointInBox (Coord, Coord, BoxTypePtr, Coord);
-int SearchObjectByLocation (unsigned, void **, void **, void **, Coord, Coord, Coord);
-int SearchScreen (Coord, Coord, int, void **, void **, void **);
-int SearchScreenGridSlop (Coord, Coord, int, void **, void **, void **);
-int SearchObjectByID (DataTypePtr, void **, void **, void **, int, int);
-ElementTypePtr SearchElementByName (DataTypePtr, char *);
+bool IsPointOnLine(Coord, Coord, Coord, LineTypePtr);
+bool IsPointOnPin(Coord, Coord, Coord, PinTypePtr);
+bool IsPointOnArc(Coord, Coord, Coord, ArcTypePtr);
+bool IsPointOnLineEnd(Coord, Coord, RatTypePtr);
+bool IsLineInRectangle(Coord, Coord, Coord, Coord, LineTypePtr);
+bool IsLineInQuadrangle(PointType p[4], LineTypePtr Line);
+bool IsArcInRectangle(Coord, Coord, Coord, Coord, ArcTypePtr);
+bool IsPointInPad(Coord, Coord, Coord, PadTypePtr);
+bool IsPointInBox(Coord, Coord, BoxTypePtr, Coord);
+int SearchObjectByLocation(unsigned, void **, void **, void **, Coord, Coord, Coord);
+int SearchScreen(Coord, Coord, int, void **, void **, void **);
+int SearchScreenGridSlop(Coord, Coord, int, void **, void **, void **);
+int SearchObjectByID(DataTypePtr, void **, void **, void **, int, int);
+ElementTypePtr SearchElementByName(DataTypePtr, char *);
 
 #endif

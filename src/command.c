@@ -55,7 +55,7 @@
 #include <dmalloc.h>
 #endif
 
-RCSID ("$Id$");
+RCSID("$Id$");
 
 /* ---------------------------------------------------------------------- */
 
@@ -84,23 +84,20 @@ static const char h_help[] = "Print a help message for commands.";
 
 %end-doc */
 
-static int
-CommandHelp (int argc, char **argv, Coord x, Coord y)
+static int CommandHelp(int argc, char **argv, Coord x, Coord y)
 {
-  Message ("following commands are supported:\n"
-	   "  Command()   execute an action command (too numerous to list)\n"
-	   "              see the manual for the list of action commands\n"
-	   "  h           display this help message\n"
-	   "  l  [file]   load layout\n"
-	   "  le [file]   load element to buffer\n"
-	   "  m  [file]   load layout to buffer (merge)\n"
-	   "  q           quits the application\n"
-	   "  q!          quits without save warning\n"
-	   "  rn [file]   read in a net-list file\n"
-	   "  s  [file]   save layout\n"
-	   "  w  [file]   save layout\n"
-	   "  wq [file]   save layout and quit\n");
-  return (0);
+	Message("following commands are supported:\n"
+					"  Command()   execute an action command (too numerous to list)\n"
+					"              see the manual for the list of action commands\n"
+					"  h           display this help message\n"
+					"  l  [file]   load layout\n"
+					"  le [file]   load element to buffer\n"
+					"  m  [file]   load layout to buffer (merge)\n"
+					"  q           quits the application\n"
+					"  q!          quits without save warning\n"
+					"  rn [file]   read in a net-list file\n"
+					"  s  [file]   save layout\n" "  w  [file]   save layout\n" "  wq [file]   save layout and quit\n");
+	return (0);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -121,26 +118,24 @@ will popup.
 
 %end-doc */
 
-static int
-CommandLoadLayout (int argc, char **argv, Coord x, Coord y)
+static int CommandLoadLayout(int argc, char **argv, Coord x, Coord y)
 {
-  char *filename, *name = NULL;
+	char *filename, *name = NULL;
 
-  switch (argc)
-    {
-    case 1:			/* filename is passed in commandline */
-      filename = argv[0];
-      break;
+	switch (argc) {
+	case 1:											/* filename is passed in commandline */
+		filename = argv[0];
+		break;
 
-    default:			/* usage */
-      Message ("Usage: l [name]\n  loads layout data\n");
-      return (1);
-    }
+	default:											/* usage */
+		Message("Usage: l [name]\n  loads layout data\n");
+		return (1);
+	}
 
-  if (!PCB->Changed || gui->confirm_dialog ("OK to override layout data?", 0))
-    LoadPCB (filename, true);
-  free (name);
-  return (0);
+	if (!PCB->Changed || gui->confirm_dialog("OK to override layout data?", 0))
+		LoadPCB(filename, true);
+	free(name);
+	return (0);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -158,24 +153,22 @@ element loader.  If no filename is specified a file select box will popup.
 
 %end-doc */
 
-static int
-CommandLoadElementToBuffer (int argc, char **argv, Coord x, Coord y)
+static int CommandLoadElementToBuffer(int argc, char **argv, Coord x, Coord y)
 {
-  char *filename;
+	char *filename;
 
-  switch (argc)
-    {
-    case 1:			/* filename is passed in commandline */
-      filename = argv[0];
-      if (filename && LoadElementToBuffer (PASTEBUFFER, filename))
-	SetMode (PASTEBUFFER_MODE);
-      break;
+	switch (argc) {
+	case 1:											/* filename is passed in commandline */
+		filename = argv[0];
+		if (filename && LoadElementToBuffer(PASTEBUFFER, filename))
+			SetMode(PASTEBUFFER_MODE);
+		break;
 
-    default:			/* usage */
-      Message (false, "Usage: le [name]\n  loads element data to buffer\n");
-      return (1);
-    }
-  return (0);
+	default:											/* usage */
+		Message(false, "Usage: le [name]\n  loads element data to buffer\n");
+		return (1);
+	}
+	return (0);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -194,24 +187,22 @@ If no filename is specified a file select box will popup.
 
 %end-doc */
 
-static int
-CommandLoadLayoutToBuffer (int argc, char **argv, Coord x, Coord y)
+static int CommandLoadLayoutToBuffer(int argc, char **argv, Coord x, Coord y)
 {
-  char *filename;
+	char *filename;
 
-  switch (argc)
-    {
-    case 1:			/* filename is passed in commandline */
-      filename = argv[0];
-      if (filename && LoadLayoutToBuffer (PASTEBUFFER, filename))
-	SetMode (PASTEBUFFER_MODE);
-      break;
+	switch (argc) {
+	case 1:											/* filename is passed in commandline */
+		filename = argv[0];
+		if (filename && LoadLayoutToBuffer(PASTEBUFFER, filename))
+			SetMode(PASTEBUFFER_MODE);
+		break;
 
-    default:			/* usage */
-      Message ("Usage: m [name]\n  loads layout data to buffer\n");
-      return (1);
-    }
-  return (0);
+	default:											/* usage */
+		Message("Usage: m [name]\n  loads layout data to buffer\n");
+		return (1);
+	}
+	return (0);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -229,18 +220,16 @@ save) before quitting.
 
 %end-doc */
 
-static int
-CommandQuit (int argc, char **argv, Coord x, Coord y)
+static int CommandQuit(int argc, char **argv, Coord x, Coord y)
 {
-  if (!PCB->Changed || gui->close_confirm_dialog () == HID_CLOSE_CONFIRM_OK)
-    QuitApplication ();
-  return 0;
+	if (!PCB->Changed || gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
+		QuitApplication();
+	return 0;
 }
 
 static const char qreally_syntax[] = "q!";
 
-static const char qreally_help[] =
-  "Quits the application without confirming.";
+static const char qreally_help[] = "Quits the application without confirming.";
 
 /* %start-doc actions q!
 
@@ -251,11 +240,10 @@ confirmation.
 
 %end-doc */
 
-static int
-CommandReallyQuit (int argc, char **argv, Coord x, Coord y)
+static int CommandReallyQuit(int argc, char **argv, Coord x, Coord y)
 {
-  QuitApplication ();
-  return 0;
+	QuitApplication();
+	return 0;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -278,26 +266,24 @@ for verifying the board layout (which is also accomplished by the
 
 %end-doc */
 
-static int
-CommandLoadNetlist (int argc, char **argv, Coord x, Coord y)
+static int CommandLoadNetlist(int argc, char **argv, Coord x, Coord y)
 {
-  char *filename, *name = NULL;
+	char *filename, *name = NULL;
 
-  switch (argc)
-    {
-    case 1:			/* filename is passed in commandline */
-      filename = argv[0];
-      break;
+	switch (argc) {
+	case 1:											/* filename is passed in commandline */
+		filename = argv[0];
+		break;
 
-    default:			/* usage */
-      Message ("Usage: rn [name]\n  reads in a netlist file\n");
-      return (1);
-    }
-  if (PCB->Netlistname)
-    free (PCB->Netlistname);
-  PCB->Netlistname = StripWhiteSpaceAndDup (filename);
-  free (name);
-  return (0);
+	default:											/* usage */
+		Message("Usage: rn [name]\n  reads in a netlist file\n");
+		return (1);
+	}
+	if (PCB->Netlistname)
+		free(PCB->Netlistname);
+	PCB->Netlistname = StripWhiteSpaceAndDup(filename);
+	free(name);
+	return (0);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -330,37 +316,33 @@ and has the same functionality as @code{s}.
 
 %end-doc */
 
-static int
-CommandSaveLayout (int argc, char **argv, Coord x, Coord y)
+static int CommandSaveLayout(int argc, char **argv, Coord x, Coord y)
 {
-  switch (argc)
-    {
-    case 0:
-      if (PCB->Filename)
-        {
-          if (SavePCB (PCB->Filename) == 0)
-            SetChangedFlag (false);
-        }
-      else
-	Message ("No filename to save to yet\n");
-      break;
+	switch (argc) {
+	case 0:
+		if (PCB->Filename) {
+			if (SavePCB(PCB->Filename) == 0)
+				SetChangedFlag(false);
+		}
+		else
+			Message("No filename to save to yet\n");
+		break;
 
-    case 1:
-      if (SavePCB (argv[0]) == 0)
-        {
-          SetChangedFlag (false);
-          free (PCB->Filename);
-          PCB->Filename = strdup (argv[0]);
-           if (gui->notify_filename_changed != NULL)
-            gui->notify_filename_changed ();
-        }
-      break;
+	case 1:
+		if (SavePCB(argv[0]) == 0) {
+			SetChangedFlag(false);
+			free(PCB->Filename);
+			PCB->Filename = strdup(argv[0]);
+			if (gui->notify_filename_changed != NULL)
+				gui->notify_filename_changed();
+		}
+		break;
 
-    default:
-      Message ("Usage: s [name] | w [name]\n  saves layout data\n");
-      return (1);
-    }
-  return (0);
+	default:
+		Message("Usage: s [name] | w [name]\n  saves layout data\n");
+		return (1);
+	}
+	return (0);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -378,47 +360,46 @@ has the same functionality as @code{s} combined with @code{q}.
 
 %end-doc */
 
-static int
-CommandSaveLayoutAndQuit (int argc, char **argv, Coord x, Coord y)
+static int CommandSaveLayoutAndQuit(int argc, char **argv, Coord x, Coord y)
 {
-  if (!CommandSaveLayout (argc, argv, x, y))
-    return CommandQuit (0, 0, 0, 0);
-  return (1);
+	if (!CommandSaveLayout(argc, argv, x, y))
+		return CommandQuit(0, 0, 0, 0);
+	return (1);
 }
 
 /* --------------------------------------------------------------------------- */
 
 HID_Action command_action_list[] = {
-  {"h", 0, CommandHelp,
-   h_help, h_syntax}
-  ,
-  {"l", 0, CommandLoadLayout,
-   l_help, l_syntax}
-  ,
-  {"le", 0, CommandLoadElementToBuffer,
-   le_help, le_syntax}
-  ,
-  {"m", 0, CommandLoadLayoutToBuffer,
-   m_help, m_syntax}
-  ,
-  {"q", 0, CommandQuit,
-   q_help, q_syntax}
-  ,
-  {"q!", 0, CommandReallyQuit,
-   qreally_help, qreally_syntax}
-  ,
-  {"rn", 0, CommandLoadNetlist,
-   rn_help, rn_syntax}
-  ,
-  {"s", 0, CommandSaveLayout,
-   s_help, s_syntax}
-  ,
-  {"w", 0, CommandSaveLayout,
-   w_help, w_syntax}
-  ,
-  {"wq", 0, CommandSaveLayoutAndQuit,
-   wq_help, wq_syntax}
-  ,
+	{"h", 0, CommandHelp,
+	 h_help, h_syntax}
+	,
+	{"l", 0, CommandLoadLayout,
+	 l_help, l_syntax}
+	,
+	{"le", 0, CommandLoadElementToBuffer,
+	 le_help, le_syntax}
+	,
+	{"m", 0, CommandLoadLayoutToBuffer,
+	 m_help, m_syntax}
+	,
+	{"q", 0, CommandQuit,
+	 q_help, q_syntax}
+	,
+	{"q!", 0, CommandReallyQuit,
+	 qreally_help, qreally_syntax}
+	,
+	{"rn", 0, CommandLoadNetlist,
+	 rn_help, rn_syntax}
+	,
+	{"s", 0, CommandSaveLayout,
+	 s_help, s_syntax}
+	,
+	{"w", 0, CommandSaveLayout,
+	 w_help, w_syntax}
+	,
+	{"wq", 0, CommandSaveLayoutAndQuit,
+	 wq_help, wq_syntax}
+	,
 };
 
-REGISTER_ACTIONS (command_action_list)
+REGISTER_ACTIONS(command_action_list)

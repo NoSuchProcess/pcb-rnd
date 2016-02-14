@@ -41,10 +41,9 @@
 	ELEMENT_TYPE | ELEMENTNAME_TYPE | POLYGON_TYPE | ARC_TYPE)
 
 
-PolygonTypePtr CopyPolygonLowLevel (PolygonTypePtr, PolygonTypePtr);
-ElementTypePtr CopyElementLowLevel (DataTypePtr, ElementTypePtr,
-				    ElementTypePtr, bool, Coord, Coord);
-bool CopyPastebufferToLayout (Coord, Coord);
-void *CopyObject (int, void *, void *, void *, Coord, Coord);
+PolygonTypePtr CopyPolygonLowLevel(PolygonTypePtr, PolygonTypePtr);
+ElementTypePtr CopyElementLowLevel(DataTypePtr, ElementTypePtr, ElementTypePtr, bool, Coord, Coord);
+bool CopyPastebufferToLayout(Coord, Coord);
+void *CopyObject(int, void *, void *, void *, Coord, Coord);
 
 #endif

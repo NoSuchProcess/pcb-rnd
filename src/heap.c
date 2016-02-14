@@ -46,7 +46,7 @@
 #include <dmalloc.h>
 #endif
 
-RCSID ("$Id$");
+RCSID("$Id$");
 
 
 /* define this for more thorough self-checking of data structures */
@@ -59,15 +59,13 @@ RCSID ("$Id$");
 /* ---------------------------------------------------------------------------
  * some local types
  */
-struct heap_element
-{
-  cost_t cost;
-  void *data;
+struct heap_element {
+	cost_t cost;
+	void *data;
 };
-struct heap_struct
-{
-  struct heap_element *element;
-  int size, max;
+struct heap_struct {
+	struct heap_element *element;
+	int size, max;
 };
 
 /* ---------------------------------------------------------------------------
@@ -81,188 +79,171 @@ static cost_t MIN_COST = 0;
 /* helper functions for assertions */
 #ifndef NDEBUG
 #ifdef SLOW_ASSERTIONS
-static int
-__heap_is_good_slow (heap_t * heap)
+static int __heap_is_good_slow(heap_t * heap)
 {
-  int i;
-  /* heap condition: key in each node should be smaller than in its children */
-  /* alternatively (and this is what we check): key in each node should be
-   * larger than (or equal to) key of its parent. */
-  /* note that array element[0] is not used (except as a sentinel) */
-  for (i = 2; i < heap->size; i++)
-    if (heap->element[i].cost < heap->element[i / 2].cost)
-      return 0;
-  return 1;
+	int i;
+	/* heap condition: key in each node should be smaller than in its children */
+	/* alternatively (and this is what we check): key in each node should be
+	 * larger than (or equal to) key of its parent. */
+	/* note that array element[0] is not used (except as a sentinel) */
+	for (i = 2; i < heap->size; i++)
+		if (heap->element[i].cost < heap->element[i / 2].cost)
+			return 0;
+	return 1;
 }
 #endif /* SLOW_ASSERTIONS */
-static int
-__heap_is_good (heap_t * heap)
+static int __heap_is_good(heap_t * heap)
 {
-  return heap && (heap->max == 0 || heap->element) &&
-    (heap->max >= 0) && (heap->size >= 0) &&
-    (heap->max == 0 || heap->size < heap->max) &&
+	return heap && (heap->max == 0 || heap->element) &&
+		(heap->max >= 0) && (heap->size >= 0) && (heap->max == 0 || heap->size < heap->max) &&
 #ifdef SLOW_ASSERTIONS
-    __heap_is_good_slow (heap) &&
+		__heap_is_good_slow(heap) &&
 #endif
-    1;
+		1;
 }
 #endif /* ! NDEBUG */
 
 /* create an empty heap */
-heap_t *
-heap_create ()
+heap_t *heap_create()
 {
-  heap_t *heap;
-  /* initialize MIN_COST if necessary */
-  if (MIN_COST == 0)
-    MIN_COST = -1e23;
-  assert (MIN_COST < 0);
-  /* okay, create empty heap */
-  heap = (heap_t *)calloc (1, sizeof (*heap));
-  assert (heap);
-  assert (__heap_is_good (heap));
-  return heap;
+	heap_t *heap;
+	/* initialize MIN_COST if necessary */
+	if (MIN_COST == 0)
+		MIN_COST = -1e23;
+	assert(MIN_COST < 0);
+	/* okay, create empty heap */
+	heap = (heap_t *) calloc(1, sizeof(*heap));
+	assert(heap);
+	assert(__heap_is_good(heap));
+	return heap;
 }
 
 /* destroy a heap */
-void
-heap_destroy (heap_t ** heap)
+void heap_destroy(heap_t ** heap)
 {
-  assert (heap && *heap);
-  assert (__heap_is_good (*heap));
-  if ((*heap)->element)
-    free ((*heap)->element);
-  free (*heap);
-  *heap = NULL;
+	assert(heap && *heap);
+	assert(__heap_is_good(*heap));
+	if ((*heap)->element)
+		free((*heap)->element);
+	free(*heap);
+	*heap = NULL;
 }
 
 /* free all elements in the heap */
-void heap_free (heap_t *heap, void (*freefunc) (void *))
+void heap_free(heap_t * heap, void (*freefunc) (void *))
 {
-  assert (heap);
-  assert (__heap_is_good (heap));
-  for ( ; heap->size; heap->size--)  
-   {
-     if (heap->element[heap->size].data)
-       freefunc (heap->element[heap->size].data);
-   }
+	assert(heap);
+	assert(__heap_is_good(heap));
+	for (; heap->size; heap->size--) {
+		if (heap->element[heap->size].data)
+			freefunc(heap->element[heap->size].data);
+	}
 }
 
 /* -- mutation -- */
-static void
-__upheap (heap_t * heap, int k)
+static void __upheap(heap_t * heap, int k)
 {
-  struct heap_element v;
+	struct heap_element v;
 
-  assert (heap && heap->size < heap->max);
-  assert (k <= heap->size);
+	assert(heap && heap->size < heap->max);
+	assert(k <= heap->size);
 
-  v = heap->element[k];
-  heap->element[0].cost = MIN_COST;
-  for (v = heap->element[k]; heap->element[k / 2].cost > v.cost; k = k / 2)
-    heap->element[k] = heap->element[k / 2];
-  heap->element[k] = v;
+	v = heap->element[k];
+	heap->element[0].cost = MIN_COST;
+	for (v = heap->element[k]; heap->element[k / 2].cost > v.cost; k = k / 2)
+		heap->element[k] = heap->element[k / 2];
+	heap->element[k] = v;
 }
 
-void
-heap_insert (heap_t * heap, cost_t cost, void *data)
+void heap_insert(heap_t * heap, cost_t cost, void *data)
 {
-  assert (heap && __heap_is_good (heap));
-  assert (cost >= MIN_COST);
+	assert(heap && __heap_is_good(heap));
+	assert(cost >= MIN_COST);
 
-  /* determine whether we need to grow the heap */
-  if (heap->size + 1 >= heap->max)
-    {
-      heap->max *= 2;
-      if (heap->max == 0)
-	heap->max = 256;		/* default initial heap size */
-      heap->element =
-	(struct heap_element *)realloc (heap->element, heap->max * sizeof (*heap->element));
-    }
-  heap->size++;
-  assert (heap->size < heap->max);
-  heap->element[heap->size].cost = cost;
-  heap->element[heap->size].data = data;
-  __upheap (heap, heap->size);	/* fix heap condition violation */
-  assert (__heap_is_good (heap));
-  return;
+	/* determine whether we need to grow the heap */
+	if (heap->size + 1 >= heap->max) {
+		heap->max *= 2;
+		if (heap->max == 0)
+			heap->max = 256;					/* default initial heap size */
+		heap->element = (struct heap_element *) realloc(heap->element, heap->max * sizeof(*heap->element));
+	}
+	heap->size++;
+	assert(heap->size < heap->max);
+	heap->element[heap->size].cost = cost;
+	heap->element[heap->size].data = data;
+	__upheap(heap, heap->size);		/* fix heap condition violation */
+	assert(__heap_is_good(heap));
+	return;
 }
 
 /* this procedure moves down the heap, exchanging the node at position
  * k with the smaller of its two children as necessary and stopping when
  * the node at k is smaller than both children or the bottom is reached.
  */
-static void
-__downheap (heap_t * heap, int k)
+static void __downheap(heap_t * heap, int k)
 {
-  struct heap_element v;
+	struct heap_element v;
 
-  assert (heap && heap->size < heap->max);
-  assert (k <= heap->size);
+	assert(heap && heap->size < heap->max);
+	assert(k <= heap->size);
 
-  v = heap->element[k];
-  while (k <= heap->size / 2)
-    {
-      int j = k + k;
-      if (j < heap->size && heap->element[j].cost > heap->element[j + 1].cost)
-	j++;
-      if (v.cost < heap->element[j].cost)
-	break;
-      heap->element[k] = heap->element[j];
-      k = j;
-    }
-  heap->element[k] = v;
+	v = heap->element[k];
+	while (k <= heap->size / 2) {
+		int j = k + k;
+		if (j < heap->size && heap->element[j].cost > heap->element[j + 1].cost)
+			j++;
+		if (v.cost < heap->element[j].cost)
+			break;
+		heap->element[k] = heap->element[j];
+		k = j;
+	}
+	heap->element[k] = v;
 }
 
-void *
-heap_remove_smallest (heap_t * heap)
+void *heap_remove_smallest(heap_t * heap)
 {
-  struct heap_element v;
-  assert (heap && __heap_is_good (heap));
-  assert (heap->size > 0);
-  assert (heap->max > 1);
+	struct heap_element v;
+	assert(heap && __heap_is_good(heap));
+	assert(heap->size > 0);
+	assert(heap->max > 1);
 
-  v = heap->element[1];
-  heap->element[1] = heap->element[heap->size--];
-  if (heap->size > 0)
-    __downheap (heap, 1);
+	v = heap->element[1];
+	heap->element[1] = heap->element[heap->size--];
+	if (heap->size > 0)
+		__downheap(heap, 1);
 
-  assert (__heap_is_good (heap));
-  return v.data;
+	assert(__heap_is_good(heap));
+	return v.data;
 }
 
-void *
-heap_replace (heap_t * heap, cost_t cost, void *data)
+void *heap_replace(heap_t * heap, cost_t cost, void *data)
 {
-  assert (heap && __heap_is_good (heap));
+	assert(heap && __heap_is_good(heap));
 
-  if (heap_is_empty (heap))
-    return data;
+	if (heap_is_empty(heap))
+		return data;
 
-  assert (heap->size > 0);
-  assert (heap->max > 1);
+	assert(heap->size > 0);
+	assert(heap->max > 1);
 
-  heap->element[0].cost = cost;
-  heap->element[0].data = data;
-  __downheap (heap, 0);		/* ooh, tricky! */
+	heap->element[0].cost = cost;
+	heap->element[0].data = data;
+	__downheap(heap, 0);					/* ooh, tricky! */
 
-  assert (__heap_is_good (heap));
-  return heap->element[0].data;
+	assert(__heap_is_good(heap));
+	return heap->element[0].data;
 }
 
 /* -- interrogation -- */
-int
-heap_is_empty (heap_t * heap)
+int heap_is_empty(heap_t * heap)
 {
-  assert (__heap_is_good (heap));
-  return heap->size == 0;
+	assert(__heap_is_good(heap));
+	return heap->size == 0;
 }
 
 /* -- size -- */
-int
-heap_size (heap_t * heap)
+int heap_size(heap_t * heap)
 {
-  assert (__heap_is_good (heap));
-  return heap->size;
+	assert(__heap_is_good(heap));
+	return heap->size;
 }
-

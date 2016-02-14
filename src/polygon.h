@@ -49,45 +49,41 @@
 
 /* Prototypes */
 
-void polygon_init (void);
-Cardinal polygon_point_idx (PolygonTypePtr polygon, PointTypePtr point);
-Cardinal polygon_point_contour (PolygonTypePtr polygon, Cardinal point);
-Cardinal prev_contour_point (PolygonTypePtr polygon, Cardinal point);
-Cardinal next_contour_point (PolygonTypePtr polygon, Cardinal point);
-Cardinal GetLowestDistancePolygonPoint (PolygonTypePtr,
-					Coord, Coord);
-bool RemoveExcessPolygonPoints (LayerTypePtr, PolygonTypePtr);
-void GoToPreviousPoint (void);
-void ClosePolygon (void);
-void CopyAttachedPolygonToLayer (void);
-int PolygonHoles (PolygonType *ptr, const BoxType *range,
-		  int (*callback) (PLINE *, void *user_data),
-                  void *user_data);
-int PlowsPolygon (DataType *, int, void *, void *,
-		  int (*callback) (DataTypePtr, LayerTypePtr, PolygonTypePtr, int, void *, void *));
-void ComputeNoHoles (PolygonType *poly);
-POLYAREA * ContourToPoly (PLINE *);
-POLYAREA * PolygonToPoly (PolygonType *);
-POLYAREA * RectPoly (Coord x1, Coord x2, Coord y1, Coord y2);
-POLYAREA * CirclePoly (Coord x, Coord y, Coord radius);
-POLYAREA * OctagonPoly(Coord x, Coord y, Coord radius, int style);
-POLYAREA * LinePoly(LineType *l, Coord thick);
-POLYAREA * ArcPoly(ArcType *l, Coord thick);
-POLYAREA * PinPoly(PinType *l, Coord thick, Coord clear);
-POLYAREA * BoxPolyBloated (BoxType *box, Coord radius);
-void frac_circle (PLINE *, Coord, Coord, Vector, int);
-int InitClip(DataType *d, LayerType *l, PolygonType *p);
+void polygon_init(void);
+Cardinal polygon_point_idx(PolygonTypePtr polygon, PointTypePtr point);
+Cardinal polygon_point_contour(PolygonTypePtr polygon, Cardinal point);
+Cardinal prev_contour_point(PolygonTypePtr polygon, Cardinal point);
+Cardinal next_contour_point(PolygonTypePtr polygon, Cardinal point);
+Cardinal GetLowestDistancePolygonPoint(PolygonTypePtr, Coord, Coord);
+bool RemoveExcessPolygonPoints(LayerTypePtr, PolygonTypePtr);
+void GoToPreviousPoint(void);
+void ClosePolygon(void);
+void CopyAttachedPolygonToLayer(void);
+int PolygonHoles(PolygonType * ptr, const BoxType * range, int (*callback) (PLINE *, void *user_data), void *user_data);
+int PlowsPolygon(DataType *, int, void *, void *,
+								 int (*callback) (DataTypePtr, LayerTypePtr, PolygonTypePtr, int, void *, void *));
+void ComputeNoHoles(PolygonType * poly);
+POLYAREA *ContourToPoly(PLINE *);
+POLYAREA *PolygonToPoly(PolygonType *);
+POLYAREA *RectPoly(Coord x1, Coord x2, Coord y1, Coord y2);
+POLYAREA *CirclePoly(Coord x, Coord y, Coord radius);
+POLYAREA *OctagonPoly(Coord x, Coord y, Coord radius, int style);
+POLYAREA *LinePoly(LineType * l, Coord thick);
+POLYAREA *ArcPoly(ArcType * l, Coord thick);
+POLYAREA *PinPoly(PinType * l, Coord thick, Coord clear);
+POLYAREA *BoxPolyBloated(BoxType * box, Coord radius);
+void frac_circle(PLINE *, Coord, Coord, Vector, int);
+int InitClip(DataType * d, LayerType * l, PolygonType * p);
 void RestoreToPolygon(DataType *, int, void *, void *);
 void ClearFromPolygon(DataType *, int, void *, void *);
 
-bool IsPointInPolygon (Coord, Coord, Coord, PolygonTypePtr);
-bool IsPointInPolygonIgnoreHoles (Coord, Coord, PolygonTypePtr);
-bool IsRectangleInPolygon (Coord, Coord, Coord, Coord, PolygonTypePtr);
-bool isects (POLYAREA *, PolygonTypePtr, bool);
-bool MorphPolygon (LayerTypePtr, PolygonTypePtr);
-void NoHolesPolygonDicer (PolygonType *p, const BoxType *clip,
-                          void (*emit) (PLINE *, void *), void *user_data);
-void PolyToPolygonsOnLayer (DataType *, LayerType *, POLYAREA *, FlagType);
+bool IsPointInPolygon(Coord, Coord, Coord, PolygonTypePtr);
+bool IsPointInPolygonIgnoreHoles(Coord, Coord, PolygonTypePtr);
+bool IsRectangleInPolygon(Coord, Coord, Coord, Coord, PolygonTypePtr);
+bool isects(POLYAREA *, PolygonTypePtr, bool);
+bool MorphPolygon(LayerTypePtr, PolygonTypePtr);
+void NoHolesPolygonDicer(PolygonType * p, const BoxType * clip, void (*emit) (PLINE *, void *), void *user_data);
+void PolyToPolygonsOnLayer(DataType *, LayerType *, POLYAREA *, FlagType);
 
 void square_pin_factors(int style, double *xm, double *ym);
 

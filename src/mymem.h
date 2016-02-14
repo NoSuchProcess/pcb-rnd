@@ -58,43 +58,43 @@
  * some memory types
  */
 
-RubberbandTypePtr GetRubberbandMemory (void);
-PinTypePtr GetPinMemory (ElementTypePtr);
-PadTypePtr GetPadMemory (ElementTypePtr);
-PinTypePtr GetViaMemory (DataTypePtr);
-LineTypePtr GetLineMemory (LayerTypePtr);
-ArcTypePtr GetArcMemory (LayerTypePtr);
-RatTypePtr GetRatMemory (DataTypePtr);
-TextTypePtr GetTextMemory (LayerTypePtr);
-PolygonTypePtr GetPolygonMemory (LayerTypePtr);
-PointTypePtr GetPointMemoryInPolygon (PolygonTypePtr);
-Cardinal *GetHoleIndexMemoryInPolygon (PolygonTypePtr);
-ElementTypePtr GetElementMemory (DataTypePtr);
-BoxTypePtr GetBoxMemory (BoxListTypePtr);
-ConnectionTypePtr GetConnectionMemory (NetTypePtr);
-NetTypePtr GetNetMemory (NetListTypePtr);
-NetListTypePtr GetNetListMemory (NetListListTypePtr);
-LibraryMenuTypePtr GetLibraryMenuMemory (LibraryTypePtr, int *idx);
-LibraryEntryTypePtr GetLibraryEntryMemory (LibraryMenuTypePtr);
-ElementTypeHandle GetDrillElementMemory (DrillTypePtr);
-PinTypeHandle GetDrillPinMemory (DrillTypePtr);
-DrillTypePtr GetDrillInfoDrillMemory (DrillInfoTypePtr);
-void **GetPointerMemory (PointerListTypePtr);
-void FreePolygonMemory (PolygonTypePtr);
-void FreeElementMemory (ElementTypePtr);
-void FreePCBMemory (PCBTypePtr);
-void FreeBoxListMemory (BoxListTypePtr);
-void FreeNetListListMemory (NetListListTypePtr);
-void FreeNetListMemory (NetListTypePtr);
-void FreeNetMemory (NetTypePtr);
-void FreeDataMemory (DataTypePtr);
-void FreeLibraryMemory (LibraryTypePtr);
-void FreePointerListMemory (PointerListTypePtr);
-void DeleteLibraryMenuMemory (LibraryTypePtr lib, int menuidx);
-char *StripWhiteSpaceAndDup (const char *);
+RubberbandTypePtr GetRubberbandMemory(void);
+PinTypePtr GetPinMemory(ElementTypePtr);
+PadTypePtr GetPadMemory(ElementTypePtr);
+PinTypePtr GetViaMemory(DataTypePtr);
+LineTypePtr GetLineMemory(LayerTypePtr);
+ArcTypePtr GetArcMemory(LayerTypePtr);
+RatTypePtr GetRatMemory(DataTypePtr);
+TextTypePtr GetTextMemory(LayerTypePtr);
+PolygonTypePtr GetPolygonMemory(LayerTypePtr);
+PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr);
+Cardinal *GetHoleIndexMemoryInPolygon(PolygonTypePtr);
+ElementTypePtr GetElementMemory(DataTypePtr);
+BoxTypePtr GetBoxMemory(BoxListTypePtr);
+ConnectionTypePtr GetConnectionMemory(NetTypePtr);
+NetTypePtr GetNetMemory(NetListTypePtr);
+NetListTypePtr GetNetListMemory(NetListListTypePtr);
+LibraryMenuTypePtr GetLibraryMenuMemory(LibraryTypePtr, int *idx);
+LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
+ElementTypeHandle GetDrillElementMemory(DrillTypePtr);
+PinTypeHandle GetDrillPinMemory(DrillTypePtr);
+DrillTypePtr GetDrillInfoDrillMemory(DrillInfoTypePtr);
+void **GetPointerMemory(PointerListTypePtr);
+void FreePolygonMemory(PolygonTypePtr);
+void FreeElementMemory(ElementTypePtr);
+void FreePCBMemory(PCBTypePtr);
+void FreeBoxListMemory(BoxListTypePtr);
+void FreeNetListListMemory(NetListListTypePtr);
+void FreeNetListMemory(NetListTypePtr);
+void FreeNetMemory(NetTypePtr);
+void FreeDataMemory(DataTypePtr);
+void FreeLibraryMemory(LibraryTypePtr);
+void FreePointerListMemory(PointerListTypePtr);
+void DeleteLibraryMenuMemory(LibraryTypePtr lib, int menuidx);
+char *StripWhiteSpaceAndDup(const char *);
 
 #ifdef NEED_STRDUP
-char *strdup (const char *);
+char *strdup(const char *);
 #endif
 
 #ifndef HAVE_LIBDMALLOC

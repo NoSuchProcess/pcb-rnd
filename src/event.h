@@ -1,8 +1,8 @@
 typedef enum {
-	EVENT_GUI_INIT,  /* finished initializing the GUI called right before the main loop of the GUI; args: (void) */
-	EVENT_CLI_ENTER, /* the user pressed enter on a CLI command - called before parsing the line for actions; args: (str commandline) */
+	EVENT_GUI_INIT,								/* finished initializing the GUI called right before the main loop of the GUI; args: (void) */
+	EVENT_CLI_ENTER,							/* the user pressed enter on a CLI command - called before parsing the line for actions; args: (str commandline) */
 
-	EVENT_last       /* not a real event */
+	EVENT_last										/* not a real event */
 } event_id_t;
 
 /* Maximum number of arguments for an event handler, auto-set argv[0] included */
@@ -10,9 +10,9 @@ typedef enum {
 
 /* Argument types in event's argv[] */
 typedef enum {
-	ARG_INT,          /* format char: i */
-	ARG_DOUBLE,       /* format char: d */
-	ARG_STR           /* format char: s */
+	ARG_INT,											/* format char: i */
+	ARG_DOUBLE,										/* format char: d */
+	ARG_STR												/* format char: s */
 } event_argtype_t;
 
 
@@ -28,14 +28,14 @@ typedef struct {
 
 /* Event callback prototype; user_data is the same as in event_bind().
    argv[0] is always an ARG_INT with the event id that triggered the event. */
-typedef void (event_handler_t)(void *user_data, int argc, event_arg_t *argv[]);
+typedef void (event_handler_t) (void *user_data, int argc, event_arg_t * argv[]);
 
 /* Bind: add a handler to the call-list of an event; the cookie is also remembered
    so that mass-unbind is easier later. user_data is passed to the handler. */
-void event_bind(event_id_t ev, event_handler_t *handler, void *user_data, void *cookie);
+void event_bind(event_id_t ev, event_handler_t * handler, void *user_data, void *cookie);
 
 /* Unbind: remove a handler from an event */
-void event_unbind(event_id_t ev, event_handler_t *handler);
+void event_unbind(event_id_t ev, event_handler_t * handler);
 
 /* Unbind by cookie: remove all handlers from an event matching the cookie */
 void event_unbind_cookie(event_id_t ev, void *cookie);

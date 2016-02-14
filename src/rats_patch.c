@@ -37,7 +37,7 @@
 #include "genht/hash.h"
 #include "create.h"
 
-static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t *n, int do_free);
+static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t * n, int do_free);
 
 void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2)
 {
@@ -69,37 +69,43 @@ void rats_patch_append_optimize(PCBTypePtr pcb, rats_patch_op_t op, const char *
 	rats_patch_op_t seek_op;
 	rats_patch_line_t *n;
 
-	switch(op) {
-		case RATP_ADD_CONN:      seek_op = RATP_DEL_CONN; break;
-		case RATP_DEL_CONN:      seek_op = RATP_ADD_CONN; break;
-		case RATP_CHANGE_ATTRIB: seek_op = RATP_CHANGE_ATTRIB; break;
+	switch (op) {
+	case RATP_ADD_CONN:
+		seek_op = RATP_DEL_CONN;
+		break;
+	case RATP_DEL_CONN:
+		seek_op = RATP_ADD_CONN;
+		break;
+	case RATP_CHANGE_ATTRIB:
+		seek_op = RATP_CHANGE_ATTRIB;
+		break;
 	}
 
 	/* keep the list clean: remove the last operation that becomes obsolete by the new one */
-	for(n = pcb->NetlistPatchLast; n != NULL; n = n->prev) {
+	for (n = pcb->NetlistPatchLast; n != NULL; n = n->prev) {
 		if ((n->op == seek_op) && (strcmp(n->id, id) == 0)) {
-			switch(op) {
-				case RATP_CHANGE_ATTRIB:
-					if (strcmp(n->arg1.attrib_name, a1) != 0)
-						break;
-					rats_patch_remove(pcb, n, 1);
-					goto quit;
-				case RATP_ADD_CONN:
-				case RATP_DEL_CONN:
-					if (strcmp(n->arg1.net_name, a1) != 0)
-						break;
-					rats_patch_remove(pcb, n, 1);
-					goto quit;
+			switch (op) {
+			case RATP_CHANGE_ATTRIB:
+				if (strcmp(n->arg1.attrib_name, a1) != 0)
+					break;
+				rats_patch_remove(pcb, n, 1);
+				goto quit;
+			case RATP_ADD_CONN:
+			case RATP_DEL_CONN:
+				if (strcmp(n->arg1.net_name, a1) != 0)
+					break;
+				rats_patch_remove(pcb, n, 1);
+				goto quit;
 			}
 		}
 	}
 
-	quit:;
+quit:;
 	rats_patch_append(pcb, op, id, a1, a2);
 }
 
 /* Unlink n from the list; if do_free is non-zero, also free fields and n */
-static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t *n, int do_free)
+static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t * n, int do_free)
 {
 	/* if we are the first or last... */
 	if (n == pcb->NetlistPatches)
@@ -169,13 +175,13 @@ static void netlist_copy(LibraryTypePtr dst, LibraryTypePtr src)
 }
 
 
-int rats_patch_apply_conn(PCBTypePtr pcb, rats_patch_line_t *patch, int del)
+int rats_patch_apply_conn(PCBTypePtr pcb, rats_patch_line_t * patch, int del)
 {
 	int n;
 
 	for (n = 0; n < pcb->NetlistLib[NETLIST_EDITED].MenuN; n++) {
 		LibraryMenuTypePtr menu = &pcb->NetlistLib[NETLIST_EDITED].Menu[n];
-		if (strcmp(menu->Name+2, patch->arg1.net_name) == 0) {
+		if (strcmp(menu->Name + 2, patch->arg1.net_name) == 0) {
 			int p;
 			for (p = 0; p < menu->EntryN; p++) {
 				LibraryEntryTypePtr entry = &menu->Entry[p];
@@ -183,7 +189,7 @@ int rats_patch_apply_conn(PCBTypePtr pcb, rats_patch_line_t *patch, int del)
 				if (strcmp(entry->ListEntry, patch->id) == 0) {
 					if (del) {
 						/* want to delete and it's on the list */
-						memmove(&menu->Entry[p], &menu->Entry[p+1], (menu->EntryN-p-1) * sizeof(LibraryEntryType));
+						memmove(&menu->Entry[p], &menu->Entry[p + 1], (menu->EntryN - p - 1) * sizeof(LibraryEntryType));
 						menu->EntryN--;
 						return 0;
 					}
@@ -196,7 +202,7 @@ int rats_patch_apply_conn(PCBTypePtr pcb, rats_patch_line_t *patch, int del)
 				return 1;
 
 			/* Wanted to add, let's add it */
-			CreateNewConnection(menu, (char *)patch->id);
+			CreateNewConnection(menu, (char *) patch->id);
 			return 0;
 		}
 	}
@@ -206,14 +212,16 @@ int rats_patch_apply_conn(PCBTypePtr pcb, rats_patch_line_t *patch, int del)
 }
 
 
-int rats_patch_apply(PCBTypePtr pcb, rats_patch_line_t *patch)
+int rats_patch_apply(PCBTypePtr pcb, rats_patch_line_t * patch)
 {
-	switch(patch->op) {
-		case RATP_ADD_CONN: return rats_patch_apply_conn(pcb, patch, 0);
-		case RATP_DEL_CONN: return rats_patch_apply_conn(pcb, patch, 1);
-		case RATP_CHANGE_ATTRIB:
+	switch (patch->op) {
+	case RATP_ADD_CONN:
+		return rats_patch_apply_conn(pcb, patch, 0);
+	case RATP_DEL_CONN:
+		return rats_patch_apply_conn(pcb, patch, 1);
+	case RATP_CHANGE_ATTRIB:
 #warning TODO: just check wheter it is still valid
-			break;
+		break;
 	}
 	return 0;
 }
@@ -224,7 +232,7 @@ void rats_patch_make_edited(PCBTypePtr pcb)
 
 	netlist_free(&(pcb->NetlistLib[NETLIST_EDITED]));
 	netlist_copy(&(pcb->NetlistLib[NETLIST_EDITED]), &(pcb->NetlistLib[NETLIST_INPUT]));
-	for(n = pcb->NetlistPatches; n != NULL; n = n->next)
+	for (n = pcb->NetlistPatches; n != NULL; n = n->next)
 		rats_patch_apply(pcb, n);
 }
 
@@ -251,18 +259,19 @@ static LibraryMenuTypePtr rats_patch_find_net(PCBTypePtr pcb, const char *netnam
 
 	for (n = 0; n < pcb->NetlistLib[listidx].MenuN; n++) {
 		LibraryMenuTypePtr menu = &pcb->NetlistLib[listidx].Menu[n];
-		if (strcmp(menu->Name+2, netname) == 0)
+		if (strcmp(menu->Name + 2, netname) == 0)
 			return menu;
 	}
 	return NULL;
 }
 
 
-static int keyeq(char *a, char *b) {
-	return !strcmp(a,b);
+static int keyeq(char *a, char *b)
+{
+	return !strcmp(a, b);
 }
 
-int rats_patch_fexport(PCBTypePtr pcb, FILE *f, int fmt_pcb)
+int rats_patch_fexport(PCBTypePtr pcb, FILE * f, int fmt_pcb)
 {
 	rats_patch_line_t *n;
 	const char *q, *po, *pc, *line_prefix;
@@ -285,38 +294,46 @@ int rats_patch_fexport(PCBTypePtr pcb, FILE *f, int fmt_pcb)
 		seen = htsp_alloc(strhash, keyeq);
 
 		/* have to print net_info lines */
-		for(n = pcb->NetlistPatches; n != NULL; n = n->next) {
-			switch(n->op) {
-				case RATP_ADD_CONN:
-				case RATP_DEL_CONN:
-					if (htsp_get(seen, n->arg1.net_name) == NULL) {
-						LibraryMenuTypePtr net;
-						int p;
+		for (n = pcb->NetlistPatches; n != NULL; n = n->next) {
+			switch (n->op) {
+			case RATP_ADD_CONN:
+			case RATP_DEL_CONN:
+				if (htsp_get(seen, n->arg1.net_name) == NULL) {
+					LibraryMenuTypePtr net;
+					int p;
 
-						net = rats_patch_find_net(pcb, n->arg1.net_name, NETLIST_INPUT);
-						printf("net: '%s' %p\n", n->arg1.net_name, net);
-						if (net != NULL) {
-							htsp_set(seen, n->arg1.net_name, net);
-							fprintf(f, "%snet_info%s%s%s%s", line_prefix, po, q, n->arg1.net_name, q);
-							for (p = 0; p < net->EntryN; p++) {
-								LibraryEntryTypePtr entry = &net->Entry[p];
-								fprintf(f, " %s%s%s", q, entry->ListEntry, q);
-							}
-							fprintf(f, "%s\n", pc);
+					net = rats_patch_find_net(pcb, n->arg1.net_name, NETLIST_INPUT);
+					printf("net: '%s' %p\n", n->arg1.net_name, net);
+					if (net != NULL) {
+						htsp_set(seen, n->arg1.net_name, net);
+						fprintf(f, "%snet_info%s%s%s%s", line_prefix, po, q, n->arg1.net_name, q);
+						for (p = 0; p < net->EntryN; p++) {
+							LibraryEntryTypePtr entry = &net->Entry[p];
+							fprintf(f, " %s%s%s", q, entry->ListEntry, q);
 						}
+						fprintf(f, "%s\n", pc);
 					}
-				case RATP_CHANGE_ATTRIB: break;
+				}
+			case RATP_CHANGE_ATTRIB:
+				break;
 			}
 		}
 		htsp_free(seen);
 	}
-	
 
-	for(n = pcb->NetlistPatches; n != NULL; n = n->next) {
-		switch(n->op) {
-			case RATP_ADD_CONN:      fprintf(f, "%sadd_conn%s%s%s%s %s%s%s%s\n", line_prefix, po, q, n->id, q, q, n->arg1.net_name, q, pc); break;
-			case RATP_DEL_CONN:      fprintf(f, "%sdel_conn%s%s%s%s %s%s%s%s\n", line_prefix, po, q, n->id, q, q, n->arg1.net_name, q, pc); break;
-			case RATP_CHANGE_ATTRIB: fprintf(f, "%schange_attrib%s%s%s%s %s%s%s %s%s%s%s\n", line_prefix, po, q, n->id, q, q, n->arg1.attrib_name, q, q, n->arg2.attrib_val, q, pc); break;
+
+	for (n = pcb->NetlistPatches; n != NULL; n = n->next) {
+		switch (n->op) {
+		case RATP_ADD_CONN:
+			fprintf(f, "%sadd_conn%s%s%s%s %s%s%s%s\n", line_prefix, po, q, n->id, q, q, n->arg1.net_name, q, pc);
+			break;
+		case RATP_DEL_CONN:
+			fprintf(f, "%sdel_conn%s%s%s%s %s%s%s%s\n", line_prefix, po, q, n->id, q, q, n->arg1.net_name, q, pc);
+			break;
+		case RATP_CHANGE_ATTRIB:
+			fprintf(f, "%schange_attrib%s%s%s%s %s%s%s %s%s%s%s\n", line_prefix, po, q, n->id, q, q, n->arg1.attrib_name, q, q,
+							n->arg2.attrib_val, q, pc);
+			break;
 		}
 	}
 }

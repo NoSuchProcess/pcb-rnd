@@ -32,5 +32,5 @@
  * support for netlist window 10/24/98
  */
 
-void rat_found_short(PinType *pin, PadType *pad, const char *with_net);
+void rat_found_short(PinType * pin, PadType * pad, const char *with_net);
 void rat_proc_shorts(void);

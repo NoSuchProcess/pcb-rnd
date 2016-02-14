@@ -114,7 +114,7 @@
 #define THERMFLAG(L)		(0xf << (4 *((L) % 2)))
 
 #define TEST_THERM(L,P)		((P)->Flags.t[(L)/2] & THERMFLAG(L) ? 1 : 0)
-#define GET_THERM(L,P)		(((P)->Flags.t[(L)/2] >> (4 * ((L) % 2))) & 0xf) 
+#define GET_THERM(L,P)		(((P)->Flags.t[(L)/2] >> (4 * ((L) % 2))) & 0xf)
 #define CLEAR_THERM(L,P)	(P)->Flags.t[(L)/2] &= ~THERMFLAG(L)
 #define ASSIGN_THERM(L,V,P)	(P)->Flags.t[(L)/2] = ((P)->Flags.t[(L)/2] & ~THERMFLAG(L)) | ((V)  << (4 * ((L) % 2)))
 
@@ -126,7 +126,7 @@
 
 #define GET_INTCONN(P)		((P)->Flags.int_conn_grp)
 
-extern int mem_any_set (unsigned char *, int);
+extern int mem_any_set(unsigned char *, int);
 #define TEST_ANY_THERMS(P)	mem_any_set((P)->Flags.t, sizeof((P)->Flags.t))
 
 /* ---------------------------------------------------------------------------

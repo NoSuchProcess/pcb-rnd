@@ -36,12 +36,12 @@
 #define	STATUS_BREAK	1
 #define	STATUS_ERROR	-1
 
-void Message (const char *Format, ...);
-void MyFatal (const char *Format, ...);
-void OpenErrorMessage (const char *);
-void PopenErrorMessage (const char *);
-void OpendirErrorMessage (const char *);
-void ChdirErrorMessage (const char *);
-void CatchSignal (int);
+void Message(const char *Format, ...);
+void MyFatal(const char *Format, ...);
+void OpenErrorMessage(const char *);
+void PopenErrorMessage(const char *);
+void OpendirErrorMessage(const char *);
+void ChdirErrorMessage(const char *);
+void CatchSignal(int);
 
 #endif

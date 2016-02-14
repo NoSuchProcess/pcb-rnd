@@ -66,7 +66,7 @@
 #define TOPOROUTER_FLAG_DETOUR        (1<<9)
 
 #if TOPO_OUTPUT_ENABLED
-  #include <cairo.h>
+#include <cairo.h>
 #endif
 
 #define EPSILON 0.0001f
@@ -112,41 +112,40 @@
 #define TOPOROUTER_BBOX_CLASS(klass)  GTS_OBJECT_CLASS_CAST (klass, toporouter_bbox_class_t, toporouter_bbox_class ())
 
 typedef enum {
-  PAD, 
-  PIN, 
-  VIA, 
-  ARC, 
-  VIA_SHADOW, 
-  LINE, 
-  OTHER, 
-  BOARD, 
-  EXPANSION_AREA, 
-  POLYGON, 
-  TEMP
+	PAD,
+	PIN,
+	VIA,
+	ARC,
+	VIA_SHADOW,
+	LINE,
+	OTHER,
+	BOARD,
+	EXPANSION_AREA,
+	POLYGON,
+	TEMP
 } toporouter_term_t;
 
 struct _toporouter_bbox_t {
-  GtsBBox b;
+	GtsBBox b;
 
-  toporouter_term_t type;
-  void *data;
-  int layer;
+	toporouter_term_t type;
+	void *data;
+	int layer;
 
-  GtsSurface *surface;
-  GtsTriangle *enclosing;
+	GtsSurface *surface;
+	GtsTriangle *enclosing;
 
-  GList *constraints;
-  GtsPoint *point,
-           *realpoint;
+	GList *constraints;
+	GtsPoint *point, *realpoint;
 
 /*  char *netlist, *style;*/
 
-  struct _toporouter_cluster_t *cluster;
+	struct _toporouter_cluster_t *cluster;
 
 };
 
 struct _toporouter_bbox_class_t {
-  GtsBBoxClass parent_class;
+	GtsBBoxClass parent_class;
 };
 
 typedef struct _toporouter_bbox_t toporouter_bbox_t;
@@ -159,16 +158,16 @@ typedef struct _toporouter_bbox_class_t toporouter_bbox_class_t;
 #define EDGE_FLAG_DIRECTCONNECTION (1<<0)
 
 struct _toporouter_edge_t {
-  GtsEdge e;
-  /*NetListType *netlist;*/
+	GtsEdge e;
+	/*NetListType *netlist; */
 
-  guint flags;
+	guint flags;
 
-  GList *routing;
+	GList *routing;
 };
 
 struct _toporouter_edge_class_t {
-  GtsEdgeClass parent_class;
+	GtsEdgeClass parent_class;
 };
 
 typedef struct _toporouter_edge_t toporouter_edge_t;
@@ -190,31 +189,31 @@ typedef struct _toporouter_edge_class_t toporouter_edge_class_t;
 #define VERTEX_FLAG_SPECCUT  (1<<11)
 
 struct _toporouter_vertex_t {
-  GtsVertex v;
-  /*GList *boxes;*/
-  struct _toporouter_bbox_t *bbox;
+	GtsVertex v;
+	/*GList *boxes; */
+	struct _toporouter_bbox_t *bbox;
 
-  struct _toporouter_vertex_t *parent;
-  struct _toporouter_vertex_t *child;
+	struct _toporouter_vertex_t *parent;
+	struct _toporouter_vertex_t *child;
 
-  toporouter_edge_t *routingedge;
+	toporouter_edge_t *routingedge;
 
-  guint flags;
+	guint flags;
 
-  gdouble gcost, hcost;
-  guint gn;
+	gdouble gcost, hcost;
+	guint gn;
 
-  struct _toporouter_arc_t *arc;
+	struct _toporouter_arc_t *arc;
 
-  struct _toporouter_oproute_t *oproute;
-  struct _toporouter_route_t *route;
+	struct _toporouter_oproute_t *oproute;
+	struct _toporouter_route_t *route;
 
-  gdouble thickness;
+	gdouble thickness;
 
 };
 
 struct _toporouter_vertex_class_t {
-  GtsVertexClass parent_class;
+	GtsVertexClass parent_class;
 };
 
 typedef struct _toporouter_vertex_t toporouter_vertex_t;
@@ -225,47 +224,47 @@ typedef struct _toporouter_vertex_class_t toporouter_vertex_class_t;
 #define TOPOROUTER_CONSTRAINT_CLASS(klass)  GTS_OBJECT_CLASS_CAST (klass, toporouter_constraint_class_t, toporouter_constraint_class ())
 
 struct _toporouter_constraint_t {
-  GtsConstraint c;
-  toporouter_bbox_t *box;
-  GList *routing;
+	GtsConstraint c;
+	toporouter_bbox_t *box;
+	GList *routing;
 };
 
 struct _toporouter_constraint_class_t {
-  GtsConstraintClass parent_class;
+	GtsConstraintClass parent_class;
 };
 
 typedef struct {
-  gdouble x, y;
+	gdouble x, y;
 } toporouter_spoint_t;
 
 typedef struct _toporouter_constraint_t toporouter_constraint_t;
 typedef struct _toporouter_constraint_class_t toporouter_constraint_class_t;
 
 typedef struct {
-  GtsSurface *surface;
+	GtsSurface *surface;
 /*  GtsTriangle *t;*/
 /*  GtsVertex *v1, *v2, *v3;*/
-  
-  GList *vertices;
-  GList *constraints; 
-  GList *edges;
+
+	GList *vertices;
+	GList *constraints;
+	GList *edges;
 
 } toporouter_layer_t;
 
 #define TOPOROUTER_VERTEX_REGION(x) ((toporouter_vertex_region_t *)x)
 typedef struct {
 
-  GList *points;
-  toporouter_vertex_t *v1, *v2;
-  toporouter_vertex_t *origin;
+	GList *points;
+	toporouter_vertex_t *v1, *v2;
+	toporouter_vertex_t *origin;
 
 } toporouter_vertex_region_t;
 
 struct _toporouter_rubberband_arc_t {
-  toporouter_vertex_t *pathv, *arcv;
-  gdouble r, d;
-  gint wind;
-  GList *list;
+	toporouter_vertex_t *pathv, *arcv;
+	gdouble r, d;
+	gint wind;
+	GList *list;
 };
 
 typedef struct _toporouter_rubberband_arc_t toporouter_rubberband_arc_t;
@@ -273,28 +272,28 @@ typedef struct _toporouter_rubberband_arc_t toporouter_rubberband_arc_t;
 
 struct _toporouter_route_t {
 
-  struct _toporouter_netlist_t *netlist;
+	struct _toporouter_netlist_t *netlist;
 
-  struct _toporouter_cluster_t *src, *dest;
-  struct _toporouter_cluster_t *psrc, *pdest;
+	struct _toporouter_cluster_t *src, *dest;
+	struct _toporouter_cluster_t *psrc, *pdest;
 
-  gdouble score, detourscore;
+	gdouble score, detourscore;
 
-  toporouter_vertex_t *curpoint;
-  GHashTable *alltemppoints; 
-  
-  GList *path;
-  
-  guint flags;
+	toporouter_vertex_t *curpoint;
+	GHashTable *alltemppoints;
 
-  GList *destvertices, *srcvertices;
+	GList *path;
 
-  GList *topopath;
+	guint flags;
 
-  gdouble pscore;
-  GList *ppath;
+	GList *destvertices, *srcvertices;
 
-  gint *ppathindices;
+	GList *topopath;
+
+	gdouble pscore;
+	GList *ppath;
+
+	gint *ppathindices;
 };
 
 typedef struct _toporouter_route_t toporouter_route_t;
@@ -302,11 +301,11 @@ typedef struct _toporouter_route_t toporouter_route_t;
 #define TOPOROUTER_ROUTE(x) ((toporouter_route_t *)x)
 
 struct _toporouter_netlist_t {
-  GPtrArray *clusters, *routes;
-  char *netlist, *style;
-  GList *routed;
+	GPtrArray *clusters, *routes;
+	char *netlist, *style;
+	GList *routed;
 
-  struct _toporouter_netlist_t *pair;
+	struct _toporouter_netlist_t *pair;
 };
 
 typedef struct _toporouter_netlist_t toporouter_netlist_t;
@@ -314,9 +313,9 @@ typedef struct _toporouter_netlist_t toporouter_netlist_t;
 #define TOPOROUTER_NETLIST(x) ((toporouter_netlist_t *)x)
 
 struct _toporouter_cluster_t {
-  gint c, pc;
-  GPtrArray *boxes;
-  toporouter_netlist_t *netlist;
+	gint c, pc;
+	GPtrArray *boxes;
+	toporouter_netlist_t *netlist;
 };
 
 typedef struct _toporouter_cluster_t toporouter_cluster_t;
@@ -331,26 +330,27 @@ typedef struct _toporouter_cluster_t toporouter_cluster_t;
 #define TOPOROUTER_SERPINTINE(x) ((toporouter_serpintine_t *)x)
 
 struct _toporouter_serpintine_t {
-  GList *arcs;
-  gdouble x, y;
-  gdouble x0, y0, x1, y1;
+	GList *arcs;
+	gdouble x, y;
+	gdouble x0, y0, x1, y1;
 
-  gpointer start;
-  gdouble halfa, radius;
-  guint nhalfcycles;
+	gpointer start;
+	gdouble halfa, radius;
+	guint nhalfcycles;
 
 };
 typedef struct _toporouter_serpintine_t toporouter_serpintine_t;
 
 struct _toporouter_oproute_t {
-  GList *arcs;
-  toporouter_vertex_t *term1, *term2;
-  char *style; char *netlist;
-  guint layergroup;
-  gdouble tof;
-  GList *path;
-  
-  toporouter_serpintine_t *serp;
+	GList *arcs;
+	toporouter_vertex_t *term1, *term2;
+	char *style;
+	char *netlist;
+	guint layergroup;
+	gdouble tof;
+	GList *path;
+
+	toporouter_serpintine_t *serp;
 };
 
 typedef struct _toporouter_oproute_t toporouter_oproute_t;
@@ -361,23 +361,23 @@ typedef struct _toporouter_oproute_t toporouter_oproute_t;
 #define TOPOROUTER_ARC_CLASS(klass)      GTS_OBJECT_CLASS_CAST (klass, toporouter_arc_class_t, toporouter_arc_class())
 
 struct _toporouter_arc_t {
-  GtsObject object;
-  
-  gdouble x0, y0, x1, y1;
-  toporouter_vertex_t *centre, *v;
-  gdouble r;
-  gint dir;
+	GtsObject object;
 
-  GList *clearance;
+	gdouble x0, y0, x1, y1;
+	toporouter_vertex_t *centre, *v;
+	gdouble r;
+	gint dir;
 
-  toporouter_oproute_t *oproute;
+	GList *clearance;
 
-  toporouter_vertex_t *v1, *v2;
+	toporouter_oproute_t *oproute;
+
+	toporouter_vertex_t *v1, *v2;
 };
 
 struct _toporouter_arc_class_t {
-  GtsObjectClass parent_class;
-  gboolean binary;
+	GtsObjectClass parent_class;
+	gboolean binary;
 };
 
 typedef struct _toporouter_arc_t toporouter_arc_t;
@@ -388,83 +388,79 @@ typedef struct _toporouter_t toporouter_t;
 
 
 typedef struct {
-  guint id;
+	guint id;
 
-  guint *pairwise_nodetour;
-  gdouble pairwise_detour_sum;
-  gdouble score;
-  guint pairwise_fails;
+	guint *pairwise_nodetour;
+	gdouble pairwise_detour_sum;
+	gdouble score;
+	guint pairwise_fails;
 
-  toporouter_route_t *routedata;
+	toporouter_route_t *routedata;
 
-  toporouter_t *r;
+	toporouter_t *r;
 
 } toporouter_netscore_t;
 
 #define TOPOROUTER_NETSCORE(x) ((toporouter_netscore_t *)x)
 
 struct _toporouter_t {
-  GSList *bboxes;
-  GNode *bboxtree;
+	GSList *bboxes;
+	GNode *bboxtree;
 
-  toporouter_layer_t *layers;
-  
-  GList *paths;
+	toporouter_layer_t *layers;
 
-  GList *keepoutlayers;
+	GList *paths;
 
-  guint flags;
+	GList *keepoutlayers;
 
-  GList *destboxes, *consumeddestboxes;
+	guint flags;
 
-  /* settings: */
-  guint viamax;
-  gdouble viacost;
-  gdouble stublength;
-  gdouble serpintine_half_amplitude;
+	GList *destboxes, *consumeddestboxes;
 
-  gdouble wiring_score;
+	/* settings: */
+	guint viamax;
+	gdouble viacost;
+	gdouble stublength;
+	gdouble serpintine_half_amplitude;
 
-  GPtrArray *routes;
-  GPtrArray *netlists;
+	gdouble wiring_score;
 
-  GList *routednets, *failednets;
+	GPtrArray *routes;
+	GPtrArray *netlists;
 
-  gint (*netsort)(toporouter_netscore_t **, toporouter_netscore_t **);
+	GList *routednets, *failednets;
 
-  struct timeval starttime;  
+	  gint(*netsort) (toporouter_netscore_t **, toporouter_netscore_t **);
 
-  FILE *debug;
+	struct timeval starttime;
+
+	FILE *debug;
 };
 
-typedef gint (*oproute_adjseg_func)
-  (toporouter_t *,
-   GList **,
-   GList **,
-   guint *,
-   gdouble, gdouble, gdouble, gdouble,
-   toporouter_oproute_t *,
-   toporouter_oproute_t *);
+typedef gint(*oproute_adjseg_func)
+ 
+	(toporouter_t *,
+	 GList **, GList **, guint *, gdouble, gdouble, gdouble, gdouble, toporouter_oproute_t *, toporouter_oproute_t *);
 
 typedef struct {
 #ifdef CAIRO_H
-  cairo_t *cr;
-  cairo_surface_t *surface;
-#endif  
-  
-  double s; /* scale factor */
+	cairo_t *cr;
+	cairo_surface_t *surface;
+#endif
 
-  int mode;
-  void *data;
+	double s;											/* scale factor */
 
-  char *filename;
-  double iw, ih; /* image dimensions */
+	int mode;
+	void *data;
+
+	char *filename;
+	double iw, ih;								/* image dimensions */
 } drawing_context_t;
 
 #define FOREACH_CLUSTER(clusters) do { \
   toporouter_cluster_t **i; \
   for(i = ((toporouter_cluster_t **)clusters->pdata) + clusters->len - 1; i >= (toporouter_cluster_t **)clusters->pdata && clusters->len > 0; --i) { \
-    toporouter_cluster_t *cluster = *i; 
+    toporouter_cluster_t *cluster = *i;
 
 #define FOREACH_BBOX(boxes) do { \
   toporouter_bbox_t **i; \

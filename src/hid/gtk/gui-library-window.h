@@ -36,26 +36,24 @@ typedef struct _GhidLibraryWindowClass GhidLibraryWindowClass;
 typedef struct _GhidLibraryWindow GhidLibraryWindow;
 
 
-struct _GhidLibraryWindowClass
-{
-  GtkDialogClass parent_class;
+struct _GhidLibraryWindowClass {
+	GtkDialogClass parent_class;
 };
 
-struct _GhidLibraryWindow
-{
-  GtkDialog parent_instance;
+struct _GhidLibraryWindow {
+	GtkDialog parent_instance;
 
-  GtkWidget *hpaned;
-  GtkTreeView *libtreeview;
-  GtkNotebook *viewtabs;
-  GtkWidget *preview;
-  GtkWidget *preview_text;
-  GtkEntry *entry_filter;
-  GtkButton *button_clear;
-  guint filter_timeout;
+	GtkWidget *hpaned;
+	GtkTreeView *libtreeview;
+	GtkNotebook *viewtabs;
+	GtkWidget *preview;
+	GtkWidget *preview_text;
+	GtkEntry *entry_filter;
+	GtkButton *button_clear;
+	guint filter_timeout;
 };
 
 
-GType ghid_library_window_get_type (void);
+GType ghid_library_window_get_type(void);
 
 #endif /* PCB_HID_GTK_GUI_LIBRARY_WINDOW_H */

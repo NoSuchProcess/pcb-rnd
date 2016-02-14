@@ -16,4 +16,3 @@ void plugin_register(const char *name, const char *path, void *handle, int dynam
 	i->next = plugins;
 	plugins = i;
 }
-

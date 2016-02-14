@@ -38,7 +38,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <time.h> /* Seed for srand() */
+#include <time.h>								/* Seed for srand() */
 #include <locale.h>
 
 #include "global.h"
@@ -76,28 +76,28 @@
 #include <dmalloc.h>
 #endif
 
-RCSID ("$Id$");
+RCSID("$Id$");
 
 
 #define PCBLIBPATH ".:" PCBSHAREDIR
 
 #ifdef HAVE_LIBSTROKE
-extern void stroke_init (void);
+extern void stroke_init(void);
 #endif
 
-static const char *fontfile_paths_in[] = {"./default_font", PCBSHAREDIR "/default_font", NULL};
+static const char *fontfile_paths_in[] = { "./default_font", PCBSHAREDIR "/default_font", NULL };
+
 char **fontfile_paths = NULL;
 
 
 /* Try gui libs in this order when not explicitly specified by the user
    if there are multiple GUIs available this sets the order of preference */
-static const char *try_gui_hids[] = {"gtk", "lesstif", NULL};
+static const char *try_gui_hids[] = { "gtk", "lesstif", NULL };
 
 /* ----------------------------------------------------------------------
  * initialize signal and error handlers
  */
-static void
-InitHandler (void)
+static void InitHandler(void)
 {
 /*
 	signal(SIGHUP, CatchSignal);
@@ -108,304 +108,280 @@ InitHandler (void)
 	signal(SIGINT, CatchSignal);
 */
 
-  /* calling external program by popen() may cause a PIPE signal,
-   * so we ignore it
-   */
+	/* calling external program by popen() may cause a PIPE signal,
+	 * so we ignore it
+	 */
 #ifdef SIGPIPE
-  signal (SIGPIPE, SIG_IGN);
+	signal(SIGPIPE, SIG_IGN);
 #endif
 }
 
 
-  /* ----------------------------------------------------------------------
-     |  command line and rc file processing.
-   */
+	/* ----------------------------------------------------------------------
+	   |  command line and rc file processing.
+	 */
 static char *command_line_pcb;
 
-void
-copyright (void)
+void copyright(void)
 {
-  printf ("\n"
-	  "                COPYRIGHT for %s version %s\n\n"
-	  "    PCB, interactive printed circuit board design\n"
-	  "    Copyright (C) 1994,1995,1996,1997 Thomas Nau\n"
-	  "    Copyright (C) 1998, 1999, 2000 Harry Eaton\n\n"
-	  "    This program is free software; you can redistribute it and/or modify\n"
-	  "    it under the terms of the GNU General Public License as published by\n"
-	  "    the Free Software Foundation; either version 2 of the License, or\n"
-	  "    (at your option) any later version.\n\n"
-	  "    This program is distributed in the hope that it will be useful,\n"
-	  "    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-	  "    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-	  "    GNU General Public License for more details.\n\n"
-	  "    You should have received a copy of the GNU General Public License\n"
-	  "    along with this program; if not, write to the Free Software\n"
-	  "    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n\n",
-	  Progname, VERSION);
-  exit (0);
+	printf("\n"
+				 "                COPYRIGHT for %s version %s\n\n"
+				 "    PCB, interactive printed circuit board design\n"
+				 "    Copyright (C) 1994,1995,1996,1997 Thomas Nau\n"
+				 "    Copyright (C) 1998, 1999, 2000 Harry Eaton\n\n"
+				 "    This program is free software; you can redistribute it and/or modify\n"
+				 "    it under the terms of the GNU General Public License as published by\n"
+				 "    the Free Software Foundation; either version 2 of the License, or\n"
+				 "    (at your option) any later version.\n\n"
+				 "    This program is distributed in the hope that it will be useful,\n"
+				 "    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+				 "    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+				 "    GNU General Public License for more details.\n\n"
+				 "    You should have received a copy of the GNU General Public License\n"
+				 "    along with this program; if not, write to the Free Software\n"
+				 "    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n\n", Progname, VERSION);
+	exit(0);
 }
 
-static inline void
-u (const char *fmt, ...)
+static inline void u(const char *fmt, ...)
 {
-  va_list ap;
-  va_start (ap, fmt);
-  vfprintf (stderr, fmt, ap);
-  fputc ('\n', stderr);
-  va_end (ap);
+	va_list ap;
+	va_start(ap, fmt);
+	vfprintf(stderr, fmt, ap);
+	fputc('\n', stderr);
+	va_end(ap);
 }
 
 typedef struct UsageNotes {
-  struct UsageNotes *next;
-  HID_Attribute *seen;
+	struct UsageNotes *next;
+	HID_Attribute *seen;
 } UsageNotes;
 
 static UsageNotes *usage_notes = NULL;
 
-static void
-usage_attr (HID_Attribute * a)
+static void usage_attr(HID_Attribute * a)
 {
-  int i, n;
-  const Unit *unit_list;
-  static char buf[200];
+	int i, n;
+	const Unit *unit_list;
+	static char buf[200];
 
-  if (a->help_text == ATTR_UNDOCUMENTED)
-    return;
+	if (a->help_text == ATTR_UNDOCUMENTED)
+		return;
 
-  switch (a->type)
-    {
-    case HID_Label:
-      return;
-    case HID_Integer:
-    case HID_Real:
-      sprintf (buf, "--%s <num>", a->name);
-      break;
-    case HID_Coord:
-      sprintf (buf, "--%s <measure>", a->name);
-      break;
-    case HID_String:
-      sprintf (buf, "--%s <string>", a->name);
-      break;
-    case HID_Boolean:
-      sprintf (buf, "--%s", a->name);
-      break;
-    case HID_Mixed:
-    case HID_Enum:
-      sprintf (buf, "--%s ", a->name);
-      if (a->type == HID_Mixed)
-	strcat (buf, " <val>");
-      for (i = 0; a->enumerations[i]; i++)
-	{
-	  strcat (buf, i ? "|" : "<");
-	  strcat (buf, a->enumerations[i]);
+	switch (a->type) {
+	case HID_Label:
+		return;
+	case HID_Integer:
+	case HID_Real:
+		sprintf(buf, "--%s <num>", a->name);
+		break;
+	case HID_Coord:
+		sprintf(buf, "--%s <measure>", a->name);
+		break;
+	case HID_String:
+		sprintf(buf, "--%s <string>", a->name);
+		break;
+	case HID_Boolean:
+		sprintf(buf, "--%s", a->name);
+		break;
+	case HID_Mixed:
+	case HID_Enum:
+		sprintf(buf, "--%s ", a->name);
+		if (a->type == HID_Mixed)
+			strcat(buf, " <val>");
+		for (i = 0; a->enumerations[i]; i++) {
+			strcat(buf, i ? "|" : "<");
+			strcat(buf, a->enumerations[i]);
+		}
+		strcat(buf, ">");
+		break;
+	case HID_Path:
+		sprintf(buf, "--%s <path>", a->name);
+		break;
+	case HID_Unit:
+		unit_list = get_unit_list();
+		n = get_n_units();
+		sprintf(buf, "--%s ", a->name);
+		for (i = 0; i < n; i++) {
+			strcat(buf, i ? "|" : "<");
+			strcat(buf, unit_list[i].suffix);
+		}
+		strcat(buf, ">");
+		break;
 	}
-      strcat (buf, ">");
-      break;
-    case HID_Path:
-      sprintf (buf, "--%s <path>", a->name);
-      break;
-    case HID_Unit:
-      unit_list = get_unit_list ();
-      n = get_n_units ();
-      sprintf (buf, "--%s ", a->name);
-      for (i = 0; i < n; i++)
-	{
-	  strcat (buf, i ? "|" : "<");
-	  strcat (buf, unit_list[i].suffix);
-	}
-      strcat (buf, ">");
-      break;
-    }
 
-  if (strlen (buf) <= 30)
-    {
-      if (a->help_text)
-	fprintf (stderr, " %-30s\t%s\n", buf, a->help_text);
-      else
-	fprintf (stderr, " %-30s\n", buf);
-    }
-  else if (a->help_text && strlen (a->help_text) + strlen (buf) < 72)
-    fprintf (stderr, " %s\t%s\n", buf, a->help_text);
-  else if (a->help_text)
-    fprintf (stderr, " %s\n\t\t\t%s\n", buf, a->help_text);
-  else
-    fprintf (stderr, " %s\n", buf);
+	if (strlen(buf) <= 30) {
+		if (a->help_text)
+			fprintf(stderr, " %-30s\t%s\n", buf, a->help_text);
+		else
+			fprintf(stderr, " %-30s\n", buf);
+	}
+	else if (a->help_text && strlen(a->help_text) + strlen(buf) < 72)
+		fprintf(stderr, " %s\t%s\n", buf, a->help_text);
+	else if (a->help_text)
+		fprintf(stderr, " %s\n\t\t\t%s\n", buf, a->help_text);
+	else
+		fprintf(stderr, " %s\n", buf);
 }
 
-static void
-usage_hid (HID * h)
+static void usage_hid(HID * h)
 {
-  HID_Attribute *attributes;
-  int i, n_attributes = 0;
-  UsageNotes *note;
+	HID_Attribute *attributes;
+	int i, n_attributes = 0;
+	UsageNotes *note;
 
-  if (h->gui)
-    {
-      fprintf (stderr, "\n%s gui options:\n", h->name);
-      attributes = h->get_export_options (&n_attributes);
-    }
-  else
-    {
-      fprintf (stderr, "\n%s options:\n", h->name);
-      exporter = h;
-      attributes = exporter->get_export_options (&n_attributes);
-      exporter = NULL;
-    }
+	if (h->gui) {
+		fprintf(stderr, "\n%s gui options:\n", h->name);
+		attributes = h->get_export_options(&n_attributes);
+	}
+	else {
+		fprintf(stderr, "\n%s options:\n", h->name);
+		exporter = h;
+		attributes = exporter->get_export_options(&n_attributes);
+		exporter = NULL;
+	}
 
-  note = (UsageNotes *)malloc (sizeof (UsageNotes));
-  note->next = usage_notes;
-  note->seen = attributes;
-  usage_notes = note;
-  
-  for (i = 0; i < n_attributes; i++)
-    usage_attr (attributes + i);
+	note = (UsageNotes *) malloc(sizeof(UsageNotes));
+	note->next = usage_notes;
+	note->seen = attributes;
+	usage_notes = note;
+
+	for (i = 0; i < n_attributes; i++)
+		usage_attr(attributes + i);
 }
 
-static void
-usage (void)
+static void usage(void)
 {
-  HID **hl = hid_enumerate ();
-  HID_AttrNode *ha;
-  UsageNotes *note;
-  int i;
-  int n_printer = 0, n_gui = 0, n_exporter = 0;
+	HID **hl = hid_enumerate();
+	HID_AttrNode *ha;
+	UsageNotes *note;
+	int i;
+	int n_printer = 0, n_gui = 0, n_exporter = 0;
 
-  for (i = 0; hl[i]; i++)
-    {
-      if (hl[i]->gui)
-	n_gui++;
-      if (hl[i]->printer)
-	n_printer++;
-      if (hl[i]->exporter)
-	n_exporter++;
-    }
-
-  u ("PCB Printed Circuit Board editing program, http://pcb.gpleda.org");
-  u ("%s [-h|-V|--copyright]\t\t\tHelp, version, copyright", Progname);
-  u ("%s [--gui GUI] [gui options] <pcb file>\t\tto edit", Progname);
-  u ("Available GUI hid%s:", n_gui == 1 ? "" : "s");
-  for (i = 0; hl[i]; i++)
-    if (hl[i]->gui)
-      fprintf (stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
-  u ("%s -p [printing options] <pcb file>\tto print", Progname);
-  u ("Available printing hid%s:", n_printer == 1 ? "" : "s");
-  for (i = 0; hl[i]; i++)
-    if (hl[i]->printer)
-      fprintf (stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
-  u ("%s -x hid [export options] <pcb file>\tto export", Progname);
-  u ("Available export hid%s:", n_exporter == 1 ? "" : "s");
-  for (i = 0; hl[i]; i++)
-    if (hl[i]->exporter)
-      fprintf (stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
-
-  for (i = 0; hl[i]; i++)
-    if (hl[i]->gui)
-      usage_hid (hl[i]);
-  for (i = 0; hl[i]; i++)
-    if (hl[i]->printer)
-      usage_hid (hl[i]);
-  for (i = 0; hl[i]; i++)
-    if (hl[i]->exporter)
-      usage_hid (hl[i]);
-
-  u ("\nCommon options:");
-  for (ha = hid_attr_nodes; ha; ha = ha->next)
-    {
-      for (note = usage_notes; note && note->seen != ha->attributes; note = note->next)
-	;
-      if (note)
-	continue;
-      for (i = 0; i < ha->n; i++)
-	{
-	  usage_attr (ha->attributes + i);
+	for (i = 0; hl[i]; i++) {
+		if (hl[i]->gui)
+			n_gui++;
+		if (hl[i]->printer)
+			n_printer++;
+		if (hl[i]->exporter)
+			n_exporter++;
 	}
-    }  
 
-  exit (1);
+	u("PCB Printed Circuit Board editing program, http://pcb.gpleda.org");
+	u("%s [-h|-V|--copyright]\t\t\tHelp, version, copyright", Progname);
+	u("%s [--gui GUI] [gui options] <pcb file>\t\tto edit", Progname);
+	u("Available GUI hid%s:", n_gui == 1 ? "" : "s");
+	for (i = 0; hl[i]; i++)
+		if (hl[i]->gui)
+			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
+	u("%s -p [printing options] <pcb file>\tto print", Progname);
+	u("Available printing hid%s:", n_printer == 1 ? "" : "s");
+	for (i = 0; hl[i]; i++)
+		if (hl[i]->printer)
+			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
+	u("%s -x hid [export options] <pcb file>\tto export", Progname);
+	u("Available export hid%s:", n_exporter == 1 ? "" : "s");
+	for (i = 0; hl[i]; i++)
+		if (hl[i]->exporter)
+			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
+
+	for (i = 0; hl[i]; i++)
+		if (hl[i]->gui)
+			usage_hid(hl[i]);
+	for (i = 0; hl[i]; i++)
+		if (hl[i]->printer)
+			usage_hid(hl[i]);
+	for (i = 0; hl[i]; i++)
+		if (hl[i]->exporter)
+			usage_hid(hl[i]);
+
+	u("\nCommon options:");
+	for (ha = hid_attr_nodes; ha; ha = ha->next) {
+		for (note = usage_notes; note && note->seen != ha->attributes; note = note->next);
+		if (note)
+			continue;
+		for (i = 0; i < ha->n; i++) {
+			usage_attr(ha->attributes + i);
+		}
+	}
+
+	exit(1);
 }
 
-static void
-print_defaults_1 (HID_Attribute * a, void *value)
+static void print_defaults_1(HID_Attribute * a, void *value)
 {
-  int i;
-  Coord c;
-  double d;
-  const char *s;
+	int i;
+	Coord c;
+	double d;
+	const char *s;
 
-  /* Remember, at this point we've parsed the command line, so they
-     may be in the global variable instead of the default_val.  */
-  switch (a->type)
-    {
-    case HID_Integer:
-      i = value ? *(int *) value : a->default_val.int_value;
-      fprintf (stderr, "%s %d\n", a->name, i);
-      break;
-    case HID_Boolean:
-      i = value ? *(char *) value : a->default_val.int_value;
-      fprintf (stderr, "%s %s\n", a->name, i ? "yes" : "no");
-      break;
-    case HID_Real:
-      d = value ? *(double *) value : a->default_val.real_value;
-      fprintf (stderr, "%s %g\n", a->name, d);
-      break;
-    case HID_Coord:
-      c = value ? *(Coord *) value : a->default_val.coord_value;
-      pcb_fprintf (stderr, "%s %$mS\n", a->name, c);
-      break;
-    case HID_String:
-    case HID_Path:
-      s = value ? *(char **) value : a->default_val.str_value;
-      fprintf (stderr, "%s \"%s\"\n", a->name, s);
-      break;
-    case HID_Enum:
-      i = value ? *(int *) value : a->default_val.int_value;
-      fprintf (stderr, "%s %s\n", a->name, a->enumerations[i]);
-      break;
-    case HID_Mixed:
-      i = value ?
-        ((HID_Attr_Val*)value)->int_value  : a->default_val.int_value;
-      d = value ?
-        ((HID_Attr_Val*)value)->real_value : a->default_val.real_value;
-      fprintf (stderr, "%s %g%s\n", a->name, d, a->enumerations[i]);
-      break;
-    case HID_Label:
-      break;
-    case HID_Unit:
-      i = value ? *(int *) value : a->default_val.int_value;
-      fprintf (stderr, "%s %s\n", a->name, get_unit_list()[i].suffix);
-    }
+	/* Remember, at this point we've parsed the command line, so they
+	   may be in the global variable instead of the default_val.  */
+	switch (a->type) {
+	case HID_Integer:
+		i = value ? *(int *) value : a->default_val.int_value;
+		fprintf(stderr, "%s %d\n", a->name, i);
+		break;
+	case HID_Boolean:
+		i = value ? *(char *) value : a->default_val.int_value;
+		fprintf(stderr, "%s %s\n", a->name, i ? "yes" : "no");
+		break;
+	case HID_Real:
+		d = value ? *(double *) value : a->default_val.real_value;
+		fprintf(stderr, "%s %g\n", a->name, d);
+		break;
+	case HID_Coord:
+		c = value ? *(Coord *) value : a->default_val.coord_value;
+		pcb_fprintf(stderr, "%s %$mS\n", a->name, c);
+		break;
+	case HID_String:
+	case HID_Path:
+		s = value ? *(char **) value : a->default_val.str_value;
+		fprintf(stderr, "%s \"%s\"\n", a->name, s);
+		break;
+	case HID_Enum:
+		i = value ? *(int *) value : a->default_val.int_value;
+		fprintf(stderr, "%s %s\n", a->name, a->enumerations[i]);
+		break;
+	case HID_Mixed:
+		i = value ? ((HID_Attr_Val *) value)->int_value : a->default_val.int_value;
+		d = value ? ((HID_Attr_Val *) value)->real_value : a->default_val.real_value;
+		fprintf(stderr, "%s %g%s\n", a->name, d, a->enumerations[i]);
+		break;
+	case HID_Label:
+		break;
+	case HID_Unit:
+		i = value ? *(int *) value : a->default_val.int_value;
+		fprintf(stderr, "%s %s\n", a->name, get_unit_list()[i].suffix);
+	}
 }
 
-static void
-print_defaults ()
+static void print_defaults()
 {
-  HID **hl = hid_enumerate ();
-  HID_Attribute *e;
-  int i, n, hi;
+	HID **hl = hid_enumerate();
+	HID_Attribute *e;
+	int i, n, hi;
 
-  for (hi = 0; hl[hi]; hi++)
-    {
-      HID *h = hl[hi];
-      if (h->gui)
-	{
-	  HID_AttrNode *ha;
-	  fprintf (stderr, "\ngui defaults:\n");
-	  for (ha = hid_attr_nodes; ha; ha = ha->next)
-	    for (i = 0; i < ha->n; i++)
-	      print_defaults_1 (ha->attributes + i, ha->attributes[i].value);
+	for (hi = 0; hl[hi]; hi++) {
+		HID *h = hl[hi];
+		if (h->gui) {
+			HID_AttrNode *ha;
+			fprintf(stderr, "\ngui defaults:\n");
+			for (ha = hid_attr_nodes; ha; ha = ha->next)
+				for (i = 0; i < ha->n; i++)
+					print_defaults_1(ha->attributes + i, ha->attributes[i].value);
+		}
+		else {
+			fprintf(stderr, "\n%s defaults:\n", h->name);
+			exporter = h;
+			e = exporter->get_export_options(&n);
+			exporter = NULL;
+			if (e)
+				for (i = 0; i < n; i++)
+					print_defaults_1(e + i, 0);
+		}
 	}
-      else
-	{
-	  fprintf (stderr, "\n%s defaults:\n", h->name);
-	  exporter = h;
-	  e = exporter->get_export_options (&n);
-	  exporter = NULL;
-	  if (e)
-	    for (i = 0; i < n; i++)
-	      print_defaults_1 (e + i, 0);
-	}
-    }
-  exit (1);
+	exit(1);
 }
 
 #define SSET(F,D,N,H) { N, H, \
@@ -445,8 +421,8 @@ Show help on command line options.
 @end ftable
 %end-doc
 */
-  {"help", "Show help on command line options", HID_Boolean, 0, 0, {0, 0, 0}, 0,
-  &show_help},
+	{"help", "Show help on command line options", HID_Boolean, 0, 0, {0, 0, 0}, 0,
+	 &show_help},
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -455,7 +431,7 @@ Show version.
 @end ftable
 %end-doc
 */
-  {"version", "Show version", HID_Boolean, 0, 0, {0, 0, 0}, 0, &show_version},
+	{"version", "Show version", HID_Boolean, 0, 0, {0, 0, 0}, 0, &show_version},
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -464,8 +440,8 @@ Be verbose on stdout.
 @end ftable
 %end-doc
 */
-  {"verbose", "Be verbose on stdout", HID_Boolean, 0, 0, {0, 0, 0}, 0,
-   &Settings.verbose},
+	{"verbose", "Be verbose on stdout", HID_Boolean, 0, 0, {0, 0, 0}, 0,
+	 &Settings.verbose},
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -474,8 +450,8 @@ Show copyright.
 @end ftable
 %end-doc
 */
-  {"copyright", "Show Copyright", HID_Boolean, 0, 0, {0, 0, 0}, 0,
-   &show_copyright},
+	{"copyright", "Show Copyright", HID_Boolean, 0, 0, {0, 0, 0}, 0,
+	 &show_copyright},
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -484,8 +460,8 @@ Show option defaults.
 @end ftable
 %end-doc
 */
-  {"show-defaults", "Show option defaults", HID_Boolean, 0, 0, {0, 0, 0}, 0,
-   &show_defaults},
+	{"show-defaults", "Show option defaults", HID_Boolean, 0, 0, {0, 0, 0}, 0,
+	 &show_defaults},
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -494,8 +470,8 @@ Show available actions and exit.
 @end ftable
 %end-doc
 */
-  {"show-actions", "Show available actions", HID_Boolean, 0, 0, {0, 0, 0}, 0,
-   &show_actions},
+	{"show-actions", "Show available actions", HID_Boolean, 0, 0, {0, 0, 0}, 0,
+	 &show_actions},
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -504,8 +480,8 @@ Dump actions (for documentation).
 @end ftable
 %end-doc
 */
-  {"dump-actions", "Dump actions (for documentation)", HID_Boolean, 0, 0,
-   {0, 0, 0}, 0, &do_dump_actions},
+	{"dump-actions", "Dump actions (for documentation)", HID_Boolean, 0, 0,
+	 {0, 0, 0}, 0, &do_dump_actions},
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -514,8 +490,8 @@ Set default grid units. Can be mm or mil. Defaults to mil.
 @end ftable
 %end-doc
 */
-  {"grid-units", "Default grid units (mm|mil)", HID_String, 0, 0, {0, "mil", 0},
-  0, &grid_units},
+	{"grid-units", "Default grid units (mm|mil)", HID_String, 0, 0, {0, "mil", 0},
+	 0, &grid_units},
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -524,7 +500,7 @@ Color value for black. Default: @samp{#000000}
 @end ftable
 %end-doc
 */
-  COLOR (BlackColor, "#000000", "black-color", "color value of 'black'"),
+	COLOR(BlackColor, "#000000", "black-color", "color value of 'black'"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -533,7 +509,7 @@ Color value for white. Default: @samp{#ffffff}
 @end ftable
 %end-doc
 */
-  COLOR (WhiteColor, "#ffffff", "white-color", "color value of 'white'"),
+	COLOR(WhiteColor, "#ffffff", "white-color", "color value of 'white'"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -542,8 +518,8 @@ Background color of the canvas. Default: @samp{#e5e5e5}
 @end ftable
 %end-doc
 */
-  COLOR (BackgroundColor, "#e5e5e5", "background-color",
-	 "color for background"),
+	COLOR(BackgroundColor, "#e5e5e5", "background-color",
+				"color for background"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -552,8 +528,8 @@ Color of the crosshair. Default: @samp{#ff0000}
 @end ftable
 %end-doc
 */
-  COLOR (CrosshairColor, "#ff0000", "crosshair-color",
-	 "color for the crosshair"),
+	COLOR(CrosshairColor, "#ff0000", "crosshair-color",
+				"color for the crosshair"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -562,7 +538,7 @@ Color of the cross. Default: @samp{#cdcd00}
 @end ftable
 %end-doc
 */
-  COLOR (CrossColor, "#cdcd00", "cross-color", "color of the cross"),
+	COLOR(CrossColor, "#cdcd00", "cross-color", "color of the cross"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -571,7 +547,7 @@ Color of vias. Default: @samp{#7f7f7f}
 @end ftable
 %end-doc
 */
-  COLOR (ViaColor, "#7f7f7f", "via-color", "color of vias"),
+	COLOR(ViaColor, "#7f7f7f", "via-color", "color of vias"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -580,8 +556,8 @@ Color of selected vias. Default: @samp{#00ffff}
 @end ftable
 %end-doc
 */
-  COLOR (ViaSelectedColor, "#00ffff", "via-selected-color",
-	 "color for selected vias"),
+	COLOR(ViaSelectedColor, "#00ffff", "via-selected-color",
+				"color for selected vias"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -590,7 +566,7 @@ Color of pins. Default: @samp{#4d4d4d}
 @end ftable
 %end-doc
 */
-  COLOR (PinColor, "#4d4d4d", "pin-color", "color of pins"),
+	COLOR(PinColor, "#4d4d4d", "pin-color", "color of pins"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -599,8 +575,8 @@ Color of selected pins. Default: @samp{#00ffff}
 @end ftable
 %end-doc
 */
-  COLOR (PinSelectedColor, "#00ffff", "pin-selected-color",
-	 "color of selected pins"),
+	COLOR(PinSelectedColor, "#00ffff", "pin-selected-color",
+				"color of selected pins"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -609,8 +585,8 @@ Color of pin names and pin numbers. Default: @samp{#ff0000}
 @end ftable
 %end-doc
 */
-  COLOR (PinNameColor, "#ff0000", "pin-name-color",
-	 "color for pin names and pin numbers"),
+	COLOR(PinNameColor, "#ff0000", "pin-name-color",
+				"color for pin names and pin numbers"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -619,7 +595,7 @@ Color of components. Default: @samp{#000000}
 @end ftable
 %end-doc
 */
-  COLOR (ElementColor, "#000000", "element-color", "color of components"),
+	COLOR(ElementColor, "#000000", "element-color", "color of components"),
 
 
 /* %start-doc options "3 Colors"
@@ -629,7 +605,7 @@ Color of components. Default: @samp{#777777}
 @end ftable
 %end-doc
 */
-  COLOR (ElementColor_nonetlist, "#777777", "element-color-nonetlist", "color of components not part of the netlist"),
+	COLOR(ElementColor_nonetlist, "#777777", "element-color-nonetlist", "color of components not part of the netlist"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -638,7 +614,7 @@ Color of ratlines. Default: @samp{#b8860b}
 @end ftable
 %end-doc
 */
-  COLOR (RatColor, "#b8860b", "rat-color", "color of ratlines"),
+	COLOR(RatColor, "#b8860b", "rat-color", "color of ratlines"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -647,8 +623,8 @@ Color of invisible objects. Default: @samp{#cccccc}
 @end ftable
 %end-doc
 */
-  COLOR (InvisibleObjectsColor, "#cccccc", "invisible-objects-color",
-	 "color of invisible objects"),
+	COLOR(InvisibleObjectsColor, "#cccccc", "invisible-objects-color",
+				"color of invisible objects"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -657,8 +633,8 @@ Color of invisible marks. Default: @samp{#cccccc}
 @end ftable
 %end-doc
 */
-  COLOR (InvisibleMarkColor, "#cccccc", "invisible-mark-color",
-	 "color of invisible marks"),
+	COLOR(InvisibleMarkColor, "#cccccc", "invisible-mark-color",
+				"color of invisible marks"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -667,8 +643,8 @@ Color of selected components. Default: @samp{#00ffff}
 @end ftable
 %end-doc
 */
-  COLOR (ElementSelectedColor, "#00ffff", "element-selected-color",
-	 "color of selected components"),
+	COLOR(ElementSelectedColor, "#00ffff", "element-selected-color",
+				"color of selected components"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -677,8 +653,8 @@ Color of selected rats. Default: @samp{#00ffff}
 @end ftable
 %end-doc
 */
-  COLOR (RatSelectedColor, "#00ffff", "rat-selected-color",
-	 "color of selected rats"),
+	COLOR(RatSelectedColor, "#00ffff", "rat-selected-color",
+				"color of selected rats"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -687,8 +663,8 @@ Color to indicate connections. Default: @samp{#00ff00}
 @end ftable
 %end-doc
 */
-  COLOR (ConnectedColor, "#00ff00", "connected-color",
-	 "color to indicate connections"),
+	COLOR(ConnectedColor, "#00ff00", "connected-color",
+				"color to indicate connections"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -697,8 +673,8 @@ Color of off-canvas area. Default: @samp{#cccccc}
 @end ftable
 %end-doc
 */
-  COLOR (OffLimitColor, "#cccccc", "off-limit-color",
-	 "color of off-canvas area"),
+	COLOR(OffLimitColor, "#cccccc", "off-limit-color",
+				"color of off-canvas area"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -707,7 +683,7 @@ Color of the grid. Default: @samp{#ff0000}
 @end ftable
 %end-doc
 */
-  COLOR (GridColor, "#ff0000", "grid-color", "color of the grid"),
+	COLOR(GridColor, "#ff0000", "grid-color", "color of the grid"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -716,22 +692,22 @@ Color of layer @code{<n>}, where @code{<n>} is an integer from 1 to 16.
 @end ftable
 %end-doc
 */
-  LAYERCOLOR (1, "#8b2323"),
-  LAYERCOLOR (2, "#3a5fcd"),
-  LAYERCOLOR (3, "#104e8b"),
-  LAYERCOLOR (4, "#cd3700"),
-  LAYERCOLOR (5, "#548b54"),
-  LAYERCOLOR (6, "#8b7355"),
-  LAYERCOLOR (7, "#00868b"),
-  LAYERCOLOR (8, "#228b22"),
-  LAYERCOLOR (9, "#8b2323"),
-  LAYERCOLOR (10, "#3a5fcd"),
-  LAYERCOLOR (11, "#104e8b"),
-  LAYERCOLOR (12, "#cd3700"),
-  LAYERCOLOR (13, "#548b54"),
-  LAYERCOLOR (14, "#8b7355"),
-  LAYERCOLOR (15, "#00868b"),
-  LAYERCOLOR (16, "#228b22"),
+	LAYERCOLOR(1, "#8b2323"),
+	LAYERCOLOR(2, "#3a5fcd"),
+	LAYERCOLOR(3, "#104e8b"),
+	LAYERCOLOR(4, "#cd3700"),
+	LAYERCOLOR(5, "#548b54"),
+	LAYERCOLOR(6, "#8b7355"),
+	LAYERCOLOR(7, "#00868b"),
+	LAYERCOLOR(8, "#228b22"),
+	LAYERCOLOR(9, "#8b2323"),
+	LAYERCOLOR(10, "#3a5fcd"),
+	LAYERCOLOR(11, "#104e8b"),
+	LAYERCOLOR(12, "#cd3700"),
+	LAYERCOLOR(13, "#548b54"),
+	LAYERCOLOR(14, "#8b7355"),
+	LAYERCOLOR(15, "#00868b"),
+	LAYERCOLOR(16, "#228b22"),
 /* %start-doc options "3 Colors"
 @ftable @code
 @item --layer-selected-color-<n> <string>
@@ -739,22 +715,22 @@ Color of layer @code{<n>}, when selected. @code{<n>} is an integer from 1 to 16.
 @end ftable
 %end-doc
 */
-  LAYERSELCOLOR (1),
-  LAYERSELCOLOR (2),
-  LAYERSELCOLOR (3),
-  LAYERSELCOLOR (4),
-  LAYERSELCOLOR (5),
-  LAYERSELCOLOR (6),
-  LAYERSELCOLOR (7),
-  LAYERSELCOLOR (8),
-  LAYERSELCOLOR (9),
-  LAYERSELCOLOR (10),
-  LAYERSELCOLOR (11),
-  LAYERSELCOLOR (12),
-  LAYERSELCOLOR (13),
-  LAYERSELCOLOR (14),
-  LAYERSELCOLOR (15),
-  LAYERSELCOLOR (16),
+	LAYERSELCOLOR(1),
+	LAYERSELCOLOR(2),
+	LAYERSELCOLOR(3),
+	LAYERSELCOLOR(4),
+	LAYERSELCOLOR(5),
+	LAYERSELCOLOR(6),
+	LAYERSELCOLOR(7),
+	LAYERSELCOLOR(8),
+	LAYERSELCOLOR(9),
+	LAYERSELCOLOR(10),
+	LAYERSELCOLOR(11),
+	LAYERSELCOLOR(12),
+	LAYERSELCOLOR(13),
+	LAYERSELCOLOR(14),
+	LAYERSELCOLOR(15),
+	LAYERSELCOLOR(16),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -763,7 +739,7 @@ Color of offending objects during DRC. Default value is @code{"#ff8000"}
 @end ftable
 %end-doc
 */
-  COLOR (WarnColor, "#ff8000", "warn-color", "color of offending objects during DRC"),
+	COLOR(WarnColor, "#ff8000", "warn-color", "color of offending objects during DRC"),
 
 /* %start-doc options "3 Colors"
 @ftable @code
@@ -772,7 +748,7 @@ Color of the mask layer. Default value is @code{"#ff0000"}
 @end ftable
 %end-doc
 */
-  COLOR (MaskColor, "#ff0000", "mask-color", "color for solder mask"),
+	COLOR(MaskColor, "#ff0000", "mask-color", "color for solder mask"),
 
 
 /* %start-doc options "5 Sizes"
@@ -807,8 +783,8 @@ Default diameter of vias. Default value is @code{60mil}.
 @end ftable
 %end-doc
 */
-  CSET (ViaThickness, MIL_TO_COORD(60), "via-thickness",
-  "default diameter of vias in 1/100 mil"),
+	CSET(ViaThickness, MIL_TO_COORD(60), "via-thickness",
+			 "default diameter of vias in 1/100 mil"),
 
 /* %start-doc options "5 Sizes"
 @ftable @code
@@ -817,8 +793,8 @@ Default diameter of holes. Default value is @code{28mil}.
 @end ftable
 %end-doc
 */
-  CSET (ViaDrillingHole, MIL_TO_COORD(28), "via-drilling-hole",
-  "default diameter of holes"),
+	CSET(ViaDrillingHole, MIL_TO_COORD(28), "via-drilling-hole",
+			 "default diameter of holes"),
 
 /* %start-doc options "5 Sizes"
 @ftable @code
@@ -827,8 +803,8 @@ Default thickness of new lines. Default value is @code{10mil}.
 @end ftable
 %end-doc
 */
-  CSET (LineThickness, MIL_TO_COORD(10), "line-thickness",
-	"initial thickness of new lines"),
+	CSET(LineThickness, MIL_TO_COORD(10), "line-thickness",
+			 "initial thickness of new lines"),
 
 /* %start-doc options "5 Sizes"
 @ftable @code
@@ -839,7 +815,7 @@ is @code{10mil}.
 @end ftable
 %end-doc
 */
-  CSET (RatThickness, MIL_TO_COORD(10), "rat-thickness", "thickness of rat lines"),
+	CSET(RatThickness, MIL_TO_COORD(10), "rat-thickness", "thickness of rat lines"),
 
 /* %start-doc options "5 Sizes"
 @ftable @code
@@ -849,7 +825,7 @@ Default value is @code{10mil}.
 @end ftable
 %end-doc
 */
-  CSET (Keepaway, MIL_TO_COORD(10), "keepaway", "minimum distance between adjacent copper"),
+	CSET(Keepaway, MIL_TO_COORD(10), "keepaway", "minimum distance between adjacent copper"),
 
 /* %start-doc options "5 Sizes"
 @ftable @code
@@ -858,8 +834,8 @@ Default width of the canvas. Default value is @code{6000mil}.
 @end ftable
 %end-doc
 */
-  CSET (MaxWidth, MIL_TO_COORD(6000), "default-PCB-width",
-  "default width of the canvas"),
+	CSET(MaxWidth, MIL_TO_COORD(6000), "default-PCB-width",
+			 "default width of the canvas"),
 
 /* %start-doc options "5 Sizes"
 @ftable @code
@@ -868,8 +844,8 @@ Default height of the canvas. Default value is @code{5000mil}.
 @end ftable
 %end-doc
 */
-  CSET (MaxHeight, MIL_TO_COORD(5000), "default-PCB-height",
-  "default height of the canvas"),
+	CSET(MaxHeight, MIL_TO_COORD(5000), "default-PCB-height",
+			 "default height of the canvas"),
 
 /* %start-doc options "5 Sizes"
 @ftable @code
@@ -878,7 +854,7 @@ Default text scale. This value is in percent. Default value is @code{100}.
 @end ftable
 %end-doc
 */
-  ISET (TextScale, 100, "text-scale", "default text scale in percent"),
+	ISET(TextScale, 100, "text-scale", "default text scale in percent"),
 
 /* %start-doc options "5 Sizes"
 @ftable @code
@@ -888,8 +864,8 @@ Default value is @code{2mil}.
 @end ftable
 %end-doc
 */
-  CSET (AlignmentDistance, MIL_TO_COORD(2), "alignment-distance",
-  "distance between the boards outline and alignment targets"),
+	CSET(AlignmentDistance, MIL_TO_COORD(2), "alignment-distance",
+			 "distance between the boards outline and alignment targets"),
 
 /* %start-doc options "7 DRC Options"
 All parameters should be given with an unit. If no unit is given, 1/100 mil
@@ -906,7 +882,7 @@ Minimum spacing. Default value is @code{10mil}.
 @end ftable
 %end-doc
 */
-  CSET (Bloat, MIL_TO_COORD(10), "bloat", "DRC minimum spacing in 1/100 mil"),
+	CSET(Bloat, MIL_TO_COORD(10), "bloat", "DRC minimum spacing in 1/100 mil"),
 
 /* %start-doc options "7 DRC Options"
 @ftable @code
@@ -915,7 +891,7 @@ Minimum touching overlap. Default value is @code{10mil}.
 @end ftable
 %end-doc
 */
-  CSET (Shrink, MIL_TO_COORD(10), "shrink", "DRC minimum overlap in 1/100 mils"),
+	CSET(Shrink, MIL_TO_COORD(10), "shrink", "DRC minimum overlap in 1/100 mils"),
 
 /* %start-doc options "7 DRC Options"
 @ftable @code
@@ -924,7 +900,7 @@ Minimum width of copper. Default value is @code{10mil}.
 @end ftable
 %end-doc
 */
-  CSET (minWid, MIL_TO_COORD(10), "min-width", "DRC minimum copper spacing"),
+	CSET(minWid, MIL_TO_COORD(10), "min-width", "DRC minimum copper spacing"),
 
 /* %start-doc options "7 DRC Options"
 @ftable @code
@@ -933,7 +909,7 @@ Minimum width of lines in silk. Default value is @code{10mil}.
 @end ftable
 %end-doc
 */
-  CSET (minSlk, MIL_TO_COORD(10), "min-silk", "DRC minimum silk width"),
+	CSET(minSlk, MIL_TO_COORD(10), "min-silk", "DRC minimum silk width"),
 
 /* %start-doc options "7 DRC Options"
 @ftable @code
@@ -942,7 +918,7 @@ Minimum diameter of holes. Default value is @code{15mil}.
 @end ftable
 %end-doc
 */
-  CSET (minDrill, MIL_TO_COORD(15), "min-drill", "DRC minimum drill diameter"),
+	CSET(minDrill, MIL_TO_COORD(15), "min-drill", "DRC minimum drill diameter"),
 
 /* %start-doc options "7 DRC Options"
 @ftable @code
@@ -951,7 +927,7 @@ Minimum width of annular ring. Default value is @code{10mil}.
 @end ftable
 %end-doc
 */
-  CSET (minRing, MIL_TO_COORD(10), "min-ring", "DRC minimum annular ring"),
+	CSET(minRing, MIL_TO_COORD(10), "min-ring", "DRC minimum annular ring"),
 
 
 /* %start-doc options "5 Sizes"
@@ -961,7 +937,7 @@ Initial grid size. Default value is @code{25mil}.
 @end ftable
 %end-doc
 */
-  CSET (Grid, MIL_TO_COORD(25), "grid", "Initial grid size in 1/100 mil"),
+	CSET(Grid, MIL_TO_COORD(25), "grid", "Initial grid size in 1/100 mil"),
 
 /* %start-doc options "5 Sizes"
 @ftable @code
@@ -970,7 +946,7 @@ Minimum polygon area.
 @end ftable
 %end-doc
 */
-  RSET (IsleArea, MIL_TO_COORD(100) * MIL_TO_COORD(100), "minimum polygon area", 0),
+	RSET(IsleArea, MIL_TO_COORD(100) * MIL_TO_COORD(100), "minimum polygon area", 0),
 
 
 /* %start-doc options "1 General Options"
@@ -981,8 +957,8 @@ The default value is @code{60}.
 @end ftable
 %end-doc
 */
-  ISET (BackupInterval, 60, "backup-interval",
-  "Time between automatic backups in seconds. Set to 0 to disable"),
+	ISET(BackupInterval, 60, "backup-interval",
+			 "Time between automatic backups in seconds. Set to 0 to disable"),
 
 /* %start-doc options "6 Commands"
 pcb uses external commands for input output operations. These commands can be
@@ -1000,7 +976,7 @@ Command to load a font.
 @end ftable
 %end-doc
 */
-  SSET (FontCommand, "", "font-command", "Command to load a font"),
+	SSET(FontCommand, "", "font-command", "Command to load a font"),
 
 /* %start-doc options "6 Commands"
 @ftable @code
@@ -1009,7 +985,7 @@ Command to read a file.
 @end ftable
 %end-doc
 */
-  SSET (FileCommand, "", "file-command", "Command to read a file"),
+	SSET(FileCommand, "", "file-command", "Command to read a file"),
 
 /* %start-doc options "6 Commands"
 @ftable @code
@@ -1018,7 +994,7 @@ Command to print to a file.
 @end ftable
 %end-doc
 */
-  SSET (PrintFile, "%f.output", "print-file", "Command to print to a file"),
+	SSET(PrintFile, "%f.output", "print-file", "Command to print to a file"),
 
 /* %start-doc options "5 Paths"
 @ftable @code
@@ -1027,8 +1003,8 @@ A list of (footprint) library search paths, separated by colons.
 @end ftable
 %end-doc
 */
-  SSET (LibrarySearchPaths, PCB_LIBRARY_SEARCH_PATHS, "lib-search-paths",
-	"A list of paths to be searched for footprints."),
+	SSET(LibrarySearchPaths, PCB_LIBRARY_SEARCH_PATHS, "lib-search-paths",
+			 "A list of paths to be searched for footprints."),
 
 /* %start-doc options "6 Commands"
 @ftable @code
@@ -1039,8 +1015,8 @@ on windows a POSIX shell should be specified with -c (e.g. "bash.exe -c").
 @end ftable
 %end-doc
 */
-  SSET (LibraryShell, PCB_LIBRARY_SHELL, "lib-shell",
-	"Optional shell command to be used for running parametric footprint generators"),
+	SSET(LibraryShell, PCB_LIBRARY_SHELL, "lib-shell",
+			 "Optional shell command to be used for running parametric footprint generators"),
 
 /* %start-doc options "6 Commands"
 @ftable @code
@@ -1049,7 +1025,7 @@ Command to save to a file.
 @end ftable
 %end-doc
 */
-  SSET (SaveCommand, "", "save-command", "Command to save to a file"),
+	SSET(SaveCommand, "", "save-command", "Command to save to a file"),
 
 /* %start-doc options "5 Paths"
 @ftable @code
@@ -1058,8 +1034,8 @@ The name of the default font.
 @end ftable
 %end-doc
 */
-  SSET (FontFile, NULL, "default-font",
-	"File name of default font"),
+	SSET(FontFile, NULL, "default-font",
+			 "File name of default font"),
 
 /* %start-doc options "5 Paths"
 @ftable @code
@@ -1068,8 +1044,8 @@ The name of the default font.
 @end ftable
 %end-doc
 */
-  SSET (DefaultPcbFile, PCB_DEFAULT_PCB_FILE, "default-pcb",
-	"File name of default pcb file (layer and style settings)"),
+	SSET(DefaultPcbFile, PCB_DEFAULT_PCB_FILE, "default-pcb",
+			 "File name of default pcb file (layer and style settings)"),
 
 /* %start-doc options "5 Paths"
 @ftable @code
@@ -1080,7 +1056,7 @@ filename.
 @end ftable
 %end-doc
 */
-  SSET (FilePath, "", "file-path", 0),
+	SSET(FilePath, "", "file-path", 0),
 
 /* %start-doc options "6 Commands"
 @ftable @code
@@ -1089,7 +1065,7 @@ Command for reading a netlist. Sequence @code{%f} is replaced by the netlist fil
 @end ftable
 %end-doc
 */
-  SSET (RatCommand, "", "rat-command", "Command for reading a netlist"),
+	SSET(RatCommand, "", "rat-command", "Command for reading a netlist"),
 
 /* %start-doc options "5 Paths"
 @ftable @code
@@ -1099,8 +1075,8 @@ the default library path.
 @end ftable
 %end-doc
 */
-  SSET (FontPath, PCBLIBPATH, "font-path",
-       "Colon separated list of directories to search the default font"),
+	SSET(FontPath, PCBLIBPATH, "font-path",
+			 "Colon separated list of directories to search the default font"),
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -1110,8 +1086,8 @@ The path is passed to the program specified in @option{--element-command}.
 @end ftable
 %end-doc
 */
-  SSET(ElementPath, PCBLIBPATH, "element-path",
-      "A colon separated list of directories or commands (starts with '|')"),
+	SSET(ElementPath, PCBLIBPATH, "element-path",
+			 "A colon separated list of directories or commands (starts with '|')"),
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -1120,8 +1096,8 @@ If set, this file is executed at startup.
 @end ftable
 %end-doc
 */
-  SSET (ScriptFilename, 0, "action-script",
-	     "If set, this file is executed at startup"),
+	SSET(ScriptFilename, 0, "action-script",
+			 "If set, this file is executed at startup"),
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -1130,8 +1106,8 @@ If set, this string of actions is executed at startup.
 @end ftable
 %end-doc
 */
-  SSET (ActionString, 0, "action-string",
-       "If set, this is executed at startup"),
+	SSET(ActionString, 0, "action-string",
+			 "If set, this is executed at startup"),
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -1140,8 +1116,8 @@ Name of author to be put in the Gerber files.
 @end ftable
 %end-doc
 */
-  SSET (FabAuthor, "", "fab-author",
-       "Name of author to be put in the Gerber files"),
+	SSET(FabAuthor, "", "fab-author",
+			 "Name of author to be put in the Gerber files"),
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -1151,13 +1127,13 @@ names, layer numbers and layer groups.
 @end ftable
 %end-doc
 */
-  SSET (InitialLayerStack, "", "layer-stack",
-	"Initial layer stackup, for setting up an export."),
+	SSET(InitialLayerStack, "", "layer-stack",
+			 "Initial layer stackup, for setting up an export."),
 
-  SSET (MakeProgram, NULL, "make-program",
-	"Sets the name and optionally full path to a make(3) program"),
-  SSET (GnetlistProgram, NULL, "gnetlist",
-	"Sets the name and optionally full path to the gnetlist(3) program"),
+	SSET(MakeProgram, NULL, "make-program",
+			 "Sets the name and optionally full path to a make(3) program"),
+	SSET(GnetlistProgram, NULL, "gnetlist",
+			 "Sets the name and optionally full path to the gnetlist(3) program"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1166,8 +1142,8 @@ Horizontal offset of the pin number display. Defaults to @code{100mil}.
 @end ftable
 %end-doc
 */
-  CSET (PinoutOffsetX, MIL_TO_COORD(1), "pinout-offset-x",
-       "Horizontal offset of the pin number display in mil"),
+	CSET(PinoutOffsetX, MIL_TO_COORD(1), "pinout-offset-x",
+			 "Horizontal offset of the pin number display in mil"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1176,8 +1152,8 @@ Vertical offset of the pin number display. Defaults to @code{100mil}.
 @end ftable
 %end-doc
 */
-  CSET (PinoutOffsetY, MIL_TO_COORD(1), "pinout-offset-y",
-       "Vertical offset of the pin number display in mil"),
+	CSET(PinoutOffsetY, MIL_TO_COORD(1), "pinout-offset-y",
+			 "Vertical offset of the pin number display in mil"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1186,8 +1162,8 @@ Horizontal offset of the pin name display. Defaults to @code{800mil}.
 @end ftable
 %end-doc
 */
-  CSET (PinoutTextOffsetX, MIL_TO_COORD(8), "pinout-text-offset-x",
-       "Horizontal offset of the pin name display in mil"),
+	CSET(PinoutTextOffsetX, MIL_TO_COORD(8), "pinout-text-offset-x",
+			 "Horizontal offset of the pin name display in mil"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1196,8 +1172,8 @@ Vertical offset of the pin name display. Defaults to @code{-100mil}.
 @end ftable
 %end-doc
 */
-  CSET (PinoutTextOffsetY, MIL_TO_COORD(-1), "pinout-text-offset-y",
-       "Vertical offset of the pin name display in mil"),
+	CSET(PinoutTextOffsetY, MIL_TO_COORD(-1), "pinout-text-offset-y",
+			 "Vertical offset of the pin name display in mil"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1206,7 +1182,7 @@ If set, draw the grid at start-up.
 @end ftable
 %end-doc
 */
-  BSET (DrawGrid, 1, "draw-grid", "If set, draw the grid at start-up"),
+	BSET(DrawGrid, 1, "draw-grid", "If set, draw the grid at start-up"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1215,7 +1191,7 @@ If set, new lines clear polygons.
 @end ftable
 %end-doc
 */
-  BSET (ClearLine, 1, "clear-line", "If set, new lines clear polygons"),
+	BSET(ClearLine, 1, "clear-line", "If set, new lines clear polygons"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1224,7 +1200,7 @@ If set, new polygons are full ones.
 @end ftable
 %end-doc
 */
-  BSET (FullPoly, 0, "full-poly", 0),
+	BSET(FullPoly, 0, "full-poly", 0),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1234,7 +1210,7 @@ of another component.
 @end ftable
 %end-doc
 */
-  BSET (UniqueNames, 1, "unique-names", "Prevents identical component names"),
+	BSET(UniqueNames, 1, "unique-names", "Prevents identical component names"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1244,8 +1220,8 @@ that the cursor can snap to.
 @end ftable
 %end-doc
 */
-  BSET (SnapPin, 1, "snap-pin",
-       "If set, the cursor snaps to pads and pin centers"),
+	BSET(SnapPin, 1, "snap-pin",
+			 "If set, the cursor snaps to pads and pin centers"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1254,8 +1230,8 @@ If set, the cursor snaps at sensible points along a line
 @end ftable
 %end-doc
 */
-  BSET (SnapOffGridLine, 1, "snap-offgrid-line",
-       "If set, the cursor snaps at sensible points along a line"),
+	BSET(SnapOffGridLine, 1, "snap-offgrid-line",
+			 "If set, the cursor snaps at sensible points along a line"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1265,8 +1241,8 @@ two (end) points.
 @end ftable
 %end-doc
 */
-  BSET (HighlightOnPoint, 0, "highlight-on-point",
-       "If set, highlights lines and arcs when the cursor is on their endpoints"),
+	BSET(HighlightOnPoint, 0, "highlight-on-point",
+			 "If set, highlights lines and arcs when the cursor is on their endpoints"),
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -1275,7 +1251,7 @@ If set, the last user command is saved.
 @end ftable
 %end-doc
 */
-  BSET (SaveLastCommand, 0, "save-last-command", 0),
+	BSET(SaveLastCommand, 0, "save-last-command", 0),
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -1285,8 +1261,8 @@ If set, all data which would otherwise be lost are saved in a temporary file
 @end ftable
 %end-doc
 */
-  BSET (SaveInTMP, 0, "save-in-tmp",
-       "When set, all data which would otherwise be lost are saved in /tmp"),
+	BSET(SaveInTMP, 0, "save-in-tmp",
+			 "When set, all data which would otherwise be lost are saved in /tmp"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1295,8 +1271,8 @@ Allow all directions, when drawing new lines.
 @end ftable
 %end-doc
 */
-  BSET (AllDirectionLines, 0, "all-direction-lines",
-       "Allow all directions, when drawing new lines"),
+	BSET(AllDirectionLines, 0, "all-direction-lines",
+			 "Allow all directions, when drawing new lines"),
 
 /* %start-doc options "2 General GUI Options"
 @ftable @code
@@ -1305,7 +1281,7 @@ Pinout shows number.
 @end ftable
 %end-doc
 */
-  BSET (ShowNumber, 0, "show-number", "Pinout shows number"),
+	BSET(ShowNumber, 0, "show-number", "Pinout shows number"),
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -1314,8 +1290,8 @@ If set, all found connections are reset before a new component is scanned.
 @end ftable
 %end-doc
 */
-  BSET (ResetAfterElement, 1, "reset-after-element",
-       "If set, all found connections are reset before a new component is scanned"),
+	BSET(ResetAfterElement, 1, "reset-after-element",
+			 "If set, all found connections are reset before a new component is scanned"),
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -1324,8 +1300,8 @@ Execute the bell command when all rats are routed.
 @end ftable
 %end-doc
 */
-  BSET (RingBellWhenFinished, 0, "ring-bell-finished",
-       "Execute the bell command when all rats are routed"),
+	BSET(RingBellWhenFinished, 0, "ring-bell-finished",
+			 "Execute the bell command when all rats are routed"),
 
 /* %start-doc options "1 General Options"
 @ftable @code
@@ -1335,75 +1311,71 @@ read from the pcb.
 @end ftable
 %end-doc
 */
-  ISET (EnableMincut, 1, "enable-mincut", "global enable mincut (1=yes, 0=no)"),
+	ISET(EnableMincut, 1, "enable-mincut", "global enable mincut (1=yes, 0=no)"),
 
 };
 
-REGISTER_ATTRIBUTES (main_attribute_list)
+REGISTER_ATTRIBUTES(main_attribute_list)
 /* ---------------------------------------------------------------------- 
  * post-process settings.
  */
-     static void settings_post_process ()
+		 static void settings_post_process()
 {
-  char *tmps;
+	char *tmps;
 
-  if (Settings.LineThickness > MAX_LINESIZE
-      || Settings.LineThickness < MIN_LINESIZE)
-    Settings.LineThickness = MIL_TO_COORD(10);
+	if (Settings.LineThickness > MAX_LINESIZE || Settings.LineThickness < MIN_LINESIZE)
+		Settings.LineThickness = MIL_TO_COORD(10);
 
-  if (Settings.ViaThickness > MAX_PINORVIASIZE
-      || Settings.ViaThickness < MIN_PINORVIASIZE)
-    Settings.ViaThickness = MIL_TO_COORD(40);
+	if (Settings.ViaThickness > MAX_PINORVIASIZE || Settings.ViaThickness < MIN_PINORVIASIZE)
+		Settings.ViaThickness = MIL_TO_COORD(40);
 
-  if (Settings.ViaDrillingHole <= 0)
-    Settings.ViaDrillingHole =
-      DEFAULT_DRILLINGHOLE * Settings.ViaThickness / 100;
+	if (Settings.ViaDrillingHole <= 0)
+		Settings.ViaDrillingHole = DEFAULT_DRILLINGHOLE * Settings.ViaThickness / 100;
 
-  Settings.MaxWidth  = CLAMP (Settings.MaxWidth, MIN_SIZE, MAX_COORD);
-  Settings.MaxHeight = CLAMP (Settings.MaxHeight, MIN_SIZE, MAX_COORD);
+	Settings.MaxWidth = CLAMP(Settings.MaxWidth, MIN_SIZE, MAX_COORD);
+	Settings.MaxHeight = CLAMP(Settings.MaxHeight, MIN_SIZE, MAX_COORD);
 
-  if (Settings.Routes != NULL)
-    ParseRouteString (Settings.Routes, &Settings.RouteStyle[0], "cmil");
+	if (Settings.Routes != NULL)
+		ParseRouteString(Settings.Routes, &Settings.RouteStyle[0], "cmil");
 
-  /*
-   * Make sure we have settings for some various programs we may wish
-   * to call
-   */
-  if (Settings.MakeProgram == NULL) {
-    tmps = getenv ("PCB_MAKE_PROGRAM");
-    if (tmps != NULL)
-      Settings.MakeProgram = strdup (tmps);
-  }
-  if (Settings.MakeProgram == NULL) {
-    Settings.MakeProgram = strdup ("make");
-  }
+	/*
+	 * Make sure we have settings for some various programs we may wish
+	 * to call
+	 */
+	if (Settings.MakeProgram == NULL) {
+		tmps = getenv("PCB_MAKE_PROGRAM");
+		if (tmps != NULL)
+			Settings.MakeProgram = strdup(tmps);
+	}
+	if (Settings.MakeProgram == NULL) {
+		Settings.MakeProgram = strdup("make");
+	}
 
-  if (Settings.GnetlistProgram == NULL) {
-    tmps = getenv ("PCB_GNETLIST");
-    if (tmps != NULL)
-      Settings.GnetlistProgram = strdup (tmps);
-  }
-  if (Settings.GnetlistProgram == NULL) {
-    Settings.GnetlistProgram = strdup ("gnetlist");
-  }
+	if (Settings.GnetlistProgram == NULL) {
+		tmps = getenv("PCB_GNETLIST");
+		if (tmps != NULL)
+			Settings.GnetlistProgram = strdup(tmps);
+	}
+	if (Settings.GnetlistProgram == NULL) {
+		Settings.GnetlistProgram = strdup("gnetlist");
+	}
 
-  if (grid_units)
-    Settings.grid_unit = get_unit_struct (grid_units);
-  if (!grid_units || Settings.grid_unit == NULL)
-    Settings.grid_unit = get_unit_struct ("mil");
+	if (grid_units)
+		Settings.grid_unit = get_unit_struct(grid_units);
+	if (!grid_units || Settings.grid_unit == NULL)
+		Settings.grid_unit = get_unit_struct("mil");
 
-  Settings.increments = get_increments_struct (Settings.grid_unit->suffix);
+	Settings.increments = get_increments_struct(Settings.grid_unit->suffix);
 }
 
 /* ---------------------------------------------------------------------- 
  * Print help or version messages.
  */
 
-static void
-print_version ()
+static void print_version()
 {
-  printf ("PCB version %s\n", VERSION);
-  exit (0);
+	printf("PCB version %s\n", VERSION);
+	exit(0);
 }
 
 /* ----------------------------------------------------------------------
@@ -1414,182 +1386,163 @@ char *bindir = NULL;
 char *exec_prefix = NULL;
 char *pcblibdir = NULL;
 
-static void
-InitPaths (char *argv0)
+static void InitPaths(char *argv0)
 {
-  size_t l;
-  int i;
-  int haspath;
-  char *t1, *t2;
-  int found_bindir = 0;
+	size_t l;
+	int i;
+	int haspath;
+	char *t1, *t2;
+	int found_bindir = 0;
 
-  /* see if argv0 has enough of a path to let lrealpath give the
-   * real path.  This should be the case if you invoke pcb with
-   * something like /usr/local/bin/pcb or ./pcb or ./foo/pcb
-   * but if you just use pcb and it exists in your path, you'll
-   * just get back pcb again.
-   */
+	/* see if argv0 has enough of a path to let lrealpath give the
+	 * real path.  This should be the case if you invoke pcb with
+	 * something like /usr/local/bin/pcb or ./pcb or ./foo/pcb
+	 * but if you just use pcb and it exists in your path, you'll
+	 * just get back pcb again.
+	 */
 
 #ifdef FAKE_BINDIR
 	haspath = 1;
 #else
-  haspath = 0;
-  for (i = 0; i < strlen (argv0) ; i++)
-    {
-      if (argv0[i] == PCB_DIR_SEPARATOR_C) 
-	haspath = 1;
-    }
+	haspath = 0;
+	for (i = 0; i < strlen(argv0); i++) {
+		if (argv0[i] == PCB_DIR_SEPARATOR_C)
+			haspath = 1;
+	}
 #endif
 
 #ifdef DEBUG
-  printf ("InitPaths (%s): haspath = %d\n", argv0, haspath);
+	printf("InitPaths (%s): haspath = %d\n", argv0, haspath);
 #endif
 
-  if (haspath)
-    {
+	if (haspath) {
 #ifdef FAKE_BINDIR
-      bindir = strdup(FAKE_BINDIR "/");
+		bindir = strdup(FAKE_BINDIR "/");
 #else
-      bindir = strdup (lrealpath (argv0));
+		bindir = strdup(lrealpath(argv0));
 #endif
-      found_bindir = 1;
-    }
-  else
-    {
-      char *path, *p, *tmps;
-      struct stat sb;
-      int r;
+		found_bindir = 1;
+	}
+	else {
+		char *path, *p, *tmps;
+		struct stat sb;
+		int r;
 
-      tmps = getenv ("PATH");
+		tmps = getenv("PATH");
 
-      if (tmps != NULL) 
-	{
-	  path = strdup (tmps);
+		if (tmps != NULL) {
+			path = strdup(tmps);
 
-	  /* search through the font path for a font file */
-	  for (p = strtok (path, PCB_PATH_DELIMETER); p && *p;
-	       p = strtok (NULL, PCB_PATH_DELIMETER))
-	    {
+			/* search through the font path for a font file */
+			for (p = strtok(path, PCB_PATH_DELIMETER); p && *p; p = strtok(NULL, PCB_PATH_DELIMETER)) {
 #ifdef DEBUG
-	      printf ("Looking for %s in %s\n", argv0, p);
+				printf("Looking for %s in %s\n", argv0, p);
 #endif
-	      if ( (tmps = (char *)malloc ( (strlen (argv0) + strlen (p) + 2) * sizeof (char))) == NULL )
-		{
-		  fprintf (stderr, "InitPaths():  malloc failed\n");
-		  exit (1);
+				if ((tmps = (char *) malloc((strlen(argv0) + strlen(p) + 2) * sizeof(char))) == NULL) {
+					fprintf(stderr, "InitPaths():  malloc failed\n");
+					exit(1);
+				}
+				sprintf(tmps, "%s%s%s", p, PCB_DIR_SEPARATOR_S, argv0);
+				r = stat(tmps, &sb);
+				if (r == 0) {
+#ifdef DEBUG
+					printf("Found it:  \"%s\"\n", tmps);
+#endif
+					bindir = lrealpath(tmps);
+					found_bindir = 1;
+					free(tmps);
+					break;
+				}
+				free(tmps);
+			}
+			free(path);
 		}
-	      sprintf (tmps, "%s%s%s", p, PCB_DIR_SEPARATOR_S, argv0);
-	      r = stat (tmps, &sb);
-	      if (r == 0)
-		{
-#ifdef DEBUG
-		  printf ("Found it:  \"%s\"\n", tmps);
-#endif
-		  bindir = lrealpath (tmps);
-		  found_bindir = 1;
-		  free (tmps);
-		  break;
-		}  
-	      free (tmps);
-	    }
-	  free (path);
-	}
-    }
-
-#ifdef DEBUG
-  printf ("InitPaths():  bindir = \"%s\"\n", bindir);
-#endif
-
-  if (found_bindir)
-    {
-      /* strip off the executible name leaving only the path */
-      t2 = NULL;
-      t1 = strchr (bindir, PCB_DIR_SEPARATOR_C);
-      while (t1 != NULL && *t1 != '\0')
-        {
-          t2 = t1;
-          t1 = strchr (t2 + 1, PCB_DIR_SEPARATOR_C);
-        }
-      if (t2 != NULL)
-        *t2 = '\0';
-
-#ifdef DEBUG
-      printf ("After stripping off the executible name, we found\n");
-      printf ("bindir = \"%s\"\n", bindir);
-#endif
-    }
-  else
-    {
-      /* we have failed to find out anything from argv[0] so fall back to the original
-       * install prefix
-       */
-       bindir = strdup (BINDIR);
-    }
-
-  /* now find the path to exec_prefix */
-  l = strlen (bindir) + 1 + strlen (BINDIR_TO_EXECPREFIX) + 1;
-  if ( (exec_prefix = (char *) malloc (l * sizeof (char) )) == NULL )
-    {
-      fprintf (stderr, "InitPaths():  malloc failed\n");
-      exit (1);
-    }
-  sprintf (exec_prefix, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, 
-	   BINDIR_TO_EXECPREFIX);
-
-  /* now find the path to PCBSHAREDIR */
-  l = strlen (bindir) + 1 + strlen (BINDIR_TO_PCBSHAREDIR) + 1;
-  if ( (pcblibdir = (char *) malloc (l * sizeof (char) )) == NULL )
-    {
-      fprintf (stderr, "InitPaths():  malloc failed\n");
-      exit (1);
-    }
-  sprintf (pcblibdir, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, 
-	   BINDIR_TO_PCBSHAREDIR);
-
-#ifdef DEBUG
-  printf ("bindir      = %s\n", bindir);
-  printf ("pcblibdir   = %s\n", pcblibdir);
-#endif
-
-  l = sizeof (main_attribute_list) / sizeof (main_attribute_list[0]);
-  for (i = 0; i < l ; i++) 
-    {
-      if (NSTRCMP (main_attribute_list[i].name, "lib-command-dir") == 0)
-	{
-	  main_attribute_list[i].default_val.str_value = pcblibdir;
 	}
 
-      if ( (NSTRCMP (main_attribute_list[i].name, "font-path") == 0) 
-	   || (NSTRCMP (main_attribute_list[i].name, "element-path") == 0)
-	   || (NSTRCMP (main_attribute_list[i].name, "lib-path") == 0) )
-	{
-	  main_attribute_list[i].default_val.str_value = pcblibdir;
+#ifdef DEBUG
+	printf("InitPaths():  bindir = \"%s\"\n", bindir);
+#endif
+
+	if (found_bindir) {
+		/* strip off the executible name leaving only the path */
+		t2 = NULL;
+		t1 = strchr(bindir, PCB_DIR_SEPARATOR_C);
+		while (t1 != NULL && *t1 != '\0') {
+			t2 = t1;
+			t1 = strchr(t2 + 1, PCB_DIR_SEPARATOR_C);
+		}
+		if (t2 != NULL)
+			*t2 = '\0';
+
+#ifdef DEBUG
+		printf("After stripping off the executible name, we found\n");
+		printf("bindir = \"%s\"\n", bindir);
+#endif
+	}
+	else {
+		/* we have failed to find out anything from argv[0] so fall back to the original
+		 * install prefix
+		 */
+		bindir = strdup(BINDIR);
 	}
 
-    }
+	/* now find the path to exec_prefix */
+	l = strlen(bindir) + 1 + strlen(BINDIR_TO_EXECPREFIX) + 1;
+	if ((exec_prefix = (char *) malloc(l * sizeof(char))) == NULL) {
+		fprintf(stderr, "InitPaths():  malloc failed\n");
+		exit(1);
+	}
+	sprintf(exec_prefix, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, BINDIR_TO_EXECPREFIX);
+
+	/* now find the path to PCBSHAREDIR */
+	l = strlen(bindir) + 1 + strlen(BINDIR_TO_PCBSHAREDIR) + 1;
+	if ((pcblibdir = (char *) malloc(l * sizeof(char))) == NULL) {
+		fprintf(stderr, "InitPaths():  malloc failed\n");
+		exit(1);
+	}
+	sprintf(pcblibdir, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, BINDIR_TO_PCBSHAREDIR);
+
+#ifdef DEBUG
+	printf("bindir      = %s\n", bindir);
+	printf("pcblibdir   = %s\n", pcblibdir);
+#endif
+
+	l = sizeof(main_attribute_list) / sizeof(main_attribute_list[0]);
+	for (i = 0; i < l; i++) {
+		if (NSTRCMP(main_attribute_list[i].name, "lib-command-dir") == 0) {
+			main_attribute_list[i].default_val.str_value = pcblibdir;
+		}
+
+		if ((NSTRCMP(main_attribute_list[i].name, "font-path") == 0)
+				|| (NSTRCMP(main_attribute_list[i].name, "element-path") == 0)
+				|| (NSTRCMP(main_attribute_list[i].name, "lib-path") == 0)) {
+			main_attribute_list[i].default_val.str_value = pcblibdir;
+		}
+
+	}
 
 	paths_init_homedir();
 
-  resolve_all_paths(fontfile_paths_in, fontfile_paths);
+	resolve_all_paths(fontfile_paths_in, fontfile_paths);
 }
 
 static void set_fontfile(void)
 {
-  if (Settings.FontFile == NULL) {
-    char **s;
-    for(s = fontfile_paths; *s != NULL; s++) {
-fprintf(stderr, "font: '%s'\n", *s);
-      if (access (*s, R_OK) == 0) {
-        Settings.FontFile= *s;
-        break;
-      }
-    }
-  }
+	if (Settings.FontFile == NULL) {
+		char **s;
+		for (s = fontfile_paths; *s != NULL; s++) {
+			fprintf(stderr, "font: '%s'\n", *s);
+			if (access(*s, R_OK) == 0) {
+				Settings.FontFile = *s;
+				break;
+			}
+		}
+	}
 
-  if (Settings.FontFile == NULL) {
-    Message("Error: no font file found\n");
-    exit(1);
-  }
+	if (Settings.FontFile == NULL) {
+		Message("Error: no font file found\n");
+		exit(1);
+	}
 
 }
 
@@ -1603,258 +1556,232 @@ char *program_directory = 0;
 
 #include "dolists.h"
 
-int
-main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-  int i;
+	int i;
 
-  /* init application:
-   * - make program name available for error handlers
-   * - evaluate special options
-   * - initialize toplevel shell and resources
-   * - create an empty PCB with default symbols
-   * - initialize all other widgets
-   * - update screen and get size of drawing area
-   * - evaluate command-line arguments
-   * - register 'call on exit()' function
-   */
+	/* init application:
+	 * - make program name available for error handlers
+	 * - evaluate special options
+	 * - initialize toplevel shell and resources
+	 * - create an empty PCB with default symbols
+	 * - initialize all other widgets
+	 * - update screen and get size of drawing area
+	 * - evaluate command-line arguments
+	 * - register 'call on exit()' function
+	 */
 
-  setbuf (stdout, 0);
-  InitPaths (argv[0]);
+	setbuf(stdout, 0);
+	InitPaths(argv[0]);
 
 #ifdef LOCALEDIR
-  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-  textdomain(GETTEXT_PACKAGE);
-  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-  setlocale(LC_ALL,"");
+	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+	textdomain(GETTEXT_PACKAGE);
+	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+	setlocale(LC_ALL, "");
 #endif
 
-  srand ( time(NULL) ); /* Set seed for rand() */
+	srand(time(NULL));						/* Set seed for rand() */
 
-  initialize_units();
-  polygon_init ();
-  hid_init ();
+	initialize_units();
+	polygon_init();
+	hid_init();
 
-  hid_load_settings ();
+	hid_load_settings();
 
-  program_name = argv[0];
-  program_basename = strrchr (program_name, PCB_DIR_SEPARATOR_C);
-  if (program_basename)
-    {
-      program_directory = strdup (program_name);
-      *strrchr (program_directory, PCB_DIR_SEPARATOR_C) = 0;
-      program_basename++;
-    }
-  else
-    {
-      program_directory = ".";
-      program_basename = program_name;
-    }
-  Progname = program_basename;
+	program_name = argv[0];
+	program_basename = strrchr(program_name, PCB_DIR_SEPARATOR_C);
+	if (program_basename) {
+		program_directory = strdup(program_name);
+		*strrchr(program_directory, PCB_DIR_SEPARATOR_C) = 0;
+		program_basename++;
+	}
+	else {
+		program_directory = ".";
+		program_basename = program_name;
+	}
+	Progname = program_basename;
 
-  /* Print usage or version if requested.  Then exit.  */  
-  if (argc > 1 &&
-      (strcmp (argv[1], "-h") == 0 ||
-       strcmp (argv[1], "-?") == 0 ||
-       strcmp (argv[1], "--help") == 0))
-    usage ();
-  if (argc > 1 && strcmp (argv[1], "-V") == 0)
-    print_version ();
-  /* Export pcb from command line if requested.  */
-  if (argc > 1 && strcmp (argv[1], "-p") == 0)
-    {
-      exporter = gui = hid_find_printer ();
-      argc--;
-      argv++;
-    }
-  else if (argc > 2 && strcmp (argv[1], "-x") == 0)
-    {
-      exporter = gui = hid_find_exporter (argv[2]);
-      argc -= 2;
-      argv += 2;
-    }
-    /* Otherwise start GUI. */
-  else if (argc > 2 && strcmp (argv[1], "--gui") == 0)
-  {
-    gui = hid_find_gui (argv[2]);
-    if (gui == NULL) {
-      Message("Can't find the gui requested.\n");
-      exit(1);
-    }
-    argc -= 2;
-    argv += 2;
-  }
-  else {
-    const char **g;
+	/* Print usage or version if requested.  Then exit.  */
+	if (argc > 1 && (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-?") == 0 || strcmp(argv[1], "--help") == 0))
+		usage();
+	if (argc > 1 && strcmp(argv[1], "-V") == 0)
+		print_version();
+	/* Export pcb from command line if requested.  */
+	if (argc > 1 && strcmp(argv[1], "-p") == 0) {
+		exporter = gui = hid_find_printer();
+		argc--;
+		argv++;
+	}
+	else if (argc > 2 && strcmp(argv[1], "-x") == 0) {
+		exporter = gui = hid_find_exporter(argv[2]);
+		argc -= 2;
+		argv += 2;
+	}
+	/* Otherwise start GUI. */
+	else if (argc > 2 && strcmp(argv[1], "--gui") == 0) {
+		gui = hid_find_gui(argv[2]);
+		if (gui == NULL) {
+			Message("Can't find the gui requested.\n");
+			exit(1);
+		}
+		argc -= 2;
+		argv += 2;
+	}
+	else {
+		const char **g;
 
-    gui = NULL;
-    for(g = try_gui_hids; (*g != NULL) && (gui == NULL); g++) {
-      gui = hid_find_gui (*g);
-    }
+		gui = NULL;
+		for (g = try_gui_hids; (*g != NULL) && (gui == NULL); g++) {
+			gui = hid_find_gui(*g);
+		}
 
-    /* try anything */
-    if (gui == NULL) {
-      Message("Warning: can't find any of the preferred GUIs, falling back to anything available...\n");
-      gui = hid_find_gui (NULL);
-    }
-  }
+		/* try anything */
+		if (gui == NULL) {
+			Message("Warning: can't find any of the preferred GUIs, falling back to anything available...\n");
+			gui = hid_find_gui(NULL);
+		}
+	}
 
-  /* Exit with error if GUI failed to start. */
-  if (!gui)
-    exit (1);
+	/* Exit with error if GUI failed to start. */
+	if (!gui)
+		exit(1);
 
 /* Initialize actions only when the gui is already known so only the right
    one is registered (there can be only one GUI). */
 #include "action_list.h"
 
 
-  /* Set up layers. */
-  for (i = 0; i < MAX_LAYER; i++)
-    {
-      char buf[20];
-      sprintf (buf, "signal%d", i + 1);
-      Settings.DefaultLayerName[i] = strdup (buf);
-      Settings.LayerColor[i] = "#c49350";
-      Settings.LayerSelectedColor[i] = "#00ffff";
-    }
+	/* Set up layers. */
+	for (i = 0; i < MAX_LAYER; i++) {
+		char buf[20];
+		sprintf(buf, "signal%d", i + 1);
+		Settings.DefaultLayerName[i] = strdup(buf);
+		Settings.LayerColor[i] = "#c49350";
+		Settings.LayerSelectedColor[i] = "#00ffff";
+	}
 
-  gui->parse_arguments (&argc, &argv);
+	gui->parse_arguments(&argc, &argv);
 
-  if (show_help || (argc > 1 && argv[1][0] == '-'))
-    usage ();
-  if (show_version)
-    print_version ();
-  if (show_defaults)
-    print_defaults ();
-  if (show_copyright)
-    copyright ();
+	if (show_help || (argc > 1 && argv[1][0] == '-'))
+		usage();
+	if (show_version)
+		print_version();
+	if (show_defaults)
+		print_defaults();
+	if (show_copyright)
+		copyright();
 
-  settings_post_process ();
+	settings_post_process();
 
 
-  if (show_actions)
-    {
-      print_actions ();
-      exit (0);
-    }
+	if (show_actions) {
+		print_actions();
+		exit(0);
+	}
 
-  if (do_dump_actions)
-    {
-      extern void dump_actions (void);
-      dump_actions ();
-      exit (0);
-    }
+	if (do_dump_actions) {
+		extern void dump_actions(void);
+		dump_actions();
+		exit(0);
+	}
 
-  set_fontfile();
+	set_fontfile();
 
-  /* Create a new PCB object in memory */
-  PCB = CreateNewPCB ();
+	/* Create a new PCB object in memory */
+	PCB = CreateNewPCB();
 
 	if (PCB == NULL) {
 		Message("Can't load the default pcb (%s) for creating an empty layout\n", Settings.DefaultPcbFile);
 		exit(1);
 	}
 
-  /* Add silk layers to newly created PCB */
-  CreateNewPCBPost (PCB, 1);
-  if (argc > 1)
-    command_line_pcb = argv[1];
+	/* Add silk layers to newly created PCB */
+	CreateNewPCBPost(PCB, 1);
+	if (argc > 1)
+		command_line_pcb = argv[1];
 
-  ResetStackAndVisibility ();
+	ResetStackAndVisibility();
 
-  if (gui->gui)
-    InitCrosshair ();
-  InitHandler ();
-  InitBuffers ();
-  SetMode (ARROW_MODE);
+	if (gui->gui)
+		InitCrosshair();
+	InitHandler();
+	InitBuffers();
+	SetMode(ARROW_MODE);
 
-  if (command_line_pcb)
-    {
-      /* keep filename even if initial load command failed;
-       * file might not exist
-       */
-      if (LoadPCB (command_line_pcb, true))
-	PCB->Filename = strdup (command_line_pcb);
-    }
+	if (command_line_pcb) {
+		/* keep filename even if initial load command failed;
+		 * file might not exist
+		 */
+		if (LoadPCB(command_line_pcb, true))
+			PCB->Filename = strdup(command_line_pcb);
+	}
 
-  if (Settings.InitialLayerStack
-      && Settings.InitialLayerStack[0])
-    {
-      LayerStringToLayerStack (Settings.InitialLayerStack);
-    }
+	if (Settings.InitialLayerStack && Settings.InitialLayerStack[0]) {
+		LayerStringToLayerStack(Settings.InitialLayerStack);
+	}
 
-  /* This must be called before any other atexit functions
-   * are registered, as it configures an atexit function to
-   * clean up and free various items of allocated memory,
-   * and must be the last last atexit function to run.
-   */
-  leaky_init ();
+	/* This must be called before any other atexit functions
+	 * are registered, as it configures an atexit function to
+	 * clean up and free various items of allocated memory,
+	 * and must be the last last atexit function to run.
+	 */
+	leaky_init();
 
-  /* Register a function to be called when the program terminates.
-   * This makes sure that data is saved even if LEX/YACC routines
-   * abort the program.
-   * If the OS doesn't have at least one of them,
-   * the critical sections will be handled by parse_l.l
-   */
-  atexit (EmergencySave);
+	/* Register a function to be called when the program terminates.
+	 * This makes sure that data is saved even if LEX/YACC routines
+	 * abort the program.
+	 * If the OS doesn't have at least one of them,
+	 * the critical sections will be handled by parse_l.l
+	 */
+	atexit(EmergencySave);
 
-  /* read the library file and display it if it's not empty
-   */
-  if (!ReadLibraryContents () && Library.MenuN)
-    hid_action ("LibraryChanged");
+	/* read the library file and display it if it's not empty
+	 */
+	if (!ReadLibraryContents() && Library.MenuN)
+		hid_action("LibraryChanged");
 
 #ifdef HAVE_LIBSTROKE
-  stroke_init ();
+	stroke_init();
 #endif
 
-  if (Settings.ScriptFilename)
-    {
-      Message (_("Executing startup script file %s\n"),
-	       Settings.ScriptFilename);
-      hid_actionl ("ExecuteFile", Settings.ScriptFilename, NULL);
-    }
-  if (Settings.ActionString)
-    {
-      Message (_("Executing startup action %s\n"), Settings.ActionString);
-      hid_parse_actions (Settings.ActionString);
-    }
+	if (Settings.ScriptFilename) {
+		Message(_("Executing startup script file %s\n"), Settings.ScriptFilename);
+		hid_actionl("ExecuteFile", Settings.ScriptFilename, NULL);
+	}
+	if (Settings.ActionString) {
+		Message(_("Executing startup action %s\n"), Settings.ActionString);
+		hid_parse_actions(Settings.ActionString);
+	}
 
-  if (gui->printer || gui->exporter)
-    {
-      /* Workaround to fix batch output for non-C locales */
-      setlocale(LC_NUMERIC,"C");
-      gui->do_export (0);
-      exit (0);
-    }
+	if (gui->printer || gui->exporter) {
+		/* Workaround to fix batch output for non-C locales */
+		setlocale(LC_NUMERIC, "C");
+		gui->do_export(0);
+		exit(0);
+	}
 
 #if HAVE_DBUS
-  pcb_dbus_setup();
+	pcb_dbus_setup();
 #endif
 
-  EnableAutosave ();
+	EnableAutosave();
 
 #ifdef DEBUG
-  printf ("Settings.FontPath            = \"%s\"\n", 
-          Settings.FontPath);
-  printf ("Settings.ElementPath         = \"%s\"\n", 
-          Settings.ElementPath);
-  printf ("Settings.LibrarySearchPaths  = \"%s\"\n", 
-          Settings.LibrarySearchPaths);
-  printf ("Settings.LibraryShell        = \"%s\"\n", 
-          Settings.LibraryShell);
-  printf ("Settings.MakeProgram = \"%s\"\n",
-          UNKNOWN (Settings.MakeProgram));
-  printf ("Settings.GnetlistProgram = \"%s\"\n",
-          UNKNOWN (Settings.GnetlistProgram));
+	printf("Settings.FontPath            = \"%s\"\n", Settings.FontPath);
+	printf("Settings.ElementPath         = \"%s\"\n", Settings.ElementPath);
+	printf("Settings.LibrarySearchPaths  = \"%s\"\n", Settings.LibrarySearchPaths);
+	printf("Settings.LibraryShell        = \"%s\"\n", Settings.LibraryShell);
+	printf("Settings.MakeProgram = \"%s\"\n", UNKNOWN(Settings.MakeProgram));
+	printf("Settings.GnetlistProgram = \"%s\"\n", UNKNOWN(Settings.GnetlistProgram));
 #endif
 
 	buildin_init();
 
-  gui->do_export (0);
+	gui->do_export(0);
 #if HAVE_DBUS
-  pcb_dbus_finish();
+	pcb_dbus_finish();
 #endif
 
-  return (0);
+	return (0);
 }
-

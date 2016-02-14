@@ -31,10 +31,10 @@
    version 2.2 of Bison.  */
 
 #ifndef YY_YY_PARSE_Y_TAB_H_INCLUDED
-# define YY_YY_PARSE_Y_TAB_H_INCLUDED
+#define YY_YY_PARSE_Y_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+#define YYDEBUG 0
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -42,82 +42,80 @@ extern int yydebug;
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
-  {
-    FLOATING = 258,
-    INTEGER = 259,
-    CHAR_CONST = 260,
-    STRING = 261,
-    T_FILEVERSION = 262,
-    T_PCB = 263,
-    T_LAYER = 264,
-    T_VIA = 265,
-    T_RAT = 266,
-    T_LINE = 267,
-    T_ARC = 268,
-    T_RECTANGLE = 269,
-    T_TEXT = 270,
-    T_ELEMENTLINE = 271,
-    T_ELEMENT = 272,
-    T_PIN = 273,
-    T_PAD = 274,
-    T_GRID = 275,
-    T_FLAGS = 276,
-    T_SYMBOL = 277,
-    T_SYMBOLLINE = 278,
-    T_CURSOR = 279,
-    T_ELEMENTARC = 280,
-    T_MARK = 281,
-    T_GROUPS = 282,
-    T_STYLES = 283,
-    T_POLYGON = 284,
-    T_POLYGON_HOLE = 285,
-    T_NETLIST = 286,
-    T_NET = 287,
-    T_CONN = 288,
-    T_NETLISTPATCH = 289,
-    T_ADD_CONN = 290,
-    T_DEL_CONN = 291,
-    T_CHANGE_ATTRIB = 292,
-    T_AREA = 293,
-    T_THERMAL = 294,
-    T_DRC = 295,
-    T_ATTRIBUTE = 296,
-    T_UMIL = 297,
-    T_CMIL = 298,
-    T_MIL = 299,
-    T_IN = 300,
-    T_NM = 301,
-    T_UM = 302,
-    T_MM = 303,
-    T_M = 304,
-    T_KM = 305
-  };
+#define YYTOKENTYPE
+enum yytokentype {
+	FLOATING = 258,
+	INTEGER = 259,
+	CHAR_CONST = 260,
+	STRING = 261,
+	T_FILEVERSION = 262,
+	T_PCB = 263,
+	T_LAYER = 264,
+	T_VIA = 265,
+	T_RAT = 266,
+	T_LINE = 267,
+	T_ARC = 268,
+	T_RECTANGLE = 269,
+	T_TEXT = 270,
+	T_ELEMENTLINE = 271,
+	T_ELEMENT = 272,
+	T_PIN = 273,
+	T_PAD = 274,
+	T_GRID = 275,
+	T_FLAGS = 276,
+	T_SYMBOL = 277,
+	T_SYMBOLLINE = 278,
+	T_CURSOR = 279,
+	T_ELEMENTARC = 280,
+	T_MARK = 281,
+	T_GROUPS = 282,
+	T_STYLES = 283,
+	T_POLYGON = 284,
+	T_POLYGON_HOLE = 285,
+	T_NETLIST = 286,
+	T_NET = 287,
+	T_CONN = 288,
+	T_NETLISTPATCH = 289,
+	T_ADD_CONN = 290,
+	T_DEL_CONN = 291,
+	T_CHANGE_ATTRIB = 292,
+	T_AREA = 293,
+	T_THERMAL = 294,
+	T_DRC = 295,
+	T_ATTRIBUTE = 296,
+	T_UMIL = 297,
+	T_CMIL = 298,
+	T_MIL = 299,
+	T_IN = 300,
+	T_NM = 301,
+	T_UM = 302,
+	T_MM = 303,
+	T_M = 304,
+	T_KM = 305
+};
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE YYSTYPE;
-union YYSTYPE
-{
-#line 110 "parse_y.y" /* yacc.c:1909  */
+union YYSTYPE {
+#line 110 "parse_y.y"						/* yacc.c:1909  */
 
-	int		integer;
-	double		number;
-	char		*string;
-	FlagType	flagtype;
-	PLMeasure	measure;
+	int integer;
+	double number;
+	char *string;
+	FlagType flagtype;
+	PLMeasure measure;
 
-#line 113 "parse_y.tab.h" /* yacc.c:1909  */
+#line 113 "parse_y.tab.h"				/* yacc.c:1909  */
 };
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+#define YYSTYPE_IS_TRIVIAL 1
+#define YYSTYPE_IS_DECLARED 1
 #endif
 
 
 extern YYSTYPE yylval;
 
-int yyparse (void);
+int yyparse(void);
 
 #endif /* !YY_YY_PARSE_Y_TAB_H_INCLUDED  */

@@ -46,4 +46,3 @@
 #endif /* HAVE_XINERAMA */
 
 #undef Mask
-

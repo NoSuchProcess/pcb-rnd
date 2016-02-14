@@ -40,34 +40,31 @@ typedef struct _GhidDrcViolationClass GhidDrcViolationClass;
 typedef struct _GhidDrcViolation GhidDrcViolation;
 
 
-struct _GhidDrcViolationClass
-{
-  GObjectClass parent_class;
+struct _GhidDrcViolationClass {
+	GObjectClass parent_class;
 };
 
-struct _GhidDrcViolation
-{
-  GObject parent_instance;
+struct _GhidDrcViolation {
+	GObject parent_instance;
 
-  char *title;
-  char *explanation;
-  Coord x_coord;
-  Coord y_coord;
-  Angle angle;
-  bool have_measured;
-  Coord measured_value;
-  Coord required_value;
-  int object_count;
-  long int *object_id_list;
-  int *object_type_list;
-  GdkDrawable *pixmap;
+	char *title;
+	char *explanation;
+	Coord x_coord;
+	Coord y_coord;
+	Angle angle;
+	bool have_measured;
+	Coord measured_value;
+	Coord required_value;
+	int object_count;
+	long int *object_id_list;
+	int *object_type_list;
+	GdkDrawable *pixmap;
 };
 
 
-GType ghid_drc_violation_get_type (void);
+GType ghid_drc_violation_get_type(void);
 
-GhidDrcViolation *ghid_drc_violation_new (DrcViolationType *violation,
-					  GdkDrawable *pixmap);
+GhidDrcViolation *ghid_drc_violation_new(DrcViolationType * violation, GdkDrawable * pixmap);
 
 
 #define GHID_TYPE_VIOLATION_RENDERER           (ghid_violation_renderer_get_type())
@@ -80,21 +77,19 @@ typedef struct _GhidViolationRendererClass GhidViolationRendererClass;
 typedef struct _GhidViolationRenderer GhidViolationRenderer;
 
 
-struct _GhidViolationRendererClass
-{
-  GtkCellRendererTextClass parent_class;
+struct _GhidViolationRendererClass {
+	GtkCellRendererTextClass parent_class;
 };
 
-struct _GhidViolationRenderer
-{
-  GtkCellRendererText parent_instance;
+struct _GhidViolationRenderer {
+	GtkCellRendererText parent_instance;
 
-  GhidDrcViolation *violation;
+	GhidDrcViolation *violation;
 };
 
 
-GType ghid_violation_renderer_get_type (void);
+GType ghid_violation_renderer_get_type(void);
 
-GtkCellRenderer *ghid_violation_renderer_new (void);
+GtkCellRenderer *ghid_violation_renderer_new(void);
 
 #endif /* PCB_HID_GTK_GUI_DRC_WINDOW_H */

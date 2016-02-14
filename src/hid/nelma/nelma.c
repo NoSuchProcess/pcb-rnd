@@ -62,7 +62,7 @@
 #include <time.h>
 
 #include "global.h"
-#include "error.h" /* Message() */
+#include "error.h"							/* Message() */
 #include "data.h"
 #include "misc.h"
 #include "rats.h"
@@ -88,51 +88,51 @@ RCSID("$Id$");
 
 struct color_struct {
 	/* the descriptor used by the gd library */
-	int             c;
+	int c;
 
 	/* so I can figure out what rgb value c refers to */
-	unsigned int    r, g, b;
+	unsigned int r, g, b;
 };
 
 struct hid_gc_struct {
-	HID            *me_pointer;
-	EndCapStyle     cap;
-	Coord           width;
-	unsigned char   r, g, b;
-	int             erase;
-	int             faded;
+	HID *me_pointer;
+	EndCapStyle cap;
+	Coord width;
+	unsigned char r, g, b;
+	int erase;
+	int faded;
 	struct color_struct *color;
-	gdImagePtr      brush;
+	gdImagePtr brush;
 };
 
 static HID nelma_hid;
 
 static struct color_struct *black = NULL, *white = NULL;
-static Coord    linewidth = -1;
-static gdImagePtr lastbrush = (gdImagePtr)((void *) -1);
-static int      lastcolor = -1;
+static Coord linewidth = -1;
+static gdImagePtr lastbrush = (gdImagePtr) ((void *) -1);
+static int lastcolor = -1;
 
 /* gd image and file for PNG export */
 static gdImagePtr nelma_im = NULL;
-static FILE    *nelma_f = NULL;
+static FILE *nelma_f = NULL;
 
-static int      is_mask;
-static int      is_drill;
+static int is_mask;
+static int is_drill;
 
 /*
  * Which groups of layers to export into PNG layer masks. 1 means export, 0
  * means do not export.
  */
-static int      nelma_export_group[MAX_LAYER];
+static int nelma_export_group[MAX_LAYER];
 
 /* Group that is currently exported. */
-static int      nelma_cur_group;
+static int nelma_cur_group;
 
 /* Filename prefix that will be used when saving files. */
 static const char *nelma_basename = NULL;
 
 /* Horizontal DPI (grid points per inch) */
-static int      nelma_dpi = -1;
+static int nelma_dpi = -1;
 
 /* Height of the copper layers in micrometers. */
 
@@ -140,16 +140,16 @@ static int      nelma_dpi = -1;
  * The height of the copper layer is currently taken as the vertical grid
  * step, since this is the smallest vertical feature in the layout.
  */
-static int      nelma_copperh = -1;
+static int nelma_copperh = -1;
 /* Height of the substrate layers in micrometers. */
-static int      nelma_substrateh = -1;
+static int nelma_substrateh = -1;
 /* Relative permittivity of the substrate. */
-static double   nelma_substratee = -1;
+static double nelma_substratee = -1;
 
 /* Permittivity of empty space (As/Vm) */
 static const double nelma_air_epsilon = 8.85e-12;
 
-HID_Attribute   nelma_attribute_list[] = {
+HID_Attribute nelma_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "nelma Options"
@@ -160,7 +160,7 @@ File name prefix.
 %end-doc
 */
 	{"basename", "File name prefix",
-	HID_String, 0, 0, {0, 0, 0}, 0, 0},
+	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_basename 0
 
 /* %start-doc options "nelma Options"
@@ -171,7 +171,7 @@ Horizontal scale factor (grid points/inch).
 %end-doc
 */
 	{"dpi", "Horizontal scale factor (grid points/inch)",
-	HID_Integer, 0, 1000, {100, 0, 0}, 0, 0},
+	 HID_Integer, 0, 1000, {100, 0, 0}, 0, 0},
 #define HA_dpi 1
 
 /* %start-doc options "nelma Options"
@@ -182,7 +182,7 @@ Copper layer height (um).
 %end-doc
 */
 	{"copper-height", "Copper layer height (um)",
-	HID_Integer, 0, 200, {100, 0, 0}, 0, 0},
+	 HID_Integer, 0, 200, {100, 0, 0}, 0, 0},
 #define HA_copperh 2
 
 /* %start-doc options "nelma Options"
@@ -193,7 +193,7 @@ Substrate layer height (um).
 %end-doc
 */
 	{"substrate-height", "Substrate layer height (um)",
-	HID_Integer, 0, 10000, {2000, 0, 0}, 0, 0},
+	 HID_Integer, 0, 10000, {2000, 0, 0}, 0, 0},
 #define HA_substrateh 3
 
 /* %start-doc options "nelma Options"
@@ -204,31 +204,30 @@ Substrate relative epsilon.
 %end-doc
 */
 	{"substrate-epsilon", "Substrate relative epsilon",
-	HID_Real, 0, 100, {0, 0, 4.0}, 0, 0},
+	 HID_Real, 0, 100, {0, 0, 4.0}, 0, 0},
 #define HA_substratee 4
 };
 
 #define NUM_OPTIONS (sizeof(nelma_attribute_list)/sizeof(nelma_attribute_list[0]))
 
 REGISTER_ATTRIBUTES(nelma_attribute_list)
-	static HID_Attr_Val nelma_values[NUM_OPTIONS];
+		 static HID_Attr_Val nelma_values[NUM_OPTIONS];
 
 /* *** Utility funcions **************************************************** */
 
 /* convert from default PCB units to nelma units */
-static int pcb_to_nelma (Coord pcb)
+		 static int pcb_to_nelma(Coord pcb)
 {
-  return COORD_TO_INCH(pcb) * nelma_dpi;
+	return COORD_TO_INCH(pcb) * nelma_dpi;
 }
 
-static char    *
-nelma_get_png_name(const char *basename, const char *suffix)
+static char *nelma_get_png_name(const char *basename, const char *suffix)
 {
-	char           *buf;
-	int             len;
+	char *buf;
+	int len;
 
 	len = strlen(basename) + strlen(suffix) + 6;
-	buf = (char *)malloc(sizeof(*buf) * len);
+	buf = (char *) malloc(sizeof(*buf) * len);
 
 	sprintf(buf, "%s.%s.png", basename, suffix);
 
@@ -237,10 +236,9 @@ nelma_get_png_name(const char *basename, const char *suffix)
 
 /* Retrieves coordinates (in default PCB units) of a pin or pad. */
 /* Copied from netlist.c */
-static int 
-pin_name_to_xy (LibraryEntryType * pin, Coord *x, Coord *y)
+static int pin_name_to_xy(LibraryEntryType * pin, Coord * x, Coord * y)
 {
-	ConnectionType  conn;
+	ConnectionType conn;
 	if (!SeekPad(pin, &conn, false))
 		return 1;
 	switch (conn.type) {
@@ -258,14 +256,13 @@ pin_name_to_xy (LibraryEntryType * pin, Coord *x, Coord *y)
 
 /* *** Exporting netlist data and geometry to the nelma config file ******** */
 
-static void 
-nelma_write_space(FILE * out)
+static void nelma_write_space(FILE * out)
 {
-	double          xh, zh;
+	double xh, zh;
 
-	int             z;
-	int             i, idx;
-	const char     *ext;
+	int z;
+	int i, idx;
+	const char *ext;
 
 	xh = 2.54e-2 / ((double) nelma_dpi);
 	zh = nelma_copperh * 1e-6;
@@ -282,8 +279,7 @@ nelma_write_space(FILE * out)
 	z = 10;
 	for (i = 0; i < MAX_LAYER; i++)
 		if (nelma_export_group[i]) {
-			idx = (i >= 0 && i < max_group) ?
-				PCB->LayerGroups.Entries[i][0] : i;
+			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 			ext = layer_type_to_file_name(idx, FNS_fixed);
 
 			if (z != 10) {
@@ -300,8 +296,7 @@ nelma_write_space(FILE * out)
 }
 
 
-static void 
-nelma_write_material(FILE * out, char *name, char *type, double e)
+static void nelma_write_material(FILE * out, char *name, char *type, double e)
 {
 	fprintf(out, "material %s {\n", name);
 	fprintf(out, "\ttype = \"%s\"\n", type);
@@ -311,27 +306,24 @@ nelma_write_material(FILE * out, char *name, char *type, double e)
 	fprintf(out, "}\n");
 }
 
-static void 
-nelma_write_materials(FILE * out)
+static void nelma_write_materials(FILE * out)
 {
 	fprintf(out, "\n/* **** Materials **** */\n\n");
 
 	nelma_write_material(out, "copper", "metal", nelma_air_epsilon);
 	nelma_write_material(out, "air", "dielectric", nelma_air_epsilon);
-	nelma_write_material(out, "composite", "dielectric",
-			     nelma_air_epsilon * nelma_substratee);
+	nelma_write_material(out, "composite", "dielectric", nelma_air_epsilon * nelma_substratee);
 }
 
-static void 
-nelma_write_nets(FILE * out)
+static void nelma_write_nets(FILE * out)
 {
-	LibraryType     netlist;
+	LibraryType netlist;
 	LibraryMenuTypePtr net;
 	LibraryEntryTypePtr pin;
 
-	int             n, m, i, idx;
+	int n, m, i, idx;
 
-	const char     *ext;
+	const char *ext;
 
 	netlist = PCB->NetlistLib[NETLIST_EDITED];
 
@@ -352,14 +344,12 @@ nelma_write_nets(FILE * out)
 
 			for (i = 0; i < MAX_LAYER; i++)
 				if (nelma_export_group[i]) {
-					idx = (i >= 0 && i < max_group) ?
-						PCB->LayerGroups.Entries[i][0] : i;
+					idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 					ext = layer_type_to_file_name(idx, FNS_fixed);
 
 					if (m != 0 || i != 0)
 						fprintf(out, ",\n");
-					fprintf(out, "\t\t\"%s-%s\"", pin->ListEntry,
-						ext);
+					fprintf(out, "\t\t\"%s-%s\"", pin->ListEntry, ext);
 				}
 		}
 
@@ -369,16 +359,13 @@ nelma_write_nets(FILE * out)
 	}
 }
 
-static void 
-nelma_write_layer(FILE * out, int z, int h,
-		  const char *name, int full,
-		  char *mat)
+static void nelma_write_layer(FILE * out, int z, int h, const char *name, int full, char *mat)
 {
-	LibraryType     netlist;
+	LibraryType netlist;
 	LibraryMenuTypePtr net;
 	LibraryEntryTypePtr pin;
 
-	int             n, m;
+	int n, m;
 
 	fprintf(out, "layer %s {\n", name);
 	fprintf(out, "\theight = %d\n", h);
@@ -397,8 +384,7 @@ nelma_write_layer(FILE * out, int z, int h,
 
 				if (m != 0 || n != 0)
 					fprintf(out, ",\n");
-				fprintf(out, "\t\t\"%s-%s\"", pin->ListEntry,
-					name);
+				fprintf(out, "\t\t\"%s-%s\"", pin->ListEntry, name);
 			}
 
 		}
@@ -407,16 +393,15 @@ nelma_write_layer(FILE * out, int z, int h,
 	fprintf(out, "}\n");
 }
 
-static void 
-nelma_write_layers(FILE * out)
+static void nelma_write_layers(FILE * out)
 {
-	int             i, idx;
-	int             z;
+	int i, idx;
+	int z;
 
-	const char     *ext;
-	char            buf[100];
+	const char *ext;
+	char buf[100];
 
-	int             subh;
+	int subh;
 
 	subh = nelma_substrateh / nelma_copperh;
 
@@ -430,18 +415,12 @@ nelma_write_layers(FILE * out)
 	z = 10;
 	for (i = 0; i < MAX_LAYER; i++)
 		if (nelma_export_group[i]) {
-			idx = (i >= 0 && i < max_group) ?
-				PCB->LayerGroups.Entries[i][0] : i;
+			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 			ext = layer_type_to_file_name(idx, FNS_fixed);
 
 			if (z != 10) {
 				sprintf(buf, "substrate-%d", z);
-				nelma_write_layer(out,
-						  z,
-						  subh,
-						  buf,
-						  0,
-						  "composite");
+				nelma_write_layer(out, z, subh, buf, 0, "composite");
 				z++;
 			}
 			/*
@@ -454,25 +433,23 @@ nelma_write_layers(FILE * out)
 		}
 }
 
-static void 
-nelma_write_object(FILE * out, LibraryEntryTypePtr pin)
+static void nelma_write_object(FILE * out, LibraryEntryTypePtr pin)
 {
-	int             i, idx;
-	Coord           px = 0, py = 0;
-	int             x, y;
+	int i, idx;
+	Coord px = 0, py = 0;
+	int x, y;
 
-	char           *f;
-	const char     *ext;
+	char *f;
+	const char *ext;
 
-	pin_name_to_xy (pin, &px, &py);
+	pin_name_to_xy(pin, &px, &py);
 
-	x = pcb_to_nelma (px);
-	y = pcb_to_nelma (py);
+	x = pcb_to_nelma(px);
+	y = pcb_to_nelma(py);
 
 	for (i = 0; i < MAX_LAYER; i++)
 		if (nelma_export_group[i]) {
-			idx = (i >= 0 && i < max_group) ?
-				PCB->LayerGroups.Entries[i][0] : i;
+			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 			ext = layer_type_to_file_name(idx, FNS_fixed);
 
 			fprintf(out, "object %s-%s {\n", pin->ListEntry, ext);
@@ -492,14 +469,13 @@ nelma_write_object(FILE * out, LibraryEntryTypePtr pin)
 		}
 }
 
-static void 
-nelma_write_objects(FILE * out)
+static void nelma_write_objects(FILE * out)
 {
-	LibraryType     netlist;
+	LibraryType netlist;
 	LibraryMenuTypePtr net;
 	LibraryEntryTypePtr pin;
 
-	int             n, m;
+	int n, m;
 
 	netlist = PCB->NetlistLib[NETLIST_EDITED];
 
@@ -518,25 +494,18 @@ nelma_write_objects(FILE * out)
 
 /* *** Main export callback ************************************************ */
 
-static void 
-nelma_parse_arguments(int *argc, char ***argv)
+static void nelma_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(nelma_attribute_list,
-				sizeof(nelma_attribute_list) /
-				sizeof(nelma_attribute_list[0]));
+	hid_register_attributes(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]));
 	hid_parse_command_line(argc, argv);
 }
 
-static HID_Attribute *
-nelma_get_export_options(int *n)
+static HID_Attribute *nelma_get_export_options(int *n)
 {
-	static char    *last_made_filename = 0;
+	static char *last_made_filename = 0;
 
 	if (PCB) {
-		derive_default_filename(PCB->Filename,
-					&nelma_attribute_list[HA_basename],
-					".nelma",
-					&last_made_filename);
+		derive_default_filename(PCB->Filename, &nelma_attribute_list[HA_basename], ".nelma", &last_made_filename);
 	}
 	if (n) {
 		*n = NUM_OPTIONS;
@@ -545,11 +514,10 @@ nelma_get_export_options(int *n)
 }
 
 /* Populates nelma_export_group array */
-void 
-nelma_choose_groups()
+void nelma_choose_groups()
 {
-	int             n, m;
-	LayerType      *layer;
+	int n, m;
+	LayerType *layer;
 
 	/* Set entire array to 0 (don't export any layer groups by default */
 	memset(nelma_export_group, 0, sizeof(nelma_export_group));
@@ -557,8 +525,7 @@ nelma_choose_groups()
 	for (n = 0; n < max_copper_layer; n++) {
 		layer = &PCB->Data->Layer[n];
 
-		if (layer->LineN || layer->TextN || layer->ArcN ||
-		    layer->PolygonN) {
+		if (layer->LineN || layer->TextN || layer->ArcN || layer->PolygonN) {
 			/* layer isn't empty */
 
 			/*
@@ -577,8 +544,7 @@ nelma_choose_groups()
 	}
 }
 
-static void 
-nelma_alloc_colors()
+static void nelma_alloc_colors()
 {
 	/*
 	 * Allocate white and black -- the first color allocated becomes the
@@ -594,11 +560,10 @@ nelma_alloc_colors()
 	black->c = gdImageColorAllocate(nelma_im, black->r, black->g, black->b);
 }
 
-static void 
-nelma_start_png(const char *basename, const char *suffix)
+static void nelma_start_png(const char *basename, const char *suffix)
 {
-	int             h, w;
-	char           *buf;
+	int h, w;
+	char *buf;
 
 	buf = nelma_get_png_name(basename, suffix);
 
@@ -616,8 +581,7 @@ nelma_start_png(const char *basename, const char *suffix)
 	free(buf);
 }
 
-static void 
-nelma_finish_png()
+static void nelma_finish_png()
 {
 #ifdef HAVE_GDIMAGEPNG
 	gdImagePng(nelma_im, nelma_f);
@@ -634,10 +598,9 @@ nelma_finish_png()
 	nelma_f = NULL;
 }
 
-void 
-nelma_start_png_export()
+void nelma_start_png_export()
 {
-	BoxType         region;
+	BoxType region;
 
 	region.X1 = 0;
 	region.Y1 = 0;
@@ -645,22 +608,21 @@ nelma_start_png_export()
 	region.Y2 = PCB->MaxHeight;
 
 	linewidth = -1;
-	lastbrush = (gdImagePtr)((void *) -1);
+	lastbrush = (gdImagePtr) ((void *) -1);
 	lastcolor = -1;
 
 	hid_expose_callback(&nelma_hid, &region, 0);
 }
 
-static void 
-nelma_do_export(HID_Attr_Val * options)
+static void nelma_do_export(HID_Attr_Val * options)
 {
-	int             save_ons[MAX_LAYER + 2];
-	int             i, idx;
-	FILE           *nelma_config;
-	char           *buf;
-	int             len;
+	int save_ons[MAX_LAYER + 2];
+	int i, idx;
+	FILE *nelma_config;
+	char *buf;
+	int len;
 
-	time_t          t;
+	time_t t;
 
 	if (!options) {
 		nelma_get_export_options(0);
@@ -690,11 +652,9 @@ nelma_do_export(HID_Attr_Val * options)
 			nelma_cur_group = i;
 
 			/* magic */
-			idx = (i >= 0 && i < max_group) ?
-				PCB->LayerGroups.Entries[i][0] : i;
+			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 
-			nelma_start_png(nelma_basename,
-					layer_type_to_file_name(idx, FNS_fixed));
+			nelma_start_png(nelma_basename, layer_type_to_file_name(idx, FNS_fixed));
 
 			hid_save_and_show_layer_ons(save_ons);
 			nelma_start_png_export();
@@ -705,7 +665,7 @@ nelma_do_export(HID_Attr_Val * options)
 	}
 
 	len = strlen(nelma_basename) + 4;
-	buf = (char *)malloc(sizeof(*buf) * len);
+	buf = (char *) malloc(sizeof(*buf) * len);
 
 	sprintf(buf, "%s.em", nelma_basename);
 	nelma_config = fopen(buf, "w");
@@ -727,11 +687,9 @@ nelma_do_export(HID_Attr_Val * options)
 
 /* *** PNG export (slightly modified code from PNG export HID) ************* */
 
-static int 
-nelma_set_layer(const char *name, int group, int empty)
+static int nelma_set_layer(const char *name, int group, int empty)
 {
-	int             idx = (group >= 0 && group < max_group) ?
-	PCB->LayerGroups.Entries[group][0] : group;
+	int idx = (group >= 0 && group < max_group) ? PCB->LayerGroups.Entries[group][0] : group;
 
 	if (name == 0) {
 		name = PCB->Data->Layer[idx].Name;
@@ -759,10 +717,9 @@ nelma_set_layer(const char *name, int group, int empty)
 	return 0;
 }
 
-static hidGC 
-nelma_make_gc(void)
+static hidGC nelma_make_gc(void)
 {
-	hidGC           rv = (hidGC) malloc(sizeof(struct hid_gc_struct));
+	hidGC rv = (hidGC) malloc(sizeof(struct hid_gc_struct));
 	rv->me_pointer = &nelma_hid;
 	rv->cap = Trace_Cap;
 	rv->width = 1;
@@ -772,20 +729,17 @@ nelma_make_gc(void)
 	return rv;
 }
 
-static void 
-nelma_destroy_gc(hidGC gc)
+static void nelma_destroy_gc(hidGC gc)
 {
 	free(gc);
 }
 
-static void 
-nelma_use_mask(int use_it)
+static void nelma_use_mask(int use_it)
 {
 	/* does nothing */
 }
 
-static void 
-nelma_set_color(hidGC gc, const char *name)
+static void nelma_set_color(hidGC gc, const char *name)
 {
 	if (nelma_im == NULL) {
 		return;
@@ -809,34 +763,29 @@ nelma_set_color(hidGC gc, const char *name)
 	return;
 }
 
-static void
-nelma_set_line_cap(hidGC gc, EndCapStyle style)
+static void nelma_set_line_cap(hidGC gc, EndCapStyle style)
 {
 	gc->cap = style;
 }
 
-static void
-nelma_set_line_width(hidGC gc, Coord width)
+static void nelma_set_line_width(hidGC gc, Coord width)
 {
 	gc->width = width;
 }
 
-static void
-nelma_set_draw_xor(hidGC gc, int xor_)
+static void nelma_set_draw_xor(hidGC gc, int xor_)
 {
 	;
 }
 
-static void
-nelma_set_draw_faded(hidGC gc, int faded)
+static void nelma_set_draw_faded(hidGC gc, int faded)
 {
 	gc->faded = faded;
 }
 
-static void
-use_gc(hidGC gc)
+static void use_gc(hidGC gc)
 {
-	int             need_brush = 0;
+	int need_brush = 0;
 
 	if (gc->me_pointer != &nelma_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to nelma HID\n");
@@ -845,20 +794,20 @@ use_gc(hidGC gc)
 	if (linewidth != gc->width) {
 		/* Make sure the scaling doesn't erase lines completely */
 		/*
-	        if (SCALE (gc->width) == 0 && gc->width > 0)
-		  gdImageSetThickness (im, 1);
-	        else
-	        */
+		   if (SCALE (gc->width) == 0 && gc->width > 0)
+		   gdImageSetThickness (im, 1);
+		   else
+		 */
 		gdImageSetThickness(nelma_im, pcb_to_nelma(gc->width));
 		linewidth = gc->width;
 		need_brush = 1;
 	}
 	if (lastbrush != gc->brush || need_brush) {
-		static void    *bcache = 0;
-		hidval          bval;
-		char            name[256];
-		char            type;
-		int             r;
+		static void *bcache = 0;
+		hidval bval;
+		char name[256];
+		char type;
+		int r;
 
 		switch (gc->cap) {
 		case Round_Cap:
@@ -872,27 +821,25 @@ use_gc(hidGC gc)
 			type = 'S';
 			break;
 		}
-		sprintf(name, "#%.2x%.2x%.2x_%c_%d", gc->color->r, gc->color->g,
-			gc->color->b, type, r);
+		sprintf(name, "#%.2x%.2x%.2x_%c_%d", gc->color->r, gc->color->g, gc->color->b, type, r);
 
 		if (hid_cache_color(0, name, &bval, &bcache)) {
-		  gc->brush = (gdImagePtr)bval.ptr;
-		} else {
-			int             bg, fg;
+			gc->brush = (gdImagePtr) bval.ptr;
+		}
+		else {
+			int bg, fg;
 			if (type == 'C')
 				gc->brush = gdImageCreate(2 * r + 1, 2 * r + 1);
 			else
 				gc->brush = gdImageCreate(r + 1, r + 1);
 			bg = gdImageColorAllocate(gc->brush, 255, 255, 255);
-			fg =
-				gdImageColorAllocate(gc->brush, gc->color->r, gc->color->g,
-						     gc->color->b);
+			fg = gdImageColorAllocate(gc->brush, gc->color->r, gc->color->g, gc->color->b);
 			gdImageColorTransparent(gc->brush, bg);
 
 			/*
-		         * if we shrunk to a radius/box width of zero, then just use
-		         * a single pixel to draw with.
-		         */
+			 * if we shrunk to a radius/box width of zero, then just use
+			 * a single pixel to draw with.
+			 */
 			if (r == 0)
 				gdImageFilledRectangle(gc->brush, 0, 0, 0, 0, fg);
 			else {
@@ -916,8 +863,9 @@ use_gc(hidGC gc)
 			fprintf(f, "%d gray\n", gc->erase ? 0 : 1);
 #endif
 			lastcolor = 0;
-		} else {
-			double          r, g, b;
+		}
+		else {
+			double r, g, b;
 			r = gc->r;
 			g = gc->g;
 			b = gc->b;
@@ -937,30 +885,24 @@ use_gc(hidGC gc)
 	}
 }
 
-static void
-nelma_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nelma_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	use_gc(gc);
-	gdImageRectangle(nelma_im,
-			 pcb_to_nelma(x1), pcb_to_nelma(y1),
-			 pcb_to_nelma(x2), pcb_to_nelma(y2), gc->color->c);
+	gdImageRectangle(nelma_im, pcb_to_nelma(x1), pcb_to_nelma(y1), pcb_to_nelma(x2), pcb_to_nelma(y2), gc->color->c);
 }
 
-static void
-nelma_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nelma_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	use_gc(gc);
 	gdImageSetThickness(nelma_im, 0);
 	linewidth = 0;
-	gdImageFilledRectangle(nelma_im, pcb_to_nelma(x1), pcb_to_nelma(y1),
-			  pcb_to_nelma(x2), pcb_to_nelma(y2), gc->color->c);
+	gdImageFilledRectangle(nelma_im, pcb_to_nelma(x1), pcb_to_nelma(y1), pcb_to_nelma(x2), pcb_to_nelma(y2), gc->color->c);
 }
 
-static void
-nelma_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nelma_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	if (x1 == x2 && y1 == y2) {
-		Coord             w = gc->width / 2;
+		Coord w = gc->width / 2;
 		nelma_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		return;
 	}
@@ -968,13 +910,10 @@ nelma_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 
 	gdImageSetThickness(nelma_im, 0);
 	linewidth = 0;
-	gdImageLine(nelma_im, pcb_to_nelma(x1), pcb_to_nelma(y1),
-		    pcb_to_nelma(x2), pcb_to_nelma(y2), gdBrushed);
+	gdImageLine(nelma_im, pcb_to_nelma(x1), pcb_to_nelma(y1), pcb_to_nelma(x2), pcb_to_nelma(y2), gdBrushed);
 }
 
-static void
-nelma_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height,
-	       Angle start_angle, Angle delta_angle)
+static void nelma_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
 {
 	Angle sa, ea;
 
@@ -987,7 +926,8 @@ nelma_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height,
 	if (delta_angle > 0) {
 		sa = start_angle;
 		ea = start_angle + delta_angle;
-	} else {
+	}
+	else {
 		sa = start_angle + delta_angle;
 		ea = start_angle;
 	}
@@ -996,40 +936,36 @@ nelma_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height,
 	 * make sure we start between 0 and 360 otherwise gd does strange
 	 * things
 	 */
-        sa = NormalizeAngle (sa);
-        ea = NormalizeAngle (ea);
+	sa = NormalizeAngle(sa);
+	ea = NormalizeAngle(ea);
 
 #if 0
-	printf("draw_arc %d,%d %dx%d %d..%d %d..%d\n",
-	       cx, cy, width, height, start_angle, delta_angle, sa, ea);
+	printf("draw_arc %d,%d %dx%d %d..%d %d..%d\n", cx, cy, width, height, start_angle, delta_angle, sa, ea);
 	printf("gdImageArc (%p, %d, %d, %d, %d, %d, %d, %d)\n",
-	       im, SCALE_X(cx), SCALE_Y(cy),
-	       SCALE(width), SCALE(height), sa, ea, gc->color->c);
+				 im, SCALE_X(cx), SCALE_Y(cy), SCALE(width), SCALE(height), sa, ea, gc->color->c);
 #endif
 	use_gc(gc);
 	gdImageSetThickness(nelma_im, 0);
 	linewidth = 0;
 	gdImageArc(nelma_im, pcb_to_nelma(cx), pcb_to_nelma(cy),
-		   pcb_to_nelma(2 * width), pcb_to_nelma(2 * height), sa, ea, gdBrushed);
+						 pcb_to_nelma(2 * width), pcb_to_nelma(2 * height), sa, ea, gdBrushed);
 }
 
-static void
-nelma_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
+static void nelma_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 {
 	use_gc(gc);
 
 	gdImageSetThickness(nelma_im, 0);
 	linewidth = 0;
 	gdImageFilledEllipse(nelma_im, pcb_to_nelma(cx), pcb_to_nelma(cy),
-	  pcb_to_nelma(2 * radius), pcb_to_nelma(2 * radius), gc->color->c);
+											 pcb_to_nelma(2 * radius), pcb_to_nelma(2 * radius), gc->color->c);
 
 }
 
-static void
-nelma_fill_polygon(hidGC gc, int n_coords, Coord *x, Coord *y)
+static void nelma_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 {
-	int             i;
-	gdPoint        *points;
+	int i;
+	gdPoint *points;
 
 	points = (gdPoint *) malloc(n_coords * sizeof(gdPoint));
 	if (points == NULL) {
@@ -1047,14 +983,12 @@ nelma_fill_polygon(hidGC gc, int n_coords, Coord *x, Coord *y)
 	free(points);
 }
 
-static void
-nelma_calibrate(double xval, double yval)
+static void nelma_calibrate(double xval, double yval)
 {
 	CRASH;
 }
 
-static void
-nelma_set_crosshair(int x, int y, int a)
+static void nelma_set_crosshair(int x, int y, int a)
 {
 }
 
@@ -1062,40 +996,39 @@ nelma_set_crosshair(int x, int y, int a)
 
 #include "dolists.h"
 
-void
-hid_nelma_init()
+void hid_nelma_init()
 {
-  memset (&nelma_hid, 0, sizeof (HID));
+	memset(&nelma_hid, 0, sizeof(HID));
 
-  common_nogui_init (&nelma_hid);
-  common_draw_helpers_init (&nelma_hid);
+	common_nogui_init(&nelma_hid);
+	common_draw_helpers_init(&nelma_hid);
 
-  nelma_hid.struct_size         = sizeof (HID);
-  nelma_hid.name                = "nelma";
-  nelma_hid.description         = "Numerical analysis package export";
-  nelma_hid.exporter            = 1;
-  nelma_hid.poly_before         = 1;
+	nelma_hid.struct_size = sizeof(HID);
+	nelma_hid.name = "nelma";
+	nelma_hid.description = "Numerical analysis package export";
+	nelma_hid.exporter = 1;
+	nelma_hid.poly_before = 1;
 
-  nelma_hid.get_export_options  = nelma_get_export_options;
-  nelma_hid.do_export           = nelma_do_export;
-  nelma_hid.parse_arguments     = nelma_parse_arguments;
-  nelma_hid.set_layer           = nelma_set_layer;
-  nelma_hid.make_gc             = nelma_make_gc;
-  nelma_hid.destroy_gc          = nelma_destroy_gc;
-  nelma_hid.use_mask            = nelma_use_mask;
-  nelma_hid.set_color           = nelma_set_color;
-  nelma_hid.set_line_cap        = nelma_set_line_cap;
-  nelma_hid.set_line_width      = nelma_set_line_width;
-  nelma_hid.set_draw_xor        = nelma_set_draw_xor;
-  nelma_hid.set_draw_faded      = nelma_set_draw_faded;
-  nelma_hid.draw_line           = nelma_draw_line;
-  nelma_hid.draw_arc            = nelma_draw_arc;
-  nelma_hid.draw_rect           = nelma_draw_rect;
-  nelma_hid.fill_circle         = nelma_fill_circle;
-  nelma_hid.fill_polygon        = nelma_fill_polygon;
-  nelma_hid.fill_rect           = nelma_fill_rect;
-  nelma_hid.calibrate           = nelma_calibrate;
-  nelma_hid.set_crosshair       = nelma_set_crosshair;
+	nelma_hid.get_export_options = nelma_get_export_options;
+	nelma_hid.do_export = nelma_do_export;
+	nelma_hid.parse_arguments = nelma_parse_arguments;
+	nelma_hid.set_layer = nelma_set_layer;
+	nelma_hid.make_gc = nelma_make_gc;
+	nelma_hid.destroy_gc = nelma_destroy_gc;
+	nelma_hid.use_mask = nelma_use_mask;
+	nelma_hid.set_color = nelma_set_color;
+	nelma_hid.set_line_cap = nelma_set_line_cap;
+	nelma_hid.set_line_width = nelma_set_line_width;
+	nelma_hid.set_draw_xor = nelma_set_draw_xor;
+	nelma_hid.set_draw_faded = nelma_set_draw_faded;
+	nelma_hid.draw_line = nelma_draw_line;
+	nelma_hid.draw_arc = nelma_draw_arc;
+	nelma_hid.draw_rect = nelma_draw_rect;
+	nelma_hid.fill_circle = nelma_fill_circle;
+	nelma_hid.fill_polygon = nelma_fill_polygon;
+	nelma_hid.fill_rect = nelma_fill_rect;
+	nelma_hid.calibrate = nelma_calibrate;
+	nelma_hid.set_crosshair = nelma_set_crosshair;
 
-  hid_register_hid (&nelma_hid);
+	hid_register_hid(&nelma_hid);
 }

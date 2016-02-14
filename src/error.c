@@ -62,7 +62,7 @@
 #include <dmalloc.h>
 #endif
 
-RCSID ("$Id$");
+RCSID("$Id$");
 
 
 #define utf8_dup_string(a,b) *(a) = strdup(b)
@@ -72,14 +72,14 @@ RCSID ("$Id$");
  */
 
 #if !defined(HAVE_STRERROR)
-extern int sys_nerr;		/* number of messages available from array */
+extern int sys_nerr;						/* number of messages available from array */
 #define USE_SYS_ERRLIST
 #endif
 
 /* the list is already defined for some OS */
 #if !defined(__NetBSD__) && !defined(__FreeBSD__) && !defined(__linux__) && !defined(__DragonFly__)
 #ifdef USE_SYS_ERRLIST
-extern char *sys_errlist[];	/* array of error messages */
+extern char *sys_errlist[];			/* array of error messages */
 #endif
 #endif
 
@@ -87,21 +87,20 @@ extern char *sys_errlist[];	/* array of error messages */
 /* ---------------------------------------------------------------------------
  * output of message in a dialog window or log window
  */
-void
-Message (const char *Format, ...)
+void Message(const char *Format, ...)
 {
-  va_list args;
+	va_list args;
 
-  if (gui != NULL) {
-    va_start (args, Format);
-    gui->logv (Format, args);
-    va_end (args);
-  }
+	if (gui != NULL) {
+		va_start(args, Format);
+		gui->logv(Format, args);
+		va_end(args);
+	}
 
 #ifdef HAVE_STDARG_H
-  va_start (args, Format);
-  vfprintf(stderr, Format, args);
-  va_end (args);
+	va_start(args, Format);
+	vfprintf(stderr, Format, args);
+	va_end(args);
 #endif
 }
 
@@ -109,137 +108,121 @@ Message (const char *Format, ...)
 /* ---------------------------------------------------------------------------
  * print standard 'open error'
  */
-void
-OpenErrorMessage (const char *Filename)
+void OpenErrorMessage(const char *Filename)
 {
-  char *utf8 = NULL;
+	char *utf8 = NULL;
 
-  utf8_dup_string (&utf8, Filename);
+	utf8_dup_string(&utf8, Filename);
 #ifdef USE_SYS_ERRLIST
-  Message (_("Can't open file\n"
-	     "   '%s'\nfopen() returned: '%s'\n"),
-	   utf8, errno <= sys_nerr ? sys_errlist[errno] : "???");
+	Message(_("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), utf8, errno <= sys_nerr ? sys_errlist[errno] : "???");
 #else
-  Message (_("Can't open file\n"
-	     "   '%s'\nfopen() returned: '%s'\n"), utf8, strerror (errno));
+	Message(_("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), utf8, strerror(errno));
 #endif
-  free (utf8);
+	free(utf8);
 }
 
 /* ---------------------------------------------------------------------------
  * print standard 'popen error'
  */
-void
-PopenErrorMessage (const char *Filename)
+void PopenErrorMessage(const char *Filename)
 {
-  char *utf8 = NULL;
+	char *utf8 = NULL;
 
-  utf8_dup_string (&utf8, Filename);
+	utf8_dup_string(&utf8, Filename);
 #ifdef USE_SYS_ERRLIST
-  Message (_("Can't execute command\n"
-	     "   '%s'\npopen() returned: '%s'\n"),
-	   utf8, errno <= sys_nerr ? sys_errlist[errno] : "???");
+	Message(_("Can't execute command\n"
+						"   '%s'\npopen() returned: '%s'\n"), utf8, errno <= sys_nerr ? sys_errlist[errno] : "???");
 #else
-  Message (_("Can't execute command\n"
-	     "   '%s'\npopen() returned: '%s'\n"), utf8, strerror (errno));
+	Message(_("Can't execute command\n" "   '%s'\npopen() returned: '%s'\n"), utf8, strerror(errno));
 #endif
-  free (utf8);
+	free(utf8);
 }
 
 /* ---------------------------------------------------------------------------
  * print standard 'opendir'
  */
-void
-OpendirErrorMessage (const char *DirName)
+void OpendirErrorMessage(const char *DirName)
 {
-  char *utf8 = NULL;
+	char *utf8 = NULL;
 
-  utf8_dup_string (&utf8, DirName);
+	utf8_dup_string(&utf8, DirName);
 #ifdef USE_SYS_ERRLIST
-  Message (_("Can't scan directory\n"
-	     "   '%s'\nopendir() returned: '%s'\n"),
-	   utf8, errno <= sys_nerr ? sys_errlist[errno] : "???");
+	Message(_("Can't scan directory\n"
+						"   '%s'\nopendir() returned: '%s'\n"), utf8, errno <= sys_nerr ? sys_errlist[errno] : "???");
 #else
-  Message (_("Can't scan directory\n"
-	     "   '%s'\nopendir() returned: '%s'\n"), utf8, strerror (errno));
+	Message(_("Can't scan directory\n" "   '%s'\nopendir() returned: '%s'\n"), utf8, strerror(errno));
 #endif
-  free (utf8);
+	free(utf8);
 }
 
 /* ---------------------------------------------------------------------------
  * print standard 'chdir error'
  */
-void
-ChdirErrorMessage (const char *DirName)
+void ChdirErrorMessage(const char *DirName)
 {
-  char *utf8 = NULL;
+	char *utf8 = NULL;
 
-  utf8_dup_string (&utf8, DirName);
+	utf8_dup_string(&utf8, DirName);
 #ifdef USE_SYS_ERRLIST
-  Message (_("Can't change working directory to\n"
-	     "   '%s'\nchdir() returned: '%s'\n"),
-	   utf8, errno <= sys_nerr ? sys_errlist[errno] : "???");
+	Message(_("Can't change working directory to\n"
+						"   '%s'\nchdir() returned: '%s'\n"), utf8, errno <= sys_nerr ? sys_errlist[errno] : "???");
 #else
-  Message (_("Can't change working directory to\n"
-	     "   '%s'\nchdir() returned: '%s'\n"), utf8, strerror (errno));
+	Message(_("Can't change working directory to\n" "   '%s'\nchdir() returned: '%s'\n"), utf8, strerror(errno));
 #endif
-  free (utf8);
+	free(utf8);
 }
 
 /* ---------------------------------------------------------------------------
  * output of fatal error message
  */
-void
-MyFatal (const char *Format, ...)
+void MyFatal(const char *Format, ...)
 {
-  va_list args;
+	va_list args;
 
-  va_start (args, Format);
+	va_start(args, Format);
 
-  /* try to save the layout and do some cleanup */
-  EmergencySave ();
-  fprintf (stderr, "%s (%i): fatal, ", Progname, (int) getpid ());
-  vfprintf (stderr, Format, args);
-  fflush (stderr);
-  va_end (args);
-  exit (1);
+	/* try to save the layout and do some cleanup */
+	EmergencySave();
+	fprintf(stderr, "%s (%i): fatal, ", Progname, (int) getpid());
+	vfprintf(stderr, Format, args);
+	fflush(stderr);
+	va_end(args);
+	exit(1);
 }
 
 /* ---------------------------------------------------------------------------
  * catches signals which abort the program
  */
-void
-CatchSignal (int Signal)
+void CatchSignal(int Signal)
 {
-  char *s;
+	char *s;
 
-  switch (Signal)
-    {
+	switch (Signal) {
 #ifdef SIGHUP
-    case SIGHUP:
-      s = "SIGHUP";
-      break;
+	case SIGHUP:
+		s = "SIGHUP";
+		break;
 #endif
-    case SIGINT:
-      s = "SIGINT";
-      break;
+	case SIGINT:
+		s = "SIGINT";
+		break;
 #ifdef SIGQUIT
-    case SIGQUIT:
-      s = "SIGQUIT";
-      break;
+	case SIGQUIT:
+		s = "SIGQUIT";
+		break;
 #endif
-    case SIGABRT:
-      s = "SIGABRT";
-      break;
-    case SIGTERM:
-      s = "SIGTERM";
-      break;
-    case SIGSEGV:
-      s = "SIGSEGV";
-      break;
-    default:
-      s = "unknown";
-      break;
-    }
-  MyFatal ("aborted by %s signal\n", s);
+	case SIGABRT:
+		s = "SIGABRT";
+		break;
+	case SIGTERM:
+		s = "SIGTERM";
+		break;
+	case SIGSEGV:
+		s = "SIGSEGV";
+		break;
+	default:
+		s = "unknown";
+		break;
+	}
+	MyFatal("aborted by %s signal\n", s);
 }

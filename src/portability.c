@@ -64,14 +64,13 @@
  * NULL, then the current working directory is copied to the array
  * pointed to by 'path'
  */
-char *
-GetWorkingDirectory (char *path)
+char *GetWorkingDirectory(char *path)
 {
 #ifdef HAVE_GETCWD
-  return getcwd (path, MAXPATHLEN);
+	return getcwd(path, MAXPATHLEN);
 #else
-  /* seems that some BSD releases lack of a prototype for getwd() */
-  return getwd (path);
+	/* seems that some BSD releases lack of a prototype for getwd() */
+	return getwd(path);
 #endif
 
 }
@@ -79,81 +78,75 @@ GetWorkingDirectory (char *path)
 const char *get_user_name(void)
 {
 #ifdef HAVE_GETPWUID
-  static struct passwd *pwentry;
+	static struct passwd *pwentry;
 
-          int len;
-          char *comma, *gecos, *fab_author;
+	int len;
+	char *comma, *gecos, *fab_author;
 
-          /* ID the user. */
-          pwentry = getpwuid (getuid ());
-          gecos = pwentry->pw_gecos;
-          comma = strchr (gecos, ',');
-          if (comma)
-            len = comma - gecos;
-          else
-            len = strlen (gecos);
-          fab_author = (char *)malloc (len + 1);
-          if (!fab_author)
-            {
-              perror ("pcb: out of memory.\n");
-              exit (-1);
-            }
-          memcpy (fab_author, gecos, len);
-          fab_author[len] = 0;
+	/* ID the user. */
+	pwentry = getpwuid(getuid());
+	gecos = pwentry->pw_gecos;
+	comma = strchr(gecos, ',');
+	if (comma)
+		len = comma - gecos;
+	else
+		len = strlen(gecos);
+	fab_author = (char *) malloc(len + 1);
+	if (!fab_author) {
+		perror("pcb: out of memory.\n");
+		exit(-1);
+	}
+	memcpy(fab_author, gecos, len);
+	fab_author[len] = 0;
 #else
-  return "Unknown";
+	return "Unknown";
 #endif
 
 }
 
-char *ExpandFilename (char *Dirname, char *Filename)
+char *ExpandFilename(char *Dirname, char *Filename)
 {
-  static DynamicStringType answer;
-  char *command;
-  FILE *pipe;
-  int c;
+	static DynamicStringType answer;
+	char *command;
+	FILE *pipe;
+	int c;
 
-  /* allocate memory for commandline and build it */
-  DSClearString (&answer);
-  if (Dirname)
-    {
-      command = (char *)calloc (strlen (Filename) + strlen (Dirname) + 7,
-                        sizeof (char));
-      sprintf (command, "echo %s/%s", Dirname, Filename);
-    }
-  else
-    {
-      command = (char *)calloc (strlen (Filename) + 6, sizeof (char));
-      sprintf (command, "echo %s", Filename);
-    }
+	/* allocate memory for commandline and build it */
+	DSClearString(&answer);
+	if (Dirname) {
+		command = (char *) calloc(strlen(Filename) + strlen(Dirname) + 7, sizeof(char));
+		sprintf(command, "echo %s/%s", Dirname, Filename);
+	}
+	else {
+		command = (char *) calloc(strlen(Filename) + 6, sizeof(char));
+		sprintf(command, "echo %s", Filename);
+	}
 
-  /* execute it with shell */
-  if ((pipe = popen (command, "r")) != NULL)
-    {
-      /* discard all but the first returned line */
-      for (;;)
-        {
-          if ((c = fgetc (pipe)) == EOF || c == '\n' || c == '\r')
-            break;
-          else
-            DSAddCharacter (&answer, c);
-        }
+	/* execute it with shell */
+	if ((pipe = popen(command, "r")) != NULL) {
+		/* discard all but the first returned line */
+		for (;;) {
+			if ((c = fgetc(pipe)) == EOF || c == '\n' || c == '\r')
+				break;
+			else
+				DSAddCharacter(&answer, c);
+		}
 
-      free (command);
-      return (pclose (pipe) ? NULL : answer.Data);
-    }
+		free(command);
+		return (pclose(pipe) ? NULL : answer.Data);
+	}
 
-  /* couldn't be expanded by the shell */
-  PopenErrorMessage (command);
-  free (command);
-  return (NULL);
+	/* couldn't be expanded by the shell */
+	PopenErrorMessage(command);
+	free(command);
+	return (NULL);
 }
 
 
 #ifdef MKDIR_IS_PCBMKDIR
 #error "Don't know how to create a directory on this system."
-int pcb_mkdir (const char *path, int mode)
+int pcb_mkdir(const char *path, int mode)
 {
-  return MKDIR (path, mode);
+	return MKDIR(path, mode);
 }
 #endif

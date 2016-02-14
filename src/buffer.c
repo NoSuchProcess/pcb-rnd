@@ -60,26 +60,26 @@
 #include <dmalloc.h>
 #endif
 
-RCSID ("$Id$");
+RCSID("$Id$");
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *AddViaToBuffer (PinTypePtr);
-static void *AddLineToBuffer (LayerTypePtr, LineTypePtr);
-static void *AddArcToBuffer (LayerTypePtr, ArcTypePtr);
-static void *AddRatToBuffer (RatTypePtr);
-static void *AddTextToBuffer (LayerTypePtr, TextTypePtr);
-static void *AddPolygonToBuffer (LayerTypePtr, PolygonTypePtr);
-static void *AddElementToBuffer (ElementTypePtr);
-static void *MoveViaToBuffer (PinTypePtr);
-static void *MoveLineToBuffer (LayerTypePtr, LineTypePtr);
-static void *MoveArcToBuffer (LayerTypePtr, ArcTypePtr);
-static void *MoveRatToBuffer (RatTypePtr);
-static void *MoveTextToBuffer (LayerTypePtr, TextTypePtr);
-static void *MovePolygonToBuffer (LayerTypePtr, PolygonTypePtr);
-static void *MoveElementToBuffer (ElementTypePtr);
-static void SwapBuffer (BufferTypePtr);
+static void *AddViaToBuffer(PinTypePtr);
+static void *AddLineToBuffer(LayerTypePtr, LineTypePtr);
+static void *AddArcToBuffer(LayerTypePtr, ArcTypePtr);
+static void *AddRatToBuffer(RatTypePtr);
+static void *AddTextToBuffer(LayerTypePtr, TextTypePtr);
+static void *AddPolygonToBuffer(LayerTypePtr, PolygonTypePtr);
+static void *AddElementToBuffer(ElementTypePtr);
+static void *MoveViaToBuffer(PinTypePtr);
+static void *MoveLineToBuffer(LayerTypePtr, LineTypePtr);
+static void *MoveArcToBuffer(LayerTypePtr, ArcTypePtr);
+static void *MoveRatToBuffer(RatTypePtr);
+static void *MoveTextToBuffer(LayerTypePtr, TextTypePtr);
+static void *MovePolygonToBuffer(LayerTypePtr, PolygonTypePtr);
+static void *MoveElementToBuffer(ElementTypePtr);
+static void SwapBuffer(BufferTypePtr);
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
@@ -89,398 +89,365 @@ static void SwapBuffer (BufferTypePtr);
 static DataTypePtr Dest, Source;
 
 static ObjectFunctionType AddBufferFunctions = {
-  AddLineToBuffer,
-  AddTextToBuffer,
-  AddPolygonToBuffer,
-  AddViaToBuffer,
-  AddElementToBuffer,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  AddArcToBuffer,
-  AddRatToBuffer
-}, MoveBufferFunctions =
-
-{
+	AddLineToBuffer,
+	AddTextToBuffer,
+	AddPolygonToBuffer,
+	AddViaToBuffer,
+	AddElementToBuffer,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	AddArcToBuffer,
+	AddRatToBuffer
+}, MoveBufferFunctions = {
 MoveLineToBuffer,
-    MoveTextToBuffer,
-    MovePolygonToBuffer,
-    MoveViaToBuffer,
-    MoveElementToBuffer,
-    NULL, NULL, NULL, NULL, NULL, MoveArcToBuffer, MoveRatToBuffer};
+		MoveTextToBuffer,
+		MovePolygonToBuffer, MoveViaToBuffer, MoveElementToBuffer, NULL, NULL, NULL, NULL, NULL, MoveArcToBuffer, MoveRatToBuffer};
 
 static int ExtraFlag = 0;
 
 /* ---------------------------------------------------------------------------
  * copies a via to paste buffer
  */
-static void *
-AddViaToBuffer (PinTypePtr Via)
+static void *AddViaToBuffer(PinTypePtr Via)
 {
-  return (CreateNewVia (Dest, Via->X, Via->Y, Via->Thickness, Via->Clearance,
-			Via->Mask, Via->DrillingHole, Via->Name,
-			MaskFlags (Via->Flags, FOUNDFLAG | ExtraFlag)));
+	return (CreateNewVia(Dest, Via->X, Via->Y, Via->Thickness, Via->Clearance,
+											 Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, FOUNDFLAG | ExtraFlag)));
 }
 
 /* ---------------------------------------------------------------------------
  * copies a rat-line to paste buffer
  */
-static void *
-AddRatToBuffer (RatTypePtr Rat)
+static void *AddRatToBuffer(RatTypePtr Rat)
 {
-  return (CreateNewRat (Dest, Rat->Point1.X, Rat->Point1.Y,
-			Rat->Point2.X, Rat->Point2.Y, Rat->group1,
-			Rat->group2, Rat->Thickness,
-			MaskFlags (Rat->Flags, FOUNDFLAG | ExtraFlag)));
+	return (CreateNewRat(Dest, Rat->Point1.X, Rat->Point1.Y,
+											 Rat->Point2.X, Rat->Point2.Y, Rat->group1,
+											 Rat->group2, Rat->Thickness, MaskFlags(Rat->Flags, FOUNDFLAG | ExtraFlag)));
 }
 
 /* ---------------------------------------------------------------------------
  * copies a line to buffer  
  */
-static void *
-AddLineToBuffer (LayerTypePtr Layer, LineTypePtr Line)
+static void *AddLineToBuffer(LayerTypePtr Layer, LineTypePtr Line)
 {
-  LineTypePtr line;
-  LayerTypePtr layer = &Dest->Layer[GetLayerNumber (Source, Layer)];
+	LineTypePtr line;
+	LayerTypePtr layer = &Dest->Layer[GetLayerNumber(Source, Layer)];
 
-  line = CreateNewLineOnLayer (layer, Line->Point1.X, Line->Point1.Y,
-			       Line->Point2.X, Line->Point2.Y,
-			       Line->Thickness, Line->Clearance,
-			       MaskFlags (Line->Flags,
-					  FOUNDFLAG | ExtraFlag));
-  if (line && Line->Number)
-    line->Number = strdup (Line->Number);
-  return (line);
+	line = CreateNewLineOnLayer(layer, Line->Point1.X, Line->Point1.Y,
+															Line->Point2.X, Line->Point2.Y,
+															Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, FOUNDFLAG | ExtraFlag));
+	if (line && Line->Number)
+		line->Number = strdup(Line->Number);
+	return (line);
 }
 
 /* ---------------------------------------------------------------------------
  * copies an arc to buffer  
  */
-static void *
-AddArcToBuffer (LayerTypePtr Layer, ArcTypePtr Arc)
+static void *AddArcToBuffer(LayerTypePtr Layer, ArcTypePtr Arc)
 {
-  LayerTypePtr layer = &Dest->Layer[GetLayerNumber (Source, Layer)];
+	LayerTypePtr layer = &Dest->Layer[GetLayerNumber(Source, Layer)];
 
-  return (CreateNewArcOnLayer (layer, Arc->X, Arc->Y,
-			       Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
-			       Arc->Thickness, Arc->Clearance,
-			       MaskFlags (Arc->Flags,
-					  FOUNDFLAG | ExtraFlag)));
+	return (CreateNewArcOnLayer(layer, Arc->X, Arc->Y,
+															Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
+															Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, FOUNDFLAG | ExtraFlag)));
 }
 
 /* ---------------------------------------------------------------------------
  * copies a text to buffer
  */
-static void *
-AddTextToBuffer (LayerTypePtr Layer, TextTypePtr Text)
+static void *AddTextToBuffer(LayerTypePtr Layer, TextTypePtr Text)
 {
-  LayerTypePtr layer = &Dest->Layer[GetLayerNumber (Source, Layer)];
+	LayerTypePtr layer = &Dest->Layer[GetLayerNumber(Source, Layer)];
 
-  return (CreateNewText (layer, &PCB->Font, Text->X, Text->Y,
-			 Text->Direction, Text->Scale, Text->TextString,
-			 MaskFlags (Text->Flags, ExtraFlag)));
+	return (CreateNewText(layer, &PCB->Font, Text->X, Text->Y,
+												Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, ExtraFlag)));
 }
 
 /* ---------------------------------------------------------------------------
  * copies a polygon to buffer
  */
-static void *
-AddPolygonToBuffer (LayerTypePtr Layer, PolygonTypePtr Polygon)
+static void *AddPolygonToBuffer(LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
-  LayerTypePtr layer = &Dest->Layer[GetLayerNumber (Source, Layer)];
-  PolygonTypePtr polygon;
+	LayerTypePtr layer = &Dest->Layer[GetLayerNumber(Source, Layer)];
+	PolygonTypePtr polygon;
 
-  polygon = CreateNewPolygon (layer, Polygon->Flags);
-  CopyPolygonLowLevel (polygon, Polygon);
+	polygon = CreateNewPolygon(layer, Polygon->Flags);
+	CopyPolygonLowLevel(polygon, Polygon);
 
-  /* Update the polygon r-tree. Unlike similarly named functions for
-   * other objects, CreateNewPolygon does not do this as it creates a
-   * skeleton polygon object, which won't have correct bounds.
-   */
-  if (!layer->polygon_tree)
-    layer->polygon_tree = r_create_tree (NULL, 0, 0);
-  r_insert_entry (layer->polygon_tree, (BoxType *)polygon, 0);
+	/* Update the polygon r-tree. Unlike similarly named functions for
+	 * other objects, CreateNewPolygon does not do this as it creates a
+	 * skeleton polygon object, which won't have correct bounds.
+	 */
+	if (!layer->polygon_tree)
+		layer->polygon_tree = r_create_tree(NULL, 0, 0);
+	r_insert_entry(layer->polygon_tree, (BoxType *) polygon, 0);
 
-  CLEAR_FLAG (FOUNDFLAG | ExtraFlag, polygon);
-  return (polygon);
+	CLEAR_FLAG(FOUNDFLAG | ExtraFlag, polygon);
+	return (polygon);
 }
 
 /* ---------------------------------------------------------------------------
  * copies a element to buffer
  */
-static void *
-AddElementToBuffer (ElementTypePtr Element)
+static void *AddElementToBuffer(ElementTypePtr Element)
 {
-  ElementTypePtr element;
+	ElementTypePtr element;
 
-  element = GetElementMemory (Dest);
-  CopyElementLowLevel (Dest, element, Element, false, 0, 0);
-  CLEAR_FLAG (ExtraFlag, element);
-  if (ExtraFlag)
-    {
-      ELEMENTTEXT_LOOP (element);
-      {
-	CLEAR_FLAG (ExtraFlag, text);
-      }
-      END_LOOP;
-      PIN_LOOP (element);
-      {
-	CLEAR_FLAG (FOUNDFLAG | ExtraFlag, pin);
-      }
-      END_LOOP;
-      PAD_LOOP (element);
-      {
-	CLEAR_FLAG (FOUNDFLAG | ExtraFlag, pad);
-      }
-      END_LOOP;
-    }
-  return (element);
+	element = GetElementMemory(Dest);
+	CopyElementLowLevel(Dest, element, Element, false, 0, 0);
+	CLEAR_FLAG(ExtraFlag, element);
+	if (ExtraFlag) {
+		ELEMENTTEXT_LOOP(element);
+		{
+			CLEAR_FLAG(ExtraFlag, text);
+		}
+		END_LOOP;
+		PIN_LOOP(element);
+		{
+			CLEAR_FLAG(FOUNDFLAG | ExtraFlag, pin);
+		}
+		END_LOOP;
+		PAD_LOOP(element);
+		{
+			CLEAR_FLAG(FOUNDFLAG | ExtraFlag, pad);
+		}
+		END_LOOP;
+	}
+	return (element);
 }
 
 /* ---------------------------------------------------------------------------
  * moves a via to paste buffer without allocating memory for the name
  */
-static void *
-MoveViaToBuffer (PinType *via)
+static void *MoveViaToBuffer(PinType * via)
 {
-  RestoreToPolygon (Source, VIA_TYPE, via, via);
+	RestoreToPolygon(Source, VIA_TYPE, via, via);
 
-  r_delete_entry (Source->via_tree, (BoxType *) via);
-  Source->Via = g_list_remove (Source->Via, via);
-  Source->ViaN --;
-  Dest->Via = g_list_append (Dest->Via, via);
-  Dest->ViaN ++;
+	r_delete_entry(Source->via_tree, (BoxType *) via);
+	Source->Via = g_list_remove(Source->Via, via);
+	Source->ViaN--;
+	Dest->Via = g_list_append(Dest->Via, via);
+	Dest->ViaN++;
 
-  CLEAR_FLAG (WARNFLAG | FOUNDFLAG, via);
+	CLEAR_FLAG(WARNFLAG | FOUNDFLAG, via);
 
-  if (!Dest->via_tree)
-    Dest->via_tree = r_create_tree (NULL, 0, 0);
-  r_insert_entry (Dest->via_tree, (BoxType *)via, 0);
-  ClearFromPolygon (Dest, VIA_TYPE, via, via);
-  return via;
+	if (!Dest->via_tree)
+		Dest->via_tree = r_create_tree(NULL, 0, 0);
+	r_insert_entry(Dest->via_tree, (BoxType *) via, 0);
+	ClearFromPolygon(Dest, VIA_TYPE, via, via);
+	return via;
 }
 
 /* ---------------------------------------------------------------------------
  * moves a rat-line to paste buffer
  */
-static void *
-MoveRatToBuffer (RatType *rat)
+static void *MoveRatToBuffer(RatType * rat)
 {
-  r_delete_entry (Source->rat_tree, (BoxType *)rat);
+	r_delete_entry(Source->rat_tree, (BoxType *) rat);
 
-  Source->Rat = g_list_remove (Source->Rat, rat);
-  Source->RatN --;
-  Dest->Rat = g_list_append (Dest->Rat, rat);
-  Dest->RatN ++;
+	Source->Rat = g_list_remove(Source->Rat, rat);
+	Source->RatN--;
+	Dest->Rat = g_list_append(Dest->Rat, rat);
+	Dest->RatN++;
 
-  CLEAR_FLAG (FOUNDFLAG, rat);
+	CLEAR_FLAG(FOUNDFLAG, rat);
 
-  if (!Dest->rat_tree)
-    Dest->rat_tree = r_create_tree (NULL, 0, 0);
-  r_insert_entry (Dest->rat_tree, (BoxType *)rat, 0);
-  return rat;
+	if (!Dest->rat_tree)
+		Dest->rat_tree = r_create_tree(NULL, 0, 0);
+	r_insert_entry(Dest->rat_tree, (BoxType *) rat, 0);
+	return rat;
 }
 
 /* ---------------------------------------------------------------------------
  * moves a line to buffer  
  */
-static void *
-MoveLineToBuffer (LayerType *layer, LineType *line)
+static void *MoveLineToBuffer(LayerType * layer, LineType * line)
 {
-  LayerTypePtr lay = &Dest->Layer[GetLayerNumber (Source, layer)];
+	LayerTypePtr lay = &Dest->Layer[GetLayerNumber(Source, layer)];
 
-  RestoreToPolygon (Source, LINE_TYPE, layer, line);
-  r_delete_entry (layer->line_tree, (BoxType *)line);
+	RestoreToPolygon(Source, LINE_TYPE, layer, line);
+	r_delete_entry(layer->line_tree, (BoxType *) line);
 
-  layer->Line = g_list_remove (layer->Line, line);
-  layer->LineN --;
-  lay->Line = g_list_append (lay->Line, line);
-  lay->LineN ++;
+	layer->Line = g_list_remove(layer->Line, line);
+	layer->LineN--;
+	lay->Line = g_list_append(lay->Line, line);
+	lay->LineN++;
 
-  CLEAR_FLAG (FOUNDFLAG, line);
+	CLEAR_FLAG(FOUNDFLAG, line);
 
-  if (!lay->line_tree)
-    lay->line_tree = r_create_tree (NULL, 0, 0);
-  r_insert_entry (lay->line_tree, (BoxType *)line, 0);
-  ClearFromPolygon (Dest, LINE_TYPE, lay, line);
-  return (line);
+	if (!lay->line_tree)
+		lay->line_tree = r_create_tree(NULL, 0, 0);
+	r_insert_entry(lay->line_tree, (BoxType *) line, 0);
+	ClearFromPolygon(Dest, LINE_TYPE, lay, line);
+	return (line);
 }
 
 /* ---------------------------------------------------------------------------
  * moves an arc to buffer  
  */
-static void *
-MoveArcToBuffer (LayerType *layer, ArcType *arc)
+static void *MoveArcToBuffer(LayerType * layer, ArcType * arc)
 {
-  LayerType *lay = &Dest->Layer[GetLayerNumber (Source, layer)];
+	LayerType *lay = &Dest->Layer[GetLayerNumber(Source, layer)];
 
-  RestoreToPolygon (Source, ARC_TYPE, layer, arc);
-  r_delete_entry (layer->arc_tree, (BoxType *)arc);
+	RestoreToPolygon(Source, ARC_TYPE, layer, arc);
+	r_delete_entry(layer->arc_tree, (BoxType *) arc);
 
-  layer->Arc = g_list_remove (layer->Arc, arc);
-  layer->ArcN --;
-  lay->Arc = g_list_append (lay->Arc, arc);
-  lay->ArcN ++;
+	layer->Arc = g_list_remove(layer->Arc, arc);
+	layer->ArcN--;
+	lay->Arc = g_list_append(lay->Arc, arc);
+	lay->ArcN++;
 
-  CLEAR_FLAG (FOUNDFLAG, arc);
+	CLEAR_FLAG(FOUNDFLAG, arc);
 
-  if (!lay->arc_tree)
-    lay->arc_tree = r_create_tree (NULL, 0, 0);
-  r_insert_entry (lay->arc_tree, (BoxType *)arc, 0);
-  ClearFromPolygon (Dest, ARC_TYPE, lay, arc);
-  return (arc);
+	if (!lay->arc_tree)
+		lay->arc_tree = r_create_tree(NULL, 0, 0);
+	r_insert_entry(lay->arc_tree, (BoxType *) arc, 0);
+	ClearFromPolygon(Dest, ARC_TYPE, lay, arc);
+	return (arc);
 }
 
 /* ---------------------------------------------------------------------------
  * moves a text to buffer without allocating memory for the name
  */
-static void *
-MoveTextToBuffer (LayerType *layer, TextType *text)
+static void *MoveTextToBuffer(LayerType * layer, TextType * text)
 {
-  LayerType *lay = &Dest->Layer[GetLayerNumber (Source, layer)];
+	LayerType *lay = &Dest->Layer[GetLayerNumber(Source, layer)];
 
-  r_delete_entry (layer->text_tree, (BoxType *)text);
-  RestoreToPolygon (Source, TEXT_TYPE, layer, text);
+	r_delete_entry(layer->text_tree, (BoxType *) text);
+	RestoreToPolygon(Source, TEXT_TYPE, layer, text);
 
-  layer->Text = g_list_remove (layer->Text, text);
-  layer->TextN --;
-  lay->Text = g_list_append (lay->Text, text);
-  lay->TextN ++;
+	layer->Text = g_list_remove(layer->Text, text);
+	layer->TextN--;
+	lay->Text = g_list_append(lay->Text, text);
+	lay->TextN++;
 
-  if (!lay->text_tree)
-    lay->text_tree = r_create_tree (NULL, 0, 0);
-  r_insert_entry (lay->text_tree, (BoxType *)text, 0);
-  ClearFromPolygon (Dest, TEXT_TYPE, lay, text);
-  return (text);
+	if (!lay->text_tree)
+		lay->text_tree = r_create_tree(NULL, 0, 0);
+	r_insert_entry(lay->text_tree, (BoxType *) text, 0);
+	ClearFromPolygon(Dest, TEXT_TYPE, lay, text);
+	return (text);
 }
 
 /* ---------------------------------------------------------------------------
  * moves a polygon to buffer. Doesn't allocate memory for the points
  */
-static void *
-MovePolygonToBuffer (LayerType *layer, PolygonType *polygon)
+static void *MovePolygonToBuffer(LayerType * layer, PolygonType * polygon)
 {
-  LayerType *lay = &Dest->Layer[GetLayerNumber (Source, layer)];
+	LayerType *lay = &Dest->Layer[GetLayerNumber(Source, layer)];
 
-  r_delete_entry (layer->polygon_tree, (BoxType *)polygon);
+	r_delete_entry(layer->polygon_tree, (BoxType *) polygon);
 
-  layer->Polygon = g_list_remove (layer->Polygon, polygon);
-  layer->PolygonN --;
-  lay->Polygon = g_list_append (lay->Polygon, polygon);
-  lay->PolygonN ++;
+	layer->Polygon = g_list_remove(layer->Polygon, polygon);
+	layer->PolygonN--;
+	lay->Polygon = g_list_append(lay->Polygon, polygon);
+	lay->PolygonN++;
 
-  CLEAR_FLAG (FOUNDFLAG, polygon);
+	CLEAR_FLAG(FOUNDFLAG, polygon);
 
-  if (!lay->polygon_tree)
-    lay->polygon_tree = r_create_tree (NULL, 0, 0);
-  r_insert_entry (lay->polygon_tree, (BoxType *)polygon, 0);
-  return (polygon);
+	if (!lay->polygon_tree)
+		lay->polygon_tree = r_create_tree(NULL, 0, 0);
+	r_insert_entry(lay->polygon_tree, (BoxType *) polygon, 0);
+	return (polygon);
 }
 
 /* ---------------------------------------------------------------------------
  * moves a element to buffer without allocating memory for pins/names
  */
-static void *
-MoveElementToBuffer (ElementType *element)
+static void *MoveElementToBuffer(ElementType * element)
 {
-  /*
-   * Delete the element from the source (remove it from trees,
-   * restore to polygons)
-   */
-  r_delete_element (Source, element);
+	/*
+	 * Delete the element from the source (remove it from trees,
+	 * restore to polygons)
+	 */
+	r_delete_element(Source, element);
 
-  Source->Element = g_list_remove (Source->Element, element);
-  Source->ElementN --;
-  Dest->Element = g_list_append (Dest->Element, element);
-  Dest->ElementN ++;
+	Source->Element = g_list_remove(Source->Element, element);
+	Source->ElementN--;
+	Dest->Element = g_list_append(Dest->Element, element);
+	Dest->ElementN++;
 
-  PIN_LOOP (element);
-  {
-    RestoreToPolygon(Source, PIN_TYPE, element, pin);
-    CLEAR_FLAG (WARNFLAG | FOUNDFLAG, pin);
-  }
-  END_LOOP;
-  PAD_LOOP (element);
-  {
-    RestoreToPolygon(Source, PAD_TYPE, element, pad);
-    CLEAR_FLAG (WARNFLAG | FOUNDFLAG, pad);
-  }
-  END_LOOP;
-  SetElementBoundingBox (Dest, element, &PCB->Font);
-  /*
-   * Now clear the from the polygons in the destination
-   */
-  PIN_LOOP (element);
-  {
-    ClearFromPolygon (Dest, PIN_TYPE, element, pin);
-  }
-  END_LOOP;
-  PAD_LOOP (element);
-  {
-    ClearFromPolygon (Dest, PAD_TYPE, element, pad);
-  }
-  END_LOOP;
+	PIN_LOOP(element);
+	{
+		RestoreToPolygon(Source, PIN_TYPE, element, pin);
+		CLEAR_FLAG(WARNFLAG | FOUNDFLAG, pin);
+	}
+	END_LOOP;
+	PAD_LOOP(element);
+	{
+		RestoreToPolygon(Source, PAD_TYPE, element, pad);
+		CLEAR_FLAG(WARNFLAG | FOUNDFLAG, pad);
+	}
+	END_LOOP;
+	SetElementBoundingBox(Dest, element, &PCB->Font);
+	/*
+	 * Now clear the from the polygons in the destination
+	 */
+	PIN_LOOP(element);
+	{
+		ClearFromPolygon(Dest, PIN_TYPE, element, pin);
+	}
+	END_LOOP;
+	PAD_LOOP(element);
+	{
+		ClearFromPolygon(Dest, PAD_TYPE, element, pad);
+	}
+	END_LOOP;
 
-  return element;
+	return element;
 }
 
 /* ---------------------------------------------------------------------------
  * calculates the bounding box of the buffer
  */
-void
-SetBufferBoundingBox (BufferTypePtr Buffer)
+void SetBufferBoundingBox(BufferTypePtr Buffer)
 {
-  BoxTypePtr box = GetDataBoundingBox (Buffer->Data);
+	BoxTypePtr box = GetDataBoundingBox(Buffer->Data);
 
-  if (box)
-    Buffer->BoundingBox = *box;
+	if (box)
+		Buffer->BoundingBox = *box;
 }
 
 /* ---------------------------------------------------------------------------
  * clears the contents of the paste buffer
  */
-void
-ClearBuffer (BufferTypePtr Buffer)
+void ClearBuffer(BufferTypePtr Buffer)
 {
-  if (Buffer && Buffer->Data)
-    {
-      FreeDataMemory (Buffer->Data);
-      Buffer->Data->pcb = PCB;
-    }
+	if (Buffer && Buffer->Data) {
+		FreeDataMemory(Buffer->Data);
+		Buffer->Data->pcb = PCB;
+	}
 }
 
 /* ----------------------------------------------------------------------
  * copies all selected and visible objects to the paste buffer
  * returns true if any objects have been removed
  */
-void
-AddSelectedToBuffer (BufferTypePtr Buffer, Coord X, Coord Y, bool LeaveSelected)
+void AddSelectedToBuffer(BufferTypePtr Buffer, Coord X, Coord Y, bool LeaveSelected)
 {
-  /* switch crosshair off because adding objects to the pastebuffer
-   * may change the 'valid' area for the cursor
-   */
-  if (!LeaveSelected)
-    ExtraFlag = SELECTEDFLAG;
-  notify_crosshair_change (false);
-  Source = PCB->Data;
-  Dest = Buffer->Data;
-  SelectedOperation (&AddBufferFunctions, false, ALL_TYPES);
+	/* switch crosshair off because adding objects to the pastebuffer
+	 * may change the 'valid' area for the cursor
+	 */
+	if (!LeaveSelected)
+		ExtraFlag = SELECTEDFLAG;
+	notify_crosshair_change(false);
+	Source = PCB->Data;
+	Dest = Buffer->Data;
+	SelectedOperation(&AddBufferFunctions, false, ALL_TYPES);
 
-  /* set origin to passed or current position */
-  if (X || Y)
-    {
-      Buffer->X = X;
-      Buffer->Y = Y;
-    }
-  else
-    {
-      Buffer->X = Crosshair.X;
-      Buffer->Y = Crosshair.Y;
-    }
-  notify_crosshair_change (true);
-  ExtraFlag = 0;
+	/* set origin to passed or current position */
+	if (X || Y) {
+		Buffer->X = X;
+		Buffer->Y = Y;
+	}
+	else {
+		Buffer->X = Crosshair.X;
+		Buffer->Y = Crosshair.Y;
+	}
+	notify_crosshair_change(true);
+	ExtraFlag = 0;
 }
 
 /* ---------------------------------------------------------------------------
@@ -489,34 +456,30 @@ AddSelectedToBuffer (BufferTypePtr Buffer, Coord X, Coord Y, bool LeaveSelected)
  * returns false on error
  * if successful, update some other stuff and reposition the pastebuffer
  */
-bool
-LoadElementToBuffer (BufferTypePtr Buffer, const char *Name)
+bool LoadElementToBuffer(BufferTypePtr Buffer, const char *Name)
 {
-  ElementTypePtr element;
+	ElementTypePtr element;
 
-  ClearBuffer (Buffer);
-      if (!ParseElement (Buffer->Data, Name))
-	{
-	  if (Settings.ShowSolderSide)
-	    SwapBuffer (Buffer);
-	  SetBufferBoundingBox (Buffer);
-	  if (Buffer->Data->ElementN)
-	    {
-	      element = Buffer->Data->Element->data;
-	      Buffer->X = element->MarkX;
-	      Buffer->Y = element->MarkY;
-	    }
-	  else
-	    {
-	      Buffer->X = 0;
-	      Buffer->Y = 0;
-	    }
-	  return (true);
+	ClearBuffer(Buffer);
+	if (!ParseElement(Buffer->Data, Name)) {
+		if (Settings.ShowSolderSide)
+			SwapBuffer(Buffer);
+		SetBufferBoundingBox(Buffer);
+		if (Buffer->Data->ElementN) {
+			element = Buffer->Data->Element->data;
+			Buffer->X = element->MarkX;
+			Buffer->Y = element->MarkY;
+		}
+		else {
+			Buffer->X = 0;
+			Buffer->Y = 0;
+		}
+		return (true);
 	}
 
-  /* release memory which might have been acquired */
-  ClearBuffer (Buffer);
-  return (false);
+	/* release memory which might have been acquired */
+	ClearBuffer(Buffer);
+	return (false);
 }
 
 
@@ -526,10 +489,9 @@ LoadElementToBuffer (BufferTypePtr Buffer, const char *Name)
  */
 
 /* Returns zero on success, non-zero on error.  */
-int
-LoadFootprintByName (BufferTypePtr Buffer, char *Footprint)
+int LoadFootprintByName(BufferTypePtr Buffer, char *Footprint)
 {
-  return !LoadElementToBuffer (Buffer, Footprint);
+	return !LoadElementToBuffer(Buffer, Footprint);
 }
 
 
@@ -545,128 +507,113 @@ into the footprint as well.  The footprint remains in the paste buffer.
 
 %end-doc */
 
-int
-LoadFootprint (int argc, char **argv, Coord x, Coord y)
+int LoadFootprint(int argc, char **argv, Coord x, Coord y)
 {
-  char *name = ARG(0);
-  char *refdes = ARG(1);
-  char *value = ARG(2);
-  ElementTypePtr e;
+	char *name = ARG(0);
+	char *refdes = ARG(1);
+	char *value = ARG(2);
+	ElementTypePtr e;
 
-  if (!name)
-    AFAIL (loadfootprint);
+	if (!name)
+		AFAIL(loadfootprint);
 
-  if (LoadFootprintByName (PASTEBUFFER, name))
-    return 1;
+	if (LoadFootprintByName(PASTEBUFFER, name))
+		return 1;
 
-  if (PASTEBUFFER->Data->ElementN == 0)
-    {
-      Message("Footprint %s contains no elements", name);
-      return 1;
-    }
-  if (PASTEBUFFER->Data->ElementN > 1)
-    {
-      Message("Footprint %s contains multiple elements", name);
-      return 1;
-    }
+	if (PASTEBUFFER->Data->ElementN == 0) {
+		Message("Footprint %s contains no elements", name);
+		return 1;
+	}
+	if (PASTEBUFFER->Data->ElementN > 1) {
+		Message("Footprint %s contains multiple elements", name);
+		return 1;
+	}
 
-  e = PASTEBUFFER->Data->Element->data;
+	e = PASTEBUFFER->Data->Element->data;
 
-  if (e->Name[0].TextString)
-    free (e->Name[0].TextString);
-  e->Name[0].TextString = strdup (name);
+	if (e->Name[0].TextString)
+		free(e->Name[0].TextString);
+	e->Name[0].TextString = strdup(name);
 
-  if (e->Name[1].TextString)
-    free (e->Name[1].TextString);
-  e->Name[1].TextString = refdes ? strdup (refdes) : 0;
+	if (e->Name[1].TextString)
+		free(e->Name[1].TextString);
+	e->Name[1].TextString = refdes ? strdup(refdes) : 0;
 
-  if (e->Name[2].TextString)
-    free (e->Name[2].TextString);
-  e->Name[2].TextString = value ? strdup (value) : 0;
+	if (e->Name[2].TextString)
+		free(e->Name[2].TextString);
+	e->Name[2].TextString = value ? strdup(value) : 0;
 
-  return 0;
+	return 0;
 }
 
 /*---------------------------------------------------------------------------
  *
  * break buffer element into pieces
  */
-bool
-SmashBufferElement (BufferTypePtr Buffer)
+bool SmashBufferElement(BufferTypePtr Buffer)
 {
-  ElementTypePtr element;
-  Cardinal group;
-  LayerTypePtr clayer, slayer;
+	ElementTypePtr element;
+	Cardinal group;
+	LayerTypePtr clayer, slayer;
 
-  if (Buffer->Data->ElementN != 1)
-    {
-      Message (_("Error!  Buffer doesn't contain a single element\n"));
-      return (false);
-    }
-  /*
-   * At this point the buffer should contain just a single element.
-   * Now we detach the single element from the buffer and then clear the
-   * buffer, ready to receive the smashed elements.  As a result of detaching
-   * it the single element is orphaned from the buffer and thus will not be
-   * free()'d by FreeDataMemory (called via ClearBuffer).  This leaves it
-   * around for us to smash bits off it.  It then becomes our responsibility,
-   * however, to free the single element when we're finished with it.
-   */
-  element = Buffer->Data->Element->data;
-  Buffer->Data->Element = NULL;
-  Buffer->Data->ElementN = 0;
-  ClearBuffer (Buffer);
-  ELEMENTLINE_LOOP (element);
-  {
-    CreateNewLineOnLayer (&Buffer->Data->SILKLAYER,
-			  line->Point1.X, line->Point1.Y,
-			  line->Point2.X, line->Point2.Y,
-			  line->Thickness, 0, NoFlags ());
-    if (line)
-      line->Number = STRDUP (NAMEONPCB_NAME (element));
-  }
-  END_LOOP;
-  ARC_LOOP (element);
-  {
-    CreateNewArcOnLayer (&Buffer->Data->SILKLAYER,
-			 arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle,
-			 arc->Delta, arc->Thickness, 0, NoFlags ());
-  }
-  END_LOOP;
-  PIN_LOOP (element);
-  {
-    FlagType f = NoFlags ();
-    AddFlags (f, VIAFLAG);
-    if (TEST_FLAG (HOLEFLAG, pin))
-      AddFlags (f, HOLEFLAG);
+	if (Buffer->Data->ElementN != 1) {
+		Message(_("Error!  Buffer doesn't contain a single element\n"));
+		return (false);
+	}
+	/*
+	 * At this point the buffer should contain just a single element.
+	 * Now we detach the single element from the buffer and then clear the
+	 * buffer, ready to receive the smashed elements.  As a result of detaching
+	 * it the single element is orphaned from the buffer and thus will not be
+	 * free()'d by FreeDataMemory (called via ClearBuffer).  This leaves it
+	 * around for us to smash bits off it.  It then becomes our responsibility,
+	 * however, to free the single element when we're finished with it.
+	 */
+	element = Buffer->Data->Element->data;
+	Buffer->Data->Element = NULL;
+	Buffer->Data->ElementN = 0;
+	ClearBuffer(Buffer);
+	ELEMENTLINE_LOOP(element);
+	{
+		CreateNewLineOnLayer(&Buffer->Data->SILKLAYER,
+												 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness, 0, NoFlags());
+		if (line)
+			line->Number = STRDUP(NAMEONPCB_NAME(element));
+	}
+	END_LOOP;
+	ARC_LOOP(element);
+	{
+		CreateNewArcOnLayer(&Buffer->Data->SILKLAYER,
+												arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, NoFlags());
+	}
+	END_LOOP;
+	PIN_LOOP(element);
+	{
+		FlagType f = NoFlags();
+		AddFlags(f, VIAFLAG);
+		if (TEST_FLAG(HOLEFLAG, pin))
+			AddFlags(f, HOLEFLAG);
 
-    CreateNewVia (Buffer->Data, pin->X, pin->Y,
-		  pin->Thickness, pin->Clearance, pin->Mask,
-		  pin->DrillingHole, pin->Number, f);
-  }
-  END_LOOP;
-  group =
-    GetLayerGroupNumberByNumber (SWAP_IDENT ? solder_silk_layer :
-					      component_silk_layer);
-  clayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
-  group =
-    GetLayerGroupNumberByNumber (SWAP_IDENT ? component_silk_layer :
-					      solder_silk_layer);
-  slayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
-  PAD_LOOP (element);
-  {
-    LineTypePtr line;
-    line = CreateNewLineOnLayer (TEST_FLAG (ONSOLDERFLAG, pad) ? slayer : clayer,
-				 pad->Point1.X, pad->Point1.Y,
-				 pad->Point2.X, pad->Point2.Y,
-				 pad->Thickness, pad->Clearance, NoFlags ());
-    if (line)
-      line->Number = STRDUP (pad->Number);
-  }
-  END_LOOP;
-  FreeElementMemory (element);
-  g_slice_free (ElementType, element);
-  return (true);
+		CreateNewVia(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
+	}
+	END_LOOP;
+	group = GetLayerGroupNumberByNumber(SWAP_IDENT ? solder_silk_layer : component_silk_layer);
+	clayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
+	group = GetLayerGroupNumberByNumber(SWAP_IDENT ? component_silk_layer : solder_silk_layer);
+	slayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
+	PAD_LOOP(element);
+	{
+		LineTypePtr line;
+		line = CreateNewLineOnLayer(TEST_FLAG(ONSOLDERFLAG, pad) ? slayer : clayer,
+																pad->Point1.X, pad->Point1.Y,
+																pad->Point2.X, pad->Point2.Y, pad->Thickness, pad->Clearance, NoFlags());
+		if (line)
+			line->Number = STRDUP(pad->Number);
+	}
+	END_LOOP;
+	FreeElementMemory(element);
+	g_slice_free(ElementType, element);
+	return (true);
 }
 
 /*---------------------------------------------------------------------------
@@ -674,101 +621,86 @@ SmashBufferElement (BufferTypePtr Buffer)
  * see if a polygon is a rectangle.  If so, canonicalize it.
  */
 
-static int
-polygon_is_rectangle (PolygonTypePtr poly)
+static int polygon_is_rectangle(PolygonTypePtr poly)
 {
-  int i, best;
-  PointType temp[4];
-  if (poly->PointN != 4 || poly->HoleIndexN != 0)
-    return 0;
-  best = 0;
-  for (i=1; i<4; i++)
-    if (poly->Points[i].X < poly->Points[best].X
-	|| poly->Points[i].Y < poly->Points[best].Y)
-      best = i;
-  for (i=0; i<4; i++)
-    temp[i] = poly->Points[(i+best)%4];
-  if (temp[0].X == temp[1].X)
-    memcpy (poly->Points, temp, sizeof(temp));
-  else
-    {
-      /* reverse them */
-      poly->Points[0] = temp[0];
-      poly->Points[1] = temp[3];
-      poly->Points[2] = temp[2];
-      poly->Points[3] = temp[1];
-    }
-  if (poly->Points[0].X == poly->Points[1].X
-      && poly->Points[1].Y == poly->Points[2].Y
-      && poly->Points[2].X == poly->Points[3].X
-      && poly->Points[3].Y == poly->Points[0].Y)
-    return 1;
-  return 0;
+	int i, best;
+	PointType temp[4];
+	if (poly->PointN != 4 || poly->HoleIndexN != 0)
+		return 0;
+	best = 0;
+	for (i = 1; i < 4; i++)
+		if (poly->Points[i].X < poly->Points[best].X || poly->Points[i].Y < poly->Points[best].Y)
+			best = i;
+	for (i = 0; i < 4; i++)
+		temp[i] = poly->Points[(i + best) % 4];
+	if (temp[0].X == temp[1].X)
+		memcpy(poly->Points, temp, sizeof(temp));
+	else {
+		/* reverse them */
+		poly->Points[0] = temp[0];
+		poly->Points[1] = temp[3];
+		poly->Points[2] = temp[2];
+		poly->Points[3] = temp[1];
+	}
+	if (poly->Points[0].X == poly->Points[1].X
+			&& poly->Points[1].Y == poly->Points[2].Y
+			&& poly->Points[2].X == poly->Points[3].X && poly->Points[3].Y == poly->Points[0].Y)
+		return 1;
+	return 0;
 }
 
 /*---------------------------------------------------------------------------
  *
  * convert buffer contents into an element
  */
-bool
-ConvertBufferToElement (BufferTypePtr Buffer)
+bool ConvertBufferToElement(BufferTypePtr Buffer)
 {
-  ElementTypePtr Element;
-  Cardinal group;
-  Cardinal pin_n = 1;
-  bool hasParts = false, crooked = false;
-  int onsolder;
-  bool warned = false;
+	ElementTypePtr Element;
+	Cardinal group;
+	Cardinal pin_n = 1;
+	bool hasParts = false, crooked = false;
+	int onsolder;
+	bool warned = false;
 
-  if (Buffer->Data->pcb == 0)
-    Buffer->Data->pcb = PCB;
+	if (Buffer->Data->pcb == 0)
+		Buffer->Data->pcb = PCB;
 
-  Element = CreateNewElement (PCB->Data, NULL, &PCB->Font, NoFlags (),
-			      NULL, NULL, NULL, PASTEBUFFER->X,
-			      PASTEBUFFER->Y, 0, 100,
-			      MakeFlags (SWAP_IDENT ? ONSOLDERFLAG : NOFLAG),
-			      false);
-  if (!Element)
-    return (false);
-  VIA_LOOP (Buffer->Data);
-  {
-    char num[8];
-    if (via->Mask < via->Thickness)
-      via->Mask = via->Thickness + 2 * MASKFRAME;
-    if (via->Name)
-      CreateNewPin (Element, via->X, via->Y, via->Thickness,
-		    via->Clearance, via->Mask, via->DrillingHole,
-		    NULL, via->Name, MaskFlags (via->Flags,
-						VIAFLAG | FOUNDFLAG |
-						SELECTEDFLAG | WARNFLAG));
-    else
-      {
-	sprintf (num, "%d", pin_n++);
-	CreateNewPin (Element, via->X, via->Y, via->Thickness,
-		      via->Clearance, via->Mask, via->DrillingHole,
-		      NULL, num, MaskFlags (via->Flags,
-					    VIAFLAG | FOUNDFLAG | SELECTEDFLAG
-					    | WARNFLAG));
-      }
-    hasParts = true;
-  }
-  END_LOOP;
-
-  for (onsolder = 0; onsolder < 2; onsolder ++)
-    {
-      int silk_layer;
-      int onsolderflag;
-
-      if ((!onsolder) == (!SWAP_IDENT))
+	Element = CreateNewElement(PCB->Data, NULL, &PCB->Font, NoFlags(),
+														 NULL, NULL, NULL, PASTEBUFFER->X,
+														 PASTEBUFFER->Y, 0, 100, MakeFlags(SWAP_IDENT ? ONSOLDERFLAG : NOFLAG), false);
+	if (!Element)
+		return (false);
+	VIA_LOOP(Buffer->Data);
 	{
-	  silk_layer = component_silk_layer;
-	  onsolderflag = NOFLAG;
+		char num[8];
+		if (via->Mask < via->Thickness)
+			via->Mask = via->Thickness + 2 * MASKFRAME;
+		if (via->Name)
+			CreateNewPin(Element, via->X, via->Y, via->Thickness,
+									 via->Clearance, via->Mask, via->DrillingHole,
+									 NULL, via->Name, MaskFlags(via->Flags, VIAFLAG | FOUNDFLAG | SELECTEDFLAG | WARNFLAG));
+		else {
+			sprintf(num, "%d", pin_n++);
+			CreateNewPin(Element, via->X, via->Y, via->Thickness,
+									 via->Clearance, via->Mask, via->DrillingHole,
+									 NULL, num, MaskFlags(via->Flags, VIAFLAG | FOUNDFLAG | SELECTEDFLAG | WARNFLAG));
+		}
+		hasParts = true;
 	}
-      else
-	{
-	  silk_layer = solder_silk_layer;
-	  onsolderflag = ONSOLDERFLAG;
-	}
+	END_LOOP;
+
+	for (onsolder = 0; onsolder < 2; onsolder++) {
+		int silk_layer;
+		int onsolderflag;
+
+		if ((!onsolder) == (!SWAP_IDENT)) {
+			silk_layer = component_silk_layer;
+			onsolderflag = NOFLAG;
+		}
+		else {
+			silk_layer = solder_silk_layer;
+			onsolderflag = ONSOLDERFLAG;
+		}
 
 #define MAYBE_WARN() \
 	  if (onsolder && !hasParts && !warned) \
@@ -780,97 +712,83 @@ ConvertBufferToElement (BufferTypePtr Buffer)
 		   "you wanted\n")); \
 	    } \
 
-      /* get the component-side SM pads */
-      group = GetLayerGroupNumberByNumber (silk_layer);
-      GROUP_LOOP (Buffer->Data, group);
-      {
-	char num[8];
-	LINE_LOOP (layer);
+		/* get the component-side SM pads */
+		group = GetLayerGroupNumberByNumber(silk_layer);
+		GROUP_LOOP(Buffer->Data, group);
+		{
+			char num[8];
+			LINE_LOOP(layer);
+			{
+				sprintf(num, "%d", pin_n++);
+				CreateNewPad(Element, line->Point1.X,
+										 line->Point1.Y, line->Point2.X,
+										 line->Point2.Y, line->Thickness,
+										 line->Clearance,
+										 line->Thickness + line->Clearance, NULL, line->Number ? line->Number : num, MakeFlags(onsolderflag));
+				MAYBE_WARN();
+				hasParts = true;
+			}
+			END_LOOP;
+			POLYGON_LOOP(layer);
+			{
+				Coord x1, y1, x2, y2, w, h, t;
+
+				if (!polygon_is_rectangle(polygon)) {
+					crooked = true;
+					continue;
+				}
+
+				w = polygon->Points[2].X - polygon->Points[0].X;
+				h = polygon->Points[1].Y - polygon->Points[0].Y;
+				t = (w < h) ? w : h;
+				x1 = polygon->Points[0].X + t / 2;
+				y1 = polygon->Points[0].Y + t / 2;
+				x2 = x1 + (w - t);
+				y2 = y1 + (h - t);
+
+				sprintf(num, "%d", pin_n++);
+				CreateNewPad(Element,
+										 x1, y1, x2, y2, t,
+										 2 * Settings.Keepaway, t + Settings.Keepaway, NULL, num, MakeFlags(SQUAREFLAG | onsolderflag));
+				MAYBE_WARN();
+				hasParts = true;
+			}
+			END_LOOP;
+		}
+		END_LOOP;
+	}
+
+	/* now add the silkscreen. NOTE: elements must have pads or pins too */
+	LINE_LOOP(&Buffer->Data->SILKLAYER);
 	{
-	  sprintf (num, "%d", pin_n++);
-	  CreateNewPad (Element, line->Point1.X,
-			line->Point1.Y, line->Point2.X,
-			line->Point2.Y, line->Thickness,
-			line->Clearance,
-			line->Thickness + line->Clearance, NULL,
-			line->Number ? line->Number : num,
-			MakeFlags (onsolderflag));
-	  MAYBE_WARN();
-	  hasParts = true;
+		if (line->Number && !NAMEONPCB_NAME(Element))
+			NAMEONPCB_NAME(Element) = strdup(line->Number);
+		CreateNewLineInElement(Element, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
+		hasParts = true;
 	}
 	END_LOOP;
-	POLYGON_LOOP (layer);
+	ARC_LOOP(&Buffer->Data->SILKLAYER);
 	{
-	  Coord x1, y1, x2, y2, w, h, t;
-
-	  if (! polygon_is_rectangle (polygon))
-	    {
-	      crooked = true;
-	      continue;
-	    }
-
-	  w = polygon->Points[2].X - polygon->Points[0].X;
-	  h = polygon->Points[1].Y - polygon->Points[0].Y;
-	  t = (w < h) ? w : h;
-	  x1 = polygon->Points[0].X + t/2;
-	  y1 = polygon->Points[0].Y + t/2;
-	  x2 = x1 + (w-t);
-	  y2 = y1 + (h-t);
-
-	  sprintf (num, "%d", pin_n++);
-	  CreateNewPad (Element,
-			x1, y1, x2, y2, t,
-			2 * Settings.Keepaway,
-			t + Settings.Keepaway,
-			NULL, num,
-			MakeFlags (SQUAREFLAG | onsolderflag));
-	  MAYBE_WARN();
-	  hasParts = true;
+		CreateNewArcInElement(Element, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
+		hasParts = true;
 	}
 	END_LOOP;
-      }
-      END_LOOP;
-    }
-
-  /* now add the silkscreen. NOTE: elements must have pads or pins too */
-  LINE_LOOP (&Buffer->Data->SILKLAYER);
-  {
-    if (line->Number && !NAMEONPCB_NAME (Element))
-      NAMEONPCB_NAME (Element) = strdup (line->Number);
-    CreateNewLineInElement (Element, line->Point1.X,
-			    line->Point1.Y, line->Point2.X,
-			    line->Point2.Y, line->Thickness);
-    hasParts = true;
-  }
-  END_LOOP;
-  ARC_LOOP (&Buffer->Data->SILKLAYER);
-  {
-    CreateNewArcInElement (Element, arc->X, arc->Y, arc->Width,
-			   arc->Height, arc->StartAngle, arc->Delta,
-			   arc->Thickness);
-    hasParts = true;
-  }
-  END_LOOP;
-  if (!hasParts)
-    {
-      DestroyObject (PCB->Data, ELEMENT_TYPE, Element, Element, Element);
-      Message (_("There was nothing to convert!\n"
-		 "Elements must have some silk, pads or pins.\n"));
-      return (false);
-    }
-  if (crooked)
-     Message (_("There were polygons that can't be made into pins!\n"
-                "So they were not included in the element\n"));
-  Element->MarkX = Buffer->X;
-  Element->MarkY = Buffer->Y;
-  if (SWAP_IDENT)
-    SET_FLAG (ONSOLDERFLAG, Element);
-  SetElementBoundingBox (PCB->Data, Element, &PCB->Font);
-  ClearBuffer (Buffer);
-  MoveObjectToBuffer (Buffer->Data, PCB->Data, ELEMENT_TYPE, Element, Element,
-		      Element);
-  SetBufferBoundingBox (Buffer);
-  return (true);
+	if (!hasParts) {
+		DestroyObject(PCB->Data, ELEMENT_TYPE, Element, Element, Element);
+		Message(_("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
+		return (false);
+	}
+	if (crooked)
+		Message(_("There were polygons that can't be made into pins!\n" "So they were not included in the element\n"));
+	Element->MarkX = Buffer->X;
+	Element->MarkY = Buffer->Y;
+	if (SWAP_IDENT)
+		SET_FLAG(ONSOLDERFLAG, Element);
+	SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
+	ClearBuffer(Buffer);
+	MoveObjectToBuffer(Buffer->Data, PCB->Data, ELEMENT_TYPE, Element, Element, Element);
+	SetBufferBoundingBox(Buffer);
+	return (true);
 }
 
 /* ---------------------------------------------------------------------------
@@ -878,235 +796,224 @@ ConvertBufferToElement (BufferTypePtr Buffer)
  * parse the file with enabled 'PCB mode' (see parser)
  * if successful, update some other stuff
  */
-bool
-LoadLayoutToBuffer (BufferTypePtr Buffer, char *Filename)
+bool LoadLayoutToBuffer(BufferTypePtr Buffer, char *Filename)
 {
-  PCBTypePtr newPCB = CreateNewPCB ();
+	PCBTypePtr newPCB = CreateNewPCB();
 
-  /* new data isn't added to the undo list */
-  if (!ParsePCB (newPCB, Filename))
-    {
-      /* clear data area and replace pointer */
-      ClearBuffer (Buffer);
-      free (Buffer->Data);
-      Buffer->Data = newPCB->Data;
-      newPCB->Data = NULL;
-      Buffer->X = newPCB->CursorX;
-      Buffer->Y = newPCB->CursorY;
-      RemovePCB (newPCB);
-      Buffer->Data->pcb = PCB;
-      return (true);
-    }
+	/* new data isn't added to the undo list */
+	if (!ParsePCB(newPCB, Filename)) {
+		/* clear data area and replace pointer */
+		ClearBuffer(Buffer);
+		free(Buffer->Data);
+		Buffer->Data = newPCB->Data;
+		newPCB->Data = NULL;
+		Buffer->X = newPCB->CursorX;
+		Buffer->Y = newPCB->CursorY;
+		RemovePCB(newPCB);
+		Buffer->Data->pcb = PCB;
+		return (true);
+	}
 
-  /* release unused memory */
-  RemovePCB (newPCB);
-      Buffer->Data->pcb = PCB;
-  return (false);
+	/* release unused memory */
+	RemovePCB(newPCB);
+	Buffer->Data->pcb = PCB;
+	return (false);
 }
 
 /* ---------------------------------------------------------------------------
  * rotates the contents of the pastebuffer
  */
-void
-RotateBuffer (BufferTypePtr Buffer, BYTE Number)
+void RotateBuffer(BufferTypePtr Buffer, BYTE Number)
 {
-  /* rotate vias */
-  VIA_LOOP (Buffer->Data);
-  {
-    r_delete_entry (Buffer->Data->via_tree, (BoxType *)via);
-    ROTATE_VIA_LOWLEVEL (via, Buffer->X, Buffer->Y, Number);
-    SetPinBoundingBox (via);
-    r_insert_entry (Buffer->Data->via_tree, (BoxType *)via, 0);
-  }
-  END_LOOP;
+	/* rotate vias */
+	VIA_LOOP(Buffer->Data);
+	{
+		r_delete_entry(Buffer->Data->via_tree, (BoxType *) via);
+		ROTATE_VIA_LOWLEVEL(via, Buffer->X, Buffer->Y, Number);
+		SetPinBoundingBox(via);
+		r_insert_entry(Buffer->Data->via_tree, (BoxType *) via, 0);
+	}
+	END_LOOP;
 
-  /* elements */
-  ELEMENT_LOOP (Buffer->Data);
-  {
-    RotateElementLowLevel (Buffer->Data, element, Buffer->X, Buffer->Y,
-			   Number);
-  }
-  END_LOOP;
+	/* elements */
+	ELEMENT_LOOP(Buffer->Data);
+	{
+		RotateElementLowLevel(Buffer->Data, element, Buffer->X, Buffer->Y, Number);
+	}
+	END_LOOP;
 
-  /* all layer related objects */
-  ALLLINE_LOOP (Buffer->Data);
-  {
-    r_delete_entry (layer->line_tree, (BoxType *)line);
-    RotateLineLowLevel (line, Buffer->X, Buffer->Y, Number);
-    r_insert_entry (layer->line_tree, (BoxType *)line, 0);
-  }
-  ENDALL_LOOP;
-  ALLARC_LOOP (Buffer->Data);
-  {
-    r_delete_entry (layer->arc_tree, (BoxType *)arc);
-    RotateArcLowLevel (arc, Buffer->X, Buffer->Y, Number);
-    r_insert_entry (layer->arc_tree, (BoxType *)arc, 0);
-  }
-  ENDALL_LOOP;
-  ALLTEXT_LOOP (Buffer->Data);
-  {
-    r_delete_entry (layer->text_tree, (BoxType *)text);
-    RotateTextLowLevel (text, Buffer->X, Buffer->Y, Number);
-    r_insert_entry (layer->text_tree, (BoxType *)text, 0);
-  }
-  ENDALL_LOOP;
-  ALLPOLYGON_LOOP (Buffer->Data);
-  {
-    r_delete_entry (layer->polygon_tree, (BoxType *)polygon);
-    RotatePolygonLowLevel (polygon, Buffer->X, Buffer->Y, Number);
-    r_insert_entry (layer->polygon_tree, (BoxType *)polygon, 0);
-  }
-  ENDALL_LOOP;
+	/* all layer related objects */
+	ALLLINE_LOOP(Buffer->Data);
+	{
+		r_delete_entry(layer->line_tree, (BoxType *) line);
+		RotateLineLowLevel(line, Buffer->X, Buffer->Y, Number);
+		r_insert_entry(layer->line_tree, (BoxType *) line, 0);
+	}
+	ENDALL_LOOP;
+	ALLARC_LOOP(Buffer->Data);
+	{
+		r_delete_entry(layer->arc_tree, (BoxType *) arc);
+		RotateArcLowLevel(arc, Buffer->X, Buffer->Y, Number);
+		r_insert_entry(layer->arc_tree, (BoxType *) arc, 0);
+	}
+	ENDALL_LOOP;
+	ALLTEXT_LOOP(Buffer->Data);
+	{
+		r_delete_entry(layer->text_tree, (BoxType *) text);
+		RotateTextLowLevel(text, Buffer->X, Buffer->Y, Number);
+		r_insert_entry(layer->text_tree, (BoxType *) text, 0);
+	}
+	ENDALL_LOOP;
+	ALLPOLYGON_LOOP(Buffer->Data);
+	{
+		r_delete_entry(layer->polygon_tree, (BoxType *) polygon);
+		RotatePolygonLowLevel(polygon, Buffer->X, Buffer->Y, Number);
+		r_insert_entry(layer->polygon_tree, (BoxType *) polygon, 0);
+	}
+	ENDALL_LOOP;
 
-  /* finally the origin and the bounding box */
-  ROTATE (Buffer->X, Buffer->Y, Buffer->X, Buffer->Y, Number);
-  RotateBoxLowLevel (&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
+	/* finally the origin and the bounding box */
+	ROTATE(Buffer->X, Buffer->Y, Buffer->X, Buffer->Y, Number);
+	RotateBoxLowLevel(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
 }
 
-static void
-free_rotate (Coord *x, Coord *y, Coord cx, Coord cy, double cosa, double sina)
+static void free_rotate(Coord * x, Coord * y, Coord cx, Coord cy, double cosa, double sina)
 {
-  double nx, ny;
-  Coord px = *x - cx;
-  Coord py = *y - cy;
+	double nx, ny;
+	Coord px = *x - cx;
+	Coord py = *y - cy;
 
-  nx = px * cosa + py * sina;
-  ny = py * cosa - px * sina;
+	nx = px * cosa + py * sina;
+	ny = py * cosa - px * sina;
 
-  *x = nx + cx;
-  *y = ny + cy;
+	*x = nx + cx;
+	*y = ny + cy;
 }
 
 void
-FreeRotateElementLowLevel (DataTypePtr Data, ElementTypePtr Element,
-			   Coord X, Coord Y,
-			   double cosa, double sina, Angle angle)
+FreeRotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coord Y, double cosa, double sina, Angle angle)
 {
-  /* solder side objects need a different orientation */
+	/* solder side objects need a different orientation */
 
-  /* the text subroutine decides by itself if the direction
-   * is to be corrected
-   */
+	/* the text subroutine decides by itself if the direction
+	 * is to be corrected
+	 */
 #if 0
-  ELEMENTTEXT_LOOP (Element);
-  {
-    if (Data && Data->name_tree[n])
-      r_delete_entry (Data->name_tree[n], (BoxType *)text);
-    RotateTextLowLevel (text, X, Y, Number);
-  }
-  END_LOOP;
+	ELEMENTTEXT_LOOP(Element);
+	{
+		if (Data && Data->name_tree[n])
+			r_delete_entry(Data->name_tree[n], (BoxType *) text);
+		RotateTextLowLevel(text, X, Y, Number);
+	}
+	END_LOOP;
 #endif
-  ELEMENTLINE_LOOP (Element);
-  {
-    free_rotate (&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
-    free_rotate (&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
-    SetLineBoundingBox (line);
-  }
-  END_LOOP;
-  PIN_LOOP (Element);
-  {
-    /* pre-delete the pins from the pin-tree before their coordinates change */
-    if (Data)
-      r_delete_entry (Data->pin_tree, (BoxType *)pin);
-    RestoreToPolygon (Data, PIN_TYPE, Element, pin);
-    free_rotate (&pin->X, &pin->Y, X, Y, cosa, sina);
-    SetPinBoundingBox (pin);
-  }
-  END_LOOP;
-  PAD_LOOP (Element);
-  {
-    /* pre-delete the pads before their coordinates change */
-    if (Data)
-      r_delete_entry (Data->pad_tree, (BoxType *)pad);
-    RestoreToPolygon (Data, PAD_TYPE, Element, pad);
-    free_rotate (&pad->Point1.X, &pad->Point1.Y, X, Y, cosa, sina);
-    free_rotate (&pad->Point2.X, &pad->Point2.Y, X, Y, cosa, sina);
-    SetLineBoundingBox ((LineType *) pad);
-  }
-  END_LOOP;
-  ARC_LOOP (Element);
-  {
-    free_rotate (&arc->X, &arc->Y, X, Y, cosa, sina);
-    arc->StartAngle = NormalizeAngle (arc->StartAngle + angle);
-  }
-  END_LOOP;
+	ELEMENTLINE_LOOP(Element);
+	{
+		free_rotate(&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
+		free_rotate(&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
+		SetLineBoundingBox(line);
+	}
+	END_LOOP;
+	PIN_LOOP(Element);
+	{
+		/* pre-delete the pins from the pin-tree before their coordinates change */
+		if (Data)
+			r_delete_entry(Data->pin_tree, (BoxType *) pin);
+		RestoreToPolygon(Data, PIN_TYPE, Element, pin);
+		free_rotate(&pin->X, &pin->Y, X, Y, cosa, sina);
+		SetPinBoundingBox(pin);
+	}
+	END_LOOP;
+	PAD_LOOP(Element);
+	{
+		/* pre-delete the pads before their coordinates change */
+		if (Data)
+			r_delete_entry(Data->pad_tree, (BoxType *) pad);
+		RestoreToPolygon(Data, PAD_TYPE, Element, pad);
+		free_rotate(&pad->Point1.X, &pad->Point1.Y, X, Y, cosa, sina);
+		free_rotate(&pad->Point2.X, &pad->Point2.Y, X, Y, cosa, sina);
+		SetLineBoundingBox((LineType *) pad);
+	}
+	END_LOOP;
+	ARC_LOOP(Element);
+	{
+		free_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
+		arc->StartAngle = NormalizeAngle(arc->StartAngle + angle);
+	}
+	END_LOOP;
 
-  free_rotate (&Element->MarkX, &Element->MarkY, X, Y, cosa, sina);
-  SetElementBoundingBox (Data, Element, &PCB->Font);
-  ClearFromPolygon (Data, ELEMENT_TYPE, Element, Element);
+	free_rotate(&Element->MarkX, &Element->MarkY, X, Y, cosa, sina);
+	SetElementBoundingBox(Data, Element, &PCB->Font);
+	ClearFromPolygon(Data, ELEMENT_TYPE, Element, Element);
 }
 
-void
-FreeRotateBuffer (BufferTypePtr Buffer, Angle angle)
+void FreeRotateBuffer(BufferTypePtr Buffer, Angle angle)
 {
-  double cosa, sina;
+	double cosa, sina;
 
-  cosa = cos(angle * M_PI/180.0);
-  sina = sin(angle * M_PI/180.0);
+	cosa = cos(angle * M_PI / 180.0);
+	sina = sin(angle * M_PI / 180.0);
 
-  /* rotate vias */
-  VIA_LOOP (Buffer->Data);
-  {
-    r_delete_entry (Buffer->Data->via_tree, (BoxType *)via);
-    free_rotate (&via->X, &via->Y, Buffer->X, Buffer->Y, cosa, sina);
-    SetPinBoundingBox (via);
-    r_insert_entry (Buffer->Data->via_tree, (BoxType *)via, 0);
-  }
-  END_LOOP;
+	/* rotate vias */
+	VIA_LOOP(Buffer->Data);
+	{
+		r_delete_entry(Buffer->Data->via_tree, (BoxType *) via);
+		free_rotate(&via->X, &via->Y, Buffer->X, Buffer->Y, cosa, sina);
+		SetPinBoundingBox(via);
+		r_insert_entry(Buffer->Data->via_tree, (BoxType *) via, 0);
+	}
+	END_LOOP;
 
-  /* elements */
-  ELEMENT_LOOP (Buffer->Data);
-  {
-    FreeRotateElementLowLevel (Buffer->Data, element, Buffer->X, Buffer->Y,
-			       cosa, sina, angle);
-  }
-  END_LOOP;
+	/* elements */
+	ELEMENT_LOOP(Buffer->Data);
+	{
+		FreeRotateElementLowLevel(Buffer->Data, element, Buffer->X, Buffer->Y, cosa, sina, angle);
+	}
+	END_LOOP;
 
-  /* all layer related objects */
-  ALLLINE_LOOP (Buffer->Data);
-  {
-    r_delete_entry (layer->line_tree, (BoxType *)line);
-    free_rotate (&line->Point1.X, &line->Point1.Y, Buffer->X, Buffer->Y, cosa, sina);
-    free_rotate (&line->Point2.X, &line->Point2.Y, Buffer->X, Buffer->Y, cosa, sina);
-    SetLineBoundingBox (line);
-    r_insert_entry (layer->line_tree, (BoxType *)line, 0);
-  }
-  ENDALL_LOOP;
-  ALLARC_LOOP (Buffer->Data);
-  {
-    r_delete_entry (layer->arc_tree, (BoxType *)arc);
-    free_rotate (&arc->X, &arc->Y, Buffer->X, Buffer->Y, cosa, sina);
-    arc->StartAngle = NormalizeAngle (arc->StartAngle + angle);
-    r_insert_entry (layer->arc_tree, (BoxType *)arc, 0);
-  }
-  ENDALL_LOOP;
-  /* FIXME: rotate text */
-  ALLPOLYGON_LOOP (Buffer->Data);
-  {
-    r_delete_entry (layer->polygon_tree, (BoxType *)polygon);
-    POLYGONPOINT_LOOP (polygon);
-    {
-      free_rotate (&point->X, &point->Y, Buffer->X, Buffer->Y, cosa, sina);
-    }
-    END_LOOP;
-    SetPolygonBoundingBox (polygon);
-    r_insert_entry (layer->polygon_tree, (BoxType *)polygon, 0);
-  }
-  ENDALL_LOOP;
+	/* all layer related objects */
+	ALLLINE_LOOP(Buffer->Data);
+	{
+		r_delete_entry(layer->line_tree, (BoxType *) line);
+		free_rotate(&line->Point1.X, &line->Point1.Y, Buffer->X, Buffer->Y, cosa, sina);
+		free_rotate(&line->Point2.X, &line->Point2.Y, Buffer->X, Buffer->Y, cosa, sina);
+		SetLineBoundingBox(line);
+		r_insert_entry(layer->line_tree, (BoxType *) line, 0);
+	}
+	ENDALL_LOOP;
+	ALLARC_LOOP(Buffer->Data);
+	{
+		r_delete_entry(layer->arc_tree, (BoxType *) arc);
+		free_rotate(&arc->X, &arc->Y, Buffer->X, Buffer->Y, cosa, sina);
+		arc->StartAngle = NormalizeAngle(arc->StartAngle + angle);
+		r_insert_entry(layer->arc_tree, (BoxType *) arc, 0);
+	}
+	ENDALL_LOOP;
+	/* FIXME: rotate text */
+	ALLPOLYGON_LOOP(Buffer->Data);
+	{
+		r_delete_entry(layer->polygon_tree, (BoxType *) polygon);
+		POLYGONPOINT_LOOP(polygon);
+		{
+			free_rotate(&point->X, &point->Y, Buffer->X, Buffer->Y, cosa, sina);
+		}
+		END_LOOP;
+		SetPolygonBoundingBox(polygon);
+		r_insert_entry(layer->polygon_tree, (BoxType *) polygon, 0);
+	}
+	ENDALL_LOOP;
 
-  SetBufferBoundingBox (Buffer);
+	SetBufferBoundingBox(Buffer);
 }
 
 
 /* -------------------------------------------------------------------------- */
 
-static const char freerotatebuffer_syntax[] =
-  "FreeRotateBuffer([Angle])";
+static const char freerotatebuffer_syntax[] = "FreeRotateBuffer([Angle])";
 
 static const char freerotatebuffer_help[] =
-  "Rotates the current paste buffer contents by the specified angle.  The\n"
-  "angle is given in degrees.  If no angle is given, the user is prompted\n"
-  "for one.\n";
+	"Rotates the current paste buffer contents by the specified angle.  The\n"
+	"angle is given in degrees.  If no angle is given, the user is prompted\n" "for one.\n";
 
 /* %start-doc actions FreeRotateBuffer
    
@@ -1115,263 +1022,248 @@ angle is given, the user is prompted for one.
 
 %end-doc */
 
-int
-ActionFreeRotateBuffer(int argc, char **argv, Coord x, Coord y)
+int ActionFreeRotateBuffer(int argc, char **argv, Coord x, Coord y)
 {
-  char *angle_s;
+	char *angle_s;
 
-  if (argc < 1)
-    angle_s = gui->prompt_for ("Enter Rotation (degrees, CCW):", "0");
-  else
-    angle_s = argv[0];
+	if (argc < 1)
+		angle_s = gui->prompt_for("Enter Rotation (degrees, CCW):", "0");
+	else
+		angle_s = argv[0];
 
-  notify_crosshair_change (false);
-  FreeRotateBuffer(PASTEBUFFER, strtod(angle_s, 0));
-  notify_crosshair_change (true);
-  return 0;
+	notify_crosshair_change(false);
+	FreeRotateBuffer(PASTEBUFFER, strtod(angle_s, 0));
+	notify_crosshair_change(true);
+	return 0;
 }
 
 /* ---------------------------------------------------------------------------
  * initializes the buffers by allocating memory
  */
-void
-InitBuffers (void)
+void InitBuffers(void)
 {
-  int i;
+	int i;
 
-  for (i = 0; i < MAX_BUFFER; i++)
-    Buffers[i].Data = CreateNewBuffer ();
+	for (i = 0; i < MAX_BUFFER; i++)
+		Buffers[i].Data = CreateNewBuffer();
 }
 
-void
-SwapBuffers (void)
+void SwapBuffers(void)
 {
-  int i;
+	int i;
 
-  for (i = 0; i < MAX_BUFFER; i++)
-    SwapBuffer (&Buffers[i]);
-  SetCrosshairRangeToBuffer ();
+	for (i = 0; i < MAX_BUFFER; i++)
+		SwapBuffer(&Buffers[i]);
+	SetCrosshairRangeToBuffer();
 }
 
-void
-MirrorBuffer (BufferTypePtr Buffer)
+void MirrorBuffer(BufferTypePtr Buffer)
 {
-  int i;
+	int i;
 
-  if (Buffer->Data->ElementN)
-    {
-      Message (_("You can't mirror a buffer that has elements!\n"));
-      return;
-    }
-  for (i = 0; i < max_copper_layer + 2; i++)
-    {
-      LayerTypePtr layer = Buffer->Data->Layer + i;
-      if (layer->TextN)
-	{
-	  Message (_("You can't mirror a buffer that has text!\n"));
-	  return;
+	if (Buffer->Data->ElementN) {
+		Message(_("You can't mirror a buffer that has elements!\n"));
+		return;
 	}
-    }
-  /* set buffer offset to 'mark' position */
-  Buffer->X = SWAP_X (Buffer->X);
-  Buffer->Y = SWAP_Y (Buffer->Y);
-  VIA_LOOP (Buffer->Data);
-  {
-    via->X = SWAP_X (via->X);
-    via->Y = SWAP_Y (via->Y);
-  }
-  END_LOOP;
-  ALLLINE_LOOP (Buffer->Data);
-  {
-    line->Point1.X = SWAP_X (line->Point1.X);
-    line->Point1.Y = SWAP_Y (line->Point1.Y);
-    line->Point2.X = SWAP_X (line->Point2.X);
-    line->Point2.Y = SWAP_Y (line->Point2.Y);
-  }
-  ENDALL_LOOP;
-  ALLARC_LOOP (Buffer->Data);
-  {
-    arc->X = SWAP_X (arc->X);
-    arc->Y = SWAP_Y (arc->Y);
-    arc->StartAngle = SWAP_ANGLE (arc->StartAngle);
-    arc->Delta = SWAP_DELTA (arc->Delta);
-    SetArcBoundingBox (arc);
-  }
-  ENDALL_LOOP;
-  ALLPOLYGON_LOOP (Buffer->Data);
-  {
-    POLYGONPOINT_LOOP (polygon);
-    {
-      point->X = SWAP_X (point->X);
-      point->Y = SWAP_Y (point->Y);
-    }
-    END_LOOP;
-    SetPolygonBoundingBox (polygon);
-  }
-  ENDALL_LOOP;
-  SetBufferBoundingBox (Buffer);
+	for (i = 0; i < max_copper_layer + 2; i++) {
+		LayerTypePtr layer = Buffer->Data->Layer + i;
+		if (layer->TextN) {
+			Message(_("You can't mirror a buffer that has text!\n"));
+			return;
+		}
+	}
+	/* set buffer offset to 'mark' position */
+	Buffer->X = SWAP_X(Buffer->X);
+	Buffer->Y = SWAP_Y(Buffer->Y);
+	VIA_LOOP(Buffer->Data);
+	{
+		via->X = SWAP_X(via->X);
+		via->Y = SWAP_Y(via->Y);
+	}
+	END_LOOP;
+	ALLLINE_LOOP(Buffer->Data);
+	{
+		line->Point1.X = SWAP_X(line->Point1.X);
+		line->Point1.Y = SWAP_Y(line->Point1.Y);
+		line->Point2.X = SWAP_X(line->Point2.X);
+		line->Point2.Y = SWAP_Y(line->Point2.Y);
+	}
+	ENDALL_LOOP;
+	ALLARC_LOOP(Buffer->Data);
+	{
+		arc->X = SWAP_X(arc->X);
+		arc->Y = SWAP_Y(arc->Y);
+		arc->StartAngle = SWAP_ANGLE(arc->StartAngle);
+		arc->Delta = SWAP_DELTA(arc->Delta);
+		SetArcBoundingBox(arc);
+	}
+	ENDALL_LOOP;
+	ALLPOLYGON_LOOP(Buffer->Data);
+	{
+		POLYGONPOINT_LOOP(polygon);
+		{
+			point->X = SWAP_X(point->X);
+			point->Y = SWAP_Y(point->Y);
+		}
+		END_LOOP;
+		SetPolygonBoundingBox(polygon);
+	}
+	ENDALL_LOOP;
+	SetBufferBoundingBox(Buffer);
 }
 
 
 /* ---------------------------------------------------------------------------
  * flip components/tracks from one side to the other
  */
-static void
-SwapBuffer (BufferTypePtr Buffer)
+static void SwapBuffer(BufferTypePtr Buffer)
 {
-  int j, k;
-  Cardinal sgroup, cgroup;
-  LayerType swap;
+	int j, k;
+	Cardinal sgroup, cgroup;
+	LayerType swap;
 
-  ELEMENT_LOOP (Buffer->Data);
-  {
-    r_delete_element (Buffer->Data, element);
-    MirrorElementCoordinates (Buffer->Data, element, 0);
-  }
-  END_LOOP;
-  /* set buffer offset to 'mark' position */
-  Buffer->X = SWAP_X (Buffer->X);
-  Buffer->Y = SWAP_Y (Buffer->Y);
-  VIA_LOOP (Buffer->Data);
-  {
-    r_delete_entry (Buffer->Data->via_tree, (BoxType *)via);
-    via->X = SWAP_X (via->X);
-    via->Y = SWAP_Y (via->Y);
-    SetPinBoundingBox (via);
-    r_insert_entry (Buffer->Data->via_tree, (BoxType *)via, 0);
-  }
-  END_LOOP;
-  ALLLINE_LOOP (Buffer->Data);
-  {
-    r_delete_entry (layer->line_tree, (BoxType *)line);
-    line->Point1.X = SWAP_X (line->Point1.X);
-    line->Point1.Y = SWAP_Y (line->Point1.Y);
-    line->Point2.X = SWAP_X (line->Point2.X);
-    line->Point2.Y = SWAP_Y (line->Point2.Y);
-    SetLineBoundingBox (line);
-    r_insert_entry (layer->line_tree, (BoxType *)line, 0);
-  }
-  ENDALL_LOOP;
-  ALLARC_LOOP (Buffer->Data);
-  {
-    r_delete_entry (layer->arc_tree, (BoxType *)arc);
-    arc->X = SWAP_X (arc->X);
-    arc->Y = SWAP_Y (arc->Y);
-    arc->StartAngle = SWAP_ANGLE (arc->StartAngle);
-    arc->Delta = SWAP_DELTA (arc->Delta);
-    SetArcBoundingBox (arc);
-    r_insert_entry (layer->arc_tree, (BoxType *)arc, 0);
-  }
-  ENDALL_LOOP;
-  ALLPOLYGON_LOOP (Buffer->Data);
-  {
-    r_delete_entry (layer->polygon_tree, (BoxType *)polygon);
-    POLYGONPOINT_LOOP (polygon);
-    {
-      point->X = SWAP_X (point->X);
-      point->Y = SWAP_Y (point->Y);
-    }
-    END_LOOP;
-    SetPolygonBoundingBox (polygon);
-    r_insert_entry (layer->polygon_tree, (BoxType *)polygon, 0);
-    /* hmmm, how to handle clip */
-  }
-  ENDALL_LOOP;
-  ALLTEXT_LOOP (Buffer->Data);
-  {
-    r_delete_entry (layer->text_tree, (BoxType *)text);
-    text->X = SWAP_X (text->X);
-    text->Y = SWAP_Y (text->Y);
-    TOGGLE_FLAG (ONSOLDERFLAG, text);
-    SetTextBoundingBox (&PCB->Font, text);
-    r_insert_entry (layer->text_tree, (BoxType *)text, 0);
-  }
-  ENDALL_LOOP;
-  /* swap silkscreen layers */
-  swap = Buffer->Data->Layer[solder_silk_layer];
-  Buffer->Data->Layer[solder_silk_layer] =
-    Buffer->Data->Layer[component_silk_layer];
-  Buffer->Data->Layer[component_silk_layer] = swap;
-
-  /* swap layer groups when balanced */
-  sgroup = GetLayerGroupNumberByNumber (solder_silk_layer);
-  cgroup = GetLayerGroupNumberByNumber (component_silk_layer);
-  if (PCB->LayerGroups.Number[cgroup] == PCB->LayerGroups.Number[sgroup])
-    {
-      for (j = k = 0; j < PCB->LayerGroups.Number[sgroup]; j++)
+	ELEMENT_LOOP(Buffer->Data);
 	{
-	  int t1, t2;
-	  Cardinal cnumber = PCB->LayerGroups.Entries[cgroup][k];
-	  Cardinal snumber = PCB->LayerGroups.Entries[sgroup][j];
-
-	  if (snumber >= max_copper_layer)
-	    continue;
-	  swap = Buffer->Data->Layer[snumber];
-
-	  while (cnumber >= max_copper_layer)
-	    {
-	      k++;
-	      cnumber = PCB->LayerGroups.Entries[cgroup][k];
-	    }
-	  Buffer->Data->Layer[snumber] = Buffer->Data->Layer[cnumber];
-	  Buffer->Data->Layer[cnumber] = swap;
-	  k++;
-	  /* move the thermal flags with the layers */
-	  ALLPIN_LOOP (Buffer->Data);
-	  {
-	    t1 = TEST_THERM (snumber, pin);
-	    t2 = TEST_THERM (cnumber, pin);
-	    ASSIGN_THERM (snumber, t2, pin);
-	    ASSIGN_THERM (cnumber, t1, pin);
-	  }
-	  ENDALL_LOOP;
-	  VIA_LOOP (Buffer->Data);
-	  {
-	    t1 = TEST_THERM (snumber, via);
-	    t2 = TEST_THERM (cnumber, via);
-	    ASSIGN_THERM (snumber, t2, via);
-	    ASSIGN_THERM (cnumber, t1, via);
-	  }
-	  END_LOOP;
+		r_delete_element(Buffer->Data, element);
+		MirrorElementCoordinates(Buffer->Data, element, 0);
 	}
-    }
-  SetBufferBoundingBox (Buffer);
+	END_LOOP;
+	/* set buffer offset to 'mark' position */
+	Buffer->X = SWAP_X(Buffer->X);
+	Buffer->Y = SWAP_Y(Buffer->Y);
+	VIA_LOOP(Buffer->Data);
+	{
+		r_delete_entry(Buffer->Data->via_tree, (BoxType *) via);
+		via->X = SWAP_X(via->X);
+		via->Y = SWAP_Y(via->Y);
+		SetPinBoundingBox(via);
+		r_insert_entry(Buffer->Data->via_tree, (BoxType *) via, 0);
+	}
+	END_LOOP;
+	ALLLINE_LOOP(Buffer->Data);
+	{
+		r_delete_entry(layer->line_tree, (BoxType *) line);
+		line->Point1.X = SWAP_X(line->Point1.X);
+		line->Point1.Y = SWAP_Y(line->Point1.Y);
+		line->Point2.X = SWAP_X(line->Point2.X);
+		line->Point2.Y = SWAP_Y(line->Point2.Y);
+		SetLineBoundingBox(line);
+		r_insert_entry(layer->line_tree, (BoxType *) line, 0);
+	}
+	ENDALL_LOOP;
+	ALLARC_LOOP(Buffer->Data);
+	{
+		r_delete_entry(layer->arc_tree, (BoxType *) arc);
+		arc->X = SWAP_X(arc->X);
+		arc->Y = SWAP_Y(arc->Y);
+		arc->StartAngle = SWAP_ANGLE(arc->StartAngle);
+		arc->Delta = SWAP_DELTA(arc->Delta);
+		SetArcBoundingBox(arc);
+		r_insert_entry(layer->arc_tree, (BoxType *) arc, 0);
+	}
+	ENDALL_LOOP;
+	ALLPOLYGON_LOOP(Buffer->Data);
+	{
+		r_delete_entry(layer->polygon_tree, (BoxType *) polygon);
+		POLYGONPOINT_LOOP(polygon);
+		{
+			point->X = SWAP_X(point->X);
+			point->Y = SWAP_Y(point->Y);
+		}
+		END_LOOP;
+		SetPolygonBoundingBox(polygon);
+		r_insert_entry(layer->polygon_tree, (BoxType *) polygon, 0);
+		/* hmmm, how to handle clip */
+	}
+	ENDALL_LOOP;
+	ALLTEXT_LOOP(Buffer->Data);
+	{
+		r_delete_entry(layer->text_tree, (BoxType *) text);
+		text->X = SWAP_X(text->X);
+		text->Y = SWAP_Y(text->Y);
+		TOGGLE_FLAG(ONSOLDERFLAG, text);
+		SetTextBoundingBox(&PCB->Font, text);
+		r_insert_entry(layer->text_tree, (BoxType *) text, 0);
+	}
+	ENDALL_LOOP;
+	/* swap silkscreen layers */
+	swap = Buffer->Data->Layer[solder_silk_layer];
+	Buffer->Data->Layer[solder_silk_layer] = Buffer->Data->Layer[component_silk_layer];
+	Buffer->Data->Layer[component_silk_layer] = swap;
+
+	/* swap layer groups when balanced */
+	sgroup = GetLayerGroupNumberByNumber(solder_silk_layer);
+	cgroup = GetLayerGroupNumberByNumber(component_silk_layer);
+	if (PCB->LayerGroups.Number[cgroup] == PCB->LayerGroups.Number[sgroup]) {
+		for (j = k = 0; j < PCB->LayerGroups.Number[sgroup]; j++) {
+			int t1, t2;
+			Cardinal cnumber = PCB->LayerGroups.Entries[cgroup][k];
+			Cardinal snumber = PCB->LayerGroups.Entries[sgroup][j];
+
+			if (snumber >= max_copper_layer)
+				continue;
+			swap = Buffer->Data->Layer[snumber];
+
+			while (cnumber >= max_copper_layer) {
+				k++;
+				cnumber = PCB->LayerGroups.Entries[cgroup][k];
+			}
+			Buffer->Data->Layer[snumber] = Buffer->Data->Layer[cnumber];
+			Buffer->Data->Layer[cnumber] = swap;
+			k++;
+			/* move the thermal flags with the layers */
+			ALLPIN_LOOP(Buffer->Data);
+			{
+				t1 = TEST_THERM(snumber, pin);
+				t2 = TEST_THERM(cnumber, pin);
+				ASSIGN_THERM(snumber, t2, pin);
+				ASSIGN_THERM(cnumber, t1, pin);
+			}
+			ENDALL_LOOP;
+			VIA_LOOP(Buffer->Data);
+			{
+				t1 = TEST_THERM(snumber, via);
+				t2 = TEST_THERM(cnumber, via);
+				ASSIGN_THERM(snumber, t2, via);
+				ASSIGN_THERM(cnumber, t1, via);
+			}
+			END_LOOP;
+		}
+	}
+	SetBufferBoundingBox(Buffer);
 }
 
 /* ----------------------------------------------------------------------
  * moves the passed object to the passed buffer and removes it
  * from its original place
  */
-void *
-MoveObjectToBuffer (DataTypePtr Destination, DataTypePtr Src,
-		    int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *MoveObjectToBuffer(DataTypePtr Destination, DataTypePtr Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-  /* setup local identifiers used by move operations */
-  Dest = Destination;
-  Source = Src;
-  return (ObjectOperation (&MoveBufferFunctions, Type, Ptr1, Ptr2, Ptr3));
+	/* setup local identifiers used by move operations */
+	Dest = Destination;
+	Source = Src;
+	return (ObjectOperation(&MoveBufferFunctions, Type, Ptr1, Ptr2, Ptr3));
 }
 
 /* ----------------------------------------------------------------------
  * Adds the passed object to the passed buffer
  */
-void *
-CopyObjectToBuffer (DataTypePtr Destination, DataTypePtr Src,
-		    int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *CopyObjectToBuffer(DataTypePtr Destination, DataTypePtr Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-  /* setup local identifiers used by Add operations */
-  Dest = Destination;
-  Source = Src;
-  return (ObjectOperation (&AddBufferFunctions, Type, Ptr1, Ptr2, Ptr3));
+	/* setup local identifiers used by Add operations */
+	Dest = Destination;
+	Source = Src;
+	return (ObjectOperation(&AddBufferFunctions, Type, Ptr1, Ptr2, Ptr3));
 }
 
 /* ---------------------------------------------------------------------- */
 
 HID_Action rotate_action_list[] = {
-  {"FreeRotateBuffer", 0, ActionFreeRotateBuffer,
-   freerotatebuffer_syntax, freerotatebuffer_help},
-  {"LoadFootprint", 0, LoadFootprint,
-   0,0}
+	{"FreeRotateBuffer", 0, ActionFreeRotateBuffer,
+	 freerotatebuffer_syntax, freerotatebuffer_help}
+	,
+	{"LoadFootprint", 0, LoadFootprint,
+	 0, 0}
 };
 
-REGISTER_ACTIONS (rotate_action_list)
+REGISTER_ACTIONS(rotate_action_list)

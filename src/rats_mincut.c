@@ -67,12 +67,12 @@
 
 typedef struct short_conn_s short_conn_t;
 struct short_conn_s {
-	int gid; /* id in the graph */
+	int gid;											/* id in the graph */
 	int from_type;
 /*	AnyObjectType *from;*/
 	int from_id;
 	int to_type;
-	int edges;                /* number of edges */
+	int edges;										/* number of edges */
 	AnyObjectType *to;
 	found_conn_type_t type;
 	short_conn_t *next;
@@ -110,7 +110,7 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 }
 
 /* returns 0 on succes */
-static int proc_short(PinType *pin, PadType *pad, int ignore)
+static int proc_short(PinType * pin, PadType * pad, int ignore)
 {
 	find_callback_t old_cb;
 	Coord x, y;
@@ -122,7 +122,7 @@ static int proc_short(PinType *pin, PadType *pad, int ignore)
 	int i, maxedges;
 	int bad_gr = 0;
 
-	if (!TEST_FLAG (ENABLEMINCUTFLAG, PCB))
+	if (!TEST_FLAG(ENABLEMINCUTFLAG, PCB))
 		return bad_gr;
 
 	if (!Settings.EnableMincut)
@@ -134,14 +134,14 @@ static int proc_short(PinType *pin, PadType *pad, int ignore)
 
 	if (pin != NULL) {
 		debprintf("short on pin!\n");
-		SET_FLAG (WARNFLAG, pin);
+		SET_FLAG(WARNFLAG, pin);
 		x = pin->X;
 		y = pin->Y;
 	}
 	else if (pad != NULL) {
 		debprintf("short on pad!\n");
-		SET_FLAG (WARNFLAG, pad);
-		if (TEST_FLAG (EDGE2FLAG, pad)) {
+		SET_FLAG(WARNFLAG, pad);
+		if (TEST_FLAG(EDGE2FLAG, pad)) {
 			x = pad->Point2.X;
 			y = pad->Point2.Y;
 		}
@@ -151,45 +151,58 @@ static int proc_short(PinType *pin, PadType *pad, int ignore)
 		}
 	}
 
-		/* run only if net is not ignored */
+	/* run only if net is not ignored */
 	if (ignore)
 		return 0;
 
-short_conns = NULL;
-num_short_conns = 0;
-short_conns_maxid = 0;
+	short_conns = NULL;
+	num_short_conns = 0;
+	short_conns_maxid = 0;
 
 	/* perform a search using MINCUTFLAG, calling back proc_short_cb() with the connections */
 	old_cb = find_callback;
 	find_callback = proc_short_cb;
 	SaveFindFlag(MINCUTFLAG);
-	LookupConnection (x, y, false, 1, MINCUTFLAG);
+	LookupConnection(x, y, false, 1, MINCUTFLAG);
 
-	debprintf("- alloced for %d\n", (short_conns_maxid+1));
-	lut_by_oid = calloc(sizeof(short_conn_t *), (short_conns_maxid+1));
-	lut_by_gid = calloc(sizeof(short_conn_t *), (num_short_conns+3));
+	debprintf("- alloced for %d\n", (short_conns_maxid + 1));
+	lut_by_oid = calloc(sizeof(short_conn_t *), (short_conns_maxid + 1));
+	lut_by_gid = calloc(sizeof(short_conn_t *), (num_short_conns + 3));
 
-	g = gr_alloc(num_short_conns+2);
+	g = gr_alloc(num_short_conns + 2);
 
-	g->node2name = calloc(sizeof(char *), (num_short_conns+2));
+	g->node2name = calloc(sizeof(char *), (num_short_conns + 2));
 
 	/* conn 0 is S and conn 1 is T and set up lookup arrays */
-	for(n = short_conns, gids=2; n != NULL; n = n->next, gids++) {
+	for (n = short_conns, gids = 2; n != NULL; n = n->next, gids++) {
 		char *s, *typ;
 		ElementType *parent;
 		n->gid = gids;
 		debprintf(" {%d} found %d %d/%p type %d from %d\n", n->gid, n->to_type, n->to->ID, n->to, n->type, n->from_id);
 		lut_by_oid[n->to->ID] = n;
 		lut_by_gid[n->gid] = n;
-		
+
 		s = malloc(256);
 		parent = NULL;
-		switch(n->to_type) {
-			case PIN_TYPE: typ = "pin"; parent = ((PinType *)(n->to))->Element; break;
-			case VIA_TYPE: typ = "via"; parent = ((PinType *)(n->to))->Element; break;
-			case PAD_TYPE: typ = "pad"; parent = ((PadType *)(n->to))->Element; break;
-			case LINE_TYPE: typ = "line"; break;
-			default: typ="other"; break;
+		switch (n->to_type) {
+		case PIN_TYPE:
+			typ = "pin";
+			parent = ((PinType *) (n->to))->Element;
+			break;
+		case VIA_TYPE:
+			typ = "via";
+			parent = ((PinType *) (n->to))->Element;
+			break;
+		case PAD_TYPE:
+			typ = "pad";
+			parent = ((PadType *) (n->to))->Element;
+			break;
+		case LINE_TYPE:
+			typ = "line";
+			break;
+		default:
+			typ = "other";
+			break;
 		}
 		if (parent != NULL) {
 			TextType *name;
@@ -208,7 +221,7 @@ short_conns_maxid = 0;
 
 	/* calculate how many edges each node has and the max edge count */
 	maxedges = 0;
-	for(n = short_conns; n != NULL; n = n->next) {
+	for (n = short_conns; n != NULL; n = n->next) {
 		short_conn_t *from;
 
 		n->edges++;
@@ -219,7 +232,7 @@ short_conns_maxid = 0;
 			from = lut_by_oid[n->from_id];
 			if (from == NULL) {
 				/* no from means broken graph (multiple components) */
-				if (n->from_id >= 2) { /* ID 0 and 1 are start/stop, there won't be from for them */
+				if (n->from_id >= 2) {	/* ID 0 and 1 are start/stop, there won't be from for them */
 					fprintf(stderr, "rats_mincut.c error: graph has multiple components, bug in find.c (n->from_id=%d)!\n", n->from_id);
 					bad_gr = 1;
 				}
@@ -234,17 +247,17 @@ short_conns_maxid = 0;
 
 	S = NULL;
 	T = NULL;
-	for(n = short_conns; n != NULL; n = n->next) {
+	for (n = short_conns; n != NULL; n = n->next) {
 		short_conn_t *from;
 		void *spare;
 
 		spare = NULL;
 		if (n->to_type == PIN_TYPE)
-			spare = ((PinType *)n->to)->Spare;
+			spare = ((PinType *) n->to)->Spare;
 		if (n->to_type == PAD_TYPE)
-			spare = ((PadType *)n->to)->Spare;
+			spare = ((PadType *) n->to)->Spare;
 		if (spare != NULL) {
-			void *net = &(((LibraryMenuTypePtr)spare)->Name[2]);
+			void *net = &(((LibraryMenuTypePtr) spare)->Name[2]);
 			debprintf(" net=%s\n", net);
 			if (S == NULL) {
 				debprintf(" -> became S\n");
@@ -272,9 +285,9 @@ short_conns_maxid = 0;
 				   strongest obj-obj conn; obj-obj conns are weaker at junctions where many
 				   objects connect */
 				if ((n->from_type == PIN_TYPE) || (n->from_type == PAD_TYPE) || (n->to_type == PIN_TYPE) || (n->to_type == PAD_TYPE))
-					weight = maxedges*2 + 2;
+					weight = maxedges * 2 + 2;
 				else
-					weight = maxedges*2 - n->edges - from->edges + 1;
+					weight = maxedges * 2 - n->edges - from->edges + 1;
 			}
 			else
 				weight = 10000;
@@ -298,33 +311,33 @@ short_conns_maxid = 0;
 #endif
 
 	if (!bad_gr) {
-	solution = solve(g);
+		solution = solve(g);
 
-	if (solution != NULL) {
-		debprintf("Would cut:\n");
-		for(i = 0; solution[i] != -1; i++) {
-			short_conn_t *s;
-			debprintf("%d:", i);
-			s = lut_by_gid[solution[i]];
-			debprintf("%d %p", solution[i], s);
-			if (s != NULL) {
-				SET_FLAG (WARNFLAG, s->to);
-				debprintf("  -> %d", s->to->ID);
+		if (solution != NULL) {
+			debprintf("Would cut:\n");
+			for (i = 0; solution[i] != -1; i++) {
+				short_conn_t *s;
+				debprintf("%d:", i);
+				s = lut_by_gid[solution[i]];
+				debprintf("%d %p", solution[i], s);
+				if (s != NULL) {
+					SET_FLAG(WARNFLAG, s->to);
+					debprintf("  -> %d", s->to->ID);
+				}
+				debprintf("\n");
 			}
-			debprintf("\n");
-		}
 
-		free(solution);
-	}
-	else {
-		fprintf(stderr, "mincut didn't find a solution, falling back to the old warn\n");
-		bad_gr=1;
-	}
+			free(solution);
+		}
+		else {
+			fprintf(stderr, "mincut didn't find a solution, falling back to the old warn\n");
+			bad_gr = 1;
+		}
 	}
 	free(lut_by_oid);
 	free(lut_by_gid);
 
-	for(n = short_conns; n != NULL; n = next) {
+	for (n = short_conns; n != NULL; n = next) {
 		next = n->next;
 		free(n);
 	}
@@ -340,16 +353,16 @@ short_conns_maxid = 0;
 
 typedef struct pinpad_s pinpad_t;
 struct pinpad_s {
-	int ignore;             /* if 1, changed our mind, do not check */
+	int ignore;										/* if 1, changed our mind, do not check */
 	PinType *pin;
 	PadType *pad;
-	const char *with_net;   /* the name of the net this pin/pad is in short with */
+	const char *with_net;					/* the name of the net this pin/pad is in short with */
 	pinpad_t *next;
 };
 
 static pinpad_t *shorts = NULL;
 
-void rat_found_short(PinType *pin, PadType *pad, const char *with_net)
+void rat_found_short(PinType * pin, PadType * pad, const char *with_net)
 {
 	pinpad_t *pp;
 	pp = malloc(sizeof(pinpad_t));
@@ -365,13 +378,13 @@ void rat_proc_shorts(void)
 {
 	pinpad_t *n, *i, *next;
 	int bad_gr = 0;
-	for(n = shorts; n != NULL; n = next) {
+	for (n = shorts; n != NULL; n = next) {
 		next = n->next;
 
-			if (n->pin != NULL)
-				SET_FLAG (WARNFLAG, n->pin);
-			if (n->pad != NULL)
-				SET_FLAG (WARNFLAG, n->pad);
+		if (n->pin != NULL)
+			SET_FLAG(WARNFLAG, n->pin);
+		if (n->pad != NULL)
+			SET_FLAG(WARNFLAG, n->pad);
 
 
 		/* run only if net is not ignored */
@@ -381,19 +394,19 @@ void rat_proc_shorts(void)
 		}
 
 		if (!bad_gr) {
-		/* check if the rest of the shorts affect the same nets - ignore them if so */
-		for(i = n->next; i != NULL; i = i->next) {
-			LibraryMenuType *spn, *spi;
-			spn = (n->pin != NULL) ? n->pin->Spare : n->pad->Spare;
-			spi = (i->pin != NULL) ? i->pin->Spare : i->pad->Spare;
+			/* check if the rest of the shorts affect the same nets - ignore them if so */
+			for (i = n->next; i != NULL; i = i->next) {
+				LibraryMenuType *spn, *spi;
+				spn = (n->pin != NULL) ? n->pin->Spare : n->pad->Spare;
+				spi = (i->pin != NULL) ? i->pin->Spare : i->pad->Spare;
 
-			if ((spn == NULL) || (spi == NULL))
-				continue;
+				if ((spn == NULL) || (spi == NULL))
+					continue;
 
-			/* can compare by pointer - names are never strdup()'d */
-			if ((&spn->Name[2] == i->with_net) || (&spi->Name[2] == n->with_net))
-				i->ignore = 1;
-		}
+				/* can compare by pointer - names are never strdup()'d */
+				if ((&spn->Name[2] == i->with_net) || (&spi->Name[2] == n->with_net))
+					i->ignore = 1;
+			}
 		}
 		free(n);
 	}

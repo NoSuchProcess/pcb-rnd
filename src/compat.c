@@ -32,81 +32,67 @@
 #include <dmalloc.h>
 #endif
 
-RCSID ("$Id$");
+RCSID("$Id$");
 
 #ifndef HAVE_EXPF
-float
-expf (float x)
+float expf(float x)
 {
-  return (float) exp ((double) x);
+	return (float) exp((double) x);
 }
 #endif
 
 #ifndef HAVE_LOGF
-float
-logf (float x)
+float logf(float x)
 {
-  return (float) log ((double) x);
+	return (float) log((double) x);
 }
 #endif
 
 #ifndef HAVE_RANDOM
-long
-random (void)
+long random(void)
 {
-  return (long) rand ();
+	return (long) rand();
 }
 #endif
 
 #if !defined(HAVE_DLFCN_H) && defined(WIN32)
 #include <windows.h>
 
-void *
-dlopen (const char * f, int ATTRIBUTE_UNUSED flag)
+void *dlopen(const char *f, int ATTRIBUTE_UNUSED flag)
 {
-  return LoadLibrary (f);
+	return LoadLibrary(f);
 }
 
-void
-dlclose (void * h)
+void dlclose(void *h)
 {
-  FreeLibrary ((HINSTANCE) h);
+	FreeLibrary((HINSTANCE) h);
 }
 
-char *
-dlerror ()
+char *dlerror()
 {
-  static LPVOID lpMsgBuf = NULL;
-  DWORD dw;
+	static LPVOID lpMsgBuf = NULL;
+	DWORD dw;
 
-  /* free the error message buffer */
-  if (lpMsgBuf)
-    LocalFree (lpMsgBuf);
+	/* free the error message buffer */
+	if (lpMsgBuf)
+		LocalFree(lpMsgBuf);
 
-  /* get the error code */
-  dw = GetLastError();
+	/* get the error code */
+	dw = GetLastError();
 
-  /* get the corresponding error message */
-  FormatMessage (
-		FORMAT_MESSAGE_ALLOCATE_BUFFER |
-		FORMAT_MESSAGE_FROM_SYSTEM |
-		FORMAT_MESSAGE_IGNORE_INSERTS,
-		NULL,
-		dw,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPTSTR) &lpMsgBuf,
-		0, NULL);
+	/* get the corresponding error message */
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+								FORMAT_MESSAGE_FROM_SYSTEM |
+								FORMAT_MESSAGE_IGNORE_INSERTS,
+								NULL, dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) & lpMsgBuf, 0, NULL);
 
-  return (char *) lpMsgBuf;
+	return (char *) lpMsgBuf;
 }
 
-void *
-dlsym (void *handle, const char *symbol)
+void *dlsym(void *handle, const char *symbol)
 {
-  return (void *) GetProcAddress((HMODULE) handle, symbol);
+	return (void *) GetProcAddress((HMODULE) handle, symbol);
 }
 
 
 #endif
-
-

@@ -36,23 +36,22 @@
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-void SetBufferBoundingBox (BufferTypePtr);
-void ClearBuffer (BufferTypePtr);
-void AddSelectedToBuffer (BufferTypePtr, Coord, Coord, bool);
-bool LoadElementToBuffer (BufferTypePtr, const char *);
-bool ConvertBufferToElement (BufferTypePtr);
-bool SmashBufferElement (BufferTypePtr);
-bool LoadLayoutToBuffer (BufferTypePtr, char *);
-void RotateBuffer (BufferTypePtr, BYTE);
-void SelectPasteBuffer (int);
-void SwapBuffers (void);
-void MirrorBuffer (BufferTypePtr);
-void InitBuffers (void);
-void *MoveObjectToBuffer (DataTypePtr, DataTypePtr, int, void *, void *, void *); 
-void *CopyObjectToBuffer (DataTypePtr, DataTypePtr, int,
-			  void *, void *, void *);
+void SetBufferBoundingBox(BufferTypePtr);
+void ClearBuffer(BufferTypePtr);
+void AddSelectedToBuffer(BufferTypePtr, Coord, Coord, bool);
+bool LoadElementToBuffer(BufferTypePtr, const char *);
+bool ConvertBufferToElement(BufferTypePtr);
+bool SmashBufferElement(BufferTypePtr);
+bool LoadLayoutToBuffer(BufferTypePtr, char *);
+void RotateBuffer(BufferTypePtr, BYTE);
+void SelectPasteBuffer(int);
+void SwapBuffers(void);
+void MirrorBuffer(BufferTypePtr);
+void InitBuffers(void);
+void *MoveObjectToBuffer(DataTypePtr, DataTypePtr, int, void *, void *, void *);
+void *CopyObjectToBuffer(DataTypePtr, DataTypePtr, int, void *, void *, void *);
 
 /* This action is called from ActionElementAddIf() */
-int LoadFootprint (int argc, char **argv, Coord x, Coord y);
+int LoadFootprint(int argc, char **argv, Coord x, Coord y);
 
 #endif

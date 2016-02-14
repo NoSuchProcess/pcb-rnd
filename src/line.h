@@ -37,8 +37,8 @@
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-void AdjustAttachedLine (void);
-void AdjustTwoLine (bool);
-void FortyFiveLine (AttachedLineTypePtr);
-void EnforceLineDRC (void);
+void AdjustAttachedLine(void);
+void AdjustTwoLine(bool);
+void FortyFiveLine(AttachedLineTypePtr);
+void EnforceLineDRC(void);
 #endif

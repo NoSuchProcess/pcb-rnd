@@ -11,7 +11,9 @@ typedef enum {
    or subdir, call the callback. Ignore file names starting with
    If subdir_may_not_exist is non-zero, don't complain if the top subdir does not exist.
 */
-int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type, void *tags[]), void *cookie, int subdir_may_not_exist, int need_tags);
+int pcb_fp_list(const char *subdir, int recurse,
+								int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type, void *tags[]), void *cookie,
+								int subdir_may_not_exist, int need_tags);
 
 /* Decide about the type of a footprint file by reading the content and
    optionally extract tag IDs into a void *tags[] */
@@ -36,7 +38,7 @@ char *pcb_fp_search(const char *search_path, const char *basename, int parametri
 FILE *pcb_fp_fopen(const char *libshell, const char *search_path, const char *name, int *state);
 
 /* Close the footprint file opened by pcb_fp_fopen(). */
-void pcb_fp_fclose(FILE *f, int *st);
+void pcb_fp_fclose(FILE * f, int *st);
 
 /**** tag management ****/
 /* Resolve a tag name to an unique void * ID; create unknown tag if alloc != 0 */

@@ -93,8 +93,9 @@ RCSID("$Id$");
 
 static htsp_t *pcb_fp_tags = NULL;
 
-static int keyeq(char *a, char *b) {
-	return !strcmp(a,b);
+static int keyeq(char *a, char *b)
+{
+	return !strcmp(a, b);
 }
 
 const void *pcb_fp_tag(const char *tag, int alloc)
@@ -104,18 +105,18 @@ const void *pcb_fp_tag(const char *tag, int alloc)
 
 	if (pcb_fp_tags == NULL)
 		pcb_fp_tags = htsp_alloc(strhash, keyeq);
-	e = htsp_getentry(pcb_fp_tags, (char *)tag);
+	e = htsp_getentry(pcb_fp_tags, (char *) tag);
 	if ((e == NULL) && alloc) {
-		htsp_set(pcb_fp_tags, strdup(tag), (void *)counter);
+		htsp_set(pcb_fp_tags, strdup(tag), (void *) counter);
 		counter++;
-		e = htsp_getentry(pcb_fp_tags, (char *)tag);
+		e = htsp_getentry(pcb_fp_tags, (char *) tag);
 	}
 	return e == NULL ? NULL : e->key;
 }
 
 const char *pcb_fp_tagname(const void *tagid)
 {
-	return (char *)tagid;
+	return (char *) tagid;
 }
 
 /* Decide about the type of a footprint file:
@@ -149,91 +150,93 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn, void ***tags)
 	if (f == NULL)
 		return PCB_FP_INVALID;
 
-	while((c = fgetc(f)) != EOF) {
-		switch(state) {
-			case ST_ELEMENT:
-				if (isspace(c))
+	while ((c = fgetc(f)) != EOF) {
+		switch (state) {
+		case ST_ELEMENT:
+			if (isspace(c))
+				break;
+			if ((c == '(') || (c == '[')) {
+				ret = PCB_FP_FILE;
+				goto out;
+			}
+		case ST_WS:
+			if (isspace(c))
+				break;
+			if (c == '#') {
+				comment_len = 0;
+				state = ST_COMMENT;
+				break;
+			}
+			else if ((first_element) && (c == 'E')) {
+				char s[8];
+				/* Element */
+				fgets(s, 7, f);
+				s[6] = '\0';
+				if (strcmp(s, "lement") == 0) {
+					state = ST_ELEMENT;
 					break;
-				if ((c == '(') || (c == '[')) {
-					ret = PCB_FP_FILE;
+				}
+			}
+			first_element = 0;
+			/* fall-thru for detecting @ */
+		case ST_COMMENT:
+			comment_len++;
+			if ((c == '#') && (comment_len == 1)) {
+				state = ST_TAG;
+				break;
+			}
+			if ((c == '\r') || (c == '\n'))
+				state = ST_WS;
+			if (c == '@') {
+				char s[10];
+			maybe_purpose:;
+				/* "@@" "purpose" */
+				fgets(s, 9, f);
+				s[8] = '\0';
+				if (strcmp(s, "@purpose") == 0) {
+					ret = PCB_FP_PARAMETRIC;
 					goto out;
 				}
-			case ST_WS:
-				if (isspace(c))
-					break;
-				if (c == '#') {
-					comment_len = 0;
-					state = ST_COMMENT;
-					break;
-				}
-				else if ((first_element) && (c == 'E')) {
-					char s[8];
-					/* Element */
-					fgets(s, 7, f);
-					s[6] = '\0';
-					if (strcmp(s, "lement") == 0) {
-						state = ST_ELEMENT;
-						break;
+			}
+			break;
+		case ST_TAG:
+			if ((c == '\r') || (c == '\n')) {	/* end of a tag */
+				if (tags != NULL) {
+					tag[tused] = '\0';
+					if (Tused >= Talloced) {
+						Talloced += 8;
+						*tags = realloc(*tags, (Talloced + 1) * sizeof(void *));
 					}
+					(*tags)[Tused] = (void *) pcb_fp_tag(tag, 1);
+					Tused++;
+					(*tags)[Tused] = NULL;
 				}
-				first_element = 0;
-				/* fall-thru for detecting @ */
-			case ST_COMMENT:
-				comment_len++;
-				if ((c == '#') && (comment_len == 1)) {
-					state = ST_TAG;
-					break;
-				}
-				if ((c == '\r') || (c == '\n'))
-					state = ST_WS;
-				if (c == '@') {
-					char s[10];
-					maybe_purpose:;
-					/* "@@" "purpose" */
-					fgets(s, 9, f);
-					s[8] = '\0';
-					if (strcmp(s, "@purpose") == 0) {
-						ret = PCB_FP_PARAMETRIC;
-						goto out;
-					}
-				}
+
+				tused = 0;
+				state = ST_WS;
 				break;
-			case ST_TAG:
-				if ((c == '\r') || (c == '\n')) { /* end of a tag */
-					if (tags != NULL) {
-						tag[tused] = '\0';
-						if (Tused >= Talloced) {
-							Talloced += 8;
-							*tags = realloc(*tags, (Talloced+1) * sizeof(void *));
-						}
-						(*tags)[Tused] = (void *)pcb_fp_tag(tag, 1);
-						Tused++;
-						(*tags)[Tused] = NULL;
-					}
-					
-					tused = 0;
-					state = ST_WS;
-					break;
-				}
-				if (c == '@')
-					goto maybe_purpose;
-				if (tused >= talloced) {
-					talloced += 64;
-					tag = realloc(tag, talloced+1); /* always make room for an extra \0 */
-				}
-				tag[tused] = c;
-				tused++;
+			}
+			if (c == '@')
+				goto maybe_purpose;
+			if (tused >= talloced) {
+				talloced += 64;
+				tag = realloc(tag, talloced + 1);	/* always make room for an extra \0 */
+			}
+			tag[tused] = c;
+			tused++;
 		}
 	}
 
-	out:;
+out:;
 	if (tag != NULL)
 		free(tag);
 	fclose(f);
 	return ret;
 }
 
-int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type, void *tags[]), void *cookie, int subdir_may_not_exist, int need_tags)
+int pcb_fp_list(const char *subdir, int recurse,
+								int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type, void *tags[]), void *cookie,
+								int subdir_may_not_exist, int need_tags)
 {
 	char olddir[MAXPATHLEN + 1];	/* The directory we start out in (cwd) */
 	char new_subdir[MAXPATHLEN + 1];
@@ -271,7 +274,7 @@ int pcb_fp_list(const char *subdir, int recurse, int (*cb) (void *cookie, const 
 	l = strlen(new_subdir);
 	memcpy(fn, new_subdir, l);
 	fn[l] = PCB_DIR_SEPARATOR_C;
-	fn_end = fn+l+1;
+	fn_end = fn + l + 1;
 
 	/* First try opening the directory specified by path */
 	if ((subdirobj = opendir(new_subdir)) == NULL) {
@@ -351,8 +354,8 @@ int pcb_fp_dupname(const char *name, char **basename, char **params)
 
 	/* split at '(' */
 	*s = '\0';
-	*params = s+1;
-	s = *params + strlen(*params)-1;
+	*params = s + 1;
+	s = *params + strlen(*params) - 1;
 
 	/* strip ')' */
 	if (*s == ')')
@@ -371,8 +374,8 @@ typedef struct {
 
 static int pcb_fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_fp_type_t type, void *tags[])
 {
-	pcb_fp_search_t *ctx = (pcb_fp_search_t *)cookie;
-	if ((strncmp(ctx->target, name, ctx->target_len) == 0) && ((!!ctx->parametric) == (type == PCB_FP_PARAMETRIC))) {
+	pcb_fp_search_t *ctx = (pcb_fp_search_t *) cookie;
+	if ((strncmp(ctx->target, name, ctx->target_len) == 0) && ((! !ctx->parametric) == (type == PCB_FP_PARAMETRIC))) {
 		const char *suffix = name + ctx->target_len;
 		/* ugly heuristics: footprint names may end in .fp or .ele */
 		if ((*suffix == '\0') || (strcasecmp(suffix, ".fp") == 0) || (strcasecmp(suffix, ".ele") == 0)) {
@@ -401,10 +404,10 @@ char *pcb_fp_search(const char *search_path, const char *basename, int parametri
 
 /*	fprintf("Looking for %s\n", ctx.target);*/
 
-	for(p = search_path; end = strchr(p, ':'); p = end+1) {
+	for (p = search_path; end = strchr(p, ':'); p = end + 1) {
 		char *fpath;
-		memcpy(path, p, end-p);
-		path[end-p] = '\0';
+		memcpy(path, p, end - p);
+		path[end - p] = '\0';
 
 		resolve_path(path, &fpath);
 /*		fprintf(stderr, " in '%s'\n", fpath);*/
@@ -463,7 +466,7 @@ FILE *pcb_fp_fopen(const char *libshell, const char *path, const char *name, int
 	return f;
 }
 
-void pcb_fp_fclose(FILE *f, int *is_parametric)
+void pcb_fp_fclose(FILE * f, int *is_parametric)
 {
 	if (*is_parametric)
 		pclose(f);

@@ -16,19 +16,19 @@
 #else
 
 /* set up atexit() hook - can be avoided if leaky_uninit() is called by hand */
-void leaky_init (void);
+void leaky_init(void);
 
 /* free all allocations */
-void leaky_uninit (void);
+void leaky_uninit(void);
 
 /* allocate memory, remember the pointer and free it after exit from the application */
-void *leaky_malloc (size_t size);
+void *leaky_malloc(size_t size);
 
 /* same as leaky_malloc but this one wraps calloc() */
-void *leaky_calloc (size_t nmemb, size_t size);
+void *leaky_calloc(size_t nmemb, size_t size);
 
 /* reallocate memory, remember the new pointer and free it after exit from the application */
-void *leaky_realloc (void* old_memory, size_t size);
+void *leaky_realloc(void *old_memory, size_t size);
 
 
 #endif

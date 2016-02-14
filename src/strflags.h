@@ -35,17 +35,15 @@
 /* When passed a string, parse it and return an appropriate set of
    flags.  Errors cause error() to be called with a suitable message;
    if error is NULL, errors are ignored.  */
-FlagType string_to_flags (const char *flagstring,
-			  int (*error) (const char *msg));
+FlagType string_to_flags(const char *flagstring, int (*error) (const char *msg));
 
 /* Given a set of flags for a given object type, return a string which
    can be output to a file.  The returned pointer must not be
    freed.  */
-char *flags_to_string (FlagType flags, int object_type);
+char *flags_to_string(FlagType flags, int object_type);
 
 /* Same as above, but for pcb flags.  */
-FlagType string_to_pcbflags (const char *flagstring,
-			  int (*error) (const char *msg));
-char *pcbflags_to_string (FlagType flags);
+FlagType string_to_pcbflags(const char *flagstring, int (*error) (const char *msg));
+char *pcbflags_to_string(FlagType flags);
 
 #endif

@@ -49,35 +49,36 @@
  * to largest -- the code uses this ordering when finding
  * the best scale to use for a group of measures */
 static Unit Units[] = {
-  { 0, "km", NULL, 'k', 0.000001, METRIC, ALLOW_KM, 5,
-             0.00005, 0.0005, 0.0025, 0.05, 0.25,
-             { "" } },
-  { 0, "m",  NULL, 'f', 0.001,    METRIC, ALLOW_M,  5,
-             0.0005, 0.005, 0.025, 0.5, 2.5,
-             { "" } },
-  { 0, "cm", NULL, 'e', 0.1,      METRIC, ALLOW_CM, 5,
-             0.005, 0.05, 0.25, 5, 25,
-             { "" } },
-  { 0, "mm", NULL, 'm', 1,        METRIC, ALLOW_MM, 4,
-             0.005, 0.05, 0.25, 5, 25,
-             { "" } },
-  { 0, "um", NULL, 'u', 1000,     METRIC, ALLOW_UM, 2,
-             0.005, 0.05, 0.25, 5, 25,
-             { "" } },
-  { 0, "nm", NULL, 'n', 1000000,  METRIC, ALLOW_NM, 0,
-             5, 50, 2500, 5000, 25000,
-             { "" } },
+	{0, "km", NULL, 'k', 0.000001, METRIC, ALLOW_KM, 5,
+	 0.00005, 0.0005, 0.0025, 0.05, 0.25,
+	 {""}},
+	{0, "m", NULL, 'f', 0.001, METRIC, ALLOW_M, 5,
+	 0.0005, 0.005, 0.025, 0.5, 2.5,
+	 {""}},
+	{0, "cm", NULL, 'e', 0.1, METRIC, ALLOW_CM, 5,
+	 0.005, 0.05, 0.25, 5, 25,
+	 {""}},
+	{0, "mm", NULL, 'm', 1, METRIC, ALLOW_MM, 4,
+	 0.005, 0.05, 0.25, 5, 25,
+	 {""}},
+	{0, "um", NULL, 'u', 1000, METRIC, ALLOW_UM, 2,
+	 0.005, 0.05, 0.25, 5, 25,
+	 {""}},
+	{0, "nm", NULL, 'n', 1000000, METRIC, ALLOW_NM, 0,
+	 5, 50, 2500, 5000, 25000,
+	 {""}},
 
-  { 0, "in",   NULL, 'i', 0.001, IMPERIAL, ALLOW_IN,   5,
-               0.1, 1.0, 5.0, 25, 100,
-               { "inch" } },
-  { 0, "mil",  NULL, 'l', 1,     IMPERIAL, ALLOW_MIL,  2,
-               0.1, 1.0, 10, 100, 1000,
-               { "" } },
-  { 0, "cmil", NULL, 'c', 100,   IMPERIAL, ALLOW_CMIL, 0,
-               1, 10, 100, 1000, 10000,
-               { "pcb" } }
+	{0, "in", NULL, 'i', 0.001, IMPERIAL, ALLOW_IN, 5,
+	 0.1, 1.0, 5.0, 25, 100,
+	 {"inch"}},
+	{0, "mil", NULL, 'l', 1, IMPERIAL, ALLOW_MIL, 2,
+	 0.1, 1.0, 10, 100, 1000,
+	 {""}},
+	{0, "cmil", NULL, 'c', 100, IMPERIAL, ALLOW_CMIL, 0,
+	 1, 10, 100, 1000, 10000,
+	 {"pcb"}}
 };
+
 #define N_UNITS ((int) (sizeof Units / sizeof Units[0]))
 /* \brief Initialize non-static data for pcb-printf
  * \par Function Description
@@ -87,62 +88,62 @@ static Unit Units[] = {
  */
 void initialize_units()
 {
-  int i;
-  for (i = 0; i < N_UNITS; ++i)
-    {
-      Units[i].index = i;
-      Units[i].in_suffix = _(Units[i].suffix);
-    }
+	int i;
+	for (i = 0; i < N_UNITS; ++i) {
+		Units[i].index = i;
+		Units[i].in_suffix = _(Units[i].suffix);
+	}
 }
 
 /* This list -must- contain all printable units from the above list */
 /* For now I have just copy/pasted the same values for all metric
  * units and the same values for all imperial ones */
 static Increments increments[] = {
-  /* TABLE FORMAT   |  default  |  min  |  max
-   *          grid  |           |       |
-   *          size  |           |       |
-   *          line  |           |       |
-   *         clear  |           |       |
-   */
-  { "km", MM_TO_COORD3 (0.1,  0.01,  1.0),
-          MM_TO_COORD3 (0.2,  0.01,  0.5),
-          MM_TO_COORD3 (0.1,  0.005, 0.5),
-          MM_TO_COORD3 (0.05, 0.005, 0.5) },
-  { "m",  MM_TO_COORD3 (0.1,  0.01,  1.0),
-          MM_TO_COORD3 (0.2,  0.01,  0.5),
-          MM_TO_COORD3 (0.1,  0.005, 0.5),
-          MM_TO_COORD3 (0.05, 0.005, 0.5) },
-  { "cm", MM_TO_COORD3 (0.1,  0.01,  1.0),
-          MM_TO_COORD3 (0.2,  0.01,  0.5),
-          MM_TO_COORD3 (0.1,  0.005, 0.5),
-          MM_TO_COORD3 (0.05, 0.005, 0.5) },
-  { "mm", MM_TO_COORD3 (0.1,  0.01,  1.0),
-          MM_TO_COORD3 (0.2,  0.01,  0.5),
-          MM_TO_COORD3 (0.1,  0.005, 0.5),
-          MM_TO_COORD3 (0.05, 0.005, 0.5) },
-  { "um", MM_TO_COORD3 (0.1,  0.01,  1.0),
-          MM_TO_COORD3 (0.2,  0.01,  0.5),
-          MM_TO_COORD3 (0.1,  0.005, 0.5),
-          MM_TO_COORD3 (0.05, 0.005, 0.5) },
-  { "nm", MM_TO_COORD3 (0.1,  0.01,  1.0),
-          MM_TO_COORD3 (0.2,  0.01,  0.5),
-          MM_TO_COORD3 (0.1,  0.005, 0.5),
-          MM_TO_COORD3 (0.05, 0.005, 0.5) },
+	/* TABLE FORMAT   |  default  |  min  |  max
+	 *          grid  |           |       |
+	 *          size  |           |       |
+	 *          line  |           |       |
+	 *         clear  |           |       |
+	 */
+	{"km", MM_TO_COORD3(0.1, 0.01, 1.0),
+	 MM_TO_COORD3(0.2, 0.01, 0.5),
+	 MM_TO_COORD3(0.1, 0.005, 0.5),
+	 MM_TO_COORD3(0.05, 0.005, 0.5)},
+	{"m", MM_TO_COORD3(0.1, 0.01, 1.0),
+	 MM_TO_COORD3(0.2, 0.01, 0.5),
+	 MM_TO_COORD3(0.1, 0.005, 0.5),
+	 MM_TO_COORD3(0.05, 0.005, 0.5)},
+	{"cm", MM_TO_COORD3(0.1, 0.01, 1.0),
+	 MM_TO_COORD3(0.2, 0.01, 0.5),
+	 MM_TO_COORD3(0.1, 0.005, 0.5),
+	 MM_TO_COORD3(0.05, 0.005, 0.5)},
+	{"mm", MM_TO_COORD3(0.1, 0.01, 1.0),
+	 MM_TO_COORD3(0.2, 0.01, 0.5),
+	 MM_TO_COORD3(0.1, 0.005, 0.5),
+	 MM_TO_COORD3(0.05, 0.005, 0.5)},
+	{"um", MM_TO_COORD3(0.1, 0.01, 1.0),
+	 MM_TO_COORD3(0.2, 0.01, 0.5),
+	 MM_TO_COORD3(0.1, 0.005, 0.5),
+	 MM_TO_COORD3(0.05, 0.005, 0.5)},
+	{"nm", MM_TO_COORD3(0.1, 0.01, 1.0),
+	 MM_TO_COORD3(0.2, 0.01, 0.5),
+	 MM_TO_COORD3(0.1, 0.005, 0.5),
+	 MM_TO_COORD3(0.05, 0.005, 0.5)},
 
-  { "cmil", MIL_TO_COORD3 (5,  1,   25),
-            MIL_TO_COORD3 (10, 1,   10),
-            MIL_TO_COORD3 (5,  0.5, 10),
-            MIL_TO_COORD3 (2,  0.5, 10) },
-  { "mil",  MIL_TO_COORD3 (5,  1,   25),
-            MIL_TO_COORD3 (10, 1,   10),
-            MIL_TO_COORD3 (5,  0.5, 10),
-            MIL_TO_COORD3 (2,  0.5, 10) },
-  { "in",   MIL_TO_COORD3 (5,  1,   25),
-            MIL_TO_COORD3 (10, 1,   10),
-            MIL_TO_COORD3 (5,  0.5, 10),
-            MIL_TO_COORD3 (2,  0.5, 10) },
+	{"cmil", MIL_TO_COORD3(5, 1, 25),
+	 MIL_TO_COORD3(10, 1, 10),
+	 MIL_TO_COORD3(5, 0.5, 10),
+	 MIL_TO_COORD3(2, 0.5, 10)},
+	{"mil", MIL_TO_COORD3(5, 1, 25),
+	 MIL_TO_COORD3(10, 1, 10),
+	 MIL_TO_COORD3(5, 0.5, 10),
+	 MIL_TO_COORD3(2, 0.5, 10)},
+	{"in", MIL_TO_COORD3(5, 1, 25),
+	 MIL_TO_COORD3(10, 1, 10),
+	 MIL_TO_COORD3(5, 0.5, 10),
+	 MIL_TO_COORD3(2, 0.5, 10)},
 };
+
 #define N_INCREMENTS (sizeof increments / sizeof increments[0])
 
 /* \brief Obtain a unit object from its suffix
@@ -155,58 +156,57 @@ static Increments increments[] = {
  *
  * \return A const pointer to the Unit struct, or NULL if none was found
  */
-const Unit *get_unit_struct (const char *const_suffix)
+const Unit *get_unit_struct(const char *const_suffix)
 {
-  int i;
-  int s_len = 0;
-  /* Turn given suffix into something we can modify... */
-  char *m_suffix = g_strdup (const_suffix);
-  /* ...and store this in a pointer we can move. */
-  char *suffix = m_suffix;
+	int i;
+	int s_len = 0;
+	/* Turn given suffix into something we can modify... */
+	char *m_suffix = g_strdup(const_suffix);
+	/* ...and store this in a pointer we can move. */
+	char *suffix = m_suffix;
 
-  /* Determine bounds */
-  while (isspace (*suffix))
-    ++suffix;
-  while (isalnum (suffix[s_len]))
-    ++s_len;
+	/* Determine bounds */
+	while (isspace(*suffix))
+		++suffix;
+	while (isalnum(suffix[s_len]))
+		++s_len;
 
-  /* Also understand plural suffixes: "inches", "mils" */
-  if (s_len > 2)
-    {
-      if (suffix[s_len - 2] == 'e' && suffix[s_len - 1] == 's')
-        suffix[s_len - 2] = 0;
-      else if (suffix[s_len - 1] == 's')
-        suffix[s_len - 1] = 0;
-    }
+	/* Also understand plural suffixes: "inches", "mils" */
+	if (s_len > 2) {
+		if (suffix[s_len - 2] == 'e' && suffix[s_len - 1] == 's')
+			suffix[s_len - 2] = 0;
+		else if (suffix[s_len - 1] == 's')
+			suffix[s_len - 1] = 0;
+	}
 
-  /* Do lookup */
-  if (*suffix)
-    for (i = 0; i < N_UNITS; ++i)
-      if (strcmp (suffix, Units[i].suffix) == 0 ||
-          strcmp (suffix, Units[i].alias[0]) == 0)
-        {
-          g_free (m_suffix);
-          return &Units[i];
-        }
-  g_free (m_suffix);
-  return NULL;
+	/* Do lookup */
+	if (*suffix)
+		for (i = 0; i < N_UNITS; ++i)
+			if (strcmp(suffix, Units[i].suffix) == 0 || strcmp(suffix, Units[i].alias[0]) == 0) {
+				g_free(m_suffix);
+				return &Units[i];
+			}
+	g_free(m_suffix);
+	return NULL;
 }
 
 /* ACCESSORS */
 /* \brief Returns the master unit list. This may not be modified. */
-const Unit *get_unit_list (void)
+const Unit *get_unit_list(void)
 {
 	return Units;
 }
+
 /* \brief Returns the unit by its index */
-const Unit *get_unit_by_idx (int idx)
+const Unit *get_unit_by_idx(int idx)
 {
 	if ((idx < 0) || (idx >= N_UNITS))
 		return NULL;
-	return Units+idx;
+	return Units + idx;
 }
+
 /* \brief Returns the length of the master unit list. */
-int get_n_units (void)
+int get_n_units(void)
 {
 	return N_UNITS;
 }
@@ -220,14 +220,14 @@ int get_n_units (void)
  *
  * \return A const pointer to the Increments struct, or NULL if none was found
  */
-Increments *get_increments_struct (const char *suffix)
+Increments *get_increments_struct(const char *suffix)
 {
-  int i;
-  /* Do lookup */
-  for (i = 0; i < N_INCREMENTS; ++i)
-    if (strcmp (suffix, increments[i].suffix) == 0)
-      return &increments[i];
-  return NULL;
+	int i;
+	/* Do lookup */
+	for (i = 0; i < N_INCREMENTS; ++i)
+		if (strcmp(suffix, increments[i].suffix) == 0)
+			return &increments[i];
+	return NULL;
 }
 
 /* \brief Convert a pcb coord to the given unit
@@ -237,15 +237,14 @@ Increments *get_increments_struct (const char *suffix)
  *
  * \return The converted measure
  */
-double coord_to_unit (const Unit *unit, Coord x)
+double coord_to_unit(const Unit * unit, Coord x)
 {
-  double base;
-  if (unit == NULL)
-    return -1;
-  base = unit->family == METRIC
-           ? COORD_TO_MM (1)
-           : COORD_TO_MIL (1);
-  return x * unit->scale_factor * base;
+	double base;
+	if (unit == NULL)
+		return -1;
+	base = unit->family == METRIC ? COORD_TO_MM(1)
+		: COORD_TO_MIL(1);
+	return x * unit->scale_factor * base;
 }
 
 /* \brief Convert a given unit to pcb coords
@@ -255,9 +254,9 @@ double coord_to_unit (const Unit *unit, Coord x)
  *
  * \return The converted measure
  */
-Coord unit_to_coord (const Unit *unit, double x)
+Coord unit_to_coord(const Unit * unit, double x)
 {
-  return x / coord_to_unit (unit, 1);
+	return x / coord_to_unit(unit, 1);
 }
 
 /* \brief Return how many PCB-internal-Coord-unit a unit translates to
@@ -266,25 +265,29 @@ Coord unit_to_coord (const Unit *unit, double x)
  *
  * \return The converted measure
  */
-double unit_to_factor (const Unit *unit)
+double unit_to_factor(const Unit * unit)
 {
-  return 1.0 / coord_to_unit (unit, 1);
+	return 1.0 / coord_to_unit(unit, 1);
 }
 
 static int min_sig_figs(double d)
 {
-  char buf[50];
-  int rv;
+	char buf[50];
+	int rv;
 
-  if(d == 0) return 0;
+	if (d == 0)
+		return 0;
 
-  /* Normalize to x.xxxx... form */
-  if(d < 0)      d *= -1;
-  while(d >= 10) d /= 10;
-  while(d < 1)   d *= 10;
+	/* Normalize to x.xxxx... form */
+	if (d < 0)
+		d *= -1;
+	while (d >= 10)
+		d /= 10;
+	while (d < 1)
+		d *= 10;
 
-  rv = sprintf(buf, "%g", d);
-  return rv;
+	rv = sprintf(buf, "%g", d);
+	return rv;
 }
 
 /* \brief Internal coord-to-string converter for pcb-printf
@@ -302,141 +305,133 @@ static int min_sig_figs(double d)
  *
  * \return A string containing the formatted coords. Must be freed with g_free.
  */
-static gchar *CoordsToString(Coord coord[], int n_coords, const char *printf_spec, enum e_allow allow, enum e_suffix suffix_type)
+static gchar *CoordsToString(Coord coord[], int n_coords, const char *printf_spec, enum e_allow allow,
+														 enum e_suffix suffix_type)
 {
-  GString *buff;
-  gchar *printf_buff;
-  gchar filemode_buff[G_ASCII_DTOSTR_BUF_SIZE];
-  enum e_family family;
-  double *value;
-  const char *suffix;
-  int i, n;
+	GString *buff;
+	gchar *printf_buff;
+	gchar filemode_buff[G_ASCII_DTOSTR_BUF_SIZE];
+	enum e_family family;
+	double *value;
+	const char *suffix;
+	int i, n;
 
-  value = malloc (n_coords * sizeof *value);
-  buff  = g_string_new ("");
+	value = malloc(n_coords * sizeof *value);
+	buff = g_string_new("");
 
-  /* Sanity checks */
-  if (buff == NULL || value == NULL)
-    return NULL;
-  if (allow == 0)
-    allow = ALLOW_ALL;
-  if (printf_spec == NULL)
-    printf_spec = "";
+	/* Sanity checks */
+	if (buff == NULL || value == NULL)
+		return NULL;
+	if (allow == 0)
+		allow = ALLOW_ALL;
+	if (printf_spec == NULL)
+		printf_spec = "";
 
-  /* Check our freedom in choosing units */
-  if ((allow & ALLOW_IMPERIAL) == 0)
-    family = METRIC;
-  else if ((allow & ALLOW_METRIC) == 0)
-    family = IMPERIAL;
-  else
-    {
-      int met_votes = 0,
-          imp_votes = 0;
+	/* Check our freedom in choosing units */
+	if ((allow & ALLOW_IMPERIAL) == 0)
+		family = METRIC;
+	else if ((allow & ALLOW_METRIC) == 0)
+		family = IMPERIAL;
+	else {
+		int met_votes = 0, imp_votes = 0;
 
-      for (i = 0; i < n_coords; ++i)
-        if(min_sig_figs(COORD_TO_MIL(coord[i])) < min_sig_figs(COORD_TO_MM(coord[i])))
-          ++imp_votes;
-        else
-          ++met_votes;
+		for (i = 0; i < n_coords; ++i)
+			if (min_sig_figs(COORD_TO_MIL(coord[i])) < min_sig_figs(COORD_TO_MM(coord[i])))
+				++imp_votes;
+			else
+				++met_votes;
 
-      if (imp_votes > met_votes)
-        family = IMPERIAL;
-      else
-        family = METRIC;
-    }
+		if (imp_votes > met_votes)
+			family = IMPERIAL;
+		else
+			family = METRIC;
+	}
 
-  /* Set base unit */
-  for (i = 0; i < n_coords; ++i)
-    {
-      switch (family)
-        {
-        case METRIC:   value[i] = COORD_TO_MM (coord[i]); break;
-        case IMPERIAL: value[i] = COORD_TO_MIL (coord[i]); break;
-        }
-    }
+	/* Set base unit */
+	for (i = 0; i < n_coords; ++i) {
+		switch (family) {
+		case METRIC:
+			value[i] = COORD_TO_MM(coord[i]);
+			break;
+		case IMPERIAL:
+			value[i] = COORD_TO_MIL(coord[i]);
+			break;
+		}
+	}
 
-  /* Determine scale factor -- find smallest unit that brings
-   * the whole group above unity */
-  for (n = 0; n < N_UNITS; ++n)
-    {
-      if ((Units[n].allow & allow) != 0 && (Units[n].family == family))
-        {
-          int n_above_one = 0;
-    
-          for (i = 0; i < n_coords; ++i)
-            if (fabs(value[i] * Units[n].scale_factor) > 1)
-              ++n_above_one;
-          if (n_above_one == n_coords)
-            break;
-        }
-    }
-  /* If nothing worked, wind back to the smallest allowable unit */
-  if (n == N_UNITS)
-    {
-      do {
-        --n;
-      } while ((Units[n].allow & allow) == 0 || Units[n].family != family);
-    }
+	/* Determine scale factor -- find smallest unit that brings
+	 * the whole group above unity */
+	for (n = 0; n < N_UNITS; ++n) {
+		if ((Units[n].allow & allow) != 0 && (Units[n].family == family)) {
+			int n_above_one = 0;
 
-  /* Apply scale factor */
-  suffix = Units[n].suffix;
-  for (i = 0; i < n_coords; ++i)
-    value[i] = value[i] * Units[n].scale_factor;
+			for (i = 0; i < n_coords; ++i)
+				if (fabs(value[i] * Units[n].scale_factor) > 1)
+					++n_above_one;
+			if (n_above_one == n_coords)
+				break;
+		}
+	}
+	/* If nothing worked, wind back to the smallest allowable unit */
+	if (n == N_UNITS) {
+		do {
+			--n;
+		} while ((Units[n].allow & allow) == 0 || Units[n].family != family);
+	}
 
-  /* Create sprintf specifier, using default_prec no preciscion is given */
-  i = 0;
-  while (printf_spec[i] == '%' || isdigit(printf_spec[i]) ||
-         printf_spec[i] == '-' || printf_spec[i] == '+' ||
-         printf_spec[i] == '#' || printf_spec[i] == '0')
-    ++i;
-  if (printf_spec[i] == '.')
-    printf_buff = g_strdup_printf (", %sf", printf_spec);
-  else
-    printf_buff = g_strdup_printf (", %s.%df", printf_spec, Units[n].default_prec);
+	/* Apply scale factor */
+	suffix = Units[n].suffix;
+	for (i = 0; i < n_coords; ++i)
+		value[i] = value[i] * Units[n].scale_factor;
 
-  /* Actually sprintf the values in place
-   *  (+ 2 skips the ", " for first value) */
-  if (n_coords > 1)
-    g_string_append_c (buff, '(');
-  if (suffix_type == FILE_MODE)
-    {
-      g_ascii_formatd (filemode_buff, sizeof filemode_buff, printf_buff + 2, value[0]);
-      g_string_append_printf (buff, "%s", filemode_buff);
-    }
-  else
-    g_string_append_printf (buff, printf_buff + 2, value[0]);
-  for (i = 1; i < n_coords; ++i)
-    {
-      if (suffix_type == FILE_MODE)
-        {
-          g_ascii_formatd (filemode_buff, sizeof filemode_buff, printf_buff, value[i]);
-          g_string_append_printf (buff, "%s", filemode_buff);
-        }
-      else
-        g_string_append_printf (buff, printf_buff, value[i]);
-    }
-  if (n_coords > 1)
-    g_string_append_c (buff, ')');
-  /* Append suffix */
-  if (value[0] != 0 || n_coords > 1)
-    {
-      switch (suffix_type)
-        {
-        case NO_SUFFIX:
-          break;
-        case SUFFIX:
-          g_string_append_printf (buff, " %s", suffix);
-          break;
-        case FILE_MODE:
-          g_string_append_printf (buff, "%s", suffix);
-          break;
-        }
-    }
+	/* Create sprintf specifier, using default_prec no preciscion is given */
+	i = 0;
+	while (printf_spec[i] == '%' || isdigit(printf_spec[i]) ||
+				 printf_spec[i] == '-' || printf_spec[i] == '+' || printf_spec[i] == '#' || printf_spec[i] == '0')
+		++i;
+	if (printf_spec[i] == '.')
+		printf_buff = g_strdup_printf(", %sf", printf_spec);
+	else
+		printf_buff = g_strdup_printf(", %s.%df", printf_spec, Units[n].default_prec);
 
-  g_free (printf_buff);
-  free (value);
-  /* Return just the gchar* part of our string */
-  return g_string_free (buff, FALSE);
+	/* Actually sprintf the values in place
+	 *  (+ 2 skips the ", " for first value) */
+	if (n_coords > 1)
+		g_string_append_c(buff, '(');
+	if (suffix_type == FILE_MODE) {
+		g_ascii_formatd(filemode_buff, sizeof filemode_buff, printf_buff + 2, value[0]);
+		g_string_append_printf(buff, "%s", filemode_buff);
+	}
+	else
+		g_string_append_printf(buff, printf_buff + 2, value[0]);
+	for (i = 1; i < n_coords; ++i) {
+		if (suffix_type == FILE_MODE) {
+			g_ascii_formatd(filemode_buff, sizeof filemode_buff, printf_buff, value[i]);
+			g_string_append_printf(buff, "%s", filemode_buff);
+		}
+		else
+			g_string_append_printf(buff, printf_buff, value[i]);
+	}
+	if (n_coords > 1)
+		g_string_append_c(buff, ')');
+	/* Append suffix */
+	if (value[0] != 0 || n_coords > 1) {
+		switch (suffix_type) {
+		case NO_SUFFIX:
+			break;
+		case SUFFIX:
+			g_string_append_printf(buff, " %s", suffix);
+			break;
+		case FILE_MODE:
+			g_string_append_printf(buff, "%s", suffix);
+			break;
+		}
+	}
+
+	g_free(printf_buff);
+	free(value);
+	/* Return just the gchar* part of our string */
+	return g_string_free(buff, FALSE);
 }
 
 /* \brief Main pcb-printf function
@@ -452,181 +447,196 @@ static gchar *CoordsToString(Coord coord[], int n_coords, const char *printf_spe
  */
 gchar *pcb_vprintf(const char *fmt, va_list args)
 {
-  GString *string = g_string_new ("");
-  GString *spec   = g_string_new ("");
+	GString *string = g_string_new("");
+	GString *spec = g_string_new("");
 
-  enum e_allow mask = ALLOW_ALL;
+	enum e_allow mask = ALLOW_ALL;
 
-  if (string == NULL || spec == NULL)
-    return NULL;
+	if (string == NULL || spec == NULL)
+		return NULL;
 
-  while(*fmt)
-    {
-      enum e_suffix suffix = NO_SUFFIX;
+	while (*fmt) {
+		enum e_suffix suffix = NO_SUFFIX;
 
-      if(*fmt == '%')
-        {
-          gchar *unit_str = NULL;
-          const char *ext_unit = "";
-          Coord value[10];
-          int count, i;
+		if (*fmt == '%') {
+			gchar *unit_str = NULL;
+			const char *ext_unit = "";
+			Coord value[10];
+			int count, i;
 
-          g_string_assign (spec, "");
+			g_string_assign(spec, "");
 
-          /* Get printf sub-specifiers */
-          g_string_append_c (spec, *fmt++);
-          while(isdigit(*fmt) || *fmt == '.' || *fmt == ' ' || *fmt == '*'
-                              || *fmt == '#' || *fmt == 'l' || *fmt == 'L'
-                              || *fmt == 'h' || *fmt == '+' || *fmt == '-')
-          {
-            if (*fmt == '*')
-              {
-                g_string_append_printf (spec, "%d", va_arg (args, int));
-                fmt++;
-              }
-            else
-              g_string_append_c (spec, *fmt++);
-          }
-          /* Get our sub-specifiers */
-          if(*fmt == '#')
-            {
-              mask = ALLOW_CMIL;  /* This must be pcb's base unit */
-              fmt++;
-            }
-          if(*fmt == '$')
-            {
-              suffix = SUFFIX;
-              fmt++;
-            }
-          /* Tack full specifier onto specifier */
-          if (*fmt != 'm')
-            g_string_append_c (spec, *fmt);
-          switch(*fmt)
-            {
-            /* Printf specs */
-            case 'o': case 'i': case 'd':
-            case 'u': case 'x': case 'X':
-              if(spec->str[1] == 'l')
-                {
-                  if(spec->str[2] == 'l')
-                    unit_str = g_strdup_printf (spec->str, va_arg(args, long long));
-                  else
-                    unit_str = g_strdup_printf (spec->str, va_arg(args, long));
-                }
-              else
-                {
-                  unit_str = g_strdup_printf (spec->str, va_arg(args, int));
-                }
-              break;
-            case 'e': case 'E': case 'f':
-            case 'g': case 'G':
-              if (strchr (spec->str, '*'))
-                {
-                  int prec = va_arg(args, int);
-                  unit_str = g_strdup_printf (spec->str, va_arg(args, double), prec);
-                }
-              else
-                unit_str = g_strdup_printf (spec->str, va_arg(args, double));
-              break;
-            case 'c':
-              if(spec->str[1] == 'l' && sizeof(int) <= sizeof(wchar_t))
-                unit_str = g_strdup_printf (spec->str, va_arg(args, wchar_t));
-              else
-                unit_str = g_strdup_printf (spec->str, va_arg(args, int));
-              break;
-            case 's':
-              if(spec->str[0] == 'l')
-                unit_str = g_strdup_printf (spec->str, va_arg(args, wchar_t *));
-              else
-                unit_str = g_strdup_printf (spec->str, va_arg(args, char *));
-              break;
-            case 'n':
-              /* Depending on gcc settings, this will probably break with
-               *  some silly "can't put %n in writeable data space" message */
-              unit_str = g_strdup_printf (spec->str, va_arg(args, int *));
-              break;
-            case 'p':
-              unit_str = g_strdup_printf (spec->str, va_arg(args, void *));
-              break;
-            case '%':
-              g_string_append_c (string, '%');
-              break;
-            /* Our specs */
-            case 'm':
-              ++fmt;
-              if (*fmt == '*')
-                ext_unit = va_arg(args, const char *);
-              if (*fmt != '+' && *fmt != 'a')
-                value[0] = va_arg(args, Coord);
-              count = 1;
-              switch(*fmt)
-                {
-                case 'I': unit_str = CoordsToString(value, 1, spec->str, ALLOW_NM, NO_SUFFIX); break;
-                case 's': unit_str = CoordsToString(value, 1, spec->str, ALLOW_MM | ALLOW_MIL, suffix); break;
-                case 'S': unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_ALL, suffix); break;
-                case 'M': unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_METRIC, suffix); break;
-                case 'L': unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_IMPERIAL, suffix); break;
+			/* Get printf sub-specifiers */
+			g_string_append_c(spec, *fmt++);
+			while (isdigit(*fmt) || *fmt == '.' || *fmt == ' ' || *fmt == '*'
+						 || *fmt == '#' || *fmt == 'l' || *fmt == 'L' || *fmt == 'h' || *fmt == '+' || *fmt == '-') {
+				if (*fmt == '*') {
+					g_string_append_printf(spec, "%d", va_arg(args, int));
+					fmt++;
+				}
+				else
+					g_string_append_c(spec, *fmt++);
+			}
+			/* Get our sub-specifiers */
+			if (*fmt == '#') {
+				mask = ALLOW_CMIL;			/* This must be pcb's base unit */
+				fmt++;
+			}
+			if (*fmt == '$') {
+				suffix = SUFFIX;
+				fmt++;
+			}
+			/* Tack full specifier onto specifier */
+			if (*fmt != 'm')
+				g_string_append_c(spec, *fmt);
+			switch (*fmt) {
+				/* Printf specs */
+			case 'o':
+			case 'i':
+			case 'd':
+			case 'u':
+			case 'x':
+			case 'X':
+				if (spec->str[1] == 'l') {
+					if (spec->str[2] == 'l')
+						unit_str = g_strdup_printf(spec->str, va_arg(args, long long));
+					else
+						unit_str = g_strdup_printf(spec->str, va_arg(args, long));
+				}
+				else {
+					unit_str = g_strdup_printf(spec->str, va_arg(args, int));
+				}
+				break;
+			case 'e':
+			case 'E':
+			case 'f':
+			case 'g':
+			case 'G':
+				if (strchr(spec->str, '*')) {
+					int prec = va_arg(args, int);
+					unit_str = g_strdup_printf(spec->str, va_arg(args, double), prec);
+				}
+				else
+					unit_str = g_strdup_printf(spec->str, va_arg(args, double));
+				break;
+			case 'c':
+				if (spec->str[1] == 'l' && sizeof(int) <= sizeof(wchar_t))
+					unit_str = g_strdup_printf(spec->str, va_arg(args, wchar_t));
+				else
+					unit_str = g_strdup_printf(spec->str, va_arg(args, int));
+				break;
+			case 's':
+				if (spec->str[0] == 'l')
+					unit_str = g_strdup_printf(spec->str, va_arg(args, wchar_t *));
+				else
+					unit_str = g_strdup_printf(spec->str, va_arg(args, char *));
+				break;
+			case 'n':
+				/* Depending on gcc settings, this will probably break with
+				 *  some silly "can't put %n in writeable data space" message */
+				unit_str = g_strdup_printf(spec->str, va_arg(args, int *));
+				break;
+			case 'p':
+				unit_str = g_strdup_printf(spec->str, va_arg(args, void *));
+				break;
+			case '%':
+				g_string_append_c(string, '%');
+				break;
+				/* Our specs */
+			case 'm':
+				++fmt;
+				if (*fmt == '*')
+					ext_unit = va_arg(args, const char *);
+				if (*fmt != '+' && *fmt != 'a')
+					value[0] = va_arg(args, Coord);
+				count = 1;
+				switch (*fmt) {
+				case 'I':
+					unit_str = CoordsToString(value, 1, spec->str, ALLOW_NM, NO_SUFFIX);
+					break;
+				case 's':
+					unit_str = CoordsToString(value, 1, spec->str, ALLOW_MM | ALLOW_MIL, suffix);
+					break;
+				case 'S':
+					unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_ALL, suffix);
+					break;
+				case 'M':
+					unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_METRIC, suffix);
+					break;
+				case 'L':
+					unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_IMPERIAL, suffix);
+					break;
 #if 0
-                case 'r': unit_str = CoordsToString(value, 1, spec->str, ALLOW_READABLE, FILE_MODE); break;
+				case 'r':
+					unit_str = CoordsToString(value, 1, spec->str, ALLOW_READABLE, FILE_MODE);
+					break;
 #else
-                case 'r': unit_str = CoordsToString(value, 1, spec->str, ALLOW_READABLE, NO_SUFFIX); break;
+				case 'r':
+					unit_str = CoordsToString(value, 1, spec->str, ALLOW_READABLE, NO_SUFFIX);
+					break;
 #endif
-                /* All these fallthroughs are deliberate */
-                case '9': value[count++] = va_arg(args, Coord);
-                case '8': value[count++] = va_arg(args, Coord);
-                case '7': value[count++] = va_arg(args, Coord);
-                case '6': value[count++] = va_arg(args, Coord);
-                case '5': value[count++] = va_arg(args, Coord);
-                case '4': value[count++] = va_arg(args, Coord);
-                case '3': value[count++] = va_arg(args, Coord);
-                case '2':
-                case 'D':
-                  value[count++] = va_arg(args, Coord);
-                  unit_str = CoordsToString(value, count, spec->str, mask & ALLOW_ALL, suffix);
-                  break;
-                case 'd':
-                  value[1] = va_arg(args, Coord);
-                  unit_str = CoordsToString(value, 2, spec->str, ALLOW_MM | ALLOW_MIL, suffix);
-                  break;
-                case '*':
-                  for (i = 0; i < N_UNITS; ++i)
-                    if (strcmp (ext_unit, Units[i].suffix) == 0)
-                      unit_str = CoordsToString(value, 1, spec->str, Units[i].allow, suffix);
-                  if (unit_str == NULL)
-                    unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_ALL, suffix);
-                  break;
-                case 'a':
-                  g_string_append (spec, ".0f");
-                  if (suffix == SUFFIX)
-                    g_string_append (spec, " deg");
-                  unit_str = g_strdup_printf (spec->str, (double) va_arg(args, Angle));
-                  break;
-                case '+':
-                  mask = va_arg(args, enum e_allow);
-                  break;
-                default:
-                  for (i = 0; i < N_UNITS; ++i)
-                    if (*fmt == Units[i].printf_code)
-                      unit_str = CoordsToString(value, 1, spec->str, Units[i].allow, suffix);
-                  if (unit_str == NULL)
-                    unit_str = CoordsToString(value, 1, spec->str, ALLOW_ALL, suffix);
-                  break;
-                }
-              break;
-            }
-          if (unit_str != NULL)
-            {
-              g_string_append (string, unit_str);
-              g_free (unit_str);
-            }
-        }
-      else
-        g_string_append_c (string, *fmt);
-      ++fmt;
-    }
-  g_string_free (spec, TRUE);
-  /* Return just the gchar* part of our string */
-  return g_string_free (string, FALSE);
+					/* All these fallthroughs are deliberate */
+				case '9':
+					value[count++] = va_arg(args, Coord);
+				case '8':
+					value[count++] = va_arg(args, Coord);
+				case '7':
+					value[count++] = va_arg(args, Coord);
+				case '6':
+					value[count++] = va_arg(args, Coord);
+				case '5':
+					value[count++] = va_arg(args, Coord);
+				case '4':
+					value[count++] = va_arg(args, Coord);
+				case '3':
+					value[count++] = va_arg(args, Coord);
+				case '2':
+				case 'D':
+					value[count++] = va_arg(args, Coord);
+					unit_str = CoordsToString(value, count, spec->str, mask & ALLOW_ALL, suffix);
+					break;
+				case 'd':
+					value[1] = va_arg(args, Coord);
+					unit_str = CoordsToString(value, 2, spec->str, ALLOW_MM | ALLOW_MIL, suffix);
+					break;
+				case '*':
+					for (i = 0; i < N_UNITS; ++i)
+						if (strcmp(ext_unit, Units[i].suffix) == 0)
+							unit_str = CoordsToString(value, 1, spec->str, Units[i].allow, suffix);
+					if (unit_str == NULL)
+						unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_ALL, suffix);
+					break;
+				case 'a':
+					g_string_append(spec, ".0f");
+					if (suffix == SUFFIX)
+						g_string_append(spec, " deg");
+					unit_str = g_strdup_printf(spec->str, (double) va_arg(args, Angle));
+					break;
+				case '+':
+					mask = va_arg(args, enum e_allow);
+					break;
+				default:
+					for (i = 0; i < N_UNITS; ++i)
+						if (*fmt == Units[i].printf_code)
+							unit_str = CoordsToString(value, 1, spec->str, Units[i].allow, suffix);
+					if (unit_str == NULL)
+						unit_str = CoordsToString(value, 1, spec->str, ALLOW_ALL, suffix);
+					break;
+				}
+				break;
+			}
+			if (unit_str != NULL) {
+				g_string_append(string, unit_str);
+				g_free(unit_str);
+			}
+		}
+		else
+			g_string_append_c(string, *fmt);
+		++fmt;
+	}
+	g_string_free(spec, TRUE);
+	/* Return just the gchar* part of our string */
+	return g_string_free(string, FALSE);
 }
 
 
@@ -639,17 +649,17 @@ gchar *pcb_vprintf(const char *fmt, va_list args)
  */
 int pcb_sprintf(char *string, const char *fmt, ...)
 {
-  gchar *tmp;
+	gchar *tmp;
 
-  va_list args;
-  va_start(args, fmt);
+	va_list args;
+	va_start(args, fmt);
 
-  tmp = pcb_vprintf (fmt, args);
-  strcpy (string, tmp);
-  g_free (tmp);
-  
-  va_end(args);
-  return strlen (string);
+	tmp = pcb_vprintf(fmt, args);
+	strcpy(string, tmp);
+	g_free(tmp);
+
+	va_end(args);
+	return strlen(string);
 }
 
 /* \brief Wrapper for pcb_vprintf that outputs to a file
@@ -659,25 +669,24 @@ int pcb_sprintf(char *string, const char *fmt, ...)
  *
  * \return The length of the written string
  */
-int pcb_fprintf(FILE *fh, const char *fmt, ...)
+int pcb_fprintf(FILE * fh, const char *fmt, ...)
 {
-  int rv;
-  gchar *tmp;
+	int rv;
+	gchar *tmp;
 
-  va_list args;
-  va_start(args, fmt);
+	va_list args;
+	va_start(args, fmt);
 
-  if (fh == NULL)
-    rv = -1;
-  else
-    {
-      tmp = pcb_vprintf (fmt, args);
-      rv = fprintf (fh, "%s", tmp);
-      g_free (tmp);
-    }
-  
-  va_end(args);
-  return rv;
+	if (fh == NULL)
+		rv = -1;
+	else {
+		tmp = pcb_vprintf(fmt, args);
+		rv = fprintf(fh, "%s", tmp);
+		g_free(tmp);
+	}
+
+	va_end(args);
+	return rv;
 }
 
 /* \brief Wrapper for pcb_vprintf that outputs to stdout
@@ -688,18 +697,18 @@ int pcb_fprintf(FILE *fh, const char *fmt, ...)
  */
 int pcb_printf(const char *fmt, ...)
 {
-  int rv;
-  gchar *tmp;
+	int rv;
+	gchar *tmp;
 
-  va_list args;
-  va_start(args, fmt);
+	va_list args;
+	va_start(args, fmt);
 
-  tmp = pcb_vprintf (fmt, args);
-  rv = printf ("%s", tmp);
-  g_free (tmp);
-  
-  va_end(args);
-  return rv;
+	tmp = pcb_vprintf(fmt, args);
+	rv = printf("%s", tmp);
+	g_free(tmp);
+
+	va_end(args);
+	return rv;
 }
 
 /* \brief Wrapper for pcb_vprintf that outputs to a newly allocated string
@@ -710,12 +719,11 @@ int pcb_printf(const char *fmt, ...)
  */
 char *pcb_g_strdup_printf(const char *fmt, ...)
 {
-  gchar *tmp;
+	gchar *tmp;
 
-  va_list args;
-  va_start(args, fmt);
-  tmp = pcb_vprintf (fmt, args);
-  va_end(args);
-  return tmp;
+	va_list args;
+	va_start(args, fmt);
+	tmp = pcb_vprintf(fmt, args);
+	va_end(args);
+	return tmp;
 }
-

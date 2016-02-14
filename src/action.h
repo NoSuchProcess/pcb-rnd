@@ -35,15 +35,15 @@
 
 #define CLONE_TYPES LINE_TYPE | ARC_TYPE | VIA_TYPE | POLYGON_TYPE
 
-void ActionAdjustStyle (char *);
-void EventMoveCrosshair (int, int);
+void ActionAdjustStyle(char *);
+void EventMoveCrosshair(int, int);
 
-void AdjustAttachedObjects (void);
+void AdjustAttachedObjects(void);
 
-void warpNoWhere (void);
+void warpNoWhere(void);
 
 /* In gui-misc.c */
-bool ActionGetLocation (char *);
-void ActionGetXY (char *);
+bool ActionGetLocation(char *);
+void ActionGetXY(char *);
 
 #endif

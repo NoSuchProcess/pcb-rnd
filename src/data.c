@@ -36,23 +36,23 @@
 #include <dmalloc.h>
 #endif
 
-RCSID ("$Id$");
+RCSID("$Id$");
 
 /* ---------------------------------------------------------------------------
  * some shared identifiers
  */
 
-CrosshairType Crosshair;	/* information about cursor settings */
-MarkType Marked;		/* a cross-hair mark */
-OutputType Output;		/* some widgets ... used for drawing */
-PCBTypePtr PCB;			/* pointer to layout struct */
+CrosshairType Crosshair;				/* information about cursor settings */
+MarkType Marked;								/* a cross-hair mark */
+OutputType Output;							/* some widgets ... used for drawing */
+PCBTypePtr PCB;									/* pointer to layout struct */
 
 char *Progname;
 SettingType Settings;
-int LayerStack[MAX_LAYER];	/* determines the layer draw order */
+int LayerStack[MAX_LAYER];			/* determines the layer draw order */
 
 BufferType Buffers[MAX_BUFFER];	/* my buffers */
-LibraryType Library;		/* the library */
-bool Bumped;			/* if the undo serial number has changed */
+LibraryType Library;						/* the library */
+bool Bumped;										/* if the undo serial number has changed */
 
 int addedLines;

@@ -68,57 +68,53 @@
 #define CHANGEMASKSIZE_TYPES    \
         (PIN_TYPE | VIA_TYPE | PAD_TYPE)
 
-bool ChangeLayoutName (char *);
-bool ChangeLayerName (LayerTypePtr, char *);
-bool ChangeSelectedSize (int, Coord, bool);
-bool ChangeSelectedClearSize (int, Coord, bool);
-bool ChangeSelected2ndSize (int, Coord, bool);
-bool ChangeSelectedMaskSize (int, Coord, bool);
-bool ChangeSelectedJoin (int);
-bool SetSelectedJoin (int);
-bool ClrSelectedJoin (int);
-bool ChangeSelectedNonetlist (int);
-bool ChangeSelectedSquare (int);
-bool SetSelectedSquare (int);
-bool ClrSelectedSquare (int);
-bool ChangeSelectedThermals (int, int);
-bool ChangeSelectedHole (void);
-bool ChangeSelectedPaste (void);
-bool ChangeSelectedOctagon (int);
-bool SetSelectedOctagon (int);
-bool ClrSelectedOctagon (int);
-bool ChangeSelectedElementSide (void);
-bool ChangeElementSide (ElementTypePtr, Coord);
-bool ChangeHole (PinTypePtr);
-bool ChangePaste (PadTypePtr);
-bool ChangeObjectSize (int, void *, void *, void *, Coord, bool);
-bool ChangeObject1stSize (int, void *, void *, void *, Coord, bool);
-bool ChangeObjectThermal (int, void *, void *, void *, int);
-bool ChangeObjectClearSize (int, void *, void *, void *, Coord,
-			       bool);
-bool ChangeObject2ndSize (int, void *, void *, void *, Coord,
-			     bool, bool);
-bool ChangeObjectMaskSize (int, void *, void *, void *, Coord,
-			      bool);
-bool ChangeObjectJoin (int, void *, void *, void *);
-bool SetObjectJoin (int, void *, void *, void *);
-bool ClrObjectJoin (int, void *, void *, void *);
-bool ChangeObjectNonetlist (int Type, void *Ptr1, void *Ptr2, void *Ptr3);
-bool ChangeObjectSquare (int, void *, void *, void *, int);
-bool SetObjectSquare (int, void *, void *, void *);
-bool ClrObjectSquare (int, void *, void *, void *);
-bool ChangeObjectOctagon (int, void *, void *, void *);
-bool SetObjectOctagon (int, void *, void *, void *);
-bool ClrObjectOctagon (int, void *, void *, void *);
-void *ChangeObjectName (int, void *, void *, void *, char *);
-void *QueryInputAndChangeObjectName (int, void *, void *, void *, int);
-void ChangePCBSize (Coord, Coord);
-void *ChangeObjectPinnum (int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name);
+bool ChangeLayoutName(char *);
+bool ChangeLayerName(LayerTypePtr, char *);
+bool ChangeSelectedSize(int, Coord, bool);
+bool ChangeSelectedClearSize(int, Coord, bool);
+bool ChangeSelected2ndSize(int, Coord, bool);
+bool ChangeSelectedMaskSize(int, Coord, bool);
+bool ChangeSelectedJoin(int);
+bool SetSelectedJoin(int);
+bool ClrSelectedJoin(int);
+bool ChangeSelectedNonetlist(int);
+bool ChangeSelectedSquare(int);
+bool SetSelectedSquare(int);
+bool ClrSelectedSquare(int);
+bool ChangeSelectedThermals(int, int);
+bool ChangeSelectedHole(void);
+bool ChangeSelectedPaste(void);
+bool ChangeSelectedOctagon(int);
+bool SetSelectedOctagon(int);
+bool ClrSelectedOctagon(int);
+bool ChangeSelectedElementSide(void);
+bool ChangeElementSide(ElementTypePtr, Coord);
+bool ChangeHole(PinTypePtr);
+bool ChangePaste(PadTypePtr);
+bool ChangeObjectSize(int, void *, void *, void *, Coord, bool);
+bool ChangeObject1stSize(int, void *, void *, void *, Coord, bool);
+bool ChangeObjectThermal(int, void *, void *, void *, int);
+bool ChangeObjectClearSize(int, void *, void *, void *, Coord, bool);
+bool ChangeObject2ndSize(int, void *, void *, void *, Coord, bool, bool);
+bool ChangeObjectMaskSize(int, void *, void *, void *, Coord, bool);
+bool ChangeObjectJoin(int, void *, void *, void *);
+bool SetObjectJoin(int, void *, void *, void *);
+bool ClrObjectJoin(int, void *, void *, void *);
+bool ChangeObjectNonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
+bool ChangeObjectSquare(int, void *, void *, void *, int);
+bool SetObjectSquare(int, void *, void *, void *);
+bool ClrObjectSquare(int, void *, void *, void *);
+bool ChangeObjectOctagon(int, void *, void *, void *);
+bool SetObjectOctagon(int, void *, void *, void *);
+bool ClrObjectOctagon(int, void *, void *, void *);
+void *ChangeObjectName(int, void *, void *, void *, char *);
+void *QueryInputAndChangeObjectName(int, void *, void *, void *, int);
+void ChangePCBSize(Coord, Coord);
+void *ChangeObjectPinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name);
 
 /* Change the specified text on an element, either on the board (give
    PCB, PCB->Data) or in a buffer (give NULL, Buffer->Data).  The old
    string is returned, and must be properly freed by the caller.  */
-char *ChangeElementText (PCBType *pcb, DataType *data, ElementTypePtr Element,
-			 int which, char *new_name);
+char *ChangeElementText(PCBType * pcb, DataType * data, ElementTypePtr Element, int which, char *new_name);
 
 #endif

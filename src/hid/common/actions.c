@@ -86,7 +86,7 @@ HID_Action *hid_remove_action(HID_Action * a)
 {
 	if (all_actions == NULL)
 		return NULL;
-	
+
 	return htsp_pop(all_actions, a->name);
 }
 

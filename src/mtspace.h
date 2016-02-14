@@ -41,17 +41,16 @@
 /* mtspace data structures are built on r-trees. */
 
 #include "global.h"
-#include "vector.h"             /* for vector_t in mtspace_query_rect prototype */
+#include "vector.h"							/* for vector_t in mtspace_query_rect prototype */
 
 typedef struct mtspace mtspace_t;
-typedef enum
-{ FIXED, ODD, EVEN } mtspace_type_t;
+typedef enum { FIXED, ODD, EVEN } mtspace_type_t;
 typedef struct vetting vetting_t;
 
 /* create an "empty space" representation with a shrunken boundary */
-mtspace_t *mtspace_create (void);
+mtspace_t *mtspace_create(void);
 /* destroy an "empty space" representation. */
-void mtspace_destroy (mtspace_t ** mtspacep);
+void mtspace_destroy(mtspace_t ** mtspacep);
 
 /* -- mutation -- */
 
@@ -59,28 +58,22 @@ void mtspace_destroy (mtspace_t ** mtspacep);
  * should *not* be bloated; it should be "true".  The feature will fill
  * *at least* a radius of keepaway around it;
  */
-void mtspace_add (mtspace_t * mtspace,
-                  const BoxType * box, mtspace_type_t which, Coord
-                  keepaway);
+void mtspace_add(mtspace_t * mtspace, const BoxType * box, mtspace_type_t which, Coord keepaway);
 /* remove a space-filler from the empty space representation.  The given box
  * should *not* be bloated; it should be "true".  The feature will fill
  * *at least* a radius of keepaway around it;
  */
-void mtspace_remove (mtspace_t * mtspace,
-                     const BoxType * box, mtspace_type_t which,
-                     Coord keepaway);
+void mtspace_remove(mtspace_t * mtspace, const BoxType * box, mtspace_type_t which, Coord keepaway);
 
 
-vetting_t *mtspace_query_rect (mtspace_t * mtspace, const BoxType * region,
-                               Coord radius, Coord keepaway,
-                               vetting_t * work,
-                               vector_t * free_space_vec,
-                               vector_t * lo_conflict_space_vec,
-                               vector_t * hi_conflict_space_vec,
-                               bool is_odd, bool with_conflicts,
-                               CheapPointType *desired);
+vetting_t *mtspace_query_rect(mtspace_t * mtspace, const BoxType * region,
+															Coord radius, Coord keepaway,
+															vetting_t * work,
+															vector_t * free_space_vec,
+															vector_t * lo_conflict_space_vec,
+															vector_t * hi_conflict_space_vec, bool is_odd, bool with_conflicts, CheapPointType * desired);
 
-void mtsFreeWork (vetting_t **);
-int mtsBoxCount (vetting_t *);
+void mtsFreeWork(vetting_t **);
+int mtsBoxCount(vetting_t *);
 
 #endif /* ! PCB_MTSPACE_H */

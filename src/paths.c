@@ -9,11 +9,11 @@ char *homedir;
 void paths_init_homedir(void)
 {
 	const char *tmps;
-	tmps = getenv ("HOME");
+	tmps = getenv("HOME");
 	if (tmps == NULL)
-		tmps = getenv ("USERPROFILE");
+		tmps = getenv("USERPROFILE");
 	if (tmps != NULL)
-		homedir = strdup (tmps);
+		homedir = strdup(tmps);
 	else
 		homedir = NULL;
 }
@@ -21,7 +21,7 @@ void paths_init_homedir(void)
 
 void resolve_paths(const char **in, char **out, int numpaths)
 {
-	for(out; numpaths > 0; numpaths--,in++,out++) {
+	for (out; numpaths > 0; numpaths--, in++, out++) {
 		if (*in != NULL) {
 			if (**in == '~') {
 				int l1, l2;
@@ -31,11 +31,11 @@ void resolve_paths(const char **in, char **out, int numpaths)
 				}
 				/* avoid Concat() here to reduce dependencies for external tools */
 				l1 = strlen(homedir);
-				l2 = strlen((*in)+1);
-				*out = malloc(l1+l2+4);
-				sprintf(*out, "%s/%s", homedir, (*in)+1);
+				l2 = strlen((*in) + 1);
+				*out = malloc(l1 + l2 + 4);
+				sprintf(*out, "%s/%s", homedir, (*in) + 1);
 			}
-			else 
+			else
 				*out = strdup(*in);
 		}
 		else

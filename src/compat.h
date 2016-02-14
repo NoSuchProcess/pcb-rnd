@@ -30,23 +30,23 @@
 #include <math.h>
 
 #ifndef HAVE_EXPF
-float expf (float);
+float expf(float);
 #endif
 
 #ifndef HAVE_LOGF
-float logf (float);
+float logf(float);
 #endif
 
 #ifndef HAVE_RANDOM
-long random (void);
+long random(void);
 #endif
 
 #if !defined(HAVE_DLFCN_H) && defined(WIN32)
-void * dlopen (const char *, int);
-void dlclose (void *);
-char * dlerror (void);
+void *dlopen(const char *, int);
+void dlclose(void *);
+char *dlerror(void);
 
-void * dlsym(void *, const char *);
+void *dlsym(void *, const char *);
 
 #define RTLD_NOW 2
 #define RTLD_LOCAL 0
@@ -56,4 +56,3 @@ void * dlsym(void *, const char *);
 
 
 #endif /* PCB_COMPAT_H */
-

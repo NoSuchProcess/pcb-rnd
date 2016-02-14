@@ -54,7 +54,7 @@
 #include <dmalloc.h>
 #endif
 
-RCSID ("$Id$");
+RCSID("$Id$");
 
 
 
@@ -62,72 +62,66 @@ RCSID ("$Id$");
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *RotateText (LayerTypePtr, TextTypePtr);
-static void *RotateArc (LayerTypePtr, ArcTypePtr);
-static void *RotateElement (ElementTypePtr);
-static void *RotateElementName (ElementTypePtr);
-static void *RotateLinePoint (LayerTypePtr, LineTypePtr, PointTypePtr);
+static void *RotateText(LayerTypePtr, TextTypePtr);
+static void *RotateArc(LayerTypePtr, ArcTypePtr);
+static void *RotateElement(ElementTypePtr);
+static void *RotateElementName(ElementTypePtr);
+static void *RotateLinePoint(LayerTypePtr, LineTypePtr, PointTypePtr);
 
 /* ----------------------------------------------------------------------
  * some local identifiers
  */
 static Coord CenterX, CenterY;	/* center of rotation */
-static unsigned Number;		/* number of rotations */
+static unsigned Number;					/* number of rotations */
 static ObjectFunctionType RotateFunctions = {
-  NULL,
-  RotateText,
-  NULL,
-  NULL,
-  RotateElement,
-  RotateElementName,
-  NULL,
-  NULL,
-  RotateLinePoint,
-  NULL,
-  RotateArc,
-  NULL
+	NULL,
+	RotateText,
+	NULL,
+	NULL,
+	RotateElement,
+	RotateElementName,
+	NULL,
+	NULL,
+	RotateLinePoint,
+	NULL,
+	RotateArc,
+	NULL
 };
 
 /* ---------------------------------------------------------------------------
  * rotates a point in 90 degree steps
  */
-void
-RotatePointLowLevel (PointTypePtr Point, Coord X, Coord Y, unsigned Number)
+void RotatePointLowLevel(PointTypePtr Point, Coord X, Coord Y, unsigned Number)
 {
-  ROTATE (Point->X, Point->Y, X, Y, Number);
+	ROTATE(Point->X, Point->Y, X, Y, Number);
 }
 
 /* ---------------------------------------------------------------------------
  * rotates a line in 90 degree steps
  */
-void
-RotateLineLowLevel (LineTypePtr Line, Coord X, Coord Y, unsigned Number)
+void RotateLineLowLevel(LineTypePtr Line, Coord X, Coord Y, unsigned Number)
 {
-  ROTATE (Line->Point1.X, Line->Point1.Y, X, Y, Number);
-  ROTATE (Line->Point2.X, Line->Point2.Y, X, Y, Number);
-  /* keep horizontal, vertical Point2 > Point1 */
-  if (Line->Point1.X == Line->Point2.X)
-    {
-      if (Line->Point1.Y > Line->Point2.Y)
-	{
-	  Coord t;
-	  t = Line->Point1.Y;
-	  Line->Point1.Y = Line->Point2.Y;
-	  Line->Point2.Y = t;
+	ROTATE(Line->Point1.X, Line->Point1.Y, X, Y, Number);
+	ROTATE(Line->Point2.X, Line->Point2.Y, X, Y, Number);
+	/* keep horizontal, vertical Point2 > Point1 */
+	if (Line->Point1.X == Line->Point2.X) {
+		if (Line->Point1.Y > Line->Point2.Y) {
+			Coord t;
+			t = Line->Point1.Y;
+			Line->Point1.Y = Line->Point2.Y;
+			Line->Point2.Y = t;
+		}
 	}
-    }
-  else if (Line->Point1.Y == Line->Point2.Y)
-    {
-      if (Line->Point1.X > Line->Point2.X)
-	{
-	  Coord t;
-	  t = Line->Point1.X;
-	  Line->Point1.X = Line->Point2.X;
-	  Line->Point2.X = t;
+	else if (Line->Point1.Y == Line->Point2.Y) {
+		if (Line->Point1.X > Line->Point2.X) {
+			Coord t;
+			t = Line->Point1.X;
+			Line->Point1.X = Line->Point2.X;
+			Line->Point2.X = t;
+		}
 	}
-    }
-  /* instead of rotating the bounding box, the call updates both end points too */
-  SetLineBoundingBox (Line);
+	/* instead of rotating the bounding box, the call updates both end points too */
+	SetLineBoundingBox(Line);
 }
 
 /* ---------------------------------------------------------------------------
@@ -135,302 +129,274 @@ RotateLineLowLevel (LineTypePtr Line, Coord X, Coord Y, unsigned Number)
  * only the bounding box is rotated, text rotation itself
  * is done by the drawing routines
  */
-void
-RotateTextLowLevel (TextTypePtr Text, Coord X, Coord Y, unsigned Number)
+void RotateTextLowLevel(TextTypePtr Text, Coord X, Coord Y, unsigned Number)
 {
-  BYTE number;
+	BYTE number;
 
-  number = TEST_FLAG (ONSOLDERFLAG, Text) ? (4 - Number) & 3 : Number;
-  RotateBoxLowLevel (&Text->BoundingBox, X, Y, Number);
-  ROTATE (Text->X, Text->Y, X, Y, Number);
+	number = TEST_FLAG(ONSOLDERFLAG, Text) ? (4 - Number) & 3 : Number;
+	RotateBoxLowLevel(&Text->BoundingBox, X, Y, Number);
+	ROTATE(Text->X, Text->Y, X, Y, Number);
 
-  /* set new direction, 0..3,
-   * 0-> to the right, 1-> straight up,
-   * 2-> to the left, 3-> straight down
-   */
-  Text->Direction = ((Text->Direction + number) & 0x03);
+	/* set new direction, 0..3,
+	 * 0-> to the right, 1-> straight up,
+	 * 2-> to the left, 3-> straight down
+	 */
+	Text->Direction = ((Text->Direction + number) & 0x03);
 }
 
 /* ---------------------------------------------------------------------------
  * rotates a polygon in 90 degree steps
  */
-void
-RotatePolygonLowLevel (PolygonTypePtr Polygon, Coord X, Coord Y, unsigned Number)
+void RotatePolygonLowLevel(PolygonTypePtr Polygon, Coord X, Coord Y, unsigned Number)
 {
-  POLYGONPOINT_LOOP (Polygon);
-  {
-    ROTATE (point->X, point->Y, X, Y, Number);
-  }
-  END_LOOP;
-  RotateBoxLowLevel (&Polygon->BoundingBox, X, Y, Number);
+	POLYGONPOINT_LOOP(Polygon);
+	{
+		ROTATE(point->X, point->Y, X, Y, Number);
+	}
+	END_LOOP;
+	RotateBoxLowLevel(&Polygon->BoundingBox, X, Y, Number);
 }
 
 /* ---------------------------------------------------------------------------
  * rotates a text object and redraws it
  */
-static void *
-RotateText (LayerTypePtr Layer, TextTypePtr Text)
+static void *RotateText(LayerTypePtr Layer, TextTypePtr Text)
 {
-  EraseText (Layer, Text);
-  RestoreToPolygon (PCB->Data, TEXT_TYPE, Layer, Text);
-  r_delete_entry (Layer->text_tree, (BoxTypePtr) Text);
-  RotateTextLowLevel (Text, CenterX, CenterY, Number);
-  r_insert_entry (Layer->text_tree, (BoxTypePtr) Text, 0);
-  ClearFromPolygon (PCB->Data, TEXT_TYPE, Layer, Text);
-  DrawText (Layer, Text);
-  Draw ();
-  return (Text);
+	EraseText(Layer, Text);
+	RestoreToPolygon(PCB->Data, TEXT_TYPE, Layer, Text);
+	r_delete_entry(Layer->text_tree, (BoxTypePtr) Text);
+	RotateTextLowLevel(Text, CenterX, CenterY, Number);
+	r_insert_entry(Layer->text_tree, (BoxTypePtr) Text, 0);
+	ClearFromPolygon(PCB->Data, TEXT_TYPE, Layer, Text);
+	DrawText(Layer, Text);
+	Draw();
+	return (Text);
 }
 
 /* ---------------------------------------------------------------------------
  * rotates an arc
  */
-void
-RotateArcLowLevel (ArcTypePtr Arc, Coord X, Coord Y, unsigned Number)
+void RotateArcLowLevel(ArcTypePtr Arc, Coord X, Coord Y, unsigned Number)
 {
-  Coord save;
+	Coord save;
 
-  /* add Number*90 degrees (i.e., Number quarter-turns) */
-  Arc->StartAngle = NormalizeAngle (Arc->StartAngle + Number * 90);
-  ROTATE (Arc->X, Arc->Y, X, Y, Number);
+	/* add Number*90 degrees (i.e., Number quarter-turns) */
+	Arc->StartAngle = NormalizeAngle(Arc->StartAngle + Number * 90);
+	ROTATE(Arc->X, Arc->Y, X, Y, Number);
 
-  /* now change width and height */
-  if (Number == 1 || Number == 3)
-    {
-      save = Arc->Width;
-      Arc->Width = Arc->Height;
-      Arc->Height = save;
-    }
-  RotateBoxLowLevel (&Arc->BoundingBox, X, Y, Number);
+	/* now change width and height */
+	if (Number == 1 || Number == 3) {
+		save = Arc->Width;
+		Arc->Width = Arc->Height;
+		Arc->Height = save;
+	}
+	RotateBoxLowLevel(&Arc->BoundingBox, X, Y, Number);
 }
 
 /* ---------------------------------------------------------------------------
  * rotate an element in 90 degree steps
  */
-void
-RotateElementLowLevel (DataTypePtr Data, ElementTypePtr Element,
-		       Coord X, Coord Y, unsigned Number)
+void RotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coord Y, unsigned Number)
 {
-  /* solder side objects need a different orientation */
+	/* solder side objects need a different orientation */
 
-  /* the text subroutine decides by itself if the direction
-   * is to be corrected
-   */
-  ELEMENTTEXT_LOOP (Element);
-  {
-    if (Data && Data->name_tree[n])
-      r_delete_entry (Data->name_tree[n], (BoxType *) text);
-    RotateTextLowLevel (text, X, Y, Number);
-  }
-  END_LOOP;
-  ELEMENTLINE_LOOP (Element);
-  {
-    RotateLineLowLevel (line, X, Y, Number);
-  }
-  END_LOOP;
-  PIN_LOOP (Element);
-  {
-    /* pre-delete the pins from the pin-tree before their coordinates change */
-    if (Data)
-      r_delete_entry (Data->pin_tree, (BoxType *) pin);
-    RestoreToPolygon (Data, PIN_TYPE, Element, pin);
-    ROTATE_PIN_LOWLEVEL (pin, X, Y, Number);
-  }
-  END_LOOP;
-  PAD_LOOP (Element);
-  {
-    /* pre-delete the pads before their coordinates change */
-    if (Data)
-      r_delete_entry (Data->pad_tree, (BoxType *) pad);
-    RestoreToPolygon (Data, PAD_TYPE, Element, pad);
-    ROTATE_PAD_LOWLEVEL (pad, X, Y, Number);
-  }
-  END_LOOP;
-  ARC_LOOP (Element);
-  {
-    RotateArcLowLevel (arc, X, Y, Number);
-  }
-  END_LOOP;
-  ROTATE (Element->MarkX, Element->MarkY, X, Y, Number);
-  /* SetElementBoundingBox reenters the rtree data */
-  SetElementBoundingBox (Data, Element, &PCB->Font);
-  ClearFromPolygon (Data, ELEMENT_TYPE, Element, Element);
+	/* the text subroutine decides by itself if the direction
+	 * is to be corrected
+	 */
+	ELEMENTTEXT_LOOP(Element);
+	{
+		if (Data && Data->name_tree[n])
+			r_delete_entry(Data->name_tree[n], (BoxType *) text);
+		RotateTextLowLevel(text, X, Y, Number);
+	}
+	END_LOOP;
+	ELEMENTLINE_LOOP(Element);
+	{
+		RotateLineLowLevel(line, X, Y, Number);
+	}
+	END_LOOP;
+	PIN_LOOP(Element);
+	{
+		/* pre-delete the pins from the pin-tree before their coordinates change */
+		if (Data)
+			r_delete_entry(Data->pin_tree, (BoxType *) pin);
+		RestoreToPolygon(Data, PIN_TYPE, Element, pin);
+		ROTATE_PIN_LOWLEVEL(pin, X, Y, Number);
+	}
+	END_LOOP;
+	PAD_LOOP(Element);
+	{
+		/* pre-delete the pads before their coordinates change */
+		if (Data)
+			r_delete_entry(Data->pad_tree, (BoxType *) pad);
+		RestoreToPolygon(Data, PAD_TYPE, Element, pad);
+		ROTATE_PAD_LOWLEVEL(pad, X, Y, Number);
+	}
+	END_LOOP;
+	ARC_LOOP(Element);
+	{
+		RotateArcLowLevel(arc, X, Y, Number);
+	}
+	END_LOOP;
+	ROTATE(Element->MarkX, Element->MarkY, X, Y, Number);
+	/* SetElementBoundingBox reenters the rtree data */
+	SetElementBoundingBox(Data, Element, &PCB->Font);
+	ClearFromPolygon(Data, ELEMENT_TYPE, Element, Element);
 }
 
 /* ---------------------------------------------------------------------------
  * rotates a line's point
  */
-static void *
-RotateLinePoint (LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
+static void *RotateLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
 {
-  EraseLine (Line);
-  if (Layer)
-    {
-      RestoreToPolygon (PCB->Data, LINE_TYPE, Layer, Line);
-      r_delete_entry (Layer->line_tree, (BoxTypePtr) Line);
-    }
-  else
-    r_delete_entry (PCB->Data->rat_tree, (BoxTypePtr) Line);
-  RotatePointLowLevel (Point, CenterX, CenterY, Number);
-  SetLineBoundingBox (Line);
-  if (Layer)
-    {
-      r_insert_entry (Layer->line_tree, (BoxTypePtr) Line, 0);
-      ClearFromPolygon (PCB->Data, LINE_TYPE, Layer, Line);
-      DrawLine (Layer, Line);
-    }
-  else
-    {
-      r_insert_entry (PCB->Data->rat_tree, (BoxTypePtr) Line, 0);
-      DrawRat ((RatTypePtr) Line);
-    }
-  Draw ();
-  return (Line);
+	EraseLine(Line);
+	if (Layer) {
+		RestoreToPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+		r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
+	}
+	else
+		r_delete_entry(PCB->Data->rat_tree, (BoxTypePtr) Line);
+	RotatePointLowLevel(Point, CenterX, CenterY, Number);
+	SetLineBoundingBox(Line);
+	if (Layer) {
+		r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
+		ClearFromPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+		DrawLine(Layer, Line);
+	}
+	else {
+		r_insert_entry(PCB->Data->rat_tree, (BoxTypePtr) Line, 0);
+		DrawRat((RatTypePtr) Line);
+	}
+	Draw();
+	return (Line);
 }
 
 /* ---------------------------------------------------------------------------
  * rotates an arc
  */
-static void *
-RotateArc (LayerTypePtr Layer, ArcTypePtr Arc)
+static void *RotateArc(LayerTypePtr Layer, ArcTypePtr Arc)
 {
-  EraseArc (Arc);
-  r_delete_entry (Layer->arc_tree, (BoxTypePtr) Arc);
-  RotateArcLowLevel (Arc, CenterX, CenterY, Number);
-  r_insert_entry (Layer->arc_tree, (BoxTypePtr) Arc, 0);
-  DrawArc (Layer, Arc);
-  Draw ();
-  return (Arc);
+	EraseArc(Arc);
+	r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
+	RotateArcLowLevel(Arc, CenterX, CenterY, Number);
+	r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
+	DrawArc(Layer, Arc);
+	Draw();
+	return (Arc);
 }
 
 /* ---------------------------------------------------------------------------
  * rotates an element
  */
-static void *
-RotateElement (ElementTypePtr Element)
+static void *RotateElement(ElementTypePtr Element)
 {
-  EraseElement (Element);
-  RotateElementLowLevel (PCB->Data, Element, CenterX, CenterY, Number);
-  DrawElement (Element);
-  Draw ();
-  return (Element);
+	EraseElement(Element);
+	RotateElementLowLevel(PCB->Data, Element, CenterX, CenterY, Number);
+	DrawElement(Element);
+	Draw();
+	return (Element);
 }
 
 /* ----------------------------------------------------------------------
  * rotates the name of an element
  */
-static void *
-RotateElementName (ElementTypePtr Element)
+static void *RotateElementName(ElementTypePtr Element)
 {
-  EraseElementName (Element);
-  ELEMENTTEXT_LOOP (Element);
-  {
-    r_delete_entry (PCB->Data->name_tree[n], (BoxType *) text);
-    RotateTextLowLevel (text, CenterX, CenterY, Number);
-    r_insert_entry (PCB->Data->name_tree[n], (BoxType *) text, 0);
-  }
-  END_LOOP;
-  DrawElementName (Element);
-  Draw ();
-  return (Element);
+	EraseElementName(Element);
+	ELEMENTTEXT_LOOP(Element);
+	{
+		r_delete_entry(PCB->Data->name_tree[n], (BoxType *) text);
+		RotateTextLowLevel(text, CenterX, CenterY, Number);
+		r_insert_entry(PCB->Data->name_tree[n], (BoxType *) text, 0);
+	}
+	END_LOOP;
+	DrawElementName(Element);
+	Draw();
+	return (Element);
 }
 
 /* ---------------------------------------------------------------------------
  * rotates a box in 90 degree steps 
  */
-void
-RotateBoxLowLevel (BoxTypePtr Box, Coord X, Coord Y, unsigned Number)
+void RotateBoxLowLevel(BoxTypePtr Box, Coord X, Coord Y, unsigned Number)
 {
-  Coord x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;
+	Coord x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;
 
-  ROTATE (x1, y1, X, Y, Number);
-  ROTATE (x2, y2, X, Y, Number);
-  Box->X1 = MIN (x1, x2);
-  Box->Y1 = MIN (y1, y2);
-  Box->X2 = MAX (x1, x2);
-  Box->Y2 = MAX (y1, y2);
+	ROTATE(x1, y1, X, Y, Number);
+	ROTATE(x2, y2, X, Y, Number);
+	Box->X1 = MIN(x1, x2);
+	Box->Y1 = MIN(y1, y2);
+	Box->X2 = MAX(x1, x2);
+	Box->Y2 = MAX(y1, y2);
 }
 
 /* ----------------------------------------------------------------------
  * rotates an objects at the cursor position as identified by its ID
  * the center of rotation is determined by the current cursor location
  */
-void *
-RotateObject (int Type, void *Ptr1, void *Ptr2, void *Ptr3,
-	      Coord X, Coord Y, unsigned Steps)
+void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord Y, unsigned Steps)
 {
-  RubberbandTypePtr ptr;
-  void *ptr2;
-  bool changed = false;
+	RubberbandTypePtr ptr;
+	void *ptr2;
+	bool changed = false;
 
-  /* setup default  global identifiers */
-  Number = Steps;
-  CenterX = X;
-  CenterY = Y;
+	/* setup default  global identifiers */
+	Number = Steps;
+	CenterX = X;
+	CenterY = Y;
 
-  /* move all the rubberband lines... and reset the counter */
-  ptr = Crosshair.AttachedObject.Rubberband;
-  while (Crosshair.AttachedObject.RubberbandN)
-    {
-      changed = true;
-      CLEAR_FLAG (RUBBERENDFLAG, ptr->Line);
-      AddObjectToRotateUndoList (LINEPOINT_TYPE, ptr->Layer, ptr->Line,
-				 ptr->MovedPoint, CenterX, CenterY, Steps);
-      EraseLine (ptr->Line);
-      if (ptr->Layer)
-	{
-	  RestoreToPolygon (PCB->Data, LINE_TYPE, ptr->Layer, ptr->Line);
-	  r_delete_entry (ptr->Layer->line_tree, (BoxType *) ptr->Line);
+	/* move all the rubberband lines... and reset the counter */
+	ptr = Crosshair.AttachedObject.Rubberband;
+	while (Crosshair.AttachedObject.RubberbandN) {
+		changed = true;
+		CLEAR_FLAG(RUBBERENDFLAG, ptr->Line);
+		AddObjectToRotateUndoList(LINEPOINT_TYPE, ptr->Layer, ptr->Line, ptr->MovedPoint, CenterX, CenterY, Steps);
+		EraseLine(ptr->Line);
+		if (ptr->Layer) {
+			RestoreToPolygon(PCB->Data, LINE_TYPE, ptr->Layer, ptr->Line);
+			r_delete_entry(ptr->Layer->line_tree, (BoxType *) ptr->Line);
+		}
+		else
+			r_delete_entry(PCB->Data->rat_tree, (BoxType *) ptr->Line);
+		RotatePointLowLevel(ptr->MovedPoint, CenterX, CenterY, Steps);
+		SetLineBoundingBox(ptr->Line);
+		if (ptr->Layer) {
+			r_insert_entry(ptr->Layer->line_tree, (BoxType *) ptr->Line, 0);
+			ClearFromPolygon(PCB->Data, LINE_TYPE, ptr->Layer, ptr->Line);
+			DrawLine(ptr->Layer, ptr->Line);
+		}
+		else {
+			r_insert_entry(PCB->Data->rat_tree, (BoxType *) ptr->Line, 0);
+			DrawRat((RatTypePtr) ptr->Line);
+		}
+		Crosshair.AttachedObject.RubberbandN--;
+		ptr++;
 	}
-      else
-	r_delete_entry (PCB->Data->rat_tree, (BoxType *) ptr->Line);
-      RotatePointLowLevel (ptr->MovedPoint, CenterX, CenterY, Steps);
-      SetLineBoundingBox (ptr->Line);
-      if (ptr->Layer)
-	{
-	  r_insert_entry (ptr->Layer->line_tree, (BoxType *) ptr->Line, 0);
-	  ClearFromPolygon (PCB->Data, LINE_TYPE, ptr->Layer, ptr->Line);
-	  DrawLine (ptr->Layer, ptr->Line);
+	AddObjectToRotateUndoList(Type, Ptr1, Ptr2, Ptr3, CenterX, CenterY, Number);
+	ptr2 = ObjectOperation(&RotateFunctions, Type, Ptr1, Ptr2, Ptr3);
+	changed |= (ptr2 != NULL);
+	if (changed) {
+		Draw();
+		IncrementUndoSerialNumber();
 	}
-      else
-	{
-	  r_insert_entry (PCB->Data->rat_tree, (BoxType *) ptr->Line, 0);
-	  DrawRat ((RatTypePtr) ptr->Line);
-	}
-      Crosshair.AttachedObject.RubberbandN--;
-      ptr++;
-    }
-  AddObjectToRotateUndoList (Type, Ptr1, Ptr2, Ptr3, CenterX, CenterY,
-			     Number);
-  ptr2 = ObjectOperation (&RotateFunctions, Type, Ptr1, Ptr2, Ptr3);
-  changed |= (ptr2 != NULL);
-  if (changed)
-    {
-      Draw ();
-      IncrementUndoSerialNumber ();
-    }
-  return (ptr2);
+	return (ptr2);
 }
 
-void
-RotateScreenObject (Coord X, Coord Y, unsigned Steps)
+void RotateScreenObject(Coord X, Coord Y, unsigned Steps)
 {
-  int type;
-  void *ptr1, *ptr2, *ptr3;
-  if ((type = SearchScreen (X, Y, ROTATE_TYPES, &ptr1, &ptr2,
-			    &ptr3)) != NO_TYPE)
-    {
-      if (TEST_FLAG (LOCKFLAG, (ArcTypePtr) ptr2))
-	{
-	  Message (_("Sorry, the object is locked\n"));
-	  return;
+	int type;
+	void *ptr1, *ptr2, *ptr3;
+	if ((type = SearchScreen(X, Y, ROTATE_TYPES, &ptr1, &ptr2, &ptr3)) != NO_TYPE) {
+		if (TEST_FLAG(LOCKFLAG, (ArcTypePtr) ptr2)) {
+			Message(_("Sorry, the object is locked\n"));
+			return;
+		}
+		Crosshair.AttachedObject.RubberbandN = 0;
+		if (TEST_FLAG(RUBBERBANDFLAG, PCB))
+			LookupRubberbandLines(type, ptr1, ptr2, ptr3);
+		if (type == ELEMENT_TYPE)
+			LookupRatLines(type, ptr1, ptr2, ptr3);
+		RotateObject(type, ptr1, ptr2, ptr3, X, Y, Steps);
+		SetChangedFlag(true);
 	}
-      Crosshair.AttachedObject.RubberbandN = 0;
-      if (TEST_FLAG (RUBBERBANDFLAG, PCB))
-	LookupRubberbandLines (type, ptr1, ptr2, ptr3);
-      if (type == ELEMENT_TYPE)
-	LookupRatLines (type, ptr1, ptr2, ptr3);
-      RotateObject (type, ptr1, ptr2, ptr3, X, Y, Steps);
-      SetChangedFlag (true);
-    }
 }

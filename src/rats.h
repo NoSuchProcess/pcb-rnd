@@ -36,16 +36,16 @@
 #include "global.h"
 
 /* This one is actually in netlist.h, but it's used by rats.c */
-LibraryMenuTypePtr netnode_to_netname (char *nodename);
-LibraryMenuTypePtr netname_to_netname (char *netname);
+LibraryMenuTypePtr netnode_to_netname(char *nodename);
+LibraryMenuTypePtr netname_to_netname(char *netname);
 
-RatTypePtr AddNet (void);
-char *ConnectionName (int, void *, void *);
+RatTypePtr AddNet(void);
+char *ConnectionName(int, void *, void *);
 
-bool AddAllRats (bool, void (*)(register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr));
-bool SeekPad (LibraryEntryTypePtr, ConnectionTypePtr, bool);
+bool AddAllRats(bool, void (*)(register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr));
+bool SeekPad(LibraryEntryTypePtr, ConnectionTypePtr, bool);
 
-NetListTypePtr ProcNetlist (LibraryTypePtr);
-NetListListType CollectSubnets (bool);
+NetListTypePtr ProcNetlist(LibraryTypePtr);
+NetListListType CollectSubnets(bool);
 
 #endif

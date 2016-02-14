@@ -93,14 +93,13 @@ do { \
 #define	ROTATE_TYPES	(ELEMENT_TYPE | TEXT_TYPE | ELEMENTNAME_TYPE | ARC_TYPE)
 
 
-void RotateLineLowLevel (LineTypePtr, Coord, Coord, unsigned);
-void RotateArcLowLevel (ArcTypePtr, Coord, Coord, unsigned);
-void RotateBoxLowLevel (BoxTypePtr, Coord, Coord, unsigned);
-void RotateTextLowLevel (TextTypePtr, Coord, Coord, unsigned);
-void RotatePolygonLowLevel (PolygonTypePtr, Coord, Coord, unsigned);
-void RotateElementLowLevel (DataTypePtr, ElementTypePtr, Coord, Coord, unsigned);
-void *RotateObject (int, void *, void *, void *, Coord, Coord,
-		    unsigned);
-void RotateScreenObject (Coord, Coord, unsigned);
+void RotateLineLowLevel(LineTypePtr, Coord, Coord, unsigned);
+void RotateArcLowLevel(ArcTypePtr, Coord, Coord, unsigned);
+void RotateBoxLowLevel(BoxTypePtr, Coord, Coord, unsigned);
+void RotateTextLowLevel(TextTypePtr, Coord, Coord, unsigned);
+void RotatePolygonLowLevel(PolygonTypePtr, Coord, Coord, unsigned);
+void RotateElementLowLevel(DataTypePtr, ElementTypePtr, Coord, Coord, unsigned);
+void *RotateObject(int, void *, void *, void *, Coord, Coord, unsigned);
+void RotateScreenObject(Coord, Coord, unsigned);
 
 #endif

@@ -15,34 +15,31 @@
 
 #include "potracelib.h"
 
-struct point_s
-{
-  long x;
-  long y;
+struct point_s {
+	long x;
+	long y;
 };
 typedef struct point_s point_t;
 
 typedef potrace_dpoint_t dpoint_t;
 
 /* convert point_t to dpoint_t */
-static inline dpoint_t
-dpoint (point_t p)
+static inline dpoint_t dpoint(point_t p)
 {
-  dpoint_t res;
-  res.x = p.x;
-  res.y = p.y;
-  return res;
+	dpoint_t res;
+	res.x = p.x;
+	res.y = p.y;
+	return res;
 }
 
 /* range over the straight line segment [a,b] when lambda ranges over [0,1] */
-static inline dpoint_t
-interval (double lambda, dpoint_t a, dpoint_t b)
+static inline dpoint_t interval(double lambda, dpoint_t a, dpoint_t b)
 {
-  dpoint_t res;
+	dpoint_t res;
 
-  res.x = a.x + lambda * (b.x - a.x);
-  res.y = a.y + lambda * (b.y - a.y);
-  return res;
+	res.x = a.x + lambda * (b.x - a.x);
+	res.y = a.y + lambda * (b.y - a.y);
+	return res;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -56,16 +53,14 @@ interval (double lambda, dpoint_t a, dpoint_t b)
 
 /* integer arithmetic */
 
-static inline int
-mod (int a, int n)
+static inline int mod(int a, int n)
 {
-  return a >= n ? a % n : a >= 0 ? a : n - 1 - (-1 - a) % n;
+	return a >= n ? a % n : a >= 0 ? a : n - 1 - (-1 - a) % n;
 }
 
-static inline int
-floordiv (int a, int n)
+static inline int floordiv(int a, int n)
 {
-  return a >= 0 ? a / n : -1 - (-1 - a) / n;
+	return a >= 0 ? a / n : -1 - (-1 - a) / n;
 }
 
 /* Note: the following work for integers and other numeric types. */

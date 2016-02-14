@@ -37,20 +37,20 @@
 	(VIA_TYPE | LINE_TYPE | TEXT_TYPE | POLYGON_TYPE | ELEMENT_TYPE |	\
 	 PIN_TYPE | PAD_TYPE | ELEMENTNAME_TYPE | RATLINE_TYPE | ARC_TYPE)
 
-bool SelectObject (void);
-bool SelectBlock (BoxTypePtr, bool);
-long int *ListBlock (BoxTypePtr Box, int *len);
-bool SelectedOperation (ObjectFunctionTypePtr, bool, int);
-void *ObjectOperation (ObjectFunctionTypePtr, int, void *, void *, void *);
-bool SelectConnection (bool);
+bool SelectObject(void);
+bool SelectBlock(BoxTypePtr, bool);
+long int *ListBlock(BoxTypePtr Box, int *len);
+bool SelectedOperation(ObjectFunctionTypePtr, bool, int);
+void *ObjectOperation(ObjectFunctionTypePtr, int, void *, void *, void *);
+bool SelectConnection(bool);
 
 typedef enum {
 	SM_REGEX = 0,
-	SM_LIST  = 1
+	SM_LIST = 1
 } search_method_t;
 
 #if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
-bool SelectObjectByName (int, char *, bool, search_method_t);
+bool SelectObjectByName(int, char *, bool, search_method_t);
 #endif
 
 #endif

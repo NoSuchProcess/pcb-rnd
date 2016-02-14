@@ -58,7 +58,7 @@
 #include <dmalloc.h>
 #endif
 
-RCSID ("$Id$");
+RCSID("$Id$");
 
 static int mode_position = 0;
 static int mode_stack[MAX_MODESTACK_DEPTH];
@@ -66,292 +66,243 @@ static int mode_stack[MAX_MODESTACK_DEPTH];
 /* ---------------------------------------------------------------------------
  * sets cursor grid with respect to grid offset values
  */
-void
-SetGrid (Coord Grid, bool align)
+void SetGrid(Coord Grid, bool align)
 {
-  if (Grid >= 1 && Grid <= MAX_GRID)
-    {
-      if (align)
-	{
-	  PCB->GridOffsetX = Crosshair.X % Grid;
-	  PCB->GridOffsetY = Crosshair.Y % Grid;
+	if (Grid >= 1 && Grid <= MAX_GRID) {
+		if (align) {
+			PCB->GridOffsetX = Crosshair.X % Grid;
+			PCB->GridOffsetY = Crosshair.Y % Grid;
+		}
+		PCB->Grid = Grid;
+		if (Settings.DrawGrid)
+			Redraw();
 	}
-      PCB->Grid = Grid;
-      if (Settings.DrawGrid)
-	Redraw ();
-    }
 }
 
 /* ---------------------------------------------------------------------------
  * sets a new line thickness
  */
-void
-SetLineSize (Coord Size)
+void SetLineSize(Coord Size)
 {
-  if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE)
-    {
-      Settings.LineThickness = Size;
-      if (TEST_FLAG (AUTODRCFLAG, PCB))
-	FitCrosshairIntoGrid (Crosshair.X, Crosshair.Y);
-    }
+	if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE) {
+		Settings.LineThickness = Size;
+		if (TEST_FLAG(AUTODRCFLAG, PCB))
+			FitCrosshairIntoGrid(Crosshair.X, Crosshair.Y);
+	}
 }
 
 /* ---------------------------------------------------------------------------
  * sets a new via thickness
  */
-void
-SetViaSize (Coord Size, bool Force)
+void SetViaSize(Coord Size, bool Force)
 {
-  if (Force || (Size <= MAX_PINORVIASIZE &&
-		Size >= MIN_PINORVIASIZE &&
-		Size >= Settings.ViaDrillingHole + MIN_PINORVIACOPPER))
-    {
-      Settings.ViaThickness = Size;
-    }
+	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIASIZE && Size >= Settings.ViaDrillingHole + MIN_PINORVIACOPPER)) {
+		Settings.ViaThickness = Size;
+	}
 }
 
 /* ---------------------------------------------------------------------------
  * sets a new via drilling hole
  */
-void
-SetViaDrillingHole (Coord Size, bool Force)
+void SetViaDrillingHole(Coord Size, bool Force)
 {
-  if (Force || (Size <= MAX_PINORVIASIZE &&
-		Size >= MIN_PINORVIAHOLE &&
-		Size <= Settings.ViaThickness - MIN_PINORVIACOPPER))
-    {
-      Settings.ViaDrillingHole = Size;
-    }
+	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIAHOLE && Size <= Settings.ViaThickness - MIN_PINORVIACOPPER)) {
+		Settings.ViaDrillingHole = Size;
+	}
 }
 
-void
-pcb_use_route_style (RouteStyleType * rst)
+void pcb_use_route_style(RouteStyleType * rst)
 {
-  Settings.LineThickness = rst->Thick;
-  Settings.ViaThickness = rst->Diameter;
-  Settings.ViaDrillingHole = rst->Hole;
-  Settings.Keepaway = rst->Keepaway;
+	Settings.LineThickness = rst->Thick;
+	Settings.ViaThickness = rst->Diameter;
+	Settings.ViaDrillingHole = rst->Hole;
+	Settings.Keepaway = rst->Keepaway;
 }
 
 /* ---------------------------------------------------------------------------
  * sets a keepaway width
  */
-void
-SetKeepawayWidth (Coord Width)
+void SetKeepawayWidth(Coord Width)
 {
-  if (Width <= MAX_LINESIZE)
-    {
-      Settings.Keepaway = Width;
-    }
+	if (Width <= MAX_LINESIZE) {
+		Settings.Keepaway = Width;
+	}
 }
 
 /* ---------------------------------------------------------------------------
  * sets a text scaling
  */
-void
-SetTextScale (int Scale)
+void SetTextScale(int Scale)
 {
-  if (Scale <= MAX_TEXTSCALE && Scale >= MIN_TEXTSCALE)
-    {
-      Settings.TextScale = Scale;
-    }
+	if (Scale <= MAX_TEXTSCALE && Scale >= MIN_TEXTSCALE) {
+		Settings.TextScale = Scale;
+	}
 }
 
 /* ---------------------------------------------------------------------------
  * sets or resets changed flag and redraws status
  */
-void
-SetChangedFlag (bool New)
+void SetChangedFlag(bool New)
 {
-  if (PCB->Changed != New)
-    {
-      PCB->Changed = New;
+	if (PCB->Changed != New) {
+		PCB->Changed = New;
 
-    }
+	}
 }
 
 /* ---------------------------------------------------------------------------
  * sets the crosshair range to the current buffer extents 
  */
-void
-SetCrosshairRangeToBuffer (void)
+void SetCrosshairRangeToBuffer(void)
 {
-  if (Settings.Mode == PASTEBUFFER_MODE)
-    {
-      SetBufferBoundingBox (PASTEBUFFER);
-      SetCrosshairRange (PASTEBUFFER->X - PASTEBUFFER->BoundingBox.X1,
-			 PASTEBUFFER->Y - PASTEBUFFER->BoundingBox.Y1,
-			 PCB->MaxWidth -
-			 (PASTEBUFFER->BoundingBox.X2 - PASTEBUFFER->X),
-			 PCB->MaxHeight -
-			 (PASTEBUFFER->BoundingBox.Y2 - PASTEBUFFER->Y));
-    }
+	if (Settings.Mode == PASTEBUFFER_MODE) {
+		SetBufferBoundingBox(PASTEBUFFER);
+		SetCrosshairRange(PASTEBUFFER->X - PASTEBUFFER->BoundingBox.X1,
+											PASTEBUFFER->Y - PASTEBUFFER->BoundingBox.Y1,
+											PCB->MaxWidth -
+											(PASTEBUFFER->BoundingBox.X2 - PASTEBUFFER->X),
+											PCB->MaxHeight - (PASTEBUFFER->BoundingBox.Y2 - PASTEBUFFER->Y));
+	}
 }
 
 /* ---------------------------------------------------------------------------
  * sets a new buffer number
  */
-void
-SetBufferNumber (int Number)
+void SetBufferNumber(int Number)
 {
-  if (Number >= 0 && Number < MAX_BUFFER)
-    {
-      Settings.BufferNumber = Number;
+	if (Number >= 0 && Number < MAX_BUFFER) {
+		Settings.BufferNumber = Number;
 
-      /* do an update on the crosshair range */
-      SetCrosshairRangeToBuffer ();
-    }
+		/* do an update on the crosshair range */
+		SetCrosshairRangeToBuffer();
+	}
 }
 
 /* ---------------------------------------------------------------------------
  */
 
-void
-SaveMode (void)
+void SaveMode(void)
 {
-  mode_stack[mode_position] = Settings.Mode;
-  if (mode_position < MAX_MODESTACK_DEPTH - 1)
-    mode_position++;
+	mode_stack[mode_position] = Settings.Mode;
+	if (mode_position < MAX_MODESTACK_DEPTH - 1)
+		mode_position++;
 }
 
-void
-RestoreMode (void)
+void RestoreMode(void)
 {
-  if (mode_position == 0)
-    {
-      Message ("hace: underflow of restore mode\n");
-      return;
-    }
-  SetMode (mode_stack[--mode_position]);
+	if (mode_position == 0) {
+		Message("hace: underflow of restore mode\n");
+		return;
+	}
+	SetMode(mode_stack[--mode_position]);
 }
 
 
 /* ---------------------------------------------------------------------------
  * set a new mode and update X cursor
  */
-void
-SetMode (int Mode)
+void SetMode(int Mode)
 {
-  static bool recursing = false;
-  /* protect the cursor while changing the mode
-   * perform some additional stuff depending on the new mode
-   * reset 'state' of attached objects
-   */
-  if (recursing)
-    return;
-  recursing = true;
-  notify_crosshair_change (false);
-  addedLines = 0;
-  Crosshair.AttachedObject.Type = NO_TYPE;
-  Crosshair.AttachedObject.State = STATE_FIRST;
-  Crosshair.AttachedPolygon.PointN = 0;
-  if (PCB->RatDraw)
-    {
-      if (Mode == ARC_MODE || Mode == RECTANGLE_MODE ||
-	  Mode == VIA_MODE || Mode == POLYGON_MODE ||
-	  Mode == POLYGONHOLE_MODE ||
-	  Mode == TEXT_MODE || Mode == INSERTPOINT_MODE ||
-	  Mode == THERMAL_MODE)
-	{
-	  Message (_("That mode is NOT allowed when drawing ratlines!\n"));
-	  Mode = NO_MODE;
+	static bool recursing = false;
+	/* protect the cursor while changing the mode
+	 * perform some additional stuff depending on the new mode
+	 * reset 'state' of attached objects
+	 */
+	if (recursing)
+		return;
+	recursing = true;
+	notify_crosshair_change(false);
+	addedLines = 0;
+	Crosshair.AttachedObject.Type = NO_TYPE;
+	Crosshair.AttachedObject.State = STATE_FIRST;
+	Crosshair.AttachedPolygon.PointN = 0;
+	if (PCB->RatDraw) {
+		if (Mode == ARC_MODE || Mode == RECTANGLE_MODE ||
+				Mode == VIA_MODE || Mode == POLYGON_MODE ||
+				Mode == POLYGONHOLE_MODE || Mode == TEXT_MODE || Mode == INSERTPOINT_MODE || Mode == THERMAL_MODE) {
+			Message(_("That mode is NOT allowed when drawing ratlines!\n"));
+			Mode = NO_MODE;
+		}
 	}
-    }
-  if (Settings.Mode == LINE_MODE && Mode == ARC_MODE &&
-      Crosshair.AttachedLine.State != STATE_FIRST)
-    {
-      Crosshair.AttachedLine.State = STATE_FIRST;
-      Crosshair.AttachedBox.State = STATE_SECOND;
-      Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X =
-	Crosshair.AttachedLine.Point1.X;
-      Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y =
-	Crosshair.AttachedLine.Point1.Y;
-      AdjustAttachedObjects ();
-    }
-  else if (Settings.Mode == ARC_MODE && Mode == LINE_MODE &&
-	   Crosshair.AttachedBox.State != STATE_FIRST)
-    {
-      Crosshair.AttachedBox.State = STATE_FIRST;
-      Crosshair.AttachedLine.State = STATE_SECOND;
-      Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X =
-	Crosshair.AttachedBox.Point1.X;
-      Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y =
-	Crosshair.AttachedBox.Point1.Y;
-      Settings.Mode = Mode;
-      AdjustAttachedObjects ();
-    }
-  else
-    {
-      if (Settings.Mode == ARC_MODE || Settings.Mode == LINE_MODE)
-	SetLocalRef (0, 0, false);
-      Crosshair.AttachedBox.State = STATE_FIRST;
-      Crosshair.AttachedLine.State = STATE_FIRST;
-      if (Mode == LINE_MODE && TEST_FLAG (AUTODRCFLAG, PCB))
-	{
-	  if (ResetConnections (true))
-	    {
-	      IncrementUndoSerialNumber ();
-	      Draw ();
-	    }
+	if (Settings.Mode == LINE_MODE && Mode == ARC_MODE && Crosshair.AttachedLine.State != STATE_FIRST) {
+		Crosshair.AttachedLine.State = STATE_FIRST;
+		Crosshair.AttachedBox.State = STATE_SECOND;
+		Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = Crosshair.AttachedLine.Point1.X;
+		Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = Crosshair.AttachedLine.Point1.Y;
+		AdjustAttachedObjects();
 	}
-    }
+	else if (Settings.Mode == ARC_MODE && Mode == LINE_MODE && Crosshair.AttachedBox.State != STATE_FIRST) {
+		Crosshair.AttachedBox.State = STATE_FIRST;
+		Crosshair.AttachedLine.State = STATE_SECOND;
+		Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = Crosshair.AttachedBox.Point1.X;
+		Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = Crosshair.AttachedBox.Point1.Y;
+		Settings.Mode = Mode;
+		AdjustAttachedObjects();
+	}
+	else {
+		if (Settings.Mode == ARC_MODE || Settings.Mode == LINE_MODE)
+			SetLocalRef(0, 0, false);
+		Crosshair.AttachedBox.State = STATE_FIRST;
+		Crosshair.AttachedLine.State = STATE_FIRST;
+		if (Mode == LINE_MODE && TEST_FLAG(AUTODRCFLAG, PCB)) {
+			if (ResetConnections(true)) {
+				IncrementUndoSerialNumber();
+				Draw();
+			}
+		}
+	}
 
-  Settings.Mode = Mode;
+	Settings.Mode = Mode;
 
-  if (Mode == PASTEBUFFER_MODE)
-    /* do an update on the crosshair range */
-    SetCrosshairRangeToBuffer ();
-  else
-    SetCrosshairRange (0, 0, PCB->MaxWidth, PCB->MaxHeight);
+	if (Mode == PASTEBUFFER_MODE)
+		/* do an update on the crosshair range */
+		SetCrosshairRangeToBuffer();
+	else
+		SetCrosshairRange(0, 0, PCB->MaxWidth, PCB->MaxHeight);
 
-  recursing = false;
+	recursing = false;
 
-  /* force a crosshair grid update because the valid range
-   * may have changed
-   */
-  MoveCrosshairRelative (0, 0);
-  notify_crosshair_change (true);
+	/* force a crosshair grid update because the valid range
+	 * may have changed
+	 */
+	MoveCrosshairRelative(0, 0);
+	notify_crosshair_change(true);
 }
 
-void
-SetRouteStyle (char *name)
+void SetRouteStyle(char *name)
 {
-  char num[10];
+	char num[10];
 
-  STYLE_LOOP (PCB);
-  {
-    if (name && NSTRCMP (name, style->Name) == 0)
-      {
-	sprintf (num, "%d", n + 1);
-	hid_actionl ("RouteStyle", num, NULL);
-	break;
-      }
-  }
-  END_LOOP;
+	STYLE_LOOP(PCB);
+	{
+		if (name && NSTRCMP(name, style->Name) == 0) {
+			sprintf(num, "%d", n + 1);
+			hid_actionl("RouteStyle", num, NULL);
+			break;
+		}
+	}
+	END_LOOP;
 }
 
-void
-SetLocalRef (Coord X, Coord Y, bool Showing)
+void SetLocalRef(Coord X, Coord Y, bool Showing)
 {
-  static MarkType old;
-  static int count = 0;
+	static MarkType old;
+	static int count = 0;
 
-  if (Showing)
-    {
-      notify_mark_change (false);
-      if (count == 0)
-	old = Marked;
-      Marked.X = X;
-      Marked.Y = Y;
-      Marked.status = true;
-      count++;
-      notify_mark_change (true);
-    }
-  else if (count > 0)
-    {
-      notify_mark_change (false);
-      count = 0;
-      Marked = old;
-      notify_mark_change (true);
-    }
+	if (Showing) {
+		notify_mark_change(false);
+		if (count == 0)
+			old = Marked;
+		Marked.X = X;
+		Marked.Y = Y;
+		Marked.status = true;
+		count++;
+		notify_mark_change(true);
+	}
+	else if (count > 0) {
+		notify_mark_change(false);
+		count = 0;
+		Marked = old;
+		notify_mark_change(true);
+	}
 }

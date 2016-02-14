@@ -23,8 +23,7 @@
 #ifndef	PCB_EDIF_PARSE_H
 #define	PCB_EDIF_PARSE_H
 
-void ParseEDIF(char* filename,FILE* err);
+void ParseEDIF(char *filename, FILE * err);
 
 
 #endif /* PCB_EDIF_PARSE_H */
-

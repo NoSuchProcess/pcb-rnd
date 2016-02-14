@@ -22,7 +22,7 @@
 #include <dmalloc.h>
 #endif
 
-RCSID ("$Id$");
+RCSID("$Id$");
 
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented PS function %s.\n", __FUNCTION__); abort()
 
@@ -38,8 +38,8 @@ PDF output with a virtual PDF printer. Example: @*
 @noindent In addition, all @ref{Postscript Export} options are valid.
 %end-doc
 */
-  {"lprcommand", "Command to use for printing",
-   HID_String, 0, 0, {0, 0, 0}, 0, 0},
+	{"lprcommand", "Command to use for printing",
+	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_lprcommand 0
 };
 
@@ -49,98 +49,87 @@ static HID_Attribute *lpr_options = 0;
 static int num_lpr_options = 0;
 static HID_Attr_Val *lpr_values;
 
-static HID_Attribute *
-lpr_get_export_options (int *n)
+static HID_Attribute *lpr_get_export_options(int *n)
 {
-  /*
-   * We initialize the default value in this manner because the GUI
-   * HID's may want to free() this string value and replace it with a
-   * new one based on how a user fills out a print dialog.
-   */
-  if (base_lpr_options[HA_lprcommand].default_val.str_value == NULL)
-    {
-      base_lpr_options[HA_lprcommand].default_val.str_value = strdup("lpr");
-    }
+	/*
+	 * We initialize the default value in this manner because the GUI
+	 * HID's may want to free() this string value and replace it with a
+	 * new one based on how a user fills out a print dialog.
+	 */
+	if (base_lpr_options[HA_lprcommand].default_val.str_value == NULL) {
+		base_lpr_options[HA_lprcommand].default_val.str_value = strdup("lpr");
+	}
 
-  if (lpr_options == 0)
-    {
-      HID_Attribute *ps_opts = ps_hid.get_export_options (&num_lpr_options);
-      lpr_options =
-	(HID_Attribute *) calloc (num_lpr_options, sizeof (HID_Attribute));
-      memcpy (lpr_options, ps_opts, num_lpr_options * sizeof (HID_Attribute));
-      memcpy (lpr_options, base_lpr_options, sizeof (base_lpr_options));
-      lpr_values =
-	(HID_Attr_Val *) calloc (num_lpr_options, sizeof (HID_Attr_Val));
-    }
-  if (n)
-    *n = num_lpr_options;
-  return lpr_options;
+	if (lpr_options == 0) {
+		HID_Attribute *ps_opts = ps_hid.get_export_options(&num_lpr_options);
+		lpr_options = (HID_Attribute *) calloc(num_lpr_options, sizeof(HID_Attribute));
+		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(HID_Attribute));
+		memcpy(lpr_options, base_lpr_options, sizeof(base_lpr_options));
+		lpr_values = (HID_Attr_Val *) calloc(num_lpr_options, sizeof(HID_Attr_Val));
+	}
+	if (n)
+		*n = num_lpr_options;
+	return lpr_options;
 }
 
-static void
-lpr_do_export (HID_Attr_Val * options)
+static void lpr_do_export(HID_Attr_Val * options)
 {
-  FILE *f;
-  int i;
-  const char *filename;
+	FILE *f;
+	int i;
+	const char *filename;
 
-  if (!options)
-    {
-      lpr_get_export_options (0);
-      for (i = 0; i < num_lpr_options; i++)
-	lpr_values[i] = lpr_options[i].default_val;
-      options = lpr_values;
-    }
+	if (!options) {
+		lpr_get_export_options(0);
+		for (i = 0; i < num_lpr_options; i++)
+			lpr_values[i] = lpr_options[i].default_val;
+		options = lpr_values;
+	}
 
-  filename = options[HA_lprcommand].str_value;
+	filename = options[HA_lprcommand].str_value;
 
-  printf ("LPR: open %s\n", filename);
-  f = popen (filename, "w");
-  if (!f)
-    {
-      perror (filename);
-      return;
-    }
+	printf("LPR: open %s\n", filename);
+	f = popen(filename, "w");
+	if (!f) {
+		perror(filename);
+		return;
+	}
 
-  ps_hid_export_to_file (f, options);
+	ps_hid_export_to_file(f, options);
 
-  fclose (f);
+	fclose(f);
 }
 
-static void
-lpr_parse_arguments (int *argc, char ***argv)
+static void lpr_parse_arguments(int *argc, char ***argv)
 {
-  lpr_get_export_options (0);
-  hid_register_attributes (lpr_options, num_lpr_options);
-  hid_parse_command_line (argc, argv);
+	lpr_get_export_options(0);
+	hid_register_attributes(lpr_options, num_lpr_options);
+	hid_parse_command_line(argc, argv);
 }
 
-static void
-lpr_calibrate (double xval, double yval)
+static void lpr_calibrate(double xval, double yval)
 {
-  ps_calibrate_1 (xval, yval, 1);
+	ps_calibrate_1(xval, yval, 1);
 }
 
 static HID lpr_hid;
 
-void
-hid_lpr_init ()
+void hid_lpr_init()
 {
-  memset (&lpr_hid, 0, sizeof (HID));
+	memset(&lpr_hid, 0, sizeof(HID));
 
-  common_nogui_init (&lpr_hid);
-  ps_ps_init (&lpr_hid);
+	common_nogui_init(&lpr_hid);
+	ps_ps_init(&lpr_hid);
 
-  lpr_hid.struct_size         = sizeof (HID);
-  lpr_hid.name                = "lpr";
-  lpr_hid.description         = "Postscript print";
-  lpr_hid.printer             = 1;
-  lpr_hid.poly_before         = 1;
+	lpr_hid.struct_size = sizeof(HID);
+	lpr_hid.name = "lpr";
+	lpr_hid.description = "Postscript print";
+	lpr_hid.printer = 1;
+	lpr_hid.poly_before = 1;
 
-  lpr_hid.get_export_options  = lpr_get_export_options;
-  lpr_hid.do_export           = lpr_do_export;
-  lpr_hid.parse_arguments     = lpr_parse_arguments;
-  lpr_hid.calibrate           = lpr_calibrate;
+	lpr_hid.get_export_options = lpr_get_export_options;
+	lpr_hid.do_export = lpr_do_export;
+	lpr_hid.parse_arguments = lpr_parse_arguments;
+	lpr_hid.calibrate = lpr_calibrate;
 
-  hid_register_hid (&lpr_hid);
+	hid_register_hid(&lpr_hid);
 }
