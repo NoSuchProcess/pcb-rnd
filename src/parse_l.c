@@ -2476,7 +2476,7 @@ int ParseFont(FontTypePtr Ptr, char *Filename)
         /* search through the font path for a font file */
 	if ((Filename[0] == '/') || (strncmp(Filename, "./", 2) == 0) || (strncmp(Filename, "../", 2) == 0)) {
 		r = Parse(NULL, Settings.FontCommand, NULL, Filename, NULL);
-		if (r != "")
+		if (r != 0)
 			return r;
 	}
 
