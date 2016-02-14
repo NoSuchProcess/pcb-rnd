@@ -97,11 +97,13 @@ static int action_gpmi_scripts(int argc, char **argv, Coord x, Coord y)
 		Message("Invalid arguments in gpmi_scripts()\n");
 		return 1;
 	}
+	return 0;
 }
 
 static int action_gpmi_rehash(int argc, char **argv, Coord x, Coord y)
 {
 	cmd_reload(NULL);
+	return 0;
 }
 
 static void register_actions()

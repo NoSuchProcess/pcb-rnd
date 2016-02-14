@@ -92,7 +92,7 @@ static hid_gpmi_script_info_t *choose_script(const char **operations, int *opera
 
 static hid_gpmi_script_info_t *load_script(void)
 {
-	char *fn, *ext, *guess;
+	char *fn, *ext;
 	hid_gpmi_script_info_t *info;
 	int default_mod = -1;
 	HID_Attribute attr[3];

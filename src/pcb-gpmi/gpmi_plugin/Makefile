@@ -2,7 +2,7 @@ PCB_GPMI_ROOT=..
 include Makefile.gpmi
 include $(PCB_GPMI_ROOT)/Makefile.config
 
-CFLAGS += -g -I$(PCB_SRC) $(PCB_CFLAGS)
+CFLAGS += -Wall -g -I$(PCB_SRC) $(PCB_CFLAGS)
 
 COMMON_OBJS = scripts.o manage_scripts.o
 BUILDIN_OBJS = gpmi_buildin.o $(COMMON_OBJS)
