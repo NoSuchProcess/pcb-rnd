@@ -113,6 +113,7 @@ bool ClrObjectOctagon (int, void *, void *, void *);
 void *ChangeObjectName (int, void *, void *, void *, char *);
 void *QueryInputAndChangeObjectName (int, void *, void *, void *, int);
 void ChangePCBSize (Coord, Coord);
+void *ChangeObjectPinnum (int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name);
 
 /* Change the specified text on an element, either on the board (give
    PCB, PCB->Data) or in a buffer (give NULL, Buffer->Data).  The old
