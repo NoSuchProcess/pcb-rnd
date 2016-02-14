@@ -1852,7 +1852,7 @@ net
 			/* name style pin pin ... */
 		: T_NET '(' STRING STRING ')' '('
 			{
-				Menu = CreateNewNet(&yyPCB->NetlistLib, $3, $4);
+				Menu = CreateNewNet((LibraryTypePtr)&yyPCB->NetlistLib, $3, $4);
 				free ($3);
 				free ($4);
 			}

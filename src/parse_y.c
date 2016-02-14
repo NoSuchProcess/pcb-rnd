@@ -2805,7 +2805,7 @@ yyreduce:
   case 183:
 #line 1854 "parse_y.y" /* yacc.c:1646  */
     {
-				Menu = CreateNewNet(&yyPCB->NetlistLib, (yyvsp[-3].string), (yyvsp[-2].string));
+				Menu = CreateNewNet((LibraryTypePtr)&yyPCB->NetlistLib, (yyvsp[-3].string), (yyvsp[-2].string));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
