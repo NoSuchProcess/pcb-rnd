@@ -56,6 +56,7 @@
 #include "set.h"
 #include "vendor.h"
 #include "create.h"
+#include "rats_patch.h"
 
 #ifdef HAVE_REGCOMP
 #undef HAVE_RE_COMP
@@ -200,7 +201,7 @@ netlist_norats (LibraryMenuType * net, LibraryEntryType * pin)
 static void
 netlist_clear (LibraryMenuType * net, LibraryEntryType * pin)
 {
-  LibraryType *netlist = &PCB->NetlistLib;
+  LibraryType *netlist = (LibraryType *) &PCB->NetlistLib;
   int ni, pi;
 
   if (net == 0)
@@ -295,10 +296,10 @@ netlist_swap ()
 	}
 
 
-	rats_patch_append_optimize(PCB, RATP_DEL_CONN, pins[0], nets[0]->Name+2);
-	rats_patch_append_optimize(PCB, RATP_DEL_CONN, pins[1], nets[1]->Name+2);
-	rats_patch_append_optimize(PCB, RATP_ADD_CONN, pins[0], nets[1]->Name+2);
-	rats_patch_append_optimize(PCB, RATP_ADD_CONN, pins[1], nets[0]->Name+2);
+	rats_patch_append_optimize(PCB, RATP_DEL_CONN, pins[0], nets[0]->Name+2, NULL);
+	rats_patch_append_optimize(PCB, RATP_DEL_CONN, pins[1], nets[1]->Name+2, NULL);
+	rats_patch_append_optimize(PCB, RATP_ADD_CONN, pins[0], nets[1]->Name+2, NULL);
+	rats_patch_append_optimize(PCB, RATP_ADD_CONN, pins[1], nets[0]->Name+2, NULL);
 
 	/* TODO: not very efficient to regenerate the whole list... */
 	rats_patch_make_edited(PCB);
