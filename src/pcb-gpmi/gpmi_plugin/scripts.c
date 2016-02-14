@@ -2,9 +2,12 @@
 #include <stdio.h>
 #include <assert.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <gpmi.h>
 #include "src/misc.h"
 #include "src/event.h"
+#include "src/error.h"
 #include "gpmi_plugin.h"
 #include "scripts.h"
 

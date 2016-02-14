@@ -6,7 +6,9 @@
 #include "src/misc.h"
 #include "src/event.h"
 #include "src/paths.h"
+#include "src/error.h"
 #include "scripts.h"
+#include "manage_scripts.h"
 
 extern char *homedir; /* detected by pcn-rnd in InitPaths() */
 
