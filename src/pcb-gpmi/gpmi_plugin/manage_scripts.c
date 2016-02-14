@@ -36,11 +36,11 @@ do { \
 	(attr)->default_val.int_value = default_item; \
 } while(0)
 
-static hid_gpmi_script_info_t *choose_script(char **operations, int *operation)
+static hid_gpmi_script_info_t *choose_script(const char **operations, int *operation)
 {
 	HID_Attribute attr[3];
 	HID_Attr_Val result[3];
-	const char **scrl, **s;
+	char **scrl, **s;
 	hid_gpmi_script_info_t *i;
 	int n, res;
 
@@ -60,7 +60,7 @@ static hid_gpmi_script_info_t *choose_script(char **operations, int *operation)
 	}
 	scrl[n] = NULL;
 
-	attr_make_enum(&attr[0],  "script", "Select an item from the list of scripts loaded", scrl, -1);
+	attr_make_enum(&attr[0],  "script", "Select an item from the list of scripts loaded", (const char **)scrl, -1);
 
 	if (operations != NULL)
 		attr_make_enum(&attr[1],  "operation", "Choose what to do with the script", operations, *operation);
@@ -114,8 +114,8 @@ static hid_gpmi_script_info_t *load_script(void)
 		".bash",   "cli",
 		NULL,      NULL
 	};
-	char *modules[] = { "tcl", "lua", "mawk", "python","scheme", "mruby",
-	                    "stutter", "ghli", "perl", "php", "cli", NULL };
+	const char *modules[] = { "tcl", "lua", "mawk", "python","scheme", "mruby",
+	                          "stutter", "ghli", "perl", "php", "cli", NULL };
 
 
 	fn = gui->fileselect("Load script", "Load a GPMI script", NULL, NULL, "gpmi_load_script", HID_FILESELECT_READ);
@@ -125,7 +125,8 @@ static hid_gpmi_script_info_t *load_script(void)
 
 	ext = strrchr(fn, '.');
 	if (ext != NULL) {
-		char **s, **i;
+		char **s;
+		const char **i;
 		/* find the extension in the extension->module pairs */
 		for(s = exts; s[0] != NULL; s+=2)
 			if (strcmp(ext, s[0]) == 0)
@@ -181,7 +182,7 @@ void gpmi_hid_manage_scripts(void)
 	static const char *err_no_script = "Error: you didn't select a script";
 #define CONSULT "Please consult the message log for details."
 
-	char *operations[] = {"show details...", "reload", "unload", "unload and remove from the config file", "load a new script...", "load a new script and add it in the config...", NULL};
+	const char *operations[] = {"show details...", "reload", "unload", "unload and remove from the config file", "load a new script...", "load a new script and add it in the config...", NULL};
 	int op = 0;
 	i = choose_script(operations, &op);
 	switch(op) {

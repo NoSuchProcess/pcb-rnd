@@ -242,7 +242,7 @@ void hid_gpmi_load_dir(const char *dir, int add_pkg_path)
 char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 {
 	char buffer[1024];
-	char *cd;
+	const char *cd;
 
 	switch(*file_name) {
 		case '~':
