@@ -13,7 +13,7 @@ double mm2pcb_multiplier()
 
 const char *current_grid_unit()
 {
-	Unit *u = Settings.grid_unit;
+	const Unit *u = Settings.grid_unit;
 	if (u == NULL)
 		return "";
 	return u->suffix;
