@@ -244,7 +244,6 @@ SetPinBoundingBox (PinTypePtr Pin)
 		POLYAREA *p = PinPoly(Pin, PIN_SIZE(Pin), Pin->Clearance);
 		poly_bbox (p, &Pin->BoundingBox);
 		poly_Free(&p);
-		return;
 	}
 
   /* the bounding box covers the extent of influence
