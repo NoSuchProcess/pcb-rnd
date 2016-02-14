@@ -132,7 +132,7 @@ hid_gpmi_script_info_t *hid_gpmi_reload_module(hid_gpmi_script_info_t *i)
 	hid_gpmi_script_info_t *r;
 	const char *old_cd;
 
-	conf_dir = old_cd;
+	old_cd = conf_dir;
 
 	if (i->conffile_name != NULL) {
 		char *end;
@@ -165,7 +165,7 @@ hid_gpmi_script_info_t *hid_gpmi_reload_module(hid_gpmi_script_info_t *i)
 
 static int cfgfile(FILE *fin, FILE *fout, char *cfn)
 {
-char line[1024], *module, *params, *s, *pkg;
+char line[1024], *module, *params, *s;
 	int found = 0;
 
 	while(!(feof(fin))) {
@@ -286,7 +286,6 @@ int gpmi_hid_script_unload(hid_gpmi_script_info_t *i)
 int gpmi_hid_script_remove(hid_gpmi_script_info_t *i)
 {
 	FILE *fin, *fout;
-	int n;
 	char *tmpfn;
 	int res;
 
