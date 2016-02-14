@@ -37,11 +37,11 @@
 #define	STATUS_ERROR	-1
 
 void Message (const char *Format, ...);
-void MyFatal (char *Format, ...);
-void OpenErrorMessage (char *);
-void PopenErrorMessage (char *);
-void OpendirErrorMessage (char *);
-void ChdirErrorMessage (char *);
+void MyFatal (const char *Format, ...);
+void OpenErrorMessage (const char *);
+void PopenErrorMessage (const char *);
+void OpendirErrorMessage (const char *);
+void ChdirErrorMessage (const char *);
 void CatchSignal (int);
 
 #endif

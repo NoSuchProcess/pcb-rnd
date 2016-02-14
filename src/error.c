@@ -110,7 +110,7 @@ Message (const char *Format, ...)
  * print standard 'open error'
  */
 void
-OpenErrorMessage (char *Filename)
+OpenErrorMessage (const char *Filename)
 {
   char *utf8 = NULL;
 
@@ -130,7 +130,7 @@ OpenErrorMessage (char *Filename)
  * print standard 'popen error'
  */
 void
-PopenErrorMessage (char *Filename)
+PopenErrorMessage (const char *Filename)
 {
   char *utf8 = NULL;
 
@@ -150,7 +150,7 @@ PopenErrorMessage (char *Filename)
  * print standard 'opendir'
  */
 void
-OpendirErrorMessage (char *DirName)
+OpendirErrorMessage (const char *DirName)
 {
   char *utf8 = NULL;
 
@@ -170,7 +170,7 @@ OpendirErrorMessage (char *DirName)
  * print standard 'chdir error'
  */
 void
-ChdirErrorMessage (char *DirName)
+ChdirErrorMessage (const char *DirName)
 {
   char *utf8 = NULL;
 
@@ -190,7 +190,7 @@ ChdirErrorMessage (char *DirName)
  * output of fatal error message
  */
 void
-MyFatal (char *Format, ...)
+MyFatal (const char *Format, ...)
 {
   va_list args;
 
