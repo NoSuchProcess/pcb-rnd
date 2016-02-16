@@ -32,9 +32,6 @@
 #include "hid/common/draw_helpers.h"
 #include "hid/common/hidinit.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

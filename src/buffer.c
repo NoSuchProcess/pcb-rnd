@@ -56,9 +56,6 @@
 #include "select.h"
 #include "set.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

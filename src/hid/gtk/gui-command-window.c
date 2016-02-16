@@ -36,9 +36,6 @@
 #include "command.h"
 #include "crosshair.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

@@ -51,9 +51,6 @@
 #if 0
 #include <locale.h>
 #endif
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 extern int MoveLayerAction(int argc, char **argv, int x, int y);
 

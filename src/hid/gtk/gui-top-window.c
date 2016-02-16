@@ -107,9 +107,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "paths.h"
 #include "gui-icons-mode-buttons.data"
 #include "gui-icons-misc.data"
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
   RCSID("$Id$");
 
 static bool ignore_layer_update;

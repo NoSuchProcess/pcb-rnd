@@ -48,9 +48,6 @@
 #include "select.h"
 #include "print.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 #undef NDEBUG
 #include <assert.h>

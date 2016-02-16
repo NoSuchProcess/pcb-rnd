@@ -80,9 +80,6 @@
 #include "portability.h"
 #include "libpcb_fp.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 #include "paths.h"
 

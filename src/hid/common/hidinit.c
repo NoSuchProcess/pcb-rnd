@@ -34,9 +34,6 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

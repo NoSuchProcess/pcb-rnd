@@ -520,9 +520,6 @@ char *restext;
 #include "resource.h"
 #include "res_parse.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

@@ -28,9 +28,6 @@
 #include "../../3rd/genht/htsp.h"
 #include "../../3rd/genht/hash.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

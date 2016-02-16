@@ -58,9 +58,6 @@
 #include "undo.h"
 #include "vendor.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

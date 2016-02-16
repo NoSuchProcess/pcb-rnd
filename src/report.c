@@ -59,9 +59,6 @@
 #define USE_RE
 #endif
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 #define USER_UNITMASK (Settings.grid_unit->allow)
 

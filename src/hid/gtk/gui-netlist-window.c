@@ -56,9 +56,6 @@
 
 #include "gui.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 #define NET_HIERARCHY_SEPARATOR "/"
 

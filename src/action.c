@@ -76,9 +76,6 @@
 #include <assert.h>
 #include <stdlib.h>							/* rand() */
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 /* for fork() and friends */
 #ifdef HAVE_UNISTD_H

@@ -28,9 +28,6 @@
 #include "compat.h"
 #include "global.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

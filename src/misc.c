@@ -73,9 +73,6 @@
 #include "action.h"
 #include "portability.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

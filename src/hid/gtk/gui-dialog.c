@@ -36,9 +36,6 @@
 #include "gui.h"
 #include "command.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

@@ -99,9 +99,6 @@
 #include "paths.h"
 #include "rats_patch.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

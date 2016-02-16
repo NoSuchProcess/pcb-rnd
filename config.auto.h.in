@@ -286,6 +286,10 @@ print [@
 #define VERSION "@/local/version@"
 #define REVISION "@/local/revision@"
 
+#ifdef HAVE_LIBDMALLOC
+#include <dmalloc.h>
+#endif
+
 @]
 
 

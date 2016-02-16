@@ -44,9 +44,6 @@
 #include "search.h"
 #include "rats.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 #define TOOLTIP_UPDATE_DELAY 200
 

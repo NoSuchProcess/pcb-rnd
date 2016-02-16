@@ -33,9 +33,6 @@
 #include "hid/common/hid_resource.h"
 #include "lesstif.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 #include <sys/poll.h>
 

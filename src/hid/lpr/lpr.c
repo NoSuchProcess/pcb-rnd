@@ -18,9 +18,6 @@
 #include "hid/common/hidnogui.h"
 #include "hid/common/hidinit.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

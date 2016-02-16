@@ -57,9 +57,6 @@
 #include "undo.h"
 #include "rats_mincut.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

@@ -55,9 +55,6 @@
 #include "set.h"
 #include "undo.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 #include "rats.h"
 #include "pcb-mincut/graph.h"

@@ -61,9 +61,6 @@
 #include "remove.h"
 #include "rotate.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

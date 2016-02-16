@@ -21,9 +21,6 @@
 #include "../hidint.h"
 #include "lesstif.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

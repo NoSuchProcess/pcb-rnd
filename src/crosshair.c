@@ -51,9 +51,6 @@
 #include "search.h"
 #include "polygon.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

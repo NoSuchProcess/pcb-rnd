@@ -43,9 +43,6 @@
 #include "rotate.h"
 #include "gui-pinout-preview.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

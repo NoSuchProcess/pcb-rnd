@@ -39,9 +39,6 @@
 #include "draw.h"
 #include "mymem.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 RCSID("$Id$");
 

@@ -94,9 +94,6 @@
 #include "undo.h"
 #include "rats.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
 
 #undef DEBUG
 

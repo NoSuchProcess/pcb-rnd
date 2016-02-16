@@ -110,9 +110,6 @@
 #include "thermal.h"
 #include "rats_patch.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>						/* see http://dmalloc.com */
-#endif
 
 RCSID("$Id$");
 
