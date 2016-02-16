@@ -366,7 +366,7 @@ static void set_some_route_style()
  * If revert is true, we pass "revert" as a parameter
  * to the HID's PCBChanged action.
  */
-static int real_load_pcb(char *Filename, bool revert, bool require_font)
+static int real_load_pcb(char *Filename, bool revert, bool require_font, bool is_misc)
 {
 	const char *unit_suffix;
 	char *new_filename;
@@ -394,12 +394,14 @@ static int real_load_pcb(char *Filename, bool revert, bool require_font)
 		CreateNewPCBPost(PCB, 0);
 		ResetStackAndVisibility();
 
-		/* update cursor location */
-		Crosshair.X = CLAMP(PCB->CursorX, 0, PCB->MaxWidth);
-		Crosshair.Y = CLAMP(PCB->CursorY, 0, PCB->MaxHeight);
+		if (!is_misc) {
+			/* update cursor location */
+			Crosshair.X = CLAMP(PCB->CursorX, 0, PCB->MaxWidth);
+			Crosshair.Y = CLAMP(PCB->CursorY, 0, PCB->MaxHeight);
 
-		/* update cursor confinement and output area (scrollbars) */
-		ChangePCBSize(PCB->MaxWidth, PCB->MaxHeight);
+			/* update cursor confinement and output area (scrollbars) */
+			ChangePCBSize(PCB->MaxWidth, PCB->MaxHeight);
+		}
 
 		/* enable default font if necessary */
 		if (!PCB->Font.Valid) {
@@ -427,10 +429,12 @@ static int real_load_pcb(char *Filename, bool revert, bool require_font)
 
 		set_some_route_style();
 
-		if (revert)
-			hid_actionl("PCBChanged", "revert", NULL);
-		else
-			hid_action("PCBChanged");
+		if (!is_misc) {
+			if (revert)
+				hid_actionl("PCBChanged", "revert", NULL);
+			else
+				hid_action("PCBChanged");
+		}
 
 #ifdef DEBUG
 		end = clock();
@@ -451,9 +455,9 @@ static int real_load_pcb(char *Filename, bool revert, bool require_font)
 /* ---------------------------------------------------------------------------
  * Load PCB
  */
-int LoadPCB(char *file, bool require_font)
+int LoadPCB(char *file, bool require_font, bool is_misc)
 {
-	return real_load_pcb(file, false, require_font);
+	return real_load_pcb(file, false, require_font, is_misc);
 }
 
 /* ---------------------------------------------------------------------------
@@ -461,7 +465,7 @@ int LoadPCB(char *file, bool require_font)
  */
 int RevertPCB(void)
 {
-	return real_load_pcb(PCB->Filename, true, true);
+	return real_load_pcb(PCB->Filename, true, true, true);
 }
 
 /* ---------------------------------------------------------------------------

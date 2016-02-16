@@ -212,7 +212,7 @@ PCBTypePtr CreateNewPCB()
 	old = PCB;
 
 	PCB = NULL;
-	if ((LoadPCB(Settings.DefaultPcbFile, false) == 0) || (LoadPCB(PCB_DEFAULT_PCB_FILE_SRC, false) == 0)) {
+	if ((LoadPCB(Settings.DefaultPcbFile, false, true) == 0) || (LoadPCB(PCB_DEFAULT_PCB_FILE_SRC, false, true) == 0)) {
 		nw = PCB;
 		if (nw->Filename != NULL) {
 			/* make sure the new PCB doesn't inherit the name of the default pcb */
