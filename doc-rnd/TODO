@@ -1,11 +1,14 @@
+CLEANUP
+	- move autorouters in plugins
+	- create a separate plugin source dir
+	- remove libstroke or move it in a plugin?
+	- warnings in util/
+
 BACK ANNOTATION
 	- renumbering action disabled; grep for BA_TODO
 
 BUGS
 - gpmi (and other buildings/plugins) not showing up in the about box
-
-CLEANUP
-	- remove libstroke?
 
 FEATURES
 - UI: trace length calculation {small}

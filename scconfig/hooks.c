@@ -9,7 +9,7 @@
 #include "tmpasm_scconfig.h"
 #include "util/arg_auto_set.h"
 
-#define version "1.0.6"
+#define version "1.0.7"
 
 const char *gui_list[] = {
 	"GTK",     "libs/gui/gtk2/presents",

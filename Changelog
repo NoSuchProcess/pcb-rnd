@@ -1,3 +1,17 @@
+pcb-rnd 1.0.7
+~~~~~~~~~~~~~
+	-Cleanup: src/ should compile in c89 - no more // comments and variables declared in for()
+	-Cleanup: const correctness in src/
+	-Cleanup: missing #includes in src/
+	-Cleanup: unified, tab based indentation all over src/
+	-Cleanup: move dmalloc include to central config.h
+	-Cleanup: move gts to src/3rd
+	-Cleanup: remove old/obsolete files inherited from the fork
+	-Cleanup: rename doc/ to doc-orig/ to avoid confusion and make it compile
+	-Fix: poly pin bounding box calculation adds clearance as rtree expects ([square])
+	-Fix: loading default.pcb shouldn't override cursor pos and board sizes and shoudln't cause file date to be changed in the gui hids since it is loading a "misc" file
+	-Add: README in each main directory to explain what the directory is for
+
 pcb-rnd 1.0.6
 ~~~~~~~~~~~~~
 	[cycdrag]

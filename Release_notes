@@ -1,4 +1,11 @@
-pcb-rnd 1.0.6
+pcb-rnd 1.0.7
 ~~~~~~~~~~~~~
-The new release features cycle drag and footprint pin renumbering, among
-with a set of bugfixes that removes some of the GNU and locale dependency.
+1.0.7 is a large scale cleanup release that touches most source files.
+The three major changes:
+ - remove non-c89 features (// comments, variable declaration in for()),
+ - unify indentation and code formatting
+ - reorganize the directory structure
+
+It also features a lot of smaller fixes and removes most compiler warnings.
+
+
