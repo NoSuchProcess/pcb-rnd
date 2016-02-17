@@ -1,0 +1,4 @@
+pcb-rnd "diff" documentation: this directory contains documentation
+on the features that differ from the original pcb version it was forked from.
+
+Documentation of the original version can be found in ../doc-orig

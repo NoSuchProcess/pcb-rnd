@@ -1,3 +1,7 @@
+Cross compile pcb-rnd on windows.
+
+Inherited from the original pcb code, haven't been tested yet.
+
 ========
 Minipack
 ========
