@@ -31,12 +31,10 @@ info_TEXINFOS=	pcb.texi
 pcb_TEXINFOS=	${inline_texi} ${pcb_output} ${tab_texi} ${images_output}
 
 dist_html_DATA=	${html_docs} ${pcb_output_inst} ${images_output_inst}
-dist_pdf_DATA=	${pdf_docs}
 
 dist_man_MANS=	pcb.1
 
 html_docs=	${info_TEXINFOS:.texi=.html}
-pdf_docs=	${info_TEXINFOS:.texi=.pdf} refcard.pdf
 
 DVIS=
 
@@ -56,7 +54,7 @@ EXTRA_DIST= \
 	${tab_texi} \
 	${images}
 
-all: $(html_docs) $(pdf_docs)
+all: $(html_docs)
 
 # use this to avoid having the clean target delete pcb.{dvi,html,pdf,ps}
 # which unfortunately deletes files which are part of the distfile
@@ -68,7 +66,7 @@ clean:
 BUILT_SOURCES=	${tab_texi} ${pcb_output} ${inline_texi}
 CLEANFILES= \
 	refcard.aux refcard.log refcard.pdf \
-	${pcb_output} ${tab_texi} ${inline_texi} pcb.html pcb.pdf \
+	${pcb_output} ${tab_texi} ${inline_texi} pcb.html \
 	${images_output}
 
 inline_texi=	\
@@ -147,9 +145,4 @@ SUFFIXES = .eps .pcb .pdf .png .tab .tex .html .texi
 %.html: %.texi
 	rm $@ 2>/dev/null; true
 	makeinfo --html --css-include=pcb.css --no-split  --output=$@ $^
-
-
-%.pdf: %.texi
-	rm $@ 2>/dev/null; true
-	makeinfo --pdf --css-include=pcb.css --no-split  --output=$@ $^
 
