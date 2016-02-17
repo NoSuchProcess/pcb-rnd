@@ -1,12 +1,10 @@
 all:
-	cd gts && make
 	cd src && make
 	cd util && make
 	cd pcblib && make
 	cd tutorial && make
 
 clean:
-	cd gts && make clean
 	cd src && make clean
 	cd util && make clean
 	cd pcblib && make clean

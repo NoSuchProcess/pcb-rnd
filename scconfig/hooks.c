@@ -254,7 +254,7 @@ int hook_generate()
 
 	printf("Generating Makefile.conf (%d)\n", generr |= tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
 
-	printf("Generating gts/Makefile (%d)\n", generr |= tmpasm("../gts", "Makefile.in", "Makefile"));
+	printf("Generating gts/Makefile (%d)\n", generr |= tmpasm("../src/3rd/gts", "Makefile.in", "Makefile"));
 	printf("Generating pcb/Makefile (%d)\n", generr |= tmpasm("../src", "Makefile.in", "Makefile"));
 
 	/* Has to be after pcb/Makefile so that all the modules are loaded. */
