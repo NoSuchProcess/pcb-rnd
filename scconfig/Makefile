@@ -46,6 +46,9 @@ include src/gui/Makefile.plugin
 #  Comment this line if you do not need software utility libs (glib)
 include src/sul/Makefile.plugin
 
+#  Uncomment this line if you need menus
+include src/menulib/Makefile.plugin
+
 #  Comment this line if you do not need generator (templating)
 #include src/generator/Makefile.plugin
 
@@ -54,11 +57,21 @@ include src/tmpasm/Makefile.plugin
 
 # --- you shouldn't edit the lines below ---
 OBJS = $(USER_OBJS) hooks.o $(DEFAULT_NOMAIN_OBJS) $(SCRIPT_OBJS) $(PARSER_OBJS) $(GENERATOR_OBJS) $(TMPASM_OBJS) $(C99_OBJS) $(PARSGEN_OBJS) $(MATH_OBJS) $(SOCKET_OBJS) $(USERPASS_OBJS) $(GUI_OBJS) $(SUL_OBJS)
-CFLAGS = $(USER_CFLAGS) $(DEFAULT_CFLAGS) $(SCRIPT_CFLAGS) $(PARSER_CFLAGS) $(GENERATOR_CFLAGS) $(TMPASM_CFLAGS) $(C99_CFLAGS) $(PARSGEN_CFLAGS) $(MATH_CFLAGS) $(SOCKET_CFLAGS) $(USERPASS_CFLAGS) $(GUI_CFLAGS)  $(SUL_CFLAGS) -Isrc/default
-LDFLAGS = $(USER_LDFLAGS) $(DEFAULT_LDFLAGS) $(SCRIPT_LDFLAGS) $(PARSER_LDFLAGS) $(GENERATOR_LDFLAGS) $(TMPASM_LDFLAGS) $(C99_LDFLAGS) $(PARSGEN_LDFLAGS) $(MATH_LDFLAGS) $(SOCKET_LDFLAGS) $(USERPASS_LDFLAGS) $(GUI_LDFLAGS) $(SUL_LDFLAGS)
+CFLAGS = $(USER_CFLAGS) $(DEFAULT_CFLAGS) $(SCRIPT_CFLAGS) $(PARSER_CFLAGS) $(GENERATOR_CFLAGS) $(TMPASM_CFLAGS) $(C99_CFLAGS) $(PARSGEN_CFLAGS) $(MATH_CFLAGS) $(SOCKET_CFLAGS) $(USERPASS_CFLAGS) $(GUI_CFLAGS)  $(SUL_CFLAGS) $(MENULIB_CFLAGS) -Isrc/default
+LDFLAGS = $(USER_LDFLAGS) $(DEFAULT_LDFLAGS) $(SCRIPT_LDFLAGS) $(PARSER_LDFLAGS) $(GENERATOR_LDFLAGS) $(TMPASM_LDFLAGS) $(C99_LDFLAGS) $(PARSGEN_LDFLAGS) $(MATH_LDFLAGS) $(SOCKET_LDFLAGS) $(USERPASS_LDFLAGS) $(GUI_LDFLAGS) $(SUL_LDFLAGS) $(MENULIB_LDFLAGS)
+
 
 configure: $(OBJS)  $(DEFAULT_MAIN_OBJS)
 	$(CC) -o configure $(OBJS)  $(DEFAULT_MAIN_OBJS)
+
+menuconfig: menucfg
+	./menucfg
+
+menucfg: $(OBJS) $(MENULIB_OBJS) src/default/main_lib.o src/default/main_custom_args.o menucfg.o src/util/arg_auto_menu.o
+	$(CC) -o menucfg $(OBJS) $(MENULIB_OBJS) menucfg.o src/default/main_lib.o src/default/main_custom_args.o src/util/arg_auto_menu.o
+
+menucfg.o: menucfg.c
+	$(CC) -c $(CFLAGS) -o menucfg.o menucfg.c
 
 clean:
 	rm $(OBJS) configure
