@@ -12,6 +12,8 @@ BEGIN {
 	fullname = $2
 	basename = $2
 	sub("/[^/]*$", "", basename)
+	if (fullname ~ "src_plugins/")
+		TYPE[basename]="plugdir"
 }
 
 /^type=/ {
@@ -36,6 +38,12 @@ END {
 		print "/* " n  " (" TYPE[n] ") */"
 		if (TYPE[n] == "gui")
 			print "if ((gui != NULL) && (strcmp(gui->name, " q hn q ") == 0)) {"
+		if (TYPE[n] == "plugdir") {
+			vname = LIST[n]
+			sub("REGISTER_ACTIONS.*[(]", "", vname)
+			sub("[)].*[\n\r]*", "", vname)
+			print "extern HID_Action " vname "[];"
+		}
 		print LIST[n]
 		if (TYPE[n] == "gui")
 			print "}"

@@ -36,7 +36,6 @@
 
 #include "action.h"
 #include "autoplace.h"
-#include "autoroute.h"
 #include "buffer.h"
 #include "change.h"
 #include "command.h"
@@ -3652,55 +3651,6 @@ static int ActionAutoPlaceSelected(int argc, char **argv, Coord x, Coord y)
 	if (gui->confirm_dialog(_("Auto-placement can NOT be undone.\n" "Do you want to continue anyway?\n"), 0)) {
 		if (AutoPlaceSelected())
 			SetChangedFlag(true);
-	}
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
-static const char autoroute_syntax[] = "AutoRoute(AllRats|SelectedRats)";
-
-static const char autoroute_help[] = "Auto-route some or all rat lines.";
-
-/* %start-doc actions AutoRoute
-
-@table @code
-
-@item AllRats
-Attempt to autoroute all rats.
-
-@item SelectedRats
-Attempt to autoroute the selected rats.
-
-@end table
-
-Before autorouting, it's important to set up a few things.  First,
-make sure any layers you aren't using are disabled, else the
-autorouter may use them.  Next, make sure the current line and via
-styles are set accordingly.  Last, make sure "new lines clear
-polygons" is set, in case you eventually want to add a copper pour.
-
-Autorouting takes a while.  During this time, the program may not be
-responsive.
-
-%end-doc */
-
-static int ActionAutoRoute(int argc, char **argv, Coord x, Coord y)
-{
-	char *function = ARG(0);
-	hid_action("Busy");
-	if (function) {								/* one parameter */
-		switch (GetFunctionID(function)) {
-		case F_AllRats:
-			if (AutoRoute(false))
-				SetChangedFlag(true);
-			break;
-		case F_SelectedRats:
-		case F_Selected:
-			if (AutoRoute(true))
-				SetChangedFlag(true);
-			break;
-		}
 	}
 	return 0;
 }
@@ -7644,9 +7594,6 @@ HID_Action action_action_list[] = {
 	,
 	{"AutoPlaceSelected", 0, ActionAutoPlaceSelected,
 	 autoplace_help, autoplace_syntax}
-	,
-	{"AutoRoute", 0, ActionAutoRoute,
-	 autoroute_help, autoroute_syntax}
 	,
 	{"ChangeClearSize", 0, ActionChangeClearSize,
 	 changeclearsize_help, changeclearsize_syntax}
