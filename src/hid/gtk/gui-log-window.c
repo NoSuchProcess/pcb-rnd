@@ -68,7 +68,7 @@ void ghid_log_window_create()
 {
 	GtkWidget *vbox, *hbox, *button;
 
-	if (log_window)
+	if ((log_window) || (ghidgui == NULL))
 		return;
 
 	log_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
