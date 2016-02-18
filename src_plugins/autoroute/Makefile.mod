@@ -5,6 +5,7 @@ append /local/pcb/autorouter/OBJS [@ ${PLUGDIR}/autoroute/autoroute.o ${PLUGDIR}
 
 if /local/pcb/autorouter/enable then
 	if /local/pcb/autorouter/buildin then
+		append /local/pcb/buildin_init    { extern void hid_autoroute_init(); hid_autoroute_init(); plugin_register("autoroute", "<autoroute>", NULL, 0); }
 		append /local/pcb/OBJS            /local/pcb/autorouter/OBJS
 		append /local/pcb/RULES [@
 

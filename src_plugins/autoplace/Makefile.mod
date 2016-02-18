@@ -5,6 +5,7 @@ append /local/pcb/autoplace/OBJS [@ ${PLUGDIR}/autoplace/autoplace.o ${PLUGDIR}/
 
 if /local/pcb/autoplace/enable then
 	if /local/pcb/autoplace/buildin then
+		append /local/pcb/buildin_init    { extern void hid_autoplace_init(); hid_autoplace_init(); plugin_register("autoplace", "<autoplace>", NULL, 0); }
 		append /local/pcb/OBJS            /local/pcb/autoplace/OBJS
 		append /local/pcb/RULES [@
 
