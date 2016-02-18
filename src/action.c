@@ -35,7 +35,6 @@
 #include "global.h"
 
 #include "action.h"
-#include "autoplace.h"
 #include "buffer.h"
 #include "change.h"
 #include "command.h"
@@ -3628,29 +3627,6 @@ static int ActionDeleteRats(int argc, char **argv, Coord x, Coord y)
 				SetChangedFlag(true);
 			break;
 		}
-	}
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
-static const char autoplace_syntax[] = "AutoPlaceSelected()";
-
-static const char autoplace_help[] = "Auto-place selected components.";
-
-/* %start-doc actions AutoPlaceSelected
-
-Attempts to re-arrange the selected components such that the nets
-connecting them are minimized.  Note that you cannot undo this.
-
-%end-doc */
-
-static int ActionAutoPlaceSelected(int argc, char **argv, Coord x, Coord y)
-{
-	hid_action("Busy");
-	if (gui->confirm_dialog(_("Auto-placement can NOT be undone.\n" "Do you want to continue anyway?\n"), 0)) {
-		if (AutoPlaceSelected())
-			SetChangedFlag(true);
 	}
 	return 0;
 }
@@ -7591,9 +7567,6 @@ HID_Action action_action_list[] = {
 	,
 	{"Atomic", 0, ActionAtomic,
 	 atomic_help, atomic_syntax}
-	,
-	{"AutoPlaceSelected", 0, ActionAutoPlaceSelected,
-	 autoplace_help, autoplace_syntax}
 	,
 	{"ChangeClearSize", 0, ActionChangeClearSize,
 	 changeclearsize_help, changeclearsize_syntax}

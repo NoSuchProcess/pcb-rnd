@@ -45,6 +45,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-autorouter", "/local/pcb/autorouter/buildin",  arg_true,      "$static link the autorouter plugin into the executable"},
 	{"plugin-autorouter",  "/local/pcb/autorouter/buildin",  arg_false,     "$the autorouter plugin is dynamic loadable"},
 
+	{"disable-autoplace",  "/local/pcb/autoplace/enable",   arg_false,     "$do not compile the autoplace"},
+	{"buildin-autoplace",  "/local/pcb/autoplace/buildin",  arg_true,      "$static link the autoplace plugin into the executable"},
+	{"plugin-autoplace",   "/local/pcb/autoplace/buildin",  arg_false,     "$the autoplace plugin is dynamic loadable"},
+
 	{NULL, NULL, NULL, NULL}
 };
 
@@ -110,6 +114,10 @@ int hook_postinit()
 	db_mkdir("/local/pcb/autorouter");
 	put("/local/pcb/autorouter/enable", strue);
 	put("/local/pcb/autorouter/buildin", strue);
+
+	db_mkdir("/local/pcb/autoplace");
+	put("/local/pcb/autoplace/enable", strue);
+	put("/local/pcb/autoplace/buildin", strue);
 
 	return 0;
 }
@@ -248,6 +256,27 @@ static int gpmi_config(void)
 	return generr;
 }
 
+static void plugin_stat(const char *header, const char *path_prefix)
+{
+	char path_en[256], path_bi[256];
+
+	sprintf(path_en, "%s/enable", path_prefix);
+	sprintf(path_bi, "%s/buildin", path_prefix);
+
+	printf("%-32s", header);
+	if (node_istrue(path_en)) {
+		printf("yes ");
+		if (node_istrue(path_bi))
+			printf("(buildin)\n");
+		else
+			printf("(plugin)\n");
+	}
+	else
+		printf("no\n");
+
+
+}
+
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
 int hook_generate()
 {
@@ -298,7 +327,7 @@ int hook_generate()
 		printf("disabled\n");
 
 /* special case because the "presents" node */
-	printf("Scripting via GPMI: ");
+	printf("%-32s", "Scripting via GPMI: ");
 	if (node_istrue("libs/script/gpmi/presents")) {
 		printf("yes ");
 		if (node_istrue("/local/pcb/gpmi/buildin"))
@@ -309,17 +338,8 @@ int hook_generate()
 	else
 		printf("no\n");
 
-	printf("Autorouter: ");
-	if (node_istrue("/local/pcb/autorouter/enable")) {
-		printf("yes ");
-		if (node_istrue("/local/pcb/autorouter/buildin"))
-			printf("(buildin)\n");
-		else
-			printf("(plugin)\n");
-	}
-	else
-		printf("no\n");
-
+	plugin_stat("Autorouter: ", "/local/pcb/autorouter");
+	plugin_stat("Autoplace: ",  "/local/pcb/autoplace");
 
 	if (manual_config)
 		printf("\n\n * NOTE: you may want to edit config.manual.h (user preferences) *\n");

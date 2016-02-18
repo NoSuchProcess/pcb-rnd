@@ -12,7 +12,6 @@ append /local/pcb/LDFLAGS cc/rdynamic
 # main: objects
 put /local/pcb/OBJS [@
 	action.o
-	autoplace.o
 	buffer.o
 	change.o
 	clip.o
@@ -127,6 +126,7 @@ include {Makefile.in.mod/nelma}
 include {Makefile.in.mod/lpr}
 
 include {../src_plugins/autoroute/Makefile.mod}
+include {../src_plugins/autoplace/Makefile.mod}
 
 
 if /target/libs/script/gpmi/presents then
