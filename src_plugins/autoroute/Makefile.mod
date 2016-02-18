@@ -6,7 +6,6 @@ append /local/pcb/autorouter/OBJS [@ ${PLUGDIR}/autoroute/autoroute.o ${PLUGDIR}
 if /local/pcb/autorouter/enable then
 	if /local/pcb/autorouter/buildin then
 		append /local/pcb/OBJS            /local/pcb/autorouter/OBJS
-		append /local/pcb/ACTION_REG_SRC  [@ ${PLUGDIR}/autoroute/action.c @]
 		append /local/pcb/RULES [@
 
 mod_autoroute: all
