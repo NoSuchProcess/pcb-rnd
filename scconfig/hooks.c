@@ -41,6 +41,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"plugin-gpmi",       "/local/pcb/gpmi/buildin",      arg_false,     "$the gpmi plugin is dynamic loadable"},
 	{"disable-toporouter","/local/pcb/toporouter/enable", arg_false,     "$do not compile the toporouter"},
 
+	{"disable-autorouter", "/local/pcb/autorouter/enable",   arg_false,     "$do not compile the autorouter"},
+	{"buildin-autorouter", "/local/pcb/autorouter/buildin",  arg_true,      "$static link the autorouter plugin into the executable"},
+	{"plugin-autorouter",  "/local/pcb/autorouter/buildin",  arg_false,     "$the autorouter plugin is dynamic loadable"},
+
 	{NULL, NULL, NULL, NULL}
 };
 
@@ -94,13 +98,19 @@ int hook_postinit()
 {
 	db_mkdir("/local");
 	db_mkdir("/local/pcb");
-	db_mkdir("/local/pcb/gpmi");
-	db_mkdir("/local/pcb/toporouter");
 
 	/* DEFAULTS */
+	db_mkdir("/local/pcb/gpmi");
 	put("/local/pcb/gpmi/buildin", strue);
 	put("/local/prefix", "/usr/local");
+
+	db_mkdir("/local/pcb/toporouter");
 	put("/local/pcb/toporouter/enable", strue);
+
+	db_mkdir("/local/pcb/autorouter");
+	put("/local/pcb/autorouter/enable", strue);
+	put("/local/pcb/autorouter/buildin", strue);
+
 	return 0;
 }
 
@@ -287,10 +297,22 @@ int hook_generate()
 	else
 		printf("disabled\n");
 
+/* special case because the "presents" node */
 	printf("Scripting via GPMI: ");
 	if (node_istrue("libs/script/gpmi/presents")) {
 		printf("yes ");
 		if (node_istrue("/local/pcb/gpmi/buildin"))
+			printf("(buildin)\n");
+		else
+			printf("(plugin)\n");
+	}
+	else
+		printf("no\n");
+
+	printf("Autorouter: ");
+	if (node_istrue("/local/pcb/autorouter/enable")) {
+		printf("yes ");
+		if (node_istrue("/local/pcb/autorouter/buildin"))
 			printf("(buildin)\n");
 		else
 			printf("(plugin)\n");
