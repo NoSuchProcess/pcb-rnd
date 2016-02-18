@@ -86,3 +86,9 @@ HID_Action autorouter_action_list[] = {
 };
 
 REGISTER_ACTIONS(autorouter_action_list)
+
+#include "dolists.h"
+void hid_autoroute_init(void)
+{
+	REGISTER_ACTIONS(autorouter_action_list)
+}
