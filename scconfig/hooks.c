@@ -49,6 +49,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-autoplace",  "/local/pcb/autoplace/buildin",  arg_true,      "$static link the autoplace plugin into the executable"},
 	{"plugin-autoplace",   "/local/pcb/autoplace/buildin",  arg_false,     "$the autoplace plugin is dynamic loadable"},
 
+	{"disable-vendordrill",  "/local/pcb/vendordrill/enable",   arg_false,     "$do not compile the vendor drill mapping"},
+	{"buildin-vendordrill",  "/local/pcb/vendordrill/buildin",  arg_true,      "$static link the vendor drill mapping plugin into the executable"},
+	{"plugin-vendordrill",   "/local/pcb/vendordrill/buildin",  arg_false,     "$the vendor drill mapping plugin is dynamic loadable"},
+
 	{NULL, NULL, NULL, NULL}
 };
 
@@ -60,13 +64,13 @@ static void help1(void)
 	printf("Usage: ./configure [options]\n");
 	printf("\n");
 	printf("options are:\n");
-	printf(" --prefix=path        change installation prefix from /usr to path\n");
+	printf(" --prefix=path         change installation prefix from /usr to path\n");
 }
 
 static void help2(void)
 {
 	printf("\n");
-	printf("The --disable options will make ./configure to skip detection of the");
+	printf("The --disable options will make ./configure to skip detection of the ");
 	printf("given feature and mark them \"not found\".");
 	printf("\n");
 }
@@ -82,7 +86,7 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 	else if (strcmp(key, "help") == 0) {
 		help1();
-		arg_auto_print_options(stdout, " ", "                   ", disable_libs);
+		arg_auto_print_options(stdout, " ", "                    ", disable_libs);
 		help2();
 		exit(0);
 	}
@@ -118,6 +122,10 @@ int hook_postinit()
 	db_mkdir("/local/pcb/autoplace");
 	put("/local/pcb/autoplace/enable", strue);
 	put("/local/pcb/autoplace/buildin", strue);
+
+	db_mkdir("/local/pcb/vendordrill");
+	put("/local/pcb/vendordrill/enable", strue);
+	put("/local/pcb/vendordrill/buildin", strue);
 
 	return 0;
 }
@@ -338,8 +346,9 @@ int hook_generate()
 	else
 		printf("no\n");
 
-	plugin_stat("Autorouter: ", "/local/pcb/autorouter");
-	plugin_stat("Autoplace: ",  "/local/pcb/autoplace");
+	plugin_stat("Autorouter: ",            "/local/pcb/autorouter");
+	plugin_stat("Autoplace: ",             "/local/pcb/autoplace");
+	plugin_stat("Vendor drill mapping: ",  "/local/pcb/vendordrill");
 
 	if (manual_config)
 		printf("\n\n * NOTE: you may want to edit config.manual.h (user preferences) *\n");
