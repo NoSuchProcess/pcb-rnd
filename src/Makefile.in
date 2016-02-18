@@ -62,10 +62,10 @@ put /local/pcb/OBJS [@
 	select.o
 	set.o
 	strflags.o
+	stub_vendor.o
 	thermal.o
 	undo.o
 	vector.o
-	vendor.o
 	hid/common/actions.o
 	hid/common/flags.o
 	hid/common/hidinit.o
@@ -95,7 +95,7 @@ put /local/pcb/LEX  {res_lex parse_l}
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
 	action.c buffer.c command.c djopt.c flags.c main.c misc.c move.c netlist.c
-	puller.c report.c vendor.c
+	puller.c report.c
 }
 
 #---- modules ----#
@@ -127,6 +127,7 @@ include {Makefile.in.mod/lpr}
 
 include {../src_plugins/autoroute/Makefile.mod}
 include {../src_plugins/autoplace/Makefile.mod}
+include {../src_plugins/vendordrill/Makefile.mod}
 
 
 if /target/libs/script/gpmi/presents then

@@ -51,9 +51,8 @@
 #include "search.h"
 #include "set.h"
 #include "undo.h"
-#include "vendor.h"
 #include "file.h"
-
+#include "stub_vendor.h"
 
 RCSID("$Id$");
 
@@ -268,7 +267,7 @@ CreateNewVia(DataTypePtr Data,
 	Via->Thickness = Thickness;
 	Via->Clearance = Clearance;
 	Via->Mask = Mask;
-	Via->DrillingHole = vendorDrillMap(DrillingHole);
+	Via->DrillingHole = stub_vendorDrillMap(DrillingHole);
 	if (Via->DrillingHole != DrillingHole) {
 		Message(_("%m+Mapped via drill hole to %$mS from %$mS per vendor table\n"),
 						Settings.grid_unit->allow, Via->DrillingHole, DrillingHole);
@@ -740,10 +739,10 @@ CreateNewPin(ElementTypePtr Element,
 	 * If there is no vendor drill map installed, this will simply
 	 * return DrillingHole.
 	 */
-	pin->DrillingHole = vendorDrillMap(DrillingHole);
+	pin->DrillingHole = stub_vendorDrillMap(DrillingHole);
 
 	/* Unless we should not map drills on this element, map them! */
-	if (vendorIsElementMappable(Element)) {
+	if (stub_vendorIsElementMappable(Element)) {
 		if (pin->DrillingHole < MIN_PINORVIASIZE) {
 			Message(_("%m+Did not map pin #%s (%s) drill hole because %$mS is below the minimum allowed size\n"),
 							Settings.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);

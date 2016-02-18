@@ -57,6 +57,7 @@
 #include "set.h"
 #include "undo.h"
 #include "vendor.h"
+#include "stub_vendor.h"
 
 
 RCSID("$Id$");
@@ -829,7 +830,8 @@ HID_Action vendor_action_list[] = {
 };
 
 REGISTER_ACTIONS(vendor_action_list)
-		 static int vendor_get_enabled(int unused)
+
+static int vendor_get_enabled(int unused)
 {
 	return vendorMapEnable;
 }
@@ -839,3 +841,13 @@ HID_Flag vendor_flag_list[] = {
 };
 
 REGISTER_FLAGS(vendor_flag_list)
+
+#include "dolists.h"
+void hid_vendordrill_init(void)
+{
+	stub_vendorDrillMap = vendorDrillMap;
+	stub_vendorIsElementMappable = vendorIsElementMappable;
+
+	REGISTER_ACTIONS(vendor_action_list)
+	REGISTER_FLAGS(vendor_flag_list)
+}

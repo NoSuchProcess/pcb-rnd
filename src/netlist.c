@@ -54,7 +54,6 @@
 #include "misc.h"
 #include "rats.h"
 #include "set.h"
-#include "vendor.h"
 #include "create.h"
 #include "rats_patch.h"
 

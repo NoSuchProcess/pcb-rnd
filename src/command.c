@@ -49,7 +49,6 @@
 #include "misc.h"
 #include "rats.h"
 #include "set.h"
-#include "vendor.h"
 
 
 RCSID("$Id$");

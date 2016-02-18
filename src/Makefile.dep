@@ -27,7 +27,7 @@ clip.o: clip.c ../config.h ../config.manual.h ../config.auto.h global.h \
 command.o: command.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h action.h buffer.h command.h data.h djopt.h error.h file.h \
- mymem.h misc.h ds.h rats.h set.h vendor.h
+ mymem.h misc.h ds.h rats.h set.h
 compat.o: compat.c ../config.h ../config.manual.h ../config.auto.h \
  compat.h global.h const.h ../globalconst.h ../config.h macro.h hid.h \
  polyarea.h libpcb_fp.h
@@ -38,7 +38,7 @@ copy.o: copy.c ../config.h ../config.manual.h ../config.auto.h global.h \
 create.o: create.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h create.h data.h draw.h error.h mymem.h misc.h ds.h parse_l.h \
- pcb-printf.h polygon.h rtree.h search.h set.h undo.h vendor.h file.h
+ pcb-printf.h polygon.h rtree.h search.h set.h undo.h file.h
 crosshair.o: crosshair.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h box.h misc.h ds.h mymem.h crosshair.h data.h draw.h error.h \
@@ -123,7 +123,7 @@ mymem.o: mymem.c ../config.h ../config.manual.h ../config.auto.h global.h \
 netlist.o: netlist.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h action.h buffer.h command.h data.h djopt.h error.h file.h \
- find.h mymem.h misc.h ds.h rats.h set.h vendor.h create.h rats_patch.h
+ find.h mymem.h misc.h ds.h rats.h set.h create.h rats_patch.h
 paths.o: paths.c paths.h error.h
 pcb-printf.o: pcb-printf.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
@@ -204,10 +204,6 @@ undo.o: undo.c ../config.h ../config.manual.h ../config.auto.h global.h \
 vector.o: vector.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h vector.h
-vendor.o: vendor.c ../config.h ../config.manual.h ../config.auto.h \
- change.h global.h const.h ../globalconst.h ../config.h macro.h hid.h \
- polyarea.h libpcb_fp.h data.h draw.h error.h resource.h set.h undo.h \
- vendor.h
 actions.o: hid/common/actions.c ../config.h ../config.manual.h \
  ../config.auto.h hid/common/../../3rd/genht/hash.h \
  hid/common/../../3rd/genht/htsp.h hid/common/../../3rd/genht/ht.h \
@@ -419,7 +415,7 @@ gui-top-window.o: hid/gtk/gui-top-window.c ../config.h ../config.manual.h \
  autoroute.h buffer.h change.h command.h copy.h create.h crosshair.h \
  draw.h error.h file.h find.h gpcb-menu.h insert.h line.h mymem.h move.h \
  pcb-printf.h polygon.h rats.h remove.h report.h rotate.h rubberband.h \
- search.h select.h set.h undo.h vendor.h event.h free_atexit.h paths.h \
+ search.h select.h set.h undo.h event.h free_atexit.h paths.h \
  hid/gtk/gui-icons-mode-buttons.data hid/gtk/gui-icons-misc.data
 gui-utils.o: hid/gtk/gui-utils.c ../config.h ../config.manual.h \
  ../config.auto.h hid/gtk/gui.h global.h const.h ../globalconst.h \
