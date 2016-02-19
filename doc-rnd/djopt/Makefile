@@ -11,9 +11,11 @@ CASES = \
 all:
 	make conv TARGET=out.png
 	make conv TARGET=png
-	make index.html
 
-index.html:
+index:
+	make index.html TARGET=txt
+
+index.html: Pre.html Post.html $(CASES) Makefile
 	cat Pre.html > $(HTML)
 	make conv TARGET=tbl
 	cat Post.html >>$(HTML)
