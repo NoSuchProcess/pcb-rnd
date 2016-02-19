@@ -1,0 +1,6 @@
+Not compilable at the moment.
+
+Needs scconfig detection. Does anyone use dbus?
+
+Makefile:
+EXTRA_DIST += dbus.xml
