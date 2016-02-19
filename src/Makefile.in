@@ -21,7 +21,6 @@ put /local/pcb/OBJS [@
 	create.o
 	crosshair.o
 	data.o
-	djopt.o
 	draw.o
 	drill.o
 	error.o
@@ -92,7 +91,7 @@ put /local/pcb/LEX  {res_lex parse_l}
 
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
-	action.c buffer.c command.c djopt.c flags.c main.c misc.c move.c netlist.c
+	action.c buffer.c command.c flags.c main.c misc.c move.c netlist.c
 	report.c
 }
 
@@ -128,6 +127,7 @@ include {../src_plugins/autoplace/Makefile.mod}
 include {../src_plugins/vendordrill/Makefile.mod}
 include {../src_plugins/puller/Makefile.mod}
 include {../src_plugins/edif/Makefile.mod}
+include {../src_plugins/djopt/Makefile.mod}
 
 if /target/libs/script/gpmi/presents then
 include {Makefile.in.mod/gpmi_plugin}

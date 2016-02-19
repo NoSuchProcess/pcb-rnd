@@ -1,7 +1,6 @@
 CLEANUP
 	- move to plugin:
 		- toporouter
-		- djopt
 		- dbus
 		- gpmi
 		- mincut (through stubs?)
