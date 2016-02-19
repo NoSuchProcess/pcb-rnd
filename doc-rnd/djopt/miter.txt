@@ -1,0 +1,2 @@
+Replaces 90 degree corners with a pair of 45 degree corners, to reduce
+RF losses and trace length.

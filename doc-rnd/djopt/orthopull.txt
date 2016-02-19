@@ -1,0 +1,4 @@
+Looks for chains of traces all going in one direction, with more
+traces orthogonal on one side than on the other.  Moves the chain in
+that direction, causing a net reduction in trace length, possibly
+eliminating traces and/or corners.

@@ -1,0 +1,2 @@
+Looks for traces that go from via to via, where moving that trace to a
+different layer eliminates one or both vias.

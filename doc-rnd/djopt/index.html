@@ -1,0 +1,44 @@
+<html>
+<body>
+<H1> Action djopt() </h1>
+
+The different types of optimizations change your board in order to
+reduce the total trace length and via count. Each optimization is accessible
+using an argument, e.g. djopt(miter). The basic actions have to be run multiple
+times as each iteration will change the design making new changes possible for
+subsequent iterations with the same or other actions.
+<p>
+
+<table border=1>
+<tr><td>argument name<td> description <td> example in <td> example out after 1st iteration
+<tr><td>debumpify<td>
+Looks for U-shaped traces (with 90 degree corners) that can be shortened
+or eliminated.
+  <td><a href="debumpify.pcb"><img src="debumpify.png"></a>  <td><a href="debumpify.out.pcb"><img src="debumpify.out.png"></a>
+<tr><td>miter<td>
+Replaces 90 degree corners with a pair of 45 degree corners, to reduce
+RF losses and trace length.
+  <td><a href="miter.pcb"><img src="miter.png"></a>  <td><a href="miter.out.pcb"><img src="miter.out.png"></a>
+<tr><td>orthopull<td>
+Looks for chains of traces all going in one direction, with more
+traces orthogonal on one side than on the other.  Moves the chain in
+that direction, causing a net reduction in trace length, possibly
+eliminating traces and/or corners.
+  <td><a href="orthopull.pcb"><img src="orthopull.png"></a>  <td><a href="orthopull.out.pcb"><img src="orthopull.out.png"></a>
+<tr><td>unjaggy<td>
+Looks for corners which could be flipped to eliminate one or more
+corners (i.e. jaggy lines become simpler).
+  <td><a href="unjaggy.pcb"><img src="unjaggy.png"></a>  <td><a href="unjaggy.out.pcb"><img src="unjaggy.out.png"></a>
+<tr><td>vianudge<td>
+Looks for vias where all traces leave in the same direction.  Tries to
+move via in that direction to eliminate one of the traces (and thus a
+corner).
+  <td><a href="vianudge.pcb"><img src="vianudge.png"></a>  <td><a href="vianudge.out.pcb"><img src="vianudge.out.png"></a>
+<tr><td>viatrim<td>
+Looks for traces that go from via to via, where moving that trace to a
+different layer eliminates one or both vias.
+  <td><a href="viatrim.pcb"><img src="viatrim.png"></a>  <td><a href="viatrim.out.pcb"><img src="viatrim.out.png"></a>
+<tr><td>auto<td>run all the above except miter; run them multiple times until there's no more change possible <td> &nbsp; <td> &nbsp;
+</table>
+</body>
+</html>
