@@ -11,6 +11,7 @@ CASES = \
 all:
 	make conv TARGET=out.png
 	make conv TARGET=png
+	make index
 
 index:
 	make index.html TARGET=txt
