@@ -9,10 +9,10 @@ triangle.o: triangle.c gts.h
 face.o: face.c gts.h
 kdtree.o: kdtree.c gts.h
 bbtree.o: bbtree.c gts.h
-misc.o: misc.c gts.h gts-private.h ../config.h ../config.manual.h \
- ../config.auto.h
-predicates.o: predicates.c predicates.h rounding.h ../config.h \
- ../config.manual.h ../config.auto.h
+misc.o: misc.c gts.h gts-private.h ../../config.h ../../config.manual.h \
+ ../../config.auto.h
+predicates.o: predicates.c predicates.h rounding.h ../../config.h \
+ ../../config.manual.h ../../config.auto.h
 heap.o: heap.c gts.h
 eheap.o: eheap.c gts.h
 fifo.o: fifo.c gts.h
@@ -22,11 +22,12 @@ stripe.o: stripe.c gts.h
 vopt.o: vopt.c gts.h
 refine.o: refine.c gts.h
 iso.o: iso.c gts.h
-isotetra.o: isotetra.c
+isotetra.o: isotetra.c gts.h
 split.o: split.c gts.h
 psurface.o: psurface.c gts.h
 hsurface.o: hsurface.c gts.h
-cdt.o: cdt.c gts.h
+cdt.o: cdt.c ../../config.h ../../config.manual.h ../../config.auto.h \
+ gts.h
 boolean.o: boolean.c gts.h
 named.o: named.c gts.h
 oocs.o: oocs.c gts.h

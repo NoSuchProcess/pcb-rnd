@@ -1,4 +1,4 @@
-put /local/gts/CFLAGS [@-I. -I.. -DG_LOG_DOMAIN=\"Gts\" @libs/sul/glib/cflags@@]
+put /local/gts/CFLAGS [@-I. -I.. -I../.. -DG_LOG_DOMAIN=\"Gts\" @libs/sul/glib/cflags@@]
 put /local/gts/OBJS [@
 	object.o
 	point.o
@@ -55,9 +55,9 @@ clean:
 
 # generate explicit rules for .c -> .o
 put /local/comp/OBJS /local/gts/OBJS
-include {../../../scconfig/Makefile.comp.inc}
+include {../../scconfig/Makefile.comp.inc}
 
 # generate deps
 put /local/dep/CFLAGS /local/gts/CFLAGS
 put /local/dep/SRCS /local/gts/SRCS
-include {../../../scconfig/Makefile.dep.inc}
+include {../../scconfig/Makefile.dep.inc}

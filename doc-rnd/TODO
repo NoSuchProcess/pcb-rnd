@@ -1,9 +1,7 @@
 CLEANUP
 	- move to plugin:
 		- toporouter
-		- dbus
 		- gpmi
-	- move src/3rd/ one level up
 	- remove libstroke or move it in a plugin?
 	- warnings in util/
 

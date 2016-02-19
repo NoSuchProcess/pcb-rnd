@@ -25,8 +25,8 @@
 #include "paths.h"
 
 #include "pcb-menu.h"
-#include "../../3rd/genht/htsp.h"
-#include "../../3rd/genht/hash.h"
+#include "../../../src_3rd/genht/htsp.h"
+#include "../../../src_3rd/genht/hash.h"
 
 
 RCSID("$Id$");

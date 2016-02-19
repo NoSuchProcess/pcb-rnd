@@ -42,7 +42,6 @@
 #include "buffer.h"
 #include "command.h"
 #include "data.h"
-#include "djopt.h"
 #include "error.h"
 #include "file.h"
 #include "mymem.h"

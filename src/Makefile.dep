@@ -2,15 +2,11 @@
 
 action.o: action.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
- libpcb_fp.h action.h buffer.h change.h command.h \
- copy.h create.h crosshair.h data.h draw.h error.h file.h find.h insert.h \
- line.h mymem.h misc.h ds.h mirror.h move.h polygon.h rats.h remove.h \
- report.h rotate.h rubberband.h search.h select.h set.h thermal.h undo.h \
- rtree.h pcb-printf.h plugins.h rats_patch.h
-autoplace.o: autoplace.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
- libpcb_fp.h box.h misc.h ds.h mymem.h compat.h data.h draw.h \
- error.h intersect.h rtree.h mirror.h move.h rats.h remove.h rotate.h
+ libpcb_fp.h action.h buffer.h change.h command.h copy.h create.h \
+ crosshair.h data.h draw.h error.h file.h find.h insert.h line.h mymem.h \
+ misc.h ds.h mirror.h move.h polygon.h rats.h remove.h report.h rotate.h \
+ rubberband.h search.h select.h set.h thermal.h undo.h rtree.h \
+ pcb-printf.h plugins.h rats_patch.h
 buffer.o: buffer.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h buffer.h copy.h create.h crosshair.h data.h error.h mymem.h \
@@ -26,8 +22,8 @@ clip.o: clip.c ../config.h ../config.manual.h ../config.auto.h global.h \
  libpcb_fp.h data.h draw.h mymem.h
 command.o: command.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
- libpcb_fp.h action.h buffer.h command.h data.h error.h file.h \
- mymem.h misc.h ds.h rats.h set.h
+ libpcb_fp.h action.h buffer.h command.h data.h error.h file.h mymem.h \
+ misc.h ds.h rats.h set.h
 compat.o: compat.c ../config.h ../config.manual.h ../config.auto.h \
  compat.h global.h const.h ../globalconst.h ../config.h macro.h hid.h \
  polyarea.h libpcb_fp.h
@@ -38,7 +34,8 @@ copy.o: copy.c ../config.h ../config.manual.h ../config.auto.h global.h \
 create.o: create.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h create.h data.h draw.h error.h mymem.h misc.h ds.h parse_l.h \
- pcb-printf.h polygon.h rtree.h search.h set.h undo.h file.h
+ pcb-printf.h polygon.h rtree.h search.h set.h undo.h file.h \
+ stub_vendor.h
 crosshair.o: crosshair.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h box.h misc.h ds.h mymem.h crosshair.h data.h draw.h error.h \
@@ -46,10 +43,6 @@ crosshair.o: crosshair.c ../config.h ../config.manual.h ../config.auto.h \
 data.o: data.c ../config.h ../config.manual.h ../config.auto.h data.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h
-djopt.o: djopt.c ../config.h ../config.manual.h ../config.auto.h global.h \
- const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
- libpcb_fp.h data.h create.h remove.h move.h draw.h undo.h strflags.h \
- find.h pcb-printf.h
 draw.o: draw.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h compat.h crosshair.h data.h draw.h error.h mymem.h misc.h \
@@ -63,10 +56,9 @@ error.o: error.c ../config.h ../config.manual.h ../config.auto.h global.h \
 event.o: event.c event.h error.h
 file.o: file.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
- libpcb_fp.h buffer.h change.h create.h crosshair.h data.h \
- error.h file.h misc.h ds.h mymem.h move.h parse_l.h pcb-printf.h \
- polygon.h rats.h remove.h set.h strflags.h portability.h paths.h \
- rats_patch.h
+ libpcb_fp.h buffer.h change.h create.h crosshair.h data.h error.h file.h \
+ misc.h ds.h mymem.h move.h parse_l.h pcb-printf.h polygon.h rats.h \
+ remove.h set.h strflags.h portability.h paths.h rats_patch.h stub_edif.h
 find.o: find.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h crosshair.h data.h draw.h error.h find.h mymem.h misc.h ds.h \
@@ -114,16 +106,13 @@ move.o: move.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h create.h crosshair.h data.h draw.h error.h misc.h ds.h \
  mymem.h move.h polygon.h rtree.h search.h select.h thermal.h undo.h
-mtspace.o: mtspace.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
- libpcb_fp.h box.h misc.h ds.h mymem.h heap.h rtree.h mtspace.h vector.h
 mymem.o: mymem.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h data.h error.h mymem.h misc.h ds.h rats.h rtree.h
 netlist.o: netlist.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
- libpcb_fp.h action.h buffer.h command.h data.h error.h file.h \
- find.h mymem.h misc.h ds.h rats.h set.h create.h rats_patch.h
+ libpcb_fp.h action.h buffer.h command.h data.h error.h file.h find.h \
+ mymem.h misc.h ds.h rats.h set.h create.h rats_patch.h
 paths.o: paths.c paths.h error.h
 pcb-printf.o: pcb-printf.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
@@ -137,10 +126,6 @@ polygon.o: polygon.c ../config.h ../config.manual.h ../config.auto.h \
 polygon1.o: polygon1.c global.h ../config.h ../config.manual.h \
  ../config.auto.h const.h ../globalconst.h ../config.h macro.h hid.h \
  polyarea.h libpcb_fp.h rtree.h heap.h
-puller.o: puller.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
- libpcb_fp.h create.h data.h draw.h misc.h ds.h mymem.h move.h \
- pcb-printf.h remove.h rtree.h strflags.h undo.h
 print.o: print.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h data.h draw.h drill.h file.h find.h error.h misc.h ds.h \
@@ -148,15 +133,12 @@ print.o: print.c ../config.h ../config.manual.h ../config.auto.h global.h \
 rats.o: rats.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h create.h data.h draw.h error.h file.h find.h misc.h ds.h \
- mymem.h polygon.h rats.h search.h set.h undo.h
-rats_mincut.o: rats_mincut.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
- hid.h polyarea.h libpcb_fp.h create.h data.h draw.h error.h file.h \
- find.h misc.h ds.h mymem.h polygon.h rats.h search.h set.h undo.h \
- pcb-mincut/graph.h pcb-mincut/solve.h pcb-mincut/graph.h
+ mymem.h polygon.h rats.h search.h set.h undo.h stub_mincut.h
 rats_patch.o: rats_patch.c rats_patch.h global.h ../config.h \
  ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
- macro.h hid.h polyarea.h libpcb_fp.h create.h
+ macro.h hid.h polyarea.h libpcb_fp.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h \
+ ../src_3rd/genht/hash.h create.h
 remove.o: remove.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h data.h draw.h error.h misc.h ds.h mymem.h move.h polygon.h \
@@ -192,6 +174,15 @@ set.o: set.c ../config.h ../config.manual.h ../config.auto.h global.h \
 strflags.o: strflags.c ../config.h ../config.manual.h ../config.auto.h \
  ../globalconst.h ../config.h global.h const.h macro.h hid.h polyarea.h \
  libpcb_fp.h compat.h strflags.h
+stub_edif.o: stub_edif.c ../config.h ../config.manual.h ../config.auto.h \
+ global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
+ libpcb_fp.h error.h stub_edif.h
+stub_mincut.o: stub_mincut.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ hid.h polyarea.h libpcb_fp.h error.h data.h stub_mincut.h
+stub_vendor.o: stub_vendor.c stub_vendor.h ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ hid.h polyarea.h libpcb_fp.h
 thermal.o: thermal.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h create.h data.h draw.h error.h misc.h ds.h mymem.h move.h \
@@ -205,9 +196,10 @@ vector.o: vector.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h vector.h
 actions.o: hid/common/actions.c ../config.h ../config.manual.h \
- ../config.auto.h hid/common/../../3rd/genht/hash.h \
- hid/common/../../3rd/genht/htsp.h hid/common/../../3rd/genht/ht.h \
- hid/common/../../3rd/genht/ht_inlines.h global.h const.h \
+ ../config.auto.h hid/common/../../../src_3rd/genht/hash.h \
+ hid/common/../../../src_3rd/genht/htsp.h \
+ hid/common/../../../src_3rd/genht/ht.h \
+ hid/common/../../../src_3rd/genht/ht_inlines.h global.h const.h \
  ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h \
  global.h error.h event.h hid.h hid/common/../hidint.h
 flags.o: hid/common/flags.c ../config.h ../config.manual.h \
@@ -233,17 +225,12 @@ hid_resource.o: hid/common/hid_resource.c global.h ../config.h \
  ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
  macro.h hid.h polyarea.h libpcb_fp.h hid.h resource.h \
  hid/common/hid_resource.h
-graph.o: pcb-mincut/graph.c pcb-mincut/graph.h
-solve.o: pcb-mincut/solve.c pcb-mincut/solve.h pcb-mincut/graph.h
 res_parse.o: res_parse.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h resource.h res_parse.h
 res_lex.o: res_lex.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h resource.h res_parse.h
-edif.o: edif.c global.h ../config.h ../config.manual.h ../config.auto.h \
- const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
- libpcb_fp.h data.h
 portability.o: portability.c ../config.h ../config.manual.h \
  ../config.auto.h ds.h global.h const.h ../globalconst.h ../config.h \
  macro.h hid.h polyarea.h libpcb_fp.h error.h mymem.h
@@ -251,7 +238,8 @@ ds.o: ds.c ds.h
 libpcb_fp.o: libpcb_fp.c ds.h ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  hid.h polyarea.h libpcb_fp.h error.h portability.h paths.h \
- 3rd/genht/htsp.h 3rd/genht/ht.h 3rd/genht/ht_inlines.h 3rd/genht/hash.h
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/ht_inlines.h ../src_3rd/genht/hash.h
 parse_y.o: parse_y.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
  libpcb_fp.h create.h data.h error.h file.h mymem.h misc.h ds.h parse_l.h \
@@ -261,9 +249,10 @@ parse_l.o: parse_l.c ../config.h ../config.manual.h ../config.auto.h \
  libpcb_fp.h crosshair.h data.h error.h file.h mymem.h misc.h ds.h \
  strflags.h parse_l.h parse_y.h create.h
 buildin.o: buildin.c plugins.h buildin.h
-hash.o: 3rd/genht/hash.c
-htsp.o: 3rd/genht/htsp.c 3rd/genht/htsp.h 3rd/genht/ht.h \
- 3rd/genht/ht_inlines.h 3rd/genht/ht.c
+hash.o: ../src_3rd/genht/hash.c
+htsp.o: ../src_3rd/genht/htsp.c ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h \
+ ../src_3rd/genht/ht.c
 ghid-cell-renderer-visibility.o: hid/gtk/ghid-cell-renderer-visibility.c \
  hid/gtk/gtkhid.h hid/gtk/gui.h global.h ../config.h ../config.manual.h \
  ../config.auto.h const.h ../globalconst.h ../config.h macro.h hid.h \
@@ -411,12 +400,12 @@ gui-top-window.o: hid/gtk/gui-top-window.c ../config.h ../config.manual.h \
  ../config.h macro.h hid.h polyarea.h libpcb_fp.h hid/gtk/gtkhid.h \
  hid/gtk/gui.h hid.h hid/common/hid_resource.h resource.h data.h global.h \
  misc.h ds.h mymem.h hid/gtk/ghid-coord-entry.h hid/gtk/ghid-main-menu.h \
- hid/gtk/gui-pinout-preview.h hid/gtk/../hidint.h action.h \
- autoroute.h buffer.h change.h command.h copy.h create.h crosshair.h \
- draw.h error.h file.h find.h gpcb-menu.h insert.h line.h mymem.h move.h \
- pcb-printf.h polygon.h rats.h remove.h report.h rotate.h rubberband.h \
- search.h select.h set.h undo.h event.h free_atexit.h paths.h \
- hid/gtk/gui-icons-mode-buttons.data hid/gtk/gui-icons-misc.data
+ hid/gtk/gui-pinout-preview.h hid/gtk/../hidint.h action.h buffer.h \
+ change.h command.h copy.h create.h crosshair.h draw.h error.h file.h \
+ find.h gpcb-menu.h insert.h line.h mymem.h move.h pcb-printf.h polygon.h \
+ rats.h remove.h report.h rotate.h rubberband.h search.h select.h set.h \
+ undo.h event.h free_atexit.h paths.h hid/gtk/gui-icons-mode-buttons.data \
+ hid/gtk/gui-icons-misc.data
 gui-utils.o: hid/gtk/gui-utils.c ../config.h ../config.manual.h \
  ../config.auto.h hid/gtk/gui.h global.h const.h ../globalconst.h \
  ../config.h macro.h hid.h polyarea.h libpcb_fp.h hid.h \
@@ -455,9 +444,10 @@ menu.o: hid/lesstif/menu.c ../config.h ../config.manual.h \
  global.h error.h misc.h ds.h mymem.h pcb-printf.h hid.h \
  hid/lesstif/../hidint.h hid/common/hid_resource.h resource.h \
  hid/lesstif/lesstif.h mymem.h paths.h pcb-menu.h \
- hid/lesstif/../../3rd/genht/htsp.h hid/lesstif/../../3rd/genht/ht.h \
- hid/lesstif/../../3rd/genht/ht_inlines.h \
- hid/lesstif/../../3rd/genht/hash.h
+ hid/lesstif/../../../src_3rd/genht/htsp.h \
+ hid/lesstif/../../../src_3rd/genht/ht.h \
+ hid/lesstif/../../../src_3rd/genht/ht_inlines.h \
+ hid/lesstif/../../../src_3rd/genht/hash.h
 netlist.o: hid/lesstif/netlist.c ../config.h ../config.manual.h \
  ../config.auto.h hid/lesstif/xincludes.h compat.h global.h const.h \
  ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h \
@@ -468,11 +458,6 @@ styles.o: hid/lesstif/styles.c ../config.h ../config.manual.h \
  ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h \
  global.h set.h misc.h ds.h mymem.h mymem.h pcb-printf.h hid.h \
  hid/lesstif/../hidint.h hid/lesstif/lesstif.h
-toporouter.o: toporouter.c toporouter.h data.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
- macro.h hid.h polyarea.h libpcb_fp.h autoroute.h box.h misc.h ds.h \
- mymem.h create.h draw.h error.h find.h heap.h rtree.h polygon.h rats.h \
- remove.h thermal.h undo.h pcb-printf.h
 batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  hid.h polyarea.h libpcb_fp.h hid.h data.h global.h misc.h ds.h mymem.h \
@@ -533,3 +518,22 @@ lpr.o: hid/lpr/lpr.c ../config.h ../config.manual.h ../config.auto.h \
  libpcb_fp.h data.h global.h misc.h ds.h mymem.h hid.h \
  hid/lpr/../hidint.h hid/lpr/../ps/ps.h hid/common/hidnogui.h \
  hid/common/hidinit.h
+autoplace.o: ../src_plugins/autoplace/autoplace.c ../config.h \
+ ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
+ ../config.h macro.h hid.h polyarea.h libpcb_fp.h \
+ ../src_plugins/autoplace/autoplace.h box.h global.h misc.h ds.h mymem.h \
+ compat.h data.h draw.h error.h intersect.h rtree.h macro.h mirror.h \
+ misc.h move.h mymem.h rats.h remove.h rotate.h
+action.o: ../src_plugins/autoplace/action.c ../config.h \
+ ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
+ ../config.h macro.h hid.h polyarea.h libpcb_fp.h \
+ ../src_plugins/autoplace/autoplace.h dolists.h
+vendor.o: ../src_plugins/vendordrill/vendor.c ../config.h \
+ ../config.manual.h ../config.auto.h change.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h \
+ draw.h error.h global.h resource.h set.h undo.h \
+ ../src_plugins/vendordrill/vendor.h stub_vendor.h dolists.h
+puller.o: ../src_plugins/puller/puller.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ hid.h polyarea.h libpcb_fp.h create.h global.h data.h draw.h misc.h ds.h \
+ mymem.h move.h pcb-printf.h remove.h rtree.h strflags.h undo.h dolists.h

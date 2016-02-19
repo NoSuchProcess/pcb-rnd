@@ -4,7 +4,7 @@
 # TODO default compiler flags
 put /local/pcb/CFLAGS cc/rdynamic
 append /local/pcb/CFLAGS cc/cflags
-append /local/pcb/CFLAGS {-I. -I.. -I3rd -Iicons -DHAVE_CONFIG_H -g -DNDEBUG}
+append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -Iicons -DHAVE_CONFIG_H -g -DNDEBUG}
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
 
@@ -79,8 +79,8 @@ put /local/pcb/OBJS [@
 	parse_y.o
 	parse_l.o
 	buildin.o
-	3rd/genht/hash.o
-	3rd/genht/htsp.o
+	../src_3rd/genht/hash.o
+	../src_3rd/genht/htsp.o
 @]
 
 # main: language generator files

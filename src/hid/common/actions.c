@@ -7,8 +7,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "../../3rd/genht/hash.h"
-#include "../../3rd/genht/htsp.h"
+#include "../../../src_3rd/genht/hash.h"
+#include "../../../src_3rd/genht/htsp.h"
 
 #include "global.h"
 #include "data.h"

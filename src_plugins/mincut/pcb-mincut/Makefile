@@ -1,6 +1,6 @@
 CFLAGS = -g -Wall
 LDFLAGS = -lm
-OBJS = main.o solve.o load.o graph.o ../3rd/genht/htsi.o
+OBJS = main.o solve.o load.o graph.o ../../../src_3rd/genht/htsi.o
 
 all: main
 
