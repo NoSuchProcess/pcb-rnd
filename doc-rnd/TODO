@@ -2,10 +2,11 @@ CLEANUP
 	- move to plugin:
 		- toporouter
 		- puller
-		- mtspace.[ch] is part of the autorouter
 		- edif
 		- djopt
 		- dbus
+		- gpmi
+		- mincut (through stubs?)
 	- move src/3rd/ one level up
 	- remove libstroke or move it in a plugin?
 	- warnings in util/

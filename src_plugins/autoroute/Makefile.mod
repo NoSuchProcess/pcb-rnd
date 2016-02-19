@@ -1,7 +1,7 @@
 append /local/pcb/autorouter/enable {}
 append /local/pcb/autorouter/buildin {}
 
-append /local/pcb/autorouter/OBJS [@ ${PLUGDIR}/autoroute/autoroute.o ${PLUGDIR}/autoroute/action.o @]
+append /local/pcb/autorouter/OBJS [@ ${PLUGDIR}/autoroute/autoroute.o ${PLUGDIR}/autoroute/mtspace.o ${PLUGDIR}/autoroute/action.o @]
 
 if /local/pcb/autorouter/enable then
 	if /local/pcb/autorouter/buildin then

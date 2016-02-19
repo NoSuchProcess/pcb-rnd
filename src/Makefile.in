@@ -40,7 +40,6 @@ put /local/pcb/OBJS [@
 	mirror.o
 	misc.o
 	move.o
-	mtspace.o
 	mymem.o
 	netlist.o
 	paths.o
