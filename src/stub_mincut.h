@@ -1,13 +1,8 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
  *  PCB, interactive printed circuit board design
- *  Copyright (C) 2013..2015 Tibor 'Igor2' Palinkas
- * 
- *  This module, rats.c, was written and is Copyright (C) 1997 by harry eaton
- *  this module is also subject to the GNU GPL as described below
+ *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +20,6 @@
  *
  */
 
-/* Change History:
- * Started 6/10/97
- * Added support for minimum length rat lines 6/13/97
- * rat lines to nearest line/via 8/29/98
- * support for netlist window 10/24/98
- */
+void (*stub_rat_found_short)(PinType * pin, PadType * pad, const char *with_net);
+void (*stub_rat_proc_shorts)(void);
 
-void rat_found_short(PinType * pin, PadType * pad, const char *with_net);
-void rat_proc_shorts(void);

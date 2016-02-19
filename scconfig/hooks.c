@@ -65,6 +65,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-djopt",  "/local/pcb/djopt/buildin",  arg_true,      "$static link the djopt plugin into the executable"},
 	{"plugin-djopt",   "/local/pcb/djopt/buildin",  arg_false,     "$the djopt plugin is dynamic loadable"},
 
+	{"disable-mincut",  "/local/pcb/mincut/enable",   arg_false,     "$do not compile the mincut"},
+	{"buildin-mincut",  "/local/pcb/mincut/buildin",  arg_true,      "$static link the mincut plugin into the executable"},
+	{"plugin-mincut",   "/local/pcb/mincut/buildin",  arg_false,     "$the mincut plugin is dynamic loadable"},
+
 	{NULL, NULL, NULL, NULL}
 };
 
@@ -150,6 +154,10 @@ int hook_postinit()
 	db_mkdir("/local/pcb/djopt");
 	put("/local/pcb/djopt/enable", strue);
 	put("/local/pcb/djopt/buildin", strue);
+
+	db_mkdir("/local/pcb/mincut");
+	put("/local/pcb/mincut/enable", strue);
+	put("/local/pcb/mincut/buildin", strue);
 
 	return 0;
 }
@@ -376,6 +384,7 @@ int hook_generate()
 	plugin_stat("Puller: ",                "/local/pcb/puller");
 	plugin_stat("Edif: ",                  "/local/pcb/edif");
 	plugin_stat("djopt: ",                 "/local/pcb/djopt");
+	plugin_stat("Mincut: ",                "/local/pcb/mincut");
 
 	if (manual_config)
 		printf("\n\n * NOTE: you may want to edit config.manual.h (user preferences) *\n");

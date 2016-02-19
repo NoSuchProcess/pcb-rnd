@@ -3,7 +3,6 @@ CLEANUP
 		- toporouter
 		- dbus
 		- gpmi
-		- mincut (through stubs?)
 	- move src/3rd/ one level up
 	- remove libstroke or move it in a plugin?
 	- warnings in util/

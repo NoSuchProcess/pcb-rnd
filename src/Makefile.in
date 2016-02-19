@@ -48,7 +48,6 @@ put /local/pcb/OBJS [@
 	polygon1.o
 	print.o
 	rats.o
-	rats_mincut.o
 	rats_patch.o
 	remove.o
 	report.o
@@ -60,6 +59,7 @@ put /local/pcb/OBJS [@
 	set.o
 	strflags.o
 	stub_edif.o
+	stub_mincut.o
 	stub_vendor.o
 	thermal.o
 	undo.o
@@ -71,8 +71,6 @@ put /local/pcb/OBJS [@
 	hid/common/extents.o
 	hid/common/draw_helpers.o
 	hid/common/hid_resource.o
-	pcb-mincut/graph.o
-	pcb-mincut/solve.o
 	res_parse.o
 	res_lex.o
 	portability.o
@@ -128,6 +126,8 @@ include {../src_plugins/vendordrill/Makefile.mod}
 include {../src_plugins/puller/Makefile.mod}
 include {../src_plugins/edif/Makefile.mod}
 include {../src_plugins/djopt/Makefile.mod}
+include {../src_plugins/mincut/Makefile.mod}
+
 
 if /target/libs/script/gpmi/presents then
 include {Makefile.in.mod/gpmi_plugin}

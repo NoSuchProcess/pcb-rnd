@@ -55,7 +55,7 @@
 #include "search.h"
 #include "set.h"
 #include "undo.h"
-#include "rats_mincut.h"
+#include "stub_mincut.h"
 
 
 RCSID("$Id$");
@@ -343,7 +343,7 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
 			if (!pin->Spare) {
 				Message(_("Warning! Net \"%s\" is shorted to %s pin %s\n"),
 								&theNet->Name[2], UNKNOWN(NAMEONPCB_NAME(element)), UNKNOWN(pin->Number));
-				rat_found_short(pin, NULL, &theNet->Name[2]);
+				stub_rat_found_short(pin, NULL, &theNet->Name[2]);
 				continue;
 			}
 			newone = true;
@@ -360,7 +360,7 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
 				*menu = pin->Spare;
 				Message(_("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 								&theNet->Name[2], &((LibraryMenuTypePtr) (pin->Spare))->Name[2]);
-				rat_found_short(pin, NULL, &theNet->Name[2]);
+				stub_rat_found_short(pin, NULL, &theNet->Name[2]);
 			}
 		}
 	}
@@ -374,7 +374,7 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
 			if (!pad->Spare) {
 				Message(_("Warning! Net \"%s\" is shorted  to %s pad %s\n"),
 								&theNet->Name[2], UNKNOWN(NAMEONPCB_NAME(element)), UNKNOWN(pad->Number));
-				rat_found_short(NULL, pad, &theNet->Name[2]);
+				stub_rat_found_short(NULL, pad, &theNet->Name[2]);
 				continue;
 			}
 			newone = true;
@@ -391,7 +391,7 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
 				*menu = pad->Spare;
 				Message(_("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 								&theNet->Name[2], &((LibraryMenuTypePtr) (pad->Spare))->Name[2]);
-				rat_found_short(NULL, pad, &theNet->Name[2]);
+				stub_rat_found_short(NULL, pad, &theNet->Name[2]);
 			}
 		}
 	}
@@ -719,7 +719,7 @@ AddAllRats(bool SelectedOnly,
 		return (true);
 
 	if (Warned || changed) {
-		rat_proc_shorts();
+		stub_rat_proc_shorts();
 		Draw();
 	}
 

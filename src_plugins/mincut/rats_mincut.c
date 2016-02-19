@@ -25,14 +25,6 @@
  *
  */
 
-/* Change History:
- * Started 6/10/97
- * Added support for minimum length rat lines 6/13/97
- * rat lines to nearest line/via 8/29/98
- * support for netlist window 10/24/98
- */
-
-
 #include "config.h"
 
 #include <math.h>
@@ -409,3 +401,12 @@ void rat_proc_shorts(void)
 	}
 	shorts = NULL;
 }
+
+
+#include "stub_mincut.h"
+void hid_mincut_init(void)
+{
+	stub_rat_found_short = rat_found_short;
+	stub_rat_proc_shorts = rat_proc_shorts;
+}
+
