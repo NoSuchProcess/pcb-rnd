@@ -270,7 +270,6 @@ DISTCLEANFILES= pcbtest.sh gpcb-menu.h pcb-menu.h \
 	hid/nelma/nelma_lists.h \
 	hid/ps/ps_lists.h \
 	core_lists.h \
-	dbus-introspect.h \
 	gpcb-menu.res \
 	pcb-menu.res
 
