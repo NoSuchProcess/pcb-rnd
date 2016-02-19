@@ -53,6 +53,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-vendordrill",  "/local/pcb/vendordrill/buildin",  arg_true,      "$static link the vendor drill mapping plugin into the executable"},
 	{"plugin-vendordrill",   "/local/pcb/vendordrill/buildin",  arg_false,     "$the vendor drill mapping plugin is dynamic loadable"},
 
+	{"disable-puller",  "/local/pcb/puller/enable",   arg_false,     "$do not compile the puller"},
+	{"buildin-puller",  "/local/pcb/puller/buildin",  arg_true,      "$static link the puller plugin into the executable"},
+	{"plugin-puller",   "/local/pcb/puller/buildin",  arg_false,     "$the puller plugin is dynamic loadable"},
+
 	{NULL, NULL, NULL, NULL}
 };
 
@@ -126,6 +130,10 @@ int hook_postinit()
 	db_mkdir("/local/pcb/vendordrill");
 	put("/local/pcb/vendordrill/enable", strue);
 	put("/local/pcb/vendordrill/buildin", strue);
+
+	db_mkdir("/local/pcb/puller");
+	put("/local/pcb/puller/enable", strue);
+	put("/local/pcb/puller/buildin", strue);
 
 	return 0;
 }
@@ -349,6 +357,7 @@ int hook_generate()
 	plugin_stat("Autorouter: ",            "/local/pcb/autorouter");
 	plugin_stat("Autoplace: ",             "/local/pcb/autoplace");
 	plugin_stat("Vendor drill mapping: ",  "/local/pcb/vendordrill");
+	plugin_stat("Puller: ",                "/local/pcb/puller");
 
 	if (manual_config)
 		printf("\n\n * NOTE: you may want to edit config.manual.h (user preferences) *\n");

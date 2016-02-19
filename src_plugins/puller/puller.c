@@ -2389,3 +2389,9 @@ HID_Action puller_action_list[] = {
 };
 
 REGISTER_ACTIONS(puller_action_list)
+
+#include "dolists.h"
+void hid_puller_init(void)
+{
+	REGISTER_ACTIONS(puller_action_list)
+}
