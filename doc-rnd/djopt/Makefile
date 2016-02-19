@@ -31,7 +31,7 @@ conv: $(CASES)
 	rm $*.out.pcb.tmp
 
 .pcb.tbl:
-	echo '<tr><td>$*<td>'>>$(HTML)
+	echo '<tr><th>$*<td>'>>$(HTML)
 	cat $*.txt >>$(HTML)
 	echo '  <td><a href="$*.pcb"><img src="$*.png"></a>  <td><a href="$*.out.pcb"><img src="$*.out.png"></a>'>>$(HTML)
 
