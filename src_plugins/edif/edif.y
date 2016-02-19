@@ -4439,3 +4439,17 @@ static int yylex()
     }
   }
 }
+
+int ReadEdifNetlist(char *filename)
+{
+	Message(_("Importing edif netlist %s\n"), filename);
+	ParseEDIF(filename, NULL);
+
+	return 0;
+}
+
+#include "stub_edif.h"
+void hid_edif_init(void)
+{
+	stub_ReadEdifNetlist = ReadEdifNetlist;
+}

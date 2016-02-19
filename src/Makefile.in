@@ -60,6 +60,7 @@ put /local/pcb/OBJS [@
 	select.o
 	set.o
 	strflags.o
+	stub_edif.o
 	stub_vendor.o
 	thermal.o
 	undo.o
@@ -75,7 +76,6 @@ put /local/pcb/OBJS [@
 	pcb-mincut/solve.o
 	res_parse.o
 	res_lex.o
-	edif.o
 	portability.o
 	ds.o
 	libpcb_fp.o
@@ -87,7 +87,7 @@ put /local/pcb/OBJS [@
 @]
 
 # main: language generator files
-put /local/pcb/YACC {edif res_parse parse_y}
+put /local/pcb/YACC {res_parse parse_y}
 put /local/pcb/LEX  {res_lex parse_l}
 
 # main: action registrations
@@ -127,7 +127,7 @@ include {../src_plugins/autoroute/Makefile.mod}
 include {../src_plugins/autoplace/Makefile.mod}
 include {../src_plugins/vendordrill/Makefile.mod}
 include {../src_plugins/puller/Makefile.mod}
-
+include {../src_plugins/edif/Makefile.mod}
 
 if /target/libs/script/gpmi/presents then
 include {Makefile.in.mod/gpmi_plugin}

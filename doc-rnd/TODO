@@ -1,7 +1,6 @@
 CLEANUP
 	- move to plugin:
 		- toporouter
-		- edif
 		- djopt
 		- dbus
 		- gpmi

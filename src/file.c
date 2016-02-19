@@ -80,7 +80,6 @@
 #include "create.h"
 #include "crosshair.h"
 #include "data.h"
-#include "edif_parse.h"
 #include "error.h"
 #include "file.h"
 #include "hid.h"
@@ -98,6 +97,7 @@
 #include "libpcb_fp.h"
 #include "paths.h"
 #include "rats_patch.h"
+#include "stub_edif.h"
 
 
 RCSID("$Id$");
@@ -1338,8 +1338,6 @@ int ReadNetlist(char *filename)
 	return (0);
 }
 
-static int ReadEdifNetlist(char *filename);
-
 int ImportNetlist(char *filename)
 {
 	FILE *fp;
@@ -1365,13 +1363,5 @@ int ImportNetlist(char *filename)
 	if (!p)
 		return ReadNetlist(filename);
 	else
-		return ReadEdifNetlist(filename);
-}
-
-static int ReadEdifNetlist(char *filename)
-{
-	Message(_("Importing edif netlist %s\n"), filename);
-	ParseEDIF(filename, NULL);
-
-	return 0;
+		return stub_ReadEdifNetlist(filename);
 }
