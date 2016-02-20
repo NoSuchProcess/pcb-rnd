@@ -39,7 +39,6 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 
 	{"buildin-gpmi",      "/local/pcb/gpmi/buildin",      arg_true,      "$static link the gpmi plugin into the executable"},
 	{"plugin-gpmi",       "/local/pcb/gpmi/buildin",      arg_false,     "$the gpmi plugin is dynamic loadable"},
-	{"disable-toporouter","/local/pcb/toporouter/enable", arg_false,     "$do not compile the toporouter"},
 
 	{"disable-autorouter", "/local/pcb/autorouter/enable",   arg_false,     "$do not compile the autorouter"},
 	{"buildin-autorouter", "/local/pcb/autorouter/buildin",  arg_true,      "$static link the autorouter plugin into the executable"},
@@ -68,6 +67,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-mincut",  "/local/pcb/mincut/enable",   arg_false,     "$do not compile the mincut"},
 	{"buildin-mincut",  "/local/pcb/mincut/buildin",  arg_true,      "$static link the mincut plugin into the executable"},
 	{"plugin-mincut",   "/local/pcb/mincut/buildin",  arg_false,     "$the mincut plugin is dynamic loadable"},
+
+	{"disable-toporouter",  "/local/pcb/toporouter/enable",   arg_false,     "$do not compile the toporouter"},
+	{"buildin-toporouter",  "/local/pcb/toporouter/buildin",  arg_true,      "$static link the toporouter plugin into the executable"},
+	{"plugin-toporouter",   "/local/pcb/toporouter/buildin",  arg_false,     "$the toporouter plugin is dynamic loadable"},
 
 	{NULL, NULL, NULL, NULL}
 };
@@ -128,8 +131,6 @@ int hook_postinit()
 	put("/local/pcb/gpmi/buildin", strue);
 	put("/local/prefix", "/usr/local");
 
-	db_mkdir("/local/pcb/toporouter");
-	put("/local/pcb/toporouter/enable", strue);
 
 	db_mkdir("/local/pcb/autorouter");
 	put("/local/pcb/autorouter/enable", strue);
@@ -158,6 +159,10 @@ int hook_postinit()
 	db_mkdir("/local/pcb/mincut");
 	put("/local/pcb/mincut/enable", strue);
 	put("/local/pcb/mincut/buildin", strue);
+
+	db_mkdir("/local/pcb/toporouter");
+	put("/local/pcb/toporouter/enable", strue);
+	put("/local/pcb/toporouter/buildin", strue);
 
 	return 0;
 }
@@ -360,12 +365,6 @@ int hook_generate()
 	list_presents("GUI hids: batch", gui_list);
 	list_presents("Export hids: bom gerber lpr ps", exporter_list);
 
-	printf("Toporouter: ");
-	if (node_istrue("/local/pcb/toporouter/enable"))
-		printf("enabled\n");
-	else
-		printf("disabled\n");
-
 /* special case because the "presents" node */
 	printf("%-32s", "Scripting via GPMI: ");
 	if (node_istrue("libs/script/gpmi/presents")) {
@@ -379,6 +378,7 @@ int hook_generate()
 		printf("no\n");
 
 	plugin_stat("Autorouter: ",            "/local/pcb/autorouter");
+	plugin_stat("Toporouter: ",            "/local/pcb/toporouter");
 	plugin_stat("Autoplace: ",             "/local/pcb/autoplace");
 	plugin_stat("Vendor drill mapping: ",  "/local/pcb/vendordrill");
 	plugin_stat("Puller: ",                "/local/pcb/puller");

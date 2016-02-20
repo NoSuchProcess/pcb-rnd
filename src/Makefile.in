@@ -110,7 +110,6 @@ put /local/pcb/rules/uninstall {}
 
 include {Makefile.in.mod/gtk-gdk}
 include {Makefile.in.mod/lesstif}
-include {Makefile.in.mod/toporouter}
 include {Makefile.in.mod/batch}
 include {Makefile.in.mod/bom}
 include {Makefile.in.mod/ps}
@@ -128,6 +127,7 @@ include {../src_plugins/edif/Makefile.mod}
 include {../src_plugins/djopt/Makefile.mod}
 include {../src_plugins/mincut/Makefile.mod}
 include {../src_plugins/gpmi/Makefile.mod}
+include {../src_plugins/toporouter/Makefile.mod}
 
 append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags
 append /local/pcb/LIBS    /target/libs/sul/glib/ldflags

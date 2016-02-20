@@ -30,7 +30,7 @@
 #include <assert.h>
 #include "data.h"
 #include "macro.h"
-#include "autoroute.h"
+#include "../autoroute/autoroute.h"
 #include "box.h"
 #include "create.h"
 #include "draw.h"

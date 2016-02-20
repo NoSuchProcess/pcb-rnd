@@ -1,6 +1,0 @@
-if /local/pcb/toporouter/enable then
-append /local/pcb/OBJS    {toporouter.o}
-append /local/pcb/LIBS    {../src_3rd/gts/libgts.a}
-append /local/pcb/CFLAGS  {-I../src_3rd/gts}
-append /local/pcb/ACTION_REG_SRC  { toporouter.c }
-end
