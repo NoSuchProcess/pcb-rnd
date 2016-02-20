@@ -41,10 +41,10 @@ append /local/pcb/RULES  [@
 
 ### gtk-gdk
 
-hid/gtk/gtk_lists.h: ${LIBGTK_SRCS} Makefile
+hid/gtk/gtk_lists.h: $(LIBGTK_SRCS) Makefile
 	$(MKDIR_P) hid/gtk
 	true > hid/gtk/gtk_lists.h
-	(for f in ${LIBGTK_SRCS} ; do cat $$f ; done) | grep "^REGISTER" > hid/gtk/gtk_lists.h.tmp
+	(for f in $(LIBGTK_SRCS) ; do cat $$f ; done) | grep "^REGISTER" > hid/gtk/gtk_lists.h.tmp
 	mv hid/gtk/gtk_lists.h.tmp hid/gtk/gtk_lists.h
 
 @]
