@@ -1,27 +1,13 @@
-append /local/pcb/autorouter/enable {}
-append /local/pcb/autorouter/buildin {}
+append /local/pcb/autoroute/enable {}
+append /local/pcb/autoroute/buildin {}
 
-append /local/pcb/autorouter/OBJS [@ $(PLUGDIR)/autoroute/autoroute.o $(PLUGDIR)/autoroute/mtspace.o $(PLUGDIR)/autoroute/action.o @]
+put /local/pcb/mod {autoroute}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/autoroute/autoroute.o $(PLUGDIR)/autoroute/mtspace.o $(PLUGDIR)/autoroute/action.o @]
 
-if /local/pcb/autorouter/enable then
-	if /local/pcb/autorouter/buildin then
-		append /local/pcb/buildin_init    { extern void hid_autoroute_init(); hid_autoroute_init(); plugin_register("autoroute", "<autoroute>", NULL, 0); }
-		append /local/pcb/OBJS            /local/pcb/autorouter/OBJS
-		append /local/pcb/RULES [@
-
-mod_autoroute: all
-
-@]
-
+if /local/pcb/autoroute/enable then
+	if /local/pcb/autoroute/buildin then
+		include {Makefile.in.mod/Buildin}
 	else
-		append /local/pcb/all   [@ $(PLUGDIR)/autoroute/autoroute.so @]
-		append /local/pcb/RULES [@
-
-$(PLUGDIR)/autoroute/autoroute.so: @/local/pcb/autorouter/OBJS@
-	$(CC) $(LDFLAGS) -shared @cc/rdynamic@ -o $(PLUGDIR)/autoroute/autoroute.so @/local/pcb/autorouter/OBJS@
-
-mod_autoroute: $(PLUGDIR)/autoroute/autoroute.so
-
-@]
+		include {Makefile.in.mod/Plugin}
 	end
 end

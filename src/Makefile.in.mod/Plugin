@@ -1,0 +1,20 @@
+# tmpasm script for compiling a plugin_src/ module as a plugin
+# Requires variables before the include:
+#  /local/pcb/mod       basename of the module (e.g. autoplace)
+#  /local/pcb/mod/OBJS  full path of all object files
+
+append /local/pcb/all   [@ $(PLUGIDIR)/@/local/pcb/mod@.so @]
+
+append /local/pcb/RULES [@
+
+$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so: @/local/pcb/mod/OBJS@
+	$(CC) $(LDFLAGS) -shared @cc/rdynamic@ -o $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@
+
+mod_@/local/pcb/mod@: $(PLUGIDIR)/@/local/pcb/mod@.so
+
+
+$(PLUGIDIR)/@/local/pcb/mod@.so: $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so
+	$(MKDIR) $(PLUGIDIR)
+	$(CP) $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so $(PLUGIDIR)/@/local/pcb/mod@.so
+
+@]

@@ -1,0 +1,12 @@
+# tmpasm script for compiling a plugin_src/ module as a buildin
+# Requires variables before the include:
+#  /local/pcb/mod       basename of the module (e.g. autoplace)
+#  /local/pcb/mod/OBJS  full path of all object files
+
+append /local/pcb/buildin_init    [@ extern void hid_@/local/pcb/mod@_init(); hid_@/local/pcb/mod@_init(); plugin_register("@/local/pcb/mod@", "<@/local/pcb/mod@>", NULL, 0); @]
+append /local/pcb/OBJS            /local/pcb/mod/OBJS
+append /local/pcb/RULES [@
+
+mod_@/local/pcb/mod@: all
+
+@]

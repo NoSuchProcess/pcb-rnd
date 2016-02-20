@@ -79,16 +79,16 @@ static int ActionAutoRoute(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action autorouter_action_list[] = {
+HID_Action autoroute_action_list[] = {
 	{"AutoRoute", 0, ActionAutoRoute,
 	 autoroute_help, autoroute_syntax}
 	,
 };
 
-REGISTER_ACTIONS(autorouter_action_list)
+REGISTER_ACTIONS(autoroute_action_list)
 
 #include "dolists.h"
 void hid_autoroute_init(void)
 {
-	REGISTER_ACTIONS(autorouter_action_list)
+	REGISTER_ACTIONS(autoroute_action_list)
 }

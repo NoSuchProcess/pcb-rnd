@@ -48,16 +48,20 @@ $(PCB_GPMI)/gpmi_plugin/gpmi_buildin.a: FORCE
 @]
 
 	else
-		append /local/pcb/all   [@ $(PCB_GPMI)/gpmi_plugin/pcb_gpmi.so @]
+		append /local/pcb/all   [@ $(PLUGIDIR)/gpmi_plugin.so @]
 		append /local/pcb/RULES [@
 
-mod_pcb_gpmi: $(PCB_GPMI)/gpmi_plugin/pcb_gpmi.so
+mod_pcb_gpmi: $(PLUGIDIR)/gpmi_plugin.so
+
+$(PLUGIDIR)/gpmi_plugin.so: $(PCB_GPMI)/gpmi_plugin/gpmi_plugin.so
+	$(MKDIR) $(PLUGIDIR)
+	$(CP) $(PCB_GPMI)/gpmi_plugin/gpmi_plugin.so $(PLUGIDIR)/gpmi_plugin.so
 
 @]
 
 		append /local/pcb/RULES [@
 
-$(PCB_GPMI)/gpmi_plugin/pcb_gpmi.so: FORCE
+$(PCB_GPMI)/gpmi_plugin/gpmi_plugin.so: FORCE
 	cd $(PCB_GPMI)/gpmi_plugin && make all_plugin
 
 @]

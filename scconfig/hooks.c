@@ -40,9 +40,9 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-gpmi",      "/local/pcb/gpmi/buildin",      arg_true,      "$static link the gpmi plugin into the executable"},
 	{"plugin-gpmi",       "/local/pcb/gpmi/buildin",      arg_false,     "$the gpmi plugin is dynamic loadable"},
 
-	{"disable-autorouter", "/local/pcb/autorouter/enable",   arg_false,     "$do not compile the autorouter"},
-	{"buildin-autorouter", "/local/pcb/autorouter/buildin",  arg_true,      "$static link the autorouter plugin into the executable"},
-	{"plugin-autorouter",  "/local/pcb/autorouter/buildin",  arg_false,     "$the autorouter plugin is dynamic loadable"},
+	{"disable-autoroute", "/local/pcb/autoroute/enable",   arg_false,     "$do not compile the autorouter"},
+	{"buildin-autoroute", "/local/pcb/autoroute/buildin",  arg_true,      "$static link the autorouter plugin into the executable"},
+	{"plugin-autoroute",  "/local/pcb/autoroute/buildin",  arg_false,     "$the autorouter plugin is dynamic loadable"},
 
 	{"disable-autoplace",  "/local/pcb/autoplace/enable",   arg_false,     "$do not compile the autoplace"},
 	{"buildin-autoplace",  "/local/pcb/autoplace/buildin",  arg_true,      "$static link the autoplace plugin into the executable"},
@@ -132,9 +132,9 @@ int hook_postinit()
 	put("/local/prefix", "/usr/local");
 
 
-	db_mkdir("/local/pcb/autorouter");
-	put("/local/pcb/autorouter/enable", strue);
-	put("/local/pcb/autorouter/buildin", strue);
+	db_mkdir("/local/pcb/autoroute");
+	put("/local/pcb/autoroute/enable", strue);
+	put("/local/pcb/autoroute/buildin", strue);
 
 	db_mkdir("/local/pcb/autoplace");
 	put("/local/pcb/autoplace/enable", strue);
@@ -377,7 +377,7 @@ int hook_generate()
 	else
 		printf("no\n");
 
-	plugin_stat("Autorouter: ",            "/local/pcb/autorouter");
+	plugin_stat("Autorouter: ",            "/local/pcb/autoroute");
 	plugin_stat("Toporouter: ",            "/local/pcb/toporouter");
 	plugin_stat("Autoplace: ",             "/local/pcb/autoplace");
 	plugin_stat("Vendor drill mapping: ",  "/local/pcb/vendordrill");
