@@ -119,15 +119,15 @@ include {Makefile.in.mod/gcode}
 include {Makefile.in.mod/nelma}
 include {Makefile.in.mod/lpr}
 
-include {../src_plugins/autoroute/Makefile.mod}
-include {../src_plugins/autoplace/Makefile.mod}
-include {../src_plugins/vendordrill/Makefile.mod}
-include {../src_plugins/puller/Makefile.mod}
-include {../src_plugins/edif/Makefile.mod}
-include {../src_plugins/djopt/Makefile.mod}
-include {../src_plugins/mincut/Makefile.mod}
-include {../src_plugins/gpmi/Makefile.mod}
-include {../src_plugins/toporouter/Makefile.mod}
+include {../src_plugins/autoplace/Plug.tmpasm}
+include {../src_plugins/autoroute/Plug.tmpasm}
+include {../src_plugins/vendordrill/Plug.tmpasm}
+include {../src_plugins/puller/Plug.tmpasm}
+include {../src_plugins/edif/Plug.tmpasm}
+include {../src_plugins/djopt/Plug.tmpasm}
+include {../src_plugins/mincut/Plug.tmpasm}
+include {../src_plugins/gpmi/Plug.tmpasm}
+include {../src_plugins/toporouter/Plug.tmpasm}
 
 append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags
 append /local/pcb/LIBS    /target/libs/sul/glib/ldflags
