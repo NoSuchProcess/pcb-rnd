@@ -3,7 +3,7 @@ PCB_GPMI_ROOT=.
 all:
 	cd gpmi_plugin; make all
 
-include ../../Makefile.conf
+include ../../../Makefile.conf
 PLUGIN_DIR=$(LIBDIR)/plugins
 
 clean:

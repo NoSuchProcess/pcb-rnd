@@ -278,16 +278,16 @@ static int gpmi_config(void)
 	const char *gcfg = get("libs/script/gpmi/gpmi-config");
 	int generr = 0;
 
-	printf("Generating pcb-gpmi/Makefile.conf (%d)\n", generr |= tmpasm("../src/pcb-gpmi", "Makefile.config.in", "Makefile.config"));
+	printf("Generating pcb-gpmi/Makefile.conf (%d)\n", generr |= tmpasm("../src_plugins/gpmi/pcb-gpmi", "Makefile.config.in", "Makefile.config"));
 
 
 	printf("Configuring gpmi packages...\n");
-	tmp = str_concat("", "cd ../src/pcb-gpmi/gpmi_plugin/gpmi_pkg && ", gcfg, " --pkggrp && ./configure", NULL);
+	tmp = str_concat("", "cd ../src_plugins/gpmi/pcb-gpmi/gpmi_plugin/gpmi_pkg && ", gcfg, " --pkggrp && ./configure", NULL);
 	generr |= system(tmp);
 	free(tmp);
 
 	printf("Configuring gpmi plugin \"app\"\n");
-	tmp = str_concat("", "cd ../src/pcb-gpmi/gpmi_plugin && ", gcfg, " --app", NULL);
+	tmp = str_concat("", "cd ../src_plugins/gpmi//pcb-gpmi/gpmi_plugin && ", gcfg, " --app", NULL);
 	generr |= system(tmp);
 	free(tmp);
 
