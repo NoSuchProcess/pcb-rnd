@@ -1,0 +1,16 @@
+append /local/pcb/toporouter/enable {}
+append /local/pcb/toporouter/buildin {}
+
+put /local/pcb/mod {toporouter}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/toporouter/toporouter.o @]
+append /local/pcb/CFLAGS  {-I../src_3rd/gts}
+
+if /local/pcb/toporouter/enable then
+	if /local/pcb/toporouter/buildin then
+		append /local/pcb/LIBS            { ../src_3rd/gts/libgts.a }
+		include {Makefile.in.mod/Buildin}
+	else
+		append /local/pcb/toporouter/OBJS { ../src_3rd/gts/libgts.a }
+		include {Makefile.in.mod/Plugin}
+	end
+end
