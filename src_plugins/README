@@ -1,0 +1,8 @@
+This directory hosts feature plugins. Each subdirectory is a specific
+feature that can be selected to be a (static linked) building, a
+(dynamic linked) plugin or not compiled at all. The selection is made
+in ./configure.
+
+Some of the plugins depend on ../src_3rd and all of them depend on
+core (../src).
+
