@@ -1,7 +1,7 @@
 append /local/pcb/edif/enable {}
 append /local/pcb/edif/buildin {}
 
-append /local/pcb/edif/OBJS [@ ${PLUGDIR}/edif/edif.o @]
+append /local/pcb/edif/OBJS [@ $(PLUGDIR)/edif/edif.o @]
 append /local/pcb/YACC {edif}
 
 if /local/pcb/edif/enable then
@@ -15,13 +15,13 @@ mod_edif: all
 @]
 
 	else
-		append /local/pcb/all   [@ ${PLUGDIR}/edif/edif.so @]
+		append /local/pcb/all   [@ $(PLUGDIR)/edif/edif.so @]
 		append /local/pcb/RULES [@
 
-${PLUGDIR}/edif/edif.so: @/local/pcb/edif/OBJS@
-	$(CC) $(LDFLAGS) -shared @cc/rdynamic@ -o ${PLUGDIR}/edif/edif.so @/local/pcb/edif/OBJS@
+$(PLUGDIR)/edif/edif.so: @/local/pcb/edif/OBJS@
+	$(CC) $(LDFLAGS) -shared @cc/rdynamic@ -o $(PLUGDIR)/edif/edif.so @/local/pcb/edif/OBJS@
 
-mod_edif: ${PLUGDIR}/edif/edif.so
+mod_edif: $(PLUGDIR)/edif/edif.so
 
 @]
 	end

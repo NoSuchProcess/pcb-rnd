@@ -1,7 +1,7 @@
 append /local/pcb/autoplace/enable {}
 append /local/pcb/autoplace/buildin {}
 
-append /local/pcb/autoplace/OBJS [@ ${PLUGDIR}/autoplace/autoplace.o ${PLUGDIR}/autoplace/action.o @]
+append /local/pcb/autoplace/OBJS [@ $(PLUGDIR)/autoplace/autoplace.o $(PLUGDIR)/autoplace/action.o @]
 
 if /local/pcb/autoplace/enable then
 	if /local/pcb/autoplace/buildin then
@@ -14,13 +14,13 @@ mod_autoplace: all
 @]
 
 	else
-		append /local/pcb/all   [@ ${PLUGDIR}/autoplace/autoplace.so @]
+		append /local/pcb/all   [@ $(PLUGDIR)/autoplace/autoplace.so @]
 		append /local/pcb/RULES [@
 
-${PLUGDIR}/autoplace/autoplace.so: @/local/pcb/autoplace/OBJS@
-	$(CC) $(LDFLAGS) -shared @cc/rdynamic@ -o ${PLUGDIR}/autoplace/autoplace.so @/local/pcb/autoplace/OBJS@
+$(PLUGDIR)/autoplace/autoplace.so: @/local/pcb/autoplace/OBJS@
+	$(CC) $(LDFLAGS) -shared @cc/rdynamic@ -o $(PLUGDIR)/autoplace/autoplace.so @/local/pcb/autoplace/OBJS@
 
-mod_autoplace: ${PLUGDIR}/autoplace/autoplace.so
+mod_autoplace: $(PLUGDIR)/autoplace/autoplace.so
 
 @]
 	end

@@ -4,7 +4,7 @@ append /local/pcb/pcb_gpmi/buildin {}
 append /local/pcb/CLEANRULES  {clean_gpmi}
 
 append /local/pcb/TOPVARS [@
-PCB_GPMI=${PLUGDIR}/gpmi/pcb-gpmi
+PCB_GPMI=$(PLUGDIR)/gpmi/pcb-gpmi
 @]
 
 append /local/pcb/RULES [@
