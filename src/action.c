@@ -2504,72 +2504,6 @@ int ActionExecuteFile(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-/* ---------------------------------------------------------------- */
-static const char replacefootprint_syntax[] = "ReplaceFootprint()\n";
-
-static const char replacefootprint_help[] = "Replace the footprint of the selected components with the footprint specified.";
-
-static int ReplaceFootprint(int argc, char **argv, Coord x, Coord y)
-{
-	char *a[4];
-	char *fpname;
-	int found = 0;
-
-	/* check if we have elements selected and quit if not */
-	ELEMENT_LOOP(PCB->Data);
-	{
-		if (TEST_FLAG(SELECTEDFLAG, element)) {
-			found = 1;
-			break;
-		}
-	}
-	END_LOOP;
-
-	if (!(found)) {
-		Message("ReplaceFootprint works on selected elements, please select elements first!\n");
-		return 1;
-	}
-
-	/* fetch the name of the new footprint */
-	if (argc == 0) {
-		fpname = gui->prompt_for("Footprint name", "");
-		if (fpname == NULL) {
-			Message("No footprint name supplied\n");
-			return 1;
-		}
-	}
-	else
-		fpname = argv[0];
-
-	/* check if the footprint is available */
-	a[0] = fpname;
-	a[1] = NULL;
-	if (LoadFootprint(1, a, x, y) != 0) {
-		Message("Can't load footprint %s\n", fpname);
-		return 1;
-	}
-
-
-	/* action: replace selected elements */
-	ELEMENT_LOOP(PCB->Data);
-	{
-		if (TEST_FLAG(SELECTEDFLAG, element)) {
-			a[0] = fpname;
-			a[1] = element->Name[1].TextString;
-			a[2] = element->Name[2].TextString;
-			a[3] = NULL;
-			LoadFootprint(3, a, element->MarkX, element->MarkY);
-			CopyPastebufferToLayout(element->MarkX, element->MarkY);
-			rats_patch_append_optimize(PCB, RATP_CHANGE_ATTRIB, a[1], "footprint", fpname);
-			RemoveElement(element);
-		}
-	}
-	END_LOOP;
-
-	fprintf(stderr, "rp2\n");
-}
-
-
 /* --------------------------------------------------------------------------- */
 
 HID_Action action_action_list[] = {
@@ -2613,9 +2547,6 @@ HID_Action action_action_list[] = {
 	,
 	{"RouteStyle", 0, ActionRouteStyle,
 	 routestyle_help, routestyle_syntax}
-	,
-	{"ReplaceFootprint", 0, ReplaceFootprint,
-	 replacefootprint_help, replacefootprint_syntax}
 	,
 };
 

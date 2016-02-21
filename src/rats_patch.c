@@ -37,6 +37,16 @@
 #include "genht/hash.h"
 #include "create.h"
 
+/* for the actions */
+#include "config.h"
+#include "global.h"
+#include "data.h"
+#include "action.h"
+#include "error.h"
+#include "buffer.h"
+#include "remove.h"
+#include "copy.h"
+
 static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t * n, int do_free);
 
 void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2)
@@ -337,3 +347,123 @@ int rats_patch_fexport(PCBTypePtr pcb, FILE * f, int fmt_pcb)
 		}
 	}
 }
+
+/* ---------------------------------------------------------------- */
+static const char replacefootprint_syntax[] = "ReplaceFootprint()\n";
+
+static const char replacefootprint_help[] = "Replace the footprint of the selected components with the footprint specified.";
+
+static int ReplaceFootprint(int argc, char **argv, Coord x, Coord y)
+{
+	char *a[4];
+	char *fpname;
+	int found = 0;
+
+	/* check if we have elements selected and quit if not */
+	ELEMENT_LOOP(PCB->Data);
+	{
+		if (TEST_FLAG(SELECTEDFLAG, element)) {
+			found = 1;
+			break;
+		}
+	}
+	END_LOOP;
+
+	if (!(found)) {
+		Message("ReplaceFootprint works on selected elements, please select elements first!\n");
+		return 1;
+	}
+
+	/* fetch the name of the new footprint */
+	if (argc == 0) {
+		fpname = gui->prompt_for("Footprint name", "");
+		if (fpname == NULL) {
+			Message("No footprint name supplied\n");
+			return 1;
+		}
+	}
+	else
+		fpname = argv[0];
+
+	/* check if the footprint is available */
+	a[0] = fpname;
+	a[1] = NULL;
+	if (LoadFootprint(1, a, x, y) != 0) {
+		Message("Can't load footprint %s\n", fpname);
+		return 1;
+	}
+
+
+	/* action: replace selected elements */
+	ELEMENT_LOOP(PCB->Data);
+	{
+		if (TEST_FLAG(SELECTEDFLAG, element)) {
+			a[0] = fpname;
+			a[1] = element->Name[1].TextString;
+			a[2] = element->Name[2].TextString;
+			a[3] = NULL;
+			LoadFootprint(3, a, element->MarkX, element->MarkY);
+			CopyPastebufferToLayout(element->MarkX, element->MarkY);
+			rats_patch_append_optimize(PCB, RATP_CHANGE_ATTRIB, a[1], "footprint", fpname);
+			RemoveElement(element);
+		}
+	}
+	END_LOOP;
+}
+
+static const char savepatch_syntax[] = "SavePatch(filename)";
+
+static const char savepatch_help[] = "Save netlist patch for back annotation.";
+
+/* %start-doc actions SavePatch
+Save netlist patch for back annotation.
+%end-doc */
+static int SavePatch(int argc, char **argv, Coord x, Coord y)
+{
+	const char *fn;
+	FILE *f;
+
+	if (argc < 1) {
+		char *default_file;
+
+		if (PCB->Filename != NULL) {
+			char *end;
+			int len;
+			len = strlen(PCB->Filename);
+			default_file = malloc(len + 8);
+			memcpy(default_file, PCB->Filename, len + 1);
+			end = strrchr(default_file, '.');
+			if ((end == NULL) || (strcasecmp(end, ".pcb") != 0))
+				end = default_file + len;
+			strcpy(end, ".bap");
+		}
+		else
+			default_file = strdup("unnamed.bap");
+
+		fn = gui->fileselect(_("Save netlist patch as ..."),
+												 _("Choose a file to save netlist patch to\n"
+													 "for back annotation\n"), default_file, ".bap", "patch", 0);
+
+		free(default_file);
+	}
+	else
+		fn = argv[0];
+	f = fopen(fn, "w");
+	if (f == NULL) {
+		Message("Can't open netlist patch file %s for writing\n", fn);
+		return 1;
+	}
+	rats_patch_fexport(PCB, f, 0);
+	fclose(f);
+	return 0;
+}
+
+HID_Action rats_patch_action_list[] = {
+	{"ReplaceFootprint", 0, ReplaceFootprint,
+	 replacefootprint_help, replacefootprint_syntax}
+	,
+	{"SavePatch", 0, SavePatch,
+	 savepatch_help, savepatch_syntax}
+};
+
+REGISTER_ACTIONS(rats_patch_action_list)
