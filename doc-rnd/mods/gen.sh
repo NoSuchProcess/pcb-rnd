@@ -36,10 +36,10 @@ do
 
 			END {
 				st = DB["state"]
-				if (st ~ "works")
-					clr = "bgcolor=\"green\""
-				else if (st ~ "partial")
+				if (st ~ "partial")
 					clr = "bgcolor=\"yellow\""
+				else if (st ~ "works")
+					clr = "bgcolor=\"lightgreen\""
 				else if ((st ~ "fail") || (st ~ "disable"))
 					clr = "bgcolor=\"red\""
 
