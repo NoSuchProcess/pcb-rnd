@@ -181,7 +181,6 @@ static BoxType StrokeBox;
  * some local routines
  */
 static void AdjustAttachedBox(void);
-static void ClearWarnings(void);
 #ifdef HAVE_LIBSTROKE
 static void FinishStroke(void);
 extern void stroke_init(void);
@@ -292,7 +291,7 @@ void FinishStroke(void)
 /* ---------------------------------------------------------------------------
  * Clear warning color from pins/pads
  */
-static void ClearWarnings()
+void ClearWarnings()
 {
 	Settings.RatWarn = false;
 	ALLPIN_LOOP(PCB->Data);
@@ -1536,74 +1535,6 @@ static int ActionQuit(int argc, char **argv, Coord x, Coord y)
 	if (!PCB->Changed || gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
 		QuitApplication();
 	return 1;
-}
-
-/* --------------------------------------------------------------------------- */
-
-static const char connection_syntax[] = "Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)";
-
-static const char connection_help[] = "Searches connections of the object at the cursor position.";
-
-/* %start-doc actions Connection
-
-Connections found with this action will be highlighted in the
-``connected-color'' color and will have the ``found'' flag set.
-
-@table @code
-
-@item Find
-The net under the cursor is ``found''.
-
-@item ResetLinesAndPolygons
-Any ``found'' lines and polygons are marked ``not found''.
-
-@item ResetPinsAndVias
-Any ``found'' pins and vias are marked ``not found''.
-
-@item Reset
-All ``found'' objects are marked ``not found''.
-
-@end table
-
-%end-doc */
-
-static int ActionConnection(int argc, char **argv, Coord x, Coord y)
-{
-	char *function = ARG(0);
-	if (function) {
-		switch (GetFunctionID(function)) {
-		case F_Find:
-			{
-				gui->get_coords(_("Click on a connection"), &x, &y);
-				LookupConnection(x, y, true, 1, FOUNDFLAG);
-				break;
-			}
-
-		case F_ResetLinesAndPolygons:
-			if (ResetFoundLinesAndPolygons(true)) {
-				IncrementUndoSerialNumber();
-				Draw();
-			}
-			break;
-
-		case F_ResetPinsViasAndPads:
-			if (ResetFoundPinsViasAndPads(true)) {
-				IncrementUndoSerialNumber();
-				Draw();
-			}
-			break;
-
-		case F_Reset:
-			if (ResetConnections(true)) {
-				IncrementUndoSerialNumber();
-				Draw();
-			}
-			break;
-		}
-		return 0;
-	}
-
-	AFAIL(connection);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -2903,77 +2834,6 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char addrats_syntax[] = "AddRats(AllRats|SelectedRats|Close)";
-
-static const char addrats_help[] = "Add one or more rat lines to the board.";
-
-/* %start-doc actions AddRats
-
-@table @code
-
-@item AllRats
-Create rat lines for all loaded nets that aren't already connected on
-with copper.
-
-@item SelectedRats
-Similarly, but only add rat lines for nets connected to selected pins
-and pads.
-
-@item Close
-Selects the shortest unselected rat on the board.
-
-@end table
-
-%end-doc */
-
-static int ActionAddRats(int argc, char **argv, Coord x, Coord y)
-{
-	char *function = ARG(0);
-	RatTypePtr shorty;
-	float len, small;
-
-	if (function) {
-		if (Settings.RatWarn)
-			ClearWarnings();
-		switch (GetFunctionID(function)) {
-		case F_AllRats:
-			if (AddAllRats(false, NULL))
-				SetChangedFlag(true);
-			break;
-		case F_SelectedRats:
-		case F_Selected:
-			if (AddAllRats(true, NULL))
-				SetChangedFlag(true);
-			break;
-		case F_Close:
-			small = SQUARE(MAX_COORD);
-			shorty = NULL;
-			RAT_LOOP(PCB->Data);
-			{
-				if (TEST_FLAG(SELECTEDFLAG, line))
-					continue;
-				len = SQUARE(line->Point1.X - line->Point2.X) + SQUARE(line->Point1.Y - line->Point2.Y);
-				if (len < small) {
-					small = len;
-					shorty = line;
-				}
-			}
-			END_LOOP;
-			if (shorty) {
-				AddObjectToFlagUndoList(RATLINE_TYPE, shorty, shorty, shorty);
-				SET_FLAG(SELECTEDFLAG, shorty);
-				DrawRat(shorty);
-				Draw();
-				CenterDisplay((shorty->Point2.X + shorty->Point1.X) / 2, (shorty->Point2.Y + shorty->Point1.Y) / 2);
-			}
-			break;
-		}
-	}
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
 static const char delete_syntax[] = "Delete(Object|Selected)\n" "Delete(AllRats|SelectedRats)";
 
 static const char delete_help[] = "Delete stuff.";
@@ -3015,37 +2875,6 @@ static int ActionDelete(int argc, char **argv, Coord x, Coord y)
 		break;
 	}
 
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
-static const char deleterats_syntax[] = "DeleteRats(AllRats|Selected|SelectedRats)";
-
-static const char deleterats_help[] = "Delete rat lines.";
-
-/* %start-doc actions DeleteRats
-
-%end-doc */
-
-static int ActionDeleteRats(int argc, char **argv, Coord x, Coord y)
-{
-	char *function = ARG(0);
-	if (function) {
-		if (Settings.RatWarn)
-			ClearWarnings();
-		switch (GetFunctionID(function)) {
-		case F_AllRats:
-			if (DeleteRats(false))
-				SetChangedFlag(true);
-			break;
-		case F_SelectedRats:
-		case F_Selected:
-			if (DeleteRats(true))
-				SetChangedFlag(true);
-			break;
-		}
-	}
 	return 0;
 }
 
@@ -5330,20 +5159,11 @@ static int ReplaceFootprint(int argc, char **argv, Coord x, Coord y)
 /* --------------------------------------------------------------------------- */
 
 HID_Action action_action_list[] = {
-	{"AddRats", 0, ActionAddRats,
-	 addrats_help, addrats_syntax}
-	,
 	{"Attributes", 0, ActionAttributes,
 	 attributes_help, attributes_syntax}
 	,
-	{"Connection", 0, ActionConnection,
-	 connection_help, connection_syntax}
-	,
 	{"Delete", 0, ActionDelete,
 	 delete_help, delete_syntax}
-	,
-	{"DeleteRats", 0, ActionDeleteRats,
-	 deleterats_help, deleterats_syntax}
 	,
 	{"DisperseElements", 0, ActionDisperseElements,
 	 disperseelements_help, disperseelements_syntax}

@@ -79,6 +79,9 @@ REGISTER_ACTIONS(lesstif_dialog_action_list)
 REGISTER_ACTIONS(lesstif_netlist_action_list)
 
 }
+/* rats_act.c () */
+REGISTER_ACTIONS(rats_action_list)
+
 /* undo_act.c () */
 REGISTER_ACTIONS(undo_action_list)
 

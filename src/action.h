@@ -66,6 +66,7 @@ extern LayerTypePtr lastLayer;
 void NotifyLine(void);
 void NotifyBlock(void);
 void NotifyMode(void);
+void ClearWarnings(void);
 
 typedef struct {
 	Coord X, Y;
