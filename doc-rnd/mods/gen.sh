@@ -36,7 +36,7 @@ do
 
 			END {
 				st = DB["state"]
-				if (st == "works")
+				if (st ~ "works")
 					clr = "bgcolor=\"green\""
 				else if (st ~ "partial")
 					clr = "bgcolor=\"yellow\""
