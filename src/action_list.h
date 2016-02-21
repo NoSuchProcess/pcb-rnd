@@ -8,6 +8,9 @@
 /* hid/png (export) */
 REGISTER_ATTRIBUTES(png_attribute_list)
 
+/* find_act.c () */
+REGISTER_ACTIONS(find_action_list)
+
 /* move.c () */
 REGISTER_ACTIONS(move_action_list)
 
