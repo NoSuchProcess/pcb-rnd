@@ -15,6 +15,7 @@ put /local/pcb/OBJS [@
 	action_funchash.o
 	buffer.o
 	change.o
+	change_act.o
 	clip.o
 	command.o
 	compat.o
@@ -90,8 +91,8 @@ put /local/pcb/LEX  {res_lex parse_l}
 
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
-	action.c buffer.c command.c flags.c main.c misc.c move.c netlist.c
-	report.c
+	action.c buffer.c change_act.c command.c flags.c main.c misc.c
+	move.c netlist.c report.c
 }
 
 #---- modules ----#

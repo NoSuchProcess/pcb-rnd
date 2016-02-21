@@ -55,4 +55,11 @@ F_END
 
 #include "action_funchash.h"
 
+#define ARG(n) (argc > (n) ? argv[n] : NULL)
+
+int get_style_size(int funcid, Coord * out, int type, int size_id);
+
+extern int defer_updates;
+extern int defer_needs_update;
+
 #endif

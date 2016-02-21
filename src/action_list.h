@@ -17,6 +17,9 @@ REGISTER_ATTRIBUTES(main_attribute_list)
 /* command.c () */
 REGISTER_ACTIONS(command_action_list)
 
+/* change_act.c () */
+REGISTER_ACTIONS(change_action_list)
+
 /* action.c () */
 REGISTER_ACTIONS(action_action_list)
 

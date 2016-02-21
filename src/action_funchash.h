@@ -31,5 +31,4 @@ typedef struct {								/* used to identify subfunctions */
 } FunctionType, *FunctionTypePtr;
 
 /* Convert function name to integer function id */
-int GetFunctionID(String Ident);
-
+FunctionID GetFunctionID(const char *Ident);

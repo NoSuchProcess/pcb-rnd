@@ -39,7 +39,7 @@ static FunctionType Functions[] = {
 static char function_hash[HSIZE];
 static int hash_initted = 0;
 
-static int hashfunc(String s)
+static int hashfunc(const char *s)
 {
 	int i = 0;
 	while (*s) {
@@ -51,7 +51,7 @@ static int hashfunc(String s)
 	return i;
 }
 
-int GetFunctionID(String Ident)
+FunctionID GetFunctionID(const char *Ident)
 {
 	int i, h;
 
