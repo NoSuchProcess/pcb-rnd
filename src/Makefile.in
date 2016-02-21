@@ -65,6 +65,7 @@ put /local/pcb/OBJS [@
 	stub_vendor.o
 	thermal.o
 	undo.o
+	undo_act.o
 	vector.o
 	hid/common/actions.o
 	hid/common/flags.o
@@ -92,7 +93,7 @@ put /local/pcb/LEX  {res_lex parse_l}
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
 	action.c buffer.c change_act.c command.c flags.c main.c misc.c
-	move.c netlist.c report.c
+	move.c netlist.c report.c undo_act.c
 }
 
 #---- modules ----#
