@@ -2047,56 +2047,6 @@ static int ActionMinClearGap(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
-
-static const char morphpolygon_syntax[] = "MorphPolygon(Object|Selected)";
-
-static const char morphpolygon_help[] = "Converts dead polygon islands into separate polygons.";
-
-/* %start-doc actions MorphPolygon 
-
-If a polygon is divided into unconnected "islands", you can use
-this command to convert the otherwise disappeared islands into
-separate polygons. Be sure the cursor is over a portion of the
-polygon that remains visible. Very small islands that may flake
-off are automatically deleted.
-
-%end-doc */
-
-static int ActionMorphPolygon(int argc, char **argv, Coord x, Coord y)
-{
-	char *function = ARG(0);
-	if (function) {
-		switch (GetFunctionID(function)) {
-		case F_Object:
-			{
-				int type;
-				void *ptr1, *ptr2, *ptr3;
-
-				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, POLYGON_TYPE, &ptr1, &ptr2, &ptr3)) != NO_TYPE) {
-					MorphPolygon((LayerType *) ptr1, (PolygonType *) ptr3);
-					Draw();
-					IncrementUndoSerialNumber();
-				}
-				break;
-			}
-		case F_Selected:
-		case F_SelectedObjects:
-			ALLPOLYGON_LOOP(PCB->Data);
-			{
-				if (TEST_FLAG(SELECTEDFLAG, polygon))
-					MorphPolygon(layer, polygon);
-			}
-			ENDALL_LOOP;
-			Draw();
-			IncrementUndoSerialNumber();
-			break;
-		}
-	}
-	return 0;
-}
-
 /* ---------------------------------------------------------------------------
  * no operation, just for testing purposes
  * syntax: Bell(volume)
@@ -2295,51 +2245,6 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char polygon_syntax[] = "Polygon(Close|PreviousPoint)";
-
-static const char polygon_help[] = "Some polygon related stuff.";
-
-/* %start-doc actions Polygon
-
-Polygons need a special action routine to make life easier.
-
-@table @code
-
-@item Close
-Creates the final segment of the polygon.  This may fail if clipping
-to 45 degree lines is switched on, in which case a warning is issued.
-
-@item PreviousPoint
-Resets the newly entered corner to the previous one. The Undo action
-will call Polygon(PreviousPoint) when appropriate to do so.
-
-@end table
-
-%end-doc */
-
-static int ActionPolygon(int argc, char **argv, Coord x, Coord y)
-{
-	char *function = ARG(0);
-	if (function && Settings.Mode == POLYGON_MODE) {
-		notify_crosshair_change(false);
-		switch (GetFunctionID(function)) {
-			/* close open polygon if possible */
-		case F_Close:
-			ClosePolygon();
-			break;
-
-			/* go back to the previous point */
-		case F_PreviousPoint:
-			GoToPreviousPoint();
-			break;
-		}
-		notify_crosshair_change(true);
-	}
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
 static const char routestyle_syntax[] = "RouteStyle(1|2|3|4)";
 
 static const char routestyle_help[] = "Copies the indicated routing style into the current sizes.";
@@ -2525,9 +2430,6 @@ HID_Action action_action_list[] = {
 	{"MinClearGap", 0, ActionMinClearGap,
 	 mincleargap_help, mincleargap_syntax}
 	,
-	{"MorphPolygon", 0, ActionMorphPolygon,
-	 morphpolygon_help, morphpolygon_syntax}
-	,
 	{"PasteBuffer", 0, ActionPasteBuffer,
 	 pastebuffer_help, pastebuffer_syntax}
 	,
@@ -2541,9 +2443,6 @@ HID_Action action_action_list[] = {
 	,
 	{"SetSame", N_("Select item to use attributes from"), ActionSetSame,
 	 setsame_help, setsame_syntax}
-	,
-	{"Polygon", 0, ActionPolygon,
-	 polygon_help, polygon_syntax}
 	,
 	{"RouteStyle", 0, ActionRouteStyle,
 	 routestyle_help, routestyle_syntax}

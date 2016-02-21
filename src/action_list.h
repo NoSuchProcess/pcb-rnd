@@ -57,6 +57,9 @@ REGISTER_ACTIONS(gui_action_list)
 /* report.c () */
 REGISTER_ACTIONS(report_action_list)
 
+/* polygon_act.c () */
+REGISTER_ACTIONS(polygon_action_list)
+
 /* netlist.c () */
 REGISTER_ACTIONS(netlist_action_list)
 
