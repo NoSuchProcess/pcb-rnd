@@ -1727,106 +1727,6 @@ void ActionBell(char *volume)
 
 /* --------------------------------------------------------------------------- */
 
-static const char routestyle_syntax[] = "RouteStyle(1|2|3|4)";
-
-static const char routestyle_help[] = "Copies the indicated routing style into the current sizes.";
-
-/* %start-doc actions RouteStyle
-
-%end-doc */
-
-static int ActionRouteStyle(int argc, char **argv, Coord x, Coord y)
-{
-	char *str = ARG(0);
-	RouteStyleType *rts;
-	int number;
-
-	if (str) {
-		number = atoi(str);
-		if (number > 0 && number <= NUM_STYLES) {
-			rts = &PCB->RouteStyle[number - 1];
-			SetLineSize(rts->Thick);
-			SetViaSize(rts->Diameter, true);
-			SetViaDrillingHole(rts->Hole, true);
-			SetKeepawayWidth(rts->Keepaway);
-			hid_action("RouteStylesChanged");
-		}
-	}
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
-static const char setsame_syntax[] = "SetSame()";
-
-static const char setsame_help[] = "Sets current layer and sizes to match indicated item.";
-
-/* %start-doc actions SetSame
-
-When invoked over any line, arc, polygon, or via, this changes the
-current layer to be the layer that item is on, and changes the current
-sizes (thickness, keepaway, drill, etc) according to that item.
-
-%end-doc */
-
-static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
-{
-	void *ptr1, *ptr2, *ptr3;
-	int type;
-	LayerTypePtr layer = CURRENT;
-
-	type = SearchScreen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
-/* set layer current and size from line or arc */
-	switch (type) {
-	case LINE_TYPE:
-		notify_crosshair_change(false);
-		Settings.LineThickness = ((LineTypePtr) ptr2)->Thickness;
-		Settings.Keepaway = ((LineTypePtr) ptr2)->Clearance / 2;
-		layer = (LayerTypePtr) ptr1;
-		if (Settings.Mode != LINE_MODE)
-			SetMode(LINE_MODE);
-		notify_crosshair_change(true);
-		hid_action("RouteStylesChanged");
-		break;
-
-	case ARC_TYPE:
-		notify_crosshair_change(false);
-		Settings.LineThickness = ((ArcTypePtr) ptr2)->Thickness;
-		Settings.Keepaway = ((ArcTypePtr) ptr2)->Clearance / 2;
-		layer = (LayerTypePtr) ptr1;
-		if (Settings.Mode != ARC_MODE)
-			SetMode(ARC_MODE);
-		notify_crosshair_change(true);
-		hid_action("RouteStylesChanged");
-		break;
-
-	case POLYGON_TYPE:
-		layer = (LayerTypePtr) ptr1;
-		break;
-
-	case VIA_TYPE:
-		notify_crosshair_change(false);
-		Settings.ViaThickness = ((PinTypePtr) ptr2)->Thickness;
-		Settings.ViaDrillingHole = ((PinTypePtr) ptr2)->DrillingHole;
-		Settings.Keepaway = ((PinTypePtr) ptr2)->Clearance / 2;
-		if (Settings.Mode != VIA_MODE)
-			SetMode(VIA_MODE);
-		notify_crosshair_change(true);
-		hid_action("RouteStylesChanged");
-		break;
-
-	default:
-		return 1;
-	}
-	if (layer != CURRENT) {
-		ChangeGroupVisibility(GetLayerNumber(PCB->Data, layer), true, true);
-		Redraw();
-	}
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
 static const char executefile_syntax[] = "ExecuteFile(filename)";
 
 static const char executefile_help[] = "Run actions from the given file.";
@@ -1906,14 +1806,8 @@ HID_Action action_action_list[] = {
 #ifdef BA_TODO
 	{"Renumber", 0, ActionRenumber,
 	 renumber_help, renumber_syntax}
-	,
+,
 #endif
-	{"SetSame", N_("Select item to use attributes from"), ActionSetSame,
-	 setsame_help, setsame_syntax}
-	,
-	{"RouteStyle", 0, ActionRouteStyle,
-	 routestyle_help, routestyle_syntax}
-	,
 };
 
 REGISTER_ACTIONS(action_action_list)
