@@ -2820,15 +2820,6 @@ static int ActionRemoveSelected(int argc, char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
-static int ActionPSCalib(int argc, char **argv, Coord x, Coord y)
-{
-	HID *ps = hid_find_exporter("ps");
-	ps->calibrate(0.0, 0.0);
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
 static ElementType *element_cache = NULL;
 
 static ElementType *find_element_by_refdes(char *refdes)
@@ -3362,8 +3353,6 @@ HID_Action action_action_list[] = {
 	,
 	{"MoveToCurrentLayer", 0, ActionMoveToCurrentLayer,
 	 movetocurrentlayer_help, movetocurrentlayer_syntax}
-	,
-	{"pscalib", 0, ActionPSCalib}
 	,
 	{"ElementList", 0, ActionElementList,
 	 elementlist_help, elementlist_syntax}

@@ -1537,10 +1537,22 @@ static void ps_set_crosshair(int x, int y, int action)
 {
 }
 
+static int ActionPSCalib(int argc, char **argv, Coord x, Coord y)
+{
+	ps_calibrate(0.0, 0.0);
+	return 0;
+}
+
+HID_Action hidps_action_list[] = {
+	{"pscalib", 0, ActionPSCalib}
+};
+
+REGISTER_ACTIONS(hidps_action_list)
+
+
 #include "dolists.h"
 
 HID ps_hid;
-
 void ps_ps_init(HID * hid)
 {
 	hid->get_export_options = ps_get_export_options;
@@ -1564,6 +1576,8 @@ void ps_ps_init(HID * hid)
 	hid->fill_rect = ps_fill_rect;
 	hid->calibrate = ps_calibrate;
 	hid->set_crosshair = ps_set_crosshair;
+
+	REGISTER_ACTIONS(hidps_action_list)
 }
 
 void hid_ps_init()
