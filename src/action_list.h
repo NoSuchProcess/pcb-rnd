@@ -91,6 +91,9 @@ REGISTER_ACTIONS(lesstif_netlist_action_list)
 /* rats_act.c () */
 REGISTER_ACTIONS(rats_action_list)
 
+/* plugins.c () */
+REGISTER_ACTIONS(plugins_action_list)
+
 /* undo_act.c () */
 REGISTER_ACTIONS(undo_action_list)
 

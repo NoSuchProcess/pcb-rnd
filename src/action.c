@@ -3233,59 +3233,6 @@ static int ActionAttributes(int argc, char **argv, Coord x, Coord y)
 }
 
 /* ---------------------------------------------------------------- */
-static const char manageplugins_syntax[] = "ManagePlugins()\n";
-
-static const char manageplugins_help[] = "Manage plugins dialog.";
-
-static int ManagePlugins(int argc, char **argv, Coord x, Coord y)
-{
-	plugin_info_t *i;
-	int nump = 0, numb = 0;
-	DynamicStringType str;
-
-	memset(&str, 0, sizeof(str));
-
-	for (i = plugins; i != NULL; i = i->next)
-		if (i->dynamic)
-			nump++;
-		else
-			numb++;
-
-	DSAddString(&str, "Plugins loaded:\n");
-	if (nump > 0) {
-		for (i = plugins; i != NULL; i = i->next) {
-			if (i->dynamic) {
-				DSAddCharacter(&str, ' ');
-				DSAddString(&str, i->name);
-				DSAddCharacter(&str, ' ');
-				DSAddString(&str, i->path);
-				DSAddCharacter(&str, '\n');
-			}
-		}
-	}
-	else
-		DSAddString(&str, " (none)\n");
-
-	DSAddString(&str, "\n\nBuildins:\n");
-	if (numb > 0) {
-		for (i = plugins; i != NULL; i = i->next) {
-			if (!i->dynamic) {
-				DSAddCharacter(&str, ' ');
-				DSAddString(&str, i->name);
-				DSAddCharacter(&str, '\n');
-			}
-		}
-	}
-	else
-		DSAddString(&str, " (none)\n");
-
-	DSAddString(&str, "\n\nNOTE: this is the alpha version, can only list plugins/buildins\n");
-	gui->report_dialog("Manage plugins", str.Data);
-	free(str.Data);
-	return 0;
-}
-
-/* ---------------------------------------------------------------- */
 static const char replacefootprint_syntax[] = "ReplaceFootprint()\n";
 
 static const char replacefootprint_help[] = "Replace the footprint of the selected components with the footprint specified.";
@@ -3423,9 +3370,6 @@ HID_Action action_action_list[] = {
 	,
 	{"ElementSetAttr", 0, ActionElementSetAttr,
 	 elementsetattr_help, elementsetattr_syntax}
-	,
-	{"ManagePlugins", 0, ManagePlugins,
-	 manageplugins_help, manageplugins_syntax}
 	,
 	{"ReplaceFootprint", 0, ReplaceFootprint,
 	 replacefootprint_help, replacefootprint_syntax}
