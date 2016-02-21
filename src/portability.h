@@ -29,3 +29,12 @@ char *ExpandFilename(char *dirname, char *filename);
 int pcb_mkdir(const char *path, int mode);
 #endif
 #endif
+
+/* for access(), fork() and friends */
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+int pcb_spawnvp(char **argv);
+char *tempfile_name_new(char *name);
+int tempfile_unlink(char *name);

@@ -14,6 +14,9 @@ REGISTER_ACTIONS(move_action_list)
 /* select_act.c () */
 REGISTER_ACTIONS(select_action_list)
 
+/* file_act.c () */
+REGISTER_ACTIONS(file_action_list)
+
 /* main.c () */
 REGISTER_ATTRIBUTES(main_attribute_list)
 

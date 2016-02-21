@@ -68,19 +68,11 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "rats_patch.h"
+#include "portability.h"
 
 #include <assert.h>
 #include <stdlib.h>							/* rand() */
 
-
-/* for fork() and friends */
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
-#ifdef HAVE_SYS_WAIT_H
-#include <sys/wait.h>
-#endif
 
 /* --------------------------------------------------------------------------- */
 
@@ -1510,31 +1502,6 @@ void EventMoveCrosshair(int ev_x, int ev_y)
 		AdjustAttachedObjects();
 		notify_crosshair_change(true);
 	}
-}
-
-/* --------------------------------------------------------------------------- */
-
-static const char quit_syntax[] = "Quit()";
-
-static const char quit_help[] = "Quits the application after confirming.";
-
-/* %start-doc actions Quit
-
-If you have unsaved changes, you will be prompted to confirm (or
-save) before quitting.
-
-%end-doc */
-
-static int ActionQuit(int argc, char **argv, Coord x, Coord y)
-{
-	char *force = ARG(0);
-	if (force && strcasecmp(force, "force") == 0) {
-		PCB->Changed = 0;
-		exit(0);
-	}
-	if (!PCB->Changed || gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
-		QuitApplication();
-	return 1;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -3255,274 +3222,6 @@ static int ActionToggleHideName(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
-
-static const char saveto_syntax[] =
-	"SaveTo(Layout|LayoutAs,filename)\n"
-	"SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)\n" "SaveTo(PasteBuffer,filename)";
-
-static const char saveto_help[] = "Saves data to a file.";
-
-/* %start-doc actions SaveTo
-
-@table @code
-
-@item Layout
-Saves the current layout.
-
-@item LayoutAs
-Saves the current layout, and remembers the filename used.
-
-@item AllConnections
-Save all connections to a file.
-
-@item AllUnusedPins
-List all unused pins to a file.
-
-@item ElementConnections
-Save connections to the element at the cursor to a file.
-
-@item PasteBuffer
-Save the content of the active Buffer to a file. This is the graphical way to create a footprint.
-
-@end table
-
-%end-doc */
-
-static int ActionSaveTo(int argc, char **argv, Coord x, Coord y)
-{
-	char *function;
-	char *name;
-
-	function = argv[0];
-	name = argv[1];
-
-	if (strcasecmp(function, "Layout") == 0) {
-		if (SavePCB(PCB->Filename) == 0)
-			SetChangedFlag(false);
-		return 0;
-	}
-
-	if (argc != 2)
-		AFAIL(saveto);
-
-	if (strcasecmp(function, "LayoutAs") == 0) {
-		if (SavePCB(name) == 0) {
-			SetChangedFlag(false);
-			free(PCB->Filename);
-			PCB->Filename = strdup(name);
-			if (gui->notify_filename_changed != NULL)
-				gui->notify_filename_changed();
-		}
-		return 0;
-	}
-
-	if (strcasecmp(function, "AllConnections") == 0) {
-		FILE *fp;
-		bool result;
-		if ((fp = CheckAndOpenFile(name, true, false, &result, NULL)) != NULL) {
-			LookupConnectionsToAllElements(fp);
-			fclose(fp);
-			SetChangedFlag(true);
-		}
-		return 0;
-	}
-
-	if (strcasecmp(function, "AllUnusedPins") == 0) {
-		FILE *fp;
-		bool result;
-		if ((fp = CheckAndOpenFile(name, true, false, &result, NULL)) != NULL) {
-			LookupUnusedPins(fp);
-			fclose(fp);
-			SetChangedFlag(true);
-		}
-		return 0;
-	}
-
-	if (strcasecmp(function, "ElementConnections") == 0) {
-		ElementTypePtr element;
-		void *ptrtmp;
-		FILE *fp;
-		bool result;
-
-		if ((SearchScreen(Crosshair.X, Crosshair.Y, ELEMENT_TYPE, &ptrtmp, &ptrtmp, &ptrtmp)) != NO_TYPE) {
-			element = (ElementTypePtr) ptrtmp;
-			if ((fp = CheckAndOpenFile(name, true, false, &result, NULL)) != NULL) {
-				LookupElementConnections(element, fp);
-				fclose(fp);
-				SetChangedFlag(true);
-			}
-		}
-		return 0;
-	}
-
-	if (strcasecmp(function, "PasteBuffer") == 0) {
-		return SaveBufferElements(name);
-	}
-
-	AFAIL(saveto);
-}
-
-/* --------------------------------------------------------------------------- */
-
-static const char savesettings_syntax[] = "SaveSettings()\n" "SaveSettings(local)";
-
-static const char savesettings_help[] = "Saves settings.";
-
-/* %start-doc actions SaveSettings
-
-If you pass no arguments, the settings are stored in
-@code{$HOME/.pcb/settings}.  If you pass the word @code{local} they're
-saved in @code{./pcb.settings}.
-
-%end-doc */
-
-static int ActionSaveSettings(int argc, char **argv, Coord x, Coord y)
-{
-	int locally = argc > 0 ? (strncasecmp(argv[0], "local", 5) == 0) : 0;
-	hid_save_settings(locally);
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
-static const char loadfrom_syntax[] = "LoadFrom(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert,filename)";
-
-static const char loadfrom_help[] = "Load layout data from a file.";
-
-/* %start-doc actions LoadFrom
-
-This action assumes you know what the filename is.  The various GUIs
-should have a similar @code{Load} action where the filename is
-optional, and will provide their own file selection mechanism to let
-you choose the file name.
-
-@table @code
-
-@item Layout
-Loads an entire PCB layout, replacing the current one.
-
-@item LayoutToBuffer
-Loads an entire PCB layout to the paste buffer.
-
-@item ElementToBuffer
-Loads the given element file into the paste buffer.  Element files
-contain only a single @code{Element} definition, such as the
-``newlib'' library uses.
-
-@item Netlist
-Loads a new netlist, replacing any current netlist.
-
-@item Revert
-Re-loads the current layout from its disk file, reverting any changes
-you may have made.
-
-@end table
-
-%end-doc */
-
-static int ActionLoadFrom(int argc, char **argv, Coord x, Coord y)
-{
-	char *function;
-	char *name;
-
-	if (argc < 2)
-		AFAIL(loadfrom);
-
-	function = argv[0];
-	name = argv[1];
-
-	if (strcasecmp(function, "ElementToBuffer") == 0) {
-		notify_crosshair_change(false);
-		if (LoadElementToBuffer(PASTEBUFFER, name))
-			SetMode(PASTEBUFFER_MODE);
-		notify_crosshair_change(true);
-	}
-
-	else if (strcasecmp(function, "LayoutToBuffer") == 0) {
-		notify_crosshair_change(false);
-		if (LoadLayoutToBuffer(PASTEBUFFER, name))
-			SetMode(PASTEBUFFER_MODE);
-		notify_crosshair_change(true);
-	}
-
-	else if (strcasecmp(function, "Layout") == 0) {
-		if (!PCB->Changed || gui->confirm_dialog(_("OK to override layout data?"), 0))
-			LoadPCB(name, true, false);
-	}
-
-	else if (strcasecmp(function, "Netlist") == 0) {
-		if (PCB->Netlistname)
-			free(PCB->Netlistname);
-		PCB->Netlistname = StripWhiteSpaceAndDup(name);
-		{
-			int i;
-			for (i = 0; i < NUM_NETLISTS; i++)
-				FreeLibraryMemory(&(PCB->NetlistLib[i]));
-		}
-		if (!ImportNetlist(PCB->Netlistname))
-			NetlistChanged(1);
-	}
-	else if (strcasecmp(function, "Revert") == 0 && PCB->Filename
-					 && (!PCB->Changed || gui->confirm_dialog(_("OK to override changes?"), 0))) {
-		RevertPCB();
-	}
-
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
-static const char new_syntax[] = "New([name])";
-
-static const char new_help[] = "Starts a new layout.";
-
-/* %start-doc actions New
-
-If a name is not given, one is prompted for.
-
-%end-doc */
-
-static int ActionNew(int argc, char **argv, Coord x, Coord y)
-{
-	char *name = ARG(0);
-
-	if (!PCB->Changed || gui->confirm_dialog(_("OK to clear layout data?"), 0)) {
-		if (name)
-			name = strdup(name);
-		else
-			name = gui->prompt_for(_("Enter the layout name:"), "");
-
-		if (!name)
-			return 1;
-
-		notify_crosshair_change(false);
-		/* do emergency saving
-		 * clear the old struct and allocate memory for the new one
-		 */
-		if (PCB->Changed && Settings.SaveInTMP)
-			SaveInTMP();
-		RemovePCB(PCB);
-		PCB = CreateNewPCB();
-		PCB->Data->LayerN = DEF_LAYER;
-		CreateNewPCBPost(PCB, 1);
-
-		/* setup the new name and reset some values to default */
-		free(PCB->Name);
-		PCB->Name = name;
-
-		ResetStackAndVisibility();
-		SetCrosshairRange(0, 0, PCB->MaxWidth, PCB->MaxHeight);
-		CenterDisplay(PCB->MaxWidth / 2, PCB->MaxHeight / 2);
-		Redraw();
-
-		hid_action("PCBChanged");
-		notify_crosshair_change(true);
-		return 0;
-	}
-	return 1;
-}
-
 /* ---------------------------------------------------------------------------
  * no operation, just for testing purposes
  * syntax: Bell(volume)
@@ -4329,229 +4028,6 @@ static int ActionElementSetAttr(int argc, char **argv, Coord x, Coord y)
 }
 
 /* ---------------------------------------------------------------- */
-static const char execcommand_syntax[] = "ExecCommand(command)";
-
-static const char execcommand_help[] = "Runs a command.";
-
-/* %start-doc actions execcommand
-
-Runs the given command, which is a system executable.
-
-%end-doc */
-
-static int ActionExecCommand(int argc, char **argv, Coord x, Coord y)
-{
-	char *command;
-
-	if (argc < 1) {
-		AFAIL(execcommand);
-	}
-
-	command = ARG(0);
-
-	if (system(command))
-		return 1;
-	return 0;
-}
-
-/* ---------------------------------------------------------------- */
-
-static int pcb_spawnvp(char **argv)
-{
-#ifdef HAVE__SPAWNVP
-	int result = _spawnvp(_P_WAIT, argv[0], (const char *const *) argv);
-	if (result == -1)
-		return 1;
-	else
-		return 0;
-#else
-	int pid;
-	pid = fork();
-	if (pid < 0) {
-		/* error */
-		Message(_("Cannot fork!"));
-		return 1;
-	}
-	else if (pid == 0) {
-		/* Child */
-		execvp(argv[0], argv);
-		exit(1);
-	}
-	else {
-		int rv;
-		/* Parent */
-		wait(&rv);
-	}
-	return 0;
-#endif
-}
-
-/* ---------------------------------------------------------------- */
-/* 
- * Creates a new temporary file name.  Hopefully the operating system
- * provides a mkdtemp() function to securily create a temporary
- * directory with mode 0700.  If so then that directory is created and
- * the returned string is made up of the directory plus the name
- * variable.  For example:
- *
- * tempfile_name_new ("myfile") might return
- * "/var/tmp/pcb.123456/myfile".
- *
- * If mkdtemp() is not available then 'name' is ignored and the
- * insecure tmpnam() function is used.
- *  
- * Files/names created with tempfile_name_new() should be unlinked
- * with tempfile_unlink to make sure the temporary directory is also
- * removed when mkdtemp() is used.
- */
-static char *tempfile_name_new(char *name)
-{
-	char *tmpfile = NULL;
-#ifdef HAVE_MKDTEMP
-	char *tmpdir, *mytmpdir;
-	size_t len;
-#endif
-
-	assert(name != NULL);
-
-#ifdef HAVE_MKDTEMP
-#define TEMPLATE "pcb.XXXXXXXX"
-
-
-	tmpdir = getenv("TMPDIR");
-
-	/* FIXME -- what about win32? */
-	if (tmpdir == NULL) {
-		tmpdir = "/tmp";
-	}
-
-	mytmpdir = (char *) malloc(sizeof(char) * (strlen(tmpdir) + 1 + strlen(TEMPLATE) + 1));
-	if (mytmpdir == NULL) {
-		fprintf(stderr, "%s(): malloc failed()\n", __FUNCTION__);
-		exit(1);
-	}
-
-	*mytmpdir = '\0';
-	(void) strcat(mytmpdir, tmpdir);
-	(void) strcat(mytmpdir, PCB_DIR_SEPARATOR_S);
-	(void) strcat(mytmpdir, TEMPLATE);
-	if (mkdtemp(mytmpdir) == NULL) {
-		fprintf(stderr, "%s():  mkdtemp (\"%s\") failed\n", __FUNCTION__, mytmpdir);
-		free(mytmpdir);
-		return NULL;
-	}
-
-
-	len = strlen(mytmpdir) +			/* the temp directory name */
-		1 +													/* the directory sep. */
-		strlen(name) +							/* the file name */
-		1														/* the \0 termination */
-		;
-
-	tmpfile = (char *) malloc(sizeof(char) * len);
-
-	*tmpfile = '\0';
-	(void) strcat(tmpfile, mytmpdir);
-	(void) strcat(tmpfile, PCB_DIR_SEPARATOR_S);
-	(void) strcat(tmpfile, name);
-
-	free(mytmpdir);
-#undef TEMPLATE
-#else
-	/*
-	 * tmpnam() uses a static buffer so strdup() the result right away
-	 * in case someone decides to create multiple temp names.
-	 */
-	tmpfile = strdup(tmpnam(NULL));
-#ifdef __WIN32__
-	{
-		/* Guile doesn't like \ separators */
-		char *c;
-		for (c = tmpfile; *c; c++)
-			if (*c == '\\')
-				*c = '/';
-	}
-#endif
-#endif
-
-	return tmpfile;
-}
-
-/* ---------------------------------------------------------------- */
-/*
- * Unlink a temporary file.  If we have mkdtemp() then our temp file
- * lives in a temporary directory and we need to remove that directory
- * too.
- */
-static int tempfile_unlink(char *name)
-{
-#ifdef DEBUG
-	/* SDB says:  Want to keep old temp files for examiniation when debugging */
-	return 0;
-#endif
-
-#ifdef HAVE_MKDTEMP
-	int e, rc2 = 0;
-	char *dname;
-
-	unlink(name);
-	/* it is possible that the file was never created so it is OK if the
-	   unlink fails */
-
-	/* now figure out the directory name to remove */
-	e = strlen(name) - 1;
-	while (e > 0 && name[e] != PCB_DIR_SEPARATOR_C) {
-		e--;
-	}
-
-	dname = strdup(name);
-	dname[e] = '\0';
-
-	/* 
-	 * at this point, e *should* point to the end of the directory part 
-	 * but lets make sure.
-	 */
-	if (e > 0) {
-		rc2 = rmdir(dname);
-		if (rc2 != 0) {
-			perror(dname);
-		}
-
-	}
-	else {
-		fprintf(stderr, _("%s():  Unable to determine temp directory name from the temp file\n"), __FUNCTION__);
-		fprintf(stderr, "%s():  \"%s\"\n", __FUNCTION__, name);
-		rc2 = -1;
-	}
-
-	/* name was allocated with malloc */
-	free(dname);
-	free(name);
-
-	/*
-	 * FIXME - should also return -1 if the temp file exists and was not
-	 * removed.  
-	 */
-	if (rc2 != 0) {
-		return -1;
-	}
-
-#else
-	int rc = unlink(name);
-
-	if (rc != 0) {
-		fprintf(stderr, _("Failed to unlink \"%s\"\n"), name);
-		free(name);
-		return rc;
-	}
-	free(name);
-
-#endif
-
-	return 0;
-}
-
-/* ---------------------------------------------------------------- */
 static const char import_syntax[] =
 	"Import()\n"
 	"Import([gnetlist|make[,source,source,...]])\n" "Import(setnewpoint[,(mark|center|X,Y)])\n" "Import(setdisperse,D,units)\n";
@@ -5186,9 +4662,6 @@ HID_Action action_action_list[] = {
 	{"Flip", N_("Click on Object or Flip Point"), ActionFlip,
 	 flip_help, flip_syntax}
 	,
-	{"LoadFrom", 0, ActionLoadFrom,
-	 loadfrom_help, loadfrom_syntax}
-	,
 	{"MarkCrosshair", 0, ActionMarkCrosshair,
 	 markcrosshair_help, markcrosshair_syntax}
 	,
@@ -5210,9 +4683,6 @@ HID_Action action_action_list[] = {
 	{"PasteBuffer", 0, ActionPasteBuffer,
 	 pastebuffer_help, pastebuffer_syntax}
 	,
-	{"Quit", 0, ActionQuit,
-	 quit_help, quit_syntax}
-	,
 	{"RemoveSelected", 0, ActionRemoveSelected,
 	 removeselected_help, removeselected_syntax}
 	,
@@ -5223,12 +4693,6 @@ HID_Action action_action_list[] = {
 #endif
 	{"RipUp", 0, ActionRipUp,
 	 ripup_help, ripup_syntax}
-	,
-	{"SaveSettings", 0, ActionSaveSettings,
-	 savesettings_help, savesettings_syntax}
-	,
-	{"SaveTo", 0, ActionSaveTo,
-	 saveto_help, saveto_syntax}
 	,
 	{"ToggleHideName", 0, ActionToggleHideName,
 	 togglehidename_help, togglehidename_syntax}
@@ -5248,9 +4712,6 @@ HID_Action action_action_list[] = {
 	{"MoveToCurrentLayer", 0, ActionMoveToCurrentLayer,
 	 movetocurrentlayer_help, movetocurrentlayer_syntax}
 	,
-	{"New", 0, ActionNew,
-	 new_help, new_syntax}
-	,
 	{"pscalib", 0, ActionPSCalib}
 	,
 	{"ElementList", 0, ActionElementList,
@@ -5258,9 +4719,6 @@ HID_Action action_action_list[] = {
 	,
 	{"ElementSetAttr", 0, ActionElementSetAttr,
 	 elementsetattr_help, elementsetattr_syntax}
-	,
-	{"ExecCommand", 0, ActionExecCommand,
-	 execcommand_help, execcommand_syntax}
 	,
 	{"Import", 0, ActionImport,
 	 import_help, import_syntax}
