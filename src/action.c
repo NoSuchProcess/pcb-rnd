@@ -1781,54 +1781,6 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 }
 
 /* --------------------------------------------------------------------------- */
-
-static const char markcrosshair_syntax[] = "MarkCrosshair()\n" "MarkCrosshair(Center)";
-
-static const char markcrosshair_help[] = "Set/Reset the Crosshair mark.";
-
-/* %start-doc actions MarkCrosshair
-
-The ``mark'' is a small X-shaped target on the display which is
-treated like a second origin (the normal origin is the upper let
-corner of the board).  The GUI will display a second set of
-coordinates for this mark, which tells you how far you are from it.
-
-If no argument is given, the mark is toggled - disabled if it was
-enabled, or enabled at the current cursor position of disabled.  If
-the @code{Center} argument is given, the mark is moved to the current
-cursor location.
-
-%end-doc */
-
-static int ActionMarkCrosshair(int argc, char **argv, Coord x, Coord y)
-{
-	char *function = ARG(0);
-	if (!function || !*function) {
-		if (Marked.status) {
-			notify_mark_change(false);
-			Marked.status = false;
-			notify_mark_change(true);
-		}
-		else {
-			notify_mark_change(false);
-			Marked.status = false;
-			Marked.status = true;
-			Marked.X = Crosshair.X;
-			Marked.Y = Crosshair.Y;
-			notify_mark_change(true);
-		}
-	}
-	else if (GetFunctionID(function) == F_Center) {
-		notify_mark_change(false);
-		Marked.status = true;
-		Marked.X = Crosshair.X;
-		Marked.Y = Crosshair.Y;
-		notify_mark_change(true);
-	}
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
 /* helper: get route style size for a function and selected object type.
    size_id: 0=main size; 1=2nd size (drill); 2=clearance */
 int get_style_size(int funcid, Coord * out, int type, int size_id)
@@ -2233,9 +2185,6 @@ HID_Action action_action_list[] = {
 	,
 	{"ExecuteFile", 0, ActionExecuteFile,
 	 executefile_help, executefile_syntax}
-	,
-	{"MarkCrosshair", 0, ActionMarkCrosshair,
-	 markcrosshair_help, markcrosshair_syntax}
 	,
 	{"MinMaskGap", 0, ActionMinMaskGap,
 	 minmaskgap_help, minmaskgap_syntax}

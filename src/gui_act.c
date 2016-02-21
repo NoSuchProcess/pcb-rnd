@@ -938,6 +938,54 @@ static int ActionToggleHideName(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
+/* --------------------------------------------------------------------------- */
+
+static const char markcrosshair_syntax[] = "MarkCrosshair()\n" "MarkCrosshair(Center)";
+
+static const char markcrosshair_help[] = "Set/Reset the Crosshair mark.";
+
+/* %start-doc actions MarkCrosshair
+
+The ``mark'' is a small X-shaped target on the display which is
+treated like a second origin (the normal origin is the upper let
+corner of the board).  The GUI will display a second set of
+coordinates for this mark, which tells you how far you are from it.
+
+If no argument is given, the mark is toggled - disabled if it was
+enabled, or enabled at the current cursor position of disabled.  If
+the @code{Center} argument is given, the mark is moved to the current
+cursor location.
+
+%end-doc */
+
+static int ActionMarkCrosshair(int argc, char **argv, Coord x, Coord y)
+{
+	char *function = ARG(0);
+	if (!function || !*function) {
+		if (Marked.status) {
+			notify_mark_change(false);
+			Marked.status = false;
+			notify_mark_change(true);
+		}
+		else {
+			notify_mark_change(false);
+			Marked.status = false;
+			Marked.status = true;
+			Marked.X = Crosshair.X;
+			Marked.Y = Crosshair.Y;
+			notify_mark_change(true);
+		}
+	}
+	else if (GetFunctionID(function) == F_Center) {
+		notify_mark_change(false);
+		Marked.status = true;
+		Marked.X = Crosshair.X;
+		Marked.Y = Crosshair.Y;
+		notify_mark_change(true);
+	}
+	return 0;
+}
+
 
 HID_Action gui_action_list[] = {
 	{"Display", 0, ActionDisplay,
@@ -945,6 +993,9 @@ HID_Action gui_action_list[] = {
 	,
 	{"CycleDrag", 0, ActionCycleDrag,
 	 cycledrag_help, cycledrag_syntax}
+	,
+	{"MarkCrosshair", 0, ActionMarkCrosshair,
+	 markcrosshair_help, markcrosshair_syntax}
 	,
 	{"Message", 0, ActionMessage,
 	 message_help, message_syntax}
