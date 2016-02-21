@@ -3,6 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,43 +17,19 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  *  Contact addresses for paper mail and Email:
- *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
- *  Thomas.Nau@rz.uni-ulm.de
+ *  Harry Eaton, 6697 Buttonhole Ct, Columbia, MD 21044, USA
+ *  haceaton@aplcomm.jhuapl.edu
  *
- *  RCS: $Id$
  */
 
-/* prototypes for action routines
- */
+typedef struct {								/* used to identify subfunctions */
+	char *Identifier;
+	FunctionID ID;
+} FunctionType, *FunctionTypePtr;
 
-#ifndef	PCB_ACTION_H
-#define	PCH_ACTION_H
+/* Convert function name to integer function id */
+int GetFunctionID(String Ident);
 
-#include "global.h"
-
-#define CLONE_TYPES LINE_TYPE | ARC_TYPE | VIA_TYPE | POLYGON_TYPE
-
-void ActionAdjustStyle(char *);
-void EventMoveCrosshair(int, int);
-
-void AdjustAttachedObjects(void);
-
-void warpNoWhere(void);
-
-/* In gui-misc.c */
-bool ActionGetLocation(char *);
-void ActionGetXY(char *);
-
-#define action_entry(x) F_ ## x,
-typedef enum {
-#include "action_funclist.h"
-F_END
-} FunctionID;
-#undef action_entry
-
-#include "action_funchash.h"
-
-#endif

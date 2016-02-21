@@ -12,6 +12,7 @@ append /local/pcb/LDFLAGS cc/rdynamic
 # main: objects
 put /local/pcb/OBJS [@
 	action.o
+	action_funchash.o
 	buffer.o
 	change.o
 	clip.o
