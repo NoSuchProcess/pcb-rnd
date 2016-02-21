@@ -210,6 +210,7 @@ MainMenu =
    {"Only Names" checked=onlynames Display(ToggleOnlyNames)}
    {"Hide Names" checked=hidenames Display(ToggleHideNames)}
    {"Mincut on shorts" checked=enablemincut Display(ToggleMinCut)}
+   {"Libstroke gestures on middle button" checked=enablestroke Display(ToggleStroke)}
    -
    {"Rubber band mode" checked=rubberband Display(ToggleRubberBandMode)}
    {"Require unique element names" checked=uniquename Display(ToggleUniqueNames)}

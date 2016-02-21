@@ -344,6 +344,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 
 		case F_ToggleStroke:
 			TOGGLE_FLAG(ENABLESTROKEFLAG, PCB);
+			Settings.EnableStroke = TEST_FLAG(ENABLESTROKEFLAG, PCB);
 			break;
 
 		case F_ToggleShowDRC:
