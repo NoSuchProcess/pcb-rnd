@@ -75,6 +75,9 @@ REGISTER_ACTIONS(rotate_action_list)
 /* hid/gcode (export) */
 REGISTER_ATTRIBUTES(gcode_attribute_list)
 
+/* object_act.c () */
+REGISTER_ACTIONS(object_action_list)
+
 /* hid/batch (gui) */
 if ((gui != NULL) && (strcmp(gui->name, "batch") == 0)) {
 REGISTER_ACTIONS(batch_action_list)
