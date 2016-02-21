@@ -1,11 +1,11 @@
 CLEANUP
 	- write mods.html
-	- ActionBell()
 	- Makefile.dep vs. plugins
 	- move to plugin:
-		- libstroke
 		- import_sch.c
 	- warnings in util/
+	- scconfig: detect libstroke
+	- libstroke: zoom
 
 BACK ANNOTATION
 	- some netlist thing doesn't work; grep for BA_TODO

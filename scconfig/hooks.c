@@ -80,6 +80,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-renumber",  "/local/pcb/renumber/buildin",  arg_true,      "$static link the renumber action into the executable"},
 	{"plugin-renumber",   "/local/pcb/renumber/buildin",  arg_false,     "$the renumber action is dynamic loadable plugin"},
 
+	{"disable-stroke",  "/local/pcb/stroke/enable",   arg_false,     "$do not compile libstroke gestures"},
+	{"buildin-stroke",  "/local/pcb/stroke/buildin",  arg_true,      "$static link libstroke gestures into the executable"},
+	{"plugin-stroke",   "/local/pcb/stroke/buildin",  arg_false,     "$libstroke gestures is dynamic loadable plugin"},
+
 	{NULL, NULL, NULL, NULL}
 };
 
@@ -179,6 +183,10 @@ int hook_postinit()
 	db_mkdir("/local/pcb/renumber");
 	put("/local/pcb/renumber/enable", strue);
 	put("/local/pcb/renumber/buildin", strue);
+
+	db_mkdir("/local/pcb/stroke");
+	put("/local/pcb/stroke/enable", strue);
+	put("/local/pcb/stroke/buildin", strue);
 
 	return 0;
 }
@@ -403,6 +411,8 @@ int hook_generate()
 	plugin_stat("Mincut: ",                "/local/pcb/mincut");
 	plugin_stat("renumber:",               "/local/pcb/renumber");
 	plugin_stat("old actions:",            "/local/pcb/oldactions");
+	plugin_stat("stroke:",                 "/local/pcb/stroke");
+
 
 	if (manual_config)
 		printf("\n\n * NOTE: you may want to edit config.manual.h (user preferences) *\n");

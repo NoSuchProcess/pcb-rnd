@@ -38,6 +38,7 @@
 #include "find.h"
 #include "set.h"
 #include "misc.h"
+#include "stub_stroke.h"
 
 /* --------------------------------------------------------------------------- */
 
@@ -713,7 +714,7 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 			break;
 		case F_Release:
 			if ((mid_stroke) && (Settings.EnableStroke))
-				FinishStroke();
+				stub_stroke_finish();
 			else
 				ReleaseMode();
 			break;
@@ -728,10 +729,7 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 			break;
 		case F_Stroke:
 			if (Settings.EnableStroke) {
-				fprintf(stderr, "stroke: MIID!\n");
-				mid_stroke = true;
-				StrokeBox.X1 = Crosshair.X;
-				StrokeBox.Y1 = Crosshair.Y;
+				stub_stroke_start();
 				break;
 			}
 			/* Handle middle mouse button restarts of drawing mode.  If not in

@@ -71,6 +71,7 @@ put /local/pcb/OBJS [@
 	strflags.o
 	stub_edif.o
 	stub_mincut.o
+	stub_stroke.o
 	stub_vendor.o
 	thermal.o
 	undo.o
@@ -144,6 +145,7 @@ include {../src_plugins/gpmi/Plug.tmpasm}
 include {../src_plugins/toporouter/Plug.tmpasm}
 include {../src_plugins/oldactions/Plug.tmpasm}
 include {../src_plugins/renumber/Plug.tmpasm}
+include {../src_plugins/stroke/Plug.tmpasm}
 
 append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags
 append /local/pcb/LIBS    /target/libs/sul/glib/ldflags

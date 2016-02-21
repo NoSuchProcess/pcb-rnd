@@ -1748,10 +1748,6 @@ int main(int argc, char *argv[])
 	if (!ReadLibraryContents() && Library.MenuN)
 		hid_action("LibraryChanged");
 
-#ifdef HAVE_LIBSTROKE
-	stroke_init();
-#endif
-
 	if (Settings.ScriptFilename) {
 		Message(_("Executing startup script file %s\n"), Settings.ScriptFilename);
 		hid_actionl("ExecuteFile", Settings.ScriptFilename, NULL);
