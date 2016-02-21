@@ -42,11 +42,24 @@ do
 					clr = "bgcolor=\"lightgreen\""
 				else if ((st ~ "fail") || (st ~ "disable"))
 					clr = "bgcolor=\"red\""
+				else
+					clr=""
 
 				print "<td  " clr " >" st
 				if (DB["lstate"] != "")
 					print "<br> (" strip(DB["lstate"]) ")"
-				print "<td>" DB["default"]
+
+				dfl = DB["default"]
+				if (dfl ~ "buildin")
+					clr = "bgcolor=\"lightgreen\""
+				else if (dfl ~ "plugin")
+					clr = "bgcolor=\"yellow\""
+				else if ((dfl ~ "fail") || (dfl ~ "disable"))
+					clr = "bgcolor=\"red\""
+				else
+					clr=""
+
+				print "<td " clr ">" dfl
 				if (DB["ldefault"] != "")
 					print "<br> (" strip(DB["ldefault"]) ")"
 				print "<td>" desc

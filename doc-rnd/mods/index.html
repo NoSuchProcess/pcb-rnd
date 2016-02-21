@@ -1,79 +1,82 @@
 <html>
 <body>
-<table border=>
+<table border=1 cellspacing=0>
+<tr><th>module <th>size [sloc] <th> status <th> configure<br>default  <th> description
+
+
 <tr><th>autoplace<td>
 604
 <td  bgcolor="lightgreen" > works
-<td> buildin
+<td bgcolor="lightgreen"> buildin
 <td> Automatically place elements. 
 <tr><th>autoroute<td>
 4172
 <td  bgcolor="lightgreen" > works
-<td> buildin
+<td bgcolor="lightgreen"> buildin
 <td> Automatically route selected or all rats. This is the original autorouter. 
 <tr><th>dbus<td>
 438
 <td  bgcolor="red" > disabled
 <br> (TODO: needs scconfig support)
-<td> disabled
+<td bgcolor="red"> disabled
 <td> Remote control PCB using DBUS. 
 <tr><th>djopt<td>
 2312
 <td  bgcolor="lightgreen" > works
-<td> buildin
+<td bgcolor="lightgreen"> buildin
 <td> Various board optimization algorithms. 
 <tr><th>edif<td>
 3575
 <td  bgcolor="lightgreen" > works
-<td> buildin
+<td bgcolor="lightgreen"> buildin
 <td> Import code for netlists in the EDIF format. 
 <tr><th>gpmi<td>
 8881
 <td  bgcolor="lightgreen" > works
-<td> buildin
+<td bgcolor="lightgreen"> buildin
 <br> (if gpmi is installed)
 <td> Scriptable plugin system with about 10 scripting languages supported and dynamic load/unload of scripts that can manipulate the GUI, the board, can implement exporters, etc. 
 <tr><th>import_sch<td>
 252
 <td  bgcolor="lightgreen" > works
-<td> buildin
+<td bgcolor="lightgreen"> buildin
 <td> Imports element and netlist data from the schematics (or some other source). 
 <tr><th>mincut<td>
 884
 <td  bgcolor="lightgreen" > works
-<td> buildin
+<td bgcolor="lightgreen"> buildin
 <td> Use the minimal cut algorithm to indicate shorts: instead of highlighting two random pins/pads, try to highlight the least number of objects that connect the two networks. 
 <tr><th>oldactions<td>
 50
 <td  bgcolor="lightgreen" > works
-<td> disabled
+<td bgcolor="red"> disabled
 <td> Random collection of old/obsolete actions. Bell(): audible feedback; DumpLibrary(): print footprint library on stdout 
 <tr><th>puller<td>
 1876
 <td  bgcolor="lightgreen" > works
-<td> buildin
+<td bgcolor="lightgreen"> buildin
 <td> Pull traces to minimize their length. 
 <tr><th>renumber<td>
 212
 <td  bgcolor="lightgreen" > works
-<td> buildin
+<td bgcolor="lightgreen"> buildin
 <td> Renumber elements (renaming them) and generate a text file for back annotation. 
 <tr><th>stroke<td>
 123
 <td  bgcolor="yellow" > partially works (doesn't work with lesstif; works with the gtk hid, but there's no zoom bindings)
-<td> buildin
+<td bgcolor="lightgreen"> buildin
 <br> (requires libstroke installed)
 <td> Gesture recognition with libstroke. 
 <tr><th>toporouter<td>
 6159
 <td  bgcolor="red" > fails
 <br> (infinite loop in gts)
-<td> disabled
+<td bgcolor="red"> disabled
 <td> Automatically route selected or all rats using a topological algorithm. This is the new autorouter from 2009. 
 <tr><th>vendordrill<td>
 564
 <td  bgcolor="lightgreen" > works
-<td> buildin
+<td bgcolor="lightgreen"> buildin
 <td> Vendor drill mapping. 
 </table>
 </body>
