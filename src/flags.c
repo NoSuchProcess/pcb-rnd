@@ -283,6 +283,8 @@ HID_Flag flags_flag_list[] = {
 	,
 	{"enablemincut", FlagTESTFLAG, ENABLEMINCUTFLAG}
 	,
+	{"enablestroke", FlagTESTFLAG, ENABLESTROKEFLAG}
+	,
 	{"snapoffgridline", FlagTESTFLAG, SNAPOFFGRIDLINEFLAG}
 	,
 	{"highlightonpoint", FlagTESTFLAG, HIGHLIGHTONPOINTFLAG}

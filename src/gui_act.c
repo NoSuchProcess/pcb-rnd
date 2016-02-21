@@ -342,6 +342,10 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 			TOGGLE_FLAG(ENABLEMINCUTFLAG, PCB);
 			break;
 
+		case F_ToggleStroke:
+			TOGGLE_FLAG(ENABLESTROKEFLAG, PCB);
+			break;
+
 		case F_ToggleShowDRC:
 			TOGGLE_FLAG(SHOWDRCFLAG, PCB);
 			break;
@@ -706,18 +710,12 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 		case F_PolygonHole:
 			SetMode(POLYGONHOLE_MODE);
 			break;
-#ifndef HAVE_LIBSTROKE
 		case F_Release:
-			ReleaseMode();
-			break;
-#else
-		case F_Release:
-			if (mid_stroke)
+			if ((mid_stroke) && (Settings.EnableStroke))
 				FinishStroke();
 			else
 				ReleaseMode();
 			break;
-#endif
 		case F_Remove:
 			SetMode(REMOVE_MODE);
 			break;
@@ -728,12 +726,13 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 			SetMode(ROTATE_MODE);
 			break;
 		case F_Stroke:
-#ifdef HAVE_LIBSTROKE
-			mid_stroke = true;
-			StrokeBox.X1 = Crosshair.X;
-			StrokeBox.Y1 = Crosshair.Y;
-			break;
-#else
+			if (Settings.EnableStroke) {
+				fprintf(stderr, "stroke: MIID!\n");
+				mid_stroke = true;
+				StrokeBox.X1 = Crosshair.X;
+				StrokeBox.Y1 = Crosshair.Y;
+				break;
+			}
 			/* Handle middle mouse button restarts of drawing mode.  If not in
 			   |  a drawing mode, middle mouse button will select objects.
 			 */
@@ -753,7 +752,6 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 				NotifyMode();
 			}
 			break;
-#endif
 		case F_Text:
 			SetMode(TEXT_MODE);
 			break;

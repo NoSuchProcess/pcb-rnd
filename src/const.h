@@ -310,6 +310,7 @@ When set, element names are not drawn.
 #define ENABLEMINCUTFLAG        0x00400000
 #define SNAPOFFGRIDLINEFLAG     0x00800000
 #define HIGHLIGHTONPOINTFLAG    0x01000000
+#define ENABLESTROKEFLAG        0x02000000
 
 /* ---------------------------------------------------------------------------
  * object types

@@ -133,7 +133,8 @@ static FlagBitsType pcb_flagbits[] = {
 	{LOCKNAMESFLAG, N("locknames"), 1},
 	{ONLYNAMESFLAG, N("onlynames"), 1},
 	{HIDENAMESFLAG, N("hidenames"), 1},
-	{ENABLEMINCUTFLAG, N("enablemincut"), 1}
+	{ENABLEMINCUTFLAG, N("enablemincut"), 1},
+	{ENABLESTROKEFLAG, N("enablestroke"), 1}
 };
 
 #undef N

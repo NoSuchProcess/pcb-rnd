@@ -1310,6 +1310,16 @@ read from the pcb.
 */
 	ISET(EnableMincut, 1, "enable-mincut", "global enable mincut (1=yes, 0=no)"),
 
+/* %start-doc options "1 General Options"
+@ftable @code
+@item --enable-stroke <num>
+Whether to enable libstroke support (1=yes, 0=no); when disabled, it overrides the setting
+read from the pcb. Will not really work unless the libstroke plugin is also loaded.
+@end ftable
+%end-doc
+*/
+	ISET(EnableStroke, 1, "enable-stroke", "global enable libstroke (1=yes, 0=no)"),
+
 };
 
 REGISTER_ATTRIBUTES(main_attribute_list)

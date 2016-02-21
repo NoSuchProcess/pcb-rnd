@@ -672,7 +672,8 @@ typedef struct {								/* some resources... */
 		/* connections is done */
 	  AutoPlace,									/* flag which says we should force placement of the
 																   windows on startup */
-	  EnableMincut;								/* Enable calculating mincut on shorts (rats_mincut.c) when non-zero */
+	  EnableMincut,								/* Enable calculating mincut on shorts (rats_mincut.c) when non-zero */
+	  EnableStroke;								/* Enable libstroke gesutres on middle mouse button when non-zero */
 } SettingType, *SettingTypePtr;
 
 /* ----------------------------------------------------------------------
