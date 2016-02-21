@@ -15,7 +15,7 @@ do
 	then
 		echo $n >&2
 		bn=`basename $n`
-		echo "<tr><th>$bn<td>"
+		echo "<tr><th align=left>$bn<td>"
 		sloc $n
 		awk '
 			/^#/ {
@@ -45,7 +45,7 @@ do
 				else
 					clr=""
 
-				print "<td align=left " clr " >" st
+				print "<td " clr " >" st
 				if (DB["lstate"] != "")
 					print "<br> (" strip(DB["lstate"]) ")"
 
