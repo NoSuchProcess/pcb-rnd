@@ -85,4 +85,10 @@ extern bool saved_mode;
 int ActionExecuteFile(int argc, char **argv, Coord x, Coord y);
 void ReleaseMode(void);
 
+#ifdef HAVE_LIBSTROKE
+extern bool mid_stroke;
+extern BoxType StrokeBox;
+void FinishStroke(void);
+#endif
+
 #endif

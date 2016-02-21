@@ -165,8 +165,8 @@ int defer_needs_update = 0;
 static Cardinal polyIndex = 0;
 bool saved_mode = false;
 #ifdef HAVE_LIBSTROKE
-static bool mid_stroke = false;
-static BoxType StrokeBox;
+bool mid_stroke = false;
+BoxType StrokeBox;
 #endif
 
 /* ---------------------------------------------------------------------------
@@ -174,7 +174,7 @@ static BoxType StrokeBox;
  */
 static void AdjustAttachedBox(void);
 #ifdef HAVE_LIBSTROKE
-static void FinishStroke(void);
+void FinishStroke(void);
 extern void stroke_init(void);
 extern void stroke_record(int x, int y);
 extern int stroke_trans(char *s);
@@ -221,7 +221,7 @@ void FinishStroke(void)
 			SetMode(ARROW_MODE);
 			break;
 		case 1478963:
-			ActionUndo("");
+			ActionUndo(0, NULL, 0, 0);
 			break;
 		case 147423:
 		case 147523:
@@ -243,7 +243,7 @@ void FinishStroke(void)
 		case 96521:
 		case 96541:
 		case 98541:
-			SetZoom(1000);						/* special zoom extents */
+			PCB->Zoom = 1000;						/* special zoom extents */
 			break;
 		case 159:
 		case 1269:
@@ -264,7 +264,7 @@ void FinishStroke(void)
 				 */
 				z = 1 + log(fabs(StrokeBox.X2 - StrokeBox.X1) / PCB->MaxWidth) / log(2.0);
 				z = MAX(z, 1 + log(fabs(StrokeBox.Y2 - StrokeBox.Y1) / PCB->MaxHeight) / log(2.0));
-				SetZoom(z);
+				PCB->Zoom = z;
 
 				CenterDisplay(x, y);
 				break;
@@ -1272,7 +1272,8 @@ void EventMoveCrosshair(int ev_x, int ev_y)
 	if (mid_stroke) {
 		StrokeBox.X2 = ev_x;
 		StrokeBox.Y2 = ev_y;
-		stroke_record(ev_x, ev_y);
+		fprintf(stderr, "stroke: %d %d\n", ev_x >> 16, ev_y >> 16);
+		stroke_record(ev_x >> 16, ev_y >> 16);
 		return;
 	}
 #endif /* HAVE_LIBSTROKE */
