@@ -77,7 +77,7 @@ Does a Restore if there was nothing to undo, else does a Close.
 
 %end-doc */
 
-static int ActionAtomic(int argc, char **argv, Coord x, Coord y)
+int ActionAtomic(int argc, char **argv, Coord x, Coord y)
 {
 	if (argc != 1)
 		AFAIL(atomic);
@@ -123,7 +123,7 @@ same serial number will be undone (or redone) as a group.  See
 
 %end-doc */
 
-static int ActionUndo(int argc, char **argv, Coord x, Coord y)
+int ActionUndo(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ARG(0);
 	if (!function || !*function) {
@@ -263,7 +263,7 @@ three "undone" lines.
 
 %end-doc */
 
-static int ActionRedo(int argc, char **argv, Coord x, Coord y)
+int ActionRedo(int argc, char **argv, Coord x, Coord y)
 {
 	if (((Settings.Mode == POLYGON_MODE ||
 				Settings.Mode == POLYGONHOLE_MODE) && Crosshair.AttachedPolygon.PointN) || Crosshair.AttachedLine.State == STATE_SECOND)

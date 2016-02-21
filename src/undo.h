@@ -69,4 +69,9 @@ void LockUndo(void);
 void UnlockUndo(void);
 bool Undoing(void);
 
+/* Publish actions - these may be useful for other actions */
+int ActionUndo(int argc, char **argv, Coord x, Coord y);
+int ActionRedo(int argc, char **argv, Coord x, Coord y);
+int ActionAtomic(int argc, char **argv, Coord x, Coord y);
+
 #endif
