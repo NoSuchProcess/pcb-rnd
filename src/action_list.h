@@ -104,3 +104,6 @@ REGISTER_ACTIONS(plugins_action_list)
 /* undo_act.c () */
 REGISTER_ACTIONS(undo_action_list)
 
+/* rats_patch.c () */
+REGISTER_ACTIONS(rats_patch_action_list)
+
