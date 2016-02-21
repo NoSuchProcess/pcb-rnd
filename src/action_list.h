@@ -73,7 +73,7 @@ REGISTER_FLAGS(flags_flag_list)
 REGISTER_ACTIONS(import_sch_action_list)
 
 /* buffer.c () */
-REGISTER_ACTIONS(rotate_action_list)
+REGISTER_ACTIONS(buffer_action_list)
 
 /* hid/gcode (export) */
 REGISTER_ATTRIBUTES(gcode_attribute_list)

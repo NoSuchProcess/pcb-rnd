@@ -37,12 +37,14 @@
 
 #include "global.h"
 
+#include "action.h"
 #include "buffer.h"
 #include "copy.h"
 #include "create.h"
 #include "crosshair.h"
 #include "data.h"
 #include "error.h"
+#include "file.h"
 #include "mymem.h"
 #include "mirror.h"
 #include "misc.h"
@@ -77,8 +79,6 @@ static void *MoveTextToBuffer(LayerTypePtr, TextTypePtr);
 static void *MovePolygonToBuffer(LayerTypePtr, PolygonTypePtr);
 static void *MoveElementToBuffer(ElementTypePtr);
 static void SwapBuffer(BufferTypePtr);
-
-#define ARG(n) (argc > (n) ? argv[n] : 0)
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -1255,12 +1255,202 @@ void *CopyObjectToBuffer(DataTypePtr Destination, DataTypePtr Src, int Type, voi
 
 /* ---------------------------------------------------------------------- */
 
-HID_Action rotate_action_list[] = {
+static const char pastebuffer_syntax[] =
+	"PasteBuffer(AddSelected|Clear|1..MAX_BUFFER)\n"
+	"PasteBuffer(Rotate, 1..3)\n" "PasteBuffer(Convert|Save|Restore|Mirror)\n" "PasteBuffer(ToLayout, X, Y, units)";
+
+static const char pastebuffer_help[] = "Various operations on the paste buffer.";
+
+/* %start-doc actions PasteBuffer
+
+There are a number of paste buffers; the actual limit is a
+compile-time constant @code{MAX_BUFFER} in @file{globalconst.h}.  It
+is currently @code{5}.  One of these is the ``current'' paste buffer,
+often referred to as ``the'' paste buffer.
+
+@table @code
+
+@item AddSelected
+Copies the selected objects to the current paste buffer.
+
+@item Clear
+Remove all objects from the current paste buffer.
+
+@item Convert
+Convert the current paste buffer to an element.  Vias are converted to
+pins, lines are converted to pads.
+
+@item Restore
+Convert any elements in the paste buffer back to vias and lines.
+
+@item Mirror
+Flip all objects in the paste buffer vertically (up/down flip).  To mirror
+horizontally, combine this with rotations.
+
+@item Rotate
+Rotates the current buffer.  The number to pass is 1..3, where 1 means
+90 degrees counter clockwise, 2 means 180 degrees, and 3 means 90
+degrees clockwise (270 CCW).
+
+@item Save
+Saves any elements in the current buffer to the indicated file.
+
+@item ToLayout
+Pastes any elements in the current buffer to the indicated X, Y
+coordinates in the layout.  The @code{X} and @code{Y} are treated like
+@code{delta} is for many other objects.  For each, if it's prefixed by
+@code{+} or @code{-}, then that amount is relative to the last
+location.  Otherwise, it's absolute.  Units can be
+@code{mil} or @code{mm}; if unspecified, units are PCB's internal
+units, currently 1/100 mil.
+
+
+@item 1..MAX_BUFFER
+Selects the given buffer to be the current paste buffer.
+
+@end table
+
+%end-doc */
+
+static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
+{
+	char *function = argc ? argv[0] : (char *) "";
+	char *sbufnum = argc > 1 ? argv[1] : (char *) "";
+	char *name;
+	static char *default_file = NULL;
+	int free_name = 0;
+
+	notify_crosshair_change(false);
+	if (function) {
+		switch (GetFunctionID(function)) {
+			/* clear contents of paste buffer */
+		case F_Clear:
+			ClearBuffer(PASTEBUFFER);
+			break;
+
+			/* copies objects to paste buffer */
+		case F_AddSelected:
+			AddSelectedToBuffer(PASTEBUFFER, 0, 0, false);
+			break;
+
+			/* converts buffer contents into an element */
+		case F_Convert:
+			ConvertBufferToElement(PASTEBUFFER);
+			break;
+
+			/* break up element for editing */
+		case F_Restore:
+			SmashBufferElement(PASTEBUFFER);
+			break;
+
+			/* Mirror buffer */
+		case F_Mirror:
+			MirrorBuffer(PASTEBUFFER);
+			break;
+
+		case F_Rotate:
+			if (sbufnum) {
+				RotateBuffer(PASTEBUFFER, (BYTE) atoi(sbufnum));
+				SetCrosshairRangeToBuffer();
+			}
+			break;
+
+		case F_Save:
+			if (PASTEBUFFER->Data->ElementN == 0) {
+				Message(_("Buffer has no elements!\n"));
+				break;
+			}
+			free_name = 0;
+			if (argc <= 1) {
+				name = gui->fileselect(_("Save Paste Buffer As ..."),
+															 _("Choose a file to save the contents of the\n"
+																 "paste buffer to.\n"), default_file, ".fp", "footprint", 0);
+
+				if (default_file) {
+					free(default_file);
+					default_file = NULL;
+				}
+				if (name && *name) {
+					default_file = strdup(name);
+				}
+				free_name = 1;
+			}
+
+			else
+				name = argv[1];
+
+			{
+				FILE *exist;
+
+				if ((exist = fopen(name, "r"))) {
+					fclose(exist);
+					if (gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0))
+						SaveBufferElements(name);
+				}
+				else
+					SaveBufferElements(name);
+
+				if (free_name && name)
+					free(name);
+			}
+			break;
+
+		case F_ToLayout:
+			{
+				static Coord oldx = 0, oldy = 0;
+				Coord x, y;
+				bool absolute;
+
+				if (argc == 1) {
+					x = y = 0;
+				}
+				else if (argc == 3 || argc == 4) {
+					x = GetValue(ARG(1), ARG(3), &absolute);
+					if (!absolute)
+						x += oldx;
+					y = GetValue(ARG(2), ARG(3), &absolute);
+					if (!absolute)
+						y += oldy;
+				}
+				else {
+					notify_crosshair_change(true);
+					AFAIL(pastebuffer);
+				}
+
+				oldx = x;
+				oldy = y;
+				if (CopyPastebufferToLayout(x, y))
+					SetChangedFlag(true);
+			}
+			break;
+
+			/* set number */
+		default:
+			{
+				int number = atoi(function);
+
+				/* correct number */
+				if (number)
+					SetBufferNumber(number - 1);
+			}
+		}
+	}
+
+	notify_crosshair_change(true);
+	return 0;
+}
+
+/* --------------------------------------------------------------------------- */
+
+HID_Action buffer_action_list[] = {
 	{"FreeRotateBuffer", 0, ActionFreeRotateBuffer,
 	 freerotatebuffer_syntax, freerotatebuffer_help}
 	,
 	{"LoadFootprint", 0, LoadFootprint,
 	 0, 0}
+	,
+	{"PasteBuffer", 0, ActionPasteBuffer,
+	 pastebuffer_help, pastebuffer_syntax}
 };
 
-REGISTER_ACTIONS(rotate_action_list)
+REGISTER_ACTIONS(buffer_action_list)
