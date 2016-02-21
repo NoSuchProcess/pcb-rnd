@@ -1644,15 +1644,6 @@ int get_style_size(int funcid, Coord * out, int type, int size_id)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * no operation, just for testing purposes
- * syntax: Bell(volume)
- */
-void ActionBell(char *volume)
-{
-	gui->beep();
-}
-
 /* --------------------------------------------------------------------------- */
 
 static const char executefile_syntax[] = "ExecuteFile(filename)";

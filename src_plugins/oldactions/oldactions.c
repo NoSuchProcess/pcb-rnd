@@ -67,9 +67,27 @@ static int ActionDumpLibrary(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
+/* ---------------------------------------------------------------------------
+ * no operation, just for testing purposes
+ * syntax: Bell(volume)
+ */
+static const char bell_syntax[] = "Bell()";
+
+static const char bell_help[] = "Attempt to produce audible notification (e.g. beep the speaker).";
+
+static int ActionBell(int argc, char **argv, Coord x, Coord y)
+{
+	gui->beep();
+	return 0;
+}
+
+
 HID_Action oldactions_action_list[] = {
 	{"DumpLibrary", 0, ActionDumpLibrary,
 	 dumplibrary_help, dumplibrary_syntax}
+	,
+	{"Bell", 0, ActionBell,
+	 bell_help, bell_syntax}
 };
 
 REGISTER_ACTIONS(oldactions_action_list)
