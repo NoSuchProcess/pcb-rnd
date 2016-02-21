@@ -45,7 +45,7 @@ do
 				else
 					clr=""
 
-				print "<td  " clr " >" st
+				print "<td align=left " clr " >" st
 				if (DB["lstate"] != "")
 					print "<br> (" strip(DB["lstate"]) ")"
 
