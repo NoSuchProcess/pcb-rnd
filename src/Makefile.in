@@ -56,6 +56,7 @@ put /local/pcb/OBJS [@
 	rats_act.o
 	rats_patch.o
 	remove.o
+	remove_act.o
 	report.o
 	rotate.o
 	rtree.o
@@ -98,7 +99,8 @@ put /local/pcb/LEX  {res_lex parse_l}
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
 	action.c buffer.c change_act.c command.c file_act.c flags.c gui_act.c
-	import_sch.c main.c misc.c move.c netlist.c plugins.c report.c rats_act.c
+	import_sch.c main.c misc.c move.c netlist.c plugins.c rats_act.c
+	remove_act.c report.c
 	select_act.c undo_act.c
 }
 

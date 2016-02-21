@@ -1944,52 +1944,6 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char delete_syntax[] = "Delete(Object|Selected)\n" "Delete(AllRats|SelectedRats)";
-
-static const char delete_help[] = "Delete stuff.";
-
-/* %start-doc actions Delete
-
-%end-doc */
-
-static int ActionDelete(int argc, char **argv, Coord x, Coord y)
-{
-	char *function = ARG(0);
-	int id = GetFunctionID(function);
-
-	Note.X = Crosshair.X;
-	Note.Y = Crosshair.Y;
-
-	if (id == -1) {								/* no arg */
-		if (RemoveSelected() == false)
-			id = F_Object;
-	}
-
-	switch (id) {
-	case F_Object:
-		SaveMode();
-		SetMode(REMOVE_MODE);
-		NotifyMode();
-		RestoreMode();
-		break;
-	case F_Selected:
-		RemoveSelected();
-		break;
-	case F_AllRats:
-		if (DeleteRats(false))
-			SetChangedFlag(true);
-		break;
-	case F_SelectedRats:
-		if (DeleteRats(true))
-			SetChangedFlag(true);
-		break;
-	}
-
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
 static const char markcrosshair_syntax[] = "MarkCrosshair()\n" "MarkCrosshair(Center)";
 
 static const char markcrosshair_help[] = "Set/Reset the Crosshair mark.";
@@ -2803,23 +2757,6 @@ int ActionExecuteFile(int argc, char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char removeselected_syntax[] = "RemoveSelected()";
-
-static const char removeselected_help[] = "Removes any selected objects.";
-
-/* %start-doc actions RemoveSelected
-
-%end-doc */
-
-static int ActionRemoveSelected(int argc, char **argv, Coord x, Coord y)
-{
-	if (RemoveSelected())
-		SetChangedFlag(true);
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
 static ElementType *element_cache = NULL;
 
 static ElementType *find_element_by_refdes(char *refdes)
@@ -3295,9 +3232,6 @@ HID_Action action_action_list[] = {
 	{"Attributes", 0, ActionAttributes,
 	 attributes_help, attributes_syntax}
 	,
-	{"Delete", 0, ActionDelete,
-	 delete_help, delete_syntax}
-	,
 	{"DisperseElements", 0, ActionDisperseElements,
 	 disperseelements_help, disperseelements_syntax}
 	,
@@ -3327,9 +3261,6 @@ HID_Action action_action_list[] = {
 	,
 	{"PasteBuffer", 0, ActionPasteBuffer,
 	 pastebuffer_help, pastebuffer_syntax}
-	,
-	{"RemoveSelected", 0, ActionRemoveSelected,
-	 removeselected_help, removeselected_syntax}
 	,
 #ifdef BA_TODO
 	{"Renumber", 0, ActionRenumber,
