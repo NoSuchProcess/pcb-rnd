@@ -81,4 +81,6 @@ typedef struct {
 
 extern action_note_t Note;
 
+int ActionExecuteFile(int argc, char **argv, Coord x, Coord y);
+
 #endif

@@ -59,6 +59,9 @@ REGISTER_ACTIONS(misc_action_list)
 /* flags.c () */
 REGISTER_FLAGS(flags_flag_list)
 
+/* import_sch.c () */
+REGISTER_ACTIONS(import_sch_action_list)
+
 /* buffer.c () */
 REGISTER_ACTIONS(rotate_action_list)
 
