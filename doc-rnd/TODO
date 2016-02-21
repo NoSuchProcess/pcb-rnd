@@ -1,8 +1,5 @@
 CLEANUP
-	- write mods.html
 	- Makefile.dep vs. plugins
-	- move to plugin:
-		- import_sch.c
 	- warnings in util/
 	- scconfig: detect libstroke
 	- libstroke: zoom
