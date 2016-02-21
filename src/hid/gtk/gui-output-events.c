@@ -123,11 +123,7 @@ gboolean ghid_note_event_location(GdkEventButton * ev)
 
 	ghid_event_to_pcb_coords(event_x, event_y, &gport->pcb_x, &gport->pcb_y);
 
-	moved = MoveCrosshairAbsolute(gport->pcb_x, gport->pcb_y);
-	if (moved) {
-		AdjustAttachedObjects();
-		notify_crosshair_change(true);
-	}
+	EventMoveCrosshair(gport->pcb_x, gport->pcb_y);
 	ghid_set_cursor_position_labels();
 	return moved;
 }
