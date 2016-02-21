@@ -47,6 +47,9 @@ REGISTER_FLAGS(ghid_main_flag_list)
 /* hid/nelma (export) */
 REGISTER_ATTRIBUTES(nelma_attribute_list)
 
+/* gui_act.c () */
+REGISTER_ACTIONS(gui_action_list)
+
 /* report.c () */
 REGISTER_ACTIONS(report_action_list)
 

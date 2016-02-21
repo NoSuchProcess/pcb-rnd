@@ -80,7 +80,9 @@ typedef struct {
 } action_note_t;
 
 extern action_note_t Note;
+extern bool saved_mode;
 
 int ActionExecuteFile(int argc, char **argv, Coord x, Coord y);
+void ReleaseMode(void);
 
 #endif
