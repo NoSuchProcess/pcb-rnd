@@ -377,7 +377,7 @@ updates the GUI.
 
 %end-doc */
 
-#define ARG(n) (argc > (n) ? argv[n] : 0)
+#define NL_ARG(n) (argc > (n) ? argv[n] : 0)
 
 static int Netlist(int argc, char **argv, Coord x, Coord y)
 {
@@ -426,7 +426,7 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 #ifdef BA_TODO
 	else if (strcasecmp(argv[0], "add") == 0) {
 		/* Add is different, because the net/pin won't already exist.  */
-		return netlist_add(ARG(1), ARG(2));
+		return netlist_add(NL_ARG(1), NL_ARG(2));
 	}
 #endif
 	else if (strcasecmp(argv[0], "sort") == 0) {
@@ -511,7 +511,7 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 
 		pin = 0;
 		if (func == (void *) netlist_style) {
-			netlist_style(net, ARG(2));
+			netlist_style(net, NL_ARG(2));
 		}
 		else if (argc > 2) {
 			int l = strlen(argv[2]);
