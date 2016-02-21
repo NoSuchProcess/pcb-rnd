@@ -8,7 +8,7 @@ CLEANUP
 	- warnings in util/
 
 BACK ANNOTATION
-	- renumbering action disabled; grep for BA_TODO
+	- some netlist thing doesn't work; grep for BA_TODO
 
 BUGS
 - gpmi (and other buildings/plugins) not showing up in the about box

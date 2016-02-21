@@ -143,6 +143,7 @@ include {../src_plugins/mincut/Plug.tmpasm}
 include {../src_plugins/gpmi/Plug.tmpasm}
 include {../src_plugins/toporouter/Plug.tmpasm}
 include {../src_plugins/oldactions/Plug.tmpasm}
+include {../src_plugins/renumber/Plug.tmpasm}
 
 append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags
 append /local/pcb/LIBS    /target/libs/sul/glib/ldflags

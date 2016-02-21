@@ -76,6 +76,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-oldactions",  "/local/pcb/oldactions/buildin",  arg_true,      "$static link the oldactions plugin into the executable"},
 	{"plugin-oldactions",   "/local/pcb/oldactions/buildin",  arg_false,     "$the oldactions plugin is dynamic loadable"},
 
+	{"disable-renumber",  "/local/pcb/renumber/enable",   arg_false,     "$do not compile the renumber action"},
+	{"buildin-renumber",  "/local/pcb/renumber/buildin",  arg_true,      "$static link the renumber action into the executable"},
+	{"plugin-renumber",   "/local/pcb/renumber/buildin",  arg_false,     "$the renumber action is dynamic loadable plugin"},
+
 	{NULL, NULL, NULL, NULL}
 };
 
@@ -171,6 +175,10 @@ int hook_postinit()
 	db_mkdir("/local/pcb/oldactions");
 	put("/local/pcb/oldactions/enable", strue);
 	put("/local/pcb/oldactions/buildin", strue);
+
+	db_mkdir("/local/pcb/renumber");
+	put("/local/pcb/renumber/enable", strue);
+	put("/local/pcb/renumber/buildin", strue);
 
 	return 0;
 }
@@ -393,6 +401,7 @@ int hook_generate()
 	plugin_stat("Edif: ",                  "/local/pcb/edif");
 	plugin_stat("djopt: ",                 "/local/pcb/djopt");
 	plugin_stat("Mincut: ",                "/local/pcb/mincut");
+	plugin_stat("renumber:",               "/local/pcb/renumber");
 	plugin_stat("old actions:",            "/local/pcb/oldactions");
 
 	if (manual_config)

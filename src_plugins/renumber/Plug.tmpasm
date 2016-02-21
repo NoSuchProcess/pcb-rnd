@@ -1,0 +1,16 @@
+append /local/pcb/renumber/enable {}
+append /local/pcb/renumber/buildin {}
+
+put /local/pcb/mod {renumber}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/renumber/renumber.o @]
+
+if /local/pcb/renumber/enable then
+	if /local/pcb/renumber/buildin then
+		include {Makefile.in.mod/Buildin}
+	else
+		include {Makefile.in.mod/Plugin}
+	end
+end
+
+
+
