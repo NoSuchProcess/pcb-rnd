@@ -1666,121 +1666,6 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 #endif
 
 /* --------------------------------------------------------------------------- */
-
-static const char ripup_syntax[] = "RipUp(All|Selected|Element)";
-
-static const char ripup_help[] = "Ripup auto-routed tracks, or convert an element to parts.";
-
-/* %start-doc actions RipUp
-
-@table @code
-
-@item All
-Removes all lines and vias which were created by the autorouter.
-
-@item Selected
-Removes all selected lines and vias which were created by the
-autorouter.
-
-@item Element
-Converts the element under the cursor to parts (vias and lines).  Note
-that this uses the highest numbered paste buffer.
-
-@end table
-
-%end-doc */
-
-static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
-{
-	char *function = ARG(0);
-	bool changed = false;
-
-	if (function) {
-		switch (GetFunctionID(function)) {
-		case F_All:
-			ALLLINE_LOOP(PCB->Data);
-			{
-				if (TEST_FLAG(AUTOFLAG, line) && !TEST_FLAG(LOCKFLAG, line)) {
-					RemoveObject(LINE_TYPE, layer, line, line);
-					changed = true;
-				}
-			}
-			ENDALL_LOOP;
-			ALLARC_LOOP(PCB->Data);
-			{
-				if (TEST_FLAG(AUTOFLAG, arc) && !TEST_FLAG(LOCKFLAG, arc)) {
-					RemoveObject(ARC_TYPE, layer, arc, arc);
-					changed = true;
-				}
-			}
-			ENDALL_LOOP;
-			VIA_LOOP(PCB->Data);
-			{
-				if (TEST_FLAG(AUTOFLAG, via) && !TEST_FLAG(LOCKFLAG, via)) {
-					RemoveObject(VIA_TYPE, via, via, via);
-					changed = true;
-				}
-			}
-			END_LOOP;
-
-			if (changed) {
-				IncrementUndoSerialNumber();
-				SetChangedFlag(true);
-			}
-			break;
-		case F_Selected:
-			VISIBLELINE_LOOP(PCB->Data);
-			{
-				if (TEST_FLAGS(AUTOFLAG | SELECTEDFLAG, line)
-						&& !TEST_FLAG(LOCKFLAG, line)) {
-					RemoveObject(LINE_TYPE, layer, line, line);
-					changed = true;
-				}
-			}
-			ENDALL_LOOP;
-			if (PCB->ViaOn)
-				VIA_LOOP(PCB->Data);
-			{
-				if (TEST_FLAGS(AUTOFLAG | SELECTEDFLAG, via)
-						&& !TEST_FLAG(LOCKFLAG, via)) {
-					RemoveObject(VIA_TYPE, via, via, via);
-					changed = true;
-				}
-			}
-			END_LOOP;
-			if (changed) {
-				IncrementUndoSerialNumber();
-				SetChangedFlag(true);
-			}
-			break;
-		case F_Element:
-			{
-				void *ptr1, *ptr2, *ptr3;
-
-				if (SearchScreen(Crosshair.X, Crosshair.Y, ELEMENT_TYPE, &ptr1, &ptr2, &ptr3) != NO_TYPE) {
-					Note.Buffer = Settings.BufferNumber;
-					SetBufferNumber(MAX_BUFFER - 1);
-					ClearBuffer(PASTEBUFFER);
-					CopyObjectToBuffer(PASTEBUFFER->Data, PCB->Data, ELEMENT_TYPE, ptr1, ptr2, ptr3);
-					SmashBufferElement(PASTEBUFFER);
-					PASTEBUFFER->X = 0;
-					PASTEBUFFER->Y = 0;
-					SaveUndoSerialNumber();
-					EraseObject(ELEMENT_TYPE, ptr1, ptr1);
-					MoveObjectToRemoveUndoList(ELEMENT_TYPE, ptr1, ptr2, ptr3);
-					RestoreUndoSerialNumber();
-					CopyPastebufferToLayout(0, 0);
-					SetBufferNumber(Note.Buffer);
-					SetChangedFlag(true);
-				}
-			}
-			break;
-		}
-	}
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
 /* helper: get route style size for a function and selected object type.
    size_id: 0=main size; 1=2nd size (drill); 2=clearance */
 int get_style_size(int funcid, Coord * out, int type, int size_id)
@@ -2197,9 +2082,6 @@ HID_Action action_action_list[] = {
 	 renumber_help, renumber_syntax}
 	,
 #endif
-	{"RipUp", 0, ActionRipUp,
-	 ripup_help, ripup_syntax}
-	,
 	{"SetSame", N_("Select item to use attributes from"), ActionSetSame,
 	 setsame_help, setsame_syntax}
 	,
