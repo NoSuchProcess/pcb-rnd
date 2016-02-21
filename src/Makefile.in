@@ -58,6 +58,7 @@ put /local/pcb/OBJS [@
 	rubberband.o
 	search.o
 	select.o
+	select_act.o
 	set.o
 	strflags.o
 	stub_edif.o
@@ -93,7 +94,7 @@ put /local/pcb/LEX  {res_lex parse_l}
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
 	action.c buffer.c change_act.c command.c flags.c main.c misc.c
-	move.c netlist.c report.c undo_act.c
+	move.c netlist.c report.c select_act.c undo_act.c
 }
 
 #---- modules ----#

@@ -63,4 +63,21 @@ extern int defer_updates;
 extern int defer_needs_update;
 extern LayerTypePtr lastLayer;
 
+void NotifyLine(void);
+void NotifyBlock(void);
+void NotifyMode(void);
+
+typedef struct {
+	Coord X, Y;
+	Cardinal Buffer;
+	bool Click;
+	bool Moving;									/* selected type clicked on */
+	int Hit;											/* move type clicked on */
+	void *ptr1;
+	void *ptr2;
+	void *ptr3;
+} action_note_t;
+
+extern action_note_t Note;
+
 #endif
