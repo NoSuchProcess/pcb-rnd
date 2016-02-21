@@ -84,6 +84,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-stroke",  "/local/pcb/stroke/buildin",  arg_true,      "$static link libstroke gestures into the executable"},
 	{"plugin-stroke",   "/local/pcb/stroke/buildin",  arg_false,     "$libstroke gestures is dynamic loadable plugin"},
 
+	{"disable-import_sch",  "/local/pcb/import_sch/enable",   arg_false,     "$do not compile the import schematics action"},
+	{"buildin-import_sch",  "/local/pcb/import_sch/buildin",  arg_true,      "$static link the import schematics action into the executable"},
+	{"plugin-import_sch",   "/local/pcb/import_sch/buildin",  arg_false,     "$the import schematics action is dynamic loadable plugin"},
+
 	{NULL, NULL, NULL, NULL}
 };
 
@@ -187,6 +191,10 @@ int hook_postinit()
 	db_mkdir("/local/pcb/stroke");
 	put("/local/pcb/stroke/enable", sfalse);
 	put("/local/pcb/stroke/buildin", strue);
+
+	db_mkdir("/local/pcb/import_sch");
+	put("/local/pcb/import_sch/enable", strue);
+	put("/local/pcb/import_sch/buildin", strue);
 
 	return 0;
 }
@@ -411,6 +419,7 @@ int hook_generate()
 	plugin_stat("Mincut: ",                "/local/pcb/mincut");
 	plugin_stat("renumber:",               "/local/pcb/renumber");
 	plugin_stat("old actions:",            "/local/pcb/oldactions");
+	plugin_stat("import_sch:",             "/local/pcb/import_sch");
 	plugin_stat("stroke:",                 "/local/pcb/stroke");
 
 

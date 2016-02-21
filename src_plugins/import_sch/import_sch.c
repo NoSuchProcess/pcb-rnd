@@ -425,3 +425,9 @@ HID_Action import_sch_action_list[] = {
 };
 
 REGISTER_ACTIONS(import_sch_action_list)
+
+#include "dolists.h"
+void hid_import_sch_init(void)
+{
+	REGISTER_ACTIONS(import_sch_action_list)
+}
