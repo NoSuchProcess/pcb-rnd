@@ -185,7 +185,7 @@ int hook_postinit()
 	put("/local/pcb/renumber/buildin", strue);
 
 	db_mkdir("/local/pcb/stroke");
-	put("/local/pcb/stroke/enable", strue);
+	put("/local/pcb/stroke/enable", sfalse);
 	put("/local/pcb/stroke/buildin", strue);
 
 	return 0;
