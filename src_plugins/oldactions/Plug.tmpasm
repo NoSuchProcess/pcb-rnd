@@ -1,0 +1,16 @@
+append /local/pcb/oldactions/enable {}
+append /local/pcb/oldactions/buildin {}
+
+put /local/pcb/mod {oldactions}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/oldactions/oldactions.o @]
+
+if /local/pcb/oldactions/enable then
+	if /local/pcb/oldactions/buildin then
+		include {Makefile.in.mod/Buildin}
+	else
+		include {Makefile.in.mod/Plugin}
+	end
+end
+
+
+

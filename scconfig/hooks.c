@@ -72,6 +72,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-toporouter",  "/local/pcb/toporouter/buildin",  arg_true,      "$static link the toporouter plugin into the executable"},
 	{"plugin-toporouter",   "/local/pcb/toporouter/buildin",  arg_false,     "$the toporouter plugin is dynamic loadable"},
 
+	{"disable-oldactions",  "/local/pcb/oldactions/enable",   arg_false,     "$do not compile the oldactions"},
+	{"buildin-oldactions",  "/local/pcb/oldactions/buildin",  arg_true,      "$static link the oldactions plugin into the executable"},
+	{"plugin-oldactions",   "/local/pcb/oldactions/buildin",  arg_false,     "$the oldactions plugin is dynamic loadable"},
+
 	{NULL, NULL, NULL, NULL}
 };
 
@@ -163,6 +167,10 @@ int hook_postinit()
 	db_mkdir("/local/pcb/toporouter");
 	put("/local/pcb/toporouter/enable", strue);
 	put("/local/pcb/toporouter/buildin", strue);
+
+	db_mkdir("/local/pcb/oldactions");
+	put("/local/pcb/oldactions/enable", strue);
+	put("/local/pcb/oldactions/buildin", strue);
 
 	return 0;
 }
@@ -385,6 +393,7 @@ int hook_generate()
 	plugin_stat("Edif: ",                  "/local/pcb/edif");
 	plugin_stat("djopt: ",                 "/local/pcb/djopt");
 	plugin_stat("Mincut: ",                "/local/pcb/mincut");
+	plugin_stat("old actions:",            "/local/pcb/oldactions");
 
 	if (manual_config)
 		printf("\n\n * NOTE: you may want to edit config.manual.h (user preferences) *\n");

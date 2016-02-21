@@ -1,8 +1,10 @@
 CLEANUP
+	- write mods.html
+	- ActionBell()
+	- Makefile.dep vs. plugins
 	- move to plugin:
-		- toporouter
-		- gpmi
-	- remove libstroke or move it in a plugin?
+		- libstroke
+		- import_sch.c
 	- warnings in util/
 
 BACK ANNOTATION

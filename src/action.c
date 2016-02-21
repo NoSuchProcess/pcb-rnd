@@ -1260,43 +1260,6 @@ void NotifyMode(void)
 	}
 }
 
-/* -------------------------------------------------------------------------- */
-
-static const char dumplibrary_syntax[] = "DumpLibrary()";
-
-static const char dumplibrary_help[] = "Display the entire contents of the libraries.";
-
-/* %start-doc actions DumpLibrary
-
-
-%end-doc */
-
-static int ActionDumpLibrary(int argc, char **argv, Coord x, Coord y)
-{
-	int i, j;
-
-	printf("**** Do not count on this format.  It will change ****\n\n");
-	printf("MenuN   = %d\n", Library.MenuN);
-	printf("MenuMax = %d\n", Library.MenuMax);
-	for (i = 0; i < Library.MenuN; i++) {
-		printf("Library #%d:\n", i);
-		printf("    EntryN    = %d\n", Library.Menu[i].EntryN);
-		printf("    EntryMax  = %d\n", Library.Menu[i].EntryMax);
-		printf("    Name      = \"%s\"\n", UNKNOWN(Library.Menu[i].Name));
-		printf("    directory = \"%s\"\n", UNKNOWN(Library.Menu[i].directory));
-		printf("    Style     = \"%s\"\n", UNKNOWN(Library.Menu[i].Style));
-		printf("    flag      = %d\n", Library.Menu[i].flag);
-
-		for (j = 0; j < Library.Menu[i].EntryN; j++) {
-			printf("    #%4d: ", j);
-			printf("newlib: \"%s\"\n", UNKNOWN(Library.Menu[i].Entry[j].ListEntry));
-		}
-	}
-
-	return 0;
-}
-
-
 /* ---------------------------------------------------------------------------
  * !!! no action routine !!!
  *
@@ -1759,9 +1722,6 @@ int ActionExecuteFile(int argc, char **argv, Coord x, Coord y)
 /* --------------------------------------------------------------------------- */
 
 HID_Action action_action_list[] = {
-	{"DumpLibrary", 0, ActionDumpLibrary,
-	 dumplibrary_help, dumplibrary_syntax}
-	,
 	{"ExecuteFile", 0, ActionExecuteFile,
 	 executefile_help, executefile_syntax}
 	,
