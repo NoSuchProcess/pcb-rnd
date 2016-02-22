@@ -284,13 +284,12 @@ quit:;
 }
 
 
-#ifdef BA_TODO
 /* The primary purpose of this action is to rebuild a netlist from a
    script, in conjunction with the clear action above.  */
 static int netlist_add(const char *netname, const char *pinname)
 {
 	int ni, pi;
-	LibraryType *netlist = &PCB->NetlistLib[NETLIST_INPUT];
+	LibraryType *netlist = &PCB->NetlistLib[NETLIST_EDITED];
 	LibraryMenuType *net = NULL;
 	LibraryEntryType *pin = NULL;
 
@@ -310,12 +309,12 @@ static int netlist_add(const char *netname, const char *pinname)
 		}
 	if (pin == NULL) {
 		pin = CreateNewConnection(net, (char *) pinname);
+		rats_patch_append_optimize(PCB, RATP_ADD_CONN, pin->ListEntry, net->Name + 2, NULL);
 	}
 
 	NetlistChanged(0);
 	return 0;
 }
-#endif
 
 static const char netlist_syntax[] =
 	"Net(find|select|rats|norats|clear[,net[,pin]])\n" "Net(freeze|thaw|forcethaw)\n" "Net(swap)\n" "Net(add,net,pin)";
@@ -423,12 +422,10 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 		func = (NFunc) netlist_style;
 	else if (strcasecmp(argv[0], "swap") == 0)
 		return netlist_swap();
-#ifdef BA_TODO
 	else if (strcasecmp(argv[0], "add") == 0) {
 		/* Add is different, because the net/pin won't already exist.  */
 		return netlist_add(NL_ARG(1), NL_ARG(2));
 	}
-#endif
 	else if (strcasecmp(argv[0], "sort") == 0) {
 		sort_netlist();
 		return 0;
