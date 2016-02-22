@@ -44,6 +44,7 @@ uninstall:
 
 
 clean:
+	$(RM) gsch2pcb-rnd$(EXE) gsch2pcb.o
 
 include ../Makefile.conf
 
