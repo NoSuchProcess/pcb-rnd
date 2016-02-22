@@ -1,4 +1,4 @@
-CLEANUP
+CLEANUP #2
 	- Makefile.dep vs. plugins
 	- warnings in util/
 	- scconfig: detect libstroke
@@ -10,6 +10,21 @@ BACK ANNOTATION
 BUGS
 - gpmi (and other buildings/plugins) not showing up in the about box
 
+
+CLEANUP #3
+- cleanup resources:
+	- better tree structs with less hidden properties (minor change in the res format: always require key=val pairs)
+	- gtk, lesstif: reorganize the code so that:
+		- menus are always created using a path (ghid_main_menu_real_add_resource)
+		- res->menu should be a common code
+	- dynamic menus for plugins
+	- gpmi:
+		- hid: hid_destroy (pair of hid_create)
+		- cleanup on unload: remove menus
+- check whether local copy of gts is needed, bisect when toporouter broke 
+
+
+
 FEATURES
 - UI: trace length calculation {small}
 - UI: be able to manually change text line width {small}
@@ -20,7 +35,7 @@ FEATURES
 
 Low prio:
 - display net names on pins, vias (and maybe tracks?) when zoomed in enough
-- DRC should wanr for thin poly hair
+- DRC should warn for thin poly hair
 - prev grid size, next grid size
 - rotate shaped vias don't rotate the shape (is via rotated at all?)
 - new examples
@@ -33,19 +48,10 @@ Low prio:
   move then around. If all layers are visible, redraw of the far side layer
   is slow and causes flickering elements from that layer until the front is
   redrawn. Maybe we should have less flushes?
-- cleanup resources:
-	- better tree structs with less hidden properties (minor change in the res format: always require key=val pairs)
-	- gtk, lesstif: reorganize the code so that:
-		- menus are always created using a path (ghid_main_menu_real_add_resource)
-		- res->menu should be a common code
-- check whether local copy of gts is needed
 - gpmi:
 	- dialog: attribute dialog: mini parser from text
 	- fix debug draw in the gtk hid
 	- ACTE_action(): coords should not be int but Coord
-	- hid: hid_destroy (pair of hid_create)
-	- cleanup on unload:
-			- remove menus
 	- get timers to work
 - win32 port {large}
 	- clean up central Makefile.in rules:
