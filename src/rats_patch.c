@@ -217,8 +217,15 @@ int rats_patch_apply_conn(PCBTypePtr pcb, rats_patch_line_t * patch, int del)
 		}
 	}
 
-	/* couldn't find the net */
-	return 1;
+	/* couldn't find the net: create it */
+	{
+		LibraryMenuType *net = NULL;
+		net = CreateNewNet(&pcb->NetlistLib[NETLIST_EDITED], patch->arg1.net_name, NULL);
+		if (net == NULL)
+			return 1;
+		CreateNewConnection(net, (char *) patch->id);
+	}
+	return 0;
 }
 
 
