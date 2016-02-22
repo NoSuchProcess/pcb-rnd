@@ -7,6 +7,7 @@ append /local/pcb/CFLAGS cc/cflags
 append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -Iicons -DHAVE_CONFIG_H -g -DNDEBUG}
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
+put /local/pcb/DEPCFLAGS {}
 
 
 # main: objects
@@ -326,4 +327,7 @@ include {../scconfig/Makefile.comp.inc}
 # generate deps
 put /local/dep/CFLAGS /local/pcb/CFLAGS
 put /local/dep/SRCS /local/pcb/SRCS
+
+gsub /local/pcb/DEPSRCS {.o } {.c }
+append /local/dep/SRCS /local/pcb/DEPSRCS
 include {../scconfig/Makefile.dep.inc}

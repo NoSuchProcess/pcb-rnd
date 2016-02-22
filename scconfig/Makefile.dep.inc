@@ -21,7 +21,11 @@ gsub /local/dep/CFLAGS {-isystem [.]} {-I .}
 foreach /local/c in /local/dep/SRCS
 	switch /local/c
 		case {/src_plugins/} end
-		case {$(PLUGDIR)} end
+		case {$(PLUGDIR)}
+			put /local/o /local/c
+			sub {/local/o} {.c$} {.o}
+			print [@	gcc -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ @/local/pcb/DEPCFLAGS@ >> Makefile.dep
+@]; end
 		default print [@	gcc -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep
 @]; end
 	end

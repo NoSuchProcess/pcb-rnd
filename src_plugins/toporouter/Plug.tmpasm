@@ -13,4 +13,6 @@ if /local/pcb/toporouter/enable then
 		append /local/pcb/toporouter/OBJS { ../src_3rd/gts/libgts.a }
 		include {Makefile.in.mod/Plugin}
 	end
+else
+	include {Makefile.in.mod/Disable}
 end

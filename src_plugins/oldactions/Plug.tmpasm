@@ -10,6 +10,8 @@ if /local/pcb/oldactions/enable then
 	else
 		include {Makefile.in.mod/Plugin}
 	end
+else
+	include {Makefile.in.mod/Disable}
 end
 
 

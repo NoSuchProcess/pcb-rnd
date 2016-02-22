@@ -583,3 +583,110 @@ lpr.o: hid/lpr/lpr.c ../config.h ../config.manual.h ../config.auto.h \
  libpcb_fp.h data.h global.h misc.h ds.h mymem.h hid.h \
  hid/lpr/../hidint.h hid/lpr/../ps/ps.h hid/common/hidnogui.h \
  hid/common/hidinit.h
+../src_plugins/autoplace/autoplace.o: \
+ ../src_plugins/autoplace/autoplace.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ hid.h polyarea.h libpcb_fp.h ../src_plugins/autoplace/autoplace.h box.h \
+ global.h misc.h ds.h mymem.h compat.h data.h draw.h error.h intersect.h \
+ rtree.h macro.h mirror.h misc.h move.h mymem.h rats.h remove.h rotate.h
+../src_plugins/autoplace/action.o: ../src_plugins/autoplace/action.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h \
+ ../src_plugins/autoplace/autoplace.h dolists.h
+../src_plugins/autoroute/autoroute.o: \
+ ../src_plugins/autoroute/autoroute.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ hid.h polyarea.h libpcb_fp.h data.h global.h macro.h \
+ ../src_plugins/autoroute/autoroute.h box.h misc.h ds.h mymem.h create.h \
+ draw.h error.h find.h heap.h rtree.h misc.h \
+ ../src_plugins/autoroute/mtspace.h vector.h mymem.h polygon.h rats.h \
+ remove.h thermal.h undo.h pcb-printf.h
+../src_plugins/autoroute/mtspace.o: ../src_plugins/autoroute/mtspace.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h box.h \
+ global.h misc.h ds.h mymem.h heap.h rtree.h \
+ ../src_plugins/autoroute/mtspace.h vector.h
+../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h \
+ ../src_plugins/autoroute/autoroute.h dolists.h
+../src_plugins/vendordrill/vendor.o: ../src_plugins/vendordrill/vendor.c \
+ ../config.h ../config.manual.h ../config.auto.h change.h global.h \
+ const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
+ libpcb_fp.h data.h draw.h error.h global.h resource.h set.h undo.h \
+ ../src_plugins/vendordrill/vendor.h stub_vendor.h dolists.h
+../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h \
+ create.h global.h data.h draw.h misc.h ds.h mymem.h move.h pcb-printf.h \
+ remove.h rtree.h strflags.h undo.h dolists.h
+../src_plugins/edif/edif.o: ../src_plugins/edif/edif.c global.h \
+ ../config.h ../config.manual.h ../config.auto.h const.h ../globalconst.h \
+ ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h global.h \
+ stub_edif.h
+../src_plugins/toporouter/toporouter.o: \
+ ../src_plugins/toporouter/toporouter.c \
+ ../src_plugins/toporouter/toporouter.h data.h global.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ macro.h hid.h polyarea.h libpcb_fp.h macro.h \
+ ../src_plugins/toporouter/../autoroute/autoroute.h global.h box.h misc.h \
+ ds.h mymem.h create.h draw.h error.h find.h heap.h rtree.h misc.h \
+ mymem.h polygon.h rats.h remove.h thermal.h undo.h ../src_3rd/gts/gts.h \
+ pcb-printf.h
+../src_plugins/oldactions/oldactions.o: \
+ ../src_plugins/oldactions/oldactions.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ hid.h polyarea.h libpcb_fp.h data.h global.h action.h action_funclist.h \
+ action_funchash.h change.h error.h undo.h dolists.h
+../src_plugins/renumber/renumber.o: ../src_plugins/renumber/renumber.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h \
+ global.h action.h action_funclist.h action_funchash.h change.h error.h \
+ undo.h pcb-printf.h dolists.h
+../src_plugins/import_sch/import_sch.o: \
+ ../src_plugins/import_sch/import_sch.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ hid.h polyarea.h libpcb_fp.h data.h global.h action.h action_funclist.h \
+ action_funchash.h change.h error.h undo.h misc.h ds.h mymem.h \
+ portability.h pcb-printf.h remove.h rats.h dolists.h
+../src_plugins/autoroute/autoroute.o: \
+ ../src_plugins/autoroute/autoroute.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ hid.h polyarea.h libpcb_fp.h data.h global.h macro.h \
+ ../src_plugins/autoroute/autoroute.h box.h misc.h ds.h mymem.h create.h \
+ draw.h error.h find.h heap.h rtree.h misc.h \
+ ../src_plugins/autoroute/mtspace.h vector.h mymem.h polygon.h rats.h \
+ remove.h thermal.h undo.h pcb-printf.h
+../src_plugins/autoroute/mtspace.o: ../src_plugins/autoroute/mtspace.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h box.h \
+ global.h misc.h ds.h mymem.h heap.h rtree.h \
+ ../src_plugins/autoroute/mtspace.h vector.h
+../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h \
+ ../src_plugins/autoroute/autoroute.h dolists.h
+../src_plugins/vendordrill/vendor.o: ../src_plugins/vendordrill/vendor.c \
+ ../config.h ../config.manual.h ../config.auto.h change.h global.h \
+ const.h ../globalconst.h ../config.h macro.h hid.h polyarea.h \
+ libpcb_fp.h data.h draw.h error.h global.h resource.h set.h undo.h \
+ ../src_plugins/vendordrill/vendor.h stub_vendor.h dolists.h
+../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h \
+ create.h global.h data.h draw.h misc.h ds.h mymem.h move.h pcb-printf.h \
+ remove.h rtree.h strflags.h undo.h dolists.h
+../src_plugins/edif/edif.o: ../src_plugins/edif/edif.c global.h \
+ ../config.h ../config.manual.h ../config.auto.h const.h ../globalconst.h \
+ ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h global.h \
+ stub_edif.h
+../src_plugins/djopt/djopt.o: ../src_plugins/djopt/djopt.c ../config.h \
+ ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
+ ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h global.h \
+ create.h remove.h move.h draw.h undo.h strflags.h find.h pcb-printf.h \
+ dolists.h
+../src_plugins/stroke/stroke.o: ../src_plugins/stroke/stroke.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h hid.h polyarea.h libpcb_fp.h data.h \
+ global.h crosshair.h stub_stroke.h rotate.h undo.h set.h error.h misc.h \
+ ds.h mymem.h

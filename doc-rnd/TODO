@@ -1,5 +1,4 @@
 CLEANUP #2
-	- Makefile.dep vs. plugins
 	- warnings in util/
 	- scconfig: detect libstroke
 	- libstroke: zoom
