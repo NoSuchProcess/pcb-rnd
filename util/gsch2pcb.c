@@ -33,6 +33,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include "../src/libpcb_fp.h"
+#include "../src/paths.h"
 #include "../config.h"
 
 #define GSC2PCB_VERSION "1.6"
@@ -127,7 +128,6 @@ build_and_run_command (const gchar *format, ...)
   gint i;
   gint status;
   gboolean result = FALSE;
-  gboolean spawn_result;
   gchar *standard_output = NULL;
   gchar *standard_error = NULL;
   GError * error = NULL;
@@ -569,9 +569,7 @@ insert_element (FILE * f_out, FILE *f_elem,
 gchar *
 search_element (PcbElement * el)
 {
-  GList *list;
-  gchar *s, *elname = NULL, *dir_path, *path = NULL;
-  gint n1, n2;
+  gchar *elname = NULL, *path = NULL;
 
   if (!elname)
     elname = g_strdup (el->description);
@@ -596,7 +594,6 @@ pkg_to_element (FILE * f, gchar * pkg_line)
 {
   PcbElement *el;
   gchar *s, *end, *refdes, *fp, *value;
-  gint n, n_extra_args, n_dashes;
 
 /*fprintf(stderr, "--- %s\n", pkg_line);*/
 
@@ -694,7 +691,7 @@ add_elements (gchar * pcb_file)
 {
   FILE *f_in, *f_out, *fp;
   PcbElement *el = NULL;
-  gchar *command, *tmp_file, *s, buf[1024];
+  gchar *tmp_file, *s, buf[1024];
   gint total, paren_level = 0;
   gboolean skipping = FALSE;
   int st;
@@ -790,7 +787,7 @@ update_element_descriptions (gchar * pcb_file, gchar * bak)
   FILE *f_in, *f_out;
   GList *list;
   PcbElement *el, *el_exists;
-  gchar *fmt, *command, *tmp, *s, buf[1024];
+  gchar *fmt, *tmp, *s, buf[1024];
 
   for (list = pcb_element_list; list; list = g_list_next (list)) {
     el = (PcbElement *) list->data;
@@ -845,7 +842,7 @@ prune_elements (gchar * pcb_file, gchar * bak)
   FILE *f_in, *f_out;
   GList *list;
   PcbElement *el, *el_exists;
-  gchar *fmt, *command, *tmp, *s, buf[1024];
+  gchar *fmt, *tmp, *s, buf[1024];
   gint paren_level = 0;
   gboolean skipping = FALSE;
 
@@ -921,18 +918,6 @@ prune_elements (gchar * pcb_file, gchar * bak)
 
   build_and_run_command ("mv %s %s", tmp, pcb_file);
   g_free (tmp);
-}
-
-static gchar *
-expand_dir (gchar * dir)
-{
-  gchar *s;
-
-  if (*dir == '~')
-    s = g_build_filename ((gchar *) g_get_home_dir (), dir + 1, NULL);
-  else
-    s = g_strdup (dir);
-  return s;
 }
 
 static void
@@ -1181,7 +1166,7 @@ usage ()
 static void
 get_args (gint argc, gchar ** argv)
 {
-  gchar *opt, *arg, *s;
+  gchar *opt, *arg;
   gint i, r;
 
   for (i = 1; i < argc; ++i) {
@@ -1234,7 +1219,6 @@ main (gint argc, gchar ** argv)
   gint i;
   gboolean initial_pcb = TRUE;
   gboolean created_pcb_file = TRUE;
-  char *path, *p;
 
   if (argc < 2)
     usage ();
