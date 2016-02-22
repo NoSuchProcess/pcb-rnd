@@ -1,0 +1,6 @@
+Automatically route selected or all rats using a topological algorithm. This
+is the new autorouter from 2009.
+
+#state: fails
+#lstate: infinite loop in gts
+#default: disabled

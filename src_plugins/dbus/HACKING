@@ -1,0 +1,5 @@
+Needs scconfig detection. Does anyone use dbus?
+
+Makefile:
+	EXTRA_DIST += dbus.xml
+	DISTCLEAN_FILES += dbus-introspect.h \

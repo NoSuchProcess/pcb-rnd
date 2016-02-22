@@ -1,0 +1,5 @@
+Random collection of old/obsolete actions. Bell(): audible feedback;
+DumpLibrary(): print footprint library on stdout
+
+#state: works
+#default: disabled

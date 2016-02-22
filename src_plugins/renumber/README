@@ -1,0 +1,5 @@
+Renumber elements (renaming them) and generate a text file for
+back annotation.
+
+#state: works
+#default: buildin
