@@ -35,14 +35,17 @@ All numbers are in <a href="en.wikipedia.org/wiki/Source_lines_of_code">SLOC</a>
 and are acquired running sloccount on the given directory. While lines of
 code alone is not a true measure of complexity, it's a good estimation. The
 slices of pie charts are the major components of the pcb-rnd executable.
-<table border=0>
-<tr><td><img src="before.png"><td><img src="after.png">
-<tr><td>Before modularization: pcb-rnd version 1.0.7 <td> After modularization: pcb-rnd version 1.0.8
+<table border=1>
+	<table border=0>
+	<tr><td><img src="before.png"><td><img src="after.png">
+	<tr><td>Before modularization: pcb-rnd version 1.0.7 <td> After modularization: pcb-rnd version 1.0.8
+	</table>
 </table>
 Note: gpmi was already a plugins in 1.0.7, and it is part of the "plugins"
 slice in 1.0.8.
 <p>
 Zooming on to the plugins:
+<p>
 <img src="mods.png">
 <p>
 (Red means the plugin doesn't really work).
