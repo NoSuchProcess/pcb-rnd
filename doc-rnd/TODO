@@ -1,13 +1,10 @@
-CLEANUP #2
-	- warnings in util/
-	- scconfig: detect libstroke
-	- libstroke: zoom
-
 BUGS
 - gpmi (and other buildings/plugins) not showing up in the about box
 
 
 CLEANUP #3
+- scconfig: detect libstroke
+- libstroke: zoom
 - cleanup resources:
 	- better tree structs with less hidden properties (minor change in the res format: always require key=val pairs)
 	- gtk, lesstif: reorganize the code so that:
