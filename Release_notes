@@ -1,11 +1,12 @@
-pcb-rnd 1.0.7
+pcb-rnd 1.0.8
 ~~~~~~~~~~~~~
-1.0.7 is a large scale cleanup release that touches most source files.
-The three major changes:
- - remove non-c89 features (// comments, variable declaration in for()),
- - unify indentation and code formatting
- - reorganize the directory structure
+1.0.8 is the second phase of the large scale cleanup started at 1.0.7.
 
-It also features a lot of smaller fixes and removes most compiler warnings.
+Major changes:
 
-
+- more than 40% of the core code has been turned into plugins
+  (see http://repo.hu/projects/pcb-rnd/mods)
+- revive libstroke support (should work with the gtk HID)
+- fix the remaining TODOs in back annotation, including action net(add,net,pin)
+- revive the renumber code (was on hold because of the back annotation patch)
+- clean up util/ (compiler warnings, indentation)

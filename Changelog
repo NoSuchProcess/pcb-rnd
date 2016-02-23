@@ -1,3 +1,46 @@
+pcb-rnd 1.0.8
+~~~~~~~~~~~~~
+	[doc-rnd]
+		-Add: djopt examples
+
+	[mods]
+		-Cleanup: split up action.c and spread the code in core and plugins
+		-Move: action pscalib() to the ps hid code
+		-Move: autoplace to a core plugin
+		-Move: autoroute to a core plugin
+		-Move: dbus to a defunct core plugin
+		-Move: djopt to a core plugin
+		-Move: edif to a core plugin
+		-Move: gpmi to a core plugin
+		-Move: import_sch to a core plugin
+		-Move: mincut to a core plugin
+		-Move: oldactions to a core plugin
+		-Move: puller to a core plugin
+		-Move: renumber to a core plugin
+		-Move: stroke to a core plugin
+		-Move: toporouter to a core plugin
+		-Move: vendordrill to a core plugin
+
+	[ba]
+		-Add: when applying patches to the edited netlist, create missing nets
+		      (new connections may implicitly define new nets)
+		-Fix: get the renumber action() fixed
+		-Fix: enable net(add,net,pin) action again and make it operate on the
+		      edited netlist for the back annotation to take notes of the
+		      changes made
+
+	[libstroke]
+		-Add: menu in the gtk hid's res to toggle stroke enable
+		-Fix: osolete calls in libstroke action - libstroke support compiles now
+		-Fix: get the gtk gui call the central crosshair move event handler
+		      instead of reproducing its code locally (... without libstroke)
+
+	[util]
+		-Add: make clean
+		-Fix: compiler warnings, mostly unused vars in gsch2pcb
+		-Cleanup: indentation in gsch2pcb
+
+
 pcb-rnd 1.0.7
 ~~~~~~~~~~~~~
 	-Cleanup: src/ should compile in c89 - no more // comments and variables declared in for()
