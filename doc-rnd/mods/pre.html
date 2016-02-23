@@ -1,5 +1,54 @@
 <html>
 <body>
+<H1> pcb-rnd modularization </H1>
+<H2> Why bother... </H2>
+I believe good software should be modular. This is especially important in
+the context of large software, such as CAD applications. There should be
+a thin core that can model the world and provide the basic operations defined
+on it but anything else should go in separate modules.
+<p>
+Fortunately PCB already had a strong infrastructure supporting this idea.
+It has dynamic loadable plugins and the GUI and exporters are in separate
+HID modules. While working on pcb-gpmi and later pcb-rnd, I added the
+gpmi module as a separate plugin.
+<p>
+As of version 1.0.8 a cosiderable chunk of core code has been moved into
+<i>core plugins</i>. A <i>core plugin</i> is just a plugin that is
+maintained together with the core, in the same repository, still the code is
+somewhat detached from the core. More importantly, the user can choose, for
+each plugin, separately:
+<ul>
+	<li> to compile it as a buildin (static-link it into the pcb executable)
+	<li> to compile it as a plugin (dynamic-link it runtime, if the .so is installed in the plugins/ directory)
+	<li> to disable the plugin, so it is not compiled at all
+</ul>
+<p>
+I believe such modularization has benefits on multiple levels:
+<ul>
+	<li> it is possible to compiler smaller, potentially faster executables by omitting features the specific user would never use anyway
+	<li> in a distribution dynamic-link plugins can be distributed as separate packages providing the user with the option to decide what features to install
+	<li> such plugins have to have some sort of APIs if they want to reference eachother or if the code needs to reference them; such an API may not (and often did not) exist when the code is part of the core
+</ul>
+
+<H2> Progress in charts </H2>
+All numbers are in <a href="en.wikipedia.org/wiki/Source_lines_of_code">SLOC</a>
+and are acquired running sloccount on the given directory. While lines of
+code alone is not a true measure of complexity, it's a good estimation. The
+slices of pie charts are the major components of the pcb-rnd executable.
+<table border=0>
+<tr><td><img src="before.png"><td><img src="after.png">
+<tr><td>Before modularization: pcb-rnd version 1.0.7 <td> After modularization: pcb-rnd version 1.0.8
+</table>
+Note: gpmi was already a plugins in 1.0.7, and it is part of the "plugins"
+slice in 1.0.8.
+<p>
+Zooming on to the plugins:
+<img src="mods.png">
+<p>
+(Red means the plugin doesn't really work).
+
+<H2> Progress in numbers </H2>
+Below is a table with the summary of core plugins.
 <table border=1 cellspacing=0>
 <tr><th>module <th>size [sloc] <th> status <th> configure<br>default  <th> description
 
