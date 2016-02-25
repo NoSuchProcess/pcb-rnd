@@ -6,8 +6,16 @@ put /local/pcb/mod/OBJS [@ $(PLUGDIR)/toporouter/toporouter.o @]
 append /local/pcb/CFLAGS  {-I../src_3rd/gts}
 
 if /local/pcb/toporouter/enable then
+
+append /local/pcb/RULES [@
+../src_3rd/gts/libgts.a:
+	cd ../src_3rd/gts && make
+
+@]
+
 	if /local/pcb/toporouter/buildin then
 		append /local/pcb/LIBS            { ../src_3rd/gts/libgts.a }
+		append /local/pcb/EXEDEPS         { ../src_3rd/gts/libgts.a }
 		include {Makefile.in.mod/Buildin}
 	else
 		append /local/pcb/toporouter/OBJS { ../src_3rd/gts/libgts.a }
