@@ -1,11 +1,11 @@
 append /local/pcb/stroke/enable {}
 append /local/pcb/stroke/buildin {}
-append /local/pcb/LDFLAGS {-lstroke}
 
 put /local/pcb/mod {stroke}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/stroke/stroke.o @]
 
 if /local/pcb/stroke/enable then
+	append /local/pcb/LDFLAGS {-lstroke}
 	if /local/pcb/stroke/buildin then
 		include {Makefile.in.mod/Buildin}
 	else
