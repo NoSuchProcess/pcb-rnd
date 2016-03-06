@@ -32,6 +32,7 @@
 #include <sys/stat.h>
 #include "../src/libpcb_fp.h"
 #include "../src/paths.h"
+#include "../src_3rd/genvector/vts0.h"
 #include "../config.h"
 
 #include <glib.h>
@@ -105,6 +106,13 @@ void Message(char *err)
 }
 
 
+/* Temporary list-to-vts0 append call as an intermediate step in [unglib] */
+static void tmp_append(gpointer data, gpointer user_data)
+{
+	vts0_t *args = (vts0_t *)user_data;
+	vts0_append(user_data, (char *)data);
+}
+
 /**
  * Build and run a command. No redirection or error handling is
  * done.  Format string is split on whitespace. Specifiers %l and %s
@@ -116,67 +124,77 @@ void Message(char *err)
  * @param[in] format  used to specify command to be executed
  * @param[in] ...     positional parameters
  */
-static int build_and_run_command(const char * format, ...)
+static int build_and_run_command(const char * format_, ...)
 {
 	va_list vargs;
-	char **split;
-	GList *tmp = NULL;
-	int num_split;
-	int i;
-	int status;
+	int i, status;
 	int result = FALSE;
 	char *standard_output = NULL;
 	char *standard_error = NULL;
 	GError *error = NULL;
+	vts0_t args;
+	char *format, *s, *start;
 
-	va_start(vargs, format);
-	split = g_strsplit_set(format, " \t\n\v", 0);
-	num_split = g_strv_length(split);
-	for (i = 0; i < num_split; ++i) {
-		char *chunk = split[i];
-		if (strcmp(chunk, "%l") == 0) {
-			/* append contents of list into command args - shared data */
-			tmp = g_list_concat(tmp, g_list_copy(va_arg(vargs, GList *)));
+	/* Translate the format string; args elements point to const char *'s
+	   within a copy of the format string. The format string is copied so
+	   that these parts can be terminated by overwriting whitepsace with \0 */
+	va_start(vargs, format_);
+	format = strdup(format_);
+	vts0_init(&args);
+	for(s = start = format; *s != '\0'; s++) {
+		/* if word separator is reached, save the previous word */
+		if (isspace(s[0])) {
+			if (start == s) { /* empty word - skip */
+				start++;
+				continue;
+			}
+			*s = '\0';
+			vts0_append(&args, start);
+			start = s+1;
+			continue;
 		}
-		else if (strcmp(chunk, "%s") == 0) {
-			/* insert contents of string into output */
-			tmp = g_list_append(tmp, va_arg(vargs, char *));
-		}
-		else {
-			/* bare string, use as is */
-			tmp = g_list_append(tmp, chunk);
+		
+		/* check if current word is a format */
+		if ((s == start) && (s[0] == '%') && (s[1] != '\0') && ((s[2] == '\0') || isspace(s[2]))) {
+			switch(s[1]) {
+				case 'l': /* append contents of list into command args - shared data */
+					{
+						GList *lst = va_arg(vargs, GList *);
+						g_list_foreach(lst, tmp_append, &args);
+					}
+					start = s+2;
+					s++;
+					continue;
+				case 's':
+					vts0_append(&args, va_arg(vargs, char *));
+					start = s+2;
+					s++;
+					continue;
+			}
 		}
 	}
 	va_end(vargs);
 
-	if (tmp) {
+	if (args.used > 0) {
 		/* we have something in the list, build & call command */
-		GList *p;
-		int i = 0;
-		char **args = g_new0(char *, g_list_length(tmp) + 1 /* NULL terminate the list */ );
-
-		if (verbose)
+		if (verbose) {
+			int i;
 			printf("Running command:\n\t");
-
-		for (p = tmp; p; p = g_list_next(p)) {
-			args[i++] = (char *) p->data;
-			if (verbose)
-				printf("%s ", (char *) p->data);
+			for (i = 0; i < args.used; i++)
+				printf("%s ", args.array[i]);
+			printf("\n%s", SEP_STRING);
 		}
 
-		if (verbose)
-			printf("\n%s", SEP_STRING);
-
-		if (g_spawn_sync(".",				/* Working directory */
-										 args,			/* argv */
-										 NULL,			/* envp */
-										 G_SPAWN_SEARCH_PATH,	/* flags */
-										 NULL,			/* child_setup */
-										 NULL,			/* user data */
-										 &standard_output,	/* standard output */
-										 &standard_error,	/* standard error */
-										 &status,		/* exit status return */
-										 &error)) {	/* GError return */
+		if (g_spawn_sync(".",                  /* Working directory */
+										 args.array,           /* argv */
+										 NULL,                 /* envp */
+										 G_SPAWN_SEARCH_PATH,  /* flags */
+										 NULL,                 /* child_setup */
+										 NULL,                 /* user data */
+										 &standard_output,     /* standard output */
+										 &standard_error,      /* standard error */
+										 &status,              /* exit status return */
+										 &error)) {            /* GError return */
 			if (verbose)
 				fputs(standard_output, stdout);
 			if (status == 0)
@@ -196,14 +214,10 @@ static int build_and_run_command(const char * format, ...)
 
 		g_free(standard_error);
 		g_free(standard_output);
-
-		g_free(args);
-		/* free the list, but leave data untouched */
-		g_list_free(tmp);
 	}
 
-	g_strfreev(split);
-
+	free(format);
+	vts0_uninit(&args);
 	return result;
 }
 
