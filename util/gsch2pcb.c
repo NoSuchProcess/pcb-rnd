@@ -74,9 +74,9 @@ typedef struct {
 } ElementMap;
 
 gdl_list_t pcb_element_list; /* initialized to 0 */
-gadl_list_t schematics;
+gadl_list_t schematics, extra_gnetlist_arg_list;
 
-static GList *extra_gnetlist_list, *extra_gnetlist_arg_list;
+static GList *extra_gnetlist_list;
 
 static char *sch_basename;
 
@@ -268,16 +268,16 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 	if (!verbose)
 		verboseList = g_list_append(verboseList, "-q");
 
-	if (!build_and_run_command("%s %l -g pcbpins -o %s %l %L", gnetlist, verboseList, pins_file, extra_gnetlist_arg_list, largs))
+	if (!build_and_run_command("%s %l -g pcbpins -o %s %L %L", gnetlist, verboseList, pins_file, &extra_gnetlist_arg_list, largs))
 		return FALSE;
 
-	if (!build_and_run_command("%s %l -g PCB -o %s %l %L", gnetlist, verboseList, net_file, extra_gnetlist_arg_list, largs))
+	if (!build_and_run_command("%s %l -g PCB -o %s %L %L", gnetlist, verboseList, net_file, &extra_gnetlist_arg_list, largs))
 		return FALSE;
 
 	mtime = (stat(pcb_file, &st) == 0) ? st.st_mtime : 0;
 
-	if (!build_and_run_command("%s %l -L " SCMDIR " -g gsch2pcb-rnd -o %s %l %l %L",
-														 gnetlist, verboseList, pcb_file, args1, extra_gnetlist_arg_list, largs)) {
+	if (!build_and_run_command("%s %l -L " SCMDIR " -g gsch2pcb-rnd -o %s %l %L %L",
+														 gnetlist, verboseList, pcb_file, args1, &extra_gnetlist_arg_list, largs)) {
 		if (stat(pcb_file, &st) != 0 || mtime == st.st_mtime) {
 			fprintf(stderr, "gsch2pcb: gnetlist command failed, `%s' not updated\n", pcb_file);
 			return FALSE;
@@ -299,8 +299,8 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 			backend = g_strndup(s, s2 - s);
 		}
 
-		if (!build_and_run_command("%s %l -g %s -o %s %l %L",
-															 gnetlist, verboseList, backend, out_file, extra_gnetlist_arg_list, largs))
+		if (!build_and_run_command("%s %l -g %s -o %s %L %L",
+															 gnetlist, verboseList, backend, out_file, &extra_gnetlist_arg_list, largs))
 			return FALSE;
 		g_free(out_file);
 		g_free(backend);
@@ -1157,7 +1157,10 @@ static void get_args(int argc, char ** argv)
 				continue;
 			}
 			else if (!strcmp(opt, "gnetlist-arg")) {
-				extra_gnetlist_arg_list = g_list_append(extra_gnetlist_arg_list, strdup(arg));
+				char **n;
+				n = gadl_new(&extra_gnetlist_arg_list);
+				*n = strdup(arg);
+				gadl_append(&extra_gnetlist_arg_list, n);
 				i++;
 				continue;
 			}
@@ -1194,6 +1197,7 @@ int main(int argc, char ** argv)
 		usage();
 
 	gadl_list_init(&schematics, sizeof(char *), NULL, NULL);
+	gadl_list_init(&extra_gnetlist_arg_list, sizeof(char *), NULL, NULL);
 
 	paths_init_homedir();
 
