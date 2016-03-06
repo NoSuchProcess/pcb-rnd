@@ -53,12 +53,12 @@ typedef struct {
 	char *pkg_name_fix;
 	char res_char;
 
-	unsigned char still_exists;
-	unsigned char new_format;
-	unsigned char hi_res_format;
-	unsigned char quoted_flags;
-	unsigned char omit_PKG;
-	unsigned char nonetlist;
+	unsigned char still_exists:1;
+	unsigned char new_format:1;
+	unsigned char hi_res_format:1;
+	unsigned char quoted_flags:1;
+	unsigned char omit_PKG:1;
+	unsigned char nonetlist:1;
 } PcbElement;
 
 
@@ -370,7 +370,7 @@ PcbElement *pcb_element_line_parse(char * line)
 {
 	PcbElement *el = NULL;
 	char *s, *t, close_char;
-	int state = 0, elcount = 0;
+	int state = 0, elcount = 0, tmp;
 
 	if (strncmp(line, "Element", 7))
 		return NULL;
@@ -391,7 +391,7 @@ PcbElement *pcb_element_line_parse(char * line)
 	el->res_char = el->hi_res_format ? '[' : '(';
 	close_char = el->hi_res_format ? ']' : ')';
 
-	el->flags = token(s + 1, NULL, &el->quoted_flags, 0);
+	el->flags = token(s + 1, NULL, &tmp, 0); el->quoted_flags = tmp;
 	el->description = token(NULL, NULL, NULL, 0);
 	el->refdes = token(NULL, NULL, NULL, 0);
 	el->value = token(NULL, NULL, NULL, 0);
