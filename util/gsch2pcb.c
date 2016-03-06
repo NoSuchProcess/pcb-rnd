@@ -19,6 +19,9 @@
 
  * Retrieved from the official git (2015.07.15)
 
+ Behavior different from the original:
+  - use getenv() instead of g_getenv(): on windows this won't do recursive variable expansion
+  - use rnd-specific .scm
  */
 
 #include "config.h"
@@ -246,7 +249,7 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 	 * are installed at once.
 	 */
 	if (gnetlist == NULL)
-		gnetlist = g_getenv("GNETLIST");
+		gnetlist = getenv("GNETLIST");
 	if (gnetlist == NULL)
 		gnetlist = "gnetlist";
 
