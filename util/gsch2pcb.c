@@ -129,7 +129,8 @@ static void tmp_append(gpointer data, gpointer user_data)
  * specifiers must be separated from other arguments in the format by
  * whitespace.
  *  - %l expects a GList, contents used as separate arguments
- *  - %s expects a char*, contents used as a single argument
+ *  - %L expects a gadl_list_t vith char * payload, contents used as separate arguments
+ *  - %s expects a char*, contents used as a single argument (omitted if NULL)
  * @param[in] format  used to specify command to be executed
  * @param[in] ...     positional parameters
  */
