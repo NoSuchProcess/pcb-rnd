@@ -21,11 +21,9 @@
 
  */
 
-
 #include "config.h"
 
-#include <glib.h>
-
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,41 +34,51 @@
 #include "../src/paths.h"
 #include "../config.h"
 
+#include <glib.h>
+
 #define GSC2PCB_VERSION "1.6"
 
 #define DEFAULT_PCB_INC "pcb.inc"
 
 #define SEP_STRING "--------\n"
 
-typedef struct {
-	gchar *refdes, *value, *description, *changed_description, *changed_value;
-	gchar *flags, *tail;
-	gchar *x, *y;
-	gchar *pkg_name_fix;
-	gchar res_char;
+#define TRUE 1
+#define FALSE 0
 
-	gboolean still_exists, new_format, hi_res_format, quoted_flags, omit_PKG, nonetlist;
+typedef struct {
+	char *refdes, *value, *description, *changed_description, *changed_value;
+	char *flags, *tail;
+	char *x, *y;
+	char *pkg_name_fix;
+	char res_char;
+
+	unsigned char still_exists;
+	unsigned char new_format;
+	unsigned char hi_res_format;
+	unsigned char quoted_flags;
+	unsigned char omit_PKG;
+	unsigned char nonetlist;
 } PcbElement;
 
 
 typedef struct {
-	gchar *part_number, *element_name;
+	char *part_number, *element_name;
 } ElementMap;
 
 static GList *pcb_element_list, *extra_gnetlist_list, *extra_gnetlist_arg_list;
 
-static gchar *sch_basename;
+static char *sch_basename;
 
 static GList *schematics;
 
-static gchar *empty_footprint_name;
+static char *empty_footprint_name;
 
-static gint verbose,
+static int verbose,
 	n_deleted,
 	n_added_ef,
 	n_fixed, n_PKG_removed_new, n_PKG_removed_old, n_preserved, n_changed_value, n_not_found, n_unknown, n_none, n_empty;
 
-static gboolean remove_unfound_elements = TRUE, quiet_mode = FALSE, preserve, fix_elements, bak_done, need_PKG_purge;
+static int remove_unfound_elements = TRUE, quiet_mode = FALSE, preserve, fix_elements, bak_done, need_PKG_purge;
 
 static char *element_search_path = NULL;
 static char *element_shell = PCB_LIBRARY_SHELL;
@@ -104,35 +112,35 @@ void Message(char *err)
  * specifiers must be separated from other arguments in the format by
  * whitespace.
  *  - %l expects a GList, contents used as separate arguments
- *  - %s expects a gchar*, contents used as a single argument
+ *  - %s expects a char*, contents used as a single argument
  * @param[in] format  used to specify command to be executed
  * @param[in] ...     positional parameters
  */
-static gboolean build_and_run_command(const gchar * format, ...)
+static int build_and_run_command(const char * format, ...)
 {
 	va_list vargs;
-	gchar **split;
+	char **split;
 	GList *tmp = NULL;
-	gint num_split;
-	gint i;
-	gint status;
-	gboolean result = FALSE;
-	gchar *standard_output = NULL;
-	gchar *standard_error = NULL;
+	int num_split;
+	int i;
+	int status;
+	int result = FALSE;
+	char *standard_output = NULL;
+	char *standard_error = NULL;
 	GError *error = NULL;
 
 	va_start(vargs, format);
 	split = g_strsplit_set(format, " \t\n\v", 0);
 	num_split = g_strv_length(split);
 	for (i = 0; i < num_split; ++i) {
-		gchar *chunk = split[i];
+		char *chunk = split[i];
 		if (strcmp(chunk, "%l") == 0) {
 			/* append contents of list into command args - shared data */
 			tmp = g_list_concat(tmp, g_list_copy(va_arg(vargs, GList *)));
 		}
 		else if (strcmp(chunk, "%s") == 0) {
 			/* insert contents of string into output */
-			tmp = g_list_append(tmp, va_arg(vargs, gchar *));
+			tmp = g_list_append(tmp, va_arg(vargs, char *));
 		}
 		else {
 			/* bare string, use as is */
@@ -144,14 +152,14 @@ static gboolean build_and_run_command(const gchar * format, ...)
 	if (tmp) {
 		/* we have something in the list, build & call command */
 		GList *p;
-		gint i = 0;
-		gchar **args = g_new0(gchar *, g_list_length(tmp) + 1 /* NULL terminate the list */ );
+		int i = 0;
+		char **args = g_new0(char *, g_list_length(tmp) + 1 /* NULL terminate the list */ );
 
 		if (verbose)
 			printf("Running command:\n\t");
 
 		for (p = tmp; p; p = g_list_next(p)) {
-			args[i++] = (gchar *) p->data;
+			args[i++] = (char *) p->data;
 			if (verbose)
 				printf("%s ", (char *) p->data);
 		}
@@ -204,11 +212,11 @@ static gboolean build_and_run_command(const gchar * format, ...)
  * stat() hoops to decide if gnetlist successfully generated the PCB
  * board file (only gnetlist >= 20030901 recognizes -m).
  */
-static gboolean run_gnetlist(gchar * pins_file, gchar * net_file, gchar * pcb_file, gchar * basename, GList * largs)
+static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char * basename, GList * largs)
 {
 	struct stat st;
 	time_t mtime;
-	static const gchar *gnetlist = NULL;
+	static const char *gnetlist = NULL;
 	GList *list = NULL;
 	GList *verboseList = NULL;
 	GList *args1 = NULL;
@@ -243,16 +251,16 @@ static gboolean run_gnetlist(gchar * pins_file, gchar * net_file, gchar * pcb_fi
 	}
 
 	for (list = extra_gnetlist_list; list; list = g_list_next(list)) {
-		const gchar *s = (gchar *) list->data;
-		const gchar *s2 = strstr(s, " -o ");
-		gchar *out_file;
-		gchar *backend;
+		const char *s = (char *) list->data;
+		const char *s2 = strstr(s, " -o ");
+		char *out_file;
+		char *backend;
 		if (!s2) {
 			out_file = g_strconcat(basename, ".", s, NULL);
-			backend = g_strdup(s);
+			backend = strdup(s);
 		}
 		else {
-			out_file = g_strdup(s2 + 4);
+			out_file = strdup(s2 + 4);
 			backend = g_strndup(s, s2 - s);
 		}
 
@@ -269,18 +277,18 @@ static gboolean run_gnetlist(gchar * pins_file, gchar * net_file, gchar * pcb_fi
 	return TRUE;
 }
 
-static gchar *token(gchar * string, gchar ** next, gboolean * quoted_ret, gboolean parenth)
+static char *token(char * string, char ** next, int * quoted_ret, int parenth)
 {
-	static gchar *str;
-	gchar *s, *ret;
-	gboolean quoted = FALSE;
+	static char *str;
+	char *s, *ret;
+	int quoted = FALSE;
 
 	if (string)
 		str = string;
 	if (!str || !*str) {
 		if (next)
 			*next = str;
-		return g_strdup("");
+		return strdup("");
 	}
 	while (*str == ' ' || *str == '\t' || *str == ',' || *str == '\n')
 		++str;
@@ -317,9 +325,9 @@ static gchar *token(gchar * string, gchar ** next, gboolean * quoted_ret, gboole
 	return ret;
 }
 
-static gchar *fix_spaces(gchar * str)
+static char *fix_spaces(char * str)
 {
-	gchar *s;
+	char *s;
 
 	if (!str)
 		return NULL;
@@ -344,11 +352,11 @@ static gchar *fix_spaces(gchar * str)
 	 *   is now relative.  The hi_res mark_x,mark_y and text_x,text_y resolutions
 	 *   are 100x the other formats.
 	 */
-PcbElement *pcb_element_line_parse(gchar * line)
+PcbElement *pcb_element_line_parse(char * line)
 {
 	PcbElement *el = NULL;
-	gchar *s, *t, close_char;
-	gint state = 0, elcount = 0;
+	char *s, *t, close_char;
+	int state = 0, elcount = 0;
 
 	if (strncmp(line, "Element", 7))
 		return NULL;
@@ -377,8 +385,8 @@ PcbElement *pcb_element_line_parse(gchar * line)
 	el->x = token(NULL, NULL, NULL, 0);
 	el->y = token(NULL, &t, NULL, 0);
 
-	el->tail = g_strdup(t ? t : "");
-	if ((s = strrchr(el->tail, (gint) '\n')) != NULL)
+	el->tail = strdup(t ? t : "");
+	if ((s = strrchr(el->tail, (int) '\n')) != NULL)
 		*s = '\0';
 
 	/* Count the tokens in tail to decide if it's new or old format.
@@ -409,7 +417,7 @@ PcbElement *pcb_element_line_parse(gchar * line)
 	 * initialize still_exists to TRUE if empty or non-alphanumeric
 	 * refdes.
 	 */
-	if (!*el->refdes || !isalnum((gint) (*el->refdes)))
+	if (!*el->refdes || !isalnum((int) (*el->refdes)))
 		el->still_exists = TRUE;
 
 	return el;
@@ -432,11 +440,11 @@ static void pcb_element_free(PcbElement * el)
 	g_free(el);
 }
 
-static void get_pcb_element_list(gchar * pcb_file)
+static void get_pcb_element_list(char * pcb_file)
 {
 	FILE *f;
 	PcbElement *el;
-	gchar *s, buf[1024];
+	char *s, buf[1024];
 
 	if ((f = fopen(pcb_file, "r")) == NULL)
 		return;
@@ -453,7 +461,7 @@ static void get_pcb_element_list(gchar * pcb_file)
 	fclose(f);
 }
 
-static PcbElement *pcb_element_exists(PcbElement * el_test, gboolean record)
+static PcbElement *pcb_element_exists(PcbElement * el_test, int record)
 {
 	GList *list;
 	PcbElement *el;
@@ -465,12 +473,12 @@ static PcbElement *pcb_element_exists(PcbElement * el_test, gboolean record)
 			continue;
 		if (strcmp(el_test->description, el->description)) {	/* footprint */
 			if (record)
-				el->changed_description = g_strdup(el_test->description);
+				el->changed_description = strdup(el_test->description);
 		}
 		else {
 			if (record) {
 				if (strcmp(el_test->value, el->value))
-					el->changed_value = g_strdup(el_test->value);
+					el->changed_value = strdup(el_test->value);
 				el->still_exists = TRUE;
 			}
 			return el;
@@ -498,11 +506,11 @@ static void simple_translate(PcbElement * el)
 	el->y = strdup("0");
 }
 
-static gboolean insert_element(FILE * f_out, FILE * f_elem, gchar * footprint, gchar * refdes, gchar * value)
+static int insert_element(FILE * f_out, FILE * f_elem, char * footprint, char * refdes, char * value)
 {
 	PcbElement *el;
-	gchar *fmt, *s, buf[1024];
-	gboolean retval = FALSE;
+	char *fmt, *s, buf[1024];
+	int retval = FALSE;
 
 	/* Copy the file element lines.  Substitute new parameters into the
 	 * Element() or Element[] line and strip comments.
@@ -524,12 +532,12 @@ static gboolean insert_element(FILE * f_out, FILE * f_elem, gchar * footprint, g
 }
 
 
-gchar *search_element(PcbElement * el)
+char *search_element(PcbElement * el)
 {
-	gchar *elname = NULL, *path = NULL;
+	char *elname = NULL, *path = NULL;
 
 	if (!elname)
-		elname = g_strdup(el->description);
+		elname = strdup(el->description);
 
 	if (!strcmp(elname, "unknown")) {
 		g_free(elname);
@@ -546,15 +554,15 @@ gchar *search_element(PcbElement * el)
  *        PKG(footprint,refdes,value)
  *
  */
-static PcbElement *pkg_to_element(FILE * f, gchar * pkg_line)
+static PcbElement *pkg_to_element(FILE * f, char * pkg_line)
 {
 	PcbElement *el;
-	gchar *s, *end, *refdes, *fp, *value;
+	char *s, *end, *refdes, *fp, *value;
 
 /*fprintf(stderr, "--- %s\n", pkg_line);*/
 
 	if (strncmp(pkg_line, "PKG", 3)
-			|| (s = strchr(pkg_line, (gint) '(')) == NULL)
+			|| (s = strchr(pkg_line, (int) '(')) == NULL)
 		return NULL;
 
 /* remove trailing ")" */
@@ -582,12 +590,12 @@ fprintf(stderr, "   val: %s\n", value);*/
 	fix_spaces(value);
 
 	el = g_new0(PcbElement, 1);
-	el->description = g_strdup(fp);
-	el->refdes = g_strdup(refdes);
-	el->value = g_strdup(value);
+	el->description = strdup(fp);
+	el->refdes = strdup(refdes);
+	el->value = strdup(value);
 
 // wtf?
-//  if ((s = strchr (el->value, (gint) ')')) != NULL)
+//  if ((s = strchr (el->value, (int) ')')) != NULL)
 //    *s = '\0';
 
 	if (empty_footprint_name && !strcmp(el->description, empty_footprint_name)) {
@@ -639,13 +647,13 @@ static int CatPCB(FILE * fout, const char *fn)
  * If there was an existing pcb file, strip out any elements if they are
  * already present so that the new pcb file will only have new elements.
  */
-static gint add_elements(gchar * pcb_file)
+static int add_elements(char * pcb_file)
 {
 	FILE *f_in, *f_out, *fp;
 	PcbElement *el = NULL;
-	gchar *tmp_file, *s, buf[1024];
-	gint total, paren_level = 0;
-	gboolean skipping = FALSE;
+	char *tmp_file, *s, buf[1024];
+	int total, paren_level = 0;
+	int skipping = FALSE;
 	int st;
 
 	if ((f_in = fopen(pcb_file, "r")) == NULL)
@@ -730,12 +738,12 @@ static gint add_elements(gchar * pcb_file)
 	return total;
 }
 
-static void update_element_descriptions(gchar * pcb_file, gchar * bak)
+static void update_element_descriptions(char * pcb_file, char * bak)
 {
 	FILE *f_in, *f_out;
 	GList *list;
 	PcbElement *el, *el_exists;
-	gchar *fmt, *tmp, *s, buf[1024];
+	char *fmt, *tmp, *s, buf[1024];
 
 	for (list = pcb_element_list; list; list = g_list_next(list)) {
 		el = (PcbElement *) list->data;
@@ -779,14 +787,14 @@ static void update_element_descriptions(gchar * pcb_file, gchar * bak)
 	g_free(tmp);
 }
 
-static void prune_elements(gchar * pcb_file, gchar * bak)
+static void prune_elements(char * pcb_file, char * bak)
 {
 	FILE *f_in, *f_out;
 	GList *list;
 	PcbElement *el, *el_exists;
-	gchar *fmt, *tmp, *s, buf[1024];
-	gint paren_level = 0;
-	gboolean skipping = FALSE;
+	char *fmt, *tmp, *s, buf[1024];
+	int paren_level = 0;
+	int skipping = FALSE;
 
 	for (list = pcb_element_list; list; list = g_list_next(list)) {
 		el = (PcbElement *) list->data;
@@ -857,19 +865,19 @@ static void prune_elements(gchar * pcb_file, gchar * bak)
 	g_free(tmp);
 }
 
-static void add_schematic(gchar * sch)
+static void add_schematic(char * sch)
 {
-	const gchar *s;
-	schematics = g_list_append(schematics, g_strdup(sch));
+	const char *s;
+	schematics = g_list_append(schematics, strdup(sch));
 	if (!sch_basename && (s = g_strrstr(sch, ".sch")) != NULL && strlen(s) == 4)
 		sch_basename = g_strndup(sch, s - sch);
 }
 
-static void add_multiple_schematics(gchar * sch)
+static void add_multiple_schematics(char * sch)
 {
 	/* parse the string using shell semantics */
-	gint count;
-	gchar **args = NULL;
+	int count;
+	char **args = NULL;
 	GError *error = NULL;
 
 	if (g_shell_parse_argv(sch, &count, &args, &error)) {
@@ -885,9 +893,9 @@ static void add_multiple_schematics(gchar * sch)
 	}
 }
 
-static gint parse_config(gchar * config, gchar * arg)
+static int parse_config(char * config, char * arg)
 {
-	gchar *s;
+	char *s;
 
 	/* remove trailing white space otherwise strange things can happen */
 	if ((arg != NULL) && (strlen(arg) >= 1)) {
@@ -924,7 +932,7 @@ static gint parse_config(gchar * config, gchar * arg)
 	}
 
 	if (!strcmp(config, "elements-shell") || !strcmp(config, "s")) {
-		element_shell = g_strdup(arg);
+		element_shell = strdup(arg);
 	}
 	else if (!strcmp(config, "elements-dir") || !strcmp(config, "d")) {
 		char *s;
@@ -940,25 +948,25 @@ static gint parse_config(gchar * config, gchar * arg)
 		element_search_path = s;
 	}
 	else if (!strcmp(config, "output-name") || !strcmp(config, "o"))
-		sch_basename = g_strdup(arg);
+		sch_basename = strdup(arg);
 	else if (!strcmp(config, "default-pcb") || !strcmp(config, "P"))
-		DefaultPcbFile = g_strdup(arg);
+		DefaultPcbFile = strdup(arg);
 	else if (!strcmp(config, "schematics"))
 		add_multiple_schematics(arg);
 	else if (!strcmp(config, "gnetlist"))
-		extra_gnetlist_list = g_list_append(extra_gnetlist_list, g_strdup(arg));
+		extra_gnetlist_list = g_list_append(extra_gnetlist_list, strdup(arg));
 	else if (!strcmp(config, "empty-footprint"))
-		empty_footprint_name = g_strdup(arg);
+		empty_footprint_name = strdup(arg);
 	else
 		return -1;
 
 	return 1;
 }
 
-static void load_project(gchar * path)
+static void load_project(char * path)
 {
 	FILE *f;
-	gchar *s, buf[1024], config[32], arg[768];
+	char *s, buf[1024], config[32], arg[768];
 
 	f = fopen(path, "r");
 	if (!f)
@@ -978,8 +986,8 @@ static void load_project(gchar * path)
 
 static void load_extra_project_files(void)
 {
-	gchar *path;
-	static gboolean done = FALSE;
+	char *path;
+	static int done = FALSE;
 
 	if (done)
 		return;
@@ -987,14 +995,14 @@ static void load_extra_project_files(void)
 	load_project("/etc/gsch2pcb");
 	load_project("/usr/local/etc/gsch2pcb");
 
-	path = g_build_filename((gchar *) g_get_home_dir(), ".gEDA", "gsch2pcb", NULL);
+	path = g_build_filename((char *) g_get_home_dir(), ".gEDA", "gsch2pcb", NULL);
 	load_project(path);
 	g_free(path);
 
 	done = TRUE;
 }
 
-static gchar *usage_string0 =
+static char *usage_string0 =
 	"usage: gsch2pcb [options] {project | foo.sch [foo1.sch ...]}\n"
 	"\n"
 	"Generate a PCB layout file from a set of gschem schematics.\n"
@@ -1050,7 +1058,7 @@ static gchar *usage_string0 =
 	"   -q, --quiet             Don't tell the user what to do next after running\n"
 	"                           gsch2pcb-rnd.\n" "\n";
 
-static gchar *usage_string1 =
+static char *usage_string1 =
 	"   --gnetlist backend    A convenience run of extra gnetlist -g commands.\n"
 	"                         Example:  gnetlist partslist3\n"
 	"                         Creates:  myproject.partslist3\n"
@@ -1088,10 +1096,10 @@ static void usage()
 	exit(0);
 }
 
-static void get_args(gint argc, gchar ** argv)
+static void get_args(int argc, char ** argv)
 {
-	gchar *opt, *arg;
-	gint i, r;
+	char *opt, *arg;
+	int i, r;
 
 	for (i = 1; i < argc; ++i) {
 		opt = argv[i];
@@ -1113,7 +1121,7 @@ static void get_args(gint argc, gchar ** argv)
 				continue;
 			}
 			else if (!strcmp(opt, "gnetlist-arg")) {
-				extra_gnetlist_arg_list = g_list_append(extra_gnetlist_arg_list, g_strdup(arg));
+				extra_gnetlist_arg_list = g_list_append(extra_gnetlist_arg_list, strdup(arg));
 				i++;
 				continue;
 			}
@@ -1139,12 +1147,12 @@ static void get_args(gint argc, gchar ** argv)
 	}
 }
 
-gint main(gint argc, gchar ** argv)
+int main(int argc, char ** argv)
 {
-	gchar *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name, *net_file_name, *tmp;
-	gint i;
-	gboolean initial_pcb = TRUE;
-	gboolean created_pcb_file = TRUE;
+	char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name, *net_file_name, *tmp;
+	int i;
+	int initial_pcb = TRUE;
+	int created_pcb_file = TRUE;
 
 	if (argc < 2)
 		usage();
@@ -1164,7 +1172,7 @@ gint main(gint argc, gchar ** argv)
 	net_file_name = g_strconcat(sch_basename, ".net", NULL);
 	pcb_file_name = g_strconcat(sch_basename, ".pcb", NULL);
 	bak_file_name = g_strconcat(sch_basename, ".pcb.bak", NULL);
-	tmp = g_strdup(bak_file_name);
+	tmp = strdup(bak_file_name);
 
 	for (i = 0; g_file_test(bak_file_name, G_FILE_TEST_EXISTS); ++i) {
 		g_free(bak_file_name);
@@ -1178,7 +1186,7 @@ gint main(gint argc, gchar ** argv)
 		get_pcb_element_list(pcb_file_name);
 	}
 	else
-		pcb_new_file_name = g_strdup(pcb_file_name);
+		pcb_new_file_name = strdup(pcb_file_name);
 
 	if (!run_gnetlist(pins_file_name, net_file_name, pcb_new_file_name, sch_basename, schematics)) {
 		fprintf(stderr, "Failed to run gnetlist\n");
