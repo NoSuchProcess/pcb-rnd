@@ -187,9 +187,13 @@ static int build_and_run_command(const char * format_, ...)
 					s++;
 					continue;
 				case 's':
-					vts0_append(&args, va_arg(vargs, char *));
-					start = s+2;
-					s++;
+					{
+						char *arg = va_arg(vargs, char *);
+						if (arg != NULL)
+							vts0_append(&args, arg);
+						start = s+2;
+						s++;
+					}
 					continue;
 			}
 		}
@@ -253,8 +257,8 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 	time_t mtime;
 	static const char *gnetlist = NULL;
 	GList *list = NULL;
-	GList *verboseList = NULL;
 	GList *args1 = NULL;
+	char *verbose_str = NULL;
 
 	/* Allow the user to specify a full path or a different name for
 	 * the gnetlist command.  Especially useful if multiple copies
@@ -266,18 +270,18 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 		gnetlist = "gnetlist";
 
 	if (!verbose)
-		verboseList = g_list_append(verboseList, "-q");
+		verbose_str = "-q";
 
-	if (!build_and_run_command("%s %l -g pcbpins -o %s %L %L", gnetlist, verboseList, pins_file, &extra_gnetlist_arg_list, largs))
+	if (!build_and_run_command("%s %s -g pcbpins -o %s %L %L", gnetlist, verbose_str, pins_file, &extra_gnetlist_arg_list, largs))
 		return FALSE;
 
-	if (!build_and_run_command("%s %l -g PCB -o %s %L %L", gnetlist, verboseList, net_file, &extra_gnetlist_arg_list, largs))
+	if (!build_and_run_command("%s %s -g PCB -o %s %L %L", gnetlist, verbose_str, net_file, &extra_gnetlist_arg_list, largs))
 		return FALSE;
 
 	mtime = (stat(pcb_file, &st) == 0) ? st.st_mtime : 0;
 
-	if (!build_and_run_command("%s %l -L " SCMDIR " -g gsch2pcb-rnd -o %s %l %L %L",
-														 gnetlist, verboseList, pcb_file, args1, &extra_gnetlist_arg_list, largs)) {
+	if (!build_and_run_command("%s %s -L " SCMDIR " -g gsch2pcb-rnd -o %s %l %L %L",
+														 gnetlist, verbose_str, pcb_file, args1, &extra_gnetlist_arg_list, largs)) {
 		if (stat(pcb_file, &st) != 0 || mtime == st.st_mtime) {
 			fprintf(stderr, "gsch2pcb: gnetlist command failed, `%s' not updated\n", pcb_file);
 			return FALSE;
@@ -299,15 +303,14 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 			backend = g_strndup(s, s2 - s);
 		}
 
-		if (!build_and_run_command("%s %l -g %s -o %s %L %L",
-															 gnetlist, verboseList, backend, out_file, &extra_gnetlist_arg_list, largs))
+		if (!build_and_run_command("%s %s -g %s -o %s %L %L",
+															 gnetlist, verbose_str, backend, out_file, &extra_gnetlist_arg_list, largs))
 			return FALSE;
 		g_free(out_file);
 		g_free(backend);
 	}
 
 	g_list_free(args1);
-	g_list_free(verboseList);
 
 	return TRUE;
 }
