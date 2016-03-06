@@ -53,6 +53,10 @@
 
 #define SEP_STRING "--------\n"
 
+/* from scconfig str lib: */
+char *str_concat(const char *sep, ...);
+
+
 
 typedef struct {
 	char *refdes, *value, *description, *changed_description, *changed_value;
@@ -278,7 +282,7 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 		char *out_file;
 		char *backend;
 		if (!s2) {
-			out_file = g_strconcat(basename, ".", s, NULL);
+			out_file = str_concat(NULL, basename, ".", s, NULL);
 			backend = strdup(s);
 		}
 		else {
@@ -675,7 +679,7 @@ static int add_elements(char * pcb_file)
 
 	if ((f_in = fopen(pcb_file, "r")) == NULL)
 		return 0;
-	tmp_file = g_strconcat(pcb_file, ".tmp", NULL);
+	tmp_file = str_concat(NULL, pcb_file, ".tmp", NULL);
 	if ((f_out = fopen(tmp_file, "wb")) == NULL) {
 		fclose(f_in);
 		free(tmp_file);
@@ -772,7 +776,7 @@ static void update_element_descriptions(char * pcb_file, char * bak)
 	}
 	if ((f_in = fopen(pcb_file, "r")) == NULL)
 		return;
-	tmp = g_strconcat(pcb_file, ".tmp", NULL);
+	tmp = str_concat(NULL, pcb_file, ".tmp", NULL);
 	if ((f_out = fopen(tmp, "wb")) == NULL) {
 		fclose(f_in);
 		return;
@@ -834,7 +838,7 @@ static void prune_elements(char * pcb_file, char * bak)
 		fprintf(stderr, "error: can not read %s\n", pcb_file);
 		return;
 	}
-	tmp = g_strconcat(pcb_file, ".tmp", NULL);
+	tmp = str_concat(NULL, pcb_file, ".tmp", NULL);
 	if ((f_out = fopen(tmp, "wb")) == NULL) {
 		fprintf(stderr, "error: can not write %s\n", tmp);
 		fclose(f_in);
@@ -1201,10 +1205,10 @@ int main(int argc, char ** argv)
 	if (gadl_length(&schematics) == 0)
 		usage();
 
-	pins_file_name = g_strconcat(sch_basename, ".cmd", NULL);
-	net_file_name = g_strconcat(sch_basename, ".net", NULL);
-	pcb_file_name = g_strconcat(sch_basename, ".pcb", NULL);
-	bak_file_name = g_strconcat(sch_basename, ".pcb.bak", NULL);
+	pins_file_name = str_concat(NULL, sch_basename, ".cmd", NULL);
+	net_file_name = str_concat(NULL, sch_basename, ".net", NULL);
+	pcb_file_name = str_concat(NULL, sch_basename, ".pcb", NULL);
+	bak_file_name = str_concat(NULL, sch_basename, ".pcb.bak", NULL);
 	tmp = strdup(bak_file_name);
 
 	for (i = 0; g_file_test(bak_file_name, G_FILE_TEST_EXISTS); ++i) {
@@ -1215,7 +1219,7 @@ int main(int argc, char ** argv)
 
 	if (g_file_test(pcb_file_name, G_FILE_TEST_EXISTS)) {
 		initial_pcb = FALSE;
-		pcb_new_file_name = g_strconcat(sch_basename, ".new.pcb", NULL);
+		pcb_new_file_name = str_concat(NULL, sch_basename, ".new.pcb", NULL);
 		get_pcb_element_list(pcb_file_name);
 	}
 	else
