@@ -33,6 +33,7 @@
 #include "../src/libpcb_fp.h"
 #include "../src/paths.h"
 #include "../src_3rd/genvector/vts0.h"
+#include "../src_3rd/genlist/gendlist.h"
 #include "../config.h"
 
 #include <glib.h>
@@ -53,20 +54,24 @@ typedef struct {
 	char *pkg_name_fix;
 	char res_char;
 
+	gdl_elem_t all_elems;
+
 	unsigned char still_exists:1;
 	unsigned char new_format:1;
 	unsigned char hi_res_format:1;
 	unsigned char quoted_flags:1;
 	unsigned char omit_PKG:1;
 	unsigned char nonetlist:1;
-} PcbElement;
 
+} PcbElement;
 
 typedef struct {
 	char *part_number, *element_name;
 } ElementMap;
 
-static GList *pcb_element_list, *extra_gnetlist_list, *extra_gnetlist_arg_list;
+gdl_list_t pcb_element_list; /* initialized to 0 */
+
+static GList *extra_gnetlist_list, *extra_gnetlist_arg_list;
 
 static char *sch_basename;
 
@@ -470,19 +475,17 @@ static void get_pcb_element_list(char * pcb_file)
 		}
 		if ((el = pcb_element_line_parse(s)) == NULL)
 			continue;
-		pcb_element_list = g_list_append(pcb_element_list, el);
+		gdl_append(&pcb_element_list, el, all_elems);
 	}
 	fclose(f);
 }
 
 static PcbElement *pcb_element_exists(PcbElement * el_test, int record)
 {
-	GList *list;
 	PcbElement *el;
+	gdl_iterator_t it;
 
-	for (list = pcb_element_list; list; list = g_list_next(list)) {
-		el = (PcbElement *) list->data;
-
+	gdl_foreach(&pcb_element_list, &it, el) {
 		if (strcmp(el_test->refdes, el->refdes))
 			continue;
 		if (strcmp(el_test->description, el->description)) {	/* footprint */
@@ -758,13 +761,13 @@ static void update_element_descriptions(char * pcb_file, char * bak)
 	GList *list;
 	PcbElement *el, *el_exists;
 	char *fmt, *tmp, *s, buf[1024];
+	gdl_iterator_t it;
 
-	for (list = pcb_element_list; list; list = g_list_next(list)) {
-		el = (PcbElement *) list->data;
+	gdl_foreach(&pcb_element_list, &it, el) {
 		if (el->changed_description)
 			++n_fixed;
 	}
-	if (!pcb_element_list || n_fixed == 0) {
+	if (!pcb_element_list.length || n_fixed == 0) {
 		fprintf(stderr, "Could not find any elements to fix.\n");
 		return;
 	}
@@ -809,9 +812,9 @@ static void prune_elements(char * pcb_file, char * bak)
 	char *fmt, *tmp, *s, buf[1024];
 	int paren_level = 0;
 	int skipping = FALSE;
+	gdl_iterator_t it;
 
-	for (list = pcb_element_list; list; list = g_list_next(list)) {
-		el = (PcbElement *) list->data;
+	gdl_foreach(&pcb_element_list, &it, el) {
 		if (!el->still_exists) {
 			if ((preserve) || (el->nonetlist)) {
 				++n_preserved;
@@ -826,7 +829,7 @@ static void prune_elements(char * pcb_file, char * bak)
 		else if (el->changed_value)
 			++n_changed_value;
 	}
-	if (!pcb_element_list || (n_deleted == 0 && !need_PKG_purge && n_changed_value == 0)
+	if ((pcb_element_list.length != 0) || (n_deleted == 0 && !need_PKG_purge && n_changed_value == 0)
 		)
 		return;
 	if ((f_in = fopen(pcb_file, "r")) == NULL)
@@ -1226,7 +1229,7 @@ int main(int argc, char ** argv)
 	printf("Done processing.  Work performed:\n");
 	if (n_deleted > 0 || n_fixed > 0 || need_PKG_purge || n_changed_value > 0)
 		printf("%s is backed up as %s.\n", pcb_file_name, bak_file_name);
-	if (pcb_element_list && n_deleted > 0)
+	if (pcb_element_list.length && n_deleted > 0)
 		printf("%d elements deleted from %s.\n", n_deleted, pcb_file_name);
 
 	if (n_added_ef > 0)
