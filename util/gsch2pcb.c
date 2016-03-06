@@ -289,8 +289,8 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 		if (!build_and_run_command("%s %s -g %s -o %s %L %L",
 															 gnetlist, verbose_str, backend, out_file, &extra_gnetlist_arg_list, largs))
 			return FALSE;
-		g_free(out_file);
-		g_free(backend);
+		free(out_file);
+		free(backend);
 	}
 
 	return TRUE;
@@ -389,7 +389,7 @@ PcbElement *pcb_element_line_parse(char * line)
 	if (*s == '[')
 		el->hi_res_format = TRUE;
 	else if (*s != '(') {
-		g_free(el);
+		free(el);
 		return NULL;
 	}
 
@@ -446,17 +446,17 @@ static void pcb_element_free(PcbElement * el)
 {
 	if (!el)
 		return;
-	g_free(el->flags);
-	g_free(el->description);
-	g_free(el->changed_description);
-	g_free(el->changed_value);
-	g_free(el->refdes);
-	g_free(el->value);
-	g_free(el->x);
-	g_free(el->y);
-	g_free(el->tail);
-	g_free(el->pkg_name_fix);
-	g_free(el);
+	free(el->flags);
+	free(el->description);
+	free(el->changed_description);
+	free(el->changed_value);
+	free(el->refdes);
+	free(el->value);
+	free(el->x);
+	free(el->y);
+	free(el->tail);
+	free(el->pkg_name_fix);
+	free(el);
 }
 
 static void get_pcb_element_list(char * pcb_file)
@@ -557,12 +557,12 @@ char *search_element(PcbElement * el)
 		elname = strdup(el->description);
 
 	if (!strcmp(elname, "unknown")) {
-		g_free(elname);
+		free(elname);
 		return NULL;
 	}
 	if (verbose > 1)
 		printf("\tSearching directories looking for file element: %s\n", elname);
-	g_free(elname);
+	free(elname);
 	return path;
 }
 
@@ -678,7 +678,7 @@ static int add_elements(char * pcb_file)
 	tmp_file = g_strconcat(pcb_file, ".tmp", NULL);
 	if ((f_out = fopen(tmp_file, "wb")) == NULL) {
 		fclose(f_in);
-		g_free(tmp_file);
+		free(tmp_file);
 		return 0;
 	}
 
@@ -751,7 +751,7 @@ static int add_elements(char * pcb_file)
 		build_and_run_command("rm %s", tmp_file);
 	else
 		build_and_run_command("mv %s %s", tmp_file, pcb_file);
-	g_free(tmp_file);
+	free(tmp_file);
 	return total;
 }
 
@@ -800,7 +800,7 @@ static void update_element_descriptions(char * pcb_file, char * bak)
 	}
 
 	build_and_run_command("mv %s %s", tmp, pcb_file);
-	g_free(tmp);
+	free(tmp);
 }
 
 static void prune_elements(char * pcb_file, char * bak)
@@ -877,7 +877,7 @@ static void prune_elements(char * pcb_file, char * bak)
 	}
 
 	build_and_run_command("mv %s %s", tmp, pcb_file);
-	g_free(tmp);
+	free(tmp);
 }
 
 static void add_schematic(char * sch)
@@ -1019,7 +1019,7 @@ static void load_extra_project_files(void)
 
 	path = g_build_filename((char *) g_get_home_dir(), ".gEDA", "gsch2pcb", NULL);
 	load_project(path);
-	g_free(path);
+	free(path);
 
 	done = TRUE;
 }
@@ -1204,10 +1204,10 @@ int main(int argc, char ** argv)
 	tmp = strdup(bak_file_name);
 
 	for (i = 0; g_file_test(bak_file_name, G_FILE_TEST_EXISTS); ++i) {
-		g_free(bak_file_name);
+		free(bak_file_name);
 		bak_file_name = g_strdup_printf("%s%d", tmp, i);
 	}
-	g_free(tmp);
+	free(tmp);
 
 	if (g_file_test(pcb_file_name, G_FILE_TEST_EXISTS)) {
 		initial_pcb = FALSE;
@@ -1310,10 +1310,10 @@ int main(int argc, char ** argv)
 		}
 	}
 
-	g_free(net_file_name);
-	g_free(pins_file_name);
-	g_free(pcb_file_name);
-	g_free(bak_file_name);
+	free(net_file_name);
+	free(pins_file_name);
+	free(pcb_file_name);
+	free(bak_file_name);
 
 	return 0;
 }
