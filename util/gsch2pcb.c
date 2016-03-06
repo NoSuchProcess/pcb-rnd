@@ -130,9 +130,6 @@ static int build_and_run_command(const char * format_, ...)
 	va_list vargs;
 	int i, status;
 	int result = FALSE;
-	char *standard_output = NULL;
-	char *standard_error = NULL;
-	GError *error = NULL;
 	vts0_t args;
 	char *format, *s, *start;
 
@@ -185,44 +182,46 @@ static int build_and_run_command(const char * format_, ...)
 	va_end(vargs);
 
 	if (args.used > 0) {
+		int i, l;
+		char *cmd, *end, line[1024];
+		FILE *f;
+
+		l = 0;
+		for (i = 0; i < args.used; i++)
+			l += strlen(args.array[i]) + 3;
+
+		end = cmd = malloc(l+1);
+		for (i = 0; i < args.used; i++) {
+			l = strlen(args.array[i]);
+			*end = '"'; end++;
+			memcpy(end, args.array[i], l);
+			end += l;
+			*end = '"'; end++;
+			*end = ' '; end++;
+		}
+		end--;
+		*end = '\0';
+
 		/* we have something in the list, build & call command */
 		if (verbose) {
-			int i;
-			printf("Running command:\n\t");
-			for (i = 0; i < args.used; i++)
-				printf("%s ", args.array[i]);
-			printf("\n%s", SEP_STRING);
+			printf("Running command:\n\t%s\n", cmd);
+			printf("%s", SEP_STRING);
 		}
 
-		if (g_spawn_sync(".",                  /* Working directory */
-										 args.array,           /* argv */
-										 NULL,                 /* envp */
-										 G_SPAWN_SEARCH_PATH,  /* flags */
-										 NULL,                 /* child_setup */
-										 NULL,                 /* user data */
-										 &standard_output,     /* standard output */
-										 &standard_error,      /* standard error */
-										 &status,              /* exit status return */
-										 &error)) {            /* GError return */
+		f = popen(cmd, "r");
+		while(fgets(line, sizeof(line), f) != NULL) {
 			if (verbose)
-				fputs(standard_output, stdout);
-			if (status == 0)
-				result = TRUE;
-			else {
-				if (standard_error)
-					fputs(standard_error, stderr);
-			}
+				fputs(line, stdout);
 		}
-		else {
-			fprintf(stderr, "Failed to execute external program: %s\n", error->message);
-			g_error_free(error);
-		}
+
+		if (pclose(f) == 0)
+			result = TRUE;
+		else
+			fprintf(stderr, "Failed to execute external program\n");
+		free(cmd);
 
 		if (verbose)
 			printf("\n%s", SEP_STRING);
-
-		g_free(standard_error);
-		g_free(standard_output);
 	}
 
 	free(format);
