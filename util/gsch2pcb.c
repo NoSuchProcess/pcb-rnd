@@ -258,7 +258,6 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 	time_t mtime;
 	static const char *gnetlist = NULL;
 	GList *list = NULL;
-	GList *args1 = NULL;
 	char *verbose_str = NULL;
 
 	/* Allow the user to specify a full path or a different name for
@@ -281,8 +280,8 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 
 	mtime = (stat(pcb_file, &st) == 0) ? st.st_mtime : 0;
 
-	if (!build_and_run_command("%s %s -L " SCMDIR " -g gsch2pcb-rnd -o %s %l %L %L",
-														 gnetlist, verbose_str, pcb_file, args1, &extra_gnetlist_arg_list, largs)) {
+	if (!build_and_run_command("%s %s -L " SCMDIR " -g gsch2pcb-rnd -o %s %L %L",
+														 gnetlist, verbose_str, pcb_file, &extra_gnetlist_arg_list, largs)) {
 		if (stat(pcb_file, &st) != 0 || mtime == st.st_mtime) {
 			fprintf(stderr, "gsch2pcb: gnetlist command failed, `%s' not updated\n", pcb_file);
 			return FALSE;
@@ -310,8 +309,6 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 		g_free(out_file);
 		g_free(backend);
 	}
-
-	g_list_free(args1);
 
 	return TRUE;
 }
