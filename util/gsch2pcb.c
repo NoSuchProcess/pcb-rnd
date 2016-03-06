@@ -34,9 +34,15 @@
 #include "../src/paths.h"
 #include "../src_3rd/genvector/vts0.h"
 #include "../src_3rd/genlist/gendlist.h"
+#include "../src_3rd/genlist/genadlist.h"
 #include "../config.h"
 
 #include <glib.h>
+#ifndef TRUE
+#define TRUE 1
+#define FALSE 0
+#endif
+
 
 #define GSC2PCB_VERSION "1.6"
 
@@ -44,8 +50,6 @@
 
 #define SEP_STRING "--------\n"
 
-#define TRUE 1
-#define FALSE 0
 
 typedef struct {
 	char *refdes, *value, *description, *changed_description, *changed_value;
@@ -70,12 +74,12 @@ typedef struct {
 } ElementMap;
 
 gdl_list_t pcb_element_list; /* initialized to 0 */
+gadl_list_t schematics;
 
 static GList *extra_gnetlist_list, *extra_gnetlist_arg_list;
 
 static char *sch_basename;
 
-static GList *schematics;
 
 static char *empty_footprint_name;
 
@@ -170,6 +174,18 @@ static int build_and_run_command(const char * format_, ...)
 					start = s+2;
 					s++;
 					continue;
+				case 'L': /* append contents of char * gadl_list_t */
+					{
+						gadl_list_t *list = va_arg(vargs, gadl_list_t *);
+						gadl_iterator_t it;
+						char **s;
+						gadl_foreach(list, &it, s) {
+							vts0_append(&args, *s);
+						}
+					}
+					start = s+2;
+					s++;
+					continue;
 				case 's':
 					vts0_append(&args, va_arg(vargs, char *));
 					start = s+2;
@@ -231,7 +247,7 @@ static int build_and_run_command(const char * format_, ...)
  * stat() hoops to decide if gnetlist successfully generated the PCB
  * board file (only gnetlist >= 20030901 recognizes -m).
  */
-static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char * basename, GList * largs)
+static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char * basename, gadl_list_t *largs)
 {
 	struct stat st;
 	time_t mtime;
@@ -252,15 +268,15 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 	if (!verbose)
 		verboseList = g_list_append(verboseList, "-q");
 
-	if (!build_and_run_command("%s %l -g pcbpins -o %s %l %l", gnetlist, verboseList, pins_file, extra_gnetlist_arg_list, largs))
+	if (!build_and_run_command("%s %l -g pcbpins -o %s %l %L", gnetlist, verboseList, pins_file, extra_gnetlist_arg_list, largs))
 		return FALSE;
 
-	if (!build_and_run_command("%s %l -g PCB -o %s %l %l", gnetlist, verboseList, net_file, extra_gnetlist_arg_list, largs))
+	if (!build_and_run_command("%s %l -g PCB -o %s %l %L", gnetlist, verboseList, net_file, extra_gnetlist_arg_list, largs))
 		return FALSE;
 
 	mtime = (stat(pcb_file, &st) == 0) ? st.st_mtime : 0;
 
-	if (!build_and_run_command("%s %l -L " SCMDIR " -g gsch2pcb-rnd -o %s %l %l %l",
+	if (!build_and_run_command("%s %l -L " SCMDIR " -g gsch2pcb-rnd -o %s %l %l %L",
 														 gnetlist, verboseList, pcb_file, args1, extra_gnetlist_arg_list, largs)) {
 		if (stat(pcb_file, &st) != 0 || mtime == st.st_mtime) {
 			fprintf(stderr, "gsch2pcb: gnetlist command failed, `%s' not updated\n", pcb_file);
@@ -283,7 +299,7 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 			backend = g_strndup(s, s2 - s);
 		}
 
-		if (!build_and_run_command("%s %l -g %s -o %s %l %l",
+		if (!build_and_run_command("%s %l -g %s -o %s %l %L",
 															 gnetlist, verboseList, backend, out_file, extra_gnetlist_arg_list, largs))
 			return FALSE;
 		g_free(out_file);
@@ -885,7 +901,10 @@ static void prune_elements(char * pcb_file, char * bak)
 static void add_schematic(char * sch)
 {
 	const char *s;
-	schematics = g_list_append(schematics, strdup(sch));
+	char **n;
+	n = gadl_new(&schematics);
+	*n = strdup(sch);
+	gadl_append(&schematics, n);
 	if (!sch_basename && (s = g_strrstr(sch, ".sch")) != NULL && strlen(s) == 4)
 		sch_basename = g_strndup(sch, s - sch);
 }
@@ -1174,6 +1193,8 @@ int main(int argc, char ** argv)
 	if (argc < 2)
 		usage();
 
+	gadl_list_init(&schematics, sizeof(char *), NULL, NULL);
+
 	paths_init_homedir();
 
 	element_search_path = strdup(PCB_LIBRARY_SEARCH_PATHS);
@@ -1182,7 +1203,7 @@ int main(int argc, char ** argv)
 
 	load_extra_project_files();
 
-	if (!schematics)
+	if (gadl_length(&schematics) == 0)
 		usage();
 
 	pins_file_name = g_strconcat(sch_basename, ".cmd", NULL);
@@ -1205,7 +1226,7 @@ int main(int argc, char ** argv)
 	else
 		pcb_new_file_name = strdup(pcb_file_name);
 
-	if (!run_gnetlist(pins_file_name, net_file_name, pcb_new_file_name, sch_basename, schematics)) {
+	if (!run_gnetlist(pins_file_name, net_file_name, pcb_new_file_name, sch_basename, &schematics)) {
 		fprintf(stderr, "Failed to run gnetlist\n");
 		exit(1);
 	}
