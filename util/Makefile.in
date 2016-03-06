@@ -9,9 +9,10 @@ HASHOBJ=../src_3rd/genht/hash.o ../src_3rd/genht/htsp.o
 VECTOBJ=../src_3rd/genvector/genvector.a
 LISTOBJ=../src_3rd/genlist/genlist.a
 SCCFOBJ=../scconfig/src/default/str.o
+QPARSE=../src_3rd/qparse/qparse.o
 
-gsch2pcb-rnd$(EXE): gsch2pcb.o ../src/libpcb_fp.o ../src/portability.o ../src/ds.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ)
-	$(CC) gsch2pcb.o ../src/libpcb_fp.o  ../src/portability.o ../src/ds.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ)  -o gsch2pcb-rnd$(EXE) $(LDFLAGS)
+gsch2pcb-rnd$(EXE): gsch2pcb.o ../src/libpcb_fp.o ../src/portability.o ../src/ds.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE)
+	$(CC) gsch2pcb.o ../src/libpcb_fp.o  ../src/portability.o ../src/ds.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) -o gsch2pcb-rnd$(EXE) $(LDFLAGS)
 
 gsch2pcb.o: gsch2pcb.c ../src/libpcb_fp.h ../config.h  ../config.manual.h  ../config.auto.h
 	$(CC) -c $(CFLAGS) gsch2pcb.c -o gsch2pcb.o
@@ -24,6 +25,9 @@ $(VECTOBJ):
 
 $(LISTOBJ):
 	cd ../src_3rd/genlist && make
+
+$(QPARSE):
+	cd ../src_3rd/qparse && make
 
 ../src/portability.o:
 	cd ../src && make portability.o

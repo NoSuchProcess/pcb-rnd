@@ -38,6 +38,7 @@
 #include "../src_3rd/genvector/vts0.h"
 #include "../src_3rd/genlist/gendlist.h"
 #include "../src_3rd/genlist/genadlist.h"
+#include "../src_3rd/qparse/qparse.h"
 #include "../config.h"
 
 #include <glib.h>
@@ -384,7 +385,7 @@ PcbElement *pcb_element_line_parse(char * line)
 	if (strncmp(line, "Element", 7))
 		return NULL;
 
-	el = g_new0(PcbElement, 1);
+	el = calloc(sizeof(PcbElement), 1);
 
 	s = line + 7;
 	while (*s == ' ' || *s == '\t')
@@ -610,7 +611,7 @@ fprintf(stderr, "   val: %s\n", value);*/
 	fix_spaces(refdes);
 	fix_spaces(value);
 
-	el = g_new0(PcbElement, 1);
+	el = calloc(sizeof(PcbElement), 1);
 	el->description = strdup(fp);
 	el->refdes = strdup(refdes);
 	el->value = strdup(value);
@@ -899,23 +900,24 @@ static void add_schematic(char * sch)
 		sch_basename = g_strndup(sch, s - sch);
 }
 
-static void add_multiple_schematics(char * sch)
+static void add_multiple_schematics(const char * sch)
 {
 	/* parse the string using shell semantics */
 	int count;
-	char **args = NULL;
-	GError *error = NULL;
+	char **args;
+	char *tmp = strdup(sch);
 
-	if (g_shell_parse_argv(sch, &count, &args, &error)) {
+	count = qparse(tmp, &args);
+	free(tmp);
+	if (count > 0) {
 		int i;
-		for (i = 0; i < count; ++i) {
-			add_schematic(args[i]);
-		}
-		g_strfreev(args);
+		for (i = 0; i < count; ++i)
+			if (*args[i] != '\0')
+				add_schematic(args[i]);
+		qparse_free(count, &args);
 	}
 	else {
-		fprintf(stderr, "invalid `schematics' option: %s\n", error->message);
-		g_error_free(error);
+		fprintf(stderr, "invalid `schematics' option: %s\n", sch);
 	}
 }
 
