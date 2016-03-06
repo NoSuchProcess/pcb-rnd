@@ -758,7 +758,6 @@ static int add_elements(char * pcb_file)
 static void update_element_descriptions(char * pcb_file, char * bak)
 {
 	FILE *f_in, *f_out;
-	GList *list;
 	PcbElement *el, *el_exists;
 	char *fmt, *tmp, *s, buf[1024];
 	gdl_iterator_t it;
@@ -807,7 +806,6 @@ static void update_element_descriptions(char * pcb_file, char * bak)
 static void prune_elements(char * pcb_file, char * bak)
 {
 	FILE *f_in, *f_out;
-	GList *list;
 	PcbElement *el, *el_exists;
 	char *fmt, *tmp, *s, buf[1024];
 	int paren_level = 0;
