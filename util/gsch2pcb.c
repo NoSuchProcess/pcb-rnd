@@ -114,21 +114,12 @@ void Message(char *err)
 	fprintf(stderr, "gsch2pcb-rnd: %s\n", err);
 }
 
-
-/* Temporary list-to-vts0 append call as an intermediate step in [unglib] */
-static void tmp_append(gpointer data, gpointer user_data)
-{
-	vts0_t *args = (vts0_t *)user_data;
-	vts0_append(user_data, (char *)data);
-}
-
 /**
  * Build and run a command. No redirection or error handling is
  * done.  Format string is split on whitespace. Specifiers %l and %s
  * are replaced with contents of positional args. To be recognized,
  * specifiers must be separated from other arguments in the format by
  * whitespace.
- *  - %l expects a GList, contents used as separate arguments
  *  - %L expects a gadl_list_t vith char * payload, contents used as separate arguments
  *  - %s expects a char*, contents used as a single argument (omitted if NULL)
  * @param[in] format  used to specify command to be executed
@@ -167,14 +158,6 @@ static int build_and_run_command(const char * format_, ...)
 		/* check if current word is a format */
 		if ((s == start) && (s[0] == '%') && (s[1] != '\0') && ((s[2] == '\0') || isspace(s[2]))) {
 			switch(s[1]) {
-				case 'l': /* append contents of list into command args - shared data */
-					{
-						GList *lst = va_arg(vargs, GList *);
-						g_list_foreach(lst, tmp_append, &args);
-					}
-					start = s+2;
-					s++;
-					continue;
 				case 'L': /* append contents of char * gadl_list_t */
 					{
 						gadl_list_t *list = va_arg(vargs, gadl_list_t *);
