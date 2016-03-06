@@ -827,16 +827,20 @@ static void prune_elements(char * pcb_file, char * bak)
 		else if (el->changed_value)
 			++n_changed_value;
 	}
-	if ((pcb_element_list.length != 0) || (n_deleted == 0 && !need_PKG_purge && n_changed_value == 0)
-		)
+	if ((pcb_element_list.length == 0) || (n_deleted == 0 && !need_PKG_purge && n_changed_value == 0)) {
 		return;
-	if ((f_in = fopen(pcb_file, "r")) == NULL)
+	}
+	if ((f_in = fopen(pcb_file, "r")) == NULL) {
+		fprintf(stderr, "error: can not read %s\n", pcb_file);
 		return;
+	}
 	tmp = g_strconcat(pcb_file, ".tmp", NULL);
 	if ((f_out = fopen(tmp, "wb")) == NULL) {
+		fprintf(stderr, "error: can not write %s\n", tmp);
 		fclose(f_in);
 		return;
 	}
+
 	while ((fgets(buf, sizeof(buf), f_in)) != NULL) {
 		for (s = buf; *s == ' ' || *s == '\t'; ++s);
 		if (skipping) {
