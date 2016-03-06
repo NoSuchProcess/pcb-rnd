@@ -74,12 +74,9 @@ typedef struct {
 } ElementMap;
 
 gdl_list_t pcb_element_list; /* initialized to 0 */
-gadl_list_t schematics, extra_gnetlist_arg_list;
-
-static GList *extra_gnetlist_list;
+gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
 
 static char *sch_basename;
-
 
 static char *empty_footprint_name;
 
@@ -240,7 +237,8 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 	struct stat st;
 	time_t mtime;
 	static const char *gnetlist = NULL;
-	GList *list = NULL;
+	gadl_iterator_t it;
+	char **sp;
 	char *verbose_str = NULL;
 
 	/* Allow the user to specify a full path or a different name for
@@ -272,8 +270,8 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 		return FALSE;
 	}
 
-	for (list = extra_gnetlist_list; list; list = g_list_next(list)) {
-		const char *s = (char *) list->data;
+	gadl_foreach(&extra_gnetlist_list, &it, sp) {
+		const char *s = *sp;
 		const char *s2 = strstr(s, " -o ");
 		char *out_file;
 		char *backend;
@@ -971,8 +969,12 @@ static int parse_config(char * config, char * arg)
 		DefaultPcbFile = strdup(arg);
 	else if (!strcmp(config, "schematics"))
 		add_multiple_schematics(arg);
-	else if (!strcmp(config, "gnetlist"))
-		extra_gnetlist_list = g_list_append(extra_gnetlist_list, strdup(arg));
+	else if (!strcmp(config, "gnetlist")) {
+		char **n;
+		n = gadl_new(&extra_gnetlist_list);
+		*n = strdup(arg);
+		gadl_append(&extra_gnetlist_list, n);
+	}
 	else if (!strcmp(config, "empty-footprint"))
 		empty_footprint_name = strdup(arg);
 	else
@@ -1180,6 +1182,7 @@ int main(int argc, char ** argv)
 
 	gadl_list_init(&schematics, sizeof(char *), NULL, NULL);
 	gadl_list_init(&extra_gnetlist_arg_list, sizeof(char *), NULL, NULL);
+	gadl_list_init(&extra_gnetlist_list, sizeof(char *), NULL, NULL);
 
 	paths_init_homedir();
 
