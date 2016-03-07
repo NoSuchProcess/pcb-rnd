@@ -42,12 +42,8 @@
 #include "../src_3rd/qparse/qparse.h"
 #include "../config.h"
 
-#include <glib.h>
-#ifndef TRUE
 #define TRUE 1
 #define FALSE 0
-#endif
-
 
 #define GSC2PCB_VERSION "1.6"
 
