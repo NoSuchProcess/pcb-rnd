@@ -98,7 +98,7 @@ static char *element_search_path = NULL;
 static char *element_shell = PCB_LIBRARY_SHELL;
 static char *DefaultPcbFile = PCB_DEFAULT_PCB_FILE;
 
-char *loc_strndup(const char *str, size_t len)
+static char *loc_strndup(const char *str, size_t len)
 {
 	char *s;
 	int l;
@@ -112,6 +112,17 @@ char *loc_strndup(const char *str, size_t len)
 	memcpy(s, str, len);
 	s[len] = '\0';
 	return s;
+}
+
+/* Checks if a file exists and is readable */
+static int file_exists(const char *fn)
+{
+	FILE *f;
+	f = fopen(fn, "r");
+	if (f == NULL)
+		return 0;
+	fclose(f);
+	return 1;
 }
 
 void ChdirErrorMessage(char *DirName)
@@ -1231,13 +1242,13 @@ int main(int argc, char ** argv)
 	bak_file_name = str_concat(NULL, sch_basename, ".pcb.bak", NULL);
 	tmp = strdup(bak_file_name);
 
-	for (i = 0; g_file_test(bak_file_name, G_FILE_TEST_EXISTS); ++i) {
+	for (i = 0; file_exists(bak_file_name); ++i) {
 		free(bak_file_name);
 		bak_file_name = g_strdup_printf("%s%d", tmp, i);
 	}
 	free(tmp);
 
-	if (g_file_test(pcb_file_name, G_FILE_TEST_EXISTS)) {
+	if (file_exists(pcb_file_name)) {
 		initial_pcb = FALSE;
 		pcb_new_file_name = str_concat(NULL, sch_basename, ".new.pcb", NULL);
 		get_pcb_element_list(pcb_file_name);
