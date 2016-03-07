@@ -1045,7 +1045,7 @@ static void load_extra_project_files(void)
 	load_project("/etc/gsch2pcb");
 	load_project("/usr/local/etc/gsch2pcb");
 
-	path = g_build_filename((char *) g_get_home_dir(), ".gEDA", "gsch2pcb", NULL);
+	path = str_concat(PCB_DIR_SEPARATOR_S, homedir, ".gEDA", "gsch2pcb", NULL);
 	load_project(path);
 	free(path);
 
