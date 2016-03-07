@@ -114,6 +114,15 @@ static char *loc_strndup(const char *str, size_t len)
 	return s;
 }
 
+/* Return a pointer to the suffix if inp ends in that suffix */
+static char *loc_str_has_suffix(char *inp, const char *suffix, int suff_len)
+{
+	int len = strlen(inp);
+	if ((len >= suff_len) && (strcmp(inp + len - suff_len, suffix) == 0))
+		return inp + len - suff_len;
+	return NULL;
+}
+
 /* Checks if a file exists and is readable */
 static int file_exists(const char *fn)
 {
@@ -923,9 +932,9 @@ static void add_schematic(char * sch)
 	*n = strdup(sch);
 	gadl_append(&schematics, n);
 	if (!sch_basename) {
-		int len = strlen(sch);
-		if ((len >= 4) && (strcmp(sch+len-4, ".sch") == 0))
-			sch_basename = loc_strndup(sch, len-4);
+		char *suff = loc_str_has_suffix(sch, ".sch", 4);
+		if (suff != NULL)
+			sch_basename = loc_strndup(sch, suff - sch);
 	}
 }
 
@@ -1201,7 +1210,7 @@ static void get_args(int argc, char ** argv)
 			usage();
 		}
 		else {
-			if (!g_str_has_suffix(argv[i], ".sch")) {
+			if (loc_str_has_suffix(argv[i], ".sch", 4) == NULL) {
 				load_extra_project_files();
 				load_project(argv[i]);
 			}
