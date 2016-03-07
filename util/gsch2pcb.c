@@ -22,6 +22,7 @@
  Behavior different from the original:
   - use getenv() instead of g_getenv(): on windows this won't do recursive variable expansion
   - use rnd-specific .scm
+  - use popen() instead of glib's spawn (stderr is always printed to stderr)
  */
 
 #include "config.h"
@@ -56,8 +57,6 @@
 
 /* from scconfig str lib: */
 char *str_concat(const char *sep, ...);
-
-
 
 typedef struct {
 	char *refdes, *value, *description, *changed_description, *changed_value;
@@ -98,6 +97,22 @@ static int remove_unfound_elements = TRUE, quiet_mode = FALSE, preserve, fix_ele
 static char *element_search_path = NULL;
 static char *element_shell = PCB_LIBRARY_SHELL;
 static char *DefaultPcbFile = PCB_DEFAULT_PCB_FILE;
+
+char *loc_strndup(const char *str, size_t len)
+{
+	char *s;
+	int l;
+
+	if (str == NULL)
+		return NULL;
+	l = strlen(str);
+	if (l < len)
+		len = l;
+	s = malloc(len+1);
+	memcpy(s, str, len);
+	s[len] = '\0';
+	return s;
+}
 
 void ChdirErrorMessage(char *DirName)
 {
@@ -288,7 +303,7 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 		}
 		else {
 			out_file = strdup(s2 + 4);
-			backend = g_strndup(s, s2 - s);
+			backend = loc_strndup(s, s2 - s);
 		}
 
 		if (!build_and_run_command("%s %s -g %s -o %s %L %L",
@@ -342,7 +357,7 @@ static char *token(char * string, char ** next, int * quoted_ret, int parenth)
 				break;
 		}
 	}
-	ret = g_strndup(str, s - str);
+	ret = loc_strndup(str, s - str);
 	str = (quoted && *s) ? s + 1 : s;
 	if (next)
 		*next = str;
@@ -897,7 +912,7 @@ static void add_schematic(char * sch)
 	*n = strdup(sch);
 	gadl_append(&schematics, n);
 	if (!sch_basename && (s = g_strrstr(sch, ".sch")) != NULL && strlen(s) == 4)
-		sch_basename = g_strndup(sch, s - sch);
+		sch_basename = loc_strndup(sch, s - sch);
 }
 
 static void add_multiple_schematics(const char * sch)
