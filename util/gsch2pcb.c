@@ -1239,14 +1239,22 @@ int main(int argc, char ** argv)
 	pins_file_name = str_concat(NULL, sch_basename, ".cmd", NULL);
 	net_file_name = str_concat(NULL, sch_basename, ".net", NULL);
 	pcb_file_name = str_concat(NULL, sch_basename, ".pcb", NULL);
-	bak_file_name = str_concat(NULL, sch_basename, ".pcb.bak", NULL);
-	tmp = strdup(bak_file_name);
 
-	for (i = 0; file_exists(bak_file_name); ++i) {
-		free(bak_file_name);
-		bak_file_name = g_strdup_printf("%s%d", tmp, i);
+
+	{ /* set bak_file_name, finding the first number that results in a non-existing bak */
+		int len;
+		char *end;
+
+		len = strlen(sch_basename);
+		bak_file_name = malloc(len+8+64); /* make room for ".pcb.bak" and an integer */
+		memcpy(bak_file_name, sch_basename, len);
+		end = bak_file_name + len;
+		strcpy(end, ".pcb.bak");
+		end += 8;
+
+		for (i = 0; file_exists(bak_file_name); ++i)
+			sprintf(end, "%d", i);
 	}
-	free(tmp);
 
 	if (file_exists(pcb_file_name)) {
 		initial_pcb = FALSE;
