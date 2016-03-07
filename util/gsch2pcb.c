@@ -911,8 +911,11 @@ static void add_schematic(char * sch)
 	n = gadl_new(&schematics);
 	*n = strdup(sch);
 	gadl_append(&schematics, n);
-	if (!sch_basename && (s = g_strrstr(sch, ".sch")) != NULL && strlen(s) == 4)
-		sch_basename = loc_strndup(sch, s - sch);
+	if (!sch_basename) {
+		int len = strlen(sch);
+		if ((len >= 4) && (strcmp(sch+len-4, ".sch") == 0))
+			sch_basename = loc_strndup(sch, len-4);
+	}
 }
 
 static void add_multiple_schematics(const char * sch)
