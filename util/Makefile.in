@@ -1,7 +1,7 @@
 print [@
 
-CFLAGS=@libs/sul/glib/cflags@ -I.. -I../src_3rd -DSCMDIR="\"$(LIBDIR)\""
-LDFLAGS=@libs/sul/glib/ldflags@
+CFLAGS=-I.. -I../src_3rd -DSCMDIR="\"$(LIBDIR)\""
+LDFLAGS=
 EXE=@sys/ext_exe@
 CC=@cc/cc@
 
