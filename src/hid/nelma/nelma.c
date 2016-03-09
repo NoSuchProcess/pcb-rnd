@@ -522,7 +522,7 @@ void nelma_choose_groups()
 	for (n = 0; n < max_copper_layer; n++) {
 		layer = &PCB->Data->Layer[n];
 
-		if (layer->LineN || layer->TextN || layer->ArcN || layer->PolygonN) {
+		if (linelist_length(&layer->Line) || layer->TextN || layer->ArcN || layer->PolygonN) {
 			/* layer isn't empty */
 
 			/*

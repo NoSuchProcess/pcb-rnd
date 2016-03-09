@@ -122,6 +122,18 @@ static void select_cb(void *obj_, void *ud)
 		s->searching = 0; \
 	} while(0)
 
+#define select2(s, om, flag, lst) \
+	do { \
+		gdl_iterator_t it; \
+		void *item; \
+		select_t ctx; \
+		ctx.flag = flag; \
+		ctx.search = s; \
+		s->searching = om; \
+		linelist_foreach(lst, &it, item) select_cb(item, &ctx); \
+		s->searching = 0; \
+	} while(0)
+
 static int layout_search_flag(const char *search_ID, multiple layout_object_mask_t obj_types, int flag)
 {
 	Cardinal l, n;
@@ -131,7 +143,7 @@ static int layout_search_flag(const char *search_ID, multiple layout_object_mask
 	for (l =0; l < MAX_LAYER + 2; l++, layer++) {
 		s->layer = l;
 		select(s, OM_ARC,     flag, layer->Arc);
-		select(s, OM_LINE,    flag, layer->Line);
+		select2(s, OM_LINE,    flag, &layer->Line);
 		select(s, OM_TEXT,    flag, layer->Text);
 		select(s, OM_POLYGON, flag, layer->Polygon);
 	}

@@ -64,7 +64,7 @@ int layout_layer_field(int layer, layer_field_t fld)
 {
 	layer_check(layer)(-1);
 	switch(fld) {
-		case LFLD_NUM_LINES: return PCB->Data->Layer[layer].LineN;
+		case LFLD_NUM_LINES: return linelist_length(&(PCB->Data->Layer[layer].Line));
 		case LFLD_NUM_TEXTS: return PCB->Data->Layer[layer].TextN;
 		case LFLD_NUM_POLYS: return PCB->Data->Layer[layer].PolygonN;
 		case LFLD_NUM_ARCS:  return PCB->Data->Layer[layer].ArcN;

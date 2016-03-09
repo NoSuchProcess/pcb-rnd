@@ -57,24 +57,13 @@
 #include <stdbool.h>
 #include <glib.h>
 
-/* Forward declarations for structures the HIDs need.  */
-typedef struct BoxType BoxType, *BoxTypePtr;
-typedef struct polygon_st PolygonType, *PolygonTypePtr;
-typedef struct pad_st PadType, *PadTypePtr;
-typedef struct pin_st PinType, *PinTypePtr, **PinTypeHandle;
-typedef struct drc_violation_st DrcViolationType, *DrcViolationTypePtr;
-typedef struct rtree rtree_t;
-typedef struct AttributeListType AttributeListType, *AttributeListTypePtr;
-typedef struct rats_patch_line_s rats_patch_line_t;
 
-typedef struct unit Unit;
-typedef struct increments Increments;
-
-typedef COORD_TYPE Coord;				/* pcb base unit */
-typedef double Angle;						/* degrees */
-
+#include "global_typedefs.h"
+#include "list_common.h"
+#include "list_line.h"
 #include "hid.h"
 #include "polyarea.h"
+
 
 /* Internationalization support. */
 #ifdef ENABLE_NLS
@@ -248,10 +237,11 @@ typedef struct {
 	ANYLINEFIELDS;
 } AnyLineObjectType, *AnyLineObjectTypePtr;
 
-typedef struct {								/* holds information about one line */
+struct line_st {								/* holds information about one line */
 	ANYLINEFIELDS;
 	char *Number;
-} LineType, *LineTypePtr;
+	gdl_elem_t link;  /* a line is in a list: either on a layer or in an element */
+};
 
 typedef struct {
 	ANYOBJECTFIELDS;
@@ -291,11 +281,11 @@ struct rtree {
 
 typedef struct {								/* holds information about one layer */
 	char *Name;										/* layer name */
-	Cardinal LineN,								/* number of lines */
+	Cardinal											/* number of... */
 	  TextN,											/* labels */
 	  PolygonN,										/* polygons */
 	  ArcN;												/* and arcs */
-	GList *Line;
+	linelist_t Line;
 	GList *Text;
 	GList *Polygon;
 	GList *Arc;
@@ -345,11 +335,10 @@ typedef struct {
 	Coord MarkX, MarkY;						/* position mark */
 	Cardinal PinN;								/* number of pins */
 	Cardinal PadN;								/* number of pads */
-	Cardinal LineN;								/* number of lines */
 	Cardinal ArcN;								/* number of arcs */
 	GList *Pin;
 	GList *Pad;
-	GList *Line;
+	linelist_t Line;
 	GList *Arc;
 	BoxType VBox;
 	AttributeListType Attributes;

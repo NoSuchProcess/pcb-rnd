@@ -393,10 +393,8 @@ static void *MoveLineToLayerLowLevel(LayerType * Source, LineType * line, LayerT
 {
 	r_delete_entry(Source->line_tree, (BoxType *) line);
 
-	Source->Line = g_list_remove(Source->Line, line);
-	Source->LineN--;
-	Destination->Line = g_list_append(Destination->Line, line);
-	Destination->LineN++;
+	linelist_remove(line);
+	linelist_append(&(Destination->Line), line);
 
 	if (!Destination->line_tree)
 		Destination->line_tree = r_create_tree(NULL, 0, 0);

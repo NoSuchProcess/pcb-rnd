@@ -40,6 +40,7 @@ put /local/pcb/OBJS [@
 	insert.o
 	intersect.o
 	line.o
+	list_line.o
 	lrealpath.o
 	main.o
 	mirror.o

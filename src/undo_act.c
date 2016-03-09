@@ -272,7 +272,7 @@ int ActionRedo(int argc, char **argv, Coord x, Coord y)
 	if (Redo(true)) {
 		SetChangedFlag(true);
 		if (Settings.Mode == LINE_MODE && Crosshair.AttachedLine.State != STATE_FIRST) {
-			LineType *line = g_list_last(CURRENT->Line)->data;
+			LineType *line = linelist_last(&CURRENT->Line);
 			Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = line->Point2.X;
 			Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = line->Point2.Y;
 			addedLines++;

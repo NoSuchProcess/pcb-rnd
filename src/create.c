@@ -697,8 +697,7 @@ LineTypePtr CreateNewLineInElement(ElementTypePtr Element, Coord X1, Coord Y1, C
 		return NULL;
 
 	line = g_slice_new0(LineType);
-	Element->Line = g_list_append(Element->Line, line);
-	Element->LineN++;
+	linelist_append(&Element->Line, line);
 
 	/* copy values */
 	line->Point1.X = X1;

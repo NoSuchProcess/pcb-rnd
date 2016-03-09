@@ -143,11 +143,7 @@ static void *DestroyLine(LayerTypePtr Layer, LineTypePtr Line)
 	r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
 	free(Line->Number);
 
-	Layer->Line = g_list_remove(Layer->Line, Line);
-	Layer->LineN--;
-
-	g_slice_free(LineType, Line);
-
+	RemoveFreeLine(Line);
 	return NULL;
 }
 

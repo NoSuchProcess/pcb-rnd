@@ -585,7 +585,7 @@ bool IsDataEmpty(DataTypePtr Data)
 	hasNoObjects &= (Data->ElementN == 0);
 	for (i = 0; i < max_copper_layer + 2; i++)
 		hasNoObjects = hasNoObjects &&
-			Data->Layer[i].LineN == 0 && Data->Layer[i].ArcN == 0 && Data->Layer[i].TextN == 0 && Data->Layer[i].PolygonN == 0;
+			linelist_length(&Data->Layer[i].Line) == 0 && Data->Layer[i].ArcN == 0 && Data->Layer[i].TextN == 0 && Data->Layer[i].PolygonN == 0;
 	return (hasNoObjects);
 }
 
@@ -600,7 +600,7 @@ int FlagIsDataEmpty(int parm)
 
 bool IsLayerEmpty(LayerTypePtr layer)
 {
-	return (layer->LineN == 0 && layer->TextN == 0 && layer->PolygonN == 0 && layer->ArcN == 0);
+	return (linelist_length(&layer->Line) == 0 && layer->TextN == 0 && layer->PolygonN == 0 && layer->ArcN == 0);
 }
 
 bool IsLayerNumEmpty(int num)

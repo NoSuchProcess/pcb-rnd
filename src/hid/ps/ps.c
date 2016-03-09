@@ -646,7 +646,7 @@ void ps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 
 	for (i = 0; i < max_copper_layer; i++) {
 		LayerType *layer = PCB->Data->Layer + i;
-		if (layer->LineN || layer->TextN || layer->ArcN || layer->PolygonN)
+		if (linelist_length(&layer->Line) || layer->TextN || layer->ArcN || layer->PolygonN)
 			global.print_group[GetLayerGroupNumberByNumber(i)] = 1;
 
 		if (strcmp(layer->Name, "outline") == 0 || strcmp(layer->Name, "route") == 0) {

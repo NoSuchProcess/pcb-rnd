@@ -268,10 +268,8 @@ static void *MoveLineToBuffer(LayerType * layer, LineType * line)
 	RestoreToPolygon(Source, LINE_TYPE, layer, line);
 	r_delete_entry(layer->line_tree, (BoxType *) line);
 
-	layer->Line = g_list_remove(layer->Line, line);
-	layer->LineN--;
-	lay->Line = g_list_append(lay->Line, line);
-	lay->LineN++;
+	linelist_remove(line);
+	linelist_append(&(lay->Line), line);
 
 	CLEAR_FLAG(FOUNDFLAG, line);
 

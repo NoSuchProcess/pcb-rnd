@@ -557,7 +557,7 @@ static void gerber_do_export(HID_Attr_Val * options)
 	hid_save_and_show_layer_ons(save_ons);
 	for (i = 0; i < max_copper_layer; i++) {
 		LayerType *layer = PCB->Data->Layer + i;
-		if (layer->LineN || layer->TextN || layer->ArcN || layer->PolygonN)
+		if (linelist_length(&layer->Line) || layer->TextN || layer->ArcN || layer->PolygonN)
 			print_group[GetLayerGroupNumberByNumber(i)] = 1;
 	}
 	print_group[GetLayerGroupNumberByNumber(solder_silk_layer)] = 1;

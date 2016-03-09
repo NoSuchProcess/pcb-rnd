@@ -304,7 +304,7 @@ bool CopyPastebufferToLayout(Coord X, Coord Y)
 
 		if (destlayer->On) {
 			changed = changed ||
-				(sourcelayer->LineN != 0) || (sourcelayer->ArcN != 0) || (sourcelayer->PolygonN != 0) || (sourcelayer->TextN != 0);
+				(linelist_length(&sourcelayer->Line) != 0) || (sourcelayer->ArcN != 0) || (sourcelayer->PolygonN != 0) || (sourcelayer->TextN != 0);
 			LINE_LOOP(sourcelayer);
 			{
 				CopyLine(destlayer, line);

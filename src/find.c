@@ -618,10 +618,10 @@ void InitLayoutLookup(void)
 	for (i = 0; i < max_copper_layer; i++) {
 		LayerTypePtr layer = LAYER_PTR(i);
 
-		if (layer->LineN) {
+		if (linelist_length(&layer->Line)) {
 			/* allocate memory for line pointer lists */
-			LineList[i].Data = (void **) calloc(layer->LineN, sizeof(LineTypePtr));
-			LineList[i].Size = layer->LineN;
+			LineList[i].Size = linelist_length(&layer->Line);
+			LineList[i].Data = (void **) calloc(LineList[i].Size, sizeof(LineTypePtr));
 		}
 		if (layer->ArcN) {
 			ArcList[i].Data = (void **) calloc(layer->ArcN, sizeof(ArcTypePtr));

@@ -250,16 +250,16 @@ LineType *GetLineMemory(LayerType * layer)
 {
 	LineType *new_obj;
 
-	new_obj = g_slice_new0(LineType);
-	layer->Line = g_list_append(layer->Line, new_obj);
-	layer->LineN++;
+	new_obj = calloc(sizeof(LineType), 1);
+	linelist_append(&layer->Line, new_obj);
 
 	return new_obj;
 }
 
-static void FreeLine(LineType * data)
+void RemoveFreeLine(LineType * data)
 {
-	g_slice_free(LineType, data);
+	linelist_remove(data);
+	free(data);
 }
 
 /* ---------------------------------------------------------------------------
@@ -589,7 +589,7 @@ void FreeElementMemory(ElementType * element)
 
 	g_list_free_full(element->Pin, (GDestroyNotify) FreePin);
 	g_list_free_full(element->Pad, (GDestroyNotify) FreePad);
-	g_list_free_full(element->Line, (GDestroyNotify) FreeLine);
+	list_map0(&element->Line, LineType, RemoveFreeLine);
 	g_list_free_full(element->Arc, (GDestroyNotify) FreeArc);
 
 	FreeAttributeListMemory(&element->Attributes);
@@ -661,7 +661,8 @@ void FreeDataMemory(DataType * data)
 				free(line->Number);
 		}
 		END_LOOP;
-		g_list_free_full(layer->Line, (GDestroyNotify) FreeLine);
+
+		list_map0(&layer->Line, LineType, RemoveFreeLine);
 		g_list_free_full(layer->Arc, (GDestroyNotify) FreeArc);
 		g_list_free_full(layer->Text, (GDestroyNotify) FreeText);
 		POLYGON_LOOP(layer);

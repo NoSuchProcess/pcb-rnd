@@ -480,17 +480,17 @@ static LineType *create_pcb_line(int layer, int x1, int y1, int x2, int y2, int 
 	LineType *nl;
 	LayerType *lyr = LAYER_PTR(layer);
 
-	from = (char *) lyr->Line;
+	from = (char *) linelist_first(&lyr->Line);
 	nl = CreateNewLineOnLayer(PCB->Data->Layer + layer, x1, y1, x2, y2, thick, clear, flags);
 	AddObjectToCreateUndoList(LINE_TYPE, lyr, nl, nl);
 
-	to = (char *) lyr->Line;
+	to = (char *) linelist_first(&lyr->Line);
 	if (from != to) {
 		line_s *lp;
 		for (lp = lines; lp; lp = lp->next) {
 			if (DELETED(lp))
 				continue;
-			if ((char *) (lp->line) >= from && (char *) (lp->line) <= from + lyr->LineN * sizeof(LineType))
+			if ((char *) (lp->line) >= from && (char *) (lp->line) <= from + linelist_length(&lyr->Line) * sizeof(LineType))
 				lp->line = (LineType *) ((char *) (lp->line) + (to - from));
 		}
 	}

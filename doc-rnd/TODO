@@ -1,3 +1,12 @@
+UNGLIB:
+	- find.c: check InitLayoutLookup - why do we build another cache? -> genvector!
+	- line transition:
+		- test autorouter
+		- test exporters
+		- test gpmi search
+	- get rid of lists.h
+
+
 BUGS
 - gpmi (and other buildings/plugins) not showing up in the about box
 

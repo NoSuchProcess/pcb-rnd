@@ -209,7 +209,7 @@ void eps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	for (i = 0; i < max_copper_layer; i++) {
 		LayerType *layer = PCB->Data->Layer + i;
 		if (layer->On)
-			if (layer->LineN || layer->TextN || layer->ArcN || layer->PolygonN)
+			if (linelist_length(&layer->Line) || layer->TextN || layer->ArcN || layer->PolygonN)
 				print_group[GetLayerGroupNumberByNumber(i)] = 1;
 	}
 

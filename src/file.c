@@ -689,11 +689,14 @@ static void WritePCBNetlistPatchData(FILE * FP)
 static void WriteElementData(FILE * FP, DataTypePtr Data)
 {
 	GList *n, *p;
+	gdl_iterator_t it;
+	LineType *line;
+
 	for (n = Data->Element; n != NULL; n = g_list_next(n)) {
 		ElementType *element = n->data;
 
 		/* only non empty elements */
-		if (!element->LineN && !element->PinN && !element->ArcN && !element->PadN)
+		if (!linelist_length(&element->Line) && !element->PinN && !element->ArcN && !element->PadN)
 			continue;
 		/* the coordinates and text-flags are the same for
 		 * both names of an element
@@ -732,8 +735,7 @@ static void WriteElementData(FILE * FP, DataTypePtr Data)
 			PrintQuotedString(FP, (char *) EMPTY(pad->Number));
 			fprintf(FP, " %s]\n", F2S(pad, PAD_TYPE));
 		}
-		for (p = element->Line; p != NULL; p = g_list_next(p)) {
-			LineType *line = p->data;
+		linelist_foreach(&element->Line, &it, line) {
 			pcb_fprintf(FP, "\tElementLine [%mr %mr %mr %mr %mr]\n",
 									line->Point1.X - element->MarkX,
 									line->Point1.Y - element->MarkY,
@@ -755,15 +757,17 @@ static void WriteElementData(FILE * FP, DataTypePtr Data)
 static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 {
 	GList *n;
+	gdl_iterator_t it;
+	LineType *line;
+
 	/* write information about non empty layers */
-	if (layer->LineN || layer->ArcN || layer->TextN || layer->PolygonN || (layer->Name && *layer->Name)) {
+	if (linelist_length(&layer->Line) || layer->ArcN || layer->TextN || layer->PolygonN || (layer->Name && *layer->Name)) {
 		fprintf(FP, "Layer(%i ", (int) Number + 1);
 		PrintQuotedString(FP, (char *) EMPTY(layer->Name));
 		fputs(")\n(\n", FP);
 		WriteAttributeList(FP, &layer->Attributes, "\t");
 
-		for (n = layer->Line; n != NULL; n = g_list_next(n)) {
-			LineType *line = n->data;
+		linelist_foreach(&layer->Line, &it, line) {
 			pcb_fprintf(FP, "\tLine[%mr %mr %mr %mr %mr %mr %s]\n",
 									line->Point1.X, line->Point1.Y,
 									line->Point2.X, line->Point2.Y, line->Thickness, line->Clearance, F2S(line, LINE_TYPE));

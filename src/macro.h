@@ -276,12 +276,9 @@ extern int mem_any_set(unsigned char *, int);
     ArcType *arc = __iter->data;
 
 #define ELEMENTLINE_LOOP(element) do {                              \
-  GList *__iter, *__next;                                           \
-  Cardinal n = 0;                                                   \
-  for (__iter = (element)->Line, __next = g_list_next (__iter);     \
-       __iter != NULL;                                              \
-       __iter = __next, __next = g_list_next (__iter), n++) {       \
-    LineType *line = __iter->data;
+  LineType *line;                                                   \
+  gdl_iterator_t __it__;                                            \
+  linelist_foreach(&(element)->Line, &__it__, line) {
 
 #define ELEMENTARC_LOOP(element) do {                               \
   GList *__iter, *__next;                                           \
@@ -292,12 +289,9 @@ extern int mem_any_set(unsigned char *, int);
     ArcType *arc = __iter->data;
 
 #define LINE_LOOP(layer) do {                                       \
-  GList *__iter, *__next;                                           \
-  Cardinal n = 0;                                                   \
-  for (__iter = (layer)->Line, __next = g_list_next (__iter);       \
-       __iter != NULL;                                              \
-       __iter = __next, __next = g_list_next (__iter), n++) {       \
-    LineType *line = __iter->data;
+  LineType *line;                                                   \
+  gdl_iterator_t __it__;                                            \
+  linelist_foreach(&(layer)->Line, &__it__, line) {
 
 #define TEXT_LOOP(layer) do {                                       \
   GList *__iter, *__next;                                           \
