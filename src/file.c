@@ -691,6 +691,7 @@ static void WriteElementData(FILE * FP, DataTypePtr Data)
 	GList *n, *p;
 	gdl_iterator_t it;
 	LineType *line;
+	ArcType *arc;
 
 	for (n = Data->Element; n != NULL; n = g_list_next(n)) {
 		ElementType *element = n->data;
@@ -741,8 +742,7 @@ static void WriteElementData(FILE * FP, DataTypePtr Data)
 									line->Point1.Y - element->MarkY,
 									line->Point2.X - element->MarkX, line->Point2.Y - element->MarkY, line->Thickness);
 		}
-		for (p = element->Arc; p != NULL; p = g_list_next(p)) {
-			ArcType *arc = p->data;
+		linelist_foreach(&element->Arc, &it, arc) {
 			pcb_fprintf(FP, "\tElementArc [%mr %mr %mr %mr %ma %ma %mr]\n",
 									arc->X - element->MarkX,
 									arc->Y - element->MarkY, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
@@ -759,6 +759,7 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 	GList *n;
 	gdl_iterator_t it;
 	LineType *line;
+	ArcType *arc;
 
 	/* write information about non empty layers */
 	if (linelist_length(&layer->Line) || layer->ArcN || layer->TextN || layer->PolygonN || (layer->Name && *layer->Name)) {
@@ -772,8 +773,7 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 									line->Point1.X, line->Point1.Y,
 									line->Point2.X, line->Point2.Y, line->Thickness, line->Clearance, F2S(line, LINE_TYPE));
 		}
-		for (n = layer->Arc; n != NULL; n = g_list_next(n)) {
-			ArcType *arc = n->data;
+		linelist_foreach(&layer->Arc, &it, arc) {
 			pcb_fprintf(FP, "\tArc[%mr %mr %mr %mr %mr %mr %ma %ma %s]\n",
 									arc->X, arc->Y, arc->Width,
 									arc->Height, arc->Thickness, arc->Clearance, arc->StartAngle, arc->Delta, F2S(arc, ARC_TYPE));

@@ -59,8 +59,10 @@
 
 
 #include "global_typedefs.h"
+#include "global_objs.h"
 #include "list_common.h"
 #include "list_line.h"
+#include "list_arc.h"
 #include "hid.h"
 #include "polyarea.h"
 
@@ -91,32 +93,6 @@ typedef struct {
 	double dval;
 	char has_units;
 } PLMeasure;
-
-#ifndef XtSpecificationRelease
-typedef unsigned int Cardinal;
-/*typedef unsigned int	Pixel;*/
-typedef char *String;
-typedef short Position;
-typedef short Dimension;
-#endif
-typedef unsigned char BYTE;
-
-/* Nobody should know about the internals of this except the macros in
-   macros.h that access it.  This structure must be simple-assignable
-   for now.  */
-typedef struct unknown_flag_s unknown_flag_t;
-struct unknown_flag_s {
-	char *str;
-	unknown_flag_t *next;
-};
-
-typedef struct {
-	unsigned long f;							/* generic flags */
-	unsigned char t[(MAX_LAYER + 1) / 2];	/* thermals */
-	unsigned char q;							/* square geometry flag */
-	unsigned char int_conn_grp;
-	unknown_flag_t *unknowns;
-} FlagType, *FlagTypePtr;
 
 #ifndef __GNUC__
 #define __FUNCTION1(a,b) a ":" #b
@@ -155,30 +131,6 @@ typedef struct {
 #define UNLIKELY(expr) (expr)
 #endif
 
-
-/* ---------------------------------------------------------------------------
- * Do not change the following definitions even if they're not very
- * nice.  It allows us to have functions act on these "base types" and
- * not need to know what kind of actual object they're working on.
- */
-
-/* Any object that uses the "object flags" defined in const.h, or
-   exists as an object on the pcb, MUST be defined using this as the
-   first fields, either directly or through ANYLINEFIELDS.  */
-#define ANYOBJECTFIELDS			\
-	BoxType		BoundingBox;	\
-	long int	ID;		\
-	FlagType	Flags
-	/*  struct LibraryEntryType *net */
-
-/* Lines, pads, and rats all use this so they can be cross-cast.  */
-#define	ANYLINEFIELDS			\
-	ANYOBJECTFIELDS;		\
-	Coord		Thickness,      \
-                        Clearance;      \
-	PointType	Point1,		\
-			Point2
-
 /* ---------------------------------------------------------------------------
  * some useful values of our widgets
  */
@@ -188,6 +140,7 @@ typedef struct {								/* holds information about output window */
 	  pmGC;												/* depth 1 pixmap GC to store clip */
 } OutputType, *OutputTypePtr;
 
+
 /* ----------------------------------------------------------------------
  * layer group. A layer group identifies layers which are always switched
  * on/off together.
@@ -196,11 +149,6 @@ typedef struct {
 	Cardinal Number[MAX_LAYER],		/* number of entries per groups */
 	  Entries[MAX_LAYER][MAX_LAYER + 2];
 } LayerGroupType, *LayerGroupTypePtr;
-
-struct BoxType {								/* a bounding box */
-	Coord X1, Y1;									/* upper left */
-	Coord X2, Y2;									/* and lower right corner */
-};
 
 typedef struct {
 	Coord x, y;
@@ -221,58 +169,24 @@ struct AttributeListType {
  * the basic object types supported by PCB
  */
 
-/* All on-pcb objects (elements, lines, pads, vias, rats, etc) are
-   based on this. */
-typedef struct {
+typedef struct element_st {
 	ANYOBJECTFIELDS;
-} AnyObjectType, *AnyObjectTypePtr;
-
-typedef struct {								/* a line/polygon point */
-	Coord X, Y, X2, Y2;						/* so Point type can be cast as BoxType */
-	long int ID;
-} PointType, *PointTypePtr;
-
-/* Lines, rats, pads, etc.  */
-typedef struct {
-	ANYLINEFIELDS;
-} AnyLineObjectType, *AnyLineObjectTypePtr;
-
-struct line_st {								/* holds information about one line */
-	ANYLINEFIELDS;
-	char *Number;
-	gdl_elem_t link;  /* a line is in a list: either on a layer or in an element */
-};
-
-typedef struct {
-	ANYOBJECTFIELDS;
-	int Scale;										/* text scaling in percent */
-	Coord X, Y;										/* origin */
-	BYTE Direction;
-	char *TextString;							/* string */
-	void *Element;
-} TextType, *TextTypePtr;
-
-struct polygon_st {							/* holds information about a polygon */
-	ANYOBJECTFIELDS;
-	Cardinal PointN,							/* number of points in polygon */
-	  PointMax;										/* max number from malloc() */
-	POLYAREA *Clipped;						/* the clipped region of this polygon */
-	PLINE *NoHoles;								/* the polygon broken into hole-less regions */
-	int NoHolesValid;							/* Is the NoHoles polygon up to date? */
-	PointTypePtr Points;					/* data */
-	Cardinal *HoleIndex;					/* Index of hole data within the Points array */
-	Cardinal HoleIndexN;					/* number of holes in polygon */
-	Cardinal HoleIndexMax;				/* max number from malloc() */
-
-};
-
-typedef struct {								/* holds information about arcs */
-	ANYOBJECTFIELDS;
-	Coord Thickness, Clearance;
-	Coord Width, Height,					/* length of axis */
-	  X, Y;												/* center coordinates */
-	Angle StartAngle, Delta;			/* the two limiting angles in degrees */
-} ArcType, *ArcTypePtr;
+	TextType Name[MAX_ELEMENTNAMES];	/* the elements names; */
+	/* description text */
+	/* name on PCB second, */
+	/* value third */
+	/* see macro.h */
+	Coord MarkX, MarkY;						/* position mark */
+	Cardinal PinN;								/* number of pins */
+	Cardinal PadN;								/* number of pads */
+	Cardinal ArcN;								/* number of arcs */
+	GList *Pin;
+	GList *Pad;
+	linelist_t Line;
+	arclist_t Arc;
+	BoxType VBox;
+	AttributeListType Attributes;
+} ElementType, *ElementTypePtr, **ElementTypeHandle;
 
 struct rtree {
 	struct rtree_node *root;
@@ -288,7 +202,7 @@ typedef struct {								/* holds information about one layer */
 	linelist_t Line;
 	GList *Text;
 	GList *Polygon;
-	GList *Arc;
+	arclist_t Arc;
 	rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
 	bool On;											/* visible flag */
 	char *Color,									/* color */
@@ -296,73 +210,6 @@ typedef struct {								/* holds information about one layer */
 	AttributeListType Attributes;
 	int no_drc;										/* whether to ignore the layer when checking the design rules */
 } LayerType, *LayerTypePtr;
-
-typedef struct {								/* a rat-line */
-	ANYLINEFIELDS;
-	Cardinal group1, group2;			/* the layer group each point is on */
-} RatType, *RatTypePtr;
-
-struct pad_st {									/* a SMD pad */
-	ANYLINEFIELDS;
-	Coord Mask;
-	char *Name, *Number;					/* 'Line' */
-	void *Element;
-	void *Spare;
-};
-
-struct pin_st {
-	ANYOBJECTFIELDS;
-	Coord Thickness, Clearance, Mask, DrillingHole;
-	Coord X, Y;										/* center and diameter */
-	char *Name, *Number;
-	void *Element;
-	void *Spare;
-};
-
-/* This is the extents of a Pin or Via, depending on whether it's a
-   hole or not.  */
-#define PIN_SIZE(pinptr) (TEST_FLAG(HOLEFLAG, (pinptr)) \
-			  ? (pinptr)->DrillingHole \
-			  : (pinptr)->Thickness)
-
-typedef struct {
-	ANYOBJECTFIELDS;
-	TextType Name[MAX_ELEMENTNAMES];	/* the elements names; */
-	/* description text */
-	/* name on PCB second, */
-	/* value third */
-	/* see macro.h */
-	Coord MarkX, MarkY;						/* position mark */
-	Cardinal PinN;								/* number of pins */
-	Cardinal PadN;								/* number of pads */
-	Cardinal ArcN;								/* number of arcs */
-	GList *Pin;
-	GList *Pad;
-	linelist_t Line;
-	GList *Arc;
-	BoxType VBox;
-	AttributeListType Attributes;
-} ElementType, *ElementTypePtr, **ElementTypeHandle;
-
-/* ---------------------------------------------------------------------------
- * symbol and font related stuff
- */
-typedef struct {								/* a single symbol */
-	LineTypePtr Line;
-	bool Valid;
-	Cardinal LineN,								/* number of lines */
-	  LineMax;
-	Coord Width, Height,					/* size of cell */
-	  Delta;											/* distance to next symbol */
-} SymbolType, *SymbolTypePtr;
-
-typedef struct {								/* complete set of symbols */
-	Coord MaxHeight,							/* maximum cell width and height */
-	  MaxWidth;
-	BoxType DefaultSymbol;				/* the default symbol is a filled box */
-	SymbolType Symbol[MAX_FONTPOSITION + 1];
-	bool Valid;
-} FontType, *FontTypePtr;
 
 typedef struct {								/* holds all objects */
 	Cardinal ViaN,								/* number of vias */

@@ -660,9 +660,8 @@ CreateNewArcInElement(ElementTypePtr Element,
 {
 	ArcType *arc;
 
-	arc = g_slice_new0(ArcType);
-	Element->Arc = g_list_append(Element->Arc, arc);
-	Element->ArcN++;
+	arc = calloc(sizeof(ArcType), 1);
+	arclist_append(&Element->Arc, arc);
 
 	/* set Delta (0,360], StartAngle in [0,360) */
 	if (delta < 0) {

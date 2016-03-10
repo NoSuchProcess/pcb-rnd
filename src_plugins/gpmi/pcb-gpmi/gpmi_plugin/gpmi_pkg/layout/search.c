@@ -142,7 +142,7 @@ static int layout_search_flag(const char *search_ID, multiple layout_object_mask
 
 	for (l =0; l < MAX_LAYER + 2; l++, layer++) {
 		s->layer = l;
-		select(s, OM_ARC,     flag, layer->Arc);
+		select2(s, OM_ARC,     flag, &layer->Arc);
 		select2(s, OM_LINE,    flag, &layer->Line);
 		select(s, OM_TEXT,    flag, layer->Text);
 		select(s, OM_POLYGON, flag, layer->Polygon);

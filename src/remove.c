@@ -154,10 +154,7 @@ static void *DestroyArc(LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
 
-	Layer->Arc = g_list_remove(Layer->Arc, Arc);
-	Layer->ArcN--;
-
-	g_slice_free(ArcType, Arc);
+	RemoveFreeArc(Arc);
 
 	return NULL;
 }

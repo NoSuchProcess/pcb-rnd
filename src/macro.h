@@ -268,12 +268,10 @@ extern int mem_any_set(unsigned char *, int);
     PadType *pad = __iter->data;
 
 #define ARC_LOOP(element) do {                                      \
-  GList *__iter, *__next;                                           \
-  Cardinal n = 0;                                                   \
-  for (__iter = (element)->Arc, __next = g_list_next (__iter);      \
-       __iter != NULL;                                              \
-       __iter = __next, __next = g_list_next (__iter), n++) {       \
-    ArcType *arc = __iter->data;
+  ArcType *arc;                                                     \
+  gdl_iterator_t __it__;                                            \
+  linelist_foreach(&(element)->Arc, &__it__, arc) {
+
 
 #define ELEMENTLINE_LOOP(element) do {                              \
   LineType *line;                                                   \

@@ -269,16 +269,16 @@ ArcTypePtr GetArcMemory(LayerType * layer)
 {
 	ArcType *new_obj;
 
-	new_obj = g_slice_new0(ArcType);
-	layer->Arc = g_list_append(layer->Arc, new_obj);
-	layer->ArcN++;
+	new_obj = calloc(sizeof(ArcType), 1);
+	arclist_append(&layer->Arc, new_obj);
 
 	return new_obj;
 }
 
-static void FreeArc(ArcType * data)
+void RemoveFreeArc(ArcType * data)
 {
-	g_slice_free(ArcType, data);
+	arclist_remove(data);
+	free(data);
 }
 
 /* ---------------------------------------------------------------------------
@@ -590,7 +590,7 @@ void FreeElementMemory(ElementType * element)
 	g_list_free_full(element->Pin, (GDestroyNotify) FreePin);
 	g_list_free_full(element->Pad, (GDestroyNotify) FreePad);
 	list_map0(&element->Line, LineType, RemoveFreeLine);
-	g_list_free_full(element->Arc, (GDestroyNotify) FreeArc);
+	list_map0(&element->Arc,  ArcType,  RemoveFreeArc);
 
 	FreeAttributeListMemory(&element->Attributes);
 	memset(element, 0, sizeof(ElementType));
@@ -663,7 +663,7 @@ void FreeDataMemory(DataType * data)
 		END_LOOP;
 
 		list_map0(&layer->Line, LineType, RemoveFreeLine);
-		g_list_free_full(layer->Arc, (GDestroyNotify) FreeArc);
+		list_map0(&layer->Arc,  ArcType,  RemoveFreeArc);
 		g_list_free_full(layer->Text, (GDestroyNotify) FreeText);
 		POLYGON_LOOP(layer);
 		{

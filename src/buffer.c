@@ -290,10 +290,8 @@ static void *MoveArcToBuffer(LayerType * layer, ArcType * arc)
 	RestoreToPolygon(Source, ARC_TYPE, layer, arc);
 	r_delete_entry(layer->arc_tree, (BoxType *) arc);
 
-	layer->Arc = g_list_remove(layer->Arc, arc);
-	layer->ArcN--;
-	lay->Arc = g_list_append(lay->Arc, arc);
-	lay->ArcN++;
+	arclist_remove(arc);
+	arclist_append(&lay->Arc, arc);
 
 	CLEAR_FLAG(FOUNDFLAG, arc);
 

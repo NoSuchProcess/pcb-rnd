@@ -93,6 +93,10 @@ void FreePointerListMemory(PointerListTypePtr);
 void DeleteLibraryMenuMemory(LibraryTypePtr lib, int menuidx);
 char *StripWhiteSpaceAndDup(const char *);
 
+void RemoveFreeArc(ArcType * data);
+void RemoveFreeLine(LineType * data);
+
+
 #ifdef NEED_STRDUP
 char *strdup(const char *);
 #endif

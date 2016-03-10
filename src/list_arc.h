@@ -20,7 +20,22 @@
  *
  */
 
-#define TDL_DONT_UNDEF
-#include "global_objs.h"
-#include "list_line.h"
-#include <genlist/gentdlist_impl.c>
+#ifndef LIST_ARC_H
+#define LIST_ARC_H
+
+/* List of Lines */
+#define TDL(x)      arclist_ ## x
+#define TDL_LIST_T  arclist_t
+#define TDL_ITEM_T  ArcType
+#define TDL_FIELD   link
+#define TDL_SIZE_T  size_t
+#define TDL_FUNC
+
+#define arclist_foreach(list, iterator, loop_elem) \
+	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
+
+
+#include <genlist/gentdlist_impl.h>
+#include <genlist/gentdlist_undef.h>
+
+#endif

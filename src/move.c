@@ -409,10 +409,8 @@ static void *MoveArcToLayerLowLevel(LayerType * Source, ArcType * arc, LayerType
 {
 	r_delete_entry(Source->arc_tree, (BoxType *) arc);
 
-	Source->Arc = g_list_remove(Source->Arc, arc);
-	Source->ArcN--;
-	Destination->Arc = g_list_append(Destination->Arc, arc);
-	Destination->ArcN++;
+	arclist_remove(arc);
+	arclist_append(&Destination->Arc, arc);
 
 	if (!Destination->arc_tree)
 		Destination->arc_tree = r_create_tree(NULL, 0, 0);
