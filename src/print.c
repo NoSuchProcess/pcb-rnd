@@ -261,7 +261,7 @@ void PrintFab(hidGC gc)
 	yoff = -TEXT_LINE;
 	for (i = 0; i < max_copper_layer; i++) {
 		LayerType *l = LAYER_PTR(i);
-		if (l->Name && (linelist_length(&l->Line) || l->ArcN)) {
+		if (l->Name && (linelist_length(&l->Line) || arclist_length(&l->Arc))) {
 			if (strcmp("route", l->Name) == 0)
 				break;
 			if (strcmp("outline", l->Name) == 0)

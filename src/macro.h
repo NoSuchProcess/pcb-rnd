@@ -292,12 +292,9 @@ extern int mem_any_set(unsigned char *, int);
   linelist_foreach(&(layer)->Line, &__it__, line) {
 
 #define TEXT_LOOP(layer) do {                                       \
-  GList *__iter, *__next;                                           \
-  Cardinal n = 0;                                                   \
-  for (__iter = (layer)->Text, __next = g_list_next (__iter);       \
-       __iter != NULL;                                              \
-       __iter = __next, __next = g_list_next (__iter), n++) {       \
-    TextType *text = __iter->data;
+  TextType *text;                                                   \
+  gdl_iterator_t __it__;                                            \
+  linelist_foreach(&(layer)->Text, &__it__, text) {
 
 #define POLYGON_LOOP(layer) do {                                    \
   GList *__iter, *__next;                                           \
@@ -468,4 +465,7 @@ extern int mem_any_set(unsigned char *, int);
 	   LayerTypePtr layer = (&data->Layer[(n)]);
 
 
+#define LAYER_IS_EMPTY(layer) LAYER_IS_EMPTY_((layer))
+#define LAYER_IS_EMPTY_(layer) \
+ ((linelist_length(&layer->Line) == 0) && (arclist_length(&layer->Arc) == 0) && (layer->PolygonN == 0) && (textlist_length(&layer->Text) == 0))
 #endif

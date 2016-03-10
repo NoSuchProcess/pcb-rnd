@@ -312,10 +312,8 @@ static void *MoveTextToBuffer(LayerType * layer, TextType * text)
 	r_delete_entry(layer->text_tree, (BoxType *) text);
 	RestoreToPolygon(Source, TEXT_TYPE, layer, text);
 
-	layer->Text = g_list_remove(layer->Text, text);
-	layer->TextN--;
-	lay->Text = g_list_append(lay->Text, text);
-	lay->TextN++;
+	textlist_remove(text);
+	textlist_append(&lay->Text, text);
 
 	if (!lay->text_tree)
 		lay->text_tree = r_create_tree(NULL, 0, 0);
@@ -1060,7 +1058,7 @@ void MirrorBuffer(BufferTypePtr Buffer)
 	}
 	for (i = 0; i < max_copper_layer + 2; i++) {
 		LayerTypePtr layer = Buffer->Data->Layer + i;
-		if (layer->TextN) {
+		if (textlist_length(&layer->Text)) {
 			Message(_("You can't mirror a buffer that has text!\n"));
 			return;
 		}

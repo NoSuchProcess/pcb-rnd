@@ -913,7 +913,7 @@ static routedata_t *CreateRouteData()
 		layergroupboxes[i].PtrMax = 0;
 		GROUP_LOOP(PCB->Data, i);
 		{
-			if (linelist_length(&layer->Line) || layer->ArcN)
+			if (linelist_length(&layer->Line) || arclist_length(&layer->Arc))
 				usedGroup[i] = true;
 			else
 				usedGroup[i] = false;

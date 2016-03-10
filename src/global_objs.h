@@ -81,6 +81,7 @@ typedef struct text_st {
 	BYTE Direction;
 	char *TextString;							/* string */
 	void *Element;
+	gdl_elem_t link;              /* a text is in a list of a layer or an element */
 } TextType, *TextTypePtr;
 
 struct polygon_st {							/* holds information about a polygon */

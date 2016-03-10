@@ -288,16 +288,16 @@ TextTypePtr GetTextMemory(LayerType * layer)
 {
 	TextType *new_obj;
 
-	new_obj = g_slice_new0(TextType);
-	layer->Text = g_list_append(layer->Text, new_obj);
-	layer->TextN++;
+	new_obj = calloc(sizeof(TextType), 1);
+	textlist_append(&layer->Text, new_obj);
 
 	return new_obj;
 }
 
-static void FreeText(TextType * data)
+void RemoveFreeText(TextType * data)
 {
-	g_slice_free(TextType, data);
+	textlist_remove(data);
+	free(data);
 }
 
 /* ---------------------------------------------------------------------------
@@ -664,7 +664,7 @@ void FreeDataMemory(DataType * data)
 
 		list_map0(&layer->Line, LineType, RemoveFreeLine);
 		list_map0(&layer->Arc,  ArcType,  RemoveFreeArc);
-		g_list_free_full(layer->Text, (GDestroyNotify) FreeText);
+		list_map0(&layer->Text, TextType, RemoveFreeText);
 		POLYGON_LOOP(layer);
 		{
 			FreePolygonMemory(polygon);

@@ -20,18 +20,18 @@
  *
  */
 
-#ifndef LIST_ARC_H
-#define LIST_ARC_H
+#ifndef LIST_TEXT_H
+#define LIST_TEXT_H
 
-/* List of Arcs */
-#define TDL(x)      arclist_ ## x
-#define TDL_LIST_T  arclist_t
-#define TDL_ITEM_T  ArcType
+/* List of Text */
+#define TDL(x)      textlist_ ## x
+#define TDL_LIST_T  textlist_t
+#define TDL_ITEM_T  TextType
 #define TDL_FIELD   link
 #define TDL_SIZE_T  size_t
 #define TDL_FUNC
 
-#define arclist_foreach(list, iterator, loop_elem) \
+#define textlist_foreach(list, iterator, loop_elem) \
 	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
 
 

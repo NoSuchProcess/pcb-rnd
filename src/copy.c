@@ -303,8 +303,7 @@ bool CopyPastebufferToLayout(Coord X, Coord Y)
 		LayerTypePtr sourcelayer = &PASTEBUFFER->Data->Layer[i], destlayer = LAYER_PTR(i);
 
 		if (destlayer->On) {
-			changed = changed ||
-				(linelist_length(&sourcelayer->Line) != 0) || (sourcelayer->ArcN != 0) || (sourcelayer->PolygonN != 0) || (sourcelayer->TextN != 0);
+			changed = changed || (!LAYER_IS_EMPTY(sourcelayer));
 			LINE_LOOP(sourcelayer);
 			{
 				CopyLine(destlayer, line);

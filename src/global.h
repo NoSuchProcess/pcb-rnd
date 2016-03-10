@@ -63,6 +63,7 @@
 #include "list_common.h"
 #include "list_line.h"
 #include "list_arc.h"
+#include "list_text.h"
 #include "hid.h"
 #include "polyarea.h"
 
@@ -196,11 +197,9 @@ struct rtree {
 typedef struct {								/* holds information about one layer */
 	char *Name;										/* layer name */
 	Cardinal											/* number of... */
-	  TextN,											/* labels */
-	  PolygonN,										/* polygons */
-	  ArcN;												/* and arcs */
+	  PolygonN;										/* polygons */
 	linelist_t Line;
-	GList *Text;
+	textlist_t Text;
 	GList *Polygon;
 	arclist_t Arc;
 	rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;

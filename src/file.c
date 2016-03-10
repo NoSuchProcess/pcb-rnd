@@ -760,9 +760,10 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 	gdl_iterator_t it;
 	LineType *line;
 	ArcType *arc;
+	TextType *text;
 
 	/* write information about non empty layers */
-	if (linelist_length(&layer->Line) || layer->ArcN || layer->TextN || layer->PolygonN || (layer->Name && *layer->Name)) {
+	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		fprintf(FP, "Layer(%i ", (int) Number + 1);
 		PrintQuotedString(FP, (char *) EMPTY(layer->Name));
 		fputs(")\n(\n", FP);
@@ -773,13 +774,12 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 									line->Point1.X, line->Point1.Y,
 									line->Point2.X, line->Point2.Y, line->Thickness, line->Clearance, F2S(line, LINE_TYPE));
 		}
-		linelist_foreach(&layer->Arc, &it, arc) {
+		arclist_foreach(&layer->Arc, &it, arc) {
 			pcb_fprintf(FP, "\tArc[%mr %mr %mr %mr %mr %mr %ma %ma %s]\n",
 									arc->X, arc->Y, arc->Width,
 									arc->Height, arc->Thickness, arc->Clearance, arc->StartAngle, arc->Delta, F2S(arc, ARC_TYPE));
 		}
-		for (n = layer->Text; n != NULL; n = g_list_next(n)) {
-			TextType *text = n->data;
+		textlist_foreach(&layer->Text, &it, text) {
 			pcb_fprintf(FP, "\tText[%mr %mr %d %d ", text->X, text->Y, text->Direction, text->Scale);
 			PrintQuotedString(FP, (char *) EMPTY(text->TextString));
 			fprintf(FP, " %s]\n", F2S(text, TEXT_TYPE));

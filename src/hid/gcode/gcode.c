@@ -252,7 +252,7 @@ void gcode_choose_groups()
 	for (n = 0; n < max_copper_layer; n++) {
 		layer = &PCB->Data->Layer[n];
 
-		if (linelist_length(&layer->Line) || layer->TextN || layer->ArcN || layer->PolygonN) {
+		if (!LAYER_IS_EMPTY(layer)) {
 			/* layer isn't empty */
 
 			/*

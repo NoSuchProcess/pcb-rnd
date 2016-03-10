@@ -567,10 +567,8 @@ static void *MoveTextToLayerLowLevel(LayerType * Source, TextType * text, LayerT
 	RestoreToPolygon(PCB->Data, TEXT_TYPE, Source, text);
 	r_delete_entry(Source->text_tree, (BoxType *) text);
 
-	Source->Text = g_list_remove(Source->Text, text);
-	Source->TextN--;
-	Destination->Text = g_list_append(Destination->Text, text);
-	Destination->TextN++;
+	textlist_remove(text);
+	textlist_append(&Destination->Text, text);
 
 	if (GetLayerGroupNumberByNumber(solder_silk_layer) == GetLayerGroupNumberByPointer(Destination))
 		SET_FLAG(ONSOLDERFLAG, text);

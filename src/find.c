@@ -623,9 +623,9 @@ void InitLayoutLookup(void)
 			LineList[i].Size = linelist_length(&layer->Line);
 			LineList[i].Data = (void **) calloc(LineList[i].Size, sizeof(LineTypePtr));
 		}
-		if (layer->ArcN) {
-			ArcList[i].Data = (void **) calloc(layer->ArcN, sizeof(ArcTypePtr));
-			ArcList[i].Size = layer->ArcN;
+		if (arclist_length(&layer->Arc)) {
+			ArcList[i].Size = arclist_length(&layer->Arc);
+			ArcList[i].Data = (void **) calloc(ArcList[i].Size, sizeof(ArcTypePtr));
 		}
 
 

@@ -220,10 +220,7 @@ static void *DestroyText(LayerTypePtr Layer, TextTypePtr Text)
 	free(Text->TextString);
 	r_delete_entry(Layer->text_tree, (BoxTypePtr) Text);
 
-	Layer->Text = g_list_remove(Layer->Text, Text);
-	Layer->TextN--;
-
-	g_slice_free(TextType, Text);
+	RemoveFreeText(Text);
 
 	return NULL;
 }

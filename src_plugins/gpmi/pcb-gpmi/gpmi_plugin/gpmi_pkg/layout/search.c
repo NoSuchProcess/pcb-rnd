@@ -144,7 +144,7 @@ static int layout_search_flag(const char *search_ID, multiple layout_object_mask
 		s->layer = l;
 		select2(s, OM_ARC,     flag, &layer->Arc);
 		select2(s, OM_LINE,    flag, &layer->Line);
-		select(s, OM_TEXT,    flag, layer->Text);
+		select2(s, OM_TEXT,    flag, &layer->Text);
 		select(s, OM_POLYGON, flag, layer->Polygon);
 	}
 	select(s, OM_VIA,  flag, PCB->Data->Via);

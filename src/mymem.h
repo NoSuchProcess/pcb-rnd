@@ -95,7 +95,7 @@ char *StripWhiteSpaceAndDup(const char *);
 
 void RemoveFreeArc(ArcType * data);
 void RemoveFreeLine(LineType * data);
-
+void RemoveFreeText(TextType * data);
 
 #ifdef NEED_STRDUP
 char *strdup(const char *);
