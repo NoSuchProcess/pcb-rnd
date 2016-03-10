@@ -97,6 +97,8 @@ void RemoveFreeArc(ArcType * data);
 void RemoveFreeLine(LineType * data);
 void RemoveFreeText(TextType * data);
 void RemoveFreePolygon(PolygonType * data);
+void RemoveFreePin(PinType * data);
+void RemoveFreePad(PadType * data);
 
 #ifdef NEED_STRDUP
 char *strdup(const char *);

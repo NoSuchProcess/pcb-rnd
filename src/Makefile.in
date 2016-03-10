@@ -43,6 +43,8 @@ put /local/pcb/OBJS [@
 	list_arc.o
 	list_line.o
 	list_text.o
+	list_pad.o
+	list_pin.o
 	list_poly.o
 	lrealpath.o
 	main.o

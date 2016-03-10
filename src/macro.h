@@ -252,20 +252,14 @@ extern int mem_any_set(unsigned char *, int);
 		textstring = (element)->Name[n].TextString
 
 #define PIN_LOOP(element) do {                                      \
-  GList *__iter, *__next;                                           \
-  Cardinal n = 0;                                                   \
-  for (__iter = (element)->Pin, __next = g_list_next (__iter);      \
-       __iter != NULL;                                              \
-       __iter = __next, __next = g_list_next (__iter), n++) {       \
-    PinType *pin = __iter->data;
+  PinType *pin;                                                     \
+  gdl_iterator_t __it__;                                            \
+  pinlist_foreach(&(element)->Pin, &__it__, pin) {
 
 #define PAD_LOOP(element) do {                                      \
-  GList *__iter, *__next;                                           \
-  Cardinal n = 0;                                                   \
-  for (__iter = (element)->Pad, __next = g_list_next (__iter);      \
-       __iter != NULL;                                              \
-       __iter = __next, __next = g_list_next (__iter), n++) {       \
-    PadType *pad = __iter->data;
+  PadType *pad;                                                     \
+  gdl_iterator_t __it__;                                            \
+  padlist_foreach(&(element)->Pad, &__it__, pad) {
 
 #define ARC_LOOP(element) do {                                      \
   ArcType *arc;                                                     \

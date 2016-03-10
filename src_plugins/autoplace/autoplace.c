@@ -375,7 +375,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 		}
 		box = GetBoxMemory(thisside);
 		/* protect against elements with no pins/pads */
-		if (element->PinN == 0 && element->PadN == 0)
+		if (pinlist_length(&element->Pin) == 0 && padlist_length(&element->Pad) == 0)
 			continue;
 		/* initialize box so that it will take the dimensions of
 		 * the first pin/pad */
@@ -580,7 +580,7 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 	case 1:
 		{														/* flip/rotate! */
 			/* only flip if it's an SMD component */
-			bool isSMD = pt.element->PadN != 0;
+			bool isSMD = padlist_length(&(pt.element->Pad)) != 0;
 			pt.which = ROTATE;
 			pt.rotate = isSMD ? (random() & 3) : (1 + (random() % 3));
 			/* 0 - flip; 1-3, rotate. */
@@ -595,8 +595,8 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 				pt.other = (ElementTypePtr) selected->Ptr[selected->PtrN - 1];
 			/* don't allow exchanging a solderside-side SMD component
 			 * with a non-SMD component. */
-			if ((pt.element->PinN != 0 /* non-SMD */  &&
-					 TEST_FLAG(ONSOLDERFLAG, pt.other)) || (pt.other->PinN != 0 /* non-SMD */  &&
+			if ((pinlist_length(&(pt.element->Pin)) != 0 /* non-SMD */  &&
+					 TEST_FLAG(ONSOLDERFLAG, pt.other)) || (pinlist_length(&pt.other->Pin) != 0 /* non-SMD */  &&
 																									TEST_FLAG(ONSOLDERFLAG, pt.element)))
 				return createPerturbation(selected, T);
 			break;

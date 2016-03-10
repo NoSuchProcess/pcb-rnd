@@ -797,16 +797,16 @@ static void DrawEMark(ElementTypePtr e, Coord X, Coord Y, bool invisible)
 	if (!PCB->InvisibleObjectsOn && invisible)
 		return;
 
-	if (e->Pin != NULL) {
-		PinType *pin0 = e->Pin->data;
+	if (pinlist_length(&e->Pin) != 0) {
+		PinType *pin0 = pinlist_first(&e->Pin);
 		if (TEST_FLAG(HOLEFLAG, pin0))
 			mark_size = MIN(mark_size, pin0->DrillingHole / 2);
 		else
 			mark_size = MIN(mark_size, pin0->Thickness / 2);
 	}
 
-	if (e->Pad != NULL) {
-		PadType *pad0 = e->Pad->data;
+	if (padlist_length(&e->Pad) != 0) {
+		PadType *pad0 = padlist_first(&e->Pad);
 		mark_size = MIN(mark_size, pad0->Thickness / 2);
 	}
 

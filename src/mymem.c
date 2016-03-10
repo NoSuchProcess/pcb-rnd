@@ -174,16 +174,16 @@ PinType *GetPinMemory(ElementType * element)
 {
 	PinType *new_obj;
 
-	new_obj = g_slice_new0(PinType);
-	element->Pin = g_list_append(element->Pin, new_obj);
-	element->PinN++;
+	new_obj = calloc(sizeof(PinType), 1);
+	pinlist_append(&element->Pin, new_obj);
 
 	return new_obj;
 }
 
-static void FreePin(PinType * data)
+void RemoveFreePin(PinType * data)
 {
-	g_slice_free(PinType, data);
+	pinlist_remove(data);
+	free(data);
 }
 
 /* ---------------------------------------------------------------------------
@@ -193,16 +193,16 @@ PadType *GetPadMemory(ElementType * element)
 {
 	PadType *new_obj;
 
-	new_obj = g_slice_new0(PadType);
-	element->Pad = g_list_append(element->Pad, new_obj);
-	element->PadN++;
+	new_obj = calloc(sizeof(PadType), 1);
+	padlist_append(&element->Pad, new_obj);
 
 	return new_obj;
 }
 
-static void FreePad(PadType * data)
+void RemoveFreePad(PadType * data)
 {
-	g_slice_free(PadType, data);
+	padlist_remove(data);
+	free(data);
 }
 
 /* ---------------------------------------------------------------------------
@@ -587,8 +587,8 @@ void FreeElementMemory(ElementType * element)
 	}
 	END_LOOP;
 
-	g_list_free_full(element->Pin, (GDestroyNotify) FreePin);
-	g_list_free_full(element->Pad, (GDestroyNotify) FreePad);
+	list_map0(&element->Pin, PinType, RemoveFreePin);
+	list_map0(&element->Pad, PadType, RemoveFreePad);
 	list_map0(&element->Line, LineType, RemoveFreeLine);
 	list_map0(&element->Arc,  ArcType,  RemoveFreeArc);
 

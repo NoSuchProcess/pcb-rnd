@@ -116,14 +116,14 @@ static bool ParseConnection(char *InString, char *ElementName, char *PinNum)
 static bool FindPad(char *ElementName, char *PinNum, ConnectionType * conn, bool Same)
 {
 	ElementTypePtr element;
-	GList *i;
+	gdl_iterator_t it;
+	PadType *pad;
+	PinType *pin;
 
 	if ((element = SearchElementByName(PCB->Data, ElementName)) == NULL)
 		return false;
 
-	for (i = element->Pad; i != NULL; i = g_list_next(i)) {
-		PadType *pad = i->data;
-
+	padlist_foreach(&element->Pad, &it, pad) {
 		if (NSTRCMP(PinNum, pad->Number) == 0 && (!Same || !TEST_FLAG(DRCFLAG, pad))) {
 			conn->type = PAD_TYPE;
 			conn->ptr1 = element;
@@ -142,9 +142,7 @@ static bool FindPad(char *ElementName, char *PinNum, ConnectionType * conn, bool
 		}
 	}
 
-	for (i = element->Pin; i != NULL; i = g_list_next(i)) {
-		PinType *pin = i->data;
-
+	padlist_foreach(&element->Pin, &it, pin) {
 		if (!TEST_FLAG(HOLEFLAG, pin) && pin->Number && NSTRCMP(PinNum, pin->Number) == 0 && (!Same || !TEST_FLAG(DRCFLAG, pin))) {
 			conn->type = PIN_TYPE;
 			conn->ptr1 = element;

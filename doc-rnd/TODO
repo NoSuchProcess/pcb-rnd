@@ -1,11 +1,13 @@
 UNGLIB:
+	- macro.h *_LOOP: add void n to see if anyone used the counter
 	- find.c: check InitLayoutLookup - why do we build another cache? -> genvector!
-	- test transition:
+	- test transition (after glib removal is finished so that valgrind works reasonably well again):
 		- test autorouter
 		- test exporters
 		- test gpmi search
 		- place 2 arcs, select first, can't move to left edge (bbox or rtree?)
 		- can't click into a text and get it selected (rtree?)?!
+		- closing the shift+D pin dialog double frees()?
 	- get rid of lists.h
 
 

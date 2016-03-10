@@ -65,6 +65,8 @@
 #include "list_arc.h"
 #include "list_text.h"
 #include "list_poly.h"
+#include "list_pad.h"
+#include "list_pin.h"
 #include "hid.h"
 #include "polyarea.h"
 
@@ -179,10 +181,8 @@ typedef struct element_st {
 	/* value third */
 	/* see macro.h */
 	Coord MarkX, MarkY;						/* position mark */
-	Cardinal PinN;								/* number of pins */
-	Cardinal PadN;								/* number of pads */
-	GList *Pin;
-	GList *Pad;
+	pinlist_t Pin;
+	padlist_t Pad;
 	linelist_t Line;
 	arclist_t Arc;
 	BoxType VBox;

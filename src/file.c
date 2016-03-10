@@ -695,9 +695,12 @@ static void WriteElementData(FILE * FP, DataTypePtr Data)
 
 	for (n = Data->Element; n != NULL; n = g_list_next(n)) {
 		ElementType *element = n->data;
+		gdl_iterator_t it;
+		PinType *pin;
+		PadType *pad;
 
 		/* only non empty elements */
-		if (!linelist_length(&element->Line) && !element->PinN && !arclist_length(&element->Arc) && !element->PadN)
+		if (!linelist_length(&element->Line) && !pinlist_length(&element->Pin) && !arclist_length(&element->Arc) && !padlist_length(&element->Pad))
 			continue;
 		/* the coordinates and text-flags are the same for
 		 * both names of an element
@@ -715,8 +718,7 @@ static void WriteElementData(FILE * FP, DataTypePtr Data)
 								DESCRIPTION_TEXT(element).Direction,
 								DESCRIPTION_TEXT(element).Scale, F2S(&(DESCRIPTION_TEXT(element)), ELEMENTNAME_TYPE));
 		WriteAttributeList(FP, &element->Attributes, "\t");
-		for (p = element->Pin; p != NULL; p = g_list_next(p)) {
-			PinType *pin = p->data;
+		pinlist_foreach(&element->Pin, &it, pin) {
 			pcb_fprintf(FP, "\tPin[%mr %mr %mr %mr %mr %mr ",
 									pin->X - element->MarkX,
 									pin->Y - element->MarkY, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole);
@@ -725,8 +727,7 @@ static void WriteElementData(FILE * FP, DataTypePtr Data)
 			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
 			fprintf(FP, " %s]\n", F2S(pin, PIN_TYPE));
 		}
-		for (p = element->Pad; p != NULL; p = g_list_next(p)) {
-			PadType *pad = p->data;
+		pinlist_foreach(&element->Pad, &it, pad) {
 			pcb_fprintf(FP, "\tPad[%mr %mr %mr %mr %mr %mr %mr ",
 									pad->Point1.X - element->MarkX,
 									pad->Point1.Y - element->MarkY,
