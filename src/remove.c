@@ -127,11 +127,7 @@ static void *DestroyVia(PinTypePtr Via)
 	r_delete_entry(DestroyTarget->via_tree, (BoxTypePtr) Via);
 	free(Via->Name);
 
-	DestroyTarget->Via = g_list_remove(DestroyTarget->Via, Via);
-	DestroyTarget->ViaN--;
-
-	g_slice_free(PinType, Via);
-
+	RemoveFreeVia(Via);
 	return NULL;
 }
 

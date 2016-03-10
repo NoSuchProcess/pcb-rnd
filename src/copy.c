@@ -344,7 +344,7 @@ bool CopyPastebufferToLayout(Coord X, Coord Y)
 
 	/* finally the vias */
 	if (PCB->ViaOn) {
-		changed |= (PASTEBUFFER->Data->ViaN != 0);
+		changed |= (pinlist_length(&(PASTEBUFFER->Data->Via)) != 0);
 		VIA_LOOP(PASTEBUFFER->Data);
 		{
 			CopyVia(via);

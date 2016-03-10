@@ -224,10 +224,8 @@ static void *MoveViaToBuffer(PinType * via)
 	RestoreToPolygon(Source, VIA_TYPE, via, via);
 
 	r_delete_entry(Source->via_tree, (BoxType *) via);
-	Source->Via = g_list_remove(Source->Via, via);
-	Source->ViaN--;
-	Dest->Via = g_list_append(Dest->Via, via);
-	Dest->ViaN++;
+	pinlist_remove(via);
+	pinlist_append(&Dest->Via, via);
 
 	CLEAR_FLAG(WARNFLAG | FOUNDFLAG, via);
 

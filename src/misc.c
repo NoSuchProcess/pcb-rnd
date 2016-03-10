@@ -581,7 +581,7 @@ bool IsDataEmpty(DataTypePtr Data)
 	bool hasNoObjects;
 	Cardinal i;
 
-	hasNoObjects = (Data->ViaN == 0);
+	hasNoObjects = (pinlist_length(&Data->Via) == 0);
 	hasNoObjects &= (Data->ElementN == 0);
 	for (i = 0; i < max_copper_layer + 2; i++)
 		hasNoObjects = hasNoObjects && LAYER_IS_EMPTY(&(Data->Layer[i]));

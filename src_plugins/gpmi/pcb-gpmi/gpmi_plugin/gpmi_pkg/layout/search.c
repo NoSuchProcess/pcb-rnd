@@ -112,16 +112,6 @@ static void select_cb(void *obj_, void *ud)
 		search_append(ctx->search, obj);
 }
 
-#define select(s, om, flag, lst) \
-	do { \
-		select_t ctx; \
-		ctx.flag = flag; \
-		ctx.search = s; \
-		s->searching = om; \
-		g_list_foreach(lst, select_cb, &ctx); \
-		s->searching = 0; \
-	} while(0)
-
 #define select2(s, om, flag, lst) \
 	do { \
 		gdl_iterator_t it; \
@@ -147,8 +137,8 @@ static int layout_search_flag(const char *search_ID, multiple layout_object_mask
 		select2(s, OM_TEXT,    flag, &layer->Text);
 		select2(s, OM_POLYGON, flag, &layer->Polygon);
 	}
-	select(s, OM_VIA,  flag, PCB->Data->Via);
-/*	select(s, OM_PIN,  flag, PCB->Data->Pin,  PCB->Data->PinN); /* TODO */
+	select2(s, OM_VIA,  flag, &PCB->Data->Via);
+/*	select2(s, OM_PIN,  flag, &PCB->Data->Pin); /* TODO */
 
 	return s->used;
 }

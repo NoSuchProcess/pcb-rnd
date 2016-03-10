@@ -212,14 +212,13 @@ PinType *GetViaMemory(DataType * data)
 {
 	PinType *new_obj;
 
-	new_obj = g_slice_new0(PinType);
-	data->Via = g_list_append(data->Via, new_obj);
-	data->ViaN++;
+	new_obj = calloc(sizeof(PinType), 1);
+	pinlist_append(&data->Via, new_obj);
 
 	return new_obj;
 }
 
-static void FreeVia(PinType * data)
+void RemoveFreeVia(PinType * data)
 {
 	g_slice_free(PinType, data);
 }
@@ -637,7 +636,7 @@ void FreeDataMemory(DataType * data)
 		free(via->Name);
 	}
 	END_LOOP;
-	g_list_free_full(data->Via, (GDestroyNotify) FreeVia);
+	list_map0(&data->Via, PinType, RemoveFreeVia);
 	ELEMENT_LOOP(data);
 	{
 		FreeElementMemory(element);

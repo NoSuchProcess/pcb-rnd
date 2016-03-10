@@ -209,11 +209,10 @@ typedef struct {								/* holds information about one layer */
 } LayerType, *LayerTypePtr;
 
 typedef struct {								/* holds all objects */
-	Cardinal ViaN,								/* number of vias */
-	  ElementN,										/* and elements */
+	Cardinal ElementN,						/* and elements */
 	  RatN;												/* and rat-lines */
 	int LayerN;										/* number of layers in this board */
-	GList *Via;
+	pinlist_t Via;
 	GList *Element;
 	GList *Rat;
 	rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */

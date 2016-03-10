@@ -616,10 +616,11 @@ static void WritePCBFontData(FILE * FP)
  */
 static void WriteViaData(FILE * FP, DataTypePtr Data)
 {
-	GList *iter;
+	gdl_iterator_t it;
+	PinType *via;
+
 	/* write information about vias */
-	for (iter = Data->Via; iter != NULL; iter = g_list_next(iter)) {
-		PinType *via = iter->data;
+	pinlist_foreach(&Data->Via, &it, via) {
 		pcb_fprintf(FP, "Via[%mr %mr %mr %mr %mr %mr ", via->X, via->Y,
 								via->Thickness, via->Clearance, via->Mask, via->DrillingHole);
 		PrintQuotedString(FP, (char *) EMPTY(via->Name));

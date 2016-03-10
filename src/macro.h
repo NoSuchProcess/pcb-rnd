@@ -185,12 +185,9 @@ extern int mem_any_set(unsigned char *, int);
                 style = &(top)->RouteStyle[n]
 
 #define VIA_LOOP(top) do {                                          \
-  GList *__iter, *__next;                                           \
-  Cardinal n = 0;                                                   \
-  for (__iter = (top)->Via, __next = g_list_next (__iter);          \
-       __iter != NULL;                                              \
-       __iter = __next, __next = g_list_next (__iter), n++) {       \
-    PinType *via = __iter->data;
+  PinType *via;                                                     \
+  gdl_iterator_t __it__;                                            \
+  pinlist_foreach(&(top)->Via, &__it__, via) {
 
 #define DRILL_LOOP(top) do             {               \
         Cardinal        n;                                      \
