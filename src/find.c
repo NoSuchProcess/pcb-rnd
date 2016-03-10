@@ -619,7 +619,6 @@ void InitLayoutLookup(void)
 		LayerTypePtr layer = LAYER_PTR(i);
 
 		if (linelist_length(&layer->Line)) {
-			/* allocate memory for line pointer lists */
 			LineList[i].Size = linelist_length(&layer->Line);
 			LineList[i].Data = (void **) calloc(LineList[i].Size, sizeof(LineTypePtr));
 		}
@@ -627,12 +626,9 @@ void InitLayoutLookup(void)
 			ArcList[i].Size = arclist_length(&layer->Arc);
 			ArcList[i].Data = (void **) calloc(ArcList[i].Size, sizeof(ArcTypePtr));
 		}
-
-
-		/* allocate memory for polygon list */
-		if (layer->PolygonN) {
-			PolygonList[i].Data = (void **) calloc(layer->PolygonN, sizeof(PolygonTypePtr));
-			PolygonList[i].Size = layer->PolygonN;
+		if (polylist_length(&layer->Polygon)) {
+			PolygonList[i].Size = polylist_length(&layer->Polygon);
+			PolygonList[i].Data = (void **) calloc(PolygonList[i].Size, sizeof(PolygonTypePtr));
 		}
 
 		/* clear some struct members */
@@ -1687,6 +1683,9 @@ static bool LookupLOConnectionsToArc(ArcTypePtr Arc, Cardinal LayerGroup)
 
 		/* handle normal layers */
 		if (layer < max_copper_layer) {
+			PolygonType *polygon;
+			gdl_iterator_t it;
+
 			info.layer = layer;
 			/* add arcs */
 			if (setjmp(info.env) == 0)
@@ -1700,8 +1699,7 @@ static bool LookupLOConnectionsToArc(ArcTypePtr Arc, Cardinal LayerGroup)
 				return true;
 
 			/* now check all polygons */
-			for (i = PCB->Data->Layer[layer].Polygon; i != NULL; i = g_list_next(i)) {
-				PolygonType *polygon = i->data;
+			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
 				if (!TEST_FLAG(TheFlag, polygon) && IsArcInPolygon(Arc, polygon)
 						&& ADD_POLYGON_TO_LIST(layer, polygon, ARC_TYPE, Arc, FCT_COPPER))
 					return true;
@@ -1817,9 +1815,10 @@ static bool LookupLOConnectionsToLine(LineTypePtr Line, Cardinal LayerGroup, boo
 				return true;
 			/* now check all polygons */
 			if (PolysTo) {
-				GList *i;
-				for (i = PCB->Data->Layer[layer].Polygon; i != NULL; i = g_list_next(i)) {
-					PolygonType *polygon = i->data;
+				gdl_iterator_t it;
+				PolygonType *polygon;
+
+				polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
 					if (!TEST_FLAG(TheFlag, polygon) && IsLineInPolygon(Line, polygon)
 							&& ADD_POLYGON_TO_LIST(layer, polygon, LINE_TYPE, Line, FCT_COPPER))
 						return true;
@@ -1888,7 +1887,8 @@ static bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup)
 
 		/* handle normal layers */
 		if (layer < max_copper_layer) {
-			GList *i;
+			gdl_iterator_t it;
+			PolygonType *polygon;
 
 			/* find the first line that touches coordinates */
 
@@ -1902,8 +1902,7 @@ static bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup)
 				return (true);
 
 			/* now check all polygons */
-			for (i = PCB->Data->Layer[layer].Polygon; i != NULL; i = g_list_next(i)) {
-				PolygonType *polygon = i->data;
+			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
 				if (!TEST_FLAG(TheFlag, polygon)
 						&& IsLineInPolygon(Line, polygon))
 					return (true);
@@ -2275,11 +2274,11 @@ static bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, Cardinal LayerG
 
 		/* handle normal layers */
 		if (layer < max_copper_layer) {
-			GList *i;
+			gdl_iterator_t it;
+			PolygonType *polygon;
 
 			/* check all polygons */
-			for (i = PCB->Data->Layer[layer].Polygon; i != NULL; i = g_list_next(i)) {
-				PolygonType *polygon = i->data;
+			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
 				if (!TEST_FLAG(TheFlag, polygon)
 						&& IsPolygonInPolygon(polygon, Polygon)
 						&& ADD_POLYGON_TO_LIST(layer, polygon, POLYGON_TYPE, Polygon, FCT_COPPER))

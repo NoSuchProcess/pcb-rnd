@@ -756,11 +756,11 @@ static void WriteElementData(FILE * FP, DataTypePtr Data)
  */
 static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 {
-	GList *n;
 	gdl_iterator_t it;
 	LineType *line;
 	ArcType *arc;
 	TextType *text;
+	PolygonType *polygon;
 
 	/* write information about non empty layers */
 	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
@@ -784,8 +784,7 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 			PrintQuotedString(FP, (char *) EMPTY(text->TextString));
 			fprintf(FP, " %s]\n", F2S(text, TEXT_TYPE));
 		}
-		for (n = layer->Polygon; n != NULL; n = g_list_next(n)) {
-			PolygonType *polygon = n->data;
+		textlist_foreach(&layer->Polygon, &it, polygon) {
 			int p, i = 0;
 			Cardinal hole = 0;
 			fprintf(FP, "\tPolygon(%s)\n\t(", F2S(polygon, POLYGON_TYPE));

@@ -95,7 +95,7 @@ struct polygon_st {							/* holds information about a polygon */
 	Cardinal *HoleIndex;					/* Index of hole data within the Points array */
 	Cardinal HoleIndexN;					/* number of holes in polygon */
 	Cardinal HoleIndexMax;				/* max number from malloc() */
-
+	gdl_elem_t link;              /* a text is in a list of a layer */
 };
 
 typedef struct arc_st {								/* holds information about arcs */

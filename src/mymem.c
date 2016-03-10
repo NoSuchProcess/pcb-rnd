@@ -307,16 +307,16 @@ PolygonType *GetPolygonMemory(LayerType * layer)
 {
 	PolygonType *new_obj;
 
-	new_obj = g_slice_new0(PolygonType);
-	layer->Polygon = g_list_append(layer->Polygon, new_obj);
-	layer->PolygonN++;
+	new_obj = calloc(sizeof(PolygonType), 1);
+	polylist_append(&layer->Polygon, new_obj);
 
 	return new_obj;
 }
 
-static void FreePolygon(PolygonType * data)
+void RemoveFreePolygon(PolygonType * data)
 {
-	g_slice_free(PolygonType, data);
+	polylist_remove(data);
+	free(data);
 }
 
 /* ---------------------------------------------------------------------------
@@ -670,7 +670,7 @@ void FreeDataMemory(DataType * data)
 			FreePolygonMemory(polygon);
 		}
 		END_LOOP;
-		g_list_free_full(layer->Polygon, (GDestroyNotify) FreePolygon);
+		list_map0(&layer->Polygon, PolygonType, RemoveFreePolygon);
 		if (layer->line_tree)
 			r_destroy_tree(&layer->line_tree);
 		if (layer->arc_tree)

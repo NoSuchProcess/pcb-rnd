@@ -331,10 +331,8 @@ static void *MovePolygonToBuffer(LayerType * layer, PolygonType * polygon)
 
 	r_delete_entry(layer->polygon_tree, (BoxType *) polygon);
 
-	layer->Polygon = g_list_remove(layer->Polygon, polygon);
-	layer->PolygonN--;
-	lay->Polygon = g_list_append(lay->Polygon, polygon);
-	lay->PolygonN++;
+	polylist_remove(polygon);
+	polylist_append(&lay->Polygon, polygon);
 
 	CLEAR_FLAG(FOUNDFLAG, polygon);
 

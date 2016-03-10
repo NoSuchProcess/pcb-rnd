@@ -297,12 +297,9 @@ extern int mem_any_set(unsigned char *, int);
   linelist_foreach(&(layer)->Text, &__it__, text) {
 
 #define POLYGON_LOOP(layer) do {                                    \
-  GList *__iter, *__next;                                           \
-  Cardinal n = 0;                                                   \
-  for (__iter = (layer)->Polygon, __next = g_list_next (__iter);    \
-       __iter != NULL;                                              \
-       __iter = __next, __next = g_list_next (__iter), n++) {       \
-    PolygonType *polygon = __iter->data;
+  PolygonType *polygon;                                             \
+  gdl_iterator_t __it__;                                            \
+  linelist_foreach(&(layer)->Polygon, &__it__, polygon) {
 
 #define	POLYGONPOINT_LOOP(polygon) do	{	\
 	Cardinal			n;		\
@@ -467,5 +464,5 @@ extern int mem_any_set(unsigned char *, int);
 
 #define LAYER_IS_EMPTY(layer) LAYER_IS_EMPTY_((layer))
 #define LAYER_IS_EMPTY_(layer) \
- ((linelist_length(&layer->Line) == 0) && (arclist_length(&layer->Arc) == 0) && (layer->PolygonN == 0) && (textlist_length(&layer->Text) == 0))
+ ((linelist_length(&layer->Line) == 0) && (arclist_length(&layer->Arc) == 0) && (polylist_length(&layer->Polygon) == 0) && (textlist_length(&layer->Text) == 0))
 #endif

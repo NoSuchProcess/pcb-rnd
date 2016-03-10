@@ -167,10 +167,7 @@ static void *DestroyPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 	r_delete_entry(Layer->polygon_tree, (BoxTypePtr) Polygon);
 	FreePolygonMemory(Polygon);
 
-	Layer->Polygon = g_list_remove(Layer->Polygon, Polygon);
-	Layer->PolygonN--;
-
-	g_slice_free(PolygonType, Polygon);
+	RemoveFreePolygon(Polygon);
 
 	return NULL;
 }
