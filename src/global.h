@@ -180,7 +180,6 @@ typedef struct element_st {
 	Coord MarkX, MarkY;						/* position mark */
 	Cardinal PinN;								/* number of pins */
 	Cardinal PadN;								/* number of pads */
-	Cardinal ArcN;								/* number of arcs */
 	GList *Pin;
 	GList *Pad;
 	linelist_t Line;

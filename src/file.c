@@ -697,7 +697,7 @@ static void WriteElementData(FILE * FP, DataTypePtr Data)
 		ElementType *element = n->data;
 
 		/* only non empty elements */
-		if (!linelist_length(&element->Line) && !element->PinN && !element->ArcN && !element->PadN)
+		if (!linelist_length(&element->Line) && !element->PinN && !arclist_length(&element->Arc) && !element->PadN)
 			continue;
 		/* the coordinates and text-flags are the same for
 		 * both names of an element

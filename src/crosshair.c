@@ -176,7 +176,7 @@ static void XORDrawAttachedLine(Coord x1, Coord y1, Coord x2, Coord y2, Coord th
 static void XORDrawElement(ElementTypePtr Element, Coord DX, Coord DY)
 {
 	/* if no silkscreen, draw the bounding box */
-	if (Element->ArcN == 0 && linelist_length(&Element->Line) == 0) {
+	if (arclist_length(&Element->Arc) == 0 && linelist_length(&Element->Line) == 0) {
 		gui->draw_line(Crosshair.GC,
 									 DX + Element->BoundingBox.X1,
 									 DY + Element->BoundingBox.Y1, DX + Element->BoundingBox.X1, DY + Element->BoundingBox.Y2);
