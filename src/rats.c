@@ -726,13 +726,13 @@ AddAllRats(bool SelectedOnly,
 
 	if (changed) {
 		IncrementUndoSerialNumber();
-		if (PCB->Data->RatN > 0) {
-			Message("%d rat line%s remaining\n", PCB->Data->RatN, PCB->Data->RatN > 1 ? "s" : "");
+		if (ratlist_length(&PCB->Data->Rat) > 0) {
+			Message("%d rat line%s remaining\n", ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) > 1 ? "s" : "");
 		}
 		return (true);
 	}
 	if (!SelectedOnly && !Warned) {
-		if (!PCB->Data->RatN && !badnet)
+		if (!ratlist_length(&PCB->Data->Rat) && !badnet)
 			Message(_("Congratulations!!\n" "The layout is complete and has no shorted nets.\n"));
 		else
 			Message(_("Nothing more to add, but there are\n"

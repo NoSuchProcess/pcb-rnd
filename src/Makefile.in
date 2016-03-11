@@ -47,6 +47,7 @@ put /local/pcb/OBJS [@
 	list_pad.o
 	list_pin.o
 	list_poly.o
+	list_rat.o
 	lrealpath.o
 	main.o
 	mirror.o

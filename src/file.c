@@ -633,10 +633,11 @@ static void WriteViaData(FILE * FP, DataTypePtr Data)
  */
 static void WritePCBRatData(FILE * FP)
 {
-	GList *iter;
+	gdl_iterator_t it;
+	RatType *line;
+
 	/* write information about rats */
-	for (iter = PCB->Data->Rat; iter != NULL; iter = g_list_next(iter)) {
-		RatType *line = iter->data;
+	ratlist_foreach(&PCB->Data->Rat, &it, line) {
 		pcb_fprintf(FP, "Rat[%mr %mr %d %mr %mr %d ",
 								line->Point1.X, line->Point1.Y, line->group1, line->Point2.X, line->Point2.Y, line->group2);
 		fprintf(FP, " %s]\n", F2S(line, RATLINE_TYPE));

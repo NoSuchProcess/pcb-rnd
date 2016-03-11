@@ -4542,7 +4542,7 @@ bool AutoRoute(bool selected)
 			return (false);
 		}
 	}
-	if (PCB->Data->RatN == 0)
+	if (ratlist_length(&PCB->Data->Rat) == 0)
 		return (false);
 	SaveFindFlag(DRCFLAG);
 	rd = CreateRouteData();

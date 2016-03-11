@@ -2631,10 +2631,10 @@ static Boolean idle_proc(XtPointer dummy)
 		static int old_nrats = -1;
 		static char buf[20];
 
-		if (old_nrats != PCB->Data->RatN) {
-			old_nrats = PCB->Data->RatN;
-			sprintf(buf, "%d rat%s", PCB->Data->RatN, PCB->Data->RatN == 1 ? "" : "s");
-			if (PCB->Data->RatN) {
+		if (old_nrats != ratlist_length(&PCB->Data->Rat)) {
+			old_nrats = ratlist_length(&PCB->Data->Rat);
+			sprintf(buf, "%d rat%s", ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) == 1 ? "" : "s");
+			if (ratlist_length(&PCB->Data->Rat)) {
 				XtManageChild(XtParent(m_rats));
 				XtManageChild(m_rats);
 				n = 0;
@@ -2646,7 +2646,7 @@ static Boolean idle_proc(XtPointer dummy)
 			stdarg(XmNlabelString, XmStringCreatePCB(buf));
 			XtSetValues(m_rats, args, n);
 
-			if (!PCB->Data->RatN) {
+			if (!ratlist_length(&PCB->Data->Rat)) {
 				n = 0;
 				stdarg(XmNleftWidget, m_mode);
 				XtSetValues(XtParent(m_status), args, n);

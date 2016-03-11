@@ -658,8 +658,8 @@ void InitLayoutLookup(void)
 	PVList.DrawLocation = 0;
 	PVList.Number = 0;
 	/* Initialize ratline data */
-	RatList.Data = (void **) calloc(PCB->Data->RatN, sizeof(RatTypePtr));
-	RatList.Size = PCB->Data->RatN;
+	RatList.Size = ratlist_length(&PCB->Data->Rat);
+	RatList.Data = (void **) calloc(RatList.Size, sizeof(RatTypePtr));
 	RatList.Location = 0;
 	RatList.DrawLocation = 0;
 	RatList.Number = 0;

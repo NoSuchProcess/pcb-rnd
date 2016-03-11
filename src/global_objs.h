@@ -112,6 +112,7 @@ typedef struct arc_st {								/* holds information about arcs */
 typedef struct rat_st {								/* a rat-line */
 	ANYLINEFIELDS;
 	Cardinal group1, group2;			/* the layer group each point is on */
+	gdl_elem_t link;              /* an arc is in a list on a design */
 } RatType, *RatTypePtr;
 
 struct pad_st {									/* a SMD pad */

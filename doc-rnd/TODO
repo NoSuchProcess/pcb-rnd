@@ -9,6 +9,7 @@ UNGLIB:
 		- can't click into a text and get it selected (rtree?)?!
 		- closing the shift+D pin dialog double frees()?
 		- buffer element breakup double frees?
+		- drawing new rats cause double free?
 	- get rid of lists.h
 
 

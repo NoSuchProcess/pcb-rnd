@@ -223,12 +223,9 @@ extern int mem_any_set(unsigned char *, int);
   pinlist_foreach(&(top)->Element, &__it__, element) {
 
 #define RAT_LOOP(top) do {                                          \
-  GList *__iter, *__next;                                           \
-  Cardinal n = 0;                                                   \
-  for (__iter = (top)->Rat, __next = g_list_next (__iter);          \
-       __iter != NULL;                                              \
-       __iter = __next, __next = g_list_next (__iter), n++) {       \
-    RatType *line = __iter->data;
+  RatType *line;                                                    \
+  gdl_iterator_t __it__;                                            \
+  ratlist_foreach(&(top)->Rat, &__it__, line) {
 
 #define	ELEMENTTEXT_LOOP(element) do { 	\
 	Cardinal	n;				\
@@ -236,7 +233,6 @@ extern int mem_any_set(unsigned char *, int);
 	for (n = MAX_ELEMENTNAMES-1; n != -1; n--)	\
 	{						\
 		text = &(element)->Name[n]
-
 
 #define	ELEMENTNAME_LOOP(element) do	{ 			\
 	Cardinal	n;					\
@@ -260,19 +256,15 @@ extern int mem_any_set(unsigned char *, int);
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Arc, &__it__, arc) {
 
-
 #define ELEMENTLINE_LOOP(element) do {                              \
   LineType *line;                                                   \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Line, &__it__, line) {
 
 #define ELEMENTARC_LOOP(element) do {                               \
-  GList *__iter, *__next;                                           \
-  Cardinal n = 0;                                                   \
-  for (__iter = (element)->Arc, __next = g_list_next (__iter);      \
-       __iter != NULL;                                              \
-       __iter = __next, __next = g_list_next (__iter), n++) {       \
-    ArcType *arc = __iter->data;
+  ArcType *arc;                                                     \
+  gdl_iterator_t __it__;                                            \
+  linelist_foreach(&(element)->Arc, &__it__, arc) {
 
 #define LINE_LOOP(layer) do {                                       \
   LineType *line;                                                   \

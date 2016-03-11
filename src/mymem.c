@@ -49,9 +49,6 @@ RCSID("$Id$");
 /* ---------------------------------------------------------------------------
  * local prototypes
  */
-static void DSRealloc(DynamicStringTypePtr, size_t);
-
-
 /* memset object to 0, but keep the link field */
 #define reset_obj_mem(type, obj) \
 do { \
@@ -59,16 +56,6 @@ do { \
 	memset(obj, 0, sizeof(type)); \
 	obj->link = __lnk__; \
 } while(0) \
-
-
-/* This API is quite new, provide a version here */
-#if !GLIB_CHECK_VERSION (2, 28, 0)
-static void g_list_free_full(GList * list, GDestroyNotify free_func)
-{
-	g_list_foreach(list, (GFunc) free_func, NULL);
-	g_list_free(list);
-}
-#endif
 
 /* ---------------------------------------------------------------------------
  * get next slot for a rubberband connection, allocates memory if necessary
@@ -229,7 +216,8 @@ PinType *GetViaMemory(DataType * data)
 
 void RemoveFreeVia(PinType * data)
 {
-	g_slice_free(PinType, data);
+	pinlist_remove(data);
+	free(data);
 }
 
 /* ---------------------------------------------------------------------------
@@ -239,16 +227,16 @@ RatType *GetRatMemory(DataType * data)
 {
 	RatType *new_obj;
 
-	new_obj = g_slice_new0(RatType);
-	data->Rat = g_list_append(data->Rat, new_obj);
-	data->RatN++;
+	new_obj = calloc(sizeof(RatType), 1);
+	ratlist_append(&data->Rat, new_obj);
 
 	return new_obj;
 }
 
-static void FreeRat(RatType * data)
+void RemoveFreeRat(RatType * data)
 {
-	g_slice_free(RatType, data);
+	ratlist_remove(data);
+	free(data);
 }
 
 /* ---------------------------------------------------------------------------
@@ -652,7 +640,7 @@ void FreeDataMemory(DataType * data)
 	}
 	END_LOOP;
 	list_map0(&data->Element, ElementType, RemoveFreeElement);
-	g_list_free_full(data->Rat, (GDestroyNotify) FreeRat);
+	list_map0(&data->Rat, RatType, RemoveFreeRat);
 
 	for (layer = data->Layer, i = 0; i < MAX_LAYER + 2; layer++, i++) {
 		FreeAttributeListMemory(&layer->Attributes);

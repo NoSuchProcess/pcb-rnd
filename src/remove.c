@@ -260,11 +260,7 @@ static void *DestroyRat(RatTypePtr Rat)
 	if (DestroyTarget->rat_tree)
 		r_delete_entry(DestroyTarget->rat_tree, &Rat->BoundingBox);
 
-	DestroyTarget->Rat = g_list_remove(DestroyTarget->Rat, Rat);
-	DestroyTarget->RatN--;
-
-	g_slice_free(RatType, Rat);
-
+	RemoveFreeRat(Rat);
 	return NULL;
 }
 

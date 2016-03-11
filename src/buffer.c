@@ -243,10 +243,8 @@ static void *MoveRatToBuffer(RatType * rat)
 {
 	r_delete_entry(Source->rat_tree, (BoxType *) rat);
 
-	Source->Rat = g_list_remove(Source->Rat, rat);
-	Source->RatN--;
-	Dest->Rat = g_list_append(Dest->Rat, rat);
-	Dest->RatN++;
+	ratlist_remove(rat);
+	ratlist_append(&Dest->Rat, rat);
 
 	CLEAR_FLAG(FOUNDFLAG, rat);
 

@@ -67,6 +67,7 @@
 #include "list_poly.h"
 #include "list_pad.h"
 #include "list_pin.h"
+#include "list_rat.h"
 #include "hid.h"
 #include "polyarea.h"
 
@@ -195,11 +196,10 @@ typedef struct {								/* holds information about one layer */
 } LayerType, *LayerTypePtr;
 
 typedef struct {								/* holds all objects */
-	Cardinal RatN;												/* and rat-lines */
 	int LayerN;										/* number of layers in this board */
 	pinlist_t Via;
 	elementlist_t Element;
-	GList *Rat;
+	ratlist_t Rat;
 	rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
 	 *rat_tree;
 	struct PCBType *pcb;

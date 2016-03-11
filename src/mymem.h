@@ -101,6 +101,7 @@ void RemoveFreePin(PinType * data);
 void RemoveFreePad(PadType * data);
 void RemoveFreeVia(PinType * data);
 void RemoveFreeElement(ElementType * data);
+void RemoveFreeRat(RatType * data);
 
 #ifdef NEED_STRDUP
 char *strdup(const char *);
