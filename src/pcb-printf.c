@@ -161,7 +161,7 @@ const Unit *get_unit_struct(const char *const_suffix)
 	int i;
 	int s_len = 0;
 	/* Turn given suffix into something we can modify... */
-	char *m_suffix = g_strdup(const_suffix);
+	char *m_suffix = strdup(const_suffix);
 	/* ...and store this in a pointer we can move. */
 	char *suffix = m_suffix;
 
@@ -183,10 +183,10 @@ const Unit *get_unit_struct(const char *const_suffix)
 	if (*suffix)
 		for (i = 0; i < N_UNITS; ++i)
 			if (strcmp(suffix, Units[i].suffix) == 0 || strcmp(suffix, Units[i].alias[0]) == 0) {
-				g_free(m_suffix);
+				free(m_suffix);
 				return &Units[i];
 			}
-	g_free(m_suffix);
+	free(m_suffix);
 	return NULL;
 }
 
