@@ -173,21 +173,7 @@ struct AttributeListType {
  * the basic object types supported by PCB
  */
 
-typedef struct element_st {
-	ANYOBJECTFIELDS;
-	TextType Name[MAX_ELEMENTNAMES];	/* the elements names; */
-	/* description text */
-	/* name on PCB second, */
-	/* value third */
-	/* see macro.h */
-	Coord MarkX, MarkY;						/* position mark */
-	pinlist_t Pin;
-	padlist_t Pad;
-	linelist_t Line;
-	arclist_t Arc;
-	BoxType VBox;
-	AttributeListType Attributes;
-} ElementType, *ElementTypePtr, **ElementTypeHandle;
+#include "global_element.h"
 
 struct rtree {
 	struct rtree_node *root;
@@ -209,11 +195,10 @@ typedef struct {								/* holds information about one layer */
 } LayerType, *LayerTypePtr;
 
 typedef struct {								/* holds all objects */
-	Cardinal ElementN,						/* and elements */
-	  RatN;												/* and rat-lines */
+	Cardinal RatN;												/* and rat-lines */
 	int LayerN;										/* number of layers in this board */
 	pinlist_t Via;
-	GList *Element;
+	elementlist_t Element;
 	GList *Rat;
 	rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
 	 *rat_tree;

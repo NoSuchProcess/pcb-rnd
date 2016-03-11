@@ -218,12 +218,9 @@ extern int mem_any_set(unsigned char *, int);
                 connection = & (net)->Connection[n]
 
 #define ELEMENT_LOOP(top) do {                                      \
-  GList *__iter, *__next;                                           \
-  Cardinal n = 0;                                                   \
-  for (__iter = (top)->Element, __next = g_list_next (__iter);      \
-       __iter != NULL;                                              \
-       __iter = __next, __next = g_list_next (__iter), n++) {       \
-    ElementType *element = __iter->data;
+  ElementType *element;                                             \
+  gdl_iterator_t __it__;                                            \
+  pinlist_foreach(&(top)->Element, &__it__, element) {
 
 #define RAT_LOOP(top) do {                                          \
   GList *__iter, *__next;                                           \

@@ -247,10 +247,7 @@ static void *DestroyElement(ElementTypePtr Element)
 	END_LOOP;
 	FreeElementMemory(Element);
 
-	DestroyTarget->Element = g_list_remove(DestroyTarget->Element, Element);
-	DestroyTarget->ElementN--;
-
-	g_slice_free(ElementType, Element);
+	RemoveFreeElement(Element);
 
 	return NULL;
 }

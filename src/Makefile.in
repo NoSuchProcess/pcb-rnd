@@ -41,6 +41,7 @@ put /local/pcb/OBJS [@
 	intersect.o
 	line.o
 	list_arc.o
+	list_element.o
 	list_line.o
 	list_text.o
 	list_pad.o

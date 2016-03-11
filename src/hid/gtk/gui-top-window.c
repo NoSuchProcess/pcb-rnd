@@ -503,7 +503,7 @@ static void layer_selector_toggle_callback(GHidLayerSelector * ls, int layer, gp
 		break;
 	case LAYER_BUTTON_PINS:
 		PCB->PinOn = active;
-		redraw |= (PCB->Data->ElementN != 0);
+		redraw |= (elementlist_length(&PCB->Data->Element) != 0);
 		break;
 	case LAYER_BUTTON_VIAS:
 		PCB->ViaOn = active;

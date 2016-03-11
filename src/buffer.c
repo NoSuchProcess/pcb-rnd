@@ -351,10 +351,8 @@ static void *MoveElementToBuffer(ElementType * element)
 	 */
 	r_delete_element(Source, element);
 
-	Source->Element = g_list_remove(Source->Element, element);
-	Source->ElementN--;
-	Dest->Element = g_list_append(Dest->Element, element);
-	Dest->ElementN++;
+	elementlist_remove(element);
+	elementlist_append(&Dest->Element, element);
 
 	PIN_LOOP(element);
 	{
@@ -452,8 +450,8 @@ bool LoadElementToBuffer(BufferTypePtr Buffer, const char *Name)
 		if (Settings.ShowSolderSide)
 			SwapBuffer(Buffer);
 		SetBufferBoundingBox(Buffer);
-		if (Buffer->Data->ElementN) {
-			element = Buffer->Data->Element->data;
+		if (elementlist_length(&Buffer->Data->Element)) {
+			element = elementlist_first(&Buffer->Data->Element);
 			Buffer->X = element->MarkX;
 			Buffer->Y = element->MarkY;
 		}
@@ -507,16 +505,16 @@ int LoadFootprint(int argc, char **argv, Coord x, Coord y)
 	if (LoadFootprintByName(PASTEBUFFER, name))
 		return 1;
 
-	if (PASTEBUFFER->Data->ElementN == 0) {
+	if (elementlist_length(&PASTEBUFFER->Data->Element) == 0) {
 		Message("Footprint %s contains no elements", name);
 		return 1;
 	}
-	if (PASTEBUFFER->Data->ElementN > 1) {
+	if (elementlist_length(&PASTEBUFFER->Data->Element) > 1) {
 		Message("Footprint %s contains multiple elements", name);
 		return 1;
 	}
 
-	e = PASTEBUFFER->Data->Element->data;
+	e = elementlist_first(&PASTEBUFFER->Data->Element);
 
 	if (e->Name[0].TextString)
 		free(e->Name[0].TextString);
@@ -543,7 +541,7 @@ bool SmashBufferElement(BufferTypePtr Buffer)
 	Cardinal group;
 	LayerTypePtr clayer, slayer;
 
-	if (Buffer->Data->ElementN != 1) {
+	if (elementlist_length(&Buffer->Data->Element) != 1) {
 		Message(_("Error!  Buffer doesn't contain a single element\n"));
 		return (false);
 	}
@@ -556,9 +554,8 @@ bool SmashBufferElement(BufferTypePtr Buffer)
 	 * around for us to smash bits off it.  It then becomes our responsibility,
 	 * however, to free the single element when we're finished with it.
 	 */
-	element = Buffer->Data->Element->data;
-	Buffer->Data->Element = NULL;
-	Buffer->Data->ElementN = 0;
+	element = elementlist_first(&Buffer->Data->Element);
+	elementlist_remove(element);
 	ClearBuffer(Buffer);
 	ELEMENTLINE_LOOP(element);
 	{
@@ -599,7 +596,7 @@ bool SmashBufferElement(BufferTypePtr Buffer)
 	}
 	END_LOOP;
 	FreeElementMemory(element);
-	g_slice_free(ElementType, element);
+	RemoveFreeElement(element);
 	return (true);
 }
 
@@ -1048,7 +1045,7 @@ void MirrorBuffer(BufferTypePtr Buffer)
 {
 	int i;
 
-	if (Buffer->Data->ElementN) {
+	if (elementlist_length(&Buffer->Data->Element)) {
 		Message(_("You can't mirror a buffer that has elements!\n"));
 		return;
 	}
@@ -1346,7 +1343,7 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 			break;
 
 		case F_Save:
-			if (PASTEBUFFER->Data->ElementN == 0) {
+			if (elementlist_length(&PASTEBUFFER->Data->Element) == 0) {
 				Message(_("Buffer has no elements!\n"));
 				break;
 			}

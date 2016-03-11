@@ -1,3 +1,5 @@
+#ifndef GLOBAL_OBJS_H
+#define GLOBAL_OBJS_H
 #include <genlist/gendlist.h>
 #include <stdbool.h>
 #include "config.h"
@@ -156,3 +158,4 @@ typedef struct font_st {								/* complete set of symbols */
 	SymbolType Symbol[MAX_FONTPOSITION + 1];
 	bool Valid;
 } FontType, *FontTypePtr;
+#endif

@@ -598,7 +598,7 @@ static int ActionElementList(int argc, char **argv, Coord x, Coord y)
 		}
 
 		er = ElementOrientation(e);
-		pe = PASTEBUFFER->Data->Element->data;
+		pe = elementlist_first(&(PASTEBUFFER->Data->Element));
 		if (!FRONT(e))
 			MirrorElementCoordinates(PASTEBUFFER->Data, pe, pe->MarkY * 2 - PCB->MaxHeight);
 		pr = ElementOrientation(pe);

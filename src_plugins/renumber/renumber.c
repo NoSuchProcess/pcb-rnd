@@ -66,7 +66,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 		unsigned int cnt;
 	} *cnt_list;
 	char **was, **is, *pin;
-	unsigned int c_cnt = 0;
+	unsigned int c_cnt = 0, numele;
 	int unique, ok;
 	int free_name = 0;
 
@@ -123,10 +123,11 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	 *
 	 * We'll actually renumber things in the 2nd pass.
 	 */
-	element_list = (ElementType **) calloc(PCB->Data->ElementN, sizeof(ElementTypePtr));
-	locked_element_list = (ElementType **) calloc(PCB->Data->ElementN, sizeof(ElementTypePtr));
-	was = (char **) calloc(PCB->Data->ElementN, sizeof(char *));
-	is = (char **) calloc(PCB->Data->ElementN, sizeof(char *));
+	numele = elementlist_length(&PCB->Data->Element);
+	element_list = (ElementType **) calloc(numele, sizeof(ElementTypePtr));
+	locked_element_list = (ElementType **) calloc(numele, sizeof(ElementTypePtr));
+	was = (char **) calloc(numele, sizeof(char *));
+	is = (char **) calloc(numele, sizeof(char *));
 	if (element_list == NULL || locked_element_list == NULL || was == NULL || is == NULL) {
 		fprintf(stderr, "calloc() failed in %s\n", __FUNCTION__);
 		exit(1);

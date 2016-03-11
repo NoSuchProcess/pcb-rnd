@@ -52,6 +52,15 @@ RCSID("$Id$");
 static void DSRealloc(DynamicStringTypePtr, size_t);
 
 
+/* memset object to 0, but keep the link field */
+#define reset_obj_mem(type, obj) \
+do { \
+	gdl_elem_t __lnk__ = obj->link; \
+	memset(obj, 0, sizeof(type)); \
+	obj->link = __lnk__; \
+} while(0) \
+
+
 /* This API is quite new, provide a version here */
 #if !GLIB_CHECK_VERSION (2, 28, 0)
 static void g_list_free_full(GList * list, GDestroyNotify free_func)
@@ -361,16 +370,16 @@ ElementType *GetElementMemory(DataType * data)
 {
 	ElementType *new_obj;
 
-	new_obj = g_slice_new0(ElementType);
-	data->Element = g_list_append(data->Element, new_obj);
-	data->ElementN++;
+	new_obj = calloc(sizeof(ElementType), 1);
+	elementlist_append(&data->Element, new_obj);
 
 	return new_obj;
 }
 
-static void FreeElement(ElementType * data)
+void RemoveFreeElement(ElementType * data)
 {
-	g_slice_free(ElementType, data);
+	elementlist_remove(data);
+	free(data);
 }
 
 /* ---------------------------------------------------------------------------
@@ -487,7 +496,7 @@ void FreePolygonMemory(PolygonType * polygon)
 		poly_Free(&polygon->Clipped);
 	poly_FreeContours(&polygon->NoHoles);
 
-	memset(polygon, 0, sizeof(PolygonType));
+	reset_obj_mem(PolygonType, polygon);
 }
 
 /* ---------------------------------------------------------------------------
@@ -592,7 +601,7 @@ void FreeElementMemory(ElementType * element)
 	list_map0(&element->Arc,  ArcType,  RemoveFreeArc);
 
 	FreeAttributeListMemory(&element->Attributes);
-	memset(element, 0, sizeof(ElementType));
+	reset_obj_mem(ElementType, element);
 }
 
 /* ---------------------------------------------------------------------------
@@ -642,7 +651,7 @@ void FreeDataMemory(DataType * data)
 		FreeElementMemory(element);
 	}
 	END_LOOP;
-	g_list_free_full(data->Element, (GDestroyNotify) FreeElement);
+	list_map0(&data->Element, ElementType, RemoveFreeElement);
 	g_list_free_full(data->Rat, (GDestroyNotify) FreeRat);
 
 	for (layer = data->Layer, i = 0; i < MAX_LAYER + 2; layer++, i++) {

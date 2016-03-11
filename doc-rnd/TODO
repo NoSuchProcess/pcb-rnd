@@ -8,6 +8,7 @@ UNGLIB:
 		- place 2 arcs, select first, can't move to left edge (bbox or rtree?)
 		- can't click into a text and get it selected (rtree?)?!
 		- closing the shift+D pin dialog double frees()?
+		- buffer element breakup double frees?
 	- get rid of lists.h
 
 

@@ -495,7 +495,7 @@ void PostLoadElementPCB()
 
 	CreateNewPCBPost(yyPCB, 0);
 	ParseGroupString("1,c:2,s", &yyPCB->LayerGroups, yyData->LayerN);
-	e = yyPCB->Data->Element->data;	/* we know there's only one */
+	e = elementlist_first(&yyPCB->Data->Element);	/* we know there's only one */
 	PCB = yyPCB;
 	MoveElementLowLevel(yyPCB->Data, e, -e->BoundingBox.X1, -e->BoundingBox.Y1);
 	PCB = pcb_save;
@@ -689,13 +689,12 @@ static void WritePCBNetlistPatchData(FILE * FP)
  */
 static void WriteElementData(FILE * FP, DataTypePtr Data)
 {
-	GList *n, *p;
-	gdl_iterator_t it;
+	gdl_iterator_t eit;
 	LineType *line;
 	ArcType *arc;
+	ElementType *element;
 
-	for (n = Data->Element; n != NULL; n = g_list_next(n)) {
-		ElementType *element = n->data;
+	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
 		PinType *pin;
 		PadType *pad;

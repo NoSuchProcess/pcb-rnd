@@ -399,8 +399,8 @@ static void library_window_preview_refresh(GhidLibraryWindow * library_window, c
 		SetMode(PASTEBUFFER_MODE);
 
 	/* update the preview with new symbol data */
-	if ((PASTEBUFFER->Data != NULL) && (PASTEBUFFER->Data->Element != NULL) && (PASTEBUFFER->Data->Element->data != NULL))
-		g_object_set(library_window->preview, "element-data", PASTEBUFFER->Data->Element->data, NULL);
+	if ((PASTEBUFFER->Data != NULL) && (elementlist_length(&PASTEBUFFER->Data->Element) != 0))
+		g_object_set(library_window->preview, "element-data", elementlist_first(&PASTEBUFFER->Data->Element), NULL);
 	else {
 		g_object_set(library_window->preview, "element-data", NULL, NULL);
 	}

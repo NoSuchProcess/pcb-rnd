@@ -2892,7 +2892,7 @@ void LookupConnectionsToAllElements(FILE * FP)
 		if (PrintElementConnections(element, FP, false))
 			break;
 		SEPARATE(FP);
-		if (Settings.ResetAfterElement && n != 1)
+		if (Settings.ResetAfterElement && gdl_it_idx(&__it__) != 1)
 			ResetConnections(false);
 	}
 	END_LOOP;
