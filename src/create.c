@@ -695,7 +695,7 @@ LineTypePtr CreateNewLineInElement(ElementTypePtr Element, Coord X1, Coord Y1, C
 	if (Thickness == 0)
 		return NULL;
 
-	line = g_slice_new0(LineType);
+	line = calloc(sizeof(LineType), 1);
 	linelist_append(&Element->Line, line);
 
 	/* copy values */
