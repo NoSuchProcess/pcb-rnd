@@ -2,6 +2,7 @@ UNGLIB:
 	- macro.h *_LOOP: add void n to see if anyone used the counter
 	- find.c: check InitLayoutLookup - why do we build another cache? -> genvector!
 	- test transition (after glib removal is finished so that valgrind works reasonably well again):
+		- a plain load & exit already triggers double free at the end
 		- test autorouter
 		- test exporters
 		- test gpmi search
@@ -10,7 +11,8 @@ UNGLIB:
 		- closing the shift+D pin dialog double frees()?
 		- buffer element breakup double frees?
 		- drawing new rats cause double free?
-	- get rid of lists.h
+		- test onpoint
+	- get rid of gcode/lists.h, ds.[ch] and vector.[ch]
 
 
 BUGS

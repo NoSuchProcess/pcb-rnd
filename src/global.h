@@ -68,6 +68,7 @@
 #include "list_pad.h"
 #include "list_pin.h"
 #include "list_rat.h"
+#include "vtonpoint.h"
 #include "hid.h"
 #include "polyarea.h"
 
@@ -393,8 +394,8 @@ typedef struct {								/* holds cursor information */
 	PolygonType AttachedPolygon;
 	AttachedObjectType AttachedObject;	/* data of attached objects */
 	enum crosshair_shape shape;		/* shape of crosshair */
-	GList *onpoint_objs;					/* list of associated lines/arc */
-	GList *onpoint_objs_types;		/* ..and a list of their respective types */
+	vtop_t onpoint_objs;
+	vtop_t old_onpoint_objs;
 
 	/* list of object IDs that could have been dragged so that they can be cycled */
 	long int *drags;

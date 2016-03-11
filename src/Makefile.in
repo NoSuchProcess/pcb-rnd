@@ -85,6 +85,7 @@ put /local/pcb/OBJS [@
 	undo.o
 	undo_act.o
 	vector.o
+	vtonpoint.o
 	hid/common/actions.o
 	hid/common/flags.o
 	hid/common/hidinit.o

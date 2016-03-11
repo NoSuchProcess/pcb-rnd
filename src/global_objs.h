@@ -159,4 +159,15 @@ typedef struct font_st {								/* complete set of symbols */
 	SymbolType Symbol[MAX_FONTPOSITION + 1];
 	bool Valid;
 } FontType, *FontTypePtr;
+
+
+typedef struct onpoint_st {
+	int type;
+	union {
+		void *any;
+		LineType *line;
+		ArcType *arc;
+	} obj;
+} OnpointType;
+
 #endif

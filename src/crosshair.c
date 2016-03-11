@@ -51,7 +51,6 @@
 #include "search.h"
 #include "polygon.h"
 
-
 RCSID("$Id$");
 
 typedef struct {
@@ -686,8 +685,10 @@ static int onpoint_line_callback(const BoxType * box, void *cl)
 				 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 #endif
 	if ((line->Point1.X == info->X && line->Point1.Y == info->Y) || (line->Point2.X == info->X && line->Point2.Y == info->Y)) {
-		crosshair->onpoint_objs = g_list_prepend(crosshair->onpoint_objs, line);
-		crosshair->onpoint_objs_types = g_list_prepend(crosshair->onpoint_objs_types, GINT_TO_POINTER(LINE_TYPE));
+		OnpointType op;
+		op.type = LINE_TYPE;
+		op.obj.line = line;
+		vtop_append(&crosshair->onpoint_objs, op);
 		SET_FLAG(ONPOINTFLAG, (AnyObjectType *) line);
 		DrawLine(NULL, line);
 		return 1;
@@ -714,8 +715,10 @@ static int onpoint_arc_callback(const BoxType * box, void *cl)
 	/* printf("p1=%ld;%ld p2=%ld;%ld info=%ld;%ld\n", p1x, p1y, p2x, p2y, info->X, info->Y); */
 
 	if ((close_enough(p1x, info->X) && close_enough(p1y, info->Y)) || (close_enough(p2x, info->X) && close_enough(p2y, info->Y))) {
-		crosshair->onpoint_objs = g_list_prepend(crosshair->onpoint_objs, arc);
-		crosshair->onpoint_objs_types = g_list_prepend(crosshair->onpoint_objs_types, GINT_TO_POINTER(ARC_TYPE));
+		OnpointType op;
+		op.type = ARC_TYPE;
+		op.obj.arc = arc;
+		vtop_append(&crosshair->onpoint_objs, op);
 		SET_FLAG(ONPOINTFLAG, (AnyObjectType *) arc);
 		DrawArc(NULL, arc);
 		return 1;
@@ -745,6 +748,26 @@ void DrawLineOrArc(int type, void *obj)
 	}
 }
 
+
+#define op_swap(crosshair) \
+do { \
+	vtop_t __tmp__ = crosshair->onpoint_objs; \
+	crosshair->onpoint_objs = crosshair->old_onpoint_objs; \
+	crosshair->old_onpoint_objs = __tmp__; \
+} while(0)
+
+static void *onpoint_find(vtop_t *vect, void *obj_ptr)
+{
+	int i;
+
+	for (i = 0; i < vect->used; i++) {
+		OnpointType *op = &(vect->array[i]);
+		if (op->obj.any == obj_ptr)
+			return op;
+	}
+	return NULL;
+}
+
 /*
  * Searches for lines or arcs which have points that are exactly
  * at the given coordinates and adds them to the crosshair's
@@ -755,13 +778,14 @@ static void onpoint_work(CrosshairType * crosshair, Coord X, Coord Y)
 	BoxType SearchBox = point_box(X, Y);
 	struct onpoint_search_info info;
 	int i;
-	GList *lobjs, *ltypes;
-	GList *old_onpoint_objs = crosshair->onpoint_objs;
-	GList *old_onpoint_objs_types = crosshair->onpoint_objs_types;
 	bool redraw = false;
 
-	crosshair->onpoint_objs = NULL;
-	crosshair->onpoint_objs_types = NULL;
+	op_swap(crosshair);
+	
+	/* Do not truncate to 0 becuase that may free the array */
+	vtop_truncate(&crosshair->onpoint_objs, 1);
+	crosshair->onpoint_objs.used = 0;
+
 
 	info.crosshair = crosshair;
 	info.X = X;
@@ -777,28 +801,28 @@ static void onpoint_work(CrosshairType * crosshair, Coord X, Coord Y)
 	}
 
 	/* Undraw the old objects */
-	for (lobjs = old_onpoint_objs, ltypes = old_onpoint_objs_types; lobjs != NULL; lobjs = lobjs->next, ltypes = ltypes->next) {
+	for (i = 0; i < crosshair->old_onpoint_objs.used; i++) {
+		OnpointType *op = &crosshair->old_onpoint_objs.array[i];
+
 		/* only remove and redraw those which aren't in the new list */
-		if (g_list_find(crosshair->onpoint_objs, lobjs->data) != NULL)
+		if (onpoint_find(&crosshair->onpoint_objs, op->obj.any) != NULL)
 			continue;
 
-		CLEAR_FLAG(ONPOINTFLAG, (AnyObjectType *) lobjs->data);
-		DrawLineOrArc(GPOINTER_TO_INT(ltypes->data), lobjs->data);
+		CLEAR_FLAG(ONPOINTFLAG, (AnyObjectType *) op->obj.any);
+		DrawLineOrArc(op->type, op->obj.any);
 		redraw = true;
 	}
 
 	/* draw the new objects */
-	for (lobjs = crosshair->onpoint_objs,
-			 ltypes = crosshair->onpoint_objs_types; lobjs != NULL; lobjs = lobjs->next, ltypes = ltypes->next) {
+	for (i = 0; i < crosshair->onpoint_objs.used; i++) {
+		OnpointType *op = &crosshair->onpoint_objs.array[i];
+
 		/* only draw those which aren't in the old list */
-		if (g_list_find(old_onpoint_objs, lobjs->data) != NULL)
+		if (onpoint_find(&crosshair->old_onpoint_objs, op->obj.any) != NULL)
 			continue;
-		DrawLineOrArc(GPOINTER_TO_INT(ltypes->data), lobjs->data);
+		DrawLineOrArc(op->type, op->obj.any);
 		redraw = true;
 	}
-
-	g_list_free(old_onpoint_objs);
-	g_list_free(old_onpoint_objs_types);
 
 	if (redraw) {
 		Redraw();
@@ -1160,8 +1184,8 @@ void InitCrosshair(void)
 	Crosshair.MaxY = PCB->MaxHeight;
 
 	/* Initialize the onpoint data. */
-	Crosshair.onpoint_objs = NULL;
-	Crosshair.onpoint_objs_types = NULL;
+	memset(&Crosshair.onpoint_objs, 0, sizeof(vtop_t));
+	memset(&Crosshair.old_onpoint_objs, 0, sizeof(vtop_t));
 
 	/* clear the mark */
 	Marked.status = false;
