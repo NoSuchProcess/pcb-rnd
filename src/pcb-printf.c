@@ -31,6 +31,7 @@
  *  top of pcb-printf.h
  */
 
+#include <locale.h>
 #include "config.h"
 #include "global.h"
 
@@ -304,7 +305,7 @@ static int min_sig_figs(double d)
 static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t *printf_spec_, enum e_allow allow,
 														 enum e_suffix suffix_type)
 {
-	char filemode_buff[G_ASCII_DTOSTR_BUF_SIZE];
+	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
 	char printf_spec_new_local[256];
 	double *value, value_local[32];
 	enum e_family family;
@@ -402,14 +403,20 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 	 *  (+ 2 skips the ", " for first value) */
 	if (n_coords > 1)
 		gds_append(dest,  '(');
-	if (suffix_type == FILE_MODE)
-		g_ascii_formatd(filemode_buff, sizeof filemode_buff, printf_spec_new + 2, value[0]);
+	if (suffix_type == FILE_MODE) {
+		setlocale(LC_ALL, "C"); /* ascii decimal */
+		sprintf(filemode_buff, printf_spec_new + 2, value[0]);
+		setlocale(LC_ALL, "");
+	}
 	else
 		sprintf(filemode_buff, printf_spec_new + 2, value[0]);
 	gds_append_str(dest, filemode_buff);
 	for (i = 1; i < n_coords; ++i) {
-		if (suffix_type == FILE_MODE)
-			g_ascii_formatd(filemode_buff, sizeof filemode_buff, printf_spec_new, value[i]);
+		if (suffix_type == FILE_MODE) {
+			setlocale(LC_ALL, "C");  /* ascii decimal */
+			sprintf(filemode_buff, printf_spec_new, value[i]);
+			setlocale(LC_ALL, "");
+		}
 		else
 			sprintf(filemode_buff, printf_spec_new, value[i]);
 		gds_append_str(dest, filemode_buff);
@@ -741,7 +748,7 @@ int pcb_printf(const char *fmt, ...)
  *
  * \param [in] fmt  Format specifier
  *
- * \return The newly allocated string. Must be freed with g_free.
+ * \return The newly allocated string. Must be freed with free.
  */
 char *pcb_g_strdup_printf(const char *fmt, ...)
 {
