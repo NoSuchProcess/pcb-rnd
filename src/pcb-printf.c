@@ -304,13 +304,14 @@ static int min_sig_figs(double d)
 static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t *printf_spec_, enum e_allow allow,
 														 enum e_suffix suffix_type)
 {
-	char *printf_buff;
 	char filemode_buff[G_ASCII_DTOSTR_BUF_SIZE];
-	enum e_family family;
+	char printf_spec_new_local[256];
 	double *value, value_local[32];
+	enum e_family family;
 	const char *suffix;
 	int i, n;
 	const char *printf_spec = printf_spec_->array;
+	char *printf_spec_new;
 
 	if (n_coords > (sizeof(value_local) / sizeof(value_local[0]))) {
 		value = malloc(n_coords * sizeof *value);
@@ -322,8 +323,12 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 
 	if (allow == 0)
 		allow = ALLOW_ALL;
-	if (printf_spec == NULL)
-		printf_spec = "";
+
+	i = printf_spec_->used + 64;
+	if (i > sizeof(printf_spec_new_local))
+		printf_spec_new = malloc(i);
+	else
+		printf_spec_new = printf_spec_new_local;
 
 	/* Check our freedom in choosing units */
 	if ((allow & ALLOW_IMPERIAL) == 0)
@@ -387,25 +392,26 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 	while (printf_spec[i] == '%' || isdigit(printf_spec[i]) ||
 				 printf_spec[i] == '-' || printf_spec[i] == '+' || printf_spec[i] == '#' || printf_spec[i] == '0')
 		++i;
+
 	if (printf_spec[i] == '.')
-		printf_buff = g_strdup_printf(", %sf", printf_spec);
+		sprintf(printf_spec_new, ", %sf", printf_spec);
 	else
-		printf_buff = g_strdup_printf(", %s.%df", printf_spec, Units[n].default_prec);
+		sprintf(printf_spec_new, ", %s.%df", printf_spec, Units[n].default_prec);
 
 	/* Actually sprintf the values in place
 	 *  (+ 2 skips the ", " for first value) */
 	if (n_coords > 1)
 		gds_append(dest,  '(');
 	if (suffix_type == FILE_MODE)
-		g_ascii_formatd(filemode_buff, sizeof filemode_buff, printf_buff + 2, value[0]);
+		g_ascii_formatd(filemode_buff, sizeof filemode_buff, printf_spec_new + 2, value[0]);
 	else
-		sprintf(filemode_buff, printf_buff + 2, value[0]);
+		sprintf(filemode_buff, printf_spec_new + 2, value[0]);
 	gds_append_str(dest, filemode_buff);
 	for (i = 1; i < n_coords; ++i) {
 		if (suffix_type == FILE_MODE)
-			g_ascii_formatd(filemode_buff, sizeof filemode_buff, printf_buff, value[i]);
+			g_ascii_formatd(filemode_buff, sizeof filemode_buff, printf_spec_new, value[i]);
 		else
-			sprintf(filemode_buff, printf_buff, value[i]);
+			sprintf(filemode_buff, printf_spec_new, value[i]);
 		gds_append_str(dest, filemode_buff);
 	}
 	if (n_coords > 1)
@@ -425,7 +431,8 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 		}
 	}
 
-	g_free(printf_buff);
+	if (printf_spec_new != printf_spec_new_local)
+		free(printf_spec_new);
 
 	if (value != value_local)
 		free(value);
@@ -441,7 +448,7 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
  * \param [in] fmt    Format specifier
  * \param [in] args   Arguments to specifier
  *
- * \return A formatted string. Must be freed with g_free.
+ * \return A formatted string. Must be freed with free.
  */
 char *pcb_vprintf(const char *fmt, va_list args)
 {
