@@ -155,6 +155,7 @@ int pcb_printf(const char *fmt, ...);
 char *pcb_strdup_printf(const char *fmt, ...);
 char *pcb_strdup_vprintf(const char *fmt, va_list args);
 
+int pcb_append_printf(gds_t *str, const char *fmt, ...);
 int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args);
 
 #endif

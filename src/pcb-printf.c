@@ -817,3 +817,22 @@ char *pcb_strdup_vprintf(const char *fmt, va_list args)
 	return str.array; /* no other allocation has been made */
 }
 
+
+/* \brief Wrapper for pcb_append_vprintf that appends to a string using vararg API
+ *
+ * \param [in] str  Existing dynamic string
+ * \param [in] fmt  Format specifier
+ *
+ * \return 0 on success
+ */
+int pcb_append_printf(gds_t *str, const char *fmt, ...)
+{
+	int retval;
+
+	va_list args;
+	va_start(args, fmt);
+	retval = pcb_append_vprintf(str, fmt, args);
+	va_end(args);
+
+	return retval;
+}
