@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <locale.h>
 
 #if defined(_POSIX_SOURCE) || defined(_HPUX_SOURCE)
 #include <unistd.h>
@@ -151,7 +152,7 @@ in	{ return T_IN; }
 						return(CHAR_CONST);
 					}
 {FLOATING}		{	return parse_number(); }
-{INTEGER}		{	yylval.integer = round (g_ascii_strtod (yytext, NULL)); return INTEGER; }
+{INTEGER}		{	yylval.integer = round (strtod (yytext, NULL)); return INTEGER; }
 
 {HEX}			{	unsigned n;
 				sscanf((char *) yytext, "%x", &n);
@@ -336,11 +337,15 @@ int ParseElement(DataTypePtr Ptr, const char *name)
  */
 int ParsePCB(PCBTypePtr Ptr, char *Filename)
 {
+	int retval;
 	yyPCB = Ptr;
 	yyData = NULL;
 	yyFont = NULL;
 	yyElement = NULL;
-	return(Parse(NULL, Settings.FileCommand, Settings.FilePath, Filename, NULL));
+	setlocale(LC_ALL, "C"); /* make sure numerics are read predictably */
+	retval = Parse(NULL, Settings.FileCommand, Settings.FilePath, Filename, NULL);
+	setlocale(LC_ALL, "");
+	return retval;
 }
 
 /* ---------------------------------------------------------------------------
@@ -385,7 +390,7 @@ int ParseFont(FontTypePtr Ptr, char *Filename)
 static int
 parse_number ()
 {
-  yylval.number = g_ascii_strtod ((gchar *) yytext, NULL);
+  yylval.number = strtod ((gchar *) yytext, NULL);
   return FLOATING;
 }
 
