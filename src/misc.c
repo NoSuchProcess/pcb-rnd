@@ -839,18 +839,18 @@ static Coord GetNum(char **s, const char *default_unit)
  */
 char *make_route_string(RouteStyleType rs[], int n_styles)
 {
-	GString *str = g_string_new("");
+	gds_t str;
 	gint i;
 
+	gds_init(&str);
 	for (i = 0; i < n_styles; ++i) {
-		char *r_string = pcb_strdup_printf("%s,%mc,%mc,%mc,%mc", rs[i].Name,
+		pcb_append_printf(&str, "%s,%mc,%mc,%mc,%mc", rs[i].Name,
 																				 rs[i].Thick, rs[i].Diameter,
 																				 rs[i].Hole, rs[i].Keepaway);
 		if (i > 0)
-			g_string_append_c(str, ':');
-		g_string_append(str, r_string);
+			gds_append(&str, ':');
 	}
-	return g_string_free(str, FALSE);
+	return str.array; /* this is the only allocation made, return this and don't uninit */
 }
 
 /* ----------------------------------------------------------------------
