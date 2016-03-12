@@ -103,7 +103,7 @@ put /local/pcb/OBJS [@
 	buildin.o
 	../src_3rd/genht/hash.o
 	../src_3rd/genht/htsp.o
-	../src_3rd/genvector/genvector.a
+	../src_3rd/genvector/gds_char.o
 @]
 
 # main: language generator files
