@@ -156,37 +156,31 @@ static Increments increments[] = {
  *
  * \return A const pointer to the Unit struct, or NULL if none was found
  */
-const Unit *get_unit_struct(const char *const_suffix)
+const Unit *get_unit_struct(const char *suffix)
 {
 	int i;
 	int s_len = 0;
-	/* Turn given suffix into something we can modify... */
-	char *m_suffix = strdup(const_suffix);
-	/* ...and store this in a pointer we can move. */
-	char *suffix = m_suffix;
 
 	/* Determine bounds */
 	while (isspace(*suffix))
-		++suffix;
+		suffix++;
 	while (isalnum(suffix[s_len]))
-		++s_len;
+		s_len++;
 
 	/* Also understand plural suffixes: "inches", "mils" */
 	if (s_len > 2) {
 		if (suffix[s_len - 2] == 'e' && suffix[s_len - 1] == 's')
-			suffix[s_len - 2] = 0;
+			s_len -= 2;
 		else if (suffix[s_len - 1] == 's')
-			suffix[s_len - 1] = 0;
+			s_len -= 1;
 	}
 
 	/* Do lookup */
-	if (*suffix)
+	if (s_len > 0)
 		for (i = 0; i < N_UNITS; ++i)
-			if (strcmp(suffix, Units[i].suffix) == 0 || strcmp(suffix, Units[i].alias[0]) == 0) {
-				free(m_suffix);
+			if (strncmp(suffix, Units[i].suffix, s_len) == 0 || strncmp(suffix, Units[i].alias[0], s_len) == 0)
 				return &Units[i];
-			}
-	free(m_suffix);
+
 	return NULL;
 }
 
