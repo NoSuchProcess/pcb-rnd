@@ -229,7 +229,7 @@ int hook_detect_target()
 {
 	int want_gtk, want_glib = 0;
 
-	want_gtk = (get("libs/gui/gtk2/presents") == NULL) || (istrue(get("libs/gui/gtk2/presents") != NULL));
+	want_gtk = (get("libs/gui/gtk2/presents") == NULL) || (istrue(get("libs/gui/gtk2/presents")));
 
 	require("cc/fpic",  0, 1);
 	require("fstools/mkdir", 0, 1);
@@ -323,7 +323,7 @@ int hook_detect_target()
 
 
 	{
-		char *tmp, *fpic, *debug;
+		const char *tmp, *fpic, *debug;
 		fpic = get("/target/cc/fpic");
 		if (fpic == NULL) fpic = "";
 		debug = get("/arg/debug");
@@ -346,7 +346,7 @@ void generator_callback(char *cmd, char *args)
 
 static void list_presents(const char *prefix, const char *nodes[])
 {
-	char **s;
+	const char **s;
 	printf("%s", prefix);
 	for(s = nodes; s[0] != NULL; s+=2)
 		if (node_istrue(s[1]))
