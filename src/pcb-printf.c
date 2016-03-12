@@ -306,11 +306,15 @@ static gchar *CoordsToString(Coord coord[], int n_coords, const char *printf_spe
 	gchar *printf_buff;
 	gchar filemode_buff[G_ASCII_DTOSTR_BUF_SIZE];
 	enum e_family family;
-	double *value;
+	double *value, value_local[32];
 	const char *suffix;
 	int i, n;
 
-	value = malloc(n_coords * sizeof *value);
+	if (n_coords > (sizeof(value_local) / sizeof(value_local[0])))
+		value = malloc(n_coords * sizeof *value);
+	else
+		value = value_local;
+
 	buff = g_string_new("");
 
 	/* Sanity checks */
@@ -423,7 +427,8 @@ static gchar *CoordsToString(Coord coord[], int n_coords, const char *printf_spe
 	}
 
 	g_free(printf_buff);
-	free(value);
+	if (value != value_local)
+		free(value);
 	/* Return just the gchar* part of our string */
 	return g_string_free(buff, FALSE);
 }
