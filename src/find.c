@@ -186,26 +186,20 @@ static void pcb_drc_violation_free(DrcViolationType * violation)
 	free(violation);
 }
 
-static GString *drc_dialog_message;
+static gds_t drc_dialog_message;
 static void reset_drc_dialog_message(void)
 {
-	if (drc_dialog_message)
-		g_string_free(drc_dialog_message, FALSE);
-	drc_dialog_message = g_string_new("");
-	if (gui->drc_gui != NULL) {
+	gds_truncate(&drc_dialog_message, 0);
+	if (gui->drc_gui != NULL)
 		gui->drc_gui->reset_drc_dialog_message();
-	}
 }
 
 static void append_drc_dialog_message(const char *fmt, ...)
 {
-	char *new_str;
 	va_list ap;
 	va_start(ap, fmt);
-	new_str = pcb_strdup_vprintf(fmt, ap);
-	g_string_append(drc_dialog_message, new_str);
+	pcb_append_vprintf(&drc_dialog_message, fmt, ap);
 	va_end(ap);
-	free(new_str);
 }
 
 static void GotoError(void);
@@ -246,7 +240,7 @@ static int throw_drc_dialog(void)
 	else {
 		/* Fallback to formatting the violation message as text */
 		append_drc_dialog_message(DRC_CONTINUE);
-		r = gui->confirm_dialog(drc_dialog_message->str, DRC_CANCEL, DRC_NEXT);
+		r = gui->confirm_dialog(drc_dialog_message.array, DRC_CANCEL, DRC_NEXT);
 		reset_drc_dialog_message();
 	}
 	return r;
