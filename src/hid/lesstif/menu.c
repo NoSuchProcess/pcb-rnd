@@ -1082,7 +1082,12 @@ int lesstif_key_event(XKeyEvent * e)
 	return 1;
 }
 
-static GHashTable *menu_hash = NULL;	/* path->Widget */
+static htsp_t *menu_hash = NULL;	/* path->Widget */
+
+static int keyeq(char *a, char *b)
+{
+	return !strcmp(a, b);
+}
 
 static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc callback, const char *path)
 {
@@ -1093,7 +1098,7 @@ static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc ca
 	char *npath;
 
 	if (!menu_hash)
-		menu_hash = g_hash_table_new(g_str_hash, g_str_equal);
+		menu_hash = htsp_alloc(strhash, keyeq);
 
 	for (i = 0; i < node->c; i++) {
 		npath = NULL;
@@ -1109,7 +1114,7 @@ static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc ca
 			XtManageChild(btn);
 			npath = Concat(path, "/", node->v[i].name, NULL);
 /*			fprintf(stderr, "htsp_set1 %s %p\n", path, sub);*/
-			g_hash_table_insert(menu_hash, (gpointer) strdup(npath), (gpointer) sub);
+			htsp_set(menu_hash, strdup(npath), sub);
 			add_resource_to_menu(sub, node->v[i].subres, callback, npath);
 			break;
 
@@ -1159,7 +1164,7 @@ static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc ca
 
 				npath = Concat(path, "/", menu_name, NULL);
 /*fprintf(stderr, "htsp_set2 %s %p\n", npath,sub);*/
-				g_hash_table_insert(menu_hash, (gpointer) strdup(npath), (gpointer) sub);
+				htsp_set(menu_hash, strdup(npath), sub);
 				add_resource_to_menu(sub, node->v[i].subres, callback, npath);
 			}
 			else {
@@ -1251,7 +1256,7 @@ static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc ca
 				btn = XmCreatePushButton(menu, node->v[i].value, args, n);
 /*				npath = Concat(path, "/", node->v[i].name, NULL);
 				fprintf(stderr, "htsp_set7 %s %p\n", path, btn);
-				g_hash_table_insert(menu_hash, (gpointer) strdup(npath), (gpointer) btn);*/
+				htsp_set(menu_hash, strdup(npath), btn);*/
 				XtManageChild(btn);
 			}
 			break;
@@ -1360,7 +1365,7 @@ void lesstif_create_menu(const char *menu[], const char *action, const char *mne
 		*path_end = '/';
 		path_end++;
 		strcpy(path_end, menu[n]);
-		if (g_hash_table_lookup(menu_hash, path) != NULL) {
+		if (htsp_has(menu_hash, path)) {
 			path_end += strlen(menu[n]);
 			continue;
 		}
@@ -1373,7 +1378,7 @@ void lesstif_create_menu(const char *menu[], const char *action, const char *mne
 		if (first)
 			w = lesstif_menubar;
 		else
-			w = g_hash_table_lookup(menu_hash, path);
+			w = htsp_get(menu_hash, path);
 
 		if (!last) {
 			int flags = first ? (FLAG_S | FLAG_NV | FLAG_V) /* 7 */ : (FLAG_V | FLAG_S) /* 5 */ ;
