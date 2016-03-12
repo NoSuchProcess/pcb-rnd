@@ -123,7 +123,7 @@ void ghid_log(const char *fmt, ...)
 
 void ghid_logv(const char *fmt, va_list args)
 {
-	char *msg = pcb_vprintf(fmt, args);
+	char *msg = pcb_strdup_vprintf(fmt, args);
 	ghid_log_append_string(msg);
 	free(msg);
 }

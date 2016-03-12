@@ -354,7 +354,7 @@ void ghid_set_status_line_label(void)
 {
 	gchar *flag = TEST_FLAG(ALLDIRECTIONFLAG, PCB)
 		? "all" : (PCB->Clipping == 0 ? "45" : (PCB->Clipping == 1 ? "45_/" : "45\\_"));
-	char *text = pcb_g_strdup_printf(_("%m+<b>view</b>=%s  "
+	char *text = pcb_strdup_printf(_("%m+<b>view</b>=%s  "
 																			"<b>grid</b>=%$mS  "
 																			"%s%s  "
 																			"<b>line</b>=%mS  "
@@ -388,7 +388,7 @@ void ghid_set_cursor_position_labels(void)
 		Coord r = Distance(Crosshair.X, Crosshair.Y, Marked.X, Marked.Y);
 		double a = atan2(dy, dx) * RAD_TO_DEG;
 
-		text = pcb_g_strdup_printf("%m+r %-mS; phi %-.1f; %-mS %-mS", Settings.grid_unit->allow, r, a, dx, dy);
+		text = pcb_strdup_printf("%m+r %-mS; phi %-.1f; %-mS %-mS", Settings.grid_unit->allow, r, a, dx, dy);
 		ghid_cursor_position_relative_label_set_text(text);
 		free(text);
 	}
@@ -396,7 +396,7 @@ void ghid_set_cursor_position_labels(void)
 		ghid_cursor_position_relative_label_set_text("r __.__; phi __._; __.__ __.__");
 
 
-	text = pcb_g_strdup_printf("%m+%-mS %-mS", Settings.grid_unit->allow, Crosshair.X, Crosshair.Y);
+	text = pcb_strdup_printf("%m+%-mS %-mS", Settings.grid_unit->allow, Crosshair.X, Crosshair.Y);
 	ghid_cursor_position_label_set_text(text);
 	free(text);
 }

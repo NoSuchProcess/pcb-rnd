@@ -332,7 +332,7 @@ void lesstif_logv(const char *fmt, va_list ap)
 		XmTextInsert(log_text, log_size++, "\n");
 		pending_newline = 0;
 	}
-	buf = pcb_vprintf(fmt, ap);
+	buf = pcb_strdup_vprintf(fmt, ap);
 	scan = &buf[strlen(buf) - 1];
 	while (scan >= buf && *scan == '\n') {
 		pending_newline++;

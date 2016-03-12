@@ -1748,7 +1748,7 @@ static GtkWidget *config_page_create(GtkTreeStore * tree, GtkTreeIter * iter, Gt
 
 void ghid_config_handle_units_changed(void)
 {
-	char *text = pcb_g_strdup_printf("<b>%s</b>",
+	char *text = pcb_strdup_printf("<b>%s</b>",
 																		Settings.grid_unit->in_suffix);
 	ghid_set_cursor_position_labels();
 	gtk_label_set_markup(GTK_LABEL(ghidgui->grid_units_label), text);

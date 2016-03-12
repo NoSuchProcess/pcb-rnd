@@ -2195,12 +2195,12 @@ static void mark_delta_to_widget(Coord dx, Coord dy, Widget w)
 		prec = Settings.grid_unit->default_prec;
 
 	if (dx == 0 && dy == 0)
-		buf = pcb_g_strdup_printf("%m+%+.*mS, %+.*mS", UUNIT, prec, dx, prec, dy);
+		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS", UUNIT, prec, dx, prec, dy);
 	else {
 		Angle angle = atan2(dy, -dx) * 180 / M_PI;
 		Coord dist = Distance(0, 0, dx, dy);
 
-		buf = pcb_g_strdup_printf("%m+%+.*mS, %+.*mS (%.*mS, %d\260)", UUNIT, prec, dx, prec, dy, prec, dist, angle);
+		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS (%.*mS, %d\260)", UUNIT, prec, dx, prec, dy, prec, dist, angle);
 	}
 
 	ms = XmStringCreatePCB(buf);
@@ -2232,7 +2232,7 @@ static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
 	if (x < 0)
 		buf = g_strdup("");
 	else
-		buf = pcb_g_strdup_printf("%m+%.*mS, %.*mS", UUNIT, prec, x, prec, y);
+		buf = pcb_strdup_printf("%m+%.*mS, %.*mS", UUNIT, prec, x, prec, y);
 
 	ms = XmStringCreatePCB(buf);
 	n = 0;
@@ -2252,15 +2252,15 @@ void lesstif_update_status_line()
 
 	switch (Settings.Mode) {
 	case VIA_MODE:
-		buf = pcb_g_strdup_printf("%m+%.2mS/%.2mS \370=%.2mS", UUNIT, S.ViaThickness, S.Keepaway, S.ViaDrillingHole);
+		buf = pcb_strdup_printf("%m+%.2mS/%.2mS \370=%.2mS", UUNIT, S.ViaThickness, S.Keepaway, S.ViaDrillingHole);
 		break;
 	case LINE_MODE:
 	case ARC_MODE:
-		buf = pcb_g_strdup_printf("%m+%.2mS/%.2mS %s", UUNIT, S.LineThickness, S.Keepaway, s45);
+		buf = pcb_strdup_printf("%m+%.2mS/%.2mS %s", UUNIT, S.LineThickness, S.Keepaway, s45);
 		break;
 	case RECTANGLE_MODE:
 	case POLYGON_MODE:
-		buf = pcb_g_strdup_printf("%m+%.2mS %s", UUNIT, S.Keepaway, s45);
+		buf = pcb_strdup_printf("%m+%.2mS %s", UUNIT, S.Keepaway, s45);
 		break;
 	case TEXT_MODE:
 		buf = g_strdup_printf("%d %%", S.TextScale);
@@ -2485,7 +2485,7 @@ static Boolean idle_proc(XtPointer dummy)
 		static double old_zoom = -1;
 		static const Unit *old_grid_unit = NULL;
 		if (view_zoom != old_zoom || Settings.grid_unit != old_grid_unit) {
-			char *buf = pcb_g_strdup_printf("%m+%$mS/pix",
+			char *buf = pcb_strdup_printf("%m+%$mS/pix",
 																			 Settings.grid_unit->allow, (Coord) view_zoom);
 			XmString ms;
 

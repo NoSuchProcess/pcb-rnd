@@ -843,7 +843,7 @@ char *make_route_string(RouteStyleType rs[], int n_styles)
 	gint i;
 
 	for (i = 0; i < n_styles; ++i) {
-		char *r_string = pcb_g_strdup_printf("%s,%mc,%mc,%mc,%mc", rs[i].Name,
+		char *r_string = pcb_strdup_printf("%s,%mc,%mc,%mc,%mc", rs[i].Name,
 																				 rs[i].Thick, rs[i].Diameter,
 																				 rs[i].Hole, rs[i].Keepaway);
 		if (i > 0)

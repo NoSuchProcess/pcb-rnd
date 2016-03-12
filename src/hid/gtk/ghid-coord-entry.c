@@ -91,7 +91,7 @@ static gboolean ghid_coord_entry_output_cb(GHidCoordEntry * ce, gpointer data)
 	double value = gtk_adjustment_get_value(adj);
 	char *text;
 
-	text = pcb_g_strdup_printf("%.*f %s", ce->unit->default_prec, value, ce->unit->suffix);
+	text = pcb_strdup_printf("%.*f %s", ce->unit->default_prec, value, ce->unit->suffix);
 	gtk_entry_set_text(GTK_ENTRY(ce), text);
 	free(text);
 

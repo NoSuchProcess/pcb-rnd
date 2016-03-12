@@ -527,7 +527,7 @@ static void ghid_violation_renderer_set_property(GObject * object, guint propert
 		return;
 
 	if (renderer->violation->have_measured) {
-		markup = pcb_g_strdup_printf("%m+<b>%s (%$mS)</b>\n"
+		markup = pcb_strdup_printf("%m+<b>%s (%$mS)</b>\n"
 																 "<span size='1024'> </span>\n"
 																 "<small>"
 																 "<i>%s</i>\n"
@@ -540,7 +540,7 @@ static void ghid_violation_renderer_set_property(GObject * object, guint propert
 																 renderer->violation->explanation, renderer->violation->required_value);
 	}
 	else {
-		markup = pcb_g_strdup_printf("%m+<b>%s</b>\n"
+		markup = pcb_strdup_printf("%m+<b>%s</b>\n"
 																 "<span size='1024'> </span>\n"
 																 "<small>"
 																 "<i>%s</i>\n"
