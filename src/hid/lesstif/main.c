@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 #include <time.h>
 #include <string.h>
 #include <math.h>
@@ -479,7 +480,9 @@ static int ZoomAction(int argc, char **argv, Coord x, Coord y)
 	}
 	if (*vp == '+' || *vp == '-' || *vp == '=')
 		vp++;
-	v = g_ascii_strtod(vp, 0);
+	setlocale(LC_ALL, "C");
+	v = strtod(vp, NULL);
+	setlocale(LC_ALL, "");
 	if (v <= 0)
 		return 1;
 	switch (argv[0][0]) {
@@ -2213,7 +2216,7 @@ static void mark_delta_to_widget(Coord dx, Coord dy, Widget w)
 static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
 {
 	int this_state = prev_state;
-	static char *buf;
+	char *buf, *empty = "";
 	double g = coord_to_unit(Settings.grid_unit, PCB->Grid);
 	XmString ms;
 	int prec;
@@ -2230,7 +2233,7 @@ static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
 	}
 
 	if (x < 0)
-		buf = g_strdup("");
+		buf = empty;
 	else
 		buf = pcb_strdup_printf("%m+%.*mS, %.*mS", UUNIT, prec, x, prec, y);
 
@@ -2238,7 +2241,8 @@ static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
 	n = 0;
 	stdarg(XmNlabelString, ms);
 	XtSetValues(w, args, n);
-	free(buf);
+	if (buf != empty)
+		free(buf);
 	return this_state;
 }
 
@@ -2246,7 +2250,8 @@ static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
 
 void lesstif_update_status_line()
 {
-	char *buf = NULL;
+	char *empty = "";
+	char *buf = empty;
 	char *s45 = cur_clip();
 	XmString xs;
 
@@ -2263,7 +2268,7 @@ void lesstif_update_status_line()
 		buf = pcb_strdup_printf("%m+%.2mS %s", UUNIT, S.Keepaway, s45);
 		break;
 	case TEXT_MODE:
-		buf = g_strdup_printf("%d %%", S.TextScale);
+		buf = pcb_strdup_printf("%d %%", S.TextScale);
 		break;
 	case MOVE_MODE:
 	case COPY_MODE:
@@ -2272,7 +2277,7 @@ void lesstif_update_status_line()
 		if (s45 != NULL)
 			buf = strdup(s45);
 		else
-			buf = strdup("");
+			buf = empty;
 		break;
 	case NO_MODE:
 	case PASTEBUFFER_MODE:
@@ -2282,7 +2287,7 @@ void lesstif_update_status_line()
 	case ARROW_MODE:
 	case LOCK_MODE:
 	default:
-		buf = strdup("");
+		buf = empty;
 		break;
 	}
 
@@ -2290,7 +2295,8 @@ void lesstif_update_status_line()
 	n = 0;
 	stdarg(XmNlabelString, xs);
 	XtSetValues(m_status, args, n);
-	free(buf);
+	if (buf != empty)
+		free(buf);
 }
 
 #undef S
@@ -2811,7 +2817,7 @@ static hidGC lesstif_make_gc(void)
 static void lesstif_destroy_gc(hidGC gc)
 {
 	if (gc->colorname != NULL)
-		g_free(gc->colorname);
+		free(gc->colorname);
 	free(gc);
 }
 
@@ -2871,8 +2877,8 @@ static void lesstif_set_color(hidGC gc, const char *name)
 
 	if (name != gc->colorname) {
 		if (gc->colorname != NULL)
-			g_free(gc->colorname);
-		gc->colorname = g_strdup(name);
+			free(gc->colorname);
+		gc->colorname = strdup(name);
 	}
 
 	if (strcmp(name, "erase") == 0) {

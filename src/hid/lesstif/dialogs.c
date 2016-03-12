@@ -1077,11 +1077,11 @@ void lesstif_sizes_reset()
 	sz_val2str(sz_drc_ring, PCB->minRing, 1);
 	sz_val2str(sz_text, Settings.TextScale, 0);
 
-	ls = g_strdup_printf(_("Units are %s."), Settings.grid_unit->in_suffix);
+	ls = pcb_strdup_printf(_("Units are %s."), Settings.grid_unit->in_suffix);
 	n = 0;
 	stdarg(XmNlabelString, XmStringCreatePCB(ls));
 	XtSetValues(sz_units, args, n);
-	g_free(ls);
+	free(ls);
 }
 
 static Widget size_field(Widget parent, char *label, int posn)
