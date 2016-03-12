@@ -310,7 +310,7 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 	double *value, value_local[32];
 	enum e_family family;
 	const char *suffix;
-	int i, n;
+	int i, n, retval = -1;
 	const char *printf_spec = printf_spec_->array;
 	char *printf_spec_new;
 
@@ -402,7 +402,8 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 	/* Actually sprintf the values in place
 	 *  (+ 2 skips the ", " for first value) */
 	if (n_coords > 1)
-		gds_append(dest,  '(');
+		if (gds_append(dest,  '(') != 0)
+			goto err;
 	if (suffix_type == FILE_MODE) {
 		setlocale(LC_ALL, "C"); /* ascii decimal */
 		sprintf(filemode_buff, printf_spec_new + 2, value[0]);
@@ -410,7 +411,7 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 	}
 	else
 		sprintf(filemode_buff, printf_spec_new + 2, value[0]);
-	gds_append_str(dest, filemode_buff);
+	if (gds_append_str(dest, filemode_buff) != 0) goto err;
 	for (i = 1; i < n_coords; ++i) {
 		if (suffix_type == FILE_MODE) {
 			setlocale(LC_ALL, "C");  /* ascii decimal */
@@ -419,53 +420,55 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 		}
 		else
 			sprintf(filemode_buff, printf_spec_new, value[i]);
-		gds_append_str(dest, filemode_buff);
+		if (gds_append_str(dest, filemode_buff) != 0)
+			goto err;
 	}
 	if (n_coords > 1)
-		gds_append(dest, ')');
+		if (gds_append(dest, ')') != 0) goto err;
 	/* Append suffix */
 	if (value[0] != 0 || n_coords > 1) {
 		switch (suffix_type) {
 		case NO_SUFFIX:
 			break;
 		case SUFFIX:
-			gds_append(dest, ' ');
-			gds_append_str(dest, suffix);
-			break;
+			if (gds_append(dest, ' ') != 0) goto err;
+			/* deliberate fall-thru */
 		case FILE_MODE:
-			gds_append_str(dest, suffix);
+			if (gds_append_str(dest, suffix) != 0) goto err;
 			break;
 		}
 	}
 
+	retval = 0;
+err:;
 	if (printf_spec_new != printf_spec_new_local)
 		free(printf_spec_new);
 
 	if (value != value_local)
 		free(value);
-	return 0;
+	return retval;
 }
 
-/* \brief Main pcb-printf function
+/* \brief Main low level pcb-printf function
  * \par Function Description
  * This is a printf wrapper that accepts new format specifiers to
  * output pcb coords as various units. See the comment at the top
  * of pcb-printf.h for full details.
  *
+ * \param [in] string Append anything new at the end of this dynamic string (must be initialized before the call)
  * \param [in] fmt    Format specifier
  * \param [in] args   Arguments to specifier
  *
- * \return A formatted string. Must be freed with free.
+ * \return 0 on success
  */
-char *pcb_vprintf(const char *fmt, va_list args)
+static int pcb_vprintf(gds_t *string, const char *fmt, va_list args)
 {
-	gds_t string, spec;
+	gds_t spec;
 	char tmp[128]; /* large enough for rendering a long long int */
-	int tmplen;
+	int tmplen, retval = -1;
 
 	enum e_allow mask = ALLOW_ALL;
 
-	gds_init(&string);
 	gds_init(&spec);
 
 	while (*fmt) {
@@ -479,18 +482,18 @@ char *pcb_vprintf(const char *fmt, va_list args)
 			gds_truncate(&spec, 0);
 
 			/* Get printf sub-specifiers */
-			gds_append(&spec, *fmt++);
+			if (gds_append(&spec, *fmt++) != 0) goto err;
 			while (isdigit(*fmt) || *fmt == '.' || *fmt == ' ' || *fmt == '*'
 						 || *fmt == '#' || *fmt == 'l' || *fmt == 'L' || *fmt == 'h' || *fmt == '+' || *fmt == '-') {
 				if (*fmt == '*') {
 					char itmp[32];
 					int ilen;
 					ilen = sprintf(itmp, "%d", va_arg(args, int));
-					gds_append_len(&spec, itmp, ilen);
+					if (gds_append_len(&spec, itmp, ilen) != 0) goto err;
 					fmt++;
 				}
 				else
-					gds_append(&spec, *fmt++);
+					if (gds_append(&spec, *fmt++) != 0) goto err;
 			}
 			/* Get our sub-specifiers */
 			if (*fmt == '#') {
@@ -503,7 +506,7 @@ char *pcb_vprintf(const char *fmt, va_list args)
 			}
 			/* Tack full specifier onto specifier */
 			if (*fmt != 'm')
-				gds_append(&spec, *fmt);
+				if (gds_append(&spec, *fmt) != 0) goto err;
 			switch (*fmt) {
 				/* Printf specs */
 			case 'o':
@@ -521,7 +524,7 @@ char *pcb_vprintf(const char *fmt, va_list args)
 				else {
 					tmplen = sprintf(tmp, spec.array, va_arg(args, int));
 				}
-				gds_append_len(&string, tmp, tmplen);
+				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case 'e':
 			case 'E':
@@ -534,34 +537,34 @@ char *pcb_vprintf(const char *fmt, va_list args)
 				}
 				else
 					tmplen = sprintf(tmp, spec.array, va_arg(args, double));
-				gds_append_len(&string, tmp, tmplen);
+				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case 'c':
 				if (spec.array[1] == 'l' && sizeof(int) <= sizeof(wchar_t))
 					tmplen = sprintf(tmp, spec.array, va_arg(args, wchar_t));
 				else
 					tmplen = sprintf(tmp, spec.array, va_arg(args, int));
-				gds_append_len(&string, tmp, tmplen);
+				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case 's':
 				if (spec.array[0] == 'l')
 					tmplen = sprintf(tmp, spec.array, va_arg(args, wchar_t *));
 				else
 					tmplen = sprintf(tmp, spec.array, va_arg(args, char *));
-				gds_append_len(&string, tmp, tmplen);
+				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case 'n':
 				/* Depending on gcc settings, this will probably break with
 				 *  some silly "can't put %n in writeable data space" message */
 				tmplen = sprintf(tmp, spec.array, va_arg(args, int *));
-				gds_append_len(&string, tmp, tmplen);
+				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case 'p':
 				tmplen = sprintf(tmp, spec.array, va_arg(args, void *));
-				gds_append_len(&string, tmp, tmplen);
+				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case '%':
-				gds_append(&string, '%');
+				if (gds_append(string, '%') != 0) goto err;
 				break;
 				/* Our specs */
 			case 'm':
@@ -573,27 +576,27 @@ char *pcb_vprintf(const char *fmt, va_list args)
 				count = 1;
 				switch (*fmt) {
 				case 'I':
-					CoordsToString(&string, value, 1, &spec, ALLOW_NM, NO_SUFFIX);
+					if (CoordsToString(string, value, 1, &spec, ALLOW_NM, NO_SUFFIX) != 0) goto err;
 					break;
 				case 's':
-					CoordsToString(&string, value, 1, &spec, ALLOW_MM | ALLOW_MIL, suffix);
+					if (CoordsToString(string, value, 1, &spec, ALLOW_MM | ALLOW_MIL, suffix) != 0) goto err;
 					break;
 				case 'S':
-					CoordsToString(&string, value, 1, &spec, mask & ALLOW_ALL, suffix);
+					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_ALL, suffix) != 0) goto err;
 					break;
 				case 'M':
-					CoordsToString(&string, value, 1, &spec, mask & ALLOW_METRIC, suffix);
+					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_METRIC, suffix) != 0) goto err;
 					break;
 				case 'L':
-					CoordsToString(&string, value, 1, &spec, mask & ALLOW_IMPERIAL, suffix);
+					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_IMPERIAL, suffix) != 0) goto err;
 					break;
 #if 0
 				case 'r':
-					CoordsToString(&string, value, 1, &spec, ALLOW_READABLE, FILE_MODE);
+					if (CoordsToString(string, value, 1, &spec, ALLOW_READABLE, FILE_MODE) != 0) goto err;
 					break;
 #else
 				case 'r':
-					CoordsToString(&string, value, 1, &spec, ALLOW_READABLE, NO_SUFFIX);
+					if (CoordsToString(string, value, 1, &spec, ALLOW_READABLE, NO_SUFFIX) != 0) goto err;
 					break;
 #endif
 					/* All these fallthroughs are deliberate */
@@ -614,32 +617,32 @@ char *pcb_vprintf(const char *fmt, va_list args)
 				case '2':
 				case 'D':
 					value[count++] = va_arg(args, Coord);
-					CoordsToString(&string, value, count, &spec, mask & ALLOW_ALL, suffix);
+					if (CoordsToString(string, value, count, &spec, mask & ALLOW_ALL, suffix) != 0) goto err;
 					break;
 				case 'd':
 					value[1] = va_arg(args, Coord);
-					CoordsToString(&string, value, 2, &spec, ALLOW_MM | ALLOW_MIL, suffix);
+					if (CoordsToString(string, value, 2, &spec, ALLOW_MM | ALLOW_MIL, suffix) != 0) goto err;
 					break;
 				case '*':
 					{
 						int found = 0;
 						for (i = 0; i < N_UNITS; ++i) {
 							if (strcmp(ext_unit, Units[i].suffix) == 0) {
-								CoordsToString(&string, value, 1, &spec, Units[i].allow, suffix);
+								if (CoordsToString(string, value, 1, &spec, Units[i].allow, suffix) != 0) goto err;
 								found = 1;
 								break;
 							}
 						}
 						if (!found)
-							CoordsToString(&string, value, 1, &spec, mask & ALLOW_ALL, suffix);
+							if (CoordsToString(string, value, 1, &spec, mask & ALLOW_ALL, suffix) != 0) goto err;
 					}
 					break;
 				case 'a':
-					gds_append_len(&spec, ".0f", 3);
+					if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
 					if (suffix == SUFFIX)
-						gds_append_len(&spec, " deg", 4);
+						if (gds_append_len(&spec, " deg", 4) != 0) goto err;
 					tmplen = sprintf(tmp, spec.array, (double) va_arg(args, Angle));
-					gds_append_len(&string, tmp, tmplen);
+					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
 				case '+':
 					mask = va_arg(args, enum e_allow);
@@ -649,13 +652,13 @@ char *pcb_vprintf(const char *fmt, va_list args)
 						int found = 0;
 						for (i = 0; i < N_UNITS; ++i) {
 							if (*fmt == Units[i].printf_code) {
-								CoordsToString(&string, value, 1, &spec, Units[i].allow, suffix);
+								if (CoordsToString(string, value, 1, &spec, Units[i].allow, suffix) != 0) goto err;
 								found = 1;
 								break;
 							}
 						}
 						if (!found)
-							CoordsToString(&string, value, 1, &spec, ALLOW_ALL, suffix);
+							if (CoordsToString(string, value, 1, &spec, ALLOW_ALL, suffix) != 0) goto err;
 					}
 					break;
 				}
@@ -663,15 +666,16 @@ char *pcb_vprintf(const char *fmt, va_list args)
 			}
 		}
 		else
-			gds_append(&string, *fmt);
+			if (gds_append(string, *fmt) != 0) goto err;
 		++fmt;
 	}
+
+	retval = 0;
+err:;
 	gds_uninit(&spec);
 
-	/* Return just the char* part of our string */
-	return string.array;
+	return retval;
 }
-
 
 /* \brief Wrapper for pcb_vprintf that outputs to a string
  *
@@ -682,17 +686,22 @@ char *pcb_vprintf(const char *fmt, va_list args)
  */
 int pcb_sprintf(char *string, const char *fmt, ...)
 {
-	char *tmp;
+	gds_t str;
+	gds_init(&str);
 
 	va_list args;
 	va_start(args, fmt);
 
-	tmp = pcb_vprintf(fmt, args);
-	strcpy(string, tmp);
-	free(tmp);
+	/* pretend the string is already allocated to something huge; this doesn't
+	   make the code less safe but saves a copy */
+	str.array = string;
+	str.alloced = 1<<31;
+	str.no_realloc = 1;
+
+	pcb_vprintf(&str, fmt, args);
 
 	va_end(args);
-	return strlen(string);
+	return str.used;
 }
 
 /* \brief Wrapper for pcb_vprintf that outputs to a string with a size limit
@@ -705,21 +714,20 @@ int pcb_sprintf(char *string, const char *fmt, ...)
  */
 int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
 {
-	char *tmp;
-	int slen;
+	gds_t str;
+	gds_init(&str);
 
 	va_list args;
 	va_start(args, fmt);
 
-	tmp = pcb_vprintf(fmt, args);
-	slen = strlen(string);
-	strncpy(string, tmp, len);
-	if (len < slen)
-		string[len] = '\0';
-	free(tmp);
+	str.array = string;
+	str.alloced = len;
+	str.no_realloc = 1;
+
+	pcb_vprintf(&str, fmt, args);
 
 	va_end(args);
-	return slen;
+	return str.used;
 }
 
 /* \brief Wrapper for pcb_vprintf that outputs to a file
@@ -732,7 +740,8 @@ int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
 int pcb_fprintf(FILE * fh, const char *fmt, ...)
 {
 	int rv;
-	char *tmp;
+	gds_t str;
+	gds_init(&str);
 
 	va_list args;
 	va_start(args, fmt);
@@ -740,12 +749,12 @@ int pcb_fprintf(FILE * fh, const char *fmt, ...)
 	if (fh == NULL)
 		rv = -1;
 	else {
-		tmp = pcb_vprintf(fmt, args);
-		rv = fprintf(fh, "%s", tmp);
-		free(tmp);
+		pcb_vprintf(&str, fmt, args);
+		rv = fprintf(fh, "%s", str.array);
 	}
-
 	va_end(args);
+
+	gds_uninit(&str);
 	return rv;
 }
 
@@ -759,15 +768,17 @@ int pcb_printf(const char *fmt, ...)
 {
 	int rv;
 	char *tmp;
+	gds_t str;
+	gds_init(&str);
 
 	va_list args;
 	va_start(args, fmt);
 
-	tmp = pcb_vprintf(fmt, args);
-	rv = printf("%s", tmp);
-	free(tmp);
+	pcb_vprintf(&str, fmt, args);
+	rv = printf("%s", str.array);
 
 	va_end(args);
+	gds_uninit(&str);
 	return rv;
 }
 
@@ -777,13 +788,34 @@ int pcb_printf(const char *fmt, ...)
  *
  * \return The newly allocated string. Must be freed with free.
  */
-char *pcb_g_strdup_printf(const char *fmt, ...)
+char *pcb_strdup_printf(const char *fmt, ...)
 {
-	char *tmp;
-
+	gds_t str;
 	va_list args;
+
+	gds_init(&str);
+
 	va_start(args, fmt);
-	tmp = pcb_vprintf(fmt, args);
+	pcb_vprintf(&str, fmt, args);
 	va_end(args);
-	return tmp;
+
+	return str.array; /* no other allocation has been made */
 }
+
+/* \brief Wrapper for pcb_vprintf that outputs to a string
+ *
+ * \param [in] string  Pointer to string to output into
+ * \param [in] fmt     Format specifier
+ *
+ * \return return the new string; must be free()'d later
+ */
+char *pcb_strdup_vprintf(const char *fmt, va_list args)
+{
+	gds_t str;
+	gds_init(&str);
+
+	pcb_vprintf(&str, fmt, args);
+
+	return str.array; /* no other allocation has been made */
+}
+
