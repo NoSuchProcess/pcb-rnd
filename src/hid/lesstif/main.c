@@ -2207,7 +2207,7 @@ static void mark_delta_to_widget(Coord dx, Coord dy, Widget w)
 	n = 0;
 	stdarg(XmNlabelString, ms);
 	XtSetValues(w, args, n);
-	g_free(buf);
+	free(buf);
 }
 
 static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
@@ -2238,7 +2238,7 @@ static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
 	n = 0;
 	stdarg(XmNlabelString, ms);
 	XtSetValues(w, args, n);
-	g_free(buf);
+	free(buf);
 	return this_state;
 }
 
@@ -2269,7 +2269,10 @@ void lesstif_update_status_line()
 	case COPY_MODE:
 	case INSERTPOINT_MODE:
 	case RUBBERBANDMOVE_MODE:
-		buf = g_strdup_printf("%s", s45);
+		if (s45 != NULL)
+			buf = strdup(s45);
+		else
+			buf = strdup("");
 		break;
 	case NO_MODE:
 	case PASTEBUFFER_MODE:
@@ -2279,7 +2282,7 @@ void lesstif_update_status_line()
 	case ARROW_MODE:
 	case LOCK_MODE:
 	default:
-		buf = g_strdup("");
+		buf = strdup("");
 		break;
 	}
 
@@ -2287,7 +2290,7 @@ void lesstif_update_status_line()
 	n = 0;
 	stdarg(XmNlabelString, xs);
 	XtSetValues(m_status, args, n);
-	g_free(buf);
+	free(buf);
 }
 
 #undef S
@@ -2482,7 +2485,7 @@ static Boolean idle_proc(XtPointer dummy)
 		static double old_zoom = -1;
 		static const Unit *old_grid_unit = NULL;
 		if (view_zoom != old_zoom || Settings.grid_unit != old_grid_unit) {
-			gchar *buf = pcb_g_strdup_printf("%m+%$mS/pix",
+			char *buf = pcb_g_strdup_printf("%m+%$mS/pix",
 																			 Settings.grid_unit->allow, (Coord) view_zoom);
 			XmString ms;
 
@@ -2493,7 +2496,7 @@ static Boolean idle_proc(XtPointer dummy)
 			n = 0;
 			stdarg(XmNlabelString, ms);
 			XtSetValues(m_zoom, args, n);
-			g_free(buf);
+			free(buf);
 		}
 	}
 

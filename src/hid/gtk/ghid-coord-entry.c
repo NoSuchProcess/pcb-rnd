@@ -89,11 +89,11 @@ static gboolean ghid_coord_entry_output_cb(GHidCoordEntry * ce, gpointer data)
 {
 	GtkAdjustment *adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(ce));
 	double value = gtk_adjustment_get_value(adj);
-	gchar *text;
+	char *text;
 
 	text = pcb_g_strdup_printf("%.*f %s", ce->unit->default_prec, value, ce->unit->suffix);
 	gtk_entry_set_text(GTK_ENTRY(ce), text);
-	g_free(text);
+	free(text);
 
 	return TRUE;
 }

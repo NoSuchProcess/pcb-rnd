@@ -199,13 +199,13 @@ static void reset_drc_dialog_message(void)
 
 static void append_drc_dialog_message(const char *fmt, ...)
 {
-	gchar *new_str;
+	char *new_str;
 	va_list ap;
 	va_start(ap, fmt);
 	new_str = pcb_vprintf(fmt, ap);
 	g_string_append(drc_dialog_message, new_str);
 	va_end(ap);
-	g_free(new_str);
+	free(new_str);
 }
 
 static void GotoError(void);

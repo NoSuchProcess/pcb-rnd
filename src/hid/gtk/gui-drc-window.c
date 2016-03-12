@@ -553,7 +553,7 @@ static void ghid_violation_renderer_set_property(GObject * object, guint propert
 	}
 
 	g_object_set(object, "markup", markup, NULL);
-	g_free(markup);
+	free(markup);
 }
 
 

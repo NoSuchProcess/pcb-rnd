@@ -284,7 +284,7 @@ static void log_dismiss(Widget w, void *up, void *cbp)
 
 void lesstif_logv(const char *fmt, va_list ap)
 {
-	gchar *buf, *scan;
+	char *buf, *scan;
 	if (!mainwind) {
 		vprintf(fmt, ap);
 		return;
@@ -347,7 +347,7 @@ void lesstif_logv(const char *fmt, va_list ap)
 	else
 		scan = buf;
 	XmTextSetCursorPosition(log_text, log_size - strlen(scan));
-	g_free(buf);
+	free(buf);
 }
 
 void lesstif_log(const char *fmt, ...)

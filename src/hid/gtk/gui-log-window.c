@@ -123,9 +123,9 @@ void ghid_log(const char *fmt, ...)
 
 void ghid_logv(const char *fmt, va_list args)
 {
-	gchar *msg = pcb_vprintf(fmt, args);
+	char *msg = pcb_vprintf(fmt, args);
 	ghid_log_append_string(msg);
-	g_free(msg);
+	free(msg);
 }
 
 static const char logshowonappend_syntax[] = "LogShowOnAppend(true|false)";
