@@ -32,8 +32,9 @@
  */
 
 #include "config.h"
-
 #include "global.h"
+
+#include <genvector/gds_char.h>
 
 #include "pcb-printf.h"
 
@@ -299,27 +300,24 @@ static int min_sig_figs(double d)
  *
  * \return A string containing the formatted coords. Must be freed with g_free.
  */
-static gchar *CoordsToString(Coord coord[], int n_coords, const char *printf_spec, enum e_allow allow,
+static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const char *printf_spec, enum e_allow allow,
 														 enum e_suffix suffix_type)
 {
-	GString *buff;
-	gchar *printf_buff;
-	gchar filemode_buff[G_ASCII_DTOSTR_BUF_SIZE];
+	char *printf_buff;
+	char filemode_buff[G_ASCII_DTOSTR_BUF_SIZE];
 	enum e_family family;
 	double *value, value_local[32];
 	const char *suffix;
 	int i, n;
 
-	if (n_coords > (sizeof(value_local) / sizeof(value_local[0])))
+	if (n_coords > (sizeof(value_local) / sizeof(value_local[0]))) {
 		value = malloc(n_coords * sizeof *value);
+		if (value == NULL)
+			return -1;
+	}
 	else
 		value = value_local;
 
-	buff = g_string_new("");
-
-	/* Sanity checks */
-	if (buff == NULL || value == NULL)
-		return NULL;
 	if (allow == 0)
 		allow = ALLOW_ALL;
 	if (printf_spec == NULL)
@@ -395,42 +393,41 @@ static gchar *CoordsToString(Coord coord[], int n_coords, const char *printf_spe
 	/* Actually sprintf the values in place
 	 *  (+ 2 skips the ", " for first value) */
 	if (n_coords > 1)
-		g_string_append_c(buff, '(');
-	if (suffix_type == FILE_MODE) {
+		gds_append(dest,  '(');
+	if (suffix_type == FILE_MODE)
 		g_ascii_formatd(filemode_buff, sizeof filemode_buff, printf_buff + 2, value[0]);
-		g_string_append_printf(buff, "%s", filemode_buff);
-	}
 	else
-		g_string_append_printf(buff, printf_buff + 2, value[0]);
+		sprintf(filemode_buff, printf_buff + 2, value[0]);
+	gds_append_str(dest, filemode_buff);
 	for (i = 1; i < n_coords; ++i) {
-		if (suffix_type == FILE_MODE) {
+		if (suffix_type == FILE_MODE)
 			g_ascii_formatd(filemode_buff, sizeof filemode_buff, printf_buff, value[i]);
-			g_string_append_printf(buff, "%s", filemode_buff);
-		}
 		else
-			g_string_append_printf(buff, printf_buff, value[i]);
+			sprintf(filemode_buff, printf_buff, value[i]);
+		gds_append_str(dest, filemode_buff);
 	}
 	if (n_coords > 1)
-		g_string_append_c(buff, ')');
+		gds_append(dest, ')');
 	/* Append suffix */
 	if (value[0] != 0 || n_coords > 1) {
 		switch (suffix_type) {
 		case NO_SUFFIX:
 			break;
 		case SUFFIX:
-			g_string_append_printf(buff, " %s", suffix);
+			gds_append(dest, ' ');
+			gds_append_str(dest, suffix);
 			break;
 		case FILE_MODE:
-			g_string_append_printf(buff, "%s", suffix);
+			gds_append_str(dest, suffix);
 			break;
 		}
 	}
 
 	g_free(printf_buff);
+
 	if (value != value_local)
 		free(value);
-	/* Return just the gchar* part of our string */
-	return g_string_free(buff, FALSE);
+	return 0;
 }
 
 /* \brief Main pcb-printf function
@@ -444,37 +441,38 @@ static gchar *CoordsToString(Coord coord[], int n_coords, const char *printf_spe
  *
  * \return A formatted string. Must be freed with g_free.
  */
-gchar *pcb_vprintf(const char *fmt, va_list args)
+char *pcb_vprintf(const char *fmt, va_list args)
 {
-	GString *string = g_string_new("");
-	GString *spec = g_string_new("");
+	gds_t string, spec;
 
 	enum e_allow mask = ALLOW_ALL;
 
-	if (string == NULL || spec == NULL)
-		return NULL;
+	gds_init(&string);
+	gds_init(&spec);
 
 	while (*fmt) {
 		enum e_suffix suffix = NO_SUFFIX;
 
 		if (*fmt == '%') {
-			gchar *unit_str = NULL;
 			const char *ext_unit = "";
 			Coord value[10];
 			int count, i;
 
-			g_string_assign(spec, "");
+			gds_truncate(&spec, 0);
 
 			/* Get printf sub-specifiers */
-			g_string_append_c(spec, *fmt++);
+			gds_append(&spec, *fmt++);
 			while (isdigit(*fmt) || *fmt == '.' || *fmt == ' ' || *fmt == '*'
 						 || *fmt == '#' || *fmt == 'l' || *fmt == 'L' || *fmt == 'h' || *fmt == '+' || *fmt == '-') {
 				if (*fmt == '*') {
-					g_string_append_printf(spec, "%d", va_arg(args, int));
+					char itmp[32];
+					int ilen;
+					ilen = sprintf(itmp, "%d", va_arg(args, int));
+					gds_append_len(&spec, itmp, ilen);
 					fmt++;
 				}
 				else
-					g_string_append_c(spec, *fmt++);
+					gds_append(&spec, *fmt++);
 			}
 			/* Get our sub-specifiers */
 			if (*fmt == '#') {
@@ -487,7 +485,7 @@ gchar *pcb_vprintf(const char *fmt, va_list args)
 			}
 			/* Tack full specifier onto specifier */
 			if (*fmt != 'm')
-				g_string_append_c(spec, *fmt);
+				gds_append(&spec, *fmt);
 			switch (*fmt) {
 				/* Printf specs */
 			case 'o':
@@ -496,14 +494,18 @@ gchar *pcb_vprintf(const char *fmt, va_list args)
 			case 'u':
 			case 'x':
 			case 'X':
-				if (spec->str[1] == 'l') {
-					if (spec->str[2] == 'l')
-						unit_str = g_strdup_printf(spec->str, va_arg(args, long long));
-					else
-						unit_str = g_strdup_printf(spec->str, va_arg(args, long));
-				}
-				else {
-					unit_str = g_strdup_printf(spec->str, va_arg(args, int));
+				{
+					char *unit_str;
+					if (spec.array[1] == 'l') {
+						if (spec.array[2] == 'l')
+							unit_str = g_strdup_printf(spec.array, va_arg(args, long long));
+						else
+							unit_str = g_strdup_printf(spec.array, va_arg(args, long));
+					}
+					else {
+						unit_str = g_strdup_printf(spec.array, va_arg(args, int));
+					}
+					gds_append_str(&string, unit_str);
 				}
 				break;
 			case 'e':
@@ -511,35 +513,55 @@ gchar *pcb_vprintf(const char *fmt, va_list args)
 			case 'f':
 			case 'g':
 			case 'G':
-				if (strchr(spec->str, '*')) {
-					int prec = va_arg(args, int);
-					unit_str = g_strdup_printf(spec->str, va_arg(args, double), prec);
+				{
+					char *unit_str;
+					if (strchr(spec.array, '*')) {
+						int prec = va_arg(args, int);
+						unit_str = g_strdup_printf(spec.array, va_arg(args, double), prec);
+					}
+					else
+						unit_str = g_strdup_printf(spec.array, va_arg(args, double));
+					gds_append_str(&string, unit_str);
 				}
-				else
-					unit_str = g_strdup_printf(spec->str, va_arg(args, double));
 				break;
 			case 'c':
-				if (spec->str[1] == 'l' && sizeof(int) <= sizeof(wchar_t))
-					unit_str = g_strdup_printf(spec->str, va_arg(args, wchar_t));
-				else
-					unit_str = g_strdup_printf(spec->str, va_arg(args, int));
+				{
+					char *unit_str;
+					if (spec.array[1] == 'l' && sizeof(int) <= sizeof(wchar_t))
+						unit_str = g_strdup_printf(spec.array, va_arg(args, wchar_t));
+					else
+						unit_str = g_strdup_printf(spec.array, va_arg(args, int));
+					gds_append_str(&string, unit_str);
+				}
 				break;
 			case 's':
-				if (spec->str[0] == 'l')
-					unit_str = g_strdup_printf(spec->str, va_arg(args, wchar_t *));
-				else
-					unit_str = g_strdup_printf(spec->str, va_arg(args, char *));
+				{
+					char *unit_str;
+					if (spec.array[0] == 'l')
+						unit_str = g_strdup_printf(spec.array, va_arg(args, wchar_t *));
+					else
+						unit_str = g_strdup_printf(spec.array, va_arg(args, char *));
+					gds_append_str(&string, unit_str);
+				}
 				break;
 			case 'n':
-				/* Depending on gcc settings, this will probably break with
-				 *  some silly "can't put %n in writeable data space" message */
-				unit_str = g_strdup_printf(spec->str, va_arg(args, int *));
+				{
+					char *unit_str;
+					/* Depending on gcc settings, this will probably break with
+					 *  some silly "can't put %n in writeable data space" message */
+					unit_str = g_strdup_printf(spec.array, va_arg(args, int *));
+					gds_append_str(&string, unit_str);
+				}
 				break;
 			case 'p':
-				unit_str = g_strdup_printf(spec->str, va_arg(args, void *));
+				{
+					char *unit_str;
+					unit_str = g_strdup_printf(spec.array, va_arg(args, void *));
+					gds_append_str(&string, unit_str);
+				}
 				break;
 			case '%':
-				g_string_append_c(string, '%');
+				gds_append(&string, '%');
 				break;
 				/* Our specs */
 			case 'm':
@@ -551,27 +573,27 @@ gchar *pcb_vprintf(const char *fmt, va_list args)
 				count = 1;
 				switch (*fmt) {
 				case 'I':
-					unit_str = CoordsToString(value, 1, spec->str, ALLOW_NM, NO_SUFFIX);
+					CoordsToString(&string, value, 1, spec.array, ALLOW_NM, NO_SUFFIX);
 					break;
 				case 's':
-					unit_str = CoordsToString(value, 1, spec->str, ALLOW_MM | ALLOW_MIL, suffix);
+					CoordsToString(&string, value, 1, spec.array, ALLOW_MM | ALLOW_MIL, suffix);
 					break;
 				case 'S':
-					unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_ALL, suffix);
+					CoordsToString(&string, value, 1, spec.array, mask & ALLOW_ALL, suffix);
 					break;
 				case 'M':
-					unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_METRIC, suffix);
+					CoordsToString(&string, value, 1, spec.array, mask & ALLOW_METRIC, suffix);
 					break;
 				case 'L':
-					unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_IMPERIAL, suffix);
+					CoordsToString(&string, value, 1, spec.array, mask & ALLOW_IMPERIAL, suffix);
 					break;
 #if 0
 				case 'r':
-					unit_str = CoordsToString(value, 1, spec->str, ALLOW_READABLE, FILE_MODE);
+					CoordsToString(&string, value, 1, spec.array, ALLOW_READABLE, FILE_MODE);
 					break;
 #else
 				case 'r':
-					unit_str = CoordsToString(value, 1, spec->str, ALLOW_READABLE, NO_SUFFIX);
+					CoordsToString(&string, value, 1, spec.array, ALLOW_READABLE, NO_SUFFIX);
 					break;
 #endif
 					/* All these fallthroughs are deliberate */
@@ -592,50 +614,65 @@ gchar *pcb_vprintf(const char *fmt, va_list args)
 				case '2':
 				case 'D':
 					value[count++] = va_arg(args, Coord);
-					unit_str = CoordsToString(value, count, spec->str, mask & ALLOW_ALL, suffix);
+					CoordsToString(&string, value, count, spec.array, mask & ALLOW_ALL, suffix);
 					break;
 				case 'd':
 					value[1] = va_arg(args, Coord);
-					unit_str = CoordsToString(value, 2, spec->str, ALLOW_MM | ALLOW_MIL, suffix);
+					CoordsToString(&string, value, 2, spec.array, ALLOW_MM | ALLOW_MIL, suffix);
 					break;
 				case '*':
-					for (i = 0; i < N_UNITS; ++i)
-						if (strcmp(ext_unit, Units[i].suffix) == 0)
-							unit_str = CoordsToString(value, 1, spec->str, Units[i].allow, suffix);
-					if (unit_str == NULL)
-						unit_str = CoordsToString(value, 1, spec->str, mask & ALLOW_ALL, suffix);
+					{
+						int found = 0;
+						for (i = 0; i < N_UNITS; ++i) {
+							if (strcmp(ext_unit, Units[i].suffix) == 0) {
+								CoordsToString(&string, value, 1, spec.array, Units[i].allow, suffix);
+								found = 1;
+								break;
+							}
+						}
+						if (!found)
+							CoordsToString(&string, value, 1, spec.array, mask & ALLOW_ALL, suffix);
+					}
 					break;
 				case 'a':
-					g_string_append(spec, ".0f");
+					gds_append_len(&spec, ".0f", 3);
 					if (suffix == SUFFIX)
-						g_string_append(spec, " deg");
-					unit_str = g_strdup_printf(spec->str, (double) va_arg(args, Angle));
+						gds_append_len(&spec, " deg", 4);
+					{
+						char *unit_str;
+						unit_str = g_strdup_printf(spec.array, (double) va_arg(args, Angle));
+						gds_append_str(&string, unit_str);
+					}
 					break;
 				case '+':
 					mask = va_arg(args, enum e_allow);
 					break;
 				default:
-					for (i = 0; i < N_UNITS; ++i)
-						if (*fmt == Units[i].printf_code)
-							unit_str = CoordsToString(value, 1, spec->str, Units[i].allow, suffix);
-					if (unit_str == NULL)
-						unit_str = CoordsToString(value, 1, spec->str, ALLOW_ALL, suffix);
+					{
+						int found = 0;
+						for (i = 0; i < N_UNITS; ++i) {
+							if (*fmt == Units[i].printf_code) {
+								CoordsToString(&string, value, 1, spec.array, Units[i].allow, suffix);
+								found = 1;
+								break;
+							}
+						}
+						if (!found)
+							CoordsToString(&string, value, 1, spec.array, ALLOW_ALL, suffix);
+					}
 					break;
 				}
 				break;
 			}
-			if (unit_str != NULL) {
-				g_string_append(string, unit_str);
-				g_free(unit_str);
-			}
 		}
 		else
-			g_string_append_c(string, *fmt);
+			gds_append(&string, *fmt);
 		++fmt;
 	}
-	g_string_free(spec, TRUE);
-	/* Return just the gchar* part of our string */
-	return g_string_free(string, FALSE);
+	gds_uninit(&spec);
+
+	/* Return just the char* part of our string */
+	return string.array;
 }
 
 
@@ -648,14 +685,14 @@ gchar *pcb_vprintf(const char *fmt, va_list args)
  */
 int pcb_sprintf(char *string, const char *fmt, ...)
 {
-	gchar *tmp;
+	char *tmp;
 
 	va_list args;
 	va_start(args, fmt);
 
 	tmp = pcb_vprintf(fmt, args);
 	strcpy(string, tmp);
-	g_free(tmp);
+	free(tmp);
 
 	va_end(args);
 	return strlen(string);
@@ -671,7 +708,7 @@ int pcb_sprintf(char *string, const char *fmt, ...)
 int pcb_fprintf(FILE * fh, const char *fmt, ...)
 {
 	int rv;
-	gchar *tmp;
+	char *tmp;
 
 	va_list args;
 	va_start(args, fmt);
@@ -681,7 +718,7 @@ int pcb_fprintf(FILE * fh, const char *fmt, ...)
 	else {
 		tmp = pcb_vprintf(fmt, args);
 		rv = fprintf(fh, "%s", tmp);
-		g_free(tmp);
+		free(tmp);
 	}
 
 	va_end(args);
@@ -697,14 +734,14 @@ int pcb_fprintf(FILE * fh, const char *fmt, ...)
 int pcb_printf(const char *fmt, ...)
 {
 	int rv;
-	gchar *tmp;
+	char *tmp;
 
 	va_list args;
 	va_start(args, fmt);
 
 	tmp = pcb_vprintf(fmt, args);
 	rv = printf("%s", tmp);
-	g_free(tmp);
+	free(tmp);
 
 	va_end(args);
 	return rv;
@@ -718,7 +755,7 @@ int pcb_printf(const char *fmt, ...)
  */
 char *pcb_g_strdup_printf(const char *fmt, ...)
 {
-	gchar *tmp;
+	char *tmp;
 
 	va_list args;
 	va_start(args, fmt);
