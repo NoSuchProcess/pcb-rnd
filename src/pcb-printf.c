@@ -444,6 +444,8 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const char *
 char *pcb_vprintf(const char *fmt, va_list args)
 {
 	gds_t string, spec;
+	char tmp[128]; /* large enough for rendering a long long int */
+	int tmplen;
 
 	enum e_allow mask = ALLOW_ALL;
 
@@ -494,71 +496,53 @@ char *pcb_vprintf(const char *fmt, va_list args)
 			case 'u':
 			case 'x':
 			case 'X':
-				{
-					char *unit_str;
-					if (spec.array[1] == 'l') {
-						if (spec.array[2] == 'l')
-							unit_str = g_strdup_printf(spec.array, va_arg(args, long long));
-						else
-							unit_str = g_strdup_printf(spec.array, va_arg(args, long));
-					}
-					else {
-						unit_str = g_strdup_printf(spec.array, va_arg(args, int));
-					}
-					gds_append_str(&string, unit_str);
+				if (spec.array[1] == 'l') {
+					if (spec.array[2] == 'l')
+						tmplen = sprintf(tmp, spec.array, va_arg(args, long long));
+					else
+						tmplen = sprintf(tmp, spec.array, va_arg(args, long));
 				}
+				else {
+					tmplen = sprintf(tmp, spec.array, va_arg(args, int));
+				}
+				gds_append_len(&string, tmp, tmplen);
 				break;
 			case 'e':
 			case 'E':
 			case 'f':
 			case 'g':
 			case 'G':
-				{
-					char *unit_str;
-					if (strchr(spec.array, '*')) {
-						int prec = va_arg(args, int);
-						unit_str = g_strdup_printf(spec.array, va_arg(args, double), prec);
-					}
-					else
-						unit_str = g_strdup_printf(spec.array, va_arg(args, double));
-					gds_append_str(&string, unit_str);
+				if (strchr(spec.array, '*')) {
+					int prec = va_arg(args, int);
+					tmplen = sprintf(tmp, spec.array, va_arg(args, double), prec);
 				}
+				else
+					tmplen = sprintf(tmp, spec.array, va_arg(args, double));
+				gds_append_len(&string, tmp, tmplen);
 				break;
 			case 'c':
-				{
-					char *unit_str;
-					if (spec.array[1] == 'l' && sizeof(int) <= sizeof(wchar_t))
-						unit_str = g_strdup_printf(spec.array, va_arg(args, wchar_t));
-					else
-						unit_str = g_strdup_printf(spec.array, va_arg(args, int));
-					gds_append_str(&string, unit_str);
-				}
+				if (spec.array[1] == 'l' && sizeof(int) <= sizeof(wchar_t))
+					tmplen = sprintf(tmp, spec.array, va_arg(args, wchar_t));
+				else
+					tmplen = sprintf(tmp, spec.array, va_arg(args, int));
+				gds_append_len(&string, tmp, tmplen);
 				break;
 			case 's':
-				{
-					char *unit_str;
-					if (spec.array[0] == 'l')
-						unit_str = g_strdup_printf(spec.array, va_arg(args, wchar_t *));
-					else
-						unit_str = g_strdup_printf(spec.array, va_arg(args, char *));
-					gds_append_str(&string, unit_str);
-				}
+				if (spec.array[0] == 'l')
+					tmplen = sprintf(tmp, spec.array, va_arg(args, wchar_t *));
+				else
+					tmplen = sprintf(tmp, spec.array, va_arg(args, char *));
+				gds_append_len(&string, tmp, tmplen);
 				break;
 			case 'n':
-				{
-					char *unit_str;
-					/* Depending on gcc settings, this will probably break with
-					 *  some silly "can't put %n in writeable data space" message */
-					unit_str = g_strdup_printf(spec.array, va_arg(args, int *));
-					gds_append_str(&string, unit_str);
-				}
+				/* Depending on gcc settings, this will probably break with
+				 *  some silly "can't put %n in writeable data space" message */
+				tmplen = sprintf(tmp, spec.array, va_arg(args, int *));
+				gds_append_len(&string, tmp, tmplen);
 				break;
 			case 'p':
-				{
-					char *unit_str;
-					unit_str = g_strdup_printf(spec.array, va_arg(args, void *));
-					gds_append_str(&string, unit_str);
-				}
+				tmplen = sprintf(tmp, spec.array, va_arg(args, void *));
+				gds_append_len(&string, tmp, tmplen);
 				break;
 			case '%':
 				gds_append(&string, '%');
@@ -638,11 +622,8 @@ char *pcb_vprintf(const char *fmt, va_list args)
 					gds_append_len(&spec, ".0f", 3);
 					if (suffix == SUFFIX)
 						gds_append_len(&spec, " deg", 4);
-					{
-						char *unit_str;
-						unit_str = g_strdup_printf(spec.array, (double) va_arg(args, Angle));
-						gds_append_str(&string, unit_str);
-					}
+					tmplen = sprintf(tmp, spec.array, (double) va_arg(args, Angle));
+					gds_append_len(&string, tmp, tmplen);
 					break;
 				case '+':
 					mask = va_arg(args, enum e_allow);
