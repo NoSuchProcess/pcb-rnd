@@ -26,6 +26,8 @@ tester.stdout: tester
 tester.diff: tester.stdout
 	diff -u tester.ref tester.stdout
 
+../../pcb-printf.o: ../../pcb-printf.c ../../pcb-printf.h
+
 clean:
 	rm tester tester.o 2>/dev/null ; true
 
