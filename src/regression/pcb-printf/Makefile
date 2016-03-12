@@ -1,9 +1,11 @@
 # glib: temporary
 CFLAGS_OP = -O3
 CFLAGS = -g \
-  -I../.. -I../../.. -I../../../src_3rd \
-  -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include
-LDFLAGS = -lglib-2.0
+  -I../.. -I../../.. -I../../../src_3rd
+
+#  -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include
+#LDFLAGS = -lglib-2.0
+
 GDS= ../../../src_3rd/genvector/gds_char.o
 
 all: test

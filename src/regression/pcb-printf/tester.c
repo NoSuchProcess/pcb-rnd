@@ -1,4 +1,5 @@
 #include <time.h>
+#include <locale.h>
 #include "config.h"
 #include "global.h"
 #include "pcb-printf.h"
@@ -26,6 +27,8 @@ int main()
 	NULL };
 	char **f;
 	int n, rep;
+
+	setlocale(LC_ALL, "");
 
 	for(rep = 0; rep < NUMREP; rep++) {
 		for(n = 0; n < sizeof(c) / sizeof(c[0]); n++) {
