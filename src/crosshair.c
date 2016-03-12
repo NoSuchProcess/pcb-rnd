@@ -35,7 +35,6 @@
 
 #include <memory.h>
 #include <math.h>
-#include <glib.h>
 
 #include "global.h"
 
