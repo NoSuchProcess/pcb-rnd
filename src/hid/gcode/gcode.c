@@ -181,7 +181,7 @@ REGISTER_ATTRIBUTES(gcode_attribute_list)
 
 static char *gcode_get_png_name(const char *basename, const char *suffix)
 {
-	return g_strdup_printf("%s.%s.png", basename, suffix);
+	return pcb_strdup_printf("%s.%s.png", basename, suffix);
 }
 
 /* Sorts drills in order of distance from the origin */
