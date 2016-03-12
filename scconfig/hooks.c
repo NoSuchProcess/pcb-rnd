@@ -214,6 +214,7 @@ int hook_detect_host()
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
+	int want_glib = 0;
 
 	require("cc/fpic",  0, 1);
 	require("fstools/mkdir", 0, 1);
@@ -240,9 +241,30 @@ int hook_detect_target()
 		hook_custom_arg("disable-gd-jpg", NULL);
 	}
 
+	if ((get("libs/gui/gtk2/presents") != NULL) && (istrue(get("libs/gui/gtk2/presents") != NULL)))
+		want_glib = 1;
 
-	/* for core, the toporouter and gsch2pcb: */
-	require("libs/sul/glib", 0, 1);
+	if (istrue(get("/local/pcb/toporouter/enable")))
+		want_glib = 1;
+
+	if (istrue(get("/local/pcb/puller/enable")))
+		want_glib = 1;
+
+	if (want_glib) {
+		require("libs/sul/glib", 0, 0);
+		if (!istrue(get("libs/sul/glib/presents"))) {
+			report("Since there's no libgd, disabling raster output formats...\n");
+			hook_custom_arg("disable-toporouter", NULL);
+			hook_custom_arg("disable-puller", NULL);
+			hook_custom_arg("disable-gtk", NULL);
+		}
+	}
+	else {
+		report("No need for glib, skipping GLIB detection\n");
+		put("libs/sul/glib/presents", "false");
+		put("libs/sul/glib/cflags", "");
+		put("libs/sul/glib/ldflags", "");
+	}
 
 	/* generic utils for Makefiles */
 	require("fstools/rm",  0, 1);
