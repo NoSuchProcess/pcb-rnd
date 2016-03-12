@@ -68,6 +68,8 @@
 #ifndef	PCB_PCB_PRINTF_H
 #define	PCB_PCB_PRINTF_H
 
+#include <genvector/gds_char.h>
+
 enum e_allow {
 	NO_PRINT = 0,									/* suffixes we can read but not print (i.e., "inch") */
 	ALLOW_NM = 1,
@@ -153,5 +155,6 @@ int pcb_printf(const char *fmt, ...);
 char *pcb_strdup_printf(const char *fmt, ...);
 char *pcb_strdup_vprintf(const char *fmt, va_list args);
 
+int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args);
 
 #endif

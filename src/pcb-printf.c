@@ -35,8 +35,6 @@
 #include "config.h"
 #include "global.h"
 
-#include <genvector/gds_char.h>
-
 #include "pcb-printf.h"
 
 /* Helper macros for tables */
@@ -461,7 +459,7 @@ err:;
  *
  * \return 0 on success
  */
-static int pcb_vprintf(gds_t *string, const char *fmt, va_list args)
+int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 {
 	gds_t spec;
 	char tmp[128]; /* large enough for rendering a long long int */
@@ -677,7 +675,7 @@ err:;
 	return retval;
 }
 
-/* \brief Wrapper for pcb_vprintf that outputs to a string
+/* \brief Wrapper for pcb_append_vprintf that outputs to a string
  *
  * \param [in] string  Pointer to string to output into
  * \param [in] fmt     Format specifier
@@ -698,13 +696,13 @@ int pcb_sprintf(char *string, const char *fmt, ...)
 	str.alloced = 1<<31;
 	str.no_realloc = 1;
 
-	pcb_vprintf(&str, fmt, args);
+	pcb_append_vprintf(&str, fmt, args);
 
 	va_end(args);
 	return str.used;
 }
 
-/* \brief Wrapper for pcb_vprintf that outputs to a string with a size limit
+/* \brief Wrapper for pcb_append_vprintf that outputs to a string with a size limit
  *
  * \param [in] string  Pointer to string to output into
  * \param [in] len     Maximum length
@@ -724,13 +722,13 @@ int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
 	str.alloced = len;
 	str.no_realloc = 1;
 
-	pcb_vprintf(&str, fmt, args);
+	pcb_append_vprintf(&str, fmt, args);
 
 	va_end(args);
 	return str.used;
 }
 
-/* \brief Wrapper for pcb_vprintf that outputs to a file
+/* \brief Wrapper for pcb_append_vprintf that outputs to a file
  *
  * \param [in] fh   File to output to
  * \param [in] fmt  Format specifier
@@ -749,7 +747,7 @@ int pcb_fprintf(FILE * fh, const char *fmt, ...)
 	if (fh == NULL)
 		rv = -1;
 	else {
-		pcb_vprintf(&str, fmt, args);
+		pcb_append_vprintf(&str, fmt, args);
 		rv = fprintf(fh, "%s", str.array);
 	}
 	va_end(args);
@@ -758,7 +756,7 @@ int pcb_fprintf(FILE * fh, const char *fmt, ...)
 	return rv;
 }
 
-/* \brief Wrapper for pcb_vprintf that outputs to stdout
+/* \brief Wrapper for pcb_append_vprintf that outputs to stdout
  *
  * \param [in] fmt  Format specifier
  *
@@ -774,7 +772,7 @@ int pcb_printf(const char *fmt, ...)
 	va_list args;
 	va_start(args, fmt);
 
-	pcb_vprintf(&str, fmt, args);
+	pcb_append_vprintf(&str, fmt, args);
 	rv = printf("%s", str.array);
 
 	va_end(args);
@@ -782,7 +780,7 @@ int pcb_printf(const char *fmt, ...)
 	return rv;
 }
 
-/* \brief Wrapper for pcb_vprintf that outputs to a newly allocated string
+/* \brief Wrapper for pcb_append_vprintf that outputs to a newly allocated string
  *
  * \param [in] fmt  Format specifier
  *
@@ -796,13 +794,13 @@ char *pcb_strdup_printf(const char *fmt, ...)
 	gds_init(&str);
 
 	va_start(args, fmt);
-	pcb_vprintf(&str, fmt, args);
+	pcb_append_vprintf(&str, fmt, args);
 	va_end(args);
 
 	return str.array; /* no other allocation has been made */
 }
 
-/* \brief Wrapper for pcb_vprintf that outputs to a string
+/* \brief Wrapper for pcb_append_vprintf that outputs to a string
  *
  * \param [in] string  Pointer to string to output into
  * \param [in] fmt     Format specifier
@@ -814,7 +812,7 @@ char *pcb_strdup_vprintf(const char *fmt, va_list args)
 	gds_t str;
 	gds_init(&str);
 
-	pcb_vprintf(&str, fmt, args);
+	pcb_append_vprintf(&str, fmt, args);
 
 	return str.array; /* no other allocation has been made */
 }
