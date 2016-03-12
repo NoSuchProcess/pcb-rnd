@@ -10,3 +10,6 @@ append /local/pcb/RULES [@
 mod_@/local/pcb/mod@: all
 
 @]
+
+put /local/pcb/mod/OBJS {}
+put /local/pcb/mod {}

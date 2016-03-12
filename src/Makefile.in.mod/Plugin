@@ -21,3 +21,6 @@ $(PLUGIDIR)/@/local/pcb/mod@.so: $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so
 	$(CP) $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so $(PLUGIDIR)/@/local/pcb/mod@.so
 
 @]
+
+put /local/pcb/mod/OBJS {}
+put /local/pcb/mod {}

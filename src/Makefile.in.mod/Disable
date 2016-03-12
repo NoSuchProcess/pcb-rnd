@@ -5,3 +5,6 @@
 # append all objects to the source list used only for dependencies
 # NOTE: .o suffixes will be replaced with .c before generating the dep
 append /local/pcb/DEPSRCS            /local/pcb/mod/OBJS
+
+put /local/pcb/mod/OBJS {}
+put /local/pcb/mod {}
