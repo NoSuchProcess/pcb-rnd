@@ -211,10 +211,25 @@ int hook_detect_host()
 	return 0;
 }
 
+char *repeat = NULL;
+#define report_repeat(msg) \
+do { \
+	report(msg); \
+	if (repeat != NULL) { \
+		char *old = repeat; \
+		repeat = str_concat("", old, msg, NULL); \
+		free(old); \
+	} \
+	else \
+		repeat = strclone(msg); \
+} while(0)
+
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
 	int want_gtk, want_glib = 0;
+
+	want_gtk = (get("libs/gui/gtk2/presents") == NULL) || (istrue(get("libs/gui/gtk2/presents") != NULL));
 
 	require("cc/fpic",  0, 1);
 	require("fstools/mkdir", 0, 1);
@@ -226,7 +241,7 @@ int hook_detect_target()
 		require("libs/gui/xrender/presents", 0, 0);
 	}
 	else {
-		report("Since there's no lesstif2, disabling xinerama and xrender...\n");	
+		report_repeat("WARNING: Since there's no lesstif2, disabling xinerama and xrender...\n");	
 		hook_custom_arg("disable-xinerama", NULL);
 		hook_custom_arg("disable-xrender", NULL);
 	}
@@ -235,13 +250,12 @@ int hook_detect_target()
 	require("libs/gui/gd/presents", 0, 0);
 
 	if (!istrue(get("libs/gui/gd/presents"))) {
-		report("Since there's no libgd, disabling raster output formats...\n");
+		report_repeat("WARNING: Since there's no libgd, disabling raster output formats (gif, png, jpg)...\n");
 		hook_custom_arg("disable-gd-gif", NULL);
 		hook_custom_arg("disable-gd-png", NULL);
 		hook_custom_arg("disable-gd-jpg", NULL);
 	}
 
-	want_gtk = (get("libs/gui/gtk2/presents") != NULL) && (istrue(get("libs/gui/gtk2/presents") != NULL));
 	if (want_gtk)
 		want_glib = 1;
 
@@ -254,17 +268,16 @@ int hook_detect_target()
 	if (want_glib) {
 		require("libs/sul/glib", 0, 0);
 		if (!istrue(get("libs/sul/glib/presents"))) {
-
 			if (want_gtk) {
-				report("WARNING: Since GLIB is not found, disabling the GTK HID...\n");
+				report_repeat("WARNING: Since GLIB is not found, disabling the GTK HID...\n");
 				hook_custom_arg("disable-gtk", NULL);
 			}
 			if (istrue(get("/local/pcb/toporouter/enable"))) {
-				report("WARNING: Since GLIB is not found, disabling the toporouter...\n");
+				report_repeat("WARNING: Since GLIB is not found, disabling the toporouter...\n");
 				hook_custom_arg("disable-toporouter", NULL);
 			}
 			if (istrue(get("/local/pcb/puller/enable"))) {
-				report("WARNING: Since GLIB is not found, disabling the puller...\n");
+				report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
 				hook_custom_arg("disable-puller", NULL);
 			}
 		}
@@ -453,6 +466,9 @@ int hook_generate()
 	plugin_stat("old actions:",            "/local/pcb/oldactions");
 	plugin_stat("import_sch:",             "/local/pcb/import_sch");
 	plugin_stat("stroke:",                 "/local/pcb/stroke");
+
+	if (repeat != NULL)
+		printf("\n%s\n", repeat);
 
 
 	if (manual_config)
