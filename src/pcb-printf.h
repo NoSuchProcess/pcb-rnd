@@ -148,6 +148,7 @@ Increments *get_increments_struct(const char *suffix);
 
 int pcb_fprintf(FILE * f, const char *fmt, ...);
 int pcb_sprintf(char *string, const char *fmt, ...);
+int pcb_snprintf(char *string, size_t len, const char *fmt, ...);
 int pcb_printf(const char *fmt, ...);
 char *pcb_g_strdup_printf(const char *fmt, ...);
 char *pcb_vprintf(const char *fmt, va_list args);

@@ -11,7 +11,7 @@
 #	define PCB_PRINTF(fmt, ...) \
 	do { \
 		pc++; \
-		pcb_sprintf(buff, fmt, __VA_ARGS__); \
+		pcb_snprintf(buff, sizeof(buff), fmt, __VA_ARGS__); \
 	} while(0)
 #else
 #	define NUMREP 1

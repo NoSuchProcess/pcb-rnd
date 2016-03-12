@@ -695,6 +695,33 @@ int pcb_sprintf(char *string, const char *fmt, ...)
 	return strlen(string);
 }
 
+/* \brief Wrapper for pcb_vprintf that outputs to a string with a size limit
+ *
+ * \param [in] string  Pointer to string to output into
+ * \param [in] len     Maximum length
+ * \param [in] fmt     Format specifier
+ *
+ * \return The length of the written string
+ */
+int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
+{
+	char *tmp;
+	int slen;
+
+	va_list args;
+	va_start(args, fmt);
+
+	tmp = pcb_vprintf(fmt, args);
+	slen = strlen(string);
+	strncpy(string, tmp, len);
+	if (len < slen)
+		string[len] = '\0';
+	free(tmp);
+
+	va_end(args);
+	return slen;
+}
+
 /* \brief Wrapper for pcb_vprintf that outputs to a file
  *
  * \param [in] fh   File to output to

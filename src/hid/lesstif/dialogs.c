@@ -686,14 +686,14 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 		case HID_Coord:
 			stdarg(XmNcolumns, 13);
 			stdarg(XmNresizeWidth, True);
-			pcb_sprintf(buf, "%$mS", results[i].coord_value);
+			pcb_snprintf(buf, sizeof(buf), "%$mS", results[i].coord_value);
 			stdarg(XmNvalue, buf);
 			wl[i] = XmCreateTextField(form, attrs[i].name, args, n);
 			break;
 		case HID_Real:
 			stdarg(XmNcolumns, 16);
 			stdarg(XmNresizeWidth, True);
-			sprintf(buf, "%g", results[i].real_value);
+			snprintf(buf, sizeof(buf), "%g", results[i].real_value);
 			stdarg(XmNvalue, buf);
 			wl[i] = XmCreateTextField(form, attrs[i].name, args, n);
 			break;
@@ -1035,7 +1035,7 @@ static void sz_val2str(Widget w, Coord u, int pcbu)
 	if (pcbu)
 		pcb_sprintf(buf, "%m+%.2mS", Settings.grid_unit->allow, u);
 	else
-		pcb_sprintf(buf, "%#mS %%", u);
+		pcb_snprintf(buf, sizeof(buf), "%#mS %%", u);
 	XmTextSetString(w, buf);
 }
 

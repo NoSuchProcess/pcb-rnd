@@ -2470,9 +2470,9 @@ static Boolean idle_proc(XtPointer dummy)
 			}
 			else {
 				if (old_gx || old_gy)
-					pcb_sprintf(buf, "%m+%$mS @%mS,%mS", UUNIT, old_grid, old_gx, old_gy);
+					pcb_snprintf(buf, sizeof(buf), "%m+%$mS @%mS,%mS", UUNIT, old_grid, old_gx, old_gy);
 				else
-					pcb_sprintf(buf, "%m+%$mS", UUNIT, old_grid);
+					pcb_snprintf(buf, sizeof(buf), "%m+%$mS", UUNIT, old_grid);
 			}
 			ms = XmStringCreatePCB(buf);
 			n = 0;
