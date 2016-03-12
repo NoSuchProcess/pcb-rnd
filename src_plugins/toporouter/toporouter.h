@@ -28,6 +28,7 @@
 #define PCB_TOPOROUTER_H
 
 #include <assert.h>
+#include <glib.h>
 #include "data.h"
 #include "macro.h"
 #include "../autoroute/autoroute.h"

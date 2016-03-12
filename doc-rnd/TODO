@@ -12,7 +12,9 @@ UNGLIB:
 		- buffer element breakup double frees?
 		- drawing new rats cause double free?
 		- test onpoint
+		- fix up dependencies: make clean in src_3rd subdirs and check what breaks
 	- get rid of gcode/lists.h, ds.[ch] and vector.[ch]
+
 
 
 BUGS

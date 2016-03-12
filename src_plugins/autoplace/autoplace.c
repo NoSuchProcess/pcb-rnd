@@ -559,8 +559,8 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 	case 0:
 		{														/* shift! */
 			Coord grid;
-			double scaleX = CLAMP(sqrt(T), MIL_TO_COORD(2.5), PCB->MaxWidth / 3);
-			double scaleY = CLAMP(sqrt(T), MIL_TO_COORD(2.5), PCB->MaxHeight / 3);
+			double scaleX = PCB_CLAMP(sqrt(T), MIL_TO_COORD(2.5), PCB->MaxWidth / 3);
+			double scaleY = PCB_CLAMP(sqrt(T), MIL_TO_COORD(2.5), PCB->MaxHeight / 3);
 			pt.which = SHIFT;
 			pt.DX = scaleX * 2 * ((((double) random()) / RAND_MAX) - 0.5);
 			pt.DY = scaleY * 2 * ((((double) random()) / RAND_MAX) - 0.5);

@@ -390,7 +390,7 @@ int ParseFont(FontTypePtr Ptr, char *Filename)
 static int
 parse_number ()
 {
-  yylval.number = strtod ((gchar *) yytext, NULL);
+  yylval.number = strtod ((char *) yytext, NULL);
   return FLOATING;
 }
 

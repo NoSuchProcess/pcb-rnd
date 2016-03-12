@@ -2337,7 +2337,7 @@ void poly_PreContour(PLINE * C, BOOLp optimize)
 		}
 		while ((c = (p = c)->next) != &C->head);
 	}
-	C->area = ABS(area);
+	C->area = PCB_ABS(area);
 	if (C->Count > 2)
 		C->Flags.orient = ((area < 0) ? PLF_INV : PLF_DIR);
 	C->tree = (rtree_t *) make_edge_tree(C);

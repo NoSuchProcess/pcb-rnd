@@ -395,8 +395,8 @@ static int real_load_pcb(char *Filename, bool revert, bool require_font, bool is
 
 		if (!is_misc) {
 			/* update cursor location */
-			Crosshair.X = CLAMP(PCB->CursorX, 0, PCB->MaxWidth);
-			Crosshair.Y = CLAMP(PCB->CursorY, 0, PCB->MaxHeight);
+			Crosshair.X = PCB_CLAMP(PCB->CursorX, 0, PCB->MaxWidth);
+			Crosshair.Y = PCB_CLAMP(PCB->CursorY, 0, PCB->MaxHeight);
 
 			/* update cursor confinement and output area (scrollbars) */
 			ChangePCBSize(PCB->MaxWidth, PCB->MaxHeight);

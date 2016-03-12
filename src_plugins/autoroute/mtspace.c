@@ -197,7 +197,7 @@ static inline void heap_append(heap_t * heap, CheapPointType * desired, BoxType 
 	CheapPointType p = *desired;
 	assert(desired);
 	closest_point_in_box(&p, newone);
-	heap_insert(heap, ABS(p.X - desired->X) + (p.Y - desired->Y), newone);
+	heap_insert(heap, PCB_ABS(p.X - desired->X) + (p.Y - desired->Y), newone);
 }
 
 static inline void append(struct query_closure *qc, BoxType * newone)

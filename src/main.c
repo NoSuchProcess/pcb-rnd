@@ -1339,8 +1339,8 @@ REGISTER_ATTRIBUTES(main_attribute_list)
 	if (Settings.ViaDrillingHole <= 0)
 		Settings.ViaDrillingHole = DEFAULT_DRILLINGHOLE * Settings.ViaThickness / 100;
 
-	Settings.MaxWidth = CLAMP(Settings.MaxWidth, MIN_SIZE, MAX_COORD);
-	Settings.MaxHeight = CLAMP(Settings.MaxHeight, MIN_SIZE, MAX_COORD);
+	Settings.MaxWidth  = PCB_CLAMP(Settings.MaxWidth, MIN_SIZE, MAX_COORD);
+	Settings.MaxHeight = PCB_CLAMP(Settings.MaxHeight, MIN_SIZE, MAX_COORD);
 
 	if (Settings.Routes != NULL)
 		ParseRouteString(Settings.Routes, &Settings.RouteStyle[0], "cmil");

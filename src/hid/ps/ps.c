@@ -610,7 +610,7 @@ void ps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	global.incolor = options[HA_color].int_value;
 	global.bloat = options[HA_psbloat].int_value;
 	global.invert = options[HA_psinvert].int_value;
-	global.fade_ratio = CLAMP(options[HA_psfade].real_value, 0, 1);
+	global.fade_ratio = PCB_CLAMP(options[HA_psfade].real_value, 0, 1);
 	global.media_idx = options[HA_media].int_value;
 	global.media_width = media_data[global.media_idx].Width;
 	global.media_height = media_data[global.media_idx].Height;

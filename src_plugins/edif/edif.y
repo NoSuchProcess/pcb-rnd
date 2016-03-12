@@ -4108,7 +4108,7 @@ void ParseEDIF(char* filename,FILE* err)
         cc = (ContextCar *) Malloc(sizeof(ContextCar));
         cc->Next = cxt->Context;
         (cxt->Context = cc)->Context =
-          FindContext(ABS(BinderDef[i].Follower[j]));
+          FindContext(PCB_ABS(BinderDef[i].Follower[j]));
         cc->u.Single = BinderDef[i].Follower[j] < 0;
       }
     }

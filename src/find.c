@@ -1671,7 +1671,6 @@ static bool LookupLOConnectionsToArc(ArcTypePtr Arc, Cardinal LayerGroup)
 	/* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
 		Cardinal layer;
-		GList *i;
 
 		layer = PCB->LayerGroups.Entries[LayerGroup][entry];
 

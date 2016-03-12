@@ -55,8 +55,6 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <stdbool.h>
-#include <glib.h>
-
 
 #include "global_typedefs.h"
 #include "global_objs.h"
@@ -136,6 +134,14 @@ typedef struct {
 #define LIKELY(expr) (expr)
 #define UNLIKELY(expr) (expr)
 #endif
+
+/* ---------------------------------------------------------------------------
+ * Macros to annotate branch-prediction information.
+ * Taken from GLib 2.42.1 (LGPL 2). PCB_ prefixes have
+ * been added to avoid namespace clashes.
+ */
+#define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+#define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
 
 /* ---------------------------------------------------------------------------
  * some useful values of our widgets

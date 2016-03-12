@@ -959,10 +959,10 @@ static routedata_t *CreateRouteData()
 							LineType fake_line = *line;
 							Coord dx = (line->Point2.X - line->Point1.X);
 							Coord dy = (line->Point2.Y - line->Point1.Y);
-							int segs = MAX(ABS(dx),
-														 ABS(dy)) / (4 * BLOAT(rd->styles[j]) + 1);
+							int segs = MAX(PCB_ABS(dx),
+														 PCB_ABS(dy)) / (4 * BLOAT(rd->styles[j]) + 1);
 							int qq;
-							segs = CLAMP(segs, 1, 32);	/* don't go too crazy */
+							segs = PCB_CLAMP(segs, 1, 32);	/* don't go too crazy */
 							dx /= segs;
 							dy /= segs;
 							for (qq = 0; qq < segs - 1; qq++) {
@@ -1074,9 +1074,9 @@ static routedata_t *CreateRouteData()
 				LineType fake_line = *line;
 				Coord dx = (line->Point2.X - line->Point1.X);
 				Coord dy = (line->Point2.Y - line->Point1.Y);
-				int segs = MAX(ABS(dx), ABS(dy)) / (4 * rd->max_bloat + 1);
+				int segs = MAX(PCB_ABS(dx), PCB_ABS(dy)) / (4 * rd->max_bloat + 1);
 				int qq;
-				segs = CLAMP(segs, 1, 32);	/* don't go too crazy */
+				segs = PCB_CLAMP(segs, 1, 32);	/* don't go too crazy */
 				dx /= segs;
 				dy /= segs;
 				for (qq = 0; qq < segs - 1; qq++) {
@@ -1201,7 +1201,7 @@ static inline cost_t cost_to_point_on_layer(const CheapPointType * p1, const Che
 	x_dist *= x_cost[point_layer];
 	y_dist *= y_cost[point_layer];
 	/* cost is proportional to orthogonal distance. */
-	r = ABS(x_dist) + ABS(y_dist);
+	r = PCB_ABS(x_dist) + PCB_ABS(y_dist);
 	if (p1->X != p2->X && p1->Y != p2->Y)
 		r += AutoRouteParameters.JogPenalty;
 	return r;
@@ -1227,8 +1227,8 @@ static cost_t cost_to_layerless_box(const CheapPointType * p, Cardinal point_lay
 	c1 = p2.X - p->X;
 	c2 = p2.Y - p->Y;
 
-	c1 = ABS(c1);
-	c2 = ABS(c2);
+	c1 = PCB_ABS(c1);
+	c2 = PCB_ABS(c2);
 	if (c1 < c2)
 		return c1 * AutoRouteParameters.MinPenalty + c2;
 	else
@@ -1275,12 +1275,12 @@ static cost_t cost_to_routebox(const CheapPointType * p, Cardinal point_layer, c
 		trial += AutoRouteParameters.JogPenalty;
 	/* special case for defered via searching */
 	if (point_layer > max_group || point_layer == rb->group)
-		return trial + ABS(p2.X - p->X) + ABS(p2.Y - p->Y);
+		return trial + PCB_ABS(p2.X - p->X) + PCB_ABS(p2.Y - p->Y);
 	/* if this target is only a via away, then the via is cheaper than the congestion */
 	if (p->X == p2.X && p->Y == p2.Y)
 		return trial + 1;
 	trial += AutoRouteParameters.ViaCost;
-	trial += ABS(p2.X - p->X) + ABS(p2.Y - p->Y);
+	trial += PCB_ABS(p2.X - p->X) + PCB_ABS(p2.Y - p->Y);
 	return trial;
 }
 
@@ -2939,7 +2939,7 @@ RD_DrawLine(routedata_t * rd,
 		return;											/* but not this! */
 	rb = (routebox_t *) malloc(sizeof(*rb));
 	memset((void *) rb, 0, sizeof(*rb));
-	assert(is_45 ? (ABS(qX2 - qX1) == ABS(qY2 - qY1))	/* line must be 45-degrees */
+	assert(is_45 ? (PCB_ABS(qX2 - qX1) == PCB_ABS(qY2 - qY1))	/* line must be 45-degrees */
 				 : (qX1 == qX2 || qY1 == qY2) /* line must be ortho */ );
 	init_const_box(rb,
 								 /*X1 */ MIN(qX1, qX2) - qhthick,
@@ -3032,7 +3032,7 @@ RD_DrawManhattanLine(routedata_t * rd,
 	}
 	else {
 		/* draw 45-degree path across knee */
-		Coord len45 = MIN(ABS(start.X - end.X), ABS(start.Y - end.Y));
+		Coord len45 = MIN(PCB_ABS(start.X - end.X), PCB_ABS(start.Y - end.Y));
 		CheapPointType kneestart = knee, kneeend = knee;
 		if (kneestart.X == start.X)
 			kneestart.Y += (kneestart.Y > start.Y) ? -len45 : len45;

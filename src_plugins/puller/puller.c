@@ -54,7 +54,7 @@
 #include <memory.h>
 #include <limits.h>
 #include <setjmp.h>
-
+#include <glib.h>
 
 #include "create.h"
 #include "data.h"

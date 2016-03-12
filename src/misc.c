@@ -840,7 +840,7 @@ static Coord GetNum(char **s, const char *default_unit)
 char *make_route_string(RouteStyleType rs[], int n_styles)
 {
 	gds_t str;
-	gint i;
+	int i;
 
 	gds_init(&str);
 	for (i = 0; i < n_styles; ++i) {
@@ -1325,7 +1325,7 @@ void SetArcBoundingBox(ArcTypePtr Arc)
 
 	/* first put angles into standard form:
 	 *  ang1 < ang2, both angles between 0 and 720 */
-	Arc->Delta = CLAMP(Arc->Delta, -360, 360);
+	Arc->Delta = PCB_CLAMP(Arc->Delta, -360, 360);
 
 	if (Arc->Delta > 0) {
 		ang1 = NormalizeAngle(Arc->StartAngle);

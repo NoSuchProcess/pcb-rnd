@@ -162,7 +162,6 @@ static int FontSave(int argc, char **argv, Coord Ux, Coord Uy)
 	FontTypePtr font;
 	SymbolTypePtr symbol;
 	int i;
-	GList *ii;
 	LineType *l; 
 	gdl_iterator_t it;
 	LayerTypePtr lfont, lwidth;

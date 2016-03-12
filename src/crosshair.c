@@ -958,8 +958,8 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	struct snap_data snap_data;
 	int ans;
 
-	Crosshair.X = CLAMP(X, Crosshair.MinX, Crosshair.MaxX);
-	Crosshair.Y = CLAMP(Y, Crosshair.MinY, Crosshair.MaxY);
+	Crosshair.X = PCB_CLAMP(X, Crosshair.MinX, Crosshair.MaxX);
+	Crosshair.Y = PCB_CLAMP(Y, Crosshair.MinY, Crosshair.MaxY);
 
 	if (PCB->RatDraw) {
 		nearest_grid_x = -MIL_TO_COORD(6);
@@ -972,7 +972,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		if (Marked.status && TEST_FLAG(ORTHOMOVEFLAG, PCB)) {
 			Coord dx = Crosshair.X - Marked.X;
 			Coord dy = Crosshair.Y - Marked.Y;
-			if (ABS(dx) > ABS(dy))
+			if (PCB_ABS(dx) > PCB_ABS(dy))
 				nearest_grid_y = Marked.Y;
 			else
 				nearest_grid_x = Marked.X;
