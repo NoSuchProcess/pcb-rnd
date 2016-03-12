@@ -292,15 +292,16 @@ static int min_sig_figs(double d)
  * given, the list is enclosed in parens to make the scope of
  * the unit suffix clear.
  *
+ * \param [in] dest         Append the output to this dynamic string
  * \param [in] coord        Array of coords to convert
  * \param [in] n_coords     Number of coords in array
  * \param [in] printf_spec  printf sub-specifier to use with %f
  * \param [in] e_allow      Bitmap of units the function may use
  * \param [in] suffix_type  Whether to add a suffix
  *
- * \return A string containing the formatted coords. Must be freed with g_free.
+ * \return 0 on success, -1 on error
  */
-static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const char *printf_spec, enum e_allow allow,
+static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t *printf_spec_, enum e_allow allow,
 														 enum e_suffix suffix_type)
 {
 	char *printf_buff;
@@ -309,6 +310,7 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const char *
 	double *value, value_local[32];
 	const char *suffix;
 	int i, n;
+	const char *printf_spec = printf_spec_->array;
 
 	if (n_coords > (sizeof(value_local) / sizeof(value_local[0]))) {
 		value = malloc(n_coords * sizeof *value);
@@ -557,27 +559,27 @@ char *pcb_vprintf(const char *fmt, va_list args)
 				count = 1;
 				switch (*fmt) {
 				case 'I':
-					CoordsToString(&string, value, 1, spec.array, ALLOW_NM, NO_SUFFIX);
+					CoordsToString(&string, value, 1, &spec, ALLOW_NM, NO_SUFFIX);
 					break;
 				case 's':
-					CoordsToString(&string, value, 1, spec.array, ALLOW_MM | ALLOW_MIL, suffix);
+					CoordsToString(&string, value, 1, &spec, ALLOW_MM | ALLOW_MIL, suffix);
 					break;
 				case 'S':
-					CoordsToString(&string, value, 1, spec.array, mask & ALLOW_ALL, suffix);
+					CoordsToString(&string, value, 1, &spec, mask & ALLOW_ALL, suffix);
 					break;
 				case 'M':
-					CoordsToString(&string, value, 1, spec.array, mask & ALLOW_METRIC, suffix);
+					CoordsToString(&string, value, 1, &spec, mask & ALLOW_METRIC, suffix);
 					break;
 				case 'L':
-					CoordsToString(&string, value, 1, spec.array, mask & ALLOW_IMPERIAL, suffix);
+					CoordsToString(&string, value, 1, &spec, mask & ALLOW_IMPERIAL, suffix);
 					break;
 #if 0
 				case 'r':
-					CoordsToString(&string, value, 1, spec.array, ALLOW_READABLE, FILE_MODE);
+					CoordsToString(&string, value, 1, &spec, ALLOW_READABLE, FILE_MODE);
 					break;
 #else
 				case 'r':
-					CoordsToString(&string, value, 1, spec.array, ALLOW_READABLE, NO_SUFFIX);
+					CoordsToString(&string, value, 1, &spec, ALLOW_READABLE, NO_SUFFIX);
 					break;
 #endif
 					/* All these fallthroughs are deliberate */
@@ -598,24 +600,24 @@ char *pcb_vprintf(const char *fmt, va_list args)
 				case '2':
 				case 'D':
 					value[count++] = va_arg(args, Coord);
-					CoordsToString(&string, value, count, spec.array, mask & ALLOW_ALL, suffix);
+					CoordsToString(&string, value, count, &spec, mask & ALLOW_ALL, suffix);
 					break;
 				case 'd':
 					value[1] = va_arg(args, Coord);
-					CoordsToString(&string, value, 2, spec.array, ALLOW_MM | ALLOW_MIL, suffix);
+					CoordsToString(&string, value, 2, &spec, ALLOW_MM | ALLOW_MIL, suffix);
 					break;
 				case '*':
 					{
 						int found = 0;
 						for (i = 0; i < N_UNITS; ++i) {
 							if (strcmp(ext_unit, Units[i].suffix) == 0) {
-								CoordsToString(&string, value, 1, spec.array, Units[i].allow, suffix);
+								CoordsToString(&string, value, 1, &spec, Units[i].allow, suffix);
 								found = 1;
 								break;
 							}
 						}
 						if (!found)
-							CoordsToString(&string, value, 1, spec.array, mask & ALLOW_ALL, suffix);
+							CoordsToString(&string, value, 1, &spec, mask & ALLOW_ALL, suffix);
 					}
 					break;
 				case 'a':
@@ -633,13 +635,13 @@ char *pcb_vprintf(const char *fmt, va_list args)
 						int found = 0;
 						for (i = 0; i < N_UNITS; ++i) {
 							if (*fmt == Units[i].printf_code) {
-								CoordsToString(&string, value, 1, spec.array, Units[i].allow, suffix);
+								CoordsToString(&string, value, 1, &spec, Units[i].allow, suffix);
 								found = 1;
 								break;
 							}
 						}
 						if (!found)
-							CoordsToString(&string, value, 1, spec.array, ALLOW_ALL, suffix);
+							CoordsToString(&string, value, 1, &spec, ALLOW_ALL, suffix);
 					}
 					break;
 				}
