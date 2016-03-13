@@ -906,6 +906,8 @@ LibraryEntryTypePtr CreateNewConnection(LibraryMenuTypePtr net, char *conn)
 	LibraryEntryTypePtr entry = GetLibraryEntryMemory(net);
 
 	entry->ListEntry = STRDUP(conn);
+	entry->ListEntry_dontfree = 0;
+
 	return (entry);
 }
 

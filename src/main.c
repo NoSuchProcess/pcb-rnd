@@ -1600,6 +1600,8 @@ void pcb_main_uninit(void)
 	uninit_strflags_buf();
 	uninit_strflags_layerlist();
 
+	FreeLibraryMemory(&Library);
+
 #define free0(ptr) \
 	do {  \
 	 if (ptr != NULL) { \

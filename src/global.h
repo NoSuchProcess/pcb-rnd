@@ -246,6 +246,7 @@ typedef struct {
  */
 typedef struct {
 	char *ListEntry;							/* the string for the selection box */
+	int ListEntry_dontfree;       /* do not free(ListEntry) if non-zero */
 	char *AllocatedMemory,				/* pointer to allocated memory; all others */
 		/* point to parts of the string */
 	 *Package,										/* package */

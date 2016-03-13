@@ -872,6 +872,7 @@ RatTypePtr AddNet(void)
 		}
 		entry = GetLibraryEntryMemory(menu);
 		entry->ListEntry = strdup(name2);
+		entry->ListEntry_dontfree = 0;
 		netnode_to_netname(name2);
 		goto ratIt;
 	}
@@ -880,6 +881,7 @@ RatTypePtr AddNet(void)
 	if (menu) {
 		entry = GetLibraryEntryMemory(menu);
 		entry->ListEntry = strdup(name1);
+		entry->ListEntry_dontfree = 0;
 		netnode_to_netname(name1);
 		goto ratIt;
 	}
@@ -899,8 +901,11 @@ RatTypePtr AddNet(void)
 	menu->Name = strdup(ratname);
 	entry = GetLibraryEntryMemory(menu);
 	entry->ListEntry = strdup(name1);
+	entry->ListEntry_dontfree = 0;
+
 	entry = GetLibraryEntryMemory(menu);
 	entry->ListEntry = strdup(name2);
+	entry->ListEntry_dontfree = 0;
 	menu->flag = 1;
 
 ratIt:

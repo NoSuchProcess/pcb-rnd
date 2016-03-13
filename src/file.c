@@ -1113,6 +1113,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_ty
 
 	/* store pointer to start of footprint name */
 	entry->ListEntry = entry->AllocatedMemory + strlen(entry->AllocatedMemory);
+	entry->ListEntry_dontfree = 1;
 
 	/* Now place footprint name into AllocatedMemory */
 	strcat(entry->AllocatedMemory, name);
@@ -1325,6 +1326,7 @@ int ReadNetlist(char *filename)
 				else {
 					entry = GetLibraryEntryMemory(menu);
 					entry->ListEntry = strdup(temp);
+					entry->ListEntry_dontfree = 0;
 				}
 			}
 		}

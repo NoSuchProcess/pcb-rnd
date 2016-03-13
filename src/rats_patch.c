@@ -178,6 +178,7 @@ static void netlist_copy(LibraryTypePtr dst, LibraryTypePtr src)
 			LibraryEntryTypePtr sentry = &smenu->Entry[p];
 			LibraryEntryTypePtr dentry = &dmenu->Entry[p];
 			dentry->ListEntry = strdup(sentry->ListEntry);
+			dentry->ListEntry_dontfree = 0;
 /*			fprintf (stderr, " '%s'/%p", dentry->ListEntry, dentry->ListEntry);*/
 		}
 /*		fprintf(stderr, "\n");*/
