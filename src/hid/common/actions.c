@@ -43,7 +43,7 @@ static const char *check_action_name(const char *s)
 	return NULL;
 }
 
-void hid_register_actions(HID_Action * a, int n)
+void hid_register_actions(HID_Action * a, int n, void *cookie)
 {
 	int i;
 
@@ -63,9 +63,9 @@ void hid_register_actions(HID_Action * a, int n)
 	}
 }
 
-void hid_register_action(HID_Action * a)
+void hid_register_action(HID_Action * a, void *cookie)
 {
-	hid_register_actions(a, 1);
+	hid_register_actions(a, 1, cookie);
 }
 
 void hid_remove_actions(HID_Action * a, int n)

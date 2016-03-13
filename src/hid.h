@@ -82,11 +82,11 @@ extern "C" {
 		const char *syntax;
 	} HID_Action;
 
-	extern void hid_register_action(HID_Action *);
+	extern void hid_register_action(HID_Action *, void *);
 
-	extern void hid_register_actions(HID_Action *, int);
+	extern void hid_register_actions(HID_Action *, int, void *);
 #define REGISTER_ACTIONS(a) HIDCONCAT(void register_,a) ()\
-{ hid_register_actions(a, sizeof(a)/sizeof(a[0])); }
+{ hid_register_actions(a, sizeof(a)/sizeof(a[0]), NULL); }
 
 	/* Note that PCB expects the gui to provide the following actions:
 
