@@ -28,6 +28,7 @@
 #include "config.h"
 #include "global.h"
 #include "autoroute.h"
+#include "set.h"
 
 /* action routines for the autorouter
  */

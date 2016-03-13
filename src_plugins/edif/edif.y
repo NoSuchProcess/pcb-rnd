@@ -28,9 +28,12 @@
 
 #include "global.h"
 #include "data.h"
+#include "error.h"
+
 /* from mymem.h, not include because of the malloc junk */
-LibraryMenuTypePtr GetLibraryMenuMemory (LibraryTypePtr);
-LibraryEntryTypePtr GetLibraryEntryMemory (LibraryMenuTypePtr);
+LibraryMenuTypePtr GetLibraryMenuMemory(LibraryTypePtr, int *idx);
+LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
+
 
 /*
  *	Local definitions.
@@ -99,7 +102,7 @@ LibraryEntryTypePtr GetLibraryEntryMemory (LibraryMenuTypePtr);
      char* buf;
      char* p;
      LibraryEntryTypePtr entry;
-     LibraryMenuTypePtr menu = GetLibraryMenuMemory (&PCB->NetlistLib);
+     LibraryMenuTypePtr menu = GetLibraryMenuMemory (PCB->NetlistLib, NULL);
 
      if ( !name->str1 )
      {
@@ -188,7 +191,7 @@ LibraryEntryTypePtr GetLibraryEntryMemory (LibraryMenuTypePtr);
  static void PopC(void);
 %}
 
-%name-prefix="edif"
+%name-prefix "edif"
 
 %union {
     char* s;

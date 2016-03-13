@@ -31,7 +31,6 @@ static void stub_rat_proc_shorts_dummy(void)
 
 	if (TEST_FLAG(ENABLEMINCUTFLAG, PCB))
 		Message(_("Can not run mincut: the mincut plugin/buildin is not present.\n"));
-	return 0;
 }
 
 static void stub_rat_found_short_dummy(PinType * pin, PadType * pad, const char *with_net)

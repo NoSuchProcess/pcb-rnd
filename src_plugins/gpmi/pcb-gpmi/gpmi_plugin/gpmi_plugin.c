@@ -155,7 +155,7 @@ static void load_base_and_cfg(void)
 	fprintf(stderr, "gpmi dirs: lg=%s lh=%s wh=%s w=%s hh=%s\n", libdirg, libdirh, wdirh, wdir, hdirh);
 
 	/* first add package search path to all host-specific plugin dirs
-	   This is needed because a script installed in ~/.pcb/plugins/*.conf
+	   This is needed because a script installed in ~/.pcb/plugins/ *.conf
 	   (added automatically from, the gui)
 	   could depend on a package being anywhere else
 	*/

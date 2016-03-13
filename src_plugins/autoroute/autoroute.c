@@ -79,6 +79,7 @@
 #include "undo.h"
 #include "vector.h"
 #include "pcb-printf.h"
+#include "set.h"
 
 
 RCSID("$Id$");

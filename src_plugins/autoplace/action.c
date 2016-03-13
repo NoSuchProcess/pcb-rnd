@@ -28,6 +28,7 @@
 #include "config.h"
 #include "global.h"
 #include "autoplace.h"
+#include "set.h"
 
 
 static const char autoplace_syntax[] = "AutoPlaceSelected()";

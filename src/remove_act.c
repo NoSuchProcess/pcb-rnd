@@ -31,6 +31,8 @@
 #include "change.h"
 #include "error.h"
 #include "undo.h"
+#include "set.h"
+#include "remove.h"
 
 /* --------------------------------------------------------------------------- */
 

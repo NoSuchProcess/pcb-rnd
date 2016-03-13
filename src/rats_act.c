@@ -31,6 +31,10 @@
 #include "change.h"
 #include "error.h"
 #include "undo.h"
+#include "set.h"
+#include "misc.h"
+#include "find.h"
+#include "remove.h"
 
 #include "rats.h"
 #include "draw.h"

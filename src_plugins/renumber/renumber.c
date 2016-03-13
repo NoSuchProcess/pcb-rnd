@@ -31,6 +31,8 @@
 #include "change.h"
 #include "error.h"
 #include "undo.h"
+#include "misc.h"
+#include "set.h"
 
 #include "pcb-printf.h"
 
@@ -298,7 +300,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	if (changed) {
 
 		/* update the netlist */
-		AddNetlistLibToUndoList(&(PCB->NetlistLib));
+		AddNetlistLibToUndoList(PCB->NetlistLib);
 
 		/* iterate over each net */
 		for (i = 0; i < PCB->NetlistLib[WTF].MenuN; i++) {
