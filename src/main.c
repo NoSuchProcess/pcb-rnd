@@ -1566,6 +1566,7 @@ char *program_directory = 0;
 void pcb_main_uninit(void)
 {
 	int i;
+	char **s;
 
 	if (gui->uninit != NULL)
 		gui->uninit(gui);
@@ -1583,6 +1584,13 @@ void pcb_main_uninit(void)
 
 	for (i = 0; i < MAX_LAYER; i++)
 		free(Settings.DefaultLayerName[i]);
+
+	if (fontfile_paths != NULL) {
+		for (s = fontfile_paths; *s != NULL; s++)
+			free(*s);
+		free(fontfile_paths);
+		fontfile_paths = NULL;
+	}
 }
 
 int main(int argc, char *argv[])
