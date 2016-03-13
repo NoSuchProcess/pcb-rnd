@@ -75,8 +75,11 @@
 
 #include "config.h"
 
+
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "free_atexit.h"
 
 #ifdef HAVE_STRING_H
 #include <string.h>
@@ -103,7 +106,7 @@ int reslex();
 #define f(x) current_res->flags |= x
 
 
-#line 107 "res_parse.tab.c" /* yacc.c:339  */
+#line 110 "res_parse.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -148,13 +151,13 @@ extern int resdebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 39 "res_parse.y" /* yacc.c:355  */
+#line 42 "res_parse.y" /* yacc.c:355  */
 
   int ival;
   char *sval;
   Resource *rval;
 
-#line 158 "res_parse.tab.c" /* yacc.c:355  */
+#line 161 "res_parse.tab.c" /* yacc.c:355  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -169,7 +172,7 @@ int resparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 173 "res_parse.tab.c" /* yacc.c:358  */
+#line 176 "res_parse.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -466,8 +469,8 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    51,    51,    51,    56,    56,    61,    61,    63,    64,
-      65,    66,    67,    68
+       0,    54,    54,    54,    59,    59,    64,    64,    66,    67,
+      68,    69,    70,    71
 };
 #endif
 
@@ -1242,55 +1245,55 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 51 "res_parse.y" /* yacc.c:1646  */
+#line 54 "res_parse.y" /* yacc.c:1646  */
     { current_res = parsed_res = resource_create(NULL); }
-#line 1248 "res_parse.tab.c" /* yacc.c:1646  */
+#line 1251 "res_parse.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 56 "res_parse.y" /* yacc.c:1646  */
+#line 59 "res_parse.y" /* yacc.c:1646  */
     { current_res = resource_create(current_res); }
-#line 1254 "res_parse.tab.c" /* yacc.c:1646  */
+#line 1257 "res_parse.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 58 "res_parse.y" /* yacc.c:1646  */
+#line 61 "res_parse.y" /* yacc.c:1646  */
     { (yyval.rval) = current_res; current_res = current_res->parent; }
-#line 1260 "res_parse.tab.c" /* yacc.c:1646  */
+#line 1263 "res_parse.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 63 "res_parse.y" /* yacc.c:1646  */
+#line 66 "res_parse.y" /* yacc.c:1646  */
     { resource_add_val(current_res, 0, (yyvsp[0].sval), 0); f(FLAG_V); }
-#line 1266 "res_parse.tab.c" /* yacc.c:1646  */
+#line 1269 "res_parse.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 64 "res_parse.y" /* yacc.c:1646  */
+#line 67 "res_parse.y" /* yacc.c:1646  */
     { resource_add_val(current_res, (yyvsp[-2].sval), (yyvsp[0].sval), 0); f(FLAG_NV); }
-#line 1272 "res_parse.tab.c" /* yacc.c:1646  */
+#line 1275 "res_parse.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 65 "res_parse.y" /* yacc.c:1646  */
+#line 68 "res_parse.y" /* yacc.c:1646  */
     { resource_add_val(current_res, 0, (yyvsp[0].sval), 0); f(FLAG_S); }
-#line 1278 "res_parse.tab.c" /* yacc.c:1646  */
+#line 1281 "res_parse.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 66 "res_parse.y" /* yacc.c:1646  */
+#line 69 "res_parse.y" /* yacc.c:1646  */
     { resource_add_val(current_res, 0, 0, (yyvsp[0].rval)); f(FLAG_S); }
-#line 1284 "res_parse.tab.c" /* yacc.c:1646  */
+#line 1287 "res_parse.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 67 "res_parse.y" /* yacc.c:1646  */
+#line 70 "res_parse.y" /* yacc.c:1646  */
     { resource_add_val(current_res, (yyvsp[-2].sval), 0, (yyvsp[0].rval)); f(FLAG_NS); }
-#line 1290 "res_parse.tab.c" /* yacc.c:1646  */
+#line 1293 "res_parse.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1294 "res_parse.tab.c" /* yacc.c:1646  */
+#line 1297 "res_parse.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1518,7 +1521,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 71 "res_parse.y" /* yacc.c:1906  */
+#line 74 "res_parse.y" /* yacc.c:1906  */
 
 
 static const char *res_filename = 0;

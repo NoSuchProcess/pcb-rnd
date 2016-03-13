@@ -4,8 +4,11 @@
 
 #include "config.h"
 
+
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "free_atexit.h"
 
 #ifdef HAVE_STRING_H
 #include <string.h>

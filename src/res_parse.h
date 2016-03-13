@@ -55,7 +55,7 @@ extern int resdebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 39 "res_parse.y" /* yacc.c:1909  */
+#line 42 "res_parse.y" /* yacc.c:1909  */
 
   int ival;
   char *sval;
