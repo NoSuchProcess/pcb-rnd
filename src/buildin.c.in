@@ -5,6 +5,7 @@ print [@
 #include "buildin.h"
 void buildin_init(void)
 {
+	pcb_uninit_t uninit_func;
 @/local/pcb/buildin_init@
 }
 @]

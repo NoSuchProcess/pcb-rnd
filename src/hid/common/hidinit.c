@@ -61,7 +61,8 @@ static void hid_load_dir(char *dirname)
 	}
 	while ((de = readdir(dir)) != NULL) {
 		void *sym;
-		void (*symv) ();
+		pcb_uninit_t (*symv) ();
+		pcb_uninit_t uninit;
 		void *so;
 		char *basename, *path, *symname;
 		struct stat st;
@@ -89,14 +90,17 @@ static void hid_load_dir(char *dirname)
 			else {
 				symname = Concat("hid_", basename, "_init", NULL);
 				if ((sym = dlsym(so, symname)) != NULL) {
-					symv = (void (*)()) sym;
-					symv();
+					symv = (pcb_uninit_t (*)()) sym;
+					uninit = symv();
 				}
 				else if ((sym = dlsym(so, "pcb_plugin_init")) != NULL) {
-					symv = (void (*)()) sym;
-					symv();
+					symv = (pcb_uninit_t (*)()) sym;
+					uninit = symv();
 				}
-				plugin_register(basename, path, so, 1);
+				else
+					uninit = NULL;
+
+				plugin_register(basename, path, so, 1, uninit);
 				free(symname);
 			}
 		}

@@ -7,6 +7,7 @@
 #include "src/event.h"
 #include "src/paths.h"
 #include "src/error.h"
+#include "src/plugins.h"
 #include "scripts.h"
 #include "manage_scripts.h"
 
@@ -133,7 +134,7 @@ static void register_actions()
 #define PLUGIN_INIT_NAME pcb_plugin_init
 #endif
 
-void PLUGIN_INIT_NAME ();
+pcb_uninit_t PLUGIN_INIT_NAME ();
 
 static void load_base_and_cfg(void)
 {
@@ -209,10 +210,11 @@ static void load_base_and_cfg(void)
 }
 
 
-void PLUGIN_INIT_NAME ()
+pcb_uninit_t PLUGIN_INIT_NAME ()
 {
 
 	printf("pcb-gpmi hid is loaded.\n");
 	gpmi_init();
 	load_base_and_cfg();
+	return NULL;
 }

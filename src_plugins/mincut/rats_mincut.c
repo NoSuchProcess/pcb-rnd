@@ -46,7 +46,7 @@
 #include "search.h"
 #include "set.h"
 #include "undo.h"
-
+#include "plugins.h"
 
 #include "rats.h"
 #include "pcb-mincut/graph.h"
@@ -404,9 +404,10 @@ void rat_proc_shorts(void)
 
 
 #include "stub_mincut.h"
-void hid_mincut_init(void)
+pcb_uninit_t hid_mincut_init(void)
 {
 	stub_rat_found_short = rat_found_short;
 	stub_rat_proc_shorts = rat_proc_shorts;
+	return NULL;
 }
 

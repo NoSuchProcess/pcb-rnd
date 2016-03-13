@@ -33,6 +33,7 @@
 #include "undo.h"
 #include "misc.h"
 #include "set.h"
+#include "plugins.h"
 
 #include "pcb-printf.h"
 
@@ -355,8 +356,9 @@ HID_Action renumber_action_list[] = {
 REGISTER_ACTIONS(renumber_action_list)
 
 #include "dolists.h"
-void hid_renumber_init(void)
+pcb_uninit_t hid_renumber_init(void)
 {
 	REGISTER_ACTIONS(renumber_action_list)
+	return NULL;
 }
 

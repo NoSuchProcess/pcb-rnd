@@ -28,6 +28,7 @@
 #include "config.h"
 #include "global.h"
 #include "autoplace.h"
+#include "plugins.h"
 #include "set.h"
 
 
@@ -62,7 +63,8 @@ HID_Action autoplace_action_list[] = {
 REGISTER_ACTIONS(autoplace_action_list)
 
 #include "dolists.h"
-void hid_autoplace_init(void)
+pcb_uninit_t hid_autoplace_init(void)
 {
 	REGISTER_ACTIONS(autoplace_action_list)
+	return NULL;
 }

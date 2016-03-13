@@ -34,7 +34,7 @@ mod_pcb_gpmi: all
 		append /local/pcb/EXEDEPS     {$(PCB_GPMI)/gpmi_plugin/gpmi_buildin.a}
 		append /local/pcb/LDFLAGS      /target/libs/script/gpmi/ldflags
 
-		append /local/pcb/buildin_init { extern void hid_gpmi_init(); hid_gpmi_init(); plugin_register("gpmi", "<gpmi>", NULL, 0); }
+		append /local/pcb/buildin_init { extern pcb_uninit_t hid_gpmi_init(); uninit_func = hid_gpmi_init(); plugin_register("gpmi", "<gpmi>", NULL, 0, uninit_func); }
 
 #		append /local/pcb/CFLAGS   /target/libs/script/gpmi/cflags
 #		append /local/pcb/LDFLAGS  /target/libs/script/gpmi/ldflags

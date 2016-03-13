@@ -31,6 +31,7 @@
 #include "change.h"
 #include "error.h"
 #include "undo.h"
+#include "plugins.h"
 
 #include "misc.h"
 #include "portability.h"
@@ -427,7 +428,8 @@ HID_Action import_sch_action_list[] = {
 REGISTER_ACTIONS(import_sch_action_list)
 
 #include "dolists.h"
-void hid_import_sch_init(void)
+pcb_uninit_t hid_import_sch_init(void)
 {
 	REGISTER_ACTIONS(import_sch_action_list)
+	return NULL;
 }

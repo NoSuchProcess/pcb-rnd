@@ -3,7 +3,12 @@
 #  /local/pcb/mod       basename of the module (e.g. autoplace)
 #  /local/pcb/mod/OBJS  full path of all object files
 
-append /local/pcb/buildin_init    [@ extern void hid_@/local/pcb/mod@_init(); hid_@/local/pcb/mod@_init(); plugin_register("@/local/pcb/mod@", "<@/local/pcb/mod@>", NULL, 0); @]
+append /local/pcb/buildin_init    [@
+
+	extern pcb_uninit_t hid_@/local/pcb/mod@_init();
+	uninit_func = hid_@/local/pcb/mod@_init();
+	plugin_register("@/local/pcb/mod@", "<@/local/pcb/mod@>", NULL, 0, uninit_func);
+@]
 append /local/pcb/OBJS            /local/pcb/mod/OBJS
 append /local/pcb/RULES [@
 

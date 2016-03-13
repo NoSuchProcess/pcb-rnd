@@ -31,6 +31,7 @@
 #include "change.h"
 #include "error.h"
 #include "undo.h"
+#include "plugins.h"
 /* -------------------------------------------------------------------------- */
 
 static const char dumplibrary_syntax[] = "DumpLibrary()";
@@ -93,8 +94,9 @@ HID_Action oldactions_action_list[] = {
 REGISTER_ACTIONS(oldactions_action_list)
 
 #include "dolists.h"
-void hid_oldactions_init(void)
+pcb_uninit_t hid_oldactions_init(void)
 {
 	REGISTER_ACTIONS(oldactions_action_list)
+	return NULL;
 }
 

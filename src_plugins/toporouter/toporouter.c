@@ -8236,7 +8236,8 @@ static HID_Action toporouter_action_list[] = {
 
 REGISTER_ACTIONS(toporouter_action_list)
 
-void hid_toporouter_init()
+pcb_uninit_t hid_toporouter_init()
 {
 	register_toporouter_action_list();
+	return NULL;
 }

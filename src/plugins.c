@@ -11,7 +11,7 @@
 
 plugin_info_t *plugins = NULL;
 
-void plugin_register(const char *name, const char *path, void *handle, int dynamic)
+void plugin_register(const char *name, const char *path, void *handle, int dynamic, void (*uninit)(void))
 {
 	plugin_info_t *i = malloc(sizeof(plugin_info_t));
 
@@ -19,6 +19,7 @@ void plugin_register(const char *name, const char *path, void *handle, int dynam
 	i->path = strdup(path);
 	i->handle = handle;
 	i->dynamic = dynamic;
+	i->uninit = uninit;
 
 	i->next = plugins;
 	plugins = i;

@@ -28,6 +28,7 @@
 #include "config.h"
 #include "global.h"
 #include "autoroute.h"
+#include "plugins.h"
 #include "set.h"
 
 /* action routines for the autorouter
@@ -89,7 +90,8 @@ HID_Action autoroute_action_list[] = {
 REGISTER_ACTIONS(autoroute_action_list)
 
 #include "dolists.h"
-void hid_autoroute_init(void)
+pcb_uninit_t hid_autoroute_init(void)
 {
 	REGISTER_ACTIONS(autoroute_action_list)
+	return NULL;
 }

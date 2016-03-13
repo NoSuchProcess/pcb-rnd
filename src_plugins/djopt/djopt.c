@@ -43,7 +43,7 @@
 #include "strflags.h"
 #include "find.h"
 #include "pcb-printf.h"
-
+#include "plugins.h"
 
 RCSID("$Id$");
 
@@ -2718,8 +2718,9 @@ HID_Action djopt_action_list[] = {
 REGISTER_ACTIONS(djopt_action_list)
 
 #include "dolists.h"
-void hid_djopt_init(void)
+pcb_uninit_t hid_djopt_init(void)
 {
 	REGISTER_FLAGS(djopt_flag_list)
 	REGISTER_ACTIONS(djopt_action_list)
+	return NULL;
 }

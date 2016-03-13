@@ -29,6 +29,7 @@
 #include "global.h"
 #include "data.h"
 #include "error.h"
+#include "plugins.h"
 
 /* from mymem.h, not include because of the malloc junk */
 LibraryMenuTypePtr GetLibraryMenuMemory(LibraryTypePtr, int *idx);

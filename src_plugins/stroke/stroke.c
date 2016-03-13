@@ -157,12 +157,13 @@ static void real_stroke_start(void)
 	StrokeBox.Y1 = Crosshair.Y;
 }
 
-void hid_stroke_init(void)
+pcb_uninit_t hid_stroke_init(void)
 {
 	stroke_init();
 
 	stub_stroke_record = real_stroke_record;
 	stub_stroke_start = real_stroke_start;
 	stub_stroke_finish = real_stroke_finish;
+	return NULL;
 }
 

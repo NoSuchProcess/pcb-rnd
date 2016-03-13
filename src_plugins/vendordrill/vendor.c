@@ -58,7 +58,7 @@
 #include "undo.h"
 #include "vendor.h"
 #include "stub_vendor.h"
-
+#include "plugins.h"
 
 RCSID("$Id$");
 
@@ -843,11 +843,12 @@ HID_Flag vendor_flag_list[] = {
 REGISTER_FLAGS(vendor_flag_list)
 
 #include "dolists.h"
-void hid_vendordrill_init(void)
+pcb_uninit_t hid_vendordrill_init(void)
 {
 	stub_vendorDrillMap = vendorDrillMap;
 	stub_vendorIsElementMappable = vendorIsElementMappable;
 
 	REGISTER_ACTIONS(vendor_action_list)
 	REGISTER_FLAGS(vendor_flag_list)
+	return NULL;
 }
