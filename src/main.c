@@ -1573,8 +1573,6 @@ void pcb_main_uninit(void)
 	if (gui->uninit != NULL)
 		gui->uninit(gui);
 
-	hid_uninit();
-
 	UninitBuffers();
 
 	/* Free up memory allocated to the PCB. Why bother when we're about to exit ?
@@ -1587,6 +1585,7 @@ void pcb_main_uninit(void)
 
 	plugins_uninit();
 	events_uninit();
+	hid_uninit();
 
 	for (i = 0; i < MAX_LAYER; i++)
 		free(Settings.DefaultLayerName[i]);

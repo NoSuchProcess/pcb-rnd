@@ -113,6 +113,8 @@ static void hid_load_dir(char *dirname)
 
 void hid_init()
 {
+	hid_actions_init();
+
 	/* Setup a "nogui" default HID */
 	gui = hid_nogui_get_hid();
 
@@ -136,7 +138,7 @@ void hid_init()
 
 void hid_uninit(void)
 {
-
+	hid_actions_uninit();
 }
 
 void hid_register_hid(HID * hid)

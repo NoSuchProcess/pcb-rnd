@@ -103,6 +103,7 @@ void hid_remove_actions_by_cookie(void *cookie)
 	for (e = htsp_first(all_actions); e; e = htsp_next(all_actions, e)) {
 		hid_cookie_action_t *ca = e->value;
 		if (ca->cookie == cookie) {
+			htsp_pop(all_actions, e->key);
 			free(e->key);
 			free(e->value);
 		}
@@ -418,6 +419,29 @@ int hid_parse_actions(const char *str_)
 	return hid_parse_actionstring(str_, TRUE);
 }
 
+void hid_actions_init(void)
+{
+
+}
+
+void hid_actions_uninit(void)
+{
+	htsp_entry_t *e;
+
+	if (all_actions == NULL)
+		return;
+
+	for (e = htsp_first(all_actions); e; e = htsp_next(all_actions, e)) {
+		hid_cookie_action_t *ca = e->value;
+		if (ca->cookie != NULL)
+			fprintf(stderr, "WARNING: hid_actions_uninit: action '%s' with cookie %p left registered, check your plugins!\n", e->key, ca->cookie);
+		free(e->key);
+		free(e->value);
+	}
+
+	htsp_free(all_actions);
+	all_actions = NULL;
+}
 
 /* trick for the doc extractor */
 #define static

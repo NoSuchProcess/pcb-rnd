@@ -644,6 +644,10 @@ extern "C" {
    smaller than a screen pixel.  */
 	extern int pixel_slop;
 
+/* Init and uninit the whole action framework */
+	void hid_actions_init(void);
+	void hid_actions_uninit(void);
+
 #if defined(__cplusplus) && __cplusplus
 }
 #endif
