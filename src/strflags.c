@@ -167,6 +167,17 @@ static char *alloc_buf(int len)
 #undef B
 }
 
+void uninit_strflags_buf(void)
+{
+	int n;
+	for(n = 0; n < 10; n++) {
+		if (buffers[n].ptr != NULL) {
+			free(buffers[n].ptr);
+			buffers[n].ptr = NULL;
+		}
+	}
+}
+
 /*
  * This set of routines manages a list of layer-specific flags.
  * Callers should call grow_layer_list(0) to reset the list, and

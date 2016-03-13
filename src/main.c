@@ -1591,6 +1591,8 @@ void pcb_main_uninit(void)
 		free(fontfile_paths);
 		fontfile_paths = NULL;
 	}
+
+	uninit_strflags_buf();
 }
 
 int main(int argc, char *argv[])
