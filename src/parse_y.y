@@ -576,6 +576,7 @@ pcbflags
 		| T_FLAGS '(' STRING ')'
 			{
 			  yyPCB->Flags = string_to_pcbflags ($3, yyerror);
+			  free($3);
 			}
 		|
 		;
@@ -660,6 +661,7 @@ pcbstyles
 					Message("illegal route-style string\n");
 					YYABORT;
 				}
+				free($3);
 			}
 		| T_STYLES '[' STRING ']'
 			{
@@ -668,6 +670,7 @@ pcbstyles
 					Message("illegal route-style string\n");
 					YYABORT;
 				}
+				free($3);
 			}
 		|
 		;
@@ -871,6 +874,8 @@ layer
 				LayerFlag[$3-1] = true;
 				if (yyData->LayerN + 2 < $3)
 				  yyData->LayerN = $3 - 2;
+				if ($5 != NULL)
+					free($5);
 			}
 		  layerdata ')'
 		;
@@ -1696,7 +1701,7 @@ pad
 		;
 
 flags		: INTEGER	{ $$ = OldFlags($1); }
-		| STRING	{ $$ = string_to_flags ($1, yyerror); }
+		| STRING	{ $$ = string_to_flags ($1, yyerror); free($1); }
 		;
 
 symbols
@@ -1933,9 +1938,9 @@ op (arg1 arg2 ...) (
 
 netpatch
 			/* name style pin pin ... */
-		: T_ADD_CONN      '(' STRING STRING ')'         { rats_patch_append(yyPCB, RATP_ADD_CONN, $3, $4, NULL); }
-		| T_DEL_CONN      '(' STRING STRING ')'         { rats_patch_append(yyPCB, RATP_DEL_CONN, $3, $4, NULL); }
-		| T_CHANGE_ATTRIB '(' STRING STRING STRING ')'  { rats_patch_append(yyPCB, RATP_CHANGE_ATTRIB, $3, $4, $5); }
+		: T_ADD_CONN      '(' STRING STRING ')'         { rats_patch_append(yyPCB, RATP_ADD_CONN, $3, $4, NULL); free($3); free($4); }
+		| T_DEL_CONN      '(' STRING STRING ')'         { rats_patch_append(yyPCB, RATP_DEL_CONN, $3, $4, NULL); free($3); free($4); }
+		| T_CHANGE_ATTRIB '(' STRING STRING STRING ')'  { rats_patch_append(yyPCB, RATP_CHANGE_ATTRIB, $3, $4, $5); free($3); free($4); free($5); }
 		;
 
 
