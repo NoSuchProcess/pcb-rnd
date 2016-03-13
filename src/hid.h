@@ -100,6 +100,7 @@ extern "C" {
 
 	extern void hid_remove_actions(HID_Action * a, int n);
 	extern HID_Action *hid_remove_action(HID_Action * a);
+	extern void hid_remove_actions_by_cooke(void *cookie);
 
 	extern const char pcbchanged_help[];
 	extern const char pcbchanged_syntax[];
