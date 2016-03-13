@@ -26,6 +26,13 @@ typedef struct {
 	} d;
 } event_arg_t;
 
+/* Initialize the event system */
+void events_init(void);
+
+/* Uninitialize the event system and remove all events */
+void events_uninit(void);
+
+
 /* Event callback prototype; user_data is the same as in event_bind().
    argv[0] is always an ARG_INT with the event id that triggered the event. */
 typedef void (event_handler_t) (void *user_data, int argc, event_arg_t * argv[]);

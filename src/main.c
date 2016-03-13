@@ -60,6 +60,7 @@
 #include "paths.h"
 #include "strflags.h"
 #include "plugins.h"
+#include "event.h"
 
 #include "hid/common/actions.h"
 
@@ -1585,6 +1586,7 @@ void pcb_main_uninit(void)
 	PCB = NULL;
 
 	plugins_uninit();
+	events_uninit();
 
 	for (i = 0; i < MAX_LAYER; i++)
 		free(Settings.DefaultLayerName[i]);
@@ -1797,6 +1799,8 @@ int main(int argc, char *argv[])
 	 * the critical sections will be handled by parse_l.l
 	 */
 	atexit(EmergencySave);
+
+	events_init();
 
 	/* read the library file and display it if it's not empty
 	 */

@@ -126,3 +126,21 @@ void event(event_id_t ev, const char *fmt, ...)
 	for (e = events[ev]; e != NULL; e = e->next)
 		e->handler(e->user_data, argc, (event_arg_t **) & argv);
 }
+
+void events_init(void)
+{
+
+}
+
+void events_uninit(void)
+{
+	int ev;
+	for(ev = 0; ev < EVENT_last; ev++) {
+		event_t *e, *next;
+		for(e = events[ev]; e != NULL; e = next) {
+			next = e->next;
+			free(e);
+		}
+	}
+}
+
