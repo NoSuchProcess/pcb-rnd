@@ -1011,6 +1011,7 @@ error:
 /* ---------------------------------------------------------------------------
  * quits application
  */
+extern void pcb_main_uninit(void);
 void QuitApplication(void)
 {
 	/*
@@ -1023,13 +1024,12 @@ void QuitApplication(void)
 	else
 		DisableEmergencySave();
 
-	/* Free up memory allocated to the PCB. Why bother when we're about to exit ?
-	 * Because it removes some false positives from heap bug detectors such as
-	 * lib dmalloc.
-	 */
-	FreePCBMemory(PCB);
-
-	exit(0);
+	if (gui->do_exit == NULL) {
+		pcb_main_uninit();
+		exit(0);
+	}
+	else
+		gui->do_exit(gui);
 }
 
 /* ---------------------------------------------------------------------------

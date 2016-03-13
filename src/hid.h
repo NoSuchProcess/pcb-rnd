@@ -288,6 +288,9 @@ extern "C" {
 		/* uninit a GUI hid */
 		void (*uninit) (HID *hid);
 
+		/* uninit a GUI hid */
+		void (*do_exit) (HID *hid);
+
 		/* Parse the command line.  Call this early for whatever HID will be
 		   the primary HID, as it will set all the registered attributes.
 		   The HID should remove all arguments, leaving any possible file

@@ -1563,6 +1563,20 @@ char *program_directory = 0;
 
 #include "dolists.h"
 
+void pcb_main_uninit(void)
+{
+	/* Free up memory allocated to the PCB. Why bother when we're about to exit ?
+	 * Because it removes some false positives from heap bug detectors such as
+	 * lib dmalloc.
+	 */
+	FreePCBMemory(PCB);
+
+	if (gui->uninit != NULL)
+		gui->uninit(gui);
+
+	hid_uninit();
+}
+
 int main(int argc, char *argv[])
 {
 	int i;
@@ -1786,10 +1800,7 @@ int main(int argc, char *argv[])
 	pcb_dbus_finish();
 #endif
 
-	if (gui->uninit != NULL)
-		gui->uninit(gui);
-
-	hid_uninit();
+	pcb_main_uninit();
 
 	return (0);
 }

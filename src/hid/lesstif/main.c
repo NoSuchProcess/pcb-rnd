@@ -1814,6 +1814,19 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	XtAppMainLoop(app_context);
 }
 
+static void lesstif_do_exit(HID *hid)
+{
+	XtAppSetExitFlag(app_context);
+}
+
+void lesstif_uninit_menu(void);
+
+static void lesstif_uninit(HID *hid)
+{
+	lesstif_uninit_menu();
+}
+
+
 #if 0
 XrmOptionDescRec lesstif_options[] = {
 };
@@ -3718,6 +3731,8 @@ void hid_lesstif_init()
 
 	lesstif_hid.get_export_options = lesstif_get_export_options;
 	lesstif_hid.do_export = lesstif_do_export;
+	lesstif_hid.do_exit = lesstif_do_exit;
+	lesstif_hid.uninit = lesstif_uninit;
 	lesstif_hid.parse_arguments = lesstif_parse_arguments;
 	lesstif_hid.invalidate_lr = lesstif_invalidate_lr;
 	lesstif_hid.invalidate_all = lesstif_invalidate_all;
