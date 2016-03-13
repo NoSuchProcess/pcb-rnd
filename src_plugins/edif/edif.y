@@ -4453,7 +4453,8 @@ int ReadEdifNetlist(char *filename)
 }
 
 #include "stub_edif.h"
-void hid_edif_init(void)
+pcb_uninit_t hid_edif_init(void)
 {
 	stub_ReadEdifNetlist = ReadEdifNetlist;
+	return NULL;
 }
