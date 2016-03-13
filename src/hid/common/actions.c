@@ -22,7 +22,7 @@
 RCSID("$Id$");
 
 static htsp_t *all_actions = NULL;
-HID_Action *current_action = NULL;
+const HID_Action *current_action = NULL;
 
 static int keyeq(char *a, char *b)
 {
@@ -43,9 +43,15 @@ static const char *check_action_name(const char *s)
 	return NULL;
 }
 
-void hid_register_actions(HID_Action * a, int n, void *cookie)
+typedef struct {
+	void *cookie;
+	const HID_Action *action;
+} hid_cookie_action_t;
+
+void hid_register_actions(const HID_Action * a, int n, void *cookie)
 {
 	int i;
+	hid_cookie_action_t *ca;
 
 	if (all_actions == NULL)
 		all_actions = htsp_alloc(keyhash, keyeq);
@@ -59,51 +65,76 @@ void hid_register_actions(HID_Action * a, int n, void *cookie)
 			Message(_("ERROR! Invalid action name, " "action \"%s\" is already registered.\n"), a[i].name);
 			continue;
 		}
-		htsp_set(all_actions, a[i].name, a + i);
+		ca = malloc(sizeof(hid_cookie_action_t));
+		ca->cookie = cookie;
+		ca->action = a+i;
+		htsp_set(all_actions, strdup(a[i].name), ca);
 	}
 }
 
-void hid_register_action(HID_Action * a, void *cookie)
+void hid_register_action(const HID_Action * a, void *cookie)
 {
 	hid_register_actions(a, 1, cookie);
 }
 
-void hid_remove_actions(HID_Action * a, int n)
+void hid_remove_actions(const HID_Action * a, int n)
 {
 	int i;
 
 	if (all_actions == NULL)
 		return;
 
-	for (i = 0; i < n; i++)
-		htsp_pop(all_actions, a[i].name);
+	for (i = 0; i < n; i++) {
+		htsp_entry_t *e;
+		e = htsp_popentry(all_actions, a[i].name);
+		free(e->key);
+		free(e->value);
+	}
 }
 
-void hid_remove_actions_by_cooke(void *cookie)
+void hid_remove_actions_by_cookie(void *cookie)
 {
-	abort();
+	htsp_entry_t *e;
+
+	if (all_actions == NULL)
+		return;
+
+	/* Slow linear search - probably OK, this will run only on uninit */
+	for (e = htsp_first(all_actions); e; e = htsp_next(all_actions, e)) {
+		hid_cookie_action_t *ca = e->value;
+		if (ca->cookie == cookie) {
+			free(e->key);
+			free(e->value);
+		}
+	}
 }
 
-HID_Action *hid_remove_action(HID_Action * a)
+HID_Action *hid_remove_action(const HID_Action * a)
 {
+	htsp_entry_t *e;
+
 	if (all_actions == NULL)
 		return NULL;
 
-	return htsp_pop(all_actions, a->name);
+	e = htsp_popentry(all_actions, a->name);
+	if (e != NULL) {
+		free(e->key);
+		free(e->value);
+	}
 }
 
-HID_Action *hid_find_action(const char *name)
+const HID_Action *hid_find_action(const char *name)
 {
-	HID_Action *action;
+	hid_cookie_action_t *ca;
 	int i;
 
 	if ((name == NULL) && (all_actions == NULL))
 		return 0;
 
-	action = htsp_get(all_actions, (char *) name);
+	ca = htsp_get(all_actions, (char *) name);
 
-	if (action)
-		return action;
+	if (ca)
+		return ca->action;
 
 	printf("unknown action `%s'\n", name);
 	return 0;
@@ -115,14 +146,14 @@ void print_actions()
 
 	fprintf(stderr, "Registered Actions:\n");
 	for (e = htsp_first(all_actions); e; e = htsp_next(all_actions, e)) {
-		HID_Action *action = e->value;
-		if (action->description)
-			fprintf(stderr, "  %s - %s\n", action->name, action->description);
+		hid_cookie_action_t *ca = e->value;
+		if (ca->action->description)
+			fprintf(stderr, "  %s - %s\n", ca->action->name, ca->action->description);
 		else
-			fprintf(stderr, "  %s\n", action->name);
-		if (action->syntax) {
+			fprintf(stderr, "  %s\n", ca->action->name);
+		if (ca->action->syntax) {
 			const char *bb, *eb;
-			bb = eb = action->syntax;
+			bb = eb = ca->action->syntax;
 			while (1) {
 				for (eb = bb; *eb && *eb != '\n'; eb++);
 				fwrite("    ", 4, 1, stderr);
@@ -160,14 +191,14 @@ void dump_actions()
 
 	fprintf(stderr, "Registered Actions:\n");
 	for (e = htsp_first(all_actions); e; e = htsp_next(all_actions, e)) {
-		HID_Action *action = e->value;
-		const char *desc = action->description;
-		const char *synt = action->syntax;
+		hid_cookie_action_t *ca = e->value;
+		const char *desc = ca->action->description;
+		const char *synt = ca->action->syntax;
 
 		desc = desc ? desc : "";
 		synt = synt ? synt : "";
 
-		printf("A%s\n", action->name);
+		printf("A%s\n", ca->action->name);
 		dump_string('D', desc);
 		dump_string('S', synt);
 	}
@@ -196,7 +227,7 @@ int hid_actionv(const char *name, int argc, char **argv)
 {
 	Coord x = 0, y = 0;
 	int i, ret;
-	HID_Action *a, *old_action;
+	const HID_Action *a, *old_action;
 
 	if (!name)
 		return 1;
@@ -386,6 +417,7 @@ int hid_parse_actions(const char *str_)
 {
 	return hid_parse_actionstring(str_, TRUE);
 }
+
 
 /* trick for the doc extractor */
 #define static

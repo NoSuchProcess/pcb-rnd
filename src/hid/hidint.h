@@ -36,7 +36,7 @@ typedef struct HID_AttrNode {
 
 extern HID_AttrNode *hid_attr_nodes;
 
-HID_Action *hid_find_action(const char *name);
+const HID_Action *hid_find_action(const char *name);
 
 HID_Flag *hid_find_flag(const char *name);
 

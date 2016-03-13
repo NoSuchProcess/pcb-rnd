@@ -82,9 +82,9 @@ extern "C" {
 		const char *syntax;
 	} HID_Action;
 
-	extern void hid_register_action(HID_Action *, void *);
+	extern void hid_register_action(const HID_Action *, void *);
 
-	extern void hid_register_actions(HID_Action *, int, void *);
+	extern void hid_register_actions(const HID_Action *, int, void *);
 #define REGISTER_ACTIONS(a) HIDCONCAT(void register_,a) ()\
 { hid_register_actions(a, sizeof(a)/sizeof(a[0]), NULL); }
 
@@ -98,9 +98,9 @@ extern "C" {
 	   Busy()
 	 */
 
-	extern void hid_remove_actions(HID_Action * a, int n);
-	extern HID_Action *hid_remove_action(HID_Action * a);
-	extern void hid_remove_actions_by_cooke(void *cookie);
+	extern void hid_remove_actions(const HID_Action * a, int n);
+	extern HID_Action *hid_remove_action(const HID_Action * a);
+	extern void hid_remove_actions_by_cookie(void *cookie);
 
 	extern const char pcbchanged_help[];
 	extern const char pcbchanged_syntax[];
@@ -637,7 +637,7 @@ extern "C" {
 
 /* This is either NULL or points to the current HID_Action that is being
    called. The action launcher sets and unsets this variable. */
-	extern HID_Action *current_action;
+	extern const HID_Action *current_action;
 
 /* The GUI may set this to be approximately the PCB size of a pixel,
    to allow for near-misses in selection and changes in drawing items
