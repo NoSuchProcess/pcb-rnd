@@ -37,3 +37,6 @@ int gpmi_hid_script_remove(hid_gpmi_script_info_t *i);
 
 /* Edit a config file so that the script is in it */
 int gpmi_hid_script_addcfg(hid_gpmi_script_info_t *i);
+
+/* Uninit the script_info database, removing all scripts loaded */
+void hid_gpmi_script_info_uninit(void);

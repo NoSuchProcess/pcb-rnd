@@ -13,6 +13,8 @@
 
 extern char *homedir; /* detected by pcn-rnd in InitPaths() */
 
+char *gpmi_cookie = "GPMI plugin cookie";
+
 /* This function is used to print a detailed GPMI error message */
 void gpmi_hid_print_error(gpmi_err_stack_t *entry, char *string)
 {
@@ -109,25 +111,21 @@ static int action_gpmi_rehash(int argc, char **argv, Coord x, Coord y)
 
 static void register_actions()
 {
-	HID_Action *ctx;
+	HID_Action act;
 
-	ctx = malloc(sizeof(HID_Action));
-	ctx->name           = strdup("gpmi_scripts");
-	ctx->need_coord_msg = NULL;
-	ctx->description    = strdup("Manage gpmi scripts");
-	ctx->syntax         = strdup("TODO");
-	ctx->trigger_cb     = action_gpmi_scripts;
+	act.name           = "gpmi_scripts";
+	act.need_coord_msg = NULL;
+	act.description    = "Manage gpmi scripts";
+	act.syntax         = "TODO";
+	act.trigger_cb     = action_gpmi_scripts;
+	hid_register_action(&act, &gpmi_cookie);
 
-	hid_register_action(ctx);
-
-	ctx = malloc(sizeof(HID_Action));
-	ctx->name           = strdup("rehash");
-	ctx->need_coord_msg = NULL;
-	ctx->description    = strdup("Reload all gpmi scripts");
-	ctx->syntax         = strdup("TODO");
-	ctx->trigger_cb     = action_gpmi_rehash;
-
-	hid_register_action(ctx);
+	act.name           = "rehash";
+	act.need_coord_msg = NULL;
+	act.description    = "Reload all gpmi scripts";
+	act.syntax         = "TODO";
+	act.trigger_cb     = action_gpmi_rehash;
+	hid_register_action(&act, &gpmi_cookie);
 }
 
 #ifndef PLUGIN_INIT_NAME
@@ -135,12 +133,12 @@ static void register_actions()
 #endif
 
 pcb_uninit_t PLUGIN_INIT_NAME ();
+static gpmi_package *pkg_scripts = NULL;
 
 static void load_base_and_cfg(void)
 {
 	char *dir, *libdirg, *libdirh, *wdir, *wdirh, *hdirh, *home;
 	void **gpmi_asm_scriptname;
-	gpmi_package *scripts = NULL;
 
 	libdirg = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL));
 	libdirh = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
@@ -170,7 +168,7 @@ static void load_base_and_cfg(void)
 
 
 	gpmi_err_stack_enable();
-	if (gpmi_pkg_load("gpmi_scripts", 0, NULL, NULL, &scripts))
+	if (gpmi_pkg_load("gpmi_scripts", 0, NULL, NULL, &pkg_scripts))
 	{
 		gpmi_err_stack_process_str(gpmi_hid_print_error);
 		abort();
@@ -178,12 +176,12 @@ static void load_base_and_cfg(void)
 	gpmi_err_stack_destroy(NULL);
 
 
-	gpmi_asm_scriptname = gpmi_pkg_resolve(scripts, "gpmi_scripts_asm_scriptname");
+	gpmi_asm_scriptname = gpmi_pkg_resolve(pkg_scripts, "gpmi_scripts_asm_scriptname");
 	assert(gpmi_asm_scriptname != NULL);
 	*gpmi_asm_scriptname = gpmi_hid_asm_scriptname;
 
 	register_actions();
-	event_bind(EVENT_GUI_INIT, ev_gui_init, NULL, PLUGIN_INIT_NAME);
+	event_bind(EVENT_GUI_INIT, ev_gui_init, NULL, &gpmi_cookie);
 
 	hid_gpmi_load_dir(libdirh, 0);
 	hid_gpmi_load_dir(libdirg, 0);
@@ -205,10 +203,19 @@ static void load_base_and_cfg(void)
 
 	free(wdir);
 	free(wdirh);
+	free(libdirg);
 	free(libdirh);
 	free(hdirh);
 }
 
+static void plugin_gpmi_uninit(void)
+{
+	event_unbind_allcookie(&gpmi_cookie);
+	hid_remove_actions_by_cookie(&gpmi_cookie);
+	hid_gpmi_script_info_uninit();
+	gpmi_pkg_unload(pkg_scripts);
+	gpmi_uninit();
+}
 
 pcb_uninit_t PLUGIN_INIT_NAME ()
 {
@@ -216,5 +223,5 @@ pcb_uninit_t PLUGIN_INIT_NAME ()
 	printf("pcb-gpmi hid is loaded.\n");
 	gpmi_init();
 	load_base_and_cfg();
-	return NULL;
+	return plugin_gpmi_uninit;
 }

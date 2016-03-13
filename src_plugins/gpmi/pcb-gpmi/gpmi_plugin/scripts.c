@@ -96,6 +96,20 @@ static void hid_gpmi_script_info_del(hid_gpmi_script_info_t *inf)
 	}
 }
 
+/* Unload all scripts and remove them from the list */
+void hid_gpmi_script_info_uninit(void)
+{
+	hid_gpmi_script_info_t *i, *next;
+
+	for(i = hid_gpmi_script_info; i != NULL; i = next) {
+		next = i->next;
+		hid_gpmi_script_info_free(i);
+		free(i);
+	}
+	hid_gpmi_script_info = NULL;
+}
+
+
 static const char *conf_dir = NULL;
 
 hid_gpmi_script_info_t *hid_gpmi_load_module(hid_gpmi_script_info_t *i, const char *module_name, const char *params, const char *config_file_name)

@@ -6,6 +6,7 @@
 #include "src/hid.h"
 #include "src/error.h"
 #include "actions.h"
+#include "../../gpmi_plugin.h"
 
 typedef struct acontext_s  acontext_t;
 
@@ -80,7 +81,7 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 	ctx->module = gpmi_get_current_module();
 	ctx->next   = NULL;
 
-	hid_register_action(&ctx->action);
+	hid_register_action(&ctx->action, &gpmi_cookie);
 
 	gpmi_mod_cleanup_insert(ctx->module, cleanup_action, "p", ctx);
 
