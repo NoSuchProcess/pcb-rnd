@@ -1550,7 +1550,6 @@ static void set_fontfile(void)
 		Message("Error: no font file found\n");
 		exit(1);
 	}
-
 }
 
 /* ---------------------------------------------------------------------- 
@@ -1593,6 +1592,21 @@ void pcb_main_uninit(void)
 	}
 
 	uninit_strflags_buf();
+
+#define free0(ptr) \
+	do {  \
+	 if (ptr != NULL) { \
+			free(ptr); \
+			ptr = 0; \
+		} \
+	} while(0)
+
+	free0(pcblibdir);
+	free0(homedir);
+	free0(bindir);
+	free0(exec_prefix);
+
+#undef free0
 }
 
 int main(int argc, char *argv[])
