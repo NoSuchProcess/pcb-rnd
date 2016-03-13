@@ -6,7 +6,7 @@ struct plugin_info_s {
 	char *name;
 	char *path;
 	void *handle;
-	int dynamic;
+	int dynamic_loaded;
 	pcb_uninit_t uninit;
 	plugin_info_t *next;
 };

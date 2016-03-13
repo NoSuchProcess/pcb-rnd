@@ -11,14 +11,14 @@
 
 plugin_info_t *plugins = NULL;
 
-void plugin_register(const char *name, const char *path, void *handle, int dynamic, void (*uninit)(void))
+void plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
 {
 	plugin_info_t *i = malloc(sizeof(plugin_info_t));
 
 	i->name = strdup(name);
 	i->path = strdup(path);
 	i->handle = handle;
-	i->dynamic = dynamic;
+	i->dynamic_loaded = dynamic_loaded;
 	i->uninit = uninit;
 
 	i->next = plugins;
@@ -60,7 +60,7 @@ static int ManagePlugins(int argc, char **argv, Coord x, Coord y)
 	memset(&str, 0, sizeof(str));
 
 	for (i = plugins; i != NULL; i = i->next)
-		if (i->dynamic)
+		if (i->dynamic_loaded)
 			nump++;
 		else
 			numb++;
@@ -68,7 +68,7 @@ static int ManagePlugins(int argc, char **argv, Coord x, Coord y)
 	DSAddString(&str, "Plugins loaded:\n");
 	if (nump > 0) {
 		for (i = plugins; i != NULL; i = i->next) {
-			if (i->dynamic) {
+			if (i->dynamic_loaded) {
 				DSAddCharacter(&str, ' ');
 				DSAddString(&str, i->name);
 				DSAddCharacter(&str, ' ');
@@ -83,7 +83,7 @@ static int ManagePlugins(int argc, char **argv, Coord x, Coord y)
 	DSAddString(&str, "\n\nBuildins:\n");
 	if (numb > 0) {
 		for (i = plugins; i != NULL; i = i->next) {
-			if (!i->dynamic) {
+			if (!i->dynamic_loaded) {
 				DSAddCharacter(&str, ' ');
 				DSAddString(&str, i->name);
 				DSAddCharacter(&str, '\n');
