@@ -1606,6 +1606,8 @@ void pcb_main_uninit(void)
 	free0(bindir);
 	free0(exec_prefix);
 	free0(program_directory);
+	free0(Settings.MakeProgram);
+	free0(Settings.GnetlistProgram);
 
 #undef free0
 }
