@@ -1580,6 +1580,7 @@ void pcb_main_uninit(void)
 	 */
 	FreePCBMemory(PCB);
 	free(PCB);
+	PCB = NULL;
 
 	for (i = 0; i < MAX_LAYER; i++)
 		free(Settings.DefaultLayerName[i]);
