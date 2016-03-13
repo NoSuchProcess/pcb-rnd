@@ -1030,7 +1030,7 @@ void InitBuffers(void)
 		Buffers[i].Data = CreateNewBuffer();
 }
 
-void UnitBuffers(void)
+void UninitBuffers(void)
 {
 	int i;
 

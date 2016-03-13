@@ -1575,7 +1575,7 @@ void pcb_main_uninit(void)
 
 	hid_uninit();
 
-	UnitBuffers();
+	UninitBuffers();
 
 	/* Free up memory allocated to the PCB. Why bother when we're about to exit ?
 	 * Because it removes some false positives from heap bug detectors such as
