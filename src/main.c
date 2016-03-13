@@ -1605,6 +1605,7 @@ void pcb_main_uninit(void)
 	free0(homedir);
 	free0(bindir);
 	free0(exec_prefix);
+	free0(program_directory);
 
 #undef free0
 }
