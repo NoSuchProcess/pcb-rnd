@@ -1030,6 +1030,16 @@ void InitBuffers(void)
 		Buffers[i].Data = CreateNewBuffer();
 }
 
+void UnitBuffers(void)
+{
+	int i;
+
+	for (i = 0; i < MAX_BUFFER; i++) {
+		ClearBuffer(Buffers+i);
+		free(Buffers[i].Data);
+	}
+}
+
 void SwapBuffers(void)
 {
 	int i;
