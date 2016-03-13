@@ -1398,9 +1398,5 @@ void lesstif_create_menu(const char *menu[], const char *action, const char *mne
 
 void lesstif_uninit_menu(void)
 {
-	htsp_entry_t *e;
-	for (e = htsp_first(menu_hash); e; e = htsp_next(menu_hash, e)) {
-		Widget w =(Widget) e->value;
-		printf("li uninit: %s %p\n", e->key, w);
-	}
+	XtDestroyWidget(lesstif_menubar);
 }
