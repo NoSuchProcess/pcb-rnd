@@ -58,6 +58,8 @@
 #include "pcb-printf.h"
 #include "buildin.h"
 #include "paths.h"
+#include "strflags.h"
+#include "plugins.h"
 
 #include "hid/common/actions.h"
 
@@ -1582,6 +1584,8 @@ void pcb_main_uninit(void)
 	free(PCB);
 	PCB = NULL;
 
+	plugins_uninit();
+
 	for (i = 0; i < MAX_LAYER; i++)
 		free(Settings.DefaultLayerName[i]);
 
@@ -1831,6 +1835,7 @@ int main(int argc, char *argv[])
 #endif
 
 	buildin_init();
+	plugins_init();
 
 	gui->do_export(0);
 #if HAVE_DBUS

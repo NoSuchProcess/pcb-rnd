@@ -25,6 +25,27 @@ void plugin_register(const char *name, const char *path, void *handle, int dynam
 	plugins = i;
 }
 
+void plugins_init(void)
+{
+}
+
+
+void plugins_uninit(void)
+{
+	plugin_info_t *i, *next;
+	for(i = plugins; i != NULL; i = next) {
+		next = i->next;
+		free(i->name);
+		free(i->path);
+		if (i->uninit != NULL)
+			i->uninit();
+		free(i);
+	}
+	plugins = NULL;
+}
+
+
+
 /* ---------------------------------------------------------------- */
 static const char manageplugins_syntax[] = "ManagePlugins()\n";
 
