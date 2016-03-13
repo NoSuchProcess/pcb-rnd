@@ -31,10 +31,10 @@
    version 2.2 of Bison.  */
 
 #ifndef YY_RES_RES_PARSE_TAB_H_INCLUDED
-#define YY_RES_RES_PARSE_TAB_H_INCLUDED
+# define YY_RES_RES_PARSE_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-#define YYDEBUG 0
+# define YYDEBUG 0
 #endif
 #if YYDEBUG
 extern int resdebug;
@@ -42,32 +42,34 @@ extern int resdebug;
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
-#define YYTOKENTYPE
-enum yytokentype {
-	STRING = 258,
-	INCLUDE = 259
-};
+# define YYTOKENTYPE
+  enum yytokentype
+  {
+    STRING = 258,
+    INCLUDE = 259
+  };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE YYSTYPE;
-union YYSTYPE {
-#line 43 "res_parse.y"					/* yacc.c:1909  */
+union YYSTYPE
+{
+#line 39 "res_parse.y" /* yacc.c:1909  */
 
-	int ival;
-	char *sval;
-	Resource *rval;
+  int ival;
+  char *sval;
+  Resource *rval;
 
-#line 65 "res_parse.tab.h"			/* yacc.c:1909  */
+#line 65 "res_parse.tab.h" /* yacc.c:1909  */
 };
-#define YYSTYPE_IS_TRIVIAL 1
-#define YYSTYPE_IS_DECLARED 1
+# define YYSTYPE_IS_TRIVIAL 1
+# define YYSTYPE_IS_DECLARED 1
 #endif
 
 
 extern YYSTYPE reslval;
 
-int resparse(void);
+int resparse (void);
 
 #endif /* !YY_RES_RES_PARSE_TAB_H_INCLUDED  */

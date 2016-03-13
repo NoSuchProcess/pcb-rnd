@@ -20,10 +20,6 @@
 #include "resource.h"
 #include "res_parse.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
-
 
 RCSID("$Id$");
 
@@ -144,18 +140,18 @@ resource_parse(const char *filename, const char **strings)
 Resource *
 resource_create(Resource *parent)
 {
-  Resource *rv = (Resource *)malloc(sizeof(Resource));
+  Resource *rv = (Resource *)leaky_malloc(sizeof(Resource));
   rv->parent = parent;
   rv->flags = 0;
   rv->c = 0;
-  rv->v = (ResourceVal *)malloc(sizeof(ResourceVal));
+  rv->v = (ResourceVal *)leaky_malloc(sizeof(ResourceVal));
   return rv;
 }
 
 void
 resource_add_val(Resource *n, char *name, char *value, Resource *subres)
 {
-  n->v = (ResourceVal *)realloc(n->v, sizeof(ResourceVal)*(n->c+1));
+  n->v = (ResourceVal *)leaky_realloc(n->v, sizeof(ResourceVal)*(n->c+1));
   n->v[n->c].name = name;
   n->v[n->c].value = value;
   n->v[n->c].subres = subres;
