@@ -1786,5 +1786,10 @@ int main(int argc, char *argv[])
 	pcb_dbus_finish();
 #endif
 
+	if (gui->uninit != NULL)
+		gui->uninit(gui);
+
+	hid_uninit();
+
 	return (0);
 }

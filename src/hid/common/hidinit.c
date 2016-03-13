@@ -129,6 +129,11 @@ void hid_init()
 	hid_load_dir(Concat("plugins", NULL));
 }
 
+void hid_uninit(void)
+{
+
+}
+
 void hid_register_hid(HID * hid)
 {
 	int i;

@@ -285,6 +285,9 @@ extern "C" {
 		   primary GUI (create a main window, print, export, etc)  */
 		void (*do_export) (HID_Attr_Val * options_);
 
+		/* uninit a GUI hid */
+		void (*uninit) (HID *hid);
+
 		/* Parse the command line.  Call this early for whatever HID will be
 		   the primary HID, as it will set all the registered attributes.
 		   The HID should remove all arguments, leaving any possible file
@@ -583,6 +586,9 @@ extern "C" {
 /* Call this as soon as possible from main().  No other HID calls are
    valid until this is called.  */
 	void hid_init(void);
+
+/* Call this at exit */
+	void hid_uninit(void);
 
 /* When PCB runs in interactive mode, this is called to instantiate
    one GUI HID which happens to be the GUI.  This HID is the one that
