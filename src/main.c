@@ -1565,6 +1565,8 @@ char *program_directory = 0;
 
 void pcb_main_uninit(void)
 {
+	int i;
+
 	if (gui->uninit != NULL)
 		gui->uninit(gui);
 
@@ -1578,6 +1580,9 @@ void pcb_main_uninit(void)
 	 */
 	FreePCBMemory(PCB);
 	free(PCB);
+
+	for (i = 0; i < MAX_LAYER; i++)
+		free(Settings.DefaultLayerName[i]);
 }
 
 int main(int argc, char *argv[])
