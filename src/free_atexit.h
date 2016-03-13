@@ -13,6 +13,7 @@
 #define leaky_malloc(size) malloc(size)
 #define leaky_calloc(nmemb, size) calloc(nmemb, size)
 #define leaky_realloc(old_memory, size) realloc(old_memory, size)
+#define leaky_strdup(str) strdup(str)
 #else
 
 /* set up atexit() hook - can be avoided if leaky_uninit() is called by hand */
@@ -29,6 +30,9 @@ void *leaky_calloc(size_t nmemb, size_t size);
 
 /* reallocate memory, remember the new pointer and free it after exit from the application */
 void *leaky_realloc(void *old_memory, size_t size);
+
+/* strdup() using leaky_malloc() */
+char *leaky_strdup(const char *src);
 
 
 #endif

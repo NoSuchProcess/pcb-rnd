@@ -83,6 +83,14 @@ void *leaky_realloc(void *old_memory, size_t size)
 	return new_memory + sizeof(leaky_admin_t);
 }
 
+char *leaky_strdup(const char *src)
+{
+	int len = strlen(src)+1;
+	char *res = leaky_malloc(len);
+	memcpy(res, src, len);
+	return res;
+}
+
 void leaky_uninit(void)
 {
 	int i;
