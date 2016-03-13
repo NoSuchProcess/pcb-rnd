@@ -204,6 +204,15 @@ static void grow_layer_list(int num)
 	return;
 }
 
+void uninit_strflags_layerlist(void)
+{
+	if (layers != NULL) {
+		free(layers);
+		layers = NULL;
+		num_layers = max_layers = 0;
+	}
+}
+
 static inline void set_layer_list(int layer, int v)
 {
 	if (layer >= num_layers)
