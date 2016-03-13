@@ -1565,6 +1565,11 @@ char *program_directory = 0;
 
 void pcb_main_uninit(void)
 {
+	if (gui->uninit != NULL)
+		gui->uninit(gui);
+
+	hid_uninit();
+
 	UnitBuffers();
 
 	/* Free up memory allocated to the PCB. Why bother when we're about to exit ?
@@ -1572,11 +1577,7 @@ void pcb_main_uninit(void)
 	 * lib dmalloc.
 	 */
 	FreePCBMemory(PCB);
-
-	if (gui->uninit != NULL)
-		gui->uninit(gui);
-
-	hid_uninit();
+	free(PCB);
 }
 
 int main(int argc, char *argv[])
