@@ -13,20 +13,20 @@
 #include "hid.h"
 #include "../hidint.h"
 
-
 RCSID("$Id$");
 
 typedef struct HID_FlagNode {
 	struct HID_FlagNode *next;
 	HID_Flag *flags;
 	int n;
+	void *cookie;
 } HID_FlagNode;
 
 HID_FlagNode *hid_flag_nodes = 0;
 static int n_flags = 0;
 static HID_Flag *all_flags = 0;
 
-void hid_register_flags(HID_Flag * a, int n)
+void hid_register_flags(HID_Flag * a, int n, void *cookie)
 {
 	HID_FlagNode *ha;
 
@@ -41,6 +41,10 @@ void hid_register_flags(HID_Flag * a, int n)
 		free(all_flags);
 		all_flags = 0;
 	}
+}
+
+void hid_flags_uninit(void)
+{
 }
 
 static int flag_sort(const void *va, const void *vb)

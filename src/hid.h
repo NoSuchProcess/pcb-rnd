@@ -140,9 +140,9 @@ extern "C" {
 		int parm;
 	} HID_Flag;
 
-	extern void hid_register_flags(HID_Flag *, int);
+	extern void hid_register_flags(HID_Flag *, int, void *);
 #define REGISTER_FLAGS(a) HIDCONCAT(void register_,a) ()\
-{ hid_register_flags(a, sizeof(a)/sizeof(a[0])); }
+{ hid_register_flags(a, sizeof(a)/sizeof(a[0]), NULL); }
 
 /* Looks up one of the flags registered above.  If the flag is
    unknown, returns zero.  */
