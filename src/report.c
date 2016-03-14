@@ -468,19 +468,19 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 
 static int ReportFoundPins(int argc, char **argv, Coord x, Coord y)
 {
-	static DynamicStringType list;
+	static gds_t list;
 	char temp[64];
 	int col = 0;
 
-	DSClearString(&list);
-	DSAddString(&list, "The following pins/pads are FOUND:\n");
+	gds_truncate(&list, 0);
+	gds_append_str(&list, "The following pins/pads are FOUND:\n");
 	ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{
 			if (TEST_FLAG(FOUNDFLAG, pin)) {
 				sprintf(temp, "%s-%s,%c", NAMEONPCB_NAME(element), pin->Number, ((col++ % (COLUMNS + 1)) == COLUMNS) ? '\n' : ' ');
-				DSAddString(&list, temp);
+				gds_append_str(&list, temp);
 			}
 		}
 		END_LOOP;
@@ -488,14 +488,14 @@ static int ReportFoundPins(int argc, char **argv, Coord x, Coord y)
 		{
 			if (TEST_FLAG(FOUNDFLAG, pad)) {
 				sprintf(temp, "%s-%s,%c", NAMEONPCB_NAME(element), pad->Number, ((col++ % (COLUMNS + 1)) == COLUMNS) ? '\n' : ' ');
-				DSAddString(&list, temp);
+				gds_append_str(&list, temp);
 			}
 		}
 		END_LOOP;
 	}
 	END_LOOP;
 
-	gui->report_dialog("Report", list.Data);
+	gui->report_dialog("Report", list.array);
 	return 0;
 }
 

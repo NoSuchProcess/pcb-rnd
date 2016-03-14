@@ -33,7 +33,7 @@
 
 #include <stdlib.h>
 #include "global.h"
-#include "ds.h"
+#include <genvector/gds_char.h>
 #include "mymem.h"
 
 enum unitflags { UNIT_PERCENT = 1 };
@@ -87,7 +87,7 @@ BoxTypePtr GetObjectBoundingBox(int, void *, void *, void *);
 void ResetStackAndVisibility(void);
 void SaveStackAndVisibility(void);
 void RestoreStackAndVisibility(void);
-void CreateQuotedString(DynamicStringTypePtr, char *);
+void CreateQuotedString(gds_t *, char *);
 BoxTypePtr GetArcEnds(ArcTypePtr);
 void ChangeArcAngles(LayerTypePtr, ArcTypePtr, Angle, Angle);
 char *UniqueElementName(DataTypePtr, char *);

@@ -509,17 +509,18 @@ void PostLoadElementPCB()
 /* ---------------------------------------------------------------------------
  * writes the quoted string created by another subroutine
  */
-static DynamicStringType pqs_ds;
+static gds_t pqs_ds;
 static void PrintQuotedString(FILE * FP, char *S)
 {
-	CreateQuotedString(&pqs_ds, S);
-	fputs(pqs_ds.Data, FP);
+	gds_init(&pqs_ds);
+	gds_append_str(&pqs_ds, S);
+	fputs(pqs_ds.array, FP);
 }
 
 void file_uninit()
 {
-	if (pqs_ds.Data != NULL)
-		free(pqs_ds.Data);
+	if (pqs_ds.array != NULL)
+		free(pqs_ds.array);
 }
 
 /* ---------------------------------------------------------------------------
@@ -885,7 +886,7 @@ static int WritePipe(char *Filename, bool thePcb)
 	FILE *fp;
 	int result;
 	char *p;
-	static DynamicStringType command;
+	static gds_t command;
 	int used_popen = 0;
 
 	if (EMPTY_STRING_P(Settings.SaveCommand)) {
@@ -898,22 +899,21 @@ static int WritePipe(char *Filename, bool thePcb)
 	else {
 		used_popen = 1;
 		/* setup commandline */
-		DSClearString(&command);
+		gds_truncate(&command,0);
 		for (p = Settings.SaveCommand; *p; p++) {
 			/* copy character if not special or add string to command */
 			if (!(*p == '%' && *(p + 1) == 'f'))
-				DSAddCharacter(&command, *p);
+				gds_append(&command, *p);
 			else {
-				DSAddString(&command, Filename);
+				gds_append_str(&command, Filename);
 
 				/* skip the character */
 				p++;
 			}
 		}
-		DSAddCharacter(&command, '\0');
-		printf("write to pipe \"%s\"\n", command.Data);
-		if ((fp = popen(command.Data, "w")) == NULL) {
-			PopenErrorMessage(command.Data);
+		printf("write to pipe \"%s\"\n", command.array);
+		if ((fp = popen(command.array, "w")) == NULL) {
+			PopenErrorMessage(command.array);
 			return (STATUS_ERROR);
 		}
 	}

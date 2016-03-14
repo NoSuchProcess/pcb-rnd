@@ -1039,7 +1039,7 @@ void QuitApplication(void)
  */
 char *EvaluateFilename(char *Template, char *Path, char *Filename, char *Parameter)
 {
-	static DynamicStringType command;
+	static gds_t command;
 	char *p;
 
 	if (Settings.verbose) {
@@ -1050,30 +1050,30 @@ char *EvaluateFilename(char *Template, char *Path, char *Filename, char *Paramet
 		printf("\tParameter: \033[33m%s\033[0m\n", Parameter);
 	}
 
-	DSClearString(&command);
+	gds_init(&command);
 
 	for (p = Template; p && *p; p++) {
 		/* copy character or add string to command */
 		if (*p == '%' && (*(p + 1) == 'f' || *(p + 1) == 'p' || *(p + 1) == 'a'))
 			switch (*(++p)) {
 			case 'a':
-				DSAddString(&command, Parameter);
+				gds_append_str(&command, Parameter);
 				break;
 			case 'f':
-				DSAddString(&command, Filename);
+				gds_append_str(&command, Filename);
 				break;
 			case 'p':
-				DSAddString(&command, Path);
+				gds_append_str(&command, Path);
 				break;
 			}
 		else
-			DSAddCharacter(&command, *p);
+			gds_append(&command, *p);
 	}
-	DSAddCharacter(&command, '\0');
+	gds_append(&command, '\0');
 	if (Settings.verbose)
-		printf("EvaluateFilename: \033[32m%s\033[0m\n", command.Data);
+		printf("EvaluateFilename: \033[32m%s\033[0m\n", command.array);
 
-	return strdup(command.Data);
+	return strdup(command.array);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1468,16 +1468,16 @@ void RestoreStackAndVisibility(void)
  * writes a string to the passed file pointer
  * some special characters are quoted
  */
-void CreateQuotedString(DynamicStringTypePtr DS, char *S)
+void CreateQuotedString(gds_t *DS, char *S)
 {
-	DSClearString(DS);
-	DSAddCharacter(DS, '"');
+	gds_truncate(DS, 0);
+	gds_append(DS, '"');
 	while (*S) {
 		if (*S == '"' || *S == '\\')
-			DSAddCharacter(DS, '\\');
-		DSAddCharacter(DS, *S++);
+			gds_append(DS, '\\');
+		gds_append(DS, *S++);
 	}
-	DSAddCharacter(DS, '"');
+	gds_append(DS, '"');
 }
 
 BoxTypePtr GetArcEnds(ArcTypePtr Arc)
@@ -1898,73 +1898,73 @@ char *GetInfoString(void)
 {
 	HID **hids;
 	int i;
-	static DynamicStringType info;
+	static gds_t info;
 	static int first_time = 1;
 
 #define TAB "    "
 
 	if (first_time) {
 		first_time = 0;
-		DSAddString(&info, "This is PCB-rnd " VERSION " (" REVISION ")" "\n an interactive\n");
-		DSAddString(&info, "printed circuit board editor\n");
-		DSAddString(&info, "PCB-rnd forked from PCB version.");
-		DSAddString(&info, "\n\n" "PCB is by harry eaton and others\n\n");
-		DSAddString(&info, "\nPCB-rnd adds a collection of\n");
-		DSAddString(&info, "useful-looking random patches.\n");
-		DSAddString(&info, "\n");
-		DSAddString(&info, "Copyright (C) Thomas Nau 1994, 1995, 1996, 1997\n");
-		DSAddString(&info, "Copyright (C) harry eaton 1998-2007\n");
-		DSAddString(&info, "Copyright (C) C. Scott Ananian 2001\n");
-		DSAddString(&info, "Copyright (C) DJ Delorie 2003, 2004, 2005, 2006, 2007, 2008\n");
-		DSAddString(&info, "Copyright (C) Dan McMahill 2003, 2004, 2005, 2006, 2007, 2008\n\n");
-		DSAddString(&info, "Copyright (C) Tibor Palinkas 2013-2015 (pcb-rnd patches)\n\n");
-		DSAddString(&info, "It is licensed under the terms of the GNU\n");
-		DSAddString(&info, "General Public License version 2\n");
-		DSAddString(&info, "See the LICENSE file for more information\n\n");
-		DSAddString(&info, "For more information see:\n\n");
-		DSAddString(&info, "PCB-rnd homepage: http://repo.hu/projects/pcb-rnd\n");
-		DSAddString(&info, "PCB homepage: http://pcb.gpleda.org\n");
-		DSAddString(&info, "gEDA homepage: http://www.gpleda.org\n");
-		DSAddString(&info, "gEDA Wiki: http://geda.seul.org/wiki/ \n\n");
+		gds_append_str(&info, "This is PCB-rnd " VERSION " (" REVISION ")" "\n an interactive\n");
+		gds_append_str(&info, "printed circuit board editor\n");
+		gds_append_str(&info, "PCB-rnd forked from PCB version.");
+		gds_append_str(&info, "\n\n" "PCB is by harry eaton and others\n\n");
+		gds_append_str(&info, "\nPCB-rnd adds a collection of\n");
+		gds_append_str(&info, "useful-looking random patches.\n");
+		gds_append_str(&info, "\n");
+		gds_append_str(&info, "Copyright (C) Thomas Nau 1994, 1995, 1996, 1997\n");
+		gds_append_str(&info, "Copyright (C) harry eaton 1998-2007\n");
+		gds_append_str(&info, "Copyright (C) C. Scott Ananian 2001\n");
+		gds_append_str(&info, "Copyright (C) DJ Delorie 2003, 2004, 2005, 2006, 2007, 2008\n");
+		gds_append_str(&info, "Copyright (C) Dan McMahill 2003, 2004, 2005, 2006, 2007, 2008\n\n");
+		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013-2015 (pcb-rnd patches)\n\n");
+		gds_append_str(&info, "It is licensed under the terms of the GNU\n");
+		gds_append_str(&info, "General Public License version 2\n");
+		gds_append_str(&info, "See the LICENSE file for more information\n\n");
+		gds_append_str(&info, "For more information see:\n\n");
+		gds_append_str(&info, "PCB-rnd homepage: http://repo.hu/projects/pcb-rnd\n");
+		gds_append_str(&info, "PCB homepage: http://pcb.gpleda.org\n");
+		gds_append_str(&info, "gEDA homepage: http://www.gpleda.org\n");
+		gds_append_str(&info, "gEDA Wiki: http://geda.seul.org/wiki/ \n\n");
 
-		DSAddString(&info, "----- Compile Time Options -----\n");
+		gds_append_str(&info, "----- Compile Time Options -----\n");
 		hids = hid_enumerate();
-		DSAddString(&info, "GUI:\n");
+		gds_append_str(&info, "GUI:\n");
 		for (i = 0; hids[i]; i++) {
 			if (hids[i]->gui) {
-				DSAddString(&info, TAB);
-				DSAddString(&info, hids[i]->name);
-				DSAddString(&info, " : ");
-				DSAddString(&info, hids[i]->description);
-				DSAddString(&info, "\n");
+				gds_append_str(&info, TAB);
+				gds_append_str(&info, hids[i]->name);
+				gds_append_str(&info, " : ");
+				gds_append_str(&info, hids[i]->description);
+				gds_append_str(&info, "\n");
 			}
 		}
 
-		DSAddString(&info, "Exporters:\n");
+		gds_append_str(&info, "Exporters:\n");
 		for (i = 0; hids[i]; i++) {
 			if (hids[i]->exporter) {
-				DSAddString(&info, TAB);
-				DSAddString(&info, hids[i]->name);
-				DSAddString(&info, " : ");
-				DSAddString(&info, hids[i]->description);
-				DSAddString(&info, "\n");
+				gds_append_str(&info, TAB);
+				gds_append_str(&info, hids[i]->name);
+				gds_append_str(&info, " : ");
+				gds_append_str(&info, hids[i]->description);
+				gds_append_str(&info, "\n");
 			}
 		}
 
-		DSAddString(&info, "Printers:\n");
+		gds_append_str(&info, "Printers:\n");
 		for (i = 0; hids[i]; i++) {
 			if (hids[i]->printer) {
-				DSAddString(&info, TAB);
-				DSAddString(&info, hids[i]->name);
-				DSAddString(&info, " : ");
-				DSAddString(&info, hids[i]->description);
-				DSAddString(&info, "\n");
+				gds_append_str(&info, TAB);
+				gds_append_str(&info, hids[i]->name);
+				gds_append_str(&info, " : ");
+				gds_append_str(&info, hids[i]->description);
+				gds_append_str(&info, "\n");
 			}
 		}
 	}
 #undef TAB
 
-	return info.Data;
+	return info.array;
 }
 
 const char *pcb_author(void)

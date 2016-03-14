@@ -32,8 +32,6 @@
 
 #include "config.h"
 
-#include "ds.h"
-
 #include <stdlib.h>
 #include <stdarg.h>
 #include <math.h>
@@ -58,6 +56,8 @@
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #endif
+
+#include <genvector/gds_char.h>
 
 #include "global.h"
 
@@ -111,13 +111,13 @@ const char *get_user_name(void)
 
 char *ExpandFilename(char *Dirname, char *Filename)
 {
-	static DynamicStringType answer;
+	static gds_t answer;
 	char *command;
 	FILE *pipe;
 	int c;
 
 	/* allocate memory for commandline and build it */
-	DSClearString(&answer);
+	gds_truncate(&answer, 0);
 	if (Dirname) {
 		command = (char *) calloc(strlen(Filename) + strlen(Dirname) + 7, sizeof(char));
 		sprintf(command, "echo %s/%s", Dirname, Filename);
@@ -134,11 +134,11 @@ char *ExpandFilename(char *Dirname, char *Filename)
 			if ((c = fgetc(pipe)) == EOF || c == '\n' || c == '\r')
 				break;
 			else
-				DSAddCharacter(&answer, c);
+				gds_append(&answer, c);
 		}
 
 		free(command);
-		return (pclose(pipe) ? NULL : answer.Data);
+		return (pclose(pipe) ? NULL : answer.array);
 	}
 
 	/* couldn't be expanded by the shell */

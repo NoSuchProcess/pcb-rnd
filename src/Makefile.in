@@ -93,7 +93,6 @@ put /local/pcb/OBJS [@
 	res_parse.o
 	res_lex.o
 	portability.o
-	ds.o
 	libpcb_fp.o
 	parse_y.o
 	parse_l.o
