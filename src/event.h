@@ -45,10 +45,10 @@ void event_bind(event_id_t ev, event_handler_t * handler, void *user_data, void 
 void event_unbind(event_id_t ev, event_handler_t * handler);
 
 /* Unbind by cookie: remove all handlers from an event matching the cookie */
-void event_unbind_cookie(event_id_t ev, void *cookie);
+void event_unbind_cookie(event_id_t ev, const char *cookie);
 
 /* Unbind all by cookie: remove all handlers from all events matching the cookie */
-void event_unbind_allcookie(void *cookie);
+void event_unbind_allcookie(const char *cookie);
 
 /* Event trigger: call all handlers for an event. Fmt is a list of
    format characters (e.g. i for ARG_INT). */

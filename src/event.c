@@ -9,7 +9,7 @@ typedef struct event_s event_t;
 struct event_s {
 	event_handler_t *handler;
 	void *user_data;
-	void *cookie;
+	const char *cookie;
 	event_t *next;
 };
 
@@ -56,7 +56,7 @@ void event_unbind(event_id_t ev, event_handler_t * handler)
 	}
 }
 
-void event_unbind_cookie(event_id_t ev, void *cookie)
+void event_unbind_cookie(event_id_t ev, const char *cookie)
 {
 	event_t *prev = NULL, *e, *next;
 	if (!(event_valid(ev)))
@@ -74,7 +74,7 @@ void event_unbind_cookie(event_id_t ev, void *cookie)
 }
 
 
-void event_unbind_allcookie(void *cookie)
+void event_unbind_allcookie(const char *cookie)
 {
 	event_id_t n;
 	for (n = 0; n < EVENT_last; n++)
