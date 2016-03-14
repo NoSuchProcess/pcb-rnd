@@ -809,6 +809,8 @@ static bool rematch(const char *re, const char *s)
 
 }
 
+static const char *vendor_cookie = "vendor drill mapping";
+
 HID_Action vendor_action_list[] = {
 	{"ApplyVendor", 0, ActionApplyVendor,
 	 apply_vendor_help, apply_vendor_syntax}
@@ -829,18 +831,19 @@ HID_Action vendor_action_list[] = {
 	 load_vendor_help, load_vendor_syntax}
 };
 
-REGISTER_ACTIONS(vendor_action_list)
+REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
 
 static int vendor_get_enabled(int unused)
 {
 	return vendorMapEnable;
 }
 
+
 HID_Flag vendor_flag_list[] = {
 	{"VendorMapOn", vendor_get_enabled, 0}
 };
 
-REGISTER_FLAGS(vendor_flag_list)
+REGISTER_FLAGS(vendor_flag_list, vendor_cookie)
 
 #include "dolists.h"
 pcb_uninit_t hid_vendordrill_init(void)
@@ -848,7 +851,7 @@ pcb_uninit_t hid_vendordrill_init(void)
 	stub_vendorDrillMap = vendorDrillMap;
 	stub_vendorIsElementMappable = vendorIsElementMappable;
 
-	REGISTER_ACTIONS(vendor_action_list)
-	REGISTER_FLAGS(vendor_flag_list)
+	REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
+	REGISTER_FLAGS(vendor_flag_list, vendor_cookie)
 	return NULL;
 }

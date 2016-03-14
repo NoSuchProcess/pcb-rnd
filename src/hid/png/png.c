@@ -54,6 +54,8 @@
 
 static HID png_hid;
 
+const char *png_cookie = "png HID";
+
 static void *color_cache = NULL;
 static void *brush_cache = NULL;
 
@@ -331,7 +333,7 @@ In photo-realistic mode, export the reverse side of the layout. Up-down flip.
 
 #define NUM_OPTIONS (sizeof(png_attribute_list)/sizeof(png_attribute_list[0]))
 
-REGISTER_ATTRIBUTES(png_attribute_list)
+REGISTER_ATTRIBUTES(png_attribute_list, png_cookie)
 
 		 static HID_Attr_Val png_values[NUM_OPTIONS];
 
@@ -929,7 +931,7 @@ static void png_do_export(HID_Attr_Val * options)
 
 static void png_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]));
+	hid_register_attributes(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]), png_cookie);
 	hid_parse_command_line(argc, argv);
 }
 

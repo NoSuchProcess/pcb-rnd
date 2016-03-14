@@ -1110,4 +1110,4 @@ HID_Action gui_action_list[] = {
 	 routestyle_help, routestyle_syntax}
 };
 
-REGISTER_ACTIONS(gui_action_list)
+REGISTER_ACTIONS(gui_action_list, NULL)

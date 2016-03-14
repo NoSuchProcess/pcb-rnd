@@ -79,6 +79,8 @@
 
 RCSID("$Id$");
 
+const char *nelma_cookie = "nelma HID";
+
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", __FUNCTION__); abort()
 
 /* Needed for PNG export */
@@ -207,7 +209,7 @@ Substrate relative epsilon.
 
 #define NUM_OPTIONS (sizeof(nelma_attribute_list)/sizeof(nelma_attribute_list[0]))
 
-REGISTER_ATTRIBUTES(nelma_attribute_list)
+REGISTER_ATTRIBUTES(nelma_attribute_list, nelma_cookie)
 		 static HID_Attr_Val nelma_values[NUM_OPTIONS];
 
 /* *** Utility funcions **************************************************** */
@@ -493,7 +495,7 @@ static void nelma_write_objects(FILE * out)
 
 static void nelma_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]));
+	hid_register_attributes(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]), nelma_cookie);
 	hid_parse_command_line(argc, argv);
 }
 

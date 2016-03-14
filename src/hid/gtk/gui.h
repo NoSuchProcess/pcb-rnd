@@ -511,4 +511,6 @@ static inline Coord Pz(int z)
 	return (z * gport->view.coord_per_px);
 }
 
+extern const char *ghid_cookie;
+
 #endif /* PCB_HID_GTK_GHID_H */

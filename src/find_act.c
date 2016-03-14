@@ -74,4 +74,4 @@ HID_Action find_action_list[] = {
 	 drc_help, drc_syntax}
 };
 
-REGISTER_ACTIONS(find_action_list)
+REGISTER_ACTIONS(find_action_list, NULL)

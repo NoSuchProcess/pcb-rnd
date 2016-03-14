@@ -1668,7 +1668,7 @@ HID_Action gtk_topwindow_action_list[] = {
 	 toggleview_help, toggleview_syntax}
 };
 
-REGISTER_ACTIONS(gtk_topwindow_action_list)
+REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 
 /* 
  * This function is used to check if a specified hotkey in the menu
@@ -1885,4 +1885,4 @@ HID_Action ghid_menu_action_list[] = {
 	{"EditLayerGroups", 0, EditLayerGroups, editlayergroups_help, editlayergroups_syntax}
 };
 
-REGISTER_ACTIONS(ghid_menu_action_list)
+REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)

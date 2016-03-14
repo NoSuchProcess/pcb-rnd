@@ -156,4 +156,4 @@ HID_Action lesstif_library_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(lesstif_library_action_list)
+REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)

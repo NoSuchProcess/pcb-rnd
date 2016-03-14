@@ -1275,4 +1275,4 @@ HID_Action action_action_list[] = {
 	 executefile_help, executefile_syntax}
 };
 
-REGISTER_ACTIONS(action_action_list)
+REGISTER_ACTIONS(action_action_list, NULL)

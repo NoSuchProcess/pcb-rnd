@@ -35,6 +35,8 @@
 
 RCSID("$Id$");
 
+const char *gerber_cookie = "gerber HID";
+
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented Gerber function %s.\n", __FUNCTION__); abort()
 
 /*----------------------------------------------------------------------------*/
@@ -600,7 +602,7 @@ static void gerber_do_export(HID_Attr_Val * options)
 
 static void gerber_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(gerber_options, NUM_OPTIONS);
+	hid_register_attributes(gerber_options, NUM_OPTIONS, gerber_cookie);
 	hid_parse_command_line(argc, argv);
 }
 

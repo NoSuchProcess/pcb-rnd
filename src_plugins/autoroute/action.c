@@ -81,17 +81,19 @@ static int ActionAutoRoute(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
+static const char *autoroute_cookie = "autoroute plugin";
+
 HID_Action autoroute_action_list[] = {
 	{"AutoRoute", 0, ActionAutoRoute,
 	 autoroute_help, autoroute_syntax}
 	,
 };
 
-REGISTER_ACTIONS(autoroute_action_list)
+REGISTER_ACTIONS(autoroute_action_list, autoroute_cookie)
 
 #include "dolists.h"
 pcb_uninit_t hid_autoroute_init(void)
 {
-	REGISTER_ACTIONS(autoroute_action_list)
+	REGISTER_ACTIONS(autoroute_action_list, autoroute_cookie)
 	return NULL;
 }

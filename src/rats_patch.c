@@ -484,4 +484,4 @@ HID_Action rats_patch_action_list[] = {
 	 savepatch_help, savepatch_syntax}
 };
 
-REGISTER_ACTIONS(rats_patch_action_list)
+REGISTER_ACTIONS(rats_patch_action_list, NULL)

@@ -1448,4 +1448,4 @@ HID_Action buffer_action_list[] = {
 	 pastebuffer_help, pastebuffer_syntax}
 };
 
-REGISTER_ACTIONS(buffer_action_list)
+REGISTER_ACTIONS(buffer_action_list, NULL)

@@ -229,4 +229,4 @@ HID_Action fontmode_action_list[] = {
 	 fontsave_help, fontsave_syntax}
 };
 
-REGISTER_ACTIONS(fontmode_action_list)
+REGISTER_ACTIONS(fontmode_action_list, NULL)

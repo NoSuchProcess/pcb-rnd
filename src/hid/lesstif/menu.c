@@ -647,7 +647,7 @@ HID_Action lesstif_menu_action_list[] = {
 	 selectlayer_help, selectlayer_syntax}
 };
 
-REGISTER_ACTIONS(lesstif_menu_action_list)
+REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
 #if 0
 		 static void
 		   do_color(char *value, char *which)

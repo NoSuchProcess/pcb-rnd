@@ -39,6 +39,8 @@
 
 RCSID("$Id$");
 
+const char *lesstif_cookie = "lesstif HID";
+
 #ifndef XtRDouble
 #define XtRDouble "Double"
 #endif
@@ -170,7 +172,7 @@ HID_Flag lesstif_main_flag_list[] = {
 	{"flip_y", flag_flipy, 0}
 };
 
-REGISTER_FLAGS(lesstif_main_flag_list)
+REGISTER_FLAGS(lesstif_main_flag_list, lesstif_cookie)
 
 /* This is the size of the current PCB work area.  */
 /* Use PCB->MaxWidth, PCB->MaxHeight.  */
@@ -226,7 +228,7 @@ Location of the @file{pcb-menu.res} file which defines the menu for the lesstif 
 #define HA_pcbmenu 3
 		 };
 
-REGISTER_ATTRIBUTES(lesstif_attribute_list)
+REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 
 		 static void lesstif_use_mask(int use_it);
 		 static void zoom_max();
@@ -904,7 +906,7 @@ HID_Action lesstif_main_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(lesstif_main_action_list)
+REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
 
 
 /* ---------------------------------------------------------------------- 

@@ -145,9 +145,11 @@ HID_Flag djopt_flag_list[] = {
 	{"optautoonly", djopt_get_auto_only, 0}
 };
 
-REGISTER_FLAGS(djopt_flag_list)
+static const char *djopt_cookie = "djopt";
 
-		 static char *element_name_for(corner_s * c)
+REGISTER_FLAGS(djopt_flag_list, djopt_cookie)
+
+static char *element_name_for(corner_s * c)
 {
 	ELEMENT_LOOP(PCB->Data);
 	{
@@ -2715,12 +2717,12 @@ HID_Action djopt_action_list[] = {
 	 djopt_sao_help, djopt_sao_syntax}
 };
 
-REGISTER_ACTIONS(djopt_action_list)
+REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
 
 #include "dolists.h"
 pcb_uninit_t hid_djopt_init(void)
 {
-	REGISTER_FLAGS(djopt_flag_list)
-	REGISTER_ACTIONS(djopt_action_list)
+	REGISTER_FLAGS(djopt_flag_list, djopt_cookie)
+	REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
 	return NULL;
 }

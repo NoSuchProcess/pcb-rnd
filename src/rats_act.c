@@ -221,4 +221,4 @@ HID_Action rats_action_list[] = {
 	 deleterats_help, deleterats_syntax}
 };
 
-REGISTER_ACTIONS(rats_action_list)
+REGISTER_ACTIONS(rats_action_list, NULL)

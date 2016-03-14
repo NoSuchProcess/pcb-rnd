@@ -29,6 +29,8 @@ RCSID("$Id$");
 
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented PS function %s.\n", __FUNCTION__); abort()
 
+const char *ps_cookie = "ps HID";
+
 static int ps_set_layer(const char *name, int group, int empty);
 static void use_gc(hidGC gc);
 
@@ -363,7 +365,7 @@ If non-zero grid polygons instead of filling them with gridlines spaced as speci
 
 #define NUM_OPTIONS (sizeof(ps_attribute_list)/sizeof(ps_attribute_list[0]))
 
-REGISTER_ATTRIBUTES(ps_attribute_list)
+REGISTER_ATTRIBUTES(ps_attribute_list, ps_cookie)
 
 /* All file-scope data is in global struct */
 		 static struct {
@@ -739,7 +741,7 @@ static void ps_do_export(HID_Attr_Val * options)
 
 static void ps_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(ps_attribute_list, NUM_OPTIONS);
+	hid_register_attributes(ps_attribute_list, NUM_OPTIONS, ps_cookie);
 	hid_parse_command_line(argc, argv);
 }
 
@@ -1547,7 +1549,7 @@ HID_Action hidps_action_list[] = {
 	{"pscalib", 0, ActionPSCalib}
 };
 
-REGISTER_ACTIONS(hidps_action_list)
+REGISTER_ACTIONS(hidps_action_list, ps_cookie)
 
 
 #include "dolists.h"
@@ -1577,7 +1579,7 @@ void ps_ps_init(HID * hid)
 	hid->calibrate = ps_calibrate;
 	hid->set_crosshair = ps_set_crosshair;
 
-	REGISTER_ACTIONS(hidps_action_list)
+	REGISTER_ACTIONS(hidps_action_list, ps_cookie)
 }
 
 void hid_ps_init()

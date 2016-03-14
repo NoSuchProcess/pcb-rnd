@@ -32,6 +32,7 @@ typedef struct HID_AttrNode {
 	struct HID_AttrNode *next;
 	HID_Attribute *attributes;
 	int n;
+	const char *cookie;
 } HID_AttrNode;
 
 extern HID_AttrNode *hid_attr_nodes;

@@ -397,4 +397,4 @@ HID_Action command_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(command_action_list)
+REGISTER_ACTIONS(command_action_list, NULL)

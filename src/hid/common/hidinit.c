@@ -243,7 +243,7 @@ HID **hid_enumerate()
 
 HID_AttrNode *hid_attr_nodes = 0;
 
-void hid_register_attributes(HID_Attribute * a, int n)
+void hid_register_attributes(HID_Attribute * a, int n, const char *cookie)
 {
 	HID_AttrNode *ha;
 
@@ -253,6 +253,7 @@ void hid_register_attributes(HID_Attribute * a, int n)
 	hid_attr_nodes = ha;
 	ha->attributes = a;
 	ha->n = n;
+	ha->cookie = cookie;
 }
 
 void hid_parse_command_line(int *argc, char ***argv)

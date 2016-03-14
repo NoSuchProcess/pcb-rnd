@@ -63,6 +63,7 @@
 
 #include "hid/common/hidinit.h"
 
+const char *gcode_cookie = "gcode HID";
 
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented GCODE function %s.\n", __FUNCTION__); abort()
 struct color_struct {
@@ -168,7 +169,7 @@ HID_Attribute gcode_attribute_list[] = {
 
 #define NUM_OPTIONS (sizeof(gcode_attribute_list)/sizeof(gcode_attribute_list[0]))
 
-REGISTER_ATTRIBUTES(gcode_attribute_list)
+REGISTER_ATTRIBUTES(gcode_attribute_list, gcode_cookie)
 		 static HID_Attr_Val gcode_values[NUM_OPTIONS];
 
 /* *** Utility funcions **************************************************** */
@@ -214,7 +215,7 @@ struct drill_struct *sort_drill(struct drill_struct *drill, int n_drill)
 
 static void gcode_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]));
+	hid_register_attributes(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]), gcode_cookie);
 	hid_parse_command_line(argc, argv);
 }
 

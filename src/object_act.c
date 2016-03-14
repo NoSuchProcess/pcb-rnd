@@ -1015,4 +1015,4 @@ HID_Action object_action_list[] = {
 	 mincleargap_help, mincleargap_syntax}
 };
 
-REGISTER_ACTIONS(object_action_list)
+REGISTER_ACTIONS(object_action_list, NULL)

@@ -21,6 +21,8 @@
 
 RCSID("$Id$");
 
+const char *bom_cookie = "bom HID";
+
 static HID_Attribute bom_options[] = {
 /* %start-doc options "8 BOM Creation"
 @ftable @code
@@ -498,7 +500,7 @@ static void bom_do_export(HID_Attr_Val * options)
 
 static void bom_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(bom_options, sizeof(bom_options) / sizeof(bom_options[0]));
+	hid_register_attributes(bom_options, sizeof(bom_options) / sizeof(bom_options[0]), bom_cookie);
 	hid_parse_command_line(argc, argv);
 }
 

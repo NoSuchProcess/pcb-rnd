@@ -91,12 +91,14 @@ HID_Action oldactions_action_list[] = {
 	 bell_help, bell_syntax}
 };
 
-REGISTER_ACTIONS(oldactions_action_list)
+static const char *oldactions_cookie = "oldactions plugin";
+
+REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
 
 #include "dolists.h"
 pcb_uninit_t hid_oldactions_init(void)
 {
-	REGISTER_ACTIONS(oldactions_action_list)
+	REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
 	return NULL;
 }
 

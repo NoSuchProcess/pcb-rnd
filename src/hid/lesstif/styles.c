@@ -431,4 +431,4 @@ HID_Action lesstif_styles_action_list[] = {
 	 routestyleschanged_help, routestyleschanged_syntax}
 };
 
-REGISTER_ACTIONS(lesstif_styles_action_list)
+REGISTER_ACTIONS(lesstif_styles_action_list, lesstif_cookie)

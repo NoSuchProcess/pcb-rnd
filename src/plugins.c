@@ -105,4 +105,4 @@ HID_Action plugins_action_list[] = {
 	 manageplugins_help, manageplugins_syntax}
 };
 
-REGISTER_ACTIONS(plugins_action_list)
+REGISTER_ACTIONS(plugins_action_list, NULL)

@@ -68,3 +68,5 @@ static XmString XmStringCreatePCB(char *x)
 		x = gettext(x);
 	return XmStringCreateLtoR(x, XmFONTLIST_DEFAULT_TAG);
 }
+
+extern const char *lesstif_cookie;

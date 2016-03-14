@@ -384,4 +384,4 @@ HID_Action file_action_list[] = {
 	 quit_help, quit_syntax}
 };
 
-REGISTER_ACTIONS(file_action_list)
+REGISTER_ACTIONS(file_action_list, NULL)

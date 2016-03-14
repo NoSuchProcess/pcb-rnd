@@ -1432,4 +1432,4 @@ HID_Action change_action_list[] = {
 	 clrflag_help, clrflag_syntax}
 };
 
-REGISTER_ACTIONS(change_action_list)
+REGISTER_ACTIONS(change_action_list, NULL)

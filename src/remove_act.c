@@ -107,4 +107,4 @@ HID_Action remove_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(remove_action_list)
+REGISTER_ACTIONS(remove_action_list, NULL)

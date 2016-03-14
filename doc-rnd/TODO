@@ -5,6 +5,7 @@ UNGLIB:
 		- test gpmi search
 		- place 2 arcs, select first, can't move to left edge (bbox or rtree?)
 		- test onpoint
+	- PrintQuotedString(FILE * FP, char *S): remove dynamic string allocation
 	- get rid of gcode/lists.h, ds.[ch] and vector.[ch]
 
 

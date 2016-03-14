@@ -927,4 +927,4 @@ HID_Action report_action_list[] = {
 	 report_help, report_syntax}
 };
 
-REGISTER_ACTIONS(report_action_list)
+REGISTER_ACTIONS(report_action_list, NULL)

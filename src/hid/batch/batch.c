@@ -91,6 +91,7 @@ static int info(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
+static const char *batch_cookie = "batch HID";
 
 HID_Action batch_action_list[] = {
 	{"PCBChanged", 0, PCBChanged}
@@ -110,7 +111,7 @@ HID_Action batch_action_list[] = {
 	{"Info", 0, info}
 };
 
-REGISTER_ACTIONS(batch_action_list)
+REGISTER_ACTIONS(batch_action_list, batch_cookie)
 
 
 /* ----------------------------------------------------------------------------- */

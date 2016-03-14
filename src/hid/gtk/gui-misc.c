@@ -40,6 +40,8 @@
 
 RCSID("$Id$");
 
+const char *ghid_cookie = "gtk hid";
+
 #define CUSTOM_CURSOR_CLOCKWISE		(GDK_LAST_CURSOR + 10)
 #define CUSTOM_CURSOR_DRAG			(GDK_LAST_CURSOR + 11)
 #define CUSTOM_CURSOR_LOCK			(GDK_LAST_CURSOR + 12)

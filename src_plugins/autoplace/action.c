@@ -53,6 +53,7 @@ static int ActionAutoPlaceSelected(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
+static const char *autoplace_cookie = "autoplace plugin";
 
 HID_Action autoplace_action_list[] = {
 	{"AutoPlaceSelected", 0, ActionAutoPlaceSelected,
@@ -60,11 +61,11 @@ HID_Action autoplace_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(autoplace_action_list)
+REGISTER_ACTIONS(autoplace_action_list, autoplace_cookie)
 
 #include "dolists.h"
 pcb_uninit_t hid_autoplace_init(void)
 {
-	REGISTER_ACTIONS(autoplace_action_list)
+	REGISTER_ACTIONS(autoplace_action_list, autoplace_cookie)
 	return NULL;
 }

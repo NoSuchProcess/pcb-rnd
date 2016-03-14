@@ -294,4 +294,4 @@ HID_Action undo_action_list[] = {
 	 redo_help, redo_syntax}
 };
 
-REGISTER_ACTIONS(undo_action_list)
+REGISTER_ACTIONS(undo_action_list, NULL)

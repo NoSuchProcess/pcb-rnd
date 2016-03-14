@@ -1044,4 +1044,4 @@ HID_Action move_action_list[] = {
 	 movelayer_help, movelayer_syntax}
 };
 
-REGISTER_ACTIONS(move_action_list)
+REGISTER_ACTIONS(move_action_list, NULL)

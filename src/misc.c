@@ -2063,4 +2063,4 @@ HID_Action misc_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(misc_action_list)
+REGISTER_ACTIONS(misc_action_list, NULL)

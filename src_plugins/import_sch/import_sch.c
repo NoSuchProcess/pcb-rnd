@@ -420,16 +420,18 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
+static const char *import_sch_cookie = "import_sch plugin";
+
 HID_Action import_sch_action_list[] = {
 	{"Import", 0, ActionImport,
 	 import_help, import_syntax}
 };
 
-REGISTER_ACTIONS(import_sch_action_list)
+REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
 
 #include "dolists.h"
 pcb_uninit_t hid_import_sch_init(void)
 {
-	REGISTER_ACTIONS(import_sch_action_list)
+	REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
 	return NULL;
 }

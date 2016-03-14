@@ -1851,7 +1851,7 @@ HID_Action ghid_main_action_list[] = {
 	{"Zoom", N_("Click on zoom focus"), Zoom, zoom_help, zoom_syntax}
 };
 
-REGISTER_ACTIONS(ghid_main_action_list)
+REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 
 
 		 static int
@@ -1871,7 +1871,7 @@ HID_Flag ghid_main_flag_list[] = {
 	{"flip_y", flag_flipy, 0}
 };
 
-REGISTER_FLAGS(ghid_main_flag_list)
+REGISTER_FLAGS(ghid_main_flag_list, ghid_cookie)
 #include "dolists.h"
 /*
  * We will need these for finding the windows installation

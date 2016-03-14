@@ -129,7 +129,7 @@ Limit the bounds of the EPS file to the visible items.
 
 #define NUM_OPTIONS (sizeof(eps_attribute_list)/sizeof(eps_attribute_list[0]))
 
-REGISTER_ATTRIBUTES(eps_attribute_list)
+REGISTER_ATTRIBUTES(eps_attribute_list, ps_cookie)
 
 		 static HID_Attr_Val eps_values[NUM_OPTIONS];
 
@@ -338,7 +338,7 @@ static void eps_do_export(HID_Attr_Val * options)
 
 static void eps_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]));
+	hid_register_attributes(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]), ps_cookie);
 	hid_parse_command_line(argc, argv);
 }
 

@@ -348,17 +348,19 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
+static const char *renumber_cookie = "renumber plugin";
+
 HID_Action renumber_action_list[] = {
 	{"Renumber", 0, ActionRenumber,
 	 renumber_help, renumber_syntax}
 };
 
-REGISTER_ACTIONS(renumber_action_list)
+REGISTER_ACTIONS(renumber_action_list, renumber_cookie)
 
 #include "dolists.h"
 pcb_uninit_t hid_renumber_init(void)
 {
-	REGISTER_ACTIONS(renumber_action_list)
+	REGISTER_ACTIONS(renumber_action_list, renumber_cookie)
 	return NULL;
 }
 

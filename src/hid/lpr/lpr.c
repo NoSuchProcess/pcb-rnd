@@ -23,6 +23,8 @@ RCSID("$Id$");
 
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented PS function %s.\n", __FUNCTION__); abort()
 
+const char *lpr_cookie = "lpr HID";
+
 static HID_Attribute base_lpr_options[] = {
 
 /* %start-doc options "98 lpr Printing Options"
@@ -99,7 +101,7 @@ static void lpr_do_export(HID_Attr_Val * options)
 static void lpr_parse_arguments(int *argc, char ***argv)
 {
 	lpr_get_export_options(0);
-	hid_register_attributes(lpr_options, num_lpr_options);
+	hid_register_attributes(lpr_options, num_lpr_options, lpr_cookie);
 	hid_parse_command_line(argc, argv);
 }
 

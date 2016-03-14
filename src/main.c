@@ -1325,7 +1325,9 @@ read from the pcb. Will not really work unless the libstroke plugin is also load
 
 };
 
-REGISTER_ATTRIBUTES(main_attribute_list)
+static const char *main_cookie = "pcb-rnd main.c";
+
+REGISTER_ATTRIBUTES(main_attribute_list, main_cookie)
 /* ---------------------------------------------------------------------- 
  * post-process settings.
  */

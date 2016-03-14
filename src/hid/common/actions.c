@@ -44,11 +44,11 @@ static const char *check_action_name(const char *s)
 }
 
 typedef struct {
-	void *cookie;
+	const char *cookie;
 	const HID_Action *action;
 } hid_cookie_action_t;
 
-void hid_register_actions(const HID_Action * a, int n, void *cookie)
+void hid_register_actions(const HID_Action * a, int n, const char *cookie)
 {
 	int i;
 	hid_cookie_action_t *ca;

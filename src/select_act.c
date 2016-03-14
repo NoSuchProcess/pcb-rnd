@@ -389,4 +389,4 @@ HID_Action select_action_list[] = {
 	 unselect_help, unselect_syntax}
 };
 
-REGISTER_ACTIONS(select_action_list)
+REGISTER_ACTIONS(select_action_list, NULL)

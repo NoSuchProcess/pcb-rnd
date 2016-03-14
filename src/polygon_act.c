@@ -141,4 +141,4 @@ HID_Action polygon_action_list[] = {
 	 polygon_help, polygon_syntax}
 };
 
-REGISTER_ACTIONS(polygon_action_list)
+REGISTER_ACTIONS(polygon_action_list, NULL)

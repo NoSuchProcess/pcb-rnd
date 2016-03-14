@@ -968,4 +968,4 @@ HID_Action ghid_netlist_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(ghid_netlist_action_list)
+REGISTER_ACTIONS(ghid_netlist_action_list, ghid_cookie)

@@ -547,4 +547,4 @@ HID_Action netlist_action_list[] = {
 	 netlist_help, netlist_syntax}
 };
 
-REGISTER_ACTIONS(netlist_action_list)
+REGISTER_ACTIONS(netlist_action_list, NULL)
