@@ -845,6 +845,12 @@ HID_Flag vendor_flag_list[] = {
 
 REGISTER_FLAGS(vendor_flag_list, vendor_cookie)
 
+static void hid_vendordrill_uninit(void)
+{
+	hid_remove_actions_by_cookie(vendor_cookie);
+	hid_remove_flags_by_cookie(vendor_cookie);
+}
+
 #include "dolists.h"
 pcb_uninit_t hid_vendordrill_init(void)
 {
@@ -853,5 +859,5 @@ pcb_uninit_t hid_vendordrill_init(void)
 
 	REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
 	REGISTER_FLAGS(vendor_flag_list, vendor_cookie)
-	return NULL;
+	return hid_vendordrill_uninit;
 }
