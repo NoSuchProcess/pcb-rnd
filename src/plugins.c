@@ -7,7 +7,7 @@
 #include "global.h"
 #include "data.h"
 #include "action.h"
-#include "ds.h"
+#include "genvector/gds_char.h"
 
 plugin_info_t *plugins = NULL;
 
@@ -55,9 +55,9 @@ static int ManagePlugins(int argc, char **argv, Coord x, Coord y)
 {
 	plugin_info_t *i;
 	int nump = 0, numb = 0;
-	DynamicStringType str;
+	gds_t str;
 
-	memset(&str, 0, sizeof(str));
+	gds_init(&str);
 
 	for (i = plugins; i != NULL; i = i->next)
 		if (i->dynamic_loaded)
@@ -65,37 +65,37 @@ static int ManagePlugins(int argc, char **argv, Coord x, Coord y)
 		else
 			numb++;
 
-	DSAddString(&str, "Plugins loaded:\n");
+	gds_append_str(&str, "Plugins loaded:\n");
 	if (nump > 0) {
 		for (i = plugins; i != NULL; i = i->next) {
 			if (i->dynamic_loaded) {
-				DSAddCharacter(&str, ' ');
-				DSAddString(&str, i->name);
-				DSAddCharacter(&str, ' ');
-				DSAddString(&str, i->path);
-				DSAddCharacter(&str, '\n');
+				gds_append(&str, ' ');
+				gds_append_str(&str, i->name);
+				gds_append(&str, ' ');
+				gds_append_str(&str, i->path);
+				gds_append(&str, '\n');
 			}
 		}
 	}
 	else
-		DSAddString(&str, " (none)\n");
+		gds_append_str(&str, " (none)\n");
 
-	DSAddString(&str, "\n\nBuildins:\n");
+	gds_append_str(&str, "\n\nBuildins:\n");
 	if (numb > 0) {
 		for (i = plugins; i != NULL; i = i->next) {
 			if (!i->dynamic_loaded) {
-				DSAddCharacter(&str, ' ');
-				DSAddString(&str, i->name);
-				DSAddCharacter(&str, '\n');
+				gds_append(&str, ' ');
+				gds_append_str(&str, i->name);
+				gds_append(&str, '\n');
 			}
 		}
 	}
 	else
-		DSAddString(&str, " (none)\n");
+		gds_append_str(&str, " (none)\n");
 
-	DSAddString(&str, "\n\nNOTE: this is the alpha version, can only list plugins/buildins\n");
-	gui->report_dialog("Manage plugins", str.Data);
-	free(str.Data);
+	gds_append_str(&str, "\n\nNOTE: this is the alpha version, can only list plugins/buildins\n");
+	gui->report_dialog("Manage plugins", str.array);
+	gds_uninit(&str);
 	return 0;
 }
 

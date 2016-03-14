@@ -31,9 +31,6 @@
  * getpid() needs a cast to (int) to get rid of compiler warnings
  * on several architectures
  */
-
-#include "ds.h"
-
 #include "config.h"
 
 #ifdef HAVE_SYS_PARAM_H
