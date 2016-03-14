@@ -392,9 +392,14 @@ LibraryMenuTypePtr GetLibraryMenuMemory(LibraryTypePtr lib, int *idx)
 void DeleteLibraryMenuMemory(LibraryTypePtr lib, int menuidx)
 {
 	LibraryMenuTypePtr menu = lib->Menu;
+
+	if (menu[menuidx].Name != NULL)
+		free(menu[menuidx].Name);
+	if (menu[menuidx].directory != NULL)
+		free(menu[menuidx].directory);
+
 	lib->MenuN--;
 	memmove(menu + menuidx, menu + menuidx + 1, sizeof(LibraryMenuType) * (lib->MenuN - menuidx));
-
 }
 
 /* ---------------------------------------------------------------------------
