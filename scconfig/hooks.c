@@ -21,8 +21,6 @@ const char *exporter_list[] = {
 	"png",   "libs/gui/gd/gdImagePng/presents",
 	"gif",   "libs/gui/gd/gdImageGif/presents",
 	"jpg",   "libs/gui/gd/gdImageJpeg/presents",
-	"gcode", "libs/gui/gd/presents",
-	"nelma", "libs/gui/gd/presents",
 	NULL, NULL
 };
 
@@ -95,6 +93,14 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-export_lpr", "/local/pcb/export_lpr/enable",  arg_false,     "$do not compile the lpr printer"},
 	{"buildin-export_lpr", "/local/pcb/export_lpr/buildin", arg_true,      "$static link the lpr printer into the executable"},
 	{"plugin-export_lpr",  "/local/pcb/export_lpr/buildin", arg_false,     "$the lpr printer is a dynamic loadable plugin"},
+
+	{"disable-export_gcode", "/local/pcb/export_gcode/enable",  arg_false,     "$do not compile the gcode exporter"},
+	{"buildin-export_gcode", "/local/pcb/export_gcode/buildin", arg_true,      "$static link the gcode exporter into the executable"},
+	{"plugin-export_gcode",  "/local/pcb/export_gcode/buildin", arg_false,     "$the gcode exporter is a dynamic loadable plugin"},
+
+	{"disable-export_nelma", "/local/pcb/export_nelma/enable",  arg_false,     "$do not compile the nelma exporter"},
+	{"buildin-export_nelma", "/local/pcb/export_nelma/buildin", arg_true,      "$static link the nelma exporter into the executable"},
+	{"plugin-export_nelma",  "/local/pcb/export_nelma/buildin", arg_false,     "$the nelma exporter is a dynamic loadable plugin"},
 
 	{NULL, NULL, NULL, NULL}
 };
@@ -211,6 +217,14 @@ int hook_postinit()
 	db_mkdir("/local/pcb/export_lpr");
 	put("/local/pcb/export_lpr/enable", strue);
 	put("/local/pcb/export_lpr/buildin", strue);
+
+	db_mkdir("/local/pcb/export_gcode");
+	put("/local/pcb/export_gcode/enable", strue);
+	put("/local/pcb/export_gcode/buildin", strue);
+
+	db_mkdir("/local/pcb/export_nelma");
+	put("/local/pcb/export_nelma/enable", strue);
+	put("/local/pcb/export_nelma/buildin", strue);
 
 	return 0;
 }
@@ -356,6 +370,13 @@ int hook_detect_target()
 		}
 	}
 
+	if (!istrue(get("libs/gui/gd/presents"))) {
+		if (istrue(get("/local/pcb/export_nelma/enable"))) {
+			report_repeat("WARNING: disabling the nelma exporter because libgd is not found or not configured...\n");
+			hook_custom_arg("disable-export_nelma", NULL);
+		}
+	}
+
 	return 0;
 }
 
@@ -494,6 +515,8 @@ int hook_generate()
 	printf("\n");
 	plugin_stat("export_ps:",              "/local/pcb/export_ps");
 	plugin_stat("export_lpr:",             "/local/pcb/export_lpr");
+	plugin_stat("export_gcode:",           "/local/pcb/export_gcode");
+	plugin_stat("export_nelma:",           "/local/pcb/export_nelma");
 
 	if (repeat != NULL)
 		printf("\n%s\n", repeat);

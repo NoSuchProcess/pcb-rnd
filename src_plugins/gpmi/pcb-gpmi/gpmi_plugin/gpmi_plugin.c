@@ -13,7 +13,7 @@
 
 extern char *homedir; /* detected by pcn-rnd in InitPaths() */
 
-char *gpmi_cookie = "GPMI plugin cookie";
+const char *gpmi_cookie = "GPMI plugin cookie";
 
 /* This function is used to print a detailed GPMI error message */
 void gpmi_hid_print_error(gpmi_err_stack_t *entry, char *string)
@@ -118,14 +118,14 @@ static void register_actions()
 	act.description    = "Manage gpmi scripts";
 	act.syntax         = "TODO";
 	act.trigger_cb     = action_gpmi_scripts;
-	hid_register_action(&act, &gpmi_cookie);
+	hid_register_action(&act, gpmi_cookie);
 
 	act.name           = "rehash";
 	act.need_coord_msg = NULL;
 	act.description    = "Reload all gpmi scripts";
 	act.syntax         = "TODO";
 	act.trigger_cb     = action_gpmi_rehash;
-	hid_register_action(&act, &gpmi_cookie);
+	hid_register_action(&act, gpmi_cookie);
 }
 
 #ifndef PLUGIN_INIT_NAME
@@ -181,7 +181,7 @@ static void load_base_and_cfg(void)
 	*gpmi_asm_scriptname = gpmi_hid_asm_scriptname;
 
 	register_actions();
-	event_bind(EVENT_GUI_INIT, ev_gui_init, NULL, &gpmi_cookie);
+	event_bind(EVENT_GUI_INIT, ev_gui_init, NULL, gpmi_cookie);
 
 	hid_gpmi_load_dir(libdirh, 0);
 	hid_gpmi_load_dir(libdirg, 0);
@@ -210,8 +210,8 @@ static void load_base_and_cfg(void)
 
 static void plugin_gpmi_uninit(void)
 {
-	event_unbind_allcookie(&gpmi_cookie);
-	hid_remove_actions_by_cookie(&gpmi_cookie);
+	event_unbind_allcookie(gpmi_cookie);
+	hid_remove_actions_by_cookie(gpmi_cookie);
 	hid_gpmi_script_info_uninit();
 	gpmi_pkg_unload(pkg_scripts);
 	gpmi_uninit();

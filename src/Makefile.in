@@ -136,8 +136,6 @@ include {Makefile.in.mod/batch}
 include {Makefile.in.mod/bom}
 include {Makefile.in.mod/png}
 include {Makefile.in.mod/gerber}
-include {Makefile.in.mod/gcode}
-include {Makefile.in.mod/nelma}
 
 include {../src_plugins/autoplace/Plug.tmpasm}
 include {../src_plugins/autoroute/Plug.tmpasm}
@@ -154,6 +152,8 @@ include {../src_plugins/stroke/Plug.tmpasm}
 include {../src_plugins/import_sch/Plug.tmpasm}
 include {../src_plugins/export_ps/Plug.tmpasm}
 include {../src_plugins/export_lpr/Plug.tmpasm}
+include {../src_plugins/export_gcode/Plug.tmpasm}
+include {../src_plugins/export_nelma/Plug.tmpasm}
 
 
 append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags

@@ -72,7 +72,7 @@ void hid_register_actions(const HID_Action * a, int n, const char *cookie)
 	}
 }
 
-void hid_register_action(const HID_Action * a, void *cookie)
+void hid_register_action(const HID_Action * a, const char *cookie)
 {
 	hid_register_actions(a, 1, cookie);
 }

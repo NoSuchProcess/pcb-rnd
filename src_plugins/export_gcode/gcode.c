@@ -33,6 +33,7 @@
  */
 
 #include "config.h"
+#include "plugins.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -860,7 +861,7 @@ static void gcode_set_crosshair(int x, int y, int a)
 
 HID gcode_hid;
 
-void hid_gcode_init()
+pcb_uninit_t hid_export_gcode_init()
 {
 	memset(&gcode_hid, 0, sizeof(HID));
 
@@ -895,4 +896,6 @@ void hid_gcode_init()
 	gcode_hid.set_crosshair = gcode_set_crosshair;
 
 	hid_register_hid(&gcode_hid);
+
+	return NULL;
 }

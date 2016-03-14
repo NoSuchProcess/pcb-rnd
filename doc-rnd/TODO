@@ -7,6 +7,8 @@ UNGLIB:
 		- test onpoint
 	- PrintQuotedString(FILE * FP, char *S): remove dynamic string allocation
 	- get rid of gcode/lists.h, ds.[ch] and vector.[ch]
+	- test whether plugin compiled exporters work
+	- test whether gd based plugins can be compiled to so (png, nelma)
 
 
 

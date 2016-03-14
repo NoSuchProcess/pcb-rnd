@@ -66,6 +66,7 @@
 #include "data.h"
 #include "misc.h"
 #include "rats.h"
+#include "plugins.h"
 
 #include "hid.h"
 #include "../hidint.h"
@@ -995,7 +996,7 @@ static void nelma_set_crosshair(int x, int y, int a)
 
 #include "dolists.h"
 
-void hid_nelma_init()
+pcb_uninit_t hid_export_nelma_init()
 {
 	memset(&nelma_hid, 0, sizeof(HID));
 
@@ -1030,4 +1031,5 @@ void hid_nelma_init()
 	nelma_hid.set_crosshair = nelma_set_crosshair;
 
 	hid_register_hid(&nelma_hid);
+	return NULL;
 }
