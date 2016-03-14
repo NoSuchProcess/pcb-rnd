@@ -138,8 +138,6 @@ void hid_init()
 
 void hid_uninit(void)
 {
-	hid_actions_uninit();
-
 	if (hid_num_hids > 0) {
 		int i;
 		for (i = hid_num_hids-1; i >= 0; i--) {
@@ -148,6 +146,8 @@ void hid_uninit(void)
 		}
 	}
 	free(hid_list);
+
+	hid_actions_uninit();
 }
 
 void hid_register_hid(HID * hid)
