@@ -15,6 +15,7 @@
 #include "error.h"
 #include "draw.h"
 #include "pcb-printf.h"
+#include "plugins.h"
 
 #include "hid.h"
 #include "hid/hidint.h"
@@ -1582,7 +1583,14 @@ void ps_ps_init(HID * hid)
 	REGISTER_ACTIONS(hidps_action_list, ps_cookie)
 }
 
-void hid_export_ps_init()
+static void plugin_ps_uninit(void)
+{
+	hid_remove_actions_by_cookie(ps_cookie);
+}
+
+
+
+pcb_uninit_t hid_export_ps_init()
 {
 	memset(&ps_hid, 0, sizeof(HID));
 
@@ -1599,4 +1607,5 @@ void hid_export_ps_init()
 	hid_register_hid(&ps_hid);
 
 	hid_eps_init();
+	return plugin_ps_uninit;
 }

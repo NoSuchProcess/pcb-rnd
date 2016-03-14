@@ -11,6 +11,7 @@
 #include "global.h"
 #include "data.h"
 #include "misc.h"
+#include "plugins.h"
 
 #include "hid.h"
 #include "hid/hidint.h"
@@ -112,7 +113,12 @@ static void lpr_calibrate(double xval, double yval)
 
 static HID lpr_hid;
 
-void hid_export_lpr_init()
+static void plugin_lpr_uninit(void)
+{
+	hid_remove_actions_by_cookie(lpr_cookie);
+}
+
+pcb_uninit_t hid_export_lpr_init()
 {
 	memset(&lpr_hid, 0, sizeof(HID));
 
@@ -131,4 +137,6 @@ void hid_export_lpr_init()
 	lpr_hid.calibrate = lpr_calibrate;
 
 	hid_register_hid(&lpr_hid);
+
+	return plugin_lpr_uninit;
 }
