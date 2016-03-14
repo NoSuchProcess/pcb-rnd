@@ -199,7 +199,7 @@ parsepcb
 			  PCBTypePtr pcb_save = PCB;
 
 			  if (layer_group_string == NULL)
-			    layer_group_string = Settings.Groups;
+			    layer_group_string = strdup(Settings.Groups);
 			  CreateNewPCBPost (yyPCB, 0);
 			  if (ParseGroupString(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN))
 			    {
@@ -209,6 +209,7 @@ parsepcb
 			/* initialize the polygon clipping now since
 			 * we didn't know the layer grouping before.
 			 */
+			free(layer_group_string);
 			PCB = yyPCB;
 			ALLPOLYGON_LOOP (yyData);
 			{
