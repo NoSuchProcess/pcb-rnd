@@ -1556,8 +1556,12 @@ REGISTER_ACTIONS(hidps_action_list, ps_cookie)
 #include "dolists.h"
 
 HID ps_hid;
+static int ps_inited = 0;
 void ps_ps_init(HID * hid)
 {
+	if (ps_inited)
+		return;
+
 	hid->get_export_options = ps_get_export_options;
 	hid->do_export = ps_do_export;
 	hid->parse_arguments = ps_parse_arguments;
@@ -1581,13 +1585,15 @@ void ps_ps_init(HID * hid)
 	hid->set_crosshair = ps_set_crosshair;
 
 	REGISTER_ACTIONS(hidps_action_list, ps_cookie)
+
+	ps_inited = 1;
 }
 
 static void plugin_ps_uninit(void)
 {
 	hid_remove_actions_by_cookie(ps_cookie);
+	ps_inited = 0;
 }
-
 
 
 pcb_uninit_t hid_export_ps_init()
