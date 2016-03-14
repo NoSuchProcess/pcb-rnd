@@ -1,0 +1,79 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> "valgrinding" flex/bison parsers </H2>
+
+In a flex/bison parser it's quiet common that strings are allocated
+in flex, passed on to bison and then either free'd there or saved in
+the output data. Since both free and save happens a lot, it's not an
+easy mechanical review of the .y file to find the reason for leaks. Especially
+if the code has to store some strings in temporary storage until a later
+stage of the parsing.
+<p>
+A typical valgrind log for such a leak looks like this:
+<pre>
+==20520== 20 bytes in 1 blocks are still reachable in loss record 3 of 6
+==20520==    at 0x402B0D5: calloc (vg_replace_malloc.c:623)
+==20520==    by 0x80E6EF0: yylex (parse_l.l:177)
+==20520==    by 0x80E0D6C: yyparse (parse_y.tab.c:1696)
+==20520==    by 0x80E85ED: Parse (parse_l.l:292)
+==20520==    by 0x80E876B: ParsePCB (parse_l.l:347)
+==20520==    by 0x8078591: real_load_pcb (file.c:390)
+==20520==    by 0x80787E9: LoadPCB (file.c:459)
+==20520==    by 0x8097719: main (main.c:1781)
+</pre>
+
+The code at <i>parse_l.l:177</i> is just a calloc() and some string
+operation: this is where the string is created. The STRING token is
+referenced about 58 times in the grammar. After reading through the
+whole file 4..5 times, I still didn't see any obvious place for the leak.
+<p>
+The leak was also a rare one: happened for one string per file. This suggested
+it was in the header - unless there's an one-instance object somewhere in the
+.pcb or it's a cache where the same pointer is free()'d and overwritten for
+multiple occurrences and simply no one free()'s the last.
+<p>
+Assuming it's a header, a cheap ways to find which header field leaked:
+<ul>
+	<li> remove the header lines one by one and see if the leak is still there - won't work if a missing header changes how the whole code runs
+	<li> change the size of each header, one by one, and see which action changes leak size - a lot of iterations, and valgrinding is slow
+</ul>
+<p>
+At this point I figured that I'd depend on the reported <i>size</i> of the leak
+with my tests. I didn't want to do multiple runs and didn't want to risk 
+the whole parser to run differently so I didn't want to modify the input. Instead
+I figured there's a simple, yet generic way to track these sort of leaks.
+<p>
+I estimated no string in the file is longer than 1000 characters. Right above
+the calloc() in the lexer I introduced a new static integer variable starting
+at 1000, increased before each allocation. This counter is sort of an ID of
+each allocation. Then I modified the calloc() to ignore the originally calculated
+string length and use this ID for allocation size. I also printed the ID-string
+pairs. The original code looked like this (simplified):
+<pre>
+	/* ... predict string size ... */
+	yylval.str = calloc(predicted_size, 1);
+	/* ... build the string here ... */
+	return STRING;
+</pre>
+
+The resulting code looked like this (simplified):
+<pre>
+	/* ... predict string size ... */
+	static int alloc_id = 1000;
+	alloc_id++;
+	yylval.str = calloc(alloc_id, 1);
+	/* ... build the string here ... */
+	fprintf(stderr, "STRING: %d '%s'\n", alloc_id, yylval.str);
+	return STRING;
+</pre>
+I saved the list printed on stderr and checked valgrind's log to find
+the two strings in question were ID 1002 and ID 1007, both looked
+something like this:
+<pre>
+1,3,4,c:2,5,6,s:7:8
+</pre>
+The only thing that looks like this is the layer group description ("Groups()").
+From this point it was trivial to find the bug in the grammar.
+
