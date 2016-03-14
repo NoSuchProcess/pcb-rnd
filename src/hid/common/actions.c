@@ -434,7 +434,7 @@ void hid_actions_uninit(void)
 	for (e = htsp_first(all_actions); e; e = htsp_next(all_actions, e)) {
 		hid_cookie_action_t *ca = e->value;
 		if (ca->cookie != NULL)
-			fprintf(stderr, "WARNING: hid_actions_uninit: action '%s' with cookie %p left registered, check your plugins!\n", e->key, ca->cookie);
+			fprintf(stderr, "WARNING: hid_actions_uninit: action '%s' with cookie '%s' left registered, check your plugins!\n", e->key, ca->cookie);
 		free(e->key);
 		free(e->value);
 	}
