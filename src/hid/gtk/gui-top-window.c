@@ -1412,7 +1412,7 @@ Location of the @file{gpcb-menu.res} file which defines the menu for the GTK+ GU
 #define HA_pcbmenu 2
 };
 
-REGISTER_ATTRIBUTES(ghid_attribute_list)
+REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
 
 		 HID_Attribute *ghid_get_export_options(int *n_ret)
 {
