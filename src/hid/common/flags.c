@@ -12,78 +12,65 @@
 
 #include "hid.h"
 #include "../hidint.h"
+#include "genht/hash.h"
+#include "genht/htsp.h"
 
 RCSID("$Id$");
 
 typedef struct HID_FlagNode {
-	struct HID_FlagNode *next;
 	HID_Flag *flags;
 	int n;
-	void *cookie;
+	const char *cookie;
 } HID_FlagNode;
 
-HID_FlagNode *hid_flag_nodes = 0;
-static int n_flags = 0;
-static HID_Flag *all_flags = 0;
+static htsp_t *hid_flags = NULL;
 
-void hid_register_flags(HID_Flag * a, int n, void *cookie)
+static int keyeq(char *a, char *b)
+{
+	return !strcmp(a, b);
+}
+
+void hid_register_flags(HID_Flag * a, int n, const char *cookie)
 {
 	HID_FlagNode *ha;
 
+	if (hid_flags == NULL)
+		hid_flags = htsp_alloc(strhash, keyeq);
+
+	if (htsp_get(hid_flags, a->name) != NULL) {
+		fprintf(stderr, "ERROR: can't register flag %s for cookie %s: name already in use\n", a->name, cookie);
+		return;
+	}
+
 	/* printf("%d flag%s registered\n", n, n==1 ? "" : "s"); */
 	ha = (HID_FlagNode *) malloc(sizeof(HID_FlagNode));
-	ha->next = hid_flag_nodes;
-	hid_flag_nodes = ha;
 	ha->flags = a;
 	ha->n = n;
-	n_flags += n;
-	if (all_flags) {
-		free(all_flags);
-		all_flags = 0;
-	}
+	ha->cookie = cookie;
+
+	htsp_set(hid_flags, a->name, ha);
 }
 
 void hid_flags_uninit(void)
 {
-}
-
-static int flag_sort(const void *va, const void *vb)
-{
-	HID_Flag *a = (HID_Flag *) va;
-	HID_Flag *b = (HID_Flag *) vb;
-	return strcmp(a->name, b->name);
+	if (hid_flags != NULL) {
+		htsp_free(hid_flags);
+		hid_flags = NULL;
+	}
 }
 
 HID_Flag *hid_find_flag(const char *name)
 {
-	HID_FlagNode *hf;
-	int i, n, lower, upper;
+	HID_FlagNode *ha;
 
-	if (all_flags == 0) {
-		n = 0;
-		all_flags = (HID_Flag *) malloc(n_flags * sizeof(HID_Flag));
-		for (hf = hid_flag_nodes; hf; hf = hf->next)
-			for (i = 0; i < hf->n; i++)
-				all_flags[n++] = hf->flags[i];
-		qsort(all_flags, n_flags, sizeof(HID_Flag), flag_sort);
-	}
+	if (hid_flags == NULL)
+		return NULL;
 
-	lower = -1;
-	upper = n_flags + 1;
-	/*printf("search flag %s\n", name); */
-	while (lower < upper - 1) {
-		i = (lower + upper) / 2;
-		n = strcmp(all_flags[i].name, name);
-		/*printf("try [%d].%s, cmp %d\n", i, all_flags[i].name, n); */
-		if (n == 0)
-			return all_flags + i;
-		if (n > 0)
-			upper = i;
-		else
-			lower = i;
-	}
-	printf("unknown flag `%s'\n", name);
-	return 0;
+	ha = htsp_get(hid_flags, (char *)name);
+	if (ha == NULL)
+		return NULL;
+
+	return ha->flags;
 }
 
 int hid_get_flag(const char *name)

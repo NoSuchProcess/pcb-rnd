@@ -1583,6 +1583,7 @@ void pcb_main_uninit(void)
 	hid_uninit();
 	plugins_uninit();
 	events_uninit();
+	hid_flags_uninit();
 
 	for (i = 0; i < MAX_LAYER; i++)
 		free(Settings.DefaultLayerName[i]);

@@ -140,13 +140,16 @@ extern "C" {
 		int parm;
 	} HID_Flag;
 
-	extern void hid_register_flags(HID_Flag *, int, void *);
+	extern void hid_register_flags(HID_Flag *a, int n, const char *cookie);
 #define REGISTER_FLAGS(a) HIDCONCAT(void register_,a) ()\
 { hid_register_flags(a, sizeof(a)/sizeof(a[0]), NULL); }
 
 /* Looks up one of the flags registered above.  If the flag is
    unknown, returns zero.  */
 	int hid_get_flag(const char *name_);
+
+/* Free all flags */
+	void hid_flags_uninit(void);
 
 /* Used for HID attributes (exporting and printing, mostly).
    HA_boolean uses int_value, HA_enum sets int_value to the index and
