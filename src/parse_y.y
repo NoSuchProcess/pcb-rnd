@@ -870,6 +870,8 @@ layer
 				Layer = &yyData->Layer[$3-1];
 
 					/* memory for name is already allocated */
+				if (Layer->Name != NULL)
+					free(Layer->Name);
 				Layer->Name = $4;
 				LayerFlag[$3-1] = true;
 				if (yyData->LayerN + 2 < $3)
