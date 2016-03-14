@@ -143,7 +143,7 @@ include {../src_plugins/autoplace/Plug.tmpasm}
 include {../src_plugins/autoroute/Plug.tmpasm}
 include {../src_plugins/vendordrill/Plug.tmpasm}
 include {../src_plugins/puller/Plug.tmpasm}
-include {../src_plugins/edif/Plug.tmpasm}
+include {../src_plugins/import_edif/Plug.tmpasm}
 include {../src_plugins/djopt/Plug.tmpasm}
 include {../src_plugins/mincut/Plug.tmpasm}
 include {../src_plugins/gpmi/Plug.tmpasm}

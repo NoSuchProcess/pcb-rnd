@@ -56,9 +56,9 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-puller",  "/local/pcb/puller/buildin",  arg_true,      "$static link the puller plugin into the executable"},
 	{"plugin-puller",   "/local/pcb/puller/buildin",  arg_false,     "$the puller plugin is a dynamic loadable"},
 
-	{"disable-edif",  "/local/pcb/edif/enable",   arg_false,     "$do not compile the edif"},
-	{"buildin-edif",  "/local/pcb/edif/buildin",  arg_true,      "$static link the edif plugin into the executable"},
-	{"plugin-edif",   "/local/pcb/edif/buildin",  arg_false,     "$the edif plugin is a dynamic loadable"},
+	{"disable-import_edif",  "/local/pcb/import_edif/enable",   arg_false,     "$do not compile the edif importer"},
+	{"buildin-import_edif",  "/local/pcb/import_edif/buildin",  arg_true,      "$static link the edif importer plugin into the executable"},
+	{"plugin-import_edif",   "/local/pcb/import_edif/buildin",  arg_false,     "$the edif importer plugin is a dynamic loadable"},
 
 	{"disable-djopt",  "/local/pcb/djopt/enable",   arg_false,     "$do not compile the djopt"},
 	{"buildin-djopt",  "/local/pcb/djopt/buildin",  arg_true,      "$static link the djopt plugin into the executable"},
@@ -172,9 +172,9 @@ int hook_postinit()
 	put("/local/pcb/puller/enable", strue);
 	put("/local/pcb/puller/buildin", strue);
 
-	db_mkdir("/local/pcb/edif");
-	put("/local/pcb/edif/enable", strue);
-	put("/local/pcb/edif/buildin", strue);
+	db_mkdir("/local/pcb/import_edif");
+	put("/local/pcb/import_edif/enable", strue);
+	put("/local/pcb/import_edif/buildin", strue);
 
 	db_mkdir("/local/pcb/djopt");
 	put("/local/pcb/djopt/enable", strue);
@@ -464,7 +464,7 @@ int hook_generate()
 	printf("Configuration summary\n");
 	printf("=====================\n\n");
 	list_presents("GUI hids: batch", gui_list);
-	list_presents("Export hids: bom gerber lpr ps", exporter_list);
+	list_presents("Export hids: bom gerber", exporter_list);
 
 /* special case because the "presents" node */
 	printf("%-32s", "Scripting via GPMI: ");
@@ -488,10 +488,10 @@ int hook_generate()
 	plugin_stat("renumber:",               "/local/pcb/renumber");
 	plugin_stat("old actions:",            "/local/pcb/oldactions");
 	plugin_stat("stroke:",                 "/local/pcb/stroke");
-
+	printf("\n");
 	plugin_stat("import_sch:",             "/local/pcb/import_sch");
-	plugin_stat("Edif: ",                  "/local/pcb/edif");
-
+	plugin_stat("import_edif: ",           "/local/pcb/import_edif");
+	printf("\n");
 	plugin_stat("export_ps:",              "/local/pcb/export_ps");
 	plugin_stat("export_lpr:",             "/local/pcb/export_lpr");
 
