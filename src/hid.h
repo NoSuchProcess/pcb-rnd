@@ -194,6 +194,9 @@ extern "C" {
 #define REGISTER_ATTRIBUTES(a, cookie) HIDCONCAT(void register_,a) ()\
 { hid_register_attributes(a, sizeof(a)/sizeof(a[0]), cookie); }
 
+	/* remove all attributes and free the list */
+	void hid_attributes_uninit(void);
+
 /* These three are set by hid_parse_command_line().  */
 	extern char *program_name;
 	extern char *program_directory;

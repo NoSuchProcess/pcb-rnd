@@ -149,6 +149,7 @@ void hid_uninit(void)
 
 	hid_actions_uninit();
 	hid_flags_uninit();
+	hid_attributes_uninit();
 }
 
 void hid_register_hid(HID * hid)
@@ -256,6 +257,19 @@ void hid_register_attributes(HID_Attribute * a, int n, const char *cookie)
 	ha->n = n;
 	ha->cookie = cookie;
 }
+
+void hid_attributes_uninit(void)
+{
+	HID_AttrNode *ha, *next;
+	for (ha = hid_attr_nodes; ha; ha = next) {
+		next = ha->next;
+		if (ha->cookie != NULL)
+			fprintf(stderr, "WARNING: attribute %s by %s is not uninited, check your plugins' uninit!\n", ha->attributes->name, ha->cookie);
+		free(ha);
+	}
+	hid_attr_nodes = NULL;
+}
+
 
 void hid_parse_command_line(int *argc, char ***argv)
 {

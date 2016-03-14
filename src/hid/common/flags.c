@@ -72,6 +72,15 @@ void hid_remove_flags_by_cookie(const char *cookie)
 void hid_flags_uninit(void)
 {
 	if (hid_flags != NULL) {
+		htsp_entry_t *e;
+		for(e = htsp_first(hid_flags); e; e = htsp_next(hid_flags, e)) {
+			HID_FlagNode *ha;
+			ha = e->value;
+			if (ha->cookie != NULL)
+				fprintf(stderr, "Warning: uninitialized flag in hid_flags_uninit: %s by %s; check your plugins' uninit!\n", e->key, ha->cookie);
+			htsp_pop(hid_flags, e->key);
+			free(ha);
+		}
 		htsp_free(hid_flags);
 		hid_flags = NULL;
 	}
