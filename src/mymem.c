@@ -712,6 +712,7 @@ void FreeLibraryMemory(LibraryTypePtr lib)
 		END_LOOP;
 		free(menu->Entry);
 		free(menu->Name);
+		free(menu->directory);
 	}
 	END_LOOP;
 	free(lib->Menu);

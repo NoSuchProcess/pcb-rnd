@@ -328,6 +328,9 @@ int pcb_fp_list(const char *subdir, int recurse,
 						break;
 					continue;
 				}
+				else
+					if (tags != NULL)
+						free(tags);
 			}
 
 			if ((S_ISDIR(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
