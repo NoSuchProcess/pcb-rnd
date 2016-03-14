@@ -61,8 +61,10 @@ void hid_remove_flags_by_cookie(const char *cookie)
 
 	for(e = htsp_first(hid_flags); e; e = htsp_next(hid_flags, e)) {
 		ha = e->value;
-		if (ha->cookie == cookie)
+		if (ha->cookie == cookie) {
 			htsp_pop(hid_flags, e->key);
+			free(ha);
+		}
 	}
 }
 
