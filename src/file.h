@@ -74,4 +74,6 @@ void RemoveTMPData(void);
 #endif
 #endif
 
+void file_uninit();
+
 #endif

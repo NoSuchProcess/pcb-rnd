@@ -1602,6 +1602,7 @@ void pcb_main_uninit(void)
 
 	FreeLibraryMemory(&Library);
 	pcb_fp_uninit();
+	file_uninit();
 
 #define free0(ptr) \
 	do {  \

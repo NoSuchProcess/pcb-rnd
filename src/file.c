@@ -509,12 +509,17 @@ void PostLoadElementPCB()
 /* ---------------------------------------------------------------------------
  * writes the quoted string created by another subroutine
  */
+static DynamicStringType pqs_ds;
 static void PrintQuotedString(FILE * FP, char *S)
 {
-	static DynamicStringType ds;
+	CreateQuotedString(&pqs_ds, S);
+	fputs(pqs_ds.Data, FP);
+}
 
-	CreateQuotedString(&ds, S);
-	fputs(ds.Data, FP);
+void file_uninit()
+{
+	if (pqs_ds.Data != NULL)
+		free(pqs_ds.Data);
 }
 
 /* ---------------------------------------------------------------------------
