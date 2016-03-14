@@ -1619,6 +1619,9 @@ void pcb_main_uninit(void)
 	free0(Settings.GnetlistProgram);
 
 #undef free0
+
+	extern void yylex_destroy(void);
+	yylex_destroy();
 }
 
 int main(int argc, char *argv[])
