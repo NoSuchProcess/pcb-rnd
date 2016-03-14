@@ -144,6 +144,9 @@ extern "C" {
 #define REGISTER_FLAGS(a, cookie) HIDCONCAT(void register_,a) ()\
 { hid_register_flags(a, sizeof(a)/sizeof(a[0]), cookie); }
 
+/* Remove all flags matching a cookie */
+	void hid_remove_flags_by_cookie(const char *cookie);
+
 /* Looks up one of the flags registered above.  If the flag is
    unknown, returns zero.  */
 	int hid_get_flag(const char *name_);

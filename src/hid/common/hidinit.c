@@ -148,6 +148,7 @@ void hid_uninit(void)
 	free(hid_list);
 
 	hid_actions_uninit();
+	hid_flags_uninit();
 }
 
 void hid_register_hid(HID * hid)

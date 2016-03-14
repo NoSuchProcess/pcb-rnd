@@ -1580,10 +1580,9 @@ void pcb_main_uninit(void)
 	free(PCB);
 	PCB = NULL;
 
-	hid_uninit();
 	plugins_uninit();
+	hid_uninit();
 	events_uninit();
-	hid_flags_uninit();
 
 	for (i = 0; i < MAX_LAYER; i++)
 		free(Settings.DefaultLayerName[i]);

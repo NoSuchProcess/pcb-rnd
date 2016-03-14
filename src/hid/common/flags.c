@@ -51,6 +51,22 @@ void hid_register_flags(HID_Flag * a, int n, const char *cookie)
 	htsp_set(hid_flags, a->name, ha);
 }
 
+void hid_remove_flags_by_cookie(const char *cookie)
+{
+	htsp_entry_t *e;
+	HID_FlagNode *ha;
+
+	if (hid_flags == NULL)
+		return NULL;
+
+	for(e = htsp_first(hid_flags); e; e = htsp_next(hid_flags, e)) {
+		ha = e->value;
+		if (ha->cookie == cookie)
+			htsp_pop(hid_flags, e->key);
+	}
+}
+
+
 void hid_flags_uninit(void)
 {
 	if (hid_flags != NULL) {
