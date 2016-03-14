@@ -1,0 +1,4 @@
+Export postscript or embedded postscript.
+
+#state: works
+#default: buildin

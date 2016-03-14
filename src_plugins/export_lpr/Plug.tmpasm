@@ -1,0 +1,15 @@
+append /local/pcb/export_lpr/enable {}
+append /local/pcb/export_lpr/buildin {}
+
+put /local/pcb/mod {export_lpr}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_lpr/lpr.o @]
+
+if /local/pcb/export_lpr/enable then
+	if /local/pcb/export_lpr/buildin then
+		include {Makefile.in.mod/Buildin}
+	else
+		include {Makefile.in.mod/Plugin}
+	end
+else
+	include {Makefile.in.mod/Disable}
+end

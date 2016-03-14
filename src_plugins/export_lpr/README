@@ -1,0 +1,4 @@
+Export to lpr (using export_ps to generate postscript)
+
+#state: works
+#default: buildin
