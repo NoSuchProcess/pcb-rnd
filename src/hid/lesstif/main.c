@@ -1662,6 +1662,7 @@ static Widget make_message(char *name, Widget left, int resizeable)
 }
 
 extern Widget lesstif_menubar;
+static lesstif_hid_inited = 0;
 
 static void lesstif_do_export(HID_Attr_Val * options)
 {
@@ -1811,6 +1812,8 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	lesstif_menubar = menu;
 	event(EVENT_GUI_INIT, NULL);
 
+	lesstif_hid_inited = 1;
+
 	XtAppMainLoop(app_context);
 }
 
@@ -1823,7 +1826,10 @@ void lesstif_uninit_menu(void);
 
 static void lesstif_uninit(HID *hid)
 {
-	lesstif_uninit_menu();
+	if (lesstif_hid_inited) {
+		lesstif_uninit_menu();
+		lesstif_hid_inited = 0;
+	}
 }
 
 

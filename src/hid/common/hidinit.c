@@ -139,6 +139,15 @@ void hid_init()
 void hid_uninit(void)
 {
 	hid_actions_uninit();
+
+	if (hid_num_hids > 0) {
+		int i;
+		for (i = hid_num_hids-1; i >= 0; i--) {
+			if (hid_list[i]->uninit != NULL)
+				hid_list[i]->uninit(hid_list[i]);
+		}
+	}
+	free(hid_list);
 }
 
 void hid_register_hid(HID * hid)
