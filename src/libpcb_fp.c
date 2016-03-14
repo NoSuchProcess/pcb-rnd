@@ -111,6 +111,15 @@ const void *pcb_fp_tag(const char *tag, int alloc)
 	return e == NULL ? NULL : e->key;
 }
 
+void pcb_fp_uninit()
+{
+	htsp_entry_t *e;
+	for (e = htsp_first(pcb_fp_tags); e; e = htsp_next(pcb_fp_tags, e))
+		free(e->key);
+	htsp_free(pcb_fp_tags);
+	pcb_fp_tags = NULL;
+}
+
 const char *pcb_fp_tagname(const void *tagid)
 {
 	return (char *) tagid;
