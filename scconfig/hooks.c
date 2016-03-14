@@ -38,55 +38,63 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-gpmi",      "libs/script/gpmi",             arg_lib_nodes, "$do not compile the gpmi (scripting) plugin"},
 
 	{"buildin-gpmi",      "/local/pcb/gpmi/buildin",      arg_true,      "$static link the gpmi plugin into the executable"},
-	{"plugin-gpmi",       "/local/pcb/gpmi/buildin",      arg_false,     "$the gpmi plugin is dynamic loadable"},
+	{"plugin-gpmi",       "/local/pcb/gpmi/buildin",      arg_false,     "$the gpmi plugin is a dynamic loadable"},
 
 	{"disable-autoroute", "/local/pcb/autoroute/enable",   arg_false,     "$do not compile the autorouter"},
 	{"buildin-autoroute", "/local/pcb/autoroute/buildin",  arg_true,      "$static link the autorouter plugin into the executable"},
-	{"plugin-autoroute",  "/local/pcb/autoroute/buildin",  arg_false,     "$the autorouter plugin is dynamic loadable"},
+	{"plugin-autoroute",  "/local/pcb/autoroute/buildin",  arg_false,     "$the autorouter plugin is a dynamic loadable"},
 
 	{"disable-autoplace",  "/local/pcb/autoplace/enable",   arg_false,     "$do not compile the autoplace"},
 	{"buildin-autoplace",  "/local/pcb/autoplace/buildin",  arg_true,      "$static link the autoplace plugin into the executable"},
-	{"plugin-autoplace",   "/local/pcb/autoplace/buildin",  arg_false,     "$the autoplace plugin is dynamic loadable"},
+	{"plugin-autoplace",   "/local/pcb/autoplace/buildin",  arg_false,     "$the autoplace plugin is a dynamic loadable"},
 
 	{"disable-vendordrill",  "/local/pcb/vendordrill/enable",   arg_false,     "$do not compile the vendor drill mapping"},
 	{"buildin-vendordrill",  "/local/pcb/vendordrill/buildin",  arg_true,      "$static link the vendor drill mapping plugin into the executable"},
-	{"plugin-vendordrill",   "/local/pcb/vendordrill/buildin",  arg_false,     "$the vendor drill mapping plugin is dynamic loadable"},
+	{"plugin-vendordrill",   "/local/pcb/vendordrill/buildin",  arg_false,     "$the vendor drill mapping plugin is a dynamic loadable"},
 
 	{"disable-puller",  "/local/pcb/puller/enable",   arg_false,     "$do not compile the puller"},
 	{"buildin-puller",  "/local/pcb/puller/buildin",  arg_true,      "$static link the puller plugin into the executable"},
-	{"plugin-puller",   "/local/pcb/puller/buildin",  arg_false,     "$the puller plugin is dynamic loadable"},
+	{"plugin-puller",   "/local/pcb/puller/buildin",  arg_false,     "$the puller plugin is a dynamic loadable"},
 
 	{"disable-edif",  "/local/pcb/edif/enable",   arg_false,     "$do not compile the edif"},
 	{"buildin-edif",  "/local/pcb/edif/buildin",  arg_true,      "$static link the edif plugin into the executable"},
-	{"plugin-edif",   "/local/pcb/edif/buildin",  arg_false,     "$the edif plugin is dynamic loadable"},
+	{"plugin-edif",   "/local/pcb/edif/buildin",  arg_false,     "$the edif plugin is a dynamic loadable"},
 
 	{"disable-djopt",  "/local/pcb/djopt/enable",   arg_false,     "$do not compile the djopt"},
 	{"buildin-djopt",  "/local/pcb/djopt/buildin",  arg_true,      "$static link the djopt plugin into the executable"},
-	{"plugin-djopt",   "/local/pcb/djopt/buildin",  arg_false,     "$the djopt plugin is dynamic loadable"},
+	{"plugin-djopt",   "/local/pcb/djopt/buildin",  arg_false,     "$the djopt plugin is a dynamic loadable"},
 
 	{"disable-mincut",  "/local/pcb/mincut/enable",   arg_false,     "$do not compile the mincut"},
 	{"buildin-mincut",  "/local/pcb/mincut/buildin",  arg_true,      "$static link the mincut plugin into the executable"},
-	{"plugin-mincut",   "/local/pcb/mincut/buildin",  arg_false,     "$the mincut plugin is dynamic loadable"},
+	{"plugin-mincut",   "/local/pcb/mincut/buildin",  arg_false,     "$the mincut plugin is a dynamic loadable"},
 
 	{"disable-toporouter",  "/local/pcb/toporouter/enable",   arg_false,     "$do not compile the toporouter"},
 	{"buildin-toporouter",  "/local/pcb/toporouter/buildin",  arg_true,      "$static link the toporouter plugin into the executable"},
-	{"plugin-toporouter",   "/local/pcb/toporouter/buildin",  arg_false,     "$the toporouter plugin is dynamic loadable"},
+	{"plugin-toporouter",   "/local/pcb/toporouter/buildin",  arg_false,     "$the toporouter plugin is a dynamic loadable"},
 
 	{"disable-oldactions",  "/local/pcb/oldactions/enable",   arg_false,     "$do not compile the oldactions"},
 	{"buildin-oldactions",  "/local/pcb/oldactions/buildin",  arg_true,      "$static link the oldactions plugin into the executable"},
-	{"plugin-oldactions",   "/local/pcb/oldactions/buildin",  arg_false,     "$the oldactions plugin is dynamic loadable"},
+	{"plugin-oldactions",   "/local/pcb/oldactions/buildin",  arg_false,     "$the oldactions plugin is a dynamic loadable"},
 
 	{"disable-renumber",  "/local/pcb/renumber/enable",   arg_false,     "$do not compile the renumber action"},
 	{"buildin-renumber",  "/local/pcb/renumber/buildin",  arg_true,      "$static link the renumber action into the executable"},
-	{"plugin-renumber",   "/local/pcb/renumber/buildin",  arg_false,     "$the renumber action is dynamic loadable plugin"},
+	{"plugin-renumber",   "/local/pcb/renumber/buildin",  arg_false,     "$the renumber action is a dynamic loadable plugin"},
 
 	{"disable-stroke",  "/local/pcb/stroke/enable",   arg_false,     "$do not compile libstroke gestures"},
 	{"buildin-stroke",  "/local/pcb/stroke/buildin",  arg_true,      "$static link libstroke gestures into the executable"},
-	{"plugin-stroke",   "/local/pcb/stroke/buildin",  arg_false,     "$libstroke gestures is dynamic loadable plugin"},
+	{"plugin-stroke",   "/local/pcb/stroke/buildin",  arg_false,     "$libstroke gestures is a dynamic loadable plugin"},
 
 	{"disable-import_sch",  "/local/pcb/import_sch/enable",   arg_false,     "$do not compile the import schematics action"},
 	{"buildin-import_sch",  "/local/pcb/import_sch/buildin",  arg_true,      "$static link the import schematics action into the executable"},
-	{"plugin-import_sch",   "/local/pcb/import_sch/buildin",  arg_false,     "$the import schematics action is dynamic loadable plugin"},
+	{"plugin-import_sch",   "/local/pcb/import_sch/buildin",  arg_false,     "$the import schematics action is a dynamic loadable plugin"},
+
+	{"disable-export_ps",  "/local/pcb/export_ps/enable",   arg_false,     "$do not compile the postscript exporter"},
+	{"buildin-export_ps",  "/local/pcb/export_ps/buildin",  arg_true,      "$static link the postscript exporter into the executable"},
+	{"plugin-export_ps",   "/local/pcb/export_ps/buildin",  arg_false,     "$the postscript exporter is a dynamic loadable plugin"},
+
+	{"disable-export_lpr", "/local/pcb/export_lpr/enable",  arg_false,     "$do not compile the lpr printer"},
+	{"buildin-export_lpr", "/local/pcb/export_lpr/buildin", arg_true,      "$static link the lpr printer into the executable"},
+	{"plugin-export_lpr",  "/local/pcb/export_lpr/buildin", arg_false,     "$the lpr printer is a dynamic loadable plugin"},
 
 	{NULL, NULL, NULL, NULL}
 };
@@ -195,6 +203,14 @@ int hook_postinit()
 	db_mkdir("/local/pcb/import_sch");
 	put("/local/pcb/import_sch/enable", strue);
 	put("/local/pcb/import_sch/buildin", strue);
+
+	db_mkdir("/local/pcb/export_ps");
+	put("/local/pcb/export_ps/enable", strue);
+	put("/local/pcb/export_ps/buildin", strue);
+
+	db_mkdir("/local/pcb/export_lpr");
+	put("/local/pcb/export_lpr/enable", strue);
+	put("/local/pcb/export_lpr/buildin", strue);
 
 	return 0;
 }
@@ -332,6 +348,14 @@ int hook_detect_target()
 		put("/local/global_cflags", tmp);
 	}
 
+	/* some internal dependencies */
+	if (!istrue(get("/local/pcb/export_ps/enable")) || !istrue(get("/local/pcb/export_ps/buildin"))) {
+		if (istrue(get("/local/pcb/export_lpr/enable"))) {
+			report_repeat("WARNING: disabling the lpr exporter because the ps exporter is not enabled as a buildin...\n");
+			hook_custom_arg("disable-export_ps", NULL);
+		}
+	}
+
 	return 0;
 }
 
@@ -459,13 +483,17 @@ int hook_generate()
 	plugin_stat("Autoplace: ",             "/local/pcb/autoplace");
 	plugin_stat("Vendor drill mapping: ",  "/local/pcb/vendordrill");
 	plugin_stat("Puller: ",                "/local/pcb/puller");
-	plugin_stat("Edif: ",                  "/local/pcb/edif");
 	plugin_stat("djopt: ",                 "/local/pcb/djopt");
 	plugin_stat("Mincut: ",                "/local/pcb/mincut");
 	plugin_stat("renumber:",               "/local/pcb/renumber");
 	plugin_stat("old actions:",            "/local/pcb/oldactions");
-	plugin_stat("import_sch:",             "/local/pcb/import_sch");
 	plugin_stat("stroke:",                 "/local/pcb/stroke");
+
+	plugin_stat("import_sch:",             "/local/pcb/import_sch");
+	plugin_stat("Edif: ",                  "/local/pcb/edif");
+
+	plugin_stat("export_ps:",              "/local/pcb/export_ps");
+	plugin_stat("export_lpr:",             "/local/pcb/export_lpr");
 
 	if (repeat != NULL)
 		printf("\n%s\n", repeat);

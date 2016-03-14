@@ -1,4 +1,0 @@
-append /local/pcb/HIDS {lpr}
-append /local/pcb/OBJS {hid/lpr/lpr.o}
-
-

@@ -14,10 +14,10 @@
 #include "pcb-printf.h"
 
 #include "hid.h"
-#include "../hidint.h"
+#include "hid/hidint.h"
 #include "hid/common/hidnogui.h"
 #include "hid/common/draw_helpers.h"
-#include "../ps/ps.h"
+#include "ps.h"
 #include "hid/common/hidinit.h"
 
 

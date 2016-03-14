@@ -13,8 +13,8 @@
 #include "misc.h"
 
 #include "hid.h"
-#include "../hidint.h"
-#include "../ps/ps.h"
+#include "hid/hidint.h"
+#include "../export_ps/ps.h"
 #include "hid/common/hidnogui.h"
 #include "hid/common/hidinit.h"
 
@@ -112,7 +112,7 @@ static void lpr_calibrate(double xval, double yval)
 
 static HID lpr_hid;
 
-void hid_lpr_init()
+void hid_export_lpr_init()
 {
 	memset(&lpr_hid, 0, sizeof(HID));
 

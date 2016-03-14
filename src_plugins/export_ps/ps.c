@@ -17,11 +17,11 @@
 #include "pcb-printf.h"
 
 #include "hid.h"
-#include "../hidint.h"
+#include "hid/hidint.h"
 #include "hid/common/hidnogui.h"
 #include "hid/common/draw_helpers.h"
-#include "../ps/ps.h"
-#include "../../print.h"
+#include "ps.h"
+#include "print.h"
 #include "hid/common/hidinit.h"
 
 
@@ -1582,7 +1582,7 @@ void ps_ps_init(HID * hid)
 	REGISTER_ACTIONS(hidps_action_list, ps_cookie)
 }
 
-void hid_ps_init()
+void hid_export_ps_init()
 {
 	memset(&ps_hid, 0, sizeof(HID));
 
