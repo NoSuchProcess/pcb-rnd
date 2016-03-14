@@ -133,9 +133,6 @@ put /local/pcb/rules/uninstall {}
 include {Makefile.in.mod/gtk-gdk}
 include {Makefile.in.mod/lesstif}
 include {Makefile.in.mod/batch}
-include {Makefile.in.mod/bom}
-include {Makefile.in.mod/png}
-include {Makefile.in.mod/gerber}
 
 include {../src_plugins/autoplace/Plug.tmpasm}
 include {../src_plugins/autoroute/Plug.tmpasm}
@@ -154,6 +151,9 @@ include {../src_plugins/export_ps/Plug.tmpasm}
 include {../src_plugins/export_lpr/Plug.tmpasm}
 include {../src_plugins/export_gcode/Plug.tmpasm}
 include {../src_plugins/export_nelma/Plug.tmpasm}
+include {../src_plugins/export_png/Plug.tmpasm}
+include {../src_plugins/export_gerber/Plug.tmpasm}
+include {../src_plugins/export_bom/Plug.tmpasm}
 
 
 append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags

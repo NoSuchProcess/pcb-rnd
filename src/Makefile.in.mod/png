@@ -1,8 +1,0 @@
-if /target/libs/gui/gd/presents then
-append /local/pcb/HIDS            {png}
-append /local/pcb/CFLAGS          {-I./hid/png}
-append /local/pcb/LIBS            libs/gui/gd/cflags
-append /local/pcb/OBJS            {hid/png/png.o}
-append /local/pcb/LIBS            libs/gui/gd/ldflags
-append /local/pcb/ACTION_REG_SRC  {hid/png/png.c hid/png/hid.conf}
-end

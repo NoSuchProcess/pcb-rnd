@@ -25,6 +25,7 @@
 #include "error.h"
 #include "draw.h"
 #include "pcb-printf.h"
+#include "plugins.h"
 
 #include "hid.h"
 #include "../hidint.h"
@@ -1168,7 +1169,7 @@ static void gerber_set_crosshair(int x, int y, int action)
 {
 }
 
-void hid_gerber_init()
+pcb_uninit_t hid_export_gerber_init()
 {
 	memset(&gerber_hid, 0, sizeof(gerber_hid));
 
@@ -1201,4 +1202,5 @@ void hid_gerber_init()
 	gerber_hid.set_crosshair = gerber_set_crosshair;
 
 	hid_register_hid(&gerber_hid);
+	return NULL;
 }

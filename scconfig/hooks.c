@@ -17,13 +17,6 @@ const char *gui_list[] = {
 	NULL, NULL
 };
 
-const char *exporter_list[] = {
-	"png",   "libs/gui/gd/gdImagePng/presents",
-	"gif",   "libs/gui/gd/gdImageGif/presents",
-	"jpg",   "libs/gui/gd/gdImageJpeg/presents",
-	NULL, NULL
-};
-
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
 	{"disable-gtk",       "libs/gui/gtk2",                arg_lib_nodes, "$do not compile the gtk HID"},
 	{"disable-lesstif",   "libs/gui/lesstif2",            arg_lib_nodes, "$do not compile the lesstif HID"},
@@ -101,6 +94,19 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-export_nelma", "/local/pcb/export_nelma/enable",  arg_false,     "$do not compile the nelma exporter"},
 	{"buildin-export_nelma", "/local/pcb/export_nelma/buildin", arg_true,      "$static link the nelma exporter into the executable"},
 	{"plugin-export_nelma",  "/local/pcb/export_nelma/buildin", arg_false,     "$the nelma exporter is a dynamic loadable plugin"},
+
+	{"disable-export_png", "/local/pcb/export_png/enable",  arg_false,     "$do not compile the png exporter"},
+	{"buildin-export_png", "/local/pcb/export_png/buildin", arg_true,      "$static link the png exporter into the executable"},
+	{"plugin-export_png",  "/local/pcb/export_png/buildin", arg_false,     "$the png exporter is a dynamic loadable plugin"},
+
+	{"disable-export_bom", "/local/pcb/export_bom/enable",  arg_false,     "$do not compile the bom exporter"},
+	{"buildin-export_bom", "/local/pcb/export_bom/buildin", arg_true,      "$static link the bom exporter into the executable"},
+	{"plugin-export_bom",  "/local/pcb/export_bom/buildin", arg_false,     "$the bom exporter is a dynamic loadable plugin"},
+
+	{"disable-export_gerber", "/local/pcb/export_gerber/enable",  arg_false,     "$do not compile the gerber exporter"},
+	{"buildin-export_gerber", "/local/pcb/export_gerber/buildin", arg_true,      "$static link the gerber exporter into the executable"},
+	{"plugin-export_gerber",  "/local/pcb/export_gerber/buildin", arg_false,     "$the gerber exporter is a dynamic loadable plugin"},
+
 
 	{NULL, NULL, NULL, NULL}
 };
@@ -225,6 +231,18 @@ int hook_postinit()
 	db_mkdir("/local/pcb/export_nelma");
 	put("/local/pcb/export_nelma/enable", strue);
 	put("/local/pcb/export_nelma/buildin", strue);
+
+	db_mkdir("/local/pcb/export_png");
+	put("/local/pcb/export_png/enable", strue);
+	put("/local/pcb/export_png/buildin", strue);
+
+	db_mkdir("/local/pcb/export_bom");
+	put("/local/pcb/export_bom/enable", strue);
+	put("/local/pcb/export_bom/buildin", strue);
+
+	db_mkdir("/local/pcb/export_gerber");
+	put("/local/pcb/export_gerber/enable", strue);
+	put("/local/pcb/export_gerber/buildin", strue);
 
 	return 0;
 }
@@ -375,6 +393,10 @@ int hook_detect_target()
 			report_repeat("WARNING: disabling the nelma exporter because libgd is not found or not configured...\n");
 			hook_custom_arg("disable-export_nelma", NULL);
 		}
+		if (istrue(get("/local/pcb/export_png/enable"))) {
+			report_repeat("WARNING: disabling the png exporter because libgd is not found or not configured...\n");
+			hook_custom_arg("disable-export_png", NULL);
+		}
 	}
 
 	return 0;
@@ -485,7 +507,6 @@ int hook_generate()
 	printf("Configuration summary\n");
 	printf("=====================\n\n");
 	list_presents("GUI hids: batch", gui_list);
-	list_presents("Export hids: bom gerber", exporter_list);
 
 /* special case because the "presents" node */
 	printf("%-32s", "Scripting via GPMI: ");
@@ -513,10 +534,13 @@ int hook_generate()
 	plugin_stat("import_sch:",             "/local/pcb/import_sch");
 	plugin_stat("import_edif: ",           "/local/pcb/import_edif");
 	printf("\n");
-	plugin_stat("export_ps:",              "/local/pcb/export_ps");
-	plugin_stat("export_lpr:",             "/local/pcb/export_lpr");
 	plugin_stat("export_gcode:",           "/local/pcb/export_gcode");
 	plugin_stat("export_nelma:",           "/local/pcb/export_nelma");
+	plugin_stat("export_png:",             "/local/pcb/export_png");
+	plugin_stat("export_bom:",             "/local/pcb/export_bom");
+	plugin_stat("export_gerber:",          "/local/pcb/export_gerber");
+	plugin_stat("export_ps:",              "/local/pcb/export_ps");
+	plugin_stat("export_lpr:",             "/local/pcb/export_lpr");
 
 	if (repeat != NULL)
 		printf("\n%s\n", repeat);

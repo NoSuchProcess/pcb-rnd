@@ -1,2 +1,0 @@
-append /local/pcb/HIDS {bom}
-append /local/pcb/OBJS {hid/bom/bom.o}

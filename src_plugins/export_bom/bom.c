@@ -13,6 +13,7 @@
 #include "error.h"
 #include "misc.h"
 #include "pcb-printf.h"
+#include "plugins.h"
 
 #include "hid.h"
 #include "hid/common/hidnogui.h"
@@ -506,7 +507,7 @@ static void bom_parse_arguments(int *argc, char ***argv)
 
 HID bom_hid;
 
-void hid_bom_init()
+pcb_uninit_t hid_export_bom_init()
 {
 	memset(&bom_hid, 0, sizeof(HID));
 
@@ -522,4 +523,5 @@ void hid_bom_init()
 	bom_hid.parse_arguments = bom_parse_arguments;
 
 	hid_register_hid(&bom_hid);
+	return NULL;
 }

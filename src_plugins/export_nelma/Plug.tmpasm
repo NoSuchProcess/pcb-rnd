@@ -5,6 +5,8 @@ put /local/pcb/mod {export_nelma}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_nelma/nelma.o @]
 
 if /local/pcb/export_nelma/enable then
+	append /local/pcb/LIBS            libs/gui/gd/ldflags
+	append /local/pcb/CFLAGS          libs/gui/gd/cflags
 	if /local/pcb/export_nelma/buildin then
 		include {Makefile.in.mod/Buildin}
 	else

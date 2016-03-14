@@ -37,6 +37,7 @@
 #include "data.h"
 #include "error.h"
 #include "misc.h"
+#include "plugins.h"
 
 #include "hid.h"
 #include "../hidint.h"
@@ -1476,7 +1477,7 @@ static void png_set_crosshair(int x, int y, int a)
 
 #include "dolists.h"
 
-void hid_png_init()
+pcb_uninit_t hid_export_png_init()
 {
 	memset(&png_hid, 0, sizeof(HID));
 
@@ -1513,4 +1514,5 @@ void hid_png_init()
 	hid_register_hid(&png_hid);
 
 #endif
+	return NULL;
 }
