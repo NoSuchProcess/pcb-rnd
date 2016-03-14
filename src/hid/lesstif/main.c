@@ -1136,6 +1136,9 @@ static void zoom_to(double new_zoom, int x, int y)
 	double max_zoom, xfrac, yfrac;
 	int cx, cy;
 
+	if (PCB == NULL)
+		return;
+
 	xfrac = (double) x / (double) view_width;
 	yfrac = (double) y / (double) view_height;
 
@@ -1664,7 +1667,7 @@ static Widget make_message(char *name, Widget left, int resizeable)
 }
 
 extern Widget lesstif_menubar;
-static lesstif_hid_inited = 0;
+static int lesstif_hid_inited = 0;
 
 static void lesstif_do_export(HID_Attr_Val * options)
 {
