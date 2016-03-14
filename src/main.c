@@ -1325,9 +1325,7 @@ read from the pcb. Will not really work unless the libstroke plugin is also load
 
 };
 
-static const char *main_cookie = "pcb-rnd main.c";
-
-REGISTER_ATTRIBUTES(main_attribute_list, main_cookie)
+REGISTER_ATTRIBUTES(main_attribute_list, NULL)
 /* ---------------------------------------------------------------------- 
  * post-process settings.
  */
@@ -1603,6 +1601,7 @@ void pcb_main_uninit(void)
 	FreeLibraryMemory(&Library);
 	pcb_fp_uninit();
 	file_uninit();
+	
 
 #define free0(ptr) \
 	do {  \

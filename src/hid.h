@@ -82,9 +82,9 @@ extern "C" {
 		const char *syntax;
 	} HID_Action;
 
-	extern void hid_register_action(const HID_Action *, void *);
+	extern void hid_register_action(const HID_Action *a, const char *cookie);
 
-	extern void hid_register_actions(const HID_Action *, int, const char *);
+	extern void hid_register_actions(const HID_Action *a, int, const char *cookie);
 #define REGISTER_ACTIONS(a, cookie) HIDCONCAT(void register_,a) ()\
 { hid_register_actions(a, sizeof(a)/sizeof(a[0]), cookie); }
 
