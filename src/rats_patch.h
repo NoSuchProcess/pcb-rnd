@@ -37,6 +37,9 @@
 /* Allocate and append a patch line to the patch list */
 void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2);
 
+/* Free the patch list and all memory claimed by patch list items */
+void rats_patch_destroy(PCBTypePtr pcb);
+
 /* Same as rats_patch_append() but also optimize previous entries so that
    redundant entries are removed */
 void rats_patch_append_optimize(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2);

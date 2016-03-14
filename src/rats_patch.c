@@ -74,6 +74,16 @@ void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const
 	n->next = NULL;
 }
 
+void rats_patch_destroy(PCBTypePtr pcb)
+{
+	rats_patch_line_t *n, *next;
+
+	for(n = pcb->NetlistPatches; n != NULL; n = next) {
+		next = n->next;
+		free(n);
+	}
+}
+
 void rats_patch_append_optimize(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2)
 {
 	rats_patch_op_t seek_op;

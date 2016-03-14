@@ -610,6 +610,7 @@ void FreePCBMemory(PCBType * pcb)
 	free(pcb->Name);
 	free(pcb->Filename);
 	free(pcb->PrintFilename);
+	rats_patch_destroy(pcb);
 	FreeDataMemory(pcb->Data);
 	free(pcb->Data);
 	/* release font symbols */
