@@ -40,6 +40,12 @@ static HID_Attribute *batch_get_export_options(int *n_ret)
 
 static char *prompt = NULL;
 
+static void hid_batch_uninit(void)
+{
+	if (prompt != NULL)
+		free(prompt);
+}
+
 static int nop(int argc, char **argv, Coord x, Coord y)
 {
 	return 0;
@@ -135,8 +141,10 @@ REGISTER_ACTIONS(batch_action_list, batch_cookie)
 			printf("%s> ", prompt);
 			fflush(stdout);
 		}
-		if (fgets(line, sizeof(line) - 1, stdin) == NULL)
+		if (fgets(line, sizeof(line) - 1, stdin) == NULL) {
+			hid_batch_uninit();
 			return;
+		}
 		hid_parse_command(line);
 	}
 }
