@@ -2438,12 +2438,14 @@ bool IsPolygonInPolygon(PolygonTypePtr P1, PolygonTypePtr P2)
  */
 static void PrintElementNameList(ElementTypePtr Element, FILE * FP)
 {
-	static gds_t cname, pname, vname;
-
-	CreateQuotedString(&cname, (char *) EMPTY(DESCRIPTION_NAME(Element)));
-	CreateQuotedString(&pname, (char *) EMPTY(NAMEONPCB_NAME(Element)));
-	CreateQuotedString(&vname, (char *) EMPTY(VALUE_NAME(Element)));
-	fprintf(FP, "(%s %s %s)\n", cname.array, pname.array, vname.array);
+	fputc('(', FP);
+	PrintQuotedString(FP, (char *) EMPTY(DESCRIPTION_NAME(Element)));
+	fputc(' ', FP);
+	PrintQuotedString(FP, (char *) EMPTY(NAMEONPCB_NAME(Element)));
+	fputc(' ', FP);
+	PrintQuotedString(FP, (char *) EMPTY(VALUE_NAME(Element)));
+	fputc(')', FP);
+	fputc('\n', FP);
 }
 
 /* ---------------------------------------------------------------------------
@@ -2461,13 +2463,15 @@ static void PrintConnectionElementName(ElementTypePtr Element, FILE * FP)
  */
 static void PrintConnectionListEntry(char *ObjName, ElementTypePtr Element, bool FirstOne, FILE * FP)
 {
-	static gds_t oname;
-
-	CreateQuotedString(&oname, ObjName);
-	if (FirstOne)
-		fprintf(FP, "\t%s\n\t{\n", oname.array);
+	if (FirstOne) {
+		fputc('\t', FP);
+		PrintQuotedString(FP, ObjName);
+		fprintf(FP, "\n\t{\n");
+	}
 	else {
-		fprintf(FP, "\t\t%s ", oname.array);
+		fprintf(FP, "\t\t");
+		PrintQuotedString(FP, ObjName);
+		fputc(' ', FP);
 		if (Element)
 			PrintElementNameList(Element, FP);
 		else
@@ -2609,7 +2613,6 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 {
 	bool first = true;
 	Cardinal number;
-	static gds_t oname;
 
 	/* check all pins in element */
 
@@ -2637,8 +2640,9 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 					}
 
 					/* write name to list and draw selected object */
-					CreateQuotedString(&oname, (char *) EMPTY(pin->Name));
-					fprintf(FP, "\t%s\n", oname.array);
+					fputc('\t', FP);
+					PrintQuotedString(FP, (char *) EMPTY(pin->Name));
+					fputc('\n', FP);
 					SET_FLAG(SELECTEDFLAG, pin);
 					DrawPin(pin);
 				}
@@ -2677,8 +2681,10 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 				}
 
 				/* write name to list and draw selected object */
-				CreateQuotedString(&oname, (char *) EMPTY(pad->Name));
-				fprintf(FP, "\t%s\n", oname.array);
+				fputc('\t', FP);
+				PrintQuotedString(FP, (char *) EMPTY(pad->Name));
+				fputc('\n', FP);
+
 				SET_FLAG(SELECTEDFLAG, pad);
 				DrawPad(pad);
 			}

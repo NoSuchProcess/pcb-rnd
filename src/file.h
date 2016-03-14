@@ -74,6 +74,8 @@ void RemoveTMPData(void);
 #endif
 #endif
 
+void PrintQuotedString(FILE *, const char *);
+
 void file_uninit();
 
 #endif

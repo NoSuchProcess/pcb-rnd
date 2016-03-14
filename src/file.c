@@ -115,7 +115,6 @@ static char TMPFilename[80];
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void PrintQuotedString(FILE *, char *);
 static void WritePCBInfoHeader(FILE *);
 static void WritePCBDataHeader(FILE *);
 static void WritePCBFontData(FILE *);
@@ -509,18 +508,29 @@ void PostLoadElementPCB()
 /* ---------------------------------------------------------------------------
  * writes the quoted string created by another subroutine
  */
-static gds_t pqs_ds;
-static void PrintQuotedString(FILE * FP, char *S)
+void PrintQuotedString(FILE * FP, const char *S)
 {
-	gds_init(&pqs_ds);
-	gds_append_str(&pqs_ds, S);
-	fputs(pqs_ds.array, FP);
+	const char *start;
+
+	fputc('"', FP);
+	for(start = S; *S != '\0'; S++) {
+		if (*S == '"' || *S == '\\') {
+			if (start != S)
+				fwrite(start, S-start, 1, FP);
+			fputc('\\', FP);
+			fputc(*S, FP);
+			start = S+1;
+		}
+	}
+
+	if (start != S)
+		fwrite(start, S-start, 1, FP);
+
+	fputc('"', FP);
 }
 
 void file_uninit()
 {
-	if (pqs_ds.array != NULL)
-		free(pqs_ds.array);
 }
 
 /* ---------------------------------------------------------------------------
