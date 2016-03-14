@@ -24,6 +24,8 @@
 
 RCSID("$Id$");
 
+static const char *batch_cookie = "batch HID";
+
 /* This is a text-line "batch" HID, which exists for scripting and
    non-GUI needs.  */
 
@@ -42,6 +44,7 @@ static char *prompt = NULL;
 
 static void hid_batch_uninit(void)
 {
+	hid_remove_actions_by_cookie(batch_cookie);
 	if (prompt != NULL)
 		free(prompt);
 }
@@ -96,8 +99,6 @@ static int info(int argc, char **argv, Coord x, Coord y)
 	}
 	return 0;
 }
-
-static const char *batch_cookie = "batch HID";
 
 HID_Action batch_action_list[] = {
 	{"PCBChanged", 0, PCBChanged}
