@@ -116,6 +116,8 @@ HID_Action batch_action_list[] = {
 	{"Help", 0, help}
 	,
 	{"Info", 0, info}
+	,
+	{"PointCursor", 0, info}
 };
 
 REGISTER_ACTIONS(batch_action_list, batch_cookie)
