@@ -92,7 +92,7 @@ void hid_remove_actions(const HID_Action * a, int n)
 	}
 }
 
-void hid_remove_actions_by_cookie(void *cookie)
+void hid_remove_actions_by_cookie(const char *cookie)
 {
 	htsp_entry_t *e;
 
