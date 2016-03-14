@@ -2390,9 +2390,14 @@ HID_Action puller_action_list[] = {
 
 REGISTER_ACTIONS(puller_action_list)
 
+static void hid_puller_uninit(void)
+{
+	hid_remove_actions_by_cookie(puller_cookie);
+}
+
 #include "dolists.h"
 pcb_uninit_t hid_puller_init(void)
 {
 	REGISTER_ACTIONS(puller_action_list)
-	return NULL;
+	return hid_puller_uninit;
 }

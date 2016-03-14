@@ -355,12 +355,17 @@ HID_Action renumber_action_list[] = {
 	 renumber_help, renumber_syntax}
 };
 
+static void hid_renumber_uninit(void)
+{
+	hid_remove_actions_by_cookie(renumber_cookie);
+}
+
 REGISTER_ACTIONS(renumber_action_list, renumber_cookie)
 
 #include "dolists.h"
 pcb_uninit_t hid_renumber_init(void)
 {
 	REGISTER_ACTIONS(renumber_action_list, renumber_cookie)
-	return NULL;
+	return hid_renumber_uninit;
 }
 

@@ -8234,10 +8234,15 @@ static HID_Action toporouter_action_list[] = {
 	{"Toporouter", "Select net(s)", toporouter, "Topological autorouter", "Toporouter()"}
 };
 
-REGISTER_ACTIONS(toporouter_action_list)
+REGISTER_ACTIONS(toporouter_action_list, toporouter_cookie)
+
+static void hid_toporouter_uninit(void)
+{
+	hid_remove_actions_by_cookie(toporouter_cookie);
+}
 
 pcb_uninit_t hid_toporouter_init()
 {
 	register_toporouter_action_list();
-	return NULL;
+	return hid_toporouter_uninit;
 }

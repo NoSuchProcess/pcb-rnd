@@ -2719,10 +2719,16 @@ HID_Action djopt_action_list[] = {
 
 REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
 
+static void hid_djopt_uninit(void)
+{
+	hid_remove_actions_by_cookie(djopt_cookie);
+	hid_remove_flags_by_cookie(djopt_cookie);
+}
+
 #include "dolists.h"
 pcb_uninit_t hid_djopt_init(void)
 {
 	REGISTER_FLAGS(djopt_flag_list, djopt_cookie)
 	REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
-	return NULL;
+	return hid_djopt_uninit;
 }

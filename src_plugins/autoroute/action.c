@@ -91,9 +91,14 @@ HID_Action autoroute_action_list[] = {
 
 REGISTER_ACTIONS(autoroute_action_list, autoroute_cookie)
 
+static void hid_autoroute_uninit(void)
+{
+	hid_remove_actions_by_cookie(autoroute_cookie);
+}
+
 #include "dolists.h"
 pcb_uninit_t hid_autoroute_init(void)
 {
 	REGISTER_ACTIONS(autoroute_action_list, autoroute_cookie)
-	return NULL;
+	return hid_autoroute_uninit;
 }

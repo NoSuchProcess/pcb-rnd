@@ -95,10 +95,15 @@ static const char *oldactions_cookie = "oldactions plugin";
 
 REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
 
+static void hid_oldactions_uninit(void)
+{
+	hid_remove_actions_by_cookie(oldactions_cookie);
+}
+
 #include "dolists.h"
 pcb_uninit_t hid_oldactions_init(void)
 {
 	REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
-	return NULL;
+	return hid_oldactions_uninit;
 }
 

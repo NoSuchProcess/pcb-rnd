@@ -429,9 +429,14 @@ HID_Action import_sch_action_list[] = {
 
 REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
 
+static void hid_import_sch_uninit(void)
+{
+	hid_remove_actions_by_cookie(import_sch_cookie);
+}
+
 #include "dolists.h"
 pcb_uninit_t hid_import_sch_init(void)
 {
 	REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
-	return NULL;
+	return hid_import_sch_uninit;
 }
