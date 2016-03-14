@@ -74,12 +74,23 @@ void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const
 	n->next = NULL;
 }
 
+static void rats_patch_free_fields(rats_patch_line_t *n)
+{
+	if (n->id != NULL)
+		free(n->id);
+	if (n->arg1.net_name != NULL)
+		free(n->arg1.net_name);
+	if (n->arg2.attrib_val != NULL)
+		free(n->arg2.attrib_val);
+}
+
 void rats_patch_destroy(PCBTypePtr pcb)
 {
 	rats_patch_line_t *n, *next;
 
 	for(n = pcb->NetlistPatches; n != NULL; n = next) {
 		next = n->next;
+		rats_patch_free_fields(n);
 		free(n);
 	}
 }
@@ -140,12 +151,7 @@ static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t * n, int do_free
 		n->next->prev = n->prev;
 
 	if (do_free) {
-		if (n->id != NULL)
-			free(n->id);
-		if (n->arg1.net_name != NULL)
-			free(n->arg1.net_name);
-		if (n->arg2.attrib_val != NULL)
-			free(n->arg2.attrib_val);
+		rats_patch_free_fields(n);
 		free(n);
 	}
 }
