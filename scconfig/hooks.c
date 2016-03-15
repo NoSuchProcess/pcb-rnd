@@ -384,7 +384,7 @@ int hook_detect_target()
 	if (!istrue(get("/local/pcb/export_ps/enable")) || !istrue(get("/local/pcb/export_ps/buildin"))) {
 		if (istrue(get("/local/pcb/export_lpr/enable"))) {
 			report_repeat("WARNING: disabling the lpr exporter because the ps exporter is not enabled as a buildin...\n");
-			hook_custom_arg("disable-export_ps", NULL);
+			hook_custom_arg("disable-export_lpr", NULL);
 		}
 	}
 
