@@ -611,7 +611,7 @@ static int ReportAllNetLengths(int argc, char **argv, Coord x, Coord y)
 			/* Reset connectors for the next lookup */
 			ResetConnections(false);
 
-			pcb_sprintf(buf, "%$m*", units_name, length);
+			pcb_snprintf(buf, sizeof(buf), "%$m*", units_name, length);
 			gui->log("Net %s length %s\n", netname, buf);
 		}
 	}
