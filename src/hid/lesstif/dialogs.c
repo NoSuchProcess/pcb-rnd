@@ -963,7 +963,7 @@ static int Export(int argc, char **argv, Coord x, Coord y)
 	HID_Attribute *opts;
 	HID *printer, **hids;
 	HID_Attr_Val *vals;
-	int n, i;
+	int n, i, count;
 	Widget prev = 0;
 	Widget w;
 
@@ -973,6 +973,7 @@ static int Export(int argc, char **argv, Coord x, Coord y)
 		n = 0;
 		stdarg(XmNtitle, "Export HIDs");
 		selector = create_form_ok_dialog("export", 0);
+		count = 0;
 		for (i = 0; hids[i]; i++) {
 			if (hids[i]->exporter) {
 				n = 0;
@@ -989,10 +990,22 @@ static int Export(int argc, char **argv, Coord x, Coord y)
 				XtManageChild(w);
 				XtAddCallback(w, XmNactivateCallback, (XtCallbackProc) dialog_callback, (XtPointer) ((size_t) i + 1));
 				prev = w;
+				count++;
 			}
+		}
+		if (count == 0) {
+			Widget label;
+			n = 0;
+			stdarg(XmNlabelString, XmStringCreatePCB("No exporter found. Check your plugins!"));
+			stdarg(XmNtopAttachment, XmATTACH_FORM);
+			stdarg(XmNrightAttachment, XmATTACH_FORM);
+			stdarg(XmNleftAttachment, XmATTACH_FORM);
+			label = XmCreateLabel(selector, "label", args, n);
+			XtManageChild(label);
 		}
 		selector = XtParent(selector);
 	}
+
 
 	i = wait_for_dialog(selector);
 

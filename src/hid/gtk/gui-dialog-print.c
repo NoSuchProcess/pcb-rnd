@@ -397,7 +397,9 @@ void ghid_dialog_export(void)
 	}
 
 	if (no_exporter) {
-		gui->log(_("Can't find a suitable exporter HID"));
+		GtkWidget *label;
+		label = gtk_label_new("No exporter found. Check your plugins!");
+			gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	}
 
 	gtk_widget_show_all(export_dialog);
