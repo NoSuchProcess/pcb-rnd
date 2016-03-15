@@ -5,8 +5,6 @@ put /local/pcb/mod {export_bom}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_bom/bom.o @]
 
 if /local/pcb/export_bom/enable then
-	append /local/pcb/LIBS            libs/gui/gd/ldflags
-	append /local/pcb/CFLAGS          libs/gui/gd/cflags
 	if /local/pcb/export_bom/buildin then
 		include {Makefile.in.mod/Buildin}
 	else

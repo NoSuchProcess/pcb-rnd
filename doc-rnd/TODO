@@ -1,12 +1,7 @@
 UNGLIB:
 	- test transition (after glib removal is finished so that valgrind works reasonably well again):
-		- undo broke (remove traces)!
-		- convert buffer to element fails?
-		- test exporters
 		- test gpmi search
-		- place 2 arcs, select first, can't move to left edge (bbox or rtree?)
 		- test onpoint
-	- test whether plugin compiled exporters work
 	- test whether gd based plugins can be compiled to so (png, nelma) _without_ pushing ldflags or includes onto core
 	- obsolete functions:
 		- ExpandFilename()

@@ -7,4 +7,6 @@
 append /local/pcb/DEPSRCS            /local/pcb/mod/OBJS
 
 put /local/pcb/mod/OBJS {}
+put /local/pcb/mod/LDFLAGS {}
+put /local/pcb/mod/CFLAGS {}
 put /local/pcb/mod {}

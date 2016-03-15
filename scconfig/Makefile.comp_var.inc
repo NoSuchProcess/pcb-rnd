@@ -2,16 +2,13 @@
 # Arguments:
 #  /local/comp/OBJS    list of .o files (assuming each have at least a .c)
 
-print {
-### explicit rules for .c -> .o ###
-}
-
+put /local/comp/output {}
 append /local/comp/CFLAGS {}
 
 foreach /local/o in /local/comp/OBJS
 put /local/c /local/o
 sub /local/c {.o$} {.c}
-print [@
+append /local/comp/output [@
 @/local/o@: @/local/c@
 	$(CC) -c $(CFLAGS) @/local/comp/CFLAGS@ -o @/local/o@ $<
 @]

@@ -3,6 +3,11 @@
 #  /local/pcb/mod       basename of the module (e.g. autoplace)
 #  /local/pcb/mod/OBJS  full path of all object files
 
+# generate .c -> .o rules in /local/comp/output
+put /local/comp/OBJS /local/pcb/mod/OBJS
+put /local/comp/CFLAGS /local/pcb/mod/CFLAGS
+include {../scconfig/Makefile.comp_var.inc}
+
 append /local/pcb/all   [@ $(PLUGIDIR)/@/local/pcb/mod@.so @]
 
 append /local/pcb/rules/install_ [@
@@ -10,17 +15,24 @@ append /local/pcb/rules/install_ [@
 
 append /local/pcb/RULES [@
 
+### Module @/local/pcb/mod@: plugin ###
+
 $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so: @/local/pcb/mod/OBJS@
-	$(CC) $(LDFLAGS) -shared @cc/rdynamic@ -o $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@
+	$(CC) $(LDFLAGS) @/local/pcb/mod/LDFLAGS@ -shared @cc/rdynamic@ -o $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@
 
 mod_@/local/pcb/mod@: $(PLUGIDIR)/@/local/pcb/mod@.so
-
 
 $(PLUGIDIR)/@/local/pcb/mod@.so: $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so
 	$(MKDIR) $(PLUGIDIR)
 	$(CP) $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so $(PLUGIDIR)/@/local/pcb/mod@.so
 
+# module .c -> .o rules
+@/local/comp/output@
+
+### Module @/local/pcb/mod@ end ###
 @]
 
 put /local/pcb/mod/OBJS {}
+put /local/pcb/mod/LDFLAGS {}
+put /local/pcb/mod/CFLAGS {}
 put /local/pcb/mod {}
