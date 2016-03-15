@@ -1629,20 +1629,6 @@ void AttachForCopy(Coord PlaceX, Coord PlaceY)
 									 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 }
 
-/*
- * Return nonzero if the given file exists and is readable.
- */
-int FileExists(const char *name)
-{
-	FILE *f;
-	f = fopen(name, "r");
-	if (f) {
-		fclose(f);
-		return 1;
-	}
-	return 0;
-}
-
 char *Concat(const char *first, ...)
 {
 	char *rv;

@@ -35,3 +35,8 @@ char *ExpandFilename(char *dirname, char *filename);
  * some special characters are quoted
  */
 void CreateQuotedString(gds_t *, char *);
+
+/*
+ * Return nonzero if the given file exists and is readable.
+ */
+int FileExists(const char *name)

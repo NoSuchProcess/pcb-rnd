@@ -93,7 +93,6 @@ char *UniqueElementName(DataTypePtr, char *);
 void AttachForCopy(Coord, Coord);
 double GetValue(const char *, const char *, bool *);
 double GetValueEx(const char *, const char *, bool *, UnitList, const char *);
-int FileExists(const char *);
 char *Concat(const char *, ...);	/* end with NULL */
 
 /* Returns NULL if the name isn't found, else the value for that named
