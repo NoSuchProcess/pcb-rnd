@@ -66,6 +66,7 @@
 #include "rtree.h"
 #include "strflags.h"
 #include "undo.h"
+#include "plugins.h"
 
 
 RCSID("$Id$");
@@ -2388,7 +2389,9 @@ HID_Action puller_action_list[] = {
 	 globalpuller_help, globalpuller_syntax}
 };
 
-REGISTER_ACTIONS(puller_action_list)
+static const char *puller_cookie = "puller plugin";
+
+REGISTER_ACTIONS(puller_action_list, puller_cookie)
 
 static void hid_puller_uninit(void)
 {
@@ -2398,6 +2401,6 @@ static void hid_puller_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_puller_init(void)
 {
-	REGISTER_ACTIONS(puller_action_list)
+	REGISTER_ACTIONS(puller_action_list, puller_cookie)
 	return hid_puller_uninit;
 }
