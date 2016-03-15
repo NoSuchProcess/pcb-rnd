@@ -1,6 +1,4 @@
 UNGLIB:
-	- test transition (after glib removal is finished so that valgrind works reasonably well again):
-		- test gpmi search
 	- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
 
 BUGS
