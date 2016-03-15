@@ -109,51 +109,6 @@ const char *get_user_name(void)
 
 }
 
-char *ExpandFilename(char *Dirname, char *Filename)
-{
-	gds_t answer;
-	char *command;
-	FILE *pipe;
-	int c;
-
-	/* allocate memory for commandline and build it */
-	gds_init(&answer);
-	if (Dirname) {
-		command = (char *) calloc(strlen(Filename) + strlen(Dirname) + 7, sizeof(char));
-		sprintf(command, "echo %s/%s", Dirname, Filename);
-	}
-	else {
-		command = (char *) calloc(strlen(Filename) + 6, sizeof(char));
-		sprintf(command, "echo %s", Filename);
-	}
-
-	/* execute it with shell */
-	if ((pipe = popen(command, "r")) != NULL) {
-		/* discard all but the first returned line */
-		for (;;) {
-			if ((c = fgetc(pipe)) == EOF || c == '\n' || c == '\r')
-				break;
-			else
-				gds_append(&answer, c);
-		}
-
-		free(command);
-		if (pclose(pipe)) {
-			gds_uninit(&answer);
-			return NULL;
-		}
-		else
-			return answer.array;
-	}
-
-	/* couldn't be expanded by the shell */
-	PopenErrorMessage(command);
-	free(command);
-	gds_uninit(&answer);
-	return NULL;
-}
-
-
 #ifdef MKDIR_IS_PCBMKDIR
 #error "Don't know how to create a directory on this system."
 int pcb_mkdir(const char *path, int mode)

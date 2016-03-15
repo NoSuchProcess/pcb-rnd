@@ -67,6 +67,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-oldactions",  "/local/pcb/oldactions/buildin",  arg_true,      "$static link the oldactions plugin into the executable"},
 	{"plugin-oldactions",   "/local/pcb/oldactions/buildin",  arg_false,     "$the oldactions plugin is a dynamic loadable"},
 
+	{"disable-legacy_func",  "/local/pcb/legacy_func/enable",   arg_false,     "$do not compile the legacy functions"},
+	{"buildin-legacy_func",  "/local/pcb/legacy_func/buildin",  arg_true,      "$static link the legacy functions plugin into the executable"},
+	{"plugin-legacy_func",   "/local/pcb/legacy_func/buildin",  arg_false,     "$the legacy functions plugin is a dynamic loadable"},
+
 	{"disable-renumber",  "/local/pcb/renumber/enable",   arg_false,     "$do not compile the renumber action"},
 	{"buildin-renumber",  "/local/pcb/renumber/buildin",  arg_true,      "$static link the renumber action into the executable"},
 	{"plugin-renumber",   "/local/pcb/renumber/buildin",  arg_false,     "$the renumber action is a dynamic loadable plugin"},
@@ -203,6 +207,10 @@ int hook_postinit()
 	db_mkdir("/local/pcb/oldactions");
 	put("/local/pcb/oldactions/enable", strue);
 	put("/local/pcb/oldactions/buildin", strue);
+
+	db_mkdir("/local/pcb/legacy_func");
+	put("/local/pcb/legacy_func/enable", strue);
+	put("/local/pcb/legacy_func/buildin", strue);
 
 	db_mkdir("/local/pcb/renumber");
 	put("/local/pcb/renumber/enable", strue);
@@ -529,6 +537,7 @@ int hook_generate()
 	plugin_stat("Mincut: ",                "/local/pcb/mincut");
 	plugin_stat("renumber:",               "/local/pcb/renumber");
 	plugin_stat("old actions:",            "/local/pcb/oldactions");
+	plugin_stat("legacy functions:",       "/local/pcb/legacy_func");
 	plugin_stat("stroke:",                 "/local/pcb/stroke");
 	printf("\n");
 	plugin_stat("import_sch:",             "/local/pcb/import_sch");

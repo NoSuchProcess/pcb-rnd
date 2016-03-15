@@ -1464,22 +1464,6 @@ void RestoreStackAndVisibility(void)
 	SavedStack.cnt--;
 }
 
-/* ---------------------------------------------------------------------------
- * writes a string to the passed file pointer
- * some special characters are quoted
- */
-void CreateQuotedString(gds_t *DS, char *S)
-{
-	gds_truncate(DS, 0);
-	gds_append(DS, '"');
-	while (*S) {
-		if (*S == '"' || *S == '\\')
-			gds_append(DS, '\\');
-		gds_append(DS, *S++);
-	}
-	gds_append(DS, '"');
-}
-
 BoxTypePtr GetArcEnds(ArcTypePtr Arc)
 {
 	static BoxType box;

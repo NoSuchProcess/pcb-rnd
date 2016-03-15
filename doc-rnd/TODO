@@ -1,16 +1,17 @@
 UNGLIB:
 	- test transition (after glib removal is finished so that valgrind works reasonably well again):
 		- test gpmi search
-		- test onpoint
-	- test whether gd based plugins can be compiled to so (png, nelma) _without_ pushing ldflags or includes onto core
 	- obsolete functions:
 		- ExpandFilename()
 		- CreateQuotedString()
 	- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
+	- move fontmode
+
+	- license text: plugins, printf, legacy_func
 
 BUGS
 - gpmi (and other buildings/plugins) not showing up in the about box
-
+- gtk hid: hotkeys stopped working for toggle (e.g. check "|"; check todo in ghid_menu_cb())
 
 CLEANUP #3
 - scconfig: detect libstroke

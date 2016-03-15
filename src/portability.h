@@ -1,11 +1,6 @@
 char *GetWorkingDirectory(char *);
 const char *get_user_name(void);
 
-/* concatenates directory and filename if directory != NULL,
- * expands them with a shell and returns the found name(s) or NULL
- */
-char *ExpandFilename(char *dirname, char *filename);
-
 /* mkdir() implentation, mostly for plugins, which don't have our config.h.
  * Check whether mkdir() is mkdir or _mkdir, and whether it takes one
  * or two arguments.  WIN32 mkdir takes one argument and POSIX takes

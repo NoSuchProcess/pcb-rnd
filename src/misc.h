@@ -87,7 +87,6 @@ BoxTypePtr GetObjectBoundingBox(int, void *, void *, void *);
 void ResetStackAndVisibility(void);
 void SaveStackAndVisibility(void);
 void RestoreStackAndVisibility(void);
-void CreateQuotedString(gds_t *, char *);
 BoxTypePtr GetArcEnds(ArcTypePtr);
 void ChangeArcAngles(LayerTypePtr, ArcTypePtr, Angle, Angle);
 char *UniqueElementName(DataTypePtr, char *);
