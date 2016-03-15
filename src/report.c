@@ -109,7 +109,7 @@ static int ReportDrills(int argc, char **argv, Coord x, Coord y)
 }
 
 
-static const char reportdialog_syntax[] = "ReportDialog()";
+static const char reportdialog_syntax[] = "ReportObject()";
 
 static const char reportdialog_help[] = "Report on the object under the crosshair";
 
