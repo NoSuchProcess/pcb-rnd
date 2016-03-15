@@ -316,7 +316,7 @@ static void ghid_menu_cb(GtkAction * action, const Resource * node)
 		}
 
 	/* Sync gui widgets with pcb state */
-	ghid_update_toggle_flags();
+/*	ghid_update_toggle_flags(); TODO: this fails to block the signal that we get again which in turn toggles the setting again... */
 	ghid_mode_buttons_update();
 
 	/* Sync gui status display with pcb state */
