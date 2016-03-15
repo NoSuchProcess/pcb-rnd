@@ -7,8 +7,6 @@ UNGLIB:
 	- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
 	- move fontmode
 
-	- license text: plugins, printf, legacy_func
-
 BUGS
 - gpmi (and other buildings/plugins) not showing up in the about box
 - gtk hid: hotkeys stopped working for toggle (e.g. check "|"; check todo in ghid_menu_cb())

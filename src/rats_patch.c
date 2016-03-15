@@ -25,13 +25,6 @@
  *
  */
 
-/* Change History:
- * Started 6/10/97
- * Added support for minimum length rat lines 6/13/97
- * rat lines to nearest line/via 8/29/98
- * support for netlist window 10/24/98
- */
-
 #include "rats_patch.h"
 #include "genht/htsp.h"
 #include "genht/hash.h"
