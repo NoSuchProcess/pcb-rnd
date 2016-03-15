@@ -702,7 +702,7 @@ got_net_name:
 
 	{
 		char buf[50];
-		pcb_sprintf(buf, "%$m*", Settings.grid_unit->suffix, length);
+		pcb_snprintf(buf, sizeof(buf), "%$m*", Settings.grid_unit->suffix, length);
 		if (netname)
 			gui->log("Net \"%s\" length: %s\n", netname, buf);
 		else
@@ -842,7 +842,7 @@ static int ReportNetLengthByName(char *tofind, int x, int y)
 
 	{
 		char buf[50];
-		pcb_sprintf(buf, "%$m*", Settings.grid_unit->suffix, length);
+		pcb_snprintf(buf, sizeof(buf), "%$m*", Settings.grid_unit->suffix, length);
 		if (netname)
 			gui->log("Net \"%s\" length: %s\n", netname, buf);
 		else
