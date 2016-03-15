@@ -1259,7 +1259,7 @@ int ReadLibraryContents(void)
 
 int ReadNetlist(char *filename)
 {
-	static char *command = NULL;
+	char *command = NULL;
 	char inputline[MAX_NETLIST_LINE_LENGTH + 1];
 	char temp[MAX_NETLIST_LINE_LENGTH + 1];
 	FILE *fp;
@@ -1283,14 +1283,15 @@ int ReadNetlist(char *filename)
 	}
 	else {
 		used_popen = 1;
-		free(command);
 		command = EvaluateFilename(Settings.RatCommand, Settings.RatPath, filename, NULL);
 
 		/* open pipe to stdout of command */
 		if (*command == '\0' || (fp = popen(command, "r")) == NULL) {
 			PopenErrorMessage(command);
+			free(command);
 			return (1);
 		}
+		free(command);
 	}
 	lines = 0;
 	/* kind = 0  is net name

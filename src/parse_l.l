@@ -250,16 +250,17 @@ static int Parse(FILE *Pipe, char *Executable, char *Path, char *Filename, char 
 	else
 	  {
 	    used_popen = 1;
-	    /* release old command and create new from template */
-	    free (command);
+
 	    command = EvaluateFilename(Executable, Path, Filename, Parameter);
 
 	    /* open pipe to stdout of command */
 	    if (*command == '\0' || (yyin = popen(command, "r")) == NULL)
 	      {
 		PopenErrorMessage(command);
+		free(command);
 		return(1);
 	      }
+			free(command);
 	  }
 	}
 	else {
