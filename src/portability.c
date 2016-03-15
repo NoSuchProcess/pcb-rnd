@@ -111,13 +111,13 @@ const char *get_user_name(void)
 
 char *ExpandFilename(char *Dirname, char *Filename)
 {
-	static gds_t answer;
+	gds_t answer;
 	char *command;
 	FILE *pipe;
 	int c;
 
 	/* allocate memory for commandline and build it */
-	gds_truncate(&answer, 0);
+	gds_init(&answer);
 	if (Dirname) {
 		command = (char *) calloc(strlen(Filename) + strlen(Dirname) + 7, sizeof(char));
 		sprintf(command, "echo %s/%s", Dirname, Filename);
@@ -138,13 +138,19 @@ char *ExpandFilename(char *Dirname, char *Filename)
 		}
 
 		free(command);
-		return (pclose(pipe) ? NULL : answer.array);
+		if (pclose(pipe)) {
+			gds_uninit(&answer);
+			return NULL;
+		}
+		else
+			return answer.array;
 	}
 
 	/* couldn't be expanded by the shell */
 	PopenErrorMessage(command);
 	free(command);
-	return (NULL);
+	gds_uninit(&answer);
+	return NULL;
 }
 
 
