@@ -545,11 +545,16 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case 's':
-				if (spec.array[0] == 'l')
-					tmplen = sprintf(tmp, spec.array, va_arg(args, wchar_t *));
-				else
-					tmplen = sprintf(tmp, spec.array, va_arg(args, char *));
-				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
+				if (spec.array[0] == 'l') {
+					/* TODO: convert wchar to char and append it */
+					fprintf(stderr, "Internal error: appending %%ls is not supported\n");
+					abort();
+				}
+				else {
+					char *s = va_arg(args, char *);
+					if (s == NULL) s = "(null)";
+					if (gds_append_str(string, s) != 0) goto err;
+				}
 				break;
 			case 'n':
 				/* Depending on gcc settings, this will probably break with
