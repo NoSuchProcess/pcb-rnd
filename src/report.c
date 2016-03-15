@@ -468,34 +468,30 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 
 static int ReportFoundPins(int argc, char **argv, Coord x, Coord y)
 {
-	static gds_t list;
-	char temp[64];
+	gds_t list;
 	int col = 0;
 
-	gds_truncate(&list, 0);
+	gds_init(&list);
 	gds_append_str(&list, "The following pins/pads are FOUND:\n");
 	ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{
-			if (TEST_FLAG(FOUNDFLAG, pin)) {
-				sprintf(temp, "%s-%s,%c", NAMEONPCB_NAME(element), pin->Number, ((col++ % (COLUMNS + 1)) == COLUMNS) ? '\n' : ' ');
-				gds_append_str(&list, temp);
-			}
+			if (TEST_FLAG(FOUNDFLAG, pin))
+				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pin->Number, ((col++ % (COLUMNS + 1)) == COLUMNS) ? '\n' : ' ');
 		}
 		END_LOOP;
 		PAD_LOOP(element);
 		{
-			if (TEST_FLAG(FOUNDFLAG, pad)) {
-				sprintf(temp, "%s-%s,%c", NAMEONPCB_NAME(element), pad->Number, ((col++ % (COLUMNS + 1)) == COLUMNS) ? '\n' : ' ');
-				gds_append_str(&list, temp);
-			}
+			if (TEST_FLAG(FOUNDFLAG, pad))
+				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pad->Number, ((col++ % (COLUMNS + 1)) == COLUMNS) ? '\n' : ' ');
 		}
 		END_LOOP;
 	}
 	END_LOOP;
 
 	gui->report_dialog("Report", list.array);
+	gds_uninit(&list);
 	return 0;
 }
 
