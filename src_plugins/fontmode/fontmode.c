@@ -45,6 +45,7 @@
 #include "strflags.h"
 #include "undo.h"
 #include "pcb-printf.h"
+#include "plugins.h"
 
 
 RCSID("$Id$");
@@ -229,4 +230,19 @@ HID_Action fontmode_action_list[] = {
 	 fontsave_help, fontsave_syntax}
 };
 
-REGISTER_ACTIONS(fontmode_action_list, NULL)
+static const char *fontmode_cookie = "fontmode plugin";
+
+REGISTER_ACTIONS(fontmode_action_list, fontmode_cookie)
+
+static void hid_fontmode_uninit(void)
+{
+	hid_remove_actions_by_cookie(fontmode_cookie);
+}
+
+#include "dolists.h"
+pcb_uninit_t hid_fontmode_init(void)
+{
+	REGISTER_ACTIONS(fontmode_action_list, fontmode_cookie)
+	return hid_fontmode_uninit;
+}
+

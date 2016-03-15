@@ -30,7 +30,6 @@ put /local/pcb/OBJS [@
 	find.o
 	find_act.o
 	flags.o
-	fontmode.o
 	free_atexit.o
 	gui_act.o
 	heap.o
@@ -144,6 +143,7 @@ include {../src_plugins/mincut/Plug.tmpasm}
 include {../src_plugins/gpmi/Plug.tmpasm}
 include {../src_plugins/toporouter/Plug.tmpasm}
 include {../src_plugins/oldactions/Plug.tmpasm}
+include {../src_plugins/fontmode/Plug.tmpasm}
 include {../src_plugins/legacy_func/Plug.tmpasm}
 include {../src_plugins/renumber/Plug.tmpasm}
 include {../src_plugins/stroke/Plug.tmpasm}

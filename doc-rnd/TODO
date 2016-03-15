@@ -1,9 +1,6 @@
 UNGLIB:
 	- test transition (after glib removal is finished so that valgrind works reasonably well again):
 		- test gpmi search
-	- obsolete functions:
-		- ExpandFilename()
-		- CreateQuotedString()
 	- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
 	- move fontmode
 

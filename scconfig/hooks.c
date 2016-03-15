@@ -67,6 +67,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-oldactions",  "/local/pcb/oldactions/buildin",  arg_true,      "$static link the oldactions plugin into the executable"},
 	{"plugin-oldactions",   "/local/pcb/oldactions/buildin",  arg_false,     "$the oldactions plugin is a dynamic loadable"},
 
+	{"disable-fontmode",    "/local/pcb/fontmode/enable",     arg_false,     "$do not compile the fontmode"},
+	{"buildin-fontmode",    "/local/pcb/fontmode/buildin",    arg_true,      "$static link the fontmode plugin into the executable"},
+	{"plugin-fontmode",     "/local/pcb/fontmode/buildin",    arg_false,     "$the fontmode plugin is a dynamic loadable"},
+
 	{"disable-legacy_func",  "/local/pcb/legacy_func/enable",   arg_false,     "$do not compile the legacy functions"},
 	{"buildin-legacy_func",  "/local/pcb/legacy_func/buildin",  arg_true,      "$static link the legacy functions plugin into the executable"},
 	{"plugin-legacy_func",   "/local/pcb/legacy_func/buildin",  arg_false,     "$the legacy functions plugin is a dynamic loadable"},
@@ -207,6 +211,10 @@ int hook_postinit()
 	db_mkdir("/local/pcb/oldactions");
 	put("/local/pcb/oldactions/enable", strue);
 	put("/local/pcb/oldactions/buildin", strue);
+
+	db_mkdir("/local/pcb/fontmode");
+	put("/local/pcb/fontmode/enable", strue);
+	put("/local/pcb/fontmode/buildin", strue);
 
 	db_mkdir("/local/pcb/legacy_func");
 	put("/local/pcb/legacy_func/enable", strue);
@@ -537,6 +545,7 @@ int hook_generate()
 	plugin_stat("Mincut: ",                "/local/pcb/mincut");
 	plugin_stat("renumber:",               "/local/pcb/renumber");
 	plugin_stat("old actions:",            "/local/pcb/oldactions");
+	plugin_stat("fontmode:",               "/local/pcb/fontmode");
 	plugin_stat("legacy functions:",       "/local/pcb/legacy_func");
 	plugin_stat("stroke:",                 "/local/pcb/stroke");
 	printf("\n");
