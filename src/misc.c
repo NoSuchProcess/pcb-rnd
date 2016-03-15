@@ -1039,7 +1039,7 @@ void QuitApplication(void)
  */
 char *EvaluateFilename(char *Template, char *Path, char *Filename, char *Parameter)
 {
-	static gds_t command;
+	gds_t command;
 	char *p;
 
 	if (Settings.verbose) {
@@ -1073,7 +1073,7 @@ char *EvaluateFilename(char *Template, char *Path, char *Filename, char *Paramet
 	if (Settings.verbose)
 		printf("EvaluateFilename: \033[32m%s\033[0m\n", command.array);
 
-	return strdup(command.array);
+	return command.array;
 }
 
 /* ---------------------------------------------------------------------------
