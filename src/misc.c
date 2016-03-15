@@ -1069,7 +1069,7 @@ char *EvaluateFilename(char *Template, char *Path, char *Filename, char *Paramet
 		else
 			gds_append(&command, *p);
 	}
-	gds_append(&command, '\0');
+
 	if (Settings.verbose)
 		printf("EvaluateFilename: \033[32m%s\033[0m\n", command.array);
 
