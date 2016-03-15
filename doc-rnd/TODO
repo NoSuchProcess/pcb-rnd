@@ -2,7 +2,6 @@ UNGLIB:
 	- test transition (after glib removal is finished so that valgrind works reasonably well again):
 		- test gpmi search
 	- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
-	- move fontmode
 
 BUGS
 - gpmi (and other buildings/plugins) not showing up in the about box

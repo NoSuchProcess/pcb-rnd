@@ -666,15 +666,6 @@ undo_act.o: undo_act.c ../config.h ../config.manual.h ../config.auto.h \
  list_element.h libpcb_fp.h data.h action.h action_funclist.h \
  action_funchash.h change.h error.h crosshair.h undo.h polygon.h set.h \
  search.h draw.h misc.h ../src_3rd/genvector/gds_char.h mymem.h
-vector.o: vector.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h vector.h
 vtonpoint.o: vtonpoint.c vtonpoint.h global_objs.h \
  ../src_3rd/genlist/gendlist.h ../config.h ../config.manual.h \
  ../config.auto.h ../globalconst.h ../config.h global_typedefs.h \
@@ -1278,8 +1269,9 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  list_element.h libpcb_fp.h data.h global.h macro.h \
  ../src_plugins/autoroute/autoroute.h box.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h create.h draw.h error.h find.h \
- heap.h rtree.h misc.h ../src_plugins/autoroute/mtspace.h vector.h \
- mymem.h polygon.h rats.h remove.h thermal.h undo.h pcb-printf.h set.h
+ heap.h rtree.h misc.h ../src_plugins/autoroute/mtspace.h \
+ ../src_plugins/autoroute/vector.h mymem.h polygon.h rats.h remove.h \
+ thermal.h undo.h pcb-printf.h set.h
 ../src_plugins/autoroute/mtspace.o: ../src_plugins/autoroute/mtspace.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -1291,7 +1283,7 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h box.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h heap.h rtree.h \
- ../src_plugins/autoroute/mtspace.h vector.h
+ ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h
 ../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -1303,6 +1295,16 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h ../src_plugins/autoroute/autoroute.h \
  plugins.h set.h global.h dolists.h
+../src_plugins/autoroute/vector.o: ../src_plugins/autoroute/vector.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h ../src_plugins/autoroute/vector.h
 ../src_plugins/vendordrill/vendor.o: ../src_plugins/vendordrill/vendor.c \
  ../config.h ../config.manual.h ../config.auto.h change.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \

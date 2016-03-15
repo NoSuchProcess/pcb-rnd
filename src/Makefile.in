@@ -80,7 +80,6 @@ put /local/pcb/OBJS [@
 	thermal.o
 	undo.o
 	undo_act.o
-	vector.o
 	vtonpoint.o
 	hid/common/actions.o
 	hid/common/flags.o
