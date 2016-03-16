@@ -1,0 +1,159 @@
+<html>
+<body>
+<H1> pcb-rnd modularization </H1>
+<H2> Why bother... </H2>
+I believe good software should be modular. This is especially important in
+the context of large software, such as CAD applications. There should be
+a thin core that can model the world and provide the basic operations defined
+on it but anything else should go in separate modules.
+<p>
+Fortunately PCB already had a strong infrastructure supporting this idea.
+It has dynamic loadable plugins and the GUI and exporters are in separate
+HID modules. While working on pcb-gpmi and later pcb-rnd, I added the
+gpmi module as a separate plugin.
+<p>
+In version 1.0.8 and 1.0.9 a cosiderable chunk of core code has been moved into
+<i>core plugins</i>. A <i>core plugin</i> is just a plugin that is
+maintained together with the core, in the same repository, still the code is
+somewhat detached from the core. More importantly, the user can choose, for
+each plugin, separately:
+<ul>
+	<li> to compile it as a buildin (static-link it into the pcb executable)
+	<li> to compile it as a plugin (dynamic-link it runtime, if the .so is installed in the plugins/ directory)
+	<li> to disable the plugin, so it is not compiled at all
+</ul>
+<p>
+I believe such modularization has benefits on multiple levels:
+<ul>
+	<li> it is possible to compiler smaller, potentially faster executables by omitting features the specific user would never use anyway
+	<li> in a distribution dynamic-link plugins can be distributed as separate packages providing the user with the option to decide what features to install
+	<li> such plugins have to have some sort of APIs if they want to reference eachother or if the code needs to reference them; such an API may not (and often did not) exist when the code is part of the core
+</ul>
+
+<H2> Progress in charts </H2>
+<h3> Before-after </h3>
+All numbers are in <a href="en.wikipedia.org/wiki/Source_lines_of_code">SLOC</a>
+and are acquired running sloccount on the given directory. While lines of
+code alone is not a true measure of complexity, it's a good estimation. The
+slices of pie charts are the major components of the pcb-rnd executable.
+<table border=1 cellspacing=0> <tr><td>
+	<table border=0>
+	<tr><td><img src="before.png"><td> &nbsp; &nbsp; &nbsp; &nbsp;<td><img src="after.png">
+	<tr><td>Before modularization: pcb-rnd version 1.0.7
+	        <br>Note: gpmi was already a plugin
+	    <td>
+	    <td> After modularization: pcb-rnd version 1.0.9
+	        <br>Note: gpmi is part of the "plugins" slice
+	</table>
+</table>
+<h3>Zooming on to the plugins</h3>
+<p>
+<img src="mods.png">
+<p>
+(Red means the plugin doesn't really work).
+
+<H2> Progress in numbers </H2>
+Below is a table with the summary of core plugins.
+<table border=1 cellspacing=0>
+<tr><th>module <th>size [sloc] <th> status <th> configure<br>default  <th> description
+
+
+<tr><th align=left>autoplace<td>612
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Automatically place elements. 
+<tr><th align=left>autoroute<td>4337
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Automatically route selected or all rats. This is the original autorouter. 
+<tr><th align=left>dbus<td>438
+<td bgcolor="red" > disabled
+<br> (TODO: needs scconfig support)
+<td bgcolor="red"> disabled
+<td> Remote control PCB using DBUS. 
+<tr><th align=left>djopt<td>2320
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Various board optimization algorithms. 
+<tr><th align=left>export_bom<td>374
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Export bom (Bill of Materials) 
+<tr><th align=left>export_gcode<td>2452
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Export to gcode 
+<tr><th align=left>export_gerber<td>972
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Export to gerber 
+<tr><th align=left>export_lpr<td>96
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Export to lpr (using export_ps to generate postscript) 
+<tr><th align=left>export_nelma<td>685
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Export to nelma (Numerical capacitance calculator) 
+<tr><th align=left>export_png<td>1107
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Export to png, gif and jpeg 
+<tr><th align=left>export_ps<td>1613
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Export postscript or embedded postscript. 
+<tr><th align=left>fontmode<td>163
+<td bgcolor="lightgreen" > works
+<td bgcolor="red"> disabled
+<td> Font editing actions. 
+<tr><th align=left>gpmi<td>3003
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<br> (if gpmi is installed)
+<td> Scriptable plugin system with about 10 scripting languages supported and dynamic load/unload of scripts that can manipulate the GUI, the board, can implement exporters, etc. 
+<tr><th align=left>import_edif<td>3578
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Import code for netlists in the EDIF format. 
+<tr><th align=left>import_sch<td>259
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Imports element and netlist data from the schematics (or some other source). 
+<tr><th align=left>legacy_func<td>72
+<td bgcolor="lightgreen" > works
+<td bgcolor="red"> disabled
+<td> Random collection of old/obsolete (legacy) functions. 3rd party plugins may depend on them. This module implements C functions and variables and does not register actions or flags. 
+<tr><th align=left>mincut<td>886
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Use the minimal cut algorithm to indicate shorts: instead of highlighting two random pins/pads, try to highlight the least number of objects that connect the two networks. 
+<tr><th align=left>oldactions<td>57
+<td bgcolor="lightgreen" > works
+<td bgcolor="red"> disabled
+<td> Random collection of old/obsolete actions. Bell(): audible feedback; DumpLibrary(): print footprint library on stdout 
+<tr><th align=left>puller<td>1884
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Pull traces to minimize their length. 
+<tr><th align=left>renumber<td>222
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Renumber elements (renaming them) and generate a text file for back annotation. 
+<tr><th align=left>stroke<td>124
+<td bgcolor="yellow" > partially works (doesn't work with lesstif; works with the gtk hid, but there's no zoom bindings)
+<td bgcolor="red"> disabled
+<br> (requires libstroke installed)
+<td> Gesture recognition with libstroke. 
+<tr><th align=left>toporouter<td>6165
+<td bgcolor="red" > fails
+<br> (infinite loop in gts)
+<td bgcolor="red"> disabled
+<td> Automatically route selected or all rats using a topological algorithm. This is the new autorouter from 2009. 
+<tr><th align=left>vendordrill<td>572
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> Vendor drill mapping. 
+</table>
+</body>
+</html>

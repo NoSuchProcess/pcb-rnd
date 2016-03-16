@@ -1,11 +1,11 @@
-UNGLIB:
+UNGLIB (cleanup #3):
 	- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
 
 BUGS
 - gpmi (and other buildings/plugins) not showing up in the about box
 - gtk hid: hotkeys stopped working for toggle (e.g. check "|"; check todo in ghid_menu_cb())
 
-CLEANUP #3
+CLEANUP #4
 - scconfig: detect libstroke
 - libstroke: zoom
 - cleanup resources:
