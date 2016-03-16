@@ -18,4 +18,5 @@ void gpmi_hid_fill_polygon(hidGC gc, int n_coords, Coord *x, Coord *y);
 void gpmi_hid_fill_pcb_polygon(hidGC gc, PolygonType *poly, const BoxType *clip_box);
 void gpmi_hid_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
 void gpmi_hid_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType *pad, bool drawHole, bool mask);
+void gpmi_hid_fill_pcb_pad(hidGC gc, PadType * pad, bool clear, bool mask);
 void gpmi_hid_use_mask(int use_it);
