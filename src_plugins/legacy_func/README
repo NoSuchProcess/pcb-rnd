@@ -4,4 +4,4 @@ This module implements C functions and variables and does not register
 actions or flags.
 
 #state: works
-#default: disabled
+#default: buildin
