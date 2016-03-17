@@ -30,7 +30,7 @@ static int keyeq(char *a, char *b)
 	return !strcmp(a, b);
 }
 
-void hid_register_flags(HID_Flag * a, int numact, const char *cookie)
+void hid_register_flags(HID_Flag * a, int numact, const char *cookie, int copy)
 {
 	HID_FlagNode *ha;
 	HID_Flag *f;

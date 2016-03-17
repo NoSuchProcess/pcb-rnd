@@ -82,11 +82,11 @@ extern "C" {
 		const char *syntax;
 	} HID_Action;
 
-	extern void hid_register_action(const HID_Action *a, const char *cookie);
+	extern void hid_register_action(const HID_Action *a, const char *cookie, int copy);
 
-	extern void hid_register_actions(const HID_Action *a, int, const char *cookie);
+	extern void hid_register_actions(const HID_Action *a, int, const char *cookie, int copy);
 #define REGISTER_ACTIONS(a, cookie) HIDCONCAT(void register_,a) ()\
-{ hid_register_actions(a, sizeof(a)/sizeof(a[0]), cookie); }
+{ hid_register_actions(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
 	/* Note that PCB expects the gui to provide the following actions:
 
@@ -140,9 +140,9 @@ extern "C" {
 		int parm;
 	} HID_Flag;
 
-	extern void hid_register_flags(HID_Flag *a, int n, const char *cookie);
+	extern void hid_register_flags(HID_Flag *a, int n, const char *cookie, int copy);
 #define REGISTER_FLAGS(a, cookie) HIDCONCAT(void register_,a) ()\
-{ hid_register_flags(a, sizeof(a)/sizeof(a[0]), cookie); }
+{ hid_register_flags(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
 /* Remove all flags matching a cookie */
 	void hid_remove_flags_by_cookie(const char *cookie);
@@ -190,9 +190,9 @@ extern "C" {
 		int hash;										/* for detecting changes. */
 	} HID_Attribute;
 
-	extern void hid_register_attributes(HID_Attribute *, int, const char *cookie);
+	extern void hid_register_attributes(HID_Attribute *, int, const char *cookie, int copy);
 #define REGISTER_ATTRIBUTES(a, cookie) HIDCONCAT(void register_,a) ()\
-{ hid_register_attributes(a, sizeof(a)/sizeof(a[0]), cookie); }
+{ hid_register_attributes(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
 	/* remove all attributes and free the list */
 	void hid_attributes_uninit(void);

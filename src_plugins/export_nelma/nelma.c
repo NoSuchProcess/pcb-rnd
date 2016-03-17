@@ -496,7 +496,7 @@ static void nelma_write_objects(FILE * out)
 
 static void nelma_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]), nelma_cookie);
+	hid_register_attributes(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]), nelma_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 

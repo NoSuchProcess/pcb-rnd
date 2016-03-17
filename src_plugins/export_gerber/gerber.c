@@ -603,7 +603,7 @@ static void gerber_do_export(HID_Attr_Val * options)
 
 static void gerber_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(gerber_options, NUM_OPTIONS, gerber_cookie);
+	hid_register_attributes(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 

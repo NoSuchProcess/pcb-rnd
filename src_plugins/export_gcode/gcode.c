@@ -216,7 +216,7 @@ struct drill_struct *sort_drill(struct drill_struct *drill, int n_drill)
 
 static void gcode_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]), gcode_cookie);
+	hid_register_attributes(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]), gcode_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 

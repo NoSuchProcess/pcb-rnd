@@ -245,7 +245,7 @@ HID **hid_enumerate()
 
 HID_AttrNode *hid_attr_nodes = 0;
 
-void hid_register_attributes(HID_Attribute * a, int n, const char *cookie)
+void hid_register_attributes(HID_Attribute * a, int n, const char *cookie, int copy)
 {
 	HID_AttrNode *ha;
 

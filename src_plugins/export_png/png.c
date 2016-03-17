@@ -932,7 +932,7 @@ static void png_do_export(HID_Attr_Val * options)
 
 static void png_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]), png_cookie);
+	hid_register_attributes(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]), png_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 

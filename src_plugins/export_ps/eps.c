@@ -338,7 +338,7 @@ static void eps_do_export(HID_Attr_Val * options)
 
 static void eps_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]), ps_cookie);
+	hid_register_attributes(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]), ps_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 

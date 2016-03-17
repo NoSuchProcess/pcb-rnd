@@ -48,7 +48,7 @@ typedef struct {
 	const HID_Action *action;
 } hid_cookie_action_t;
 
-void hid_register_actions(const HID_Action * a, int n, const char *cookie)
+void hid_register_actions(const HID_Action * a, int n, const char *cookie, int copy)
 {
 	int i;
 	hid_cookie_action_t *ca;
@@ -72,9 +72,9 @@ void hid_register_actions(const HID_Action * a, int n, const char *cookie)
 	}
 }
 
-void hid_register_action(const HID_Action * a, const char *cookie)
+void hid_register_action(const HID_Action * a, const char *cookie, int copy)
 {
-	hid_register_actions(a, 1, cookie);
+	hid_register_actions(a, 1, cookie, copy);
 }
 
 void hid_remove_actions(const HID_Action * a, int n)

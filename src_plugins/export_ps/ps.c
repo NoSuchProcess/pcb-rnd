@@ -742,7 +742,7 @@ static void ps_do_export(HID_Attr_Val * options)
 
 static void ps_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(ps_attribute_list, NUM_OPTIONS, ps_cookie);
+	hid_register_attributes(ps_attribute_list, NUM_OPTIONS, ps_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 

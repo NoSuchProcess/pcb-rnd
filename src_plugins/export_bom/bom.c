@@ -501,7 +501,7 @@ static void bom_do_export(HID_Attr_Val * options)
 
 static void bom_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(bom_options, sizeof(bom_options) / sizeof(bom_options[0]), bom_cookie);
+	hid_register_attributes(bom_options, sizeof(bom_options) / sizeof(bom_options[0]), bom_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 
