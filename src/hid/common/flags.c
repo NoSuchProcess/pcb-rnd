@@ -30,25 +30,29 @@ static int keyeq(char *a, char *b)
 	return !strcmp(a, b);
 }
 
-void hid_register_flags(HID_Flag * a, int n, const char *cookie)
+void hid_register_flags(HID_Flag * a, int numact, const char *cookie)
 {
 	HID_FlagNode *ha;
+	HID_Flag *f;
+	int n;
 
 	if (hid_flags == NULL)
 		hid_flags = htsp_alloc(strhash, keyeq);
 
-	if (htsp_get(hid_flags, a->name) != NULL) {
-		fprintf(stderr, "ERROR: can't register flag %s for cookie %s: name already in use\n", a->name, cookie);
-		return;
+	for(f = a, n = 0; n < numact; n++, f++) {
+		if (htsp_get(hid_flags, f->name) != NULL) {
+			fprintf(stderr, "ERROR: can't register flag %s for cookie %s: name already in use\n", f->name, cookie);
+			return;
+		}
+
+		/* printf("%d flag%s registered\n", n, n==1 ? "" : "s"); */
+		ha = (HID_FlagNode *) malloc(sizeof(HID_FlagNode));
+		ha->flags = f;
+		ha->n = n;
+		ha->cookie = cookie;
+
+		htsp_set(hid_flags, f->name, ha);
 	}
-
-	/* printf("%d flag%s registered\n", n, n==1 ? "" : "s"); */
-	ha = (HID_FlagNode *) malloc(sizeof(HID_FlagNode));
-	ha->flags = a;
-	ha->n = n;
-	ha->cookie = cookie;
-
-	htsp_set(hid_flags, a->name, ha);
 }
 
 void hid_remove_flags_by_cookie(const char *cookie)
@@ -94,8 +98,10 @@ HID_Flag *hid_find_flag(const char *name)
 		return NULL;
 
 	ha = htsp_get(hid_flags, (char *)name);
-	if (ha == NULL)
+	if (ha == NULL) {
+		fprintf(stderr, "ERROR: hid_find_flag(): flag not found '%s'\n", name);
 		return NULL;
+	}
 
 	return ha->flags;
 }
