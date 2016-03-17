@@ -118,14 +118,14 @@ static void register_actions()
 	act.description    = "Manage gpmi scripts";
 	act.syntax         = "TODO";
 	act.trigger_cb     = action_gpmi_scripts;
-	hid_register_action(&act, gpmi_cookie, 1);
+	hid_register_action(&act, gpmi_cookie, 0);
 
 	act.name           = "rehash";
 	act.need_coord_msg = NULL;
 	act.description    = "Reload all gpmi scripts";
 	act.syntax         = "TODO";
 	act.trigger_cb     = action_gpmi_rehash;
-	hid_register_action(&act, gpmi_cookie, 1);
+	hid_register_action(&act, gpmi_cookie, 0);
 }
 
 #ifndef PLUGIN_INIT_NAME
