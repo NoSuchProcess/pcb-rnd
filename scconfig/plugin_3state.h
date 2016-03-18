@@ -51,4 +51,4 @@ const arg_auto_set_node_t arg_plugin[] = {
 
 /* plugin_def implementation to print a report with the final state */
 #define plugin3_stat(name, desc) \
-	plugin_stat(desc, "/local/pcb/" name "/controls");
+	plugin_stat(desc, "/local/pcb/" name "/controls", name);

@@ -34,9 +34,9 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"plugin-gpmi",       "/local/pcb/gpmi/buildin",      arg_false,     "$the gpmi plugin is a dynamic loadable"},
 
 #undef plugin_def
-#undef plugin_sep
+#undef plugin_header
 #define plugin_def(name, desc, default_) plugin3_args(name, desc)
-#define plugin_sep()
+#define plugin_header(sect)
 #include "plugins.h"
 
 	{NULL, NULL, NULL, NULL}
@@ -98,9 +98,9 @@ int hook_postinit()
 	put("/local/prefix", "/usr/local");
 
 #undef plugin_def
-#undef plugin_sep
+#undef plugin_header
 #define plugin_def(name, desc, default_) plugin3_default(name, default_)
-#define plugin_sep()
+#define plugin_header(sect)
 #include "plugins.h"
 
 	return 0;
@@ -303,20 +303,22 @@ static int gpmi_config(void)
 
 	return generr;
 }
-static void plugin_stat(const char *header, const char *path)
+static void plugin_stat(const char *header, const char *path, const char *name)
 {
 	const char *val = get(path);
 
-	printf("%-32s", header);
+	printf(" %-32s", header);
 
 	if (val == NULL)
-		printf("??? (NULL)\n");
+		printf("??? (NULL)   ");
 	else if (strcmp(val, sbuildin) == 0)
-		printf("yes (buildin)\n");
+		printf("yes, buildin ");
 	else if (strcmp(val, splugin) == 0)
-		printf("yes (plugin)\n");
+		printf("yes, PLUGIN  ");
 	else
-		printf("no\n");
+		printf("no           ");
+
+	printf("   [%s]\n", name);
 }
 
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
@@ -359,7 +361,7 @@ int hook_generate()
 	printf("=====================\n");
 	printf("Configuration summary\n");
 	printf("=====================\n\n");
-	list_presents("GUI hids: batch", gui_list);
+	list_presents("GUI hids:                        batch", gui_list);
 
 /* special case because the "presents" node */
 	printf("%-32s", "Scripting via GPMI: ");
@@ -374,9 +376,9 @@ int hook_generate()
 		printf("no\n");
 
 #undef plugin_def
-#undef plugin_sep
+#undef plugin_header
 #define plugin_def(name, desc, default_) plugin3_stat(name, desc)
-#define plugin_sep() printf("\n");
+#define plugin_header(sect) printf(sect);
 #include "plugins.h"
 
 	if (repeat != NULL)
