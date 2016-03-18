@@ -1,15 +1,8 @@
-append /local/pcb/export_gerber/enable {}
-append /local/pcb/export_gerber/buildin {}
-
 put /local/pcb/mod {export_gerber}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_gerber/gerber.o @]
 
-if /local/pcb/export_gerber/enable then
-	if /local/pcb/export_gerber/buildin then
-		include {Makefile.in.mod/Buildin}
-	else
-		include {Makefile.in.mod/Plugin}
-	end
-else
-	include {Makefile.in.mod/Disable}
+switch /local/pcb/export_gerber/controls
+	case {buildin}   include {Makefile.in.mod/Buildin}; end;
+	case {plugin}    include {Makefile.in.mod/Plugin}; end;
+	case {disable}   include {Makefile.in.mod/Disable}; end;
 end

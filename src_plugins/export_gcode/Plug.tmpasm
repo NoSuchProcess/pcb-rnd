@@ -1,15 +1,8 @@
-append /local/pcb/export_gcode/enable {}
-append /local/pcb/export_gcode/buildin {}
-
 put /local/pcb/mod {export_gcode}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_gcode/gcode.o $(PLUGDIR)/export_gcode/decompose.o $(PLUGDIR)/export_gcode/trace.o $(PLUGDIR)/export_gcode/curve.o @]
 
-if /local/pcb/export_gcode/enable then
-	if /local/pcb/export_gcode/buildin then
-		include {Makefile.in.mod/Buildin}
-	else
-		include {Makefile.in.mod/Plugin}
-	end
-else
-	include {Makefile.in.mod/Disable}
+switch /local/pcb/export_gcode/controls
+	case {buildin}   include {Makefile.in.mod/Buildin}; end;
+	case {plugin}    include {Makefile.in.mod/Plugin}; end;
+	case {disable}   include {Makefile.in.mod/Disable}; end;
 end

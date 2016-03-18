@@ -1,18 +1,8 @@
-append /local/pcb/fontmode/enable {}
-append /local/pcb/fontmode/buildin {}
-
 put /local/pcb/mod {fontmode}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/fontmode/fontmode.o @]
 
-if /local/pcb/fontmode/enable then
-	if /local/pcb/fontmode/buildin then
-		include {Makefile.in.mod/Buildin}
-	else
-		include {Makefile.in.mod/Plugin}
-	end
-else
-	include {Makefile.in.mod/Disable}
+switch /local/pcb/fontmode/controls
+	case {buildin}   include {Makefile.in.mod/Buildin}; end;
+	case {plugin}    include {Makefile.in.mod/Plugin}; end;
+	case {disable}   include {Makefile.in.mod/Disable}; end;
 end
-
-
-

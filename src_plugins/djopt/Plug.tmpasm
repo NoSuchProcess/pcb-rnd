@@ -1,15 +1,8 @@
-append /local/pcb/djopt/enable {}
-append /local/pcb/djopt/buildin {}
-
 put /local/pcb/mod {djopt}
 append /local/pcb/mod/OBJS [@ $(PLUGDIR)/djopt/djopt.o @]
 
-if /local/pcb/djopt/enable then
-	if /local/pcb/djopt/buildin then
-		include {Makefile.in.mod/Buildin}
-	else
-		include {Makefile.in.mod/Plugin}
-	end
-else
-	include {Makefile.in.mod/Disable}
+switch /local/pcb/djopt/controls
+	case {buildin}   include {Makefile.in.mod/Buildin}; end;
+	case {plugin}    include {Makefile.in.mod/Plugin}; end;
+	case {disable}   include {Makefile.in.mod/Disable}; end;
 end

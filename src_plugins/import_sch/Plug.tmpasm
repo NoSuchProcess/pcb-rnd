@@ -1,18 +1,8 @@
-append /local/pcb/import_sch/enable {}
-append /local/pcb/import_sch/buildin {}
-
 put /local/pcb/mod {import_sch}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_sch/import_sch.o @]
 
-if /local/pcb/import_sch/enable then
-	if /local/pcb/import_sch/buildin then
-		include {Makefile.in.mod/Buildin}
-	else
-		include {Makefile.in.mod/Plugin}
-	end
-else
-	include {Makefile.in.mod/Disable}
+switch /local/pcb/import_sch/controls
+	case {buildin}   include {Makefile.in.mod/Buildin}; end;
+	case {plugin}    include {Makefile.in.mod/Plugin}; end;
+	case {disable}   include {Makefile.in.mod/Disable}; end;
 end
-
-
-

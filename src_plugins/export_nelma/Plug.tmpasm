@@ -1,17 +1,10 @@
-append /local/pcb/export_nelma/enable {}
-append /local/pcb/export_nelma/buildin {}
-
 put /local/pcb/mod {export_nelma}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_nelma/nelma.o @]
 put /local/pcb/mod/LDFLAGS         libs/gui/gd/ldflags
 put /local/pcb/mod/CFLAGS          libs/gui/gd/cflags
 
-if /local/pcb/export_nelma/enable then
-	if /local/pcb/export_nelma/buildin then
-		include {Makefile.in.mod/Buildin}
-	else
-		include {Makefile.in.mod/Plugin}
-	end
-else
-	include {Makefile.in.mod/Disable}
+switch /local/pcb/export_nelma/controls
+	case {buildin}   include {Makefile.in.mod/Buildin}; end;
+	case {plugin}    include {Makefile.in.mod/Plugin}; end;
+	case {disable}   include {Makefile.in.mod/Disable}; end;
 end

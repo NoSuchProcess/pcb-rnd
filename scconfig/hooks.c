@@ -17,6 +17,8 @@ const char *gui_list[] = {
 	NULL, NULL
 };
 
+#include "plugin_3state.h"
+
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
 	{"disable-gtk",       "libs/gui/gtk2",                arg_lib_nodes, "$do not compile the gtk HID"},
 	{"disable-lesstif",   "libs/gui/lesstif2",            arg_lib_nodes, "$do not compile the lesstif HID"},
@@ -31,90 +33,11 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"buildin-gpmi",      "/local/pcb/gpmi/buildin",      arg_true,      "$static link the gpmi plugin into the executable"},
 	{"plugin-gpmi",       "/local/pcb/gpmi/buildin",      arg_false,     "$the gpmi plugin is a dynamic loadable"},
 
-	{"disable-autoroute", "/local/pcb/autoroute/enable",   arg_false,     "$do not compile the autorouter"},
-	{"buildin-autoroute", "/local/pcb/autoroute/buildin",  arg_true,      "$static link the autorouter plugin into the executable"},
-	{"plugin-autoroute",  "/local/pcb/autoroute/buildin",  arg_false,     "$the autorouter plugin is a dynamic loadable"},
-
-	{"disable-autoplace",  "/local/pcb/autoplace/enable",   arg_false,     "$do not compile the autoplace"},
-	{"buildin-autoplace",  "/local/pcb/autoplace/buildin",  arg_true,      "$static link the autoplace plugin into the executable"},
-	{"plugin-autoplace",   "/local/pcb/autoplace/buildin",  arg_false,     "$the autoplace plugin is a dynamic loadable"},
-
-	{"disable-vendordrill",  "/local/pcb/vendordrill/enable",   arg_false,     "$do not compile the vendor drill mapping"},
-	{"buildin-vendordrill",  "/local/pcb/vendordrill/buildin",  arg_true,      "$static link the vendor drill mapping plugin into the executable"},
-	{"plugin-vendordrill",   "/local/pcb/vendordrill/buildin",  arg_false,     "$the vendor drill mapping plugin is a dynamic loadable"},
-
-	{"disable-puller",  "/local/pcb/puller/enable",   arg_false,     "$do not compile the puller"},
-	{"buildin-puller",  "/local/pcb/puller/buildin",  arg_true,      "$static link the puller plugin into the executable"},
-	{"plugin-puller",   "/local/pcb/puller/buildin",  arg_false,     "$the puller plugin is a dynamic loadable"},
-
-	{"disable-import_edif",  "/local/pcb/import_edif/enable",   arg_false,     "$do not compile the edif importer"},
-	{"buildin-import_edif",  "/local/pcb/import_edif/buildin",  arg_true,      "$static link the edif importer plugin into the executable"},
-	{"plugin-import_edif",   "/local/pcb/import_edif/buildin",  arg_false,     "$the edif importer plugin is a dynamic loadable"},
-
-	{"disable-djopt",  "/local/pcb/djopt/enable",   arg_false,     "$do not compile the djopt"},
-	{"buildin-djopt",  "/local/pcb/djopt/buildin",  arg_true,      "$static link the djopt plugin into the executable"},
-	{"plugin-djopt",   "/local/pcb/djopt/buildin",  arg_false,     "$the djopt plugin is a dynamic loadable"},
-
-	{"disable-mincut",  "/local/pcb/mincut/enable",   arg_false,     "$do not compile the mincut"},
-	{"buildin-mincut",  "/local/pcb/mincut/buildin",  arg_true,      "$static link the mincut plugin into the executable"},
-	{"plugin-mincut",   "/local/pcb/mincut/buildin",  arg_false,     "$the mincut plugin is a dynamic loadable"},
-
-	{"disable-toporouter",  "/local/pcb/toporouter/enable",   arg_false,     "$do not compile the toporouter"},
-	{"buildin-toporouter",  "/local/pcb/toporouter/buildin",  arg_true,      "$static link the toporouter plugin into the executable"},
-	{"plugin-toporouter",   "/local/pcb/toporouter/buildin",  arg_false,     "$the toporouter plugin is a dynamic loadable"},
-
-	{"disable-oldactions",  "/local/pcb/oldactions/enable",   arg_false,     "$do not compile the oldactions"},
-	{"buildin-oldactions",  "/local/pcb/oldactions/buildin",  arg_true,      "$static link the oldactions plugin into the executable"},
-	{"plugin-oldactions",   "/local/pcb/oldactions/buildin",  arg_false,     "$the oldactions plugin is a dynamic loadable"},
-
-	{"disable-fontmode",    "/local/pcb/fontmode/enable",     arg_false,     "$do not compile the fontmode"},
-	{"buildin-fontmode",    "/local/pcb/fontmode/buildin",    arg_true,      "$static link the fontmode plugin into the executable"},
-	{"plugin-fontmode",     "/local/pcb/fontmode/buildin",    arg_false,     "$the fontmode plugin is a dynamic loadable"},
-
-	{"disable-legacy_func",  "/local/pcb/legacy_func/enable",   arg_false,     "$do not compile the legacy functions"},
-	{"buildin-legacy_func",  "/local/pcb/legacy_func/buildin",  arg_true,      "$static link the legacy functions plugin into the executable"},
-	{"plugin-legacy_func",   "/local/pcb/legacy_func/buildin",  arg_false,     "$the legacy functions plugin is a dynamic loadable"},
-
-	{"disable-renumber",  "/local/pcb/renumber/enable",   arg_false,     "$do not compile the renumber action"},
-	{"buildin-renumber",  "/local/pcb/renumber/buildin",  arg_true,      "$static link the renumber action into the executable"},
-	{"plugin-renumber",   "/local/pcb/renumber/buildin",  arg_false,     "$the renumber action is a dynamic loadable plugin"},
-
-	{"disable-stroke",  "/local/pcb/stroke/enable",   arg_false,     "$do not compile libstroke gestures"},
-	{"buildin-stroke",  "/local/pcb/stroke/buildin",  arg_true,      "$static link libstroke gestures into the executable"},
-	{"plugin-stroke",   "/local/pcb/stroke/buildin",  arg_false,     "$libstroke gestures is a dynamic loadable plugin"},
-
-	{"disable-import_sch",  "/local/pcb/import_sch/enable",   arg_false,     "$do not compile the import schematics action"},
-	{"buildin-import_sch",  "/local/pcb/import_sch/buildin",  arg_true,      "$static link the import schematics action into the executable"},
-	{"plugin-import_sch",   "/local/pcb/import_sch/buildin",  arg_false,     "$the import schematics action is a dynamic loadable plugin"},
-
-	{"disable-export_ps",  "/local/pcb/export_ps/enable",   arg_false,     "$do not compile the postscript exporter"},
-	{"buildin-export_ps",  "/local/pcb/export_ps/buildin",  arg_true,      "$static link the postscript exporter into the executable"},
-	{"plugin-export_ps",   "/local/pcb/export_ps/buildin",  arg_false,     "$the postscript exporter is a dynamic loadable plugin"},
-
-	{"disable-export_lpr", "/local/pcb/export_lpr/enable",  arg_false,     "$do not compile the lpr printer"},
-	{"buildin-export_lpr", "/local/pcb/export_lpr/buildin", arg_true,      "$static link the lpr printer into the executable"},
-	{"plugin-export_lpr",  "/local/pcb/export_lpr/buildin", arg_false,     "$the lpr printer is a dynamic loadable plugin"},
-
-	{"disable-export_gcode", "/local/pcb/export_gcode/enable",  arg_false,     "$do not compile the gcode exporter"},
-	{"buildin-export_gcode", "/local/pcb/export_gcode/buildin", arg_true,      "$static link the gcode exporter into the executable"},
-	{"plugin-export_gcode",  "/local/pcb/export_gcode/buildin", arg_false,     "$the gcode exporter is a dynamic loadable plugin"},
-
-	{"disable-export_nelma", "/local/pcb/export_nelma/enable",  arg_false,     "$do not compile the nelma exporter"},
-	{"buildin-export_nelma", "/local/pcb/export_nelma/buildin", arg_true,      "$static link the nelma exporter into the executable"},
-	{"plugin-export_nelma",  "/local/pcb/export_nelma/buildin", arg_false,     "$the nelma exporter is a dynamic loadable plugin"},
-
-	{"disable-export_png", "/local/pcb/export_png/enable",  arg_false,     "$do not compile the png exporter"},
-	{"buildin-export_png", "/local/pcb/export_png/buildin", arg_true,      "$static link the png exporter into the executable"},
-	{"plugin-export_png",  "/local/pcb/export_png/buildin", arg_false,     "$the png exporter is a dynamic loadable plugin"},
-
-	{"disable-export_bom", "/local/pcb/export_bom/enable",  arg_false,     "$do not compile the bom exporter"},
-	{"buildin-export_bom", "/local/pcb/export_bom/buildin", arg_true,      "$static link the bom exporter into the executable"},
-	{"plugin-export_bom",  "/local/pcb/export_bom/buildin", arg_false,     "$the bom exporter is a dynamic loadable plugin"},
-
-	{"disable-export_gerber", "/local/pcb/export_gerber/enable",  arg_false,     "$do not compile the gerber exporter"},
-	{"buildin-export_gerber", "/local/pcb/export_gerber/buildin", arg_true,      "$static link the gerber exporter into the executable"},
-	{"plugin-export_gerber",  "/local/pcb/export_gerber/buildin", arg_false,     "$the gerber exporter is a dynamic loadable plugin"},
-
+#undef plugin_def
+#undef plugin_sep
+#define plugin_def(name, desc, default_) plugin3_args(name, desc)
+#define plugin_sep()
+#include "plugins.h"
 
 	{NULL, NULL, NULL, NULL}
 };
@@ -127,14 +50,13 @@ static void help1(void)
 	printf("Usage: ./configure [options]\n");
 	printf("\n");
 	printf("options are:\n");
-	printf(" --prefix=path         change installation prefix from /usr to path\n");
+	printf(" --prefix=path              change installation prefix from /usr to path\n");
 }
 
 static void help2(void)
 {
 	printf("\n");
-	printf("The --disable options will make ./configure to skip detection of the ");
-	printf("given feature and mark them \"not found\".");
+	printf("Some of the --disable options will make ./configure to skip detection of the given feature and mark them \"not found\".");
 	printf("\n");
 }
 
@@ -149,7 +71,7 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 	else if (strcmp(key, "help") == 0) {
 		help1();
-		arg_auto_print_options(stdout, " ", "                    ", disable_libs);
+		arg_auto_print_options(stdout, " ", "                         ", disable_libs);
 		help2();
 		exit(0);
 	}
@@ -175,90 +97,11 @@ int hook_postinit()
 	put("/local/pcb/gpmi/buildin", strue);
 	put("/local/prefix", "/usr/local");
 
-
-	db_mkdir("/local/pcb/autoroute");
-	put("/local/pcb/autoroute/enable", strue);
-	put("/local/pcb/autoroute/buildin", strue);
-
-	db_mkdir("/local/pcb/autoplace");
-	put("/local/pcb/autoplace/enable", strue);
-	put("/local/pcb/autoplace/buildin", strue);
-
-	db_mkdir("/local/pcb/vendordrill");
-	put("/local/pcb/vendordrill/enable", strue);
-	put("/local/pcb/vendordrill/buildin", strue);
-
-	db_mkdir("/local/pcb/puller");
-	put("/local/pcb/puller/enable", strue);
-	put("/local/pcb/puller/buildin", strue);
-
-	db_mkdir("/local/pcb/import_edif");
-	put("/local/pcb/import_edif/enable", strue);
-	put("/local/pcb/import_edif/buildin", strue);
-
-	db_mkdir("/local/pcb/djopt");
-	put("/local/pcb/djopt/enable", strue);
-	put("/local/pcb/djopt/buildin", strue);
-
-	db_mkdir("/local/pcb/mincut");
-	put("/local/pcb/mincut/enable", strue);
-	put("/local/pcb/mincut/buildin", strue);
-
-	db_mkdir("/local/pcb/toporouter");
-	put("/local/pcb/toporouter/enable", strue);
-	put("/local/pcb/toporouter/buildin", strue);
-
-	db_mkdir("/local/pcb/oldactions");
-	put("/local/pcb/oldactions/enable", strue);
-	put("/local/pcb/oldactions/buildin", strue);
-
-	db_mkdir("/local/pcb/fontmode");
-	put("/local/pcb/fontmode/enable", strue);
-	put("/local/pcb/fontmode/buildin", strue);
-
-	db_mkdir("/local/pcb/legacy_func");
-	put("/local/pcb/legacy_func/enable", strue);
-	put("/local/pcb/legacy_func/buildin", strue);
-
-	db_mkdir("/local/pcb/renumber");
-	put("/local/pcb/renumber/enable", strue);
-	put("/local/pcb/renumber/buildin", strue);
-
-	db_mkdir("/local/pcb/stroke");
-	put("/local/pcb/stroke/enable", sfalse);
-	put("/local/pcb/stroke/buildin", strue);
-
-	db_mkdir("/local/pcb/import_sch");
-	put("/local/pcb/import_sch/enable", strue);
-	put("/local/pcb/import_sch/buildin", strue);
-
-	db_mkdir("/local/pcb/export_ps");
-	put("/local/pcb/export_ps/enable", strue);
-	put("/local/pcb/export_ps/buildin", strue);
-
-	db_mkdir("/local/pcb/export_lpr");
-	put("/local/pcb/export_lpr/enable", strue);
-	put("/local/pcb/export_lpr/buildin", strue);
-
-	db_mkdir("/local/pcb/export_gcode");
-	put("/local/pcb/export_gcode/enable", strue);
-	put("/local/pcb/export_gcode/buildin", strue);
-
-	db_mkdir("/local/pcb/export_nelma");
-	put("/local/pcb/export_nelma/enable", strue);
-	put("/local/pcb/export_nelma/buildin", strue);
-
-	db_mkdir("/local/pcb/export_png");
-	put("/local/pcb/export_png/enable", strue);
-	put("/local/pcb/export_png/buildin", strue);
-
-	db_mkdir("/local/pcb/export_bom");
-	put("/local/pcb/export_bom/enable", strue);
-	put("/local/pcb/export_bom/buildin", strue);
-
-	db_mkdir("/local/pcb/export_gerber");
-	put("/local/pcb/export_gerber/enable", strue);
-	put("/local/pcb/export_gerber/buildin", strue);
+#undef plugin_def
+#undef plugin_sep
+#define plugin_def(name, desc, default_) plugin3_default(name, default_)
+#define plugin_sep()
+#include "plugins.h"
 
 	return 0;
 }
@@ -323,10 +166,10 @@ int hook_detect_target()
 	if (want_gtk)
 		want_glib = 1;
 
-	if (istrue(get("/local/pcb/toporouter/enable")))
+	if (plug_is_enabled("toporouter"))
 		want_glib = 1;
 
-	if (istrue(get("/local/pcb/puller/enable")))
+	if (plug_is_enabled("puller"))
 		want_glib = 1;
 
 	if (want_glib) {
@@ -336,11 +179,11 @@ int hook_detect_target()
 				report_repeat("WARNING: Since GLIB is not found, disabling the GTK HID...\n");
 				hook_custom_arg("disable-gtk", NULL);
 			}
-			if (istrue(get("/local/pcb/toporouter/enable"))) {
+			if (plug_is_enabled("toporouter")) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the toporouter...\n");
 				hook_custom_arg("disable-toporouter", NULL);
 			}
-			if (istrue(get("/local/pcb/puller/enable"))) {
+			if (plug_is_enabled("puller")) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
 				hook_custom_arg("disable-puller", NULL);
 			}
@@ -397,19 +240,19 @@ int hook_detect_target()
 	}
 
 	/* some internal dependencies */
-	if (!istrue(get("/local/pcb/export_ps/enable")) || !istrue(get("/local/pcb/export_ps/buildin"))) {
-		if (istrue(get("/local/pcb/export_lpr/enable"))) {
+	if (!plug_is_buildin("export_ps")) {
+		if (plug_is_enabled("export_lpr")) {
 			report_repeat("WARNING: disabling the lpr exporter because the ps exporter is not enabled as a buildin...\n");
 			hook_custom_arg("disable-export_lpr", NULL);
 		}
 	}
 
 	if (!istrue(get("libs/gui/gd/presents"))) {
-		if (istrue(get("/local/pcb/export_nelma/enable"))) {
+		if (plug_is_enabled("export_nelma")) {
 			report_repeat("WARNING: disabling the nelma exporter because libgd is not found or not configured...\n");
 			hook_custom_arg("disable-export_nelma", NULL);
 		}
-		if (istrue(get("/local/pcb/export_png/enable"))) {
+		if (plug_is_enabled("export_png")) {
 			report_repeat("WARNING: disabling the png exporter because libgd is not found or not configured...\n");
 			hook_custom_arg("disable-export_png", NULL);
 		}
@@ -460,26 +303,20 @@ static int gpmi_config(void)
 
 	return generr;
 }
-
-static void plugin_stat(const char *header, const char *path_prefix)
+static void plugin_stat(const char *header, const char *path)
 {
-	char path_en[256], path_bi[256];
-
-	sprintf(path_en, "%s/enable", path_prefix);
-	sprintf(path_bi, "%s/buildin", path_prefix);
+	const char *val = get(path);
 
 	printf("%-32s", header);
-	if (node_istrue(path_en)) {
-		printf("yes ");
-		if (node_istrue(path_bi))
-			printf("(buildin)\n");
-		else
-			printf("(plugin)\n");
-	}
+
+	if (val == NULL)
+		printf("??? (NULL)\n");
+	else if (strcmp(val, sbuildin) == 0)
+		printf("yes (buildin)\n");
+	else if (strcmp(val, splugin) == 0)
+		printf("yes (plugin)\n");
 	else
 		printf("no\n");
-
-
 }
 
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
@@ -536,33 +373,14 @@ int hook_generate()
 	else
 		printf("no\n");
 
-	plugin_stat("Autorouter: ",            "/local/pcb/autoroute");
-	plugin_stat("Toporouter: ",            "/local/pcb/toporouter");
-	plugin_stat("Autoplace: ",             "/local/pcb/autoplace");
-	plugin_stat("Vendor drill mapping: ",  "/local/pcb/vendordrill");
-	plugin_stat("Puller: ",                "/local/pcb/puller");
-	plugin_stat("djopt: ",                 "/local/pcb/djopt");
-	plugin_stat("Mincut: ",                "/local/pcb/mincut");
-	plugin_stat("renumber:",               "/local/pcb/renumber");
-	plugin_stat("old actions:",            "/local/pcb/oldactions");
-	plugin_stat("fontmode:",               "/local/pcb/fontmode");
-	plugin_stat("legacy functions:",       "/local/pcb/legacy_func");
-	plugin_stat("stroke:",                 "/local/pcb/stroke");
-	printf("\n");
-	plugin_stat("import_sch:",             "/local/pcb/import_sch");
-	plugin_stat("import_edif: ",           "/local/pcb/import_edif");
-	printf("\n");
-	plugin_stat("export_gcode:",           "/local/pcb/export_gcode");
-	plugin_stat("export_nelma:",           "/local/pcb/export_nelma");
-	plugin_stat("export_png:",             "/local/pcb/export_png");
-	plugin_stat("export_bom:",             "/local/pcb/export_bom");
-	plugin_stat("export_gerber:",          "/local/pcb/export_gerber");
-	plugin_stat("export_ps:",              "/local/pcb/export_ps");
-	plugin_stat("export_lpr:",             "/local/pcb/export_lpr");
+#undef plugin_def
+#undef plugin_sep
+#define plugin_def(name, desc, default_) plugin3_stat(name, desc)
+#define plugin_sep() printf("\n");
+#include "plugins.h"
 
 	if (repeat != NULL)
 		printf("\n%s\n", repeat);
-
 
 	if (manual_config)
 		printf("\n\n * NOTE: you may want to edit config.manual.h (user preferences) *\n");

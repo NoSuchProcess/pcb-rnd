@@ -1,16 +1,9 @@
-append /local/pcb/import_edif/enable {}
-append /local/pcb/import_edif/buildin {}
-
 put /local/pcb/mod {edif}
 append /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_edif/edif.o @]
 append /local/pcb/YACC {edif}
 
-if /local/pcb/import_edif/enable then
-	if /local/pcb/import_edif/buildin then
-		include {Makefile.in.mod/Buildin}
-	else
-		include {Makefile.in.mod/Plugin}
-	end
-else
-	include {Makefile.in.mod/Disable}
+switch /local/pcb/import_edif/controls
+	case {buildin}   include {Makefile.in.mod/Buildin}; end;
+	case {plugin}    include {Makefile.in.mod/Plugin}; end;
+	case {disable}   include {Makefile.in.mod/Disable}; end;
 end

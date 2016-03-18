@@ -1,26 +1,24 @@
-append /local/pcb/toporouter/enable {}
-append /local/pcb/toporouter/buildin {}
-
 put /local/pcb/mod {toporouter}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/toporouter/toporouter.o @]
+
 append /local/pcb/CFLAGS  {-I../src_3rd/gts}
 
-if /local/pcb/toporouter/enable then
-
-append /local/pcb/RULES [@
+put /local/pcb/toporouter_rules [@
 ../src_3rd/gts/libgts.a:
 	cd ../src_3rd/gts && make
-
 @]
 
-	if /local/pcb/toporouter/buildin then
+switch /local/pcb/toporouter/controls
+	case {buildin}
+		append /local/pcb/RULES           /local/pcb/toporouter_rules
 		append /local/pcb/LIBS            { ../src_3rd/gts/libgts.a }
 		append /local/pcb/EXEDEPS         { ../src_3rd/gts/libgts.a }
 		include {Makefile.in.mod/Buildin}
-	else
+		end;
+	case {plugin}
+		append /local/pcb/RULES           /local/pcb/toporouter_rules
 		append /local/pcb/toporouter/OBJS { ../src_3rd/gts/libgts.a }
 		include {Makefile.in.mod/Plugin}
-	end
-else
-	include {Makefile.in.mod/Disable}
+		end
+	case {disable}   include {Makefile.in.mod/Disable}; end;
 end

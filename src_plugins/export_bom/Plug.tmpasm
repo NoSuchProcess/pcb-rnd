@@ -1,15 +1,8 @@
-append /local/pcb/export_bom/enable {}
-append /local/pcb/export_bom/buildin {}
-
 put /local/pcb/mod {export_bom}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_bom/bom.o @]
 
-if /local/pcb/export_bom/enable then
-	if /local/pcb/export_bom/buildin then
-		include {Makefile.in.mod/Buildin}
-	else
-		include {Makefile.in.mod/Plugin}
-	end
-else
-	include {Makefile.in.mod/Disable}
+switch /local/pcb/export_bom/controls
+	case {buildin}   include {Makefile.in.mod/Buildin}; end;
+	case {plugin}    include {Makefile.in.mod/Plugin}; end;
+	case {disable}   include {Makefile.in.mod/Disable}; end;
 end

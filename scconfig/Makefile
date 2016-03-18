@@ -73,6 +73,8 @@ menucfg: $(OBJS) $(MENULIB_OBJS) src/default/main_lib.o src/default/main_custom_
 menucfg.o: menucfg.c
 	$(CC) -c $(CFLAGS) -o menucfg.o menucfg.c
 
+hooks.o: plugin_3state.h plugins.h
+
 clean:
 	rm $(OBJS) configure
 
