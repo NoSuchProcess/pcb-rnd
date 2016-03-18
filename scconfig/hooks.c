@@ -30,9 +30,6 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png exporter"},
 	{"disable-gpmi",      "libs/script/gpmi",             arg_lib_nodes, "$do not compile the gpmi (scripting) plugin"},
 
-	{"buildin-gpmi",      "/local/pcb/gpmi/buildin",      arg_true,      "$static link the gpmi plugin into the executable"},
-	{"plugin-gpmi",       "/local/pcb/gpmi/buildin",      arg_false,     "$the gpmi plugin is a dynamic loadable"},
-
 #undef plugin_def
 #undef plugin_header
 #define plugin_def(name, desc, default_) plugin3_args(name, desc)
@@ -93,8 +90,6 @@ int hook_postinit()
 	db_mkdir("/local/pcb");
 
 	/* DEFAULTS */
-	db_mkdir("/local/pcb/gpmi");
-	put("/local/pcb/gpmi/buildin", strue);
 	put("/local/prefix", "/usr/local");
 
 #undef plugin_def
@@ -222,8 +217,6 @@ int hook_detect_target()
 	require("libs/gui/gd/gdImageJpeg/presents", 0, 0);
 	require("libs/fs/stat/macros/*", 0, 0);
 
-	require("libs/script/gpmi/presents", 0, 0);
-
 
 	if (get("cc/rdynamic") == NULL)
 		put("cc/rdynamic", "");
@@ -239,11 +232,20 @@ int hook_detect_target()
 		put("/local/global_cflags", tmp);
 	}
 
-	/* some internal dependencies */
+	/* plugin dependencies */
 	if (!plug_is_buildin("export_ps")) {
 		if (plug_is_enabled("export_lpr")) {
 			report_repeat("WARNING: disabling the lpr exporter because the ps exporter is not enabled as a buildin...\n");
 			hook_custom_arg("disable-export_lpr", NULL);
+		}
+	}
+
+
+	if (plug_is_enabled("gpmi")) {
+		require("libs/script/gpmi/presents", 0, 0);
+		if (!istrue(get("libs/script/gpmi/presents"))) {
+			report_repeat("WARNING: disabling the gpmi scripting because libgpmi is not found or not configured...\n");
+			hook_custom_arg("disable-gpmi", NULL);
 		}
 	}
 
@@ -348,7 +350,7 @@ int hook_generate()
 
 	printf("Generating config.auto.h (%d)\n", generr |= tmpasm("..", "config.auto.h.in", "config.auto.h"));
 
-	if (node_istrue("libs/script/gpmi/presents"))
+	if (plug_is_enabled("gpmi"))
 		gpmi_config();
 
 	if (!exists("../config.manual.h")) {
@@ -362,18 +364,6 @@ int hook_generate()
 	printf("Configuration summary\n");
 	printf("=====================\n\n");
 	list_presents("GUI hids:                        batch", gui_list);
-
-/* special case because the "presents" node */
-	printf("%-32s", "Scripting via GPMI: ");
-	if (node_istrue("libs/script/gpmi/presents")) {
-		printf("yes ");
-		if (node_istrue("/local/pcb/gpmi/buildin"))
-			printf("(buildin)\n");
-		else
-			printf("(plugin)\n");
-	}
-	else
-		printf("no\n");
 
 #undef plugin_def
 #undef plugin_header

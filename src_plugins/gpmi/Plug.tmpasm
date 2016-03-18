@@ -22,8 +22,8 @@ append /local/pcb/rules/uninstall   {	cd $(PCB_GPMI) && make uninstall} {
 }
 
 
-if /target/libs/script/gpmi/presents then
-	if /local/pcb/gpmi/buildin then
+switch /local/pcb/gpmi/controls
+	case {buildin}
 		append /local/pcb/RULES [@
 
 mod_pcb_gpmi: all
@@ -47,7 +47,8 @@ $(PCB_GPMI)/gpmi_plugin/gpmi_buildin.a: FORCE
 
 @]
 
-	else
+		end
+	case {plugin}
 		append /local/pcb/all   [@ $(PLUGIDIR)/gpmi_plugin.so @]
 		append /local/pcb/RULES [@
 
@@ -65,6 +66,7 @@ $(PCB_GPMI)/gpmi_plugin/gpmi_plugin.so: FORCE
 	cd $(PCB_GPMI)/gpmi_plugin && make all_plugin
 
 @]
-
-	end
+		end
+	case {disable}
+		end
 end

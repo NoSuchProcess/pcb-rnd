@@ -1,4 +1,5 @@
 plugin_header("\nFeature plugins:\n")
+plugin_def("gpmi",            "GPMI scripting",            sbuildin)
 plugin_def("autoroute",       "the original autorouter",   sbuildin)
 plugin_def("toporouter",      "topological autorouter",    sdisable)
 plugin_def("autoplace",       "auto place components",     sbuildin)
