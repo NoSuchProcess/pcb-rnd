@@ -42,6 +42,7 @@
 #include "misc.h"
 #include "rats.h"
 #include "rtree.h"
+#include "rats_patch.h"
 
 
 RCSID("$Id$");

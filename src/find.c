@@ -93,6 +93,7 @@
 #include "set.h"
 #include "undo.h"
 #include "rats.h"
+#include "file.h"
 
 
 #undef DEBUG
