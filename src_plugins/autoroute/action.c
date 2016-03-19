@@ -28,6 +28,7 @@
 #include "config.h"
 #include "global.h"
 #include "autoroute.h"
+#include "action.h"
 #include "plugins.h"
 #include "set.h"
 
@@ -61,12 +62,9 @@ responsive.
 
 %end-doc */
 
-#warning TODO: make this central
-#define ARG(n) (argc > (n) ? argv[n] : NULL)
-
 static int ActionAutoRoute(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	hid_action("Busy");
 	if (function) {								/* one parameter */
 		if (strcmp(function, "AllRats") == 0) {

@@ -63,7 +63,7 @@ static int ActionExecCommand(int argc, char **argv, Coord x, Coord y)
 		AFAIL(execcommand);
 	}
 
-	command = ARG(0);
+	command = ACTION_ARG(0);
 
 	if (system(command))
 		return 1;
@@ -171,7 +171,7 @@ If a name is not given, one is prompted for.
 
 static int ActionNew(int argc, char **argv, Coord x, Coord y)
 {
-	char *name = ARG(0);
+	char *name = ACTION_ARG(0);
 
 	if (!PCB->Changed || gui->confirm_dialog(_("OK to clear layout data?"), 0)) {
 		if (name)
@@ -353,7 +353,7 @@ save) before quitting.
 
 static int ActionQuit(int argc, char **argv, Coord x, Coord y)
 {
-	char *force = ARG(0);
+	char *force = ACTION_ARG(0);
 	if (force && strcasecmp(force, "force") == 0) {
 		PCB->Changed = 0;
 		exit(0);

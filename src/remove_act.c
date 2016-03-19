@@ -46,7 +46,7 @@ static const char delete_help[] = "Delete stuff.";
 
 static int ActionDelete(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	int id = GetFunctionID(function);
 
 	Note.X = Crosshair.X;

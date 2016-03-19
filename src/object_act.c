@@ -103,8 +103,8 @@ pcb, an element, or a layer.
 
 static int ActionAttributes(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
-	char *layername = ARG(1);
+	char *function = ACTION_ARG(0);
+	char *layername = ACTION_ARG(1);
 	char *buf;
 
 	if (!function)
@@ -211,7 +211,7 @@ from.
 
 static int ActionDisperseElements(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	Coord minx = GAP, miny = GAP, maxy = GAP, dx, dy;
 	int all = 0, bad = 0;
 
@@ -322,7 +322,7 @@ other, not their absolute positions on the board.
 
 static int ActionFlip(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	ElementTypePtr element;
 	void *ptrtmp;
 	int err = 0;
@@ -369,9 +369,9 @@ units, currently 1/100 mil.
 
 static int ActionMoveObject(int argc, char **argv, Coord x, Coord y)
 {
-	char *x_str = ARG(0);
-	char *y_str = ARG(1);
-	char *units = ARG(2);
+	char *x_str = ACTION_ARG(0);
+	char *y_str = ACTION_ARG(1);
+	char *units = ACTION_ARG(2);
 	Coord nx, ny;
 	bool absolute1, absolute2;
 	void *ptr1, *ptr2, *ptr3;
@@ -415,7 +415,7 @@ or from solder to component, won't automatically flip it.  Use the
 
 static int ActionMoveToCurrentLayer(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 		case F_Object:
@@ -528,9 +528,9 @@ static int ActionElementList(int argc, char **argv, Coord x, Coord y)
 	argc--;
 	argv++;
 
-	refdes = ARG(0);
-	footprint = ARG(1);
-	value = ARG(2);
+	refdes = ACTION_ARG(0);
+	footprint = ACTION_ARG(1);
+	value = ACTION_ARG(2);
 
 	args[0] = footprint;
 	args[1] = refdes;
@@ -667,7 +667,7 @@ static int ActionElementSetAttr(int argc, char **argv, Coord x, Coord y)
 
 	refdes = argv[0];
 	name = argv[1];
-	value = ARG(2);
+	value = ACTION_ARG(2);
 
 	ELEMENT_LOOP(PCB->Data);
 	{
@@ -726,7 +726,7 @@ that this uses the highest numbered paste buffer.
 
 static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	bool changed = false;
 
 	if (function) {
@@ -830,9 +830,9 @@ the mask edge.
 
 static int ActionMinMaskGap(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
-	char *delta = ARG(1);
-	char *units = ARG(2);
+	char *function = ACTION_ARG(0);
+	char *delta = ACTION_ARG(1);
+	char *units = ACTION_ARG(2);
 	bool absolute;
 	Coord value;
 	int flags;
@@ -904,9 +904,9 @@ polygon edges.
 
 static int ActionMinClearGap(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
-	char *delta = ARG(1);
-	char *units = ARG(2);
+	char *function = ACTION_ARG(0);
+	char *delta = ACTION_ARG(1);
+	char *units = ACTION_ARG(2);
 	bool absolute;
 	Coord value;
 	int flags;

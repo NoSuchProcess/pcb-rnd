@@ -116,7 +116,7 @@ numbered paste buffer.
 
 static int ActionSelect(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 #if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
@@ -146,13 +146,13 @@ static int ActionSelect(int argc, char **argv, Coord x, Coord y)
 
 		commonByName:
 			{
-				char *pattern = ARG(1);
+				char *pattern = ACTION_ARG(1);
 				search_method_t method;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
 					if (SelectObjectByName(type, pattern, true, method))
 						SetChangedFlag(true);
-					if (ARG(1) == NULL)
+					if (ACTION_ARG(1) == NULL)
 						free(pattern);
 				}
 				break;
@@ -287,7 +287,7 @@ type specified are unselected.
 
 static int ActionUnselect(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 #if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
@@ -317,13 +317,13 @@ static int ActionUnselect(int argc, char **argv, Coord x, Coord y)
 
 		commonByName:
 			{
-				char *pattern = ARG(1);
+				char *pattern = ACTION_ARG(1);
 				search_method_t method;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
 					if (SelectObjectByName(type, pattern, false, method))
 						SetChangedFlag(true);
-					if (ARG(1) == NULL)
+					if (ACTION_ARG(1) == NULL)
 						free(pattern);
 				}
 				break;

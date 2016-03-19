@@ -66,7 +66,7 @@ Selects the shortest unselected rat on the board.
 
 static int ActionAddRats(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	RatTypePtr shorty;
 	float len, small;
 
@@ -141,7 +141,7 @@ All ``found'' objects are marked ``not found''.
 
 static int ActionConnection(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 		case F_Find:
@@ -190,7 +190,7 @@ static const char deleterats_help[] = "Delete rat lines.";
 
 static int ActionDeleteRats(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		if (Settings.RatWarn)
 			ClearWarnings();

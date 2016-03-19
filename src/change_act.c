@@ -68,9 +68,9 @@ changes the polygon clearance.
 
 static int ActionChangeClearSize(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
-	char *delta = ARG(1);
-	char *units = ARG(2);
+	char *function = ACTION_ARG(0);
+	char *delta = ACTION_ARG(1);
+	char *units = ACTION_ARG(2);
 	bool absolute;
 	Coord value;
 	int type;
@@ -153,8 +153,8 @@ cleared.  If the value is 1, the flag is set.
 
 static int ActionChangeFlag(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
-	char *flag = ARG(1);
+	char *function = ACTION_ARG(0);
+	char *flag = ACTION_ARG(1);
 	int value = argc > 2 ? atoi(argv[2]) : -1;
 	if (value != 0 && value != 1)
 		AFAIL(changeflag);
@@ -260,7 +260,7 @@ plated-through hole (not set), or an unplated hole (set).
 
 static int ActionChangeHole(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 		case F_ToggleObject:
@@ -302,7 +302,7 @@ The "no paste flag" of a pad determines whether the solderpaste
 
 static int ActionChangePaste(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 		case F_ToggleObject:
@@ -380,9 +380,9 @@ of the silk layer lines and arcs for this element.
 
 static int ActionChangeSize(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
-	char *delta = ARG(1);
-	char *units = ARG(2);
+	char *function = ACTION_ARG(0);
+	char *delta = ACTION_ARG(1);
+	char *units = ACTION_ARG(2);
 	bool absolute;								/* indicates if absolute size is given */
 	Coord value;
 	int type, tostyle = 0;
@@ -482,9 +482,9 @@ static const char changedrillsize_help[] = "Changes the drilling hole size of ob
 
 static int ActionChange2ndSize(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
-	char *delta = ARG(1);
-	char *units = ARG(2);
+	char *function = ACTION_ARG(0);
+	char *delta = ACTION_ARG(1);
+	char *units = ACTION_ARG(2);
 	int type;
 	void *ptr1, *ptr2, *ptr3;
 
@@ -643,8 +643,8 @@ Changes the name of the currently active layer.
 
 int ActionChangeName(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
-	char *pinnums = ARG(1);
+	char *function = ACTION_ARG(0);
+	char *pinnums = ACTION_ARG(1);
 	char *name;
 	int pinnum;
 
@@ -724,7 +724,7 @@ polygon, insulating them from each other.
 
 static int ActionChangeJoin(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 		case F_ToggleObject:
@@ -777,7 +777,7 @@ Note that @code{Pins} means both pins and pads.
 
 static int ActionChangeNonetlist(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 		case F_ToggleObject:
@@ -823,7 +823,7 @@ Note that @code{Pins} means both pins and pads.
 
 static int ActionChangeSquare(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 		case F_ToggleObject:
@@ -885,7 +885,7 @@ Note that @code{Pins} means pins and pads.
 
 static int ActionSetSquare(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function && *function) {
 		switch (GetFunctionID(function)) {
 		case F_ToggleObject:
@@ -937,7 +937,7 @@ Note that @code{Pins} means pins and pads.
 
 static int ActionClearSquare(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function && *function) {
 		switch (GetFunctionID(function)) {
 		case F_ToggleObject:
@@ -988,7 +988,7 @@ static const char changeoctagon_help[] = "Changes the octagon-flag of pins and v
 
 static int ActionChangeOctagon(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 		case F_ToggleObject:
@@ -1043,7 +1043,7 @@ static const char setoctagon_help[] = "Sets the octagon-flag of objects.";
 
 static int ActionSetOctagon(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 		case F_ToggleObject:
@@ -1099,7 +1099,7 @@ static const char clearoctagon_help[] = "Clears the octagon-flag of pins and via
 
 static int ActionClearOctagon(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 		case F_ToggleObject:
@@ -1172,8 +1172,8 @@ to connect with. However, they will have no effect without the polygon.
 
 static int ActionSetThermal(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
-	char *style = ARG(1);
+	char *function = ACTION_ARG(0);
+	char *style = ACTION_ARG(1);
 	void *ptr1, *ptr2, *ptr3;
 	int type, kind;
 	int err = 0;
@@ -1238,8 +1238,8 @@ SetFlag(SelectedPins,thermal)
 
 static int ActionSetFlag(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
-	char *flag = ARG(1);
+	char *function = ACTION_ARG(0);
+	char *flag = ACTION_ARG(1);
 	ChangeFlag(function, flag, 1, "SetFlag");
 	return 0;
 }
@@ -1267,8 +1267,8 @@ ClrFlag(SelectedLines,join)
 
 static int ActionClrFlag(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
-	char *flag = ARG(1);
+	char *function = ACTION_ARG(0);
+	char *flag = ACTION_ARG(1);
 	ChangeFlag(function, flag, 0, "ClrFlag");
 	return 0;
 }
@@ -1307,9 +1307,9 @@ Changes the size of new text.
 
 static int ActionSetValue(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
-	char *val = ARG(1);
-	char *units = ARG(2);
+	char *function = ACTION_ARG(0);
+	char *val = ACTION_ARG(1);
+	char *units = ACTION_ARG(2);
 	bool absolute;								/* flag for 'absolute' value */
 	double value;
 	int err = 0;

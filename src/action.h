@@ -55,7 +55,7 @@ F_END
 
 #include "action_funchash.h"
 
-#define ARG(n) (argc > (n) ? argv[n] : NULL)
+#define ACTION_ARG(n) (argc > (n) ? argv[n] : NULL)
 
 int get_style_size(int funcid, Coord * out, int type, int size_id);
 

@@ -55,7 +55,7 @@ off are automatically deleted.
 
 static int ActionMorphPolygon(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function) {
 		switch (GetFunctionID(function)) {
 		case F_Object:
@@ -113,7 +113,7 @@ will call Polygon(PreviousPoint) when appropriate to do so.
 
 static int ActionPolygon(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function && Settings.Mode == POLYGON_MODE) {
 		notify_crosshair_change(false);
 		switch (GetFunctionID(function)) {

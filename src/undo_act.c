@@ -125,7 +125,7 @@ same serial number will be undone (or redone) as a group.  See
 
 int ActionUndo(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (!function || !*function) {
 		/* don't allow undo in the middle of an operation */
 		if (Settings.Mode != POLYGONHOLE_MODE && Crosshair.AttachedObject.State != STATE_FIRST)

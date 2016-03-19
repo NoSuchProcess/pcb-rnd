@@ -376,8 +376,6 @@ updates the GUI.
 
 %end-doc */
 
-#define NL_ARG(n) (argc > (n) ? argv[n] : 0)
-
 static int Netlist(int argc, char **argv, Coord x, Coord y)
 {
 	NFunc func;
@@ -424,7 +422,7 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 		return netlist_swap();
 	else if (strcasecmp(argv[0], "add") == 0) {
 		/* Add is different, because the net/pin won't already exist.  */
-		return netlist_add(NL_ARG(1), NL_ARG(2));
+		return netlist_add(ACTION_ARG(1), ACTION_ARG(2));
 	}
 	else if (strcasecmp(argv[0], "sort") == 0) {
 		sort_netlist();
@@ -508,7 +506,7 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 
 		pin = 0;
 		if (func == (void *) netlist_style) {
-			netlist_style(net, NL_ARG(2));
+			netlist_style(net, ACTION_ARG(2));
 		}
 		else if (argc > 2) {
 			int l = strlen(argv[2]);

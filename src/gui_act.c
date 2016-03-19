@@ -209,8 +209,8 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 	int id;
 	int err = 0;
 
-	function = ARG(0);
-	str_dir = ARG(1);
+	function = ACTION_ARG(0);
+	str_dir = ACTION_ARG(1);
 
 	if (function && (!str_dir || !*str_dir)) {
 		switch (id = GetFunctionID(function)) {
@@ -590,7 +590,7 @@ Restores the tool to the last saved tool.
 
 static int ActionMode(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 
 	if (function) {
 		Note.X = Crosshair.X;
@@ -890,7 +890,7 @@ appear on the silk layer when you print the layout.
 
 static int ActionToggleHideName(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (function && PCB->ElementOn) {
 		switch (GetFunctionID(function)) {
 		case F_Object:
@@ -957,7 +957,7 @@ cursor location.
 
 static int ActionMarkCrosshair(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	char *function = ACTION_ARG(0);
 	if (!function || !*function) {
 		if (Marked.status) {
 			notify_mark_change(false);
@@ -995,7 +995,7 @@ static const char routestyle_help[] = "Copies the indicated routing style into t
 
 static int ActionRouteStyle(int argc, char **argv, Coord x, Coord y)
 {
-	char *str = ARG(0);
+	char *str = ACTION_ARG(0);
 	RouteStyleType *rts;
 	int number;
 

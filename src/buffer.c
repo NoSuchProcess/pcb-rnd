@@ -492,9 +492,9 @@ into the footprint as well.  The footprint remains in the paste buffer.
 
 int LoadFootprint(int argc, char **argv, Coord x, Coord y)
 {
-	char *name = ARG(0);
-	char *refdes = ARG(1);
-	char *value = ARG(2);
+	char *name = ACTION_ARG(0);
+	char *refdes = ACTION_ARG(1);
+	char *value = ACTION_ARG(2);
 	ElementTypePtr e;
 
 	if (!name)
@@ -1400,10 +1400,10 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 					x = y = 0;
 				}
 				else if (argc == 3 || argc == 4) {
-					x = GetValue(ARG(1), ARG(3), &absolute);
+					x = GetValue(ACTION_ARG(1), ACTION_ARG(3), &absolute);
 					if (!absolute)
 						x += oldx;
-					y = GetValue(ARG(2), ARG(3), &absolute);
+					y = GetValue(ACTION_ARG(2), ACTION_ARG(3), &absolute);
 					if (!absolute)
 						y += oldy;
 				}
