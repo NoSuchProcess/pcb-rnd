@@ -1,11 +1,12 @@
 append /local/pcb/pcb_gpmi/enable {}
 append /local/pcb/pcb_gpmi/buildin {}
 
-append /local/pcb/CLEANRULES  {clean_gpmi}
-
-append /local/pcb/TOPVARS [@
-PCB_GPMI=$(PLUGDIR)/gpmi/pcb-gpmi
-@]
+switch /local/pcb/gpmi/controls
+case {disable}
+	put /local/pcb/TOPVARS     {}
+	put /local/pcb/CLEANRULES  {}
+	end
+default
 
 append /local/pcb/RULES [@
 ### gpmi_plugin
@@ -13,6 +14,11 @@ clean_gpmi: FORCE
 	cd $(PCB_GPMI) && make clean
 @]
 
+append /local/pcb/CLEANRULES  {clean_gpmi}
+
+append /local/pcb/TOPVARS [@
+PCB_GPMI=$(PLUGDIR)/gpmi/pcb-gpmi
+@]
 
 append /local/pcb/rules/install     {	cd $(PCB_GPMI) && make install} {
 }
@@ -20,6 +26,8 @@ append /local/pcb/rules/linstall    {	cd $(PCB_GPMI) && make linstall} {
 }
 append /local/pcb/rules/uninstall   {	cd $(PCB_GPMI) && make uninstall} {
 }
+end
+end
 
 
 switch /local/pcb/gpmi/controls
