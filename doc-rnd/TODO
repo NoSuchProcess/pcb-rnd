@@ -1,3 +1,6 @@
+RELEASE: 
+	- mention the harmless gtk/lesstif uninit warnings in the release notes
+
 UNGLIB (cleanup #3):
 	- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
 

@@ -1,3 +1,42 @@
+pcb-rnd 1.0.9
+~~~~~~~~~~~~~
+	[unglib]
+		-Fix: replace glib with minilibs in core and util/
+		-Del: remove local dynamic string implementation in  favor of genvector
+		-Move: vector.[ch] is used only by the autorouter, move it there
+
+	[scconfig]
+		-Add: print warnings if glib is not found and selected components need to be left out
+		-Add: repeate some of the critical messages below the summary
+		-Fix: compiler warnings
+		-Fix: instead of two booleans, implement a 3-state "/controls" node with values disable, buildin, plugin for the plugins
+		-Change: better module summary printout at the end of ./configure
+
+	[leak]
+		-API CHANGE: plugin init should return a pointer to the plugin uninit function
+		-Fix: a bunch of random memory leaks
+		-Fix: a bunch of potential buffer overruns
+		-Add: central infrastructure for uninit'ing GUI hids
+		-Fix: missing closedir()
+		-Add: uninit paste buffers
+		-Add: actions, flags and attributes are registered with a cookie so they an be deleted by cookie
+		-Fix: uninit plugins before hids so they have a chance to clean up registrations
+		-Fix: don't use dynamic strings where printing quoted string directly to a file would work
+
+	[mods]
+		-Change: convert the ps and lpr exporters into configurable exporter plugins
+		-Rename: edif plugin to import_edif for consistency
+		-Change: move gcode and nelma from hid to plugin
+		-Move: gerber, bom and png to expoter plugins
+		-Cleanup: move old/unused/legacy functions to a new plugin called legacy_func
+		-Change: move fontmode to a separate plugin
+
+	[core]
+		-Change: use a hash for flag storage - faster and simpler code
+
+	[gpmi]
+		-Add: expotert hid callback for filled pad exporting
+
 pcb-rnd 1.0.8
 ~~~~~~~~~~~~~
 	[doc-rnd]

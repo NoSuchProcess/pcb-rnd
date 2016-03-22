@@ -1,12 +1,24 @@
 pcb-rnd 1.0.8
 ~~~~~~~~~~~~~
-1.0.8 is the second phase of the large scale cleanup started at 1.0.7.
+1.0.9 is the third phase of the large scale cleanup started at 1.0.7.
 
-Major changes:
+Major objective was to clean up memory management. As a first step
+glib was replaced with a set of minilibs for core and util/. The only
+modules still use glib are the gtk HID (gtk depends on glib anyway), the
+puller (will be fixed later) and the toporouter (will be either fixed
+or removed).
 
-- more than 40% of the core code has been turned into plugins
-  (see http://repo.hu/projects/pcb-rnd/mods)
-- revive libstroke support (should work with the gtk HID)
-- fix the remaining TODOs in back annotation, including action net(add,net,pin)
-- revive the renumber code (was on hold because of the back annotation patch)
-- clean up util/ (compiler warnings, indentation)
+After the "unglib" project, a lot of effort went into fixing memory leaks and
+potential buffer overruns in the code inherited from pcb originally.
+
+The modularization effort progressed some more too: all exporter HIDs are
+plugins now. A bunch of unused/old/obsolete core functions are moved to
+a separate plugin so they don't need to be compiled into the executable.
+The fontmode (font editor) became a plugin too. There are 23 plugins at
+the moment, from which 15 used to be hardwired code in pcb core and 7
+used to be compile-time selectable HIDs.
+
+pcb-rnd plugins have 3-state configuration:
+ - disable: do not compile at all 
+ - buildin: compile and static link into the executable
+ - plugin: compile into dynamic loadable plugin
