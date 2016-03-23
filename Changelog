@@ -11,6 +11,9 @@ pcb-rnd 1.0.9
 		-Fix: compiler warnings
 		-Fix: instead of two booleans, implement a 3-state "/controls" node with values disable, buildin, plugin for the plugins
 		-Change: better module summary printout at the end of ./configure
+		-Fix: use -fPIC on x86_64 to make sure plugins link
+		-Fix: gpmi plugin installation bugs
+		-Fix: src/plugin is cleaned on make clean
 
 	[leak]
 		-API CHANGE: plugin init should return a pointer to the plugin uninit function
