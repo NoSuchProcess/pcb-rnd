@@ -1,6 +1,7 @@
 # TODO default compiler flags
 put /local/pcb/CFLAGS cc/rdynamic
 append /local/pcb/CFLAGS cc/cflags
+append /local/pcb/CFLAGS cc/fpic
 append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -Iicons -DHAVE_CONFIG_H -g -DNDEBUG}
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
