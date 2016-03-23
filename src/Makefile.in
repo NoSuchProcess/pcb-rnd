@@ -307,7 +307,7 @@ clean: $(CLEANRULES)
 include ../Makefile.conf
 
 install_:
-	$(MKDIR) $(BINDIR) $(DATADIR) $(LIBDIR)
+	$(MKDIR) $(BINDIR) $(DATADIR) $(LIBDIR) $(LIBDIR)/plugins
 	$(CPC) "`pwd`/pcb-rnd" "$(BINDIR)/pcb-rnd"
 	$(CPC) "`pwd`/default.pcb" "$(DATADIR)/default.pcb"
 	$(CPC) "`pwd`/default_font" "$(DATADIR)/default_font"
