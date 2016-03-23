@@ -68,6 +68,8 @@ $(PLUGIDIR)/gpmi_plugin.so: $(PCB_GPMI)/gpmi_plugin/gpmi_plugin.so
 
 @]
 
+		append /local/pcb/CLEANFILES [@ $(PLUGIDIR)/gpmi_plugin.so @]
+
 		append /local/pcb/RULES [@
 
 $(PCB_GPMI)/gpmi_plugin/gpmi_plugin.so: FORCE
