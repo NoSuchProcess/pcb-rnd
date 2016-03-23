@@ -13,6 +13,8 @@ append /local/pcb/all   [@ $(PLUGIDIR)/@/local/pcb/mod@.so @]
 append /local/pcb/rules/install_ [@
 	$(CPC) "`pwd`/$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so" "$(LIBDIR)/plugins/@/local/pcb/mod@.so"@]
 
+append /local/pcb/CLEANFILES [@ $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so @]
+
 append /local/pcb/RULES [@
 
 ### Module @/local/pcb/mod@: plugin ###
