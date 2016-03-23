@@ -1,12 +1,23 @@
+Cleanup #4:
+	- remove action_funchash.[ch] and use genht
+	- rename action.[ch], maybe even split it
+	- move hid/common/actions.[ch] to core
+	- !! move batch, gtk and lesstif
+	- clean up rest of hid/common:
+		- hid/common/extents.[ch]: find out what is this
+		- hid/common/flags.[ch]: split at layer and move the stuff in core maybe
+		- hid/common/hidgl.[ch]: move it to the gtk hid maybe?
+		- hid/common/hidinit.[ch]: split, move to core
+		- hid/common/hidnogui.[ch]: make it a plugin that can not be disabled; check how much it differs from the batch HID
+
 RELEASE: 
-	- mention the harmless gtk/lesstif uninit warnings in the release notes
+	- mention the harmless gtk/lesstif uninit warnings in the release notes?
 
 UNGLIB (cleanup #3):
 	- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
 
 BUGS
 - gpmi (and other buildings/plugins) not showing up in the about box
-- gtk hid: hotkeys stopped working for toggle (e.g. check "|"; check todo in ghid_menu_cb())
 
 CLEANUP #4
 - scconfig: detect libstroke
