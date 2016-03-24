@@ -273,6 +273,7 @@ intersect.o: intersect.c ../config.h ../config.manual.h ../config.auto.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h intersect.h mymem.h
+layer_helper.o: layer_helper.c
 line.o: line.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1435,7 +1436,7 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h error.h draw.h pcb-printf.h \
- plugins.h hid.h hid/hidint.h hid/common/hidnogui.h \
+ plugins.h layer_helper.h hid.h hid/hidint.h hid/common/hidnogui.h \
  hid/common/draw_helpers.h ../src_plugins/export_ps/ps.h print.h \
  hid/common/hidinit.h dolists.h
 ../src_plugins/export_ps/eps.o: ../src_plugins/export_ps/eps.c \
@@ -1474,8 +1475,8 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h error.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h rats.h hid.h hid/gtk/../hidint.h \
- hid/common/hidnogui.h hid/common/draw_helpers.h \
+ ../src_3rd/genvector/gds_char.h mymem.h rats.h layer_helper.h hid.h \
+ hid/gtk/../hidint.h hid/common/hidnogui.h hid/common/draw_helpers.h \
  ../src_plugins/export_gcode/gcode.h ../src_plugins/export_gcode/bitmap.h \
  ../src_plugins/export_gcode/potracelib.h \
  ../src_plugins/export_gcode/curve.h \
@@ -1519,9 +1520,9 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h error.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h rats.h plugins.h hid.h \
- hid/gtk/../hidint.h hid/common/hidnogui.h hid/common/draw_helpers.h \
- hid/common/hidinit.h dolists.h
+ ../src_3rd/genvector/gds_char.h mymem.h rats.h plugins.h layer_helper.h \
+ hid.h hid/gtk/../hidint.h hid/common/hidnogui.h \
+ hid/common/draw_helpers.h hid/common/hidinit.h dolists.h
 ../src_plugins/export_png/png.o: ../src_plugins/export_png/png.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \

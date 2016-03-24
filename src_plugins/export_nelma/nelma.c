@@ -67,6 +67,7 @@
 #include "misc.h"
 #include "rats.h"
 #include "plugins.h"
+#include "layer_helper.h"
 
 #include "hid.h"
 #include "../hidint.h"

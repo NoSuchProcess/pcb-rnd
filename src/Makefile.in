@@ -38,6 +38,7 @@ put /local/pcb/OBJS [@
 	heap.o
 	insert.o
 	intersect.o
+	layer_helper.o
 	line.o
 	list_arc.o
 	list_element.o
