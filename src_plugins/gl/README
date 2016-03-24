@@ -1,0 +1,5 @@
+Common gl functions for hids.
+
+#state: disabled
+#lstate: pcb-rnd has no support for opengl.
+#default: disabled
