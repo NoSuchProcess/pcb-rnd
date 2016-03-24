@@ -10,6 +10,7 @@ put /local/pcb/DEPCFLAGS {}
 
 # main: objects
 put /local/pcb/OBJS [@
+	actions.o
 	action_helper.o
 	action_act.o
 	buffer.o
@@ -83,7 +84,6 @@ put /local/pcb/OBJS [@
 	undo.o
 	undo_act.o
 	vtonpoint.o
-	hid/common/actions.o
 	hid/common/flags.o
 	hid/common/hidinit.o
 	hid/common/hidnogui.o

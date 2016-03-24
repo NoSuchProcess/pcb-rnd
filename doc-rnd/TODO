@@ -1,5 +1,4 @@
 Cleanup #4:
-	- rename action.[ch], maybe even split it
 	- move hid/common/actions.[ch] to core
 	- !! move batch, gtk and lesstif
 	- clean up rest of hid/common:

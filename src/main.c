@@ -63,7 +63,7 @@
 #include "event.h"
 #include "funchash.h"
 
-#include "hid/common/actions.h"
+#include "actions.h"
 
 /* This next one is so we can print the help messages. */
 #include "hid/hidint.h"
