@@ -36,6 +36,8 @@ put /local/pcb/OBJS [@
 	funchash.o
 	gui_act.o
 	heap.o
+	hid_extents.o
+	hid_flags.o
 	insert.o
 	intersect.o
 	layer_helper.o
@@ -85,10 +87,8 @@ put /local/pcb/OBJS [@
 	undo.o
 	undo_act.o
 	vtonpoint.o
-	hid/common/flags.o
 	hid/common/hidinit.o
 	hid/common/hidnogui.o
-	hid/common/extents.o
 	hid/common/draw_helpers.o
 	hid/common/hid_resource.o
 	res_parse.o
