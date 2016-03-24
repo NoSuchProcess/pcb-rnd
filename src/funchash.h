@@ -30,5 +30,7 @@ int funchash_get(const char *key, const char *cookie);
 int funchash_set(const char *key, int val, const char *cookie);
 int funchash_set_table(funchash_table_t *table, int numelem, const char *cookie);
 
+void funchash_remove_cookie(const char *cookie);
+
 void funchash_init(void);
 void funchash_uninit(void);

@@ -50,15 +50,42 @@ static int keyeq(void *a_, void *b_)
 	return !strcmp(a->key, b->key);
 }
 
+static unsigned fh_hash(void *key)
+{
+	fh_key_t *k = key;
+	return strhash((char *)k->key) ^ ptrhash((void *)k->cookie);
+}
+
 void funchash_init(void)
 {
-	funchash = htpi_alloc(strhash, keyeq);
+	funchash = htpi_alloc(fh_hash, keyeq);
 	funchash_set_table(Functions, ENTRIES(Functions), NULL);
 }
 
 void funchash_uninit(void)
 {
+	htpi_entry_t *e;
 
+	for (e = htpi_first(funchash); e; e = htpi_next(funchash, e)) {
+		htpi_pop(funchash, e->key);
+		free(e->key);
+	}
+	htpi_free(funchash);
+	funchash = NULL;
+}
+
+void funchash_remove_cookie(const char *cookie)
+{
+	htpi_entry_t *e;
+
+	/* Slow linear search - probably OK, this will run only on uninit */
+	for (e = htpi_first(funchash); e; e = htpi_next(funchash, e)) {
+		fh_key_t *k = e->key;
+		if (k->cookie == cookie) {
+			htpi_pop(funchash, e->key);
+			free(e->key);
+		}
+	}
 }
 
 int funchash_get(const char *key, const char *cookie)
