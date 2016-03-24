@@ -39,6 +39,7 @@ put /local/pcb/OBJS [@
 	hid_draw_helpers.o
 	hid_extents.o
 	hid_flags.o
+	hid_nogui.o
 	hid_resource.o
 	insert.o
 	intersect.o
@@ -90,7 +91,6 @@ put /local/pcb/OBJS [@
 	undo_act.o
 	vtonpoint.o
 	hid/common/hidinit.o
-	hid/common/hidnogui.o
 	res_parse.o
 	res_lex.o
 	portability.o

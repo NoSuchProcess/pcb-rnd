@@ -16,7 +16,7 @@
 #include "plugins.h"
 
 #include "hid.h"
-#include "hid/common/hidnogui.h"
+#include "hid_nogui.h"
 #include "../hidint.h"
 
 

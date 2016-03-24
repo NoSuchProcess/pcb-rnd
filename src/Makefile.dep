@@ -283,6 +283,15 @@ hid_flags.o: hid_flags.c ../config.h ../config.manual.h ../config.auto.h \
  mymem.h hid/gtk/../hidint.h ../src_3rd/genht/hash.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/ht_inlines.h
+hid_nogui.o: hid_nogui.c ../config.h ../config.manual.h ../config.auto.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h
 hid_resource.o: hid_resource.c global.h ../config.h ../config.manual.h \
  ../config.auto.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -745,19 +754,9 @@ hidinit.o: hid/common/hidinit.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid/common/hidnogui.h \
- hid/common/../hidint.h compat.h error.h misc.h global.h \
- ../src_3rd/genvector/gds_char.h mymem.h portability.h pcb-printf.h \
- plugins.h hid/common/hidlist.h
-hidnogui.o: hid/common/hidnogui.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
- global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
- list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h
+ list_element.h libpcb_fp.h hid.h hid_nogui.h hid/common/../hidint.h \
+ compat.h error.h misc.h global.h ../src_3rd/genvector/gds_char.h mymem.h \
+ portability.h pcb-printf.h plugins.h hid/common/hidlist.h
 res_parse.o: res_parse.c ../config.h ../config.manual.h ../config.auto.h \
  free_atexit.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -918,8 +917,8 @@ gtkhid-main.o: hid/gtk/gtkhid-main.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/gds_char.h mymem.h hid/gtk/ghid-coord-entry.h \
  hid/gtk/ghid-main-menu.h hid/gtk/ghid-layer-selector.h \
  hid/gtk/ghid-route-style-selector.h resource.h \
- hid/gtk/gui-pinout-preview.h hid/common/hidnogui.h hid_draw_helpers.h \
- pcb-printf.h dolists.h
+ hid/gtk/gui-pinout-preview.h hid_nogui.h hid_draw_helpers.h pcb-printf.h \
+ dolists.h
 gui-command-window.o: hid/gtk/gui-command-window.c ../config.h \
  ../config.manual.h ../config.auto.h hid/gtk/gui.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -1195,7 +1194,7 @@ main.o: hid/lesstif/main.c ../config.h ../config.manual.h \
  list_element.h libpcb_fp.h data.h global.h action_helper.h crosshair.h \
  mymem.h misc.h ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h \
  resource.h clip.h event.h error.h hid.h hid/lesstif/../hidint.h \
- hid/common/hidnogui.h hid_draw_helpers.h hid_resource.h resource.h \
+ hid_nogui.h hid_draw_helpers.h hid_resource.h resource.h \
  hid/lesstif/lesstif.h dolists.h
 menu.o: hid/lesstif/menu.c ../config.h ../config.manual.h \
  ../config.auto.h hid/lesstif/xincludes.h global.h const.h \
@@ -1248,7 +1247,7 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h hid.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h hid/batch/../hidint.h \
- pcb-printf.h hid_draw_helpers.h hid/common/hidnogui.h actions.h \
+ pcb-printf.h hid_draw_helpers.h hid_nogui.h actions.h \
  hid/common/hidinit.h dolists.h
 ../src_plugins/autoplace/autoplace.o: \
  ../src_plugins/autoplace/autoplace.c ../config.h ../config.manual.h \
@@ -1448,7 +1447,7 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h error.h draw.h pcb-printf.h \
- plugins.h layer_helper.h hid.h hid/hidint.h hid/common/hidnogui.h \
+ plugins.h layer_helper.h hid.h hid/hidint.h hid_nogui.h \
  hid_draw_helpers.h ../src_plugins/export_ps/ps.h print.h \
  hid/common/hidinit.h dolists.h
 ../src_plugins/export_ps/eps.o: ../src_plugins/export_ps/eps.c \
@@ -1462,7 +1461,7 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h hid/hidint.h \
- hid/common/hidnogui.h hid_draw_helpers.h ../src_plugins/export_ps/ps.h \
+ hid_nogui.h hid_draw_helpers.h ../src_plugins/export_ps/ps.h \
  hid/common/hidinit.h
 ../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
@@ -1475,7 +1474,7 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h plugins.h hid.h hid/hidint.h \
- ../src_plugins/export_lpr/../export_ps/ps.h hid/common/hidnogui.h \
+ ../src_plugins/export_lpr/../export_ps/ps.h hid_nogui.h \
  hid/common/hidinit.h
 ../src_plugins/export_gcode/gcode.o: ../src_plugins/export_gcode/gcode.c \
  ../config.h ../config.manual.h ../config.auto.h plugins.h global.h \
@@ -1488,7 +1487,7 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h error.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h rats.h layer_helper.h hid.h \
- hid/gtk/../hidint.h hid/common/hidnogui.h hid_draw_helpers.h \
+ hid/gtk/../hidint.h hid_nogui.h hid_draw_helpers.h \
  ../src_plugins/export_gcode/gcode.h ../src_plugins/export_gcode/bitmap.h \
  ../src_plugins/export_gcode/potracelib.h \
  ../src_plugins/export_gcode/curve.h \
@@ -1533,7 +1532,7 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h error.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h rats.h plugins.h layer_helper.h \
- hid.h hid/gtk/../hidint.h hid/common/hidnogui.h hid_draw_helpers.h \
+ hid.h hid/gtk/../hidint.h hid_nogui.h hid_draw_helpers.h \
  hid/common/hidinit.h dolists.h
 ../src_plugins/export_png/png.o: ../src_plugins/export_png/png.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
@@ -1546,7 +1545,7 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h global.h error.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h plugins.h hid.h \
- hid/gtk/../hidint.h hid/common/hidnogui.h hid_draw_helpers.h \
+ hid/gtk/../hidint.h hid_nogui.h hid_draw_helpers.h \
  ../src_plugins/export_png/png.h hid/common/hidinit.h dolists.h
 ../src_plugins/export_bom/bom.o: ../src_plugins/export_bom/bom.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
@@ -1559,7 +1558,7 @@ batch.o: hid/batch/batch.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h global.h error.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h plugins.h hid.h \
- hid/common/hidnogui.h hid/gtk/../hidint.h
+ hid_nogui.h hid/gtk/../hidint.h
 ../src_plugins/toporouter/toporouter.o: \
  ../src_plugins/toporouter/toporouter.c \
  ../src_plugins/toporouter/toporouter.h data.h global.h ../config.h \

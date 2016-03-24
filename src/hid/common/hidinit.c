@@ -21,7 +21,7 @@
 
 #include "global.h"
 #include "hid.h"
-#include "hidnogui.h"
+#include "hid_nogui.h"
 #include "../hidint.h"
 
 /* for dlopen() and friends on windows */

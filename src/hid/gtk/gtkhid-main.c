@@ -17,7 +17,7 @@
 #include "error.h"
 #include "../hidint.h"
 #include "gui.h"
-#include "hid/common/hidnogui.h"
+#include "hid_nogui.h"
 #include "hid_draw_helpers.h"
 #include "pcb-printf.h"
 

@@ -41,7 +41,7 @@
 
 #include "hid.h"
 #include "../hidint.h"
-#include "hid/common/hidnogui.h"
+#include "hid_nogui.h"
 #include "hid_draw_helpers.h"
 #include "png.h"
 
