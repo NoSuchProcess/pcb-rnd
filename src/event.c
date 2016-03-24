@@ -44,7 +44,7 @@ void event_unbind(event_id_t ev, event_handler_t * handler)
 	event_t *prev = NULL, *e, *next;
 	if (!(event_valid(ev)))
 		return;
-	for (e = events[ev]; e != NULL; prev = e, e = next) {
+	for (e = events[ev]; e != NULL; e = next) {
 		next = e->next;
 		if (e->handler == handler) {
 			event_destroy(e);
@@ -53,6 +53,8 @@ void event_unbind(event_id_t ev, event_handler_t * handler)
 			else
 				prev->next = next;
 		}
+		else
+			prev = e;
 	}
 }
 
@@ -61,7 +63,7 @@ void event_unbind_cookie(event_id_t ev, const char *cookie)
 	event_t *prev = NULL, *e, *next;
 	if (!(event_valid(ev)))
 		return;
-	for (e = events[ev]; e != NULL; prev = e, e = next) {
+	for (e = events[ev]; e != NULL; e = next) {
 		next = e->next;
 		if (e->cookie == cookie) {
 			event_destroy(e);
@@ -70,6 +72,8 @@ void event_unbind_cookie(event_id_t ev, const char *cookie)
 			else
 				prev->next = next;
 		}
+		else
+		 prev = e;
 	}
 }
 
