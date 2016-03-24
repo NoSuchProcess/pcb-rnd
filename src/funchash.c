@@ -67,6 +67,9 @@ void funchash_uninit(void)
 	htpi_entry_t *e;
 
 	for (e = htpi_first(funchash); e; e = htpi_next(funchash, e)) {
+		fh_key_t *k = e->key;
+		if (k->cookie != NULL)
+			fprintf(stderr, "WARNING: function not removed: %s::%s\n", k->cookie, k->key);
 		htpi_pop(funchash, e->key);
 		free(e->key);
 	}
