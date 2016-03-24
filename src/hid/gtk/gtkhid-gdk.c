@@ -8,7 +8,7 @@
 #include "clip.h"
 #include "../hidint.h"
 #include "gui.h"
-#include "hid/common/draw_helpers.h"
+#include "hid_draw_helpers.h"
 
 
 

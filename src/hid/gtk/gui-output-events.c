@@ -30,7 +30,7 @@
 
 #include "gui.h"
 #include "gtkhid.h"
-#include "hid/common/hid_resource.h"
+#include "hid_resource.h"
 
 #include <gdk/gdkkeysyms.h>
 

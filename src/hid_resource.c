@@ -5,7 +5,7 @@
 #include "global.h"
 #include "hid.h"
 #include "resource.h"
-#include "hid/common/hid_resource.h"
+#include "hid_resource.h"
 
 /* #define DEBUG_HID_RESOURCE */
 

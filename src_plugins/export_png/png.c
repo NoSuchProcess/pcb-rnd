@@ -42,7 +42,7 @@
 #include "hid.h"
 #include "../hidint.h"
 #include "hid/common/hidnogui.h"
-#include "hid/common/draw_helpers.h"
+#include "hid_draw_helpers.h"
 #include "png.h"
 
 /* the gd library which makes this all so easy */

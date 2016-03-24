@@ -18,7 +18,7 @@
 
 #include "hid.h"
 #include "../hidint.h"
-#include "hid/common/hid_resource.h"
+#include "hid_resource.h"
 #include "resource.h"
 #include "lesstif.h"
 #include "mymem.h"

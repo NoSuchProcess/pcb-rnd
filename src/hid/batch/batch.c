@@ -16,7 +16,7 @@
 #include "../hidint.h"
 #include "pcb-printf.h"
 
-#include "hid/common/draw_helpers.h"
+#include "hid_draw_helpers.h"
 #include "hid/common/hidnogui.h"
 #include "actions.h"
 #include "hid/common/hidinit.h"

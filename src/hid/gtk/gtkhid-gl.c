@@ -25,7 +25,7 @@
 
 #include <gtk/gtkgl.h>
 #include "hid/common/hidgl.h"
-#include "hid/common/draw_helpers.h"
+#include "hid_draw_helpers.h"
 
 
 RCSID("$Id$");

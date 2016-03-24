@@ -29,7 +29,7 @@
 
 #include "global.h"
 #include "hid.h"
-#include "hid/common/hid_resource.h"
+#include "hid_resource.h"
 
 #include "data.h"
 #include "misc.h"

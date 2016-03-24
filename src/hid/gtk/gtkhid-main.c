@@ -18,7 +18,7 @@
 #include "../hidint.h"
 #include "gui.h"
 #include "hid/common/hidnogui.h"
-#include "hid/common/draw_helpers.h"
+#include "hid_draw_helpers.h"
 #include "pcb-printf.h"
 
 

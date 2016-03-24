@@ -69,7 +69,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "gui.h"
 #include "hid.h"
 #include "../hidint.h"
-#include "hid/common/hid_resource.h"
+#include "hid_resource.h"
 #include "action_helper.h"
 #include "buffer.h"
 #include "change.h"
