@@ -57,7 +57,7 @@
 #include "search.h"
 #include "select.h"
 #include "set.h"
-
+#include "funchash_core.h"
 
 RCSID("$Id$");
 
@@ -1317,7 +1317,7 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 
 	notify_crosshair_change(false);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 			/* clear contents of paste buffer */
 		case F_Clear:
 			ClearBuffer(PASTEBUFFER);

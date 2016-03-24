@@ -33,6 +33,7 @@
 #include "undo.h"
 #include "set.h"
 #include "remove.h"
+#include "funchash_core.h"
 
 /* --------------------------------------------------------------------------- */
 
@@ -47,7 +48,7 @@ static const char delete_help[] = "Delete stuff.";
 static int ActionDelete(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
-	int id = GetFunctionID(function);
+	int id = funchash_get(function, NULL);
 
 	Note.X = Crosshair.X;
 	Note.Y = Crosshair.Y;

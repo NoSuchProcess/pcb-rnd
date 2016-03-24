@@ -30,6 +30,7 @@
 #include "action.h"
 #include "change.h"
 #include "error.h"
+#include "funchash_core.h"
 
 #include "crosshair.h"
 #include "undo.h"
@@ -82,7 +83,7 @@ int ActionAtomic(int argc, char **argv, Coord x, Coord y)
 	if (argc != 1)
 		AFAIL(atomic);
 
-	switch (GetFunctionID(argv[0])) {
+	switch (funchash_get(argv[0], NULL)) {
 	case F_Save:
 		SaveUndoSerialNumber();
 		break;
@@ -231,7 +232,7 @@ int ActionUndo(int argc, char **argv, Coord x, Coord y)
 			SetChangedFlag(true);
 	}
 	else if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 			/* clear 'undo objects' list */
 		case F_ClearList:
 			ClearUndoList(false);

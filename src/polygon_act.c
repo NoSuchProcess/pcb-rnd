@@ -31,6 +31,7 @@
 #include "change.h"
 #include "error.h"
 #include "undo.h"
+#include "funchash_core.h"
 
 #include "polygon.h"
 #include "draw.h"
@@ -57,7 +58,7 @@ static int ActionMorphPolygon(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_Object:
 			{
 				int type;
@@ -116,7 +117,7 @@ static int ActionPolygon(int argc, char **argv, Coord x, Coord y)
 	char *function = ACTION_ARG(0);
 	if (function && Settings.Mode == POLYGON_MODE) {
 		notify_crosshair_change(false);
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 			/* close open polygon if possible */
 		case F_Close:
 			ClosePolygon();

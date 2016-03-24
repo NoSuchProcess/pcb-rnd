@@ -61,6 +61,7 @@
 #include "strflags.h"
 #include "plugins.h"
 #include "event.h"
+#include "funchash.h"
 
 #include "hid/common/actions.h"
 
@@ -1600,7 +1601,7 @@ void pcb_main_uninit(void)
 	FreeLibraryMemory(&Library);
 	pcb_fp_uninit();
 	file_uninit();
-	
+	funchash_uninit();
 
 #define free0(ptr) \
 	do {  \
@@ -1651,6 +1652,7 @@ int main(int argc, char *argv[])
 
 	srand(time(NULL));						/* Set seed for rand() */
 
+	funchash_init();
 	initialize_units();
 	polygon_init();
 	hid_init();

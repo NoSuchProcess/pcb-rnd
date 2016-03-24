@@ -11,7 +11,6 @@ put /local/pcb/DEPCFLAGS {}
 # main: objects
 put /local/pcb/OBJS [@
 	action.o
-	action_funchash.o
 	buffer.o
 	change.o
 	change_act.o
@@ -32,6 +31,7 @@ put /local/pcb/OBJS [@
 	find_act.o
 	flags.o
 	free_atexit.o
+	funchash.o
 	gui_act.o
 	heap.o
 	insert.o
@@ -98,6 +98,7 @@ put /local/pcb/OBJS [@
 	buildin.o
 	../src_3rd/genht/hash.o
 	../src_3rd/genht/htsp.o
+	../src_3rd/genht/htsi.o
 	../src_3rd/genvector/gds_char.o
 @]
 

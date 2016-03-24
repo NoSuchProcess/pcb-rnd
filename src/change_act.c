@@ -32,6 +32,7 @@
 
 #include "global.h"
 #include "data.h"
+#include "funchash_core.h"
 
 #include "action.h"
 #include "change.h"
@@ -77,7 +78,7 @@ static int ActionChangeClearSize(int argc, char **argv, Coord x, Coord y)
 	void *ptr1, *ptr2, *ptr3;
 
 	if (function && delta) {
-		int funcid = GetFunctionID(function);
+		int funcid = funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
 			gui->get_coords(_("Select an Object"), &x, &y);
@@ -94,7 +95,7 @@ static int ActionChangeClearSize(int argc, char **argv, Coord x, Coord y)
 		}
 		else
 			value = 2 * GetValue(delta, units, &absolute);
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_Object:
 			{
 				if (type != NO_TYPE)
@@ -188,7 +189,7 @@ static void ChangeFlag(char *what, char *flag_name, int value, char *cmd_name)
 		return;
 	}
 
-	switch (GetFunctionID(what)) {
+	switch (funchash_get(what, NULL)) {
 	case F_Object:
 		{
 			int type;
@@ -262,7 +263,7 @@ static int ActionChangeHole(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -304,7 +305,7 @@ static int ActionChangePaste(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -390,7 +391,7 @@ static int ActionChangeSize(int argc, char **argv, Coord x, Coord y)
 
 
 	if (function && delta) {
-		int funcid = GetFunctionID(function);
+		int funcid = funchash_get(function, NULL);
 
 		if (funcid == F_Object)
 			type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
@@ -492,7 +493,7 @@ static int ActionChange2ndSize(int argc, char **argv, Coord x, Coord y)
 	Coord value;
 
 	if (function && delta) {
-		int funcid = GetFunctionID(function);
+		int funcid = funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
 			gui->get_coords(_("Select an Object"), &x, &y);
@@ -507,7 +508,7 @@ static int ActionChange2ndSize(int argc, char **argv, Coord x, Coord y)
 		else
 			value = GetValue(delta, units, &absolute);
 
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_Object:
 			{
 
@@ -649,7 +650,7 @@ int ActionChangeName(int argc, char **argv, Coord x, Coord y)
 	int pinnum;
 
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 			/* change the name of an object */
 		case F_Object:
 			{
@@ -726,7 +727,7 @@ static int ActionChangeJoin(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -779,7 +780,7 @@ static int ActionChangeNonetlist(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 		case F_Element:
@@ -825,7 +826,7 @@ static int ActionChangeSquare(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -887,7 +888,7 @@ static int ActionSetSquare(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function && *function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -939,7 +940,7 @@ static int ActionClearSquare(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function && *function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -990,7 +991,7 @@ static int ActionChangeOctagon(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -1045,7 +1046,7 @@ static int ActionSetOctagon(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -1101,7 +1102,7 @@ static int ActionClearOctagon(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -1183,7 +1184,7 @@ static int ActionSetThermal(int argc, char **argv, Coord x, Coord y)
 
 		kind = GetValue(style, NULL, &absolute);
 		if (absolute)
-			switch (GetFunctionID(function)) {
+			switch (funchash_get(function, NULL)) {
 			case F_Object:
 				if ((type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != NO_TYPE) {
 					ChangeObjectThermal(type, ptr1, ptr2, ptr3, kind);
@@ -1316,7 +1317,7 @@ static int ActionSetValue(int argc, char **argv, Coord x, Coord y)
 
 	if (function && val) {
 		value = GetValue(val, units, &absolute);
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_ViaDrillingHole:
 			SetViaDrillingHole(absolute ? value : value + Settings.ViaDrillingHole, false);
 			hid_action("RouteStylesChanged");

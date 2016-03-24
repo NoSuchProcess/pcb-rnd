@@ -31,6 +31,7 @@
 #include "change.h"
 #include "error.h"
 #include "undo.h"
+#include "funchash_core.h"
 
 #include "draw.h"
 #include "search.h"
@@ -213,7 +214,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 	str_dir = ACTION_ARG(1);
 
 	if (function && (!str_dir || !*str_dir)) {
-		switch (id = GetFunctionID(function)) {
+		switch (id = funchash_get(function, NULL)) {
 
 			/* redraw layout */
 		case F_ClearAndRedraw:
@@ -506,7 +507,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 		}
 	}
 	else if (function && str_dir) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_ToggleGrid:
 			if (argc > 2) {
 				PCB->GridOffsetX = GetValue(argv[1], NULL, NULL);
@@ -596,7 +597,7 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 		Note.X = Crosshair.X;
 		Note.Y = Crosshair.Y;
 		notify_crosshair_change(false);
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_Arc:
 			SetMode(ARC_MODE);
 			break;
@@ -892,7 +893,7 @@ static int ActionToggleHideName(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function && PCB->ElementOn) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_Object:
 			{
 				int type;
@@ -973,7 +974,7 @@ static int ActionMarkCrosshair(int argc, char **argv, Coord x, Coord y)
 			notify_mark_change(true);
 		}
 	}
-	else if (GetFunctionID(function) == F_Center) {
+	else if (funchash_get(function, NULL) == F_Center) {
 		notify_mark_change(false);
 		Marked.status = true;
 		Marked.X = Crosshair.X;

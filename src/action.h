@@ -46,15 +46,6 @@ void warpNoWhere(void);
 bool ActionGetLocation(char *);
 void ActionGetXY(char *);
 
-#define action_entry(x) F_ ## x,
-typedef enum {
-#include "action_funclist.h"
-F_END
-} FunctionID;
-#undef action_entry
-
-#include "action_funchash.h"
-
 #define ACTION_ARG(n) (argc > (n) ? argv[n] : NULL)
 
 int get_style_size(int funcid, Coord * out, int type, int size_id);
@@ -84,11 +75,5 @@ extern bool saved_mode;
 
 int ActionExecuteFile(int argc, char **argv, Coord x, Coord y);
 void ReleaseMode(void);
-
-#ifdef HAVE_LIBSTROKE
-extern bool mid_stroke;
-extern BoxType StrokeBox;
-void FinishStroke(void);
-#endif
 
 #endif

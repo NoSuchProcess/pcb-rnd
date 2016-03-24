@@ -31,6 +31,7 @@
 #include "change.h"
 #include "error.h"
 #include "undo.h"
+#include "funchash_core.h"
 
 #include "search.h"
 #include "select.h"
@@ -118,7 +119,7 @@ static int ActionSelect(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 #if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
 			int type;
 			/* select objects by their names */
@@ -289,7 +290,7 @@ static int ActionUnselect(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 #if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
 			int type;
 			/* select objects by their names */

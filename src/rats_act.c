@@ -35,6 +35,7 @@
 #include "misc.h"
 #include "find.h"
 #include "remove.h"
+#include "funchash_core.h"
 
 #include "rats.h"
 #include "draw.h"
@@ -73,7 +74,7 @@ static int ActionAddRats(int argc, char **argv, Coord x, Coord y)
 	if (function) {
 		if (Settings.RatWarn)
 			ClearWarnings();
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_AllRats:
 			if (AddAllRats(false, NULL))
 				SetChangedFlag(true);
@@ -143,7 +144,7 @@ static int ActionConnection(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_Find:
 			{
 				gui->get_coords(_("Click on a connection"), &x, &y);
@@ -194,7 +195,7 @@ static int ActionDeleteRats(int argc, char **argv, Coord x, Coord y)
 	if (function) {
 		if (Settings.RatWarn)
 			ClearWarnings();
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_AllRats:
 			if (DeleteRats(false))
 				SetChangedFlag(true);

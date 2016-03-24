@@ -1,10 +1,9 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design
- *  Copyright (C) 1994,1995,1996 Thomas Nau
- *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
- *
+ *  PCB-rnd, interactive printed circuit board design
+ *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -17,18 +16,19 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- *  Contact addresses for paper mail and Email:
- *  Harry Eaton, 6697 Buttonhole Ct, Columbia, MD 21044, USA
- *  haceaton@aplcomm.jhuapl.edu
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
 
-typedef struct {								/* used to identify subfunctions */
-	char *Identifier;
-	FunctionID ID;
-} FunctionType, *FunctionTypePtr;
+/* Table entry format for funchash_set_table() */
+typedef struct {
+	char *key;
+	int val;
+} funchash_table_t;
 
-/* Convert function name to integer function id */
-FunctionID GetFunctionID(const char *Ident);
+int funchash_get(const char *key, const char *cookie);
+int funchash_set(const char *key, int val, const char *cookie);
+int funchash_set_table(funchash_table_t *table, int numelem, const char *cookie);
+
+void funchash_init(void);
+void funchash_uninit(void);

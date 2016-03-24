@@ -31,6 +31,7 @@
 #include "change.h"
 #include "error.h"
 #include "undo.h"
+#include "funchash_core.h"
 
 #include "search.h"
 #include "move.h"
@@ -115,7 +116,7 @@ static int ActionAttributes(int argc, char **argv, Coord x, Coord y)
 		return 1;
 	}
 
-	switch (GetFunctionID(function)) {
+	switch (funchash_get(function, NULL)) {
 	case F_Layout:
 		{
 			gui->edit_attributes("Layout Attributes", &(PCB->Attributes));
@@ -219,7 +220,7 @@ static int ActionDisperseElements(int argc, char **argv, Coord x, Coord y)
 		bad = 1;
 	}
 	else {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_All:
 			all = 1;
 			break;
@@ -328,7 +329,7 @@ static int ActionFlip(int argc, char **argv, Coord x, Coord y)
 	int err = 0;
 
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_Object:
 			if ((SearchScreen(x, y, ELEMENT_TYPE, &ptrtmp, &ptrtmp, &ptrtmp)) != NO_TYPE) {
 				element = (ElementTypePtr) ptrtmp;
@@ -417,7 +418,7 @@ static int ActionMoveToCurrentLayer(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_Object:
 			{
 				int type;
@@ -730,7 +731,7 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 	bool changed = false;
 
 	if (function) {
-		switch (GetFunctionID(function)) {
+		switch (funchash_get(function, NULL)) {
 		case F_All:
 			ALLLINE_LOOP(PCB->Data);
 			{
