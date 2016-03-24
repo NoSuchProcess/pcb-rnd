@@ -23,12 +23,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <genht/htsi.h>
+#include <genht/htpi.h>
 #include <genht/hash.h>
 #include "funchash_core.h"
 #include "macro.h"
-
-#define MAXKEYLEN 256
 
 #define action_entry(x) { #x, F_ ## x},
 static funchash_table_t Functions[] = {
@@ -36,16 +34,25 @@ static funchash_table_t Functions[] = {
 	{"F_END", F_END}
 };
 
-static htsi_t *funchash;
+typedef struct {
+	const char *cookie;
+	const char *key;
+	char key_buff[1];
+} fh_key_t;
 
-static int keyeq(char *a, char *b)
+static htpi_t *funchash;
+
+static int keyeq(void *a_, void *b_)
 {
-	return !strcmp(a, b);
+	fh_key_t *a = a_, *b = b_;
+	if (a->cookie != b->cookie)
+		return 1;
+	return !strcmp(a->key, b->key);
 }
 
 void funchash_init(void)
 {
-	funchash = htsi_alloc(strhash, keyeq);
+	funchash = htpi_alloc(strhash, keyeq);
 	funchash_set_table(Functions, ENTRIES(Functions), NULL);
 }
 
@@ -54,34 +61,18 @@ void funchash_uninit(void)
 
 }
 
-/* A key is either a plain string (cookie == NULL) or an aggregate of
-   cookie and the key - this guarantees each cookie has its own namespace */
-#define asm_key(dest, buff, key, cookie, badretval) \
-do { \
-	if (cookie != NULL) { \
-		int __lk__; \
-		__lk__ = strlen(key); \
-		if (strlen(key)+sizeof(int)*2+6 > sizeof(buff)) \
-			return badretval; \
-		sprintf(buff, "%p::%s", cookie, key); \
-		new_key = buff; \
-	} \
-	else \
-		new_key = (char *)key; \
-} while(0)
-
-
 int funchash_get(const char *key, const char *cookie)
 {
-	char buff[MAXKEYLEN];
-	char *new_key;
-	htsi_entry_t *e;
+	fh_key_t new_key;
+	htpi_entry_t *e;
 
 	if (key == NULL)
 		return -1;
 
-	asm_key(new_key, buff, key, cookie, -1);
-	e = htsi_getentry(funchash, new_key);
+	new_key.cookie = cookie;
+	new_key.key = key;
+
+	e = htpi_getentry(funchash, &new_key);
 	if (e == NULL)
 		return -1;
 	return e->value;
@@ -89,16 +80,18 @@ int funchash_get(const char *key, const char *cookie)
 
 int funchash_set(const char *key, int val, const char *cookie)
 {
-	char buff[MAXKEYLEN];
-	char *new_key;
-	htsi_entry_t *e;
+	fh_key_t *new_key;
+	int kl;
 
-	asm_key(new_key, buff, key, cookie, -1);
-	e = htsi_getentry(funchash, new_key);
-	if (e != NULL)
+	if (funchash_get(key, cookie) >= 0)
 		return -1;
 
-	htsi_set(funchash, strdup(new_key), val);
+	kl = strlen(key);
+	new_key = malloc(sizeof(fh_key_t) + kl);
+	new_key->cookie = cookie;
+	new_key->key = new_key->key_buff;
+	strcpy(new_key->key_buff, key);
+	htpi_set(funchash, new_key, val);
 	return 0;
 }
 

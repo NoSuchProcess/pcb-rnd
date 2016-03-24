@@ -206,7 +206,7 @@ flags.o: flags.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_element.h libpcb_fp.h data.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h
 free_atexit.o: free_atexit.c
-funchash.o: funchash.c ../src_3rd/genht/htsi.h ../src_3rd/genht/ht.h \
+funchash.o: funchash.c ../src_3rd/genht/htpi.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/ht_inlines.h ../src_3rd/genht/hash.h funchash_core.h \
  funchash.h funchash_core_list.h macro.h
 gui_act.o: gui_act.c ../config.h ../config.manual.h ../config.auto.h \
@@ -805,7 +805,7 @@ hash.o: ../src_3rd/genht/hash.c
 htsp.o: ../src_3rd/genht/htsp.c ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h \
  ../src_3rd/genht/ht.c
-htsi.o: ../src_3rd/genht/htsi.c ../src_3rd/genht/htsi.h \
+htpi.o: ../src_3rd/genht/htpi.c ../src_3rd/genht/htpi.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h \
  ../src_3rd/genht/ht.c
 gds_char.o: ../src_3rd/genvector/gds_char.c \
