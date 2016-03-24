@@ -3,7 +3,7 @@ Cleanup #4:
 		- hid/common/hidinit.[ch]: split, move to core
 	- check Makefile.in for hid/
 	- Makefile.in: local/pcb/hids (obsolete)
-
+	- remove Makefile.in.mod
 
 RELEASE: 
 	- mention the harmless gtk/lesstif uninit warnings in the release notes?

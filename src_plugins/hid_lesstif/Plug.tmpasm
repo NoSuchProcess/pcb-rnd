@@ -1,0 +1,27 @@
+put /local/pcb/mod {hid_lesstif}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/hid_lesstif/dialogs.o
+	$(PLUGDIR)/hid_lesstif/library.o
+	$(PLUGDIR)/hid_lesstif/main.o
+	$(PLUGDIR)/hid_lesstif/menu.o
+	$(PLUGDIR)/hid_lesstif/netlist.o
+	$(PLUGDIR)/hid_lesstif/styles.o
+@]
+
+put /local/pcb/mod/CFLAGS [@
+	@/target/libs/gui/lesstif2/cflags@
+	@/target/libs/gui/xinerama/cflags@
+	@/target/libs/gui/xrender/cflags@
+@]
+
+put /local/pcb/mod/LDFLAGS [@
+	@/target/libs/gui/lesstif2/ldflags@
+	@/target/libs/gui/xinerama/ldflags@
+	@/target/libs/gui/xrender/ldflags@
+@]
+
+switch /local/pcb/hid_lesstif/controls
+	case {buildin}   include {Makefile.in.mod/Buildin}; end;
+	case {plugin}    include {Makefile.in.mod/Plugin}; end;
+	case {disable}   include {Makefile.in.mod/Disable}; end;
+end

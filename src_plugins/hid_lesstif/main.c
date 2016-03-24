@@ -26,6 +26,7 @@
 #include "clip.h"
 #include "event.h"
 #include "error.h"
+#include "plugins.h"
 
 #include "hid.h"
 #include "hid/hidint.h"
@@ -3727,7 +3728,7 @@ static void lesstif_finish_debug_draw(void)
 
 void lesstif_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip);
 
-void hid_lesstif_init()
+pcb_uninit_t hid_hid_lesstif_init()
 {
 	memset(&lesstif_hid, 0, sizeof(HID));
 
@@ -3797,4 +3798,16 @@ void hid_lesstif_init()
 	lesstif_hid.create_menu = lesstif_create_menu;
 
 	hid_register_hid(&lesstif_hid);
+
+	REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)
+	REGISTER_FLAGS(lesstif_main_flag_list, lesstif_cookie)
+	REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
+	REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
+	REGISTER_ACTIONS(lesstif_dialog_action_list, lesstif_cookie)
+	REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)
+	REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
+	REGISTER_ACTIONS(lesstif_styles_action_list, lesstif_cookie)
+
+	return NULL;
 }
+

@@ -1257,7 +1257,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h hid_nogui.h \
- hid_draw_helpers.h pcb-printf.h dolists.h
+ hid_draw_helpers.h pcb-printf.h plugins.h dolists.h
 ../src_plugins/hid_gtk/gui-command-window.o: \
  ../src_plugins/hid_gtk/gui-command-window.c ../config.h \
  ../config.manual.h ../config.auto.h ../src_plugins/hid_gtk/gui.h \
@@ -1548,6 +1548,89 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h hid_draw_helpers.h
+../src_plugins/hid_lesstif/dialogs.o: \
+ ../src_plugins/hid_lesstif/dialogs.c ../config.h ../config.manual.h \
+ ../config.auto.h ../src_plugins/hid_lesstif/xincludes.h compat.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h crosshair.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h hid/hidint.h \
+ ../src_plugins/hid_lesstif/lesstif.h
+../src_plugins/hid_lesstif/library.o: \
+ ../src_plugins/hid_lesstif/library.c ../config.h ../config.manual.h \
+ ../config.auto.h ../src_plugins/hid_lesstif/xincludes.h compat.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h set.h buffer.h hid.h \
+ hid/hidint.h ../src_plugins/hid_lesstif/lesstif.h
+../src_plugins/hid_lesstif/main.o: ../src_plugins/hid_lesstif/main.c \
+ ../config.h ../config.manual.h ../config.auto.h \
+ ../src_plugins/hid_lesstif/xincludes.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h action_helper.h crosshair.h \
+ mymem.h misc.h ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h \
+ resource.h clip.h event.h error.h plugins.h hid.h hid/hidint.h \
+ hid_nogui.h hid_draw_helpers.h hid_resource.h resource.h \
+ ../src_plugins/hid_lesstif/lesstif.h dolists.h
+../src_plugins/hid_lesstif/menu.o: ../src_plugins/hid_lesstif/menu.c \
+ ../config.h ../config.manual.h ../config.auto.h \
+ ../src_plugins/hid_lesstif/xincludes.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h error.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h hid/hidint.h \
+ hid_resource.h resource.h resource.h \
+ ../src_plugins/hid_lesstif/lesstif.h mymem.h paths.h pcb-menu.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/ht_inlines.h ../src_3rd/genht/hash.h
+../src_plugins/hid_lesstif/netlist.o: \
+ ../src_plugins/hid_lesstif/netlist.c ../config.h ../config.manual.h \
+ ../config.auto.h ../src_plugins/hid_lesstif/xincludes.h compat.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h find.h rats.h select.h undo.h \
+ remove.h crosshair.h draw.h hid.h hid/hidint.h \
+ ../src_plugins/hid_lesstif/lesstif.h
+../src_plugins/hid_lesstif/styles.o: ../src_plugins/hid_lesstif/styles.c \
+ ../config.h ../config.manual.h ../config.auto.h \
+ ../src_plugins/hid_lesstif/xincludes.h compat.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h set.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h mymem.h pcb-printf.h hid.h \
+ hid/hidint.h ../src_plugins/hid_lesstif/lesstif.h
 ../src_plugins/toporouter/toporouter.o: \
  ../src_plugins/toporouter/toporouter.c \
  ../src_plugins/toporouter/toporouter.h data.h global.h ../config.h \

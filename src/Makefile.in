@@ -156,7 +156,7 @@ include {../src_plugins/export_gerber/Plug.tmpasm}
 include {../src_plugins/export_bom/Plug.tmpasm}
 include {../src_plugins/hid_batch/Plug.tmpasm}
 include {../src_plugins/hid_gtk/Plug.tmpasm}
-
+include {../src_plugins/hid_lesstif/Plug.tmpasm}
 
 append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags
 append /local/pcb/LIBS    /target/libs/sul/glib/ldflags
