@@ -1,4 +1,0 @@
-append /local/pcb/HIDS            {batch}
-append /local/pcb/CFLAGS          {-I./hid/batch}
-append /local/pcb/OBJS            {hid/batch/batch.o}
-append /local/pcb/ACTION_REG_SRC  {hid/batch/batch.c hid/batch/hid.conf}

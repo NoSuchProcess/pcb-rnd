@@ -28,7 +28,7 @@
 #include "error.h"
 
 #include "hid.h"
-#include "../hidint.h"
+#include "hid/hidint.h"
 #include "hid_nogui.h"
 #include "hid_draw_helpers.h"
 #include "hid_resource.h"

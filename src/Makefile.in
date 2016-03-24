@@ -132,10 +132,6 @@ put /local/pcb/mod/OBJS {}
 put /local/pcb/mod/LDFLAGS {}
 put /local/pcb/mod/CFLAGS {}
 
-include {Makefile.in.mod/gtk-gdk}
-include {Makefile.in.mod/lesstif}
-include {Makefile.in.mod/batch}
-
 include {../src_plugins/autoplace/Plug.tmpasm}
 include {../src_plugins/autoroute/Plug.tmpasm}
 include {../src_plugins/vendordrill/Plug.tmpasm}
@@ -158,6 +154,8 @@ include {../src_plugins/export_nelma/Plug.tmpasm}
 include {../src_plugins/export_png/Plug.tmpasm}
 include {../src_plugins/export_gerber/Plug.tmpasm}
 include {../src_plugins/export_bom/Plug.tmpasm}
+include {../src_plugins/hid_batch/Plug.tmpasm}
+include {../src_plugins/hid_gtk/Plug.tmpasm}
 
 
 append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags
@@ -255,19 +253,9 @@ EXTRA_DIST= \
 	check_icon.data \
 	default_font \
 	default.pcb \
-	hid/batch/hid.conf \
-	hid/bom/hid.conf \
-	hid/gcode/hid.conf \
-	hid/gerber/hid.conf \
 	hid/gtk/gui-icons-misc.data \
 	hid/gtk/gui-icons-mode-buttons.data \
-	hid/gtk/hid.conf \
 	hid/gtk/pcb.rc \
-	hid/lesstif/hid.conf \
-	hid/lpr/hid.conf \
-	hid/png/hid.conf \
-	hid/nelma/hid.conf \
-	hid/ps/hid.conf \
 	pcbtest.sh.in
 
 
@@ -292,14 +280,7 @@ FORCE:
 
 
 DISTCLEANFILES= pcbtest.sh gpcb-menu.h pcb-menu.h \
-	hid/batch/batch_lists.h \
 	hid/common/hidlist.h \
-	hid/gtk/gtk_lists.h \
-	hid/lesstif/lesstif_lists.h \
-	hid/png/png_lists.h \
-	hid/gcode/gcode_lists.h \
-	hid/nelma/nelma_lists.h \
-	hid/ps/ps_lists.h \
 	core_lists.h \
 	gpcb-menu.res \
 	pcb-menu.res

@@ -7,8 +7,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "../../../src_3rd/genht/hash.h"
-#include "../../../src_3rd/genht/htsp.h"
+#include <genht/hash.h>
+#include <genht/htsp.h>
 
 #include "global.h"
 #include "data.h"
@@ -16,7 +16,6 @@
 #include "event.h"
 
 #include "hid.h"
-#include "../hidint.h"
 
 
 RCSID("$Id$");

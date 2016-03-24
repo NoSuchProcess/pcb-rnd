@@ -1,7 +1,9 @@
 Cleanup #4:
-	- !! move batch, gtk and lesstif
 	- clean up rest of hid/common:
 		- hid/common/hidinit.[ch]: split, move to core
+	- check Makefile.in for hid/
+	- Makefile.in: local/pcb/hids (obsolete)
+
 
 RELEASE: 
 	- mention the harmless gtk/lesstif uninit warnings in the release notes?

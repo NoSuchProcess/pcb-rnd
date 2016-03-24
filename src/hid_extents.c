@@ -11,7 +11,7 @@
 #include "data.h"
 
 #include "hid.h"
-#include "../hidint.h"
+#include "hid/hidint.h"
 #include "hid_draw_helpers.h"
 
 

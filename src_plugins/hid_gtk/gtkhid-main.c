@@ -15,11 +15,12 @@
 #include "action_helper.h"
 #include "crosshair.h"
 #include "error.h"
-#include "../hidint.h"
+#include "hid/hidint.h"
 #include "gui.h"
 #include "hid_nogui.h"
 #include "hid_draw_helpers.h"
 #include "pcb-printf.h"
+#include "plugins.h"
 
 
 
@@ -1872,6 +1873,7 @@ HID_Flag ghid_main_flag_list[] = {
 };
 
 REGISTER_FLAGS(ghid_main_flag_list, ghid_cookie)
+
 #include "dolists.h"
 /*
  * We will need these for finding the windows installation
@@ -1882,10 +1884,10 @@ REGISTER_FLAGS(ghid_main_flag_list, ghid_cookie)
 #include <windows.h>
 #include <winreg.h>
 #endif
-		 HID ghid_hid;
 
-		 void
-		   hid_gtk_init()
+HID ghid_hid;
+
+pcb_uninit_t hid_hid_gtk_init()
 {
 #ifdef WIN32
 	char *tmps;
@@ -1982,5 +1984,16 @@ REGISTER_FLAGS(ghid_main_flag_list, ghid_cookie)
 
 	ghid_hid.create_menu = ghid_create_menu;
 
+	REGISTER_FLAGS(ghid_main_flag_list, ghid_cookie)
+	REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
+	REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
+	REGISTER_ACTIONS(ghid_netlist_action_list, ghid_cookie)
+	REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)
+	REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
+	REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
+	REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
+
 	hid_register_hid(&ghid_hid);
+
+	return NULL;
 }

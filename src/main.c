@@ -1672,6 +1672,26 @@ int main(int argc, char *argv[])
 	}
 	Progname = program_basename;
 
+	/* This must be called before any other atexit functions
+	 * are registered, as it configures an atexit function to
+	 * clean up and free various items of allocated memory,
+	 * and must be the last last atexit function to run.
+	 */
+	leaky_init();
+
+	/* Register a function to be called when the program terminates.
+	 * This makes sure that data is saved even if LEX/YACC routines
+	 * abort the program.
+	 * If the OS doesn't have at least one of them,
+	 * the critical sections will be handled by parse_l.l
+	 */
+	atexit(EmergencySave);
+
+	events_init();
+
+	buildin_init();
+	plugins_init();
+
 	/* Print usage or version if requested.  Then exit.  */
 	if (argc > 1 && (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-?") == 0 || strcmp(argv[1], "--help") == 0))
 		usage();
@@ -1791,23 +1811,6 @@ int main(int argc, char *argv[])
 		LayerStringToLayerStack(Settings.InitialLayerStack);
 	}
 
-	/* This must be called before any other atexit functions
-	 * are registered, as it configures an atexit function to
-	 * clean up and free various items of allocated memory,
-	 * and must be the last last atexit function to run.
-	 */
-	leaky_init();
-
-	/* Register a function to be called when the program terminates.
-	 * This makes sure that data is saved even if LEX/YACC routines
-	 * abort the program.
-	 * If the OS doesn't have at least one of them,
-	 * the critical sections will be handled by parse_l.l
-	 */
-	atexit(EmergencySave);
-
-	events_init();
-
 	/* read the library file and display it if it's not empty
 	 */
 	if (!ReadLibraryContents() && Library.MenuN)
@@ -1843,9 +1846,6 @@ int main(int argc, char *argv[])
 	printf("Settings.MakeProgram = \"%s\"\n", UNKNOWN(Settings.MakeProgram));
 	printf("Settings.GnetlistProgram = \"%s\"\n", UNKNOWN(Settings.GnetlistProgram));
 #endif
-
-	buildin_init();
-	plugins_init();
 
 	gui->do_export(0);
 #if HAVE_DBUS

@@ -11,7 +11,7 @@
 #include "misc.h"
 
 #include "hid.h"
-#include "../hidint.h"
+#include "hid/hidint.h"
 #include "genht/hash.h"
 #include "genht/htsp.h"
 

@@ -13,13 +13,13 @@
 #include "data.h"
 #include "misc.h"
 #include "hid.h"
-#include "../hidint.h"
 #include "pcb-printf.h"
+#include "plugins.h"
 
 #include "hid_draw_helpers.h"
 #include "hid_nogui.h"
 #include "actions.h"
-#include "hid/common/hidinit.h"
+#include "hid/hidint.h"
 
 
 RCSID("$Id$");
@@ -303,7 +303,7 @@ static void batch_create_menu(const char *menu[], const char *action, const char
 
 static HID batch_hid;
 
-void hid_batch_init()
+pcb_uninit_t hid_hid_batch_init()
 {
 	memset(&batch_hid, 0, sizeof(HID));
 
@@ -351,4 +351,6 @@ void hid_batch_init()
 	batch_hid.create_menu = batch_create_menu;
 
 	hid_register_hid(&batch_hid);
+	REGISTER_ACTIONS(batch_action_list, batch_cookie)
+	return NULL;
 }

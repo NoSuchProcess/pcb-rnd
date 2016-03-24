@@ -34,7 +34,7 @@
 
 #include "gui.h"
 #include "hid.h"
-#include "../hidint.h"
+#include "hid/hidint.h"
 #include "gtkhid.h"
 
 #include "global.h"

@@ -11,17 +11,9 @@
 
 #define version "1.0.9"
 
-const char *gui_list[] = {
-	"GTK",     "libs/gui/gtk2/presents",
-	"lesstif", "libs/gui/lesstif2/presents",
-	NULL, NULL
-};
-
 #include "plugin_3state.h"
 
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
-	{"disable-gtk",       "libs/gui/gtk2",                arg_lib_nodes, "$do not compile the gtk HID"},
-	{"disable-lesstif",   "libs/gui/lesstif2",            arg_lib_nodes, "$do not compile the lesstif HID"},
 	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
 	{"disable-xinerama",  "libs/gui/xinerama",            arg_lib_nodes, "$do not use xinerama for lesstif"},
 	{"disable-gd",        "libs/gui/gd",                  arg_lib_nodes, "$do not use gd (many exporters need it)"},
@@ -271,16 +263,6 @@ void generator_callback(char *cmd, char *args)
 }
 #endif
 
-static void list_presents(const char *prefix, const char *nodes[])
-{
-	const char **s;
-	printf("%s", prefix);
-	for(s = nodes; s[0] != NULL; s+=2)
-		if (node_istrue(s[1]))
-			printf(" %s", s[0]);
-	printf("\n");
-}
-
 static int gpmi_config(void)
 {
 	char *tmp;
@@ -361,8 +343,7 @@ int hook_generate()
 	printf("\n\n");
 	printf("=====================\n");
 	printf("Configuration summary\n");
-	printf("=====================\n\n");
-	list_presents("GUI hids:                        batch", gui_list);
+	printf("=====================\n");
 
 #undef plugin_def
 #undef plugin_header

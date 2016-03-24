@@ -1,0 +1,35 @@
+put /local/pcb/mod {hid_gtk}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/hid_gtk/ghid-cell-renderer-visibility.o
+	$(PLUGDIR)/hid_gtk/ghid-coord-entry.o
+	$(PLUGDIR)/hid_gtk/ghid-layer-selector.o
+	$(PLUGDIR)/hid_gtk/ghid-main-menu.o
+	$(PLUGDIR)/hid_gtk/ghid-route-style-selector.o
+	$(PLUGDIR)/hid_gtk/gtkhid-main.o
+	$(PLUGDIR)/hid_gtk/gui-command-window.o
+	$(PLUGDIR)/hid_gtk/gui-config.o
+	$(PLUGDIR)/hid_gtk/gui-dialog-print.o
+	$(PLUGDIR)/hid_gtk/gui-dialog.o
+	$(PLUGDIR)/hid_gtk/gui-drc-window.o
+	$(PLUGDIR)/hid_gtk/gui-keyref-window.o
+	$(PLUGDIR)/hid_gtk/gui-library-window.o
+	$(PLUGDIR)/hid_gtk/gui-log-window.o
+	$(PLUGDIR)/hid_gtk/gui-misc.o
+	$(PLUGDIR)/hid_gtk/gui-netlist-window.o
+	$(PLUGDIR)/hid_gtk/gui-output-events.o
+	$(PLUGDIR)/hid_gtk/gui-pinout-preview.o
+	$(PLUGDIR)/hid_gtk/gui-pinout-window.o
+	$(PLUGDIR)/hid_gtk/gui-top-window.o
+	$(PLUGDIR)/hid_gtk/gui-utils.o
+	$(PLUGDIR)/hid_gtk/gtkhid-gdk.o
+@]
+
+put /local/pcb/mod/CFLAGS   /target/libs/gui/gtk2/cflags
+put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtk2/ldflags
+
+
+switch /local/pcb/hid_gtk/controls
+	case {buildin}   include {Makefile.in.mod/Buildin}; end;
+	case {plugin}    include {Makefile.in.mod/Plugin}; end;
+	case {disable}   include {Makefile.in.mod/Disable}; end;
+end

@@ -1,0 +1,4 @@
+HID without GUI; read actions from stdin.
+
+#state: works
+#default: buildin
