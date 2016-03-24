@@ -32,7 +32,7 @@
 
 #define action_entry(x) { #x, F_ ## x},
 static funchash_table_t Functions[] = {
-#include "action_funclist.h"
+#include "funchash_core_list.h"
 	{"F_END", F_END}
 };
 

@@ -12,7 +12,7 @@ action.o: action.c ../config.h ../config.manual.h ../config.auto.h \
  crosshair.h data.h draw.h error.h find.h insert.h line.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h move.h polygon.h rats.h remove.h \
  rotate.h rubberband.h search.h select.h set.h undo.h rtree.h \
- stub_stroke.h
+ stub_stroke.h funchash_core.h funchash.h funchash_core_list.h
 buffer.o: buffer.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -25,7 +25,7 @@ buffer.o: buffer.c ../config.h ../config.manual.h ../config.auto.h \
  data.h error.h file.h mymem.h mirror.h misc.h \
  ../src_3rd/genvector/gds_char.h parse_l.h polygon.h rats.h rotate.h \
  remove.h rtree.h search.h select.h set.h funchash_core.h funchash.h \
- action_funclist.h
+ funchash_core_list.h
 change.o: change.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -47,8 +47,8 @@ change_act.o: change_act.c ../config.h ../config.manual.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h funchash_core.h funchash.h \
- action_funclist.h action.h change.h crosshair.h draw.h search.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h set.h error.h undo.h \
+ funchash_core_list.h action.h change.h crosshair.h draw.h search.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h set.h error.h undo.h \
  rubberband.h
 clip.o: clip.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
@@ -206,7 +206,9 @@ flags.o: flags.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_element.h libpcb_fp.h data.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h
 free_atexit.o: free_atexit.c
-funchash.o: funchash.c action_funclist.h
+funchash.o: funchash.c ../src_3rd/genht/htsi.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/ht_inlines.h ../src_3rd/genht/hash.h funchash_core.h \
+ funchash.h funchash_core_list.h macro.h
 gui_act.o: gui_act.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -216,8 +218,8 @@ gui_act.o: gui_act.c ../config.h ../config.manual.h ../config.auto.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h action.h change.h error.h undo.h \
- funchash_core.h funchash.h action_funclist.h draw.h search.h crosshair.h \
- find.h set.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ funchash_core.h funchash.h funchash_core_list.h draw.h search.h \
+ crosshair.h find.h set.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
  stub_stroke.h
 heap.o: heap.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
@@ -381,7 +383,7 @@ object_act.o: object_act.c ../config.h ../config.manual.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h action.h change.h error.h undo.h \
- funchash_core.h funchash.h action_funclist.h search.h move.h draw.h \
+ funchash_core.h funchash.h funchash_core_list.h search.h move.h draw.h \
  mirror.h rotate.h set.h copy.h misc.h ../src_3rd/genvector/gds_char.h \
  mymem.h rubberband.h buffer.h remove.h create.h
 paths.o: paths.c paths.h error.h
@@ -433,8 +435,8 @@ polygon_act.o: polygon_act.c ../config.h ../config.manual.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h action.h change.h error.h undo.h \
- funchash_core.h funchash.h action_funclist.h polygon.h draw.h search.h \
- crosshair.h
+ funchash_core.h funchash.h funchash_core_list.h polygon.h draw.h \
+ search.h crosshair.h
 print.o: print.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -467,7 +469,7 @@ rats_act.o: rats_act.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h action.h change.h error.h undo.h set.h \
  misc.h ../src_3rd/genvector/gds_char.h mymem.h find.h remove.h \
- funchash_core.h funchash.h action_funclist.h rats.h draw.h
+ funchash_core.h funchash.h funchash_core_list.h rats.h draw.h
 rats_patch.o: rats_patch.c rats_patch.h global.h ../config.h \
  ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
  macro.h global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h \
@@ -499,7 +501,7 @@ remove_act.o: remove_act.c ../config.h ../config.manual.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h action.h change.h error.h undo.h set.h \
- remove.h funchash_core.h funchash.h action_funclist.h
+ remove.h funchash_core.h funchash.h funchash_core_list.h
 report.o: report.c ../config.h ../config.manual.h ../config.auto.h \
  report.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -571,7 +573,7 @@ select_act.o: select_act.c ../config.h ../config.manual.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h action.h change.h error.h undo.h \
- funchash_core.h funchash.h action_funclist.h search.h select.h \
+ funchash_core.h funchash.h funchash_core_list.h search.h select.h \
  crosshair.h set.h buffer.h draw.h remove.h copy.h
 set.o: set.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
@@ -653,7 +655,7 @@ undo_act.o: undo_act.c ../config.h ../config.manual.h ../config.auto.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h action.h change.h error.h \
- funchash_core.h funchash.h action_funclist.h crosshair.h undo.h \
+ funchash_core.h funchash.h funchash_core_list.h crosshair.h undo.h \
  polygon.h set.h search.h draw.h misc.h ../src_3rd/genvector/gds_char.h \
  mymem.h
 vtonpoint.o: vtonpoint.c vtonpoint.h global_objs.h \
@@ -801,6 +803,9 @@ parse_l.o: parse_l.c ../config.h ../config.manual.h ../config.auto.h \
 buildin.o: buildin.c plugins.h buildin.h
 hash.o: ../src_3rd/genht/hash.c
 htsp.o: ../src_3rd/genht/htsp.c ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h \
+ ../src_3rd/genht/ht.c
+htsi.o: ../src_3rd/genht/htsi.c ../src_3rd/genht/htsi.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h \
  ../src_3rd/genht/ht.c
 gds_char.o: ../src_3rd/genvector/gds_char.c \
