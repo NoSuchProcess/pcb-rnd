@@ -26,11 +26,22 @@ typedef struct {
 	int val;
 } funchash_table_t;
 
+/* Cookie is the namespace so that different modules can use the same
+   function names with different integer IDs without interference. Core
+   should use cookie==NULL. */
+
+/* Resolve a key string into an integer ID */
 int funchash_get(const char *key, const char *cookie);
+
+/* Store key string - integer ID pair */
 int funchash_set(const char *key, int val, const char *cookie);
+
+/* Store multiple key strings - integer ID pairs using a table */
 int funchash_set_table(funchash_table_t *table, int numelem, const char *cookie);
 
+/* Remove all keys inserted for a cookie */
 void funchash_remove_cookie(const char *cookie);
 
+/* Init-ununit the hash */
 void funchash_init(void);
 void funchash_uninit(void);
