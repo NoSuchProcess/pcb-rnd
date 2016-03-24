@@ -30,7 +30,7 @@
 #include "crosshair.h"
 #include "data.h"
 #include "misc.h"
-#include "action.h"
+#include "action_helper.h"
 #include "set.h"
 #include "pcb-printf.h"
 

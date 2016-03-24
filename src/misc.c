@@ -70,7 +70,7 @@
 #include "search.h"
 #include "set.h"
 #include "undo.h"
-#include "action.h"
+#include "action_helper.h"
 #include "portability.h"
 
 

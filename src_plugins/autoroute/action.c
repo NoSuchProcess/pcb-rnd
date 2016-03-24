@@ -28,7 +28,7 @@
 #include "config.h"
 #include "global.h"
 #include "autoroute.h"
-#include "action.h"
+#include "action_helper.h"
 #include "plugins.h"
 #include "set.h"
 

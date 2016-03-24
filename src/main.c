@@ -50,7 +50,7 @@
 #include "error.h"
 #include "file.h"
 #include "set.h"
-#include "action.h"
+#include "action_helper.h"
 #include "misc.h"
 #include "lrealpath.h"
 #include "free_atexit.h"

@@ -38,7 +38,7 @@
 #include "gtkhid.h"
 
 #include "global.h"
-#include "action.h"
+#include "action_helper.h"
 #include "change.h"
 #include "file.h"
 #include "error.h"

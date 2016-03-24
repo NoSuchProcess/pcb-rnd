@@ -12,7 +12,7 @@
 #include <unistd.h>
 
 
-#include "action.h"
+#include "action_helper.h"
 #include "crosshair.h"
 #include "error.h"
 #include "../hidint.h"

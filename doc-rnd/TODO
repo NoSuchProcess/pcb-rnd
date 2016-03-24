@@ -1,5 +1,4 @@
 Cleanup #4:
-	- remove action_funchash.[ch] and use genht
 	- rename action.[ch], maybe even split it
 	- move hid/common/actions.[ch] to core
 	- !! move batch, gtk and lesstif

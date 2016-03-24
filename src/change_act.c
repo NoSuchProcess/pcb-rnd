@@ -34,7 +34,7 @@
 #include "data.h"
 #include "funchash_core.h"
 
-#include "action.h"
+#include "action_helper.h"
 #include "change.h"
 #include "crosshair.h"
 #include "draw.h"

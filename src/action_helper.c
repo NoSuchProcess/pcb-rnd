@@ -32,7 +32,7 @@
 
 #include "global.h"
 
-#include "action.h"
+#include "action_helper.h"
 #include "buffer.h"
 #include "change.h"
 #include "copy.h"
@@ -1202,77 +1202,3 @@ int get_style_size(int funcid, Coord * out, int type, int size_id)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
-
-static const char executefile_syntax[] = "ExecuteFile(filename)";
-
-static const char executefile_help[] = "Run actions from the given file.";
-
-/* %start-doc actions ExecuteFile
-
-Lines starting with @code{#} are ignored.
-
-%end-doc */
-
-int ActionExecuteFile(int argc, char **argv, Coord x, Coord y)
-{
-	FILE *fp;
-	char *fname;
-	char line[256];
-	int n = 0;
-	char *sp;
-
-	if (argc != 1)
-		AFAIL(executefile);
-
-	fname = argv[0];
-
-	if ((fp = fopen(fname, "r")) == NULL) {
-		fprintf(stderr, _("Could not open actions file \"%s\".\n"), fname);
-		return 1;
-	}
-
-	defer_updates = 1;
-	defer_needs_update = 0;
-	while (fgets(line, sizeof(line), fp) != NULL) {
-		n++;
-		sp = line;
-
-		/* eat the trailing newline */
-		while (*sp && *sp != '\r' && *sp != '\n')
-			sp++;
-		*sp = '\0';
-
-		/* eat leading spaces and tabs */
-		sp = line;
-		while (*sp && (*sp == ' ' || *sp == '\t'))
-			sp++;
-
-		/* 
-		 * if we have anything left and its not a comment line
-		 * then execute it
-		 */
-
-		if (*sp && *sp != '#') {
-			/*Message ("%s : line %-3d : \"%s\"\n", fname, n, sp); */
-			hid_parse_actions(sp);
-		}
-	}
-
-	defer_updates = 0;
-	if (defer_needs_update) {
-		IncrementUndoSerialNumber();
-		gui->invalidate_all();
-	}
-	fclose(fp);
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
-
-HID_Action action_action_list[] = {
-	{"ExecuteFile", 0, ActionExecuteFile,
-	 executefile_help, executefile_syntax}
-};
-
-REGISTER_ACTIONS(action_action_list, NULL)

@@ -34,7 +34,7 @@
 
 #include <gdk/gdkkeysyms.h>
 
-#include "action.h"
+#include "action_helper.h"
 #include "crosshair.h"
 #include "draw.h"
 #include "error.h"

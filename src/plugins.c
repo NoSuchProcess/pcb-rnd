@@ -33,7 +33,7 @@
 #include "config.h"
 #include "global.h"
 #include "data.h"
-#include "action.h"
+#include "action_helper.h"
 #include "genvector/gds_char.h"
 
 plugin_info_t *plugins = NULL;

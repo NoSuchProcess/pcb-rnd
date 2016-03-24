@@ -17,7 +17,7 @@
 
 #include "global.h"
 #include "data.h"
-#include "action.h"
+#include "action_helper.h"
 #include "crosshair.h"
 #include "mymem.h"
 #include "misc.h"

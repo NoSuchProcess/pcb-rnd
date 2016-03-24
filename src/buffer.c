@@ -37,7 +37,7 @@
 
 #include "global.h"
 
-#include "action.h"
+#include "action_helper.h"
 #include "buffer.h"
 #include "copy.h"
 #include "create.h"

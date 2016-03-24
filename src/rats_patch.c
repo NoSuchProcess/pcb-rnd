@@ -34,7 +34,7 @@
 #include "config.h"
 #include "global.h"
 #include "data.h"
-#include "action.h"
+#include "action_helper.h"
 #include "error.h"
 #include "buffer.h"
 #include "remove.h"

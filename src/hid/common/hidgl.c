@@ -48,7 +48,7 @@
 #include <GL/glu.h>
 #endif
 
-#include "action.h"
+#include "action_helper.h"
 #include "crosshair.h"
 #include "data.h"
 #include "error.h"
