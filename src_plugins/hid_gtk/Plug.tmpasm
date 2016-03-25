@@ -24,9 +24,13 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/hid_gtk/gtkhid-gdk.o
 @]
 
-put /local/pcb/mod/CFLAGS   /target/libs/gui/gtk2/cflags
-put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtk2/ldflags
-
+switch /local/pcb/hid_gtk/controls
+	case {disable} end;
+	default
+		put /local/pcb/mod/CFLAGS   /target/libs/gui/gtk2/cflags
+		put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtk2/ldflags
+	end
+end
 
 switch /local/pcb/hid_gtk/controls
 	case {buildin}   include {Makefile.in.mod/Buildin}; end;

@@ -122,11 +122,18 @@ int hook_detect_target()
 {
 	int want_gtk, want_glib = 0;
 
-	want_gtk = (get("libs/gui/gtk2/presents") == NULL) || (istrue(get("libs/gui/gtk2/presents")));
+	want_gtk = plug_is_enabled("hid_gtk");
 
 	require("cc/fpic",  0, 1);
 	require("fstools/mkdir", 0, 1);
-	require("libs/gui/gtk2/presents", 0, 0);
+
+	if (want_gtk) {
+		require("libs/gui/gtk2/presents", 0, 0);
+		if (!istrue(get("libs/gui/gtk2/presents"))) {
+			report_repeat("WARNING: Since there's no libgtk2 found, disabling the gtk hid...\n");	
+			hook_custom_arg("disable-hid_gtk", NULL);
+		}
+	}
 
 	if (plug_is_enabled("hid_lesstif")) {
 		require("libs/gui/lesstif2/presents", 0, 0);
@@ -135,13 +142,16 @@ int hook_detect_target()
 			require("libs/gui/xrender/presents", 0, 0);
 		}
 		else {
-			report_repeat("WARNING: Since there's no lesstif2, disabling the lesstif HID and xinerama and xrender...\n");	
+			report_repeat("WARNING: Since there's no lesstif2 found, disabling the lesstif HID and xinerama and xrender...\n");	
 			hook_custom_arg("disable-xinerama", NULL);
 			hook_custom_arg("disable-xrender", NULL);
 			hook_custom_arg("disable-hid_lesstif", NULL);
 		}
 	}
-
+	else {
+		hook_custom_arg("disable-xinerama", NULL);
+		hook_custom_arg("disable-xrender", NULL);
+	}
 	/* for the exporters */
 	require("libs/gui/gd/presents", 0, 0);
 
