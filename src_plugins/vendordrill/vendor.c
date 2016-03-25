@@ -59,6 +59,7 @@
 #include "vendor.h"
 #include "stub_vendor.h"
 #include "plugins.h"
+#include "hid_flags.h"
 
 RCSID("$Id$");
 

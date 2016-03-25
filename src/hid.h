@@ -3,6 +3,7 @@
 
 #include <stdarg.h>
 
+typedef struct HID_Attr_Val_s  HID_Attr_Val;
 typedef struct HID_Attribute_s HID_Attribute;
 
 /* Human Interface Device */
@@ -100,10 +101,6 @@ extern "C" {
 	   Busy()
 	 */
 
-	extern void hid_remove_actions(const HID_Action * a, int n);
-	extern HID_Action *hid_remove_action(const HID_Action * a);
-	extern void hid_remove_actions_by_cookie(const char *cookie);
-
 	extern const char pcbchanged_help[];
 	extern const char pcbchanged_syntax[];
 	extern const char routestyleschanged_help[];
@@ -115,83 +112,10 @@ extern "C" {
 	extern const char librarychanged_help[];
 	extern const char librarychanged_syntax[];
 
-	int hid_action(const char *action_);
-	int hid_actionl(const char *action_, ...);	/* NULL terminated */
-	int hid_actionv(const char *action_, int argc_, char **argv_);
-	void hid_save_settings(int);
-	void hid_load_settings(void);
-
-/* Parse the given command string into action calls, and call
-   hid_actionv for each action found.  Accepts both "action(arg1,
-   arg2)" and command-style "action arg1 arg2", allowing only one
-   action in the later case.  Returns nonzero if the action handler(s)
-   return nonzero. */
-	int hid_parse_command(const char *str_);
-
-/* Parse the given string into action calls, and call
-   hid_actionv for each action found.  Accepts only
-   "action(arg1, arg2)" */
-	int hid_parse_actions(const char *str_);
-
-	typedef struct {
-		/* Name of the flag */
-		char *name;
-		/* Function to call to get the value of the flag.  */
-		int (*function) (int);
-		/* Additional parameter to pass to that function.  */
-		int parm;
-	} HID_Flag;
-
-	extern void hid_register_flags(HID_Flag *a, int n, const char *cookie, int copy);
-#define REGISTER_FLAGS(a, cookie) HIDCONCAT(void register_,a) ()\
-{ hid_register_flags(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
-
-/* Remove all flags matching a cookie */
-	void hid_remove_flags_by_cookie(const char *cookie);
-
-/* Looks up one of the flags registered above.  If the flag is
-   unknown, returns zero.  */
-	int hid_get_flag(const char *name_);
-
-/* Free all flags */
-	void hid_flags_uninit(void);
-
-/* Used for HID attributes (exporting and printing, mostly).
-   HA_boolean uses int_value, HA_enum sets int_value to the index and
-   str_value to the enumeration string.  HID_Label just shows the
-   default str_value.  HID_Mixed is a real_value followed by an enum,
-   like 0.5in or 100mm. */
-	typedef struct {
-		int int_value;
-		const char *str_value;
-		double real_value;
-		Coord coord_value;
-	} HID_Attr_Val;
-
-	enum hids { HID_Label, HID_Integer, HID_Real, HID_String,
-		HID_Boolean, HID_Enum, HID_Mixed, HID_Path,
-		HID_Unit, HID_Coord
-	};
-
 /* These three are set by hid_parse_command_line().  */
 	extern char *program_name;
 	extern char *program_directory;
 	extern char *program_basename;
-
-#define SL_0_SIDE	0x0000
-#define SL_TOP_SIDE	0x0001
-#define SL_BOTTOM_SIDE	0x0002
-#define SL_SILK		0x0010
-#define SL_MASK		0x0020
-#define SL_PDRILL	0x0030
-#define SL_UDRILL	0x0040
-#define SL_PASTE	0x0050
-#define SL_INVISIBLE	0x0060
-#define SL_FAB		0x0070
-#define SL_ASSY		0x0080
-#define SL_RATS		0x0090
-/* Callers should use this.  */
-#define SL(type,side) (~0xfff | SL_##type | SL_##side##_SIDE)
 
 /* File Watch flags */
 /* Based upon those in dbus/dbus-connection.h */
@@ -571,28 +495,6 @@ extern "C" {
 		 * action, mnemonic, accel and tip affect the new menu item. */
 		void (*create_menu) (const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip);
 	};
-
-/* Call this as soon as possible from main().  No other HID calls are
-   valid until this is called.  */
-	void hid_init(void);
-
-/* Call this at exit */
-	void hid_uninit(void);
-
-/* When PCB runs in interactive mode, this is called to instantiate
-   one GUI HID which happens to be the GUI.  This HID is the one that
-   interacts with the mouse and keyboard.  */
-	HID *hid_find_gui(const char *preference);
-
-/* Finds the one printer HID and instantiates it.  */
-	HID *hid_find_printer(void);
-
-/* Finds the indicated exporter HID and instantiates it.  */
-	HID *hid_find_exporter(const char *);
-
-/* This returns a NULL-terminated array of available HIDs.  The only
-   real reason to use this is to locate all the export-style HIDs. */
-	HID **hid_enumerate(void);
 
 /* This function (in the common code) will be called whenever the GUI
    needs to redraw the screen, print the board, or export a layer.  If

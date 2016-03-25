@@ -22,7 +22,7 @@
 #include "plugins.h"
 #include "hid_attrib.h"
 #include "hid_init.h"
-
+#include "hid_flags.h"
 
 
 RCSID("$Id$");

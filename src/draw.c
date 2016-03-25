@@ -47,6 +47,7 @@
 #include "search.h"
 #include "select.h"
 #include "print.h"
+#include "hid_helper.h"
 
 
 #undef NDEBUG
