@@ -1,10 +1,10 @@
 Cleanup #4:
-	- remove Makefile.in.mod
+	- remove Makefile.in.mod -> move files to the plugin dir
 	- reduce
 		- hash in hid_attrib.c?
 		- hash in hid_color.c; test: eps
 		- nelma and gcode both invent .png name locally
-	- what's 	hid/gtk/pcb.rc? -> win32 icon something
+	- Makefile.in: what's hid/gtk/pcb.rc? -> win32 icon something
 
 RELEASE: 
 	- mention the harmless gtk/lesstif uninit warnings in the release notes?
@@ -13,7 +13,7 @@ UNGLIB (cleanup #3):
 	- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
 
 BUGS
-- gpmi (and other buildings/plugins) not showing up in the about box
+- gpmi (and other buildins/plugins) not showing up in the about box
 
 CLEANUP #4
 - scconfig: detect libstroke
