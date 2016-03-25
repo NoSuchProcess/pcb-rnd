@@ -280,7 +280,6 @@ FORCE:
 
 
 DISTCLEANFILES= pcbtest.sh gpcb-menu.h pcb-menu.h \
-	hid/common/hidlist.h \
 	core_lists.h \
 	gpcb-menu.res \
 	pcb-menu.res

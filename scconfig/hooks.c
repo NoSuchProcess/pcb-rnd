@@ -127,16 +127,19 @@ int hook_detect_target()
 	require("cc/fpic",  0, 1);
 	require("fstools/mkdir", 0, 1);
 	require("libs/gui/gtk2/presents", 0, 0);
-	require("libs/gui/lesstif2/presents", 0, 0);
 
-	if (istrue(get("libs/gui/lesstif2/presents"))) {
-		require("libs/gui/xinerama/presents", 0, 0);
-		require("libs/gui/xrender/presents", 0, 0);
-	}
-	else {
-		report_repeat("WARNING: Since there's no lesstif2, disabling xinerama and xrender...\n");	
-		hook_custom_arg("disable-xinerama", NULL);
-		hook_custom_arg("disable-xrender", NULL);
+	if (plug_is_enabled("hid_lesstif")) {
+		require("libs/gui/lesstif2/presents", 0, 0);
+		if (istrue(get("libs/gui/lesstif2/presents"))) {
+			require("libs/gui/xinerama/presents", 0, 0);
+			require("libs/gui/xrender/presents", 0, 0);
+		}
+		else {
+			report_repeat("WARNING: Since there's no lesstif2, disabling the lesstif HID and xinerama and xrender...\n");	
+			hook_custom_arg("disable-xinerama", NULL);
+			hook_custom_arg("disable-xrender", NULL);
+			hook_custom_arg("disable-hid_lesstif", NULL);
+		}
 	}
 
 	/* for the exporters */
@@ -324,7 +327,6 @@ int hook_generate()
 	printf("Generating pcb/Makefile (%d)\n", generr |= tmpasm("../src", "Makefile.in", "Makefile"));
 
 	/* Has to be after pcb/Makefile so that all the modules are loaded. */
-	printf("Generating pcb/hidlist  (%d)\n", generr |= tmpasm("../src/hid/common", "hidlist.h.in", "hidlist.h"));
 	printf("Generating pcb/buildin  (%d)\n", generr |= tmpasm("../src", "buildin.c.in", "buildin.c"));
 
 	printf("Generating util/Makefile (%d)\n", generr |= tmpasm("../util", "Makefile.in", "Makefile"));

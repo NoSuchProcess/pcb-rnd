@@ -37,10 +37,6 @@
 
 RCSID("$Id$");
 
-#define HID_DEF(x) extern void hid_ ## x ## _init(void);
-#include "hid/common/hidlist.h"
-#undef HID_DEF
-
 HID **hid_list = 0;
 int hid_num_hids = 0;
 
@@ -117,10 +113,6 @@ void hid_init()
 
 	/* Setup a "nogui" default HID */
 	gui = hid_nogui_get_hid();
-
-#define HID_DEF(x) hid_ ## x ## _init();
-#include "hid/common/hidlist.h"
-#undef HID_DEF
 
 	hid_load_dir(Concat(exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
 											PCB_DIR_SEPARATOR_S, "pcb", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
