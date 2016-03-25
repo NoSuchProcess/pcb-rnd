@@ -39,7 +39,7 @@ typedef void (event_handler_t) (void *user_data, int argc, event_arg_t * argv[])
 
 /* Bind: add a handler to the call-list of an event; the cookie is also remembered
    so that mass-unbind is easier later. user_data is passed to the handler. */
-void event_bind(event_id_t ev, event_handler_t * handler, void *user_data, void *cookie);
+void event_bind(event_id_t ev, event_handler_t * handler, void *user_data, const char *cookie);
 
 /* Unbind: remove a handler from an event */
 void event_unbind(event_id_t ev, event_handler_t * handler);

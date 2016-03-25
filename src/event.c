@@ -17,7 +17,7 @@ event_t *events[EVENT_last];
 
 #define event_valid(ev) (((ev) >= 0) && ((ev) < EVENT_last))
 
-void event_bind(event_id_t ev, event_handler_t * handler, void *user_data, void *cookie)
+void event_bind(event_id_t ev, event_handler_t * handler, void *user_data, const char *cookie)
 {
 	event_t *e;
 
