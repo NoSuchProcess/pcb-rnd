@@ -63,7 +63,7 @@
 #include "decompose.h"
 #include "pcb-printf.h"
 
-#include "hid/common/hidinit.h"
+#include "hid_init.h"
 
 const char *gcode_cookie = "gcode HID";
 

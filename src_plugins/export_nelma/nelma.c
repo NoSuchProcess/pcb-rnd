@@ -76,7 +76,7 @@
 
 #include <gd.h>
 
-#include "hid/common/hidinit.h"
+#include "hid_init.h"
 
 
 RCSID("$Id$");

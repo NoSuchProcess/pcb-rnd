@@ -24,7 +24,7 @@
 #include "hid_draw_helpers.h"
 #include "ps.h"
 #include "print.h"
-#include "hid/common/hidinit.h"
+#include "hid_init.h"
 
 
 RCSID("$Id$");

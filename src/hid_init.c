@@ -22,7 +22,7 @@
 #include "global.h"
 #include "hid.h"
 #include "hid_nogui.h"
-#include "../hidint.h"
+#include "hid/hidint.h"
 
 /* for dlopen() and friends on windows */
 #include "compat.h"
@@ -691,36 +691,4 @@ int hid_cache_color(int set, const char *name, hidval * val, void **vcache)
 	cache->lru = e;
 
 	return 1;
-}
-
-/* otherwise homeless function, refactored out of the five export HIDs */
-void derive_default_filename(const char *pcbfile, HID_Attribute * filename_attrib, const char *suffix, char **memory)
-{
-	char *buf;
-	char *pf;
-
-	if (pcbfile == NULL)
-		pf = strdup("unknown.pcb");
-	else
-		pf = strdup(pcbfile);
-
-	if (!pf || (memory && filename_attrib->default_val.str_value != *memory))
-		return;
-
-	buf = (char *) malloc(strlen(pf) + strlen(suffix) + 1);
-	if (memory)
-		*memory = buf;
-	if (buf) {
-		size_t bl;
-		strcpy(buf, pf);
-		bl = strlen(buf);
-		if (bl > 4 && strcmp(buf + bl - 4, ".pcb") == 0)
-			buf[bl - 4] = 0;
-		strcat(buf, suffix);
-		if (filename_attrib->default_val.str_value)
-			free((void *) filename_attrib->default_val.str_value);
-		filename_attrib->default_val.str_value = buf;
-	}
-
-	free(pf);
 }

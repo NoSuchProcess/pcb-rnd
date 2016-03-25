@@ -57,4 +57,3 @@ void hid_restore_layer_ons(int *save_array);
    and returns the extents of what was drawn.  */
 BoxType *hid_get_extents(void *item);
 
-void derive_default_filename(const char *pcbfile, HID_Attribute * filename_attrib, const char *suffix, char **memory);

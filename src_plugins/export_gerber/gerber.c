@@ -32,7 +32,7 @@
 #include "hid/hidint.h"
 #include "hid_nogui.h"
 #include "hid_draw_helpers.h"
-#include "hid/common/hidinit.h"
+#include "hid_init.h"
 
 
 RCSID("$Id$");

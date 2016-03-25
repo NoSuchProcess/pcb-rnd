@@ -48,7 +48,7 @@
 /* the gd library which makes this all so easy */
 #include <gd.h>
 
-#include "hid/common/hidinit.h"
+#include "hid_init.h"
 
 
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", __FUNCTION__); abort()
