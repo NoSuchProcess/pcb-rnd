@@ -5,8 +5,6 @@ Cleanup #4:
 	- reduce
 		- hash in hid_attrib.c?
 		- hash in hid_color.c; test: eps
-	- get rid of extern c
-	- event.h: cookie should be const char *
 
 RELEASE: 
 	- mention the harmless gtk/lesstif uninit warnings in the release notes?

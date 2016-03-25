@@ -5,10 +5,6 @@
 
 #include <stdio.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 	struct Resource;
 
 	typedef struct ResourceVal {
@@ -44,7 +40,4 @@ extern "C" {
 
 	void resource_dump(Resource * res);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

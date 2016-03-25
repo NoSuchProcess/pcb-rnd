@@ -25,10 +25,6 @@
 #ifndef	PCB_POLYAREA_H
 #define	PCB_POLYAREA_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 	typedef int BOOLp;
 
 #ifndef FALSE
@@ -181,7 +177,4 @@ independently of its orientation */
 /* calculate the bounding box of a POLYAREA and save result in b */
 	void poly_bbox(POLYAREA * p, BoxType * b);
 
-#ifdef __cplusplus
-}
-#endif
-#endif													/* PCB_POLYAREA_H */
+#endif   /* PCB_POLYAREA_H */
