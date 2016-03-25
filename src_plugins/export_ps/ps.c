@@ -16,7 +16,7 @@
 #include "draw.h"
 #include "pcb-printf.h"
 #include "plugins.h"
-#include "layer_helper.h"
+#include "hid_helper.h"
 
 #include "hid.h"
 #include "hid/hidint.h"

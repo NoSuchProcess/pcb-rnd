@@ -327,7 +327,7 @@ layer_helper.o: layer_helper.c ../config.h ../config.manual.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h misc.h ../src_3rd/genvector/gds_char.h \
- mymem.h layer_helper.h
+ mymem.h hid_helper.h
 line.o: line.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1025,7 +1025,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h error.h draw.h pcb-printf.h \
- plugins.h layer_helper.h hid.h hid/hidint.h hid_nogui.h \
+ plugins.h hid_helper.h hid.h hid/hidint.h hid_nogui.h \
  hid_draw_helpers.h ../src_plugins/export_ps/ps.h print.h \
  hid/common/hidinit.h dolists.h
 ../src_plugins/export_ps/eps.o: ../src_plugins/export_ps/eps.c \
@@ -1064,7 +1064,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h error.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h rats.h layer_helper.h hid.h \
+ ../src_3rd/genvector/gds_char.h mymem.h rats.h hid_helper.h hid.h \
  hid/hidint.h hid_nogui.h hid_draw_helpers.h \
  ../src_plugins/export_gcode/gcode.h ../src_plugins/export_gcode/bitmap.h \
  ../src_plugins/export_gcode/potracelib.h \
@@ -1109,7 +1109,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h error.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h rats.h plugins.h layer_helper.h \
+ ../src_3rd/genvector/gds_char.h mymem.h rats.h plugins.h hid_helper.h \
  hid.h hid/hidint.h hid_nogui.h hid_draw_helpers.h hid/common/hidinit.h \
  dolists.h
 ../src_plugins/export_png/png.o: ../src_plugins/export_png/png.c \

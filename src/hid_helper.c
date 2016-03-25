@@ -29,7 +29,7 @@
 #include "global.h"
 #include "data.h"
 #include "misc.h"
-#include "layer_helper.h"
+#include "hid_helper.h"
 
 const char *layer_type_to_file_name(int idx, int style)
 {

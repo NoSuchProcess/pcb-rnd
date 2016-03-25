@@ -39,11 +39,11 @@ put /local/pcb/OBJS [@
 	hid_draw_helpers.o
 	hid_extents.o
 	hid_flags.o
+	hid_helper.o
 	hid_nogui.o
 	hid_resource.o
 	insert.o
 	intersect.o
-	layer_helper.o
 	line.o
 	list_arc.o
 	list_element.o
