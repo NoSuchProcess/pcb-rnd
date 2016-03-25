@@ -3,6 +3,7 @@ Cleanup #4:
 	- reduce
 		- hash in hid_attrib.c?
 		- hash in hid_color.c; test: eps
+		- nelma and gcode both invent .png name locally
 	- what's 	hid/gtk/pcb.rc? -> win32 icon something
 
 RELEASE: 
