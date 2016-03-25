@@ -1,10 +1,9 @@
 Cleanup #4:
-	- check Makefile.in for hid/
-	- Makefile.in: local/pcb/hids (obsolete)
 	- remove Makefile.in.mod
 	- reduce
 		- hash in hid_attrib.c?
 		- hash in hid_color.c; test: eps
+	- what's 	hid/gtk/pcb.rc?
 
 RELEASE: 
 	- mention the harmless gtk/lesstif uninit warnings in the release notes?

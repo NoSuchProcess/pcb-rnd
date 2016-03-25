@@ -171,7 +171,6 @@ uniq /local/pcb/OBJS
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/LDFLAGS
 uniq /local/pcb/LIBS
-uniq /local/pcb/HIDS
 uniq /local/pcb/ACTION_REG_SRC
 put /local/pcb/SRCS /local/pcb/OBJS
 gsub /local/pcb/SRCS {.o } {.c }
@@ -194,7 +193,6 @@ SRCS=@/local/pcb/SRCS@
 CFLAGS=@/local/pcb/CFLAGS@
 LDFLAGS=@/local/pcb/LDFLAGS@
 LIBS=@/local/pcb/LIBS@ -lm -ldl
-HIDLIST=@/local/pcb/HIDS@
 EXEDEPS=@/local/pcb/EXEDEPS@
 CLEANFILES=@/local/pcb/CLEANFILES@
 CLEANRULES=@/local/pcb/CLEANRULES@
@@ -255,11 +253,7 @@ EXTRA_DIST= \
 	check_icon.data \
 	default_font \
 	default.pcb \
-	hid/gtk/gui-icons-misc.data \
-	hid/gtk/gui-icons-mode-buttons.data \
-	hid/gtk/pcb.rc \
 	pcbtest.sh.in
-
 
 all-local: pcbtest.sh
 
