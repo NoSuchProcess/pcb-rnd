@@ -30,6 +30,7 @@
 #include "global.h"
 #include "error.h"
 #include "action_helper.h"
+#include "hid_actions.h"
 #include "undo.h"
 
 /* actions about actions

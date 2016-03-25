@@ -30,7 +30,7 @@
 #include "autoplace.h"
 #include "plugins.h"
 #include "set.h"
-
+#include "hid_actions.h"
 
 static const char autoplace_syntax[] = "AutoPlaceSelected()";
 

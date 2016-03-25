@@ -40,6 +40,7 @@
 #include "set.h"
 #include "misc.h"
 #include "stub_stroke.h"
+#include "hid_actions.h"
 
 /* --------------------------------------------------------------------------- */
 

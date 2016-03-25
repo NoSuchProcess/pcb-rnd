@@ -49,6 +49,7 @@
 #include "rtree.h"
 #include "search.h"
 #include "polygon.h"
+#include "hid_actions.h"
 
 RCSID("$Id$");
 

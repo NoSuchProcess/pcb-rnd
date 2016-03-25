@@ -53,7 +53,7 @@
 #include "misc.h"
 #include "set.h"
 #include "undo.h"
-
+#include "hid_actions.h"
 
 RCSID("$Id$");
 

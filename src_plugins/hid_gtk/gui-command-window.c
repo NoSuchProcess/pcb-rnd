@@ -35,7 +35,7 @@
 
 #include "command.h"
 #include "crosshair.h"
-
+#include "hid_actions.h"
 
 RCSID("$Id$");
 

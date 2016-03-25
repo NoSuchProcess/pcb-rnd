@@ -1,16 +1,5 @@
 ### Generated file, do not edit, run make dep ###
 
-actions.o: actions.c ../config.h ../config.manual.h ../config.auto.h \
- ../src_3rd/genht/hash.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
- ../src_3rd/genht/ht_inlines.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h error.h event.h
 action_helper.o: action_helper.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -23,7 +12,8 @@ action_helper.o: action_helper.c ../config.h ../config.manual.h \
  create.h crosshair.h data.h draw.h error.h find.h insert.h line.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h move.h polygon.h rats.h remove.h \
  rotate.h rubberband.h search.h select.h set.h undo.h rtree.h \
- stub_stroke.h funchash_core.h funchash.h funchash_core_list.h
+ stub_stroke.h funchash_core.h funchash.h funchash_core_list.h \
+ hid_actions.h
 action_act.o: action_act.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -32,7 +22,7 @@ action_act.o: action_act.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h error.h action_helper.h undo.h
+ list_element.h libpcb_fp.h error.h action_helper.h hid_actions.h undo.h
 buffer.o: buffer.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -57,7 +47,7 @@ change.o: change.c ../config.h ../config.manual.h ../config.auto.h \
  list_element.h libpcb_fp.h change.h create.h crosshair.h data.h draw.h \
  error.h mymem.h misc.h ../src_3rd/genvector/gds_char.h mirror.h \
  polygon.h rats.h remove.h rtree.h search.h select.h set.h thermal.h \
- undo.h
+ undo.h hid_actions.h
 change_act.o: change_act.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -67,9 +57,9 @@ change_act.o: change_act.c ../config.h ../config.manual.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h funchash_core.h funchash.h \
- funchash_core_list.h action_helper.h change.h crosshair.h draw.h \
- search.h misc.h ../src_3rd/genvector/gds_char.h mymem.h set.h error.h \
- undo.h rubberband.h
+ funchash_core_list.h action_helper.h hid_actions.h change.h crosshair.h \
+ draw.h search.h misc.h ../src_3rd/genvector/gds_char.h mymem.h set.h \
+ error.h undo.h rubberband.h
 clip.o: clip.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -120,7 +110,7 @@ create.o: create.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h create.h data.h draw.h error.h mymem.h misc.h \
  ../src_3rd/genvector/gds_char.h parse_l.h pcb-printf.h polygon.h rtree.h \
- search.h set.h undo.h file.h stub_vendor.h
+ search.h set.h undo.h file.h stub_vendor.h hid_actions.h
 crosshair.o: crosshair.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -131,7 +121,7 @@ crosshair.o: crosshair.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h box.h misc.h ../src_3rd/genvector/gds_char.h \
  mymem.h crosshair.h data.h draw.h error.h line.h rtree.h search.h \
- polygon.h
+ polygon.h hid_actions.h
 data.o: data.c ../config.h ../config.manual.h ../config.auto.h data.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -151,7 +141,7 @@ draw.o: draw.c ../config.h ../config.manual.h ../config.auto.h global.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h compat.h crosshair.h data.h draw.h error.h \
  mymem.h misc.h ../src_3rd/genvector/gds_char.h rotate.h rtree.h search.h \
- select.h print.h
+ select.h print.h hid_helper.h
 drill.o: drill.c ../config.h ../config.manual.h ../config.auto.h data.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -183,7 +173,7 @@ file.o: file.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_element.h libpcb_fp.h buffer.h change.h create.h crosshair.h data.h \
  error.h file.h misc.h ../src_3rd/genvector/gds_char.h mymem.h move.h \
  parse_l.h pcb-printf.h polygon.h rats.h remove.h set.h strflags.h \
- portability.h paths.h rats_patch.h stub_edif.h
+ portability.h paths.h rats_patch.h stub_edif.h hid_actions.h
 file_act.o: file_act.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -194,7 +184,8 @@ file_act.o: file_act.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h action_helper.h change.h error.h \
  undo.h crosshair.h set.h file.h buffer.h mymem.h misc.h \
- ../src_3rd/genvector/gds_char.h remove.h create.h draw.h find.h search.h
+ ../src_3rd/genvector/gds_char.h remove.h create.h draw.h find.h search.h \
+ hid_actions.h
 find.o: find.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -205,7 +196,7 @@ find.o: find.c ../config.h ../config.manual.h ../config.auto.h global.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h crosshair.h data.h draw.h error.h find.h \
  mymem.h misc.h ../src_3rd/genvector/gds_char.h rtree.h polygon.h \
- pcb-printf.h search.h set.h undo.h rats.h file.h
+ pcb-printf.h search.h set.h undo.h rats.h file.h hid_actions.h
 find_act.o: find_act.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -225,7 +216,7 @@ flags.o: flags.c ../config.h ../config.manual.h ../config.auto.h global.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h
+ ../src_3rd/genvector/gds_char.h hid_flags.h
 free_atexit.o: free_atexit.c
 funchash.o: funchash.c ../src_3rd/genht/htpi.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/ht_inlines.h ../src_3rd/genht/hash.h funchash_core.h \
@@ -241,7 +232,7 @@ gui_act.o: gui_act.c ../config.h ../config.manual.h ../config.auto.h \
  list_element.h libpcb_fp.h data.h action_helper.h change.h error.h \
  undo.h funchash_core.h funchash.h funchash_core_list.h draw.h search.h \
  crosshair.h find.h set.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- stub_stroke.h
+ stub_stroke.h hid_actions.h
 heap.o: heap.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -251,6 +242,17 @@ heap.o: heap.c ../config.h ../config.manual.h ../config.auto.h global.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h heap.h
+hid_actions.o: hid_actions.c ../config.h ../config.manual.h \
+ ../config.auto.h ../src_3rd/genht/hash.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h error.h event.h hid_actions.h
 hid_attrib.o: hid_attrib.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -298,7 +300,7 @@ hid_flags.o: hid_flags.c ../config.h ../config.manual.h ../config.auto.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h misc.h ../src_3rd/genvector/gds_char.h \
- mymem.h ../src_3rd/genht/hash.h ../src_3rd/genht/htsp.h \
+ mymem.h hid_flags.h ../src_3rd/genht/hash.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h
 hid_helper.o: hid_helper.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
@@ -427,7 +429,7 @@ main.o: main.c ../config.h ../config.manual.h ../config.auto.h global.h \
  error.h file.h set.h action_helper.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h lrealpath.h free_atexit.h \
  polygon.h pcb-printf.h buildin.h paths.h strflags.h plugins.h event.h \
- funchash.h actions.h hid_attrib.h dolists.h action_list.h
+ funchash.h hid_actions.h hid_attrib.h dolists.h action_list.h
 mirror.o: mirror.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -450,7 +452,7 @@ misc.o: misc.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_element.h libpcb_fp.h box.h misc.h ../src_3rd/genvector/gds_char.h \
  mymem.h crosshair.h create.h data.h draw.h file.h error.h move.h \
  pcb-printf.h polygon.h remove.h rtree.h rotate.h rubberband.h search.h \
- set.h undo.h action_helper.h portability.h
+ set.h undo.h action_helper.h portability.h hid_actions.h
 move.o: move.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -461,7 +463,7 @@ move.o: move.c ../config.h ../config.manual.h ../config.auto.h global.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h create.h crosshair.h data.h draw.h error.h \
  misc.h ../src_3rd/genvector/gds_char.h mymem.h move.h polygon.h rtree.h \
- search.h select.h thermal.h undo.h
+ search.h select.h thermal.h undo.h hid_actions.h
 mymem.o: mymem.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -482,7 +484,7 @@ netlist.o: netlist.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h action_helper.h buffer.h command.h data.h \
  error.h file.h find.h mymem.h misc.h ../src_3rd/genvector/gds_char.h \
- rats.h set.h create.h rats_patch.h
+ rats.h set.h create.h rats_patch.h hid_actions.h
 object_act.o: object_act.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -695,7 +697,7 @@ set.o: set.c ../config.h ../config.manual.h ../config.auto.h global.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h action_helper.h buffer.h compat.h crosshair.h \
  data.h draw.h error.h find.h misc.h ../src_3rd/genvector/gds_char.h \
- mymem.h set.h undo.h
+ mymem.h set.h undo.h hid_actions.h
 strflags.o: strflags.c ../config.h ../config.manual.h ../config.auto.h \
  ../globalconst.h ../config.h global.h const.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -870,7 +872,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h ../src_plugins/autoplace/autoplace.h \
- plugins.h set.h global.h dolists.h
+ plugins.h set.h global.h hid_actions.h dolists.h
 ../src_plugins/autoroute/autoroute.o: \
  ../src_plugins/autoroute/autoroute.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
@@ -908,7 +910,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h ../src_plugins/autoroute/autoroute.h \
- action_helper.h global.h plugins.h set.h dolists.h
+ action_helper.h global.h plugins.h set.h hid_actions.h dolists.h
 ../src_plugins/autoroute/vector.o: ../src_plugins/autoroute/vector.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -930,7 +932,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h draw.h error.h global.h resource.h \
  set.h undo.h ../src_plugins/vendordrill/vendor.h stub_vendor.h plugins.h \
- dolists.h
+ hid_flags.h hid_actions.h dolists.h
 ../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -964,7 +966,8 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h global.h create.h remove.h move.h \
  draw.h undo.h strflags.h find.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h plugins.h dolists.h
+ ../src_3rd/genvector/gds_char.h plugins.h hid_flags.h hid_actions.h \
+ dolists.h
 ../src_plugins/mincut/rats_mincut.o: ../src_plugins/mincut/rats_mincut.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -998,7 +1001,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h create.h global.h data.h draw.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h move.h remove.h rtree.h \
- strflags.h undo.h pcb-printf.h plugins.h dolists.h
+ strflags.h undo.h pcb-printf.h plugins.h hid_actions.h dolists.h
 ../src_plugins/legacy_func/legacy_func.o: \
  ../src_plugins/legacy_func/legacy_func.c ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -1033,7 +1036,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h global.h action_helper.h change.h \
  error.h undo.h plugins.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- portability.h pcb-printf.h remove.h rats.h dolists.h
+ portability.h pcb-printf.h remove.h rats.h hid_actions.h dolists.h
 ../src_plugins/export_ps/ps.o: ../src_plugins/export_ps/ps.c ../config.h \
  ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
  ../config.h macro.h global_typedefs.h global_objs.h \
@@ -1168,7 +1171,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h hid.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h plugins.h \
- hid_draw_helpers.h hid_nogui.h actions.h hid_init.h dolists.h
+ hid_draw_helpers.h hid_nogui.h hid_actions.h hid_init.h dolists.h
 ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.o: \
  ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.c \
  ../src_plugins/hid_gtk/gtkhid.h ../src_plugins/hid_gtk/gui.h global.h \
@@ -1278,7 +1281,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h hid_nogui.h \
  hid_draw_helpers.h pcb-printf.h plugins.h hid_attrib.h hid_init.h \
- dolists.h
+ hid_flags.h hid_actions.h dolists.h
 ../src_plugins/hid_gtk/gui-command-window.o: \
  ../src_plugins/hid_gtk/gui-command-window.c ../config.h \
  ../config.manual.h ../config.auto.h ../src_plugins/hid_gtk/gui.h \
@@ -1295,7 +1298,8 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h command.h crosshair.h
+ ../src_plugins/hid_gtk/gui-pinout-preview.h command.h crosshair.h \
+ hid_actions.h
 ../src_plugins/hid_gtk/gui-config.o: ../src_plugins/hid_gtk/gui-config.c \
  ../config.h ../config.manual.h ../config.auto.h \
  ../src_plugins/hid_gtk/gui.h global.h const.h ../globalconst.h \
@@ -1366,7 +1370,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
- ../src_plugins/hid_gtk/gui-drc-window.h
+ ../src_plugins/hid_gtk/gui-drc-window.h hid_actions.h
 ../src_plugins/hid_gtk/gui-keyref-window.o: \
  ../src_plugins/hid_gtk/gui-keyref-window.c ../config.h \
  ../config.manual.h ../config.auto.h ../src_plugins/hid_gtk/gui.h \
@@ -1448,8 +1452,8 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h create.h global.h data.h draw.h error.h \
  find.h misc.h ../src_3rd/genvector/gds_char.h mymem.h mymem.h rats.h \
- remove.h search.h select.h set.h undo.h ../src_plugins/hid_gtk/gui.h \
- hid.h hid_resource.h resource.h \
+ remove.h search.h select.h set.h undo.h hid_actions.h \
+ ../src_plugins/hid_gtk/gui.h hid.h hid_resource.h resource.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -1534,7 +1538,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  rats.h remove.h report.h rotate.h rubberband.h search.h select.h set.h \
  undo.h event.h free_atexit.h paths.h \
  ../src_plugins/hid_gtk/gui-icons-mode-buttons.data \
- ../src_plugins/hid_gtk/gui-icons-misc.data hid_attrib.h
+ ../src_plugins/hid_gtk/gui-icons-misc.data hid_attrib.h hid_actions.h
 ../src_plugins/hid_gtk/gui-utils.o: ../src_plugins/hid_gtk/gui-utils.c \
  ../config.h ../config.manual.h ../config.auto.h \
  ../src_plugins/hid_gtk/gui.h global.h const.h ../globalconst.h \
@@ -1582,7 +1586,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h global.h crosshair.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h \
- ../src_plugins/hid_lesstif/lesstif.h hid_attrib.h
+ ../src_plugins/hid_lesstif/lesstif.h hid_attrib.h hid_actions.h
 ../src_plugins/hid_lesstif/library.o: \
  ../src_plugins/hid_lesstif/library.c ../config.h ../config.manual.h \
  ../config.auto.h ../src_plugins/hid_lesstif/xincludes.h compat.h \
@@ -1611,7 +1615,7 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  resource.h clip.h event.h error.h plugins.h hid.h hid_nogui.h \
  hid_draw_helpers.h hid_resource.h resource.h \
  ../src_plugins/hid_lesstif/lesstif.h hid_attrib.h hid_helper.h \
- hid_init.h hid_color.h hid_extents.h dolists.h
+ hid_init.h hid_color.h hid_extents.h hid_flags.h hid_actions.h dolists.h
 ../src_plugins/hid_lesstif/menu.o: ../src_plugins/hid_lesstif/menu.c \
  ../config.h ../config.manual.h ../config.auto.h \
  ../src_plugins/hid_lesstif/xincludes.h global.h const.h ../globalconst.h \
@@ -1639,7 +1643,8 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h global.h find.h rats.h select.h undo.h \
- remove.h crosshair.h draw.h hid.h ../src_plugins/hid_lesstif/lesstif.h
+ remove.h crosshair.h draw.h hid.h hid_actions.h \
+ ../src_plugins/hid_lesstif/lesstif.h
 ../src_plugins/hid_lesstif/styles.o: ../src_plugins/hid_lesstif/styles.c \
  ../config.h ../config.manual.h ../config.auto.h \
  ../src_plugins/hid_lesstif/xincludes.h compat.h global.h const.h \

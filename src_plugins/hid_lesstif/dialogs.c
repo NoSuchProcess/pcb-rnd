@@ -19,7 +19,7 @@
 #include "hid.h"
 #include "lesstif.h"
 #include "hid_attrib.h"
-
+#include "hid_actions.h"
 
 RCSID("$Id$");
 

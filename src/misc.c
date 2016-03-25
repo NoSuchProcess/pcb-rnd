@@ -72,7 +72,7 @@
 #include "undo.h"
 #include "action_helper.h"
 #include "portability.h"
-
+#include "hid_actions.h"
 
 RCSID("$Id$");
 

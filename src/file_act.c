@@ -43,6 +43,7 @@
 #include "draw.h"
 #include "find.h"
 #include "search.h"
+#include "hid_actions.h"
 
 /* ---------------------------------------------------------------- */
 static const char execcommand_syntax[] = "ExecCommand(command)";

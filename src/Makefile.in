@@ -10,7 +10,6 @@ put /local/pcb/DEPCFLAGS {}
 
 # main: objects
 put /local/pcb/OBJS [@
-	actions.o
 	action_helper.o
 	action_act.o
 	buffer.o
@@ -36,6 +35,7 @@ put /local/pcb/OBJS [@
 	funchash.o
 	gui_act.o
 	heap.o
+	hid_actions.o
 	hid_attrib.o
 	hid_color.o
 	hid_draw_helpers.o

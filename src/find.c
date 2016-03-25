@@ -94,7 +94,7 @@
 #include "undo.h"
 #include "rats.h"
 #include "file.h"
-
+#include "hid_actions.h"
 
 #undef DEBUG
 

@@ -6,6 +6,7 @@
 #include "src/hid.h"
 #include "src/error.h"
 #include "actions.h"
+#include "src/hid_actions.h"
 #include "../../gpmi_plugin.h"
 
 typedef struct acontext_s  acontext_t;

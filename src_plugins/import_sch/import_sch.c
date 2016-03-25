@@ -38,6 +38,7 @@
 #include "pcb-printf.h"
 #include "remove.h"
 #include "rats.h"
+#include "hid_actions.h"
 
 extern int ActionExecuteFile(int argc, char **argv, Coord x, Coord y);
 

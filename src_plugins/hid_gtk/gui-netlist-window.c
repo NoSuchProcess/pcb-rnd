@@ -53,6 +53,7 @@
 #include "select.h"
 #include "set.h"
 #include "undo.h"
+#include "hid_actions.h"
 
 #include "gui.h"
 

@@ -53,6 +53,7 @@
 #include "undo.h"
 #include "file.h"
 #include "stub_vendor.h"
+#include "hid_actions.h"
 
 RCSID("$Id$");
 

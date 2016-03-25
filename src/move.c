@@ -51,7 +51,7 @@
 #include "select.h"
 #include "thermal.h"
 #include "undo.h"
-
+#include "hid_actions.h"
 
 RCSID("$Id$");
 

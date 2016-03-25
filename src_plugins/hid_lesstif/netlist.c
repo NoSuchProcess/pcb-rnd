@@ -22,6 +22,7 @@
 #include "draw.h"
 
 #include "hid.h"
+#include "hid_actions.h"
 #include "lesstif.h"
 
 

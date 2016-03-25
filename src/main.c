@@ -63,7 +63,7 @@
 #include "event.h"
 #include "funchash.h"
 
-#include "actions.h"
+#include "hid_actions.h"
 #include "hid_attrib.h"
 
 #ifdef HAVE_DBUS

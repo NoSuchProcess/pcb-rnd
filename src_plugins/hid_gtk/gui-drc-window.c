@@ -36,7 +36,7 @@
 #include "set.h"
 #include "gui.h"
 #include "gui-drc-window.h"
-
+#include "hid_actions.h"
 
 #define VIOLATION_PIXMAP_PIXEL_SIZE   100
 #define VIOLATION_PIXMAP_PIXEL_BORDER 5

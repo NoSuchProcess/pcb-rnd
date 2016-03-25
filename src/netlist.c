@@ -55,6 +55,7 @@
 #include "set.h"
 #include "create.h"
 #include "rats_patch.h"
+#include "hid_actions.h"
 
 #ifdef HAVE_REGCOMP
 #undef HAVE_RE_COMP

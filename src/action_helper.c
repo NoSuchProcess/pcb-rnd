@@ -58,6 +58,7 @@
 #include "rtree.h"
 #include "stub_stroke.h"
 #include "funchash_core.h"
+#include "hid_actions.h"
 
 /* --------------------------------------------------------------------------- */
 

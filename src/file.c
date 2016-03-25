@@ -100,7 +100,7 @@
 #include "paths.h"
 #include "rats_patch.h"
 #include "stub_edif.h"
-
+#include "hid_actions.h"
 
 RCSID("$Id$");
 

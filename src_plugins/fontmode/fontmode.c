@@ -46,6 +46,7 @@
 #include "undo.h"
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "hid_actions.h"
 
 
 RCSID("$Id$");

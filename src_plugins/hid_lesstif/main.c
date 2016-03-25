@@ -39,7 +39,7 @@
 #include "hid_color.h"
 #include "hid_extents.h"
 #include "hid_flags.h"
-
+#include "hid_actions.h"
 
 #include <sys/poll.h>
 
