@@ -65,6 +65,7 @@
 
 #include "hid_actions.h"
 #include "hid_attrib.h"
+#include "hid_init.h"
 
 #ifdef HAVE_DBUS
 #include "dbus.h"

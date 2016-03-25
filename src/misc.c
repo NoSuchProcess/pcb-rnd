@@ -73,6 +73,7 @@
 #include "action_helper.h"
 #include "portability.h"
 #include "hid_actions.h"
+#include "hid_init.h"
 
 RCSID("$Id$");
 

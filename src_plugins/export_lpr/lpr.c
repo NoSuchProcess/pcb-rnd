@@ -18,6 +18,7 @@
 #include "hid_nogui.h"
 #include "hid_init.h"
 #include "hid_attrib.h"
+#include "hid_actions.h"
 
 
 RCSID("$Id$");

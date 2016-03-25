@@ -44,6 +44,7 @@
 #include "find.h"
 #include "search.h"
 #include "hid_actions.h"
+#include "hid_attrib.h"
 
 /* ---------------------------------------------------------------- */
 static const char execcommand_syntax[] = "ExecCommand(command)";

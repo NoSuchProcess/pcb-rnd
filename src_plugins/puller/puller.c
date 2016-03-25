@@ -67,7 +67,7 @@
 #include "strflags.h"
 #include "undo.h"
 #include "plugins.h"
-
+#include "hid_actions.h"
 
 RCSID("$Id$");
 

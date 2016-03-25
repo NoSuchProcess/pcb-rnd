@@ -8,6 +8,7 @@
 #include "src/paths.h"
 #include "src/error.h"
 #include "src/plugins.h"
+#include "src/hid_actions.h"
 #include "scripts.h"
 #include "manage_scripts.h"
 

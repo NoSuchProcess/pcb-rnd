@@ -105,6 +105,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "gui-icons-misc.data"
 #include "hid_attrib.h"
 #include "hid_actions.h"
+#include "hid_flags.h"
 
 RCSID("$Id$");
 

@@ -6,6 +6,7 @@
 #include "hid.h"
 #include "resource.h"
 #include "hid_resource.h"
+#include "hid_actions.h"
 
 /* #define DEBUG_HID_RESOURCE */
 

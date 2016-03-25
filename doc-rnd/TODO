@@ -1,9 +1,12 @@
 Cleanup #4:
-	- clean up rest of hid/common:
-		- hid/common/hidinit.[ch]: split, move to core
 	- check Makefile.in for hid/
 	- Makefile.in: local/pcb/hids (obsolete)
 	- remove Makefile.in.mod
+	- reduce
+		- hash in hid_attrib.c?
+		- hash in hid_color.c; test: eps
+	- get rid of extern c
+	- event.h: cookie should be const char *
 
 RELEASE: 
 	- mention the harmless gtk/lesstif uninit warnings in the release notes?

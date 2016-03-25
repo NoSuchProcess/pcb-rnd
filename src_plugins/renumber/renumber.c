@@ -34,6 +34,7 @@
 #include "misc.h"
 #include "set.h"
 #include "plugins.h"
+#include "hid_actions.h"
 
 #include "pcb-printf.h"
 

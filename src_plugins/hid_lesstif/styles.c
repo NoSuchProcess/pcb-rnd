@@ -19,6 +19,8 @@
 
 #include "hid.h"
 #include "lesstif.h"
+#include "hid_flags.h"
+
 
 
 RCSID("$Id$");
