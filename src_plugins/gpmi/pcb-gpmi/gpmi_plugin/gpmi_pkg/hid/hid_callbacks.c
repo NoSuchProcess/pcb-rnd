@@ -2,11 +2,13 @@
 #include "src/global.h"
 #include "src/hid.h"
 #include "src/data.h"
-#include "src/hid/hidint.h"
 #define FROM_PKG
 #include "hid.h"
 #include "hid_events.h"
 #include "hid_callbacks.h"
+#include "src/hid_flags.h"
+#include "src/hid_init.h"
+
 
 /* TODO */
 #define MAX_LAYER 16

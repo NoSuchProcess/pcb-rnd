@@ -29,10 +29,11 @@
 #include "hid_helper.h"
 
 #include "hid.h"
-#include "hid/hidint.h"
 #include "hid_nogui.h"
 #include "hid_draw_helpers.h"
 #include "hid_init.h"
+#include "hid_attrib.h"
+#include "hid_flags.h"
 
 
 RCSID("$Id$");

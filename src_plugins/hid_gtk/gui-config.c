@@ -34,7 +34,6 @@
 
 #include "gui.h"
 #include "hid.h"
-#include "hid/hidint.h"
 #include "gtkhid.h"
 
 #include "global.h"
@@ -47,6 +46,8 @@
 #include "portability.h"				/* MKDIR() */
 #include "pcb-printf.h"
 #include "set.h"
+#include "hid_attrib.h"
+
 
 #if 0
 #include <locale.h>

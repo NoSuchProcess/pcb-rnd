@@ -19,7 +19,7 @@
 #include "hid_draw_helpers.h"
 #include "hid_nogui.h"
 #include "actions.h"
-#include "hid/hidint.h"
+#include "hid_init.h"
 
 
 RCSID("$Id$");

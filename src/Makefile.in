@@ -36,6 +36,8 @@ put /local/pcb/OBJS [@
 	funchash.o
 	gui_act.o
 	heap.o
+	hid_attrib.o
+	hid_color.o
 	hid_draw_helpers.o
 	hid_extents.o
 	hid_flags.o

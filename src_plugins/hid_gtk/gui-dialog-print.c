@@ -36,6 +36,7 @@
 
 #include "gui.h"
 #include "pcb-printf.h"
+#include "hid_attrib.h"
 
 
 RCSID("$Id$");

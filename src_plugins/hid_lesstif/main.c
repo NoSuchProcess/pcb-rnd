@@ -29,11 +29,15 @@
 #include "plugins.h"
 
 #include "hid.h"
-#include "hid/hidint.h"
 #include "hid_nogui.h"
 #include "hid_draw_helpers.h"
 #include "hid_resource.h"
 #include "lesstif.h"
+#include "hid_attrib.h"
+#include "hid_helper.h"
+#include "hid_init.h"
+#include "hid_color.h"
+#include "hid_extents.h"
 
 
 #include <sys/poll.h>

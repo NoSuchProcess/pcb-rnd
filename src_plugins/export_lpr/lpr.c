@@ -14,10 +14,10 @@
 #include "plugins.h"
 
 #include "hid.h"
-#include "hid/hidint.h"
 #include "../export_ps/ps.h"
 #include "hid_nogui.h"
 #include "hid_init.h"
+#include "hid_attrib.h"
 
 
 RCSID("$Id$");

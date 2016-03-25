@@ -64,9 +64,7 @@
 #include "funchash.h"
 
 #include "actions.h"
-
-/* This next one is so we can print the help messages. */
-#include "hid/hidint.h"
+#include "hid_attrib.h"
 
 #ifdef HAVE_DBUS
 #include "dbus.h"

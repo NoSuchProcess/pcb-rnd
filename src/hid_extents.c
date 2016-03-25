@@ -11,9 +11,8 @@
 #include "data.h"
 
 #include "hid.h"
-#include "hid/hidint.h"
 #include "hid_draw_helpers.h"
-
+#include "hid_helper.h"
 
 RCSID("$Id$");
 

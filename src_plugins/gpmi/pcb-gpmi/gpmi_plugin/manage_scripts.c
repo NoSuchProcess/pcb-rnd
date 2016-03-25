@@ -7,6 +7,8 @@
 #include "src/event.h"
 #include "gpmi_plugin.h"
 #include "scripts.h"
+#include "src/hid_attrib.h"
+
 
 extern HID *gui;
 

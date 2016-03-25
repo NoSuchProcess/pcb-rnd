@@ -6,8 +6,10 @@
 #include "src/error.h"
 #include "src/hid.h"
 #include "src/hid_nogui.h"
-#include "src/hid/hidint.h"
 #include "src/pcb-printf.h"
+#include "src/hid_attrib.h"
+#include "src/hid_init.h"
+
 #define FROM_PKG
 #include "hid.h"
 #include "hid_callbacks.h"

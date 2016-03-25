@@ -17,7 +17,6 @@
 #include "buffer.h"
 
 #include "hid.h"
-#include "hid/hidint.h"
 #include "lesstif.h"
 
 

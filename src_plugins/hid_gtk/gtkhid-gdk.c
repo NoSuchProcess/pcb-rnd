@@ -6,9 +6,11 @@
 
 #include "crosshair.h"
 #include "clip.h"
-#include "hid/hidint.h"
 #include "gui.h"
 #include "hid_draw_helpers.h"
+#include "hid_attrib.h"
+#include "hid_helper.h"
+#include "hid_color.h"
 
 
 

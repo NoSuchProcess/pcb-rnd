@@ -40,7 +40,6 @@
 #include "plugins.h"
 
 #include "hid.h"
-#include "hid/hidint.h"
 #include "hid_nogui.h"
 #include "hid_draw_helpers.h"
 #include "png.h"
@@ -49,6 +48,10 @@
 #include <gd.h>
 
 #include "hid_init.h"
+#include "hid_attrib.h"
+#include "hid_color.h"
+#include "hid_helper.h"
+#include "hid_flags.h"
 
 
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", __FUNCTION__); abort()

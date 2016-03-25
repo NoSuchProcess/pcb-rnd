@@ -39,6 +39,8 @@
 #include "remove.h"
 #include "rats.h"
 
+extern int ActionExecuteFile(int argc, char **argv, Coord x, Coord y);
+
 /* ---------------------------------------------------------------- */
 static const char import_syntax[] =
 	"Import()\n"

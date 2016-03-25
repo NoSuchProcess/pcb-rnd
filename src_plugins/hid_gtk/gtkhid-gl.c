@@ -6,7 +6,6 @@
 
 #include "crosshair.h"
 #include "clip.h"
-#include "hid/hidint.h"
 #include "gui.h"
 #include "gui-pinout-preview.h"
 

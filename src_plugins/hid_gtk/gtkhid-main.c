@@ -15,12 +15,13 @@
 #include "action_helper.h"
 #include "crosshair.h"
 #include "error.h"
-#include "hid/hidint.h"
 #include "gui.h"
 #include "hid_nogui.h"
 #include "hid_draw_helpers.h"
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "hid_attrib.h"
+#include "hid_init.h"
 
 
 

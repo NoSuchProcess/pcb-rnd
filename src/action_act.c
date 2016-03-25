@@ -31,7 +31,6 @@
 #include "error.h"
 #include "action_helper.h"
 #include "undo.h"
-#include "hid/hidint.h"
 
 /* actions about actions
  */

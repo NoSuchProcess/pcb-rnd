@@ -41,6 +41,7 @@
 #include "draw.h"
 #include "remove.h"
 #include "copy.h"
+#include "hid_attrib.h"
 
 /* --------------------------------------------------------------------------- */
 /* Ask the user for a search pattern */

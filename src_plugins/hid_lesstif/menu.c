@@ -17,7 +17,6 @@
 #include "pcb-printf.h"
 
 #include "hid.h"
-#include "hid/hidint.h"
 #include "hid_resource.h"
 #include "resource.h"
 #include "lesstif.h"
