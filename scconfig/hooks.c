@@ -196,9 +196,9 @@ int hook_detect_target()
 			hook_custom_arg("disable-gd-gif", NULL);
 			hook_custom_arg("disable-gd-png", NULL);
 			hook_custom_arg("disable-gd-jpg", NULL);
-			hook_custom_arg("export_png", NULL);
-			hook_custom_arg("export_nelma", NULL);
-			hook_custom_arg("export_gcode", NULL);
+			hook_custom_arg("disable-export_png", NULL);
+			hook_custom_arg("disable-export_nelma", NULL);
+			hook_custom_arg("disable-export_gcode", NULL);
 			want_gd = 0;
 			goto disable_gd_formats;
 		}
@@ -207,9 +207,7 @@ int hook_detect_target()
 			require("libs/gui/gd/gdImageGif/presents", 0, 0);
 			require("libs/gui/gd/gdImageJpeg/presents", 0, 0);
 			if (!istrue(get("libs/gui/gd/gdImagePng/presents"))) {
-				report_repeat("WARNING: libgd is installed, but its png code fails, disabling exportes depending on png (nelma, gcode)...\n");
-				hook_custom_arg("export_nelma", NULL);
-				hook_custom_arg("export_gcode", NULL);
+				report_repeat("WARNING: libgd is installed, but its png code fails, some exporters will be compiled with reduced functionality; exporters affected: export_nelma, export_gcode\n");
 			}
 		}
 	}
