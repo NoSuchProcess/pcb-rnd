@@ -120,9 +120,10 @@ do { \
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int want_gtk, want_glib = 0;
+	int want_gtk, want_glib = 0, want_gd;
 
 	want_gtk = plug_is_enabled("hid_gtk");
+	want_gd  = plug_is_enabled("export_png") ||  plug_is_enabled("export_nelma") ||  plug_is_enabled("export_gcode");
 
 	require("cc/fpic",  0, 1);
 	require("fstools/mkdir", 0, 1);
@@ -152,15 +153,7 @@ int hook_detect_target()
 		hook_custom_arg("disable-xinerama", NULL);
 		hook_custom_arg("disable-xrender", NULL);
 	}
-	/* for the exporters */
-	require("libs/gui/gd/presents", 0, 0);
 
-	if (!istrue(get("libs/gui/gd/presents"))) {
-		report_repeat("WARNING: Since there's no libgd, disabling raster output formats (gif, png, jpg)...\n");
-		hook_custom_arg("disable-gd-gif", NULL);
-		hook_custom_arg("disable-gd-png", NULL);
-		hook_custom_arg("disable-gd-jpg", NULL);
-	}
 
 	if (want_gtk)
 		want_glib = 1;
@@ -195,6 +188,39 @@ int hook_detect_target()
 		put("libs/sul/glib/ldflags", "");
 	}
 
+
+	if (want_gd) {
+		require("libs/gui/gd/presents", 0, 0);
+		if (!istrue(get("libs/gui/gd/presents"))) {
+			report_repeat("WARNING: Since there's no libgd, disabling gd based exportes (png, nelma, gcode)...\n");
+			hook_custom_arg("disable-gd-gif", NULL);
+			hook_custom_arg("disable-gd-png", NULL);
+			hook_custom_arg("disable-gd-jpg", NULL);
+			hook_custom_arg("export_png", NULL);
+			hook_custom_arg("export_nelma", NULL);
+			hook_custom_arg("export_gcode", NULL);
+			want_gd = 0;
+			goto disable_gd_formats;
+		}
+		else {
+			require("libs/gui/gd/gdImagePng/presents", 0, 0);
+			require("libs/gui/gd/gdImageGif/presents", 0, 0);
+			require("libs/gui/gd/gdImageJpeg/presents", 0, 0);
+			if (!istrue(get("libs/gui/gd/gdImagePng/presents"))) {
+				report_repeat("WARNING: libgd is installed, but its png code fails, disabling exportes depending on png (nelma, gcode)...\n");
+				hook_custom_arg("export_nelma", NULL);
+				hook_custom_arg("export_gcode", NULL);
+			}
+		}
+	}
+	else {
+		put("libs/gui/gd/presents", sfalse);
+		disable_gd_formats:;
+		put("libs/gui/gd/gdImagePng/presents", sfalse);
+		put("libs/gui/gd/gdImageGif/presents", sfalse);
+		put("libs/gui/gd/gdImageJpeg/presents", sfalse);
+	}
+
 	/* generic utils for Makefiles */
 	require("fstools/rm",  0, 1);
 	require("fstools/ar",  0, 1);
@@ -216,9 +242,6 @@ int hook_detect_target()
 	require("libs/math/expf", 0, 0);
 	require("libs/math/logf", 0, 0);
 	require("libs/script/m4/bin/*", 0, 0);
-	require("libs/gui/gd/gdImagePng/presents", 0, 0);
-	require("libs/gui/gd/gdImageGif/presents", 0, 0);
-	require("libs/gui/gd/gdImageJpeg/presents", 0, 0);
 	require("libs/fs/stat/macros/*", 0, 0);
 
 
@@ -250,17 +273,6 @@ int hook_detect_target()
 		if (!istrue(get("libs/script/gpmi/presents"))) {
 			report_repeat("WARNING: disabling the gpmi scripting because libgpmi is not found or not configured...\n");
 			hook_custom_arg("disable-gpmi", NULL);
-		}
-	}
-
-	if (!istrue(get("libs/gui/gd/presents"))) {
-		if (plug_is_enabled("export_nelma")) {
-			report_repeat("WARNING: disabling the nelma exporter because libgd is not found or not configured...\n");
-			hook_custom_arg("disable-export_nelma", NULL);
-		}
-		if (plug_is_enabled("export_png")) {
-			report_repeat("WARNING: disabling the png exporter because libgd is not found or not configured...\n");
-			hook_custom_arg("disable-export_png", NULL);
 		}
 	}
 

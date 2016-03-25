@@ -1,7 +1,13 @@
 put /local/pcb/mod {export_nelma}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_nelma/nelma.o @]
-put /local/pcb/mod/LDFLAGS         libs/gui/gd/ldflags
-put /local/pcb/mod/CFLAGS          libs/gui/gd/cflags
+
+switch /local/pcb/export_nelma/controls
+	case {disable} end;
+	default
+		put /local/pcb/mod/LDFLAGS         libs/gui/gd/ldflags
+		put /local/pcb/mod/CFLAGS          libs/gui/gd/cflags
+		end
+end
 
 switch /local/pcb/export_nelma/controls
 	case {buildin}   include {Makefile.in.mod/Buildin}; end;
