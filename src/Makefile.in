@@ -273,8 +273,8 @@ gpcb-menu.h: gpcb-menu.res
 	sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$$/",/' < gpcb-menu.res >> gpcb-menu.h
 	echo '0};' >> gpcb-menu.h
 
-action_list.h: @/local/pcb/ACTION_REG_SRC@ Makefile
-	../scconfig/gen_core_lists.sh @/local/pcb/ACTION_REG_SRC@ > action_list.h
+generated_lists.h: @/local/pcb/ACTION_REG_SRC@ Makefile
+	../scconfig/gen_core_lists.sh @/local/pcb/ACTION_REG_SRC@ > generated_lists.h
 
 FORCE:
 

@@ -1738,7 +1738,7 @@ int main(int argc, char *argv[])
 
 /* Initialize actions only when the gui is already known so only the right
    one is registered (there can be only one GUI). */
-#include "action_list.h"
+#include "generated_lists.h"
 
 
 	/* Set up layers. */
