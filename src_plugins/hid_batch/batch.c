@@ -127,6 +127,7 @@ REGISTER_ACTIONS(batch_action_list, batch_cookie)
 
 
 /* ----------------------------------------------------------------------------- */
+static int batch_stay;
 static void batch_do_export(HID_Attr_Val * options)
 {
 	int interactive;
@@ -143,7 +144,9 @@ static void batch_do_export(HID_Attr_Val * options)
 		printf("Entering %s version %s batch mode.\n", PACKAGE, VERSION);
 		printf("See http://pcb.gpleda.org for project information\n");
 	}
-	while (1) {
+
+	batch_stay = 1;
+	while (batch_stay) {
 		if (interactive) {
 			printf("%s> ", prompt);
 			fflush(stdout);
@@ -155,6 +158,11 @@ static void batch_do_export(HID_Attr_Val * options)
 		hid_parse_command(line);
 	}
 	batch_end();
+}
+
+static void batch_do_exit(HID *hid)
+{
+	batch_stay = 0;
 }
 
 static void batch_parse_arguments(int *argc, char ***argv)
@@ -322,6 +330,7 @@ pcb_uninit_t hid_hid_batch_init()
 
 	batch_hid.get_export_options = batch_get_export_options;
 	batch_hid.do_export = batch_do_export;
+	batch_hid.do_exit = batch_do_exit;
 	batch_hid.parse_arguments = batch_parse_arguments;
 	batch_hid.invalidate_lr = batch_invalidate_lr;
 	batch_hid.invalidate_all = batch_invalidate_all;
