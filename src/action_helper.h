@@ -28,8 +28,8 @@
 /* prototypes for action routines
  */
 
-#ifndef	PCB_ACTION_H
-#define	PCH_ACTION_H
+#ifndef	PCB_ACTION_HELPER_H
+#define	PCB_ACTION_HELPER_H
 
 #include "global.h"
 

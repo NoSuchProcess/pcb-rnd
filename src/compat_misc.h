@@ -23,7 +23,7 @@
  */
 
 #ifndef PCB_COMPAT_MISC_H
-#define PCH_COMPAT_MISC_H
+#define PCB_COMPAT_MISC_H
 
 #include "config.h"
 
