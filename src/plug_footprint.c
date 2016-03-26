@@ -204,11 +204,7 @@ static int ParseLibraryTree(void)
 
 int ReadLibraryContents(void)
 {
-	static char *command = NULL;
-	char inputline[MAX_LIBRARY_LINE_LENGTH + 1];
 	FILE *resultFP = NULL;
-	LibraryMenuTypePtr menu = NULL;
-	LibraryEntryTypePtr entry;
 
 	/* List all footprint libraries.  Then sort the whole
 	 * library.
