@@ -1,5 +1,4 @@
 Cleanup #4:
-	- remove Makefile.in.mod -> move files to the plugin dir
 	- reduce
 		- hash in hid_attrib.c?
 		- hash in hid_color.c; test: eps
