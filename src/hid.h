@@ -514,6 +514,9 @@ void hid_expose_callback(HID * hid_, struct BoxType *region_, void *item_);
    main. hid_expose_callback also temporarily set it for drawing. */
 extern HID *gui;
 
+/* When not NULL, auto-start the next gui after the current one quits */
+extern HID *next_gui;
+
 /* This is either NULL or points to the current HID that is being called to
    do the exporting. The gui HIDs set and unset this var.*/
 extern HID *exporter;

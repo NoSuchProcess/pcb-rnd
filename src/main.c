@@ -1846,7 +1846,20 @@ int main(int argc, char *argv[])
 	printf("Settings.GnetlistProgram = \"%s\"\n", UNKNOWN(Settings.GnetlistProgram));
 #endif
 
-	gui->do_export(0);
+	do {
+		gui->do_export(0);
+		gui = next_gui;
+		next_gui = NULL;
+		if (gui != NULL) {
+			/* init the next GUI */
+			gui->parse_arguments(&argc, &argv);
+			if (gui->gui)
+				InitCrosshair();
+			SetMode(ARROW_MODE);
+				hid_action("LibraryChanged");
+		}
+	} while(gui != NULL);
+
 #if HAVE_DBUS
 	pcb_dbus_finish();
 #endif

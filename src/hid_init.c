@@ -41,6 +41,7 @@ HID **hid_list = 0;
 int hid_num_hids = 0;
 
 HID *gui = NULL;
+HID *next_gui = NULL;
 HID *exporter = NULL;
 
 int pixel_slop = 1;

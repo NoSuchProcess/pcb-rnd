@@ -9,6 +9,7 @@ Cleanup #4:
 		- move compat to portability?
 		- move realpath to portability?
 	- mods:
+		- move command.[ch]
 		- move libpcbfp
 
 UNGLIB (cleanup #3):
