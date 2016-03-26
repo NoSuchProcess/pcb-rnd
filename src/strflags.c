@@ -38,7 +38,7 @@
 
 #include "globalconst.h"
 #include "global.h"
-#include "compat.h"
+#include "compat_misc.h"
 #include "const.h"
 #include "strflags.h"
 

@@ -49,9 +49,6 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
 
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
@@ -77,36 +74,6 @@ char *GetWorkingDirectory(char *path)
 	/* seems that some BSD releases lack of a prototype for getwd() */
 	return getwd(path);
 #endif
-
-}
-
-const char *get_user_name(void)
-{
-#ifdef HAVE_GETPWUID
-	static struct passwd *pwentry;
-
-	int len;
-	char *comma, *gecos, *fab_author;
-
-	/* ID the user. */
-	pwentry = getpwuid(getuid());
-	gecos = pwentry->pw_gecos;
-	comma = strchr(gecos, ',');
-	if (comma)
-		len = comma - gecos;
-	else
-		len = strlen(gecos);
-	fab_author = (char *) malloc(len + 1);
-	if (!fab_author) {
-		perror("pcb: out of memory.\n");
-		exit(-1);
-	}
-	memcpy(fab_author, gecos, len);
-	fab_author[len] = 0;
-#else
-	return "Unknown";
-#endif
-
 }
 
 #ifdef MKDIR_IS_PCBMKDIR

@@ -9,7 +9,7 @@
 
 #include "xincludes.h"
 
-#include "compat.h"
+#include "compat_misc.h"
 #include "global.h"
 #include "data.h"
 #include "crosshair.h"

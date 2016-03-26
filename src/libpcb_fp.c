@@ -74,7 +74,7 @@
 #endif
 
 #include "error.h"
-#include "portability.h"
+#include "compat_fs.h"
 #include "libpcb_fp.h"
 
 

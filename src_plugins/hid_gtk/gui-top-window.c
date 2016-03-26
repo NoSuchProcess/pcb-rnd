@@ -72,7 +72,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "action_helper.h"
 #include "buffer.h"
 #include "change.h"
-#include "command.h"
 #include "copy.h"
 #include "create.h"
 #include "crosshair.h"

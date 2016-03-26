@@ -22,24 +22,11 @@
  *
  */
 
-#ifndef PCB_COMPAT_H
-#define PCH_COMPAT_H
+#ifndef PCB_COMPAT_DL_H
+#define PCB_COMPAT_DL_H
 
 #include "config.h"
 
-#include <math.h>
-
-#ifndef HAVE_EXPF
-float expf(float);
-#endif
-
-#ifndef HAVE_LOGF
-float logf(float);
-#endif
-
-#ifndef HAVE_RANDOM
-long random(void);
-#endif
 
 #if !defined(HAVE_DLFCN_H) && defined(WIN32)
 void *dlopen(const char *, int);
@@ -55,4 +42,4 @@ void *dlsym(void *, const char *);
 #endif
 
 
-#endif /* PCB_COMPAT_H */
+#endif /* PCB_COMPAT_DL_H */

@@ -95,7 +95,7 @@
 #include "remove.h"
 #include "set.h"
 #include "strflags.h"
-#include "portability.h"
+#include "compat_fs.h"
 #include "libpcb_fp.h"
 #include "paths.h"
 #include "rats_patch.h"

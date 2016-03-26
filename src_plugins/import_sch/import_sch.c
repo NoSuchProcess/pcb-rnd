@@ -34,7 +34,7 @@
 #include "plugins.h"
 
 #include "misc.h"
-#include "portability.h"
+#include "compat_fs.h"
 #include "pcb-printf.h"
 #include "remove.h"
 #include "rats.h"

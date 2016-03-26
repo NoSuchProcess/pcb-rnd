@@ -43,10 +43,12 @@
 #include "error.h"
 #include "draw.h"
 #include "misc.h"
-#include "portability.h"				/* MKDIR() */
 #include "pcb-printf.h"
 #include "set.h"
 #include "hid_attrib.h"
+
+/* for MKDIR() */
+#include "compat_fs.h"
 
 
 #if 0

@@ -6,7 +6,7 @@
 #include "hid_helper.h"
 #include "misc.h"
 #include "pcb-printf.h"
-#include "portability.h"
+#include "compat_fs.h"
 #include "error.h"
 
 HID_AttrNode *hid_attr_nodes = 0;

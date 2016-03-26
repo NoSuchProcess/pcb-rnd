@@ -3,23 +3,15 @@ Cleanup #4:
 		- hash in hid_attrib.c?
 		- hash in hid_color.c; test: eps
 		- nelma and gcode both invent .png name locally
-	- Makefile.in: what's hid/gtk/pcb.rc? -> win32 icon something
-	- portability:
-		- move compat to portability?
-		- move realpath to portability?
+		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
 	- mods:
 		- move libpcbfp
-
-UNGLIB (cleanup #3):
-	- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
-
-BUGS
-- gpmi (and other buildins/plugins) not showing up in the about box
+		- gpmi (and other buildins/plugins) not showing up in the about box
 
 CLEANUP #4
 - scconfig: detect libstroke
 - libstroke: zoom
-- cleanup resources:
+- cleanup/rewrite resources:
 	- better tree structs with less hidden properties (minor change in the res format: always require key=val pairs)
 	- gtk, lesstif: reorganize the code so that:
 		- menus are always created using a path (ghid_main_menu_real_add_resource)

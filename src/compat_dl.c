@@ -24,33 +24,12 @@
 
 #include "config.h"
 
-#include <math.h>
-#include "compat.h"
+#include "compat_dl.h"
 #include "global.h"
 
 
 RCSID("$Id$");
 
-#ifndef HAVE_EXPF
-float expf(float x)
-{
-	return (float) exp((double) x);
-}
-#endif
-
-#ifndef HAVE_LOGF
-float logf(float x)
-{
-	return (float) log((double) x);
-}
-#endif
-
-#ifndef HAVE_RANDOM
-long random(void)
-{
-	return (long) rand();
-}
-#endif
 
 #if !defined(HAVE_DLFCN_H) && defined(WIN32)
 #include <windows.h>

@@ -1,5 +1,4 @@
 char *GetWorkingDirectory(char *);
-const char *get_user_name(void);
 
 /* mkdir() implentation, mostly for plugins, which don't have our config.h.
  * Check whether mkdir() is mkdir or _mkdir, and whether it takes one

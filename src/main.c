@@ -52,7 +52,7 @@
 #include "set.h"
 #include "action_helper.h"
 #include "misc.h"
-#include "lrealpath.h"
+#include "compat_lrealpath.h"
 #include "free_atexit.h"
 #include "polygon.h"
 #include "pcb-printf.h"

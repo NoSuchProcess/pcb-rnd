@@ -33,7 +33,7 @@
 #include "data.h"
 
 /* For lrealpath */
-#include "lrealpath.h"
+#include "compat_lrealpath.h"
 
 
 #define PCB_DBUS_CANONICAL_NAME    "org.seul.geda.pcb"

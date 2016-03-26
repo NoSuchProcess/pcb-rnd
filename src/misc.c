@@ -71,7 +71,7 @@
 #include "set.h"
 #include "undo.h"
 #include "action_helper.h"
-#include "portability.h"
+#include "compat_fs.h"
 #include "hid_actions.h"
 #include "hid_init.h"
 

@@ -16,7 +16,10 @@ put /local/pcb/OBJS [@
 	change.o
 	change_act.o
 	clip.o
-	compat.o
+	compat_dl.o
+	compat_fs.o
+	compat_lrealpath.o
+	compat_misc.o
 	copy.o
 	create.o
 	crosshair.o
@@ -55,7 +58,6 @@ put /local/pcb/OBJS [@
 	list_pin.o
 	list_poly.o
 	list_rat.o
-	lrealpath.o
 	main.o
 	mirror.o
 	misc.o
@@ -93,7 +95,6 @@ put /local/pcb/OBJS [@
 	vtonpoint.o
 	res_parse.o
 	res_lex.o
-	portability.o
 	libpcb_fp.o
 	parse_y.o
 	parse_l.o

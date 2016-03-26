@@ -35,7 +35,7 @@
 #include "global.h"
 
 /*#include "clip.h"*/
-#include "compat.h"
+#include "compat_misc.h"
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"

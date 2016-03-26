@@ -34,7 +34,6 @@
 
 #include "data.h"
 #include "gui.h"
-#include "command.h"
 
 
 RCSID("$Id$");
