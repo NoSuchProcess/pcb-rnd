@@ -2433,21 +2433,21 @@ int ParseElement(DataTypePtr Ptr, const char *name)
 {
 	FILE *f;
 	int ret;
-	int st;
+	fp_fopen_ctx_t st;
 
 	yyPCB = NULL;
 	yyData = Ptr;
 	yyFont = &PCB->Font;
 	yyElement = NULL;
 
-	f = pcb_fp_fopen(Settings.LibraryShell, Settings.LibrarySearchPaths, name, &st);
+	f = fp_fopen(Settings.LibrarySearchPaths, name, &st);
 
 	if (f == NULL)
 		return -1;
 
 	ret = Parse(f, NULL,NULL,NULL,NULL);
 
-	pcb_fp_fclose(f, &st);
+	fp_fclose(f, &st);
 
 	return(ret);
 }

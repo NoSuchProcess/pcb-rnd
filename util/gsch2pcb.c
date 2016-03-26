@@ -34,7 +34,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include "../src/libpcb_fp.h"
+#include "../src/plug_footprint.h"
 #include "../src/paths.h"
 #include "../src_3rd/genvector/vts0.h"
 #include "../src_3rd/genlist/gendlist.h"

@@ -46,6 +46,8 @@
 #include "compat_fs.h"
 #include "error.h"
 
+static fp_type_t pcb_fp_file_type(const char *fn, void ***tags);
+
 /* ---------------------------------------------------------------------------
  * Parse the directory tree where newlib footprints are found
  */
@@ -304,6 +306,7 @@ static int fp_search_cb(void *cookie, const char *subdir, const char *name, fp_t
 	return 0;
 }
 
+/* TODO: make this static */
 char *fp_fs_search(const char *search_path, const char *basename, int parametric)
 {
 	int found;
@@ -345,6 +348,170 @@ char *fp_fs_search(const char *search_path, const char *basename, int parametric
 	return NULL;
 }
 
+/* Decide about the type of a footprint file:
+   - it is a file element if the first non-comment is "Element(" or "Element["
+   - else it is a parametric element (footprint generator) if it contains 
+     "@@" "purpose"
+   - else it's not an element.
+   - if a line of a file element starts with ## and doesn't contain @, it's a tag
+   - if tags is not NULL, it's a pointer to a void *tags[] - an array of tag IDs
+*/
+static fp_type_t pcb_fp_file_type(const char *fn, void ***tags)
+{
+	int c, comment_len;
+	int first_element = 1;
+	FILE *f;
+	enum {
+		ST_WS,
+		ST_COMMENT,
+		ST_ELEMENT,
+		ST_TAG,
+	} state = ST_WS;
+	char *tag = NULL;
+	int talloced = 0, tused = 0;
+	int Talloced = 0, Tused = 0;
+	fp_type_t ret = PCB_FP_INVALID;
+
+	if (tags != NULL)
+		*tags = NULL;
+
+	f = fopen(fn, "r");
+	if (f == NULL)
+		return PCB_FP_INVALID;
+
+	while ((c = fgetc(f)) != EOF) {
+		switch (state) {
+		case ST_ELEMENT:
+			if (isspace(c))
+				break;
+			if ((c == '(') || (c == '[')) {
+				ret = PCB_FP_FILE;
+				goto out;
+			}
+		case ST_WS:
+			if (isspace(c))
+				break;
+			if (c == '#') {
+				comment_len = 0;
+				state = ST_COMMENT;
+				break;
+			}
+			else if ((first_element) && (c == 'E')) {
+				char s[8];
+				/* Element */
+				fgets(s, 7, f);
+				s[6] = '\0';
+				if (strcmp(s, "lement") == 0) {
+					state = ST_ELEMENT;
+					break;
+				}
+			}
+			first_element = 0;
+			/* fall-thru for detecting @ */
+		case ST_COMMENT:
+			comment_len++;
+			if ((c == '#') && (comment_len == 1)) {
+				state = ST_TAG;
+				break;
+			}
+			if ((c == '\r') || (c == '\n'))
+				state = ST_WS;
+			if (c == '@') {
+				char s[10];
+			maybe_purpose:;
+				/* "@@" "purpose" */
+				fgets(s, 9, f);
+				s[8] = '\0';
+				if (strcmp(s, "@purpose") == 0) {
+					ret = PCB_FP_PARAMETRIC;
+					goto out;
+				}
+			}
+			break;
+		case ST_TAG:
+			if ((c == '\r') || (c == '\n')) {	/* end of a tag */
+				if (tags != NULL) {
+					tag[tused] = '\0';
+					if (Tused >= Talloced) {
+						Talloced += 8;
+						*tags = realloc(*tags, (Talloced + 1) * sizeof(void *));
+					}
+					(*tags)[Tused] = (void *) fp_tag(tag, 1);
+					Tused++;
+					(*tags)[Tused] = NULL;
+				}
+
+				tused = 0;
+				state = ST_WS;
+				break;
+			}
+			if (c == '@')
+				goto maybe_purpose;
+			if (tused >= talloced) {
+				talloced += 64;
+				tag = realloc(tag, talloced + 1);	/* always make room for an extra \0 */
+			}
+			tag[tused] = c;
+			tused++;
+		}
+	}
+
+out:;
+	if (tag != NULL)
+		free(tag);
+	fclose(f);
+	return ret;
+}
+
+#define F_IS_PARAMETRIC 0
+static FILE *fp_fs_fopen(plug_fp_t *ctx, const char *path, const char *name, fp_fopen_ctx_t *fctx)
+{
+	char *basename, *params, *fullname;
+	FILE *f = NULL;
+	const char *libshell = Settings.LibraryShell;
+
+	fctx->field[F_IS_PARAMETRIC].i = fp_dupname(name, &basename, &params);
+	if (basename == NULL)
+		return NULL;
+
+	fctx->backend = ctx;
+
+	fullname = fp_fs_search(path, basename, fctx->field[F_IS_PARAMETRIC].i);
+/*	fprintf(stderr, "basename=%s fullname=%s\n", basename, fullname);*/
+/*	printf("pcb_fp_fopen: %d '%s' '%s' fullname='%s'\n", fctx->field[F_IS_PARAMETRIC].i, basename, params, fullname);*/
+
+
+	if (fullname != NULL) {
+/*fprintf(stderr, "fullname=%s param=%d\n",  fullname, fctx->field[F_IS_PARAMETRIC].i);*/
+		if (fctx->field[F_IS_PARAMETRIC].i) {
+			char *cmd, *sep = " ";
+			if (libshell == NULL) {
+				libshell = "";
+				sep = "";
+			}
+			cmd = malloc(strlen(libshell) + strlen(fullname) + strlen(params) + 16);
+			sprintf(cmd, "%s%s%s %s", libshell, sep, fullname, params);
+/*fprintf(stderr, " cmd=%s\n",  cmd);*/
+			f = popen(cmd, "r");
+			free(cmd);
+		}
+		else
+			f = fopen(fullname, "r");
+		free(fullname);
+	}
+
+	free(basename);
+	return f;
+}
+
+static void fp_fs_fclose(plug_fp_t *ctx, FILE * f, fp_fopen_ctx_t *fctx)
+{
+	if (fctx->field[F_IS_PARAMETRIC].i)
+		pclose(f);
+	else
+		fclose(f);
+}
+
 
 static plug_fp_t fp_fs;
 
@@ -352,6 +519,8 @@ pcb_uninit_t hid_fp_fs_init(void)
 {
 	fp_fs.plugin_data = NULL;
 	fp_fs.load_dir = fp_fs_load_dir;
+	fp_fs.fopen = fp_fs_fopen;
+	fp_fs.fclose = fp_fs_fclose;
 	HOOK_REGISTER(plug_fp_t, plug_fp_chain, &fp_fs);
 
 	return NULL;

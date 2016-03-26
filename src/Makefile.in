@@ -96,7 +96,6 @@ put /local/pcb/OBJS [@
 	vtonpoint.o
 	res_parse.o
 	res_lex.o
-	libpcb_fp.o
 	parse_y.o
 	parse_l.o
 	buildin.o

@@ -34,7 +34,6 @@
 #include "data.h"
 #include "file.h"
 #include "mymem.h"
-#include "libpcb_fp.h"
 #include "paths.h"
 #include "error.h"
 #include "plug_footprint.h"
@@ -168,4 +167,16 @@ void fp_uninit()
 const char *fp_tagname(const void *tagid)
 {
 	return (char *) tagid;
+}
+
+FILE *fp_fopen(const char *path, const char *name, fp_fopen_ctx_t *fctx)
+{
+	FILE *res = NULL;
+	HOOK_CALL(plug_fp_t, plug_fp_chain, fopen, res, != NULL, path, name, fctx);
+}
+
+void fp_fclose(FILE * f, fp_fopen_ctx_t *fctx)
+{
+	if (fctx->backend->fclose != NULL)
+		fctx->backend->fclose(fctx->backend, f, fctx);
 }

@@ -96,7 +96,6 @@
 #include "set.h"
 #include "strflags.h"
 #include "compat_fs.h"
-#include "libpcb_fp.h"
 #include "paths.h"
 #include "rats_patch.h"
 #include "stub_edif.h"
