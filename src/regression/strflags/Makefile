@@ -15,7 +15,7 @@ tester.o: tester.c
 	$(CC) -c $(CFLAGS) -o $@ tester.c
 
 tester.stdout: tester
-	./tester > tester.stdout
+	./tester > tester.stdout && rm tester.stdout
 
 tester.diff: tester.stdout
 	diff -u tester.ref tester.stdout

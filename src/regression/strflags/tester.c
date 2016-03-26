@@ -30,6 +30,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 
+#define FLAG_TEST
 #include "strflags.c"
 
 static void dump_flag(FlagType * f)
@@ -107,14 +108,12 @@ int main()
 		count++;
 		if (FLAGS_EQUAL(fh.Flags, new_flags))
 			continue;
-printf("D1=");
 		dump_flag(&fh.Flags);
 		printf(" ");
-printf("D2=");
 		dump_flag(&new_flags);
 		printf("\n");
 		if (++errors == 5)
-			exit(1);
+			goto bad;
 	}
 
 	while (count < 1000000) {
@@ -149,9 +148,13 @@ printf("D2=");
 		printf("\n");
 
 		if (++errors == 5)
-			exit(1);
+			goto bad;
 	}
 	printf("%d out of %d failed\n", errors, count);
+	return errors;
+
+	bad:;
+	printf("%d out of %d FAILED\n", errors, count);
 	return errors;
 }
 
