@@ -36,6 +36,23 @@ void hid_attributes_uninit(void)
 	hid_attr_nodes = NULL;
 }
 
+void hid_remove_attributes_by_cookie(const char *cookie)
+{
+	HID_AttrNode *ha, *next, *prev = NULL;
+	for (ha = hid_attr_nodes; ha; ha = next) {
+		next = ha->next;
+		if (ha->cookie == cookie) {
+			if (prev == NULL)
+				hid_attr_nodes = next;
+			else
+				prev->next = next;
+			free(ha);
+		}
+		else
+			prev = ha;
+	}
+}
+
 void hid_parse_command_line(int *argc, char ***argv)
 {
 	HID_AttrNode *ha;

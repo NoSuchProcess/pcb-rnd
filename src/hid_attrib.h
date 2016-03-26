@@ -43,6 +43,9 @@ extern void hid_register_attributes(HID_Attribute *, int, const char *cookie, in
 #define REGISTER_ATTRIBUTES(a, cookie) HIDCONCAT(void register_,a) ()\
 { hid_register_attributes(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
+/* Remove all attributes registered with the given cookie */
+void hid_remove_attributes_by_cookie(const char *cookie);
+
 /* remove all attributes and free the list */
 void hid_attributes_uninit(void);
 
