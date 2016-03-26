@@ -13,12 +13,12 @@ switch /local/pcb/toporouter/controls
 		append /local/pcb/RULES           /local/pcb/toporouter_rules
 		append /local/pcb/LIBS            { ../src_3rd/gts/libgts.a }
 		append /local/pcb/EXEDEPS         { ../src_3rd/gts/libgts.a }
-		include {Makefile.in.mod/Buildin}
+		include /local/pcb/tmpasm/buildin
 		end;
 	case {plugin}
 		append /local/pcb/RULES           /local/pcb/toporouter_rules
 		append /local/pcb/toporouter/OBJS { ../src_3rd/gts/libgts.a }
-		include {Makefile.in.mod/Plugin}
+		include /local/pcb/tmpasm/plugin
 		end
-	case {disable}   include {Makefile.in.mod/Disable}; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
 end

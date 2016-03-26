@@ -2,7 +2,7 @@ put /local/pcb/mod {import_sch}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_sch/import_sch.o @]
 
 switch /local/pcb/import_sch/controls
-	case {buildin}   include {Makefile.in.mod/Buildin}; end;
-	case {plugin}    include {Makefile.in.mod/Plugin}; end;
-	case {disable}   include {Makefile.in.mod/Disable}; end;
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
 end
