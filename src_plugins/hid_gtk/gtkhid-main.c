@@ -2007,5 +2007,5 @@ void gtkhid_end(void)
 {
 	hid_remove_actions_by_cookie(ghid_cookie);
 	hid_remove_flags_by_cookie(ghid_cookie);
-/*TODO:	hid_remove_attributes_by_cookie(ghid_cookie); */
+	hid_remove_attributes_by_cookie(ghid_cookie);
 }
