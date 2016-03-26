@@ -146,6 +146,9 @@ static bool flip_x = 0, flip_y = 0;
 static bool autofade = 0;
 static bool crosshair_on = true;
 
+static void lesstif_begin(void);
+static void lesstif_end(void);
+
 static void ShowCrosshair(bool show)
 {
 	if (crosshair_on == show)
@@ -1681,6 +1684,8 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	Widget menu;
 	Widget work_area_frame;
 
+	lesstif_begin();
+
 	n = 0;
 	stdarg(XtNwidth, &width);
 	stdarg(XtNheight, &height);
@@ -1826,6 +1831,7 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	lesstif_hid_inited = 1;
 
 	XtAppMainLoop(app_context);
+	lesstif_end();
 }
 
 static void lesstif_do_exit(HID *hid)
@@ -3804,6 +3810,11 @@ pcb_uninit_t hid_hid_lesstif_init()
 
 	hid_register_hid(&lesstif_hid);
 
+	return NULL;
+}
+
+static void lesstif_begin(void)
+{
 	REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)
 	REGISTER_FLAGS(lesstif_main_flag_list, lesstif_cookie)
 	REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
@@ -3812,7 +3823,11 @@ pcb_uninit_t hid_hid_lesstif_init()
 	REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)
 	REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
 	REGISTER_ACTIONS(lesstif_styles_action_list, lesstif_cookie)
-
-	return NULL;
 }
 
+static void lesstif_end(void)
+{
+	hid_remove_actions_by_cookie(lesstif_cookie);
+	hid_remove_flags_by_cookie(lesstif_cookie);
+/*TODO:	hid_remove_attributes_by_cookie(lesstif_cookie); */
+}

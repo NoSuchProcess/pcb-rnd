@@ -26,6 +26,9 @@ RCSID("$Id$");
 
 static const char *batch_cookie = "batch HID";
 
+static void batch_begin(void);
+static void batch_end(void);
+
 /* This is a text-line "batch" HID, which exists for scripting and
    non-GUI needs.  */
 
@@ -124,11 +127,12 @@ REGISTER_ACTIONS(batch_action_list, batch_cookie)
 
 
 /* ----------------------------------------------------------------------------- */
-		 static void
-		   batch_do_export(HID_Attr_Val * options)
+static void batch_do_export(HID_Attr_Val * options)
 {
 	int interactive;
 	char line[1000];
+
+	batch_begin();
 
 	if (isatty(0))
 		interactive = 1;
@@ -150,6 +154,7 @@ REGISTER_ACTIONS(batch_action_list, batch_cookie)
 		}
 		hid_parse_command(line);
 	}
+	batch_end();
 }
 
 static void batch_parse_arguments(int *argc, char ***argv)
@@ -351,6 +356,15 @@ pcb_uninit_t hid_hid_batch_init()
 	batch_hid.create_menu = batch_create_menu;
 
 	hid_register_hid(&batch_hid);
-	REGISTER_ACTIONS(batch_action_list, batch_cookie)
 	return NULL;
+}
+
+static void batch_begin(void)
+{
+	REGISTER_ACTIONS(batch_action_list, batch_cookie)
+}
+
+static void batch_end(void)
+{
+	hid_remove_actions_by_cookie(batch_cookie);
 }

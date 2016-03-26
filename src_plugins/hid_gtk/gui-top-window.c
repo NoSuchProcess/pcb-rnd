@@ -1511,6 +1511,7 @@ void ghid_parse_arguments(int *argc, char ***argv)
 
 void ghid_do_export(HID_Attr_Val * options)
 {
+	gtkhid_begin();
 	ghid_create_pcb_widgets();
 
 	/* These are needed to make sure the @layerpick and @layerview menus
@@ -1529,7 +1530,7 @@ void ghid_do_export(HID_Attr_Val * options)
 
 	gtk_main();
 	ghid_config_files_write();
-
+	gtkhid_end();
 }
 
 /*! \brief callback for */

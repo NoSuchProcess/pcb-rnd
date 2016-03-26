@@ -1985,6 +1985,13 @@ pcb_uninit_t hid_hid_gtk_init()
 
 	ghid_hid.create_menu = ghid_create_menu;
 
+	hid_register_hid(&ghid_hid);
+
+	return NULL;
+}
+
+void gtkhid_begin(void)
+{
 	REGISTER_FLAGS(ghid_main_flag_list, ghid_cookie)
 	REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 	REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
@@ -1993,8 +2000,11 @@ pcb_uninit_t hid_hid_gtk_init()
 	REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
 	REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 	REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
+}
 
-	hid_register_hid(&ghid_hid);
-
-	return NULL;
+void gtkhid_end(void)
+{
+	hid_remove_actions_by_cookie(ghid_cookie);
+	hid_remove_flags_by_cookie(ghid_cookie);
+/*TODO:	hid_remove_attributes_by_cookie(ghid_cookie); */
 }
