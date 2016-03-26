@@ -43,7 +43,6 @@ void Backup(void);
 void SaveInTMP(void);
 void EmergencySave(void);
 void DisableEmergencySave(void);
-int ReadLibraryContents(void);	/* walk through all lib paths and build the library menu */
 int ImportNetlist(char *);
 int SaveBufferElements(char *);
 void PreLoadElementPCB(void);
@@ -77,5 +76,6 @@ void RemoveTMPData(void);
 void PrintQuotedString(FILE *, const char *);
 
 void file_uninit();
+void sort_library(LibraryTypePtr lib);
 
 #endif

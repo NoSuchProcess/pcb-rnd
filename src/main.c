@@ -60,6 +60,7 @@
 #include "paths.h"
 #include "strflags.h"
 #include "plugins.h"
+#include "plug_footprint.h"
 #include "event.h"
 #include "funchash.h"
 
