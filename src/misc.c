@@ -72,6 +72,7 @@
 #include "undo.h"
 #include "action_helper.h"
 #include "compat_fs.h"
+#include "compat_misc.h"
 #include "hid_actions.h"
 #include "hid_init.h"
 
