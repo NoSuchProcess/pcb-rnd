@@ -132,9 +132,9 @@ put /local/pcb/mod/OBJS {}
 put /local/pcb/mod/LDFLAGS {}
 put /local/pcb/mod/CFLAGS {}
 
-put /local/pcb/tmpasm/buildin  {Makefile.in.mod/Buildin}
-put /local/pcb/tmpasm/plugin   {Makefile.in.mod/Plugin}
-put /local/pcb/tmpasm/disable  {Makefile.in.mod/Disable}
+put /local/pcb/tmpasm/buildin  {../src_plugins/Buildin.tmpasm}
+put /local/pcb/tmpasm/plugin   {../src_plugins/Plugin.tmpasm}
+put /local/pcb/tmpasm/disable  {../src_plugins/Disable.tmpasm}
 
 include {../src_plugins/autoplace/Plug.tmpasm}
 include {../src_plugins/autoroute/Plug.tmpasm}
