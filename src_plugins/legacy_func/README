@@ -5,3 +5,4 @@ actions or flags.
 
 #state: works
 #default: buildin
+#implements: (lib)

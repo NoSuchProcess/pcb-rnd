@@ -2,3 +2,4 @@ GUI: the lesstif HID.
 
 #state: works
 #default: buildin
+#implements: hid

@@ -2,4 +2,4 @@ Gesture recognition with libstroke.
 
 #state: partially works (doesn't work with lesstif; works with the gtk hid, but there's no zoom bindings)
 #default: disabled
-
+#implements: (feature)

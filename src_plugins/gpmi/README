@@ -5,3 +5,4 @@ can implement exporters, etc.
 #state: works
 #default: buildin
 #ldefault: if gpmi is installed
+#implements: (feature)

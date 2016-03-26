@@ -2,3 +2,4 @@ Export to png, gif and jpeg
 
 #state: works
 #default: buildin
+#implements: export

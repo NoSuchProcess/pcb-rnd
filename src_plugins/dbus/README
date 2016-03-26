@@ -3,3 +3,4 @@ Remote control PCB using DBUS.
 #state: disabled
 #lstate: TODO: needs scconfig support
 #default: disabled
+#implements: (feature)

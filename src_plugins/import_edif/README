@@ -2,3 +2,4 @@ Import code for netlists in the EDIF format.
 
 #state: works
 #default: buildin
+#implements: import

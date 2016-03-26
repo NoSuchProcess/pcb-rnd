@@ -2,3 +2,4 @@ Imports element and netlist data from the schematics (or some other source).
 
 #state: works
 #default: buildin
+#implements: import

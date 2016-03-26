@@ -4,3 +4,4 @@ is the new autorouter from 2009.
 #state: fails
 #lstate: infinite loop in gts
 #default: disabled
+#implements: (feature)

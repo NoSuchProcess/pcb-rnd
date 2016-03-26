@@ -2,3 +2,4 @@ Export to gerber
 
 #state: works
 #default: buildin
+#implements: export

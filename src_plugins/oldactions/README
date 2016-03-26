@@ -3,3 +3,4 @@ DumpLibrary(): print footprint library on stdout
 
 #state: works
 #default: disabled
+#implements: (feature)
