@@ -48,6 +48,8 @@
 #include "misc.h"
 #include "rats.h"
 #include "set.h"
+#include "plugins.h"
+#include "hid_actions.h"
 
 
 RCSID("$Id$");
@@ -364,7 +366,7 @@ static int CommandSaveLayoutAndQuit(int argc, char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
-HID_Action command_action_list[] = {
+HID_Action shand_cmd_action_list[] = {
 	{"h", 0, CommandHelp,
 	 h_help, h_syntax}
 	,
@@ -397,4 +399,19 @@ HID_Action command_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(command_action_list, NULL)
+static const char *shand_cmd_cookie = "shand_cmd plugin";
+
+REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
+
+static void hid_shand_cmd_uninit(void)
+{
+	hid_remove_actions_by_cookie(shand_cmd_cookie);
+}
+
+#include "dolists.h"
+pcb_uninit_t hid_shand_cmd_init(void)
+{
+	REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
+	return hid_shand_cmd_uninit;
+}
+

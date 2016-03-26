@@ -44,7 +44,6 @@
 #include "global.h"
 #include "action_helper.h"
 #include "buffer.h"
-#include "command.h"
 #include "data.h"
 #include "error.h"
 #include "file.h"

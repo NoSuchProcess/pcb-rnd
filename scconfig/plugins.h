@@ -13,6 +13,7 @@ plugin_def("fontmode",        "font editor",               sbuildin)
 plugin_def("legacy_func",     "legacy functions",          sbuildin)
 plugin_def("stroke",          "libstroke gestures",        sdisable)
 plugin_def("report",          "reprot actions",            sbuildin)
+plugin_def("shand_cmd",       "command shorthands",        sbuildin)
 
 plugin_header("\nImport plugins:\n")
 plugin_def("import_sch",      "import sch",                sbuildin)

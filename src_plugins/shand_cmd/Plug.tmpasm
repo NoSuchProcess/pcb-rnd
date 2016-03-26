@@ -1,0 +1,8 @@
+put /local/pcb/mod {shand_cmd}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/shand_cmd/command.o @]
+
+switch /local/pcb/shand_cmd/controls
+	case {buildin}   include {Makefile.in.mod/Buildin}; end;
+	case {plugin}    include {Makefile.in.mod/Plugin}; end;
+	case {disable}   include {Makefile.in.mod/Disable}; end;
+end
