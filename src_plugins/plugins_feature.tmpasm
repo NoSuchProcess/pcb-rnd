@@ -1,0 +1,17 @@
+# Feature plugins
+
+include {../src_plugins/autoplace/Plug.tmpasm}
+include {../src_plugins/autoroute/Plug.tmpasm}
+include {../src_plugins/vendordrill/Plug.tmpasm}
+include {../src_plugins/puller/Plug.tmpasm}
+include {../src_plugins/djopt/Plug.tmpasm}
+include {../src_plugins/mincut/Plug.tmpasm}
+include {../src_plugins/gpmi/Plug.tmpasm}
+include {../src_plugins/toporouter/Plug.tmpasm}
+include {../src_plugins/oldactions/Plug.tmpasm}
+include {../src_plugins/fontmode/Plug.tmpasm}
+include {../src_plugins/shand_cmd/Plug.tmpasm}
+include {../src_plugins/legacy_func/Plug.tmpasm}
+include {../src_plugins/renumber/Plug.tmpasm}
+include {../src_plugins/stroke/Plug.tmpasm}
+include {../src_plugins/report/Plug.tmpasm}

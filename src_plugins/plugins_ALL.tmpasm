@@ -1,0 +1,4 @@
+# List of all plugins
+include {../src_plugins/plugins_io.tmpasm}
+include {../src_plugins/plugins_feature.tmpasm}
+include {../src_plugins/plugins_fp.tmpasm}

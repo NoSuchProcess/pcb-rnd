@@ -137,34 +137,7 @@ put /local/pcb/tmpasm/buildin  {../src_plugins/Buildin.tmpasm}
 put /local/pcb/tmpasm/plugin   {../src_plugins/Plugin.tmpasm}
 put /local/pcb/tmpasm/disable  {../src_plugins/Disable.tmpasm}
 
-include {../src_plugins/autoplace/Plug.tmpasm}
-include {../src_plugins/autoroute/Plug.tmpasm}
-include {../src_plugins/vendordrill/Plug.tmpasm}
-include {../src_plugins/puller/Plug.tmpasm}
-include {../src_plugins/import_edif/Plug.tmpasm}
-include {../src_plugins/djopt/Plug.tmpasm}
-include {../src_plugins/mincut/Plug.tmpasm}
-include {../src_plugins/gpmi/Plug.tmpasm}
-include {../src_plugins/toporouter/Plug.tmpasm}
-include {../src_plugins/oldactions/Plug.tmpasm}
-include {../src_plugins/fontmode/Plug.tmpasm}
-include {../src_plugins/shand_cmd/Plug.tmpasm}
-include {../src_plugins/legacy_func/Plug.tmpasm}
-include {../src_plugins/renumber/Plug.tmpasm}
-include {../src_plugins/stroke/Plug.tmpasm}
-include {../src_plugins/report/Plug.tmpasm}
-include {../src_plugins/fp_fs/Plug.tmpasm}
-include {../src_plugins/import_sch/Plug.tmpasm}
-include {../src_plugins/export_ps/Plug.tmpasm}
-include {../src_plugins/export_lpr/Plug.tmpasm}
-include {../src_plugins/export_gcode/Plug.tmpasm}
-include {../src_plugins/export_nelma/Plug.tmpasm}
-include {../src_plugins/export_png/Plug.tmpasm}
-include {../src_plugins/export_gerber/Plug.tmpasm}
-include {../src_plugins/export_bom/Plug.tmpasm}
-include {../src_plugins/hid_batch/Plug.tmpasm}
-include {../src_plugins/hid_gtk/Plug.tmpasm}
-include {../src_plugins/hid_lesstif/Plug.tmpasm}
+include {../src_plugins/plugins_ALL.tmpasm}
 
 append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags
 append /local/pcb/LIBS    /target/libs/sul/glib/ldflags

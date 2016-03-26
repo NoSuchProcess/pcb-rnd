@@ -1,0 +1,5 @@
+# footprint plugins
+# This has to be separate from any other class because gsch2pcb depends on it
+# while it doesn't want to link the rest.
+
+include {../src_plugins/fp_fs/Plug.tmpasm}
