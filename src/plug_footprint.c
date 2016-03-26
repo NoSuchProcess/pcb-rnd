@@ -114,7 +114,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fp_ty
 	return 0;
 }
 
-int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath, int is_root)
+static int fp_fs_load_dir_(const char *subdir, const char *toppath, int is_root)
 {
 	LibraryMenuTypePtr menu = NULL;	/* Pointer to PCB's library menu structure */
 	list_st_t l;
@@ -143,7 +143,7 @@ int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath, int is_
 	/* now recurse to each subdirectory mapped in the previous call;
 	   by now we don't care if menu is ruined by the realloc() in GetLibraryMenuMemory() */
 	for (d = l.subdirs; d != NULL; d = nextd) {
-		l.children += LoadNewlibFootprintsFromDir(d->subdir, d->parent, 0);
+		l.children += fp_fs_load_dir_(d->subdir, d->parent, 0);
 		nextd = d->next;
 		free(d->subdir);
 		free(d->parent);
@@ -157,15 +157,19 @@ int LoadNewlibFootprintsFromDir(const char *subdir, const char *toppath, int is_
 }
 
 
+static int fp_fs_load_dir(const char *path)
+{
+	return fp_fs_load_dir_(".", path, 1);
+}
 
 /* This function loads the newlib footprints into the Library.
  * It examines all directories pointed to by Settings.LibraryTree.
  * In each directory specified there, it looks both in that directory,
  * as well as *one* level down.  It calls the subfunction 
- * LoadNewlibFootprintsFromDir to put the footprints into PCB's internal
+ * fp_fs_load_dir to put the footprints into PCB's internal
  * datastructures.
  */
-static int ParseLibraryTree(void)
+static int fp_read_lib_all_(void)
 {
 	char toppath[MAXPATHLEN + 1];	/* String holding abs path to top level library dir */
 	char *libpaths;								/* String holding list of library paths to search */
@@ -191,7 +195,7 @@ static int ParseLibraryTree(void)
 #endif
 
 		/* Next read in any footprints in the top level dir */
-		n_footprints += LoadNewlibFootprintsFromDir(".", toppath, 1);
+		n_footprints += fp_fs_load_dir(toppath);
 	}
 
 #ifdef DEBUG
@@ -202,14 +206,14 @@ static int ParseLibraryTree(void)
 	return n_footprints;
 }
 
-int ReadLibraryContents(void)
+int fp_read_lib_all(void)
 {
 	FILE *resultFP = NULL;
 
 	/* List all footprint libraries.  Then sort the whole
 	 * library.
 	 */
-	if (ParseLibraryTree() > 0 || resultFP != NULL) {
+	if (fp_read_lib_all_() > 0 || resultFP != NULL) {
 		sort_library(&Library);
 		return 0;
 	}

@@ -1813,7 +1813,7 @@ int main(int argc, char *argv[])
 
 	/* read the library file and display it if it's not empty
 	 */
-	if (!ReadLibraryContents() && Library.MenuN)
+	if (!fp_read_lib_all() && Library.MenuN)
 		hid_action("LibraryChanged");
 
 	if (Settings.ScriptFilename) {

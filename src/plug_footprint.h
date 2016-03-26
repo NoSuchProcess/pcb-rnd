@@ -1,3 +1,3 @@
 
 /* walk through all lib paths and build the library menu */
-int ReadLibraryContents(void);
+int fp_read_lib_all(void);
