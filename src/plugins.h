@@ -46,5 +46,29 @@ void plugins_init(void);
 /* Uninit each plugin then uninit the plugin system */
 void plugins_uninit(void);
 
-/* Register a new plugin (or building) */
+/* Register a new plugin (or buildin) */
 void plugin_register(const char *name, const char *path, void *handle, int dynamic, pcb_uninit_t uninit);
+
+
+/* Hook based plugin generics; plugins that implement a common API should use
+   HOOK_REGISTER with an api struct. The core should run the plugins using
+   HOOK_CALL */
+
+#define HOOK_CALL(chain_type, chain, func, res, accept, ...) \
+do { \
+	chain_type *__ch__; \
+	for(__ch__ = (chain); __ch__ != NULL; __ch__ = __ch__->next) { \
+		if (__ch__->func == NULL) \
+			continue; \
+		res = __ch__->func(__ch__, __VA_ARGS__); \
+		if (res accept) \
+			break; \
+	} \
+} while(0)
+
+#define HOOK_REGISTER(chain_type, chain, hstruct) \
+do { \
+	(hstruct)->next = chain; \
+	chain = (hstruct); \
+} while(0)
+

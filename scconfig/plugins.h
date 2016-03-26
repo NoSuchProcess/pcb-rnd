@@ -15,6 +15,9 @@ plugin_def("stroke",          "libstroke gestures",        sdisable)
 plugin_def("report",          "reprot actions",            sbuildin)
 plugin_def("shand_cmd",       "command shorthands",        sbuildin)
 
+plugin_header("\nFootprint backends:\n")
+plugin_def("fp_fs",           "filesystem footprints",     sbuildin)
+
 plugin_header("\nImport plugins:\n")
 plugin_def("import_sch",      "import sch",                sbuildin)
 plugin_def("import_edif",     "import edif",               sbuildin)
