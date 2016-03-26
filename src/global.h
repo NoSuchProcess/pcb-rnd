@@ -240,7 +240,7 @@ typedef struct {
 	int index;
 } RouteStyleType, *RouteStyleTypePtr;
 
-#include "libpcb_fp.h"
+#include "plug_footprint.h"
 /* ---------------------------------------------------------------------------
  * structure used by library routines
  */
@@ -252,7 +252,7 @@ typedef struct {
 	 *Package,										/* package */
 	 *Value,											/* the value field */
 	 *Description;								/* some descritional text */
-	pcb_fp_type_t Type;
+	fp_type_t Type;
 	void **Tags;									/* an array of void * tag IDs; last tag ID is NULL */
 } LibraryEntryType, *LibraryEntryTypePtr;
 /*typedef LibraryEntryType *LibraryEntryTypePtr;*/

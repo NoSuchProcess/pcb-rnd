@@ -40,6 +40,9 @@
 #include "plug_footprint.h"
 #include "plugins.h"
 
+#include "../src_3rd/genht/htsp.h"
+#include "../src_3rd/genht/hash.h"
+
 plug_fp_t *plug_fp_chain = NULL;
 
 /* This function loads the newlib footprints into the Library.
@@ -105,4 +108,64 @@ int fp_read_lib_all(void)
 	}
 
 	return (1);
+}
+
+int fp_dupname(const char *name, char **basename, char **params)
+{
+	char *newname, *s;
+
+	*basename = newname = strdup(name);
+	s = strchr(newname, '(');
+	if (s == NULL) {
+		*params = NULL;
+		return 0;
+	}
+
+	/* split at '(' */
+	*s = '\0';
+	*params = s + 1;
+	s = *params + strlen(*params) - 1;
+
+	/* strip ')' */
+	if (*s == ')')
+		*s = '\0';
+
+	return 1;
+}
+
+static htsp_t *fp_tags = NULL;
+
+static int keyeq(char *a, char *b)
+{
+	return !strcmp(a, b);
+}
+
+const void *fp_tag(const char *tag, int alloc)
+{
+	htsp_entry_t *e;
+	static int counter = 0;
+
+	if (fp_tags == NULL)
+		fp_tags = htsp_alloc(strhash, keyeq);
+	e = htsp_getentry(fp_tags, (char *) tag);
+	if ((e == NULL) && alloc) {
+		htsp_set(fp_tags, strdup(tag), (void *) counter);
+		counter++;
+		e = htsp_getentry(fp_tags, (char *) tag);
+	}
+	return e == NULL ? NULL : e->key;
+}
+
+void fp_uninit()
+{
+	htsp_entry_t *e;
+	for (e = htsp_first(fp_tags); e; e = htsp_next(fp_tags, e))
+		free(e->key);
+	htsp_free(fp_tags);
+	fp_tags = NULL;
+}
+
+const char *fp_tagname(const void *tagid)
+{
+	return (char *) tagid;
 }

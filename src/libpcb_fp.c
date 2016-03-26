@@ -39,17 +39,12 @@
 
 #include "global.h"
 
-#include <dirent.h>
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
 #include <time.h>
 
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
 
-#include <sys/stat.h>
 
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
@@ -76,51 +71,12 @@
 #include "error.h"
 #include "compat_fs.h"
 #include "libpcb_fp.h"
+#include "plug_footprint.h"
 
 
 #include "paths.h"
 
-#include "../src_3rd/genht/htsp.h"
-#include "../src_3rd/genht/hash.h"
-
 RCSID("$Id$");
-
-static htsp_t *pcb_fp_tags = NULL;
-
-static int keyeq(char *a, char *b)
-{
-	return !strcmp(a, b);
-}
-
-const void *pcb_fp_tag(const char *tag, int alloc)
-{
-	htsp_entry_t *e;
-	static int counter = 0;
-
-	if (pcb_fp_tags == NULL)
-		pcb_fp_tags = htsp_alloc(strhash, keyeq);
-	e = htsp_getentry(pcb_fp_tags, (char *) tag);
-	if ((e == NULL) && alloc) {
-		htsp_set(pcb_fp_tags, strdup(tag), (void *) counter);
-		counter++;
-		e = htsp_getentry(pcb_fp_tags, (char *) tag);
-	}
-	return e == NULL ? NULL : e->key;
-}
-
-void pcb_fp_uninit()
-{
-	htsp_entry_t *e;
-	for (e = htsp_first(pcb_fp_tags); e; e = htsp_next(pcb_fp_tags, e))
-		free(e->key);
-	htsp_free(pcb_fp_tags);
-	pcb_fp_tags = NULL;
-}
-
-const char *pcb_fp_tagname(const void *tagid)
-{
-	return (char *) tagid;
-}
 
 /* Decide about the type of a footprint file:
    - it is a file element if the first non-comment is "Element(" or "Element["
@@ -130,7 +86,7 @@ const char *pcb_fp_tagname(const void *tagid)
    - if a line of a file element starts with ## and doesn't contain @, it's a tag
    - if tags is not NULL, it's a pointer to a void *tags[] - an array of tag IDs
 */
-pcb_fp_type_t pcb_fp_file_type(const char *fn, void ***tags)
+fp_type_t pcb_fp_file_type(const char *fn, void ***tags)
 {
 	int c, comment_len;
 	int first_element = 1;
@@ -144,7 +100,7 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn, void ***tags)
 	char *tag = NULL;
 	int talloced = 0, tused = 0;
 	int Talloced = 0, Tused = 0;
-	pcb_fp_type_t ret = PCB_FP_INVALID;
+	fp_type_t ret = PCB_FP_INVALID;
 
 	if (tags != NULL)
 		*tags = NULL;
@@ -210,7 +166,7 @@ pcb_fp_type_t pcb_fp_file_type(const char *fn, void ***tags)
 						Talloced += 8;
 						*tags = realloc(*tags, (Talloced + 1) * sizeof(void *));
 					}
-					(*tags)[Tused] = (void *) pcb_fp_tag(tag, 1);
+					(*tags)[Tused] = (void *) fp_tag(tag, 1);
 					Tused++;
 					(*tags)[Tused] = NULL;
 				}
@@ -237,214 +193,16 @@ out:;
 	return ret;
 }
 
-int pcb_fp_list(const char *subdir, int recurse,
-								int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fp_type_t type, void *tags[]), void *cookie,
-								int subdir_may_not_exist, int need_tags)
-{
-	char olddir[MAXPATHLEN + 1];	/* The directory we start out in (cwd) */
-	char new_subdir[MAXPATHLEN + 1];
-	char fn[MAXPATHLEN + 1], *fn_end;
-	DIR *subdirobj;								/* Interable object holding all subdir entries */
-	struct dirent *subdirentry;		/* Individual subdir entry */
-	struct stat buffer;						/* Buffer used in stat */
-	size_t l;
-	size_t len;
-	int n_footprints = 0;					/* Running count of footprints found in this subdir */
-	char *full_path;
-
-	/* Cache old dir, then cd into subdir because stat is given relative file names. */
-	memset(olddir, 0, sizeof olddir);
-	if (GetWorkingDirectory(olddir) == NULL) {
-		Message(_("pcb_fp_list(): Could not determine initial working directory\n"));
-		return 0;
-	}
-
-	if (chdir(subdir)) {
-		if (!subdir_may_not_exist)
-			ChdirErrorMessage(subdir);
-		return 0;
-	}
-
-
-	/* Determine subdir's abs path */
-	if (GetWorkingDirectory(new_subdir) == NULL) {
-		Message(_("pcb_fp_list(): Could not determine new working directory\n"));
-		if (chdir(olddir))
-			ChdirErrorMessage(olddir);
-		return 0;
-	}
-
-	l = strlen(new_subdir);
-	memcpy(fn, new_subdir, l);
-	fn[l] = PCB_DIR_SEPARATOR_C;
-	fn_end = fn + l + 1;
-
-	/* First try opening the directory specified by path */
-	if ((subdirobj = opendir(new_subdir)) == NULL) {
-		OpendirErrorMessage(new_subdir);
-		if (chdir(olddir))
-			ChdirErrorMessage(olddir);
-		return 0;
-	}
-
-	/* Now loop over files in this directory looking for files.
-	 * We ignore certain files which are not footprints.
-	 */
-	while ((subdirentry = readdir(subdirobj)) != NULL) {
-#ifdef DEBUG
-/*    printf("...  Examining file %s ... \n", subdirentry->d_name); */
-#endif
-
-
-		/* Ignore non-footprint files found in this directory
-		 * We're skipping .png and .html because those
-		 * may exist in a library tree to provide an html browsable
-		 * index of the library.
-		 */
-		l = strlen(subdirentry->d_name);
-		if (!stat(subdirentry->d_name, &buffer)
-				&& subdirentry->d_name[0] != '.'
-				&& NSTRCMP(subdirentry->d_name, "CVS") != 0
-				&& NSTRCMP(subdirentry->d_name, "Makefile") != 0
-				&& NSTRCMP(subdirentry->d_name, "Makefile.am") != 0
-				&& NSTRCMP(subdirentry->d_name, "Makefile.in") != 0 && (l < 4 || NSTRCMP(subdirentry->d_name + (l - 4), ".png") != 0)
-				&& (l < 5 || NSTRCMP(subdirentry->d_name + (l - 5), ".html") != 0)
-				&& (l < 4 || NSTRCMP(subdirentry->d_name + (l - 4), ".pcb") != 0)) {
-
-#ifdef DEBUG
-/*	printf("...  Found a footprint %s ... \n", subdirentry->d_name); */
-#endif
-			strcpy(fn_end, subdirentry->d_name);
-			if ((S_ISREG(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
-				pcb_fp_type_t ty;
-				void **tags = NULL;
-				ty = pcb_fp_file_type(subdirentry->d_name, (need_tags ? &tags : NULL));
-				if ((ty == PCB_FP_FILE) || (ty == PCB_FP_PARAMETRIC)) {
-					n_footprints++;
-					if (cb(cookie, new_subdir, subdirentry->d_name, ty, tags))
-						break;
-					continue;
-				}
-				else
-					if (tags != NULL)
-						free(tags);
-			}
-
-			if ((S_ISDIR(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
-				cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_DIR, NULL);
-				if (recurse) {
-					n_footprints += pcb_fp_list(fn, recurse, cb, cookie, 0, need_tags);
-				}
-				continue;
-			}
-
-		}
-	}
-	/* Done.  Clean up, cd back into old dir, and return */
-	closedir(subdirobj);
-	if (chdir(olddir))
-		ChdirErrorMessage(olddir);
-	return n_footprints;
-}
-
-int pcb_fp_dupname(const char *name, char **basename, char **params)
-{
-	char *newname, *s;
-
-	*basename = newname = strdup(name);
-	s = strchr(newname, '(');
-	if (s == NULL) {
-		*params = NULL;
-		return 0;
-	}
-
-	/* split at '(' */
-	*s = '\0';
-	*params = s + 1;
-	s = *params + strlen(*params) - 1;
-
-	/* strip ')' */
-	if (*s == ')')
-		*s = '\0';
-
-	return 1;
-}
-
-typedef struct {
-	const char *target;
-	int target_len;
-	int parametric;
-	char *path;
-	char *real_name;
-} pcb_fp_search_t;
-
-static int pcb_fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_fp_type_t type, void *tags[])
-{
-	pcb_fp_search_t *ctx = (pcb_fp_search_t *) cookie;
-	if ((strncmp(ctx->target, name, ctx->target_len) == 0) && ((! !ctx->parametric) == (type == PCB_FP_PARAMETRIC))) {
-		const char *suffix = name + ctx->target_len;
-		/* ugly heuristics: footprint names may end in .fp or .ele */
-		if ((*suffix == '\0') || (strcasecmp(suffix, ".fp") == 0) || (strcasecmp(suffix, ".ele") == 0)) {
-			ctx->path = strdup(subdir);
-			ctx->real_name = strdup(name);
-			return 1;
-		}
-	}
-	return 0;
-}
-
-char *pcb_fp_search(const char *search_path, const char *basename, int parametric)
-{
-	int found;
-	const char *p, *end;
-	char path[MAXPATHLEN + 1];
-	pcb_fp_search_t ctx;
-
-	if ((*basename == '/') || (*basename == PCB_DIR_SEPARATOR_C))
-		return strdup(basename);
-
-	ctx.target = basename;
-	ctx.target_len = strlen(ctx.target);
-	ctx.parametric = parametric;
-	ctx.path = NULL;
-
-/*	fprintf("Looking for %s\n", ctx.target);*/
-
-	for (p = search_path; end = strchr(p, ':'); p = end + 1) {
-		char *fpath;
-		memcpy(path, p, end - p);
-		path[end - p] = '\0';
-
-		resolve_path(path, &fpath);
-/*		fprintf(stderr, " in '%s'\n", fpath);*/
-
-		pcb_fp_list(fpath, 1, pcb_fp_search_cb, &ctx, 1, 0);
-		if (ctx.path != NULL) {
-			sprintf(path, "%s%c%s", ctx.path, PCB_DIR_SEPARATOR_C, ctx.real_name);
-			free(ctx.path);
-			free(ctx.real_name);
-/*			fprintf("  found '%s'\n", path);*/
-			free(fpath);
-			return strdup(path);
-		}
-		free(fpath);
-		if (end == NULL)
-			break;
-	}
-	return NULL;
-}
-
-
 FILE *pcb_fp_fopen(const char *libshell, const char *path, const char *name, int *is_parametric)
 {
 	char *basename, *params, *fullname;
 	FILE *f = NULL;
 
-	*is_parametric = pcb_fp_dupname(name, &basename, &params);
+	*is_parametric = fp_dupname(name, &basename, &params);
 	if (basename == NULL)
 		return NULL;
 
-	fullname = pcb_fp_search(path, basename, *is_parametric);
+	fullname = fp_fs_search(path, basename, *is_parametric);
 /*	fprintf(stderr, "basename=%s fullname=%s\n", basename, fullname);*/
 /*	printf("pcb_fp_fopen: %d '%s' '%s' fullname='%s'\n", *is_parametric, basename, params, fullname);*/
 

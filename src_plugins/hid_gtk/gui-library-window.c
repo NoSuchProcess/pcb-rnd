@@ -289,7 +289,7 @@ static gboolean lib_model_filter_visible_func(GtkTreeModel * model, GtkTreeIter 
 						while (isspace(*next))
 							next++;
 					}
-					need = pcb_fp_tag(tag, 0);
+					need = fp_tag(tag, 0);
 					fprintf(stderr, "TAG: '%s' %p\n", tag, need);
 					if (need == NULL) {
 						ret = FALSE;
@@ -412,7 +412,7 @@ static void library_window_preview_refresh(GhidLibraryWindow * library_window, c
 
 
 		for (t = entry->Tags; *t != NULL; t++) {
-			const char *name = pcb_fp_tagname(*t);
+			const char *name = fp_tagname(*t);
 			if (name != NULL) {
 				g_string_append(pt, "\n  ");
 				g_string_append(pt, name);

@@ -1599,7 +1599,7 @@ void pcb_main_uninit(void)
 	uninit_strflags_layerlist();
 
 	FreeLibraryMemory(&Library);
-	pcb_fp_uninit();
+	fp_uninit();
 	file_uninit();
 	funchash_uninit();
 
