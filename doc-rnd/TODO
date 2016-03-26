@@ -9,7 +9,6 @@ Cleanup #4:
 		- move compat to portability?
 		- move realpath to portability?
 	- mods:
-		- move rubberband
 		- move libpcbfp
 
 RELEASE: 
