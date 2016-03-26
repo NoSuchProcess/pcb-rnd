@@ -1,8 +1,12 @@
-This directory hosts feature plugins. Each subdirectory is a specific
-feature that can be selected to be a (static linked) building, a
-(dynamic linked) plugin or not compiled at all. The selection is made
-in ./configure.
+This directory hosts core plugins. They are feature, exporter and hid plugins.
+
+Each subdirectory is a standalone plugin that can be selected to be a
+(static linked) building, a (dynamic linked) plugin or not compiled at
+all. The selection is made in ./configure.
+
+HID plugins are user interfaces; exporter plugins convert the current design
+to an alien format; feature plugins create actions or otherwise add
+functionality to the system independent of which HID is running.
 
 Some of the plugins depend on ../src_3rd and all of them depend on
 core (../src).
-
