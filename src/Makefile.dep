@@ -1,5 +1,913 @@
 ### Generated file, do not edit, run make dep ###
 
+../src_plugins/autoplace/action.o: ../src_plugins/autoplace/action.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h ../src_plugins/autoplace/autoplace.h \
+ plugins.h set.h global.h hid_actions.h dolists.h
+../src_plugins/autoplace/autoplace.o: \
+ ../src_plugins/autoplace/autoplace.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h ../src_plugins/autoplace/autoplace.h box.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h compat_misc.h \
+ data.h draw.h error.h intersect.h rtree.h macro.h mirror.h misc.h move.h \
+ mymem.h rats.h remove.h rotate.h
+../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h ../src_plugins/autoroute/autoroute.h \
+ action_helper.h global.h plugins.h set.h hid_actions.h dolists.h
+../src_plugins/autoroute/autoroute.o: \
+ ../src_plugins/autoroute/autoroute.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h macro.h \
+ ../src_plugins/autoroute/autoroute.h box.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h create.h draw.h error.h find.h \
+ heap.h rtree.h misc.h ../src_plugins/autoroute/mtspace.h \
+ ../src_plugins/autoroute/vector.h mymem.h polygon.h rats.h remove.h \
+ thermal.h undo.h pcb-printf.h set.h
+../src_plugins/autoroute/mtspace.o: ../src_plugins/autoroute/mtspace.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h box.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h heap.h rtree.h \
+ ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h
+../src_plugins/autoroute/vector.o: ../src_plugins/autoroute/vector.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h ../src_plugins/autoroute/vector.h
+../src_plugins/djopt/djopt.o: ../src_plugins/djopt/djopt.c ../config.h \
+ ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h create.h remove.h move.h \
+ draw.h undo.h strflags.h find.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h plugins.h hid_flags.h hid_actions.h \
+ dolists.h
+../src_plugins/export_bom/bom.o: ../src_plugins/export_bom/bom.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h error.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h plugins.h hid.h \
+ hid_nogui.h hid_attrib.h hid_helper.h hid_init.h
+../src_plugins/export_gcode/curve.o: ../src_plugins/export_gcode/curve.c \
+ ../src_plugins/export_gcode/potracelib.h \
+ ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/curve.h \
+ ../src_plugins/export_gcode/auxiliary.h ../config.h ../config.manual.h \
+ ../config.auto.h
+../src_plugins/export_gcode/decompose.o: \
+ ../src_plugins/export_gcode/decompose.c \
+ ../src_plugins/export_gcode/potracelib.h \
+ ../src_plugins/export_gcode/curve.h \
+ ../src_plugins/export_gcode/auxiliary.h ../config.h ../config.manual.h \
+ ../config.auto.h ../src_plugins/export_gcode/lists.h \
+ ../src_plugins/export_gcode/bitmap.h \
+ ../src_plugins/export_gcode/decompose.h
+../src_plugins/export_gcode/gcode.o: ../src_plugins/export_gcode/gcode.c \
+ ../config.h ../config.manual.h ../config.auto.h plugins.h global.h \
+ const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h error.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h rats.h hid_helper.h hid.h \
+ hid_nogui.h hid_draw_helpers.h ../src_plugins/export_gcode/gcode.h \
+ ../src_plugins/export_gcode/bitmap.h \
+ ../src_plugins/export_gcode/potracelib.h \
+ ../src_plugins/export_gcode/curve.h \
+ ../src_plugins/export_gcode/auxiliary.h \
+ ../src_plugins/export_gcode/trace.h \
+ ../src_plugins/export_gcode/decompose.h pcb-printf.h hid_init.h \
+ hid_attrib.h hid_flags.h hid_color.h dolists.h
+../src_plugins/export_gcode/trace.o: ../src_plugins/export_gcode/trace.c \
+ global.h ../config.h ../config.manual.h ../config.auto.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h ../src_plugins/export_gcode/potracelib.h \
+ ../src_plugins/export_gcode/curve.h \
+ ../src_plugins/export_gcode/auxiliary.h \
+ ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/trace.h
+../src_plugins/export_gerber/gerber.o: \
+ ../src_plugins/export_gerber/gerber.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h error.h draw.h pcb-printf.h \
+ plugins.h hid_helper.h hid.h hid_nogui.h hid_draw_helpers.h hid_init.h \
+ hid_attrib.h hid_flags.h
+../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h plugins.h hid.h \
+ ../src_plugins/export_lpr/../export_ps/ps.h hid_nogui.h hid_init.h \
+ hid_attrib.h hid_actions.h
+../src_plugins/export_nelma/nelma.o: ../src_plugins/export_nelma/nelma.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h error.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h rats.h plugins.h hid_helper.h \
+ hid.h hid_nogui.h hid_draw_helpers.h hid_init.h hid_attrib.h hid_flags.h \
+ hid_color.h dolists.h
+../src_plugins/export_png/png.o: ../src_plugins/export_png/png.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h error.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h plugins.h hid.h hid_nogui.h \
+ hid_draw_helpers.h ../src_plugins/export_png/png.h hid_init.h \
+ hid_attrib.h hid_color.h hid_helper.h hid_flags.h dolists.h
+../src_plugins/export_ps/eps.o: ../src_plugins/export_ps/eps.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h hid_nogui.h \
+ hid_draw_helpers.h ../src_plugins/export_ps/ps.h hid_init.h hid_attrib.h \
+ hid_helper.h hid_flags.h hid_color.h
+../src_plugins/export_ps/ps.o: ../src_plugins/export_ps/ps.c ../config.h \
+ ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h error.h draw.h pcb-printf.h \
+ plugins.h hid_helper.h hid.h hid_nogui.h hid_draw_helpers.h \
+ ../src_plugins/export_ps/ps.h print.h hid_init.h hid_attrib.h \
+ hid_flags.h hid_actions.h dolists.h
+../src_plugins/fontmode/fontmode.o: ../src_plugins/fontmode/fontmode.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h create.h global.h data.h draw.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h move.h remove.h rtree.h \
+ strflags.h undo.h pcb-printf.h plugins.h hid_actions.h dolists.h
+../src_plugins/hid_batch/batch.o: ../src_plugins/hid_batch/batch.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h plugins.h \
+ hid_draw_helpers.h hid_nogui.h hid_actions.h hid_init.h dolists.h
+../src_plugins/hid_gtk/ghid-cell-renderer-visibility.o: \
+ ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.c \
+ ../src_plugins/hid_gtk/gtkhid.h ../src_plugins/hid_gtk/gui.h global.h \
+ ../config.h ../config.manual.h ../config.auto.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.h
+../src_plugins/hid_gtk/ghid-coord-entry.o: \
+ ../src_plugins/hid_gtk/ghid-coord-entry.c \
+ ../src_plugins/hid_gtk/gtkhid.h ../src_plugins/hid_gtk/gui.h global.h \
+ ../config.h ../config.manual.h ../config.auto.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h
+../src_plugins/hid_gtk/ghid-layer-selector.o: \
+ ../src_plugins/hid_gtk/ghid-layer-selector.c \
+ ../src_plugins/hid_gtk/gtkhid.h ../src_plugins/hid_gtk/gui.h global.h \
+ ../config.h ../config.manual.h ../config.auto.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h \
+ ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.h
+../src_plugins/hid_gtk/ghid-main-menu.o: \
+ ../src_plugins/hid_gtk/ghid-main-menu.c ../src_plugins/hid_gtk/gtkhid.h \
+ ../src_plugins/hid_gtk/gui.h global.h ../config.h ../config.manual.h \
+ ../config.auto.h const.h ../globalconst.h ../config.h macro.h \
+ global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h
+../src_plugins/hid_gtk/ghid-route-style-selector.o: \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.c global.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ macro.h global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h \
+ polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h ../src_plugins/hid_gtk/gtkhid.h \
+ ../src_plugins/hid_gtk/gui.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h
+../src_plugins/hid_gtk/gtkhid-gdk.o: ../src_plugins/hid_gtk/gtkhid-gdk.c \
+ ../config.h ../config.manual.h ../config.auto.h crosshair.h global.h \
+ const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h clip.h ../src_plugins/hid_gtk/gui.h global.h \
+ hid.h hid_resource.h resource.h data.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h hid_draw_helpers.h \
+ hid_attrib.h hid_helper.h hid_color.h
+../src_plugins/hid_gtk/gtkhid-main.o: \
+ ../src_plugins/hid_gtk/gtkhid-main.c ../config.h ../config.manual.h \
+ ../config.auto.h action_helper.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h crosshair.h error.h \
+ ../src_plugins/hid_gtk/gui.h global.h hid.h hid_resource.h resource.h \
+ data.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h hid_nogui.h \
+ hid_draw_helpers.h pcb-printf.h plugins.h hid_attrib.h hid_init.h \
+ hid_flags.h hid_actions.h dolists.h
+../src_plugins/hid_gtk/gui-command-window.o: \
+ ../src_plugins/hid_gtk/gui-command-window.c ../config.h \
+ ../config.manual.h ../config.auto.h ../src_plugins/hid_gtk/gui.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h crosshair.h hid_actions.h
+../src_plugins/hid_gtk/gui-config.o: ../src_plugins/hid_gtk/gui-config.c \
+ ../config.h ../config.manual.h ../config.auto.h \
+ ../src_plugins/hid_gtk/gui.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/gtkhid.h action_helper.h change.h file.h error.h \
+ draw.h pcb-printf.h set.h hid_attrib.h compat_fs.h
+../src_plugins/hid_gtk/gui-dialog-print.o: \
+ ../src_plugins/hid_gtk/gui-dialog-print.c ../config.h ../config.manual.h \
+ ../config.auto.h ../src_plugins/hid_gtk/gui.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h hid_attrib.h \
+ hid_init.h
+../src_plugins/hid_gtk/gui-dialog.o: ../src_plugins/hid_gtk/gui-dialog.c \
+ ../config.h ../config.manual.h ../config.auto.h data.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h ../src_plugins/hid_gtk/gui.h global.h hid.h \
+ hid_resource.h resource.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h
+../src_plugins/hid_gtk/gui-drc-window.o: \
+ ../src_plugins/hid_gtk/gui-drc-window.c ../config.h ../config.manual.h \
+ ../config.auto.h error.h search.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h draw.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h undo.h set.h \
+ ../src_plugins/hid_gtk/gui.h global.h hid.h hid_resource.h resource.h \
+ data.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/gui-drc-window.h hid_actions.h
+../src_plugins/hid_gtk/gui-keyref-window.o: \
+ ../src_plugins/hid_gtk/gui-keyref-window.c ../config.h \
+ ../config.manual.h ../config.auto.h ../src_plugins/hid_gtk/gui.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h
+../src_plugins/hid_gtk/gui-library-window.o: \
+ ../src_plugins/hid_gtk/gui-library-window.c ../config.h \
+ ../config.manual.h ../config.auto.h ../src_plugins/hid_gtk/gui.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h buffer.h set.h \
+ ../src_plugins/hid_gtk/gui-library-window.h
+../src_plugins/hid_gtk/gui-log-window.o: \
+ ../src_plugins/hid_gtk/gui-log-window.c ../config.h ../config.manual.h \
+ ../config.auto.h ../src_plugins/hid_gtk/gui.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h
+../src_plugins/hid_gtk/gui-misc.o: ../src_plugins/hid_gtk/gui-misc.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h crosshair.h global.h data.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h action_helper.h set.h \
+ pcb-printf.h ../src_plugins/hid_gtk/gui.h hid.h hid_resource.h \
+ resource.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h
+../src_plugins/hid_gtk/gui-netlist-window.o: \
+ ../src_plugins/hid_gtk/gui-netlist-window.c ../config.h \
+ ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h create.h global.h data.h draw.h error.h \
+ find.h misc.h ../src_3rd/genvector/gds_char.h mymem.h mymem.h rats.h \
+ remove.h search.h select.h set.h undo.h hid_actions.h \
+ ../src_plugins/hid_gtk/gui.h hid.h hid_resource.h resource.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h
+../src_plugins/hid_gtk/gui-output-events.o: \
+ ../src_plugins/hid_gtk/gui-output-events.c ../config.h \
+ ../config.manual.h ../config.auto.h ../src_plugins/hid_gtk/gui.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/gtkhid.h action_helper.h crosshair.h draw.h \
+ error.h set.h find.h search.h rats.h
+../src_plugins/hid_gtk/gui-pinout-preview.o: \
+ ../src_plugins/hid_gtk/gui-pinout-preview.c ../config.h \
+ ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h ../src_plugins/hid_gtk/gui.h hid.h \
+ hid_resource.h resource.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h copy.h draw.h mymem.h move.h \
+ rotate.h
+../src_plugins/hid_gtk/gui-pinout-window.o: \
+ ../src_plugins/hid_gtk/gui-pinout-window.c ../config.h \
+ ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h ../src_plugins/hid_gtk/gui.h hid.h \
+ hid_resource.h resource.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h copy.h draw.h mymem.h move.h \
+ rotate.h
+../src_plugins/hid_gtk/gui-top-window.o: \
+ ../src_plugins/hid_gtk/gui-top-window.c ../config.h ../config.manual.h \
+ ../config.auto.h ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h ../src_plugins/hid_gtk/gtkhid.h \
+ ../src_plugins/hid_gtk/gui.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h action_helper.h buffer.h \
+ change.h copy.h create.h crosshair.h draw.h error.h file.h find.h \
+ gpcb-menu.h insert.h line.h mymem.h move.h pcb-printf.h polygon.h rats.h \
+ remove.h rotate.h rubberband.h search.h select.h set.h undo.h event.h \
+ free_atexit.h paths.h ../src_plugins/hid_gtk/gui-icons-mode-buttons.data \
+ ../src_plugins/hid_gtk/gui-icons-misc.data hid_attrib.h hid_actions.h \
+ hid_flags.h
+../src_plugins/hid_gtk/gui-utils.o: ../src_plugins/hid_gtk/gui-utils.c \
+ ../config.h ../config.manual.h ../config.auto.h \
+ ../src_plugins/hid_gtk/gui.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
+ global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h
+../src_plugins/hid_lesstif/dialogs.o: \
+ ../src_plugins/hid_lesstif/dialogs.c ../config.h ../config.manual.h \
+ ../config.auto.h ../src_plugins/hid_lesstif/xincludes.h compat_misc.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h crosshair.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h \
+ ../src_plugins/hid_lesstif/lesstif.h hid_attrib.h hid_actions.h \
+ hid_init.h
+../src_plugins/hid_lesstif/library.o: \
+ ../src_plugins/hid_lesstif/library.c ../config.h ../config.manual.h \
+ ../config.auto.h ../src_plugins/hid_lesstif/xincludes.h compat_misc.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h set.h buffer.h hid.h \
+ ../src_plugins/hid_lesstif/lesstif.h
+../src_plugins/hid_lesstif/main.o: ../src_plugins/hid_lesstif/main.c \
+ ../config.h ../config.manual.h ../config.auto.h \
+ ../src_plugins/hid_lesstif/xincludes.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h action_helper.h crosshair.h \
+ mymem.h misc.h ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h \
+ resource.h clip.h event.h error.h plugins.h hid.h hid_nogui.h \
+ hid_draw_helpers.h hid_resource.h resource.h \
+ ../src_plugins/hid_lesstif/lesstif.h hid_attrib.h hid_helper.h \
+ hid_init.h hid_color.h hid_extents.h hid_flags.h hid_actions.h dolists.h
+../src_plugins/hid_lesstif/menu.o: ../src_plugins/hid_lesstif/menu.c \
+ ../config.h ../config.manual.h ../config.auto.h \
+ ../src_plugins/hid_lesstif/xincludes.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h error.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h \
+ hid_resource.h resource.h resource.h \
+ ../src_plugins/hid_lesstif/lesstif.h mymem.h paths.h hid_actions.h \
+ hid_flags.h pcb-menu.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/ht_inlines.h ../src_3rd/genht/hash.h
+../src_plugins/hid_lesstif/netlist.o: \
+ ../src_plugins/hid_lesstif/netlist.c ../config.h ../config.manual.h \
+ ../config.auto.h ../src_plugins/hid_lesstif/xincludes.h compat_misc.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h find.h rats.h select.h undo.h \
+ remove.h crosshair.h draw.h hid.h hid_actions.h \
+ ../src_plugins/hid_lesstif/lesstif.h
+../src_plugins/hid_lesstif/styles.o: ../src_plugins/hid_lesstif/styles.c \
+ ../config.h ../config.manual.h ../config.auto.h \
+ ../src_plugins/hid_lesstif/xincludes.h compat_misc.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h set.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h mymem.h pcb-printf.h hid.h \
+ ../src_plugins/hid_lesstif/lesstif.h hid_flags.h
+../src_plugins/import_edif/edif.o: ../src_plugins/import_edif/edif.c \
+ global.h ../config.h ../config.manual.h ../config.auto.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h error.h plugins.h stub_edif.h
+../src_plugins/import_sch/import_sch.o: \
+ ../src_plugins/import_sch/import_sch.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h action_helper.h change.h \
+ error.h undo.h plugins.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ compat_fs.h pcb-printf.h remove.h rats.h hid_actions.h dolists.h
+../src_plugins/legacy_func/legacy_func.o: \
+ ../src_plugins/legacy_func/legacy_func.c ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h hid.h global_element.h list_element.h libpcb_fp.h data.h \
+ global.h action_helper.h change.h error.h undo.h plugins.h
+../src_plugins/mincut/pcb-mincut/graph.o: \
+ ../src_plugins/mincut/pcb-mincut/graph.c \
+ ../src_plugins/mincut/pcb-mincut/graph.h
+../src_plugins/mincut/pcb-mincut/solve.o: \
+ ../src_plugins/mincut/pcb-mincut/solve.c \
+ ../src_plugins/mincut/pcb-mincut/solve.h \
+ ../src_plugins/mincut/pcb-mincut/graph.h
+../src_plugins/mincut/rats_mincut.o: ../src_plugins/mincut/rats_mincut.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h create.h global.h data.h draw.h error.h \
+ file.h find.h misc.h ../src_3rd/genvector/gds_char.h mymem.h mymem.h \
+ polygon.h rats.h search.h set.h undo.h plugins.h \
+ ../src_plugins/mincut/pcb-mincut/graph.h \
+ ../src_plugins/mincut/pcb-mincut/solve.h \
+ ../src_plugins/mincut/pcb-mincut/graph.h stub_mincut.h
+../src_plugins/oldactions/oldactions.o: \
+ ../src_plugins/oldactions/oldactions.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h action_helper.h change.h \
+ error.h undo.h plugins.h dolists.h
+../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h create.h global.h data.h draw.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h move.h pcb-printf.h remove.h \
+ rtree.h strflags.h undo.h plugins.h hid_actions.h dolists.h
+../src_plugins/renumber/renumber.o: ../src_plugins/renumber/renumber.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h action_helper.h change.h \
+ error.h undo.h misc.h ../src_3rd/genvector/gds_char.h mymem.h set.h \
+ plugins.h hid_actions.h pcb-printf.h dolists.h
+../src_plugins/report/report.o: ../src_plugins/report/report.c \
+ ../config.h ../config.manual.h ../config.auto.h \
+ ../src_plugins/report/report.h global.h const.h ../globalconst.h \
+ ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h crosshair.h global.h data.h drill.h error.h \
+ search.h misc.h ../src_3rd/genvector/gds_char.h mymem.h mymem.h rats.h \
+ rtree.h strflags.h macro.h undo.h find.h draw.h pcb-printf.h plugins.h \
+ hid_actions.h dolists.h
+../src_plugins/shand_cmd/command.o: ../src_plugins/shand_cmd/command.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h action_helper.h global.h buffer.h \
+ ../src_plugins/shand_cmd/command.h data.h error.h file.h mymem.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h rats.h set.h plugins.h \
+ hid_actions.h dolists.h
+../src_plugins/stroke/stroke.o: ../src_plugins/stroke/stroke.c \
+ ../config.h ../config.manual.h ../config.auto.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h global.h crosshair.h stub_stroke.h \
+ rotate.h undo.h set.h error.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h plugins.h
+../src_plugins/toporouter/toporouter.o: \
+ ../src_plugins/toporouter/toporouter.c \
+ ../src_plugins/toporouter/toporouter.h data.h global.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ macro.h global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h \
+ polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h macro.h \
+ ../src_plugins/toporouter/../autoroute/autoroute.h global.h box.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h create.h draw.h error.h find.h \
+ heap.h rtree.h misc.h mymem.h polygon.h rats.h remove.h thermal.h undo.h \
+ ../src_3rd/gts/gts.h pcb-printf.h
+../src_plugins/vendordrill/vendor.o: ../src_plugins/vendordrill/vendor.c \
+ ../config.h ../config.manual.h ../config.auto.h change.h global.h \
+ const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h data.h draw.h error.h global.h resource.h \
+ set.h undo.h ../src_plugins/vendordrill/vendor.h stub_vendor.h plugins.h \
+ hid_flags.h hid_actions.h dolists.h
+hash.o: ../src_3rd/genht/hash.c
+htpi.o: ../src_3rd/genht/htpi.c ../src_3rd/genht/htpi.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h \
+ ../src_3rd/genht/ht.c
+htsp.o: ../src_3rd/genht/htsp.c ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h \
+ ../src_3rd/genht/ht.c
+gds_char.o: ../src_3rd/genvector/gds_char.c \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_3rd/genvector/genvector_impl.c
+action_act.o: action_act.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h error.h action_helper.h hid_actions.h undo.h
 action_helper.o: action_helper.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -14,15 +922,6 @@ action_helper.o: action_helper.c ../config.h ../config.manual.h \
  rotate.h rubberband.h search.h select.h set.h undo.h rtree.h \
  stub_stroke.h funchash_core.h funchash.h funchash_core_list.h \
  hid_actions.h
-action_act.o: action_act.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
- global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
- list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h error.h action_helper.h hid_actions.h undo.h
 buffer.o: buffer.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -36,6 +935,7 @@ buffer.o: buffer.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/gds_char.h parse_l.h polygon.h rats.h rotate.h \
  remove.h rtree.h search.h select.h set.h funchash_core.h funchash.h \
  funchash_core_list.h
+buildin.o: buildin.c plugins.h buildin.h
 change.o: change.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -370,6 +1270,17 @@ intersect.o: intersect.c ../config.h ../config.manual.h ../config.auto.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h intersect.h mymem.h
+libpcb_fp.o: libpcb_fp.c ../config.h ../config.manual.h ../config.auto.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h error.h compat_fs.h paths.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/ht_inlines.h ../src_3rd/genht/hash.h
 line.o: line.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -399,11 +1310,6 @@ list_line.o: list_line.c global_objs.h ../src_3rd/genlist/gendlist.h \
  ../config.h global_typedefs.h polyarea.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
-list_text.o: list_text.c global_objs.h ../src_3rd/genlist/gendlist.h \
- ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
- ../config.h global_typedefs.h polyarea.h list_text.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
 list_pad.o: list_pad.c global_objs.h ../src_3rd/genlist/gendlist.h \
  ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
  ../config.h global_typedefs.h polyarea.h list_pad.h \
@@ -422,6 +1328,11 @@ list_poly.o: list_poly.c global_objs.h ../src_3rd/genlist/gendlist.h \
 list_rat.o: list_rat.c global_objs.h ../src_3rd/genlist/gendlist.h \
  ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
  ../config.h global_typedefs.h polyarea.h list_rat.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
+list_text.o: list_text.c global_objs.h ../src_3rd/genlist/gendlist.h \
+ ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
+ ../config.h global_typedefs.h polyarea.h list_text.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
 main.o: main.c ../config.h ../config.manual.h ../config.auto.h global.h \
@@ -507,6 +1418,28 @@ object_act.o: object_act.c ../config.h ../config.manual.h \
  draw.h mirror.h rotate.h set.h copy.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h rubberband.h buffer.h remove.h \
  create.h
+parse_l.o: parse_l.c ../config.h ../config.manual.h ../config.auto.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h crosshair.h data.h error.h file.h mymem.h \
+ misc.h ../src_3rd/genvector/gds_char.h strflags.h parse_l.h parse_y.h \
+ create.h
+parse_y.o: parse_y.c ../config.h ../config.manual.h ../config.auto.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h create.h data.h error.h file.h mymem.h misc.h \
+ ../src_3rd/genvector/gds_char.h parse_l.h polygon.h remove.h rtree.h \
+ strflags.h thermal.h rats_patch.h parse_y.h
 paths.o: paths.c paths.h error.h
 pcb-printf.o: pcb-printf.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
@@ -623,6 +1556,24 @@ remove_act.o: remove_act.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h data.h action_helper.h change.h error.h \
  undo.h set.h remove.h funchash_core.h funchash.h funchash_core_list.h
+res_lex.o: res_lex.c ../config.h ../config.manual.h ../config.auto.h \
+ global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h resource.h res_parse.h free_atexit.h
+res_parse.o: res_parse.c ../config.h ../config.manual.h ../config.auto.h \
+ free_atexit.h global.h const.h ../globalconst.h ../config.h macro.h \
+ global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h libpcb_fp.h resource.h res_parse.h
 rotate.o: rotate.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -774,954 +1725,3 @@ vtonpoint.o: vtonpoint.c vtonpoint.h global_objs.h \
  polyarea.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genvector/genvector_impl.c
-res_parse.o: res_parse.c ../config.h ../config.manual.h ../config.auto.h \
- free_atexit.h global.h const.h ../globalconst.h ../config.h macro.h \
- global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
- list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h resource.h res_parse.h
-res_lex.o: res_lex.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h resource.h res_parse.h free_atexit.h
-libpcb_fp.o: libpcb_fp.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h error.h compat_fs.h paths.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
- ../src_3rd/genht/ht_inlines.h ../src_3rd/genht/hash.h
-parse_y.o: parse_y.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h create.h data.h error.h file.h mymem.h misc.h \
- ../src_3rd/genvector/gds_char.h parse_l.h polygon.h remove.h rtree.h \
- strflags.h thermal.h rats_patch.h parse_y.h
-parse_l.o: parse_l.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h crosshair.h data.h error.h file.h mymem.h \
- misc.h ../src_3rd/genvector/gds_char.h strflags.h parse_l.h parse_y.h \
- create.h
-buildin.o: buildin.c plugins.h buildin.h
-hash.o: ../src_3rd/genht/hash.c
-htsp.o: ../src_3rd/genht/htsp.c ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h \
- ../src_3rd/genht/ht.c
-htpi.o: ../src_3rd/genht/htpi.c ../src_3rd/genht/htpi.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/ht_inlines.h \
- ../src_3rd/genht/ht.c
-gds_char.o: ../src_3rd/genvector/gds_char.c \
- ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h \
- ../src_3rd/genvector/genvector_impl.c
-../src_plugins/autoplace/autoplace.o: \
- ../src_plugins/autoplace/autoplace.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
- global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
- list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h ../src_plugins/autoplace/autoplace.h box.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h compat_misc.h \
- data.h draw.h error.h intersect.h rtree.h macro.h mirror.h misc.h move.h \
- mymem.h rats.h remove.h rotate.h
-../src_plugins/autoplace/action.o: ../src_plugins/autoplace/action.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h ../src_plugins/autoplace/autoplace.h \
- plugins.h set.h global.h hid_actions.h dolists.h
-../src_plugins/autoroute/autoroute.o: \
- ../src_plugins/autoroute/autoroute.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
- global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
- list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h macro.h \
- ../src_plugins/autoroute/autoroute.h box.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h create.h draw.h error.h find.h \
- heap.h rtree.h misc.h ../src_plugins/autoroute/mtspace.h \
- ../src_plugins/autoroute/vector.h mymem.h polygon.h rats.h remove.h \
- thermal.h undo.h pcb-printf.h set.h
-../src_plugins/autoroute/mtspace.o: ../src_plugins/autoroute/mtspace.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h box.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h heap.h rtree.h \
- ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h
-../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h ../src_plugins/autoroute/autoroute.h \
- action_helper.h global.h plugins.h set.h hid_actions.h dolists.h
-../src_plugins/autoroute/vector.o: ../src_plugins/autoroute/vector.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h ../src_plugins/autoroute/vector.h
-../src_plugins/vendordrill/vendor.o: ../src_plugins/vendordrill/vendor.c \
- ../config.h ../config.manual.h ../config.auto.h change.h global.h \
- const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h draw.h error.h global.h resource.h \
- set.h undo.h ../src_plugins/vendordrill/vendor.h stub_vendor.h plugins.h \
- hid_flags.h hid_actions.h dolists.h
-../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h create.h global.h data.h draw.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h move.h pcb-printf.h remove.h \
- rtree.h strflags.h undo.h plugins.h hid_actions.h dolists.h
-../src_plugins/import_edif/edif.o: ../src_plugins/import_edif/edif.c \
- global.h ../config.h ../config.manual.h ../config.auto.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h error.h plugins.h stub_edif.h
-../src_plugins/djopt/djopt.o: ../src_plugins/djopt/djopt.c ../config.h \
- ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h create.h remove.h move.h \
- draw.h undo.h strflags.h find.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h plugins.h hid_flags.h hid_actions.h \
- dolists.h
-../src_plugins/mincut/rats_mincut.o: ../src_plugins/mincut/rats_mincut.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h create.h global.h data.h draw.h error.h \
- file.h find.h misc.h ../src_3rd/genvector/gds_char.h mymem.h mymem.h \
- polygon.h rats.h search.h set.h undo.h plugins.h \
- ../src_plugins/mincut/pcb-mincut/graph.h \
- ../src_plugins/mincut/pcb-mincut/solve.h \
- ../src_plugins/mincut/pcb-mincut/graph.h stub_mincut.h
-../src_plugins/mincut/pcb-mincut/graph.o: \
- ../src_plugins/mincut/pcb-mincut/graph.c \
- ../src_plugins/mincut/pcb-mincut/graph.h
-../src_plugins/mincut/pcb-mincut/solve.o: \
- ../src_plugins/mincut/pcb-mincut/solve.c \
- ../src_plugins/mincut/pcb-mincut/solve.h \
- ../src_plugins/mincut/pcb-mincut/graph.h
-../src_plugins/fontmode/fontmode.o: ../src_plugins/fontmode/fontmode.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h create.h global.h data.h draw.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h move.h remove.h rtree.h \
- strflags.h undo.h pcb-printf.h plugins.h hid_actions.h dolists.h
-../src_plugins/shand_cmd/command.o: ../src_plugins/shand_cmd/command.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h action_helper.h global.h buffer.h \
- ../src_plugins/shand_cmd/command.h data.h error.h file.h mymem.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h rats.h set.h plugins.h \
- hid_actions.h dolists.h
-../src_plugins/legacy_func/legacy_func.o: \
- ../src_plugins/legacy_func/legacy_func.c ../src_3rd/genvector/gds_char.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
- global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
- list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h hid.h global_element.h list_element.h libpcb_fp.h data.h \
- global.h action_helper.h change.h error.h undo.h plugins.h
-../src_plugins/renumber/renumber.o: ../src_plugins/renumber/renumber.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h action_helper.h change.h \
- error.h undo.h misc.h ../src_3rd/genvector/gds_char.h mymem.h set.h \
- plugins.h hid_actions.h pcb-printf.h dolists.h
-../src_plugins/stroke/stroke.o: ../src_plugins/stroke/stroke.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h crosshair.h stub_stroke.h \
- rotate.h undo.h set.h error.h misc.h ../src_3rd/genvector/gds_char.h \
- mymem.h plugins.h
-../src_plugins/report/report.o: ../src_plugins/report/report.c \
- ../config.h ../config.manual.h ../config.auto.h \
- ../src_plugins/report/report.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h crosshair.h global.h data.h drill.h error.h \
- search.h misc.h ../src_3rd/genvector/gds_char.h mymem.h mymem.h rats.h \
- rtree.h strflags.h macro.h undo.h find.h draw.h pcb-printf.h plugins.h \
- hid_actions.h dolists.h
-../src_plugins/import_sch/import_sch.o: \
- ../src_plugins/import_sch/import_sch.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
- global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
- list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h action_helper.h change.h \
- error.h undo.h plugins.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- compat_fs.h pcb-printf.h remove.h rats.h hid_actions.h dolists.h
-../src_plugins/export_ps/ps.o: ../src_plugins/export_ps/ps.c ../config.h \
- ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h error.h draw.h pcb-printf.h \
- plugins.h hid_helper.h hid.h hid_nogui.h hid_draw_helpers.h \
- ../src_plugins/export_ps/ps.h print.h hid_init.h hid_attrib.h \
- hid_flags.h hid_actions.h dolists.h
-../src_plugins/export_ps/eps.o: ../src_plugins/export_ps/eps.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h hid_nogui.h \
- hid_draw_helpers.h ../src_plugins/export_ps/ps.h hid_init.h hid_attrib.h \
- hid_helper.h hid_flags.h hid_color.h
-../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h plugins.h hid.h \
- ../src_plugins/export_lpr/../export_ps/ps.h hid_nogui.h hid_init.h \
- hid_attrib.h hid_actions.h
-../src_plugins/export_gcode/gcode.o: ../src_plugins/export_gcode/gcode.c \
- ../config.h ../config.manual.h ../config.auto.h plugins.h global.h \
- const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h error.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h rats.h hid_helper.h hid.h \
- hid_nogui.h hid_draw_helpers.h ../src_plugins/export_gcode/gcode.h \
- ../src_plugins/export_gcode/bitmap.h \
- ../src_plugins/export_gcode/potracelib.h \
- ../src_plugins/export_gcode/curve.h \
- ../src_plugins/export_gcode/auxiliary.h \
- ../src_plugins/export_gcode/trace.h \
- ../src_plugins/export_gcode/decompose.h pcb-printf.h hid_init.h \
- hid_attrib.h hid_flags.h hid_color.h dolists.h
-../src_plugins/export_gcode/decompose.o: \
- ../src_plugins/export_gcode/decompose.c \
- ../src_plugins/export_gcode/potracelib.h \
- ../src_plugins/export_gcode/curve.h \
- ../src_plugins/export_gcode/auxiliary.h ../config.h ../config.manual.h \
- ../config.auto.h ../src_plugins/export_gcode/lists.h \
- ../src_plugins/export_gcode/bitmap.h \
- ../src_plugins/export_gcode/decompose.h
-../src_plugins/export_gcode/trace.o: ../src_plugins/export_gcode/trace.c \
- global.h ../config.h ../config.manual.h ../config.auto.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h ../src_plugins/export_gcode/potracelib.h \
- ../src_plugins/export_gcode/curve.h \
- ../src_plugins/export_gcode/auxiliary.h \
- ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/trace.h
-../src_plugins/export_gcode/curve.o: ../src_plugins/export_gcode/curve.c \
- ../src_plugins/export_gcode/potracelib.h \
- ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/curve.h \
- ../src_plugins/export_gcode/auxiliary.h ../config.h ../config.manual.h \
- ../config.auto.h
-../src_plugins/export_nelma/nelma.o: ../src_plugins/export_nelma/nelma.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h error.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h rats.h plugins.h hid_helper.h \
- hid.h hid_nogui.h hid_draw_helpers.h hid_init.h hid_attrib.h hid_flags.h \
- hid_color.h dolists.h
-../src_plugins/export_png/png.o: ../src_plugins/export_png/png.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h error.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h plugins.h hid.h hid_nogui.h \
- hid_draw_helpers.h ../src_plugins/export_png/png.h hid_init.h \
- hid_attrib.h hid_color.h hid_helper.h hid_flags.h dolists.h
-../src_plugins/export_gerber/gerber.o: \
- ../src_plugins/export_gerber/gerber.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
- global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
- list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h error.h draw.h pcb-printf.h \
- plugins.h hid_helper.h hid.h hid_nogui.h hid_draw_helpers.h hid_init.h \
- hid_attrib.h hid_flags.h
-../src_plugins/export_bom/bom.o: ../src_plugins/export_bom/bom.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h error.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h plugins.h hid.h \
- hid_nogui.h hid_attrib.h hid_helper.h hid_init.h
-../src_plugins/hid_batch/batch.o: ../src_plugins/hid_batch/batch.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h plugins.h \
- hid_draw_helpers.h hid_nogui.h hid_actions.h hid_init.h dolists.h
-../src_plugins/hid_gtk/ghid-cell-renderer-visibility.o: \
- ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.c \
- ../src_plugins/hid_gtk/gtkhid.h ../src_plugins/hid_gtk/gui.h global.h \
- ../config.h ../config.manual.h ../config.auto.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h \
- ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.h
-../src_plugins/hid_gtk/ghid-coord-entry.o: \
- ../src_plugins/hid_gtk/ghid-coord-entry.c \
- ../src_plugins/hid_gtk/gtkhid.h ../src_plugins/hid_gtk/gui.h global.h \
- ../config.h ../config.manual.h ../config.auto.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h
-../src_plugins/hid_gtk/ghid-layer-selector.o: \
- ../src_plugins/hid_gtk/ghid-layer-selector.c \
- ../src_plugins/hid_gtk/gtkhid.h ../src_plugins/hid_gtk/gui.h global.h \
- ../config.h ../config.manual.h ../config.auto.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h \
- ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.h
-../src_plugins/hid_gtk/ghid-main-menu.o: \
- ../src_plugins/hid_gtk/ghid-main-menu.c ../src_plugins/hid_gtk/gtkhid.h \
- ../src_plugins/hid_gtk/gui.h global.h ../config.h ../config.manual.h \
- ../config.auto.h const.h ../globalconst.h ../config.h macro.h \
- global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
- list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h
-../src_plugins/hid_gtk/ghid-route-style-selector.o: \
- ../src_plugins/hid_gtk/ghid-route-style-selector.c global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
- macro.h global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h \
- polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h ../src_plugins/hid_gtk/gtkhid.h \
- ../src_plugins/hid_gtk/gui.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h
-../src_plugins/hid_gtk/gtkhid-main.o: \
- ../src_plugins/hid_gtk/gtkhid-main.c ../config.h ../config.manual.h \
- ../config.auto.h action_helper.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h crosshair.h error.h \
- ../src_plugins/hid_gtk/gui.h global.h hid.h hid_resource.h resource.h \
- data.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h hid_nogui.h \
- hid_draw_helpers.h pcb-printf.h plugins.h hid_attrib.h hid_init.h \
- hid_flags.h hid_actions.h dolists.h
-../src_plugins/hid_gtk/gui-command-window.o: \
- ../src_plugins/hid_gtk/gui-command-window.c ../config.h \
- ../config.manual.h ../config.auto.h ../src_plugins/hid_gtk/gui.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h crosshair.h hid_actions.h
-../src_plugins/hid_gtk/gui-config.o: ../src_plugins/hid_gtk/gui-config.c \
- ../config.h ../config.manual.h ../config.auto.h \
- ../src_plugins/hid_gtk/gui.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h \
- ../src_plugins/hid_gtk/gtkhid.h action_helper.h change.h file.h error.h \
- draw.h pcb-printf.h set.h hid_attrib.h compat_fs.h
-../src_plugins/hid_gtk/gui-dialog-print.o: \
- ../src_plugins/hid_gtk/gui-dialog-print.c ../config.h ../config.manual.h \
- ../config.auto.h ../src_plugins/hid_gtk/gui.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h hid_attrib.h \
- hid_init.h
-../src_plugins/hid_gtk/gui-dialog.o: ../src_plugins/hid_gtk/gui-dialog.c \
- ../config.h ../config.manual.h ../config.auto.h data.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h ../src_plugins/hid_gtk/gui.h global.h hid.h \
- hid_resource.h resource.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h
-../src_plugins/hid_gtk/gui-drc-window.o: \
- ../src_plugins/hid_gtk/gui-drc-window.c ../config.h ../config.manual.h \
- ../config.auto.h error.h search.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h draw.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h undo.h set.h \
- ../src_plugins/hid_gtk/gui.h global.h hid.h hid_resource.h resource.h \
- data.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h \
- ../src_plugins/hid_gtk/gui-drc-window.h hid_actions.h
-../src_plugins/hid_gtk/gui-keyref-window.o: \
- ../src_plugins/hid_gtk/gui-keyref-window.c ../config.h \
- ../config.manual.h ../config.auto.h ../src_plugins/hid_gtk/gui.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h
-../src_plugins/hid_gtk/gui-library-window.o: \
- ../src_plugins/hid_gtk/gui-library-window.c ../config.h \
- ../config.manual.h ../config.auto.h ../src_plugins/hid_gtk/gui.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h buffer.h set.h \
- ../src_plugins/hid_gtk/gui-library-window.h
-../src_plugins/hid_gtk/gui-log-window.o: \
- ../src_plugins/hid_gtk/gui-log-window.c ../config.h ../config.manual.h \
- ../config.auto.h ../src_plugins/hid_gtk/gui.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h
-../src_plugins/hid_gtk/gui-misc.o: ../src_plugins/hid_gtk/gui-misc.c \
- ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h crosshair.h global.h data.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h action_helper.h set.h \
- pcb-printf.h ../src_plugins/hid_gtk/gui.h hid.h hid_resource.h \
- resource.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h
-../src_plugins/hid_gtk/gui-netlist-window.o: \
- ../src_plugins/hid_gtk/gui-netlist-window.c ../config.h \
- ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h create.h global.h data.h draw.h error.h \
- find.h misc.h ../src_3rd/genvector/gds_char.h mymem.h mymem.h rats.h \
- remove.h search.h select.h set.h undo.h hid_actions.h \
- ../src_plugins/hid_gtk/gui.h hid.h hid_resource.h resource.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h
-../src_plugins/hid_gtk/gui-output-events.o: \
- ../src_plugins/hid_gtk/gui-output-events.c ../config.h \
- ../config.manual.h ../config.auto.h ../src_plugins/hid_gtk/gui.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h \
- ../src_plugins/hid_gtk/gtkhid.h action_helper.h crosshair.h draw.h \
- error.h set.h find.h search.h rats.h
-../src_plugins/hid_gtk/gui-pinout-preview.o: \
- ../src_plugins/hid_gtk/gui-pinout-preview.c ../config.h \
- ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h ../src_plugins/hid_gtk/gui.h hid.h \
- hid_resource.h resource.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h copy.h draw.h mymem.h move.h \
- rotate.h
-../src_plugins/hid_gtk/gui-pinout-window.o: \
- ../src_plugins/hid_gtk/gui-pinout-window.c ../config.h \
- ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h ../src_plugins/hid_gtk/gui.h hid.h \
- hid_resource.h resource.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h copy.h draw.h mymem.h move.h \
- rotate.h
-../src_plugins/hid_gtk/gui-top-window.o: \
- ../src_plugins/hid_gtk/gui-top-window.c ../config.h ../config.manual.h \
- ../config.auto.h ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h ../src_plugins/hid_gtk/gtkhid.h \
- ../src_plugins/hid_gtk/gui.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h action_helper.h buffer.h \
- change.h copy.h create.h crosshair.h draw.h error.h file.h find.h \
- gpcb-menu.h insert.h line.h mymem.h move.h pcb-printf.h polygon.h rats.h \
- remove.h rotate.h rubberband.h search.h select.h set.h undo.h event.h \
- free_atexit.h paths.h ../src_plugins/hid_gtk/gui-icons-mode-buttons.data \
- ../src_plugins/hid_gtk/gui-icons-misc.data hid_attrib.h hid_actions.h \
- hid_flags.h
-../src_plugins/hid_gtk/gui-utils.o: ../src_plugins/hid_gtk/gui-utils.c \
- ../config.h ../config.manual.h ../config.auto.h \
- ../src_plugins/hid_gtk/gui.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h hid.h hid_resource.h resource.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h
-../src_plugins/hid_gtk/gtkhid-gdk.o: ../src_plugins/hid_gtk/gtkhid-gdk.c \
- ../config.h ../config.manual.h ../config.auto.h crosshair.h global.h \
- const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h clip.h ../src_plugins/hid_gtk/gui.h global.h \
- hid.h hid_resource.h resource.h data.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h \
- ../src_plugins/hid_gtk/ghid-coord-entry.h \
- ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
- ../src_plugins/hid_gtk/ghid-route-style-selector.h resource.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h hid_draw_helpers.h \
- hid_attrib.h hid_helper.h hid_color.h
-../src_plugins/hid_lesstif/dialogs.o: \
- ../src_plugins/hid_lesstif/dialogs.c ../config.h ../config.manual.h \
- ../config.auto.h ../src_plugins/hid_lesstif/xincludes.h compat_misc.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h crosshair.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h \
- ../src_plugins/hid_lesstif/lesstif.h hid_attrib.h hid_actions.h \
- hid_init.h
-../src_plugins/hid_lesstif/library.o: \
- ../src_plugins/hid_lesstif/library.c ../config.h ../config.manual.h \
- ../config.auto.h ../src_plugins/hid_lesstif/xincludes.h compat_misc.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h set.h buffer.h hid.h \
- ../src_plugins/hid_lesstif/lesstif.h
-../src_plugins/hid_lesstif/main.o: ../src_plugins/hid_lesstif/main.c \
- ../config.h ../config.manual.h ../config.auto.h \
- ../src_plugins/hid_lesstif/xincludes.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h action_helper.h crosshair.h \
- mymem.h misc.h ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h \
- resource.h clip.h event.h error.h plugins.h hid.h hid_nogui.h \
- hid_draw_helpers.h hid_resource.h resource.h \
- ../src_plugins/hid_lesstif/lesstif.h hid_attrib.h hid_helper.h \
- hid_init.h hid_color.h hid_extents.h hid_flags.h hid_actions.h dolists.h
-../src_plugins/hid_lesstif/menu.o: ../src_plugins/hid_lesstif/menu.c \
- ../config.h ../config.manual.h ../config.auto.h \
- ../src_plugins/hid_lesstif/xincludes.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h error.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h \
- hid_resource.h resource.h resource.h \
- ../src_plugins/hid_lesstif/lesstif.h mymem.h paths.h hid_actions.h \
- hid_flags.h pcb-menu.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
- ../src_3rd/genht/ht_inlines.h ../src_3rd/genht/hash.h
-../src_plugins/hid_lesstif/netlist.o: \
- ../src_plugins/hid_lesstif/netlist.c ../config.h ../config.manual.h \
- ../config.auto.h ../src_plugins/hid_lesstif/xincludes.h compat_misc.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
- global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h find.h rats.h select.h undo.h \
- remove.h crosshair.h draw.h hid.h hid_actions.h \
- ../src_plugins/hid_lesstif/lesstif.h
-../src_plugins/hid_lesstif/styles.o: ../src_plugins/hid_lesstif/styles.c \
- ../config.h ../config.manual.h ../config.auto.h \
- ../src_plugins/hid_lesstif/xincludes.h compat_misc.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
- ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
- list_pad.h list_pin.h list_rat.h vtonpoint.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h set.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h mymem.h pcb-printf.h hid.h \
- ../src_plugins/hid_lesstif/lesstif.h hid_flags.h
-../src_plugins/toporouter/toporouter.o: \
- ../src_plugins/toporouter/toporouter.c \
- ../src_plugins/toporouter/toporouter.h data.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
- macro.h global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h \
- polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h macro.h \
- ../src_plugins/toporouter/../autoroute/autoroute.h global.h box.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h create.h draw.h error.h find.h \
- heap.h rtree.h misc.h mymem.h polygon.h rats.h remove.h thermal.h undo.h \
- ../src_3rd/gts/gts.h pcb-printf.h
-../src_plugins/oldactions/oldactions.o: \
- ../src_plugins/oldactions/oldactions.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
- global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
- list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h libpcb_fp.h data.h global.h action_helper.h change.h \
- error.h undo.h plugins.h dolists.h

@@ -18,7 +18,9 @@ dep: FORCE
 gsub /local/dep/CFLAGS {-I} {-isystem }
 gsub /local/dep/CFLAGS {-isystem [.][.]} {-I ..}
 gsub /local/dep/CFLAGS {-isystem [.]} {-I .}
-foreach /local/c in /local/dep/SRCS
+sortuniq /local/dep/SRCS_SORTED /local/dep/SRCS
+
+foreach /local/c in /local/dep/SRCS_SORTED
 	switch /local/c
 		case {/src_plugins/} end
 		case {$(PLUGDIR)}
