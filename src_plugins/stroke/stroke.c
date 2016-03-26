@@ -26,6 +26,7 @@
  */
 
 #include "config.h"
+#include <stroke.h>
 #include "global.h"
 #include "data.h"
 #include "crosshair.h"
@@ -35,11 +36,9 @@
 #include "set.h"
 #include "error.h"
 #include "misc.h"
+#include "plugins.h"
 
 void FinishStroke(void);
-extern void stroke_init(void);
-extern void stroke_record(int x, int y);
-extern int stroke_trans(char *s);
 
 BoxType StrokeBox;
 

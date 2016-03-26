@@ -9,7 +9,6 @@ Cleanup #4:
 		- gpmi (and other buildins/plugins) not showing up in the about box
 
 CLEANUP #4
-- scconfig: detect libstroke
 - libstroke: zoom
 - cleanup/rewrite resources:
 	- better tree structs with less hidden properties (minor change in the res format: always require key=val pairs)

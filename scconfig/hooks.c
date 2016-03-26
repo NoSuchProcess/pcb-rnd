@@ -120,13 +120,22 @@ do { \
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int want_gtk, want_glib = 0, want_gd;
+	int want_glib = 0, want_gtk, want_gd, want_stroke;
 
-	want_gtk = plug_is_enabled("hid_gtk");
-	want_gd  = plug_is_enabled("export_png") ||  plug_is_enabled("export_nelma") ||  plug_is_enabled("export_gcode");
+	want_gtk    = plug_is_enabled("hid_gtk");
+	want_gd     = plug_is_enabled("export_png") ||  plug_is_enabled("export_nelma") ||  plug_is_enabled("export_gcode");
+	want_stroke = plug_is_enabled("stroke");
 
 	require("cc/fpic",  0, 1);
 	require("fstools/mkdir", 0, 1);
+
+	if (want_stroke) {
+		require("libs/gui/libstroke/presents", 0, 0);
+		if (!istrue(get("libs/gui/libstroke/presents"))) {
+			report_repeat("WARNING: Since there's no libstroke found, disabling the stroke plugin...\n");	
+			hook_custom_arg("disable-stroke", NULL);
+		}
+	}
 
 	if (want_gtk) {
 		require("libs/gui/gtk2/presents", 0, 0);
