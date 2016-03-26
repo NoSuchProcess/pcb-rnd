@@ -1533,7 +1533,7 @@ void ghid_do_export(HID_Attr_Val * options)
 	gtkhid_end();
 }
 
-void ghid_do_exit(HID_Attr_Val * options)
+void ghid_do_exit(HID *hid)
 {
 	gtk_main_quit();
 }
