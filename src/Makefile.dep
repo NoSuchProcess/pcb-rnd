@@ -991,7 +991,8 @@ gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h libpcb_fp.h action_helper.h global.h buffer.h \
  ../src_plugins/shand_cmd/command.h data.h error.h file.h mymem.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h rats.h set.h
+ ../src_3rd/genvector/gds_char.h mymem.h rats.h set.h plugins.h \
+ hid_actions.h dolists.h
 ../src_plugins/legacy_func/legacy_func.o: \
  ../src_plugins/legacy_func/legacy_func.c ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
