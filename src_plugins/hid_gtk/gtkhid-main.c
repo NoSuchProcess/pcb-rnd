@@ -1931,6 +1931,7 @@ pcb_uninit_t hid_hid_gtk_init()
 
 	ghid_hid.get_export_options = ghid_get_export_options;
 	ghid_hid.do_export = ghid_do_export;
+	ghid_hid.do_exit = ghid_do_exit;
 	ghid_hid.parse_arguments = ghid_parse_arguments;
 	ghid_hid.invalidate_lr = ghid_invalidate_lr;
 	ghid_hid.invalidate_all = ghid_invalidate_all;

@@ -1533,6 +1533,11 @@ void ghid_do_export(HID_Attr_Val * options)
 	gtkhid_end();
 }
 
+void ghid_do_exit(HID_Attr_Val * options)
+{
+	gtk_main_quit();
+}
+
 /*! \brief callback for */
 static gboolean get_layer_visible_cb(int id)
 {

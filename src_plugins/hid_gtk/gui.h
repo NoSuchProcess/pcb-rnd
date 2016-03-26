@@ -197,6 +197,7 @@ typedef enum {
 */
 void ghid_parse_arguments(gint * argc, gchar *** argv);
 void ghid_do_export(HID_Attr_Val * options);
+void ghid_do_exit(HID_Attr_Val * options);
 
 void ghid_create_pcb_widgets(void);
 void ghid_window_set_name_label(gchar * name);
