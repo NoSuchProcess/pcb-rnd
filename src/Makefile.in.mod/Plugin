@@ -3,6 +3,12 @@
 #  /local/pcb/mod       basename of the module (e.g. autoplace)
 #  /local/pcb/mod/OBJS  full path of all object files
 
+# clean up input vars
+uniq /local/pcb/mod/OBJS
+uniq /local/pcb/mod/CFLAGS
+uniq /local/pcb/mod/LDFLAGS
+uniq /local/pcb/mod/LIBS
+
 # generate .c -> .o rules in /local/comp/output
 put /local/comp/OBJS /local/pcb/mod/OBJS
 put /local/comp/CFLAGS /local/pcb/mod/CFLAGS
