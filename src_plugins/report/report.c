@@ -47,6 +47,9 @@
 #include "find.h"
 #include "draw.h"
 #include "pcb-printf.h"
+#include "plugins.h"
+#include "hid_actions.h"
+
 #ifdef HAVE_REGEX_H
 #include <regex.h>
 #endif
@@ -923,4 +926,19 @@ HID_Action report_action_list[] = {
 	 report_help, report_syntax}
 };
 
-REGISTER_ACTIONS(report_action_list, NULL)
+static const char *report_cookie = "report plugin";
+
+REGISTER_ACTIONS(report_action_list, report_cookie)
+
+static void hid_report_uninit(void)
+{
+	hid_remove_actions_by_cookie(report_cookie);
+}
+
+#include "dolists.h"
+pcb_uninit_t hid_report_init(void)
+{
+	REGISTER_ACTIONS(report_action_list, report_cookie)
+	return hid_report_uninit;
+}
+

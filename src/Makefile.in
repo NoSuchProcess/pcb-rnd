@@ -76,7 +76,6 @@ put /local/pcb/OBJS [@
 	rats_patch.o
 	remove.o
 	remove_act.o
-	report.o
 	rotate.o
 	rtree.o
 	rubberband.o
@@ -115,7 +114,7 @@ put /local/pcb/ACTION_REG_SRC  {
 	action_act.c buffer.c change_act.c command.c file_act.c find_act.c
 	flags.c gui_act.c main.c misc.c move.c netlist.c
 	object_act.c plugins.c polygon_act.c rats_act.c rats_patch.c
-	remove_act.c report.c select_act.c undo_act.c
+	remove_act.c select_act.c undo_act.c
 }
 
 #---- modules ----#
@@ -148,6 +147,7 @@ include {../src_plugins/fontmode/Plug.tmpasm}
 include {../src_plugins/legacy_func/Plug.tmpasm}
 include {../src_plugins/renumber/Plug.tmpasm}
 include {../src_plugins/stroke/Plug.tmpasm}
+include {../src_plugins/report/Plug.tmpasm}
 include {../src_plugins/import_sch/Plug.tmpasm}
 include {../src_plugins/export_ps/Plug.tmpasm}
 include {../src_plugins/export_lpr/Plug.tmpasm}

@@ -1,0 +1,8 @@
+put /local/pcb/mod {report}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/report/report.o @]
+
+switch /local/pcb/report/controls
+	case {buildin}   include {Makefile.in.mod/Buildin}; end;
+	case {plugin}    include {Makefile.in.mod/Plugin}; end;
+	case {disable}   include {Makefile.in.mod/Disable}; end;
+end

@@ -90,7 +90,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "polygon.h"
 #include "rats.h"
 #include "remove.h"
-#include "report.h"
 #include "resource.h"
 #include "rotate.h"
 #include "rubberband.h"
