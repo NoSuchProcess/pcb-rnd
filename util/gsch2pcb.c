@@ -750,7 +750,6 @@ static int add_elements(char * pcb_file)
 			if (verbose)
 				printf("%s: need new element for footprint  %s (value=%s)\n", el->refdes, el->description, el->value);
 
-/* TODO: element_shell */
 			fp = fp_fopen(element_search_path, el->description, &fctx);
 
 			if (fp == NULL && verbose)
@@ -1233,7 +1232,7 @@ void sort_library(void *lib)                           { bozo(); }
 
 const char *fp_get_library_shell(void)
 {
-	return "/bin/sh";
+	return element_shell;
 }
 
 /************************ main ***********************/
