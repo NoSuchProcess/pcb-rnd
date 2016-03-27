@@ -1,0 +1,1 @@
+int gedasym_init();
