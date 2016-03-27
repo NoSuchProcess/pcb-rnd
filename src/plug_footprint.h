@@ -71,4 +71,9 @@ struct plug_fp_s {
 extern plug_fp_t *plug_fp_chain;
 
 
+/* Optional pcb-rnd-side glue for some implementations */
+
+/* Return the library shell string (from Settings) */
+const char *fp_get_library_shell(void);
+
 #endif

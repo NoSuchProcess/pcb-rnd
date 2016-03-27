@@ -468,7 +468,7 @@ static FILE *fp_fs_fopen(plug_fp_t *ctx, const char *path, const char *name, fp_
 {
 	char *basename, *params, *fullname;
 	FILE *f = NULL;
-	const char *libshell = Settings.LibraryShell;
+	const char *libshell = fp_get_library_shell();
 
 	fctx->field[F_IS_PARAMETRIC].i = fp_dupname(name, &basename, &params);
 	if (basename == NULL)
