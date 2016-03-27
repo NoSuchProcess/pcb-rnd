@@ -1,6 +1,8 @@
 #ifndef PCB_PLUG_FOOTPRINT_H
 #define PCB_PLUG_FOOTPRINT_H
 
+#include <stdio.h>
+
 typedef struct plug_fp_s plug_fp_t;
 
 typedef struct {
