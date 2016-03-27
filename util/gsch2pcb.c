@@ -707,7 +707,7 @@ static int add_elements(char * pcb_file)
 	char *tmp_file, *s, buf[1024];
 	int total, paren_level = 0;
 	int skipping = FALSE;
-	int st;
+	fp_fopen_ctx_t fctx;
 
 	if ((f_in = fopen(pcb_file, "r")) == NULL)
 		return 0;
@@ -750,7 +750,8 @@ static int add_elements(char * pcb_file)
 			if (verbose)
 				printf("%s: need new element for footprint  %s (value=%s)\n", el->refdes, el->description, el->value);
 
-			fp = pcb_fp_fopen(element_shell, element_search_path, el->description, &st);
+/* TODO: element_shell */
+			fp = fp_fopen(element_search_path, el->description, &fctx);
 
 			if (fp == NULL && verbose)
 				printf("\tNo file element found.\n");
@@ -772,7 +773,7 @@ static int add_elements(char * pcb_file)
 				}
 			}
 			if (fp != NULL)
-				pcb_fp_fclose(fp, &st);
+				fp_fclose(fp, &fctx);
 		}
 
 		pcb_element_free(el);
@@ -1216,6 +1217,26 @@ static void get_args(int argc, char ** argv)
 	}
 }
 
+/* Dummy pcb-rnd for the fp lib to work */
+int Library;
+
+static void bozo()
+{
+	fprintf(stderr, "bozo: pcb-rnd footprint plugin compatibility error.\n");
+	abort();
+}
+
+void *GetLibraryEntryMemory(void *Menu)                { bozo(); }
+void * GetLibraryMenuMemory(void *lib, int *idx)       { bozo(); }
+void DeleteLibraryMenuMemory(void *lib, int menuidx)   { bozo(); }
+void sort_library(void *lib)                           { bozo(); }
+
+const char *fp_get_library_shell(void)
+{
+	return "/bin/sh";
+}
+
+/************************ main ***********************/
 int main(int argc, char ** argv)
 {
 	char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name, *net_file_name, *tmp;

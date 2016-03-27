@@ -1,4 +1,5 @@
 print [@
+PLUGDIR=../src_plugins
 
 CFLAGS=-I.. -I../src_3rd -DSCMDIR="\"$(LIBDIR)\""
 LDFLAGS=
@@ -10,12 +11,30 @@ VECTOBJ=../src_3rd/genvector/genvector.a
 LISTOBJ=../src_3rd/genlist/genlist.a
 SCCFOBJ=../scconfig/src/default/str.o
 QPARSE=../src_3rd/qparse/qparse.o
+@]
 
-gsch2pcb-rnd$(EXE): gsch2pcb.o ../src/libpcb_fp.o ../src/portability.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE)
-	$(CC) gsch2pcb.o ../src/libpcb_fp.o  ../src/portability.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) -o gsch2pcb-rnd$(EXE) $(LDFLAGS)
+put /local/pcb/tmpasm/buildin  {../src_plugins/Buildin.tmpasm}
+put /local/pcb/tmpasm/plugin   {../src_plugins/Plugin.tmpasm}
+put /local/pcb/tmpasm/disable  {../src_plugins/Disable.tmpasm}
 
-gsch2pcb.o: gsch2pcb.c ../src/libpcb_fp.h ../config.h  ../config.manual.h  ../config.auto.h
-	$(CC) -c $(CFLAGS) gsch2pcb.c -o gsch2pcb.o
+put /local/pcb/RULES {}
+put /local/pcb/OBJS {}
+put /local/pcb/LDFLAGS {}
+put /local/pcb/CFLAGS {}
+
+include {../src_plugins/plugins_fp.tmpasm}
+
+print [@
+
+FP_OBJS    = @/local/pcb/OBJS@ ../src/plug_footprint.o
+FP_LDFLAGS = @/local/pcb/LDFLAGS@
+FP_CFLAGS  = @/local/pcb/CFLAGS@
+
+gsch2pcb-rnd$(EXE): gsch2pcb.o ../src/libpcb_fp.o ../src/portability.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS)
+	$(CC) gsch2pcb.o ../src/libpcb_fp.o  ../src/portability.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS) -o gsch2pcb-rnd$(EXE) $(LDFLAGS) $(FP_LDFLAGS)
+
+gsch2pcb.o: gsch2pcb.c ../config.h  ../config.manual.h  ../config.auto.h
+	$(CC) -c $(CFLAGS) $(FP_CFLAGS) gsch2pcb.c -o gsch2pcb.o
 
 $(HASHOBJ):
 	cd ../src_3rd/genht && make
@@ -29,14 +48,16 @@ $(LISTOBJ):
 $(QPARSE):
 	cd ../src_3rd/qparse && make
 
-../src/portability.o:
-	cd ../src && make portability.o
+##### module rules begin #####
+@/local/pcb/RULES@
+##### module rules end #####
+@]
 
-../src/ds.o:
-	cd ../src && make ds.o
+# generate explicit rules for .c -> .o
+put /local/comp/OBJS /local/pcb/OBJS
+include {../scconfig/Makefile.comp.inc}
 
-../src/libpcb_fp.o:
-	cd ../src && make libpcb_fp.o
+print [@
 
 install_:
 	$(MKDIR) "$(BINDIR)" "$(LIBDIR)"
