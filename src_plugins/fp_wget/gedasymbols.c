@@ -2,10 +2,13 @@
 #include <ctype.h>
 #include <string.h>
 #include "fp_wget.h"
+#include "gedasymbols.h"
 
+#define REQUIRE_PATH_PREFIX "gedasymbols://"
 
 #define CGI_URL "http://www.gedasymbols.org/scripts/global_list.cgi"
 static const char *url_idx_md5 = CGI_URL "?md5";
+static const char *url_idx_list = CGI_URL;
 static const char *gedasym_cache = "fp_wget_cache";
 static const char *last_sum_fn = "fp_wget_cache/gedasymbols.last";
 
@@ -57,11 +60,14 @@ static int md5_cmp_free(const char *last_fn, char *md5_last, char *md5_new)
 }
 
 
-int gedasym_init()
+int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 {
 	FILE *f;
 	int fctx;
 	char *md5_last, *md5_new;
+
+	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
+		return -1;
 
 	if (fp_wget_open(url_idx_md5, gedasym_cache, &f, &fctx, 0) != 0)
 		return -1;
@@ -83,6 +89,17 @@ int gedasym_init()
 		return 0;
 	}
 
+	if (fp_wget_open(url_idx_list, gedasym_cache, &f, &fctx, 0) != 0) {
+		printf("failed to download the new list\n");
+		remove(last_sum_fn); /* make sure it is downloaded next time */
+		return -1;
+	}
+/*	load_index(); */
+	fp_wget_close(&f, &fctx);
+
 	printf("update!\n");
 	return 0;
 }
+
+
+

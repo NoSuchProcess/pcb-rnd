@@ -1,5 +1,6 @@
+#include <stdlib.h>
 #include "gedasymbols.h"
 int main()
 {
-	gedasym_init();
+	fp_gedasymbols_load_dir(NULL, "gedasymbols://");
 }
