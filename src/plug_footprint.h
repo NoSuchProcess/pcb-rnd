@@ -3,9 +3,6 @@
 
 typedef struct plug_fp_s plug_fp_t;
 
-/* walk through all lib paths and build the library menu */
-int fp_read_lib_all(void);
-
 typedef struct {
 	plug_fp_t *backend;
 	union {
@@ -75,5 +72,8 @@ extern plug_fp_t *plug_fp_chain;
 
 /* Return the library shell string (from Settings) */
 const char *fp_get_library_shell(void);
+
+/* walk through all lib paths and build the library menu */
+int fp_read_lib_all(void);
 
 #endif
