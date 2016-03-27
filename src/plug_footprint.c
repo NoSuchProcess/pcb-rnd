@@ -25,8 +25,6 @@
  */
 
 #include "config.h"
-
-//#include <locale.h>
 #include "global.h"
 #include <dirent.h>
 #include <sys/stat.h>
@@ -180,9 +178,3 @@ void fp_fclose(FILE * f, fp_fopen_ctx_t *fctx)
 	if (fctx->backend->fclose != NULL)
 		fctx->backend->fclose(fctx->backend, f, fctx);
 }
-
-const char *fp_get_library_shell(void)
-{
-	return Settings.LibraryShell;
-}
-
