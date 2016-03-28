@@ -75,12 +75,9 @@ typedef struct {
 	int children;
 } list_st_t;
 
-
 static int list_cb(void *cookie, const char *subdir, const char *name, fp_type_t type, void *tags[])
 {
 	list_st_t *l = (list_st_t *) cookie;
-	LibraryEntryTypePtr entry;		/* Pointer to individual menu entry */
-	size_t len;
 
 	if (type == PCB_FP_DIR) {
 		list_dir_t *d;
@@ -96,30 +93,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, fp_type_t
 	}
 
 	l->children++;
-	entry = GetLibraryEntryMemory(l->menu);
-
-	/* 
-	 * entry->AllocatedMemory points to abs path to the footprint.
-	 * entry->ListEntry points to fp name itself.
-	 */
-	len = strlen(subdir) + strlen("/") + strlen(name) + 8;
-	entry->AllocatedMemory = (char *) calloc(1, len);
-	strcat(entry->AllocatedMemory, subdir);
-	strcat(entry->AllocatedMemory, PCB_DIR_SEPARATOR_S);
-
-	/* store pointer to start of footprint name */
-	entry->ListEntry = entry->AllocatedMemory + strlen(entry->AllocatedMemory);
-	entry->ListEntry_dontfree = 1;
-
-	/* Now place footprint name into AllocatedMemory */
-	strcat(entry->AllocatedMemory, name);
-
-	if (type == PCB_FP_PARAMETRIC)
-		strcat(entry->AllocatedMemory, "()");
-
-	entry->Type = type;
-
-	entry->Tags = tags;
+	fp_append_entry(l->menu, subdir, name, type, tags);
 
 	return 0;
 }
@@ -234,10 +208,8 @@ static int fp_fs_list(const char *subdir, int recurse,
 	return n_footprints;
 }
 
-
 static int fp_fs_load_dir_(const char *subdir, const char *toppath, int is_root)
 {
-	LibraryMenuTypePtr menu = NULL;	/* Pointer to PCB's library menu structure */
 	list_st_t l;
 	list_dir_t *d, *nextd;
 	char working_[MAXPATHLEN + 1];
@@ -247,15 +219,7 @@ static int fp_fs_load_dir_(const char *subdir, const char *toppath, int is_root)
 	sprintf(working_, "%s%c%s", toppath, PCB_DIR_SEPARATOR_C, subdir);
 	resolve_path(working_, &working);
 
-	/* Get pointer to memory holding menu */
-	menu = GetLibraryMenuMemory(&Library, &menuidx);
-
-
-	/* Populate menuname and path vars */
-	menu->Name = strdup(pcb_basename(subdir));
-	menu->directory = strdup(pcb_basename(toppath));
-
-	l.menu = menu;
+	l.menu = fp_append_topdir(pcb_basename(toppath), pcb_basename(subdir), &menuidx);
 	l.subdirs = NULL;
 	l.children = 0;
 

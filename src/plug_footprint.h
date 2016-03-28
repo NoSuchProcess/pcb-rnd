@@ -75,6 +75,11 @@ extern plug_fp_t *plug_fp_chain;
 /* Return the library shell string (from Settings) */
 const char *fp_get_library_shell(void);
 
+/* Append a menu entry in the tree */
+LibraryEntryType *fp_append_entry(LibraryMenuType *parent, const char *dirname, const char *name, fp_type_t type, void *tags[]);
+
+LibraryMenuType *fp_append_topdir(const char *parent_dir, const char *dir_name, int *menuidx);
+
 /* walk through all lib paths and build the library menu */
 int fp_read_lib_all(void);
 

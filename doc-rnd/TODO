@@ -5,7 +5,6 @@ Cleanup #4:
 		- nelma and gcode both invent .png name locally
 		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
 	- mods:
-		- move libpcbfp
 		- gpmi (and other buildins/plugins) not showing up in the about box
 
 CLEANUP #4

@@ -110,3 +110,49 @@ void fp_fclose(FILE * f, fp_fopen_ctx_t *fctx)
 	if (fctx->backend->fclose != NULL)
 		fctx->backend->fclose(fctx->backend, f, fctx);
 }
+
+LibraryEntryType *fp_append_entry(LibraryMenuType *parent, const char *dirname, const char *name, fp_type_t type, void *tags[])
+{
+	LibraryEntryType *entry;   /* Pointer to individual menu entry */
+	size_t len;
+
+	entry = GetLibraryEntryMemory(parent);
+
+	/* 
+	 * entry->AllocatedMemory points to abs path to the footprint.
+	 * entry->ListEntry points to fp name itself.
+	 */
+	len = strlen(dirname) + strlen("/") + strlen(name) + 8;
+	entry->AllocatedMemory = (char *) calloc(1, len);
+	strcat(entry->AllocatedMemory, dirname);
+	strcat(entry->AllocatedMemory, PCB_DIR_SEPARATOR_S);
+
+	/* store pointer to start of footprint name */
+	entry->ListEntry = entry->AllocatedMemory + strlen(entry->AllocatedMemory);
+	entry->ListEntry_dontfree = 1;
+
+	/* Now place footprint name into AllocatedMemory */
+	strcat(entry->AllocatedMemory, name);
+
+	if (type == PCB_FP_PARAMETRIC)
+		strcat(entry->AllocatedMemory, "()");
+
+	entry->Type = type;
+
+	entry->Tags = tags;
+}
+
+LibraryMenuType *fp_append_topdir(const char *parent_dir, const char *dir_name, int *menuidx)
+{
+	LibraryMenuType *menu;
+
+	/* Get pointer to memory holding menu */
+	menu = GetLibraryMenuMemory(&Library, menuidx);
+
+	/* Populate menuname and path vars */
+	menu->Name = strdup(dir_name);
+	menu->directory = strdup(parent_dir);
+
+	return menu;
+}
+

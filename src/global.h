@@ -240,11 +240,14 @@ typedef struct {
 	int index;
 } RouteStyleType, *RouteStyleTypePtr;
 
+typedef struct LibraryEntryTpye_s  LibraryEntryType, *LibraryEntryTypePtr;
+typedef struct LibraryMenuType_s   LibraryMenuType, *LibraryMenuTypePtr;
+
 #include "plug_footprint.h"
 /* ---------------------------------------------------------------------------
  * structure used by library routines
  */
-typedef struct {
+struct LibraryEntryTpye_s {
 	char *ListEntry;							/* the string for the selection box */
 	int ListEntry_dontfree;       /* do not free(ListEntry) if non-zero */
 	char *AllocatedMemory,				/* pointer to allocated memory; all others */
@@ -254,15 +257,14 @@ typedef struct {
 	 *Description;								/* some descritional text */
 	fp_type_t Type;
 	void **Tags;									/* an array of void * tag IDs; last tag ID is NULL */
-} LibraryEntryType, *LibraryEntryTypePtr;
-/*typedef LibraryEntryType *LibraryEntryTypePtr;*/
+};
 
 /* If the internal flag is set, the only field that is valid is Name,
    and the struct is allocated with malloc instead of
    CreateLibraryEntry.  These "internal" entries are used for
    electrical paths that aren't yet assigned to a real net.  */
 
-typedef struct {
+struct LibraryMenuType_s {
 	char *Name,										/* name of the menu entry */
 	 *directory,									/* Directory name library elements are from */
 	 *Style;											/* routing style */
@@ -272,7 +274,7 @@ typedef struct {
 	char flag;										/* used by the netlist window to enable/disable nets */
 	char internal;								/* if set, this is an internal-only entry, not
 																   part of the global netlist. */
-} LibraryMenuType, *LibraryMenuTypePtr;
+};
 
 typedef struct {
 	Cardinal MenuN;								/* number of objects */
