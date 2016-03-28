@@ -100,9 +100,9 @@ put /local/pcb/OBJS [@
 	parse_y.o
 	parse_l.o
 	buildin.o
-	../src_3rd/genht/hash.o
-	../src_3rd/genht/htsp.o
-	../src_3rd/genht/htpi.o
+	../src_3rd/liblihata/genht/hash.o
+	../src_3rd/liblihata/genht/htsp.o
+	../src_3rd/liblihata/genht/htpi.o
 	../src_3rd/genvector/gds_char.o
 @]
 

@@ -6,7 +6,7 @@ LDFLAGS=
 EXE=@sys/ext_exe@
 CC=@cc/cc@
 
-HASHOBJ=../src_3rd/genht/hash.o ../src_3rd/genht/htsp.o
+HASHOBJ=../src_3rd/liblihata/genht/hash.o ../src_3rd/liblihata/genht/htsp.o
 VECTOBJ=../src_3rd/genvector/genvector.a
 LISTOBJ=../src_3rd/genlist/genlist.a
 SCCFOBJ=../scconfig/src/default/str.o
@@ -37,7 +37,7 @@ gsch2pcb.o: gsch2pcb.c ../config.h  ../config.manual.h  ../config.auto.h
 	$(CC) -c $(CFLAGS) $(FP_CFLAGS) gsch2pcb.c -o gsch2pcb.o
 
 $(HASHOBJ):
-	cd ../src_3rd/genht && make
+	cd ../src_3rd/liblihata/genht && make
 
 $(VECTOBJ):
 	cd ../src_3rd/genvector && make

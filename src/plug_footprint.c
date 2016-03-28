@@ -34,8 +34,8 @@
 #include "plug_footprint.h"
 #include "plugins.h"
 
-#include "../src_3rd/genht/htsp.h"
-#include "../src_3rd/genht/hash.h"
+#include <genht/htsp.h>
+#include <genht/hash.h>
 
 plug_fp_t *plug_fp_chain = NULL;
 
