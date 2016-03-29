@@ -121,7 +121,6 @@ static void build_mouse_cache(hid_res_t *hr)
 		}
 		for(m = btn->data.list.first; m != NULL; m = m->next) {
 			hid_res_mod_t mod_mask = parse_mods(m->name);
-			printf("add %x|%x (%s, %s) %x %p\n", btn_mask, mod_mask, btn->name, m->name, btn_mask|mod_mask, m);
 			htip_set(hr->cache.mouse_mask, btn_mask|mod_mask, m);
 		}
 	}
@@ -136,14 +135,12 @@ static lht_node_t *find_best_action(hid_res_t *hr, hid_res_mod_t button_and_mask
 
 	/* look for exact mod match */
 	n = htip_get(hr->cache.mouse_mask, button_and_mask);
-printf("BEST exact: %x %p\n", button_and_mask, n);
 	if (n != NULL)
 		return n;
 
 	if (button_and_mask & M_Release) {
 		/* look for plain release for the given button */
 		n = htip_get(hr->cache.mouse_mask, (button_and_mask & M_ANY) | M_Release);
-printf("BEST rels.: %x %p\n", (button_and_mask & M_ANY) | M_Release, n);
 		if (n != NULL)
 			return n;
 	}
