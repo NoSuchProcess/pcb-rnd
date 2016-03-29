@@ -270,7 +270,7 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 
 static hid_res_mod_t ghid_mouse_button(int ev_button)
 {
-#warning TODO: convert ev->button
+	/* GDK numbers buttons from 1..5, there seem to be no symbolic names */
 	return (MB_LEFT << (ev_button-1));
 }
 
