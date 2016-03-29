@@ -89,7 +89,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "polygon.h"
 #include "rats.h"
 #include "remove.h"
-#include "resource.h"
 #include "rotate.h"
 #include "rubberband.h"
 #include "search.h"
@@ -115,11 +114,13 @@ GhidGui _ghidgui, *ghidgui = NULL;
 
 GHidPort ghid_port, *gport;
 
+hid_res_t *ghid_res = NULL;
+
 static gchar *bg_image_file;
 
 static struct {
 	GtkAction *action;
-	const Resource *node;
+	const lht_node_t *node;
 } ghid_hotkey_actions[256];
 #define N_HOTKEY_ACTIONS \
         (sizeof (ghid_hotkey_actions) / sizeof (ghid_hotkey_actions[0]))
@@ -298,23 +299,17 @@ static gboolean top_window_enter_cb(GtkWidget * widget, GdkEvent * event, GHidPo
  *  pcb calls this function directly through ghid_hotkey_cb() for them.
  *
  *  \param [in]   The action that was activated
- *  \param [in]   The menu resource associated with the action
+ *  \param [in]   The related menu resource's action node
  */
 
-static void ghid_menu_cb(GtkAction * action, const Resource * node)
+static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
 {
 	int i;
 
 	if (action == NULL || node == NULL)
 		return;
 
-	for (i = 1; i < node->c; i++)
-		if (resource_type(node->v[i]) == 10) {
-#ifdef DEBUG_MENUS
-			printf("    %s\n", node->v[i].value);
-#endif
-			hid_parse_actions(node->v[i].value);
-		}
+	hid_res_action(node);
 
 	/* Sync gui widgets with pcb state */
 	ghid_update_toggle_flags();
@@ -1371,7 +1366,6 @@ static void ghid_create_listener(void)
 /* ------------------------------------------------------------ */
 
 static int stdin_listen = 0;
-static const char *pcbmenu_paths_in[] = { "gpcb-menu.res", "gpcb-menu.res", PCBSHAREDIR "/gpcb-menu.res", NULL };
 
 static char **pcbmenu_paths = NULL;
 
@@ -1400,17 +1394,6 @@ automatically scaled to fit the canvas.
 	{"bg-image", "Background Image",
 	 HID_String, 0, 0, {0, 0, 0}, 0, &bg_image_file},
 #define HA_bg_image 1
-
-/* %start-doc options "21 GTK+ GUI Options"
-@ftable @code
-@item --pcb-menu <string>
-Location of the @file{gpcb-menu.res} file which defines the menu for the GTK+ GUI.
-@end ftable
-%end-doc
-*/
-	{"pcb-menu", "Location of gpcb-menu.res file",
-	 HID_String, 0, 0, {0, "gpcb-menu.res", 0}, 0, &pcbmenu_paths_in[0]}
-#define HA_pcbmenu 2
 };
 
 REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
@@ -1686,7 +1669,7 @@ REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
  * accelerators are added when the menus are being built
  */
 		 static void
-		   ghid_check_special_key(const char *accel, GtkAction * action, const Resource * node)
+		   ghid_check_special_key(const char *accel, GtkAction * action, const lht_node_t * node)
 {
 	size_t len;
 	unsigned int mods;
@@ -1746,38 +1729,9 @@ REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 	}
 }
 
-/*! \brief Finds the gpcb-menu.res file */
-char *get_menu_filename(void)
-{
-	char **s, *rv = NULL;
-	char *home_pcbmenu = NULL;
-
-	/* homedir is set by the core */
-	if (homedir) {
-		Message(_("Note:  home directory is \"%s\"\n"), homedir);
-		home_pcbmenu = Concat(homedir, PCB_DIR_SEPARATOR_S, ".pcb", PCB_DIR_SEPARATOR_S, "gpcb-menu.res", NULL);
-	}
-	else
-		Message(_("Warning:  could not determine home directory\n"));
-
-	resolve_all_paths(pcbmenu_paths_in, pcbmenu_paths);
-
-	for (s = pcbmenu_paths; *s != NULL; s++) {
-		if (access(*s, R_OK) == 0)
-			return strdup(*s);
-	}
-
-	if (home_pcbmenu != NULL && (access(home_pcbmenu, R_OK) == 0))
-		rv = home_pcbmenu;
-
-	return rv;
-}
-
 static GtkWidget *ghid_load_menus(void)
 {
-	char *filename;
-	const Resource *r = 0, *bir;
-	const Resource *mr;
+	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;
 	int i;
 
@@ -1786,54 +1740,37 @@ static GtkWidget *ghid_load_menus(void)
 		ghid_hotkey_actions[i].node = NULL;
 	}
 
-	bir = resource_parse(0, gpcb_menu_default);
-	if (!bir) {
-		fprintf(stderr, _("Error: internal menu resource didn't parse\n"));
-		exit(1);
+#warning TODO
+	const char *gpcb_menu_default = NULL;
+
+	ghid_res = hid_res_load("gtk", gpcb_menu_default);
+	if (ghid_res == NULL) {
+		Message("FATAL: can't load the gtk menu res either from file or from hardwired default.");
+		abort();
 	}
 
-	filename = get_menu_filename();
-	if (filename) {
-		Message("Loading menus from %s\n", filename);
-		r = resource_parse(filename, 0);
-	}
-
-	if (!r) {
-		Message("Using default menus\n");
-		r = bir;
-	}
-	free(filename);
-
-	mr = resource_subres(r, "MainMenu");
-	if (!mr)
-		mr = resource_subres(bir, "MainMenu");
-
-	if (mr) {
+	mr = hid_res_get_menu(ghid_res, "/main_menu");
+	if (mr != NULL) {
 		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb), ghid_check_special_key);
 		ghid_main_menu_add_resource(GHID_MAIN_MENU(menu_bar), mr);
 	}
 
-	mr = resource_subres(r, "PopupMenus");
-	if (!mr)
-		mr = resource_subres(bir, "PopupMenus");
-
-	if (mr) {
-		int i;
-		for (i = 0; i < mr->c; i++)
-			if (resource_type(mr->v[i]) == 101)
-				/* This is a named resource which defines a popup menu */
-				ghid_main_menu_add_popup_resource(GHID_MAIN_MENU(menu_bar), mr->v[i].name, mr->v[i].subres);
+	mr = hid_res_get_menu(ghid_res, "/popups");
+	if (mr != NULL) {
+		if (mr->type == LHT_LIST) {
+			lht_node_t *n;
+			for(n = mr->data.list.first; n != NULL; n = n->next)
+				ghid_main_menu_add_popup_resource(GHID_MAIN_MENU(menu_bar), n);
+		}
 	}
 
 #ifdef DEBUG_MENUS
 	puts("Finished loading menus.");
 #endif
 
-	mr = resource_subres(r, "Mouse");
-	if (!mr)
-		mr = resource_subres(bir, "Mouse");
-	if (mr)
-		load_mouse_resource(mr);
+#warning TODO:
+	mr = hid_res_get_menu(ghid_res, "/mouse");
+/*	load_mouse_resource(mr);*/
 
 	return menu_bar;
 }

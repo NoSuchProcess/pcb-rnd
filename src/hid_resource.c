@@ -1,268 +1,295 @@
-#include <string.h>
+/*
+ *                            COPYRIGHT
+ *
+ *  PCB, interactive printed circuit board design
+ *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ * 
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ */
+
 #include <stdlib.h>
-#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+#include <liblihata/lihata.h>
+#include <liblihata/tree.h>
+#include <genht/hash.h>
 
 #include "global.h"
 #include "hid.h"
-#include "resource.h"
 #include "hid_resource.h"
 #include "hid_actions.h"
+#include "hid_resource.h"
+#include "error.h"
 
-/* #define DEBUG_HID_RESOURCE */
+static void hid_res_flush(hid_res_t *hr);
 
-static int button_count;				/* number of buttons we have actions for */
-static int *button_nums;				/* list of button numbers */
-static int *mod_count;					/* how many mods they have */
-static unsigned *mods;					/* mods, in order, one button after another */
-static Resource **actions;			/* actions, in order, one button after another */
+char hid_res_error_shared[1024];
 
-static Resource *res_wrap(char *value)
+/* split value into a list of '-' separated words; examine each word
+   and set the bitmask of modifiers */
+static hid_res_mod_t parse_mods(const char *value)
 {
-	Resource *tmp;
-	tmp = resource_create(0);
-	resource_add_val(tmp, 0, value, 0);
-	return tmp;
-}
+	hid_res_mod_t m = 0;
+	int press = 0;
 
-static unsigned parse_mods(char *value)
-{
-	unsigned m = 0;
-	long int mod_num;
-	char *s;
-
-	for (s = value; *s; s++)
-		*s = tolower(*s);
-
-	s = strstr(value, "mod");
-	if (s) {
-		s += 3;											/* skip "mod" to get to number */
-		errno = 0;
-		mod_num = strtol(s, (char **) NULL, 0);
-		if (!errno)
-			m |= M_Mod(mod_num);
+	for(;;) {
+		if (strncmp(value, "shift", 5) == 0)        m |= M_Shift;
+		else if (strncmp(value, "ctrl", 4) == 0)    m |= M_Ctrl;
+		else if (strncmp(value, "alt", 3) == 0)     m |= M_Alt;
+		else if (strncmp(value, "release", 7) == 0) m |= M_Release;
+		else if (strncmp(value, "press", 5) == 0)   press = 1;
+		else
+			Message("Unkown modifier: %s\n", value);
+		/* skip to next word */
+		value = strchr(value, '-');
+		if (value == NULL)
+			break;
+		value++;
 	}
-	if (strstr(value, "shift"))
-		m |= M_Shift;
-	if (strstr(value, "ctrl"))
-		m |= M_Ctrl;
-	if (strstr(value, "alt"))
-		m |= M_Alt;
-	if (strstr(value, "up"))
-		m |= M_Release;
+
+	if (press && (m & M_Release))
+		Message("Bogus modifier: both press and release\n");
+
 	return m;
 }
 
-static int button_name_to_num(const char *name)
+static hid_res_mod_t button_name2mask(const char *name)
 {
 	/* All mouse-related resources must be named.  The name is the
 	   mouse button number.  */
 	if (!name)
-		return -1;
-	else if (strcasecmp(name, "left") == 0)
-		return 1;
-	else if (strcasecmp(name, "middle") == 0)
-		return 2;
-	else if (strcasecmp(name, "right") == 0)
-		return 3;
-	else if (strcasecmp(name, "up") == 0)
-		return 4;
-	else if (strcasecmp(name, "down") == 0)
-		return 5;
+		return 0;
+	else if (strcasecmp(name, "left") == 0)   return MB_LEFT;
+	else if (strcasecmp(name, "middle") == 0) return MB_MIDDLE;
+	else if (strcasecmp(name, "right") == 0)  return MB_RIGHT;
+	else if (strcasecmp(name, "up") == 0)     return MB_UP;
+	else if (strcasecmp(name, "down") == 0)   return MB_DOWN;
+	else {
+		Message("Error: unknown mouse button: %s\n", name);
+		return 0;
+	}
+}
+
+
+static int keyeq_int(htip_key_t a, htip_key_t b)   { return a == b; }
+static unsigned int keyhash_int(htip_key_t a)      { return murmurhash32(a & 0xFFFF); }
+
+static void build_mouse_cache(hid_res_t *hr)
+{
+	lht_node_t *btn, *m;
+
+	if (hr->cache.mouse == NULL)
+		hr->cache.mouse = hid_res_get_menu(hr, "/mouse");
+
+	if (hr->cache.mouse == NULL) {
+		Message("Warning: no /mouse section in the resource file - mouse is disabled\n");
+		return;
+	}
+
+	if (hr->cache.mouse->type != LHT_LIST) {
+		hid_res_error(hr->cache.mouse, "Warning: should be a list - mouse is disabled\n");
+		return;
+	}
+
+	if (hr->cache.mouse_mask == NULL)
+		hr->cache.mouse_mask = htip_alloc(keyhash_int, keyeq_int);
 	else
-		return atoi(name);
-}
+		htip_clear(hr->cache.mouse_mask);
 
-void load_mouse_resource(const Resource * res)
-{
-	int bi, mi, a;
-	int action_count;
-#ifdef DEBUG_HID_RESOURCE
-	fprintf(stderr, "note mouse resource:\n");
-	resource_dump(res);
-#endif
-
-	button_count = res->c;
-	button_nums = (int *) malloc(res->c * sizeof(int));
-	mod_count = (int *) malloc(res->c * sizeof(int));
-	action_count = 0;
-	for (bi = 0; bi < res->c; bi++) {
-		if (res->v[bi].value)
-			action_count++;
-
-		if (res->v[bi].subres)
-			action_count += res->v[bi].subres->c;
-
-	}
-	mods = (unsigned int *) malloc(action_count * sizeof(int));
-	actions = (Resource **) malloc(action_count * sizeof(Resource *));
-
-	a = 0;
-	for (bi = 0; bi < res->c; bi++) {
-		int button_num = button_name_to_num(res->v[bi].name);
-
-		if (button_num < 0)
+	for(btn = hr->cache.mouse->data.list.first; btn != NULL; btn = btn->next) {
+		hid_res_mod_t btn_mask = button_name2mask(btn->name);
+		if (btn_mask == 0) {
+			hid_res_error(btn, "unknown mouse button");
 			continue;
-
-		button_nums[bi] = button_num;
-		mod_count[bi] = 0;
-
-		if (res->v[bi].value) {
-			mods[a] = 0;
-			actions[a++] = res_wrap(res->v[bi].value);
-			mod_count[bi] = 1;
 		}
-
-		if (res->v[bi].subres) {
-			Resource *m = res->v[bi].subres;
-			mod_count[bi] += m->c;
-
-			for (mi = 0; mi < m->c; mi++, a++) {
-				switch (resource_type(m->v[mi])) {
-				case 1:								/* subres only */
-					mods[a] = 0;
-					actions[a] = m->v[mi].subres;
-					break;
-
-				case 10:								/* value only */
-					mods[a] = 0;
-					actions[a] = res_wrap(m->v[mi].value);
-					break;
-
-				case 101:							/* name = subres */
-					mods[a] = parse_mods(m->v[mi].name);
-					actions[a] = m->v[mi].subres;
-					break;
-
-				case 110:							/* name = value */
-					mods[a] = parse_mods(m->v[mi].name);
-					actions[a] = res_wrap(m->v[mi].value);
-					break;
-				}
-			}
+		if (btn->type != LHT_LIST) {
+			hid_res_error(btn, "needs to be a list");
+			continue;
+		}
+		for(m = btn->data.list.first; m != NULL; m = m->next) {
+			hid_res_mod_t mod_mask = parse_mods(m->name);
+			printf("add %x|%x (%s, %s) %x %p\n", btn_mask, mod_mask, btn->name, m->name, btn_mask|mod_mask, m);
+			htip_set(hr->cache.mouse_mask, btn_mask|mod_mask, m);
 		}
 	}
 }
 
-static Resource *find_best_action(int button, int start, unsigned mod_mask)
+static lht_node_t *find_best_action(hid_res_t *hr, hid_res_mod_t button_and_mask)
 {
-	int i, j;
-	int count = mod_count[button];
-	unsigned search_mask = mod_mask & ~M_Release;
-	unsigned release_mask = mod_mask & M_Release;
+	lht_node_t *n;
+
+	if (hr->cache.mouse_mask == NULL)
+		return NULL;
 
 	/* look for exact mod match */
-	for (i = start; i < start + count; i++)
-		if (mods[i] == mod_mask) {
-			return actions[i];
-		}
+	n = htip_get(hr->cache.mouse_mask, button_and_mask);
+printf("BEST exact: %x %p\n", button_and_mask, n);
+	if (n != NULL)
+		return n;
 
-	for (j = search_mask - 1; j >= 0; j--)
-		if ((j & search_mask) == j)	/* this would work */
-			for (i = start; i < start + count; i++)	/* search for it */
-				if (mods[i] == (j | release_mask))
-					return actions[i];
+	if (button_and_mask & M_Release) {
+		/* look for plain release for the given button */
+		n = htip_get(hr->cache.mouse_mask, (button_and_mask & M_ANY) | M_Release);
+printf("BEST rels.: %x %p\n", (button_and_mask & M_ANY) | M_Release, n);
+		if (n != NULL)
+			return n;
+	}
 
 	return NULL;
 }
 
-void do_mouse_action(int button, int mod_mask)
+void hid_res_mouse_action(hid_res_t *hr, hid_res_mod_t button_and_mask)
 {
-	Resource *action = NULL;
-	int bi, i, a;
-
-	/* find the right set of actions; */
-	a = 0;
-	for (bi = 0; bi < button_count && !action; bi++)
-		if (button_nums[bi] == button) {
-			action = find_best_action(bi, a, mod_mask);
-			break;
-		}
-		else
-			a += mod_count[bi];				/* skip this buttons actions */
-
-	if (!action)
-		return;
-
-	for (i = 0; i < action->c; i++)
-		if (action->v[i].value)
-			if (hid_parse_actions(action->v[i].value))
-				return;
+	hid_res_action(find_best_action(hr, button_and_mask));
 }
 
-Resource *resource_create_menu(const char *name, const char *action, const char *mnemonic, const char *accel, const char *tip,
-															 int flags)
+lht_node_t *resource_create_menu(hid_res_t *hr, const char *name, const char *action, const char *mnemonic, const char *accel, const char *tip, int flags)
 {
-	Resource *resp, *res;
-	ResourceVal *rvp, *rv;
-	int next;
+	/* TODO */
+	abort();
+}
 
-	/* child */
-	res = calloc(sizeof(Resource), 1);
-	res->c = 1 + (action != NULL) + (mnemonic != NULL) + (accel != NULL) + (tip != NULL);
-	rv = malloc(sizeof(ResourceVal) * res->c);
-	res->v = rv;
-	res->flags = flags;
 
-	rv[0].name = NULL;
-	rv[0].value = strdup(name);
-	rv[0].subres = NULL;
-	next = 1;
+hid_res_t *hid_res_load(const char *hidname, const char *embedded_fallback)
+{
+	lht_doc_t *doc;
+	hid_res_t *hr;
+	FILE *f;
+//static const char *pcbmenu_paths_in[] = { "gpcb-menu.res", "gpcb-menu.res", PCBSHAREDIR "/gpcb-menu.res", NULL };
+	char *hidfn = strdup(hidname); /* TODO: search for the file */
+	int error = 0;
 
-	if (action != NULL) {
-		rv[next].name = NULL;
-		rv[next].value = strdup(action);
-		rv[next].subres = NULL;
-		next++;
+	f = fopen(hidfn, "r");
+	doc = lht_dom_init();
+	lht_dom_loc_newfile(doc, hidfn);
+
+	while(!(feof(f))) {
+		lht_err_t err;
+		int c = fgetc(f);
+		err = lht_dom_parser_char(doc, c);
+		if (err != LHTE_SUCCESS) {
+			if (err != LHTE_STOP) {
+				const char *fn;
+				int line, col;
+				lht_dom_loc_active(doc, &fn, &line, &col);
+				Message("Resource error: %s (%s:%d.%d)*\n", lht_err_str(err), hidfn, line+1, col+1);
+				error = 1;
+				break;
+			}
+			break; /* error or stop, do not read anymore (would get LHTE_STOP without any processing all the time) */
+		}
 	}
 
-	if (mnemonic != NULL) {
-		rv[next].name = "m";
-		rv[next].value = strdup(mnemonic);
-		rv[next].subres = NULL;
-		next++;
+	if (error) {
+		lht_dom_uninit(doc);
+		doc = NULL;
 	}
+	fclose(f);
 
-	if (accel != NULL) {
-		Resource *ares;
-		ResourceVal *arv;
-
-		ares = calloc(sizeof(Resource), 1);
-		arv = malloc(sizeof(ResourceVal) * 2);
-		ares->c = 2;
-		ares->v = arv;
-		ares->flags = 0;
-
-		arv[0].name = NULL;
-		arv[0].value = strdup(accel);
-		arv[0].subres = NULL;
-
-		arv[1].name = NULL;
-		arv[1].value = strdup(accel);
-		arv[1].subres = NULL;
-
-		rv[next].name = "a";
-		rv[next].value = NULL;
-		rv[next].subres = ares;
-
-		next++;
+	if (doc != NULL) {
+		hr = calloc(sizeof(hid_res_t), 1); /* make sure the cache is cleared */
+		hr->doc = doc;
+		hid_res_flush(hr);
 	}
+	else
+		hr = NULL;
 
-	if (tip != NULL) {
-		rv[next].name = "tip";
-		rv[next].value = strdup(tip);
-		rv[next].subres = NULL;
-		next++;
+	return hr;
+}
+
+void hid_res_action(const lht_node_t *node)
+{
+	if (node == NULL)
+		return;
+	switch(node->type) {
+		case LHT_TEXT:
+			hid_parse_actions(node->data.text.value);
+			break;
+		case LHT_LIST:
+			for(node = node->data.list.first; node != NULL; node = node->next)
+				if (node->type == LHT_TEXT)
+					hid_parse_actions(node->data.text.value);
+			break;
 	}
+}
 
-	/* parent */
-	resp = calloc(sizeof(Resource), 1);
-	rvp = malloc(sizeof(ResourceVal));
+/************* "parsing" **************/
 
-	resp->v = rvp;
-	resp->c = 1;
-	rvp->name = NULL;
-	rvp->value = NULL;
-	rvp->subres = res;
+lht_node_t *hid_res_get_menu(hid_res_t *hr, const char *menu_path)
+{
+	lht_err_t err;
+	return lht_tree_path(hr->doc, "/", menu_path, 1, &err);
+}
 
-	return resp;
+lht_node_t *hid_res_menu_field(const lht_node_t *submenu, hid_res_menufield_t field, const char **field_name)
+{
+	lht_node_t *n;
+	lht_err_t err;
+	const char *fieldstr = NULL;
+
+	switch(field) {
+		case MF_ACCELERATOR:  fieldstr = "a"; break;
+		case MF_MNEMONIC:     fieldstr = "m"; break;
+		case MF_SUBMENU:      fieldstr = "submenu"; break;
+		case MF_CHECKED:      fieldstr = "checked"; break;
+		case MF_SENSITIVE:    fieldstr = "sensitive"; break;
+		case MF_TIP:          fieldstr = "tip"; break;
+		case MF_ACTIVE:       fieldstr = "active"; break;
+		case MF_ACTION:       fieldstr = "action"; break;
+	}
+	if (field_name != NULL)
+		*field_name = fieldstr;
+
+	if (fieldstr == NULL)
+		return NULL;
+
+	return lht_tree_path_(submenu->doc, (lht_node_t *)submenu, fieldstr, 1, 0, &err);
+}
+
+const char *hid_res_menu_field_str(const lht_node_t *submenu, hid_res_menufield_t field)
+{
+	const char *fldname;
+	lht_node_t *n = hid_res_menu_field(submenu, field, &fldname);
+
+	if (n == NULL)
+		return NULL;
+	if (n->type != LHT_TEXT) {
+		hid_res_error(submenu, "Error: field %s should be a text node\n", fldname);
+		return NULL;
+	}
+	return n->data.text.value;
+}
+
+int hid_res_has_submenus(const lht_node_t *submenu)
+{
+	const char *fldname;
+	lht_node_t *n = hid_res_menu_field(submenu, MF_SUBMENU, &fldname);
+	if (n == NULL)
+		return 0;
+	if (n->type != LHT_LIST) {
+		hid_res_error(submenu, "Error: field %s should be a list (of submenus)\n", fldname);
+		return NULL;
+	}
+	return 1;
+}
+
+/************* cache **************/
+/* reset the cache of a resource tree; should be called any time the tree
+   changes */
+static void hid_res_flush(hid_res_t *hr)
+{
+	build_mouse_cache(hr);
 }

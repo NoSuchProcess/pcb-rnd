@@ -95,20 +95,32 @@ put /local/pcb/OBJS [@
 	undo.o
 	undo_act.o
 	vtonpoint.o
-	res_parse.o
-	res_lex.o
 	parse_y.o
 	parse_l.o
 	buildin.o
+	../src_3rd/liblihata/parser.o
+	../src_3rd/liblihata/dom.o
+	../src_3rd/liblihata/dom_list.o
+	../src_3rd/liblihata/dom_hash.o
+	../src_3rd/liblihata/dom_table.o
+	../src_3rd/liblihata/lihata.o
+	../src_3rd/liblihata/hash_str.o
+	../src_3rd/liblihata/tree.o
+	../src_3rd/liblihata/tree_list.o
+	../src_3rd/liblihata/tree_hash.o
+	../src_3rd/liblihata/tree_table.o
+	../src_3rd/liblihata/tree_symlink.o
+	../src_3rd/liblihata/tree_path.o
 	../src_3rd/liblihata/genht/hash.o
 	../src_3rd/liblihata/genht/htsp.o
 	../src_3rd/liblihata/genht/htpi.o
+	../src_3rd/liblihata/genht/htip.o
 	../src_3rd/genvector/gds_char.o
 @]
 
 # main: language generator files
-put /local/pcb/YACC {res_parse parse_y}
-put /local/pcb/LEX  {res_lex parse_l}
+put /local/pcb/YACC {parse_y}
+put /local/pcb/LEX  {parse_l}
 
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {

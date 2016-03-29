@@ -7,7 +7,7 @@
 
 #include "ghid-layer-selector.h"
 #include "ghid-route-style-selector.h"
-#include "resource.h"
+#include "hid_resource.h"
 
 G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_MAIN_MENU_TYPE            (ghid_main_menu_get_type ())
@@ -20,19 +20,21 @@ typedef struct _GHidMainMenuClass GHidMainMenuClass;
 
 GType ghid_main_menu_get_type(void);
 GtkWidget *ghid_main_menu_new(GCallback action_cb,
-															void (*special_key_cb) (const char *accel, GtkAction * action, const Resource * node));
-void ghid_main_menu_add_resource(GHidMainMenu * menu, const Resource * res);
+															void (*special_key_cb) (const char *accel, GtkAction * action, const lht_node_t * node));
+void ghid_main_menu_add_resource(GHidMainMenu * menu, const lht_node_t * res);
 GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu);
 void ghid_main_menu_update_toggle_state(GHidMainMenu * menu,
 																				void (*cb) (GtkAction *, const char *toggle_flag, const char *active_flag));
 
-void ghid_main_menu_add_popup_resource(GHidMainMenu * menu, const char *name, const Resource * res);
+void ghid_main_menu_add_popup_resource(GHidMainMenu * menu, const lht_node_t * res);
 GtkMenu *ghid_main_menu_get_popup(GHidMainMenu * menu, const char *name);
 
 void ghid_main_menu_install_layer_selector(GHidMainMenu * mm, GHidLayerSelector * ls);
 void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, GHidRouteStyleSelector * rss);
 
 void ghid_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip);
+
+extern hid_res_t *ghid_res;
 
 G_END_DECLS											/* keep c++ happy */
 #endif

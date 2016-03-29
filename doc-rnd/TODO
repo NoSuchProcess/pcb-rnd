@@ -10,7 +10,6 @@ Cleanup #4:
 CLEANUP #4
 - libstroke: zoom
 - cleanup/rewrite resources:
-	- better tree structs with less hidden properties (minor change in the res format: always require key=val pairs)
 	- gtk, lesstif: reorganize the code so that:
 		- menus are always created using a path (ghid_main_menu_real_add_resource)
 		- res->menu should be a common code
@@ -18,6 +17,8 @@ CLEANUP #4
 	- gpmi:
 		- hid: hid_destroy (pair of hid_create)
 		- cleanup on unload: remove menus
+	- check how toolbar disappears under short menus
+	- check why hotkeys (e.g. ESC) don't work
 - check whether local copy of gts is needed, bisect when toporouter broke 
 
 

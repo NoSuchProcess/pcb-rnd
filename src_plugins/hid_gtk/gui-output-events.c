@@ -268,6 +268,12 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 	return handled;
 }
 
+static hid_res_mod_t ghid_mouse_button(int ev_button)
+{
+#warning TODO: convert ev->button
+	return (MB_LEFT << (ev_button-1));
+}
+
 gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data)
 {
 	ModifierKeysState mk;
@@ -281,7 +287,7 @@ gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(&state);
 
-	do_mouse_action(ev->button, mk);
+	hid_res_mouse_action(ghid_res, ghid_mouse_button(ev->button) | mk);
 
 	ghid_invalidate_all();
 	ghid_window_set_name_label(PCB->Name);
@@ -301,7 +307,7 @@ gboolean ghid_port_button_release_cb(GtkWidget * drawing_area, GdkEventButton * 
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(&state);
 
-	do_mouse_action(ev->button, mk + M_Release);
+	hid_res_mouse_action(ghid_res, ghid_mouse_button(ev->button) | mk | M_Release);
 
 	AdjustAttachedObjects();
 	ghid_invalidate_all();
@@ -547,23 +553,14 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget * widget, GdkEventScroll * ev, G
 	 * who has buttons 4 - 7 that aren't the scroll wheel?
 	 */
 	switch (ev->direction) {
-	case GDK_SCROLL_UP:
-		button = 4;
-		break;
-	case GDK_SCROLL_DOWN:
-		button = 5;
-		break;
-	case GDK_SCROLL_LEFT:
-		button = 6;
-		break;
-	case GDK_SCROLL_RIGHT:
-		button = 7;
-		break;
-	default:
-		button = -1;
+		case GDK_SCROLL_UP:    button = MB_UP; break;
+		case GDK_SCROLL_DOWN:  button = MB_DOWN; break;
+		case GDK_SCROLL_LEFT:  button = MB_LEFT; break;
+		case GDK_SCROLL_RIGHT: button = MB_RIGHT; break;
+		default: return FALSE;
 	}
 
-	do_mouse_action(button, mk);
+	hid_res_mouse_action(ghid_res, button | mk);
 
 	return TRUE;
 }

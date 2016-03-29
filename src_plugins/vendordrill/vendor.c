@@ -53,7 +53,6 @@
 #include "draw.h"
 #include "error.h"
 #include "global.h"
-#include "resource.h"
 #include "set.h"
 #include "undo.h"
 #include "vendor.h"

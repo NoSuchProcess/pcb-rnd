@@ -22,7 +22,6 @@
 #include "mymem.h"
 #include "misc.h"
 #include "pcb-printf.h"
-#include "resource.h"
 #include "clip.h"
 #include "event.h"
 #include "error.h"

@@ -111,7 +111,7 @@ static void set_visibility(GHidLayerSelector * ls, GtkTreeIter * iter, struct _l
 {
 	gtk_list_store_set(ls->list_store, iter, VISIBLE_COL, state, -1);
 
-	if (ldata) {
+	if ((ldata) && (ldata->view_item)) {
 		gtk_action_block_activate(GTK_ACTION(ldata->view_action));
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ldata->view_item), state);
 		gtk_action_unblock_activate(GTK_ACTION(ldata->view_action));

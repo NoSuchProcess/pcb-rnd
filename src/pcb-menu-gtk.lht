@@ -1,0 +1,312 @@
+ha:{
+	li:mouse {
+		li:left {
+			li:press            = { Mode(Notify) }
+			li:press-ctrl       = { Mode(Save); Mode(None); Mode(Restore); Mode(Notify) }
+			li:press-shift-ctrl = { Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore) }
+			li:release          = { Mode(Release) }
+		}
+		li:right {
+			li:press         = { Pan(1) }
+			li:release       = { Pan(0) }
+			li:press-shift   = { Popup(Popup1) }
+			li:press-ctrl    = { Display(CycleCrosshair) }
+		}
+		li:middle {
+			li:press               = { Mode(Stroke) }
+			li:release             = { Mode(Release) }
+			li:press-ctrl          = { Mode(Save); Mode(Copy); Mode(Notify) }
+			li:release-ctrl        = { Mode(Notify); Mode(Restore); }
+			li:press-shift-ctrl    = { Display(ToggleRubberbandMode); Mode(Save); Mode(Move); Mode(Notify) }
+			li:release-shift-ctrl  = { Mode(Notify); Mode(Restore); Display(ToggleRubberbandMode) }
+		}
+		li:up {
+			li:press        = { Zoom(0.8) }
+			li:press-shift  = { Scroll(up) }
+			li:press-ctrl   = { Scroll(left) }
+		}
+		li:down {
+			li:press       = { Zoom(1.25) }
+			li:press-shift = { Scroll(down) }
+			li:press-ctrl  = { Scroll(right) }
+		}
+# If you want zoom to center, do this instead.
+		#ha:Up = { li:{} = {Zoom(0.8); Center()} }
+		#ha:Down = { li:{} = {Zoom(1.25); Center()} }
+	}
+	
+	li:main_menu {
+		### File Menu
+		ha:File {
+			m=F
+			li:submenu {
+				ha:Save Layout                       = { m=S; a={Ctrl<Key>s};        action=Save(Layout); tip=Saves current layout }
+				ha:Save Layout As...                 = { m=A; a={Shift Ctrl<Key>s};  action=Save(LayoutAs); tip=Saves current layout into a new file }
+				-
+				ha:Revert                            = {                             action=Load(Revert,none); tip=Revert to the layout stored on disk }
+				-
+				ha:Import Schematics                 = {                             action=Import() }
+				ha:Load layout                       = {                             action=Load(Layout); tip=Load a layout from a file }
+				ha:Load element data to paste-buffer = {                             li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
+				ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
+				ha:Load netlist file                 = {                             action=Load(Netlist) }
+				ha:Load vendor resource file         = {                             action=LoadVendorFrom() }
+				-
+				ha:Save connection data of {
+					li:submenu {
+						ha:a single element                  = {                  li:action={ GetXY(Click to set the element mark <>); Save(ElementConnections)}}
+						ha:all elements                      = {                  action=Save(AllConnections) }
+						ha:unused pins                       = {                  action=Save(AllUnusedPins) }
+						ha:netlist patch for back annotation = {a=Alt Ctrl<Key>b; action=SavePatch() }
+					}
+				}
+				-
+				ha:Print layout...      = {               action=Print()}
+				ha:Export layout...     = {               action=Export()}
+				ha:Calibrate Printer... = {               action=PrintCalibrate()}
+				-
+				ha:Start New Layout     = { a=Ctrl<Key>n; action=New() }
+				-
+				ha:Preferences...       = {               action=DoWindows(Preferences)}
+				-
+				ha:Quit Program         = { a=Ctrl<Key>q; action=Quit() }
+			}
+		}
+
+		ha:Edit {
+			m=E
+			li:submenu {
+				ha:Undo last operation          = { a=<Key>u;           action=Undo() }
+				ha:Redo last undone operation   = { a=Shift<Key>r;      action=Redo() }
+				ha:Clear undo-buffer            = { a=Shift Ctrl<Key>u; action=Undo(ClearList) }
+				-
+				ha:Cut selection to buffer      = { a=Ctrl<Key>x;       li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer) } }
+				ha:Copy selection to buffer     = { a=Ctrl<Key>c;       li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
+				ha:Paste buffer to layout       = { a=Ctrl<Key>v;       action=Mode(PasteBuffer) }
+				-
+				ha:Unselect all                 = { a=Shift Alt<Key>a;  action=Unselect(All) }
+				ha:Select all visible           = { a=Alt<Key>a;        action=Select(All) }
+				-
+				ha:Edit name of {
+					li:submenu {
+						ha:text on layout             = { a=<Key>n;           action=ChangeName(Object) }
+						ha:pin on layout              = { a=Shift Ctrl<Key>n; action=ChangeName(Object, Number) }
+						ha:layout                     = {                     action=ChangeName(Layout) }
+						ha:active layer               = {                     action=ChangeName(Layer) }
+					}
+				}
+				ha:Edit attributes of {
+					li:submenu {
+						ha:Layout                     = { action=Attributes(Layout) }
+						ha:CurrentLayer               = { action=Attributes(Layer) }
+						ha:Element                    = { action=Attributes(Element) }
+					}
+				}
+				ha:Change flags {
+					li:submenu {
+						ha:Nonetlist                  = { a=Alt<Key>n; action=ChangeNonetlist(Element) }
+					}
+				}
+				ha:Route Styles {
+					li:submenu {
+						@routestyles
+						-
+						ha:Edit...                    = { action=AdjustStyle(0) }
+					}
+				}
+			}
+		} # Edit
+
+		ha:View {
+			m=V
+			li:submenu {
+				ha:Enable visible grid        = { checked=drawgrid; action=Display(Grid) }
+				ha:Grid units {
+					li:submenu {
+						ha:mil                    = { checked=grid_units_mil,1; action=SetUnits(mil) }
+						ha:mm                     = { checked=grid_units_mm,1; action=SetUnits(mm) }
+					}
+				}
+				ha:Grid size = {
+					li:submenu {
+						ha:No Grid                = { checked=grid,0; action=SetValue(Grid,1) }
+						-
+						ha:0.1 mil                = { checked=gridsize,0.1mil; li:action={SetUnits(mil); SetValue(Grid,0.1mil)} }
+						ha:1 mil                  = { checked=gridsize,1mil; li:action={SetUnits(mil); SetValue(Grid,1mil)} }
+						ha:5 mil                  = { checked=gridsize,5mil; li:action={SetUnits(mil); SetValue(Grid,5mil)} }
+						ha:10 mil                 = { checked=gridsize,10mil; li:action={SetUnits(mil); SetValue(Grid,10mil)} }
+						ha:25 mil                 = { checked=gridsize,25mil; li:action={SetUnits(mil); SetValue(Grid,25mil)} }
+						ha:50 mil                 = { checked=gridsize,50mil; li:action={SetUnits(mil); SetValue(Grid,50mil)} }
+						ha:100 mil                = { checked=gridsize,100mil; li:action={SetUnits(mil); SetValue(Grid,100mil)} }
+						-
+						ha:0.01 mm                = { checked=gridsize,0.01mm; li:action={SetUnits(mm); SetValue(Grid,0.01mm)} }
+						ha:0.05 mm                = { checked=gridsize,0.05mm; li:action={SetUnits(mm); SetValue(Grid,0.05mm)} }
+						ha:0.1 mm                 = { checked=gridsize,0.10mm; li:action={SetUnits(mm); SetValue(Grid,0.1mm)} }
+						ha:0.25 mm                = { checked=gridsize,0.25mm; li:action={SetUnits(mm); SetValue(Grid,0.25mm)} }
+						ha:0.5 mm                 = { checked=gridsize,0.50mm; li:action={SetUnits(mm); SetValue(Grid,0.5mm)} }
+						ha:1 mm                   = { checked=gridsize,1mm; li:action={SetUnits(mm); SetValue(Grid,1mm)} }
+						-
+						ha:Grid -5mil             = { a=Shift<Key>g; action=SetValue(Grid,-5,mil) }
+						ha:Grid +5mil             = { a=<Key>g;  action=SetValue(Grid,+5,mil) }
+						ha:Grid -0.05mm           = { a=Shift Ctrl<Key>g; action=SetValue(Grid,-0.05,mm) }
+						ha:Grid +0.05mm           = { a=Ctrl<Key>g; action=SetValue(Grid,+0.05,mm) }
+					}
+				}
+				ha:Realign grid               = { li:action={GetXY(Click to set the grid origin); Display(ToggleGrid) } }
+				-
+				ha:Displayed element name {
+					li:submenu {
+						ha:Description            = { checked=elementname,1; action=Display(Description) }
+						ha:Reference Designator   = { checked=elementname,2; action=Display(NameOnPCB) }
+						ha:Value                  = { checked=elementname,3; action=Display(Value) }
+					}
+				}
+				ha:Enable Pinout shows number = { checked=shownumber; action=Display(ToggleName) }
+				ha:Pins/Via show Name/Number  = { a=<Key>d; action=Display(PinOrPadName) }
+				ha:Zoom In 20%                = { m=Z; a=<Key>z; action=Zoom(-1.2) }
+				ha:Zoom Out 20%               = { m=O; a=Shift<Key>z; action=Zoom(+1.2) }
+				ha:More zooms and view changes {
+					li:submenu {
+						ha:Zoom Max               = { m=M; a=<Key>v; action=Zoom() }
+						ha:Zoom In 2X             = { action=Zoom(-2) }
+						ha:Zoom Out 2X            = { action=Zoom(+2) }
+						ha:Zoom to 0.1mil/px      = { action={Zoom(=0.1mil)} }
+						ha:Zoom to 0.01mm/px      = { action={Zoom(=0.01mm)} }
+						ha:Zoom to 1mil/px        = { action={Zoom(=1mil)} }
+						ha:Zoom to 0.05mm/px      = { action={Zoom(=0.05mm)} }
+						ha:Zoom to 2.5mil/px      = { action={Zoom(=2.5mil)} }
+						ha:Zoom to 0.1mm/px       = { action={Zoom(=0.1mm)} }
+						ha:Zoom to 10mil/px       = { action={Zoom(=10mil)} }
+						ha:Zoom In 20% and center = { m=Z; li:action={Zoom(-1.2); Center()} }
+						ha:Zoom Out 20% and center= { m=O; li:action={Zoom(+1.2); Center()} }
+						ha:Flip up/down           = { checked=flip_y; a=<Key>Tab; action=SwapSides(V) }
+						ha:Flip left/right        = { checked=flip_x; a=Shift<Key>Tab; action=SwapSides(H) }
+						ha:Spin 180 degrees       = { a=Ctrl<Key>Tab; action=SwapSides(R) }
+						ha:Swap Sides             = { a=Ctrl Shift<Key>Tab; action=SwapSides() }
+						ha:Center cursor          = { a=<Key>c; action=Center() }
+					}
+				}
+				-
+				ha:Shown Layers {
+					li:submenu {
+						@layerview
+						-
+						ha:Edit Layer Groups      = { action=EditLayerGroups() }
+					}
+				}
+				ha:Current Layer {
+					li:submenu {
+						anon2=@layerpick
+						-
+						ha:Delete current layer   = { action=MoveLayer(c,-1) }
+						ha:Add new layer          = { action=MoveLayer(-1,c) }
+						ha:Move current layer up  = { action=MoveLayer(c,up) }
+						ha:Move current layer down= { action=MoveLayer(c,down) }
+					}
+				}
+			}
+		} # View
+
+		ha:Settings = {
+			m=S
+			li:submenu {
+				ha:'All-direction' lines            = { checked=alldirection; a=<Key>.; action=Display(Toggle45Degree) }
+				ha:Auto swap line start angle       = { checked=swapstartdir; action=Display(ToggleStartDirection) }
+				ha:Orthogonal moves                 = { checked=orthomove; action=Display(ToggleOrthoMove) }
+				ha:Crosshair snaps to pins and pads = { checked=snappin; action=Display(ToggleSnapPin) }
+				ha:Crosshair snaps to off-grid points on lines = { checked=snapoffgridline; action=Display(ToggleSnapOffGridLine) }
+				ha:Crosshair shows DRC clearance    = { checked=showdrc; action=Display(ToggleShowDRC) }
+				ha:Auto enforce DRC clearance       = { checked=autodrc; action=Display(ToggleAutoDRC) }
+				ha:Lock Names                       = { checked=locknames; action=Display(ToggleLockNames) }
+				ha:Only Names                       = { checked=onlynames; action=Display(ToggleOnlyNames) }
+				ha:Hide Names                       = { checked=hidenames; action=Display(ToggleHideNames) }
+				ha:Mincut on shorts                 = { checked=enablemincut; action=Display(ToggleMinCut) }
+				ha:Libstroke gestures on middle button = { checked=enablestroke; action=Display(ToggleStroke) }
+				-
+				ha:Rubber band mode                 = { checked=rubberband; action=Display(ToggleRubberBandMode) }
+				ha:Require unique element names     = { checked=uniquename; action=Display(ToggleUniqueNames) }
+				ha:Auto-zero delta measurements     = { checked=localref; action=Display(ToggleLocalRef) }
+				ha:New lines, arcs clear polygons   = { checked=clearnew; action=Display(ToggleClearLine) }
+				ha:New polygons are full ones       = { checked=newfullpoly; action=Display(ToggleFullPoly) }
+				ha:Show autorouter trials           = { checked=liveroute; action=Display(ToggleLiveRoute) }
+				ha:Highlighting on line, arc points = { checked=highlightonpoint; action=Display(ToggleHighlightOnPoint) }
+				ha:Thin draw                        = { checked=thindraw; a=<Key>|;  action=Display(ToggleThindraw) }
+				ha:Thin draw poly                   = { checked=thindrawpoly; a=Ctrl Shift<Key>p; action=Display(ToggleThindrawPoly) }
+				ha:Check polygons                   = { checked=checkplanes; action=Display(ToggleCheckPlanes) }
+				-
+				ha:Vendor drill mapping             = { checked=VendorMapOn; action=ToggleVendor() }
+				ha:Import New Elements at = {
+					m=I
+					li:submenu {
+						ha:Center          = { m=C; action=Import(setnewpoint,center) }
+						ha:Mark            = { m=M; action=Import(setnewpoint,mark) }
+						ha:Crosshair       = { m=h; action=Import(setnewpoint) }
+						-
+						ha:Set Dispersion  = { m=D; action=Import(setdisperse) }
+					}
+				}
+			}
+		} #Settings
+
+	ha:Select {
+		m=l
+		li:submenu {
+			ha:Select all visible objects      = { action=Select(All) }
+			ha:Select all connected objects    = { action=Select(Connection) }
+			ha:Unselect all objects            = { action=Unselect(All) }
+			ha:unselect all connected objects  = { action=Unselect(Connection) }
+			ha:Select by name {
+				li:submenu {
+					ha:All objects           = { active=have_regex; action=Select(ObjectByName) }
+					ha:Elements              = { active=have_regex; action=Select(ElementByName) }
+					ha:Pads                  = { active=have_regex; action=Select(PadByName) }
+					ha:Pins                  = { active=have_regex; action=Select(PinByName) }
+					ha:Text                  = { active=have_regex; action=Select(TextByName) }
+					ha:Vias                  = { active=have_regex; action=Select(ViaByName) }
+				}
+			}
+			ha:Auto-place selected elements          = { a=Ctrl<Key>p; action=AutoPlaceSelected() }
+			ha:Disperse all elements                 = { action=DisperseElements(All) }
+			ha:Disperse selected elements            = { action=DisperseElements(Selected) }
+			ha:Move selected elements to other side  = { a=Shift<Key>b; action=Flip(SelectedElements) }
+			ha:Move selected to current layer        = { a=Shift<Key>m; action=MoveToCurrentLayer(Selected) }
+			ha:Remove selected objects               = { a=Shift<Key>Delete; action=RemoveSelected() }
+			ha:Convert selection to element          = { action=Select(Convert) }
+			ha:Optimize selected rats                = { li:action={DeleteRats(SelectedRats); AddRats(SelectedRats) } }
+			ha:Auto-route selected rats              = { a=Alt<Key>r; action=AutoRoute(SelectedRats) }
+			ha:Rip up selected auto-routed tracks    = { action=RipUp(Selected) }
+			ha:Change size of selected objects {
+				li:submenu {
+					ha:Lines -10 mil = { li:action={ChangeSize(SelectedLines,-10,mil); ChangeSize(SelectedArcs,-10,mil)} }
+					ha:Lines +10 mil = { li:action={ChangeSize(SelectedLines,+10,mil); ChangeSize(SelectedArcs,+10,mil)} }
+					ha:Pads -10 mil  = { action=ChangeSize(SelectedPads,-10,mil) }
+					ha:Pads +10 mil  = { action=ChangeSize(SelectedPads,+10,mil) }
+					ha:Pins -10 mil  = { action=ChangeSize(SelectedPins,-10,mil) }
+					ha:Pins +10 mil  = { action=ChangeSize(SelectedPins,+10,mil) }
+					ha:Texts -10 mil = { action=ChangeSize(SelectedTexts,-10,mil) }
+					ha:Texts +10 mil = { action=ChangeSize(SelectedTexts,+10,mil) }
+					ha:Vias -10 mil  = { action=ChangeSize(SelectedVias,-10,mil) }
+					ha:Vias +10 mil  = { action=ChangeSize(SelectedVias,+10,mil) }
+				}
+			}
+			ha:Change drilling hole of selected objects {
+				li:submenu {
+					ha:Vias -10 mil = { action=ChangeDrillSize(SelectedVias,-10,mil) }
+					ha:Vias +10 mil = { action=ChangeDrillSize(SelectedVias,+10,mil) }
+					ha:Pins -10 mil = { action=ChangeDrillSize(SelectedPins,-10,mil) }
+					ha:Pins +10 mil = { action=ChangeDrillSize(SelectedPins,+10,mil) }
+				}
+			}
+			ha:Change square-flag of selected objects {
+				li:submenu {
+					ha:Elements  = { action=ChangeSquare(SelectedElements) }
+					ha:Pins      = { action=ChangeSquare(SelectedPins) }
+				}
+			}
+			ha:Cycle object being dragged   = { a=<Key>x; action=CycleDrag() }
+		}
+	} # Select
+
+
+	} # main menu
+} # root

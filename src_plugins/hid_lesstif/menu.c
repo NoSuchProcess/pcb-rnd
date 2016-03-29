@@ -18,7 +18,6 @@
 
 #include "hid.h"
 #include "hid_resource.h"
-#include "resource.h"
 #include "lesstif.h"
 #include "mymem.h"
 #include "paths.h"
