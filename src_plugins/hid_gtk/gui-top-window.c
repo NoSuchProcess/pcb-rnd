@@ -880,12 +880,13 @@ static void make_mode_buttons_and_toolbar(GtkWidget ** mode_frame, GtkWidget ** 
 {
 	GtkToolItem *tool_item;
 	GtkWidget *vbox, *hbox = NULL;
+	GtkWidget *pad_hbox, *pad_vbox;
 	GtkWidget *image;
 	GdkPixbuf *pixbuf;
 	GSList *group = NULL;
 	GSList *toolbar_group = NULL;
 	ModeButton *mb;
-	int i;
+	int i, tb_width = 0;
 
 	*mode_toolbar = gtk_toolbar_new();
 
@@ -927,6 +928,7 @@ static void make_mode_buttons_and_toolbar(GtkWidget ** mode_frame, GtkWidget ** 
 		image = gtk_image_new_from_pixbuf(pixbuf);
 		gtk_container_add(GTK_CONTAINER(mb->toolbar_button), image);
 		g_object_unref(pixbuf);
+		tb_width += image->requisition.width;
 
 		if (strcmp(mb->name, "select") == 0) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mb->button), TRUE);
@@ -936,6 +938,20 @@ static void make_mode_buttons_and_toolbar(GtkWidget ** mode_frame, GtkWidget ** 
 		mb->button_cb_id = g_signal_connect(mb->button, "toggled", G_CALLBACK(mode_button_toggled_cb), mb);
 		mb->toolbar_button_cb_id = g_signal_connect(mb->toolbar_button, "toggled", G_CALLBACK(mode_toolbar_button_toggled_cb), mb);
 	}
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), *mode_toolbar, FALSE, FALSE, 0);
+	*mode_toolbar = vbox;
+
+	/* Pack an empty, wide hbox right below the toolbar and make it as wide
+	   as the calculated width of the toolbar with some tuning. Toolbar icons
+	   disappear if the container hbox is not wide enough. Without this hack
+	   the width would be determined by the menu bar, and that could be short
+	   if the user changes the menu layout. */
+	pad_hbox = gtk_hbox_new(FALSE, 0);
+	pad_vbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(pad_hbox), pad_vbox, FALSE, FALSE, tb_width * 3 / 4);
+	gtk_box_pack_start(GTK_BOX(*mode_toolbar), pad_hbox, FALSE, FALSE, 0);
 }
 
 
@@ -1087,7 +1103,6 @@ static void ghid_build_pcb_top_window(void)
 
 	make_mode_buttons_and_toolbar(&ghidgui->mode_buttons_frame, &ghidgui->mode_toolbar);
 	gtk_box_pack_start(GTK_BOX(ghidgui->menubar_toolbar_vbox), ghidgui->mode_toolbar, FALSE, FALSE, 0);
-
 
 	ghidgui->position_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(ghidgui->top_hbox), ghidgui->position_hbox, FALSE, FALSE, 4);
