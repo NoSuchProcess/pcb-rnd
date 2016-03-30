@@ -248,65 +248,156 @@ ha:{
 			}
 		} #Settings
 
-	ha:Select {
-		m=l
-		li:submenu {
-			ha:Select all visible objects      = { action=Select(All) }
-			ha:Select all connected objects    = { action=Select(Connection) }
-			ha:Unselect all objects            = { action=Unselect(All) }
-			ha:unselect all connected objects  = { action=Unselect(Connection) }
-			ha:Select by name {
-				li:submenu {
-					ha:All objects           = { active=have_regex; action=Select(ObjectByName) }
-					ha:Elements              = { active=have_regex; action=Select(ElementByName) }
-					ha:Pads                  = { active=have_regex; action=Select(PadByName) }
-					ha:Pins                  = { active=have_regex; action=Select(PinByName) }
-					ha:Text                  = { active=have_regex; action=Select(TextByName) }
-					ha:Vias                  = { active=have_regex; action=Select(ViaByName) }
+		ha:Select {
+			m=l
+			li:submenu {
+				ha:Select all visible objects      = { action=Select(All) }
+				ha:Select all connected objects    = { action=Select(Connection) }
+				-
+				ha:Unselect all objects            = { action=Unselect(All) }
+				ha:unselect all connected objects  = { action=Unselect(Connection) }
+				-
+				ha:Select by name {
+					li:submenu {
+						ha:All objects           = { active=have_regex; action=Select(ObjectByName) }
+						ha:Elements              = { active=have_regex; action=Select(ElementByName) }
+						ha:Pads                  = { active=have_regex; action=Select(PadByName) }
+						ha:Pins                  = { active=have_regex; action=Select(PinByName) }
+						ha:Text                  = { active=have_regex; action=Select(TextByName) }
+						ha:Vias                  = { active=have_regex; action=Select(ViaByName) }
+					}
 				}
-			}
-			ha:Auto-place selected elements          = { a=Ctrl<Key>p; action=AutoPlaceSelected() }
-			ha:Disperse all elements                 = { action=DisperseElements(All) }
-			ha:Disperse selected elements            = { action=DisperseElements(Selected) }
-			ha:Move selected elements to other side  = { a=Shift<Key>b; action=Flip(SelectedElements) }
-			ha:Move selected to current layer        = { a=Shift<Key>m; action=MoveToCurrentLayer(Selected) }
-			ha:Remove selected objects               = { a=Shift<Key>Delete; action=RemoveSelected() }
-			ha:Convert selection to element          = { action=Select(Convert) }
-			ha:Optimize selected rats                = { li:action={DeleteRats(SelectedRats); AddRats(SelectedRats) } }
-			ha:Auto-route selected rats              = { a=Alt<Key>r; action=AutoRoute(SelectedRats) }
-			ha:Rip up selected auto-routed tracks    = { action=RipUp(Selected) }
-			ha:Change size of selected objects {
-				li:submenu {
-					ha:Lines -10 mil = { li:action={ChangeSize(SelectedLines,-10,mil); ChangeSize(SelectedArcs,-10,mil)} }
-					ha:Lines +10 mil = { li:action={ChangeSize(SelectedLines,+10,mil); ChangeSize(SelectedArcs,+10,mil)} }
-					ha:Pads -10 mil  = { action=ChangeSize(SelectedPads,-10,mil) }
-					ha:Pads +10 mil  = { action=ChangeSize(SelectedPads,+10,mil) }
-					ha:Pins -10 mil  = { action=ChangeSize(SelectedPins,-10,mil) }
-					ha:Pins +10 mil  = { action=ChangeSize(SelectedPins,+10,mil) }
-					ha:Texts -10 mil = { action=ChangeSize(SelectedTexts,-10,mil) }
-					ha:Texts +10 mil = { action=ChangeSize(SelectedTexts,+10,mil) }
-					ha:Vias -10 mil  = { action=ChangeSize(SelectedVias,-10,mil) }
-					ha:Vias +10 mil  = { action=ChangeSize(SelectedVias,+10,mil) }
+				-
+				ha:Auto-place selected elements          = { a=Ctrl<Key>p; action=AutoPlaceSelected() }
+				ha:Disperse all elements                 = { action=DisperseElements(All) }
+				ha:Disperse selected elements            = { action=DisperseElements(Selected) }
+				-
+				ha:Move selected elements to other side  = { a=Shift<Key>b; action=Flip(SelectedElements) }
+				ha:Move selected to current layer        = { a=Shift<Key>m; action=MoveToCurrentLayer(Selected) }
+				ha:Remove selected objects               = { a=Shift<Key>Delete; action=RemoveSelected() }
+				ha:Convert selection to element          = { action=Select(Convert) }
+				-
+				ha:Optimize selected rats                = { li:action={DeleteRats(SelectedRats); AddRats(SelectedRats) } }
+				ha:Auto-route selected rats              = { a=Alt<Key>r; action=AutoRoute(SelectedRats) }
+				ha:Rip up selected auto-routed tracks    = { action=RipUp(Selected) }
+				-
+				ha:Change size of selected objects {
+					li:submenu {
+						ha:Lines -10 mil = { li:action={ChangeSize(SelectedLines,-10,mil); ChangeSize(SelectedArcs,-10,mil)} }
+						ha:Lines +10 mil = { li:action={ChangeSize(SelectedLines,+10,mil); ChangeSize(SelectedArcs,+10,mil)} }
+						ha:Pads -10 mil  = { action=ChangeSize(SelectedPads,-10,mil) }
+						ha:Pads +10 mil  = { action=ChangeSize(SelectedPads,+10,mil) }
+						ha:Pins -10 mil  = { action=ChangeSize(SelectedPins,-10,mil) }
+						ha:Pins +10 mil  = { action=ChangeSize(SelectedPins,+10,mil) }
+						ha:Texts -10 mil = { action=ChangeSize(SelectedTexts,-10,mil) }
+						ha:Texts +10 mil = { action=ChangeSize(SelectedTexts,+10,mil) }
+						ha:Vias -10 mil  = { action=ChangeSize(SelectedVias,-10,mil) }
+						ha:Vias +10 mil  = { action=ChangeSize(SelectedVias,+10,mil) }
+					}
 				}
-			}
-			ha:Change drilling hole of selected objects {
-				li:submenu {
-					ha:Vias -10 mil = { action=ChangeDrillSize(SelectedVias,-10,mil) }
-					ha:Vias +10 mil = { action=ChangeDrillSize(SelectedVias,+10,mil) }
-					ha:Pins -10 mil = { action=ChangeDrillSize(SelectedPins,-10,mil) }
-					ha:Pins +10 mil = { action=ChangeDrillSize(SelectedPins,+10,mil) }
+				-
+				ha:Change drilling hole of selected objects {
+					li:submenu {
+						ha:Vias -10 mil = { action=ChangeDrillSize(SelectedVias,-10,mil) }
+						ha:Vias +10 mil = { action=ChangeDrillSize(SelectedVias,+10,mil) }
+						ha:Pins -10 mil = { action=ChangeDrillSize(SelectedPins,-10,mil) }
+						ha:Pins +10 mil = { action=ChangeDrillSize(SelectedPins,+10,mil) }
+					}
 				}
-			}
-			ha:Change square-flag of selected objects {
-				li:submenu {
-					ha:Elements  = { action=ChangeSquare(SelectedElements) }
-					ha:Pins      = { action=ChangeSquare(SelectedPins) }
+				-
+				ha:Change square-flag of selected objects {
+					li:submenu {
+						ha:Elements  = { action=ChangeSquare(SelectedElements) }
+						ha:Pins      = { action=ChangeSquare(SelectedPins) }
+					}
 				}
+				ha:Cycle object being dragged   = { a=<Key>x; action=CycleDrag() }
 			}
-			ha:Cycle object being dragged   = { a=<Key>x; action=CycleDrag() }
-		}
-	} # Select
+		} # Select
 
+		ha:Buffer {
+			m=B
+			li:submenu {
+				ha:Cut selection to buffer = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer)} }
+				ha:Paste buffer to layout = { action=Mode(PasteBuffer) }
+				-
+				ha:Rotate buffer 90 deg CCW = { a=Shift<Key>F7; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1)} }
+				ha:Rotate buffer 90 deg CW = { li:action={Mode(PasteBuffer); PasteBuffer(Rotate,3)} }
+				ha:Arbitrarily Rotate Buffer = { li:action={Mode(PasteBuffer); FreeRotateBuffer()} }
+				ha:Mirror buffer (up/down) = { li:action={Mode(PasteBuffer); PasteBuffer(Mirror)} }
+				ha:Mirror buffer (left/right) = { li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
+				-
+				ha:Clear buffer = { action=PasteBuffer(Clear) }
+				ha:Convert buffer to element = { action=PasteBuffer(Convert) }
+				ha:Break buffer elements to pieces = { action=PasteBuffer(Restore) }
+				ha:Save buffer elements to file = { action=Save(PasteBuffer) }
+				-
+				ha:Select Buffer \#1 = { checked=buffer,1; m=1; a=Shift<Key>1; action=PasteBuffer(1) }
+				ha:Select Buffer \#2 = { checked=buffer,2; m=2; a=Shift<Key>2; action=PasteBuffer(2) }
+				ha:Select Buffer \#3 = { checked=buffer,3; m=3; a=Shift<Key>3; action=PasteBuffer(3) }
+				ha:Select Buffer \#4 = { checked=buffer,4; m=4; a=Shift<Key>4; action=PasteBuffer(4) }
+				ha:Select Buffer \#5 = { checked=buffer,5; m=5; a=Shift<Key>5; action=PasteBuffer(5) }
+			}
+		} # Buffer
+
+		ha:Connects = {
+			m=C
+			li:submenu {
+				ha:Lookup connection to object   = { a=Ctrl<Key>f; li:action={GetXY(Click on the object); Connection(Find)} }
+				ha:Reset scanned pads/pins/vias  = { li:action={Connection(ResetPinsViasAndPads); Display(Redraw)} }
+				ha:Reset scanned lines/polygons  = { li:action={Connection(ResetLinesAndPolygons); Display(Redraw)} }
+				ha:Reset all connections         = { a=Shift<Key>f; li:action={Connection(Reset); Display(Redraw)} }
+				-
+				ha:Optimize rats nest            = { a=<Key>o; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(AllRats); Atomic(Block)} }
+				ha:Erase rats nest               = { a=<Key>e; action=DeleteRats(AllRats) }
+				ha:Erase selected rats           = { a=Shift<Key>e; action=DeleteRats(SelectedRats) }
+				-
+				ha:Auto-route selected rats      = { action=AutoRoute(Selected) }
+				ha:Auto-route all rats           = { action=AutoRoute(AllRats) }
+				ha:Rip up all auto-routed tracks = { action=RipUp(All) }
+				-
+				ha:Optimize routed tracks {
+					li:submenu {
+						ha:Auto-Optimize = { a={Shift<Key>=}; action=djopt(auto) }
+						ha:Debumpify = { action=djopt(debumpify) }
+						ha:Unjaggy = { action=djopt(unjaggy) }
+						ha:Vianudge = { action=djopt(vianudge) }
+						ha:Viatrim = { action=djopt(viatrim) }
+						ha:Ortho pull = { action=djopt(orthopull) }
+						ha:Simple optimization = { a={<Key>=}; action=djopt(simple) }
+						ha:Miter = { action=djopt(miter) }
+						ha:Puller = { a=<Key>y; action=Puller() }
+						ha:Global Puller {
+							li:submenu {
+								ha:Selected = { action=GlobalPuller(selected) }
+								ha:Found = { action=GlobalPuller(found) }
+								ha:All = { action=GlobalPuller() }
+							}
+						}
+						-
+						ha:Only autorouted nets = { checked=optautoonly; action=OptAutoOnly() }
+					}
+				}
+				-
+				ha:Design Rule Checker = { action=DRC() }
+				-
+				ha:Apply vendor drill mapping = { action=ApplyVendor() }
+				-
+				ha:Design changes (back annotation) {
+					li:submenu {
+						ha:Swap nets on two selected pins = { a=Shift<Key>x; action=net(swap) }
+						ha:Replace footprint = { a=Alt Shift<Key>f; action=ReplaceFootprint() }
+					}
+				}
+			}
+		} # Connects
+	
+		ha:Plugins {
+			m=P
+			li:submenu {
+				ha:Manage plugins... = { a=Alt<Key>p; action=ManagePlugins() }
+			}
+		} # Plugins
 
 	} # main menu
 } # root
