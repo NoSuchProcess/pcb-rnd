@@ -1,9 +1,15 @@
 Cleanup #4:
 	- reduce
+		- replace hid_load_settings() with lihata
 		- hash in hid_attrib.c?
 		- hash in hid_color.c; test: eps
 		- nelma and gcode both invent .png name locally
 		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
+		- revise RCSID and $id$
+		- vendordrill
+			- search for /units, replace it with pcb-printf something
+			- add round down
+			- replace ignore_refdes, ignore_value and ignore_descr with genvector
 	- mods:
 		- gpmi (and other buildins/plugins) not showing up in the about box
 
@@ -17,11 +23,8 @@ CLEANUP #4
 	- gpmi:
 		- hid: hid_destroy (pair of hid_create)
 		- cleanup on unload: remove menus
-	- check how toolbar disappears under short menus
-	- check why hotkeys (e.g. ESC) don't work
 - check whether local copy of gts is needed, bisect when toporouter broke 
-
-
+- vendordrill: free at exit
 
 FEATURES
 - UI: trace length calculation {small}
