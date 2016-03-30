@@ -60,12 +60,15 @@
 #include "plugins.h"
 #include "hid_flags.h"
 #include "hid_actions.h"
+#include "hid_resource.h"
+#include <liblihata/lihata.h>
+#include <liblihata/tree.h>
 
 RCSID("$Id$");
 
 static void add_to_drills(char *);
 static void apply_vendor_map(void);
-static void process_skips(Resource *);
+static void process_skips(lht_node_t *);
 static bool rematch(const char *, const char *);
 
 /* list of vendor drills and a count of them */
@@ -137,7 +140,7 @@ static const char toggle_vendor_help[] = "Toggles the state of automatic drill s
 When drill mapping is enabled, new instances of pins and vias will
 have their drill holes mapped to one of the allowed drill sizes
 specified in the currently loaded vendor drill table.  To enable drill
-mapping, a vendor resource file containing a drill table must be
+mapping, a vendor lihata file containing a drill table must be
 loaded first.
 
 %end-doc */
@@ -166,7 +169,7 @@ static const char enable_vendor_help[] = "Enables automatic drill size mapping."
 When drill mapping is enabled, new instances of pins and vias will
 have their drill holes mapped to one of the allowed drill sizes
 specified in the currently loaded vendor drill table.  To enable drill
-mapping, a vendor resource file containing a drill table must be
+mapping, a vendor lihata file containing a drill table must be
 loaded first.
 
 %end-doc */
@@ -235,7 +238,7 @@ int ActionUnloadVendor(int argc, char **argv, Coord x, Coord y)
 
 static const char load_vendor_syntax[] = "LoadVendorFrom(filename)";
 
-static const char load_vendor_help[] = "Loads the specified vendor resource file.";
+static const char load_vendor_help[] = "Loads the specified vendor lihata file.";
 
 /* %start-doc actions LoadVendorFrom
 
@@ -245,7 +248,7 @@ static const char load_vendor_help[] = "Loads the specified vendor resource file
 
 @table @var
 @item filename
-Name of the vendor resource file.  If not specified, the user will
+Name of the vendor lihata file.  If not specified, the user will
 be prompted to enter one.
 @end table
 
@@ -256,8 +259,9 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 	int i;
 	char *fname = NULL;
 	static char *default_file = NULL;
-	char *sval;
-	Resource *res, *drcres, *drlres;
+	const char *sval;
+	lht_doc_t *doc;
+	lht_node_t *drlres;
 	int type;
 	bool free_fname = false;
 
@@ -293,19 +297,18 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 	FREE(ignore_value);
 	FREE(ignore_descr);
 
-
 	/* load the resource file */
-	res = resource_parse(fname, NULL);
-	if (res == NULL) {
+	doc = hid_res_load_lht(fname);
+	if (doc == NULL) {
 		Message(_("Could not load vendor resource file \"%s\"\n"), fname);
 		return 1;
 	}
 
 	/* figure out the vendor name, if specified */
-	vendor_name = (char *) UNKNOWN(resource_value(res, "vendor"));
+	vendor_name = (char *) UNKNOWN(hid_res_text_value(doc, "vendor"));
 
 	/* figure out the units, if specified */
-	sval = resource_value(res, "units");
+	sval = hid_res_text_value(doc, "/units");
 	if (sval == NULL) {
 		sf = MIL_TO_COORD(1);
 	}
@@ -323,80 +326,72 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 		sf = INCH_TO_COORD(1);
 	}
 
-
 	/* default to ROUND_UP */
 	rounding_method = ROUND_UP;
+	sval = hid_res_text_value(doc, "/round");
+	if (sval != NULL) {
+		if (NSTRCMP(sval, "up") == 0) {
+			rounding_method = ROUND_UP;
+		}
+		else if (NSTRCMP(sval, "nearest") == 0) {
+			rounding_method = CLOSEST;
+		}
+		else {
+			Message(_("\"%s\" is not a valid rounding type.  Defaulting to up\n"), sval);
+			rounding_method = ROUND_UP;
+		}
+	}
+
+	process_skips(lht_tree_path(doc, "/", "/skips", 1, NULL));
 
 	/* extract the drillmap resource */
-	drlres = resource_subres(res, "drillmap");
-	if (drlres == NULL) {
+	drlres = lht_tree_path(doc, "/", "/drillmap", 1, NULL);
+	if (drlres != NULL) {
+		if (drlres->type = LHT_LIST) {
+			lht_node_t *n;
+			for(n = drlres->data.list.first; n != NULL; n = n->next) {
+				if (n->type != LHT_TEXT)
+					hid_res_error(n, "Broken drillmap: /drillmap should contain text children only\n");
+				else
+					add_to_drills(n->data.text.value);
+			}
+		}
+		Message(_("Broken drillmap: /drillmap should be a list\n"));
+	}
+	else
 		Message(_("No drillmap resource found\n"));
-	}
-	else {
-		sval = resource_value(drlres, "round");
-		if (sval != NULL) {
-			if (NSTRCMP(sval, "up") == 0) {
-				rounding_method = ROUND_UP;
-			}
-			else if (NSTRCMP(sval, "nearest") == 0) {
-				rounding_method = CLOSEST;
-			}
-			else {
-				Message(_("\"%s\" is not a valid rounding type.  Defaulting to up\n"), sval);
-				rounding_method = ROUND_UP;
-			}
-		}
 
-		process_skips(resource_subres(drlres, "skips"));
-
-		for (i = 0; i < drlres->c; i++) {
-			type = resource_type(drlres->v[i]);
-			switch (type) {
-			case 10:
-				/* just a number */
-				add_to_drills(drlres->v[i].value);
-				break;
-
-			default:
-				break;
-			}
-		}
-	}
-
-	/* Extract the DRC resource */
-	drcres = resource_subres(res, "drc");
-
-	sval = resource_value(drcres, "copper_space");
+	sval = hid_res_text_value(doc, "/drc/copper_space");
 	if (sval != NULL) {
 		PCB->Bloat = floor(sf * atof(sval) + 0.5);
 		Message(_("Set DRC minimum copper spacing to %.2f mils\n"), 0.01 * PCB->Bloat);
 	}
 
-	sval = resource_value(drcres, "copper_overlap");
+	sval = hid_res_text_value(doc, "/drc/copper_overlap");
 	if (sval != NULL) {
 		PCB->Shrink = floor(sf * atof(sval) + 0.5);
 		Message(_("Set DRC minimum copper overlap to %.2f mils\n"), 0.01 * PCB->Shrink);
 	}
 
-	sval = resource_value(drcres, "copper_width");
+	sval = hid_res_text_value(doc, "/drc/copper_width");
 	if (sval != NULL) {
 		PCB->minWid = floor(sf * atof(sval) + 0.5);
 		Message(_("Set DRC minimum copper spacing to %.2f mils\n"), 0.01 * PCB->minWid);
 	}
 
-	sval = resource_value(drcres, "silk_width");
+	sval = hid_res_text_value(doc, "/drc/silk_width");
 	if (sval != NULL) {
 		PCB->minSlk = floor(sf * atof(sval) + 0.5);
 		Message(_("Set DRC minimum silk width to %.2f mils\n"), 0.01 * PCB->minSlk);
 	}
 
-	sval = resource_value(drcres, "min_drill");
+	sval = hid_res_text_value(doc, "/drc/min_drill");
 	if (sval != NULL) {
 		PCB->minDrill = floor(sf * atof(sval) + 0.5);
 		Message(_("Set DRC minimum drill diameter to %.2f mils\n"), 0.01 * PCB->minDrill);
 	}
 
-	sval = resource_value(drcres, "min_ring");
+	sval = hid_res_text_value(doc, "/drc/min_ring");
 	if (sval != NULL) {
 		PCB->minRing = floor(sf * atof(sval) + 0.5);
 		Message(_("Set DRC minimum annular ring to %.2f mils\n"), 0.01 * PCB->minRing);
@@ -409,6 +404,7 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 	apply_vendor_map();
 	if (free_fname)
 		free(fname);
+	lht_dom_uninit(doc);
 	return 0;
 }
 
@@ -636,66 +632,50 @@ static void add_to_drills(char *sval)
 }
 
 /* deal with the "skip" subresource */
-static void process_skips(Resource * res)
+static void process_skips(lht_node_t *res)
 {
 	int type;
-	int i, k;
 	char *sval;
 	int *cnt;
 	char ***lst = NULL;
+	lht_node_t *n;
 
 	if (res == NULL)
 		return;
 
-	for (i = 0; i < res->c; i++) {
-		type = resource_type(res->v[i]);
-		switch (type) {
-		case 1:
-			/* 
-			 * an unnamed sub resource.  This is something like
-			 * {refdes "J3"}
-			 */
-			sval = res->v[i].subres->v[0].value;
-			if (sval == NULL) {
-				Message("Error:  null skip value\n");
+	if (res->type != LHT_LIST)
+		hid_res_error(res, "skips must be a list.\n");
+
+	for(n = res->data.list.first; n != NULL; n = n->next) {
+		if (n->type == LHT_TEXT) {
+			if (NSTRCMP(n->name, "refdes") == 0) {
+				cnt = &n_refdes;
+				lst = &ignore_refdes;
+			}
+			else if (NSTRCMP(n->name, "value") == 0) {
+				cnt = &n_value;
+				lst = &ignore_value;
+			}
+			else if (NSTRCMP(n->name, "descr") == 0) {
+				cnt = &n_descr;
+				lst = &ignore_descr;
 			}
 			else {
-				if (NSTRCMP(sval, "refdes") == 0) {
-					cnt = &n_refdes;
-					lst = &ignore_refdes;
-				}
-				else if (NSTRCMP(sval, "value") == 0) {
-					cnt = &n_value;
-					lst = &ignore_value;
-				}
-				else if (NSTRCMP(sval, "descr") == 0) {
-					cnt = &n_descr;
-					lst = &ignore_descr;
-				}
-				else {
-					cnt = NULL;
-				}
-
-				/* add the entry to the appropriate list */
-				if (cnt != NULL) {
-					for (k = 1; k < res->v[i].subres->c; k++) {
-						sval = res->v[i].subres->v[k].value;
-						(*cnt)++;
-						if ((*lst = (char **) realloc(*lst, (*cnt) * sizeof(char *))) == NULL) {
-							fprintf(stderr, "realloc() failed\n");
-							exit(-1);
-						}
-						(*lst)[*cnt - 1] = strdup(sval);
-					}
-				}
+				hid_res_error(n, "invalid skip name; must be one of refdes, value, descr");
+				continue;
 			}
-			break;
-
-		default:
-			Message(_("Ignored resource type = %d in skips= section\n"), type);
+			/* add the entry to the appropriate list */
+			sval = n->data.text.value;
+			(*cnt)++;
+			if ((*lst = (char **) realloc(*lst, (*cnt) * sizeof(char *))) == NULL) {
+				fprintf(stderr, "realloc() failed\n");
+				exit(-1);
+			}
+			(*lst)[*cnt - 1] = strdup(sval);
 		}
+		else
+			hid_res_error(n, "invalid skip type; must be text");
 	}
-
 }
 
 bool vendorIsElementMappable(ElementTypePtr element)
