@@ -159,19 +159,15 @@ lht_node_t *resource_create_menu(hid_res_t *hr, const char *name, const char *ac
 	abort();
 }
 
-
-hid_res_t *hid_res_load(const char *hidname, const char *embedded_fallback)
+lht_doc_t *hid_res_load_lht(const char *filename)
 {
-	lht_doc_t *doc;
-	hid_res_t *hr;
 	FILE *f;
-//static const char *pcbmenu_paths_in[] = { "gpcb-menu.res", "gpcb-menu.res", PCBSHAREDIR "/gpcb-menu.res", NULL };
-	char *hidfn = strdup(hidname); /* TODO: search for the file */
+	lht_doc_t *doc;
 	int error = 0;
 
-	f = fopen(hidfn, "r");
+	f = fopen(filename, "r");
 	doc = lht_dom_init();
-	lht_dom_loc_newfile(doc, hidfn);
+	lht_dom_loc_newfile(doc, filename);
 
 	while(!(feof(f))) {
 		lht_err_t err;
@@ -182,7 +178,7 @@ hid_res_t *hid_res_load(const char *hidname, const char *embedded_fallback)
 				const char *fn;
 				int line, col;
 				lht_dom_loc_active(doc, &fn, &line, &col);
-				Message("Resource error: %s (%s:%d.%d)*\n", lht_err_str(err), hidfn, line+1, col+1);
+				Message("Resource error: %s (%s:%d.%d)*\n", lht_err_str(err), filename, line+1, col+1);
 				error = 1;
 				break;
 			}
@@ -196,13 +192,36 @@ hid_res_t *hid_res_load(const char *hidname, const char *embedded_fallback)
 	}
 	fclose(f);
 
-	if (doc != NULL) {
-		hr = calloc(sizeof(hid_res_t), 1); /* make sure the cache is cleared */
-		hr->doc = doc;
-		hid_res_flush(hr);
+	return doc;
+}
+
+const char *hid_res_text_value(lht_doc_t *doc, const char *path)
+{
+	lht_node_t *n = lht_tree_path(doc, "/", path, 1, NULL);
+	if (n == NULL)
+		return NULL;
+	if (n->type != LHT_TEXT) {
+		hid_res_error(n, "Error: node %s should be a text node\n", path);
+		return NULL;
 	}
-	else
-		hr = NULL;
+	return n->data.text.value;
+}
+
+hid_res_t *hid_res_load(const char *hidname, const char *embedded_fallback)
+{
+	lht_doc_t *doc;
+	hid_res_t *hr;
+
+//static const char *pcbmenu_paths_in[] = { "gpcb-menu.res", "gpcb-menu.res", PCBSHAREDIR "/gpcb-menu.res", NULL };
+	char *hidfn = strdup(hidname); /* TODO: search for the file */
+
+	doc = hid_res_load_lht(hidfn);
+	if (doc == NULL)
+		return NULL;
+
+	hr = calloc(sizeof(hid_res_t), 1); /* make sure the cache is cleared */
+	hr->doc = doc;
+	hid_res_flush(hr);
 
 	return hr;
 }

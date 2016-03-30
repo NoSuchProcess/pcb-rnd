@@ -68,6 +68,12 @@ lht_node_t *resource_create_menu(hid_res_t *hr, const char *name, const char *ac
    is not NULL, parse that string instead. Returns NULL on error */
 hid_res_t *hid_res_load(const char *hidname, const char *embedded_fallback);
 
+/* Generic, low level lihata loader */
+lht_doc_t *hid_res_load_lht(const char *filename);
+
+/* Generic, low level lihata text value fetch */
+const char *hid_res_text_value(lht_doc_t *doc, const char *path);
+
 lht_node_t *hid_res_get_menu(hid_res_t *hr, const char *menu_path);
 
 /* Fields are retrieved using this enum so that HIDs don't need to hardwire
