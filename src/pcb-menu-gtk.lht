@@ -9,7 +9,7 @@ ha:{
 		li:right {
 			li:press         = { Pan(1) }
 			li:release       = { Pan(0) }
-			li:press-shift   = { Popup(Popup1) }
+			li:press-shift   = { Popup(popup1) }
 			li:press-ctrl    = { Display(CycleCrosshair) }
 		}
 		li:middle {
@@ -311,7 +311,7 @@ ha:{
 						ha:Pins      = { action=ChangeSquare(SelectedPins) }
 					}
 				}
-				ha:Cycle object being dragged   = { a=<Key>x; action=CycleDrag() }
+				ha:Cycle object being dragged = { a=<Key>x; action=CycleDrag() }
 			}
 		} # Select
 
@@ -319,18 +319,18 @@ ha:{
 			m=B
 			li:submenu {
 				ha:Cut selection to buffer = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer)} }
-				ha:Paste buffer to layout = { action=Mode(PasteBuffer) }
+				ha:Paste buffer to layout  = { action=Mode(PasteBuffer) }
 				-
-				ha:Rotate buffer 90 deg CCW = { a=Shift<Key>F7; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1)} }
-				ha:Rotate buffer 90 deg CW = { li:action={Mode(PasteBuffer); PasteBuffer(Rotate,3)} }
-				ha:Arbitrarily Rotate Buffer = { li:action={Mode(PasteBuffer); FreeRotateBuffer()} }
-				ha:Mirror buffer (up/down) = { li:action={Mode(PasteBuffer); PasteBuffer(Mirror)} }
+				ha:Rotate buffer 90 deg CCW   = { a=Shift<Key>F7; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1)} }
+				ha:Rotate buffer 90 deg CW    = { li:action={Mode(PasteBuffer); PasteBuffer(Rotate,3)} }
+				ha:Arbitrarily Rotate Buffer  = { li:action={Mode(PasteBuffer); FreeRotateBuffer()} }
+				ha:Mirror buffer (up/down)    = { li:action={Mode(PasteBuffer); PasteBuffer(Mirror)} }
 				ha:Mirror buffer (left/right) = { li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
 				-
-				ha:Clear buffer = { action=PasteBuffer(Clear) }
-				ha:Convert buffer to element = { action=PasteBuffer(Convert) }
+				ha:Clear buffer                    = { action=PasteBuffer(Clear) }
+				ha:Convert buffer to element       = { action=PasteBuffer(Convert) }
 				ha:Break buffer elements to pieces = { action=PasteBuffer(Restore) }
-				ha:Save buffer elements to file = { action=Save(PasteBuffer) }
+				ha:Save buffer elements to file    = { action=Save(PasteBuffer) }
 				-
 				ha:Select Buffer \#1 = { checked=buffer,1; m=1; a=Shift<Key>1; action=PasteBuffer(1) }
 				ha:Select Buffer \#2 = { checked=buffer,2; m=2; a=Shift<Key>2; action=PasteBuffer(2) }
@@ -358,20 +358,20 @@ ha:{
 				-
 				ha:Optimize routed tracks {
 					li:submenu {
-						ha:Auto-Optimize = { a={Shift<Key>=}; action=djopt(auto) }
-						ha:Debumpify = { action=djopt(debumpify) }
-						ha:Unjaggy = { action=djopt(unjaggy) }
-						ha:Vianudge = { action=djopt(vianudge) }
-						ha:Viatrim = { action=djopt(viatrim) }
-						ha:Ortho pull = { action=djopt(orthopull) }
-						ha:Simple optimization = { a={<Key>=}; action=djopt(simple) }
-						ha:Miter = { action=djopt(miter) }
-						ha:Puller = { a=<Key>y; action=Puller() }
+						ha:Auto-Optimize        = { a={Shift<Key>=}; action=djopt(auto) }
+						ha:Debumpify            = { action=djopt(debumpify) }
+						ha:Unjaggy              = { action=djopt(unjaggy) }
+						ha:Vianudge             = { action=djopt(vianudge) }
+						ha:Viatrim              = { action=djopt(viatrim) }
+						ha:Ortho pull           = { action=djopt(orthopull) }
+						ha:Simple optimization  = { a={<Key>=}; action=djopt(simple) }
+						ha:Miter                = { action=djopt(miter) }
+						ha:Puller               = { a=<Key>y; action=Puller() }
 						ha:Global Puller {
 							li:submenu {
-								ha:Selected = { action=GlobalPuller(selected) }
-								ha:Found = { action=GlobalPuller(found) }
-								ha:All = { action=GlobalPuller() }
+								ha:Selected  = { action=GlobalPuller(selected) }
+								ha:Found     = { action=GlobalPuller(found) }
+								ha:All       = { action=GlobalPuller() }
 							}
 						}
 						-
@@ -385,8 +385,8 @@ ha:{
 				-
 				ha:Design changes (back annotation) {
 					li:submenu {
-						ha:Swap nets on two selected pins = { a=Shift<Key>x; action=net(swap) }
-						ha:Replace footprint = { a=Alt Shift<Key>f; action=ReplaceFootprint() }
+						ha:Swap nets on two selected pins  = { a=Shift<Key>x; action=net(swap) }
+						ha:Replace footprint               = { a=Alt Shift<Key>f; action=ReplaceFootprint() }
 					}
 				}
 			}
@@ -399,5 +399,134 @@ ha:{
 			}
 		} # Plugins
 
+		ha:Info = {
+			m=I
+			li:submenu {
+				ha:Generate object report  = { a=Ctrl<Key>r; action=ReportObject() }
+				ha:Generate drill summary  = { action=Report(DrillReport) }
+				ha:Report found pins\/pads = { action=Report(FoundPins) }
+				ha:Key Bindings {
+					li:submenu {
+						ha:Remove                       = { a=<Key>Delete; li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
+						ha:Remove Selected              = { a=<Key>BackSpace; action=RemoveSelected() }
+						ha:Remove Connected             = { a=Shift<Key>BackSpace; li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
+						ha:Remove Connected             = { li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
+						ha:Set Same                     = { a=<Key>a; action=SetSame() }
+						ha:Flip Object                  = { a=<Key>b; action=Flip(Object) }
+						ha:Find Connections             = { a=<Key>f; li:action={Connection(Reset); Connection(Find)} }
+						ha:ToggleHideName Object        = { a=<Key>h; action=ToggleHideName(Object) }
+						ha:ToggleHideName SelectedElement = { a=Shift<Key>h; action=ToggleHideName(SelectedElements) }
+						ha:ChangeHole Object            = { a=Ctrl<Key>h; action=ChangeHole(Object) }
+						ha:ChangeJoin Object            = { a=<Key>j; action=ChangeJoin(Object) }
+						ha:ChangeJoin SelectedObject    = { a=Shift<Key>j; action=ChangeJoin(SelectedObjects) }
+						ha:Clear Object +2 mil          = { a=<Key>k; action=ChangeClearSize(Object,+2,mil) }
+						ha:Clear Object -2 mil          = { a=Shift<Key>k; action=ChangeClearSize(Object,-2,mil) }
+						ha:Clear Selected +2 mil        = { a=Ctrl<Key>k; action=ChangeClearSize(SelectedObjects,+2,mil) }
+						ha:Clear Selected -2 mil        = { a=Shift Ctrl<Key>k; action=ChangeClearSize(SelectedObjects,-2,mil) }
+						ha:Line Tool size +5 mil        = { a=<Key>l; action=SetValue(LineSize,+5,mil) }
+						ha:Line Tool size -5 mil        = { a=Shift<Key>l; action=SetValue(LineSize,-5,mil) }
+						ha:Move Object to current layer = { a=<Key>m; action=MoveToCurrentLayer(Object) }
+						ha:MarkCrosshair                = { a=Ctrl<Key>m; action=MarkCrosshair() }
+						ha:Select shortest rat          = { a=Shift<Key>n; action=AddRats(Close) }
+						ha:AddRats to selected pins     = { a=Shift<Key>o; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(SelectedRats); Atomic(Block)} }
+						ha:ChangeOctagon Object         = { a=Ctrl<Key>o; action=ChangeOctagon(Object) }
+						ha:Polygon PreviousPoint        = { a=<Key>p; action=Polygon(PreviousPoint) }
+						ha:Polygon Close                = { a=Shift<Key>p; action=Polygon(Close) }
+						ha:ChangeSquare Object          = { a=<Key>q; action=ChangeSquare(ToggleObject) }
+						ha:ChangeSizes to Route style   = { a=Shift<Key>y; action=ChangeSizes(Object,style,mil) }
+						ha:ChangeSize +5 mil            = { a=<Key>s; action=ChangeSize(Object,+5,mil) }
+						ha:ChangeSize -5 mil            = { a=Shift<Key>s; action=ChangeSize(Object,-5,mil) }
+						ha:ChangeDrill +5 mil           = { a=Alt<Key>s; action=ChangeDrillSize(Object,+5,mil) }
+						ha:ChangeDrill -5 mil           = { a=Alt Shift<Key>s; action=ChangeDrillSize(Object,-5,mil) }
+						ha:Text Tool scale +10 mil      = { a=<Key>t; action=SetValue(TextScale,+10,mil) }
+						ha:Text Tool scale -10 mil      = { a=Shift<Key>t; action=SetValue(TextScale,-10,mil) }
+						ha:Via Tool size +5 mil         = { a=Shift<Key>v; action=SetValue(ViaSize,+5,mil) }
+						ha:Via Tool size -5 mil         = { a=Shift Ctrl<Key>v; action=SetValue(ViaSize,-5,mil) }
+						ha:Via Tool drill +5 mil        = { a=Alt<Key>v; action=SetValue(ViaDrillingHole,+5,mil) }
+						ha:Via Tool drill -5 mil        = { a=Alt Shift<Key>v; action=SetValue(ViaDrillingHole,-5,mil) }
+						ha:AddRats Selected             = { a=Shift<Key>w; action=AddRats(SelectedRats) }
+						ha:Add All Rats                 = { a=<Key>w; action=AddRats(AllRats) }
+						ha:Cycle Clip                   = { a=<Key>/; action=Display(CycleClip) }
+						ha:Arrow Mode                   = { a=<Key>space; checked=arrowmode,1; action=Mode(Arrow) }
+						ha:Temp Arrow ON                = { a=<Key>[; li:action={Mode(Save); Mode(Arrow); Mode(Notify)} }
+						ha:Temp Arrow OFF               = { a=<Key>]; li:action={Mode(Release); Mode(Restore)} }
+						-
+						ha:Step Up                      = { a=<Key>Up; action=Cursor(Warp,0,1,grid) }
+						ha:Step Down                    = { a=<Key>Down; action=Cursor(Warp,0,-1,grid) }
+						ha:Step Left                    = { a=<Key>Left; action=Cursor(Warp,-1,0,grid) }
+						ha:Step Right                   = { a=<Key>Right; action=Cursor(Warp,1,0,grid) }
+						ha:Step +Up                     = { a=Shift<Key>Up; action=Cursor(Pan,0,50,view) }
+						ha:Step +Down                   = { a=Shift<Key>Down; action=Cursor(Pan,0,-50,view) }
+						ha:Step +Left                   = { a=Shift<Key>Left; action=Cursor(Pan,-50,0,view) }
+						ha:Step +Right                  = { a=Shift<Key>Right; action=Cursor(Pan,50,0,view) }
+						ha:Click                        = { a=<Key>Enter; li:action={Mode(Notify); Mode(Release)} }
+					}
+				}
+			}
+		} # Info
+
+		ha:Window {
+			m=W
+			li:submenu {
+				ha:Library        = { a=<Key>i; action=DoWindows(Library) }
+				ha:Message Log    = { action=DoWindows(Log) }
+				ha:DRC Check      = { action=DoWindows(DRC) }
+				ha:Netlist        = { action=DoWindows(Netlist) }
+				ha:Command Entry  = { a=<Key>\:; action=Command() }
+				ha:Pinout         = { a=Shift<Key>d; action=Display(Pinout) }
+				-
+				ha:About...       = { action=About() }
+			}
+		} # Window
 	} # main menu
+
+	li:popups {
+		ha:popup1 {
+			li:submenu {
+				ha:Operations on selections {
+					li:submenu {
+						ha:Unselect all objects               = { action=Unselect(All) }
+						ha:Remove selected objects            = { action=RemoveSelected() }
+						ha:Copy selection to buffer           = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Mode(PasteBuffer)} }
+						ha:Cut selection to buffer            = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer)} }
+						ha:Convert selection to element       = { action=Select(Convert) }
+						ha:Auto place selected elements       = { action=AutoPlaceSelected() }
+						ha:Autoroute selected elements        = { action=AutoRoute(SelectedRats) }
+						ha:Rip up selected auto-routed tracks = { action=RipUp(Selected) }
+					}
+				}
+				ha:Operations on this location {
+					li:submenu {
+						ha:Generate object report = { li:action={GetXY(Click on the object); Report(Object)} }
+					}
+				}
+				-
+				ha:Undo last operation          = { action=Undo() }
+				ha:Redo last undone operation   = { action=Redo() }
+				-
+				ha:Tools {
+					li:submenu {
+						ha:None           = { checked=nomode,1; action=Mode(None) }
+						ha:Via            = { checked=viamode,1; a=<Key>F1; action=Mode(Via) }
+						ha:Line           = { checked=linemode,1; a=<Key>F2; action=Mode(Line) }
+						ha:Arc            = { checked=arcmode,1; a=<Key>F3; action=Mode(Arc) }
+						ha:Text           = { checked=textmode,1; a=<Key>F4; action=Mode(Text) }
+						ha:Rectangle      = { checked=rectanglemode,1; a=<Key>F5; action=Mode(Rectangle) }
+						ha:Polygon        = { checked=polygonmode,1; a=<Key>F6; action=Mode(Polygon) }
+						ha:Polygon Hole   = { checked=polygonholemode,1; action=Mode(PolygonHole) }
+						ha:Buffer         = { checked=pastebuffermode,1; a=<Key>F7; action=Mode(PasteBuffer) }
+						ha:Remove         = { checked=removemode,1; a=<Key>F8; action=Mode(Remove) }
+						ha:Rotate         = { checked=rotatemode,1; a=<Key>F9; action=Mode(Rotate) }
+						ha:Thermal        = { checked=thermalmode,1; a=<Key>F10; action=Mode(Thermal) }
+						ha:Arrow          = { checked=arrowmode,1; a=<Key>F11; action=Mode(Arrow) }
+						ha:Insert Point   = { checked=insertpointmode,1; a=<Key>Insert; action=Mode(InsertPoint) }
+						ha:Move           = { checked=movemode,1; action=Mode(Move) }
+						ha:Copy           = { checked=copymode,1; action=Mode(Copy) }
+						ha:Lock           = { checked=lockmode,1; a=<Key>F12; action=Mode(Lock) }
+						ha:Cancel         = { a=<Key>Escape; action=Mode(Escape) }
+					}
+				}
+			}
+		} # popup1
+	} # popups
 } # root
