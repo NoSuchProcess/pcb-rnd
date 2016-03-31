@@ -17,7 +17,8 @@
 #include "pcb-printf.h"
 
 #include "hid.h"
-#include "hid_resource.h"
+#include "hid_cfg.h"
+#include "hid_cfg_input.h"
 #include "lesstif.h"
 #include "mymem.h"
 #include "paths.h"
@@ -25,7 +26,6 @@
 #include "hid_flags.h"
 
 #include "pcb-menu.h"
-#include <genht/htsp.h>
 #include <genht/hash.h>
 
 
@@ -44,7 +44,7 @@ static Arg args[30];
 static int n;
 #define stdarg(t,v) XtSetArg(args[n], t, v), n++
 
-static void note_accelerator(char *acc, Resource * node);
+static void note_accelerator(const char *acc, lht_node_t * node);
 static void note_widget_flag(Widget w, char *type, char *name);
 
 static const char getxy_syntax[] = "GetXY()";
@@ -500,18 +500,16 @@ static void insert_layerview_buttons(Widget menu)
 		}
 		n = 0;
 		if (accel_idx < 9) {
-			char buf[20], av[30];
-			Resource *ar;
+			char buf[20], av[30], av2[30];
+			lht_node_t *ar;
 			XmString as;
 			sprintf(buf, "Ctrl-%d", accel_idx + 1);
 			as = XmStringCreatePCB(buf);
 			stdarg(XmNacceleratorText, as);
-			ar = resource_create(0);
+
 			sprintf(av, "ToggleView(%d)", i + 1);
-			resource_add_val(ar, 0, strdup(av), 0);
-			resource_add_val(ar, 0, strdup(av), 0);
-			ar->flags |= FLAG_V;
-			sprintf(av, "Ctrl<Key>%d", accel_idx + 1);
+			sprintf(av2, "Ctrl<Key>%d", accel_idx + 1);
+			ar = hid_cfg_create_hash_node(NULL, av,  "action", av, "a", av2, NULL);
 			note_accelerator(av, ar);
 			stdarg(XmNmnemonic, accel_idx + '1');
 		}
@@ -564,13 +562,12 @@ static void insert_layerpick_buttons(Widget menu)
 		}
 		n = 0;
 		if (accel_idx < 9) {
-			Resource *ar;
+			lht_node_t *ar;
 			XmString as;
-			ar = resource_create(0);
-			resource_add_val(ar, 0, strdup(av), 0);
-			resource_add_val(ar, 0, strdup(av), 0);
-			ar->flags |= FLAG_V;
+
 			sprintf(buf, "%d", i + 1);
+			ar = hid_cfg_create_hash_node(NULL, av,  "action", av, "a", buf, NULL);
+
 			as = XmStringCreatePCB(buf);
 			stdarg(XmNacceleratorText, as);
 			sprintf(av, "<Key>%d", accel_idx + 1);
@@ -665,7 +662,7 @@ typedef struct ToggleItem {
 	Widget w;
 	char *group, *item;
 	XtCallbackProc callback;
-	Resource *node;
+	lht_node_t *node;
 } ToggleItem;
 static ToggleItem *toggle_items = 0;
 
@@ -729,7 +726,7 @@ void lesstif_get_coords(const char *msg, Coord * px, Coord * py)
 		lesstif_coords_to_pcb(action_x, action_y, px, py);
 }
 
-static void callback(Widget w, Resource * node, XmPushButtonCallbackStruct * pbcs)
+static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * pbcs)
 {
 	int vi;
 	have_xy = 0;
@@ -757,10 +754,7 @@ static void callback(Widget w, Resource * node, XmPushButtonCallbackStruct * pbc
 	}
 
 	lesstif_need_idle_proc();
-	for (vi = 1; vi < node->c; vi++)
-		if (resource_type(node->v[vi]) == 10)
-			if (hid_parse_actions(node->v[vi].value))
-				return;
+	hid_cfg_action(node);
 }
 
 typedef struct acc_table_t {
@@ -777,7 +771,7 @@ typedef struct acc_table_t {
 		   event.  */
 		struct {
 			KeySym key;
-			Resource *node;
+			lht_node_t *node;
 		} a;
 	} u;
 } acc_table_t;
@@ -815,11 +809,9 @@ static int DumpKeys2()
 		ch[0] = toupper((int) acc_table[i].key_char);
 		printf("%16s%s\t", mod, acc_table[i].key_char ? ch : XKeysymToString(acc_table[i].u.a.key));
 
-		for (vi = 1; vi < acc_table[i].u.a.node->c; vi++)
-			if (resource_type(acc_table[i].u.a.node->v[vi]) == 10) {
-				printf("%s%s", tabs, acc_table[i].u.a.node->v[vi].value);
-				tabs = "\n\t\t\t  ";
-			}
+#warning TODO: test
+		printf("%s%s", tabs, acc_table[i].u.a.node->data.text.value);
+//if it is a list?			tabs = "\n\t\t\t  ";
 
 		printf("\n");
 	}
@@ -857,9 +849,9 @@ static acc_table_t *find_or_create_acc(char mods, char key, KeySym sym, acc_tabl
 	return a;
 }
 
-static void note_accelerator(char *acc, Resource * node)
+static void note_accelerator(const char *acc, lht_node_t * node)
 {
-	char *orig_acc = acc;
+	const char *orig_acc = acc;
 	int mods = 0;
 	acc_table_t *a;
 	char key_char = 0;
@@ -1072,54 +1064,37 @@ int lesstif_key_event(XKeyEvent * e)
 		have_xy = 0;
 
 	/* Parsing actions may not return until more user interaction
-	   happens, so remember which table we're scanning.  */
-	my_table = cur_table;
-	for (vi = 1; vi < my_table[i].u.a.node->c; vi++)
-		if (resource_type(my_table[i].u.a.node->v[vi]) == 10)
-			if (hid_parse_actions(my_table[i].u.a.node->v[vi].value))
-				break;
+	   happens.  */
+	hid_cfg_action(my_table[i].u.a.node);
+#warning TODO: do we need this?
 	cur_table = 0;
 	return 1;
 }
 
-static htsp_t *menu_hash = NULL;	/* path->Widget */
+static void add_resource_to_menu(Widget menu, lht_node_t *node, XtCallbackProc callback, int level);
 
-static int keyeq(char *a, char *b)
+static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc callback)
 {
-	return !strcmp(a, b);
+	Widget sub, btn = NULL;
+
+	n = 0;
+	stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
+	sub = XmCreatePulldownMenu(menu, node->name, args, n);
+	XtSetValues(sub, args, n);
+	n = 0;
+	stdarg(XmNsubMenuId, sub);
+	btn = XmCreateCascadeButton(menu, node->name, args, n);
+	XtManageChild(btn);
+	add_resource_to_menu(sub, node, callback, 1);
 }
 
-static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc callback, const char *path)
+static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc callback, int level)
 {
-	int i, j;
-	char *v, *menu_name = "*unknown*";
+	const char *v, *r;
 	Widget sub, btn = NULL;
-	Resource *r;
-	char *npath;
 
-	if (!menu_hash)
-		menu_hash = htsp_alloc(strhash, keyeq);
-
-	for (i = 0; i < node->c; i++) {
-		npath = NULL;
-		switch (resource_type(node->v[i])) {
-		case 101:									/* named subnode */
-			n = 0;
-			stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
-			sub = XmCreatePulldownMenu(menu, node->v[i].name, args, n);
-			XtSetValues(sub, args, n);
-			n = 0;
-			stdarg(XmNsubMenuId, sub);
-			btn = XmCreateCascadeButton(menu, node->v[i].name, args, n);
-			XtManageChild(btn);
-			npath = Concat(path, "/", node->v[i].name, NULL);
-/*			fprintf(stderr, "htsp_set1 %s %p\n", path, sub);*/
-			htsp_set(menu_hash, strdup(npath), sub);
-			add_resource_to_menu(sub, node->v[i].subres, callback, npath);
-			break;
-
-		case 1:										/* unnamed subres */
-			n = 0;
+	n = 0;
+#warning TODO: check if we should reenable this
 #if 0
 			if ((v = resource_value(node->v[i].subres, "fg"))) {
 				do_color(v, XmNforeground);
@@ -1135,76 +1110,87 @@ static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc ca
 				}
 			}
 #endif
-			if ((v = resource_value(node->v[i].subres, "m"))) {
-				stdarg(XmNmnemonic, v);
+	v = hid_cfg_menu_field_str(node, MF_MNEMONIC);
+	if (v != NULL)
+		stdarg(XmNmnemonic, v);
+
+	r = hid_cfg_menu_field_str(node, MF_ACCELERATOR);
+	if (r != NULL) {
+		XmString as = XmStringCreatePCB(strdup(r));
+		stdarg(XmNacceleratorText, as);
+		/*stdarg(XmNaccelerator, r->v[1].value); */
+		note_accelerator(r, node);
+	}
+
+	v = node->name;
+	stdarg(XmNlabelString, XmStringCreatePCB(strdup(v)));
+
+	if (hid_cfg_has_submenus(node)) {
+		int nn = n;
+		const char *field_name;
+		lht_node_t *submenu_node = hid_cfg_menu_field(node, MF_SUBMENU, &field_name);
+
+		if (submenu_node->type == LHT_LIST) {
+			lht_node_t *i;
+
+			stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
+			sub = XmCreatePulldownMenu(menu, strdup(v), args + nn, n - nn);
+			n = nn;
+			stdarg(XmNsubMenuId, sub);
+			btn = XmCreateCascadeButton(menu, "menubutton", args, n);
+			XtManageChild(btn);
+
+			for(i = submenu_node->data.list.first; i != NULL; i = i->next)
+				add_resource_to_menu(sub, i, callback, level+1);
+		}
+		else
+			hid_cfg_error(submenu_node, "submenu needs to be a list");
+	}
+	else {
+		/* doesn't have submenu */
+		const char *checked = hid_cfg_menu_field_str(node, MF_CHECKED);
+		const char *label = hid_cfg_menu_field_str(node, MF_SENSITIVE);
+#warning TODO: do we have/want radio?
+#if 0
+		Resource *radio = resource_subres(node->v[i].subres, "radio");
+		if (radio) {
+			ToggleItem *ti = (ToggleItem *) malloc(sizeof(ToggleItem));
+			ti->next = toggle_items;
+			ti->group = radio->v[0].value;
+			ti->item = radio->v[1].value;
+			ti->callback = callback;
+			ti->node = node->v[i].subres;
+			toggle_items = ti;
+
+			if (resource_value(node->v[i].subres, "set")) {
+				stdarg(XmNset, True);
 			}
-			if ((r = resource_subres(node->v[i].subres, "a"))) {
-				XmString as = XmStringCreatePCB(r->v[0].value);
-				stdarg(XmNacceleratorText, as);
-				/*stdarg(XmNaccelerator, r->v[1].value); */
-				note_accelerator(r->v[1].value, node->v[i].subres);
-			}
-			v = "button";
-			for (j = 0; j < node->v[i].subres->c; j++)
-				if (resource_type(node->v[i].subres->v[j]) == 10) {
-					v = node->v[i].subres->v[j].value;
-					break;
-				}
-			stdarg(XmNlabelString, XmStringCreatePCB(v));
-			menu_name = v;
+			stdarg(XmNindicatorType, XmONE_OF_MANY);
+			btn = XmCreateToggleButton(menu, "menubutton", args, n);
+			ti->w = btn;
+			XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) radio_callback, (XtPointer) ti);
+		}
+		else
+#endif
+		if (checked) {
+			if (strchr(checked, ','))
+				stdarg(XmNindicatorType, XmONE_OF_MANY);
+			else
+				stdarg(XmNindicatorType, XmN_OF_MANY);
+			btn = XmCreateToggleButton(menu, "menubutton", args, n);
+			XtAddCallback(btn, XmNvalueChangedCallback, callback, (XtPointer) node);
+		}
+		else if (label && strcmp(label, "false") == 0) {
+			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
+			btn = XmCreateLabel(menu, "menulabel", args, n);
+		}
+		else {
+			btn = XmCreatePushButton(menu, "menubutton", args, n);
+			XtAddCallback(btn, XmNactivateCallback, callback, (XtPointer) node);
+		}
 
-			if (node->v[i].subres->flags & FLAG_S) {
-				int nn = n;
-				stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
-				sub = XmCreatePulldownMenu(menu, v, args + nn, n - nn);
-				n = nn;
-				stdarg(XmNsubMenuId, sub);
-				btn = XmCreateCascadeButton(menu, "menubutton", args, n);
-				XtManageChild(btn);
-
-				npath = Concat(path, "/", menu_name, NULL);
-/*fprintf(stderr, "htsp_set2 %s %p\n", npath,sub);*/
-				htsp_set(menu_hash, strdup(npath), sub);
-				add_resource_to_menu(sub, node->v[i].subres, callback, npath);
-			}
-			else {
-				Resource *radio = resource_subres(node->v[i].subres, "radio");
-				char *checked = resource_value(node->v[i].subres, "checked");
-				char *label = resource_value(node->v[i].subres, "sensitive");
-				if (radio) {
-					ToggleItem *ti = (ToggleItem *) malloc(sizeof(ToggleItem));
-					ti->next = toggle_items;
-					ti->group = radio->v[0].value;
-					ti->item = radio->v[1].value;
-					ti->callback = callback;
-					ti->node = node->v[i].subres;
-					toggle_items = ti;
-
-					if (resource_value(node->v[i].subres, "set")) {
-						stdarg(XmNset, True);
-					}
-					stdarg(XmNindicatorType, XmONE_OF_MANY);
-					btn = XmCreateToggleButton(menu, "menubutton", args, n);
-					ti->w = btn;
-					XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) radio_callback, (XtPointer) ti);
-				}
-				else if (checked) {
-					if (strchr(checked, ','))
-						stdarg(XmNindicatorType, XmONE_OF_MANY);
-					else
-						stdarg(XmNindicatorType, XmN_OF_MANY);
-					btn = XmCreateToggleButton(menu, "menubutton", args, n);
-					XtAddCallback(btn, XmNvalueChangedCallback, callback, (XtPointer) node->v[i].subres);
-				}
-				else if (label && strcmp(label, "false") == 0) {
-					stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
-					btn = XmCreateLabel(menu, "menulabel", args, n);
-				}
-				else {
-					btn = XmCreatePushButton(menu, "menubutton", args, n);
-					XtAddCallback(btn, XmNactivateCallback, callback, (XtPointer) node->v[i].subres);
-				}
-
+#warning TODO: what is this?
+#if 0
 				for (j = 0; j < node->v[i].subres->c; j++)
 					switch (resource_type(node->v[i].subres->v[j])) {
 					case 110:						/* named value = X resource */
@@ -1229,40 +1215,52 @@ static void add_resource_to_menu(Widget menu, Resource * node, XtCallbackProc ca
 						}
 						break;
 					}
+#endif
 
-				XtManageChild(btn);
-			}
-			break;
+		XtManageChild(btn);
+	}
+}
 
-		case 10:										/* unnamed value */
-/*			if (i == 0) {
-				menu_name = node->v[i].value;
-				fprintf(stderr, "mn=%s btn=%p\n", menu_name, btn);
-			}*/
-			n = 0;
-			if (node->v[i].value[0] == '@') {
-				if (strcmp(node->v[i].value, "@layerview") == 0)
-					insert_layerview_buttons(menu);
-				if (strcmp(node->v[i].value, "@layerpick") == 0)
-					insert_layerpick_buttons(menu);
-				if (strcmp(node->v[i].value, "@routestyles") == 0)
-					lesstif_insert_style_buttons(menu);
-			}
-			else if (strcmp(node->v[i].value, "-") == 0) {
-				btn = XmCreateSeparator(menu, "sep", args, n);
-				XtManageChild(btn);
-			}
-			else if (i > 0) {
+static void add_res2menu_text_special(Widget menu, lht_node_t *node, XtCallbackProc callback)
+{
+#warning TODO: make this a flag hash, also in the gtk hid
+	Widget btn = NULL;
+	n = 0;
+	if (*node->data.text.value == '@') {
+		if (strcmp(node->data.text.value, "@layerview") == 0)
+			insert_layerview_buttons(menu);
+		if (strcmp(node->data.text.value, "@layerpick") == 0)
+			insert_layerpick_buttons(menu);
+		if (strcmp(node->data.text.value, "@routestyles") == 0)
+			lesstif_insert_style_buttons(menu);
+	}
+	else if ((strcmp(node->data.text.value, "-") == 0) || (strcmp(node->data.text.value, "-"))) {
+		btn = XmCreateSeparator(menu, "sep", args, n);
+		XtManageChild(btn);
+	}
+
+#if 0
+#warning TODO: this created the rest of the items in a list, or what?
+	else if (i > 0) {
 				btn = XmCreatePushButton(menu, node->v[i].value, args, n);
 /*				npath = Concat(path, "/", node->v[i].name, NULL);
 				fprintf(stderr, "htsp_set7 %s %p\n", path, btn);
 				htsp_set(menu_hash, strdup(npath), btn);*/
 				XtManageChild(btn);
 			}
-			break;
-		}
-		if (npath != NULL)
-			free(npath);
+#endif
+}
+
+static void add_resource_to_menu(Widget in_menu, lht_node_t *node, XtCallbackProc callback, int level)
+{
+	if (level == 0) {
+		add_res2menu_main(in_menu, node, callback);
+		return;
+	}
+
+	switch(node->type) {
+		case LHT_HASH: add_res2menu_named(in_menu, node, callback, level); break;
+		case LHT_TEXT: add_res2menu_text_special(in_menu, node, callback); break;
 	}
 }
 
@@ -1272,79 +1270,43 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 {
 	Widget mb = XmCreateMenuBar(parent, name, margs, mn);
 	char *filename;
-	Resource *r = 0, *bir;
+	hid_cfg_t *r = 0;
 	char *home_pcbmenu, *home;
 	int screen;
-	Resource *mr;
-	char *full_menu_path = NULL;
+	lht_node_t *mr;
 
 	display = XtDisplay(mb);
 	screen = DefaultScreen(display);
 	cmap = DefaultColormap(display, screen);
 
-	/* homedir is set by the core */
-	home = homedir;
-	home_pcbmenu = NULL;
-	if (home == NULL) {
-		Message("Warning:  could not determine home directory (from HOME)\n");
-	}
-	else {
-		home_pcbmenu = Concat(home, PCB_DIR_SEPARATOR_S, ".pcb", PCB_DIR_SEPARATOR_S, "pcb-menu.res", NULL);
-	}
+#warning TODO
+	const char *lesstif_menu_default = NULL;
 
-	resolve_path(lesstif_pcbmenu_path, &full_menu_path);
-
-	if (access("pcb-menu.res", R_OK) == 0)
-		filename = "pcb-menu.res";
-	else if (home_pcbmenu != NULL && (access(home_pcbmenu, R_OK) == 0))
-		filename = home_pcbmenu;
-	else if (access(full_menu_path, R_OK) == 0)
-		filename = full_menu_path;
-	else
-		filename = 0;
-
-	bir = resource_parse(0, pcb_menu_default);
-	if (!bir) {
-		fprintf(stderr, "Error: internal menu resource didn't parse\n");
-		if (full_menu_path != NULL)
-			free(full_menu_path);
-		exit(1);
+	r = hid_cfg_load("lesstif", lesstif_menu_default);
+	if (r == NULL) {
+		Message("FATAL: can't load the gtk menu res either from file or from hardwired default.");
+		abort();
 	}
 
-	if (filename)
-		r = resource_parse(filename, 0);
+	mr = hid_cfg_get_menu(r, "/main_menu");
+	if (mr != NULL)
+		add_resource_to_menu(mb, mr, (XtCallbackProc) callback, 0);
 
-	if (!r)
-		r = bir;
-
-	if (home_pcbmenu != NULL) {
-		free(home_pcbmenu);
-	}
-
-	mr = resource_subres(r, "MainMenu");
-	if (!mr)
-		mr = resource_subres(bir, "MainMenu");
-	if (mr)
-		add_resource_to_menu(mb, mr, (XtCallbackProc) callback, "");
-
-	mr = resource_subres(r, "Mouse");
-	if (!mr)
-		mr = resource_subres(bir, "Mouse");
-	if (mr)
+	mr = hid_cfg_get_menu(r, "/mouse");
+	if (mr != NULL)
 		load_mouse_resource(mr);
-
 
 	if (do_dump_keys)
 		DumpKeys2();
-
-	if (full_menu_path != NULL)
-		free(full_menu_path);
 
 	return mb;
 }
 
 void lesstif_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip)
 {
+#warning TODO
+abort();
+#if 0
 	char *path, *path_end;
 	int n, plen;
 
@@ -1394,6 +1356,7 @@ void lesstif_create_menu(const char *menu[], const char *action, const char *mne
 	}
 
 	free(path);
+#endif
 }
 
 void lesstif_uninit_menu(void)
