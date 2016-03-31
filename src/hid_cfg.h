@@ -45,6 +45,8 @@ lht_doc_t *hid_cfg_load_lht(const char *filename);
 const char *hid_cfg_text_value(lht_doc_t *doc, const char *path);
 
 lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path);
+lht_node_t *hid_cfg_get_submenu(lht_node_t *parent, const char *path);
+
 
 /* Fields are retrieved using this enum so that HIDs don't need to hardwire
    lihata node names */
@@ -73,6 +75,11 @@ int hid_cfg_has_submenus(const lht_node_t *submenu);
 
 /* Run an action node. The node is either a list of text nodes or a text node */
 void hid_cfg_action(const lht_node_t *node);
+
+/* Create a new hash node under parent (optional) and create a flat subtree of
+   text nodes from name,value varargs (NULL terminated). This is a shorthand
+   for creating a menu item in a subtree list. */
+lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...);
 
 /* Report an error about a node */
 #define hid_cfg_error(node, ...) \

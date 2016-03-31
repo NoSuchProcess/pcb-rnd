@@ -183,3 +183,14 @@ int hid_cfg_has_submenus(const lht_node_t *submenu)
 	return 1;
 }
 
+
+lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...)
+{
+#warning TODO
+	abort();
+}
+
+lht_node_t *hid_cfg_get_submenu(lht_node_t *parent, const char *path)
+{
+	return lht_tree_path_(parent->doc, (lht_node_t *)parent, path, 1, 0, NULL);
+}
