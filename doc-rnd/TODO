@@ -1,3 +1,6 @@
+- test vendordrill if it works
+- vendordrill: free at exit
+
 Cleanup #4:
 	- reduce
 		- replace hid_load_settings() with lihata
@@ -24,7 +27,9 @@ CLEANUP #4
 		- hid: hid_destroy (pair of hid_create)
 		- cleanup on unload: remove menus
 - check whether local copy of gts is needed, bisect when toporouter broke 
-- vendordrill: free at exit
+
+- Message() should have a first param that tells if it is an error, info, etc.; pop up window on error, red
+
 
 FEATURES
 - UI: trace length calculation {small}

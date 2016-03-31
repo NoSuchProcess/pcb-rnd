@@ -30,7 +30,7 @@
 
 #include "gui.h"
 #include "gtkhid.h"
-#include "hid_resource.h"
+#include "hid_cfg.h"
 
 #include <gdk/gdkkeysyms.h>
 
@@ -268,7 +268,7 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 	return handled;
 }
 
-static hid_res_mod_t ghid_mouse_button(int ev_button)
+static hid_cfg_mod_t ghid_mouse_button(int ev_button)
 {
 	/* GDK numbers buttons from 1..5, there seem to be no symbolic names */
 	return (MB_LEFT << (ev_button-1));
@@ -287,7 +287,7 @@ gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(&state);
 
-	hid_res_mouse_action(ghid_res, ghid_mouse_button(ev->button) | mk);
+	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk);
 
 	ghid_invalidate_all();
 	ghid_window_set_name_label(PCB->Name);
@@ -307,7 +307,7 @@ gboolean ghid_port_button_release_cb(GtkWidget * drawing_area, GdkEventButton * 
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(&state);
 
-	hid_res_mouse_action(ghid_res, ghid_mouse_button(ev->button) | mk | M_Release);
+	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk | M_Release);
 
 	AdjustAttachedObjects();
 	ghid_invalidate_all();
@@ -560,7 +560,7 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget * widget, GdkEventScroll * ev, G
 		default: return FALSE;
 	}
 
-	hid_res_mouse_action(ghid_res, button | mk);
+	hid_cfg_mouse_action(&ghid_mouse, button | mk);
 
 	return TRUE;
 }

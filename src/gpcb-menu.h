@@ -201,7 +201,7 @@ const char *gpcb_menu_default[] = {
 "# Settings menu",
 "#",
 "  {\"Settings\" m=S",
-"   {\"'All-direction' lines\" checked=alldirection Display(Toggle45Degree) a={\".\" \"<Key>.\"}}",
+"   {\"'All-direction' lines\" checked=alldirection Display(ToggleAllDirections) a={\".\" \"<Key>.\"}}",
 "   {\"Auto swap line start angle\" checked=swapstartdir Display(ToggleStartDirection)}",
 "   {\"Orthogonal moves\" checked=orthomove Display(ToggleOrthoMove)}",
 "   {\"Crosshair snaps to pins and pads\" checked=snappin Display(ToggleSnapPin)}",

@@ -161,15 +161,15 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 	const gchar *accel = NULL;
 	char *menu_label;
 	char *npath;
-	lht_node_t *n_action = hid_res_menu_field(sub_res, MF_ACTION, NULL);
+	lht_node_t *n_action = hid_cfg_menu_field(sub_res, MF_ACTION, NULL);
 
 	/* Resolve accelerator */
-	tmp_val = hid_res_menu_field_str(sub_res, MF_ACCELERATOR);
+	tmp_val = hid_cfg_menu_field_str(sub_res, MF_ACCELERATOR);
 	if (tmp_val)
 		accel = check_unique_accel(translate_accelerator(tmp_val));
 
 	/* Resolve the mnemonic */
-	tmp_val = hid_res_menu_field_str(sub_res, MF_MNEMONIC);
+	tmp_val = hid_cfg_menu_field_str(sub_res, MF_MNEMONIC);
 	if (tmp_val)
 		mnemonic = tmp_val[0];
 
@@ -194,7 +194,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 
 	npath = Concat(path, "/", tmp_val, NULL);
 
-	if (hid_res_has_submenus(sub_res)) {
+	if (hid_cfg_has_submenus(sub_res)) {
 		/* SUBMENU */
 		GtkWidget *submenu = gtk_menu_new();
 		GtkWidget *item = gtk_menu_item_new_with_mnemonic(menu_label);
@@ -207,18 +207,18 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 		/* add tearoff to menu */
 		gtk_menu_shell_append(GTK_MENU_SHELL(submenu), tearoff);
 
-		/* recurse on the newly-added submenu; hid_res_has_submenus() makes sure
+		/* recurse on the newly-added submenu; hid_cfg_has_submenus() makes sure
 		   the node format is correct; iterate over the list of submenus and create
 		   them recursively. */
-		n = hid_res_menu_field(sub_res, MF_SUBMENU, NULL);
+		n = hid_cfg_menu_field(sub_res, MF_SUBMENU, NULL);
 		for(n = n->data.list.first; n != NULL; n = n->next)
 			ghid_main_menu_real_add_resource(menu, GTK_MENU_SHELL(submenu), n, npath);
 	}
 	else {
 		/* NON-SUBMENU: MENU ITEM */
-		const char *checked = hid_res_menu_field_str(sub_res, MF_CHECKED);
-		const char *label = hid_res_menu_field_str(sub_res, MF_SENSITIVE);
-		const char *tip = hid_res_menu_field_str(sub_res, MF_TIP);
+		const char *checked = hid_cfg_menu_field_str(sub_res, MF_CHECKED);
+		const char *label = hid_cfg_menu_field_str(sub_res, MF_SENSITIVE);
+		const char *tip = hid_cfg_menu_field_str(sub_res, MF_TIP);
 		if (checked) {
 			/* TOGGLE ITEM */
 			gchar *name = g_strdup_printf("MainMenuAction%d", action_counter++);
@@ -276,11 +276,11 @@ void ghid_main_menu_real_add_resource(GHidMainMenu * menu, GtkMenuShell * shell,
 				if (action) {
 					const char *val;
 
-					val = hid_res_menu_field_str(res, MF_CHECKED);
+					val = hid_cfg_menu_field_str(res, MF_CHECKED);
 					if (val != NULL)
 						g_object_set_data(G_OBJECT(action), "checked-flag", (gpointer *)val);
 
-					val = hid_res_menu_field_str(res, MF_ACTIVE);
+					val = hid_cfg_menu_field_str(res, MF_ACTIVE);
 					if (val != NULL)
 						g_object_set_data(G_OBJECT(action), "active-flag", (gpointer *)val);
 				}
@@ -312,11 +312,11 @@ void ghid_main_menu_real_add_resource(GHidMainMenu * menu, GtkMenuShell * shell,
 					menu->route_style_pos = pos;
 				}
 				else
-					hid_res_error(res, "Unexpected text node; the only text accepted here is sep, -, @layerview, @layerpick and @routestyles");
+					hid_cfg_error(res, "Unexpected text node; the only text accepted here is sep, -, @layerview, @layerpick and @routestyles");
 			}
 			break;
 		default:
-			hid_res_error(res, "Unexpected node type; should be hash (submenu) or text (separator or @special)");
+			hid_cfg_error(res, "Unexpected node type; should be hash (submenu) or text (separator or @special)");
 	}
 }
 
@@ -389,7 +389,7 @@ void ghid_main_menu_add_resource(GHidMainMenu * menu, const lht_node_t * res)
 {
 	lht_node_t *n;
 	if (res->type != LHT_LIST) {
-		hid_res_error(res, "Menu description shall be a list (li)\n");
+		hid_cfg_error(res, "Menu description shall be a list (li)\n");
 		abort();
 	}
 	for(n = res->data.list.first; n != NULL; n = n->next) {
@@ -405,7 +405,7 @@ void ghid_main_menu_add_popup_resource(GHidMainMenu * menu, const lht_node_t * r
 
 	submenu = lht_tree_path_(res->doc, (lht_node_t *)res, "submenu", 1, 0, NULL);
 	if (submenu == NULL) {
-		hid_res_error(res, "can not create popup without submenu list");
+		hid_cfg_error(res, "can not create popup without submenu list");
 		return;
 	}
 
@@ -443,7 +443,7 @@ ghid_main_menu_update_toggle_state(GHidMainMenu * menu,
 	GList *list;
 	for (list = menu->actions; list; list = list->next) {
 		lht_node_t *res = g_object_get_data(G_OBJECT(list->data), "resource");
-		lht_node_t *act = hid_res_menu_field(res, MF_ACTION, NULL);
+		lht_node_t *act = hid_cfg_menu_field(res, MF_ACTION, NULL);
 		const char *tf = g_object_get_data(G_OBJECT(list->data),
 																			 "checked-flag");
 		const char *af = g_object_get_data(G_OBJECT(list->data),

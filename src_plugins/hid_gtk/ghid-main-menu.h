@@ -7,7 +7,7 @@
 
 #include "ghid-layer-selector.h"
 #include "ghid-route-style-selector.h"
-#include "hid_resource.h"
+#include "hid_cfg.h"
 
 G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_MAIN_MENU_TYPE            (ghid_main_menu_get_type ())
@@ -34,7 +34,7 @@ void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, GHidRouteSty
 
 void ghid_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip);
 
-extern hid_res_t *ghid_res;
+extern hid_cfg_t *ghid_cfg;
 
 G_END_DECLS											/* keep c++ happy */
 #endif

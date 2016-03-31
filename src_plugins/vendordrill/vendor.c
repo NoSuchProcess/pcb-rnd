@@ -60,7 +60,7 @@
 #include "plugins.h"
 #include "hid_flags.h"
 #include "hid_actions.h"
-#include "hid_resource.h"
+#include "hid_cfg.h"
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 
@@ -298,17 +298,17 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 	FREE(ignore_descr);
 
 	/* load the resource file */
-	doc = hid_res_load_lht(fname);
+	doc = hid_cfg_load_lht(fname);
 	if (doc == NULL) {
 		Message(_("Could not load vendor resource file \"%s\"\n"), fname);
 		return 1;
 	}
 
 	/* figure out the vendor name, if specified */
-	vendor_name = (char *) UNKNOWN(hid_res_text_value(doc, "vendor"));
+	vendor_name = (char *) UNKNOWN(hid_cfg_text_value(doc, "vendor"));
 
 	/* figure out the units, if specified */
-	sval = hid_res_text_value(doc, "/units");
+	sval = hid_cfg_text_value(doc, "/units");
 	if (sval == NULL) {
 		sf = MIL_TO_COORD(1);
 	}
@@ -328,7 +328,7 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 
 	/* default to ROUND_UP */
 	rounding_method = ROUND_UP;
-	sval = hid_res_text_value(doc, "/round");
+	sval = hid_cfg_text_value(doc, "/round");
 	if (sval != NULL) {
 		if (NSTRCMP(sval, "up") == 0) {
 			rounding_method = ROUND_UP;
@@ -351,7 +351,7 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 			lht_node_t *n;
 			for(n = drlres->data.list.first; n != NULL; n = n->next) {
 				if (n->type != LHT_TEXT)
-					hid_res_error(n, "Broken drillmap: /drillmap should contain text children only\n");
+					hid_cfg_error(n, "Broken drillmap: /drillmap should contain text children only\n");
 				else
 					add_to_drills(n->data.text.value);
 			}
@@ -361,37 +361,37 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 	else
 		Message(_("No drillmap resource found\n"));
 
-	sval = hid_res_text_value(doc, "/drc/copper_space");
+	sval = hid_cfg_text_value(doc, "/drc/copper_space");
 	if (sval != NULL) {
 		PCB->Bloat = floor(sf * atof(sval) + 0.5);
 		Message(_("Set DRC minimum copper spacing to %.2f mils\n"), 0.01 * PCB->Bloat);
 	}
 
-	sval = hid_res_text_value(doc, "/drc/copper_overlap");
+	sval = hid_cfg_text_value(doc, "/drc/copper_overlap");
 	if (sval != NULL) {
 		PCB->Shrink = floor(sf * atof(sval) + 0.5);
 		Message(_("Set DRC minimum copper overlap to %.2f mils\n"), 0.01 * PCB->Shrink);
 	}
 
-	sval = hid_res_text_value(doc, "/drc/copper_width");
+	sval = hid_cfg_text_value(doc, "/drc/copper_width");
 	if (sval != NULL) {
 		PCB->minWid = floor(sf * atof(sval) + 0.5);
 		Message(_("Set DRC minimum copper spacing to %.2f mils\n"), 0.01 * PCB->minWid);
 	}
 
-	sval = hid_res_text_value(doc, "/drc/silk_width");
+	sval = hid_cfg_text_value(doc, "/drc/silk_width");
 	if (sval != NULL) {
 		PCB->minSlk = floor(sf * atof(sval) + 0.5);
 		Message(_("Set DRC minimum silk width to %.2f mils\n"), 0.01 * PCB->minSlk);
 	}
 
-	sval = hid_res_text_value(doc, "/drc/min_drill");
+	sval = hid_cfg_text_value(doc, "/drc/min_drill");
 	if (sval != NULL) {
 		PCB->minDrill = floor(sf * atof(sval) + 0.5);
 		Message(_("Set DRC minimum drill diameter to %.2f mils\n"), 0.01 * PCB->minDrill);
 	}
 
-	sval = hid_res_text_value(doc, "/drc/min_ring");
+	sval = hid_cfg_text_value(doc, "/drc/min_ring");
 	if (sval != NULL) {
 		PCB->minRing = floor(sf * atof(sval) + 0.5);
 		Message(_("Set DRC minimum annular ring to %.2f mils\n"), 0.01 * PCB->minRing);
@@ -644,7 +644,7 @@ static void process_skips(lht_node_t *res)
 		return;
 
 	if (res->type != LHT_LIST)
-		hid_res_error(res, "skips must be a list.\n");
+		hid_cfg_error(res, "skips must be a list.\n");
 
 	for(n = res->data.list.first; n != NULL; n = n->next) {
 		if (n->type == LHT_TEXT) {
@@ -661,7 +661,7 @@ static void process_skips(lht_node_t *res)
 				lst = &ignore_descr;
 			}
 			else {
-				hid_res_error(n, "invalid skip name; must be one of refdes, value, descr");
+				hid_cfg_error(n, "invalid skip name; must be one of refdes, value, descr");
 				continue;
 			}
 			/* add the entry to the appropriate list */
@@ -674,7 +674,7 @@ static void process_skips(lht_node_t *res)
 			(*lst)[*cnt - 1] = strdup(sval);
 		}
 		else
-			hid_res_error(n, "invalid skip type; must be text");
+			hid_cfg_error(n, "invalid skip type; must be text");
 	}
 }
 

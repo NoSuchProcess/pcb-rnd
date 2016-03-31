@@ -47,7 +47,7 @@
 static const char display_syntax[] =
 	"Display(NameOnPCB|Description|Value)\n"
 	"Display(Grid|Redraw)\n"
-	"Display(CycleClip|CycleCrosshair|Toggle45Degree|ToggleStartDirection)\n"
+	"Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)\n"
 	"Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)\n"
 	"Display(ToggleMask|ToggleName|ToggleClearLine|ToggleFullPoly)\n"
 	"Display(ToggleSnapPin|ToggleSnapOffGridLine|ToggleHighlightOnPoint)\n"
@@ -69,7 +69,7 @@ Specify whether all elements show their name, description, or value.
 @item Redraw
 Redraw the whole board.
 
-@item Toggle45Degree
+@item ToggleAllDirections
 When clear, lines can be drawn at any angle.  When set, lines are
 restricted to multiples of 45 degrees and requested lines may be
 broken up according to the clip setting.

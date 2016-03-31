@@ -210,7 +210,7 @@ ha:{
 		ha:Settings = {
 			m=S
 			li:submenu {
-				ha:'All-direction' lines            = { checked=alldirection; a=<Key>.; action=Display(Toggle45Degree) }
+				ha:'All-direction' lines            = { checked=alldirection; a=<Key>.; action=Display(ToggleAllDirections) }
 				ha:Auto swap line start angle       = { checked=swapstartdir; action=Display(ToggleStartDirection) }
 				ha:Orthogonal moves                 = { checked=orthomove; action=Display(ToggleOrthoMove) }
 				ha:Crosshair snaps to pins and pads = { checked=snappin; action=Display(ToggleSnapPin) }

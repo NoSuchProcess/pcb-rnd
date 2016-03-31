@@ -68,7 +68,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "gtkhid.h"
 #include "gui.h"
 #include "hid.h"
-#include "hid_resource.h"
+#include "hid_cfg.h"
 #include "action_helper.h"
 #include "buffer.h"
 #include "change.h"
@@ -100,6 +100,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "paths.h"
 #include "gui-icons-mode-buttons.data"
 #include "gui-icons-misc.data"
+#include "gui.h"
 #include "hid_attrib.h"
 #include "hid_actions.h"
 #include "hid_flags.h"
@@ -114,7 +115,8 @@ GhidGui _ghidgui, *ghidgui = NULL;
 
 GHidPort ghid_port, *gport;
 
-hid_res_t *ghid_res = NULL;
+hid_cfg_t *ghid_cfg = NULL;
+hid_cfg_mouse_t ghid_mouse;
 
 static gchar *bg_image_file;
 
@@ -309,7 +311,7 @@ static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
 	if (action == NULL || node == NULL)
 		return;
 
-	hid_res_action(node);
+	hid_cfg_action(node);
 
 	/* Sync gui widgets with pcb state */
 	ghid_update_toggle_flags();
@@ -1758,19 +1760,19 @@ static GtkWidget *ghid_load_menus(void)
 #warning TODO
 	const char *gpcb_menu_default = NULL;
 
-	ghid_res = hid_res_load("gtk", gpcb_menu_default);
-	if (ghid_res == NULL) {
+	ghid_cfg = hid_cfg_load("gtk", gpcb_menu_default);
+	if (ghid_cfg == NULL) {
 		Message("FATAL: can't load the gtk menu res either from file or from hardwired default.");
 		abort();
 	}
 
-	mr = hid_res_get_menu(ghid_res, "/main_menu");
+	mr = hid_cfg_get_menu(ghid_cfg, "/main_menu");
 	if (mr != NULL) {
 		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb), ghid_check_special_key);
 		ghid_main_menu_add_resource(GHID_MAIN_MENU(menu_bar), mr);
 	}
 
-	mr = hid_res_get_menu(ghid_res, "/popups");
+	mr = hid_cfg_get_menu(ghid_cfg, "/popups");
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
@@ -1778,16 +1780,16 @@ static GtkWidget *ghid_load_menus(void)
 				ghid_main_menu_add_popup_resource(GHID_MAIN_MENU(menu_bar), n);
 		}
 		else
-			hid_res_error(mr, "/popups should be a list");
+			hid_cfg_error(mr, "/popups should be a list");
 	}
 
 #ifdef DEBUG_MENUS
 	puts("Finished loading menus.");
 #endif
 
-#warning TODO:
-	mr = hid_res_get_menu(ghid_res, "/mouse");
-/*	load_mouse_resource(mr);*/
+	mr = hid_cfg_get_menu(ghid_cfg, "/mouse");
+	if (hid_cfg_mouse_init(ghid_cfg, &ghid_mouse) != 0)
+		Message("Error: failed to load mouse actions from the hid config lihata - mouse input will not work.");
 
 	return menu_bar;
 }

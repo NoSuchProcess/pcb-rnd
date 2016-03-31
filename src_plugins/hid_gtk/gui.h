@@ -29,7 +29,8 @@
 
 #include "global.h"
 #include "hid.h"
-#include "hid_resource.h"
+#include "hid_cfg.h"
+#include "hid_cfg_input.h"
 
 #include "data.h"
 #include "misc.h"
@@ -513,5 +514,6 @@ static inline Coord Pz(int z)
 }
 
 extern const char *ghid_cookie;
+extern hid_cfg_mouse_t ghid_mouse;
 
-#endif /* PCB_HID_GTK_GHID_H */
+#endif /* PCB_HID_GTK_GHID_GUI_H */
