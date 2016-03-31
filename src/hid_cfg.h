@@ -59,6 +59,7 @@ typedef enum {
 	MF_TIP,
 	MF_ACTIVE,
 	MF_ACTION
+/*	MF_RADIO*/
 } hid_cfg_menufield_t;
 
 /* Return a field of a submenu and optionally fill in field_name with the
