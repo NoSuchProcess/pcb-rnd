@@ -1,5 +1,18 @@
-- test vendordrill if it works
-- vendordrill: free at exit
+- vemdordrill conversion:
+	- test vendordrill if it works
+	- vendordrill: free at exit
+
+- lesstif conversion:
+	- check if ctrl+1..ctrl+4 works
+
+- resource conv cleanup:
+	- gtk: use hid_cfg_get_submenu() instead of lht_tree_path_
+	- remove npath ting
+	- enable gpmi and test dynamic menu insertion
+	- search for "resource" in src/ and in src_plugin/, rename
+
+- lihata:
+	- const correctness in path_
 
 Cleanup #4:
 	- reduce
