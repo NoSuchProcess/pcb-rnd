@@ -7,6 +7,7 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
+#include <liblihata/tree.h>
 
 #include "gtkhid.h"
 #include "gui.h"
@@ -399,9 +400,21 @@ void ghid_main_menu_add_resource(GHidMainMenu * menu, const lht_node_t * res)
 /*! \brief Turn a pcb resource into a popup menu */
 void ghid_main_menu_add_popup_resource(GHidMainMenu * menu, const lht_node_t * res)
 {
-	GtkWidget *new_menu = gtk_menu_new();
+	lht_node_t *submenu, *i;
+	GtkWidget *new_menu;
+
+	submenu = lht_tree_path_(res->doc, (lht_node_t *)res, "submenu", 1, 0, NULL);
+	if (submenu == NULL) {
+		hid_res_error(res, "can not create popup without submenu list");
+		return;
+	}
+
+	new_menu = gtk_menu_new();
 	g_object_ref_sink(new_menu);
-	ghid_main_menu_real_add_resource(menu, GTK_MENU_SHELL(new_menu), res, "");
+
+	for(i = submenu->data.list.first; i != NULL; i = i->next)
+		ghid_main_menu_real_add_resource(menu, GTK_MENU_SHELL(new_menu), i, "");
+
 	g_hash_table_insert(menu->popup_table, (gpointer) res->name, new_menu);
 	gtk_widget_show_all(new_menu);
 }

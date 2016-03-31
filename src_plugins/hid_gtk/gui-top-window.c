@@ -1777,6 +1777,8 @@ static GtkWidget *ghid_load_menus(void)
 			for(n = mr->data.list.first; n != NULL; n = n->next)
 				ghid_main_menu_add_popup_resource(GHID_MAIN_MENU(menu_bar), n);
 		}
+		else
+			hid_res_error(mr, "/popups should be a list");
 	}
 
 #ifdef DEBUG_MENUS
