@@ -1289,13 +1289,18 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 	}
 
 	mr = hid_cfg_get_menu(r, "/main_menu");
-	if (mr != NULL)
-		add_resource_to_menu(mb, mr, (XtCallbackProc) callback, 0);
+	if (mr != NULL) {
+		if (mr->type == LHT_LIST) {
+			lht_node_t *n;
+			for(n = mr->data.list.first; n != NULL; n = n->next)
+				add_resource_to_menu(mb, n, (XtCallbackProc) callback, 0);
+		}
+		else
+			hid_cfg_error(mr, "/main_menu should be a list");
+	}
 
-	mr = hid_cfg_get_menu(r, "/mouse");
-	if (mr != NULL)
-		load_mouse_resource(mr);
 
+	hid_cfg_mouse_init(r, &lesstif_mouse);
 	if (do_dump_keys)
 		DumpKeys2();
 

@@ -47,6 +47,8 @@ RCSID("$Id$");
 
 const char *lesstif_cookie = "lesstif HID";
 
+hid_cfg_mouse_t lesstif_mouse;
+
 #ifndef XtRDouble
 #define XtRDouble "Double"
 #endif
@@ -1314,7 +1316,8 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #else
 				+ ((e->xbutton.state & Mod1Mask) ? M_Alt : 0);
 #endif
-			do_mouse_action(e->xbutton.button, mods);
+			hid_cfg_mouse_action(&lesstif_mouse, e->xbutton.button | mods);
+
 			notify_crosshair_change(true);
 			break;
 		}
@@ -1335,7 +1338,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 				+ ((e->xbutton.state & Mod1Mask) ? M_Alt : 0)
 #endif
 				+ M_Release;
-			do_mouse_action(e->xbutton.button, mods);
+			hid_cfg_mouse_action(&lesstif_mouse, e->xbutton.button | mods);
 			notify_crosshair_change(true);
 			break;
 		}

@@ -1,5 +1,7 @@
 /* $Id$ */
 
+#include "hid_cfg_input.h"
+
 #define app_context lesstif_app_context
 #define appwidget lesstif_appwidget
 #define display lesstif_display
@@ -18,6 +20,8 @@ extern Widget appwidget;
 extern Display *display;
 extern Screen *screen_s;
 extern int screen;
+
+extern hid_cfg_mouse_t lesstif_mouse;
 
 extern Widget mainwind, work_area, command, hscroll, vscroll;
 extern Widget m_click;
