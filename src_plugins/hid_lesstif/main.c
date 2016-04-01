@@ -1278,6 +1278,18 @@ static void mod_changed(XKeyEvent * e, int set)
 	in_move_event = 0;
 }
 
+static hid_cfg_mod_t lesstif_mb2cfg(int but)
+{
+	switch(but) {
+		case 1: return MB_LEFT;
+		case 2: return MB_MIDDLE;
+		case 3: return MB_RIGHT;
+		case 4: return MB_UP;
+		case 5: return MB_DOWN;
+	}
+	return 0;
+}
+
 static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 {
 	static int pressed_button = 0;
@@ -1316,7 +1328,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #else
 				+ ((e->xbutton.state & Mod1Mask) ? M_Alt : 0);
 #endif
-			hid_cfg_mouse_action(&lesstif_mouse, e->xbutton.button | mods);
+			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods);
 
 			notify_crosshair_change(true);
 			break;
@@ -1338,7 +1350,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 				+ ((e->xbutton.state & Mod1Mask) ? M_Alt : 0)
 #endif
 				+ M_Release;
-			hid_cfg_mouse_action(&lesstif_mouse, e->xbutton.button | mods);
+			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods);
 			notify_crosshair_change(true);
 			break;
 		}
