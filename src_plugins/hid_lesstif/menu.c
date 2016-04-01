@@ -1076,7 +1076,6 @@ static void add_resource_to_menu(Widget menu, lht_node_t *node, XtCallbackProc c
 static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc callback)
 {
 	Widget sub, btn = NULL;
-
 	n = 0;
 	stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
 	sub = XmCreatePulldownMenu(menu, node->name, args, n);
@@ -1085,13 +1084,20 @@ static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc call
 	stdarg(XmNsubMenuId, sub);
 	btn = XmCreateCascadeButton(menu, node->name, args, n);
 	XtManageChild(btn);
-	add_resource_to_menu(sub, node, callback, 1);
+
+	if (hid_cfg_has_submenus(node)) {
+		lht_node_t *i;
+		i = hid_cfg_menu_field(node, MF_SUBMENU, NULL);
+		for(i = i->data.list.first; i != NULL; i = i->next)
+			add_resource_to_menu(sub, i, callback, 1);
+	}
 }
 
 static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc callback, int level)
 {
 	const char *v, *r;
 	Widget sub, btn = NULL;
+	lht_node_t *act;
 
 	n = 0;
 #warning TODO: check if we should reenable this
@@ -1127,24 +1133,20 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 
 	if (hid_cfg_has_submenus(node)) {
 		int nn = n;
+		lht_node_t *i;
 		const char *field_name;
 		lht_node_t *submenu_node = hid_cfg_menu_field(node, MF_SUBMENU, &field_name);
 
-		if (submenu_node->type == LHT_LIST) {
-			lht_node_t *i;
+		stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
+		sub = XmCreatePulldownMenu(menu, strdup(v), args + nn, n - nn);
+		n = nn;
+		stdarg(XmNsubMenuId, sub);
+		btn = XmCreateCascadeButton(menu, "menubutton", args, n);
+		XtManageChild(btn);
 
-			stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
-			sub = XmCreatePulldownMenu(menu, strdup(v), args + nn, n - nn);
-			n = nn;
-			stdarg(XmNsubMenuId, sub);
-			btn = XmCreateCascadeButton(menu, "menubutton", args, n);
-			XtManageChild(btn);
-
-			for(i = submenu_node->data.list.first; i != NULL; i = i->next)
-				add_resource_to_menu(sub, i, callback, level+1);
-		}
-		else
-			hid_cfg_error(submenu_node, "submenu needs to be a list");
+		/* assume submenu is a list, hid_cfg_has_submenus() already checked that */
+		for(i = submenu_node->data.list.first; i != NULL; i = i->next)
+			add_resource_to_menu(sub, i, callback, level+1);
 	}
 	else {
 		/* doesn't have submenu */
@@ -1172,13 +1174,15 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 		}
 		else
 #endif
+		act = hid_cfg_menu_field(node, MF_ACTION, NULL);
 		if (checked) {
 			if (strchr(checked, ','))
 				stdarg(XmNindicatorType, XmONE_OF_MANY);
 			else
 				stdarg(XmNindicatorType, XmN_OF_MANY);
 			btn = XmCreateToggleButton(menu, "menubutton", args, n);
-			XtAddCallback(btn, XmNvalueChangedCallback, callback, (XtPointer) node);
+			if (act != NULL)
+				XtAddCallback(btn, XmNvalueChangedCallback, callback, (XtPointer) act);
 		}
 		else if (label && strcmp(label, "false") == 0) {
 			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
@@ -1186,7 +1190,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 		}
 		else {
 			btn = XmCreatePushButton(menu, "menubutton", args, n);
-			XtAddCallback(btn, XmNactivateCallback, callback, (XtPointer) node);
+			XtAddCallback(btn, XmNactivateCallback, callback, (XtPointer) act);
 		}
 
 #warning TODO: what is this?
