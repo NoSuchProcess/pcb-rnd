@@ -70,6 +70,12 @@ typedef struct hid_cfg_keys_s {
 */
 int hid_cfg_keys_init(hid_cfg_keys_t *km);
 
+#warning TODO: desc
+int hid_cfg_keys_uninit(hid_cfg_keys_t *km);
+
+#warning TODO: desc
+hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *parent, hid_cfg_mod_t mods, short int key_char, int terminal);
+
 /* Add a new key using a description (read from a lihata file usually)
    If out_seq is not NULL, load the array with pointers pointing to each
    key in the sequence, up to out_seq_len.
@@ -87,7 +93,7 @@ int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const char *keydesc, hid_cfg_ke
      + a positive integer means the lookup succeeded and the return value
        is the length of the resulting sequence.
 */
-int hid_cfg_keys_input(hid_cfg_keys_t *km, hid_cfg_mod_t mod, short int key_char, hid_cfg_keyseq_t **seq, int *seq_len, int seq_len_max);
+int hid_cfg_keys_input(hid_cfg_keys_t *km, hid_cfg_mod_t mods, short int key_char, hid_cfg_keyseq_t **seq, int *seq_len, int seq_len_max);
 
 /* Run the action for a key sequence looked up by hid_cfg_keys_input().
    Returns: the result of the action or -1 on error */

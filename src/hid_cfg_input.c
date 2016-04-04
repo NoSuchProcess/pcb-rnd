@@ -83,6 +83,8 @@ static hid_cfg_mod_t button_name2mask(const char *name)
 static int keyeq_int(htip_key_t a, htip_key_t b)   { return a == b; }
 static unsigned int keyhash_int(htip_key_t a)      { return murmurhash32(a & 0xFFFF); }
 
+/************************** MOUSE ***************************/
+
 int hid_cfg_mouse_init(hid_cfg_t *hr, hid_cfg_mouse_t *mouse)
 {
 	lht_node_t *btn, *m;
@@ -147,4 +149,45 @@ static lht_node_t *find_best_action(hid_cfg_mouse_t *mouse, hid_cfg_mod_t button
 void hid_cfg_mouse_action(hid_cfg_mouse_t *mouse, hid_cfg_mod_t button_and_mask)
 {
 	hid_cfg_action(find_best_action(mouse, button_and_mask));
+}
+
+
+/************************** KEYBOARD ***************************/
+int hid_cfg_keys_init(hid_cfg_keys_t *km)
+{
+	htip_init(&km->keys, keyhash_int, keyeq_int);
+}
+
+int hid_cfg_keys_uninit(hid_cfg_keys_t *km)
+{
+#warning TODO: recursive free of nodes
+	htip_uninit(&km->keys);
+}
+
+hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *parent, hid_cfg_mod_t mods, short int key_char, int terminal)
+{
+	hid_cfg_keyseq_t *ns;
+	hid_cfg_keyhash_t addr;
+	htip_t *phash = (parent == NULL) ? &km->keys : &parent->seq_next;
+
+	addr.details.mods = mods;
+	addr.details.key_char = key_char;
+
+	/* already in the tree */
+	ns = htip_get(phash, addr.hash);
+	if (ns != NULL) {
+		if (terminal)
+			return NULL; /* full-path-match is collision */
+		return ns;
+	}
+
+	/* new node on this level */
+	ns = calloc(sizeof(hid_cfg_keyseq_t), 1);
+	htip_set(phash, addr.hash, ns);
+	return ns;
+}
+
+int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const char *keydesc, hid_cfg_keyseq_t **out_seq, int out_seq_len)
+{
+
 }
