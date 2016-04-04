@@ -17,7 +17,7 @@ typedef enum {
 	M_Shift   = M_Mod0(0),
 	M_Ctrl    = M_Mod0(1),
 	M_Alt     = M_Mod0(2),
-	M_Multi   = M_Mod0(3),
+	M_Multi   = M_Mod0(3), /* not a key; indicates that the keystroke is part of a multi-stroke sequence */
 	/* M_Mod(3) is M_Mod0(4) */
 	/* M_Mod(4) is M_Mod0(5) */
 	M_Release = M_Mod0(6), /* there might be a random number of modkeys, but hopefully not this many */
