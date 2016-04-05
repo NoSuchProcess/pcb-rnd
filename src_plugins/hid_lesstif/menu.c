@@ -112,29 +112,6 @@ static int Return(int argc, char **argv, Coord x, Coord y)
 	return atoi(argv[0]);
 }
 
-static const char dumpkeys_syntax[] = "DumpKeys()";
-
-static const char dumpkeys_help[] = "Dump Lesstif key bindings.";
-
-/* %start-doc actions DumpKeys
-
-Causes the list of key bindings (from @code{pcb-menu.res}) to be
-dumped to stdout.  This is most useful when invoked from the command
-line like this:
-
-@example
-pcb --action-string DumpKeys
-@end example
-
-%end-doc */
-
-static int do_dump_keys = 0;
-static int DumpKeys(int argc, char **argv, Coord x, Coord y)
-{
-	do_dump_keys = 1;
-	return 0;
-}
-
 /*-----------------------------------------------------------------------------*/
 
 #define LB_SILK	(MAX_LAYER+0)
@@ -634,8 +611,6 @@ void lesstif_update_widget_flags()
 /*-----------------------------------------------------------------------------*/
 
 HID_Action lesstif_menu_action_list[] = {
-	{"DumpKeys", 0, DumpKeys,
-	 dumpkeys_help, dumpkeys_syntax},
 	{"Debug", 0, Debug,
 	 debug_help, debug_syntax},
 	{"DebugXY", "Click X,Y for Debug", Debug,
@@ -1073,10 +1048,6 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 
 
 	hid_cfg_mouse_init(r, &lesstif_mouse);
-
-#warning TODO: remove
-//	if (do_dump_keys)
-//		DumpKeys2();
 
 	return mb;
 }
