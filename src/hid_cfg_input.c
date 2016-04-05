@@ -199,6 +199,8 @@ hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *p
 
 	/* new node on this level */
 	ns = calloc(sizeof(hid_cfg_keyseq_t), 1);
+	if (!terminal)
+		htip_init(&ns->seq_next, keyhash_int, keyeq_int);
 	htip_set(phash, addr.hash, ns);
 	return ns;
 }
@@ -326,15 +328,17 @@ int hid_cfg_keys_input(hid_cfg_keys_t *km, hid_cfg_mod_t mods, unsigned short in
 {
 	hid_cfg_keyseq_t *ns;
 	hid_cfg_keyhash_t addr;
-	htip_t *phash = (*seq_len == 0) ? &km->keys : &(seq[*seq_len])->seq_next;
+	htip_t *phash = (*seq_len == 0) ? &km->keys : &((seq[(*seq_len)-1])->seq_next);
 
 	addr.details.mods = mods;
 	addr.details.key_char = key_char;
 
 	/* already in the tree */
 	ns = htip_get(phash, addr.hash);
-	if (ns == NULL)
+	if (ns == NULL) {
+		(*seq_len) = 0;
 		return -1;
+	}
 
 	seq[*seq_len] = ns;
 	(*seq_len)++;
@@ -342,7 +346,7 @@ int hid_cfg_keys_input(hid_cfg_keys_t *km, hid_cfg_mod_t mods, unsigned short in
 	/* found a terminal node with an action */
 	if (ns->action_node != NULL) {
 		int len = *seq_len;
-		*seq_len = 0;
+		(*seq_len) = 0;
 		return len;
 	}
 
