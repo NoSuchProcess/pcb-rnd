@@ -187,8 +187,33 @@ int hid_cfg_has_submenus(const lht_node_t *submenu)
 
 lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...)
 {
-#warning TODO
-	abort();
+	lht_node_t *n;
+	va_list ap;
+
+	if ((parent != NULL) && (parent->type != LHT_LIST))
+		return NULL;
+
+	n = lht_dom_node_alloc(LHT_HASH, name);
+	if (parent != NULL)
+		lht_dom_list_append(parent, n);
+
+	va_start(ap, name);
+	for(;;) {
+		char *cname, *cval;
+		lht_node_t *t;
+
+		cname = va_arg(ap, char *);
+		if (cname == NULL)
+			break;
+		cval = va_arg(ap, char *);
+
+		t = lht_dom_node_alloc(LHT_TEXT, cname);
+		t->data.text.value = strdup(cval);
+		lht_dom_hash_put(n, t);
+	}
+	va_end(ap);
+
+	return n;
 }
 
 lht_node_t *hid_cfg_get_submenu(lht_node_t *parent, const char *path)
