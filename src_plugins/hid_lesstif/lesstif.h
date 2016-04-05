@@ -22,6 +22,7 @@ extern Screen *screen_s;
 extern int screen;
 
 extern hid_cfg_mouse_t lesstif_mouse;
+extern hid_cfg_keys_t lesstif_keymap;
 
 extern Widget mainwind, work_area, command, hscroll, vscroll;
 extern Widget m_click;

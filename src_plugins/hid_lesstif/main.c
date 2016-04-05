@@ -48,6 +48,8 @@ RCSID("$Id$");
 const char *lesstif_cookie = "lesstif HID";
 
 hid_cfg_mouse_t lesstif_mouse;
+hid_cfg_keys_t lesstif_keymap;
+
 
 #ifndef XtRDouble
 #define XtRDouble "Double"
@@ -1690,6 +1692,18 @@ static Widget make_message(char *name, Widget left, int resizeable)
 	return w;
 }
 
+static short int lesstif_translate_key(char *desc, int len)
+{
+	KeySym key = XStringToKeysym(desc);
+	if (key == NoSymbol && len > 1) {
+		Message("no symbol for %s\n", desc);
+		return 0;
+	}
+	return key;
+}
+
+
+
 extern Widget lesstif_menubar;
 static int lesstif_hid_inited = 0;
 
@@ -1700,6 +1714,11 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	Widget work_area_frame;
 
 	lesstif_begin();
+
+	hid_cfg_keys_init(&lesstif_keymap);
+	lesstif_keymap.translate_key = lesstif_translate_key;
+	lesstif_keymap.auto_chr = 1;
+	lesstif_keymap.auto_tr = hid_cfg_key_default_trans;
 
 	n = 0;
 	stdarg(XtNwidth, &width);
@@ -1846,6 +1865,8 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	lesstif_hid_inited = 1;
 
 	XtAppMainLoop(app_context);
+
+	hid_cfg_keys_uninit(&lesstif_keymap);
 	lesstif_end();
 }
 

@@ -7,6 +7,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <assert.h>
 
 #include "xincludes.h"
 
@@ -44,7 +45,7 @@ static Arg args[30];
 static int n;
 #define stdarg(t,v) XtSetArg(args[n], t, v), n++
 
-static void note_accelerator(const char *acc, lht_node_t * node);
+static void note_accelerator(const char *acc, lht_node_t *node);
 static void note_widget_flag(Widget w, char *type, char *name);
 
 static const char getxy_syntax[] = "GetXY()";
@@ -510,8 +511,12 @@ static void insert_layerview_buttons(Widget menu)
 			sprintf(av, "ToggleView(%d)", i + 1);
 			sprintf(av2, "Ctrl<Key>%d", accel_idx + 1);
 			ar = hid_cfg_create_hash_node(NULL, av,  "action", av, "a", av2, NULL);
-			note_accelerator(av, ar);
-			stdarg(XmNmnemonic, accel_idx + '1');
+			if (ar != NULL)  {
+				note_accelerator(av, ar);
+				stdarg(XmNmnemonic, accel_idx + '1');
+			}
+			else
+				Message("Error: faliled to create ToggleView(%d)\n", i+1);
 		}
 		btn = XmCreateToggleButton(menu, name, args, n);
 		XtManageChild(btn);
@@ -567,12 +572,15 @@ static void insert_layerpick_buttons(Widget menu)
 
 			sprintf(buf, "%d", i + 1);
 			ar = hid_cfg_create_hash_node(NULL, av,  "action", av, "a", buf, NULL);
-
-			as = XmStringCreatePCB(buf);
-			stdarg(XmNacceleratorText, as);
-			sprintf(av, "<Key>%d", accel_idx + 1);
-			note_accelerator(av, ar);
-			stdarg(XmNmnemonic, accel_idx + '1');
+			if (ar != NULL) {
+				as = XmStringCreatePCB(buf);
+				stdarg(XmNacceleratorText, as);
+				sprintf(av, "<Key>%d", accel_idx + 1);
+				note_accelerator(av, ar);
+				stdarg(XmNmnemonic, accel_idx + '1');
+			}
+			else
+				Message("Error: failed to create accel <Key>%d\n", accel_idx+1);
 		}
 		stdarg(XmNindicatorType, XmONE_OF_MANY);
 		btn = XmCreateToggleButton(menu, name, args, n);
@@ -757,223 +765,25 @@ static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * p
 	hid_cfg_action(node);
 }
 
-typedef struct acc_table_t {
-	char mods;
-	char key_char;
-	union {
-		/* If M_Multi is set in mods, these are used to chain to the next
-		   attribute table for multi-key accelerators.  */
-		struct {
-			int n_chain;
-			struct acc_table_t *chain;
-		} c;
-		/* If M_Multi isn't set, these are used to map a single key to an
-		   event.  */
-		struct {
-			KeySym key;
-			lht_node_t *node;
-		} a;
-	} u;
-} acc_table_t;
-
-static acc_table_t *acc_table;
-static int acc_num = 0;
-
-static int acc_sort(const void *va, const void *vb)
+static void note_accelerator(const char *acc, lht_node_t *node)
 {
-	acc_table_t *a = (acc_table_t *) va;
-	acc_table_t *b = (acc_table_t *) vb;
-	if (a->key_char != b->key_char)
-		return a->key_char - b->key_char;
-	if (!(a->mods & M_Multi))
-		if (a->u.a.key != b->u.a.key)
-			return a->u.a.key - b->u.a.key;
-	return a->mods - b->mods;
-}
-
-static int DumpKeys2()
-{
-	int i;
-	char ch[2];
-	printf("in dumpkeys! %d\n", acc_num);
-	qsort(acc_table, acc_num, sizeof(acc_table_t), acc_sort);
-	ch[1] = 0;
-	for (i = 0; i < acc_num; i++) {
-		char mod[16];
-		int vi;
-		char *tabs = "";
-
-		sprintf(mod, "%s%s%s",
-						acc_table[i].mods & M_Alt ? "Alt-" : "",
-						acc_table[i].mods & M_Ctrl ? "Ctrl-" : "", acc_table[i].mods & M_Shift ? "Shift-" : "");
-		ch[0] = toupper((int) acc_table[i].key_char);
-		printf("%16s%s\t", mod, acc_table[i].key_char ? ch : XKeysymToString(acc_table[i].u.a.key));
-
-#warning TODO: test
-		printf("%s%s", tabs, acc_table[i].u.a.node->data.text.value);
-//if it is a list?			tabs = "\n\t\t\t  ";
-
-		printf("\n");
-	}
-	exit(0);
-}
-
-static acc_table_t *find_or_create_acc(char mods, char key, KeySym sym, acc_table_t ** table, int *n_ents)
-{
-	int i, max;
-	acc_table_t *a;
-
-	if (*table)
-		for (i = (*n_ents) - 1; i >= 0; i--) {
-			a = &(*table)[i];
-			if (a->mods == mods && a->key_char == key && (mods & M_Multi || a->u.a.key == sym))
-				return a;
-		}
-
-	(*n_ents)++;
-	max = (*n_ents + 16) & ~15;
-
-	if (*table)
-		*table = (acc_table_t *) realloc(*table, max * sizeof(acc_table_t));
+	lht_node_t *anode;
+	assert(node != NULL);
+	anode = hid_cfg_menu_field(node, MF_ACTION, NULL);
+	if (anode != NULL)
+		hid_cfg_keys_add_by_desc(&lesstif_keymap, acc, anode, NULL, 0);
 	else
-		*table = (acc_table_t *) malloc(max * sizeof(acc_table_t));
-
-	a = &((*table)[(*n_ents) - 1]);
-	memset(a, 0, sizeof(acc_table_t));
-
-	a->mods = mods;
-	a->key_char = key;
-	if (!(mods & M_Multi))
-		a->u.a.key = sym;
-
-	return a;
-}
-
-static void note_accelerator(const char *acc, lht_node_t * node)
-{
-	const char *orig_acc = acc;
-	int mods = 0;
-	acc_table_t *a;
-	char key_char = 0;
-	KeySym key = 0;
-	int multi_key = 0;
-
-	while (isalpha((int) acc[0])) {
-		if (strncmp(acc, "Shift", 5) == 0) {
-			mods |= M_Shift;
-			acc += 5;
-		}
-		else if (strncmp(acc, "Ctrl", 4) == 0) {
-			mods |= M_Ctrl;
-			acc += 4;
-		}
-		else if (strncmp(acc, "Alt", 3) == 0) {
-			mods |= M_Alt;
-			acc += 3;
-		}
-		else {
-			printf("Must be Shift/Ctrl/Alt: %s\n", acc);
-			return;
-		}
-		while (*acc == ' ')
-			acc++;
-	}
-	if (strncmp(acc, "<Keys>", 6) == 0) {
-		multi_key = 1;
-		acc++;
-	}
-	else if (strncmp(acc, "<Key>", 5)) {
-		fprintf(stderr, "accelerator \"%s\" not <Key> or <Keys>\n", orig_acc);
-		return;
-	}
-
-	/* We have a hard time specifying the Enter key the "usual" way.  */
-	if (strcmp(acc, "<Key>Enter") == 0)
-		acc = "<Key>\r";
-
-	acc += 5;
-	if (acc[0] && acc[1] == 0) {
-		key_char = acc[0];
-		a = find_or_create_acc(mods, key_char, 0, &acc_table, &acc_num);
-	}
-	else if (multi_key) {
-		acc_table_t **ap = &acc_table;
-		int *np = &acc_num;
-
-		mods |= M_Multi;
-		while (acc[0] && acc[1]) {
-			a = find_or_create_acc(mods, acc[0], 0, ap, np);
-			ap = &(a->u.c.chain);
-			np = &(a->u.c.n_chain);
-			acc++;
-		}
-		a = find_or_create_acc(mods & ~M_Multi, acc[0], 0, ap, np);
-	}
-	else {
-		key = XStringToKeysym(acc);
-		if (key == NoSymbol && !key_char) {
-			printf("no symbol for %s\n", acc);
-			return;
-		}
-		a = find_or_create_acc(mods, 0, key, &acc_table, &acc_num);
-	}
-
-	a->u.a.node = node;
-}
-
-#if 0
-static void dump_multi(int ix, int ind, acc_table_t * a, int n)
-{
-	int i = ix;
-	while (n--) {
-		if (a->mods & M_Multi) {
-			printf("%*cacc[%d] mods %x char %c multi %p/%d\n", ind, ' ', i, a->mods, a->key_char, a->u.c.chain, a->u.c.n_chain);
-			dump_multi(0, ind + 4, a->u.c.chain, a->u.c.n_chain);
-		}
-		else {
-			printf("%*cacc[%d] mods %x char %c key %d node `%s'\n",
-						 ind, ' ', i, a->mods, a->key_char, a->u.a.key, a->u.a.node->v[0].value);
-		}
-		a++;
-		i++;
-	}
-}
-#else
-#define dump_multi(x,a,b,c)
-#endif
-
-static acc_table_t *cur_table = 0;
-static int cur_ntable = 0;
-
-/* We sort these such that the ones with explicit modifiers come
-   before the ones with implicit modifiers.  That way, a
-   Shift<Key>Code gets chosen before a <Key>Code.  */
-static int acc_sort_rev(const void *va, const void *vb)
-{
-	acc_table_t *a = (acc_table_t *) va;
-	acc_table_t *b = (acc_table_t *) vb;
-	if (a->key_char != b->key_char)
-		return a->key_char - b->key_char;
-	if (!(a->mods & M_Multi))
-		if (a->u.a.key != b->u.a.key)
-			return a->u.a.key - b->u.a.key;
-	return b->mods - a->mods;
+		hid_cfg_error(node, "No action specified for key accel\n");
 }
 
 int lesstif_key_event(XKeyEvent * e)
 {
-	char buf[10], buf2[10];
-	KeySym sym, sym2;
-	int slen, slen2;
+	char buf[10];
+	KeySym sym;
+	int slen;
 	int mods = 0;
-	int i, vi;
-	static int sorted = 0;
-	acc_table_t *my_table = 0;
-
-	if (!sorted) {
-		sorted = 1;
-		qsort(acc_table, acc_num, sizeof(acc_table_t), acc_sort_rev);
-	}
+	static hid_cfg_keyseq_t *seq[32];
+	static int seq_len = 0;
 
 	if (e->state & ShiftMask)
 		mods |= M_Shift;
@@ -983,14 +793,10 @@ int lesstif_key_event(XKeyEvent * e)
 		mods |= M_Alt;
 
 	e->state &= ~(ControlMask | Mod1Mask);
-	slen = XLookupString(e, buf, sizeof(buf), &sym, NULL);
 
-	if (e->state & ShiftMask) {
+	if (e->state & ShiftMask)
 		e->state &= ~ShiftMask;
-		slen2 = XLookupString(e, buf2, sizeof(buf2), &sym2, NULL);
-	}
-	else
-		slen2 = slen;
+	slen = XLookupString(e, buf, sizeof(buf), &sym, NULL);
 
 	/* Ignore these.  */
 	switch (sym) {
@@ -1012,48 +818,11 @@ int lesstif_key_event(XKeyEvent * e)
 		return 1;
 	}
 
-	if (cur_table == 0) {
-		cur_table = acc_table;
-		cur_ntable = acc_num;
-	}
+	printf("KEY lookup: mod=%x sym=%x/%d\n", mods, sym, slen);
 
-	/*printf("\nmods %x key %d str `%s' in %p/%d\n", mods, (int)sym, buf, cur_table, cur_ntable); */
-
-#define KM(m) ((m) & ~M_Multi)
-	for (i = 0; i < cur_ntable; i++) {
-		dump_multi(i, 0, cur_table + i, 1);
-		if (KM(cur_table[i].mods) == mods) {
-			if (sym == acc_table[i].u.a.key)
-				break;
-		}
-		if (KM(cur_table[i].mods) == (mods & ~M_Shift)) {
-			if (slen == 1 && buf[0] == cur_table[i].key_char)
-				break;
-			if (sym == cur_table[i].u.a.key)
-				break;
-		}
-		if (mods & M_Shift && KM(cur_table[i].mods) == mods) {
-			if (slen2 == 1 && buf2[0] == cur_table[i].key_char)
-				break;
-			if (sym2 == acc_table[i].u.a.key)
-				break;
-		}
-	}
-
-	if (i == cur_ntable) {
-		if (cur_table == acc_table)
-			lesstif_log("Key \"%s\" not tied to an action\n", buf);
-		else
-			lesstif_log("Key \"%s\" not tied to a multi-key action\n", buf);
-		cur_table = 0;
-		return 0;
-	}
-	if (cur_table[i].mods & M_Multi) {
-		cur_ntable = cur_table[i].u.c.n_chain;
-		cur_table = cur_table[i].u.c.chain;
-		dump_multi(0, 0, cur_table, cur_ntable);
+	slen = hid_cfg_keys_input(&lesstif_keymap, mods, sym, seq, &seq_len);
+	if (slen <= 0)
 		return 1;
-	}
 
 	if (e->window == XtWindow(work_area)) {
 		have_xy = 1;
@@ -1065,9 +834,8 @@ int lesstif_key_event(XKeyEvent * e)
 
 	/* Parsing actions may not return until more user interaction
 	   happens.  */
-	hid_cfg_action(my_table[i].u.a.node);
-#warning TODO: do we need this?
-	cur_table = 0;
+	hid_cfg_keys_action(seq, slen);
+
 	return 1;
 }
 
@@ -1305,8 +1073,10 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 
 
 	hid_cfg_mouse_init(r, &lesstif_mouse);
-	if (do_dump_keys)
-		DumpKeys2();
+
+#warning TODO: remove
+//	if (do_dump_keys)
+//		DumpKeys2();
 
 	return mb;
 }
