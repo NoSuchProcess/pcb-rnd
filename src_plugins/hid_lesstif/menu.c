@@ -512,7 +512,7 @@ static void insert_layerview_buttons(Widget menu)
 			sprintf(av2, "Ctrl<Key>%d", accel_idx + 1);
 			ar = hid_cfg_create_hash_node(NULL, av,  "action", av, "a", av2, NULL);
 			if (ar != NULL)  {
-				note_accelerator(av, ar);
+				note_accelerator(av2, ar);
 				stdarg(XmNmnemonic, accel_idx + '1');
 			}
 			else
