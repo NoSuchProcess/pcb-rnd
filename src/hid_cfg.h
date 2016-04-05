@@ -74,8 +74,9 @@ const char *hid_cfg_menu_field_str(const lht_node_t *submenu, hid_cfg_menufield_
    there is a submenu field with the wrong lihata type */
 int hid_cfg_has_submenus(const lht_node_t *submenu);
 
-/* Run an action node. The node is either a list of text nodes or a text node */
-void hid_cfg_action(const lht_node_t *node);
+/* Run an action node. The node is either a list of text nodes or a text node;
+   returns non-zero on error, the first action that fails in a chain breaks the chain */
+int hid_cfg_action(const lht_node_t *node);
 
 /* Create a new hash node under parent (optional) and create a flat subtree of
    text nodes from name,value varargs (NULL terminated). This is a shorthand

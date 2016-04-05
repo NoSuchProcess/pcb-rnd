@@ -354,7 +354,5 @@ int hid_cfg_keys_action(hid_cfg_keyseq_t **seq, int seq_len)
 	if (seq_len < 1)
 		return -1;
 
-	hid_cfg_action(seq[seq_len-1]->action_node);
-#warning TODO:
-	return 0;
+	return hid_cfg_action(seq[seq_len-1]->action_node);
 }

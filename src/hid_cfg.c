@@ -37,7 +37,7 @@ char hid_cfg_error_shared[1024];
 
 lht_node_t *resource_create_menu(hid_cfg_t *hr, const char *name, const char *action, const char *mnemonic, const char *accel, const char *tip, int flags)
 {
-	/* TODO */
+#warning TODO
 	abort();
 }
 
@@ -107,20 +107,25 @@ hid_cfg_t *hid_cfg_load(const char *hidname, const char *embedded_fallback)
 	return hr;
 }
 
-void hid_cfg_action(const lht_node_t *node)
+int hid_cfg_action(const lht_node_t *node)
 {
 	if (node == NULL)
-		return;
+		return -1;
 	switch(node->type) {
 		case LHT_TEXT:
-			hid_parse_actions(node->data.text.value);
-			break;
+			return hid_parse_actions(node->data.text.value);
 		case LHT_LIST:
-			for(node = node->data.list.first; node != NULL; node = node->next)
-				if (node->type == LHT_TEXT)
-					hid_parse_actions(node->data.text.value);
-			break;
+			for(node = node->data.list.first; node != NULL; node = node->next) {
+				if (node->type == LHT_TEXT) {
+					if (hid_parse_actions(node->data.text.value) != 0)
+						return -1;
+				}
+				else
+					return -1;
+			}
+			return 0;
 	}
+	return -1;
 }
 
 /************* "parsing" **************/
