@@ -894,8 +894,8 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 		/* doesn't have submenu */
 		const char *checked = hid_cfg_menu_field_str(node, MF_CHECKED);
 		const char *label = hid_cfg_menu_field_str(node, MF_SENSITIVE);
-#warning TODO: do we have/want radio?
 #if 0
+/* Do not support radio for now: the gtk HID doesn't have it either */
 		Resource *radio = resource_subres(node->v[i].subres, "radio");
 		if (radio) {
 			ToggleItem *ti = (ToggleItem *) malloc(sizeof(ToggleItem));
@@ -964,17 +964,6 @@ static void add_res2menu_text_special(Widget menu, lht_node_t *node, XtCallbackP
 		btn = XmCreateSeparator(menu, "sep", stdarg_args, stdarg_n);
 		XtManageChild(btn);
 	}
-
-#if 0
-#warning TODO: this created the rest of the items in a list, or what?
-	else if (i > 0) {
-				btn = XmCreatePushButton(menu, node->v[i].value, stdarg_args, stdarg_n);
-/*				npath = Concat(path, "/", node->v[i].name, NULL);
-				fprintf(stderr, "htsp_set7 %s %p\n", path, btn);
-				htsp_set(menu_hash, strdup(npath), btn);*/
-				XtManageChild(btn);
-			}
-#endif
 }
 
 static void add_resource_to_menu(Widget in_menu, lht_node_t *node, XtCallbackProc callback, int level)
