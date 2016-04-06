@@ -58,7 +58,10 @@ typedef enum {
 	MF_SENSITIVE,
 	MF_TIP,
 	MF_ACTIVE,
-	MF_ACTION
+	MF_ACTION,
+	MF_FOREGROUND,
+	MF_BACKGROUND,
+	MF_FONT
 /*	MF_RADIO*/
 } hid_cfg_menufield_t;
 

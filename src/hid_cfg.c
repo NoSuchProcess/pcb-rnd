@@ -151,6 +151,9 @@ lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, hid_cfg_menufield_t fi
 		case MF_TIP:          fieldstr = "tip"; break;
 		case MF_ACTIVE:       fieldstr = "active"; break;
 		case MF_ACTION:       fieldstr = "action"; break;
+		case MF_FOREGROUND:   fieldstr = "foreground"; break;
+		case MF_BACKGROUND:   fieldstr = "background"; break;
+		case MF_FONT:         fieldstr = "font"; break;
 /*		case MF_RADIO:        fieldstr = "radio"; break; */
 	}
 	if (field_name != NULL)
