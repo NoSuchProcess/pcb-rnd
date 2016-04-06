@@ -6,6 +6,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/hid_lesstif/menu.o
 	$(PLUGDIR)/hid_lesstif/netlist.o
 	$(PLUGDIR)/hid_lesstif/styles.o
+	$(PLUGDIR)/hid_lesstif/stdarg.o
 @]
 
 switch /local/pcb/hid_lesstif/controls

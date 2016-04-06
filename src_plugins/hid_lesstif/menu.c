@@ -25,6 +25,7 @@
 #include "paths.h"
 #include "hid_actions.h"
 #include "hid_flags.h"
+#include "stdarg.h"
 
 #include "pcb-menu.h"
 #include <genht/hash.h>
@@ -40,10 +41,6 @@ Widget lesstif_menubar;
 #endif
 
 static Colormap cmap;
-
-static Arg args[30];
-static int n;
-#define stdarg(t,v) XtSetArg(args[n], t, v), n++
 
 static void note_accelerator(const char *acc, lht_node_t *node);
 static void note_widget_flag(Widget w, char *type, char *name);
@@ -202,7 +199,7 @@ static int LayersChanged(int argc, char **argv, Coord x, Coord y)
 				break;
 			}
 
-			n = 0;
+			stdarg_n = 0;
 			if (i < MAX_LAYER && PCB->Data->Layer[i].Name) {
 				XmString s = XmStringCreatePCB(PCB->Data->Layer[i].Name);
 				stdarg(XmNlabelString, s);
@@ -223,7 +220,7 @@ static int LayersChanged(int argc, char **argv, Coord x, Coord y)
 				stdarg(XmNbackground, fg_colors[i]);
 				stdarg(XmNset, current_layer == i ? True : False);
 			}
-			XtSetValues(lb->w[i], args, n);
+			XtSetValues(lb->w[i], stdarg_args, stdarg_n);
 
 			if (i >= max_copper_layer && i < MAX_LAYER)
 				XtUnmanageChild(lb->w[i]);
@@ -243,11 +240,11 @@ static int LayersChanged(int argc, char **argv, Coord x, Coord y)
 			name = PCB->Data->Layer[current_layer].Name;
 			break;
 		}
-		n = 0;
+		stdarg_n = 0;
 		stdarg(XmNbackground, fg_colors[current_layer]);
 		stdarg(XmNforeground, bg_color);
 		stdarg(XmNlabelString, XmStringCreatePCB(name));
-		XtSetValues(lesstif_m_layer, args, n);
+		XtSetValues(lesstif_m_layer, stdarg_args, stdarg_n);
 	}
 
 	lesstif_update_layer_groups();
@@ -258,7 +255,8 @@ static int LayersChanged(int argc, char **argv, Coord x, Coord y)
 static void show_one_layer_button(int layer, int set)
 {
 	int l;
-	n = 0;
+
+	stdarg_n = 0;
 	if (set) {
 		stdarg(XmNforeground, bg_color);
 		stdarg(XmNbackground, fg_colors[layer]);
@@ -272,7 +270,7 @@ static void show_one_layer_button(int layer, int set)
 	for (l = 0; l < num_layer_buttons; l++) {
 		LayerButtons *lb = layer_button_list + l;
 		if (!lb->is_pick)
-			XtSetValues(lb->w[layer], args, n);
+			XtSetValues(lb->w[layer], stdarg_args, stdarg_n);
 	}
 }
 
@@ -347,11 +345,11 @@ static void layerpick_button_callback(Widget w, int layer, XmPushButtonCallbackS
 		name = PCB->Data->Layer[layer].Name;
 		break;
 	}
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNbackground, fg_colors[layer]);
 	stdarg(XmNforeground, bg_color);
 	stdarg(XmNlabelString, XmStringCreatePCB(name));
-	XtSetValues(lesstif_m_layer, args, n);
+	XtSetValues(lesstif_m_layer, stdarg_args, stdarg_n);
 	lesstif_invalidate_all();
 }
 
@@ -476,7 +474,7 @@ static void insert_layerview_buttons(Widget menu)
 			name = "Solder Mask";
 			break;
 		}
-		n = 0;
+		stdarg_n = 0;
 		if (accel_idx < 9) {
 			char buf[20], av[30], av2[30];
 			lht_node_t *ar;
@@ -495,7 +493,7 @@ static void insert_layerview_buttons(Widget menu)
 			else
 				Message("Error: faliled to create ToggleView(%d)\n", i+1);
 		}
-		btn = XmCreateToggleButton(menu, name, args, n);
+		btn = XmCreateToggleButton(menu, name, stdarg_args, stdarg_n);
 		XtManageChild(btn);
 		XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) layer_button_callback, (XtPointer) (size_t) i);
 		lb->w[i] = btn;
@@ -542,7 +540,7 @@ static void insert_layerpick_buttons(Widget menu)
 			sprintf(av, "SelectLayer(%d)", i + 1);
 			break;
 		}
-		n = 0;
+		stdarg_n = 0;
 		if (accel_idx < 9) {
 			lht_node_t *ar;
 			XmString as;
@@ -560,7 +558,7 @@ static void insert_layerpick_buttons(Widget menu)
 				Message("Error: failed to create accel <Key>%d\n", accel_idx+1);
 		}
 		stdarg(XmNindicatorType, XmONE_OF_MANY);
-		btn = XmCreateToggleButton(menu, name, args, n);
+		btn = XmCreateToggleButton(menu, name, stdarg_args, stdarg_n);
 		XtManageChild(btn);
 		XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) layerpick_button_callback, (XtPointer) (size_t) i);
 		lb->w[i] = btn;
@@ -630,7 +628,7 @@ HID_Action lesstif_menu_action_list[] = {
 REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
 #if 0
 		 static void
-		   do_color(char *value, char *which)
+		   stdarg_do_color(char *value, char *which)
 {
 	XColor color;
 	if (XParseColor(display, cmap, value, &color))
@@ -685,9 +683,9 @@ void lesstif_get_xy(const char *message)
 	XmString ls = XmStringCreatePCB((char *) message);
 
 	XtManageChild(m_click);
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNlabelString, ls);
-	XtSetValues(m_click, args, n);
+	XtSetValues(m_click, stdarg_args, stdarg_n);
 	/*printf("need xy: msg `%s'\n", msg); */
 	need_xy = 1;
 	XBell(display, 100);
@@ -722,10 +720,10 @@ static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * p
 		if (aw) {
 			Widget p = work_area;
 			while (p && p != aw) {
-				n = 0;
+				stdarg_n = 0;
 				stdarg(XmNx, &wx);
 				stdarg(XmNy, &wy);
-				XtGetValues(p, args, n);
+				XtGetValues(p, stdarg_args, stdarg_n);
 				action_x -= wx;
 				action_y -= wy;
 				p = XtParent(p);
@@ -819,13 +817,13 @@ static void add_resource_to_menu(Widget menu, lht_node_t *node, XtCallbackProc c
 static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc callback)
 {
 	Widget sub, btn = NULL;
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
-	sub = XmCreatePulldownMenu(menu, node->name, args, n);
-	XtSetValues(sub, args, n);
-	n = 0;
+	sub = XmCreatePulldownMenu(menu, node->name, stdarg_args, stdarg_n);
+	XtSetValues(sub, stdarg_args, stdarg_n);
+	stdarg_n = 0;
 	stdarg(XmNsubMenuId, sub);
-	btn = XmCreateCascadeButton(menu, node->name, args, n);
+	btn = XmCreateCascadeButton(menu, node->name, stdarg_args, stdarg_n);
 	XtManageChild(btn);
 
 	if (hid_cfg_has_submenus(node)) {
@@ -842,14 +840,14 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 	Widget sub, btn = NULL;
 	lht_node_t *act;
 
-	n = 0;
+	stdarg_n = 0;
 	v = hid_cfg_menu_field_str(node, MF_FOREGROUND);
 	if (v != NULL)
-		do_color(v, XmNforeground);
+		stdarg_do_color(v, XmNforeground);
 
 	v = hid_cfg_menu_field_str(node, MF_BACKGROUND);
 	if (v != NULL)
-		do_color(v, XmNbackground);
+		stdarg_do_color(v, XmNbackground);
 
 #warning TODO: check if we should reenable this
 #if 0
@@ -877,16 +875,16 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 	stdarg(XmNlabelString, XmStringCreatePCB(strdup(v)));
 
 	if (hid_cfg_has_submenus(node)) {
-		int nn = n;
+		int nn = stdarg_n;
 		lht_node_t *i;
 		const char *field_name;
 		lht_node_t *submenu_node = hid_cfg_menu_field(node, MF_SUBMENU, &field_name);
 
 		stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
-		sub = XmCreatePulldownMenu(menu, strdup(v), args + nn, n - nn);
-		n = nn;
+		sub = XmCreatePulldownMenu(menu, strdup(v), stdarg_args + nn, stdarg_n - nn);
+		stdarg_n = nn;
 		stdarg(XmNsubMenuId, sub);
-		btn = XmCreateCascadeButton(menu, "menubutton", args, n);
+		btn = XmCreateCascadeButton(menu, "menubutton", stdarg_args, stdarg_n);
 		XtManageChild(btn);
 
 		/* assume submenu is a list, hid_cfg_has_submenus() already checked that */
@@ -925,16 +923,16 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 				stdarg(XmNindicatorType, XmONE_OF_MANY);
 			else
 				stdarg(XmNindicatorType, XmN_OF_MANY);
-			btn = XmCreateToggleButton(menu, "menubutton", args, n);
+			btn = XmCreateToggleButton(menu, "menubutton", stdarg_args, stdarg_n);
 			if (act != NULL)
 				XtAddCallback(btn, XmNvalueChangedCallback, callback, (XtPointer) act);
 		}
 		else if (label && strcmp(label, "false") == 0) {
 			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
-			btn = XmCreateLabel(menu, "menulabel", args, n);
+			btn = XmCreateLabel(menu, "menulabel", stdarg_args, stdarg_n);
 		}
 		else {
-			btn = XmCreatePushButton(menu, "menubutton", args, n);
+			btn = XmCreatePushButton(menu, "menubutton", stdarg_args, stdarg_n);
 			XtAddCallback(btn, XmNactivateCallback, callback, (XtPointer) act);
 		}
 
@@ -974,7 +972,7 @@ static void add_res2menu_text_special(Widget menu, lht_node_t *node, XtCallbackP
 {
 #warning TODO: make this a flag hash, also in the gtk hid
 	Widget btn = NULL;
-	n = 0;
+	stdarg_n = 0;
 	if (*node->data.text.value == '@') {
 		if (strcmp(node->data.text.value, "@layerview") == 0)
 			insert_layerview_buttons(menu);
@@ -984,14 +982,14 @@ static void add_res2menu_text_special(Widget menu, lht_node_t *node, XtCallbackP
 			lesstif_insert_style_buttons(menu);
 	}
 	else if ((strcmp(node->data.text.value, "-") == 0) || (strcmp(node->data.text.value, "-"))) {
-		btn = XmCreateSeparator(menu, "sep", args, n);
+		btn = XmCreateSeparator(menu, "sep", stdarg_args, stdarg_n);
 		XtManageChild(btn);
 	}
 
 #if 0
 #warning TODO: this created the rest of the items in a list, or what?
 	else if (i > 0) {
-				btn = XmCreatePushButton(menu, node->v[i].value, args, n);
+				btn = XmCreatePushButton(menu, node->v[i].value, stdarg_args, stdarg_n);
 /*				npath = Concat(path, "/", node->v[i].name, NULL);
 				fprintf(stderr, "htsp_set7 %s %p\n", path, btn);
 				htsp_set(menu_hash, strdup(npath), btn);*/

@@ -102,7 +102,7 @@ static Picture pale_picture;
 static int pixmap_w = 0, pixmap_h = 0;
 Screen *screen_s;
 int screen;
-static Colormap colormap;
+Colormap lesstif_colormap;
 static GC my_gc = 0, bg_gc, clip_gc = 0, bset_gc = 0, bclear_gc = 0, mask_gc = 0;
 static Pixel bgcolor, offlimit_color, grid_color;
 static int bgred, bggreen, bgblue;
@@ -301,23 +301,13 @@ void lesstif_coords_to_pcb(int vx, int vy, Coord * px, Coord * py)
 	*py = Py(vy);
 }
 
-Pixel lesstif_parse_color(char *value)
+Pixel lesstif_parse_color(const char *value)
 {
 	XColor color;
-	if (XParseColor(display, colormap, value, &color))
-		if (XAllocColor(display, colormap, &color))
+	if (XParseColor(display, lesstif_colormap, value, &color))
+		if (XAllocColor(display, lesstif_colormap, &color))
 			return color.pixel;
 	return 0;
-}
-
-#warning rename this: prefix!
-void do_color(char *value, char *which)
-{
-	XColor color;
-	if (XParseColor(display, colormap, value, &color))
-		if (XAllocColor(display, colormap, &color)) {
-			stdarg(which, color.pixel);
-		}
 }
 
 /* ------------------------------------------------------------ */
@@ -1024,7 +1014,7 @@ REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
 				pix.green = pg * 65535 / maxval;
 				pix.blue = pb * 65535 / maxval;
 				pix.flags = DoRed | DoGreen | DoBlue;
-				XAllocColor(display, colormap, &pix);
+				XAllocColor(display, lesstif_colormap, &pix);
 				bg[r][c] = pix.pixel;
 				break;
 			case PT_RGB565:
@@ -1585,7 +1575,7 @@ static void work_area_resize(Widget work_area, void *me, XmDrawingAreaCallbackSt
 	view_height = height;
 
 	color.pixel = bgcolor;
-	XQueryColor(display, colormap, &color);
+	XQueryColor(display, lesstif_colormap, &color);
 	bgred = color.red;
 	bggreen = color.green;
 	bgblue = color.blue;
@@ -1756,7 +1746,7 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	XtManageChild(work_area_frame);
 
 	n = 0;
-	do_color(Settings.BackgroundColor, XmNbackground);
+	stdarg_do_color(Settings.BackgroundColor, XmNbackground);
 	work_area = XmCreateDrawingArea(work_area_frame, "work_area", args, n);
 	XtManageChild(work_area);
 	XtAddCallback(work_area, XmNexposeCallback, (XtCallbackProc) work_area_first_expose, 0);
@@ -2104,7 +2094,7 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 	display = XtDisplay(appwidget);
 	screen_s = XtScreen(appwidget);
 	screen = XScreenNumberOfScreen(screen_s);
-	colormap = XDefaultColormap(display, screen);
+	lesstif_colormap = XDefaultColormap(display, screen);
 
 	close_atom = XmInternAtom(display, "WM_DELETE_WINDOW", 0);
 	XmAddWMProtocolCallback(appwidget, close_atom, (XtCallbackProc) mainwind_delete_cb, 0);
@@ -2171,10 +2161,10 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 			}
 		}
 
-	/* redefine colormap, if requested via "-install" */
+	/* redefine lesstif_colormap, if requested via "-install" */
 	if (use_private_colormap) {
-		colormap = XCopyColormapAndFree(display, colormap);
-		XtVaSetValues(appwidget, XtNcolormap, colormap, NULL);
+		lesstif_colormap = XCopyColormapAndFree(display, lesstif_colormap);
+		XtVaSetValues(appwidget, XtNcolormap, lesstif_colormap, NULL);
 	}
 
 	/* listen on standard input for actions */
@@ -2967,7 +2957,7 @@ static void lesstif_set_color(hidGC gc, const char *name)
 		gc->erase = 0;
 	}
 	else {
-		if (!XAllocNamedColor(display, colormap, name, &color, &exact_color))
+		if (!XAllocNamedColor(display, lesstif_colormap, name, &color, &exact_color))
 			color.pixel = WhitePixel(display, screen);
 #if 0
 		printf("lesstif_set_color `%s' %08x rgb/%d/%d/%d\n", name, color.pixel, color.red, color.green, color.blue);
@@ -2984,11 +2974,11 @@ static void lesstif_set_color(hidGC gc, const char *name)
 			lastcolor = gc->color;
 			color.pixel = gc->color;
 
-			XQueryColor(display, colormap, &color);
+			XQueryColor(display, lesstif_colormap, &color);
 			color.red = (bgred + color.red) / 2;
 			color.green = (bggreen + color.green) / 2;
 			color.blue = (bgblue + color.blue) / 2;
-			XAllocColor(display, colormap, &color);
+			XAllocColor(display, lesstif_colormap, &color);
 			lastfade = gc->color = color.pixel;
 		}
 	}

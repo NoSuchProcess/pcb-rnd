@@ -50,7 +50,7 @@ extern void lesstif_sizes_reset(void);
 extern void lesstif_pan_fixup(void);
 extern void lesstif_show_library(void);
 extern void lesstif_show_netlist(void);
-extern Pixel lesstif_parse_color(char *value);
+extern Pixel lesstif_parse_color(const char *value);
 extern void lesstif_insert_style_buttons(Widget menu);
 extern void lesstif_styles_update_values();
 extern void lesstif_update_layer_groups();
