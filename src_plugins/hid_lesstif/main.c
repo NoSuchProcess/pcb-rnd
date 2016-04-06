@@ -310,7 +310,8 @@ Pixel lesstif_parse_color(char *value)
 	return 0;
 }
 
-static void do_color(char *value, char *which)
+#warning rename this: prefix!
+void do_color(char *value, char *which)
 {
 	XColor color;
 	if (XParseColor(display, colormap, value, &color))

@@ -843,14 +843,16 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 	lht_node_t *act;
 
 	n = 0;
+	v = hid_cfg_menu_field_str(node, MF_FOREGROUND);
+	if (v != NULL)
+		do_color(v, XmNforeground);
+
+	v = hid_cfg_menu_field_str(node, MF_BACKGROUND);
+	if (v != NULL)
+		do_color(v, XmNbackground);
+
 #warning TODO: check if we should reenable this
 #if 0
-			if ((v = resource_value(node->v[i].subres, "fg"))) {
-				do_color(v, XmNforeground);
-			}
-			if ((v = resource_value(node->v[i].subres, "bg"))) {
-				do_color(v, XmNbackground);
-			}
 			if ((v = resource_value(node->v[i].subres, "font"))) {
 				XFontStruct *fs = XLoadQueryFont(display, v);
 				if (fs) {
