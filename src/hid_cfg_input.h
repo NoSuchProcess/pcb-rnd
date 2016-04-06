@@ -89,10 +89,14 @@ typedef struct hid_cfg_keys_s {
 */
 int hid_cfg_keys_init(hid_cfg_keys_t *km);
 
-#warning TODO: desc
+/* Free km's fields recursively */
 int hid_cfg_keys_uninit(hid_cfg_keys_t *km);
 
-#warning TODO: desc
+/* Add the next key of a key sequence; key sequences form a tree. A key starting
+   a new key sequence should have parent set NULL, subsequent calls should have
+   parent set to the previously returned keyseq value. Terminal is non-zero if
+   this is the last key of the sequence.
+   Returns NULL on error */
 hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *parent, hid_cfg_mod_t mods, unsigned short int key_char, int terminal);
 
 /* Add a new key using a description (read from a lihata file usually)
