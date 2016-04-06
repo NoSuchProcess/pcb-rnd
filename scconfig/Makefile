@@ -11,7 +11,7 @@ USER_LDFLAGS =
 USER_OBJS = src/util/arg_auto_set.o
 
 #  what to build - a ./configure
-all: configure
+all: configure cquote
 
 # This line imports scconfig core and default tests
 include src/default/Makefile.plugin
@@ -74,6 +74,8 @@ menucfg.o: menucfg.c
 	$(CC) -c $(CFLAGS) -o menucfg.o menucfg.c
 
 hooks.o: plugin_3state.h plugins.h
+
+cquote: cquote.c
 
 clean:
 	rm $(OBJS) configure
