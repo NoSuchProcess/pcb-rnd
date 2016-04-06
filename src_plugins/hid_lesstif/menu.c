@@ -43,7 +43,7 @@ Widget lesstif_menubar;
 static Colormap cmap;
 
 static void note_accelerator(const char *acc, lht_node_t *node);
-static void note_widget_flag(Widget w, char *type, char *name);
+static void note_widget_flag(Widget w, char *type, const char *name);
 
 static const char getxy_syntax[] = "GetXY()";
 
@@ -580,7 +580,7 @@ static WidgetFlagType *wflags = 0;
 static int n_wflags = 0;
 static int max_wflags = 0;
 
-static void note_widget_flag(Widget w, char *type, char *name)
+static void note_widget_flag(Widget w, char *type, const char *name)
 {
 	if (n_wflags >= max_wflags) {
 		max_wflags += 20;
@@ -849,7 +849,6 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 	if (v != NULL)
 		stdarg_do_color(v, XmNbackground);
 
-
 	v = hid_cfg_menu_field_str(node, MF_FONT);
 	if (v != NULL) {
 		XFontStruct *fs = XLoadQueryFont(display, v);
@@ -936,33 +935,13 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 			XtAddCallback(btn, XmNactivateCallback, callback, (XtPointer) act);
 		}
 
-#warning TODO: what is this?
-#if 0
-				for (j = 0; j < node->v[i].subres->c; j++)
-					switch (resource_type(node->v[i].subres->v[j])) {
-					case 110:						/* named value = X resource */
-						{
-							char *n = node->v[i].subres->v[j].name;
-							if (strcmp(n, "fg") == 0)
-								n = "foreground";
-							if (strcmp(n, "bg") == 0)
-								n = "background";
-							if (strcmp(n, "m") == 0 || strcmp(n, "a") == 0 || strcmp(n, "sensitive") == 0)
-								break;
-							if (strcmp(n, "checked") == 0) {
-								note_widget_flag(btn, XmNset, node->v[i].subres->v[j].value);
-								break;
-							}
-							if (strcmp(n, "active") == 0) {
-								note_widget_flag(btn, XmNsensitive, node->v[i].subres->v[j].value);
-								break;
-							}
-							XtVaSetValues(btn, XtVaTypedArg,
-														n, XtRString, node->v[i].subres->v[j].value, strlen(node->v[i].subres->v[j].value) + 1, NULL);
-						}
-						break;
-					}
-#endif
+		v = hid_cfg_menu_field_str(node, MF_CHECKED);
+		if (v != NULL)
+			note_widget_flag(btn, XmNset, v);
+
+		v = hid_cfg_menu_field_str(node, MF_ACTIVE);
+		if (v != NULL)
+			note_widget_flag(btn, XmNsensitive, v);
 
 		XtManageChild(btn);
 	}
