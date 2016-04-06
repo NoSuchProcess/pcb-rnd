@@ -162,7 +162,7 @@ lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, hid_cfg_menufield_t fi
 	if (fieldstr == NULL)
 		return NULL;
 
-	return lht_tree_path_(submenu->doc, (lht_node_t *)submenu, fieldstr, 1, 0, &err);
+	return lht_tree_path_(submenu->doc, submenu, fieldstr, 1, 0, &err);
 }
 
 const char *hid_cfg_menu_field_str(const lht_node_t *submenu, hid_cfg_menufield_t field)
@@ -226,5 +226,5 @@ lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...)
 
 lht_node_t *hid_cfg_get_submenu(lht_node_t *parent, const char *path)
 {
-	return lht_tree_path_(parent->doc, (lht_node_t *)parent, path, 1, 0, NULL);
+	return lht_tree_path_(parent->doc, parent, path, 1, 0, NULL);
 }
