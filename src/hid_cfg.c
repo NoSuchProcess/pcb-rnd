@@ -131,22 +131,28 @@ hid_cfg_t *hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallb
 	lht_doc_t *doc;
 	hid_cfg_t *hr;
 
-//static const char *pcbmenu_paths_in[] = { "gpcb-menu.res", "gpcb-menu.res", PCBSHAREDIR "/gpcb-menu.res", NULL };
-	char *hidfn = strdup(fn);
-
 	if (!exact_fn) {
-		static const char *hid_cfg_paths_in[] = { ".", PCBSHAREDIR "/", NULL };
-		char **paths = NULL;
+		/* try different paths to find the menu file inventing its exact name */
+		static const char *hid_cfg_paths_in[] = { "./", PCBSHAREDIR "/", NULL };
+		char **paths = NULL, **p;
 		int fn_len = strlen(fn);
 
+		doc = NULL;
 		resolve_all_paths(hid_cfg_paths_in, paths, fn_len+32);
-		for(doc = NULL; doc == NULL;) {
-		
+		for(p = paths; *p != NULL; p++) {
+			if (doc == NULL) {
+				char *end = *p + strlen(*p);
+				sprintf(end, "pcb-menu-%s.lht", fn);
+				doc = hid_cfg_load_lht(*p);
+				if (doc != NULL)
+					Message("Loaded menu file '%s'\n", *p);
+			}
+			free(*p);
 		}
 		free(paths);
 	}
 	else
-		doc = hid_cfg_load_lht(hidfn);
+		doc = hid_cfg_load_lht(fn);
 
 	if (doc == NULL)
 		doc = hid_cfg_load_str(embedded_fallback);
