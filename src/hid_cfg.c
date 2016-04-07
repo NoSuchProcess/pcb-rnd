@@ -32,6 +32,7 @@
 #include "hid_actions.h"
 #include "hid_cfg.h"
 #include "error.h"
+#include "paths.h"
 
 char hid_cfg_error_shared[1024];
 
@@ -125,7 +126,7 @@ const char *hid_cfg_text_value(lht_doc_t *doc, const char *path)
 	return n->data.text.value;
 }
 
-hid_cfg_t *hid_cfg_load(const char *hidname, const char *embedded_fallback)
+hid_cfg_t *hid_cfg_load(const char *hidname, int exact_fn, const char *embedded_fallback)
 {
 	lht_doc_t *doc;
 	hid_cfg_t *hr;
@@ -133,7 +134,19 @@ hid_cfg_t *hid_cfg_load(const char *hidname, const char *embedded_fallback)
 //static const char *pcbmenu_paths_in[] = { "gpcb-menu.res", "gpcb-menu.res", PCBSHAREDIR "/gpcb-menu.res", NULL };
 	char *hidfn = strdup(hidname); /* TODO: search for the file */
 
-	doc = hid_cfg_load_lht(hidfn);
+	if (!exact_fn) {
+		static const char *hid_cfg_paths_in[] = { ".", PCBSHAREDIR "/", NULL };
+		char **paths = NULL;
+
+		resolve_all_paths(hid_cfg_paths_in, paths);
+		for(doc = NULL; doc == NULL;) {
+		
+		}
+		free(paths);
+	}
+	else
+		doc = hid_cfg_load_lht(hidfn);
+
 	if (doc == NULL)
 		doc = hid_cfg_load_str(embedded_fallback);
 	if (doc == NULL)

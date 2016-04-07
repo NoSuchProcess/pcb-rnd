@@ -1759,7 +1759,7 @@ static GtkWidget *ghid_load_menus(void)
 
 	extern const char *hid_gtk_menu_default;
 
-	ghid_cfg = hid_cfg_load("gtk", hid_gtk_menu_default);
+	ghid_cfg = hid_cfg_load("gtk", 0, hid_gtk_menu_default);
 	if (ghid_cfg == NULL) {
 		Message("FATAL: can't load the gtk menu res either from file or from hardwired default.");
 		abort();

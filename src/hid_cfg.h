@@ -36,7 +36,7 @@ lht_node_t *resource_create_menu(hid_cfg_t *hr, const char *name, const char *ac
 
 /* Search and load the menu res for hidname; if not found, and embedded_fallback
    is not NULL, parse that string instead. Returns NULL on error */
-hid_cfg_t *hid_cfg_load(const char *hidname, const char *embedded_fallback);
+hid_cfg_t *hid_cfg_load(const char *hidname, int exact_fn, const char *embedded_fallback);
 
 /* Generic, low level lihata loader */
 lht_doc_t *hid_cfg_load_lht(const char *filename);

@@ -996,7 +996,7 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 
 	extern const char *lesstif_menu_default;
 
-	r = hid_cfg_load("lesstif", lesstif_menu_default);
+	r = hid_cfg_load("lesstif", 0, lesstif_menu_default);
 	if (r == NULL) {
 		Message("FATAL: can't load the lesstif menu res either from file or from hardwired default.");
 		abort();
