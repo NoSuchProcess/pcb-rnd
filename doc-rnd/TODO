@@ -42,6 +42,15 @@ CLEANUP #4
 
 - Message() should have a first param that tells if it is an error, info, etc.; pop up window on error, red
 
+CLEANUP #5:
+- self contained
+	- files
+		- menu_lht
+		- default font
+	- action and dialog box to print where the actual files are coming from
+
+
+
 
 FEATURES
 - UI: trace length calculation {small}
