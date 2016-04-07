@@ -19,7 +19,7 @@ void paths_init_homedir(void)
 }
 
 
-void resolve_paths(const char **in, char **out, int numpaths)
+void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra_room)
 {
 	for (out; numpaths > 0; numpaths--, in++, out++) {
 		if (*in != NULL) {
@@ -32,26 +32,28 @@ void resolve_paths(const char **in, char **out, int numpaths)
 				/* avoid Concat() here to reduce dependencies for external tools */
 				l1 = strlen(homedir);
 				l2 = strlen((*in) + 1);
-				*out = malloc(l1 + l2 + 4);
+				*out = malloc(l1 + l2 + 4 + extra_room);
 				sprintf(*out, "%s/%s", homedir, (*in) + 1);
 			}
-			else
-				*out = strdup(*in);
+			else {
+				*out = malloc(strlen(*in) + 1 + extra_room);
+				strcpy(*out, *in);
+			}
 		}
 		else
 			*out = NULL;
 	}
 }
 
-void resolve_path(const char *in, char **out)
+void resolve_path(const char *in, char **out, unsigned int extra_room)
 {
-	resolve_paths(&in, out, 1);
+	resolve_paths(&in, out, 1, extra_room);
 }
 
-char *resolve_path_inplace(char *in)
+char *resolve_path_inplace(char *in, unsigned int extra_room)
 {
 	char *out;
-	resolve_path(in, &out);
+	resolve_path(in, &out, extra_room);
 	free(in);
 	return out;
 }

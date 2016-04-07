@@ -374,7 +374,7 @@ static int real_load_pcb(char *Filename, bool revert, bool require_font, bool is
 	start = clock();
 #endif
 
-	resolve_path(Filename, &new_filename);
+	resolve_path(Filename, &new_filename, 0);
 
 	oldPCB = PCB;
 	PCB = newPCB;

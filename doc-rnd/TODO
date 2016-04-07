@@ -1,3 +1,5 @@
+- check why util/ broke
+
 - vemdordrill conversion:
 	- test vendordrill if it works
 	- vendordrill: free at exit

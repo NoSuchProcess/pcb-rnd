@@ -1534,7 +1534,7 @@ static void InitPaths(char *argv0)
 
 	paths_init_homedir();
 
-	resolve_all_paths(fontfile_paths_in, fontfile_paths);
+	resolve_all_paths(fontfile_paths_in, fontfile_paths, 0);
 }
 
 static void set_fontfile(void)

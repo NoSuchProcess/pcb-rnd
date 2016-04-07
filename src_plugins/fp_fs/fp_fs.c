@@ -217,7 +217,7 @@ static int fp_fs_load_dir_(const char *subdir, const char *toppath, int is_root)
 	int menuidx;
 
 	sprintf(working_, "%s%c%s", toppath, PCB_DIR_SEPARATOR_C, subdir);
-	resolve_path(working_, &working);
+	resolve_path(working_, &working, 0);
 
 	l.menu = fp_append_topdir(pcb_basename(toppath), pcb_basename(subdir), &menuidx);
 	l.subdirs = NULL;
@@ -293,7 +293,7 @@ char *fp_fs_search(const char *search_path, const char *basename, int parametric
 		memcpy(path, p, end - p);
 		path[end - p] = '\0';
 
-		resolve_path(path, &fpath);
+		resolve_path(path, &fpath, 0);
 /*		fprintf(stderr, " in '%s'\n", fpath);*/
 
 		fp_fs_list(fpath, 1, fp_search_cb, &ctx, 1, 0);

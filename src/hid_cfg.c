@@ -126,19 +126,20 @@ const char *hid_cfg_text_value(lht_doc_t *doc, const char *path)
 	return n->data.text.value;
 }
 
-hid_cfg_t *hid_cfg_load(const char *hidname, int exact_fn, const char *embedded_fallback)
+hid_cfg_t *hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallback)
 {
 	lht_doc_t *doc;
 	hid_cfg_t *hr;
 
 //static const char *pcbmenu_paths_in[] = { "gpcb-menu.res", "gpcb-menu.res", PCBSHAREDIR "/gpcb-menu.res", NULL };
-	char *hidfn = strdup(hidname); /* TODO: search for the file */
+	char *hidfn = strdup(fn);
 
 	if (!exact_fn) {
 		static const char *hid_cfg_paths_in[] = { ".", PCBSHAREDIR "/", NULL };
 		char **paths = NULL;
+		int fn_len = strlen(fn);
 
-		resolve_all_paths(hid_cfg_paths_in, paths);
+		resolve_all_paths(hid_cfg_paths_in, paths, fn_len+32);
 		for(doc = NULL; doc == NULL;) {
 		
 		}
