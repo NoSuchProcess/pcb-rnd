@@ -22,6 +22,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/hid_gtk/gui-top-window.o
 	$(PLUGDIR)/hid_gtk/gui-utils.o
 	$(PLUGDIR)/hid_gtk/gtkhid-gdk.o
+	$(PLUGDIR)/hid_gtk/menu_lht.o
 @]
 
 switch /local/pcb/hid_gtk/controls
@@ -29,6 +30,12 @@ switch /local/pcb/hid_gtk/controls
 	default
 		put /local/pcb/mod/CFLAGS   /target/libs/gui/gtk2/cflags
 		put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtk2/ldflags
+		append /local/pcb/RULES [@
+### lesstif menu embed
+$(PLUGDIR)/hid_gtk/menu_lht.c: pcb-menu-gtk.lht
+	$(CQUOTE) -n hid_gtk_menu_default <pcb-menu-gtk.lht >$(PLUGDIR)/hid_gtk/menu_lht.c
+@]
+
 	end
 end
 

@@ -994,12 +994,11 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 	screen = DefaultScreen(display);
 	cmap = DefaultColormap(display, screen);
 
-#warning TODO
-	const char *lesstif_menu_default = NULL;
+	extern const char *lesstif_menu_default;
 
 	r = hid_cfg_load("lesstif", lesstif_menu_default);
 	if (r == NULL) {
-		Message("FATAL: can't load the gtk menu res either from file or from hardwired default.");
+		Message("FATAL: can't load the lesstif menu res either from file or from hardwired default.");
 		abort();
 	}
 

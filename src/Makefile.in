@@ -190,6 +190,7 @@ EXEDEPS=@/local/pcb/EXEDEPS@
 CLEANFILES=@/local/pcb/CLEANFILES@
 CLEANRULES=@/local/pcb/CLEANRULES@
 CC=@cc/cc@
+CQUOTE=../scconfig/cquote
 
 all: pcb-rnd @/local/pcb/all@
 

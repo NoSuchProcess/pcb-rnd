@@ -41,6 +41,15 @@ lht_node_t *resource_create_menu(hid_cfg_t *hr, const char *name, const char *ac
 	abort();
 }
 
+static int hid_cfg_load_error(lht_doc_t *doc, const char *filename, lht_err_t err)
+{
+	const char *fn;
+	int line, col;
+	lht_dom_loc_active(doc, &fn, &line, &col);
+	Message("Resource error: %s (%s:%d.%d)*\n", lht_err_str(err), filename, line+1, col+1);
+	return 1;
+}
+
 lht_doc_t *hid_cfg_load_lht(const char *filename)
 {
 	FILE *f;
@@ -48,6 +57,8 @@ lht_doc_t *hid_cfg_load_lht(const char *filename)
 	int error = 0;
 
 	f = fopen(filename, "r");
+	if (f == NULL)
+		return NULL;
 	doc = lht_dom_init();
 	lht_dom_loc_newfile(doc, filename);
 
@@ -57,11 +68,7 @@ lht_doc_t *hid_cfg_load_lht(const char *filename)
 		err = lht_dom_parser_char(doc, c);
 		if (err != LHTE_SUCCESS) {
 			if (err != LHTE_STOP) {
-				const char *fn;
-				int line, col;
-				lht_dom_loc_active(doc, &fn, &line, &col);
-				Message("Resource error: %s (%s:%d.%d)*\n", lht_err_str(err), filename, line+1, col+1);
-				error = 1;
+				error = hid_cfg_load_error(doc, filename, err);
 				break;
 			}
 			break; /* error or stop, do not read anymore (would get LHTE_STOP without any processing all the time) */
@@ -73,6 +80,35 @@ lht_doc_t *hid_cfg_load_lht(const char *filename)
 		doc = NULL;
 	}
 	fclose(f);
+
+	return doc;
+}
+
+lht_doc_t *hid_cfg_load_str(const char *text)
+{
+	lht_doc_t *doc;
+	int error = 0;
+
+	doc = lht_dom_init();
+	lht_dom_loc_newfile(doc, "embedded");
+
+	while(*text != '\0') {
+		lht_err_t err;
+		int c = *text++;
+		err = lht_dom_parser_char(doc, c);
+		if (err != LHTE_SUCCESS) {
+			if (err != LHTE_STOP) {
+				error = hid_cfg_load_error(doc, "internal", err);
+				break;
+			}
+			break; /* error or stop, do not read anymore (would get LHTE_STOP without any processing all the time) */
+		}
+	}
+
+	if (error) {
+		lht_dom_uninit(doc);
+		doc = NULL;
+	}
 
 	return doc;
 }
@@ -98,6 +134,8 @@ hid_cfg_t *hid_cfg_load(const char *hidname, const char *embedded_fallback)
 	char *hidfn = strdup(hidname); /* TODO: search for the file */
 
 	doc = hid_cfg_load_lht(hidfn);
+	if (doc == NULL)
+		doc = hid_cfg_load_str(embedded_fallback);
 	if (doc == NULL)
 		return NULL;
 
@@ -187,7 +225,7 @@ int hid_cfg_has_submenus(const lht_node_t *submenu)
 		return 0;
 	if (n->type != LHT_LIST) {
 		hid_cfg_error(submenu, "Error: field %s should be a list (of submenus)\n", fldname);
-		return NULL;
+		return 0;
 	}
 	return 1;
 }

@@ -4,6 +4,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/hid_lesstif/library.o
 	$(PLUGDIR)/hid_lesstif/main.o
 	$(PLUGDIR)/hid_lesstif/menu.o
+	$(PLUGDIR)/hid_lesstif/menu_lht.o
 	$(PLUGDIR)/hid_lesstif/netlist.o
 	$(PLUGDIR)/hid_lesstif/styles.o
 	$(PLUGDIR)/hid_lesstif/stdarg.o
@@ -23,6 +24,13 @@ switch /local/pcb/hid_lesstif/controls
 			@/target/libs/gui/xinerama/ldflags@
 			@/target/libs/gui/xrender/ldflags@
 		@]
+
+		append /local/pcb/RULES [@
+### lesstif menu embed
+$(PLUGDIR)/hid_lesstif/menu_lht.c: pcb-menu-lesstif.lht
+	$(CQUOTE) -n lesstif_menu_default <pcb-menu-lesstif.lht >$(PLUGDIR)/hid_lesstif/menu_lht.c
+@]
+
 		end
 end
 
