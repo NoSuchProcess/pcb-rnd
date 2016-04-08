@@ -72,6 +72,7 @@ extern plug_fp_t *plug_fp_chain;
 
 /* Optional pcb-rnd-side glue for some implementations */
 
+#ifndef PCB_NO_GLUE
 /* Return the library shell string (from Settings) */
 const char *fp_get_library_shell(void);
 
@@ -82,5 +83,5 @@ LibraryMenuType *fp_append_topdir(const char *parent_dir, const char *dir_name, 
 
 /* walk through all lib paths and build the library menu */
 int fp_read_lib_all(void);
-
+#endif
 #endif
