@@ -155,6 +155,7 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, g
 	return FALSE;
 }
 
+#warning TODO: this comment may be obsolete
 /* Handle user keys in the output drawing area.
  * Note that the default is for all hotkeys to be handled by the
  * menu accelerators.
@@ -167,6 +168,9 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, g
  */
 gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data)
 {
+	if (ghid_is_modifier_key_sym(kev->keyval))
+		return FALSE;
+
 	if (kev->keyval <= 0xffff) {
 		GdkModifierType state = (GdkModifierType) (kev->state);
 		int slen, mods = 0;
