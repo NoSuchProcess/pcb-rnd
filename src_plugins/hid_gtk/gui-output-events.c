@@ -165,107 +165,35 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, g
  * menu code to ever see it.  We capture those here (like Tab and the
  * arrow keys) and feed it back to the normal menu callback.
  */
-
 gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data)
 {
-	ModifierKeysState mk;
-	gint ksym = kev->keyval;
-	gboolean handled;
-	extern void ghid_hotkey_cb(int);
-	GdkModifierType state;
+	if (kev->keyval <= 0xffff) {
+		GdkModifierType state = (GdkModifierType) (kev->state);
+		int slen, mods = 0;
+		static hid_cfg_keyseq_t *seq[32];
+		static int seq_len = 0;
+		extern void ghid_hotkey_cb(int);
+		unsigned short int kv = kev->keyval;
 
-	if (ghid_is_modifier_key_sym(ksym))
 		ghid_note_event_location(NULL);
 
-	state = (GdkModifierType) (kev->state);
-	mk = ghid_modifier_keys_state(&state);
-
-	handled = TRUE;								/* Start off assuming we handle it */
-	switch (ksym) {
-	case GDK_Alt_L:
-	case GDK_Alt_R:
-	case GDK_Control_L:
-	case GDK_Control_R:
-	case GDK_Shift_L:
-	case GDK_Shift_R:
-	case GDK_Shift_Lock:
-	case GDK_ISO_Level3_Shift:
-		break;
-
-	case GDK_Up:
-		ghid_hotkey_cb(GHID_KEY_UP);
-		break;
-
-	case GDK_Down:
-		ghid_hotkey_cb(GHID_KEY_DOWN);
-		break;
-	case GDK_Left:
-		ghid_hotkey_cb(GHID_KEY_LEFT);
-		break;
-	case GDK_Right:
-		ghid_hotkey_cb(GHID_KEY_RIGHT);
-		break;
-
-	case GDK_ISO_Left_Tab:
-	case GDK_3270_BackTab:
-		switch (mk) {
-		case NONE_PRESSED:
-			ghid_hotkey_cb(GHID_KEY_SHIFT | GHID_KEY_TAB);
-			break;
-		case CONTROL_PRESSED:
-			ghid_hotkey_cb(GHID_KEY_CONTROL | GHID_KEY_SHIFT | GHID_KEY_TAB);
-			break;
-		case MOD1_PRESSED:
-			ghid_hotkey_cb(GHID_KEY_ALT | GHID_KEY_SHIFT | GHID_KEY_TAB);
-			break;
-		case SHIFT_PRESSED:
-			ghid_hotkey_cb(GHID_KEY_SHIFT | GHID_KEY_TAB);
-			break;
-		case SHIFT_CONTROL_PRESSED:
-			ghid_hotkey_cb(GHID_KEY_CONTROL | GHID_KEY_SHIFT | GHID_KEY_TAB);
-			break;
-		case SHIFT_MOD1_PRESSED:
-			ghid_hotkey_cb(GHID_KEY_ALT | GHID_KEY_SHIFT | GHID_KEY_TAB);
-			break;
-
-		default:
-			handled = FALSE;
-			break;
+		if (state & GDK_MOD1_MASK)    mods |= M_Alt;
+		if (state & GDK_CONTROL_MASK) mods |= M_Ctrl;
+		if (state & GDK_SHIFT_MASK) {
+			mods |= M_Shift;
+			if ((kv >= 'A') && (kv <= 'Z'))
+				kv = tolower(kv);
 		}
-		break;
 
-	case GDK_Tab:
-		switch (mk) {
-		case NONE_PRESSED:
-			ghid_hotkey_cb(GHID_KEY_TAB);
-			break;
-		case CONTROL_PRESSED:
-			ghid_hotkey_cb(GHID_KEY_CONTROL | GHID_KEY_TAB);
-			break;
-		case MOD1_PRESSED:
-			ghid_hotkey_cb(GHID_KEY_ALT | GHID_KEY_TAB);
-			break;
-		case SHIFT_PRESSED:
-			ghid_hotkey_cb(GHID_KEY_SHIFT | GHID_KEY_TAB);
-			break;
-		case SHIFT_CONTROL_PRESSED:
-			ghid_hotkey_cb(GHID_KEY_CONTROL | GHID_KEY_SHIFT | GHID_KEY_TAB);
-			break;
-		case SHIFT_MOD1_PRESSED:
-			ghid_hotkey_cb(GHID_KEY_ALT | GHID_KEY_SHIFT | GHID_KEY_TAB);
-			break;
-
-		default:
-			handled = FALSE;
-			break;
+		slen = hid_cfg_keys_input(&ghid_keymap, mods, kv, seq, &seq_len);
+		if (slen > 0) {
+			ghid_port.has_entered  = 1;
+			hid_cfg_keys_action(seq, slen);
+			return TRUE;
 		}
-		break;
-
-	default:
-		handled = FALSE;
 	}
 
-	return handled;
+	return FALSE;
 }
 
 static hid_cfg_mod_t ghid_mouse_button(int ev_button)

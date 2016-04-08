@@ -117,6 +117,7 @@ GHidPort ghid_port, *gport;
 
 hid_cfg_t *ghid_cfg = NULL;
 hid_cfg_mouse_t ghid_mouse;
+hid_cfg_keys_t ghid_keymap;
 
 static gchar *bg_image_file;
 
@@ -1508,9 +1509,26 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	ghidgui->creating = TRUE;
 }
 
+static short int ghid_translate_key(char *desc, int len)
+{
+	guint key = gdk_keyval_from_name(desc);
+	if (key > 0xffff) {
+		Message("Ignoring invalid/exotic key sym: '%s'\n", desc);
+		return 0;
+	}
+	return key;
+}
+
+
 void ghid_do_export(HID_Attr_Val * options)
 {
 	gtkhid_begin();
+
+	hid_cfg_keys_init(&ghid_keymap);
+	ghid_keymap.translate_key = ghid_translate_key;
+	ghid_keymap.auto_chr = 1;
+	ghid_keymap.auto_tr = hid_cfg_key_default_trans;
+
 	ghid_create_pcb_widgets();
 
 	/* These are needed to make sure the @layerpick and @layerview menus
@@ -1529,6 +1547,7 @@ void ghid_do_export(HID_Attr_Val * options)
 
 	gtk_main();
 	ghid_config_files_write();
+	hid_cfg_keys_uninit(&ghid_keymap);
 	gtkhid_end();
 }
 
@@ -1685,11 +1704,9 @@ REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
  * into the menu callbacks.  This function is called as new
  * accelerators are added when the menus are being built
  */
-		 static void
-		   ghid_check_special_key(const char *accel, GtkAction * action, const lht_node_t * node)
+static void ghid_check_special_key(hid_cfg_mod_t mods, const char *accel, GtkAction * action, const lht_node_t * node)
 {
 	size_t len;
-	unsigned int mods;
 	unsigned int ind;
 
 	if (action == NULL || accel == NULL || *accel == '\0')
@@ -1698,18 +1715,6 @@ REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 #ifdef DEBUG_MENUS
 	printf("%s(\"%s\", \"%s\")\n", __FUNCTION__, accel, name);
 #endif
-
-	mods = 0;
-	if (strstr(accel, "<alt>")) {
-		mods |= GHID_KEY_ALT;
-	}
-	if (strstr(accel, "<ctrl>")) {
-		mods |= GHID_KEY_CONTROL;
-	}
-	if (strstr(accel, "<shift>")) {
-		mods |= GHID_KEY_SHIFT;
-	}
-
 
 	len = strlen(accel);
 

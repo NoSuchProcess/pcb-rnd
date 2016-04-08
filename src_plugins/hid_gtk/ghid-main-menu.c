@@ -43,7 +43,7 @@ struct _GHidMainMenu {
 	gint n_route_styles;
 
 	GCallback action_cb;
-	void (*special_key_cb) (const char *accel, GtkAction * action, const lht_node_t * node);
+	void (*special_key_cb) (hid_cfg_mod_t mods, const char *accel, GtkAction * action, const lht_node_t * node);
 };
 
 struct _GHidMainMenuClass {
@@ -65,6 +65,7 @@ struct _GHidMainMenuClass {
  * gtk source distribution) to figure out the names that go with the 
  * codes.
  */
+#if 0
 static gchar *translate_accelerator(const char *text)
 {
 	GString *ret_val = g_string_new("");
@@ -128,29 +129,21 @@ static gchar *translate_accelerator(const char *text)
 	}
 	return g_string_free(ret_val, FALSE);
 }
-
-/*! \brief Check that translated accelerators are unique; warn otherwise. */
-static const char *check_unique_accel(const char *accelerator)
-{
-	static GHashTable *accel_table;
-
-	if (!accelerator || *accelerator)
-		return accelerator;
-
-	if (!accel_table)
-		accel_table = g_hash_table_new(g_str_hash, g_str_equal);
-
-	if (g_hash_table_lookup(accel_table, accelerator)) {
-		Message(_("Duplicate accelerator found: \"%s\"\n" "The second occurance will be dropped\n"), accelerator);
-		return NULL;
-	}
-
-	g_hash_table_insert(accel_table, (gpointer) accelerator, (gpointer) accelerator);
-
-	return accelerator;
-}
+#endif
 
 void ghid_main_menu_real_add_resource(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t * res, const char *path);
+
+#warning remove this function?
+static void note_accelerator(const char *acc, const lht_node_t *node)
+{
+	lht_node_t *anode;
+	assert(node != NULL);
+	anode = hid_cfg_menu_field(node, MF_ACTION, NULL);
+	if (anode != NULL)
+		hid_cfg_keys_add_by_desc(&ghid_keymap, acc, anode, NULL, 0);
+	else
+		hid_cfg_error(node, "No action specified for key accel\n");
+}
 
 static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t * sub_res, const char *path)
 {
@@ -165,8 +158,8 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 
 	/* Resolve accelerator */
 	tmp_val = hid_cfg_menu_field_str(sub_res, MF_ACCELERATOR);
-	if (tmp_val)
-		accel = check_unique_accel(translate_accelerator(tmp_val));
+	if (tmp_val != NULL)
+		note_accelerator(tmp_val, sub_res);
 
 	/* Resolve the mnemonic */
 	tmp_val = hid_cfg_menu_field_str(sub_res, MF_MNEMONIC);
@@ -244,14 +237,14 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 	if (action) {
 		GtkWidget *item;
 		gtk_action_set_accel_group(action, menu->accel_group);
-		gtk_action_group_add_action_with_accel(menu->action_group, action, accel);
+//		gtk_action_group_add_action_with_accel(menu->action_group, action, accel);
 		gtk_action_connect_accelerator(action);
 		g_signal_connect(G_OBJECT(action), "activate", menu->action_cb, (gpointer) n_action);
 		g_object_set_data(G_OBJECT(action), "resource", (gpointer) sub_res);
 		item = gtk_action_create_menu_item(action);
 		gtk_menu_shell_append(shell, item);
 		menu->actions = g_list_append(menu->actions, action);
-		menu->special_key_cb(accel, action, n_action);
+//		menu->special_key_cb(mods, accel, action, n_action);
 	}
 
 /* keep npath for the hash so do not free(npath); */
@@ -358,8 +351,7 @@ GType ghid_main_menu_get_type(void)
  *
  *  \return a freshly-allocated GHidMainMenu
  */
-GtkWidget *ghid_main_menu_new(GCallback action_cb,
-															void (*special_key_cb) (const char *accel, GtkAction * action, const lht_node_t * node))
+GtkWidget *ghid_main_menu_new(GCallback action_cb, void (*special_key_cb) (hid_cfg_mod_t mods, const char *accel, GtkAction * action, const lht_node_t * node))
 {
 	GHidMainMenu *mm = g_object_new(GHID_MAIN_MENU_TYPE, NULL);
 

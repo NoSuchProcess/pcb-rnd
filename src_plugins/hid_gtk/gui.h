@@ -81,16 +81,12 @@
 
 /* The modifier keys */
 
-#define GHID_KEY_ALT     0x80
-#define GHID_KEY_CONTROL 0x40
-#define GHID_KEY_SHIFT   0x20
-
 /* The actual keys */
-#define GHID_KEY_TAB      0x01
-#define GHID_KEY_UP       0x02
-#define GHID_KEY_DOWN     0x03
-#define GHID_KEY_LEFT     0x04
-#define GHID_KEY_RIGHT    0x05
+#define GHID_KEY_TAB      0x81
+#define GHID_KEY_UP       0x82
+#define GHID_KEY_DOWN     0x83
+#define GHID_KEY_LEFT     0x84
+#define GHID_KEY_RIGHT    0x85
 
 typedef struct {
 	GtkActionGroup *main_actions, *change_selected_actions, *displayed_name_actions;
@@ -515,5 +511,6 @@ static inline Coord Pz(int z)
 
 extern const char *ghid_cookie;
 extern hid_cfg_mouse_t ghid_mouse;
+extern hid_cfg_keys_t ghid_keymap;
 
 #endif /* PCB_HID_GTK_GHID_GUI_H */
