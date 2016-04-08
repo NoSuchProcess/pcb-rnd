@@ -130,7 +130,7 @@ static gchar *translate_accelerator(const char *text)
 }
 #endif
 
-void ghid_main_menu_real_add_resource(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t * res, const char *path);
+void ghid_main_menu_real_add_resource(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t * res);
 
 #warning remove this function?
 static void note_accelerator(const char *acc, const lht_node_t *node)
@@ -144,7 +144,7 @@ static void note_accelerator(const char *acc, const lht_node_t *node)
 		hid_cfg_error(node, "No action specified for key accel\n");
 }
 
-static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t * sub_res, const char *path)
+static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t * sub_res)
 {
 	const char *tmp_val;
 	gchar mnemonic = 0;
@@ -152,7 +152,6 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 	GtkAction *action = NULL;
 	const gchar *accel = NULL;
 	char *menu_label;
-	char *npath;
 	lht_node_t *n_action = hid_cfg_menu_field(sub_res, MF_ACTION, NULL);
 
 	/* Resolve accelerator */
@@ -184,8 +183,6 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 		}
 	}
 
-	npath = Concat(path, "/", tmp_val, NULL);
-
 	if (hid_cfg_has_submenus(sub_res)) {
 		/* SUBMENU */
 		GtkWidget *submenu = gtk_menu_new();
@@ -204,7 +201,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 		   them recursively. */
 		n = hid_cfg_menu_field(sub_res, MF_SUBMENU, NULL);
 		for(n = n->data.list.first; n != NULL; n = n->next)
-			ghid_main_menu_real_add_resource(menu, GTK_MENU_SHELL(submenu), n, npath);
+			ghid_main_menu_real_add_resource(menu, GTK_MENU_SHELL(submenu), n);
 	}
 	else {
 		/* NON-SUBMENU: MENU ITEM */
@@ -245,7 +242,6 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 		menu->actions = g_list_append(menu->actions, action);
 	}
 
-/* keep npath for the hash so do not free(npath); */
 	return action;
 }
 
@@ -255,7 +251,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
  *  \param [in] shall   The base menu shell (a menu bar or popup menu)
  *  \param [in] res     The base of the resource tree
  * */
-void ghid_main_menu_real_add_resource(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t * res, const char *path)
+void ghid_main_menu_real_add_resource(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t * res)
 {
 	lht_node_t *n;
 
@@ -263,7 +259,7 @@ void ghid_main_menu_real_add_resource(GHidMainMenu * menu, GtkMenuShell * shell,
 		case LHT_HASH: /* leaf submenu */
 			{
 				GtkAction *action = NULL;
-				action = ghid_add_menu(menu, shell, res, path);
+				action = ghid_add_menu(menu, shell, res);
 				if (action) {
 					const char *val;
 
@@ -382,7 +378,7 @@ void ghid_main_menu_add_resource(GHidMainMenu * menu, const lht_node_t * res)
 		abort();
 	}
 	for(n = res->data.list.first; n != NULL; n = n->next) {
-		ghid_main_menu_real_add_resource(menu, GTK_MENU_SHELL(menu), n, "");
+		ghid_main_menu_real_add_resource(menu, GTK_MENU_SHELL(menu), n);
 	}
 }
 
@@ -402,7 +398,7 @@ void ghid_main_menu_add_popup_resource(GHidMainMenu * menu, const lht_node_t * r
 	g_object_ref_sink(new_menu);
 
 	for(i = submenu->data.list.first; i != NULL; i = i->next)
-		ghid_main_menu_real_add_resource(menu, GTK_MENU_SHELL(new_menu), i, "");
+		ghid_main_menu_real_add_resource(menu, GTK_MENU_SHELL(new_menu), i);
 
 	g_hash_table_insert(menu->popup_table, (gpointer) res->name, new_menu);
 	gtk_widget_show_all(new_menu);
@@ -553,7 +549,7 @@ what?
 			res = resource_create_menu(menu[n], action, mnemonic, accel, tip, FLAG_NS | FLAG_NV | FLAG_V);
 #endif
 
-		ghid_main_menu_real_add_resource(GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w), res, path);
+		ghid_main_menu_real_add_resource(GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w), res);
 
 		*path_end = '/';
 		path_end += strlen(menu[n]) + 1;
