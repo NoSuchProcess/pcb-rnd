@@ -25,6 +25,7 @@
   - use popen() instead of glib's spawn (stderr is always printed to stderr)
  */
 
+#define PCB_NO_GLUE
 #include "config.h"
 
 #include <stdarg.h>

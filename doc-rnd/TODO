@@ -6,13 +6,9 @@
 	- check if ctrl+1..ctrl+4 works
 
 - resource conv cleanup:
-	- rewrite hid_gtk to use the keyboard input layer from hid_cfg
-	- check if multikey works in gtk
-	- gtk: use hid_cfg_get_submenu() instead of lht_tree_path_
 	- remove npath thing
 	- enable gpmi and test dynamic menu insertion
 	- search for "resource" in src/ and in src_plugin/, rename
-	- remove M_Multi
 
 Cleanup #4:
 	- reduce
@@ -41,7 +37,9 @@ CLEANUP #4
 		- cleanup on unload: remove menus
 - check whether local copy of gts is needed, bisect when toporouter broke 
 
+- multi-key: display state on the gui
 - Message() should have a first param that tells if it is an error, info, etc.; pop up window on error, red
+
 
 CLEANUP #5:
 - self contained
