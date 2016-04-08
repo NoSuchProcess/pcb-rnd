@@ -1490,7 +1490,7 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	ghidgui->creating = TRUE;
 }
 
-static short int ghid_translate_key(char *desc, int len)
+static unsigned short int ghid_translate_key(char *desc, int len)
 {
 	guint key = gdk_keyval_from_name(desc);
 	if (key > 0xffff) {
