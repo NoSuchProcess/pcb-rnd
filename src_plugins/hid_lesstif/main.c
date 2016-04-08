@@ -198,7 +198,6 @@ REGISTER_FLAGS(lesstif_main_flag_list, lesstif_cookie)
 		 static int use_private_colormap = 0;
 		 static int stdin_listen = 0;
 		 static char *background_image_file = 0;
-		 char *lesstif_pcbmenu_path = "pcb-menu.res";
 
 		 HID_Attribute lesstif_attribute_list[] = {
 			 {"install", "Install private colormap",
@@ -236,9 +235,12 @@ Location of the @file{pcb-menu.res} file which defines the menu for the lesstif 
 @end ftable
 %end-doc
 */
+#warning TODO#1: this should be generic and not depend on the HID
+/*
 			 {"pcb-menu", "Location of pcb-menu.res file",
 				HID_String, 0, 0, {0, PCBSHAREDIR "/pcb-menu.res", 0}, 0, &lesstif_pcbmenu_path}
 #define HA_pcbmenu 3
+*/
 		 };
 
 REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
