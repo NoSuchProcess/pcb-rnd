@@ -45,7 +45,7 @@ lht_doc_t *hid_cfg_load_lht(const char *filename);
 const char *hid_cfg_text_value(lht_doc_t *doc, const char *path);
 
 lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path);
-lht_node_t *hid_cfg_get_submenu(lht_node_t *parent, const char *path);
+lht_node_t *hid_cfg_get_submenu(const lht_node_t *parent, const char *path);
 
 
 /* Fields are retrieved using this enum so that HIDs don't need to hardwire
