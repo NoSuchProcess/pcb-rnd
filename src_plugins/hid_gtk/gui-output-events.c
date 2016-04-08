@@ -155,17 +155,7 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, g
 	return FALSE;
 }
 
-#warning TODO: this comment may be obsolete
-/* Handle user keys in the output drawing area.
- * Note that the default is for all hotkeys to be handled by the
- * menu accelerators.
- *
- * Key presses not handled by the menus will show up here.  This means
- * the key press was either not defined in the menu lht file or
- * that the key press is special in that gtk doesn't allow the normal
- * menu code to ever see it.  We capture those here (like Tab and the
- * arrow keys) and feed it back to the normal menu callback.
- */
+/* Handle user keys in the output drawing area. */
 gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data)
 {
 	if (ghid_is_modifier_key_sym(kev->keyval))
