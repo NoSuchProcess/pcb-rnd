@@ -54,7 +54,7 @@ static hid_cfg_mod_t parse_mods(const char *value, const char **last, unsigned i
 		else
 			Message("Unkown modifier: %s\n", value);
 		/* skip to next word */
-		next = strpbrk(value, "<-");
+		next = strpbrk(value, "<- \t");
 		if (next == NULL)
 			break;
 		if (*next == '<')
