@@ -395,7 +395,7 @@ void ghid_main_menu_add_popup_resource(GHidMainMenu * menu, const lht_node_t * r
 	lht_node_t *submenu, *i;
 	GtkWidget *new_menu;
 
-	submenu = lht_tree_path_(res->doc, res, "submenu", 1, 0, NULL);
+	submenu = hid_cfg_get_submenu(res, "submenu");
 	if (submenu == NULL) {
 		hid_cfg_error(res, "can not create popup without submenu list");
 		return;
