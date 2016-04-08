@@ -1,14 +1,13 @@
 - vemdordrill conversion:
 	- test vendordrill if it works
-	- vendordrill: free at exit
+	- vendordrill: free at exit (check for leaks)
 
 - lesstif conversion:
 	- check if ctrl+1..ctrl+4 works
 
 - resource conv cleanup:
-	- remove npath thing
 	- enable gpmi and test dynamic menu insertion
-	- search for "resource" in src/ and in src_plugin/, rename
+	- dynamic menus for plugins
 
 Cleanup #4:
 	- reduce
@@ -28,10 +27,7 @@ Cleanup #4:
 CLEANUP #4
 - libstroke: zoom
 - cleanup/rewrite resources:
-	- gtk, lesstif: reorganize the code so that:
-		- menus are always created using a path (ghid_main_menu_real_add_resource)
-		- res->menu should be a common code
-	- dynamic menus for plugins
+	- load/swap menus (TODO#1)
 	- gpmi:
 		- hid: hid_destroy (pair of hid_create)
 		- cleanup on unload: remove menus
