@@ -57,18 +57,6 @@ struct _GHidMainMenuClass {
 
 void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t *base);
 
-#warning remove this function?
-static void note_accelerator(const char *acc, const lht_node_t *node)
-{
-	lht_node_t *anode;
-	assert(node != NULL);
-	anode = hid_cfg_menu_field(node, MF_ACTION, NULL);
-	if (anode != NULL)
-		hid_cfg_keys_add_by_desc(&ghid_keymap, acc, anode, NULL, 0);
-	else
-		hid_cfg_error(node, "No action specified for key accel\n");
-}
-
 static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t * sub_res)
 {
 	const char *tmp_val;
@@ -79,10 +67,18 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 	char *menu_label;
 	lht_node_t *n_action = hid_cfg_menu_field(sub_res, MF_ACTION, NULL);
 
-	/* Resolve accelerator */
+	/* Resolve accelerator and save it */
 	tmp_val = hid_cfg_menu_field_str(sub_res, MF_ACCELERATOR);
-	if (tmp_val != NULL)
-		note_accelerator(tmp_val, sub_res);
+	if (tmp_val != NULL) {
+		lht_node_t *anode;
+
+		assert(node != NULL);
+		anode = hid_cfg_menu_field(sub_res, MF_ACTION, NULL);
+		if (anode != NULL)
+			hid_cfg_keys_add_by_desc(&ghid_keymap, tmp_val, anode, NULL, 0);
+		else
+			hid_cfg_error(sub_res, "No action specified for key accel\n");
+	}
 
 	/* Resolve the mnemonic */
 	tmp_val = hid_cfg_menu_field_str(sub_res, MF_MNEMONIC);
