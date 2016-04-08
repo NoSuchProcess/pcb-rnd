@@ -1685,7 +1685,7 @@ static Widget make_message(char *name, Widget left, int resizeable)
 	return w;
 }
 
-static short int lesstif_translate_key(char *desc, int len)
+static unsigned short int lesstif_translate_key(char *desc, int len)
 {
 	KeySym key = XStringToKeysym(desc);
 	if (key == NoSymbol && len > 1) {
