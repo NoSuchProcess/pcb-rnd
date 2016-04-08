@@ -1,5 +1,3 @@
-- check why util/ broke
-
 - vemdordrill conversion:
 	- test vendordrill if it works
 	- vendordrill: free at exit
@@ -14,6 +12,7 @@
 	- remove npath thing
 	- enable gpmi and test dynamic menu insertion
 	- search for "resource" in src/ and in src_plugin/, rename
+	- remove M_Multi
 
 Cleanup #4:
 	- reduce
