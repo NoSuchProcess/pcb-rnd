@@ -20,8 +20,7 @@ typedef struct _GHidMainMenu GHidMainMenu;
 typedef struct _GHidMainMenuClass GHidMainMenuClass;
 
 GType ghid_main_menu_get_type(void);
-GtkWidget *ghid_main_menu_new(GCallback action_cb,
-															void (*special_key_cb) (hid_cfg_mod_t mods, const char *accel, GtkAction * action, const lht_node_t * node));
+GtkWidget *ghid_main_menu_new(GCallback action_cb);
 void ghid_main_menu_add_resource(GHidMainMenu * menu, const lht_node_t * res);
 GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu);
 void ghid_main_menu_update_toggle_state(GHidMainMenu * menu,

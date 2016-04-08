@@ -43,7 +43,6 @@ struct _GHidMainMenu {
 	gint n_route_styles;
 
 	GCallback action_cb;
-	void (*special_key_cb) (hid_cfg_mod_t mods, const char *accel, GtkAction * action, const lht_node_t * node);
 };
 
 struct _GHidMainMenuClass {
@@ -244,7 +243,6 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 		item = gtk_action_create_menu_item(action);
 		gtk_menu_shell_append(shell, item);
 		menu->actions = g_list_append(menu->actions, action);
-//		menu->special_key_cb(mods, accel, action, n_action);
 	}
 
 /* keep npath for the hash so do not free(npath); */
@@ -351,7 +349,7 @@ GType ghid_main_menu_get_type(void)
  *
  *  \return a freshly-allocated GHidMainMenu
  */
-GtkWidget *ghid_main_menu_new(GCallback action_cb, void (*special_key_cb) (hid_cfg_mod_t mods, const char *accel, GtkAction * action, const lht_node_t * node))
+GtkWidget *ghid_main_menu_new(GCallback action_cb)
 {
 	GHidMainMenu *mm = g_object_new(GHID_MAIN_MENU_TYPE, NULL);
 
@@ -368,7 +366,6 @@ GtkWidget *ghid_main_menu_new(GCallback action_cb, void (*special_key_cb) (hid_c
 	mm->layer_pick_shell = NULL;
 	mm->route_style_shell = NULL;
 
-	mm->special_key_cb = special_key_cb;
 	mm->action_cb = action_cb;
 	mm->actions = NULL;
 	mm->popup_table = g_hash_table_new(g_str_hash, g_str_equal);

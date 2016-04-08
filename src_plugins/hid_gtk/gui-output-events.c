@@ -176,7 +176,6 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 		int slen, mods = 0;
 		static hid_cfg_keyseq_t *seq[32];
 		static int seq_len = 0;
-		extern void ghid_hotkey_cb(int);
 		unsigned short int kv = kev->keyval;
 
 		ghid_note_event_location(NULL);

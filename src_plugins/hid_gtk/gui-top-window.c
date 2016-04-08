@@ -121,14 +121,6 @@ hid_cfg_keys_t ghid_keymap;
 
 static gchar *bg_image_file;
 
-static struct {
-	GtkAction *action;
-	const lht_node_t *node;
-} ghid_hotkey_actions[256];
-#define N_HOTKEY_ACTIONS \
-        (sizeof (ghid_hotkey_actions) / sizeof (ghid_hotkey_actions[0]))
-
-
 /*! \brief callback for ghid_main_menu_update_toggle_state () */
 void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag)
 {
@@ -294,15 +286,11 @@ static gboolean top_window_enter_cb(GtkWidget * widget, GdkEvent * event, GHidPo
 /*! \brief Menu action callback function
  *  \par Function Description
  *  This is the main menu callback function.  The callback receives
- *  the original Resource pointer containing the HID actions to be
+ *  the original lohata action node pointer HID actions to be
  *  executed.
  *
- *  All hotkeys go through the menus which means they go through here.
- *  Some, such as tab, are caught by Gtk instead of passed here, so
- *  pcb calls this function directly through ghid_hotkey_cb() for them.
- *
  *  \param [in]   The action that was activated
- *  \param [in]   The related menu resource's action node
+ *  \param [in]   The related menu lht action node
  */
 
 static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
@@ -323,13 +311,6 @@ static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
 	ghid_invalidate_all();
 	ghid_window_set_name_label(PCB->Name);
 	ghid_set_status_line_label();
-}
-
-/* \brief Accelerator callback for accelerators gtk tries to hide from us */
-void ghid_hotkey_cb(int which)
-{
-	if (ghid_hotkey_actions[which].action != NULL)
-		ghid_menu_cb(ghid_hotkey_actions[which].action, (gpointer) ghid_hotkey_actions[which].node);
 }
 
 static void update_board_mtime_from_disk(void)
@@ -1696,72 +1677,11 @@ HID_Action gtk_topwindow_action_list[] = {
 
 REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 
-/* 
- * This function is used to check if a specified hotkey in the menu
- * resource file is "special".  In this case "special" means that gtk
- * assigns a particular meaning to it and the normal menu setup will
- * never see these key presses.  We capture those and feed them back
- * into the menu callbacks.  This function is called as new
- * accelerators are added when the menus are being built
- */
-static void ghid_check_special_key(hid_cfg_mod_t mods, const char *accel, GtkAction * action, const lht_node_t * node)
-{
-	size_t len;
-	unsigned int ind;
-
-	if (action == NULL || accel == NULL || *accel == '\0')
-		return;
-
-#ifdef DEBUG_MENUS
-	printf("%s(\"%s\", \"%s\")\n", __FUNCTION__, accel, name);
-#endif
-
-	len = strlen(accel);
-
-#define  CHECK_KEY(a) ((len >= strlen (a)) && (strcmp (accel + len - strlen (a), (a)) == 0))
-
-	ind = 0;
-	if (CHECK_KEY("Tab")) {
-		ind = mods | GHID_KEY_TAB;
-	}
-	else if (CHECK_KEY("Up")) {
-		ind = mods | GHID_KEY_UP;
-	}
-	else if (CHECK_KEY("Down")) {
-		ind = mods | GHID_KEY_DOWN;
-	}
-	else if (CHECK_KEY("Left")) {
-		ind = mods | GHID_KEY_LEFT;
-	}
-	else if (CHECK_KEY("Right")) {
-		ind = mods | GHID_KEY_RIGHT;
-	}
-
-	if (ind > 0) {
-		if (ind >= N_HOTKEY_ACTIONS) {
-			fprintf(stderr, "ERROR:  overflow of the ghid_hotkey_actions array.  Index = %d\n" "Please report this.\n", ind);
-			exit(1);
-		}
-
-		ghid_hotkey_actions[ind].action = action;
-		ghid_hotkey_actions[ind].node = node;
-#ifdef DEBUG_MENUS
-		printf("Adding \"special\" hotkey to ghid_hotkey_actions[%u] :" " %s (%s)\n", ind, accel, name);
-#endif
-	}
-}
-
 static GtkWidget *ghid_load_menus(void)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;
 	int i;
-
-	for (i = 0; i < N_HOTKEY_ACTIONS; i++) {
-		ghid_hotkey_actions[i].action = NULL;
-		ghid_hotkey_actions[i].node = NULL;
-	}
-
 	extern const char *hid_gtk_menu_default;
 
 	ghid_cfg = hid_cfg_load("gtk", 0, hid_gtk_menu_default);
@@ -1772,7 +1692,7 @@ static GtkWidget *ghid_load_menus(void)
 
 	mr = hid_cfg_get_menu(ghid_cfg, "/main_menu");
 	if (mr != NULL) {
-		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb), ghid_check_special_key);
+		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb));
 		ghid_main_menu_add_resource(GHID_MAIN_MENU(menu_bar), mr);
 	}
 
