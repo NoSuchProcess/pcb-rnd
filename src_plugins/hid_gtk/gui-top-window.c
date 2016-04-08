@@ -1693,7 +1693,7 @@ static GtkWidget *ghid_load_menus(void)
 	mr = hid_cfg_get_menu(ghid_cfg, "/main_menu");
 	if (mr != NULL) {
 		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb));
-		ghid_main_menu_add_resource(GHID_MAIN_MENU(menu_bar), mr);
+		ghid_main_menu_add_node(GHID_MAIN_MENU(menu_bar), mr);
 	}
 
 	mr = hid_cfg_get_menu(ghid_cfg, "/popups");
@@ -1701,7 +1701,7 @@ static GtkWidget *ghid_load_menus(void)
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
 			for(n = mr->data.list.first; n != NULL; n = n->next)
-				ghid_main_menu_add_popup_resource(GHID_MAIN_MENU(menu_bar), n);
+				ghid_main_menu_add_popup_node(GHID_MAIN_MENU(menu_bar), n);
 		}
 		else
 			hid_cfg_error(mr, "/popups should be a list");
@@ -1749,7 +1749,7 @@ static const char editlayergroups_help[] = "Open the preferences window which al
 
 Opens the preferences window which is where the layer groups
 are edited.  This action is primarily provides to provide menu
-resource compatibility with the lesstif HID.
+lht compatibility with the lesstif HID.
 
 %end-doc */
 

@@ -812,7 +812,7 @@ int lesstif_key_event(XKeyEvent * e)
 	return 1;
 }
 
-static void add_resource_to_menu(Widget menu, lht_node_t *node, XtCallbackProc callback, int level);
+static void add_node_to_menu(Widget menu, lht_node_t *node, XtCallbackProc callback, int level);
 
 static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc callback)
 {
@@ -830,7 +830,7 @@ static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc call
 		lht_node_t *i;
 		i = hid_cfg_menu_field(node, MF_SUBMENU, NULL);
 		for(i = i->data.list.first; i != NULL; i = i->next)
-			add_resource_to_menu(sub, i, callback, 1);
+			add_node_to_menu(sub, i, callback, 1);
 	}
 }
 
@@ -888,7 +888,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 
 		/* assume submenu is a list, hid_cfg_has_submenus() already checked that */
 		for(i = submenu_node->data.list.first; i != NULL; i = i->next)
-			add_resource_to_menu(sub, i, callback, level+1);
+			add_node_to_menu(sub, i, callback, level+1);
 	}
 	else {
 		/* doesn't have submenu */
@@ -966,7 +966,7 @@ static void add_res2menu_text_special(Widget menu, lht_node_t *node, XtCallbackP
 	}
 }
 
-static void add_resource_to_menu(Widget in_menu, lht_node_t *node, XtCallbackProc callback, int level)
+static void add_node_to_menu(Widget in_menu, lht_node_t *node, XtCallbackProc callback, int level)
 {
 	if (level == 0) {
 		add_res2menu_main(in_menu, node, callback);
@@ -1007,7 +1007,7 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
 			for(n = mr->data.list.first; n != NULL; n = n->next)
-				add_resource_to_menu(mb, n, (XtCallbackProc) callback, 0);
+				add_node_to_menu(mb, n, (XtCallbackProc) callback, 0);
 		}
 		else
 			hid_cfg_error(mr, "/main_menu should be a list");
@@ -1066,7 +1066,7 @@ abort();
 		else
 			res = resource_create_menu(menu[n], action, mnemonic, accel, tip, FLAG_NS | FLAG_NV | FLAG_V);
 
-		add_resource_to_menu(w, res, (XtCallbackProc) callback, path);
+		add_node_to_menu(w, res, (XtCallbackProc) callback, path);
 
 		*path_end = '/';
 		path_end += strlen(menu[n]) + 1;

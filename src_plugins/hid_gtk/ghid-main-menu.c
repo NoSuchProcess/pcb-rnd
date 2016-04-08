@@ -53,84 +53,9 @@ struct _GHidMainMenuClass {
 
 /* SIGNAL HANDLERS */
 
-/* RESOURCE HANDLER */
-/* \brief Translate gpcb-menu.res accelerators to gtk ones
- * \par Function Description
- * Some keys need to be replaced by a name for the gtk accelerators to
- * work.  This table contains the translations.  The "in" character is
- * what would appear in gpcb-menu.res and the "out" string is what we
- * have to feed to gtk.  I was able to find these by using xev to find
- * the keycode and then looked at gtk+-2.10.9/gdk/keynames.txt (from the
- * gtk source distribution) to figure out the names that go with the 
- * codes.
- */
-#if 0
-static gchar *translate_accelerator(const char *text)
-{
-	GString *ret_val = g_string_new("");
-	static struct {
-		const char *in, *out;
-	} key_table[] = {
-		{
-		"Enter", "Return"}, {
-		"Alt", "<alt>"}, {
-		"Shift", "<shift>"}, {
-		"Ctrl", "<ctrl>"}, {
-		" ", ""}, {
-		":", "colon"}, {
-		"=", "equal"}, {
-		"/", "slash"}, {
-		"[", "bracketleft"}, {
-		"]", "bracketright"}, {
-		".", "period"}, {
-		"|", "bar"}, {
-		NULL, NULL}
-	};
+/* LHT HANDLER */
 
-	enum { MOD, KEY } state = MOD;
-	while (*text != '\0') {
-		static gboolean gave_msg;
-		gboolean found = FALSE;
-		int i;
-
-		if (state == MOD && strncmp(text, "<Key>", 5) == 0) {
-			state = KEY;
-			text += 5;
-		}
-		for (i = 0; key_table[i].in != NULL; ++i) {
-			int len = strlen(key_table[i].in);
-			if (strncmp(text, key_table[i].in, len) == 0) {
-				found = TRUE;
-				g_string_append(ret_val, key_table[i].out);
-				text += len;
-			}
-		}
-		if (found == FALSE)
-			switch (state) {
-			case MOD:
-				Message(_("Don't know how to parse \"%s\" as an " "accelerator in the menu resource file.\n"), text);
-				if (!gave_msg) {
-					gave_msg = TRUE;
-					Message(_("Format is:\n"
-										"modifiers<Key>k\n"
-										"where \"modifiers\" is a space "
-										"separated list of key modifiers\n"
-										"and \"k\" is the name of the key.\n"
-										"Allowed modifiers are:\n" "   Ctrl\n" "   Shift\n" "   Alt\n" "Please note that case is important.\n"));
-				}
-				text++;
-				break;
-			case KEY:
-				g_string_append_c(ret_val, *text);
-				++text;
-				break;
-			}
-	}
-	return g_string_free(ret_val, FALSE);
-}
-#endif
-
-void ghid_main_menu_real_add_resource(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t * res);
+void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t *base);
 
 #warning remove this function?
 static void note_accelerator(const char *acc, const lht_node_t *node)
@@ -201,7 +126,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 		   them recursively. */
 		n = hid_cfg_menu_field(sub_res, MF_SUBMENU, NULL);
 		for(n = n->data.list.first; n != NULL; n = n->next)
-			ghid_main_menu_real_add_resource(menu, GTK_MENU_SHELL(submenu), n);
+			ghid_main_menu_real_add_node(menu, GTK_MENU_SHELL(submenu), n);
 	}
 	else {
 		/* NON-SUBMENU: MENU ITEM */
@@ -249,25 +174,25 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
  *
  *  \param [in] menu    The GHidMainMenu widget to be acted on
  *  \param [in] shall   The base menu shell (a menu bar or popup menu)
- *  \param [in] res     The base of the resource tree
+ *  \param [in] res     The base of the menu item subtree
  * */
-void ghid_main_menu_real_add_resource(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t * res)
+void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t *base)
 {
 	lht_node_t *n;
 
-	switch(res->type) {
+	switch(base->type) {
 		case LHT_HASH: /* leaf submenu */
 			{
 				GtkAction *action = NULL;
-				action = ghid_add_menu(menu, shell, res);
+				action = ghid_add_menu(menu, shell, base);
 				if (action) {
 					const char *val;
 
-					val = hid_cfg_menu_field_str(res, MF_CHECKED);
+					val = hid_cfg_menu_field_str(base, MF_CHECKED);
 					if (val != NULL)
 						g_object_set_data(G_OBJECT(action), "checked-flag", (gpointer *)val);
 
-					val = hid_cfg_menu_field_str(res, MF_ACTIVE);
+					val = hid_cfg_menu_field_str(base, MF_ACTIVE);
 					if (val != NULL)
 						g_object_set_data(G_OBJECT(action), "active-flag", (gpointer *)val);
 				}
@@ -282,28 +207,28 @@ void ghid_main_menu_real_add_resource(GHidMainMenu * menu, GtkMenuShell * shell,
 				pos = g_list_length(children);
 				g_list_free(children);
 
-				if ((strcmp(res->data.text.value, "sep") == 0) || (strcmp(res->data.text.value, "-") == 0)) {
+				if ((strcmp(base->data.text.value, "sep") == 0) || (strcmp(base->data.text.value, "-") == 0)) {
 					GtkWidget *item = gtk_separator_menu_item_new();
 					gtk_menu_shell_append(shell, item);
 				}
-				else if (strcmp(res->data.text.value, "@layerview") == 0) {
+				else if (strcmp(base->data.text.value, "@layerview") == 0) {
 					menu->layer_view_shell = shell;
 					menu->layer_view_pos = pos;
 				}
-				else if (strcmp(res->data.text.value, "@layerpick") == 0) {
+				else if (strcmp(base->data.text.value, "@layerpick") == 0) {
 					menu->layer_pick_shell = shell;
 					menu->layer_pick_pos = pos;
 				}
-				else if (strcmp(res->data.text.value, "@routestyles") == 0) {
+				else if (strcmp(base->data.text.value, "@routestyles") == 0) {
 					menu->route_style_shell = shell;
 					menu->route_style_pos = pos;
 				}
 				else
-					hid_cfg_error(res, "Unexpected text node; the only text accepted here is sep, -, @layerview, @layerpick and @routestyles");
+					hid_cfg_error(base, "Unexpected text node; the only text accepted here is sep, -, @layerview, @layerpick and @routestyles");
 			}
 			break;
 		default:
-			hid_cfg_error(res, "Unexpected node type; should be hash (submenu) or text (separator or @special)");
+			hid_cfg_error(base, "Unexpected node type; should be hash (submenu) or text (separator or @special)");
 	}
 }
 
@@ -369,28 +294,28 @@ GtkWidget *ghid_main_menu_new(GCallback action_cb)
 	return GTK_WIDGET(mm);
 }
 
-/*! \brief Turn a pcb resource into the main menu */
-void ghid_main_menu_add_resource(GHidMainMenu * menu, const lht_node_t * res)
+/*! \brief Turn a lht node into the main menu */
+void ghid_main_menu_add_node(GHidMainMenu * menu, const lht_node_t *base)
 {
 	lht_node_t *n;
-	if (res->type != LHT_LIST) {
-		hid_cfg_error(res, "Menu description shall be a list (li)\n");
+	if (base->type != LHT_LIST) {
+		hid_cfg_error(base, "Menu description shall be a list (li)\n");
 		abort();
 	}
-	for(n = res->data.list.first; n != NULL; n = n->next) {
-		ghid_main_menu_real_add_resource(menu, GTK_MENU_SHELL(menu), n);
+	for(n = base->data.list.first; n != NULL; n = n->next) {
+		ghid_main_menu_real_add_node(menu, GTK_MENU_SHELL(menu), n);
 	}
 }
 
-/*! \brief Turn a pcb resource into a popup menu */
-void ghid_main_menu_add_popup_resource(GHidMainMenu * menu, const lht_node_t * res)
+/*! \brief Turn a lihata node into a popup menu */
+void ghid_main_menu_add_popup_node(GHidMainMenu * menu, const lht_node_t *base)
 {
 	lht_node_t *submenu, *i;
 	GtkWidget *new_menu;
 
-	submenu = hid_cfg_get_submenu(res, "submenu");
+	submenu = hid_cfg_get_submenu(base, "submenu");
 	if (submenu == NULL) {
-		hid_cfg_error(res, "can not create popup without submenu list");
+		hid_cfg_error(base, "can not create popup without submenu list");
 		return;
 	}
 
@@ -398,9 +323,9 @@ void ghid_main_menu_add_popup_resource(GHidMainMenu * menu, const lht_node_t * r
 	g_object_ref_sink(new_menu);
 
 	for(i = submenu->data.list.first; i != NULL; i = i->next)
-		ghid_main_menu_real_add_resource(menu, GTK_MENU_SHELL(new_menu), i);
+		ghid_main_menu_real_add_node(menu, GTK_MENU_SHELL(new_menu), i);
 
-	g_hash_table_insert(menu->popup_table, (gpointer) res->name, new_menu);
+	g_hash_table_insert(menu->popup_table, (gpointer) base->name, new_menu);
 	gtk_widget_show_all(new_menu);
 }
 
@@ -534,7 +459,7 @@ what?
 			res = resource_create_menu(menu[n], action, mnemonic, accel, tip, FLAG_NS | FLAG_NV | FLAG_V);
 #endif
 
-		ghid_main_menu_real_add_resource(GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w), res);
+		ghid_main_menu_real_add_node(GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w), res);
 	}
 
 /* make sure new menu items appear on screen */

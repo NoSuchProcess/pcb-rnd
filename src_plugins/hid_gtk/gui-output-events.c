@@ -161,7 +161,7 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, g
  * menu accelerators.
  *
  * Key presses not handled by the menus will show up here.  This means
- * the key press was either not defined in the menu resource file or
+ * the key press was either not defined in the menu lht file or
  * that the key press is special in that gtk doesn't allow the normal
  * menu code to ever see it.  We capture those here (like Tab and the
  * arrow keys) and feed it back to the normal menu callback.

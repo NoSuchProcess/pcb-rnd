@@ -1724,12 +1724,9 @@ N_("Bring up the popup menu specified by @code{MenuName}.\n"
 /* %start-doc actions Popup
 
 This just pops up the specified menu.  The menu must have been defined
-as a named subresource of the Popups resource in the menu resource
-file.
+in the popups subtree in the menu lht file.
 
 %end-doc */
-
-
 static int Popup(int argc, char **argv, Coord x, Coord y)
 {
 	GtkMenu *menu;
