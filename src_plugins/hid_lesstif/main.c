@@ -1878,15 +1878,6 @@ static void lesstif_uninit(HID *hid)
 	}
 }
 
-
-#if 0
-XrmOptionDescRec lesstif_options[] = {
-};
-
-XtResource lesstif_resources[] = {
-};
-#endif
-
 typedef union {
 	int i;
 	double f;
