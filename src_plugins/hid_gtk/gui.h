@@ -176,11 +176,11 @@ typedef enum {
 	NONE_PRESSED = 0,
 	SHIFT_PRESSED = M_Shift,
 	CONTROL_PRESSED = M_Ctrl,
-	MOD1_PRESSED = M_Mod(1),
+	MOD1_PRESSED = M_Mod1,
 	SHIFT_CONTROL_PRESSED = M_Shift | M_Ctrl,
-	SHIFT_MOD1_PRESSED = M_Shift | M_Mod(1),
-	CONTROL_MOD1_PRESSED = M_Ctrl | M_Mod(1),
-	SHIFT_CONTROL_MOD1_PRESSED = M_Shift | M_Ctrl | M_Mod(1),
+	SHIFT_MOD1_PRESSED = M_Shift | M_Mod1,
+	CONTROL_MOD1_PRESSED = M_Ctrl | M_Mod1,
+	SHIFT_CONTROL_MOD1_PRESSED = M_Shift | M_Ctrl | M_Mod1,
 } ModifierKeysState;
 
 typedef enum {

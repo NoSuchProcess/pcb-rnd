@@ -5,15 +5,12 @@
 #include <genht/htip.h>
 #include "hid_cfg.h"
 
-#warning TODO:
-/* For compatibility; TODO: REMOVE */
-#define M_Mod(n)  (1u<<(n+1))
-
 #define M_Mod0(n)  (1u<<(n))
 typedef enum {
 	M_Shift   = M_Mod0(0),
 	M_Ctrl    = M_Mod0(1),
 	M_Alt     = M_Mod0(2),
+	M_Mod1    = M_Alt,
 	/* M_Mod(3) is M_Mod0(4) */
 	/* M_Mod(4) is M_Mod0(5) */
 	M_Release = M_Mod0(6), /* there might be a random number of modkeys, but hopefully not this many */
@@ -24,6 +21,7 @@ typedef enum {
 	MB_UP     = M_Mod0(10), /* scroll wheel */
 	MB_DOWN   = M_Mod0(11)  /* scroll wheel */
 } hid_cfg_mod_t;
+#undef M_Mod0
 
 #define MB_ANY (MB_LEFT | MB_MIDDLE | MB_RIGHT | MB_UP | MB_DOWN)
 #define M_ANY  (M_Release-1)
