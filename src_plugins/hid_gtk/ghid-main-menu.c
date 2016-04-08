@@ -501,15 +501,7 @@ GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu)
 
 void ghid_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip)
 {
-	char *path, *path_end;
-	int n, plen;
-
-	plen = 1;											/* for the \0 */
-	for (n = 0; menu[n] != NULL; n++)
-		plen += strlen(menu[n]) + 1;	/* +1 for the leading slash */
-
-	path = path_end = malloc(plen);
-	*path = '\0';
+	int n;
 
 	for (n = 0; menu[n] != NULL; n++) {
 		int last = (menu[n + 1] == NULL);
@@ -518,9 +510,6 @@ void ghid_create_menu(const char *menu[], const char *action, const char *mnemon
 		lht_node_t *res;
 
 		/* check if the current node exists */
-		*path_end = '/';
-		path_end++;
-		strcpy(path_end, menu[n]);
 #if 0
 what is this?
 		if (g_hash_table_lookup(menu_hash, path) != NULL) {
@@ -528,10 +517,6 @@ what is this?
 			continue;
 		}
 #endif
-
-		/* if not, revert path to the parent's path */
-		path_end--;
-		*path_end = '\0';
 
 #if 0
 what?
@@ -550,13 +535,8 @@ what?
 #endif
 
 		ghid_main_menu_real_add_resource(GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w), res);
-
-		*path_end = '/';
-		path_end += strlen(menu[n]) + 1;
 	}
 
 /* make sure new menu items appear on screen */
 	gtk_widget_show_all(ghidgui->menu_bar);
-
-	free(path);
 }
