@@ -28,7 +28,7 @@ echo "<html>
 "
 
 
-c99tree awk -I$root "$@" \
+c99tree awk -I$root -I$root/src_3rd "$@" \
   --gtx 'events=([] /+  d=[type == DECL]) && (d / i=[name ~ "GPMI_EVENT"]) && (i .+ [type == TYPE] . a=[type  == ARGLIST] ) && (d : [loc_is_local == "1"])' \
   --gtx 'funcs=([] /+  d=[type == DECL]) && (d / i=[!name ~ "GPMI_EVENT"]) && (i .+ [type == TYPE] . [] >* a=[type  == ARGLIST] ) && (d : [loc_is_local == "1"])' \
   --gtx 'enums=([] /+  i=[type == ENUM]) && (i : [loc_is_local == "1"])' \
