@@ -12,7 +12,7 @@ function ev_action() {
 
 function ev_gui_init()
 {
-	GPMI create_menu "Plugins/GPMI scripting/hello" "hello()" "h" "Ctrl<Key>w" "tooltip for hello"
+	GPMI create_menu "/main_menu/Plugins/GPMI scripting/hello" "hello()" "h" "Ctrl<Key>w" "tooltip for hello"
 }
 
 function main()

@@ -6,7 +6,7 @@ function ev_action(id, name, argc, x, y)
 end
 
 function ev_gui_init(id, argc, argv)
-	create_menu("Plugins/GPMI scripting/hello", "hello()", "h", "Ctrl<Key>w", "tooltip for hello");
+	create_menu("/main_menu/Plugins/GPMI scripting/hello", "hello()", "h", "Ctrl<Key>w", "tooltip for hello");
 end
 
 Bind("ACTE_action", "ev_action");

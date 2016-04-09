@@ -9,7 +9,7 @@ sub ev_action {
 sub ev_gui_init
 {
 	my($id, $name, $argc, $argv) = @_;
-	create_menu("Plugins/GPMI scripting/hello", "hello()", "h", "Ctrl<Key>w", "tooltip for hello");
+	create_menu("/main_menu/Plugins/GPMI scripting/hello", "hello()", "h", "Ctrl<Key>w", "tooltip for hello");
 }
 
 Bind("ACTE_action", "ev_action");
