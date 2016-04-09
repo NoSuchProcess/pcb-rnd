@@ -424,19 +424,35 @@ GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu)
 	return menu->accel_group;
 }
 
+/* Create a new popup window */
+static GtkWidget *new_popup(lht_node_t *menu_item)
+{
+	GtkWidget *new_menu = gtk_menu_new();;
+	GHidMainMenu *menu  = GHID_MAIN_MENU(ghidgui->menu_bar);
 
+	g_object_ref_sink(new_menu);
+	menu_item->user_data = new_menu;
+
+	g_hash_table_insert(menu->popup_table, (gpointer) menu_item->name, new_menu);
+
+	return new_menu;
+}
+
+/* Menu widget create callback: create a main menu, popup or submenu as descending the path */
 static int ghid_create_menu_widget(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item)
 {
-	GtkWidget *w = (is_main) ? ghidgui->menu_bar : parent->user_data;
+	int is_popup = (strncmp(path, "/popups", 7) == 0);
+	GtkWidget *w = (is_main) ? (is_popup ? new_popup(menu_item) : ghidgui->menu_bar) : parent->user_data;
+
 	ghid_main_menu_real_add_node(GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w), menu_item);
+
+/* make sure new menu items appear on screen */
+	gtk_widget_show_all(w);
 	return 0;
 }
 
-
+/* Create a new menu by path */
 void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip)
 {
 	hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, ghid_create_menu_widget, NULL);
-
-/* make sure new menu items appear on screen */
-	gtk_widget_show_all(ghidgui->menu_bar);
 }
