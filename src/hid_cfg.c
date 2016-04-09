@@ -37,6 +37,7 @@
 char hid_cfg_error_shared[1024];
 
 typedef struct {
+	hid_cfg_t *hr;
 	create_menu_widget_t cb;
 	void *cb_ctx;
 	lht_node_t *parent;
@@ -62,7 +63,19 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 		else
 			name = path;
 
-		psub = hid_cfg_menu_field(cmc->parent, MF_SUBMENU, NULL);
+		if (rel_level <= 1) {
+			/* creating a main menu */
+			char *end, *name = strdup(path);
+			for(end = name; *end == '/'; end++) ;
+			end = strchr(end, '/');
+			*end = '\0';
+			psub = cmc->parent = hid_cfg_get_menu(cmc->hr, name);
+			free(name);
+		}
+		else
+			psub = hid_cfg_menu_field(cmc->parent, MF_SUBMENU, NULL);
+
+
 
 		if (rel_level == cmc->target_level) {
 			node = hid_cfg_create_hash_node(psub, name, "m", cmc->mnemonic, "a", cmc->accel, "tip", cmc->tip, ((cmc->action != NULL) ? "action": NULL), cmc->action, NULL);
@@ -91,6 +104,7 @@ int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, con
 	const char *name;
 	create_menu_ctx_t cmc;
 
+	cmc.hr = hr;
 	cmc.cb = cb;
 	cmc.cb_ctx = cb_ctx;
 	cmc.parent = NULL;
