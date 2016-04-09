@@ -93,7 +93,10 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 
 		lht_dom_list_append(psub, node);
 
-		cmc->cb(cmc->cb_ctx, path, name, (rel_level == 1), cmc->parent, node);
+		if (cmc->cb(cmc->cb_ctx, path, name, (rel_level == 1), cmc->parent, node) != 0) {
+			cmc->err = -1;
+			return NULL;
+		}
 	}
 	cmc->parent = node;
 	return node;
