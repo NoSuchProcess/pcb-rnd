@@ -36,62 +36,89 @@
 
 char hid_cfg_error_shared[1024];
 
-lht_node_t *hid_cfg_create_menu(hid_cfg_t *hr, const char *path_, const char *action, const char *mnemonic, const char *accel, const char *tip, lht_node_t **out_parent, int *is_main)
+typedef struct {
+	create_menu_widget_t cb;
+	void *cb_ctx;
+	lht_node_t *parent;
+	const char *action;
+	const char *mnemonic;
+	const char *accel;
+	const char *tip;
+	int target_level;
+	int err;
+} create_menu_ctx_t;
+
+static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path, int rel_level)
 {
-	lht_node_t *parent, *new_sub = NULL, *psub;
-	char *name, *path = strdup(path_);
+	create_menu_ctx_t *cmc = ctx;
+	lht_node_t *psub;
+
+/*	printf(" CB: '%s' %p at %d->%d\n", path, node, rel_level, cmc->target_level);*/
+	if (node == NULL) { /* level does not exist, create it */
+		const char *name;
+		name = strrchr(path, '/');
+		if (name != NULL)
+			name++;
+		else
+			name = path;
+
+		psub = hid_cfg_menu_field(cmc->parent, MF_SUBMENU, NULL);
+
+		if (rel_level == cmc->target_level) {
+			node = hid_cfg_create_hash_node(psub, name, "m", cmc->mnemonic, "a", cmc->accel, "tip", cmc->tip, ((cmc->action != NULL) ? "action": NULL), cmc->action, NULL);
+			if (node != NULL)
+				cmc->err = 0;
+		}
+		else
+			node = hid_cfg_create_hash_node(psub, name, NULL);
+
+		if (node == NULL)
+			return NULL;
+
+		if ((rel_level != cmc->target_level) || (cmc->action == NULL))
+			lht_dom_hash_put(node, lht_dom_node_alloc(LHT_LIST, "submenu"));
+
+		lht_dom_list_append(psub, node);
+
+		cmc->cb(cmc->cb_ctx, path, name, (rel_level == 1), cmc->parent, node);
+	}
+	cmc->parent = node;
+	return node;
+}
+
+int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, create_menu_widget_t cb, void *cb_ctx)
+{
+	const char *name;
+	create_menu_ctx_t cmc;
+
+	cmc.cb = cb;
+	cmc.cb_ctx = cb_ctx;
+	cmc.parent = NULL;
+	cmc.action = action;
+	cmc.mnemonic = mnemonic;
+	cmc.accel = accel;
+	cmc.tip = tip;
+	cmc.err = -1;
 
 	/* Allow creating new nodes only under certain main paths that correspond to menus */
 	name = path;
 	while(*name == '/') name++;
-	if (strncmp(name, "main_menu/", 10) == 0)
-		name += 10;
-	else if (strncmp(name, "popups/", 7) == 0)
-		name += 7;
-	else
-		goto out;
 
-	if (strchr(name, '/') == NULL) {
-		/* a new main menu */
-		name[-1] = '\0';
-		parent = psub = hid_cfg_get_menu(hr, path);
-		name[-1] = '/';
-		while (*name == '/')
-			name++;
-		if (is_main != NULL)
-			*is_main = 1;
-	}
-	else {
-		/* submenu under an existing menu */
-		name = strrchr(path, '/');
-		*name = '\0';
-		name++;
-		parent = hid_cfg_get_menu(hr, path);
-		if (parent == NULL)
-			goto out;
-		psub = hid_cfg_menu_field(parent, MF_SUBMENU, NULL);
-		if (is_main != NULL)
-			*is_main = 0;
+	if ((strncmp(name, "main_menu/", 10) == 0) || (strncmp(name, "popups/", 7) == 0)) {
+		/* calculate target level */
+		for(cmc.target_level = 0; *name != '\0'; name++) {
+			if (*name == '/') {
+				cmc.target_level++;
+				while(*name == '/') name++;
+				name--;
+			}
+		}
+
+		/* descend and visit each level, create missing levels */
+		hid_cfg_get_menu_at(hr, NULL, path, create_menu_cb, &cmc);
 	}
 
-	if (psub == NULL)
-		goto out;
-
-	if (out_parent != NULL)
-		*out_parent = parent;
-
-	new_sub = hid_cfg_create_hash_node(psub, name, "m", mnemonic, "a", accel, "tip", tip, ((action != NULL) ? "action": NULL), action, NULL);
-	if (new_sub == NULL)
-		goto out;
-
-	if (action == NULL)
-		lht_dom_hash_put(new_sub, lht_dom_node_alloc(LHT_LIST, "submenu"));
-
-	lht_dom_list_append(psub, new_sub);
-
-	out:;
-	free(path);
-	return new_sub;
+	return cmc.err;
 }
 
 static int hid_cfg_load_error(lht_doc_t *doc, const char *filename, lht_err_t err)
@@ -240,7 +267,7 @@ int hid_cfg_action(const lht_node_t *node)
 
 /************* "parsing" **************/
 
-lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path)
+lht_node_t *hid_cfg_get_menu_at(hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)
 {
 	lht_err_t err;
 	lht_node_t *curr;
@@ -251,7 +278,7 @@ lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path)
  strcpy(path, menu_path);
 
 	next_seg = path;
-	curr = hr->doc->root;
+	curr = (at == NULL) ? hr->doc->root : at;
 
 	/* Have to descend manually because of the submenu nodes */
 	for(;;) {
@@ -276,10 +303,15 @@ lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path)
 		save = *end;
 		*end = '\0';
 		
-/*		printf("step: %p '%s'\n", curr, next_seg);*/
 		curr = lht_tree_path_(hr->doc, curr, next_seg, 1, 0, &err);
-/*		printf("      %p\n", curr);*/
+		if (cb != NULL) {
+			end[-1] = '\0';
+			curr = cb(ctx, curr, path, level);
+		}
+
 		*end = save;
+		if (next != NULL) /* restore previous / so that path is a full path */
+			*next = '/';
 		next_seg = next;
 		if ((curr == NULL) || (next_seg == NULL))
 			break;
@@ -289,6 +321,11 @@ lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path)
 
 	free(path);
 	return curr;
+}
+
+lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path)
+{
+	return hid_cfg_get_menu_at(hr, NULL, menu_path, NULL, NULL);
 }
 
 lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, hid_cfg_menufield_t field, const char **field_name)

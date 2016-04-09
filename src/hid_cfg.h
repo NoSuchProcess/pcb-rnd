@@ -32,8 +32,11 @@ typedef struct hid_cfg_s {
 } hid_cfg_t;
 
 /* Create a set of resources representing a single menu item
-   If action is NULL, it's a drop-down item that has submenus. */
-lht_node_t *hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, lht_node_t **out_parent, int *is_main);
+   If action is NULL, it's a drop-down item that has submenus.
+   The callback is called after the new lihata node is created.
+   */
+typedef int (*create_menu_widget_t)(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item);
+int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, create_menu_widget_t cb, void *cb_ctx);
 
 /* Search and load the menu res for hidname; if not found, and embedded_fallback
    is not NULL, parse that string instead. Returns NULL on error */
@@ -46,6 +49,7 @@ lht_doc_t *hid_cfg_load_lht(const char *filename);
 const char *hid_cfg_text_value(lht_doc_t *doc, const char *path);
 
 lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path);
+lht_node_t *hid_cfg_get_menu_at(hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx);
 #warning TODO: this is broken
 lht_node_t *hid_cfg_get_submenu(const lht_node_t *parent, const char *path);
 
