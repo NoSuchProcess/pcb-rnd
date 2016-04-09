@@ -36,7 +36,7 @@
 
 char hid_cfg_error_shared[1024];
 
-lht_node_t *hid_cfg_create_menu(hid_cfg_t *hr, const char *path_, const char *action, const char *mnemonic, const char *accel, const char *tip)
+lht_node_t *hid_cfg_create_menu(hid_cfg_t *hr, const char *path_, const char *action, const char *mnemonic, const char *accel, const char *tip, lht_node_t **out_parent)
 {
 	lht_node_t *parent, *new_sub;
 	char *name, *path = strdup(path_);
@@ -55,6 +55,9 @@ lht_node_t *hid_cfg_create_menu(hid_cfg_t *hr, const char *path_, const char *ac
 		name++;
 		parent = hid_cfg_get_menu(hr, path);
 	}
+
+	if (out_parent != NULL)
+		*out_parent = parent;
 
 	new_sub = hid_cfg_create_hash_node(parent, name, "m", mnemonic, "a", accel, "tip", tip, ((action != NULL) ? "action": NULL), action, NULL);
 
