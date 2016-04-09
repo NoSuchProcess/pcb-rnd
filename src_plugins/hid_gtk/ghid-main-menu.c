@@ -55,9 +55,9 @@ struct _GHidMainMenuClass {
 
 /* LHT HANDLER */
 
-void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t *base);
+void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t *base);
 
-static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t * sub_res)
+static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t * sub_res)
 {
 	const char *tmp_val;
 	gchar mnemonic = 0;
@@ -111,6 +111,8 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 		GtkWidget *tearoff = gtk_tearoff_menu_item_new();
 		lht_node_t *n;
 
+		sub_res->user_data = submenu;
+
 		gtk_menu_shell_append(shell, item);
 		gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), submenu);
 
@@ -142,6 +144,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 			GtkWidget *item = gtk_menu_item_new_with_label(menu_label);
 			gtk_widget_set_sensitive(item, FALSE);
 			gtk_menu_shell_append(shell, item);
+			sub_res->user_data = item;
 		}
 		else {
 			/* NORMAL ITEM */
@@ -161,6 +164,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
 		item = gtk_action_create_menu_item(action);
 		gtk_menu_shell_append(shell, item);
 		menu->actions = g_list_append(menu->actions, action);
+		sub_res->user_data = item;
 	}
 
 	return action;
@@ -172,7 +176,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, const
  *  \param [in] shall   The base menu shell (a menu bar or popup menu)
  *  \param [in] res     The base of the menu item subtree
  * */
-void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, const lht_node_t *base)
+void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t *base)
 {
 	lht_node_t *n;
 
@@ -420,43 +424,17 @@ GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu)
 }
 
 
-void ghid_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip)
+static int ghid_create_menu_widget(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item)
 {
-	int n;
+	GtkWidget *w = (is_main) ? ghidgui->menu_bar : parent->user_data;
+	ghid_main_menu_real_add_node(GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w), menu_item);
+	return 0;
+}
 
-	for (n = 0; menu[n] != NULL; n++) {
-		int last = (menu[n + 1] == NULL);
-		int first = (n == 0);
-		GtkWidget *w;
-		lht_node_t *res;
 
-		/* check if the current node exists */
-#if 0
-what is this?
-		if (g_hash_table_lookup(menu_hash, path) != NULL) {
-			path_end += strlen(menu[n]);
-			continue;
-		}
-#endif
-
-#if 0
-what?
-		/* look up the parent */
-		if (first)
-			w = ghidgui->menu_bar;
-		else
-			w = g_hash_table_lookup(menu_hash, path);
-
-		if (!last) {
-			int flags = first ? (FLAG_S | FLAG_NV | FLAG_V) /* 7 */ : (FLAG_V | FLAG_S) /* 5 */ ;
-			res = resource_create_menu(menu[n], NULL, NULL, NULL, NULL, flags);
-		}
-		else
-			res = resource_create_menu(menu[n], action, mnemonic, accel, tip, FLAG_NS | FLAG_NV | FLAG_V);
-#endif
-
-		ghid_main_menu_real_add_node(GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w), res);
-	}
+void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip)
+{
+	hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, ghid_create_menu_widget, NULL);
 
 /* make sure new menu items appear on screen */
 	gtk_widget_show_all(ghidgui->menu_bar);
