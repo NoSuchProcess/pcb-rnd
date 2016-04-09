@@ -82,16 +82,33 @@ The most common way is to create all menus from the ACTE_gui_init event,
 which is called after the gui finished setting up.
 <p>
 The first argument of create_menu() is the menu path. The path is a list
-of visible menu names separated by slashes (e.g. "File/Save as..." means
-"File" menu, "Save as..." submenu). By <b>convention</b>, scripts should
-create new menu items under the "Plugins/" menu.
+of visible menu names separated by slashes (e.g. "/main_menu/File/Save as..." means
+"File" menu, "Save as..." submenu). 
+<p>
+Paths are interpreted as menu paths, which are a slightly simplified version
+of lihata paths found in menu.lht. Basically there's a main directory directly
+under root that determines the type of the menu:
+<p>
+<ul>
+	<li> /main_menu/ is the menubar
+	<li> /popups/something/ is a popup menu called something; the lesstif HID does
+	     not support popups; popups are popped up by actions.
+</ul>
+<p>
+The simplification compared to lihata paths is that only menu and submenu
+names are on the path, so lihata nodes like "li:submenu" should be ignored.
+In other words, the path represents how the menus can be reached from the user
+interface, plus a "main menu type prefix" as discussed above.
+<p>
+By <b>convention</b>, scripts should
+create new menu items under the "/main_menu/Plugins/" menu.
 <p>
 The following example lua script registers a new menu item
 <pre>
 PkgLoad("pcb-rnd-gpmi/actions", 0);
 
 function ev_gui_init(argc, argv)
-	create_menu("Plugins/foo", "undo()", "o", "Ctrl&lt;Key&gt;o", "tooltip for foo");
+	create_menu("/main_menu/Plugins/foo", "undo()", "o", "Ctrl&lt;Key&gt;o", "tooltip for foo");
 end
 
 -- register and bind action
