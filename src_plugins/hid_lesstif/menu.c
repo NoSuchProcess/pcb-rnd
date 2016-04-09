@@ -34,6 +34,7 @@
 RCSID("$Id$");
 
 Widget lesstif_menubar;
+hid_cfg_t *lesstif_cfg;
 
 #ifndef R_OK
 /* Common value for systems that don't define it.  */
@@ -826,6 +827,8 @@ static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc call
 	btn = XmCreateCascadeButton(menu, node->name, stdarg_args, stdarg_n);
 	XtManageChild(btn);
 
+	node->user_data = sub;
+
 	if (hid_cfg_has_submenus(node)) {
 		lht_node_t *i;
 		i = hid_cfg_menu_field(node, MF_SUBMENU, NULL);
@@ -881,6 +884,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 
 		stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
 		sub = XmCreatePulldownMenu(menu, strdup(v), stdarg_args + nn, stdarg_n - nn);
+		node->user_data = sub;
 		stdarg_n = nn;
 		stdarg(XmNsubMenuId, sub);
 		btn = XmCreateCascadeButton(menu, "menubutton", stdarg_args, stdarg_n);
@@ -996,11 +1000,13 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 
 	extern const char *lesstif_menu_default;
 
+#warning TODO: r is not needed anymore
 	r = hid_cfg_load("lesstif", 0, lesstif_menu_default);
 	if (r == NULL) {
 		Message("FATAL: can't load the lesstif menu res either from file or from hardwired default.");
 		abort();
 	}
+	lesstif_cfg = r;
 
 	mr = hid_cfg_get_menu(r, "/main_menu");
 	if (mr != NULL) {
@@ -1019,62 +1025,24 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 	return mb;
 }
 
-void lesstif_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip)
+static int lesstif_create_menu_widget(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item)
 {
-#warning TODO
-abort();
-#if 0
-	char *path, *path_end;
-	int n, plen;
+	Widget w = (is_main) ? lesstif_menubar : parent->user_data;
 
-	plen = 1;											/* for the \0 */
-	for (n = 0; menu[n] != NULL; n++)
-		plen += strlen(menu[n]) + 1;	/* +1 for the leading slash */
+	if (strncmp(path, "/popups", 7) == 0)
+		return -1; /* there's no popup support in lesstif */
 
-	path = path_end = malloc(plen);
-	*path = '\0';
+	add_node_to_menu(w, menu_item, (XtCallbackProc) callback, is_main ? 0 : 2);
 
-	for (n = 0; menu[n] != NULL; n++) {
-		int last = (menu[n + 1] == NULL);
-		int first = (n == 0);
-		Widget w;
-		Resource *res;
-
-		/* check if the current node exists */
-		*path_end = '/';
-		path_end++;
-		strcpy(path_end, menu[n]);
-		if (htsp_has(menu_hash, path)) {
-			path_end += strlen(menu[n]);
-			continue;
-		}
-
-		/* if not, revert path to the parent's path */
-		path_end--;
-		*path_end = '\0';
-
-		/* look up the parent */
-		if (first)
-			w = lesstif_menubar;
-		else
-			w = htsp_get(menu_hash, path);
-
-		if (!last) {
-			int flags = first ? (FLAG_S | FLAG_NV | FLAG_V) /* 7 */ : (FLAG_V | FLAG_S) /* 5 */ ;
-			res = resource_create_menu(menu[n], NULL, NULL, NULL, NULL, flags);
-		}
-		else
-			res = resource_create_menu(menu[n], action, mnemonic, accel, tip, FLAG_NS | FLAG_NV | FLAG_V);
-
-		add_node_to_menu(w, res, (XtCallbackProc) callback, path);
-
-		*path_end = '/';
-		path_end += strlen(menu[n]) + 1;
-	}
-
-	free(path);
-#endif
+	return 0;
 }
+
+
+void lesstif_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip)
+{
+	hid_cfg_create_menu(lesstif_cfg, menu_path, action, mnemonic, accel, tip, lesstif_create_menu_widget, NULL);
+}
+
 
 void lesstif_uninit_menu(void)
 {
