@@ -26,7 +26,7 @@ GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu);
 void ghid_main_menu_update_toggle_state(GHidMainMenu * menu,
 																				void (*cb) (GtkAction *, const char *toggle_flag, const char *active_flag));
 
-void ghid_main_menu_add_popup_node(GHidMainMenu * menu, const lht_node_t *base);
+void ghid_main_menu_add_popup_node(GHidMainMenu * menu, lht_node_t *base);
 GtkMenu *ghid_main_menu_get_popup(GHidMainMenu * menu, const char *name);
 
 void ghid_main_menu_install_layer_selector(GHidMainMenu * mm, GHidLayerSelector * ls);

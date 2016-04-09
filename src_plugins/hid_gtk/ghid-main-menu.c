@@ -308,7 +308,7 @@ void ghid_main_menu_add_node(GHidMainMenu * menu, const lht_node_t *base)
 }
 
 /*! \brief Turn a lihata node into a popup menu */
-void ghid_main_menu_add_popup_node(GHidMainMenu * menu, const lht_node_t *base)
+void ghid_main_menu_add_popup_node(GHidMainMenu * menu, lht_node_t *base)
 {
 	lht_node_t *submenu, *i;
 	GtkWidget *new_menu;
@@ -321,6 +321,7 @@ void ghid_main_menu_add_popup_node(GHidMainMenu * menu, const lht_node_t *base)
 
 	new_menu = gtk_menu_new();
 	g_object_ref_sink(new_menu);
+	base->user_data = new_menu;
 
 	for(i = submenu->data.list.first; i != NULL; i = i->next)
 		ghid_main_menu_real_add_node(menu, GTK_MENU_SHELL(new_menu), i);
