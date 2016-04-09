@@ -383,7 +383,7 @@ static void nogui_finish_debug_draw(void)
 {
 }
 
-static void nogui_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip)
+static void nogui_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip)
 {
 }
 
