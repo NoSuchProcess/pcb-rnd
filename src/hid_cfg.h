@@ -31,8 +31,9 @@ typedef struct hid_cfg_s {
 	lht_doc_t *doc;
 } hid_cfg_t;
 
-/* Create a set of resources representing a single menu item */
-lht_node_t *resource_create_menu(hid_cfg_t *hr, const char *name, const char *action, const char *mnemonic, const char *accel, const char *tip, int flags);
+/* Create a set of resources representing a single menu item
+   If action is NULL, it's a drop-down item that has submenus. */
+lht_node_t *hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip);
 
 /* Search and load the menu res for hidname; if not found, and embedded_fallback
    is not NULL, parse that string instead. Returns NULL on error */

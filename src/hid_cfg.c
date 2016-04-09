@@ -36,10 +36,33 @@
 
 char hid_cfg_error_shared[1024];
 
-lht_node_t *resource_create_menu(hid_cfg_t *hr, const char *name, const char *action, const char *mnemonic, const char *accel, const char *tip, int flags)
+lht_node_t *hid_cfg_create_menu(hid_cfg_t *hr, const char *path_, const char *action, const char *mnemonic, const char *accel, const char *tip)
 {
-#warning TODO
-	abort();
+	lht_node_t *parent, *new_sub;
+	char *name, *path = strdup(path_);
+
+	if (strchr(path+1, '/') == NULL) {
+		/* a new main menu */
+		parent = NULL;
+		name = path;
+		while (*name == '/')
+			name++;
+	}
+	else {
+		/* submenu under an existing menu */
+		name = strrchr(path, '/');
+		*name = '\0';
+		name++;
+		parent = hid_cfg_get_menu(hr, path);
+	}
+
+	new_sub = hid_cfg_create_hash_node(parent, name, "m", mnemonic, "a", accel, "tip", tip, ((action != NULL) ? "action": NULL), action, NULL);
+
+	if (action == NULL)
+		lht_dom_hash_put(new_sub, lht_dom_node_alloc(LHT_LIST, "submenu"));
+
+	free(path);
+	return new_sub;
 }
 
 static int hid_cfg_load_error(lht_doc_t *doc, const char *filename, lht_err_t err)
@@ -191,7 +214,52 @@ int hid_cfg_action(const lht_node_t *node)
 lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path)
 {
 	lht_err_t err;
-	return lht_tree_path(hr->doc, "/", menu_path, 1, &err);
+	lht_node_t *curr;
+	int level = 0, len = strlen(menu_path);
+	char *next_seg, *path;
+
+ path = malloc(len+4); /* need a few bytes after the end for the ':' */
+ strcpy(path, menu_path);
+
+	next_seg = path;
+	curr = hr->doc->root;
+
+	/* Have to descend manually because of the submenu nodes */
+	for(;;) {
+		char *next, *end, save;
+		while(*next_seg == '/') next_seg++;
+		if (curr != hr->doc->root) {
+			if (level > 1) {
+				curr = lht_tree_path_(hr->doc, curr, "submenu", 1, 0, &err);
+				if (curr == NULL)
+					break;
+			}
+		}
+		next = end = strchr(next_seg, '/');
+		if (end == NULL)
+			end = next_seg + strlen(next_seg);
+		
+		if (level > 0)
+			*end = ':';
+		else
+			*end = '\0';
+		end++;
+		save = *end;
+		*end = '\0';
+		
+/*		printf("step: %p '%s'\n", curr, next_seg);*/
+		curr = lht_tree_path_(hr->doc, curr, next_seg, 1, 0, &err);
+/*		printf("      %p\n", curr);*/
+		*end = save;
+		next_seg = next;
+		if ((curr == NULL) || (next_seg == NULL))
+			break;
+		next_seg++;
+		level++;
+	}
+
+	free(path);
+	return curr;
 }
 
 lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, hid_cfg_menufield_t field, const char **field_name)
