@@ -29,7 +29,7 @@ static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 	int ev;
 	char *ev_args;
 	hid_gpmi_script_info_t *i;
-	const char *menu[] = {"Plugins", "GPMI scripting", "Scripts", NULL};
+	const char *menu = "/main_menu/Plugins/GPMI scripting/Scripts";
 
 	gui->create_menu(menu, "gpmi_scripts()", "S", "Alt<Key>g", "Manage GPMI scripts");
 
@@ -141,16 +141,16 @@ static void load_base_and_cfg(void)
 	char *dir, *libdirg, *libdirh, *wdir, *wdirh, *hdirh, *home;
 	void **gpmi_asm_scriptname;
 
-	libdirg = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL));
-	libdirh = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
-	wdirh = resolve_path_inplace(Concat ("plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
+	libdirg = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL), 0);
+	libdirh = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL), 0);
+	wdirh = resolve_path_inplace(Concat ("plugins" PCB_DIR_SEPARATOR_S, HOST, NULL), 0);
 	wdir = Concat("plugins", NULL);
 
 	home = getenv ("PCB_RND_GPMI_HOME");
 	if (home == NULL)
 		home = homedir;
 
-	hdirh = resolve_path_inplace(Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL));
+	hdirh = resolve_path_inplace(Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL), 0);
 
 	fprintf(stderr, "gpmi dirs: lg=%s lh=%s wh=%s w=%s hh=%s\n", libdirg, libdirh, wdirh, wdir, hdirh);
 
@@ -194,7 +194,7 @@ static void load_base_and_cfg(void)
 	if (home != NULL) {
 		hid_gpmi_load_dir (hdirh, 0);
 
-		dir = resolve_path_inplace(Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL));
+		dir = resolve_path_inplace(Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL), 0);
 		hid_gpmi_load_dir(dir, 1);
 		free(dir);
 	}
