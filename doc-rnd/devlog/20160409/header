@@ -1,0 +1,7 @@
+1. Do you use the lesstif HID?
+2. If there were different menu resources files distributed with PCB, would you try them?
+3. Do you customize your menu resource file?
+4. If you do not costumize your menu resource file, it's because
+5. Do you miss multi-key sequences from the GTK hid?
+6. If the GTK hid supported multi-key sequences, would that change any of your previous answers?
+7. Vendor (drill) mapping also uses a resource file.
