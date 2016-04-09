@@ -36,17 +36,30 @@
 
 char hid_cfg_error_shared[1024];
 
-lht_node_t *hid_cfg_create_menu(hid_cfg_t *hr, const char *path_, const char *action, const char *mnemonic, const char *accel, const char *tip, lht_node_t **out_parent)
+lht_node_t *hid_cfg_create_menu(hid_cfg_t *hr, const char *path_, const char *action, const char *mnemonic, const char *accel, const char *tip, lht_node_t **out_parent, int *is_main)
 {
-	lht_node_t *parent, *new_sub;
+	lht_node_t *parent, *new_sub = NULL, *psub;
 	char *name, *path = strdup(path_);
 
-	if (strchr(path+1, '/') == NULL) {
+	/* Allow creating new nodes only under certain main paths that correspond to menus */
+	name = path;
+	while(*name == '/') name++;
+	if (strncmp(name, "main_menu/", 10) == 0)
+		name += 10;
+	else if (strncmp(name, "popups/", 7) == 0)
+		name += 7;
+	else
+		goto out;
+
+	if (strchr(name, '/') == NULL) {
 		/* a new main menu */
-		parent = NULL;
-		name = path;
+		name[-1] = '\0';
+		parent = psub = hid_cfg_get_menu(hr, path);
+		name[-1] = '/';
 		while (*name == '/')
 			name++;
+		if (is_main != NULL)
+			*is_main = 1;
 	}
 	else {
 		/* submenu under an existing menu */
@@ -54,16 +67,29 @@ lht_node_t *hid_cfg_create_menu(hid_cfg_t *hr, const char *path_, const char *ac
 		*name = '\0';
 		name++;
 		parent = hid_cfg_get_menu(hr, path);
+		if (parent == NULL)
+			goto out;
+		psub = hid_cfg_menu_field(parent, MF_SUBMENU, NULL);
+		if (is_main != NULL)
+			*is_main = 0;
 	}
+
+	if (psub == NULL)
+		goto out;
 
 	if (out_parent != NULL)
 		*out_parent = parent;
 
-	new_sub = hid_cfg_create_hash_node(parent, name, "m", mnemonic, "a", accel, "tip", tip, ((action != NULL) ? "action": NULL), action, NULL);
+	new_sub = hid_cfg_create_hash_node(psub, name, "m", mnemonic, "a", accel, "tip", tip, ((action != NULL) ? "action": NULL), action, NULL);
+	if (new_sub == NULL)
+		goto out;
 
 	if (action == NULL)
 		lht_dom_hash_put(new_sub, lht_dom_node_alloc(LHT_LIST, "submenu"));
 
+	lht_dom_list_append(psub, new_sub);
+
+	out:;
 	free(path);
 	return new_sub;
 }
