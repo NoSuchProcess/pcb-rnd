@@ -3,11 +3,7 @@
 	- vendordrill: free at exit (check for leaks)
 	- search for vendor in the hid plugins, there should be no trace
 
-- lesstif conversion:
-	- check if ctrl+1..ctrl+4 works
-
 - resource conv cleanup:
-	- search for * res and _resource and rename
 	- look for warnings
 	- enable gpmi and test dynamic menu insertion
 	- dynamic menus for plugins
