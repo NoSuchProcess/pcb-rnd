@@ -3757,7 +3757,7 @@ static void lesstif_finish_debug_draw(void)
 
 #include "dolists.h"
 
-void lesstif_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip);
+void lesstif_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip);
 
 pcb_uninit_t hid_hid_lesstif_init()
 {

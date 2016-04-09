@@ -420,7 +420,7 @@ GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu)
 }
 
 
-void ghid_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip)
+void ghid_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip)
 {
 	int n;
 

@@ -1019,7 +1019,7 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 	return mb;
 }
 
-void lesstif_create_menu(const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip)
+void lesstif_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip)
 {
 #warning TODO
 abort();

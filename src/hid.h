@@ -486,10 +486,12 @@ struct hid_st {
 	void (*notify_filename_changed) (void);
 
 	/* Create a new menu and/or submenus
-	 * menu[] is a NULL terminated path to the new menu (parents are silently created).
+	 * menu is a / separated path to the new menu (parents are silently created).
 	 * The last non-NULL item is the new menu item.
-	 * action, mnemonic, accel and tip affect the new menu item. */
-	void (*create_menu) (const char *menu[], const char *action, const char *mnemonic, const char *accel, const char *tip);
+	 * action, mnemonic, accel and tip affect the new menu item.
+	 * If action is NULL, the menu may get submenus.
+	 */
+	void (*create_menu) (const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip);
 };
 
 /* This function (in the common code) will be called whenever the GUI
