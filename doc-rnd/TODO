@@ -7,27 +7,9 @@
 	- vendordrill: free at exit (check for leaks)
 
 - resource conv cleanup:
-	- add anchors
-	- search for vendor in the hid plugins, there should be no trace of it (vendor should register its menus at placeholders, see later)
-	- look for warnings
 	- gtk: display hotkeys again
 	- lesstif: display hotkeys in the right format (even multikey)
-	- gpmi: auto-remove menus by cookie (TODO#2)
-
-Cleanup #4:
-	- reduce
-		- replace hid_load_settings() with lihata
-		- hash in hid_attrib.c?
-		- hash in hid_color.c; test: eps
-		- nelma and gcode both invent .png name locally
-		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
-		- revise RCSID and $id$
-		- vendordrill
-			- search for /units, replace it with pcb-printf something
-			- add round down
-			- replace ignore_refdes, ignore_value and ignore_descr with genvector
-	- mods:
-		- gpmi (and other buildins/plugins) not showing up in the about box
+	- look for warnings
 
 CLEANUP #4
 - libstroke: zoom
@@ -43,6 +25,31 @@ CLEANUP #4
 
 
 CLEANUP #5:
+- res:
+	- add anchors
+	- search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
+	- re-add dynamic menus after a gui change:
+		- either remember dynamic menus in a separate list so they can be rebuilt
+		- or provide hooks and let plugins deal with it
+	- gpmi: auto-remove menus by cookie (TODO#2)
+	- load new res on the fly:
+		- low level reload code (re-add the dynamic menus too!)
+		- action to reload if file name is known
+		- gui load dialog with tags listed
+
+- reduce
+		- replace hid_load_settings() with lihata
+		- hash in hid_attrib.c?
+		- hash in hid_color.c; test: eps
+		- nelma and gcode both invent .png name locally
+		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
+		- revise RCSID and $id$
+		- vendordrill
+			- search for /units, replace it with pcb-printf something
+			- add round down
+			- replace ignore_refdes, ignore_value and ignore_descr with genvector
+	- mods:
+		- gpmi (and other buildins/plugins) not showing up in the about box
 - self contained
 	- files
 		- menu_lht
