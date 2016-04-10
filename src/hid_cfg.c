@@ -424,9 +424,11 @@ lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...)
 			break;
 		cval = va_arg(ap, char *);
 
-		t = lht_dom_node_alloc(LHT_TEXT, cname);
-		t->data.text.value = strdup(cval);
-		lht_dom_hash_put(n, t);
+		if (cval != NULL) {
+			t = lht_dom_node_alloc(LHT_TEXT, cname);
+			t->data.text.value = strdup(cval);
+			lht_dom_hash_put(n, t);
+		}
 	}
 	va_end(ap);
 
