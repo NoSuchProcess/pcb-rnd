@@ -97,5 +97,5 @@ int action(const char *cmdline)
 
 void create_menu(const char *path, const char *action, const char *mnemonic, const char *hotkey, const char *tooltip)
 {
-	gui->create_menu(path, action, mnemonic, hotkey, tooltip);
+	gui->create_menu(path, action, mnemonic, hotkey, tooltip, "TODO#2");
 }

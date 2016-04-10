@@ -440,7 +440,7 @@ static int ghid_create_menu_widget(void *ctx, const char *path, const char *name
 }
 
 /* Create a new menu by path */
-void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip)
+void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
 {
-	hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, ghid_create_menu_widget, NULL);
+	hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, NULL);
 }

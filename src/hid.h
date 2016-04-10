@@ -489,9 +489,11 @@ struct hid_st {
 	 * menu is a / separated path to the new menu (parents are silently created).
 	 * The last non-NULL item is the new menu item.
 	 * action, mnemonic, accel and tip affect the new menu item.
+	 * Cookie is strdup()'d into the lihata tree and can be used later to search
+	 * and remove menu items that are no longer needed.
 	 * If action is NULL, the menu may get submenus.
 	 */
-	void (*create_menu) (const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip);
+	void (*create_menu) (const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
 };
 
 /* This function (in the common code) will be called whenever the GUI

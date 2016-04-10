@@ -34,9 +34,10 @@ typedef struct hid_cfg_s {
 /* Create a set of resources representing a single menu item
    If action is NULL, it's a drop-down item that has submenus.
    The callback is called after the new lihata node is created.
+   NOTE: unlike other cookies, this cookie is strdup()'d. 
    */
 typedef int (*create_menu_widget_t)(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item);
-int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, create_menu_widget_t cb, void *cb_ctx);
+int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie, create_menu_widget_t cb, void *cb_ctx);
 
 /* Search and load the menu res for hidname; if not found, and embedded_fallback
    is not NULL, parse that string instead. Returns NULL on error */

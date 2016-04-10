@@ -45,6 +45,7 @@ typedef struct {
 	const char *mnemonic;
 	const char *accel;
 	const char *tip;
+	const char *cookie;
 	int target_level;
 	int err;
 } create_menu_ctx_t;
@@ -76,12 +77,12 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 			psub = hid_cfg_menu_field(cmc->parent, MF_SUBMENU, NULL);
 
 		if (rel_level == cmc->target_level) {
-			node = hid_cfg_create_hash_node(psub, name, "dyn", "1", "m", cmc->mnemonic, "a", cmc->accel, "tip", cmc->tip, ((cmc->action != NULL) ? "action": NULL), cmc->action, NULL);
+			node = hid_cfg_create_hash_node(psub, name, "dyn", "1", "m", "cookie", cmc->cookie, cmc->mnemonic, "a", cmc->accel, "tip", cmc->tip, ((cmc->action != NULL) ? "action": NULL), cmc->action, NULL);
 			if (node != NULL)
 				cmc->err = 0;
 		}
 		else
-			node = hid_cfg_create_hash_node(psub, name, "dyn", "1",  NULL);
+			node = hid_cfg_create_hash_node(psub, name, "dyn", "1", "cookie", cmc->cookie,  NULL);
 
 		if (node == NULL)
 			return NULL;
@@ -100,7 +101,7 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 	return node;
 }
 
-int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, create_menu_widget_t cb, void *cb_ctx)
+int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie, create_menu_widget_t cb, void *cb_ctx)
 {
 	const char *name;
 	create_menu_ctx_t cmc;
@@ -113,6 +114,7 @@ int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, con
 	cmc.mnemonic = mnemonic;
 	cmc.accel = accel;
 	cmc.tip = tip;
+	cmc.cookie = cookie;
 	cmc.err = -1;
 
 	/* Allow creating new nodes only under certain main paths that correspond to menus */

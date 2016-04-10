@@ -31,7 +31,7 @@ void ghid_main_menu_add_popup_node(GHidMainMenu * menu, lht_node_t *base);
 void ghid_main_menu_install_layer_selector(GHidMainMenu * mm, GHidLayerSelector * ls);
 void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, GHidRouteStyleSelector * rss);
 
-void ghid_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip);
+void ghid_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
 
 extern hid_cfg_t *ghid_cfg;
 

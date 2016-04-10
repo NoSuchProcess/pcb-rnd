@@ -1004,9 +1004,9 @@ static int lesstif_create_menu_widget(void *ctx, const char *path, const char *n
 }
 
 
-void lesstif_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip)
+void lesstif_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
 {
-	hid_cfg_create_menu(lesstif_cfg, menu_path, action, mnemonic, accel, tip, lesstif_create_menu_widget, NULL);
+	hid_cfg_create_menu(lesstif_cfg, menu_path, action, mnemonic, accel, tip, cookie, lesstif_create_menu_widget, NULL);
 }
 
 

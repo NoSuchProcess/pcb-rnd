@@ -1017,7 +1017,7 @@ static int ActionRouteStyle(int argc, char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char createmenu_syntax[] = "CreateMenu(path | path, action, mnemonic, accel, tooltip)";
+static const char createmenu_syntax[] = "CreateMenu(path | path, action, mnemonic, accel, tooltip, cookie)";
 static const char createmenu_help[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
 
 /* %start-doc actions RouteStyle
@@ -1032,7 +1032,7 @@ static int ActionCreateMenu(int argc, char **argv, Coord x, Coord y)
 	}
 
 	if (argc > 0) {
-		gui->create_menu(argv[0], (argc > 1) ? argv[1] : NULL, (argc > 2) ? argv[2] : NULL, (argc > 3) ? argv[3] : NULL, (argc > 4) ? argv[4] : NULL);
+		gui->create_menu(argv[0], (argc > 1) ? argv[1] : NULL, (argc > 2) ? argv[2] : NULL, (argc > 3) ? argv[3] : NULL, (argc > 4) ? argv[4] : NULL, (argc > 5) ? argv[5] : NULL);
 		return 0;
 	}
 
