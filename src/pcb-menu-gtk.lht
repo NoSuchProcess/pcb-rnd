@@ -505,7 +505,7 @@ ha:{
 								ha:Toggle Layer 19          = { a=Ctrl-Alt<Key>9; action=ToggleView(19) }
 								ha:Toggle Layer 20          = { a=Ctrl-Alt<Key>0; action=ToggleView(20) }
 							}
-						}
+						} # layer keys
 					}
 				}
 			}
