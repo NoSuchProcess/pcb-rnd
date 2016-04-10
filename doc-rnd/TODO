@@ -1,13 +1,18 @@
+- random breaks:
+	- gpmi plugin make is not triggered when gpmi is a buildin
+	- gpmi packages are not installed in plugins/pcb-rnd-gpmi
+
 - vemdordrill conversion:
 	- test vendordrill if it works
 	- vendordrill: free at exit (check for leaks)
-	- search for vendor in the hid plugins, there should be no trace
 
 - resource conv cleanup:
+	- add anchors
+	- search for vendor in the hid plugins, there should be no trace of it (vendor should register its menus at placeholders, see later)
 	- look for warnings
-	- enable gpmi and test dynamic menu insertion
-	- dynamic menus for plugins
-	- menu placeholders for plugins
+	- gtk: display hotkeys again
+	- lesstif: display hotkeys in the right format (even multikey)
+	- gpmi: auto-remove menus by cookie (TODO#2)
 
 Cleanup #4:
 	- reduce
@@ -43,7 +48,7 @@ CLEANUP #5:
 		- menu_lht
 		- default font
 	- action and dialog box to print where the actual files are coming from
-
+	- project specific menus from extra lihata files
 
 
 
