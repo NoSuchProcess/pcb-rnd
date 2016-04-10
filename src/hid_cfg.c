@@ -433,7 +433,7 @@ lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...)
 	return n;
 }
 
-lht_node_t *hid_cfg_get_submenu(const lht_node_t *parent, const char *path)
+lht_node_t *hid_cfg_menu_field_path(const lht_node_t *parent, const char *path)
 {
 	return lht_tree_path_(parent->doc, parent, path, 1, 0, NULL);
 }

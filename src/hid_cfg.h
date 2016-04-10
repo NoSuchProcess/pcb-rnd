@@ -50,8 +50,6 @@ const char *hid_cfg_text_value(lht_doc_t *doc, const char *path);
 
 lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path);
 lht_node_t *hid_cfg_get_menu_at(hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx);
-#warning TODO: this is broken
-lht_node_t *hid_cfg_get_submenu(const lht_node_t *parent, const char *path);
 
 
 /* Fields are retrieved using this enum so that HIDs don't need to hardwire
@@ -74,6 +72,10 @@ typedef enum {
 /* Return a field of a submenu and optionally fill in field_name with the
    field name expected in the lihata document (useful for error messages) */
 lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, hid_cfg_menufield_t field, const char **field_name);
+
+/* Return a lihata node usign a relative lihata path from parent - this is
+   just a wrapper around lht_tree_path_ */
+lht_node_t *hid_cfg_menu_field_path(const lht_node_t *parent, const char *path);
 
 /* Return a text field of a submenu; return NULL and generate a Message() if
    the given field is not text */
