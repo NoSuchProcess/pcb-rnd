@@ -1,3 +1,4 @@
+- BUG: don't use ~/.pcb, use ~/.pcb-rnd; do not hardwire this in the code, make it a config.h setting
 - random breaks:
 	- gpmi plugin make is not triggered when gpmi is a buildin
 	- gpmi packages are not installed in plugins/pcb-rnd-gpmi
@@ -10,6 +11,7 @@
 	- gtk: display hotkeys again
 	- lesstif: display hotkeys in the right format (even multikey)
 	- look for warnings
+	- key html converter for lihata
 
 CLEANUP #4
 - libstroke: zoom
