@@ -1017,6 +1017,30 @@ static int ActionRouteStyle(int argc, char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
+static const char createmenu_syntax[] = "CreateMenu(path | path, action, mnemonic, accel, tooltip)";
+static const char createmenu_help[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
+
+/* %start-doc actions RouteStyle
+
+%end-doc */
+
+static int ActionCreateMenu(int argc, char **argv, Coord x, Coord y)
+{
+	if (gui == NULL) {
+		Message("Error: can't create menu, there's no GUI hid loaded\n");
+		return 1;
+	}
+
+	if (argc > 0) {
+		gui->create_menu(argv[0], (argc > 1) ? argv[1] : NULL, (argc > 2) ? argv[2] : NULL, (argc > 3) ? argv[3] : NULL, (argc > 4) ? argv[4] : NULL);
+		return 0;
+	}
+
+	AFAIL(message);
+}
+
+/* --------------------------------------------------------------------------- */
+
 static const char setsame_syntax[] = "SetSame()";
 
 static const char setsame_help[] = "Sets current layer and sizes to match indicated item.";
@@ -1110,6 +1134,9 @@ HID_Action gui_action_list[] = {
 	,
 	{"RouteStyle", 0, ActionRouteStyle,
 	 routestyle_help, routestyle_syntax}
+	,
+	{"CreateMenu", 0, ActionCreateMenu,
+	 createmenu_help, createmenu_syntax}
 };
 
 REGISTER_ACTIONS(gui_action_list, NULL)
