@@ -460,6 +460,52 @@ ha:{
 						ha:Step +Left                   = { a=Shift<Key>Left; action=Cursor(Pan,-50,0,view) }
 						ha:Step +Right                  = { a=Shift<Key>Right; action=Cursor(Pan,50,0,view) }
 						ha:Click                        = { a=<Key>Enter; li:action={Mode(Notify); Mode(Release)} }
+						-
+						ha:layer keys {
+							li:submenu {
+								ha:Select Layer 1           = { a=<Key>1; action=SelectLayer(1) }
+								ha:Select Layer 2           = { a=<Key>2; action=SelectLayer(2) }
+								ha:Select Layer 3           = { a=<Key>3; action=SelectLayer(3) }
+								ha:Select Layer 4           = { a=<Key>4; action=SelectLayer(4) }
+								ha:Select Layer 5           = { a=<Key>5; action=SelectLayer(5) }
+								ha:Select Layer 6           = { a=<Key>6; action=SelectLayer(6) }
+								ha:Select Layer 7           = { a=<Key>7; action=SelectLayer(7) }
+								ha:Select Layer 8           = { a=<Key>8; action=SelectLayer(8) }
+								ha:Select Layer 9           = { a=<Key>9; action=SelectLayer(9) }
+								ha:Select Layer 10          = { a=<Key>0; action=SelectLayer(10) }
+								ha:Select Layer 11          = { a=Alt<Key>1; action=SelectLayer(11) }
+								ha:Select Layer 12          = { a=Alt<Key>2; action=SelectLayer(12) }
+								ha:Select Layer 13          = { a=Alt<Key>3; action=SelectLayer(13) }
+								ha:Select Layer 14          = { a=Alt<Key>4; action=SelectLayer(14) }
+								ha:Select Layer 15          = { a=Alt<Key>5; action=SelectLayer(15) }
+								ha:Select Layer 16          = { a=Alt<Key>6; action=SelectLayer(16) }
+								ha:Select Layer 17          = { a=Alt<Key>7; action=SelectLayer(17) }
+								ha:Select Layer 18          = { a=Alt<Key>8; action=SelectLayer(18) }
+								ha:Select Layer 19          = { a=Alt<Key>9; action=SelectLayer(19) }
+								ha:Select Layer 20          = { a=Alt<Key>0; action=SelectLayer(20) }
+								-
+								ha:Toggle Layer 1           = { a=Ctrl<Key>1; action=ToggleView(1) }
+								ha:Toggle Layer 2           = { a=Ctrl<Key>2; action=ToggleView(2) }
+								ha:Toggle Layer 3           = { a=Ctrl<Key>3; action=ToggleView(3) }
+								ha:Toggle Layer 4           = { a=Ctrl<Key>4; action=ToggleView(4) }
+								ha:Toggle Layer 5           = { a=Ctrl<Key>5; action=ToggleView(5) }
+								ha:Toggle Layer 6           = { a=Ctrl<Key>6; action=ToggleView(6) }
+								ha:Toggle Layer 7           = { a=Ctrl<Key>7; action=ToggleView(7) }
+								ha:Toggle Layer 8           = { a=Ctrl<Key>8; action=ToggleView(8) }
+								ha:Toggle Layer 9           = { a=Ctrl<Key>9; action=ToggleView(9) }
+								ha:Toggle Layer 10          = { a=Ctrl<Key>0; action=ToggleView(10) }
+								ha:Toggle Layer 11          = { a=Ctrl-Alt<Key>1; action=ToggleView(11) }
+								ha:Toggle Layer 12          = { a=Ctrl-Alt<Key>2; action=ToggleView(12) }
+								ha:Toggle Layer 13          = { a=Ctrl-Alt<Key>3; action=ToggleView(13) }
+								ha:Toggle Layer 14          = { a=Ctrl-Alt<Key>4; action=ToggleView(14) }
+								ha:Toggle Layer 15          = { a=Ctrl-Alt<Key>5; action=ToggleView(15) }
+								ha:Toggle Layer 16          = { a=Ctrl-Alt<Key>6; action=ToggleView(16) }
+								ha:Toggle Layer 17          = { a=Ctrl-Alt<Key>7; action=ToggleView(17) }
+								ha:Toggle Layer 18          = { a=Ctrl-Alt<Key>8; action=ToggleView(18) }
+								ha:Toggle Layer 19          = { a=Ctrl-Alt<Key>9; action=ToggleView(19) }
+								ha:Toggle Layer 20          = { a=Ctrl-Alt<Key>0; action=ToggleView(20) }
+							}
+						}
 					}
 				}
 			}
@@ -472,7 +518,7 @@ ha:{
 				ha:Message Log    = { action=DoWindows(Log) }
 				ha:DRC Check      = { action=DoWindows(DRC) }
 				ha:Netlist        = { action=DoWindows(Netlist) }
-				ha:Command Entry  = { a=<Key>\:; action=Command() }
+				ha:Command Entry  = { a={<Key>:}; action=Command() }
 				ha:Pinout         = { a=Shift<Key>d; action=Display(Pinout) }
 				-
 				ha:About...       = { action=About() }
