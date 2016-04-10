@@ -100,6 +100,11 @@ lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...);
 void hid_cfg_extend_hash_node(lht_node_t *node, ...);
 void hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap);
 
+/* Search a subtree in depth-first-search manner. Call cb on each node as
+   descending. If cb returns non-zero, stop the search and return that value.
+   Do all this recursively. */
+int hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), void *ctx);
+
 /* Report an error about a node */
 #define hid_cfg_error(node, ...) \
 do { \

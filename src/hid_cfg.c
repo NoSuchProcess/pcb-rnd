@@ -75,15 +75,13 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 		else
 			psub = hid_cfg_menu_field(cmc->parent, MF_SUBMENU, NULL);
 
-
-
 		if (rel_level == cmc->target_level) {
-			node = hid_cfg_create_hash_node(psub, name, "m", cmc->mnemonic, "a", cmc->accel, "tip", cmc->tip, ((cmc->action != NULL) ? "action": NULL), cmc->action, NULL);
+			node = hid_cfg_create_hash_node(psub, name, "dyn", "1", "m", cmc->mnemonic, "a", cmc->accel, "tip", cmc->tip, ((cmc->action != NULL) ? "action": NULL), cmc->action, NULL);
 			if (node != NULL)
 				cmc->err = 0;
 		}
 		else
-			node = hid_cfg_create_hash_node(psub, name, NULL);
+			node = hid_cfg_create_hash_node(psub, name, "dyn", "1",  NULL);
 
 		if (node == NULL)
 			return NULL;
@@ -452,3 +450,24 @@ lht_node_t *hid_cfg_menu_field_path(const lht_node_t *parent, const char *path)
 {
 	return lht_tree_path_(parent->doc, parent, path, 1, 0, NULL);
 }
+
+int hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), void *ctx)
+{
+	lht_dom_iterator_t it;
+	lht_node_t *n;
+
+	for(n = lht_dom_first(&it, parent); n != NULL; n = lht_dom_next(&it)) {
+		int ret;
+		ret = cb(ctx, n);
+		if (ret != 0)
+			return ret;
+		if (n->type != LHT_TEXT) {
+			ret = hid_cfg_dfs(n, cb, ctx);
+			if (ret != 0)
+				return ret;
+		}
+	}
+	return 0;
+}
+
+
