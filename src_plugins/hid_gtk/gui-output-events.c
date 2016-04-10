@@ -174,7 +174,7 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 		if (state & GDK_CONTROL_MASK) mods |= M_Ctrl;
 		if (state & GDK_SHIFT_MASK) {
 			static const char *ignore_shift = "~!@#$%^&*()_+{}|:\"<>?";
-			if ((kv > 32) || (kv < 126) || (strchr(ignore_shift, kv) == NULL)) {
+			if ((kv < 32) || (kv > 126) || (strchr(ignore_shift, kv) == NULL)) {
 				mods |= M_Shift;
 				if ((kv >= 'A') && (kv <= 'Z'))
 					kv = tolower(kv);
