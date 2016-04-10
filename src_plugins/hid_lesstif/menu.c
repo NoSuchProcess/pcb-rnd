@@ -476,24 +476,6 @@ static void insert_layerview_buttons(Widget menu)
 			break;
 		}
 		stdarg_n = 0;
-		if (accel_idx < 9) {
-			char buf[20], av[30], av2[30];
-			lht_node_t *ar;
-			XmString as;
-			sprintf(buf, "Ctrl-%d", accel_idx + 1);
-			as = XmStringCreatePCB(buf);
-			stdarg(XmNacceleratorText, as);
-
-			sprintf(av, "ToggleView(%d)", i + 1);
-			sprintf(av2, "Ctrl<Key>%d", accel_idx + 1);
-			ar = hid_cfg_create_hash_node(NULL, av,  "action", av, "a", av2, NULL);
-			if (ar != NULL)  {
-				note_accelerator(av2, ar);
-				stdarg(XmNmnemonic, accel_idx + '1');
-			}
-			else
-				Message("Error: faliled to create ToggleView(%d)\n", i+1);
-		}
 		btn = XmCreateToggleButton(menu, name, stdarg_args, stdarg_n);
 		XtManageChild(btn);
 		XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) layer_button_callback, (XtPointer) (size_t) i);
@@ -542,22 +524,6 @@ static void insert_layerpick_buttons(Widget menu)
 			break;
 		}
 		stdarg_n = 0;
-		if (accel_idx < 9) {
-			lht_node_t *ar;
-			XmString as;
-
-			sprintf(buf, "%d", i + 1);
-			ar = hid_cfg_create_hash_node(NULL, av,  "action", av, "a", buf, NULL);
-			if (ar != NULL) {
-				as = XmStringCreatePCB(buf);
-				stdarg(XmNacceleratorText, as);
-				sprintf(av, "<Key>%d", accel_idx + 1);
-				note_accelerator(av, ar);
-				stdarg(XmNmnemonic, accel_idx + '1');
-			}
-			else
-				Message("Error: failed to create accel <Key>%d\n", accel_idx+1);
-		}
 		stdarg(XmNindicatorType, XmONE_OF_MANY);
 		btn = XmCreateToggleButton(menu, name, stdarg_args, stdarg_n);
 		XtManageChild(btn);
