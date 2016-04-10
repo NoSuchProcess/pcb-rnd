@@ -1729,12 +1729,20 @@ in the popups subtree in the menu lht file.
 %end-doc */
 static int Popup(int argc, char **argv, Coord x, Coord y)
 {
-	GtkMenu *menu;
+	GtkMenu *menu = NULL;
+	char name[256];
 
 	if (argc != 1 && argc != 2)
 		AFAIL(popup);
 
-	menu = ghid_main_menu_get_popup(GHID_MAIN_MENU(ghidgui->menu_bar), argv[0]);
+	if (strlen(argv[0]) < sizeof(name)-32) {
+		lht_node_t *menu_node;
+		sprintf(name, "/popups/%s", argv[0]);
+		menu_node = hid_cfg_get_menu(ghid_cfg, name);
+		if (menu_node != NULL)
+			menu = menu_node->user_data;
+	}
+
 	if (!GTK_IS_MENU(menu)) {
 		Message(_("The specified popup menu \"%s\" has not been defined.\n"), argv[0]);
 		return 1;

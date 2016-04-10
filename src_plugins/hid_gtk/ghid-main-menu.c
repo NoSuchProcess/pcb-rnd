@@ -36,7 +36,6 @@ struct _GHidMainMenu {
 	GtkMenuShell *route_style_shell;
 
 	GList *actions;
-	GHashTable *popup_table;
 
 	gint n_layer_views;
 	gint n_layer_picks;
@@ -289,7 +288,6 @@ GtkWidget *ghid_main_menu_new(GCallback action_cb)
 
 	mm->action_cb = action_cb;
 	mm->actions = NULL;
-	mm->popup_table = g_hash_table_new(g_str_hash, g_str_equal);
 
 	return GTK_WIDGET(mm);
 }
@@ -326,16 +324,8 @@ void ghid_main_menu_add_popup_node(GHidMainMenu * menu, lht_node_t *base)
 	for(i = submenu->data.list.first; i != NULL; i = i->next)
 		ghid_main_menu_real_add_node(menu, GTK_MENU_SHELL(new_menu), i);
 
-	g_hash_table_insert(menu->popup_table, (gpointer) base->name, new_menu);
 	gtk_widget_show_all(new_menu);
 }
-
-/*! \brief Returns a registered popup menu by name */
-GtkMenu *ghid_main_menu_get_popup(GHidMainMenu * menu, const char *name)
-{
-	return g_hash_table_lookup(menu->popup_table, name);
-}
-
 
 /*! \brief Updates the toggle/active state of all items 
  *  \par Function Description
@@ -432,8 +422,6 @@ static GtkWidget *new_popup(lht_node_t *menu_item)
 
 	g_object_ref_sink(new_menu);
 	menu_item->user_data = new_menu;
-
-	g_hash_table_insert(menu->popup_table, (gpointer) menu_item->name, new_menu);
 
 	return new_menu;
 }
