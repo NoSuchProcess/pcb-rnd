@@ -402,6 +402,33 @@ int hid_cfg_has_submenus(const lht_node_t *submenu)
 }
 
 
+void hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap)
+{
+	for(;;) {
+		char *cname, *cval;
+		lht_node_t *t;
+
+		cname = va_arg(ap, char *);
+		if (cname == NULL)
+			break;
+		cval = va_arg(ap, char *);
+
+		if (cval != NULL) {
+			t = lht_dom_node_alloc(LHT_TEXT, cname);
+			t->data.text.value = strdup(cval);
+			lht_dom_hash_put(node, t);
+		}
+	}
+}
+
+void hid_cfg_extend_hash_node(lht_node_t *node, ...)
+{
+	va_list ap;
+	va_start(ap, node);
+	hid_cfg_extend_hash_nodev(node, ap);
+	va_end(ap);
+}
+
 lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...)
 {
 	lht_node_t *n;
@@ -415,21 +442,7 @@ lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...)
 		lht_dom_list_append(parent, n);
 
 	va_start(ap, name);
-	for(;;) {
-		char *cname, *cval;
-		lht_node_t *t;
-
-		cname = va_arg(ap, char *);
-		if (cname == NULL)
-			break;
-		cval = va_arg(ap, char *);
-
-		if (cval != NULL) {
-			t = lht_dom_node_alloc(LHT_TEXT, cname);
-			t->data.text.value = strdup(cval);
-			lht_dom_hash_put(n, t);
-		}
-	}
+	hid_cfg_extend_hash_nodev(n, ap);
 	va_end(ap);
 
 	return n;

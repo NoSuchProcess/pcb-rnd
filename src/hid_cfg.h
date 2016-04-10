@@ -94,6 +94,12 @@ int hid_cfg_action(const lht_node_t *node);
    for creating a menu item in a subtree list. */
 lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...);
 
+/* Create a flat subtree of text nodes from name,value varargs (NULL
+   terminated). This is a shorthand for creating a menu item in a
+   subtree list. */
+void hid_cfg_extend_hash_node(lht_node_t *node, ...);
+void hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap);
+
 /* Report an error about a node */
 #define hid_cfg_error(node, ...) \
 do { \
