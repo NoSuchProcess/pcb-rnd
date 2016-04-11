@@ -239,8 +239,8 @@ print [@
 pcblib_DATA= \
 	default_font \
 	default.pcb \
-	gpcb-menu.res \
-	pcb-menu.res
+	pcb-menu-lesstif.lht \
+	pcb-menu-gtk.lht
 
 
 EXTRA_DIST= \
