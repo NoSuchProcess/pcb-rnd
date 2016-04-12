@@ -11,9 +11,9 @@
 	- gtk: display hotkeys again
 	- lesstif: display hotkeys in the right format (even multikey)
 	- look for warnings
-	- key html converter for lihata
+	- key html converter for lihata: multi-key sequences (when accel is a list)
 
-CLEANUP #4
+CLEANUP #5
 - libstroke: zoom
 - cleanup/rewrite resources:
 	- load/swap menus (TODO#1)
@@ -26,7 +26,7 @@ CLEANUP #4
 - Message() should have a first param that tells if it is an error, info, etc.; pop up window on error, red
 
 
-CLEANUP #5:
+CLEANUP #6:
 - res:
 	- add anchors
 	- search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
