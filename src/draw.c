@@ -330,7 +330,7 @@ static void _draw_pad(hidGC gc, PadType * pad, bool clear, bool mask)
 
 static void draw_pad(PadType * pad)
 {
-	const char *color;
+	const char *color = NULL;
 	char buf[sizeof("#XXXXXX")];
 
 	if (doing_pinout)
@@ -342,7 +342,6 @@ static void draw_pad(PadType * pad)
 			color = PCB->PinSelectedColor;
 		else
 			color = PCB->ConnectedColor;
-
 	}
 	else if (FRONT(pad))
 		color = PCB->PinColor;
@@ -354,7 +353,9 @@ static void draw_pad(PadType * pad)
 		LightenColor(color, buf, 1.75);
 		color = buf;
 	}
-	gui->set_color(Output.fgGC, color);
+
+	if (color != NULL)
+		gui->set_color(Output.fgGC, color);
 
 	_draw_pad(Output.fgGC, pad, false, false);
 
