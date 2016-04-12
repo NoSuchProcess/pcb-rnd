@@ -47,7 +47,7 @@ fi
 
 extract_from_lht()
 {
-	lhtflat | tee F | $AWK -F '[\t]' -v "fn=$1" '
+	lhtflat | $AWK -F '[\t]' -v "fn=$1" '
 
 #data	text	//main_menu/1::Edit/submenu/11::Edit name of/submenu/1::pin on layout/a	Shift Ctrl<Key>n
 #data	text	//main_menu/1::Edit/submenu/11::Edit name of/submenu/1::pin on layout/action	ChangeName(Object, Number) 
