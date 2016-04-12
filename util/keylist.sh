@@ -1,6 +1,6 @@
 #!/bin/sh
-#   keylist - list hotkey->actions found in .res files in a html table, per HID
-#   Copyright (C) 2015 Tibor 'Igor2' Palinkas
+#   keylist - list hotkey->actions found in .lht files in a html table, per HID
+#   Copyright (C) 2015..2016 Tibor 'Igor2' Palinkas
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -22,10 +22,22 @@ AWK=awk
 
 export LANG=C
 
+need_lht()
+{
+	echo "lhtflat not found. Please install lihata to run this script. The" >&2
+	echo "svn extern in src_3rd/ is not enough, this script requires a full" >&2
+	echo "installation from svn://repo.hu/lihata/trunk" >&2
+	exit 1
+}
+
+# make sure lhtflat is installed
+echo "" | lhtflat || need_lht
+
+
 if test -z "$*"
 then
 	echo ""
-	echo "$0: Generate a html table from pcb menu res files."
+	echo "$0: Generate a html table from pcb menu lht files."
 	echo "Usage: $0 file1 [file2 [file3 ... [fileN]]]"
 	echo ""
 	exit
@@ -33,128 +45,24 @@ else
 	res_files="$@"
 fi
 
-# split the file into one token per line using a state machine
-# tokens are:
-#  - quoted strings ("")
-#  - control characters: {,  }, =
-#  - other words
-tokenize()
+extract_from_lht()
 {
-	$AWK '
-		BEGIN {
-			q = "\""
-		}
+	lhtflat | tee F | $AWK -F '[\t]' -v "fn=$1" '
 
-# echo a character and remember if it was a newline
-		function echo(c) {
-			had_nl = (c == "\n")
-			printf "%s", c
-		}
+#data	text	//main_menu/1::Edit/submenu/11::Edit name of/submenu/1::pin on layout/a	Shift Ctrl<Key>n
+#data	text	//main_menu/1::Edit/submenu/11::Edit name of/submenu/1::pin on layout/action	ChangeName(Object, Number) 
 
-# echo a newline if the previous character written was not a newline
-		function nl() {
-			if (!had_nl)
-				echo("\n")
-		}
+	{
+		parent=$3
+		sub("/[^/]*$","", parent)
+		node=$3
+		sub("^.*/","", node)
+	}
 
-# parse state machine: eats input character by character
-		function parse(c) {
-#			ignore comments
-			if (in_comment)
-				return
-
-#			quote state machine
-			if (in_quote) {
-				if (bslash) {
-					echo(c)
-					bslash = 0
-					return
-				}
-				if (c == "\\")
-					bslash = 1
-				if (c == q) {
-					nl();
-					in_quote = 0
-					return
-				}
-				echo(c)
-				return
-			}
-
-			if (c == "#") {
-				in_comment = 1
-				return
-			}
-
-#			quote start
-			if (c == q) {
-				in_quote = 1
-				echo(c)
-				return
-			}
-
-#			whitespace are non-redundant newlines
-			if (c ~ "[ \t]") {
-				nl()
-				return
-			}
-
-#			"keywords"
-			if (c ~ "[{}=]") {
-				nl()
-				echo(c)
-				nl()
-				return
-			}
-
-#			anything else
-			echo(c)
-		}
-
-# each new line of the input is a set of characters
-# reset comment first, as it spanned to the previous newline
-		{
-			in_comment = 0
-			l = length($0)
-			for(n = 1; n <= l; n++)
-				parse(substr($0, n, 1))
-		}
-	'
-}
-
-# "grammar": read tokens and output "key src action" where
-#   key is in base-modified-modifier format, modifiers ordered
-#   src is the source res file we are working from, passed as $1
-#   action is the action given right after the key or before the key
-extract_from_res()
-{
-	tokenize | $AWK -v "src=$1" '
-		BEGIN {
-			sub(".*/", "", src)
-		}
-		/^=$/ {
-			if (last != "a") {
-				last = ""
-				getline t
-				next
-			}
-			last = ""
-
-			getline t
-			if (t != "{")
-				next
-			getline k1
-			getline k2
-			getline t
-			if (t != "}")
-				next
-			getline action
-			if (action == "}")
-				action = last_act
-			sub("^\"", "", k2)
-			sub("\"$", "", k2)
-			gsub(" \t", "", k2)
-			split(tolower(k2), K, "<key>")
+	(($1 == "data") && ($2 == "text")) {
+		# simple text node: accel key
+		if (node == "a") {
+			split(tolower($4), K, "<key>")
 			if (K[1] != "") {
 				mods = ""
 				if (K[1] ~ "alt")   mods = mods "-alt"
@@ -163,26 +71,36 @@ extract_from_res()
 			}
 			else
 				mods = ""
-			key = K[2] mods
-			gsub("[ \t]", "", key)
-			gsub("[ \t]", "", src)
-			gsub("[ \t]", "", action)
-			print key, src, action
-			last_act = ""
-			next
+
+			KEY[parent] = K[2] mods
 		}
-		/[a-zA-Z]/ {
-			if (last != "")
-				last_act = last
+
+		# simple text node: action
+		if (node == "action")
+			ACTION[parent] = $4
+
+		# list item: action
+		if ($3 ~ "/action/[0-9]+::$") {
+			parent = $3
+			sub("/action/[^/]*$", "", parent)
+			if (ACTION[parent] != "")
+				ACTION[parent] = ACTION[parent] ";" $4 
+			else
+				ACTION[parent] = $4 
 		}
-		{ last = $0 }
+	}
+
+	END {
+		for(n in KEY)
+			print KEY[n] "\t" fn "\t" ACTION[n]
+	}
 	'
 }
 
 # convert a "key src action" to a html table with rowspans for base keys
 gen_html()
 {
-	$AWK '
+	$AWK -F '[\t]' '
 	BEGIN {
 		HIDNAMES["gpcb-menu.res"] = "gtk"
 		HIDNAMES["pcb-menu.res"]  = "lesstif"
@@ -253,6 +171,6 @@ gen_html()
 
 for n in $res_files 
 do
-	extract_from_res "$n" < $n
+	extract_from_lht "`basename $n`" < $n
 done | sort | gen_html
 
