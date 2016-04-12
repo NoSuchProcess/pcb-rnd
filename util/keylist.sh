@@ -159,6 +159,8 @@ gen_html()
 				act = ACTION[h, key]
 				if (act == "")
 					act = "&nbsp;"
+				else
+					gsub(");", "); ", act)
 				print "	<td>", act
 			}
 			last_base = base
