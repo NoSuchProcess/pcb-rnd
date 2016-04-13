@@ -30,8 +30,8 @@ FP_OBJS    = @/local/pcb/OBJS@ ../src/plug_footprint.o
 FP_LDFLAGS = @/local/pcb/LDFLAGS@
 FP_CFLAGS  = @/local/pcb/CFLAGS@
 
-gsch2pcb-rnd$(EXE): gsch2pcb.o ../src/portability.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS)
-	$(CC) gsch2pcb.o  ../src/portability.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS) -o gsch2pcb-rnd$(EXE) $(LDFLAGS) $(FP_LDFLAGS)
+gsch2pcb-rnd$(EXE): gsch2pcb.o ../src/compat_fs.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS)
+	$(CC) gsch2pcb.o  ../src/compat_fs.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS) -o gsch2pcb-rnd$(EXE) $(LDFLAGS) $(FP_LDFLAGS)
 
 gsch2pcb.o: gsch2pcb.c ../config.h  ../config.manual.h  ../config.auto.h
 	$(CC) -c $(CFLAGS) $(FP_CFLAGS) gsch2pcb.c -o gsch2pcb.o
