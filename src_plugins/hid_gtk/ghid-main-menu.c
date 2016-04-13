@@ -73,8 +73,11 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 
 		assert(node != NULL);
 		anode = hid_cfg_menu_field(sub_res, MF_ACTION, NULL);
-		if (anode != NULL)
+		if (anode != NULL) {
 			hid_cfg_keys_add_by_desc(&ghid_keymap, tmp_val, anode, NULL, 0);
+#warning TODO: this has to be a functio that respects lists
+			accel = tmp_val;
+		}
 		else
 			hid_cfg_error(sub_res, "No action specified for key accel\n");
 	}
@@ -147,12 +150,14 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 		}
 		else {
 			/* NORMAL ITEM */
-			gchar *name = g_strdup_printf("MainMenuAction%d", action_counter++);
-			action = gtk_action_new(name, menu_label, tip, NULL);
+			GtkWidget *item = gtk_menu_item_new_gschem(menu_label, accel);
+			gtk_menu_shell_append(shell, item);
+			sub_res->user_data = item;
+			g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu->action_cb), (gpointer)n_action);
 		}
 	}
 
-	/* Connect accelerator, if there is one */
+	/* By now this runs only for toggle items. */
 	if (action) {
 		GtkWidget *item;
 		gtk_action_set_accel_group(action, menu->accel_group);
