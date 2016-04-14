@@ -196,6 +196,7 @@ ha:{
 				ha:Copy = { checked=copymode,1; action=Mode(Copy) }
 				ha:Lock = { checked=lockmode,1; a=<Key>F12; action=Mode(Lock) }
 				ha:Cancel = { a=<Key>Escape; action=Mode(Cancel) }
+				-
 				ha:Command = { a={<Key>:}; action=Command() }
 			}
 		} # Tools
@@ -204,6 +205,7 @@ ha:{
 			li:submenu {
 				ha:Layer groups = { foreground=grey50; sensitive=false }
 				ha:Edit layer groupings = { action=EditLayerGroups() }
+				-
 				ha:'All-direction' lines = { checked=alldirection; a=<Key>.; action=Display(Toggle45Degree) }
 				ha:Auto swap line start angle = { checked=swapstartdir; action=Display(ToggleStartDirection) }
 				ha:Orthogonal moves = { checked=orthomove; action=Display(ToggleOrthoMove) }
@@ -211,6 +213,7 @@ ha:{
 				ha:Crosshair snaps to off-grid points on lines = { checked=snapoffgridline; action=Display(ToggleSnapOffGridLine) }
 				ha:Crosshair shows DRC clearance = { checked=showdrc; action=Display(ToggleShowDRC) }
 				ha:Auto enforce DRC clearance = { checked=autodrc; action=Display(ToggleAutoDRC) }
+				-
 				ha:Rubber band mode = { checked=rubberband; action=Display(ToggleRubberBandMode) }
 				ha:Require unique element names = { checked=uniquename; action=Display(ToggleUniqueNames) }
 				ha:Auto-zero delta measurements = { checked=localref; action=Display(ToggleLocalRef) }
@@ -221,6 +224,7 @@ ha:{
 				ha:Thin draw = { checked=thindraw; a=<Key>|; action=Display(ToggleThindraw) }
 				ha:Thin draw poly = { checked=thindrawpoly; a=Ctrl Shift<Key>p; action=Display(ToggleThindrawPoly) }
 				ha:Check polygons = { checked=checkplanes; action=Display(ToggleCheckPlanes) }
+				-
 				ha:Pinout shows number = { checked=shownumber; action=Display(ToggleName) }
 				ha:Pins/Via show Name/Number = { a=<Key>d; action=Display(PinOrPadName) }
 				ha:Enable vendor drill mapping = { checked=VendorMapOn; action=ToggleVendor() }
@@ -230,6 +234,7 @@ ha:{
 						ha: Center = { action=Import(setnewpoint,center) }
 						ha: Mark = { action=Import(setnewpoint,mark) }
 						ha: Crosshair = { action=Import(setnewpoint) }
+						-
 						ha:Set Dispersion = { action=Import(setdisperse) }
 					}
 				}
@@ -240,8 +245,10 @@ ha:{
 			li:submenu {
 				ha:Select all visible objects = { action=Select(All) }
 				ha:Select all connected objects = { action=Select(Connection) }
+				-
 				ha:Unselect all objects = { action=Unselect(All) }
 				ha:unselect all connected objects = { action=Unselect(Connection) }
+				-
 				ha:Select by name = { foreground=grey50; sensitive=false }
 				ha:All objects = { active=have_regex; action=Select(ObjectByName) }
 				ha:Elements = { active=have_regex; action=Select(ElementByName) }
@@ -249,15 +256,18 @@ ha:{
 				ha:Pins = { active=have_regex; action=Select(PinByName) }
 				ha:Text Objects = { active=have_regex; action=Select(TextByName) }
 				ha:Vias = { active=have_regex; action=Select(ViaByName) }
+				-
 				ha:Auto-place selected elements = { a=Ctrl<Key>p; action=AutoPlaceSelected() }
 				ha:Disperse all elements = { action=DisperseElements(All) }
 				ha:Move selected elements to other side = { a=Shift<Key>b; action=Flip(SelectedElements) }
 				ha:Move selected to current layer = { a=Shift<Key>m; action=MoveToCurrentLayer(Selected) }
 				ha:Delete selected objects = { a=<Key>Delete; action=Delete(Selected) }
 				ha:Convert selection to element = { action=Select(Convert) }
+				-
 				ha:Optimize selected rats = { li:action={DeleteRats(SelectedRats); AddRats(SelectedRats)} }
 				ha:Auto-route selected rats = { a=Alt<Key>r; action=AutoRoute(SelectedRats) }
 				ha:Rip up selected auto-routed tracks = { action=RipUp(Selected) }
+				-
 				ha:Change size of selected objects = { foreground=grey50; sensitive=false }
 				ha:ChangeSizes to Route style = { a=Shift<Key>y; action=ChangeSizes(Object,style,mil); }
 				ha:Lines -10 mil = { li:action={ChangeSize(SelectedLines,-10,mil); ChangeSize(SelectedArcs,-10,mil)} }
@@ -270,11 +280,13 @@ ha:{
 				ha:Texts +10 mil = { action=ChangeSize(SelectedTexts,+10,mil) }
 				ha:Vias -10 mil = { action=ChangeSize(SelectedVias,-10,mil) }
 				ha:Vias +10 mil = { action=ChangeSize(SelectedVias,+10,mil) }
+				-
 				ha:Change drilling hole of selected objects = { foreground=grey50; sensitive=false }
 				ha:Vias -10 mil = { action=ChangeDrillSize(SelectedVias,-10,mil) }
 				ha:Vias +10 mil = { action=ChangeDrillSize(SelectedVias,+10,mil) }
 				ha:Pins -10 mil = { action=ChangeDrillSize(SelectedPins,-10,mil) }
 				ha:Pins +10 mil = { action=ChangeDrillSize(SelectedPins,+10,mil) }
+				-
 				ha:Change square-flag of selected objects = { foreground=grey50; sensitive=false }
 				ha:Elements = { action=ChangeSquare(SelectedElements) }
 				ha:Pins = { action=ChangeSquare(SelectedPins) }
@@ -287,15 +299,18 @@ ha:{
 				ha:Copy selection to buffer = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Mode(PasteBuffer)} }
 				ha:Cut selection to buffer = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer)} }
 				ha:Paste buffer to layout = { action=Mode(PasteBuffer) }
+				-
 				ha:Rotate buffer 90 deg CCW = { a=Shift<Key>F7; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1)} }
 				ha:Rotate buffer 90 deg CW = { li:action={Mode(PasteBuffer); PasteBuffer(Rotate,3)} }
 				ha:Arbitrarily Rotate Buffer = { li:action={Mode(PasteBuffer); FreeRotateBuffer()} }
 				ha:Mirror buffer (up/down) = { li:action={Mode(PasteBuffer); PasteBuffer(Mirror)} }
 				ha:Mirror buffer (left/right) = { li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
+				-
 				ha:Clear buffer = { action=PasteBuffer(Clear) }
 				ha:Convert buffer to element = { action=PasteBuffer(Convert) }
 				ha:Break buffer elements to pieces = { action=PasteBuffer(Restore) }
 				ha:Save buffer elements to file = { action=Save(PasteBuffer) }
+				-
 				ha:Select current buffer = { foreground=grey50; sensitive=false }
 				ha:\#1 = { checked=buffer,1; a=Shift<Key>1; action=PasteBuffer(1) }
 				ha:\#2 = { checked=buffer,2; a=Shift<Key>2; action=PasteBuffer(2) }
@@ -312,12 +327,15 @@ ha:{
 				ha:Reset scanned pads/pins/vias = { li:action={Connection(ResetPinsViasAndPads); Display(Redraw)} }
 				ha:Reset scanned lines/polygons = { li:action={Connection(ResetLinesAndPolygons); Display(Redraw)} }
 				ha:Reset all connections = { a=Shift<Key>f; li:action={Connection(Reset); Display(Redraw)} }
+				-
 				ha:Optimize rats-nest = { a=<Key>o; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(AllRats); Atomic(Block)} }
 				ha:Erase rats-nest = { a=<Key>e; action=DeleteRats(AllRats) }
 				ha:Erase selected rats = { a=Shift<Key>e; action=DeleteRats(SelectedRats) }
+				-
 				ha:Auto-route selected rats = { action=AutoRoute(Selected) }
 				ha:Auto-route all rats = { action=AutoRoute(AllRats) }
 				ha:Rip up all auto-routed tracks = { action=RipUp(All) }
+				-
 				ha:Auto-Optimize = { a={Shift<Key>=}; action=djopt(auto) }
 				ha:Debumpify = { action=djopt(debumpify) }
 				ha:Unjaggy = { action=djopt(unjaggy) }
@@ -335,7 +353,9 @@ ha:{
 					}
 				}
 				ha:Only autorouted nets = { checked=optautoonly; action=OptAutoOnly() }
+				-
 				ha:Design Rule Checker = { action=DRC() }
+				-
 				ha:Apply vendor drill mapping = { action=ApplyVendor() }
 			}
 		} # Connects
