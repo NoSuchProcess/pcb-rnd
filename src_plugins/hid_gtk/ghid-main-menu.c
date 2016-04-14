@@ -65,16 +65,14 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 	const gchar *accel = NULL;
 	char *menu_label;
 	lht_node_t *n_action = hid_cfg_menu_field(sub_res, MF_ACTION, NULL);
+	lht_node_t *n_keydesc = hid_cfg_menu_field(sub_res, MF_ACCELERATOR, NULL);
 
 	/* Resolve accelerator and save it */
 	tmp_val = hid_cfg_menu_field_str(sub_res, MF_ACCELERATOR);
 	if (tmp_val != NULL) {
-		lht_node_t *anode;
-
 		assert(node != NULL);
-		anode = hid_cfg_menu_field(sub_res, MF_ACTION, NULL);
-		if (anode != NULL) {
-			hid_cfg_keys_add_by_desc(&ghid_keymap, tmp_val, anode, NULL, 0);
+		if (n_action != NULL) {
+			hid_cfg_keys_add_by_desc(&ghid_keymap, n_keydesc, n_action, NULL, 0);
 #warning TODO: this has to be a functio that respects lists
 			accel = tmp_val;
 		}

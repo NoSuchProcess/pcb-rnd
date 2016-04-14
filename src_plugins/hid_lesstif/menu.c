@@ -43,7 +43,7 @@ hid_cfg_t *lesstif_cfg;
 
 static Colormap cmap;
 
-static void note_accelerator(const char *acc, lht_node_t *node);
+static void note_accelerator(const lht_node_t *node);
 static void note_widget_flag(Widget w, char *type, const char *name);
 
 static const char getxy_syntax[] = "GetXY()";
@@ -705,13 +705,14 @@ static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * p
 	hid_cfg_action(node);
 }
 
-static void note_accelerator(const char *acc, lht_node_t *node)
+static void note_accelerator(const lht_node_t *node)
 {
-	lht_node_t *anode;
+	lht_node_t *anode, *knode;
 	assert(node != NULL);
 	anode = hid_cfg_menu_field(node, MF_ACTION, NULL);
-	if (anode != NULL)
-		hid_cfg_keys_add_by_desc(&lesstif_keymap, acc, anode, NULL, 0);
+	knode = hid_cfg_menu_field(node, MF_ACCELERATOR, NULL);
+	if ((anode != NULL) && (knode != NULL))
+		hid_cfg_keys_add_by_desc(&lesstif_keymap, knode, anode, NULL, 0);
 	else
 		hid_cfg_error(node, "No action specified for key accel\n");
 }
@@ -836,7 +837,8 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 		XmString as = XmStringCreatePCB(strdup(r));
 		stdarg(XmNacceleratorText, as);
 		/*stdarg(XmNaccelerator, r->v[1].value); */
-		note_accelerator(r, node);
+#warning TODO: pass lht_node_t here, build the string from the transformed variant above
+		note_accelerator(node);
 	}
 
 	v = node->name;

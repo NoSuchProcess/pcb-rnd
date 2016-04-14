@@ -52,7 +52,7 @@ typedef struct hid_cfg_keyseq_s  hid_cfg_keyseq_t;
 struct hid_cfg_keyseq_s {
 	unsigned long int keysym;  /* optional 32 bit long storage the GUI hid should cast to whatever the GUI backend supports */
 
-	lht_node_t *action_node; /* terminal node: end of sequence, run actions */
+	const lht_node_t *action_node; /* terminal node: end of sequence, run actions */
 
 	htip_t seq_next; /* ... or if node is NULL, a hash for each key that may follow the current one */
 	hid_cfg_keyseq_t *parent;
@@ -102,7 +102,7 @@ hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *p
    key in the sequence, up to out_seq_len.
    Returns -1 on failure or the length of the sequence.
 */
-int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const char *keydesc, lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len);
+int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const lht_node_t *keydesc, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len);
 
 /* Process next input key stroke.
    Seq and seq_len must not be NULL as they are the internal state of multi-key

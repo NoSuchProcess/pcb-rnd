@@ -245,13 +245,15 @@ static unsigned short int translate_key(hid_cfg_keys_t *km, const char *desc, in
 }
 
 
-int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const char *keydesc, lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len)
+int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const lht_node_t *keydescn, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len)
 {
 	const char *curr, *next, *last, *k;
 	hid_cfg_mod_t mods[HIDCFG_MAX_KEYSEQ_LEN];
 	unsigned short int key_chars[HIDCFG_MAX_KEYSEQ_LEN];
 	int n, slen, len;
 	hid_cfg_keyseq_t *lasts;
+#warning TODO: keydescn may be a list
+	const char *keydesc = keydescn->data.text.value;
 
 	slen = 0;
 	curr = keydesc;
