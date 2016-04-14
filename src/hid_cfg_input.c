@@ -244,19 +244,15 @@ static unsigned short int translate_key(hid_cfg_keys_t *km, const char *desc, in
 	return km->translate_key(tmp, len);
 }
 
-
-int hid_cfg_keys_add_by_strdesc(hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len)
+static int parse_keydesc(hid_cfg_keys_t *km, const char *keydesc, hid_cfg_mod_t *mods, unsigned short int *key_chars, int arr_len)
 {
 	const char *curr, *next, *last, *k;
-	hid_cfg_mod_t mods[HIDCFG_MAX_KEYSEQ_LEN];
-	unsigned short int key_chars[HIDCFG_MAX_KEYSEQ_LEN];
 	int n, slen, len;
-	hid_cfg_keyseq_t *lasts;
 
 	slen = 0;
 	curr = keydesc;
 	do {
-		if (slen >= HIDCFG_MAX_KEYSEQ_LEN)
+		if (slen >= arr_len)
 			return -1;
 		while(isspace(*curr)) curr++;
 		if (*curr == '\0')
@@ -290,10 +286,22 @@ int hid_cfg_keys_add_by_strdesc(hid_cfg_keys_t *km, const char *keydesc, const l
 			return -1;
 		}
 
-
 		slen++;
 		curr = next;
 	} while(curr != NULL);
+	return slen;
+}
+
+int hid_cfg_keys_add_by_strdesc(hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len)
+{
+	hid_cfg_mod_t mods[HIDCFG_MAX_KEYSEQ_LEN];
+	unsigned short int key_chars[HIDCFG_MAX_KEYSEQ_LEN];
+	hid_cfg_keyseq_t *lasts;
+	int slen, n;
+
+	slen = parse_keydesc(km, keydesc, mods, key_chars, HIDCFG_MAX_KEYSEQ_LEN);
+	if (slen <= 0)
+		return slen;
 
 	if ((out_seq != NULL) && (slen >= out_seq_len))
 		return -1;
