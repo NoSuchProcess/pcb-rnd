@@ -77,6 +77,11 @@ typedef struct hid_cfg_keys_s {
 	   on error. */
 	unsigned short int (*translate_key)(char *desc, int len);
 
+	/* convert a key_char to human readable name, copy the string to out/out_len.
+	   Return 0 on success. */
+	int (*key_name)(unsigned short int key_char, char *out, int out_len);
+
+
 	int auto_chr;                       /* if non-zero: don't call translate_key() for 1-char symbols, handle the default way */
 	const hid_cfg_keytrans_t *auto_tr;  /* apply this table before calling translate_key() */
 } hid_cfg_keys_t;
@@ -106,6 +111,14 @@ hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *p
 */
 int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const lht_node_t *keydesc, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len);
 int hid_cfg_keys_add_by_strdesc(hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len);
+
+
+/* Allocate a new string and generate a human readable accel-text; mask determines
+   which keys on the list are generated (when multiple key sequences are
+   specified for the same action; from LSB to MSB, at most 32 keys)
+   Caller needs to free the string; returns NULL on error.
+   */
+char *hid_cfg_keys_gen_accel(hid_cfg_keys_t *km, const lht_node_t *keydescn, unsigned long mask, const char *sep);
 
 /* Process next input key stroke.
    Seq and seq_len must not be NULL as they are the internal state of multi-key

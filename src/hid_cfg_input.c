@@ -26,6 +26,7 @@
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 #include <genht/hash.h>
+#include <genvector/gds_char.h>
 
 #include "global.h"
 #include "hid.h"
@@ -354,6 +355,63 @@ int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const lht_node_t *keydescn, con
 	}
 	return -1;
 }
+
+static void gen_accel(gds_t *s, hid_cfg_keys_t *km, const char *keydesc, int *cnt, const char *sep)
+{
+	hid_cfg_mod_t mods[HIDCFG_MAX_KEYSEQ_LEN];
+	unsigned short int key_chars[HIDCFG_MAX_KEYSEQ_LEN];
+	hid_cfg_keyseq_t *lasts;
+	int slen, n;
+
+	slen = parse_keydesc(km, keydesc, mods, key_chars, HIDCFG_MAX_KEYSEQ_LEN);
+	if (slen <= 0)
+		return;
+
+	if (*cnt > 0)
+		gds_append_str(s, sep);
+
+	for(n = 0; n < slen; n++) {
+		char buff[64];
+
+		if (km->key_name(key_chars[n], buff, sizeof(buff)) != 0)
+			strcpy(buff, "<unknown>");
+
+		if (mods[n] & M_Alt)   gds_append_str(s, "Alt-");
+		if (mods[n] & M_Ctrl)  gds_append_str(s, "Ctrl-");
+		if (mods[n] & M_Shift) gds_append_str(s, "Shift-");
+		gds_append_str(s, buff);
+	}
+}
+
+char *hid_cfg_keys_gen_accel(hid_cfg_keys_t *km, const lht_node_t *keydescn, unsigned long mask, const char *sep)
+{
+	gds_t s;
+	int cnt = 0;
+
+	memset(&s, 0, sizeof(s));
+
+	switch(keydescn->type) {
+		case LHT_TEXT:
+			if (mask & 1)
+				gen_accel(&s, km, keydescn->data.text.value, &cnt, sep);
+			break;
+		case LHT_LIST:
+		{
+			int ret = -1, cnt;
+			lht_node_t *n;
+			for(n = keydescn->data.list.first, cnt = 0; n != NULL; n = n->next, cnt++, mask >>= 1) {
+				if (n->type != LHT_TEXT)
+					break;
+				if (!(mask & 1))
+					continue;
+				gen_accel(&s, km, n->data.text.value, &cnt, sep);
+			}
+		}
+		default:;
+	}
+	return s.array;
+}
+
 
 int hid_cfg_keys_input(hid_cfg_keys_t *km, hid_cfg_mod_t mods, unsigned short int key_char, hid_cfg_keyseq_t **seq, int *seq_len)
 {
