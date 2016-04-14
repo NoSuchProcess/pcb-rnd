@@ -26,8 +26,6 @@
 #include "hid_actions.h"
 #include "hid_flags.h"
 #include "stdarg.h"
-
-#include "pcb-menu.h"
 #include <genht/hash.h>
 
 

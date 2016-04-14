@@ -413,7 +413,7 @@ void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, GHidRouteSty
 GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu)
 {
 	if (menu == NULL) {
-		Message("ghid: can't initialize the menu - is your gpcb-menu.res valid?\n");
+		Message("ghid: can't initialize the menu - is your menu .lht valid?\n");
 		exit(1);
 	}
 	return menu->accel_group;
