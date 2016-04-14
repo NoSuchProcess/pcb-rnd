@@ -100,9 +100,12 @@ hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *p
 /* Add a new key using a description (read from a lihata file usually)
    If out_seq is not NULL, load the array with pointers pointing to each
    key in the sequence, up to out_seq_len.
+   When key desc is a lihata node, it may be a list (multiple keys for the
+   same action). In this case return value and seq are set using the first key.
    Returns -1 on failure or the length of the sequence.
 */
 int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const lht_node_t *keydesc, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len);
+int hid_cfg_keys_add_by_strdesc(hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len);
 
 /* Process next input key stroke.
    Seq and seq_len must not be NULL as they are the internal state of multi-key

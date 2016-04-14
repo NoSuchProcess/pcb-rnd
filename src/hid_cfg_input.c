@@ -245,15 +245,13 @@ static unsigned short int translate_key(hid_cfg_keys_t *km, const char *desc, in
 }
 
 
-int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const lht_node_t *keydescn, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len)
+int hid_cfg_keys_add_by_strdesc(hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len)
 {
 	const char *curr, *next, *last, *k;
 	hid_cfg_mod_t mods[HIDCFG_MAX_KEYSEQ_LEN];
 	unsigned short int key_chars[HIDCFG_MAX_KEYSEQ_LEN];
 	int n, slen, len;
 	hid_cfg_keyseq_t *lasts;
-#warning TODO: keydescn may be a list
-	const char *keydesc = keydescn->data.text.value;
 
 	slen = 0;
 	curr = keydesc;
@@ -324,6 +322,29 @@ int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const lht_node_t *keydescn, con
 	}
 
 	return slen;
+}
+
+int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const lht_node_t *keydescn, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len)
+{
+	switch(keydescn->type) {
+		case LHT_TEXT: return hid_cfg_keys_add_by_strdesc(km, keydescn->data.text.value, action_node, out_seq, out_seq_len);
+		case LHT_LIST:
+		{
+			int ret = -1, cnt;
+			lht_node_t *n;
+			for(n = keydescn->data.list.first, cnt = 0; n != NULL; n = n->next, cnt++) {
+				if (n->type != LHT_TEXT)
+					break;
+				if (cnt == 0)
+					ret = hid_cfg_keys_add_by_strdesc(km, n->data.text.value, action_node, out_seq, out_seq_len);
+				else
+					hid_cfg_keys_add_by_strdesc(km, n->data.text.value, action_node, NULL, 0);
+			}
+			return ret;
+		}
+		default:;
+	}
+	return -1;
 }
 
 int hid_cfg_keys_input(hid_cfg_keys_t *km, hid_cfg_mod_t mods, unsigned short int key_char, hid_cfg_keyseq_t **seq, int *seq_len)
