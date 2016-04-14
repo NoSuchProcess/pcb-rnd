@@ -1500,6 +1500,15 @@ static unsigned short int ghid_translate_key(char *desc, int len)
 	return key;
 }
 
+int ghid_key_name(unsigned short int key_char, char *out, int out_len)
+{
+	char *name = gdk_keyval_name(key_char);
+	if (name == NULL)
+		return -1;
+	strncpy(out, name, out_len);
+	out[out_len-1] = '\0';
+	return 0;
+}
 
 void ghid_do_export(HID_Attr_Val * options)
 {
@@ -1507,6 +1516,7 @@ void ghid_do_export(HID_Attr_Val * options)
 
 	hid_cfg_keys_init(&ghid_keymap);
 	ghid_keymap.translate_key = ghid_translate_key;
+	ghid_keymap.key_name = ghid_key_name;
 	ghid_keymap.auto_chr = 1;
 	ghid_keymap.auto_tr = hid_cfg_key_default_trans;
 

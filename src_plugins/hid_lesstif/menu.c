@@ -806,9 +806,9 @@ static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc call
 
 static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc callback, int level)
 {
-	const char *v, *r;
+	const char *v;
 	Widget sub, btn = NULL;
-	lht_node_t *act;
+	lht_node_t *act, *kacc;
 
 	stdarg_n = 0;
 	v = hid_cfg_menu_field_str(node, MF_FOREGROUND);
@@ -832,12 +832,16 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 	if (v != NULL)
 		stdarg(XmNmnemonic, v);
 
-	r = hid_cfg_menu_field_str(node, MF_ACCELERATOR);
-	if (r != NULL) {
-		XmString as = XmStringCreatePCB(strdup(r));
-		stdarg(XmNacceleratorText, as);
-		/*stdarg(XmNaccelerator, r->v[1].value); */
-#warning TODO: pass lht_node_t here, build the string from the transformed variant above
+	kacc = hid_cfg_menu_field(node, MF_ACCELERATOR, NULL);
+	if (kacc != NULL) {
+		char *acc_str = hid_cfg_keys_gen_accel(&lesstif_keymap, kacc, 1, NULL);
+
+		if (acc_str != NULL) {
+			XmString as = XmStringCreatePCB(acc_str);
+			stdarg(XmNacceleratorText, as);
+		}
+
+#warning TODO: remove this call
 		note_accelerator(node);
 	}
 

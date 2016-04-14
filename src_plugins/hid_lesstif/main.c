@@ -1695,6 +1695,15 @@ static unsigned short int lesstif_translate_key(char *desc, int len)
 	return key;
 }
 
+int lesstif_key_name(unsigned short int key_char, char *out, int out_len)
+{
+	char *name = XKeysymToString(key_char);
+	if (name == NULL)
+		return -1;
+	strncpy(out, name, out_len);
+	out[out_len-1] = '\0';
+	return 0;
+}
 
 
 extern Widget lesstif_menubar;
@@ -1710,6 +1719,7 @@ static void lesstif_do_export(HID_Attr_Val * options)
 
 	hid_cfg_keys_init(&lesstif_keymap);
 	lesstif_keymap.translate_key = lesstif_translate_key;
+	lesstif_keymap.key_name = lesstif_key_name;
 	lesstif_keymap.auto_chr = 1;
 	lesstif_keymap.auto_tr = hid_cfg_key_default_trans;
 

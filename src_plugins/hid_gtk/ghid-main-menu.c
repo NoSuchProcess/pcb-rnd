@@ -62,19 +62,16 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 	gchar mnemonic = 0;
 	int j;
 	GtkAction *action = NULL;
-	const gchar *accel = NULL;
+	const char *accel = NULL;
 	char *menu_label;
 	lht_node_t *n_action = hid_cfg_menu_field(sub_res, MF_ACTION, NULL);
 	lht_node_t *n_keydesc = hid_cfg_menu_field(sub_res, MF_ACCELERATOR, NULL);
 
 	/* Resolve accelerator and save it */
-	tmp_val = hid_cfg_menu_field_str(sub_res, MF_ACCELERATOR);
-	if (tmp_val != NULL) {
-		assert(node != NULL);
+	if (n_keydesc != NULL) {
 		if (n_action != NULL) {
 			hid_cfg_keys_add_by_desc(&ghid_keymap, n_keydesc, n_action, NULL, 0);
-#warning TODO: this has to be a functio that respects lists
-			accel = tmp_val;
+			accel = hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, 1, NULL);
 		}
 		else
 			hid_cfg_error(sub_res, "No action specified for key accel\n");
@@ -149,6 +146,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 		else {
 			/* NORMAL ITEM */
 			GtkWidget *item = gtk_menu_item_new_gschem(menu_label, accel);
+			accel = NULL;
 			gtk_menu_shell_append(shell, item);
 			sub_res->user_data = item;
 			g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu->action_cb), (gpointer)n_action);
@@ -168,6 +166,10 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 		menu->actions = g_list_append(menu->actions, action);
 		sub_res->user_data = item;
 	}
+
+	/* unused accel key - generated, but never stored, time to free it */
+	if (accel != NULL)
+		free(accel);
 
 	return action;
 }
