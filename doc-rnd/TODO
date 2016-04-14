@@ -1,4 +1,3 @@
-- BUG: don't use ~/.pcb, use ~/.pcb-rnd; do not hardwire this in the code, make it a config.h setting
 - random breaks:
 	- gpmi plugin make is not triggered when gpmi is a buildin
 	- gpmi packages are not installed in plugins/pcb-rnd-gpmi
@@ -8,12 +7,12 @@
 	- vendordrill: free at exit (check for leaks)
 
 - resource conv cleanup:
-	- gtk: display hotkeys again
-	- lesstif: display hotkeys in the right format (even multikey)
 	- look for warnings
 	- key html converter for lihata: multi-key sequences (when accel is a list)
+	- action, all key combinations in tooltip?
 
 CLEANUP #5
+- BUG: don't use ~/.pcb, use ~/.pcb-rnd; do not hardwire this in the code, make it a config.h setting
 - libstroke: zoom
 - cleanup/rewrite resources:
 	- load/swap menus (TODO#1)
