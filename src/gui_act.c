@@ -41,6 +41,7 @@
 #include "misc.h"
 #include "stub_stroke.h"
 #include "hid_actions.h"
+#include "hid_init.h"
 
 /* --------------------------------------------------------------------------- */
 
@@ -1109,6 +1110,36 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
+/* --------------------------------------------------------------------------- */
+
+static const char switchhid_syntax[] = "SwitchHID(lesstif|gtk|batch)";
+
+static const char switchhid_help[] = "Switch to another HID.";
+
+/* %start-doc actions SwitchHID
+
+Switch to another HID.
+
+%end-doc */
+
+static int ActionSwitchHID(int argc, char **argv, Coord x, Coord y)
+{
+	HID *ng = hid_find_gui(argv[0]);
+	int chg;
+
+	if (ng == NULL) {
+		Message("No such HID.");
+		return 1;
+	}
+
+	next_gui = ng;
+	chg = PCB->Changed;
+	QuitApplication();
+	PCB->Changed = chg;
+
+	return 0;
+}
+
 
 HID_Action gui_action_list[] = {
 	{"Display", 0, ActionDisplay,
@@ -1137,6 +1168,9 @@ HID_Action gui_action_list[] = {
 	,
 	{"CreateMenu", 0, ActionCreateMenu,
 	 createmenu_help, createmenu_syntax}
+	,
+	{"SwitchHID", 0, ActionSwitchHID,
+	 switchhid_help, switchhid_syntax}
 };
 
 REGISTER_ACTIONS(gui_action_list, NULL)
