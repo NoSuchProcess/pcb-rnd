@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "fp_wget.h"
+#include "wget_common.h"
 
 enum {
 	FCTX_INVALID = 0,

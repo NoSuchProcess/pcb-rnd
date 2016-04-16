@@ -3,7 +3,7 @@
 #include <string.h>
 #include <genvector/gds_char.h>
 #include "global.h"
-#include "fp_wget.h"
+#include "wget_common.h"
 #include "gedasymbols.h"
 #include "plugins.h"
 #include "plug_footprint.h"
