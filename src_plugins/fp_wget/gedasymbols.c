@@ -2,6 +2,8 @@
 #include <ctype.h>
 #include <string.h>
 #include <genvector/gds_char.h>
+#include <genht/htsp.h>
+#include <genht/hash.h>
 #include "global.h"
 #include "wget_common.h"
 #include "gedasymbols.h"
@@ -9,7 +11,7 @@
 #include "plug_footprint.h"
 
 
-#define REQUIRE_PATH_PREFIX "gedasymbols://"
+#define REQUIRE_PATH_PREFIX "wget@gedasymbols"
 
 #define CGI_URL "http://www.gedasymbols.org/scripts/global_list.cgi"
 #define FP_URL "http://www.gedasymbols.org/"
@@ -66,12 +68,23 @@ static int md5_cmp_free(const char *last_fn, char *md5_last, char *md5_new)
 	return changed;
 }
 
+static int keyeq(char *a, char *b)
+{
+	return !strcmp(a, b);
+}
 
 int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 {
 	FILE *f;
 	int fctx;
 	char *md5_last, *md5_new;
+	LibraryMenuType *top;
+	int tmp;
+	htsp_t *path2menu;
+	char line[1024];
+	fp_get_mode mode;
+	gds_t vpath;
+	int vpath_base_len;
 
 	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return -1;
@@ -93,15 +106,59 @@ int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 
 	if (!md5_cmp_free(last_sum_fn, md5_last, md5_new)) {
 		printf("no chg.\n");
-		return 0;
+		mode = FP_WGET_OFFLINE; /* use the cache */
 	}
+	else
+		mode = 0;
 
-	if (fp_wget_open(url_idx_list, gedasym_cache, &f, &fctx, 0) != 0) {
+	if (fp_wget_open(url_idx_list, gedasym_cache, &f, &fctx, mode) != 0) {
 		printf("failed to download the new list\n");
 		remove(last_sum_fn); /* make sure it is downloaded next time */
 		return -1;
 	}
-/*	load_index(); */
+
+	gds_init(&vpath);
+	gds_append_str(&vpath, REQUIRE_PATH_PREFIX);
+	path2menu = htsp_alloc(strhash, keyeq);
+	htsp_set(path2menu, strdup(vpath.array), top);
+
+	gds_append(&vpath, '/');
+	vpath_base_len = vpath.used;
+
+	while(fgets(line, sizeof(line), f) != NULL) {
+		char *end, *fn;
+		LibraryMenuType *l, *parent;
+
+		if (*line == '#')
+			continue;
+		end = strchr(line, '|');
+		if (end == NULL)
+			continue;
+		*end = '\0';
+
+		gds_truncate(&vpath, vpath_base_len);
+		gds_append_str(&vpath, line);
+		end = vpath.array + vpath.used - 1;
+		while((end > vpath.array) && (*end != '/')) { end--; vpath.used--; }
+		*end = '\0';
+		vpath.used--;
+		end++;
+		fn = end;
+
+		fprintf(stderr, "FP WGET: '%s' '%s'\n", vpath.array, fn);
+		l = htsp_get(path2menu, vpath.array);
+		fprintf(stderr, " vpath='%s' l=%p\n", vpath.array, l);
+
+		if (l == NULL) {
+			char *new_dir = vpath.array + vpath_base_len;
+			l = fp_append_topdir(REQUIRE_PATH_PREFIX, new_dir, &tmp);
+			htsp_set(path2menu, strdup(vpath.array), l);
+			fprintf(stderr, "    added: '%s' -> %p\n", new_dir, l);
+		}
+
+		fprintf(stderr, " fp: '%s' '%s' under %p\n", vpath.array, fn, l);
+		fp_append_entry(l, vpath.array, fn, PCB_FP_FILE, NULL);
+	}
 	fp_wget_close(&f, &fctx);
 
 	printf("update!\n");
@@ -139,16 +196,14 @@ void fp_gedasymbols_fclose(plug_fp_t *ctx, FILE * f, fp_fopen_ctx_t *fctx)
 }
 
 
-static plug_fp_t fp_wget;
+static plug_fp_t fp_gedasymbols;
 
 void fp_gedasymbols_init(void)
 {
-	fp_wget.plugin_data = NULL;
-	fp_wget.load_dir = fp_gedasymbols_load_dir;
-	fp_wget.fopen = fp_gedasymbols_fopen;
-	fp_wget.fclose = fp_gedasymbols_fclose;
+	fp_gedasymbols.plugin_data = NULL;
+	fp_gedasymbols.load_dir = fp_gedasymbols_load_dir;
+	fp_gedasymbols.fopen = fp_gedasymbols_fopen;
+	fp_gedasymbols.fclose = fp_gedasymbols_fclose;
 
-	HOOK_REGISTER(plug_fp_t, plug_fp_chain, &fp_wget);
-
-	return NULL;
+	HOOK_REGISTER(plug_fp_t, plug_fp_chain, &fp_gedasymbols);
 }

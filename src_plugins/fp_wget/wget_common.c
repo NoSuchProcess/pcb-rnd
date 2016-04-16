@@ -10,7 +10,7 @@ enum {
 };
 
 const char *wget_cmd = "wget -U 'pcb-rnd-fp_wget'";
-int fp_wget_offline = 0;
+int fp_wget_offline = 1;
 
 static int mkdirp(const char *dir)
 {
@@ -20,7 +20,7 @@ static int mkdirp(const char *dir)
 	return system(buff);
 }
 
-int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, int update)
+int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, fp_get_mode mode)
 {
 	char *cmd, *upds;
 	int wl = strlen(wget_cmd), ul = strlen(url), cl = strlen(cache_path);
@@ -28,7 +28,7 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, i
 
 	*fctx = FCTX_INVALID;
 
-	if (update)
+	if (mode & FP_WGET_UPDATE)
 		upds = "-c";
 	else
 		upds = "";
@@ -49,9 +49,10 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, i
 		if (cdir == NULL)
 			goto error;
 		cdir += 3;
-		sprintf(cmd, "%s -O '%s/%s' %s '%s'", wget_cmd, cache_path, cdir, upds, url);
-		if (!fp_wget_offline)
+		if ((!fp_wget_offline) && !(mode & FP_WGET_OFFLINE)) {
+			sprintf(cmd, "%s -O '%s/%s' %s '%s'", wget_cmd, cache_path, cdir, upds, url);
 			system(cmd);
+		}
 		if (f != NULL) {
 			char *end;
 			sprintf(cmd, "%s/%s", cache_path, cdir);

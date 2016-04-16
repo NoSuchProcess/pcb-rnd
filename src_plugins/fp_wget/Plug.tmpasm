@@ -1,0 +1,8 @@
+put /local/pcb/mod {fp_wget}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/fp_wget/fp_wget.o $(PLUGDIR)/fp_wget/wget_common.o $(PLUGDIR)/fp_wget/gedasymbols.o @]
+
+switch /local/pcb/fp_wget/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
