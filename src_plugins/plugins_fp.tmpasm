@@ -3,3 +3,4 @@
 # while it doesn't want to link the rest.
 
 include {../src_plugins/fp_fs/Plug.tmpasm}
+include {../src_plugins/fp_wget/Plug.tmpasm}
