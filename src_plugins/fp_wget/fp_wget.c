@@ -10,7 +10,7 @@ enum {
 };
 
 const char *wget_cmd = "wget -U 'pcb-rnd-fp_wget'";
-int fp_wget_offline = 1;
+int fp_wget_offline = 0;
 
 static int mkdirp(const char *dir)
 {
@@ -93,3 +93,4 @@ int fp_wget_close(FILE **f, int *fctx)
 
 	return -1;
 }
+

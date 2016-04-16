@@ -1,12 +1,19 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <genvector/gds_char.h>
+#include "global.h"
 #include "fp_wget.h"
 #include "gedasymbols.h"
+#include "plugins.h"
+#include "plug_footprint.h"
+
 
 #define REQUIRE_PATH_PREFIX "gedasymbols://"
 
 #define CGI_URL "http://www.gedasymbols.org/scripts/global_list.cgi"
+#define FP_URL "http://www.gedasymbols.org/"
+#define FP_DL "?dl"
 static const char *url_idx_md5 = CGI_URL "?md5";
 static const char *url_idx_list = CGI_URL;
 static const char *gedasym_cache = "fp_wget_cache";
@@ -101,5 +108,47 @@ int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 	return 0;
 }
 
+#define FIELD_WGET_CTX 0
+
+FILE *fp_gedasymbols_fopen(plug_fp_t *ctx, const char *path, const char *name, fp_fopen_ctx_t *fctx)
+{
+	gds_t s;
+	gds_init(&s);
+	FILE *f;
+
+	if (strncmp(path, "gedasymbols/", 12) == 0)
+		path+=12;
+	if (*path == '/')
+		path++;
+
+	gds_append_str(&s, FP_URL);
+	gds_append_str(&s, path);
+	gds_append(&s, '/');
+	gds_append_str(&s, name);
+	gds_append_str(&s, FP_DL);
+
+	fp_wget_open(s.array, gedasym_cache, &f, &(fctx->field[FIELD_WGET_CTX].i), 1);
+
+	gds_uninit(&s);
+	return f;
+}
+
+void fp_gedasymbols_fclose(plug_fp_t *ctx, FILE * f, fp_fopen_ctx_t *fctx)
+{
+	fp_wget_close(&f, &(fctx->field[FIELD_WGET_CTX].i));
+}
 
 
+static plug_fp_t fp_wget;
+
+void fp_gedasymbols_init(void)
+{
+	fp_wget.plugin_data = NULL;
+	fp_wget.load_dir = fp_gedasymbols_load_dir;
+	fp_wget.fopen = fp_gedasymbols_fopen;
+	fp_wget.fclose = fp_gedasymbols_fclose;
+
+	HOOK_REGISTER(plug_fp_t, plug_fp_chain, &fp_wget);
+
+	return NULL;
+}
