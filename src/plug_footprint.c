@@ -33,6 +33,7 @@
 #include "paths.h"
 #include "plug_footprint.h"
 #include "plugins.h"
+#include "pcb-printf.h"
 
 #include <genht/htsp.h>
 #include <genht/hash.h>
@@ -112,7 +113,7 @@ void fp_fclose(FILE * f, fp_fopen_ctx_t *fctx)
 		fctx->backend->fclose(fctx->backend, f, fctx);
 }
 
-library_t *fp_append_entry(library_t *parent, const char *dirname, const char *name, fp_type_t type, void *tags[])
+library_t *fp_append_entry(library_t *parent, const char *name, fp_type_t type, void *tags[])
 {
 	library_t *entry;   /* Pointer to individual menu entry */
 	size_t len;
@@ -122,28 +123,16 @@ library_t *fp_append_entry(library_t *parent, const char *dirname, const char *n
 	if (entry == NULL)
 		return NULL;
 
-	/* 
-	 * entry->AllocatedMemory points to abs path to the footprint.
-	 * entry->ListEntry points to fp name itself.
-	 */
-	len = strlen(dirname) + strlen("/") + strlen(name) + 8;
-	entry->data.fp.full_path = malloc(len);
-	strcpy(entry->data.fp.full_path, dirname);
-	strcat(entry->data.fp.full_path, PCB_DIR_SEPARATOR_S);
-
-	/* store pointer to start of footprint name */
-	entry->name = entry->data.fp.full_path + strlen(entry->data.fp.full_path);
-	entry->dontfree_name = 1;
-
-	/* Now place footprint name into AllocatedMemory */
-	strcat(entry->data.fp.full_path, name);
-
 	if (type == PCB_FP_PARAMETRIC)
-		strcat(entry->data.fp.full_path, "()");
+		entry->name = pcb_strdup_printf("%s()", name);
+	else
+		entry->name = strdup(name);
 
 	entry->type = LIB_FOOTPRINT;
 	entry->data.fp.type = type;
 	entry->data.fp.tags = tags;
+	entry->data.fp.loc_info = NULL;
+	entry->data.fp.backend_data = NULL;
 }
 
 library_t *fp_lib_search_len(library_t *dir, const char *name, int name_len)
@@ -185,7 +174,6 @@ library_t *fp_mkdir_len(library_t *parent, const char *name, int name_len)
 		l->name = strndup(name, name_len);
 	else
 		l->name = strdup(name);
-	l->dontfree_name = 0;
 	l->parent = parent;
 
 	return l;

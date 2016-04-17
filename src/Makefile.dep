@@ -239,7 +239,8 @@
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h mymem.h global.h data.h paths.h plugins.h \
- plug_footprint.h vtlibrary.h compat_fs.h error.h
+ plug_footprint.h vtlibrary.h compat_fs.h error.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h
 ../src_plugins/fp_wget/fp_wget.o: ../src_plugins/fp_wget/fp_wget.c \
  global.h ../config.h ../config.manual.h ../config.auto.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -1680,8 +1681,9 @@ plug_footprint.o: plug_footprint.c ../config.h ../config.manual.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h data.h file.h mymem.h paths.h plug_footprint.h \
- vtlibrary.h plugins.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ vtlibrary.h plugins.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h
 plug_footprint_host.o: plug_footprint_host.c ../config.h \
  ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \

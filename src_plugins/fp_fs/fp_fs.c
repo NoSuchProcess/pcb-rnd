@@ -45,6 +45,7 @@
 #include "plug_footprint.h"
 #include "compat_fs.h"
 #include "error.h"
+#include "misc.h"
 
 static fp_type_t pcb_fp_file_type(const char *fn, void ***tags);
 
@@ -78,6 +79,7 @@ typedef struct {
 static int list_cb(void *cookie, const char *subdir, const char *name, fp_type_t type, void *tags[])
 {
 	list_st_t *l = (list_st_t *) cookie;
+	library_t *e;
 
 	if (type == PCB_FP_DIR) {
 		list_dir_t *d;
@@ -93,7 +95,8 @@ static int list_cb(void *cookie, const char *subdir, const char *name, fp_type_t
 	}
 
 	l->children++;
-	fp_append_entry(l->menu, subdir, name, type, tags);
+	e = fp_append_entry(l->menu, name, type, tags);
+	e->data.fp.loc_info = Concat(subdir, "/", name, NULL);
 
 	return 0;
 }
@@ -215,7 +218,8 @@ static int fp_fs_load_dir_(library_t *pl, const char *subdir, const char *toppat
 {
 	list_st_t l;
 	list_dir_t *d, *nextd;
-	char working_[MAXPATHLEN + 1], *visible_subdir;
+	char working_[MAXPATHLEN + 1];
+	const char *visible_subdir;
 	char *working;								/* String holding abs path to working dir */
 	int menuidx;
 

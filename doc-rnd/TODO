@@ -14,6 +14,7 @@
 	- action, all key combinations in tooltip?
 
 CLEANUP #5
+- move print.[ch]
 - BUG: don't use ~/.pcb, use ~/.pcb-rnd; do not hardwire this in the code, make it a config.h setting
 - libstroke: zoom
 - cleanup/rewrite resources:

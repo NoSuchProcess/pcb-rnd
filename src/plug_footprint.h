@@ -81,7 +81,7 @@ library_t *fp_lib_search(library_t *dir, const char *name);
 const char *fp_get_library_shell(void);
 
 /* Append a menu entry in the tree */
-library_t *fp_append_entry(library_t *parent, const char *dirname, const char *name, fp_type_t type, void *tags[]);
+library_t *fp_append_entry(library_t *parent, const char *name, fp_type_t type, void *tags[]);
 
 /* walk through all lib paths and build the library menu */
 int fp_read_lib_all(void);

@@ -54,8 +54,7 @@ typedef struct library_s library_t;
 
 /* An element of a library: either a directory or a footprint */
 struct library_s {
-	char *name;         /* the string for the selection box */
-	int dontfree_name;  /* do not free(->name) if non-zero */
+	char *name;            /* visible name */
 	library_type_t type;
 	library_t *parent;
 
@@ -64,8 +63,7 @@ struct library_s {
 			vtlib_t children;
 		} dir;
 		struct { /* type == LIB_FOOTPRINT */
-			char *full_path;
-			char *loc_info;     /* allocated*/
+			char *loc_info;
 			void *backend_data;
 			fp_type_t type;
 			void **tags;        /* an array of void * tag IDs; last tag ID is NULL */

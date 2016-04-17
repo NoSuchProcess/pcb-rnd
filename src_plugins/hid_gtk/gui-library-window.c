@@ -399,7 +399,7 @@ static void library_window_preview_refresh(GhidLibraryWindow * library_window, c
 	if (name == NULL) {
 		if ((entry == NULL) || (entry->type != LIB_FOOTPRINT))
 			return;
-		fullp = entry->data.fp.full_path;
+		fullp = entry->data.fp.loc_info;
 	}
 	if (LoadElementToBuffer(PASTEBUFFER, name == NULL ? fullp : name))
 		SetMode(PASTEBUFFER_MODE);
@@ -424,6 +424,8 @@ static void library_window_preview_refresh(GhidLibraryWindow * library_window, c
 			}
 		}
 	}
+	g_string_append(pt, "\nLocation:\n ");
+	g_string_append(pt, entry->data.fp.loc_info);
 	g_string_append(pt, "\n");
 	gtk_label_set_text(GTK_LABEL(library_window->preview_text), g_string_free(pt, FALSE));
 }
