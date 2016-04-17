@@ -1598,7 +1598,7 @@ void pcb_main_uninit(void)
 	uninit_strflags_buf();
 	uninit_strflags_layerlist();
 
-	FreeLibraryMemory(&Library);
+	fp_free_children(&library);
 	fp_uninit();
 	file_uninit();
 	funchash_uninit();
@@ -1813,7 +1813,7 @@ int main(int argc, char *argv[])
 
 	/* read the library file and display it if it's not empty
 	 */
-	if (!fp_read_lib_all() && Library.MenuN)
+	if (!fp_read_lib_all() && library.data.dir.children.used)
 		hid_action("LibraryChanged");
 
 	if (Settings.ScriptFilename) {

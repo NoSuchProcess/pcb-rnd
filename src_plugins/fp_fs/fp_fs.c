@@ -70,7 +70,7 @@ struct list_dir_s {
 };
 
 typedef struct {
-	LibraryMenuTypePtr menu;
+	library_t *menu;
 	list_dir_t *subdirs;
 	int children;
 } list_st_t;
@@ -98,7 +98,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, fp_type_t
 	return 0;
 }
 
-static int fp_fs_list(const char *subdir, int recurse,
+static int fp_fs_list(library_t *pl, const char *subdir, int recurse,
 								int (*cb) (void *cookie, const char *subdir, const char *name, fp_type_t type, void *tags[]), void *cookie,
 								int subdir_may_not_exist, int need_tags)
 {
@@ -119,6 +119,9 @@ static int fp_fs_list(const char *subdir, int recurse,
 		Message(_("fp_fs_list(): Could not determine initial working directory\n"));
 		return 0;
 	}
+
+	if (strcmp(subdir, ".svn") == 0)
+		return 0;
 
 	if (chdir(subdir)) {
 		if (!subdir_may_not_exist)
@@ -194,7 +197,7 @@ static int fp_fs_list(const char *subdir, int recurse,
 			if ((S_ISDIR(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
 				cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_DIR, NULL);
 				if (recurse) {
-					n_footprints += fp_fs_list(fn, recurse, cb, cookie, 0, need_tags);
+					n_footprints += fp_fs_list(pl, fn, recurse, cb, cookie, 0, need_tags);
 				}
 				continue;
 			}
@@ -208,35 +211,41 @@ static int fp_fs_list(const char *subdir, int recurse,
 	return n_footprints;
 }
 
-static int fp_fs_load_dir_(const char *subdir, const char *toppath, int is_root)
+static int fp_fs_load_dir_(library_t *pl, const char *subdir, const char *toppath, int is_root)
 {
 	list_st_t l;
 	list_dir_t *d, *nextd;
-	char working_[MAXPATHLEN + 1];
+	char working_[MAXPATHLEN + 1], *visible_subdir;
 	char *working;								/* String holding abs path to working dir */
 	int menuidx;
 
 	sprintf(working_, "%s%c%s", toppath, PCB_DIR_SEPARATOR_C, subdir);
 	resolve_path(working_, &working, 0);
 
-	l.menu = fp_append_topdir(pcb_basename(toppath), pcb_basename(subdir), &menuidx);
+	if (strcmp(subdir, ".") == 0)
+		visible_subdir = "fs";
+	else
+		visible_subdir = subdir;
+
+	l.menu = fp_lib_search(pl, visible_subdir);
+	if (l.menu == NULL)
+		l.menu = fp_mkdir_len(pl, visible_subdir, -1);
 	l.subdirs = NULL;
 	l.children = 0;
 
-	fp_fs_list(working, 0, list_cb, &l, is_root, 1);
+	fp_fs_list(l.menu, working, 0, list_cb, &l, is_root, 1);
 
 	/* now recurse to each subdirectory mapped in the previous call;
 	   by now we don't care if menu is ruined by the realloc() in GetLibraryMenuMemory() */
 	for (d = l.subdirs; d != NULL; d = nextd) {
-		l.children += fp_fs_load_dir_(d->subdir, d->parent, 0);
+		l.children += fp_fs_load_dir_(l.menu, d->subdir, d->parent, 0);
 		nextd = d->next;
 		free(d->subdir);
 		free(d->parent);
 		free(d);
 	}
-	if (l.children == 0) {
-		DeleteLibraryMenuMemory(&Library, menuidx);
-	}
+	if (l.children == 0)
+		fp_rmdir(l.menu);
 	free(working);
 	return l.children;
 }
@@ -244,7 +253,7 @@ static int fp_fs_load_dir_(const char *subdir, const char *toppath, int is_root)
 
 static int fp_fs_load_dir(plug_fp_t *ctx, const char *path)
 {
-	return fp_fs_load_dir_(".", path, 1);
+	return fp_fs_load_dir_(&library, ".", path, 1);
 }
 
 typedef struct {
@@ -296,7 +305,7 @@ char *fp_fs_search(const char *search_path, const char *basename, int parametric
 		resolve_path(path, &fpath, 0);
 /*		fprintf(stderr, " in '%s'\n", fpath);*/
 
-		fp_fs_list(fpath, 1, fp_search_cb, &ctx, 1, 0);
+		fp_fs_list(&library, fpath, 1, fp_search_cb, &ctx, 1, 0);
 		if (ctx.path != NULL) {
 			sprintf(path, "%s%c%s", ctx.path, PCB_DIR_SEPARATOR_C, ctx.real_name);
 			free(ctx.path);

@@ -68,19 +68,12 @@ static int md5_cmp_free(const char *last_fn, char *md5_last, char *md5_new)
 	return changed;
 }
 
-static int keyeq(char *a, char *b)
-{
-	return !strcmp(a, b);
-}
-
 int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 {
 	FILE *f;
 	int fctx;
 	char *md5_last, *md5_new;
-	LibraryMenuType *top;
 	int tmp;
-	htsp_t *path2menu;
 	char line[1024];
 	fp_get_mode mode;
 	gds_t vpath;
@@ -119,15 +112,12 @@ int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 
 	gds_init(&vpath);
 	gds_append_str(&vpath, REQUIRE_PATH_PREFIX);
-	path2menu = htsp_alloc(strhash, keyeq);
-	htsp_set(path2menu, strdup(vpath.array), top);
-
 	gds_append(&vpath, '/');
 	vpath_base_len = vpath.used;
 
 	while(fgets(line, sizeof(line), f) != NULL) {
 		char *end, *fn;
-		LibraryMenuType *l, *parent;
+		library_t *l, *parent;
 
 		if (*line == '#')
 			continue;
@@ -136,6 +126,7 @@ int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 			continue;
 		*end = '\0';
 
+		/* split path and fn; path stays in vpath.array, fn is a ptr to the file name */
 		gds_truncate(&vpath, vpath_base_len);
 		gds_append_str(&vpath, line);
 		end = vpath.array + vpath.used - 1;
@@ -145,18 +136,8 @@ int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 		end++;
 		fn = end;
 
-		fprintf(stderr, "FP WGET: '%s' '%s'\n", vpath.array, fn);
-		l = htsp_get(path2menu, vpath.array);
-		fprintf(stderr, " vpath='%s' l=%p\n", vpath.array, l);
-
-		if (l == NULL) {
-			char *new_dir = vpath.array + vpath_base_len;
-			l = fp_append_topdir(REQUIRE_PATH_PREFIX, new_dir, &tmp);
-			htsp_set(path2menu, strdup(vpath.array), l);
-			fprintf(stderr, "    added: '%s' -> %p\n", new_dir, l);
-		}
-
-		fprintf(stderr, " fp: '%s' '%s' under %p\n", vpath.array, fn, l);
+		/* add to the database */
+		l = fp_mkdir_p(vpath.array);
 		fp_append_entry(l, vpath.array, fn, PCB_FP_FILE, NULL);
 	}
 	fp_wget_close(&f, &fctx);

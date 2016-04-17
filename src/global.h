@@ -255,8 +255,10 @@ struct LibraryEntryTpye_s {
 	 *Package,										/* package */
 	 *Value,											/* the value field */
 	 *Description;								/* some descritional text */
+#if 0
 	fp_type_t Type;
 	void **Tags;									/* an array of void * tag IDs; last tag ID is NULL */
+#endif
 };
 
 /* If the internal flag is set, the only field that is valid is Name,

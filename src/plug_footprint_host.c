@@ -103,7 +103,7 @@ int fp_read_lib_all(void)
 	 * library.
 	 */
 	if (fp_read_lib_all_(Settings.LibrarySearchPaths) > 0 || resultFP != NULL) {
-		sort_library(&Library);
+		fp_sort_children(&library);
 		return 0;
 	}
 

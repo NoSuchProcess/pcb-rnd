@@ -1,9 +1,11 @@
+- test before release: gsch2pcb-rnd
+
 - random breaks:
 	- gpmi plugin make is not triggered when gpmi is a buildin
 	- gpmi packages are not installed in plugins/pcb-rnd-gpmi
 
-- vemdordrill conversion:
-	- test vendordrill if it works
+- vendordrill conversion:
+	+ test vendordrill if it works
 	- vendordrill: free at exit (check for leaks)
 
 - resource conv cleanup:
@@ -39,6 +41,7 @@ CLEANUP #6:
 		- gui load dialog with tags listed
 
 - reduce
+		- centralize all keyeq() calls
 		- replace hid_load_settings() with lihata
 		- hash in hid_attrib.c?
 		- hash in hid_color.c; test: eps

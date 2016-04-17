@@ -2,6 +2,7 @@
 #define PCB_PLUG_FOOTPRINT_H
 
 #include <stdio.h>
+#include "vtlibrary.h"
 
 typedef struct plug_fp_s plug_fp_t;
 
@@ -16,14 +17,6 @@ typedef struct {
 /* hook bindings, see below */
 FILE *fp_fopen(const char *path, const char *name, fp_fopen_ctx_t *fctx);
 void fp_fclose(FILE * f, fp_fopen_ctx_t *fctx);
-
-
-typedef enum {
-	PCB_FP_INVALID,
-	PCB_FP_DIR,
-	PCB_FP_FILE,
-	PCB_FP_PARAMETRIC
-} fp_type_t;
 
 /* duplicates the name and splits it into a basename and params;
    params is NULL if the name is not parametric (and "" if parameter list is empty)
@@ -72,16 +65,24 @@ extern plug_fp_t *plug_fp_chain;
 
 /* Optional pcb-rnd-side glue for some implementations */
 
+extern library_t library; /* the footprint library */
+
+#define get_library_memory(parent) vtlib_alloc_append(((parent) == NULL ? &library.data.dir.children : &(parent)->data.dir.children), 1);
+
+void fp_free_children(library_t *parent);
+void fp_sort_children(library_t *parent);
+void fp_rmdir(library_t *dir);
+library_t *fp_mkdir_p(const char *path);
+
 #ifndef PCB_NO_GLUE
 /* Return the library shell string (from Settings) */
 const char *fp_get_library_shell(void);
 
 /* Append a menu entry in the tree */
-LibraryEntryType *fp_append_entry(LibraryMenuType *parent, const char *dirname, const char *name, fp_type_t type, void *tags[]);
-
-LibraryMenuType *fp_append_topdir(const char *parent_dir, const char *dir_name, int *menuidx);
+library_t *fp_append_entry(library_t *parent, const char *dirname, const char *name, fp_type_t type, void *tags[]);
 
 /* walk through all lib paths and build the library menu */
 int fp_read_lib_all(void);
+
 #endif
 #endif

@@ -98,8 +98,7 @@ static gint library_window_configure_event_cb(GtkWidget * widget, GdkEventConfig
 
 enum {
 	MENU_NAME_COLUMN,							/* Text to display in the tree     */
-	MENU_LIBRARY_COLUMN,					/* Pointer to the LibraryMenuType  */
-	MENU_ENTRY_COLUMN,						/* Pointer to the LibraryEntryType */
+	MENU_ENTRY_COLUMN,						/* Pointer to the library_t */
 	N_MENU_COLUMNS
 };
 
@@ -273,9 +272,9 @@ static gboolean lib_model_filter_visible_func(GtkTreeModel * model, GtkTreeIter 
 		ret = g_pattern_match_simple(pattern, compname_upper);
 
 		if ((tags != NULL) && ret) {
-			LibraryEntryType *entry = NULL;
+			library_t *entry = NULL;
 			gtk_tree_model_get(model, iter, MENU_ENTRY_COLUMN, &entry, -1);
-			if ((entry != NULL) && (entry->Tags != NULL)) {
+			if ((entry != NULL) && (entry->type == LIB_FOOTPRINT) && (entry->data.fp.tags != NULL)) {
 				char *next, *tag;
 				int found;
 				void **t;
@@ -296,7 +295,7 @@ static gboolean lib_model_filter_visible_func(GtkTreeModel * model, GtkTreeIter 
 						break;
 					}
 					found = 0;
-					for (t = entry->Tags; *t != NULL; t++) {
+					for (t = entry->data.fp.tags; *t != NULL; t++) {
 						if (*t == need) {
 							found = 1;
 							break;
@@ -388,14 +387,20 @@ static gboolean tree_row_key_pressed(GtkTreeView * tree_view, GdkEventKey * even
 	return TRUE;
 }
 
-static void library_window_preview_refresh(GhidLibraryWindow * library_window, const char *name, LibraryEntryType * entry)
+static void library_window_preview_refresh(GhidLibraryWindow * library_window, const char *name, library_t * entry)
 {
 	GString *pt;
+	char *fullp;
 
 	/* -1 flags this is an element file part and the file path is in
 	   |  entry->AllocateMemory.
 	 */
-	if (LoadElementToBuffer(PASTEBUFFER, name == NULL ? entry->AllocatedMemory : name))
+	if (name == NULL) {
+		if ((entry == NULL) || (entry->type != LIB_FOOTPRINT))
+			return;
+		fullp = entry->data.fp.full_path;
+	}
+	if (LoadElementToBuffer(PASTEBUFFER, name == NULL ? fullp : name))
 		SetMode(PASTEBUFFER_MODE);
 
 	/* update the preview with new symbol data */
@@ -407,11 +412,10 @@ static void library_window_preview_refresh(GhidLibraryWindow * library_window, c
 
 	/* update the text */
 	pt = g_string_new("Tags:");
-	if ((entry != NULL) && (entry->Tags != NULL)) {
+	if ((entry != NULL) && (entry->type == LIB_FOOTPRINT) && (entry->data.fp.tags != NULL)) {
 		void **t;
 
-
-		for (t = entry->Tags; *t != NULL; t++) {
+		for (t = entry->data.fp.tags; *t != NULL; t++) {
 			const char *name = fp_tagname(*t);
 			if (name != NULL) {
 				g_string_append(pt, "\n  ");
@@ -439,7 +443,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GhidLibraryWindow *library_window = (GhidLibraryWindow *) user_data;
-	LibraryEntryType *entry = NULL;
+	library_t *entry = NULL;
 
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
 		return;
@@ -557,57 +561,28 @@ static void library_window_callback_filter_button_clicked(GtkButton * button, gp
  * Creates a tree where the branches are the available library
  * sources and the leaves are the footprints.
  */
-static GtkTreeModel *create_lib_tree_model(GhidLibraryWindow * library_window)
+static GtkTreeModel *create_lib_tree_model_recurse(GtkTreeStore *tree, GhidLibraryWindow *library_window, library_t *parent, GtkTreeIter *iter_parent)
 {
-	GtkTreeStore *tree;
-	GtkTreeIter iter, p_iter, e_iter, c_iter;
-	gchar *name;
-	gboolean exists;
+	GtkTreeIter p_iter;
+	library_t *menu, *entry;
+	int n, m;
 
-	tree = gtk_tree_store_new(N_MENU_COLUMNS, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_POINTER);
-
-	MENU_LOOP(&Library);
+	for(menu = parent->data.dir.children.array, n = 0; n < parent->data.dir.children.used; n++, menu++)
 	{
-		/* Watch for directory changes of library parts and create new
-		   |  parent iter at each change.
-		 */
-		if (!menu->directory)				/* Shouldn't happen */
-			menu->directory = g_strdup("???");
-
-		exists = FALSE;
-		if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(tree), &e_iter))
-			do {
-				gtk_tree_model_get(GTK_TREE_MODEL(tree), &e_iter, MENU_NAME_COLUMN, &name, -1);
-				if (!strcmp(name, menu->directory)) {
-					exists = TRUE;
-					break;
-				}
-			}
-			while (gtk_tree_model_iter_next(GTK_TREE_MODEL(tree), &e_iter));
-
-		if (exists)
-			p_iter = e_iter;
-		else {
-			gtk_tree_store_append(tree, &p_iter, NULL);
-			gtk_tree_store_set(tree, &p_iter,
-												 MENU_NAME_COLUMN, menu->directory, MENU_LIBRARY_COLUMN, NULL, MENU_ENTRY_COLUMN, NULL, -1);
-		}
-		gtk_tree_store_append(tree, &iter, &p_iter);
-		gtk_tree_store_set(tree, &iter, MENU_NAME_COLUMN, menu->Name, MENU_LIBRARY_COLUMN, menu, MENU_ENTRY_COLUMN, NULL, -1);
-		ENTRY_LOOP(menu);
-		{
-			gtk_tree_store_append(tree, &c_iter, &iter);
-			gtk_tree_store_set(tree, &c_iter,
-												 MENU_NAME_COLUMN, entry->ListEntry, MENU_LIBRARY_COLUMN, menu, MENU_ENTRY_COLUMN, entry, -1);
-		}
-		END_LOOP;
-
+		gtk_tree_store_append(tree, &p_iter, iter_parent);
+		gtk_tree_store_set(tree, &p_iter, MENU_NAME_COLUMN, menu->name, MENU_ENTRY_COLUMN, menu, -1);
+		if (menu->type == LIB_DIR)
+			create_lib_tree_model_recurse(tree, library_window, menu, &p_iter);
 	}
-	END_LOOP;
 
 	return (GtkTreeModel *) tree;
 }
 
+static GtkTreeModel *create_lib_tree_model(GhidLibraryWindow *library_window)
+{
+	GtkTreeStore *tree = gtk_tree_store_new(N_MENU_COLUMNS, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_POINTER);
+	return create_lib_tree_model_recurse(tree, library_window, &library, NULL);
+}
 
 #if 0
 /* \brief On-demand refresh of the footprint library.

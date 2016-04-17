@@ -17,7 +17,7 @@ plugin_def("shand_cmd",       "command shorthands",        sbuildin)
 
 plugin_header("\nFootprint backends:\n")
 plugin_def("fp_fs",           "filesystem footprints",     sbuildin)
-plugin_def("fp_wget",         "web footprints",            sdisable)
+plugin_def("fp_wget",         "web footprints",            sbuildin)
 
 plugin_header("\nImport plugins:\n")
 plugin_def("import_sch",      "import sch",                sbuildin)

@@ -15,16 +15,14 @@
 #include "misc.h"
 #include "set.h"
 #include "buffer.h"
+#include "vtptr.h"
+#include "stdarg.h"
 
 #include "hid.h"
 #include "lesstif.h"
 
 
 RCSID("$Id$");
-
-static Arg args[30];
-static int n;
-#define stdarg(t,v) XtSetArg(args[n], t, v); n++
 
 static Widget library_dialog = 0;
 static Widget library_list, libnode_list;
@@ -33,10 +31,13 @@ static XmString *library_strings = 0;
 static XmString *libnode_strings = 0;
 static int last_pick = -1;
 
+vtptr_t picks;      /* of library_t * */
+vtptr_t pick_names; /* of char * */
+
 static void pick_net(int pick)
 {
-	LibraryMenuType *menu = Library.Menu + pick;
-	int i;
+	library_t *menu = (library_t *)picks.array[pick];
+	int i, found;
 
 	if (pick == last_pick)
 		return;
@@ -44,13 +45,19 @@ static void pick_net(int pick)
 
 	if (libnode_strings)
 		free(libnode_strings);
-	libnode_strings = (XmString *) malloc(menu->EntryN * sizeof(XmString));
-	for (i = 0; i < menu->EntryN; i++)
-		libnode_strings[i] = XmStringCreatePCB(menu->Entry[i].ListEntry);
-	n = 0;
+
+	libnode_strings = (XmString *) malloc(menu->data.dir.children.used * sizeof(XmString));
+	for (found = 0, i = 0; i < menu->data.dir.children.used; i++) {
+		if (menu->data.dir.children.array[i].type == LIB_FOOTPRINT) {
+			libnode_strings[i] = XmStringCreatePCB(menu->data.dir.children.array[i].name);
+			found++;
+		}
+	}
+
+	stdarg_n = 0;
 	stdarg(XmNitems, libnode_strings);
-	stdarg(XmNitemCount, menu->EntryN);
-	XtSetValues(libnode_list, args, n);
+	stdarg(XmNitemCount, found);
+	XtSetValues(libnode_list, stdarg_args, stdarg_n);
 }
 
 static void library_browse(Widget w, void *v, XmListCallbackStruct * cbs)
@@ -61,9 +68,9 @@ static void library_browse(Widget w, void *v, XmListCallbackStruct * cbs)
 static void libnode_select(Widget w, void *v, XmListCallbackStruct * cbs)
 {
 	char *args;
-	LibraryEntryType *e = Library.Menu[last_pick].Entry + cbs->item_position - 1;
-
-	if (LoadElementToBuffer(PASTEBUFFER, e->AllocatedMemory))
+	library_t *e = picks.array[last_pick];
+	e = &e->data.dir.children.array[cbs->item_position - 1];
+	if (LoadElementToBuffer(PASTEBUFFER, e->data.fp.full_path))
 		SetMode(PASTEBUFFER_MODE);
 }
 
@@ -74,50 +81,84 @@ static int build_library_dialog()
 	if (library_dialog)
 		return 0;
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNresizePolicy, XmRESIZE_GROW);
 	stdarg(XmNtitle, "Element Library");
-	library_dialog = XmCreateFormDialog(mainwind, "library", args, n);
+	library_dialog = XmCreateFormDialog(mainwind, "library", stdarg_args, stdarg_n);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNvisibleItemCount, 10);
-	library_list = XmCreateScrolledList(library_dialog, "nets", args, n);
+	library_list = XmCreateScrolledList(library_dialog, "nets", stdarg_args, stdarg_n);
 	XtManageChild(library_list);
 	XtAddCallback(library_list, XmNbrowseSelectionCallback, (XtCallbackProc) library_browse, 0);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_WIDGET);
 	stdarg(XmNleftWidget, library_list);
-	libnode_list = XmCreateScrolledList(library_dialog, "nodes", args, n);
+	libnode_list = XmCreateScrolledList(library_dialog, "nodes", stdarg_args, stdarg_n);
 	XtManageChild(libnode_list);
 	XtAddCallback(libnode_list, XmNbrowseSelectionCallback, (XtCallbackProc) libnode_select, 0);
 
 	return 0;
 }
 
+static void lib_dfs(library_t *parent, int level)
+{
+	library_t *l;
+	char *s;
+	int n, len;
+
+	if (parent->type != LIB_DIR)
+		return;
+
+	if (parent->name != NULL) {
+		vtptr_append(&picks, parent);
+		len = strlen(parent->name);
+		s = malloc(len+level+1);
+		for(n = 0; n < level-1; n++) s[n] = ' ';
+		strcpy(s+level-1, parent->name);
+		vtptr_append(&pick_names, s);
+	}
+
+	for(l = parent->data.dir.children.array, n = 0; n < parent->data.dir.children.used; n++,l++)
+		lib_dfs(l, level+1);
+}
+
 static int LibraryChanged(int argc, char **argv, Coord x, Coord y)
 {
 	int i;
-	if (!Library.MenuN)
+	if (library.data.dir.children.used == 0)
 		return 0;
 	if (build_library_dialog())
 		return 0;
 	last_pick = -1;
+
+	for (i = 0; i < pick_names.used; i++)
+		free(pick_names.array[i]);
+
+	vtptr_truncate(&picks, 0);
+	vtptr_truncate(&pick_names, 0);
+
+	lib_dfs(&library, 0);
+
+
 	if (library_strings)
 		free(library_strings);
-	library_strings = (XmString *) malloc(Library.MenuN * sizeof(XmString));
-	for (i = 0; i < Library.MenuN; i++)
-		library_strings[i] = XmStringCreatePCB(Library.Menu[i].Name);
-	n = 0;
+	library_strings = (XmString *) malloc(picks.used * sizeof(XmString));
+	for (i = 0; i < picks.used; i++)
+		library_strings[i] = XmStringCreatePCB(pick_names.array[i]);
+
+	stdarg_n = 0;
 	stdarg(XmNitems, library_strings);
-	stdarg(XmNitemCount, Library.MenuN);
-	XtSetValues(library_list, args, n);
+	stdarg(XmNitemCount, picks.used);
+	XtSetValues(library_list, stdarg_args, stdarg_n);
+
 	pick_net(0);
 	return 0;
 }

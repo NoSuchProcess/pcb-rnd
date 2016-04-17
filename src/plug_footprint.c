@@ -38,6 +38,7 @@
 #include <genht/hash.h>
 
 plug_fp_t *plug_fp_chain = NULL;
+library_t library;
 
 int fp_dupname(const char *name, char **basename, char **params)
 {
@@ -111,48 +112,173 @@ void fp_fclose(FILE * f, fp_fopen_ctx_t *fctx)
 		fctx->backend->fclose(fctx->backend, f, fctx);
 }
 
-LibraryEntryType *fp_append_entry(LibraryMenuType *parent, const char *dirname, const char *name, fp_type_t type, void *tags[])
+library_t *fp_append_entry(library_t *parent, const char *dirname, const char *name, fp_type_t type, void *tags[])
 {
-	LibraryEntryType *entry;   /* Pointer to individual menu entry */
+	library_t *entry;   /* Pointer to individual menu entry */
 	size_t len;
 
-	entry = GetLibraryEntryMemory(parent);
+	assert(parent->type == LIB_DIR);
+	entry = get_library_memory(parent);
+	if (entry == NULL)
+		return NULL;
 
 	/* 
 	 * entry->AllocatedMemory points to abs path to the footprint.
 	 * entry->ListEntry points to fp name itself.
 	 */
 	len = strlen(dirname) + strlen("/") + strlen(name) + 8;
-	entry->AllocatedMemory = (char *) calloc(1, len);
-	strcat(entry->AllocatedMemory, dirname);
-	strcat(entry->AllocatedMemory, PCB_DIR_SEPARATOR_S);
+	entry->data.fp.full_path = malloc(len);
+	strcpy(entry->data.fp.full_path, dirname);
+	strcat(entry->data.fp.full_path, PCB_DIR_SEPARATOR_S);
 
 	/* store pointer to start of footprint name */
-	entry->ListEntry = entry->AllocatedMemory + strlen(entry->AllocatedMemory);
-	entry->ListEntry_dontfree = 1;
+	entry->name = entry->data.fp.full_path + strlen(entry->data.fp.full_path);
+	entry->dontfree_name = 1;
 
 	/* Now place footprint name into AllocatedMemory */
-	strcat(entry->AllocatedMemory, name);
+	strcat(entry->data.fp.full_path, name);
 
 	if (type == PCB_FP_PARAMETRIC)
-		strcat(entry->AllocatedMemory, "()");
+		strcat(entry->data.fp.full_path, "()");
 
-	entry->Type = type;
-
-	entry->Tags = tags;
+	entry->type = LIB_FOOTPRINT;
+	entry->data.fp.type = type;
+	entry->data.fp.tags = tags;
 }
 
-LibraryMenuType *fp_append_topdir(const char *parent_dir, const char *dir_name, int *menuidx)
+library_t *fp_lib_search_len(library_t *dir, const char *name, int name_len)
 {
-	LibraryMenuType *menu;
+	library_t *l;
+	int n;
 
-	/* Get pointer to memory holding menu */
-	menu = GetLibraryMenuMemory(&Library, menuidx);
+	if (dir->type != LIB_DIR)
+		return NULL;
 
-	/* Populate menuname and path vars */
-	menu->Name = strdup(dir_name);
-	menu->directory = strdup(parent_dir);
+	for(n = 0, l = dir->data.dir.children.array; n < dir->data.dir.children.used; n++, l++)
+		if (strncmp(l->name, name, name_len) == 0)
+			return l;
 
-	return menu;
+	return NULL;
+}
+
+library_t *fp_lib_search(library_t *dir, const char *name)
+{
+	library_t *l;
+	int n;
+
+	if (dir->type != LIB_DIR)
+		return NULL;
+
+	for(n = 0, l = dir->data.dir.children.array; n < dir->data.dir.children.used; n++, l++)
+		if (strcmp(l->name, name) == 0)
+			return l;
+
+	return NULL;
+}
+
+
+library_t *fp_mkdir_len(library_t *parent, const char *name, int name_len)
+{
+	library_t *l = get_library_memory(parent);
+
+	if (name_len > 0)
+		l->name = strndup(name, name_len);
+	else
+		l->name = strdup(name);
+	l->dontfree_name = 0;
+	l->parent = parent;
+
+	return l;
+}
+
+library_t *fp_mkdir_p(const char *path)
+{
+	library_t *l, *parent = NULL;
+	const char *next;
+
+	/* search for the last existing dir in the path */
+	
+	while(*path == '/') path++;
+	for(parent = l = &library; l != NULL; parent = l,path = next) {
+		next = strchr(path, '/');
+		if (next == NULL)
+			l = fp_lib_search(l, path);
+		else
+			l = fp_lib_search_len(l, path, next-path);
+
+		/* skip path sep */
+		if (next != NULL) {
+			while(*next == '/') next++;
+			if (*next == '\0')
+				next = NULL;
+		}
+
+		/* last elem of the path */
+		if (next == NULL) {
+			if (l != NULL)
+				return l;
+			break; /* found a non-existing node */
+		}
+		
+		if (l == NULL)
+			break;
+	}
+
+	/* by now path points to the first non-existing dir, under parent */
+	for(;path != NULL; path = next) {
+		next = strchr(path, '/');
+		parent = fp_mkdir_len(parent, path, next-path);
+		if (next != NULL) {
+			while(*next == '/') next++;
+			if (*next == '\0')
+				next = NULL;
+		}
+	}
+
+	return parent;
+}
+
+void fp_free_children(library_t *parent)
+{
+
+}
+
+
+void fp_sort_children(library_t *parent)
+{
+/*	int i;
+	qsort(lib->Menu, lib->MenuN, sizeof(lib->Menu[0]), netlist_sort);
+	for (i = 0; i < lib->MenuN; i++)
+		qsort(lib->Menu[i].Entry, lib->Menu[i].EntryN, sizeof(lib->Menu[i].Entry[0]), netnode_sort);*/
+}
+
+void fp_rmdir(library_t *dir)
+{
+
+}
+
+/* Debug functions */
+void fp_dump_dir(library_t *dir, int level)
+{
+	library_t *l;
+	int n, p;
+
+	for(n = 0, l = dir->data.dir.children.array; n < dir->data.dir.children.used; n++, l++) {
+		for(p = 0; p < level; p++)
+			putchar(' ');
+		if (l->type == LIB_DIR) {
+			printf("%s/\n", l->name);
+			fp_dump_dir(l, level+1);
+		}
+		else if (l->type == LIB_FOOTPRINT)
+			printf("%s\n", l->name);
+		else
+			printf("*INVALID*\n");
+	}
+}
+
+void fp_dump()
+{
+	fp_dump_dir(&library, 0);
 }
 

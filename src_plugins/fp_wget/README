@@ -2,6 +2,5 @@ Footprint: get static (file) footprints from the web, e.g. from
 http://gedasymbols.org
 
 #state: works
-#lstate: TODO: need to rewrite library memory handling
-#default: disabled
+#default: buildin
 #implements: fp

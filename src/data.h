@@ -55,8 +55,6 @@ extern SettingType Settings;
 
 extern BufferType Buffers[MAX_BUFFER];
 
-extern LibraryType Library;
-
 /*extern	DeviceInfoType	PrintingDevice[];*/
 
 extern char *Progname;
