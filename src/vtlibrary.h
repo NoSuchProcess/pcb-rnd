@@ -3,6 +3,7 @@
 #include "global_objs.h"
 
 typedef enum {
+	LIB_INVALID,
 	LIB_DIR,
 	LIB_FOOTPRINT
 } library_type_t;

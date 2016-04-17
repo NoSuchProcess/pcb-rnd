@@ -87,9 +87,16 @@ const void *fp_tag(const char *tag, int alloc)
 	return e == NULL ? NULL : e->key;
 }
 
+void fp_init()
+{
+	library.type = LIB_DIR;
+	library.name = "/";
+}
+
 void fp_uninit()
 {
 	htsp_entry_t *e;
+	fp_free_children(&library);
 	for (e = htsp_first(fp_tags); e; e = htsp_next(fp_tags, e))
 		free(e->key);
 	htsp_free(fp_tags);
@@ -226,12 +233,6 @@ library_t *fp_mkdir_p(const char *path)
 	return parent;
 }
 
-void fp_free_children(library_t *parent)
-{
-
-}
-
-
 void fp_sort_children(library_t *parent)
 {
 /*	int i;
@@ -240,9 +241,52 @@ void fp_sort_children(library_t *parent)
 		qsort(lib->Menu[i].Entry, lib->Menu[i].EntryN, sizeof(lib->Menu[i].Entry[0]), netnode_sort);*/
 }
 
+void fp_free_entry(library_t *l)
+{
+	switch(l->type) {
+		case LIB_DIR:
+			fp_free_children(l);
+			vtlib_uninit(&(l->data.dir.children));
+			break;
+		case LIB_FOOTPRINT:
+			if (l->data.fp.loc_info != NULL)
+				free(l->data.fp.loc_info);
+			break;
+	}
+	if (l->name != NULL) {
+		free(l->name);
+		l->name = NULL;
+	}
+	l->type = LIB_INVALID;
+}
+
+void fp_free_children(library_t *parent)
+{
+	int n;
+	library_t *l;
+
+	assert(parent->type == LIB_DIR);
+
+	for(n = 0, l = parent->data.dir.children.array; n < parent->data.dir.children.used; n++, l++)
+		fp_free_entry(l);
+
+	vtlib_truncate(&(parent->data.dir.children), 0);
+}
+
+
 void fp_rmdir(library_t *dir)
 {
-
+	library_t *l, *parent = dir->parent;
+	int n;
+	fp_free_entry(dir);
+	if (parent != NULL) {
+		for(n = 0, l = parent->data.dir.children.array; n < parent->data.dir.children.used; n++,l++) {
+			if (l = dir) {
+				vtlib_remove(&(parent->data.dir.children), n, 1);
+				break;
+			}
+		}
+	}
 }
 
 /* Debug functions */

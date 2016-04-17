@@ -36,7 +36,8 @@ const void *fp_tag(const char *tag, int alloc);
 /* Resolve a tag ID to a tag name */
 const char *fp_tagname(const void *tagid);
 
-/* Uninit the footprint lib, free tag key memory */
+/* init/uninit the footprint lib, free tag key memory */
+void fp_init();
 void fp_uninit();
 
 /**************************** API definition *********************************/

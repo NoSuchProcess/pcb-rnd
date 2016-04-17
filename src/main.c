@@ -1598,7 +1598,6 @@ void pcb_main_uninit(void)
 	uninit_strflags_buf();
 	uninit_strflags_layerlist();
 
-	fp_free_children(&library);
 	fp_uninit();
 	file_uninit();
 	funchash_uninit();
@@ -1642,6 +1641,8 @@ int main(int argc, char *argv[])
 
 	setbuf(stdout, 0);
 	InitPaths(argv[0]);
+
+	fp_init();
 
 #ifdef LOCALEDIR
 	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);

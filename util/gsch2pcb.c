@@ -1247,6 +1247,8 @@ int main(int argc, char ** argv)
 	if (argc < 2)
 		usage();
 
+	fp_init();
+
 	gadl_list_init(&schematics, sizeof(char *), NULL, NULL);
 	gadl_list_init(&extra_gnetlist_arg_list, sizeof(char *), NULL, NULL);
 	gadl_list_init(&extra_gnetlist_list, sizeof(char *), NULL, NULL);
