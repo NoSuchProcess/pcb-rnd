@@ -95,7 +95,9 @@ put /local/pcb/OBJS [@
 	thermal.o
 	undo.o
 	undo_act.o
+	vtlibrary.o
 	vtonpoint.o
+	vtptr.o
 	parse_y.o
 	parse_l.o
 	buildin.o
