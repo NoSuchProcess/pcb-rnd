@@ -16,11 +16,11 @@
 #include "set.h"
 #include "buffer.h"
 #include "vtptr.h"
-#include "stdarg.h"
+#include "plug_footprint.h"
 
 #include "hid.h"
 #include "lesstif.h"
-
+#include "stdarg.h"
 
 RCSID("$Id$");
 

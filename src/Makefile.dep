@@ -9,8 +9,8 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h ../src_plugins/autoplace/autoplace.h \
- plugins.h set.h global.h hid_actions.h dolists.h
+ list_element.h ../src_plugins/autoplace/autoplace.h plugins.h set.h \
+ global.h hid_actions.h dolists.h
 ../src_plugins/autoplace/autoplace.o: \
  ../src_plugins/autoplace/autoplace.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
@@ -20,10 +20,10 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h ../src_plugins/autoplace/autoplace.h \
- box.h global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- compat_misc.h data.h draw.h error.h intersect.h rtree.h macro.h mirror.h \
- misc.h move.h mymem.h rats.h remove.h rotate.h
+ list_element.h ../src_plugins/autoplace/autoplace.h box.h global.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h compat_misc.h data.h \
+ draw.h error.h intersect.h rtree.h macro.h mirror.h misc.h move.h \
+ mymem.h rats.h remove.h rotate.h
 ../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -33,8 +33,8 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h ../src_plugins/autoroute/autoroute.h \
- action_helper.h global.h plugins.h set.h hid_actions.h dolists.h
+ list_element.h ../src_plugins/autoroute/autoroute.h action_helper.h \
+ global.h plugins.h set.h hid_actions.h dolists.h
 ../src_plugins/autoroute/autoroute.o: \
  ../src_plugins/autoroute/autoroute.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
@@ -44,7 +44,7 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h macro.h \
+ list_element.h data.h global.h macro.h \
  ../src_plugins/autoroute/autoroute.h box.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h create.h draw.h error.h find.h \
  heap.h rtree.h misc.h ../src_plugins/autoroute/mtspace.h \
@@ -59,9 +59,9 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h box.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h heap.h rtree.h \
- ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h
+ list_element.h box.h global.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h heap.h rtree.h ../src_plugins/autoroute/mtspace.h \
+ ../src_plugins/autoroute/vector.h
 ../src_plugins/autoroute/vector.o: ../src_plugins/autoroute/vector.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -71,7 +71,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h ../src_plugins/autoroute/vector.h
+ list_element.h ../src_plugins/autoroute/vector.h
 ../src_plugins/djopt/djopt.o: ../src_plugins/djopt/djopt.c ../config.h \
  ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
  ../config.h macro.h global_typedefs.h global_objs.h \
@@ -81,10 +81,9 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h create.h remove.h move.h \
- draw.h undo.h strflags.h find.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h plugins.h hid_flags.h hid_actions.h \
- dolists.h
+ list_element.h data.h global.h create.h remove.h move.h draw.h undo.h \
+ strflags.h find.h pcb-printf.h ../src_3rd/genvector/gds_char.h plugins.h \
+ hid_flags.h hid_actions.h dolists.h
 ../src_plugins/export_bom/bom.o: ../src_plugins/export_bom/bom.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -94,7 +93,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h error.h misc.h \
+ list_element.h data.h global.h error.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h plugins.h hid.h \
  hid_nogui.h hid_attrib.h hid_helper.h hid_init.h
 ../src_plugins/export_gcode/curve.o: ../src_plugins/export_gcode/curve.c \
@@ -119,7 +118,7 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h error.h data.h global.h misc.h \
+ list_element.h error.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h rats.h hid_helper.h hid.h \
  hid_nogui.h hid_draw_helpers.h ../src_plugins/export_gcode/gcode.h \
  ../src_plugins/export_gcode/bitmap.h \
@@ -138,7 +137,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h ../src_plugins/export_gcode/potracelib.h \
+ list_element.h ../src_plugins/export_gcode/potracelib.h \
  ../src_plugins/export_gcode/curve.h \
  ../src_plugins/export_gcode/auxiliary.h \
  ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/trace.h
@@ -151,10 +150,9 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h error.h draw.h pcb-printf.h \
- plugins.h hid_helper.h hid.h hid_nogui.h hid_draw_helpers.h hid_init.h \
- hid_attrib.h hid_flags.h
+ list_element.h data.h global.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h error.h draw.h pcb-printf.h plugins.h hid_helper.h hid.h \
+ hid_nogui.h hid_draw_helpers.h hid_init.h hid_attrib.h hid_flags.h
 ../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -164,10 +162,9 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h plugins.h hid.h \
- ../src_plugins/export_lpr/../export_ps/ps.h hid_nogui.h hid_init.h \
- hid_attrib.h hid_actions.h
+ list_element.h data.h global.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h plugins.h hid.h ../src_plugins/export_lpr/../export_ps/ps.h \
+ hid_nogui.h hid_init.h hid_attrib.h hid_actions.h
 ../src_plugins/export_nelma/nelma.o: ../src_plugins/export_nelma/nelma.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -177,7 +174,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h error.h data.h global.h misc.h \
+ list_element.h error.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h rats.h plugins.h hid_helper.h \
  hid.h hid_nogui.h hid_draw_helpers.h hid_init.h hid_attrib.h hid_flags.h \
  hid_color.h dolists.h
@@ -190,7 +187,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h error.h misc.h \
+ list_element.h data.h global.h error.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h plugins.h hid.h hid_nogui.h \
  hid_draw_helpers.h ../src_plugins/export_png/png.h hid_init.h \
  hid_attrib.h hid_color.h hid_helper.h hid_flags.h dolists.h
@@ -203,10 +200,10 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h hid_nogui.h \
- hid_draw_helpers.h ../src_plugins/export_ps/ps.h hid_init.h hid_attrib.h \
- hid_helper.h hid_flags.h hid_color.h
+ list_element.h data.h global.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h pcb-printf.h hid.h hid_nogui.h hid_draw_helpers.h \
+ ../src_plugins/export_ps/ps.h hid_init.h hid_attrib.h hid_helper.h \
+ hid_flags.h hid_color.h
 ../src_plugins/export_ps/ps.o: ../src_plugins/export_ps/ps.c ../config.h \
  ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
  ../config.h macro.h global_typedefs.h global_objs.h \
@@ -216,11 +213,10 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h error.h draw.h pcb-printf.h \
- plugins.h hid_helper.h hid.h hid_nogui.h hid_draw_helpers.h \
- ../src_plugins/export_ps/ps.h print.h hid_init.h hid_attrib.h \
- hid_flags.h hid_actions.h dolists.h
+ list_element.h data.h global.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h error.h draw.h pcb-printf.h plugins.h hid_helper.h hid.h \
+ hid_nogui.h hid_draw_helpers.h ../src_plugins/export_ps/ps.h print.h \
+ hid_init.h hid_attrib.h hid_flags.h hid_actions.h dolists.h
 ../src_plugins/fontmode/fontmode.o: ../src_plugins/fontmode/fontmode.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -230,7 +226,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h create.h global.h data.h draw.h misc.h \
+ list_element.h create.h global.h data.h draw.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h move.h remove.h rtree.h \
  strflags.h undo.h pcb-printf.h plugins.h hid_actions.h dolists.h
 ../src_plugins/fp_fs/fp_fs.o: ../src_plugins/fp_fs/fp_fs.c ../config.h \
@@ -242,8 +238,37 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h mymem.h global.h data.h paths.h \
- plugins.h plug_footprint.h compat_fs.h error.h
+ list_element.h mymem.h global.h data.h paths.h plugins.h \
+ plug_footprint.h vtlibrary.h compat_fs.h error.h
+../src_plugins/fp_wget/fp_wget.o: ../src_plugins/fp_wget/fp_wget.c \
+ global.h ../config.h ../config.manual.h ../config.auto.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
+ list_element.h ../src_plugins/fp_wget/gedasymbols.h plug_footprint.h \
+ vtlibrary.h plugins.h
+../src_plugins/fp_wget/gedasymbols.o: \
+ ../src_plugins/fp_wget/gedasymbols.c ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/liblihata/genht/hash.h global.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ macro.h global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h \
+ polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h hid.h global_element.h list_element.h \
+ ../src_plugins/fp_wget/wget_common.h \
+ ../src_plugins/fp_wget/gedasymbols.h plug_footprint.h vtlibrary.h \
+ plugins.h
+../src_plugins/fp_wget/wget_common.o: \
+ ../src_plugins/fp_wget/wget_common.c \
+ ../src_plugins/fp_wget/wget_common.h
 ../src_plugins/hid_batch/batch.o: ../src_plugins/hid_batch/batch.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -253,7 +278,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h data.h global.h misc.h \
+ list_element.h hid.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h plugins.h \
  hid_draw_helpers.h hid_nogui.h hid_actions.h hid_init.h dolists.h
 ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.o: \
@@ -267,12 +292,12 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h hid_cfg.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ list_element.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -290,12 +315,12 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h hid_cfg.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ list_element.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -312,12 +337,12 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h hid_cfg.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ list_element.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -338,7 +363,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h hid_cfg.h hid_cfg_input.h \
+ list_element.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
@@ -355,7 +380,7 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h ../src_plugins/hid_gtk/gtkhid.h \
+ list_element.h ../src_plugins/hid_gtk/gtkhid.h \
  ../src_plugins/hid_gtk/gui.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
@@ -379,13 +404,12 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h clip.h ../src_plugins/hid_gtk/gui.h \
- global.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
- ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h \
+ list_element.h clip.h ../src_plugins/hid_gtk/gui.h global.h hid.h \
+ hid_cfg.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -402,9 +426,8 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h crosshair.h error.h \
- ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ list_element.h crosshair.h error.h ../src_plugins/hid_gtk/gui.h global.h \
+ hid.h hid_cfg.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
@@ -426,12 +449,12 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h hid_cfg.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ list_element.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -447,12 +470,12 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h hid_cfg.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ list_element.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -470,12 +493,12 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h hid_cfg.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ list_element.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -491,8 +514,8 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h ../src_plugins/hid_gtk/gui.h global.h \
- hid.h hid_cfg.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ list_element.h ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h misc.h \
@@ -512,9 +535,8 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h draw.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h undo.h set.h \
- ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h \
+ list_element.h draw.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ undo.h set.h ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
@@ -535,12 +557,12 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h hid_cfg.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ list_element.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -556,18 +578,18 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h hid_cfg.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ list_element.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h buffer.h set.h \
- ../src_plugins/hid_gtk/gui-library-window.h
+ plug_footprint.h vtlibrary.h ../src_plugins/hid_gtk/gui-library-window.h
 ../src_plugins/hid_gtk/gui-log-window.o: \
  ../src_plugins/hid_gtk/gui-log-window.c ../config.h ../config.manual.h \
  ../config.auto.h ../src_plugins/hid_gtk/gui.h global.h const.h \
@@ -578,12 +600,12 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h hid_cfg.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ list_element.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -598,7 +620,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h crosshair.h global.h data.h misc.h \
+ list_element.h crosshair.h global.h data.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h action_helper.h set.h \
  pcb-printf.h ../src_plugins/hid_gtk/gui.h hid.h hid_cfg.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -620,14 +642,13 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h create.h global.h data.h draw.h error.h \
- find.h misc.h ../src_3rd/genvector/gds_char.h mymem.h mymem.h rats.h \
- remove.h search.h select.h set.h undo.h hid_actions.h \
- ../src_plugins/hid_gtk/gui.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
- ../src_3rd/liblihata/genht/htip.h hid_cfg.h \
+ list_element.h create.h global.h data.h draw.h error.h find.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h mymem.h rats.h remove.h search.h \
+ select.h set.h undo.h hid_actions.h ../src_plugins/hid_gtk/gui.h hid.h \
+ hid_cfg.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -643,12 +664,12 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h hid_cfg.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ list_element.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -666,8 +687,8 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h ../src_plugins/hid_gtk/gui.h hid.h \
- hid_cfg.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ list_element.h ../src_plugins/hid_gtk/gui.h hid.h hid_cfg.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
@@ -688,8 +709,8 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h ../src_plugins/hid_gtk/gui.h hid.h \
- hid_cfg.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ list_element.h ../src_plugins/hid_gtk/gui.h hid.h hid_cfg.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
@@ -711,7 +732,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h ../src_plugins/hid_gtk/gtkhid.h \
+ list_element.h ../src_plugins/hid_gtk/gtkhid.h \
  ../src_plugins/hid_gtk/gui.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
@@ -737,12 +758,12 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid.h hid_cfg.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
- global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ list_element.h hid.h hid_cfg.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -759,7 +780,7 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h crosshair.h misc.h \
+ list_element.h data.h global.h crosshair.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h \
  ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -777,13 +798,14 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h set.h buffer.h hid.h \
+ list_element.h data.h global.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h set.h buffer.h vtptr.h plug_footprint.h vtlibrary.h hid.h \
  ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- ../src_3rd/liblihata/genht/htip.h hid_cfg.h
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h \
+ ../src_plugins/hid_lesstif/stdarg.h
 ../src_plugins/hid_lesstif/main.o: ../src_plugins/hid_lesstif/main.c \
  ../config.h ../config.manual.h ../config.auto.h \
  ../src_plugins/hid_lesstif/xincludes.h global.h const.h ../globalconst.h \
@@ -794,13 +816,12 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h action_helper.h \
- crosshair.h mymem.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- pcb-printf.h clip.h event.h error.h plugins.h hid.h hid_nogui.h \
- hid_draw_helpers.h hid_cfg.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/liblihata/genht/ht_inlines.h \
+ list_element.h data.h global.h action_helper.h crosshair.h mymem.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h clip.h \
+ event.h error.h plugins.h hid.h hid_nogui.h hid_draw_helpers.h hid_cfg.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h hid_attrib.h hid_helper.h \
  hid_init.h hid_color.h hid_extents.h hid_flags.h hid_actions.h dolists.h
@@ -814,7 +835,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h error.h misc.h \
+ list_element.h data.h global.h error.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h hid.h hid_cfg.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
@@ -835,8 +856,8 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h find.h rats.h select.h \
- undo.h remove.h crosshair.h draw.h hid.h hid_actions.h \
+ list_element.h data.h global.h find.h rats.h select.h undo.h remove.h \
+ crosshair.h draw.h hid.h hid_actions.h \
  ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
@@ -855,7 +876,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h set.h misc.h \
+ list_element.h data.h global.h set.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h mymem.h pcb-printf.h hid.h \
  ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -871,8 +892,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h error.h plugins.h \
- stub_edif.h
+ list_element.h data.h global.h error.h plugins.h stub_edif.h
 ../src_plugins/import_sch/import_sch.o: \
  ../src_plugins/import_sch/import_sch.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
@@ -882,9 +902,9 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h action_helper.h change.h \
- error.h undo.h plugins.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- compat_fs.h pcb-printf.h remove.h rats.h hid_actions.h dolists.h
+ list_element.h data.h global.h action_helper.h change.h error.h undo.h \
+ plugins.h misc.h ../src_3rd/genvector/gds_char.h mymem.h compat_fs.h \
+ pcb-printf.h remove.h rats.h hid_actions.h dolists.h
 ../src_plugins/legacy_func/legacy_func.o: \
  ../src_plugins/legacy_func/legacy_func.c ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -894,8 +914,8 @@
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h hid.h global_element.h list_element.h plug_footprint.h \
- data.h global.h action_helper.h change.h error.h undo.h plugins.h
+ vtonpoint.h hid.h global_element.h list_element.h data.h global.h \
+ action_helper.h change.h error.h undo.h plugins.h
 ../src_plugins/mincut/pcb-mincut/graph.o: \
  ../src_plugins/mincut/pcb-mincut/graph.c \
  ../src_plugins/mincut/pcb-mincut/graph.h
@@ -912,10 +932,9 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h create.h global.h data.h draw.h error.h \
- file.h find.h misc.h ../src_3rd/genvector/gds_char.h mymem.h mymem.h \
- polygon.h rats.h search.h set.h undo.h plugins.h \
- ../src_plugins/mincut/pcb-mincut/graph.h \
+ list_element.h create.h global.h data.h draw.h error.h file.h find.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h mymem.h polygon.h rats.h \
+ search.h set.h undo.h plugins.h ../src_plugins/mincut/pcb-mincut/graph.h \
  ../src_plugins/mincut/pcb-mincut/solve.h \
  ../src_plugins/mincut/pcb-mincut/graph.h stub_mincut.h
 ../src_plugins/oldactions/oldactions.o: \
@@ -927,8 +946,8 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h action_helper.h change.h \
- error.h undo.h plugins.h dolists.h
+ list_element.h data.h global.h action_helper.h change.h error.h undo.h \
+ plugins.h dolists.h
 ../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -938,7 +957,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h create.h global.h data.h draw.h misc.h \
+ list_element.h create.h global.h data.h draw.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h move.h pcb-printf.h remove.h \
  rtree.h strflags.h undo.h plugins.h hid_actions.h dolists.h
 ../src_plugins/renumber/renumber.o: ../src_plugins/renumber/renumber.c \
@@ -950,9 +969,9 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h action_helper.h change.h \
- error.h undo.h misc.h ../src_3rd/genvector/gds_char.h mymem.h set.h \
- plugins.h hid_actions.h pcb-printf.h dolists.h
+ list_element.h data.h global.h action_helper.h change.h error.h undo.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h set.h plugins.h \
+ hid_actions.h pcb-printf.h dolists.h
 ../src_plugins/report/report.o: ../src_plugins/report/report.c \
  ../config.h ../config.manual.h ../config.auto.h \
  ../src_plugins/report/report.h global.h const.h ../globalconst.h \
@@ -963,10 +982,10 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h crosshair.h global.h data.h drill.h \
- error.h search.h misc.h ../src_3rd/genvector/gds_char.h mymem.h mymem.h \
- rats.h rtree.h strflags.h macro.h undo.h find.h draw.h pcb-printf.h \
- plugins.h hid_actions.h dolists.h
+ list_element.h crosshair.h global.h data.h drill.h error.h search.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h mymem.h rats.h rtree.h \
+ strflags.h macro.h undo.h find.h draw.h pcb-printf.h plugins.h \
+ hid_actions.h dolists.h
 ../src_plugins/shand_cmd/command.o: ../src_plugins/shand_cmd/command.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -976,7 +995,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h action_helper.h global.h buffer.h \
+ list_element.h action_helper.h global.h buffer.h \
  ../src_plugins/shand_cmd/command.h data.h error.h file.h mymem.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h rats.h set.h plugins.h \
  hid_actions.h dolists.h
@@ -989,9 +1008,8 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h global.h crosshair.h \
- stub_stroke.h rotate.h undo.h set.h error.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h plugins.h
+ list_element.h data.h global.h crosshair.h stub_stroke.h rotate.h undo.h \
+ set.h error.h misc.h ../src_3rd/genvector/gds_char.h mymem.h plugins.h
 ../src_plugins/toporouter/toporouter.o: \
  ../src_plugins/toporouter/toporouter.c \
  ../src_plugins/toporouter/toporouter.h data.h global.h ../config.h \
@@ -1002,7 +1020,7 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h macro.h \
+ list_element.h macro.h \
  ../src_plugins/toporouter/../autoroute/autoroute.h global.h box.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h create.h draw.h error.h find.h \
  heap.h rtree.h misc.h mymem.h polygon.h rats.h remove.h thermal.h undo.h \
@@ -1016,9 +1034,9 @@
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h draw.h error.h global.h set.h \
- undo.h ../src_plugins/vendordrill/vendor.h stub_vendor.h plugins.h \
- hid_flags.h hid_actions.h hid_cfg.h ../src_3rd/liblihata/dom.h \
+ list_element.h data.h draw.h error.h global.h set.h undo.h \
+ ../src_plugins/vendordrill/vendor.h stub_vendor.h plugins.h hid_flags.h \
+ hid_actions.h hid_cfg.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/liblihata/lihata.h \
@@ -1102,8 +1120,7 @@ action_act.o: action_act.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h error.h action_helper.h hid_actions.h \
- undo.h
+ list_element.h error.h action_helper.h hid_actions.h undo.h
 action_helper.o: action_helper.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1112,8 +1129,8 @@ action_helper.o: action_helper.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h action_helper.h buffer.h change.h copy.h \
- create.h crosshair.h data.h draw.h error.h find.h insert.h line.h misc.h \
+ list_element.h action_helper.h buffer.h change.h copy.h create.h \
+ crosshair.h data.h draw.h error.h find.h insert.h line.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h move.h polygon.h rats.h remove.h \
  rotate.h rubberband.h search.h select.h set.h undo.h rtree.h \
  stub_stroke.h funchash_core.h funchash.h funchash_core_list.h \
@@ -1126,8 +1143,8 @@ buffer.o: buffer.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h action_helper.h buffer.h copy.h create.h \
- crosshair.h data.h error.h file.h mymem.h mirror.h misc.h \
+ list_element.h action_helper.h buffer.h copy.h create.h crosshair.h \
+ data.h error.h file.h mymem.h mirror.h misc.h \
  ../src_3rd/genvector/gds_char.h parse_l.h polygon.h rats.h rotate.h \
  remove.h rtree.h search.h select.h set.h funchash_core.h funchash.h \
  funchash_core_list.h
@@ -1140,10 +1157,9 @@ change.o: change.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h change.h create.h crosshair.h data.h \
- draw.h error.h mymem.h misc.h ../src_3rd/genvector/gds_char.h mirror.h \
- polygon.h rats.h remove.h rtree.h search.h select.h set.h thermal.h \
- undo.h hid_actions.h
+ list_element.h change.h create.h crosshair.h data.h draw.h error.h \
+ mymem.h misc.h ../src_3rd/genvector/gds_char.h mirror.h polygon.h rats.h \
+ remove.h rtree.h search.h select.h set.h thermal.h undo.h hid_actions.h
 change_act.o: change_act.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1152,10 +1168,10 @@ change_act.o: change_act.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h funchash_core.h funchash.h \
- funchash_core_list.h action_helper.h hid_actions.h change.h crosshair.h \
- draw.h search.h misc.h ../src_3rd/genvector/gds_char.h mymem.h set.h \
- error.h undo.h rubberband.h
+ list_element.h data.h funchash_core.h funchash.h funchash_core_list.h \
+ action_helper.h hid_actions.h change.h crosshair.h draw.h search.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h set.h error.h undo.h \
+ rubberband.h
 clip.o: clip.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1164,7 +1180,7 @@ clip.o: clip.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h draw.h mymem.h
+ list_element.h data.h draw.h mymem.h
 compat_dl.o: compat_dl.c ../config.h ../config.manual.h ../config.auto.h \
  compat_dl.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1173,7 +1189,7 @@ compat_dl.o: compat_dl.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h
+ list_element.h
 compat_fs.o: compat_fs.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h global.h const.h ../globalconst.h \
@@ -1182,7 +1198,7 @@ compat_fs.o: compat_fs.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
  list_pad.h list_pin.h list_rat.h vtonpoint.h hid.h global_element.h \
- list_element.h plug_footprint.h error.h mymem.h
+ list_element.h error.h mymem.h
 compat_lrealpath.o: compat_lrealpath.c ../config.h ../config.manual.h \
  ../config.auto.h compat_lrealpath.h
 compat_misc.o: compat_misc.c ../config.h ../config.manual.h \
@@ -1194,7 +1210,7 @@ compat_misc.o: compat_misc.c ../config.h ../config.manual.h \
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h
+ list_element.h
 copy.o: copy.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1203,9 +1219,9 @@ copy.o: copy.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h copy.h create.h data.h draw.h mymem.h \
- mirror.h misc.h ../src_3rd/genvector/gds_char.h move.h polygon.h rats.h \
- rtree.h select.h undo.h
+ list_element.h copy.h create.h data.h draw.h mymem.h mirror.h misc.h \
+ ../src_3rd/genvector/gds_char.h move.h polygon.h rats.h rtree.h select.h \
+ undo.h
 create.o: create.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1214,9 +1230,9 @@ create.o: create.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h create.h data.h draw.h error.h mymem.h \
- misc.h ../src_3rd/genvector/gds_char.h parse_l.h pcb-printf.h polygon.h \
- rtree.h search.h set.h undo.h file.h stub_vendor.h hid_actions.h
+ list_element.h create.h data.h draw.h error.h mymem.h misc.h \
+ ../src_3rd/genvector/gds_char.h parse_l.h pcb-printf.h polygon.h rtree.h \
+ search.h set.h undo.h file.h stub_vendor.h hid_actions.h
 crosshair.o: crosshair.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1225,9 +1241,9 @@ crosshair.o: crosshair.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h box.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h crosshair.h data.h draw.h \
- error.h line.h rtree.h search.h polygon.h hid_actions.h
+ list_element.h box.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ crosshair.h data.h draw.h error.h line.h rtree.h search.h polygon.h \
+ hid_actions.h
 data.o: data.c ../config.h ../config.manual.h ../config.auto.h data.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1236,7 +1252,7 @@ data.o: data.c ../config.h ../config.manual.h ../config.auto.h data.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h
+ list_element.h
 draw.o: draw.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1245,9 +1261,9 @@ draw.o: draw.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h compat_misc.h crosshair.h data.h draw.h \
- error.h mymem.h misc.h ../src_3rd/genvector/gds_char.h rotate.h rtree.h \
- search.h select.h print.h hid_helper.h
+ list_element.h compat_misc.h crosshair.h data.h draw.h error.h mymem.h \
+ misc.h ../src_3rd/genvector/gds_char.h rotate.h rtree.h search.h \
+ select.h print.h hid_helper.h
 drill.o: drill.c ../config.h ../config.manual.h ../config.auto.h data.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1256,7 +1272,7 @@ drill.o: drill.c ../config.h ../config.manual.h ../config.auto.h data.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h error.h mymem.h
+ list_element.h error.h mymem.h
 error.o: error.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1265,7 +1281,7 @@ error.o: error.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h error.h file.h misc.h \
+ list_element.h data.h error.h file.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h
 event.o: event.c event.h error.h
 file.o: file.c ../config.h ../config.manual.h ../config.auto.h global.h \
@@ -1276,10 +1292,10 @@ file.o: file.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h buffer.h change.h create.h crosshair.h \
- data.h error.h file.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- move.h parse_l.h pcb-printf.h polygon.h rats.h remove.h set.h strflags.h \
- compat_fs.h paths.h rats_patch.h stub_edif.h hid_actions.h hid_flags.h
+ list_element.h buffer.h change.h create.h crosshair.h data.h error.h \
+ file.h misc.h ../src_3rd/genvector/gds_char.h mymem.h move.h parse_l.h \
+ pcb-printf.h polygon.h rats.h remove.h set.h strflags.h compat_fs.h \
+ paths.h rats_patch.h stub_edif.h hid_actions.h hid_flags.h
 file_act.o: file_act.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1288,8 +1304,8 @@ file_act.o: file_act.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h action_helper.h change.h error.h \
- undo.h crosshair.h set.h file.h buffer.h mymem.h misc.h \
+ list_element.h data.h action_helper.h change.h error.h undo.h \
+ crosshair.h set.h file.h buffer.h mymem.h misc.h \
  ../src_3rd/genvector/gds_char.h remove.h create.h draw.h find.h search.h \
  hid_actions.h hid_attrib.h
 find.o: find.c ../config.h ../config.manual.h ../config.auto.h global.h \
@@ -1300,9 +1316,9 @@ find.o: find.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h crosshair.h data.h draw.h error.h find.h \
- mymem.h misc.h ../src_3rd/genvector/gds_char.h rtree.h polygon.h \
- pcb-printf.h search.h set.h undo.h rats.h file.h hid_actions.h
+ list_element.h crosshair.h data.h draw.h error.h find.h mymem.h misc.h \
+ ../src_3rd/genvector/gds_char.h rtree.h polygon.h pcb-printf.h search.h \
+ set.h undo.h rats.h file.h hid_actions.h
 find_act.o: find_act.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1311,8 +1327,8 @@ find_act.o: find_act.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h action_helper.h change.h error.h \
- undo.h find.h pcb-printf.h ../src_3rd/genvector/gds_char.h
+ list_element.h data.h action_helper.h change.h error.h undo.h find.h \
+ pcb-printf.h ../src_3rd/genvector/gds_char.h
 flags.o: flags.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1321,8 +1337,8 @@ flags.o: flags.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h hid_flags.h
+ list_element.h data.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ hid_flags.h
 free_atexit.o: free_atexit.c
 funchash.o: funchash.c ../src_3rd/liblihata/genht/htpi.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
@@ -1336,10 +1352,10 @@ gui_act.o: gui_act.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h action_helper.h change.h error.h \
- undo.h funchash_core.h funchash.h funchash_core_list.h draw.h search.h \
+ list_element.h data.h action_helper.h change.h error.h undo.h \
+ funchash_core.h funchash.h funchash_core_list.h draw.h search.h \
  crosshair.h find.h set.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- stub_stroke.h hid_actions.h
+ stub_stroke.h hid_actions.h hid_init.h
 heap.o: heap.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1348,7 +1364,7 @@ heap.o: heap.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h heap.h
+ list_element.h heap.h
 hid_actions.o: hid_actions.c ../config.h ../config.manual.h \
  ../config.auto.h ../src_3rd/liblihata/genht/hash.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
@@ -1360,7 +1376,7 @@ hid_actions.o: hid_actions.c ../config.h ../config.manual.h \
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h error.h event.h hid_actions.h
+ list_element.h data.h error.h event.h hid_actions.h
 hid_attrib.o: hid_attrib.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1369,7 +1385,7 @@ hid_attrib.o: hid_attrib.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid_attrib.h hid_helper.h misc.h \
+ list_element.h hid_attrib.h hid_helper.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h compat_fs.h error.h
 hid_cfg.o: hid_cfg.c ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/tree.h ../src_3rd/liblihata/dom.h \
@@ -1383,7 +1399,7 @@ hid_cfg.o: hid_cfg.c ../src_3rd/liblihata/lihata.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid_cfg.h hid_actions.h error.h paths.h
+ list_element.h hid_cfg.h hid_actions.h error.h paths.h
 hid_cfg_input.o: hid_cfg_input.c ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/tree.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -1397,9 +1413,8 @@ hid_cfg_input.o: hid_cfg_input.c ../src_3rd/liblihata/lihata.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h hid.h global_element.h list_element.h plug_footprint.h \
- hid_cfg.h hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h \
- hid_actions.h error.h
+ vtonpoint.h hid.h global_element.h list_element.h hid_cfg.h \
+ hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_actions.h error.h
 hid_color.o: hid_color.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1408,7 +1423,7 @@ hid_color.o: hid_color.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid_color.h
+ list_element.h hid_color.h
 hid_draw_helpers.o: hid_draw_helpers.c global.h ../config.h \
  ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
  macro.h global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h \
@@ -1417,7 +1432,7 @@ hid_draw_helpers.o: hid_draw_helpers.c global.h ../config.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h polygon.h
+ list_element.h polygon.h
 hid_extents.o: hid_extents.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1426,7 +1441,7 @@ hid_extents.o: hid_extents.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h hid_draw_helpers.h hid_helper.h
+ list_element.h data.h hid_draw_helpers.h hid_helper.h
 hid_flags.o: hid_flags.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1435,10 +1450,10 @@ hid_flags.o: hid_flags.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h hid_flags.h \
- ../src_3rd/liblihata/genht/hash.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h
+ list_element.h data.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ hid_flags.h ../src_3rd/liblihata/genht/hash.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h
 hid_helper.o: hid_helper.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1447,8 +1462,8 @@ hid_helper.o: hid_helper.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h hid_helper.h hid_attrib.h
+ list_element.h data.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ hid_helper.h hid_attrib.h
 hid_init.o: hid_init.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1457,7 +1472,7 @@ hid_init.o: hid_init.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h hid_nogui.h compat_dl.h error.h misc.h \
+ list_element.h hid_nogui.h compat_dl.h error.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h plugins.h \
  hid_attrib.h hid_flags.h compat_fs.h
 hid_nogui.o: hid_nogui.c ../config.h ../config.manual.h ../config.auto.h \
@@ -1468,7 +1483,7 @@ hid_nogui.o: hid_nogui.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h
+ list_element.h
 insert.o: insert.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1477,9 +1492,9 @@ insert.o: insert.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h copy.h create.h crosshair.h data.h \
- draw.h insert.h line.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- move.h polygon.h rtree.h search.h select.h set.h undo.h
+ list_element.h copy.h create.h crosshair.h data.h draw.h insert.h line.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h move.h polygon.h rtree.h \
+ search.h select.h set.h undo.h
 intersect.o: intersect.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1488,7 +1503,7 @@ intersect.o: intersect.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h intersect.h mymem.h
+ list_element.h data.h intersect.h mymem.h
 line.o: line.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1497,7 +1512,7 @@ line.o: line.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h crosshair.h find.h line.h misc.h \
+ list_element.h data.h crosshair.h find.h line.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h rtree.h
 list_arc.o: list_arc.c global_objs.h ../src_3rd/genlist/gendlist.h \
  ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
@@ -1512,7 +1527,7 @@ list_element.o: list_element.c global.h ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h ../src_3rd/genlist/gentdlist_impl.c
+ list_element.h ../src_3rd/genlist/gentdlist_impl.c
 list_line.o: list_line.c global_objs.h ../src_3rd/genlist/gendlist.h \
  ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
  ../config.h global_typedefs.h polyarea.h list_line.h \
@@ -1551,11 +1566,11 @@ main.o: main.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h buffer.h create.h crosshair.h \
- draw.h error.h file.h set.h action_helper.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h compat_lrealpath.h free_atexit.h \
- polygon.h pcb-printf.h buildin.h paths.h strflags.h plugins.h event.h \
- funchash.h hid_actions.h hid_attrib.h hid_init.h dolists.h \
+ list_element.h data.h buffer.h create.h crosshair.h draw.h error.h \
+ file.h set.h action_helper.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h compat_lrealpath.h free_atexit.h polygon.h pcb-printf.h \
+ buildin.h paths.h strflags.h plugins.h plug_footprint.h vtlibrary.h \
+ event.h funchash.h hid_actions.h hid_attrib.h hid_init.h dolists.h \
  generated_lists.h
 mirror.o: mirror.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
@@ -1565,7 +1580,7 @@ mirror.o: mirror.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h draw.h mirror.h misc.h \
+ list_element.h data.h draw.h mirror.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h polygon.h search.h select.h \
  set.h
 misc.o: misc.c ../config.h ../config.manual.h ../config.auto.h global.h \
@@ -1576,11 +1591,10 @@ misc.o: misc.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h box.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h crosshair.h create.h data.h \
- draw.h file.h error.h move.h pcb-printf.h polygon.h remove.h rtree.h \
- rotate.h rubberband.h search.h set.h undo.h action_helper.h compat_fs.h \
- compat_misc.h hid_actions.h hid_init.h
+ list_element.h box.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ crosshair.h create.h data.h draw.h file.h error.h move.h pcb-printf.h \
+ polygon.h remove.h rtree.h rotate.h rubberband.h search.h set.h undo.h \
+ action_helper.h compat_fs.h compat_misc.h hid_actions.h hid_init.h
 move.o: move.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1589,9 +1603,9 @@ move.o: move.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h create.h crosshair.h data.h draw.h \
- error.h misc.h ../src_3rd/genvector/gds_char.h mymem.h move.h polygon.h \
- rtree.h search.h select.h thermal.h undo.h hid_actions.h
+ list_element.h create.h crosshair.h data.h draw.h error.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h move.h polygon.h rtree.h \
+ search.h select.h thermal.h undo.h hid_actions.h
 mymem.o: mymem.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1600,7 +1614,7 @@ mymem.o: mymem.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h error.h mymem.h misc.h \
+ list_element.h data.h error.h mymem.h misc.h \
  ../src_3rd/genvector/gds_char.h rats.h rtree.h rats_patch.h
 netlist.o: netlist.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
@@ -1610,9 +1624,9 @@ netlist.o: netlist.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h action_helper.h buffer.h data.h error.h \
- file.h find.h mymem.h misc.h ../src_3rd/genvector/gds_char.h rats.h \
- set.h create.h rats_patch.h hid_actions.h
+ list_element.h action_helper.h buffer.h data.h error.h file.h find.h \
+ mymem.h misc.h ../src_3rd/genvector/gds_char.h rats.h set.h create.h \
+ rats_patch.h hid_actions.h
 object_act.o: object_act.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1621,11 +1635,10 @@ object_act.o: object_act.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h action_helper.h change.h error.h \
- undo.h funchash_core.h funchash.h funchash_core_list.h search.h move.h \
- draw.h mirror.h rotate.h set.h copy.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h rubberband.h buffer.h remove.h \
- create.h
+ list_element.h data.h action_helper.h change.h error.h undo.h \
+ funchash_core.h funchash.h funchash_core_list.h search.h move.h draw.h \
+ mirror.h rotate.h set.h copy.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h rubberband.h buffer.h remove.h create.h
 parse_l.o: parse_l.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1634,9 +1647,9 @@ parse_l.o: parse_l.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h crosshair.h data.h error.h file.h \
- mymem.h misc.h ../src_3rd/genvector/gds_char.h strflags.h parse_l.h \
- parse_y.h create.h
+ list_element.h crosshair.h data.h error.h file.h mymem.h misc.h \
+ ../src_3rd/genvector/gds_char.h strflags.h parse_l.h parse_y.h create.h \
+ plug_footprint.h vtlibrary.h
 parse_y.o: parse_y.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1645,9 +1658,9 @@ parse_y.o: parse_y.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h create.h data.h error.h file.h mymem.h \
- misc.h ../src_3rd/genvector/gds_char.h parse_l.h polygon.h remove.h \
- rtree.h strflags.h thermal.h rats_patch.h parse_y.h
+ list_element.h create.h data.h error.h file.h mymem.h misc.h \
+ ../src_3rd/genvector/gds_char.h parse_l.h polygon.h remove.h rtree.h \
+ strflags.h thermal.h rats_patch.h parse_y.h
 paths.o: paths.c paths.h error.h
 pcb-printf.o: pcb-printf.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
@@ -1657,8 +1670,7 @@ pcb-printf.o: pcb-printf.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h
+ list_element.h pcb-printf.h ../src_3rd/genvector/gds_char.h
 plug_footprint.o: plug_footprint.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1667,9 +1679,9 @@ plug_footprint.o: plug_footprint.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h file.h mymem.h paths.h plugins.h \
- ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/liblihata/genht/ht_inlines.h \
+ list_element.h data.h file.h mymem.h paths.h plug_footprint.h \
+ vtlibrary.h plugins.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h
 plug_footprint_host.o: plug_footprint_host.c ../config.h \
  ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
@@ -1680,7 +1692,8 @@ plug_footprint_host.o: plug_footprint_host.c ../config.h \
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h file.h plugins.h error.h
+ list_element.h data.h file.h plug_footprint.h vtlibrary.h plugins.h \
+ error.h
 plugins.o: plugins.c plugins.h ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1689,8 +1702,7 @@ plugins.o: plugins.c plugins.h ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h action_helper.h \
- ../src_3rd/genvector/gds_char.h
+ list_element.h data.h action_helper.h ../src_3rd/genvector/gds_char.h
 polygon.o: polygon.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1699,10 +1711,9 @@ polygon.o: polygon.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h box.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h create.h crosshair.h data.h \
- draw.h error.h find.h move.h pcb-printf.h polygon.h remove.h rtree.h \
- search.h set.h thermal.h undo.h
+ list_element.h box.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ create.h crosshair.h data.h draw.h error.h find.h move.h pcb-printf.h \
+ polygon.h remove.h rtree.h search.h set.h thermal.h undo.h
 polygon1.o: polygon1.c global.h ../config.h ../config.manual.h \
  ../config.auto.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1711,7 +1722,7 @@ polygon1.o: polygon1.c global.h ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h rtree.h heap.h
+ list_element.h rtree.h heap.h
 polygon_act.o: polygon_act.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1720,8 +1731,8 @@ polygon_act.o: polygon_act.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h action_helper.h change.h error.h \
- undo.h funchash_core.h funchash.h funchash_core_list.h polygon.h draw.h \
+ list_element.h data.h action_helper.h change.h error.h undo.h \
+ funchash_core.h funchash.h funchash_core_list.h polygon.h draw.h \
  search.h crosshair.h
 print.o: print.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
@@ -1731,9 +1742,9 @@ print.o: print.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h draw.h drill.h file.h find.h \
- error.h misc.h ../src_3rd/genvector/gds_char.h mymem.h print.h polygon.h \
- rtree.h search.h
+ list_element.h data.h draw.h drill.h file.h find.h error.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h print.h polygon.h rtree.h \
+ search.h
 rats.o: rats.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1742,9 +1753,9 @@ rats.o: rats.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h create.h data.h draw.h error.h file.h \
- find.h misc.h ../src_3rd/genvector/gds_char.h mymem.h polygon.h rats.h \
- search.h set.h undo.h stub_mincut.h
+ list_element.h create.h data.h draw.h error.h file.h find.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h polygon.h rats.h search.h set.h \
+ undo.h stub_mincut.h
 rats_act.o: rats_act.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1753,9 +1764,9 @@ rats_act.o: rats_act.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h action_helper.h change.h error.h \
- undo.h set.h misc.h ../src_3rd/genvector/gds_char.h mymem.h find.h \
- remove.h funchash_core.h funchash.h funchash_core_list.h rats.h draw.h
+ list_element.h data.h action_helper.h change.h error.h undo.h set.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h find.h remove.h \
+ funchash_core.h funchash.h funchash_core_list.h rats.h draw.h
 rats_patch.o: rats_patch.c rats_patch.h global.h ../config.h \
  ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
  macro.h global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h \
@@ -1764,7 +1775,7 @@ rats_patch.o: rats_patch.c rats_patch.h global.h ../config.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h ../src_3rd/liblihata/genht/htsp.h \
+ list_element.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h create.h data.h action_helper.h \
  error.h buffer.h remove.h copy.h
@@ -1776,7 +1787,7 @@ remove.o: remove.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h draw.h error.h misc.h \
+ list_element.h data.h draw.h error.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h move.h polygon.h rats.h remove.h \
  rtree.h search.h select.h set.h undo.h
 remove_act.o: remove_act.c ../config.h ../config.manual.h \
@@ -1787,8 +1798,8 @@ remove_act.o: remove_act.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h action_helper.h change.h error.h \
- undo.h set.h remove.h funchash_core.h funchash.h funchash_core_list.h
+ list_element.h data.h action_helper.h change.h error.h undo.h set.h \
+ remove.h funchash_core.h funchash.h funchash_core_list.h
 rotate.o: rotate.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1797,7 +1808,7 @@ rotate.o: rotate.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h crosshair.h data.h draw.h error.h misc.h \
+ list_element.h crosshair.h data.h draw.h error.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h polygon.h rotate.h rtree.h \
  rubberband.h search.h select.h set.h undo.h
 rtree.o: rtree.c ../config.h ../config.manual.h ../config.auto.h global.h \
@@ -1808,7 +1819,7 @@ rtree.o: rtree.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h mymem.h rtree.h
+ list_element.h mymem.h rtree.h
 rubberband.o: rubberband.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1817,7 +1828,7 @@ rubberband.o: rubberband.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h create.h data.h error.h misc.h \
+ list_element.h create.h data.h error.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h polygon.h rubberband.h rtree.h \
  search.h
 search.o: search.c ../config.h ../config.manual.h ../config.auto.h \
@@ -1828,9 +1839,8 @@ search.o: search.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h box.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h data.h draw.h error.h find.h \
- polygon.h rtree.h search.h
+ list_element.h box.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ data.h draw.h error.h find.h polygon.h rtree.h search.h
 select.o: select.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1839,8 +1849,8 @@ select.o: select.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h draw.h error.h search.h select.h \
- undo.h rats.h misc.h ../src_3rd/genvector/gds_char.h mymem.h find.h
+ list_element.h data.h draw.h error.h search.h select.h undo.h rats.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h find.h
 select_act.o: select_act.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1849,8 +1859,8 @@ select_act.o: select_act.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h action_helper.h change.h error.h \
- undo.h funchash_core.h funchash.h funchash_core_list.h search.h select.h \
+ list_element.h data.h action_helper.h change.h error.h undo.h \
+ funchash_core.h funchash.h funchash_core_list.h search.h select.h \
  crosshair.h set.h buffer.h draw.h remove.h copy.h hid_attrib.h
 set.o: set.c ../config.h ../config.manual.h ../config.auto.h global.h \
  const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
@@ -1860,9 +1870,9 @@ set.o: set.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h action_helper.h buffer.h compat_misc.h \
- crosshair.h data.h draw.h error.h find.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h set.h undo.h hid_actions.h
+ list_element.h action_helper.h buffer.h compat_misc.h crosshair.h data.h \
+ draw.h error.h find.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ set.h undo.h hid_actions.h
 strflags.o: strflags.c ../config.h ../config.manual.h ../config.auto.h \
  ../globalconst.h ../config.h global.h const.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1871,7 +1881,7 @@ strflags.o: strflags.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h compat_misc.h strflags.h
+ list_element.h compat_misc.h strflags.h
 stub_edif.o: stub_edif.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1880,7 +1890,7 @@ stub_edif.o: stub_edif.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h error.h stub_edif.h
+ list_element.h error.h stub_edif.h
 stub_mincut.o: stub_mincut.c ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1889,7 +1899,7 @@ stub_mincut.o: stub_mincut.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h error.h data.h stub_mincut.h
+ list_element.h error.h data.h stub_mincut.h
 stub_stroke.o: stub_stroke.c error.h
 stub_vendor.o: stub_vendor.c stub_vendor.h ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
@@ -1899,7 +1909,7 @@ stub_vendor.o: stub_vendor.c stub_vendor.h ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h
+ list_element.h
 thermal.o: thermal.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1908,7 +1918,7 @@ thermal.o: thermal.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h create.h data.h draw.h error.h misc.h \
+ list_element.h create.h data.h draw.h error.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h move.h polygon.h rtree.h \
  thermal.h undo.h
 undo.o: undo.c ../config.h ../config.manual.h ../config.auto.h global.h \
@@ -1919,10 +1929,9 @@ undo.o: undo.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h buffer.h change.h create.h data.h draw.h \
- error.h insert.h misc.h ../src_3rd/genvector/gds_char.h mymem.h mirror.h \
- move.h polygon.h remove.h rotate.h rtree.h search.h set.h undo.h \
- strflags.h
+ list_element.h buffer.h change.h create.h data.h draw.h error.h insert.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h mirror.h move.h polygon.h \
+ remove.h rotate.h rtree.h search.h set.h undo.h strflags.h
 undo_act.o: undo_act.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
@@ -1931,13 +1940,24 @@ undo_act.o: undo_act.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h plug_footprint.h data.h action_helper.h change.h error.h \
- funchash_core.h funchash.h funchash_core_list.h crosshair.h undo.h \
- polygon.h set.h search.h draw.h misc.h ../src_3rd/genvector/gds_char.h \
- mymem.h
+ list_element.h data.h action_helper.h change.h error.h funchash_core.h \
+ funchash.h funchash_core_list.h crosshair.h undo.h polygon.h set.h \
+ search.h draw.h misc.h ../src_3rd/genvector/gds_char.h mymem.h
+vtlibrary.o: vtlibrary.c vtlibrary.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h ../config.h ../config.manual.h \
+ ../config.auto.h ../globalconst.h ../config.h global_typedefs.h \
+ polyarea.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_3rd/genvector/genvector_impl.c
 vtonpoint.o: vtonpoint.c vtonpoint.h global_objs.h \
  ../src_3rd/genlist/gendlist.h ../config.h ../config.manual.h \
  ../config.auto.h ../globalconst.h ../config.h global_typedefs.h \
  polyarea.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_3rd/genvector/genvector_impl.c
+vtptr.o: vtptr.c vtptr.h global_objs.h ../src_3rd/genlist/gendlist.h \
+ ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
+ ../config.h global_typedefs.h polyarea.h \
+ ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genvector/genvector_impl.c

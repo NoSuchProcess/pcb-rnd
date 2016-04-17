@@ -64,8 +64,9 @@ struct library_s {
 			vtlib_t children;
 		} dir;
 		struct { /* type == LIB_FOOTPRINT */
-#warning TODO: this should be removed
-			char *full_path;     /* allocated*/
+			char *full_path;
+			char *loc_info;     /* allocated*/
+			void *backend_data;
 			fp_type_t type;
 			void **tags;        /* an array of void * tag IDs; last tag ID is NULL */
 		} fp;

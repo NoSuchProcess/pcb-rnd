@@ -73,6 +73,8 @@ void fp_free_children(library_t *parent);
 void fp_sort_children(library_t *parent);
 void fp_rmdir(library_t *dir);
 library_t *fp_mkdir_p(const char *path);
+library_t *fp_mkdir_len(library_t *parent, const char *name, int name_len);
+library_t *fp_lib_search(library_t *dir, const char *name);
 
 #ifndef PCB_NO_GLUE
 /* Return the library shell string (from Settings) */

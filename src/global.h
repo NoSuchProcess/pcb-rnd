@@ -243,7 +243,6 @@ typedef struct {
 typedef struct LibraryEntryTpye_s  LibraryEntryType, *LibraryEntryTypePtr;
 typedef struct LibraryMenuType_s   LibraryMenuType, *LibraryMenuTypePtr;
 
-#include "plug_footprint.h"
 /* ---------------------------------------------------------------------------
  * structure used by library routines
  */
