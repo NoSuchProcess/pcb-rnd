@@ -252,6 +252,8 @@ void fp_free_entry(library_t *l)
 		case LIB_FOOTPRINT:
 			if (l->data.fp.loc_info != NULL)
 				free(l->data.fp.loc_info);
+			if (l->data.fp.tags != NULL)
+				free(l->data.fp.tags);
 			break;
 	}
 	if (l->name != NULL) {
