@@ -49,11 +49,8 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 		if (cdir == NULL)
 			goto error;
 		cdir += 3;
-		if ((!fp_wget_offline) && !(mode & FP_WGET_OFFLINE)) {
-			sprintf(cmd, "%s -O '%s/%s' %s '%s'", wget_cmd, cache_path, cdir, upds, url);
-			system(cmd);
-		}
-		if (f != NULL) {
+
+		{
 			char *end;
 			sprintf(cmd, "%s/%s", cache_path, cdir);
 			end = strrchr(cmd, '/');
@@ -63,6 +60,14 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 					goto error;
 				*end = '/';
 			}
+		}
+
+		if ((!fp_wget_offline) && !(mode & FP_WGET_OFFLINE)) {
+			sprintf(cmd, "%s -O '%s/%s' %s '%s'", wget_cmd, cache_path, cdir, upds, url);
+			system(cmd);
+		}
+		if (f != NULL) {
+			sprintf(cmd, "%s/%s", cache_path, cdir);
 			*f = fopen(cmd, "r");
 			if (*f == NULL)
 				goto error;
