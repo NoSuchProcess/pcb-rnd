@@ -182,7 +182,8 @@ library_t *fp_mkdir_len(library_t *parent, const char *name, int name_len)
 	else
 		l->name = strdup(name);
 	l->parent = parent;
-
+	l->type = LIB_DIR;
+	vtlib_init(&l->data.dir.children);
 	return l;
 }
 
