@@ -73,7 +73,6 @@ int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 	FILE *f;
 	int fctx;
 	char *md5_last, *md5_new;
-	int tmp;
 	char line[1024];
 	fp_get_mode mode;
 	gds_t vpath;
@@ -117,7 +116,7 @@ int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 
 	while(fgets(line, sizeof(line), f) != NULL) {
 		char *end, *fn;
-		library_t *l, *parent;
+		library_t *l;
 
 		if (*line == '#')
 			continue;
@@ -153,21 +152,22 @@ int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 FILE *fp_gedasymbols_fopen(plug_fp_t *ctx, const char *path, const char *name, fp_fopen_ctx_t *fctx)
 {
 	gds_t s;
-	gds_init(&s);
 	FILE *f;
 
-	if (strncmp(path, "gedasymbols/", 12) == 0)
-		path+=12;
-	if (*path == '/')
-		path++;
+	if (strncmp(name, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) == 0)
+		name+=strlen(REQUIRE_PATH_PREFIX);
+	else
+		return NULL;
 
+	if (*name == '/')
+		name++;
+
+	gds_init(&s);
 	gds_append_str(&s, FP_URL);
-	gds_append_str(&s, path);
-	gds_append(&s, '/');
 	gds_append_str(&s, name);
 	gds_append_str(&s, FP_DL);
 
-	fp_wget_open(s.array, gedasym_cache, &f, &(fctx->field[FIELD_WGET_CTX].i), 1);
+	fp_wget_open(s.array, gedasym_cache, &f, &(fctx->field[FIELD_WGET_CTX].i), FP_WGET_UPDATE);
 
 	gds_uninit(&s);
 	return f;
