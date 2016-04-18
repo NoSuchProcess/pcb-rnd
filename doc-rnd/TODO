@@ -1,5 +1,8 @@
 - test before release: gsch2pcb-rnd
 
+- uncrecognized key symbol (see log window)
+- lesstif: check why key : fails
+
 - random breaks:
 	- gpmi plugin make is not triggered when gpmi is a buildin
 	- gpmi packages are not installed in plugins/pcb-rnd-gpmi
@@ -9,11 +12,12 @@
 	- vendordrill: free at exit (check for leaks)
 
 - resource conv cleanup:
-	- look for warnings
+	- look for #warnings
 	- key html converter for lihata: multi-key sequences (when accel is a list)
 	- action, all key combinations in tooltip?
 
 CLEANUP #5
+- fix librarychanged: disable update of gedasymbols on-start, make it an explicit refresh button
 - move print.[ch]
 - BUG: don't use ~/.pcb, use ~/.pcb-rnd; do not hardwire this in the code, make it a config.h setting
 - libstroke: zoom
