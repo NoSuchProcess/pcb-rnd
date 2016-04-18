@@ -20,7 +20,7 @@
 #include "hid.h"
 #include "lesstif.h"
 #include "hid_flags.h"
-
+#include "stdarg.h"
 
 
 RCSID("$Id$");
@@ -42,10 +42,6 @@ RCSID("$Id$");
 
    So, we need to do PCB->RouteStyle <-> active style.
 */
-
-static Arg args[30];
-static int n;
-#define stdarg(t,v) XtSetArg(args[n], t, v); n++
 
 typedef enum {
 	SSthick, SSdiam, SShole, SSkeep,
@@ -94,9 +90,9 @@ static void update_one_value(int i, Coord v)
 
 	pcb_snprintf(buf, sizeof(buf), "%m+%.2mS", unit->allow, v);
 	XmTextSetString(style_values[i], buf);
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNlabelString, ustr);
-	XtSetValues(units_pb[i], args, n);
+	XtSetValues(units_pb[i], stdarg_args, stdarg_n);
 }
 
 static void update_values()
@@ -181,7 +177,7 @@ static void units_cb()
 static Widget style_value(int i)
 {
 	Widget w, l;
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_POSITION);
 	stdarg(XmNtopPosition, i);
 	stdarg(XmNbottomAttachment, XmATTACH_POSITION);
@@ -189,10 +185,10 @@ static Widget style_value(int i)
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNalignment, XmALIGNMENT_END);
-	l = XmCreateLabel(value_labels, value_names[i], args, n);
+	l = XmCreateLabel(value_labels, value_names[i], stdarg_args, stdarg_n);
 	XtManageChild(l);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_POSITION);
 	stdarg(XmNtopPosition, i);
 	stdarg(XmNbottomAttachment, XmATTACH_POSITION);
@@ -200,11 +196,11 @@ static Widget style_value(int i)
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNcolumns, 8);
-	w = XmCreateTextField(value_texts, value_names[i], args, n);
+	w = XmCreateTextField(value_texts, value_names[i], stdarg_args, stdarg_n);
 	XtAddCallback(w, XmNvalueChangedCallback, (XtCallbackProc) style_value_cb, (XtPointer) (size_t) i);
 	XtManageChild(w);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_POSITION);
 	stdarg(XmNtopPosition, i);
 	stdarg(XmNbottomAttachment, XmATTACH_POSITION);
@@ -212,7 +208,7 @@ static Widget style_value(int i)
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNlabelString, ustr);
-	units_pb[i] = XmCreatePushButton(units_form, value_names[i], args, n);
+	units_pb[i] = XmCreatePushButton(units_form, value_names[i], stdarg_args, stdarg_n);
 	XtAddCallback(units_pb[i], XmNactivateCallback, (XtCallbackProc) units_cb, (XtPointer) (size_t) i);
 	XtManageChild(units_pb[i]);
 
@@ -272,26 +268,26 @@ static Widget style_button(int i)
 {
 	Widget pb, set;
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_WIDGET);
 	stdarg(XmNtopWidget, i ? style_pb[i - 1] : value_form);
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNlabelString, XmStringCreatePCB("Name"));
-	set = XmCreatePushButton(style_dialog, "style", args, n);
+	set = XmCreatePushButton(style_dialog, "style", stdarg_args, stdarg_n);
 	XtManageChild(set);
 	XtAddCallback(set, XmNactivateCallback, (XtCallbackProc) style_name_cb, (XtPointer) (size_t) i);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_WIDGET);
 	stdarg(XmNtopWidget, i ? style_pb[i - 1] : value_form);
 	stdarg(XmNleftAttachment, XmATTACH_WIDGET);
 	stdarg(XmNleftWidget, set);
 	stdarg(XmNlabelString, XmStringCreatePCB("Set"));
-	set = XmCreatePushButton(style_dialog, "style", args, n);
+	set = XmCreatePushButton(style_dialog, "style", stdarg_args, stdarg_n);
 	XtManageChild(set);
 	XtAddCallback(set, XmNactivateCallback, (XtCallbackProc) style_set_cb, (XtPointer) (size_t) i);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_WIDGET);
 	stdarg(XmNtopWidget, i ? style_pb[i - 1] : value_form);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
@@ -300,7 +296,7 @@ static Widget style_button(int i)
 	stdarg(XmNlabelString, XmStringCreatePCB(PCB->RouteStyle[i].Name));
 	stdarg(XmNindicatorType, XmONE_OF_MANY);
 	stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
-	pb = XmCreateToggleButton(style_dialog, "style", args, n);
+	pb = XmCreateToggleButton(style_dialog, "style", stdarg_args, stdarg_n);
 	XtManageChild(pb);
 	XtAddCallback(pb, XmNvalueChangedCallback, (XtCallbackProc) style_selected, (XtPointer) (size_t) i);
 	return pb;
@@ -324,36 +320,36 @@ static int AdjustStyle(int argc, char **argv, Coord x, Coord y)
 		unit = Settings.grid_unit;
 		ustr = XmStringCreateLocalized((char *) unit->suffix);
 
-		n = 0;
+		stdarg_n = 0;
 		stdarg(XmNautoUnmanage, False);
 		stdarg(XmNtitle, "Route Styles");
-		style_dialog = XmCreateFormDialog(mainwind, "style", args, n);
+		style_dialog = XmCreateFormDialog(mainwind, "style", stdarg_args, stdarg_n);
 
-		n = 0;
+		stdarg_n = 0;
 		stdarg(XmNtopAttachment, XmATTACH_FORM);
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
-		value_form = XmCreateForm(style_dialog, "values", args, n);
+		value_form = XmCreateForm(style_dialog, "values", stdarg_args, stdarg_n);
 		XtManageChild(value_form);
 
-		n = 0;
+		stdarg_n = 0;
 		stdarg(XmNtopAttachment, XmATTACH_FORM);
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
 		stdarg(XmNbottomAttachment, XmATTACH_FORM);
 		stdarg(XmNfractionBase, 4);
 		stdarg(XmNresizePolicy, XmRESIZE_GROW);
-		units_form = XmCreateForm(value_form, "units", args, n);
+		units_form = XmCreateForm(value_form, "units", stdarg_args, stdarg_n);
 		XtManageChild(units_form);
 
-		n = 0;
+		stdarg_n = 0;
 		stdarg(XmNtopAttachment, XmATTACH_FORM);
 		stdarg(XmNbottomAttachment, XmATTACH_FORM);
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNfractionBase, 4);
-		value_labels = XmCreateForm(value_form, "values", args, n);
+		value_labels = XmCreateForm(value_form, "values", stdarg_args, stdarg_n);
 		XtManageChild(value_labels);
 
-		n = 0;
+		stdarg_n = 0;
 		stdarg(XmNtopAttachment, XmATTACH_FORM);
 		stdarg(XmNbottomAttachment, XmATTACH_FORM);
 		stdarg(XmNrightAttachment, XmATTACH_WIDGET);
@@ -361,7 +357,7 @@ static int AdjustStyle(int argc, char **argv, Coord x, Coord y)
 		stdarg(XmNleftAttachment, XmATTACH_WIDGET);
 		stdarg(XmNleftWidget, value_labels);
 		stdarg(XmNfractionBase, 4);
-		value_texts = XmCreateForm(value_form, "values", args, n);
+		value_texts = XmCreateForm(value_form, "values", stdarg_args, stdarg_n);
 		XtManageChild(value_texts);
 
 		for (i = 0; i < SSNUM; i++) {
@@ -390,12 +386,12 @@ static int RouteStylesChanged(int argc, char **argv, Coord x, Coord y)
 		if (name_hashes[j] == h)
 			continue;
 		name_hashes[j] = h;
-		n = 0;
+		stdarg_n = 0;
 		stdarg(XmNlabelString, XmStringCreatePCB(PCB->RouteStyle[j].Name));
 		if (style_dialog)
-			XtSetValues(style_pb[j], args, n);
+			XtSetValues(style_pb[j], stdarg_args, stdarg_n);
 		for (i = 0; i < num_style_buttons; i++)
-			XtSetValues(style_button_list[i].w[j], args, n);
+			XtSetValues(style_button_list[i].w[j], stdarg_args, stdarg_n);
 	}
 	update_values();
 	return 0;
@@ -413,10 +409,10 @@ void lesstif_insert_style_buttons(Widget menu)
 
 	for (i = 0; i < NUM_STYLES; i++) {
 		Widget btn;
-		n = 0;
+		stdarg_n = 0;
 		stdarg(XmNindicatorType, XmONE_OF_MANY);
 		stdarg(XmNlabelString, XmStringCreatePCB(PCB->RouteStyle[i].Name));
-		btn = XmCreateToggleButton(menu, "style", args, n);
+		btn = XmCreateToggleButton(menu, "style", stdarg_args, stdarg_n);
 		XtManageChild(btn);
 		XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) style_selected, (XtPointer) (size_t) i);
 		sb->w[i] = btn;
