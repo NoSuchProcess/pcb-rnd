@@ -230,17 +230,16 @@
  ../src_3rd/genvector/gds_char.h mymem.h move.h remove.h rtree.h \
  strflags.h undo.h pcb-printf.h plugins.h hid_actions.h dolists.h
 ../src_plugins/fp_fs/fp_fs.o: ../src_plugins/fp_fs/fp_fs.c ../config.h \
- ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
- ../config.h macro.h global_typedefs.h global_objs.h \
+ ../config.manual.h ../config.auto.h mymem.h global.h const.h \
+ ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h mymem.h global.h data.h paths.h plugins.h \
- plug_footprint.h vtlibrary.h compat_fs.h error.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h
+ list_element.h data.h paths.h plugins.h plug_footprint.h vtlibrary.h \
+ compat_fs.h error.h misc.h ../src_3rd/genvector/gds_char.h mymem.h
 ../src_plugins/fp_wget/fp_wget.o: ../src_plugins/fp_wget/fp_wget.c \
  global.h ../config.h ../config.manual.h ../config.auto.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -371,7 +370,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h
+ ../src_plugins/hid_gtk/gui-pinout-preview.h pcb-printf.h \
+ ../src_plugins/hid_gtk/gschem_accel_label.h
 ../src_plugins/hid_gtk/ghid-route-style-selector.o: \
  ../src_plugins/hid_gtk/ghid-route-style-selector.c global.h ../config.h \
  ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
@@ -825,7 +825,8 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h hid_attrib.h hid_helper.h \
- hid_init.h hid_color.h hid_extents.h hid_flags.h hid_actions.h dolists.h
+ hid_init.h hid_color.h hid_extents.h hid_flags.h hid_actions.h \
+ ../src_plugins/hid_lesstif/stdarg.h dolists.h
 ../src_plugins/hid_lesstif/menu.o: ../src_plugins/hid_lesstif/menu.c \
  ../config.h ../config.manual.h ../config.auto.h \
  ../src_plugins/hid_lesstif/xincludes.h global.h const.h ../globalconst.h \
@@ -1681,9 +1682,8 @@ plug_footprint.o: plug_footprint.c ../config.h ../config.manual.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h data.h file.h mymem.h paths.h plug_footprint.h \
- vtlibrary.h plugins.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
- ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/liblihata/genht/ht_inlines.h \
+ vtlibrary.h plugins.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h
 plug_footprint_host.o: plug_footprint_host.c ../config.h \
  ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \

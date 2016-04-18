@@ -16,6 +16,7 @@
 #include "ghid-main-menu.h"
 #include "ghid-layer-selector.h"
 #include "ghid-route-style-selector.h"
+#include "gschem_accel_label.h"
 
 void Message(const char *, ...);
 
@@ -62,7 +63,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 	gchar mnemonic = 0;
 	int j;
 	GtkAction *action = NULL;
-	const char *accel = NULL;
+	char *accel = NULL;
 	char *menu_label;
 	lht_node_t *n_action = hid_cfg_menu_field(sub_res, MF_ACTION, NULL);
 	lht_node_t *n_keydesc = hid_cfg_menu_field(sub_res, MF_ACCELERATOR, NULL);

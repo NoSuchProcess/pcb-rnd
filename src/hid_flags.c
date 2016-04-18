@@ -61,7 +61,7 @@ void hid_remove_flags_by_cookie(const char *cookie)
 	HID_FlagNode *ha;
 
 	if (hid_flags == NULL)
-		return NULL;
+		return;
 
 	for(e = htsp_first(hid_flags); e; e = htsp_next(hid_flags, e)) {
 		ha = e->value;

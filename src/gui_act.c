@@ -791,7 +791,7 @@ static int ActionCycleDrag(int argc, char **argv, Coord x, Coord y)
 	int over = 0;
 
 	if (Crosshair.drags == NULL)
-		return NULL;
+		return 0;
 
 	do {
 		Crosshair.drags_current++;
