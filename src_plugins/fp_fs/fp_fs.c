@@ -248,7 +248,7 @@ static int fp_fs_load_dir_(library_t *pl, const char *subdir, const char *toppat
 		free(d->parent);
 		free(d);
 	}
-	if (l.children == 0)
+	if ((l.children == 0) && (l.menu->data.dir.children.used == 0))
 		fp_rmdir(l.menu);
 	free(working);
 	return l.children;
