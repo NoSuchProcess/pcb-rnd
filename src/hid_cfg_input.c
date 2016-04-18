@@ -276,14 +276,19 @@ static int parse_keydesc(hid_cfg_keys_t *km, const char *keydesc, hid_cfg_mod_t 
 		len -= k-last;
 		k++; len--;
 		if ((strncmp(k, "key>", 4) != 0) && (strncmp(k, "Key>", 4) != 0)) {
-			Message("Missing <key> in the key description");
+			Message("Missing <key> in the key description\n");
 			return -1;
 		}
 		k+=4; len-=4;
 		key_chars[slen] = translate_key(km, k, len);
 
 		if (key_chars[slen] == 0) {
-			Message("Unrecognised key symbol in key description");
+			char *s;
+			s = malloc(len+1);
+			memcpy(s, k, len);
+			s[len] = '\0';
+			Message("Unrecognised key symbol in key description: %s\n", s);
+			free(s);
 			return -1;
 		}
 
@@ -307,14 +312,14 @@ int hid_cfg_keys_add_by_strdesc(hid_cfg_keys_t *km, const char *keydesc, const l
 	if ((out_seq != NULL) && (slen >= out_seq_len))
 		return -1;
 
-	printf("KEY insert\n");
+/*	printf("KEY insert\n");*/
 
 	lasts = NULL;
 	for(n = 0; n < slen; n++) {
 		hid_cfg_keyseq_t *s;
 		int terminal = (n == slen-1);
 
-		printf(" mods=%x sym=%x\n", mods[n], key_chars[n]);
+/*		printf(" mods=%x sym=%x\n", mods[n], key_chars[n]);*/
 
 		s = hid_cfg_keys_add_under(km, lasts, mods[n], key_chars[n], terminal);
 		if (s == NULL) {
