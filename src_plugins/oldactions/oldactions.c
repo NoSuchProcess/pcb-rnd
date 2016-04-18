@@ -82,13 +82,70 @@ static int ActionBell(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
+/* --------------------------------------------------------------------------- */
+
+static const char debug_syntax[] = "Debug(...)";
+
+static const char debug_help[] = "Debug action.";
+
+/* %start-doc actions Debug
+
+This action exists to help debug scripts; it simply prints all its
+arguments to stdout.
+
+%end-doc */
+
+static const char debugxy_syntax[] = "DebugXY(...)";
+
+static const char debugxy_help[] = "Debug action, with coordinates";
+
+/* %start-doc actions DebugXY
+
+Like @code{Debug}, but requires a coordinate.  If the user hasn't yet
+indicated a location on the board, the user will be prompted to click
+on one.
+
+%end-doc */
+
+static int Debug(int argc, char **argv, Coord x, Coord y)
+{
+	int i;
+	printf("Debug:");
+	for (i = 0; i < argc; i++)
+		printf(" [%d] `%s'", i, argv[i]);
+	pcb_printf(" x,y %$mD\n", x, y);
+	return 0;
+}
+
+static const char return_syntax[] = "Return(0|1)";
+
+static const char return_help[] = "Simulate a passing or failing action.";
+
+/* %start-doc actions Return
+
+This is for testing.  If passed a 0, does nothing and succeeds.  If
+passed a 1, does nothing but pretends to fail.
+
+%end-doc */
+
+static int Return(int argc, char **argv, Coord x, Coord y)
+{
+	return atoi(argv[0]);
+}
+
+
 
 HID_Action oldactions_action_list[] = {
 	{"DumpLibrary", 0, ActionDumpLibrary,
-	 dumplibrary_help, dumplibrary_syntax}
-	,
+	 dumplibrary_help, dumplibrary_syntax},
 	{"Bell", 0, ActionBell,
-	 bell_help, bell_syntax}
+	 bell_help, bell_syntax},
+	{"Debug", 0, Debug,
+	 debug_help, debug_syntax},
+	{"DebugXY", "Click X,Y for Debug", Debug,
+	 debugxy_help, debugxy_syntax},
+	{"Return", 0, Return,
+	 return_help, return_syntax}
 };
 
 static const char *oldactions_cookie = "oldactions plugin";

@@ -1,5 +1,6 @@
 Random collection of old/obsolete actions. Bell(): audible feedback;
-DumpLibrary(): print footprint library on stdout
+DumpLibrary(): print footprint library on stdout; a set of debug actions
+useful for writing pcb scripts: Debug(), DebugXY(), Return().
 
 #state: works
 #default: disabled
