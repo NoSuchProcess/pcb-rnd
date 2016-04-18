@@ -40,6 +40,7 @@
 #include "hid_extents.h"
 #include "hid_flags.h"
 #include "hid_actions.h"
+#include "stdarg.h"
 
 #include <sys/poll.h>
 
@@ -190,11 +191,6 @@ REGISTER_FLAGS(lesstif_main_flag_list, lesstif_cookie)
 /* This is the size of the current PCB work area.  */
 /* Use PCB->MaxWidth, PCB->MaxHeight.  */
 /* static int pcb_width, pcb_height; */
-		 static Arg args[30];
-		 static int n;
-#define stdarg(t,v) XtSetArg(args[n], t, v), n++
-
-
 		 static int use_private_colormap = 0;
 		 static int stdin_listen = 0;
 		 static char *background_image_file = 0;
@@ -359,18 +355,18 @@ static int PCBChanged(int argc, char **argv, Coord x, Coord y)
 	if (work_area == 0)
 		return 0;
 	/*pcb_printf("PCB Changed! %$mD\n", PCB->MaxWidth, PCB->MaxHeight); */
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNminimum, 0);
 	stdarg(XmNvalue, 0);
 	stdarg(XmNsliderSize, PCB->MaxWidth ? PCB->MaxWidth : 1);
 	stdarg(XmNmaximum, PCB->MaxWidth ? PCB->MaxWidth : 1);
-	XtSetValues(hscroll, args, n);
-	n = 0;
+	XtSetValues(hscroll, stdarg_args, stdarg_n);
+	stdarg_n = 0;
 	stdarg(XmNminimum, 0);
 	stdarg(XmNvalue, 0);
 	stdarg(XmNsliderSize, PCB->MaxHeight ? PCB->MaxHeight : 1);
 	stdarg(XmNmaximum, PCB->MaxHeight ? PCB->MaxHeight : 1);
-	XtSetValues(vscroll, args, n);
+	XtSetValues(vscroll, stdarg_args, stdarg_n);
 	zoom_max();
 
 	hid_action("NetlistChanged");
@@ -382,9 +378,9 @@ static int PCBChanged(int argc, char **argv, Coord x, Coord y)
 		pinout_unmap(0, pinouts, 0);
 	if (PCB->Filename) {
 		char *cp = strrchr(PCB->Filename, '/');
-		n = 0;
+		stdarg_n = 0;
 		stdarg(XmNtitle, cp ? cp + 1 : PCB->Filename);
-		XtSetValues(appwidget, args, n);
+		XtSetValues(appwidget, stdarg_args, stdarg_n);
 	}
 	return 0;
 }
@@ -612,19 +608,19 @@ static int SwapSides(int argc, char **argv, Coord x, Coord y)
 		Settings.ShowSolderSide = (flip_x == flip_y);
 	}
 
-	n = 0;
+	stdarg_n = 0;
 	if (flip_x)
 		stdarg(XmNprocessingDirection, XmMAX_ON_LEFT);
 	else
 		stdarg(XmNprocessingDirection, XmMAX_ON_RIGHT);
-	XtSetValues(hscroll, args, n);
+	XtSetValues(hscroll, stdarg_args, stdarg_n);
 
-	n = 0;
+	stdarg_n = 0;
 	if (flip_y)
 		stdarg(XmNprocessingDirection, XmMAX_ON_TOP);
 	else
 		stdarg(XmNprocessingDirection, XmMAX_ON_BOTTOM);
-	XtSetValues(vscroll, args, n);
+	XtSetValues(vscroll, stdarg_args, stdarg_n);
 
 	Settings.ShowSolderSide = !Settings.ShowSolderSide;
 
@@ -1092,13 +1088,13 @@ static void set_scroll(Widget s, int pos, int view, int pcb)
 	int sz = view * view_zoom;
 	if (sz > pcb)
 		sz = pcb;
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNvalue, pos);
 	stdarg(XmNsliderSize, sz);
 	stdarg(XmNincrement, view_zoom);
 	stdarg(XmNpageIncrement, sz);
 	stdarg(XmNmaximum, pcb);
-	XtSetValues(s, args, n);
+	XtSetValues(s, stdarg_args, stdarg_n);
 }
 
 void lesstif_pan_fixup()
@@ -1568,11 +1564,11 @@ static void work_area_resize(Widget work_area, void *me, XmDrawingAreaCallbackSt
 
 	show_crosshair(0);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XtNwidth, &width);
 	stdarg(XtNheight, &height);
 	stdarg(XmNbackground, &bgcolor);
-	XtGetValues(work_area, args, n);
+	XtGetValues(work_area, stdarg_args, stdarg_n);
 	view_width = width;
 	view_height = height;
 
@@ -1610,11 +1606,11 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 	XSetDashes(display, arc1_gc, 0, dashes, 2);
 	XSetDashes(display, arc2_gc, 0, dashes, 2);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XtNwidth, &width);
 	stdarg(XtNheight, &height);
 	stdarg(XmNbackground, &bgcolor);
-	XtGetValues(work_area, args, n);
+	XtGetValues(work_area, stdarg_args, stdarg_n);
 	view_width = width;
 	view_height = height;
 
@@ -1656,7 +1652,7 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 static Widget make_message(char *name, Widget left, int resizeable)
 {
 	Widget w, f;
-	n = 0;
+	stdarg_n = 0;
 	if (left) {
 		stdarg(XmNleftAttachment, XmATTACH_WIDGET);
 		stdarg(XmNleftWidget, XtParent(left));
@@ -1673,14 +1669,14 @@ static Widget make_message(char *name, Widget left, int resizeable)
 	stdarg(XmNmarginHeight, 1);
 	if (!resizeable)
 		stdarg(XmNresizePolicy, XmRESIZE_GROW);
-	f = XmCreateForm(messages, name, args, n);
+	f = XmCreateForm(messages, name, stdarg_args, stdarg_n);
 	XtManageChild(f);
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
-	w = XmCreateLabel(f, name, args, n);
+	w = XmCreateLabel(f, name, stdarg_args, stdarg_n);
 	XtManageChild(w);
 	return w;
 }
@@ -1723,10 +1719,10 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	lesstif_keymap.auto_chr = 1;
 	lesstif_keymap.auto_tr = hid_cfg_key_default_trans;
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XtNwidth, &width);
 	stdarg(XtNheight, &height);
-	XtGetValues(appwidget, args, n);
+	XtGetValues(appwidget, stdarg_args, stdarg_n);
 
 	if (width < 1)
 		width = 640;
@@ -1737,29 +1733,29 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	if (height > XDisplayHeight(display, screen))
 		height = XDisplayHeight(display, screen);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNwidth, width);
 	stdarg(XmNheight, height);
-	XtSetValues(appwidget, args, n);
+	XtSetValues(appwidget, stdarg_args, stdarg_n);
 
 	stdarg(XmNspacing, 0);
-	mainwind = XmCreateMainWindow(appwidget, "mainWind", args, n);
+	mainwind = XmCreateMainWindow(appwidget, "mainWind", stdarg_args, stdarg_n);
 	XtManageChild(mainwind);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNmarginWidth, 0);
 	stdarg(XmNmarginHeight, 0);
-	menu = lesstif_menu(mainwind, "menubar", args, n);
+	menu = lesstif_menu(mainwind, "menubar", stdarg_args, stdarg_n);
 	XtManageChild(menu);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNshadowType, XmSHADOW_IN);
-	work_area_frame = XmCreateFrame(mainwind, "work_area_frame", args, n);
+	work_area_frame = XmCreateFrame(mainwind, "work_area_frame", stdarg_args, stdarg_n);
 	XtManageChild(work_area_frame);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg_do_color(Settings.BackgroundColor, XmNbackground);
-	work_area = XmCreateDrawingArea(work_area_frame, "work_area", args, n);
+	work_area = XmCreateDrawingArea(work_area_frame, "work_area", stdarg_args, stdarg_n);
 	XtManageChild(work_area);
 	XtAddCallback(work_area, XmNexposeCallback, (XtCallbackProc) work_area_first_expose, 0);
 	XtAddCallback(work_area, XmNresizeCallback, (XtCallbackProc) work_area_resize, 0);
@@ -1770,46 +1766,46 @@ static void lesstif_do_export(HID_Attr_Val * options)
 										| PointerMotionMask | PointerMotionHintMask
 										| KeyPressMask | KeyReleaseMask | EnterWindowMask | LeaveWindowMask, 0, work_area_input, 0);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNorientation, XmVERTICAL);
 	stdarg(XmNprocessingDirection, XmMAX_ON_BOTTOM);
 	stdarg(XmNmaximum, PCB->MaxHeight ? PCB->MaxHeight : 1);
-	vscroll = XmCreateScrollBar(mainwind, "vscroll", args, n);
+	vscroll = XmCreateScrollBar(mainwind, "vscroll", stdarg_args, stdarg_n);
 	XtAddCallback(vscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
 	XtAddCallback(vscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
 	XtManageChild(vscroll);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNorientation, XmHORIZONTAL);
 	stdarg(XmNmaximum, PCB->MaxWidth ? PCB->MaxWidth : 1);
-	hscroll = XmCreateScrollBar(mainwind, "hscroll", args, n);
+	hscroll = XmCreateScrollBar(mainwind, "hscroll", stdarg_args, stdarg_n);
 	XtAddCallback(hscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
 	XtAddCallback(hscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
 	XtManageChild(hscroll);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNresize, True);
 	stdarg(XmNresizePolicy, XmRESIZE_ANY);
-	messages = XmCreateForm(mainwind, "messages", args, n);
+	messages = XmCreateForm(mainwind, "messages", stdarg_args, stdarg_n);
 	XtManageChild(messages);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNalignment, XmALIGNMENT_CENTER);
 	stdarg(XmNshadowThickness, 2);
-	m_click = XmCreateLabel(messages, "click", args, n);
+	m_click = XmCreateLabel(messages, "click", stdarg_args, stdarg_n);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNlabelString, XmStringCreatePCB("Command: "));
-	m_cmd_label = XmCreateLabel(messages, "command", args, n);
+	m_cmd_label = XmCreateLabel(messages, "command", stdarg_args, stdarg_n);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_WIDGET);
@@ -1819,7 +1815,7 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	stdarg(XmNhighlightThickness, 0);
 	stdarg(XmNmarginWidth, 2);
 	stdarg(XmNmarginHeight, 2);
-	m_cmd = XmCreateTextField(messages, "command", args, n);
+	m_cmd = XmCreateTextField(messages, "command", stdarg_args, stdarg_n);
 	XtAddCallback(m_cmd, XmNactivateCallback, (XtCallbackProc) command_callback, 0);
 	XtAddCallback(m_cmd, XmNlosingFocusCallback, (XtCallbackProc) command_callback, 0);
 	XtAddEventHandler(m_cmd, KeyPressMask, 0, command_event_handler, 0);
@@ -1836,18 +1832,18 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	XtUnmanageChild(XtParent(m_mark));
 	XtUnmanageChild(XtParent(m_rats));
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
-	XtSetValues(XtParent(m_status), args, n);
+	XtSetValues(XtParent(m_status), stdarg_args, stdarg_n);
 
 	/* We'll use this later.  */
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNleftWidget, XtParent(m_mark));
-	XtSetValues(XtParent(m_crosshair), args, n);
+	XtSetValues(XtParent(m_crosshair), stdarg_args, stdarg_n);
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNmessageWindow, messages);
-	XtSetValues(mainwind, args, n);
+	XtSetValues(mainwind, stdarg_args, stdarg_n);
 
 	if (background_image_file)
 		LoadBackgroundImage(background_image_file);
@@ -2089,10 +2085,10 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 	}
 #endif
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNdeleteResponse, XmDO_NOTHING);
 
-	appwidget = XtAppInitialize(&app_context, "Pcb", new_options, amax, argc, *argv, 0, args, n);
+	appwidget = XtAppInitialize(&app_context, "Pcb", new_options, amax, argc, *argv, 0, stdarg_args, stdarg_n);
 
 	display = XtDisplay(appwidget);
 	screen_s = XtScreen(appwidget);
@@ -2273,9 +2269,9 @@ static void mark_delta_to_widget(Coord dx, Coord dy, Widget w)
 	}
 
 	ms = XmStringCreatePCB(buf);
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNlabelString, ms);
-	XtSetValues(w, args, n);
+	XtSetValues(w, stdarg_args, stdarg_n);
 	free(buf);
 }
 
@@ -2304,9 +2300,9 @@ static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
 		buf = pcb_strdup_printf("%m+%.*mS, %.*mS", UUNIT, prec, x, prec, y);
 
 	ms = XmStringCreatePCB(buf);
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNlabelString, ms);
-	XtSetValues(w, args, n);
+	XtSetValues(w, stdarg_args, stdarg_n);
 	if (buf != empty)
 		free(buf);
 	return this_state;
@@ -2358,9 +2354,9 @@ void lesstif_update_status_line()
 	}
 
 	xs = XmStringCreatePCB(buf);
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNlabelString, xs);
-	XtSetValues(m_status, args, n);
+	XtSetValues(m_status, stdarg_args, stdarg_n);
 	if (buf != empty)
 		free(buf);
 }
@@ -2477,15 +2473,15 @@ static Boolean idle_proc(XtPointer dummy)
 				if (Marked.status) {
 					XtManageChild(XtParent(m_mark));
 					XtManageChild(m_mark);
-					n = 0;
+					stdarg_n = 0;
 					stdarg(XmNleftAttachment, XmATTACH_WIDGET);
 					stdarg(XmNleftWidget, XtParent(m_mark));
-					XtSetValues(XtParent(m_crosshair), args, n);
+					XtSetValues(XtParent(m_crosshair), stdarg_args, stdarg_n);
 				}
 				else {
-					n = 0;
+					stdarg_n = 0;
 					stdarg(XmNleftAttachment, XmATTACH_FORM);
-					XtSetValues(XtParent(m_crosshair), args, n);
+					XtSetValues(XtParent(m_crosshair), stdarg_args, stdarg_n);
 					XtUnmanageChild(XtParent(m_mark));
 				}
 				last_state = this_state + 100;
@@ -2510,17 +2506,17 @@ static Boolean idle_proc(XtPointer dummy)
 			   (when grow-only), or a non-zero but not "this_state" which
 			   means we need to start a resize cycle.  */
 			if (this_state != last_state && last_state) {
-				n = 0;
+				stdarg_n = 0;
 				stdarg(XmNresizePolicy, XmRESIZE_ANY);
-				XtSetValues(XtParent(m_mark), args, n);
-				XtSetValues(XtParent(m_crosshair), args, n);
+				XtSetValues(XtParent(m_mark), stdarg_args, stdarg_n);
+				XtSetValues(XtParent(m_crosshair), stdarg_args, stdarg_n);
 				last_state = 0;
 			}
 			else if (this_state != last_state) {
-				n = 0;
+				stdarg_n = 0;
 				stdarg(XmNresizePolicy, XmRESIZE_GROW);
-				XtSetValues(XtParent(m_mark), args, n);
-				XtSetValues(XtParent(m_crosshair), args, n);
+				XtSetValues(XtParent(m_mark), stdarg_args, stdarg_n);
+				XtSetValues(XtParent(m_crosshair), stdarg_args, stdarg_n);
 				last_state = this_state;
 			}
 		}
@@ -2547,9 +2543,9 @@ static Boolean idle_proc(XtPointer dummy)
 					pcb_snprintf(buf, sizeof(buf), "%m+%$mS", UUNIT, old_grid);
 			}
 			ms = XmStringCreatePCB(buf);
-			n = 0;
+			stdarg_n = 0;
 			stdarg(XmNlabelString, ms);
-			XtSetValues(m_grid, args, n);
+			XtSetValues(m_grid, stdarg_args, stdarg_n);
 		}
 	}
 
@@ -2565,9 +2561,9 @@ static Boolean idle_proc(XtPointer dummy)
 			old_grid_unit = Settings.grid_unit;
 
 			ms = XmStringCreatePCB(buf);
-			n = 0;
+			stdarg_n = 0;
 			stdarg(XmNlabelString, ms);
-			XtSetValues(m_zoom, args, n);
+			XtSetValues(m_zoom, stdarg_args, stdarg_n);
 			free(buf);
 		}
 	}
@@ -2658,9 +2654,9 @@ static Boolean idle_proc(XtPointer dummy)
 				break;
 			}
 			ms = XmStringCreatePCB(s);
-			n = 0;
+			stdarg_n = 0;
 			stdarg(XmNlabelString, ms);
-			XtSetValues(m_mode, args, n);
+			XtSetValues(m_mode, stdarg_args, stdarg_n);
 
 			if (free_cursor) {
 				XFreeCursor(display, my_cursor);
@@ -2712,19 +2708,19 @@ static Boolean idle_proc(XtPointer dummy)
 			if (ratlist_length(&PCB->Data->Rat)) {
 				XtManageChild(XtParent(m_rats));
 				XtManageChild(m_rats);
-				n = 0;
+				stdarg_n = 0;
 				stdarg(XmNleftWidget, m_rats);
-				XtSetValues(XtParent(m_status), args, n);
+				XtSetValues(XtParent(m_status), stdarg_args, stdarg_n);
 			}
 
-			n = 0;
+			stdarg_n = 0;
 			stdarg(XmNlabelString, XmStringCreatePCB(buf));
-			XtSetValues(m_rats, args, n);
+			XtSetValues(m_rats, stdarg_args, stdarg_n);
 
 			if (!ratlist_length(&PCB->Data->Rat)) {
-				n = 0;
+				stdarg_n = 0;
 				stdarg(XmNleftWidget, m_mode);
-				XtSetValues(XtParent(m_status), args, n);
+				XtSetValues(XtParent(m_status), stdarg_args, stdarg_n);
 				XtUnmanageChild(XtParent(m_rats));
 			}
 		}
@@ -3491,10 +3487,10 @@ static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStr
 		Dimension w, h;
 		double z;
 
-		n = 0;
+		stdarg_n = 0;
 		stdarg(XmNwidth, &w);
 		stdarg(XmNheight, &h);
-		XtGetValues(da, args, n);
+		XtGetValues(da, stdarg_args, stdarg_n);
 
 		pd->window = XtWindow(da);
 		pd->v_width = w;
@@ -3591,21 +3587,21 @@ static void lesstif_show_item(void *item)
 	pinouts = pd;
 	pd->zoom = 0;
 
-	n = 0;
-	pd->form = XmCreateFormDialog(mainwind, "pinout", args, n);
+	stdarg_n = 0;
+	pd->form = XmCreateFormDialog(mainwind, "pinout", stdarg_args, stdarg_n);
 	pd->window = 0;
 	XtAddCallback(pd->form, XmNunmapCallback, (XtCallbackProc) pinout_unmap, (XtPointer) pd);
 
 	scale = sqrt(200.0 * 200.0 / ((pd->right - pd->left + 1.0) * (pd->bottom - pd->top + 1.0)));
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNwidth, (int) (scale * (pd->right - pd->left + 1)));
 	stdarg(XmNheight, (int) (scale * (pd->bottom - pd->top + 1)));
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
-	da = XmCreateDrawingArea(pd->form, "pinout", args, n);
+	da = XmCreateDrawingArea(pd->form, "pinout", stdarg_args, stdarg_n);
 	XtManageChild(da);
 
 	XtAddCallback(da, XmNexposeCallback, (XtCallbackProc) pinout_callback, (XtPointer) pd);
@@ -3643,12 +3639,12 @@ static void lesstif_progress_dialog(int so_far, int total, const char *msg)
 	if (progress_dialog == 0) {
 		Atom close_atom;
 
-		n = 0;
+		stdarg_n = 0;
 		stdarg(XmNdefaultButtonType, XmDIALOG_CANCEL_BUTTON);
 		stdarg(XmNtitle, "Progress");
 		stdarg(XmNdialogStyle, XmDIALOG_APPLICATION_MODAL);
 		stdarg(XmNdialogStyle, XmDIALOG_FULL_APPLICATION_MODAL);
-		progress_dialog = XmCreateInformationDialog(mainwind, "progress", args, n);
+		progress_dialog = XmCreateInformationDialog(mainwind, "progress", stdarg_args, stdarg_n);
 		XtAddCallback(progress_dialog, XmNcancelCallback, (XtCallbackProc) progress_cancel_callback, NULL);
 
 		progress_cancel = XmMessageBoxGetChild(progress_dialog, XmDIALOG_CANCEL_BUTTON);
@@ -3658,31 +3654,31 @@ static void lesstif_progress_dialog(int so_far, int total, const char *msg)
 		XtUnmanageChild(XmMessageBoxGetChild(progress_dialog, XmDIALOG_HELP_BUTTON));
 
 		stdarg(XmNdefaultPosition, False);
-		XtSetValues(progress_dialog, args, n);
+		XtSetValues(progress_dialog, stdarg_args, stdarg_n);
 
-		n = 0;
+		stdarg_n = 0;
 		stdarg(XmNminimum, 0);
 		stdarg(XmNvalue, 0);
 		stdarg(XmNmaximum, total > 0 ? total : 1);
 		stdarg(XmNorientation, XmHORIZONTAL);
 		stdarg(XmNshowArrows, false);
-		progress_scale = XmCreateScrollBar(progress_dialog, "scale", args, n);
+		progress_scale = XmCreateScrollBar(progress_dialog, "scale", stdarg_args, stdarg_n);
 		XtManageChild(progress_scale);
 
 		close_atom = XmInternAtom(display, "WM_DELETE_WINDOW", 0);
 		XmAddWMProtocolCallback(XtParent(progress_dialog), close_atom, (XtCallbackProc) progress_cancel_callback, 0);
 	}
 
-	n = 0;
+	stdarg_n = 0;
 	stdarg(XmNvalue, 0);
 	stdarg(XmNsliderSize, (so_far <= total) ? (so_far < 0) ? 0 : so_far : total);
 	stdarg(XmNmaximum, total > 0 ? total : 1);
-	XtSetValues(progress_scale, args, n);
+	XtSetValues(progress_scale, stdarg_args, stdarg_n);
 
-	n = 0;
+	stdarg_n = 0;
 	xs = XmStringCreatePCB((char *) msg);
 	stdarg(XmNmessageString, xs);
-	XtSetValues(progress_dialog, args, n);
+	XtSetValues(progress_dialog, stdarg_args, stdarg_n);
 
 	return;
 }
