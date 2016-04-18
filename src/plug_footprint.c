@@ -33,7 +33,6 @@
 #include "paths.h"
 #include "plug_footprint.h"
 #include "plugins.h"
-#include "pcb-printf.h"
 
 #include <genht/htsp.h>
 #include <genht/hash.h>
@@ -130,8 +129,14 @@ library_t *fp_append_entry(library_t *parent, const char *name, fp_type_t type, 
 	if (entry == NULL)
 		return NULL;
 
-	if (type == PCB_FP_PARAMETRIC)
-		entry->name = pcb_strdup_printf("%s()", name);
+	if (type == PCB_FP_PARAMETRIC) {
+		/* concat name and () */
+		/* do not use pcb_strdup_printf or Concat here, do not increase gsch2pcb-rnd deps */
+		int nl = strlen(name);
+		entry->name = malloc(nl+3);
+		memcpy(entry->name, name, nl);
+		strcpy(entry->name+nl, "()");
+	}
 	else
 		entry->name = strdup(name);
 
