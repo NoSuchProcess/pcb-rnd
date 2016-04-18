@@ -25,7 +25,6 @@
  */
 
 #include "config.h"
-#include "global.h"
 
 #include <dirent.h>
 #ifdef HAVE_PWD_H
@@ -96,7 +95,18 @@ static int list_cb(void *cookie, const char *subdir, const char *name, fp_type_t
 
 	l->children++;
 	e = fp_append_entry(l->menu, name, type, tags);
-	e->data.fp.loc_info = Concat(subdir, "/", name, NULL);
+
+/* Avoid using Concat() - would be a new dependency for gsch2pcb-rnd */
+	{
+		int sl = strlen(subdir);
+		int nl = strlen(name);
+		char *end;
+		
+		end = e->data.fp.loc_info = malloc(sl+nl+3);
+		memcpy(end, subdir, sl); end += sl;
+		*end = '/'; end++;
+		memcpy(end, name, nl+1); end += nl;
+	}
 
 	return 0;
 }
