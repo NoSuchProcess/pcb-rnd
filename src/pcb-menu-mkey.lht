@@ -76,8 +76,8 @@ ha:{
 		ha:Edit {
 			m=E
 			li:submenu {
-				ha:Undo last operation          = { li:a={{<key>e; Shift<Key>u}; {Ctrl<Key>z}; {<Key>u};};        action=Undo() }
-				ha:Redo last undone operation   = { li:a={{<key>e; Shift<Key>r}; {Ctrl<Key>y}; {Shift<Key>r};};   action=Redo() }
+				ha:Undo last operation          = { li:a={{<key>e; <Key>u}; {Ctrl<Key>z}; {<Key>u};};        action=Undo() }
+				ha:Redo last undone operation   = { li:a={{<key>e; <Key>r}; {Ctrl<Key>y}; {Shift<Key>r};};   action=Redo() }
 				ha:Clear undo-buffer            = { a=Shift Ctrl<Key>u; action=Undo(ClearList) }
 				-
 				ha:Cut selection to buffer      = { a=Ctrl<Key>x;                            li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer) } }
@@ -555,7 +555,7 @@ ha:{
 						ha:None           = { checked=nomode,1; action=Mode(None) }
 						ha:Via            = { checked=viamode,1; a=<Key>F1; action=Mode(Via) }
 						ha:Line           = { checked=linemode,1; li:a={{<Key>a;<Key>n}; {<Key>a;<Key>l}; {<Key>F2};}; action=Mode(Line) }
-						ha:Arc            = { checked=arcmode,1; li:a={{<key>a;<key>r}; {<Key>F3}}; action=Mode(Arc) }
+						ha:Arc            = { checked=arcmode,1; li:a={{<key>a;<key>r}; {<Key>F3};}; action=Mode(Arc) }
 						ha:Text           = { checked=textmode,1; li:a={{<Key>a;<key>t}; {<Key>F4};}; action=Mode(Text) }
 						ha:Rectangle      = { checked=rectanglemode,1; li:a={{<key>a;<key>p}; {<key>a;<key>v}; {<Key>F5};}; action=Mode(Rectangle) }
 						ha:Polygon        = { checked=polygonmode,1; a=<Key>F6; action=Mode(Polygon) }
