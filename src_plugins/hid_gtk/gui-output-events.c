@@ -173,6 +173,7 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 		if (state & GDK_MOD1_MASK)    mods |= M_Alt;
 		if (state & GDK_CONTROL_MASK) mods |= M_Ctrl;
 		if (state & GDK_SHIFT_MASK) {
+/* TODO#3: this works only on US keyboard */
 			static const char *ignore_shift = "~!@#$%^&*()_+{}|:\"<>?";
 			if ((kv < 32) || (kv > 126) || (strchr(ignore_shift, kv) == NULL)) {
 				mods |= M_Shift;

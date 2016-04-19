@@ -702,6 +702,19 @@ int lesstif_key_event(XKeyEvent * e)
 		return 1;
 	}
 
+/* TODO#3: this works only on US keyboard */
+	if (mods & M_Shift) {
+		static const char *lower = "`1234567890-=[]\\;',./";
+		static const char *upper = "~!@#$%^&*()_+{}|:\"<>?";
+		char *l;
+		if ((sym >= 'A') && (sym <= 'Z'))
+			sym = tolower(sym);
+		else if ((l = strchr(lower, sym)) != NULL) {
+			sym = upper[l - lower];
+			mods &= ~M_Shift;
+		}
+	}
+
 	printf("KEY lookup: mod=%x sym=%x/%d\n", mods, sym, slen);
 
 	slen = hid_cfg_keys_input(&lesstif_keymap, mods, sym, seq, &seq_len);
