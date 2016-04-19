@@ -118,7 +118,7 @@ extract_from_lht()
 				print K[i] "\t" fn "\t" ACTION[n] "\t" menuname
 		}
 	}
-	' | tee keylist.lst
+	'
 }
 
 # convert a "key src action" to a html table with rowspans for base keys
