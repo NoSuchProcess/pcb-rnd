@@ -1683,7 +1683,11 @@ static Widget make_message(char *name, Widget left, int resizeable)
 
 static unsigned short int lesstif_translate_key(char *desc, int len)
 {
-	KeySym key = XStringToKeysym(desc);
+	KeySym key;
+
+	if (strcasecmp(desc, "enter") == 0) desc = "Return";
+
+	key = XStringToKeysym(desc);
 	if (key == NoSymbol && len > 1) {
 		Message("no symbol for %s\n", desc);
 		return 0;
