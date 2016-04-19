@@ -111,12 +111,14 @@ extract_from_lht()
 
 	END {
 		for(n in KEY) {
+			menuname = n
+			sub(".*::", "", menuname)
 			v = split(KEY[n], K, "[" SUBSEP "]")
 			for(i = 1; i <= v; i++)
-				print K[i] "\t" fn "\t" ACTION[n]
+				print K[i] "\t" fn "\t" ACTION[n] "\t" menuname
 		}
 	}
-	'
+	' | tee keylist.lst
 }
 
 # convert a "key src action" to a html table with rowspans for base keys
@@ -149,6 +151,7 @@ gen_html()
 			ROWSPAN[to_base_key(k)]++
 		}
 		ACTION[$2, k] = $3
+		MENUNAME[$2, k] = $4
 		HIDS[$2]++
 		last = k
 	}
@@ -182,11 +185,15 @@ gen_html()
 
 			print "	<th align=left>" keystr
 			for(h in HIDS) {
+				mn = MENUNAME[h, key]
 				act = ACTION[h, key]
-				if (act == "")
+				if ((act == "") && (mn == ""))
 					act = "&nbsp;"
-				else
+				else {
 					gsub(");", "); ", act)
+					if (mn != "")
+						act = "<I>" mn "</I>" "<br>" act
+				}
 				print "	<td>", act
 			}
 			last_base = base
