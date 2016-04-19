@@ -917,7 +917,6 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 {
 	Widget mb = XmCreateMenuBar(parent, name, margs, mn);
 	char *filename;
-	hid_cfg_t *r = 0;
 	char *home_pcbmenu, *home;
 	int screen;
 	lht_node_t *mr;
@@ -928,15 +927,13 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 
 	extern const char *lesstif_menu_default;
 
-#warning TODO: r is not needed anymore
-	r = hid_cfg_load("lesstif", 0, lesstif_menu_default);
-	if (r == NULL) {
+	lesstif_cfg = hid_cfg_load("lesstif", 0, lesstif_menu_default);
+	if (lesstif_cfg == NULL) {
 		Message("FATAL: can't load the lesstif menu res either from file or from hardwired default.");
 		abort();
 	}
-	lesstif_cfg = r;
 
-	mr = hid_cfg_get_menu(r, "/main_menu");
+	mr = hid_cfg_get_menu(lesstif_cfg, "/main_menu");
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
@@ -948,7 +945,7 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 	}
 
 
-	hid_cfg_mouse_init(r, &lesstif_mouse);
+	hid_cfg_mouse_init(lesstif_cfg, &lesstif_mouse);
 
 	return mb;
 }
