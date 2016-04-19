@@ -151,7 +151,16 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 			gtk_menu_shell_append(shell, item);
 			sub_res->user_data = item;
 			g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu->action_cb), (gpointer)n_action);
+			if ((tip != NULL) || (n_keydesc != NULL)) {
+				char *acc = NULL, *s;
+				if (n_keydesc != NULL)
+					acc = hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, -1, "\nhotkey: ");
+				s = Concat((tip == NULL ? "" : tip), "\nhotkey: ", (acc == NULL ? "" : acc), NULL);
+				gtk_widget_set_tooltip_text(item, s);
+				free(s);
+			}
 		}
+
 	}
 
 	/* By now this runs only for toggle items. */
