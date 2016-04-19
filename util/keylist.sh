@@ -158,7 +158,7 @@ gen_html()
 		v = split(k, K, ";")
 		p = ""
 		for(n = 1; n <= v; n++) {
-			p = K[n] ";"
+			p = p K[n] ";"
 			if (($2, p) in PREFIX) {
 				err = err "<br>" $2 ": " k " vs. " p
 				ERR[$2, p]++
