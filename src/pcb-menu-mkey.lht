@@ -46,7 +46,7 @@ ha:{
 				ha:Revert                            = { a={<key>f;<key>r};          action=Load(Revert,none); tip=Revert to the layout stored on disk }
 				-
 				ha:Import Schematics                 = {                             action=Import() }
-				ha:Load layout                       = { a={<key>f;<key>n};          action=Load(Layout); tip=Load a layout from a file }
+				ha:Load layout                       = { a={<key>f;<key>o};          action=Load(Layout); tip=Load a layout from a file }
 				ha:Load element data to paste-buffer = {                             li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
 				ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
 				ha:Load netlist file                 = {                             action=Load(Netlist) }
@@ -76,8 +76,8 @@ ha:{
 		ha:Edit {
 			m=E
 			li:submenu {
-				ha:Undo last operation          = { li:a={{<key>e; <Key>u}; {Ctrl<Key>z}; {<Key>u};};        action=Undo() }
-				ha:Redo last undone operation   = { li:a={{<key>e; <Key>r}; {Ctrl<Key>y}; {Shift<Key>r};};   action=Redo() }
+				ha:Undo last operation          = { li:a={{<key>e; Shift<Key>u}; {Ctrl<Key>z}; {<Key>u};};        action=Undo() }
+				ha:Redo last undone operation   = { li:a={{<key>e; Shift<Key>r}; {Ctrl<Key>y}; {Shift<Key>r};};   action=Redo() }
 				ha:Clear undo-buffer            = { a=Shift Ctrl<Key>u; action=Undo(ClearList) }
 				-
 				ha:Cut selection to buffer      = { a=Ctrl<Key>x;                            li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer) } }
@@ -349,7 +349,7 @@ ha:{
 				ha:Reset all connections         = { a=Shift<Key>f; li:action={Connection(Reset); Display(Redraw)} }
 				-
 				ha:Optimize rats nest            = { a=<Key>o; li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(AllRats); Atomic(Block)} }
-				ha:Erase rats nest               = { a=<Key>e; action=DeleteRats(AllRats) }
+				ha:Erase rats nest               = { action=DeleteRats(AllRats) }
 				ha:Erase selected rats           = { a=Shift<Key>e; action=DeleteRats(SelectedRats) }
 				-
 				ha:Auto-route selected rats      = { action=AutoRoute(Selected) }
@@ -411,10 +411,10 @@ ha:{
 						ha:Remove Selected              = { a=<Key>BackSpace; action=RemoveSelected() }
 						ha:Remove Connected             = { a=Shift<Key>BackSpace; li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
 						ha:Remove Connected             = { li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
-						ha:Set Same                     = { a=<Key>a; action=SetSame() }
+						ha:Set Same                     = { action=SetSame() }
 						ha:Flip Object                  = { a=<Key>b; action=Flip(Object) }
-						ha:Find Connections             = { a=<Key>f; li:action={Connection(Reset); Connection(Find)} }
-						ha:ToggleHideName Object        = { a=<Key>h; action=ToggleHideName(Object) }
+						ha:Find Connections             = { li:action={Connection(Reset); Connection(Find)} }
+						ha:ToggleHideName Object        = { action=ToggleHideName(Object) }
 						ha:ToggleHideName SelectedElement = { a=Shift<Key>h; action=ToggleHideName(SelectedElements) }
 						ha:ChangeHole Object            = { a=Ctrl<Key>h; action=ChangeHole(Object) }
 						ha:ChangeJoin Object            = { a=<Key>j; action=ChangeJoin(Object) }
@@ -448,8 +448,8 @@ ha:{
 						ha:Add All Rats                 = { a=<Key>w; action=AddRats(AllRats) }
 						ha:Cycle Clip                   = { a=<Key>/; action=Display(CycleClip) }
 						ha:Arrow Mode                   = { a=<Key>space; checked=arrowmode,1; action=Mode(Arrow) }
-						ha:Temp Arrow ON                = { a=<Key>[; li:action={Mode(Save); Mode(Arrow); Mode(Notify)} }
-						ha:Temp Arrow OFF               = { a=<Key>]; li:action={Mode(Release); Mode(Restore)} }
+						ha:Temp Arrow ON                = { li:action={Mode(Save); Mode(Arrow); Mode(Notify)} }
+						ha:Temp Arrow OFF               = { li:action={Mode(Release); Mode(Restore)} }
 						-
 						ha:Step Up                      = { a=<Key>Up; action=Cursor(Warp,0,1,grid) }
 						ha:Step Down                    = { a=<Key>Down; action=Cursor(Warp,0,-1,grid) }
