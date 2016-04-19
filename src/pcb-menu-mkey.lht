@@ -40,8 +40,8 @@ ha:{
 		ha:File {
 			m=F
 			li:submenu {
-				ha:Save Layout                       = { m=S; li:a={{<key>f;<key>s}; {Ctrl<Key>s}};        action=Save(Layout); tip=Saves current layout }
-				ha:Save Layout As...                 = { m=A; li:a={{<key>f;<key>a}; {Shift Ctrl<Key>s}};  action=Save(LayoutAs); tip=Saves current layout into a new file }
+				ha:Save Layout                       = { m=S; li:a={{<key>f;<key>s}; {Ctrl<Key>s};};        action=Save(Layout); tip=Saves current layout }
+				ha:Save Layout As...                 = { m=A; li:a={{<key>f;<key>a}; {Shift Ctrl<Key>s};};  action=Save(LayoutAs); tip=Saves current layout into a new file }
 				-
 				ha:Revert                            = { a={<key>f;<key>r};          action=Load(Revert,none); tip=Revert to the layout stored on disk }
 				-
@@ -65,23 +65,23 @@ ha:{
 				ha:Export layout...     = { a={<key>f;<key>i}; action=Export()}
 				ha:Calibrate Printer... = {               action=PrintCalibrate()}
 				-
-				ha:Start New Layout     = { li:a={{<key>f;<key>n}; {Ctrl<Key>n}}; action=New() }
+				ha:Start New Layout     = { li:a={{<key>f;<key>n}; {Ctrl<Key>n};}; action=New() }
 				-
 				ha:Preferences...       = {               action=DoWindows(Preferences)}
 				-
-				ha:Quit Program         = { li:a={{<key>f;<key>c}; {Ctrl<Key>q}}; action=Quit() }
+				ha:Quit Program         = { li:a={{<key>f;<key>c}; {Ctrl<Key>q};}; action=Quit() }
 			}
 		}
 
 		ha:Edit {
 			m=E
 			li:submenu {
-				ha:Undo last operation          = { li:a={{<key>e; Shift<Key>u}; {Ctrl<Key>z}; {<Key>u}};        action=Undo() }
-				ha:Redo last undone operation   = { li:a={{<key>e; Shift<Key>r}; {Ctrl<Key>y}; {Shift<Key>r}};   action=Redo() }
+				ha:Undo last operation          = { li:a={{<key>e; Shift<Key>u}; {Ctrl<Key>z}; {<Key>u};};        action=Undo() }
+				ha:Redo last undone operation   = { li:a={{<key>e; Shift<Key>r}; {Ctrl<Key>y}; {Shift<Key>r};};   action=Redo() }
 				ha:Clear undo-buffer            = { a=Shift Ctrl<Key>u; action=Undo(ClearList) }
 				-
 				ha:Cut selection to buffer      = { a=Ctrl<Key>x;                            li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer) } }
-				ha:Copy selection to buffer     = { li:a={{<key>e; <key>c}; {Ctrl<Key>c;}}   li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
+				ha:Copy selection to buffer     = { li:a={{<key>e; <key>c}; {Ctrl<Key>c;};}  li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
 				ha:Paste buffer to layout       = { a=Ctrl<Key>v;       action=Mode(PasteBuffer) }
 				-
 				ha:Unselect all                 = { a=Shift Alt<Key>a;  action=Unselect(All) }
@@ -89,10 +89,10 @@ ha:{
 				-
 				ha:Edit name of {
 					li:submenu {
-						ha:text on layout             = { li:a={{<key>e;<key>x}; {<Key>n}}; action=ChangeName(Object) }
-						ha:pin on layout              = { a=Shift Ctrl<Key>n;               action=ChangeName(Object, Number) }
-						ha:layout                     = {                                   action=ChangeName(Layout) }
-						ha:active layer               = {                                   action=ChangeName(Layer) }
+						ha:text on layout             = { li:a={{<key>e;<key>x}; {<Key>n};}; action=ChangeName(Object) }
+						ha:pin on layout              = { a=Shift Ctrl<Key>n;                action=ChangeName(Object, Number) }
+						ha:layout                     = {                                    action=ChangeName(Layout) }
+						ha:active layer               = {                                    action=ChangeName(Layer) }
 					}
 				}
 				ha:Edit attributes of {
@@ -146,8 +146,8 @@ ha:{
 						ha:0.5 mm                 = { checked=gridsize,0.50mm; li:action={SetUnits(mm); SetValue(Grid,0.5mm)} }
 						ha:1 mm                   = { checked=gridsize,1mm; li:action={SetUnits(mm); SetValue(Grid,1mm)} }
 						-
-						ha:Grid -5mil             = { li:a={{<key>[}{Shift<Key>g}}; action=SetValue(Grid,-5,mil) }
-						ha:Grid +5mil             = { li:a={{<key>]}{<Key>g}};  action=SetValue(Grid,+5,mil) }
+						ha:Grid -5mil             = { li:a={{<key>[};{Shift<Key>g};}; action=SetValue(Grid,-5,mil) }
+						ha:Grid +5mil             = { li:a={{<key>]};{<Key>g};};  action=SetValue(Grid,+5,mil) }
 						ha:Grid -0.05mm           = { a=Shift Ctrl<Key>g; action=SetValue(Grid,-0.05,mm) }
 						ha:Grid +0.05mm           = { a=Ctrl<Key>g; action=SetValue(Grid,+0.05,mm) }
 					}
@@ -167,7 +167,7 @@ ha:{
 				ha:Zoom Out 20%               = { m=O; a=Shift<Key>z; action=Zoom(+1.2) }
 				ha:More zooms and view changes {
 					li:submenu {
-						ha:Zoom Max               = { li:a={{<key>v;<key>f}; {<key>v;<key>e}}; m=M; action=Zoom() }
+						ha:Zoom Max               = { li:a={{<key>v;<key>f}; {<key>v;<key>e};}; m=M; action=Zoom() }
 						ha:Zoom In 2X             = { a={<key>v;<key>i}; action=Zoom(-2) }
 						ha:Zoom Out 2X            = { a={<key>v;<key>o}; action=Zoom(+2) }
 						ha:Zoom to 0.1mil/px      = { action={Zoom(=0.1mil)} }
@@ -321,7 +321,7 @@ ha:{
 				ha:Cut selection to buffer = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer)} }
 				ha:Paste buffer to layout  = { action=Mode(PasteBuffer) }
 				-
-				ha:Rotate buffer 90 deg CCW   = { a={{<key>e; <key>r}; {Shift<Key>F7}}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1)} }
+				ha:Rotate buffer 90 deg CCW   = { a={{<key>e; <key>r}; {Shift<Key>F7};}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1)} }
 				ha:Rotate buffer 90 deg CW    = { li:action={Mode(PasteBuffer); PasteBuffer(Rotate,3)} }
 				ha:Arbitrarily Rotate Buffer  = { li:action={Mode(PasteBuffer); FreeRotateBuffer()} }
 				ha:Mirror buffer (up/down)    = { a={<key>e; <key>i}; li:action={Mode(PasteBuffer); PasteBuffer(Mirror)} }
@@ -407,7 +407,7 @@ ha:{
 				ha:Report found pins\/pads = { action=Report(FoundPins) }
 				ha:Key Bindings {
 					li:submenu {
-						ha:Remove                       = { li:a={{<key>e;<key>d};{<Key>Delete}}; li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
+						ha:Remove                       = { li:a={{<key>e;<key>d};{<Key>Delete};}; li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
 						ha:Remove Selected              = { a=<Key>BackSpace; action=RemoveSelected() }
 						ha:Remove Connected             = { a=Shift<Key>BackSpace; li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
 						ha:Remove Connected             = { li:action={Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)} }
@@ -554,10 +554,10 @@ ha:{
 					li:submenu {
 						ha:None           = { checked=nomode,1; action=Mode(None) }
 						ha:Via            = { checked=viamode,1; a=<Key>F1; action=Mode(Via) }
-						ha:Line           = { checked=linemode,1; li:a={{<Key>a;<Key>n}; {<Key>a;<Key>l}; {<Key>F2}}; action=Mode(Line) }
+						ha:Line           = { checked=linemode,1; li:a={{<Key>a;<Key>n}; {<Key>a;<Key>l}; {<Key>F2};}; action=Mode(Line) }
 						ha:Arc            = { checked=arcmode,1; li:a={{<key>a;<key>r}; {<Key>F3}}; action=Mode(Arc) }
-						ha:Text           = { checked=textmode,1; li:a={{<Key>a;<key>t}; {<Key>F4}}; action=Mode(Text) }
-						ha:Rectangle      = { checked=rectanglemode,1; li:a={{<key>a;<key>p}; {<key>a;<key>v}; {<Key>F5}}; action=Mode(Rectangle) }
+						ha:Text           = { checked=textmode,1; li:a={{<Key>a;<key>t}; {<Key>F4};}; action=Mode(Text) }
+						ha:Rectangle      = { checked=rectanglemode,1; li:a={{<key>a;<key>p}; {<key>a;<key>v}; {<Key>F5};}; action=Mode(Rectangle) }
 						ha:Polygon        = { checked=polygonmode,1; a=<Key>F6; action=Mode(Polygon) }
 						ha:Polygon Hole   = { checked=polygonholemode,1; action=Mode(PolygonHole) }
 						ha:Buffer         = { checked=pastebuffermode,1; a=<Key>F7; action=Mode(PasteBuffer) }
@@ -568,7 +568,7 @@ ha:{
 						ha:Insert Point   = { checked=insertpointmode,1; a=<Key>Insert; action=Mode(InsertPoint) }
 						ha:Move           = { checked=movemode,1; action=Mode(Move) }
 						ha:Copy           = { checked=copymode,1; action=Mode(Copy) }
-						ha:Lock           = { checked=lockmode,1; li:a={{<key>e;<key>l};{<key>e;Shift<key>l}; {<Key>F12}}; action=Mode(Lock) }
+						ha:Lock           = { checked=lockmode,1; li:a={{<key>e;<key>l}; {<key>e;Shift<key>l}; {<Key>F12};}; action=Mode(Lock) }
 						ha:Cancel         = { a=<Key>Escape; action=Mode(Escape) }
 					}
 				}
