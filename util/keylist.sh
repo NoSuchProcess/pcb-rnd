@@ -148,12 +148,25 @@ gen_html()
 		k = $1
 		if (last != k) {
 			LIST[key_combos++] = k
-			ROWSPAN[to_base_key(k)]++
+#			ROWSPAN[to_base_key(k)]++
 		}
 		ACTION[$2, k] = $3
 		MENUNAME[$2, k] = $4
 		HIDS[$2]++
 		last = k
+
+		v = split(k, K, ";")
+		p = ""
+		for(n = 1; n <= v; n++) {
+			p = K[n] ";"
+			if (($2, p) in PREFIX) {
+				err = err "<br>" $2 ": " k " vs. " p
+				ERR[$2, p]++
+				ERR[$2, k]++
+			}
+		}
+		p = k ";"
+		PREFIX[$2, p]++
 	}
 
 	END {
@@ -195,10 +208,13 @@ gen_html()
 						act = "<I>" mn "</I>" "<br>" act
 				}
 				print "	<td>", act
+				if ((h, key) in ERR)
+					print "<br> <b>Error: key prefix collision</b>"
 			}
 			last_base = base
 		}
 		print "</table>"
+		print err
 		print "</body></html>"
 	}
 	'
