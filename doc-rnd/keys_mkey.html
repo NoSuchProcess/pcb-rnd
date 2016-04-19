@@ -159,59 +159,53 @@
 	<th align=left>]
 	<td> <I>Grid +5mil</I><br>SetValue(Grid,+5,mil) 
 <tr bgcolor=#DDFFFF>
-	<th align=left>a
-	<td> <I>Set Same</I><br>SetSame() 
-<tr bgcolor=#FFFFFF>
 	<th align=left>a-alt
 	<td> <I>Select all visible</I><br>Select(All) 
-<tr bgcolor=#DDFFFF>
+<tr bgcolor=#FFFFFF>
 	<th align=left>a-alt-shift
 	<td> <I>Unselect all</I><br>Unselect(All) 
-<tr bgcolor=#FFFFFF>
+<tr bgcolor=#DDFFFF>
 	<th align=left>a<br>&nbsp;c
 	<td> <I>Library</I><br>DoWindows(Library) 
-<tr bgcolor=#DDFFFF>
+<tr bgcolor=#FFFFFF>
 	<th align=left>b
 	<td> <I>Flip Object</I><br>Flip(Object) 
-<tr bgcolor=#FFFFFF>
+<tr bgcolor=#DDFFFF>
 	<th align=left>b-alt-ctrl
 	<td> <I>netlist patch for back annotation</I><br>SavePatch() 
-<tr bgcolor=#DDFFFF>
+<tr bgcolor=#FFFFFF>
 	<th align=left>b-shift
 	<td> <I>Move selected elements to other side</I><br>Flip(SelectedElements) 
-<tr bgcolor=#FFFFFF>
+<tr bgcolor=#DDFFFF>
 	<th align=left>backspace
 	<td> <I>Remove Selected</I><br>RemoveSelected() 
-<tr bgcolor=#DDFFFF>
+<tr bgcolor=#FFFFFF>
 	<th align=left>backspace-shift
 	<td> <I>Remove Connected</I><br>Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)
-<tr bgcolor=#FFFFFF>
+<tr bgcolor=#DDFFFF>
 	<th align=left>c
 	<td> <I>Center cursor</I><br>Center() 
-<tr bgcolor=#DDFFFF>
+<tr bgcolor=#FFFFFF>
 	<th align=left>c-ctrl<br>&nbsp;
 	<td> <I>Copy selection to buffer</I><br>GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer)
-<tr bgcolor=#FFFFFF>
+<tr bgcolor=#DDFFFF>
 	<th align=left>d
 	<td> <I>Pins/Via show Name/Number</I><br>Display(PinOrPadName) 
-<tr bgcolor=#DDFFFF>
+<tr bgcolor=#FFFFFF>
 	<th align=left>d-shift
 	<td> <I>Pinout</I><br>Display(Pinout) 
-<tr bgcolor=#FFFFFF>
+<tr bgcolor=#DDFFFF>
 	<th align=left>delete
 	<td> <I>Remove</I><br>Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)
-<tr bgcolor=#DDFFFF>
+<tr bgcolor=#FFFFFF>
 	<th align=left>delete-shift
 	<td> <I>Remove selected objects</I><br>RemoveSelected() 
-<tr bgcolor=#FFFFFF>
+<tr bgcolor=#DDFFFF>
 	<th align=left>down
 	<td> <I>Step Down</I><br>Cursor(Warp,0,-1,grid) 
-<tr bgcolor=#DDFFFF>
+<tr bgcolor=#FFFFFF>
 	<th align=left>down-shift
 	<td> <I>Step +Down</I><br>Cursor(Pan,0,-50,view) 
-<tr bgcolor=#FFFFFF>
-	<th align=left>e
-	<td> <I>Erase rats nest</I><br>DeleteRats(AllRats) 
 <tr bgcolor=#DDFFFF>
 	<th align=left>e-shift
 	<td> <I>Erase selected rats</I><br>DeleteRats(SelectedRats) 
@@ -226,19 +220,19 @@
 	<td> <I>Buffer/Mirror buffer (up/down)</I><br>Mode(PasteBuffer); PasteBuffer(Mirror)
 <tr bgcolor=#DDFFFF>
 	<th align=left>e<br>&nbsp;r
-	<td> <I>Redo last undone operation</I><br>Redo() 
+	<td> <I>Rotate buffer 90 deg CCW</I><br>
 <tr bgcolor=#FFFFFF>
-	<th align=left>e<br>&nbsp;u
-	<td> <I>Undo last operation</I><br>Undo() 
+	<th align=left>e<br>&nbsp;r-shift
+	<td> <I>Redo last undone operation</I><br>Redo() 
 <tr bgcolor=#DDFFFF>
+	<th align=left>e<br>&nbsp;u-shift
+	<td> <I>Undo last operation</I><br>Undo() 
+<tr bgcolor=#FFFFFF>
 	<th align=left>e<br>&nbsp;x
 	<td> <I>text on layout</I><br>ChangeName(Object) 
-<tr bgcolor=#FFFFFF>
+<tr bgcolor=#DDFFFF>
 	<th align=left>enter
 	<td> <I>Click</I><br>Mode(Notify); Mode(Release)
-<tr bgcolor=#DDFFFF>
-	<th align=left>f
-	<td> <I>Find Connections</I><br>Connection(Reset); Connection(Find)
 <tr bgcolor=#FFFFFF>
 	<th align=left>f-alt-shift
 	<td> <I>Replace footprint</I><br>ReplaceFootprint() 
@@ -261,29 +255,29 @@
 	<th align=left>f<br>&nbsp;n
 	<td> <I>Start New Layout</I><br>New() 
 <tr bgcolor=#DDFFFF>
+	<th align=left>f<br>&nbsp;o
+	<td> <I>Load layout</I><br>Load(Layout)
+<tr bgcolor=#FFFFFF>
 	<th align=left>f<br>&nbsp;p
 	<td> <I>Print layout...</I><br>Print()
-<tr bgcolor=#FFFFFF>
+<tr bgcolor=#DDFFFF>
 	<th align=left>f<br>&nbsp;r
 	<td> <I>Revert</I><br>Load(Revert,none)
-<tr bgcolor=#DDFFFF>
+<tr bgcolor=#FFFFFF>
 	<th align=left>f<br>&nbsp;s
 	<td> <I>Save Layout</I><br>Save(Layout)
-<tr bgcolor=#FFFFFF>
+<tr bgcolor=#DDFFFF>
 	<th align=left>g
 	<td> <I>Grid +5mil</I><br>SetValue(Grid,+5,mil) 
-<tr bgcolor=#DDFFFF>
+<tr bgcolor=#FFFFFF>
 	<th align=left>g-ctrl
 	<td> <I>Grid +0.05mm</I><br>SetValue(Grid,+0.05,mm) 
-<tr bgcolor=#FFFFFF>
+<tr bgcolor=#DDFFFF>
 	<th align=left>g-ctrl-shift
 	<td> <I>Grid -0.05mm</I><br>SetValue(Grid,-0.05,mm) 
-<tr bgcolor=#DDFFFF>
+<tr bgcolor=#FFFFFF>
 	<th align=left>g-shift
 	<td> <I>Grid -5mil</I><br>SetValue(Grid,-5,mil) 
-<tr bgcolor=#FFFFFF>
-	<th align=left>h
-	<td> <I>ToggleHideName Object</I><br>ToggleHideName(Object) 
 <tr bgcolor=#DDFFFF>
 	<th align=left>h-ctrl
 	<td> <I>ChangeHole Object</I><br>ChangeHole(Object) 
@@ -507,4 +501,5 @@
 	<th align=left>|
 	<td> <I>Thin draw</I><br>Display(ToggleThindraw) 
 </table>
+
 </body></html>
