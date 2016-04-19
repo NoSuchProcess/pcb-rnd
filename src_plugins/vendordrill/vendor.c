@@ -826,10 +826,27 @@ HID_Flag vendor_flag_list[] = {
 
 REGISTER_FLAGS(vendor_flag_list, vendor_cookie)
 
+static void vendor_free_vect(char **lst, int len)
+{
+	if (lst != NULL) {
+		int n;
+		for(n = 0; n < len; n++)
+			if (lst[n] != NULL)
+				free(lst[n]);
+		free(lst);
+	}
+}
+
 static void hid_vendordrill_uninit(void)
 {
 	hid_remove_actions_by_cookie(vendor_cookie);
 	hid_remove_flags_by_cookie(vendor_cookie);
+
+	vendor_free_vect(ignore_refdes, n_refdes);
+	vendor_free_vect(ignore_value, n_value);
+	vendor_free_vect(ignore_descr, n_descr);
+	if (vendor_drills != NULL)
+		free(vendor_drills);
 }
 
 #include "dolists.h"
