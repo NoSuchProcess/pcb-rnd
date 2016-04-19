@@ -373,6 +373,9 @@ static void gen_accel(gds_t *s, hid_cfg_keys_t *km, const char *keydesc, int *cn
 	for(n = 0; n < slen; n++) {
 		char buff[64];
 
+		if (n > 0)
+			gds_append(s, ' ');
+
 		if (km->key_name(key_chars[n], buff, sizeof(buff)) != 0)
 			strcpy(buff, "<unknown>");
 
