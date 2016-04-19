@@ -1,0 +1,32 @@
+<html>
+<body>
+<h1> pcb-rnd - the [fp_wget] patch </h1>
+
+Since version 1.0.10, pcb-rnd implements a new footprint mechanism (see
+<a href="pcblib.html">[fp_fs]</a> and <a href="library_t.html">[library_t]</a>).
+The new code allows footprint backend plugins to get library from anywhere.
+The [fp_wget] plugin is an implementation that:
+<ul>
+	<li> downloads a library list from the web on startup into a local cache
+	<li> donwloads footprints from the web on-demand into a local cache
+</ul>
+<p>
+This is all transparent, the user experience is that the remote library is
+like a read-only local library reachable from the library window. 
+<p>
+A web site used as a library should be able to:
+<ul>
+	<li> generate a plain text list of all footprints available
+	<li> return the raw footprint file by name
+</ul>
+<p>
+The plugin uses external program <i>wget</i> to communicate on the web.
+<h2> save/load and compatibility </h2>
+Not affected.
+
+<h2> plans </h2>
+Better feedback on progress, explicit user requested refresh, refresh in
+the background.
+
+</body>
+</html>
