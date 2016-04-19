@@ -1,0 +1,28 @@
+<html>
+<body>
+<h1> pcb-rnd - the [library_t] patch </h1>
+
+The original code has a special setup for representing trees, C structures
+called LibraryMenu and LibraryEntry. This system can represent only a subset
+of trees: there is a root, a level consist of directories only and a next level,
+each directory consist of data nodes only. This has been enough for newlib,
+which strictly follows this model in the file system hierarchy. The lesstif
+HID also hardwired this model in the GUI.
+<p>
+In pcb-rnd this has been replaced with a new struct type called library_t
+that can represent an arbitrary tree: directories and files within directories
+down to many levels.
+<p>
+Both the gtk and the lesstif had has been modified accordingly and can
+properly display the tree. This in turn enables alternative footprint backend
+implementations such as <a href="fp_wget.html"> fp_wget <a> to import
+more complex libraries, e.g. the one on gedasymbols.org.
+
+<h2> save/load and compatibility </h2>
+Not affected.
+
+<h2> plans </h2>
+Finished, no plans.
+
+</body>
+</html>

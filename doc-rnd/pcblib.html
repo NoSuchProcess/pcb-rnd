@@ -1,6 +1,6 @@
 <html>
 <body>
-<h1> pcb-rnd - the [pcblib] and [pcblib-param] patches </h1>
+<h1> pcb-rnd - the [pcblib] and [pcblib-param] and [fp_fs] patches </h1>
 <table border=0>
 <tr><td valign=top>
 The footprint library shipped with vanilla pcb is cluttered with
@@ -35,6 +35,13 @@ and the layout may change in the future.
 To the right: Footprint selection dialog on pcblib, with the smd directory
 open. Note how few smd parts are there. Still, smd/ is the most crowded
 subdirectory!
+
+<h2> [fp_fs] </h2>
+As of vesion 1.0.10, the footprint list/search/load of footprints is a plugin.
+The original code that handles local file system footprint libraries (e.g.
+pcblib or newlib) is now a plugin. Altnerative plugins can be provided that work
+from databases or <a href="fp_wget.html"> from the web</a>. In extreme
+situations the file system based footprint plugin can even be disabled.
 
 <h2> save/load and compatibility </h2>
 Not affected: elements are embedded in the PCB.
