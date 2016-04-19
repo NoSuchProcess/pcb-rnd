@@ -82,13 +82,35 @@ Special menu items are text nodes instead of hashes; they are:
 <p>
 A key description is a text in the form of:
 <ul>
+	<li> the name of the node is the visible name of the menu item
 	<li> &lt;key&gt;keyname, e.g. "&lt;key&gt;k" for key K, or "&lt;key&gt;F10" for F10
 	<li> modifier&lt;key&gt;keyname, e.g. "Alt-&lt;key&gt;K" for Alt+K
 	<li> modifier-modifier&lt;key&gt;keyname, e.g. "Shift-Alt-&lt;key&gt;K" for Shift+Alt+K; modifiers are Alt, Shift and Ctrl; order does not matter, all three can be used together.
 	<li> multikey sequence: multiple of the above, separated by semicolons (protected with {} for lihata, as the text contains semicolon); e.g. "{&lt;key&gt;f;&lt;key&gt;o}" means the user presses "f" then "o". Sequences can be a dozen stroke long and any segment may use modifiers
 </ul>
 
-TODO
+An example menu item with submenus (can be a main menu or a submenu of
+another menu item):
+<pre>
+ha:example menu item {
+	li:submenu {
+		ha:menu item {
+			action=Save(ElementConnections)
+			tip=example menu
+		}
+		-
+		ha:another menu item {
+			a={Shift-Alt&lt;key&gt;r}
+			action={Action1(); Action2();}
+		}
+	}
+}
+</pre>
+
+<h3> li:popups </h3>
+Each children is a hash that describes a popup menu. A popup menu behaves
+exactly like a menu item, it should have a submenu list. Popup windows will
+be popped up by executing an action with the name of the popup menu.
 
 <h2> save/load and compatibility </h2>
 Not affected.

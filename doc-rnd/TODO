@@ -1,11 +1,5 @@
 - test before release: gsch2pcb-rnd
 
-- doc/text:
-	- [res]
-		- format doc
-		- multi-key
-
-
 CLEANUP #5
 - next_gui: keep them open, hide
 - look for #warnings
