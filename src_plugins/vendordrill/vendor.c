@@ -70,6 +70,7 @@ static void add_to_drills(char *);
 static void apply_vendor_map(void);
 static void process_skips(lht_node_t *);
 static bool rematch(const char *, const char *);
+static void vendor_free_all(void);
 
 /* list of vendor drills and a count of them */
 static int *vendor_drills = NULL;
@@ -222,15 +223,7 @@ int ActionUnloadVendor(int argc, char **argv, Coord x, Coord y)
 {
 	cached_drill = -1;
 
-	/* Unload any vendor table we may have had */
-	n_vendor_drills = 0;
-	n_refdes = 0;
-	n_value = 0;
-	n_descr = 0;
-	FREE(vendor_drills);
-	FREE(ignore_refdes);
-	FREE(ignore_value);
-	FREE(ignore_descr);
+	vendor_free_all();
 	return 0;
 }
 
@@ -287,15 +280,7 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 			default_file = strdup(fname);
 	}
 
-	/* Unload any vendor table we may have had */
-	n_vendor_drills = 0;
-	n_refdes = 0;
-	n_value = 0;
-	n_descr = 0;
-	FREE(vendor_drills);
-	FREE(ignore_refdes);
-	FREE(ignore_value);
-	FREE(ignore_descr);
+	vendor_free_all();
 
 	/* load the resource file */
 	doc = hid_cfg_load_lht(fname);
@@ -826,27 +811,37 @@ HID_Flag vendor_flag_list[] = {
 
 REGISTER_FLAGS(vendor_flag_list, vendor_cookie)
 
-static void vendor_free_vect(char **lst, int len)
+static char **vendor_free_vect(char **lst, int *len)
 {
 	if (lst != NULL) {
 		int n;
-		for(n = 0; n < len; n++)
+		for(n = 0; n < *len; n++)
 			if (lst[n] != NULL)
 				free(lst[n]);
 		free(lst);
 	}
+	*len = 0;
+	return NULL;
+}
+
+static void vendor_free_all(void)
+{
+	ignore_refdes = vendor_free_vect(ignore_refdes, &n_refdes);
+	ignore_value = vendor_free_vect(ignore_value, &n_value);
+	ignore_descr = vendor_free_vect(ignore_descr, &n_descr);
+	if (vendor_drills != NULL) {
+		free(vendor_drills);
+		vendor_drills = NULL;
+		n_vendor_drills = 0;
+	}
+	cached_drill = -1;
 }
 
 static void hid_vendordrill_uninit(void)
 {
 	hid_remove_actions_by_cookie(vendor_cookie);
 	hid_remove_flags_by_cookie(vendor_cookie);
-
-	vendor_free_vect(ignore_refdes, n_refdes);
-	vendor_free_vect(ignore_value, n_value);
-	vendor_free_vect(ignore_descr, n_descr);
-	if (vendor_drills != NULL)
-		free(vendor_drills);
+	vendor_free_all();
 }
 
 #include "dolists.h"
