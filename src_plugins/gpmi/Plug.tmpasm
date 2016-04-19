@@ -12,7 +12,14 @@ append /local/pcb/RULES [@
 ### gpmi_plugin
 clean_gpmi: FORCE
 	cd $(PCB_GPMI) && make clean
+
+$(PLUGIDIR)/pcb-rnd-gpmi: $(PCB_GPMI)/gpmi_plugin/gpmi_plugin.o FORCE
+	$(MKDIR) $(PLUGIDIR)
+	$(MKDIR) $(PLUGIDIR)/pcb-rnd-gpmi
+	$(CP) $(PLUGDIR)/gpmi/pcb-gpmi/gpmi_plugin/gpmi_pkg/*.so $(PLUGIDIR)/pcb-rnd-gpmi
 @]
+
+append /local/pcb/all   [@ $(PLUGIDIR)/pcb-rnd-gpmi @]
 
 append /local/pcb/CLEANRULES  {clean_gpmi}
 
