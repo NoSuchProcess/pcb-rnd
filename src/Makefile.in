@@ -242,7 +242,8 @@ pcblib_DATA= \
 	default_font \
 	default.pcb \
 	pcb-menu-lesstif.lht \
-	pcb-menu-gtk.lht
+	pcb-menu-gtk.lht \
+	pcb-menu-mkey.lht
 
 
 EXTRA_DIST= \
