@@ -1,0 +1,102 @@
+<html>
+<body>
+<h1> pcb-rnd - the [res] patch </h1>
+
+PCB used to have an own file format for describing resources (menu structure
+and hotkey bindings, vendor drill mapping). The resource format was generic
+enough to describe these things, but the syntax was somewhat wierd: mixed
+positional and named fields. More precisely, composite nodes could contain
+named and anonymous subnodes, and the meaning of anonymous subnodes depended
+on their position in the anon-subnode-list.
+<p>
+The code that dealt with the in-memory representation of the resource tree
+was wierd and big chunks duplicated in the HIDs and vendor drill module. It
+was also hard to parse a resource file with external tools.
+<p>
+Since version 1.0.10, pcb-rnd replaces resource files with 
+<a href="http://repo.hu/projects/lihata">lihata</a>. Lihata is a small, generic
+purpose container format that can describe arbitrary trees. Just like resource
+file syntax, lihata is optimized for hand-editing: no need to use excess
+quoting or long boilerplate blocks.
+<p>
+Liblihata also provides a lot of helper functions that made the code
+dealing with the menus and vendor drill resources much simpler and less
+redundant. Since the parser is small and external, and since there are
+external converter tools available, it is also easier to deal with the
+files outside of the pcb executable.
+
+<h2> menu resource lihata structure </h2>
+The root of a menu resource file should be a <i>hi:</i> with the following
+children:
+<ul>
+	<li> <i>li:mouse</i> for mouse button bindings
+	<li> <i>li:main_menu</i> for describing the main menu
+	<li> <i>li:popups</i> for describing the popup menus
+</ul>
+All children are optional, but recommended. Thus the file stucture, zoomed
+out, is:
+<pre>
+ha:{
+	li:mouse { ... }
+	li:main_menu { ... }
+	li:popups { ... }
+}
+</pre>
+
+<h3> li:mouse </h3>
+The mouse subtree may contain a <i>li:</i> for each mouse button action;
+the children of the list are further <i>li:</i> nodes for key modifiers, whose
+children are text nodes: actions executed in order.
+<p>
+Buttons supported are: left, right, middle, up, down  - the last two
+are for the scroll wheel. Modifier name should start with "press" or "release"
+optionally followed by modifier key suffixes separated with dashes, e.g.
+"press-alt-shift" means the given button is pressed while alt and shift
+were also pressed.
+<p>
+Example structure:
+<pre>
+	li:mouse {
+		li:left {
+			li:press            = { Mode(Notify) }
+			li:press-ctrl       = { Mode(Save); Mode(None); }
+		}
+	}
+</pre>
+
+<h3> li:main_menu </h3>
+The main menu is a list of menubar items that may host submenu items
+recursively. Each normal item is a hash with the following children:
+<ul>
+	<li> <i>li:submenu</i> an ordered list of submenu nodes (should not have accel key or action)
+	<li> <i>tip</i> tooltip text
+	<li> <i>action</i> text or list of actions to execute when menu is selected
+	<li> <i>a</i> a key description for an accelerator key (hotkey)
+	<li> <i>li:a</i> a list of key descriptions for an accelerator keys (hotkeys); all keys will be bound to the menu and the first key is shown in the menu
+</ul>
+Special menu items are text nodes instead of hashes; they are:
+<ul>
+	<li> starting with @, are dynamic, auto-generated items (e.g. layers; might be HID-dependent)
+	<li> a singel dash: separator
+</ul>
+<p>
+A key description is a text in the form of:
+<ul>
+	<li> &lt;key&gt;keyname, e.g. "&lt;key&gt;k" for key K, or "&lt;key&gt;F10" for F10
+	<li> modifier&lt;key&gt;keyname, e.g. "Alt-&lt;key&gt;K" for Alt+K
+	<li> modifier-modifier&lt;key&gt;keyname, e.g. "Shift-Alt-&lt;key&gt;K" for Shift+Alt+K; modifiers are Alt, Shift and Ctrl; order does not matter, all three can be used together.
+	<li> multikey sequence: multiple of the above, separated by semicolons (protected with {} for lihata, as the text contains semicolon); e.g. "{&lt;key&gt;f;&lt;key&gt;o}" means the user presses "f" then "o". Sequences can be a dozen stroke long and any segment may use modifiers
+</ul>
+
+TODO
+
+<h2> save/load and compatibility </h2>
+Not affected.
+
+<h2> plans </h2>
+The resource file format conversion is done. There are other parts of the code
+that will probably get lihata instead of the current custom parsers, e.g.
+the preferences/settings file.
+
+</body>
+</html>
