@@ -208,11 +208,6 @@ hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *p
 
 const hid_cfg_keytrans_t hid_cfg_key_default_trans[] = {
 	{ "semicolon", ';'  },
-	{ "return",    '\r' },
-	{ "enter",     '\r' },
-	{ "space",     ' '  },
-/*	{ "backspace", '\b' },*/
-/*	{ "tab",       '\t' },*/
 	{ NULL,        0    },
 };
 

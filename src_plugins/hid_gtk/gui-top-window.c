@@ -1491,7 +1491,11 @@ void ghid_parse_arguments(int *argc, char ***argv)
 
 static unsigned short int ghid_translate_key(char *desc, int len)
 {
-	guint key = gdk_keyval_from_name(desc);
+	guint key;
+
+	if (strcasecmp(desc, "enter") == 0) desc = "Return";
+
+	key = gdk_keyval_from_name(desc);
 	if (key > 0xffff) {
 		Message("Ignoring invalid/exotic key sym: '%s'\n", desc);
 		return 0;
