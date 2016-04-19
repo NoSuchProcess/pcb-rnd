@@ -53,26 +53,45 @@ extract_from_lht()
 #data	text	//main_menu/1::Edit/submenu/11::Edit name of/submenu/1::pin on layout/action	ChangeName(Object, Number) 
 
 	{
-		parent=$3
+		tmp = $3
+		if ($3 ~ "/a/[0-9]*::$") {
+			# li:a = {}
+			sub("/[0-9]*::$", "", tmp)
+		}
+		parent=tmp
 		sub("/[^/]*$","", parent)
-		node=$3
+		node=tmp
 		sub("^.*/","", node)
 	}
+
 
 	(($1 == "data") && ($2 == "text")) {
 		# simple text node: accel key
 		if (node == "a") {
-			split(tolower($4), K, "<key>")
-			if (K[1] != "") {
-				mods = ""
-				if (K[1] ~ "alt")   mods = mods "-alt"
-				if (K[1] ~ "ctrl")  mods = mods "-ctrl"
-				if (K[1] ~ "shift") mods = mods "-shift"
+			seq=$0
+			sub("[^\t]*[\t]*[^\t]*[\t]*[^\t]*[\t]*", "", seq)
+			gsub(" ", "", seq)
+			v = split(tolower(seq), S, "[;]")
+			ktmp = ""
+			for(n = 1; n <= v; n++) {
+				split(S[n], K, "<key>")
+				if (K[1] != "") {
+					mods = ""
+					if (K[1] ~ "alt")   mods = mods "-alt"
+					if (K[1] ~ "ctrl")  mods = mods "-ctrl"
+					if (K[1] ~ "shift") mods = mods "-shift"
+				}
+				else
+					mods = ""
+				if (ktmp == "")
+					ktmp = K[2] mods
+				else
+					ktmp = ktmp ";" K[2] mods
 			}
+			if (KEY[parent] == "")
+				KEY[parent] = ktmp
 			else
-				mods = ""
-
-			KEY[parent] = K[2] mods
+				KEY[parent] = KEY[parent] SUBSEP ktmp
 		}
 
 		# simple text node: action
@@ -84,15 +103,18 @@ extract_from_lht()
 			parent = $3
 			sub("/action/[^/]*$", "", parent)
 			if (ACTION[parent] != "")
-				ACTION[parent] = ACTION[parent] ";" $4 
+				ACTION[parent] = ACTION[parent] ";" $4
 			else
-				ACTION[parent] = $4 
+				ACTION[parent] = $4
 		}
 	}
 
 	END {
-		for(n in KEY)
-			print KEY[n] "\t" fn "\t" ACTION[n]
+		for(n in KEY) {
+			v = split(KEY[n], K, "[" SUBSEP "]")
+			for(i = 1; i <= v; i++)
+				print K[i] "\t" fn "\t" ACTION[n]
+		}
 	}
 	'
 }
@@ -102,8 +124,6 @@ gen_html()
 {
 	$AWK -F '[\t]' '
 	BEGIN {
-		HIDNAMES["gpcb-menu.res"] = "gtk"
-		HIDNAMES["pcb-menu.res"]  = "lesstif"
 		CLR[0] = "#FFFFFF"
 		CLR[1] = "#DDFFFF"
 		key_combos = 0
@@ -123,38 +143,44 @@ gen_html()
 	}
 
 	{
-		if (last != $1) {
-			LIST[key_combos++] = $1
-			ROWSPAN[to_base_key($1)]++
+		k = $1
+		if (last != k) {
+			LIST[key_combos++] = k
+			ROWSPAN[to_base_key(k)]++
 		}
-		ACTION[$2, $1] = $3
+		ACTION[$2, k] = $3
 		HIDS[$2]++
-		last = $1
+		last = k
 	}
 
 	END {
 		print "<html><body>"
 		print "<h1> Key to action bindings </h1>"
 		print "<table border=1 cellspacing=0>"
-		printf("<tr><th> key <th> modifiers")
+		printf("<tr><th> key")
 		colspan = 2
 		for(h in HIDS) {
-			printf(" <th>%s<br>%s", h, HIDNAMES[h])
+			printf(" <th>%s", h)
 			colspan++
 		}
 		print ""
 		for(n = 0; n < key_combos; n++) {
+			clr_cnt++
 			key = LIST[n]
-			base = to_base_key(key)
-			mods = to_mods(key)
-			if (base != last_base)
-				clr_cnt++
 			print "<tr bgcolor=" CLR[clr_cnt % 2] ">"
-			if (base != last_base)
-				print "	<th rowspan=" ROWSPAN[base] ">" base
-			if (mods == "")
-				mods = "&nbsp;"
-			print "	<td>" mods
+
+			kv = split(key, K, ";")
+			keystr = ""
+			ind=""
+			for(kn = 1; kn <= kv; kn++) {
+				if (kn > 1)
+					keystr = keystr "<br>"
+				keystr = keystr ind K[kn]
+				ind = ind "&nbsp;"
+			}
+			
+
+			print "	<th align=left>" keystr
 			for(h in HIDS) {
 				act = ACTION[h, key]
 				if (act == "")
