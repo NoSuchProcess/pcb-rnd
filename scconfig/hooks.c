@@ -9,7 +9,7 @@
 #include "tmpasm_scconfig.h"
 #include "util/arg_auto_set.h"
 
-#define version "1.0.9"
+#define version "1.0.10"
 
 #include "plugin_3state.h"
 
