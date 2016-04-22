@@ -1,6 +1,5 @@
-- test before release: gsch2pcb-rnd
-
 CLEANUP #5
+- scconfig: check for bison/flex, do not regenerate languages if they are missing
 - next_gui: keep them open, hide
 - look for #warnings
 - fix librarychanged: disable update of gedasymbols on-start, make it an explicit refresh button
@@ -13,7 +12,7 @@ CLEANUP #5
 		- hid: hid_destroy (pair of hid_create)
 		- cleanup on unload: remove menus
 - check whether local copy of gts is needed, bisect when toporouter broke 
-
+- check gpmi when pcb-rnd is fully linstalled - broken symlinks?
 - multi-key: display state on the gui
 - Message() should have a first param that tells if it is an error, info, etc.; pop up window on error, red
 - TODO#3: works only on US keyboard
@@ -21,7 +20,6 @@ CLEANUP #5
 
 CLEANUP #6:
 - res:
-	- add anchors
 	- search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
 	- re-add dynamic menus after a gui change:
 		- either remember dynamic menus in a separate list so they can be rebuilt
