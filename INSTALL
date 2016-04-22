@@ -9,106 +9,72 @@ Run make install.
 
 --
 
-PCB is organized into a core program that deals with all of the
-internal database procedures and a collection of Human Interface
-Devices (HID's).  The HID's provide exporting/printing capability
-as well as a graphical user interface.  At the time of writing
+PCB is organized into a core program that deals with all of the internal
+database procedures and a collection of plugins, of which a few are Human
+Interface Devices (HID's). The HID's provide exporting/printing
+capabilityas well as a graphical user interface.  At the time of writing
 this document PCB includes the following HIDs:
 
-TODO: this doesn't work with scconfig:
-GUI HID's:
-     gtk      -- GTK based GUI.  This is the default GUI.  You will
-		 need gtk-2.4 or newer installed (both the runtime
-		 files as well as the developer headers).  You only
-		 need gtk if you want the gtk HID.
+HID's:
+     gtk -- GTK based GUI.  This is the default GUI.  You will
+            need gtk-2.4 or newer installed (both the runtime
+            files as well as the developer headers).  You only
+            need gtk if you want the gtk HID.
 
-     lesstif  -- motif/lesstif based GUI.  To use the lesstif HID
-     you will need Motif, OpenMotif, or Lesstif installed.
-     Again you need both libraries and headers.
+     lesstif -- motif/lesstif based GUI.  To use the lesstif HID
+                you will need Motif, OpenMotif, or Lesstif installed.
+                Again you need both libraries and headers.
 
-     The choice of which gui to use (if you want something other than 
-     the default of GTK) is indicated with the --with-gui configure
-     option.  Examples are:
-       --with-gui=lesstif  = picks the lesstif HID
-       --with-gui=gtk      = picks the GTK HID
-       --without-gui       = specifies that no GUI will be built.  This
-			     option is primarily intended for use in a
-			     web server environment where you may wish
-			     to export .pcb files to graphical files on
-			     the fly but you do not want to install
-			     X11 or any GUI tooliks on the server.
+     batch -- no GUI; read commands oin stdin.
 
-Export HID's:
+     ./configure will compile all HIDs for which the dependencies are
+     available - look at the summary at the end to see which ones found.
+     It's possible to manually disable HIDs with the --disable-lesstif,
+     --disable-gtk and --disable-batch. It's also possible to build
+     them as shared objects (dynamic loadable plugin): --plugin-lesstif,
+     --plugin-gtk, --plugin-batch for ./configure.
+
+Export plugins:
      ps       -- Postscript and Encapsulated Postscript output.  No
-		 additional libraries are needed for this.
+                 additional libraries are needed for this.
 
      gcode    -- CNC G-CODE output (experimental).  The gdlib library
                  is used by this HID.  gdlib may be found at
                  http://www.libgd.org
 
      gerber   -- RS-274-X (Gerber) and Excellon drill output.  No
-		 additional libraries are needed for this.
+                 additional libraries are needed for this.
 
      bom      -- Bill of materials (BOM) and Centroid (X-Y) output.
-		 No additional libraries are needed for this.
+                 No additional libraries are needed for this.
 
      png      -- png/gif/jpeg output.  This HID uses gdlib to do
-		 the majority of the work.  gdlib may be obtained
-		 from http://www.libgd.org.  At the time of
-		 writing this document, I have tested with 
-		 gd-2.0.23 and gd-2.0.33.  Other versions may
-		 work as well.
+                 the majority of the work.  gdlib may be obtained
+                 from http://www.libgd.org.
 
-		 Since some installations of gdlib may not support
-		 all three of the formats mentioned here (png, gif,
-		 and jpeg), PCB provides configure options to individually
-		 turn off each of these output formats.  These options
-		 are:
-		   --disable-gif, --disable-jpeg, and --disable-png
-		 By having you, the user, explicitly turn off the different
-		 formats hopefully it will avoid suprises when the
-		 disabled formats are not available at runtime.
+Printer plugins:
 
-    The choice of which export HID's to compile is indicated with:
-
-      --with-exporters="ps gerber bom png"
-
-    By default all available exporters will be configured in if --with-exporters
-    is not given.  
-
-Printer HID's:
      lpr     -- Unix line printer support.  No additional libraries are
-		needed for this.
-
-     The choice of which printer HID's to compile is indicated with:
-
-       --with-printers="lpr"
-
-     By default all available printers will be configured in if --with-printers
-     is not given.
-
-In addition to the libraries listed above, there is a graphical QFP footprint
-creator which uses TCL/TK.  If you do not wish to use this feature, and you
-do not have TCL/TK installed on your system, you may simply set WISH to
-/usr/bin/true in your configure environment.  For example:
-
-  env WISH=/usr/bin/true ./configure
+                needed for this.
 
 
-Please refer to the output of
+NOTE: plugins can be enabled as buildin (compiled into the main executable),
+plugin (dynamic loadable) or disabled (not compiled at all). Please refer to
+the output of
 
   ./configure --help
 
 for the most up to date details on the options.
 
+
 After running ./configure with your selected options, run
 
   make
 
-to build PCB.  You can try out the program by running
+to build pcb-rnd.  You can try out the program by running
 
   cd src
-  ./pcbtest.sh
+  ./pcb-rnd
 
 prior to installation.
 
@@ -116,25 +82,22 @@ To install PCB after it has been built run:
 
   make install
 
-from the top level directory.
+from the top level directory. An alternative installation method
+is the link-install, which places symlinks instead of copying files so
+no subsequent make install is needed after a recompilation if no new
+files appeared (useful for developers):
+
+  make linstall
 
 -------- Summary of dependencies --------------------
+For users:
+ - C compiler
+ - make
+ - optional: glib and gtk if you are using the gtk frontend
+ - motif or lesstif if you are using the lesstif frontend
+ - gdlib if you are using the png HID
 
-- GNU m4.  In particular your m4 must support -F for frozen files.
-
-- wish (part of tcl/tk).  If not installed, set WISH=/bin/false in
-  your configure environment and you just won't get the graphical
-  QFP footprint builder
-
-- gtk if you are using the gtk frontend
-
-(- motif or lesstif if you are using the lesstif frontend)
-
-- gdlib if you are using the png HID
-
-- (GNU) make for building
-
-- flex
-
-- bison
+For developers:
+ - flex
+ - bison
 
