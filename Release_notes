@@ -1,24 +1,29 @@
-pcb-rnd 1.0.8
-~~~~~~~~~~~~~
-1.0.9 is the third phase of the large scale cleanup started at 1.0.7.
+pcb-rnd 1.0.10
+~~~~~~~~~~~~~~
+1.0.10 is the fourth phase of the large scale cleanup started at 1.0.7. This
+release focuses on getting on with modularization, replacing the resource
+infrastructure and replacing the MenuEntry code for libraries.
 
-Major objective was to clean up memory management. As a first step
-glib was replaced with a set of minilibs for core and util/. The only
-modules still use glib are the gtk HID (gtk depends on glib anyway), the
-puller (will be fixed later) and the toporouter (will be either fixed
-or removed).
+In modularization, more code moved from core to plugins, including all
+HIDs, shorthand comands and the report action. The whole footprint
+listing and loading has been outsourced into a plugin, fp_fs. An
+alternative footprint plugin, fp_wget implements gedasymbols.org
+integration.
 
-After the "unglib" project, a lot of effort went into fixing memory leaks and
-potential buffer overruns in the code inherited from pcb originally.
+Resource files have been replaced with lihata files. This removes a
+custom, domain-specific minilanguage from pcb code in favor of a more
+generic, still small container format. As a side effect it is now
+possible to use multi-key hotkeys in gtk and bind multiple hotkeys to
+the same menu item. By the time the new version provided the same
+functionality plus multikey in gtk, it was more than 300 lines smaller
+than the original version.
 
-The modularization effort progressed some more too: all exporter HIDs are
-plugins now. A bunch of unused/old/obsolete core functions are moved to
-a separate plugin so they don't need to be compiled into the executable.
-The fontmode (font editor) became a plugin too. There are 23 plugins at
-the moment, from which 15 used to be hardwired code in pcb core and 7
-used to be compile-time selectable HIDs.
+The library code rewrite allows footprint libraries to be generic trees
+of arbitrary depth (the original code allowed only 2 levels). This is
+essential for displaying more complex library structuers (such
+gedasymbols.org) but also helped cleaning up special cases from the
+code.
 
-pcb-rnd plugins have 3-state configuration:
- - disable: do not compile at all 
- - buildin: compile and static link into the executable
- - plugin: compile into dynamic loadable plugin
+Changing HIDs on the fly alreayd works partially: it's possible to switch
+between gtk and lesstif once in a session. The limitation comes from
+gtk's broken design and will be worked around in a later release.

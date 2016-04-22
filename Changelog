@@ -1,3 +1,80 @@
+pcb-rnd 1.0.10
+~~~~~~~~~~~~~~
+	[res] - resource->lihata conversion
+		-Add: new action: CreateMenu()
+		-Add: centralized hid keyboard handling API
+		-Add: optional: a gtk-clone multi-key capable menu file that copies gschem's hotkeys mostly
+		-Change: remove res parser, use lihata instead; affected plugins: hid_gtk, hid_lesstif, vendordrill
+		-API CHANGE: dynamic create menu call API takes a string path, not an already splitted array
+		-Update: keylist html generator util works from lihata and handles multikey
+		-Fix: remove hardwired layer selection key bindings, use configured hotkeys (alternative menu files may want to use the same keys differently, hardwired keys are bad)
+
+	[library_t] - library data structure cleanup/rewrite
+		- Change: replace MenuEntry and related code to a library_t
+		- Add: allow a generic tree representation in footprint library
+
+	[reduce] - reduce code size without losing actual functionality
+		-Del: extern "C": pcb is a pure C project, if someone wants to include headers from whatever other language, he should take care of it on that side
+		-API CHANGE: rewrite action_funchash to not use custom local hash but genht and to offer cookie based namespaces for modules
+		-Cleanup: rename action_funclist to funchash_core_list to decouple functions from actions
+
+	[scconfig]
+		-Fix: scconfig/build doesnt' fail even if lesstif is not installed
+		-Fix: do not attempt to detect libgtk is the gtk hid is disabled
+		-Fix: don't detect gd if it's not needed; disable exporters that depend on GD if required parts are not available
+		-Fix: relax gcode/nelma png requirements: print a warning about reduced functionality but let them compile if there's no png but gd is present
+		-Fix: get the dep file sorted by target; this should avoid unintended changes introduced by unordered lists
+		-Change: split up the tmpasm list of modules so that it's easier to get gsch2pcb link again using whatever backend plugins
+		-Cleanup: move strflags test code to regression/
+		-Change: portability, realpath are compat_*; compat.[ch] split to _dl and _misc
+		-Move: remove Makefile.in.mod, move module tmpasm files to src_plugins/
+		-Add: detect libstroke and compile with the right cflags and ldflags
+		-Add: tool to quote files into C strings; generate compiled-in, C versions of the new lht menu files, per hid
+
+	[mods]
+		-Add: API to remove functions by cookie
+		-Add: print warning if a module leaves anything in the func hash at exit
+		-Add: infrastructure for switching from one gui to another
+		-Add: fp_wget: web based footprint implementation, gedasymbols.org integration
+		-Move: command.[ch] to a shorthand command plugin (shand_cmd)
+		-Move: report to a feature plugin
+		-Move: fp_fs plugin: separate footprint code from file.[ch]
+		-Move: move debug actions from lesstif to comomn "oldactions" as they are not GUI-dependant and might be generally useful
+		-Move: hid/common/ to core hid_*, split up large, random collections of functions by purpose
+		-Move: split and rename action.[ch] to make room for hid-common actions.[ch] in core and avoid confusion in names; rename actions.h to hid_actions.h for naming consistency
+		-Move: HIDs to plugins, removing the hid/ directory
+		-Move: hidgl to a separate plugin (to be compiled later)
+		-Fix: event unbind shouldn't segfault if multiple adjacent events are free'd
+		-Fix: event_bind() takes cookie as const char *, not as void * to comform the convention
+		-Fix: hids install and uninstall actions, flags and attributes only around their do_export main loop so they don't conflict
+
+	[leak] - cleaning up memory leaks
+		-Add: hid attribute remove by cookie
+		-Fix: lesstif and gtk hids remove their attributes
+		-Fix: vendordrill free()s all cache memory used when the cache is discarded
+
+	[gtk]
+		-Fix: make sure menubar is always wide enough to expose all buttons (using a hidden invisible hbox of calculated size)
+		-Add: copy accel key menuitems from gschem and take over keyboard handling; hid_gtk now supports multi-key hotkeys
+		-Add: set tooltip on menu items
+		-Add: include all hotkeys in the tooltip for submenus
+
+	[lesstif]
+		-Del: remove dumpkeys action/code: this info should be extracted from the lihata file
+		-Fix: there should be no global variable named 'n' in lesstif; make the stdarg thing a bit more robust and reusable
+		-Add: reenable code to set set menu font and color
+
+	[core]
+		-Fix: draw_pad() used uninitialized pad color
+		-Add: SwitchHID action to change the HID module on the fly (works partially)
+
+	[png]
+		-Fix: png max dpi should be 10k - modern printers easily do 2400 but some models are said to do 9600 DPI in one direction
+
+	[gpmi]
+		-Fix: auto-copy .so files to src's plugin dir on compile so that running from source always has the latest .so files
+
+
 pcb-rnd 1.0.9
 ~~~~~~~~~~~~~
 	[unglib]
