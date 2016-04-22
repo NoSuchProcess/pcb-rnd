@@ -21,6 +21,7 @@ put /local/pcb/RULES {}
 put /local/pcb/OBJS {}
 put /local/pcb/LDFLAGS {}
 put /local/pcb/CFLAGS {}
+put /local/pcb/buildin_init {}
 
 include {../src_plugins/plugins_fp.tmpasm}
 
@@ -83,3 +84,7 @@ clean:
 include ../Makefile.conf
 
 @]
+
+
+redir {fp_init.c}
+print /local/pcb/buildin_init 

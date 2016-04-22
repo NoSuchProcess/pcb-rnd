@@ -42,6 +42,7 @@
 #include "../src_3rd/genlist/genadlist.h"
 #include "../src_3rd/qparse/qparse.h"
 #include "../config.h"
+#include "../src/plugins.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -1236,6 +1237,12 @@ const char *fp_get_library_shell(void)
 	return element_shell;
 }
 
+void plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
+{
+
+}
+
+
 /************************ main ***********************/
 int main(int argc, char ** argv)
 {
@@ -1246,6 +1253,11 @@ int main(int argc, char ** argv)
 
 	if (argc < 2)
 		usage();
+
+	{
+		pcb_uninit_t uninit_func;
+#		include "fp_init.c"
+	}
 
 	fp_init();
 
