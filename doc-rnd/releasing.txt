@@ -1,0 +1,10 @@
+release check list
+
+0. test compile and test run a clean checkout on a clean system
+1. check next version number and previous revision in tags/
+2. update the changelog
+3. rewrite the release notes
+4. modify version number in scconfig
+5. update changelog in debian/
+6. commit trunk
+7. svn tag using URLs
