@@ -8,19 +8,19 @@
    str_value to the enumeration string.  HID_Label just shows the
    default str_value.  HID_Mixed is a real_value followed by an enum,
    like 0.5in or 100mm. */
-typedef struct HID_Attr_Val_s {
+struct HID_Attr_Val_s {
 	int int_value;
 	const char *str_value;
 	double real_value;
 	Coord coord_value;
-} HID_Attr_Val;
+};
 
 enum hids { HID_Label, HID_Integer, HID_Real, HID_String,
 	HID_Boolean, HID_Enum, HID_Mixed, HID_Path,
 	HID_Unit, HID_Coord
 };
 
-typedef struct HID_Attribute_s {
+struct HID_Attribute_s {
 	char *name;
 	/* If the help_text is this, usage() won't show this option */
 #define ATTR_UNDOCUMENTED ((char *)(1))
@@ -37,7 +37,7 @@ typedef struct HID_Attribute_s {
 	   set to non-zero (not always one).  */
 	void *value;
 	int hash;										/* for detecting changes. */
-} HID_Attribute;
+};
 
 extern void hid_register_attributes(HID_Attribute *, int, const char *cookie, int copy);
 #define REGISTER_ATTRIBUTES(a, cookie) HIDCONCAT(void register_,a) ()\
