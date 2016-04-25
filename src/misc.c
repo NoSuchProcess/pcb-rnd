@@ -1895,9 +1895,9 @@ char *GetInfoString(void)
 		gds_append_str(&info, "See the LICENSE file for more information\n\n");
 		gds_append_str(&info, "For more information see:\n\n");
 		gds_append_str(&info, "PCB-rnd homepage: http://repo.hu/projects/pcb-rnd\n");
-		gds_append_str(&info, "PCB homepage: http://pcb.gpleda.org\n");
-		gds_append_str(&info, "gEDA homepage: http://www.gpleda.org\n");
-		gds_append_str(&info, "gEDA Wiki: http://geda.seul.org/wiki/ \n\n");
+		gds_append_str(&info, "PCB homepage: http://pcb.geda-project.org\n");
+		gds_append_str(&info, "gEDA homepage: http://www.geda-project.org\n");
+		gds_append_str(&info, "gEDA Wiki: http://wiki.geda-project.org\n\n");
 
 		gds_append_str(&info, "----- Compile Time Options -----\n");
 		hids = hid_enumerate();
