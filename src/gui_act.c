@@ -437,8 +437,10 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 		case F_PinOrPadName:
 			{
 				void *ptr1, *ptr2, *ptr3;
+				Coord x, y;
+				gui->get_coords(_("Click on an element"), &x, &y);
 
-				switch (SearchScreen(Crosshair.X, Crosshair.Y,
+				switch (SearchScreen(x, y,
 														 ELEMENT_TYPE | PIN_TYPE | PAD_TYPE |
 														 VIA_TYPE, (void **) &ptr1, (void **) &ptr2, (void **) &ptr3)) {
 				case ELEMENT_TYPE:
