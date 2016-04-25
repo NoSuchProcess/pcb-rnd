@@ -3,6 +3,8 @@
 #warning TODO: merge trees
 #warning TODO: this should do settings_postproc too
 
+#if 0
+
 typedef enum {
 	POL_PREPEND,
 	POL_APPEND,
@@ -189,3 +191,4 @@ void conf_update(void)
 	conf_load_as(CFR_SYSTEM, "./pcb-conf.lht");
 	conf_merge_all();
 }
+#endif

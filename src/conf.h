@@ -3,6 +3,8 @@
 #include "global.h"
 #include "global_typedefs.h"
 #include "pcb-printf.h"
+#include <liblihata/lihata.h>
+#include <liblihata/dom.h>
 
 typedef char *   CFT_STRING;
 typedef int      CFT_BOOLEAN;
