@@ -1,4 +1,18 @@
+- replace settings with lihata (conf_*)
+	- replace hid_load_settings() with lihata
+	- revise main.c, line by line
+	- setting prio (top pri to bottom prio):
+			cli/action/manual override
+			vendor
+			design
+			project
+			user
+			system
+			hardwired
+
+
 CLEANUP #5
+- action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
 - scconfig: check for bison/flex, do not regenerate languages if they are missing
 - next_gui: keep them open, hide
 - look for #warnings
@@ -32,7 +46,6 @@ CLEANUP #6:
 
 - reduce
 		- centralize all keyeq() calls
-		- replace hid_load_settings() with lihata
 		- hash in hid_attrib.c?
 		- hash in hid_color.c; test: eps
 		- nelma and gcode both invent .png name locally
