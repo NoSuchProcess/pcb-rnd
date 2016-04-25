@@ -9,7 +9,7 @@ typedef int      CFT_BOOLEAN;
 typedef long     CFT_INTEGER;
 typedef double   CFT_REAL;
 typedef Coord    CFT_COORD;
-typedef Unit     CFT_UNIT;
+typedef Unit *   CFT_UNIT;
 typedef char *   CFT_COLOR;
 
 typedef enum {
@@ -25,15 +25,26 @@ typedef enum {
 typedef struct {
 	conf_native_type_t type;
 	union {
-		char **string;
-		int *boolean;
-		long *integer;
-		double *real;
-		Coord *coord;
-		Unit *unit;
-		char **color;
+		char *string;
+		int boolean;
+		long integer;
+		double real;
+		Coord coord;
+		Unit unit;
+		char *color;
 	} native;
 	const char *description;
+	int prio;
+	lht_node_t *src;
 } conf_native_t;
+
+typedef enum {
+	CFR_SYSTEM,
+	CFR_max
+} conf_role_t;
+
+void conf_update(void);
+
 #endif
+
 

@@ -1,0 +1,191 @@
+#include "conf.h"
+
+#warning TODO: merge trees
+#warning TODO: this should do settings_postproc too
+
+typedef enum {
+	POL_PREPEND,
+	POL_APPEND,
+	POL_OVERWRITE
+} policy_t;
+
+static lht_doc_t *conf_root[CNR_max];
+
+int conf_load_as(conf_role_t role, const char *fn)
+{
+	if (conf_root[role] != NULL)
+		lht_dom_uninit(conf_root[role]);
+	conf_root[role] = hid_cfg_load_lht(fn);
+#warning TODO: root should be a list
+}
+
+static const char *get_hash_text(lht_node_t *parent, const char *name, lht_node_t **nout)
+{
+	lht_node *n;
+
+	if ((parent == NULL) || (parent->type != LHT_HASH)) {
+		if (nout != NULL)
+			*nout = NULL;
+		return NULL;
+	}
+
+	//n = htsp_get(parent->data.hash, name);
+	n = lht_dom_hash_get(parent, name);
+	if (nout != NULL)
+		*nout = n;
+
+	if (n->type != LHT_TEXT)
+		return NULL;
+
+	return n->data.text;
+}
+
+static const int get_hash_int(long *out, lht_node_t *parent, const char *name)
+{
+	lht_node_t *n;
+	const char *s;
+	char *end;
+	long l;
+
+	s = get_hash_text(parent, name, &n);
+	if (s == NULL)
+		return -1;
+
+	l = strtol(s, &end, 10);
+	if (*end != '\0') {
+		hid_cfg_error(parent, "%s should be an integer", s)
+		return -1;
+	}
+	if (out != NULL)
+		*out = l;
+	return 0;
+}
+
+static const int get_hash_policy(policy_t *out, lht_node_t *parent, const char *name)
+{
+	lht_node_t *n;
+	const char *s;
+	char *end;
+	policy_t p;
+
+	s = get_hash_text(parent, name, &n);
+	if (s == NULL)
+		return -1;
+
+	if (strcasecmp(s, "overwrite") == 0)
+		p = POL_OVERWRITE;
+	else if (strcasecmp(s, "prepend") == 0)
+		p = POL_PREPEND;
+	else if (strcasecmp(s, "append") == 0)
+		p = POL_APPEND;
+	else if (strcasecmp(s, "disable") == 0)
+		p = POL_DISABLE;
+	else {
+		hid_cfg_error(parent, "invalid policy %s", s)
+		return -1;
+	}
+
+	if (out != NULL)
+		*out = p;
+	return 0;
+}
+
+/* merge main subtree of a patch */
+int conf_merge_patch_main(lht_node_t *main, int default_prio, policy_t default_policy, const char *path_prefix)
+{
+	lht_dom_iterator_t it;
+	lht_node_t *n, *target;
+	char path[256], *pathe;
+	char name[256], *namee;
+	int nl, ppl = strlen(path_prefix);
+
+#warning TODO: use gds with static length
+
+	memcpy(path, path_prefix, ppl);
+	path[ppl] = '/';
+	pathe = path + ppl + 1;
+
+	for(n = lht_dom_first(&it, root); n != NULL; n = lht_dom_next(&it)) {
+		nl = strlen(n->name);
+		memcpy(pathe, n->name, nl);
+		namee = pathe+nl;
+		*namee = '\0';
+		target = lht_tree_path(conf_main, "/", path, 1, NULL);
+
+		case(n->type) {
+			case LHT_TEXT:
+#warnign TODO
+				if ((target != NULL) /* && (o->prio > default_prio) */)
+					continue;
+				if (strcmp(target->data.text.value, n->data.text.value) == 0)
+					continue;
+				/* have a different string with higher prio */
+#warning TODO: need to clone n here
+				lht_tree_replace(target, n);
+				lht_dom_node_free(target);
+				
+				break;
+			case LHT_HASH:
+				if (target == NULL) {
+					char save = *pathe;
+					lht_node_t *parent;
+					/* create hash node */
+					*pathe = '\0'
+					parent = lht_tree_path(conf_main, "/", path, 1, NULL);
+					if (parent == NULL)
+						return -1;
+					*pathe = save;
+					target = lht_dom_node_alloc(LHT_HASH, n->name);
+
+					lht_dom_hash_put(parent, lht_node_t *node);
+				}
+				conf_merge_patch_main(n, gprio, gpolicy);
+		}
+	}
+
+}
+
+int conf_merge_patch(lht_node_t *root)
+{
+	long gprio = 0;
+	policy_t gpolicy = POL_OVERWRITE;
+	const char *ps;
+	lht_node_t n;
+	lht_dom_iterator_t it;
+
+	if (root->type != LHT_HASH) {
+		hid_cfg_error(root, "patch root should be a hash")
+		return -1;
+	}
+
+	/* get global settings */
+	get_hash_int(&prio, root, "priority");
+	get_hash_policy(&gpolicy, root, "policy");
+
+	/* iterate over all hashes and insert them recursively */
+	for(n = lht_dom_first(&it, root); n != NULL; n = lht_dom_next(&it))
+		if (n->type == LHT_HASH)
+			conf_merge_patch_main(n, gprio, gpolicy, "/");
+
+	return 0;
+}
+
+int conf_merge_all()
+{
+	int n, ret = 0;
+	for(n = 0; n < CNR_max; n++) {
+		lht_node_t *r;
+		if (conf_root[n] == NULL)
+			continue;
+		for(r = conf_root[n]->root->data.list.first; r != NULL; r = r->next)
+			if (conf_merge_patch(r) != 0)
+				ret = -1;
+	}
+	return ret
+}
+
+void conf_update(void)
+{
+	conf_load_as(CFR_SYSTEM, "./pcb-conf.lht");
+	conf_merge_all();
+}
