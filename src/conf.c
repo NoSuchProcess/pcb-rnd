@@ -1,17 +1,20 @@
 #include "conf.h"
+#include "hid_cfg.h"
 
-#warning TODO: merge trees
 #warning TODO: this should do settings_postproc too
 
-#if 0
 
 typedef enum {
 	POL_PREPEND,
 	POL_APPEND,
-	POL_OVERWRITE
+	POL_OVERWRITE,
+	POL_DISABLE
 } policy_t;
 
-static lht_doc_t *conf_root[CNR_max];
+static lht_doc_t *conf_root[CFR_max];
+
+/*static lht_doc_t *conf_plugin;*/
+
 
 int conf_load_as(conf_role_t role, const char *fn)
 {
@@ -23,7 +26,7 @@ int conf_load_as(conf_role_t role, const char *fn)
 
 static const char *get_hash_text(lht_node_t *parent, const char *name, lht_node_t **nout)
 {
-	lht_node *n;
+	lht_node_t *n;
 
 	if ((parent == NULL) || (parent->type != LHT_HASH)) {
 		if (nout != NULL)
@@ -39,7 +42,7 @@ static const char *get_hash_text(lht_node_t *parent, const char *name, lht_node_
 	if (n->type != LHT_TEXT)
 		return NULL;
 
-	return n->data.text;
+	return n->data.text.value;
 }
 
 static const int get_hash_int(long *out, lht_node_t *parent, const char *name)
@@ -55,7 +58,7 @@ static const int get_hash_int(long *out, lht_node_t *parent, const char *name)
 
 	l = strtol(s, &end, 10);
 	if (*end != '\0') {
-		hid_cfg_error(parent, "%s should be an integer", s)
+		hid_cfg_error(parent, "%s should be an integer", s);
 		return -1;
 	}
 	if (out != NULL)
@@ -83,7 +86,7 @@ static const int get_hash_policy(policy_t *out, lht_node_t *parent, const char *
 	else if (strcasecmp(s, "disable") == 0)
 		p = POL_DISABLE;
 	else {
-		hid_cfg_error(parent, "invalid policy %s", s)
+		hid_cfg_error(parent, "invalid policy %s", s);
 		return -1;
 	}
 
@@ -92,14 +95,21 @@ static const int get_hash_policy(policy_t *out, lht_node_t *parent, const char *
 	return 0;
 }
 
+int conf_merge_patch_field(conf_native_t *dest, lht_node_t *src)
+{
+#warning TODO: implement this
+	return -1;
+}
+
 /* merge main subtree of a patch */
-int conf_merge_patch_main(lht_node_t *main, int default_prio, policy_t default_policy, const char *path_prefix)
+int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, policy_t default_policy, const char *path_prefix)
 {
 	lht_dom_iterator_t it;
-	lht_node_t *n, *target;
+	lht_node_t *n, *h;
 	char path[256], *pathe;
 	char name[256], *namee;
-	int nl, ppl = strlen(path_prefix);
+	int nl, ppl = strlen(path_prefix), res = 0;
+	conf_native_t *target;
 
 #warning TODO: use gds with static length
 
@@ -107,44 +117,29 @@ int conf_merge_patch_main(lht_node_t *main, int default_prio, policy_t default_p
 	path[ppl] = '/';
 	pathe = path + ppl + 1;
 
-	for(n = lht_dom_first(&it, root); n != NULL; n = lht_dom_next(&it)) {
+	for(n = lht_dom_first(&it, sect); n != NULL; n = lht_dom_next(&it)) {
 		nl = strlen(n->name);
 		memcpy(pathe, n->name, nl);
 		namee = pathe+nl;
 		*namee = '\0';
-		target = lht_tree_path(conf_main, "/", path, 1, NULL);
+		target = conf_get_field(path);
 
-		case(n->type) {
+		if (target == NULL) {
+			hid_cfg_error(n, "ignoring unrecognized field: %s", path);
+			continue;
+		}
+
+		switch(n->type) {
 			case LHT_TEXT:
-#warnign TODO
-				if ((target != NULL) /* && (o->prio > default_prio) */)
+				if (target->prio > default_prio)
 					continue;
-				if (strcmp(target->data.text.value, n->data.text.value) == 0)
-					continue;
-				/* have a different string with higher prio */
-#warning TODO: need to clone n here
-				lht_tree_replace(target, n);
-				lht_dom_node_free(target);
-				
+				conf_merge_patch_field(target, n);
 				break;
 			case LHT_HASH:
-				if (target == NULL) {
-					char save = *pathe;
-					lht_node_t *parent;
-					/* create hash node */
-					*pathe = '\0'
-					parent = lht_tree_path(conf_main, "/", path, 1, NULL);
-					if (parent == NULL)
-						return -1;
-					*pathe = save;
-					target = lht_dom_node_alloc(LHT_HASH, n->name);
-
-					lht_dom_hash_put(parent, lht_node_t *node);
-				}
-				conf_merge_patch_main(n, gprio, gpolicy);
+				res |= conf_merge_patch_recurse(n, default_prio, default_policy, path);
 		}
 	}
-
+	return res;
 }
 
 int conf_merge_patch(lht_node_t *root)
@@ -152,22 +147,22 @@ int conf_merge_patch(lht_node_t *root)
 	long gprio = 0;
 	policy_t gpolicy = POL_OVERWRITE;
 	const char *ps;
-	lht_node_t n;
+	lht_node_t *n;
 	lht_dom_iterator_t it;
 
 	if (root->type != LHT_HASH) {
-		hid_cfg_error(root, "patch root should be a hash")
+		hid_cfg_error(root, "patch root should be a hash");
 		return -1;
 	}
 
 	/* get global settings */
-	get_hash_int(&prio, root, "priority");
+	get_hash_int(&gprio, root, "priority");
 	get_hash_policy(&gpolicy, root, "policy");
 
 	/* iterate over all hashes and insert them recursively */
 	for(n = lht_dom_first(&it, root); n != NULL; n = lht_dom_next(&it))
 		if (n->type == LHT_HASH)
-			conf_merge_patch_main(n, gprio, gpolicy, "/");
+			conf_merge_patch_recurse(n, gprio, gpolicy, "/");
 
 	return 0;
 }
@@ -175,7 +170,7 @@ int conf_merge_patch(lht_node_t *root)
 int conf_merge_all()
 {
 	int n, ret = 0;
-	for(n = 0; n < CNR_max; n++) {
+	for(n = 0; n < CFR_max; n++) {
 		lht_node_t *r;
 		if (conf_root[n] == NULL)
 			continue;
@@ -183,7 +178,7 @@ int conf_merge_all()
 			if (conf_merge_patch(r) != 0)
 				ret = -1;
 	}
-	return ret
+	return ret;
 }
 
 void conf_update(void)
@@ -191,4 +186,13 @@ void conf_update(void)
 	conf_load_as(CFR_SYSTEM, "./pcb-conf.lht");
 	conf_merge_all();
 }
-#endif
+
+void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path)
+{
+
+}
+
+conf_native_t *conf_get_field(const char *path)
+{
+
+}
