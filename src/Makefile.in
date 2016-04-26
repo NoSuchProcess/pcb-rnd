@@ -15,6 +15,8 @@ put /local/pcb/OBJS [@
 	buffer.o
 	change.o
 	change_act.o
+	conf.o
+	conf_core.o
 	clip.o
 	compat_dl.o
 	compat_fs.o
@@ -256,6 +258,9 @@ all-local: pcbtest.sh
 
 generated_lists.h: @/local/pcb/ACTION_REG_SRC@ Makefile
 	../scconfig/gen_core_lists.sh @/local/pcb/ACTION_REG_SRC@ > generated_lists.h
+
+conf_core_fields.h: conf_core.h
+	../scconfig/gen_conf.sh < conf_core.h > conf_core_fields.h
 
 FORCE:
 
