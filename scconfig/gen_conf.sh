@@ -36,7 +36,7 @@ awk '
 		sub("^/", "", id)
 		gsub("/", ".", id)
 		id = id "." name
-		printf("conf_reg(%-36s %d, %-16s %-25s %s)\n", id cm, array, type cm, q path q cm, q name q)
+		printf("conf_reg(%-36s %s %-16s %-25s %s)\n", id cm, (array ? "array, " : "scalar,"), type cm, q path q cm, q name q)
 		
 	}
 
