@@ -1963,3 +1963,4 @@ vtptr.o: vtptr.c vtptr.h global_objs.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genvector/genvector_impl.c
+conf_core.o: conf_core_fields.h
