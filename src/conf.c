@@ -95,10 +95,70 @@ static const int get_hash_policy(policy_t *out, lht_node_t *parent, const char *
 	return 0;
 }
 
-int conf_merge_patch_field(conf_native_t *dest, lht_node_t *src)
+int conf_parse_text(confitem_t *dst, conf_native_type_t type, const char *text, lht_node_t *err_node)
 {
-#warning TODO: implement this
+	char *strue[]  = {"true",  "yes",  "on",   "1", NULL};
+	char *sfalse[] = {"false", "no",   "off",  "0", NULL};
+	char **s, *end;
+	long l;
+	int base = 10;
+	double d;
+
+	switch(type) {
+		case CFN_STRING:
+			*dst->string = text;
+			break;
+		case CFN_BOOLEAN:
+			for(s = strue; *s != NULL; s++)
+				if (strcasecmp(*s, text) == 0) {
+					*dst->boolean = 1;
+					return 0;
+				}
+			for(s = sfalse; *s != NULL; s++)
+				if (strcasecmp(*s, text) == 0) {
+					*dst->boolean = 0;
+					return 0;
+				}
+			hid_cfg_error(err_node, "Invalid boolean value: %s\n", text);
+			return -1;
+		case CFN_INTEGER:
+			if ((text[0] == '0') && (text[1] == 'x')) {
+				text += 2;
+				base = 16;
+			}
+			l = strtol(text, &end, base);
+			if (*end == '\0') {
+				*dst->integer = l;
+				return 0;
+			}
+			hid_cfg_error(err_node, "Invalid integer value: %s\n", text);
+			return -1;
+		case CFN_REAL:
+			d = strtod(text, &end);
+			if (*end == '\0') {
+				*dst->real = d;
+				return 0;
+			}
+			hid_cfg_error(err_node, "Invalid numeric value: %s\n", text);
+			return -1;
+		case CFN_COORD:
+		case CFN_UNIT:
+		case CFN_COLOR:
+#warning TODO
+			break;
+	}
 	return -1;
+}
+
+int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, policy_t pol)
+{
+	if ((pol == POL_DISABLE) || (dest->prop[0].prio > prio))
+		return 0;
+
+	conf_parse_text(&dest->val.string[0], dest->type, src->data.text.value, src);
+	dest->prop[0].prio = prio;
+	dest->prop[0].src = src;
+	return 0;
 }
 
 /* merge main subtree of a patch */
@@ -131,9 +191,7 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, policy_t defaul
 
 		switch(n->type) {
 			case LHT_TEXT:
-				if (target->prio > default_prio)
-					continue;
-				conf_merge_patch_field(target, n);
+				conf_merge_patch_text(target, n, default_prio, default_policy);
 				break;
 			case LHT_HASH:
 				res |= conf_merge_patch_recurse(n, default_prio, default_policy, path);

@@ -24,22 +24,31 @@ typedef enum {
 	CFN_COLOR,
 } conf_native_type_t;
 
+typedef union confitem_u {
+	const char **string;
+	int *boolean;
+	long *integer;
+	double *real;
+	Coord *coord;
+	Unit *unit;
+	char *color;
+} confitem_t ;
+
 typedef struct {
-	conf_native_type_t type;
-	union {
-		char **string;
-		int *boolean;
-		long *integer;
-		double *real;
-		Coord *coord;
-		Unit *unit;
-		char *color;
-		void *any;
-	} native;
-	const char *description;
 	int prio;
-	int array_size;
 	lht_node_t *src;
+} confprop_t;
+
+typedef struct {
+	/* static fields defined by the macros */
+	const char *description;
+	int array_size;
+	conf_native_type_t type;
+
+	/* dynamic fields loaded from lihata */
+	confitem_t val;   /* value is always an array (len 1 for the common case)  */
+	confprop_t *prop; /* an array of properies allocated as big as val's array */
+	int used;         /* number of items actually used in the arrays */
 } conf_native_t;
 
 typedef enum {
