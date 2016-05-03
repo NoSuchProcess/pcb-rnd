@@ -32,6 +32,8 @@ typedef union confitem_u {
 	Coord *coord;
 	const Unit **unit;
 	const char **color;
+
+	void *any;
 } confitem_t ;
 
 typedef struct {

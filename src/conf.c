@@ -1,3 +1,6 @@
+#include <assert.h>
+#include <genht/htsp.h>
+#include <genht/hash.h>
 #include "conf.h"
 #include "hid_cfg.h"
 #include "misc.h"
@@ -14,6 +17,7 @@ typedef enum {
 } policy_t;
 
 static lht_doc_t *conf_root[CFR_max];
+static htsp_t *conf_fields = NULL;
 
 /*static lht_doc_t *conf_plugin;*/
 
@@ -43,7 +47,6 @@ static const char *get_hash_text(lht_node_t *parent, const char *name, lht_node_
 		return NULL;
 	}
 
-	//n = htsp_get(parent->data.hash, name);
 	n = lht_dom_hash_get(parent, name);
 	if (nout != NULL)
 		*nout = n;
@@ -166,8 +169,11 @@ int conf_parse_text(confitem_t *dst, conf_native_type_t type, const char *text, 
 #warning TODO: perhaps make some tests about validity?
 			*dst->color = text;
 			break;
+		default:
+			/* unknown field type registered in the fields hash: internal error */
+			return -1;
 	}
-	return -1;
+	return 0;
 }
 
 int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, policy_t pol)
@@ -175,9 +181,11 @@ int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, policy
 	if ((pol == POL_DISABLE) || (dest->prop[0].prio > prio))
 		return 0;
 
-	conf_parse_text(&dest->val, dest->type, src->data.text.value, src);
-	dest->prop[0].prio = prio;
-	dest->prop[0].src = src;
+	if (conf_parse_text(&dest->val, dest->type, src->data.text.value, src) == 0) {
+		dest->prop[0].prio = prio;
+		dest->prop[0].src  = src;
+		dest->used         = 1;
+	}
 	return 0;
 }
 
@@ -265,12 +273,34 @@ void conf_update(void)
 	conf_merge_all();
 }
 
+static int keyeq(char *a, char *b)
+{
+	return !strcmp(a, b);
+}
+
 void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path)
 {
+	conf_native_t *node;
 
+	if (conf_fields == NULL) {
+		conf_fields = htsp_alloc(strhash, keyeq);
+		assert(conf_fields != NULL);
+	}
+	assert(array_size >= 1);
+
+#warning assert if the path already exists
+
+	node = malloc(sizeof(conf_native_t));
+	node->description = "n/a";
+	node->array_size  = array_size;
+	node->type        = type;
+	node->val.any     = value;
+	node->prop        = calloc(sizeof(confprop_t), array_size);
+	node->used        = 0;
+	htsp_set(conf_fields, path, node);
 }
 
 conf_native_t *conf_get_field(const char *path)
 {
-
+	return htsp_get(conf_fields, path);
 }
