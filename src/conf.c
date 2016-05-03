@@ -20,10 +20,17 @@ static lht_doc_t *conf_root[CFR_max];
 
 int conf_load_as(conf_role_t role, const char *fn)
 {
+	lht_doc_t *d;
 	if (conf_root[role] != NULL)
 		lht_dom_uninit(conf_root[role]);
-	conf_root[role] = hid_cfg_load_lht(fn);
-#warning TODO: root should be a list
+	d = hid_cfg_load_lht(fn);
+	if (d->root->type != LHT_LIST) {
+		hid_cfg_error(d->root, "Config root must be a list");
+		conf_root[role] = NULL;
+		return -1;
+	}
+	conf_root[role] = d;
+	return 0;
 }
 
 static const char *get_hash_text(lht_node_t *parent, const char *name, lht_node_t **nout)
