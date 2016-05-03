@@ -1,5 +1,7 @@
 #include "conf.h"
 #include "hid_cfg.h"
+#include "misc.h"
+#include "error.h"
 
 #warning TODO: this should do settings_postproc too
 
@@ -103,6 +105,7 @@ int conf_parse_text(confitem_t *dst, conf_native_type_t type, const char *text, 
 	long l;
 	int base = 10;
 	double d;
+	const Unit *u;
 
 	switch(type) {
 		case CFN_STRING:
@@ -142,9 +145,19 @@ int conf_parse_text(confitem_t *dst, conf_native_type_t type, const char *text, 
 			hid_cfg_error(err_node, "Invalid numeric value: %s\n", text);
 			return -1;
 		case CFN_COORD:
+#warning TODO: write a new version of GetValue where absolute is optional and error is properly returned
+			*dst->coord = GetValue(text, NULL, NULL);
+			break;
 		case CFN_UNIT:
+			u = get_unit_struct(text);
+			if (u == NULL)
+				hid_cfg_error(err_node, "Invalid unit: %s\n", text);
+			else
+				*dst->unit = u;
+			break;
 		case CFN_COLOR:
-#warning TODO
+#warning TODO: perhaps make some tests about validity?
+			*dst->color = text;
 			break;
 	}
 	return -1;
@@ -155,7 +168,7 @@ int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, policy
 	if ((pol == POL_DISABLE) || (dest->prop[0].prio > prio))
 		return 0;
 
-	conf_parse_text(&dest->val.string[0], dest->type, src->data.text.value, src);
+	conf_parse_text(&dest->val, dest->type, src->data.text.value, src);
 	dest->prop[0].prio = prio;
 	dest->prop[0].src = src;
 	return 0;

@@ -30,8 +30,8 @@ typedef union confitem_u {
 	long *integer;
 	double *real;
 	Coord *coord;
-	Unit *unit;
-	char *color;
+	const Unit **unit;
+	const char **color;
 } confitem_t ;
 
 typedef struct {
