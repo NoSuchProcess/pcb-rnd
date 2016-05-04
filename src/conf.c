@@ -288,7 +288,7 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 	}
 	assert(array_size >= 1);
 
-#warning assert if the path already exists
+	assert(htsp_get(conf_fields, (char *)path) == NULL);
 
 	node = malloc(sizeof(conf_native_t));
 	node->description = "n/a";
