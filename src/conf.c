@@ -28,8 +28,13 @@ int conf_load_as(conf_role_t role, const char *fn)
 	if (conf_root[role] != NULL)
 		lht_dom_uninit(conf_root[role]);
 	d = hid_cfg_load_lht(fn);
+	if (d == NULL) {
+		Message("error: failed to load lh config: %s\n", fn);
+		conf_root[role] = NULL;
+		return -1;
+	}
 	if (d->root->type != LHT_LIST) {
-		hid_cfg_error(d->root, "Config root must be a list");
+		hid_cfg_error(d->root, "Config root must be a list\n");
 		conf_root[role] = NULL;
 		return -1;
 	}
@@ -51,7 +56,7 @@ static const char *get_hash_text(lht_node_t *parent, const char *name, lht_node_
 	if (nout != NULL)
 		*nout = n;
 
-	if (n->type != LHT_TEXT)
+	if ((n == NULL) || (n->type != LHT_TEXT))
 		return NULL;
 
 	return n->data.text.value;
@@ -70,7 +75,7 @@ static const int get_hash_int(long *out, lht_node_t *parent, const char *name)
 
 	l = strtol(s, &end, 10);
 	if (*end != '\0') {
-		hid_cfg_error(parent, "%s should be an integer", s);
+		hid_cfg_error(parent, "%s should be an integer\n", s);
 		return -1;
 	}
 	if (out != NULL)
@@ -98,7 +103,7 @@ static const int get_hash_policy(policy_t *out, lht_node_t *parent, const char *
 	else if (strcasecmp(s, "disable") == 0)
 		p = POL_DISABLE;
 	else {
-		hid_cfg_error(parent, "invalid policy %s", s);
+		hid_cfg_error(parent, "invalid policy %s\n", s);
 		return -1;
 	}
 
@@ -212,13 +217,12 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, policy_t defaul
 		*namee = '\0';
 		target = conf_get_field(path);
 
-		if (target == NULL) {
-			hid_cfg_error(n, "ignoring unrecognized field: %s", path);
-			continue;
-		}
-
 		switch(n->type) {
 			case LHT_TEXT:
+				if (target == NULL) {
+					hid_cfg_error(n, "ignoring unrecognized field: %s\n", path);
+					break;
+				}
 				conf_merge_patch_text(target, n, default_prio, default_policy);
 				break;
 			case LHT_HASH:
@@ -237,7 +241,7 @@ int conf_merge_patch(lht_node_t *root)
 	lht_dom_iterator_t it;
 
 	if (root->type != LHT_HASH) {
-		hid_cfg_error(root, "patch root should be a hash");
+		hid_cfg_error(root, "patch root should be a hash\n");
 		return -1;
 	}
 
@@ -248,7 +252,7 @@ int conf_merge_patch(lht_node_t *root)
 	/* iterate over all hashes and insert them recursively */
 	for(n = lht_dom_first(&it, root); n != NULL; n = lht_dom_next(&it))
 		if (n->type == LHT_HASH)
-			conf_merge_patch_recurse(n, gprio, gpolicy, "/");
+			conf_merge_patch_recurse(n, gprio, gpolicy, n->name);
 
 	return 0;
 }

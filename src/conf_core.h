@@ -15,7 +15,6 @@ typedef struct {
 		CFT_UNIT grid_unit;
 		CFT_COORD grid; /* grid in pcb-units */
 #if 0
-TODO
 	const Increments increments;
 #endif
 		CFT_REAL zoom; /* default zoom */
@@ -111,7 +110,7 @@ TODO
 
 /* @path appearance/color */
 #warning TODO: fix typo
-	struct apperance {
+	struct appearance {
 		struct color {
 			CFT_COLOR black;
 			CFT_COLOR white;
@@ -152,7 +151,7 @@ TODO
 		struct misc {
 			CFT_INTEGER volume;          /* the speakers volume -100..100 */
 		} misc;
-	} apperance;
+	} appearance;
 
 } conf_core_t;
 

@@ -67,11 +67,11 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 	conf_reg_field_(&globvar.field, (sizeof(globvar.field) / sizeof(globvar.field[0])), type_name, path)
 
 #define conf_reg_field_scalar(globvar, field, type_name, path) \
-	conf_reg_field_(&globvar.field, -1, type_name, path)
+	conf_reg_field_(&globvar.field, 1, type_name, path)
 
 /* register a config field, array or scalar, selecting the right macro */
 #define conf_reg_field(globvar,   field,isarray,type_name,cpath,cname) \
-	conf_reg_field_ ## isarray(globvar, field,type_name,cpath cname)
+	conf_reg_field_ ## isarray(globvar, field,type_name,cpath "/" cname)
 
 
 #endif
