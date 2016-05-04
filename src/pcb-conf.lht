@@ -1,0 +1,145 @@
+li:pcb_config {
+	ha:main {
+		priority = 100
+		lists = overwrite
+		ha:editor {
+			grid_unit = mil
+			grid = 25 mil
+			zoom = 1
+			mode = 110
+			buffer_number = 0
+			clear_line = 1
+			full_poly = 0
+			unique_names = 0
+			snap_pin = 1
+			snap_offgrid_line = 1
+			highlight_on_point = 0
+			show_solder_side = 0
+			save_last_command = 0
+			save_in_tmp = 0
+			draw_grid = 0
+			rat_warn = 0
+			stipple_polygons = 0
+			all_direction_lines = 0
+			rubber_band_mode = 0
+			swap_start_direction = 0
+			show_drc = 0
+			auto_drc = 0
+			show_number = 0
+			orthogonal_moves = 0
+			reset_after_element = 1
+			auto_place = 0
+			enable_mincut = 1
+			enable_stroke = 0
+			live_routing = 0
+			beep_when_finished = 0
+		} # editor
+
+		ha:rc {
+			verbose = 0
+			backup_interval = 60
+#			font_command = {}
+#			file_command = {}
+#			file_path = {}
+			print_file = {}
+			library_shell = {}
+			library_search_paths = {}
+			save_command = {}
+			font_file = {}
+			li:font_path = {
+				{~/pcblic}
+				{../pcblic}
+				{$SHAREDIR/pcblib}
+			}
+			default_pcb_file = {$SHAREDIR/pcblib/default.pcb}
+
+			groups = {}
+			routes = {}
+
+#			script_filename = {}
+#			action_string = {}
+#			rat_path = {}
+#			rat_command = {}
+
+			gnetlist_program = gnetlist
+			make_program = make
+		} # rc
+
+		ha:design {
+#			via_thickness = 0
+#			via_drilling_hole  = 0
+#			line_thickness = 0
+#			rat_thickness = 0
+#			keepaway = 0
+#			max_width = 0
+#			max_height = 0
+#			alignment_distance = 0
+#			bloat = 0
+#			shrink = 0
+#			min_wid = 0
+#			min_slk = 0
+#			min_drill = 0
+#			min_ring = 0
+#			text_scale = 0
+#			poly_isle_area = 0
+#			li:default_layer_name = {}
+#			background_image = {}
+#			fab_author = {}
+#			initial_layer_stack = {}
+	} # design
+
+		ha:appearance {
+			ha:color {
+				black = {#000000}
+				white = {#ffffff}
+				background = {#e5e5e5}
+				crosshair = {#ff0000}
+				cross = {#cdcd00}
+				via = {#7f7f7f}
+				via_selected = {#00ffff}
+				pin = {#4d4d4d}
+				pin_selected = {#00ffff}
+				pin_name = {#ff0000}
+				element = {#000000}
+				element_nonetlist = {#777777}
+				rat = {#b8860b}
+				invisible_objects = {#cccccc}
+				invisible_mark = {#cccccc}
+				element_selected = {#00ffff}
+				rat_selected = {#00ffff}
+				connected = {#00ff00}
+				off_limit = {#cccccc}
+				grid = {#ff0000}
+				li:layer = {
+					{#8b2323}; {#3a5fcd}; {#104e8b}; {#cd3700}; {#548b54};
+					{#8b7355}; {#00868b}; {#228b22}; {#8b2323}; {#3a5fcd};
+					{#104e8b}; {#cd3700}; {#548b54}; {#8b7355}; {#00868b};
+					{#228b22};
+				}
+				li:layer_selected = {
+					{#00ffff}; {#00ffff}; {#00ffff}; {#00ffff}; {#00ffff};
+					{#00ffff}; {#00ffff}; {#00ffff}; {#00ffff}; {#00ffff};
+					{#00ffff}; {#00ffff}; {#00ffff}; {#00ffff}; {#00ffff};
+					{#00ffff};
+				}
+				warn = {#ff8000}
+				mask = {#ff0000}
+			}
+			ha:pinout {
+#				name_length = 0
+#				zoom = 0
+				offset_x = 25400
+				offset_y = 25400
+				text_offset_x = 203200
+				text_offset_y = -25400
+			}
+			ha:messages {
+#				char_per_line = 0
+			}
+#			ha:misc {
+#				volume = 0
+#			} misc;
+		} # appearance;
+	} # main
+} # root
+
