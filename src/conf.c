@@ -194,6 +194,34 @@ int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, policy
 	return 0;
 }
 
+int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, policy_t pol)
+{
+	lht_node_t *s;
+
+	if (pol == POL_DISABLE)
+		return 0;
+
+	if (dest->type != CFN_LIST)
+		return -1;
+
+#warning TODO: respect policy
+	for(s = src_lst->data.list.first; s != NULL; s = s->next) {
+		if (s->type == LHT_TEXT) {
+			conf_listitem_t *i;
+			i = malloc(sizeof(conf_listitem_t));
+			if (conf_parse_text(&i->val, CFN_STRING, s->data.text.value, s) != 0) {
+				free(i);
+				continue;
+			}
+			conflist_append(dest->val.list, i);
+		}
+		else
+			hid_cfg_error(s, "List item must be text\n");
+	}
+
+	return 0;
+}
+
 /* merge main subtree of a patch */
 int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, policy_t default_policy, const char *path_prefix)
 {
@@ -227,6 +255,10 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, policy_t defaul
 				break;
 			case LHT_HASH:
 				res |= conf_merge_patch_recurse(n, default_prio, default_policy, path);
+				break;
+			case LHT_LIST:
+				res |= conf_merge_patch_list(target, n, default_prio, default_policy);
+				break;
 		}
 	}
 	return res;
@@ -306,5 +338,5 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 
 conf_native_t *conf_get_field(const char *path)
 {
-	return htsp_get(conf_fields, path);
+	return htsp_get(conf_fields, (char *)path);
 }

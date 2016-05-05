@@ -54,17 +54,16 @@ typedef struct {
 	struct rc {
 		CFT_INTEGER verbose;
 		CFT_INTEGER backup_interval;       /* time between two backups in seconds */
-		CFT_STRING font_command;            /* commands for file loading... */
+		CFT_STRING font_command;           /* commands for file loading... */
 		CFT_STRING file_command;
 		CFT_STRING file_path;
 #warning move this to printer?
 		CFT_STRING print_file;
 		CFT_STRING library_shell;
-		CFT_STRING library_search_paths;
+		CFT_LIST library_search_paths;
 		CFT_STRING save_command;
-		CFT_STRING font_file;               /* name of default font file */
-		CFT_STRING font_path;               /* name of default font file */
-		CFT_STRING default_pcb_file;
+		CFT_LIST default_font_file;  /* name of default font file */
+		CFT_LIST default_pcb_file;
 
 #warning move these two to design
 		CFT_STRING groups;                 /* string with layergroups */
@@ -109,7 +108,6 @@ typedef struct {
 	} design;
 
 /* @path appearance/color */
-#warning TODO: fix typo
 	struct appearance {
 		struct color {
 			CFT_COLOR black;

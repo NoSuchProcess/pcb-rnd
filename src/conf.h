@@ -13,6 +13,7 @@ typedef double   CFT_REAL;
 typedef Coord    CFT_COORD;
 typedef Unit *   CFT_UNIT;
 typedef char *   CFT_COLOR;
+typedef char *   CFT_LIST;
 
 typedef enum {
 	CFN_STRING,
@@ -22,7 +23,10 @@ typedef enum {
 	CFN_COORD,
 	CFN_UNIT,
 	CFN_COLOR,
+	CFN_LIST,
 } conf_native_type_t;
+
+typedef union conflist_u conflist_t;
 
 typedef union confitem_u {
 	const char **string;
@@ -32,7 +36,7 @@ typedef union confitem_u {
 	Coord *coord;
 	const Unit **unit;
 	const char **color;
-
+	conflist_t *list;
 	void *any;
 } confitem_t ;
 
@@ -52,6 +56,18 @@ typedef struct {
 	confprop_t *prop; /* an array of properies allocated as big as val's array */
 	int used;         /* number of items actually used in the arrays */
 } conf_native_t;
+
+
+typedef struct conf_listitem_s conf_listitem_t;
+struct conf_listitem_s {
+	conf_native_type_t type;
+	confitem_t val;   /* value is always an array (len 1 for the common case)  */
+	confprop_t *prop; /* an array of properies allocated as big as val's array */
+	gdl_elem_t link;
+};
+
+#include "list_conf.h"
+
 
 typedef enum {
 	CFR_SYSTEM,
