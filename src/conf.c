@@ -112,7 +112,7 @@ static const int get_hash_policy(policy_t *out, lht_node_t *parent, const char *
 	return 0;
 }
 
-int conf_parse_text(confitem_t *dst, conf_native_type_t type, const char *text, lht_node_t *err_node)
+int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const char *text, lht_node_t *err_node)
 {
 	char *strue[]  = {"true",  "yes",  "on",   "1", NULL};
 	char *sfalse[] = {"false", "no",   "off",  "0", NULL};
@@ -124,17 +124,17 @@ int conf_parse_text(confitem_t *dst, conf_native_type_t type, const char *text, 
 
 	switch(type) {
 		case CFN_STRING:
-			*dst->string = text;
+			dst->string[idx] = text;
 			break;
 		case CFN_BOOLEAN:
 			for(s = strue; *s != NULL; s++)
 				if (strcasecmp(*s, text) == 0) {
-					*dst->boolean = 1;
+					dst->boolean[idx] = 1;
 					return 0;
 				}
 			for(s = sfalse; *s != NULL; s++)
 				if (strcasecmp(*s, text) == 0) {
-					*dst->boolean = 0;
+					dst->boolean[idx] = 0;
 					return 0;
 				}
 			hid_cfg_error(err_node, "Invalid boolean value: %s\n", text);
@@ -146,7 +146,7 @@ int conf_parse_text(confitem_t *dst, conf_native_type_t type, const char *text, 
 			}
 			l = strtol(text, &end, base);
 			if (*end == '\0') {
-				*dst->integer = l;
+				dst->integer[idx] = l;
 				return 0;
 			}
 			hid_cfg_error(err_node, "Invalid integer value: %s\n", text);
@@ -154,25 +154,25 @@ int conf_parse_text(confitem_t *dst, conf_native_type_t type, const char *text, 
 		case CFN_REAL:
 			d = strtod(text, &end);
 			if (*end == '\0') {
-				*dst->real = d;
+				dst->real[idx] = d;
 				return 0;
 			}
 			hid_cfg_error(err_node, "Invalid numeric value: %s\n", text);
 			return -1;
 		case CFN_COORD:
 #warning TODO: write a new version of GetValue where absolute is optional and error is properly returned
-			*dst->coord = GetValue(text, NULL, NULL);
+			dst->coord[idx] = GetValue(text, NULL, NULL);
 			break;
 		case CFN_UNIT:
 			u = get_unit_struct(text);
 			if (u == NULL)
 				hid_cfg_error(err_node, "Invalid unit: %s\n", text);
 			else
-				*dst->unit = u;
+				dst->unit[idx] = u;
 			break;
 		case CFN_COLOR:
 #warning TODO: perhaps make some tests about validity?
-			*dst->color = text;
+			dst->color[idx] = text;
 			break;
 		default:
 			/* unknown field type registered in the fields hash: internal error */
@@ -186,7 +186,7 @@ int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, policy
 	if ((pol == POL_DISABLE) || (dest->prop[0].prio > prio))
 		return 0;
 
-	if (conf_parse_text(&dest->val, dest->type, src->data.text.value, src) == 0) {
+	if (conf_parse_text(&dest->val, 0, dest->type, src->data.text.value, src) == 0) {
 		dest->prop[0].prio = prio;
 		dest->prop[0].src  = src;
 		dest->used         = 1;
@@ -194,15 +194,49 @@ int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, policy
 	return 0;
 }
 
-int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, policy_t pol)
+int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, policy_t pol)
 {
 	lht_node_t *s;
+	int res;
 
 	if (pol == POL_DISABLE)
 		return 0;
 
-	if (dest->type != CFN_LIST)
-		return -1;
+#warning TODO: respect policy
+	for(s = src_lst->data.list.first; s != NULL; s = s->next) {
+		if (s->type == LHT_TEXT) {
+
+			if ((dest->prop[dest->used].prio > prio))
+				continue;
+
+			if (dest->used >= dest->array_size) {
+				hid_cfg_error(s, "Array is already full\n");
+				res = -1;
+				break;
+			}
+
+			if (conf_parse_text(&dest->val, dest->used, dest->type, s->data.text.value, s) == 0) {
+				dest->prop[dest->used].prio = prio;
+				dest->prop[dest->used].src  = s;
+				dest->used++;
+			}
+		}
+		else {
+			hid_cfg_error(s, "List item must be text\n");
+			res = -1;
+		}
+	}
+
+	return res;
+}
+
+int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, policy_t pol)
+{
+	lht_node_t *s;
+	int res = 0;
+
+	if (pol == POL_DISABLE)
+		return 0;
 
 #warning TODO: respect policy
 	for(s = src_lst->data.list.first; s != NULL; s = s->next) {
@@ -212,17 +246,19 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, po
 			i->val.string = &i->payload;
 			i->prop.prio = prio;
 			i->prop.src  = s;
-			if (conf_parse_text(&i->val, CFN_STRING, s->data.text.value, s) != 0) {
+			if (conf_parse_text(&i->val, 0, CFN_STRING, s->data.text.value, s) != 0) {
 				free(i);
 				continue;
 			}
 			conflist_append(dest->val.list, i);
 		}
-		else
+		else {
 			hid_cfg_error(s, "List item must be text\n");
+			res = -1;
+		}
 	}
 
-	return 0;
+	return res;
 }
 
 /* merge main subtree of a patch */
@@ -260,7 +296,12 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, policy_t defaul
 				res |= conf_merge_patch_recurse(n, default_prio, default_policy, path);
 				break;
 			case LHT_LIST:
-				res |= conf_merge_patch_list(target, n, default_prio, default_policy);
+				if (target->type == CFN_LIST)
+					res |= conf_merge_patch_list(target, n, default_prio, default_policy);
+				else if (target->array_size > 1)
+					res |= conf_merge_patch_array(target, n, default_prio, default_policy);
+				else
+					hid_cfg_error(n, "Attempt to initialize a scalar with a list - this node should be a text node\n");
 				break;
 		}
 	}
