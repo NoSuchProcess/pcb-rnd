@@ -24,6 +24,7 @@
 #define LIST_CONF_H
 
 #include "conf.h"
+#include <genlist/gentdlist_undef.h>
 
 /* List of Arcs */
 #define TDL(x)      conflist_ ## x
@@ -34,7 +35,7 @@
 #define TDL_SIZE_T  size_t
 #define TDL_FUNC
 
-#define arclist_foreach(list, iterator, loop_elem) \
+#define conflist_foreach(list, iterator, loop_elem) \
 	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
 
 

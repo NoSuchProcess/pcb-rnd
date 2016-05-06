@@ -208,7 +208,10 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, po
 	for(s = src_lst->data.list.first; s != NULL; s = s->next) {
 		if (s->type == LHT_TEXT) {
 			conf_listitem_t *i;
-			i = malloc(sizeof(conf_listitem_t));
+			i = calloc(sizeof(conf_listitem_t), 1);
+			i->val.string = &i->payload;
+			i->prop.prio = prio;
+			i->prop.src  = s;
 			if (conf_parse_text(&i->val, CFN_STRING, s->data.text.value, s) != 0) {
 				free(i);
 				continue;

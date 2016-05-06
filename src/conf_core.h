@@ -60,7 +60,10 @@ typedef struct {
 #warning move this to printer?
 		CFT_STRING print_file;
 		CFT_STRING library_shell;
-		CFT_LIST library_search_paths;
+#warning TODO: this should be a list
+/*		CFT_LIST library_search_paths; */
+		CFT_STRING library_search_paths;
+
 		CFT_STRING save_command;
 		CFT_LIST default_font_file;  /* name of default font file */
 		CFT_LIST default_pcb_file;
