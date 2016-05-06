@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "config.h"
 #include "paths.h"
 #include "error.h"
 
@@ -21,6 +22,8 @@ void paths_init_homedir(void)
 
 void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra_room)
 {
+	char *subst_to;
+	int subst_offs;
 	for (out; numpaths > 0; numpaths--, in++, out++) {
 		if (*in != NULL) {
 			if (**in == '~') {
@@ -29,11 +32,24 @@ void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra
 					Message("can't resolve home dir required for path %s\n", *in);
 					exit(1);
 				}
+				subst_to = homedir;
+				subst_offs = 1;
+				replace:;
 				/* avoid Concat() here to reduce dependencies for external tools */
-				l1 = strlen(homedir);
+				l1 = strlen(subst_to);
 				l2 = strlen((*in) + 1);
 				*out = malloc(l1 + l2 + 4 + extra_room);
-				sprintf(*out, "%s/%s", homedir, (*in) + 1);
+				sprintf(*out, "%s/%s", subst_to, (*in) + subst_offs);
+			}
+			else if (**in == '$') {
+				if (strncmp(*in, "$SHAREDIR", 9) == 0) {
+#warning TODO: get this from a hash
+					subst_to = PCBSHAREDIR;
+					subst_offs = 9;
+					goto replace;
+				}
+				else
+					*out = NULL;
 			}
 			else {
 				*out = malloc(strlen(*in) + 1 + extra_room);
