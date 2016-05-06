@@ -70,6 +70,8 @@ struct conf_listitem_s {
 
 typedef enum {
 	CFR_SYSTEM,
+	CFR_USER,
+	CFR_PROJECT,
 	CFR_max
 } conf_role_t;
 
@@ -99,6 +101,7 @@ void conf_dump(FILE *f, const char *prefix, int verbose);
 do { \
 	conf_listitem_t *__n__; \
 	conflist_t *__lst__ = (conf_list); \
+	printf("conf_list_foreach_path_first: %s using %s\n", # call, # conf_list); \
 	for(__n__ = conflist_first(__lst__); __n__ != NULL; __n__ = conflist_next(__n__)) { \
 		char *__path__; \
 		const char **__in__ = __n__->val.string; \
@@ -106,6 +109,7 @@ do { \
 			continue; \
 		resolve_path(*__in__, &__path__, 0); \
 		res = call; \
+		printf("  %s -> %d\n", __path__, res); \
 		free(__path__); \
 		if (res == 0) \
 			break; \

@@ -350,8 +350,10 @@ int conf_merge_all()
 void conf_update(void)
 {
 #warning TODO: make this data
+#warning TODO: built-in
 	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht");
-	conf_load_as(CFR_SYSTEM, "./pcb-conf.lht");
+	conf_load_as(CFR_USER, "~/.pcb-rnd/pcb-conf.lht");
+	conf_load_as(CFR_PROJECT, "./pcb-conf.lht");
 	conf_merge_all();
 }
 
@@ -396,8 +398,8 @@ static void conf_dump_(FILE *f, const char *prefix, int verbose, confitem_t *val
 		case CFN_INTEGER: fprintf(f, "%ld", val->integer[idx]); break;
 		case CFN_REAL:    fprintf(f, "%f", val->real[idx]); break;
 		case CFN_COORD:   pcb_fprintf(f, "%$mS", val->coord[idx]); break;
-		case CFN_UNIT:    pcb_fprintf(f, "%s", val->unit[idx]->suffix); break;
-		case CFN_COLOR:   fprintf(f, "%s", val->color[idx]); break;
+		case CFN_UNIT:    pcb_fprintf(f, "%s", val->unit[idx] == NULL ? "<NULL>" : val->unit[idx]->suffix); break;
+		case CFN_COLOR:   fprintf(f, "%s", val->color[idx] == NULL ? "<NULL>" : val->color[idx]); break;
 		case CFN_LIST:
 			{
 				conf_listitem_t *n;
