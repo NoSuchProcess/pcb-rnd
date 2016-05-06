@@ -349,6 +349,8 @@ int conf_merge_all()
 
 void conf_update(void)
 {
+#warning TODO: make this data
+	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht");
 	conf_load_as(CFR_SYSTEM, "./pcb-conf.lht");
 	conf_merge_all();
 }
