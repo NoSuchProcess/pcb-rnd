@@ -43,16 +43,24 @@ li:pcb_config {
 #			file_path = {}
 			print_file = {}
 			library_shell = {}
-			library_search_paths = {}
-			save_command = {}
-			font_file = {}
-			li:font_path = {
-				{~/pcblic}
-				{../pcblic}
-				{$SHAREDIR/pcblib}
-			}
-			default_pcb_file = {$SHAREDIR/pcblib/default.pcb}
 
+			library_search_paths = {../pcblib:~/pcblib/:$SHAREDIR/pcblib}
+
+#			li:library_search_paths = {
+#				{~/pcblib/}
+#				{../pcblib}
+#				{$SHAREDIR/pcblib}
+#			}
+
+			save_command = {}
+			li:default_font_file = {
+				{./default_font}
+				{$SHAREDIR/default_font}
+			}
+			li:default_pcb_file = {
+				{./default.pcb}
+				{$SHAREDIR/default.pcb}
+			}
 			groups = {}
 			routes = {}
 
@@ -80,7 +88,7 @@ li:pcb_config {
 #			min_slk = 0
 #			min_drill = 0
 #			min_ring = 0
-#			text_scale = 0
+			text_scale = 100
 #			poly_isle_area = 0
 #			li:default_layer_name = {}
 #			background_image = {}
