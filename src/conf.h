@@ -6,6 +6,13 @@
 #include <liblihata/lihata.h>
 #include <liblihata/dom.h>
 
+typedef enum {
+	POL_PREPEND,
+	POL_APPEND,
+	POL_OVERWRITE,
+	POL_DISABLE
+} conf_policy_t;
+
 typedef union conflist_u conflist_t;
 
 typedef char *      CFT_STRING;
@@ -71,10 +78,13 @@ struct conf_listitem_s {
 typedef enum {
 	CFR_SYSTEM,
 	CFR_USER,
-	CFR_PROJECT,
+	CFR_PROJECT,   /* project specific, from a local file */
+/*	CFR_DESIGN,    from the design file */
+	CFR_CLI,       /* from the command line */
 	CFR_max
 } conf_role_t;
 
+void conf_init(void);
 void conf_update(void);
 
 conf_native_t *conf_get_field(const char *path);
@@ -83,6 +93,10 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 /* Print all configuration items to f, prefixing each line with prefix */
 void conf_dump(FILE *f, const char *prefix, int verbose);
 
+
+int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_policy_t pol);
+
+int conf_set_from_cli(const char *arg_, char **why);
 
 #define conf_reg_field_array(globvar, field, type_name, path) \
 	conf_reg_field_(&globvar.field, (sizeof(globvar.field) / sizeof(globvar.field[0])), type_name, path)

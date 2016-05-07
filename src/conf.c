@@ -8,14 +8,6 @@
 
 #warning TODO: this should do settings_postproc too
 
-
-typedef enum {
-	POL_PREPEND,
-	POL_APPEND,
-	POL_OVERWRITE,
-	POL_DISABLE
-} policy_t;
-
 static lht_doc_t *conf_root[CFR_max];
 static htsp_t *conf_fields = NULL;
 
@@ -83,12 +75,12 @@ static const int get_hash_int(long *out, lht_node_t *parent, const char *name)
 	return 0;
 }
 
-static const int get_hash_policy(policy_t *out, lht_node_t *parent, const char *name)
+static const int get_hash_policy(conf_policy_t *out, lht_node_t *parent, const char *name)
 {
 	lht_node_t *n;
 	const char *s;
 	char *end;
-	policy_t p;
+	conf_policy_t p;
 
 	s = get_hash_text(parent, name, &n);
 	if (s == NULL)
@@ -181,7 +173,7 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 	return 0;
 }
 
-int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, policy_t pol)
+int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, conf_policy_t pol)
 {
 	if ((pol == POL_DISABLE) || (dest->prop[0].prio > prio))
 		return 0;
@@ -194,7 +186,7 @@ int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, policy
 	return 0;
 }
 
-int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, policy_t pol)
+int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, conf_policy_t pol)
 {
 	lht_node_t *s;
 	int res;
@@ -230,7 +222,7 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, p
 	return res;
 }
 
-int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, policy_t pol)
+int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, conf_policy_t pol)
 {
 	lht_node_t *s;
 	int res = 0;
@@ -262,7 +254,7 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, po
 }
 
 /* merge main subtree of a patch */
-int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, policy_t default_policy, const char *path_prefix)
+int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t default_policy, const char *path_prefix)
 {
 	lht_dom_iterator_t it;
 	lht_node_t *n, *h;
@@ -311,7 +303,7 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, policy_t defaul
 int conf_merge_patch(lht_node_t *root)
 {
 	long gprio = 0;
-	policy_t gpolicy = POL_OVERWRITE;
+	conf_policy_t gpolicy = POL_OVERWRITE;
 	const char *ps;
 	lht_node_t *n;
 	lht_dom_iterator_t it;
@@ -349,8 +341,8 @@ int conf_merge_all()
 
 void conf_update(void)
 {
-#warning TODO: make this data
-#warning TODO: built-in
+#warning TODO: move paths and order to data (array of strings, oslt)
+#warning TODO: load built-in lht first
 	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht");
 	conf_load_as(CFR_USER, "~/.pcb-rnd/pcb-conf.lht");
 	conf_load_as(CFR_PROJECT, "./pcb-conf.lht");
@@ -447,4 +439,67 @@ void conf_dump(FILE *f, const char *prefix, int verbose)
 			fprintf(f, "\n");
 		}
 	}
+}
+
+int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_policy_t pol)
+{
+	char *path, *basename;
+	conf_native_t *nat = conf_get_field(path_);
+	lht_node_t *cwd;
+
+	if (nat == NULL)
+		return -1;
+	if (conf_root[target] == NULL)
+		return -1;
+	if (pol == POL_DISABLE)
+		return 0;
+
+	cwd = conf_root[target]->root;
+	path = strdup(path_);
+	basename = strrchr(path, '/');
+	if (basename == NULL) {
+		free(path);
+		return -1;
+	}
+
+	*basename = '\0';
+	basename++;
+	
+
+	free(path);
+}
+
+int conf_set_from_cli(const char *arg_, char **why)
+{
+	char *arg = strdup(arg_);
+	char *val, *op = strchr(arg, '=');
+	conf_policy_t pol = POL_OVERWRITE;
+	int ret;
+
+	*why = "";
+	if ((op == NULL) || (op == val)) {
+		free(arg);
+		*why = "value not specified; syntax is path=val";
+		return -1;
+	}
+	*op = '\0';
+	val = op+1;
+	op--;
+	switch(*op) {
+		case '+': pol = POL_APPEND; break;
+		case '^': pol = POL_PREPEND; break;
+	}
+
+	ret = conf_set(CFR_CLI, arg, val, pol);
+	if (ret != 0)
+		*why = "invalid config path";
+
+	free(arg);
+	return ret;
+}
+
+void conf_init(void)
+{
+	conf_root[CFR_CLI] = lht_dom_init();
+	conf_root[CFR_CLI]->root = lht_dom_node_alloc(LHT_LIST, "cli_root");
 }
