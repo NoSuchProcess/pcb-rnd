@@ -443,9 +443,10 @@ void conf_dump(FILE *f, const char *prefix, int verbose)
 
 int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_policy_t pol)
 {
-	char *path, *basename;
+	char *path, *basename, *next, *last;
 	conf_native_t *nat = conf_get_field(path_);
-	lht_node_t *cwd;
+	lht_node_t *cwd, *nn;
+	lht_node_type_t ty;
 
 	if (nat == NULL)
 		return -1;
@@ -454,19 +455,99 @@ int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_po
 	if (pol == POL_DISABLE)
 		return 0;
 
+	/* assume root is a li and add to the first hash */
 	cwd = conf_root[target]->root;
+	if ((cwd == NULL) || (cwd->type != LHT_LIST))
+		return -1;
+	cwd = cwd->data.list.first;
+	if ((cwd == NULL) || (cwd->type != LHT_HASH))
+		return -1;
+
 	path = strdup(path_);
 	basename = strrchr(path, '/');
+
 	if (basename == NULL) {
 		free(path);
 		return -1;
 	}
 
+	/* create parents if they do not exist */
 	*basename = '\0';
 	basename++;
-	
+	last = next = path;
+	do {
+		next = strchr(next, '/');
+		if (next != NULL)
+			*next = '\0';
+
+		nn = lht_tree_path_(conf_root[target], cwd, last, 1, 0, NULL);
+		if (nn == NULL) {
+			/* create a new hash node */
+			nn = lht_dom_node_alloc(LHT_HASH, last);
+			if (lht_dom_hash_put(cwd, nn) != LHTE_SUCCESS) {
+				lht_dom_node_free(nn);
+				free(path);
+				return -1;
+			}
+			cwd = nn;
+		}
+		if (next != NULL)
+			last = next+1;
+	} while(next != NULL);
+
+	/* add the last part of the path, which is either a list or a text node */
+	if ((nat->array_size > 1) || (nat->type == CFN_LIST))
+		ty = LHT_LIST;
+	else
+		ty = LHT_TEXT;
+
+	nn = lht_tree_path_(conf_root[target], cwd, basename, 1, 0, NULL);
+	if (nn == NULL) {
+		nn = lht_dom_node_alloc(ty, basename);
+		if (lht_dom_hash_put(cwd, nn) != LHTE_SUCCESS) {
+			lht_dom_node_free(nn);
+			free(path);
+			return -1;
+		}
+		cwd = nn;
+	}
+
+	/* set value */
+	if (ty == LHT_LIST) {
+		lht_err_t err;
+		nn = lht_dom_node_alloc(LHT_TEXT, NULL);
+		if (pol == POL_OVERWRITE) {
+			/* empty the list so that we insert to an empty list which is overwriting the list */
+			while(cwd->data.list.first != NULL)
+				lht_tree_del(cwd->data.list.first);
+		}
+		if ((pol == POL_PREPEND) || (pol == POL_OVERWRITE))
+			err = lht_dom_list_insert(cwd, nn);
+		else if (pol == POL_APPEND)
+			err = lht_dom_list_append(cwd, nn);
+		if (err != LHTE_SUCCESS) {
+			lht_dom_node_free(nn);
+			free(path);
+			return -1;
+		}
+		cwd = nn;
+	}
+
+	/* by now cwd is the text node we need to load with the new value; it is
+	   either a text config value under a hash or a list item already allocated */
+	if (cwd->type != LHT_TEXT) {
+		free(path);
+		return -1;
+	}
+
+	if (cwd->data.text.value != NULL)
+		free(cwd->data.text.value);
+
+	cwd->data.text.value = strdup(new_val);
+	cwd->file_name = conf_root[target]->active_file;
 
 	free(path);
+	return 0;
 }
 
 int conf_set_from_cli(const char *arg_, char **why)
@@ -494,12 +575,21 @@ int conf_set_from_cli(const char *arg_, char **why)
 	if (ret != 0)
 		*why = "invalid config path";
 
+/*	lht_dom_ptree(conf_root[CFR_CLI]->root, stdout, "[cli] ");*/
+
 	free(arg);
 	return ret;
 }
 
 void conf_init(void)
 {
+	lht_node_t *n, *p;
 	conf_root[CFR_CLI] = lht_dom_init();
+	lht_dom_loc_newfile(conf_root[CFR_CLI], "<command line>");
 	conf_root[CFR_CLI]->root = lht_dom_node_alloc(LHT_LIST, "cli_root");
+	n = lht_dom_node_alloc(LHT_HASH, "main");
+	lht_dom_list_insert(conf_root[CFR_CLI]->root, n);
+	p = lht_dom_node_alloc(LHT_TEXT, "priority");
+	p->data.text.value = strdup("500");
+	lht_dom_hash_put(n, p);
 }
