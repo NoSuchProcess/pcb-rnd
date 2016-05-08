@@ -10,6 +10,7 @@
 #include <gtk/gtk.h>
 
 #include "global.h"
+#include "conf_core.h"
 #include "gtkhid.h"
 #include "gui.h"
 #include "pcb-printf.h"
@@ -127,7 +128,7 @@ static void _table_attach(GtkWidget * table, gint row, const gchar * label, GtkW
 	GtkWidget *label_w = gtk_label_new(label);
 	gtk_misc_set_alignment(GTK_MISC(label_w), 1.0, 0.5);
 
-	*entry = ghid_coord_entry_new(min, max, 0, Settings.grid_unit, CE_SMALL);
+	*entry = ghid_coord_entry_new(min, max, 0, conf_core.editor.grid_unit, CE_SMALL);
 	gtk_table_attach(GTK_TABLE(table), label_w, 0, 1, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
 	gtk_table_attach(GTK_TABLE(table), *entry, 1, 2, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
 }

@@ -32,6 +32,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -71,7 +72,7 @@ void SetGrid(Coord Grid, bool align)
 			PCB->GridOffsetY = Crosshair.Y % Grid;
 		}
 		PCB->Grid = Grid;
-		if (Settings.DrawGrid)
+		if (conf_core.editor.draw_grid)
 			Redraw();
 	}
 }
@@ -82,7 +83,7 @@ void SetGrid(Coord Grid, bool align)
 void SetLineSize(Coord Size)
 {
 	if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE) {
-		Settings.LineThickness = Size;
+		conf_core.design.line_thickness = Size;
 		if (TEST_FLAG(AUTODRCFLAG, PCB))
 			FitCrosshairIntoGrid(Crosshair.X, Crosshair.Y);
 	}
@@ -93,8 +94,8 @@ void SetLineSize(Coord Size)
  */
 void SetViaSize(Coord Size, bool Force)
 {
-	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIASIZE && Size >= Settings.ViaDrillingHole + MIN_PINORVIACOPPER)) {
-		Settings.ViaThickness = Size;
+	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIASIZE && Size >= conf_core.design.via_drilling_hole + MIN_PINORVIACOPPER)) {
+		conf_core.design.via_thickness = Size;
 	}
 }
 
@@ -103,17 +104,17 @@ void SetViaSize(Coord Size, bool Force)
  */
 void SetViaDrillingHole(Coord Size, bool Force)
 {
-	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIAHOLE && Size <= Settings.ViaThickness - MIN_PINORVIACOPPER)) {
-		Settings.ViaDrillingHole = Size;
+	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - MIN_PINORVIACOPPER)) {
+		conf_core.design.via_drilling_hole = Size;
 	}
 }
 
 void pcb_use_route_style(RouteStyleType * rst)
 {
-	Settings.LineThickness = rst->Thick;
-	Settings.ViaThickness = rst->Diameter;
-	Settings.ViaDrillingHole = rst->Hole;
-	Settings.Keepaway = rst->Keepaway;
+	conf_core.design.line_thickness = rst->Thick;
+	conf_core.design.via_thickness = rst->Diameter;
+	conf_core.design.via_drilling_hole = rst->Hole;
+	conf_core.design.keepaway = rst->Keepaway;
 }
 
 /* ---------------------------------------------------------------------------
@@ -122,7 +123,7 @@ void pcb_use_route_style(RouteStyleType * rst)
 void SetKeepawayWidth(Coord Width)
 {
 	if (Width <= MAX_LINESIZE) {
-		Settings.Keepaway = Width;
+		conf_core.design.keepaway = Width;
 	}
 }
 
@@ -132,7 +133,7 @@ void SetKeepawayWidth(Coord Width)
 void SetTextScale(int Scale)
 {
 	if (Scale <= MAX_TEXTSCALE && Scale >= MIN_TEXTSCALE) {
-		Settings.TextScale = Scale;
+		conf_core.design.text_scale = Scale;
 	}
 }
 
@@ -152,7 +153,7 @@ void SetChangedFlag(bool New)
  */
 void SetCrosshairRangeToBuffer(void)
 {
-	if (Settings.Mode == PASTEBUFFER_MODE) {
+	if (conf_core.editor.mode == PASTEBUFFER_MODE) {
 		SetBufferBoundingBox(PASTEBUFFER);
 		SetCrosshairRange(PASTEBUFFER->X - PASTEBUFFER->BoundingBox.X1,
 											PASTEBUFFER->Y - PASTEBUFFER->BoundingBox.Y1,
@@ -168,7 +169,7 @@ void SetCrosshairRangeToBuffer(void)
 void SetBufferNumber(int Number)
 {
 	if (Number >= 0 && Number < MAX_BUFFER) {
-		Settings.BufferNumber = Number;
+		conf_core.editor.buffer_number = Number;
 
 		/* do an update on the crosshair range */
 		SetCrosshairRangeToBuffer();
@@ -180,7 +181,7 @@ void SetBufferNumber(int Number)
 
 void SaveMode(void)
 {
-	mode_stack[mode_position] = Settings.Mode;
+	mode_stack[mode_position] = conf_core.editor.mode;
 	if (mode_position < MAX_MODESTACK_DEPTH - 1)
 		mode_position++;
 }
@@ -221,23 +222,23 @@ void SetMode(int Mode)
 			Mode = NO_MODE;
 		}
 	}
-	if (Settings.Mode == LINE_MODE && Mode == ARC_MODE && Crosshair.AttachedLine.State != STATE_FIRST) {
+	if (conf_core.editor.mode == LINE_MODE && Mode == ARC_MODE && Crosshair.AttachedLine.State != STATE_FIRST) {
 		Crosshair.AttachedLine.State = STATE_FIRST;
 		Crosshair.AttachedBox.State = STATE_SECOND;
 		Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = Crosshair.AttachedLine.Point1.X;
 		Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = Crosshair.AttachedLine.Point1.Y;
 		AdjustAttachedObjects();
 	}
-	else if (Settings.Mode == ARC_MODE && Mode == LINE_MODE && Crosshair.AttachedBox.State != STATE_FIRST) {
+	else if (conf_core.editor.mode == ARC_MODE && Mode == LINE_MODE && Crosshair.AttachedBox.State != STATE_FIRST) {
 		Crosshair.AttachedBox.State = STATE_FIRST;
 		Crosshair.AttachedLine.State = STATE_SECOND;
 		Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = Crosshair.AttachedBox.Point1.X;
 		Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = Crosshair.AttachedBox.Point1.Y;
-		Settings.Mode = Mode;
+		conf_core.editor.mode = Mode;
 		AdjustAttachedObjects();
 	}
 	else {
-		if (Settings.Mode == ARC_MODE || Settings.Mode == LINE_MODE)
+		if (conf_core.editor.mode == ARC_MODE || conf_core.editor.mode == LINE_MODE)
 			SetLocalRef(0, 0, false);
 		Crosshair.AttachedBox.State = STATE_FIRST;
 		Crosshair.AttachedLine.State = STATE_FIRST;
@@ -249,7 +250,7 @@ void SetMode(int Mode)
 		}
 	}
 
-	Settings.Mode = Mode;
+	conf_core.editor.mode = Mode;
 
 	if (Mode == PASTEBUFFER_MODE)
 		/* do an update on the crosshair range */

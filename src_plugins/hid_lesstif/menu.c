@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -101,18 +102,18 @@ static int LayersChanged(int argc, char **argv, Coord x, Coord y)
 		fg_colors[LB_VIAS] = lesstif_parse_color(PCB->ViaColor);
 		fg_colors[LB_BACK] = lesstif_parse_color(PCB->InvisibleObjectsColor);
 		fg_colors[LB_MASK] = lesstif_parse_color(PCB->MaskColor);
-		bg_color = lesstif_parse_color(Settings.BackgroundColor);
+		bg_color = lesstif_parse_color(conf_core.appearance.color.background);
 	}
 	else {
 		for (i = 0; i < MAX_LAYER; i++)
-			fg_colors[i] = lesstif_parse_color(Settings.LayerColor[i]);
-		fg_colors[LB_SILK] = lesstif_parse_color(Settings.ElementColor);
-		fg_colors[LB_RATS] = lesstif_parse_color(Settings.RatColor);
-		fg_colors[LB_PINS] = lesstif_parse_color(Settings.PinColor);
-		fg_colors[LB_VIAS] = lesstif_parse_color(Settings.ViaColor);
-		fg_colors[LB_BACK] = lesstif_parse_color(Settings.InvisibleObjectsColor);
-		fg_colors[LB_MASK] = lesstif_parse_color(Settings.MaskColor);
-		bg_color = lesstif_parse_color(Settings.BackgroundColor);
+			fg_colors[i] = lesstif_parse_color(conf_core.appearance.color.layer[i]);
+		fg_colors[LB_SILK] = lesstif_parse_color(conf_core.appearance.color.element);
+		fg_colors[LB_RATS] = lesstif_parse_color(conf_core.appearance.color.rat);
+		fg_colors[LB_PINS] = lesstif_parse_color(conf_core.appearance.color.pin);
+		fg_colors[LB_VIAS] = lesstif_parse_color(conf_core.appearance.color.via);
+		fg_colors[LB_BACK] = lesstif_parse_color(conf_core.appearance.color.invisible_objects);
+		fg_colors[LB_MASK] = lesstif_parse_color(conf_core.appearance.color.mask);
+		bg_color = lesstif_parse_color(conf_core.appearance.color.background);
 	}
 
 	if (PCB->RatDraw)

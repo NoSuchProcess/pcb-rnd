@@ -37,7 +37,7 @@
  * draw.c uses a different definition of TO_SCREEN
  */
 #ifndef	SWAP_IDENT
-#define	SWAP_IDENT			Settings.ShowSolderSide
+#define	SWAP_IDENT			conf_core.editor.show_solder_side
 #endif
 
 #define	SWAP_SIGN_X(x)		(x)
@@ -76,15 +76,15 @@
 #define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[LayerStack[(n)]])
 #define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])
 #define	CURRENT			(PCB->SilkActive ? &PCB->Data->Layer[ \
-				(Settings.ShowSolderSide ? solder_silk_layer : component_silk_layer)] \
+				(conf_core.editor.show_solder_side ? solder_silk_layer : component_silk_layer)] \
 				: LAYER_ON_STACK(0))
 #define	INDEXOFCURRENT		(PCB->SilkActive ? \
-				(Settings.ShowSolderSide ? solder_silk_layer : component_silk_layer) \
+				(conf_core.editor.show_solder_side ? solder_silk_layer : component_silk_layer) \
 				: LayerStack[0])
 #define SILKLAYER		Layer[ \
-				(Settings.ShowSolderSide ? solder_silk_layer : component_silk_layer)]
+				(conf_core.editor.show_solder_side ? solder_silk_layer : component_silk_layer)]
 #define BACKSILKLAYER		Layer[ \
-				(Settings.ShowSolderSide ? component_silk_layer : solder_silk_layer)]
+				(conf_core.editor.show_solder_side ? component_silk_layer : solder_silk_layer)]
 
 #define TEST_SILK_LAYER(layer)	(GetLayerNumber (PCB->Data, layer) >= max_copper_layer)
 
@@ -97,7 +97,7 @@
 /* ---------------------------------------------------------------------------
  * access macro for current buffer
  */
-#define	PASTEBUFFER		(&Buffers[Settings.BufferNumber])
+#define	PASTEBUFFER		(&Buffers[conf_core.editor.buffer_number])
 
 /* ---------------------------------------------------------------------------
  * some routines for flag setting, clearing, changing and testing

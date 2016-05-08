@@ -33,6 +33,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <locale.h>
 
@@ -414,10 +415,11 @@ static int real_load_pcb(char *Filename, bool revert, bool require_font, bool is
 		unit_suffix = AttributeGet(PCB, "PCB::grid::unit");
 		if (unit_suffix && *unit_suffix) {
 			const Unit *new_unit = get_unit_struct(unit_suffix);
+#warning TODO: we MUST NOT overwrite this here; should be handled by pcb-local settings
 			if (new_unit)
-				Settings.grid_unit = new_unit;
+				conf_core.editor.grid_unit = new_unit;
 		}
-		AttributePut(PCB, "PCB::grid::unit", Settings.grid_unit->suffix);
+		AttributePut(PCB, "PCB::grid::unit", conf_core.editor.grid_unit->suffix);
 
 		sort_netlist();
 		rats_patch_make_edited(PCB);
@@ -581,7 +583,7 @@ static void WritePCBDataHeader(FILE * FP)
 	fputs("\nPCB[", FP);
 	PrintQuotedString(FP, (char *) EMPTY(PCB->Name));
 	pcb_fprintf(FP, " %mr %mr]\n\n", PCB->MaxWidth, PCB->MaxHeight);
-	pcb_fprintf(FP, "Grid[%.1mr %mr %mr %d]\n", PCB->Grid, PCB->GridOffsetX, PCB->GridOffsetY, Settings.DrawGrid);
+	pcb_fprintf(FP, "Grid[%.1mr %mr %mr %d]\n", PCB->Grid, PCB->GridOffsetX, PCB->GridOffsetY, conf_core.editor.draw_grid);
 	pcb_fprintf(FP, "Cursor[%mr %mr %s]\n", Crosshair.X, Crosshair.Y, c_dtostr(PCB->Zoom));
 	/* PolyArea should be output in square cmils, no suffix */
 	fprintf(FP, "PolyArea[%s]\n", c_dtostr(COORD_TO_MIL(COORD_TO_MIL(PCB->IsleArea) * 100) * 100));
@@ -885,7 +887,7 @@ static int WritePCBFile(char *Filename)
 }
 
 /* ---------------------------------------------------------------------------
- * writes to pipe using the command defined by Settings.SaveCommand
+ * writes to pipe using the command defined by conf_core.rc.save_command
  * %f are replaced by the passed filename
  */
 static int WritePipe(char *Filename, bool thePcb)
@@ -896,7 +898,7 @@ static int WritePipe(char *Filename, bool thePcb)
 	static gds_t command;
 	int used_popen = 0;
 
-	if (EMPTY_STRING_P(Settings.SaveCommand)) {
+	if (EMPTY_STRING_P(conf_core.rc.save_command)) {
 		fp = fopen(Filename, "w");
 		if (fp == 0) {
 			Message("Unable to write to file %s\n", Filename);
@@ -907,7 +909,7 @@ static int WritePipe(char *Filename, bool thePcb)
 		used_popen = 1;
 		/* setup commandline */
 		gds_truncate(&command,0);
-		for (p = Settings.SaveCommand; *p; p++) {
+		for (p = conf_core.rc.save_command; *p; p++) {
 			/* copy character if not special or add string to command */
 			if (!(*p == '%' && *(p + 1) == 'f'))
 				gds_append(&command, *p);
@@ -985,14 +987,14 @@ static hidval backup_timer;
 /*  
  * If the backup interval is > 0 then set another timer.  Otherwise
  * we do nothing and it is up to the GUI to call EnableAutosave()
- * after setting Settings.BackupInterval > 0 again.
+ * after setting conf_core.rc.backup_interval > 0 again.
  */
 static void backup_cb(hidval data)
 {
 	backup_timer.ptr = NULL;
 	Backup();
-	if (Settings.BackupInterval > 0 && gui->add_timer)
-		backup_timer = gui->add_timer(backup_cb, 1000 * Settings.BackupInterval, data);
+	if (conf_core.rc.backup_interval > 0 && gui->add_timer)
+		backup_timer = gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, data);
 }
 
 void EnableAutosave(void)
@@ -1007,8 +1009,8 @@ void EnableAutosave(void)
 
 	backup_timer.ptr = NULL;
 	/* Start up a new timer */
-	if (Settings.BackupInterval > 0 && gui->add_timer)
-		backup_timer = gui->add_timer(backup_cb, 1000 * Settings.BackupInterval, x);
+	if (conf_core.rc.backup_interval > 0 && gui->add_timer)
+		backup_timer = gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, x);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1088,7 +1090,7 @@ int ReadNetlist(char *filename)
 
 	Message(_("Importing PCB netlist %s\n"), filename);
 
-	if (EMPTY_STRING_P(Settings.RatCommand)) {
+	if (EMPTY_STRING_P(conf_core.rc.rat_command)) {
 		fp = fopen(filename, "r");
 		if (!fp) {
 			Message("Cannot open %s for reading", filename);
@@ -1097,7 +1099,7 @@ int ReadNetlist(char *filename)
 	}
 	else {
 		used_popen = 1;
-		command = EvaluateFilename(Settings.RatCommand, Settings.RatPath, filename, NULL);
+		command = EvaluateFilename(conf_core.rc.rat_command, conf_core.rc.rat_path, filename, NULL);
 
 		/* open pipe to stdout of command */
 		if (*command == '\0' || (fp = popen(command, "r")) == NULL) {

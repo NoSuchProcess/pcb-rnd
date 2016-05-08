@@ -29,6 +29,7 @@
 /* This file written by Bill Wilson for the PCB Gtk port */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include "gui.h"
 #include <gdk/gdkkeysyms.h>
@@ -414,7 +415,7 @@ void ghid_handle_user_command(gboolean raise)
 	if (ghidgui->use_command_window)
 		ghid_command_window_show(raise);
 	else {
-		command = ghid_command_entry_get(_("Enter command:"), (Settings.SaveLastCommand && previous) ? previous : (gchar *) "");
+		command = ghid_command_entry_get(_("Enter command:"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *) "");
 		if (command != NULL) {
 			/* copy new comand line to save buffer */
 			g_free(previous);

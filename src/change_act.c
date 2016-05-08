@@ -28,7 +28,10 @@
 /* action routines for output window
  */
 
+#include <assert.h>
+
 #include "config.h"
+#include "conf_core.h"
 
 #include "global.h"
 #include "data.h"
@@ -45,7 +48,6 @@
 #include "error.h"
 #include "undo.h"
 #include "rubberband.h"
-#include <assert.h>
 
 static void ChangeFlag(char *, char *, int, char *);
 static int ActionChangeSize(int argc, char **argv, Coord x, Coord y);
@@ -1320,7 +1322,7 @@ static int ActionSetValue(int argc, char **argv, Coord x, Coord y)
 		value = GetValue(val, units, &absolute);
 		switch (funchash_get(function, NULL)) {
 		case F_ViaDrillingHole:
-			SetViaDrillingHole(absolute ? value : value + Settings.ViaDrillingHole, false);
+			SetViaDrillingHole(absolute ? value : value + conf_core.design.via_drilling_hole, false);
 			hid_action("RouteStylesChanged");
 			break;
 
@@ -1341,20 +1343,20 @@ static int ActionSetValue(int argc, char **argv, Coord x, Coord y)
 
 		case F_LineSize:
 		case F_Line:
-			SetLineSize(absolute ? value : value + Settings.LineThickness);
+			SetLineSize(absolute ? value : value + conf_core.design.line_thickness);
 			hid_action("RouteStylesChanged");
 			break;
 
 		case F_Via:
 		case F_ViaSize:
-			SetViaSize(absolute ? value : value + Settings.ViaThickness, false);
+			SetViaSize(absolute ? value : value + conf_core.design.via_thickness, false);
 			hid_action("RouteStylesChanged");
 			break;
 
 		case F_Text:
 		case F_TextScale:
 			value /= 45;
-			SetTextScale(absolute ? value : value + Settings.TextScale);
+			SetTextScale(absolute ? value : value + conf_core.design.text_scale);
 			break;
 		default:
 			err = 1;

@@ -25,6 +25,7 @@
  *
  */
 #include "config.h"
+#include "conf_core.h"
 #include "global.h"
 #include "data.h"
 #include "action_helper.h"
@@ -55,7 +56,7 @@ static int ActionDRCheck(int argc, char **argv, Coord x, Coord y)
 		Message(_("%m+Rules are minspace %$mS, minoverlap %$mS "
 							"minwidth %$mS, minsilk %$mS\n"
 							"min drill %$mS, min annular ring %$mS\n"),
-						Settings.grid_unit->allow, PCB->Bloat, PCB->Shrink, PCB->minWid, PCB->minSlk, PCB->minDrill, PCB->minRing);
+						conf_core.editor.grid_unit->allow, PCB->Bloat, PCB->Shrink, PCB->minWid, PCB->minSlk, PCB->minDrill, PCB->minRing);
 	}
 	count = DRCAll();
 	if (gui->drc_gui == NULL || gui->drc_gui->log_drc_overview) {

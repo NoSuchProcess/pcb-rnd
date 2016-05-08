@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -27,11 +28,11 @@ RCSID("$Id$");
 
 /* There are three places where styles are kept:
 
-   First, the "active" style is in Settings.LineThickness et al.
+   First, the "active" style is in conf_core.design.line_thickness et al.
 
    Second, there are NUM_STYLES styles in PCB->RouteStyle[].
 
-   Third, there are NUM_STYLES styles in Settings.RouteStyle[]
+   (not anymore: Third, there are NUM_STYLES styles in conf_core.design.RouteStyle[])
 
    Selecting a style copies its values to the active style.  We also
    need a way to modify the active style, copy the active style to
@@ -98,10 +99,10 @@ static void update_one_value(int i, Coord v)
 static void update_values()
 {
 	local_update = 1;
-	update_one_value(SSthick, Settings.LineThickness);
-	update_one_value(SSdiam, Settings.ViaThickness);
-	update_one_value(SShole, Settings.ViaDrillingHole);
-	update_one_value(SSkeep, Settings.Keepaway);
+	update_one_value(SSthick, conf_core.design.line_thickness);
+	update_one_value(SSdiam, conf_core.design.via_thickness);
+	update_one_value(SShole, conf_core.design.via_drilling_hole);
+	update_one_value(SSkeep, conf_core.design.keepaway);
 	local_update = 0;
 	lesstif_update_status_line();
 }
@@ -112,8 +113,8 @@ void lesstif_styles_update_values()
 		lesstif_update_status_line();
 		return;
 	}
-	unit = Settings.grid_unit;
-	ustr = XmStringCreateLocalized((char *) Settings.grid_unit->suffix);
+	unit = conf_core.editor.grid_unit;
+	ustr = XmStringCreateLocalized((char *) conf_core.editor.grid_unit->suffix);
 	update_values();
 }
 
@@ -147,18 +148,19 @@ static void style_value_cb(Widget w, int i, void *cbs)
 		return;
 	s = XmTextGetString(w);
 	n = GetValueEx(s, NULL, NULL, NULL, unit->suffix);
+#warning TODO: shouldn't write conf_core directly
 	switch (i) {
 	case SSthick:
-		Settings.LineThickness = n;
+		conf_core.design.line_thickness = n;
 		break;
 	case SSdiam:
-		Settings.ViaThickness = n;
+		conf_core.design.via_thickness = n;
 		break;
 	case SShole:
-		Settings.ViaDrillingHole = n;
+		conf_core.design.via_drilling_hole = n;
 		break;
 	case SSkeep:
-		Settings.Keepaway = n;
+		conf_core.design.keepaway = n;
 		break;
 	}
 	update_style_buttons();
@@ -225,10 +227,10 @@ static void style_name_cb(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 
 static void style_set_cb(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 {
-	PCB->RouteStyle[i].Thick = Settings.LineThickness;
-	PCB->RouteStyle[i].Diameter = Settings.ViaThickness;
-	PCB->RouteStyle[i].Hole = Settings.ViaDrillingHole;
-	PCB->RouteStyle[i].Keepaway = Settings.Keepaway;
+	PCB->RouteStyle[i].Thick = conf_core.design.line_thickness;
+	PCB->RouteStyle[i].Diameter = conf_core.design.via_thickness;
+	PCB->RouteStyle[i].Hole = conf_core.design.via_drilling_hole;
+	PCB->RouteStyle[i].Keepaway = conf_core.design.keepaway;
 	update_style_buttons();
 }
 
@@ -317,7 +319,7 @@ static int AdjustStyle(int argc, char **argv, Coord x, Coord y)
 	if (style_dialog == 0) {
 		int i;
 
-		unit = Settings.grid_unit;
+		unit = conf_core.editor.grid_unit;
 		ustr = XmStringCreateLocalized((char *) unit->suffix);
 
 		stdarg_n = 0;

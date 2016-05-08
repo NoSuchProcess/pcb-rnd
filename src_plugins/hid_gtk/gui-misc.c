@@ -25,6 +25,7 @@
 /* This file was originally written by Bill Wilson for the PCB Gtk port */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include "global.h"
 #include "crosshair.h"
@@ -362,16 +363,16 @@ void ghid_set_status_line_label(void)
 																			"<b>line</b>=%mS  "
 																			"<b>via</b>=%mS (%mS)  %s"
 																			"<b>clearance</b>=%mS  " "<b>text</b>=%i%%  " "<b>buffer</b>=#%i"),
-																		Settings.grid_unit->allow,
-																		Settings.ShowSolderSide ? _("solder") : _("component"),
+																		conf_core.editor.grid_unit->allow,
+																		conf_core.editor.show_solder_side ? _("solder") : _("component"),
 																		PCB->Grid,
 																		flag, TEST_FLAG(RUBBERBANDFLAG, PCB) ? ",R  " : "  ",
-																		Settings.LineThickness,
-																		Settings.ViaThickness,
-																		Settings.ViaDrillingHole,
+																		conf_core.design.line_thickness,
+																		conf_core.design.via_thickness,
+																		conf_core.design.via_drilling_hole,
 																		ghidgui->compact_horizontal ? "\n" : "",
-																		Settings.Keepaway,
-																		Settings.TextScale, Settings.BufferNumber + 1);
+																		conf_core.design.keepaway,
+																		conf_core.design.text_scale, conf_core.editor.buffer_number + 1);
 
 	ghid_status_line_set_text(text);
 	free(text);
@@ -390,7 +391,7 @@ void ghid_set_cursor_position_labels(void)
 		Coord r = Distance(Crosshair.X, Crosshair.Y, Marked.X, Marked.Y);
 		double a = atan2(dy, dx) * RAD_TO_DEG;
 
-		text = pcb_strdup_printf("%m+r %-mS; phi %-.1f; %-mS %-mS", Settings.grid_unit->allow, r, a, dx, dy);
+		text = pcb_strdup_printf("%m+r %-mS; phi %-.1f; %-mS %-mS", conf_core.editor.grid_unit->allow, r, a, dx, dy);
 		ghid_cursor_position_relative_label_set_text(text);
 		free(text);
 	}
@@ -398,7 +399,7 @@ void ghid_set_cursor_position_labels(void)
 		ghid_cursor_position_relative_label_set_text("r __.__; phi __._; __.__ __.__");
 
 
-	text = pcb_strdup_printf("%m+%-mS %-mS", Settings.grid_unit->allow, Crosshair.X, Crosshair.Y);
+	text = pcb_strdup_printf("%m+%-mS %-mS", conf_core.editor.grid_unit->allow, Crosshair.X, Crosshair.Y);
 	ghid_cursor_position_label_set_text(text);
 	free(text);
 }

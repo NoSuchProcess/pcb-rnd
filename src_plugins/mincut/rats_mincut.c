@@ -26,6 +26,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -114,7 +115,7 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 	if (!TEST_FLAG(ENABLEMINCUTFLAG, PCB))
 		return bad_gr;
 
-	if (!Settings.EnableMincut)
+	if (!conf_core.editor.enable_mincut)
 		return bad_gr;
 
 	/* only one should be set, but one must be set */

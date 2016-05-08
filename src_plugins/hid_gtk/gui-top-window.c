@@ -35,7 +35,7 @@ hid_action("Quit");
 -what about stuff like this:
 
 	/* Set to ! because ActionDisplay toggles it */
-Settings.DrawGrid = !gtk_toggle_action_get_active(action);
+conf_core.editor.draw_grid = !gtk_toggle_action_get_active(action);
 ghidgui->config_modified = TRUE;
 hid_actionl("Display", "Grid", "", NULL);
 ghid_set_status_line_label();
@@ -59,6 +59,8 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 |  there in ghid_port_key_press_cb().
 */
 #include "config.h"
+#include "conf_core.h"
+
 #include <unistd.h>
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
@@ -400,37 +402,37 @@ static void layer_process(gchar ** color_string, char **text, int *set, int i)
 
 	switch (i) {
 	case LAYER_BUTTON_SILK:
-		*color_string = Settings.ElementColor;
+		*color_string = conf_core.appearance.color.element;
 		*text = _("silk");
 		*set = PCB->ElementOn;
 		break;
 	case LAYER_BUTTON_RATS:
-		*color_string = Settings.RatColor;
+		*color_string = conf_core.appearance.color.rat;
 		*text = _("rat lines");
 		*set = PCB->RatOn;
 		break;
 	case LAYER_BUTTON_PINS:
-		*color_string = Settings.PinColor;
+		*color_string = conf_core.appearance.color.pin;
 		*text = _("pins/pads");
 		*set = PCB->PinOn;
 		break;
 	case LAYER_BUTTON_VIAS:
-		*color_string = Settings.ViaColor;
+		*color_string = conf_core.appearance.color.via;
 		*text = _("vias");
 		*set = PCB->ViaOn;
 		break;
 	case LAYER_BUTTON_FARSIDE:
-		*color_string = Settings.InvisibleObjectsColor;
+		*color_string = conf_core.appearance.color.invisible_objects;
 		*text = _("far side");
 		*set = PCB->InvisibleObjectsOn;
 		break;
 	case LAYER_BUTTON_MASK:
-		*color_string = Settings.MaskColor;
+		*color_string = conf_core.appearance.color.mask;
 		*text = _("solder mask");
 		*set = TEST_FLAG(SHOWMASKFLAG, PCB);
 		break;
 	default:											/* layers */
-		*color_string = Settings.LayerColor[i];
+		*color_string = conf_core.appearance.color.layer[i];
 		*text = (char *) UNKNOWN(PCB->Data->Layer[i].Name);
 		*set = PCB->Data->Layer[i].On;
 		break;
@@ -570,7 +572,7 @@ void ghid_window_set_name_label(gchar * name)
 static void grid_units_button_cb(GtkWidget * widget, gpointer data)
 {
 	/* Button only toggles between mm and mil */
-	if (Settings.grid_unit == get_unit_struct("mm"))
+	if (conf_core.editor.grid_unit == get_unit_struct("mm"))
 		hid_actionl("SetUnits", "mil", NULL);
 	else
 		hid_actionl("SetUnits", "mm", NULL);
@@ -609,7 +611,7 @@ static void make_cursor_position_labels(GtkWidget * hbox, GHidPort * port)
 	 */
 	ghidgui->grid_units_button = gtk_button_new();
 	label = gtk_label_new("");
-	gtk_label_set_markup(GTK_LABEL(label), Settings.grid_unit->in_suffix);
+	gtk_label_set_markup(GTK_LABEL(label), conf_core.editor.grid_unit->in_suffix);
 	ghidgui->grid_units_label = label;
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	gtk_container_add(GTK_CONTAINER(ghidgui->grid_units_button), label);
@@ -732,8 +734,9 @@ void ghid_layer_buttons_update(void)
 static void route_styles_edited_cb(GHidRouteStyleSelector * rss, gboolean save, gpointer data)
 {
 	if (save) {
-		g_free(Settings.Routes);
-		Settings.Routes = make_route_string(PCB->RouteStyle, NUM_STYLES);
+#warning TODO: shouldn't write directly
+//		g_free(conf_core.design.routes);
+		conf_core.rc.routes = make_route_string(PCB->RouteStyle, NUM_STYLES);
 		ghidgui->config_modified = TRUE;
 		ghid_config_files_write();
 	}
@@ -834,7 +837,7 @@ void ghid_mode_buttons_update(void)
 
 	for (i = 0; i < n_mode_buttons; ++i) {
 		mb = &mode_buttons[i];
-		if (Settings.Mode == mb->mode) {
+		if (conf_core.editor.mode == mb->mode) {
 			g_signal_handler_block(mb->button, mb->button_cb_id);
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mb->button), TRUE);
 			g_signal_handler_unblock(mb->button, mb->button_cb_id);
@@ -1421,7 +1424,8 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	sprintf(libdir, "%s%s", tmps, REST_OF_PATH);
 	free(tmps);
 
-	Settings.LibraryTree = libdir;
+#warning TODO: why do we write it here?
+	conf_core.rc.library_tree = libdir;
 
 #undef REST_OF_PATH
 
@@ -1461,10 +1465,11 @@ void ghid_parse_arguments(int *argc, char ***argv)
 
 	ghid_config_files_read(argc, argv);
 
-	Settings.AutoPlace = 0;
+#warning TODO: don't write conf_core
+	conf_core.editor.auto_place = 0;
 	for (i = 0; i < *argc; i++) {
 		if (strcmp((*argv)[i], "-auto-place") == 0)
-			Settings.AutoPlace = 1;
+			conf_core.editor.auto_place = 1;
 	}
 
 #ifdef ENABLE_NLS
@@ -1482,7 +1487,7 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	gtk_window_set_title(GTK_WINDOW(window), "PCB");
 	gtk_window_set_default_size(GTK_WINDOW(window), ghidgui->top_window_width, ghidgui->top_window_height);
 
-	if (Settings.AutoPlace)
+	if (conf_core.editor.auto_place)
 		gtk_window_move(GTK_WINDOW(window), 10, 10);
 
 	gtk_widget_show_all(gport->top_window);

@@ -25,6 +25,8 @@
  *
  */
 #include "config.h"
+#include "conf_core.h"
+
 #include "global.h"
 #include "data.h"
 #include "action_helper.h"
@@ -129,20 +131,20 @@ int ActionUndo(int argc, char **argv, Coord x, Coord y)
 	char *function = ACTION_ARG(0);
 	if (!function || !*function) {
 		/* don't allow undo in the middle of an operation */
-		if (Settings.Mode != POLYGONHOLE_MODE && Crosshair.AttachedObject.State != STATE_FIRST)
+		if (conf_core.editor.mode != POLYGONHOLE_MODE && Crosshair.AttachedObject.State != STATE_FIRST)
 			return 1;
-		if (Crosshair.AttachedBox.State != STATE_FIRST && Settings.Mode != ARC_MODE)
+		if (Crosshair.AttachedBox.State != STATE_FIRST && conf_core.editor.mode != ARC_MODE)
 			return 1;
 		/* undo the last operation */
 
 		notify_crosshair_change(false);
-		if ((Settings.Mode == POLYGON_MODE || Settings.Mode == POLYGONHOLE_MODE) && Crosshair.AttachedPolygon.PointN) {
+		if ((conf_core.editor.mode == POLYGON_MODE || conf_core.editor.mode == POLYGONHOLE_MODE) && Crosshair.AttachedPolygon.PointN) {
 			GoToPreviousPoint();
 			notify_crosshair_change(true);
 			return 0;
 		}
 		/* move anchor point if undoing during line creation */
-		if (Settings.Mode == LINE_MODE) {
+		if (conf_core.editor.mode == LINE_MODE) {
 			if (Crosshair.AttachedLine.State == STATE_SECOND) {
 				if (TEST_FLAG(AUTODRCFLAG, PCB))
 					Undo(true);						/* undo the connection find */
@@ -207,7 +209,7 @@ int ActionUndo(int argc, char **argv, Coord x, Coord y)
 				return 0;
 			}
 		}
-		if (Settings.Mode == ARC_MODE) {
+		if (conf_core.editor.mode == ARC_MODE) {
 			if (Crosshair.AttachedBox.State == STATE_SECOND) {
 				Crosshair.AttachedBox.State = STATE_FIRST;
 				notify_crosshair_change(true);
@@ -266,13 +268,13 @@ three "undone" lines.
 
 int ActionRedo(int argc, char **argv, Coord x, Coord y)
 {
-	if (((Settings.Mode == POLYGON_MODE ||
-				Settings.Mode == POLYGONHOLE_MODE) && Crosshair.AttachedPolygon.PointN) || Crosshair.AttachedLine.State == STATE_SECOND)
+	if (((conf_core.editor.mode == POLYGON_MODE ||
+				conf_core.editor.mode == POLYGONHOLE_MODE) && Crosshair.AttachedPolygon.PointN) || Crosshair.AttachedLine.State == STATE_SECOND)
 		return 1;
 	notify_crosshair_change(false);
 	if (Redo(true)) {
 		SetChangedFlag(true);
-		if (Settings.Mode == LINE_MODE && Crosshair.AttachedLine.State != STATE_FIRST) {
+		if (conf_core.editor.mode == LINE_MODE && Crosshair.AttachedLine.State != STATE_FIRST) {
 			LineType *line = linelist_last(&CURRENT->Line);
 			Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = line->Point2.X;
 			Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = line->Point2.Y;

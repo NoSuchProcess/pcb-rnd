@@ -2,6 +2,7 @@
 #include <assert.h>
 #include "layout.h"
 #include "src/undo.h"
+#include "src/conf_core.h"
 
 
 typedef struct flag_tr_s {

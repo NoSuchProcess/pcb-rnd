@@ -72,6 +72,7 @@ dicer output is used for HIDs which cannot render things with holes
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <assert.h>
 #include <math.h>

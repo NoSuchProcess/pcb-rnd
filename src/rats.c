@@ -35,6 +35,7 @@
 /* rats nest routines
  */
 #include "config.h"
+#include "conf_core.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -625,7 +626,7 @@ DrawShortestRats(NetListTypePtr Netl,
 				if ((line = CreateNewRat(PCB->Data,
 																 firstpoint->X, firstpoint->Y,
 																 secondpoint->X, secondpoint->Y,
-																 firstpoint->group, secondpoint->group, Settings.RatThickness, NoFlags())) != NULL) {
+																 firstpoint->group, secondpoint->group, conf_core.design.rat_thickness, NoFlags())) != NULL) {
 					if (distance == 0)
 						SET_FLAG(VIAFLAG, line);
 					AddObjectToCreateUndoList(RATLINE_TYPE, line, line, line);
@@ -722,7 +723,7 @@ AddAllRats(bool SelectedOnly,
 	}
 
 	if (Warned)
-		Settings.RatWarn = true;
+		conf_core.editor.rat_warn = true;
 
 	if (changed) {
 		IncrementUndoSerialNumber();
@@ -913,7 +914,7 @@ ratIt:
 	return (CreateNewRat(PCB->Data, Crosshair.AttachedLine.Point1.X,
 											 Crosshair.AttachedLine.Point1.Y,
 											 Crosshair.AttachedLine.Point2.X,
-											 Crosshair.AttachedLine.Point2.Y, group1, group2, Settings.RatThickness, NoFlags()));
+											 Crosshair.AttachedLine.Point2.Y, group1, group2, conf_core.design.rat_thickness, NoFlags()));
 }
 
 

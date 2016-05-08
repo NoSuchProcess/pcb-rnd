@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -275,7 +276,7 @@ void eps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	fprintf(f, "1 dup neg scale\n");
 	fprintf(f, "%g dup scale\n", options[HA_scale].real_value);
 	pcb_fprintf(f, "%mi %mi translate\n", -bounds->X1, -bounds->Y2);
-	if (options[HA_as_shown].int_value && Settings.ShowSolderSide)
+	if (options[HA_as_shown].int_value && conf_core.editor.show_solder_side)
 		pcb_fprintf(f, "-1 1 scale %mi 0 translate\n", bounds->X1 - bounds->X2);
 	linewidth = -1;
 	lastcap = -1;

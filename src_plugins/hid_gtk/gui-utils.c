@@ -29,6 +29,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include "gui.h"
 #include <gdk/gdkkeysyms.h>
@@ -244,7 +245,7 @@ ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, Coord value,
 		box = hbox;
 	}
 
-	entry_widget = ghid_coord_entry_new(low, high, value, Settings.grid_unit, step_size);
+	entry_widget = ghid_coord_entry_new(low, high, value, conf_core.editor.grid_unit, step_size);
 	if (coord_entry)
 		*coord_entry = entry_widget;
 	if (width > 0)
@@ -324,7 +325,7 @@ ghid_table_coord_entry(GtkWidget * table, gint row, gint column,
 	if (!table)
 		return;
 
-	entry_widget = ghid_coord_entry_new(low, high, value, Settings.grid_unit, step_size);
+	entry_widget = ghid_coord_entry_new(low, high, value, conf_core.editor.grid_unit, step_size);
 	if (coord_entry)
 		*coord_entry = entry_widget;
 	if (width > 0)

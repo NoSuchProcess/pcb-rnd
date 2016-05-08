@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 
@@ -117,7 +118,7 @@ hidGC ghid_make_gc(void)
 
 	rv = g_new0(hid_gc_struct, 1);
 	rv->me_pointer = &ghid_hid;
-	rv->colorname = g_strdup(Settings.BackgroundColor);
+	rv->colorname = g_strdup(conf_core.appearance.color.background);
 	return rv;
 }
 
@@ -140,12 +141,12 @@ static void ghid_draw_grid(void)
 	int n, i;
 	render_priv *priv = gport->render_priv;
 
-	if (!Settings.DrawGrid)
+	if (!conf_core.editor.draw_grid)
 		return;
 	if (Vz(PCB->Grid) < MIN_GRID_DISTANCE)
 		return;
 	if (!priv->grid_gc) {
-		if (gdk_color_parse(Settings.GridColor, &gport->grid_color)) {
+		if (gdk_color_parse(conf_core.appearance.color.grid, &gport->grid_color)) {
 			gport->grid_color.red ^= gport->bg_color.red;
 			gport->grid_color.green ^= gport->bg_color.green;
 			gport->grid_color.blue ^= gport->bg_color.blue;
@@ -924,7 +925,7 @@ static void show_crosshair(gboolean paint_new_location)
 		gdk_gc_set_clip_origin(xor_gc, 0, 0);
 		set_clip(priv, xor_gc);
 		/* FIXME: when CrossColor changed from config */
-		ghid_map_color_string(Settings.CrossColor, &cross_color);
+		ghid_map_color_string(conf_core.appearance.color.cross, &cross_color);
 	}
 	x = DRAW_X(gport->crosshair_x);
 	y = DRAW_Y(gport->crosshair_y);

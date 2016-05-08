@@ -78,6 +78,7 @@
 #endif
 
 #include "global.h"
+#include "conf_core.h"
 
 #include "crosshair.h"
 #include "data.h"
@@ -117,7 +118,7 @@ RCSID("$Id$");
 	{											\
 		int	i;									\
 		fputc('#', (FP));						\
-		for (i = Settings.CharPerLine; i; i--)	\
+		for (i = conf_core.appearance.messages.char_per_line; i; i--)	\
 			fputc('=', (FP));					\
 		fputc('\n', (FP));						\
 	}
@@ -213,13 +214,13 @@ static void append_drc_violation(DrcViolationType * violation)
 	else {
 		/* Fallback to formatting the violation message as text */
 		append_drc_dialog_message("%s\n", violation->title);
-		append_drc_dialog_message(_("%m+near %$mD\n"), Settings.grid_unit->allow, violation->x, violation->y);
+		append_drc_dialog_message(_("%m+near %$mD\n"), conf_core.editor.grid_unit->allow, violation->x, violation->y);
 		GotoError();
 	}
 
 	if (gui->drc_gui == NULL || gui->drc_gui->log_drc_violations) {
 		Message(_("WARNING!  Design Rule error - %s\n"), violation->title);
-		Message(_("%m+near location %$mD\n"), Settings.grid_unit->allow, violation->x, violation->y);
+		Message(_("%m+near location %$mD\n"), conf_core.editor.grid_unit->allow, violation->x, violation->y);
 	}
 }
 
@@ -911,7 +912,7 @@ static int pv_pv_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pin) && PV_TOUCH_PV(&i->pv, pin)) {
 		if (TEST_FLAG(HOLEFLAG, pin) || TEST_FLAG(HOLEFLAG, &i->pv)) {
 			SET_FLAG(WARNFLAG, pin);
-			Settings.RatWarn = true;
+			conf_core.editor.rat_warn = true;
 			if (pin->Element)
 				Message(_("WARNING: Hole too close to pin.\n"));
 			else
@@ -990,7 +991,7 @@ static int pv_line_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pv) && PinLineIntersect(pv, &i->line)) {
 		if (TEST_FLAG(HOLEFLAG, pv)) {
 			SET_FLAG(WARNFLAG, pv);
-			Settings.RatWarn = true;
+			conf_core.editor.rat_warn = true;
 			Message(_("WARNING: Hole too close to line.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, LINE_TYPE, &i->line, FCT_COPPER))
@@ -1007,7 +1008,7 @@ static int pv_pad_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pv) && IS_PV_ON_PAD(pv, &i->pad)) {
 		if (TEST_FLAG(HOLEFLAG, pv)) {
 			SET_FLAG(WARNFLAG, pv);
-			Settings.RatWarn = true;
+			conf_core.editor.rat_warn = true;
 			Message(_("WARNING: Hole too close to pad.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, PAD_TYPE, &i->pad, FCT_COPPER))
@@ -1024,7 +1025,7 @@ static int pv_arc_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pv) && IS_PV_ON_ARC(pv, &i->arc)) {
 		if (TEST_FLAG(HOLEFLAG, pv)) {
 			SET_FLAG(WARNFLAG, pv);
-			Settings.RatWarn = true;
+			conf_core.editor.rat_warn = true;
 			Message(_("WARNING: Hole touches arc.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, ARC_TYPE, &i->arc, FCT_COPPER))
@@ -2867,7 +2868,7 @@ void LookupElementConnections(ElementTypePtr Element, FILE * FP)
 	InitConnectionLookup();
 	PrintElementConnections(Element, FP, true);
 	SetChangedFlag(true);
-	if (Settings.RingBellWhenFinished)
+	if (conf_core.editor.beep_when_finished)
 		gui->beep();
 	FreeConnectionLookupMemory();
 	IncrementUndoSerialNumber();
@@ -2892,11 +2893,11 @@ void LookupConnectionsToAllElements(FILE * FP)
 		if (PrintElementConnections(element, FP, false))
 			break;
 		SEPARATE(FP);
-		if (Settings.ResetAfterElement && gdl_it_idx(&__it__) != 1)
+		if (conf_core.editor.reset_after_element && gdl_it_idx(&__it__) != 1)
 			ResetConnections(false);
 	}
 	END_LOOP;
-	if (Settings.RingBellWhenFinished)
+	if (conf_core.editor.beep_when_finished)
 		gui->beep();
 	ResetConnections(false);
 	FreeConnectionLookupMemory();
@@ -3018,7 +3019,7 @@ void LookupConnection(Coord X, Coord Y, bool AndDraw, Coord Range, int which_fla
 	/* we are done */
 	if (AndDraw)
 		Draw();
-	if (AndDraw && Settings.RingBellWhenFinished)
+	if (AndDraw && conf_core.editor.beep_when_finished)
 		gui->beep();
 	FreeConnectionLookupMemory();
 }
@@ -3056,7 +3057,7 @@ void LookupUnusedPins(FILE * FP)
 	}
 	END_LOOP;
 
-	if (Settings.RingBellWhenFinished)
+	if (conf_core.editor.beep_when_finished)
 		gui->beep();
 	FreeConnectionLookupMemory();
 	IncrementUndoSerialNumber();

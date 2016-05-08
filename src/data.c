@@ -45,7 +45,6 @@ OutputType Output;							/* some widgets ... used for drawing */
 PCBTypePtr PCB;									/* pointer to layout struct */
 
 char *Progname;
-SettingType Settings;
 int LayerStack[MAX_LAYER];			/* determines the layer draw order */
 
 BufferType Buffers[MAX_BUFFER];	/* my buffers */

@@ -25,6 +25,8 @@
  *
  */
 #include "config.h"
+#include "conf_core.h"
+
 #include "global.h"
 #include "data.h"
 #include "action_helper.h"
@@ -213,7 +215,7 @@ static int ActionSelect(int argc, char **argv, Coord x, Coord y)
 		case F_Convert:
 			{
 				Coord x, y;
-				Note.Buffer = Settings.BufferNumber;
+				Note.Buffer = conf_core.editor.buffer_number;
 				SetBufferNumber(MAX_BUFFER - 1);
 				ClearBuffer(PASTEBUFFER);
 				gui->get_coords(_("Select the Element's Mark Location"), &x, &y);

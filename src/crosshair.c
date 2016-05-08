@@ -37,6 +37,7 @@
 #include <math.h>
 
 #include "global.h"
+#include "conf_core.h"
 
 #include "box.h"
 #include "crosshair.h"
@@ -50,6 +51,7 @@
 #include "search.h"
 #include "polygon.h"
 #include "hid_actions.h"
+
 
 RCSID("$Id$");
 
@@ -213,7 +215,7 @@ static void XORDrawElement(ElementTypePtr Element, Coord DX, Coord DY)
 	/* pads */
 	PAD_LOOP(Element);
 	{
-		if (PCB->InvisibleObjectsOn || (TEST_FLAG(ONSOLDERFLAG, pad) != 0) == Settings.ShowSolderSide) {
+		if (PCB->InvisibleObjectsOn || (TEST_FLAG(ONSOLDERFLAG, pad) != 0) == conf_core.editor.show_solder_side) {
 			/* Make a copy of the pad structure, moved to the correct position */
 			PadType moved_pad = *pad;
 			moved_pad.Point1.X += DX;
@@ -453,16 +455,16 @@ static void XORDrawMoveOrCopyObject(void)
  */
 void DrawAttached(void)
 {
-	switch (Settings.Mode) {
+	switch (conf_core.editor.mode) {
 	case VIA_MODE:
 		{
 			/* Make a dummy via structure to draw from */
 			PinType via;
 			via.X = Crosshair.X;
 			via.Y = Crosshair.Y;
-			via.Thickness = Settings.ViaThickness;
-			via.Clearance = 2 * Settings.Keepaway;
-			via.DrillingHole = Settings.ViaDrillingHole;
+			via.Thickness = conf_core.design.via_thickness;
+			via.Clearance = 2 * conf_core.design.keepaway;
+			via.DrillingHole = conf_core.design.via_drilling_hole;
 			via.Mask = 0;
 			via.Flags = NoFlags();
 
@@ -470,10 +472,10 @@ void DrawAttached(void)
 
 			if (TEST_FLAG(SHOWDRCFLAG, PCB)) {
 				/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
-				via.Mask = Settings.ViaThickness + PCB->Bloat * 2;
-				gui->set_color(Crosshair.GC, Settings.CrossColor);
+				via.Mask = conf_core.design.via_thickness + PCB->Bloat * 2;
+				gui->set_color(Crosshair.GC, conf_core.appearance.color.cross);
 				gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &via, false, true);
-				gui->set_color(Crosshair.GC, Settings.CrosshairColor);
+				gui->set_color(Crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 			break;
 		}
@@ -495,11 +497,11 @@ void DrawAttached(void)
 
 	case ARC_MODE:
 		if (Crosshair.AttachedBox.State != STATE_FIRST) {
-			XORDrawAttachedArc(Settings.LineThickness);
+			XORDrawAttachedArc(conf_core.design.line_thickness);
 			if (TEST_FLAG(SHOWDRCFLAG, PCB)) {
-				gui->set_color(Crosshair.GC, Settings.CrossColor);
-				XORDrawAttachedArc(Settings.LineThickness + 2 * (PCB->Bloat + 1));
-				gui->set_color(Crosshair.GC, Settings.CrosshairColor);
+				gui->set_color(Crosshair.GC, conf_core.appearance.color.cross);
+				XORDrawAttachedArc(conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
+				gui->set_color(Crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 
 		}
@@ -511,23 +513,23 @@ void DrawAttached(void)
 			XORDrawAttachedLine(Crosshair.AttachedLine.Point1.X,
 													Crosshair.AttachedLine.Point1.Y,
 													Crosshair.AttachedLine.Point2.X,
-													Crosshair.AttachedLine.Point2.Y, PCB->RatDraw ? 10 : Settings.LineThickness);
+													Crosshair.AttachedLine.Point2.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness);
 			/* draw two lines ? */
 			if (PCB->Clipping)
 				XORDrawAttachedLine(Crosshair.AttachedLine.Point2.X,
 														Crosshair.AttachedLine.Point2.Y,
-														Crosshair.X, Crosshair.Y, PCB->RatDraw ? 10 : Settings.LineThickness);
+														Crosshair.X, Crosshair.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness);
 			if (TEST_FLAG(SHOWDRCFLAG, PCB)) {
-				gui->set_color(Crosshair.GC, Settings.CrossColor);
+				gui->set_color(Crosshair.GC, conf_core.appearance.color.cross);
 				XORDrawAttachedLine(Crosshair.AttachedLine.Point1.X,
 														Crosshair.AttachedLine.Point1.Y,
 														Crosshair.AttachedLine.Point2.X,
-														Crosshair.AttachedLine.Point2.Y, PCB->RatDraw ? 10 : Settings.LineThickness + 2 * (PCB->Bloat + 1));
+														Crosshair.AttachedLine.Point2.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
 				if (PCB->Clipping)
 					XORDrawAttachedLine(Crosshair.AttachedLine.Point2.X,
 															Crosshair.AttachedLine.Point2.Y,
-															Crosshair.X, Crosshair.Y, PCB->RatDraw ? 10 : Settings.LineThickness + 2 * (PCB->Bloat + 1));
-				gui->set_color(Crosshair.GC, Settings.CrosshairColor);
+															Crosshair.X, Crosshair.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
+				gui->set_color(Crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 		}
 		break;
@@ -895,8 +897,8 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, Coord nearest_g
 	 * the same layer), and when moving a line end-point
 	 * (but don't snap to the same line)
 	 */
-	if ((Settings.Mode != LINE_MODE || CURRENT != ptr1) &&
-			(Settings.Mode != MOVE_MODE ||
+	if ((conf_core.editor.mode != LINE_MODE || CURRENT != ptr1) &&
+			(conf_core.editor.mode != MOVE_MODE ||
 			 Crosshair.AttachedObject.Ptr1 != ptr1 ||
 			 Crosshair.AttachedObject.Type != LINEPOINT_TYPE || Crosshair.AttachedObject.Ptr2 == line))
 		return;
@@ -1001,11 +1003,11 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 
 	/* Avoid self-snapping when moving */
 	if (ans != NO_TYPE &&
-			Settings.Mode == MOVE_MODE && Crosshair.AttachedObject.Type == ELEMENT_TYPE && ptr1 == Crosshair.AttachedObject.Ptr1)
+			conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == ELEMENT_TYPE && ptr1 == Crosshair.AttachedObject.Ptr1)
 		ans = NO_TYPE;
 
 	if (ans != NO_TYPE &&
-			(Settings.Mode == LINE_MODE || (Settings.Mode == MOVE_MODE && Crosshair.AttachedObject.Type == LINEPOINT_TYPE))) {
+			(conf_core.editor.mode == LINE_MODE || (conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == LINEPOINT_TYPE))) {
 		PadTypePtr pad = (PadTypePtr) ptr2;
 		LayerType *desired_layer;
 		Cardinal desired_group;
@@ -1013,7 +1015,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		int found_our_layer = false;
 
 		desired_layer = CURRENT;
-		if (Settings.Mode == MOVE_MODE && Crosshair.AttachedObject.Type == LINEPOINT_TYPE) {
+		if (conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == LINEPOINT_TYPE) {
 			desired_layer = (LayerType *) Crosshair.AttachedObject.Ptr1;
 		}
 
@@ -1046,7 +1048,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 
 	/* Avoid self-snapping when moving */
 	if (ans != NO_TYPE &&
-			Settings.Mode == MOVE_MODE && Crosshair.AttachedObject.Type == ELEMENT_TYPE && ptr1 == Crosshair.AttachedObject.Ptr1)
+			conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == ELEMENT_TYPE && ptr1 == Crosshair.AttachedObject.Ptr1)
 		ans = NO_TYPE;
 
 	if (ans != NO_TYPE) {
@@ -1059,7 +1061,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, VIA_TYPE, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid snapping vias to any other vias */
-	if (Settings.Mode == MOVE_MODE && Crosshair.AttachedObject.Type == VIA_TYPE && (ans & PIN_TYPES))
+	if (conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == VIA_TYPE && (ans & PIN_TYPES))
 		ans = NO_TYPE;
 
 	if (ans != NO_TYPE) {
@@ -1099,7 +1101,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	if (TEST_FLAG(HIGHLIGHTONPOINTFLAG, PCB))
 		onpoint_work(&Crosshair, Crosshair.X, Crosshair.Y);
 
-	if (Settings.Mode == ARROW_MODE) {
+	if (conf_core.editor.mode == ARROW_MODE) {
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, LINEPOINT_TYPE, &ptr1, &ptr2, &ptr3);
 		if (ans == NO_TYPE)
 			hid_action("PointCursor");
@@ -1107,7 +1109,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 			hid_actionl("PointCursor", "True", NULL);
 	}
 
-	if (Settings.Mode == LINE_MODE && Crosshair.AttachedLine.State != STATE_FIRST && TEST_FLAG(AUTODRCFLAG, PCB))
+	if (conf_core.editor.mode == LINE_MODE && Crosshair.AttachedLine.State != STATE_FIRST && TEST_FLAG(AUTODRCFLAG, PCB))
 		EnforceLineDRC();
 
 	gui->set_crosshair(Crosshair.X, Crosshair.Y, HID_SC_DO_NOTHING);
@@ -1170,7 +1172,7 @@ void InitCrosshair(void)
 {
 	Crosshair.GC = gui->make_gc();
 
-	gui->set_color(Crosshair.GC, Settings.CrosshairColor);
+	gui->set_color(Crosshair.GC, conf_core.appearance.color.crosshair);
 	gui->set_draw_xor(Crosshair.GC, 1);
 	gui->set_line_cap(Crosshair.GC, Trace_Cap);
 	gui->set_line_width(Crosshair.GC, 1);

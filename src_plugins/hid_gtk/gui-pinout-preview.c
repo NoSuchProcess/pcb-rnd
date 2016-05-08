@@ -30,6 +30,7 @@
  * gui-pinout-window.c, written by Bill Wilson for the PCB Gtk port */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include "global.h"
 
@@ -52,8 +53,8 @@ static void pinout_set_view(GhidPinoutPreview * pinout)
 {
 	float scale = SENSIBLE_VIEW_SCALE;
 
-	pinout->x_max = pinout->element.BoundingBox.X2 + Settings.PinoutOffsetX;
-	pinout->y_max = pinout->element.BoundingBox.Y2 + Settings.PinoutOffsetY;
+	pinout->x_max = pinout->element.BoundingBox.X2 + conf_core.appearance.pinout.offset_x;
+	pinout->y_max = pinout->element.BoundingBox.Y2 + conf_core.appearance.pinout.offset_y;
 	pinout->w_pixels = scale * (pinout->element.BoundingBox.X2 - pinout->element.BoundingBox.X1);
 	pinout->h_pixels = scale * (pinout->element.BoundingBox.Y2 - pinout->element.BoundingBox.Y1);
 }
@@ -89,8 +90,8 @@ static void pinout_set_data(GhidPinoutPreview * pinout, ElementType * element)
 
 
 	MoveElementLowLevel(NULL, &pinout->element,
-											Settings.PinoutOffsetX -
-											pinout->element.BoundingBox.X1, Settings.PinoutOffsetY - pinout->element.BoundingBox.Y1);
+											conf_core.appearance.pinout.offset_x -
+											pinout->element.BoundingBox.X1, conf_core.appearance.pinout.offset_y - pinout->element.BoundingBox.Y1);
 
 	pinout_set_view(pinout);
 

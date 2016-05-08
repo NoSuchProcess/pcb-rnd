@@ -26,7 +26,7 @@
 */
 
 #include "config.h"
-
+#include "conf_core.h"
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -619,7 +619,7 @@ static void load_rc_file(gchar * path)
 	if (!f)
 		return;
 
-	if (Settings.verbose)
+	if (conf_core.rc.verbose)
 		printf("Loading pcbrc file: %s\n", path);
 	while (fgets(buf, sizeof(buf), f)) {
 		argv = &(av[0]);
@@ -666,18 +666,20 @@ void ghid_config_files_read(gint * argc, gchar *** argv)
 	(*argv)++;
 	parse_optionv(argc, argv, TRUE);
 
+#warning TODO: check why we write conf_core here
 	if (board_size_override && sscanf(board_size_override, "%dx%d", &width, &height) == 2) {
-		Settings.MaxWidth = TO_PCB_UNITS(width);
-		Settings.MaxHeight = TO_PCB_UNITS(height);
+		conf_core.design.max_width = TO_PCB_UNITS(width);
+		conf_core.design.max_height = TO_PCB_UNITS(height);
 	}
 
 	if (lib_newlib_config && *lib_newlib_config)
 		add_to_paths_list(&lib_newlib_list, lib_newlib_config);
 
+#warning TODO: check why we write conf_core here
 	for (list = lib_newlib_list; list; list = list->next) {
-		str = Settings.LibrarySearchPaths;
+		str = conf_core.rc.library_search_paths;
 		dir = expand_dir((gchar *) list->data);
-		Settings.LibrarySearchPaths = g_strconcat(str, PCB_PATH_DELIMETER, dir, NULL);
+		conf_core.rc.library_search_paths = g_strconcat(str, PCB_PATH_DELIMETER, dir, NULL);
 		g_free(dir);
 		g_free(str);
 	}
@@ -777,7 +779,8 @@ static void config_general_toggle_cb(GtkToggleButton * button, void *setting)
 
 static void config_backup_spin_button_cb(GtkSpinButton * spin_button, gpointer data)
 {
-	Settings.BackupInterval = gtk_spin_button_get_value_as_int(spin_button);
+#warning TODO: this should be more generic and not write this value directly
+	conf_core.rc.backup_interval = gtk_spin_button_get_value_as_int(spin_button);
 	EnableAutosave();
 	ghidgui->config_modified = TRUE;
 }
@@ -811,11 +814,12 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 															_("Alternate window layout to allow smaller vertical size"));
 
 	vbox = ghid_category_vbox(tab_vbox, _("Backups"), 4, 2, TRUE, TRUE);
-	ghid_check_button_connected(vbox, NULL, Settings.SaveInTMP,
+#warning this all should be more generic code...
+	ghid_check_button_connected(vbox, NULL, conf_core.editor.save_in_tmp,
 															TRUE, FALSE, FALSE, 2,
-															config_general_toggle_cb, &Settings.SaveInTMP,
+															config_general_toggle_cb, &conf_core.editor.save_in_tmp,
 															_("If layout is modified at exit, save into PCB.%i.save"));
-	ghid_spin_button(vbox, NULL, Settings.BackupInterval, 0.0, 60 * 60, 60.0,
+	ghid_spin_button(vbox, NULL, conf_core.rc.backup_interval, 0.0, 60 * 60, 60.0,
 									 600.0, 0, 0, config_backup_spin_button_cb, NULL, FALSE,
 									 _("Seconds between auto backups\n" "(set to zero to disable auto backups)"));
 
@@ -848,20 +852,22 @@ static void config_sizes_apply(void)
 
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_board_size_default_button));
 	if (active) {
-		Settings.MaxWidth = new_board_width;
-		Settings.MaxHeight = new_board_height;
+#warning TODO: no direct overwrite
+		conf_core.design.max_width = new_board_width;
+		conf_core.design.max_height = new_board_height;
 		ghidgui->config_modified = TRUE;
 	}
 
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_drc_sizes_default_button));
 	if (active) {
-		Settings.Bloat = PCB->Bloat;
-		Settings.Shrink = PCB->Shrink;
-		Settings.minWid = PCB->minWid;
-		Settings.minSlk = PCB->minSlk;
-		Settings.IsleArea = PCB->IsleArea;
-		Settings.minDrill = PCB->minDrill;
-		Settings.minRing = PCB->minRing;
+#warning TODO: no direct overwrite
+		conf_core.design.bloat = PCB->Bloat;
+		conf_core.design.shrink = PCB->Shrink;
+		conf_core.design.min_wid = PCB->minWid;
+		conf_core.design.min_slk = PCB->minSlk;
+		conf_core.design.poly_isle_area = PCB->IsleArea;
+		conf_core.design.min_drill = PCB->minDrill;
+		conf_core.design.min_ring = PCB->minRing;
 		ghidgui->config_modified = TRUE;
 	}
 
@@ -924,10 +930,10 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 	gtk_box_pack_start(GTK_BOX(hbox), table, FALSE, FALSE, 0);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 6);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 3);
-
+#warning TODO: more generic code
 	ghid_table_spin_button(table, 0, 0, &config_text_spin_button,
-												 Settings.TextScale,
-												 MIN_TEXTSCALE, MAX_TEXTSCALE, 10.0, 10.0, 0, 0, text_spin_button_cb, &Settings.TextScale, FALSE, "%");
+												 conf_core.design.text_scale,
+												 MIN_TEXTSCALE, MAX_TEXTSCALE, 10.0, 10.0, 0, 0, text_spin_button_cb, &conf_core.design.text_scale, FALSE, "%");
 
 
 	/* ---- DRC Sizes ---- */
@@ -998,6 +1004,8 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 		config_increments_tab_vbox = tab_vbox;
 	}
 
+#warning TODO: increment is disbaled in conf_core - figure how to do this
+#if 0
 	/* ---- Grid Increment/Decrement ---- */
 	vbox = ghid_category_vbox(config_increments_vbox, _("Grid Increment/Decrement"), 4, 2, TRUE, TRUE);
 
@@ -1007,7 +1015,6 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 									 Settings.increments->grid_min,
 									 Settings.increments->grid_max,
 									 CE_SMALL, 0, increment_spin_button_cb, target, FALSE, _("For 'g' and '<shift>g' grid change actions"));
-
 
 	/* ---- Size Increment/Decrement ---- */
 	vbox = ghid_category_vbox(config_increments_vbox, _("Size Increment/Decrement"), 4, 2, TRUE, TRUE);
@@ -1045,6 +1052,7 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 									 target, FALSE, _("For 'k' and '<shift>k' line clearance inside polygon size\n" "change actions"));
 
 	gtk_widget_show_all(config_increments_vbox);
+#endif
 }
 
 	/* -------------- The Library config page ----------------
@@ -1221,7 +1229,7 @@ static void config_layers_apply(void)
 		if (dup_string(&layer->Name, s))
 			layers_modified = TRUE;
 /* FIXME */
-		if (use_as_default && dup_string(&Settings.DefaultLayerName[i], s))
+		if (use_as_default && dup_string(&conf_core.design.default_layer_name[i], s))
 			ghidgui->config_modified = TRUE;
 
 	}
@@ -1266,12 +1274,15 @@ static void config_layers_apply(void)
 		groups_modified = FALSE;
 	}
 	if (use_as_default) {
+#warning TODO: this should happen here, should be done centrally, pcb->lihata
+#if 0 
 		s = make_layer_group_string(&PCB->LayerGroups);
-		if (dup_string(&Settings.Groups, s)) {
-			ParseGroupString(Settings.Groups, &Settings.LayerGroups, max_copper_layer);
+		if (dup_string(&conf_core.design.groups, s)) {
+			ParseGroupString(conf_core.design.groups, &Settings.LayerGroups, max_copper_layer);
 			ghidgui->config_modified = TRUE;
 		}
 		g_free(s);
+#endif
 	}
 }
 
@@ -1752,7 +1763,7 @@ static GtkWidget *config_page_create(GtkTreeStore * tree, GtkTreeIter * iter, Gt
 void ghid_config_handle_units_changed(void)
 {
 	char *text = pcb_strdup_printf("<b>%s</b>",
-																		Settings.grid_unit->in_suffix);
+																		conf_core.editor.grid_unit->in_suffix);
 	ghid_set_cursor_position_labels();
 	gtk_label_set_markup(GTK_LABEL(ghidgui->grid_units_label), text);
 	free(text);
@@ -1773,7 +1784,7 @@ void ghid_config_handle_units_changed(void)
 void ghid_config_text_scale_update(void)
 {
 	if (config_window)
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(config_text_spin_button), (gdouble) Settings.TextScale);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(config_text_spin_button), (gdouble) conf_core.design.text_scale);
 }
 
 static void config_close_cb(gpointer data)

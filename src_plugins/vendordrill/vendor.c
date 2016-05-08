@@ -23,6 +23,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <ctype.h>
 #include <math.h>
@@ -473,8 +474,10 @@ static void apply_vendor_map(void)
 
 		Message(_("Updated %d drill sizes out of %d total\n"), changed, tot);
 
+#warning TODO: this should not happen; modify some local setting?
+#if 0
 		/* Update the current Via */
-		if (Settings.ViaDrillingHole != vendorDrillMap(Settings.ViaDrillingHole)) {
+		if (conf_core.design.via_drilling_hole != vendorDrillMap(Settings.ViaDrillingHole)) {
 			changed++;
 			Settings.ViaDrillingHole = vendorDrillMap(Settings.ViaDrillingHole);
 			Message(_("Adjusted active via hole size to be %6.2f mils\n"), 0.01 * Settings.ViaDrillingHole);
@@ -496,7 +499,7 @@ static void apply_vendor_map(void)
 				}
 			}
 		}
-
+#endif
 		/* 
 		 * if we've changed anything, indicate that we need to save the
 		 * file, redraw things, and make sure we can undo.

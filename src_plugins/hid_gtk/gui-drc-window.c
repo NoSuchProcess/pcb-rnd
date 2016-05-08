@@ -27,6 +27,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include "error.h"
 #include "search.h"
@@ -534,7 +535,7 @@ static void ghid_violation_renderer_set_property(GObject * object, guint propert
 																 "<span size='5120'> </span>\n"
 																 "Required: %$mS"
 																 "</small>",
-																 Settings.grid_unit->allow,
+																 conf_core.editor.grid_unit->allow,
 																 renderer->violation->title,
 																 renderer->violation->measured_value,
 																 renderer->violation->explanation, renderer->violation->required_value);
@@ -547,7 +548,7 @@ static void ghid_violation_renderer_set_property(GObject * object, guint propert
 																 "<span size='5120'> </span>\n"
 																 "Required: %$mS"
 																 "</small>",
-																 Settings.grid_unit->allow,
+																 conf_core.editor.grid_unit->allow,
 																 renderer->violation->title,
 																 renderer->violation->explanation, renderer->violation->required_value);
 	}
@@ -776,7 +777,7 @@ void ghid_drc_window_show(gboolean raise)
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
 	gtk_widget_realize(drc_window);
-	if (Settings.AutoPlace)
+	if (conf_core.editor.auto_place)
 		gtk_window_move(GTK_WINDOW(drc_window), 10, 10);
 	gtk_widget_show_all(drc_window);
 }

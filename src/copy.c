@@ -32,6 +32,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdlib.h>
 
@@ -50,7 +51,6 @@
 #include "rtree.h"
 #include "select.h"
 #include "undo.h"
-
 
 RCSID("$Id$");
 

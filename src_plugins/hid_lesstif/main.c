@@ -2,6 +2,7 @@
 /* 15 Oct 2008 Ineiev: add different crosshair shapes */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,7 +59,7 @@ hid_cfg_keys_t lesstif_keymap;
 
 /* How big the viewport can be relative to the pcb size.  */
 #define MAX_ZOOM_SCALE	10
-#define UUNIT	Settings.grid_unit->allow
+#define UUNIT	conf_core.editor.grid_unit->allow
 
 typedef struct hid_gc_struct {
 	HID *me_pointer;
@@ -411,8 +412,12 @@ static int SetUnits(int argc, char **argv, Coord x, Coord y)
 		return 0;
 	new_unit = get_unit_struct(argv[0]);
 	if (new_unit != NULL && new_unit->allow != NO_PRINT) {
-		Settings.grid_unit = new_unit;
+#warning TODO: do not modify directly
+		conf_core.editor.grid_unit = new_unit;
+#warning TODO: figure what to do with increments
+#if 0
 		Settings.increments = get_increments_struct(Settings.grid_unit->suffix);
+#endif
 		AttributePut(PCB, "PCB::grid::unit", argv[0]);
 	}
 	lesstif_sizes_reset();
@@ -577,7 +582,7 @@ static int group_showing(int g, int *c)
 
 static int SwapSides(int argc, char **argv, Coord x, Coord y)
 {
-	int old_shown_side = Settings.ShowSolderSide;
+	int old_shown_side = conf_core.editor.show_solder_side;
 	int comp_group = GetLayerGroupNumberByNumber(component_silk_layer);
 	int solder_group = GetLayerGroupNumberByNumber(solder_silk_layer);
 	int active_group = GetLayerGroupNumberByNumber(LayerStack[0]);
@@ -605,7 +610,7 @@ static int SwapSides(int argc, char **argv, Coord x, Coord y)
 			return 1;
 		}
 		/* SwapSides will swap this */
-		Settings.ShowSolderSide = (flip_x == flip_y);
+		conf_core.editor.show_solder_side = (flip_x == flip_y);
 	}
 
 	stdarg_n = 0;
@@ -622,15 +627,15 @@ static int SwapSides(int argc, char **argv, Coord x, Coord y)
 		stdarg(XmNprocessingDirection, XmMAX_ON_BOTTOM);
 	XtSetValues(vscroll, stdarg_args, stdarg_n);
 
-	Settings.ShowSolderSide = !Settings.ShowSolderSide;
+	conf_core.editor.show_solder_side = !conf_core.editor.show_solder_side;
 
 	/* The idea is that if we're looking at the front side and the front
 	   layer is active (or visa versa), switching sides should switch
 	   layers too.  We used to only do this if the other layer wasn't
 	   shown, but we now do it always.  Change it back if users get
 	   confused.  */
-	if (Settings.ShowSolderSide != old_shown_side) {
-		if (Settings.ShowSolderSide) {
+	if (conf_core.editor.show_solder_side != old_shown_side) {
+		if (conf_core.editor.show_solder_side) {
 			if (active_group == comp_group) {
 				if (comp_showing && !solder_showing)
 					ChangeGroupVisibility(comp_layer, 0, 0);
@@ -1486,7 +1491,7 @@ void lesstif_show_crosshair(int show)
 	if (!crosshair_in_window || !window)
 		return;
 	if (xor_gc == 0) {
-		crosshair_color = lesstif_parse_color(Settings.CrosshairColor) ^ bgcolor;
+		crosshair_color = lesstif_parse_color(conf_core.appearance.color.crosshair) ^ bgcolor;
 		xor_gc = XCreateGC(display, window, 0, 0);
 		XSetFunction(display, xor_gc, GXxor);
 		XSetForeground(display, xor_gc, crosshair_color);
@@ -1614,8 +1619,8 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 	view_width = width;
 	view_height = height;
 
-	offlimit_color = lesstif_parse_color(Settings.OffLimitColor);
-	grid_color = lesstif_parse_color(Settings.GridColor);
+	offlimit_color = lesstif_parse_color(conf_core.appearance.color.off_limit);
+	grid_color = lesstif_parse_color(conf_core.appearance.color.grid);
 
 	bg_gc = XCreateGC(display, window, 0, 0);
 	XSetForeground(display, bg_gc, bgcolor);
@@ -1758,7 +1763,7 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	XtManageChild(work_area_frame);
 
 	stdarg_n = 0;
-	stdarg_do_color(Settings.BackgroundColor, XmNbackground);
+	stdarg_do_color(conf_core.appearance.color.background, XmNbackground);
 	work_area = XmCreateDrawingArea(work_area_frame, "work_area", stdarg_args, stdarg_n);
 	XtManageChild(work_area);
 	XtAddCallback(work_area, XmNexposeCallback, (XtCallbackProc) work_area_first_expose, 0);
@@ -2185,7 +2190,7 @@ static void draw_grid()
 	int n;
 	static GC grid_gc = 0;
 
-	if (!Settings.DrawGrid)
+	if (!conf_core.editor.draw_grid)
 		return;
 	if (Vz(PCB->Grid) < MIN_GRID_DISTANCE)
 		return;
@@ -2253,7 +2258,7 @@ static void draw_grid()
 static void mark_delta_to_widget(Coord dx, Coord dy, Widget w)
 {
 	char *buf;
-	double g = coord_to_unit(Settings.grid_unit, PCB->Grid);
+	double g = coord_to_unit(conf_core.editor.grid_unit, PCB->Grid);
 	int prec;
 	XmString ms;
 
@@ -2261,7 +2266,7 @@ static void mark_delta_to_widget(Coord dx, Coord dy, Widget w)
 	if (((int) (g * 10000 + 0.5) % 10000) == 0)
 		prec = 0;
 	else
-		prec = Settings.grid_unit->default_prec;
+		prec = conf_core.editor.grid_unit->default_prec;
 
 	if (dx == 0 && dy == 0)
 		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS", UUNIT, prec, dx, prec, dy);
@@ -2283,7 +2288,7 @@ static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
 {
 	int this_state = prev_state;
 	char *buf, *empty = "";
-	double g = coord_to_unit(Settings.grid_unit, PCB->Grid);
+	double g = coord_to_unit(conf_core.editor.grid_unit, PCB->Grid);
 	XmString ms;
 	int prec;
 
@@ -2291,11 +2296,11 @@ static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
 	 * on the user's grid setting */
 	if (((int) (g * 10000 + 0.5) % 10000) == 0) {
 		prec = 0;
-		this_state = Settings.grid_unit->allow;
+		this_state = conf_core.editor.grid_unit->allow;
 	}
 	else {
-		prec = Settings.grid_unit->default_prec;
-		this_state = -Settings.grid_unit->allow;
+		prec = conf_core.editor.grid_unit->default_prec;
+		this_state = -conf_core.editor.grid_unit->allow;
 	}
 
 	if (x < 0)
@@ -2312,8 +2317,6 @@ static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
 	return this_state;
 }
 
-#define S Settings
-
 void lesstif_update_status_line()
 {
 	char *empty = "";
@@ -2321,20 +2324,20 @@ void lesstif_update_status_line()
 	char *s45 = cur_clip();
 	XmString xs;
 
-	switch (Settings.Mode) {
+	switch (conf_core.editor.mode) {
 	case VIA_MODE:
-		buf = pcb_strdup_printf("%m+%.2mS/%.2mS \370=%.2mS", UUNIT, S.ViaThickness, S.Keepaway, S.ViaDrillingHole);
+		buf = pcb_strdup_printf("%m+%.2mS/%.2mS \370=%.2mS", UUNIT, conf_core.design.via_thickness, conf_core.design.keepaway, conf_core.design.via_drilling_hole);
 		break;
 	case LINE_MODE:
 	case ARC_MODE:
-		buf = pcb_strdup_printf("%m+%.2mS/%.2mS %s", UUNIT, S.LineThickness, S.Keepaway, s45);
+		buf = pcb_strdup_printf("%m+%.2mS/%.2mS %s", UUNIT, conf_core.design.line_thickness, conf_core.design.keepaway, s45);
 		break;
 	case RECTANGLE_MODE:
 	case POLYGON_MODE:
-		buf = pcb_strdup_printf("%m+%.2mS %s", UUNIT, S.Keepaway, s45);
+		buf = pcb_strdup_printf("%m+%.2mS %s", UUNIT, conf_core.design.keepaway, s45);
 		break;
 	case TEXT_MODE:
-		buf = pcb_strdup_printf("%d %%", S.TextScale);
+		buf = pcb_strdup_printf("%d %%", conf_core.design.text_scale);
 		break;
 	case MOVE_MODE:
 	case COPY_MODE:
@@ -2364,8 +2367,6 @@ void lesstif_update_status_line()
 	if (buf != empty)
 		free(buf);
 }
-
-#undef S
 
 static int idle_proc_set = 0;
 static int need_redraw = 0;
@@ -2462,7 +2463,7 @@ static Boolean idle_proc(XtPointer dummy)
 		static MarkType saved_mark;
 		static const Unit *old_grid_unit = NULL;
 		if (crosshair_x != c_x || crosshair_y != c_y
-				|| Settings.grid_unit != old_grid_unit || memcmp(&saved_mark, &Marked, sizeof(MarkType))) {
+				|| conf_core.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &Marked, sizeof(MarkType))) {
 			static int last_state = 0;
 			static int this_state = 0;
 
@@ -2492,8 +2493,8 @@ static Boolean idle_proc(XtPointer dummy)
 			}
 			memcpy(&saved_mark, &Marked, sizeof(MarkType));
 
-			if (old_grid_unit != Settings.grid_unit) {
-				old_grid_unit = Settings.grid_unit;
+			if (old_grid_unit != conf_core.editor.grid_unit) {
+				old_grid_unit = conf_core.editor.grid_unit;
 				/* Force a resize on units change.  */
 				last_state++;
 			}
@@ -2531,10 +2532,10 @@ static Boolean idle_proc(XtPointer dummy)
 		static Coord old_gx, old_gy;
 		static const Unit *old_unit;
 		XmString ms;
-		if (PCB->Grid != old_grid || PCB->GridOffsetX != old_gx || PCB->GridOffsetY != old_gy || Settings.grid_unit != old_unit) {
+		if (PCB->Grid != old_grid || PCB->GridOffsetX != old_gx || PCB->GridOffsetY != old_gy || conf_core.editor.grid_unit != old_unit) {
 			static char buf[100];
 			old_grid = PCB->Grid;
-			old_unit = Settings.grid_unit;
+			old_unit = conf_core.editor.grid_unit;
 			old_gx = PCB->GridOffsetX;
 			old_gy = PCB->GridOffsetY;
 			if (old_grid == 1) {
@@ -2556,13 +2557,13 @@ static Boolean idle_proc(XtPointer dummy)
 	{
 		static double old_zoom = -1;
 		static const Unit *old_grid_unit = NULL;
-		if (view_zoom != old_zoom || Settings.grid_unit != old_grid_unit) {
+		if (view_zoom != old_zoom || conf_core.editor.grid_unit != old_grid_unit) {
 			char *buf = pcb_strdup_printf("%m+%$mS/pix",
-																			 Settings.grid_unit->allow, (Coord) view_zoom);
+																			 conf_core.editor.grid_unit->allow, (Coord) view_zoom);
 			XmString ms;
 
 			old_zoom = view_zoom;
-			old_grid_unit = Settings.grid_unit;
+			old_grid_unit = conf_core.editor.grid_unit;
 
 			ms = XmStringCreatePCB(buf);
 			stdarg_n = 0;
@@ -2573,14 +2574,14 @@ static Boolean idle_proc(XtPointer dummy)
 	}
 
 	{
-		if (old_cursor_mode != Settings.Mode) {
+		if (old_cursor_mode != conf_core.editor.mode) {
 			char *s = "None";
 			XmString ms;
 			int cursor = -1;
 			static int free_cursor = 0;
 
-			old_cursor_mode = Settings.Mode;
-			switch (Settings.Mode) {
+			old_cursor_mode = conf_core.editor.mode;
+			switch (conf_core.editor.mode) {
 			case NO_MODE:
 				s = "None";
 				cursor = XC_X_cursor;
@@ -2695,10 +2696,10 @@ static Boolean idle_proc(XtPointer dummy)
 		static int old_tscale = -1;
 		char *new_clip = cur_clip();
 
-		if (new_clip != old_clip || Settings.TextScale != old_tscale) {
+		if (new_clip != old_clip || conf_core.design.text_scale != old_tscale) {
 			lesstif_update_status_line();
 			old_clip = new_clip;
-			old_tscale = Settings.TextScale;
+			old_tscale = conf_core.design.text_scale;
 		}
 	}
 

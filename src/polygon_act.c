@@ -25,6 +25,8 @@
  *
  */
 #include "config.h"
+#include "conf_core.h"
+
 #include "global.h"
 #include "data.h"
 #include "action_helper.h"
@@ -115,7 +117,7 @@ will call Polygon(PreviousPoint) when appropriate to do so.
 static int ActionPolygon(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
-	if (function && Settings.Mode == POLYGON_MODE) {
+	if (function && conf_core.editor.mode == POLYGON_MODE) {
 		notify_crosshair_change(false);
 		switch (funchash_get(function, NULL)) {
 			/* close open polygon if possible */

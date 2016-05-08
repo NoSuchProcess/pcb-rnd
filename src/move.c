@@ -31,6 +31,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <setjmp.h>
 #include <stdlib.h>
@@ -462,7 +463,7 @@ static void *MoveRatToLayer(RatType * Rat)
 	   else as before */
 
 	newone = CreateNewLineOnLayer(Dest, Rat->Point1.X, Rat->Point1.Y,
-																Rat->Point2.X, Rat->Point2.Y, Settings.LineThickness, 2 * Settings.Keepaway, Rat->Flags);
+																Rat->Point2.X, Rat->Point2.Y, conf_core.design.line_thickness, 2 * conf_core.design.keepaway, Rat->Flags);
 	if (TEST_FLAG(CLEARNEWFLAG, PCB))
 		SET_FLAG(CLEARLINEFLAG, newone);
 	if (!newone)
@@ -492,7 +493,7 @@ static int moveline_callback(const BoxType * b, void *cl)
 
 	if ((via =
 			 CreateNewVia(PCB->Data, i->X, i->Y,
-										Settings.ViaThickness, 2 * Settings.Keepaway, NOFLAG, Settings.ViaDrillingHole, NULL, NoFlags())) != NULL) {
+										conf_core.design.via_thickness, 2 * conf_core.design.keepaway, NOFLAG, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
 		AddObjectToCreateUndoList(VIA_TYPE, via, via, via);
 		DrawVia(via);
 	}
@@ -537,7 +538,7 @@ static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
 	sb.Y1 = newone->Point1.Y - newone->Thickness / 2;
 	sb.Y2 = newone->Point1.Y + newone->Thickness / 2;
 	if ((SearchObjectByLocation(PIN_TYPES, &ptr1, &ptr2, &ptr3,
-															newone->Point1.X, newone->Point1.Y, Settings.ViaThickness / 2) == NO_TYPE)) {
+															newone->Point1.X, newone->Point1.Y, conf_core.design.via_thickness / 2) == NO_TYPE)) {
 		info.X = newone->Point1.X;
 		info.Y = newone->Point1.Y;
 		if (setjmp(info.env) == 0)
@@ -549,7 +550,7 @@ static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
 	sb.Y1 = newone->Point2.Y - newone->Thickness / 2;
 	sb.Y2 = newone->Point2.Y + newone->Thickness / 2;
 	if ((SearchObjectByLocation(PIN_TYPES, &ptr1, &ptr2, &ptr3,
-															newone->Point2.X, newone->Point2.Y, Settings.ViaThickness / 2) == NO_TYPE)) {
+															newone->Point2.X, newone->Point2.Y, conf_core.design.via_thickness / 2) == NO_TYPE)) {
 		info.X = newone->Point2.X;
 		info.Y = newone->Point2.Y;
 		if (setjmp(info.env) == 0)
@@ -875,8 +876,8 @@ int MoveLayer(int old_index, int new_index)
 		memset(lp, 0, sizeof(LayerType));
 		lp->On = 1;
 		lp->Name = strdup("New Layer");
-		lp->Color = Settings.LayerColor[new_index];
-		lp->SelectedColor = Settings.LayerSelectedColor[new_index];
+		lp->Color = conf_core.appearance.color.layer[new_index];
+		lp->SelectedColor = conf_core.appearance.color.layer_selected[new_index];
 		for (l = 0; l < max_copper_layer; l++)
 			if (LayerStack[l] >= new_index)
 				LayerStack[l]++;

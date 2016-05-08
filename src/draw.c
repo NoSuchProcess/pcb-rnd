@@ -33,6 +33,7 @@
 #include "config.h"
 
 #include "global.h"
+#include "conf_core.h"
 
 /*#include "clip.h"*/
 #include "compat_misc.h"
@@ -48,7 +49,6 @@
 #include "select.h"
 #include "print.h"
 #include "hid_helper.h"
-
 
 #undef NDEBUG
 #include <assert.h>
@@ -210,12 +210,12 @@ static void _draw_pv_name(PinType * pv)
 	vert = TEST_FLAG(EDGE2FLAG, pv);
 
 	if (vert) {
-		box.X1 = pv->X - pv->Thickness / 2 + Settings.PinoutTextOffsetY;
-		box.Y1 = pv->Y - pv->DrillingHole / 2 - Settings.PinoutTextOffsetX;
+		box.X1 = pv->X - pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
+		box.Y1 = pv->Y - pv->DrillingHole / 2 - conf_core.appearance.pinout.text_offset_x;
 	}
 	else {
-		box.X1 = pv->X + pv->DrillingHole / 2 + Settings.PinoutTextOffsetX;
-		box.Y1 = pv->Y - pv->Thickness / 2 + Settings.PinoutTextOffsetY;
+		box.X1 = pv->X + pv->DrillingHole / 2 + conf_core.appearance.pinout.text_offset_x;
+		box.Y1 = pv->Y - pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
 	}
 
 	gui->set_color(Output.fgGC, PCB->PinNameColor);
@@ -295,14 +295,14 @@ static void draw_pad_name(PadType * pad)
 	if (vert) {
 		box.X1 = pad->Point1.X - pad->Thickness / 2;
 		box.Y1 = MAX(pad->Point1.Y, pad->Point2.Y) + pad->Thickness / 2;
-		box.X1 += Settings.PinoutTextOffsetY;
-		box.Y1 -= Settings.PinoutTextOffsetX;
+		box.X1 += conf_core.appearance.pinout.text_offset_y;
+		box.Y1 -= conf_core.appearance.pinout.text_offset_x;
 	}
 	else {
 		box.X1 = MIN(pad->Point1.X, pad->Point2.X) - pad->Thickness / 2;
 		box.Y1 = pad->Point1.Y - pad->Thickness / 2;
-		box.X1 += Settings.PinoutTextOffsetX;
-		box.Y1 += Settings.PinoutTextOffsetY;
+		box.X1 += conf_core.appearance.pinout.text_offset_x;
+		box.Y1 += conf_core.appearance.pinout.text_offset_y;
 	}
 
 	gui->set_color(Output.fgGC, PCB->PinNameColor);
@@ -458,7 +458,7 @@ static int hole_callback(const BoxType * b, void *cl)
 		else if (TEST_FLAG(SELECTEDFLAG, pv))
 			color = PCB->ViaSelectedColor;
 		else
-			color = Settings.BlackColor;
+			color = conf_core.appearance.color.black;
 
 		if (TEST_FLAG(ONPOINTFLAG, pv)) {
 			assert(color != NULL);
@@ -543,8 +543,8 @@ static int rat_callback(const BoxType * b, void *cl)
 	else
 		gui->set_color(Output.fgGC, PCB->RatColor);
 
-	if (Settings.RatThickness < 20)
-		rat->Thickness = pixel_slop * Settings.RatThickness;
+	if (conf_core.design.rat_thickness < 20)
+		rat->Thickness = pixel_slop * conf_core.design.rat_thickness;
 	/* rats.c set VIAFLAG if this rat goes to a containing poly: draw a donut */
 	if (TEST_FLAG(VIAFLAG, rat)) {
 		int w = rat->Thickness;
@@ -1126,12 +1126,12 @@ static void GatherPVName(PinTypePtr Ptr)
 	bool vert = TEST_FLAG(EDGE2FLAG, Ptr);
 
 	if (vert) {
-		box.X1 = Ptr->X - Ptr->Thickness / 2 + Settings.PinoutTextOffsetY;
-		box.Y1 = Ptr->Y - Ptr->DrillingHole / 2 - Settings.PinoutTextOffsetX;
+		box.X1 = Ptr->X - Ptr->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
+		box.Y1 = Ptr->Y - Ptr->DrillingHole / 2 - conf_core.appearance.pinout.text_offset_x;
 	}
 	else {
-		box.X1 = Ptr->X + Ptr->DrillingHole / 2 + Settings.PinoutTextOffsetX;
-		box.Y1 = Ptr->Y - Ptr->Thickness / 2 + Settings.PinoutTextOffsetY;
+		box.X1 = Ptr->X + Ptr->DrillingHole / 2 + conf_core.appearance.pinout.text_offset_x;
+		box.Y1 = Ptr->Y - Ptr->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
 	}
 
 	if (vert) {
@@ -1156,16 +1156,16 @@ static void GatherPadName(PadTypePtr Pad)
 	if (vert) {
 		box.X1 = Pad->Point1.X - Pad->Thickness / 2;
 		box.Y1 = MAX(Pad->Point1.Y, Pad->Point2.Y) + Pad->Thickness / 2;
-		box.X1 += Settings.PinoutTextOffsetY;
-		box.Y1 -= Settings.PinoutTextOffsetX;
+		box.X1 += conf_core.appearance.pinout.text_offset_y;
+		box.Y1 -= conf_core.appearance.pinout.text_offset_x;
 		box.X2 = box.X1;
 		box.Y2 = box.Y1;
 	}
 	else {
 		box.X1 = MIN(Pad->Point1.X, Pad->Point2.X) - Pad->Thickness / 2;
 		box.Y1 = Pad->Point1.Y - Pad->Thickness / 2;
-		box.X1 += Settings.PinoutTextOffsetX;
-		box.Y1 += Settings.PinoutTextOffsetY;
+		box.X1 += conf_core.appearance.pinout.text_offset_x;
+		box.Y1 += conf_core.appearance.pinout.text_offset_y;
 		box.X2 = box.X1;
 		box.Y2 = box.Y1;
 	}
@@ -1317,8 +1317,8 @@ void DrawLine(LayerTypePtr Layer, LineTypePtr Line)
  */
 void DrawRat(RatTypePtr Rat)
 {
-	if (Settings.RatThickness < 20)
-		Rat->Thickness = pixel_slop * Settings.RatThickness;
+	if (conf_core.design.rat_thickness < 20)
+		Rat->Thickness = pixel_slop * conf_core.design.rat_thickness;
 	/* rats.c set VIAFLAG if this rat goes to a containing poly: draw a donut */
 	if (TEST_FLAG(VIAFLAG, Rat)) {
 		Coord w = Rat->Thickness;

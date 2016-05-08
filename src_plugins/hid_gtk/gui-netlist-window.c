@@ -31,6 +31,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -764,7 +765,7 @@ void ghid_netlist_window_create(GHidPort * out)
 
 
 	gtk_widget_realize(netlist_window);
-	if (Settings.AutoPlace)
+	if (conf_core.editor.auto_place)
 		gtk_window_move(GTK_WINDOW(netlist_window), 10, 10);
 
 }

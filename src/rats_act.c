@@ -25,6 +25,8 @@
  *
  */
 #include "config.h"
+#include "conf_core.h"
+
 #include "global.h"
 #include "data.h"
 #include "action_helper.h"
@@ -72,7 +74,7 @@ static int ActionAddRats(int argc, char **argv, Coord x, Coord y)
 	float len, small;
 
 	if (function) {
-		if (Settings.RatWarn)
+		if (conf_core.editor.rat_warn)
 			ClearWarnings();
 		switch (funchash_get(function, NULL)) {
 		case F_AllRats:
@@ -193,7 +195,7 @@ static int ActionDeleteRats(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		if (Settings.RatWarn)
+		if (conf_core.editor.rat_warn)
 			ClearWarnings();
 		switch (funchash_get(function, NULL)) {
 		case F_AllRats:

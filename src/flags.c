@@ -24,6 +24,7 @@
 
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -44,9 +45,9 @@ static int FlagCurrentStyle(int dummy)
 {
 	STYLE_LOOP(PCB);
 	{
-		if (style->Thick == Settings.LineThickness &&
-				style->Diameter == Settings.ViaThickness &&
-				style->Hole == Settings.ViaDrillingHole && style->Keepaway == Settings.Keepaway)
+		if (style->Thick == conf_core.design.line_thickness &&
+				style->Diameter == conf_core.design.via_thickness &&
+				style->Hole == conf_core.design.via_drilling_hole && style->Keepaway == conf_core.design.keepaway)
 			return n + 1;
 	}
 	END_LOOP;
@@ -68,7 +69,8 @@ static int FlagUnitsMm(int dummy)
 	static const Unit *u = NULL;
 	if (u == NULL)
 		u = get_unit_struct("mm");
-	return (Settings.grid_unit == u);
+#warning we can save a memcmp here, probably
+	return memcmp(&conf_core.editor.grid_unit, u, sizeof(Unit));
 }
 
 static int FlagUnitsMil(int dummy)
@@ -76,12 +78,13 @@ static int FlagUnitsMil(int dummy)
 	static const Unit *u = NULL;
 	if (u == NULL)
 		u = get_unit_struct("mil");
-	return (Settings.grid_unit == u);
+#warning we can save a memcmp here, probably
+	return memcmp(&conf_core.editor.grid_unit, u, sizeof(Unit));
 }
 
 static int FlagBuffer(int dummy)
 {
-	return (int) (Settings.BufferNumber + 1);
+	return (int) (conf_core.editor.buffer_number + 1);
 }
 
 static int FlagElementName(int dummy)
@@ -100,14 +103,14 @@ static int FlagTESTFLAG(int bit)
 
 static int FlagSETTINGS(int ofs)
 {
-	return *(bool *) ((char *) (&Settings) + ofs);
+	return *(bool *) ((char *) (&conf_core) + ofs);
 }
 
 static int FlagMode(int x)
 {
 	if (x == -1)
-		return Settings.Mode;
-	return Settings.Mode == x;
+		return conf_core.editor.mode;
+	return conf_core.editor.mode == x;
 }
 
 static int FlagHaveRegex(int x)
@@ -169,7 +172,7 @@ static int FlagLayerActive(int n)
  * 64bit machines.
  */
 #define OffsetOf(a,b) (int)(size_t)(&(((a *)0)->b))
-
+#warning TODO: do we still need this?
 HID_Flag flags_flag_list[] = {
 	{"style", FlagCurrentStyle, 0}
 	,
@@ -291,43 +294,39 @@ HID_Flag flags_flag_list[] = {
 	{"highlightonpoint", FlagTESTFLAG, HIGHLIGHTONPOINTFLAG}
 	,
 
-	{"fullpoly", FlagSETTINGS, OffsetOf(SettingType, FullPoly)}
+	{"fullpoly", FlagSETTINGS, OffsetOf(conf_core_t, editor.full_poly)}
 	,
 	{"grid_units_mm", FlagUnitsMm, -1}
 	,
 	{"grid_units_mil", FlagUnitsMil, -1}
 	,
-	{"clearline", FlagSETTINGS, OffsetOf(SettingType, ClearLine)}
+	{"clearline", FlagSETTINGS, OffsetOf(conf_core_t, editor.clear_line)}
 	,
-	{"uniquenames", FlagSETTINGS, OffsetOf(SettingType, UniqueNames)}
+	{"uniquenames", FlagSETTINGS, OffsetOf(conf_core_t, editor.unique_names)}
 	,
-	{"showsolderside", FlagSETTINGS, OffsetOf(SettingType, ShowSolderSide)}
+	{"showsolderside", FlagSETTINGS, OffsetOf(conf_core_t, editor.show_solder_side)}
 	,
-	{"savelastcommand", FlagSETTINGS, OffsetOf(SettingType, SaveLastCommand)}
+	{"savelastcommand", FlagSETTINGS, OffsetOf(conf_core_t, editor.save_last_command)}
 	,
-	{"saveintmp", FlagSETTINGS, OffsetOf(SettingType, SaveInTMP)}
+	{"saveintmp", FlagSETTINGS, OffsetOf(conf_core_t, editor.save_in_tmp)}
 	,
-	{"drawgrid", FlagSETTINGS, OffsetOf(SettingType, DrawGrid)}
+	{"drawgrid", FlagSETTINGS, OffsetOf(conf_core_t, editor.draw_grid)}
 	,
-	{"ratwarn", FlagSETTINGS, OffsetOf(SettingType, RatWarn)}
+	{"ratwarn", FlagSETTINGS, OffsetOf(conf_core_t, editor.rat_warn)}
 	,
-	{"stipplepolygons", FlagSETTINGS, OffsetOf(SettingType, StipplePolygons)}
+	{"stipplepolygons", FlagSETTINGS, OffsetOf(conf_core_t, editor.stipple_polygons)}
 	,
-	{"alldirectionlines", FlagSETTINGS,
-	 OffsetOf(SettingType, AllDirectionLines)}
+	{"alldirectionlines", FlagSETTINGS, OffsetOf(conf_core_t, editor.all_direction_lines)}
 	,
-	{"rubberbandmode", FlagSETTINGS, OffsetOf(SettingType, RubberBandMode)}
+	{"rubberbandmode", FlagSETTINGS, OffsetOf(conf_core_t, editor.rubber_band_mode)}
 	,
-	{"swapstartdirection", FlagSETTINGS,
-	 OffsetOf(SettingType, SwapStartDirection)}
+	{"swapstartdirection", FlagSETTINGS, OffsetOf(conf_core_t, editor.swap_start_direction)}
 	,
-	{"showdrcmode", FlagSETTINGS, OffsetOf(SettingType, ShowDRC)}
+	{"showdrcmode", FlagSETTINGS, OffsetOf(conf_core_t, editor.show_drc)}
 	,
-	{"resetafterelement", FlagSETTINGS,
-	 OffsetOf(SettingType, ResetAfterElement)}
+	{"resetafterelement", FlagSETTINGS, OffsetOf(conf_core_t, editor.reset_after_element)}
 	,
-	{"ringbellwhenfinished", FlagSETTINGS,
-	 OffsetOf(SettingType, RingBellWhenFinished)}
+	{"ringbellwhenfinished", FlagSETTINGS, OffsetOf(conf_core_t, editor.beep_when_finished)}
 	,
 
 	{"buffer", FlagBuffer, 0}

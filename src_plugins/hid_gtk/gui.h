@@ -61,8 +61,8 @@
 	   |  PCB keeps values internally higher precision, but gui
 	   |  widgets (spin buttons, labels, etc) need mils or millimeters.
 	 */
-#define	FROM_PCB_UNITS(v)	coord_to_unit (Settings.grid_unit, v)
-#define	TO_PCB_UNITS(v)		unit_to_coord (Settings.grid_unit, v)
+#define	FROM_PCB_UNITS(v)	coord_to_unit (conf_core.editor.grid_unit, v)
+#define	TO_PCB_UNITS(v)		unit_to_coord (conf_core.editor.grid_unit, v)
 
 #define SIDE_X(x)         ((gport->view.flip_x ? PCB->MaxWidth - (x) : (x)))
 #define SIDE_Y(y)         ((gport->view.flip_y ? PCB->MaxHeight - (y) : (y)))

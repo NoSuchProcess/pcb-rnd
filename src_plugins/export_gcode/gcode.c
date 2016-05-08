@@ -33,6 +33,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 #include "plugins.h"
 
 #include <stdio.h>
@@ -230,8 +231,8 @@ static HID_Attribute *gcode_get_export_options(int *n)
 	static int last_unit_value = -1;
 
 	if (gcode_attribute_list[HA_unit].default_val.int_value == last_unit_value) {
-		if (Settings.grid_unit)
-			gcode_attribute_list[HA_unit].default_val.int_value = Settings.grid_unit->index;
+		if (conf_core.editor.grid_unit)
+			gcode_attribute_list[HA_unit].default_val.int_value = conf_core.editor.grid_unit->index;
 		else
 			gcode_attribute_list[HA_unit].default_val.int_value = get_unit_struct("mil")->index;
 		last_unit_value = gcode_attribute_list[HA_unit].default_val.int_value;

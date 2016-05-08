@@ -39,6 +39,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include "global.h"
 #include "create.h"
@@ -199,7 +200,7 @@ parsepcb
 			  PCBTypePtr pcb_save = PCB;
 
 			  if (layer_group_string == NULL)
-			    layer_group_string = strdup(Settings.Groups);
+			    layer_group_string = strdup(conf_core.rc.groups);
 			  CreateNewPCBPost (yyPCB, 0);
 			  if (ParseGroupString(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN))
 			    {
@@ -387,9 +388,9 @@ pcbgridnew
 				yyPCB->GridOffsetX = OU ($4);
 				yyPCB->GridOffsetY = OU ($5);
 				if ($6)
-					Settings.DrawGrid = true;
+					conf_core.editor.draw_grid = true;
 				else
-					Settings.DrawGrid = false;
+					conf_core.editor.draw_grid = false;
 			}
 		;
 
@@ -400,9 +401,9 @@ pcbhigrid
 				yyPCB->GridOffsetX = NU ($4);
 				yyPCB->GridOffsetY = NU ($5);
 				if ($6)
-					Settings.DrawGrid = true;
+					conf_core.editor.draw_grid = true;
 				else
-					Settings.DrawGrid = false;
+					conf_core.editor.draw_grid = false;
 			}
 		;
 
@@ -823,12 +824,12 @@ rats
 		: T_RAT '[' measure measure INTEGER measure measure INTEGER flags ']'
 			{
 				CreateNewRat(yyData, NU ($3), NU ($4), NU ($6), NU ($7), $5, $8,
-					Settings.RatThickness, $9);
+					conf_core.design.rat_thickness, $9);
 			}
 		| T_RAT '(' measure measure INTEGER measure measure INTEGER INTEGER ')'
 			{
 				CreateNewRat(yyData, OU ($3), OU ($4), OU ($6), OU ($7), $5, $8,
-					Settings.RatThickness, OldFlags($9));
+					conf_core.design.rat_thickness, OldFlags($9));
 			}
 		;
 

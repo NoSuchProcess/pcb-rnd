@@ -25,6 +25,7 @@
  *
  */
 #include "config.h"
+#include "conf_core.h"
 #include "global.h"
 #include "data.h"
 #include "action_helper.h"
@@ -188,7 +189,7 @@ static int ActionNew(int argc, char **argv, Coord x, Coord y)
 		/* do emergency saving
 		 * clear the old struct and allocate memory for the new one
 		 */
-		if (PCB->Changed && Settings.SaveInTMP)
+		if (PCB->Changed && conf_core.editor.save_in_tmp)
 			SaveInTMP();
 		RemovePCB(PCB);
 		PCB = CreateNewPCB();

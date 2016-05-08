@@ -37,6 +37,7 @@
 #include <setjmp.h>
 
 #include "global.h"
+#include "conf_core.h"
 
 #include "change.h"
 #include "create.h"
@@ -2467,7 +2468,7 @@ void ChangePCBSize(Coord Width, Coord Height)
 	/* crosshair range is different if pastebuffer-mode
 	 * is enabled
 	 */
-	if (Settings.Mode == PASTEBUFFER_MODE)
+	if (conf_core.editor.mode == PASTEBUFFER_MODE)
 		SetCrosshairRange(PASTEBUFFER->X - PASTEBUFFER->BoundingBox.X1,
 											PASTEBUFFER->Y - PASTEBUFFER->BoundingBox.Y1,
 											MAX(0,

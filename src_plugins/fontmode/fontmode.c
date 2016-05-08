@@ -27,6 +27,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include "global.h"
 
@@ -81,11 +82,12 @@ static int FontEdit(int argc, char **argv, Coord Ux, Coord Uy)
 	if (hid_actionl("New", "Font", 0))
 		return 1;
 
-	Settings.grid_unit = get_unit_struct("mil");
-	Settings.Bloat = PCB->Bloat = 1;
-	Settings.Shrink = PCB->Shrink = 1;
-	Settings.minWid = PCB->minWid = 1;
-	Settings.minSlk = PCB->minSlk = 1;
+#warning TODO is this a good idea?
+	conf_core.editor.grid_unit = get_unit_struct("mil");
+	conf_core.design.bloat = PCB->Bloat = 1;
+	conf_core.design.shrink = PCB->Shrink = 1;
+	conf_core.design.min_wid = PCB->minWid = 1;
+	conf_core.design.min_slk = PCB->minSlk = 1;
 
 	MoveLayerToGroup(max_copper_layer + COMPONENT_LAYER, 0);
 	MoveLayerToGroup(max_copper_layer + SOLDER_LAYER, 1);

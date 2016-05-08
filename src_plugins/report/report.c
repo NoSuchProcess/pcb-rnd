@@ -28,6 +28,7 @@
 
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <math.h>
 
@@ -63,7 +64,7 @@
 #endif
 
 
-#define USER_UNITMASK (Settings.grid_unit->allow)
+#define USER_UNITMASK (conf_core.editor.grid_unit->allow)
 
 static int ReportDrills(int argc, char **argv, Coord x, Coord y)
 {
@@ -89,14 +90,14 @@ static int ReportDrills(int argc, char **argv, Coord x, Coord y)
 	sprintf(stringlist,
 					"There are %d different drill sizes used in this layout, %d holes total\n\n"
 					"Drill Diam. (%s)\t# of Pins\t# of Vias\t# of Elements\t# Unplated\n",
-					AllDrills->DrillN, total_drills, Settings.grid_unit->suffix);
+					AllDrills->DrillN, total_drills, conf_core.editor.grid_unit->suffix);
 	thestring = stringlist;
 	while (*thestring != '\0')
 		thestring++;
 	for (n = 0; n < AllDrills->DrillN; n++) {
 		pcb_sprintf(thestring,
 								"%10m*\t\t%d\t\t%d\t\t%d\t\t%d\n",
-								Settings.grid_unit->suffix,
+								conf_core.editor.grid_unit->suffix,
 								AllDrills->Drill[n].DrillSize,
 								AllDrills->Drill[n].PinCount, AllDrills->Drill[n].ViaCount,
 								AllDrills->Drill[n].ElementN, AllDrills->Drill[n].UnplatedCount);
@@ -607,7 +608,7 @@ static int ReportAllNetLengths(int argc, char **argv, Coord x, Coord y)
 			Coord length;
 
 			if (argc < 1)
-				units_name = Settings.grid_unit->suffix;
+				units_name = conf_core.editor.grid_unit->suffix;
 
 			length = XYtoNetLength(x, y, &found);
 
@@ -705,7 +706,7 @@ got_net_name:
 
 	{
 		char buf[50];
-		pcb_snprintf(buf, sizeof(buf), "%$m*", Settings.grid_unit->suffix, length);
+		pcb_snprintf(buf, sizeof(buf), "%$m*", conf_core.editor.grid_unit->suffix, length);
 		if (netname)
 			gui->log("Net \"%s\" length: %s\n", netname, buf);
 		else
@@ -845,7 +846,7 @@ static int ReportNetLengthByName(char *tofind, int x, int y)
 
 	{
 		char buf[50];
-		pcb_snprintf(buf, sizeof(buf), "%$m*", Settings.grid_unit->suffix, length);
+		pcb_snprintf(buf, sizeof(buf), "%$m*", conf_core.editor.grid_unit->suffix, length);
 		if (netname)
 			gui->log("Net \"%s\" length: %s\n", netname, buf);
 		else

@@ -172,7 +172,7 @@ hidGC ghid_make_gc(void)
 
 	rv = g_new0(hid_gc_struct, 1);
 	rv->me_pointer = &ghid_hid;
-	rv->colorname = Settings.BackgroundColor;
+	rv->colorname = conf_core.appearance.color.background;
 	rv->alpha_mult = 1.0;
 	return rv;
 }
@@ -182,7 +182,7 @@ static void ghid_draw_grid(BoxTypePtr drawn_area)
 	if (Vz(PCB->Grid) < MIN_GRID_DISTANCE)
 		return;
 
-	if (gdk_color_parse(Settings.GridColor, &gport->grid_color)) {
+	if (gdk_color_parse(conf_core.appearance.color.grid, &gport->grid_color)) {
 		gport->grid_color.red ^= gport->bg_color.red;
 		gport->grid_color.green ^= gport->bg_color.green;
 		gport->grid_color.blue ^= gport->bg_color.blue;
@@ -685,7 +685,7 @@ void ghid_show_crosshair(gboolean paint_new_location)
 	if (!done_once) {
 		done_once = 1;
 		/* FIXME: when CrossColor changed from config */
-		ghid_map_color_string(Settings.CrossColor, &cross_color);
+		ghid_map_color_string(conf_core.appearance.color.cross, &cross_color);
 	}
 	x = gport->crosshair_x;
 	y = gport->crosshair_y;

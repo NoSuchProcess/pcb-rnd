@@ -31,6 +31,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -239,6 +240,7 @@ static int Parse(FILE *Pipe, char *Executable, char *Path, char *Filename, char 
               sprintf (tmps, "%s", Filename);
 
 	    yyin = fopen (tmps, "r");
+printf("OPENING: %s -> %p\n", tmps, yyin);
 	    if (!yyin)
 	      {
 	        /* Special case this one, we get it all the time... */
@@ -322,7 +324,7 @@ int ParseElement(DataTypePtr Ptr, const char *name)
 	yyFont = &PCB->Font;
 	yyElement = NULL;
 
-	f = fp_fopen(Settings.LibrarySearchPaths, name, &st);
+	f = fp_fopen(conf_core.rc.library_search_paths, name, &st);
 
 	if (f == NULL)
 		return -1;
@@ -345,7 +347,7 @@ int ParsePCB(PCBTypePtr Ptr, char *Filename)
 	yyFont = NULL;
 	yyElement = NULL;
 	setlocale(LC_ALL, "C"); /* make sure numerics are read predictably */
-	retval = Parse(NULL, Settings.FileCommand, Settings.FilePath, Filename, NULL);
+	retval = Parse(NULL, conf_core.rc.file_command, conf_core.rc.file_path, Filename, NULL);
 	setlocale(LC_ALL, "");
 	return retval;
 }
@@ -361,31 +363,12 @@ int ParseFont(FontTypePtr Ptr, char *Filename)
 	yyFont = Ptr;
 	yyElement = NULL;
 
-        /* search through the font path for a font file */
-	if ((Filename[0] == '/') || (strncmp(Filename, "./", 2) == 0) || (strncmp(Filename, "../", 2) == 0)) {
-		r = Parse(NULL, Settings.FontCommand, NULL, Filename, NULL);
-		if (r != 0)
-			return r;
+	r = Parse(NULL, conf_core.rc.font_command, NULL, Filename, NULL);
+	if (r == 0) {
+#ifdef DEBUG
+		Message ("Found %s in %s\n", Filename, p);
+#endif
 	}
-
-	path = strdup (Settings.FontPath);
-	for (p = strtok (path, PCB_PATH_DELIMETER); p && *p;
-		p = strtok (NULL, PCB_PATH_DELIMETER))
-	  {
-#ifdef DEBUG
-            Message ("Looking for %s in %s\n", Filename, p);
-#endif
-	    r = Parse(NULL, Settings.FontCommand, p, Filename, NULL);
-            if (r == 0)
-              {
-#ifdef DEBUG
-                Message ("Found %s in %s\n", Filename, p);
-#endif
-                break;
-              }
-          }
-        free (path);
-
 	return r;
 }
 

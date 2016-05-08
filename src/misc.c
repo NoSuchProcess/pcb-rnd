@@ -31,6 +31,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdlib.h>
 #include <stdarg.h>
@@ -860,13 +861,12 @@ char *make_route_string(RouteStyleType rs[], int n_styles)
  * comma separated Name, Dimension, Dimension, Dimension, Dimension
  * e.g. Signal,20,40,20,10:Power,40,60,28,10:...
  */
-int ParseRouteString(char *s, RouteStyleTypePtr routeStyle, const char *default_unit)
+int ParseRoutingString1(char **str, RouteStyleTypePtr routeStyle, const char *default_unit)
 {
-	int i, style;
+	char *s = *str;
 	char Name[256];
+	int i;
 
-	memset(routeStyle, 0, NUM_STYLES * sizeof(RouteStyleType));
-	for (style = 0; style < NUM_STYLES; style++, routeStyle++) {
 		while (*s && isspace((int) *s))
 			s++;
 		for (i = 0; *s && *s != ','; i++)
@@ -908,6 +908,24 @@ int ParseRouteString(char *s, RouteStyleTypePtr routeStyle, const char *default_
 			while (*s && isspace((int) *s))
 				s++;
 		}
+
+	*str = s;
+	return 0;
+	error:;
+		*str = s;
+		return -1;
+}
+
+int ParseRouteString(char *s, RouteStyleTypePtr routeStyle, const char *default_unit)
+{
+	int style;
+
+
+	memset(routeStyle, 0, NUM_STYLES * sizeof(RouteStyleType));
+	for (style = 0; style < NUM_STYLES; style++, routeStyle++) {
+
+		ParseRoutingString1(&s, routeStyle, default_unit);
+
 		if (style < NUM_STYLES - 1) {
 			while (*s && isspace((int) *s))
 				s++;
@@ -1021,7 +1039,7 @@ void QuitApplication(void)
 	 * via our atexit() registering of EmergencySave().  We presumeably wanted to
 	 * exit here and thus it is not an emergency.
 	 */
-	if (PCB->Changed && Settings.SaveInTMP)
+	if (PCB->Changed && conf_core.editor.save_in_tmp)
 		EmergencySave();
 	else
 		DisableEmergencySave();
@@ -1044,7 +1062,7 @@ char *EvaluateFilename(char *Template, char *Path, char *Filename, char *Paramet
 	gds_t command;
 	char *p;
 
-	if (Settings.verbose) {
+	if (conf_core.rc.verbose) {
 		printf("EvaluateFilename:\n");
 		printf("\tTemplate: \033[33m%s\033[0m\n", Template);
 		printf("\tPath: \033[33m%s\033[0m\n", Path);
@@ -1072,7 +1090,7 @@ char *EvaluateFilename(char *Template, char *Path, char *Filename, char *Paramet
 			gds_append(&command, *p);
 	}
 
-	if (Settings.verbose)
+	if (conf_core.rc.verbose)
 		printf("EvaluateFilename: \033[32m%s\033[0m\n", command.array);
 
 	return command.array;
@@ -1125,7 +1143,7 @@ int ChangeGroupVisibility(int Layer, bool On, bool ChangeStackOrder)
 	   |  thinks the are.
 	 */
 
-	if (Settings.verbose)
+	if (conf_core.rc.verbose)
 		printf("ChangeGroupVisibility(Layer=%d, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
 
 	/* decrement 'i' to keep stack in order of layergroup */
@@ -1200,7 +1218,7 @@ void LayerStringToLayerStack(char *s)
 	PCB->ViaOn = false;
 	PCB->RatOn = false;
 	CLEAR_FLAG(SHOWMASKFLAG, PCB);
-	Settings.ShowSolderSide = 0;
+	conf_core.editor.show_solder_side = 0;
 
 	for (i = argn - 1; i >= 0; i--) {
 		if (strcasecmp(args[i], "rats") == 0)
@@ -1216,7 +1234,7 @@ void LayerStringToLayerStack(char *s)
 		else if (strcasecmp(args[i], "mask") == 0)
 			SET_FLAG(SHOWMASKFLAG, PCB);
 		else if (strcasecmp(args[i], "solderside") == 0)
-			Settings.ShowSolderSide = 1;
+			conf_core.editor.show_solder_side = 1;
 		else if (isdigit((int) args[i][0])) {
 			lno = atoi(args[i]);
 			ChangeGroupVisibility(lno, true, true);
@@ -1620,10 +1638,10 @@ void AttachForCopy(Coord PlaceX, Coord PlaceY)
 										PCB->MaxHeight - (box->Y2 - Crosshair.AttachedObject.Y));
 
 	/* get all attached objects if necessary */
-	if ((Settings.Mode != COPY_MODE) && TEST_FLAG(RUBBERBANDFLAG, PCB))
+	if ((conf_core.editor.mode != COPY_MODE) && TEST_FLAG(RUBBERBANDFLAG, PCB))
 		LookupRubberbandLines(Crosshair.AttachedObject.Type,
 													Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
-	if (Settings.Mode != COPY_MODE &&
+	if (conf_core.editor.mode != COPY_MODE &&
 			(Crosshair.AttachedObject.Type == ELEMENT_TYPE ||
 			 Crosshair.AttachedObject.Type == VIA_TYPE ||
 			 Crosshair.AttachedObject.Type == LINE_TYPE || Crosshair.AttachedObject.Type == LINEPOINT_TYPE))
@@ -1941,8 +1959,8 @@ char *GetInfoString(void)
 
 const char *pcb_author(void)
 {
-	if (Settings.FabAuthor && Settings.FabAuthor[0])
-		return Settings.FabAuthor;
+	if (conf_core.design.fab_author && conf_core.design.fab_author[0])
+		return conf_core.design.fab_author;
 	else
 		return get_user_name();
 }

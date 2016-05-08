@@ -30,6 +30,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdlib.h>
 #include <memory.h>
@@ -445,7 +446,7 @@ bool LoadElementToBuffer(BufferTypePtr Buffer, const char *Name)
 
 	ClearBuffer(Buffer);
 	if (!ParseElement(Buffer->Data, Name)) {
-		if (Settings.ShowSolderSide)
+		if (conf_core.editor.show_solder_side)
 			SwapBuffer(Buffer);
 		SetBufferBoundingBox(Buffer);
 		if (elementlist_length(&Buffer->Data->Element)) {
@@ -731,7 +732,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 				sprintf(num, "%d", pin_n++);
 				CreateNewPad(Element,
 										 x1, y1, x2, y2, t,
-										 2 * Settings.Keepaway, t + Settings.Keepaway, NULL, num, MakeFlags(SQUAREFLAG | onsolderflag));
+										 2 * conf_core.design.keepaway, t + conf_core.design.keepaway, NULL, num, MakeFlags(SQUAREFLAG | onsolderflag));
 				MAYBE_WARN();
 				hasParts = true;
 			}

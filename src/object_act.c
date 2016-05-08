@@ -25,6 +25,8 @@
  *
  */
 #include "config.h"
+#include "conf_core.h"
+
 #include "global.h"
 #include "data.h"
 #include "action_helper.h"
@@ -793,7 +795,7 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 				void *ptr1, *ptr2, *ptr3;
 
 				if (SearchScreen(Crosshair.X, Crosshair.Y, ELEMENT_TYPE, &ptr1, &ptr2, &ptr3) != NO_TYPE) {
-					Note.Buffer = Settings.BufferNumber;
+					Note.Buffer = conf_core.editor.buffer_number;
 					SetBufferNumber(MAX_BUFFER - 1);
 					ClearBuffer(PASTEBUFFER);
 					CopyObjectToBuffer(PASTEBUFFER->Data, PCB->Data, ELEMENT_TYPE, ptr1, ptr2, ptr3);

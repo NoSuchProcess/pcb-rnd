@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -352,7 +353,7 @@ typedef struct {
 static gboolean ghid_timer(GuiTimer * timer)
 {
 	(*timer->func) (timer->user_data);
-	ghid_mode_cursor(Settings.Mode);
+	ghid_mode_cursor(conf_core.editor.mode);
 	return FALSE;									/* Turns timer off */
 }
 
@@ -403,7 +404,7 @@ static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer
 
 	x.ptr = (void *) watch;
 	watch->func(x, watch->fd, pcb_condition, watch->user_data);
-	ghid_mode_cursor(Settings.Mode);
+	ghid_mode_cursor(conf_core.editor.mode);
 
 	return TRUE;									/* Leave watch on */
 }
@@ -1008,7 +1009,7 @@ static int PointCursor(int argc, char **argv, Coord x, Coord y)
 	if (argc > 0)
 		ghid_point_cursor();
 	else
-		ghid_mode_cursor(Settings.Mode);
+		ghid_mode_cursor(conf_core.editor.mode);
 	return 0;
 }
 
@@ -1021,7 +1022,7 @@ static int RouteStylesChanged(int argc, char **argv, Coord x, Coord y)
 
 	ghid_route_style_selector_sync
 		(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector),
-		 Settings.LineThickness, Settings.ViaDrillingHole, Settings.ViaThickness, Settings.Keepaway);
+		 conf_core.design.line_thickness, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.keepaway);
 
 	return 0;
 }
@@ -1102,20 +1103,20 @@ static int Load(int argc, char **argv, Coord x, Coord y)
 	function = argc ? argv[0] : (char *) "Layout";
 
 	if (strcasecmp(function, "Netlist") == 0) {
-		name = ghid_dialog_file_select_open(_("Load netlist file"), &current_netlist_dir, Settings.FilePath);
+		name = ghid_dialog_file_select_open(_("Load netlist file"), &current_netlist_dir, conf_core.rc.file_path);
 	}
 	else if (strcasecmp(function, "ElementToBuffer") == 0) {
-		name = ghid_dialog_file_select_open(_("Load element to buffer"), &current_element_dir, Settings.LibrarySearchPaths);
+		name = ghid_dialog_file_select_open(_("Load element to buffer"), &current_element_dir, conf_core.rc.library_search_paths);
 	}
 	else if (strcasecmp(function, "LayoutToBuffer") == 0) {
-		name = ghid_dialog_file_select_open(_("Load layout file to buffer"), &current_layout_dir, Settings.FilePath);
+		name = ghid_dialog_file_select_open(_("Load layout file to buffer"), &current_layout_dir, conf_core.rc.file_path);
 	}
 	else if (strcasecmp(function, "Layout") == 0) {
-		name = ghid_dialog_file_select_open(_("Load layout file"), &current_layout_dir, Settings.FilePath);
+		name = ghid_dialog_file_select_open(_("Load layout file"), &current_layout_dir, conf_core.rc.file_path);
 	}
 
 	if (name) {
-		if (Settings.verbose)
+		if (conf_core.rc.verbose)
 			fprintf(stderr, "%s:  Calling LoadFrom(%s, %s)\n", __FUNCTION__, function, name);
 		hid_actionl("LoadFrom", function, name, NULL);
 		g_free(name);
@@ -1166,10 +1167,10 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 	else
 		prompt = _("Save layout as");
 
-	name = ghid_dialog_file_select_save(prompt, &current_dir, PCB->Filename, Settings.FilePath);
+	name = ghid_dialog_file_select_save(prompt, &current_dir, PCB->Filename, conf_core.rc.file_path);
 
 	if (name) {
-		if (Settings.verbose)
+		if (conf_core.rc.verbose)
 			fprintf(stderr, "%s:  Calling SaveTo(%s, %s)\n", __FUNCTION__, function, name);
 
 		if (strcasecmp(function, "PasteBuffer") == 0)
@@ -1255,17 +1256,17 @@ static int SwapSides(int argc, char **argv, Coord x, Coord y)
 		case 'r':
 		case 'R':
 			ghid_flip_view(gport->pcb_x, gport->pcb_y, true, true);
-			Settings.ShowSolderSide = !Settings.ShowSolderSide;	/* Swapped back below */
+			conf_core.editor.show_solder_side = !conf_core.editor.show_solder_side;	/* Swapped back below */
 			break;
 		default:
 			return 1;
 		}
 	}
 
-	Settings.ShowSolderSide = !Settings.ShowSolderSide;
+	conf_core.editor.show_solder_side = !conf_core.editor.show_solder_side;
 
 	if ((active_group == comp_group && comp_on && !solder_on) || (active_group == solder_group && solder_on && !comp_on)) {
-		bool new_solder_vis = Settings.ShowSolderSide;
+		bool new_solder_vis = conf_core.editor.show_solder_side;
 
 		ChangeGroupVisibility(PCB->LayerGroups.Entries[comp_group][0], !new_solder_vis, !new_solder_vis);
 		ChangeGroupVisibility(PCB->LayerGroups.Entries[solder_group][0], new_solder_vis, new_solder_vis);
@@ -1615,8 +1616,11 @@ static int SetUnits(int argc, char **argv, Coord x, Coord y)
 
 	new_unit = get_unit_struct(argv[0]);
 	if (new_unit != NULL && new_unit->allow != NO_PRINT) {
-		Settings.grid_unit = new_unit;
+		conf_core.editor.grid_unit = new_unit;
+#warning TODO
+#if 0
 		Settings.increments = get_increments_struct(Settings.grid_unit->suffix);
+#endif
 		AttributePut(PCB, "PCB::grid::unit", argv[0]);
 	}
 
@@ -1781,7 +1785,7 @@ static int ImportGUI(int argc, char **argv, Coord x, Coord y)
 		return 1;
 
 
-	name = ghid_dialog_file_select_open(_("Load schematics"), &current_layout_dir, Settings.FilePath);
+	name = ghid_dialog_file_select_open(_("Load schematics"), &current_layout_dir, conf_core.rc.file_path);
 
 #ifdef DEBUG
 	printf("File selected = %s\n", name);

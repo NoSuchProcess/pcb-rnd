@@ -29,6 +29,7 @@
 /* This file written by Bill Wilson for the PCB Gtk port. */
 
 #include "config.h"
+#include "conf_core.h"
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -156,7 +157,7 @@ int ghid_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * res
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 			entry = ghid_coord_entry_new(attrs[j].min_val, attrs[j].max_val,
-																	 attrs[j].default_val.coord_value, Settings.grid_unit, CE_SMALL);
+																	 attrs[j].default_val.coord_value, conf_core.editor.grid_unit, CE_SMALL);
 			gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
 			if (attrs[j].default_val.str_value != NULL)
 				gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);

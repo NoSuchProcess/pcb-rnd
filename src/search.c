@@ -32,6 +32,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <math.h>
 #include <setjmp.h>

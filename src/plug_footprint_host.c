@@ -32,6 +32,8 @@
 #include <sys/stat.h>
 
 #include "config.h"
+#include "conf_core.h"
+
 #include "global.h"
 #include "data.h"
 #include "file.h"
@@ -41,7 +43,7 @@
 
 const char *fp_get_library_shell(void)
 {
-	return Settings.LibraryShell;
+	return conf_core.rc.library_shell;
 }
 
 /* This function loads the newlib footprints into the Library.
@@ -102,7 +104,7 @@ int fp_read_lib_all(void)
 	/* List all footprint libraries.  Then sort the whole
 	 * library.
 	 */
-	if (fp_read_lib_all_(Settings.LibrarySearchPaths) > 0 || resultFP != NULL) {
+	if (fp_read_lib_all_(conf_core.rc.library_search_paths) > 0 || resultFP != NULL) {
 		fp_sort_children(&library);
 		return 0;
 	}

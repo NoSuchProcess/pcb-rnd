@@ -27,6 +27,7 @@
 /* This file written by Bill Wilson for the PCB Gtk port */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include "gui.h"
 #include "gtkhid.h"
@@ -130,13 +131,13 @@ gboolean ghid_note_event_location(GdkEventButton * ev)
 
 static gboolean ghid_idle_cb(gpointer data)
 {
-	if (Settings.Mode == NO_MODE)
+	if (conf_core.editor.mode == NO_MODE)
 		SetMode(ARROW_MODE);
-	ghid_mode_cursor(Settings.Mode);
-	if (ghidgui->settings_mode != Settings.Mode) {
+	ghid_mode_cursor(conf_core.editor.mode);
+	if (ghidgui->settings_mode != conf_core.editor.mode) {
 		ghid_mode_buttons_update();
 	}
-	ghidgui->settings_mode = Settings.Mode;
+	ghidgui->settings_mode = conf_core.editor.mode;
 
 	ghid_update_toggle_flags();
 	return FALSE;
@@ -259,12 +260,12 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 
 	if (!first_time_done) {
 		gport->colormap = gtk_widget_get_colormap(gport->top_window);
-		if (gdk_color_parse(Settings.BackgroundColor, &gport->bg_color))
+		if (gdk_color_parse(conf_core.appearance.color.background, &gport->bg_color))
 			gdk_color_alloc(gport->colormap, &gport->bg_color);
 		else
 			gdk_color_white(gport->colormap, &gport->bg_color);
 
-		if (gdk_color_parse(Settings.OffLimitColor, &gport->offlimits_color))
+		if (gdk_color_parse(conf_core.appearance.color.off_limit, &gport->offlimits_color))
 			gdk_color_alloc(gport->colormap, &gport->offlimits_color);
 		else
 			gdk_color_white(gport->colormap, &gport->offlimits_color);

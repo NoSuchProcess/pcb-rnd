@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -91,8 +92,8 @@ static HID_Attribute *bom_get_export_options(int *n)
 	static int last_unit_value = -1;
 
 	if (bom_options[HA_unit].default_val.int_value == last_unit_value) {
-		if (Settings.grid_unit)
-			bom_options[HA_unit].default_val.int_value = Settings.grid_unit->index;
+		if (conf_core.editor.grid_unit)
+			bom_options[HA_unit].default_val.int_value = conf_core.editor.grid_unit->index;
 		else
 			bom_options[HA_unit].default_val.int_value = get_unit_struct("mil")->index;
 		last_unit_value = bom_options[HA_unit].default_val.int_value;

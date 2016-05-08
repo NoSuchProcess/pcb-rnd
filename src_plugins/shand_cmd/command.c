@@ -30,6 +30,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdlib.h>
 #ifdef HAVE_STRING_H

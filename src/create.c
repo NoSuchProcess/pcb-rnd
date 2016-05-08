@@ -37,6 +37,7 @@
 #include <stdlib.h>
 
 #include "global.h"
+#include "conf_core.h"
 
 #include "create.h"
 #include "data.h"
@@ -54,6 +55,7 @@
 #include "file.h"
 #include "stub_vendor.h"
 #include "hid_actions.h"
+#include "paths.h"
 
 RCSID("$Id$");
 
@@ -99,30 +101,30 @@ void pcb_colors_from_settings(PCBTypePtr ptr)
 	int i;
 
 	/* copy default settings */
-	ptr->ConnectedColor = Settings.ConnectedColor;
-	ptr->ElementColor = Settings.ElementColor;
-	ptr->ElementColor_nonetlist = Settings.ElementColor_nonetlist;
-	ptr->RatColor = Settings.RatColor;
-	ptr->InvisibleObjectsColor = Settings.InvisibleObjectsColor;
-	ptr->InvisibleMarkColor = Settings.InvisibleMarkColor;
-	ptr->ElementSelectedColor = Settings.ElementSelectedColor;
-	ptr->RatSelectedColor = Settings.RatSelectedColor;
-	ptr->PinColor = Settings.PinColor;
-	ptr->PinSelectedColor = Settings.PinSelectedColor;
-	ptr->PinNameColor = Settings.PinNameColor;
-	ptr->ViaColor = Settings.ViaColor;
-	ptr->ViaSelectedColor = Settings.ViaSelectedColor;
-	ptr->WarnColor = Settings.WarnColor;
-	ptr->MaskColor = Settings.MaskColor;
+	ptr->ConnectedColor = conf_core.appearance.color.connected;
+	ptr->ElementColor = conf_core.appearance.color.element;
+	ptr->ElementColor_nonetlist = conf_core.appearance.color.element_nonetlist;
+	ptr->RatColor = conf_core.appearance.color.rat;
+	ptr->InvisibleObjectsColor = conf_core.appearance.color.invisible_objects;
+	ptr->InvisibleMarkColor = conf_core.appearance.color.invisible_mark;
+	ptr->ElementSelectedColor = conf_core.appearance.color.element_selected;
+	ptr->RatSelectedColor = conf_core.appearance.color.rat_selected;
+	ptr->PinColor = conf_core.appearance.color.pin;
+	ptr->PinSelectedColor = conf_core.appearance.color.pin_selected;
+	ptr->PinNameColor = conf_core.appearance.color.pin_name;
+	ptr->ViaColor = conf_core.appearance.color.via;
+	ptr->ViaSelectedColor = conf_core.appearance.color.via_selected;
+	ptr->WarnColor = conf_core.appearance.color.warn;
+	ptr->MaskColor = conf_core.appearance.color.mask;
 	for (i = 0; i < MAX_LAYER; i++) {
-		ptr->Data->Layer[i].Color = Settings.LayerColor[i];
-		ptr->Data->Layer[i].SelectedColor = Settings.LayerSelectedColor[i];
+		ptr->Data->Layer[i].Color = conf_core.appearance.color.layer[i];
+		ptr->Data->Layer[i].SelectedColor = conf_core.appearance.color.layer_selected[i];
 	}
 	ptr->Data->Layer[component_silk_layer].Color =
-		Settings.ShowSolderSide ? Settings.InvisibleObjectsColor : Settings.ElementColor;
-	ptr->Data->Layer[component_silk_layer].SelectedColor = Settings.ElementSelectedColor;
-	ptr->Data->Layer[solder_silk_layer].Color = Settings.ShowSolderSide ? Settings.ElementColor : Settings.InvisibleObjectsColor;
-	ptr->Data->Layer[solder_silk_layer].SelectedColor = Settings.ElementSelectedColor;
+		conf_core.editor.show_solder_side ? conf_core.appearance.color.invisible_objects : conf_core.appearance.color.element;
+	ptr->Data->Layer[component_silk_layer].SelectedColor = conf_core.appearance.color.element_selected;
+	ptr->Data->Layer[solder_silk_layer].Color = conf_core.editor.show_solder_side ? conf_core.appearance.color.element : conf_core.appearance.color.invisible_objects;
+	ptr->Data->Layer[solder_silk_layer].SelectedColor = conf_core.appearance.color.element_selected;
 }
 
 /* ---------------------------------------------------------------------------
@@ -143,59 +145,60 @@ PCBTypePtr CreateNewPCB_(bool SetDefaultNames)
 	ptr->SilkActive = false;
 	ptr->RatDraw = false;
 	SET_FLAG(NAMEONPCBFLAG, ptr);
-	if (Settings.ShowNumber)
+	if (conf_core.editor.show_number)
 		SET_FLAG(SHOWNUMBERFLAG, ptr);
-	if (Settings.AllDirectionLines)
+	if (conf_core.editor.all_direction_lines)
 		SET_FLAG(ALLDIRECTIONFLAG, ptr);
 	ptr->Clipping = 1;						/* this is the most useful starting point for now */
-	if (Settings.RubberBandMode)
+	if (conf_core.editor.rubber_band_mode)
 		SET_FLAG(RUBBERBANDFLAG, ptr);
-	if (Settings.SwapStartDirection)
+	if (conf_core.editor.swap_start_direction)
 		SET_FLAG(SWAPSTARTDIRFLAG, ptr);
-	if (Settings.UniqueNames)
+	if (conf_core.editor.unique_names)
 		SET_FLAG(UNIQUENAMEFLAG, ptr);
-	if (Settings.SnapPin)
+	if (conf_core.editor.snap_pin)
 		SET_FLAG(SNAPPINFLAG, ptr);
-	if (Settings.SnapOffGridLine)
+	if (conf_core.editor.snap_offgrid_line)
 		SET_FLAG(SNAPOFFGRIDLINEFLAG, ptr);
-	if (Settings.HighlightOnPoint)
+	if (conf_core.editor.highlight_on_point)
 		SET_FLAG(HIGHLIGHTONPOINTFLAG, ptr);
-	if (Settings.ClearLine)
+	if (conf_core.editor.clear_line)
 		SET_FLAG(CLEARNEWFLAG, ptr);
-	if (Settings.FullPoly)
+	if (conf_core.editor.full_poly)
 		SET_FLAG(NEWFULLPOLYFLAG, ptr);
-	if (Settings.OrthogonalMoves)
+	if (conf_core.editor.orthogonal_moves)
 		SET_FLAG(ORTHOMOVEFLAG, ptr);
-	if (Settings.liveRouting)
+	if (conf_core.editor.live_routing)
 		SET_FLAG(LIVEROUTEFLAG, ptr);
-	if (Settings.ShowDRC)
+	if (conf_core.editor.show_drc)
 		SET_FLAG(SHOWDRCFLAG, ptr);
-	if (Settings.AutoDRC)
+	if (conf_core.editor.auto_drc)
 		SET_FLAG(AUTODRCFLAG, ptr);
-	ptr->Grid = Settings.Grid;
-	ptr->LayerGroups = Settings.LayerGroups;
+	ptr->Grid = conf_core.editor.grid;
+	ParseGroupString(conf_core.rc.groups, &ptr->LayerGroups, MAX_LAYER);
 	STYLE_LOOP(ptr);
 	{
-		*style = Settings.RouteStyle[n];
+		char *s = &conf_core.rc.routes[n];
+		ParseRoutingString1(&s, style, "mil");
 		style->index = n;
 	}
 	END_LOOP;
 	hid_action("RouteStylesChanged");
-	ptr->Zoom = Settings.Zoom;
-	ptr->MaxWidth = Settings.MaxWidth;
-	ptr->MaxHeight = Settings.MaxHeight;
+	ptr->Zoom = conf_core.editor.zoom;
+	ptr->MaxWidth = conf_core.design.max_width;
+	ptr->MaxHeight = conf_core.design.max_height;
 	ptr->ID = ID++;
 	ptr->ThermScale = 0.5;
 
-	ptr->Bloat = Settings.Bloat;
-	ptr->Shrink = Settings.Shrink;
-	ptr->minWid = Settings.minWid;
-	ptr->minSlk = Settings.minSlk;
-	ptr->minDrill = Settings.minDrill;
-	ptr->minRing = Settings.minRing;
+	ptr->Bloat = conf_core.design.bloat;
+	ptr->Shrink = conf_core.design.shrink;
+	ptr->minWid = conf_core.design.min_wid;
+	ptr->minSlk = conf_core.design.min_slk;
+	ptr->minDrill = conf_core.design.min_drill;
+	ptr->minRing = conf_core.design.min_ring;
 
 	for (i = 0; i < MAX_LAYER; i++)
-		ptr->Data->Layer[i].Name = strdup(Settings.DefaultLayerName[i]);
+		ptr->Data->Layer[i].Name = strdup(conf_core.design.default_layer_name[i]);
 
 	CreateDefaultFont(ptr);
 
@@ -205,11 +208,17 @@ PCBTypePtr CreateNewPCB_(bool SetDefaultNames)
 PCBTypePtr CreateNewPCB()
 {
 	PCBTypePtr old, nw;
+	int dpcb;
 
 	old = PCB;
 
 	PCB = NULL;
-	if ((LoadPCB(Settings.DefaultPcbFile, false, true) == 0) || (LoadPCB(PCB_DEFAULT_PCB_FILE_SRC, false, true) == 0)) {
+
+	dpcb = -1;
+	conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, LoadPCB(__path__, false, true));
+
+#warning TODO: load from a lihata list instead? same for font file?
+	if (dpcb == 0) {
 		nw = PCB;
 		if (nw->Filename != NULL) {
 			/* make sure the new PCB doesn't inherit the name of the default pcb */
@@ -251,7 +260,7 @@ CreateNewVia(DataTypePtr Data,
 		{
 			if (Distance(X, Y, via->X, via->Y) <= via->DrillingHole / 2 + DrillingHole / 2) {
 				Message(_("%m+Dropping via at %$mD because it's hole would overlap with the via "
-									"at %$mD\n"), Settings.grid_unit->allow, X, Y, via->X, via->Y);
+									"at %$mD\n"), conf_core.editor.grid_unit->allow, X, Y, via->X, via->Y);
 				return (NULL);					/* don't allow via stacking */
 			}
 		}
@@ -271,7 +280,7 @@ CreateNewVia(DataTypePtr Data,
 	Via->DrillingHole = stub_vendorDrillMap(DrillingHole);
 	if (Via->DrillingHole != DrillingHole) {
 		Message(_("%m+Mapped via drill hole to %$mS from %$mS per vendor table\n"),
-						Settings.grid_unit->allow, Via->DrillingHole, DrillingHole);
+						conf_core.editor.grid_unit->allow, Via->DrillingHole, DrillingHole);
 	}
 
 	Via->Name = STRDUP(Name);
@@ -287,7 +296,7 @@ CreateNewVia(DataTypePtr Data,
 	if (!TEST_FLAG(HOLEFLAG, Via) && (Via->Thickness < Via->DrillingHole + MIN_PINORVIACOPPER)) {
 		Via->Thickness = Via->DrillingHole + MIN_PINORVIACOPPER;
 		Message(_("%m+Increased via thickness to %$mS to allow enough copper"
-							" at %$mD.\n"), Settings.grid_unit->allow, Via->Thickness, Via->X, Via->Y);
+							" at %$mD.\n"), conf_core.editor.grid_unit->allow, Via->Thickness, Via->X, Via->Y);
 	}
 
 	SetPinBoundingBox(Via);
@@ -744,18 +753,18 @@ CreateNewPin(ElementTypePtr Element,
 	if (stub_vendorIsElementMappable(Element)) {
 		if (pin->DrillingHole < MIN_PINORVIASIZE) {
 			Message(_("%m+Did not map pin #%s (%s) drill hole because %$mS is below the minimum allowed size\n"),
-							Settings.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
+							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
 		else if (pin->DrillingHole > MAX_PINORVIASIZE) {
 			Message(_("%m+Did not map pin #%s (%s) drill hole because %$mS is above the maximum allowed size\n"),
-							Settings.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
+							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
 		else if (!TEST_FLAG(HOLEFLAG, pin)
 						 && (pin->DrillingHole > pin->Thickness - MIN_PINORVIACOPPER)) {
 			Message(_("%m+Did not map pin #%s (%s) drill hole because %$mS does not leave enough copper\n"),
-							Settings.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
+							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
 	}
@@ -765,7 +774,7 @@ CreateNewPin(ElementTypePtr Element,
 
 	if (pin->DrillingHole != DrillingHole) {
 		Message(_("%m+Mapped pin drill hole to %$mS from %$mS per vendor table\n"),
-						Settings.grid_unit->allow, pin->DrillingHole, DrillingHole);
+						conf_core.editor.grid_unit->allow, pin->DrillingHole, DrillingHole);
 	}
 
 	return (pin);
@@ -859,8 +868,11 @@ LineTypePtr CreateNewLineInSymbol(SymbolTypePtr Symbol, Coord X1, Coord Y1, Coor
  */
 void CreateDefaultFont(PCBTypePtr pcb)
 {
-	if (ParseFont(&pcb->Font, Settings.FontFile))
-		Message(_("Can't find font-symbol-file '%s'\n"), Settings.FontFile);
+	int res = -1;
+	conf_list_foreach_path_first(res, &conf_core.rc.default_font_file, ParseFont(&pcb->Font, __path__));
+#warning TODO: print content of list
+	if (res != 0)
+		Message(_("Can't find font-symbol-file '%s'\n"), "<print paths here>");
 }
 
 /* ---------------------------------------------------------------------------

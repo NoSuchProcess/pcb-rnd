@@ -31,6 +31,7 @@
 #include "config.h"
 
 #include "global.h"
+#include "conf_core.h"
 
 #include "action_helper.h"
 #include "buffer.h"
@@ -160,7 +161,7 @@ static void AdjustAttachedBox(void);
  */
 void ClearWarnings()
 {
-	Settings.RatWarn = false;
+	conf_core.editor.rat_warn = false;
 	ALLPIN_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(WARNFLAG, pin)) {
@@ -219,7 +220,7 @@ static void click_cb(hidval hv)
 		notify_crosshair_change(false);
 		Note.Click = false;
 		if (Note.Moving && !gui->shift_is_pressed()) {
-			Note.Buffer = Settings.BufferNumber;
+			Note.Buffer = conf_core.editor.buffer_number;
 			SetBufferNumber(MAX_BUFFER - 1);
 			ClearBuffer(PASTEBUFFER);
 			AddSelectedToBuffer(PASTEBUFFER, Note.X, Note.Y, true);
@@ -317,7 +318,7 @@ void ReleaseMode(void)
 		NotifyMode();
 		Note.Hit = 0;
 	}
-	else if (Settings.Mode == ARROW_MODE) {
+	else if (conf_core.editor.mode == ARROW_MODE) {
 		box.X1 = Crosshair.AttachedBox.Point1.X;
 		box.Y1 = Crosshair.AttachedBox.Point1.Y;
 		box.X2 = Crosshair.AttachedBox.Point2.X;
@@ -341,7 +342,7 @@ void ReleaseMode(void)
  */
 static void AdjustAttachedBox(void)
 {
-	if (Settings.Mode == ARC_MODE) {
+	if (conf_core.editor.mode == ARC_MODE) {
 		Crosshair.AttachedBox.otherway = gui->shift_is_pressed();
 		return;
 	}
@@ -362,7 +363,7 @@ static void AdjustAttachedBox(void)
 void AdjustAttachedObjects(void)
 {
 	PointTypePtr pnt;
-	switch (Settings.Mode) {
+	switch (conf_core.editor.mode) {
 		/* update at least an attached block (selection) */
 	case NO_MODE:
 	case ARROW_MODE:
@@ -417,7 +418,7 @@ void NotifyLine(void)
 			gui->beep();
 			break;
 		}
-		if (TEST_FLAG(AUTODRCFLAG, PCB) && Settings.Mode == LINE_MODE) {
+		if (TEST_FLAG(AUTODRCFLAG, PCB) && conf_core.editor.mode == LINE_MODE) {
 			type = SearchScreen(Crosshair.X, Crosshair.Y, PIN_TYPE | PAD_TYPE | VIA_TYPE, &ptr1, &ptr2, &ptr3);
 			LookupConnection(Crosshair.X, Crosshair.Y, true, 1, FOUNDFLAG);
 		}
@@ -485,9 +486,9 @@ void NotifyMode(void)
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
-	if (Settings.RatWarn)
+	if (conf_core.editor.rat_warn)
 		ClearWarnings();
-	switch (Settings.Mode) {
+	switch (conf_core.editor.mode) {
 	case ARROW_MODE:
 		{
 			int test;
@@ -526,8 +527,8 @@ void NotifyMode(void)
 				break;
 			}
 			if ((via = CreateNewVia(PCB->Data, Note.X, Note.Y,
-															Settings.ViaThickness, 2 * Settings.Keepaway,
-															0, Settings.ViaDrillingHole, NULL, NoFlags())) != NULL) {
+															conf_core.design.via_thickness, 2 * conf_core.design.keepaway,
+															0, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
 				AddObjectToCreateUndoList(VIA_TYPE, via, via, via);
 				if (gui->shift_is_pressed())
 					ChangeObjectThermal(VIA_TYPE, via, via, via, PCB->ThermStyle);
@@ -584,8 +585,8 @@ void NotifyMode(void)
 																												abs(wy),
 																												sa,
 																												dir,
-																												Settings.LineThickness,
-																												2 * Settings.Keepaway,
+																												conf_core.design.line_thickness,
+																												2 * conf_core.design.keepaway,
 																												MakeFlags(TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)))) {
 						BoxTypePtr bx;
 
@@ -727,8 +728,8 @@ void NotifyMode(void)
 																		 Crosshair.AttachedLine.Point1.Y,
 																		 Crosshair.AttachedLine.Point2.X,
 																		 Crosshair.AttachedLine.Point2.Y,
-																		 Settings.LineThickness,
-																		 2 * Settings.Keepaway,
+																		 conf_core.design.line_thickness,
+																		 2 * conf_core.design.keepaway,
 																		 MakeFlags(maybe_found_flag |
 																							 (TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)))) != NULL) {
 				PinTypePtr via;
@@ -744,14 +745,14 @@ void NotifyMode(void)
 						SearchObjectByLocation(PIN_TYPES, &ptr1, &ptr2, &ptr3,
 																	 Crosshair.AttachedLine.Point1.X,
 																	 Crosshair.AttachedLine.Point1.Y,
-																	 Settings.ViaThickness / 2) ==
+																	 conf_core.design.via_thickness / 2) ==
 						NO_TYPE
 						&& (via =
 								CreateNewVia(PCB->Data,
 														 Crosshair.AttachedLine.Point1.X,
 														 Crosshair.AttachedLine.Point1.Y,
-														 Settings.ViaThickness,
-														 2 * Settings.Keepaway, 0, Settings.ViaDrillingHole, NULL, NoFlags())) != NULL) {
+														 conf_core.design.via_thickness,
+														 2 * conf_core.design.keepaway, 0, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
 					AddObjectToCreateUndoList(VIA_TYPE, via, via, via);
 					DrawVia(via);
 				}
@@ -767,8 +768,8 @@ void NotifyMode(void)
 																		 Crosshair.AttachedLine.Point2.X,
 																		 Crosshair.AttachedLine.Point2.Y,
 																		 Note.X, Note.Y,
-																		 Settings.LineThickness,
-																		 2 * Settings.Keepaway,
+																		 conf_core.design.line_thickness,
+																		 2 * conf_core.design.keepaway,
 																		 MakeFlags((TEST_FLAG
 																								(AUTODRCFLAG,
 																								 PCB) ? FOUNDFLAG : 0) |
@@ -833,7 +834,7 @@ void NotifyMode(void)
 					if (GetLayerGroupNumberByNumber(INDEXOFCURRENT) == GetLayerGroupNumberByNumber(solder_silk_layer))
 						flag |= ONSOLDERFLAG;
 					if ((text = CreateNewText(CURRENT, &PCB->Font, Note.X,
-																		Note.Y, 0, Settings.TextScale, string, MakeFlags(flag))) != NULL) {
+																		Note.Y, 0, conf_core.design.text_scale, string, MakeFlags(flag))) != NULL) {
 						AddObjectToCreateUndoList(TEXT_TYPE, CURRENT, text, text);
 						IncrementUndoSerialNumber();
 						DrawText(CURRENT, text);
@@ -1041,13 +1042,13 @@ void NotifyMode(void)
 			/* first notify, lookup object */
 		case STATE_FIRST:
 			{
-				int types = (Settings.Mode == COPY_MODE) ? COPY_TYPES : MOVE_TYPES;
+				int types = (conf_core.editor.mode == COPY_MODE) ? COPY_TYPES : MOVE_TYPES;
 
 				Crosshair.AttachedObject.Type =
 					SearchScreen(Note.X, Note.Y, types,
 											 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 				if (Crosshair.AttachedObject.Type != NO_TYPE) {
-					if (Settings.Mode == MOVE_MODE && TEST_FLAG(LOCKFLAG, (PinTypePtr)
+					if (conf_core.editor.mode == MOVE_MODE && TEST_FLAG(LOCKFLAG, (PinTypePtr)
 																											Crosshair.AttachedObject.Ptr2)) {
 						Message(_("Sorry, the object is locked\n"));
 						Crosshair.AttachedObject.Type = NO_TYPE;
@@ -1060,7 +1061,7 @@ void NotifyMode(void)
 
 			/* second notify, move or copy object */
 		case STATE_SECOND:
-			if (Settings.Mode == COPY_MODE)
+			if (conf_core.editor.mode == COPY_MODE)
 				CopyObject(Crosshair.AttachedObject.Type,
 									 Crosshair.AttachedObject.Ptr1,
 									 Crosshair.AttachedObject.Ptr2,
@@ -1182,18 +1183,18 @@ int get_style_size(int funcid, Coord * out, int type, int size_id)
 	case F_Selected:
 	case F_SelectedElements:
 		if (size_id == 0)
-			*out = Settings.ViaThickness;
+			*out = conf_core.design.via_thickness;
 		else if (size_id == 1)
-			*out = Settings.ViaDrillingHole;
+			*out = conf_core.design.via_drilling_hole;
 		else
-			*out = Settings.Keepaway;
+			*out = conf_core.design.keepaway;
 		break;
 	case F_SelectedArcs:
 	case F_SelectedLines:
 		if (size_id == 2)
-			*out = Settings.Keepaway;
+			*out = conf_core.design.keepaway;
 		else
-			*out = Settings.LineThickness;
+			*out = conf_core.design.line_thickness;
 		return 0;
 	case F_SelectedTexts:
 	case F_SelectedNames:

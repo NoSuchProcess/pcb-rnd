@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -245,7 +246,7 @@ int hid_actionv(const char *name, int argc, char **argv)
 	if (a->need_coord_msg)
 		gui->get_coords(_(a->need_coord_msg), &x, &y);
 
-	if (Settings.verbose) {
+	if (conf_core.rc.verbose) {
 		printf("Action: \033[34m%s(", name);
 		for (i = 0; i < argc; i++)
 			printf("%s%s", i ? "," : "", argv[i]);

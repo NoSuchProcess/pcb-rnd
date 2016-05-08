@@ -277,6 +277,7 @@ install_:
 	$(MKDIR) $(BINDIR) $(DATADIR) $(LIBDIR) $(LIBDIR)/plugins
 	$(CPC) "`pwd`/pcb-rnd" "$(BINDIR)/pcb-rnd"
 	$(CPC) "`pwd`/default.pcb" "$(DATADIR)/default.pcb"
+	$(CPC) "`pwd`/pcb-conf.lht" "$(DATADIR)/pcb-conf.lht"
 	$(CPC) "`pwd`/pcb-menu-lesstif.lht" "$(DATADIR)/pcb-menu-lesstif.lht"
 	$(CPC) "`pwd`/pcb-menu-gtk.lht" "$(DATADIR)/pcb-menu-gtk.lht"
 	$(CPC) "`pwd`/default_font" "$(DATADIR)/default_font"@/local/pcb/rules/install_@
@@ -293,6 +294,7 @@ uninstall:
 	$(RM) $(BINDIR)/pcb-rnd
 	$(RM) $(DATADIR)/default.pcb
 	$(RM) $(DATADIR)/pcb-menu-lesstif.lht
+	$(RM) $(DATADIR)/pcb-conf.lht
 	$(RM) $(DATADIR)/pcb-menu-gtk.lht
 	$(RM) $(DATADIR)/default_font@/local/pcb/rules/uninstall@
 @]

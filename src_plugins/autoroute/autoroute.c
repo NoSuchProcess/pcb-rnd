@@ -53,6 +53,7 @@
  */
 #define NET_HEAP 1
 #include "config.h"
+#include "conf_core.h"
 
 #include "global.h"
 
@@ -892,12 +893,12 @@ static routedata_t *CreateRouteData()
 	rd = (routedata_t *) malloc(sizeof(*rd));
 	memset((void *) rd, 0, sizeof(*rd));
 	/* create default style */
-	rd->defaultstyle.Thick = Settings.LineThickness;
-	rd->defaultstyle.Diameter = Settings.ViaThickness;
-	rd->defaultstyle.Hole = Settings.ViaDrillingHole;
-	rd->defaultstyle.Keepaway = Settings.Keepaway;
+	rd->defaultstyle.Thick = conf_core.design.line_thickness;
+	rd->defaultstyle.Diameter = conf_core.design.via_thickness;
+	rd->defaultstyle.Hole = conf_core.design.via_drilling_hole;
+	rd->defaultstyle.Keepaway = conf_core.design.keepaway;
 	rd->max_bloat = BLOAT(&rd->defaultstyle);
-	rd->max_keep = Settings.Keepaway;
+	rd->max_keep = conf_core.design.keepaway;
 	/* create styles structures */
 	bbox.X1 = bbox.Y1 = 0;
 	bbox.X2 = PCB->MaxWidth;
@@ -1307,7 +1308,7 @@ static BoxType bloat_routebox(routebox_t * rb)
 #ifdef ROUTE_DEBUG							/* only for debugging expansion areas */
 
 /* makes a line on the solder layer silk surrounding the box */
-void showbox(BoxType b, Dimension thickness, int group)
+void showbox(BoxType b, dimension_t thickness, int group)
 {
 	LineTypePtr line;
 	LayerTypePtr SLayer = LAYER_PTR(group);

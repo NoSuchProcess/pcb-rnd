@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -1037,14 +1038,14 @@ static int sz_str2val(Widget w, bool pcbu)
 	char *buf = XmTextGetString(w);
 	if (!pcbu)
 		return strtol(buf, NULL, 0);
-	return GetValueEx(buf, NULL, NULL, NULL, Settings.grid_unit->suffix);
+	return GetValueEx(buf, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix);
 }
 
 static void sz_val2str(Widget w, Coord u, int pcbu)
 {
 	static char buf[40];
 	if (pcbu)
-		pcb_sprintf(buf, "%m+%.2mS", Settings.grid_unit->allow, u);
+		pcb_sprintf(buf, "%m+%.2mS", conf_core.editor.grid_unit->allow, u);
 	else
 		pcb_snprintf(buf, sizeof(buf), "%#mS %%", u);
 	XmTextSetString(w, buf);
@@ -1060,14 +1061,15 @@ static void sizes_set()
 	PCB->minSlk = sz_str2val(sz_drc_slk, 1);
 	PCB->minDrill = sz_str2val(sz_drc_drill, 1);
 	PCB->minRing = sz_str2val(sz_drc_ring, 1);
-	Settings.TextScale = sz_str2val(sz_text, 0);
+#warning do not directly modify these
+	conf_core.design.text_scale = sz_str2val(sz_text, 0);
 
-	Settings.Bloat = PCB->Bloat;
-	Settings.Shrink = PCB->Shrink;
-	Settings.minWid = PCB->minWid;
-	Settings.minSlk = PCB->minSlk;
-	Settings.minDrill = PCB->minDrill;
-	Settings.minRing = PCB->minRing;
+	conf_core.design.bloat = PCB->Bloat;
+	conf_core.design.shrink = PCB->Shrink;
+	conf_core.design.min_wid = PCB->minWid;
+	conf_core.design.min_slk = PCB->minSlk;
+	conf_core.design.min_drill = PCB->minDrill;
+	conf_core.design.min_ring = PCB->minRing;
 
 	SetCrosshairRange(0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	lesstif_pan_fixup();
@@ -1086,9 +1088,9 @@ void lesstif_sizes_reset()
 	sz_val2str(sz_drc_slk, PCB->minSlk, 1);
 	sz_val2str(sz_drc_drill, PCB->minDrill, 1);
 	sz_val2str(sz_drc_ring, PCB->minRing, 1);
-	sz_val2str(sz_text, Settings.TextScale, 0);
+	sz_val2str(sz_text, conf_core.design.text_scale, 0);
 
-	ls = pcb_strdup_printf(_("Units are %s."), Settings.grid_unit->in_suffix);
+	ls = pcb_strdup_printf(_("Units are %s."), conf_core.editor.grid_unit->in_suffix);
 	stdarg_n = 0;
 	stdarg(XmNlabelString, XmStringCreatePCB(ls));
 	XtSetValues(sz_units, stdarg_args, stdarg_n);

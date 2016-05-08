@@ -28,6 +28,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <math.h>
 #include <setjmp.h>
@@ -58,7 +59,7 @@ void AdjustAttachedLine(void)
 	if (line->State == STATE_FIRST)
 		return;
 	/* don't draw outline when ctrl key is pressed */
-	if (Settings.Mode == LINE_MODE && gui->control_is_pressed()) {
+	if (conf_core.editor.mode == LINE_MODE && gui->control_is_pressed()) {
 		line->draw = false;
 		return;
 	}
@@ -272,7 +273,7 @@ static double drc_lines(PointTypePtr end, bool way)
 	s = 0.5;
 	last = -1;
 	line1.Flags = line2.Flags = NoFlags();
-	line1.Thickness = Settings.LineThickness + 2 * (PCB->Bloat + 1);
+	line1.Thickness = conf_core.design.line_thickness + 2 * (PCB->Bloat + 1);
 	line2.Thickness = line1.Thickness;
 	line1.Clearance = line2.Clearance = 0;
 	line1.Point1.X = Crosshair.AttachedLine.Point1.X;

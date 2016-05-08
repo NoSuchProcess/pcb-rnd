@@ -25,6 +25,8 @@
  *
  */
 #include "config.h"
+#include "conf_core.h"
+
 #include "global.h"
 #include "data.h"
 #include "action_helper.h"
@@ -105,7 +107,10 @@ the generated file @emph{must not} start with the two characters
 
 If a temporary file is needed the @code{TMPDIR} environment variable
 is used to select its location.
+*/
 
+#warning TODO: update this para
+/*
 Note that the programs @code{gnetlist} and @code{make} may be
 overridden by the user via the @code{make-program} and @code{gnetlist}
 @code{pcb} settings (i.e. in @code{~/.pcb/settings} or on the command
@@ -305,7 +310,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 		}
 
 		cmd = (char **) malloc((7 + nsources) * sizeof(char *));
-		cmd[0] = Settings.GnetlistProgram;
+		cmd[0] = conf_core.rc.gnetlist_program;
 		cmd[1] = "-g";
 		cmd[2] = "pcbfwd";
 		cmd[3] = "-o";
@@ -376,7 +381,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 			strcat(srclist, sources[i]);
 		}
 
-		cmd[0] = Settings.MakeProgram;
+		cmd[0] = conf_core.rc.make_program;
 		cmd[1] = "-s";
 		cmd[2] = Concat("PCB=", PCB->Filename, NULL);
 		cmd[3] = srclist;

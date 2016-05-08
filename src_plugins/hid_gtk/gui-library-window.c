@@ -54,6 +54,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include "gui.h"
 #include "global.h"
@@ -157,7 +158,7 @@ void ghid_library_window_create(GHidPort * out)
 	gtk_window_set_wmclass(GTK_WINDOW(library_window), "PCB_Library", "PCB");
 
 	gtk_widget_realize(library_window);
-	if (Settings.AutoPlace)
+	if (conf_core.editor.auto_place)
 		gtk_window_move(GTK_WINDOW(library_window), 10, 10);
 
 	gtk_editable_select_region(GTK_EDITABLE(GHID_LIBRARY_WINDOW(library_window)->entry_filter), 0, -1);

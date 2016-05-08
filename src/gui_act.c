@@ -25,6 +25,7 @@
  *
  */
 #include "config.h"
+#include "conf_core.h"
 #include "global.h"
 #include "data.h"
 #include "action_helper.h"
@@ -348,7 +349,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 
 		case F_ToggleStroke:
 			TOGGLE_FLAG(ENABLESTROKEFLAG, PCB);
-			Settings.EnableStroke = TEST_FLAG(ENABLESTROKEFLAG, PCB);
+			conf_core.editor.enable_stroke = TEST_FLAG(ENABLESTROKEFLAG, PCB);
 			break;
 
 		case F_ToggleShowDRC:
@@ -362,7 +363,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 		case F_ToggleAutoDRC:
 			notify_crosshair_change(false);
 			TOGGLE_FLAG(AUTODRCFLAG, PCB);
-			if (TEST_FLAG(AUTODRCFLAG, PCB) && Settings.Mode == LINE_MODE) {
+			if (TEST_FLAG(AUTODRCFLAG, PCB) && conf_core.editor.mode == LINE_MODE) {
 				if (ResetConnections(true)) {
 					IncrementUndoSerialNumber();
 					Draw();
@@ -414,7 +415,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 
 			/* toggle displaying of the grid */
 		case F_Grid:
-			Settings.DrawGrid = !Settings.DrawGrid;
+			conf_core.editor.draw_grid = !conf_core.editor.draw_grid;
 			Redraw();
 			break;
 
@@ -516,7 +517,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 			if (argc > 2) {
 				PCB->GridOffsetX = GetValue(argv[1], NULL, NULL);
 				PCB->GridOffsetY = GetValue(argv[2], NULL, NULL);
-				if (Settings.DrawGrid)
+				if (conf_core.editor.draw_grid)
 					Redraw();
 			}
 			break;
@@ -628,14 +629,14 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 			break;
 		case F_Cancel:
 			{
-				int saved_mode = Settings.Mode;
+				int saved_mode = conf_core.editor.mode;
 				SetMode(NO_MODE);
 				SetMode(saved_mode);
 			}
 			break;
 		case F_Escape:
 			{
-				switch (Settings.Mode) {
+				switch (conf_core.editor.mode) {
 				case VIA_MODE:
 				case PASTEBUFFER_MODE:
 				case TEXT_MODE:
@@ -718,7 +719,7 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 			SetMode(POLYGONHOLE_MODE);
 			break;
 		case F_Release:
-			if ((mid_stroke) && (Settings.EnableStroke))
+			if ((mid_stroke) && (conf_core.editor.enable_stroke))
 				stub_stroke_finish();
 			else
 				ReleaseMode();
@@ -733,21 +734,21 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 			SetMode(ROTATE_MODE);
 			break;
 		case F_Stroke:
-			if (Settings.EnableStroke) {
+			if (conf_core.editor.enable_stroke) {
 				stub_stroke_start();
 				break;
 			}
 			/* Handle middle mouse button restarts of drawing mode.  If not in
 			   |  a drawing mode, middle mouse button will select objects.
 			 */
-			if (Settings.Mode == LINE_MODE && Crosshair.AttachedLine.State != STATE_FIRST) {
+			if (conf_core.editor.mode == LINE_MODE && Crosshair.AttachedLine.State != STATE_FIRST) {
 				SetMode(LINE_MODE);
 			}
-			else if (Settings.Mode == ARC_MODE && Crosshair.AttachedBox.State != STATE_FIRST)
+			else if (conf_core.editor.mode == ARC_MODE && Crosshair.AttachedBox.State != STATE_FIRST)
 				SetMode(ARC_MODE);
-			else if (Settings.Mode == RECTANGLE_MODE && Crosshair.AttachedBox.State != STATE_FIRST)
+			else if (conf_core.editor.mode == RECTANGLE_MODE && Crosshair.AttachedBox.State != STATE_FIRST)
 				SetMode(RECTANGLE_MODE);
-			else if (Settings.Mode == POLYGON_MODE && Crosshair.AttachedLine.State != STATE_FIRST)
+			else if (conf_core.editor.mode == POLYGON_MODE && Crosshair.AttachedLine.State != STATE_FIRST)
 				SetMode(POLYGON_MODE);
 			else {
 				SaveMode();
@@ -1067,10 +1068,10 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 	switch (type) {
 	case LINE_TYPE:
 		notify_crosshair_change(false);
-		Settings.LineThickness = ((LineTypePtr) ptr2)->Thickness;
-		Settings.Keepaway = ((LineTypePtr) ptr2)->Clearance / 2;
+		conf_core.design.line_thickness = ((LineTypePtr) ptr2)->Thickness;
+		conf_core.design.keepaway = ((LineTypePtr) ptr2)->Clearance / 2;
 		layer = (LayerTypePtr) ptr1;
-		if (Settings.Mode != LINE_MODE)
+		if (conf_core.editor.mode != LINE_MODE)
 			SetMode(LINE_MODE);
 		notify_crosshair_change(true);
 		hid_action("RouteStylesChanged");
@@ -1078,10 +1079,10 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 
 	case ARC_TYPE:
 		notify_crosshair_change(false);
-		Settings.LineThickness = ((ArcTypePtr) ptr2)->Thickness;
-		Settings.Keepaway = ((ArcTypePtr) ptr2)->Clearance / 2;
+		conf_core.design.line_thickness = ((ArcTypePtr) ptr2)->Thickness;
+		conf_core.design.keepaway = ((ArcTypePtr) ptr2)->Clearance / 2;
 		layer = (LayerTypePtr) ptr1;
-		if (Settings.Mode != ARC_MODE)
+		if (conf_core.editor.mode != ARC_MODE)
 			SetMode(ARC_MODE);
 		notify_crosshair_change(true);
 		hid_action("RouteStylesChanged");
@@ -1093,10 +1094,10 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 
 	case VIA_TYPE:
 		notify_crosshair_change(false);
-		Settings.ViaThickness = ((PinTypePtr) ptr2)->Thickness;
-		Settings.ViaDrillingHole = ((PinTypePtr) ptr2)->DrillingHole;
-		Settings.Keepaway = ((PinTypePtr) ptr2)->Clearance / 2;
-		if (Settings.Mode != VIA_MODE)
+		conf_core.design.via_thickness = ((PinTypePtr) ptr2)->Thickness;
+		conf_core.design.via_drilling_hole = ((PinTypePtr) ptr2)->DrillingHole;
+		conf_core.design.keepaway = ((PinTypePtr) ptr2)->Clearance / 2;
+		if (conf_core.editor.mode != VIA_MODE)
 			SetMode(VIA_MODE);
 		notify_crosshair_change(true);
 		hid_action("RouteStylesChanged");

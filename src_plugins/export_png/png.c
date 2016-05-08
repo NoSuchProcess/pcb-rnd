@@ -25,6 +25,7 @@
  */
 
 #include "config.h"
+#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -457,12 +458,13 @@ void png_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 
 	memcpy(saved_layer_stack, LayerStack, sizeof(LayerStack));
 	save_flags = PCB->Flags;
-	saved_show_solder_side = Settings.ShowSolderSide;
+	saved_show_solder_side = conf_core.editor.show_solder_side;
 
 	as_shown = options[HA_as_shown].int_value;
 	if (!options[HA_as_shown].int_value) {
 		CLEAR_FLAG(SHOWMASKFLAG, PCB);
-		Settings.ShowSolderSide = 0;
+#warning TODO: this should not happen here
+		conf_core.editor.show_solder_side = 0;
 
 		comp_layer = GetLayerGroupNumberByNumber(component_silk_layer);
 		solder_layer = GetLayerGroupNumberByNumber(solder_silk_layer);
@@ -506,11 +508,11 @@ void png_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	lastbrush = (gdImagePtr) ((void *) -1);
 	lastcap = -1;
 	lastgroup = -1;
-	show_solder_side = Settings.ShowSolderSide;
+	show_solder_side = conf_core.editor.show_solder_side;
 
 	in_mono = options[HA_mono].int_value;
 
-	if (!photo_mode && Settings.ShowSolderSide) {
+	if (!photo_mode && conf_core.editor.show_solder_side) {
 		int i, j;
 		for (i = 0, j = max_copper_layer - 1; i < j; i++, j--) {
 			int k = LayerStack[i];
@@ -523,7 +525,7 @@ void png_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 
 	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
 	PCB->Flags = save_flags;
-	Settings.ShowSolderSide = saved_show_solder_side;
+	conf_core.editor.show_solder_side = saved_show_solder_side;
 }
 
 static void blend(color_struct * dest, float a_amount, color_struct * a, color_struct * b)

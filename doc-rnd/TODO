@@ -1,4 +1,6 @@
 - replace settings with lihata (conf_*)
+	- shouldn't segfault if pcb-conf.lht is missing (embedded version?)
+	- PCB->Grid and friends: what should we load from the design?
 	- replace hid_load_settings() with lihata
 	- revise main.c, line by line
 	- setting prio (top pri to bottom prio):

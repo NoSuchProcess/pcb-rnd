@@ -44,7 +44,7 @@ typedef unsigned int Cardinal;
 /*typedef unsigned int	Pixel;*/
 typedef char *String;
 typedef short Position;
-typedef short Dimension;
+typedef short dimension_t;
 #endif
 typedef unsigned char BYTE;
 

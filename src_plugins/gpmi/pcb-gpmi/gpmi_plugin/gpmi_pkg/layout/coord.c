@@ -1,5 +1,6 @@
 #include "layout.h"
 #include "src/pcb-printf.h"
+#include "src/conf_core.h"
 
 double mil2pcb_multiplier()
 {
@@ -13,7 +14,7 @@ double mm2pcb_multiplier()
 
 const char *current_grid_unit()
 {
-	const Unit *u = Settings.grid_unit;
+	const Unit *u = conf_core.editor.grid_unit;
 	if (u == NULL)
 		return "";
 	return u->suffix;
