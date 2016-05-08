@@ -1890,6 +1890,12 @@ static GtkTreeIter *config_tree_auto_mkdirp(GtkTreeStore *model, GtkTreeIter *ma
 	return cwd;
 }
 
+static int config_tree_auto_cmp(const void *v1, const void *v2)
+{
+	const htsp_entry_t **e1 = (const htsp_entry_t **)v1, **e2 = (const htsp_entry_t **)v2;
+	return strcmp((*e1)->key, (*e2)->key);
+}
+
 /* Automatically create a subtree using the central config field hash */
 static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 {
@@ -1898,12 +1904,23 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 	char path[1024];
 	GtkTreeIter *parent;
 	GtkWidget *tab;
+	htsp_entry_t **sorted;
+	int num_paths, n;
 
-#warning TODO: alpha-sort
-
+	/* remember the parent for each dir */
 	dirs = htsp_alloc(strhash, keyeq);
-	for (e = htsp_first(conf_fields); e; e = htsp_next(conf_fields, e)) {
+
+	/* alpha sort keys for the more consistend UI */
+	for (e = htsp_first(conf_fields), num_paths = 0; e; e = htsp_next(conf_fields, e))
+		num_paths++;
+	sorted = malloc(sizeof(htsp_entry_t *) * num_paths);
+	for (e = htsp_first(conf_fields), n = 0; e; e = htsp_next(conf_fields, e), n++)
+		sorted[n] = e;
+	qsort(sorted, num_paths, sizeof(htsp_entry_t *), config_tree_auto_cmp);
+
+	for (n = 0; n < num_paths; n++) {
 		char *basename;
+		e = sorted[n];
 		if (strlen(e->key) > sizeof(path)-1) {
 			Message("Warning: can't create config item for %s: path too long\n", e->key);
 			continue;
@@ -1918,9 +1935,9 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 		basename++;
 		parent = config_tree_auto_mkdirp(model, main_parent, dirs, path);
 		tab = config_tree_leaf(model, parent, basename, NULL);
-
 	}
 	htsp_free(dirs);
+	free(sorted);
 }
 
 void ghid_config_window_show(void)
