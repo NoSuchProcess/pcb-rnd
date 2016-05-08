@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <genht/htsp.h>
 #include <genht/hash.h>
 #include "conf.h"
 #include "hid_cfg.h"
@@ -9,7 +8,7 @@
 #warning TODO: this should do settings_postproc too
 
 static lht_doc_t *conf_root[CFR_max];
-static htsp_t *conf_fields = NULL;
+htsp_t *conf_fields = NULL;
 
 /*static lht_doc_t *conf_plugin;*/
 

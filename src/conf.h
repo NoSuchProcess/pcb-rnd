@@ -5,6 +5,8 @@
 #include "pcb-printf.h"
 #include <liblihata/lihata.h>
 #include <liblihata/dom.h>
+#include <genht/htsp.h>
+
 
 typedef enum {
 	POL_PREPEND,
@@ -108,6 +110,8 @@ int conf_set_from_cli(const char *arg_, char **why);
 #define conf_reg_field(globvar,   field,isarray,type_name,cpath,cname) \
 	conf_reg_field_ ## isarray(globvar, field,type_name,cpath "/" cname)
 
+/* all configuration fields ever seen */
+extern htsp_t *conf_fields;
 
 /****** utility ******/
 
