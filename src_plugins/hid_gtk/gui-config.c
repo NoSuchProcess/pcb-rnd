@@ -1829,7 +1829,7 @@ static void config_selection_changed_cb(GtkTreeSelection * selection, gpointer d
 	gtk_notebook_set_current_page(config_notebook, page);
 }
 
-/* Create a root (e.g. Config PoV) top level in the preference tree */
+/* Create a root (e.g. Config PoV) top level in the preference tree; iter is output and acts as a parent for further nodes */
 static void config_tree_root(GtkTreeStore *model, GtkTreeIter *iter, const char *name, const char *desc)
 {
 	GtkWidget *vbox, *label;
@@ -1842,6 +1842,20 @@ static void config_tree_root(GtkTreeStore *model, GtkTreeIter *iter, const char 
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 }
 
+/* Create a leaf node with a custom tab */
+static void config_tree_leaf(GtkTreeStore *model, GtkTreeIter *parent, const char *name, void (*tab_create)(GtkWidget *tab_vbox))
+{
+	GtkTreeIter iter;
+	GtkWidget *vbox;
+
+	gtk_tree_store_append(model, &iter, parent);
+	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, name, -1);
+	vbox = config_page_create(model, &iter, config_notebook);
+	tab_create(vbox);
+}
+
+
+
 void ghid_config_window_show(void)
 {
 	GtkWidget *widget, *main_vbox, *vbox, *config_hbox, *hbox;
@@ -1849,7 +1863,7 @@ void ghid_config_window_show(void)
 	GtkWidget *button;
 	GtkTreeStore *model;
 	GtkTreeView *treeview;
-	GtkTreeIter iter, user_pov, config_pov;
+	GtkTreeIter user_pov, config_pov;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *select;
@@ -1881,52 +1895,20 @@ void ghid_config_window_show(void)
 	config_notebook = GTK_NOTEBOOK(widget);
 	gtk_notebook_set_show_tabs(config_notebook, FALSE);
 
+	/* build the tree */
 	model = gtk_tree_store_new(N_CONFIG_COLUMNS, G_TYPE_STRING, G_TYPE_INT);
-
 
 	config_tree_root(model, &user_pov,   _("User PoV"),   _("\n<b>User PoV</b>\nA subset of configuration settings regroupped, presented in the User's Point of View."));
 	config_tree_root(model, &config_pov, _("Config PoV"), _("\n<b>Config PoV</b>\nAccess all configuration fields presented in a tree that matches the configuration file (lht) structure."));
 
-	/* -- General -- */
-	gtk_tree_store_append(model, &iter, &user_pov);
-	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, _("General"), -1);
-	vbox = config_page_create(model, &iter, config_notebook);
-	config_general_tab_create(vbox);
+	config_tree_leaf(model, &user_pov, _("General"), config_general_tab_create);
+	config_tree_leaf(model, &user_pov, _("Sizes"), config_sizes_tab_create);
+	config_tree_leaf(model, &user_pov, _("Increments"), config_increments_tab_create);
+	config_tree_leaf(model, &user_pov, _("Library"), config_library_tab_create);
+	config_tree_leaf(model, &user_pov, _("Layers"), config_layers_tab_create);
+	config_tree_leaf(model, &user_pov, _("Colors"), config_colors_tab_create);
 
-	/* -- Sizes -- */
-	gtk_tree_store_append(model, &iter, &user_pov);
-	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, _("Sizes"), -1);
-	vbox = config_page_create(model, &iter, config_notebook);
-	config_sizes_tab_create(vbox);
-
-	/* -- Increments -- */
-	gtk_tree_store_append(model, &iter, &user_pov);
-	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, _("Increments"), -1);
-	vbox = config_page_create(model, &iter, config_notebook);
-	config_increments_tab_create(vbox);
-
-	/* -- Library -- */
-	gtk_tree_store_append(model, &iter, &user_pov);
-	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, _("Library"), -1);
-	vbox = config_page_create(model, &iter, config_notebook);
-	config_library_tab_create(vbox);
-
-	/* -- Layer names and groups -- */
-	gtk_tree_store_append(model, &iter, &user_pov);
-	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, _("Layers"), -1);
-	vbox = config_page_create(model, &iter, config_notebook);
-	config_layers_tab_create(vbox);
-
-
-	/* -- Colors -- */
-	gtk_tree_store_append(model, &iter, &user_pov);
-	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, _("Colors"), -1);
-	vbox = config_page_create(model, &iter, config_notebook);
-	config_colors_tab_create(vbox);
-
-
-	/* Create the tree view
-	 */
+	/* Create the tree view */
 	treeview = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(model)));
 	g_object_unref(G_OBJECT(model));	/* Don't need the model anymore */
 
