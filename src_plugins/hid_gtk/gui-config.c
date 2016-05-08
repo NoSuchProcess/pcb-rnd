@@ -1829,6 +1829,19 @@ static void config_selection_changed_cb(GtkTreeSelection * selection, gpointer d
 	gtk_notebook_set_current_page(config_notebook, page);
 }
 
+/* Create a root (e.g. Config PoV) top level in the preference tree */
+static void config_tree_root(GtkTreeStore *model, GtkTreeIter *iter, const char *name, const char *desc)
+{
+	GtkWidget *vbox, *label;
+	gtk_tree_store_append(model, iter, NULL);
+	gtk_tree_store_set(model, iter, CONFIG_NAME_COLUMN, name, -1);
+	vbox = config_page_create(model, iter, config_notebook);
+	label = gtk_label_new("");
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_label_set_markup(GTK_LABEL(label), desc);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+}
+
 void ghid_config_window_show(void)
 {
 	GtkWidget *widget, *main_vbox, *vbox, *config_hbox, *hbox;
@@ -1836,7 +1849,7 @@ void ghid_config_window_show(void)
 	GtkWidget *button;
 	GtkTreeStore *model;
 	GtkTreeView *treeview;
-	GtkTreeIter iter;
+	GtkTreeIter iter, user_pov, config_pov;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *select;
@@ -1871,40 +1884,42 @@ void ghid_config_window_show(void)
 	model = gtk_tree_store_new(N_CONFIG_COLUMNS, G_TYPE_STRING, G_TYPE_INT);
 
 
+	config_tree_root(model, &user_pov,   _("User PoV"),   _("\n<b>User PoV</b>\nA subset of configuration settings regroupped, presented in the User's Point of View."));
+	config_tree_root(model, &config_pov, _("Config PoV"), _("\n<b>Config PoV</b>\nAccess all configuration fields presented in a tree that matches the configuration file (lht) structure."));
+
 	/* -- General -- */
-	gtk_tree_store_append(model, &iter, NULL);
+	gtk_tree_store_append(model, &iter, &user_pov);
 	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, _("General"), -1);
 	vbox = config_page_create(model, &iter, config_notebook);
 	config_general_tab_create(vbox);
 
-
 	/* -- Sizes -- */
-	gtk_tree_store_append(model, &iter, NULL);
+	gtk_tree_store_append(model, &iter, &user_pov);
 	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, _("Sizes"), -1);
 	vbox = config_page_create(model, &iter, config_notebook);
 	config_sizes_tab_create(vbox);
 
 	/* -- Increments -- */
-	gtk_tree_store_append(model, &iter, NULL);
+	gtk_tree_store_append(model, &iter, &user_pov);
 	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, _("Increments"), -1);
 	vbox = config_page_create(model, &iter, config_notebook);
 	config_increments_tab_create(vbox);
 
 	/* -- Library -- */
-	gtk_tree_store_append(model, &iter, NULL);
+	gtk_tree_store_append(model, &iter, &user_pov);
 	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, _("Library"), -1);
 	vbox = config_page_create(model, &iter, config_notebook);
 	config_library_tab_create(vbox);
 
 	/* -- Layer names and groups -- */
-	gtk_tree_store_append(model, &iter, NULL);
+	gtk_tree_store_append(model, &iter, &user_pov);
 	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, _("Layers"), -1);
 	vbox = config_page_create(model, &iter, config_notebook);
 	config_layers_tab_create(vbox);
 
 
 	/* -- Colors -- */
-	gtk_tree_store_append(model, &iter, NULL);
+	gtk_tree_store_append(model, &iter, &user_pov);
 	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, _("Colors"), -1);
 	vbox = config_page_create(model, &iter, config_notebook);
 	config_colors_tab_create(vbox);
