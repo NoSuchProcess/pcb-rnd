@@ -31,6 +31,7 @@
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
+#include <genht/hash.h>
 
 #include "gui.h"
 #include "hid.h"
@@ -46,6 +47,7 @@
 #include "pcb-printf.h"
 #include "set.h"
 #include "hid_attrib.h"
+#include "conf.h"
 
 /* for MKDIR() */
 #include "compat_fs.h"
@@ -1843,7 +1845,7 @@ static void config_tree_sect(GtkTreeStore *model, GtkTreeIter *parent, GtkTreeIt
 }
 
 /* Create a leaf node with a custom tab */
-static void config_tree_leaf(GtkTreeStore *model, GtkTreeIter *parent, const char *name, void (*tab_create)(GtkWidget *tab_vbox))
+static GtkWidget *config_tree_leaf(GtkTreeStore *model, GtkTreeIter *parent, const char *name, void (*tab_create)(GtkWidget *tab_vbox))
 {
 	GtkTreeIter iter;
 	GtkWidget *vbox;
@@ -1851,10 +1853,75 @@ static void config_tree_leaf(GtkTreeStore *model, GtkTreeIter *parent, const cha
 	gtk_tree_store_append(model, &iter, parent);
 	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, name, -1);
 	vbox = config_page_create(model, &iter, config_notebook);
-	tab_create(vbox);
+	if (tab_create != NULL)
+		tab_create(vbox);
+	return vbox;
 }
 
+static int keyeq(char *a, char *b)
+{
+	return !strcmp(a, b);
+}
 
+static GtkTreeIter *config_tree_auto_mkdirp(GtkTreeStore *model, GtkTreeIter *main_parent, htsp_t *dirs, char *path)
+{
+	char *basename;
+	GtkTreeIter *parent, *cwd;
+
+	cwd = htsp_get(dirs, path);
+	if (cwd != NULL)
+		return cwd;
+
+	cwd = malloc(sizeof(GtkTreeIter));
+	htsp_set(dirs, path, cwd);
+
+	basename = strrchr(path, '/');
+	if (basename == NULL) {
+		parent = main_parent;
+		basename = path;
+	}
+	else {
+		*basename = '\0';
+		basename++;
+		parent = config_tree_auto_mkdirp(model, main_parent, dirs, path);
+	}
+
+	config_tree_sect(model, parent, cwd, basename, "");
+	return cwd;
+}
+
+/* Automatically create a subtree using the central config field hash */
+static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
+{
+	htsp_t *dirs;
+	htsp_entry_t *e;
+	char path[1024];
+	GtkTreeIter *parent;
+	GtkWidget *tab;
+
+#warning TODO: alpha-sort
+
+	dirs = htsp_alloc(strhash, keyeq);
+	for (e = htsp_first(conf_fields); e; e = htsp_next(conf_fields, e)) {
+		char *basename;
+		if (strlen(e->key) > sizeof(path)-1) {
+			Message("Warning: can't create config item for %s: path too long\n", e->key);
+			continue;
+		}
+		strcpy(path, e->key);
+		basename = strrchr(path, '/');
+		if ((basename == NULL) || (basename == path)) {
+			Message("Warning: can't create config item for %s: invalid path\n", e->key);
+			continue;
+		}
+		*basename = '\0';
+		basename++;
+		parent = config_tree_auto_mkdirp(model, main_parent, dirs, path);
+		tab = config_tree_leaf(model, parent, basename, NULL);
+
+	}
+	htsp_free(dirs);
+}
 
 void ghid_config_window_show(void)
 {
@@ -1907,6 +1974,8 @@ void ghid_config_window_show(void)
 	config_tree_leaf(model, &user_pov, _("Library"), config_library_tab_create);
 	config_tree_leaf(model, &user_pov, _("Layers"), config_layers_tab_create);
 	config_tree_leaf(model, &user_pov, _("Colors"), config_colors_tab_create);
+
+	config_tree_auto(model, &config_pov);
 
 	/* Create the tree view */
 	treeview = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(model)));
