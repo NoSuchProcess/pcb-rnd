@@ -313,23 +313,21 @@ static void set_special_grid_color(void)
 		gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);
 }
 
-void ghid_set_special_colors(HID_Attribute * ha)
+void ghid_set_special_colors(conf_native_t *cfg)
 {
 	render_priv *priv = gport->render_priv;
 
-	if (!ha->name || !ha->value)
-		return;
-	if (!strcmp(ha->name, "background-color") && priv->bg_gc) {
-		ghid_map_color_string(*(char **) ha->value, &gport->bg_color);
+	if ((cfg->val.color == &conf_core.appearance.color.background) && priv->bg_gc) {
+		ghid_map_color_string(cfg->val.color[0], &gport->bg_color);
 		gdk_gc_set_foreground(priv->bg_gc, &gport->bg_color);
 		set_special_grid_color();
 	}
-	else if (!strcmp(ha->name, "off-limit-color") && priv->offlimits_gc) {
-		ghid_map_color_string(*(char **) ha->value, &gport->offlimits_color);
+	else if ((cfg->val.color == &conf_core.appearance.color.off_limit) && priv->offlimits_gc) {
+		ghid_map_color_string(cfg->val.color[0], &gport->offlimits_color);
 		gdk_gc_set_foreground(priv->offlimits_gc, &gport->offlimits_color);
 	}
-	else if (!strcmp(ha->name, "grid-color") && priv->grid_gc) {
-		ghid_map_color_string(*(char **) ha->value, &gport->grid_color);
+	else if ((cfg->val.color == &conf_core.appearance.color.grid) && priv->grid_gc) {
+		ghid_map_color_string(cfg->val.color[0], &gport->grid_color);
 		set_special_grid_color();
 	}
 }

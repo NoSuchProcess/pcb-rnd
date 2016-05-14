@@ -85,13 +85,6 @@ enum ColorTypes {
 	LAYER_SELECTED_COLOR
 };
 
-typedef struct {
-	HID_Attribute *attributes;
-	enum ColorTypes type;
-	GdkColor color;
-	gboolean color_is_mapped;
-} ConfigColor;
-
 static GList *config_color_list, *lib_newlib_list;
 
 static gchar *lib_newlib_config, *board_size_override;
@@ -99,7 +92,7 @@ static gchar *lib_newlib_config, *board_size_override;
 
 static gchar *color_file;
 
-extern void ghid_set_special_colors(HID_Attribute * ha);
+extern void ghid_set_special_colors(conf_native_t *cfg);
 
 
 #define PCB_CONFIG_DIR	".pcb"
@@ -228,7 +221,6 @@ void ghid_config_init(void)
 	HID_AttrNode *ha;
 	HID_Attribute *a;
 	ConfigAttribute *ca, dummy_attribute;
-	ConfigColor *cc;
 	gint len;
 
 	ghidgui->n_mode_button_columns = 3;
@@ -267,24 +259,6 @@ void ghid_config_init(void)
 					break;
 				*(char **) a->value = g_strdup(a->default_val.str_value);
 				ca->type = CONFIG_String;
-
-				len = strlen(a->name);
-				if (len < 7 || strstr(a->name, "color") == NULL)
-					break;
-
-				cc = g_new0(ConfigColor, 1);
-				cc->attributes = a;
-
-				if (!strncmp(a->name, "layer-color", 11))
-					cc->type = LAYER_COLOR;
-				else if (!strncmp(a->name, "layer-selected-color", 20))
-					cc->type = LAYER_SELECTED_COLOR;
-				else if (!strncmp(a->name + len - 14, "selected-color", 14))
-					cc->type = MISC_SELECTED_COLOR;
-				else
-					cc->type = MISC_COLOR;
-
-				config_color_list = g_list_append(config_color_list, cc);
 				break;
 
 			case HID_Enum:
@@ -412,60 +386,6 @@ static void config_file_read(void)
 	}
 
 	fclose(f);
-}
-
-static void config_colors_write(gchar * path)
-{
-	FILE *f;
-	GList *list;
-	HID_Attribute *ha;
-	ConfigColor *cc;
-
-	if ((f = fopen(path, "w")) == NULL)
-		return;
-	for (list = config_color_list; list; list = list->next) {
-		cc = (ConfigColor *) list->data;
-		ha = cc->attributes;
-		fprintf(f, "%s =\t%s\n", ha->name, *(char **) ha->value);
-	}
-	fclose(f);
-}
-
-static gboolean config_colors_read(gchar * path)
-{
-	FILE *f;
-	GList *list;
-	ConfigColor *cc;
-	HID_Attribute *ha;
-	gchar *s, buf[512], option[64], arg[512];
-
-	if (!path || !*path || (f = fopen(path, "r")) == NULL)
-		return FALSE;
-
-	while (fgets(buf, sizeof(buf), f)) {
-		sscanf(buf, "%63s %511[^\n]", option, arg);
-		s = option;									/* Strip trailing ':' or '=' */
-		while (*s && *s != ':' && *s != '=')
-			++s;
-		*s = '\0';
-		s = arg;										/* Strip leading ':', '=', and whitespace */
-		while (*s == ' ' || *s == '\t' || *s == ':' || *s == '=')
-			++s;
-
-		for (list = config_color_list; list; list = list->next) {
-			cc = (ConfigColor *) list->data;
-			ha = cc->attributes;
-			if (!strcmp(option, ha->name)) {
-				*(char **) ha->value = g_strdup(s);
-				cc->color_is_mapped = FALSE;
-				ghid_set_special_colors(ha);
-				break;
-			}
-		}
-	}
-	fclose(f);
-
-	return TRUE;
 }
 
 static gchar *expand_dir(gchar * dir)
@@ -663,7 +583,6 @@ void ghid_config_files_read(gint * argc, gchar *** argv)
 	ghid_config_init();
 	load_rc_files();
 	config_file_read();
-	config_colors_read(color_file);
 	(*argc)--;
 	(*argv)++;
 	parse_optionv(argc, argv, TRUE);
@@ -1522,140 +1441,85 @@ static void config_color_file_set_label(void)
 	g_free(str);
 }
 
-static void config_color_defaults_cb(gpointer data)
-{
-	GList *list;
-	ConfigColor *cc;
-	HID_Attribute *ha;
 
-	for (list = config_color_list; list; list = list->next) {
-		cc = (ConfigColor *) list->data;
-		ha = cc->attributes;
-		dup_string((char **) ha->value, ha->default_val.str_value);
-		cc->color_is_mapped = FALSE;
-		ghid_set_special_colors(ha);
-	}
-
-	dup_string(&color_file, "");
-	ghidgui->config_modified = TRUE;
-
-	gtk_widget_set_sensitive(config_colors_save_button, FALSE);
-	gtk_widget_set_sensitive(config_color_warn_label, FALSE);
-	config_color_file_set_label();
-	config_colors_modified = FALSE;
-
-	ghid_layer_buttons_color_update();
-
-	/* Receate the colors config page to pick up new colors.
-	 */
-	gtk_widget_destroy(config_colors_vbox);
-	config_colors_tab_create(config_colors_tab_vbox);
-
-	ghid_invalidate_all();
-}
-
-static void config_color_load_cb(gpointer data)
-{
-	gchar *path, *dir = g_strdup(color_dir);
-
-	path = ghid_dialog_file_select_open(_("Load Color File"), &dir, NULL);
-	if (path) {
-		config_colors_read(path);
-		dup_string(&color_file, path);
-		ghidgui->config_modified = TRUE;
-
-		gtk_widget_set_sensitive(config_colors_save_button, FALSE);
-		gtk_widget_set_sensitive(config_color_warn_label, FALSE);
-		config_color_file_set_label();
-		config_colors_modified = FALSE;
-	}
-	g_free(path);
-	g_free(dir);
-
-	/* Receate the colors config page to pick up new colors.
-	 */
-	gtk_widget_destroy(config_colors_vbox);
-	config_colors_tab_create(config_colors_tab_vbox);
-
-	ghid_layer_buttons_color_update();
-	ghid_invalidate_all();
-}
-
-static void config_color_save_cb(gpointer data)
-{
-	gchar *name, *path, *dir = g_strdup(color_dir);
-
-	path = ghid_dialog_file_select_save(_("Save Color File"), &dir, NULL, NULL);
-	if (path) {
-		name = g_path_get_basename(path);
-		if (!strcmp(name, "default"))
-			ghid_dialog_message(_("Sorry, not overwriting the default color file!"));
-		else {
-			config_colors_write(path);
-			dup_string(&color_file, path);
-			ghidgui->config_modified = TRUE;
-
-			gtk_widget_set_sensitive(config_colors_save_button, FALSE);
-			gtk_widget_set_sensitive(config_color_warn_label, FALSE);
-			config_color_file_set_label();
-			config_colors_modified = FALSE;
-		}
-		g_free(name);
-	}
-	g_free(path);
-	g_free(dir);
-}
-
-static void config_color_set_cb(GtkWidget * button, ConfigColor * cc)
+static void config_color_set_cb(GtkWidget * button, conf_native_t *cfg)
 {
 	GdkColor new_color;
-	HID_Attribute *ha = cc->attributes;
 	gchar *str;
+
+#warning TODO: save this in cfg
+	GdkColor color;
+
 
 	gtk_color_button_get_color(GTK_COLOR_BUTTON(button), &new_color);
 	str = ghid_get_color_name(&new_color);
-	ghid_map_color_string(str, &cc->color);
-	*(char **) ha->value = str;
-/*	g_free(str);		Memory leak */
+#warning TODO: save the new value then update the config
+	g_free(str);
 
 	config_colors_modified = TRUE;
 	gtk_widget_set_sensitive(config_colors_save_button, TRUE);
 	gtk_widget_set_sensitive(config_color_warn_label, TRUE);
 
-	ghid_set_special_colors(ha);
+	ghid_set_special_colors(cfg);
 	ghid_layer_buttons_color_update();
 	ghid_invalidate_all();
 }
 
-static void config_color_button_create(GtkWidget * box, ConfigColor * cc)
+static void config_color_button_create(GtkWidget * box, conf_native_t *cfg, int idx)
 {
 	GtkWidget *button, *hbox, *label;
-	HID_Attribute *ha = cc->attributes;
 	gchar *title;
+
+#warning TODO: save this in cfg
+	GdkColor color;
 
 	hbox = gtk_hbox_new(FALSE, 6);
 	gtk_box_pack_start(GTK_BOX(box), hbox, FALSE, FALSE, 0);
 
-	if (!cc->color_is_mapped)
-		ghid_map_color_string(*(char **) ha->value, &cc->color);
-	cc->color_is_mapped = TRUE;
+/*	if (!cc->color_is_mapped)*/
+	ghid_map_color_string(cfg->val.color[idx], &color);
 
-	title = g_strdup_printf(_("PCB %s Color"), ha->name);
-	button = gtk_color_button_new_with_color(&cc->color);
+	title = g_strdup_printf(_("PCB %s Color"), cfg->description);
+	button = gtk_color_button_new_with_color(&color);
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(button), title);
 	g_free(title);
 
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-	label = gtk_label_new(ha->name);
+	label = gtk_label_new(cfg->description);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(button), "color-set", G_CALLBACK(config_color_set_cb), cc);
+	g_signal_connect(G_OBJECT(button), "color-set", G_CALLBACK(config_color_set_cb), cfg);
+}
+
+void config_colors_tab_create_scalar(GtkWidget *parent_vbox, const char *path_prefix, int selected)
+{
+	htsp_entry_t *e;
+	int pl = strlen(path_prefix);
+
+	conf_fields_foreach(e) {
+		conf_native_t *cfg = e->value;
+		if ((strncmp(e->key, path_prefix, pl) == 0) && (cfg->type == CFN_COLOR)) {
+			int is_selected = (strstr(e->key, "_selected") != NULL);
+			if (is_selected == selected)
+				config_color_button_create(parent_vbox, cfg, 0);
+		}
+	}
+}
+
+void config_colors_tab_create_array(GtkWidget *parent_vbox, const char *path)
+{
+	conf_native_t *cfg = conf_get_field(path);
+	int n;
+	if (cfg->type != CFN_COLOR)
+		return;
+
+	for(n = 0; n < cfg->used; n++)
+		config_color_button_create(parent_vbox, cfg, n);
 }
 
 static void config_colors_tab_create(GtkWidget * tab_vbox)
 {
 	GtkWidget *scrolled_vbox, *vbox, *hbox, *expander, *sep;
 	GList *list;
-	ConfigColor *cc;
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
@@ -1673,12 +1537,7 @@ static void config_colors_tab_create(GtkWidget * tab_vbox)
 	gtk_container_add(GTK_CONTAINER(expander), vbox);
 	vbox = ghid_category_vbox(vbox, NULL, 0, 2, TRUE, FALSE);
 
-	for (list = config_color_list; list; list = list->next) {
-		cc = (ConfigColor *) list->data;
-		if (cc->type != MISC_COLOR)
-			continue;
-		config_color_button_create(vbox, cc);
-	}
+	config_colors_tab_create_scalar(vbox, "appearance/color", 0);
 
 	/* ---- Layer colors ---- */
 	expander = gtk_expander_new(_("Layer colors"));
@@ -1687,12 +1546,7 @@ static void config_colors_tab_create(GtkWidget * tab_vbox)
 	gtk_container_add(GTK_CONTAINER(expander), vbox);
 	vbox = ghid_category_vbox(vbox, NULL, 0, 2, TRUE, FALSE);
 
-	for (list = config_color_list; list; list = list->next) {
-		cc = (ConfigColor *) list->data;
-		if (cc->type != LAYER_COLOR)
-			continue;
-		config_color_button_create(vbox, cc);
-	}
+	config_colors_tab_create_array(vbox, "appearance/color/layer");
 
 	/* ---- Selected colors ---- */
 	expander = gtk_expander_new(_("Selected colors"));
@@ -1701,20 +1555,11 @@ static void config_colors_tab_create(GtkWidget * tab_vbox)
 	gtk_container_add(GTK_CONTAINER(expander), vbox);
 	vbox = ghid_category_vbox(vbox, NULL, 0, 2, TRUE, FALSE);
 
-	for (list = config_color_list; list; list = list->next) {
-		cc = (ConfigColor *) list->data;
-		if (cc->type != MISC_SELECTED_COLOR)
-			continue;
-		config_color_button_create(vbox, cc);
-	}
+	config_colors_tab_create_scalar(vbox, "appearance/color", 1);
+
 	sep = gtk_hseparator_new();
-	gtk_box_pack_start(GTK_BOX(vbox), sep, FALSE, FALSE, 2);
-	for (list = config_color_list; list; list = list->next) {
-		cc = (ConfigColor *) list->data;
-		if (cc->type != LAYER_SELECTED_COLOR)
-			continue;
-		config_color_button_create(vbox, cc);
-	}
+
+	config_colors_tab_create_array(vbox, "appearance/color/layer_selected");
 
 	config_color_warn_label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(config_color_warn_label), TRUE);
@@ -1730,9 +1575,8 @@ static void config_colors_tab_create(GtkWidget * tab_vbox)
 	config_color_file_set_label();
 	gtk_box_pack_start(GTK_BOX(hbox), config_color_file_label, FALSE, FALSE, 0);
 
-	ghid_button_connected(hbox, NULL, FALSE, FALSE, FALSE, 4, config_color_load_cb, NULL, _("Load"));
-	ghid_button_connected(hbox, &config_colors_save_button, FALSE, FALSE, FALSE, 4, config_color_save_cb, NULL, _("Save"));
-	ghid_button_connected(hbox, NULL, FALSE, FALSE, FALSE, 4, config_color_defaults_cb, NULL, _("Defaults"));
+#warning TODO: do we need special buttons here?
+/*	ghid_button_connected(hbox, NULL, FALSE, FALSE, FALSE, 4, config_color_defaults_cb, NULL, _("Defaults"));*/
 
 	gtk_widget_set_sensitive(config_colors_save_button, config_colors_modified);
 	gtk_widget_set_sensitive(config_color_warn_label, config_colors_modified);
@@ -1858,6 +1702,60 @@ static GtkWidget *config_tree_leaf(GtkTreeStore *model, GtkTreeIter *parent, con
 	return vbox;
 }
 
+/***** auto *****/
+static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename, conf_native_t *item)
+{
+	GtkWidget *vbox, *label;
+	GtkWidget *w;
+
+	gtk_container_set_border_width(GTK_CONTAINER(tab_vbox), 6);
+	vbox = ghid_category_vbox(tab_vbox, basename, 4, 2, TRUE, TRUE);
+	label = gtk_label_new(item->description);
+
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+
+	switch(item->type) {
+		case CFN_STRING:
+			w = gtk_entry_new();
+			gtk_entry_set_text(GTK_ENTRY(w), *item->val.string);
+			gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 4);
+			break;
+		case CFN_COORD:
+			w = ghid_coord_entry_new(10, 15000, 2000000, conf_core.editor.grid_unit, CE_TINY);
+			gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 4);
+			break;
+		case CFN_INTEGER:
+			w = gtk_adjustment_new(15,
+																							10, /* min */
+																							20,
+																							1, 10, /* steps */
+																							0.0);
+			gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 4);
+			break;
+		case CFN_REAL:
+			w = gtk_adjustment_new(15.5,
+																							10, /* min */
+																							20,
+																							1, 10, /* steps */
+																							0.0);
+			gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 4);
+			break;
+		case CFN_BOOLEAN:
+			ghid_check_button_connected(vbox, NULL, *item->val.boolean,
+															TRUE, FALSE, FALSE, 2,
+															config_command_window_toggle_cb, NULL, _("todo81"));
+			break;
+		case CFN_UNIT:
+		case CFN_COLOR:
+		case CFN_LIST:
+/*			gtk_entry_set_text(GTK_ENTRY(entry), *item->val.string);
+			gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 4);*/
+			break;
+	}
+}
+
+
+
 static int keyeq(char *a, char *b)
 {
 	return !strcmp(a, b);
@@ -1935,6 +1833,7 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 		basename++;
 		parent = config_tree_auto_mkdirp(model, main_parent, dirs, path);
 		tab = config_tree_leaf(model, parent, basename, NULL);
+		config_auto_tab_create(tab, basename, e->value);
 	}
 	htsp_free(dirs);
 	free(sorted);
