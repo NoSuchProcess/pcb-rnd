@@ -366,7 +366,6 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 	assert(htsp_get(conf_fields, (char *)path) == NULL);
 
 	node = malloc(sizeof(conf_native_t));
-	node->description = "n/a";
 	node->array_size  = array_size;
 	node->type        = type;
 	node->val.any     = value;
@@ -374,6 +373,8 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 	node->used        = 0;
 	node->description = desc;
 	node->hash_path   = path;
+	vtp0_init(&node->hid_data);
+
 	htsp_set(conf_fields, (char *)path, node);
 
 }
@@ -595,3 +596,4 @@ void conf_init(void)
 	p->data.text.value = strdup("500");
 	lht_dom_hash_put(n, p);
 }
+

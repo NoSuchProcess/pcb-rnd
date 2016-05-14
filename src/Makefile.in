@@ -17,6 +17,7 @@ put /local/pcb/OBJS [@
 	change_act.o
 	conf.o
 	conf_core.o
+	conf_hid.o
 	clip.o
 	compat_dl.o
 	compat_fs.o
@@ -122,6 +123,7 @@ put /local/pcb/OBJS [@
 	../src_3rd/liblihata/genht/htpi.o
 	../src_3rd/liblihata/genht/htip.o
 	../src_3rd/genvector/gds_char.o
+	../src_3rd/genvector/vtp0.o
 @]
 
 # main: language generator files

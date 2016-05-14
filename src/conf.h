@@ -6,6 +6,7 @@
 #include <liblihata/lihata.h>
 #include <liblihata/dom.h>
 #include <genht/htsp.h>
+#include <genvector/vtp0.h>
 
 
 typedef enum {
@@ -65,6 +66,9 @@ typedef struct {
 	confitem_t val;   /* value is always an array (len 1 for the common case)  */
 	confprop_t *prop; /* an array of properies allocated as big as val's array */
 	int used;         /* number of items actually used in the arrays */
+
+	/* dynamic fields for HIDs storing their data */
+	vtp0_t *hid_data;
 } conf_native_t;
 
 typedef struct conf_listitem_s conf_listitem_t;
@@ -95,7 +99,6 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 
 /* Print all configuration items to f, prefixing each line with prefix */
 void conf_dump(FILE *f, const char *prefix, int verbose);
-
 
 int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_policy_t pol);
 
