@@ -43,7 +43,6 @@ void conf_hid_uninit(void)
 
 conf_hid_id_t conf_hid_reg(const char *cookie, const conf_hid_callbacks_t *cb)
 {
-	int id;
 	conf_hid_t *h;
 
 	if (cookie == NULL)
@@ -57,7 +56,7 @@ conf_hid_id_t conf_hid_reg(const char *cookie, const conf_hid_callbacks_t *cb)
 	h->cb = cb;
 	h->id = conf_hid_id_next++;
 	htpp_set(conf_hid_ids, (void *)cookie, h);
-	return id;
+	return h->id;
 }
 
 void conf_hid_unreg(const char *cookie)
