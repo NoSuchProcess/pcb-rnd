@@ -90,7 +90,7 @@ void conf_init(void);
 void conf_update(void);
 
 conf_native_t *conf_get_field(const char *path);
-void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path);
+void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc);
 
 /* Print all configuration items to f, prefixing each line with prefix */
 void conf_dump(FILE *f, const char *prefix, int verbose);
@@ -100,15 +100,15 @@ int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_po
 
 int conf_set_from_cli(const char *arg_, char **why);
 
-#define conf_reg_field_array(globvar, field, type_name, path) \
-	conf_reg_field_(&globvar.field, (sizeof(globvar.field) / sizeof(globvar.field[0])), type_name, path)
+#define conf_reg_field_array(globvar, field, type_name, path, desc) \
+	conf_reg_field_(&globvar.field, (sizeof(globvar.field) / sizeof(globvar.field[0])), type_name, path, desc)
 
-#define conf_reg_field_scalar(globvar, field, type_name, path) \
-	conf_reg_field_(&globvar.field, 1, type_name, path)
+#define conf_reg_field_scalar(globvar, field, type_name, path, desc) \
+	conf_reg_field_(&globvar.field, 1, type_name, path, desc)
 
 /* register a config field, array or scalar, selecting the right macro */
-#define conf_reg_field(globvar,   field,isarray,type_name,cpath,cname) \
-	conf_reg_field_ ## isarray(globvar, field,type_name,cpath "/" cname)
+#define conf_reg_field(globvar,   field,isarray,type_name,cpath,cname, desc) \
+	conf_reg_field_ ## isarray(globvar, field,type_name,cpath "/" cname, desc)
 
 /* all configuration fields ever seen */
 extern htsp_t *conf_fields;

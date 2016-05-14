@@ -353,7 +353,7 @@ static int keyeq(char *a, char *b)
 	return !strcmp(a, b);
 }
 
-void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path)
+void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc)
 {
 	conf_native_t *node;
 
@@ -372,6 +372,7 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 	node->val.any     = value;
 	node->prop        = calloc(sizeof(confprop_t), array_size);
 	node->used        = 0;
+	node->description = desc;
 	htsp_set(conf_fields, (char *)path, node);
 }
 

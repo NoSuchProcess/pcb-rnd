@@ -23,6 +23,7 @@ awk '
 	/CFT_/ {
 		if (level < 1)
 			next
+
 		name=$0
 		sub("^.*CFT_", "CFN_", name)
 		sub(";.*", "", name)
@@ -37,9 +38,21 @@ awk '
 		gsub("/", ".", id)
 		id = id "." name
 
+		desc = $0
+		if (desc ~ "/[*]") {
+			sub("^.*/[*]", "", desc)
+			sub("[*]/.*$", "", desc)
+			sub("^[ \t]*", "", desc)
+			sub("[ \t]*$", "", desc)
+		}
+		else
+			desc = ""
+		if (desc == "")
+			desc = "<" name ">"
+
 		path_tmp=path
 		sub("^/", "", path_tmp)
-		printf("conf_reg(%-36s %s %-16s %-25s %s)\n", id cm, (array ? "array, " : "scalar,"), type cm, q path_tmp q cm, q name q)
+		printf("conf_reg(%-36s %s %-16s %-25s %-25s %s)\n", id cm, (array ? "array, " : "scalar,"), type cm, q path_tmp q cm, q name q cm, q desc q)
 		
 	}
 
