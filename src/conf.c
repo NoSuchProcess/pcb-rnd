@@ -373,7 +373,9 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 	node->prop        = calloc(sizeof(confprop_t), array_size);
 	node->used        = 0;
 	node->description = desc;
+	node->hash_path   = path;
 	htsp_set(conf_fields, (char *)path, node);
+
 }
 
 conf_native_t *conf_get_field(const char *path)

@@ -57,6 +57,7 @@ typedef struct {
 typedef struct {
 	/* static fields defined by the macros */
 	const char *description;
+	const char *hash_path;     /* points to the hash key once its added in the hash (else: NULL) */
 	int array_size;
 	conf_native_type_t type;
 
