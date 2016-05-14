@@ -68,7 +68,7 @@ typedef struct {
 	int used;         /* number of items actually used in the arrays */
 
 	/* dynamic fields for HIDs storing their data */
-	vtp0_t *hid_data;
+	vtp0_t hid_data;
 } conf_native_t;
 
 typedef struct conf_listitem_s conf_listitem_t;

@@ -1,6 +1,8 @@
 #ifndef PCB_CONF_HID_H
 #define PCB_CONF_HID_H
 
+#include "conf.h"
+
 typedef struct conf_hid_callbacks_s {
 	/* Called before/after a value of a config item is changed */
 	void (*val_change_pre)(conf_native_t *cfg, int arr_idx);
