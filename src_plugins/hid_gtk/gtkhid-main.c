@@ -26,8 +26,11 @@
 #include "hid_flags.h"
 #include "hid_actions.h"
 
+#include "gtkhid.h"
+
 RCSID("$Id$");
 
+conf_hid_id_t ghid_conf_id = -1;
 
 static void pan_common(GHidPort * port)
 {
@@ -1992,6 +1995,9 @@ pcb_uninit_t hid_hid_gtk_init()
 
 	ghid_hid.notify_save_pcb = ghid_notify_save_pcb;
 	ghid_hid.notify_filename_changed = ghid_notify_filename_changed;
+
+#warning TODO: call cond_hid_unreg on uninit
+	ghid_conf_id = conf_hid_reg(ghid_cookie, NULL);
 
 	ghid_hid.create_menu = ghid_create_menu;
 

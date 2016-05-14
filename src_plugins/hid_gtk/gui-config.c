@@ -1447,10 +1447,6 @@ static void config_color_set_cb(GtkWidget * button, conf_native_t *cfg)
 	GdkColor new_color;
 	gchar *str;
 
-#warning TODO: save this in cfg
-	GdkColor color;
-
-
 	gtk_color_button_get_color(GTK_COLOR_BUTTON(button), &new_color);
 	str = ghid_get_color_name(&new_color);
 #warning TODO: save the new value then update the config
@@ -1469,18 +1465,20 @@ static void config_color_button_create(GtkWidget * box, conf_native_t *cfg, int 
 {
 	GtkWidget *button, *hbox, *label;
 	gchar *title;
-
-#warning TODO: save this in cfg
-	GdkColor color;
+	GdkColor *color = conf_hid_get_data(cfg, ghid_conf_id);
 
 	hbox = gtk_hbox_new(FALSE, 6);
 	gtk_box_pack_start(GTK_BOX(box), hbox, FALSE, FALSE, 0);
 
-/*	if (!cc->color_is_mapped)*/
-	ghid_map_color_string(cfg->val.color[idx], &color);
+	if (color == NULL) {
+		color = calloc(sizeof(GdkColor), cfg->array_size);
+		conf_hid_set_data(cfg, ghid_conf_id, color);
+	}
+
+	ghid_map_color_string(cfg->val.color[idx], &(color[idx]));
 
 	title = g_strdup_printf(_("PCB %s Color"), cfg->description);
-	button = gtk_color_button_new_with_color(&color);
+	button = gtk_color_button_new_with_color(&(color[idx]));
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(button), title);
 	g_free(title);
 
@@ -1497,7 +1495,7 @@ void config_colors_tab_create_scalar(GtkWidget *parent_vbox, const char *path_pr
 
 	conf_fields_foreach(e) {
 		conf_native_t *cfg = e->value;
-		if ((strncmp(e->key, path_prefix, pl) == 0) && (cfg->type == CFN_COLOR)) {
+		if ((strncmp(e->key, path_prefix, pl) == 0) && (cfg->type == CFN_COLOR) && (cfg->array_size == 1)) {
 			int is_selected = (strstr(e->key, "_selected") != NULL);
 			if (is_selected == selected)
 				config_color_button_create(parent_vbox, cfg, 0);
