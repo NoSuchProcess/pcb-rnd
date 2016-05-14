@@ -10,14 +10,15 @@ typedef struct {
 
 void *conf_hid_set_data(conf_native_t *cfg, conf_hid_id_t id, void *data)
 {
-	void *old = vtp0_get(&cfg->hid_data, id, 0);
+	void **old = vtp0_get(&cfg->hid_data, id, 0);
 	vtp0_set(&cfg->hid_data, id, data);
-	return old;
+	return old == NULL ? NULL : *old;
 }
 
 void *conf_hid_get_data(conf_native_t *cfg, conf_hid_id_t id)
 {
-	return vtp0_get(&cfg->hid_data, id, 0);
+	void **old = vtp0_get(&cfg->hid_data, id, 0);
+	return old == NULL ? NULL : *old;
 }
 
 static int conf_hid_id_next = 0;
