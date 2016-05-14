@@ -135,6 +135,9 @@ do { \
 } while(0)
 
 
+/* htsp_entry_t *e; */
+#define conf_fields_foreach(e) \
+	for (e = htsp_first(conf_fields); e; e = htsp_next(conf_fields, e))
 
 #endif
 
