@@ -914,6 +914,7 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 {
 	GtkWidget *vbox;
 	Coord *target;
+	Increments *inc;
 
 	/* Need a vbox we can destroy if user changes grid units.
 	 */
@@ -925,26 +926,27 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 		config_increments_tab_vbox = tab_vbox;
 	}
 
-#warning TODO: increment is disbaled in conf_core - figure how to do this
-#if 0
+#warning TODO: dual unit increments
 	/* ---- Grid Increment/Decrement ---- */
 	vbox = ghid_category_vbox(config_increments_vbox, _("Grid Increment/Decrement"), 4, 2, TRUE, TRUE);
 
-	target = &Settings.increments->grid;
+	inc = &conf_core.editor.increments_mm;
+
+	target = &inc->grid;
 	ghid_coord_entry(vbox, NULL,
-									 Settings.increments->grid,
-									 Settings.increments->grid_min,
-									 Settings.increments->grid_max,
+									 inc->grid,
+									 inc->grid_min,
+									 inc->grid_max,
 									 CE_SMALL, 0, increment_spin_button_cb, target, FALSE, _("For 'g' and '<shift>g' grid change actions"));
 
 	/* ---- Size Increment/Decrement ---- */
 	vbox = ghid_category_vbox(config_increments_vbox, _("Size Increment/Decrement"), 4, 2, TRUE, TRUE);
 
-	target = &Settings.increments->size;
+	target = &inc->size;
 	ghid_coord_entry(vbox, NULL,
-									 Settings.increments->size,
-									 Settings.increments->size_min,
-									 Settings.increments->size_max,
+									 inc->size,
+									 inc->size_min,
+									 inc->size_max,
 									 CE_SMALL, 0, increment_spin_button_cb,
 									 target, FALSE,
 									 _("For 's' and '<shift>s' size change actions on lines,\n"
@@ -953,27 +955,26 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 	/* ---- Line Increment/Decrement ---- */
 	vbox = ghid_category_vbox(config_increments_vbox, _("Line Increment/Decrement"), 4, 2, TRUE, TRUE);
 
-	target = &Settings.increments->line;
+	target = &inc->line;
 	ghid_coord_entry(vbox, NULL,
-									 Settings.increments->line,
-									 Settings.increments->line_min,
-									 Settings.increments->line_max,
+									 inc->line,
+									 inc->line_min,
+									 inc->line_max,
 									 CE_SMALL, 0, increment_spin_button_cb,
 									 target, FALSE, _("For 'l' and '<shift>l' routing line width change actions"));
 
 	/* ---- Clear Increment/Decrement ---- */
 	vbox = ghid_category_vbox(config_increments_vbox, _("Clear Increment/Decrement"), 4, 2, TRUE, TRUE);
 
-	target = &Settings.increments->clear;
+	target = &inc->clear;
 	ghid_coord_entry(vbox, NULL,
-									 Settings.increments->clear,
-									 Settings.increments->clear_min,
-									 Settings.increments->clear_max,
+									 inc->clear,
+									 inc->clear_min,
+									 inc->clear_max,
 									 CE_SMALL, 0, increment_spin_button_cb,
 									 target, FALSE, _("For 'k' and '<shift>k' line clearance inside polygon size\n" "change actions"));
 
 	gtk_widget_show_all(config_increments_vbox);
-#endif
 }
 
 	/* -------------- The Library config page ----------------
