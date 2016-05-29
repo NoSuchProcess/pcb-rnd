@@ -1809,7 +1809,7 @@ yyreduce:
 			  PCBTypePtr pcb_save = PCB;
 
 			  if (layer_group_string == NULL)
-			    layer_group_string = strdup(conf_core.rc.groups);
+			    layer_group_string = strdup(conf_core.design.groups);
 			  CreateNewPCBPost (yyPCB, 0);
 			  if (ParseGroupString(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN))
 			    {

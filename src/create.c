@@ -175,10 +175,10 @@ PCBTypePtr CreateNewPCB_(bool SetDefaultNames)
 	if (conf_core.editor.auto_drc)
 		SET_FLAG(AUTODRCFLAG, ptr);
 	ptr->Grid = conf_core.editor.grid;
-	ParseGroupString(conf_core.rc.groups, &ptr->LayerGroups, MAX_LAYER);
+	ParseGroupString(conf_core.design.groups, &ptr->LayerGroups, MAX_LAYER);
 	STYLE_LOOP(ptr);
 	{
-		char *s = &conf_core.rc.routes[n];
+		char *s = &conf_core.design.routes[n];
 		ParseRoutingString1(&s, style, "mil");
 		style->index = n;
 	}

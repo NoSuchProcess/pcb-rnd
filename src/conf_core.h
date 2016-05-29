@@ -65,10 +65,6 @@ typedef struct {
 		CFT_LIST default_font_file;  /* name of default font file */
 		CFT_LIST default_pcb_file;
 
-#warning move these two to design
-		CFT_STRING groups;                 /* string with layergroups */
-		CFT_STRING routes;                 /* string with route styles */
-
 		CFT_STRING script_filename;        /* PCB Actions script to execute on startup */
 		CFT_STRING action_string;          /* PCB Actions string to execute on startup */
 		CFT_STRING rat_path;
@@ -101,6 +97,9 @@ typedef struct {
 		CFT_STRING background_image;            /* PPM file for board background */
 		CFT_STRING fab_author;                  /* Full name of author for FAB drawings */
 		CFT_STRING initial_layer_stack;         /* If set, the initial layer stack is set to this */
+
+		CFT_STRING groups;                 /* string with layergroups */
+		CFT_STRING routes;                 /* string with route styles */
 	} design;
 
 /* @path appearance/color */

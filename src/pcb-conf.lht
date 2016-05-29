@@ -61,8 +61,6 @@ li:pcb_config {
 				{./default.pcb}
 				{$SHAREDIR/default.pcb}
 			}
-			groups = {}
-			routes = {}
 
 #			script_filename = {}
 #			action_string = {}
@@ -93,6 +91,8 @@ li:pcb_config {
 #			background_image = {}
 #			fab_author = {}
 #			initial_layer_stack = {}
+#			groups = {}
+#			routes = {}
 	} # design
 
 		ha:appearance {
