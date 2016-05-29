@@ -20,6 +20,8 @@ awk '
 			path = path "/" name
 	}
 
+	/^[ \t]*[/][/]/ { next }
+
 	/CFT_/ {
 		if (level < 1)
 			next
