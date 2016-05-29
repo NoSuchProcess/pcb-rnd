@@ -35,12 +35,13 @@
 
 static const char conf_syntax[] =
 	"conf(dump, [verbose], [prefix]) - dump the current config tree to stdout\n"
+	"conf(dumplht, role, [prefix]) - dump in-memory lihata representation of a config tree\n"
 	"conf(set,  path, value, [role], [policy]) - change a config setting\n"
 	;
 
 static const char conf_help[] = "Perform various operations on the configuration tree.";
 
-
+extern lht_doc_t *conf_root[];
 static int ActionConf(int argc, char **argv, Coord x, Coord y)
 {
 	char *cmd = argc > 0 ? argv[0] : 0;
@@ -55,7 +56,27 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 		conf_dump(stdout, prefix, verbose);
 	}
 
-	if (NSTRCMP(cmd, "set") == 0) {
+	else if (NSTRCMP(cmd, "dumplht") == 0) {
+		conf_role_t role;
+		const char *prefix = "";
+		if (argc <= 1) {
+			Message("conf(dumplht) needs a role");
+			return 1;
+		}
+		role = conf_role_parse(argv[1]);
+		if (role == CFR_invalid) {
+			Message("Invalid role: '%s'", argv[3]);
+			return 1;
+		}
+		if (argc > 2)
+			prefix = argv[2];
+		if (conf_root[role] != NULL)
+			lht_dom_export(conf_root[role]->root, stdout, prefix);
+		else
+			printf("%s <empty>\n", prefix);
+	}
+
+	else if (NSTRCMP(cmd, "set") == 0) {
 		char *path, *val;
 		conf_policy_t pol = POL_OVERWRITE;
 		conf_role_t role = CFR_PROJECT;
@@ -80,10 +101,16 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 		}
 		path = argv[1];
 		val = argv[2];
-		if (conf_set(role, path, val, pol) != 0) {
+		if (conf_set(role, path, -1, val, pol) != 0) {
 			Message("conf(set) failed.\n");
 			return 1;
 		}
+		conf_update();
+	}
+
+	else {
+		Message("Invalid conf command '%s'\n", argv[0]);
+		return 1;
 	}
 	return 0;
 }
@@ -92,7 +119,6 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 HID_Action debug_action_list[] = {
 	{"conf", 0, ActionConf,
 	 conf_help, conf_syntax}
-	,
 };
 
 static const char *debug_cookie = "debug plugin";
