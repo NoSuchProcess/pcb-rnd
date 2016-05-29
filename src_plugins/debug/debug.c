@@ -27,10 +27,35 @@
 #include "config.h"
 #include "global.h"
 #include "data.h"
+#include "debug_conf.h"
 #include "action_helper.h"
 #include "plugins.h"
 
+static const char conf_syntax[] =
+	"djopt(dump, [verbose], [prefix]) - dump the current config tree to stdout\n";
+
+static const char conf_help[] = "Perform various operations on the configuration tree.";
+
+
+static int ActionConf(int argc, char **argv, Coord x, Coord y)
+{
+	char *cmd = argc > 0 ? argv[0] : 0;
+	if (NSTRCMP(cmd, "dump") == 0) {
+		int verbose;
+		const char *prefix = "";
+		if (argc > 1)
+			verbose = atoi(argv[1]);
+		if (argc > 2)
+			prefix = argv[2];
+		conf_dump(stdout, prefix, verbose);
+	}
+}
+
+
 HID_Action debug_action_list[] = {
+	{"conf", 0, ActionConf,
+	 conf_help, conf_syntax}
+	,
 };
 
 static const char *debug_cookie = "debug plugin";
