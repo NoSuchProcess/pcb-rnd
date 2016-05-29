@@ -399,29 +399,52 @@ conf_native_t *conf_get_field(const char *path)
 
 int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_policy_t pol)
 {
-	char *path, *basename, *next, *last;
-	conf_native_t *nat = conf_get_field(path_);
+	char *path, *basename, *next, *last, *sidx;
+	conf_native_t *nat;
 	lht_node_t *cwd, *nn;
 	lht_node_type_t ty;
+	int idx = -1;
 
-	if (nat == NULL)
+	path = strdup(path_);
+	sidx = strrchr(path, '[');
+	if (sidx != NULL) {
+		char *end;
+		*sidx = '\0';
+		sidx++;
+		idx = strtol(sidx, &end, 10);
+		if ((*end != ']') || (strchr(sidx, '/') != NULL)) {
+			free(path);
+			return -1;
+		}
+	}
+
+	nat = conf_get_field(path);
+	if (nat == NULL) {
+		free(path);
 		return -1;
-	if (conf_root[target] == NULL)
+	}
+	if (conf_root[target] == NULL) {
+		free(path);
 		return -1;
-	if (pol == POL_DISABLE)
+	}
+	if (pol == POL_DISABLE) {
+		free(path);
 		return 0;
+	}
 
 	/* assume root is a li and add to the first hash */
 	cwd = conf_root[target]->root;
-	if ((cwd == NULL) || (cwd->type != LHT_LIST))
+	if ((cwd == NULL) || (cwd->type != LHT_LIST)) {
+		free(path);
 		return -1;
+	}
 	cwd = cwd->data.list.first;
-	if ((cwd == NULL) || (cwd->type != LHT_HASH))
+	if ((cwd == NULL) || (cwd->type != LHT_HASH)) {
+		free(path);
 		return -1;
+	}
 
-	path = strdup(path_);
 	basename = strrchr(path, '/');
-
 	if (basename == NULL) {
 		free(path);
 		return -1;
@@ -471,13 +494,37 @@ int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_po
 	/* set value */
 	if (ty == LHT_LIST) {
 		lht_err_t err;
-		nn = lht_dom_node_alloc(LHT_TEXT, basename);
+		nn = lht_dom_node_alloc(LHT_TEXT, "");
 		if (pol == POL_OVERWRITE) {
-			/* empty the list so that we insert to an empty list which is overwriting the list */
-			while(cwd->data.list.first != NULL)
-				lht_tree_del(cwd->data.list.first);
+			if (idx == -1) {
+				/* empty the list so that we insert to an empty list which is overwriting the list */
+				while(cwd->data.list.first != NULL)
+					lht_tree_del(cwd->data.list.first);
+			}
+			else {
+#warning TODO: check whether we idx is beyond array size
+				lht_node_t *old = lht_tree_list_nth(cwd, idx);
+				if (old != NULL) {
+					/* the list is large enough already: overwrite the element at idx */
+					lht_tree_list_replace_child(cwd, old, nn);
+				}
+				else {
+					int n;
+					lht_node_t *i;
+					/* count members */
+					for (n = 0, i = cwd->data.list.first; i != NULL && n > 0; i = i->next) n++;
+					/* append just enough elements to get one less than needed */
+					err = 0;
+					for(n = idx - n; n > 0; n--) {
+						lht_node_t *dummy = lht_dom_node_alloc(LHT_TEXT, "");
+						err |= lht_dom_list_append(cwd, dummy);
+					}
+					/* append the new node */
+					err |= lht_dom_list_append(cwd, nn);
+				}
+			}
 		}
-		if ((pol == POL_PREPEND) || (pol == POL_OVERWRITE))
+		else if ((pol == POL_PREPEND) || (pol == POL_OVERWRITE))
 			err = lht_dom_list_insert(cwd, nn);
 		else if (pol == POL_APPEND)
 			err = lht_dom_list_append(cwd, nn);

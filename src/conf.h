@@ -115,6 +115,8 @@ int conf_set_from_cli(const char *arg_, char **why);
 
 /* convert a policy text to policy value - return POL_invalid on error */
 conf_policy_t conf_policy_parse(const char *s);
+
+/* convert a role text to role value - return CFR_invalid on error */
 conf_role_t conf_role_parse(const char *s);
 
 /* all configuration fields ever seen */
