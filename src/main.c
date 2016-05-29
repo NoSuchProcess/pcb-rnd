@@ -491,7 +491,7 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
-	conf_update();
+	conf_load_all();
 
 	setbuf(stdout, 0);
 	InitPaths(argv[0]);

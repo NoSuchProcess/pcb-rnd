@@ -288,6 +288,10 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 		*namee = '\0';
 		target = conf_get_field(path);
 
+		if (target == NULL) {
+			Message("conf error: lht->bin conversion: can't find path '%s' - check your lht!\n", path);
+			continue;
+		}
 		switch(n->type) {
 			case LHT_TEXT:
 				if (target == NULL) {
@@ -351,7 +355,24 @@ int conf_merge_all()
 	return ret;
 }
 
-void conf_update(void)
+static conf_field_clear(conf_native_t *f)
+{
+	f->used = 0;
+}
+
+void conf_update()
+{
+	/* clear all memory-bin data first */
+	htsp_entry_t *e;
+	conf_fields_foreach(e)
+		conf_field_clear(e->value);
+
+	/* merge all memory-lht data to memory-bin */
+	conf_merge_all();
+#warning TODO: notify HIDs about the change; introduce a "version" field in conf_native_t and a global int conf_version; update the version field from conf_version upon change; bump global version on each update() - this how hids know if something has changed
+}
+
+void conf_load_all(void)
 {
 #warning TODO: move paths and order to data (array of strings, oslt)
 #warning TODO: load built-in lht first
@@ -359,6 +380,7 @@ void conf_update(void)
 	conf_load_as(CFR_USER, "~/.pcb-rnd/pcb-conf.lht");
 	conf_load_as(CFR_PROJECT, "./pcb-conf.lht");
 	conf_merge_all();
+#warning TODO: notify HIDs about the change
 }
 
 static int keyeq(char *a, char *b)
