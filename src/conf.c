@@ -518,7 +518,7 @@ int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_po
 	/* set value */
 	if (ty == LHT_LIST) {
 		lht_err_t err;
-		nn = lht_dom_node_alloc(LHT_TEXT, NULL);
+		nn = lht_dom_node_alloc(LHT_TEXT, basename);
 		if (pol == POL_OVERWRITE) {
 			/* empty the list so that we insert to an empty list which is overwriting the list */
 			while(cwd->data.list.first != NULL)
