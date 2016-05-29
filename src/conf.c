@@ -74,6 +74,26 @@ static const int get_hash_int(long *out, lht_node_t *parent, const char *name)
 	return 0;
 }
 
+conf_policy_t conf_policy_parse(const char *s)
+{
+	if (strcasecmp(s, "overwrite") == 0)  return POL_OVERWRITE;
+	if (strcasecmp(s, "prepend") == 0)    return  POL_PREPEND;
+	if (strcasecmp(s, "append") == 0)     return  POL_APPEND;
+	if (strcasecmp(s, "disable") == 0)    return  POL_DISABLE;
+	return POL_invalid;
+}
+
+conf_role_t conf_role_parse(const char *s)
+{
+	if (strcasecmp(s, "system") == 0)  return CFR_SYSTEM;
+	if (strcasecmp(s, "user") == 0)    return CFR_USER;
+	if (strcasecmp(s, "project") == 0) return CFR_PROJECT;
+//	if (strcasecmp(s, "design") == 0)  return CFR_DESIGN;
+	if (strcasecmp(s, "cli") == 0)     return CFR_CLI;
+	return POL_invalid;
+}
+
+
 static const int get_hash_policy(conf_policy_t *out, lht_node_t *parent, const char *name)
 {
 	lht_node_t *n;
@@ -85,15 +105,8 @@ static const int get_hash_policy(conf_policy_t *out, lht_node_t *parent, const c
 	if (s == NULL)
 		return -1;
 
-	if (strcasecmp(s, "overwrite") == 0)
-		p = POL_OVERWRITE;
-	else if (strcasecmp(s, "prepend") == 0)
-		p = POL_PREPEND;
-	else if (strcasecmp(s, "append") == 0)
-		p = POL_APPEND;
-	else if (strcasecmp(s, "disable") == 0)
-		p = POL_DISABLE;
-	else {
+	p = conf_policy_parse(s);
+	if (p == POL_invalid) {
 		hid_cfg_error(parent, "invalid policy %s\n", s);
 		return -1;
 	}

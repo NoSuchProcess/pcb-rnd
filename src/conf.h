@@ -13,7 +13,8 @@ typedef enum {
 	POL_PREPEND,
 	POL_APPEND,
 	POL_OVERWRITE,
-	POL_DISABLE
+	POL_DISABLE,
+	POL_invalid
 } conf_policy_t;
 
 typedef union conflist_u conflist_t;
@@ -88,7 +89,8 @@ typedef enum {
 	CFR_PROJECT,   /* project specific, from a local file */
 /*	CFR_DESIGN,    from the design file */
 	CFR_CLI,       /* from the command line */
-	CFR_max
+	CFR_max,
+	CFR_invalid = CFR_max
 } conf_role_t;
 
 void conf_init(void);
@@ -110,6 +112,10 @@ int conf_set_from_cli(const char *arg_, char **why);
 /* register a config field, array or scalar, selecting the right macro */
 #define conf_reg_field(globvar,   field,isarray,type_name,cpath,cname, desc) \
 	conf_reg_field_ ## isarray(globvar, field,type_name,cpath "/" cname, desc)
+
+/* convert a policy text to policy value - return POL_invalid on error */
+conf_policy_t conf_policy_parse(const char *s);
+conf_role_t conf_role_parse(const char *s);
 
 /* all configuration fields ever seen */
 extern htsp_t *conf_fields;
