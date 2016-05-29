@@ -2183,7 +2183,7 @@ yyreduce:
 #line 825 "parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewRat(yyData, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-4].measure)), NU ((yyvsp[-3].measure)), (yyvsp[-5].integer), (yyvsp[-2].integer),
-					conf_core.design.rat_thickness, (yyvsp[-1].flagtype));
+					conf_core.appearance.rat_thickness, (yyvsp[-1].flagtype));
 			}
 #line 2189 "parse_y.tab.c" /* yacc.c:1646  */
     break;
@@ -2192,7 +2192,7 @@ yyreduce:
 #line 830 "parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewRat(yyData, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-5].integer), (yyvsp[-2].integer),
-					conf_core.design.rat_thickness, OldFlags((yyvsp[-1].integer)));
+					conf_core.appearance.rat_thickness, OldFlags((yyvsp[-1].integer)));
 			}
 #line 2198 "parse_y.tab.c" /* yacc.c:1646  */
     break;

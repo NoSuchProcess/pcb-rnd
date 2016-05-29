@@ -824,12 +824,12 @@ rats
 		: T_RAT '[' measure measure INTEGER measure measure INTEGER flags ']'
 			{
 				CreateNewRat(yyData, NU ($3), NU ($4), NU ($6), NU ($7), $5, $8,
-					conf_core.design.rat_thickness, $9);
+					conf_core.appearance.rat_thickness, $9);
 			}
 		| T_RAT '(' measure measure INTEGER measure measure INTEGER INTEGER ')'
 			{
 				CreateNewRat(yyData, OU ($3), OU ($4), OU ($6), OU ($7), $5, $8,
-					conf_core.design.rat_thickness, OldFlags($9));
+					conf_core.appearance.rat_thickness, OldFlags($9));
 			}
 		;
 

@@ -83,13 +83,9 @@ typedef struct {
 	} rc;
 
 	struct design { /* defaults of a new layout */
-#warning maybe the first 5 and some others should be in editor?
 		CFT_COORD via_thickness;
 		CFT_COORD via_drilling_hole;
-#warning appear?
 		CFT_COORD line_thickness;
-#warning move this to appearance
-		CFT_COORD rat_thickness;
 #warning rename this to clearance?
 		CFT_COORD keepaway;
 
@@ -112,6 +108,7 @@ typedef struct {
 
 /* @path appearance/color */
 	struct appearance {
+		CFT_COORD rat_thickness;
 		struct color {
 			CFT_COLOR black;
 			CFT_COLOR white;

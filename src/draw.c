@@ -543,8 +543,8 @@ static int rat_callback(const BoxType * b, void *cl)
 	else
 		gui->set_color(Output.fgGC, PCB->RatColor);
 
-	if (conf_core.design.rat_thickness < 20)
-		rat->Thickness = pixel_slop * conf_core.design.rat_thickness;
+	if (conf_core.appearance.rat_thickness < 20)
+		rat->Thickness = pixel_slop * conf_core.appearance.rat_thickness;
 	/* rats.c set VIAFLAG if this rat goes to a containing poly: draw a donut */
 	if (TEST_FLAG(VIAFLAG, rat)) {
 		int w = rat->Thickness;
@@ -1317,8 +1317,8 @@ void DrawLine(LayerTypePtr Layer, LineTypePtr Line)
  */
 void DrawRat(RatTypePtr Rat)
 {
-	if (conf_core.design.rat_thickness < 20)
-		Rat->Thickness = pixel_slop * conf_core.design.rat_thickness;
+	if (conf_core.appearance.rat_thickness < 20)
+		Rat->Thickness = pixel_slop * conf_core.appearance.rat_thickness;
 	/* rats.c set VIAFLAG if this rat goes to a containing poly: draw a donut */
 	if (TEST_FLAG(VIAFLAG, Rat)) {
 		Coord w = Rat->Thickness;
