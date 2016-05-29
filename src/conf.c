@@ -20,7 +20,7 @@ int conf_load_as(conf_role_t role, const char *fn)
 		lht_dom_uninit(conf_root[role]);
 	d = hid_cfg_load_lht(fn);
 	if (d == NULL) {
-		Message("error: failed to load lh config: %s\n", fn);
+		Message("error: failed to load lht config: %s\n", fn);
 		conf_root[role] = NULL;
 		return -1;
 	}
