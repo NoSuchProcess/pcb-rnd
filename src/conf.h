@@ -105,7 +105,9 @@ void conf_update(void);
 conf_native_t *conf_get_field(const char *path);
 void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc);
 
-int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_policy_t pol);
+/* Set the value of path[arr_idx] in memory-lht role target to new_val using policy pol. Only lists should
+   be indexed. Indexing can be a [n] suffix on path or a non-negative arr_idx. */
+int conf_set(conf_role_t target, const char *path, int arr_idx, const char *new_val, conf_policy_t pol);
 
 int conf_set_from_cli(const char *arg_, char **why);
 

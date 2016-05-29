@@ -428,7 +428,7 @@ conf_native_t *conf_get_field(const char *path)
 	return htsp_get(conf_fields, (char *)path);
 }
 
-int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_policy_t pol)
+int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol)
 {
 	char *path, *basename, *next, *last, *sidx;
 	conf_native_t *nat;
@@ -447,7 +447,13 @@ int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_po
 			free(path);
 			return -1;
 		}
+		if ((arr_idx >= 0) && (arr_idx != idx)) {
+			free(path);
+			return -1;
+		}
 	}
+	else if (arr_idx >= 0)
+		idx = arr_idx;
 
 	nat = conf_get_field(path);
 	if (nat == NULL) {
@@ -619,7 +625,7 @@ int conf_set_from_cli(const char *arg_, char **why)
 		case '^': pol = POL_PREPEND; break;
 	}
 
-	ret = conf_set(CFR_CLI, arg, val, pol);
+	ret = conf_set(CFR_CLI, arg, -1, val, pol);
 	if (ret != 0)
 		*why = "invalid config path";
 
