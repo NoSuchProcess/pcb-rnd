@@ -1,7 +1,7 @@
 li:pcb_config {
 	ha:main {
 		priority = 100
-		lists = overwrite
+		policy = overwrite
 		ha:editor {
 			grid_unit = mil
 			grid = 25 mil

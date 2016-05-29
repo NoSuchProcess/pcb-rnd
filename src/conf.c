@@ -7,7 +7,7 @@
 
 #warning TODO: this should do settings_postproc too
 
-static lht_doc_t *conf_root[CFR_max];
+lht_doc_t *conf_root[CFR_max];
 htsp_t *conf_fields = NULL;
 
 /*static lht_doc_t *conf_plugin;*/
@@ -201,28 +201,41 @@ int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, conf_p
 int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, conf_policy_t pol)
 {
 	lht_node_t *s;
-	int res;
+	int res, idx, didx;
 
 	if (pol == POL_DISABLE)
 		return 0;
 
 #warning TODO: respect policy
-	for(s = src_lst->data.list.first; s != NULL; s = s->next) {
+	for(s = src_lst->data.list.first, idx = 0; s != NULL; s = s->next, idx++) {
 		if (s->type == LHT_TEXT) {
 
 			if ((dest->prop[dest->used].prio > prio))
 				continue;
 
-			if (dest->used >= dest->array_size) {
-				hid_cfg_error(s, "Array is already full\n");
+			switch(pol) {
+				case POL_PREPEND:
+#warning TODO
+					abort();
+				case POL_APPEND:
+					didx = dest->used++;
+					break;
+				case POL_OVERWRITE:
+					didx = idx;
+				break;
+			}
+
+			if (didx >= dest->array_size) {
+				hid_cfg_error(s, "Array is already full [%d] of [%d] ingored value: '%s' policy=%d\n", dest->used, dest->array_size, s->data.text.value, pol);
 				res = -1;
 				break;
 			}
 
-			if (conf_parse_text(&dest->val, dest->used, dest->type, s->data.text.value, s) == 0) {
-				dest->prop[dest->used].prio = prio;
-				dest->prop[dest->used].src  = s;
-				dest->used++;
+			if (conf_parse_text(&dest->val, didx, dest->type, s->data.text.value, s) == 0) {
+				dest->prop[didx].prio = prio;
+				dest->prop[didx].src  = s;
+				if (didx >= dest->used)
+					dest->used = didx+1;
 			}
 		}
 		else {
@@ -288,14 +301,10 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 		*namee = '\0';
 		target = conf_get_field(path);
 
-		if (target == NULL) {
-			Message("conf error: lht->bin conversion: can't find path '%s' - check your lht!\n", path);
-			continue;
-		}
 		switch(n->type) {
 			case LHT_TEXT:
 				if (target == NULL) {
-					hid_cfg_error(n, "ignoring unrecognized field: %s\n", path);
+					hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht!\n", path);
 					break;
 				}
 				conf_merge_patch_text(target, n, default_prio, default_policy);
@@ -470,15 +479,19 @@ int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_po
 		return -1;
 	}
 
-	basename = strrchr(path, '/');
-	if (basename == NULL) {
-		free(path);
-		return -1;
+	if (idx < 0) {
+		basename = strrchr(path, '/');
+		if (basename == NULL) {
+			free(path);
+			return -1;
+		}
+		*basename = '\0';
+		basename++;
 	}
+	else
+		basename = NULL;
 
 	/* create parents if they do not exist */
-	*basename = '\0';
-	basename++;
 	last = next = path;
 	do {
 		next = strchr(next, '/');
@@ -494,8 +507,8 @@ int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_po
 				free(path);
 				return -1;
 			}
-			cwd = nn;
 		}
+		cwd = nn;
 		if (next != NULL)
 			last = next+1;
 	} while(next != NULL);
@@ -506,15 +519,17 @@ int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_po
 	else
 		ty = LHT_TEXT;
 
-	nn = lht_tree_path_(conf_root[target], cwd, basename, 1, 0, NULL);
-	if (nn == NULL) {
-		nn = lht_dom_node_alloc(ty, basename);
-		if (lht_dom_hash_put(cwd, nn) != LHTE_SUCCESS) {
-			lht_dom_node_free(nn);
-			free(path);
-			return -1;
+	if (basename != NULL) {
+		nn = lht_tree_path_(conf_root[target], cwd, basename, 1, 0, NULL);
+		if (nn == NULL) {
+			nn = lht_dom_node_alloc(ty, basename);
+			if (lht_dom_hash_put(cwd, nn) != LHTE_SUCCESS) {
+				lht_dom_node_free(nn);
+				free(path);
+				return -1;
+			}
+			cwd = nn;
 		}
-		cwd = nn;
 	}
 
 	/* set value */
@@ -532,7 +547,7 @@ int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_po
 				lht_node_t *old = lht_tree_list_nth(cwd, idx);
 				if (old != NULL) {
 					/* the list is large enough already: overwrite the element at idx */
-					lht_tree_list_replace_child(cwd, old, nn);
+					err = lht_tree_list_replace_child(cwd, old, nn);
 				}
 				else {
 					int n;
