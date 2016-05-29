@@ -15,3 +15,4 @@ include {../src_plugins/legacy_func/Plug.tmpasm}
 include {../src_plugins/renumber/Plug.tmpasm}
 include {../src_plugins/stroke/Plug.tmpasm}
 include {../src_plugins/report/Plug.tmpasm}
+include {../src_plugins/debug/Plug.tmpasm}
