@@ -30,9 +30,13 @@
 #include "debug_conf.h"
 #include "action_helper.h"
 #include "plugins.h"
+#include "conf.h"
+#include "error.h"
 
 static const char conf_syntax[] =
-	"djopt(dump, [verbose], [prefix]) - dump the current config tree to stdout\n";
+	"conf(dump, [verbose], [prefix]) - dump the current config tree to stdout\n"
+	"conf(set,  path, value, [role], [policy]) - change a config setting\n"
+	;
 
 static const char conf_help[] = "Perform various operations on the configuration tree.";
 
@@ -40,6 +44,7 @@ static const char conf_help[] = "Perform various operations on the configuration
 static int ActionConf(int argc, char **argv, Coord x, Coord y)
 {
 	char *cmd = argc > 0 ? argv[0] : 0;
+
 	if (NSTRCMP(cmd, "dump") == 0) {
 		int verbose;
 		const char *prefix = "";
@@ -49,6 +54,38 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 			prefix = argv[2];
 		conf_dump(stdout, prefix, verbose);
 	}
+
+	if (NSTRCMP(cmd, "set") == 0) {
+		char *path, *val;
+		conf_policy_t pol = POL_OVERWRITE;
+		conf_role_t role = CFR_PROJECT;
+
+		if (argc < 2) {
+			Message("conf(set) needs at least two arguments");
+			return 1;
+		}
+		if (argc > 2) {
+			role = conf_role_parse(argv[3]);
+			if (role == CFR_invalid) {
+				Message("Invalid role: '%s'", argv[3]);
+				return 1;
+			}
+		}
+		if (argc > 3) {
+			pol = conf_policy_parse(argv[4]);
+			if (pol == POL_invalid) {
+				Message("Invalid policy: '%s'", argv[4]);
+				return 1;
+			}
+		}
+		path = argv[1];
+		val = argv[2];
+		if (conf_set(role, path, val, pol) != 0) {
+			Message("conf(set) failed.\n");
+			return 1;
+		}
+	}
+	return 0;
 }
 
 

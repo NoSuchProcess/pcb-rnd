@@ -1,4 +1,4 @@
-#include "src/conf.h"
+#include "conf.h"
 
 static void conf_dump_(FILE *f, const char *prefix, int verbose, confitem_t *val, conf_native_type_t type, confprop_t *prop, int idx)
 {
