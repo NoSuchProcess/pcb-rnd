@@ -431,6 +431,10 @@ int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_po
 		free(path);
 		return 0;
 	}
+	if ((pol != POL_OVERWRITE) && (idx >= 0)) {
+		free(path);
+		return -1;
+	}
 
 	/* assume root is a li and add to the first hash */
 	cwd = conf_root[target]->root;
@@ -534,6 +538,10 @@ int conf_set(conf_role_t target, const char *path_, const char *new_val, conf_po
 			return -1;
 		}
 		cwd = nn;
+	}
+	else {
+		if (idx >= 0)
+			return -1; /* only lists/array path should have index */
 	}
 
 	/* by now cwd is the text node we need to load with the new value; it is
