@@ -116,6 +116,41 @@ static const int get_hash_policy(conf_policy_t *out, lht_node_t *parent, const c
 	return 0;
 }
 
+static int conf_parse_increments(Increments *inc, lht_node_t *node)
+{
+	lht_node_t *val;
+	
+	if (node->type != LHT_HASH) {
+		hid_cfg_error(node, "Increments need to be a hash\n");
+		return -1;
+	}
+
+#warning TODO: write a new version of GetValue where absolute is optional and error is properly returned
+#define incload(field) \
+	val = lht_dom_hash_get(node, #field); \
+	if (val != NULL) {\
+		if (val->type == LHT_TEXT) \
+			inc->field = GetValue(val->data.text.value, NULL, NULL); \
+		else\
+			hid_cfg_error(node, "increment field " #field " needs to be a text node\n", val); \
+	}
+
+	incload(grid);
+	incload(grid_min);
+	incload(grid_max);
+	incload(size_max);
+	incload(size_min);
+	incload(size_max);
+	incload(line);
+	incload(line_min);
+	incload(line_max);
+	incload(clear);
+	incload(clear_min);
+	incload(clear_max);
+
+#undef incload
+}
+
 int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const char *text, lht_node_t *err_node)
 {
 	char *strue[]  = {"true",  "yes",  "on",   "1", NULL};
@@ -174,6 +209,8 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 			else
 				dst->unit[idx] = u;
 			break;
+		case CFN_INCREMENTS:
+			return conf_parse_increments(&(dst->increments[idx]), err_node);
 		case CFN_COLOR:
 #warning TODO: perhaps make some tests about validity?
 			dst->color[idx] = text;
@@ -310,7 +347,10 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 				conf_merge_patch_text(target, n, default_prio, default_policy);
 				break;
 			case LHT_HASH:
-				res |= conf_merge_patch_recurse(n, default_prio, default_policy, path);
+				if (target == NULL) /* no leaf: another level of structs */
+					res |= conf_merge_patch_recurse(n, default_prio, default_policy, path);
+				else /* leaf: pretend it's text so it gets parsed */
+					conf_merge_patch_text(target, n, default_prio, default_policy);
 				break;
 			case LHT_LIST:
 				if (target->type == CFN_LIST)

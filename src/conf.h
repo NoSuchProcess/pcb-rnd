@@ -5,7 +5,6 @@
 #include "pcb-printf.h"
 #include <liblihata/lihata.h>
 #include <liblihata/dom.h>
-#include <genht/htsp.h>
 #include <genvector/vtp0.h>
 
 
@@ -27,6 +26,7 @@ typedef Coord       CFT_COORD;
 typedef Unit *      CFT_UNIT;
 typedef char *      CFT_COLOR;
 typedef conflist_t  CFT_LIST;
+typedef Increments  CFT_INCREMENTS;
 
 typedef enum {
 	CFN_STRING,
@@ -37,6 +37,7 @@ typedef enum {
 	CFN_UNIT,
 	CFN_COLOR,
 	CFN_LIST,
+	CFN_INCREMENTS
 } conf_native_type_t;
 
 typedef union confitem_u {
@@ -48,6 +49,7 @@ typedef union confitem_u {
 	const Unit **unit;
 	const char **color;
 	conflist_t *list;
+	Increments *increments;
 	void *any;
 } confitem_t ;
 

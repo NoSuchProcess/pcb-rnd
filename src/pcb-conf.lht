@@ -5,6 +5,34 @@ li:pcb_config {
 		ha:editor {
 			grid_unit = mil
 			grid = 25 mil
+			ha:increments_mm {
+				grid=0.1mm
+				grid_min=0.01mm
+				grid_max=1mm
+				size=0.2mm
+				size_min=0.01mm
+				size_max=0.5mm
+				line=0.1mm
+				line_min=0.005mm
+				line_max=9.5mm
+				clear=0.05mm
+				clear_min=0.005mm
+				clear_max=0.5mm
+			}
+			ha:increments_mil {
+				grid=5 mil
+				grid_min=1 mil
+				grid_max=25 mil
+				size=10 mil
+				size_min = 1 mil
+				size_max = 10 mil
+				line=5 mil
+				line_min = 0.5 mil
+				line_max = 10 mil
+				clear=2 mil
+				clear_min = 0.5 mil
+				clear_max = 10 mil
+			}
 			zoom = 1
 			mode = 110
 			buffer_number = 0
@@ -91,8 +119,8 @@ li:pcb_config {
 #			background_image = {}
 #			fab_author = {}
 #			initial_layer_stack = {}
-#			groups = {}
-#			routes = {}
+			groups = {}
+			routes = {}
 	} # design
 
 		ha:appearance {

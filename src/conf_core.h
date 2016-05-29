@@ -14,9 +14,8 @@ typedef struct {
 	struct editor {
 		CFT_UNIT grid_unit;
 		CFT_COORD grid; /* grid in pcb-units */
-#if 0
-	const Increments increments;
-#endif
+		CFT_INCREMENTS increments_mm;
+		CFT_INCREMENTS increments_mil;
 		CFT_REAL zoom; /* default zoom */
 		CFT_INTEGER mode;  /* currently active mode */
 		CFT_INTEGER buffer_number; /* number of the current buffer */

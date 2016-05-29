@@ -10,6 +10,16 @@ static void conf_dump_(FILE *f, const char *prefix, int verbose, confitem_t *val
 		case CFN_COORD:   pcb_fprintf(f, "%$mS", val->coord[idx]); break;
 		case CFN_UNIT:    pcb_fprintf(f, "%s", val->unit[idx] == NULL ? "<NULL>" : val->unit[idx]->suffix); break;
 		case CFN_COLOR:   fprintf(f, "%s", val->color[idx] == NULL ? "<NULL>" : val->color[idx]); break;
+		case CFN_INCREMENTS:
+			{
+				Increments *i = &val->increments[idx];
+				pcb_fprintf(f, "{ grid=%$mS/%$mS/%$mS size=%$mS/%$mS/%$mS line=%$mS/%$mS/%$mS clear=%$mS/%$mS/%$mS}",
+				i->grid, i->grid_min, i->grid_max,
+				i->size, i->size_min, i->size_max,
+				i->line, i->line_min, i->line_max,
+				i->clear, i->clear_min, i->clear_max);
+			}
+			break;
 		case CFN_LIST:
 			{
 				conf_listitem_t *n;
