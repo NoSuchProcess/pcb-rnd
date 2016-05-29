@@ -493,9 +493,6 @@ int main(int argc, char *argv[])
 	}
 	conf_update();
 
-#warning TODO: make this an optional action in a debug plugin
-	conf_dump(stdout, "  ", 1);
-
 	setbuf(stdout, 0);
 	InitPaths(argv[0]);
 
