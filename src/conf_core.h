@@ -61,7 +61,7 @@ typedef struct {
 		CFT_STRING print_file;
 		CFT_STRING library_shell;
 #warning TODO: this should be a list
-/*		CFT_LIST library_search_paths; */
+//		CFT_LIST library_search_paths;
 		CFT_STRING library_search_paths;
 
 		CFT_STRING save_command;
