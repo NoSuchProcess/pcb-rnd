@@ -1441,22 +1441,31 @@ static void config_color_file_set_label(void)
 	g_free(str);
 }
 
+typedef struct {
+	conf_native_t *cfg;
+	int idx;
+} cfg_color_idx_t;
 
-static void config_color_set_cb(GtkWidget * button, conf_native_t *cfg)
+static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t *ci)
 {
 	GdkColor new_color;
 	gchar *str;
 
 	gtk_color_button_get_color(GTK_COLOR_BUTTON(button), &new_color);
 	str = ghid_get_color_name(&new_color);
-#warning TODO: save the new value then update the config
-	g_free(str);
+
+	printf("COLOR IDX: %d\n", ci->idx);
+	conf_set(CFR_PROJECT, ci->cfg->hash_path, ci->idx, str, POL_OVERWRITE);
+	conf_update();
+
+#warning TODO: check whether we need to free this
+//	g_free(str);
 
 	config_colors_modified = TRUE;
 	gtk_widget_set_sensitive(config_colors_save_button, TRUE);
 	gtk_widget_set_sensitive(config_color_warn_label, TRUE);
 
-	ghid_set_special_colors(cfg);
+	ghid_set_special_colors(ci->cfg);
 	ghid_layer_buttons_color_update();
 	ghid_invalidate_all();
 }
@@ -1466,6 +1475,7 @@ static void config_color_button_create(GtkWidget * box, conf_native_t *cfg, int 
 	GtkWidget *button, *hbox, *label;
 	gchar *title;
 	GdkColor *color = conf_hid_get_data(cfg, ghid_conf_id);
+	cfg_color_idx_t *ci;
 
 	hbox = gtk_hbox_new(FALSE, 6);
 	gtk_box_pack_start(GTK_BOX(box), hbox, FALSE, FALSE, 0);
@@ -1485,7 +1495,11 @@ static void config_color_button_create(GtkWidget * box, conf_native_t *cfg, int 
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	label = gtk_label_new(cfg->description);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(button), "color-set", G_CALLBACK(config_color_set_cb), cfg);
+#warning LEAK: this is never free()d
+	ci = malloc(sizeof(cfg_color_idx_t));
+	ci->cfg = cfg;
+	ci->idx = idx;
+	g_signal_connect(G_OBJECT(button), "color-set", G_CALLBACK(config_color_set_cb), ci);
 }
 
 void config_colors_tab_create_scalar(GtkWidget *parent_vbox, const char *path_prefix, int selected)
