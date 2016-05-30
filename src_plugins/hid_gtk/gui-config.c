@@ -960,8 +960,6 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 {
 	GtkWidget *hbox, *vbox, *catvbox;
 
-	/* Need a vbox we can destroy if user changes grid units.
-	 */
 	if (!config_increments_vbox) {
 		hbox = gtk_hbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(tab_vbox), hbox, FALSE, FALSE, 0);
@@ -994,7 +992,6 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 
 	catvbox = ghid_category_vbox (config_increments_vbox, _("Imperial Increment Settings"), 4, 2, TRUE, TRUE);
 	config_increments_sect_create(catvbox, &conf_core.editor.increments_mil, get_unit_struct("mil"));
-
 }
 
 	/* -------------- The Library config page ----------------
@@ -1651,11 +1648,6 @@ void ghid_config_handle_units_changed(void)
 		gtk_widget_destroy(config_sizes_vbox);
 		config_sizes_vbox = NULL;
 		config_sizes_tab_create(config_sizes_tab_vbox);
-	}
-	if (config_increments_vbox) {
-		gtk_widget_destroy(config_increments_vbox);
-		config_increments_vbox = NULL;
-		config_increments_tab_create(config_increments_tab_vbox);
 	}
 	ghidgui->config_modified = TRUE;
 }
