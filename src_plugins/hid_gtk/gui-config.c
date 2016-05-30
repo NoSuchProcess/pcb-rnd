@@ -590,9 +590,9 @@ void ghid_config_files_read(gint * argc, gchar *** argv)
 	if (board_size_override && sscanf(board_size_override, "%dx%d", &width, &height) == 2) {
 		char s[128];
 #warning TODO: this should be CFR_DESIGN
-		pcb_printf(s, "%mS", TO_PCB_UNITS(width));
+		pcb_sprintf(s, "%$mS", width);
 		conf_set(CFR_PROJECT, "design/max_width", -1, s, POL_OVERWRITE);
-		pcb_printf(s, "%mS", TO_PCB_UNITS(height));
+		pcb_sprintf(s, "%$mS", height);
 		conf_set(CFR_PROJECT, "design/max_height", -1, s, POL_OVERWRITE);
 	}
 
@@ -703,8 +703,12 @@ static void config_general_toggle_cb(GtkToggleButton * button, void *setting)
 
 static void config_backup_spin_button_cb(GtkSpinButton * spin_button, gpointer data)
 {
-#warning TODO: this should be more generic and not write this value directly
-	conf_core.rc.backup_interval = gtk_spin_button_get_value_as_int(spin_button);
+	int i;
+	char s[32];
+#warning TODO: this should be CFR_DESIGN or as selected by the user
+	i = gtk_spin_button_get_value_as_int(spin_button);
+	sprintf(s, "%d", i);
+	conf_set(CFR_PROJECT, "rc/backup_interval", -1, s, POL_OVERWRITE);
 	EnableAutosave();
 	ghidgui->config_modified = TRUE;
 }
@@ -773,12 +777,19 @@ static Coord new_board_width, new_board_height;
 static void config_sizes_apply(void)
 {
 	gboolean active;
+	char s[128];
+
+#warning TODO: this should be CFR_DESIGN
+//TO_PCB_UNITS
+	pcb_sprintf(s, "%$mS", (new_board_width));
+	conf_set(CFR_PROJECT, "design/max_width", -1, s, POL_OVERWRITE);
+	pcb_sprintf(s, "%$mS", (new_board_height));
+	conf_set(CFR_PROJECT, "design/max_height", -1, s, POL_OVERWRITE);
+	conf_update();
 
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_board_size_default_button));
 	if (active) {
-#warning TODO: no direct overwrite
-		conf_core.design.max_width = new_board_width;
-		conf_core.design.max_height = new_board_height;
+#warning TODO: what?
 		ghidgui->config_modified = TRUE;
 	}
 
@@ -795,8 +806,8 @@ static void config_sizes_apply(void)
 		ghidgui->config_modified = TRUE;
 	}
 
-	if (PCB->MaxWidth != new_board_width || PCB->MaxHeight != new_board_height)
-		ChangePCBSize(new_board_width, new_board_height);
+	if (PCB->MaxWidth != conf_core.design.max_width || PCB->MaxHeight != conf_core.design.max_height)
+		ChangePCBSize(conf_core.design.max_width, conf_core.design.max_height);
 }
 
 static void text_spin_button_cb(GtkSpinButton * spin, void *dst)
