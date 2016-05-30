@@ -910,71 +910,90 @@ static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
 	ghidgui->config_modified = TRUE;
 }
 
-static void config_increments_tab_create(GtkWidget * tab_vbox)
+static void config_increments_sect_create(GtkWidget * vbox, Increments *inc)
 {
-	GtkWidget *vbox;
 	Coord *target;
-	Increments *inc;
-
-	/* Need a vbox we can destroy if user changes grid units.
-	 */
-	if (!config_increments_vbox) {
-		vbox = gtk_vbox_new(FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, FALSE, FALSE, 0);
-		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
-		config_increments_vbox = vbox;
-		config_increments_tab_vbox = tab_vbox;
-	}
 
 #warning TODO: dual unit increments
 	/* ---- Grid Increment/Decrement ---- */
-	vbox = ghid_category_vbox(config_increments_vbox, _("Grid Increment/Decrement"), 4, 2, TRUE, TRUE);
-
-	inc = &conf_core.editor.increments_mm;
-
 	target = &inc->grid;
 	ghid_coord_entry(vbox, NULL,
 									 inc->grid,
 									 inc->grid_min,
 									 inc->grid_max,
-									 CE_SMALL, 0, increment_spin_button_cb, target, FALSE, _("For 'g' and '<shift>g' grid change actions"));
+									 CE_SMALL, 0, increment_spin_button_cb, target, _("Grid:"), _("For 'g' and '<shift>g' grid change actions"));
 
 	/* ---- Size Increment/Decrement ---- */
-	vbox = ghid_category_vbox(config_increments_vbox, _("Size Increment/Decrement"), 4, 2, TRUE, TRUE);
-
 	target = &inc->size;
 	ghid_coord_entry(vbox, NULL,
 									 inc->size,
 									 inc->size_min,
 									 inc->size_max,
 									 CE_SMALL, 0, increment_spin_button_cb,
-									 target, FALSE,
+									 target, _("Size:"),
 									 _("For 's' and '<shift>s' size change actions on lines,\n"
 										 "pads, pins and text.\n" "Use '<ctrl>s' and '<shift><ctrl>s' for drill holes."));
 
 	/* ---- Line Increment/Decrement ---- */
-	vbox = ghid_category_vbox(config_increments_vbox, _("Line Increment/Decrement"), 4, 2, TRUE, TRUE);
-
 	target = &inc->line;
 	ghid_coord_entry(vbox, NULL,
 									 inc->line,
 									 inc->line_min,
 									 inc->line_max,
 									 CE_SMALL, 0, increment_spin_button_cb,
-									 target, FALSE, _("For 'l' and '<shift>l' routing line width change actions"));
+									 target, _("Line:"), _("For 'l' and '<shift>l' routing line width change actions"));
 
 	/* ---- Clear Increment/Decrement ---- */
-	vbox = ghid_category_vbox(config_increments_vbox, _("Clear Increment/Decrement"), 4, 2, TRUE, TRUE);
-
 	target = &inc->clear;
 	ghid_coord_entry(vbox, NULL,
 									 inc->clear,
 									 inc->clear_min,
 									 inc->clear_max,
 									 CE_SMALL, 0, increment_spin_button_cb,
-									 target, FALSE, _("For 'k' and '<shift>k' line clearance inside polygon size\n" "change actions"));
+									 target, _("Clear:"), _("For 'k' and '<shift>k' line clearance inside polygon size\n" "change actions"));
 
 	gtk_widget_show_all(config_increments_vbox);
+}
+
+static void config_increments_tab_create(GtkWidget * tab_vbox)
+{
+	GtkWidget *hbox, *vbox, *catvbox;
+
+	/* Need a vbox we can destroy if user changes grid units.
+	 */
+	if (!config_increments_vbox) {
+		hbox = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(tab_vbox), hbox, FALSE, FALSE, 0);
+
+		/* the actual content */
+		{
+			vbox = gtk_vbox_new(FALSE, 0);
+			gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
+			gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
+			config_increments_vbox = vbox;
+			config_increments_tab_vbox = tab_vbox;
+		}
+
+#if 0
+		/* box to fill up remaining space */
+		{
+			GtkWidget *dummy_vbox, *label;
+			dummy_vbox = gtk_vbox_new(FALSE, 0);
+			gtk_box_pack_start(GTK_BOX(hbox), dummy_vbox, TRUE, TRUE, 0);
+			gtk_container_set_border_width(GTK_CONTAINER(dummy_vbox), 16);
+
+			label = gtk_label_new("comments");
+			gtk_box_pack_start(GTK_BOX(dummy_vbox), label, TRUE, TRUE, 2);
+		}
+#endif
+	}
+
+	catvbox = ghid_category_vbox (config_increments_vbox, _("Metric Increment Settings"), 4, 2, TRUE, TRUE);
+	config_increments_sect_create(catvbox, &conf_core.editor.increments_mm);
+
+	catvbox = ghid_category_vbox (config_increments_vbox, _("Imperial Increment Settings"), 4, 2, TRUE, TRUE);
+	config_increments_sect_create(catvbox, &conf_core.editor.increments_mil);
+
 }
 
 	/* -------------- The Library config page ----------------

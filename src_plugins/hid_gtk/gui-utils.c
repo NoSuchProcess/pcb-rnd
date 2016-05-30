@@ -234,12 +234,12 @@ ghid_button_connected(GtkWidget * box, GtkWidget ** button,
 void
 ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, Coord value,
 								 Coord low, Coord high, enum ce_step_size step_size,
-								 gint width, void (*cb_func) (GHidCoordEntry *, gpointer), gpointer data, gboolean right_align, gchar * string)
+								 gint width, void (*cb_func) (GHidCoordEntry *, gpointer), gpointer data, gchar * string_pre, gchar * string_post)
 {
 	GtkWidget *hbox = NULL, *label, *entry_widget;
 	GHidCoordEntry *entry;
 
-	if (string && box) {
+	if ((string_pre || string_post) && box) {
 		hbox = gtk_hbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(box), hbox, FALSE, FALSE, 2);
 		box = hbox;
@@ -256,14 +256,13 @@ ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, Coord value,
 	if (cb_func)
 		g_signal_connect(G_OBJECT(entry_widget), "value_changed", G_CALLBACK(cb_func), data);
 	if (box) {
-		if (right_align && string) {
-			label = gtk_label_new(string);
-			gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
-			gtk_box_pack_start(GTK_BOX(box), label, TRUE, TRUE, 2);
+		if (string_pre) {
+			label = gtk_label_new(string_pre);
+			gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 2);
 		}
 		gtk_box_pack_start(GTK_BOX(box), entry_widget, FALSE, FALSE, 2);
-		if (!right_align && string) {
-			label = gtk_label_new(string);
+		if (string_post) {
+			label = gtk_label_new(string_post);
 			gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 			gtk_box_pack_start(GTK_BOX(box), label, TRUE, TRUE, 2);
 		}
