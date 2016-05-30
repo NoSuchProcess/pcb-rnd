@@ -1619,11 +1619,8 @@ static int SetUnits(int argc, char **argv, Coord x, Coord y)
 
 	new_unit = get_unit_struct(argv[0]);
 	if (new_unit != NULL && new_unit->allow != NO_PRINT) {
+#warning TODO: decide what to do with this: some fields are just overwritten by hand
 		conf_core.editor.grid_unit = new_unit;
-#warning TODO
-#if 0
-		Settings.increments = get_increments_struct(Settings.grid_unit->suffix);
-#endif
 		AttributePut(PCB, "PCB::grid::unit", argv[0]);
 	}
 
