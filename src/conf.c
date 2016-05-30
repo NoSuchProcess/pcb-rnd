@@ -138,7 +138,7 @@ static int conf_parse_increments(Increments *inc, lht_node_t *node)
 	incload(grid);
 	incload(grid_min);
 	incload(grid_max);
-	incload(size_max);
+	incload(size);
 	incload(size_min);
 	incload(size_max);
 	incload(line);
