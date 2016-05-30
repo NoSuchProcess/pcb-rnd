@@ -587,10 +587,13 @@ void ghid_config_files_read(gint * argc, gchar *** argv)
 	(*argv)++;
 	parse_optionv(argc, argv, TRUE);
 
-#warning TODO: check why we write conf_core here
 	if (board_size_override && sscanf(board_size_override, "%dx%d", &width, &height) == 2) {
-		conf_core.design.max_width = TO_PCB_UNITS(width);
-		conf_core.design.max_height = TO_PCB_UNITS(height);
+		char s[128];
+#warning TODO: this should be CFR_DESIGN
+		pcb_printf(s, "%mS", TO_PCB_UNITS(width));
+		conf_set(CFR_PROJECT, "design/max_width", -1, s, POL_OVERWRITE);
+		pcb_printf(s, "%mS", TO_PCB_UNITS(height));
+		conf_set(CFR_PROJECT, "design/max_height", -1, s, POL_OVERWRITE);
 	}
 
 	if (lib_newlib_config && *lib_newlib_config)
