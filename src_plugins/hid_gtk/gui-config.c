@@ -910,9 +910,10 @@ static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
 	ghidgui->config_modified = TRUE;
 }
 
-static void config_increments_sect_create(GtkWidget * vbox, Increments *inc)
+static void config_increments_sect_create(GtkWidget * vbox, Increments *inc, const Unit *u)
 {
 	Coord *target;
+	const int width = 128;
 
 #warning TODO: dual unit increments
 	/* ---- Grid Increment/Decrement ---- */
@@ -921,7 +922,7 @@ static void config_increments_sect_create(GtkWidget * vbox, Increments *inc)
 									 inc->grid,
 									 inc->grid_min,
 									 inc->grid_max,
-									 CE_SMALL, 0, increment_spin_button_cb, target, _("Grid:"), _("For 'g' and '<shift>g' grid change actions"));
+									 CE_SMALL, u, width, increment_spin_button_cb, target, _("Grid:"), _("For 'g' and '<shift>g' grid change actions"));
 
 	/* ---- Size Increment/Decrement ---- */
 	target = &inc->size;
@@ -929,7 +930,7 @@ static void config_increments_sect_create(GtkWidget * vbox, Increments *inc)
 									 inc->size,
 									 inc->size_min,
 									 inc->size_max,
-									 CE_SMALL, 0, increment_spin_button_cb,
+									 CE_SMALL, u, width, increment_spin_button_cb,
 									 target, _("Size:"),
 									 _("For 's' and '<shift>s' size change actions on lines,\n"
 										 "pads, pins and text.\n" "Use '<ctrl>s' and '<shift><ctrl>s' for drill holes."));
@@ -940,7 +941,7 @@ static void config_increments_sect_create(GtkWidget * vbox, Increments *inc)
 									 inc->line,
 									 inc->line_min,
 									 inc->line_max,
-									 CE_SMALL, 0, increment_spin_button_cb,
+									 CE_SMALL, u, width, increment_spin_button_cb,
 									 target, _("Line:"), _("For 'l' and '<shift>l' routing line width change actions"));
 
 	/* ---- Clear Increment/Decrement ---- */
@@ -949,7 +950,7 @@ static void config_increments_sect_create(GtkWidget * vbox, Increments *inc)
 									 inc->clear,
 									 inc->clear_min,
 									 inc->clear_max,
-									 CE_SMALL, 0, increment_spin_button_cb,
+									 CE_SMALL, u, width, increment_spin_button_cb,
 									 target, _("Clear:"), _("For 'k' and '<shift>k' line clearance inside polygon size\n" "change actions"));
 
 	gtk_widget_show_all(config_increments_vbox);
@@ -989,10 +990,10 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 	}
 
 	catvbox = ghid_category_vbox (config_increments_vbox, _("Metric Increment Settings"), 4, 2, TRUE, TRUE);
-	config_increments_sect_create(catvbox, &conf_core.editor.increments_mm);
+	config_increments_sect_create(catvbox, &conf_core.editor.increments_mm, get_unit_struct("mm"));
 
 	catvbox = ghid_category_vbox (config_increments_vbox, _("Imperial Increment Settings"), 4, 2, TRUE, TRUE);
-	config_increments_sect_create(catvbox, &conf_core.editor.increments_mil);
+	config_increments_sect_create(catvbox, &conf_core.editor.increments_mil, get_unit_struct("mil"));
 
 }
 

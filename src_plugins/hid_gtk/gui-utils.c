@@ -233,11 +233,14 @@ ghid_button_connected(GtkWidget * box, GtkWidget ** button,
 
 void
 ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, Coord value,
-								 Coord low, Coord high, enum ce_step_size step_size,
+								 Coord low, Coord high, enum ce_step_size step_size, const Unit *u,
 								 gint width, void (*cb_func) (GHidCoordEntry *, gpointer), gpointer data, gchar * string_pre, gchar * string_post)
 {
 	GtkWidget *hbox = NULL, *label, *entry_widget;
 	GHidCoordEntry *entry;
+
+	if (u == NULL)
+		u = conf_core.editor.grid_unit;
 
 	if ((string_pre || string_post) && box) {
 		hbox = gtk_hbox_new(FALSE, 0);
@@ -245,7 +248,7 @@ ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, Coord value,
 		box = hbox;
 	}
 
-	entry_widget = ghid_coord_entry_new(low, high, value, conf_core.editor.grid_unit, step_size);
+	entry_widget = ghid_coord_entry_new(low, high, value, u, step_size);
 	if (coord_entry)
 		*coord_entry = entry_widget;
 	if (width > 0)

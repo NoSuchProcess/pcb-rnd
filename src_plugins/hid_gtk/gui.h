@@ -329,7 +329,7 @@ void ghid_button_connected(GtkWidget * box, GtkWidget ** button,
 													 gboolean pack_start, gboolean expand,
 													 gboolean fill, gint pad, void (*cb_func) (gpointer), gpointer data, gchar * string);
 void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, Coord value,
-											Coord low, Coord high, enum ce_step_size step_size,
+											Coord low, Coord high, enum ce_step_size step_size, const Unit *u,
 											gint width, void (*cb_func) (GHidCoordEntry *, gpointer),
 											gpointer data, gchar * string_pre, gchar * string_post);
 void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button,
