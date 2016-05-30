@@ -902,12 +902,38 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 	/* Increment/decrement values are kept in mil and mm units and not in
 	   |  PCB units.
 	 */
+GtkWidget *config_increments_tbl[4][4]; /* [col][row] */
+
 static GtkWidget *config_increments_vbox, *config_increments_tab_vbox;
+
+static void increment_tbl_update_cell(GtkLabel *lab, Coord val, const char *fmt)
+{
+	char s[128];
+	pcb_snprintf(s, sizeof(s), fmt, val);
+	gtk_label_set_text(lab, s);
+}
+
+static void increment_tbl_update_row(int row, Coord edit_in_mm, Coord edit_in_mil)
+{
+	increment_tbl_update_cell(config_increments_tbl[0][row], edit_in_mm, "%$mm");
+	increment_tbl_update_cell(config_increments_tbl[1][row], edit_in_mil, "%$mm");
+	increment_tbl_update_cell(config_increments_tbl[2][row], edit_in_mm, "%$ml");
+	increment_tbl_update_cell(config_increments_tbl[3][row], edit_in_mil, "%$ml");
+}
+
+static void increment_tbl_update()
+{
+	increment_tbl_update_row(0, conf_core.editor.increments_mm.grid, conf_core.editor.increments_mil.grid);
+	increment_tbl_update_row(1, conf_core.editor.increments_mm.size, conf_core.editor.increments_mil.size);
+	increment_tbl_update_row(2, conf_core.editor.increments_mm.line, conf_core.editor.increments_mil.line);
+	increment_tbl_update_row(3, conf_core.editor.increments_mm.clear, conf_core.editor.increments_mil.clear);
+}
 
 static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
 {
 	*(Coord *) dst = ghid_coord_entry_get_value(ce);
 	ghidgui->config_modified = TRUE;
+	increment_tbl_update();
 }
 
 static void config_increments_sect_create(GtkWidget * vbox, Increments *inc, const Unit *u)
@@ -956,35 +982,28 @@ static void config_increments_sect_create(GtkWidget * vbox, Increments *inc, con
 	gtk_widget_show_all(config_increments_vbox);
 }
 
+static GtkWidget *config_increments_table_attach(GtkWidget *table, int x, int y, int colspan, const char *text)
+{
+	GtkWidget *box, *label;
+
+	box = gtk_vbox_new(FALSE, 0);
+	label = gtk_label_new(text);
+	gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), box,  x,x+colspan,y,y+1,   0,0,10,2);
+	return label;
+}
+
 static void config_increments_tab_create(GtkWidget * tab_vbox)
 {
-	GtkWidget *hbox, *vbox, *catvbox;
+	GtkWidget *vbox, *catvbox;
 
 	if (!config_increments_vbox) {
-		hbox = gtk_hbox_new(FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(tab_vbox), hbox, FALSE, FALSE, 0);
-
 		/* the actual content */
-		{
-			vbox = gtk_vbox_new(FALSE, 0);
-			gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
-			gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
-			config_increments_vbox = vbox;
-			config_increments_tab_vbox = tab_vbox;
-		}
-
-#if 0
-		/* box to fill up remaining space */
-		{
-			GtkWidget *dummy_vbox, *label;
-			dummy_vbox = gtk_vbox_new(FALSE, 0);
-			gtk_box_pack_start(GTK_BOX(hbox), dummy_vbox, TRUE, TRUE, 0);
-			gtk_container_set_border_width(GTK_CONTAINER(dummy_vbox), 16);
-
-			label = gtk_label_new("comments");
-			gtk_box_pack_start(GTK_BOX(dummy_vbox), label, TRUE, TRUE, 2);
-		}
-#endif
+		vbox = gtk_vbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, FALSE, FALSE, 0);
+		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
+		config_increments_vbox = vbox;
+		config_increments_tab_vbox = tab_vbox;
 	}
 
 	catvbox = ghid_category_vbox (config_increments_vbox, _("Metric Increment Settings"), 4, 2, TRUE, TRUE);
@@ -992,6 +1011,35 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 
 	catvbox = ghid_category_vbox (config_increments_vbox, _("Imperial Increment Settings"), 4, 2, TRUE, TRUE);
 	config_increments_sect_create(catvbox, &conf_core.editor.increments_mil, get_unit_struct("mil"));
+
+	catvbox = ghid_category_vbox (config_increments_vbox, _("Comparison table"), 4, 2, TRUE, TRUE);
+
+	/* increment summary table */
+	{
+		GtkWidget *table;
+		int y, x;
+
+		table = gtk_table_new(7, 3, 0);
+		gtk_box_pack_start(GTK_BOX(catvbox), table, FALSE, FALSE, 0);
+
+		config_increments_table_attach(table, 1, 0, 2, "converter to mm");
+		config_increments_table_attach(table, 1, 1, 1, "metric editing");
+		config_increments_table_attach(table, 2, 1, 1, "imperial editing");
+
+		config_increments_table_attach(table, 3, 0, 2, "converter to mil");
+		config_increments_table_attach(table, 3, 1, 1, "metric editing");
+		config_increments_table_attach(table, 4, 1, 1, "imperial editing");
+
+		config_increments_table_attach(table, 0, 2, 1, "grid");
+		config_increments_table_attach(table, 0, 3, 1, "size");
+		config_increments_table_attach(table, 0, 4, 1, "line");
+		config_increments_table_attach(table, 0, 5, 1, "clear");
+
+		for(y = 0; y < 4; y++)
+			for(x = 0; x < 4; x++)
+				config_increments_tbl[x][y] = config_increments_table_attach(table, x+1, y+2, 1, "n/a");
+		increment_tbl_update();
+	}
 }
 
 	/* -------------- The Library config page ----------------
