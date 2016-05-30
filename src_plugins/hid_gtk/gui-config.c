@@ -779,23 +779,23 @@ static void config_sizes_apply(void)
 	gboolean active;
 	char s[128];
 
-#warning TODO: this should be CFR_DESIGN
-//TO_PCB_UNITS
+#warning TODO: this should be CFR_DESIGN or whatever the user selects
 	pcb_sprintf(s, "%$mS", (new_board_width));
 	conf_set(CFR_PROJECT, "design/max_width", -1, s, POL_OVERWRITE);
 	pcb_sprintf(s, "%$mS", (new_board_height));
 	conf_set(CFR_PROJECT, "design/max_height", -1, s, POL_OVERWRITE);
 	conf_update();
 
+#warning TODO: what? this could be removed once user can select where to save
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_board_size_default_button));
 	if (active) {
-#warning TODO: what?
 		ghidgui->config_modified = TRUE;
 	}
 
+#warning TODO: what? this could be removed once user can select where to save
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_drc_sizes_default_button));
 	if (active) {
-#warning TODO: no direct overwrite
+#warning TODO: no direct overwrite, use conf_set()
 		conf_core.design.bloat = PCB->Bloat;
 		conf_core.design.shrink = PCB->Shrink;
 		conf_core.design.min_wid = PCB->minWid;
@@ -955,7 +955,6 @@ static void config_increments_sect_create(GtkWidget * vbox, Increments *inc, con
 	Coord *target;
 	const int width = 128;
 
-#warning TODO: dual unit increments
 	/* ---- Grid Increment/Decrement ---- */
 	target = &inc->grid;
 	ghid_coord_entry(vbox, NULL,
@@ -1275,7 +1274,7 @@ static void config_layers_apply(void)
 		groups_modified = FALSE;
 	}
 	if (use_as_default) {
-#warning TODO: this should happen here, should be done centrally, pcb->lihata
+#warning TODO: this should not happen here, should be done centrally, pcb->lihata
 #if 0 
 		s = make_layer_group_string(&PCB->LayerGroups);
 		if (dup_string(&conf_core.design.groups, s)) {
