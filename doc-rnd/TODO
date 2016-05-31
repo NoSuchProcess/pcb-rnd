@@ -1,9 +1,9 @@
 - replace settings with lihata (conf_*)
+	- double check flags like mincut in menu:
+		- they should come from conf by field name (forget FLAGS and magic numbers in that layer)
+		- FLAGS and magic numbers should be part of the file thingie
 	- add CFR_DESIGN
 		- load/save values back in the design file
-			- double check flags like mincut:
-				- they should come from conf by field name (forget FLAGS and magic numbers in that layer)
-				- FLAGS and magic numbers should be part of the file thingie
 		- assign some high prio
 		- check changing:
 			- layer groups
@@ -12,6 +12,8 @@
 	- shouldn't segfault if pcb-conf.lht is missing (embedded version?)
 	- PCB->Grid and friends: what should we load from the design?
 	- replace hid_load_settings() with lihata
+	- plugin unload should unregister binary conf items
+		- mincut
 	- revise main.c, line by line
 	- setting prio (top pri to bottom prio):
 			cli/action/manual override
