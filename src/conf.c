@@ -625,6 +625,7 @@ int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new
 	else {
 		if (idx >= 0)
 			return -1; /* only lists/array path should have index */
+		cwd = nn;
 	}
 
 	/* by now cwd is the text node we need to load with the new value; it is
