@@ -9,11 +9,14 @@
 #include "global.h"
 #include "data.h"
 #include "misc.h"
+#include "conf.h"
 
 #include "hid.h"
 #include "hid_flags.h"
 #include "genht/hash.h"
 #include "genht/htsp.h"
+
+#warning TODO: THIS ENTIRE FILE SHOULD BE GONE in favor of the new config system (the config system may need callbacks then?)
 
 RCSID("$Id$");
 
@@ -106,12 +109,24 @@ HID_Flag *hid_find_flag(const char *name)
 	return ha->flags;
 }
 
+#warning TODO: return -1 on not found, prepare caller code to deal with this
 int hid_get_flag(const char *name)
 {
 	static char *buf = 0;
 	static int nbuf = 0;
 	const char *cp;
 	HID_Flag *f;
+
+	cp = strchr(name, '/');
+	if (cp) {
+		conf_native_t *n = conf_get_field(name);
+		if (n == NULL)
+			return 0;
+		if ((n->type != CFN_BOOLEAN) || (n->used != 1))
+			return 0;
+		return n->val.boolean[0];
+	}
+
 
 	cp = strchr(name, ',');
 	if (cp) {
