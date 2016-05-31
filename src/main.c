@@ -635,6 +635,10 @@ int main(int argc, char *argv[])
 	}
 #endif
 
+	/* plugins may have installed their new fields, reinterpret
+	   (memory lht -> memory bin) to get the new fields */
+	conf_update();
+
 	/* Create a new PCB object in memory */
 	PCB = CreateNewPCB();
 

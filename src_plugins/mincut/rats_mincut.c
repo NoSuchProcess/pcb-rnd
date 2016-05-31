@@ -26,7 +26,6 @@
  */
 
 #include "config.h"
-#include "conf_core.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -52,6 +51,10 @@
 #include "rats.h"
 #include "pcb-mincut/graph.h"
 #include "pcb-mincut/solve.h"
+
+#include "conf.h"
+#include "rats_mincut_conf.h"
+conf_mincut_t conf_mincut;
 
 #define debprintf(x...)
 
@@ -115,7 +118,7 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 	if (!TEST_FLAG(ENABLEMINCUTFLAG, PCB))
 		return bad_gr;
 
-	if (!conf_core.editor.enable_mincut)
+	if (!conf_mincut.plugins.mincut.enable)
 		return bad_gr;
 
 	/* only one should be set, but one must be set */
@@ -409,6 +412,9 @@ pcb_uninit_t hid_mincut_init(void)
 {
 	stub_rat_found_short = rat_found_short;
 	stub_rat_proc_shorts = rat_proc_shorts;
+#define conf_reg(field,isarray,type_name,cpath,cname,desc) \
+	conf_reg_field(conf_mincut, field,isarray,type_name,cpath,cname,desc);
+#include "rats_mincut_conf_fields.h"
 	return NULL;
 }
 

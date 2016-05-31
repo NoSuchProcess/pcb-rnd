@@ -1,4 +1,14 @@
 - replace settings with lihata (conf_*)
+	- add CFR_DESIGN
+		- load/save values back in the design file
+			- double check flags like mincut:
+				- they should come from conf by field name (forget FLAGS and magic numbers in that layer)
+				- FLAGS and magic numbers should be part of the file thingie
+		- assign some high prio
+		- check changing:
+			- layer groups
+			- pcb size
+	- increments are not really implemented
 	- shouldn't segfault if pcb-conf.lht is missing (embedded version?)
 	- PCB->Grid and friends: what should we load from the design?
 	- replace hid_load_settings() with lihata

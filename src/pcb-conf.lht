@@ -57,7 +57,6 @@ li:pcb_config {
 			orthogonal_moves = 0
 			reset_after_element = 1
 			auto_place = 0
-			enable_mincut = 1
 			enable_stroke = 0
 			live_routing = 0
 			beep_when_finished = 0
@@ -176,6 +175,13 @@ li:pcb_config {
 #				volume = 0
 #			} misc;
 		} # appearance;
+
+		ha:plugins {
+			ha:mincut {
+				enable = 1
+			}
+		} # plugins
+
 	} # main
 } # root
 

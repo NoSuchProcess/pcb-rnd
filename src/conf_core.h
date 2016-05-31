@@ -41,7 +41,6 @@ typedef struct {
 		CFT_BOOLEAN reset_after_element;   /* reset connections after each element */
 		CFT_BOOLEAN auto_place;            /* flag which says we should force placement of the windows on startup */
 #warning TODO: move all the rest in plugins:
-		CFT_BOOLEAN enable_mincut;         /* Enable calculating mincut on shorts (rats_mincut.c) when non-zero */
 		CFT_BOOLEAN enable_stroke;         /* Enable libstroke gesutres on middle mouse button when non-zero */
 		CFT_BOOLEAN live_routing;          /* autorouter shows tracks in progress */
 		CFT_BOOLEAN beep_when_finished;    /* flag if a signal should be produced when searching of  connections is done */

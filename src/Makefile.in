@@ -152,6 +152,7 @@ put /local/pcb/rules/install {}
 put /local/pcb/rules/linstall {}
 put /local/pcb/rules/uninstall {}
 put /local/pcb/mod/OBJS {}
+put /local/pcb/mod/CONF {}
 put /local/pcb/mod/LDFLAGS {}
 put /local/pcb/mod/CFLAGS {}
 

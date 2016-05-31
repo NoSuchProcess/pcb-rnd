@@ -1,5 +1,6 @@
 put /local/pcb/mod {mincut}
 append /local/pcb/mod/OBJS [@ $(PLUGDIR)/mincut/rats_mincut.o $(PLUGDIR)/mincut/pcb-mincut/graph.o $(PLUGDIR)/mincut/pcb-mincut/solve.o @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/mincut/rats_mincut_conf.h}
 
 switch /local/pcb/mincut/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
