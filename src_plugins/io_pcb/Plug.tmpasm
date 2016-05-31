@@ -1,0 +1,10 @@
+put /local/pcb/mod {io_pcb}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/io_pcb/io_pcb.o $(PLUGDIR)/io_pcb/file.o $(PLUGDIR)/io_pcb/parse_y.o $(PLUGDIR)/io_pcb/parse_l.o $(PLUGDIR)/io_pcb/strflags.o @]
+put /local/pcb/mod/YACC {$(PLUGDIR)/io_pcb/parse_y}
+put /local/pcb/mod/LEX  {$(PLUGDIR)/io_pcb/parse_l}
+
+switch /local/pcb/io_pcb/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

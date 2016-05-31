@@ -19,20 +19,4 @@ mod_@/local/pcb/mod@: all
 
 @]
 
-switch /local/pcb/mod/CONF
-	case {} end
-	default
-		put /local/pcb/mod/CONFOUT /local/pcb/mod/CONF
-		sub {/local/pcb/mod/CONFOUT} {.h$} {_fields.h}
-		append /local/pcb/RULES [@
-@/local/pcb/mod/CONFOUT@: @/local/pcb/mod/CONF@
-	../scconfig/gen_conf.sh < @/local/pcb/mod/CONF@ > @/local/pcb/mod/CONFOUT@
-@]
-		end
-end
-
-put /local/pcb/mod/OBJS {}
-put /local/pcb/mod/CONF {}
-put /local/pcb/mod/LDFLAGS {}
-put /local/pcb/mod/CFLAGS {}
-put /local/pcb/mod {}
+include /local/pcb/tmpasm/common_enabled

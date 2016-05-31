@@ -1,0 +1,76 @@
+# explicit rules: .y -> .c
+#  do not assume old yacc to work to different file names, do the generation
+#  in a separate directory to allow parallel compilation with -j
+switch /local/pcb/mod/YACC
+	case {^$} end
+	default
+		foreach /local/n in /local/pcb/mod/YACC
+			put /local/tmp /local/n
+			sub {/local/tmp} {^[^/]*/} {}
+			gsub {/local/tmp} {/} {_}
+			put /local/tmp [@tmp.@/local/tmp@.l@]
+
+			put /local/bn /local/n
+			sub {/local/bn} {^.*/} {}
+
+			append /local/pcb/RULES [@
+# yacc for @/local/pcb/mod@
+@/local/n@.c @/local/n@.h: @/local/n@.y
+	mkdir @/local/tmp@
+	cp @/local/n@.y @/local/tmp@
+	cd @/local/tmp@ && bison -d ../@/local/n@.y
+	mv @/local/tmp@/@/local/bn@.tab.h @/local/n@.h
+	mv @/local/tmp@/@/local/bn@.tab.c @/local/n@.c
+	-mv @/local/tmp@/@/local/bn@.output @/local/n@.output
+	rm -rf @/local/tmp@
+@]
+		end
+	end
+end
+
+# explicit rules: .l -> .c
+#  do not assume old lex to work to different file names, do the generation
+#  in a separate directory to allow parallel compilation with -j
+switch /local/pcb/mod/LEX
+	case {^$} end
+	default
+		foreach /local/n in /local/pcb/mod/LEX
+			put /local/tmp /local/n
+			sub {/local/tmp} {^[^/]*/} {}
+			gsub {/local/tmp} {/} {_}
+			put /local/tmp [@tmp.@/local/tmp@.l@]
+
+			append /local/pcb/RULES [@
+# lex for @/local/pcb/mod@
+@/local/n@.c: @/local/n@.l
+	mkdir @/local/tmp@
+	cp @/local/n@.l @/local/tmp@
+	cd @/local/tmp@ && flex ../@/local/n@.l
+	mv @/local/tmp@/lex.yy.c @/local/n@.c
+	rm -rf @/local/tmp@
+@]
+		end
+	end
+end
+
+switch /local/pcb/mod/CONF
+	case {^$} end
+	default
+		put /local/pcb/mod/CONFOUT /local/pcb/mod/CONF
+		sub {/local/pcb/mod/CONFOUT} {.h$} {_fields.h}
+		append /local/pcb/RULES [@
+# conf generation for @/local/pcb/mod@ '@/local/pcb/mod/CONF@'
+@/local/pcb/mod/CONFOUT@: @/local/pcb/mod/CONF@
+	../scconfig/gen_conf.sh < @/local/pcb/mod/CONF@ > @/local/pcb/mod/CONFOUT@
+@]
+		end
+end
+
+put /local/pcb/mod/OBJS {}
+put /local/pcb/mod/CONF {}
+put /local/pcb/mod/LDFLAGS {}
+put /local/pcb/mod/CFLAGS {}
+put /local/pcb/mod/YACC {}
+put /local/pcb/mod/LEX {}
+put /local/pcb/mod {}
+

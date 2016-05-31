@@ -33,6 +33,9 @@ plugin_def("export_gerber",   "gerber exporter",           sbuildin)
 plugin_def("export_lpr",      "lpr exporter (printer)",    sbuildin)
 plugin_def("export_ps",       "postscript exporter",       sbuildin)
 
+plugin_header("\nIO plugins (core file formats):\n")
+plugin_def("io_pcb",          "the original pcb format",   sbuildin)
+
 plugin_header("\nHID plugins:\n")
 plugin_def("hid_batch",       "batch process (no-gui HID)",sbuildin)
 plugin_def("hid_gtk",         "the GTK gui",               sbuildin)

@@ -32,7 +32,6 @@ put /local/pcb/OBJS [@
 	drill.o
 	error.o
 	event.o
-	file.o
 	file_act.o
 	find.o
 	find_act.o
@@ -92,7 +91,6 @@ put /local/pcb/OBJS [@
 	select.o
 	select_act.o
 	set.o
-	strflags.o
 	stub_edif.o
 	stub_mincut.o
 	stub_stroke.o
@@ -103,8 +101,6 @@ put /local/pcb/OBJS [@
 	vtlibrary.o
 	vtonpoint.o
 	vtptr.o
-	parse_y.o
-	parse_l.o
 	buildin.o
 	../src_3rd/liblihata/parser.o
 	../src_3rd/liblihata/dom.o
@@ -127,10 +123,6 @@ put /local/pcb/OBJS [@
 	../src_3rd/genvector/gds_char.o
 	../src_3rd/genvector/vtp0.o
 @]
-
-# main: language generator files
-put /local/pcb/YACC {parse_y}
-put /local/pcb/LEX  {parse_l}
 
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
@@ -156,10 +148,13 @@ put /local/pcb/mod/OBJS {}
 put /local/pcb/mod/CONF {}
 put /local/pcb/mod/LDFLAGS {}
 put /local/pcb/mod/CFLAGS {}
+put /local/pcb/mod/YACC {}
+put /local/pcb/mod/LEX {}
 
-put /local/pcb/tmpasm/buildin  {../src_plugins/Buildin.tmpasm}
-put /local/pcb/tmpasm/plugin   {../src_plugins/Plugin.tmpasm}
-put /local/pcb/tmpasm/disable  {../src_plugins/Disable.tmpasm}
+put /local/pcb/tmpasm/buildin         {../src_plugins/Buildin.tmpasm}
+put /local/pcb/tmpasm/plugin          {../src_plugins/Plugin.tmpasm}
+put /local/pcb/tmpasm/disable         {../src_plugins/Disable.tmpasm}
+put /local/pcb/tmpasm/common_enabled  {../src_plugins/Common_enabled.tmpasm}
 
 include {../src_plugins/plugins_ALL.tmpasm}
 
@@ -207,37 +202,6 @@ all: pcb-rnd @/local/pcb/all@
 pcb-rnd: $(OBJS) $(EXEDEPS)
 	$(CC) $(LDFLAGS) $(OBJS) -o pcb-rnd $(LIBS)
 @]
-
-# explicit rules: .y -> .c
-#  do not assume old yacc to work to different file names, do the generation
-#  in a separate directory to allow parallel compilation with -j
-foreach /local/n in /local/pcb/YACC
-print [@
-@/local/n@.c @/local/n@.h: @/local/n@.y
-	mkdir tmp.@/local/n@.y
-	cp @/local/n@.y tmp.@/local/n@.y
-	cd tmp.@/local/n@.y && bison -d @/local/n@.y
-	mv tmp.@/local/n@.y/@/local/n@.tab.h @/local/n@.h
-	mv tmp.@/local/n@.y/@/local/n@.tab.c @/local/n@.c
-	-mv tmp.@/local/n@.y/@/local/n@.output @/local/n@.output
-	rm -rf tmp.@/local/n@.y
-@]
-end
-
-# explicit rules: .l -> .c
-#  do not assume old lex to work to different file names, do the generation
-#  in a separate directory to allow parallel compilation with -j
-foreach /local/n in /local/pcb/LEX
-print [@
-@/local/n@.c: @/local/n@.l
-	mkdir tmp.@/local/n@.l
-	cp @/local/n@.l tmp.@/local/n@.l
-	cd tmp.@/local/n@.l && flex @/local/n@.l
-	mv tmp.@/local/n@.l/lex.yy.c @/local/n@.c
-	rm -rf tmp.@/local/n@.l
-@]
-end
-
 
 print [@
 ##### module rules begin #####
