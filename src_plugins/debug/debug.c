@@ -36,7 +36,8 @@
 static const char conf_syntax[] =
 	"conf(dump, [verbose], [prefix]) - dump the current config tree to stdout\n"
 	"conf(dumplht, role, [prefix]) - dump in-memory lihata representation of a config tree\n"
-	"conf(set,  path, value, [role], [policy]) - change a config setting\n"
+	"conf(set, path, value, [role], [policy]) - change a config setting\n"
+	"conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config\n"
 	;
 
 static const char conf_help[] = "Perform various operations on the configuration tree.";
@@ -103,6 +104,47 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 		val = argv[2];
 		if (conf_set(role, path, -1, val, pol) != 0) {
 			Message("conf(set) failed.\n");
+			return 1;
+		}
+		conf_update();
+	}
+
+	else if (NSTRCMP(cmd, "toggle") == 0) {
+		conf_native_t *n = conf_get_field(argv[1]);
+		char *new_value;
+		conf_role_t role = CFR_invalid;
+		int res;
+
+		if (n == NULL) {
+			Message("Invalid conf field '%s': no such path\n", argv[1]);
+			return 1;
+		}
+		if (n->type != CFN_BOOLEAN) {
+			Message("Can not toggle '%s': not a boolean\n", argv[1]);
+			return 1;
+		}
+		if (n->used != 1) {
+			Message("Can not toggle '%s': array size should be 1, not %d\n", argv[1], n->used);
+			return 1;
+		}
+		if (argc > 1) {
+			role = conf_role_parse(argv[2]);
+			if (role == CFR_invalid) {
+				Message("Invalid role: '%s'", argv[2]);
+				return 1;
+			}
+		}
+		if (n->val.boolean[0])
+			new_value = "false";
+		else
+			new_value = "true";
+		if (role == CFR_invalid)
+			res = conf_set_native(n, 0, new_value);
+		else
+			conf_set(role, argv[1], 0, new_value, POL_OVERWRITE);
+		
+		if (res != 0) {
+			Message("Can not toggle '%s': failed to set new value\n", argv[1]);
 			return 1;
 		}
 		conf_update();
