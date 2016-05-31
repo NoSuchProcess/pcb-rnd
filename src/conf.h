@@ -111,6 +111,10 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
    be indexed. Indexing can be a [n] suffix on path or a non-negative arr_idx. */
 int conf_set(conf_role_t target, const char *path, int arr_idx, const char *new_val, conf_policy_t pol);
 
+/* Same as conf_set, but doesn't look up where to set things: change the value of
+   the lihata node backing the native field */
+int conf_set_native(conf_native_t *field, int arr_idx, const char *new_val);
+
 int conf_set_from_cli(const char *arg_, char **why);
 
 #define conf_reg_field_array(globvar, field, type_name, path, desc) \

@@ -644,6 +644,23 @@ int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new
 	return 0;
 }
 
+int conf_set_native(conf_native_t *field, int arr_idx, const char *new_val)
+{
+	lht_node_t *node;
+
+	if (arr_idx >= field->used)
+		return -1;
+
+	node = field->prop[arr_idx].src;
+
+	if (node->data.text.value != NULL)
+		free(node->data.text.value);
+
+	node->data.text.value = strdup(new_val);
+	return 0;
+}
+
+
 int conf_set_from_cli(const char *arg_, char **why)
 {
 	char *arg = strdup(arg_);
