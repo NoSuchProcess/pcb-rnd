@@ -80,20 +80,21 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 	else if (NSTRCMP(cmd, "set") == 0) {
 		char *path, *val;
 		conf_policy_t pol = POL_OVERWRITE;
-		conf_role_t role = CFR_PROJECT;
+		conf_role_t role = CFR_invalid;
+		int res;
 
-		if (argc < 2) {
+		if (argc < 3) {
 			Message("conf(set) needs at least two arguments");
 			return 1;
 		}
-		if (argc > 2) {
+		if (argc > 3) {
 			role = conf_role_parse(argv[3]);
 			if (role == CFR_invalid) {
 				Message("Invalid role: '%s'", argv[3]);
 				return 1;
 			}
 		}
-		if (argc > 3) {
+		if (argc > 4) {
 			pol = conf_policy_parse(argv[4]);
 			if (pol == POL_invalid) {
 				Message("Invalid policy: '%s'", argv[4]);
@@ -102,7 +103,19 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 		}
 		path = argv[1];
 		val = argv[2];
-		if (conf_set(role, path, -1, val, pol) != 0) {
+
+
+		if (role == CFR_invalid) {
+			conf_native_t *n = conf_get_field(argv[1]);
+			if (n == NULL) {
+				Message("Invalid conf field '%s': no such path\n", argv[1]);
+				return 1;
+			}
+			res = conf_set_native(n, 0, val);
+		}
+		else
+			res = conf_set(role, path, -1, val, pol);
+		if (res != 0) {
 			Message("conf(set) failed.\n");
 			return 1;
 		}
@@ -127,7 +140,7 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 			Message("Can not toggle '%s': array size should be 1, not %d\n", argv[1], n->used);
 			return 1;
 		}
-		if (argc > 1) {
+		if (argc > 2) {
 			role = conf_role_parse(argv[2]);
 			if (role == CFR_invalid) {
 				Message("Invalid role: '%s'", argv[2]);
@@ -141,7 +154,7 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 		if (role == CFR_invalid)
 			res = conf_set_native(n, 0, new_value);
 		else
-			conf_set(role, argv[1], 0, new_value, POL_OVERWRITE);
+			res = conf_set(role, argv[1], -1, new_value, POL_OVERWRITE);
 		
 		if (res != 0) {
 			Message("Can not toggle '%s': failed to set new value\n", argv[1]);
