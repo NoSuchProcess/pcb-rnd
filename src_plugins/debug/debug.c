@@ -4,7 +4,7 @@
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
  * 
- *  This module, rats.c, was written and is Copyright (C) 1997 by harry eaton
+ *  This module, debug, was written and is Copyright (C) 2016 by Tibor Palinkas
  *  this module is also subject to the GNU GPL as described below
  *
  *  This program is free software; you can redistribute it and/or modify
