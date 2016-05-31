@@ -26,55 +26,23 @@
 #include "config.h"
 #include "global.h"
 #include "data.h"
-#include "debug_conf.h"
 #include "action_helper.h"
-#include "plugins.h"
 #include "conf.h"
 #include "error.h"
 
 static const char conf_syntax[] =
-	"dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout\n"
-	"dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree\n"
+	"conf(set, path, value, [role], [policy]) - change a config setting\n"
+	"conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config\n"
 	;
 
 static const char conf_help[] = "Perform various operations on the configuration tree.";
 
 extern lht_doc_t *conf_root[];
-static int ActionDumpConf(int argc, char **argv, Coord x, Coord y)
+static int ActionConf(int argc, char **argv, Coord x, Coord y)
 {
 	char *cmd = argc > 0 ? argv[0] : 0;
 
-	if (NSTRCMP(cmd, "native") == 0) {
-		int verbose;
-		const char *prefix = "";
-		if (argc > 1)
-			verbose = atoi(argv[1]);
-		if (argc > 2)
-			prefix = argv[2];
-		conf_dump(stdout, prefix, verbose);
-	}
-
-	else if (NSTRCMP(cmd, "lihata") == 0) {
-		conf_role_t role;
-		const char *prefix = "";
-		if (argc <= 1) {
-			Message("conf(dumplht) needs a role");
-			return 1;
-		}
-		role = conf_role_parse(argv[1]);
-		if (role == CFR_invalid) {
-			Message("Invalid role: '%s'", argv[3]);
-			return 1;
-		}
-		if (argc > 2)
-			prefix = argv[2];
-		if (conf_root[role] != NULL)
-			lht_dom_export(conf_root[role]->root, stdout, prefix);
-		else
-			printf("%s <empty>\n", prefix);
-	}
-
-	else if (NSTRCMP(cmd, "set") == 0) {
+	if (NSTRCMP(cmd, "set") == 0) {
 		char *path, *val;
 		conf_policy_t pol = POL_OVERWRITE;
 		conf_role_t role = CFR_invalid;
@@ -168,24 +136,9 @@ static int ActionDumpConf(int argc, char **argv, Coord x, Coord y)
 }
 
 
-HID_Action debug_action_list[] = {
-	{"dumpconf", 0, ActionDumpConf,
+HID_Action conf_action_list[] = {
+	{"conf", 0, ActionConf,
 	 conf_help, conf_syntax}
 };
 
-static const char *debug_cookie = "debug plugin";
-
-REGISTER_ACTIONS(debug_action_list, debug_cookie)
-
-static void hid_debug_uninit(void)
-{
-	hid_remove_actions_by_cookie(debug_cookie);
-}
-
-#include "dolists.h"
-pcb_uninit_t hid_debug_init(void)
-{
-	REGISTER_ACTIONS(debug_action_list, debug_cookie)
-	return hid_debug_uninit;
-}
-
+REGISTER_ACTIONS(conf_action_list, NULL)

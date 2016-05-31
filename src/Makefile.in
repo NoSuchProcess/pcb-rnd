@@ -16,6 +16,7 @@ put /local/pcb/OBJS [@
 	change.o
 	change_act.o
 	conf.o
+	conf_act.o
 	conf_core.o
 	conf_hid.o
 	clip.o
@@ -133,7 +134,7 @@ put /local/pcb/LEX  {parse_l}
 
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
-	action_act.c buffer.c change_act.c file_act.c find_act.c
+	action_act.c buffer.c change_act.c conf_act.c file_act.c find_act.c
 	flags.c gui_act.c main.c misc.c move.c netlist.c
 	object_act.c plugins.c polygon_act.c rats_act.c rats_patch.c
 	remove_act.c select_act.c undo_act.c
