@@ -1,0 +1,23 @@
+<html>
+<body>
+<h1> pcb-rnd - the [io_*]  patches </h1>
+
+Mainline PCB core was coupled with the file format; the [io] patch set is
+an effort to decouple any file design I/O from core. The original file format
+(plain text .pcb and .fp) lives on as plugin called io_pcb.
+
+<p>
+TODO
+
+<h2> save/load and compatibility </h2>
+Not affected when io_pcb is used and .pcb or .fp files are loaded or saved.
+<p>
+Using other io_* implementations will obviously result in files that are
+incompatible with mainline pcb (unless mainline pcb learns how to load those
+formats).
+
+<h2> plans </h2>
+The project is still in an early phase.
+
+</body>
+</html>
