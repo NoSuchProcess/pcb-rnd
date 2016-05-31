@@ -287,7 +287,7 @@ static gboolean top_window_enter_cb(GtkWidget * widget, GdkEvent * event, GHidPo
 /*! \brief Menu action callback function
  *  \par Function Description
  *  This is the main menu callback function.  The callback receives
- *  the original lohata action node pointer HID actions to be
+ *  the original lihata action node pointer HID actions to be
  *  executed.
  *
  *  \param [in]   The action that was activated
