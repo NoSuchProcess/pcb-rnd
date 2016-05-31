@@ -2,8 +2,10 @@
  *                            COPYRIGHT
  *
  *  PCB, interactive printed circuit board design
- *  Copyright (C) 1994,1995,1996 Thomas Nau
- *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
+ *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ * 
+ *  This module, rats.c, was written and is Copyright (C) 1997 by harry eaton
+ *  this module is also subject to the GNU GPL as described below
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,13 +19,10 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- *  Contact addresses for paper mail and Email:
- *  Harry Eaton, 6697 Buttonhole Ct, Columbia, MD 21044, USA
- *  haceaton@aplcomm.jhuapl.edu
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
+
 #include "config.h"
 #include "global.h"
 #include "data.h"
