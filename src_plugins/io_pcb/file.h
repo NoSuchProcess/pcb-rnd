@@ -33,7 +33,9 @@
 #include <stdio.h>							/* needed to define 'FILE *' */
 #include "global.h"
 
-int WritePipe(char *Filename, bool thePcb);
+int WriteBuffer(FILE * FP);
+void WriteElementData(FILE *, DataTypePtr);
+int WritePCB(FILE *);
 
 
 /* 

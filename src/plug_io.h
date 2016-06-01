@@ -65,6 +65,8 @@ void sort_netlist(void);
 void PrintQuotedString(FILE *, const char *);
 void sort_library(LibraryTypePtr lib);
 void set_some_route_style();
+int WritePCBFile(char *);
+int WritePipe(char *, bool);
 
 
 #ifndef HAS_ATEXIT

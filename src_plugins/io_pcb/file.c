@@ -122,11 +122,7 @@ static void WritePCBDataHeader(FILE *);
 static void WritePCBFontData(FILE *);
 static void WriteViaData(FILE *, DataTypePtr);
 static void WritePCBRatData(FILE *);
-static void WriteElementData(FILE *, DataTypePtr);
 static void WriteLayerData(FILE *, Cardinal, LayerTypePtr);
-static int WritePCB(FILE *);
-int WritePCBFile(char *);
-int WritePipe(char *, bool);
 
 /* ---------------------------------------------------------------------------
  * Flag helper functions
@@ -447,7 +443,7 @@ static void WritePCBNetlistPatchData(FILE * FP)
 /* ---------------------------------------------------------------------------
  * writes element data
  */
-static void WriteElementData(FILE * FP, DataTypePtr Data)
+void WriteElementData(FILE * FP, DataTypePtr Data)
 {
 	gdl_iterator_t eit;
 	LineType *line;
@@ -578,7 +574,7 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 /* ---------------------------------------------------------------------------
  * writes just the elements in the buffer to file
  */
-static int WriteBuffer(FILE * FP)
+int WriteBuffer(FILE * FP)
 {
 	Cardinal i;
 
@@ -592,7 +588,7 @@ static int WriteBuffer(FILE * FP)
 /* ---------------------------------------------------------------------------
  * writes PCB to file
  */
-static int WritePCB(FILE * FP)
+int WritePCB(FILE * FP)
 {
 	Cardinal i;
 
@@ -609,77 +605,4 @@ static int WritePCB(FILE * FP)
 	WritePCBNetlistPatchData(FP);
 
 	return (STATUS_OK);
-}
-
-/* ---------------------------------------------------------------------------
- * writes PCB to file
- */
-int WritePCBFile(char *Filename)
-{
-	FILE *fp;
-	int result;
-
-	if ((fp = fopen(Filename, "w")) == NULL) {
-		OpenErrorMessage(Filename);
-		return (STATUS_ERROR);
-	}
-	result = WritePCB(fp);
-	fclose(fp);
-	return (result);
-}
-
-/* ---------------------------------------------------------------------------
- * writes to pipe using the command defined by conf_core.rc.save_command
- * %f are replaced by the passed filename
- */
-int WritePipe(char *Filename, bool thePcb)
-{
-	FILE *fp;
-	int result;
-	char *p;
-	static gds_t command;
-	int used_popen = 0;
-
-	if (EMPTY_STRING_P(conf_core.rc.save_command)) {
-		fp = fopen(Filename, "w");
-		if (fp == 0) {
-			Message("Unable to write to file %s\n", Filename);
-			return STATUS_ERROR;
-		}
-	}
-	else {
-		used_popen = 1;
-		/* setup commandline */
-		gds_truncate(&command,0);
-		for (p = conf_core.rc.save_command; *p; p++) {
-			/* copy character if not special or add string to command */
-			if (!(*p == '%' && *(p + 1) == 'f'))
-				gds_append(&command, *p);
-			else {
-				gds_append_str(&command, Filename);
-
-				/* skip the character */
-				p++;
-			}
-		}
-		printf("write to pipe \"%s\"\n", command.array);
-		if ((fp = popen(command.array, "w")) == NULL) {
-			PopenErrorMessage(command.array);
-			return (STATUS_ERROR);
-		}
-	}
-	if (thePcb) {
-		if (PCB->is_footprint) {
-			WriteElementData(fp, PCB->Data);
-			result = 0;
-		}
-		else
-			result = WritePCB(fp);
-	}
-	else
-		result = WriteBuffer(fp);
-
-	if (used_popen)
-		return (pclose(fp) ? STATUS_ERROR : result);
-	return (fclose(fp) ? STATUS_ERROR : result);
 }
