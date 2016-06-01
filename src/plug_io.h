@@ -27,8 +27,10 @@
 
 #ifndef PCB_PLUG_IO_H
 #define PCB_PLUG_IO_H
+
+#include "global.h"
+
 /**************************** API definition *********************************/
-typedef struct plug_io_s plug_io_t;
 struct plug_io_s {
 	plug_io_t *next;
 	void *plugin_data;

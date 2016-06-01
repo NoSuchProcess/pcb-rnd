@@ -201,6 +201,8 @@ typedef struct {								/* holds information about one layer */
 	int no_drc;										/* whether to ignore the layer when checking the design rules */
 } LayerType, *LayerTypePtr;
 
+typedef struct plug_io_s plug_io_t;
+
 typedef struct {								/* holds all objects */
 	int LayerN;										/* number of layers in this board */
 	pinlist_t Via;
@@ -210,6 +212,7 @@ typedef struct {								/* holds all objects */
 	 *rat_tree;
 	struct PCBType *pcb;
 	LayerType Layer[MAX_LAYER + 2];	/* add 2 silkscreen layers */
+	plug_io_t *loader;
 } DataType, *DataTypePtr;
 
 typedef struct {								/* holds drill information */
