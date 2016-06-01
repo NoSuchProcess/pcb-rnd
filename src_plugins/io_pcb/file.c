@@ -573,7 +573,7 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 }
 
 /* ---------------------------------------------------------------------------
- * writes just the elements in the buffer to file
+ * writes the buffer to file
  */
 int WriteBuffer(FILE * FP, BufferType *buff)
 {

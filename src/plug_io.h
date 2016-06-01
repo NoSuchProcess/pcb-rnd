@@ -43,7 +43,7 @@ struct plug_io_s {
 	int (*ParseFont)(FontTypePtr Ptr, char *Filename);
 
 
-	/* Write just the elements in the buffer to a file. Return 0 on success. */
+	/* Write the buffer to a file. Return 0 on success. */
 	int (*WriteBuffer)(FILE *f, BufferType *buff);
 
 	/* Write element data to a file. Return 0 on success. */
