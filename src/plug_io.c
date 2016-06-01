@@ -151,6 +151,104 @@ int WritePCB(FILE *f)
 }
 
 
+/* ---------------------------------------------------------------------------
+ * load PCB
+ * parse the file with enabled 'PCB mode' (see parser)
+ * if successful, update some other stuff
+ *
+ * If revert is true, we pass "revert" as a parameter
+ * to the HID's PCBChanged action.
+ */
+int real_load_pcb(char *Filename, bool revert, bool require_font, bool is_misc)
+{
+	const char *unit_suffix;
+	char *new_filename;
+	PCBTypePtr newPCB = CreateNewPCB_(false);
+	PCBTypePtr oldPCB;
+#ifdef DEBUG
+	double elapsed;
+	clock_t start, end;
+
+	start = clock();
+#endif
+
+	resolve_path(Filename, &new_filename, 0);
+
+	oldPCB = PCB;
+	PCB = newPCB;
+
+	/* mark the default font invalid to know if the file has one */
+	newPCB->Font.Valid = false;
+
+	/* new data isn't added to the undo list */
+	if (!ParsePCB(PCB, new_filename)) {
+		RemovePCB(oldPCB);
+
+		CreateNewPCBPost(PCB, 0);
+		ResetStackAndVisibility();
+
+		if (!is_misc) {
+			/* update cursor location */
+			Crosshair.X = PCB_CLAMP(PCB->CursorX, 0, PCB->MaxWidth);
+			Crosshair.Y = PCB_CLAMP(PCB->CursorY, 0, PCB->MaxHeight);
+
+			/* update cursor confinement and output area (scrollbars) */
+			ChangePCBSize(PCB->MaxWidth, PCB->MaxHeight);
+		}
+
+		/* enable default font if necessary */
+		if (!PCB->Font.Valid) {
+			if (require_font)
+				Message(_("File '%s' has no font information, using default font\n"), new_filename);
+			PCB->Font.Valid = true;
+		}
+
+		/* clear 'changed flag' */
+		SetChangedFlag(false);
+		PCB->Filename = new_filename;
+		/* just in case a bad file saved file is loaded */
+
+		/* Use attribute PCB::grid::unit as unit, if we can */
+		unit_suffix = AttributeGet(PCB, "PCB::grid::unit");
+		if (unit_suffix && *unit_suffix) {
+			const Unit *new_unit = get_unit_struct(unit_suffix);
+#warning TODO: we MUST NOT overwrite this here; should be handled by pcb-local settings
+			if (new_unit)
+				conf_core.editor.grid_unit = new_unit;
+		}
+		AttributePut(PCB, "PCB::grid::unit", conf_core.editor.grid_unit->suffix);
+
+		sort_netlist();
+		rats_patch_make_edited(PCB);
+
+		set_some_route_style();
+
+		if (!is_misc) {
+			if (revert)
+				hid_actionl("PCBChanged", "revert", NULL);
+			else
+				hid_action("PCBChanged");
+		}
+
+#ifdef DEBUG
+		end = clock();
+		elapsed = ((double) (end - start)) / CLOCKS_PER_SEC;
+		gui->log("Loading file %s took %f seconds of CPU time\n", new_filename, elapsed);
+#endif
+
+		return (0);
+	}
+
+	PCB = oldPCB;
+	hid_action("PCBChanged");
+
+	/* release unused memory */
+	RemovePCB(newPCB);
+
+	return (1);
+}
+
+
 #if !defined(HAS_ATEXIT) && !defined(HAS_ON_EXIT)
 /* ---------------------------------------------------------------------------
  * some local identifiers for OS without an atexit() or on_exit()
@@ -351,7 +449,7 @@ void set_some_route_style()
  */
 int LoadPCB(char *file, bool require_font, bool is_misc)
 {
-	return io_pcb_load_pcb(NULL, file, false, require_font, is_misc);
+	return real_load_pcb(file, false, require_font, is_misc);
 }
 
 /* ---------------------------------------------------------------------------
@@ -359,7 +457,7 @@ int LoadPCB(char *file, bool require_font, bool is_misc)
  */
 int RevertPCB(void)
 {
-	return io_pcb_load_pcb(NULL, PCB->Filename, true, true, true);
+	return real_load_pcb(PCB->Filename, true, true, true);
 }
 
 /* ---------------------------------------------------------------------------

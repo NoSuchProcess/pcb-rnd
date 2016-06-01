@@ -86,6 +86,7 @@ void sort_library(LibraryTypePtr lib);
 void set_some_route_style();
 int WritePCBFile(char *);
 int WritePipe(char *, bool);
+int real_load_pcb(char *Filename, bool revert, bool require_font, bool is_misc);
 
 
 #ifndef HAS_ATEXIT
