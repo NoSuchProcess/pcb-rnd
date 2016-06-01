@@ -34,7 +34,7 @@
 #include "global.h"
 
 int WriteBuffer(FILE *f, BufferType *buff);
-void WriteElementData(FILE *f, DataTypePtr);
+int WriteElementData(FILE *f, DataTypePtr);
 int WritePCB(FILE *f);
 
 

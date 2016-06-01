@@ -443,7 +443,7 @@ static void WritePCBNetlistPatchData(FILE * FP)
 /* ---------------------------------------------------------------------------
  * writes element data
  */
-void WriteElementData(FILE * FP, DataTypePtr Data)
+int WriteElementData(FILE * FP, DataTypePtr Data)
 {
 	gdl_iterator_t eit;
 	LineType *line;
@@ -506,6 +506,7 @@ void WriteElementData(FILE * FP, DataTypePtr Data)
 		}
 		fputs("\n\t)\n", FP);
 	}
+	return 0;
 }
 
 /* ---------------------------------------------------------------------------
