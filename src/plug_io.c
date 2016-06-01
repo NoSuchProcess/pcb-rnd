@@ -105,9 +105,51 @@
 #include "stub_edif.h"
 #include "hid_actions.h"
 #include "hid_flags.h"
+#include "plugins.h"
 #include "plug_io.h"
 
+plug_io_t *plug_io_chain = NULL;
+
 RCSID("$Id$");
+
+int ParsePCB(PCBTypePtr Ptr, char *Filename)
+{
+	int res;
+	HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, Ptr, Filename);
+}
+
+int ParseElement(DataTypePtr Ptr, const char *name)
+{
+	int res;
+	HOOK_CALL(plug_io_t, plug_io_chain, parse_element, res, == 0, Ptr, name);
+}
+
+int ParseFont(FontTypePtr Ptr, char *Filename)
+{
+	int res;
+	HOOK_CALL(plug_io_t, plug_io_chain, parse_font, res, == 0, Ptr, Filename);
+}
+
+
+#warning this should not be run on all hooks but on the hook saved in the pcb probably
+int WriteBuffer(FILE *f, BufferType *buff)
+{
+	int res;
+	HOOK_CALL(plug_io_t, plug_io_chain, write_buffer, res, == 0, f, buff);
+}
+
+int WriteElementData(FILE *f, DataTypePtr e)
+{
+	int res;
+	HOOK_CALL(plug_io_t, plug_io_chain, write_element, res, == 0, f, e);
+}
+
+int WritePCB(FILE *f)
+{
+	int res;
+	HOOK_CALL(plug_io_t, plug_io_chain, write_pcb, res, == 0, f);
+}
+
 
 #if !defined(HAS_ATEXIT) && !defined(HAS_ON_EXIT)
 /* ---------------------------------------------------------------------------
@@ -309,7 +351,7 @@ void set_some_route_style()
  */
 int LoadPCB(char *file, bool require_font, bool is_misc)
 {
-	return real_load_pcb(file, false, require_font, is_misc);
+	return io_pcb_load_pcb(NULL, file, false, require_font, is_misc);
 }
 
 /* ---------------------------------------------------------------------------
@@ -317,7 +359,7 @@ int LoadPCB(char *file, bool require_font, bool is_misc)
  */
 int RevertPCB(void)
 {
-	return real_load_pcb(PCB->Filename, true, true, true);
+	return io_pcb_load_pcb(NULL, PCB->Filename, true, true, true);
 }
 
 /* ---------------------------------------------------------------------------

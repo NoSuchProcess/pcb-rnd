@@ -2432,7 +2432,7 @@ printf("OPENING: %s -> %p\n", tmps, yyin);
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a single element file
  */
-int ParseElement(DataTypePtr Ptr, const char *name)
+int io_pcb_ParseElement(plug_io_t *ctx, DataTypePtr Ptr, const char *name)
 {
 	FILE *f;
 	int ret;
@@ -2458,7 +2458,7 @@ int ParseElement(DataTypePtr Ptr, const char *name)
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a complete board
  */
-int ParsePCB(PCBTypePtr Ptr, char *Filename)
+int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename)
 {
 	int retval;
 	yyPCB = Ptr;
@@ -2474,7 +2474,7 @@ int ParsePCB(PCBTypePtr Ptr, char *Filename)
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a font
  */
-int ParseFont(FontTypePtr Ptr, char *Filename)
+int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr Ptr, char *Filename)
 {
 	int r = 0;
 	char *path, *p;

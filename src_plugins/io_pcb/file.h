@@ -32,11 +32,11 @@
 
 #include <stdio.h>							/* needed to define 'FILE *' */
 #include "global.h"
+#include "plug_io.h"
 
-int WriteBuffer(FILE *f, BufferType *buff);
-int WriteElementData(FILE *f, DataTypePtr);
-int WritePCB(FILE *f);
-
+int io_pcb_WriteBuffer(plug_io_t *ctx, FILE *f, BufferType *buff);
+int io_pcb_WriteElementData(plug_io_t *ctx, FILE *f, DataTypePtr);
+int io_pcb_WritePCB(plug_io_t *ctx, FILE *f);
 
 /* 
  * Whenever the pcb file format is modified, this version number

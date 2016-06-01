@@ -34,27 +34,36 @@ struct plug_io_s {
 	void *plugin_data;
 
 	/* Attempt to load a pcb design from Filename to Ptr. Return 0 on success. */
-	int (*ParsePCB)(PCBTypePtr Ptr, char *Filename);
+	int (*parse_pcb)(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename);
 
 	/* Attempt to load an element from Filename to Ptr. Return 0 on success. */
-	int (*ParseElement)(DataTypePtr Ptr, const char *name);
+	int (*parse_element)(plug_io_t *ctx, DataTypePtr Ptr, const char *name);
 
 	/* Attempt to load fonts from a file. Return 0 on success. */
-	int (*ParseFont)(FontTypePtr Ptr, char *Filename);
+	int (*parse_font)(plug_io_t *ctx, FontTypePtr Ptr, char *Filename);
 
 
 	/* Write the buffer to a file. Return 0 on success. */
-	int (*WriteBuffer)(FILE *f, BufferType *buff);
+	int (*write_buffer)(plug_io_t *ctx, FILE *f, BufferType *buff);
 
 	/* Write element data to a file. Return 0 on success. */
-	int (*WriteElementData)(FILE *f, DataTypePtr);
+	int (*write_element)(plug_io_t *ctx, FILE *f, DataTypePtr e);
 
 	/* Writes PCB to a file. Return 0 on success. */
-	int (*WritePCB)(FILE *f);
+	int (*write_pcb)(plug_io_t *ctx, FILE *f);
 
 };
-
 extern plug_io_t *plug_io_chain;
+
+
+/********** hook wrappers **********/
+int ParsePCB(PCBTypePtr Ptr, char *Filename);
+int ParseElement(DataTypePtr Ptr, const char *name);
+int ParseFont(FontTypePtr Ptr, char *Filename);
+int WriteBuffer(FILE *f, BufferType *buff);
+int WriteElementData(FILE *f, DataTypePtr e);
+int WritePCB(FILE *f);
+
 
 /********** common function used to be part of file.[ch] and friends **********/
 FILE *CheckAndOpenFile(char *, bool, bool, bool *, bool *);

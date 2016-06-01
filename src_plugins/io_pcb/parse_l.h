@@ -32,9 +32,10 @@
 #define	PCB_LEX_H
 
 #include "global.h"
+#include "plug_io.h"
 
-int ParsePCB(PCBTypePtr, char *);
-int ParseElement(DataTypePtr, const char *);
-int ParseFont(FontTypePtr, char *);
+int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr, char *);
+int io_pcb_ParseElement(plug_io_t *ctx, DataTypePtr, const char *);
+int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr, char *);
 
 #endif

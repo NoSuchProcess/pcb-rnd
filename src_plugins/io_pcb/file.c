@@ -178,7 +178,7 @@ int PCBFileVersionNeeded(void)
  * If revert is true, we pass "revert" as a parameter
  * to the HID's PCBChanged action.
  */
-int real_load_pcb(char *Filename, bool revert, bool require_font, bool is_misc)
+int io_pcb_load_pcb(plug_io_t *ctx, char *Filename, bool revert, bool require_font, bool is_misc)
 {
 	const char *unit_suffix;
 	char *new_filename;
@@ -202,7 +202,7 @@ int real_load_pcb(char *Filename, bool revert, bool require_font, bool is_misc)
 	newPCB->Font.Valid = false;
 
 	/* new data isn't added to the undo list */
-	if (!ParsePCB(PCB, new_filename)) {
+	if (!io_pcb_ParsePCB(ctx, PCB, new_filename)) {
 		RemovePCB(oldPCB);
 
 		CreateNewPCBPost(PCB, 0);
@@ -443,7 +443,7 @@ static void WritePCBNetlistPatchData(FILE * FP)
 /* ---------------------------------------------------------------------------
  * writes element data
  */
-int WriteElementData(FILE * FP, DataTypePtr Data)
+int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 {
 	gdl_iterator_t eit;
 	LineType *line;
@@ -575,7 +575,7 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 /* ---------------------------------------------------------------------------
  * writes the buffer to file
  */
-int WriteBuffer(FILE * FP, BufferType *buff)
+int io_pcb_WriteBuffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
 {
 	Cardinal i;
 
@@ -589,7 +589,7 @@ int WriteBuffer(FILE * FP, BufferType *buff)
 /* ---------------------------------------------------------------------------
  * writes PCB to file
  */
-int WritePCB(FILE * FP)
+int io_pcb_WritePCB(plug_io_t *ctx, FILE * FP)
 {
 	Cardinal i;
 
