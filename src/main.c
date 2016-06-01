@@ -639,7 +639,7 @@ int main(int argc, char *argv[])
 	PCB = CreateNewPCB();
 
 	if (PCB == NULL) {
-		Message("Can't load the default pcb (%s) for creating an empty layout\n", conf_core.rc.default_pcb_file);
+		Message("Can't load the default pcb for creating an empty layout\n");
 		exit(1);
 	}
 

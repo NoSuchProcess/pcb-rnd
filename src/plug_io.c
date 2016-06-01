@@ -112,42 +112,88 @@ plug_io_t *plug_io_chain = NULL;
 
 RCSID("$Id$");
 
+static plug_io_err(int res, const char *what, const char *filename)
+{
+	if (res != 0) {
+		char *reason = "", *comment = "";
+		if (plug_io_chain != NULL) {
+			if (filename == NULL) {
+				reason = "none of io plugins could succesfully write the file";
+				filename = "";
+			}
+			else {
+				FILE *f;
+				reason = "none of io plugins could succesfully read file";
+				f = fopen(filename, "r");
+				if (f != NULL) {
+					fclose(f);
+					comment = "(unknown/invalid file format?)";
+				}
+				else
+					comment = "(can not open the file for reading)";
+			}
+		}
+		else {
+			reason = "no io plugin loaded, I don't know any file format";
+			if (filename == NULL)
+				filename = "";
+		}
+		Message("IO error during %s: %s %s %s\n", what, reason, filename, comment);
+	}
+}
+
 int ParsePCB(PCBTypePtr Ptr, char *Filename)
 {
-	int res;
+	int res = -1;
 	HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, Ptr, Filename);
+
+	plug_io_err(res, "load pcb", Filename);
+	return res;
 }
 
 int ParseElement(DataTypePtr Ptr, const char *name)
 {
-	int res;
+	int res = -1;
 	HOOK_CALL(plug_io_t, plug_io_chain, parse_element, res, == 0, Ptr, name);
+
+	plug_io_err(res, "load element", name);
+	return res;
 }
 
 int ParseFont(FontTypePtr Ptr, char *Filename)
 {
-	int res;
+	int res = -1;
 	HOOK_CALL(plug_io_t, plug_io_chain, parse_font, res, == 0, Ptr, Filename);
+
+	plug_io_err(res, "load font", Filename);
+	return res;
 }
 
 
 #warning this should not be run on all hooks but on the hook saved in the pcb probably
 int WriteBuffer(FILE *f, BufferType *buff)
 {
-	int res;
+	int res = -1;
 	HOOK_CALL(plug_io_t, plug_io_chain, write_buffer, res, == 0, f, buff);
+
+	plug_io_err(res, "write buffer", NULL);
+	return res;
 }
 
 int WriteElementData(FILE *f, DataTypePtr e)
 {
-	int res;
+	int res = -1;
 	HOOK_CALL(plug_io_t, plug_io_chain, write_element, res, == 0, f, e);
+	plug_io_err(res, "write element", NULL);
+	return res;
 }
 
 int WritePCB(FILE *f)
 {
-	int res;
+	int res = -1;
 	HOOK_CALL(plug_io_t, plug_io_chain, write_pcb, res, == 0, f);
+	plug_io_err(res, "write pcb", NULL);
+	return res;
 }
 
 
