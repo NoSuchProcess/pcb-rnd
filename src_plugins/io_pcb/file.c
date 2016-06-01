@@ -574,14 +574,14 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 /* ---------------------------------------------------------------------------
  * writes just the elements in the buffer to file
  */
-int WriteBuffer(FILE * FP)
+int WriteBuffer(FILE * FP, BufferType *buff)
 {
 	Cardinal i;
 
-	WriteViaData(FP, PASTEBUFFER->Data);
-	WriteElementData(FP, PASTEBUFFER->Data);
+	WriteViaData(FP, buff->Data);
+	WriteElementData(FP, buff->Data);
 	for (i = 0; i < max_copper_layer + 2; i++)
-		WriteLayerData(FP, i, &(PASTEBUFFER->Data->Layer[i]));
+		WriteLayerData(FP, i, &(buff->Data->Layer[i]));
 	return (STATUS_OK);
 }
 

@@ -574,7 +574,7 @@ int WritePipe(char *Filename, bool thePcb)
 			result = WritePCB(fp);
 	}
 	else
-		result = WriteBuffer(fp);
+		result = WriteBuffer(fp, PASTEBUFFER);
 
 	if (used_popen)
 		return (pclose(fp) ? STATUS_ERROR : result);
