@@ -189,4 +189,5 @@ void fp_gedasymbols_init(void)
 	fp_gedasymbols.fclose = fp_gedasymbols_fclose;
 
 	HOOK_REGISTER(plug_fp_t, plug_fp_chain, &fp_gedasymbols);
+#warning TODO: make an uninit that calls HOOK_UNREGISTER
 }

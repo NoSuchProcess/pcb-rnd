@@ -2,5 +2,4 @@ Load and save the design and elements in the original pcb text format.
 
 #state: works
 #default: buildin
-#ldefault: must be builtin until the io plugin API is finished
 #implements: io

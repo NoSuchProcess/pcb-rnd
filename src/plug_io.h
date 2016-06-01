@@ -78,8 +78,6 @@ void DisableEmergencySave(void);
 int RevertPCB(void);
 int ImportNetlist(char *);
 int SaveBufferElements(char *);
-void PreLoadElementPCB(void);
-void PostLoadElementPCB(void);
 void sort_netlist(void);
 void PrintQuotedString(FILE *, const char *);
 void sort_library(LibraryTypePtr lib);

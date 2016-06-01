@@ -31,6 +31,13 @@
 
 static plug_io_t io_pcb;
 
+extern void yylex_destroy(void);
+static void hid_io_pcb_uninit(void)
+{
+	yylex_destroy();
+	HOOK_UNREGISTER(plug_io_t, plug_io_chain, &io_pcb);
+}
+
 pcb_uninit_t hid_io_pcb_init(void)
 {
 
@@ -44,6 +51,6 @@ pcb_uninit_t hid_io_pcb_init(void)
 	io_pcb.write_pcb = io_pcb_WritePCB;
 	HOOK_REGISTER(plug_io_t, plug_io_chain, &io_pcb);
 
-	return NULL;
+	return hid_io_pcb_uninit;
 }
 

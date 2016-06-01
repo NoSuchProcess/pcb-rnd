@@ -446,9 +446,6 @@ void pcb_main_uninit(void)
 	free0(program_directory);
 
 #undef free0
-
-	extern void yylex_destroy(void);
-	yylex_destroy();
 }
 
 static int arg_match(const char *in, const char *shrt, const char *lng)

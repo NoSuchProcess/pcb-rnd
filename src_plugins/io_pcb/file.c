@@ -507,3 +507,42 @@ int io_pcb_WritePCB(plug_io_t *ctx, FILE * FP)
 
 	return (STATUS_OK);
 }
+
+/* ---------------------------------------------------------------------------
+ * functions for loading elements-as-pcb
+ */
+
+extern PCBTypePtr yyPCB;
+extern DataTypePtr yyData;
+extern FontTypePtr yyFont;
+
+void PreLoadElementPCB()
+{
+
+	if (!yyPCB)
+		return;
+
+	yyFont = &yyPCB->Font;
+	yyData = yyPCB->Data;
+	yyData->pcb = yyPCB;
+	yyData->LayerN = 0;
+}
+
+void PostLoadElementPCB()
+{
+	PCBTypePtr pcb_save = PCB;
+	ElementTypePtr e;
+
+	if (!yyPCB)
+		return;
+
+	CreateNewPCBPost(yyPCB, 0);
+	ParseGroupString("1,c:2,s", &yyPCB->LayerGroups, yyData->LayerN);
+	e = elementlist_first(&yyPCB->Data->Element);	/* we know there's only one */
+	PCB = yyPCB;
+	MoveElementLowLevel(yyPCB->Data, e, -e->BoundingBox.X1, -e->BoundingBox.Y1);
+	PCB = pcb_save;
+	yyPCB->MaxWidth = e->BoundingBox.X2;
+	yyPCB->MaxHeight = e->BoundingBox.Y2;
+	yyPCB->is_footprint = 1;
+}
