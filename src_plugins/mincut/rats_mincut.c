@@ -37,7 +37,7 @@
 #include "data.h"
 #include "draw.h"
 #include "error.h"
-#include "file.h"
+#include "plug_io.h"
 #include "find.h"
 #include "misc.h"
 #include "mymem.h"

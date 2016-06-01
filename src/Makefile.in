@@ -73,6 +73,7 @@ put /local/pcb/OBJS [@
 	paths.o
 	pcb-printf.o
 	plugins.o
+	plug_io.o
 	plug_footprint.o
 	plug_footprint_host.o
 	polygon.o

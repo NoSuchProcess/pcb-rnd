@@ -49,7 +49,7 @@
 #include "data.h"
 #include "draw.h"
 #include "drill.h"
-#include "file.h"
+#include "plug_io.h"
 #include "find.h"
 #include "error.h"
 #include "misc.h"

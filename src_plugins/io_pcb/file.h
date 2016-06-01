@@ -33,21 +33,8 @@
 #include <stdio.h>							/* needed to define 'FILE *' */
 #include "global.h"
 
-FILE *CheckAndOpenFile(char *, bool, bool, bool *, bool *);
-FILE *OpenConnectionDataFile(void);
-int SavePCB(char *);
-int LoadPCB(char *, bool, bool);
-int RevertPCB(void);
-void EnableAutosave(void);
-void Backup(void);
-void SaveInTMP(void);
-void EmergencySave(void);
-void DisableEmergencySave(void);
-int ImportNetlist(char *);
-int SaveBufferElements(char *);
-void PreLoadElementPCB(void);
-void PostLoadElementPCB(void);
-void sort_netlist(void);
+int WritePipe(char *Filename, bool thePcb);
+
 
 /* 
  * Whenever the pcb file format is modified, this version number
@@ -62,20 +49,5 @@ int PCBFileVersionNeeded(void);
 
 /* This is the version we support.  */
 #define PCB_FILE_VERSION 20110603
-
-
-#ifndef HAS_ATEXIT
-#ifdef HAS_ON_EXIT
-void GlueEmergencySave(int, caddr_t);
-#else
-void SaveTMPData(void);
-void RemoveTMPData(void);
-#endif
-#endif
-
-void PrintQuotedString(FILE *, const char *);
-
-void file_uninit();
-void sort_library(LibraryTypePtr lib);
 
 #endif

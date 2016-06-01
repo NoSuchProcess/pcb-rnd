@@ -35,7 +35,7 @@
 
 #include "crosshair.h"
 #include "set.h"
-#include "file.h"
+#include "plug_io.h"
 #include "buffer.h"
 #include "mymem.h"
 #include "misc.h"

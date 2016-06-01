@@ -57,7 +57,7 @@
 #include "create.h"
 #include "data.h"
 #include "draw.h"
-#include "file.h"
+#include "plug_io.h"
 #include "error.h"
 #include "mymem.h"
 #include "misc.h"

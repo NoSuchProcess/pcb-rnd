@@ -49,7 +49,7 @@
 #include "crosshair.h"
 #include "draw.h"
 #include "error.h"
-#include "file.h"
+#include "plug_io.h"
 #include "set.h"
 #include "action_helper.h"
 #include "misc.h"
@@ -429,7 +429,6 @@ void pcb_main_uninit(void)
 	uninit_strflags_layerlist();
 
 	fp_uninit();
-	file_uninit();
 	funchash_uninit();
 
 #define free0(ptr) \

@@ -36,7 +36,7 @@
 
 #include "global.h"
 #include "data.h"
-#include "file.h"
+#include "plug_io.h"
 #include "plug_footprint.h"
 #include "plugins.h"
 #include "error.h"

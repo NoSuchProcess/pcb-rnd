@@ -46,7 +46,7 @@
 #include "buffer.h"
 #include "data.h"
 #include "error.h"
-#include "file.h"
+#include "plug_io.h"
 #include "find.h"
 #include "mymem.h"
 #include "misc.h"

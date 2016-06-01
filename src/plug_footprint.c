@@ -28,7 +28,7 @@
 #include "global.h"
 
 #include "data.h"
-#include "file.h"
+#include "plug_io.h"
 #include "mymem.h"
 #include "paths.h"
 #include "plug_footprint.h"

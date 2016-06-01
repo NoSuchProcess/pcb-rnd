@@ -79,7 +79,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "crosshair.h"
 #include "draw.h"
 #include "error.h"
-#include "file.h"
+#include "plug_io.h"
 #include "find.h"
 #include "insert.h"
 #include "line.h"

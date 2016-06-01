@@ -44,7 +44,7 @@
 #include "command.h"
 #include "data.h"
 #include "error.h"
-#include "file.h"
+#include "plug_io.h"
 #include "mymem.h"
 #include "misc.h"
 #include "rats.h"

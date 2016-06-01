@@ -553,7 +553,7 @@
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
  ../src_plugins/hid_gtk/gtkhid.h conf_hid.h action_helper.h change.h \
- file.h ../src_plugins/io_pcb/file.h error.h draw.h pcb-printf.h set.h \
+ ../src_plugins/io_pcb/file.h error.h draw.h pcb-printf.h set.h \
  hid_attrib.h conf.h compat_fs.h
 ../src_plugins/hid_gtk/gui-dialog-print.o: \
  ../src_plugins/hid_gtk/gui-dialog-print.c ../config.h ../config.manual.h \
@@ -827,7 +827,7 @@
  ../src_plugins/hid_gtk/ghid-coord-entry.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h action_helper.h buffer.h \
- change.h copy.h create.h crosshair.h draw.h error.h file.h \
+ change.h copy.h create.h crosshair.h draw.h error.h \
  ../src_plugins/io_pcb/file.h find.h insert.h line.h mymem.h move.h \
  pcb-printf.h polygon.h rats.h remove.h rotate.h rubberband.h search.h \
  select.h set.h undo.h event.h free_atexit.h paths.h \
@@ -1099,7 +1099,7 @@
  list_pad.h list_pin.h list_rat.h vtonpoint.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h create.h global.h data.h draw.h error.h file.h \
+ list_element.h create.h global.h data.h draw.h error.h \
  ../src_plugins/io_pcb/file.h find.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h mymem.h polygon.h rats.h \
  search.h set.h undo.h plugins.h ../src_plugins/mincut/pcb-mincut/graph.h \
@@ -1184,7 +1184,7 @@
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
  list_conf.h global.h action_helper.h buffer.h \
- ../src_plugins/shand_cmd/command.h data.h error.h file.h \
+ ../src_plugins/shand_cmd/command.h data.h error.h \
  ../src_plugins/io_pcb/file.h mymem.h misc.h mymem.h rats.h set.h \
  plugins.h hid_actions.h dolists.h
 ../src_plugins/stroke/stroke.o: ../src_plugins/stroke/stroke.c \
@@ -1349,7 +1349,7 @@ buffer.o: buffer.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
  list_conf.h action_helper.h buffer.h copy.h create.h crosshair.h data.h \
- error.h file.h ../src_plugins/io_pcb/file.h global.h mymem.h mirror.h \
+ error.h ../src_plugins/io_pcb/file.h global.h mymem.h mirror.h \
  misc.h parse_l.h ../src_plugins/io_pcb/parse_l.h polygon.h rats.h \
  rotate.h remove.h rtree.h search.h select.h set.h funchash_core.h \
  funchash.h funchash_core_list.h
@@ -1514,7 +1514,7 @@ create.o: create.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h list_conf.h create.h data.h draw.h error.h \
  mymem.h misc.h parse_l.h ../src_plugins/io_pcb/parse_l.h global.h \
- polygon.h rtree.h search.h set.h undo.h file.h \
+ polygon.h rtree.h search.h set.h undo.h \
  ../src_plugins/io_pcb/file.h stub_vendor.h hid_actions.h paths.h
 crosshair.o: crosshair.c ../config.h ../config.manual.h ../config.auto.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
@@ -1573,7 +1573,7 @@ error.o: error.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h data.h error.h file.h ../src_plugins/io_pcb/file.h \
+ list_element.h data.h error.h ../src_plugins/io_pcb/file.h \
  global.h misc.h ../src_3rd/genvector/gds_char.h mymem.h
 event.o: event.c event.h error.h
 file_act.o: file_act.c ../config.h ../config.manual.h ../config.auto.h \
@@ -1590,7 +1590,7 @@ file_act.o: file_act.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
  list_conf.h data.h action_helper.h change.h error.h undo.h crosshair.h \
- set.h file.h ../src_plugins/io_pcb/file.h global.h buffer.h mymem.h \
+ set.h ../src_plugins/io_pcb/file.h global.h buffer.h mymem.h \
  misc.h remove.h create.h draw.h find.h search.h hid_actions.h \
  hid_attrib.h
 find.o: find.c ../config.h ../config.manual.h ../config.auto.h global.h \
@@ -1608,7 +1608,7 @@ find.o: find.c ../config.h ../config.manual.h ../config.auto.h global.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h list_conf.h crosshair.h data.h draw.h \
  error.h find.h mymem.h misc.h rtree.h polygon.h search.h set.h undo.h \
- rats.h file.h ../src_plugins/io_pcb/file.h global.h hid_actions.h
+ rats.h ../src_plugins/io_pcb/file.h global.h hid_actions.h
 find_act.o: find_act.c ../config.h ../config.manual.h ../config.auto.h \
  conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -1903,7 +1903,7 @@ main.o: main.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
- list_conf.h data.h buffer.h create.h crosshair.h draw.h error.h file.h \
+ list_conf.h data.h buffer.h create.h crosshair.h draw.h error.h \
  ../src_plugins/io_pcb/file.h global.h set.h action_helper.h misc.h \
  mymem.h compat_lrealpath.h free_atexit.h polygon.h buildin.h paths.h \
  strflags.h plugins.h plug_footprint.h vtlibrary.h event.h funchash.h \
@@ -1933,7 +1933,7 @@ misc.o: misc.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
  list_conf.h box.h misc.h mymem.h crosshair.h create.h data.h draw.h \
- file.h ../src_plugins/io_pcb/file.h global.h error.h move.h polygon.h \
+ ../src_plugins/io_pcb/file.h global.h error.h move.h polygon.h \
  remove.h rtree.h rotate.h rubberband.h search.h set.h undo.h \
  action_helper.h compat_fs.h compat_misc.h hid_actions.h hid_init.h
 move.o: move.c ../config.h ../config.manual.h ../config.auto.h \
@@ -1970,7 +1970,7 @@ netlist.o: netlist.c ../config.h ../config.manual.h ../config.auto.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h action_helper.h buffer.h data.h error.h file.h \
+ list_element.h action_helper.h buffer.h data.h error.h \
  ../src_plugins/io_pcb/file.h global.h find.h mymem.h misc.h \
  ../src_3rd/genvector/gds_char.h rats.h set.h create.h rats_patch.h \
  hid_actions.h
@@ -2011,7 +2011,7 @@ plug_footprint.o: plug_footprint.c ../config.h ../config.manual.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h data.h file.h ../src_plugins/io_pcb/file.h global.h \
+ list_element.h data.h ../src_plugins/io_pcb/file.h global.h \
  mymem.h paths.h plug_footprint.h vtlibrary.h plugins.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
@@ -2030,7 +2030,7 @@ plug_footprint_host.o: plug_footprint_host.c ../config.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
- list_conf.h data.h file.h ../src_plugins/io_pcb/file.h global.h \
+ list_conf.h data.h ../src_plugins/io_pcb/file.h global.h \
  plug_footprint.h vtlibrary.h plugins.h error.h
 plugins.o: plugins.c plugins.h ../config.h ../config.manual.h \
  ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
@@ -2091,7 +2091,7 @@ print.o: print.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
- list_element.h data.h draw.h drill.h file.h ../src_plugins/io_pcb/file.h \
+ list_element.h data.h draw.h drill.h ../src_plugins/io_pcb/file.h \
  global.h find.h error.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
  print.h polygon.h rtree.h search.h
 rats.o: rats.c ../config.h ../config.manual.h ../config.auto.h \
@@ -2107,7 +2107,7 @@ rats.o: rats.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
- list_conf.h create.h data.h draw.h error.h file.h \
+ list_conf.h create.h data.h draw.h error.h \
  ../src_plugins/io_pcb/file.h global.h find.h misc.h mymem.h polygon.h \
  rats.h search.h set.h undo.h stub_mincut.h
 rats_act.o: rats_act.c ../config.h ../config.manual.h ../config.auto.h \

@@ -54,7 +54,7 @@
 
 #include "data.h"
 #include "error.h"
-#include "file.h"
+#include "plug_io.h"
 
 #include "misc.h"
 

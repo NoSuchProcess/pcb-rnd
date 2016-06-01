@@ -40,7 +40,7 @@
 #include "global.h"
 #include "action_helper.h"
 #include "change.h"
-#include "file.h"
+#include "plug_io.h"
 #include "error.h"
 #include "draw.h"
 #include "misc.h"
