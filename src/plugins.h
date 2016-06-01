@@ -72,3 +72,6 @@ do { \
 	chain = (hstruct); \
 } while(0)
 
+
+#warning TODO
+#define HOOK_UNREGISTER(chain_type, chain, hstruct)
