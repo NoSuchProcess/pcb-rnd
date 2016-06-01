@@ -91,6 +91,7 @@ put /local/pcb/OBJS [@
 	select.o
 	select_act.o
 	set.o
+	strflags.o
 	stub_edif.o
 	stub_mincut.o
 	stub_stroke.o
