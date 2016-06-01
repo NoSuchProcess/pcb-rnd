@@ -42,6 +42,16 @@ struct plug_io_s {
 	/* Attempt to load fonts from a file. Return 0 on success. */
 	int (*ParseFont)(FontTypePtr Ptr, char *Filename);
 
+
+	/* Write just the elements in the buffer to a file. Return 0 on success. */
+	int (*WriteBuffer)(FILE *f, BufferType *buff);
+
+	/* Write element data to a file. Return 0 on success. */
+	int (*WriteElementData)(FILE *f, DataTypePtr);
+
+	/* Writes PCB to a file. Return 0 on success. */
+	int (*WritePCB)(FILE *f);
+
 };
 
 extern plug_io_t *plug_io_chain;
