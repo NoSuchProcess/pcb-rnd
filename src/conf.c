@@ -409,7 +409,26 @@ int conf_merge_all()
 
 static conf_field_clear(conf_native_t *f)
 {
+
+	if (f->used > 0) {
+#define clr(field) memset(f->val.field, 0, sizeof(*(f->val.field)) * f->used)
+		switch(f->type) {
+			case CFN_STRING:      clr(string); break;
+			case CFN_BOOLEAN:     clr(boolean); break;
+			case CFN_INTEGER:     clr(integer); break;
+			case CFN_REAL:        clr(real); break;
+			case CFN_COORD:       clr(coord); break;
+#warning TODO: test these
+/*			case CFN_UNIT:        clr(unit); break;
+			case CFN_COLOR:       clr(color); break;
+			case CFN_LIST:        clr(list); break;
+			case CFN_INCREMENTS:  clr(increments); break;*/
+		}
+#undef clr
+	}
+
 	f->used = 0;
+
 }
 
 void conf_update()
