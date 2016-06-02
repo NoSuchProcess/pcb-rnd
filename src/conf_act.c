@@ -33,6 +33,7 @@
 static const char conf_syntax[] =
 	"conf(set, path, value, [role], [policy]) - change a config setting\n"
 	"conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config\n"
+	"conf(reset, role) - reset the in-memory lihata of a role\n"
 	;
 
 static const char conf_help[] = "Perform various operations on the configuration tree.";
@@ -125,6 +126,18 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 			Message("Can not toggle '%s': failed to set new value\n", argv[1]);
 			return 1;
 		}
+		conf_update();
+	}
+
+	else if (NSTRCMP(cmd, "toggle") == 0) {
+		conf_role_t role;
+		int res;
+		role = conf_role_parse(argv[1]);
+		if (role == CFR_invalid) {
+			Message("Invalid role: '%s'", argv[1]);
+			return 1;
+		}
+		conf_reset(role, "<action>");
 		conf_update();
 	}
 
