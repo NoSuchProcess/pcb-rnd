@@ -1,0 +1,15 @@
+# release: pcb-rnd 1.0.7
+
+# To read pcb files, the pcb version (or the git source date) must be >= the file version
+FileVersion[20070407]
+
+PCB["" 600000 500000]
+
+Grid[2500.0 0 0 1]
+Cursor[282500 172500 0.000000]
+PolyArea[3100.006200]
+Thermal[0.500000]
+DRC[1200 900 1000 700 1500 1000]
+Flags("")
+Groups("")
+Styles["Signal,1000,7874,3150,2000:Power,2000,8661,3937,2000:Fat,20000,13780,4724,2500:Sig-tight,1000,6400,3150,1200"]
