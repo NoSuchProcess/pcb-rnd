@@ -104,6 +104,8 @@ static FlagBitsType object_flagbits[] = {
 	{NONETLISTFLAG, N("nonetlist"), ALL_TYPES}
 };
 
+#warning TODO: move this to io_pcb
+/* NEVER USE THESE FROM ANYWHERE ELSE THAN io_pcb */
 static FlagBitsType pcb_flagbits[] = {
 	{SHOWNUMBERFLAG, N("shownumber"), 1},
 	{LOCALREFFLAG, N("localref"), 1},
@@ -460,6 +462,7 @@ FlagType string_to_flags(const char *flagstring, int (*error) (const char *msg))
 	return common_string_to_flags(flagstring, error, object_flagbits, ENTRIES(object_flagbits));
 }
 
+#warning TODO: move this to io_pcb
 FlagType string_to_pcbflags(const char *flagstring, int (*error) (const char *msg))
 {
 	return common_string_to_flags(flagstring, error, pcb_flagbits, ENTRIES(pcb_flagbits));

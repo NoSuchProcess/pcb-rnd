@@ -213,7 +213,7 @@ static int ActionNew(int argc, char **argv, Coord x, Coord y)
 }
 
 /* --------------------------------------------------------------------------- */
-
+#warning TODO: remove this (keep a placeholder for backward compatibility)
 static const char savesettings_syntax[] = "SaveSettings()\n" "SaveSettings(local)";
 
 static const char savesettings_help[] = "Saves settings.";
