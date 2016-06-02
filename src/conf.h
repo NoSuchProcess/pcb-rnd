@@ -143,7 +143,7 @@ void conf_unlock(conf_role_t target);
 
 /* Throw out a subtree (remove all nodes from the lihata representation).
    Useful for io_ plugins, on CFR_DESIGN, before loading a new file. */
-void conf_reset(conf_role_t target);
+void conf_reset(conf_role_t target, const char *source_fn);
 
 
 /* all configuration fields ever seen */

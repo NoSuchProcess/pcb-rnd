@@ -703,21 +703,23 @@ void conf_unlock(conf_role_t target)
 
 }
 
-void conf_reset(conf_role_t target)
+void conf_reset(conf_role_t target, const char *source_fn)
 {
-
+	if (conf_root[target] != NULL)
+		lht_dom_uninit(conf_root[target]);
+	lht_node_t *n, *p;
+	conf_root[target] = lht_dom_init();
+	lht_dom_loc_newfile(conf_root[target], source_fn);
+	conf_root[target]->root = lht_dom_node_alloc(LHT_LIST, "root");
+	n = lht_dom_node_alloc(LHT_HASH, "main");
+	lht_dom_list_insert(conf_root[target]->root, n);
+	p = lht_dom_node_alloc(LHT_TEXT, "priority");
+	p->data.text.value = strdup("500");
+	lht_dom_hash_put(n, p);
 }
 
 void conf_init(void)
 {
-	lht_node_t *n, *p;
-	conf_root[CFR_CLI] = lht_dom_init();
-	lht_dom_loc_newfile(conf_root[CFR_CLI], "<command line>");
-	conf_root[CFR_CLI]->root = lht_dom_node_alloc(LHT_LIST, "cli_root");
-	n = lht_dom_node_alloc(LHT_HASH, "main");
-	lht_dom_list_insert(conf_root[CFR_CLI]->root, n);
-	p = lht_dom_node_alloc(LHT_TEXT, "priority");
-	p->data.text.value = strdup("500");
-	lht_dom_hash_put(n, p);
+	conf_reset(CFR_CLI, "<commandline>");
 }
 
