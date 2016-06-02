@@ -15,7 +15,7 @@ run_pcb()
 }
 
 
-set_flag_and_save()
+test_flag()
 {
 	local name="`basename $1`" newf expect="Flags(\"$3\")" res
 	if test -z "$name"
@@ -33,24 +33,42 @@ dumpconf(lihata,design)
 	res=$?
 	if test $res != 0
 	then
-		echo "$1 broken: expected '$expect' got '$newf'"
+		echo "$1 save broken: expected '$expect' got '$newf'"
+		return 1
 	fi
-	return $res
+
+
+	echo "###### load test" >> $name.log
+	echo "
+SaveTo(LayoutAs, $pwd/$name.2.pcb)
+dumpconf(lihata,design)
+" | run_pcb $pwd/$name.pcb >>$name.log 2>&1
+
+	newf=`grep ^Flags $name.2.pcb`
+	test "$newf" = "$expect"
+	res=$?
+	if test $res != 0
+	then
+		echo "$1 load broken: expected '$expect' got '$newf'"
+		return 1
+	fi
+
+	return 0
 }
 
 
-set_flag_and_save "plugins/mincut/enable" "true" "enablemincut"
-set_flag_and_save "editor/show_number" "true" "shownumber"
-set_flag_and_save "editor/show_drc" "true" "showdrc"
-set_flag_and_save "editor/rubber_band_mode" "true" "rubberband"
-set_flag_and_save "editor/auto_drc" "true" "autodrc"
-set_flag_and_save "editor/all_direction_lines" "true" "alldirection"
-set_flag_and_save "editor/swap_start_direction" "true" "swapstartdir"
-set_flag_and_save "editor/unique_names" "true" "uniquename"
-set_flag_and_save "editor/clear_line" "true" "clearnew"
-set_flag_and_save "editor/full_poly" "true" "newfullpoly"
-set_flag_and_save "editor/snap_pin" "true" "snappin"
-set_flag_and_save "editor/orthogonal_moves" "true" "orthomove"
-set_flag_and_save "editor/live_routing" "true" "liveroute"
-set_flag_and_save "editor/enable_stroke" "true" "enablestroke"
+test_flag "plugins/mincut/enable" "true" "enablemincut"
+test_flag "editor/show_number" "true" "shownumber"
+test_flag "editor/show_drc" "true" "showdrc"
+test_flag "editor/rubber_band_mode" "true" "rubberband"
+test_flag "editor/auto_drc" "true" "autodrc"
+test_flag "editor/all_direction_lines" "true" "alldirection"
+test_flag "editor/swap_start_direction" "true" "swapstartdir"
+test_flag "editor/unique_names" "true" "uniquename"
+test_flag "editor/clear_line" "true" "clearnew"
+test_flag "editor/full_poly" "true" "newfullpoly"
+test_flag "editor/snap_pin" "true" "snappin"
+test_flag "editor/orthogonal_moves" "true" "orthomove"
+test_flag "editor/live_routing" "true" "liveroute"
+test_flag "editor/enable_stroke" "true" "enablestroke"
 
