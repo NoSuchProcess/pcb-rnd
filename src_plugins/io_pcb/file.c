@@ -244,6 +244,8 @@ static void WritePCBDataHeader(FILE * FP)
 	conf_update_pcb_flag("editor/lock_names", LOCKNAMESFLAG);
 	conf_update_pcb_flag("editor/only_names", ONLYNAMESFLAG);
 	conf_update_pcb_flag("editor/hide_names", HIDENAMESFLAG);
+	conf_update_pcb_flag("editor/thin_draw", THINDRAWFLAG);
+	conf_update_pcb_flag("editor/thin_draw_poly", THINDRAWPOLYFLAG);
 
 
 	fprintf(FP, "\n# To read pcb files, the pcb version (or the git source date) must be >= the file version\n");

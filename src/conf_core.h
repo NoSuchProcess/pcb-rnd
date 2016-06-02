@@ -44,7 +44,9 @@ typedef struct {
 		CFT_BOOLEAN lock_names;            /* lock down text so they can not be moved or selected */
 		CFT_BOOLEAN only_names;            /* lock down everything else but text so only text objects can be moved or selected */
 #warning TODO: write comment
-		CFT_BOOLEAN hide_names;            /* TODO */
+		CFT_BOOLEAN hide_names;            /* */
+		CFT_BOOLEAN thin_draw;             /* */
+		CFT_BOOLEAN thin_draw_poly;        /* */
 
 #warning TODO: move all the rest in plugins (watch out for io_pcb string path refs):
 		CFT_BOOLEAN enable_stroke;         /* Enable libstroke gesutres on middle mouse button when non-zero */

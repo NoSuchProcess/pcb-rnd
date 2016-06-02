@@ -2493,6 +2493,9 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_set
 		conf_set(CFR_DESIGN, "editor/lock_names", -1, CONF_BOOL_FLAG(LOCKNAMESFLAG, Ptr), POL_OVERWRITE);
 		conf_set(CFR_DESIGN, "editor/only_names", -1, CONF_BOOL_FLAG(ONLYNAMESFLAG, Ptr), POL_OVERWRITE);
 		conf_set(CFR_DESIGN, "editor/hide_names", -1, CONF_BOOL_FLAG(HIDENAMESFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/thin_draw", -1, CONF_BOOL_FLAG(THINDRAWFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/thin_draw_poly", -1, CONF_BOOL_FLAG(THINDRAWPOLYFLAG, Ptr), POL_OVERWRITE);
+
 		conf_lock(CFR_DESIGN);
 		conf_update();
 	}
