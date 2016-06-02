@@ -1,9 +1,5 @@
 - replace settings with lihata (conf_*)
-	- double check flags like mincut in menu:
-		- they should come from conf by field name (forget FLAGS and magic numbers in that layer)
-		- FLAGS and magic numbers should be part of the file thingie
 	- add CFR_DESIGN
-		- load/save values back in the design file
 		- assign some high prio
 		- check changing:
 			- layer groups
@@ -26,6 +22,8 @@
 
 
 CLEANUP #5
+- shift key bbug
+- release zoom on menu lockup
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
 - scconfig: check for bison/flex, do not regenerate languages if they are missing
 - next_gui: keep them open, hide
