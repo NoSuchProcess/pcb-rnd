@@ -1,5 +1,14 @@
 - replace settings with lihata (conf_*)
+	- 'd' pin show: pin labels are waaaay off
 	- add CFR_DESIGN
+		- check flags (strflags.c), what are these:
+			- LOCALREFFLAG
+			- CHECKPLANESFLAG
+			- DESCRIPTIONFLAG
+			- NAMEONPCBFLAG
+			- SHOWMASKFLAG
+			- THINDRAWFLAG
+			- THINDRAWPOLYFLAG
 		- assign some high prio
 		- check changing:
 			- layer groups
