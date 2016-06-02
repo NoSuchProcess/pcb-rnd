@@ -45,7 +45,7 @@
 #include "hid_init.h"
 
 /* --------------------------------------------------------------------------- */
-
+#warning TODO: at least Toggle, but maybe the whole thing can be removed after the conf transition
 static const char display_syntax[] =
 	"Display(NameOnPCB|Description|Value)\n"
 	"Display(Grid|Redraw)\n"

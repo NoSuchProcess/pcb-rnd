@@ -7,8 +7,6 @@
 			- DESCRIPTIONFLAG
 			- NAMEONPCBFLAG
 			- SHOWMASKFLAG
-			- THINDRAWFLAG
-			- THINDRAWPOLYFLAG
 		- assign some high prio
 		- check changing:
 			- layer groups
