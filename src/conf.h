@@ -145,6 +145,8 @@ void conf_unlock(conf_role_t target);
    Useful for io_ plugins, on CFR_DESIGN, before loading a new file. */
 void conf_reset(conf_role_t target, const char *source_fn);
 
+/* Returns whether a given lihata tree is locked */
+int conf_islocked(conf_role_t target);
 
 /* all configuration fields ever seen */
 extern htsp_t *conf_fields;

@@ -714,6 +714,11 @@ void conf_unlock(conf_role_t target)
 	conf_root_lock[target] = 0;
 }
 
+int conf_islocked(conf_role_t target)
+{
+	return conf_root_lock[target];
+}
+
 void conf_reset(conf_role_t target, const char *source_fn)
 {
 	if (conf_root[target] != NULL)
