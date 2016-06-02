@@ -115,9 +115,6 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 	int i, maxedges;
 	int bad_gr = 0;
 
-	if (!TEST_FLAG(ENABLEMINCUTFLAG, PCB))
-		return bad_gr;
-
 	if (!conf_mincut.plugins.mincut.enable)
 		return bad_gr;
 

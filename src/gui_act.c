@@ -343,10 +343,6 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 			Redraw();
 			break;
 
-		case F_ToggleMinCut:
-			TOGGLE_FLAG(ENABLEMINCUTFLAG, PCB);
-			break;
-
 		case F_ToggleStroke:
 			TOGGLE_FLAG(ENABLESTROKEFLAG, PCB);
 			conf_core.editor.enable_stroke = TEST_FLAG(ENABLESTROKEFLAG, PCB);
