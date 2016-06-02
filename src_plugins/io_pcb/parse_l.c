@@ -2483,7 +2483,7 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_set
 		conf_set(CFR_DESIGN, "editor/auto_drc", -1, CONF_BOOL_FLAG(AUTODRCFLAG, Ptr), POL_OVERWRITE);
 		conf_set(CFR_DESIGN, "editor/all_direction_lines", -1, CONF_BOOL_FLAG(ALLDIRECTIONFLAG, Ptr), POL_OVERWRITE);
 		conf_set(CFR_DESIGN, "editor/swap_start_direction", -1, CONF_BOOL_FLAG(SWAPSTARTDIRFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/uniq_names", -1, CONF_BOOL_FLAG(UNIQUENAMEFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/unique_names", -1, CONF_BOOL_FLAG(UNIQUENAMEFLAG, Ptr), POL_OVERWRITE);
 		conf_set(CFR_DESIGN, "editor/clear_line", -1, CONF_BOOL_FLAG(CLEARNEWFLAG, Ptr), POL_OVERWRITE);
 		conf_set(CFR_DESIGN, "editor/full_poly", -1, CONF_BOOL_FLAG(NEWFULLPOLYFLAG, Ptr), POL_OVERWRITE);
 		conf_set(CFR_DESIGN, "editor/snap_pin", -1, CONF_BOOL_FLAG(SNAPPINFLAG, Ptr), POL_OVERWRITE);

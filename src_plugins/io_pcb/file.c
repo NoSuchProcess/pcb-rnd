@@ -234,10 +234,10 @@ static void WritePCBDataHeader(FILE * FP)
 	conf_update_pcb_flag("editor/auto_drc", AUTODRCFLAG);
 	conf_update_pcb_flag("editor/all_direction_lines", ALLDIRECTIONFLAG);
 	conf_update_pcb_flag("editor/swap_start_direction", SWAPSTARTDIRFLAG);
-	conf_update_pcb_flag("editor/uniq_names", UNIQUENAMEFLAG);
+	conf_update_pcb_flag("editor/unique_names", UNIQUENAMEFLAG);
 	conf_update_pcb_flag("editor/clear_line", CLEARNEWFLAG);
 	conf_update_pcb_flag("editor/full_poly", NEWFULLPOLYFLAG);
-	conf_update_pcb_flag("editor/snap_pin", NEWFULLPOLYFLAG);
+	conf_update_pcb_flag("editor/snap_pin", SNAPPINFLAG);
 	conf_update_pcb_flag("editor/orthogonal_moves", ORTHOMOVEFLAG);
 	conf_update_pcb_flag("editor/live_routing", LIVEROUTEFLAG);
 	conf_update_pcb_flag("editor/enable_stroke", ENABLESTROKEFLAG);
