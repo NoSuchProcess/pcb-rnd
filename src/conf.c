@@ -8,6 +8,7 @@
 #warning TODO: this should do settings_postproc too
 
 lht_doc_t *conf_root[CFR_max];
+int conf_root_lock[CFR_max];
 htsp_t *conf_fields = NULL;
 
 /*static lht_doc_t *conf_plugin;*/
@@ -16,6 +17,8 @@ htsp_t *conf_fields = NULL;
 int conf_load_as(conf_role_t role, const char *fn)
 {
 	lht_doc_t *d;
+	if (conf_root_lock[role])
+		return -1;
 	if (conf_root[role] != NULL)
 		lht_dom_uninit(conf_root[role]);
 	d = hid_cfg_load_lht(fn);
@@ -546,6 +549,10 @@ int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new
 
 		nn = lht_tree_path_(conf_root[target], cwd, last, 1, 0, NULL);
 		if (nn == NULL) {
+			if (conf_root_lock[target]) {
+				free(path);
+				return -1;
+			}
 			/* create a new hash node */
 			nn = lht_dom_node_alloc(LHT_HASH, last);
 			if (lht_dom_hash_put(cwd, nn) != LHTE_SUCCESS) {
@@ -568,6 +575,10 @@ int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new
 	if (basename != NULL) {
 		nn = lht_tree_path_(conf_root[target], cwd, basename, 1, 0, NULL);
 		if (nn == NULL) {
+			if (conf_root_lock[target]) {
+				free(path);
+				return -1;
+			}
 			nn = lht_dom_node_alloc(ty, basename);
 			if (lht_dom_hash_put(cwd, nn) != LHTE_SUCCESS) {
 				lht_dom_node_free(nn);
@@ -695,12 +706,12 @@ int conf_set_from_cli(const char *arg_, char **why)
 
 void conf_lock(conf_role_t target)
 {
-
+	conf_root_lock[target] = 1;
 }
 
 void conf_unlock(conf_role_t target)
 {
-
+	conf_root_lock[target] = 0;
 }
 
 void conf_reset(conf_role_t target, const char *source_fn)
