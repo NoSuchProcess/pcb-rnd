@@ -358,6 +358,19 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_set
 	setlocale(LC_ALL, "");
 	if (load_settings) {
 		conf_set(CFR_DESIGN, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(ENABLEMINCUTFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/show_number", -1, CONF_BOOL_FLAG(SHOWNUMBERFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/show_drc", -1, CONF_BOOL_FLAG(SHOWDRCFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/rubber_band_mode", -1, CONF_BOOL_FLAG(RUBBERBANDFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/auto_drc", -1, CONF_BOOL_FLAG(AUTODRCFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/all_direction_lines", -1, CONF_BOOL_FLAG(ALLDIRECTIONFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/swap_start_direction", -1, CONF_BOOL_FLAG(SWAPSTARTDIRFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/uniq_names", -1, CONF_BOOL_FLAG(UNIQUENAMEFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/clear_line", -1, CONF_BOOL_FLAG(CLEARNEWFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/full_poly", -1, CONF_BOOL_FLAG(NEWFULLPOLYFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/snap_pin", -1, CONF_BOOL_FLAG(SNAPPINFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/orthogonal_moves", -1, CONF_BOOL_FLAG(ORTHOMOVEFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/live_routing", -1, CONF_BOOL_FLAG(LIVEROUTEFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/enable_stroke", -1, CONF_BOOL_FLAG(ENABLESTROKEFLAG, Ptr), POL_OVERWRITE);
 		conf_lock(CFR_DESIGN);
 		conf_update();
 	}

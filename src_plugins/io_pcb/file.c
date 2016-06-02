@@ -228,6 +228,20 @@ static void WritePCBDataHeader(FILE * FP)
 	/* set binary flags from conf hash; these flags used to be checked
 	   with TEST_FLAG() but got moved to the conf system */
 	conf_update_pcb_flag("plugins/mincut/enable", ENABLEMINCUTFLAG);
+	conf_update_pcb_flag("editor/show_number", SHOWNUMBERFLAG);
+	conf_update_pcb_flag("editor/show_drc", SHOWDRCFLAG);
+	conf_update_pcb_flag("editor/rubber_band_mode", RUBBERBANDFLAG);
+	conf_update_pcb_flag("editor/auto_drc", AUTODRCFLAG);
+	conf_update_pcb_flag("editor/all_direction_lines", ALLDIRECTIONFLAG);
+	conf_update_pcb_flag("editor/swap_start_direction", SWAPSTARTDIRFLAG);
+	conf_update_pcb_flag("editor/uniq_names", UNIQUENAMEFLAG);
+	conf_update_pcb_flag("editor/clear_line", CLEARNEWFLAG);
+	conf_update_pcb_flag("editor/full_poly", NEWFULLPOLYFLAG);
+	conf_update_pcb_flag("editor/snap_pin", NEWFULLPOLYFLAG);
+	conf_update_pcb_flag("editor/orthogonal_moves", ORTHOMOVEFLAG);
+	conf_update_pcb_flag("editor/live_routing", LIVEROUTEFLAG);
+	conf_update_pcb_flag("editor/enable_stroke", ENABLESTROKEFLAG);
+
 
 	fprintf(FP, "\n# To read pcb files, the pcb version (or the git source date) must be >= the file version\n");
 	fprintf(FP, "FileVersion[%i]\n", PCBFileVersionNeeded());
