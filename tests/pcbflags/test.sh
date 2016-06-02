@@ -82,4 +82,7 @@ test_flag "editor/snap_pin" "true" "snappin"
 test_flag "editor/orthogonal_moves" "true" "orthomove"
 test_flag "editor/live_routing" "true" "liveroute"
 test_flag "editor/enable_stroke" "true" "enablestroke"
+test_flag "editor/only_names" "true" "onlynames"
+test_flag "editor/lock_names" "true" "locknames"
+test_flag "editor/hide_names" "true" "hidenames"
 

@@ -226,6 +226,7 @@ static int attr_hash(HID_Attribute * a)
 	return rv;
 }
 
+#warning TODO: this should be removed among with hid_load_settings*
 void hid_save_settings(int locally)
 {
 	char *fname;

@@ -241,6 +241,9 @@ static void WritePCBDataHeader(FILE * FP)
 	conf_update_pcb_flag("editor/orthogonal_moves", ORTHOMOVEFLAG);
 	conf_update_pcb_flag("editor/live_routing", LIVEROUTEFLAG);
 	conf_update_pcb_flag("editor/enable_stroke", ENABLESTROKEFLAG);
+	conf_update_pcb_flag("editor/lock_names", LOCKNAMESFLAG);
+	conf_update_pcb_flag("editor/only_names", ONLYNAMESFLAG);
+	conf_update_pcb_flag("editor/hide_names", HIDENAMESFLAG);
 
 
 	fprintf(FP, "\n# To read pcb files, the pcb version (or the git source date) must be >= the file version\n");
