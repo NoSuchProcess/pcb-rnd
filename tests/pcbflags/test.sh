@@ -6,11 +6,19 @@ pwd=`pwd`
 run_pcb()
 {
 	local fn
-	fn="$pwd/$1"
+	if test ! -z "$1"
+	then
+		fn="$pwd/$1"
+	fi
 	shift 1
 	(
 		cd "$src_dir"
-		./pcb-rnd --gui batch "$fn" "$@"
+		if test -z "$fn"
+		then
+			./pcb-rnd --gui batch "$@"
+		else
+			./pcb-rnd --gui batch "$fn" "$@"
+		fi
 	)
 }
 
@@ -40,9 +48,12 @@ dumpconf(lihata,design)
 
 	echo "###### load test" >> $name.log
 	echo "
+conf(reset, system)
+conf(reset, project)
+LoadFrom(Layout, $pwd/$name.pcb)
 SaveTo(LayoutAs, $pwd/$name.2.pcb)
 dumpconf(lihata,design)
-" | run_pcb $pwd/$name.pcb >>$name.log 2>&1
+" | run_pcb >>$name.log 2>&1
 
 	newf=`grep ^Flags $name.2.pcb`
 	test "$newf" = "$expect"
