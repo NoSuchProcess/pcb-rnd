@@ -105,6 +105,7 @@
 #define	SET_FLAG(F,P)		((P)->Flags.f |= (F))
 #define	CLEAR_FLAG(F,P)		((P)->Flags.f &= (~(F)))
 #define	TEST_FLAG(F,P)		((P)->Flags.f & (F) ? 1 : 0)
+#define CONF_BOOL_FLAG(F,P)	(TEST_FLAG(F,P) ? "true" : "false")
 #define	TOGGLE_FLAG(F,P)	((P)->Flags.f ^= (F))
 #define	ASSIGN_FLAG(F,V,P)	((P)->Flags.f = ((P)->Flags.f & (~(F))) | ((V) ? (F) : 0))
 #define TEST_FLAGS(F,P)         (((P)->Flags.f & (F)) == (F) ? 1 : 0)

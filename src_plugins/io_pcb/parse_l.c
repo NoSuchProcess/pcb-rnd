@@ -2476,6 +2476,7 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_set
 	retval = Parse(NULL, conf_core.rc.file_command, conf_core.rc.file_path, Filename, NULL);
 	setlocale(LC_ALL, "");
 	if (load_settings) {
+		conf_set(CFR_DESIGN, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(ENABLEMINCUTFLAG, Ptr), POL_OVERWRITE);
 		conf_lock(CFR_DESIGN);
 		conf_update();
 	}

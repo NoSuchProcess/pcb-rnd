@@ -71,7 +71,7 @@ ha:{
 				ha:Lock Names = { checked=locknames; action=Display(ToggleLockNames) }
 				ha:Only Names = { checked=onlynames; action=Display(ToggleOnlyNames) }
 				ha:Hide Names = { checked=hidenames; action=Display(ToggleHideNames) }
-				ha:Mincut on shorts = { checked=plugins/mincut/enable; action=conf(toggle, plugins/mincut/enable, project) }
+				ha:Mincut on shorts = { checked=plugins/mincut/enable; action=conf(toggle, plugins/mincut/enable, design) }
 				-
 				ha:Pinout shows number = { checked=shownumber; action=Display(ToggleName) }
 				ha:Open pinout menu = { a=Shift<Key>d; action=Display(Pinout) }

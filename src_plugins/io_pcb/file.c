@@ -194,6 +194,15 @@ static void WritePCBInfoHeader(FILE * FP)
 	 */
 }
 
+static void conf_update_pcb_flag(const char *hash_path, int binflag)
+{
+	conf_native_t *n = conf_get_field(hash_path);
+	if ((n == NULL) || (n->type != CFN_BOOLEAN) || (n->used < 0) || (!n->val.boolean[0]))
+		CLEAR_FLAG(binflag, PCB);
+	else
+		SET_FLAG(binflag, PCB);
+}
+
 /* ---------------------------------------------------------------------------
  * writes data header
  * the name of the PCB, cursor location, zoom and grid
@@ -214,6 +223,11 @@ static void WritePCBDataHeader(FILE * FP)
 	 * ************************** README *******************
 	 * ************************** README *******************
 	 */
+
+
+	/* set binary flags from conf hash; these flags used to be checked
+	   with TEST_FLAG() but got moved to the conf system */
+	conf_update_pcb_flag("plugins/mincut/enable", ENABLEMINCUTFLAG);
 
 	fprintf(FP, "\n# To read pcb files, the pcb version (or the git source date) must be >= the file version\n");
 	fprintf(FP, "FileVersion[%i]\n", PCBFileVersionNeeded());
