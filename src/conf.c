@@ -88,7 +88,7 @@ conf_role_t conf_role_parse(const char *s)
 	if (strcasecmp(s, "system") == 0)  return CFR_SYSTEM;
 	if (strcasecmp(s, "user") == 0)    return CFR_USER;
 	if (strcasecmp(s, "project") == 0) return CFR_PROJECT;
-//	if (strcasecmp(s, "design") == 0)  return CFR_DESIGN;
+	if (strcasecmp(s, "design") == 0)  return CFR_DESIGN;
 	if (strcasecmp(s, "cli") == 0)     return CFR_CLI;
 	return POL_invalid;
 }
@@ -691,6 +691,21 @@ int conf_set_from_cli(const char *arg_, char **why)
 
 	free(arg);
 	return ret;
+}
+
+void conf_lock(conf_role_t target)
+{
+
+}
+
+void conf_unlock(conf_role_t target)
+{
+
+}
+
+void conf_reset(conf_role_t target)
+{
+
 }
 
 void conf_init(void)

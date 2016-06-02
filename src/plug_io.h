@@ -35,8 +35,10 @@ struct plug_io_s {
 	plug_io_t *next;
 	void *plugin_data;
 
-	/* Attempt to load a pcb design from Filename to Ptr. Return 0 on success. */
-	int (*parse_pcb)(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename);
+	/* Attempt to load a pcb design from Filename to Ptr.
+	   If load_settings is non-zero, CRF_DESIGN is replaced by settings loaded from the file.
+	   Return 0 on success. */
+	int (*parse_pcb)(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_settings);
 
 	/* Attempt to load an element from Filename to Ptr. Return 0 on success. */
 	int (*parse_element)(plug_io_t *ctx, DataTypePtr Ptr, const char *name);
@@ -59,7 +61,7 @@ extern plug_io_t *plug_io_chain;
 
 
 /********** hook wrappers **********/
-int ParsePCB(PCBTypePtr Ptr, char *Filename);
+int ParsePCB(PCBTypePtr Ptr, char *Filename, int load_settings);
 int ParseElement(DataTypePtr Ptr, const char *name);
 int ParseFont(FontTypePtr Ptr, char *Filename);
 int WriteBuffer(FILE *f, BufferType *buff);

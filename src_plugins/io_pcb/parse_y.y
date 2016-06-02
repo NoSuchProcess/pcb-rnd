@@ -76,6 +76,7 @@ extern	ElementTypePtr	yyElement;
 extern	FontTypePtr		yyFont;
 extern	int				yylineno;		/* linenumber */
 extern	char			*yyfilename;	/* in this file */
+extern	int	yyLoadSettings;
 
 static char *layer_group_string; 
 
@@ -199,8 +200,8 @@ parsepcb
 			{
 			  PCBTypePtr pcb_save = PCB;
 
-			  if (layer_group_string == NULL)
-			    layer_group_string = strdup(conf_core.design.groups);
+			  if (yyLoadSettings && (layer_group_string == NULL))
+					conf_set(CFR_DESIGN, "design/groups", -1, conf_core.design.groups, POL_OVERWRITE);
 			  CreateNewPCBPost (yyPCB, 0);
 			  if (ParseGroupString(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN))
 			    {
@@ -387,10 +388,12 @@ pcbgridnew
 				yyPCB->Grid = OU ($3);
 				yyPCB->GridOffsetX = OU ($4);
 				yyPCB->GridOffsetY = OU ($5);
-				if ($6)
-					conf_core.editor.draw_grid = true;
-				else
-					conf_core.editor.draw_grid = false;
+				if (yyLoadSettings) {
+					if ($6)
+						conf_set(CFR_DESIGN, "editor/draw_grid", -1, "true", POL_OVERWRITE);
+					else
+						conf_set(CFR_DESIGN, "editor/draw_grid", -1, "false", POL_OVERWRITE);
+				}
 			}
 		;
 
@@ -400,10 +403,12 @@ pcbhigrid
 				yyPCB->Grid = NU ($3);
 				yyPCB->GridOffsetX = NU ($4);
 				yyPCB->GridOffsetY = NU ($5);
-				if ($6)
-					conf_core.editor.draw_grid = true;
-				else
-					conf_core.editor.draw_grid = false;
+				if (yyLoadSettings) {
+					if ($6)
+						conf_set(CFR_DESIGN, "editor/draw_grid", -1, "true", POL_OVERWRITE);
+					else
+						conf_set(CFR_DESIGN, "editor/draw_grid", -1, "false", POL_OVERWRITE);
+				}
 			}
 		;
 

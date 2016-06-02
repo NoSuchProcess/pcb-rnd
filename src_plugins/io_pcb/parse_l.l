@@ -79,6 +79,7 @@ PCBTypePtr		yyPCB;			/* used by parser */
 DataTypePtr		yyData;
 ElementTypePtr		yyElement;
 FontTypePtr		yyFont;
+int	yyLoadSettings;
 
 static int parse_number (void);
 
@@ -319,6 +320,7 @@ int io_pcb_ParseElement(plug_io_t *ctx, DataTypePtr Ptr, const char *name)
 	int ret;
 	fp_fopen_ctx_t st;
 
+	yyLoadSettings = 0;
 	yyPCB = NULL;
 	yyData = Ptr;
 	yyFont = &PCB->Font;
@@ -339,16 +341,25 @@ int io_pcb_ParseElement(plug_io_t *ctx, DataTypePtr Ptr, const char *name)
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a complete board
  */
-int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename)
+int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_settings)
 {
 	int retval;
 	yyPCB = Ptr;
 	yyData = NULL;
 	yyFont = NULL;
 	yyElement = NULL;
+	yyLoadSettings = load_settings;
+	if (load_settings) {
+		conf_unlock(CFR_DESIGN);
+		conf_reset(CFR_DESIGN);
+	}
 	setlocale(LC_ALL, "C"); /* make sure numerics are read predictably */
 	retval = Parse(NULL, conf_core.rc.file_command, conf_core.rc.file_path, Filename, NULL);
 	setlocale(LC_ALL, "");
+	if (load_settings) {
+		conf_lock(CFR_DESIGN);
+		conf_update();
+	}
 	return retval;
 }
 
@@ -363,6 +374,7 @@ int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr Ptr, char *Filename)
 	yyFont = Ptr;
 	yyElement = NULL;
 
+	yyLoadSettings = 0;
 	r = Parse(NULL, conf_core.rc.font_command, NULL, Filename, NULL);
 	if (r == 0) {
 #ifdef DEBUG

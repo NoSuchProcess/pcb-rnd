@@ -89,7 +89,7 @@ typedef enum {
 	CFR_SYSTEM,
 	CFR_USER,
 	CFR_PROJECT,   /* project specific, from a local file */
-/*	CFR_DESIGN,    from the design file */
+	CFR_DESIGN,    /* from the design file */
 	CFR_CLI,       /* from the command line */
 	CFR_max,
 	CFR_invalid = CFR_max
@@ -132,6 +132,19 @@ conf_policy_t conf_policy_parse(const char *s);
 
 /* convert a role text to role value - return CFR_invalid on error */
 conf_role_t conf_role_parse(const char *s);
+
+/* Lock/unlock the structure of a role. In a locked role value of existing
+   fields may be modified but the structure of the tree is static (can't
+   create or remove nodes). This is useful when an io_ file format supports
+   only a subset of settings: it can build the CFR_DESIGN tree, lock it so
+   settings that it wouldn't know how to save won't appear. */
+void conf_lock(conf_role_t target);
+void conf_unlock(conf_role_t target);
+
+/* Throw out a subtree (remove all nodes from the lihata representation).
+   Useful for io_ plugins, on CFR_DESIGN, before loading a new file. */
+void conf_reset(conf_role_t target);
+
 
 /* all configuration fields ever seen */
 extern htsp_t *conf_fields;

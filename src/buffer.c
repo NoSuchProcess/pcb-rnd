@@ -783,7 +783,7 @@ bool LoadLayoutToBuffer(BufferTypePtr Buffer, char *Filename)
 	PCBTypePtr newPCB = CreateNewPCB();
 
 	/* new data isn't added to the undo list */
-	if (!ParsePCB(newPCB, Filename)) {
+	if (!ParsePCB(newPCB, Filename, 0)) {
 		/* clear data area and replace pointer */
 		ClearBuffer(Buffer);
 		free(Buffer->Data);

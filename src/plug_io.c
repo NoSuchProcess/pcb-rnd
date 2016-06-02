@@ -142,10 +142,10 @@ static plug_io_err(int res, const char *what, const char *filename)
 	}
 }
 
-int ParsePCB(PCBTypePtr Ptr, char *Filename)
+int ParsePCB(PCBTypePtr Ptr, char *Filename, int load_settings)
 {
 	int res = -1;
-	HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, Ptr, Filename);
+	HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, Ptr, Filename, load_settings);
 
 	plug_io_err(res, "load pcb", Filename);
 	return res;
@@ -227,7 +227,7 @@ int real_load_pcb(char *Filename, bool revert, bool require_font, bool is_misc)
 	newPCB->Font.Valid = false;
 
 	/* new data isn't added to the undo list */
-	if (!ParsePCB(PCB, new_filename)) {
+	if (!ParsePCB(PCB, new_filename, !is_misc)) {
 		RemovePCB(oldPCB);
 
 		CreateNewPCBPost(PCB, 0);

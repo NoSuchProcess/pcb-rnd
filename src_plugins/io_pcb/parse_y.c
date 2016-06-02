@@ -131,6 +131,7 @@ extern	ElementTypePtr	yyElement;
 extern	FontTypePtr		yyFont;
 extern	int				yylineno;		/* linenumber */
 extern	char			*yyfilename;	/* in this file */
+extern	int	yyLoadSettings;
 
 static char *layer_group_string; 
 
@@ -159,7 +160,7 @@ static Coord new_units (PLMeasure m);
 #include "parse_y.h"
 
 
-#line 163 "parse_y.tab.c" /* yacc.c:339  */
+#line 164 "parse_y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -250,7 +251,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 111 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:355  */
+#line 112 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:355  */
 
 	int		integer;
 	double		number;
@@ -258,7 +259,7 @@ union YYSTYPE
 	FlagType	flagtype;
 	PLMeasure	measure;
 
-#line 262 "parse_y.tab.c" /* yacc.c:355  */
+#line 263 "parse_y.tab.c" /* yacc.c:355  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -273,7 +274,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 277 "parse_y.tab.c" /* yacc.c:358  */
+#line 278 "parse_y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -575,28 +576,28 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   138,   138,   139,   140,   141,   165,   165,   223,   223,
-     234,   234,   253,   254,   259,   259,   299,   301,   331,   337,
-     343,   372,   373,   374,   377,   385,   398,   430,   436,   442,
-     458,   460,   485,   487,   518,   520,   521,   522,   526,   536,
-     547,   574,   578,   583,   611,   615,   659,   668,   677,   681,
-     682,   686,   687,   691,   692,   692,   693,   694,   696,   696,
-     703,   707,   708,   709,   710,   711,   747,   757,   768,   778,
-     788,   824,   829,   861,   860,   888,   889,   893,   894,   898,
-     899,   900,   901,   902,   903,   905,   910,   911,   912,   913,
-     913,   914,   944,   953,   962,  1010,  1019,  1028,  1065,  1075,
-    1093,  1143,  1142,  1181,  1183,  1188,  1187,  1194,  1196,  1201,
-    1205,  1265,  1266,  1267,  1268,  1269,  1277,  1276,  1295,  1294,
-    1313,  1312,  1333,  1331,  1355,  1353,  1434,  1435,  1439,  1440,
-    1441,  1442,  1443,  1445,  1450,  1455,  1460,  1465,  1470,  1475,
-    1475,  1479,  1480,  1484,  1485,  1486,  1487,  1489,  1495,  1502,
-    1507,  1512,  1512,  1553,  1565,  1577,  1588,  1604,  1658,  1672,
-    1685,  1696,  1707,  1708,  1712,  1713,  1735,  1737,  1753,  1772,
-    1773,  1776,  1778,  1779,  1800,  1807,  1823,  1824,  1828,  1833,
-    1834,  1838,  1839,  1863,  1862,  1872,  1873,  1877,  1878,  1897,
-    1914,  1915,  1919,  1924,  1925,  1929,  1930,  1945,  1946,  1947,
-    1974,  1982,  1983,  1987,  1988,  1993,  1994,  1995,  1996,  1997,
-    1998,  1999,  2000,  2001,  2002
+       0,   139,   139,   140,   141,   142,   166,   166,   224,   224,
+     235,   235,   254,   255,   260,   260,   300,   302,   332,   338,
+     344,   373,   374,   375,   378,   386,   401,   435,   441,   447,
+     463,   465,   490,   492,   523,   525,   526,   527,   531,   541,
+     552,   579,   583,   588,   616,   620,   664,   673,   682,   686,
+     687,   691,   692,   696,   697,   697,   698,   699,   701,   701,
+     708,   712,   713,   714,   715,   716,   752,   762,   773,   783,
+     793,   829,   834,   866,   865,   893,   894,   898,   899,   903,
+     904,   905,   906,   907,   908,   910,   915,   916,   917,   918,
+     918,   919,   949,   958,   967,  1015,  1024,  1033,  1070,  1080,
+    1098,  1148,  1147,  1186,  1188,  1193,  1192,  1199,  1201,  1206,
+    1210,  1270,  1271,  1272,  1273,  1274,  1282,  1281,  1300,  1299,
+    1318,  1317,  1338,  1336,  1360,  1358,  1439,  1440,  1444,  1445,
+    1446,  1447,  1448,  1450,  1455,  1460,  1465,  1470,  1475,  1480,
+    1480,  1484,  1485,  1489,  1490,  1491,  1492,  1494,  1500,  1507,
+    1512,  1517,  1517,  1558,  1570,  1582,  1593,  1609,  1663,  1677,
+    1690,  1701,  1712,  1713,  1717,  1718,  1740,  1742,  1758,  1777,
+    1778,  1781,  1783,  1784,  1805,  1812,  1828,  1829,  1833,  1838,
+    1839,  1843,  1844,  1868,  1867,  1877,  1878,  1882,  1883,  1902,
+    1919,  1920,  1924,  1929,  1930,  1934,  1935,  1950,  1951,  1952,
+    1979,  1987,  1988,  1992,  1993,  1998,  1999,  2000,  2001,  2002,
+    2003,  2004,  2005,  2006,  2007
 };
 #endif
 
@@ -1773,13 +1774,13 @@ yyreduce:
   switch (yyn)
     {
         case 5:
-#line 141 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 142 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { YYABORT; }
-#line 1779 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1780 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 165 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 166 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 					/* reset flags for 'used layers';
 					 * init font and data pointers
@@ -1800,16 +1801,16 @@ yyreduce:
 				yyPCB->NetlistPatches = yyPCB->NetlistPatchLast = NULL;
 				layer_group_string = NULL;
 			}
-#line 1804 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1805 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 199 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 200 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 			  PCBTypePtr pcb_save = PCB;
 
-			  if (layer_group_string == NULL)
-			    layer_group_string = strdup(conf_core.design.groups);
+			  if (yyLoadSettings && (layer_group_string == NULL))
+					conf_set(CFR_DESIGN, "design/groups", -1, conf_core.design.groups, POL_OVERWRITE);
 			  CreateNewPCBPost (yyPCB, 0);
 			  if (ParseGroupString(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN))
 			    {
@@ -1828,28 +1829,28 @@ yyreduce:
 			ENDALL_LOOP;
 			PCB = pcb_save;
 			}
-#line 1832 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1833 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 223 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 224 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { PreLoadElementPCB ();
 		    layer_group_string = NULL; }
-#line 1839 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1840 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 226 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 227 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { LayerFlag[0] = true;
 		    LayerFlag[1] = true;
 		    yyData->LayerN = 2;
 		    PostLoadElementPCB ();
 		  }
-#line 1849 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1850 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 234 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 235 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 					/* reset flags for 'used layers';
 					 * init font and data pointers
@@ -1865,11 +1866,11 @@ yyreduce:
 					LayerFlag[i] = false;
 				yyData->LayerN = 0;
 			}
-#line 1869 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1870 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 259 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 260 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 					/* mark all symbols invalid */
 				int	i;
@@ -1884,147 +1885,151 @@ yyreduce:
 					free (yyFont->Symbol[i].Line);
 				bzero(yyFont->Symbol, sizeof(yyFont->Symbol));
 			}
-#line 1888 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1889 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 274 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 275 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyFont->Valid = true;
 		  		SetFontInfo(yyFont);
 			}
-#line 1897 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1898 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 302 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 303 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
   if (check_file_version ((yyvsp[-1].integer)) != 0)
     {
       YYABORT;
     }
 }
-#line 1908 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1909 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 332 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 333 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->Name = (yyvsp[-1].string);
 				yyPCB->MaxWidth = MAX_COORD;
 				yyPCB->MaxHeight = MAX_COORD;
 			}
-#line 1918 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1919 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 338 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 339 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->Name = (yyvsp[-3].string);
 				yyPCB->MaxWidth = OU ((yyvsp[-2].measure));
 				yyPCB->MaxHeight = OU ((yyvsp[-1].measure));
 			}
-#line 1928 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1929 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 344 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 345 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->Name = (yyvsp[-3].string);
 				yyPCB->MaxWidth = NU ((yyvsp[-2].measure));
 				yyPCB->MaxHeight = NU ((yyvsp[-1].measure));
 			}
-#line 1938 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1939 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 378 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 379 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->Grid = OU ((yyvsp[-3].measure));
 				yyPCB->GridOffsetX = OU ((yyvsp[-2].measure));
 				yyPCB->GridOffsetY = OU ((yyvsp[-1].measure));
 			}
-#line 1948 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1949 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 386 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 387 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->Grid = OU ((yyvsp[-4].measure));
 				yyPCB->GridOffsetX = OU ((yyvsp[-3].measure));
 				yyPCB->GridOffsetY = OU ((yyvsp[-2].measure));
-				if ((yyvsp[-1].integer))
-					conf_core.editor.draw_grid = true;
-				else
-					conf_core.editor.draw_grid = false;
+				if (yyLoadSettings) {
+					if ((yyvsp[-1].integer))
+						conf_set(CFR_DESIGN, "editor/draw_grid", -1, "true", POL_OVERWRITE);
+					else
+						conf_set(CFR_DESIGN, "editor/draw_grid", -1, "false", POL_OVERWRITE);
+				}
 			}
-#line 1962 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1965 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 399 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 402 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->Grid = NU ((yyvsp[-4].measure));
 				yyPCB->GridOffsetX = NU ((yyvsp[-3].measure));
 				yyPCB->GridOffsetY = NU ((yyvsp[-2].measure));
-				if ((yyvsp[-1].integer))
-					conf_core.editor.draw_grid = true;
-				else
-					conf_core.editor.draw_grid = false;
+				if (yyLoadSettings) {
+					if ((yyvsp[-1].integer))
+						conf_set(CFR_DESIGN, "editor/draw_grid", -1, "true", POL_OVERWRITE);
+					else
+						conf_set(CFR_DESIGN, "editor/draw_grid", -1, "false", POL_OVERWRITE);
+				}
 			}
-#line 1976 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1981 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 431 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 436 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->CursorX = OU ((yyvsp[-3].measure));
 				yyPCB->CursorY = OU ((yyvsp[-2].measure));
 				yyPCB->Zoom = (yyvsp[-1].number)*2;
 			}
-#line 1986 "parse_y.tab.c" /* yacc.c:1646  */
+#line 1991 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 437 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 442 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->CursorX = NU ((yyvsp[-3].measure));
 				yyPCB->CursorY = NU ((yyvsp[-2].measure));
 				yyPCB->Zoom = (yyvsp[-1].number);
 			}
-#line 1996 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2001 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 461 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 466 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				/* Read in cmil^2 for now; in future this should be a noop. */
 				yyPCB->IsleArea = MIL_TO_COORD (MIL_TO_COORD ((yyvsp[-1].number)) / 100.0) / 100.0;
 			}
-#line 2005 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2010 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 488 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 493 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->ThermScale = (yyvsp[-1].number);
 			}
-#line 2013 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2018 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 527 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 532 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->Bloat = NU ((yyvsp[-3].measure));
 				yyPCB->Shrink = NU ((yyvsp[-2].measure));
 				yyPCB->minWid = NU ((yyvsp[-1].measure));
 				yyPCB->minRing = NU ((yyvsp[-1].measure));
 			}
-#line 2024 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2029 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 537 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 542 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->Bloat = NU ((yyvsp[-4].measure));
 				yyPCB->Shrink = NU ((yyvsp[-3].measure));
@@ -2032,11 +2037,11 @@ yyreduce:
 				yyPCB->minSlk = NU ((yyvsp[-1].measure));
 				yyPCB->minRing = NU ((yyvsp[-2].measure));
 			}
-#line 2036 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2041 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 548 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 553 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->Bloat = NU ((yyvsp[-6].measure));
 				yyPCB->Shrink = NU ((yyvsp[-5].measure));
@@ -2045,36 +2050,36 @@ yyreduce:
 				yyPCB->minDrill = NU ((yyvsp[-2].measure));
 				yyPCB->minRing = NU ((yyvsp[-1].measure));
 			}
-#line 2049 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2054 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 575 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 580 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->Flags = MakeFlags ((yyvsp[-1].integer) & PCB_FLAGS);
 			}
-#line 2057 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2062 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 579 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 584 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 			  yyPCB->Flags = string_to_pcbflags ((yyvsp[-1].string), yyerror);
 			  free((yyvsp[-1].string));
 			}
-#line 2066 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2071 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 612 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 617 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 			  layer_group_string = (yyvsp[-1].string);
 			}
-#line 2074 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2079 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 660 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 665 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				if (ParseRouteString((yyvsp[-1].string), &yyPCB->RouteStyle[0], "mil"))
 				{
@@ -2083,11 +2088,11 @@ yyreduce:
 				}
 				free((yyvsp[-1].string));
 			}
-#line 2087 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2092 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 669 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 674 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				if (ParseRouteString((yyvsp[-1].string), &yyPCB->RouteStyle[0], "cmil"))
 				{
@@ -2096,74 +2101,74 @@ yyreduce:
 				}
 				free((yyvsp[-1].string));
 			}
-#line 2100 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2105 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 692 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 697 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { attr_list = & yyPCB->Attributes; }
-#line 2106 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2111 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 696 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 701 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 					/* clear pointer to force memory allocation by 
 					 * the appropriate subroutine
 					 */
 				yyElement = NULL;
 			}
-#line 2117 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2122 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 703 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 708 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { YYABORT; }
-#line 2123 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2128 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 748 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 753 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewVia(yyData, NU ((yyvsp[-8].measure)), NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)),
 				                     NU ((yyvsp[-3].measure)), (yyvsp[-2].string), (yyvsp[-1].flagtype));
 				free ((yyvsp[-2].string));
 			}
-#line 2133 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2138 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 758 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 763 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewVia(yyData, OU ((yyvsp[-8].measure)), OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-2].string),
 					OldFlags((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2143 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2148 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 769 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 774 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewVia(yyData, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)),
 					     OU ((yyvsp[-5].measure)) + OU((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-2].string), OldFlags((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2153 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2158 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 779 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 784 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewVia(yyData, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), 2*GROUNDPLANEFRAME,
 					OU((yyvsp[-4].measure)) + 2*MASKFRAME,  OU ((yyvsp[-3].measure)), (yyvsp[-2].string), OldFlags((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2163 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2168 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 789 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 794 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				Coord	hole = (OU((yyvsp[-3].measure)) * DEFAULT_DRILLINGHOLE);
 
@@ -2176,29 +2181,29 @@ yyreduce:
 					OU((yyvsp[-3].measure)) + 2*MASKFRAME, hole, (yyvsp[-2].string), OldFlags((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2180 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2185 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 825 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 830 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewRat(yyData, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-4].measure)), NU ((yyvsp[-3].measure)), (yyvsp[-5].integer), (yyvsp[-2].integer),
 					conf_core.appearance.rat_thickness, (yyvsp[-1].flagtype));
 			}
-#line 2189 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2194 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 830 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 835 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewRat(yyData, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-5].integer), (yyvsp[-2].integer),
 					conf_core.appearance.rat_thickness, OldFlags((yyvsp[-1].integer)));
 			}
-#line 2198 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2203 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 861 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 866 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				if ((yyvsp[-4].integer) <= 0 || (yyvsp[-4].integer) > MAX_LAYER + 2)
 				{
@@ -2222,92 +2227,92 @@ yyreduce:
 				if ((yyvsp[-2].string) != NULL)
 					free((yyvsp[-2].string));
 			}
-#line 2226 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2231 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 85:
-#line 906 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 911 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewPolygonFromRectangle(Layer,
 					OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-5].measure)) + OU ((yyvsp[-3].measure)), OU ((yyvsp[-4].measure)) + OU ((yyvsp[-2].measure)), OldFlags((yyvsp[-1].integer)));
 			}
-#line 2235 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2240 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 913 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 918 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { attr_list = & Layer->Attributes; }
-#line 2241 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2246 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 92:
-#line 945 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 950 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewLineOnLayer(Layer, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)),
 				                            NU ((yyvsp[-3].measure)), NU ((yyvsp[-2].measure)), (yyvsp[-1].flagtype));
 			}
-#line 2250 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2255 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 93:
-#line 954 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 959 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewLineOnLayer(Layer, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)),
 						     OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)), OldFlags((yyvsp[-1].integer)));
 			}
-#line 2259 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2264 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 94:
-#line 963 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 968 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				/* eliminate old-style rat-lines */
 			if ((IV ((yyvsp[-1].measure)) & RATFLAG) == 0)
 				CreateNewLineOnLayer(Layer, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)),
 					200*GROUNDPLANEFRAME, OldFlags(IV ((yyvsp[-1].measure))));
 			}
-#line 2270 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2275 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 95:
-#line 1011 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1016 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 			  CreateNewArcOnLayer(Layer, NU ((yyvsp[-9].measure)), NU ((yyvsp[-8].measure)), NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), (yyvsp[-3].number), (yyvsp[-2].number),
 			                             NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-1].flagtype));
 			}
-#line 2279 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2284 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 96:
-#line 1020 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1025 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewArcOnLayer(Layer, OU ((yyvsp[-9].measure)), OU ((yyvsp[-8].measure)), OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), (yyvsp[-3].number), (yyvsp[-2].number),
 						    OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OldFlags((yyvsp[-1].integer)));
 			}
-#line 2288 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2293 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 97:
-#line 1029 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1034 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewArcOnLayer(Layer, OU ((yyvsp[-8].measure)), OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-6].measure)), IV ((yyvsp[-3].measure)), (yyvsp[-2].number),
 					OU ((yyvsp[-4].measure)), 200*GROUNDPLANEFRAME, OldFlags((yyvsp[-1].integer)));
 			}
-#line 2297 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2302 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 1066 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1071 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 					/* use a default scale of 100% */
 				CreateNewText(Layer,yyFont,OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].number), 100, (yyvsp[-2].string), OldFlags((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2307 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2312 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 1076 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1081 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				if ((yyvsp[-1].integer) & ONSILKFLAG)
 				{
@@ -2322,11 +2327,11 @@ yyreduce:
 						      OldFlags((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2326 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2331 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 1094 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1099 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				/* FIXME: shouldn't know about .f */
 				/* I don't think this matters because anything with hi_format
@@ -2346,19 +2351,19 @@ yyreduce:
 					CreateNewText(Layer, yyFont, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), (yyvsp[-2].string), (yyvsp[-1].flagtype));
 				free ((yyvsp[-2].string));
 			}
-#line 2350 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2355 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 101:
-#line 1143 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1148 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				Polygon = CreateNewPolygon(Layer, (yyvsp[-2].flagtype));
 			}
-#line 2358 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2363 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 102:
-#line 1148 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1153 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				Cardinal contour, contour_start, contour_end;
 				bool bad_contour_found = false;
@@ -2390,35 +2395,35 @@ yyreduce:
 				    r_insert_entry (Layer->polygon_tree, (BoxType *) Polygon, 0);
 				  }
 			}
-#line 2394 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2399 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 1188 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1193 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewHoleInPolygon (Polygon);
 			}
-#line 2402 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2407 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 109:
-#line 1202 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1207 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewPointInPolygon(Polygon, OU ((yyvsp[-2].measure)), OU ((yyvsp[-1].measure)));
 			}
-#line 2410 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2415 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 110:
-#line 1206 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1211 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewPointInPolygon(Polygon, NU ((yyvsp[-2].measure)), NU ((yyvsp[-1].measure)));
 			}
-#line 2418 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2423 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 116:
-#line 1277 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1282 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, NoFlags(),
 					(yyvsp[-6].string), (yyvsp[-5].string), NULL, OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-2].integer), 100, NoFlags(), false);
@@ -2426,19 +2431,19 @@ yyreduce:
 				free ((yyvsp[-5].string));
 				pin_num = 1;
 			}
-#line 2430 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2435 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 117:
-#line 1285 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1290 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				SetElementBoundingBox(yyData, yyElement, yyFont);
 			}
-#line 2438 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2443 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 118:
-#line 1295 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1300 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, OldFlags((yyvsp[-9].integer)),
 					(yyvsp[-8].string), (yyvsp[-7].string), NULL, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), IV ((yyvsp[-4].measure)), IV ((yyvsp[-3].measure)), OldFlags((yyvsp[-2].integer)), false);
@@ -2446,19 +2451,19 @@ yyreduce:
 				free ((yyvsp[-7].string));
 				pin_num = 1;
 			}
-#line 2450 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2455 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 119:
-#line 1303 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1308 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				SetElementBoundingBox(yyData, yyElement, yyFont);
 			}
-#line 2458 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2463 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 120:
-#line 1313 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1318 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, OldFlags((yyvsp[-10].integer)),
 					(yyvsp[-9].string), (yyvsp[-8].string), (yyvsp[-7].string), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), IV ((yyvsp[-4].measure)), IV ((yyvsp[-3].measure)), OldFlags((yyvsp[-2].integer)), false);
@@ -2467,19 +2472,19 @@ yyreduce:
 				free ((yyvsp[-7].string));
 				pin_num = 1;
 			}
-#line 2471 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2476 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 121:
-#line 1322 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1327 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				SetElementBoundingBox(yyData, yyElement, yyFont);
 			}
-#line 2479 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2484 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 122:
-#line 1333 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1338 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, OldFlags((yyvsp[-12].integer)),
 					(yyvsp[-11].string), (yyvsp[-10].string), (yyvsp[-9].string), OU ((yyvsp[-8].measure)) + OU ((yyvsp[-6].measure)), OU ((yyvsp[-7].measure)) + OU ((yyvsp[-5].measure)),
@@ -2490,19 +2495,19 @@ yyreduce:
 				free ((yyvsp[-10].string));
 				free ((yyvsp[-9].string));
 			}
-#line 2494 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2499 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 123:
-#line 1344 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1349 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				SetElementBoundingBox(yyData, yyElement, yyFont);
 			}
-#line 2502 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2507 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 124:
-#line 1355 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1360 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, (yyvsp[-12].flagtype),
 					(yyvsp[-11].string), (yyvsp[-10].string), (yyvsp[-9].string), NU ((yyvsp[-8].measure)) + NU ((yyvsp[-6].measure)), NU ((yyvsp[-7].measure)) + NU ((yyvsp[-5].measure)),
@@ -2513,119 +2518,119 @@ yyreduce:
 				free ((yyvsp[-10].string));
 				free ((yyvsp[-9].string));
 			}
-#line 2517 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2522 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 125:
-#line 1366 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1371 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				SetElementBoundingBox(yyData, yyElement, yyFont);
 			}
-#line 2525 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2530 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 133:
-#line 1446 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1451 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewLineInElement(yyElement, NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), NU ((yyvsp[-3].measure)), NU ((yyvsp[-2].measure)), NU ((yyvsp[-1].measure)));
 			}
-#line 2533 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2538 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 134:
-#line 1451 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1456 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewLineInElement(yyElement, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)), OU ((yyvsp[-1].measure)));
 			}
-#line 2541 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2546 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 135:
-#line 1456 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1461 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewArcInElement(yyElement, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), NU ((yyvsp[-1].measure)));
 			}
-#line 2549 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2554 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 136:
-#line 1461 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1466 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewArcInElement(yyElement, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), OU ((yyvsp[-1].measure)));
 			}
-#line 2557 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2562 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 137:
-#line 1466 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1471 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyElement->MarkX = NU ((yyvsp[-2].measure));
 				yyElement->MarkY = NU ((yyvsp[-1].measure));
 			}
-#line 2566 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2571 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 138:
-#line 1471 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1476 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyElement->MarkX = OU ((yyvsp[-2].measure));
 				yyElement->MarkY = OU ((yyvsp[-1].measure));
 			}
-#line 2575 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2580 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 139:
-#line 1475 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1480 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { attr_list = & yyElement->Attributes; }
-#line 2581 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2586 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 147:
-#line 1490 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1495 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewLineInElement(yyElement, NU ((yyvsp[-5].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-4].measure)) + yyElement->MarkY, NU ((yyvsp[-3].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-2].measure)) + yyElement->MarkY, NU ((yyvsp[-1].measure)));
 			}
-#line 2591 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2596 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 148:
-#line 1496 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1501 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewLineInElement(yyElement, OU ((yyvsp[-5].measure)) + yyElement->MarkX,
 					OU ((yyvsp[-4].measure)) + yyElement->MarkY, OU ((yyvsp[-3].measure)) + yyElement->MarkX,
 					OU ((yyvsp[-2].measure)) + yyElement->MarkY, OU ((yyvsp[-1].measure)));
 			}
-#line 2601 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2606 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 149:
-#line 1503 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1508 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewArcInElement(yyElement, NU ((yyvsp[-7].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-6].measure)) + yyElement->MarkY, NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), NU ((yyvsp[-1].measure)));
 			}
-#line 2610 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2615 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 150:
-#line 1508 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1513 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewArcInElement(yyElement, OU ((yyvsp[-7].measure)) + yyElement->MarkX,
 					OU ((yyvsp[-6].measure)) + yyElement->MarkY, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), OU ((yyvsp[-1].measure)));
 			}
-#line 2619 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2624 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 151:
-#line 1512 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1517 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { attr_list = & yyElement->Attributes; }
-#line 2625 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2630 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 153:
-#line 1554 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1559 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewPin(yyElement, NU ((yyvsp[-9].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-8].measure)) + yyElement->MarkY, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].string),
@@ -2633,11 +2638,11 @@ yyreduce:
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2637 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2642 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 154:
-#line 1566 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1571 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewPin(yyElement, OU ((yyvsp[-9].measure)) + yyElement->MarkX,
 					OU ((yyvsp[-8].measure)) + yyElement->MarkY, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].string),
@@ -2645,22 +2650,22 @@ yyreduce:
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2649 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2654 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 155:
-#line 1578 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1583 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewPin(yyElement, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), 2*GROUNDPLANEFRAME,
 					OU ((yyvsp[-5].measure)) + 2*MASKFRAME, OU ((yyvsp[-4].measure)), (yyvsp[-3].string), (yyvsp[-2].string), OldFlags((yyvsp[-1].integer)));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2660 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2665 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 156:
-#line 1589 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1594 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				char	p_number[8];
 
@@ -2670,11 +2675,11 @@ yyreduce:
 
 				free ((yyvsp[-2].string));
 			}
-#line 2674 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2679 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 157:
-#line 1605 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1610 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				Coord	hole = OU ((yyvsp[-3].measure)) * DEFAULT_DRILLINGHOLE;
 				char	p_number[8];
@@ -2689,11 +2694,11 @@ yyreduce:
 					OU ((yyvsp[-3].measure)) + 2*MASKFRAME, hole, (yyvsp[-2].string), p_number, OldFlags((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2693 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2698 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 158:
-#line 1659 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1664 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewPad(yyElement, NU ((yyvsp[-10].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-9].measure)) + yyElement->MarkY,
@@ -2703,11 +2708,11 @@ yyreduce:
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2707 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2712 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 159:
-#line 1673 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1678 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewPad(yyElement,OU ((yyvsp[-10].measure)) + yyElement->MarkX,
 					OU ((yyvsp[-9].measure)) + yyElement->MarkY, OU ((yyvsp[-8].measure)) + yyElement->MarkX,
@@ -2716,22 +2721,22 @@ yyreduce:
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2720 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2725 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 160:
-#line 1686 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1691 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewPad(yyElement,OU ((yyvsp[-8].measure)),OU ((yyvsp[-7].measure)),OU ((yyvsp[-6].measure)),OU ((yyvsp[-5].measure)),OU ((yyvsp[-4].measure)), 2*GROUNDPLANEFRAME,
 					OU ((yyvsp[-4].measure)) + 2*MASKFRAME, (yyvsp[-3].string), (yyvsp[-2].string), OldFlags((yyvsp[-1].integer)));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2731 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2736 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 161:
-#line 1697 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1702 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				char		p_number[8];
 
@@ -2740,23 +2745,23 @@ yyreduce:
 					OU ((yyvsp[-3].measure)) + 2*MASKFRAME, (yyvsp[-2].string),p_number, OldFlags((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2744 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2749 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 162:
-#line 1707 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1712 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { (yyval.flagtype) = OldFlags((yyvsp[0].integer)); }
-#line 2750 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2755 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 163:
-#line 1708 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1713 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { (yyval.flagtype) = string_to_flags ((yyvsp[0].string), yyerror); free((yyvsp[0].string)); }
-#line 2756 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2761 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 167:
-#line 1738 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1743 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				if ((yyvsp[-3].integer) <= 0 || (yyvsp[-3].integer) > MAX_FONTPOSITION)
 				{
@@ -2772,11 +2777,11 @@ yyreduce:
 				Symbol->Valid = true;
 				Symbol->Delta = NU ((yyvsp[-2].measure));
 			}
-#line 2776 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2781 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 168:
-#line 1754 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1759 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				if ((yyvsp[-3].integer) <= 0 || (yyvsp[-3].integer) > MAX_FONTPOSITION)
 				{
@@ -2792,158 +2797,158 @@ yyreduce:
 				Symbol->Valid = true;
 				Symbol->Delta = OU ((yyvsp[-2].measure));
 			}
-#line 2796 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2801 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 174:
-#line 1801 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1806 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewLineInSymbol(Symbol, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)), OU ((yyvsp[-1].measure)));
 			}
-#line 2804 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2809 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 175:
-#line 1808 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1813 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewLineInSymbol(Symbol, NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), NU ((yyvsp[-3].measure)), NU ((yyvsp[-2].measure)), NU ((yyvsp[-1].measure)));
 			}
-#line 2812 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2817 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 183:
-#line 1863 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1868 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				Menu = CreateNewNet((LibraryTypePtr)&yyPCB->NetlistLib, (yyvsp[-3].string), (yyvsp[-2].string));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2822 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2827 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 189:
-#line 1898 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1903 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				CreateNewConnection(Menu, (yyvsp[-1].string));
 				free ((yyvsp[-1].string));
 			}
-#line 2831 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2836 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 197:
-#line 1945 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1950 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { rats_patch_append(yyPCB, RATP_ADD_CONN, (yyvsp[-2].string), (yyvsp[-1].string), NULL); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
-#line 2837 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2842 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 198:
-#line 1946 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1951 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { rats_patch_append(yyPCB, RATP_DEL_CONN, (yyvsp[-2].string), (yyvsp[-1].string), NULL); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
-#line 2843 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2848 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 199:
-#line 1947 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1952 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { rats_patch_append(yyPCB, RATP_CHANGE_ATTRIB, (yyvsp[-3].string), (yyvsp[-2].string), (yyvsp[-1].string)); free((yyvsp[-3].string)); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
-#line 2849 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2854 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 200:
-#line 1975 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1980 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 			  CreateNewAttribute (attr_list, (yyvsp[-2].string), (yyvsp[-1].string) ? (yyvsp[-1].string) : (char *)"");
 				free ((yyvsp[-2].string));
 				free ((yyvsp[-1].string));
 			}
-#line 2859 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2864 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 201:
-#line 1982 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1987 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { (yyval.string) = (yyvsp[0].string); }
-#line 2865 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2870 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 202:
-#line 1983 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1988 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { (yyval.string) = 0; }
-#line 2871 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2876 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 203:
-#line 1987 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1992 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { (yyval.number) = (yyvsp[0].number); }
-#line 2877 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2882 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 204:
-#line 1988 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1993 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { (yyval.number) = (yyvsp[0].integer); }
-#line 2883 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2888 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 205:
-#line 1993 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1998 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { do_measure(&(yyval.measure), (yyvsp[0].number), MIL_TO_COORD ((yyvsp[0].number)) / 100.0, 0); }
-#line 2889 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2894 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 206:
-#line 1994 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 1999 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { M ((yyval.measure), (yyvsp[-1].number), MIL_TO_COORD ((yyvsp[-1].number)) / 100000.0); }
-#line 2895 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2900 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 207:
-#line 1995 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 2000 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { M ((yyval.measure), (yyvsp[-1].number), MIL_TO_COORD ((yyvsp[-1].number)) / 100.0); }
-#line 2901 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2906 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 208:
-#line 1996 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 2001 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { M ((yyval.measure), (yyvsp[-1].number), MIL_TO_COORD ((yyvsp[-1].number))); }
-#line 2907 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2912 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 209:
-#line 1997 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 2002 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { M ((yyval.measure), (yyvsp[-1].number), INCH_TO_COORD ((yyvsp[-1].number))); }
-#line 2913 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2918 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 210:
-#line 1998 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 2003 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { M ((yyval.measure), (yyvsp[-1].number), MM_TO_COORD ((yyvsp[-1].number)) / 1000000.0); }
-#line 2919 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2924 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 211:
-#line 1999 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 2004 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { M ((yyval.measure), (yyvsp[-1].number), MM_TO_COORD ((yyvsp[-1].number)) / 1000.0); }
-#line 2925 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2930 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 212:
-#line 2000 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 2005 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { M ((yyval.measure), (yyvsp[-1].number), MM_TO_COORD ((yyvsp[-1].number))); }
-#line 2931 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2936 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 213:
-#line 2001 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 2006 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { M ((yyval.measure), (yyvsp[-1].number), MM_TO_COORD ((yyvsp[-1].number)) * 1000.0); }
-#line 2937 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2942 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 214:
-#line 2002 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
+#line 2007 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     { M ((yyval.measure), (yyvsp[-1].number), MM_TO_COORD ((yyvsp[-1].number)) * 1000000.0); }
-#line 2943 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2948 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2947 "parse_y.tab.c" /* yacc.c:1646  */
+#line 2952 "parse_y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3171,7 +3176,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 2005 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1906  */
+#line 2010 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1906  */
 
 
 /* ---------------------------------------------------------------------------
