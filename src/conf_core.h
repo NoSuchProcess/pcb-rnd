@@ -47,6 +47,11 @@ typedef struct {
 		CFT_BOOLEAN hide_names;            /* */
 		CFT_BOOLEAN thin_draw;             /* */
 		CFT_BOOLEAN thin_draw_poly;        /* */
+		CFT_BOOLEAN local_ref;             /* */
+		CFT_BOOLEAN check_planes;          /* */
+		CFT_BOOLEAN description;           /* */
+		CFT_BOOLEAN name_on_pcb;           /* */
+		CFT_BOOLEAN show_mask;             /* */
 
 #warning TODO: move all the rest in plugins (watch out for io_pcb string path refs):
 		CFT_BOOLEAN enable_stroke;         /* Enable libstroke gesutres on middle mouse button when non-zero */

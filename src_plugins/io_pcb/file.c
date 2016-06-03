@@ -246,7 +246,11 @@ static void WritePCBDataHeader(FILE * FP)
 	conf_update_pcb_flag("editor/hide_names", HIDENAMESFLAG);
 	conf_update_pcb_flag("editor/thin_draw", THINDRAWFLAG);
 	conf_update_pcb_flag("editor/thin_draw_poly", THINDRAWPOLYFLAG);
-
+	conf_update_pcb_flag("editor/local_ref", LOCALREFFLAG);
+	conf_update_pcb_flag("editor/check_planes",CHECKPLANESFLAG);
+	conf_update_pcb_flag("editor/description", DESCRIPTIONFLAG);
+	conf_update_pcb_flag("editor/name_on_pcb", NAMEONPCBFLAG);
+	conf_update_pcb_flag("editor/show_mask", SHOWMASKFLAG);
 
 	fprintf(FP, "\n# To read pcb files, the pcb version (or the git source date) must be >= the file version\n");
 	fprintf(FP, "FileVersion[%i]\n", PCBFileVersionNeeded());
