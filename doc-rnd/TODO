@@ -1,4 +1,6 @@
 - replace settings with lihata (conf_*)
+	- never modify conf_core directly (latest commits do this often!)
+		- make conf_core read-only
 	- 'd' pin show: pin labels are waaaay off
 	- add CFR_DESIGN
 		- assign some high prio
@@ -20,10 +22,13 @@
 			user
 			system
 			hardwired
-
+	- TEST:
+		- ps export vs. thin draw poly, check_planes
+		- check why rat lines are so thin now (width is not read/used from the conf?)
+		- test from lesstif
 
 CLEANUP #5
-- shift key bbug
+- shift key bug
 - release zoom on menu lockup
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
 - scconfig: check for bison/flex, do not regenerate languages if they are missing
