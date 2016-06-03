@@ -26,6 +26,7 @@
 		- ps export vs. thin draw poly, check_planes
 		- check why rat lines are so thin now (width is not read/used from the conf?)
 		- test from lesstif
+		- test with all plugins enabled (maybe add an scconfig cli arg for this?)
 
 CLEANUP #5
 - shift key bug

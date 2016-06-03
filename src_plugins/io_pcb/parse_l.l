@@ -81,6 +81,7 @@ DataTypePtr		yyData;
 ElementTypePtr		yyElement;
 FontTypePtr		yyFont;
 int	yyLoadSettings;
+FlagType yy_pcb_flags;
 
 static int parse_number (void);
 
@@ -342,6 +343,8 @@ int io_pcb_ParseElement(plug_io_t *ctx, DataTypePtr Ptr, const char *name)
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a complete board
  */
+#define	TEST_FLAG_LOCAL(F,FLG)		(((FLG) & (F)) ? 1 : 0)
+#define CONF_BOOL_FLAG(F,FLG)	(TEST_FLAG_LOCAL(F,FLG.f) ? "true" : "false")
 int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_settings)
 {
 	int retval;
@@ -358,30 +361,30 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_set
 	retval = Parse(NULL, conf_core.rc.file_command, conf_core.rc.file_path, Filename, NULL);
 	setlocale(LC_ALL, "");
 	if (load_settings) {
-		conf_set(CFR_DESIGN, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(ENABLEMINCUTFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/show_number", -1, CONF_BOOL_FLAG(SHOWNUMBERFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/show_drc", -1, CONF_BOOL_FLAG(SHOWDRCFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/rubber_band_mode", -1, CONF_BOOL_FLAG(RUBBERBANDFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/auto_drc", -1, CONF_BOOL_FLAG(AUTODRCFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/all_direction_lines", -1, CONF_BOOL_FLAG(ALLDIRECTIONFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/swap_start_direction", -1, CONF_BOOL_FLAG(SWAPSTARTDIRFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/unique_names", -1, CONF_BOOL_FLAG(UNIQUENAMEFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/clear_line", -1, CONF_BOOL_FLAG(CLEARNEWFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/full_poly", -1, CONF_BOOL_FLAG(NEWFULLPOLYFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/snap_pin", -1, CONF_BOOL_FLAG(SNAPPINFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/orthogonal_moves", -1, CONF_BOOL_FLAG(ORTHOMOVEFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/live_routing", -1, CONF_BOOL_FLAG(LIVEROUTEFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/enable_stroke", -1, CONF_BOOL_FLAG(ENABLESTROKEFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/lock_names", -1, CONF_BOOL_FLAG(LOCKNAMESFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/only_names", -1, CONF_BOOL_FLAG(ONLYNAMESFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/hide_names", -1, CONF_BOOL_FLAG(HIDENAMESFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/thin_draw", -1, CONF_BOOL_FLAG(THINDRAWFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/thin_draw_poly", -1, CONF_BOOL_FLAG(THINDRAWPOLYFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/local_ref", -1, CONF_BOOL_FLAG(LOCALREFFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/check_planes", -1, CONF_BOOL_FLAG(CHECKPLANESFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/description", -1, CONF_BOOL_FLAG(DESCRIPTIONFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/name_on_pcb", -1, CONF_BOOL_FLAG(NAMEONPCBFLAG, Ptr), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/show_mask", -1, CONF_BOOL_FLAG(SHOWMASKFLAG, Ptr), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(ENABLEMINCUTFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/show_number", -1, CONF_BOOL_FLAG(SHOWNUMBERFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/show_drc", -1, CONF_BOOL_FLAG(SHOWDRCFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/rubber_band_mode", -1, CONF_BOOL_FLAG(RUBBERBANDFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/auto_drc", -1, CONF_BOOL_FLAG(AUTODRCFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/all_direction_lines", -1, CONF_BOOL_FLAG(ALLDIRECTIONFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/swap_start_direction", -1, CONF_BOOL_FLAG(SWAPSTARTDIRFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/unique_names", -1, CONF_BOOL_FLAG(UNIQUENAMEFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/clear_line", -1, CONF_BOOL_FLAG(CLEARNEWFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/full_poly", -1, CONF_BOOL_FLAG(NEWFULLPOLYFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/snap_pin", -1, CONF_BOOL_FLAG(SNAPPINFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/orthogonal_moves", -1, CONF_BOOL_FLAG(ORTHOMOVEFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/live_routing", -1, CONF_BOOL_FLAG(LIVEROUTEFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/enable_stroke", -1, CONF_BOOL_FLAG(ENABLESTROKEFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/lock_names", -1, CONF_BOOL_FLAG(LOCKNAMESFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/only_names", -1, CONF_BOOL_FLAG(ONLYNAMESFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/hide_names", -1, CONF_BOOL_FLAG(HIDENAMESFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/thin_draw", -1, CONF_BOOL_FLAG(THINDRAWFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/thin_draw_poly", -1, CONF_BOOL_FLAG(THINDRAWPOLYFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/local_ref", -1, CONF_BOOL_FLAG(LOCALREFFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/check_planes", -1, CONF_BOOL_FLAG(CHECKPLANESFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/description", -1, CONF_BOOL_FLAG(DESCRIPTIONFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/name_on_pcb", -1, CONF_BOOL_FLAG(NAMEONPCBFLAG, yy_pcb_flags), POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/show_mask", -1, CONF_BOOL_FLAG(SHOWMASKFLAG, yy_pcb_flags), POL_OVERWRITE);
 
 		conf_lock(CFR_DESIGN);
 		conf_update();

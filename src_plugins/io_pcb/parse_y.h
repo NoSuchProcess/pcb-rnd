@@ -101,7 +101,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 113 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1909  */
+#line 114 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1909  */
 
 	int		integer;
 	double		number;

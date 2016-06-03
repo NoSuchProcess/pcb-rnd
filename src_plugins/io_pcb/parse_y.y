@@ -78,6 +78,7 @@ extern	FontTypePtr		yyFont;
 extern	int				yylineno;		/* linenumber */
 extern	char			*yyfilename;	/* in this file */
 extern	int	yyLoadSettings;
+extern FlagType yy_pcb_flags;
 
 static char *layer_group_string; 
 
@@ -579,11 +580,11 @@ represent pcb-wide flags as defined in @ref{PCBFlags}.
 pcbflags
 		: T_FLAGS '(' INTEGER ')'
 			{
-				yyPCB->Flags = MakeFlags ($3 & PCB_FLAGS);
+				yy_pcb_flags = MakeFlags ($3 & PCB_FLAGS);
 			}
 		| T_FLAGS '(' STRING ')'
 			{
-			  yyPCB->Flags = string_to_pcbflags ($3, yyerror);
+			  yy_pcb_flags = string_to_pcbflags ($3, yyerror);
 			  free($3);
 			}
 		|

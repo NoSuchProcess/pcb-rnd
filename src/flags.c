@@ -96,11 +96,6 @@ static int FlagElementName(int dummy)
 	return 3;
 }
 
-static int FlagTESTFLAG(int bit)
-{
-	return TEST_FLAG(bit, PCB) ? 1 : 0;
-}
-
 static int FlagSETTINGS(int ofs)
 {
 	return *(bool *) ((char *) (&conf_core) + ofs);
