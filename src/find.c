@@ -912,7 +912,7 @@ static int pv_pv_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pin) && PV_TOUCH_PV(&i->pv, pin)) {
 		if (TEST_FLAG(HOLEFLAG, pin) || TEST_FLAG(HOLEFLAG, &i->pv)) {
 			SET_FLAG(WARNFLAG, pin);
-			conf_core.editor.rat_warn = true;
+			conf_core.temp.rat_warn = true;
 			if (pin->Element)
 				Message(_("WARNING: Hole too close to pin.\n"));
 			else
@@ -991,7 +991,7 @@ static int pv_line_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pv) && PinLineIntersect(pv, &i->line)) {
 		if (TEST_FLAG(HOLEFLAG, pv)) {
 			SET_FLAG(WARNFLAG, pv);
-			conf_core.editor.rat_warn = true;
+			conf_core.temp.rat_warn = true;
 			Message(_("WARNING: Hole too close to line.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, LINE_TYPE, &i->line, FCT_COPPER))
@@ -1008,7 +1008,7 @@ static int pv_pad_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pv) && IS_PV_ON_PAD(pv, &i->pad)) {
 		if (TEST_FLAG(HOLEFLAG, pv)) {
 			SET_FLAG(WARNFLAG, pv);
-			conf_core.editor.rat_warn = true;
+			conf_core.temp.rat_warn = true;
 			Message(_("WARNING: Hole too close to pad.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, PAD_TYPE, &i->pad, FCT_COPPER))
@@ -1025,7 +1025,7 @@ static int pv_arc_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pv) && IS_PV_ON_ARC(pv, &i->arc)) {
 		if (TEST_FLAG(HOLEFLAG, pv)) {
 			SET_FLAG(WARNFLAG, pv);
-			conf_core.editor.rat_warn = true;
+			conf_core.temp.rat_warn = true;
 			Message(_("WARNING: Hole touches arc.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, ARC_TYPE, &i->arc, FCT_COPPER))

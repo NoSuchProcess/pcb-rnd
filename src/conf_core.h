@@ -11,6 +11,10 @@
 
 typedef struct {
 
+	struct temp {
+		CFT_BOOLEAN rat_warn;              /* rats nest has set warnings */
+	} temp;
+
 	struct editor {
 		CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
 		CFT_COORD grid;                    /* grid in pcb-units */
@@ -29,7 +33,6 @@ typedef struct {
 		CFT_BOOLEAN save_last_command;     /* save the last command entered by user */
 		CFT_BOOLEAN save_in_tmp;           /* always save data in /tmp */
 		CFT_BOOLEAN draw_grid;             /* draw grid points */
-		CFT_BOOLEAN rat_warn;              /* rats nest has set warnings */
 		CFT_BOOLEAN stipple_polygons;      /* draw polygons with stipple */
 		CFT_BOOLEAN all_direction_lines;   /* enable lines to all directions */
 		CFT_BOOLEAN rubber_band_mode;      /* move, rotate use rubberband connections */

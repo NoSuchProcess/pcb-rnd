@@ -304,7 +304,7 @@ HID_Flag flags_flag_list[] = {
 	,
 	{"drawgrid", FlagSETTINGS, OffsetOf(conf_core_t, editor.draw_grid)}
 	,
-	{"ratwarn", FlagSETTINGS, OffsetOf(conf_core_t, editor.rat_warn)}
+	{"ratwarn", FlagSETTINGS, OffsetOf(conf_core_t, temp.rat_warn)}
 	,
 	{"stipplepolygons", FlagSETTINGS, OffsetOf(conf_core_t, editor.stipple_polygons)}
 	,

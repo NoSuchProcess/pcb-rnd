@@ -723,7 +723,7 @@ AddAllRats(bool SelectedOnly,
 	}
 
 	if (Warned)
-		conf_core.editor.rat_warn = true;
+		conf_core.temp.rat_warn = true;
 
 	if (changed) {
 		IncrementUndoSerialNumber();

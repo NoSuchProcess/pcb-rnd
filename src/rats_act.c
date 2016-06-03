@@ -74,7 +74,7 @@ static int ActionAddRats(int argc, char **argv, Coord x, Coord y)
 	float len, small;
 
 	if (function) {
-		if (conf_core.editor.rat_warn)
+		if (conf_core.temp.rat_warn)
 			ClearWarnings();
 		switch (funchash_get(function, NULL)) {
 		case F_AllRats:
@@ -195,7 +195,7 @@ static int ActionDeleteRats(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		if (conf_core.editor.rat_warn)
+		if (conf_core.temp.rat_warn)
 			ClearWarnings();
 		switch (funchash_get(function, NULL)) {
 		case F_AllRats:

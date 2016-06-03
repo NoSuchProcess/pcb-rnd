@@ -409,7 +409,8 @@ int conf_merge_all()
 
 static conf_field_clear(conf_native_t *f)
 {
-
+	if (strncmp(f->hash_path, "temp", 4) == 0)
+		return;
 	if (f->used > 0) {
 #define clr(field) memset(f->val.field, 0, sizeof(*(f->val.field)) * f->used)
 		switch(f->type) {

@@ -161,7 +161,7 @@ static void AdjustAttachedBox(void);
  */
 void ClearWarnings()
 {
-	conf_core.editor.rat_warn = false;
+	conf_core.temp.rat_warn = false;
 	ALLPIN_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(WARNFLAG, pin)) {
@@ -486,7 +486,7 @@ void NotifyMode(void)
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
-	if (conf_core.editor.rat_warn)
+	if (conf_core.temp.rat_warn)
 		ClearWarnings();
 	switch (conf_core.editor.mode) {
 	case ARROW_MODE:
