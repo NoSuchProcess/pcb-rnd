@@ -586,27 +586,6 @@ void ghid_config_files_read(gint * argc, gchar *** argv)
 	(*argc)--;
 	(*argv)++;
 	parse_optionv(argc, argv, TRUE);
-
-	if (board_size_override && sscanf(board_size_override, "%dx%d", &width, &height) == 2) {
-		char s[128];
-#warning TODO: this should be CFR_DESIGN
-		pcb_sprintf(s, "%$mS", width);
-		conf_set(CFR_PROJECT, "design/max_width", -1, s, POL_OVERWRITE);
-		pcb_sprintf(s, "%$mS", height);
-		conf_set(CFR_PROJECT, "design/max_height", -1, s, POL_OVERWRITE);
-	}
-
-	if (lib_newlib_config && *lib_newlib_config)
-		add_to_paths_list(&lib_newlib_list, lib_newlib_config);
-
-#warning TODO: check why we write conf_core here
-	for (list = lib_newlib_list; list; list = list->next) {
-		str = conf_core.rc.library_search_paths;
-		dir = expand_dir((gchar *) list->data);
-		conf_core.rc.library_search_paths = g_strconcat(str, PCB_PATH_DELIMETER, dir, NULL);
-		g_free(dir);
-		g_free(str);
-	}
 }
 
 void ghid_config_files_write(void)
