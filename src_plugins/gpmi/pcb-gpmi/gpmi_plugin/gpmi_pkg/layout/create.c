@@ -11,6 +11,8 @@ typedef struct flag_tr_s {
 } flag_tr_t;
 
 static flag_tr_t flags[] = {
+#warning TODO: get these from conf
+#if 0
 	{1, FL_SHOWNUMBER,   SHOWNUMBERFLAG},
 	{1, FL_LOCALREF,     LOCALREFFLAG},
 	{1, FL_CHECKPLANS,   CHECKPLANESFLAG},
@@ -33,6 +35,7 @@ static flag_tr_t flags[] = {
 	{1, FL_ONLYNAMES,    ONLYNAMESFLAG},
 	{1, FL_NEWFULLPOLY,  NEWFULLPOLYFLAG},
 	{1, FL_HIDENAMES,    HIDENAMESFLAG},
+#endif
 
 	{0, FL_THERMALSTYLE1, 1},
 	{0, FL_THERMALSTYLE2, 2},

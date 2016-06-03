@@ -313,9 +313,9 @@ Pixel lesstif_parse_color(const char *value)
 
 static char *cur_clip()
 {
-	if (TEST_FLAG(ORTHOMOVEFLAG, PCB))
+	if (conf_core.editor.orthogonal_moves)
 		return "+";
-	if (TEST_FLAG(ALLDIRECTIONFLAG, PCB))
+	if (conf_core.editor.all_direction_lines)
 		return "*";
 	if (PCB->Clipping == 0)
 		return "X";
@@ -2854,7 +2854,7 @@ static int lesstif_set_layer(const char *name, int group, int empty)
 			return pinout ? 0 : PCB->InvisibleObjectsOn;
 		case SL_MASK:
 			if (SL_MYSIDE(idx) && !pinout)
-				return TEST_FLAG(SHOWMASKFLAG, PCB);
+				return conf_core.editor.show_mask;
 			return 0;
 		case SL_SILK:
 			if (SL_MYSIDE(idx) || pinout)
@@ -2890,7 +2890,7 @@ static void lesstif_destroy_gc(hidGC gc)
 
 static void lesstif_use_mask(int use_it)
 {
-	if ((TEST_FLAG(THINDRAWFLAG, PCB) || TEST_FLAG(THINDRAWPOLYFLAG, PCB)) && !use_xrender)
+	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && !use_xrender)
 		use_it = 0;
 	if ((use_it == 0) == (use_mask == 0))
 		return;
@@ -3063,7 +3063,7 @@ static void lesstif_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	double dx1, dy1, dx2, dy2;
 	int vw = Vz(gc->width);
-	if ((pinout || TEST_FLAG(THINDRAWFLAG, PCB) || TEST_FLAG(THINDRAWPOLYFLAG, PCB)) && gc->erase)
+	if ((pinout || conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && gc->erase)
 		return;
 #if 0
 	pcb_printf("draw_line %#mD-%#mD @%#mS", x1, y1, x2, y2, gc->width);
@@ -3101,7 +3101,7 @@ static void lesstif_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 
 static void lesstif_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
 {
-	if ((pinout || TEST_FLAG(THINDRAWFLAG, PCB)) && gc->erase)
+	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
 		return;
 #if 0
 	pcb_printf("draw_arc %#mD %#mSx%#mS s %d d %d", cx, cy, width, height, start_angle, delta_angle);
@@ -3126,13 +3126,13 @@ static void lesstif_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord he
 #endif
 	set_gc(gc);
 	XDrawArc(display, pixmap, my_gc, cx, cy, width * 2, height * 2, (start_angle + 180) * 64, delta_angle * 64);
-	if (use_mask && !TEST_FLAG(THINDRAWFLAG, PCB))
+	if (use_mask && !conf_core.editor.thin_draw)
 		XDrawArc(display, mask_bitmap, mask_gc, cx, cy, width * 2, height * 2, (start_angle + 180) * 64, delta_angle * 64);
+#warning TODO: make this #if a flag and add it in the gtk hid as well
 #if 0
 	/* Enable this if you want to see the center and radii of drawn
 	   arcs, for debugging.  */
-	if (TEST_FLAG(THINDRAWFLAG, PCB)
-			&& delta_angle != 360) {
+	if (conf_core.editor.thin_draw && (delta_angle != 360)) {
 		cx += width;
 		cy += height;
 		XDrawLine(display, pixmap, arc1_gc, cx, cy,
@@ -3147,7 +3147,7 @@ static void lesstif_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord he
 static void lesstif_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	int vw = Vz(gc->width);
-	if ((pinout || TEST_FLAG(THINDRAWFLAG, PCB)) && gc->erase)
+	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
 		return;
 	x1 = Vx(x1);
 	y1 = Vy(y1);
@@ -3181,7 +3181,7 @@ static void lesstif_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 {
 	if (pinout && use_mask && gc->erase)
 		return;
-	if ((TEST_FLAG(THINDRAWFLAG, PCB) || TEST_FLAG(THINDRAWPOLYFLAG, PCB)) && gc->erase)
+	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && gc->erase)
 		return;
 #if 0
 	pcb_printf("fill_circle %#mD %#mS", cx, cy, radius);
@@ -3232,7 +3232,7 @@ static void lesstif_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 static void lesstif_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	int vw = Vz(gc->width);
-	if ((pinout || TEST_FLAG(THINDRAWFLAG, PCB)) && gc->erase)
+	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
 		return;
 	x1 = Vx(x1);
 	y1 = Vy(y1);

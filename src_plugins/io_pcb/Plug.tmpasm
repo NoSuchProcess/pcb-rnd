@@ -1,5 +1,5 @@
 put /local/pcb/mod {io_pcb}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/io_pcb/io_pcb.o $(PLUGDIR)/io_pcb/file.o $(PLUGDIR)/io_pcb/parse_y.o $(PLUGDIR)/io_pcb/parse_l.o @]
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/io_pcb/io_pcb.o $(PLUGDIR)/io_pcb/file.o $(PLUGDIR)/io_pcb/parse_y.o $(PLUGDIR)/io_pcb/parse_l.o $(PLUGDIR)/io_pcb/flags.o @]
 put /local/pcb/mod/YACC {$(PLUGDIR)/io_pcb/parse_y}
 put /local/pcb/mod/LEX  {$(PLUGDIR)/io_pcb/parse_l}
 

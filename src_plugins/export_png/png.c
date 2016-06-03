@@ -426,9 +426,7 @@ void png_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 {
 	int i;
 	static int saved_layer_stack[MAX_LAYER];
-	int saved_show_solder_side;
 	BoxType region;
-	FlagType save_flags;
 
 	f = the_file;
 
@@ -457,25 +455,23 @@ void png_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 			print_layer[i] = 1;
 
 	memcpy(saved_layer_stack, LayerStack, sizeof(LayerStack));
-	save_flags = PCB->Flags;
-	saved_show_solder_side = conf_core.editor.show_solder_side;
 
 	as_shown = options[HA_as_shown].int_value;
 	if (!options[HA_as_shown].int_value) {
-		CLEAR_FLAG(SHOWMASKFLAG, PCB);
-#warning TODO: this should not happen here
+	/* NOTE: it's OK to change flags bypassing conf - we will use conf to restore them */
+		conf_core.editor.thin_draw = 0;
+		conf_core.editor.thin_draw_poly = 0;
+/*		conf_core.editor.check_planes = 0;*/
 		conf_core.editor.show_solder_side = 0;
+		conf_core.editor.show_mask = 0;
 
 		comp_layer = GetLayerGroupNumberByNumber(component_silk_layer);
 		solder_layer = GetLayerGroupNumberByNumber(solder_silk_layer);
 		qsort(LayerStack, max_copper_layer, sizeof(LayerStack[0]), layer_sort);
 
-		CLEAR_FLAG(THINDRAWFLAG, PCB);
-		CLEAR_FLAG(THINDRAWPOLYFLAG, PCB);
-
 		if (photo_mode) {
 			int i, n = 0;
-			SET_FLAG(SHOWMASKFLAG, PCB);
+			conf_core.editor.show_mask = 1;
 			photo_has_inners = 0;
 			if (comp_layer < solder_layer)
 				for (i = comp_layer; i <= solder_layer; i++) {
@@ -524,8 +520,7 @@ void png_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	hid_expose_callback(&png_hid, bounds, 0);
 
 	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
-	PCB->Flags = save_flags;
-	conf_core.editor.show_solder_side = saved_show_solder_side;
+	conf_update();
 }
 
 static void blend(color_struct * dest, float a_amount, color_struct * a, color_struct * b)
@@ -1055,7 +1050,7 @@ static int png_set_layer(const char *name, int group, int empty)
 
 		case SL(MASK, TOP):
 		case SL(MASK, BOTTOM):
-			return TEST_FLAG(SHOWMASKFLAG, PCB) && SL_MYSIDE(idx);
+			return conf_core.editor.show_mask && SL_MYSIDE(idx);
 		}
 	}
 	else {

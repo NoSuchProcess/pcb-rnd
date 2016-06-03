@@ -207,6 +207,7 @@ static enum crosshair_shape CrosshairShapeIncrement(enum crosshair_shape shape)
 	return shape;
 }
 
+#define TOGGLE_CONF(field) conf_core.editor.field = !conf_core.editor.field
 static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 {
 	char *function, *str_dir;
@@ -234,15 +235,15 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 				EraseElementName(element);
 			}
 			END_LOOP;
-			CLEAR_FLAG(DESCRIPTIONFLAG | NAMEONPCBFLAG, PCB);
+			conf_core.editor.description = conf_core.editor.name_on_pcb = 0;
 			switch (id) {
 			case F_Value:
 				break;
 			case F_NameOnPCB:
-				SET_FLAG(NAMEONPCBFLAG, PCB);
+				conf_core.editor.name_on_pcb = 1;
 				break;
 			case F_Description:
-				SET_FLAG(DESCRIPTIONFLAG, PCB);
+				conf_core.editor.description = 1;
 				break;
 			}
 			ELEMENT_LOOP(PCB->Data);
@@ -255,15 +256,14 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 
 			/* toggle line-adjust flag */
 		case F_ToggleAllDirections:
-			TOGGLE_FLAG(ALLDIRECTIONFLAG, PCB);
+			TOGGLE_CONF(all_direction_lines);
 			AdjustAttachedObjects();
 			break;
 
 		case F_CycleClip:
 			notify_crosshair_change(false);
-			if TEST_FLAG
-				(ALLDIRECTIONFLAG, PCB) {
-				TOGGLE_FLAG(ALLDIRECTIONFLAG, PCB);
+			if (conf_core.editor.all_direction_lines) {
+				TOGGLE_CONF(all_direction_lines);
 				PCB->Clipping = 0;
 				}
 			else
@@ -282,84 +282,83 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 
 		case F_ToggleRubberBandMode:
 			notify_crosshair_change(false);
-			TOGGLE_FLAG(RUBBERBANDFLAG, PCB);
+			TOGGLE_CONF(rubber_band_mode);
 			notify_crosshair_change(true);
 			break;
 
 		case F_ToggleStartDirection:
 			notify_crosshair_change(false);
-			TOGGLE_FLAG(SWAPSTARTDIRFLAG, PCB);
+			TOGGLE_CONF(swap_start_direction);
 			notify_crosshair_change(true);
 			break;
 
 		case F_ToggleUniqueNames:
-			TOGGLE_FLAG(UNIQUENAMEFLAG, PCB);
+			TOGGLE_CONF(unique_names);
 			break;
 
 		case F_ToggleSnapPin:
 			notify_crosshair_change(false);
-			TOGGLE_FLAG(SNAPPINFLAG, PCB);
+			TOGGLE_CONF(snap_pin);
 			notify_crosshair_change(true);
 			break;
 
 		case F_ToggleSnapOffGridLine:
 			notify_crosshair_change(false);
-			TOGGLE_FLAG(SNAPOFFGRIDLINEFLAG, PCB);
+			TOGGLE_CONF(snap_offgrid_line);
 			notify_crosshair_change(true);
 			break;
 
 		case F_ToggleHighlightOnPoint:
 			notify_crosshair_change(false);
-			TOGGLE_FLAG(HIGHLIGHTONPOINTFLAG, PCB);
+			TOGGLE_CONF(highlight_on_point);
 			notify_crosshair_change(true);
 			break;
 
 		case F_ToggleLocalRef:
-			TOGGLE_FLAG(LOCALREFFLAG, PCB);
+			TOGGLE_CONF(local_ref);
 			break;
 
 		case F_ToggleThindraw:
-			TOGGLE_FLAG(THINDRAWFLAG, PCB);
+			TOGGLE_CONF(thin_draw);
 			Redraw();
 			break;
 
 		case F_ToggleThindrawPoly:
-			TOGGLE_FLAG(THINDRAWPOLYFLAG, PCB);
+			TOGGLE_CONF(thin_draw_poly);
 			Redraw();
 			break;
 
 		case F_ToggleLockNames:
-			TOGGLE_FLAG(LOCKNAMESFLAG, PCB);
-			CLEAR_FLAG(ONLYNAMESFLAG, PCB);
+			TOGGLE_CONF(lock_names);
+			conf_core.editor.only_names = 0;
 			break;
 
 		case F_ToggleOnlyNames:
-			TOGGLE_FLAG(ONLYNAMESFLAG, PCB);
-			CLEAR_FLAG(LOCKNAMESFLAG, PCB);
+			TOGGLE_CONF(only_names);
+			conf_core.editor.lock_names = 0;
 			break;
 
 		case F_ToggleHideNames:
-			TOGGLE_FLAG(HIDENAMESFLAG, PCB);
+			TOGGLE_CONF(hide_names);
 			Redraw();
 			break;
 
 		case F_ToggleStroke:
-			TOGGLE_FLAG(ENABLESTROKEFLAG, PCB);
-			conf_core.editor.enable_stroke = TEST_FLAG(ENABLESTROKEFLAG, PCB);
+			TOGGLE_CONF(enable_stroke);
 			break;
 
 		case F_ToggleShowDRC:
-			TOGGLE_FLAG(SHOWDRCFLAG, PCB);
+			TOGGLE_CONF(show_drc);
 			break;
 
 		case F_ToggleLiveRoute:
-			TOGGLE_FLAG(LIVEROUTEFLAG, PCB);
+			TOGGLE_CONF(live_routing);
 			break;
 
 		case F_ToggleAutoDRC:
 			notify_crosshair_change(false);
-			TOGGLE_FLAG(AUTODRCFLAG, PCB);
-			if (TEST_FLAG(AUTODRCFLAG, PCB) && conf_core.editor.mode == LINE_MODE) {
+			TOGGLE_CONF(auto_drc);
+			if (conf_core.editor.auto_drc && conf_core.editor.mode == LINE_MODE) {
 				if (ResetConnections(true)) {
 					IncrementUndoSerialNumber();
 					Draw();
@@ -371,30 +370,30 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 			break;
 
 		case F_ToggleCheckPlanes:
-			TOGGLE_FLAG(CHECKPLANESFLAG, PCB);
+			TOGGLE_CONF(check_planes);
 			Redraw();
 			break;
 
 		case F_ToggleOrthoMove:
-			TOGGLE_FLAG(ORTHOMOVEFLAG, PCB);
+			TOGGLE_CONF(orthogonal_moves);
 			break;
 
 		case F_ToggleName:
-			TOGGLE_FLAG(SHOWNUMBERFLAG, PCB);
+			TOGGLE_CONF(show_number);
 			Redraw();
 			break;
 
 		case F_ToggleMask:
-			TOGGLE_FLAG(SHOWMASKFLAG, PCB);
+			TOGGLE_CONF(show_mask);
 			Redraw();
 			break;
 
 		case F_ToggleClearLine:
-			TOGGLE_FLAG(CLEARNEWFLAG, PCB);
+			TOGGLE_CONF(clear_line);
 			break;
 
 		case F_ToggleFullPoly:
-			TOGGLE_FLAG(NEWFULLPOLYFLAG, PCB);
+			TOGGLE_CONF(full_poly);
 			break;
 
 			/* shift grid alignment */
@@ -529,7 +528,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 
 	AFAIL(display);
 }
-
+#undef TOGGLE_CONF
 /* --------------------------------------------------------------------------- */
 
 static const char mode_syntax[] =

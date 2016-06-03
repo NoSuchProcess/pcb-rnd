@@ -49,6 +49,7 @@
 #include "select.h"
 #include "set.h"
 #include "undo.h"
+#include "conf_core.h"
 
 
 RCSID("$Id$");
@@ -389,7 +390,7 @@ void RotateScreenObject(Coord X, Coord Y, unsigned Steps)
 			return;
 		}
 		Crosshair.AttachedObject.RubberbandN = 0;
-		if (TEST_FLAG(RUBBERBANDFLAG, PCB))
+		if (conf_core.editor.rubber_band_mode)
 			LookupRubberbandLines(type, ptr1, ptr2, ptr3);
 		if (type == ELEMENT_TYPE)
 			LookupRatLines(type, ptr1, ptr2, ptr3);

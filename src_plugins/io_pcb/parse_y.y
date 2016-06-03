@@ -55,6 +55,7 @@
 #include "strflags.h"
 #include "thermal.h"
 #include "rats_patch.h"
+#include "flags.h"
 
 #ifdef HAVE_LIBDMALLOC
 # include <dmalloc.h> /* see http://dmalloc.com */

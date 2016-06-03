@@ -1307,7 +1307,7 @@ void ClosePolygon(void)
 		/* if 45 degree lines are what we want do a quick check
 		 * if closing the polygon makes sense
 		 */
-		if (!TEST_FLAG(ALLDIRECTIONFLAG, PCB)) {
+		if (!conf_core.editor.all_direction_lines) {
 			Coord dx, dy;
 
 			dx = abs(Crosshair.AttachedPolygon.Points[n - 1].X - Crosshair.AttachedPolygon.Points[0].X);
@@ -1338,7 +1338,7 @@ void CopyAttachedPolygonToLayer(void)
 	*polygon = Crosshair.AttachedPolygon;
 	polygon->ID = saveID;
 	SET_FLAG(CLEARPOLYFLAG, polygon);
-	if (TEST_FLAG(NEWFULLPOLYFLAG, PCB))
+	if (conf_core.editor.full_poly)
 		SET_FLAG(FULLPOLYFLAG, polygon);
 	memset(&Crosshair.AttachedPolygon, 0, sizeof(PolygonType));
 	SetPolygonBoundingBox(polygon);

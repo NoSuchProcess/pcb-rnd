@@ -241,7 +241,7 @@ PointTypePtr AdjustInsertPoint(void)
 		InsertedPoint.Y = myline.Point2.Y;
 		return &InsertedPoint;
 	}
-	if (TEST_FLAG(ALLDIRECTIONFLAG, PCB)) {
+	if (conf_core.editor.all_direction_lines) {
 		InsertedPoint.X = Crosshair.X;
 		InsertedPoint.Y = Crosshair.Y;
 		return &InsertedPoint;

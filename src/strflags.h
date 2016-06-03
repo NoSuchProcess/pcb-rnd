@@ -28,6 +28,25 @@
 #ifndef PCB_STRFLAGS_H
 #define PCB_STRFLAGS_H
 
+/* for flagtype */
+#include "global_objs.h"
+
+typedef struct {
+
+	/* This is the bit that we're setting.  */
+	int mask;
+
+	/* The name used in the output file.  */
+	char *name;
+	int nlen;
+
+	/* If set, this entry won't be output unless the object type is one
+	   of these.  */
+	int object_types;
+
+} FlagBitsType;
+
+
 /* The purpose of this interface is to make the file format able to
    handle more than 32 flags, and to hide the internal details of
    flags from the file format.  */
@@ -48,5 +67,9 @@ char *pcbflags_to_string(FlagType flags);
 
 void uninit_strflags_buf(void);
 void uninit_strflags_layerlist(void);
+
+/* io_pcb() needs this for historic reasons */
+FlagType common_string_to_flags(const char *flagstring, int (*error) (const char *msg), FlagBitsType * flagbits, int n_flagbits);
+char *common_flags_to_string(FlagType flags, int object_type, FlagBitsType * flagbits, int n_flagbits);
 
 #endif

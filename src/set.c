@@ -84,7 +84,7 @@ void SetLineSize(Coord Size)
 {
 	if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE) {
 		conf_core.design.line_thickness = Size;
-		if (TEST_FLAG(AUTODRCFLAG, PCB))
+		if (conf_core.editor.auto_drc)
 			FitCrosshairIntoGrid(Crosshair.X, Crosshair.Y);
 	}
 }
@@ -242,7 +242,7 @@ void SetMode(int Mode)
 			SetLocalRef(0, 0, false);
 		Crosshair.AttachedBox.State = STATE_FIRST;
 		Crosshair.AttachedLine.State = STATE_FIRST;
-		if (Mode == LINE_MODE && TEST_FLAG(AUTODRCFLAG, PCB)) {
+		if (Mode == LINE_MODE && conf_core.editor.auto_drc) {
 			if (ResetConnections(true)) {
 				IncrementUndoSerialNumber();
 				Draw();

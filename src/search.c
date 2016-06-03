@@ -500,7 +500,7 @@ SearchElementNameByLocation(int locked, ElementTypePtr * Element, TextTypePtr * 
 		info.area = SQUARE(MAX_COORD);
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 		info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
-		if (r_search(PCB->Data->name_tree[NAME_INDEX(PCB)], &SearchBox, NULL, name_callback, &info))
+		if (r_search(PCB->Data->name_tree[NAME_INDEX()], &SearchBox, NULL, name_callback, &info))
 			return true;
 	}
 	return (false);
@@ -1015,16 +1015,16 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 		SearchBox = point_box(X, Y);
 	}
 
-	if (TEST_FLAG(LOCKNAMESFLAG, PCB)) {
+	if (conf_core.editor.lock_names) {
 		Type &= ~(ELEMENTNAME_TYPE | TEXT_TYPE);
 	}
-	if (TEST_FLAG(HIDENAMESFLAG, PCB)) {
+	if (conf_core.editor.hide_names) {
 		Type &= ~ELEMENTNAME_TYPE;
 	}
-	if (TEST_FLAG(ONLYNAMESFLAG, PCB)) {
+	if (conf_core.editor.only_names) {
 		Type &= (ELEMENTNAME_TYPE | TEXT_TYPE);
 	}
-	if (TEST_FLAG(THINDRAWFLAG, PCB) || TEST_FLAG(THINDRAWPOLYFLAG, PCB)) {
+	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) {
 		Type &= ~POLYGON_TYPE;
 	}
 

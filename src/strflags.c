@@ -59,22 +59,7 @@ typedef struct {
  * Thermals are handled separately, as they're layer-selective.
  */
 
-typedef struct {
-
-	/* This is the bit that we're setting.  */
-	int mask;
-
-	/* The name used in the output file.  */
-	char *name;
-	int nlen;
 #define N(x) x, sizeof(x)-1
-
-	/* If set, this entry won't be output unless the object type is one
-	   of these.  */
-	int object_types;
-
-} FlagBitsType;
-
 static FlagBitsType object_flagbits[] = {
 	{PINFLAG, N("pin"), ALL_TYPES},
 	{VIAFLAG, N("via"), ALL_TYPES},
@@ -84,8 +69,11 @@ static FlagBitsType object_flagbits[] = {
 	{PININPOLYFLAG, N("pininpoly"), PIN_TYPES | PAD_TYPE},
 	{CLEARPOLYFLAG, N("clearpoly"), POLYGON_TYPE},
 	{HIDENAMEFLAG, N("hidename"), ELEMENT_TYPE},
+#warning TODO: do we need these?
+/*
 	{SNAPOFFGRIDLINEFLAG, N("snapoffgridline"), ALL_TYPES},
 	{HIGHLIGHTONPOINTFLAG, N("highlightonpoint"), ALL_TYPES},
+*/
 	{DISPLAYNAMEFLAG, N("showname"), ELEMENT_TYPE},
 	{CLEARLINEFLAG, N("clearline"), LINE_TYPE | ARC_TYPE | TEXT_TYPE},
 	{SELECTEDFLAG, N("selected"), ALL_TYPES},
@@ -103,36 +91,6 @@ static FlagBitsType object_flagbits[] = {
 	{NOPASTEFLAG, N("nopaste"), PAD_TYPE},
 	{NONETLISTFLAG, N("nonetlist"), ALL_TYPES}
 };
-
-#warning TODO: move this to io_pcb
-/* NEVER USE THESE FROM ANYWHERE ELSE THAN io_pcb */
-static FlagBitsType pcb_flagbits[] = {
-	{SHOWNUMBERFLAG, N("shownumber"), 1},
-	{LOCALREFFLAG, N("localref"), 1},
-	{CHECKPLANESFLAG, N("checkplanes"), 1},
-	{SHOWDRCFLAG, N("showdrc"), 1},
-	{RUBBERBANDFLAG, N("rubberband"), 1},
-	{DESCRIPTIONFLAG, N("description"), 1},
-	{NAMEONPCBFLAG, N("nameonpcb"), 1},
-	{AUTODRCFLAG, N("autodrc"), 1},
-	{ALLDIRECTIONFLAG, N("alldirection"), 1},
-	{SWAPSTARTDIRFLAG, N("swapstartdir"), 1},
-	{UNIQUENAMEFLAG, N("uniquename"), 1},
-	{CLEARNEWFLAG, N("clearnew"), 1},
-	{NEWFULLPOLYFLAG, N("newfullpoly"), 1},
-	{SNAPPINFLAG, N("snappin"), 1},
-	{SHOWMASKFLAG, N("showmask"), 1},
-	{THINDRAWFLAG, N("thindraw"), 1},
-	{ORTHOMOVEFLAG, N("orthomove"), 1},
-	{LIVEROUTEFLAG, N("liveroute"), 1},
-	{THINDRAWPOLYFLAG, N("thindrawpoly"), 1},
-	{LOCKNAMESFLAG, N("locknames"), 1},
-	{ONLYNAMESFLAG, N("onlynames"), 1},
-	{HIDENAMESFLAG, N("hidenames"), 1},
-	{ENABLEMINCUTFLAG, N("enablemincut"), 1},
-	{ENABLESTROKEFLAG, N("enablestroke"), 1}
-};
-
 #undef N
 
 /*
@@ -371,7 +329,7 @@ static int error_ignore(const char *msg)
 
 static FlagType empty_flags;
 
-static FlagType
+FlagType
 common_string_to_flags(const char *flagstring, int (*error) (const char *msg), FlagBitsType * flagbits, int n_flagbits)
 {
 	const char *fp, *ep;
@@ -462,12 +420,6 @@ FlagType string_to_flags(const char *flagstring, int (*error) (const char *msg))
 	return common_string_to_flags(flagstring, error, object_flagbits, ENTRIES(object_flagbits));
 }
 
-#warning TODO: move this to io_pcb
-FlagType string_to_pcbflags(const char *flagstring, int (*error) (const char *msg))
-{
-	return common_string_to_flags(flagstring, error, pcb_flagbits, ENTRIES(pcb_flagbits));
-}
-
 
 /*
  * Given a set of flags for a given type of object, return a string
@@ -480,7 +432,7 @@ FlagType string_to_pcbflags(const char *flagstring, int (*error) (const char *ms
  * forcibly set when vias are parsed.
  */
 
-static char *common_flags_to_string(FlagType flags, int object_type, FlagBitsType * flagbits, int n_flagbits)
+char *common_flags_to_string(FlagType flags, int object_type, FlagBitsType * flagbits, int n_flagbits)
 {
 	int len;
 	int i;
@@ -597,10 +549,5 @@ static char *common_flags_to_string(FlagType flags, int object_type, FlagBitsTyp
 char *flags_to_string(FlagType flags, int object_type)
 {
 	return common_flags_to_string(flags, object_type, object_flagbits, ENTRIES(object_flagbits));
-}
-
-char *pcbflags_to_string(FlagType flags)
-{
-	return common_flags_to_string(flags, ALL_TYPES, pcb_flagbits, ENTRIES(pcb_flagbits));
 }
 

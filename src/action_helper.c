@@ -410,7 +410,7 @@ void NotifyLine(void)
 	int type = NO_TYPE;
 	void *ptr1, *ptr2, *ptr3;
 
-	if (!Marked.status || TEST_FLAG(LOCALREFFLAG, PCB))
+	if (!Marked.status || conf_core.editor.local_ref)
 		SetLocalRef(Crosshair.X, Crosshair.Y, true);
 	switch (Crosshair.AttachedLine.State) {
 	case STATE_FIRST:						/* first point */
@@ -418,7 +418,7 @@ void NotifyLine(void)
 			gui->beep();
 			break;
 		}
-		if (TEST_FLAG(AUTODRCFLAG, PCB) && conf_core.editor.mode == LINE_MODE) {
+		if (conf_core.editor.auto_drc && conf_core.editor.mode == LINE_MODE) {
 			type = SearchScreen(Crosshair.X, Crosshair.Y, PIN_TYPE | PAD_TYPE | VIA_TYPE, &ptr1, &ptr2, &ptr3);
 			LookupConnection(Crosshair.X, Crosshair.Y, true, 1, FOUNDFLAG);
 		}
@@ -587,7 +587,7 @@ void NotifyMode(void)
 																												dir,
 																												conf_core.design.line_thickness,
 																												2 * conf_core.design.keepaway,
-																												MakeFlags(TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)))) {
+																												MakeFlags(conf_core.editor.clear_line ? CLEARLINEFLAG : 0)))) {
 						BoxTypePtr bx;
 
 						bx = GetArcEnds(arc);
@@ -714,7 +714,7 @@ void NotifyMode(void)
 				Crosshair.AttachedLine.Point2.Y = Note.Y;
 			}
 
-			if (TEST_FLAG(AUTODRCFLAG, PCB)
+			if (conf_core.editor.auto_drc
 					&& !TEST_SILK_LAYER(CURRENT))
 				maybe_found_flag = FOUNDFLAG;
 			else
@@ -731,7 +731,7 @@ void NotifyMode(void)
 																		 conf_core.design.line_thickness,
 																		 2 * conf_core.design.keepaway,
 																		 MakeFlags(maybe_found_flag |
-																							 (TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)))) != NULL) {
+																							 (conf_core.editor.clear_line ? CLEARLINEFLAG : 0)))) != NULL) {
 				PinTypePtr via;
 
 				addedLines++;
@@ -770,10 +770,8 @@ void NotifyMode(void)
 																		 Note.X, Note.Y,
 																		 conf_core.design.line_thickness,
 																		 2 * conf_core.design.keepaway,
-																		 MakeFlags((TEST_FLAG
-																								(AUTODRCFLAG,
-																								 PCB) ? FOUNDFLAG : 0) |
-																							 (TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)))) != NULL) {
+																		 MakeFlags((conf_core.editor.auto_drc ? FOUNDFLAG : 0) |
+																							 (conf_core.editor.clear_line ? CLEARLINEFLAG : 0)))) != NULL) {
 				addedLines++;
 				AddObjectToCreateUndoList(LINE_TYPE, CURRENT, line, line);
 				IncrementUndoSerialNumber();
@@ -783,7 +781,7 @@ void NotifyMode(void)
 				Crosshair.AttachedLine.Point1.Y = Note.Y;
 				Crosshair.AttachedLine.Point2.X = Note.X;
 				Crosshair.AttachedLine.Point2.Y = Note.Y;
-				if (TEST_FLAG(SWAPSTARTDIRFLAG, PCB)) {
+				if (conf_core.editor.swap_start_direction) {
 					PCB->Clipping ^= 3;
 				}
 			}
@@ -804,7 +802,7 @@ void NotifyMode(void)
 			PolygonTypePtr polygon;
 
 			int flags = CLEARPOLYFLAG;
-			if (TEST_FLAG(NEWFULLPOLYFLAG, PCB))
+			if (conf_core.editor.full_poly)
 				flags |= FULLPOLYFLAG;
 			if ((polygon = CreateNewPolygonFromRectangle(CURRENT,
 																									 Crosshair.AttachedBox.Point1.X,
@@ -983,7 +981,7 @@ void NotifyMode(void)
 					int i, save_n;
 					e = (ElementTypePtr) ptr1;
 
-					save_n = NAME_INDEX(PCB);
+					save_n = NAME_INDEX();
 
 					for (i = 0; i < MAX_ELEMENTNAMES; i++) {
 						if (i == save_n)

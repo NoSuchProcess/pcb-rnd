@@ -143,7 +143,7 @@ static int LayersChanged(int argc, char **argv, Coord x, Coord y)
 				set = PCB->InvisibleObjectsOn;
 				break;
 			case LB_MASK:
-				set = TEST_FLAG(SHOWMASKFLAG, PCB);
+				set = conf_core.editor.show_mask;
 				break;
 			default:									/* layers */
 				set = PCB->Data->Layer[i].On;
@@ -247,8 +247,9 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 		set = PCB->InvisibleObjectsOn = !PCB->InvisibleObjectsOn;
 		break;
 	case LB_MASK:
-		TOGGLE_FLAG(SHOWMASKFLAG, PCB);
-		set = TEST_FLAG(SHOWMASKFLAG, PCB);
+#warning TODO: do not modify directly
+		conf_core.editor.show_mask = !conf_core.editor.show_mask;
+		set = conf_core.editor.show_mask;
 		break;
 	default:											/* layers */
 		set = PCB->Data->Layer[layer].On = !PCB->Data->Layer[layer].On;

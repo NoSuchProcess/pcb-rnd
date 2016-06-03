@@ -42,14 +42,16 @@ typedef struct {
 		CFT_BOOLEAN auto_place;            /* flag which says we should force placement of the windows on startup */
 		CFT_BOOLEAN lock_names;            /* lock down text so they can not be moved or selected */
 		CFT_BOOLEAN only_names;            /* lock down everything else but text so only text objects can be moved or selected */
-		CFT_BOOLEAN hide_names;            /* when set, element names are not drawn. */
 		CFT_BOOLEAN thin_draw;             /* if set, objects on the screen are drawn as outlines (lines are drawn as center-lines).  This lets you see line endpoints hidden under pins, for example. */
 		CFT_BOOLEAN thin_draw_poly;        /* if set, polygons on the screen are drawn as outlines. */
 		CFT_BOOLEAN local_ref;             /* use local reference for moves, by setting the mark at the beginning of each move. */
 		CFT_BOOLEAN check_planes;          /* when set, only polygons and their clearances are drawn, to see if polygons have isolated regions. */
+		CFT_BOOLEAN show_mask;             /* show the solder mask layer */
+
+#warning TODO: should be an enum maybe?
+		CFT_BOOLEAN hide_names;            /* when set, element names are not drawn. */
 		CFT_BOOLEAN description;           /* display element description as element name, instead of value */
 		CFT_BOOLEAN name_on_pcb;           /* display Reference Designator as element name, instead of value */
-		CFT_BOOLEAN show_mask;             /* show the solder mask layer */
 
 #warning TODO: move all the rest in plugins (watch out for io_pcb string path refs):
 		CFT_BOOLEAN enable_stroke;         /* Enable libstroke gesutres on middle mouse button when non-zero */

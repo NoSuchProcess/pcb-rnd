@@ -393,7 +393,7 @@ static int ActionMoveObject(int argc, char **argv, Coord x, Coord y)
 	if (absolute2)
 		ny -= y;
 	Crosshair.AttachedObject.RubberbandN = 0;
-	if (TEST_FLAG(RUBBERBANDFLAG, PCB))
+	if (conf_core.editor.rubber_band_mode)
 		LookupRubberbandLines(type, ptr1, ptr2, ptr3);
 	if (type == ELEMENT_TYPE)
 		LookupRatLines(type, ptr1, ptr2, ptr3);

@@ -103,6 +103,7 @@
 #include "stub_edif.h"
 #include "hid_actions.h"
 #include "hid_flags.h"
+#include "flags.h"
 
 RCSID("$Id$");
 

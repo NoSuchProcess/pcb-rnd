@@ -66,7 +66,7 @@ void AdjustAttachedLine(void)
 	else
 		line->draw = true;
 	/* no 45 degree lines required */
-	if (PCB->RatDraw || TEST_FLAG(ALLDIRECTIONFLAG, PCB)) {
+	if (PCB->RatDraw || conf_core.editor.all_direction_lines) {
 		line->Point2.X = Crosshair.X;
 		line->Point2.Y = Crosshair.Y;
 		return;
@@ -170,7 +170,7 @@ void AdjustTwoLine(bool way)
 	}
 	else
 		line->draw = true;
-	if (TEST_FLAG(ALLDIRECTIONFLAG, PCB)) {
+	if (conf_core.editor.all_direction_lines) {
 		line->Point2.X = Crosshair.X;
 		line->Point2.Y = Crosshair.Y;
 		return;

@@ -143,36 +143,10 @@ PCBTypePtr CreateNewPCB_(bool SetDefaultNames)
 	ptr->IsleArea = 2.e8;
 	ptr->SilkActive = false;
 	ptr->RatDraw = false;
-	SET_FLAG(NAMEONPCBFLAG, ptr);
-	if (conf_core.editor.show_number)
-		SET_FLAG(SHOWNUMBERFLAG, ptr);
-	if (conf_core.editor.all_direction_lines)
-		SET_FLAG(ALLDIRECTIONFLAG, ptr);
+
+	/* NOTE: we used to set all the pcb flags on ptr here, but we don't need to do that anymore due to the new conf system */
 	ptr->Clipping = 1;						/* this is the most useful starting point for now */
-	if (conf_core.editor.rubber_band_mode)
-		SET_FLAG(RUBBERBANDFLAG, ptr);
-	if (conf_core.editor.swap_start_direction)
-		SET_FLAG(SWAPSTARTDIRFLAG, ptr);
-	if (conf_core.editor.unique_names)
-		SET_FLAG(UNIQUENAMEFLAG, ptr);
-	if (conf_core.editor.snap_pin)
-		SET_FLAG(SNAPPINFLAG, ptr);
-	if (conf_core.editor.snap_offgrid_line)
-		SET_FLAG(SNAPOFFGRIDLINEFLAG, ptr);
-	if (conf_core.editor.highlight_on_point)
-		SET_FLAG(HIGHLIGHTONPOINTFLAG, ptr);
-	if (conf_core.editor.clear_line)
-		SET_FLAG(CLEARNEWFLAG, ptr);
-	if (conf_core.editor.full_poly)
-		SET_FLAG(NEWFULLPOLYFLAG, ptr);
-	if (conf_core.editor.orthogonal_moves)
-		SET_FLAG(ORTHOMOVEFLAG, ptr);
-	if (conf_core.editor.live_routing)
-		SET_FLAG(LIVEROUTEFLAG, ptr);
-	if (conf_core.editor.show_drc)
-		SET_FLAG(SHOWDRCFLAG, ptr);
-	if (conf_core.editor.auto_drc)
-		SET_FLAG(AUTODRCFLAG, ptr);
+
 	ptr->Grid = conf_core.editor.grid;
 	ParseGroupString(conf_core.design.groups, &ptr->LayerGroups, MAX_LAYER);
 	STYLE_LOOP(ptr);

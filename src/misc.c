@@ -1217,7 +1217,7 @@ void LayerStringToLayerStack(char *s)
 	PCB->PinOn = false;
 	PCB->ViaOn = false;
 	PCB->RatOn = false;
-	CLEAR_FLAG(SHOWMASKFLAG, PCB);
+	conf_core.editor.show_mask = 0;
 	conf_core.editor.show_solder_side = 0;
 
 	for (i = argn - 1; i >= 0; i--) {
@@ -1232,7 +1232,7 @@ void LayerStringToLayerStack(char *s)
 		else if (strcasecmp(args[i], "elements") == 0 || strcasecmp(args[i], "silk") == 0)
 			PCB->ElementOn = true;
 		else if (strcasecmp(args[i], "mask") == 0)
-			SET_FLAG(SHOWMASKFLAG, PCB);
+			conf_core.editor.show_mask = 1;
 		else if (strcasecmp(args[i], "solderside") == 0)
 			conf_core.editor.show_solder_side = 1;
 		else if (isdigit((int) args[i][0])) {
@@ -1613,7 +1613,7 @@ void AttachForCopy(Coord PlaceX, Coord PlaceY)
 	Coord mx = 0, my = 0;
 
 	Crosshair.AttachedObject.RubberbandN = 0;
-	if (!TEST_FLAG(SNAPPINFLAG, PCB)) {
+	if (!conf_core.editor.snap_pin) {
 		/* dither the grab point so that the mark, center, etc
 		 * will end up on a grid coordinate
 		 */
@@ -1625,7 +1625,7 @@ void AttachForCopy(Coord PlaceX, Coord PlaceY)
 	}
 	Crosshair.AttachedObject.X = PlaceX - mx;
 	Crosshair.AttachedObject.Y = PlaceY - my;
-	if (!Marked.status || TEST_FLAG(LOCALREFFLAG, PCB))
+	if (!Marked.status || conf_core.editor.local_ref)
 		SetLocalRef(PlaceX - mx, PlaceY - my, true);
 	Crosshair.AttachedObject.State = STATE_SECOND;
 
@@ -1638,7 +1638,7 @@ void AttachForCopy(Coord PlaceX, Coord PlaceY)
 										PCB->MaxHeight - (box->Y2 - Crosshair.AttachedObject.Y));
 
 	/* get all attached objects if necessary */
-	if ((conf_core.editor.mode != COPY_MODE) && TEST_FLAG(RUBBERBANDFLAG, PCB))
+	if ((conf_core.editor.mode != COPY_MODE) && conf_core.editor.rubber_band_mode)
 		LookupRubberbandLines(Crosshair.AttachedObject.Type,
 													Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 	if (conf_core.editor.mode != COPY_MODE &&

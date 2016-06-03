@@ -67,6 +67,7 @@
 #include "set.h"
 #include "undo.h"
 #include "strflags.h"
+#include "conf_core.h"
 
 
 RCSID("$Id$");
@@ -847,8 +848,8 @@ int Undo(bool draw)
 	int unique;
 	bool error_undoing = false;
 
-	unique = TEST_FLAG(UNIQUENAMEFLAG, PCB);
-	CLEAR_FLAG(UNIQUENAMEFLAG, PCB);
+	unique = conf_core.editor.unique_names;
+	conf_core.editor.unique_names = 0; /* NOTE: intentinal bypass of the conf system for temporary change of a flag */
 
 	andDraw = draw;
 
@@ -900,8 +901,7 @@ int Undo(bool draw)
 		Draw();
 
 	/* restore the unique flag setting */
-	if (unique)
-		SET_FLAG(UNIQUENAMEFLAG, PCB);
+	conf_core.editor.unique_names = unique;
 
 	return Types;
 }

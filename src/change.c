@@ -1149,7 +1149,7 @@ char *ChangeElementText(PCBType * pcb, DataType * data, ElementTypePtr Element, 
 	printf("In ChangeElementText, updating old TextString %s to %s\n", old, new_name);
 #endif
 
-	if (pcb && which == NAME_INDEX(pcb))
+	if (pcb && which == NAME_INDEX())
 		EraseElementName(Element);
 
 	r_delete_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
@@ -1159,7 +1159,7 @@ char *ChangeElementText(PCBType * pcb, DataType * data, ElementTypePtr Element, 
 
 	r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox, 0);
 
-	if (pcb && which == NAME_INDEX(pcb))
+	if (pcb && which == NAME_INDEX())
 		DrawElementName(Element);
 
 	return old;
@@ -1169,14 +1169,14 @@ static void *ChangeElementName(ElementTypePtr Element)
 {
 	if (TEST_FLAG(LOCKFLAG, &Element->Name[0]))
 		return (NULL);
-	if (NAME_INDEX(PCB) == NAMEONPCB_INDEX) {
-		if (TEST_FLAG(UNIQUENAMEFLAG, PCB) && UniqueElementName(PCB->Data, NewName) != NewName) {
+	if (NAME_INDEX() == NAMEONPCB_INDEX) {
+		if (conf_core.editor.unique_names && UniqueElementName(PCB->Data, NewName) != NewName) {
 			Message(_("Error: The name \"%s\" is not unique!\n"), NewName);
 			return ((char *) -1);
 		}
 	}
 
-	return ChangeElementText(PCB, PCB->Data, Element, NAME_INDEX(PCB), NewName);
+	return ChangeElementText(PCB, PCB->Data, Element, NAME_INDEX(), NewName);
 }
 
 static void *ChangeElementNonetlist(ElementTypePtr Element)
@@ -1823,7 +1823,7 @@ bool ChangeSelectedClearSize(int types, Coord Difference, bool fixIt)
 	/* setup identifiers */
 	Absolute = (fixIt) ? Difference : 0;
 	Delta = Difference;
-	if (TEST_FLAG(SHOWMASKFLAG, PCB))
+	if (conf_core.editor.show_mask)
 		change = SelectedOperation(&ChangeMaskSizeFunctions, false, types);
 	else
 		change = SelectedOperation(&ChangeClearSizeFunctions, false, types);
@@ -2140,7 +2140,7 @@ bool ChangeObjectClearSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord D
 	/* setup identifier */
 	Absolute = (fixIt) ? Difference : 0;
 	Delta = Difference;
-	if (TEST_FLAG(SHOWMASKFLAG, PCB))
+	if (conf_core.editor.show_mask)
 		change = (ObjectOperation(&ChangeMaskSizeFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	else
 		change = (ObjectOperation(&ChangeClearSizeFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);

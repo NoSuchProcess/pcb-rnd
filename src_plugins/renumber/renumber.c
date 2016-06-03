@@ -35,6 +35,7 @@
 #include "set.h"
 #include "plugins.h"
 #include "hid_actions.h"
+#include "conf_core.h"
 
 #include "pcb-printf.h"
 
@@ -71,7 +72,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	} *cnt_list;
 	char **was, **is, *pin;
 	unsigned int c_cnt = 0, numele;
-	int unique, ok;
+	int ok;
 	int free_name = 0;
 
 	if (argc < 1) {
@@ -191,8 +192,8 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	 * in our way.  When we're done with the renumber we will have unique
 	 * names.
 	 */
-	unique = TEST_FLAG(UNIQUENAMEFLAG, PCB);
-	CLEAR_FLAG(UNIQUENAMEFLAG, PCB);
+	/* It is OK to directly write conf_core here, it's a temp change and will be restored at the end */
+	conf_core.editor.unique_names = 0;
 
 	cnt_list = (struct _cnt_list *) calloc(cnt_list_sz, sizeof(struct _cnt_list));
 	for (i = 0; i < cnt; i++) {
@@ -296,8 +297,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	fclose(out);
 
 	/* restore the unique flag setting */
-	if (unique)
-		SET_FLAG(UNIQUENAMEFLAG, PCB);
+	conf_update();
 
 	if (changed) {
 

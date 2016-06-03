@@ -146,7 +146,7 @@ int ActionUndo(int argc, char **argv, Coord x, Coord y)
 		/* move anchor point if undoing during line creation */
 		if (conf_core.editor.mode == LINE_MODE) {
 			if (Crosshair.AttachedLine.State == STATE_SECOND) {
-				if (TEST_FLAG(AUTODRCFLAG, PCB))
+				if (conf_core.editor.auto_drc)
 					Undo(true);						/* undo the connection find */
 				Crosshair.AttachedLine.State = STATE_FIRST;
 				SetLocalRef(0, 0, false);
@@ -184,7 +184,7 @@ int ActionUndo(int argc, char **argv, Coord x, Coord y)
 					SearchObjectByLocation(LINE_TYPE | RATLINE_TYPE, &ptr1,
 																 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y, 0);
 					ptr2 = (LineTypePtr) ptrtmp;
-					if (TEST_FLAG(AUTODRCFLAG, PCB)) {
+					if (conf_core.editor.auto_drc) {
 						/* undo loses FOUNDFLAG */
 						SET_FLAG(FOUNDFLAG, ptr2);
 						DrawLine(CURRENT, ptr2);

@@ -417,7 +417,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 			TextTypePtr text;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
-				__r_dump_tree(PCB->Data->name_tree[NAME_INDEX(PCB)]->root, 0);
+				__r_dump_tree(PCB->Data->name_tree[NAME_INDEX()]->root, 0);
 				return 0;
 			}
 #endif

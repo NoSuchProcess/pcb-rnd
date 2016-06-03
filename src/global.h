@@ -301,6 +301,7 @@ enum {
 	 */
 typedef struct PCBType {
 	long ID;											/* see macro.h */
+#warning TODO: remove Flags - we have conf instead
 	FlagType Flags;
 	char *Name,										/* name of board */
 	 *Filename,										/* name of file (from load) */

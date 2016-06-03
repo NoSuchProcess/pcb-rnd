@@ -85,7 +85,7 @@ int ghid_set_layer(const char *name, int group, int empty)
 			return /* pinout ? 0 : */ PCB->InvisibleObjectsOn;
 		case SL_MASK:
 			if (SL_MYSIDE(idx) /*&& !pinout */ )
-				return TEST_FLAG(SHOWMASKFLAG, PCB);
+				return conf_core.editor.show_mask;
 			return 0;
 		case SL_SILK:
 			if (SL_MYSIDE(idx) /*|| pinout */ )

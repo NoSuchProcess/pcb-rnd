@@ -263,8 +263,7 @@ static void *CopyElement(ElementTypePtr Element)
 
 	ElementTypePtr element = CopyElementLowLevel(PCB->Data,
 																							 NULL, Element,
-																							 TEST_FLAG(UNIQUENAMEFLAG,
-																												 PCB), DeltaX,
+																							 conf_core.editor.unique_names, DeltaX,
 																							 DeltaY);
 
 	/* this call clears the polygons */

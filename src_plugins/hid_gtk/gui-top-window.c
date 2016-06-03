@@ -429,7 +429,7 @@ static void layer_process(gchar ** color_string, char **text, int *set, int i)
 	case LAYER_BUTTON_MASK:
 		*color_string = conf_core.appearance.color.mask;
 		*text = _("solder mask");
-		*set = TEST_FLAG(SHOWMASKFLAG, PCB);
+		*set = conf_core.editor.show_mask;
 		break;
 	default:											/* layers */
 		*color_string = conf_core.appearance.color.layer[i];
@@ -496,10 +496,11 @@ static void layer_selector_toggle_callback(GHidLayerSelector * ls, int layer, gp
 		redraw = TRUE;
 		break;
 	case LAYER_BUTTON_MASK:
+#warning TODO: don't write directly
 		if (active)
-			SET_FLAG(SHOWMASKFLAG, PCB);
+			conf_core.editor.show_mask = 1;
 		else
-			CLEAR_FLAG(SHOWMASKFLAG, PCB);
+			conf_core.editor.show_mask = 0;
 		redraw = TRUE;
 		break;
 	default:

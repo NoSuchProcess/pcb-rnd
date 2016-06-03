@@ -470,7 +470,7 @@ void DrawAttached(void)
 
 			gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &via, true, false);
 
-			if (TEST_FLAG(SHOWDRCFLAG, PCB)) {
+			if (conf_core.editor.show_drc) {
 				/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
 				via.Mask = conf_core.design.via_thickness + PCB->Bloat * 2;
 				gui->set_color(Crosshair.GC, conf_core.appearance.color.cross);
@@ -498,7 +498,7 @@ void DrawAttached(void)
 	case ARC_MODE:
 		if (Crosshair.AttachedBox.State != STATE_FIRST) {
 			XORDrawAttachedArc(conf_core.design.line_thickness);
-			if (TEST_FLAG(SHOWDRCFLAG, PCB)) {
+			if (conf_core.editor.show_drc) {
 				gui->set_color(Crosshair.GC, conf_core.appearance.color.cross);
 				XORDrawAttachedArc(conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
 				gui->set_color(Crosshair.GC, conf_core.appearance.color.crosshair);
@@ -519,7 +519,7 @@ void DrawAttached(void)
 				XORDrawAttachedLine(Crosshair.AttachedLine.Point2.X,
 														Crosshair.AttachedLine.Point2.Y,
 														Crosshair.X, Crosshair.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness);
-			if (TEST_FLAG(SHOWDRCFLAG, PCB)) {
+			if (conf_core.editor.show_drc) {
 				gui->set_color(Crosshair.GC, conf_core.appearance.color.cross);
 				XORDrawAttachedLine(Crosshair.AttachedLine.Point1.X,
 														Crosshair.AttachedLine.Point1.Y,
@@ -879,7 +879,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, Coord nearest_g
 	double dx, dy;
 	double dist;
 
-	if (!TEST_FLAG(SNAPPINFLAG, PCB))
+	if (!conf_core.editor.snap_pin)
 		return;
 
 	/* Code to snap at some sensible point along a line */
@@ -971,7 +971,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		nearest_grid_x = GridFit(Crosshair.X, PCB->Grid, PCB->GridOffsetX);
 		nearest_grid_y = GridFit(Crosshair.Y, PCB->Grid, PCB->GridOffsetY);
 
-		if (Marked.status && TEST_FLAG(ORTHOMOVEFLAG, PCB)) {
+		if (Marked.status && conf_core.editor.orthogonal_moves) {
 			Coord dx = Crosshair.X - Marked.X;
 			Coord dy = Crosshair.Y - Marked.Y;
 			if (PCB_ABS(dx) > PCB_ABS(dy))
@@ -998,7 +998,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	}
 
 	ans = NO_TYPE;
-	if (PCB->RatDraw || TEST_FLAG(SNAPPINFLAG, PCB))
+	if (PCB->RatDraw || conf_core.editor.snap_pin)
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PAD_TYPE, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid self-snapping when moving */
@@ -1043,7 +1043,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	}
 
 	ans = NO_TYPE;
-	if (PCB->RatDraw || TEST_FLAG(SNAPPINFLAG, PCB))
+	if (PCB->RatDraw || conf_core.editor.snap_pin)
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PIN_TYPE, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid self-snapping when moving */
@@ -1057,7 +1057,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	}
 
 	ans = NO_TYPE;
-	if (TEST_FLAG(SNAPPINFLAG, PCB))
+	if (conf_core.editor.snap_pin)
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, VIA_TYPE, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid snapping vias to any other vias */
@@ -1070,7 +1070,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	}
 
 	ans = NO_TYPE;
-	if (TEST_FLAG(SNAPPINFLAG, PCB))
+	if (conf_core.editor.snap_pin)
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, LINEPOINT_TYPE, &ptr1, &ptr2, &ptr3);
 
 	if (ans != NO_TYPE) {
@@ -1081,11 +1081,11 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	/*
 	 * Snap to offgrid points on lines.
 	 */
-	if (TEST_FLAG(SNAPOFFGRIDLINEFLAG, PCB))
+	if (conf_core.editor.snap_offgrid_line)
 		check_snap_offgrid_line(&snap_data, nearest_grid_x, nearest_grid_y);
 
 	ans = NO_TYPE;
-	if (TEST_FLAG(SNAPPINFLAG, PCB))
+	if (conf_core.editor.snap_pin)
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, POLYGONPOINT_TYPE, &ptr1, &ptr2, &ptr3);
 
 	if (ans != NO_TYPE) {
@@ -1098,7 +1098,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		Crosshair.Y = snap_data.y;
 	}
 
-	if (TEST_FLAG(HIGHLIGHTONPOINTFLAG, PCB))
+	if (conf_core.editor.highlight_on_point)
 		onpoint_work(&Crosshair, Crosshair.X, Crosshair.Y);
 
 	if (conf_core.editor.mode == ARROW_MODE) {
@@ -1109,7 +1109,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 			hid_actionl("PointCursor", "True", NULL);
 	}
 
-	if (conf_core.editor.mode == LINE_MODE && Crosshair.AttachedLine.State != STATE_FIRST && TEST_FLAG(AUTODRCFLAG, PCB))
+	if (conf_core.editor.mode == LINE_MODE && Crosshair.AttachedLine.State != STATE_FIRST && conf_core.editor.auto_drc)
 		EnforceLineDRC();
 
 	gui->set_crosshair(Crosshair.X, Crosshair.Y, HID_SC_DO_NOTHING);

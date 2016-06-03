@@ -28,6 +28,7 @@
 #include "hid_helper.h"
 #include "hid_flags.h"
 #include "hid_actions.h"
+#include "conf_core.h"
 
 
 RCSID("$Id$");
@@ -600,12 +601,11 @@ void ps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 {
 	int i;
 	static int saved_layer_stack[MAX_LAYER];
-	FlagType save_thindraw;
 
-	save_thindraw = PCB->Flags;
-	CLEAR_FLAG(THINDRAWFLAG, PCB);
-	CLEAR_FLAG(THINDRAWPOLYFLAG, PCB);
-	CLEAR_FLAG(CHECKPLANESFLAG, PCB);
+	/* NOTE: it's OK to change flags bypassing conf - we will use conf to restore them */
+	conf_core.editor.thin_draw = 0;
+	conf_core.editor.thin_draw_poly = 0;
+	conf_core.editor.check_planes = 0;
 
 	global.f = the_file;
 	global.drill_helper = options[HA_drillhelper].int_value;
@@ -701,7 +701,7 @@ void ps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 		fprintf(the_file, "showpage\n");
 
 	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
-	PCB->Flags = save_thindraw;
+	conf_update();
 }
 
 static void ps_do_export(HID_Attr_Val * options)

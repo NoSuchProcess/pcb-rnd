@@ -2842,7 +2842,7 @@ static void RD_DrawVia(routedata_t * rd, Coord X, Coord Y, Coord radius, routebo
 	int ka = AutoRouteParameters.style->Keepaway;
 	PinType *live_via = NULL;
 
-	if (TEST_FLAG(LIVEROUTEFLAG, PCB)) {
+	if (conf_core.editor.live_routing) {
 		live_via = CreateNewVia(PCB->Data, X, Y, radius * 2,
 														2 * AutoRouteParameters.style->Keepaway, 0, AutoRouteParameters.style->Hole, NULL, MakeFlags(0));
 		if (live_via != NULL)
@@ -2969,7 +2969,7 @@ RD_DrawLine(routedata_t * rd,
 	/* and add it to the r-tree! */
 	r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 1);
 
-	if (TEST_FLAG(LIVEROUTEFLAG, PCB)) {
+	if (conf_core.editor.live_routing) {
 		LayerType *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
 		LineType *line = CreateNewLineOnLayer(layer, qX1, qY1, qX2, qY2,
 																					2 * qhthick, 0, MakeFlags(0));
@@ -3242,7 +3242,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 	/* flush the line queue */
 	RD_DrawLine(rd, -1, 0, 0, 0, 0, 0, NULL, false, false);
 
-	if (TEST_FLAG(LIVEROUTEFLAG, PCB))
+	if (conf_core.editor.live_routing)
 		Draw();
 
 #ifdef ROUTE_DEBUG
@@ -4200,7 +4200,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 							mtspace_add(rd->mtspace, &p->box, p->flags.is_odd ? EVEN : ODD, p->style->Keepaway);
 					}
 					if (rip) {
-						if (TEST_FLAG(LIVEROUTEFLAG, PCB))
+						if (conf_core.editor.live_routing)
 							ripout_livedraw_obj(p);
 #ifndef NDEBUG
 						del =
@@ -4215,7 +4215,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 					}
 				}
 				END_LOOP;
-				if (TEST_FLAG(LIVEROUTEFLAG, PCB))
+				if (conf_core.editor.live_routing)
 					Draw();
 				/* reset to original connectivity */
 				if (rip) {
@@ -4457,7 +4457,7 @@ bool IronDownAllUnfixedPaths(routedata_t * rd)
 					/* using CreateDrawn instead of CreateNew concatenates sequential lines */
 					p->parent.line = CreateDrawnLineOnLayer
 						(layer, b.X1, b.Y1, b.X2, b.Y2,
-						 p->style->Thick, p->style->Keepaway * 2, MakeFlags(AUTOFLAG | (TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)));
+						 p->style->Thick, p->style->Keepaway * 2, MakeFlags(AUTOFLAG | (conf_core.editor.clear_line ? CLEARLINEFLAG : 0)));
 
 					if (p->parent.line) {
 						AddObjectToCreateUndoList(LINE_TYPE, layer, p->parent.line, p->parent.line);
@@ -4671,7 +4671,7 @@ bool AutoRoute(bool selected)
 	changed = (RouteAll(rd).total_nets_routed > 0) || changed;
 donerouting:
 	gui->progress(0, 0, NULL);
-	if (TEST_FLAG(LIVEROUTEFLAG, PCB)) {
+	if (conf_core.editor.live_routing) {
 		int i;
 		BoxType big = { 0, 0, MAX_COORD, MAX_COORD };
 		for (i = 0; i < max_group; i++) {

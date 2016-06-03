@@ -199,7 +199,7 @@ static void _draw_pv_name(PinType * pv)
 	if (!pv->Name || !pv->Name[0])
 		pn = EMPTY(pv->Number);
 	else
-		pn = EMPTY(TEST_FLAG(SHOWNUMBERFLAG, PCB) ? pv->Number : pv->Name);
+		pn = EMPTY(conf_core.editor.show_number ? pv->Number : pv->Name);
 
 	if (GET_INTCONN(pv) > 0)
 		snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pv));
@@ -236,7 +236,7 @@ static void _draw_pv_name(PinType * pv)
 
 static void _draw_pv(PinTypePtr pv, bool draw_hole)
 {
-	if (TEST_FLAG(THINDRAWFLAG, PCB))
+	if (conf_core.editor.thin_draw)
 		gui->thindraw_pcb_pv(Output.fgGC, Output.fgGC, pv, draw_hole, false);
 	else
 		gui->fill_pcb_pv(Output.fgGC, Output.bgGC, pv, draw_hole, false);
@@ -281,7 +281,7 @@ static void draw_pad_name(PadType * pad)
 	if (!pad->Name || !pad->Name[0])
 		pn = EMPTY(pad->Number);
 	else
-		pn = EMPTY(TEST_FLAG(SHOWNUMBERFLAG, PCB) ? pad->Number : pad->Name);
+		pn = conf_core.editor.show_number ? pad->Number : pad->Name;
 
 	if (GET_INTCONN(pad) > 0)
 		snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pad));
@@ -322,7 +322,7 @@ static void _draw_pad(hidGC gc, PadType * pad, bool clear, bool mask)
 	if (clear && !mask && pad->Clearance <= 0)
 		return;
 
-	if (TEST_FLAG(THINDRAWFLAG, PCB) || (clear && TEST_FLAG(THINDRAWPOLYFLAG, PCB)))
+	if (conf_core.editor.thin_draw || (clear && conf_core.editor.thin_draw_poly))
 		gui->thindraw_pcb_pad(gc, pad, clear, mask);
 	else
 		gui->fill_pcb_pad(gc, pad, clear, mask);
@@ -375,7 +375,7 @@ static int pad_callback(const BoxType * b, void *cl)
 
 static void draw_element_name(ElementType * element)
 {
-	if ((TEST_FLAG(HIDENAMESFLAG, PCB) && gui->gui) || TEST_FLAG(HIDENAMEFLAG, element))
+	if ((conf_core.editor.hide_names && gui->gui) || TEST_FLAG(HIDENAMEFLAG, element))
 		return;
 	if (doing_pinout || doing_assy)
 		gui->set_color(Output.fgGC, PCB->ElementColor);
@@ -442,7 +442,7 @@ static int hole_callback(const BoxType * b, void *cl)
 	if ((plated == 0 && !TEST_FLAG(HOLEFLAG, pv)) || (plated == 1 && TEST_FLAG(HOLEFLAG, pv)))
 		return 1;
 
-	if (TEST_FLAG(THINDRAWFLAG, PCB)) {
+	if (conf_core.editor.thin_draw) {
 		if (!TEST_FLAG(HOLEFLAG, pv)) {
 			gui->set_line_cap(Output.fgGC, Round_Cap);
 			gui->set_line_width(Output.fgGC, 0);
@@ -490,7 +490,7 @@ static void DrawHoles(bool draw_plated, bool draw_unplated, const BoxType * draw
 static void _draw_line(LineType * line)
 {
 	gui->set_line_cap(Output.fgGC, Trace_Cap);
-	if (TEST_FLAG(THINDRAWFLAG, PCB))
+	if (conf_core.editor.thin_draw)
 		gui->set_line_width(Output.fgGC, 0);
 	else
 		gui->set_line_width(Output.fgGC, line->Thickness);
@@ -549,7 +549,7 @@ static int rat_callback(const BoxType * b, void *cl)
 	if (TEST_FLAG(VIAFLAG, rat)) {
 		int w = rat->Thickness;
 
-		if (TEST_FLAG(THINDRAWFLAG, PCB))
+		if (conf_core.editor.thin_draw)
 			gui->set_line_width(Output.fgGC, 0);
 		else
 			gui->set_line_width(Output.fgGC, w);
@@ -565,7 +565,7 @@ static void _draw_arc(ArcType * arc)
 	if (!arc->Thickness)
 		return;
 
-	if (TEST_FLAG(THINDRAWFLAG, PCB))
+	if (conf_core.editor.thin_draw)
 		gui->set_line_width(Output.fgGC, 0);
 	else
 		gui->set_line_width(Output.fgGC, arc->Thickness);
@@ -691,12 +691,12 @@ static void DrawEverything(const BoxType * drawn_area)
 	/*
 	 * first draw all 'invisible' stuff
 	 */
-	if (!TEST_FLAG(CHECKPLANESFLAG, PCB)
+	if (!conf_core.editor.check_planes
 			&& gui->set_layer("invisible", SL(INVISIBLE, 0), 0)) {
 		side = SWAP_IDENT ? COMPONENT_LAYER : SOLDER_LAYER;
 		if (PCB->ElementOn) {
 			r_search(PCB->Data->element_tree, drawn_area, NULL, element_callback, &side);
-			r_search(PCB->Data->name_tree[NAME_INDEX(PCB)], drawn_area, NULL, name_callback, &side);
+			r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, name_callback, &side);
 			DrawLayer(&(PCB->Data->Layer[max_copper_layer + side]), drawn_area);
 		}
 		r_search(PCB->Data->pad_tree, drawn_area, NULL, pad_callback, &side);
@@ -713,7 +713,7 @@ static void DrawEverything(const BoxType * drawn_area)
 		}
 	}
 
-	if (TEST_FLAG(CHECKPLANESFLAG, PCB) && gui->gui)
+	if (conf_core.editor.check_planes && gui->gui)
 		return;
 
 	/* Draw pins, pads, vias below silk */
@@ -869,7 +869,7 @@ static void DrawPPV(int group, const BoxType * drawn_area)
 static int clearPin_callback(const BoxType * b, void *cl)
 {
 	PinType *pin = (PinTypePtr) b;
-	if (TEST_FLAG(THINDRAWFLAG, PCB) || TEST_FLAG(THINDRAWPOLYFLAG, PCB))
+	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly)
 		gui->thindraw_pcb_pv(Output.pmGC, Output.pmGC, pin, false, true);
 	else
 		gui->fill_pcb_pv(Output.pmGC, Output.pmGC, pin, false, true);
@@ -906,13 +906,13 @@ static int poly_callback(const BoxType * b, void *cl)
 		color = i->layer->Color;
 	gui->set_color(Output.fgGC, color);
 
-	if (gui->thindraw_pcb_polygon != NULL && (TEST_FLAG(THINDRAWFLAG, PCB) || TEST_FLAG(THINDRAWPOLYFLAG, PCB)))
+	if (gui->thindraw_pcb_polygon != NULL && conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly)
 		gui->thindraw_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
 	else
 		gui->fill_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
 
 	/* If checking planes, thin-draw any pieces which have been clipped away */
-	if (gui->thindraw_pcb_polygon != NULL && TEST_FLAG(CHECKPLANESFLAG, PCB) && !TEST_FLAG(FULLPOLYFLAG, polygon)) {
+	if (gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !TEST_FLAG(FULLPOLYFLAG, polygon)) {
 		PolygonType poly = *polygon;
 
 		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)
@@ -950,7 +950,7 @@ static void DrawSilk(int side, const BoxType * drawn_area)
 		DrawLayer(LAYER_PTR(max_copper_layer + side), drawn_area);
 		/* draw package */
 		r_search(PCB->Data->element_tree, drawn_area, NULL, element_callback, &side);
-		r_search(PCB->Data->name_tree[NAME_INDEX(PCB)], drawn_area, NULL, name_callback, &side);
+		r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, name_callback, &side);
 #if 0
 	}
 
@@ -964,7 +964,7 @@ static void DrawSilk(int side, const BoxType * drawn_area)
 		DrawLayer(LAYER_PTR(max_copper_layer + layer), drawn_area);
 		/* draw package */
 		r_search(PCB->Data->element_tree, drawn_area, NULL, element_callback, &side);
-		r_search(PCB->Data->name_tree[NAME_INDEX(PCB)], drawn_area, NULL, name_callback, &side);
+		r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, name_callback, &side);
 	}
 	gui->use_mask(HID_MASK_OFF);
 #endif
@@ -990,7 +990,7 @@ static void DrawMaskBoardArea(int mask_type, const BoxType * drawn_area)
  */
 static void DrawMask(int side, const BoxType * screen)
 {
-	int thin = TEST_FLAG(THINDRAWFLAG, PCB) || TEST_FLAG(THINDRAWPOLYFLAG, PCB);
+	int thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
 
 	if (thin)
 		gui->set_color(Output.pmGC, PCB->MaskColor);
@@ -1070,7 +1070,7 @@ void DrawLayer(LayerTypePtr Layer, const BoxType * screen)
 	/* print the non-clearing polys */
 	r_search(Layer->polygon_tree, screen, NULL, poly_callback, &info);
 
-	if (TEST_FLAG(CHECKPLANESFLAG, PCB))
+	if (conf_core.editor.check_planes)
 		return;
 
 	/* draw all visible lines this layer */

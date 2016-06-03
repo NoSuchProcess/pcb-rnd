@@ -89,9 +89,9 @@ static int FlagBuffer(int dummy)
 
 static int FlagElementName(int dummy)
 {
-	if (TEST_FLAG(NAMEONPCBFLAG, PCB))
+	if (conf_core.editor.name_on_pcb)
 		return 2;
-	if (TEST_FLAG(DESCRIPTIONFLAG, PCB))
+	if (conf_core.editor.description)
 		return 1;
 	return 3;
 }
@@ -145,7 +145,7 @@ static int FlagLayerShown(int n)
 	case FL_BACK:
 		return PCB->InvisibleObjectsOn;
 	case FL_MASK:
-		return TEST_FLAG(SHOWMASKFLAG, PCB);
+		return conf_core.editor.show_mask;
 	default:
 		if (n >= 0 && n < max_copper_layer)
 			return PCB->Data->Layer[n].On;
@@ -172,7 +172,6 @@ static int FlagLayerActive(int n)
  * 64bit machines.
  */
 #define OffsetOf(a,b) (int)(size_t)(&(((a *)0)->b))
-#warning TODO: do we still need this?
 HID_Flag flags_flag_list[] = {
 	{"style", FlagCurrentStyle, 0}
 	,
@@ -240,7 +239,12 @@ HID_Flag flags_flag_list[] = {
 	,
 	{"viamode", FlagMode, VIA_MODE}
 	,
-
+	{"grid_units_mm", FlagUnitsMm, -1}
+	,
+	{"grid_units_mil", FlagUnitsMil, -1}
+	,
+#warning TODO: access these via the conf system
+#if 0
 	{"shownumber", FlagTESTFLAG, SHOWNUMBERFLAG}
 	,
 	{"localref", FlagTESTFLAG, LOCALREFFLAG}
@@ -285,20 +289,13 @@ HID_Flag flags_flag_list[] = {
 	,
 	{"hidenames", FlagTESTFLAG, HIDENAMESFLAG}
 	,
-	{"enablemincut", FlagTESTFLAG, ENABLEMINCUTFLAG}
+	{"enablestroke", FlagTESTFLAG, OffsetOf(conf_core_t, editor.enable_stroke)}
 	,
-	{"enablestroke", FlagTESTFLAG, ENABLESTROKEFLAG}
+	{"snapoffgridline", FlagTESTFLAG, ffsetOf(conf_core_t, editor.snap_offgrid_line)}
 	,
-	{"snapoffgridline", FlagTESTFLAG, SNAPOFFGRIDLINEFLAG}
+	{"highlightonpoint", FlagTESTFLAG, OffsetOf(conf_core_t, editor.highlight_on_point)}
 	,
-	{"highlightonpoint", FlagTESTFLAG, HIGHLIGHTONPOINTFLAG}
-	,
-
 	{"fullpoly", FlagSETTINGS, OffsetOf(conf_core_t, editor.full_poly)}
-	,
-	{"grid_units_mm", FlagUnitsMm, -1}
-	,
-	{"grid_units_mil", FlagUnitsMil, -1}
 	,
 	{"clearline", FlagSETTINGS, OffsetOf(conf_core_t, editor.clear_line)}
 	,
@@ -328,7 +325,7 @@ HID_Flag flags_flag_list[] = {
 	,
 	{"ringbellwhenfinished", FlagSETTINGS, OffsetOf(conf_core_t, editor.beep_when_finished)}
 	,
-
+#endif
 	{"buffer", FlagBuffer, 0}
 	,
 

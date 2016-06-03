@@ -34,6 +34,7 @@
 #include "hid_init.h"
 #include "hid_attrib.h"
 #include "hid_flags.h"
+#include "conf_core.h"
 
 
 RCSID("$Id$");
@@ -511,12 +512,11 @@ static void gerber_do_export(HID_Attr_Val * options)
 	int i;
 	static int saved_layer_stack[MAX_LAYER];
 	int save_ons[MAX_LAYER + 2];
-	FlagType save_thindraw;
 
-	save_thindraw = PCB->Flags;
-	CLEAR_FLAG(THINDRAWFLAG, PCB);
-	CLEAR_FLAG(THINDRAWPOLYFLAG, PCB);
-	CLEAR_FLAG(CHECKPLANESFLAG, PCB);
+	/* NOTE: it's OK to change flags bypassing conf - we will use conf to restore them */
+	conf_core.editor.thin_draw = 0;
+	conf_core.editor.thin_draw_poly = 0;
+	conf_core.editor.check_planes = 0;
 
 	if (!options) {
 		gerber_get_export_options(NULL);
@@ -600,7 +600,7 @@ static void gerber_do_export(HID_Attr_Val * options)
 	maybe_close_f(f);
 	f = NULL;
 	hid_restore_layer_ons(save_ons);
-	PCB->Flags = save_thindraw;
+	conf_update();
 }
 
 static void gerber_parse_arguments(int *argc, char ***argv)
