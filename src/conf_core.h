@@ -12,15 +12,15 @@
 typedef struct {
 
 	struct editor {
-		CFT_UNIT grid_unit;
-		CFT_COORD grid; /* grid in pcb-units */
-		CFT_INCREMENTS increments_mm;
-		CFT_INCREMENTS increments_mil;
-		CFT_REAL zoom; /* default zoom */
-		CFT_INTEGER mode;  /* currently active mode */
-		CFT_INTEGER buffer_number; /* number of the current buffer */
-		CFT_BOOLEAN clear_line;
-		CFT_BOOLEAN full_poly;
+		CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
+		CFT_COORD grid;                    /* grid in pcb-units */
+		CFT_INCREMENTS increments_mm;      /* increments (size deltas) when drawing in mil */
+		CFT_INCREMENTS increments_mil;     /* increments (size deltas) when drawing in mil */
+		CFT_REAL zoom;                     /* default zoom */
+		CFT_INTEGER mode;                  /* currently active mode */
+		CFT_INTEGER buffer_number;         /* number of the current buffer */
+		CFT_BOOLEAN clear_line;            /* new lines/arc clear polygons. */
+		CFT_BOOLEAN full_poly;             /* new polygons are full polygons. */
 		CFT_BOOLEAN unique_names;          /* force unique names */
 		CFT_BOOLEAN snap_pin;              /* snap to pins and pads */
 		CFT_BOOLEAN snap_offgrid_line;     /* Snap to certain off-grid points along a line. */
@@ -35,23 +35,21 @@ typedef struct {
 		CFT_BOOLEAN rubber_band_mode;      /* move, rotate use rubberband connections */
 		CFT_BOOLEAN swap_start_direction;  /* change starting direction after each click */
 		CFT_BOOLEAN show_drc;              /* show drc region on crosshair */
-		CFT_BOOLEAN auto_drc;              /* */
+		CFT_BOOLEAN auto_drc;              /* when set, PCB doesn't let you place copper that violates DRC. */
 		CFT_BOOLEAN show_number;           /* pinout shows number */
-#warning TODO: write comment
-		CFT_BOOLEAN orthogonal_moves;      /* */
+		CFT_BOOLEAN orthogonal_moves;      /* move items orthogonally. */
 		CFT_BOOLEAN reset_after_element;   /* reset connections after each element */
 		CFT_BOOLEAN auto_place;            /* flag which says we should force placement of the windows on startup */
 		CFT_BOOLEAN lock_names;            /* lock down text so they can not be moved or selected */
 		CFT_BOOLEAN only_names;            /* lock down everything else but text so only text objects can be moved or selected */
-#warning TODO: write comment
-		CFT_BOOLEAN hide_names;            /* */
-		CFT_BOOLEAN thin_draw;             /* */
-		CFT_BOOLEAN thin_draw_poly;        /* */
-		CFT_BOOLEAN local_ref;             /* */
-		CFT_BOOLEAN check_planes;          /* */
-		CFT_BOOLEAN description;           /* */
-		CFT_BOOLEAN name_on_pcb;           /* */
-		CFT_BOOLEAN show_mask;             /* */
+		CFT_BOOLEAN hide_names;            /* when set, element names are not drawn. */
+		CFT_BOOLEAN thin_draw;             /* if set, objects on the screen are drawn as outlines (lines are drawn as center-lines).  This lets you see line endpoints hidden under pins, for example. */
+		CFT_BOOLEAN thin_draw_poly;        /* if set, polygons on the screen are drawn as outlines. */
+		CFT_BOOLEAN local_ref;             /* use local reference for moves, by setting the mark at the beginning of each move. */
+		CFT_BOOLEAN check_planes;          /* when set, only polygons and their clearances are drawn, to see if polygons have isolated regions. */
+		CFT_BOOLEAN description;           /* display element description as element name, instead of value */
+		CFT_BOOLEAN name_on_pcb;           /* display Reference Designator as element name, instead of value */
+		CFT_BOOLEAN show_mask;             /* show the solder mask layer */
 
 #warning TODO: move all the rest in plugins (watch out for io_pcb string path refs):
 		CFT_BOOLEAN enable_stroke;         /* Enable libstroke gesutres on middle mouse button when non-zero */
