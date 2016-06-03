@@ -418,11 +418,10 @@ static conf_field_clear(conf_native_t *f)
 			case CFN_INTEGER:     clr(integer); break;
 			case CFN_REAL:        clr(real); break;
 			case CFN_COORD:       clr(coord); break;
-#warning TODO: test these
-/*			case CFN_UNIT:        clr(unit); break;
+			case CFN_UNIT:        clr(unit); break;
 			case CFN_COLOR:       clr(color); break;
 			case CFN_LIST:        clr(list); break;
-			case CFN_INCREMENTS:  clr(increments); break;*/
+			case CFN_INCREMENTS:  clr(increments); break;
 		}
 #undef clr
 	}
