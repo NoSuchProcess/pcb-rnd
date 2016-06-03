@@ -62,7 +62,7 @@ typedef struct {
 		CFT_BOOLEAN beep_when_finished;    /* flag if a signal should be produced when searching of  connections is done */
 	} editor;
 
-	struct rc {
+	const struct rc {
 		CFT_INTEGER verbose;
 		CFT_INTEGER backup_interval;       /* time between two backups in seconds */
 		CFT_STRING font_command;           /* commands for file loading... */
@@ -117,7 +117,7 @@ typedef struct {
 	} design;
 
 /* @path appearance/color */
-	struct appearance {
+	const struct appearance {
 		CFT_COORD rat_thickness;
 		struct color {
 			CFT_COLOR black;
