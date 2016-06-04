@@ -2469,13 +2469,17 @@ int io_pcb_ParseElement(plug_io_t *ctx, DataTypePtr Ptr, const char *name)
 /* Hack: set a no-save-attribute flag while loading some fields from the file;
    because we have all these flags set we won't need to list the paths that
    have hardwired flags again in a "don't save these in attributes" list. */
-#define CONF_SET(target, path, arr_idx, new_val, pol) \
+#define CONF_NO_ATTRIB(path) \
 do { \
 	conf_native_t *n = conf_get_field(path); \
-	conf_set(target, path, arr_idx, new_val, pol); \
-	printf("CONF_SET: %s %p\n", path, n); \
 	if (n != NULL) \
 		n->random_flags.io_pcb_no_attrib = 1; \
+} while(0) \
+
+#define CONF_SET(target, path, arr_idx, new_val, pol) \
+do { \
+	CONF_NO_ATTRIB(path); \
+	conf_set(target, path, arr_idx, new_val, pol); \
 } while(0) \
 
 int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_settings)
@@ -2518,6 +2522,13 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_set
 		CONF_SET(CFR_DESIGN, "editor/name_on_pcb", -1, CONF_BOOL_FLAG(NAMEONPCBFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(CFR_DESIGN, "editor/show_mask", -1, CONF_BOOL_FLAG(SHOWMASKFLAG, yy_pcb_flags), POL_OVERWRITE);
 
+		/* don't save this because it is saved manually as PCB::grid::unit */
+		CONF_NO_ATTRIB("editor/grid_unit");
+
+		/* don't save these to reduce noise - they are reset by the GUI anyway */
+		CONF_NO_ATTRIB("editor/mode");
+
+		/* load config nodes not disabled above, from optional attributes */
 		io_pcb_attrib_a2c(Ptr);
 
 		conf_update();
