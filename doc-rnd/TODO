@@ -104,7 +104,9 @@ CLEANUP #6:
 		- default font
 	- action and dialog box to print where the actual files are coming from
 	- project specific menus from extra lihata files
-
+- main.c:
+	- SIGPIPE
+- plugin argument parsing and usage()
 
 
 FEATURES
