@@ -486,7 +486,9 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget * widget, GdkEventScroll * ev, G
 		default: return FALSE;
 	}
 
+	ghid_wheel_zoom = 1;
 	hid_cfg_mouse_action(&ghid_mouse, button | mk);
+	ghid_wheel_zoom = 0;
 
 	return TRUE;
 }

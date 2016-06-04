@@ -257,6 +257,7 @@ static gboolean loop_button_press_cb(GtkWidget * drawing_area, GdkEventButton * 
 	return TRUE;
 }
 
+int ghid_wheel_zoom = 0;
 	/* Run a glib GMainLoop which intercepts key and mouse button events from
 	   |  the top level loop.  When a mouse or key is hit in the Output drawing
 	   |  area, quit the loop so the top level loop can continue and use the
@@ -269,8 +270,12 @@ static gboolean run_get_location_loop(const gchar * message)
 	gulong button_handler, key_handler;
 	gint oldObjState, oldLineState, oldBoxState;
 
-	if (getting_loc)
+	/* Do not enter the loop recursively (ask for coord only once); also don't
+	   ask for coord if the scrollwheel triggered the event, it may cause strange
+	   GUI lockups when done outside of the drawing area */
+	if ((getting_loc) || (ghid_wheel_zoom))
 		return false;
+
 	getting_loc = 1;
 	ghid_status_line_set_text(message);
 
