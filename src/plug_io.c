@@ -259,7 +259,7 @@ int real_load_pcb(char *Filename, bool revert, bool require_font, bool is_misc)
 		if (unit_suffix && *unit_suffix) {
 			const Unit *new_unit = get_unit_struct(unit_suffix);
 			if (new_unit)
-				conf_set_editor(grid_unit, new_unit);
+				conf_set(CFR_DESIGN, "editor/grid_unit", -1, unit_suffix, POL_OVERWRITE);
 		}
 		AttributePut(PCB, "PCB::grid::unit", conf_core.editor.grid_unit->suffix);
 
