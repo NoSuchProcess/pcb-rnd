@@ -187,10 +187,9 @@ void eps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	static int saved_layer_stack[MAX_LAYER];
 	BoxType region;
 
-	/* NOTE: it's OK to change flags bypassing conf - we will use conf to restore them */
-	conf_core.editor.thin_draw = 0;
-	conf_core.editor.thin_draw_poly = 0;
-	conf_core.editor.check_planes = 0;
+	conf_force_set_bool(conf_core.editor.thin_draw, 0);
+	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
+	conf_force_set_bool(conf_core.editor.check_planes, 0);
 
 	f = the_file;
 
@@ -304,7 +303,7 @@ void eps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	fprintf(f, "%%%%EOF\n");
 
 	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
-	conf_update();
+	conf_update(); /* restore forced sets */
 }
 
 static void eps_do_export(HID_Attr_Val * options)

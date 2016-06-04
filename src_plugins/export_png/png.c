@@ -458,12 +458,11 @@ void png_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 
 	as_shown = options[HA_as_shown].int_value;
 	if (!options[HA_as_shown].int_value) {
-	/* NOTE: it's OK to change flags bypassing conf - we will use conf to restore them */
-		conf_core.editor.thin_draw = 0;
-		conf_core.editor.thin_draw_poly = 0;
-/*		conf_core.editor.check_planes = 0;*/
-		conf_core.editor.show_solder_side = 0;
-		conf_core.editor.show_mask = 0;
+		conf_force_set_bool(conf_core.editor.thin_draw, 0);
+		conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
+/*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
+		conf_force_set_bool(conf_core.editor.show_solder_side, 0);
+		conf_force_set_bool(conf_core.editor.show_mask, 0);
 
 		comp_layer = GetLayerGroupNumberByNumber(component_silk_layer);
 		solder_layer = GetLayerGroupNumberByNumber(solder_silk_layer);
@@ -471,7 +470,7 @@ void png_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 
 		if (photo_mode) {
 			int i, n = 0;
-			conf_core.editor.show_mask = 1;
+			conf_force_set_bool(conf_core.editor.show_mask, 1);
 			photo_has_inners = 0;
 			if (comp_layer < solder_layer)
 				for (i = comp_layer; i <= solder_layer; i++) {
@@ -520,7 +519,7 @@ void png_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	hid_expose_callback(&png_hid, bounds, 0);
 
 	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
-	conf_update();
+	conf_update(); /* restore forced sets */
 }
 
 static void blend(color_struct * dest, float a_amount, color_struct * a, color_struct * b)

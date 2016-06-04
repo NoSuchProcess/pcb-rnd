@@ -849,7 +849,7 @@ int Undo(bool draw)
 	bool error_undoing = false;
 
 	unique = conf_core.editor.unique_names;
-	conf_core.editor.unique_names = 0; /* NOTE: intentinal bypass of the conf system for temporary change of a flag */
+	conf_force_set_bool(conf_core.editor.unique_names, 0);
 
 	andDraw = draw;
 
@@ -871,7 +871,7 @@ int Undo(bool draw)
 		Message(_("ERROR: Bad undo serial number %d in undo stack - expecting %d or lower\n"
 							"       Please save your work and report this bug.\n"), ptr->Serial, Serial);
 
-		/* It is likely that the serial number got corrupted through some bad
+	/* It is likely that the serial number got corrupted through some bad
 		 * use of the SaveUndoSerialNumber() / RestoreUndoSerialNumber() APIs.
 		 *
 		 * Reset the serial number to be consistent with that of the last
@@ -901,7 +901,7 @@ int Undo(bool draw)
 		Draw();
 
 	/* restore the unique flag setting */
-	conf_core.editor.unique_names = unique;
+	conf_force_set_bool(conf_core.editor.unique_names, unique);
 
 	return Types;
 }

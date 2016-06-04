@@ -602,10 +602,9 @@ void ps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	int i;
 	static int saved_layer_stack[MAX_LAYER];
 
-	/* NOTE: it's OK to change flags bypassing conf - we will use conf to restore them */
-	conf_core.editor.thin_draw = 0;
-	conf_core.editor.thin_draw_poly = 0;
-	conf_core.editor.check_planes = 0;
+	conf_force_set_bool(conf_core.editor.thin_draw, 0);
+	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
+	conf_force_set_bool(conf_core.editor.check_planes, 0);
 
 	global.f = the_file;
 	global.drill_helper = options[HA_drillhelper].int_value;
@@ -701,7 +700,7 @@ void ps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 		fprintf(the_file, "showpage\n");
 
 	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
-	conf_update();
+	conf_update(); /* restore forced sets */
 }
 
 static void ps_do_export(HID_Attr_Val * options)

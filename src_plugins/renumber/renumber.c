@@ -192,8 +192,8 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	 * in our way.  When we're done with the renumber we will have unique
 	 * names.
 	 */
-	/* It is OK to directly write conf_core here, it's a temp change and will be restored at the end */
-	conf_core.editor.unique_names = 0;
+
+	conf_force_set_bool(conf_core.editor.unique_names, 0);
 
 	cnt_list = (struct _cnt_list *) calloc(cnt_list_sz, sizeof(struct _cnt_list));
 	for (i = 0; i < cnt; i++) {

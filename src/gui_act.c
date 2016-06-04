@@ -207,7 +207,6 @@ static enum crosshair_shape CrosshairShapeIncrement(enum crosshair_shape shape)
 	return shape;
 }
 
-#define TOGGLE_CONF(field) conf_core.editor.field = !conf_core.editor.field
 static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 {
 	char *function, *str_dir;
@@ -235,15 +234,16 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 				EraseElementName(element);
 			}
 			END_LOOP;
-			conf_core.editor.description = conf_core.editor.name_on_pcb = 0;
+			conf_set_editor(description, 0);
+			conf_set_editor(name_on_pcb, 0);
 			switch (id) {
 			case F_Value:
 				break;
 			case F_NameOnPCB:
-				conf_core.editor.name_on_pcb = 1;
+				conf_set_editor(name_on_pcb, 1);
 				break;
 			case F_Description:
-				conf_core.editor.description = 1;
+				conf_set_editor(description, 1);
 				break;
 			}
 			ELEMENT_LOOP(PCB->Data);
@@ -256,14 +256,14 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 
 			/* toggle line-adjust flag */
 		case F_ToggleAllDirections:
-			TOGGLE_CONF(all_direction_lines);
+			conf_toggle_editor(all_direction_lines);
 			AdjustAttachedObjects();
 			break;
 
 		case F_CycleClip:
 			notify_crosshair_change(false);
 			if (conf_core.editor.all_direction_lines) {
-				TOGGLE_CONF(all_direction_lines);
+				conf_toggle_editor(all_direction_lines);
 				PCB->Clipping = 0;
 				}
 			else
@@ -282,82 +282,82 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 
 		case F_ToggleRubberBandMode:
 			notify_crosshair_change(false);
-			TOGGLE_CONF(rubber_band_mode);
+			conf_toggle_editor(rubber_band_mode);
 			notify_crosshair_change(true);
 			break;
 
 		case F_ToggleStartDirection:
 			notify_crosshair_change(false);
-			TOGGLE_CONF(swap_start_direction);
+			conf_toggle_editor(swap_start_direction);
 			notify_crosshair_change(true);
 			break;
 
 		case F_ToggleUniqueNames:
-			TOGGLE_CONF(unique_names);
+			conf_toggle_editor(unique_names);
 			break;
 
 		case F_ToggleSnapPin:
 			notify_crosshair_change(false);
-			TOGGLE_CONF(snap_pin);
+			conf_toggle_editor(snap_pin);
 			notify_crosshair_change(true);
 			break;
 
 		case F_ToggleSnapOffGridLine:
 			notify_crosshair_change(false);
-			TOGGLE_CONF(snap_offgrid_line);
+			conf_toggle_editor(snap_offgrid_line);
 			notify_crosshair_change(true);
 			break;
 
 		case F_ToggleHighlightOnPoint:
 			notify_crosshair_change(false);
-			TOGGLE_CONF(highlight_on_point);
+			conf_toggle_editor(highlight_on_point);
 			notify_crosshair_change(true);
 			break;
 
 		case F_ToggleLocalRef:
-			TOGGLE_CONF(local_ref);
+			conf_toggle_editor(local_ref);
 			break;
 
 		case F_ToggleThindraw:
-			TOGGLE_CONF(thin_draw);
+			conf_toggle_editor(thin_draw);
 			Redraw();
 			break;
 
 		case F_ToggleThindrawPoly:
-			TOGGLE_CONF(thin_draw_poly);
+			conf_toggle_editor(thin_draw_poly);
 			Redraw();
 			break;
 
 		case F_ToggleLockNames:
-			TOGGLE_CONF(lock_names);
-			conf_core.editor.only_names = 0;
+			conf_toggle_editor(lock_names);
+			conf_set_editor(only_names, 0);
 			break;
 
 		case F_ToggleOnlyNames:
-			TOGGLE_CONF(only_names);
-			conf_core.editor.lock_names = 0;
+			conf_toggle_editor(only_names);
+			conf_set_editor(lock_names, 0);
 			break;
 
 		case F_ToggleHideNames:
-			TOGGLE_CONF(hide_names);
+			conf_toggle_editor(hide_names);
 			Redraw();
 			break;
 
 		case F_ToggleStroke:
-			TOGGLE_CONF(enable_stroke);
+			conf_toggle_editor(enable_stroke);
 			break;
 
 		case F_ToggleShowDRC:
-			TOGGLE_CONF(show_drc);
+			conf_toggle_editor(show_drc);
 			break;
 
 		case F_ToggleLiveRoute:
-			TOGGLE_CONF(live_routing);
+			conf_toggle_editor(live_routing);
 			break;
 
 		case F_ToggleAutoDRC:
 			notify_crosshair_change(false);
-			TOGGLE_CONF(auto_drc);
+			conf_toggle_editor(auto_drc);
 			if (conf_core.editor.auto_drc && conf_core.editor.mode == LINE_MODE) {
 				if (ResetConnections(true)) {
 					IncrementUndoSerialNumber();
@@ -370,30 +370,30 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 			break;
 
 		case F_ToggleCheckPlanes:
-			TOGGLE_CONF(check_planes);
+			conf_toggle_editor(check_planes);
 			Redraw();
 			break;
 
 		case F_ToggleOrthoMove:
-			TOGGLE_CONF(orthogonal_moves);
+			conf_toggle_editor(orthogonal_moves);
 			break;
 
 		case F_ToggleName:
-			TOGGLE_CONF(show_number);
+			conf_toggle_editor(show_number);
 			Redraw();
 			break;
 
 		case F_ToggleMask:
-			TOGGLE_CONF(show_mask);
+			conf_toggle_editor(show_mask);
 			Redraw();
 			break;
 
 		case F_ToggleClearLine:
-			TOGGLE_CONF(clear_line);
+			conf_toggle_editor(clear_line);
 			break;
 
 		case F_ToggleFullPoly:
-			TOGGLE_CONF(full_poly);
+			conf_toggle_editor(full_poly);
 			break;
 
 			/* shift grid alignment */
@@ -410,7 +410,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 
 			/* toggle displaying of the grid */
 		case F_Grid:
-			conf_core.editor.draw_grid = !conf_core.editor.draw_grid;
+			conf_toggle_editor(draw_grid);
 			Redraw();
 			break;
 
@@ -528,7 +528,6 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 
 	AFAIL(display);
 }
-#undef TOGGLE_CONF
 /* --------------------------------------------------------------------------- */
 
 static const char mode_syntax[] =

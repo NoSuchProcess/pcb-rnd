@@ -1217,8 +1217,9 @@ void LayerStringToLayerStack(char *s)
 	PCB->PinOn = false;
 	PCB->ViaOn = false;
 	PCB->RatOn = false;
-	conf_core.editor.show_mask = 0;
-	conf_core.editor.show_solder_side = 0;
+
+	conf_set_editor(show_mask, 0);
+	conf_set_editor(show_solder_side, 0);
 
 	for (i = argn - 1; i >= 0; i--) {
 		if (strcasecmp(args[i], "rats") == 0)
@@ -1232,9 +1233,9 @@ void LayerStringToLayerStack(char *s)
 		else if (strcasecmp(args[i], "elements") == 0 || strcasecmp(args[i], "silk") == 0)
 			PCB->ElementOn = true;
 		else if (strcasecmp(args[i], "mask") == 0)
-			conf_core.editor.show_mask = 1;
+			conf_set_editor(show_mask, 1);
 		else if (strcasecmp(args[i], "solderside") == 0)
-			conf_core.editor.show_solder_side = 1;
+			conf_set_editor(show_solder_side, 1);
 		else if (isdigit((int) args[i][0])) {
 			lno = atoi(args[i]);
 			ChangeGroupVisibility(lno, true, true);

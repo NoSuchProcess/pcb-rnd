@@ -412,8 +412,7 @@ static int SetUnits(int argc, char **argv, Coord x, Coord y)
 		return 0;
 	new_unit = get_unit_struct(argv[0]);
 	if (new_unit != NULL && new_unit->allow != NO_PRINT) {
-#warning TODO: do not modify directly
-		conf_core.editor.grid_unit = new_unit;
+		conf_set(CFR_DESIGN, "editor/grid_unit", -1, argv[0], POL_OVERWRITE);
 #warning TODO: figure what to do with increments
 #if 0
 		Settings.increments = get_increments_struct(Settings.grid_unit->suffix);
@@ -610,7 +609,7 @@ static int SwapSides(int argc, char **argv, Coord x, Coord y)
 			return 1;
 		}
 		/* SwapSides will swap this */
-		conf_core.editor.show_solder_side = (flip_x == flip_y);
+		conf_set_editor(show_solder_side, (flip_x == flip_y));
 	}
 
 	stdarg_n = 0;
@@ -627,7 +626,7 @@ static int SwapSides(int argc, char **argv, Coord x, Coord y)
 		stdarg(XmNprocessingDirection, XmMAX_ON_BOTTOM);
 	XtSetValues(vscroll, stdarg_args, stdarg_n);
 
-	conf_core.editor.show_solder_side = !conf_core.editor.show_solder_side;
+	conf_toggle_editor(show_solder_side);
 
 	/* The idea is that if we're looking at the front side and the front
 	   layer is active (or visa versa), switching sides should switch

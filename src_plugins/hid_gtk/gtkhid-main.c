@@ -1259,14 +1259,14 @@ static int SwapSides(int argc, char **argv, Coord x, Coord y)
 		case 'r':
 		case 'R':
 			ghid_flip_view(gport->pcb_x, gport->pcb_y, true, true);
-			conf_core.editor.show_solder_side = !conf_core.editor.show_solder_side;	/* Swapped back below */
+			conf_toggle_editor(show_solder_side); /* Swapped back below */
 			break;
 		default:
 			return 1;
 		}
 	}
 
-	conf_core.editor.show_solder_side = !conf_core.editor.show_solder_side;
+	conf_toggle_editor(show_solder_side);
 
 	if ((active_group == comp_group && comp_on && !solder_on) || (active_group == solder_group && solder_on && !comp_on)) {
 		bool new_solder_vis = conf_core.editor.show_solder_side;
@@ -1620,7 +1620,8 @@ static int SetUnits(int argc, char **argv, Coord x, Coord y)
 	new_unit = get_unit_struct(argv[0]);
 	if (new_unit != NULL && new_unit->allow != NO_PRINT) {
 #warning TODO: decide what to do with this: some fields are just overwritten by hand
-		conf_core.editor.grid_unit = new_unit;
+		conf_set(CFR_DESIGN, "editor/grid_unit", -1, argv[0], POL_OVERWRITE);
+		conf_update();
 		AttributePut(PCB, "PCB::grid::unit", argv[0]);
 	}
 

@@ -247,8 +247,7 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 		set = PCB->InvisibleObjectsOn = !PCB->InvisibleObjectsOn;
 		break;
 	case LB_MASK:
-#warning TODO: do not modify directly
-		conf_core.editor.show_mask = !conf_core.editor.show_mask;
+		conf_toggle_editor(show_mask);
 		set = conf_core.editor.show_mask;
 		break;
 	default:											/* layers */

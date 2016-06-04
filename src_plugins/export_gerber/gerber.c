@@ -513,10 +513,9 @@ static void gerber_do_export(HID_Attr_Val * options)
 	static int saved_layer_stack[MAX_LAYER];
 	int save_ons[MAX_LAYER + 2];
 
-	/* NOTE: it's OK to change flags bypassing conf - we will use conf to restore them */
-	conf_core.editor.thin_draw = 0;
-	conf_core.editor.thin_draw_poly = 0;
-	conf_core.editor.check_planes = 0;
+	conf_force_set_bool(conf_core.editor.thin_draw, 0);
+	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
+	conf_force_set_bool(conf_core.editor.check_planes, 0);
 
 	if (!options) {
 		gerber_get_export_options(NULL);
@@ -600,7 +599,7 @@ static void gerber_do_export(HID_Attr_Val * options)
 	maybe_close_f(f);
 	f = NULL;
 	hid_restore_layer_ons(save_ons);
-	conf_update();
+	conf_update(); /* resotre forced sets */
 }
 
 static void gerber_parse_arguments(int *argc, char ***argv)

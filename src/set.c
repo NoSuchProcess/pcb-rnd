@@ -169,7 +169,7 @@ void SetCrosshairRangeToBuffer(void)
 void SetBufferNumber(int Number)
 {
 	if (Number >= 0 && Number < MAX_BUFFER) {
-		conf_core.editor.buffer_number = Number;
+		conf_set_editor(buffer_number, Number);
 
 		/* do an update on the crosshair range */
 		SetCrosshairRangeToBuffer();
@@ -201,6 +201,7 @@ void RestoreMode(void)
  */
 void SetMode(int Mode)
 {
+	char sMode[32];
 	static bool recursing = false;
 	/* protect the cursor while changing the mode
 	 * perform some additional stuff depending on the new mode
@@ -234,7 +235,9 @@ void SetMode(int Mode)
 		Crosshair.AttachedLine.State = STATE_SECOND;
 		Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = Crosshair.AttachedBox.Point1.X;
 		Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = Crosshair.AttachedBox.Point1.Y;
-		conf_core.editor.mode = Mode;
+		sprintf(sMode, "%d", Mode);
+		conf_set(CFR_DESIGN, "editor.mode", -1, sMode, POL_OVERWRITE);
+		conf_update();
 		AdjustAttachedObjects();
 	}
 	else {
@@ -250,7 +253,9 @@ void SetMode(int Mode)
 		}
 	}
 
-	conf_core.editor.mode = Mode;
+	sprintf(sMode, "%d", Mode);
+	conf_set(CFR_DESIGN, "editor.mode", -1, sMode, POL_OVERWRITE);
+	conf_update();
 
 	if (Mode == PASTEBUFFER_MODE)
 		/* do an update on the crosshair range */

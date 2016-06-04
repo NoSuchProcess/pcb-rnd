@@ -496,11 +496,10 @@ static void layer_selector_toggle_callback(GHidLayerSelector * ls, int layer, gp
 		redraw = TRUE;
 		break;
 	case LAYER_BUTTON_MASK:
-#warning TODO: don't write directly
 		if (active)
-			conf_core.editor.show_mask = 1;
+			conf_set_editor(show_mask, 1);
 		else
-			conf_core.editor.show_mask = 0;
+			conf_set_editor(show_mask, 0);
 		redraw = TRUE;
 		break;
 	default:
@@ -1463,13 +1462,6 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	ghid_init_renderer(argc, argv, gport);
 
 	ghid_config_files_read(argc, argv);
-
-#warning TODO: don't write conf_core
-	conf_core.editor.auto_place = 0;
-	for (i = 0; i < *argc; i++) {
-		if (strcmp((*argv)[i], "-auto-place") == 0)
-			conf_core.editor.auto_place = 1;
-	}
 
 #ifdef ENABLE_NLS
 #ifdef LOCALEDIR

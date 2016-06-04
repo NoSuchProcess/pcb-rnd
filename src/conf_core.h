@@ -15,7 +15,7 @@ typedef struct {
 		CFT_BOOLEAN rat_warn;              /* rats nest has set warnings */
 	} temp;
 
-	struct editor {
+	const struct editor {
 		CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
 		CFT_COORD grid;                    /* grid in pcb-units */
 		CFT_INCREMENTS increments_mm;      /* increments (size deltas) when drawing in mil */

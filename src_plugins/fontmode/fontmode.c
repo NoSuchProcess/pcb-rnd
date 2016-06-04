@@ -83,7 +83,7 @@ static int FontEdit(int argc, char **argv, Coord Ux, Coord Uy)
 		return 1;
 
 #warning TODO do we need to change design.bloat here?
-	conf_core.editor.grid_unit = get_unit_struct("mil");
+	conf_set(CFR_DESIGN, "editor.grid_unit", -1, "mil", POL_OVERWRITE);
 	conf_set_design("design.bloat", "%s", "1"); PCB->Bloat = 1;
 	conf_set_design("design.shrink", "%s", "1"); PCB->Shrink = 1;
 	conf_set_design("design.min_wid", "%s", "1"); PCB->minWid = 1;

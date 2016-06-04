@@ -1,6 +1,15 @@
 - replace settings with lihata (conf_*)
 	- never modify conf_core directly (latest commits do this often!)
 		- make conf_core read-only
+	- check AttributePut - maybe a way of storing the extra settings?
+	- decide how to store line thickness and pcb flags - either in the PCB struct or in conf, but not both
+	  if in the conf, make every iteam load/save
+	- CLI: check if it still works
+		- auto-place -> conf_core.editor.auto_place
+	- optimize conf-update-after-set:
+		- we know whether the node we change ended up in native (check prop.src)
+		- recalc native directly if did so - never run conf_update!
+		- revse each call to conf_update(), especially from the set macros!
 	- 'd' pin show: pin labels are waaaay off
 	- add CFR_DESIGN
 		- assign some high prio
@@ -24,8 +33,9 @@
 			hardwired
 	- TEST:
 		- ps export vs. thin draw poly, check_planes
+		- png and gerber export vs. forced sets
 		- check why rat lines are so thin now (width is not read/used from the conf?)
-		- test from lesstif
+		- test lesstif
 		- test with all plugins enabled (maybe add an scconfig cli arg for this?)
 		- fontmode
 		- change style in both GUIs

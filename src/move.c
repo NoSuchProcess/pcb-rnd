@@ -465,7 +465,7 @@ static void *MoveRatToLayer(RatType * Rat)
 	newone = CreateNewLineOnLayer(Dest, Rat->Point1.X, Rat->Point1.Y,
 																Rat->Point2.X, Rat->Point2.Y, conf_core.design.line_thickness, 2 * conf_core.design.keepaway, Rat->Flags);
 	if (conf_core.editor.clear_line)
-		conf_core.editor.clear_line = 1;
+		conf_set_editor(clear_line, 1);
 	if (!newone)
 		return (NULL);
 	AddObjectToCreateUndoList(LINE_TYPE, Dest, newone, newone);
