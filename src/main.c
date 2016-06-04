@@ -47,16 +47,13 @@
 #include "buffer.h"
 #include "create.h"
 #include "crosshair.h"
-#include "draw.h"
 #include "error.h"
 #include "plug_io.h"
 #include "set.h"
-#include "action_helper.h"
 #include "misc.h"
 #include "compat_lrealpath.h"
 #include "free_atexit.h"
 #include "polygon.h"
-#include "pcb-printf.h"
 #include "buildin.h"
 #include "paths.h"
 #include "strflags.h"
@@ -65,19 +62,15 @@
 #include "event.h"
 #include "funchash.h"
 #include "conf.h"
+#include "conf_core.h"
 
 #include "hid_actions.h"
 #include "hid_attrib.h"
 #include "hid_init.h"
 
-#ifdef HAVE_DBUS
-#include "dbus.h"
-#endif
-
 #if ENABLE_NLS
 #include <libintl.h>
 #endif
-
 
 RCSID("$Id$");
 
