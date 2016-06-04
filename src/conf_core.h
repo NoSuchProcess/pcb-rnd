@@ -89,7 +89,7 @@ typedef struct {
 		CFT_STRING make_program;           /* make program name */
 	} rc;
 
-	struct design { /* defaults of a new layout */
+	const struct design { /* defaults of a new layout */
 		CFT_COORD via_thickness;
 		CFT_COORD via_drilling_hole;
 		CFT_COORD line_thickness;

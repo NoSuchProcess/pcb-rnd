@@ -148,19 +148,18 @@ static void style_value_cb(Widget w, int i, void *cbs)
 		return;
 	s = XmTextGetString(w);
 	n = GetValueEx(s, NULL, NULL, NULL, unit->suffix);
-#warning TODO: shouldn't write conf_core directly
 	switch (i) {
 	case SSthick:
-		conf_core.design.line_thickness = n;
+		conf_SET_design("design/line_thickness", "%s", s);
 		break;
 	case SSdiam:
-		conf_core.design.via_thickness = n;
+		conf_SET_design("design/via_thickness", "%s", s);
 		break;
 	case SShole:
-		conf_core.design.via_drilling_hole = n;
+		conf_SET_design("design/via_drilling_hole", "%s", s);;
 		break;
 	case SSkeep:
-		conf_core.design.keepaway = n;
+		conf_SET_design("design/keepaway", "%s", s);;
 		break;
 	}
 	update_style_buttons();

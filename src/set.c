@@ -83,7 +83,7 @@ void SetGrid(Coord Grid, bool align)
 void SetLineSize(Coord Size)
 {
 	if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE) {
-		conf_core.design.line_thickness = Size;
+		conf_SET_design("design/line_thickness", "%$mS", Size);
 		if (conf_core.editor.auto_drc)
 			FitCrosshairIntoGrid(Crosshair.X, Crosshair.Y);
 	}
@@ -95,7 +95,7 @@ void SetLineSize(Coord Size)
 void SetViaSize(Coord Size, bool Force)
 {
 	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIASIZE && Size >= conf_core.design.via_drilling_hole + MIN_PINORVIACOPPER)) {
-		conf_core.design.via_thickness = Size;
+		conf_SET_design("design/via_thickness", "%$mS", Size);
 	}
 }
 
@@ -105,16 +105,16 @@ void SetViaSize(Coord Size, bool Force)
 void SetViaDrillingHole(Coord Size, bool Force)
 {
 	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - MIN_PINORVIACOPPER)) {
-		conf_core.design.via_drilling_hole = Size;
+		conf_SET_design("design/via_drilling_hole", "%$mS", Size);
 	}
 }
 
 void pcb_use_route_style(RouteStyleType * rst)
 {
-	conf_core.design.line_thickness = rst->Thick;
-	conf_core.design.via_thickness = rst->Diameter;
-	conf_core.design.via_drilling_hole = rst->Hole;
-	conf_core.design.keepaway = rst->Keepaway;
+	conf_set_design("design/line_thickness", "%$mS", rst->Thick);
+	conf_set_design("design/via_thickness", "%$mS", rst->Diameter);
+	conf_set_design("design/via_drilling_hole", "%$mS", rst->Hole);
+	conf_SET_design("design/keepaway", "%$mS", rst->Keepaway);
 }
 
 /* ---------------------------------------------------------------------------
@@ -123,7 +123,7 @@ void pcb_use_route_style(RouteStyleType * rst)
 void SetKeepawayWidth(Coord Width)
 {
 	if (Width <= MAX_LINESIZE) {
-		conf_core.design.keepaway = Width;
+		conf_SET_design("design/keepaway", "%$mS", Width);
 	}
 }
 
@@ -133,7 +133,7 @@ void SetKeepawayWidth(Coord Width)
 void SetTextScale(int Scale)
 {
 	if (Scale <= MAX_TEXTSCALE && Scale >= MIN_TEXTSCALE) {
-		conf_core.design.text_scale = Scale;
+		conf_SET_design("design/text_scale", "%d", Scale);
 	}
 }
 

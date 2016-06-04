@@ -1061,15 +1061,14 @@ static void sizes_set()
 	PCB->minSlk = sz_str2val(sz_drc_slk, 1);
 	PCB->minDrill = sz_str2val(sz_drc_drill, 1);
 	PCB->minRing = sz_str2val(sz_drc_ring, 1);
-#warning do not directly modify these
-	conf_core.design.text_scale = sz_str2val(sz_text, 0);
-
-	conf_core.design.bloat = PCB->Bloat;
-	conf_core.design.shrink = PCB->Shrink;
-	conf_core.design.min_wid = PCB->minWid;
-	conf_core.design.min_slk = PCB->minSlk;
-	conf_core.design.min_drill = PCB->minDrill;
-	conf_core.design.min_ring = PCB->minRing;
+#warning think these over - are these only for new designs amd we keep real values in PCB-> ?
+	conf_set_design("design/text_scale", "%s", sz_text);
+	conf_set_design("design/bloat", "%s", sz_bloat);
+	conf_set_design("design/shrink", "%s", sz_shrink);
+	conf_set_design("design/min_wid", "%s", sz_drc_wid);
+	conf_set_design("design/min_slk", "%s", sz_drc_slk);
+	conf_set_design("design/min_drill", "%s", sz_drc_drill);
+	conf_SET_design("design/min_ring", "%s", sz_drc_ring);
 
 	SetCrosshairRange(0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	lesstif_pan_fixup();

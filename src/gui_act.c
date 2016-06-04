@@ -1063,8 +1063,8 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 	switch (type) {
 	case LINE_TYPE:
 		notify_crosshair_change(false);
-		conf_core.design.line_thickness = ((LineTypePtr) ptr2)->Thickness;
-		conf_core.design.keepaway = ((LineTypePtr) ptr2)->Clearance / 2;
+		conf_set_design("design/line_thickness", "%$mS", ((LineTypePtr) ptr2)->Thickness);
+		conf_SET_design("design/keepaway", "%$mS", ((LineTypePtr) ptr2)->Clearance / 2);
 		layer = (LayerTypePtr) ptr1;
 		if (conf_core.editor.mode != LINE_MODE)
 			SetMode(LINE_MODE);
@@ -1074,8 +1074,8 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 
 	case ARC_TYPE:
 		notify_crosshair_change(false);
-		conf_core.design.line_thickness = ((ArcTypePtr) ptr2)->Thickness;
-		conf_core.design.keepaway = ((ArcTypePtr) ptr2)->Clearance / 2;
+		conf_set_design("design/line_thickness", "%$mS", ((ArcTypePtr) ptr2)->Thickness);
+		conf_SET_design("design/keepaway", "%$mS", ((ArcTypePtr) ptr2)->Clearance / 2);
 		layer = (LayerTypePtr) ptr1;
 		if (conf_core.editor.mode != ARC_MODE)
 			SetMode(ARC_MODE);
@@ -1089,9 +1089,9 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 
 	case VIA_TYPE:
 		notify_crosshair_change(false);
-		conf_core.design.via_thickness = ((PinTypePtr) ptr2)->Thickness;
-		conf_core.design.via_drilling_hole = ((PinTypePtr) ptr2)->DrillingHole;
-		conf_core.design.keepaway = ((PinTypePtr) ptr2)->Clearance / 2;
+		conf_set_design("design/via_thickness", "%$mS", ((PinTypePtr) ptr2)->Thickness);
+		conf_set_design("design/via_drilling_hole", "%$mS", ((PinTypePtr) ptr2)->DrillingHole);
+		conf_SET_design("design/keepaway", "%$mS", ((PinTypePtr) ptr2)->Clearance / 2);
 		if (conf_core.editor.mode != VIA_MODE)
 			SetMode(VIA_MODE);
 		notify_crosshair_change(true);

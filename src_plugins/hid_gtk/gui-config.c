@@ -774,14 +774,13 @@ static void config_sizes_apply(void)
 #warning TODO: what? this could be removed once user can select where to save
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_drc_sizes_default_button));
 	if (active) {
-#warning TODO: no direct overwrite, use conf_set()
-		conf_core.design.bloat = PCB->Bloat;
-		conf_core.design.shrink = PCB->Shrink;
-		conf_core.design.min_wid = PCB->minWid;
-		conf_core.design.min_slk = PCB->minSlk;
-		conf_core.design.poly_isle_area = PCB->IsleArea;
-		conf_core.design.min_drill = PCB->minDrill;
-		conf_core.design.min_ring = PCB->minRing;
+		conf_set_design("design/bloat", "%$mS", PCB->Bloat);
+		conf_set_design("design/shrink", "%$mS", PCB->Shrink);
+		conf_set_design("design/min_wid", "%$mS", PCB->minWid);
+		conf_set_design("design/min_slk", "%$mS", PCB->minSlk);
+		conf_set_design("design/poly_isle_area", "%f", PCB->IsleArea);
+		conf_set_design("design/min_drill", "%$mS", PCB->minDrill);
+		conf_SET_design("design/min_ring", "%$mS", PCB->minRing);
 		ghidgui->config_modified = TRUE;
 	}
 

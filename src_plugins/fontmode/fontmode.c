@@ -82,12 +82,12 @@ static int FontEdit(int argc, char **argv, Coord Ux, Coord Uy)
 	if (hid_actionl("New", "Font", 0))
 		return 1;
 
-#warning TODO is this a good idea?
+#warning TODO do we need to change design.bloat here?
 	conf_core.editor.grid_unit = get_unit_struct("mil");
-	conf_core.design.bloat = PCB->Bloat = 1;
-	conf_core.design.shrink = PCB->Shrink = 1;
-	conf_core.design.min_wid = PCB->minWid = 1;
-	conf_core.design.min_slk = PCB->minSlk = 1;
+	conf_set_design("design.bloat", "%s", "1"); PCB->Bloat = 1;
+	conf_set_design("design.shrink", "%s", "1"); PCB->Shrink = 1;
+	conf_set_design("design.min_wid", "%s", "1"); PCB->minWid = 1;
+	conf_SET_design("design.min_slk", "%s", "1"); PCB->minSlk = 1;
 
 	MoveLayerToGroup(max_copper_layer + COMPONENT_LAYER, 0);
 	MoveLayerToGroup(max_copper_layer + SOLDER_LAYER, 1);

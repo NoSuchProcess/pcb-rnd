@@ -46,7 +46,6 @@ li:pcb_config {
 			save_last_command = 0
 			save_in_tmp = 0
 			draw_grid = 0
-			rat_warn = 0
 			stipple_polygons = 0
 			all_direction_lines = 0
 			rubber_band_mode = 0

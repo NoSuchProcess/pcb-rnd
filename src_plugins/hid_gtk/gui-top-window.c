@@ -735,9 +735,7 @@ void ghid_layer_buttons_update(void)
 static void route_styles_edited_cb(GHidRouteStyleSelector * rss, gboolean save, gpointer data)
 {
 	if (save) {
-#warning TODO: shouldn't write directly
-//		g_free(conf_core.design.routes);
-		conf_core.design.routes = make_route_string(PCB->RouteStyle, NUM_STYLES);
+		conf_SET_design(conf_core.design.routes, "%s", make_route_string(PCB->RouteStyle, NUM_STYLES));
 		ghidgui->config_modified = TRUE;
 		ghid_config_files_write();
 	}

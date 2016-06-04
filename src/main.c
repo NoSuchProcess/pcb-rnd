@@ -64,6 +64,7 @@
 #include "plug_footprint.h"
 #include "event.h"
 #include "funchash.h"
+#include "conf.h"
 
 #include "hid_actions.h"
 #include "hid_attrib.h"
@@ -595,12 +596,13 @@ int main(int argc, char *argv[])
    one is registered (there can be only one GUI). */
 #include "generated_lists.h"
 
-#warning TODO: this should be coming from config files
+#warning TODO: this should be coming from the hardwired lht config file
 	/* Set up layers. */
 	for (i = 0; i < MAX_LAYER; i++) {
 		char buf[20];
 		sprintf(buf, "signal%d", i + 1);
-		conf_core.design.default_layer_name[i] = strdup(buf);
+		if (conf_set(CFR_DESIGN, "design/default_layer_name", i, buf, POL_OVERWRITE) != 0)
+			printf("Can't set layer name\n");
 	}
 
 	gui->parse_arguments(&argc, &argv);
