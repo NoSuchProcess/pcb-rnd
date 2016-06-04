@@ -424,6 +424,7 @@ static conf_field_clear(conf_native_t *f)
 			case CFN_LIST:        clr(list); break;
 			case CFN_INCREMENTS:  clr(increments); break;
 		}
+		memset(f->prop, 0, sizeof(confprop_t) * f->used);
 #undef clr
 	}
 
@@ -547,17 +548,13 @@ int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new
 		return -1;
 	}
 
-	if (idx < 0) {
-		basename = strrchr(path, '/');
-		if (basename == NULL) {
-			free(path);
-			return -1;
-		}
-		*basename = '\0';
-		basename++;
+	basename = strrchr(path, '/');
+	if (basename == NULL) {
+		free(path);
+		return -1;
 	}
-	else
-		basename = NULL;
+	*basename = '\0';
+	basename++;
 
 	/* create parents if they do not exist */
 	last = next = path;
@@ -591,22 +588,20 @@ int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new
 	else
 		ty = LHT_TEXT;
 
-	if (basename != NULL) {
-		nn = lht_tree_path_(conf_root[target], cwd, basename, 1, 0, NULL);
-		if (nn == NULL) {
-			if (conf_root_lock[target]) {
-				free(path);
-				return -1;
-			}
-			nn = lht_dom_node_alloc(ty, basename);
-			if (lht_dom_hash_put(cwd, nn) != LHTE_SUCCESS) {
-				lht_dom_node_free(nn);
-				free(path);
-				return -1;
-			}
-			cwd = nn;
+	nn = lht_tree_path_(conf_root[target], cwd, basename, 1, 0, NULL);
+	if (nn == NULL) {
+		if (conf_root_lock[target]) {
+			free(path);
+			return -1;
+		}
+		nn = lht_dom_node_alloc(ty, basename);
+		if (lht_dom_hash_put(cwd, nn) != LHTE_SUCCESS) {
+			lht_dom_node_free(nn);
+			free(path);
+			return -1;
 		}
 	}
+	cwd = nn;
 
 	/* set value */
 	if (ty == LHT_LIST) {
@@ -629,7 +624,7 @@ int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new
 					int n;
 					lht_node_t *i;
 					/* count members */
-					for (n = 0, i = cwd->data.list.first; i != NULL && n > 0; i = i->next) n++;
+					for (n = 0, i = cwd->data.list.first; i != NULL; i = i->next) n++;
 					/* append just enough elements to get one less than needed */
 					err = 0;
 					for(n = idx - n; n > 0; n--) {
@@ -756,5 +751,6 @@ void conf_reset(conf_role_t target, const char *source_fn)
 void conf_init(void)
 {
 	conf_reset(CFR_CLI, "<commandline>");
+	conf_reset(CFR_DESIGN, "<null-design>");
 }
 
