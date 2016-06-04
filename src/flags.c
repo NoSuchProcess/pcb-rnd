@@ -178,7 +178,6 @@ HID_Flag flags_flag_list[] = {
 	,
 	{"have_regex", FlagHaveRegex, 0}
 	,
-
 	{"silk_shown", FlagLayerShown, FL_SILK}
 	,
 	{"pins_shown", FlagLayerShown, FL_PINS}
@@ -195,7 +194,6 @@ HID_Flag flags_flag_list[] = {
 	,
 	{"rats_active", FlagLayerActive, FL_RATS}
 	,
-
 	{"mode", FlagMode, -1}
 	,
 	{"nomode", FlagMode, NO_MODE}
@@ -238,89 +236,6 @@ HID_Flag flags_flag_list[] = {
 	,
 	{"grid_units_mil", FlagUnitsMil, -1}
 	,
-#warning TODO: access these via the conf system
-#if 0
-	{"shownumber", FlagTESTFLAG, SHOWNUMBERFLAG}
-	,
-	{"localref", FlagTESTFLAG, LOCALREFFLAG}
-	,
-	{"checkplanes", FlagTESTFLAG, CHECKPLANESFLAG}
-	,
-	{"showdrc", FlagTESTFLAG, SHOWDRCFLAG}
-	,
-	{"rubberband", FlagTESTFLAG, RUBBERBANDFLAG}
-	,
-	{"description", FlagTESTFLAG, DESCRIPTIONFLAG}
-	,
-	{"nameonpcb", FlagTESTFLAG, NAMEONPCBFLAG}
-	,
-	{"autodrc", FlagTESTFLAG, AUTODRCFLAG}
-	,
-	{"alldirection", FlagTESTFLAG, ALLDIRECTIONFLAG}
-	,
-	{"swapstartdir", FlagTESTFLAG, SWAPSTARTDIRFLAG}
-	,
-	{"uniquename", FlagTESTFLAG, UNIQUENAMEFLAG}
-	,
-	{"clearnew", FlagTESTFLAG, CLEARNEWFLAG}
-	,
-	{"snappin", FlagTESTFLAG, SNAPPINFLAG}
-	,
-	{"showmask", FlagTESTFLAG, SHOWMASKFLAG}
-	,
-	{"thindraw", FlagTESTFLAG, THINDRAWFLAG}
-	,
-	{"orthomove", FlagTESTFLAG, ORTHOMOVEFLAG}
-	,
-	{"liveroute", FlagTESTFLAG, LIVEROUTEFLAG}
-	,
-	{"thindrawpoly", FlagTESTFLAG, THINDRAWPOLYFLAG}
-	,
-	{"locknames", FlagTESTFLAG, LOCKNAMESFLAG}
-	,
-	{"onlynames", FlagTESTFLAG, ONLYNAMESFLAG}
-	,
-	{"newfullpoly", FlagTESTFLAG, NEWFULLPOLYFLAG}
-	,
-	{"hidenames", FlagTESTFLAG, HIDENAMESFLAG}
-	,
-	{"enablestroke", FlagTESTFLAG, OffsetOf(conf_core_t, editor.enable_stroke)}
-	,
-	{"snapoffgridline", FlagTESTFLAG, ffsetOf(conf_core_t, editor.snap_offgrid_line)}
-	,
-	{"highlightonpoint", FlagTESTFLAG, OffsetOf(conf_core_t, editor.highlight_on_point)}
-	,
-	{"fullpoly", FlagSETTINGS, OffsetOf(conf_core_t, editor.full_poly)}
-	,
-	{"clearline", FlagSETTINGS, OffsetOf(conf_core_t, editor.clear_line)}
-	,
-	{"uniquenames", FlagSETTINGS, OffsetOf(conf_core_t, editor.unique_names)}
-	,
-	{"showsolderside", FlagSETTINGS, OffsetOf(conf_core_t, editor.show_solder_side)}
-	,
-	{"savelastcommand", FlagSETTINGS, OffsetOf(conf_core_t, editor.save_last_command)}
-	,
-	{"saveintmp", FlagSETTINGS, OffsetOf(conf_core_t, editor.save_in_tmp)}
-	,
-	{"drawgrid", FlagSETTINGS, OffsetOf(conf_core_t, editor.draw_grid)}
-	,
-	{"ratwarn", FlagSETTINGS, OffsetOf(conf_core_t, temp.rat_warn)}
-	,
-	{"stipplepolygons", FlagSETTINGS, OffsetOf(conf_core_t, editor.stipple_polygons)}
-	,
-	{"alldirectionlines", FlagSETTINGS, OffsetOf(conf_core_t, editor.all_direction_lines)}
-	,
-	{"rubberbandmode", FlagSETTINGS, OffsetOf(conf_core_t, editor.rubber_band_mode)}
-	,
-	{"swapstartdirection", FlagSETTINGS, OffsetOf(conf_core_t, editor.swap_start_direction)}
-	,
-	{"showdrcmode", FlagSETTINGS, OffsetOf(conf_core_t, editor.show_drc)}
-	,
-	{"resetafterelement", FlagSETTINGS, OffsetOf(conf_core_t, editor.reset_after_element)}
-	,
-	{"ringbellwhenfinished", FlagSETTINGS, OffsetOf(conf_core_t, editor.beep_when_finished)}
-	,
-#endif
 	{"buffer", FlagBuffer, 0}
 	,
 
