@@ -17,8 +17,8 @@ ha:{
 			li:release             = { Mode(Release) }
 			li:press-ctrl          = { Mode(Save); Mode(Copy); Mode(Notify) }
 			li:release-ctrl        = { Mode(Notify); Mode(Restore); }
-			li:press-shift-ctrl    = { Display(ToggleRubberbandMode); Mode(Save); Mode(Move); Mode(Notify) }
-			li:release-shift-ctrl  = { Mode(Notify); Mode(Restore); Display(ToggleRubberbandMode) }
+			li:press-shift-ctrl    = { conf(toggle, editor/rubber_band_mode, design); Mode(Save); Mode(Move); Mode(Notify) }
+			li:release-shift-ctrl  = { Mode(Notify); Mode(Restore); conf(toggle, editor/rubber_band_mode, design) }
 		}
 		li:up {
 			li:press        = { Zoom(0.8) }
@@ -120,7 +120,7 @@ ha:{
 		ha:View {
 			m=V
 			li:submenu {
-				ha:Enable visible grid        = { checked=drawgrid; action=Display(Grid) }
+				ha:Enable visible grid        = { checked=editor/draw_grid; action=conf(toggle, editor/draw_grid, design) }
 				ha:Grid units {
 					li:submenu {
 						ha:mil                    = { checked=grid_units_mil,1; action=SetUnits(mil) }
@@ -161,7 +161,7 @@ ha:{
 						ha:Value                  = { checked=elementname,3; action=Display(Value) }
 					}
 				}
-				ha:Enable Pinout shows number = { checked=shownumber; action=Display(ToggleName) }
+				ha:Enable Pinout shows number = { checked=editor/show_number; action=conf(toggle, editor/show_number, design) }
 				ha:Pins/Via show Name/Number  = { a=<Key>d; action=Display(PinOrPadName) }
 				ha:Zoom In 20%                = { m=Z; a=<Key>z; action=Zoom(-1.2) }
 				ha:Zoom Out 20%               = { m=O; a=Shift<Key>z; action=Zoom(+1.2) }
@@ -210,29 +210,29 @@ ha:{
 		ha:Settings = {
 			m=S
 			li:submenu {
-				ha:'All-direction' lines            = { checked=alldirection; a=<Key>.; action=Display(ToggleAllDirections) }
-				ha:Auto swap line start angle       = { checked=swapstartdir; action=Display(ToggleStartDirection) }
-				ha:Orthogonal moves                 = { checked=orthomove; action=Display(ToggleOrthoMove) }
-				ha:Crosshair snaps to pins and pads = { checked=snappin; action=Display(ToggleSnapPin) }
-				ha:Crosshair snaps to off-grid points on lines = { checked=snapoffgridline; action=Display(ToggleSnapOffGridLine) }
-				ha:Crosshair shows DRC clearance    = { checked=showdrc; action=Display(ToggleShowDRC) }
-				ha:Auto enforce DRC clearance       = { checked=autodrc; action=Display(ToggleAutoDRC) }
-				ha:Lock Names                       = { checked=locknames; action=Display(ToggleLockNames) }
-				ha:Only Names                       = { checked=onlynames; action=Display(ToggleOnlyNames) }
-				ha:Hide Names                       = { checked=hidenames; action=Display(ToggleHideNames) }
+				ha:'All-direction' lines            = { checked=editor/alldirection_lines; a=<Key>.; action=conf(toggle, editor/all_direction_lines, design) }
+				ha:Auto swap line start angle       = { checked=editor/swap_start_direction; action=conf(toggle, editor/swap_start_direction, design) }
+				ha:Orthogonal moves                 = { checked=editor/orthogonal_moves; action=conf(toggle, editor/orthogonal_moves, design) }
+				ha:Crosshair snaps to pins and pads = { checked=editor/snap_pin; action=conf(toggle, editor/snap_pin, design) }
+				ha:Crosshair snaps to off-grid points on lines = { checked=editor/snap_offgrid_line; action=conf(toggle, editor/snap_offgrid_line, design) }
+				ha:Crosshair shows DRC clearance    = { checked=editor/show_drc; action=conf(toggle, editor/show_drc, design) }
+				ha:Auto enforce DRC clearance       = { checked=editor/auto_drc; action=conf(toggle, editor/auto_drc, design) }
+				ha:Lock Names                       = { checked=editor/lock_names; action=conf(toggle, editor/lock_names, design) }
+				ha:Only Names                       = { checked=editor/only_names; action=conf(toggle, editor/only_names, design) }
+				ha:Hide Names                       = { checked=editor/hide_names; action=conf(toggle, editor/hide_names, design) }
 				ha:Mincut on shorts                 = { checked=plugins/mincut/enable; action=conf(toggle, plugins/mincut/enable, design) }
-				ha:Libstroke gestures on middle button = { checked=enablestroke; action=Display(ToggleStroke) }
+				ha:Libstroke gestures on middle button = { checked=editor/enable_stroke; action=conf(toggle, editor/enable_stroke, design) }
 				-
-				ha:Rubber band mode                 = { checked=rubberband; action=Display(ToggleRubberBandMode) }
-				ha:Require unique element names     = { checked=uniquename; action=Display(ToggleUniqueNames) }
-				ha:Auto-zero delta measurements     = { checked=localref; action=Display(ToggleLocalRef) }
-				ha:New lines, arcs clear polygons   = { checked=clearnew; action=Display(ToggleClearLine) }
-				ha:New polygons are full ones       = { checked=newfullpoly; action=Display(ToggleFullPoly) }
-				ha:Show autorouter trials           = { checked=liveroute; action=Display(ToggleLiveRoute) }
-				ha:Highlighting on line, arc points = { checked=highlightonpoint; action=Display(ToggleHighlightOnPoint) }
-				ha:Thin draw                        = { checked=thindraw; a=<Key>|;  action=Display(ToggleThindraw) }
-				ha:Thin draw poly                   = { checked=thindrawpoly; a=Ctrl Shift<Key>p; action=Display(ToggleThindrawPoly) }
-				ha:Check polygons                   = { checked=checkplanes; action=Display(ToggleCheckPlanes) }
+				ha:Rubber band mode                 = { checked=editor/rubber_band_mode; action=conf(toggle, editor/rubber_band_mode, design) }
+				ha:Require unique element names     = { checked=editor/unique_names; action=conf(toggle, editor/unique_names, design) }
+				ha:Auto-zero delta measurements     = { checked=editor/local_ref; action=conf(toggle, editor/local_ref, design) }
+				ha:New lines, arcs clear polygons   = { checked=editor/clear_line; action=conf(toggle, editor/clear_line, design) }
+				ha:New polygons are full ones       = { checked=editor/full_poly; action=conf(toggle, editor/full_poly, design) }
+				ha:Show autorouter trials           = { checked=editor/live_routing; action=conf(toggle, editor/live_routing, design) }
+				ha:Highlighting on line, arc points = { checked=editor/highlight_on_point; action=conf(toggle, editor/highlight_on_point, design) }
+				ha:Thin draw                        = { checked=editor/thin_draw; a=<Key>|;  action=conf(toggle, editor/thin_draw, design) }
+				ha:Thin draw poly                   = { checked=editor/thin_draw_poly; a=Ctrl Shift<Key>p; action=conf(toggle, editor/thin_draw_poly, design) }
+				ha:Check polygons                   = { checked=editor/check_planes; action=conf(toggle, editor/check_planes, design) }
 				-
 				ha:Vendor drill mapping             = { checked=VendorMapOn; action=ToggleVendor() }
 				ha:Import New Elements at = {

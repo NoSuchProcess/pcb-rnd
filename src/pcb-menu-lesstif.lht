@@ -97,7 +97,7 @@ ha:{
 					li:submenu {
 						ha:mil = { checked=grid_units_mil,1; action=SetUnits(mil) }
 						ha:mm = { checked=grid_units_mm,1; action=SetUnits(mm) }
-						ha:Display grid = { checked=drawgrid; action=Display(Grid) }
+						ha:Display grid = { checked=editor/draw_grid; action=conf(toggle, editor/draw_grid, design) }
 						ha:Realign grid = { li:action={GetXY(Click to set the grid origin); Display(ToggleGrid)} }
 						ha:No Grid = { checked=grid,0; action=SetValue(Grid,1) }
 						-
@@ -215,7 +215,7 @@ ha:{
 				ha:Crosshair shows DRC clearance = { checked=showdrc; action=Display(ToggleShowDRC) }
 				ha:Auto enforce DRC clearance = { checked=autodrc; action=Display(ToggleAutoDRC) }
 				-
-				ha:Rubber band mode = { checked=rubberband; action=Display(ToggleRubberBandMode) }
+				ha:Rubber band mode = { checked=editor/rubber_band_mode; action=conf(toggle, editor/rubber_band_mode, design) }
 				ha:Require unique element names = { checked=uniquename; action=Display(ToggleUniqueNames) }
 				ha:Auto-zero delta measurements = { checked=localref; action=Display(ToggleLocalRef) }
 				ha:New lines, arcs clear polygons = { checked=clearnew; action=Display(ToggleClearLine) }
