@@ -1,15 +1,18 @@
+BUGS:
+	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
+	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
+
 - replace settings with lihata (conf_*)
 	- menu lht updates:
 		- fix lesstif menu lht for conf(toggle, editor/draw_grid, design)
 		- pcb-menu-mkey.lht
-	- decide how to store line thickness and pcb flags - either in the PCB struct or in conf, but not both
-	  if in the conf, make every iteam load/save
+	- remove redundancy: don't store values in the PCB struct that are in the design conf
 	- CLI: check if it still works
 		- -auto-place -> conf_core.editor.auto_place
 	- optimize conf-update-after-set:
 		- we know whether the node we change ended up in native (check prop.src)
 		- recalc native directly if did so - never run conf_update!
-		- revse each call to conf_update(), especially from the set macros!
+		- revise each call to conf_update(), especially from the set macros!
 	- add CFR_DESIGN
 		- assign some high prio
 		- check changing:
@@ -17,7 +20,6 @@
 			- pcb size
 	- increments are not really implemented
 	- shouldn't segfault if pcb-conf.lht is missing (embedded version?)
-	- PCB->Grid and friends: what should we load from the design?
 	- replace hid_load_settings() with lihata
 	- plugin unload should unregister binary conf items
 		- mincut
