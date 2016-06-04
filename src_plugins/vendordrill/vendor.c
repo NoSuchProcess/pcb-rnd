@@ -807,7 +807,7 @@ static int vendor_get_enabled(int unused)
 	return vendorMapEnable;
 }
 
-
+#warning TODO: make this a normal config item in plugins/
 HID_Flag vendor_flag_list[] = {
 	{"VendorMapOn", vendor_get_enabled, 0}
 };

@@ -1,8 +1,9 @@
 #ifndef PCB_HID_ACTIONS_H
 #define PCB_HID_ACTIONS_H
 
-/* This one is called from main.c */
+/* These are called from main_act.c */
 void print_actions(void);
+void dump_actions(void);
 
 
 /* HID internal interfaces.  These may ONLY be called from the HID

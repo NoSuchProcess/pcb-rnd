@@ -494,6 +494,9 @@ struct hid_st {
 	 * If action is NULL, the menu may get submenus.
 	 */
 	void (*create_menu) (const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
+
+	/* Optional: print usage string (if accepts command line arguments) */
+	void (*usage)(void);
 };
 
 /* This function (in the common code) will be called whenever the GUI

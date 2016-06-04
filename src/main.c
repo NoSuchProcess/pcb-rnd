@@ -112,123 +112,7 @@ static void InitHandler(void)
 #endif
 }
 
-
-	/* ----------------------------------------------------------------------
-	   |  command line and rc file processing.
-	 */
 static char *command_line_pcb;
-
-void copyright(void)
-{
-	printf("\n"
-				 "                COPYRIGHT for %s version %s\n\n"
-				 "    PCB, interactive printed circuit board design\n"
-				 "    Copyright (C) 1994,1995,1996,1997 Thomas Nau\n"
-				 "    Copyright (C) 1998, 1999, 2000 Harry Eaton\n\n"
-				 "    This program is free software; you can redistribute it and/or modify\n"
-				 "    it under the terms of the GNU General Public License as published by\n"
-				 "    the Free Software Foundation; either version 2 of the License, or\n"
-				 "    (at your option) any later version.\n\n"
-				 "    This program is distributed in the hope that it will be useful,\n"
-				 "    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-				 "    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-				 "    GNU General Public License for more details.\n\n"
-				 "    You should have received a copy of the GNU General Public License\n"
-				 "    along with this program; if not, write to the Free Software\n"
-				 "    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n\n", Progname, VERSION);
-	exit(0);
-}
-
-/* print usage lines */
-static inline void u(const char *fmt, ...)
-{
-	va_list ap;
-	va_start(ap, fmt);
-	vfprintf(stderr, fmt, ap);
-	fputc('\n', stderr);
-	va_end(ap);
-}
-
-typedef struct UsageNotes {
-	struct UsageNotes *next;
-	HID_Attribute *seen;
-} UsageNotes;
-
-static UsageNotes *usage_notes = NULL;
-
-static void usage(void)
-{
-	HID **hl = hid_enumerate();
-	HID_AttrNode *ha;
-	UsageNotes *note;
-	int i;
-	int n_printer = 0, n_gui = 0, n_exporter = 0;
-
-	for (i = 0; hl[i]; i++) {
-		if (hl[i]->gui)
-			n_gui++;
-		if (hl[i]->printer)
-			n_printer++;
-		if (hl[i]->exporter)
-			n_exporter++;
-	}
-
-	u("PCB Printed Circuit Board editing program, http://pcb.gpleda.org");
-	u("%s [-h|-V|--copyright]\t\t\tHelp, version, copyright", Progname);
-	u("%s [--gui GUI] [gui options] <pcb file>\t\tto edit", Progname);
-	u("Available GUI hid%s:", n_gui == 1 ? "" : "s");
-	for (i = 0; hl[i]; i++)
-		if (hl[i]->gui)
-			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
-	u("%s -p [printing options] <pcb file>\tto print", Progname);
-	u("Available printing hid%s:", n_printer == 1 ? "" : "s");
-	for (i = 0; hl[i]; i++)
-		if (hl[i]->printer)
-			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
-	u("%s -x hid [export options] <pcb file>\tto export", Progname);
-	u("Available export hid%s:", n_exporter == 1 ? "" : "s");
-	for (i = 0; hl[i]; i++)
-		if (hl[i]->exporter)
-			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
-
-#warning TODO: CLI: do this on a per plugin basis
-#if 0
-	for (i = 0; hl[i]; i++)
-		if (hl[i]->gui)
-			usage_hid(hl[i]);
-	for (i = 0; hl[i]; i++)
-		if (hl[i]->printer)
-			usage_hid(hl[i]);
-	for (i = 0; hl[i]; i++)
-		if (hl[i]->exporter)
-			usage_hid(hl[i]);
-#endif
-
-	u("\nCommon options:");
-#warning TODO: CLI: do this on a per plugin basis
-#if 0
-	for (ha = hid_attr_nodes; ha; ha = ha->next) {
-		for (note = usage_notes; note && note->seen != ha->attributes; note = note->next);
-		if (note)
-			continue;
-		for (i = 0; i < ha->n; i++) {
-			usage_attr(ha->attributes + i);
-		}
-	}
-#endif
-
-	exit(1);
-}
-
-/* ---------------------------------------------------------------------- 
- * Print help or version messages.
- */
-
-static void print_version()
-{
-	printf("PCB version %s\n", VERSION);
-	exit(0);
-}
 
 /* ----------------------------------------------------------------------
  * Figure out the canonical name of the executed program
@@ -444,13 +328,28 @@ void pcb_main_uninit(void)
 
 static int arg_match(const char *in, const char *shrt, const char *lng)
 {
-	return (strcmp(in, shrt) == 0) || (strcmp(in, lng) == 0);
+	return ((shrt != NULL) && (strcmp(in, shrt) == 0)) || ((lng != NULL) && (strcmp(in, lng) == 0));
 }
+
+static const char *action_args[] = {
+/*short, -long, action*/
+	NULL, "-show-actions", "PrintActions()",
+	NULL, "-dump-actions", "DumpActions()",
+#warning TODO: move this in the debug module
+	NULL, "-dump-configig","dumpconf(native,1)",
+	"h",  "-help",         "PrintUsage()",
+	"?",  NULL,            "PrintUsage()",
+	"V",  "-version",      "PrintVersion()",
+	NULL, "-copyright",    "PrintCopyright()",
+	NULL, NULL, NULL /* terminator */
+};
 
 int main(int argc, char *argv[])
 {
 	int i, n;
 	char *cmd, *arg, *stmp;
+	const char **cs;
+	const char *main_action = NULL;
 
 #warning TODO: update this comment
 	/* init application:
@@ -473,6 +372,14 @@ int main(int argc, char *argv[])
 		arg = argv[n+1];
 		if (*cmd == '-') {
 			cmd++;
+			for(cs = action_args; cs[2] != NULL; cs += 3) {
+				if (arg_match(cmd, cs[0], cs[1])) {
+					if (main_action == NULL)
+						main_action = cs[2];
+					else
+						fprintf(stderr, "Warning: can't execute multiple command line actions, ignoring %s\n", argv[n]);
+				}
+			}
 			if (arg_match(cmd, "c", "-conf")) {
 				if (conf_set_from_cli(arg, &stmp) != 0) {
 					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, stmp);
@@ -538,24 +445,12 @@ int main(int argc, char *argv[])
 	plugins_init();
 
 
-#warning TODO: CLI: move this in the cli arg proc loop
-
-	/* Print usage or version if requested.  Then exit.  */
-	if (argc > 1 && (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-?") == 0 || strcmp(argv[1], "--help") == 0))
-		usage();
-	if (argc > 1 && strcmp(argv[1], "-V") == 0)
-		print_version();
+#warning TODO: CLI: move this in the cli arg proc loop or use the new argc/argv?
 	/* Export pcb from command line if requested.  */
-	if (argc > 1 && strcmp(argv[1], "-p") == 0) {
+	if (argc > 1 && strcmp(argv[1], "-p") == 0)
 		exporter = gui = hid_find_printer();
-		argc--;
-		argv++;
-	}
-	else if (argc > 2 && strcmp(argv[1], "-x") == 0) {
+	else if (argc > 2 && strcmp(argv[1], "-x") == 0)
 		exporter = gui = hid_find_exporter(argv[2]);
-		argc -= 2;
-		argv += 2;
-	}
 	/* Otherwise start GUI. */
 	else if (argc > 2 && strcmp(argv[1], "--gui") == 0) {
 		gui = hid_find_gui(argv[2]);
@@ -563,8 +458,6 @@ int main(int argc, char *argv[])
 			Message("Can't find the gui requested.\n");
 			exit(1);
 		}
-		argc -= 2;
-		argv += 2;
 	}
 	else {
 		const char **g;
@@ -598,37 +491,17 @@ int main(int argc, char *argv[])
 			printf("Can't set layer name\n");
 	}
 
-	gui->parse_arguments(&argc, &argv);
-
-#warning make these actions
-#if 0
-	if (show_help || (argc > 1 && argv[1][0] == '-'))
-		usage();
-	if (show_version)
-		print_version();
-	if (show_defaults)
-		print_defaults();
-	if (show_copyright)
-		copyright();
-#endif
-
 	/* plugins may have installed their new fields, reinterpret
 	   (memory lht -> memory bin) to get the new fields */
 	conf_update();
 
-#warning TODO: CLI: move this to actions; generic solution: action string set up from CLI, run here then exit
-#if 0
-	if (show_actions) {
-		print_actions();
+	if (main_action != NULL) {
+		hid_parse_command(main_action);
 		exit(0);
 	}
 
-	if (do_dump_actions) {
-		extern void dump_actions(void);
-		dump_actions();
-		exit(0);
-	}
-#endif
+#warning TODO: get a limited set of args, only the unprocessed ones
+	gui->parse_arguments(&argc, &argv);
 
 	/* Create a new PCB object in memory */
 	PCB = CreateNewPCB();

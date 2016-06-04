@@ -185,7 +185,7 @@ static void dump_string(char prefix, const char *str)
 		putchar('\n');
 }
 
-void dump_actions()
+void dump_actions(void)
 {
 	int i;
 	htsp_entry_t *e;
