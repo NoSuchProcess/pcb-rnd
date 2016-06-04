@@ -187,6 +187,7 @@ hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *p
 		return NULL;
 
 
+	addr.hash = 0;
 	addr.details.mods = mods;
 	addr.details.key_char = key_char;
 
@@ -422,6 +423,7 @@ int hid_cfg_keys_input(hid_cfg_keys_t *km, hid_cfg_mod_t mods, unsigned short in
 	hid_cfg_keyhash_t addr;
 	htip_t *phash = (*seq_len == 0) ? &km->keys : &((seq[(*seq_len)-1])->seq_next);
 
+	addr.hash = 0;
 	addr.details.mods = mods;
 	addr.details.key_char = key_char;
 
