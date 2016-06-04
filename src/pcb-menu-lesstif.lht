@@ -2,6 +2,7 @@ ha:{
 	li:mouse {
 		li:left {
 			li:press         = { Mode(Notify) }
+			li:press-shift   = { Mode(Notify) }
 			li:release       = { Mode(Release) }
 		}
 		li:right {
