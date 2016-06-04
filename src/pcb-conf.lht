@@ -164,8 +164,8 @@ li:pcb_config {
 #				zoom = 0
 				offset_x = 25400
 				offset_y = 25400
-				text_offset_x = 203200
-				text_offset_y = -25400
+				text_offset_x = 0.1 mm
+				text_offset_y = 0.1 mm
 			}
 			ha:messages {
 #				char_per_line = 0
