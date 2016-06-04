@@ -220,7 +220,7 @@ do { \
 
 #define conf_set_editor(field, val) \
 do { \
-	conf_set(CFR_DESIGN, "editor." #field, -1, val ? "1" : "0", POL_OVERWRITE); \
+	conf_set(CFR_DESIGN, "editor/" #field, -1, val ? "1" : "0", POL_OVERWRITE); \
 	conf_update(); \
 } while(0)
 

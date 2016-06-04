@@ -236,7 +236,7 @@ void SetMode(int Mode)
 		Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = Crosshair.AttachedBox.Point1.X;
 		Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = Crosshair.AttachedBox.Point1.Y;
 		sprintf(sMode, "%d", Mode);
-		conf_set(CFR_DESIGN, "editor.mode", -1, sMode, POL_OVERWRITE);
+		conf_set(CFR_DESIGN, "editor/mode", -1, sMode, POL_OVERWRITE);
 		conf_update();
 		AdjustAttachedObjects();
 	}
@@ -254,7 +254,7 @@ void SetMode(int Mode)
 	}
 
 	sprintf(sMode, "%d", Mode);
-	conf_set(CFR_DESIGN, "editor.mode", -1, sMode, POL_OVERWRITE);
+	conf_set(CFR_DESIGN, "editor/mode", -1, sMode, POL_OVERWRITE);
 	conf_update();
 
 	if (Mode == PASTEBUFFER_MODE)
