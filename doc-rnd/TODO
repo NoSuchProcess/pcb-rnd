@@ -1,8 +1,11 @@
 - replace settings with lihata (conf_*)
+	- menu lht updates:
+		- fix lesstif menu lht for conf(toggle, editor/draw_grid, design)
+		- pcb-menu-mkey.lht
 	- decide how to store line thickness and pcb flags - either in the PCB struct or in conf, but not both
 	  if in the conf, make every iteam load/save
 	- CLI: check if it still works
-		- auto-place -> conf_core.editor.auto_place
+		- -auto-place -> conf_core.editor.auto_place
 	- optimize conf-update-after-set:
 		- we know whether the node we change ended up in native (check prop.src)
 		- recalc native directly if did so - never run conf_update!
@@ -36,6 +39,16 @@
 		- test with all plugins enabled (maybe add an scconfig cli arg for this?)
 		- fontmode
 		- change style in both GUIs
+		- what are these and how to test them:
+			{"showmask", FlagTESTFLAG, SHOWMASKFLAG}
+			{"fullpoly", FlagSETTINGS, OffsetOf(conf_core_t, editor.full_poly)}
+			{"savelastcommand", FlagSETTINGS, OffsetOf(conf_core_t, editor.save_last_command)}
+			{"saveintmp", FlagSETTINGS, OffsetOf(conf_core_t, editor.save_in_tmp)}
+			{"ratwarn", FlagSETTINGS, OffsetOf(conf_core_t, temp.rat_warn)}
+			{"stipplepolygons", FlagSETTINGS, OffsetOf(conf_core_t, editor.stipple_polygons)}
+					{"showdrcmode", FlagSETTINGS, OffsetOf(conf_core_t, editor.show_drc)}
+			{"resetafterelement", FlagSETTINGS, OffsetOf(conf_core_t, editor.reset_after_element)}
+			{"ringbellwhenfinished", FlagSETTINGS, OffsetOf(conf_core_t, editor.beep_when_finished)}
 
 CLEANUP #5
 - shift key bug
