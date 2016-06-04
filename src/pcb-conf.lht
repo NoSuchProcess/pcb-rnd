@@ -122,7 +122,7 @@ li:pcb_config {
 	} # design
 
 		ha:appearance {
-			rat_thickness = 0
+			rat_thickness = 0.25 mm
 			ha:color {
 				black = {#000000}
 				white = {#ffffff}
