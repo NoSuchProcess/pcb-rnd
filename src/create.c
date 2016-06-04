@@ -149,13 +149,6 @@ PCBTypePtr CreateNewPCB_(bool SetDefaultNames)
 
 	ptr->Grid = conf_core.editor.grid;
 	ParseGroupString(conf_core.design.groups, &ptr->LayerGroups, MAX_LAYER);
-	STYLE_LOOP(ptr);
-	{
-		char *s = &conf_core.design.routes[n];
-		ParseRoutingString1(&s, style, "mil");
-		style->index = n;
-	}
-	END_LOOP;
 	hid_action("RouteStylesChanged");
 	ptr->Zoom = conf_core.editor.zoom;
 	ptr->MaxWidth = conf_core.design.max_width;
