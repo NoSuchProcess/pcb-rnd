@@ -104,6 +104,7 @@
 #include "hid_actions.h"
 #include "hid_flags.h"
 #include "flags.h"
+#include "attribs.h"
 
 RCSID("$Id$");
 
@@ -232,6 +233,7 @@ static void WritePCBDataHeader(FILE * FP)
 	 * ************************** README *******************
 	 */
 
+	io_pcb_attrib_c2a(PCB);
 
 	/* set binary flags from conf hash; these flags used to be checked
 	   with TEST_FLAG() but got moved to the conf system */

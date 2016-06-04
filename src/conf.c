@@ -1,3 +1,25 @@
+/*
+ *                            COPYRIGHT
+ *
+ *  PCB, interactive printed circuit board design
+ *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ * 
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ */
+
 #include <assert.h>
 #include <genht/hash.h>
 #include "conf.h"
@@ -491,6 +513,20 @@ conf_native_t *conf_get_field(const char *path)
 	return htsp_get(conf_fields, (char *)path);
 }
 
+lht_node_t *conf_lht_get_main(conf_role_t target)
+{
+	lht_node_t *cwd;
+
+	/* assume root is a li and add to the first hash */
+	cwd = conf_root[target]->root;
+	if ((cwd == NULL) || (cwd->type != LHT_LIST))
+		return NULL;
+	cwd = cwd->data.list.first;
+	if ((cwd == NULL) || (cwd->type != LHT_HASH))
+		return NULL;
+	return cwd;
+}
+
 int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol)
 {
 	char *path, *basename, *next, *last, *sidx;
@@ -536,17 +572,13 @@ int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new
 		return -1;
 	}
 
-	/* assume root is a li and add to the first hash */
-	cwd = conf_root[target]->root;
-	if ((cwd == NULL) || (cwd->type != LHT_LIST)) {
+	cwd = conf_lht_get_main(target);
+	if (cwd == NULL) {
 		free(path);
 		return -1;
 	}
-	cwd = cwd->data.list.first;
-	if ((cwd == NULL) || (cwd->type != LHT_HASH)) {
-		free(path);
-		return -1;
-	}
+
+
 
 	basename = strrchr(path, '/');
 	if (basename == NULL) {
@@ -566,6 +598,7 @@ int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new
 		nn = lht_tree_path_(conf_root[target], cwd, last, 1, 0, NULL);
 		if (nn == NULL) {
 			if (conf_root_lock[target]) {
+				Message("WARNING: can't set config item %s because target in-memory lihata does not have the node and is tree-locked\n", path_);
 				free(path);
 				return -1;
 			}

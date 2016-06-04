@@ -681,6 +681,7 @@ RCSID("$Id$");
 #include "parse_y.h"
 #include "create.h"
 #include "plug_footprint.h"
+#include "attribs.h"
 
 #define YY_NO_INPUT
 
@@ -712,7 +713,7 @@ int	yyparse(void);
  */
 static	int		Parse(FILE *, char *, char *, char *, char *);
 
-#line 716 "lex.yy.c"
+#line 717 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -899,10 +900,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 107 "../../src_plugins/io_pcb/parse_l.l"
+#line 108 "../../src_plugins/io_pcb/parse_l.l"
 
 
-#line 906 "lex.yy.c"
+#line 907 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -997,227 +998,227 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 109 "../../src_plugins/io_pcb/parse_l.l"
+#line 110 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_FILEVERSION); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 110 "../../src_plugins/io_pcb/parse_l.l"
+#line 111 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_PCB); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 111 "../../src_plugins/io_pcb/parse_l.l"
+#line 112 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_GRID); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 112 "../../src_plugins/io_pcb/parse_l.l"
+#line 113 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_CURSOR); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 113 "../../src_plugins/io_pcb/parse_l.l"
+#line 114 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_THERMAL); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 114 "../../src_plugins/io_pcb/parse_l.l"
+#line 115 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_AREA); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 115 "../../src_plugins/io_pcb/parse_l.l"
+#line 116 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_DRC); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 116 "../../src_plugins/io_pcb/parse_l.l"
+#line 117 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_FLAGS); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 117 "../../src_plugins/io_pcb/parse_l.l"
+#line 118 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_LAYER); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 118 "../../src_plugins/io_pcb/parse_l.l"
+#line 119 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_PIN); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 119 "../../src_plugins/io_pcb/parse_l.l"
+#line 120 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_PAD); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 120 "../../src_plugins/io_pcb/parse_l.l"
+#line 121 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_VIA); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 121 "../../src_plugins/io_pcb/parse_l.l"
+#line 122 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_LINE); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 122 "../../src_plugins/io_pcb/parse_l.l"
+#line 123 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_RAT); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 123 "../../src_plugins/io_pcb/parse_l.l"
+#line 124 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_RECTANGLE); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 124 "../../src_plugins/io_pcb/parse_l.l"
+#line 125 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_TEXT); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 125 "../../src_plugins/io_pcb/parse_l.l"
+#line 126 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_ELEMENTLINE); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 126 "../../src_plugins/io_pcb/parse_l.l"
+#line 127 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_ELEMENTARC); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 127 "../../src_plugins/io_pcb/parse_l.l"
+#line 128 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_ELEMENT); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 128 "../../src_plugins/io_pcb/parse_l.l"
+#line 129 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_SYMBOLLINE); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 129 "../../src_plugins/io_pcb/parse_l.l"
+#line 130 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_SYMBOL); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 130 "../../src_plugins/io_pcb/parse_l.l"
+#line 131 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_MARK); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 131 "../../src_plugins/io_pcb/parse_l.l"
+#line 132 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_GROUPS); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 132 "../../src_plugins/io_pcb/parse_l.l"
+#line 133 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_STYLES); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 133 "../../src_plugins/io_pcb/parse_l.l"
+#line 134 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_POLYGON); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 134 "../../src_plugins/io_pcb/parse_l.l"
+#line 135 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_POLYGON_HOLE); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 135 "../../src_plugins/io_pcb/parse_l.l"
+#line 136 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_ARC); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 136 "../../src_plugins/io_pcb/parse_l.l"
+#line 137 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_NETLIST); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 137 "../../src_plugins/io_pcb/parse_l.l"
+#line 138 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_NET); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 138 "../../src_plugins/io_pcb/parse_l.l"
+#line 139 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_CONN); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 139 "../../src_plugins/io_pcb/parse_l.l"
+#line 140 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_NETLISTPATCH); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 140 "../../src_plugins/io_pcb/parse_l.l"
+#line 141 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_ADD_CONN); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 141 "../../src_plugins/io_pcb/parse_l.l"
+#line 142 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_DEL_CONN); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 142 "../../src_plugins/io_pcb/parse_l.l"
+#line 143 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_CHANGE_ATTRIB); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 143 "../../src_plugins/io_pcb/parse_l.l"
+#line 144 "../../src_plugins/io_pcb/parse_l.l"
 { return(T_ATTRIBUTE); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 145 "../../src_plugins/io_pcb/parse_l.l"
+#line 146 "../../src_plugins/io_pcb/parse_l.l"
 { return T_NM; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 146 "../../src_plugins/io_pcb/parse_l.l"
+#line 147 "../../src_plugins/io_pcb/parse_l.l"
 { return T_UM; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 147 "../../src_plugins/io_pcb/parse_l.l"
+#line 148 "../../src_plugins/io_pcb/parse_l.l"
 { return T_MM; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 148 "../../src_plugins/io_pcb/parse_l.l"
+#line 149 "../../src_plugins/io_pcb/parse_l.l"
 { return T_M; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 149 "../../src_plugins/io_pcb/parse_l.l"
+#line 150 "../../src_plugins/io_pcb/parse_l.l"
 { return T_KM; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 150 "../../src_plugins/io_pcb/parse_l.l"
+#line 151 "../../src_plugins/io_pcb/parse_l.l"
 { return T_UMIL; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 151 "../../src_plugins/io_pcb/parse_l.l"
+#line 152 "../../src_plugins/io_pcb/parse_l.l"
 { return T_CMIL; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 152 "../../src_plugins/io_pcb/parse_l.l"
+#line 153 "../../src_plugins/io_pcb/parse_l.l"
 { return T_MIL; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 153 "../../src_plugins/io_pcb/parse_l.l"
+#line 154 "../../src_plugins/io_pcb/parse_l.l"
 { return T_IN; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 155 "../../src_plugins/io_pcb/parse_l.l"
+#line 156 "../../src_plugins/io_pcb/parse_l.l"
 {
 						yylval.integer = (unsigned) *(yytext+1);
 						return(CHAR_CONST);
@@ -1225,17 +1226,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 159 "../../src_plugins/io_pcb/parse_l.l"
+#line 160 "../../src_plugins/io_pcb/parse_l.l"
 {	return parse_number(); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 160 "../../src_plugins/io_pcb/parse_l.l"
+#line 161 "../../src_plugins/io_pcb/parse_l.l"
 {	yylval.integer = round (strtod (yytext, NULL)); return INTEGER; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 162 "../../src_plugins/io_pcb/parse_l.l"
+#line 163 "../../src_plugins/io_pcb/parse_l.l"
 {	unsigned n;
 				sscanf((char *) yytext, "%x", &n);
 				yylval.integer = n;
@@ -1244,7 +1245,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 167 "../../src_plugins/io_pcb/parse_l.l"
+#line 168 "../../src_plugins/io_pcb/parse_l.l"
 {
 						char	*p1, *p2;
 
@@ -1280,18 +1281,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 199 "../../src_plugins/io_pcb/parse_l.l"
+#line 200 "../../src_plugins/io_pcb/parse_l.l"
 {}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 200 "../../src_plugins/io_pcb/parse_l.l"
+#line 201 "../../src_plugins/io_pcb/parse_l.l"
 {}
 	YY_BREAK
 case 52:
 /* rule 52 can match eol */
 YY_RULE_SETUP
-#line 201 "../../src_plugins/io_pcb/parse_l.l"
+#line 202 "../../src_plugins/io_pcb/parse_l.l"
 {
 #ifndef FLEX_SCANNER
 						yylineno++;
@@ -1300,20 +1301,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 206 "../../src_plugins/io_pcb/parse_l.l"
+#line 207 "../../src_plugins/io_pcb/parse_l.l"
 {}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 207 "../../src_plugins/io_pcb/parse_l.l"
+#line 208 "../../src_plugins/io_pcb/parse_l.l"
 { return(*yytext); }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 209 "../../src_plugins/io_pcb/parse_l.l"
+#line 210 "../../src_plugins/io_pcb/parse_l.l"
 ECHO;
 	YY_BREAK
-#line 1317 "lex.yy.c"
+#line 1318 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2323,7 +2324,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 209 "../../src_plugins/io_pcb/parse_l.l"
+#line 210 "../../src_plugins/io_pcb/parse_l.l"
 
 
 
@@ -2464,6 +2465,19 @@ int io_pcb_ParseElement(plug_io_t *ctx, DataTypePtr Ptr, const char *name)
  */
 #define	TEST_FLAG_LOCAL(F,FLG)		(((FLG) & (F)) ? 1 : 0)
 #define CONF_BOOL_FLAG(F,FLG)	(TEST_FLAG_LOCAL(F,FLG.f) ? "true" : "false")
+
+/* Hack: set a no-save-attribute flag while loading some fields from the file;
+   because we have all these flags set we won't need to list the paths that
+   have hardwired flags again in a "don't save these in attributes" list. */
+#define CONF_SET(target, path, arr_idx, new_val, pol) \
+do { \
+	conf_native_t *n = conf_get_field(path); \
+	conf_set(target, path, arr_idx, new_val, pol); \
+	printf("CONF_SET: %s %p\n", path, n); \
+	if (n != NULL) \
+		n->random_flags.io_pcb_no_attrib = 1; \
+} while(0) \
+
 int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_settings)
 {
 	int retval;
@@ -2472,40 +2486,40 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_set
 	yyFont = NULL;
 	yyElement = NULL;
 	yyLoadSettings = load_settings;
-	if (load_settings) {
-		conf_unlock(CFR_DESIGN);
+	if (load_settings)
 		conf_reset(CFR_DESIGN, Filename);
-	}
 	setlocale(LC_ALL, "C"); /* make sure numerics are read predictably */
 	retval = Parse(NULL, conf_core.rc.file_command, conf_core.rc.file_path, Filename, NULL);
 	setlocale(LC_ALL, "");
 	if (load_settings) {
-		conf_set(CFR_DESIGN, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(ENABLEMINCUTFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/show_number", -1, CONF_BOOL_FLAG(SHOWNUMBERFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/show_drc", -1, CONF_BOOL_FLAG(SHOWDRCFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/rubber_band_mode", -1, CONF_BOOL_FLAG(RUBBERBANDFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/auto_drc", -1, CONF_BOOL_FLAG(AUTODRCFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/all_direction_lines", -1, CONF_BOOL_FLAG(ALLDIRECTIONFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/swap_start_direction", -1, CONF_BOOL_FLAG(SWAPSTARTDIRFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/unique_names", -1, CONF_BOOL_FLAG(UNIQUENAMEFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/clear_line", -1, CONF_BOOL_FLAG(CLEARNEWFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/full_poly", -1, CONF_BOOL_FLAG(NEWFULLPOLYFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/snap_pin", -1, CONF_BOOL_FLAG(SNAPPINFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/orthogonal_moves", -1, CONF_BOOL_FLAG(ORTHOMOVEFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/live_routing", -1, CONF_BOOL_FLAG(LIVEROUTEFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/enable_stroke", -1, CONF_BOOL_FLAG(ENABLESTROKEFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/lock_names", -1, CONF_BOOL_FLAG(LOCKNAMESFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/only_names", -1, CONF_BOOL_FLAG(ONLYNAMESFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/hide_names", -1, CONF_BOOL_FLAG(HIDENAMESFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/thin_draw", -1, CONF_BOOL_FLAG(THINDRAWFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/thin_draw_poly", -1, CONF_BOOL_FLAG(THINDRAWPOLYFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/local_ref", -1, CONF_BOOL_FLAG(LOCALREFFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/check_planes", -1, CONF_BOOL_FLAG(CHECKPLANESFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/description", -1, CONF_BOOL_FLAG(DESCRIPTIONFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/name_on_pcb", -1, CONF_BOOL_FLAG(NAMEONPCBFLAG, yy_pcb_flags), POL_OVERWRITE);
-		conf_set(CFR_DESIGN, "editor/show_mask", -1, CONF_BOOL_FLAG(SHOWMASKFLAG, yy_pcb_flags), POL_OVERWRITE);
+		/* overwrite settings from the flags, mark them not-to-save */
+		CONF_SET(CFR_DESIGN, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(ENABLEMINCUTFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/show_number", -1, CONF_BOOL_FLAG(SHOWNUMBERFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/show_drc", -1, CONF_BOOL_FLAG(SHOWDRCFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/rubber_band_mode", -1, CONF_BOOL_FLAG(RUBBERBANDFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/auto_drc", -1, CONF_BOOL_FLAG(AUTODRCFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/all_direction_lines", -1, CONF_BOOL_FLAG(ALLDIRECTIONFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/swap_start_direction", -1, CONF_BOOL_FLAG(SWAPSTARTDIRFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/unique_names", -1, CONF_BOOL_FLAG(UNIQUENAMEFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/clear_line", -1, CONF_BOOL_FLAG(CLEARNEWFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/full_poly", -1, CONF_BOOL_FLAG(NEWFULLPOLYFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/snap_pin", -1, CONF_BOOL_FLAG(SNAPPINFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/orthogonal_moves", -1, CONF_BOOL_FLAG(ORTHOMOVEFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/live_routing", -1, CONF_BOOL_FLAG(LIVEROUTEFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/enable_stroke", -1, CONF_BOOL_FLAG(ENABLESTROKEFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/lock_names", -1, CONF_BOOL_FLAG(LOCKNAMESFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/only_names", -1, CONF_BOOL_FLAG(ONLYNAMESFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/hide_names", -1, CONF_BOOL_FLAG(HIDENAMESFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/thin_draw", -1, CONF_BOOL_FLAG(THINDRAWFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/thin_draw_poly", -1, CONF_BOOL_FLAG(THINDRAWPOLYFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/local_ref", -1, CONF_BOOL_FLAG(LOCALREFFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/check_planes", -1, CONF_BOOL_FLAG(CHECKPLANESFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/description", -1, CONF_BOOL_FLAG(DESCRIPTIONFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/name_on_pcb", -1, CONF_BOOL_FLAG(NAMEONPCBFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(CFR_DESIGN, "editor/show_mask", -1, CONF_BOOL_FLAG(SHOWMASKFLAG, yy_pcb_flags), POL_OVERWRITE);
 
-		conf_lock(CFR_DESIGN);
+		io_pcb_attrib_a2c(Ptr);
+
 		conf_update();
 	}
 	return retval;

@@ -1,3 +1,25 @@
+/*
+ *                            COPYRIGHT
+ *
+ *  PCB, interactive printed circuit board design
+ *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ * 
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ */
+
 #ifndef PCB_CONF_H
 #define PCB_CONF_H
 #include "global.h"
@@ -64,6 +86,9 @@ typedef struct {
 	const char *hash_path;     /* points to the hash key once its added in the hash (else: NULL) */
 	int array_size;
 	conf_native_type_t type;
+	struct {
+		unsigned io_pcb_no_attrib:1;
+	} random_flags;  /* hack... persistent flags attached by various plugins */
 
 	/* dynamic fields loaded from lihata */
 	confitem_t val;   /* value is always an array (len 1 for the common case)  */
@@ -137,7 +162,8 @@ conf_role_t conf_role_parse(const char *s);
    fields may be modified but the structure of the tree is static (can't
    create or remove nodes). This is useful when an io_ file format supports
    only a subset of settings: it can build the CFR_DESIGN tree, lock it so
-   settings that it wouldn't know how to save won't appear. */
+   settings that it wouldn't know how to save won't appear. NOTE: io_pcb
+   supports all settings via attributes so does not lock. */
 void conf_lock(conf_role_t target);
 void conf_unlock(conf_role_t target);
 
@@ -203,6 +229,10 @@ do { \
 
 /* For temporary modification/restoration of variables (hack) */
 #define conf_force_set_bool(var, val) *((CFT_BOOLEAN *)(&var)) = val
+
+/* get the main node of a configuration (it's a hash and its children
+   are "design", "rc", ...) */
+lht_node_t *conf_lht_get_main(conf_role_t target);
 
 #endif
 

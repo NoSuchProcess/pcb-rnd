@@ -1,7 +1,4 @@
 - replace settings with lihata (conf_*)
-	- never modify conf_core directly (latest commits do this often!)
-		- make conf_core read-only
-	- check AttributePut - maybe a way of storing the extra settings?
 	- decide how to store line thickness and pcb flags - either in the PCB struct or in conf, but not both
 	  if in the conf, make every iteam load/save
 	- CLI: check if it still works
