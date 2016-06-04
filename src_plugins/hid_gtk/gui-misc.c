@@ -264,10 +264,14 @@ static gboolean loop_button_press_cb(GtkWidget * drawing_area, GdkEventButton * 
 	 */
 static gboolean run_get_location_loop(const gchar * message)
 {
+	static int getting_loc = 0;
 	GMainLoop *loop;
 	gulong button_handler, key_handler;
 	gint oldObjState, oldLineState, oldBoxState;
 
+	if (getting_loc)
+		return false;
+	getting_loc = 1;
 	ghid_status_line_set_text(message);
 
 	oldObjState = Crosshair.AttachedObject.State;
@@ -313,6 +317,7 @@ static gboolean run_get_location_loop(const gchar * message)
 
 	ghid_set_status_line_label();
 
+	getting_loc = 0;
 	return got_location;
 }
 
