@@ -81,17 +81,9 @@
 
 RCSID("$Id$");
 
-
-#define PCBLIBPATH ".:" PCBSHAREDIR
-
-#ifdef HAVE_LIBSTROKE
-extern void stroke_init(void);
-#endif
-
 #warning TODO: to conf
 static const char *fontfile_paths_in[] = { "./default_font", PCBSHAREDIR "/default_font", NULL };
 char **fontfile_paths = NULL;
-
 
 /* Try gui libs in this order when not explicitly specified by the user
    if there are multiple GUIs available this sets the order of preference */
@@ -147,6 +139,7 @@ void copyright(void)
 	exit(0);
 }
 
+/* print usage lines */
 static inline void u(const char *fmt, ...)
 {
 	va_list ap;
@@ -198,7 +191,7 @@ static void usage(void)
 		if (hl[i]->exporter)
 			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
 
-#warning TODO: do this on a per plugin basis
+#warning TODO: CLI: do this on a per plugin basis
 #if 0
 	for (i = 0; hl[i]; i++)
 		if (hl[i]->gui)
@@ -212,7 +205,7 @@ static void usage(void)
 #endif
 
 	u("\nCommon options:");
-#warning TODO: do this from conf_
+#warning TODO: CLI: do this on a per plugin basis
 #if 0
 	for (ha = hid_attr_nodes; ha; ha = ha->next) {
 		for (note = usage_notes; note && note->seen != ha->attributes; note = note->next);
@@ -545,7 +538,7 @@ int main(int argc, char *argv[])
 	plugins_init();
 
 
-#warning TODO: move this in the cli arg proc loop
+#warning TODO: CLI: move this in the cli arg proc loop
 
 	/* Print usage or version if requested.  Then exit.  */
 	if (argc > 1 && (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-?") == 0 || strcmp(argv[1], "--help") == 0))
@@ -619,7 +612,11 @@ int main(int argc, char *argv[])
 		copyright();
 #endif
 
-#warning TODO: move this to actions
+	/* plugins may have installed their new fields, reinterpret
+	   (memory lht -> memory bin) to get the new fields */
+	conf_update();
+
+#warning TODO: CLI: move this to actions; generic solution: action string set up from CLI, run here then exit
 #if 0
 	if (show_actions) {
 		print_actions();
@@ -632,10 +629,6 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 #endif
-
-	/* plugins may have installed their new fields, reinterpret
-	   (memory lht -> memory bin) to get the new fields */
-	conf_update();
 
 	/* Create a new PCB object in memory */
 	PCB = CreateNewPCB();
@@ -656,6 +649,7 @@ int main(int argc, char *argv[])
 		InitCrosshair();
 	InitHandler();
 	InitBuffers();
+
 	SetMode(ARROW_MODE);
 
 	if (command_line_pcb) {
@@ -691,13 +685,9 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-#if HAVE_DBUS
-	pcb_dbus_setup();
-#endif
-
 	EnableAutosave();
 
-#warning TODO: update for new settings; also convert into a debug action
+#warning TODO: CLI: update for new settings; also convert into a debug action
 #ifdef DEBUG
 	printf("Settings.FontPath            = \"%s\"\n", Settings.FontPath);
 	printf("conf_core.appearance.color.elementPath         = \"%s\"\n", conf_core.appearance.color.elementPath);
@@ -707,6 +697,7 @@ int main(int argc, char *argv[])
 	printf("Settings.GnetlistProgram = \"%s\"\n", UNKNOWN(Settings.GnetlistProgram));
 #endif
 
+	/* main loop */
 	do {
 		gui->do_export(0);
 		gui = next_gui;
@@ -720,10 +711,6 @@ int main(int argc, char *argv[])
 				hid_action("LibraryChanged");
 		}
 	} while(gui != NULL);
-
-#if HAVE_DBUS
-	pcb_dbus_finish();
-#endif
 
 	pcb_main_uninit();
 
