@@ -45,7 +45,7 @@ li:pcb_config {
 			show_solder_side = 0
 			save_last_command = 0
 			save_in_tmp = 0
-			draw_grid = 0
+			draw_grid = 1
 			stipple_polygons = 0
 			all_direction_lines = 0
 			rubber_band_mode = 0
