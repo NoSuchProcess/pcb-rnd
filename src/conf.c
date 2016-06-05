@@ -484,7 +484,6 @@ static void conf_field_clear(conf_native_t *f)
 
 static void conf_notify_hids()
 {
-	conf_notify_hids();
 #warning TODO: notify HIDs about the change; introduce a "version" field in conf_native_t and a global int conf_version; update the version field from conf_version upon change; bump global version on each update() - this how hids know if something has changed
 }
 
@@ -636,7 +635,11 @@ int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new
 		return -1;
 	}
 
-
+	if (idx >= nat->array_size) {
+		Message("Error: can't conf_set() %s[%d]: %d is beyond the end of the array (%d)\n", path, idx, idx, nat->array_size);
+		free(path);
+		return -1;
+	}
 
 	basename = strrchr(path, '/');
 	if (basename == NULL) {
@@ -705,7 +708,6 @@ int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new
 					lht_tree_del(cwd->data.list.first);
 			}
 			else {
-#warning TODO: check whether we idx is beyond array size
 				lht_node_t *old = lht_tree_list_nth(cwd, idx);
 				if (old != NULL) {
 					/* the list is large enough already: overwrite the element at idx */
