@@ -474,15 +474,6 @@ int main(int argc, char *argv[])
    one is registered (there can be only one GUI). */
 #include "generated_lists.h"
 
-#warning TODO: this should be coming from the hardwired lht config file
-	/* Set up layers. */
-	for (i = 0; i < MAX_LAYER; i++) {
-		char buf[20];
-		sprintf(buf, "signal%d", i + 1);
-		if (conf_set(CFR_DESIGN, "design/default_layer_name", i, buf, POL_OVERWRITE) != 0)
-			printf("Can't set layer name\n");
-	}
-
 	/* plugins may have installed their new fields, reinterpret
 	   (memory lht -> memory bin) to get the new fields */
 	conf_update();

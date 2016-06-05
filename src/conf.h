@@ -111,6 +111,7 @@ struct conf_listitem_s {
 #include "list_conf.h"
 
 typedef enum {
+	CFR_INTERNAL,
 	CFR_SYSTEM,
 	CFR_USER,
 	CFR_ENV,       /* env vars */

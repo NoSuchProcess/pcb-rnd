@@ -19,6 +19,7 @@ put /local/pcb/OBJS [@
 	conf_act.o
 	conf_core.o
 	conf_hid.o
+	conf_internal.o
 	clip.o
 	compat_dl.o
 	compat_fs.o
@@ -234,6 +235,9 @@ generated_lists.h: @/local/pcb/ACTION_REG_SRC@ Makefile
 
 conf_core_fields.h: conf_core.h
 	../scconfig/gen_conf.sh < conf_core.h > conf_core_fields.h
+
+conf_internal.c: pcb-conf.lht
+	$(CQUOTE) -n conf_internal < pcb-conf.lht > conf_internal.c
 
 FORCE:
 

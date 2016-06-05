@@ -113,7 +113,7 @@ li:pcb_config {
 #			min_ring = 0
 			text_scale = 100
 #			poly_isle_area = 0
-#			li:default_layer_name = {}
+#			li:default_layer_name = {layername1; layername2}
 #			background_image = {}
 #			fab_author = {}
 #			initial_layer_stack = {}

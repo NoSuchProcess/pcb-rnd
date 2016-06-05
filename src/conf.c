@@ -32,17 +32,22 @@ lht_doc_t *conf_root[CFR_max];
 int conf_root_lock[CFR_max];
 htsp_t *conf_fields = NULL;
 
+extern const char *conf_internal;
+
 /*static lht_doc_t *conf_plugin;*/
 
 
-int conf_load_as(conf_role_t role, const char *fn)
+int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 {
 	lht_doc_t *d;
 	if (conf_root_lock[role])
 		return -1;
 	if (conf_root[role] != NULL)
 		lht_dom_uninit(conf_root[role]);
-	d = hid_cfg_load_lht(fn);
+	if (fn_is_text)
+		d = hid_cfg_load_str(fn);
+	else
+		d = hid_cfg_load_lht(fn);
 	if (d == NULL) {
 		Message("error: failed to load lht config: %s\n", fn);
 		conf_root[role] = NULL;
@@ -467,13 +472,51 @@ void conf_update()
 #warning TODO: notify HIDs about the change; introduce a "version" field in conf_native_t and a global int conf_version; update the version field from conf_version upon change; bump global version on each update() - this how hids know if something has changed
 }
 
+lht_node_t *conf_lht_get_main(conf_role_t target)
+{
+	lht_node_t *cwd;
+
+	/* assume root is a li and add to the first hash */
+	cwd = conf_root[target]->root;
+	if ((cwd == NULL) || (cwd->type != LHT_LIST))
+		return NULL;
+	cwd = cwd->data.list.first;
+	if ((cwd == NULL) || (cwd->type != LHT_HASH))
+		return NULL;
+	return cwd;
+}
+
 void conf_load_all(void)
 {
-#warning TODO: move paths and order to data (array of strings, oslt)
-#warning TODO: load built-in lht first
-	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht");
-	conf_load_as(CFR_USER, "~/.pcb-rnd/pcb-conf.lht");
-	conf_load_as(CFR_PROJECT, "./pcb-conf.lht");
+	int i;
+	lht_node_t *dln;
+
+	/* get the lihata node for design/default_layer_name */
+	conf_load_as(CFR_INTERNAL, conf_internal, 1);
+	dln = conf_lht_get_main(CFR_INTERNAL);
+	assert(nmain != NULL);
+	dln = lht_tree_path_(conf_root[CFR_INTERNAL], dln, "design/default_layer_name", 1, 0, NULL);
+	if (dln != NULL) {
+		assert(dln->type == LHT_LIST);
+		dln = dln->data.list.first;
+	}
+
+	/* Set up default layer names - make sure there are enough layers (over the hardwired ones, if any) */
+	for (i = 0; i < MAX_LAYER; i++) {
+		char buf[20];
+		if (dln == NULL) {
+			sprintf(buf, "signal%d", i + 1);
+			if (conf_set(CFR_DESIGN, "design/default_layer_name", i, buf, POL_OVERWRITE) != 0)
+				printf("Can't set layer name\n");
+		}
+		else
+			dln = dln->next;
+	}
+
+	/* load config files */
+	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht", 0);
+	conf_load_as(CFR_USER, "~/.pcb-rnd/pcb-conf.lht", 0);
+	conf_load_as(CFR_PROJECT, "./pcb-conf.lht", 0);
 	conf_merge_all();
 #warning TODO: notify HIDs about the change
 }
@@ -512,20 +555,6 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 conf_native_t *conf_get_field(const char *path)
 {
 	return htsp_get(conf_fields, (char *)path);
-}
-
-lht_node_t *conf_lht_get_main(conf_role_t target)
-{
-	lht_node_t *cwd;
-
-	/* assume root is a li and add to the first hash */
-	cwd = conf_root[target]->root;
-	if ((cwd == NULL) || (cwd->type != LHT_LIST))
-		return NULL;
-	cwd = cwd->data.list.first;
-	if ((cwd == NULL) || (cwd->type != LHT_HASH))
-		return NULL;
-	return cwd;
 }
 
 int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol)
@@ -798,15 +827,3 @@ void conf_init(void)
 	if (tmp != NULL)
 		conf_set(CFR_ENV, "rc/gnetlist_program", -1, tmp, POL_OVERWRITE);
 }
-
-
-
-#warning TODO: hardwired:
-/* should be coming from the hardwired
-  Settings.grid_unit = get_unit_struct ("mil");
-  copy_nonzero_increments (get_increments_struct (METRIC), &increment_mm);
-  copy_nonzero_increments (get_increments_struct (IMPERIAL), &increment_mil);
-  Settings.increments = get_increments_struct (Settings.grid_unit->family);
-  Settings.MakeProgram = strdup ("make");
-  Settings.GnetlistProgram = strdup ("gnetlist");
-*/
