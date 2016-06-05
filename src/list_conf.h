@@ -24,7 +24,12 @@
 #define LIST_CONF_H
 
 #include "conf.h"
+
 #include <genlist/gentdlist_undef.h>
+
+#ifdef FROM_CONF_C
+#define TDL_DONT_UNDEF
+#endif
 
 #define TDL(x)      conflist_ ## x
 #define TDL_LIST_T  conflist_t

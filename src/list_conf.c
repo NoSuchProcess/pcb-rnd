@@ -20,7 +20,7 @@
  *
  */
 
-#define TDL_DONT_UNDEF
+#define FROM_CONF_C
 #include "conf.h"
 #include "list_conf.h"
 #include <genlist/gentdlist_impl.c>
