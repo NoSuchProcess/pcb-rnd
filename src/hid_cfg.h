@@ -45,6 +45,7 @@ hid_cfg_t *hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallb
 
 /* Generic, low level lihata loader */
 lht_doc_t *hid_cfg_load_lht(const char *filename);
+lht_doc_t *hid_cfg_load_str(const char *text);
 
 /* Generic, low level lihata text value fetch */
 const char *hid_cfg_text_value(lht_doc_t *doc, const char *path);

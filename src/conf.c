@@ -22,6 +22,7 @@
 
 #include <assert.h>
 #include <genht/hash.h>
+#include <liblihata/tree.h>
 #include "conf.h"
 #include "conf_core.h"
 #include "hid_cfg.h"
