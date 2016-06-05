@@ -72,9 +72,7 @@ typedef struct {
 		CFT_STRING file_command;
 		CFT_STRING file_path;
 		CFT_STRING library_shell;
-#warning TODO: this should be a list
-//		CFT_LIST library_search_paths;
-		CFT_STRING library_search_paths;
+		CFT_LIST library_search_paths;
 
 		CFT_STRING save_command;
 		CFT_LIST default_font_file;  /* name of default font file */

@@ -299,6 +299,7 @@ void pcb_main_uninit(void)
 	uninit_strflags_layerlist();
 
 	fp_uninit();
+	fp_host_uninit();
 	funchash_uninit();
 
 #define free0(ptr) \

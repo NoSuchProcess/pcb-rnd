@@ -329,7 +329,7 @@ int io_pcb_ParseElement(plug_io_t *ctx, DataTypePtr Ptr, const char *name)
 	yyFont = &PCB->Font;
 	yyElement = NULL;
 
-	f = fp_fopen(conf_core.rc.library_search_paths, name, &st);
+	f = fp_fopen(fp_default_search_path(), name, &st);
 
 	if (f == NULL)
 		return -1;

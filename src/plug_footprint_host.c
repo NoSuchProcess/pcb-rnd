@@ -94,6 +94,40 @@ static int fp_read_lib_all_(const char *searchpath)
 	return n_footprints;
 }
 
+static gds_t fpds_paths;
+static int fpds_inited = 0;
+
+const char *fp_default_search_path(void)
+{
+	int n;
+	conf_listitem_t *ci;
+
+	if (!fpds_inited) {
+		gds_init(&fpds_paths);
+		fpds_inited = 1;
+	}
+	else
+		gds_truncate(&fpds_paths, 0);
+
+	for (n = 0, ci = conflist_first((conflist_t *)&conf_core.rc.library_search_paths); ci != NULL; ci = conflist_next(ci), n++) {
+		const char *p = ci->val.string[0];
+		if (ci->type != CFN_STRING)
+			continue;
+		if (n > 0)
+			gds_append(&fpds_paths, ':');
+		gds_append_str(&fpds_paths, p);
+	}
+printf("PATHS='%s'\n", fpds_paths.array);
+	return fpds_paths.array;
+}
+
+int fp_host_uninit(void)
+{
+	if (fpds_inited)
+		gds_uninit(&fpds_paths);
+}
+
+
 int fp_read_lib_all(void)
 {
 	FILE *resultFP = NULL;
@@ -101,7 +135,7 @@ int fp_read_lib_all(void)
 	/* List all footprint libraries.  Then sort the whole
 	 * library.
 	 */
-	if (fp_read_lib_all_(conf_core.rc.library_search_paths) > 0 || resultFP != NULL) {
+	if (fp_read_lib_all_(fp_default_search_path()) > 0 || resultFP != NULL) {
 		fp_sort_children(&library);
 		return 0;
 	}

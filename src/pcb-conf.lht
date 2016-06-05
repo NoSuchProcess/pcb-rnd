@@ -69,13 +69,11 @@ li:pcb_config {
 #			file_path = {}
 			library_shell = {}
 
-			library_search_paths = {../pcblib:~/pcblib/:$SHAREDIR/pcblib}
-
-#			li:library_search_paths = {
-#				{~/pcblib/}
-#				{../pcblib}
-#				{$SHAREDIR/pcblib}
-#			}
+			li:library_search_paths = {
+				../pcblib
+				~/pcblib/
+				$SHAREDIR/pcblib
+			}
 
 			save_command = {}
 			li:default_font_file = {

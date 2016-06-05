@@ -1,7 +1,3 @@
-BUGS:
-	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
-	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
-
 - replace settings with lihata (conf_*)
 	- menu lht updates:
 		- fix lesstif menu lht for conf(toggle, editor/draw_grid, design)
@@ -33,6 +29,7 @@ BUGS:
 			user
 			system
 			hardwired
+	- get gsch2pcb to use the same config system
 	- TEST:
 		- ps export vs. thin draw poly, check_planes
 		- png and gerber export vs. forced sets
@@ -54,7 +51,12 @@ BUGS:
 			- gnetlist_program, make_program from conf
 			- gnetlist_program, make_program from env var
 
+BUGS:
+	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
+	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
+
 CLEANUP #5
+- "keepaway" vs. "clearance" renaming?
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
 - scconfig: check for bison/flex, do not regenerate languages if they are missing
 - next_gui: keep them open, hide

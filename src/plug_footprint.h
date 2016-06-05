@@ -87,5 +87,10 @@ library_t *fp_append_entry(library_t *parent, const char *name, fp_type_t type, 
 /* walk through all lib paths and build the library menu */
 int fp_read_lib_all(void);
 
+
+const char *fp_default_search_path(void);
+
+int fp_host_uninit(void);
+
 #endif
 #endif

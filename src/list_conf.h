@@ -26,7 +26,6 @@
 #include "conf.h"
 #include <genlist/gentdlist_undef.h>
 
-/* List of Arcs */
 #define TDL(x)      conflist_ ## x
 #define TDL_LIST_T  conflist_t
 #define TDL_LIST_U  conflist_u
