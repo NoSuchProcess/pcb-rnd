@@ -59,9 +59,6 @@ void hid_parse_command_line(int *argc, char ***argv)
 	HID_AttrNode *ha;
 	int i, e, ok;
 
-	(*argc)--;
-	(*argv)++;
-
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
 			HID_Attribute *a = ha->attributes + i;

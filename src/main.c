@@ -266,7 +266,7 @@ char *program_directory = 0;
 
 #include "dolists.h"
 
-static char **hid_argv;
+static char **hid_argv_orig;
 
 void pcb_main_uninit(void)
 {
@@ -318,7 +318,7 @@ void pcb_main_uninit(void)
 	free0(exec_prefix);
 	free0(program_directory);
 #undef free0
-	free(hid_argv);
+	free(hid_argv_orig);
 }
 
 static int arg_match(const char *in, const char *shrt, const char *lng)
@@ -341,12 +341,18 @@ static const char *action_args[] = {
 
 int main(int argc, char *argv[])
 {
+	enum {
+		DO_SOMETHING,
+		DO_PRINT,
+		DO_EXPORT,
+		DO_GUI
+	} do_what = DO_SOMETHING;
 	int i, n, hid_argc = 0;
-	char *cmd, *arg, *stmp;
+	char *cmd, *arg, *stmp, *hid_name = NULL, **hid_argv;
 	const char **cs;
 	const char *main_action = NULL;
 
-	hid_argv = calloc(sizeof(char *), argc);
+	hid_argv_orig = hid_argv = calloc(sizeof(char *), argc);
 #warning TODO: update this comment
 	/* init application:
 	 * - make program name available for error handlers
@@ -368,6 +374,23 @@ int main(int argc, char *argv[])
 		arg = argv[n+1];
 		if (*cmd == '-') {
 			cmd++;
+			if ((strcmp(cmd, "g") == 0) || (strcmp(cmd, "-gui") == 0)) {
+				do_what = DO_GUI;
+				hid_name = arg;
+				n++;
+				goto next_arg;
+			}
+			if ((strcmp(cmd, "x") == 0) || (strcmp(cmd, "-export") == 0)) {
+				do_what = DO_EXPORT;
+				hid_name = arg;
+				n++;
+				goto next_arg;
+			}
+			if ((strcmp(cmd, "p") == 0) || (strcmp(cmd, "-print") == 0)) {
+				do_what = DO_PRINT;
+				goto next_arg;
+			}
+
 			for(cs = action_args; cs[2] != NULL; cs += 3) {
 				if (arg_match(cmd, cs[0], cs[1])) {
 					if (main_action == NULL)
@@ -451,30 +474,27 @@ int main(int argc, char *argv[])
 
 #warning TODO: CLI: move this in the cli arg proc loop or use the new argc/argv?
 	/* Export pcb from command line if requested.  */
-	if (argc > 1 && strcmp(argv[1], "-p") == 0)
-		exporter = gui = hid_find_printer();
-	else if (argc > 2 && strcmp(argv[1], "-x") == 0)
-		exporter = gui = hid_find_exporter(argv[2]);
-	/* Otherwise start GUI. */
-	else if (argc > 2 && strcmp(argv[1], "--gui") == 0) {
-		gui = hid_find_gui(argv[2]);
-		if (gui == NULL) {
-			Message("Can't find the gui requested.\n");
-			exit(1);
-		}
-	}
-	else {
-		const char **g;
+	switch(do_what) {
+		case DO_PRINT:   exporter = gui = hid_find_printer(); break;
+		case DO_EXPORT:  exporter = gui = hid_find_exporter(hid_name); break;
+		case DO_GUI:
+			gui = hid_find_gui(argv[2]);
+			if (gui == NULL) {
+				Message("Can't find the gui requested.\n");
+				exit(1);
+			}
+			break;
+		default: {
+			const char **g;
+			gui = NULL;
+			for (g = try_gui_hids; (*g != NULL) && (gui == NULL); g++)
+				gui = hid_find_gui(*g);
 
-		gui = NULL;
-		for (g = try_gui_hids; (*g != NULL) && (gui == NULL); g++) {
-			gui = hid_find_gui(*g);
-		}
-
-		/* try anything */
-		if (gui == NULL) {
-			Message("Warning: can't find any of the preferred GUIs, falling back to anything available...\n");
-			gui = hid_find_gui(NULL);
+			/* try anything */
+			if (gui == NULL) {
+				Message("Warning: can't find any of the preferred GUIs, falling back to anything available...\n");
+				gui = hid_find_gui(NULL);
+			}
 		}
 	}
 
