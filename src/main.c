@@ -266,6 +266,8 @@ char *program_directory = 0;
 
 #include "dolists.h"
 
+static char **hid_argv;
+
 void pcb_main_uninit(void)
 {
 	int i;
@@ -315,8 +317,8 @@ void pcb_main_uninit(void)
 	free0(bindir);
 	free0(exec_prefix);
 	free0(program_directory);
-
 #undef free0
+	free(hid_argv);
 }
 
 static int arg_match(const char *in, const char *shrt, const char *lng)
@@ -339,11 +341,12 @@ static const char *action_args[] = {
 
 int main(int argc, char *argv[])
 {
-	int i, n;
+	int i, n, hid_argc = 0;
 	char *cmd, *arg, *stmp;
 	const char **cs;
 	const char *main_action = NULL;
 
+	hid_argv = calloc(sizeof(char *), argc);
 #warning TODO: update this comment
 	/* init application:
 	 * - make program name available for error handlers
@@ -371,15 +374,23 @@ int main(int argc, char *argv[])
 						main_action = cs[2];
 					else
 						fprintf(stderr, "Warning: can't execute multiple command line actions, ignoring %s\n", argv[n]);
+					goto next_arg;
 				}
 			}
 			if (arg_match(cmd, "c", "-conf")) {
+				n++; /* eat up arg */
 				if (conf_set_from_cli(arg, &stmp) != 0) {
 					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, stmp);
 					exit(1);
 				}
+				goto next_arg;
 			}
 		}
+
+		/* didn't handle argument, save it for the HID */
+		hid_argv[hid_argc++] = argv[n];
+
+		next_arg:;
 	}
 	conf_load_all();
 
@@ -484,8 +495,7 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-#warning TODO: get a limited set of args, only the unprocessed ones
-	gui->parse_arguments(&argc, &argv);
+	gui->parse_arguments(&hid_argc, &hid_argv);
 
 	/* Create a new PCB object in memory */
 	PCB = CreateNewPCB();
@@ -498,7 +508,7 @@ int main(int argc, char *argv[])
 	/* Add silk layers to newly created PCB */
 	CreateNewPCBPost(PCB, 1);
 	if (argc > 1)
-		command_line_pcb = argv[1];
+		command_line_pcb = hid_argv[1];
 
 	ResetStackAndVisibility();
 
@@ -561,7 +571,7 @@ int main(int argc, char *argv[])
 		next_gui = NULL;
 		if (gui != NULL) {
 			/* init the next GUI */
-			gui->parse_arguments(&argc, &argv);
+			gui->parse_arguments(&hid_argc, &hid_argv);
 			if (gui->gui)
 				InitCrosshair();
 			SetMode(ARROW_MODE);
