@@ -25,6 +25,7 @@
 #include "hid_init.h"
 #include "hid_flags.h"
 #include "hid_actions.h"
+#include "plug_footprint.h"
 
 #include "gtkhid.h"
 
@@ -1109,7 +1110,8 @@ static int Load(int argc, char **argv, Coord x, Coord y)
 		name = ghid_dialog_file_select_open(_("Load netlist file"), &current_netlist_dir, conf_core.rc.file_path);
 	}
 	else if (strcasecmp(function, "ElementToBuffer") == 0) {
-		name = ghid_dialog_file_select_open(_("Load element to buffer"), &current_element_dir, fp_default_search_path());
+		gchar *path = (gchar *)fp_default_search_path();
+		name = ghid_dialog_file_select_open(_("Load element to buffer"), &current_element_dir, path);
 	}
 	else if (strcasecmp(function, "LayoutToBuffer") == 0) {
 		name = ghid_dialog_file_select_open(_("Load layout file to buffer"), &current_layout_dir, conf_core.rc.file_path);

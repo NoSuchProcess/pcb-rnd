@@ -184,7 +184,8 @@ extern htsp_t *conf_fields;
 #define conf_list_foreach_path_first(res, conf_list, call) \
 do { \
 	conf_listitem_t *__n__; \
-	conflist_t *__lst__ = (conf_list); \
+	const conflist_t *__lst1__ = (conf_list); \
+	conflist_t *__lst__ = (conflist_t *)(__lst1__); \
 	printf("conf_list_foreach_path_first: %s using %s\n", # call, # conf_list); \
 	for(__n__ = conflist_first(__lst__); __n__ != NULL; __n__ = conflist_next(__n__)) { \
 		char *__path__; \
