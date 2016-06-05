@@ -277,7 +277,6 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 	if (pol == POL_DISABLE)
 		return 0;
 
-#warning TODO: respect policy
 	for(s = src_lst->data.list.first, idx = 0; s != NULL; s = s->next, idx++) {
 		if (s->type == LHT_TEXT) {
 
