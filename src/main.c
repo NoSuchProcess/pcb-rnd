@@ -331,7 +331,7 @@ static const char *action_args[] = {
 	NULL, "-show-actions", "PrintActions()",
 	NULL, "-dump-actions", "DumpActions()",
 #warning TODO: move this in the debug module
-	NULL, "-dump-configig","dumpconf(native,1)",
+	NULL, "-dump-config",  "dumpconf(native,1)",
 	"h",  "-help",         "PrintUsage()",
 	"?",  NULL,            "PrintUsage()",
 	"V",  "-version",      "PrintVersion()",
