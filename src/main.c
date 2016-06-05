@@ -330,7 +330,6 @@ static const char *action_args[] = {
 /*short, -long, action*/
 	NULL, "-show-actions", "PrintActions()",
 	NULL, "-dump-actions", "DumpActions()",
-#warning TODO: move this in the debug module
 	NULL, "-dump-config",  "dumpconf(native,1)",
 	"h",  "-help",         "PrintUsage()",
 	"?",  NULL,            "PrintUsage()",
