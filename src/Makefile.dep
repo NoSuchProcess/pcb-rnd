@@ -1015,7 +1015,8 @@
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
  list_conf.h global.h data.h action_helper.h change.h error.h undo.h \
  plugins.h misc.h mymem.h compat_fs.h pcb-printf.h remove.h rats.h \
- hid_actions.h dolists.h
+ hid_actions.h ../src_plugins/import_sch/import_sch_conf.h conf.h \
+ dolists.h ../src_plugins/import_sch/import_sch_conf_fields.h
 ../src_plugins/io_pcb/attribs.o: ../src_plugins/io_pcb/attribs.c conf.h \
  global.h ../config.h ../config.manual.h ../config.auto.h const.h \
  ../globalconst.h ../config.h macro.h global_typedefs.h global_objs.h \
@@ -1519,6 +1520,7 @@ conf_hid.o: conf_hid.c conf_hid.h conf.h global.h ../config.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
  list_conf.h ../src_3rd/liblihata/genht/hash.h \
  ../src_3rd/liblihata/genht/htpp.h
+conf_internal.o: conf_internal.c
 copy.o: copy.c ../config.h ../config.manual.h ../config.auto.h \
  conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \

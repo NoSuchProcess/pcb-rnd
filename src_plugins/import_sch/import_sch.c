@@ -41,6 +41,9 @@
 #include "remove.h"
 #include "rats.h"
 #include "hid_actions.h"
+#include "import_sch_conf.h"
+
+conf_import_sch_t conf_import_sch;
 
 extern int ActionExecuteFile(int argc, char **argv, Coord x, Coord y);
 
@@ -310,7 +313,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 		}
 
 		cmd = (char **) malloc((7 + nsources) * sizeof(char *));
-		cmd[0] = conf_core.rc.gnetlist_program;
+		cmd[0] = conf_import_sch.plugins.import_sch.gnetlist_program;
 		cmd[1] = "-g";
 		cmd[2] = "pcbfwd";
 		cmd[3] = "-o";
@@ -381,7 +384,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 			strcat(srclist, sources[i]);
 		}
 
-		cmd[0] = conf_core.rc.make_program;
+		cmd[0] = conf_import_sch.plugins.import_sch.make_program;
 		cmd[1] = "-s";
 		cmd[2] = Concat("PCB=", PCB->Filename, NULL);
 		cmd[3] = srclist;
@@ -445,6 +448,21 @@ static void hid_import_sch_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_import_sch_init(void)
 {
+	char *tmp;
+
 	REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
+#define conf_reg(field,isarray,type_name,cpath,cname,desc) \
+	conf_reg_field(conf_import_sch, field,isarray,type_name,cpath,cname,desc);
+#include "import_sch_conf_fields.h"
+
+	/* Compatibility: get some settings from the env */
+	tmp = getenv ("PCB_MAKE_PROGRAM");
+	if (tmp != NULL)
+		conf_set(CFR_ENV, "plugins/import_sch/make_program", -1, tmp, POL_OVERWRITE);
+
+	tmp = getenv ("PCB_GNETLIST");
+	if (tmp != NULL)
+		conf_set(CFR_ENV, "plugins/import_sch/gnetlist_program", -1, tmp, POL_OVERWRITE);
+
 	return hid_import_sch_uninit;
 }

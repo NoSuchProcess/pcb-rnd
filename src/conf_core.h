@@ -81,10 +81,6 @@ typedef struct {
 		CFT_STRING action_string;          /* PCB Actions string to execute on startup */
 		CFT_STRING rat_path;
 		CFT_STRING rat_command;
-
-#warning move to the import plugin:
-		CFT_STRING gnetlist_program;       /* gnetlist program name */
-		CFT_STRING make_program;           /* make program name */
 	} rc;
 
 	const struct design { /* defaults of a new layout */

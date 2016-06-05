@@ -92,9 +92,6 @@ li:pcb_config {
 #			action_string = {}
 #			rat_path = {}
 #			rat_command = {}
-
-			gnetlist_program = gnetlist
-			make_program = make
 		} # rc
 
 		ha:design {
@@ -179,6 +176,10 @@ li:pcb_config {
 			ha:mincut {
 				enable = 1
 			}
+#			ha:import_sch {
+#				gnetlist_program = gnetlist
+#				make_program = make
+#			}
 		} # plugins
 
 	} # main

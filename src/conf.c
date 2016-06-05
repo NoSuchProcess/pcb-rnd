@@ -813,17 +813,7 @@ void conf_reset(conf_role_t target, const char *source_fn)
 
 void conf_init(void)
 {
-	char *tmp;
-
 	conf_reset(CFR_ENV, "<environment-variables>");
 	conf_reset(CFR_CLI, "<commandline>");
 	conf_reset(CFR_DESIGN, "<null-design>");
-
-	tmp = getenv ("PCB_MAKE_PROGRAM");
-	if (tmp != NULL)
-		conf_set(CFR_ENV, "rc/make_program", -1, tmp, POL_OVERWRITE);
-
-	tmp = getenv ("PCB_GNETLIST");
-	if (tmp != NULL)
-		conf_set(CFR_ENV, "rc/gnetlist_program", -1, tmp, POL_OVERWRITE);
 }

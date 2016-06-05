@@ -23,6 +23,7 @@ BUGS:
 	- replace hid_load_settings() with lihata
 	- plugin unload should unregister binary conf items
 		- mincut
+		- import_sch
 	- revise main.c, line by line
 	- setting prio (top pri to bottom prio):
 			cli/action/manual override
@@ -49,10 +50,11 @@ BUGS:
 					{"showdrcmode", FlagSETTINGS, OffsetOf(conf_core_t, editor.show_drc)}
 			{"resetafterelement", FlagSETTINGS, OffsetOf(conf_core_t, editor.reset_after_element)}
 			{"ringbellwhenfinished", FlagSETTINGS, OffsetOf(conf_core_t, editor.beep_when_finished)}
+		- import schematics:
+			- gnetlist_program, make_program from conf
+			- gnetlist_program, make_program from env var
 
 CLEANUP #5
-- shift key bug
-- release zoom on menu lockup
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
 - scconfig: check for bison/flex, do not regenerate languages if they are missing
 - next_gui: keep them open, hide
