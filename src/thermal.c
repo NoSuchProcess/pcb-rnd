@@ -56,18 +56,9 @@
 #include <pwd.h>
 #endif
 
-#include "global.h"
-
-#include "create.h"
-#include "data.h"
-#include "draw.h"
-#include "error.h"
 #include "misc.h"
-#include "move.h"
 #include "polygon.h"
-#include "rtree.h"
 #include "thermal.h"
-#include "undo.h"
 
 
 RCSID("$Id$");

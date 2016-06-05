@@ -30,7 +30,6 @@
 
 #include "config.h"
 
-#include "global.h"
 #include "conf_core.h"
 
 #include "action_helper.h"

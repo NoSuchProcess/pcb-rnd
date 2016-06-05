@@ -34,9 +34,6 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include "global.h"
-#include "data.h"
-#include "plug_io.h"
 #include "plug_footprint.h"
 #include "plugins.h"
 #include "error.h"

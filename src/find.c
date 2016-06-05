@@ -77,19 +77,14 @@
 #include <sys/times.h>
 #endif
 
-#include "global.h"
 #include "conf_core.h"
-
-#include "crosshair.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
 #include "find.h"
-#include "mymem.h"
 #include "misc.h"
 #include "rtree.h"
 #include "polygon.h"
-#include "pcb-printf.h"
 #include "search.h"
 #include "set.h"
 #include "undo.h"

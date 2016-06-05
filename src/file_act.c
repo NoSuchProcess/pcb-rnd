@@ -26,18 +26,14 @@
  */
 #include "config.h"
 #include "conf_core.h"
-#include "global.h"
 #include "data.h"
 #include "action_helper.h"
-#include "change.h"
 #include "error.h"
-#include "undo.h"
 
 #include "crosshair.h"
 #include "set.h"
 #include "plug_io.h"
 #include "buffer.h"
-#include "mymem.h"
 #include "misc.h"
 #include "remove.h"
 #include "create.h"

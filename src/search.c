@@ -37,14 +37,10 @@
 #include <math.h>
 #include <setjmp.h>
 
-#include "global.h"
-
 #include "box.h"
 #include "data.h"
-#include "draw.h"
 #include "error.h"
 #include "find.h"
-#include "misc.h"
 #include "polygon.h"
 #include "rtree.h"
 #include "search.h"

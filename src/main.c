@@ -42,7 +42,6 @@
 #include <time.h>								/* Seed for srand() */
 #include <locale.h>
 
-#include "global.h"
 #include "data.h"
 #include "buffer.h"
 #include "create.h"

@@ -79,17 +79,12 @@ dicer output is used for HIDs which cannot render things with holes
 #include <memory.h>
 #include <setjmp.h>
 
-#include "global.h"
 #include "box.h"
 #include "create.h"
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
-#include "find.h"
-#include "misc.h"
-#include "move.h"
-#include "pcb-printf.h"
 #include "polygon.h"
 #include "remove.h"
 #include "rtree.h"

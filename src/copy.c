@@ -36,18 +36,13 @@
 
 #include <stdlib.h>
 
-#include "global.h"
 
-#include "copy.h"
 #include "create.h"
 #include "data.h"
 #include "draw.h"
-#include "mymem.h"
-#include "mirror.h"
 #include "misc.h"
 #include "move.h"
 #include "polygon.h"
-#include "rats.h"
 #include "rtree.h"
 #include "select.h"
 #include "undo.h"

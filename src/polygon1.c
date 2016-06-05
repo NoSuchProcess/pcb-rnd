@@ -46,7 +46,6 @@
 #include	<math.h>
 #include	<string.h>
 
-#include "global.h"
 #include "rtree.h"
 #include "heap.h"
 

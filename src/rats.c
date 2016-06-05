@@ -41,20 +41,15 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "global.h"
-
 #include "create.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
-#include "plug_io.h"
 #include "find.h"
 #include "misc.h"
-#include "mymem.h"
 #include "polygon.h"
 #include "rats.h"
 #include "search.h"
-#include "set.h"
 #include "undo.h"
 #include "stub_mincut.h"
 

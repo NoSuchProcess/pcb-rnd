@@ -30,11 +30,8 @@
 #include "genht/hash.h"
 #include "create.h"
 
-/* for the actions */
 #include "config.h"
-#include "global.h"
 #include "data.h"
-#include "action_helper.h"
 #include "error.h"
 #include "buffer.h"
 #include "remove.h"

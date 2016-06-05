@@ -26,16 +26,11 @@
 /* for dlopen() and friends on windows */
 #include "compat_dl.h"
 
-#include "error.h"
 #include "global.h"
 #include "misc.h"
-#include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_attrib.h"
 #include "hid_flags.h"
-
-/* for MKDIR() */
-#include "compat_fs.h"
 
 
 RCSID("$Id$");

@@ -25,12 +25,7 @@
  */
 
 #include "config.h"
-#include "global.h"
 
-#include "data.h"
-#include "plug_io.h"
-#include "mymem.h"
-#include "paths.h"
 #include "plug_footprint.h"
 #include "plugins.h"
 

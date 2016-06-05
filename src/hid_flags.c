@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "global.h"
 #include "data.h"
 #include "misc.h"
 #include "conf.h"

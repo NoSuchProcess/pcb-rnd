@@ -34,9 +34,6 @@
 
 #include <stdlib.h>
 
-#include "global.h"
-
-#include "crosshair.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"

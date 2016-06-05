@@ -33,8 +33,6 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include "global.h"
-
 #include "data.h"
 #include "draw.h"
 #include "error.h"

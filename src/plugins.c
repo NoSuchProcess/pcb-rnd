@@ -30,10 +30,8 @@
 #include "plugins.h"
 
 /* for the action */
-#include "config.h"
 #include "global.h"
-#include "data.h"
-#include "action_helper.h"
+#include "config.h"
 #include "genvector/gds_char.h"
 
 plugin_info_t *plugins = NULL;

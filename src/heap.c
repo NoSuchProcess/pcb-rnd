@@ -34,12 +34,8 @@
 /* operations on heaps.
  */
 
-#include "config.h"
-
-#include "global.h"
-
 #include <assert.h>
-
+#include "config.h"
 #include "heap.h"
 
 

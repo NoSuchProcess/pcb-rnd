@@ -56,11 +56,8 @@
 #include "error.h"
 #include "plug_io.h"
 
-#include "misc.h"
-
 
 RCSID("$Id$");
-
 
 #define utf8_dup_string(a,b) *(a) = strdup(b)
 

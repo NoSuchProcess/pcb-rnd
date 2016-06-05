@@ -36,21 +36,16 @@
 #include <setjmp.h>
 #include <stdlib.h>
 
-#include "global.h"
-
 #include "create.h"
-#include "crosshair.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
 #include "misc.h"
 #include "move.h"
-#include "mymem.h"
 #include "polygon.h"
 #include "rtree.h"
 #include "search.h"
 #include "select.h"
-#include "thermal.h"
 #include "undo.h"
 #include "hid_actions.h"
 

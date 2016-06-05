@@ -33,17 +33,12 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include "global.h"
-
-#include "copy.h"
 #include "create.h"
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
-#include "insert.h"
 #include "line.h"
 #include "misc.h"
-#include "move.h"
 #include "polygon.h"
 #include "rtree.h"
 #include "search.h"

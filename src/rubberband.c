@@ -42,16 +42,12 @@
 #include <unistd.h>
 #endif
 
-#include "global.h"
-
 #include "create.h"
 #include "data.h"
 #include "error.h"
 #include "misc.h"
 #include "polygon.h"
-#include "rubberband.h"
 #include "rtree.h"
-#include "search.h"
 
 
 RCSID("$Id$");

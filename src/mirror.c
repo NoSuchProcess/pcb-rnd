@@ -37,17 +37,10 @@
 
 #include <stdlib.h>
 
-#include "global.h"
-
 #include "data.h"
-#include "draw.h"
 #include "mirror.h"
 #include "misc.h"
 #include "polygon.h"
-#include "search.h"
-#include "select.h"
-#include "set.h"
-
 
 RCSID("$Id$");
 

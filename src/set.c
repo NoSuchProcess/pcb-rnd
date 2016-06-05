@@ -41,17 +41,13 @@
 #include <string.h>
 #endif
 
-#include "global.h"
-
 #include "action_helper.h"
 #include "buffer.h"
-#include "compat_misc.h"
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
 #include "find.h"
-#include "misc.h"
 #include "set.h"
 #include "undo.h"
 #include "hid_actions.h"

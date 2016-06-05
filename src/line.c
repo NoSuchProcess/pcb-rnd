@@ -34,8 +34,6 @@
 #include <setjmp.h>
 #include <stdlib.h>
 
-
-#include "global.h"
 #include "data.h"
 #include "crosshair.h"
 #include "find.h"

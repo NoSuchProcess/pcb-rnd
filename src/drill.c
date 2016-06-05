@@ -29,16 +29,9 @@
  */
 #include "config.h"
 
-
-#include "data.h"
-#include "error.h"
 #include "mymem.h"
 
-
 RCSID("$Id$");
-
-
-
 
 /*
  * some local prototypes

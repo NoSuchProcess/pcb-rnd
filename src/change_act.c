@@ -33,14 +33,12 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include "global.h"
 #include "data.h"
 #include "funchash_core.h"
 
 #include "action_helper.h"
 #include "hid_actions.h"
 #include "change.h"
-#include "crosshair.h"
 #include "draw.h"
 #include "search.h"
 #include "misc.h"

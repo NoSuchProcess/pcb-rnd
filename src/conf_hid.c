@@ -1,4 +1,3 @@
-#include "conf.h"
 #include "conf_hid.h"
 #include <genht/hash.h>
 #include <genht/htpp.h>

@@ -32,15 +32,10 @@
 
 #include "config.h"
 
-#include "global.h"
-
 #include <memory.h>
 
 #include "data.h"
-#include "error.h"
 #include "mymem.h"
-#include "misc.h"
-#include "rats.h"
 #include "rtree.h"
 #include "rats_patch.h"
 

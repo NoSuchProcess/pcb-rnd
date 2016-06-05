@@ -36,10 +36,7 @@
 #include <string.h>
 #endif
 
-#include "globalconst.h"
 #include "global.h"
-#include "compat_misc.h"
-#include "const.h"
 #include "strflags.h"
 
 

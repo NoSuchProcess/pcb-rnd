@@ -3,7 +3,6 @@
 #include "config.h"
 #include "global.h"
 #include "hid_attrib.h"
-#include "hid_helper.h"
 #include "misc.h"
 #include "pcb-printf.h"
 #include "compat_fs.h"

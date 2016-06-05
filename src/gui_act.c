@@ -26,10 +26,8 @@
  */
 #include "config.h"
 #include "conf_core.h"
-#include "global.h"
 #include "data.h"
 #include "action_helper.h"
-#include "change.h"
 #include "error.h"
 #include "undo.h"
 #include "funchash_core.h"

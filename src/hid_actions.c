@@ -11,12 +11,8 @@
 #include <genht/hash.h>
 #include <genht/htsp.h>
 
-#include "global.h"
-#include "data.h"
 #include "error.h"
 #include "event.h"
-
-#include "hid.h"
 #include "hid_actions.h"
 
 RCSID("$Id$");

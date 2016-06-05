@@ -38,12 +38,8 @@
  */
 #include "config.h"
 
-#include "global.h"
-
 #include <assert.h>
 #include <setjmp.h>
-
-#include "mymem.h"
 
 #include "rtree.h"
 

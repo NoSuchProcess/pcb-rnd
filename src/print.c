@@ -37,8 +37,6 @@
  */
 #include "config.h"
 
-#include "global.h"
-
 #include <time.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -49,16 +47,9 @@
 #include "data.h"
 #include "draw.h"
 #include "drill.h"
-#include "plug_io.h"
-#include "find.h"
-#include "error.h"
 #include "misc.h"
 #include "print.h"
 #include "polygon.h"
-#include "rtree.h"
-#include "search.h"
-
-#include "hid.h"
 
 
 RCSID("$Id$");

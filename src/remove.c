@@ -36,21 +36,14 @@
 #include <setjmp.h>
 #include <memory.h>
 
-#include "global.h"
-
 #include "data.h"
 #include "draw.h"
-#include "error.h"
 #include "misc.h"
 #include "move.h"
-#include "mymem.h"
 #include "polygon.h"
-#include "rats.h"
 #include "remove.h"
 #include "rtree.h"
-#include "search.h"
 #include "select.h"
-#include "set.h"
 #include "undo.h"
 
 

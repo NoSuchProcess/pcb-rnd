@@ -26,7 +26,6 @@
  */
 
 #include "config.h"
-#include "global.h"
 #include "data.h"
 #include "misc.h"
 #include "hid_helper.h"

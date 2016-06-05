@@ -41,17 +41,13 @@
 #include <regex.h>
 #endif
 
-#include "global.h"
 #include "action_helper.h"
-#include "buffer.h"
 #include "data.h"
 #include "error.h"
 #include "plug_io.h"
 #include "find.h"
 #include "mymem.h"
-#include "misc.h"
 #include "rats.h"
-#include "set.h"
 #include "create.h"
 #include "rats_patch.h"
 #include "hid_actions.h"

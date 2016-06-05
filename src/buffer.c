@@ -33,10 +33,7 @@
 #include "conf_core.h"
 
 #include <stdlib.h>
-#include <memory.h>
 #include <math.h>
-
-#include "global.h"
 
 #include "action_helper.h"
 #include "buffer.h"
@@ -46,15 +43,12 @@
 #include "data.h"
 #include "error.h"
 #include "plug_io.h"
-#include "mymem.h"
 #include "mirror.h"
 #include "misc.h"
 #include "polygon.h"
-#include "rats.h"
 #include "rotate.h"
 #include "remove.h"
 #include "rtree.h"
-#include "search.h"
 #include "select.h"
 #include "set.h"
 #include "funchash_core.h"

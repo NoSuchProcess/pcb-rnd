@@ -36,26 +36,17 @@
 #include <stdio.h>
 #include <setjmp.h>
 
-#include "global.h"
 #include "conf_core.h"
 
-#include "change.h"
-#include "create.h"
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
-#include "mymem.h"
 #include "misc.h"
 #include "mirror.h"
 #include "polygon.h"
-#include "rats.h"
-#include "remove.h"
 #include "rtree.h"
-#include "search.h"
 #include "select.h"
-#include "set.h"
-#include "thermal.h"
 #include "undo.h"
 #include "hid_actions.h"
 

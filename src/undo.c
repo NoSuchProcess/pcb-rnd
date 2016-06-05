@@ -46,7 +46,6 @@
 
 #include <assert.h>
 #include <memory.h>
-#include "global.h"
 
 #include "buffer.h"
 #include "change.h"
@@ -58,7 +57,6 @@
 #include "misc.h"
 #include "mirror.h"
 #include "move.h"
-#include "mymem.h"
 #include "polygon.h"
 #include "remove.h"
 #include "rotate.h"

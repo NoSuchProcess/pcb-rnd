@@ -36,20 +36,14 @@
 #include <setjmp.h>
 #include <stdlib.h>
 
-#include "global.h"
 #include "conf_core.h"
 
 #include "create.h"
 #include "data.h"
-#include "draw.h"
 #include "error.h"
-#include "mymem.h"
 #include "misc.h"
-#include "pcb-printf.h"
-#include "polygon.h"
 #include "rtree.h"
 #include "search.h"
-#include "set.h"
 #include "undo.h"
 #include "plug_io.h"
 #include "stub_vendor.h"

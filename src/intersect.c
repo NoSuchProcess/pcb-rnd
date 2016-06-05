@@ -36,14 +36,9 @@
 
 #include "config.h"
 
-#include "global.h"
-
 #include <assert.h>
 
-#include "data.h"
 #include "intersect.h"
-#include "mymem.h"
-
 
 RCSID("$Id$");
 

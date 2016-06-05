@@ -24,9 +24,6 @@
  */
 
 #include "config.h"
-#include "global.h"
-#include "data.h"
-#include "action_helper.h"
 #include "conf.h"
 #include "error.h"
 

@@ -36,7 +36,6 @@
 #include <memory.h>
 #include <math.h>
 
-#include "global.h"
 #include "conf_core.h"
 
 #include "box.h"
@@ -45,8 +44,6 @@
 #include "draw.h"
 #include "error.h"
 #include "line.h"
-#include "misc.h"
-#include "mymem.h"
 #include "rtree.h"
 #include "search.h"
 #include "polygon.h"

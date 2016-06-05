@@ -22,8 +22,6 @@
 
 #include "config.h"
 #include "global.h"
-#include "error.h"
-#include "data.h"
 #include "stub_mincut.h"
 
 static void stub_rat_proc_shorts_dummy(void)

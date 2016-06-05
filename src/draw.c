@@ -32,21 +32,13 @@
 
 #include "config.h"
 
-#include "global.h"
 #include "conf_core.h"
-
-/*#include "clip.h"*/
-#include "compat_misc.h"
-#include "crosshair.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
-#include "mymem.h"
 #include "misc.h"
 #include "rotate.h"
 #include "rtree.h"
-#include "search.h"
-#include "select.h"
 #include "print.h"
 #include "hid_helper.h"
 

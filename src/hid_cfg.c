@@ -27,10 +27,8 @@
 #include <liblihata/tree.h>
 
 #include "global.h"
-#include "hid.h"
 #include "hid_cfg.h"
 #include "hid_actions.h"
-#include "hid_cfg.h"
 #include "error.h"
 #include "paths.h"
 
