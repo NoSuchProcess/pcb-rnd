@@ -254,8 +254,7 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 		case CFN_INCREMENTS:
 			return conf_parse_increments(&(dst->increments[idx]), err_node);
 		case CFN_COLOR:
-#warning TODO: perhaps make some tests about validity?
-			dst->color[idx] = text;
+			dst->color[idx] = text; /* let the HID check validity to support flexibility of the format */
 			break;
 		default:
 			/* unknown field type registered in the fields hash: internal error */
@@ -483,6 +482,12 @@ static void conf_field_clear(conf_native_t *f)
 	f->used = 0;
 }
 
+static void conf_notify_hids()
+{
+	conf_notify_hids();
+#warning TODO: notify HIDs about the change; introduce a "version" field in conf_native_t and a global int conf_version; update the version field from conf_version upon change; bump global version on each update() - this how hids know if something has changed
+}
+
 void conf_update()
 {
 	/* clear all memory-bin data first */
@@ -493,7 +498,7 @@ void conf_update()
 	/* merge all memory-lht data to memory-bin */
 	conf_merge_all();
 	conf_core_postproc();
-#warning TODO: notify HIDs about the change; introduce a "version" field in conf_native_t and a global int conf_version; update the version field from conf_version upon change; bump global version on each update() - this how hids know if something has changed
+	conf_notify_hids();
 }
 
 lht_node_t *conf_lht_get_main(conf_role_t target)
@@ -542,7 +547,6 @@ void conf_load_all(void)
 	conf_load_as(CFR_USER, "~/.pcb-rnd/pcb-conf.lht", 0);
 	conf_load_as(CFR_PROJECT, "./pcb-conf.lht", 0);
 	conf_merge_all();
-#warning TODO: notify HIDs about the change
 }
 
 static int keyeq(char *a, char *b)
