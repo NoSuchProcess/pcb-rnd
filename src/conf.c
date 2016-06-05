@@ -49,7 +49,12 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 	else
 		d = hid_cfg_load_lht(fn);
 	if (d == NULL) {
-		Message("error: failed to load lht config: %s\n", fn);
+		FILE *f;
+		f = fopen(fn, "r");
+		if (f != NULL) { /* warn only if the file is there - missing file is normal */
+			Message("error: failed to load lht config: %s\n", fn);
+			fclose(f);
+		}
 		conf_root[role] = NULL;
 		return -1;
 	}
@@ -370,7 +375,8 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 		switch(n->type) {
 			case LHT_TEXT:
 				if (target == NULL) {
-					hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht!\n", path);
+					if (strncmp(path, "plugins/", 8) != 0) /* it is normal to have configuration for plugins not loaded - ignore these */
+						hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht!\n", path);
 					break;
 				}
 				conf_merge_patch_text(target, n, default_prio, default_policy);
