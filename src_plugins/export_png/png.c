@@ -419,7 +419,7 @@ static void parse_bloat(const char *str)
 	};
 	if (str == NULL)
 		return;
-	bloat = GetValueEx(str, NULL, NULL, extra_units, "");
+	bloat = GetValueEx(str, NULL, NULL, extra_units, "", NULL);
 }
 
 void png_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)

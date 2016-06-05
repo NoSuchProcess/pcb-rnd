@@ -132,9 +132,9 @@ void hid_parse_command_line(int *argc, char ***argv)
 						break;
 					case HID_Coord:
 						if (a->value)
-							*(Coord *) a->value = GetValue((*argv)[1], NULL, NULL);
+							*(Coord *) a->value = GetValue((*argv)[1], NULL, NULL, NULL);
 						else
-							a->default_val.coord_value = GetValue((*argv)[1], NULL, NULL);
+							a->default_val.coord_value = GetValue((*argv)[1], NULL, NULL, NULL);
 						(*argc)--;
 						(*argv)++;
 						break;
@@ -325,7 +325,7 @@ static void hid_set_attribute(char *name, char *value)
 					a->default_val.int_value = strtol(value, 0, 0);
 					break;
 				case HID_Coord:
-					a->default_val.coord_value = GetValue(value, NULL, NULL);
+					a->default_val.coord_value = GetValue(value, NULL, NULL, NULL);
 					break;
 				case HID_Real:
 					a->default_val.real_value = strtod(value, 0);

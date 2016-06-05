@@ -1394,10 +1394,10 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 					x = y = 0;
 				}
 				else if (argc == 3 || argc == 4) {
-					x = GetValue(ACTION_ARG(1), ACTION_ARG(3), &absolute);
+					x = GetValue(ACTION_ARG(1), ACTION_ARG(3), &absolute, NULL);
 					if (!absolute)
 						x += oldx;
-					y = GetValue(ACTION_ARG(2), ACTION_ARG(3), &absolute);
+					y = GetValue(ACTION_ARG(2), ACTION_ARG(3), &absolute, NULL);
 					if (!absolute)
 						y += oldy;
 				}

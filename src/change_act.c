@@ -95,7 +95,7 @@ static int ActionChangeClearSize(int argc, char **argv, Coord x, Coord y)
 			value *= 2;
 		}
 		else
-			value = 2 * GetValue(delta, units, &absolute);
+			value = 2 * GetValue(delta, units, &absolute, NULL);
 		switch (funchash_get(function, NULL)) {
 		case F_Object:
 			{
@@ -404,7 +404,7 @@ static int ActionChangeSize(int argc, char **argv, Coord x, Coord y)
 			tostyle = 1;
 		}
 		else
-			value = GetValue(delta, units, &absolute);
+			value = GetValue(delta, units, &absolute, NULL);
 		switch (funcid) {
 		case F_Object:
 			{
@@ -507,7 +507,7 @@ static int ActionChange2ndSize(int argc, char **argv, Coord x, Coord y)
 			absolute = 1;
 		}
 		else
-			value = GetValue(delta, units, &absolute);
+			value = GetValue(delta, units, &absolute, NULL);
 
 		switch (funchash_get(function, NULL)) {
 		case F_Object:
@@ -1183,7 +1183,7 @@ static int ActionSetThermal(int argc, char **argv, Coord x, Coord y)
 	if (function && *function && style && *style) {
 		bool absolute;
 
-		kind = GetValue(style, NULL, &absolute);
+		kind = GetValue(style, NULL, &absolute, NULL);
 		if (absolute)
 			switch (funchash_get(function, NULL)) {
 			case F_Object:
@@ -1317,7 +1317,7 @@ static int ActionSetValue(int argc, char **argv, Coord x, Coord y)
 	int err = 0;
 
 	if (function && val) {
-		value = GetValue(val, units, &absolute);
+		value = GetValue(val, units, &absolute, NULL);
 		switch (funchash_get(function, NULL)) {
 		case F_ViaDrillingHole:
 			SetViaDrillingHole(absolute ? value : value + conf_core.design.via_drilling_hole, false);

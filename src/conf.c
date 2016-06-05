@@ -159,12 +159,15 @@ static int conf_parse_increments(Increments *inc, lht_node_t *node)
 		return -1;
 	}
 
-#warning TODO: write a new version of GetValue where absolute is optional and error is properly returned
 #define incload(field) \
 	val = lht_dom_hash_get(node, #field); \
 	if (val != NULL) {\
-		if (val->type == LHT_TEXT) \
-			inc->field = GetValue(val->data.text.value, NULL, NULL); \
+		if (val->type == LHT_TEXT) {\
+			bool succ; \
+			inc->field = GetValue(val->data.text.value, NULL, NULL, &succ); \
+			if (!succ) \
+				hid_cfg_error(node, "invalid numeric value in increment field " #field "\n", val); \
+		} \
 		else\
 			hid_cfg_error(node, "increment field " #field " needs to be a text node\n", val); \
 	}
@@ -233,8 +236,12 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 			hid_cfg_error(err_node, "Invalid numeric value: %s\n", text);
 			return -1;
 		case CFN_COORD:
-#warning TODO: write a new version of GetValue where absolute is optional and error is properly returned
-			dst->coord[idx] = GetValue(text, NULL, NULL);
+			{
+				bool succ;
+				dst->coord[idx] = GetValue(text, NULL, NULL, &succ);
+				if (!succ)
+					hid_cfg_error(err_node, "Invalid numeric value (coordinate): %s\n", text);
+			}
 			break;
 		case CFN_UNIT:
 			u = get_unit_struct(text);

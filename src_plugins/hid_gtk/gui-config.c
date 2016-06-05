@@ -361,7 +361,7 @@ static gboolean set_config_attribute(gchar * option, gchar * arg)
 		dup_string((gchar **) ca->value, arg ? arg : (gchar *) "");
 		break;
 	case CONFIG_Coord:
-		*(Coord *) ca->value = GetValue(arg, NULL, NULL);
+		*(Coord *) ca->value = GetValue(arg, NULL, NULL, NULL);
 		break;
 	default:
 		break;
@@ -441,9 +441,9 @@ static void parse_optionv(gint * argc, gchar *** argv, gboolean from_cmd_line)
 					break;
 				case HID_Coord:
 					if (a->value)
-						*(Coord *) a->value = GetValue((*argv)[1], 0, 0);
+						*(Coord *) a->value = GetValue((*argv)[1], 0, 0, NULL);
 					else
-						a->default_val.coord_value = GetValue((*argv)[1], 0, 0);
+						a->default_val.coord_value = GetValue((*argv)[1], 0, 0, NULL);
 					(*argc)--;
 					(*argv)++;
 					break;

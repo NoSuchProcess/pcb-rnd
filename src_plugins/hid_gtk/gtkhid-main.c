@@ -1512,10 +1512,10 @@ static int CursorAction(int argc, char **argv, Coord x, Coord y)
 	else
 		AFAIL(cursor);
 
-	dx = GetValueEx(argv[1], argv[3], NULL, extra_units_x, "");
+	dx = GetValueEx(argv[1], argv[3], NULL, extra_units_x, "", NULL);
 	if (gport->view.flip_x)
 		dx = -dx;
-	dy = GetValueEx(argv[2], argv[3], NULL, extra_units_y, "");
+	dy = GetValueEx(argv[2], argv[3], NULL, extra_units_y, "", NULL);
 	if (!gport->view.flip_y)
 		dy = -dy;
 

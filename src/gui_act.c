@@ -508,8 +508,8 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleGrid:
 			if (argc > 2) {
-				PCB->GridOffsetX = GetValue(argv[1], NULL, NULL);
-				PCB->GridOffsetY = GetValue(argv[2], NULL, NULL);
+				PCB->GridOffsetX = GetValue(argv[1], NULL, NULL, NULL);
+				PCB->GridOffsetY = GetValue(argv[2], NULL, NULL, NULL);
 				if (conf_core.editor.draw_grid)
 					Redraw();
 			}

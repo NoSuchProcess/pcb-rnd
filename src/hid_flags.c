@@ -138,7 +138,7 @@ int hid_get_flag(const char *name)
 		memcpy(buf, name, cp - name);
 		buf[cp - name] = 0;
 		/* A number without units is just a number.  */
-		wv = GetValueEx(cp + 1, NULL, NULL, NULL, NULL);
+		wv = GetValueEx(cp + 1, NULL, NULL, NULL, NULL, NULL);
 		f = hid_find_flag(buf);
 		if (!f)
 			return 0;

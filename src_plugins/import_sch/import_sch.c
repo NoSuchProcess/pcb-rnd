@@ -223,8 +223,8 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 			}
 		}
 		else if (ys) {
-			x = GetValue(xs, units, NULL);
-			y = GetValue(ys, units, NULL);
+			x = GetValue(xs, units, NULL, NULL);
+			y = GetValue(ys, units, NULL, NULL);
 		}
 		else {
 			Message(_("Bad syntax for Import(setnewpoint)"));

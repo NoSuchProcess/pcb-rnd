@@ -122,12 +122,12 @@ Angle NormalizeAngle(Angle a)
 /* Get Value returns a numeric value passed from the string and sets the
  * bool variable absolute to false if it leads with a +/- character
  */
-double GetValue(const char *val, const char *units, bool * absolute)
+double GetValue(const char *val, const char *units, bool * absolute, bool *success)
 {
-	return GetValueEx(val, units, absolute, NULL, "cmil");
+	return GetValueEx(val, units, absolute, NULL, "cmil", success);
 }
 
-double GetValueEx(const char *val, const char *units, bool * absolute, UnitList extra_units, const char *default_unit)
+double GetValueEx(const char *val, const char *units, bool * absolute, UnitList extra_units, const char *default_unit, bool *success)
 {
 	double value;
 	int n = -1;
@@ -153,18 +153,22 @@ double GetValueEx(const char *val, const char *units, bool * absolute, UnitList 
 			*absolute = false;
 		sscanf(val, "%lf%n", &value, &n);
 	}
+	if (n <= 0)
+		goto fail;
+
 	if (!units && n > 0)
 		units = val + n;
 
-	while (units && *units == ' ')
+	while (units && isspace(*units))
 		units++;
 
 	if (units && *units) {
-		int i;
+		int i, unit_ok = 0;
 		const Unit *unit = get_unit_struct(units);
 		if (unit != NULL) {
 			value = unit_to_coord(unit, value);
 			scaled = 1;
+			unit_ok = 1;
 		}
 		if (extra_units) {
 			for (i = 0; *extra_units[i].suffix; ++i) {
@@ -173,10 +177,14 @@ double GetValueEx(const char *val, const char *units, bool * absolute, UnitList 
 					if (extra_units[i].flags & UNIT_PERCENT)
 						value /= 100.0;
 					scaled = 1;
+					unit_ok = 1;
 				}
 			}
 		}
+		if ((!unit_ok) && (success != NULL)) /* there was something after the number but it doesn't look like a valid unit */
+			goto fail;
 	}
+
 	/* Apply default unit */
 	if (!scaled && default_unit && *default_unit) {
 		int i;
@@ -193,7 +201,14 @@ double GetValueEx(const char *val, const char *units, bool * absolute, UnitList 
 			value = unit_to_coord(unit, value);
 	}
 
+	if (success != NULL)
+		*success = 1;
 	return value;
+
+	fail:;
+	if (success != NULL)
+		*success = 0;
+	return 0;
 }
 
 /* ---------------------------------------------------------------------------
@@ -817,7 +832,7 @@ void SetFontInfo(FontTypePtr Ptr)
 static Coord GetNum(char **s, const char *default_unit)
 {
 	/* Read value */
-	Coord ret_val = GetValueEx(*s, NULL, NULL, NULL, default_unit);
+	Coord ret_val = GetValueEx(*s, NULL, NULL, NULL, default_unit, NULL);
 	/* Advance pointer */
 	while (isalnum(**s) || **s == '.')
 		(*s)++;

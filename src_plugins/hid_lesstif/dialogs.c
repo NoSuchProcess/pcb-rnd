@@ -761,7 +761,7 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 			break;
 		case HID_Coord:
 			cp = XmTextGetString(wl[i]);
-			results[i].coord_value = GetValue(cp, NULL, NULL);
+			results[i].coord_value = GetValue(cp, NULL, NULL, NULL);
 			break;
 		case HID_Real:
 			cp = XmTextGetString(wl[i]);
@@ -1038,7 +1038,7 @@ static int sz_str2val(Widget w, bool pcbu)
 	char *buf = XmTextGetString(w);
 	if (!pcbu)
 		return strtol(buf, NULL, 0);
-	return GetValueEx(buf, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix);
+	return GetValueEx(buf, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, NULL);
 }
 
 static void sz_val2str(Widget w, Coord u, int pcbu)

@@ -379,8 +379,8 @@ static int ActionMoveObject(int argc, char **argv, Coord x, Coord y)
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
-	ny = GetValue(y_str, units, &absolute1);
-	nx = GetValue(x_str, units, &absolute2);
+	ny = GetValue(y_str, units, &absolute1, NULL);
+	nx = GetValue(x_str, units, &absolute2, NULL);
 
 	type = SearchScreen(x, y, MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == NO_TYPE) {
@@ -479,7 +479,7 @@ static int parse_layout_attribute_units(char *name, int def)
 	const char *as = AttributeGet(PCB, name);
 	if (!as)
 		return def;
-	return GetValue(as, NULL, NULL);
+	return GetValue(as, NULL, NULL, NULL);
 }
 
 static int ActionElementList(int argc, char **argv, Coord x, Coord y)
@@ -848,7 +848,7 @@ static int ActionMinMaskGap(int argc, char **argv, Coord x, Coord y)
 		delta = function;
 		flags = 0;
 	}
-	value = 2 * GetValue(delta, units, &absolute);
+	value = 2 * GetValue(delta, units, &absolute, NULL);
 
 	SaveUndoSerialNumber();
 	ELEMENT_LOOP(PCB->Data);
@@ -922,7 +922,7 @@ static int ActionMinClearGap(int argc, char **argv, Coord x, Coord y)
 		delta = function;
 		flags = 0;
 	}
-	value = 2 * GetValue(delta, units, &absolute);
+	value = 2 * GetValue(delta, units, &absolute, NULL);
 
 	SaveUndoSerialNumber();
 	ELEMENT_LOOP(PCB->Data);

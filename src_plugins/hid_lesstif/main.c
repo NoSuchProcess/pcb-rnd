@@ -866,10 +866,10 @@ static int CursorAction(int argc, char **argv, Coord x, Coord y)
 	else
 		AFAIL(cursor);
 
-	dx = GetValueEx(argv[1], argv[3], NULL, extra_units_x, "mil");
+	dx = GetValueEx(argv[1], argv[3], NULL, extra_units_x, "mil", NULL);
 	if (flip_x)
 		dx = -dx;
-	dy = GetValueEx(argv[2], argv[3], NULL, extra_units_y, "mil");
+	dy = GetValueEx(argv[2], argv[3], NULL, extra_units_y, "mil", NULL);
 	if (!flip_y)
 		dy = -dy;
 
@@ -1916,7 +1916,7 @@ static Boolean
 pcb_cvt_string_to_coord(Display * d, XrmValue * args, Cardinal * num_args, XrmValue * from, XrmValue * to, XtPointer * data)
 {
 	static Coord rv;
-	rv = GetValue((char *) from->addr, NULL, NULL);
+	rv = GetValue((char *) from->addr, NULL, NULL, NULL);
 	if (to->addr)
 		*(Coord *) to->addr = rv;
 	else
