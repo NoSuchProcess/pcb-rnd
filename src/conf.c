@@ -459,7 +459,7 @@ int conf_merge_all()
 	return ret;
 }
 
-static conf_field_clear(conf_native_t *f)
+static void conf_field_clear(conf_native_t *f)
 {
 	if (strncmp(f->hash_path, "temp", 4) == 0)
 		return;
@@ -481,9 +481,7 @@ static conf_field_clear(conf_native_t *f)
 	}
 
 	f->used = 0;
-
 }
-
 
 void conf_update()
 {

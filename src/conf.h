@@ -104,7 +104,7 @@ struct conf_listitem_s {
 	conf_native_type_t type;
 	confitem_t val;   /* value is always an array (len 1 for the common case)  */
 	confprop_t prop; /* an array of properies allocated as big as val's array */
-	char *payload;
+	const char *payload;
 	gdl_elem_t link;
 };
 
