@@ -519,7 +519,7 @@ void conf_load_all(void)
 	/* get the lihata node for design/default_layer_name */
 	conf_load_as(CFR_INTERNAL, conf_internal, 1);
 	dln = conf_lht_get_main(CFR_INTERNAL);
-	assert(nmain != NULL);
+	assert(dln != NULL);
 	dln = lht_tree_path_(conf_root[CFR_INTERNAL], dln, "design/default_layer_name", 1, 0, NULL);
 	if (dln != NULL) {
 		assert(dln->type == LHT_LIST);
