@@ -56,6 +56,16 @@ li:pcb_config {
 			orthogonal_moves = 0
 			reset_after_element = 1
 			auto_place = 0
+			lock_names = 0
+			only_names = 0
+			thin_draw = 0
+			thin_draw_poly = 0
+			local_ref = 0
+			check_planes = 0
+			show_mask = 0
+			hide_names = 0
+			description = 0
+			name_on_pcb = 0
 			enable_stroke = 0
 			live_routing = 0
 			beep_when_finished = 0
