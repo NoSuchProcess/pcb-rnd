@@ -322,14 +322,19 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 {
 	lht_node_t *s;
 	int res = 0;
+	conf_listitem_t *i;
 
 	if (pol == POL_DISABLE)
 		return 0;
 
-#warning TODO: respect policy
+	if (pol = POL_OVERWRITE) {
+		/* overwrite the whole list: make it empty then append new elements */
+		while((i = conflist_first(dest->val.list)) != NULL)
+			conflist_remove(i);
+	}
+
 	for(s = src_lst->data.list.first; s != NULL; s = s->next) {
 		if (s->type == LHT_TEXT) {
-			conf_listitem_t *i;
 			i = calloc(sizeof(conf_listitem_t), 1);
 			i->val.string = &i->payload;
 			i->prop.prio = prio;
@@ -338,7 +343,15 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 				free(i);
 				continue;
 			}
-			conflist_append(dest->val.list, i);
+			switch(pol) {
+				case POL_PREPEND:
+					conflist_insert(dest->val.list, i);
+					break;
+				case POL_APPEND:
+				case POL_OVERWRITE:
+					conflist_append(dest->val.list, i);
+					break;
+			}
 		}
 		else {
 			hid_cfg_error(s, "List item must be text\n");
