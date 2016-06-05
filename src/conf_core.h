@@ -54,9 +54,14 @@ typedef struct {
 		CFT_BOOLEAN description;           /* display element description as element name, instead of value */
 		CFT_BOOLEAN name_on_pcb;           /* display Reference Designator as element name, instead of value */
 
-#warning TODO: move all the rest in plugins (watch out for io_pcb string path refs):
+		/* these two would need to be moved in the router plugin.... There are two
+		   reasons to keep them here:
+		   - the original pcb and pcb-rnd file formats already have named/numbered flags for these, so io_pcb needs these
+		   - more than one router plugin may share these */
 		CFT_BOOLEAN enable_stroke;         /* Enable libstroke gesutres on middle mouse button when non-zero */
 		CFT_BOOLEAN live_routing;          /* autorouter shows tracks in progress */
+
+		/* Keep it here instead of the router plugin: more than one router plugin may share these */
 		CFT_BOOLEAN beep_when_finished;    /* flag if a signal should be produced when searching of  connections is done */
 	} editor;
 
@@ -66,8 +71,6 @@ typedef struct {
 		CFT_STRING font_command;           /* commands for file loading... */
 		CFT_STRING file_command;
 		CFT_STRING file_path;
-#warning move this to printer?
-		CFT_STRING print_file;
 		CFT_STRING library_shell;
 #warning TODO: this should be a list
 //		CFT_LIST library_search_paths;

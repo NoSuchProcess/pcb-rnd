@@ -67,7 +67,6 @@ li:pcb_config {
 #			font_command = {}
 #			file_command = {}
 #			file_path = {}
-			print_file = {}
 			library_shell = {}
 
 			library_search_paths = {../pcblib:~/pcblib/:$SHAREDIR/pcblib}
