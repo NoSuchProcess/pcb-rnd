@@ -211,7 +211,7 @@ ha:{
 		ha:Settings = {
 			m=S
 			li:submenu {
-				ha:'All-direction' lines            = { checked=editor/alldirection_lines; a=<Key>.; action=conf(toggle, editor/all_direction_lines, design) }
+				ha:'All-direction' lines            = { checked=editor/all_direction_lines; a=<Key>.; action=conf(toggle, editor/all_direction_lines, design) }
 				ha:Auto swap line start angle       = { checked=editor/swap_start_direction; action=conf(toggle, editor/swap_start_direction, design) }
 				ha:Orthogonal moves                 = { checked=editor/orthogonal_moves; action=conf(toggle, editor/orthogonal_moves, design) }
 				ha:Crosshair snaps to pins and pads = { checked=editor/snap_pin; action=conf(toggle, editor/snap_pin, design) }
