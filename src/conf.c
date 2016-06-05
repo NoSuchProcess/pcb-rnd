@@ -23,11 +23,10 @@
 #include <assert.h>
 #include <genht/hash.h>
 #include "conf.h"
+#include "conf_core.h"
 #include "hid_cfg.h"
 #include "misc.h"
 #include "error.h"
-
-#warning TODO: this should do settings_postproc too
 
 lht_doc_t *conf_root[CFR_max];
 int conf_root_lock[CFR_max];
@@ -454,6 +453,7 @@ static conf_field_clear(conf_native_t *f)
 
 }
 
+
 void conf_update()
 {
 	/* clear all memory-bin data first */
@@ -463,6 +463,7 @@ void conf_update()
 
 	/* merge all memory-lht data to memory-bin */
 	conf_merge_all();
+	conf_core_postproc();
 #warning TODO: notify HIDs about the change; introduce a "version" field in conf_native_t and a global int conf_version; update the version field from conf_version upon change; bump global version on each update() - this how hids know if something has changed
 }
 
@@ -783,7 +784,29 @@ void conf_reset(conf_role_t target, const char *source_fn)
 
 void conf_init(void)
 {
+	char *tmp;
+
+	conf_reset(CFR_ENV, "<environment-variables>");
 	conf_reset(CFR_CLI, "<commandline>");
 	conf_reset(CFR_DESIGN, "<null-design>");
+
+	tmp = getenv ("PCB_MAKE_PROGRAM");
+	if (tmp != NULL)
+		conf_set(CFR_ENV, "rc/make_program", -1, tmp, POL_OVERWRITE);
+
+	tmp = getenv ("PCB_GNETLIST");
+	if (tmp != NULL)
+		conf_set(CFR_ENV, "rc/gnetlist_program", -1, tmp, POL_OVERWRITE);
 }
 
+
+
+#warning TODO: hardwired:
+/* should be coming from the hardwired
+  Settings.grid_unit = get_unit_struct ("mil");
+  copy_nonzero_increments (get_increments_struct (METRIC), &increment_mm);
+  copy_nonzero_increments (get_increments_struct (IMPERIAL), &increment_mil);
+  Settings.increments = get_increments_struct (Settings.grid_unit->family);
+  Settings.MakeProgram = strdup ("make");
+  Settings.GnetlistProgram = strdup ("gnetlist");
+*/

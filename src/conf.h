@@ -113,6 +113,7 @@ struct conf_listitem_s {
 typedef enum {
 	CFR_SYSTEM,
 	CFR_USER,
+	CFR_ENV,       /* env vars */
 	CFR_PROJECT,   /* project specific, from a local file */
 	CFR_DESIGN,    /* from the design file */
 	CFR_CLI,       /* from the command line */
