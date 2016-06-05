@@ -83,7 +83,7 @@ do
 
 	# test compile to see if we got new warnings compared to the reference
 	make $fn_o 2>$fn_tmpo >/dev/null
-	diff $fn_refo $fn_tmpo >/dev/null && echo REMOVE: $cnt $name
+	diff $fn_refo $fn_tmpo >/dev/null && echo REMOVE: $fn_c $cnt $name
 
 	# start over
 	cnt=$(($cnt+1))
