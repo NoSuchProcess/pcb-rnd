@@ -145,10 +145,10 @@ int conf_set_native(conf_native_t *field, int arr_idx, const char *new_val);
 int conf_set_from_cli(const char *arg_, char **why);
 
 #define conf_reg_field_array(globvar, field, type_name, path, desc) \
-	conf_reg_field_(&globvar.field, (sizeof(globvar.field) / sizeof(globvar.field[0])), type_name, path, desc)
+	conf_reg_field_((void *)&globvar.field, (sizeof(globvar.field) / sizeof(globvar.field[0])), type_name, path, desc)
 
 #define conf_reg_field_scalar(globvar, field, type_name, path, desc) \
-	conf_reg_field_(&globvar.field, 1, type_name, path, desc)
+	conf_reg_field_((void *)&globvar.field, 1, type_name, path, desc)
 
 /* register a config field, array or scalar, selecting the right macro */
 #define conf_reg_field(globvar,   field,isarray,type_name,cpath,cname, desc) \
