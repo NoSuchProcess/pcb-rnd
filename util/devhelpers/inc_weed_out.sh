@@ -32,6 +32,9 @@
 #        to compile foo.o
 #  NOTE: sometimes disabling multiple #includes have different effect than
 #        disabling them one by one - always check manually.
+#  NOTE: conditional code also requires manual examination - the script may
+#        find an #include can be removed with the current settings but the
+#        same include may be needed with different ./configure settings
 
 # set up file names
 fn_c=$1
