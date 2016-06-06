@@ -467,7 +467,6 @@ int main(int argc, char *argv[])
 	plugins_init();
 
 
-#warning TODO: CLI: move this in the cli arg proc loop or use the new argc/argv?
 	/* Export pcb from command line if requested.  */
 	switch(do_what) {
 		case DO_PRINT:   exporter = gui = hid_find_printer(); break;
@@ -501,7 +500,7 @@ int main(int argc, char *argv[])
    one is registered (there can be only one GUI). */
 #include "generated_lists.h"
 
-	/* plugins may have installed their new fields, reinterpret
+	/* plugins may have installed their new fields, reinterpret the config
 	   (memory lht -> memory bin) to get the new fields */
 	conf_update();
 
