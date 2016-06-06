@@ -77,11 +77,6 @@ RCSID("$Id$");
 static const char *fontfile_paths_in[] = { "./default_font", PCBSHAREDIR "/default_font", NULL };
 char **fontfile_paths = NULL;
 
-/* Try gui libs in this order when not explicitly specified by the user
-   if there are multiple GUIs available this sets the order of preference */
-#warning TODO: to conf
-static const char *try_gui_hids[] = { "gtk", "lesstif", NULL };
-
 /* ----------------------------------------------------------------------
  * initialize signal and error handlers
  */
@@ -479,10 +474,16 @@ int main(int argc, char *argv[])
 			}
 			break;
 		default: {
-			const char **g;
+			conf_listitem_t *i;
+			int n;
+			const char *g;
+
 			gui = NULL;
-			for (g = try_gui_hids; (*g != NULL) && (gui == NULL); g++)
-				gui = hid_find_gui(*g);
+			conf_loop_list_str(&conf_core.rc.preferred_gui, i, g, n) {
+				gui = hid_find_gui(g);
+				if (gui != NULL)
+					break;
+			}
 
 			/* try anything */
 			if (gui == NULL) {

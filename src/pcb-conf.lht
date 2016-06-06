@@ -99,6 +99,7 @@ li:pcb_config {
 #			action_string = {}
 #			rat_path = {}
 #			rat_command = {}
+			li:preferred_gui = { gtk; lesstif }
 		} # rc
 
 		ha:design {

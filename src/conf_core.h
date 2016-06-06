@@ -82,6 +82,8 @@ typedef struct {
 		CFT_STRING action_string;          /* PCB Actions string to execute on startup */
 		CFT_STRING rat_path;
 		CFT_STRING rat_command;
+
+		CFT_LIST preferred_gui;            /* if set, try GUI HIDs in this order when no GUI is explicitly selected */
 	} rc;
 
 	const struct design { /* defaults of a new layout */
