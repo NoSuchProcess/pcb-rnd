@@ -482,9 +482,11 @@ static void conf_field_clear(conf_native_t *f)
 	f->used = 0;
 }
 
+int conf_rev = 0;
 static void conf_notify_hids()
 {
-#warning TODO: notify HIDs about the change; introduce a "version" field in conf_native_t and a global int conf_version; update the version field from conf_version upon change; bump global version on each update() - this how hids know if something has changed
+	conf_rev++;
+#warning TODO: notify HIDs about the change
 }
 
 void conf_update()

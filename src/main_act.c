@@ -162,7 +162,7 @@ static print_list(const conflist_t *cl)
 	int n;
 	conf_listitem_t *ci;
 	printf(" ");
-	for (n = 0, ci = conflist_first((conflist_t *)cl); ci != NULL; ci = conflist_next(ci), n++) {
+	conf_loop_list_str(cl, ci, n) {
 		const char *p = ci->val.string[0];
 		if (ci->type != CFN_STRING)
 			continue;

@@ -29,6 +29,7 @@
 #include <liblihata/dom.h>
 #include <genvector/vtp0.h>
 
+int conf_rev; /* icreased by one each time there's a change in any of the config binaries */
 
 typedef enum {
 	POL_PREPEND,
@@ -236,6 +237,10 @@ do { \
 /* get the main node of a configuration (it's a hash and its children
    are "design", "rc", ...) */
 lht_node_t *conf_lht_get_main(conf_role_t target);
+
+/*conf_listitem_t *item;*/
+#define conf_loop_list_str(list, item, idx) \
+	for (idx = 0, item = conflist_first((conflist_t *)cl); item != NULL; item = conflist_next(item), idx++)
 
 #endif
 
