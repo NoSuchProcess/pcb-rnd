@@ -182,10 +182,6 @@ static void InitPaths(char *argv0)
 		}
 	}
 
-#ifdef DEBUG
-	printf("InitPaths():  bindir = \"%s\"\n", bindir);
-#endif
-
 	if (found_bindir) {
 		/* strip off the executible name leaving only the path */
 		t2 = NULL;
@@ -196,11 +192,6 @@ static void InitPaths(char *argv0)
 		}
 		if (t2 != NULL)
 			*t2 = '\0';
-
-#ifdef DEBUG
-		printf("After stripping off the executible name, we found\n");
-		printf("bindir = \"%s\"\n", bindir);
-#endif
 	}
 	else {
 		/* we have failed to find out anything from argv[0] so fall back to the original
