@@ -252,5 +252,7 @@ conf_listitem_t *conf_list_next_str(conf_listitem_t *item_li, const char **item_
 		item_li != NULL;\
 		item_li = conf_list_next_str(item_li, &item_str, &idx))
 
+const char *conf_concat_strlist(const conflist_t *lst, gds_t *buff, int *inited, char sep);
+
 #endif
 

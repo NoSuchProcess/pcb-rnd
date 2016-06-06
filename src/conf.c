@@ -838,6 +838,30 @@ conf_listitem_t *conf_list_next_str(conf_listitem_t *item_li, const char **item_
 	return item_li;
 }
 
+const char *conf_concat_strlist(const conflist_t *lst, gds_t *buff, int *inited, char sep)
+{
+	int n;
+	conf_listitem_t *ci;
+
+	if ((inited == NULL) || (!*inited)) {
+		gds_init(buff);
+		if (inited != NULL)
+			*inited = 1;
+	}
+	else
+		gds_truncate(buff, 0);
+
+	for (n = 0, ci = conflist_first((conflist_t *)lst); ci != NULL; ci = conflist_next(ci), n++) {
+		const char *p = ci->val.string[0];
+		if (ci->type != CFN_STRING)
+			continue;
+		if (n > 0)
+			gds_append(buff, sep);
+		gds_append_str(buff, p);
+	}
+	return buff->array;
+}
+
 void conf_lock(conf_role_t target)
 {
 	conf_root_lock[target] = 1;

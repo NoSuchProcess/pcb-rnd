@@ -177,7 +177,6 @@ PCBTypePtr CreateNewPCB()
 	dpcb = -1;
 	conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, LoadPCB(__path__, false, true));
 
-#warning TODO: load from a lihata list instead? same for font file?
 	if (dpcb == 0) {
 		nw = PCB;
 		if (nw->Filename != NULL) {
