@@ -583,8 +583,6 @@ void ghid_config_files_read(gint * argc, gchar *** argv)
 	ghid_config_init();
 	load_rc_files();
 	config_file_read();
-	(*argc)--;
-	(*argv)++;
 	parse_optionv(argc, argv, TRUE);
 }
 
