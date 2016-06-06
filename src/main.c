@@ -230,11 +230,6 @@ static void InitPaths(char *argv0)
 	}
 	sprintf(pcblibdir, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, BINDIR_TO_PCBSHAREDIR);
 
-#ifdef DEBUG
-	printf("bindir      = %s\n", bindir);
-	printf("pcblibdir   = %s\n", pcblibdir);
-#endif
-
 #warning TODO do we still need this or can we get it from the embedded lihata?
 #if 0
 	l = sizeof(main_attribute_list) / sizeof(main_attribute_list[0]);
@@ -329,6 +324,7 @@ static int arg_match(const char *in, const char *shrt, const char *lng)
 static const char *action_args[] = {
 /*short, -long, action*/
 	NULL, "-show-actions", "PrintActions()",
+	NULL, "-show-paths",   "PrintPaths()",
 	NULL, "-dump-actions", "DumpActions()",
 	NULL, "-dump-config",  "dumpconf(native,1)",
 	"h",  "-help",         "PrintUsage()",
@@ -572,16 +568,6 @@ int main(int argc, char *argv[])
 	}
 
 	EnableAutosave();
-
-#warning TODO: CLI: update for new settings; also convert into a debug action
-#ifdef DEBUG
-	printf("Settings.FontPath            = \"%s\"\n", Settings.FontPath);
-	printf("conf_core.appearance.color.elementPath         = \"%s\"\n", conf_core.appearance.color.elementPath);
-	printf("conf_core.rc.library_search_paths  = \"%s\"\n", conf_core.rc.library_search_paths);
-	printf("conf_core.rc.library_shell        = \"%s\"\n", conf_core.rc.library_shell);
-	printf("Settings.MakeProgram = \"%s\"\n", UNKNOWN(Settings.MakeProgram));
-	printf("Settings.GnetlistProgram = \"%s\"\n", UNKNOWN(Settings.GnetlistProgram));
-#endif
 
 	/* main loop */
 	do {

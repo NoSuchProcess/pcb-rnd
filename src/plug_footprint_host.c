@@ -117,7 +117,6 @@ const char *fp_default_search_path(void)
 			gds_append(&fpds_paths, ':');
 		gds_append_str(&fpds_paths, p);
 	}
-printf("PATHS='%s'\n", fpds_paths.array);
 	return fpds_paths.array;
 }
 

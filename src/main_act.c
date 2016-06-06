@@ -33,6 +33,7 @@
 #include "hid_init.h"
 #include "hid.h"
 #include "data.h"
+#include "conf_core.h"
 
 
 /* --------------------------------------------------------------------------- */
@@ -107,6 +108,7 @@ int ActionPrintUsage(int argc, char **argv, Coord x, Coord y)
 			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
 
 #warning TODO: two level help instead
+#warning TODO: add a help for main_act
 	for (i = 0; hl[i]; i++)
 		if (hl[i]->usage != NULL)
 			hl[i]->usage();
@@ -150,6 +152,33 @@ int ActionPrintCopyright(int argc, char **argv, Coord x, Coord y)
 				 "    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n\n", Progname, VERSION);
 }
 
+/* --------------------------------------------------------------------------- */
+static const char printpaths_syntax[] = "PrintPaths()";
+
+static const char printpaths_help[] = "Print full paths and search paths.";
+
+static print_list(const conflist_t *cl)
+{
+	int n;
+	conf_listitem_t *ci;
+	printf(" ");
+	for (n = 0, ci = conflist_first((conflist_t *)cl); ci != NULL; ci = conflist_next(ci), n++) {
+		const char *p = ci->val.string[0];
+		if (ci->type != CFN_STRING)
+			continue;
+		printf("%c%s", (n == 0) ? '"' : ':', p);
+	}
+	printf("\"\n");
+}
+
+int ActionPrintPaths(int argc, char **argv, Coord x, Coord y)
+{
+	printf("bindir                   = \"%s\"\n", bindir);
+	printf("pcblibdir                = \"%s\"\n", pcblibdir);
+	printf("rc.default_font_file     ="); print_list(&conf_core.rc.default_font_file);
+	printf("rc.library_search_paths  ="); print_list(&conf_core.rc.library_search_paths);
+	printf("rc.library_shell         = \"%s\"\n", conf_core.rc.library_shell);
+}
 
 
 /* --------------------------------------------------------------------------- */
@@ -169,6 +198,9 @@ HID_Action main_action_list[] = {
 	,
 	{"PrintCopyright", 0, ActionPrintCopyright,
 	 printcopyright_help, printcopyright_syntax}
+	,
+	{"PrintPaths", 0, ActionPrintPaths,
+	 printpaths_help, printpaths_syntax}
 };
 
 REGISTER_ACTIONS(main_action_list, NULL)
