@@ -829,9 +829,14 @@ void CreateDefaultFont(PCBTypePtr pcb)
 {
 	int res = -1;
 	conf_list_foreach_path_first(res, &conf_core.rc.default_font_file, ParseFont(&pcb->Font, __path__));
-#warning TODO: print content of list
-	if (res != 0)
-		Message(_("Can't find font-symbol-file '%s'\n"), "<print paths here>");
+
+	if (res != 0) {
+		const char *s;
+		gds_t buff;
+		s = conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
+		Message(_("Can't find font-symbol-file '%s'\n"), s);
+		gds_uninit(&buff);
+	}
 }
 
 /* ---------------------------------------------------------------------------
