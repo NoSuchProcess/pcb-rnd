@@ -378,8 +378,6 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 	int nl, ppl = strlen(path_prefix), res = 0;
 	conf_native_t *target;
 
-#warning TODO: use gds with static length
-
 	memcpy(path, path_prefix, ppl);
 	path[ppl] = '/';
 	pathe = path + ppl + 1;
