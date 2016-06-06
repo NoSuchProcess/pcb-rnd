@@ -56,6 +56,9 @@ BUGS:
 	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 
 CLEANUP #5
+- if font file is not found:
+	- embedded version?
+	- warn when try to write text on pcb?
 - "keepaway" vs. "clearance" renaming?
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
 - scconfig: check for bison/flex, do not regenerate languages if they are missing
