@@ -157,15 +157,14 @@ static const char printpaths_syntax[] = "PrintPaths()";
 
 static const char printpaths_help[] = "Print full paths and search paths.";
 
-static print_list(const conflist_t *cl)
+static void print_list(const conflist_t *cl)
 {
 	int n;
 	conf_listitem_t *ci;
+	const char *p;
+
 	printf(" ");
-	conf_loop_list_str(cl, ci, n) {
-		const char *p = ci->val.string[0];
-		if (ci->type != CFN_STRING)
-			continue;
+	conf_loop_list_str(cl, ci, p, n) {
 		printf("%c%s", (n == 0) ? '"' : ':', p);
 	}
 	printf("\"\n");

@@ -238,9 +238,19 @@ do { \
    are "design", "rc", ...) */
 lht_node_t *conf_lht_get_main(conf_role_t target);
 
+/* loop helper */
+conf_listitem_t *conf_list_first_str(conflist_t *list, const char **item_str, int *idx);
+conf_listitem_t *conf_list_next_str(conf_listitem_t *item_li, const char **item_str, int *idx);
+
 /*conf_listitem_t *item;*/
-#define conf_loop_list_str(list, item, idx) \
+#define conf_loop_list(list, item, idx) \
 	for (idx = 0, item = conflist_first((conflist_t *)cl); item != NULL; item = conflist_next(item), idx++)
+
+/*conf_listitem_t *item; const char *item_str; */
+#define conf_loop_list_str(list, item_li, item_str, idx) \
+	for (idx = 0, item_li = conf_list_first_str((conflist_t *)list, &item_str, &idx); \
+		item_li != NULL;\
+		item_li = conf_list_next_str(item_li, &item_str, &idx))
 
 #endif
 

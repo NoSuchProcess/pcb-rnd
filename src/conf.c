@@ -813,6 +813,33 @@ int conf_set_from_cli(const char *arg_, char **why)
 	return ret;
 }
 
+conf_listitem_t *conf_list_first_str(conflist_t *list, const char **item_str, int *idx)
+{
+	conf_listitem_t *item_li;
+	item_li = conflist_first(list);
+	if (item_li == NULL)
+		return NULL;
+	if (item_li->type == CFN_STRING) {
+		*item_str = item_li->val.string[0];
+		return item_li;
+	}
+	return conf_list_next_str(item_li, item_str, idx);
+}
+
+conf_listitem_t *conf_list_next_str(conf_listitem_t *item_li, const char **item_str, int *idx)
+{
+	while((item_li = conflist_next(item_li)) != NULL) {
+		if (item_li->type != CFN_STRING)
+			continue;
+		/* found next string */
+		*item_str = item_li->val.string[0];
+		return item_li;
+	}
+	/* found end of the list */
+	*item_str = NULL;
+	return item_li;
+}
+
 void conf_lock(conf_role_t target)
 {
 	conf_root_lock[target] = 1;
