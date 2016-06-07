@@ -250,7 +250,6 @@ static void WritePCBDataHeader(FILE * FP)
 	conf_update_pcb_flag(&pcb_flags, "editor/snap_pin", SNAPPINFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/orthogonal_moves", ORTHOMOVEFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/live_routing", LIVEROUTEFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/enable_stroke", ENABLESTROKEFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/lock_names", LOCKNAMESFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/only_names", ONLYNAMESFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/hide_names", HIDENAMESFLAG);

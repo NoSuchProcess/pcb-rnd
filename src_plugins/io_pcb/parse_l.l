@@ -391,7 +391,6 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_set
 		CONF_SET(CFR_DESIGN, "editor/snap_pin", -1, CONF_BOOL_FLAG(SNAPPINFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(CFR_DESIGN, "editor/orthogonal_moves", -1, CONF_BOOL_FLAG(ORTHOMOVEFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(CFR_DESIGN, "editor/live_routing", -1, CONF_BOOL_FLAG(LIVEROUTEFLAG, yy_pcb_flags), POL_OVERWRITE);
-		CONF_SET(CFR_DESIGN, "editor/enable_stroke", -1, CONF_BOOL_FLAG(ENABLESTROKEFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(CFR_DESIGN, "editor/lock_names", -1, CONF_BOOL_FLAG(LOCKNAMESFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(CFR_DESIGN, "editor/only_names", -1, CONF_BOOL_FLAG(ONLYNAMESFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(CFR_DESIGN, "editor/hide_names", -1, CONF_BOOL_FLAG(HIDENAMESFLAG, yy_pcb_flags), POL_OVERWRITE);
