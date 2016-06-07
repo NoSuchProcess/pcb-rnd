@@ -64,20 +64,12 @@ static int FlagGridSize(int dummy)
 
 static int FlagUnitsMm(int dummy)
 {
-	static const Unit *u = NULL;
-	if (u == NULL)
-		u = get_unit_struct("mm");
-#warning we can save a memcmp here, probably
-	return memcmp(&conf_core.editor.grid_unit, u, sizeof(Unit));
+	return conf_set(CFR_DESIGN, "editor/grid_unit", -1, "mm", POL_OVERWRITE);
 }
 
 static int FlagUnitsMil(int dummy)
 {
-	static const Unit *u = NULL;
-	if (u == NULL)
-		u = get_unit_struct("mil");
-#warning we can save a memcmp here, probably
-	return memcmp(&conf_core.editor.grid_unit, u, sizeof(Unit));
+	return conf_set(CFR_DESIGN, "editor/grid_unit", -1, "mil", POL_OVERWRITE);
 }
 
 static int FlagBuffer(int dummy)
