@@ -334,18 +334,13 @@ int main(int argc, char *argv[])
 	const char *main_action = NULL;
 
 	hid_argv_orig = hid_argv = calloc(sizeof(char *), argc);
-#warning TODO: update this comment
 	/* init application:
 	 * - make program name available for error handlers
-	 * - evaluate special options
-	 * - initialize toplevel shell and resources
+	 * - initialize infrastructure (e.g. the conf system)
+	 * - evaluate options
 	 * - create an empty PCB with default symbols
-	 * - initialize all other widgets
-	 * - update screen and get size of drawing area
-	 * - evaluate command-line arguments
 	 * - register 'call on exit()' function
 	 */
-
 	conf_init();
 	conf_core_init();
 

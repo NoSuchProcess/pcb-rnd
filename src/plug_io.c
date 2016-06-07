@@ -160,7 +160,7 @@ int ParseFont(FontTypePtr Ptr, char *Filename)
 }
 
 
-#warning this should not be run on all hooks but on the hook saved in the pcb probably
+#warning TODO: when we have multiple io_* plugins: write function should not be run on all available IO hooks but on the IO hook saved in the pcb struct (at load or creation time) so we save with the same format all the time
 int WriteBuffer(FILE *f, BufferType *buff)
 {
 	int res = -1;
