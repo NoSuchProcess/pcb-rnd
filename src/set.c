@@ -165,7 +165,8 @@ void SetCrosshairRangeToBuffer(void)
 void SetBufferNumber(int Number)
 {
 	if (Number >= 0 && Number < MAX_BUFFER) {
-		conf_set_editor(buffer_number, Number);
+		conf_set_design("editor/buffer_number", "%d", Number);
+		conf_update();
 
 		/* do an update on the crosshair range */
 		SetCrosshairRangeToBuffer();
