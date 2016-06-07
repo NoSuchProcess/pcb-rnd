@@ -8,8 +8,6 @@
 #include "compat_fs.h"
 #include "error.h"
 
-#warning TODO: this file should be deleted after the conf transition
-
 HID_AttrNode *hid_attr_nodes = 0;
 
 void hid_register_attributes(HID_Attribute * a, int n, const char *cookie, int copy)
@@ -366,6 +364,7 @@ static void hid_set_attribute(char *name, char *value)
 			}
 }
 
+#warning TODO: load/save settings should be deleted after the conf transition
 static void hid_load_settings_1(char *fname)
 {
 	char line[1024], *namep, *valp, *cp;
@@ -412,4 +411,10 @@ void hid_load_settings()
 	if (homedir != NULL)
 		hid_load_settings_1(Concat(homedir, PCB_DIR_SEPARATOR_S, ".pcb", PCB_DIR_SEPARATOR_S, "settings", NULL));
 	hid_load_settings_1(Concat("pcb.settings", NULL));
+}
+
+void hid_usage(HID_Attribute * a, int numa)
+{
+	for (; numa > 0; numa--,a++)
+		fprintf(stderr, "%-20s %s\n", a->name, a->help_text);
 }
