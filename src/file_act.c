@@ -209,27 +209,6 @@ static int ActionNew(int argc, char **argv, Coord x, Coord y)
 }
 
 /* --------------------------------------------------------------------------- */
-#warning TODO: remove this (keep a placeholder for backward compatibility)
-static const char savesettings_syntax[] = "SaveSettings()\n" "SaveSettings(local)";
-
-static const char savesettings_help[] = "Saves settings.";
-
-/* %start-doc actions SaveSettings
-
-If you pass no arguments, the settings are stored in
-@code{$HOME/.pcb/settings}.  If you pass the word @code{local} they're
-saved in @code{./pcb.settings}.
-
-%end-doc */
-
-static int ActionSaveSettings(int argc, char **argv, Coord x, Coord y)
-{
-	int locally = argc > 0 ? (strncasecmp(argv[0], "local", 5) == 0) : 0;
-	hid_save_settings(locally);
-	return 0;
-}
-
-/* --------------------------------------------------------------------------- */
 
 static const char saveto_syntax[] =
 	"SaveTo(Layout|LayoutAs,filename)\n"
@@ -372,9 +351,6 @@ HID_Action file_action_list[] = {
 	,
 	{"New", 0, ActionNew,
 	 new_help, new_syntax}
-	,
-	{"SaveSettings", 0, ActionSaveSettings,
-	 savesettings_help, savesettings_syntax}
 	,
 	{"SaveTo", 0, ActionSaveTo,
 	 saveto_help, saveto_syntax}

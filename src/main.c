@@ -420,8 +420,6 @@ int main(int argc, char *argv[])
 	polygon_init();
 	hid_init();
 
-	hid_load_settings();
-
 	program_name = argv[0];
 	program_basename = strrchr(program_name, PCB_DIR_SEPARATOR_C);
 	if (program_basename) {
