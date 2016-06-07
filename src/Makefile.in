@@ -36,7 +36,6 @@ put /local/pcb/OBJS [@
 	file_act.o
 	find.o
 	find_act.o
-	flags.o
 	free_atexit.o
 	funchash.o
 	gui_act.o
@@ -131,7 +130,7 @@ put /local/pcb/OBJS [@
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
 	action_act.c buffer.c change_act.c conf_act.c file_act.c find_act.c
-	flags.c gui_act.c main_act.c misc.c move.c netlist.c
+	gui_act.c main_act.c misc.c move.c netlist.c
 	object_act.c plugins.c polygon_act.c rats_act.c rats_patch.c
 	remove_act.c select_act.c undo_act.c
 }
