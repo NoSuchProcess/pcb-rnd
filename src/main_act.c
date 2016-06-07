@@ -73,46 +73,92 @@ static const char printusage_syntax[] =
 
 static const char printusage_help[] = "Print command line aruments of pcb-rnd or a plugin loaded.";
 
-int ActionPrintUsage(int argc, char **argv, Coord x, Coord y)
+static int help0(void)
+{
+	HID **hl = hid_enumerate();
+	int i;
+
+	u("pcb-rnd Printed Circuit Board editing program, http://repo.hu/projects/pcb-rnd");
+	u("For more information, please read the topic help pages:", Progname);
+	u("  %s --help topic");
+	u("Topics are:");
+	u("  invocation           how to run pcb-rnd");
+	u("  main                 main/misc flags (affecting none or all plugins)");
+	for (i = 0; hl[i]; i++)
+		if (hl[i]->usage != NULL)
+			u("  %-20s %s\n", hl[i]->name, hl[i]->description);
+	return 0;
+}
+
+extern const char *pcb_action_args[];
+static int help_main(void) {
+	const char **cs;
+	for(cs = pcb_action_args; cs[2] != NULL; cs += 4) {
+		fprintf(stderr, "%s [", Progname);
+		if (cs[0] != NULL)
+			fprintf(stderr, "-%s", cs[0]);
+		if ((cs[0] != NULL) && (cs[1] != NULL))
+			fprintf(stderr, "|");
+		if (cs[1] != NULL)
+			fprintf(stderr, "-%s", cs[1]);
+		fprintf(stderr, "]    %s\n", cs[3]);
+		
+	}
+	return 0;
+}
+
+static int help_invoc(void)
 {
 	HID **hl = hid_enumerate();
 	HID_AttrNode *ha;
 	int i;
 	int n_printer = 0, n_gui = 0, n_exporter = 0;
 
-	for (i = 0; hl[i]; i++) {
-		if (hl[i]->gui)
-			n_gui++;
-		if (hl[i]->printer)
-			n_printer++;
-		if (hl[i]->exporter)
-			n_exporter++;
-	}
-
-	u("PCB Printed Circuit Board editing program, http://pcb.gpleda.org");
-	u("%s [-h|-V|--copyright]\t\t\tHelp, version, copyright", Progname);
-	u("%s [--gui GUI] [gui options] <pcb file>\t\tto edit", Progname);
+	u("pcb-rnd invocation:");
+	u("");
+	u("%s [main options]                         See --help main", Progname);
+	u("");
+	u("%s [--gui GUI] [gui options] <pcb file>   interactive GUI", Progname);
 	u("Available GUI hid%s:", n_gui == 1 ? "" : "s");
 	for (i = 0; hl[i]; i++)
 		if (hl[i]->gui)
 			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
-	u("%s -p [printing options] <pcb file>\tto print", Progname);
+	u("\n%s -p [printing options] <pcb file>\tto print", Progname);
 	u("Available printing hid%s:", n_printer == 1 ? "" : "s");
 	for (i = 0; hl[i]; i++)
 		if (hl[i]->printer)
 			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
-	u("%s -x hid [export options] <pcb file>\tto export", Progname);
+	u("\n%s -x hid [export options] <pcb file>\tto export", Progname);
 	u("Available export hid%s:", n_exporter == 1 ? "" : "s");
 	for (i = 0; hl[i]; i++)
 		if (hl[i]->exporter)
 			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
-
-#warning TODO: two level help instead
-#warning TODO: add a help for main_act
-	for (i = 0; hl[i]; i++)
-		if (hl[i]->usage != NULL)
-			hl[i]->usage();
+	return 0;
 }
+
+int ActionPrintUsage(int argc, char **argv, Coord x, Coord y)
+{
+	u("");
+	if (argc > 0) {
+		HID **hl = hid_enumerate();
+		int i;
+
+		if (strcmp(argv[0], "invocation") == 0)  return help_invoc();
+		if (strcmp(argv[0], "main") == 0)        return help_main();
+
+		for (i = 0; hl[i]; i++) {
+			if ((hl[i]->usage != NULL) && (strcmp(argv[0], hl[i]->name) == 0)) {
+				if (argc > 1)
+					return hl[i]->usage(argv[1]);
+				else
+					return hl[i]->usage(NULL);
+			}
+		}
+	}
+	else
+		help0();
+}
+
 
 /* --------------------------------------------------------------------------- */
 static const char printversion_syntax[] = "PrintVersion()";

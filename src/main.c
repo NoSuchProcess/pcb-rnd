@@ -307,16 +307,14 @@ static int arg_match(const char *in, const char *shrt, const char *lng)
 	return ((shrt != NULL) && (strcmp(in, shrt) == 0)) || ((lng != NULL) && (strcmp(in, lng) == 0));
 }
 
-static const char *action_args[] = {
-/*short, -long, action*/
-	NULL, "-show-actions", "PrintActions()",
-	NULL, "-show-paths",   "PrintPaths()",
-	NULL, "-dump-actions", "DumpActions()",
-	NULL, "-dump-config",  "dumpconf(native,1)",
-	"h",  "-help",         "PrintUsage()",
-	"?",  NULL,            "PrintUsage()",
-	"V",  "-version",      "PrintVersion()",
-	NULL, "-copyright",    "PrintCopyright()",
+const char *pcb_action_args[] = {
+/*short, -long, action, help */
+	NULL, "-show-actions", "PrintActions()",     "Print all available actions (human readable) and exit",
+	NULL, "-dump-actions", "DumpActions()",      "Print all available actions (script readable) and exit",
+	NULL, "-show-paths",   "PrintPaths()",       "Print all configured paths and exit",
+	NULL, "-dump-config",  "dumpconf(native,1)", "Print the config tree and exit",
+	"V",  "-version",      "PrintVersion()",     "Print version info and exit",
+	NULL, "-copyright",    "PrintCopyright()",   "Print copyright and exit",
 	NULL, NULL, NULL /* terminator */
 };
 
@@ -350,6 +348,16 @@ int main(int argc, char *argv[])
 		arg = argv[n+1];
 		if (*cmd == '-') {
 			cmd++;
+			if ((strcmp(cmd, "?") == 0) || (strcmp(cmd, "h") == 0) || (strcmp(cmd, "-help") == 0)) {
+				if (arg != NULL) {
+					/* memory leak, but who cares for --help? */
+					main_action = pcb_strdup_printf("PrintUsage(%s)", arg);
+					n++;
+				}
+				else
+					main_action = "PrintUsage()";
+				goto next_arg;
+			}
 			if ((strcmp(cmd, "g") == 0) || (strcmp(cmd, "-gui") == 0)) {
 				do_what = DO_GUI;
 				hid_name = arg;
@@ -367,7 +375,7 @@ int main(int argc, char *argv[])
 				goto next_arg;
 			}
 
-			for(cs = action_args; cs[2] != NULL; cs += 3) {
+			for(cs = pcb_action_args; cs[2] != NULL; cs += 4) {
 				if (arg_match(cmd, cs[0], cs[1])) {
 					if (main_action == NULL)
 						main_action = cs[2];
