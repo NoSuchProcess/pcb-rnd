@@ -50,6 +50,8 @@
 
 RCSID("$Id$");
 
+static const char *djopt_cookie = "djopt";
+
 #ifndef HAVE_RINT
 #define rint(x)  (ceil((x) - 0.5))
 #endif
@@ -143,14 +145,6 @@ static int djopt_get_auto_only(int dummy)
 {
 	return autorouted_only;
 }
-
-HID_Flag djopt_flag_list[] = {
-	{"optautoonly", djopt_get_auto_only, 0}
-};
-
-static const char *djopt_cookie = "djopt";
-
-REGISTER_FLAGS(djopt_flag_list, djopt_cookie)
 
 static char *element_name_for(corner_s * c)
 {
@@ -2725,13 +2719,11 @@ REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
 static void hid_djopt_uninit(void)
 {
 	hid_remove_actions_by_cookie(djopt_cookie);
-	hid_remove_flags_by_cookie(djopt_cookie);
 }
 
 #include "dolists.h"
 pcb_uninit_t hid_djopt_init(void)
 {
-	REGISTER_FLAGS(djopt_flag_list, djopt_cookie)
 	REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
 	return hid_djopt_uninit;
 }

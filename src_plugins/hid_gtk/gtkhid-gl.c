@@ -813,11 +813,11 @@ gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, GH
 	glLoadIdentity();
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
-	glScalef((port->view.flip_x ? -1. : 1.) / port->view.coord_per_px,
-					 (port->view.flip_y ? -1. : 1.) / port->view.coord_per_px,
-					 ((port->view.flip_x == port->view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
-	glTranslatef(port->view.flip_x ? port->view.x0 - PCB->MaxWidth :
-							 -port->view.x0, port->view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
+	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px,
+					 (conf_core.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px,
+					 ((conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
+	glTranslatef(conf_core.editor.view.flip_x ? port->view.x0 - PCB->MaxWidth :
+							 -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
 
 	glEnable(GL_STENCIL_TEST);
 	glClearColor(port->offlimits_color.red / 65535.,
@@ -957,10 +957,10 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	hidgl_init_triangle_array(&buffer);
 	ghid_invalidate_current_gc();
 	glPushMatrix();
-	glScalef((gport->view.flip_x ? -1. : 1.) / gport->view.coord_per_px,
-					 (gport->view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
-	glTranslatef(gport->view.flip_x ? gport->view.x0 - PCB->MaxWidth :
-							 -gport->view.x0, gport->view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
+	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px,
+					 (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
+	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth :
+							 -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
 	hid_expose_callback(&ghid_hid, NULL, &pinout->element);
 	hidgl_flush_triangles(&buffer);
 	glPopMatrix();
@@ -1014,9 +1014,9 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	gport->height = height;
 	gport->view.width = width * gport->view.coord_per_px;
 	gport->view.height = height * gport->view.coord_per_px;
-	gport->view.x0 = gport->view.flip_x ? PCB->MaxWidth - cx : cx;
+	gport->view.x0 = conf_core.editor.view.flip_x ? PCB->MaxWidth - cx : cx;
 	gport->view.x0 -= gport->view.height / 2;
-	gport->view.y0 = gport->view.flip_y ? PCB->MaxHeight - cy : cy;
+	gport->view.y0 = conf_core.editor.view.flip_y ? PCB->MaxHeight - cy : cy;
 	gport->view.y0 -= gport->view.width / 2;
 
 	/* make GL-context "current" */
@@ -1050,8 +1050,8 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	hidgl_init_triangle_array(&buffer);
 	ghid_invalidate_current_gc();
 	glPushMatrix();
-	glScalef((gport->view.flip_x ? -1. : 1.) / gport->view.coord_per_px,
-					 (gport->view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
+	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px,
+					 (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
 	glTranslatef(gport->view.flip_x ? gport->view.x0 - PCB->MaxWidth :
 							 -gport->view.x0, gport->view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
 
@@ -1113,10 +1113,10 @@ HID *ghid_request_debug_draw(void)
 	glDisable(GL_STENCIL_TEST);
 
 	glPushMatrix();
-	glScalef((port->view.flip_x ? -1. : 1.) / port->view.coord_per_px,
-					 (port->view.flip_y ? -1. : 1.) / port->view.coord_per_px, (port->view.flip_x == port->view.flip_y) ? 1. : -1.);
-	glTranslatef(port->view.flip_x ? port->view.x0 - PCB->MaxWidth :
-							 -port->view.x0, port->view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
+	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px,
+					 (conf_core.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, (port->view.flip_x == port->view.flip_y) ? 1. : -1.);
+	glTranslatef(conf_core.editor.view.flip_x ? port->view.x0 - PCB->MaxWidth :
+							 -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
 
 	return &ghid_hid;
 }

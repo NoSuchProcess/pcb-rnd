@@ -220,11 +220,33 @@ int hid_actionl(const char *name, ...)
 	return hid_actionv(name, argc, argv);
 }
 
-int hid_actionv(const char *name, int argc, char **argv)
+int hid_actionv_(const HID_Action *a, int argc, char **argv)
 {
 	Coord x = 0, y = 0;
 	int i, ret;
-	const HID_Action *a, *old_action;
+	const HID_Action *old_action;
+
+	if (a->need_coord_msg)
+		gui->get_coords(_(a->need_coord_msg), &x, &y);
+
+	if (conf_core.rc.verbose) {
+		printf("Action: \033[34m%s(", a->name);
+		for (i = 0; i < argc; i++)
+			printf("%s%s", i ? "," : "", argv[i]);
+		printf(")\033[0m\n");
+	}
+
+	old_action = current_action;
+	current_action = a;
+	ret = current_action->trigger_cb(argc, argv, x, y);
+	current_action = old_action;
+
+	return ret;
+}
+
+int hid_actionv(const char *name, int argc, char **argv)
+{
+	const HID_Action *a;
 
 	if (!name)
 		return 1;
@@ -238,23 +260,7 @@ int hid_actionv(const char *name, int argc, char **argv)
 		Message(")\n");
 		return 1;
 	}
-
-	if (a->need_coord_msg)
-		gui->get_coords(_(a->need_coord_msg), &x, &y);
-
-	if (conf_core.rc.verbose) {
-		printf("Action: \033[34m%s(", name);
-		for (i = 0; i < argc; i++)
-			printf("%s%s", i ? "," : "", argv[i]);
-		printf(")\033[0m\n");
-	}
-
-	old_action = current_action;
-	current_action = a;
-	ret = current_action->trigger_cb(argc, argv, x, y);
-	current_action = old_action;
-
-	return ret;
+	return hid_actionv_(a, argc, argv);
 }
 
 static int hid_parse_actionstring(const char *rstr, char require_parens)

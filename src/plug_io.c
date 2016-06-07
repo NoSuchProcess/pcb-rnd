@@ -471,7 +471,7 @@ int SavePCB(char *file)
  */
 void set_some_route_style()
 {
-	if (hid_get_flag("style"))
+	if (hid_get_flag("GetStyle()"))
 		return;
 	SetLineSize(PCB->RouteStyle[0].Thick);
 	SetViaSize(PCB->RouteStyle[0].Diameter, true);

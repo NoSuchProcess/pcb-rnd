@@ -807,13 +807,6 @@ static int vendor_get_enabled(int unused)
 	return vendorMapEnable;
 }
 
-#warning TODO: make this a normal config item in plugins/
-HID_Flag vendor_flag_list[] = {
-	{"VendorMapOn", vendor_get_enabled, 0}
-};
-
-REGISTER_FLAGS(vendor_flag_list, vendor_cookie)
-
 static char **vendor_free_vect(char **lst, int *len)
 {
 	if (lst != NULL) {
@@ -843,7 +836,6 @@ static void vendor_free_all(void)
 static void hid_vendordrill_uninit(void)
 {
 	hid_remove_actions_by_cookie(vendor_cookie);
-	hid_remove_flags_by_cookie(vendor_cookie);
 	vendor_free_all();
 }
 
@@ -854,6 +846,5 @@ pcb_uninit_t hid_vendordrill_init(void)
 	stub_vendorIsElementMappable = vendorIsElementMappable;
 
 	REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
-	REGISTER_FLAGS(vendor_flag_list, vendor_cookie)
 	return hid_vendordrill_uninit;
 }

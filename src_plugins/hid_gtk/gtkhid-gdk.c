@@ -497,11 +497,11 @@ void ghid_draw_arc(hidGC gc, Coord cx, Coord cy, Coord xradius, Coord yradius, A
 	vrx = Vz(xradius);
 	vry = Vz(yradius);
 
-	if (gport->view.flip_x) {
+	if (conf_core.editor.view.flip_x) {
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
 	}
-	if (gport->view.flip_y) {
+	if (conf_core.editor.view.flip_y) {
 		start_angle = -start_angle;
 		delta_angle = -delta_angle;
 	}
@@ -1081,9 +1081,9 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	gport->height = height;
 	gport->view.width = width * gport->view.coord_per_px;
 	gport->view.height = height * gport->view.coord_per_px;
-	gport->view.x0 = gport->view.flip_x ? PCB->MaxWidth - cx : cx;
+	gport->view.x0 = conf_core.editor.view.flip_x ? PCB->MaxWidth - cx : cx;
 	gport->view.x0 -= gport->view.height / 2;
-	gport->view.y0 = gport->view.flip_y ? PCB->MaxHeight - cy : cy;
+	gport->view.y0 = conf_core.editor.view.flip_y ? PCB->MaxHeight - cy : cy;
 	gport->view.y0 -= gport->view.width / 2;
 
 	/* clear background */

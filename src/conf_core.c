@@ -30,4 +30,10 @@ void conf_core_postproc()
 	conf_clamp_to(CFT_COORD, conf_core.design.via_drilling_hole, 0, MAX_COORD, DEFAULT_DRILLINGHOLE * conf_core.design.via_thickness / 100);
 	conf_clamp(CFT_COORD, conf_core.design.max_width, MIN_SIZE, MAX_COORD);
 	conf_clamp(CFT_COORD, conf_core.design.max_height, MIN_SIZE, MAX_COORD);
+#if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
+	conf_force_set_bool(conf_core.rc.have_regex, 1);
+#else
+	conf_force_set_bool(conf_core.rc.have_regex, 0);
+#endif
+
 }

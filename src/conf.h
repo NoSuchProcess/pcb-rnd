@@ -231,6 +231,9 @@ do { \
 #define conf_toggle_editor(field) \
 	conf_set_editor(field, !conf_core.editor.field)
 
+#define conf_toggle_editor_(sfield, field) \
+	conf_set_editor(sfield, !conf_core.editor.field)
+
 /* For temporary modification/restoration of variables (hack) */
 #define conf_force_set_bool(var, val) *((CFT_BOOLEAN *)(&var)) = val
 

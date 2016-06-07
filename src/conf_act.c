@@ -23,9 +23,13 @@
  *
  */
 
+#include "global.h"
+#include "data.h"
 #include "config.h"
 #include "conf.h"
+#include "conf_core.h"
 #include "error.h"
+#include "misc.h"
 
 static const char conf_syntax[] =
 	"conf(set, path, value, [role], [policy]) - change a config setting\n"
@@ -145,10 +149,133 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
+/*------------ get/chk (check flag actions for menus) ------------------*/
+static const char GetStyle_syntax[] = "GetStyle()" ;
+static const char GetStyle_help[] = "Return integer index (>=1) of the currently active style or 0 if no style is selected";
+static int ActionGetStyle(int argc, char **argv, Coord x, Coord y)
+{
+	STYLE_LOOP(PCB);
+	{
+		if (style->Thick == conf_core.design.line_thickness &&
+				style->Diameter == conf_core.design.via_thickness &&
+				style->Hole == conf_core.design.via_drilling_hole && style->Keepaway == conf_core.design.keepaway)
+			return n + 1;
+	}
+	END_LOOP;
+	return 0;
+}
+
+static const char ChkMode_syntax[] = "ChkMode(expected_mode)" ;
+static const char ChkMode_help[] = "Return 1 if the currently selected mode is the expected_mode";
+static int ActionChkMode(int argc, char **argv, Coord x, Coord y)
+{
+#warning TODO: convert this to a compile-time hash
+	struct {
+		char *name;
+		int mode;
+	} *m, modes[] = {
+		{"none", NO_MODE},
+		{"arc", ARC_MODE},
+		{"arrow", ARROW_MODE},
+		{"copy", COPY_MODE},
+		{"insertpoint", INSERTPOINT_MODE},
+		{"line", LINE_MODE},
+		{"lock", LOCK_MODE},
+		{"move", MOVE_MODE},
+		{"pastebuffer", PASTEBUFFER_MODE},
+		{"polygon", POLYGON_MODE},
+		{"polygonhole", POLYGONHOLE_MODE},
+		{"rectangle", RECTANGLE_MODE},
+		{"remove", REMOVE_MODE},
+		{"rotate", ROTATE_MODE},
+		{"rubberbandmove", RUBBERBANDMOVE_MODE},
+		{"text", TEXT_MODE},
+		{"thermal", THERMAL_MODE},
+		{"via", VIA_MODE},
+		{NULL, 0}
+	};
+	assert(argc == 1);
+	for(m = modes; m->name != NULL; m++) {
+		if (strcmp(m->name, argv[0]) == 0)
+			return conf_core.editor.mode == m->mode;
+	}
+	Message("Unknown mode in ChkMode(): %s\n", argv[1]);
+	abort();
+	return -1;
+}
+
+
+static const char ChkGridSize_syntax[] = 
+	"ChkGridSize(expected_size)\n"
+	"ChkGridSize(none)\n"
+	;
+static const char ChkGridSize_help[] = "Return 1 if the currently selected grid matches the expected_size. If argument is \"none\" return 1 if there is no grid.";
+static int ActionChkGridSize(int argc, char **argv, Coord x, Coord y)
+{
+	assert(argc == 1);
+	if (strcmp(argv[0], "none") == 0)
+		return PCB->Grid <= 300;
+
+	return (PCB->Grid == GetValueEx(argv[0], NULL, NULL, NULL, NULL, NULL));
+}
+
+static const char ChkElementName_syntax[] = 
+	"ChkElementName(1) - expect description\n"
+	"ChkElementName(2) - expect refdes\n"
+	"ChkElementName(3) - expect value\n"
+	;
+static const char ChkElementName_help[] = "Return 1 if currently shown element label (name) type matches the expected";
+static int ActionChkElementName(int argc, char **argv, Coord x, Coord y)
+{
+	int have, expected = argv[0][0] - '0';
+
+	assert(argc == 1);
+	if (conf_core.editor.description) have = 1;
+	else if (conf_core.editor.name_on_pcb) have = 2;
+	else have = 3;
+
+	return expected == have;
+}
+
+static const char ChkGridUnits_syntax[] = "ChkGridUnits(expected)";
+static const char ChkGridUnits_help[] = "Return 1 if currently selected grid unit matches the expected (normally mm or mil)";
+static int ActionChkGridUnits(int argc, char **argv, Coord x, Coord y)
+{
+	assert(argc == 1);
+	return strcmp(conf_core.editor.grid_unit->suffix, argv[0]) == 0;
+}
+
+static const char ChkBuffer_syntax[] = "ChkBuffer(idx)";
+static const char ChkBuffer_help[] = "Return 1 if currently selected buffer's index matches idx";
+static int ActionChkBuffer(int argc, char **argv, Coord x, Coord y)
+{
+	int expected = argv[0][0] - '0';
+	assert(argc == 1);
+printf("Checkbuffer: %d == %d -> %d\n", (conf_core.editor.buffer_number + 1), expected, (conf_core.editor.buffer_number + 1) == expected );
+	return (conf_core.editor.buffer_number + 1) == expected;
+}
 
 HID_Action conf_action_list[] = {
 	{"conf", 0, ActionConf,
 	 conf_help, conf_syntax}
+	,
+	{"GetStyle", 0, ActionGetStyle,
+	 GetStyle_help, GetStyle_syntax}
+	,
+	{"ChkMode", 0, ActionChkMode,
+	 ChkMode_help, ChkMode_syntax}
+	,
+	{"ChkGridSize", 0, ActionChkGridSize,
+	 ChkGridSize_help, ChkGridSize_syntax}
+	,
+	{"ChkElementName", 0, ActionChkElementName,
+	 ChkElementName_help, ChkElementName_syntax}
+	,
+	{"ChkGridUnits", 0, ActionChkGridUnits,
+	 ChkGridUnits_help, ChkGridUnits_syntax}
+	,
+	{"ChkBuffer", 0, ActionChkBuffer,
+	 ChkBuffer_help, ChkBuffer_syntax}
 };
 
 REGISTER_ACTIONS(conf_action_list, NULL)

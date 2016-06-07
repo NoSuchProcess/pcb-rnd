@@ -148,7 +148,6 @@ static int view_left_x = 0, view_top_y = 0;
    out - the largest value means you are looking at the whole
    board.  */
 static double view_zoom = MIL_TO_COORD(10), prev_view_zoom = MIL_TO_COORD(10);
-static bool flip_x = 0, flip_y = 0;
 static bool autofade = 0;
 static bool crosshair_on = true;
 
@@ -170,24 +169,6 @@ static void ShowCrosshair(bool show)
 	if (Marked.status)
 		notify_mark_change(true);
 }
-
-static int flag_flipx(int x)
-{
-	return flip_x;
-}
-
-static int flag_flipy(int x)
-{
-	return flip_y;
-}
-
-HID_Flag lesstif_main_flag_list[] = {
-	{"flip_x", flag_flipx, 0}
-	,
-	{"flip_y", flag_flipy, 0}
-};
-
-REGISTER_FLAGS(lesstif_main_flag_list, lesstif_cookie)
 
 /* This is the size of the current PCB work area.  */
 /* Use PCB->MaxWidth, PCB->MaxHeight.  */
@@ -257,7 +238,7 @@ REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 		   Vx(Coord x)
 {
 	int rv = (x - view_left_x) / view_zoom + 0.5;
-	if (flip_x)
+	if (conf_core.editor.view.flip_x)
 		rv = view_width - rv;
 	return rv;
 }
@@ -265,7 +246,7 @@ REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 static inline int Vy(Coord y)
 {
 	int rv = (y - view_top_y) / view_zoom + 0.5;
-	if (flip_y)
+	if (conf_core.editor.view.flip_y)
 		rv = view_height - rv;
 	return rv;
 }
@@ -277,14 +258,14 @@ static inline int Vz(Coord z)
 
 static inline Coord Px(int x)
 {
-	if (flip_x)
+	if (conf_core.editor.view.flip_x)
 		x = view_width - x;
 	return x * view_zoom + view_left_x;
 }
 
 static inline Coord Py(int y)
 {
-	if (flip_y)
+	if (conf_core.editor.view.flip_y)
 		y = view_height - y;
 	return y * view_zoom + view_top_y;
 }
@@ -594,33 +575,33 @@ static int SwapSides(int argc, char **argv, Coord x, Coord y)
 		switch (argv[0][0]) {
 		case 'h':
 		case 'H':
-			flip_x = !flip_x;
+			conf_toggle_editor_("view/flip_x", view.flip_x);
 			break;
 		case 'v':
 		case 'V':
-			flip_y = !flip_y;
+			conf_toggle_editor_("view/flip_y", view.flip_y);
 			break;
 		case 'r':
 		case 'R':
-			flip_x = !flip_x;
-			flip_y = !flip_y;
+			conf_toggle_editor_("view/flip_x", view.flip_x);
+			conf_toggle_editor_("view/flip_y", view.flip_y);
 			break;
 		default:
 			return 1;
 		}
 		/* SwapSides will swap this */
-		conf_set_editor(show_solder_side, (flip_x == flip_y));
+		conf_set_editor(show_solder_side, (conf_core.editor.view.flip_x == conf_core.editor.view.flip_y));
 	}
 
 	stdarg_n = 0;
-	if (flip_x)
+	if (conf_core.editor.view.flip_x)
 		stdarg(XmNprocessingDirection, XmMAX_ON_LEFT);
 	else
 		stdarg(XmNprocessingDirection, XmMAX_ON_RIGHT);
 	XtSetValues(hscroll, stdarg_args, stdarg_n);
 
 	stdarg_n = 0;
-	if (flip_y)
+	if (conf_core.editor.view.flip_y)
 		stdarg(XmNprocessingDirection, XmMAX_ON_TOP);
 	else
 		stdarg(XmNprocessingDirection, XmMAX_ON_BOTTOM);
@@ -867,10 +848,10 @@ static int CursorAction(int argc, char **argv, Coord x, Coord y)
 		AFAIL(cursor);
 
 	dx = GetValueEx(argv[1], argv[3], NULL, extra_units_x, "mil", NULL);
-	if (flip_x)
+	if (conf_core.editor.view.flip_x)
 		dx = -dx;
 	dy = GetValueEx(argv[2], argv[3], NULL, extra_units_y, "mil", NULL);
-	if (!flip_y)
+	if (!conf_core.editor.view.flip_y)
 		dy = -dy;
 
 	EventMoveCrosshair(Crosshair.X + dx, Crosshair.Y + dy);
@@ -1148,9 +1129,9 @@ static void zoom_to(double new_zoom, int x, int y)
 	xfrac = (double) x / (double) view_width;
 	yfrac = (double) y / (double) view_height;
 
-	if (flip_x)
+	if (conf_core.editor.view.flip_x)
 		xfrac = 1 - xfrac;
-	if (flip_y)
+	if (conf_core.editor.view.flip_y)
 		yfrac = 1 - yfrac;
 
 	max_zoom = PCB->MaxWidth / view_width;
@@ -1209,9 +1190,9 @@ static void Pan(int mode, int x, int y)
 	if (pan_thumb_mode) {
 		opx = x * PCB->MaxWidth / view_width;
 		opy = y * PCB->MaxHeight / view_height;
-		if (flip_x)
+		if (conf_core.editor.view.flip_x)
 			opx = PCB->MaxWidth - opx;
-		if (flip_y)
+		if (conf_core.editor.view.flip_y)
 			opy = PCB->MaxHeight - opy;
 		view_left_x = opx - view_width / 2 * view_zoom;
 		view_top_y = opy - view_height / 2 * view_zoom;
@@ -1228,11 +1209,11 @@ static void Pan(int mode, int x, int y)
 	/* continued drag, we calculate how far we've moved the cursor and
 	   set the position accordingly.  */
 	else {
-		if (flip_x)
+		if (conf_core.editor.view.flip_x)
 			view_left_x = opx + (x - ox) * view_zoom;
 		else
 			view_left_x = opx - (x - ox) * view_zoom;
-		if (flip_y)
+		if (conf_core.editor.view.flip_y)
 			view_top_y = opy + (y - oy) * view_zoom;
 		else
 			view_top_y = opy - (y - oy) * view_zoom;
@@ -2198,7 +2179,7 @@ static void draw_grid()
 		XSetFunction(display, grid_gc, GXxor);
 		XSetForeground(display, grid_gc, grid_color);
 	}
-	if (flip_x) {
+	if (conf_core.editor.view.flip_x) {
 		x2 = GridFit(Px(0), PCB->Grid, PCB->GridOffsetX);
 		x1 = GridFit(Px(view_width), PCB->Grid, PCB->GridOffsetX);
 		if (Vx(x2) < 0)
@@ -2214,7 +2195,7 @@ static void draw_grid()
 		if (Vx(x2) >= view_width)
 			x2 -= PCB->Grid;
 	}
-	if (flip_y) {
+	if (conf_core.editor.view.flip_y) {
 		y2 = GridFit(Py(0), PCB->Grid, PCB->GridOffsetY);
 		y1 = GridFit(Py(view_height), PCB->Grid, PCB->GridOffsetY);
 		if (Vy(y2) < 0)
@@ -2383,12 +2364,12 @@ static Boolean idle_proc(XtPointer dummy)
 		region.Y1 = Py(0);
 		region.X2 = Px(view_width);
 		region.Y2 = Py(view_height);
-		if (flip_x) {
+		if (conf_core.editor.view.flip_x) {
 			Coord tmp = region.X1;
 			region.X1 = region.X2;
 			region.X2 = tmp;
 		}
-		if (flip_y) {
+		if (conf_core.editor.view.flip_y) {
 			Coord tmp = region.Y1;
 			region.Y1 = region.Y2;
 			region.Y2 = tmp;
@@ -3109,11 +3090,11 @@ static void lesstif_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord he
 	height = Vz(height);
 	cx = Vx(cx) - width;
 	cy = Vy(cy) - height;
-	if (flip_x) {
+	if (conf_core.editor.view.flip_x) {
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
 	}
-	if (flip_y) {
+	if (conf_core.editor.view.flip_y) {
 		start_angle = -start_angle;
 		delta_angle = -delta_angle;
 	}
@@ -3307,11 +3288,11 @@ static void lesstif_set_crosshair(int x, int y, int action)
 		unsigned int keys_buttons;
 		int pos_x, pos_y, root_x, root_y;
 		XQueryPointer(display, window, &root, &child, &root_x, &root_y, &pos_x, &pos_y, &keys_buttons);
-		if (flip_x)
+		if (conf_core.editor.view.flip_x)
 			view_left_x = x - (view_width - pos_x) * view_zoom;
 		else
 			view_left_x = x - pos_x * view_zoom;
-		if (flip_y)
+		if (conf_core.editor.view.flip_y)
 			view_top_y = y - (view_height - pos_y) * view_zoom;
 		else
 			view_top_y = y - pos_y * view_zoom;
@@ -3513,8 +3494,8 @@ static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStr
 	save_vz = view_zoom;
 	save_vw = view_width;
 	save_vh = view_height;
-	save_fx = flip_x;
-	save_fy = flip_y;
+	save_fx = conf_core.editor.view.flip_x;
+	save_fy = conf_core.editor.view.flip_y;
 	save_px = pixmap;
 	pinout = pd;
 	pixmap = pd->window;
@@ -3524,8 +3505,8 @@ static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStr
 	view_width = pd->v_width;
 	view_height = pd->v_height;
 	use_mask = 0;
-	flip_x = flip_y = 0;
-
+	conf_force_set_bool(conf_core.editor.view.flip_x, 0);
+	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
 	region.X1 = 0;
 	region.Y1 = 0;
 	region.X2 = PCB->MaxWidth;
@@ -3541,8 +3522,8 @@ static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStr
 	view_width = save_vw;
 	view_height = save_vh;
 	pixmap = save_px;
-	flip_x = save_fx;
-	flip_y = save_fy;
+	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx);
+	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
 }
 
 static void pinout_unmap(Widget w, PinoutData * pd, void *v)
@@ -3854,7 +3835,6 @@ pcb_uninit_t hid_hid_lesstif_init()
 static void lesstif_begin(void)
 {
 	REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)
-	REGISTER_FLAGS(lesstif_main_flag_list, lesstif_cookie)
 	REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 	REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
 	REGISTER_ACTIONS(lesstif_dialog_action_list, lesstif_cookie)
@@ -3866,6 +3846,5 @@ static void lesstif_begin(void)
 static void lesstif_end(void)
 {
 	hid_remove_actions_by_cookie(lesstif_cookie);
-	hid_remove_flags_by_cookie(lesstif_cookie);
 	hid_remove_attributes_by_cookie(lesstif_cookie);
 }

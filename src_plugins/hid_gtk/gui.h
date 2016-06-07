@@ -40,7 +40,7 @@
 #include "ghid-coord-entry.h"
 #include "ghid-main-menu.h"
 #include "gui-pinout-preview.h"
-
+#include "conf_core.h"
 
 	/* Silk and rats lines are the two additional selectable to draw on.
 	   |  gui code in gui-top-window.c and group code in misc.c must agree
@@ -64,8 +64,8 @@
 #define	FROM_PCB_UNITS(v)	coord_to_unit (conf_core.editor.grid_unit, v)
 #define	TO_PCB_UNITS(v)		unit_to_coord (conf_core.editor.grid_unit, v)
 
-#define SIDE_X(x)         ((gport->view.flip_x ? PCB->MaxWidth - (x) : (x)))
-#define SIDE_Y(y)         ((gport->view.flip_y ? PCB->MaxHeight - (y) : (y)))
+#define SIDE_X(x)         ((conf_core.editor.view.flip_x ? PCB->MaxWidth - (x) : (x)))
+#define SIDE_Y(y)         ((conf_core.editor.view.flip_y ? PCB->MaxHeight - (y) : (y)))
 
 #define	DRAW_X(x)         (gint)((SIDE_X(x) - gport->view.x0) / gport->view.coord_per_px)
 #define	DRAW_Y(y)         (gint)((SIDE_Y(y) - gport->view.y0) / gport->view.coord_per_px)
@@ -138,9 +138,6 @@ typedef struct {
 	Coord y0;
 	Coord width;
 	Coord height;
-
-	bool flip_x;
-	bool flip_y;
 
 } view_data;
 
@@ -466,7 +463,7 @@ extern GdkPixmap *XC_clock_source, *XC_clock_mask;
 static inline int Vx(Coord x)
 {
 	int rv;
-	if (gport->view.flip_x)
+	if (conf_core.editor.view.flip_x)
 		rv = (PCB->MaxWidth - x - gport->view.x0) / gport->view.coord_per_px + 0.5;
 	else
 		rv = (x - gport->view.x0) / gport->view.coord_per_px + 0.5;
@@ -476,7 +473,7 @@ static inline int Vx(Coord x)
 static inline int Vy(Coord y)
 {
 	int rv;
-	if (gport->view.flip_y)
+	if (conf_core.editor.view.flip_y)
 		rv = (PCB->MaxHeight - y - gport->view.y0) / gport->view.coord_per_px + 0.5;
 	else
 		rv = (y - gport->view.y0) / gport->view.coord_per_px + 0.5;
@@ -491,7 +488,7 @@ static inline int Vz(Coord z)
 static inline Coord Px(int x)
 {
 	Coord rv = x * gport->view.coord_per_px + gport->view.x0;
-	if (gport->view.flip_x)
+	if (conf_core.editor.view.flip_x)
 		rv = PCB->MaxWidth - (x * gport->view.coord_per_px + gport->view.x0);
 	return rv;
 }
@@ -499,7 +496,7 @@ static inline Coord Px(int x)
 static inline Coord Py(int y)
 {
 	Coord rv = y * gport->view.coord_per_px + gport->view.y0;
-	if (gport->view.flip_y)
+	if (conf_core.editor.view.flip_y)
 		rv = PCB->MaxHeight - (y * gport->view.coord_per_px + gport->view.y0);
 	return rv;
 }

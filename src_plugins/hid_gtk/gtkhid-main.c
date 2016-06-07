@@ -135,8 +135,8 @@ static void ghid_flip_view(Coord center_x, Coord center_y, bool flip_x, bool fli
 	/* Work out where on the screen the flip point is */
 	ghid_pcb_to_event_coords(center_x, center_y, &widget_x, &widget_y);
 
-	gport->view.flip_x = gport->view.flip_x != flip_x;
-	gport->view.flip_y = gport->view.flip_y != flip_y;
+	conf_set_design("editor/view/flip_x", "%d", conf_core.editor.view.flip_x != flip_x);
+	conf_SET_design("editor/view/flip_y", "%d", conf_core.editor.view.flip_y != flip_y);
 
 	/* Pan the board so the center location remains in the same place */
 	ghid_pan_view_abs(center_x, center_y, widget_x, widget_y);
@@ -1515,10 +1515,10 @@ static int CursorAction(int argc, char **argv, Coord x, Coord y)
 		AFAIL(cursor);
 
 	dx = GetValueEx(argv[1], argv[3], NULL, extra_units_x, "", NULL);
-	if (gport->view.flip_x)
+	if (conf_core.editor.view.flip_x)
 		dx = -dx;
 	dy = GetValueEx(argv[2], argv[3], NULL, extra_units_y, "", NULL);
-	if (!gport->view.flip_y)
+	if (!conf_core.editor.view.flip_y)
 		dy = -dy;
 
 	EventMoveCrosshair(Crosshair.X + dx, Crosshair.Y + dy);
@@ -1867,25 +1867,17 @@ HID_Action ghid_main_action_list[] = {
 
 REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 
-
-		 static int
-		   flag_flipx(int x)
+#warning are these still in use? also check lesstif
+static int flag_flipx(int x)
 {
-	return gport->view.flip_x;
+	return conf_core.editor.view.flip_x;
 }
 
 static int flag_flipy(int x)
 {
-	return gport->view.flip_y;
+	return conf_core.editor.view.flip_y;
 }
 
-HID_Flag ghid_main_flag_list[] = {
-	{"flip_x", flag_flipx, 0}
-	,
-	{"flip_y", flag_flipy, 0}
-};
-
-REGISTER_FLAGS(ghid_main_flag_list, ghid_cookie)
 
 #include "dolists.h"
 /*
@@ -2010,7 +2002,6 @@ pcb_uninit_t hid_hid_gtk_init()
 
 void gtkhid_begin(void)
 {
-	REGISTER_FLAGS(ghid_main_flag_list, ghid_cookie)
 	REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 	REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
 	REGISTER_ACTIONS(ghid_netlist_action_list, ghid_cookie)
@@ -2023,6 +2014,5 @@ void gtkhid_begin(void)
 void gtkhid_end(void)
 {
 	hid_remove_actions_by_cookie(ghid_cookie);
-	hid_remove_flags_by_cookie(ghid_cookie);
 	hid_remove_attributes_by_cookie(ghid_cookie);
 }

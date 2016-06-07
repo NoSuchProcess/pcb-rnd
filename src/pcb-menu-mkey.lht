@@ -259,12 +259,12 @@ ha:{
 				-
 				ha:Select by name {
 					li:submenu {
-						ha:All objects           = { active=have_regex; action=Select(ObjectByName) }
-						ha:Elements              = { active=have_regex; action=Select(ElementByName) }
-						ha:Pads                  = { active=have_regex; action=Select(PadByName) }
-						ha:Pins                  = { active=have_regex; action=Select(PinByName) }
-						ha:Text                  = { active=have_regex; action=Select(TextByName) }
-						ha:Vias                  = { active=have_regex; action=Select(ViaByName) }
+						ha:All objects           = { active=rc/have_regex; action=Select(ObjectByName) }
+						ha:Elements              = { active=rc/have_regex; action=Select(ElementByName) }
+						ha:Pads                  = { active=rc/have_regex; action=Select(PadByName) }
+						ha:Pins                  = { active=rc/have_regex; action=Select(PinByName) }
+						ha:Text                  = { active=rc/have_regex; action=Select(TextByName) }
+						ha:Vias                  = { active=rc/have_regex; action=Select(ViaByName) }
 					}
 				}
 				-

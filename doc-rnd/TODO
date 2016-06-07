@@ -1,4 +1,5 @@
 - replace settings with lihata (conf_*)
+	- chaneg ha:view to li:view in the conf -> segfault
 	- menu lht updates:
 		- fix lesstif menu lht for conf(toggle, editor/draw_grid, design)
 		- pcb-menu-mkey.lht

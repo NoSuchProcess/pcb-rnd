@@ -54,6 +54,11 @@ typedef struct {
 		CFT_BOOLEAN description;           /* display element description as element name, instead of value */
 		CFT_BOOLEAN name_on_pcb;           /* display Reference Designator as element name, instead of value */
 
+		struct view {
+			CFT_BOOLEAN flip_x;              /* view: flip the board along the X (horizontal) axis */
+			CFT_BOOLEAN flip_y;              /* view: flip the board along the Y (vertical) axis */
+		} view;
+
 		/* these two would need to be moved in the router plugin.... There are two
 		   reasons to keep them here:
 		   - the original pcb and pcb-rnd file formats already have named/numbered flags for these, so io_pcb needs these
@@ -84,6 +89,8 @@ typedef struct {
 		CFT_STRING rat_command;
 
 		CFT_LIST preferred_gui;            /* if set, try GUI HIDs in this order when no GUI is explicitly selected */
+
+		CFT_BOOLEAN have_regex;            /* auto-set by postproc: whether we have regex compiled in */
 	} rc;
 
 	const struct design { /* defaults of a new layout */

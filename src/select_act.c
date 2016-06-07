@@ -236,16 +236,6 @@ static int ActionSelect(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-/* FLAG(have_regex,FlagHaveRegex,0) */
-int FlagHaveRegex(int parm)
-{
-#if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
-	return 1;
-#else
-	return 0;
-#endif
-}
-
 /* --------------------------------------------------------------------------- */
 
 static const char unselect_syntax[] =

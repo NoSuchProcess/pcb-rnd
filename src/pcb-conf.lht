@@ -69,6 +69,10 @@ li:pcb_config {
 			enable_stroke = 0
 			live_routing = 0
 			beep_when_finished = 0
+			ha:view {
+				flip_x = 0
+				flip_y = 0
+			}
 		} # editor
 
 		ha:rc {

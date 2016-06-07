@@ -120,7 +120,7 @@ void lesstif_styles_update_values()
 
 static void update_style_buttons()
 {
-	int i = hid_get_flag("style");
+	int i = hid_get_flag("GetStyle()");
 	int j, n;
 
 	for (n = 0; n < num_style_buttons; n++) {
