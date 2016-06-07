@@ -2001,6 +2001,8 @@ pcb_uninit_t hid_hid_gtk_init()
 
 	ghid_hid.create_menu = ghid_create_menu;
 
+	ghid_hid.usage = ghid_usage;
+
 	hid_register_hid(&ghid_hid);
 
 	return NULL;

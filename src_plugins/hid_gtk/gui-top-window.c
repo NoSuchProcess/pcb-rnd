@@ -1395,6 +1395,14 @@ automatically scaled to fit the canvas.
 #define HA_bg_image 1
 };
 
+int ghid_usage(char *topic)
+{
+	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
+	hid_usage(ghid_attribute_list, sizeof(ghid_attribute_list) / sizeof(ghid_attribute_list[0]));
+	fprintf(stderr, "\nInvocation: %s --gui gtk [options]\n", Progname);
+}
+
+
 REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
 
 		 HID_Attribute *ghid_get_export_options(int *n_ret)

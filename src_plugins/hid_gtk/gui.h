@@ -514,4 +514,6 @@ extern hid_cfg_mouse_t ghid_mouse;
 extern hid_cfg_keys_t ghid_keymap;
 extern int ghid_wheel_zoom;
 
+int ghid_usage(char *topic);
+
 #endif /* PCB_HID_GTK_GHID_GUI_H */
