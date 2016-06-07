@@ -3765,6 +3765,13 @@ static void lesstif_finish_debug_draw(void)
 	 */
 }
 
+static int lesstif_usage(char *topic)
+{
+	fprintf(stderr, "\nLesstif GUI command line arguments:\n\n");
+	hid_usage(lesstif_attribute_list, sizeof(lesstif_attribute_list) / sizeof(lesstif_attribute_list[0]));
+	fprintf(stderr, "\nInvocation: %s --gui lesstif [options]\n", Progname);
+}
+
 #include "dolists.h"
 
 void lesstif_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
@@ -3837,6 +3844,7 @@ pcb_uninit_t hid_hid_lesstif_init()
 	lesstif_hid.finish_debug_draw = lesstif_finish_debug_draw;
 
 	lesstif_hid.create_menu = lesstif_create_menu;
+	lesstif_hid.usage = lesstif_usage;
 
 	hid_register_hid(&lesstif_hid);
 
