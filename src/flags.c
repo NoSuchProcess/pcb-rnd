@@ -36,20 +36,7 @@
 #include "data.h"
 #include "hid_flags.h"
 
-#warning TODO: these must be removed in favor of conf
+#warning TODO: REMOVE THIS FILE.
 
 RCSID("$Id$");
 
-/* The cast to (int) is ONLY valid because we know we are
- * taking offsets on structures where the offset will fit
- * in an integer variable. It silences compile warnings on
- * 64bit machines.
- */
-/*
-#define OffsetOf(a,b) (int)(size_t)(&(((a *)0)->b))
-HID_Flag flags_flag_list[] = {
-	{"buffer", FlagBuffer, 0}
-	,
-};
-
-*/

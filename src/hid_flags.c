@@ -77,32 +77,6 @@ int hid_get_flag(const char *name)
 //			abort();
 		}
 	}
-
-#warning TODO: check this in practice
-#if 0
-	cp = strchr(name, ',');
-	if (cp) {
-		int wv;
-
-		if (nbuf < (cp - name + 1)) {
-			nbuf = cp - name + 10;
-			buf = (char *) realloc(buf, nbuf);
-		}
-		memcpy(buf, name, cp - name);
-		buf[cp - name] = 0;
-		/* A number without units is just a number.  */
-		wv = GetValueEx(cp + 1, NULL, NULL, NULL, NULL, NULL);
-		f = hid_find_flag(buf);
-		if (!f)
-			return 0;
-		return f->function(f->parm) == wv;
-	}
-
-	f = hid_find_flag(name);
-	if (!f)
-		return 0;
-	return f->function(f->parm);
-#endif
 }
 
 

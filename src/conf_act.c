@@ -251,7 +251,7 @@ static int ActionChkBuffer(int argc, char **argv, Coord x, Coord y)
 {
 	int expected = argv[0][0] - '0';
 	assert(argc == 1);
-printf("Checkbuffer: %d == %d -> %d\n", (conf_core.editor.buffer_number + 1), expected, (conf_core.editor.buffer_number + 1) == expected );
+
 	return (conf_core.editor.buffer_number + 1) == expected;
 }
 
