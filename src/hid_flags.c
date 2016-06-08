@@ -15,11 +15,8 @@
 #include "genht/hash.h"
 #include "genht/htsp.h"
 
-#warning TODO: THIS ENTIRE FILE SHOULD BE GONE in favor of the new config system (the config system may need callbacks then?)
-
 RCSID("$Id$");
 
-#warning TODO: move this to conf
 #warning TODO: return -1 on not found, prepare caller code to deal with this (e.g. disable menu)
 int hid_get_flag(const char *name)
 {
