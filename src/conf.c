@@ -586,7 +586,24 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 	vtp0_init(&(node->hid_data));
 
 	htsp_set(conf_fields, (char *)path, node);
+}
 
+void conf_unreg_fields(const char *prefix)
+{
+	int len = strlen(prefix);
+	htsp_entry_t *e;
+
+	assert(prefix[len-1] == '/');
+
+	conf_fields_foreach(e) {
+		if (strncmp(e->key, prefix, len) == 0) {
+			conf_native_t *node = e->value;
+			htsp_pop(conf_fields, e->value);
+			vtp0_uninit(&(node->hid_data));
+			free(node->prop);
+			free(node);
+		}
+	}
 }
 
 conf_native_t *conf_get_field(const char *path)

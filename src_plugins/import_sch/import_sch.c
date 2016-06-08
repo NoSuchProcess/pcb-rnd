@@ -443,6 +443,7 @@ REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
 static void hid_import_sch_uninit(void)
 {
 	hid_remove_actions_by_cookie(import_sch_cookie);
+	conf_unreg_fields("plugins/import_sch/");
 }
 
 #include "dolists.h"

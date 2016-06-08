@@ -403,6 +403,10 @@ void rat_proc_shorts(void)
 	shorts = NULL;
 }
 
+void hid_mincut_uninit(void)
+{
+	conf_unreg_fields("plugins/mincut/");
+}
 
 #include "stub_mincut.h"
 pcb_uninit_t hid_mincut_init(void)
@@ -412,6 +416,6 @@ pcb_uninit_t hid_mincut_init(void)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc) \
 	conf_reg_field(conf_mincut, field,isarray,type_name,cpath,cname,desc);
 #include "rats_mincut_conf_fields.h"
-	return NULL;
+	return hid_mincut_uninit;
 }
 
