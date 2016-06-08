@@ -2,6 +2,7 @@ ha:{
 	li:mouse {
 		li:left {
 			li:press            = { Mode(Notify) }
+			li:press-shift      = { Mode(Notify) }
 			li:press-ctrl       = { Mode(Save); Mode(None); Mode(Restore); Mode(Notify) }
 			li:press-shift-ctrl = { Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore) }
 			li:release          = { Mode(Release) }
@@ -120,31 +121,31 @@ ha:{
 		ha:View {
 			m=V
 			li:submenu {
-				ha:Enable visible grid        = { checked=drawgrid; action=Display(Grid) }
+				ha:Enable visible grid        = { checked=editor/draw_grid; action=conf(toggle, editor/draw_grid, design) }
 				ha:Grid units {
 					li:submenu {
-						ha:mil                    = { checked=grid_units_mil,1; action=SetUnits(mil) }
-						ha:mm                     = { checked=grid_units_mm,1; action=SetUnits(mm) }
+						ha:mil                    = { checked=ChkGridUnits(mil); action=SetUnits(mil) }
+						ha:mm                     = { checked=ChkGridUnits(mm); action=SetUnits(mm) }
 					}
 				}
 				ha:Grid size = {
 					li:submenu {
-						ha:No Grid                = { checked=grid,0; action=SetValue(Grid,1) }
+						ha:No Grid                = { checked=ChkGridSize(none); action=SetValue(Grid,1) }
 						-
-						ha:0.1 mil                = { checked=gridsize,0.1mil; li:action={SetUnits(mil); SetValue(Grid,0.1mil)} }
-						ha:1 mil                  = { checked=gridsize,1mil; li:action={SetUnits(mil); SetValue(Grid,1mil)} }
-						ha:5 mil                  = { checked=gridsize,5mil; li:action={SetUnits(mil); SetValue(Grid,5mil)} }
-						ha:10 mil                 = { checked=gridsize,10mil; li:action={SetUnits(mil); SetValue(Grid,10mil)} }
-						ha:25 mil                 = { checked=gridsize,25mil; li:action={SetUnits(mil); SetValue(Grid,25mil)} }
-						ha:50 mil                 = { checked=gridsize,50mil; li:action={SetUnits(mil); SetValue(Grid,50mil)} }
-						ha:100 mil                = { checked=gridsize,100mil; li:action={SetUnits(mil); SetValue(Grid,100mil)} }
+						ha:0.1 mil                = { checked=ChkGridSize(0.1mil); li:action={SetUnits(mil); SetValue(Grid,0.1mil)} }
+						ha:1 mil                  = { checked=ChkGridSize(1mil); li:action={SetUnits(mil); SetValue(Grid,1mil)} }
+						ha:5 mil                  = { checked=ChkGridSize(5mil); li:action={SetUnits(mil); SetValue(Grid,5mil)} }
+						ha:10 mil                 = { checked=ChkGridSize(10mil); li:action={SetUnits(mil); SetValue(Grid,10mil)} }
+						ha:25 mil                 = { checked=ChkGridSize(25mil); li:action={SetUnits(mil); SetValue(Grid,25mil)} }
+						ha:50 mil                 = { checked=ChkGridSize(50mil); li:action={SetUnits(mil); SetValue(Grid,50mil)} }
+						ha:100 mil                = { checked=ChkGridSize(100mil); li:action={SetUnits(mil); SetValue(Grid,100mil)} }
 						-
-						ha:0.01 mm                = { checked=gridsize,0.01mm; li:action={SetUnits(mm); SetValue(Grid,0.01mm)} }
-						ha:0.05 mm                = { checked=gridsize,0.05mm; li:action={SetUnits(mm); SetValue(Grid,0.05mm)} }
-						ha:0.1 mm                 = { checked=gridsize,0.10mm; li:action={SetUnits(mm); SetValue(Grid,0.1mm)} }
-						ha:0.25 mm                = { checked=gridsize,0.25mm; li:action={SetUnits(mm); SetValue(Grid,0.25mm)} }
-						ha:0.5 mm                 = { checked=gridsize,0.50mm; li:action={SetUnits(mm); SetValue(Grid,0.5mm)} }
-						ha:1 mm                   = { checked=gridsize,1mm; li:action={SetUnits(mm); SetValue(Grid,1mm)} }
+						ha:0.01 mm                = { checked=ChkGridSize(0.01mm); li:action={SetUnits(mm); SetValue(Grid,0.01mm)} }
+						ha:0.05 mm                = { checked=ChkGridSize(0.05mm); li:action={SetUnits(mm); SetValue(Grid,0.05mm)} }
+						ha:0.1 mm                 = { checked=ChkGridSize(0.10mm); li:action={SetUnits(mm); SetValue(Grid,0.1mm)} }
+						ha:0.25 mm                = { checked=ChkGridSize(0.25mm); li:action={SetUnits(mm); SetValue(Grid,0.25mm)} }
+						ha:0.5 mm                 = { checked=ChkGridSize(0.50mm); li:action={SetUnits(mm); SetValue(Grid,0.5mm)} }
+						ha:1 mm                   = { checked=ChkGridSize(1mm); li:action={SetUnits(mm); SetValue(Grid,1mm)} }
 						-
 						ha:Grid -5mil             = { li:a={{<key>[};{Shift<Key>g};}; action=SetValue(Grid,-5,mil) }
 						ha:Grid +5mil             = { li:a={{<key>]};{<Key>g};};  action=SetValue(Grid,+5,mil) }
@@ -156,12 +157,12 @@ ha:{
 				-
 				ha:Displayed element name {
 					li:submenu {
-						ha:Description            = { checked=elementname,1; action=Display(Description) }
-						ha:Reference Designator   = { checked=elementname,2; action=Display(NameOnPCB) }
-						ha:Value                  = { checked=elementname,3; action=Display(Value) }
+						ha:Description            = { checked=ChkElementName(1); action=Display(Description) }
+						ha:Reference Designator   = { checked=ChkElementName(2); action=Display(NameOnPCB) }
+						ha:Value                  = { checked=ChkElementName(3); action=Display(Value) }
 					}
 				}
-				ha:Enable Pinout shows number = { checked=shownumber; action=Display(ToggleName) }
+				ha:Enable Pinout shows number = { checked=editor/show_number; action=conf(toggle, editor/show_number, design) }
 				ha:Pins/Via show Name/Number  = { a=<Key>d; action=Display(PinOrPadName) }
 				ha:Zoom In 20%                = { m=Z; a=<Key>z; action=Zoom(-1.2) }
 				ha:Zoom Out 20%               = { m=O; a=Shift<Key>z; action=Zoom(+1.2) }
@@ -210,29 +211,29 @@ ha:{
 		ha:Settings = {
 			m=S
 			li:submenu {
-				ha:'All-direction' lines            = { checked=alldirection; a=<Key>.; action=Display(ToggleAllDirections) }
-				ha:Auto swap line start angle       = { checked=swapstartdir; action=Display(ToggleStartDirection) }
-				ha:Orthogonal moves                 = { checked=orthomove; action=Display(ToggleOrthoMove) }
-				ha:Crosshair snaps to pins and pads = { checked=snappin; action=Display(ToggleSnapPin) }
-				ha:Crosshair snaps to off-grid points on lines = { checked=snapoffgridline; action=Display(ToggleSnapOffGridLine) }
-				ha:Crosshair shows DRC clearance    = { checked=showdrc; action=Display(ToggleShowDRC) }
-				ha:Auto enforce DRC clearance       = { checked=autodrc; action=Display(ToggleAutoDRC) }
-				ha:Lock Names                       = { checked=locknames; action=Display(ToggleLockNames) }
-				ha:Only Names                       = { checked=onlynames; action=Display(ToggleOnlyNames) }
-				ha:Hide Names                       = { checked=hidenames; action=Display(ToggleHideNames) }
+				ha:'All-direction' lines            = { checked=editor/alldirection_lines; a=<Key>.; action=conf(toggle, editor/all_direction_lines, design) }
+				ha:Auto swap line start angle       = { checked=editor/swap_start_direction; action=conf(toggle, editor/swap_start_direction, design) }
+				ha:Orthogonal moves                 = { checked=editor/orthogonal_moves; action=conf(toggle, editor/orthogonal_moves, design) }
+				ha:Crosshair snaps to pins and pads = { checked=editor/snap_pin; action=conf(toggle, editor/snap_pin, design) }
+				ha:Crosshair snaps to off-grid points on lines = { checked=editor/snap_offgrid_line; action=conf(toggle, editor/snap_offgrid_line, design) }
+				ha:Crosshair shows DRC clearance    = { checked=editor/show_drc; action=conf(toggle, editor/show_drc, design) }
+				ha:Auto enforce DRC clearance       = { checked=editor/auto_drc; action=conf(toggle, editor/auto_drc, design) }
+				ha:Lock Names                       = { checked=editor/lock_names; action=conf(toggle, editor/lock_names, design) }
+				ha:Only Names                       = { checked=editor/only_names; action=conf(toggle, editor/only_names, design) }
+				ha:Hide Names                       = { checked=editor/hide_names; action=conf(toggle, editor/hide_names, design) }
 				ha:Mincut on shorts                 = { checked=enablemincut; action=Display(ToggleMinCut) }
-				ha:Libstroke gestures on middle button = { checked=enablestroke; action=Display(ToggleStroke) }
+				ha:Libstroke gestures on middle button = { checked=editor/enable_stroke; action=conf(toggle, editor/enable_stroke, design) }
 				-
-				ha:Rubber band mode                 = { checked=rubberband; action=Display(ToggleRubberBandMode) }
-				ha:Require unique element names     = { checked=uniquename; action=Display(ToggleUniqueNames) }
-				ha:Auto-zero delta measurements     = { checked=localref; action=Display(ToggleLocalRef) }
-				ha:New lines, arcs clear polygons   = { checked=clearnew; action=Display(ToggleClearLine) }
-				ha:New polygons are full ones       = { checked=newfullpoly; action=Display(ToggleFullPoly) }
-				ha:Show autorouter trials           = { checked=liveroute; action=Display(ToggleLiveRoute) }
-				ha:Highlighting on line, arc points = { checked=highlightonpoint; action=Display(ToggleHighlightOnPoint) }
-				ha:Thin draw                        = { checked=thindraw; a=<Key>|;  action=Display(ToggleThindraw) }
-				ha:Thin draw poly                   = { checked=thindrawpoly; a=Ctrl Shift<Key>p; action=Display(ToggleThindrawPoly) }
-				ha:Check polygons                   = { checked=checkplanes; action=Display(ToggleCheckPlanes) }
+				ha:Rubber band mode                 = { checked=editor/rubber_band_mode; action=conf(toggle, editor/rubber_band_mode, design) }
+				ha:Require unique element names     = { checked=editor/unique_names; action=conf(toggle, editor/unique_names, design) }
+				ha:Auto-zero delta measurements     = { checked=editor/local_ref; action=conf(toggle, editor/local_ref, design) }
+				ha:New lines, arcs clear polygons   = { checked=editor/clear_line; action=conf(toggle, editor/clear_line, design) }
+				ha:New polygons are full ones       = { checked=editor/full_poly; action=conf(toggle, editor/full_poly, design) }
+				ha:Show autorouter trials           = { checked=editor/live_routing; action=conf(toggle, editor/live_routing, design) }
+				ha:Highlighting on line, arc points = { checked=editor/highlight_on_point; action=conf(toggle, editor/highlight_on_point, design) }
+				ha:Thin draw                        = { checked=editor/thin_draw; a=<Key>|;  action=conf(toggle, editor/thin_draw, design) }
+				ha:Thin draw poly                   = { checked=editor/thin_drawpoly; a=Ctrl Shift<Key>p; action=conf(toggle, editor/thin_draw_poly, design) }
+				ha:Check polygons                   = { checked=editor/check_planes; action=conf(toggle, editor/check_planes, design) }
 				-
 				ha:Vendor drill mapping             = { checked=VendorMapOn; action=ToggleVendor() }
 				ha:Import New Elements at = {
@@ -332,11 +333,11 @@ ha:{
 				ha:Break buffer elements to pieces = { action=PasteBuffer(Restore) }
 				ha:Save buffer elements to file    = { action=Save(PasteBuffer) }
 				-
-				ha:Select Buffer \#1 = { checked=buffer,1; m=1; a=Shift<Key>1; action=PasteBuffer(1) }
-				ha:Select Buffer \#2 = { checked=buffer,2; m=2; a=Shift<Key>2; action=PasteBuffer(2) }
-				ha:Select Buffer \#3 = { checked=buffer,3; m=3; a=Shift<Key>3; action=PasteBuffer(3) }
-				ha:Select Buffer \#4 = { checked=buffer,4; m=4; a=Shift<Key>4; action=PasteBuffer(4) }
-				ha:Select Buffer \#5 = { checked=buffer,5; m=5; a=Shift<Key>5; action=PasteBuffer(5) }
+				ha:Select Buffer \#1 = { checked=ChkBuffer(1); m=1; a=Shift<Key>1; action=PasteBuffer(1) }
+				ha:Select Buffer \#2 = { checked=ChkBuffer(2); m=2; a=Shift<Key>2; action=PasteBuffer(2) }
+				ha:Select Buffer \#3 = { checked=ChkBuffer(3); m=3; a=Shift<Key>3; action=PasteBuffer(3) }
+				ha:Select Buffer \#4 = { checked=ChkBuffer(4); m=4; a=Shift<Key>4; action=PasteBuffer(4) }
+				ha:Select Buffer \#5 = { checked=ChkBuffer(5); m=5; a=Shift<Key>5; action=PasteBuffer(5) }
 			}
 		} # Buffer
 
@@ -447,7 +448,7 @@ ha:{
 						ha:AddRats Selected             = { a=Shift<Key>w; action=AddRats(SelectedRats) }
 						ha:Add All Rats                 = { a=<Key>w; action=AddRats(AllRats) }
 						ha:Cycle Clip                   = { a=<Key>/; action=Display(CycleClip) }
-						ha:Arrow Mode                   = { a=<Key>space; checked=arrowmode,1; action=Mode(Arrow) }
+						ha:Arrow Mode                   = { a=<Key>space; checked=ChkMode(arrow); action=Mode(Arrow) }
 						ha:Temp Arrow ON                = { li:action={Mode(Save); Mode(Arrow); Mode(Notify)} }
 						ha:Temp Arrow OFF               = { li:action={Mode(Release); Mode(Restore)} }
 						-
@@ -552,23 +553,23 @@ ha:{
 				-
 				ha:Tools {
 					li:submenu {
-						ha:None           = { checked=nomode,1; action=Mode(None) }
-						ha:Via            = { checked=viamode,1; a=<Key>F1; action=Mode(Via) }
-						ha:Line           = { checked=linemode,1; li:a={{<Key>a;<Key>n}; {<Key>a;<Key>l}; {<Key>F2};}; action=Mode(Line) }
-						ha:Arc            = { checked=arcmode,1; li:a={{<key>a;<key>r}; {<Key>F3};}; action=Mode(Arc) }
-						ha:Text           = { checked=textmode,1; li:a={{<Key>a;<key>t}; {<Key>F4};}; action=Mode(Text) }
-						ha:Rectangle      = { checked=rectanglemode,1; li:a={{<key>a;<key>p}; {<key>a;<key>v}; {<Key>F5};}; action=Mode(Rectangle) }
-						ha:Polygon        = { checked=polygonmode,1; a=<Key>F6; action=Mode(Polygon) }
-						ha:Polygon Hole   = { checked=polygonholemode,1; action=Mode(PolygonHole) }
-						ha:Buffer         = { checked=pastebuffermode,1; a=<Key>F7; action=Mode(PasteBuffer) }
-						ha:Remove         = { checked=removemode,1; a=<Key>F8; action=Mode(Remove) }
-						ha:Rotate         = { checked=rotatemode,1; a=<Key>F9; action=Mode(Rotate) }
-						ha:Thermal        = { checked=thermalmode,1; a=<Key>F10; action=Mode(Thermal) }
-						ha:Arrow          = { checked=arrowmode,1; a=<Key>F11; action=Mode(Arrow) }
-						ha:Insert Point   = { checked=insertpointmode,1; a=<Key>Insert; action=Mode(InsertPoint) }
-						ha:Move           = { checked=movemode,1; action=Mode(Move) }
-						ha:Copy           = { checked=copymode,1; action=Mode(Copy) }
-						ha:Lock           = { checked=lockmode,1; li:a={{<key>e;<key>l}; {<key>e;Shift<key>l}; {<Key>F12};}; action=Mode(Lock) }
+						ha:None           = { checked=ChkMode(none); action=Mode(None) }
+						ha:Via            = { checked=ChkMode(via); a=<Key>F1; action=Mode(Via) }
+						ha:Line           = { checked=ChkMode(line); li:a={{<Key>a;<Key>n}; {<Key>a;<Key>l}; {<Key>F2};}; action=Mode(Line) }
+						ha:Arc            = { checked=ChkMode(arc); li:a={{<key>a;<key>r}; {<Key>F3};}; action=Mode(Arc) }
+						ha:Text           = { checked=ChkMode(text); li:a={{<Key>a;<key>t}; {<Key>F4};}; action=Mode(Text) }
+						ha:Rectangle      = { checked=ChkMode(rectangle); li:a={{<key>a;<key>p}; {<key>a;<key>v}; {<Key>F5};}; action=Mode(Rectangle) }
+						ha:Polygon        = { checked=ChkMode(polygon); a=<Key>F6; action=Mode(Polygon) }
+						ha:Polygon Hole   = { checked=ChkMode(polygonhole); action=Mode(PolygonHole) }
+						ha:Buffer         = { checked=ChkMode(pastebuffer); a=<Key>F7; action=Mode(PasteBuffer) }
+						ha:Remove         = { checked=ChkMode(remove); a=<Key>F8; action=Mode(Remove) }
+						ha:Rotate         = { checked=ChkMode(rotate); a=<Key>F9; action=Mode(Rotate) }
+						ha:Thermal        = { checked=ChkMode(thermal); a=<Key>F10; action=Mode(Thermal) }
+						ha:Arrow          = { checked=ChkMode(arrow); a=<Key>F11; action=Mode(Arrow) }
+						ha:Insert Point   = { checked=ChkMode(insertpoint); a=<Key>Insert; action=Mode(InsertPoint) }
+						ha:Move           = { checked=ChkMode(move); action=Mode(Move) }
+						ha:Copy           = { checked=ChkMode(copy); action=Mode(Copy) }
+						ha:Lock           = { checked=ChkMode(lock); li:a={{<key>e;<key>l}; {<key>e;Shift<key>l}; {<Key>F12};}; action=Mode(Lock) }
 						ha:Cancel         = { a=<Key>Escape; action=Mode(Escape) }
 					}
 				}
