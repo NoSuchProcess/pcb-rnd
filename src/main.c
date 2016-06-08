@@ -216,7 +216,7 @@ static void InitPaths(char *argv0)
 	}
 	sprintf(pcblibdir, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, BINDIR_TO_PCBSHAREDIR);
 
-#warning TODO do we still need this or can we get it from the embedded lihata?
+#warning TODO remove this and add $ variables in path resolving instead
 #if 0
 	l = sizeof(main_attribute_list) / sizeof(main_attribute_list[0]);
 	for (i = 0; i < l; i++) {
