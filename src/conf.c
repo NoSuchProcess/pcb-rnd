@@ -414,7 +414,9 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 					conf_merge_patch_text(target, n, default_prio, default_policy);
 				break;
 			case LHT_LIST:
-				if (target->type == CFN_LIST)
+				if (target == NULL)
+					hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht; may it be that it should be a hash instead of a list?\n", path);
+				else if (target->type == CFN_LIST)
 					res |= conf_merge_patch_list(target, n, default_prio, default_policy);
 				else if (target->array_size > 1)
 					res |= conf_merge_patch_array(target, n, default_prio, default_policy);
