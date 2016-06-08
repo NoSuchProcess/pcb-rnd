@@ -513,12 +513,18 @@ static void note_widget_flag(Widget w, char *type, const char *name)
 void lesstif_update_widget_flags()
 {
 	int i;
-
 	for (i = 0; i < n_wflags; i++) {
 		int v = hid_get_flag(wflags[i].flagname);
-		Arg args[1];
-		XtSetArg(args[0], wflags[i].xres, v ? 1 : 0);
-		XtSetValues(wflags[i].w, args, 1);
+		Arg args[2];
+		if (v < 0) {
+			XtSetArg(args[0], wflags[i].xres, 0);
+			XtSetArg(args[1], XtNsensitive, 0);
+			XtSetValues(wflags[i].w, args, 2);
+		}
+		else {
+			XtSetArg(args[0], wflags[i].xres, v ? 1 : 0);
+			XtSetValues(wflags[i].w, args, 1);
+		}
 		wflags[i].oldval = v;
 	}
 }

@@ -127,7 +127,12 @@ void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag
 {
 	if (tflag != NULL) {
 		int v = hid_get_flag(tflag);
-		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), ! !v);
+		if (v < 0) {
+			gtk_toggle_action_set_active(act, 0);
+			gtk_action_set_sensitive(act, 0);
+		}
+		else
+			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), ! !v);
 	}
 	if (aflag != NULL) {
 		int v = hid_get_flag(aflag);
