@@ -10,11 +10,6 @@
 		- we know whether the node we change ended up in native (check prop.src)
 		- recalc native directly if did so - never run conf_update!
 		- revise each call to conf_update(), especially from the set macros!
-	- add CFR_DESIGN
-		- assign some high prio
-		- check changing:
-			- layer groups
-			- pcb size
 	- increments are not really implemented
 	- shouldn't segfault if pcb-conf.lht is missing (embedded version?)
 	- replace hid_load_settings() with lihata
@@ -24,6 +19,9 @@
 	- revise main.c, line by line
 	- get gsch2pcb to use the same config system
 	- TEST:
+		- CFR_DESIGN; check changing:
+			- layer groups
+			- pcb size
 		- ps export vs. thin draw poly, check_planes
 		- png and gerber export vs. forced sets
 		- test lesstif
