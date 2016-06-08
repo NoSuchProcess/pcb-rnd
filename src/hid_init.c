@@ -31,7 +31,7 @@
 #include "plugins.h"
 #include "hid_attrib.h"
 #include "hid_flags.h"
-
+#include "misc_util.h"
 
 RCSID("$Id$");
 

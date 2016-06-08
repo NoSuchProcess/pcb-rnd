@@ -91,6 +91,7 @@
 #include "rats.h"
 #include "plug_io.h"
 #include "hid_actions.h"
+#include "misc_util.h"
 
 #undef DEBUG
 

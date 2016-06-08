@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <gpmi.h>
 #include "src/misc.h"
+#include "src/misc_util.h"
 #include "src/event.h"
 #include "src/paths.h"
 #include "src/error.h"

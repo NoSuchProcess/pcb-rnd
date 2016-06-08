@@ -4,6 +4,7 @@
 #include "global.h"
 #include "hid_attrib.h"
 #include "misc.h"
+#include "misc_util.h"
 #include "pcb-printf.h"
 #include "compat_fs.h"
 #include "error.h"

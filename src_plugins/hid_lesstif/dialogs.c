@@ -23,6 +23,7 @@
 #include "hid_actions.h"
 #include "hid_init.h"
 #include "stdarg.h"
+#include "misc_util.h"
 
 RCSID("$Id$");
 

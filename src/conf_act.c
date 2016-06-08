@@ -30,6 +30,7 @@
 #include "conf_core.h"
 #include "error.h"
 #include "misc.h"
+#include "misc_util.h"
 
 static const char conf_syntax[] =
 	"conf(set, path, value, [role], [policy]) - change a config setting\n"

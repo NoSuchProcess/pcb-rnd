@@ -12,6 +12,7 @@
 #include "gtkhid.h"
 #include "gui.h"
 #include "pcb-printf.h"
+#include "misc_util.h"
 
 #include "ghid-main-menu.h"
 #include "ghid-layer-selector.h"

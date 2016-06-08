@@ -92,6 +92,7 @@ dicer output is used for HIDs which cannot render things with holes
 #include "set.h"
 #include "thermal.h"
 #include "undo.h"
+#include "misc.h"
 
 
 #define ROUND(x) ((long)(((x) >= 0 ? (x) + 0.5  : (x) - 0.5)))

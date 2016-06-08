@@ -42,6 +42,7 @@
 #include "hid_flags.h"
 #include "hid_actions.h"
 #include "stdarg.h"
+#include "misc_util.h"
 
 #include <sys/poll.h>
 

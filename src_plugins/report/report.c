@@ -50,6 +50,7 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_actions.h"
+#include "misc_util.h"
 
 #ifdef HAVE_REGEX_H
 #include <regex.h>

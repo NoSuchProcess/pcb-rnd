@@ -38,6 +38,7 @@
 #include "data.h"
 #include "error.h"
 #include "misc.h"
+#include "misc_util.h"
 #include "plugins.h"
 
 #include "hid.h"

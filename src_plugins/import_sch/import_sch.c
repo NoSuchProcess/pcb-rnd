@@ -42,6 +42,7 @@
 #include "rats.h"
 #include "hid_actions.h"
 #include "import_sch_conf.h"
+#include "misc_util.h"
 
 conf_import_sch_t conf_import_sch;
 

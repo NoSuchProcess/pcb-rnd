@@ -25,7 +25,7 @@
  *  RCS: $Id$
  */
 
-/* prototypes for misc routines
+/* prototypes for misc routines - PCB data type dependent ones
  */
 
 #ifndef	PCB_MISC_H
@@ -36,19 +36,9 @@
 #include <genvector/gds_char.h>
 #include "mymem.h"
 
-enum unitflags { UNIT_PERCENT = 1 };
-
-typedef struct {
-	const char *suffix;
-	double scale;
-	enum unitflags flags;
-} UnitList[];
-
-double Distance(double x1, double y1, double x2, double y2);
-double Distance2(double x1, double y1, double x2, double y2);	/* distance square */
-Angle NormalizeAngle(Angle a);
-
 const char *pcb_author(void);
+
+Angle NormalizeAngle(Angle a);
 
 void r_delete_element(DataTypePtr, ElementTypePtr);
 void SetLineBoundingBox(LineTypePtr);
@@ -96,9 +86,6 @@ BoxTypePtr GetArcEnds(ArcTypePtr);
 void ChangeArcAngles(LayerTypePtr, ArcTypePtr, Angle, Angle);
 char *UniqueElementName(DataTypePtr, char *);
 void AttachForCopy(Coord, Coord);
-double GetValue(const char *, const char *, bool *, bool *success);
-double GetValueEx(const char *, const char *, bool *, UnitList, const char *, bool *success);
-char *Concat(const char *, ...);	/* end with NULL */
 
 /* Returns NULL if the name isn't found, else the value for that named
    attribute.  */

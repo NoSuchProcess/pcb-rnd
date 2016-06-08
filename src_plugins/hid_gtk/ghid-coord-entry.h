@@ -7,6 +7,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include "unit.h"
 
 G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_COORD_ENTRY_TYPE            (ghid_coord_entry_get_type ())

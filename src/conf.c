@@ -26,7 +26,7 @@
 #include "conf.h"
 #include "conf_core.h"
 #include "hid_cfg.h"
-#include "misc.h"
+#include "misc_util.h"
 #include "error.h"
 
 lht_doc_t *conf_root[CFR_max];

@@ -48,6 +48,7 @@
 #include "set.h"
 #include "hid_attrib.h"
 #include "conf.h"
+#include "misc_util.h"
 
 /* for MKDIR() */
 #include "compat_fs.h"

@@ -46,6 +46,7 @@
 #include "buffer.h"
 #include "remove.h"
 #include "create.h"
+#include "misc_util.h"
 
 /* --------------------------------------------------------------------------- */
 

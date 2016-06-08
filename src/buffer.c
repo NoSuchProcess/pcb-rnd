@@ -45,6 +45,7 @@
 #include "plug_io.h"
 #include "mirror.h"
 #include "misc.h"
+#include "misc_util.h"
 #include "polygon.h"
 #include "rotate.h"
 #include "remove.h"

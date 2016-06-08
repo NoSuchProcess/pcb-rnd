@@ -47,6 +47,8 @@
 #include "rtree.h"
 #include "search.h"
 #include "polygon.h"
+#include "misc.h"
+#include "misc_util.h"
 #include "hid_actions.h"
 
 

@@ -49,6 +49,7 @@
 #include "stub_vendor.h"
 #include "hid_actions.h"
 #include "paths.h"
+#include "misc_util.h"
 
 RCSID("$Id$");
 

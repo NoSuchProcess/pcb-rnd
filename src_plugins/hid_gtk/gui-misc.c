@@ -34,6 +34,7 @@
 #include "action_helper.h"
 #include "set.h"
 #include "pcb-printf.h"
+#include "misc_util.h"
 
 #include "gui.h"
 #include <gdk/gdkkeysyms.h>

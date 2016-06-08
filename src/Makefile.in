@@ -67,6 +67,7 @@ put /local/pcb/OBJS [@
 	main_act.o
 	mirror.o
 	misc.o
+	misc_util.o
 	move.o
 	mymem.o
 	netlist.o
@@ -101,6 +102,7 @@ put /local/pcb/OBJS [@
 	thermal.o
 	undo.o
 	undo_act.o
+	unit.o
 	vtlibrary.o
 	vtonpoint.o
 	vtptr.o

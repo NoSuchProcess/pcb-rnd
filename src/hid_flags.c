@@ -14,6 +14,8 @@
 #include "hid_flags.h"
 #include "genht/hash.h"
 #include "genht/htsp.h"
+#include "error.h"
+#include "hid_actions.h"
 
 RCSID("$Id$");
 

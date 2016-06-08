@@ -38,233 +38,6 @@
 
 #include "pcb-printf.h"
 
-/* Helper macros for tables */
-#define MM_TO_COORD3(a,b,c)		MM_TO_COORD (a), MM_TO_COORD (b), MM_TO_COORD (c)
-#define MIL_TO_COORD3(a,b,c)		MIL_TO_COORD (a), MIL_TO_COORD (b), MIL_TO_COORD (c)
-#define MM_TO_COORD5(a,b,c,d,e)		MM_TO_COORD (a), MM_TO_COORD (b), MM_TO_COORD (c),	\
-                              		MM_TO_COORD (d), MM_TO_COORD (e)
-#define MIL_TO_COORD5(a,b,c,d,e)	MIL_TO_COORD (a), MIL_TO_COORD (b), MIL_TO_COORD (c),	\
-                               		MIL_TO_COORD (d), MIL_TO_COORD (e)
-
-/* These should be kept in order of smallest scale_factor
- * to largest -- the code uses this ordering when finding
- * the best scale to use for a group of measures */
-static Unit Units[] = {
-	{0, "km", NULL, 'k', 0.000001, METRIC, ALLOW_KM, 5,
-	 0.00005, 0.0005, 0.0025, 0.05, 0.25,
-	 {""}},
-	{0, "m", NULL, 'f', 0.001, METRIC, ALLOW_M, 5,
-	 0.0005, 0.005, 0.025, 0.5, 2.5,
-	 {""}},
-	{0, "cm", NULL, 'e', 0.1, METRIC, ALLOW_CM, 5,
-	 0.005, 0.05, 0.25, 5, 25,
-	 {""}},
-	{0, "mm", NULL, 'm', 1, METRIC, ALLOW_MM, 4,
-	 0.005, 0.05, 0.25, 5, 25,
-	 {""}},
-	{0, "um", NULL, 'u', 1000, METRIC, ALLOW_UM, 2,
-	 0.005, 0.05, 0.25, 5, 25,
-	 {""}},
-	{0, "nm", NULL, 'n', 1000000, METRIC, ALLOW_NM, 0,
-	 5, 50, 2500, 5000, 25000,
-	 {""}},
-
-	{0, "in", NULL, 'i', 0.001, IMPERIAL, ALLOW_IN, 5,
-	 0.1, 1.0, 5.0, 25, 100,
-	 {"inch"}},
-	{0, "mil", NULL, 'l', 1, IMPERIAL, ALLOW_MIL, 2,
-	 0.1, 1.0, 10, 100, 1000,
-	 {""}},
-	{0, "cmil", NULL, 'c', 100, IMPERIAL, ALLOW_CMIL, 0,
-	 1, 10, 100, 1000, 10000,
-	 {"pcb"}}
-};
-
-#define N_UNITS ((int) (sizeof Units / sizeof Units[0]))
-/* \brief Initialize non-static data for pcb-printf
- * \par Function Description
- * Assigns each unit its index for quick access through the
- * main units array, and internationalize the units for GUI
- * display.
- */
-void initialize_units()
-{
-	int i;
-	for (i = 0; i < N_UNITS; ++i) {
-		Units[i].index = i;
-		Units[i].in_suffix = _(Units[i].suffix);
-	}
-}
-
-/* This list -must- contain all printable units from the above list */
-/* For now I have just copy/pasted the same values for all metric
- * units and the same values for all imperial ones */
-static Increments increments[] = {
-	/* TABLE FORMAT   |  default  |  min  |  max
-	 *          grid  |           |       |
-	 *          size  |           |       |
-	 *          line  |           |       |
-	 *         clear  |           |       |
-	 */
-	{"km", MM_TO_COORD3(0.1, 0.01, 1.0),
-	 MM_TO_COORD3(0.2, 0.01, 0.5),
-	 MM_TO_COORD3(0.1, 0.005, 0.5),
-	 MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"m", MM_TO_COORD3(0.1, 0.01, 1.0),
-	 MM_TO_COORD3(0.2, 0.01, 0.5),
-	 MM_TO_COORD3(0.1, 0.005, 0.5),
-	 MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"cm", MM_TO_COORD3(0.1, 0.01, 1.0),
-	 MM_TO_COORD3(0.2, 0.01, 0.5),
-	 MM_TO_COORD3(0.1, 0.005, 0.5),
-	 MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"mm", MM_TO_COORD3(0.1, 0.01, 1.0),
-	 MM_TO_COORD3(0.2, 0.01, 0.5),
-	 MM_TO_COORD3(0.1, 0.005, 0.5),
-	 MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"um", MM_TO_COORD3(0.1, 0.01, 1.0),
-	 MM_TO_COORD3(0.2, 0.01, 0.5),
-	 MM_TO_COORD3(0.1, 0.005, 0.5),
-	 MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"nm", MM_TO_COORD3(0.1, 0.01, 1.0),
-	 MM_TO_COORD3(0.2, 0.01, 0.5),
-	 MM_TO_COORD3(0.1, 0.005, 0.5),
-	 MM_TO_COORD3(0.05, 0.005, 0.5)},
-
-	{"cmil", MIL_TO_COORD3(5, 1, 25),
-	 MIL_TO_COORD3(10, 1, 10),
-	 MIL_TO_COORD3(5, 0.5, 10),
-	 MIL_TO_COORD3(2, 0.5, 10)},
-	{"mil", MIL_TO_COORD3(5, 1, 25),
-	 MIL_TO_COORD3(10, 1, 10),
-	 MIL_TO_COORD3(5, 0.5, 10),
-	 MIL_TO_COORD3(2, 0.5, 10)},
-	{"in", MIL_TO_COORD3(5, 1, 25),
-	 MIL_TO_COORD3(10, 1, 10),
-	 MIL_TO_COORD3(5, 0.5, 10),
-	 MIL_TO_COORD3(2, 0.5, 10)},
-};
-
-#define N_INCREMENTS (sizeof increments / sizeof increments[0])
-
-/* \brief Obtain a unit object from its suffix
- * \par Function Description
- * Looks up a given suffix in the main units array. Internationalized
- * unit suffixes are not supported, though pluralized units are, for
- * backward-compatibility.
- *
- * \param [in] const_suffix   The suffix to look up
- *
- * \return A const pointer to the Unit struct, or NULL if none was found
- */
-const Unit *get_unit_struct(const char *suffix)
-{
-	int i;
-	int s_len = 0;
-
-	/* Determine bounds */
-	while (isspace(*suffix))
-		suffix++;
-	while (isalnum(suffix[s_len]))
-		s_len++;
-
-	/* Also understand plural suffixes: "inches", "mils" */
-	if (s_len > 2) {
-		if (suffix[s_len - 2] == 'e' && suffix[s_len - 1] == 's')
-			s_len -= 2;
-		else if (suffix[s_len - 1] == 's')
-			s_len -= 1;
-	}
-
-	/* Do lookup */
-	if (s_len > 0)
-		for (i = 0; i < N_UNITS; ++i)
-			if (strncmp(suffix, Units[i].suffix, s_len) == 0 || strncmp(suffix, Units[i].alias[0], s_len) == 0)
-				return &Units[i];
-
-	return NULL;
-}
-
-/* ACCESSORS */
-/* \brief Returns the master unit list. This may not be modified. */
-const Unit *get_unit_list(void)
-{
-	return Units;
-}
-
-/* \brief Returns the unit by its index */
-const Unit *get_unit_by_idx(int idx)
-{
-	if ((idx < 0) || (idx >= N_UNITS))
-		return NULL;
-	return Units + idx;
-}
-
-/* \brief Returns the length of the master unit list. */
-int get_n_units(void)
-{
-	return N_UNITS;
-}
-
-/* \brief Obtain an increment object from its suffix
- * \par Function Description
- * Looks up a given suffix in the main increments array. Internationalized
- * unit suffixes are not supported, nor are pluralized units.
- *
- * \param [in] suffix   The suffix to look up
- *
- * \return A const pointer to the Increments struct, or NULL if none was found
- */
-Increments *get_increments_struct(const char *suffix)
-{
-	int i;
-	/* Do lookup */
-	for (i = 0; i < N_INCREMENTS; ++i)
-		if (strcmp(suffix, increments[i].suffix) == 0)
-			return &increments[i];
-	return NULL;
-}
-
-/* \brief Convert a pcb coord to the given unit
- *
- * \param [in] unit  The unit to convert to
- * \param [in] x     The quantity to convert
- *
- * \return The converted measure
- */
-double coord_to_unit(const Unit * unit, Coord x)
-{
-	double base;
-	if (unit == NULL)
-		return -1;
-	base = unit->family == METRIC ? COORD_TO_MM(1)
-		: COORD_TO_MIL(1);
-	return x * unit->scale_factor * base;
-}
-
-/* \brief Convert a given unit to pcb coords
- *
- * \param [in] unit  The unit to convert from
- * \param [in] x     The quantity to convert
- *
- * \return The converted measure
- */
-Coord unit_to_coord(const Unit * unit, double x)
-{
-	return x / coord_to_unit(unit, 1);
-}
-
-/* \brief Return how many PCB-internal-Coord-unit a unit translates to
- *
- * \param [in] unit  The unit to convert
- *
- * \return The converted measure
- */
-double unit_to_factor(const Unit * unit)
-{
-	return 1.0 / coord_to_unit(unit, 1);
-}
-
 static int min_sig_figs(double d)
 {
 	char buf[50];
@@ -364,7 +137,7 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 
 	/* Determine scale factor -- find smallest unit that brings
 	 * the whole group above unity */
-	for (n = 0; n < N_UNITS; ++n) {
+	for (n = 0; n < get_n_units(); ++n) {
 		if ((Units[n].allow & allow) != 0 && (Units[n].family == family)) {
 			int n_above_one = 0;
 
@@ -376,7 +149,7 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 		}
 	}
 	/* If nothing worked, wind back to the smallest allowable unit */
-	if (n == N_UNITS) {
+	if (n == get_n_units()) {
 		do {
 			--n;
 		} while ((Units[n].allow & allow) == 0 || Units[n].family != family);
@@ -630,7 +403,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				case '*':
 					{
 						int found = 0;
-						for (i = 0; i < N_UNITS; ++i) {
+						for (i = 0; i < get_n_units(); ++i) {
 							if (strcmp(ext_unit, Units[i].suffix) == 0) {
 								if (CoordsToString(string, value, 1, &spec, Units[i].allow, suffix) != 0) goto err;
 								found = 1;
@@ -654,7 +427,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				default:
 					{
 						int found = 0;
-						for (i = 0; i < N_UNITS; ++i) {
+						for (i = 0; i < get_n_units(); ++i) {
 							if (*fmt == Units[i].printf_code) {
 								if (CoordsToString(string, value, 1, &spec, Units[i].allow, suffix) != 0) goto err;
 								found = 1;

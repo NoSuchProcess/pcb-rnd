@@ -40,7 +40,7 @@
 #include <assert.h>
 #include "global.h"
 
-#include "misc.h"
+#include "misc_util.h"
 
 typedef enum { NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3, NE = 4, SE = 5, SW = 6, NW = 7, ALL = 8
 } direction_t;

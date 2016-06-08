@@ -70,84 +70,9 @@
 #define	PCB_PCB_PRINTF_H
 
 #include <genvector/gds_char.h>
-
-enum e_allow {
-	NO_PRINT = 0,									/* suffixes we can read but not print (i.e., "inch") */
-	ALLOW_NM = 1,
-	ALLOW_UM = 2,
-	ALLOW_MM = 4,
-	ALLOW_CM = 8,
-	ALLOW_M = 16,
-	ALLOW_KM = 32,
-
-	ALLOW_CMIL = 1024,
-	ALLOW_MIL = 2048,
-	ALLOW_IN = 4096,
-
-	ALLOW_METRIC = ALLOW_NM | ALLOW_UM | ALLOW_MM | ALLOW_CM | ALLOW_M | ALLOW_KM,
-	ALLOW_IMPERIAL = ALLOW_CMIL | ALLOW_MIL | ALLOW_IN,
-	/* This is all units allowed in parse_l.l */
-#if 0
-	ALLOW_READABLE = ALLOW_NM | ALLOW_UM | ALLOW_MM | ALLOW_M | ALLOW_KM | ALLOW_CMIL | ALLOW_MIL | ALLOW_IN,
-#else
-	ALLOW_READABLE = ALLOW_CMIL,
-#endif
-
-	ALLOW_ALL = ~0
-};
-
-enum e_family { METRIC, IMPERIAL };
-enum e_suffix { NO_SUFFIX, SUFFIX, FILE_MODE };
-
-struct unit {
-	int index;										/* Index into Unit[] list */
-	const char *suffix;
-	const char *in_suffix;				/* internationalized suffix */
-	char printf_code;
-	double scale_factor;
-	enum e_family family;
-	enum e_allow allow;
-	int default_prec;
-	/* used for gui spinboxes */
-	double step_tiny;
-	double step_small;
-	double step_medium;
-	double step_large;
-	double step_huge;
-	/* aliases -- right now we only need 1 ("inch"->"in"), add as needed */
-	const char *alias[1];
-};
-
-struct increments {
-	const char *suffix;
-	/* key g and <shift>g value  */
-	Coord grid;
-	Coord grid_min;
-	Coord grid_max;
-	/* key s and <shift>s value  */
-	Coord size;
-	Coord size_min;
-	Coord size_max;
-	/* key l and <shift>l value  */
-	Coord line;
-	Coord line_min;
-	Coord line_max;
-	/* key k and <shift>k value  */
-	Coord clear;
-	Coord clear_min;
-	Coord clear_max;
-};
+#include "unit.h"
 
 void initialize_units();
-
-const Unit *get_unit_struct(const char *suffix);
-const Unit *get_unit_list(void);
-const Unit *get_unit_by_idx(int idx);
-int get_n_units(void);
-double coord_to_unit(const Unit *, Coord);
-double unit_to_factor(const Unit * unit);
-Coord unit_to_coord(const Unit *, double);
-Increments *get_increments_struct(const char *suffix);
 
 int pcb_fprintf(FILE * f, const char *fmt, ...);
 int pcb_sprintf(char *string, const char *fmt, ...);

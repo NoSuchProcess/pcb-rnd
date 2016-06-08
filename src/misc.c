@@ -74,7 +74,6 @@ RCSID("$Id$");
 static char *BumpName(char *);
 static void GetGridLockCoordinates(int, void *, void *, void *, Coord *, Coord *);
 
-
 /* Local variables */
 
 /* 
@@ -89,26 +88,6 @@ static struct {
 	int cnt;
 } SavedStack;
 
-/* Distance() should be used so that there is only one
- *  place to deal with overflow/precision errors
- */
-double Distance(double x1, double y1, double x2, double y2)
-{
-	double delta_x = (x2 - x1);
-	double delta_y = (y2 - y1);
-	return sqrt(delta_x * delta_x + delta_y * delta_y);
-}
-
-/* Distance2() should be used so that there is only one
- *  place to deal with overflow/precision errors
- */
-double Distance2(double x1, double y1, double x2, double y2)
-{
-	double delta_x = (x2 - x1);
-	double delta_y = (y2 - y1);
-	return delta_x * delta_x + delta_y * delta_y;
-}
-
 /* Bring an angle into [0, 360) range */
 Angle NormalizeAngle(Angle a)
 {
@@ -117,98 +96,6 @@ Angle NormalizeAngle(Angle a)
 	while (a >= 360.0)
 		a -= 360.0;
 	return a;
-}
-
-/* Get Value returns a numeric value passed from the string and sets the
- * bool variable absolute to false if it leads with a +/- character
- */
-double GetValue(const char *val, const char *units, bool * absolute, bool *success)
-{
-	return GetValueEx(val, units, absolute, NULL, "cmil", success);
-}
-
-double GetValueEx(const char *val, const char *units, bool * absolute, UnitList extra_units, const char *default_unit, bool *success)
-{
-	double value;
-	int n = -1;
-	bool scaled = 0;
-	bool dummy;
-
-	/* Allow NULL to be passed for absolute */
-	if (absolute == NULL)
-		absolute = &dummy;
-
-	/* if the first character is a sign we have to add the
-	 * value to the current one
-	 */
-	if (*val == '=') {
-		*absolute = true;
-		sscanf(val + 1, "%lf%n", &value, &n);
-		n++;
-	}
-	else {
-		if (isdigit((int) *val))
-			*absolute = true;
-		else
-			*absolute = false;
-		sscanf(val, "%lf%n", &value, &n);
-	}
-	if (n <= 0)
-		goto fail;
-
-	if (!units && n > 0)
-		units = val + n;
-
-	while (units && isspace(*units))
-		units++;
-
-	if (units && *units) {
-		int i, unit_ok = 0;
-		const Unit *unit = get_unit_struct(units);
-		if (unit != NULL) {
-			value = unit_to_coord(unit, value);
-			scaled = 1;
-			unit_ok = 1;
-		}
-		if (extra_units) {
-			for (i = 0; *extra_units[i].suffix; ++i) {
-				if (strncmp(units, extra_units[i].suffix, strlen(extra_units[i].suffix)) == 0) {
-					value *= extra_units[i].scale;
-					if (extra_units[i].flags & UNIT_PERCENT)
-						value /= 100.0;
-					scaled = 1;
-					unit_ok = 1;
-				}
-			}
-		}
-		if ((!unit_ok) && (success != NULL)) /* there was something after the number but it doesn't look like a valid unit */
-			goto fail;
-	}
-
-	/* Apply default unit */
-	if (!scaled && default_unit && *default_unit) {
-		int i;
-		const Unit *unit = get_unit_struct(default_unit);
-		if (extra_units)
-			for (i = 0; *extra_units[i].suffix; ++i)
-				if (strcmp(extra_units[i].suffix, default_unit) == 0) {
-					value *= extra_units[i].scale;
-					if (extra_units[i].flags & UNIT_PERCENT)
-						value /= 100.0;
-					scaled = 1;
-				}
-		if (!scaled && unit != NULL)
-			value = unit_to_coord(unit, value);
-	}
-
-	if (success != NULL)
-		*success = 1;
-	return value;
-
-	fail:;
-	if (success != NULL)
-		*success = 0;
-	return 0;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1655,37 +1542,6 @@ void AttachForCopy(Coord PlaceX, Coord PlaceY)
 									 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 }
 
-char *Concat(const char *first, ...)
-{
-	char *rv;
-	int len;
-	va_list a;
-
-	len = strlen(first);
-	rv = (char *) malloc(len + 1);
-	strcpy(rv, first);
-
-	va_start(a, first);
-	while (1) {
-		const char *s = va_arg(a, const char *);
-		if (!s)
-			break;
-		len += strlen(s);
-		rv = (char *) realloc(rv, len + 1);
-		strcat(rv, s);
-	}
-	va_end(a);
-	return rv;
-}
-
-int mem_any_set(unsigned char *ptr, int bytes)
-{
-	while (bytes--)
-		if (*ptr++)
-			return 1;
-	return 0;
-}
-
 /* This just fills in a FlagType with current flags.  */
 FlagType MakeFlags(unsigned int flags)
 {
@@ -1840,6 +1696,7 @@ void AttributeRemoveFromList(AttributeListType * list, char *name)
 		}
 }
 
+#warning TODO: move this to io_pcb
 /* In future all use of this should be supplanted by
  * pcb-printf and %mr/%m# spec */
 const char *c_dtostr(double d)

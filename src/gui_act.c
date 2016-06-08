@@ -38,6 +38,7 @@
 #include "find.h"
 #include "set.h"
 #include "misc.h"
+#include "misc_util.h"
 #include "stub_stroke.h"
 #include "hid_actions.h"
 #include "hid_init.h"

@@ -26,6 +26,7 @@
 #include "hid_flags.h"
 #include "hid_actions.h"
 #include "plug_footprint.h"
+#include "misc_util.h"
 
 #include "gtkhid.h"
 

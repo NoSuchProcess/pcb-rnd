@@ -28,6 +28,7 @@
 #include <liblihata/lihata.h>
 #include <liblihata/dom.h>
 #include <genvector/vtp0.h>
+#include "unit.h"
 
 int conf_rev; /* icreased by one each time there's a change in any of the config binaries */
 

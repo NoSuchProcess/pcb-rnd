@@ -45,7 +45,7 @@
 #include "select.h"
 #include "set.h"
 #include "undo.h"
-
+#include "misc_util.h"
 
 RCSID("$Id$");
 

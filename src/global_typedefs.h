@@ -33,12 +33,6 @@ typedef struct rtree rtree_t;
 typedef struct AttributeListType AttributeListType, *AttributeListTypePtr;
 typedef struct rats_patch_line_s rats_patch_line_t;
 
-typedef struct unit Unit;
-typedef struct increments Increments;
-
-typedef COORD_TYPE Coord;				/* pcb base unit */
-typedef double Angle;						/* degrees */
-
 #ifndef XtSpecificationRelease
 typedef unsigned int Cardinal;
 /*typedef unsigned int	Pixel;*/
@@ -47,6 +41,8 @@ typedef short Position;
 typedef short dimension_t;
 #endif
 typedef unsigned char BYTE;
+
+#include "unit.h"
 
 #endif
 
