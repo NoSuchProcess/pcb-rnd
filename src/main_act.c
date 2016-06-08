@@ -102,7 +102,6 @@ static int help_main(void) {
 		if (cs[1] != NULL)
 			fprintf(stderr, "-%s", cs[1]);
 		fprintf(stderr, "]    %s\n", cs[3]);
-		
 	}
 	return 0;
 }
@@ -116,23 +115,31 @@ static int help_invoc(void)
 
 	u("pcb-rnd invocation:");
 	u("");
-	u("%s [main options]                         See --help main", Progname);
+	u("%s [main options]                                    See --help main", Progname);
 	u("");
-	u("%s [--gui GUI] [gui options] <pcb file>   interactive GUI", Progname);
+	u("%s [generics] [--gui GUI] [gui options] <pcb file>   interactive GUI", Progname);
+
 	u("Available GUI hid%s:", n_gui == 1 ? "" : "s");
 	for (i = 0; hl[i]; i++)
 		if (hl[i]->gui)
 			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
-	u("\n%s -p [printing options] <pcb file>\tto print", Progname);
+
+	u("\n%s [generics] -p [printing options] <pcb file>\tto print", Progname);
 	u("Available printing hid%s:", n_printer == 1 ? "" : "s");
 	for (i = 0; hl[i]; i++)
 		if (hl[i]->printer)
 			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
-	u("\n%s -x hid [export options] <pcb file>\tto export", Progname);
+
+	u("\n%s [generics] -x hid [export options] <pcb file>\tto export", Progname);
 	u("Available export hid%s:", n_exporter == 1 ? "" : "s");
 	for (i = 0; hl[i]; i++)
 		if (hl[i]->exporter)
 			fprintf(stderr, "\t%-8s %s\n", hl[i]->name, hl[i]->description);
+
+
+	u("\nGenerics:");
+	u("-c conf/path=value        set the value of a configuration item (in CFR_CLI)");
+
 	return 0;
 }
 
