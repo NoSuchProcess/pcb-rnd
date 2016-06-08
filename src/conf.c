@@ -32,6 +32,15 @@
 lht_doc_t *conf_root[CFR_max];
 int conf_root_lock[CFR_max];
 htsp_t *conf_fields = NULL;
+static const int conf_default_prio[] = {
+/*	CFR_INTERNAL */ 100,
+/*	CFR_SYSTEM */   200,
+/*	CFR_USER */     300,
+/*	CFR_ENV */      400, 
+/*	CFR_PROJECT */  500,
+/*	CFR_DESIGN */   600,
+/*	CFR_CLI */      700
+};
 
 extern const char *conf_internal;
 
@@ -417,9 +426,8 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 	return res;
 }
 
-int conf_merge_patch(lht_node_t *root)
+int conf_merge_patch(lht_node_t *root, int gprio)
 {
-	long gprio = 0;
 	conf_policy_t gpolicy = POL_OVERWRITE;
 	const char *ps;
 	lht_node_t *n;
@@ -450,7 +458,7 @@ int conf_merge_all()
 		if (conf_root[n] == NULL)
 			continue;
 		for(r = conf_root[n]->root->data.list.first; r != NULL; r = r->next)
-			if (conf_merge_patch(r) != 0)
+			if (conf_merge_patch(r, conf_default_prio[n]) != 0)
 				ret = -1;
 	}
 	return ret;
