@@ -17,21 +17,22 @@
 
 RCSID("$Id$");
 
-#warning TODO: return -1 on not found, prepare caller code to deal with this (e.g. disable menu)
 int hid_get_flag(const char *name)
 {
 	static char *buf = 0;
 	static int nbuf = 0;
 	const char *cp;
 
+	if (name == NULL)
+		return -1;
 
 	cp = strchr(name, '/');
 	if (cp) {
 		conf_native_t *n = conf_get_field(name);
 		if (n == NULL)
-			return 0;
+			return -1;
 		if ((n->type != CFN_BOOLEAN) || (n->used != 1))
-			return 0;
+			return -1;
 		return n->val.boolean[0];
 	}
 	else {
@@ -45,7 +46,7 @@ int hid_get_flag(const char *name)
 			len = cp - name;
 			if (len > sizeof(buff)-1) {
 				Message("hid_get_flag: action name too long: %s()\n", name);
-				return 0; /* -1 */
+				return -1;
 			}
 			memcpy(buff, name, len);
 			buff[len] = '\0';
@@ -53,14 +54,14 @@ int hid_get_flag(const char *name)
 			if (!a) {
 				int i;
 				Message("hid_get_flag: no action %s\n", name);
-				return 0; /* -1 */
+				return -1;
 			}
 			cp++;
 			len = strlen(cp);
 			end = strchr(cp, ')');
 			if ((len > sizeof(buff)-1) || (end == NULL)) {
 				Message("hid_get_flag: action arg too long or unterminated: %s\n", name);
-				return 0; /* -1 */
+				return -1;
 			}
 			len = end - cp;
 			memcpy(buff, cp, len);
@@ -74,8 +75,8 @@ int hid_get_flag(const char *name)
 //			abort();
 		}
 	}
+	return -1;
 }
-
 
 void hid_save_and_show_layer_ons(int *save_array)
 {
