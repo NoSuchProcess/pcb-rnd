@@ -56,7 +56,7 @@ void conf_dump(FILE *f, const char *prefix, int verbose)
 			for(n = 0; n < node->used; n++) {
 				fprintf(f, "%s I %s[%d] = ", prefix, e->key, n);
 				conf_dump_(f, prefix, verbose, &node->val, node->type, node->prop, n);
-				fprintf(f, "\n");
+				fprintf(f, " conf_rev=%d\n", node->conf_rev);
 			}
 			if (node->used == 0)
 				fprintf(f, "%s I %s[] = <empty>\n", prefix, e->key);
@@ -64,7 +64,7 @@ void conf_dump(FILE *f, const char *prefix, int verbose)
 		else {
 			fprintf(f, "%s I %s = ", prefix, e->key);
 			conf_dump_(f, prefix, verbose, &node->val, node->type, node->prop, 0);
-			fprintf(f, "\n");
+			fprintf(f, " conf_rev=%d\n", node->conf_rev);
 		}
 	}
 }

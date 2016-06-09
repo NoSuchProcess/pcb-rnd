@@ -282,6 +282,7 @@ int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, conf_p
 		dest->prop[0].prio = prio;
 		dest->prop[0].src  = src;
 		dest->used         = 1;
+		dest->conf_rev     = conf_rev;
 	}
 	return 0;
 }
@@ -453,16 +454,19 @@ int conf_merge_patch(lht_node_t *root, long gprio)
 	return 0;
 }
 
-int conf_merge_all()
+int conf_merge_all(const char *path)
 {
 	int n, ret = 0;
 	for(n = 0; n < CFR_max; n++) {
 		lht_node_t *r;
 		if (conf_root[n] == NULL)
 			continue;
-		for(r = conf_root[n]->root->data.list.first; r != NULL; r = r->next)
-			if (conf_merge_patch(r, conf_default_prio[n]) != 0)
+		for(r = conf_root[n]->root->data.list.first; r != NULL; r = r->next) {
+			if (path != NULL)
+				r = lht_tree_path_(r->doc, r, path, 1, 0, NULL);
+			if ((r != NULL) && (conf_merge_patch(r, conf_default_prio[n]) != 0))
 				ret = -1;
+		}
 	}
 	return ret;
 }
@@ -488,7 +492,8 @@ static void conf_field_clear(conf_native_t *f)
 #undef clr
 	}
 
-	f->used = 0;
+	f->used     = 0;
+	f->conf_rev = conf_rev;
 }
 
 int conf_rev = 0;
@@ -509,7 +514,7 @@ void conf_update()
 		conf_field_clear(e->value);
 
 	/* merge all memory-lht data to memory-bin */
-	conf_merge_all();
+	conf_merge_all(NULL);
 	conf_core_postproc();
 	conf_notify_hids();
 }
@@ -559,7 +564,7 @@ void conf_load_all(void)
 	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht", 0);
 	conf_load_as(CFR_USER, "~/.pcb-rnd/pcb-conf.lht", 0);
 	conf_load_as(CFR_PROJECT, "./pcb-conf.lht", 0);
-	conf_merge_all();
+	conf_merge_all(NULL);
 }
 
 static int keyeq(char *a, char *b)
