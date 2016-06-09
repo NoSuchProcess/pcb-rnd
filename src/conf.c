@@ -26,6 +26,7 @@
 #include "conf.h"
 #include "conf_core.h"
 #include "hid_cfg.h"
+#include "hid_init.h"
 #include "misc_util.h"
 #include "error.h"
 
@@ -493,8 +494,11 @@ static void conf_field_clear(conf_native_t *f)
 int conf_rev = 0;
 static void conf_notify_hids()
 {
+	HID **h;
 	conf_rev++;
-#warning TODO: notify HIDs about the change
+	for(h = hid_enumerate(); *h != NULL; h++)
+		if ((*h)->notify_conf_changed != NULL)
+			(*h)->notify_conf_changed();
 }
 
 void conf_update()

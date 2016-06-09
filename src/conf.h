@@ -96,6 +96,7 @@ typedef struct {
 	confitem_t val;   /* value is always an array (len 1 for the common case)  */
 	confprop_t *prop; /* an array of properies allocated as big as val's array */
 	int used;         /* number of items actually used in the arrays */
+	int conf_rev;     /* last changed rev */
 
 	/* dynamic fields for HIDs storing their data */
 	vtp0_t hid_data;

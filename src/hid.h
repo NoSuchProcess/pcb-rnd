@@ -485,6 +485,11 @@ struct hid_st {
 	/* Notification to the GUI that the PCB file has been renamed. */
 	void (*notify_filename_changed) (void);
 
+	/* Notification to the GUI that the in-memory binary representation of
+	   the config has changed. See also: global var conf_rev and the conf_rev
+	   field in conf_native_t. */
+	void (*notify_conf_changed) (void);
+
 	/* Create a new menu and/or submenus
 	 * menu is a / separated path to the new menu (parents are silently created).
 	 * The last non-NULL item is the new menu item.
