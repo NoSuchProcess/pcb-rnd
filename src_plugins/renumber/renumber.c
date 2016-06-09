@@ -297,7 +297,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	fclose(out);
 
 	/* restore the unique flag setting */
-	conf_update();
+	conf_update(NULL);
 
 	if (changed) {
 

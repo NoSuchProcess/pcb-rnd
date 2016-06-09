@@ -762,7 +762,7 @@ static void config_sizes_apply(void)
 	conf_set(CFR_PROJECT, "design/max_width", -1, s, POL_OVERWRITE);
 	pcb_sprintf(s, "%$mS", (new_board_height));
 	conf_set(CFR_PROJECT, "design/max_height", -1, s, POL_OVERWRITE);
-	conf_update();
+	conf_update("design/max_height");
 
 #warning TODO: what? this could be removed once user can select where to save
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_board_size_default_button));
@@ -779,7 +779,7 @@ static void config_sizes_apply(void)
 		conf_set_design("design/min_slk", "%$mS", PCB->minSlk);
 		conf_set_design("design/poly_isle_area", "%f", PCB->IsleArea);
 		conf_set_design("design/min_drill", "%$mS", PCB->minDrill);
-		conf_SET_design("design/min_ring", "%$mS", PCB->minRing);
+		conf_set_design("design/min_ring", "%$mS", PCB->minRing);
 		ghidgui->config_modified = TRUE;
 	}
 
@@ -1512,7 +1512,7 @@ static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t *ci)
 
 	printf("COLOR IDX: %d\n", ci->idx);
 	conf_set(CFR_PROJECT, ci->cfg->hash_path, ci->idx, str, POL_OVERWRITE);
-	conf_update();
+	conf_update(ci->cfg->hash_path);
 
 #warning TODO: check whether we need to free this
 //	g_free(str);

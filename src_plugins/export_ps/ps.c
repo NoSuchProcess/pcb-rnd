@@ -700,7 +700,7 @@ void ps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 		fprintf(the_file, "showpage\n");
 
 	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
-	conf_update(); /* restore forced sets */
+	conf_update(NULL); /* restore forced sets */
 }
 
 static void ps_do_export(HID_Attr_Val * options)

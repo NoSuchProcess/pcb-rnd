@@ -379,27 +379,15 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 	return res;
 }
 
-/* merge main subtree of a patch */
-int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t default_policy, const char *path_prefix)
+int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t default_policy, const char *path_prefix);
+
+void d1() {}
+
+int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, conf_policy_t default_policy)
 {
-	lht_dom_iterator_t it;
-	lht_node_t *n, *h;
-	char path[256], *pathe;
-	char name[256], *namee;
-	int nl, ppl = strlen(path_prefix), res = 0;
-	conf_native_t *target;
-
-	memcpy(path, path_prefix, ppl);
-	path[ppl] = '/';
-	pathe = path + ppl + 1;
-
-	for(n = lht_dom_first(&it, sect); n != NULL; n = lht_dom_next(&it)) {
-		nl = strlen(n->name);
-		memcpy(pathe, n->name, nl);
-		namee = pathe+nl;
-		*namee = '\0';
-		target = conf_get_field(path);
-
+	conf_native_t *target = conf_get_field(path);
+	int res = 0;
+if (strstr(path, "unit") != NULL) d1();
 		switch(n->type) {
 			case LHT_TEXT:
 				if (target == NULL) {
@@ -426,6 +414,29 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 					hid_cfg_error(n, "Attempt to initialize a scalar with a list - this node should be a text node\n");
 				break;
 		}
+	return res;
+}
+
+
+/* merge main subtree of a patch */
+int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t default_policy, const char *path_prefix)
+{
+	lht_dom_iterator_t it;
+	lht_node_t *n, *h;
+	char path[256], *pathe;
+	char name[256], *namee;
+	int nl, ppl = strlen(path_prefix), res = 0;
+
+	memcpy(path, path_prefix, ppl);
+	path[ppl] = '/';
+	pathe = path + ppl + 1;
+
+	for(n = lht_dom_first(&it, sect); n != NULL; n = lht_dom_next(&it)) {
+		nl = strlen(n->name);
+		memcpy(pathe, n->name, nl);
+		namee = pathe+nl;
+		*namee = '\0';
+		res |= conf_merge_patch_item(path, n, default_prio, default_policy);
 	}
 	return res;
 }
@@ -458,14 +469,20 @@ int conf_merge_all(const char *path)
 {
 	int n, ret = 0;
 	for(n = 0; n < CFR_max; n++) {
-		lht_node_t *r;
+		lht_node_t *r, *r2;
 		if (conf_root[n] == NULL)
 			continue;
 		for(r = conf_root[n]->root->data.list.first; r != NULL; r = r->next) {
-			if (path != NULL)
-				r = lht_tree_path_(r->doc, r, path, 1, 0, NULL);
-			if ((r != NULL) && (conf_merge_patch(r, conf_default_prio[n]) != 0))
-				ret = -1;
+			if (path != NULL) {
+				conf_policy_t gpolicy = POL_OVERWRITE;
+				r2 = lht_tree_path_(r->doc, r, path, 1, 0, NULL);
+				get_hash_policy(&gpolicy, r, "policy");
+				if ((r2 == NULL) || (conf_merge_patch_item(path, r2, conf_default_prio[n], gpolicy) != 0))
+					ret = -1;
+			}
+			else
+				if (conf_merge_patch(r, conf_default_prio[n]) != 0)
+					ret = -1;
 		}
 	}
 	return ret;
@@ -506,15 +523,24 @@ static void conf_notify_hids()
 			(*h)->notify_conf_changed();
 }
 
-void conf_update()
+void conf_update(const char *path)
 {
-	/* clear all memory-bin data first */
-	htsp_entry_t *e;
-	conf_fields_foreach(e)
-		conf_field_clear(e->value);
+	/* clear memory-bin data first */
+	if (path == NULL) {
+		htsp_entry_t *e;
+		conf_fields_foreach(e)
+			conf_field_clear(e->value);
+	}
+	else {
+		conf_native_t *n;
+		n = conf_get_field(path);
+		if (n == NULL)
+			return;
+		conf_field_clear(n);
+	}
 
 	/* merge all memory-lht data to memory-bin */
-	conf_merge_all(NULL);
+	conf_merge_all(path);
 	conf_core_postproc();
 	conf_notify_hids();
 }

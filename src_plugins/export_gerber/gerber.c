@@ -599,7 +599,7 @@ static void gerber_do_export(HID_Attr_Val * options)
 	maybe_close_f(f);
 	f = NULL;
 	hid_restore_layer_ons(save_ons);
-	conf_update(); /* resotre forced sets */
+	conf_update(NULL); /* resotre forced sets */
 }
 
 static void gerber_parse_arguments(int *argc, char ***argv)

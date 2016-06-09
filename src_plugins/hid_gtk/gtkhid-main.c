@@ -137,7 +137,7 @@ static void ghid_flip_view(Coord center_x, Coord center_y, bool flip_x, bool fli
 	ghid_pcb_to_event_coords(center_x, center_y, &widget_x, &widget_y);
 
 	conf_set_design("editor/view/flip_x", "%d", conf_core.editor.view.flip_x != flip_x);
-	conf_SET_design("editor/view/flip_y", "%d", conf_core.editor.view.flip_y != flip_y);
+	conf_set_design("editor/view/flip_y", "%d", conf_core.editor.view.flip_y != flip_y);
 
 	/* Pan the board so the center location remains in the same place */
 	ghid_pan_view_abs(center_x, center_y, widget_x, widget_y);
@@ -1624,7 +1624,7 @@ static int SetUnits(int argc, char **argv, Coord x, Coord y)
 	if (new_unit != NULL && new_unit->allow != NO_PRINT) {
 #warning TODO: decide what to do with this: some fields are just overwritten by hand
 		conf_set(CFR_DESIGN, "editor/grid_unit", -1, argv[0], POL_OVERWRITE);
-		conf_update();
+		conf_update("editor/grid_unit");
 		AttributePut(PCB, "PCB::grid::unit", argv[0]);
 	}
 

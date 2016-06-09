@@ -132,7 +132,7 @@ void conf_init(void);
 void conf_load_all(void);
 
 /* Update the binary representation from the memory-lht representation */
-void conf_update(void);
+void conf_update(const char *path);
 
 conf_native_t *conf_get_field(const char *path);
 void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc);
@@ -218,18 +218,13 @@ do { \
 	char *__tmp__ = pcb_strdup_printf(fmt, new_val); \
 	conf_set(CFR_DESIGN, path, -1, __tmp__, POL_OVERWRITE); \
 	free(__tmp__); \
-} while(0)
-
-#define conf_SET_design(path, fmt, new_val) \
-do { \
-	conf_set_design(path, fmt, new_val); \
-	conf_update(); \
+	conf_update(path); \
 } while(0)
 
 #define conf_set_editor(field, val) \
 do { \
 	conf_set(CFR_DESIGN, "editor/" #field, -1, val ? "1" : "0", POL_OVERWRITE); \
-	conf_update(); \
+	conf_update("editor/" #field); \
 } while(0)
 
 #define conf_toggle_editor(field) \

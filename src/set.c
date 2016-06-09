@@ -79,7 +79,7 @@ void SetGrid(Coord Grid, bool align)
 void SetLineSize(Coord Size)
 {
 	if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE) {
-		conf_SET_design("design/line_thickness", "%$mS", Size);
+		conf_set_design("design/line_thickness", "%$mS", Size);
 		if (conf_core.editor.auto_drc)
 			FitCrosshairIntoGrid(Crosshair.X, Crosshair.Y);
 	}
@@ -91,7 +91,7 @@ void SetLineSize(Coord Size)
 void SetViaSize(Coord Size, bool Force)
 {
 	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIASIZE && Size >= conf_core.design.via_drilling_hole + MIN_PINORVIACOPPER)) {
-		conf_SET_design("design/via_thickness", "%$mS", Size);
+		conf_set_design("design/via_thickness", "%$mS", Size);
 	}
 }
 
@@ -101,7 +101,7 @@ void SetViaSize(Coord Size, bool Force)
 void SetViaDrillingHole(Coord Size, bool Force)
 {
 	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - MIN_PINORVIACOPPER)) {
-		conf_SET_design("design/via_drilling_hole", "%$mS", Size);
+		conf_set_design("design/via_drilling_hole", "%$mS", Size);
 	}
 }
 
@@ -110,7 +110,7 @@ void pcb_use_route_style(RouteStyleType * rst)
 	conf_set_design("design/line_thickness", "%$mS", rst->Thick);
 	conf_set_design("design/via_thickness", "%$mS", rst->Diameter);
 	conf_set_design("design/via_drilling_hole", "%$mS", rst->Hole);
-	conf_SET_design("design/keepaway", "%$mS", rst->Keepaway);
+	conf_set_design("design/keepaway", "%$mS", rst->Keepaway);
 }
 
 /* ---------------------------------------------------------------------------
@@ -119,7 +119,7 @@ void pcb_use_route_style(RouteStyleType * rst)
 void SetKeepawayWidth(Coord Width)
 {
 	if (Width <= MAX_LINESIZE) {
-		conf_SET_design("design/keepaway", "%$mS", Width);
+		conf_set_design("design/keepaway", "%$mS", Width);
 	}
 }
 
@@ -129,7 +129,7 @@ void SetKeepawayWidth(Coord Width)
 void SetTextScale(int Scale)
 {
 	if (Scale <= MAX_TEXTSCALE && Scale >= MIN_TEXTSCALE) {
-		conf_SET_design("design/text_scale", "%d", Scale);
+		conf_set_design("design/text_scale", "%d", Scale);
 	}
 }
 
@@ -166,7 +166,7 @@ void SetBufferNumber(int Number)
 {
 	if (Number >= 0 && Number < MAX_BUFFER) {
 		conf_set_design("editor/buffer_number", "%d", Number);
-		conf_update();
+		conf_update("editor/buffer_number");
 
 		/* do an update on the crosshair range */
 		SetCrosshairRangeToBuffer();
@@ -234,7 +234,7 @@ void SetMode(int Mode)
 		Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = Crosshair.AttachedBox.Point1.Y;
 		sprintf(sMode, "%d", Mode);
 		conf_set(CFR_DESIGN, "editor/mode", -1, sMode, POL_OVERWRITE);
-		conf_update();
+		conf_update("editor/mode");
 		AdjustAttachedObjects();
 	}
 	else {
@@ -252,7 +252,7 @@ void SetMode(int Mode)
 
 	sprintf(sMode, "%d", Mode);
 	conf_set(CFR_DESIGN, "editor/mode", -1, sMode, POL_OVERWRITE);
-	conf_update();
+	conf_update("editor/mode");
 
 	if (Mode == PASTEBUFFER_MODE)
 		/* do an update on the crosshair range */
