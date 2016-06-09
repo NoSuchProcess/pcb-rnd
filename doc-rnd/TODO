@@ -1,13 +1,4 @@
 - replace settings with lihata (conf_*)
-	- menu lht updates:
-		- fix lesstif menu lht for conf(toggle, editor/draw_grid, design)
-		- pcb-menu-mkey.lht
-	- remove redundancy: don't store values in the PCB struct that are in the design conf
-	- optimize conf-update-after-set:
-		- we know whether the node we change ended up in native (check prop.src)
-		- recalc native directly if did so - never run conf_update!
-		- revise each call to conf_update(), especially from the set macros!
-	- increments are not really implemented
 	- revise main.c, line by line
 	- get gsch2pcb to use the same config system
 	- TEST:
@@ -37,11 +28,18 @@
 BUGS:
 	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
 	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
+	- menu:
+		- view/show layers stopped working (broke before 1.0.10)
+		- view/show current layer stopped working (broke before 1.0.10)
+
 
 CLEANUP #5
-- if font file is not found:
-	- embedded version?
-	- warn when try to write text on pcb?
+- conf:
+	- remove redundancy: don't store values in the PCB struct that are in the design conf
+	- increments are not really implemented
+	- if font file is not found:
+		- embedded version?
+		- warn when try to write text on pcb?
 - "keepaway" vs. "clearance" renaming?
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
 - scconfig: check for bison/flex, do not regenerate languages if they are missing
