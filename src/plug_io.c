@@ -102,7 +102,7 @@ plug_io_t *plug_io_chain = NULL;
 
 RCSID("$Id$");
 
-static plug_io_err(int res, const char *what, const char *filename)
+static void plug_io_err(int res, const char *what, const char *filename)
 {
 	if (res != 0) {
 		char *reason = "", *comment = "";

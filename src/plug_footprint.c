@@ -68,7 +68,7 @@ static int keyeq(char *a, char *b)
 const void *fp_tag(const char *tag, int alloc)
 {
 	htsp_entry_t *e;
-	static int counter = 0;
+	static char *counter = NULL;
 
 	if (fp_tags == NULL)
 		fp_tags = htsp_alloc(strhash, keyeq);
