@@ -428,7 +428,7 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 	return res;
 }
 
-int conf_merge_patch(lht_node_t *root, int gprio)
+int conf_merge_patch(lht_node_t *root, long gprio)
 {
 	conf_policy_t gpolicy = POL_OVERWRITE;
 	const char *ps;
