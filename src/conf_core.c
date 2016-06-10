@@ -52,6 +52,7 @@ void conf_core_postproc()
 #else
 	conf_force_set_bool(conf_core.rc.have_regex, 0);
 #endif
+	conf_ro("rc/have_regex");
 
 	conf_force_set_str(conf_core.rc.path.prefix, PCB_PREFIX);   conf_ro("rc/path/prefix");
 	conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);       conf_ro("rc/path/lib");
