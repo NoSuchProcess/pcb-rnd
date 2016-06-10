@@ -180,8 +180,8 @@ ha:{
 						ha:Zoom to 10mil/px       = { action={Zoom(=10mil)} }
 						ha:Zoom In 20% and center = { m=Z; li:action={Zoom(-1.2); Center()} }
 						ha:Zoom Out 20% and center= { m=O; li:action={Zoom(+1.2); Center()} }
-						ha:Flip up/down           = { checked=flip_y; a=<Key>Tab; action=SwapSides(V) }
-						ha:Flip left/right        = { checked=flip_x; a=Shift<Key>Tab; action=SwapSides(H) }
+						ha:Flip up/down           = { checked=editor/view/flip_y; a=<Key>Tab; action=SwapSides(V) }
+						ha:Flip left/right        = { checked=editor/view/flip_x; a=Shift<Key>Tab; action=SwapSides(H) }
 						ha:Spin 180 degrees       = { a=Ctrl<Key>Tab; action=SwapSides(R) }
 						ha:Swap Sides             = { a=Ctrl Shift<Key>Tab; action=SwapSides() }
 						ha:Center cursor          = { a=<Key>c; action=Center() }
@@ -235,7 +235,7 @@ ha:{
 				ha:Thin draw poly                   = { checked=editor/thin_draw_poly; a=Ctrl Shift<Key>p; action=conf(toggle, editor/thin_draw_poly, design) }
 				ha:Check polygons                   = { checked=editor/check_planes; action=conf(toggle, editor/check_planes, design) }
 				-
-				ha:Vendor drill mapping             = { checked=VendorMapOn; action=ToggleVendor() }
+				ha:Vendor drill mapping             = { checked=plugins/vendor/enable; action=ToggleVendor() }
 				ha:Import New Elements at = {
 					m=I
 					li:submenu {
@@ -376,7 +376,7 @@ ha:{
 							}
 						}
 						-
-						ha:Only autorouted nets = { checked=optautoonly; action=OptAutoOnly() }
+						ha:Only autorouted nets = { checked=plugins/djopt/auto_only; action=OptAutoOnly() }
 					}
 				}
 				-
@@ -448,7 +448,7 @@ ha:{
 						ha:AddRats Selected             = { a=Shift<Key>w; action=AddRats(SelectedRats) }
 						ha:Add All Rats                 = { a=<Key>w; action=AddRats(AllRats) }
 						ha:Cycle Clip                   = { a=<Key>/; action=Display(CycleClip) }
-						ha:Arrow Mode                   = { a=<Key>space; checked=arrowmode,1; action=Mode(Arrow) }
+						ha:Arrow Mode                   = { a=<Key>space; checked=ChkMode(arrow); action=Mode(Arrow) }
 						ha:Temp Arrow ON                = { a=<Key>[; li:action={Mode(Save); Mode(Arrow); Mode(Notify)} }
 						ha:Temp Arrow OFF               = { a=<Key>]; li:action={Mode(Release); Mode(Restore)} }
 						-
