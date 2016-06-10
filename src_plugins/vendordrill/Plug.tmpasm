@@ -1,5 +1,6 @@
 put /local/pcb/mod {vendordrill}
 append /local/pcb/mod/OBJS [@ $(PLUGDIR)/vendordrill/vendor.o @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/vendordrill/vendor_conf.h}
 
 switch /local/pcb/vendordrill/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

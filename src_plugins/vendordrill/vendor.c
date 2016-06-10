@@ -62,10 +62,13 @@
 #include "hid_flags.h"
 #include "hid_actions.h"
 #include "hid_cfg.h"
+#include "vendor_conf.h"
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 
 RCSID("$Id$");
+
+conf_vendor_t conf_vendor;
 
 static void add_to_drills(char *);
 static void apply_vendor_map(void);
@@ -94,9 +97,6 @@ static char *vendor_name = NULL;
 /* resource file to PCB units scale factor */
 static double sf;
 
-
-/* enable/disable mapping */
-static bool vendorMapEnable = false;
 
 /* type of drill mapping */
 #define CLOSEST 1
@@ -149,10 +149,7 @@ loaded first.
 
 int ActionToggleVendor(int argc, char **argv, Coord x, Coord y)
 {
-	if (vendorMapEnable)
-		vendorMapEnable = false;
-	else
-		vendorMapEnable = true;
+	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, conf_vendor.plugins.vendor.enable ? "0" : "1", POL_OVERWRITE);
 	return 0;
 }
 
@@ -178,7 +175,7 @@ loaded first.
 
 int ActionEnableVendor(int argc, char **argv, Coord x, Coord y)
 {
-	vendorMapEnable = true;
+	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "1", POL_OVERWRITE);
 	return 0;
 }
 
@@ -202,7 +199,7 @@ specified in the currently loaded vendor drill table.
 
 int ActionDisableVendor(int argc, char **argv, Coord x, Coord y)
 {
-	vendorMapEnable = false;
+	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
 	return 0;
 }
 
@@ -386,7 +383,8 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 	Message(_("Loaded %d vendor drills from %s\n"), n_vendor_drills, fname);
 	Message(_("Loaded %d RefDes skips, %d Value skips, %d Descr skips\n"), n_refdes, n_value, n_descr);
 
-	vendorMapEnable = true;
+	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
+
 	apply_vendor_map();
 	if (free_fname)
 		free(fname);
@@ -400,10 +398,10 @@ static void apply_vendor_map(void)
 	int changed, tot;
 	bool state;
 
-	state = vendorMapEnable;
+	state = conf_vendor.plugins.vendor.enable;
 
 	/* enable mapping */
-	vendorMapEnable = true;
+	conf_force_set_bool(conf_vendor.plugins.vendor.enable, 1);
 
 	/* reset our counts */
 	changed = 0;
@@ -512,7 +510,7 @@ static void apply_vendor_map(void)
 	}
 
 	/* restore mapping on/off */
-	vendorMapEnable = state;
+	conf_force_set_bool(conf_vendor.plugins.vendor.enable, state);
 }
 
 /* for a given drill size, find the closest vendor drill size */
@@ -526,7 +524,7 @@ int vendorDrillMap(int in)
 
 	/* skip the mapping if we don't have a vendor drill table */
 	if ((n_vendor_drills == 0) || (vendor_drills == NULL)
-			|| (vendorMapEnable == false)) {
+			|| (!conf_vendor.plugins.vendor.enable)) {
 		cached_map = in;
 		return in;
 	}
@@ -671,7 +669,7 @@ bool vendorIsElementMappable(ElementTypePtr element)
 	int i;
 	int noskip;
 
-	if (vendorMapEnable == false)
+	if (!conf_vendor.plugins.vendor.enable)
 		return false;
 
 	noskip = 1;
@@ -802,11 +800,6 @@ HID_Action vendor_action_list[] = {
 
 REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
 
-static int vendor_get_enabled(int unused)
-{
-	return vendorMapEnable;
-}
-
 static char **vendor_free_vect(char **lst, int *len)
 {
 	if (lst != NULL) {
@@ -837,11 +830,16 @@ static void hid_vendordrill_uninit(void)
 {
 	hid_remove_actions_by_cookie(vendor_cookie);
 	vendor_free_all();
+	conf_unreg_fields("plugins/vendor/");
 }
 
 #include "dolists.h"
 pcb_uninit_t hid_vendordrill_init(void)
 {
+#define conf_reg(field,isarray,type_name,cpath,cname,desc) \
+	conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc);
+#include "vendor_conf_fields.h"
+
 	stub_vendorDrillMap = vendorDrillMap;
 	stub_vendorIsElementMappable = vendorIsElementMappable;
 
