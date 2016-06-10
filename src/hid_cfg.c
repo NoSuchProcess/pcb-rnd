@@ -28,7 +28,6 @@
 
 #include "global.h"
 #include "hid_cfg.h"
-#include "hid_actions.h"
 #include "error.h"
 #include "paths.h"
 
@@ -257,27 +256,6 @@ hid_cfg_t *hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallb
 	hr->doc = doc;
 
 	return hr;
-}
-
-int hid_cfg_action(const lht_node_t *node)
-{
-	if (node == NULL)
-		return -1;
-	switch(node->type) {
-		case LHT_TEXT:
-			return hid_parse_actions(node->data.text.value);
-		case LHT_LIST:
-			for(node = node->data.list.first; node != NULL; node = node->next) {
-				if (node->type == LHT_TEXT) {
-					if (hid_parse_actions(node->data.text.value) != 0)
-						return -1;
-				}
-				else
-					return -1;
-			}
-			return 0;
-	}
-	return -1;
 }
 
 /************* "parsing" **************/

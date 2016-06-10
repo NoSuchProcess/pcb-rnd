@@ -71,6 +71,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "gui.h"
 #include "hid.h"
 #include "hid_cfg.h"
+#include "hid_cfg_action.h"
 #include "action_helper.h"
 #include "buffer.h"
 #include "change.h"

@@ -43,6 +43,7 @@ put /local/pcb/OBJS [@
 	hid_actions.o
 	hid_attrib.o
 	hid_cfg.o
+	hid_cfg_action.o
 	hid_cfg_input.o
 	hid_color.o
 	hid_draw_helpers.o

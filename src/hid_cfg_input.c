@@ -33,6 +33,7 @@
 #include "hid_cfg.h"
 #include "hid_cfg_input.h"
 #include "hid_actions.h"
+#include "hid_cfg_action.h"
 #include "error.h"
 
 /* split value into a list of '-' separated words; examine each word

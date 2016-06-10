@@ -20,6 +20,7 @@
 
 #include "hid.h"
 #include "hid_cfg.h"
+#include "hid_cfg_action.h"
 #include "hid_cfg_input.h"
 #include "lesstif.h"
 #include "mymem.h"
