@@ -1696,31 +1696,6 @@ void AttributeRemoveFromList(AttributeListType * list, char *name)
 		}
 }
 
-#warning TODO: move this to io_pcb
-/* In future all use of this should be supplanted by
- * pcb-printf and %mr/%m# spec */
-const char *c_dtostr(double d)
-{
-	static char buf[100];
-	int i, f;
-	char *bufp = buf;
-
-	if (d < 0) {
-		*bufp++ = '-';
-		d = -d;
-	}
-	d += 0.0000005;								/* rounding */
-	i = floor(d);
-	d -= i;
-	sprintf(bufp, "%d", i);
-	bufp += strlen(bufp);
-	*bufp++ = '.';
-
-	f = floor(d * 1000000.0);
-	sprintf(bufp, "%06d", f);
-	return buf;
-}
-
 void r_delete_element(DataType * data, ElementType * element)
 {
 	r_delete_entry(data->element_tree, (BoxType *) element);

@@ -119,9 +119,6 @@ char *LayerGroupsToString(LayerGroupTypePtr);
 /* Make the current layer groups the default.  */
 void MakeLayerGroupsDefault();
 
-/* These act like you'd expect, except always in the C locale.  */
-extern const char *c_dtostr(double d);
-
 /* Returns a string with info about this copy of pcb. */
 char *GetInfoString(void);
 

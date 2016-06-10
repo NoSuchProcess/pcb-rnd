@@ -172,6 +172,31 @@ int PCBFileVersionNeeded(void)
 	return PCB_FILE_VERSION_BASELINE;
 }
 
+/* In future all use of this should be supplanted by
+ * pcb-printf and %mr/%m# spec */
+static const char *c_dtostr(double d)
+{
+	static char buf[100];
+	int i, f;
+	char *bufp = buf;
+
+	if (d < 0) {
+		*bufp++ = '-';
+		d = -d;
+	}
+	d += 0.0000005;								/* rounding */
+	i = floor(d);
+	d -= i;
+	sprintf(bufp, "%d", i);
+	bufp += strlen(bufp);
+	*bufp++ = '.';
+
+	f = floor(d * 1000000.0);
+	sprintf(bufp, "%06d", f);
+	return buf;
+}
+
+
 /* ---------------------------------------------------------------------------
  * writes out an attribute list
  */
