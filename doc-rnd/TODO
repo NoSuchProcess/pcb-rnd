@@ -1,4 +1,5 @@
 - replace settings with lihata (conf_*)
+	- introduce a path type for automatic subst
 	- revise main.c, line by line
 	- TEST:
 		- gsch2pcb
