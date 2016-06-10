@@ -573,6 +573,5 @@ struct rats_patch_line_s {
 #warning TODO: remove these
 extern char *bindir;						/* The dir in which PCB installation was found */
 extern char *pcblibdir;
-extern char *exec_prefix;
 
 #endif /* PCB_GLOBAL_H  */

@@ -106,8 +106,8 @@ static char *command_line_pcb;
  * and fix up the defaults for various paths
  */
 char *bindir = NULL;
-char *exec_prefix = NULL;
 char *pcblibdir = NULL;
+
 
 static void InitPaths(char *argv0)
 {
@@ -116,6 +116,7 @@ static void InitPaths(char *argv0)
 	int haspath;
 	char *t1, *t2;
 	int found_bindir = 0;
+	char *exec_prefix = NULL;
 
 	/* see if argv0 has enough of a path to let lrealpath give the
 	 * real path.  This should be the case if you invoke pcb with
@@ -207,6 +208,9 @@ static void InitPaths(char *argv0)
 		exit(1);
 	}
 	sprintf(exec_prefix, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, BINDIR_TO_EXECPREFIX);
+	conf_set(CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, POL_OVERWRITE);
+	conf_update("rc/path/exec_prefix");
+	free(exec_prefix);
 
 	/* now find the path to PCBSHAREDIR */
 	l = strlen(bindir) + 1 + strlen(BINDIR_TO_PCBSHAREDIR) + 1;
@@ -293,7 +297,6 @@ void pcb_main_uninit(void)
 
 	free0(pcblibdir);
 	free0(bindir);
-	free0(exec_prefix);
 	free0(program_directory);
 #undef free0
 	free(hid_argv_orig);

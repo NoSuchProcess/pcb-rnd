@@ -98,6 +98,8 @@ typedef struct {
 			CFT_STRING bin;                  /* e.g. /usr/bin */
 			CFT_STRING share;                /* e.g. /usr/share/pcb-rnd */
 			CFT_STRING home;                 /* user's home dir, determined run-time */
+			
+			CFT_STRING exec_prefix;          /* exec prefix path (extracted from argv[0]) */
 		} path;
 	} rc;
 
