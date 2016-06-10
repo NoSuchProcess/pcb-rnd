@@ -86,17 +86,17 @@ li:pcb_config {
 			li:library_search_paths = {
 				../pcblib
 				~/pcblib/
-				$SHAREDIR/pcblib
+				$(rc.path.share)/pcblib
 			}
 
 			save_command = {}
 			li:default_font_file = {
 				{./default_font}
-				{$SHAREDIR/default_font}
+				{$(rc.path.share)/default_font}
 			}
 			li:default_pcb_file = {
 				{./default.pcb}
-				{$SHAREDIR/default.pcb}
+				{$(rc.path.share)/default.pcb}
 			}
 
 #			script_filename = {}

@@ -80,7 +80,7 @@ typedef struct {
 		CFT_LIST library_search_paths;
 
 		CFT_STRING save_command;
-		CFT_LIST default_font_file;  /* name of default font file */
+		CFT_LIST default_font_file;        /* name of default font file (list of names to search) */
 		CFT_LIST default_pcb_file;
 
 		CFT_STRING script_filename;        /* PCB Actions script to execute on startup */
@@ -90,7 +90,14 @@ typedef struct {
 
 		CFT_LIST preferred_gui;            /* if set, try GUI HIDs in this order when no GUI is explicitly selected */
 
-		CFT_BOOLEAN have_regex;            /* auto-set by postproc: whether we have regex compiled in */
+		/***** automatically set (in postporc) *****/
+		CFT_BOOLEAN have_regex;            /* whether we have regex compiled in */
+		struct path {
+			CFT_STRING prefix;               /* e.g. /usr/local */
+			CFT_STRING lib;                  /* e.g. /usr/lib/pcb-rnd */
+			CFT_STRING bin;                  /* e.g. /usr/bin */
+			CFT_STRING share;                /* e.g. /usr/share/pcb-rnd */
+		} path;
 	} rc;
 
 	const struct design { /* defaults of a new layout */

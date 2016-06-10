@@ -235,6 +235,7 @@ do { \
 
 /* For temporary modification/restoration of variables (hack) */
 #define conf_force_set_bool(var, val) *((CFT_BOOLEAN *)(&var)) = val
+#define conf_force_set_str(var, val) *((CFT_STRING *)(&var)) = val
 
 /* get the main node of a configuration (it's a hash and its children
    are "design", "rc", ...) */

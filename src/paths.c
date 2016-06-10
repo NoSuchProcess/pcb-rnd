@@ -4,7 +4,9 @@
 #include "config.h"
 #include "paths.h"
 #include "error.h"
+#include "conf.h"
 
+#warning TODO: move this in conf_core
 char *homedir;
 
 void paths_init_homedir(void)
@@ -39,14 +41,36 @@ void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra
 				l1 = strlen(subst_to);
 				l2 = strlen((*in) + 1);
 				*out = malloc(l1 + l2 + 4 + extra_room);
-				sprintf(*out, "%s/%s", subst_to, (*in) + subst_offs);
+				sprintf(*out, "%s%s", subst_to, (*in) + subst_offs);
 			}
 			else if (**in == '$') {
-				if (strncmp(*in, "$SHAREDIR", 9) == 0) {
-#warning TODO: get this from a hash
-					subst_to = PCBSHAREDIR;
-					subst_offs = 9;
-					goto replace;
+				if ((*in)[1] == '(') {
+					char *end = strchr((*in)+2, ')');
+					if (end != NULL) {
+						char hash_path[128];
+						int len = end - (*in);
+						if (len < sizeof(hash_path)-1) {
+							conf_native_t *cn;
+							char *si, *so;
+							int n;
+
+							(*in) += 2;
+							len -= 2;
+							for(si = *in, so = hash_path, n=0; n < len; n++,si++,so++) {
+								if (*si == '.')
+									*so = '/';
+								else
+									*so = *si;
+							}
+							*so = 0;
+							cn = conf_get_field(hash_path);
+							if ((cn != NULL) && (cn->type == CFN_STRING)) {
+								subst_to = cn->val.string[0];
+								subst_offs = len+1;
+								goto replace;
+							}
+						}
+					}
 				}
 				else
 					*out = NULL;

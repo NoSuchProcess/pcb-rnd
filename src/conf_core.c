@@ -36,4 +36,8 @@ void conf_core_postproc()
 	conf_force_set_bool(conf_core.rc.have_regex, 0);
 #endif
 
+	conf_force_set_str(conf_core.rc.path.prefix, PCB_PREFIX);
+	conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);
+	conf_force_set_str(conf_core.rc.path.bin, BINDIR);
+	conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);
 }
