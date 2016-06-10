@@ -2,7 +2,7 @@ print [@
 PLUGDIR=../src_plugins
 
 CFLAGS=-I.. -I../src_3rd -DSCMDIR="\"$(LIBDIR)\""
-LDFLAGS=
+LDFLAGS=-lm
 EXE=@sys/ext_exe@
 CC=@cc/cc@
 
@@ -11,6 +11,20 @@ VECTOBJ=../src_3rd/genvector/genvector.a
 LISTOBJ=../src_3rd/genlist/genlist.a
 SCCFOBJ=../scconfig/src/default/str.o
 QPARSE=../src_3rd/qparse/qparse.o
+LHTOBJ= \
+	../src_3rd/liblihata/parser.o \
+	../src_3rd/liblihata/dom.o \
+	../src_3rd/liblihata/dom_list.o \
+	../src_3rd/liblihata/dom_hash.o \
+	../src_3rd/liblihata/dom_table.o \
+	../src_3rd/liblihata/lihata.o \
+	../src_3rd/liblihata/hash_str.o \
+	../src_3rd/liblihata/tree.o \
+	../src_3rd/liblihata/tree_list.o \
+	../src_3rd/liblihata/tree_hash.o \
+	../src_3rd/liblihata/tree_table.o \
+	../src_3rd/liblihata/tree_symlink.o \
+	../src_3rd/liblihata/tree_path.o
 @]
 
 put /local/pcb/tmpasm/buildin  {../src_plugins/Buildin.tmpasm}
@@ -28,11 +42,12 @@ include {../src_plugins/plugins_fp.tmpasm}
 print [@
 
 FP_OBJS    = @/local/pcb/OBJS@ ../src/plug_footprint.o
+CONF_OBJS  = ../src/vtlibrary.o ../src/compat_fs.o ../src/paths.o ../src/conf.o ../src/conf_core.o ../src/hid_cfg.o ../src/misc_util.o ../src/unit.o ../src/conf_internal.o ../src/list_conf.o
 FP_LDFLAGS = @/local/pcb/LDFLAGS@
 FP_CFLAGS  = @/local/pcb/CFLAGS@
 
-gsch2pcb-rnd$(EXE): gsch2pcb.o ../src/vtlibrary.o ../src/compat_fs.o ../src/paths.o $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS)
-	$(CC) gsch2pcb.o ../src/vtlibrary.o ../src/compat_fs.o ../src/paths.o  $(FP_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) -o gsch2pcb-rnd$(EXE) $(LDFLAGS) $(FP_LDFLAGS)
+gsch2pcb-rnd$(EXE): gsch2pcb.o $(CONF_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS) $(LHTOBJ)
+	$(CC) gsch2pcb.o $(CONF_OBJS)  $(FP_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(LHTOBJ) -o gsch2pcb-rnd$(EXE) $(LDFLAGS) $(FP_LDFLAGS)
 
 gsch2pcb.o: gsch2pcb.c ../config.h  ../config.manual.h  ../config.auto.h
 	$(CC) -c $(CFLAGS) $(FP_CFLAGS) gsch2pcb.c -o gsch2pcb.o

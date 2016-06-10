@@ -1242,6 +1242,11 @@ void plugin_register(const char *name, const char *path, void *handle, int dynam
 
 }
 
+void hid_notify_conf_changed(void)
+{
+
+}
+
 
 /************************ main ***********************/
 int main(int argc, char ** argv)
