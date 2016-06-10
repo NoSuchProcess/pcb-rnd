@@ -1,7 +1,9 @@
+put /local/pcb/CFLAGS {-I.. -I../src_3rd -DSCMDIR="\"$(LIBDIR)\""}
+include {../scconfig/template/debug.tmpasm}
+
 print [@
 PLUGDIR=../src_plugins
-
-CFLAGS=-I.. -I../src_3rd -DSCMDIR="\"$(LIBDIR)\""
+CFLAGS=@/local/pcb/CFLAGS@
 LDFLAGS=-lm
 EXE=@sys/ext_exe@
 CC=@cc/cc@
