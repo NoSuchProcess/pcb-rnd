@@ -25,11 +25,11 @@ int hid_actionv_(const HID_Action *a, int argc, char **argv);
    arg2)" and command-style "action arg1 arg2", allowing only one
    action in the later case.  Returns nonzero if the action handler(s)
    return nonzero. */
-	int hid_parse_command(const char *str_);
+int hid_parse_command(const char *str_);
 
 /* Parse the given string into action calls, and call
    hid_actionv for each action found.  Accepts only
    "action(arg1, arg2)" */
-	int hid_parse_actions(const char *str_);
+int hid_parse_actions(const char *str_);
 
 #endif
