@@ -87,7 +87,10 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 		if ((rel_level != cmc->target_level) || (cmc->action == NULL))
 			lht_dom_hash_put(node, lht_dom_node_alloc(LHT_LIST, "submenu"));
 
-		lht_dom_list_append(psub, node);
+		if (node->parent == NULL)
+			lht_dom_list_append(psub, node);
+		else
+			assert(node->parent == psub);
 
 		if (cmc->cb(cmc->cb_ctx, path, name, (rel_level == 1), cmc->parent, node) != 0) {
 			cmc->err = -1;
