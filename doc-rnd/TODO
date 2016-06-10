@@ -1,7 +1,7 @@
 - replace settings with lihata (conf_*)
 	- revise main.c, line by line
-	- get gsch2pcb to use the same config system
 	- TEST:
+		- gsch2pcb
 		- CFR_DESIGN; check changing:
 			- layer groups
 			- pcb size
