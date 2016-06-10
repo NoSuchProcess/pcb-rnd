@@ -1,6 +1,11 @@
 - replace settings with lihata (conf_*)
 	- introduce a path type for automatic subst
+	- the menu conf files are still somewhat broken: look for ERROR on startup
+	- enable NDEBUG, check why menus fail
 	- revise main.c, line by line
+	- menu bug:
+		- view/show layers stopped working (broke before 1.0.10)
+		- view/show current layer stopped working (broke before 1.0.10)
 	- TEST:
 		- gsch2pcb
 		- CFR_DESIGN; check changing:
@@ -29,9 +34,6 @@
 BUGS:
 	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
 	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
-	- menu:
-		- view/show layers stopped working (broke before 1.0.10)
-		- view/show current layer stopped working (broke before 1.0.10)
 
 
 CLEANUP #5
