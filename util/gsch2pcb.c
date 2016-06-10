@@ -37,6 +37,7 @@
 #include <sys/stat.h>
 #include "../src/plug_footprint.h"
 #include "../src/paths.h"
+#include "../src/conf.h"
 #include "../src_3rd/genvector/vts0.h"
 #include "../src_3rd/genlist/gendlist.h"
 #include "../src_3rd/genlist/genadlist.h"
@@ -1184,6 +1185,15 @@ static void get_args(int argc, char ** argv)
 				verbose += 1;
 				continue;
 			}
+			else if (!strcmp(opt, "c") || !strcmp(opt, "conf")) {
+				char *stmp;
+				if (conf_set_from_cli(arg, &stmp) != 0) {
+					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, stmp);
+					exit(1);
+				}
+				i++;
+				continue;
+			}
 			else if (!strcmp(opt, "fix-elements")) {
 				fix_elements = TRUE;
 				continue;
@@ -1264,6 +1274,10 @@ int main(int argc, char ** argv)
 #		include "fp_init.c"
 	}
 
+	conf_init();
+	conf_core_init();
+	conf_load_all();
+
 	fp_init();
 
 	gadl_list_init(&schematics, sizeof(char *), NULL, NULL);
@@ -1285,6 +1299,7 @@ int main(int argc, char ** argv)
 	net_file_name = str_concat(NULL, sch_basename, ".net", NULL);
 	pcb_file_name = str_concat(NULL, sch_basename, ".pcb", NULL);
 
+	conf_update(NULL);
 
 	{ /* set bak_file_name, finding the first number that results in a non-existing bak */
 		int len;
