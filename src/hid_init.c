@@ -32,6 +32,7 @@
 #include "hid_attrib.h"
 #include "hid_flags.h"
 #include "misc_util.h"
+#include "conf_core.h"
 
 RCSID("$Id$");
 
@@ -118,10 +119,10 @@ void hid_init()
 	hid_load_dir(Concat(exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
 											PCB_DIR_SEPARATOR_S, "pcb", PCB_DIR_SEPARATOR_S, "plugins", NULL));
 
-	/* homedir is set by the core immediately on startup */
-	if (homedir != NULL) {
-		hid_load_dir(Concat(homedir, PCB_DIR_SEPARATOR_S, ".pcb", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-		hid_load_dir(Concat(homedir, PCB_DIR_SEPARATOR_S, ".pcb", PCB_DIR_SEPARATOR_S, "plugins", NULL));
+	/* conf_core.rc.path.home is set by the conf_core immediately on startup */
+	if (conf_core.rc.path.home != NULL) {
+		hid_load_dir(Concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, ".pcb", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
+		hid_load_dir(Concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, ".pcb", PCB_DIR_SEPARATOR_S, "plugins", NULL));
 	}
 	hid_load_dir(Concat("plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
 	hid_load_dir(Concat("plugins", NULL));

@@ -11,6 +11,7 @@
 #include "src/error.h"
 #include "gpmi_plugin.h"
 #include "scripts.h"
+#include "src/conf_core.h"
 
 
 #define CONFNAME "pcb-rnd-gpmi.conf"
@@ -263,8 +264,8 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 	switch(*file_name) {
 		case '~':
 			file_name += 2;
-			if (homedir != NULL) {
-				snprintf(buffer, sizeof(buffer), "%s%c%s", homedir, PCB_DIR_SEPARATOR_C, file_name);
+			if (conf_core.rc.path.home != NULL) {
+				snprintf(buffer, sizeof(buffer), "%s%c%s", conf_core.rc.path.home, PCB_DIR_SEPARATOR_C, file_name);
 				fprintf(stderr, "asm_scriptname FN=%s\n", buffer);
 				return strdup(buffer);
 			}
@@ -352,9 +353,9 @@ int gpmi_hid_script_addcfg(hid_gpmi_script_info_t *i)
 
 	home = getenv ("PCB_RND_GPMI_HOME");
 	if (home == NULL)
-		home = homedir;
+		home = conf_core.rc.path.home;
 
-	if (homedir != NULL) {
+	if (conf_core.rc.path.home != NULL) {
 		fn = Concat(home, PCB_DIR_SEPARATOR_S ".pcb", NULL);
 		mkdir(fn, 0755);
 		free(fn);

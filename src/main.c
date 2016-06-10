@@ -232,8 +232,6 @@ static void InitPaths(char *argv0)
 	}
 #endif
 
-	paths_init_homedir();
-
 	resolve_all_paths(fontfile_paths_in, fontfile_paths, 0);
 }
 
@@ -294,7 +292,6 @@ void pcb_main_uninit(void)
 	} while(0)
 
 	free0(pcblibdir);
-	free0(homedir);
 	free0(bindir);
 	free0(exec_prefix);
 	free0(program_directory);
@@ -339,8 +336,11 @@ int main(int argc, char *argv[])
 	 * - create an empty PCB with default symbols
 	 * - register 'call on exit()' function
 	 */
+
+	/* Minimal conf setup before we do anything else */
 	conf_init();
 	conf_core_init();
+	conf_core_postproc(); /* to get all the paths initialized */
 
 	/* process arguments */
 	for(n = 1; n < argc; n++) {

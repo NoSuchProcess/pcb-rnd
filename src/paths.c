@@ -5,22 +5,7 @@
 #include "paths.h"
 #include "error.h"
 #include "conf.h"
-
-#warning TODO: move this in conf_core
-char *homedir;
-
-void paths_init_homedir(void)
-{
-	const char *tmps;
-	tmps = getenv("HOME");
-	if (tmps == NULL)
-		tmps = getenv("USERPROFILE");
-	if (tmps != NULL)
-		homedir = strdup(tmps);
-	else
-		homedir = NULL;
-}
-
+#include "conf_core.h"
 
 void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra_room)
 {
@@ -30,11 +15,11 @@ void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra
 		if (*in != NULL) {
 			if (**in == '~') {
 				int l1, l2;
-				if (homedir == NULL) {
+				if (conf_core.rc.path.home == NULL) {
 					Message("can't resolve home dir required for path %s\n", *in);
 					exit(1);
 				}
-				subst_to = homedir;
+				subst_to = conf_core.rc.path.home;
 				subst_offs = 1;
 				replace:;
 				/* avoid Concat() here to reduce dependencies for external tools */
@@ -71,6 +56,7 @@ void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra
 							}
 						}
 					}
+					Message("can't resolve conf-hash dir required for path %s\n", *in);
 				}
 				else
 					*out = NULL;

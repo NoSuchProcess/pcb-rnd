@@ -1,5 +1,5 @@
 
-/* Allocate *out and copy the path from in to out, replacing ~ with homedir
+/* Allocate *out and copy the path from in to out, replacing ~ with conf_core.rc.path.home
    If extra_room is non-zero, allocate this many bytes extra for each slot;
    this leaves some room to append a file name. */
 void resolve_path(const char *in, char **out, unsigned int extra_room);
@@ -21,8 +21,3 @@ do { \
 		resolve_paths(in, out, __numpath__, extra_room); \
 	} \
 } while(0)
-
-extern char *homedir;
-
-/* set up global var homedir */
-void paths_init_homedir(void);

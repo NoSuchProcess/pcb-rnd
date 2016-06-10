@@ -97,6 +97,7 @@ typedef struct {
 			CFT_STRING lib;                  /* e.g. /usr/lib/pcb-rnd */
 			CFT_STRING bin;                  /* e.g. /usr/bin */
 			CFT_STRING share;                /* e.g. /usr/share/pcb-rnd */
+			CFT_STRING home;                 /* user's home dir, determined run-time */
 		} path;
 	} rc;
 

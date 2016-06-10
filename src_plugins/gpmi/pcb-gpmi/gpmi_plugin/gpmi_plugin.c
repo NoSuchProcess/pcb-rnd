@@ -5,6 +5,7 @@
 #include <gpmi.h>
 #include "src/misc.h"
 #include "src/misc_util.h"
+#include "src/conf_core.h"
 #include "src/event.h"
 #include "src/paths.h"
 #include "src/error.h"
@@ -12,8 +13,6 @@
 #include "src/hid_actions.h"
 #include "scripts.h"
 #include "manage_scripts.h"
-
-extern char *homedir; /* detected by pcn-rnd in InitPaths() */
 
 const char *gpmi_cookie = "GPMI plugin cookie";
 
@@ -149,7 +148,7 @@ static void load_base_and_cfg(void)
 
 	home = getenv ("PCB_RND_GPMI_HOME");
 	if (home == NULL)
-		home = homedir;
+		home = conf_core.rc.path.home;
 
 	hdirh = resolve_path_inplace(Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL), 0);
 

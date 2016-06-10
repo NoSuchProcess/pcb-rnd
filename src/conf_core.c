@@ -23,6 +23,14 @@ do { \
 		*((type *)(&var)) = max; \
 }	while(0)
 
+static char *get_homedir(void)
+{
+	char *homedir = getenv("HOME");
+	if (homedir == NULL)
+		homedir = getenv("USERPROFILE");
+	return homedir;
+}
+
 void conf_core_postproc()
 {
 	conf_clamp_to(CFT_COORD, conf_core.design.line_thickness, MIN_LINESIZE, MAX_LINESIZE, MIL_TO_COORD(10));
@@ -40,4 +48,5 @@ void conf_core_postproc()
 	conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);
 	conf_force_set_str(conf_core.rc.path.bin, BINDIR);
 	conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);
+	conf_force_set_str(conf_core.rc.path.home, get_homedir());
 }

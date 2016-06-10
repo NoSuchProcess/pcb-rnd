@@ -38,6 +38,7 @@
 #include "../src/plug_footprint.h"
 #include "../src/paths.h"
 #include "../src/conf.h"
+#include "../src/conf_core.h"
 #include "../src_3rd/genvector/vts0.h"
 #include "../src_3rd/genlist/gendlist.h"
 #include "../src_3rd/genlist/genadlist.h"
@@ -1064,7 +1065,7 @@ static void load_extra_project_files(void)
 	load_project("/etc/gsch2pcb");
 	load_project("/usr/local/etc/gsch2pcb");
 
-	path = str_concat(PCB_DIR_SEPARATOR_S, homedir, ".gEDA", "gsch2pcb", NULL);
+	path = str_concat(PCB_DIR_SEPARATOR_S, conf_core.rc.path.home, ".gEDA", "gsch2pcb", NULL);
 	load_project(path);
 	free(path);
 
@@ -1277,6 +1278,7 @@ int main(int argc, char ** argv)
 	conf_init();
 	conf_core_init();
 	conf_load_all();
+	conf_update(NULL);
 
 	fp_init();
 
@@ -1284,11 +1286,11 @@ int main(int argc, char ** argv)
 	gadl_list_init(&extra_gnetlist_arg_list, sizeof(char *), NULL, NULL);
 	gadl_list_init(&extra_gnetlist_list, sizeof(char *), NULL, NULL);
 
-	paths_init_homedir();
-
 	element_search_path = strdup(PCB_LIBRARY_SEARCH_PATHS);
 
 	get_args(argc, argv);
+
+	conf_update(NULL); /* because of CLI changes */
 
 	load_extra_project_files();
 
@@ -1299,7 +1301,6 @@ int main(int argc, char ** argv)
 	net_file_name = str_concat(NULL, sch_basename, ".net", NULL);
 	pcb_file_name = str_concat(NULL, sch_basename, ".pcb", NULL);
 
-	conf_update(NULL);
 
 	{ /* set bak_file_name, finding the first number that results in a non-existing bak */
 		int len;

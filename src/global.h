@@ -570,9 +570,9 @@ struct rats_patch_line_s {
  * Variables with absolute paths to various directories.  These are deduced
  * at runtime to allow pcb to be relocatable
  */
+#warning TODO: remove these
 extern char *bindir;						/* The dir in which PCB installation was found */
 extern char *pcblibdir;
 extern char *exec_prefix;
-extern char *homedir;
 
 #endif /* PCB_GLOBAL_H  */
