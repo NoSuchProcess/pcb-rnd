@@ -90,6 +90,7 @@ typedef struct {
 	conf_native_type_t type;
 	struct {
 		unsigned io_pcb_no_attrib:1;
+		unsigned read_only:1;         /* set by conf_core, has no lihata, should not be overwritten */
 	} random_flags;  /* hack... persistent flags attached by various plugins */
 
 	/* dynamic fields loaded from lihata */

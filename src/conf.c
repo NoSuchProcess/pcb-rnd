@@ -278,6 +278,11 @@ int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, conf_p
 	if ((pol == POL_DISABLE) || (dest->prop[0].prio > prio))
 		return 0;
 
+	if (dest->random_flags.read_only) {
+		hid_cfg_error(src, "WARNING: not going to overwrite read-only value %s from a config file\n", dest->hash_path);
+		return 0;
+	}
+
 	if (conf_parse_text(&dest->val, 0, dest->type, src->data.text.value, src) == 0) {
 		dest->prop[0].prio = prio;
 		dest->prop[0].src  = src;
@@ -607,12 +612,11 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 
 	assert(htsp_get(conf_fields, (char *)path) == NULL);
 
-	node = malloc(sizeof(conf_native_t));
+	node = calloc(sizeof(conf_native_t), 1);
 	node->array_size  = array_size;
 	node->type        = type;
 	node->val.any     = value;
 	node->prop        = calloc(sizeof(confprop_t), array_size);
-	node->used        = 0;
 	node->description = desc;
 	node->hash_path   = path;
 	vtp0_init(&(node->hid_data));
