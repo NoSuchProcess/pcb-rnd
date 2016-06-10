@@ -1,5 +1,6 @@
 put /local/pcb/mod {djopt}
 append /local/pcb/mod/OBJS [@ $(PLUGDIR)/djopt/djopt.o @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/djopt/djopt_conf.h}
 
 switch /local/pcb/djopt/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

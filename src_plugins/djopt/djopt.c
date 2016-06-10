@@ -47,8 +47,11 @@
 #include "plugins.h"
 #include "hid_flags.h"
 #include "hid_actions.h"
+#include "djopt_conf.h"
 
 RCSID("$Id$");
+
+conf_djopt_t conf_djopt;
 
 static const char *djopt_cookie = "djopt";
 
@@ -117,8 +120,6 @@ static char layer_type[MAX_LAYER];
 #define LT_COMPONENT 1
 #define LT_SOLDER 2
 
-static int autorouted_only = 1;
-
 static const char djopt_sao_syntax[] = "OptAutoOnly()";
 
 static const char djopt_sao_help[] = "Toggles the optimize-only-autorouted flag.";
@@ -137,13 +138,8 @@ optimize hand-routed traces also.
 
 int djopt_set_auto_only(int argc, char **argv, Coord x, Coord y)
 {
-	autorouted_only = autorouted_only ? 0 : 1;
+	conf_set(CFR_DESIGN, "plugins/djopt/auto_only", -1, conf_djopt.plugins.djopt.auto_only ? "0" : "1", POL_OVERWRITE);
 	return 0;
-}
-
-static int djopt_get_auto_only(int dummy)
-{
-	return autorouted_only;
 }
 
 static char *element_name_for(corner_s * c)
@@ -1184,7 +1180,7 @@ static int orthopull_1(corner_s * c, int fdir, int rdir, int any_sel)
 		return 0;
 	if (any_sel && !saw_sel)
 		return 0;
-	if (!any_sel && autorouted_only && !saw_auto)
+	if (!any_sel && conf_djopt.plugins.djopt.auto_only && !saw_auto)
 		return 0;
 
 	/* Ok, now look for other blockages. */
@@ -1501,7 +1497,7 @@ static int debumpify()
 			continue;
 		if (any_selected && !selected(l->line))
 			continue;
-		if (!any_selected && autorouted_only && !autorouted(l->line))
+		if (!any_selected && conf_djopt.plugins.djopt.auto_only && !autorouted(l->line))
 			continue;
 		if (l->s->pin || l->s->pad || l->e->pin || l->e->pad)
 			continue;
@@ -1650,7 +1646,7 @@ static int unjaggy_once()
 		if (sel && !(selected(c->lines[0]->line)
 								 || selected(c->lines[1]->line)))
 			continue;
-		if (!sel && autorouted_only && !(autorouted(c->lines[0]->line)
+		if (!sel && conf_djopt.plugins.djopt.auto_only && !(autorouted(c->lines[0]->line)
 																		 || autorouted(c->lines[1]->line)))
 			continue;
 		dprintf("simple at %#mD\n", c->x, c->y);
@@ -1864,7 +1860,7 @@ static int viatrim()
 			continue;
 		if (any_sel && !selected(l->line))
 			continue;
-		if (!any_sel && autorouted_only && !autorouted(l->line))
+		if (!any_sel && conf_djopt.plugins.djopt.auto_only && !autorouted(l->line))
 			continue;
 
 		my_layer = l->layer;
@@ -1999,7 +1995,7 @@ static int miter()
 
 				if ((sel && !(selected(c->lines[0]->line)
 											|| selected(c->lines[1]->line)))
-						|| (!sel && autorouted_only && !(autorouted(c->lines[0]->line)
+						|| (!sel && conf_djopt.plugins.djopt.auto_only && !(autorouted(c->lines[0]->line)
 																						 || autorouted(c->lines[1]->line)))) {
 					c->miter = 0;
 					progress = 1;
@@ -2643,7 +2639,7 @@ static int ActionDJopt(int argc, char **argv, Coord x, Coord y)
 		{
 			line_s *ls;
 
-			if (autorouted_only && !autorouted(line))
+			if (conf_djopt.plugins.djopt.auto_only && !autorouted(line))
 				continue;
 
 			/* don't mess with thermals */
@@ -2719,11 +2715,16 @@ REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
 static void hid_djopt_uninit(void)
 {
 	hid_remove_actions_by_cookie(djopt_cookie);
+	conf_unreg_fields("plugins/djopt/");
 }
 
 #include "dolists.h"
 pcb_uninit_t hid_djopt_init(void)
 {
+#define conf_reg(field,isarray,type_name,cpath,cname,desc) \
+	conf_reg_field(conf_djopt, field,isarray,type_name,cpath,cname,desc);
+#include "djopt_conf_fields.h"
+
 	REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
 	return hid_djopt_uninit;
 }

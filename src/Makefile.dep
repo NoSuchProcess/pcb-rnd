@@ -123,7 +123,8 @@
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
  list_conf.h global.h data.h create.h remove.h move.h draw.h undo.h \
  strflags.h find.h pcb-printf.h plugins.h hid_flags.h hid_actions.h \
- dolists.h
+ ../src_plugins/djopt/djopt_conf.h conf.h dolists.h \
+ ../src_plugins/djopt/djopt_conf_fields.h
 ../src_plugins/export_bom/bom.o: ../src_plugins/export_bom/bom.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
  ../globalconst.h ../config.h conf.h global.h const.h macro.h \
@@ -1278,8 +1279,8 @@
  list_conf.h change.h data.h draw.h error.h global.h set.h undo.h \
  ../src_plugins/vendordrill/vendor.h stub_vendor.h plugins.h hid_flags.h \
  hid_actions.h hid_cfg.h ../src_plugins/vendordrill/vendor_conf.h conf.h \
- ../src_plugins/vendordrill/vendor_conf_fields.h \
- ../src_3rd/liblihata/tree.h dolists.h
+ ../src_3rd/liblihata/tree.h dolists.h \
+ ../src_plugins/vendordrill/vendor_conf_fields.h
 gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
