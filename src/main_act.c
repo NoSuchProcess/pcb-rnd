@@ -225,10 +225,15 @@ static void print_list(const conflist_t *cl)
 
 int ActionPrintPaths(int argc, char **argv, Coord x, Coord y)
 {
-	printf("rc.default_font_file     ="); print_list(&conf_core.rc.default_font_file);
-	printf("rc.library_search_paths  ="); print_list(&conf_core.rc.library_search_paths);
-	printf("rc.library_shell         = \"%s\"\n", conf_core.rc.library_shell);
-#warning TODO: print rc.path.
+	htsp_entry_t *e;
+	conf_fields_foreach(e) {
+		conf_native_t *n = e->value;
+		if ((strncmp(n->hash_path, "rc/path/", 8) == 0) && (n->type == CFN_STRING) && (n->used == 1))
+			printf("%-32s = %s\n", n->hash_path, n->val.string[0]);
+	}
+	printf("rc/default_font_file             ="); print_list(&conf_core.rc.default_font_file);
+	printf("rc/library_search_paths          ="); print_list(&conf_core.rc.library_search_paths);
+	printf("rc/library_shell                 = \"%s\"\n", conf_core.rc.library_shell);
 }
 
 
