@@ -225,11 +225,10 @@ static void print_list(const conflist_t *cl)
 
 int ActionPrintPaths(int argc, char **argv, Coord x, Coord y)
 {
-	printf("bindir                   = \"%s\"\n", bindir);
-	printf("pcblibdir                = \"%s\"\n", pcblibdir);
 	printf("rc.default_font_file     ="); print_list(&conf_core.rc.default_font_file);
 	printf("rc.library_search_paths  ="); print_list(&conf_core.rc.library_search_paths);
 	printf("rc.library_shell         = \"%s\"\n", conf_core.rc.library_shell);
+#warning TODO: print rc.path.
 }
 
 

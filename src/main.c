@@ -105,9 +105,6 @@ static char *command_line_pcb;
  * Figure out the canonical name of the executed program
  * and fix up the defaults for various paths
  */
-char *bindir = NULL;
-char *pcblibdir = NULL;
-
 
 static void InitPaths(char *argv0)
 {
@@ -117,6 +114,8 @@ static void InitPaths(char *argv0)
 	char *t1, *t2;
 	int found_bindir = 0;
 	char *exec_prefix = NULL;
+	char *bindir = NULL;
+
 
 	/* see if argv0 has enough of a path to let lrealpath give the
 	 * real path.  This should be the case if you invoke pcb with
@@ -211,32 +210,7 @@ static void InitPaths(char *argv0)
 	conf_set(CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, POL_OVERWRITE);
 	conf_update("rc/path/exec_prefix");
 	free(exec_prefix);
-
-	/* now find the path to PCBSHAREDIR */
-	l = strlen(bindir) + 1 + strlen(BINDIR_TO_PCBSHAREDIR) + 1;
-	if ((pcblibdir = (char *) malloc(l * sizeof(char))) == NULL) {
-		fprintf(stderr, "InitPaths():  malloc failed\n");
-		exit(1);
-	}
-	sprintf(pcblibdir, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, BINDIR_TO_PCBSHAREDIR);
-
-#warning TODO remove this and add $ variables in path resolving instead
-#if 0
-	l = sizeof(main_attribute_list) / sizeof(main_attribute_list[0]);
-	for (i = 0; i < l; i++) {
-		if (NSTRCMP(main_attribute_list[i].name, "lib-command-dir") == 0) {
-			main_attribute_list[i].default_val.str_value = pcblibdir;
-		}
-
-		if ((NSTRCMP(main_attribute_list[i].name, "font-path") == 0)
-				|| (NSTRCMP(main_attribute_list[i].name, "element-path") == 0)
-				|| (NSTRCMP(main_attribute_list[i].name, "lib-path") == 0)) {
-			main_attribute_list[i].default_val.str_value = pcblibdir;
-		}
-	}
-#endif
-
-	resolve_all_paths(fontfile_paths_in, fontfile_paths, 0);
+	free(bindir);
 }
 
 /* ---------------------------------------------------------------------- 
@@ -245,6 +219,8 @@ static void InitPaths(char *argv0)
 
 char *program_name = 0;
 char *program_basename = 0;
+
+#warning TODO: kill this:
 char *program_directory = 0;
 
 #include "dolists.h"
@@ -295,8 +271,6 @@ void pcb_main_uninit(void)
 		} \
 	} while(0)
 
-	free0(pcblibdir);
-	free0(bindir);
 	free0(program_directory);
 #undef free0
 	free(hid_argv_orig);

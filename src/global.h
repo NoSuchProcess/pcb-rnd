@@ -566,12 +566,4 @@ struct rats_patch_line_s {
 #define AUSAGE(x) Message ("Usage:\n%s\n", (x##_syntax))
 #define AFAIL(x) { Message ("Syntax error.  Usage:\n%s\n", (x##_syntax)); return 1; }
 
-/* ---------------------------------------------------------------------------
- * Variables with absolute paths to various directories.  These are deduced
- * at runtime to allow pcb to be relocatable
- */
-#warning TODO: remove these
-extern char *bindir;						/* The dir in which PCB installation was found */
-extern char *pcblibdir;
-
 #endif /* PCB_GLOBAL_H  */
