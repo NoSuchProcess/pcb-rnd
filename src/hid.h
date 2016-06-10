@@ -108,11 +108,6 @@ extern const char layerschanged_syntax[];
 extern const char librarychanged_help[];
 extern const char librarychanged_syntax[];
 
-/* These three are set by hid_parse_command_line().  */
-extern char *program_name;
-extern char *program_directory;
-extern char *program_basename;
-
 /* File Watch flags */
 /* Based upon those in dbus/dbus-connection.h */
 typedef enum {

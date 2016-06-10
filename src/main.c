@@ -217,12 +217,6 @@ static void InitPaths(char *argv0)
  * main program
  */
 
-char *program_name = 0;
-char *program_basename = 0;
-
-#warning TODO: kill this:
-char *program_directory = 0;
-
 #include "dolists.h"
 
 static char **hid_argv_orig;
@@ -262,17 +256,6 @@ void pcb_main_uninit(void)
 	fp_uninit();
 	fp_host_uninit();
 	funchash_uninit();
-
-#define free0(ptr) \
-	do {  \
-	 if (ptr != NULL) { \
-			free(ptr); \
-			ptr = 0; \
-		} \
-	} while(0)
-
-	free0(program_directory);
-#undef free0
 	free(hid_argv_orig);
 }
 
@@ -396,19 +379,6 @@ int main(int argc, char *argv[])
 	initialize_units();
 	polygon_init();
 	hid_init();
-
-	program_name = argv[0];
-	program_basename = strrchr(program_name, PCB_DIR_SEPARATOR_C);
-	if (program_basename) {
-		program_directory = strdup(program_name);
-		*strrchr(program_directory, PCB_DIR_SEPARATOR_C) = 0;
-		program_basename++;
-	}
-	else {
-		program_directory = strdup(".");
-		program_basename = program_name;
-	}
-	Progname = program_basename;
 
 	/* This must be called before any other atexit functions
 	 * are registered, as it configures an atexit function to
