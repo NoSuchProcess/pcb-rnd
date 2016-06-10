@@ -516,11 +516,8 @@ static void conf_field_clear(conf_native_t *f)
 int conf_rev = 0;
 static void conf_notify_hids()
 {
-	HID **h;
 	conf_rev++;
-	for(h = hid_enumerate(); *h != NULL; h++)
-		if ((*h)->notify_conf_changed != NULL)
-			(*h)->notify_conf_changed();
+	hid_notify_conf_changed();
 }
 
 void conf_update(const char *path)

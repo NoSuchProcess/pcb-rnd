@@ -232,3 +232,11 @@ HID **hid_enumerate()
 {
 	return hid_list;
 }
+
+void hid_notify_conf_changed(void)
+{
+	HID **h;
+	for(h = hid_enumerate(); *h != NULL; h++)
+		if ((*h)->notify_conf_changed != NULL)
+			(*h)->notify_conf_changed();
+}
