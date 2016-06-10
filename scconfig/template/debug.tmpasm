@@ -1,0 +1,7 @@
+# append debug or production flags to CFLAGS, depending on the global debug flag
+
+if /local/pcb/debug then
+	append /local/pcb/CFLAGS { -g -O0 }
+else
+	append /local/pcb/CFLAGS { -O3 -DNDEBUG }
+end

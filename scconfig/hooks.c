@@ -39,6 +39,7 @@ static void help1(void)
 	printf("\n");
 	printf("options are:\n");
 	printf(" --prefix=path              change installation prefix from /usr to path\n");
+	printf(" --debug                    configure for building a debug version (-g -O0)\n");
 }
 
 static void help2(void)
@@ -55,6 +56,10 @@ int hook_custom_arg(const char *key, const char *value)
 	if (strcmp(key, "prefix") == 0) {
 		report("Setting prefix to '%s'\n", value);
 		put("/local/prefix", strclone(value));
+		return 1;
+	}
+	if (strcmp(key, "debug") == 0) {
+		put("/local/pcb/debug", strue);
 		return 1;
 	}
 	else if (strcmp(key, "help") == 0) {
@@ -88,6 +93,8 @@ int hook_postinit()
 #define plugin_def(name, desc, default_) plugin3_default(name, default_)
 #define plugin_header(sect)
 #include "plugins.h"
+
+	put("/local/pcb/debug", sfalse);
 
 	return 0;
 }
