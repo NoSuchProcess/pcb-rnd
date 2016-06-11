@@ -1,12 +1,13 @@
 - replace settings with lihata (conf_*)
+	- move djopt, vendor flag toggle/set to old_actions (look for other toggles in src_plugin)
 	- introduce a path type for automatic subst
-	- the menu conf files are still somewhat broken: look for ERROR on startup
-	- enable NDEBUG, check why menus fail
 	- revise main.c, line by line
 	- menu bug:
 		- view/show layers stopped working (broke before 1.0.10)
 		- view/show current layer stopped working (broke before 1.0.10)
 	- TEST:
+		- vendor drill mapping
+		- djopt, auto_only flag
 		- gsch2pcb
 		- CFR_DESIGN; check changing:
 			- layer groups
