@@ -86,7 +86,7 @@ static int help0(void)
 	u("  main                 main/misc flags (affecting none or all plugins)");
 	for (i = 0; hl[i]; i++)
 		if (hl[i]->usage != NULL)
-			u("  %-20s %s\n", hl[i]->name, hl[i]->description);
+			u("  %-20s %s", hl[i]->name, hl[i]->description);
 	return 0;
 }
 
