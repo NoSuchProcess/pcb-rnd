@@ -1405,7 +1405,7 @@ int ghid_usage(char *topic)
 {
 	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
 	hid_usage(ghid_attribute_list, sizeof(ghid_attribute_list) / sizeof(ghid_attribute_list[0]));
-	fprintf(stderr, "\nInvocation: %s --gui gtk [options]\n", Progname);
+	fprintf(stderr, "\nInvocation: pcb-rnd --gui gtk [options]\n");
 }
 
 

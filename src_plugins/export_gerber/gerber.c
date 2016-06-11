@@ -727,7 +727,7 @@ static int gerber_set_layer(const char *name, int group, int empty)
 		}
 		/* Print a cute file header at the beginning of each file. */
 		fprintf(f, "G04 Title: %s, %s *\r\n", UNKNOWN(PCB->Name), UNKNOWN(name));
-		fprintf(f, "G04 Creator: %s " VERSION " *\r\n", Progname);
+		fprintf(f, "G04 Creator: pcb-rnd " VERSION " *\r\n");
 		fprintf(f, "G04 CreationDate: %s *\r\n", utcTime);
 
 #ifdef HAVE_GETPWUID

@@ -214,7 +214,7 @@ static void WriteAttributeList(FILE * FP, AttributeListTypePtr list, char *prefi
 static void WritePCBInfoHeader(FILE * FP)
 {
 	/* write some useful comments */
-	fprintf(FP, "# release: %s " VERSION "\n", Progname);
+	fprintf(FP, "# release: pcb-rnd " VERSION "\n");
 
 	/* avoid writing things like user name or date, as these cause merge
 	 * conflicts in collaborative environments using version control systems

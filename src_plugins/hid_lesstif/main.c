@@ -3751,7 +3751,7 @@ static int lesstif_usage(char *topic)
 {
 	fprintf(stderr, "\nLesstif GUI command line arguments:\n\n");
 	hid_usage(lesstif_attribute_list, sizeof(lesstif_attribute_list) / sizeof(lesstif_attribute_list[0]));
-	fprintf(stderr, "\nInvocation: %s --gui lesstif [options]\n", Progname);
+	fprintf(stderr, "\nInvocation: pcb-rnd --gui lesstif [options]\n");
 }
 
 #include "dolists.h"

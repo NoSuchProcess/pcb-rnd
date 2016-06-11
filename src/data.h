@@ -55,7 +55,6 @@ extern BufferType Buffers[MAX_BUFFER];
 
 /*extern	DeviceInfoType	PrintingDevice[];*/
 
-extern char *Progname;
 extern char *InputTranslations;
 
 extern int addedLines;

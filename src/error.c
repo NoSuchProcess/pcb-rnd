@@ -177,7 +177,7 @@ void MyFatal(const char *Format, ...)
 
 	/* try to save the layout and do some cleanup */
 	EmergencySave();
-	fprintf(stderr, "%s (%i): fatal, ", Progname, (int) getpid());
+	fprintf(stderr, "pcb-rnd (%i): fatal, ", (int) getpid());
 	vfprintf(stderr, Format, args);
 	fflush(stderr);
 	va_end(args);

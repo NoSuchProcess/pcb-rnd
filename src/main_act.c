@@ -25,6 +25,8 @@
  *
  */
 
+#define Progname "pcb-rnd"
+
 #include "config.h"
 
 #include "action_helper.h"
