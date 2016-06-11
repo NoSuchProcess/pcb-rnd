@@ -114,6 +114,14 @@ static void lpr_calibrate(double xval, double yval)
 
 static HID lpr_hid;
 
+static int lpr_usage(char *topic)
+{
+	fprintf(stderr, "\nlpr exporter command line arguments:\n\n");
+	hid_usage(base_lpr_options, sizeof(base_lpr_options) / sizeof(base_lpr_options[0]));
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x lpr foo.pcb [lpr options]\n\n");
+	return 0;
+}
+
 static void plugin_lpr_uninit(void)
 {
 	hid_remove_actions_by_cookie(lpr_cookie);
@@ -136,6 +144,8 @@ pcb_uninit_t hid_export_lpr_init()
 	lpr_hid.do_export = lpr_do_export;
 	lpr_hid.parse_arguments = lpr_parse_arguments;
 	lpr_hid.calibrate = lpr_calibrate;
+
+	lpr_hid.usage = lpr_usage;
 
 	hid_register_hid(&lpr_hid);
 

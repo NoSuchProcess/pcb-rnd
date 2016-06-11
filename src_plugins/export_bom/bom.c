@@ -502,6 +502,15 @@ static void bom_do_export(HID_Attr_Val * options)
 	PrintBOM();
 }
 
+static int bom_usage(char *topic)
+{
+	fprintf(stderr, "\nbom exporter command line arguments:\n\n");
+	hid_usage(bom_options, sizeof(bom_options) / sizeof(bom_options[0]));
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x bom foo.pcb [bom_options]\n\n");
+	return 0;
+}
+
+
 static void bom_parse_arguments(int *argc, char ***argv)
 {
 	hid_register_attributes(bom_options, sizeof(bom_options) / sizeof(bom_options[0]), bom_cookie, 0);
@@ -524,6 +533,8 @@ pcb_uninit_t hid_export_bom_init()
 	bom_hid.get_export_options = bom_get_export_options;
 	bom_hid.do_export = bom_do_export;
 	bom_hid.parse_arguments = bom_parse_arguments;
+
+	bom_hid.usage = bom_usage;
 
 	hid_register_hid(&bom_hid);
 	return NULL;

@@ -1166,6 +1166,14 @@ static void gerber_calibrate(double xval, double yval)
 	CRASH;
 }
 
+static int gerber_usage(char *topic)
+{
+	fprintf(stderr, "\ngerber exporter command line arguments:\n\n");
+	hid_usage(gerber_options, sizeof(gerber_options) / sizeof(gerber_options[0]));
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x gerber foo.pcb [gerber options]\n\n");
+	return 0;
+}
+
 static void gerber_set_crosshair(int x, int y, int action)
 {
 }
@@ -1201,6 +1209,7 @@ pcb_uninit_t hid_export_gerber_init()
 	gerber_hid.fill_rect = gerber_fill_rect;
 	gerber_hid.calibrate = gerber_calibrate;
 	gerber_hid.set_crosshair = gerber_set_crosshair;
+	gerber_hid.usage = gerber_usage;
 
 	hid_register_hid(&gerber_hid);
 	return NULL;

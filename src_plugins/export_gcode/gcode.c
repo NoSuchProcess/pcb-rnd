@@ -860,6 +860,14 @@ static void gcode_set_crosshair(int x, int y, int a)
 {
 }
 
+static int gcode_usage(char *topic)
+{
+	fprintf(stderr, "\ngcode exporter command line arguments:\n\n");
+	hid_usage(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]));
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x gcode foo.pcb [gcode options]\n\n");
+	return 0;
+}
+
 /* *** Miscellaneous ******************************************************* */
 
 #include "dolists.h"
@@ -899,6 +907,8 @@ pcb_uninit_t hid_export_gcode_init()
 	gcode_hid.fill_rect = gcode_fill_rect;
 	gcode_hid.calibrate = gcode_calibrate;
 	gcode_hid.set_crosshair = gcode_set_crosshair;
+
+	gcode_hid.usage = gcode_usage;
 
 	hid_register_hid(&gcode_hid);
 
