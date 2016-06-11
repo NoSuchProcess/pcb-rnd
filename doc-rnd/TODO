@@ -101,17 +101,11 @@ CLEANUP #6:
 	- SIGPIPE - do we need it? probably yes, because we can run commands
 
 FEATURES
-- UI: trace length calculation {small}
-- UI: be able to manually change text line width {small}
-- CORE: clear poly should be a per layer flag (on each objects) {?}
-- CORE: inverse text {medium}
 - BUILD: menuconfig and a config file for scconfig
-- split line segment into two (insert line point in the middle)
 
 Low prio:
 - display net names on pins, vias (and maybe tracks?) when zoomed in enough
 - DRC should warn for thin poly hair
-- prev grid size, next grid size
 - rotate shaped vias don't rotate the shape (is via rotated at all?)
 - new examples
 	- blinking led with parametric footprints
