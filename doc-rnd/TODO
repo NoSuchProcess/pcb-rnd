@@ -1,5 +1,9 @@
 - replace settings with lihata (conf_*)
+	- plugin usage()
 	- BUG: don't use ~/.pcb, use ~/.pcb-rnd; do not hardwire this in the code, make it a config.h setting
+	- finish gtk preferences user pov (change is always saved to the design)
+		- color is not saved
+		- library path
 	- menu bug:
 		- view/show layers stopped working (broke before 1.0.10)
 		- view/show current layer stopped working (broke before 1.0.10)
@@ -29,6 +33,7 @@
 		- import schematics:
 			- gnetlist_program, make_program from conf
 			- gnetlist_program, make_program from env var
+		- gtk, preferences dialog, user pov
 
 BUGS:
 	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
@@ -41,6 +46,7 @@ CLEANUP #5
 	- if font file is not found:
 		- embedded version?
 		- warn when try to write text on pcb?
+	- finish gtk hid preferences config pov
 - "keepaway" vs. "clearance" renaming?
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
 - scconfig: check for bison/flex, do not regenerate languages if they are missing
@@ -88,14 +94,11 @@ CLEANUP #6:
 		- gpmi (and other buildins/plugins) not showing up in the about box
 - self contained
 	- files
-		- menu_lht
 		- default font
-	- action and dialog box to print where the actual files are coming from
+	- action (--show-paths!) and dialog box to print where the actual files are coming from
 	- project specific menus from extra lihata files
 - main.c:
-	- SIGPIPE
-- plugin argument parsing and usage()
-
+	- SIGPIPE - do we need it? probably yes, because we can run commands
 
 FEATURES
 - UI: trace length calculation {small}
