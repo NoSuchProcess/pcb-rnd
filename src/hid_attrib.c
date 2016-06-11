@@ -286,6 +286,11 @@ static void hid_set_attribute(char *name, char *value)
 
 void hid_usage(HID_Attribute * a, int numa)
 {
-	for (; numa > 0; numa--,a++)
-		fprintf(stderr, "%-20s %s\n", a->name, a->help_text);
+	for (; numa > 0; numa--,a++) {
+		const char *help;
+		if (a->help_text == NULL) help = "";
+		else if (a->help_text == ATTR_UNDOCUMENTED) help = "<undocumented>";
+		else help = a->help_text;
+		fprintf(stderr, "%-20s %s\n", a->name, help);
+	}
 }
