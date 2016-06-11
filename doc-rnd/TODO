@@ -1,7 +1,5 @@
 - replace settings with lihata (conf_*)
-	- move djopt, vendor flag toggle/set to old_actions (look for other toggles in src_plugin)
-	- introduce a path type for automatic subst
-	- revise main.c, line by line
+	- BUG: don't use ~/.pcb, use ~/.pcb-rnd; do not hardwire this in the code, make it a config.h setting
 	- menu bug:
 		- view/show layers stopped working (broke before 1.0.10)
 		- view/show current layer stopped working (broke before 1.0.10)
@@ -36,7 +34,6 @@ BUGS:
 	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
 	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 
-
 CLEANUP #5
 - conf:
 	- remove redundancy: don't store values in the PCB struct that are in the design conf
@@ -51,7 +48,6 @@ CLEANUP #5
 - look for #warnings
 - fix librarychanged: disable update of gedasymbols on-start, make it an explicit refresh button
 - move print.[ch]
-- BUG: don't use ~/.pcb, use ~/.pcb-rnd; do not hardwire this in the code, make it a config.h setting
 - libstroke: zoom
 - cleanup/rewrite resources:
 	- load/swap menus (TODO#1)
