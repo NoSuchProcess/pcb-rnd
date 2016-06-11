@@ -36,25 +36,7 @@
 #include "config.h"
 
 #include <stdlib.h>
-#include <stdarg.h>
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#include <assert.h>
-#include <setjmp.h>
-#include <memory.h>
-#include <ctype.h>
-#include <signal.h>
-#include <sys/param.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <math.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
 
 #include "misc.h"
 #include "polygon.h"
