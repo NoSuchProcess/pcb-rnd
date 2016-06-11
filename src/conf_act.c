@@ -87,7 +87,6 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 			Message("conf(set) failed.\n");
 			return 1;
 		}
-		conf_update(path);
 	}
 
 	else if (NSTRCMP(cmd, "toggle") == 0) {
@@ -131,7 +130,7 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 		conf_update(argv[1]);
 	}
 
-	else if (NSTRCMP(cmd, "toggle") == 0) {
+	else if (NSTRCMP(cmd, "reset") == 0) {
 		conf_role_t role;
 		int res;
 		role = conf_role_parse(argv[1]);

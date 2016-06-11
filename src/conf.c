@@ -644,7 +644,7 @@ conf_native_t *conf_get_field(const char *path)
 	return htsp_get(conf_fields, (char *)path);
 }
 
-int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol)
+int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol)
 {
 	char *path, *basename, *next, *last, *sidx;
 	conf_native_t *nat;
@@ -820,6 +820,16 @@ int conf_set(conf_role_t target, const char *path_, int arr_idx, const char *new
 	cwd->file_name = conf_root[target]->active_file;
 
 	free(path);
+	return 0;
+}
+
+int conf_set(conf_role_t target, const char *path, int arr_idx, const char *new_val, conf_policy_t pol)
+{
+	int res;
+	res = conf_set_dry(target, path, arr_idx, new_val, pol);
+	if (res < 0)
+		return res;
+	conf_update(path);
 	return 0;
 }
 

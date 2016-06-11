@@ -1624,7 +1624,6 @@ static int SetUnits(int argc, char **argv, Coord x, Coord y)
 	if (new_unit != NULL && new_unit->allow != NO_PRINT) {
 #warning TODO: decide what to do with this: some fields are just overwritten by hand
 		conf_set(CFR_DESIGN, "editor/grid_unit", -1, argv[0], POL_OVERWRITE);
-		conf_update("editor/grid_unit");
 		AttributePut(PCB, "PCB::grid::unit", argv[0]);
 	}
 

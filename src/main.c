@@ -208,7 +208,6 @@ static void InitPaths(char *argv0)
 	}
 	sprintf(exec_prefix, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, BINDIR_TO_EXECPREFIX);
 	conf_set(CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, POL_OVERWRITE);
-	conf_update("rc/path/exec_prefix");
 	free(exec_prefix);
 	free(bindir);
 }

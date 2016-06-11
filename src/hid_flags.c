@@ -74,7 +74,6 @@ int hid_get_flag(const char *name)
 		}
 		else {
 			fprintf(stderr, "ERROR: hid_get_flag(%s) - not a path or an action\n", name);
-//			abort();
 		}
 	}
 	return -1;

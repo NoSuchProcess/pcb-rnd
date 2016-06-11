@@ -140,9 +140,14 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 
 void conf_unreg_fields(const char *prefix);
 
-/* Set the value of path[arr_idx] in memory-lht role target to new_val using policy pol. Only lists should
-   be indexed. Indexing can be a [n] suffix on path or a non-negative arr_idx. */
+/* Set the value of path[arr_idx] in memory-lht role target to new_val using
+   policy pol. Only lists should be indexed. Indexing can be a [n] suffix on
+   path or a non-negative arr_idx. Updates the in-memory binary as well. */
 int conf_set(conf_role_t target, const char *path, int arr_idx, const char *new_val, conf_policy_t pol);
+
+/* Same as conf_set, but without updating the binary - useful for multiple
+   conf_set_dry calls and a single all-tree conf_udpate(NULL) for transactions. */
+int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol);
 
 /* Same as conf_set, but doesn't look up where to set things: change the value of
    the lihata node backing the native field */
@@ -219,14 +224,10 @@ do { \
 	char *__tmp__ = pcb_strdup_printf(fmt, new_val); \
 	conf_set(CFR_DESIGN, path, -1, __tmp__, POL_OVERWRITE); \
 	free(__tmp__); \
-	conf_update(path); \
 } while(0)
 
 #define conf_set_editor(field, val) \
-do { \
-	conf_set(CFR_DESIGN, "editor/" #field, -1, val ? "1" : "0", POL_OVERWRITE); \
-	conf_update("editor/" #field); \
-} while(0)
+	conf_set(CFR_DESIGN, "editor/" #field, -1, val ? "1" : "0", POL_OVERWRITE)
 
 #define conf_toggle_editor(field) \
 	conf_set_editor(field, !conf_core.editor.field)
