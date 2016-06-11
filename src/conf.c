@@ -386,39 +386,36 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 
 int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t default_policy, const char *path_prefix);
 
-void d1() {}
-
 int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, conf_policy_t default_policy)
 {
 	conf_native_t *target = conf_get_field(path);
 	int res = 0;
-if (strstr(path, "unit") != NULL) d1();
-		switch(n->type) {
-			case LHT_TEXT:
-				if (target == NULL) {
-					if (strncmp(path, "plugins/", 8) != 0) /* it is normal to have configuration for plugins not loaded - ignore these */
-						hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht!\n", path);
-					break;
-				}
+	switch(n->type) {
+		case LHT_TEXT:
+			if (target == NULL) {
+				if (strncmp(path, "plugins/", 8) != 0) /* it is normal to have configuration for plugins not loaded - ignore these */
+					hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht!\n", path);
+				break;
+			}
+			conf_merge_patch_text(target, n, default_prio, default_policy);
+			break;
+		case LHT_HASH:
+			if (target == NULL) /* no leaf: another level of structs */
+				res |= conf_merge_patch_recurse(n, default_prio, default_policy, path);
+			else /* leaf: pretend it's text so it gets parsed */
 				conf_merge_patch_text(target, n, default_prio, default_policy);
-				break;
-			case LHT_HASH:
-				if (target == NULL) /* no leaf: another level of structs */
-					res |= conf_merge_patch_recurse(n, default_prio, default_policy, path);
-				else /* leaf: pretend it's text so it gets parsed */
-					conf_merge_patch_text(target, n, default_prio, default_policy);
-				break;
-			case LHT_LIST:
-				if (target == NULL)
-					hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht; may it be that it should be a hash instead of a list?\n", path);
-				else if (target->type == CFN_LIST)
-					res |= conf_merge_patch_list(target, n, default_prio, default_policy);
-				else if (target->array_size > 1)
-					res |= conf_merge_patch_array(target, n, default_prio, default_policy);
-				else
-					hid_cfg_error(n, "Attempt to initialize a scalar with a list - this node should be a text node\n");
-				break;
-		}
+			break;
+		case LHT_LIST:
+			if (target == NULL)
+				hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht; may it be that it should be a hash instead of a list?\n", path);
+			else if (target->type == CFN_LIST)
+				res |= conf_merge_patch_list(target, n, default_prio, default_policy);
+			else if (target->array_size > 1)
+				res |= conf_merge_patch_array(target, n, default_prio, default_policy);
+			else
+				hid_cfg_error(n, "Attempt to initialize a scalar with a list - this node should be a text node\n");
+			break;
+	}
 	return res;
 }
 
