@@ -161,6 +161,8 @@ int ActionPrintUsage(int argc, char **argv, Coord x, Coord y)
 					return hl[i]->usage(NULL);
 			}
 		}
+		fprintf(stderr, "No help available for %s\n", argv[0]);
+		return -1;
 	}
 	else
 		help0();
