@@ -229,7 +229,7 @@ ha:{
 				-
 				ha:Pinout shows number = { checked=editor/show_number; action=conf(toggle, editor/show_number, design) }
 				ha:Pins/Via show Name/Number = { a=<Key>d; action=Display(PinOrPadName) }
-				ha:Enable vendor drill mapping = { checked=plugins/vendor/enable; action=ToggleVendor() }
+				ha:Enable vendor drill mapping = { checked=plugins/vendor/enable; action=conf(toggle, plugins/vendor/enable, design) }
 				ha:Import Settings {
 					li:submenu {
 						ha:New elements added at... = { foreground=grey50; sensitive=false }
@@ -354,7 +354,7 @@ ha:{
 						ha:All = { action=GlobalPuller() }
 					}
 				}
-				ha:Only autorouted nets = { checked=plugins/djopt/auto_only; action=OptAutoOnly() }
+				ha:Only autorouted nets = { checked=plugins/djopt/auto_only; action=conf(toggle, plugins/djopt/auto_only, design) }
 				-
 				ha:Design Rule Checker = { action=DRC() }
 				-

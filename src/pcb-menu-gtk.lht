@@ -235,7 +235,7 @@ ha:{
 				ha:Thin draw poly                   = { checked=editor/thin_draw_poly; a=Ctrl Shift<Key>p; action=conf(toggle, editor/thin_draw_poly, design) }
 				ha:Check polygons                   = { checked=editor/check_planes; action=conf(toggle, editor/check_planes, design) }
 				-
-				ha:Vendor drill mapping             = { checked=plugins/vendor/enable; action=ToggleVendor() }
+				ha:Vendor drill mapping             = { checked=plugins/vendor/enable; action=conf(toggle, plugins/vendor/enable, design) }
 				ha:Import New Elements at = {
 					m=I
 					li:submenu {
@@ -376,7 +376,7 @@ ha:{
 							}
 						}
 						-
-						ha:Only autorouted nets = { checked=plugins/djopt/auto_only; action=OptAutoOnly() }
+						ha:Only autorouted nets = { checked=plugins/djopt/auto_only; action=conf(toggle, plugins/djopt/auto_only, design) }
 					}
 				}
 				-
