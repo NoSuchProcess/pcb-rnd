@@ -1,6 +1,8 @@
 Random collection of old/obsolete actions. Bell(): audible feedback;
 DumpLibrary(): print footprint library on stdout; a set of debug actions
-useful for writing pcb scripts: Debug(), DebugXY(), Return().
+useful for writing pcb scripts: Debug(), DebugXY(), Return(). Old
+plugin actions to toggle or set settings that are now accessible via
+the unified config system (vendordrill, djopt)
 
 #state: works
 #default: disabled

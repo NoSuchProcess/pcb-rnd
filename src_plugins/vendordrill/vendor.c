@@ -129,82 +129,6 @@ int ActionApplyVendor(int argc, char **argv, Coord x, Coord y)
 
 /* ************************************************************ */
 
-static const char toggle_vendor_syntax[] = "ToggleVendor()";
-
-static const char toggle_vendor_help[] = "Toggles the state of automatic drill size mapping.";
-
-/* %start-doc actions ToggleVendor
-
-@cindex vendor map 
-@cindex vendor drill table
-@findex ToggleVendor()
-
-When drill mapping is enabled, new instances of pins and vias will
-have their drill holes mapped to one of the allowed drill sizes
-specified in the currently loaded vendor drill table.  To enable drill
-mapping, a vendor lihata file containing a drill table must be
-loaded first.
-
-%end-doc */
-
-int ActionToggleVendor(int argc, char **argv, Coord x, Coord y)
-{
-	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, conf_vendor.plugins.vendor.enable ? "0" : "1", POL_OVERWRITE);
-	return 0;
-}
-
-/* ************************************************************ */
-
-static const char enable_vendor_syntax[] = "EnableVendor()";
-
-static const char enable_vendor_help[] = "Enables automatic drill size mapping.";
-
-/* %start-doc actions EnableVendor
-
-@cindex vendor map 
-@cindex vendor drill table
-@findex EnableVendor()
-
-When drill mapping is enabled, new instances of pins and vias will
-have their drill holes mapped to one of the allowed drill sizes
-specified in the currently loaded vendor drill table.  To enable drill
-mapping, a vendor lihata file containing a drill table must be
-loaded first.
-
-%end-doc */
-
-int ActionEnableVendor(int argc, char **argv, Coord x, Coord y)
-{
-	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "1", POL_OVERWRITE);
-	return 0;
-}
-
-/* ************************************************************ */
-
-static const char disable_vendor_syntax[] = "DisableVendor()";
-
-static const char disable_vendor_help[] = "Disables automatic drill size mapping.";
-
-/* %start-doc actions DisableVendor
-
-@cindex vendor map 
-@cindex vendor drill table
-@findex DisableVendor()
-
-When drill mapping is enabled, new instances of pins and vias will
-have their drill holes mapped to one of the allowed drill sizes
-specified in the currently loaded vendor drill table.
-
-%end-doc */
-
-int ActionDisableVendor(int argc, char **argv, Coord x, Coord y)
-{
-	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
-	return 0;
-}
-
-/* ************************************************************ */
-
 static const char unload_vendor_syntax[] = "UnloadVendor()";
 
 static const char unload_vendor_help[] = "Unloads the current vendor drill mapping table.";
@@ -781,15 +705,6 @@ static const char *vendor_cookie = "vendor drill mapping";
 HID_Action vendor_action_list[] = {
 	{"ApplyVendor", 0, ActionApplyVendor,
 	 apply_vendor_help, apply_vendor_syntax}
-	,
-	{"ToggleVendor", 0, ActionToggleVendor,
-	 toggle_vendor_help, toggle_vendor_syntax}
-	,
-	{"EnableVendor", 0, ActionEnableVendor,
-	 enable_vendor_help, enable_vendor_syntax}
-	,
-	{"DisableVendor", 0, ActionDisableVendor,
-	 disable_vendor_help, disable_vendor_syntax}
 	,
 	{"UnloadVendor", 0, ActionUnloadVendor,
 	 unload_vendor_help, unload_vendor_syntax}

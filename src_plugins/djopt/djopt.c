@@ -120,28 +120,6 @@ static char layer_type[MAX_LAYER];
 #define LT_COMPONENT 1
 #define LT_SOLDER 2
 
-static const char djopt_sao_syntax[] = "OptAutoOnly()";
-
-static const char djopt_sao_help[] = "Toggles the optimize-only-autorouted flag.";
-
-/* %start-doc actions OptAutoOnly
-
-The original purpose of the trace optimizer was to clean up the traces
-created by the various autorouters that have been used with PCB.  When
-a board has a mix of autorouted and carefully hand-routed traces, you
-don't normally want the optimizer to move your hand-routed traces.
-But, sometimes you do.  By default, the optimizer only optimizes
-autorouted traces.  This action toggles that setting, so that you can
-optimize hand-routed traces also.
-
-%end-doc */
-
-int djopt_set_auto_only(int argc, char **argv, Coord x, Coord y)
-{
-	conf_set(CFR_DESIGN, "plugins/djopt/auto_only", -1, conf_djopt.plugins.djopt.auto_only ? "0" : "1", POL_OVERWRITE);
-	return 0;
-}
-
 static char *element_name_for(corner_s * c)
 {
 	ELEMENT_LOOP(PCB->Data);
@@ -2705,9 +2683,6 @@ static int ActionDJopt(int argc, char **argv, Coord x, Coord y)
 HID_Action djopt_action_list[] = {
 	{"djopt", 0, ActionDJopt,
 	 djopt_help, djopt_syntax}
-	,
-	{"OptAutoOnly", 0, djopt_set_auto_only,
-	 djopt_sao_help, djopt_sao_syntax}
 };
 
 REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
