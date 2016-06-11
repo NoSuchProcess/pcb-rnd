@@ -95,8 +95,6 @@ static void InitHandler(void)
 #endif
 }
 
-static char *command_line_pcb;
-
 /* ----------------------------------------------------------------------
  * Figure out the canonical name of the executed program
  * and fix up the defaults for various paths
@@ -275,6 +273,7 @@ int main(int argc, char *argv[])
 	char *cmd, *arg, *stmp, *hid_name = NULL, **hid_argv;
 	const char **cs;
 	const char *main_action = NULL;
+	char *command_line_pcb = NULL;
 
 	hid_argv_orig = hid_argv = calloc(sizeof(char *), argc);
 	/* init application:
