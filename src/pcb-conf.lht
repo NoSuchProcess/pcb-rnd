@@ -188,6 +188,12 @@ li:pcb_config {
 			ha:mincut {
 				enable = 1
 			}
+			ha:djopt {
+				auto_only = 1
+			}
+			ha:vendor {
+				enable = 0
+			}
 #			ha:import_sch {
 #				gnetlist_program = gnetlist
 #				make_program = make
