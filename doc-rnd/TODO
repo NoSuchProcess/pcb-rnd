@@ -1,6 +1,5 @@
 - replace settings with lihata (conf_*)
 	- gsch2pcb: use the same conf as pcb-rnd
-	- plugin usage()
 	- BUG: don't use ~/.pcb, use ~/.pcb-rnd; do not hardwire this in the code, make it a config.h setting
 	- finish gtk preferences user pov (change is always saved to the design)
 		- color is not saved

@@ -1592,6 +1592,14 @@ void ps_ps_init(HID * hid)
 	ps_inited = 1;
 }
 
+static int ps_usage(char *topic)
+{
+	fprintf(stderr, "\nps exporter command line arguments:\n\n");
+	hid_usage(ps_attribute_list, sizeof(ps_attribute_list) / sizeof(ps_attribute_list[0]));
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x ps foo.pcb [ps options]\n\n");
+	return 0;
+}
+
 static void plugin_ps_uninit(void)
 {
 	hid_remove_actions_by_cookie(ps_cookie);
@@ -1612,6 +1620,8 @@ pcb_uninit_t hid_export_ps_init()
 	ps_hid.description = "Postscript export";
 	ps_hid.exporter = 1;
 	ps_hid.poly_before = 1;
+
+	ps_hid.usage = ps_usage;
 
 	hid_register_hid(&ps_hid);
 

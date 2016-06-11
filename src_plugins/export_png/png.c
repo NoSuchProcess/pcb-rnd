@@ -1475,6 +1475,14 @@ static void png_set_crosshair(int x, int y, int a)
 {
 }
 
+static int png_usage(char *topic)
+{
+	fprintf(stderr, "\npng exporter command line arguments:\n\n");
+	hid_usage(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]));
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x png foo.pcb [png options]\n\n");
+	return 0;
+}
+
 #include "dolists.h"
 
 pcb_uninit_t hid_export_png_init()
@@ -1509,6 +1517,8 @@ pcb_uninit_t hid_export_png_init()
 	png_hid.fill_rect = png_fill_rect;
 	png_hid.calibrate = png_calibrate;
 	png_hid.set_crosshair = png_set_crosshair;
+
+	png_hid.usage = png_usage;
 
 #ifdef HAVE_SOME_FORMAT
 	hid_register_hid(&png_hid);

@@ -995,6 +995,14 @@ static void nelma_set_crosshair(int x, int y, int a)
 {
 }
 
+static int nelma_usage(char *topic)
+{
+	fprintf(stderr, "\nnelma exporter command line arguments:\n\n");
+	hid_usage(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]));
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x nelma foo.pcb [nelma options]\n\n");
+	return 0;
+}
+
 /* *** Miscellaneous ******************************************************* */
 
 #include "dolists.h"
@@ -1032,6 +1040,8 @@ pcb_uninit_t hid_export_nelma_init()
 	nelma_hid.fill_rect = nelma_fill_rect;
 	nelma_hid.calibrate = nelma_calibrate;
 	nelma_hid.set_crosshair = nelma_set_crosshair;
+
+	nelma_hid.usage = nelma_usage;
 
 	hid_register_hid(&nelma_hid);
 	return NULL;

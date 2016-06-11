@@ -594,6 +594,14 @@ static void eps_set_crosshair(int x, int y, int action)
 {
 }
 
+static int eps_usage(char *topic)
+{
+	fprintf(stderr, "\neps exporter command line arguments:\n\n");
+	hid_usage(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]));
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x eps foo.pcb [eps options]\n\n");
+	return 0;
+}
+
 void hid_eps_init()
 {
 	memset(&eps_hid, 0, sizeof(HID));
@@ -626,6 +634,8 @@ void hid_eps_init()
 	eps_hid.fill_rect = eps_fill_rect;
 	eps_hid.calibrate = eps_calibrate;
 	eps_hid.set_crosshair = eps_set_crosshair;
+
+	eps_hid.usage = eps_usage;
 
 	hid_register_hid(&eps_hid);
 }
