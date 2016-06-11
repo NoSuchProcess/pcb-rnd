@@ -73,10 +73,6 @@
 
 RCSID("$Id$");
 
-#warning TODO: to conf
-static const char *fontfile_paths_in[] = { "./default_font", PCBSHAREDIR "/default_font", NULL };
-char **fontfile_paths = NULL;
-
 /* ----------------------------------------------------------------------
  * initialize signal and error handlers
  */
@@ -241,13 +237,6 @@ void pcb_main_uninit(void)
 
 	for (i = 0; i < MAX_LAYER; i++)
 		free(conf_core.design.default_layer_name[i]);
-
-	if (fontfile_paths != NULL) {
-		for (s = fontfile_paths; *s != NULL; s++)
-			free(*s);
-		free(fontfile_paths);
-		fontfile_paths = NULL;
-	}
 
 	uninit_strflags_buf();
 	uninit_strflags_layerlist();
