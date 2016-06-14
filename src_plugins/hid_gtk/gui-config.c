@@ -558,7 +558,7 @@ static void load_rc_files(void)
 {
 	gchar *path;
 
-#warning TODO: check what came from here - move them to conf
+#warning CONF TODO: check what came from here - move them to conf
 	load_rc_file("/etc/pcbrc");
 	load_rc_file("/usr/local/etc/pcbrc");
 
@@ -685,10 +685,9 @@ static void config_backup_spin_button_cb(GtkSpinButton * spin_button, gpointer d
 {
 	int i;
 	char s[32];
-#warning TODO: this should be CFR_DESIGN or as selected by the user
 	i = gtk_spin_button_get_value_as_int(spin_button);
 	sprintf(s, "%d", i);
-	conf_set(CFR_PROJECT, "rc/backup_interval", -1, s, POL_OVERWRITE);
+	conf_set(CFR_DESIGN, "rc/backup_interval", -1, s, POL_OVERWRITE);
 	EnableAutosave();
 	ghidgui->config_modified = TRUE;
 }
@@ -759,19 +758,18 @@ static void config_sizes_apply(void)
 	gboolean active;
 	char s[128];
 
-#warning TODO: this should be CFR_DESIGN or whatever the user selects
 	pcb_sprintf(s, "%$mS", (new_board_width));
-	conf_set(CFR_PROJECT, "design/max_width", -1, s, POL_OVERWRITE);
+	conf_set(CFR_DESIGN, "design/max_width", -1, s, POL_OVERWRITE);
 	pcb_sprintf(s, "%$mS", (new_board_height));
-	conf_set(CFR_PROJECT, "design/max_height", -1, s, POL_OVERWRITE);
+	conf_set(CFR_DESIGN, "design/max_height", -1, s, POL_OVERWRITE);
 
-#warning TODO: what? this could be removed once user can select where to save
+#warning CONF TODO: what? this could be removed once user can select where to save
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_board_size_default_button));
 	if (active) {
 		ghidgui->config_modified = TRUE;
 	}
 
-#warning TODO: what? this could be removed once user can select where to save
+#warning CONF TODO: what? this could be removed once user can select where to save
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_drc_sizes_default_button));
 	if (active) {
 		conf_set_design("design/bloat", "%$mS", PCB->Bloat);
@@ -1252,7 +1250,7 @@ static void config_layers_apply(void)
 		groups_modified = FALSE;
 	}
 	if (use_as_default) {
-#warning TODO: this should not happen here, should be done centrally, pcb->lihata
+#warning CONF TODO: there should be no "use as default"
 #if 0 
 		s = make_layer_group_string(&PCB->LayerGroups);
 		if (dup_string(&conf_core.design.groups, s)) {

@@ -1622,7 +1622,6 @@ static int SetUnits(int argc, char **argv, Coord x, Coord y)
 
 	new_unit = get_unit_struct(argv[0]);
 	if (new_unit != NULL && new_unit->allow != NO_PRINT) {
-#warning TODO: decide what to do with this: some fields are just overwritten by hand
 		conf_set(CFR_DESIGN, "editor/grid_unit", -1, argv[0], POL_OVERWRITE);
 		AttributePut(PCB, "PCB::grid::unit", argv[0]);
 	}
@@ -1866,18 +1865,6 @@ HID_Action ghid_main_action_list[] = {
 };
 
 REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
-
-#warning are these still in use? also check lesstif
-static int flag_flipx(int x)
-{
-	return conf_core.editor.view.flip_x;
-}
-
-static int flag_flipy(int x)
-{
-	return conf_core.editor.view.flip_y;
-}
-
 
 #include "dolists.h"
 /*

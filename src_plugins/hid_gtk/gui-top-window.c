@@ -1436,7 +1436,7 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	sprintf(libdir, "%s%s", tmps, REST_OF_PATH);
 	free(tmps);
 
-#warning TODO: why do we write it here?
+#warning CONF TODO: use conf_set()
 	conf_core.rc.library_tree = libdir;
 
 #undef REST_OF_PATH
