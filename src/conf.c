@@ -587,7 +587,7 @@ void conf_load_all(void)
 
 	/* load config files */
 	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht", 0);
-	conf_load_as(CFR_USER, "~/.pcb-rnd/pcb-conf.lht", 0);
+	conf_load_as(CFR_USER, "~/" DOT_PCB_RND "/pcb-conf.lht", 0);
 	conf_load_as(CFR_PROJECT, "./pcb-conf.lht", 0);
 	conf_merge_all(NULL);
 }

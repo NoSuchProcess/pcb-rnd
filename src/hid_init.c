@@ -121,8 +121,8 @@ void hid_init()
 
 	/* conf_core.rc.path.home is set by the conf_core immediately on startup */
 	if (conf_core.rc.path.home != NULL) {
-		hid_load_dir(Concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, ".pcb", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-		hid_load_dir(Concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, ".pcb", PCB_DIR_SEPARATOR_S, "plugins", NULL));
+		hid_load_dir(Concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
+		hid_load_dir(Concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", NULL));
 	}
 	hid_load_dir(Concat("plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
 	hid_load_dir(Concat("plugins", NULL));
