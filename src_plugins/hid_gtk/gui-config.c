@@ -63,14 +63,14 @@ extern int MoveLayerAction(int argc, char **argv, int x, int y);
 conf_hid_gtk_t conf_hid_gtk;
 window_geometry_t hid_gtk_wgeo, hid_gtk_wgeo_old;
 
-#define hid_gtk_wgeo_update_(field) \
-do { \
+#define hid_gtk_wgeo_save_(field, dest_role) \
+	conf_setf(dest_role, "plugins/hid_gtk/window_geometry/" #field, -1, "%d", hid_gtk_wgeo.field); \
+
+#define hid_gtk_wgeo_update_(field, dest_role) \
 	if (hid_gtk_wgeo.field != hid_gtk_wgeo_old.field) { \
 		hid_gtk_wgeo_old.field = hid_gtk_wgeo.field; \
-		conf_setf(dest_role, "plugins/hid_gtk/window_geometry/" #field, -1, "%d", hid_gtk_wgeo.field); \
-	} \
-} while(0)
-
+		hid_gtk_wgeo_save_(field, dest_role); \
+	}
 void hid_gtk_wgeo_update(void)
 {
 	conf_role_t dest_role = CFR_USER;
@@ -79,20 +79,21 @@ void hid_gtk_wgeo_update(void)
 		return;
 	if (conf_hid_gtk.plugins.hid_gtk.save_window_geometry_in_design)
 		dest_role = CFR_DESIGN;
-
-	hid_gtk_wgeo_update_(top_width);
-	hid_gtk_wgeo_update_(top_height);
-	hid_gtk_wgeo_update_(log_width);
-	hid_gtk_wgeo_update_(log_height);
-	hid_gtk_wgeo_update_(drc_width);
-	hid_gtk_wgeo_update_(drc_height);
-	hid_gtk_wgeo_update_(library_width);
-	hid_gtk_wgeo_update_(library_height);
-	hid_gtk_wgeo_update_(netlist_height);
-	hid_gtk_wgeo_update_(keyref_width);
-	hid_gtk_wgeo_update_(keyref_height);
+	GHID_WGEO_ALL(hid_gtk_wgeo_update_, dest_role);
 }
 #undef hid_gtk_wgeo_update_
+
+
+void hid_gtk_wgeo_save(void)
+{
+	conf_role_t dest_role = CFR_USER;
+
+	if (conf_hid_gtk.plugins.hid_gtk.save_window_geometry_in_design)
+		dest_role = CFR_DESIGN;
+	GHID_WGEO_ALL(hid_gtk_wgeo_save_, dest_role);
+#warning CONF TODO: trigger a lihata save of dest_role
+}
+#undef hid_gtk_wgeo_save_
 
 RCSID("$Id$");
 

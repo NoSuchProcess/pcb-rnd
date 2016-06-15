@@ -32,6 +32,22 @@ typedef struct {
 	} plugins;
 } conf_hid_gtk_t;
 
+/* Call macro op(field_name, ...) for each window geometry field */
+#define GHID_WGEO_ALL(op, ...) \
+do { \
+	op(top_width, __VA_ARGS__); \
+	op(top_height, __VA_ARGS__); \
+	op(log_width, __VA_ARGS__); \
+	op(log_height, __VA_ARGS__); \
+	op(drc_width, __VA_ARGS__); \
+	op(drc_height, __VA_ARGS__); \
+	op(library_width, __VA_ARGS__); \
+	op(library_height, __VA_ARGS__); \
+	op(netlist_height, __VA_ARGS__); \
+	op(keyref_width, __VA_ARGS__); \
+	op(keyref_height, __VA_ARGS__); \
+} while(0)
+
 typedef struct window_geometry window_geometry_t;
 extern window_geometry_t hid_gtk_wgeo;
 extern conf_hid_gtk_t conf_hid_gtk;
