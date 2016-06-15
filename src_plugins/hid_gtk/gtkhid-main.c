@@ -1804,6 +1804,18 @@ static int ImportGUI(int argc, char **argv, Coord x, Coord y)
 }
 
 /* ------------------------------------------------------------ */
+static const char savewingeo_syntax[] = "SaveWindowGeometry()";
+
+static const char savewingeo_help[] = N_("Saves window geometry in the config.\n");
+
+static int SaveWinGeo(int argc, char **argv, Coord x, Coord y)
+{
+	ghid_wgeo_save();
+#warning CONF TODO: trigger a lihata save of dest_role
+}
+
+
+/* ------------------------------------------------------------ */
 static int Busy(int argc, char **argv, Coord x, Coord y)
 {
 	ghid_watch_cursor();
@@ -1854,6 +1866,8 @@ HID_Action ghid_main_action_list[] = {
 	{"RouteStylesChanged", 0, RouteStylesChanged}
 	,
 	{"Save", 0, Save, save_help, save_syntax}
+	,
+	{"SaveWindowGeometry", 0, SaveWinGeo, savewingeo_help, savewingeo_syntax}
 	,
 	{"Scroll", N_("Click on a place to scroll"), ScrollAction, scroll_help, scroll_syntax}
 	,

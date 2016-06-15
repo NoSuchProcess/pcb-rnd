@@ -84,14 +84,13 @@ void hid_gtk_wgeo_update(void)
 #undef hid_gtk_wgeo_update_
 
 
-void hid_gtk_wgeo_save(void)
+void ghid_wgeo_save(void)
 {
 	conf_role_t dest_role = CFR_USER;
 
 	if (conf_hid_gtk.plugins.hid_gtk.save_window_geometry_in_design)
 		dest_role = CFR_DESIGN;
 	GHID_WGEO_ALL(hid_gtk_wgeo_save_, dest_role);
-#warning CONF TODO: trigger a lihata save of dest_role
 }
 #undef hid_gtk_wgeo_save_
 
