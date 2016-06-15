@@ -118,7 +118,7 @@ typedef struct {
 
 	gboolean adjustment_changed_holdoff, command_entry_status_line_active, in_popup;
 
-	gboolean config_modified, small_label_markup, creating;
+	gboolean small_label_markup, creating;
 
 	gint settings_mode;
 } GhidGui;

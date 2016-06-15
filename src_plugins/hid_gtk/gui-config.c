@@ -211,7 +211,6 @@ static void config_backup_spin_button_cb(GtkSpinButton * spin_button, gpointer d
 	sprintf(s, "%d", i);
 	conf_set(CFR_DESIGN, "rc/backup_interval", -1, s, POL_OVERWRITE);
 	EnableAutosave();
-	ghidgui->config_modified = TRUE;
 }
 
 static void config_history_spin_button_cb(GtkSpinButton * spin_button, gpointer data)
@@ -287,9 +286,6 @@ static void config_sizes_apply(void)
 
 #warning CONF TODO: what? this could be removed once user can select where to save
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_board_size_default_button));
-	if (active) {
-		ghidgui->config_modified = TRUE;
-	}
 
 #warning CONF TODO: what? this could be removed once user can select where to save
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_drc_sizes_default_button));
@@ -301,7 +297,6 @@ static void config_sizes_apply(void)
 		conf_set_design("design/poly_isle_area", "%f", PCB->IsleArea);
 		conf_set_design("design/min_drill", "%$mS", PCB->minDrill);
 		conf_set_design("design/min_ring", "%$mS", PCB->minRing);
-		ghidgui->config_modified = TRUE;
 	}
 
 	if (PCB->MaxWidth != conf_core.design.max_width || PCB->MaxHeight != conf_core.design.max_height)
@@ -311,14 +306,12 @@ static void config_sizes_apply(void)
 static void text_spin_button_cb(GtkSpinButton * spin, void *dst)
 {
 	*(gint *) dst = gtk_spin_button_get_value_as_int(spin);
-	ghidgui->config_modified = TRUE;
 	ghid_set_status_line_label();
 }
 
 static void coord_entry_cb(GHidCoordEntry * ce, void *dst)
 {
 	*(Coord *) dst = ghid_coord_entry_get_value(ce);
-	ghidgui->config_modified = TRUE;
 }
 
 static void config_sizes_tab_create(GtkWidget * tab_vbox)
@@ -444,7 +437,6 @@ static void increment_tbl_update()
 static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
 {
 	*(Coord *) dst = ghid_coord_entry_get_value(ce);
-	ghidgui->config_modified = TRUE;
 	increment_tbl_update();
 }
 
@@ -672,7 +664,6 @@ static void config_layer_groups_radio_button_cb(GtkToggleButton * button, gpoint
 		return;
 	config_layer_group[layer] = group;
 	groups_modified = TRUE;
-	ghidgui->config_modified = TRUE;
 }
 
 	/* Construct a layer group string.  Follow logic in WritePCBDataHeader(),
@@ -726,10 +717,6 @@ static void config_layers_apply(void)
 		s = ghid_entry_get_text(layer_entry[i]);
 		if (dup_string(&layer->Name, s))
 			layers_modified = TRUE;
-/* FIXME */
-		if (use_as_default && dup_string(&conf_core.design.default_layer_name[i], s))
-			ghidgui->config_modified = TRUE;
-
 	}
 	/* Layer names can be changed from the menus and that can update the
 	   |  config.  So holdoff the loop.
@@ -777,7 +764,6 @@ static void config_layers_apply(void)
 		s = make_layer_group_string(&PCB->LayerGroups);
 		if (dup_string(&conf_core.design.groups, s)) {
 			ParseGroupString(conf_core.design.groups, &Settings.LayerGroups, max_copper_layer);
-			ghidgui->config_modified = TRUE;
 		}
 		g_free(s);
 #endif
@@ -1207,7 +1193,6 @@ void ghid_config_handle_units_changed(void)
 		config_sizes_vbox = NULL;
 		config_sizes_tab_create(config_sizes_tab_vbox);
 	}
-	ghidgui->config_modified = TRUE;
 }
 
 void ghid_config_text_scale_update(void)

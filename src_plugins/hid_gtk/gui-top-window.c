@@ -31,7 +31,6 @@ TODO:
 
 	/* Set to ! because ActionDisplay toggles it */
 conf_core.editor.draw_grid = !gtk_toggle_action_get_active(action);
-ghidgui->config_modified = TRUE;
 hid_actionl("Display", "Grid", "", NULL);
 ghid_set_status_line_label();
 
@@ -737,7 +736,6 @@ static void route_styles_edited_cb(GHidRouteStyleSelector * rss, gboolean save, 
 	if (save) {
 #warning CONF TODO: save means we need to save it  in CFR_USER!
 		conf_set_design(conf_core.design.routes, "%s", make_route_string(PCB->RouteStyle, NUM_STYLES));
-		ghidgui->config_modified = TRUE;
 	}
 	ghid_main_menu_install_route_style_selector
 		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
