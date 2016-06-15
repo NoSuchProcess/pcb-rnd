@@ -219,12 +219,16 @@ do { \
 
 
 /* helpers to make the code shorter */
-#define conf_set_design(path, fmt, new_val) \
+#define conf_setf(role, path, idx, fmt, ...) \
 do { \
-	char *__tmp__ = pcb_strdup_printf(fmt, new_val); \
-	conf_set(CFR_DESIGN, path, -1, __tmp__, POL_OVERWRITE); \
+	char *__tmp__ = pcb_strdup_printf(fmt, __VA_ARGS__); \
+	conf_set(role, path, idx, __tmp__, POL_OVERWRITE); \
 	free(__tmp__); \
 } while(0)
+
+/* helpers to make the code shorter */
+#define conf_set_design(path, fmt, new_val) \
+	conf_setf(CFR_DESIGN, path, -1, fmt, new_val)
 
 #define conf_set_editor(field, val) \
 	conf_set(CFR_DESIGN, "editor/" #field, -1, val ? "1" : "0", POL_OVERWRITE)

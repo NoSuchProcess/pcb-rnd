@@ -198,6 +198,12 @@ li:pcb_config {
 #				gnetlist_program = gnetlist
 #				make_program = make
 #			}
+			ha:hid_gtk {
+				compact_horizontal = 1
+				compact_vertical = 1
+				use_command_window = 0
+				history_size = 16
+			}
 		} # plugins
 
 	} # main
