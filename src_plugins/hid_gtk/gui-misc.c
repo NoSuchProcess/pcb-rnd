@@ -381,7 +381,7 @@ void ghid_set_status_line_label(void)
 																		conf_core.design.line_thickness,
 																		conf_core.design.via_thickness,
 																		conf_core.design.via_drilling_hole,
-																		ghidgui->compact_horizontal ? "\n" : "",
+																		conf_hid_gtk.plugins.hid_gtk.compact_horizontal ? "\n" : "",
 																		conf_core.design.keepaway,
 																		conf_core.design.text_scale, conf_core.editor.buffer_number + 1);
 

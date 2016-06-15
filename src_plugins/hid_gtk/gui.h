@@ -42,6 +42,8 @@
 #include "gui-pinout-preview.h"
 #include "conf_core.h"
 
+#include "hid_gtk_conf.h"
+
 	/* Silk and rats lines are the two additional selectable to draw on.
 	   |  gui code in gui-top-window.c and group code in misc.c must agree
 	   |  on what layer is what!
@@ -116,17 +118,9 @@ typedef struct {
 
 	gboolean adjustment_changed_holdoff, command_entry_status_line_active, in_popup;
 
-	gboolean config_modified, small_label_markup, compact_horizontal, compact_vertical, use_command_window, creating;
+	gboolean config_modified, small_label_markup, creating;
 
-	gint n_mode_button_columns,
-		top_window_width,
-		top_window_height,
-		log_window_width,
-		log_window_height,
-		drc_window_width,
-		drc_window_height,
-		keyref_window_width,
-		keyref_window_height, library_window_width, library_window_height, netlist_window_height, history_size, settings_mode;
+	gint settings_mode;
 } GhidGui;
 
 extern GhidGui _ghidgui, *ghidgui;
@@ -212,8 +206,6 @@ void ghid_config_layer_name_update(gchar * name, gint layer);
 void ghid_config_groups_changed(void);
 
 void ghid_config_init(void);
-void ghid_config_files_write(void);
-void ghid_config_files_read(gint * argc, gchar *** argv);
 
 void ghid_mode_buttons_update(void);
 void ghid_pack_mode_buttons(void);

@@ -55,9 +55,10 @@ static gint drc_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure 
 	GtkAllocation allocation;
 
 	gtk_widget_get_allocation(widget, &allocation);
-	ghidgui->drc_window_width = allocation.width;
-	ghidgui->drc_window_height = allocation.height;
-	ghidgui->config_modified = TRUE;
+
+	hid_gtk_wgeo.drc_width = allocation.width;
+	hid_gtk_wgeo.drc_height = allocation.height;
+	hid_gtk_wgeo_update();
 
 	return FALSE;
 }
@@ -730,7 +731,7 @@ void ghid_drc_window_show(gboolean raise)
 	g_signal_connect(G_OBJECT(drc_window), "configure_event", G_CALLBACK(drc_window_configure_event_cb), NULL);
 	gtk_window_set_title(GTK_WINDOW(drc_window), _("PCB DRC"));
 	gtk_window_set_wmclass(GTK_WINDOW(drc_window), "PCB_DRC", "PCB");
-	gtk_window_set_default_size(GTK_WINDOW(drc_window), ghidgui->drc_window_width, ghidgui->drc_window_height);
+	gtk_window_set_default_size(GTK_WINDOW(drc_window), hid_gtk_wgeo.drc_width, hid_gtk_wgeo.drc_height);
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(drc_window), vbox);

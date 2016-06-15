@@ -47,9 +47,10 @@ static gint log_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure 
 	GtkAllocation allocation;
 
 	gtk_widget_get_allocation(widget, &allocation);
-	ghidgui->log_window_width = allocation.width;
-	ghidgui->log_window_height = allocation.height;
-	ghidgui->config_modified = TRUE;
+
+	hid_gtk_wgeo.log_width = allocation.width;
+	hid_gtk_wgeo.log_height = allocation.height;
+	hid_gtk_wgeo_update();
 
 	return FALSE;
 }
@@ -77,7 +78,7 @@ void ghid_log_window_create()
 	g_signal_connect(G_OBJECT(log_window), "configure_event", G_CALLBACK(log_window_configure_event_cb), NULL);
 	gtk_window_set_title(GTK_WINDOW(log_window), _("PCB Log"));
 	gtk_window_set_wmclass(GTK_WINDOW(log_window), "PCB_Log", "PCB");
-	gtk_window_set_default_size(GTK_WINDOW(log_window), ghidgui->log_window_width, ghidgui->log_window_height);
+	gtk_window_set_default_size(GTK_WINDOW(log_window), hid_gtk_wgeo.log_width, hid_gtk_wgeo.log_height);
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);

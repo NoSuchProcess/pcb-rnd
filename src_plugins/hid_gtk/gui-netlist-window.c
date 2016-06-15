@@ -623,8 +623,10 @@ static gint netlist_window_configure_event_cb(GtkWidget * widget, GdkEventConfig
 	GtkAllocation allocation;
 
 	gtk_widget_get_allocation(widget, &allocation);
-	ghidgui->netlist_window_height = allocation.height;
-	ghidgui->config_modified = TRUE;
+
+	hid_gtk_wgeo.netlist_height = allocation.height;
+	hid_gtk_wgeo_update();
+
 	return FALSE;
 }
 
@@ -667,7 +669,7 @@ void ghid_netlist_window_create(GHidPort * out)
 	gtk_window_set_title(GTK_WINDOW(netlist_window), _("PCB Netlist"));
 	gtk_window_set_wmclass(GTK_WINDOW(netlist_window), "PCB_Netlist", "PCB");
 	g_signal_connect(G_OBJECT(netlist_window), "configure_event", G_CALLBACK(netlist_window_configure_event_cb), NULL);
-	gtk_window_set_default_size(GTK_WINDOW(netlist_window), -1, ghidgui->netlist_window_height);
+	gtk_window_set_default_size(GTK_WINDOW(netlist_window), -1, hid_gtk_wgeo.netlist_height);
 
 	gtk_container_set_border_width(GTK_CONTAINER(netlist_window), 2);
 

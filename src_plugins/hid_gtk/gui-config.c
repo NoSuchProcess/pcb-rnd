@@ -49,6 +49,7 @@
 #include "hid_attrib.h"
 #include "conf.h"
 #include "misc_util.h"
+#include "hid_gtk_conf.h"
 
 /* for MKDIR() */
 #include "compat_fs.h"
@@ -59,7 +60,39 @@
 #endif
 
 extern int MoveLayerAction(int argc, char **argv, int x, int y);
+conf_hid_gtk_t conf_hid_gtk;
+window_geometry_t hid_gtk_wgeo, hid_gtk_wgeo_old;
 
+#define hid_gtk_wgeo_update_(field) \
+do { \
+	if (hid_gtk_wgeo.field != hid_gtk_wgeo_old.field) { \
+		hid_gtk_wgeo_old.field = hid_gtk_wgeo.field; \
+		conf_setf(dest_role, "plugins/hid_gtk/window_geometry/" #field, -1, "%d", hid_gtk_wgeo.field); \
+	} \
+} while(0)
+
+void hid_gtk_wgeo_update(void)
+{
+	conf_role_t dest_role = CFR_USER;
+
+	if (!conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry)
+		return;
+	if (conf_hid_gtk.plugins.hid_gtk.save_window_geometry_in_design)
+		dest_role = CFR_DESIGN;
+
+	hid_gtk_wgeo_update_(top_width);
+	hid_gtk_wgeo_update_(top_height);
+	hid_gtk_wgeo_update_(log_width);
+	hid_gtk_wgeo_update_(log_height);
+	hid_gtk_wgeo_update_(drc_width);
+	hid_gtk_wgeo_update_(drc_height);
+	hid_gtk_wgeo_update_(library_width);
+	hid_gtk_wgeo_update_(library_height);
+	hid_gtk_wgeo_update_(netlist_height);
+	hid_gtk_wgeo_update_(keyref_width);
+	hid_gtk_wgeo_update_(keyref_height);
+}
+#undef hid_gtk_wgeo_update_
 
 RCSID("$Id$");
 
@@ -79,316 +112,19 @@ typedef struct {
 } ConfigAttribute;
 
 
-enum ColorTypes {
-	MISC_COLOR,
-	MISC_SELECTED_COLOR,
-	LAYER_COLOR,
-	LAYER_SELECTED_COLOR
-};
-
-static GList *config_color_list, *lib_newlib_list;
-
-static gchar *lib_newlib_config, *board_size_override;
-
-
+#warning CONF TODO: remove this and all color file code
 static gchar *color_file;
 
 extern void ghid_set_special_colors(conf_native_t *cfg);
 
-
-#define PCB_CONFIG_DIR	".pcb"
-#define PCB_CONFIG_FILE	"preferences"
-#define PCB_COLORS_DIR	"colors"
-
-static gchar *config_dir, *color_dir;
-
-	/* CONFIG_Unused types are expected to be found in main_attribute_list and
-	   |  will be assigned the type found there.  NULL value pointers here are
-	   |  also expected to be assigned values from the main_attribute_list.
-	 */
-	/* PinoutFont also not used anymore */
-
-static ConfigAttribute config_attributes[] = {
-	{"gui-compact-horizontal", CONFIG_Boolean, &_ghidgui.compact_horizontal},
-	{"gui-compact-vertical", CONFIG_Boolean, &_ghidgui.compact_vertical},
-	{"use-command-window", CONFIG_Boolean, &_ghidgui.use_command_window},
-	{"save-in-tmp", CONFIG_Unused, NULL},
-	{"grid-units", CONFIG_Unused, NULL},
-	{"grid", CONFIG_Unused, NULL},
-
-	{"history-size", CONFIG_Integer, &_ghidgui.history_size},
-	{"top-window-width", CONFIG_Integer, &_ghidgui.top_window_width},
-	{"top-window-height", CONFIG_Integer, &_ghidgui.top_window_height},
-	{"log-window-width", CONFIG_Integer, &_ghidgui.log_window_width},
-	{"log-window-height", CONFIG_Integer, &_ghidgui.log_window_height},
-	{"drc-window-width", CONFIG_Integer, &_ghidgui.drc_window_width},
-	{"drc-window-height", CONFIG_Integer, &_ghidgui.drc_window_height},
-	{"library-window-width", CONFIG_Integer, &_ghidgui.library_window_width},
-	{"library-window-height", CONFIG_Integer, &_ghidgui.library_window_height},
-	{"netlist-window-height", CONFIG_Integer, &_ghidgui.netlist_window_height},
-	{"keyref-window-width", CONFIG_Integer, &_ghidgui.keyref_window_width},
-	{"keyref-window-height", CONFIG_Integer, &_ghidgui.keyref_window_height},
-	{"text-scale", CONFIG_Unused, NULL},
-	{"via-thickness", CONFIG_Unused, NULL},
-	{"via-drilling-hole", CONFIG_Unused, NULL},
-	{"backup-interval", CONFIG_Unused, NULL},
-	{"line-thickness", CONFIG_Unused, NULL},
-	{"rat-thickness", CONFIG_Unused, NULL},
-	{"bloat", CONFIG_Unused, NULL},
-	{"shrink", CONFIG_Unused, NULL},
-	{"min-width", CONFIG_Unused, NULL},
-	{"min-silk", CONFIG_Unused, NULL},
-	{"min-drill", CONFIG_Unused, NULL},
-	{"min-ring", CONFIG_Unused, NULL},
-	{"default-PCB-width", CONFIG_Unused, NULL},
-	{"default-PCB-height", CONFIG_Unused, NULL},
-
-	{"groups", CONFIG_Unused, NULL},
-	{"route-styles", CONFIG_Unused, NULL},
-	{"library-newlib", CONFIG_String, &lib_newlib_config},
-	{"color-file", CONFIG_String, &color_file},
-/* FIXME: construct layer-names- in a list */
-	{"layer-name-1", CONFIG_Unused, NULL},
-	{"layer-name-2", CONFIG_Unused, NULL},
-	{"layer-name-3", CONFIG_Unused, NULL},
-	{"layer-name-4", CONFIG_Unused, NULL},
-	{"layer-name-5", CONFIG_Unused, NULL},
-	{"layer-name-6", CONFIG_Unused, NULL},
-	{"layer-name-7", CONFIG_Unused, NULL},
-	{"layer-name-8", CONFIG_Unused, NULL},
-};
-
-
-static FILE *config_file_open(gchar * mode)
-{
-	FILE *f;
-	gchar *homedir, *fname;
-
-
-	homedir = (gchar *) g_get_home_dir();
-	if (!homedir) {
-		g_message("config_file_open: Can't get home directory!");
-		return NULL;
-	}
-
-	if (!config_dir) {
-		config_dir = g_build_path(G_DIR_SEPARATOR_S, homedir, PCB_CONFIG_DIR, NULL);
-		if (!g_file_test(config_dir, G_FILE_TEST_IS_DIR)
-				&& MKDIR(config_dir, 0755) < 0) {
-			g_message("config_file_open: Can't make \"%s\" directory!", config_dir);
-			g_free(config_dir);
-			config_dir = NULL;
-			return NULL;
-		}
-	}
-
-	if (!color_dir) {							/* Convenient to make the color dir here */
-		color_dir = g_build_path(G_DIR_SEPARATOR_S, config_dir, PCB_COLORS_DIR, NULL);
-		if (!g_file_test(color_dir, G_FILE_TEST_IS_DIR)) {
-			if (MKDIR(color_dir, 0755) < 0) {
-				g_message("config_file_open: Can't make \"%s\" directory!", color_dir);
-				g_free(color_dir);
-				color_dir = NULL;
-			}
-			fname = g_build_path(G_DIR_SEPARATOR_S, color_dir, "Default", NULL);
-			dup_string(&color_file, fname);
-			g_free(fname);
-		}
-	}
-
-	fname = g_build_path(G_DIR_SEPARATOR_S, config_dir, PCB_CONFIG_FILE, NULL);
-	f = fopen(fname, mode);
-
-	g_free(fname);
-	return f;
-}
-
-static ConfigAttribute *lookup_config_attribute(gchar * name, gboolean if_null_value)
-{
-	ConfigAttribute *ca;
-
-	for (ca = &config_attributes[0]; ca < &config_attributes[0] + G_N_ELEMENTS(config_attributes); ++ca) {
-		if (name && (!strcmp(name, ca->name))) {
-			if (ca->value && if_null_value)
-				break;
-			return ca;
-		}
-	}
-	return NULL;
-}
-
 void ghid_config_init(void)
 {
-	HID_AttrNode *ha;
-	HID_Attribute *a;
-	ConfigAttribute *ca, dummy_attribute;
-	gint len;
-
-	ghidgui->n_mode_button_columns = 3;
-	ghidgui->small_label_markup = TRUE;
-	ghidgui->history_size = 5;
-	dup_string(&color_file, "");
-
-	for (ha = hid_attr_nodes; ha; ha = ha->next) {
-		for (a = ha->attributes; a < ha->attributes + ha->n; ++a) {
-			if (!a->value)
-				continue;
-			if ((ca = lookup_config_attribute(a->name, TRUE)) == NULL)
-				ca = &dummy_attribute;
-			ca->value = a->value;			/* Typically &Setting.xxx */
-			ca->type = CONFIG_Unused;
-			switch (a->type) {
-			case HID_Boolean:
-				*(char *) a->value = a->default_val.int_value;
-				ca->type = CONFIG_Boolean;
-				break;
-			case HID_Integer:
-				*(int *) a->value = a->default_val.int_value;
-				ca->type = CONFIG_Integer;
-				break;
-			case HID_Coord:
-				*(Coord *) a->value = a->default_val.coord_value;
-				ca->type = CONFIG_Coord;
-				break;
-			case HID_Real:
-				*(double *) a->value = a->default_val.real_value;
-				ca->type = CONFIG_Real;
-				break;
-
-			case HID_String:
-				if (!a->name)
-					break;
-				*(char **) a->value = g_strdup(a->default_val.str_value);
-				ca->type = CONFIG_String;
-				break;
-
-			case HID_Enum:
-			case HID_Unit:
-				*(int *) a->value = a->default_val.int_value;
-				break;
-
-			case HID_Label:
-			case HID_Mixed:
-			case HID_Path:
-				break;
-			default:
-				abort();
-			}
-		}
-	}
+	hid_gtk_wgeo_old = hid_gtk_wgeo = conf_hid_gtk.plugins.hid_gtk.window_geometry;
+#warning CONF TODO: inject the internal part here?
 }
 
-static gint parse_option_line(gchar * line, gchar ** option_result, gchar ** arg_result)
-{
-	gchar *s, *ss, option[64], arg[512];
-	gint argc = 1;
 
-	if (option_result)
-		*option_result = NULL;
-	if (arg_result)
-		*arg_result = NULL;
-
-	s = line;
-	while (*s == ' ' || *s == '\t')
-		++s;
-	if (!*s || *s == '\n' || *s == '#' || *s == '[')
-		return 0;
-	if ((ss = strchr(s, '\n')) != NULL)
-		*ss = '\0';
-	arg[0] = '\0';
-	sscanf(s, "%63s %511[^\n]", option, arg);
-
-	s = option;										/* Strip trailing ':' or '=' */
-	while (*s && *s != ':' && *s != '=')
-		++s;
-	*s = '\0';
-
-	s = arg;											/* Strip leading ':', '=', and whitespace */
-	while (*s == ' ' || *s == '\t' || *s == ':' || *s == '=' || *s == '"')
-		++s;
-	if ((ss = strchr(s, '"')) != NULL)
-		*ss = '\0';
-
-	if (option_result)
-		*option_result = g_strdup(option);
-	if (arg_result && *s) {
-		*arg_result = g_strdup(s);
-		++argc;
-	}
-	return argc;
-}
-
-static gboolean set_config_attribute(gchar * option, gchar * arg)
-{
-	ConfigAttribute *ca;
-#if 0
-	struct lconv *lc;
-	gchar locale_point, *comma_point, *period_point;
-
-	/* Until LC_NUMERIC is totally resolved, check if we need to decimal
-	   |  point convert.  Ultimately, data files will be POSIX and gui
-	   |  presentation (hence the config file reals) will be in the users locale.
-	 */
-	lc = localeconv();
-	locale_point = *lc->decimal_point;
-#endif
-
-	if ((ca = lookup_config_attribute(option, FALSE)) == NULL)
-		return FALSE;
-	switch (ca->type) {
-	case CONFIG_Boolean:
-		*(gchar *) ca->value = (gchar) atoi(arg);
-		break;
-
-	case CONFIG_Integer:
-		*(gint *) ca->value = atoi(arg);
-		break;
-
-	case CONFIG_Real:
-		/* Hopefully temporary locale decimal point check:
-		 */
-#if 0
-		comma_point = strrchr(arg, ',');
-		period_point = strrchr(arg, '.');
-		if (comma_point && *comma_point != locale_point)
-			*comma_point = locale_point;
-		else if (period_point && *period_point != locale_point)
-			*period_point = locale_point;
-#endif
-		*(double *) ca->value = atof(arg);
-		break;
-
-	case CONFIG_String:
-		dup_string((gchar **) ca->value, arg ? arg : (gchar *) "");
-		break;
-	case CONFIG_Coord:
-		*(Coord *) ca->value = GetValue(arg, NULL, NULL, NULL);
-		break;
-	default:
-		break;
-	}
-	return TRUE;
-}
-
-static void config_file_read(void)
-{
-	FILE *f;
-	gchar buf[512], *option, *arg;
-
-	if ((f = config_file_open("r")) == NULL)
-		return;
-
-	buf[0] = '\0';
-	while (fgets(buf, sizeof(buf), f)) {
-		if (parse_option_line(buf, &option, &arg) > 0)
-			set_config_attribute(option, arg);
-		g_free(option);
-		g_free(arg);
-	}
-
-	fclose(f);
-}
-
+#warning CONF TODO: remove this for paths.c
 static gchar *expand_dir(gchar * dir)
 {
 	gchar *s;
@@ -400,6 +136,7 @@ static gchar *expand_dir(gchar * dir)
 	return s;
 }
 
+#warning CONF TODO: remove this for conf and paths.c
 static void add_to_paths_list(GList ** list, gchar * path_string)
 {
 	gchar *p, *paths;
@@ -408,224 +145,6 @@ static void add_to_paths_list(GList ** list, gchar * path_string)
 	for (p = strtok(paths, PCB_PATH_DELIMETER); p && *p; p = strtok(NULL, PCB_PATH_DELIMETER))
 		*list = g_list_prepend(*list, expand_dir(p));
 	g_free(paths);
-}
-
-	/* Parse command line code borrowed from hid/common/hidinit.c
-	 */
-static void parse_optionv(gint * argc, gchar *** argv, gboolean from_cmd_line)
-{
-	HID_AttrNode *ha;
-	HID_Attribute *a;
-	const Unit *unit;
-	gchar *ep;
-	gint e, ok, offset;
-	gboolean matched = FALSE;
-
-	offset = from_cmd_line ? 2 : 0;
-
-	while (*argc && (((*argv)[0][0] == '-' && (*argv)[0][1] == '-')
-									 || !from_cmd_line)) {
-		for (ha = hid_attr_nodes; ha; ha = ha->next) {
-			for (a = ha->attributes; a < ha->attributes + ha->n; ++a) {
-				if (!a->name || strcmp((*argv)[0] + offset, a->name))
-					continue;
-				switch (a->type) {
-				case HID_Label:
-					break;
-				case HID_Integer:
-					if (a->value)
-						*(int *) a->value = strtol((*argv)[1], 0, 0);
-					else
-						a->default_val.int_value = strtol((*argv)[1], 0, 0);
-					(*argc)--;
-					(*argv)++;
-					break;
-				case HID_Coord:
-					if (a->value)
-						*(Coord *) a->value = GetValue((*argv)[1], 0, 0, NULL);
-					else
-						a->default_val.coord_value = GetValue((*argv)[1], 0, 0, NULL);
-					(*argc)--;
-					(*argv)++;
-					break;
-				case HID_Real:
-					if (a->value)
-						*(double *) a->value = strtod((*argv)[1], 0);
-					else
-						a->default_val.real_value = strtod((*argv)[1], 0);
-					(*argc)--;
-					(*argv)++;
-					break;
-				case HID_String:
-					if (a->value)
-						*(char **) a->value = g_strdup((*argv)[1]);
-					else
-						a->default_val.str_value = g_strdup((*argv)[1]);
-					(*argc)--;
-					(*argv)++;
-					break;
-				case HID_Boolean:
-					if (a->value)
-						*(char *) a->value = 1;
-					else
-						a->default_val.int_value = 1;
-					break;
-				case HID_Mixed:
-					a->default_val.real_value = strtod((*argv)[1], &ep);
-					goto do_enum;
-				case HID_Enum:
-					ep = (*argv)[1];
-				do_enum:
-					ok = 0;
-					for (e = 0; a->enumerations[e]; e++)
-						if (strcmp(a->enumerations[e], ep) == 0) {
-							ok = 1;
-							a->default_val.int_value = e;
-							a->default_val.str_value = ep;
-							break;
-						}
-					if (!ok) {
-						fprintf(stderr, "ERROR:  \"%s\" is an unknown value for the --%s option\n", (*argv)[1], a->name);
-						exit(1);
-					}
-					(*argc)--;
-					(*argv)++;
-					break;
-				case HID_Path:
-					abort();
-					a->default_val.str_value = (*argv)[1];
-					(*argc)--;
-					(*argv)++;
-					break;
-				case HID_Unit:
-					unit = get_unit_struct((*argv)[1]);
-					if (unit == NULL) {
-						fprintf(stderr, "ERROR:  unit \"%s\" is unknown to pcb (option --%s)\n", (*argv)[1], a->name);
-						exit(1);
-					}
-					a->default_val.int_value = unit->index;
-					a->default_val.str_value = unit->suffix;
-					(*argc)--;
-					(*argv)++;
-					break;
-				}
-				(*argc)--;
-				(*argv)++;
-				ha = 0;
-				goto got_match;
-			}
-			if (a < ha->attributes + ha->n)
-				matched = TRUE;
-		}
-		if (!matched) {
-			if (from_cmd_line) {
-				fprintf(stderr, "unrecognized option: %s\n", (*argv)[0]);
-				exit(1);
-			}
-			else
-/*                              ghid_log("unrecognized option: %s\n", (*argv)[0]);*/
-				fprintf(stderr, "unrecognized option: %s\n", (*argv)[0]);
-		}
-	got_match:;
-	}
-	(*argc)++;
-	(*argv)--;
-}
-
-static void load_rc_file(gchar * path)
-{
-	FILE *f;
-	gchar buf[1024], *av[2], **argv;
-	gint argc;
-
-	f = fopen(path, "r");
-	if (!f)
-		return;
-
-	if (conf_core.rc.verbose)
-		printf("Loading pcbrc file: %s\n", path);
-	while (fgets(buf, sizeof(buf), f)) {
-		argv = &(av[0]);
-		if ((argc = parse_option_line(buf, &av[0], &av[1])) > 0)
-			parse_optionv(&argc, &argv, FALSE);
-		g_free(av[0]);
-		g_free(av[1]);
-	}
-	fclose(f);
-}
-
-static void load_rc_files(void)
-{
-	gchar *path;
-
-#warning CONF TODO: check what came from here - move them to conf
-	load_rc_file("/etc/pcbrc");
-	load_rc_file("/usr/local/etc/pcbrc");
-
-//	got killed during conf rewrite:
-//	path = g_build_filename(pcblibdir, "pcbrc", NULL);
-	load_rc_file(path);
-	g_free(path);
-
-	path = g_build_filename((gchar *) g_get_home_dir(), ".pcb/pcbrc", NULL);
-	load_rc_file(path);
-	g_free(path);
-
-	load_rc_file("pcbrc");
-}
-
-
-void ghid_config_files_read(gint * argc, gchar *** argv)
-{
-	GList *list;
-	gchar *str, *dir;
-	gint width, height;
-
-	ghidgui = &_ghidgui;
-
-	ghid_config_init();
-	load_rc_files();
-	config_file_read();
-	parse_optionv(argc, argv, TRUE);
-}
-
-void ghid_config_files_write(void)
-{
-	FILE *f;
-	ConfigAttribute *ca;
-
-	if (!ghidgui->config_modified || (f = config_file_open("w")) == NULL)
-		return;
-
-	fprintf(f, "### PCB configuration file. ###\n");
-
-	for (ca = &config_attributes[0]; ca < &config_attributes[0] + G_N_ELEMENTS(config_attributes); ++ca) {
-		switch (ca->type) {
-		case CONFIG_Boolean:
-			fprintf(f, "%s = %d\n", ca->name, (gint) * (gchar *) ca->value);
-			break;
-
-		case CONFIG_Integer:
-			fprintf(f, "%s = %d\n", ca->name, *(gint *) ca->value);
-			break;
-
-		case CONFIG_Real:
-			fprintf(f, "%s = %f\n", ca->name, *(double *) ca->value);
-			break;
-
-		case CONFIG_String:
-			if (*(char **) ca->value == NULL)
-				fprintf(f, "# %s = NULL\n", ca->name);
-			else
-				fprintf(f, "%s = %s\n", ca->name, *(char **) ca->value);
-			break;
-		default:
-			break;
-		}
-	}
-	fclose(f);
-
-	ghidgui->config_modified = FALSE;
 }
 
 /* =================== OK, now the gui stuff ======================
@@ -652,7 +171,8 @@ static void config_command_window_toggle_cb(GtkToggleButton * button, gpointer d
 		holdoff = FALSE;
 		return;
 	}
-	ghidgui->use_command_window = active;
+#warning TODO: conf_set() this 
+/*	conf_hid_gtk.plugins.hid_gtk.use_command_window = active;*/
 	ghid_command_use_command_window_sync();
 }
 
@@ -661,24 +181,26 @@ static void config_compact_horizontal_toggle_cb(GtkToggleButton * button, gpoint
 {
 	gboolean active = gtk_toggle_button_get_active(button);
 
-	ghidgui->compact_horizontal = active;
+#warning CONF TODO: conf_set()
+/*	conf_hid_gtk.plugins.hid_gtk.compact_horizontal = active;
 	ghid_set_status_line_label();
-	ghidgui->config_modified = TRUE;
+*/
 }
 
 static void config_compact_vertical_toggle_cb(GtkToggleButton * button, gpointer data)
 {
 	gboolean active = gtk_toggle_button_get_active(button);
 
+#warning CONF TODO: conf_set()
+/*
 	ghidgui->compact_vertical = active;
 	ghid_pack_mode_buttons();
-	ghidgui->config_modified = TRUE;
+*/
 }
 
 static void config_general_toggle_cb(GtkToggleButton * button, void *setting)
 {
 	*(gint *) setting = gtk_toggle_button_get_active(button);
-	ghidgui->config_modified = TRUE;
 }
 
 static void config_backup_spin_button_cb(GtkSpinButton * spin_button, gpointer data)
@@ -694,8 +216,8 @@ static void config_backup_spin_button_cb(GtkSpinButton * spin_button, gpointer d
 
 static void config_history_spin_button_cb(GtkSpinButton * spin_button, gpointer data)
 {
-	ghidgui->history_size = gtk_spin_button_get_value_as_int(spin_button);
-	ghidgui->config_modified = TRUE;
+#warning CONF TODO: use conf_set() on this
+//	conf_hid_gtk.plugins.hid_gtk.history_size = gtk_spin_button_get_value_as_int(spin_button);
 }
 
 static void config_general_tab_create(GtkWidget * tab_vbox)
@@ -706,16 +228,16 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 
 	vbox = ghid_category_vbox(tab_vbox, _("Enables"), 4, 2, TRUE, TRUE);
 
-	ghid_check_button_connected(vbox, NULL, ghidgui->use_command_window,
+	ghid_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.use_command_window,
 															TRUE, FALSE, FALSE, 2,
 															config_command_window_toggle_cb, NULL, _("Use separate window for command entry"));
 
-	ghid_check_button_connected(vbox, NULL, ghidgui->compact_horizontal,
+	ghid_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_horizontal,
 															TRUE, FALSE, FALSE, 2,
 															config_compact_horizontal_toggle_cb, NULL,
 															_("Alternate window layout to allow smaller horizontal size"));
 
-	ghid_check_button_connected(vbox, NULL, ghidgui->compact_vertical,
+	ghid_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_vertical,
 															TRUE, FALSE, FALSE, 2,
 															config_compact_vertical_toggle_cb, NULL,
 															_("Alternate window layout to allow smaller vertical size"));
@@ -731,7 +253,7 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 									 _("Seconds between auto backups\n" "(set to zero to disable auto backups)"));
 
 	vbox = ghid_category_vbox(tab_vbox, _("Misc"), 4, 2, TRUE, TRUE);
-	ghid_spin_button(vbox, NULL, ghidgui->history_size,
+	ghid_spin_button(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.history_size,
 									 5.0, 25.0, 1.0, 1.0, 0, 0,
 									 config_history_spin_button_cb, NULL, FALSE, _("Number of commands to remember in the history list"));
 }
@@ -740,7 +262,7 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 static void config_general_apply(void)
 {
 	/* save the settings */
-	ghid_config_files_write();
+#warning CONF TODO: save lihata?
 }
 
 
@@ -1033,12 +555,12 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 
 	/* -------------- The Library config page ----------------
 	 */
+#warning CONF TODO: remove?
 static GtkWidget *library_newlib_entry;
 
 static void config_library_apply(void)
 {
-	if (dup_string(&lib_newlib_config, ghid_entry_get_text(library_newlib_entry)))
-		ghidgui->config_modified = TRUE;
+#warning CONF TODO: what to do here?
 }
 
 static void config_library_tab_create(GtkWidget * tab_vbox)
@@ -1065,8 +587,8 @@ static void config_library_tab_create(GtkWidget * tab_vbox)
 
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	entry = gtk_entry_new();
-	library_newlib_entry = entry;
-	gtk_entry_set_text(GTK_ENTRY(entry), lib_newlib_config);
+#warning CONF TODO: print library search paths here; it should be a clever list selector thing
+	gtk_entry_set_text(GTK_ENTRY(entry), "TODO");
 	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 4);
 }
 

@@ -306,9 +306,10 @@ static gint keyref_window_configure_event_cb(GtkWidget * widget, GdkEventConfigu
 	GtkAllocation allocation;
 
 	gtk_widget_get_allocation(widget, &allocation);
-	ghidgui->keyref_window_width = allocation.width;
-	ghidgui->keyref_window_height = allocation.height;
-	ghidgui->config_modified = TRUE;
+	hid_gtk_wgeo.keyref_width = allocation.width;
+	hid_gtk_wgeo.keyref_height = allocation.height;
+	hid_gtk_wgeo_update();
+
 	return FALSE;
 }
 
@@ -338,7 +339,7 @@ void ghid_keyref_window_show(gboolean raise)
 	g_signal_connect(G_OBJECT(keyref_window), "configure_event", G_CALLBACK(keyref_window_configure_event_cb), NULL);
 	gtk_window_set_title(GTK_WINDOW(keyref_window), _("PCB Key Reference"));
 	gtk_window_set_wmclass(GTK_WINDOW(keyref_window), "PCB_Keyref", "PCB");
-	gtk_window_set_default_size(GTK_WINDOW(keyref_window), ghidgui->keyref_window_width, ghidgui->keyref_window_height);
+	gtk_window_set_default_size(GTK_WINDOW(keyref_window), hid_gtk_wgeo.keyref_width, hid_gtk_wgeo.keyref_height);
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);

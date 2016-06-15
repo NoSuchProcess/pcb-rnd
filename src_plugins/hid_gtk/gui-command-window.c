@@ -36,6 +36,7 @@
 
 #include "crosshair.h"
 #include "hid_actions.h"
+#include "hid_gtk_conf.h"
 
 RCSID("$Id$");
 
@@ -168,10 +169,10 @@ static void command_history_add(gchar * cmd)
 
 	/* And keep the lists trimmed!
 	 */
-	if (g_list_length(history_list) > ghidgui->history_size) {
-		s = (gchar *) g_list_nth_data(history_list, ghidgui->history_size);
+	if (g_list_length(history_list) > conf_hid_gtk.plugins.hid_gtk.history_size) {
+		s = (gchar *) g_list_nth_data(history_list, conf_hid_gtk.plugins.hid_gtk.history_size);
 		history_list = g_list_remove(history_list, s);
-		gtk_combo_box_remove_text(GTK_COMBO_BOX(ghidgui->command_combo_box), ghidgui->history_size);
+		gtk_combo_box_remove_text(GTK_COMBO_BOX(ghidgui->command_combo_box), conf_hid_gtk.plugins.hid_gtk.history_size);
 		g_free(s);
 	}
 }
@@ -194,7 +195,7 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 	if (*command)
 		command_history_add(command);
 
-	if (ghidgui->use_command_window) {
+	if (conf_hid_gtk.plugins.hid_gtk.use_command_window) {
 		hid_parse_command(command);
 		g_free(command);
 	}
@@ -207,9 +208,9 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 
 	/* Create the command_combo_box.  Called once, either by
 	   |  ghid_command_window_show() or ghid_command_entry_get().  Then as long as
-	   |  ghidgui->use_command_window is TRUE, the command_combo_box will live
+	   |  conf_hid_gtk.plugins.hid_gtk.use_command_window is TRUE, the command_combo_box will live
 	   |  in a command window vbox or float if the command window is not up.
-	   |  But if ghidgui->use_command_window is FALSE, the command_combo_box
+	   |  But if conf_hid_gtk.plugins.hid_gtk.use_command_window is FALSE, the command_combo_box
 	   |  will live in the status_line_hbox either shown or hidden. 
 	   |  Since it's never destroyed, the combo history strings never need
 	   |  rebuilding and history is maintained if the combo box location is moved.
@@ -243,7 +244,7 @@ static void command_destroy_cb(GtkWidget * widget, gpointer data)
 	command_window = NULL;
 }
 
-	/* If ghidgui->use_command_window toggles, the config code calls
+	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window toggles, the config code calls
 	   |  this to ensure the command_combo_box is set up for living in the
 	   |  right place.
 	 */
@@ -255,7 +256,7 @@ void ghid_command_use_command_window_sync(void)
 	if (!ghidgui->command_combo_box)
 		return;
 
-	if (ghidgui->use_command_window)
+	if (conf_hid_gtk.plugins.hid_gtk.use_command_window)
 		gtk_container_remove(GTK_CONTAINER(ghidgui->status_line_hbox), ghidgui->command_combo_box);
 	else {
 		/* Destroy the window (if it's up) which floats the command_combo_box
@@ -268,7 +269,7 @@ void ghid_command_use_command_window_sync(void)
 	}
 }
 
-	/* If ghidgui->use_command_window is TRUE this will get called from
+	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window is TRUE this will get called from
 	   |  ActionCommand() to show the command window.
 	 */
 void ghid_command_window_show(gboolean raise)
@@ -339,7 +340,7 @@ static gboolean command_escape_cb(GtkWidget * widget, GdkEventKey * kev, gpointe
 
 
 	/* This is the command entry function called from ActionCommand() when
-	   |  ghidgui->use_command_window is FALSE.  The command_combo_box is already
+	   |  conf_hid_gtk.plugins.hid_gtk.use_command_window is FALSE.  The command_combo_box is already
 	   |  packed into the status line label hbox in this case.
 	 */
 gchar *ghid_command_entry_get(gchar * prompt, gchar * command)
@@ -412,7 +413,7 @@ void ghid_handle_user_command(gboolean raise)
 	char *command;
 	static char *previous = NULL;
 
-	if (ghidgui->use_command_window)
+	if (conf_hid_gtk.plugins.hid_gtk.use_command_window)
 		ghid_command_window_show(raise);
 	else {
 		command = ghid_command_entry_get(_("Enter command:"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *) "");

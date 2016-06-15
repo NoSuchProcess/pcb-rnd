@@ -27,11 +27,6 @@
 #ifdef DAN_FIXME
 TODO:
 
--figure out when we need to call this:
-ghid_set_status_line_label();
-Everytime ? -the old quit callback had : ghid_config_files_write();
-hid_action("Quit");
-
 -what about stuff like this:
 
 	/* Set to ! because ActionDisplay toggles it */
@@ -113,7 +108,7 @@ static bool ignore_layer_update;
 
 static GtkWidget *ghid_load_menus(void);
 
-GhidGui _ghidgui, *ghidgui = NULL;
+GhidGui _ghidgui, *ghidgui = &_ghidgui;;
 
 GHidPort ghid_port, *gport;
 
@@ -172,14 +167,14 @@ static gint top_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure 
 
 	gtk_widget_get_allocation(widget, &allocation);
 
-	new_w = (ghidgui->top_window_width != allocation.width);
-	new_h = (ghidgui->top_window_height != allocation.height);
+	new_w = (hid_gtk_wgeo.top_width != allocation.width);
+	new_h = (hid_gtk_wgeo.top_height != allocation.height);
 
-	ghidgui->top_window_width = allocation.width;
-	ghidgui->top_window_height = allocation.height;
+	hid_gtk_wgeo.top_width = allocation.width;
+	hid_gtk_wgeo.top_height = allocation.height;
 
 	if (new_w || new_h)
-		ghidgui->config_modified = TRUE;
+		hid_gtk_wgeo_update();
 
 	return FALSE;
 }
@@ -740,9 +735,9 @@ void ghid_layer_buttons_update(void)
 static void route_styles_edited_cb(GHidRouteStyleSelector * rss, gboolean save, gpointer data)
 {
 	if (save) {
+#warning CONF TODO: save means we need to save it  in CFR_USER!
 		conf_set_design(conf_core.design.routes, "%s", make_route_string(PCB->RouteStyle, NUM_STYLES));
 		ghidgui->config_modified = TRUE;
-		ghid_config_files_write();
 	}
 	ghid_main_menu_install_route_style_selector
 		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
@@ -856,7 +851,7 @@ void ghid_mode_buttons_update(void)
 
 void ghid_pack_mode_buttons(void)
 {
-	if (ghidgui->compact_vertical) {
+	if (conf_hid_gtk.plugins.hid_gtk.compact_vertical) {
 		gtk_widget_hide(ghidgui->mode_buttons_frame);
 		gtk_widget_show_all(ghidgui->mode_toolbar);
 	}
@@ -876,7 +871,7 @@ static void make_mode_buttons_and_toolbar(GtkWidget ** mode_frame, GtkWidget ** 
 	GSList *group = NULL;
 	GSList *toolbar_group = NULL;
 	ModeButton *mb;
-	int i, tb_width = 0;
+	int n_mb, i, tb_width = 0;
 
 	*mode_toolbar = gtk_toolbar_new();
 
@@ -898,7 +893,10 @@ static void make_mode_buttons_and_toolbar(GtkWidget ** mode_frame, GtkWidget ** 
 		gtk_toggle_button_set_mode(GTK_TOGGLE_BUTTON(mb->toolbar_button), FALSE);
 
 		/* Pack mode-frame button into the frame */
-		if ((i % ghidgui->n_mode_button_columns) == 0) {
+		n_mb = conf_hid_gtk.plugins.hid_gtk.n_mode_button_columns;
+		if ((n_mb < 1) || (n_mb > 10))
+			n_mb = 3;
+		if ((i % n_mb) == 0) {
 			hbox = gtk_hbox_new(FALSE, 0);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 		}
@@ -953,7 +951,6 @@ static void make_mode_buttons_and_toolbar(GtkWidget ** mode_frame, GtkWidget ** 
 
 static gint delete_chart_cb(GtkWidget * widget, GdkEvent * event, GHidPort * port)
 {
-	ghid_config_files_write();
 	hid_action("Quit");
 
 	/*
@@ -1426,6 +1423,8 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	gint i;
 	GdkPixbuf *icon;
 
+	ghid_config_init();
+
 	/* on windows we need to figure out the installation directory */
 #ifdef WIN32
 	char *tmps;
@@ -1475,8 +1474,6 @@ void ghid_parse_arguments(int *argc, char ***argv)
 
 	ghid_init_renderer(argc, argv, gport);
 
-	ghid_config_files_read(argc, argv);
-
 #ifdef ENABLE_NLS
 #ifdef LOCALEDIR
 	bindtextdomain(PACKAGE, LOCALEDIR);
@@ -1490,7 +1487,7 @@ void ghid_parse_arguments(int *argc, char ***argv)
 
 	window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), "PCB");
-	gtk_window_set_default_size(GTK_WINDOW(window), ghidgui->top_window_width, ghidgui->top_window_height);
+	gtk_window_set_default_size(GTK_WINDOW(window), hid_gtk_wgeo.top_width, hid_gtk_wgeo.top_height);
 
 	if (conf_core.editor.auto_place)
 		gtk_window_move(GTK_WINDOW(window), 10, 10);
@@ -1550,7 +1547,6 @@ void ghid_do_export(HID_Attr_Val * options)
 	event(EVENT_GUI_INIT, NULL);
 
 	gtk_main();
-	ghid_config_files_write();
 	hid_cfg_keys_uninit(&ghid_keymap);
 	gtkhid_end();
 }

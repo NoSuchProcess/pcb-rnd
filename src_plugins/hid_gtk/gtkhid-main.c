@@ -1984,6 +1984,10 @@ pcb_uninit_t hid_hid_gtk_init()
 
 	hid_register_hid(&ghid_hid);
 
+#define conf_reg(field,isarray,type_name,cpath,cname,desc) \
+	conf_reg_field(conf_hid_gtk, field,isarray,type_name,cpath,cname,desc);
+#include "hid_gtk_conf_fields.h"
+
 	return NULL;
 }
 
