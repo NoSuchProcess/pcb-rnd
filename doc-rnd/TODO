@@ -1,6 +1,6 @@
 - replace settings with lihata (conf_*)
+	- gtk hid: clean up gthe #warnings
 	- gsch2pcb: use the same conf as pcb-rnd
-	- BUG: don't use ~/.pcb, use ~/.pcb-rnd; do not hardwire this in the code, make it a config.h setting
 	- finish gtk preferences user pov (change is always saved to the design)
 		- color is not saved
 		- library path
