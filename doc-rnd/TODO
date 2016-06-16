@@ -1,4 +1,5 @@
 - replace settings with lihata (conf_*)
+	- color file: a plugin for importing/exporting colors
 	- gtk hid: clean up gthe #warnings
 	- gsch2pcb: use the same conf as pcb-rnd
 	- finish gtk preferences user pov (change is always saved to the design)
@@ -34,6 +35,7 @@
 			- gnetlist_program, make_program from conf
 			- gnetlist_program, make_program from env var
 		- gtk, preferences dialog, user pov
+		- test if all plugins work from .so
 
 BUGS:
 	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
