@@ -119,30 +119,6 @@ void ghid_config_init(void)
 #warning CONF TODO: inject the internal part here?
 }
 
-
-#warning CONF TODO: remove this for paths.c
-static gchar *expand_dir(gchar * dir)
-{
-	gchar *s;
-
-	if (*dir == '~')
-		s = g_build_filename((gchar *) g_get_home_dir(), dir + 1, NULL);
-	else
-		s = g_strdup(dir);
-	return s;
-}
-
-#warning CONF TODO: remove this for conf and paths.c
-static void add_to_paths_list(GList ** list, gchar * path_string)
-{
-	gchar *p, *paths;
-
-	paths = g_strdup(path_string);
-	for (p = strtok(paths, PCB_PATH_DELIMETER); p && *p; p = strtok(NULL, PCB_PATH_DELIMETER))
-		*list = g_list_prepend(*list, expand_dir(p));
-	g_free(paths);
-}
-
 /* =================== OK, now the gui stuff ======================
 */
 static GtkWidget *config_window;
