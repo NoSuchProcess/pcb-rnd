@@ -251,14 +251,8 @@ static Coord new_board_width, new_board_height;
 
 static void config_sizes_apply(void)
 {
-	gboolean active;
-#warning CONF_TODO: conf_setf
-	char s[128];
-
-	pcb_sprintf(s, "%$mS", (new_board_width));
-	conf_set(CFR_DESIGN, "design/max_width", -1, s, POL_OVERWRITE);
-	pcb_sprintf(s, "%$mS", (new_board_height));
-	conf_set(CFR_DESIGN, "design/max_height", -1, s, POL_OVERWRITE);
+	conf_setf(CFR_DESIGN, "design/max_width", -1, "%$mS", new_board_width);
+	conf_setf(CFR_DESIGN, "design/max_height", -1, "%$mS", new_board_height);
 
 	conf_set_design("design/bloat", "%$mS", PCB->Bloat);
 	conf_set_design("design/shrink", "%$mS", PCB->Shrink);
@@ -687,7 +681,7 @@ static void config_layers_apply(void)
 	gchar *s;
 	gint group, i;
 	gint componentgroup = 0, soldergroup = 0;
-	gboolean use_as_default = FALSE, layers_modified = FALSE;
+	gboolean layers_modified = FALSE;
 
 	/* Get each layer name entry and dup if modified into the PCB layer names
 	   |  and, if to use as default, the Settings layer names.
@@ -738,16 +732,16 @@ static void config_layers_apply(void)
 		ghid_invalidate_all();
 		groups_modified = FALSE;
 	}
-	if (use_as_default) {
 #warning CONF TODO: there should be no "use as default" but "save as user"
 #if 0 
+	if (use_as_default) {
 		s = make_layer_group_string(&PCB->LayerGroups);
 		if (dup_string(&conf_core.design.groups, s)) {
 			ParseGroupString(conf_core.design.groups, &Settings.LayerGroups, max_copper_layer);
 		}
 		g_free(s);
-#endif
 	}
+#endif
 }
 
 static void config_layer_group_button_state_update(void)
