@@ -1810,7 +1810,8 @@ static const char savewingeo_help[] = N_("Saves window geometry in the config.\n
 
 static int SaveWinGeo(int argc, char **argv, Coord x, Coord y)
 {
-	ghid_wgeo_save();
+	conf_role_t geo_dest = ghid_wgeo_save();
+	conf_save_file(geo_dest);
 #warning CONF TODO: trigger a lihata save of dest_role
 }
 

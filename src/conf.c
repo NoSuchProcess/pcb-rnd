@@ -888,6 +888,11 @@ int conf_set_from_cli(const char *arg_, char **why)
 	return ret;
 }
 
+void conf_save_file(conf_role_t role)
+{
+#warning TODO
+}
+
 conf_listitem_t *conf_list_first_str(conflist_t *list, const char **item_str, int *idx)
 {
 	conf_listitem_t *item_li;

@@ -184,6 +184,9 @@ void conf_unlock(conf_role_t target);
    Useful for io_ plugins, on CFR_DESIGN, before loading a new file. */
 void conf_reset(conf_role_t target, const char *source_fn);
 
+/* Save an in-memory lihata representation to the disk */
+void conf_save_file(conf_role_t role);
+
 /* Returns whether a given lihata tree is locked */
 int conf_islocked(conf_role_t target);
 

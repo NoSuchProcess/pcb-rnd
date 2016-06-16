@@ -206,7 +206,7 @@ void ghid_config_layer_name_update(gchar * name, gint layer);
 void ghid_config_groups_changed(void);
 
 void ghid_config_init(void);
-void ghid_wgeo_save(void);
+conf_role_t ghid_wgeo_save(void);
 
 void ghid_mode_buttons_update(void);
 void ghid_pack_mode_buttons(void);
