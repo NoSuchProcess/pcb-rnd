@@ -255,16 +255,18 @@ static void config_sizes_apply(void)
 #warning CONF TODO: what? this could be removed once user can select where to save
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_board_size_default_button));
 
+	conf_set_design("design/bloat", "%$mS", PCB->Bloat);
+	conf_set_design("design/shrink", "%$mS", PCB->Shrink);
+	conf_set_design("design/min_wid", "%$mS", PCB->minWid);
+	conf_set_design("design/min_slk", "%$mS", PCB->minSlk);
+	conf_set_design("design/poly_isle_area", "%f", PCB->IsleArea);
+	conf_set_design("design/min_drill", "%$mS", PCB->minDrill);
+	conf_set_design("design/min_ring", "%$mS", PCB->minRing);
+
 #warning CONF TODO: what? this could be removed once user can select where to save
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_drc_sizes_default_button));
 	if (active) {
-		conf_set_design("design/bloat", "%$mS", PCB->Bloat);
-		conf_set_design("design/shrink", "%$mS", PCB->Shrink);
-		conf_set_design("design/min_wid", "%$mS", PCB->minWid);
-		conf_set_design("design/min_slk", "%$mS", PCB->minSlk);
-		conf_set_design("design/poly_isle_area", "%f", PCB->IsleArea);
-		conf_set_design("design/min_drill", "%$mS", PCB->minDrill);
-		conf_set_design("design/min_ring", "%$mS", PCB->minRing);
+#warning CONF TODO: also save in CRF_USER
 	}
 
 	if (PCB->MaxWidth != conf_core.design.max_width || PCB->MaxHeight != conf_core.design.max_height)
@@ -548,7 +550,7 @@ static void config_library_tab_create(GtkWidget * tab_vbox)
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	entry = gtk_entry_new();
 #warning CONF TODO: print library search paths here; it should be a clever list selector thing
-	gtk_entry_set_text(GTK_ENTRY(entry), "TODO");
+	gtk_entry_set_text(GTK_ENTRY(entry), "TODO1226");
 	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 4);
 }
 
@@ -727,7 +729,7 @@ static void config_layers_apply(void)
 		groups_modified = FALSE;
 	}
 	if (use_as_default) {
-#warning CONF TODO: there should be no "use as default"
+#warning CONF TODO: there should be no "use as default" but "save as user"
 #if 0 
 		s = make_layer_group_string(&PCB->LayerGroups);
 		if (dup_string(&conf_core.design.groups, s)) {
