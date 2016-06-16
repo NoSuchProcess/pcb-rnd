@@ -113,8 +113,6 @@ typedef struct {
 
 
 #warning CONF TODO: remove this and all color file code
-static gchar *color_file;
-
 extern void ghid_set_special_colors(conf_native_t *cfg);
 
 void ghid_config_init(void)
@@ -983,26 +981,11 @@ void ghid_config_layer_name_update(gchar * name, gint layer)
 	/* -------------- The Colors config page ----------------
 	 */
 static GtkWidget *config_colors_vbox,
-	*config_colors_tab_vbox, *config_colors_save_button, *config_color_file_label, *config_color_warn_label;
+	*config_colors_tab_vbox, *config_colors_save_button, *config_color_warn_label;
 
 static void config_colors_tab_create(GtkWidget * tab_vbox);
 
 static gboolean config_colors_modified;
-
-static void config_color_file_set_label(void)
-{
-	gchar *str, *name;
-
-	if (!*color_file)
-		name = g_strdup("defaults");
-	else
-		name = g_path_get_basename(color_file);
-
-	str = g_strdup_printf(_("Current colors loaded: <b>%s</b>"), name);
-	gtk_label_set_markup(GTK_LABEL(config_color_file_label), str);
-	g_free(name);
-	g_free(str);
-}
 
 typedef struct {
 	conf_native_t *cfg;
@@ -1138,16 +1121,11 @@ static void config_colors_tab_create(GtkWidget * tab_vbox)
 	config_color_warn_label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(config_color_warn_label), TRUE);
 	gtk_label_set_markup(GTK_LABEL(config_color_warn_label),
-											 _("<b>Warning:</b> unsaved color changes will be lost" " at program exit."));
+											 _("<b>placeholder</b>"));
 	gtk_box_pack_start(GTK_BOX(config_colors_vbox), config_color_warn_label, FALSE, FALSE, 4);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(config_colors_vbox), hbox, FALSE, FALSE, 6);
-
-	config_color_file_label = gtk_label_new("");
-	gtk_label_set_use_markup(GTK_LABEL(config_color_file_label), TRUE);
-	config_color_file_set_label();
-	gtk_box_pack_start(GTK_BOX(hbox), config_color_file_label, FALSE, FALSE, 0);
 
 #warning TODO: do we need special buttons here?
 /*	ghid_button_connected(hbox, NULL, FALSE, FALSE, FALSE, 4, config_color_defaults_cb, NULL, _("Defaults"));*/
