@@ -146,13 +146,13 @@ void ghid_draw_area_update(GHidPort * port, GdkRectangle * rect)
 
 gchar *ghid_get_color_name(GdkColor * color)
 {
-	gchar *name;
+	static char tmp[16];
 
 	if (!color)
-		name = g_strdup("#000000");
-	else
-		name = g_strdup_printf("#%2.2x%2.2x%2.2x", (color->red >> 8) & 0xff, (color->green >> 8) & 0xff, (color->blue >> 8) & 0xff);
-	return name;
+		return "#000000";
+
+	sprintf(tmp, "#%2.2x%2.2x%2.2x", (color->red >> 8) & 0xff, (color->green >> 8) & 0xff, (color->blue >> 8) & 0xff);
+	return tmp;
 }
 
 void ghid_map_color_string(char *color_string, GdkColor * color)

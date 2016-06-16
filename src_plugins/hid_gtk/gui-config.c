@@ -972,16 +972,13 @@ typedef struct {
 static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t *ci)
 {
 	GdkColor new_color;
-	gchar *str;
+	const char *str;
 
 	gtk_color_button_get_color(GTK_COLOR_BUTTON(button), &new_color);
 	str = ghid_get_color_name(&new_color);
 
 	printf("COLOR IDX: %d\n", ci->idx);
 	conf_set(CFR_PROJECT, ci->cfg->hash_path, ci->idx, str, POL_OVERWRITE);
-
-#warning CONF TODO: check whether we need to free this
-//	g_free(str);
 
 	ghid_set_special_colors(ci->cfg);
 	ghid_layer_buttons_color_update();
