@@ -125,6 +125,16 @@ void ghid_config_init(void)
 */
 static GtkWidget *config_window;
 
+static void config_user_role_section(GtkWidget * vbox)
+{
+	GtkWidget *config_color_warn_label;
+	config_color_warn_label = gtk_label_new("");
+	gtk_label_set_use_markup(GTK_LABEL(config_color_warn_label), TRUE);
+	gtk_label_set_markup(GTK_LABEL(config_color_warn_label),
+											 _("<b>placeholder</b>"));
+	gtk_box_pack_start(vbox, config_color_warn_label, FALSE, FALSE, 4);
+}
+
 	/* -------------- The General config page ----------------
 	 */
 
@@ -189,11 +199,13 @@ static void config_history_spin_button_cb(GtkSpinButton * spin_button, gpointer 
 
 static void config_general_tab_create(GtkWidget * tab_vbox)
 {
-	GtkWidget *vbox;
+	GtkWidget *vbox, *content_vbox;
 
-	gtk_container_set_border_width(GTK_CONTAINER(tab_vbox), 6);
+	content_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), content_vbox, TRUE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
 
-	vbox = ghid_category_vbox(tab_vbox, _("Enables"), 4, 2, TRUE, TRUE);
+	vbox = ghid_category_vbox(content_vbox, _("Enables"), 4, 2, TRUE, TRUE);
 
 	ghid_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.use_command_window,
 															TRUE, FALSE, FALSE, 2,
@@ -209,7 +221,7 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 															config_compact_vertical_toggle_cb, NULL,
 															_("Alternate window layout to allow smaller vertical size"));
 
-	vbox = ghid_category_vbox(tab_vbox, _("Backups"), 4, 2, TRUE, TRUE);
+	vbox = ghid_category_vbox(content_vbox, _("Backups"), 4, 2, TRUE, TRUE);
 #warning this all should be more generic code...
 	ghid_check_button_connected(vbox, NULL, conf_core.editor.save_in_tmp,
 															TRUE, FALSE, FALSE, 2,
@@ -219,10 +231,15 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 									 600.0, 0, 0, config_backup_spin_button_cb, NULL, FALSE,
 									 _("Seconds between auto backups\n" "(set to zero to disable auto backups)"));
 
-	vbox = ghid_category_vbox(tab_vbox, _("Misc"), 4, 2, TRUE, TRUE);
+	vbox = ghid_category_vbox(content_vbox, _("Misc"), 4, 2, TRUE, TRUE);
 	ghid_spin_button(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.history_size,
 									 5.0, 25.0, 1.0, 1.0, 0, 0,
 									 config_history_spin_button_cb, NULL, FALSE, _("Number of commands to remember in the history list"));
+
+
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
+	config_user_role_section(GTK_BOX(tab_vbox));
 }
 
 
@@ -286,16 +303,20 @@ static void coord_entry_cb(GHidCoordEntry * ce, void *dst)
 
 static void config_sizes_tab_create(GtkWidget * tab_vbox)
 {
-	GtkWidget *table, *vbox, *hbox;
+	GtkWidget *table, *vbox, *hbox, *content_vbox;
+
+	content_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), content_vbox, TRUE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
 
 	/* Need a vbox we can destroy if user changes grid units.
 	 */
 	if (!config_sizes_vbox) {
 		vbox = gtk_vbox_new(FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(content_vbox), vbox, FALSE, FALSE, 0);
 		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 		config_sizes_vbox = vbox;
-		config_sizes_tab_vbox = tab_vbox;
+		config_sizes_tab_vbox = content_vbox;
 	}
 
 	/* ---- Board Size ---- */
@@ -367,6 +388,10 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 
 	ghid_check_button_connected(vbox, &use_drc_sizes_default_button, FALSE,
 															TRUE, FALSE, FALSE, 0, NULL, NULL, _("Use DRC values as the default for new layouts"));
+
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
+	config_user_role_section(GTK_BOX(tab_vbox));
 
 	gtk_widget_show_all(config_sizes_vbox);
 }
@@ -468,15 +493,19 @@ static GtkWidget *config_increments_table_attach(GtkWidget *table, int x, int y,
 
 static void config_increments_tab_create(GtkWidget * tab_vbox)
 {
-	GtkWidget *vbox, *catvbox;
+	GtkWidget *vbox, *catvbox, *content_vbox;
+
+	content_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), content_vbox, TRUE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
 
 	if (!config_increments_vbox) {
 		/* the actual content */
 		vbox = gtk_vbox_new(FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(content_vbox), vbox, FALSE, FALSE, 0);
 		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 		config_increments_vbox = vbox;
-		config_increments_tab_vbox = tab_vbox;
+		config_increments_tab_vbox = content_vbox;
 	}
 
 	catvbox = ghid_category_vbox (config_increments_vbox, _("Metric Increment Settings"), 4, 2, TRUE, TRUE);
@@ -513,6 +542,10 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 				config_increments_tbl[x][y] = config_increments_table_attach(table, x+1, y+2, 1, "n/a");
 		increment_tbl_update();
 	}
+
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
+	config_user_role_section(GTK_BOX(tab_vbox));
 }
 
 	/* -------------- The Library config page ----------------
@@ -527,9 +560,13 @@ static void config_library_apply(void)
 
 static void config_library_tab_create(GtkWidget * tab_vbox)
 {
-	GtkWidget *vbox, *label, *entry;
+	GtkWidget *vbox, *label, *entry, *content_vbox;
 
-	gtk_container_set_border_width(GTK_CONTAINER(tab_vbox), 6);
+	content_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), content_vbox, TRUE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
+
+	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
 	vbox = ghid_category_vbox(tab_vbox, _("Element Directories"), 4, 2, TRUE, TRUE);
 	label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
@@ -552,6 +589,10 @@ static void config_library_tab_create(GtkWidget * tab_vbox)
 #warning CONF TODO: print library search paths here; it should be a clever list selector thing
 	gtk_entry_set_text(GTK_ENTRY(entry), "TODO1226");
 	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 4);
+
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
+	config_user_role_section(GTK_BOX(tab_vbox));
 }
 
 
@@ -869,12 +910,16 @@ static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 
 static void config_layers_tab_create(GtkWidget * tab_vbox)
 {
-	GtkWidget *tabs, *vbox, *vbox1, *button, *text, *sep;
+	GtkWidget *tabs, *vbox, *vbox1, *button, *text, *sep, *content_vbox;
 	GtkWidget *hbox, *arrow;
 	gint i;
 
+	content_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), content_vbox, TRUE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
+
 	tabs = gtk_notebook_new();
-	gtk_box_pack_start(GTK_BOX(tab_vbox), tabs, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(content_vbox), tabs, TRUE, TRUE, 0);
 
 /* -- Change tab */
 	vbox = ghid_notebook_page(tabs, _("Change"), 0, 6);
@@ -930,6 +975,11 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 	text = ghid_scrolled_text_view(vbox, NULL, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	for (i = 0; i < sizeof(layer_info_text) / sizeof(gchar *); ++i)
 		ghid_text_view_append(text, _(layer_info_text[i]));
+
+/* -- common */
+	vbox = gtk_vbox_new(TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
+	config_user_role_section(GTK_BOX(tab_vbox));
 }
 
 
@@ -953,11 +1003,9 @@ void ghid_config_layer_name_update(gchar * name, gint layer)
 	/* -------------- The Colors config page ----------------
 	 */
 static GtkWidget *config_colors_vbox,
-	*config_colors_tab_vbox, *config_colors_save_button, *config_color_warn_label;
+	*config_colors_tab_vbox;
 
 static void config_colors_tab_create(GtkWidget * tab_vbox);
-
-static gboolean config_colors_modified;
 
 typedef struct {
 	conf_native_t *cfg;
@@ -975,12 +1023,8 @@ static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t *ci)
 	printf("COLOR IDX: %d\n", ci->idx);
 	conf_set(CFR_PROJECT, ci->cfg->hash_path, ci->idx, str, POL_OVERWRITE);
 
-#warning TODO: check whether we need to free this
+#warning CONF TODO: check whether we need to free this
 //	g_free(str);
-
-	config_colors_modified = TRUE;
-	gtk_widget_set_sensitive(config_colors_save_button, TRUE);
-	gtk_widget_set_sensitive(config_color_warn_label, TRUE);
 
 	ghid_set_special_colors(ci->cfg);
 	ghid_layer_buttons_color_update();
@@ -1089,21 +1133,11 @@ static void config_colors_tab_create(GtkWidget * tab_vbox)
 	sep = gtk_hseparator_new();
 
 	config_colors_tab_create_array(vbox, "appearance/color/layer_selected");
-
-	config_color_warn_label = gtk_label_new("");
-	gtk_label_set_use_markup(GTK_LABEL(config_color_warn_label), TRUE);
-	gtk_label_set_markup(GTK_LABEL(config_color_warn_label),
-											 _("<b>placeholder</b>"));
-	gtk_box_pack_start(GTK_BOX(config_colors_vbox), config_color_warn_label, FALSE, FALSE, 4);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(config_colors_vbox), hbox, FALSE, FALSE, 6);
+	config_user_role_section(GTK_BOX(config_colors_vbox));
 
 #warning TODO: do we need special buttons here?
 /*	ghid_button_connected(hbox, NULL, FALSE, FALSE, FALSE, 4, config_color_defaults_cb, NULL, _("Defaults"));*/
 
-	gtk_widget_set_sensitive(config_colors_save_button, config_colors_modified);
-	gtk_widget_set_sensitive(config_color_warn_label, config_colors_modified);
 	gtk_widget_show_all(config_colors_vbox);
 }
 
