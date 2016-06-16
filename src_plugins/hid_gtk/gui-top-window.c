@@ -733,10 +733,9 @@ void ghid_layer_buttons_update(void)
 /*! \brief Called when user clicks OK on route style dialog */
 static void route_styles_edited_cb(GHidRouteStyleSelector * rss, gboolean save, gpointer data)
 {
-	if (save) {
-#warning CONF TODO: save means we need to save it  in CFR_USER!
-		conf_set_design(conf_core.design.routes, "%s", make_route_string(PCB->RouteStyle, NUM_STYLES));
-	}
+	conf_setf(CFR_DESIGN, "design/routes", -1, "%s", make_route_string(PCB->RouteStyle, NUM_STYLES));
+	if (save)
+		conf_setf(CFR_USER, "design/routes", -1, "%s", make_route_string(PCB->RouteStyle, NUM_STYLES));
 	ghid_main_menu_install_route_style_selector
 		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
 }
