@@ -153,21 +153,16 @@ static void config_compact_horizontal_toggle_cb(GtkToggleButton * button, gpoint
 {
 	gboolean active = gtk_toggle_button_get_active(button);
 
-#warning CONF TODO: conf_set()
-/*	conf_hid_gtk.plugins.hid_gtk.compact_horizontal = active;
+	conf_setf(CFR_USER, "plugins/hid_gtk/compact_horizontal", -1, "%d", active);
 	ghid_set_status_line_label();
-*/
 }
 
 static void config_compact_vertical_toggle_cb(GtkToggleButton * button, gpointer data)
 {
 	gboolean active = gtk_toggle_button_get_active(button);
 
-#warning CONF TODO: conf_set()
-/*
-	ghidgui->compact_vertical = active;
+	conf_setf(CFR_USER, "plugins/hid_gtk/compact_vertical", -1, "%d", active);
 	ghid_pack_mode_buttons();
-*/
 }
 
 static void config_general_toggle_cb(GtkToggleButton * button, void *setting)
@@ -187,8 +182,7 @@ static void config_backup_spin_button_cb(GtkSpinButton * spin_button, gpointer d
 
 static void config_history_spin_button_cb(GtkSpinButton * spin_button, gpointer data)
 {
-#warning CONF TODO: use conf_set() on this
-//	conf_hid_gtk.plugins.hid_gtk.history_size = gtk_spin_button_get_value_as_int(spin_button);
+	conf_setf(CFR_USER, "plugins/hid_gtk/history_size", -1, "%d", gtk_spin_button_get_value_as_int(spin_button));
 }
 
 static void config_general_tab_create(GtkWidget * tab_vbox)
