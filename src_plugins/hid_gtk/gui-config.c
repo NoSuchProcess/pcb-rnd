@@ -111,8 +111,6 @@ typedef struct {
 	void *value;
 } ConfigAttribute;
 
-
-#warning CONF TODO: remove this and all color file code
 extern void ghid_set_special_colors(conf_native_t *cfg);
 
 void ghid_config_init(void)
