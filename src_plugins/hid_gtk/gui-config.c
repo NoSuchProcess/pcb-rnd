@@ -130,6 +130,7 @@ static void config_user_role_section(GtkWidget * vbox)
 	GtkWidget *config_color_warn_label;
 	config_color_warn_label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(config_color_warn_label), TRUE);
+#warning CONF TODO:
 	gtk_label_set_markup(GTK_LABEL(config_color_warn_label),
 											 _("<b>placeholder</b>"));
 	gtk_box_pack_start(vbox, config_color_warn_label, FALSE, FALSE, 4);
@@ -242,35 +243,22 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 	config_user_role_section(GTK_BOX(tab_vbox));
 }
 
-
-static void config_general_apply(void)
-{
-	/* save the settings */
-#warning CONF TODO: save lihata?
-}
-
-
 	/* -------------- The Sizes config page ----------------
 	 */
-
 static GtkWidget *config_sizes_vbox, *config_sizes_tab_vbox, *config_text_spin_button;
-
-static GtkWidget *use_board_size_default_button, *use_drc_sizes_default_button;
 
 static Coord new_board_width, new_board_height;
 
 static void config_sizes_apply(void)
 {
 	gboolean active;
+#warning CONF_TODO: conf_setf
 	char s[128];
 
 	pcb_sprintf(s, "%$mS", (new_board_width));
 	conf_set(CFR_DESIGN, "design/max_width", -1, s, POL_OVERWRITE);
 	pcb_sprintf(s, "%$mS", (new_board_height));
 	conf_set(CFR_DESIGN, "design/max_height", -1, s, POL_OVERWRITE);
-
-#warning CONF TODO: what? this could be removed once user can select where to save
-	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_board_size_default_button));
 
 	conf_set_design("design/bloat", "%$mS", PCB->Bloat);
 	conf_set_design("design/shrink", "%$mS", PCB->Shrink);
@@ -279,12 +267,6 @@ static void config_sizes_apply(void)
 	conf_set_design("design/poly_isle_area", "%f", PCB->IsleArea);
 	conf_set_design("design/min_drill", "%$mS", PCB->minDrill);
 	conf_set_design("design/min_ring", "%$mS", PCB->minRing);
-
-#warning CONF TODO: what? this could be removed once user can select where to save
-	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_drc_sizes_default_button));
-	if (active) {
-#warning CONF TODO: also save in CRF_USER
-	}
 
 	if (PCB->MaxWidth != conf_core.design.max_width || PCB->MaxHeight != conf_core.design.max_height)
 		ChangePCBSize(conf_core.design.max_width, conf_core.design.max_height);
@@ -336,8 +318,6 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 	ghid_table_coord_entry(table, 1, 0, NULL,
 												 PCB->MaxHeight, MIN_SIZE, MAX_COORD,
 												 CE_LARGE, 0, coord_entry_cb, &new_board_height, FALSE, _("Height"));
-	ghid_check_button_connected(vbox, &use_board_size_default_button, FALSE,
-															TRUE, FALSE, FALSE, 0, NULL, NULL, _("Use this board size as the default for new layouts"));
 
 	/* ---- Text Scale ---- */
 	vbox = ghid_category_vbox(config_sizes_vbox, _("Text Scale"), 4, 2, TRUE, TRUE);
@@ -385,9 +365,6 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 	ghid_table_coord_entry(table, 5, 0, NULL,
 												 PCB->minRing, MIN_DRC_VALUE, MAX_DRC_VALUE,
 												 CE_SMALL, 0, coord_entry_cb, &PCB->minRing, FALSE, _("Minimum annular ring"));
-
-	ghid_check_button_connected(vbox, &use_drc_sizes_default_button, FALSE,
-															TRUE, FALSE, FALSE, 0, NULL, NULL, _("Use DRC values as the default for new layouts"));
 
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
@@ -603,10 +580,6 @@ static GtkWidget *config_groups_table, *config_groups_vbox, *config_groups_windo
 static GtkWidget *layer_entry[MAX_LAYER];
 static GtkWidget *group_button[MAX_LAYER + 2][MAX_LAYER];
 
-#if FIXME
-static GtkWidget *use_layer_default_button;
-#endif
-
 static gint config_layer_group[MAX_LAYER + 2];
 
 static LayerGroupType layer_groups,	/* Working copy */
@@ -715,10 +688,6 @@ static void config_layers_apply(void)
 	gint group, i;
 	gint componentgroup = 0, soldergroup = 0;
 	gboolean use_as_default = FALSE, layers_modified = FALSE;
-
-#if FIXME
-	use_as_default = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(use_layer_default_button));
-#endif
 
 	/* Get each layer name entry and dup if modified into the PCB layer names
 	   |  and, if to use as default, the Settings layer names.
@@ -963,12 +932,6 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 	sep = gtk_hseparator_new();
 	gtk_box_pack_start(GTK_BOX(vbox), sep, FALSE, FALSE, 4);
 
-#if FIXME
-	ghid_check_button_connected(vbox, &use_layer_default_button, FALSE,
-															TRUE, FALSE, FALSE, 8, NULL, NULL, ("Use these layer settings as the default for new layouts"));
-#endif
-
-
 /* -- Info tab */
 	vbox = ghid_notebook_page(tabs, _("Info"), 0, 6);
 
@@ -1193,7 +1156,6 @@ static void config_close_cb(gpointer data)
 	config_sizes_apply();
 	config_layers_apply();
 	config_library_apply();
-	config_general_apply();
 
 	config_sizes_vbox = NULL;
 	config_increments_vbox = NULL;
