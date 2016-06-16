@@ -562,6 +562,7 @@ void conf_load_all(void)
 {
 	int i;
 	lht_node_t *dln;
+	const char *conf_user_fn = "~/" DOT_PCB_RND "/pcb-conf.lht";
 
 	/* get the lihata node for design/default_layer_name */
 	conf_load_as(CFR_INTERNAL, conf_internal, 1);
@@ -587,9 +588,15 @@ void conf_load_all(void)
 
 	/* load config files */
 	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht", 0);
-	conf_load_as(CFR_USER, "~/" DOT_PCB_RND "/pcb-conf.lht", 0);
-	conf_load_as(CFR_PROJECT, "./pcb-conf.lht", 0);
+	conf_load_as(CFR_USER, conf_user_fn, 0);
+	conf_load_as(CFR_PROJECT, "./project.lht", 0);
 	conf_merge_all(NULL);
+
+	/* create the user config (in-memory-lht) if it does not exist on disk;
+	   this is needed so if the user makes config changes from the GUI things
+	   get saved. */
+	if (conf_root[CFR_USER] == NULL)
+		conf_reset(CFR_USER, conf_user_fn);
 }
 
 static int keyeq(char *a, char *b)
