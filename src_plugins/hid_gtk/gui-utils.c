@@ -211,27 +211,6 @@ ghid_check_button_connected(GtkWidget * box,
 }
 
 void
-ghid_button_connected(GtkWidget * box, GtkWidget ** button,
-											gboolean pack_start, gboolean expand, gboolean fill,
-											gint pad, void (*cb_func) (gpointer), gpointer data, gchar * string)
-{
-	GtkWidget *b;
-
-	if (!string)
-		return;
-	b = gtk_button_new_with_label(string);
-	if (box && pack_start)
-		gtk_box_pack_start(GTK_BOX(box), b, expand, fill, pad);
-	else if (box && !pack_start)
-		gtk_box_pack_end(GTK_BOX(box), b, expand, fill, pad);
-
-	if (cb_func)
-		g_signal_connect(b, "clicked", G_CALLBACK(cb_func), data);
-	if (button)
-		*button = b;
-}
-
-void
 ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, Coord value,
 								 Coord low, Coord high, enum ce_step_size step_size, const Unit *u,
 								 gint width, void (*cb_func) (GHidCoordEntry *, gpointer), gpointer data, gchar * string_pre, gchar * string_post)
