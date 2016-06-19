@@ -128,9 +128,6 @@ void ghid_config_init(void)
 */
 static GtkWidget *config_window;
 
-#warning CONF TODO: do we need special buttons here?
-/*	ghid_button_connected(hbox, NULL, FALSE, FALSE, FALSE, 4, config_color_defaults_cb, NULL, _("Defaults"));*/
-
 static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton *widget, conf_role_t *role))
 {
 	GtkWidget *config_color_warn_label, *button, *hbox;
