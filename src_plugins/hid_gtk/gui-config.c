@@ -633,9 +633,46 @@ static void post_rebuild(gtk_conf_list_t *cl)
 }
 
 
+static GtkWidget *config_library_append_paths(int post_sep)
+{
+	GtkWidget *hbox, *vbox_key, *vbox_val, *vbox_sep, *label;
+	htsp_entry_t *e;
+
+	hbox = gtk_hbox_new(FALSE, 0);
+
+	vbox_key = gtk_vbox_new(FALSE, 0);
+	vbox_sep = gtk_vbox_new(FALSE, 0);
+	vbox_val = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox_key, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox_sep, FALSE, FALSE, 16);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox_val, FALSE, FALSE, 0);
+
+	conf_fields_foreach(e) {
+		if (strncmp(e->key, "rc/path/", 8) == 0) {
+			conf_native_t *nat = e->value;
+			char tmp[256];
+
+			sprintf(tmp, "  $(%s)", e->key+8);
+			label = gtk_label_new(tmp);
+			gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+			gtk_box_pack_start(GTK_BOX(vbox_key), label, FALSE, FALSE, 0);
+
+			label = gtk_label_new(nat->val.string[0]);
+			gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+			gtk_box_pack_start(GTK_BOX(vbox_val), label, FALSE, FALSE, 0);
+		}
+	}
+	if (post_sep) {
+		label = gtk_label_new("\n\n");
+		gtk_box_pack_start(GTK_BOX(vbox_val), label, FALSE, FALSE, 0);
+	}
+
+	return hbox;
+}
+
 static void config_library_tab_create(GtkWidget * tab_vbox)
 {
-	GtkWidget *vbox, *label, *entry, *content_vbox;
+	GtkWidget *vbox, *label, *entry, *content_vbox, *paths_box;
 	const char *cnames[] = {"configured path", "actual path on the filesystem", "config source"};
 
 	library_cl.num_cols = 3;
@@ -658,8 +695,12 @@ static void config_library_tab_create(GtkWidget * tab_vbox)
 	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
 	vbox = ghid_category_vbox(content_vbox, _("Element Directories"), 4, 2, TRUE, FALSE);
 
-	label = gtk_label_new(_("Ordered list of footprint library search directories; reorder: drag&drop"));
+	label = gtk_label_new(_("Ordered list of footprint library search directories; use drag&drop to reorder.\nThe following $(variables) can be used in the path:\n\n"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+
+	paths_box = config_library_append_paths(1);
+	gtk_box_pack_start(GTK_BOX(vbox), paths_box, FALSE, FALSE, 0);
 
 	entry = gtk_conf_list_widget(&library_cl);
 	gtk_box_pack_start(GTK_BOX(vbox), entry, TRUE, TRUE, 4);
