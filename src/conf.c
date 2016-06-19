@@ -840,10 +840,6 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 		cwd = nn;
 	}
 
-	if (increment_field != NULL) {
-		d1();
-	}
-
 	/* by now cwd is the text node we need to load with the new value; it is
 	   either a text config value under a hash or a list item already allocated */
 	if (cwd->type != LHT_TEXT) {
