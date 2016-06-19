@@ -57,6 +57,7 @@ void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra
 						}
 					}
 					Message("can't resolve conf-hash dir required for path %s\n", *in);
+					*out = NULL;
 				}
 				else
 					*out = NULL;
