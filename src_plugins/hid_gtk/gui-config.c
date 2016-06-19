@@ -1117,6 +1117,8 @@ static void config_colors_tab_create(GtkWidget * tab_vbox);
 typedef struct {
 	conf_native_t *cfg;
 	int idx;
+	GdkColor *color;
+	GtkWidget *button;
 } cfg_color_idx_t;
 
 static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t *ci)
@@ -1136,34 +1138,47 @@ static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t *ci)
 
 static void config_color_button_create(GtkWidget * box, conf_native_t *cfg, int idx)
 {
-	GtkWidget *button, *hbox, *label;
+	GtkWidget *hbox, *label;
 	gchar *title;
-	GdkColor *color = conf_hid_get_data(cfg, ghid_conf_id);
-	cfg_color_idx_t *ci;
+	cfg_color_idx_t *ci = conf_hid_get_data(cfg, ghid_conf_id);
 
 	hbox = gtk_hbox_new(FALSE, 6);
 	gtk_box_pack_start(GTK_BOX(box), hbox, FALSE, FALSE, 0);
 
-	if (color == NULL) {
-		color = calloc(sizeof(GdkColor), cfg->array_size);
-		conf_hid_set_data(cfg, ghid_conf_id, color);
+	if (ci == NULL) {
+#warning LEAK: this is never free()d
+		ci = malloc(sizeof(cfg_color_idx_t));
+		ci->cfg = cfg;
+		ci->idx = idx;
+		ci->color = calloc(sizeof(GdkColor), cfg->array_size);
+		conf_hid_set_data(cfg, ghid_conf_id, ci);
 	}
 
-	ghid_map_color_string(cfg->val.color[idx], &(color[idx]));
+	ghid_map_color_string(cfg->val.color[idx], &(ci->color[idx]));
 
 	title = g_strdup_printf(_("PCB %s Color"), cfg->description);
-	button = gtk_color_button_new_with_color(&(color[idx]));
-	gtk_color_button_set_title(GTK_COLOR_BUTTON(button), title);
+	ci->button = gtk_color_button_new_with_color(&(ci->color[idx]));
+	gtk_color_button_set_title(GTK_COLOR_BUTTON(ci->button), title);
 	g_free(title);
 
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), ci->button, FALSE, FALSE, 0);
 	label = gtk_label_new(cfg->description);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-#warning LEAK: this is never free()d
-	ci = malloc(sizeof(cfg_color_idx_t));
-	ci->cfg = cfg;
-	ci->idx = idx;
-	g_signal_connect(G_OBJECT(button), "color-set", G_CALLBACK(config_color_set_cb), ci);
+	g_signal_connect(G_OBJECT(ci->button), "color-set", G_CALLBACK(config_color_set_cb), ci);
+}
+
+void config_color_button_update(conf_native_t *cfg, int idx)
+{
+	if (idx < 0) {
+		for(idx = 0; idx < cfg->array_size; idx++)
+			config_color_button_update(cfg, idx);
+	}
+	else {
+		cfg_color_idx_t *ci = conf_hid_get_data(cfg, ghid_conf_id);
+
+		ghid_map_color_string(cfg->val.color[idx], &(ci->color[idx]));
+		gtk_color_button_set_color(GTK_COLOR_BUTTON(ci->button), &(ci->color[idx]));
+	}
 }
 
 void config_colors_tab_create_scalar(GtkWidget *parent_vbox, const char *path_prefix, int selected)

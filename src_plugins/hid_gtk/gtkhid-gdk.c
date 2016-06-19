@@ -313,7 +313,7 @@ static void set_special_grid_color(void)
 	conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "#%02x%02x%02x", red, green, blue);
 	ghid_map_color_string(conf_core.appearance.color.grid, &gport->grid_color);
 
-#warning CONF TODO: update grid color on the open preferences box somehow
+	config_color_button_update(conf_get_field("appearance/color/grid"), -1);
 
 	if (priv->grid_gc)
 		gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);
