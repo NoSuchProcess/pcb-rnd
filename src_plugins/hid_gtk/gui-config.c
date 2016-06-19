@@ -916,16 +916,6 @@ static void config_layers_apply(void)
 		ghid_invalidate_all();
 		groups_modified = FALSE;
 	}
-#warning CONF TODO: there should be no "use as default" but "save as user"
-#if 0 
-	if (use_as_default) {
-		s = make_layer_group_string(&PCB->LayerGroups);
-		if (dup_string(&conf_core.design.groups, s)) {
-			ParseGroupString(conf_core.design.groups, &Settings.LayerGroups, max_copper_layer);
-		}
-		g_free(s);
-	}
-#endif
 }
 
 static void config_layer_group_button_state_update(void)
@@ -1058,6 +1048,15 @@ static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 void config_layers_save(GtkButton *widget, conf_role_t *role)
 {
 #warning CONF TODO
+#if 0 
+	if (use_as_default) {
+		s = make_layer_group_string(&PCB->LayerGroups);
+		if (dup_string(&conf_core.design.groups, s)) {
+			ParseGroupString(conf_core.design.groups, &Settings.LayerGroups, max_copper_layer);
+		}
+		g_free(s);
+	}
+#endif
 }
 
 static void config_layers_tab_create(GtkWidget * tab_vbox)
