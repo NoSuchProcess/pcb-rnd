@@ -316,17 +316,16 @@ static void set_special_grid_color(void)
 void ghid_set_special_colors(conf_native_t *cfg)
 {
 	render_priv *priv = gport->render_priv;
-
-	if ((cfg->val.color == &conf_core.appearance.color.background) && priv->bg_gc) {
+	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background) && priv->bg_gc) {
 		ghid_map_color_string(cfg->val.color[0], &gport->bg_color);
 		gdk_gc_set_foreground(priv->bg_gc, &gport->bg_color);
 		set_special_grid_color();
 	}
-	else if ((cfg->val.color == &conf_core.appearance.color.off_limit) && priv->offlimits_gc) {
+	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit) && priv->offlimits_gc) {
 		ghid_map_color_string(cfg->val.color[0], &gport->offlimits_color);
 		gdk_gc_set_foreground(priv->offlimits_gc, &gport->offlimits_color);
 	}
-	else if ((cfg->val.color == &conf_core.appearance.color.grid) && priv->grid_gc) {
+	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid) && priv->grid_gc) {
 		ghid_map_color_string(cfg->val.color[0], &gport->grid_color);
 		set_special_grid_color();
 	}
