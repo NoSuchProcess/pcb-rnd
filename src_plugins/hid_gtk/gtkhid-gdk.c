@@ -302,13 +302,19 @@ typedef struct {
 static void set_special_grid_color(void)
 {
 	render_priv *priv = gport->render_priv;
+	int red, green, blue;
 
 	if (!gport->colormap)
 		return;
-	gport->grid_color.red ^= gport->bg_color.red;
-	gport->grid_color.green ^= gport->bg_color.green;
-	gport->grid_color.blue ^= gport->bg_color.blue;
-	gdk_color_alloc(gport->colormap, &gport->grid_color);
+
+	red = (gport->grid_color.red ^ gport->bg_color.red) & 0xFF;
+	green = (gport->grid_color.green ^ gport->bg_color.green) & 0xFF;
+	blue = (gport->grid_color.blue ^ gport->bg_color.blue) & 0xFF;
+	conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "#%02x%02x%02x", red, green, blue);
+	ghid_map_color_string(conf_core.appearance.color.grid, &gport->grid_color);
+
+#warning CONF TODO: update grid color on the open preferences box somehow
+
 	if (priv->grid_gc)
 		gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);
 }

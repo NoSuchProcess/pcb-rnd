@@ -1127,12 +1127,11 @@ static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t *ci)
 	gtk_color_button_get_color(GTK_COLOR_BUTTON(button), &new_color);
 	str = ghid_get_color_name(&new_color);
 
-	printf("COLOR IDX: %d\n", ci->idx);
-	conf_set(CFR_PROJECT, ci->cfg->hash_path, ci->idx, str, POL_OVERWRITE);
-
-	ghid_set_special_colors(ci->cfg);
-	ghid_layer_buttons_color_update();
-	ghid_invalidate_all();
+	if (conf_set(CFR_DESIGN, ci->cfg->hash_path, ci->idx, str, POL_OVERWRITE) == 0) {
+		ghid_set_special_colors(ci->cfg);
+		ghid_layer_buttons_color_update();
+		ghid_invalidate_all();
+	}
 }
 
 static void config_color_button_create(GtkWidget * box, conf_native_t *cfg, int idx)
