@@ -3,9 +3,59 @@
 #include <gdk/gdkkeysyms.h>
 #include "gtk_conf_list.h"
 
+static void fill_misc_cols(gtk_conf_list_t *cl, int row_idx, GtkTreeIter *iter, lht_node_t *nd)
+{
+	int col;
+	if (cl->get_misc_col_data != NULL) {
+		for(col = 0; col < cl->num_cols; col++) {
+			if ((col == cl->col_data) || (col == cl->col_src))
+				continue;
+			char *s = cl->get_misc_col_data(row_idx, col, nd);
+			if (s != NULL) {
+				gtk_list_store_set(cl->l, iter, col, s, -1);
+				free(s);
+			}
+		}
+	}
+}
+
+/* Rebuild the list from the GUI. There would be a cheaper altnerative for most
+   operations, but our lists are short (less than 10 items usually) and
+   edited rarely - optimize for code size instead of speed. This also solves
+   a higher level problem: sometimes the input list is a composite from multiple
+   sources whereas the output list must be all in CFR_DESIGN. */
 static void rebuild(gtk_conf_list_t *cl)
 {
-	printf("rebuild\n");
+	GtkTreeModel *tm = gtk_tree_view_get_model(GTK_TREE_VIEW(cl->t));
+	GtkTreeIter it;
+	gboolean valid;
+	int n;
+
+	if (cl->pre_rebuild != NULL)
+		cl->pre_rebuild(cl);
+
+/*	printf("rebuild\n");*/
+
+	for(valid = gtk_tree_model_get_iter_first(tm, &it), n = 0; valid; valid = gtk_tree_model_iter_next(tm, &it), n++) {
+		gchar *s;
+		lht_node_t *nd;
+
+		gtk_tree_model_get(tm, &it, cl->col_data, &s, -1);
+/*		printf(" -> %s\n", s);*/
+		if (cl->col_src > 0)
+			gtk_list_store_set(cl->l, &it, cl->col_src, "<not saved yet>", -1);
+
+		nd = lht_dom_node_alloc(LHT_TEXT, "");
+		nd->data.text.value = strdup(s == NULL ? "" : s);
+		nd->doc = cl->lst->doc;
+		lht_dom_list_append(cl->lst, nd);
+
+		fill_misc_cols(cl, n, &it, nd);
+		g_free(s);
+	}
+
+	if (cl->post_rebuild != NULL)
+		cl->post_rebuild(cl);
 }
 
 static int get_sel(gtk_conf_list_t *cl, GtkTreeIter *iter)
@@ -41,25 +91,10 @@ static void row_delete_cb(GtkTreeModel *m, GtkTreePath *p, gtk_conf_list_t *cl)
 	rebuild(cl);
 }
 
-static void fill_misc_cols(gtk_conf_list_t *cl, int row_idx, GtkTreeIter *iter)
-{
-	int col;
-	if (cl->get_misc_col_data != NULL) {
-		for(col = 0; col < cl->num_cols; col++) {
-			if ((col == cl->col_data) || (col == cl->col_src))
-				continue;
-			char *s = cl->get_misc_col_data(row_idx, col, NULL);
-			if (s != NULL) {
-				gtk_list_store_set(cl->l, iter, col, s, -1);
-				free(s);
-			}
-		}
-	}
-}
-
 static void button_ins_cb(GtkButton * button, gtk_conf_list_t *cl)
 {
 	GtkTreeIter *sibl, sibl_, iter;
+	lht_node_t *nd;
 	int idx = get_sel(cl, &sibl_);
 	if (idx < 0) {
 		idx = gtk_tree_model_iter_n_children(gtk_tree_view_get_model(GTK_TREE_VIEW(cl->t)), NULL);
@@ -69,9 +104,12 @@ static void button_ins_cb(GtkButton * button, gtk_conf_list_t *cl)
 		sibl = &sibl_;
 
 	gtk_list_store_insert_before(cl->l, &iter, sibl);
-	fill_misc_cols(cl, idx, &iter);
 
+	rebuild(cl);
 #warning TODO: insert new item at idx
+	nd = NULL;
+
+	fill_misc_cols(cl, idx, &iter, nd);
 	printf("ins %d!\n", idx);
 }
 
@@ -85,6 +123,7 @@ static void button_del_cb(GtkButton * button, gtk_conf_list_t *cl)
 
 	printf("del %d!\n", idx);
 	gtk_list_store_remove(cl->l, &iter);
+	rebuild(cl);
 #warning TODO: remove list item idx
 	
 	/* set cursor to where the user may expect it */
@@ -116,6 +155,7 @@ static void button_sel_cb(GtkButton * button, gtk_conf_list_t *cl)
 		printf("sel %d '%s'\n", idx, fn);
 		gtk_list_store_set(cl->l, &iter, cl->col_data, fn, -1);
 #warning TODO: replace list item idx
+		rebuild(cl);
 		g_free(fno);
 	}
 	gtk_widget_destroy(fcd);
@@ -132,6 +172,7 @@ static void cell_edited_cb(GtkCellRendererText *cell, gchar *path, gchar *new_te
 	printf("edit %d to %s!\n", idx, new_text);
 	gtk_list_store_set(cl->l, &iter, cl->col_data, new_text, -1);
 #warning TODO: replace list item idx
+	rebuild(cl);
 }
 
 static void cell_edit_started_cb(GtkCellRendererText *cell, GtkCellEditable *e,gchar *path, gtk_conf_list_t *cl)
@@ -170,12 +211,15 @@ gboolean key_release_cb(GtkWidget *widget, GdkEventKey *event, gtk_conf_list_t *
 
 GtkWidget *gtk_conf_list_widget(gtk_conf_list_t *cl)
 {
-	GtkWidget *vbox, *hbox, *bins, *bdel, *bsel, *vfill;
+	GtkWidget *vbox, *hbox, *bins, *bdel, *bsel;
 	GtkTreeIter iter;
 	int n;
 	GType *ty;
+	lht_node_t *nd;
 
 	cl->editing = 0;
+	assert(cl->lst != NULL);
+	assert(cl->lst->type == LHT_LIST);
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	cl->t = gtk_tree_view_new();
@@ -188,14 +232,15 @@ GtkWidget *gtk_conf_list_widget(gtk_conf_list_t *cl)
 	free(ty);
 
 	/* fill in the list with initial data */
-	for(n = 0; n < 8; n++) {
-		char s[16];
-		sprintf(s, "foo %d", n);
-		gtk_list_store_append(cl->l, &iter);
+	for(nd = cl->lst->data.list.first; nd != NULL; nd = nd->next) {
+		if (nd->type != LHT_TEXT)
+			continue;
 
-		gtk_list_store_set(cl->l, &iter, cl->col_data, s, -1);
-		gtk_list_store_set(cl->l, &iter, cl->col_src, "src", -1);
-		fill_misc_cols(cl, n, &iter);
+		gtk_list_store_append(cl->l, &iter);
+		gtk_list_store_set(cl->l, &iter, cl->col_data, nd->data.text.value, -1);
+		if (nd->file_name != NULL)
+			gtk_list_store_set(cl->l, &iter, cl->col_src, nd->file_name, -1);
+		fill_misc_cols(cl, n, &iter, nd);
 	}
 
 	/* add all columns */
@@ -234,10 +279,7 @@ GtkWidget *gtk_conf_list_widget(gtk_conf_list_t *cl)
 		g_signal_connect(G_OBJECT(bsel), "clicked", G_CALLBACK(button_sel_cb), cl);
 	}
 
-	vfill = gtk_vbox_new(FALSE, 100);
-
-	gtk_box_pack_start(GTK_BOX(vbox), cl->t, FALSE, FALSE, 2);
-	gtk_box_pack_start(GTK_BOX(vbox), vfill, TRUE, TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), cl->t, TRUE, TRUE, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
 
 	return vbox;

@@ -50,6 +50,7 @@
 #include "conf.h"
 #include "misc_util.h"
 #include "hid_gtk_conf.h"
+#include "gtk_conf_list.h"
 
 /* for MKDIR() */
 #include "compat_fs.h"
@@ -523,46 +524,146 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 	 */
 #warning CONF TODO: remove?
 static GtkWidget *library_newlib_entry;
+static gtk_conf_list_t library_cl;
 
 static void config_library_apply(void)
 {
 #warning CONF TODO: what to do here?
 }
 
+static const char *fn_postproc(char *path)
+{
+	char *end = strrchr(path, '/');
+	if (end != NULL)
+		*end = '\0';
+	return path;
+}
+
+static char *get_misc_col_data(int row, int col, lht_node_t *nd)
+{
+	if ((nd != NULL) && (col == 1)) {
+		char *out;
+		resolve_path(nd->data.text.value, &out, 0);
+		return out;
+	}
+	return NULL;
+}
+
+#warning TODO: leak: this is never free'd
+lht_doc_t *config_library_lst_doc;
+lht_node_t *config_library_lst;
+
+static void lht_clean_list(lht_node_t *lst)
+{
+	lht_node_t *n;
+	while(lst->data.list.first != NULL) {
+		n = lst->data.list.first;
+		if (n->doc == NULL) {
+			if (lst->data.list.last == n)
+				lst->data.list.last = NULL;
+			lst->data.list.first = n->next;
+		}
+		else
+			lht_tree_unlink(n);
+		lht_dom_node_free(n);
+	}
+	lst->data.list.last = NULL;
+}
+
+/* Create a lihata list of the current library paths - to be tuned into CFR design upon the first modification */
+static lht_node_t *config_library_list()
+{
+	lht_node_t *rt = conf_lht_get_main(CFR_INTERNAL), *n;
+	conf_listitem_t *i;
+	int idx;
+	const char *s;
+
+	if (config_library_lst_doc == NULL) {
+		/* create a new list */
+		config_library_lst_doc = lht_dom_init();
+		config_library_lst = lht_dom_node_alloc(LHT_LIST, "library_search_paths");
+		config_library_lst_doc->root = config_library_lst;
+		config_library_lst->doc = config_library_lst_doc;
+	}
+	else {
+		/* clean the old list */
+		lht_clean_list(config_library_lst);
+	}
+
+	conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
+		lht_node_t *txt;
+		const char *sfn;
+		if (i->prop.src->file_name != NULL) {
+			lht_dom_loc_newfile(config_library_lst_doc, i->prop.src->file_name);
+			lht_dom_loc_active(config_library_lst_doc, &sfn, NULL, NULL);
+		}
+		else
+			sfn = NULL;
+
+		txt = lht_dom_node_alloc(LHT_TEXT, "");
+		txt->data.text.value = strdup(i->payload);
+		txt->file_name = sfn;
+		txt->doc = config_library_lst_doc;
+		printf("append: '%s' '%s'\n", txt->data.text.value, sfn);
+		lht_dom_list_append(config_library_lst, txt);
+	}
+	return config_library_lst;
+}
+
+static void pre_rebuild(gtk_conf_list_t *cl)
+{
+	lht_node_t *m, *l;
+	lht_clean_list(config_library_lst);
+
+	m = conf_lht_get_main(CFR_DESIGN);
+	
+	cl->lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
+	if (cl->lst == NULL) {
+		conf_set(CFR_DESIGN, "rc/library_search_paths", 0, "", POL_OVERWRITE);
+	}
+	cl->lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
+	assert(cl->lst != NULL);
+
+	lht_clean_list(cl->lst);
+}
+
+static void post_rebuild(gtk_conf_list_t *cl)
+{
+	conf_update("rc/library_search_paths");
+}
+
+
 static void config_library_tab_create(GtkWidget * tab_vbox)
 {
 	GtkWidget *vbox, *label, *entry, *content_vbox;
+	const char *cnames[] = {"configured path", "actual path on the filesystem", "config source"};
+
+	library_cl.num_cols = 3;
+	library_cl.col_names = cnames;
+	library_cl.col_data = 0;
+	library_cl.col_src = 2;
+	library_cl.reorder = 1;
+	library_cl.get_misc_col_data = NULL;
+	library_cl.file_chooser_title = "Select footprint library directory";
+	library_cl.file_chooser_postproc = fn_postproc;
+	library_cl.get_misc_col_data = get_misc_col_data;
+	library_cl.lst = config_library_list();
+	library_cl.pre_rebuild = pre_rebuild;
+	library_cl.post_rebuild = post_rebuild;
 
 	content_vbox = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), content_vbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
 
 	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
-	vbox = ghid_category_vbox(tab_vbox, _("Element Directories"), 4, 2, TRUE, TRUE);
-	label = gtk_label_new("");
-	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_label_set_markup(GTK_LABEL(label),
-											 _
-											 ("<small>Enter a \""
-												PCB_PATH_DELIMETER
-												"\" separated list of custom top level\n"
-												"element directories.  For example:\n"
-												"\t<b>~/gaf/pcb-elements"
-												PCB_PATH_DELIMETER
-												"packages"
-												PCB_PATH_DELIMETER
-												"/usr/local/pcb-elements</b>\n"
-												"Elements should be organized into subdirectories below each\n"
-												"top level directory.  Restart program for changes to take effect." "</small>"));
+	vbox = ghid_category_vbox(content_vbox, _("Element Directories"), 4, 2, TRUE, FALSE);
 
+	label = gtk_label_new(_("Ordered list of footprint library search directories; reorder: drag&drop"));
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-	entry = gtk_entry_new();
-#warning CONF TODO: print library search paths here; it should be a clever list selector thing
-	gtk_entry_set_text(GTK_ENTRY(entry), "TODO1226");
-	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 4);
 
-	vbox = gtk_vbox_new(TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
+	entry = gtk_conf_list_widget(&library_cl);
+	gtk_box_pack_start(GTK_BOX(vbox), entry, TRUE, TRUE, 4);
+
 	config_user_role_section(GTK_BOX(tab_vbox));
 }
 
