@@ -1432,7 +1432,7 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	sprintf(libdir, "%s%s", tmps, REST_OF_PATH);
 	free(tmps);
 
-#warning CONF TODO: use conf_set() - or rather, why does it happen  in the gtk hid?
+#error TODO: use conf_set() - or rather, why does it happen  in the gtk hid?
 	conf_core.rc.library_tree = libdir;
 
 #undef REST_OF_PATH

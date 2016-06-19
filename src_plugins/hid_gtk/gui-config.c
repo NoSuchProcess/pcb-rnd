@@ -561,8 +561,6 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 
 	/* -------------- The Library config page ----------------
 	 */
-#warning CONF TODO: remove?
-static GtkWidget *library_newlib_entry;
 static gtk_conf_list_t library_cl;
 
 static void config_library_apply(void)
