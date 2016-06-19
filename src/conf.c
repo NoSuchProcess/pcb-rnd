@@ -533,8 +533,21 @@ void conf_update(const char *path)
 	else {
 		conf_native_t *n;
 		n = conf_get_field(path);
-		if (n == NULL)
+		if (n == NULL) {
+			char *path_, *field;
+			path_ = strdup(path);
+			field = strrchr(path_, '/');
+			if (field == NULL) {
+				free(path_);
+				return;
+			}
+			*field = '\0';
+			n = conf_get_field(path_);
+			if ((n != NULL) && (n->type == CFN_INCREMENTS))
+				conf_update(path_);
+			free(path_);
 			return;
+		}
 		conf_field_clear(n);
 	}
 
@@ -653,7 +666,7 @@ conf_native_t *conf_get_field(const char *path)
 
 int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol)
 {
-	char *path, *basename, *next, *last, *sidx;
+	char *path, *basename, *next, *last, *sidx, *increment_field = NULL;
 	conf_native_t *nat;
 	lht_node_t *cwd, *nn;
 	lht_node_type_t ty;
@@ -680,9 +693,23 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 
 	nat = conf_get_field(path);
 	if (nat == NULL) {
-		free(path);
-		return -1;
+		/* might be increments */
+		increment_field = strrchr(path, '/');
+		if (increment_field == NULL) {
+			free(path);
+			return -1;
+		}
+		*increment_field = '\0';
+		nat = conf_get_field(path);
+		if ((nat == NULL) || (nat->type != CFN_INCREMENTS)) {
+			free(path);
+			return -1;
+		}
+		*increment_field = '/';
+		increment_field++;
 	}
+
+
 	if (conf_root[target] == NULL) {
 		free(path);
 		return -1;
@@ -808,9 +835,13 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 		cwd = nn;
 	}
 	else {
-		if (idx >= 0)
-			return -1; /* only lists/array path should have index */
+		if (idx > 0)
+			return -1; /* only lists/array path should have index larger than 0 */
 		cwd = nn;
+	}
+
+	if (increment_field != NULL) {
+		d1();
 	}
 
 	/* by now cwd is the text node we need to load with the new value; it is
