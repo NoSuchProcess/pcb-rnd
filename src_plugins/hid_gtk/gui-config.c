@@ -51,6 +51,8 @@
 #include "misc_util.h"
 #include "hid_gtk_conf.h"
 #include "gtk_conf_list.h"
+#include "paths.h"
+#include <liblihata/tree.h>
 
 /* for MKDIR() */
 #include "compat_fs.h"
@@ -134,7 +136,7 @@ static void config_user_role_section(GtkWidget * vbox)
 #warning CONF TODO:
 	gtk_label_set_markup(GTK_LABEL(config_color_warn_label),
 											 _("<b>placeholder</b>"));
-	gtk_box_pack_start(vbox, config_color_warn_label, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox), config_color_warn_label, FALSE, FALSE, 4);
 }
 
 	/* -------------- The General config page ----------------
@@ -157,7 +159,7 @@ static void config_command_window_toggle_cb(GtkToggleButton * button, gpointer d
 		holdoff = FALSE;
 		return;
 	}
-#warning TODO: conf_set() this 
+#warning CONF TODO: conf_set() this 
 /*	conf_hid_gtk.plugins.hid_gtk.use_command_window = active;*/
 	ghid_command_use_command_window_sync();
 }
@@ -227,7 +229,7 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 #warning this all should be more generic code...
 	ghid_check_button_connected(vbox, NULL, conf_core.editor.save_in_tmp,
 															TRUE, FALSE, FALSE, 2,
-															config_general_toggle_cb, &conf_core.editor.save_in_tmp,
+															config_general_toggle_cb, (void *)&conf_core.editor.save_in_tmp,
 															_("If layout is modified at exit, save into PCB.%i.save"));
 	ghid_spin_button(vbox, NULL, conf_core.rc.backup_interval, 0.0, 60 * 60, 60.0,
 									 600.0, 0, 0, config_backup_spin_button_cb, NULL, FALSE,
@@ -241,7 +243,7 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(GTK_BOX(tab_vbox));
+	config_user_role_section(tab_vbox);
 }
 
 	/* -------------- The Sizes config page ----------------
@@ -269,7 +271,7 @@ static void config_sizes_apply(void)
 
 static void text_spin_button_cb(GtkSpinButton * spin, void *dst)
 {
-	*(gint *) dst = gtk_spin_button_get_value_as_int(spin);
+	conf_setf(CFR_DESIGN, "design/text_scale", -1, "%d", gtk_spin_button_get_value_as_int(spin));
 	ghid_set_status_line_label();
 }
 
@@ -322,10 +324,9 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 	gtk_box_pack_start(GTK_BOX(hbox), table, FALSE, FALSE, 0);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 6);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 3);
-#warning TODO: more generic code
 	ghid_table_spin_button(table, 0, 0, &config_text_spin_button,
 												 conf_core.design.text_scale,
-												 MIN_TEXTSCALE, MAX_TEXTSCALE, 10.0, 10.0, 0, 0, text_spin_button_cb, &conf_core.design.text_scale, FALSE, "%");
+												 MIN_TEXTSCALE, MAX_TEXTSCALE, 10.0, 10.0, 0, 0, text_spin_button_cb, NULL, FALSE, "%");
 
 
 	/* ---- DRC Sizes ---- */
@@ -363,7 +364,7 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(GTK_BOX(tab_vbox));
+	config_user_role_section(tab_vbox);
 
 	gtk_widget_show_all(config_sizes_vbox);
 }
@@ -387,10 +388,10 @@ static void increment_tbl_update_cell(GtkLabel *lab, Coord val, const char *fmt)
 
 static void increment_tbl_update_row(int row, Coord edit_in_mm, Coord edit_in_mil)
 {
-	increment_tbl_update_cell(config_increments_tbl[0][row], edit_in_mm, "%$mm");
-	increment_tbl_update_cell(config_increments_tbl[1][row], edit_in_mil, "%$mm");
-	increment_tbl_update_cell(config_increments_tbl[2][row], edit_in_mm, "%$ml");
-	increment_tbl_update_cell(config_increments_tbl[3][row], edit_in_mil, "%$ml");
+	increment_tbl_update_cell(GTK_LABEL(config_increments_tbl[0][row]), edit_in_mm, "%$mm");
+	increment_tbl_update_cell(GTK_LABEL(config_increments_tbl[1][row]), edit_in_mil, "%$mm");
+	increment_tbl_update_cell(GTK_LABEL(config_increments_tbl[2][row]), edit_in_mm, "%$ml");
+	increment_tbl_update_cell(GTK_LABEL(config_increments_tbl[3][row]), edit_in_mil, "%$ml");
 }
 
 static void increment_tbl_update()
@@ -403,51 +404,58 @@ static void increment_tbl_update()
 
 static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
 {
-	*(Coord *) dst = ghid_coord_entry_get_value(ce);
+	const char *path = dst;
+	conf_setf(CFR_DESIGN, path, -1, "%mI", (Coord)ghid_coord_entry_get_value(ce));
 	increment_tbl_update();
 }
 
-static void config_increments_sect_create(GtkWidget * vbox, Increments *inc, const Unit *u)
+static void config_increments_sect_create(GtkWidget * vbox, const Increments *inc, const Unit *u, const char *base_path)
 {
-	Coord *target;
 	const int width = 128;
+	int l = strlen(base_path);
+	char path[256], *pe;
+
+	memcpy(path, base_path, l);
+	pe = path+l;
+	*pe = '/';
+	pe++;
 
 	/* ---- Grid Increment/Decrement ---- */
-	target = &inc->grid;
+	strcpy(pe, "grid");
 	ghid_coord_entry(vbox, NULL,
 									 inc->grid,
 									 inc->grid_min,
 									 inc->grid_max,
-									 CE_SMALL, u, width, increment_spin_button_cb, target, _("Grid:"), _("For 'g' and '<shift>g' grid change actions"));
+									 CE_SMALL, u, width, increment_spin_button_cb, path, _("Grid:"), _("For 'g' and '<shift>g' grid change actions"));
 
 	/* ---- Size Increment/Decrement ---- */
-	target = &inc->size;
+	strcpy(pe, "size");
 	ghid_coord_entry(vbox, NULL,
 									 inc->size,
 									 inc->size_min,
 									 inc->size_max,
 									 CE_SMALL, u, width, increment_spin_button_cb,
-									 target, _("Size:"),
+									 path, _("Size:"),
 									 _("For 's' and '<shift>s' size change actions on lines,\n"
 										 "pads, pins and text.\n" "Use '<ctrl>s' and '<shift><ctrl>s' for drill holes."));
 
 	/* ---- Line Increment/Decrement ---- */
-	target = &inc->line;
+	strcpy(pe, "line");
 	ghid_coord_entry(vbox, NULL,
 									 inc->line,
 									 inc->line_min,
 									 inc->line_max,
 									 CE_SMALL, u, width, increment_spin_button_cb,
-									 target, _("Line:"), _("For 'l' and '<shift>l' routing line width change actions"));
+									 path, _("Line:"), _("For 'l' and '<shift>l' routing line width change actions"));
 
 	/* ---- Clear Increment/Decrement ---- */
-	target = &inc->clear;
+	strcpy(pe, "clear");
 	ghid_coord_entry(vbox, NULL,
 									 inc->clear,
 									 inc->clear_min,
 									 inc->clear_max,
 									 CE_SMALL, u, width, increment_spin_button_cb,
-									 target, _("Clear:"), _("For 'k' and '<shift>k' line clearance inside polygon size\n" "change actions"));
+									 path, _("Clear:"), _("For 'k' and '<shift>k' line clearance inside polygon size\n" "change actions"));
 
 	gtk_widget_show_all(config_increments_vbox);
 }
@@ -481,10 +489,10 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 	}
 
 	catvbox = ghid_category_vbox (config_increments_vbox, _("Metric Increment Settings"), 4, 2, TRUE, TRUE);
-	config_increments_sect_create(catvbox, &conf_core.editor.increments_mm, get_unit_struct("mm"));
+	config_increments_sect_create(catvbox, &conf_core.editor.increments_mm, get_unit_struct("mm"), "editor/increments_mm");
 
 	catvbox = ghid_category_vbox (config_increments_vbox, _("Imperial Increment Settings"), 4, 2, TRUE, TRUE);
-	config_increments_sect_create(catvbox, &conf_core.editor.increments_mil, get_unit_struct("mil"));
+	config_increments_sect_create(catvbox, &conf_core.editor.increments_mil, get_unit_struct("mil"), "editor/increments_mil");
 
 	catvbox = ghid_category_vbox (config_increments_vbox, _("Comparison table"), 4, 2, TRUE, TRUE);
 
@@ -517,7 +525,7 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(GTK_BOX(tab_vbox));
+	config_user_role_section(tab_vbox);
 }
 
 	/* -------------- The Library config page ----------------
@@ -705,7 +713,7 @@ static void config_library_tab_create(GtkWidget * tab_vbox)
 	entry = gtk_conf_list_widget(&library_cl);
 	gtk_box_pack_start(GTK_BOX(vbox), entry, TRUE, TRUE, 4);
 
-	config_user_role_section(GTK_BOX(tab_vbox));
+	config_user_role_section(tab_vbox);
 }
 
 
@@ -1078,7 +1086,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 /* -- common */
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(GTK_BOX(tab_vbox));
+	config_user_role_section(tab_vbox);
 }
 
 
@@ -1229,9 +1237,9 @@ static void config_colors_tab_create(GtkWidget * tab_vbox)
 	sep = gtk_hseparator_new();
 
 	config_colors_tab_create_array(vbox, "appearance/color/layer_selected");
-	config_user_role_section(GTK_BOX(config_colors_vbox));
+	config_user_role_section(config_colors_vbox);
 
-#warning TODO: do we need special buttons here?
+#warning CONF TODO: do we need special buttons here?
 /*	ghid_button_connected(hbox, NULL, FALSE, FALSE, FALSE, 4, config_color_defaults_cb, NULL, _("Defaults"));*/
 
 	gtk_widget_show_all(config_colors_vbox);
@@ -1354,6 +1362,7 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename, c
 {
 	GtkWidget *vbox, *label;
 	GtkWidget *w;
+	GtkObject *o;
 
 	gtk_container_set_border_width(GTK_CONTAINER(tab_vbox), 6);
 	vbox = ghid_category_vbox(tab_vbox, basename, 4, 2, TRUE, TRUE);
@@ -1372,20 +1381,20 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename, c
 			gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 4);
 			break;
 		case CFN_INTEGER:
-			w = gtk_adjustment_new(15,
+			o = gtk_adjustment_new(15,
 																							10, /* min */
 																							20,
 																							1, 10, /* steps */
 																							0.0);
-			gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 4);
+			gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(o), FALSE, FALSE, 4);
 			break;
 		case CFN_REAL:
-			w = gtk_adjustment_new(15.5,
+			o = gtk_adjustment_new(15.5,
 																							10, /* min */
 																							20,
 																							1, 10, /* steps */
 																							0.0);
-			gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 4);
+			gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(o), FALSE, FALSE, 4);
 			break;
 		case CFN_BOOLEAN:
 			ghid_check_button_connected(vbox, NULL, *item->val.boolean,

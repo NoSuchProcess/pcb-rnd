@@ -155,7 +155,7 @@ gchar *ghid_get_color_name(GdkColor * color)
 	return tmp;
 }
 
-void ghid_map_color_string(char *color_string, GdkColor * color)
+void ghid_map_color_string(const char *color_string, GdkColor * color)
 {
 	static GdkColormap *colormap = NULL;
 	GHidPort *out = &ghid_port;
