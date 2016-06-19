@@ -128,15 +128,31 @@ void ghid_config_init(void)
 */
 static GtkWidget *config_window;
 
-static void config_user_role_section(GtkWidget * vbox)
+#warning CONF TODO: do we need special buttons here?
+/*	ghid_button_connected(hbox, NULL, FALSE, FALSE, FALSE, 4, config_color_defaults_cb, NULL, _("Defaults"));*/
+
+static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton *widget, conf_role_t *role))
 {
-	GtkWidget *config_color_warn_label;
+	GtkWidget *config_color_warn_label, *button, *hbox;
+	static conf_role_t role_project = CFR_PROJECT;
+	static conf_role_t role_user    = CFR_USER;
+
+	hbox = gtk_hbox_new(FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 4);
+
 	config_color_warn_label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(config_color_warn_label), TRUE);
-#warning CONF TODO:
 	gtk_label_set_markup(GTK_LABEL(config_color_warn_label),
-											 _("<b>placeholder</b>"));
-	gtk_box_pack_start(GTK_BOX(vbox), config_color_warn_label, FALSE, FALSE, 4);
+											 _("The above are <i>design-level</i> configuration, saved with the pcb file.\nUse these buttons to save all settings on this page:"));
+	gtk_box_pack_start(GTK_BOX(hbox), config_color_warn_label, FALSE, FALSE, 4);
+
+	button = gtk_button_new_with_label("Save in project config");
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
+	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &role_project);
+
+	button = gtk_button_new_with_label("Save in user config");
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
+	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &role_user);
 }
 
 	/* -------------- The General config page ----------------
@@ -201,6 +217,12 @@ static void config_history_spin_button_cb(GtkSpinButton * spin_button, gpointer 
 	conf_setf(CFR_USER, "plugins/hid_gtk/history_size", -1, "%d", gtk_spin_button_get_value_as_int(spin_button));
 }
 
+void config_general_save(GtkButton *widget, conf_role_t *role)
+{
+	printf("General save: %d\n", *role);
+#warning CONF TODO
+}
+
 static void config_general_tab_create(GtkWidget * tab_vbox)
 {
 	GtkWidget *vbox, *content_vbox;
@@ -243,7 +265,7 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(tab_vbox);
+	config_user_role_section(tab_vbox, config_general_save);
 }
 
 	/* -------------- The Sizes config page ----------------
@@ -279,6 +301,12 @@ static void coord_entry_cb(GHidCoordEntry * ce, void *dst)
 {
 	*(Coord *) dst = ghid_coord_entry_get_value(ce);
 }
+
+void config_sizes_save(GtkButton *widget, conf_role_t *role)
+{
+#warning CONF TODO
+}
+
 
 static void config_sizes_tab_create(GtkWidget * tab_vbox)
 {
@@ -364,7 +392,7 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(tab_vbox);
+	config_user_role_section(tab_vbox, config_sizes_save);
 
 	gtk_widget_show_all(config_sizes_vbox);
 }
@@ -471,6 +499,11 @@ static GtkWidget *config_increments_table_attach(GtkWidget *table, int x, int y,
 	return label;
 }
 
+void config_increments_save(GtkButton *widget, conf_role_t *role)
+{
+#warning CONF TODO
+}
+
 static void config_increments_tab_create(GtkWidget * tab_vbox)
 {
 	GtkWidget *vbox, *catvbox, *content_vbox;
@@ -525,7 +558,7 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(tab_vbox);
+	config_user_role_section(tab_vbox, config_increments_save);
 }
 
 	/* -------------- The Library config page ----------------
@@ -678,6 +711,11 @@ static GtkWidget *config_library_append_paths(int post_sep)
 	return hbox;
 }
 
+void config_library_save(GtkButton *widget, conf_role_t *role)
+{
+#warning CONF TODO
+}
+
 static void config_library_tab_create(GtkWidget * tab_vbox)
 {
 	GtkWidget *vbox, *label, *entry, *content_vbox, *paths_box;
@@ -713,7 +751,7 @@ static void config_library_tab_create(GtkWidget * tab_vbox)
 	entry = gtk_conf_list_widget(&library_cl);
 	gtk_box_pack_start(GTK_BOX(vbox), entry, TRUE, TRUE, 4);
 
-	config_user_role_section(tab_vbox);
+	config_user_role_section(tab_vbox, config_library_save);
 }
 
 
@@ -1021,6 +1059,11 @@ static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 	g_strfreev(argv);
 }
 
+void config_layers_save(GtkButton *widget, conf_role_t *role)
+{
+#warning CONF TODO
+}
+
 static void config_layers_tab_create(GtkWidget * tab_vbox)
 {
 	GtkWidget *tabs, *vbox, *vbox1, *button, *text, *sep, *content_vbox;
@@ -1086,9 +1129,8 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 /* -- common */
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(tab_vbox);
+	config_user_role_section(tab_vbox, config_layers_save);
 }
-
 
 void ghid_config_layer_name_update(gchar * name, gint layer)
 {
@@ -1207,6 +1249,11 @@ void config_colors_tab_create_array(GtkWidget *parent_vbox, const char *path)
 		config_color_button_create(parent_vbox, cfg, n);
 }
 
+void config_colors_save(GtkButton *widget, conf_role_t *role)
+{
+#warning CONF TODO
+}
+
 static void config_colors_tab_create(GtkWidget * tab_vbox)
 {
 	GtkWidget *scrolled_vbox, *vbox, *hbox, *expander, *sep;
@@ -1251,10 +1298,7 @@ static void config_colors_tab_create(GtkWidget * tab_vbox)
 	sep = gtk_hseparator_new();
 
 	config_colors_tab_create_array(vbox, "appearance/color/layer_selected");
-	config_user_role_section(config_colors_vbox);
-
-#warning CONF TODO: do we need special buttons here?
-/*	ghid_button_connected(hbox, NULL, FALSE, FALSE, FALSE, 4, config_color_defaults_cb, NULL, _("Defaults"));*/
+	config_user_role_section(config_colors_vbox, config_colors_save);
 
 	gtk_widget_show_all(config_colors_vbox);
 }
