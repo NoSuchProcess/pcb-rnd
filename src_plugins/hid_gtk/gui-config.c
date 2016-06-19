@@ -433,7 +433,7 @@ static void increment_tbl_update()
 static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
 {
 	const char *path = dst;
-	conf_setf(CFR_DESIGN, path, -1, "%mI", (Coord)ghid_coord_entry_get_value(ce));
+	conf_setf(CFR_DESIGN, path, -1, "%mr", (Coord)ghid_coord_entry_get_value(ce));
 	increment_tbl_update();
 }
 
@@ -448,13 +448,14 @@ static void config_increments_sect_create(GtkWidget * vbox, const Increments *in
 	*pe = '/';
 	pe++;
 
+#warning leak: strdup(path) never free'd
 	/* ---- Grid Increment/Decrement ---- */
 	strcpy(pe, "grid");
 	ghid_coord_entry(vbox, NULL,
 									 inc->grid,
 									 inc->grid_min,
 									 inc->grid_max,
-									 CE_SMALL, u, width, increment_spin_button_cb, path, _("Grid:"), _("For 'g' and '<shift>g' grid change actions"));
+									 CE_SMALL, u, width, increment_spin_button_cb, strdup(path), _("Grid:"), _("For 'g' and '<shift>g' grid change actions"));
 
 	/* ---- Size Increment/Decrement ---- */
 	strcpy(pe, "size");
@@ -463,7 +464,7 @@ static void config_increments_sect_create(GtkWidget * vbox, const Increments *in
 									 inc->size_min,
 									 inc->size_max,
 									 CE_SMALL, u, width, increment_spin_button_cb,
-									 path, _("Size:"),
+									 strdup(path), _("Size:"),
 									 _("For 's' and '<shift>s' size change actions on lines,\n"
 										 "pads, pins and text.\n" "Use '<ctrl>s' and '<shift><ctrl>s' for drill holes."));
 
@@ -474,7 +475,7 @@ static void config_increments_sect_create(GtkWidget * vbox, const Increments *in
 									 inc->line_min,
 									 inc->line_max,
 									 CE_SMALL, u, width, increment_spin_button_cb,
-									 path, _("Line:"), _("For 'l' and '<shift>l' routing line width change actions"));
+									 strdup(path), _("Line:"), _("For 'l' and '<shift>l' routing line width change actions"));
 
 	/* ---- Clear Increment/Decrement ---- */
 	strcpy(pe, "clear");
@@ -483,7 +484,7 @@ static void config_increments_sect_create(GtkWidget * vbox, const Increments *in
 									 inc->clear_min,
 									 inc->clear_max,
 									 CE_SMALL, u, width, increment_spin_button_cb,
-									 path, _("Clear:"), _("For 'k' and '<shift>k' line clearance inside polygon size\n" "change actions"));
+									 strdup(path), _("Clear:"), _("For 'k' and '<shift>k' line clearance inside polygon size\n" "change actions"));
 
 	gtk_widget_show_all(config_increments_vbox);
 }
