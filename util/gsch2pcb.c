@@ -83,20 +83,22 @@ typedef struct {
 gdl_list_t pcb_element_list; /* initialized to 0 */
 gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
 
-static char *sch_basename;
-
 static char *empty_footprint_name;
 
-static int verbose,
-	n_deleted,
-	n_added_ef,
-	n_fixed, n_PKG_removed_new, n_PKG_removed_old, n_preserved, n_changed_value, n_not_found, n_unknown, n_none, n_empty;
+static int n_deleted, n_added_ef, n_fixed, n_PKG_removed_new,
+           n_PKG_removed_old, n_preserved, n_changed_value, n_not_found,
+           n_unknown, n_none, n_empty;
 
-static int remove_unfound_elements = TRUE, quiet_mode = FALSE, preserve, fix_elements, bak_done, need_PKG_purge;
+static int bak_done, need_PKG_purge;
 
+#warning CONF TODO:
+static int remove_unfound_elements = TRUE, quiet_mode = FALSE;
+static int verbose, preserve, fix_elements;
 static char *element_search_path = NULL;
 static char *element_shell = PCB_LIBRARY_SHELL;
 static char *DefaultPcbFile = PCB_DEFAULT_PCB_FILE;
+static char *sch_basename;
+
 
 static char *loc_strndup(const char *str, size_t len)
 {
