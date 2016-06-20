@@ -50,7 +50,7 @@
 #define TRUE 1
 #define FALSE 0
 
-#define GSC2PCB_VERSION "1.6"
+#define GSCH2PCB_RND_VERSION "1.0.1"
 
 #define DEFAULT_PCB_INC "pcb.inc"
 
@@ -1088,7 +1088,7 @@ static void get_args(int argc, char ** argv)
 			if (*opt == '-')
 				++opt;
 			if (!strcmp(opt, "version") || !strcmp(opt, "V")) {
-				printf("gsch2pcb %s\n", GSC2PCB_VERSION);
+				printf("gsch2pcb-rnd %s\n", GSCH2PCB_RND_VERSION);
 				exit(0);
 			}
 			else if (!strcmp(opt, "verbose") || !strcmp(opt, "v")) {
