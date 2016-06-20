@@ -47,11 +47,12 @@ FP_OBJS    = @/local/pcb/OBJS@ ../../src/plug_footprint.o
 CONF_OBJS  = ../../src/vtlibrary.o ../../src/compat_fs.o ../../src/paths.o ../../src/conf.o ../../src/conf_core.o ../../src/hid_cfg.o ../../src/misc_util.o ../../src/unit.o ../../src/conf_internal.o ../../src/list_conf.o
 FP_LDFLAGS = @/local/pcb/LDFLAGS@
 FP_CFLAGS  = @/local/pcb/CFLAGS@
+OBJS=gsch2pcb.o help.o
 
 all: gsch2pcb-rnd$(EXE)
 
-gsch2pcb-rnd$(EXE): gsch2pcb.o $(CONF_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS) $(LHTOBJ)
-	$(CC) gsch2pcb.o $(CONF_OBJS)  $(FP_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(LHTOBJ) -o gsch2pcb-rnd$(EXE) $(LDFLAGS) $(FP_LDFLAGS)
+gsch2pcb-rnd$(EXE): $(OBJS)  $(CONF_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS) $(LHTOBJ)
+	$(CC) $(OBJS) $(CONF_OBJS)  $(FP_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(LHTOBJ) -o gsch2pcb-rnd$(EXE) $(LDFLAGS) $(FP_LDFLAGS)
 
 gsch2pcb.o: gsch2pcb.c ../../config.h  ../../config.manual.h  ../../config.auto.h
 	$(CC) -c $(CFLAGS) $(FP_CFLAGS) gsch2pcb.c -o gsch2pcb.o
@@ -96,7 +97,7 @@ uninstall:
 
 
 clean:
-	$(RM) gsch2pcb-rnd$(EXE) gsch2pcb.o
+	$(RM) gsch2pcb-rnd$(EXE) $(OBJS)
 
 include ../../Makefile.conf
 
