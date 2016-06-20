@@ -93,12 +93,12 @@ static int n_deleted, n_added_ef, n_fixed, n_PKG_removed_new,
 
 static int bak_done, need_PKG_purge;
 
-conf_gsch2pcb_rnd_t conf_gsch2pcb_rnd;
-#warning CONF TODO:
-static int remove_unfound_elements = TRUE, quiet_mode = FALSE;
-static int verbose, preserve, fix_elements;
+conf_gsch2pcb_rnd_t conf_g2pr;
+
+#warning CONF TODO: remove this in favor of rc/library_search_path
 static char *element_search_path = NULL;
-static char *element_shell = PCB_LIBRARY_SHELL;
+
+#warning CONF TODO: remove this in favor of rc/default_pcb_file
 static char *DefaultPcbFile = PCB_DEFAULT_PCB_FILE;
 static char *sch_basename;
 
@@ -248,14 +248,14 @@ static int build_and_run_command(const char * format_, ...)
 		*end = '\0';
 
 		/* we have something in the list, build & call command */
-		if (verbose) {
+		if (conf_g2pr.utils.gsch2pcb_rnd.verbose) {
 			printf("Running command:\n\t%s\n", cmd);
 			printf("%s", SEP_STRING);
 		}
 
 		f = popen(cmd, "r");
 		while(fgets(line, sizeof(line), f) != NULL) {
-			if (verbose)
+			if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 				fputs(line, stdout);
 		}
 
@@ -265,7 +265,7 @@ static int build_and_run_command(const char * format_, ...)
 			fprintf(stderr, "Failed to execute external program\n");
 		free(cmd);
 
-		if (verbose)
+		if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 			printf("\n%s", SEP_STRING);
 	}
 
@@ -297,7 +297,7 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 	if (gnetlist == NULL)
 		gnetlist = "gnetlist";
 
-	if (!verbose)
+	if (!conf_g2pr.utils.gsch2pcb_rnd.verbose)
 		verbose_str = "-q";
 
 	if (!build_and_run_command("%s %s -g pcbpins -o %s %L %L", gnetlist, verbose_str, pins_file, &extra_gnetlist_arg_list, largs))
@@ -605,7 +605,7 @@ char *search_element(PcbElement * el)
 		free(elname);
 		return NULL;
 	}
-	if (verbose > 1)
+	if (conf_g2pr.utils.gsch2pcb_rnd.verbose > 1)
 		printf("\tSearching directories looking for file element: %s\n", elname);
 	free(elname);
 	return path;
@@ -661,7 +661,7 @@ fprintf(stderr, "   val: %s\n", value);*/
 //    *s = '\0';
 
 	if (empty_footprint_name && !strcmp(el->description, empty_footprint_name)) {
-		if (verbose)
+		if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 			printf("%s: has the empty footprint attribute \"%s\" so won't be in the layout.\n", el->refdes, el->description);
 		n_empty += 1;
 		el->omit_PKG = TRUE;
@@ -756,22 +756,22 @@ static int add_elements(char * pcb_file)
 		}
 
 		{
-			if (verbose)
+			if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 				printf("%s: need new element for footprint  %s (value=%s)\n", el->refdes, el->description, el->value);
 
 			fp = fp_fopen(element_search_path, el->description, &fctx);
 
-			if (fp == NULL && verbose)
+			if (fp == NULL && conf_g2pr.utils.gsch2pcb_rnd.verbose)
 				printf("\tNo file element found.\n");
 
 			if ((fp != NULL) && insert_element(f_out, fp, el->description, el->refdes, el->value)) {
 				++n_added_ef;
-				if (verbose)
+				if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 					printf("%s: added new element for footprint %s (value=%s)\n", el->refdes, el->description, el->value);
 			}
 			else {
 				fprintf(stderr, "%s: can't find PCB element for footprint %s (value=%s)\n", el->refdes, el->description, el->value);
-				if (remove_unfound_elements && !fix_elements) {
+				if (conf_g2pr.utils.gsch2pcb_rnd.remove_unfound_elements && !conf_g2pr.utils.gsch2pcb_rnd.fix_elements) {
 					fprintf(stderr, "So device %s will not be in the layout.\n", el->refdes);
 					++n_PKG_removed_new;
 				}
@@ -785,7 +785,7 @@ static int add_elements(char * pcb_file)
 		}
 
 		pcb_element_free(el);
-		if (verbose)
+		if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 			printf("----\n");
 	}
 	fclose(f_in);
@@ -859,9 +859,9 @@ static void prune_elements(char * pcb_file, char * bak)
 
 	gdl_foreach(&pcb_element_list, &it, el) {
 		if (!el->still_exists) {
-			if ((preserve) || (el->nonetlist)) {
+			if ((conf_g2pr.utils.gsch2pcb_rnd.preserve) || (el->nonetlist)) {
 				++n_preserved;
-				if (verbose > 1)
+				if (conf_g2pr.utils.gsch2pcb_rnd.verbose > 1)
 					fprintf(stderr,
 									"Preserving PCB element not in the schematic:    %s (element   %s) %s\n",
 									el->refdes, el->description, el->nonetlist ? "nonetlist" : "");
@@ -897,9 +897,9 @@ static void prune_elements(char * pcb_file, char * bak)
 		}
 		el_exists = NULL;
 		if ((el = pcb_element_line_parse(s)) != NULL
-				&& (el_exists = pcb_element_exists(el, FALSE)) != NULL && !el_exists->still_exists && !preserve && !el->nonetlist) {
+				&& (el_exists = pcb_element_exists(el, FALSE)) != NULL && !el_exists->still_exists && !conf_g2pr.utils.gsch2pcb_rnd.preserve && !el->nonetlist) {
 			skipping = TRUE;
-			if (verbose)
+			if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 				printf("%s: deleted element %s (value=%s)\n", el->refdes, el->description, el->value);
 			pcb_element_free(el);
 			continue;
@@ -908,7 +908,7 @@ static void prune_elements(char * pcb_file, char * bak)
 			fmt = el->quoted_flags ? "Element%c\"%s\" \"%s\" \"%s\" \"%s\" %s %s%s\n" : "Element%c%s \"%s\" \"%s\" \"%s\" %s %s%s\n";
 			fprintf(f_out, fmt,
 							el->res_char, el->flags, el->description, el->refdes, el_exists->changed_value, el->x, el->y, el->tail);
-			if (verbose)
+			if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 				printf("%s: changed element %s value: %s -> %s\n", el->refdes, el->description, el->value, el_exists->changed_value);
 		}
 		else if (!strncmp(s, "PKG_", 4))
@@ -976,24 +976,24 @@ static int parse_config(char * config, char * arg)
 		s++;
 		*s = '\0';
 	}
-	if (verbose)
+	if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 		printf("    %s \"%s\"\n", config, arg ? arg : "");
 
 	if (!strcmp(config, "remove-unfound") || !strcmp(config, "r")) {
 		/* This is default behavior set in header section */
-		remove_unfound_elements = TRUE;
+		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/remove_unfound_elements", -1, "1", POL_OVERWRITE);
 		return 0;
 	}
 	if (!strcmp(config, "keep-unfound") || !strcmp(config, "k")) {
-		remove_unfound_elements = FALSE;
+		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/remove_unfound_elements", -1, "0", POL_OVERWRITE);
 		return 0;
 	}
 	if (!strcmp(config, "quiet") || !strcmp(config, "q")) {
-		quiet_mode = TRUE;
+		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/quiet_mode", -1, "1", POL_OVERWRITE);
 		return 0;
 	}
 	if (!strcmp(config, "preserve") || !strcmp(config, "p")) {
-		preserve = TRUE;
+		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/preserve", -1, "1", POL_OVERWRITE);
 		return 0;
 	}
 	if (!strcmp(config, "elements-dir-clr") || !strcmp(config, "c")) {
@@ -1003,7 +1003,7 @@ static int parse_config(char * config, char * arg)
 	}
 
 	if (!strcmp(config, "elements-shell") || !strcmp(config, "s")) {
-		element_shell = strdup(arg);
+		conf_set(CFR_CLI, "rc/library_shell", -1, arg, POL_OVERWRITE);
 	}
 	else if (!strcmp(config, "elements-dir") || !strcmp(config, "d")) {
 		char *s;
@@ -1046,7 +1046,7 @@ static void load_project(char * path)
 	f = fopen(path, "r");
 	if (!f)
 		return;
-	if (verbose)
+	if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 		printf("Reading project file: %s\n", path);
 	while (fgets(buf, sizeof(buf), f)) {
 		for (s = buf; *s == ' ' || *s == '\t' || *s == '\n'; ++s);
@@ -1094,7 +1094,9 @@ static void get_args(int argc, char ** argv)
 				exit(0);
 			}
 			else if (!strcmp(opt, "verbose") || !strcmp(opt, "v")) {
-				verbose += 1;
+				char tmp[16];
+				sprintf(tmp, "%d", conf_g2pr.utils.gsch2pcb_rnd.verbose + 1);
+				conf_set(CFR_CLI, "utils/gsch2pcb_rnd/verbose", -1, tmp, POL_OVERWRITE);
 				continue;
 			}
 			else if (!strcmp(opt, "c") || !strcmp(opt, "conf")) {
@@ -1107,7 +1109,7 @@ static void get_args(int argc, char ** argv)
 				continue;
 			}
 			else if (!strcmp(opt, "fix-elements")) {
-				fix_elements = TRUE;
+				conf_set(CFR_CLI, "utils/gsch2pcb_rnd/fix_elements", -1, "1", POL_OVERWRITE);
 				continue;
 			}
 			else if (!strcmp(opt, "gnetlist-arg")) {
@@ -1154,9 +1156,10 @@ void * GetLibraryMenuMemory(void *lib, int *idx)       { bozo(); }
 void DeleteLibraryMenuMemory(void *lib, int menuidx)   { bozo(); }
 void sort_library(void *lib)                           { bozo(); }
 
+#warning TODO: delete this API
 const char *fp_get_library_shell(void)
 {
-	return element_shell;
+	return conf_core.rc.library_shell;
 }
 
 void plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
@@ -1191,7 +1194,7 @@ int main(int argc, char ** argv)
 	conf_core_init();
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc) \
-	conf_reg_field(conf_gsch2pcb_rnd, field,isarray,type_name,cpath,cname,desc);
+	conf_reg_field(conf_g2pr, field,isarray,type_name,cpath,cname,desc);
 #include "gsch2pcb_rnd_conf_fields.h"
 
 	conf_load_all();
@@ -1255,12 +1258,12 @@ int main(int argc, char ** argv)
 		}
 	}
 
-	if (fix_elements)
+	if (conf_g2pr.utils.gsch2pcb_rnd.fix_elements)
 		update_element_descriptions(pcb_file_name, bak_file_name);
 	prune_elements(pcb_file_name, bak_file_name);
 
 	/* Report work done during processing */
-	if (verbose)
+	if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 		printf("\n");
 	printf("\n----------------------------------\n");
 	printf("Done processing.  Work performed:\n");
@@ -1307,11 +1310,11 @@ int main(int argc, char ** argv)
 		printf("%d elements not in the schematic preserved in %s.\n", n_preserved, pcb_file_name);
 
 	/* Tell user what to do next */
-	if (verbose)
+	if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 		printf("\n");
 
 	if (n_added_ef > 0)
-		next_steps(initial_pcb, quiet_mode);
+		next_steps(initial_pcb, conf_g2pr.utils.gsch2pcb_rnd.quiet_mode);
 
 	free(net_file_name);
 	free(pins_file_name);
