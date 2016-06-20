@@ -206,6 +206,13 @@ li:pcb_config {
 			}
 		} # plugins
 
+		ha:utils {
+			ha:gsch2pcb-rnd {
+				remove_unfound_elements = 1
+				quiet_mode = 0
+				verbose = 0
+			}
+		} # utils
 	} # main
 } # root
 
