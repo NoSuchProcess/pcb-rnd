@@ -80,6 +80,9 @@ include {../scconfig/Makefile.comp.inc}
 
 print [@
 
+gsch2pcb_rnd_conf_fields.h: gsch2pcb_rnd_conf.h
+	../../scconfig/gen_conf.sh < gsch2pcb_rnd_conf.h > gsch2pcb_rnd_conf_fields.h
+
 install_:
 	$(MKDIR) "$(BINDIR)" "$(LIBDIR)"
 	$(CPC) "`pwd`/gsch2pcb-rnd$(EXE)" "$(BINDIR)/gsch2pcb-rnd$(EXE)"

@@ -46,6 +46,7 @@
 #include "../config.h"
 #include "../src/plugins.h"
 #include "help.h"
+#include "gsch2pcb_rnd_conf.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -92,6 +93,7 @@ static int n_deleted, n_added_ef, n_fixed, n_PKG_removed_new,
 
 static int bak_done, need_PKG_purge;
 
+conf_gsch2pcb_rnd_t conf_gsch2pcb_rnd;
 #warning CONF TODO:
 static int remove_unfound_elements = TRUE, quiet_mode = FALSE;
 static int verbose, preserve, fix_elements;
@@ -1187,6 +1189,11 @@ int main(int argc, char ** argv)
 
 	conf_init();
 	conf_core_init();
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc) \
+	conf_reg_field(conf_gsch2pcb_rnd, field,isarray,type_name,cpath,cname,desc);
+#include "gsch2pcb_rnd_conf_fields.h"
+
 	conf_load_all();
 	conf_update(NULL);
 
