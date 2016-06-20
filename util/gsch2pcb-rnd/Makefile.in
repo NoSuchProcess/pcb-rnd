@@ -1,32 +1,32 @@
-put /local/pcb/CFLAGS {-I.. -I../src_3rd -DSCMDIR="\\"$(LIBDIR)\\""}
+put /local/pcb/CFLAGS {-I../.. -I../../src_3rd -DSCMDIR="\\"$(LIBDIR)\\""}
 include {../scconfig/template/debug.tmpasm}
 
 print [@
-PLUGDIR=../src_plugins
+PLUGDIR=../../src_plugins
 CFLAGS=@/local/pcb/CFLAGS@
 LDFLAGS=-lm
 EXE=@sys/ext_exe@
 CC=@cc/cc@
 
-HASHOBJ=../src_3rd/liblihata/genht/hash.o ../src_3rd/liblihata/genht/htsp.o
-VECTOBJ=../src_3rd/genvector/genvector.a
-LISTOBJ=../src_3rd/genlist/genlist.a
-SCCFOBJ=../scconfig/src/default/str.o
-QPARSE=../src_3rd/qparse/qparse.o
+HASHOBJ=../../src_3rd/liblihata/genht/hash.o ../../src_3rd/liblihata/genht/htsp.o
+VECTOBJ=../../src_3rd/genvector/genvector.a
+LISTOBJ=../../src_3rd/genlist/genlist.a
+SCCFOBJ=../../scconfig/src/default/str.o
+QPARSE=../../src_3rd/qparse/qparse.o
 LHTOBJ= \
-	../src_3rd/liblihata/parser.o \
-	../src_3rd/liblihata/dom.o \
-	../src_3rd/liblihata/dom_list.o \
-	../src_3rd/liblihata/dom_hash.o \
-	../src_3rd/liblihata/dom_table.o \
-	../src_3rd/liblihata/lihata.o \
-	../src_3rd/liblihata/hash_str.o \
-	../src_3rd/liblihata/tree.o \
-	../src_3rd/liblihata/tree_list.o \
-	../src_3rd/liblihata/tree_hash.o \
-	../src_3rd/liblihata/tree_table.o \
-	../src_3rd/liblihata/tree_symlink.o \
-	../src_3rd/liblihata/tree_path.o
+	../../src_3rd/liblihata/parser.o \
+	../../src_3rd/liblihata/dom.o \
+	../../src_3rd/liblihata/dom_list.o \
+	../../src_3rd/liblihata/dom_hash.o \
+	../../src_3rd/liblihata/dom_table.o \
+	../../src_3rd/liblihata/lihata.o \
+	../../src_3rd/liblihata/hash_str.o \
+	../../src_3rd/liblihata/tree.o \
+	../../src_3rd/liblihata/tree_list.o \
+	../../src_3rd/liblihata/tree_hash.o \
+	../../src_3rd/liblihata/tree_table.o \
+	../../src_3rd/liblihata/tree_symlink.o \
+	../../src_3rd/liblihata/tree_path.o
 @]
 
 put /local/pcb/tmpasm/buildin  {../src_plugins/Buildin.tmpasm}
@@ -43,28 +43,30 @@ include {../src_plugins/plugins_fp.tmpasm}
 
 print [@
 
-FP_OBJS    = @/local/pcb/OBJS@ ../src/plug_footprint.o
-CONF_OBJS  = ../src/vtlibrary.o ../src/compat_fs.o ../src/paths.o ../src/conf.o ../src/conf_core.o ../src/hid_cfg.o ../src/misc_util.o ../src/unit.o ../src/conf_internal.o ../src/list_conf.o
+FP_OBJS    = @/local/pcb/OBJS@ ../../src/plug_footprint.o
+CONF_OBJS  = ../../src/vtlibrary.o ../../src/compat_fs.o ../../src/paths.o ../../src/conf.o ../../src/conf_core.o ../../src/hid_cfg.o ../../src/misc_util.o ../../src/unit.o ../../src/conf_internal.o ../../src/list_conf.o
 FP_LDFLAGS = @/local/pcb/LDFLAGS@
 FP_CFLAGS  = @/local/pcb/CFLAGS@
+
+all: gsch2pcb-rnd$(EXE)
 
 gsch2pcb-rnd$(EXE): gsch2pcb.o $(CONF_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS) $(LHTOBJ)
 	$(CC) gsch2pcb.o $(CONF_OBJS)  $(FP_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(LHTOBJ) -o gsch2pcb-rnd$(EXE) $(LDFLAGS) $(FP_LDFLAGS)
 
-gsch2pcb.o: gsch2pcb.c ../config.h  ../config.manual.h  ../config.auto.h
+gsch2pcb.o: gsch2pcb.c ../../config.h  ../../config.manual.h  ../../config.auto.h
 	$(CC) -c $(CFLAGS) $(FP_CFLAGS) gsch2pcb.c -o gsch2pcb.o
 
 $(HASHOBJ):
-	cd ../src_3rd/liblihata/genht && make
+	cd ../../src_3rd/liblihata/genht && make
 
 $(VECTOBJ):
-	cd ../src_3rd/genvector && make
+	cd ../../src_3rd/genvector && make
 
 $(LISTOBJ):
-	cd ../src_3rd/genlist && make
+	cd ../../src_3rd/genlist && make
 
 $(QPARSE):
-	cd ../src_3rd/qparse && make
+	cd ../../src_3rd/qparse && make
 
 ##### module rules begin #####
 @/local/pcb/RULES@
@@ -80,7 +82,6 @@ print [@
 install_:
 	$(MKDIR) "$(BINDIR)" "$(LIBDIR)"
 	$(CPC) "`pwd`/gsch2pcb-rnd$(EXE)" "$(BINDIR)/gsch2pcb-rnd$(EXE)"
-	$(CPC) "`pwd`/fp2anim" "$(BINDIR)/fp2anim"
 	$(CPC) "`pwd`/gnet-gsch2pcb-rnd.scm" "$(LIBDIR)/gnet-gsch2pcb-rnd.scm"
 
 install:
@@ -91,17 +92,17 @@ linstall:
 
 uninstall:
 	$(RM) "$(BINDIR)/gsch2pcb-rnd$(EXE)"
-	$(RM) "$(BINDIR)/fp2anim"
 	$(RM) "$(LIBDIR)/gnet-gsch2pcb-rnd.scm"
 
 
 clean:
 	$(RM) gsch2pcb-rnd$(EXE) gsch2pcb.o
 
-include ../Makefile.conf
+include ../../Makefile.conf
 
 @]
 
 
-redir {fp_init.c}
-print /local/pcb/buildin_init 
+redir {gsch2pcb-rnd/fp_init.c}
+print /local/pcb/buildin_init
+
