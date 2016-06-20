@@ -393,7 +393,7 @@ int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, con
 	switch(n->type) {
 		case LHT_TEXT:
 			if (target == NULL) {
-				if (strncmp(path, "plugins/", 8) != 0) /* it is normal to have configuration for plugins not loaded - ignore these */
+				if ((strncmp(path, "plugins/", 8) != 0) && (strncmp(path, "utils/", 6) != 0))/* it is normal to have configuration for plugins and utils not loaded - ignore these */
 					hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht!\n", path);
 				break;
 			}
