@@ -1,10 +1,13 @@
 - replace settings with lihata (conf_*)
 	- color file: a plugin for importing/exporting colors
-	- gtk hid: clean up gthe #warnings
+	- gtk hid: clean up the #warnings
 	- gsch2pcb: use the same conf as pcb-rnd
 	- finish gtk preferences user pov (change is always saved to the design)
-		- color is not saved
-		- library path
+		- layer colors not saved
+		- color dialog:
+			- background color not loaded: catch conf change event in the gtk hid to reconfigure the color
+			- add a button to restore colors from the internal config
+		- library path: remap the library, test!
 	- menu bug:
 		- view/show layers stopped working (broke before 1.0.10)
 		- view/show current layer stopped working (broke before 1.0.10)
