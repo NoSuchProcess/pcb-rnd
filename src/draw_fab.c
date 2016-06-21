@@ -48,7 +48,7 @@
 #include "draw.h"
 #include "drill.h"
 #include "misc.h"
-#include "print.h"
+#include "draw_fab.h"
 #include "polygon.h"
 
 
@@ -169,7 +169,7 @@ static int count_drill_lines(DrillInfoTypePtr AllDrills)
 }
 
 
-int PrintFab_overhang(void)
+int DrawFab_overhang(void)
 {
 	DrillInfoTypePtr AllDrills = GetDrillInfo(PCB->Data);
 	int ds = count_drill_lines(AllDrills);
@@ -178,7 +178,7 @@ int PrintFab_overhang(void)
 	return (ds + 2) * TEXT_LINE;
 }
 
-void PrintFab(hidGC gc)
+void DrawFab(hidGC gc)
 {
 	DrillInfoTypePtr AllDrills;
 	int i, n, yoff, total_drills = 0, ds = 0;

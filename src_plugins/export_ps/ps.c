@@ -22,7 +22,7 @@
 #include "hid_nogui.h"
 #include "hid_draw_helpers.h"
 #include "ps.h"
-#include "print.h"
+#include "draw_fab.h"
 #include "hid_init.h"
 #include "hid_attrib.h"
 #include "hid_helper.h"
@@ -900,7 +900,7 @@ static int ps_set_layer(const char *name, int group, int empty)
 		 * sizes, they can always ignore this sheet. */
 		if (SL_TYPE(idx) == SL_FAB) {
 			Coord natural = boffset - MIL_TO_COORD(500) - PCB->MaxHeight / 2;
-			Coord needed = PrintFab_overhang();
+			Coord needed = DrawFab_overhang();
 			pcb_fprintf(global.f, "%% PrintFab overhang natural %mi, needed %mi\n", natural, needed);
 			if (needed > natural)
 				pcb_fprintf(global.f, "0 %mi translate\n", needed - natural);

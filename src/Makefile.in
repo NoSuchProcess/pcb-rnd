@@ -31,6 +31,7 @@ put /local/pcb/OBJS [@
 	crosshair.o
 	data.o
 	draw.o
+	draw_fab.o
 	drill.o
 	error.o
 	event.o
@@ -83,7 +84,7 @@ put /local/pcb/OBJS [@
 	polygon.o
 	polygon1.o
 	polygon_act.o
-	print.o
+
 	rats.o
 	rats_act.o
 	rats_patch.o

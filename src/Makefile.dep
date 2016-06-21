@@ -277,7 +277,7 @@
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h data.h global.h misc.h ../src_3rd/genvector/gds_char.h \
  mymem.h error.h draw.h pcb-printf.h plugins.h hid_helper.h hid.h \
- hid_nogui.h hid_draw_helpers.h ../src_plugins/export_ps/ps.h print.h \
+ hid_nogui.h hid_draw_helpers.h ../src_plugins/export_ps/ps.h draw_fab.h \
  hid_init.h hid_attrib.h hid_flags.h hid_actions.h conf_core.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -1607,7 +1607,7 @@ draw.o: draw.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
  list_conf.h data.h draw.h error.h misc.h mymem.h rotate.h rtree.h \
- print.h hid_helper.h
+ draw_fab.h hid_helper.h
 drill.o: drill.c ../config.h ../config.manual.h ../config.auto.h mymem.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
@@ -2172,7 +2172,7 @@ polygon_act.o: polygon_act.c ../config.h ../config.manual.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
  list_conf.h data.h action_helper.h undo.h funchash_core.h funchash.h \
  funchash_core_list.h polygon.h draw.h search.h misc_util.h crosshair.h
-print.o: print.c ../config.h ../config.manual.h ../config.auto.h data.h \
+draw_fab.o: draw_fab.c ../config.h ../config.manual.h ../config.auto.h data.h \
  global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -2181,7 +2181,7 @@ print.o: print.c ../config.h ../config.manual.h ../config.auto.h data.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h global_element.h \
  list_element.h draw.h drill.h misc.h ../src_3rd/genvector/gds_char.h \
- mymem.h print.h polygon.h
+ mymem.h draw_fab.h polygon.h
 rats.o: rats.c ../config.h ../config.manual.h ../config.auto.h \
  conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \

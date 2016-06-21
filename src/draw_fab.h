@@ -35,7 +35,7 @@
 
 #include "global.h"
 
-int PrintFab_overhang(void);
-void PrintFab(hidGC gc);
+int DrawFab_overhang(void);
+void DrawFab(hidGC gc);
 
 #endif

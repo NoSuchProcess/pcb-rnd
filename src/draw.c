@@ -39,7 +39,7 @@
 #include "misc.h"
 #include "rotate.h"
 #include "rtree.h"
-#include "print.h"
+#include "draw_fab.h"
 #include "hid_helper.h"
 
 #undef NDEBUG
@@ -780,7 +780,7 @@ static void DrawEverything(const BoxType * drawn_area)
 	}
 
 	if (gui->set_layer("fab", SL(FAB, 0), 0)) {
-		PrintFab(Output.fgGC);
+		DrawFab(Output.fgGC);
 		gui->end_layer();
 	}
 }
