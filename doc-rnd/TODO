@@ -78,7 +78,7 @@ CLEANUP #6:
 		- either remember dynamic menus in a separate list so they can be rebuilt
 		- or provide hooks and let plugins deal with it
 	- gpmi: auto-remove menus by cookie (TODO#2)
-	- load new res on the fly:
+	- load new res on the fly (replace the menu system):
 		- low level reload code (re-add the dynamic menus too!)
 		- action to reload if file name is known
 		- gui load dialog with tags listed
