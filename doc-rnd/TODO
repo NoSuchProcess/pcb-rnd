@@ -1,4 +1,5 @@
 - replace settings with lihata (conf_*)
+	- "keepaway" vs. "clearance" renaming?
 	- color file: a plugin for importing/exporting colors
 	- gtk hid: clean up the #warnings
 	- gsch2pcb: use the same conf as pcb-rnd
@@ -7,7 +8,7 @@
 		- color dialog:
 			- background color not loaded: catch conf change event in the gtk hid to reconfigure the color
 			- add a button to restore colors from the internal config
-		- library path: remap the library, test!
+		- library path: remap the library after a change, test!
 	- menu bug:
 		- view/show layers stopped working (broke before 1.0.10)
 		- view/show current layer stopped working (broke before 1.0.10)
@@ -52,13 +53,11 @@ CLEANUP #5
 		- embedded version?
 		- warn when try to write text on pcb?
 	- finish gtk hid preferences config pov
-- "keepaway" vs. "clearance" renaming?
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
 - scconfig: check for bison/flex, do not regenerate languages if they are missing
 - next_gui: keep them open, hide
 - look for #warnings
 - fix librarychanged: disable update of gedasymbols on-start, make it an explicit refresh button
-- move print.[ch]
 - libstroke: zoom
 - cleanup/rewrite resources:
 	- load/swap menus (TODO#1)
@@ -101,7 +100,7 @@ CLEANUP #6:
 	- files
 		- default font
 	- action (--show-paths!) and dialog box to print where the actual files are coming from
-	- project specific menus from extra lihata files
+	- project specific menus from extra lihata files - maybe from project.lht
 - main.c:
 	- SIGPIPE - do we need it? probably yes, because we can run commands
 

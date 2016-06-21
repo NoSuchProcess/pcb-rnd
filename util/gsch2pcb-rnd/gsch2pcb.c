@@ -100,6 +100,8 @@ static char *element_search_path = NULL;
 
 #warning CONF TODO: remove this in favor of rc/default_pcb_file
 static char *DefaultPcbFile = PCB_DEFAULT_PCB_FILE;
+
+#warning CONF TODO: move this to the conf
 static char *sch_basename;
 
 
