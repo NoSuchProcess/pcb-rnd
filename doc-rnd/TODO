@@ -1,5 +1,5 @@
 - replace settings with lihata (conf_*)
-	- "keepaway" vs. "clearance" renaming?
+	- make route style number dynamic?
 	- color file: a plugin for importing/exporting colors
 	- gtk hid: clean up the #warnings
 	- gsch2pcb: use the same conf as pcb-rnd
@@ -40,6 +40,7 @@
 			- gnetlist_program, make_program from env var
 		- gtk, preferences dialog, user pov
 		- test if all plugins work from .so
+		- test clearance + drc clearance
 
 BUGS:
 	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
