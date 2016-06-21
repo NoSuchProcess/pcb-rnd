@@ -238,7 +238,7 @@ typedef struct {
 	Coord Thick,									/* line thickness */
 	  Diameter,										/* via diameter */
 	  Hole,												/* via drill hole */
-	  Keepaway;										/* min. separation from other nets */
+	  Clearance;									/* min. separation from other nets */
 	char *Name;
 	int index;
 } RouteStyleType, *RouteStyleTypePtr;

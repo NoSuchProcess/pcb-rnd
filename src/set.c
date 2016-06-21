@@ -110,16 +110,16 @@ void pcb_use_route_style(RouteStyleType * rst)
 	conf_set_design("design/line_thickness", "%$mS", rst->Thick);
 	conf_set_design("design/via_thickness", "%$mS", rst->Diameter);
 	conf_set_design("design/via_drilling_hole", "%$mS", rst->Hole);
-	conf_set_design("design/keepaway", "%$mS", rst->Keepaway);
+	conf_set_design("design/clearance", "%$mS", rst->Clearance);
 }
 
 /* ---------------------------------------------------------------------------
- * sets a keepaway width
+ * sets a clearance width
  */
-void SetKeepawayWidth(Coord Width)
+void SetClearanceWidth(Coord Width)
 {
 	if (Width <= MAX_LINESIZE) {
-		conf_set_design("design/keepaway", "%$mS", Width);
+		conf_set_design("design/clearance", "%$mS", Width);
 	}
 }
 

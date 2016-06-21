@@ -143,10 +143,10 @@ static hidGC ar_gc = 0;
 #define EXPENSIVE 3e28
 /* round up "half" thicknesses */
 #define HALF_THICK(x) (((x)+1)/2)
-/* a styles maximum bloat is its keepaway plus the larger of its via radius
+/* a styles maximum bloat is its clearance plus the larger of its via radius
  * or line half-thickness. */
 #define BLOAT(style)\
-	((style)->Keepaway + HALF_THICK((style)->Thick))
+	((style)->Clearance + HALF_THICK((style)->Thick))
 /* conflict penalty is less for traces laid down during previous pass than
  * it is for traces already laid down in this pass. */
 #define CONFLICT_LEVEL(rb)\
@@ -204,7 +204,7 @@ static hidGC ar_gc = 0;
  * because these are not actually in the allowed box.
  *
  * All routeboxes *except* EXPANSION_AREAS now have their "box" bloated by
- * their particular required keepaway. This simplifies the tree searching.
+ * their particular required clearance. This simplifies the tree searching.
  * the "sbox" contains the unbloated box.
  */
 /* ---------------------------------------------------------------------------
@@ -261,7 +261,7 @@ typedef struct routebox {
 		 * instead of from upper-left to bottom-right. */
 		unsigned bl_to_ur:1;
 		/* mark polygons which are "transparent" for via-placement; that is,
-		 * vias through the polygon will automatically be given a keepaway
+		 * vias through the polygon will automatically be given a clearance
 		 * and will not electrically connect to the polygon. */
 		unsigned clear_poly:1;
 		/* this marks "conflicting" routes that must be torn up to obtain
@@ -307,8 +307,8 @@ typedef struct routedata {
 	RouteStyleType defaultstyle;
 	/* style structures */
 	RouteStyleType *styles[NUM_STYLES + 1];
-	/* what is the maximum bloat (keepaway+line half-width or
-	 * keepaway+via_radius) for any style we've seen? */
+	/* what is the maximum bloat (clearance+line half-width or
+	 * clearance+via_radius) for any style we've seen? */
 	Coord max_bloat;
 	Coord max_keep;
 	mtspace_t *mtspace;
@@ -541,15 +541,15 @@ static void RemoveFromNet(routebox_t * a, enum boxlist which)
 	return;
 }
 
-static void init_const_box(routebox_t * rb, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord keepaway)
+static void init_const_box(routebox_t * rb, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord clearance)
 {
 	BoxType *bp = (BoxType *) & rb->box;	/* note discarding const! */
 	assert(!rb->flags.inited);
 	assert(X1 <= X2 && Y1 <= Y2);
-	bp->X1 = X1 - keepaway;
-	bp->Y1 = Y1 - keepaway;
-	bp->X2 = X2 + keepaway;
-	bp->Y2 = Y2 + keepaway;
+	bp->X1 = X1 - clearance;
+	bp->Y1 = Y1 - clearance;
+	bp->X2 = X2 + clearance;
+	bp->Y2 = Y2 + clearance;
 	bp = (BoxType *) & rb->sbox;
 	bp->X1 = X1;
 	bp->Y1 = Y1;
@@ -599,7 +599,7 @@ static routebox_t *AddPin(PointerListType layergroupboxes[], PinTypePtr pin, boo
 									 /*X1 */ pin->X - ht,
 									 /*Y1 */ pin->Y - ht,
 									 /*X2 */ pin->X + ht,
-									 /*Y2 */ pin->Y + ht, style->Keepaway);
+									 /*Y2 */ pin->Y + ht, style->Clearance);
 		/* set aux. properties */
 		if (is_via) {
 			(*rbpp)->type = VIA;
@@ -645,7 +645,7 @@ static routebox_t *AddPad(PointerListType layergroupboxes[], ElementTypePtr elem
 								 /*Y1 */ MIN(pad->Point1.Y, pad->Point2.Y) - halfthick,
 								 /*X2 */ MAX(pad->Point1.X, pad->Point2.X) + halfthick,
 								 /*Y2 */ MAX(pad->Point1.Y, pad->Point2.Y) + halfthick,
-								 style->Keepaway);
+								 style->Clearance);
 	/* kludge for non-manhattan pads (which are not allowed at present) */
 	if (pad->Point1.X != pad->Point2.X && pad->Point1.Y != pad->Point2.Y)
 		(*rbpp)->flags.nonstraight = 1;
@@ -680,7 +680,7 @@ static routebox_t *AddLine(PointerListType layergroupboxes[], int layergroup, Li
 								 /*X2 */ MAX(line->Point1.X,
 														 line->Point2.X) + HALF_THICK(line->Thickness),
 								 /*Y2 */ MAX(line->Point1.Y,
-														 line->Point2.Y) + HALF_THICK(line->Thickness), style->Keepaway);
+														 line->Point2.Y) + HALF_THICK(line->Thickness), style->Clearance);
 	/* kludge for non-manhattan lines */
 	if (line->Point1.X != line->Point2.X && line->Point1.Y != line->Point2.Y) {
 		(*rbpp)->flags.nonstraight = 1;
@@ -706,7 +706,7 @@ static routebox_t *AddIrregularObstacle(PointerListType layergroupboxes[],
 																				Coord X2, Coord Y2, Cardinal layergroup, void *parent, RouteStyleType * style)
 {
 	routebox_t **rbpp;
-	Coord keep = style->Keepaway;
+	Coord keep = style->Clearance;
 	assert(layergroupboxes && parent);
 	assert(X1 <= X2 && Y1 <= Y2);
 	assert(0 <= layergroup && layergroup < max_group);
@@ -786,7 +786,7 @@ static int __found_one_on_lg(const BoxType * box, void *cl)
 
 	if (rb->flags.nonstraight)
 		return 0;
-	sb = shrink_box(&rb->box, rb->style->Keepaway);
+	sb = shrink_box(&rb->box, rb->style->Clearance);
 	if (inf->query.X1 >= sb.X2 || inf->query.X2 <= sb.X1 || inf->query.Y1 >= sb.Y2 || inf->query.Y2 <= sb.Y1)
 		return 0;
 	inf->winner = rb;
@@ -896,9 +896,9 @@ static routedata_t *CreateRouteData()
 	rd->defaultstyle.Thick = conf_core.design.line_thickness;
 	rd->defaultstyle.Diameter = conf_core.design.via_thickness;
 	rd->defaultstyle.Hole = conf_core.design.via_drilling_hole;
-	rd->defaultstyle.Keepaway = conf_core.design.keepaway;
+	rd->defaultstyle.Clearance = conf_core.design.clearance;
 	rd->max_bloat = BLOAT(&rd->defaultstyle);
-	rd->max_keep = conf_core.design.keepaway;
+	rd->max_keep = conf_core.design.clearance;
 	/* create styles structures */
 	bbox.X1 = bbox.Y1 = 0;
 	bbox.X2 = PCB->MaxWidth;
@@ -1013,7 +1013,7 @@ static routedata_t *CreateRouteData()
 						MergeNets(last_in_net, rb, NET);
 					last_in_subnet = last_in_net = rb;
 					rd->max_bloat = MAX(rd->max_bloat, BLOAT(rb->style));
-					rd->max_keep = MAX(rd->max_keep, rb->style->Keepaway);
+					rd->max_keep = MAX(rd->max_keep, rb->style->Clearance);
 				}
 				END_LOOP;
 			}
@@ -1130,13 +1130,13 @@ static routedata_t *CreateRouteData()
 		rd->mtspace = mtspace_create();
 
 		/* create "empty-space" structures for via placement (now that we know
-		 * appropriate keepaways for all the fixed elements) */
+		 * appropriate clearances for all the fixed elements) */
 		for (i = 0; i < max_group; i++) {
 			POINTER_LOOP(&layergroupboxes[i]);
 			{
 				routebox_t *rb = (routebox_t *) * ptr;
 				if (!rb->flags.clear_poly)
-					mtspace_add(rd->mtspace, &rb->box, FIXED, rb->style->Keepaway);
+					mtspace_add(rd->mtspace, &rb->box, FIXED, rb->style->Clearance);
 			}
 			END_LOOP;
 		}
@@ -1290,7 +1290,7 @@ static cost_t cost_to_routebox(const CheapPointType * p, Cardinal point_layer, c
 static BoxType bloat_routebox(routebox_t * rb)
 {
 	BoxType r;
-	Coord keepaway;
+	Coord clearance;
 	assert(__routebox_is_good(rb));
 
 	if (rb->flags.nobloat)
@@ -1299,8 +1299,8 @@ static BoxType bloat_routebox(routebox_t * rb)
 	/* Obstacle exclusion zones get bloated by the larger of
 	 * the two required clearances plus half the track width.
 	 */
-	keepaway = MAX(AutoRouteParameters.style->Keepaway, rb->style->Keepaway);
-	r = bloat_box(&rb->sbox, keepaway + HALF_THICK(AutoRouteParameters.style->Thick));
+	clearance = MAX(AutoRouteParameters.style->Clearance, rb->style->Clearance);
+	r = bloat_box(&rb->sbox, clearance + HALF_THICK(AutoRouteParameters.style->Thick));
 	return r;
 }
 
@@ -1854,11 +1854,11 @@ static int __Expand_this_rect(const BoxType * box, void *cl)
 		return 0;
 
 	/* The inflated box outer edges include its own 
-	 * track width plus its own keepaway.
+	 * track width plus its own clearance.
 	 *
 	 * To check for intersection, we need to expand
-	 * anything with greater keepaway by its excess
-	 * keepaway.
+	 * anything with greater clearance by its excess
+	 * clearance.
 	 *
 	 * If something has nobloat then we need to shrink
 	 * the inflated box back and see if it still touches.
@@ -1872,8 +1872,8 @@ static int __Expand_this_rect(const BoxType * box, void *cl)
 			return 0;									/* doesn't touch */
 	}
 	else {
-		if (rb->style->Keepaway > res->keep)
-			rbox = bloat_box(&rb->sbox, rb->style->Keepaway - res->keep);
+		if (rb->style->Clearance > res->keep)
+			rbox = bloat_box(&rb->sbox, rb->style->Clearance - res->keep);
 		else
 			rbox = rb->sbox;
 
@@ -1944,8 +1944,8 @@ static int __Expand_this_rect(const BoxType * box, void *cl)
 static bool boink_box(routebox_t * rb, struct E_result *res, direction_t dir)
 {
 	Coord bloat;
-	if (rb->style->Keepaway > res->keep)
-		bloat = res->keep - rb->style->Keepaway;
+	if (rb->style->Clearance > res->keep)
+		bloat = res->keep - rb->style->Clearance;
 	else
 		bloat = 0;
 	if (rb->flags.nobloat)
@@ -1970,16 +1970,16 @@ static bool boink_box(routebox_t * rb, struct E_result *res, direction_t dir)
 
 /* main Expand routine.
  *
- * The expansion probe edge includes the keepaway and half thickness
+ * The expansion probe edge includes the clearance and half thickness
  * as the search is performed in order to see everything relevant.
  * The result is backed off by this amount before being returned.
  * Targets (and other no-bloat routeboxes) go all the way to touching.
  * This is accomplished by backing off the probe edge when checking
  * for touch against such an object. Usually the expanding edge
  * bumps into neighboring pins on the same device that require a
- * keepaway, preventing seeing a target immediately. Rather than await
+ * clearance, preventing seeing a target immediately. Rather than await
  * another expansion to actually touch the target, the edge breaker code 
- * looks past the keepaway to see these targets even though they 
+ * looks past the clearance to see these targets even though they 
  * weren't actually touched in the expansion.
  */
 struct E_result *Expand(rtree_t * rtree, edge_t * e, const BoxType * box)
@@ -1994,7 +1994,7 @@ struct E_result *Expand(rtree_t * rtree, edge_t * e, const BoxType * box)
 	/* the inflated box must be bloated in all directions that it might
 	 * hit something in order to guarantee that we see object in the
 	 * tree it might hit. The tree holds objects bloated by their own
-	 * keepaway so we are guaranteed to honor that.
+	 * clearance so we are guaranteed to honor that.
 	 */
 	switch (e->expand_dir) {
 	case ALL:
@@ -2081,7 +2081,7 @@ struct E_result *Expand(rtree_t * rtree, edge_t * e, const BoxType * box)
 		noshrink = ans.done = 0;
 		assert(0);
 	}
-	ans.keep = e->rb->style->Keepaway;
+	ans.keep = e->rb->style->Clearance;
 	ans.parent = nonhomeless_parent(e->rb);
 	r_search(rtree, &ans.inflated, NULL, __Expand_this_rect, &ans);
 /* because the overlaping boxes are found in random order, some blockers
@@ -2127,8 +2127,8 @@ struct E_result *Expand(rtree_t * rtree, edge_t * e, const BoxType * box)
 static int blocker_to_heap(heap_t * heap, routebox_t * rb, BoxType * box, direction_t dir)
 {
 	BoxType b = rb->sbox;
-	if (rb->style->Keepaway > AutoRouteParameters.style->Keepaway)
-		b = bloat_box(&b, rb->style->Keepaway - AutoRouteParameters.style->Keepaway);
+	if (rb->style->Clearance > AutoRouteParameters.style->Clearance)
+		b = bloat_box(&b, rb->style->Clearance - AutoRouteParameters.style->Clearance);
 	b = clip_box(&b, box);
 	assert(box_is_good(&b));
 	/* we want to look at the blockers clockwise around the box */
@@ -2388,8 +2388,8 @@ static int __GatherBlockers(const BoxType * box, void *cl)
 	if (rb->flags.source && bi->ignore_source)
 		return 0;
 	b = rb->sbox;
-	if (rb->style->Keepaway > AutoRouteParameters.style->Keepaway)
-		b = bloat_box(&b, rb->style->Keepaway - AutoRouteParameters.style->Keepaway);
+	if (rb->style->Clearance > AutoRouteParameters.style->Clearance)
+		b = bloat_box(&b, rb->style->Clearance - AutoRouteParameters.style->Clearance);
 	if (b.X2 <= bi->box.X1 || b.X1 >= bi->box.X2 || b.Y1 >= bi->box.Y2 || b.Y2 <= bi->box.Y1)
 		return 0;
 	return blocker_to_heap(bi->heap, rb, &bi->box, bi->dir);
@@ -2839,12 +2839,12 @@ static void RD_DrawVia(routedata_t * rd, Coord X, Coord Y, Coord radius, routebo
 {
 	routebox_t *rb, *first_via = NULL;
 	int i;
-	int ka = AutoRouteParameters.style->Keepaway;
+	int ka = AutoRouteParameters.style->Clearance;
 	PinType *live_via = NULL;
 
 	if (conf_core.editor.live_routing) {
 		live_via = CreateNewVia(PCB->Data, X, Y, radius * 2,
-														2 * AutoRouteParameters.style->Keepaway, 0, AutoRouteParameters.style->Hole, NULL, MakeFlags(0));
+														2 * AutoRouteParameters.style->Clearance, 0, AutoRouteParameters.style->Hole, NULL, MakeFlags(0));
 		if (live_via != NULL)
 			DrawVia(live_via);
 	}
@@ -2871,7 +2871,7 @@ static void RD_DrawVia(routedata_t * rd, Coord X, Coord Y, Coord radius, routebo
 			rb->parent.via = NULL;		/* indicates that not on PCB yet */
 			first_via = rb;
 			/* only add the first via to mtspace, not the shadows too */
-			mtspace_add(rd->mtspace, &rb->box, rb->flags.is_odd ? ODD : EVEN, rb->style->Keepaway);
+			mtspace_add(rd->mtspace, &rb->box, rb->flags.is_odd ? ODD : EVEN, rb->style->Clearance);
 		}
 		else {
 			rb->type = VIA_SHADOW;
@@ -2906,7 +2906,7 @@ RD_DrawLine(routedata_t * rd,
 	static routebox_t *qsn;
 
 	routebox_t *rb;
-	Coord ka = AutoRouteParameters.style->Keepaway;
+	Coord ka = AutoRouteParameters.style->Clearance;
 
 	/* don't draw zero-length segments. */
 	if (X1 == X2 && Y1 == Y2)
@@ -2980,7 +2980,7 @@ RD_DrawLine(routedata_t * rd,
 
 	/* and to the via space structures */
 	if (AutoRouteParameters.use_vias)
-		mtspace_add(rd->mtspace, &rb->box, rb->flags.is_odd ? ODD : EVEN, rb->style->Keepaway);
+		mtspace_add(rd->mtspace, &rb->box, rb->flags.is_odd ? ODD : EVEN, rb->style->Clearance);
 	usedGroup[rb->group] = true;
 	/* and queue this one */
 	qX1 = X1;
@@ -3056,26 +3056,26 @@ RD_DrawManhattanLine(routedata_t * rd,
 static void add_clearance(CheapPointType * nextpoint, const BoxType * b)
 {
 	if (nextpoint->X == b->X1) {
-		if (nextpoint->X + AutoRouteParameters.style->Keepaway < (b->X1 + b->X2) / 2)
-			nextpoint->X += AutoRouteParameters.style->Keepaway;
+		if (nextpoint->X + AutoRouteParameters.style->Clearance < (b->X1 + b->X2) / 2)
+			nextpoint->X += AutoRouteParameters.style->Clearance;
 		else
 			nextpoint->X = (b->X1 + b->X2) / 2;
 	}
 	else if (nextpoint->X == b->X2) {
-		if (nextpoint->X - AutoRouteParameters.style->Keepaway > (b->X1 + b->X2) / 2)
-			nextpoint->X -= AutoRouteParameters.style->Keepaway;
+		if (nextpoint->X - AutoRouteParameters.style->Clearance > (b->X1 + b->X2) / 2)
+			nextpoint->X -= AutoRouteParameters.style->Clearance;
 		else
 			nextpoint->X = (b->X1 + b->X2) / 2;
 	}
 	else if (nextpoint->Y == b->Y1) {
-		if (nextpoint->Y + AutoRouteParameters.style->Keepaway < (b->Y1 + b->Y2) / 2)
-			nextpoint->Y += AutoRouteParameters.style->Keepaway;
+		if (nextpoint->Y + AutoRouteParameters.style->Clearance < (b->Y1 + b->Y2) / 2)
+			nextpoint->Y += AutoRouteParameters.style->Clearance;
 		else
 			nextpoint->Y = (b->Y1 + b->Y2) / 2;
 	}
 	else if (nextpoint->Y == b->Y2) {
-		if (nextpoint->Y - AutoRouteParameters.style->Keepaway > (b->Y1 + b->Y2) / 2)
-			nextpoint->Y -= AutoRouteParameters.style->Keepaway;
+		if (nextpoint->Y - AutoRouteParameters.style->Clearance > (b->Y1 + b->Y2) / 2)
+			nextpoint->Y -= AutoRouteParameters.style->Clearance;
 		else
 			nextpoint->Y = (b->Y1 + b->Y2) / 2;
 	}
@@ -3336,19 +3336,19 @@ add_via_sites(struct routeone_state *s,
 							mtspace_t * mtspace, routebox_t * within,
 							conflict_t within_conflict_level, edge_t * parent_edge, rtree_t * targets, Coord shrink, bool in_plane)
 {
-	Coord radius, keepaway;
+	Coord radius, clearance;
 	vetting_t *work;
 	BoxType region = shrink_routebox(within);
 	shrink_box(&region, shrink);
 
 	radius = HALF_THICK(AutoRouteParameters.style->Diameter);
-	keepaway = AutoRouteParameters.style->Keepaway;
+	clearance = AutoRouteParameters.style->Clearance;
 	assert(AutoRouteParameters.use_vias);
 	/* XXX: need to clip 'within' to shrunk_pcb_bounds, because when
 	   XXX: routing with conflicts may poke over edge. */
 
 	/* ask for a via box near our cost_point first */
-	work = mtspace_query_rect(mtspace, &region, radius, keepaway,
+	work = mtspace_query_rect(mtspace, &region, radius, clearance,
 														NULL, vss->free_space_vec,
 														vss->lo_conflict_space_vec,
 														vss->hi_conflict_space_vec,
@@ -3363,13 +3363,13 @@ do_via_search(edge_t * search, struct routeone_state *s,
 							struct routeone_via_site_state *vss, mtspace_t * mtspace, rtree_t * targets)
 {
 	int i, j, count = 0;
-	Coord radius, keepaway;
+	Coord radius, clearance;
 	vetting_t *work;
 	routebox_t *within;
 	conflict_t within_conflict_level;
 
 	radius = HALF_THICK(AutoRouteParameters.style->Diameter);
-	keepaway = AutoRouteParameters.style->Keepaway;
+	clearance = AutoRouteParameters.style->Clearance;
 	work = mtspace_query_rect(mtspace, NULL, 0, 0,
 														search->work, vss->free_space_vec,
 														vss->lo_conflict_space_vec,
@@ -3388,8 +3388,8 @@ do_via_search(edge_t * search, struct routeone_state *s,
 				free(area);
 				continue;
 			}
-			/* answers are bloated by radius + keepaway */
-			cliparea = shrink_box(area, radius + keepaway);
+			/* answers are bloated by radius + clearance */
+			cliparea = shrink_box(area, radius + clearance);
 			close_box(&cliparea);
 			free(area);
 			assert(box_is_good(&cliparea));
@@ -3546,7 +3546,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 
 	assert(rd && from);
 	result.route_had_conflicts = 0;
-	/* no targets on to/from net need keepaway areas */
+	/* no targets on to/from net need clearance areas */
 	LIST_LOOP(from, same_net, p);
 	p->flags.nobloat = 1;
 	END_LOOP;
@@ -4011,7 +4011,7 @@ static void InitAutoRouteParameters(int pass, RouteStyleType * style, bool with_
 	int i;
 	/* routing style */
 	AutoRouteParameters.style = style;
-	AutoRouteParameters.bloat = style->Keepaway + HALF_THICK(style->Thick);
+	AutoRouteParameters.bloat = style->Clearance + HALF_THICK(style->Thick);
 	/* costs */
 	AutoRouteParameters.ViaCost = INCH_TO_COORD(3.5) + style->Diameter * (is_smoothing ? 80 : 30);
 	AutoRouteParameters.LastConflictPenalty = (400 * pass / passes + 2) / (pass + 1);
@@ -4195,9 +4195,9 @@ struct routeall_status RouteAll(routedata_t * rd)
 						RemoveFromNet(p, SUBNET);
 					}
 					if (AutoRouteParameters.use_vias && p->type != VIA_SHADOW && p->type != PLANE) {
-						mtspace_remove(rd->mtspace, &p->box, p->flags.is_odd ? ODD : EVEN, p->style->Keepaway);
+						mtspace_remove(rd->mtspace, &p->box, p->flags.is_odd ? ODD : EVEN, p->style->Clearance);
 						if (!rip)
-							mtspace_add(rd->mtspace, &p->box, p->flags.is_odd ? EVEN : ODD, p->style->Keepaway);
+							mtspace_add(rd->mtspace, &p->box, p->flags.is_odd ? EVEN : ODD, p->style->Clearance);
 					}
 					if (rip) {
 						if (conf_core.editor.live_routing)
@@ -4457,7 +4457,7 @@ bool IronDownAllUnfixedPaths(routedata_t * rd)
 					/* using CreateDrawn instead of CreateNew concatenates sequential lines */
 					p->parent.line = CreateDrawnLineOnLayer
 						(layer, b.X1, b.Y1, b.X2, b.Y2,
-						 p->style->Thick, p->style->Keepaway * 2, MakeFlags(AUTOFLAG | (conf_core.editor.clear_line ? CLEARLINEFLAG : 0)));
+						 p->style->Thick, p->style->Clearance * 2, MakeFlags(AUTOFLAG | (conf_core.editor.clear_line ? CLEARLINEFLAG : 0)));
 
 					if (p->parent.line) {
 						AddObjectToCreateUndoList(LINE_TYPE, layer, p->parent.line, p->parent.line);
@@ -4476,7 +4476,7 @@ bool IronDownAllUnfixedPaths(routedata_t * rd)
 						pp->parent.via =
 							CreateNewVia(PCB->Data, b.X1 + radius,
 													 b.Y1 + radius,
-													 pp->style->Diameter, 2 * pp->style->Keepaway, 0, pp->style->Hole, NULL, MakeFlags(AUTOFLAG));
+													 pp->style->Diameter, 2 * pp->style->Clearance, 0, pp->style->Hole, NULL, MakeFlags(AUTOFLAG));
 						assert(pp->parent.via);
 						if (pp->parent.via) {
 							AddObjectToCreateUndoList(VIA_TYPE, pp->parent.via, pp->parent.via, pp->parent.via);
@@ -4539,7 +4539,7 @@ bool AutoRoute(bool selected)
 
 	for (i = 0; i < NUM_STYLES; i++) {
 		if (PCB->RouteStyle[i].Thick == 0 ||
-				PCB->RouteStyle[1].Diameter == 0 || PCB->RouteStyle[1].Hole == 0 || PCB->RouteStyle[i].Keepaway == 0) {
+				PCB->RouteStyle[1].Diameter == 0 || PCB->RouteStyle[1].Hole == 0 || PCB->RouteStyle[i].Clearance == 0) {
 			Message("You must define proper routing styles\n" "before auto-routing.\n");
 			return (false);
 		}

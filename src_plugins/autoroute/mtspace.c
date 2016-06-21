@@ -60,7 +60,7 @@ RCSID("$Id$");
 
 typedef struct mtspacebox {
 	const BoxType box;
-	Coord keepaway;								/* the smallest keepaway around this box */
+	Coord clearance;								/* the smallest clearance around this box */
 } mtspacebox_t;
 
 /* this is an mtspace_t */
@@ -82,20 +82,20 @@ struct vetting {
 	heap_or_vector no_hi;
 	heap_or_vector hi_candidate;
 	Coord radius;
-	Coord keepaway;
+	Coord clearance;
 	CheapPointType desired;
 };
 
 #define SPECIAL 823157
 
-mtspacebox_t *mtspace_create_box(const BoxType * box, Coord keepaway)
+mtspacebox_t *mtspace_create_box(const BoxType * box, Coord clearance)
 {
 	mtspacebox_t *mtsb;
 	assert(box_is_good(box));
 	mtsb = (mtspacebox_t *) malloc(sizeof(*mtsb));
-	/* the box was sent to us pre-bloated by the keepaway amount */
+	/* the box was sent to us pre-bloated by the clearance amount */
 	*((BoxTypePtr) & mtsb->box) = *box;
-	mtsb->keepaway = keepaway;
+	mtsb->clearance = clearance;
 	assert(box_is_good(&mtsb->box));
 	return mtsb;
 }
@@ -126,7 +126,7 @@ void mtspace_destroy(mtspace_t ** mtspacep)
 }
 
 struct mts_info {
-	Coord keepaway;
+	Coord clearance;
 	BoxType box;
 	rtree_t *tree;
 	jmp_buf env;
@@ -140,7 +140,7 @@ static int mts_remove_one(const BoxType * b, void *cl)
 	/* there can be duplicate boxes, we just remove one */
 	/* the info box is pre-bloated, so just check equality */
 	if (b->X1 == info->box.X1 && b->X2 == info->box.X2 &&
-			b->Y1 == info->box.Y1 && b->Y2 == info->box.Y2 && box->keepaway == info->keepaway) {
+			b->Y1 == info->box.Y1 && b->Y2 == info->box.Y2 && box->clearance == info->clearance) {
 		r_delete_entry(info->tree, b);
 		longjmp(info->env, 1);
 	}
@@ -160,19 +160,19 @@ rtree_t *which_tree(mtspace_t * mtspace, mtspace_type_t which)
 }
 
 /* add a space-filler to the empty space representation.  */
-void mtspace_add(mtspace_t * mtspace, const BoxType * box, mtspace_type_t which, Coord keepaway)
+void mtspace_add(mtspace_t * mtspace, const BoxType * box, mtspace_type_t which, Coord clearance)
 {
-	mtspacebox_t *filler = mtspace_create_box(box, keepaway);
+	mtspacebox_t *filler = mtspace_create_box(box, clearance);
 	r_insert_entry(which_tree(mtspace, which), (const BoxType *) filler, 1);
 }
 
 /* remove a space-filler from the empty space representation. */
-void mtspace_remove(mtspace_t * mtspace, const BoxType * box, mtspace_type_t which, Coord keepaway)
+void mtspace_remove(mtspace_t * mtspace, const BoxType * box, mtspace_type_t which, Coord clearance)
 {
 	struct mts_info cl;
 	BoxType small_search;
 
-	cl.keepaway = keepaway;
+	cl.clearance = clearance;
 	cl.box = *box;
 	cl.tree = which_tree(mtspace, which);
 	small_search = box_center(box);
@@ -187,7 +187,7 @@ struct query_closure {
 	heap_or_vector checking;
 	heap_or_vector touching;
 	CheapPointType *desired;
-	Coord radius, keepaway;
+	Coord radius, clearance;
 	jmp_buf env;
 	bool touch_is_vec;
 };
@@ -218,11 +218,11 @@ static int query_one(const BoxType * box, void *cl)
 	mtspacebox_t *mtsb = (mtspacebox_t *) box;
 	Coord shrink;
 	assert(box_intersect(qc->cbox, &mtsb->box));
-	/* we need to satisfy the larger of the two keepaways */
-	if (qc->keepaway > mtsb->keepaway)
-		shrink = mtsb->keepaway;
+	/* we need to satisfy the larger of the two clearances */
+	if (qc->clearance > mtsb->clearance)
+		shrink = mtsb->clearance;
 	else
-		shrink = qc->keepaway;
+		shrink = qc->clearance;
 	/* if we shrink qc->box by this amount and it doesn't intersect
 	 * then we didn't actually touch this box */
 	if (qc->cbox->X1 + shrink >= mtsb->box.X2 ||
@@ -232,7 +232,7 @@ static int query_one(const BoxType * box, void *cl)
 	if (mtsb->box.Y1 > qc->cbox->Y1 + shrink) {	/* top region exists */
 		Coord Y1 = qc->cbox->Y1;
 		Coord Y2 = mtsb->box.Y1 + shrink;
-		if (Y2 - Y1 >= 2 * (qc->radius + qc->keepaway)) {
+		if (Y2 - Y1 >= 2 * (qc->radius + qc->clearance)) {
 			BoxType *newone = (BoxType *) malloc(sizeof(BoxType));
 			newone->X1 = qc->cbox->X1;
 			newone->X2 = qc->cbox->X2;
@@ -245,7 +245,7 @@ static int query_one(const BoxType * box, void *cl)
 	if (mtsb->box.Y2 < qc->cbox->Y2 - shrink) {	/* bottom region exists */
 		Coord Y1 = mtsb->box.Y2 - shrink;
 		Coord Y2 = qc->cbox->Y2;
-		if (Y2 - Y1 >= 2 * (qc->radius + qc->keepaway)) {
+		if (Y2 - Y1 >= 2 * (qc->radius + qc->clearance)) {
 			BoxType *newone = (BoxType *) malloc(sizeof(BoxType));
 			newone->X1 = qc->cbox->X1;
 			newone->X2 = qc->cbox->X2;
@@ -258,7 +258,7 @@ static int query_one(const BoxType * box, void *cl)
 	if (mtsb->box.X1 > qc->cbox->X1 + shrink) {	/* left region exists */
 		Coord X1 = qc->cbox->X1;
 		Coord X2 = mtsb->box.X1 + shrink;
-		if (X2 - X1 >= 2 * (qc->radius + qc->keepaway)) {
+		if (X2 - X1 >= 2 * (qc->radius + qc->clearance)) {
 			BoxType *newone;
 			newone = (BoxType *) malloc(sizeof(BoxType));
 			newone->Y1 = qc->cbox->Y1;
@@ -272,7 +272,7 @@ static int query_one(const BoxType * box, void *cl)
 	if (mtsb->box.X2 < qc->cbox->X2 - shrink) {	/* right region exists */
 		Coord X1 = mtsb->box.X2 - shrink;
 		Coord X2 = qc->cbox->X2;
-		if (X2 - X1 >= 2 * (qc->radius + qc->keepaway)) {
+		if (X2 - X1 >= 2 * (qc->radius + qc->clearance)) {
 			BoxType *newone = (BoxType *) malloc(sizeof(BoxType));
 			newone->Y1 = qc->cbox->Y1;
 			newone->Y2 = qc->cbox->Y2;
@@ -366,7 +366,7 @@ void mtsFreeWork(vetting_t ** w)
 
 
 /* returns some empty spaces in 'region' (or former narrowed regions)
- * that may hold a feature with the specified radius and keepaway
+ * that may hold a feature with the specified radius and clearance
  * It tries first to find Completely empty regions (which are appended
  * to the free_space_vec vector). If that fails, it looks for regions
  * filled only by objects generated by the previous pass (which are
@@ -381,7 +381,7 @@ void mtsFreeWork(vetting_t ** w)
  * necessary.
  */
 vetting_t *mtspace_query_rect(mtspace_t * mtspace, const BoxType * region,
-															Coord radius, Coord keepaway,
+															Coord radius, Coord clearance,
 															vetting_t * work,
 															vector_t * free_space_vec,
 															vector_t * lo_conflict_space_vec,
@@ -402,10 +402,10 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const BoxType * region,
 		assert(vector_is_empty(lo_conflict_space_vec));
 		assert(vector_is_empty(hi_conflict_space_vec));
 		work = (vetting_t *) malloc(sizeof(vetting_t));
-		work->keepaway = keepaway;
+		work->clearance = clearance;
 		work->radius = radius;
 		cbox = (BoxType *) malloc(sizeof(BoxType));
-		*cbox = bloat_box(region, keepaway + radius);
+		*cbox = bloat_box(region, clearance + radius);
 		if (desired) {
 			work->untested.h = heap_create();
 			work->no_fix.h = heap_create();
@@ -426,7 +426,7 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const BoxType * region,
 		}
 		return work;
 	}
-	qc.keepaway = work->keepaway;
+	qc.clearance = work->clearance;
 	qc.radius = work->radius;
 	if (work->desired.X == -SPECIAL && work->desired.Y == -SPECIAL)
 		qc.desired = NULL;

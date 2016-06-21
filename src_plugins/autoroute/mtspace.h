@@ -56,18 +56,18 @@ void mtspace_destroy(mtspace_t ** mtspacep);
 
 /* add a space-filler to the empty space representation.  The given box
  * should *not* be bloated; it should be "true".  The feature will fill
- * *at least* a radius of keepaway around it;
+ * *at least* a radius of clearance around it;
  */
-void mtspace_add(mtspace_t * mtspace, const BoxType * box, mtspace_type_t which, Coord keepaway);
+void mtspace_add(mtspace_t * mtspace, const BoxType * box, mtspace_type_t which, Coord clearance);
 /* remove a space-filler from the empty space representation.  The given box
  * should *not* be bloated; it should be "true".  The feature will fill
- * *at least* a radius of keepaway around it;
+ * *at least* a radius of clearance around it;
  */
-void mtspace_remove(mtspace_t * mtspace, const BoxType * box, mtspace_type_t which, Coord keepaway);
+void mtspace_remove(mtspace_t * mtspace, const BoxType * box, mtspace_type_t which, Coord clearance);
 
 
 vetting_t *mtspace_query_rect(mtspace_t * mtspace, const BoxType * region,
-															Coord radius, Coord keepaway,
+															Coord radius, Coord clearance,
 															vetting_t * work,
 															vector_t * free_space_vec,
 															vector_t * lo_conflict_space_vec,

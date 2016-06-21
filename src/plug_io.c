@@ -476,7 +476,7 @@ void set_some_route_style()
 	SetLineSize(PCB->RouteStyle[0].Thick);
 	SetViaSize(PCB->RouteStyle[0].Diameter, true);
 	SetViaDrillingHole(PCB->RouteStyle[0].Hole, true);
-	SetKeepawayWidth(PCB->RouteStyle[0].Keepaway);
+	SetClearanceWidth(PCB->RouteStyle[0].Clearance);
 }
 
 /* ---------------------------------------------------------------------------

@@ -110,7 +110,7 @@ li:pcb-rnd-conf-v1 {
 #			via_thickness = 0
 #			via_drilling_hole  = 0
 #			line_thickness = 0
-#			keepaway = 0
+#			clearance = 0
 #			max_width = 0
 #			max_height = 0
 #			alignment_distance = 0

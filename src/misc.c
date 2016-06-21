@@ -741,7 +741,7 @@ char *make_route_string(RouteStyleType rs[], int n_styles)
 	for (i = 0; i < n_styles; ++i) {
 		pcb_append_printf(&str, "%s,%mc,%mc,%mc,%mc", rs[i].Name,
 																				 rs[i].Thick, rs[i].Diameter,
-																				 rs[i].Hole, rs[i].Keepaway);
+																				 rs[i].Hole, rs[i].Clearance);
 		if (i > 0)
 			gds_append(&str, ':');
 	}
@@ -787,16 +787,16 @@ int ParseRoutingString1(char **str, RouteStyleTypePtr routeStyle, const char *de
 			goto error;
 		routeStyle->Hole = GetNum(&s, default_unit);
 		/* for backwards-compatibility, we use a 10-mil default
-		 * for styles which omit the keepaway specification. */
+		 * for styles which omit the clearance specification. */
 		if (*s != ',')
-			routeStyle->Keepaway = MIL_TO_COORD(10);
+			routeStyle->Clearance = MIL_TO_COORD(10);
 		else {
 			s++;
 			while (*s && isspace((int) *s))
 				s++;
 			if (!isdigit((int) *s))
 				goto error;
-			routeStyle->Keepaway = GetNum(&s, default_unit);
+			routeStyle->Clearance = GetNum(&s, default_unit);
 			while (*s && isspace((int) *s))
 				s++;
 		}

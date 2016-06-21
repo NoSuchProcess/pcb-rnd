@@ -39,7 +39,7 @@ void SetZoom(double);
 void SetLineSize(Coord);
 void SetViaSize(Coord, bool);
 void SetViaDrillingHole(Coord, bool);
-void SetKeepawayWidth(Coord);
+void SetClearanceWidth(Coord);
 void SetChangedFlag(bool);
 void SetBufferNumber(int);
 void SetMode(int);

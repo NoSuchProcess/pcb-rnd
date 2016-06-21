@@ -89,14 +89,14 @@ static void *InsertPointIntoRat(RatTypePtr Rat)
 	LineTypePtr newone;
 
 	newone = CreateDrawnLineOnLayer(CURRENT, Rat->Point1.X, Rat->Point1.Y,
-																	InsertX, InsertY, conf_core.design.line_thickness, 2 * conf_core.design.keepaway, Rat->Flags);
+																	InsertX, InsertY, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (!newone)
 		return newone;
 	AddObjectToCreateUndoList(LINE_TYPE, CURRENT, newone, newone);
 	EraseRat(Rat);
 	DrawLine(CURRENT, newone);
 	newone = CreateDrawnLineOnLayer(CURRENT, Rat->Point2.X, Rat->Point2.Y,
-																	InsertX, InsertY, conf_core.design.line_thickness, 2 * conf_core.design.keepaway, Rat->Flags);
+																	InsertX, InsertY, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (newone) {
 		AddObjectToCreateUndoList(LINE_TYPE, CURRENT, newone, newone);
 		DrawLine(CURRENT, newone);

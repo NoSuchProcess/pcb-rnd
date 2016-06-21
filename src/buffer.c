@@ -726,7 +726,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 				sprintf(num, "%d", pin_n++);
 				CreateNewPad(Element,
 										 x1, y1, x2, y2, t,
-										 2 * conf_core.design.keepaway, t + conf_core.design.keepaway, NULL, num, MakeFlags(SQUAREFLAG | onsolderflag));
+										 2 * conf_core.design.clearance, t + conf_core.design.clearance, NULL, num, MakeFlags(SQUAREFLAG | onsolderflag));
 				MAYBE_WARN();
 				hasParts = true;
 			}

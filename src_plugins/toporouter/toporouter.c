@@ -264,18 +264,18 @@ void toporouter_output_close(drawing_context_t * dc)
 #endif
 }
 
-gdouble lookup_keepaway(char *name)
+gdouble lookup_clearance(char *name)
 {
 	if (name)
 		STYLE_LOOP(PCB);
 	{
-/*    if(!strcmp(style->Name, name)) return style->Keepaway + 1.; */
+/*    if(!strcmp(style->Name, name)) return style->Clearance + 1.; */
 		if (!strcmp(style->Name, name))
-			return style->Keepaway;
+			return style->Clearance;
 	}
 	END_LOOP;
-/*  return Settings.Keepaway + 1.; */
-	return Settings.Keepaway;
+/*  return Settings.Clearance + 1.; */
+	return Settings.Clearance;
 }
 
 gdouble lookup_thickness(char *name)
@@ -290,11 +290,11 @@ gdouble lookup_thickness(char *name)
 	return Settings.LineThickness;
 }
 
-static inline gdouble cluster_keepaway(toporouter_cluster_t * cluster)
+static inline gdouble cluster_clearance(toporouter_cluster_t * cluster)
 {
 	if (cluster)
-		return lookup_keepaway(cluster->netlist->style);
-	return lookup_keepaway(NULL);
+		return lookup_clearance(cluster->netlist->style);
+	return lookup_clearance(NULL);
 }
 
 static inline gdouble cluster_thickness(toporouter_cluster_t * cluster)
@@ -348,7 +348,7 @@ gint toporouter_draw_vertex(gpointer item, gpointer data)
 					cairo_arc(dc->cr,
 										tv->v.p.x * dc->s + MARGIN,
 										tv->v.p.y * dc->s + MARGIN,
-										(((gdouble) pin->Thickness / 2.0f) + (gdouble) lookup_keepaway(pin->Name)) * dc->s, 0, 2 * M_PI);
+										(((gdouble) pin->Thickness / 2.0f) + (gdouble) lookup_clearance(pin->Name)) * dc->s, 0, 2 * M_PI);
 					cairo_fill(dc->cr);
 
 					cairo_set_source_rgba(dc->cr, 1.0f, 0., 0., 0.4f);
@@ -363,7 +363,7 @@ gint toporouter_draw_vertex(gpointer item, gpointer data)
 					cairo_arc(dc->cr,
 										tv->v.p.x * dc->s + MARGIN,
 										tv->v.p.y * dc->s + MARGIN,
-										(((gdouble) pin->Thickness / 2.0f) + (gdouble) lookup_keepaway(pin->Name)) * dc->s, 0, 2 * M_PI);
+										(((gdouble) pin->Thickness / 2.0f) + (gdouble) lookup_clearance(pin->Name)) * dc->s, 0, 2 * M_PI);
 					cairo_fill(dc->cr);
 
 					cairo_set_source_rgba(dc->cr, 0.0f, 0., 1., 0.4f);
@@ -636,7 +636,7 @@ gdouble vertex_net_thickness(toporouter_vertex_t * v)
 	return cluster_thickness(box->cluster);
 }
 
-gdouble vertex_net_keepaway(toporouter_vertex_t * v)
+gdouble vertex_net_clearance(toporouter_vertex_t * v)
 {
 	toporouter_bbox_t *box = vertex_bbox(v);
 	if (!box) {
@@ -654,10 +654,10 @@ gdouble vertex_net_keepaway(toporouter_vertex_t * v)
 
 	}
 
-/*  if(!box || !box->cluster) return Settings.Keepaway + 1.; */
+/*  if(!box || !box->cluster) return Settings.Clearance + 1.; */
 	if (!box || !box->cluster)
-		return Settings.Keepaway;
-	return cluster_keepaway(box->cluster);
+		return Settings.Clearance;
+	return cluster_clearance(box->cluster);
 }
 
 /*
@@ -900,20 +900,20 @@ void vertex_move_towards_vertex_values(GtsVertex * v, GtsVertex * p, gdouble d, 
 static inline gdouble min_spacing(toporouter_vertex_t * v1, toporouter_vertex_t * v2)
 {
 
-	gdouble v1halfthick, v2halfthick, v1keepaway, v2keepaway, ms;
+	gdouble v1halfthick, v2halfthick, v1clearance, v2clearance, ms;
 /*  toporouter_edge_t *e = v1->routingedge;*/
 
 	v1halfthick = vertex_net_thickness(TOPOROUTER_VERTEX(v1)) / 2.;
 	v2halfthick = vertex_net_thickness(TOPOROUTER_VERTEX(v2)) / 2.;
 
-	v1keepaway = vertex_net_keepaway(TOPOROUTER_VERTEX(v1));
-	v2keepaway = vertex_net_keepaway(TOPOROUTER_VERTEX(v2));
+	v1clearance = vertex_net_clearance(TOPOROUTER_VERTEX(v1));
+	v2clearance = vertex_net_clearance(TOPOROUTER_VERTEX(v2));
 
-	ms = v1halfthick + v2halfthick + MAX(v1keepaway, v2keepaway);
+	ms = v1halfthick + v2halfthick + MAX(v1clearance, v2clearance);
 
 #ifdef SPACING_DEBUG
-	printf("v1halfthick = %f v2halfthick = %f v1keepaway = %f v2keepaway = %f ms = %f\n",
-				 v1halfthick, v2halfthick, v1keepaway, v2keepaway, ms);
+	printf("v1halfthick = %f v2halfthick = %f v1clearance = %f v2clearance = %f ms = %f\n",
+				 v1halfthick, v2halfthick, v1clearance, v2clearance, ms);
 #endif
 
 	return ms;
@@ -923,15 +923,15 @@ static inline gdouble min_spacing(toporouter_vertex_t * v1, toporouter_vertex_t 
 static inline gdouble min_vertex_net_spacing(toporouter_vertex_t * v1, toporouter_vertex_t * v2)
 {
 
-	gdouble v1halfthick, v2halfthick, v1keepaway, v2keepaway, ms;
+	gdouble v1halfthick, v2halfthick, v1clearance, v2clearance, ms;
 
 	v1halfthick = vertex_net_thickness(TOPOROUTER_VERTEX(v1)) / 2.;
 	v2halfthick = cluster_thickness(vertex_bbox(v2)->cluster) / 2.;
 
-	v1keepaway = vertex_net_keepaway(TOPOROUTER_VERTEX(v1));
-	v2keepaway = cluster_keepaway(vertex_bbox(v2)->cluster);
+	v1clearance = vertex_net_clearance(TOPOROUTER_VERTEX(v1));
+	v2clearance = cluster_clearance(vertex_bbox(v2)->cluster);
 
-	ms = v1halfthick + v2halfthick + MAX(v1keepaway, v2keepaway);
+	ms = v1halfthick + v2halfthick + MAX(v1clearance, v2clearance);
 
 	return ms;
 }
@@ -939,15 +939,15 @@ static inline gdouble min_vertex_net_spacing(toporouter_vertex_t * v1, toporoute
 static inline gdouble min_oproute_vertex_spacing(toporouter_oproute_t * oproute, toporouter_vertex_t * v2)
 {
 
-	gdouble v1halfthick, v2halfthick, v1keepaway, v2keepaway, ms;
+	gdouble v1halfthick, v2halfthick, v1clearance, v2clearance, ms;
 
 	v1halfthick = lookup_thickness(oproute->style) / 2.;
 	v2halfthick = vertex_net_thickness(v2) / 2.;
 
-	v1keepaway = lookup_keepaway(oproute->style);
-	v2keepaway = vertex_net_keepaway(v2);
+	v1clearance = lookup_clearance(oproute->style);
+	v2clearance = vertex_net_clearance(v2);
 
-	ms = v1halfthick + v2halfthick + MAX(v1keepaway, v2keepaway);
+	ms = v1halfthick + v2halfthick + MAX(v1clearance, v2clearance);
 
 	return ms;
 }
@@ -955,15 +955,15 @@ static inline gdouble min_oproute_vertex_spacing(toporouter_oproute_t * oproute,
 gdouble min_oproute_net_spacing(toporouter_oproute_t * oproute, toporouter_vertex_t * v2)
 {
 
-	gdouble v1halfthick, v2halfthick, v1keepaway, v2keepaway, ms;
+	gdouble v1halfthick, v2halfthick, v1clearance, v2clearance, ms;
 
 	v1halfthick = lookup_thickness(oproute->style) / 2.;
 	v2halfthick = cluster_thickness(v2->route->src) / 2.;
 
-	v1keepaway = lookup_keepaway(oproute->style);
-	v2keepaway = cluster_keepaway(v2->route->src);
+	v1clearance = lookup_clearance(oproute->style);
+	v2clearance = cluster_clearance(v2->route->src);
 
-	ms = v1halfthick + v2halfthick + MAX(v1keepaway, v2keepaway);
+	ms = v1halfthick + v2halfthick + MAX(v1clearance, v2clearance);
 
 	return ms;
 }
@@ -971,15 +971,15 @@ gdouble min_oproute_net_spacing(toporouter_oproute_t * oproute, toporouter_verte
 gdouble min_net_net_spacing(toporouter_vertex_t * v1, toporouter_vertex_t * v2)
 {
 
-	gdouble v1halfthick, v2halfthick, v1keepaway, v2keepaway, ms;
+	gdouble v1halfthick, v2halfthick, v1clearance, v2clearance, ms;
 
 	v1halfthick = cluster_thickness(v1->route->src) / 2.;
 	v2halfthick = cluster_thickness(v2->route->src) / 2.;
 
-	v1keepaway = cluster_keepaway(v1->route->src);
-	v2keepaway = cluster_keepaway(v2->route->src);
+	v1clearance = cluster_clearance(v1->route->src);
+	v2clearance = cluster_clearance(v2->route->src);
 
-	ms = v1halfthick + v2halfthick + MAX(v1keepaway, v2keepaway);
+	ms = v1halfthick + v2halfthick + MAX(v1clearance, v2clearance);
 
 	return ms;
 }
@@ -1755,12 +1755,12 @@ GtsPoint *midpoint(GtsPoint * a, GtsPoint * b)
 
 static inline gdouble pad_rad(PadType * pad)
 {
-	return (lookup_thickness(pad->Name) / 2.) + lookup_keepaway(pad->Name);
+	return (lookup_thickness(pad->Name) / 2.) + lookup_clearance(pad->Name);
 }
 
 static inline gdouble pin_rad(PinType * pin)
 {
-	return (lookup_thickness(pin->Name) / 2.) + lookup_keepaway(pin->Name);
+	return (lookup_thickness(pin->Name) / 2.) + lookup_clearance(pin->Name);
 }
 
 GList *rect_with_attachments(gdouble rad,
@@ -3492,11 +3492,11 @@ flow_from_edge_to_edge(GtsTriangle * t, toporouter_edge_t * e1, toporouter_edge_
 		toporouter_bbox_t *box = vertex_bbox(TOPOROUTER_VERTEX(edge_v1(op_edge)));
 		r += vertex_net_thickness(v) / 2.;
 		if (box) {
-			r += MAX(vertex_net_keepaway(v), cluster_keepaway(box->cluster));
+			r += MAX(vertex_net_clearance(v), cluster_clearance(box->cluster));
 			r += cluster_thickness(box->cluster) / 2.;
 		}
 		else {
-			r += vertex_net_keepaway(v);
+			r += vertex_net_clearance(v);
 
 		}
 	}
@@ -5531,12 +5531,12 @@ void print_oproute(toporouter_oproute_t * oproute)
 	printf("\n");
 }
 
-gdouble export_pcb_drawline(guint layer, guint x0, guint y0, guint x1, guint y1, guint thickness, guint keepaway)
+gdouble export_pcb_drawline(guint layer, guint x0, guint y0, guint x1, guint y1, guint thickness, guint clearance)
 {
 	gdouble d = 0.;
 	LineTypePtr line;
 	line = CreateDrawnLineOnLayer(LAYER_PTR(layer), x0, y0, x1, y1,
-																thickness, keepaway, MakeFlags(AUTOFLAG | (TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)));
+																thickness, clearance, MakeFlags(AUTOFLAG | (TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)));
 
 	if (line) {
 		AddObjectToCreateUndoList(LINE_TYPE, LAYER_PTR(layer), line, line);
@@ -5557,7 +5557,7 @@ gdouble arc_angle(toporouter_arc_t * arc)
 	return fabs(acos(((x0 * x1) + (y0 * y1)) / (sqrt(pow(x0, 2) + pow(y0, 2)) * sqrt(pow(x1, 2) + pow(y1, 2)))));
 }
 
-gdouble export_pcb_drawarc(guint layer, toporouter_arc_t * a, guint thickness, guint keepaway)
+gdouble export_pcb_drawarc(guint layer, toporouter_arc_t * a, guint thickness, guint clearance)
 {
 	gdouble sa, da, theta;
 	gdouble d = 0.;
@@ -5584,7 +5584,7 @@ gdouble export_pcb_drawarc(guint layer, toporouter_arc_t * a, guint thickness, g
 		return 0.;
 
 	arc = CreateNewArcOnLayer(LAYER_PTR(layer), vx(a->centre), vy(a->centre), a->r, a->r,
-														sa, da, thickness, keepaway,
+														sa, da, thickness, clearance,
 														MakeFlags(AUTOFLAG | (TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)));
 
 	if (arc) {
@@ -5921,14 +5921,14 @@ void export_oproutes(toporouter_t * ar, toporouter_oproute_t * oproute)
 {
 	guint layer = PCB->LayerGroups.Entries[oproute->layergroup][0];
 	guint thickness = lookup_thickness(oproute->style);
-	guint keepaway = lookup_keepaway(oproute->style);
+	guint clearance = lookup_clearance(oproute->style);
 	GList *arcs = oproute->arcs;
 	toporouter_arc_t *arc, *parc = NULL;
 
 	if (!arcs) {
 		ar->wiring_score +=
 			export_pcb_drawline(layer, vx(oproute->term1), vy(oproute->term1), vx(oproute->term2), vy(oproute->term2), thickness,
-													keepaway);
+													clearance);
 		return;
 	}
 
@@ -5939,19 +5939,19 @@ void export_oproutes(toporouter_t * ar, toporouter_oproute_t * oproute)
 		arc = TOPOROUTER_ARC(arcs->data);
 
 		if (parc && arc) {
-			ar->wiring_score += export_pcb_drawarc(layer, parc, thickness, keepaway);
-			ar->wiring_score += export_pcb_drawline(layer, parc->x1, parc->y1, arc->x0, arc->y0, thickness, keepaway);
+			ar->wiring_score += export_pcb_drawarc(layer, parc, thickness, clearance);
+			ar->wiring_score += export_pcb_drawline(layer, parc->x1, parc->y1, arc->x0, arc->y0, thickness, clearance);
 		}
 		else if (!parc) {
 			ar->wiring_score +=
-				export_pcb_drawline(layer, vx(oproute->term1), vy(oproute->term1), arc->x0, arc->y0, thickness, keepaway);
+				export_pcb_drawline(layer, vx(oproute->term1), vy(oproute->term1), arc->x0, arc->y0, thickness, clearance);
 		}
 
 		parc = arc;
 		arcs = arcs->next;
 	}
-	ar->wiring_score += export_pcb_drawarc(layer, arc, thickness, keepaway);
-	ar->wiring_score += export_pcb_drawline(layer, arc->x1, arc->y1, vx(oproute->term2), vy(oproute->term2), thickness, keepaway);
+	ar->wiring_score += export_pcb_drawarc(layer, arc, thickness, clearance);
+	ar->wiring_score += export_pcb_drawline(layer, arc->x1, arc->y1, vx(oproute->term2), vy(oproute->term2), thickness, clearance);
 
 }
 
@@ -6042,8 +6042,8 @@ void calculate_serpintine(gdouble delta, gdouble r, gdouble initiala, gdouble * 
 
 gdouble oproute_min_spacing(toporouter_oproute_t * a, toporouter_oproute_t * b)
 {
-	return lookup_thickness(a->style) / 2. + lookup_thickness(b->style) / 2. + MAX(lookup_keepaway(a->style),
-																																								 lookup_keepaway(b->style));
+	return lookup_thickness(a->style) / 2. + lookup_thickness(b->style) / 2. + MAX(lookup_clearance(a->style),
+																																								 lookup_clearance(b->style));
 }
 
 gdouble vector_angle(gdouble ox, gdouble oy, gdouble ax, gdouble ay, gdouble bx, gdouble by)
@@ -8203,14 +8203,14 @@ static int escape(int argc, char **argv, Coord x, Coord y)
 			}
 
 			if ((via = CreateNewVia(PCB->Data, viax, viay,
-															Settings.ViaThickness, 2 * Settings.Keepaway,
+															Settings.ViaThickness, 2 * Settings.Clearance,
 															0, Settings.ViaDrillingHole, NULL, NoFlags())) != NULL) {
 				AddObjectToCreateUndoList(VIA_TYPE, via, via, via);
 /*        if (gui->shift_is_pressed ())
             ChangeObjectThermal (VIA_TYPE, via, via, via, PCB->ThermStyle);*/
 				DrawVia(via);
 				if ((line = CreateDrawnLineOnLayer(CURRENT, pad->Point1.X + 1., pad->Point1.Y + 1., viax + 1., viay + 1.,
-																					 Settings.LineThickness, 2 * Settings.Keepaway, NoFlags()))) {
+																					 Settings.LineThickness, 2 * Settings.Clearance, NoFlags()))) {
 
 					AddObjectToCreateUndoList(LINE_TYPE, CURRENT, line, line);
 					DrawLine(CURRENT, line);

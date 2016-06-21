@@ -1005,7 +1005,7 @@ static int ActionRouteStyle(int argc, char **argv, Coord x, Coord y)
 			SetLineSize(rts->Thick);
 			SetViaSize(rts->Diameter, true);
 			SetViaDrillingHole(rts->Hole, true);
-			SetKeepawayWidth(rts->Keepaway);
+			SetClearanceWidth(rts->Clearance);
 			hid_action("RouteStylesChanged");
 		}
 	}
@@ -1046,7 +1046,7 @@ static const char setsame_help[] = "Sets current layer and sizes to match indica
 
 When invoked over any line, arc, polygon, or via, this changes the
 current layer to be the layer that item is on, and changes the current
-sizes (thickness, keepaway, drill, etc) according to that item.
+sizes (thickness, clearance, drill, etc) according to that item.
 
 %end-doc */
 
@@ -1062,7 +1062,7 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 	case LINE_TYPE:
 		notify_crosshair_change(false);
 		conf_set_design("design/line_thickness", "%$mS", ((LineTypePtr) ptr2)->Thickness);
-		conf_set_design("design/keepaway", "%$mS", ((LineTypePtr) ptr2)->Clearance / 2);
+		conf_set_design("design/clearance", "%$mS", ((LineTypePtr) ptr2)->Clearance / 2);
 		layer = (LayerTypePtr) ptr1;
 		if (conf_core.editor.mode != LINE_MODE)
 			SetMode(LINE_MODE);
@@ -1073,7 +1073,7 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 	case ARC_TYPE:
 		notify_crosshair_change(false);
 		conf_set_design("design/line_thickness", "%$mS", ((ArcTypePtr) ptr2)->Thickness);
-		conf_set_design("design/keepaway", "%$mS", ((ArcTypePtr) ptr2)->Clearance / 2);
+		conf_set_design("design/clearance", "%$mS", ((ArcTypePtr) ptr2)->Clearance / 2);
 		layer = (LayerTypePtr) ptr1;
 		if (conf_core.editor.mode != ARC_MODE)
 			SetMode(ARC_MODE);
@@ -1089,7 +1089,7 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 		notify_crosshair_change(false);
 		conf_set_design("design/via_thickness", "%$mS", ((PinTypePtr) ptr2)->Thickness);
 		conf_set_design("design/via_drilling_hole", "%$mS", ((PinTypePtr) ptr2)->DrillingHole);
-		conf_set_design("design/keepaway", "%$mS", ((PinTypePtr) ptr2)->Clearance / 2);
+		conf_set_design("design/clearance", "%$mS", ((PinTypePtr) ptr2)->Clearance / 2);
 		if (conf_core.editor.mode != VIA_MODE)
 			SetMode(VIA_MODE);
 		notify_crosshair_change(true);

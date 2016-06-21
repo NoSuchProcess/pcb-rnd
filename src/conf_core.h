@@ -107,7 +107,7 @@ typedef struct {
 		CFT_COORD via_thickness;
 		CFT_COORD via_drilling_hole;
 		CFT_COORD line_thickness;
-		CFT_COORD keepaway;
+		CFT_COORD clearance;
 
 		CFT_COORD max_width;
 		CFT_COORD max_height;

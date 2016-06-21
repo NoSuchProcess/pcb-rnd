@@ -81,7 +81,7 @@ static StyleButtons *style_button_list = 0;
 static int num_style_buttons = 0;
 
 static char *value_names[] = {
-	"Thickness", "Diameter", "Hole", "Keepaway"
+	"Thickness", "Diameter", "Hole", "Clearance"
 };
 
 static int RouteStylesChanged(int argc, char **argv, Coord x, Coord y);
@@ -103,7 +103,7 @@ static void update_values()
 	update_one_value(SSthick, conf_core.design.line_thickness);
 	update_one_value(SSdiam, conf_core.design.via_thickness);
 	update_one_value(SShole, conf_core.design.via_drilling_hole);
-	update_one_value(SSkeep, conf_core.design.keepaway);
+	update_one_value(SSkeep, conf_core.design.clearance);
 	local_update = 0;
 	lesstif_update_status_line();
 }
@@ -160,7 +160,7 @@ static void style_value_cb(Widget w, int i, void *cbs)
 		conf_set_design("design/via_drilling_hole", "%s", s);;
 		break;
 	case SSkeep:
-		conf_set_design("design/keepaway", "%s", s);;
+		conf_set_design("design/clearance", "%s", s);;
 		break;
 	}
 	update_style_buttons();
@@ -230,7 +230,7 @@ static void style_set_cb(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 	PCB->RouteStyle[i].Thick = conf_core.design.line_thickness;
 	PCB->RouteStyle[i].Diameter = conf_core.design.via_thickness;
 	PCB->RouteStyle[i].Hole = conf_core.design.via_drilling_hole;
-	PCB->RouteStyle[i].Keepaway = conf_core.design.keepaway;
+	PCB->RouteStyle[i].Clearance = conf_core.design.clearance;
 	update_style_buttons();
 }
 
@@ -246,7 +246,7 @@ static void style_selected(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 	SetLineSize(style->Thick);
 	SetViaSize(style->Diameter, true);
 	SetViaDrillingHole(style->Hole, true);
-	SetKeepawayWidth(style->Keepaway);
+	SetClearanceWidth(style->Clearance);
 	if (style_dialog) {
 		for (j = 0; j < NUM_STYLES; j++)
 			if (j != i)

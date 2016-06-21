@@ -158,7 +158,7 @@ static int ActionGetStyle(int argc, char **argv, Coord x, Coord y)
 	{
 		if (style->Thick == conf_core.design.line_thickness &&
 				style->Diameter == conf_core.design.via_thickness &&
-				style->Hole == conf_core.design.via_drilling_hole && style->Keepaway == conf_core.design.keepaway)
+				style->Hole == conf_core.design.via_drilling_hole && style->Clearance == conf_core.design.clearance)
 			return n + 1;
 	}
 	END_LOOP;

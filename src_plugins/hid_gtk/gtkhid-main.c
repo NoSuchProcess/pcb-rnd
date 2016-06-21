@@ -1027,7 +1027,7 @@ static int RouteStylesChanged(int argc, char **argv, Coord x, Coord y)
 
 	ghid_route_style_selector_sync
 		(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector),
-		 conf_core.design.line_thickness, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.keepaway);
+		 conf_core.design.line_thickness, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance);
 
 	return 0;
 }

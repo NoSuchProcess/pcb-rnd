@@ -526,7 +526,7 @@ void NotifyMode(void)
 				break;
 			}
 			if ((via = CreateNewVia(PCB->Data, Note.X, Note.Y,
-															conf_core.design.via_thickness, 2 * conf_core.design.keepaway,
+															conf_core.design.via_thickness, 2 * conf_core.design.clearance,
 															0, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
 				AddObjectToCreateUndoList(VIA_TYPE, via, via, via);
 				if (gui->shift_is_pressed())
@@ -585,7 +585,7 @@ void NotifyMode(void)
 																												sa,
 																												dir,
 																												conf_core.design.line_thickness,
-																												2 * conf_core.design.keepaway,
+																												2 * conf_core.design.clearance,
 																												MakeFlags(conf_core.editor.clear_line ? CLEARLINEFLAG : 0)))) {
 						BoxTypePtr bx;
 
@@ -728,7 +728,7 @@ void NotifyMode(void)
 																		 Crosshair.AttachedLine.Point2.X,
 																		 Crosshair.AttachedLine.Point2.Y,
 																		 conf_core.design.line_thickness,
-																		 2 * conf_core.design.keepaway,
+																		 2 * conf_core.design.clearance,
 																		 MakeFlags(maybe_found_flag |
 																							 (conf_core.editor.clear_line ? CLEARLINEFLAG : 0)))) != NULL) {
 				PinTypePtr via;
@@ -751,7 +751,7 @@ void NotifyMode(void)
 														 Crosshair.AttachedLine.Point1.X,
 														 Crosshair.AttachedLine.Point1.Y,
 														 conf_core.design.via_thickness,
-														 2 * conf_core.design.keepaway, 0, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
+														 2 * conf_core.design.clearance, 0, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
 					AddObjectToCreateUndoList(VIA_TYPE, via, via, via);
 					DrawVia(via);
 				}
@@ -768,7 +768,7 @@ void NotifyMode(void)
 																		 Crosshair.AttachedLine.Point2.Y,
 																		 Note.X, Note.Y,
 																		 conf_core.design.line_thickness,
-																		 2 * conf_core.design.keepaway,
+																		 2 * conf_core.design.clearance,
 																		 MakeFlags((conf_core.editor.auto_drc ? FOUNDFLAG : 0) |
 																							 (conf_core.editor.clear_line ? CLEARLINEFLAG : 0)))) != NULL) {
 				addedLines++;
@@ -1184,12 +1184,12 @@ int get_style_size(int funcid, Coord * out, int type, int size_id)
 		else if (size_id == 1)
 			*out = conf_core.design.via_drilling_hole;
 		else
-			*out = conf_core.design.keepaway;
+			*out = conf_core.design.clearance;
 		break;
 	case F_SelectedArcs:
 	case F_SelectedLines:
 		if (size_id == 2)
-			*out = conf_core.design.keepaway;
+			*out = conf_core.design.clearance;
 		else
 			*out = conf_core.design.line_thickness;
 		return 0;

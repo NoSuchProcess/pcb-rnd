@@ -118,7 +118,7 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->line_entry), style->rst->Thick);
 	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_hole_entry), style->rst->Hole);
 	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_size_entry), style->rst->Diameter);
-	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->clearance_entry), style->rst->Keepaway);
+	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->clearance_entry), style->rst->Clearance);
 
 }
 
@@ -219,7 +219,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 		rst->Thick = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.line_entry));
 		rst->Hole = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_hole_entry));
 		rst->Diameter = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_size_entry));
-		rst->Keepaway = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry));
+		rst->Clearance = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry));
 		save = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_box));
 
 		if (style == NULL)
@@ -486,9 +486,9 @@ GtkAccelGroup *ghid_route_style_selector_get_accel_group(GHidRouteStyleSelector 
  *  \param [in] Thick     Coord to match selection to
  *  \param [in] Hole      Coord to match selection to
  *  \param [in] Diameter  Coord to match selection to
- *  \param [in] Keepaway  Coord to match selection to
+ *  \param [in] Clearance  Coord to match selection to
  */
-void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, Coord Hole, Coord Diameter, Coord Keepaway)
+void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, Coord Hole, Coord Diameter, Coord Clearance)
 {
 	GtkTreeIter iter;
 	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter);
@@ -496,7 +496,7 @@ void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, C
 		struct _route_style *style;
 		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &style, -1);
 		if (style->rst->Thick == Thick &&
-				style->rst->Hole == Hole && style->rst->Diameter == Diameter && style->rst->Keepaway == Keepaway) {
+				style->rst->Hole == Hole && style->rst->Diameter == Diameter && style->rst->Clearance == Clearance) {
 			g_signal_handler_block(G_OBJECT(style->action), style->sig_id);
 			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(style->action), TRUE);
 			g_signal_handler_unblock(G_OBJECT(style->action), style->sig_id);

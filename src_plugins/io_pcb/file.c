@@ -305,10 +305,10 @@ static void WritePCBDataHeader(FILE * FP)
 	for (group = 0; group < NUM_STYLES - 1; group++)
 		pcb_fprintf(FP, "%s,%mr,%mr,%mr,%mr:", PCB->RouteStyle[group].Name,
 								PCB->RouteStyle[group].Thick,
-								PCB->RouteStyle[group].Diameter, PCB->RouteStyle[group].Hole, PCB->RouteStyle[group].Keepaway);
+								PCB->RouteStyle[group].Diameter, PCB->RouteStyle[group].Hole, PCB->RouteStyle[group].Clearance);
 	pcb_fprintf(FP, "%s,%mr,%mr,%mr,%mr\"]\n\n", PCB->RouteStyle[group].Name,
 							PCB->RouteStyle[group].Thick,
-							PCB->RouteStyle[group].Diameter, PCB->RouteStyle[group].Hole, PCB->RouteStyle[group].Keepaway);
+							PCB->RouteStyle[group].Diameter, PCB->RouteStyle[group].Hole, PCB->RouteStyle[group].Clearance);
 }
 
 /* ---------------------------------------------------------------------------

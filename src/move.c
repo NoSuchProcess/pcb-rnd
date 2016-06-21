@@ -458,7 +458,7 @@ static void *MoveRatToLayer(RatType * Rat)
 	   else as before */
 
 	newone = CreateNewLineOnLayer(Dest, Rat->Point1.X, Rat->Point1.Y,
-																Rat->Point2.X, Rat->Point2.Y, conf_core.design.line_thickness, 2 * conf_core.design.keepaway, Rat->Flags);
+																Rat->Point2.X, Rat->Point2.Y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (conf_core.editor.clear_line)
 		conf_set_editor(clear_line, 1);
 	if (!newone)
@@ -488,7 +488,7 @@ static int moveline_callback(const BoxType * b, void *cl)
 
 	if ((via =
 			 CreateNewVia(PCB->Data, i->X, i->Y,
-										conf_core.design.via_thickness, 2 * conf_core.design.keepaway, NOFLAG, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
+										conf_core.design.via_thickness, 2 * conf_core.design.clearance, NOFLAG, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
 		AddObjectToCreateUndoList(VIA_TYPE, via, via, via);
 		DrawVia(via);
 	}

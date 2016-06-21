@@ -2307,15 +2307,15 @@ void lesstif_update_status_line()
 
 	switch (conf_core.editor.mode) {
 	case VIA_MODE:
-		buf = pcb_strdup_printf("%m+%.2mS/%.2mS \370=%.2mS", UUNIT, conf_core.design.via_thickness, conf_core.design.keepaway, conf_core.design.via_drilling_hole);
+		buf = pcb_strdup_printf("%m+%.2mS/%.2mS \370=%.2mS", UUNIT, conf_core.design.via_thickness, conf_core.design.clearance, conf_core.design.via_drilling_hole);
 		break;
 	case LINE_MODE:
 	case ARC_MODE:
-		buf = pcb_strdup_printf("%m+%.2mS/%.2mS %s", UUNIT, conf_core.design.line_thickness, conf_core.design.keepaway, s45);
+		buf = pcb_strdup_printf("%m+%.2mS/%.2mS %s", UUNIT, conf_core.design.line_thickness, conf_core.design.clearance, s45);
 		break;
 	case RECTANGLE_MODE:
 	case POLYGON_MODE:
-		buf = pcb_strdup_printf("%m+%.2mS %s", UUNIT, conf_core.design.keepaway, s45);
+		buf = pcb_strdup_printf("%m+%.2mS %s", UUNIT, conf_core.design.clearance, s45);
 		break;
 	case TEXT_MODE:
 		buf = pcb_strdup_printf("%d %%", conf_core.design.text_scale);

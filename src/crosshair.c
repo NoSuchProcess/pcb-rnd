@@ -462,7 +462,7 @@ void DrawAttached(void)
 			via.X = Crosshair.X;
 			via.Y = Crosshair.Y;
 			via.Thickness = conf_core.design.via_thickness;
-			via.Clearance = 2 * conf_core.design.keepaway;
+			via.Clearance = 2 * conf_core.design.clearance;
 			via.DrillingHole = conf_core.design.via_drilling_hole;
 			via.Mask = 0;
 			via.Flags = NoFlags();
