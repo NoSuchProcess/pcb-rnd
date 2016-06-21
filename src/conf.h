@@ -246,9 +246,9 @@ do { \
 #define conf_force_set_bool(var, val) *((CFT_BOOLEAN *)(&var)) = val
 #define conf_force_set_str(var, val) *((CFT_STRING *)(&var)) = val
 
-/* get the main node of a configuration (it's a hash and its children
+/* get the first config subtree node (it's a hash and its children
    are "design", "rc", ...) */
-lht_node_t *conf_lht_get_main(conf_role_t target);
+lht_node_t *conf_lht_get_first(conf_role_t target);
 
 /* loop helper */
 conf_listitem_t *conf_list_first_str(conflist_t *list, const char **item_str, int *idx);

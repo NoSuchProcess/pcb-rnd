@@ -610,7 +610,7 @@ static void lht_clean_list(lht_node_t *lst)
 /* Create a lihata list of the current library paths - to be tuned into CFR design upon the first modification */
 static lht_node_t *config_library_list()
 {
-	lht_node_t *rt = conf_lht_get_main(CFR_INTERNAL), *n;
+	lht_node_t *rt = conf_lht_get_first(CFR_INTERNAL), *n;
 	conf_listitem_t *i;
 	int idx;
 	const char *s;
@@ -652,7 +652,7 @@ static void pre_rebuild(gtk_conf_list_t *cl)
 	lht_node_t *m, *l;
 	lht_clean_list(config_library_lst);
 
-	m = conf_lht_get_main(CFR_DESIGN);
+	m = conf_lht_get_first(CFR_DESIGN);
 	
 	cl->lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
 	if (cl->lst == NULL) {

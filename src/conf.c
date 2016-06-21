@@ -30,6 +30,9 @@
 #include "misc_util.h"
 #include "error.h"
 
+/* conf list node's name */
+const char *conf_list_name = "pcb-rnd-conf-v1";
+
 lht_doc_t *conf_root[CFR_max];
 int conf_root_lock[CFR_max];
 htsp_t *conf_fields = NULL;
@@ -46,6 +49,22 @@ static const int conf_default_prio[] = {
 extern const char *conf_internal;
 
 /*static lht_doc_t *conf_plugin;*/
+
+static lht_node_t *conf_lht_get_confroot(lht_node_t *cwd)
+{
+	if (cwd == NULL)
+		return NULL;
+
+	/* if it's a list with a matching name, we found it */
+	if ((cwd->type == LHT_LIST) && (strcmp(cwd->name, conf_list_name) == 0))
+		return cwd;
+
+	/* else it may be the parent-hash of the list */
+	if (cwd->type != LHT_HASH)
+		return NULL;
+
+	return lht_dom_hash_get(cwd, conf_list_name);
+}
 
 
 int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
@@ -471,10 +490,13 @@ int conf_merge_all(const char *path)
 {
 	int n, ret = 0;
 	for(n = 0; n < CFR_max; n++) {
-		lht_node_t *r, *r2;
+		lht_node_t *cr, *r, *r2;
 		if (conf_root[n] == NULL)
 			continue;
-		for(r = conf_root[n]->root->data.list.first; r != NULL; r = r->next) {
+		cr = conf_lht_get_confroot(conf_root[n]->root);
+		if (cr == NULL)
+			continue;
+		for(r = cr->data.list.first; r != NULL; r = r->next) {
 			if (path != NULL) {
 				conf_policy_t gpolicy = POL_OVERWRITE;
 				r2 = lht_tree_path_(r->doc, r, path, 1, 0, NULL);
@@ -557,18 +579,21 @@ void conf_update(const char *path)
 	conf_notify_hids();
 }
 
-lht_node_t *conf_lht_get_main(conf_role_t target)
+static lht_node_t *conf_lht_get_first_(lht_node_t *cwd)
 {
-	lht_node_t *cwd;
-
 	/* assume root is a li and add to the first hash */
-	cwd = conf_root[target]->root;
-	if ((cwd == NULL) || (cwd->type != LHT_LIST))
+	cwd = conf_lht_get_confroot(cwd);
+	if (cwd == NULL)
 		return NULL;
 	cwd = cwd->data.list.first;
 	if ((cwd == NULL) || (cwd->type != LHT_HASH))
 		return NULL;
 	return cwd;
+}
+
+lht_node_t *conf_lht_get_first(conf_role_t target)
+{
+	return conf_lht_get_first_(conf_root[target]->root);
 }
 
 void conf_load_all(void)
@@ -579,7 +604,7 @@ void conf_load_all(void)
 
 	/* get the lihata node for design/default_layer_name */
 	conf_load_as(CFR_INTERNAL, conf_internal, 1);
-	dln = conf_lht_get_main(CFR_INTERNAL);
+	dln = conf_lht_get_first(CFR_INTERNAL);
 	assert(dln != NULL);
 	dln = lht_tree_path_(conf_root[CFR_INTERNAL], dln, "design/default_layer_name", 1, 0, NULL);
 	if (dln != NULL) {
@@ -723,7 +748,7 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 		return -1;
 	}
 
-	cwd = conf_lht_get_main(target);
+	cwd = conf_lht_get_first(target);
 	if (cwd == NULL) {
 		free(path);
 		return -1;
@@ -993,7 +1018,7 @@ void conf_reset(conf_role_t target, const char *source_fn)
 	lht_node_t *n, *p;
 	conf_root[target] = lht_dom_init();
 	lht_dom_loc_newfile(conf_root[target], source_fn);
-	conf_root[target]->root = lht_dom_node_alloc(LHT_LIST, "root");
+	conf_root[target]->root = lht_dom_node_alloc(LHT_LIST, conf_list_name);
 	n = lht_dom_node_alloc(LHT_HASH, "main");
 	lht_dom_list_insert(conf_root[target]->root, n);
 	p = lht_dom_node_alloc(LHT_TEXT, "priority");

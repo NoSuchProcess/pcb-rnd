@@ -62,7 +62,7 @@ static void c2a(PCBType *pcb, lht_node_t *tree, char *path1)
 
 void io_pcb_attrib_c2a(PCBType *pcb)
 {
-	lht_node_t *nmain = conf_lht_get_main(CFR_DESIGN);
+	lht_node_t *nmain = conf_lht_get_first(CFR_DESIGN);
 
 	c2a(pcb, nmain, "");
 }
