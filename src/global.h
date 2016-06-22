@@ -69,6 +69,7 @@
 #include "vtonpoint.h"
 #include "hid.h"
 #include "polyarea.h"
+#include "vtroutestyle.h"
 
 
 /* Internationalization support. */
@@ -234,15 +235,6 @@ typedef struct {								/* holds a range of Drill Infos */
 	DrillTypePtr Drill;						/* plated holes */
 } DrillInfoType, *DrillInfoTypePtr;
 
-typedef struct {
-	Coord Thick,									/* line thickness */
-	  Diameter,										/* via diameter */
-	  Hole,												/* via drill hole */
-	  Clearance;									/* min. separation from other nets */
-	char *Name;
-	int index;
-} RouteStyleType, *RouteStyleTypePtr;
-
 typedef struct LibraryEntryTpye_s  LibraryEntryType, *LibraryEntryTypePtr;
 typedef struct LibraryMenuType_s   LibraryMenuType, *LibraryMenuTypePtr;
 
@@ -334,7 +326,7 @@ typedef struct PCBType {
 	  ThermScale;									/* scale factor used with thermals */
 	FontType Font;
 	LayerGroupType LayerGroups;
-	RouteStyleType RouteStyle[NUM_STYLES];
+	vtroutestyle_t RouteStyle;
 	LibraryType NetlistLib[NUM_NETLISTS];
 	rats_patch_line_t *NetlistPatches, *NetlistPatchLast;
 	AttributeListType Attributes;

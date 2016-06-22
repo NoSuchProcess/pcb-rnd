@@ -84,13 +84,13 @@ put /local/pcb/OBJS [@
 	polygon.o
 	polygon1.o
 	polygon_act.o
-
 	rats.o
 	rats_act.o
 	rats_patch.o
 	remove.o
 	remove_act.o
 	rotate.o
+	route_style.o
 	rtree.o
 	rubberband.o
 	search.o
@@ -109,6 +109,7 @@ put /local/pcb/OBJS [@
 	vtlibrary.o
 	vtonpoint.o
 	vtptr.o
+	vtroutestyle.o
 	buildin.o
 	../src_3rd/liblihata/parser.o
 	../src_3rd/liblihata/dom.o

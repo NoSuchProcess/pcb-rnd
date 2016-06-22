@@ -56,6 +56,7 @@
 #include "thermal.h"
 #include "rats_patch.h"
 #include "flags.h"
+#include "route_style.h"
 
 #ifdef HAVE_LIBDMALLOC
 # include <dmalloc.h> /* see http://dmalloc.com */
@@ -665,7 +666,7 @@ is split across lines only to make it readable.
 pcbstyles
 		: T_STYLES '(' STRING ')'
 			{
-				if (ParseRouteString($3, &yyPCB->RouteStyle[0], "mil"))
+				if (ParseRouteString($3, &yyPCB->RouteStyle, "mil"))
 				{
 					Message("illegal route-style string\n");
 					YYABORT;
@@ -674,7 +675,7 @@ pcbstyles
 			}
 		| T_STYLES '[' STRING ']'
 			{
-				if (ParseRouteString($3, &yyPCB->RouteStyle[0], "cmil"))
+				if (ParseRouteString($3, &yyPCB->RouteStyle, "cmil"))
 				{
 					Message("illegal route-style string\n");
 					YYABORT;

@@ -71,7 +71,6 @@
 #define	MAX_LAYER		16	/* max number of layer, check source */
 					/* code for more changes, a *lot* more changes */
 #define DEF_LAYER		8	/* default number of layers for new boards */
-#define NUM_STYLES		4
 #define	MIN_LINESIZE		MIL_TO_COORD(0.01)	/* thickness of lines */
 #define	MAX_LINESIZE		LARGE_VALUE
 #define	MIN_TEXTSCALE		10	/* scaling of text objects in percent */

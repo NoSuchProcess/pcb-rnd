@@ -1,4 +1,9 @@
 - replace settings with lihata (conf_*)
+	- do not save route styles as attribute? or maybe this is the way to keep more than 4 with pcb mainline?
+	- dynamic route style bugs:
+		- gtk hid new style is not "this session only"
+		- check why there is an extra empty route style
+	- try to remove globalconst.h in favor of config
 	- make route style number dynamic?
 	- color file: a plugin for importing/exporting colors
 	- gtk hid: clean up the #warnings
@@ -41,6 +46,8 @@
 		- gtk, preferences dialog, user pov
 		- test if all plugins work from .so
 		- test clearance + drc clearance
+		- route style in gtk and lesstif, save, load, 0, 1 or a lot of styles
+		- route style vs. autorouter
 
 BUGS:
 	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly

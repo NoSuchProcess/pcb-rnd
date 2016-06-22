@@ -716,7 +716,7 @@ void SetFontInfo(FontTypePtr Ptr)
 	Ptr->DefaultSymbol.Y2 = Ptr->DefaultSymbol.Y1 + Ptr->MaxHeight;
 }
 
-static Coord GetNum(char **s, const char *default_unit)
+Coord GetNum(char **s, const char *default_unit)
 {
 	/* Read value */
 	Coord ret_val = GetValueEx(*s, NULL, NULL, NULL, default_unit, NULL);
@@ -724,112 +724,6 @@ static Coord GetNum(char **s, const char *default_unit)
 	while (isalnum(**s) || **s == '.')
 		(*s)++;
 	return ret_val;
-}
-
-/*! \brief Serializes the route style list 
- *  \par Function Description
- *  Right now n_styles should always be set to NUM_STYLES,
- *  since that is the number of route styles ParseRouteString()
- *  expects to parse.
- */
-char *make_route_string(RouteStyleType rs[], int n_styles)
-{
-	gds_t str;
-	int i;
-
-	gds_init(&str);
-	for (i = 0; i < n_styles; ++i) {
-		pcb_append_printf(&str, "%s,%mc,%mc,%mc,%mc", rs[i].Name,
-																				 rs[i].Thick, rs[i].Diameter,
-																				 rs[i].Hole, rs[i].Clearance);
-		if (i > 0)
-			gds_append(&str, ':');
-	}
-	return str.array; /* this is the only allocation made, return this and don't uninit */
-}
-
-/* ----------------------------------------------------------------------
- * parses the routes definition string which is a colon separated list of
- * comma separated Name, Dimension, Dimension, Dimension, Dimension
- * e.g. Signal,20,40,20,10:Power,40,60,28,10:...
- */
-int ParseRoutingString1(char **str, RouteStyleTypePtr routeStyle, const char *default_unit)
-{
-	char *s = *str;
-	char Name[256];
-	int i;
-
-		while (*s && isspace((int) *s))
-			s++;
-		for (i = 0; *s && *s != ','; i++)
-			Name[i] = *s++;
-		Name[i] = '\0';
-		routeStyle->Name = strdup(Name);
-		if (!isdigit((int) *++s))
-			goto error;
-		routeStyle->Thick = GetNum(&s, default_unit);
-		while (*s && isspace((int) *s))
-			s++;
-		if (*s++ != ',')
-			goto error;
-		while (*s && isspace((int) *s))
-			s++;
-		if (!isdigit((int) *s))
-			goto error;
-		routeStyle->Diameter = GetNum(&s, default_unit);
-		while (*s && isspace((int) *s))
-			s++;
-		if (*s++ != ',')
-			goto error;
-		while (*s && isspace((int) *s))
-			s++;
-		if (!isdigit((int) *s))
-			goto error;
-		routeStyle->Hole = GetNum(&s, default_unit);
-		/* for backwards-compatibility, we use a 10-mil default
-		 * for styles which omit the clearance specification. */
-		if (*s != ',')
-			routeStyle->Clearance = MIL_TO_COORD(10);
-		else {
-			s++;
-			while (*s && isspace((int) *s))
-				s++;
-			if (!isdigit((int) *s))
-				goto error;
-			routeStyle->Clearance = GetNum(&s, default_unit);
-			while (*s && isspace((int) *s))
-				s++;
-		}
-
-	*str = s;
-	return 0;
-	error:;
-		*str = s;
-		return -1;
-}
-
-int ParseRouteString(char *s, RouteStyleTypePtr routeStyle, const char *default_unit)
-{
-	int style;
-
-
-	memset(routeStyle, 0, NUM_STYLES * sizeof(RouteStyleType));
-	for (style = 0; style < NUM_STYLES; style++, routeStyle++) {
-
-		ParseRoutingString1(&s, routeStyle, default_unit);
-
-		if (style < NUM_STYLES - 1) {
-			while (*s && isspace((int) *s))
-				s++;
-			if (*s++ != ':')
-				goto error;
-		}
-	}
-	return (0);
-
-error:
-	memset(routeStyle, 0, NUM_STYLES * sizeof(RouteStyleType));
-	return (1);
 }
 
 /* ----------------------------------------------------------------------

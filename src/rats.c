@@ -52,7 +52,7 @@
 #include "search.h"
 #include "undo.h"
 #include "stub_mincut.h"
-
+#include "route_style.h"
 
 RCSID("$Id$");
 
@@ -229,7 +229,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 			if (menu->Style) {
 				STYLE_LOOP(PCB);
 				{
-					if (style->Name && !NSTRCMP(style->Name, menu->Style)) {
+					if (style->name && !NSTRCMP(style->name, menu->Style)) {
 						net->Style = style;
 						break;
 					}

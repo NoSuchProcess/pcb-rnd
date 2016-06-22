@@ -114,7 +114,7 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 		return;
 	}
 
-	gtk_entry_set_text(GTK_ENTRY(dialog->name_entry), style->rst->Name);
+	gtk_entry_set_text(GTK_ENTRY(dialog->name_entry), style->rst->name);
 	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->line_entry), style->rst->Thick);
 	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_hole_entry), style->rst->Hole);
 	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_size_entry), style->rst->Diameter);
@@ -145,6 +145,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	GtkWidget *content_area;
 	GtkWidget *vbox, *hbox, *sub_vbox, *table;
 	GtkWidget *label, *select_box, *check_box;
+	char *new_name;
 
 	/* Build dialog */
 	dialog = gtk_dialog_new_with_buttons(_("Edit Route Styles"),
@@ -212,10 +213,16 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 			rst = g_malloc(sizeof *rst);
 		else {
 			rst = style->rst;
-			free(rst->Name);
+			*rst->name = '\0';
 		}
 
-		rst->Name = StripWhiteSpaceAndDup(gtk_entry_get_text(GTK_ENTRY(dialog_data.name_entry)));
+#warning TODO: doesn't this leak?
+		new_name = gtk_entry_get_text(GTK_ENTRY(dialog_data.name_entry));
+
+		while(isspace(*new_name)) new_name++;
+		strncpy(rst->name, new_name, sizeof(rst->name)-1);
+		rst->name[sizeof(rst->name)-1] = '0';
+
 		rst->Thick = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.line_entry));
 		rst->Hole = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_hole_entry));
 		rst->Diameter = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_size_entry));
@@ -225,8 +232,8 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 		if (style == NULL)
 			style = ghid_route_style_selector_real_add_route_style(rss, rst, TRUE);
 		else {
-			gtk_action_set_label(GTK_ACTION(style->action), rst->Name);
-			gtk_list_store_set(rss->model, &iter, TEXT_COL, rst->Name, -1);
+			gtk_action_set_label(GTK_ACTION(style->action), rst->name);
+			gtk_list_store_set(rss->model, &iter, TEXT_COL, rst->name, -1);
 		}
 
 		/* Cleanup */
@@ -355,7 +362,7 @@ struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteSty
 	/* Key the route style data with the RouteStyleType it controls */
 	new_style->rst = data;
 	new_style->temporary = temp;
-	new_style->action = gtk_radio_action_new(action_name, data->Name, NULL, NULL, action_count);
+	new_style->action = gtk_radio_action_new(action_name, data->name, NULL, NULL, action_count);
 	gtk_radio_action_set_group(new_style->action, rss->action_radio_group);
 	rss->action_radio_group = gtk_radio_action_get_group(new_style->action);
 	new_style->button = gtk_radio_button_new(rss->button_radio_group);
@@ -363,7 +370,7 @@ struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteSty
 	gtk_activatable_set_related_action(GTK_ACTIVATABLE(new_style->button), GTK_ACTION(new_style->action));
 
 	gtk_list_store_append(rss->model, &iter);
-	gtk_list_store_set(rss->model, &iter, TEXT_COL, data->Name, DATA_COL, new_style, -1);
+	gtk_list_store_set(rss->model, &iter, TEXT_COL, data->name, DATA_COL, new_style, -1);
 	path = gtk_tree_model_get_path(GTK_TREE_MODEL(rss->model), &iter);
 	new_style->rref = gtk_tree_row_reference_new(GTK_TREE_MODEL(rss->model), path);
 	gtk_tree_path_free(path);

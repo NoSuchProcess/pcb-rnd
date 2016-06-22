@@ -473,10 +473,14 @@ void set_some_route_style()
 {
 	if (hid_get_flag("GetStyle()"))
 		return;
-	SetLineSize(PCB->RouteStyle[0].Thick);
-	SetViaSize(PCB->RouteStyle[0].Diameter, true);
-	SetViaDrillingHole(PCB->RouteStyle[0].Hole, true);
-	SetClearanceWidth(PCB->RouteStyle[0].Clearance);
+
+	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
+#warning TODO: call some central setter instead so we don't need to know the field names here
+		SetLineSize(PCB->RouteStyle.array[0].Thick);
+		SetViaSize(PCB->RouteStyle.array[0].Diameter, true);
+		SetViaDrillingHole(PCB->RouteStyle.array[0].Hole, true);
+		SetClearanceWidth(PCB->RouteStyle.array[0].Clearance);
+	}
 }
 
 /* ---------------------------------------------------------------------------

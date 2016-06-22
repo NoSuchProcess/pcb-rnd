@@ -299,6 +299,7 @@ typedef struct routebox {
 } routebox_t;
 
 typedef struct routedata {
+	int max_styles;
 	/* one rtree per layer *group */
 	rtree_t *layergrouptree[MAX_LAYER];	/* no silkscreen layers here =) */
 	/* root pointer into connectivity information */
@@ -306,7 +307,7 @@ typedef struct routedata {
 	/* default routing style */
 	RouteStyleType defaultstyle;
 	/* style structures */
-	RouteStyleType *styles[NUM_STYLES + 1];
+	RouteStyleType **styles; /* [max_styles+1] */
 	/* what is the maximum bloat (clearance+line half-width or
 	 * clearance+via_radius) for any style we've seen? */
 	Coord max_bloat;
@@ -892,6 +893,11 @@ static routedata_t *CreateRouteData()
 	/* create routedata */
 	rd = (routedata_t *) malloc(sizeof(*rd));
 	memset((void *) rd, 0, sizeof(*rd));
+
+	rd->max_styles = vtroutestyle_len(&PCB->RouteStyle);
+/*	rd->layergrouptree = calloc(sizeof(rd->layergrouptree[0]), rd->max_layers);*/
+	rd->styles = calloc(sizeof(rd->styles[0]), rd->max_styles);
+
 	/* create default style */
 	rd->defaultstyle.Thick = conf_core.design.line_thickness;
 	rd->defaultstyle.Diameter = conf_core.design.via_thickness;
@@ -903,8 +909,8 @@ static routedata_t *CreateRouteData()
 	bbox.X1 = bbox.Y1 = 0;
 	bbox.X2 = PCB->MaxWidth;
 	bbox.Y2 = PCB->MaxHeight;
-	for (i = 0; i < NUM_STYLES + 1; i++) {
-		RouteStyleType *style = (i < NUM_STYLES) ? &PCB->RouteStyle[i] : &rd->defaultstyle;
+	for (i = 0; i < rd->max_styles + 1; i++) {
+		RouteStyleType *style = (i < rd->max_styles) ? &PCB->RouteStyle.array[i] : &rd->defaultstyle;
 		rd->styles[i] = style;
 	}
 
@@ -942,7 +948,7 @@ static routedata_t *CreateRouteData()
 				routebox_t *last_in_subnet = NULL;
 				int j;
 
-				for (j = 0; j < NUM_STYLES; j++)
+				for (j = 0; j < rd->max_styles; j++)
 					if (net->Style == rd->styles[j])
 						break;
 				CONNECTION_LOOP(net);
@@ -1041,7 +1047,7 @@ static routedata_t *CreateRouteData()
 		if (TEST_FLAG(DRCFLAG, pin))
 			CLEAR_FLAG(DRCFLAG, pin);
 		else
-			AddPin(layergroupboxes, pin, false, rd->styles[NUM_STYLES]);
+			AddPin(layergroupboxes, pin, false, rd->styles[rd->max_styles]);
 	}
 	ENDALL_LOOP;
 	ALLPAD_LOOP(PCB->Data);
@@ -1049,7 +1055,7 @@ static routedata_t *CreateRouteData()
 		if (TEST_FLAG(DRCFLAG, pad))
 			CLEAR_FLAG(DRCFLAG, pad);
 		else
-			AddPad(layergroupboxes, element, pad, rd->styles[NUM_STYLES]);
+			AddPad(layergroupboxes, element, pad, rd->styles[rd->max_styles]);
 	}
 	ENDALL_LOOP;
 	/* add all vias */
@@ -1058,7 +1064,7 @@ static routedata_t *CreateRouteData()
 		if (TEST_FLAG(DRCFLAG, via))
 			CLEAR_FLAG(DRCFLAG, via);
 		else
-			AddPin(layergroupboxes, via, true, rd->styles[NUM_STYLES]);
+			AddPin(layergroupboxes, via, true, rd->styles[rd->max_styles]);
 	}
 	END_LOOP;
 
@@ -1086,14 +1092,14 @@ static routedata_t *CreateRouteData()
 					fake_line.Point2.Y = fake_line.Point1.Y + dy;
 					if (fake_line.Point2.X == line->Point2.X && fake_line.Point2.Y == line->Point2.Y)
 						break;
-					AddLine(layergroupboxes, layergroup, &fake_line, line, rd->styles[NUM_STYLES]);
+					AddLine(layergroupboxes, layergroup, &fake_line, line, rd->styles[rd->max_styles]);
 					fake_line.Point1 = fake_line.Point2;
 				}
 				fake_line.Point2 = line->Point2;
-				AddLine(layergroupboxes, layergroup, &fake_line, line, rd->styles[NUM_STYLES]);
+				AddLine(layergroupboxes, layergroup, &fake_line, line, rd->styles[rd->max_styles]);
 			}
 			else {
-				AddLine(layergroupboxes, layergroup, line, line, rd->styles[NUM_STYLES]);
+				AddLine(layergroupboxes, layergroup, line, line, rd->styles[rd->max_styles]);
 			}
 		}
 		END_LOOP;
@@ -1103,19 +1109,19 @@ static routedata_t *CreateRouteData()
 			if (TEST_FLAG(DRCFLAG, polygon))
 				CLEAR_FLAG(DRCFLAG, polygon);
 			else
-				AddPolygon(layergroupboxes, i, polygon, rd->styles[NUM_STYLES]);
+				AddPolygon(layergroupboxes, i, polygon, rd->styles[rd->max_styles]);
 		}
 		END_LOOP;
 		/* add all copper text */
 		TEXT_LOOP(LAYER_PTR(i));
 		{
-			AddText(layergroupboxes, layergroup, text, rd->styles[NUM_STYLES]);
+			AddText(layergroupboxes, layergroup, text, rd->styles[rd->max_styles]);
 		}
 		END_LOOP;
 		/* add all arcs */
 		ARC_LOOP(LAYER_PTR(i));
 		{
-			AddArc(layergroupboxes, layergroup, arc, rd->styles[NUM_STYLES]);
+			AddArc(layergroupboxes, layergroup, arc, rd->styles[rd->max_styles]);
 		}
 		END_LOOP;
 	}
@@ -1155,6 +1161,8 @@ void DestroyRouteData(routedata_t ** rd)
 		r_destroy_tree(&(*rd)->layergrouptree[i]);
 	if (AutoRouteParameters.use_vias)
 		mtspace_destroy(&(*rd)->mtspace);
+/*	free((*rd)->layergrouptree);*/
+	free((*rd)->styles);
 	free(*rd);
 	*rd = NULL;
 }
@@ -4537,9 +4545,9 @@ bool AutoRoute(bool selected)
 	}
 #endif
 
-	for (i = 0; i < NUM_STYLES; i++) {
-		if (PCB->RouteStyle[i].Thick == 0 ||
-				PCB->RouteStyle[1].Diameter == 0 || PCB->RouteStyle[1].Hole == 0 || PCB->RouteStyle[i].Clearance == 0) {
+	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); i++) {
+		if (PCB->RouteStyle.array[i].Thick == 0 ||
+				PCB->RouteStyle.array[i].Diameter == 0 || PCB->RouteStyle.array[i].Hole == 0 || PCB->RouteStyle.array[i].Clearance == 0) {
 			Message("You must define proper routing styles\n" "before auto-routing.\n");
 			return (false);
 		}

@@ -57,13 +57,8 @@ void CountHoles(int *, int *, const BoxType *);
 BoxTypePtr GetDataBoundingBox(DataTypePtr);
 void CenterDisplay(Coord, Coord);
 void SetFontInfo(FontTypePtr);
-char *make_route_string(RouteStyleType rs[], int n_styles);
 int ParseGroupString(char *, LayerGroupTypePtr, int /* LayerN */ );
-
-/* Parse a single route string into one RouteStyleTypePtr slot */
-int ParseRoutingString1(char **str, RouteStyleTypePtr routeStyle, const char *default_unit);
-/* Parse a ':' separated list of route strings into a full RouteStyleTypePtr array */
-int ParseRouteString(char *, RouteStyleTypePtr, const char *);
+Coord GetNum(char **s, const char *default_unit);
 
 void QuitApplication(void);
 char *EvaluateFilename(char *, char *, char *, char *);

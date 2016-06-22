@@ -51,6 +51,7 @@
 #include "set.h"
 #include "undo.h"
 #include "hid_actions.h"
+#include "route_style.h"
 
 RCSID("$Id$");
 
@@ -272,7 +273,7 @@ void SetRouteStyle(char *name)
 
 	STYLE_LOOP(PCB);
 	{
-		if (name && NSTRCMP(name, style->Name) == 0) {
+		if (name && NSTRCMP(name, style->name) == 0) {
 			sprintf(num, "%d", n + 1);
 			hid_actionl("RouteStyle", num, NULL);
 			break;

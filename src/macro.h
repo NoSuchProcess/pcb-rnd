@@ -177,13 +177,6 @@ extern int mem_any_set(unsigned char *, int);
  */
 #define END_LOOP  }} while (0)
 
-#define STYLE_LOOP(top)  do {                                       \
-        Cardinal n;                                                 \
-        RouteStyleTypePtr style;                                    \
-        for (n = 0; n < NUM_STYLES; n++)                            \
-        {                                                           \
-                style = &(top)->RouteStyle[n]
-
 #define VIA_LOOP(top) do {                                          \
   PinType *via;                                                     \
   gdl_iterator_t __it__;                                            \

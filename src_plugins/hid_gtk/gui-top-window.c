@@ -100,6 +100,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "hid_attrib.h"
 #include "hid_actions.h"
 #include "hid_flags.h"
+#include "route_style.h"
 
 RCSID("$Id$");
 
@@ -344,8 +345,10 @@ static void update_board_mtime_from_disk(void)
 	 */
 void ghid_sync_with_new_layout(void)
 {
-	pcb_use_route_style(&PCB->RouteStyle[0]);
-	ghid_route_style_selector_select_style(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector), &PCB->RouteStyle[0]);
+	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
+		pcb_use_route_style(&PCB->RouteStyle.array[0]);
+		ghid_route_style_selector_select_style(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector), &PCB->RouteStyle.array[0]);
+	}
 
 	ghid_config_handle_units_changed();
 
@@ -733,9 +736,9 @@ void ghid_layer_buttons_update(void)
 /*! \brief Called when user clicks OK on route style dialog */
 static void route_styles_edited_cb(GHidRouteStyleSelector * rss, gboolean save, gpointer data)
 {
-	conf_setf(CFR_DESIGN, "design/routes", -1, "%s", make_route_string(PCB->RouteStyle, NUM_STYLES));
+	conf_setf(CFR_DESIGN, "design/routes", -1, "%s", make_route_string(&PCB->RouteStyle));
 	if (save)
-		conf_setf(CFR_USER, "design/routes", -1, "%s", make_route_string(PCB->RouteStyle, NUM_STYLES));
+		conf_setf(CFR_USER, "design/routes", -1, "%s", make_route_string(&PCB->RouteStyle));
 	ghid_main_menu_install_route_style_selector
 		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
 }
@@ -751,8 +754,8 @@ static void route_style_changed_cb(GHidRouteStyleSelector * rss, RouteStyleType 
 void make_route_style_buttons(GHidRouteStyleSelector * rss)
 {
 	int i;
-	for (i = 0; i < NUM_STYLES; ++i)
-		ghid_route_style_selector_add_route_style(rss, &PCB->RouteStyle[i]);
+	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); ++i)
+		ghid_route_style_selector_add_route_style(rss, &PCB->RouteStyle.array[i]);
 	g_signal_connect(G_OBJECT(rss), "select_style", G_CALLBACK(route_style_changed_cb), NULL);
 	g_signal_connect(G_OBJECT(rss), "style_edited", G_CALLBACK(route_styles_edited_cb), NULL);
 }

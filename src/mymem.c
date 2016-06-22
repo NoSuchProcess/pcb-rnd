@@ -614,9 +614,7 @@ void FreePCBMemory(PCBType * pcb)
 		free(pcb->Font.Symbol[i].Line);
 	for (i = 0; i < NUM_NETLISTS; i++)
 		FreeLibraryMemory(&(pcb->NetlistLib[i]));
-	for (i = 0; i < NUM_STYLES; i++)
-		if (pcb->RouteStyle[i].Name != NULL)
-			free(pcb->RouteStyle[i].Name);
+	vtroutestyle_uninit(&pcb->RouteStyle);
 	FreeAttributeListMemory(&pcb->Attributes);
 	/* clear struct */
 	memset(pcb, 0, sizeof(PCBType));

@@ -105,6 +105,8 @@
 #include "hid_flags.h"
 #include "flags.h"
 #include "attribs.h"
+#include "route_style.h"
+
 
 RCSID("$Id$");
 
@@ -241,7 +243,7 @@ static void conf_update_pcb_flag(FlagType *dest, const char *hash_path, int binf
  */
 static void WritePCBDataHeader(FILE * FP)
 {
-	Cardinal group;
+	int group;
 	FlagType pcb_flags;
 
 	memset(&pcb_flags, 0, sizeof(pcb_flags));
@@ -302,13 +304,17 @@ static void WritePCBDataHeader(FILE * FP)
 	fprintf(FP, "Flags(%s)\n", pcbflags_to_string(pcb_flags));
 	fprintf(FP, "Groups(\"%s\")\n", LayerGroupsToString(&PCB->LayerGroups));
 	fputs("Styles[\"", FP);
-	for (group = 0; group < NUM_STYLES - 1; group++)
-		pcb_fprintf(FP, "%s,%mr,%mr,%mr,%mr:", PCB->RouteStyle[group].Name,
-								PCB->RouteStyle[group].Thick,
-								PCB->RouteStyle[group].Diameter, PCB->RouteStyle[group].Hole, PCB->RouteStyle[group].Clearance);
-	pcb_fprintf(FP, "%s,%mr,%mr,%mr,%mr\"]\n\n", PCB->RouteStyle[group].Name,
-							PCB->RouteStyle[group].Thick,
-							PCB->RouteStyle[group].Diameter, PCB->RouteStyle[group].Hole, PCB->RouteStyle[group].Clearance);
+printf("groups=%d\n", vtroutestyle_len(&PCB->RouteStyle));
+
+	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
+		for (group = 0; group < vtroutestyle_len(&PCB->RouteStyle) - 1; group++)
+			pcb_fprintf(FP, "%s,%mr,%mr,%mr,%mr:", PCB->RouteStyle.array[group].name,
+									PCB->RouteStyle.array[group].Thick,
+									PCB->RouteStyle.array[group].Diameter, PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
+		pcb_fprintf(FP, "%s,%mr,%mr,%mr,%mr\"]\n\n", PCB->RouteStyle.array[group].name,
+								PCB->RouteStyle.array[group].Thick,
+								PCB->RouteStyle.array[group].Diameter, PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
+	}
 }
 
 /* ---------------------------------------------------------------------------

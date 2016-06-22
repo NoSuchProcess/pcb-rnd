@@ -52,9 +52,20 @@ typedef enum {
 
 static Widget style_dialog = 0;
 static Widget style_values[SSNUM];
-static Widget style_pb[NUM_STYLES];
-static Widget units_pb[NUM_STYLES];
-static int name_hashes[NUM_STYLES];
+
+/* dynamic arrays for styles */
+static int alloced_styles = 0;
+static Widget *style_pb;
+static Widget *units_pb;
+static int *name_hashes;
+typedef struct {
+	Widget *w;
+} StyleButtons;
+
+static StyleButtons *style_button_list = NULL;
+static int num_style_buttons = 0; /* number of style_button_list instances (depends on how many times it's placed in the menu) */
+/**/
+
 static Widget value_form, value_labels, value_texts, units_form;
 static int local_update = 0;
 XmString xms_mm, xms_mil;
@@ -72,13 +83,6 @@ static int hash(char *cp)
 	}
 	return h;
 }
-
-typedef struct {
-	Widget w[NUM_STYLES];
-} StyleButtons;
-
-static StyleButtons *style_button_list = 0;
-static int num_style_buttons = 0;
 
 static char *value_names[] = {
 	"Thickness", "Diameter", "Hole", "Clearance"
@@ -125,14 +129,14 @@ static void update_style_buttons()
 	int j, n;
 
 	for (n = 0; n < num_style_buttons; n++) {
-		for (j = 0; j < NUM_STYLES; j++)
+		for (j = 0; j < vtroutestyle_len(&PCB->RouteStyle); j++)
 			if (j != i - 1)
 				XmToggleButtonSetState(style_button_list[n].w[j], 0, 0);
 			else
 				XmToggleButtonSetState(style_button_list[n].w[j], 1, 0);
 	}
 	if (style_dialog) {
-		for (j = 0; j < NUM_STYLES; j++)
+		for (j = 0; j < vtroutestyle_len(&PCB->RouteStyle); j++)
 			if (j != i - 1)
 				XmToggleButtonSetState(style_pb[j], 0, 0);
 			else
@@ -219,18 +223,20 @@ static Widget style_value(int i)
 
 static void style_name_cb(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 {
-	char *newname = lesstif_prompt_for("New name", PCB->RouteStyle[i].Name);
-	free(PCB->RouteStyle[i].Name);
-	PCB->RouteStyle[i].Name = newname;
+	char *newname = lesstif_prompt_for("New name", PCB->RouteStyle.array[i].name);
+	strncpy(PCB->RouteStyle.array[i].name, newname, sizeof(PCB->RouteStyle.array[i].name)-1);
+	PCB->RouteStyle.array[i].name[sizeof(PCB->RouteStyle.array[i].name)-1] = '\0';
+	free(newname);
+	
 	RouteStylesChanged(0, 0, 0, 0);
 }
 
 static void style_set_cb(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 {
-	PCB->RouteStyle[i].Thick = conf_core.design.line_thickness;
-	PCB->RouteStyle[i].Diameter = conf_core.design.via_thickness;
-	PCB->RouteStyle[i].Hole = conf_core.design.via_drilling_hole;
-	PCB->RouteStyle[i].Clearance = conf_core.design.clearance;
+	PCB->RouteStyle.array[i].Thick = conf_core.design.line_thickness;
+	PCB->RouteStyle.array[i].Diameter = conf_core.design.via_thickness;
+	PCB->RouteStyle.array[i].Hole = conf_core.design.via_drilling_hole;
+	PCB->RouteStyle.array[i].Clearance = conf_core.design.clearance;
 	update_style_buttons();
 }
 
@@ -242,13 +248,13 @@ static void style_selected(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 		XmToggleButtonSetState(w, 1, 0);
 		return;
 	}
-	style = PCB->RouteStyle + i;
+	style = PCB->RouteStyle.array + i;
 	SetLineSize(style->Thick);
 	SetViaSize(style->Diameter, true);
 	SetViaDrillingHole(style->Hole, true);
 	SetClearanceWidth(style->Clearance);
 	if (style_dialog) {
-		for (j = 0; j < NUM_STYLES; j++)
+		for (j = 0; j < vtroutestyle_len(&PCB->RouteStyle); j++)
 			if (j != i)
 				XmToggleButtonSetState(style_pb[j], 0, 0);
 			else
@@ -258,7 +264,7 @@ static void style_selected(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 	else
 		lesstif_update_status_line();
 	for (n = 0; n < num_style_buttons; n++) {
-		for (j = 0; j < NUM_STYLES; j++)
+		for (j = 0; j < vtroutestyle_len(&PCB->RouteStyle); j++)
 			if (j != i)
 				XmToggleButtonSetState(style_button_list[n].w[j], 0, 0);
 			else
@@ -295,7 +301,7 @@ static Widget style_button(int i)
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_WIDGET);
 	stdarg(XmNleftWidget, set);
-	stdarg(XmNlabelString, XmStringCreatePCB(PCB->RouteStyle[i].Name));
+	stdarg(XmNlabelString, XmStringCreatePCB(PCB->RouteStyle.array[i].name));
 	stdarg(XmNindicatorType, XmONE_OF_MANY);
 	stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
 	pb = XmCreateToggleButton(style_dialog, "style", stdarg_args, stdarg_n);
@@ -364,9 +370,9 @@ static int AdjustStyle(int argc, char **argv, Coord x, Coord y)
 
 		for (i = 0; i < SSNUM; i++) {
 			style_values[i] = style_value(i);
-			name_hashes[i] = hash(PCB->RouteStyle[i].Name);
+			name_hashes[i] = hash(PCB->RouteStyle.array[i].name);
 		}
-		for (i = 0; i < NUM_STYLES; i++)
+		for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); i++)
 			style_pb[i] = style_button(i);
 		update_values();
 		update_style_buttons();
@@ -378,18 +384,18 @@ static int AdjustStyle(int argc, char **argv, Coord x, Coord y)
 static int RouteStylesChanged(int argc, char **argv, Coord x, Coord y)
 {
 	int i, j, h;
-	if (!PCB || !PCB->RouteStyle[0].Name)
+	if (!PCB || vtroutestyle_len(&PCB->RouteStyle) == 0)
 		return 0;
 	update_style_buttons();
 	if (!style_dialog)
 		return 0;
-	for (j = 0; j < NUM_STYLES; j++) {
-		h = hash(PCB->RouteStyle[j].Name);
+	for (j = 0; j < vtroutestyle_len(&PCB->RouteStyle); j++) {
+		h = hash(PCB->RouteStyle.array[j].name);
 		if (name_hashes[j] == h)
 			continue;
 		name_hashes[j] = h;
 		stdarg_n = 0;
-		stdarg(XmNlabelString, XmStringCreatePCB(PCB->RouteStyle[j].Name));
+		stdarg(XmNlabelString, XmStringCreatePCB(PCB->RouteStyle.array[j].name));
 		if (style_dialog)
 			XtSetValues(style_pb[j], stdarg_args, stdarg_n);
 		for (i = 0; i < num_style_buttons; i++)
@@ -409,11 +415,17 @@ void lesstif_insert_style_buttons(Widget menu)
 	style_button_list = (StyleButtons *) realloc(style_button_list, s);
 	sb = style_button_list + num_style_buttons - 1;
 
-	for (i = 0; i < NUM_STYLES; i++) {
+	alloced_styles = vtroutestyle_len(&PCB->RouteStyle);
+	style_pb = realloc(style_pb, sizeof(style_pb[0]) * alloced_styles);
+	units_pb = realloc(units_pb, sizeof(units_pb[0]) * alloced_styles);
+	name_hashes = realloc(name_hashes, sizeof(name_hashes[0]) * alloced_styles);
+	sb->w = realloc(sb->w, sizeof(sb->w[0]) * alloced_styles);
+
+	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); i++) {
 		Widget btn;
 		stdarg_n = 0;
 		stdarg(XmNindicatorType, XmONE_OF_MANY);
-		stdarg(XmNlabelString, XmStringCreatePCB(PCB->RouteStyle[i].Name));
+		stdarg(XmNlabelString, XmStringCreatePCB(PCB->RouteStyle.array[i].name));
 		btn = XmCreateToggleButton(menu, "style", stdarg_args, stdarg_n);
 		XtManageChild(btn);
 		XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) style_selected, (XtPointer) (size_t) i);

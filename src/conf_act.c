@@ -31,6 +31,7 @@
 #include "error.h"
 #include "misc.h"
 #include "misc_util.h"
+#include "route_style.h"
 
 static const char conf_syntax[] =
 	"conf(set, path, value, [role], [policy]) - change a config setting\n"

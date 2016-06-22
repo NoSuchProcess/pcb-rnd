@@ -1000,8 +1000,8 @@ static int ActionRouteStyle(int argc, char **argv, Coord x, Coord y)
 
 	if (str) {
 		number = atoi(str);
-		if (number > 0 && number <= NUM_STYLES) {
-			rts = &PCB->RouteStyle[number - 1];
+		if (number > 0 && number <= vtroutestyle_len(&PCB->RouteStyle)) {
+			rts = &PCB->RouteStyle.array[number - 1];
 			SetLineSize(rts->Thick);
 			SetViaSize(rts->Diameter, true);
 			SetViaDrillingHole(rts->Hole, true);
