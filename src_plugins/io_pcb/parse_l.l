@@ -411,7 +411,7 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_set
 		/* load config nodes not disabled above, from optional attributes */
 		io_pcb_attrib_a2c(Ptr);
 
-		conf_update();
+		conf_update(NULL);
 	}
 	return retval;
 }
