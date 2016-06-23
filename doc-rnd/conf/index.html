@@ -73,5 +73,19 @@ For plugin programmers, the new system makes life much easier as they can
 plug their settings in.
 
 
+<H2> Compatibility with mainline </H2>
+
+None. The new configuration system uses a new logical structure, new file
+format, new locations on the file system. Most setting names are the same
+or very similar to the old ones, but the new, tree-based logics add a twist.
+Some settings are renamed for clarity: clearance is always called clearance,
+on the UI, in the code and in config files as well (mainline pcb sometimes
+call it keepaway).
+
+<p>
+
+Since configuration is stored in new files, pcb-rnd settings do not interfere
+with pcb settings on any level.
+
 </body>
 </html>
