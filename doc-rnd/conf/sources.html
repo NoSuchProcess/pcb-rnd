@@ -1,0 +1,66 @@
+<html>
+<body>
+<H1> The new config system in pcb-rnd </H1>
+<H2> Sources </H2>
+There are different sources of configuration settings. These are
+different configuration files, sometimes located on the file system.
+The full list of config sources is:
+
+<table border=1>
+<tr><th> role     <th> default<br>setting<br>prio <th> location <th> presence <th> remarks
+<tr><td> internal
+    <td> 100
+    <td> (compiled into the executable)
+    <td> always
+    <td> the ultimate fallback; allows pcb-rnd even if no other configuration file is found
+
+
+<tr><td> system
+    <td> 200
+    <td> /usr/share/pcb-rnd/pcb-conf.lht
+    <td> recommended
+    <td> should hold system and installation specific settigns, e.g. path to the system-wise installed footprint library
+
+<tr><td> user
+    <td> 300
+    <td> ~/.pcb-rnd/pcb-conf.lht
+    <td> recommended
+    <td> store user preferences, user's common footprint lib path, etc; this is the first file the user can modify (even from the GUI)
+
+<tr><td> environment
+    <td> 400
+    <td> environment variables (TODO)
+    <td> occassional
+    <td> inject the same (temporary) settings in multiple pcb-rnd sessions without having to change config files
+
+<tr><td> project
+    <td> 500
+    <td> projdect.lht in the project directory
+    <td> optional
+    <td> local project settings - useful for large projects with multiple design (.pcb) files
+
+<tr><td> design
+    <td> 600
+    <td> saved in the design (.pcb) file
+    <td> optional, common
+    <td> per design deviation from the user+system config
+
+<tr><td> cli
+    <td> 700
+    <td> command line argument
+    <td> occassional
+    <td> inject/change a setting for a single session; useful in batch/automated processing
+</table>
+
+<p>
+Pcb-rnd reads them all, then merges all settings into a master binary
+representation. If a setting is specified in multiple sources, the one
+with the higher priority wins, except for lists where it is also possible
+to prepend/append items. Default priorities are designed to result
+precedence in an intuitive way (e.g. design settigns overwrite user settings).
+However, <a href="prio.html">priority can be changed</a> per setting, resulting
+in weak settings ("use this value if it was not already set") or strong settings
+("I always want to use mincut, so I enable it from my user's config with high
+priority and a version controlled project setting can not turn it off")
+
+

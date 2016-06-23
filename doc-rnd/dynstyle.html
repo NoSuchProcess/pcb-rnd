@@ -1,0 +1,20 @@
+<html>
+<body>
+<h1> pcb-rnd - the [dynstyle] patch </h1>
+
+Pcb-rnd doesn't have a hardwired limit on number of routing styles
+anymore. Routing styles can be created on the fly and are saved to and loaded
+from .pcb files.
+<p>
+There's no theoretical maximum explicitly set either. An implicit maximum
+exists and is sizeof(int) - should be at least 2^31 on most systems.
+
+<h2> save/load and compatibility </h2>
+The first 4 styles are loaded and preserved by mainline. Styles above
+4 would probably be deleted in a mainline load-save cycle. The number 4
+is a constant value that can be changed if mainline is recompiled.
+
+<h2> plans </h2>
+GUI HID representation of styles (especially in menus) need more testing.
+</body>
+</html>
