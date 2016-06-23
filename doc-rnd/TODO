@@ -1,4 +1,7 @@
 - replace settings with lihata (conf_*)
+	- segfault: --gui lesstif
+	- segfault: load two different pcb files from menu, the second will crash pcb
+	- pcb file from command line with gtk (broken by r1966)
 	- do not save route styles as attribute? or maybe this is the way to keep more than 4 with pcb mainline?
 	- dynamic route style bugs:
 		- gtk hid new style is not "this session only"
