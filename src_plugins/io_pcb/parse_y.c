@@ -133,7 +133,7 @@ extern	ElementTypePtr	yyElement;
 extern	FontTypePtr		yyFont;
 extern	int				yylineno;		/* linenumber */
 extern	char			*yyfilename;	/* in this file */
-extern	int	yyLoadSettings;
+extern	conf_role_t yy_settings_dest;
 extern FlagType yy_pcb_flags;
 
 static char *layer_group_string; 
@@ -1812,8 +1812,8 @@ yyreduce:
     {
 			  PCBTypePtr pcb_save = PCB;
 
-			  if (yyLoadSettings && (layer_group_string == NULL))
-					conf_set(CFR_DESIGN, "design/groups", -1, conf_core.design.groups, POL_OVERWRITE);
+			  if ((yy_settings_dest != CFR_invalid) && (layer_group_string == NULL))
+					conf_set(yy_settings_dest, "design/groups", -1, conf_core.design.groups, POL_OVERWRITE);
 			  CreateNewPCBPost (yyPCB, 0);
 			  if (ParseGroupString(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN))
 			    {
@@ -1957,11 +1957,11 @@ yyreduce:
 				yyPCB->Grid = OU ((yyvsp[-4].measure));
 				yyPCB->GridOffsetX = OU ((yyvsp[-3].measure));
 				yyPCB->GridOffsetY = OU ((yyvsp[-2].measure));
-				if (yyLoadSettings) {
+				if (yy_settings_dest != CFR_invalid) {
 					if ((yyvsp[-1].integer))
-						conf_set(CFR_DESIGN, "editor/draw_grid", -1, "true", POL_OVERWRITE);
+						conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", POL_OVERWRITE);
 					else
-						conf_set(CFR_DESIGN, "editor/draw_grid", -1, "false", POL_OVERWRITE);
+						conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", POL_OVERWRITE);
 				}
 			}
 #line 1968 "parse_y.tab.c" /* yacc.c:1646  */
@@ -1973,11 +1973,11 @@ yyreduce:
 				yyPCB->Grid = NU ((yyvsp[-4].measure));
 				yyPCB->GridOffsetX = NU ((yyvsp[-3].measure));
 				yyPCB->GridOffsetY = NU ((yyvsp[-2].measure));
-				if (yyLoadSettings) {
+				if (yy_settings_dest != CFR_invalid) {
 					if ((yyvsp[-1].integer))
-						conf_set(CFR_DESIGN, "editor/draw_grid", -1, "true", POL_OVERWRITE);
+						conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", POL_OVERWRITE);
 					else
-						conf_set(CFR_DESIGN, "editor/draw_grid", -1, "false", POL_OVERWRITE);
+						conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", POL_OVERWRITE);
 				}
 			}
 #line 1984 "parse_y.tab.c" /* yacc.c:1646  */

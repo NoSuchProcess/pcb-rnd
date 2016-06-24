@@ -21,32 +21,38 @@ The full list of config sources is:
     <td> recommended
     <td> should hold system and installation specific settigns, e.g. path to the system-wise installed footprint library
 
-<tr><td> user
+<tr><td> default.pcb
     <td> 300
+    <td> /usr/share/pcb-rnd/default.pcb
+    <td> deprecated
+    <td> pcb editable defaults
+
+<tr><td> user
+    <td> 400
     <td> ~/.pcb-rnd/pcb-conf.lht
     <td> recommended
     <td> store user preferences, user's common footprint lib path, etc; this is the first file the user can modify (even from the GUI)
 
 <tr><td> environment
-    <td> 400
+    <td> 500
     <td> environment variables (TODO)
     <td> occassional
     <td> inject the same (temporary) settings in multiple pcb-rnd sessions without having to change config files
 
 <tr><td> project
-    <td> 500
+    <td> 600
     <td> projdect.lht in the project directory
     <td> optional
     <td> local project settings - useful for large projects with multiple design (.pcb) files
 
 <tr><td> design
-    <td> 600
+    <td> 700
     <td> saved in the design (.pcb) file
     <td> optional, common
     <td> per design deviation from the user+system config
 
 <tr><td> cli
-    <td> 700
+    <td> 800
     <td> command line argument
     <td> occassional
     <td> inject/change a setting for a single session; useful in batch/automated processing

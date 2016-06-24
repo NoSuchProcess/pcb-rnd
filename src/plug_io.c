@@ -195,12 +195,13 @@ int WritePCB(FILE *f)
  * If revert is true, we pass "revert" as a parameter
  * to the HID's PCBChanged action.
  */
-int real_load_pcb(char *Filename, bool revert, bool require_font, bool is_misc)
+static int real_load_pcb(char *Filename, bool revert, bool require_font, int how)
 {
 	const char *unit_suffix;
 	char *new_filename;
 	PCBTypePtr newPCB = CreateNewPCB_(false);
 	PCBTypePtr oldPCB;
+	conf_role_t settings_dest;
 #ifdef DEBUG
 	double elapsed;
 	clock_t start, end;
@@ -216,14 +217,21 @@ int real_load_pcb(char *Filename, bool revert, bool require_font, bool is_misc)
 	/* mark the default font invalid to know if the file has one */
 	newPCB->Font.Valid = false;
 
+	switch(how) {
+		case 0: settings_dest = CFR_DESIGN; break;
+		case 1: settings_dest = CFR_DEFAULTPCB; break;
+		case 2: settings_dest = CFR_invalid; break;
+		default: abort();
+	}
+
 	/* new data isn't added to the undo list */
-	if (!ParsePCB(PCB, new_filename, !is_misc)) {
+	if (!ParsePCB(PCB, new_filename, settings_dest)) {
 		RemovePCB(oldPCB);
 
 		CreateNewPCBPost(PCB, 0);
 		ResetStackAndVisibility();
 
-		if (!is_misc) {
+		if (how == 0) {
 			/* update cursor location */
 			Crosshair.X = PCB_CLAMP(PCB->CursorX, 0, PCB->MaxWidth);
 			Crosshair.Y = PCB_CLAMP(PCB->CursorY, 0, PCB->MaxHeight);
@@ -249,7 +257,7 @@ int real_load_pcb(char *Filename, bool revert, bool require_font, bool is_misc)
 		if (unit_suffix && *unit_suffix) {
 			const Unit *new_unit = get_unit_struct(unit_suffix);
 			if (new_unit)
-				conf_set(CFR_DESIGN, "editor/grid_unit", -1, unit_suffix, POL_OVERWRITE);
+				conf_set(settings_dest, "editor/grid_unit", -1, unit_suffix, POL_OVERWRITE);
 		}
 		AttributePut(PCB, "PCB::grid::unit", conf_core.editor.grid_unit->suffix);
 
@@ -258,7 +266,7 @@ int real_load_pcb(char *Filename, bool revert, bool require_font, bool is_misc)
 
 		set_some_route_style();
 
-		if (!is_misc) {
+		if (how == 0) {
 			if (revert)
 				hid_actionl("PCBChanged", "revert", NULL);
 			else
@@ -486,9 +494,9 @@ void set_some_route_style()
 /* ---------------------------------------------------------------------------
  * Load PCB
  */
-int LoadPCB(char *file, bool require_font, bool is_misc)
+int LoadPCB(char *file, bool require_font, int how)
 {
-	return real_load_pcb(file, false, require_font, is_misc);
+	return real_load_pcb(file, false, require_font, how);
 }
 
 /* ---------------------------------------------------------------------------

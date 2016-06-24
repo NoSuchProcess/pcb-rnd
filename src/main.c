@@ -464,7 +464,7 @@ int main(int argc, char *argv[])
 		/* keep filename even if initial load command failed;
 		 * file might not exist
 		 */
-		if (LoadPCB(command_line_pcb, true, false))
+		if (LoadPCB(command_line_pcb, true, 0))
 			PCB->Filename = strdup(command_line_pcb);
 	}
 

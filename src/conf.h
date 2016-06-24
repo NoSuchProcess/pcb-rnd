@@ -117,11 +117,12 @@ struct conf_listitem_s {
 typedef enum {
 	CFR_INTERNAL,
 	CFR_SYSTEM,
+	CFR_DEFAULTPCB, /* default.pcb */
 	CFR_USER,
-	CFR_ENV,       /* env vars */
-	CFR_PROJECT,   /* project specific, from a local file */
-	CFR_DESIGN,    /* from the design file */
-	CFR_CLI,       /* from the command line */
+	CFR_ENV,        /* env vars */
+	CFR_PROJECT,    /* project specific, from a local file */
+	CFR_DESIGN,     /* from the design file */
+	CFR_CLI,        /* from the command line */
 	CFR_max,
 	CFR_invalid = CFR_max
 } conf_role_t;

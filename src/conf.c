@@ -37,13 +37,14 @@ lht_doc_t *conf_root[CFR_max];
 int conf_root_lock[CFR_max];
 htsp_t *conf_fields = NULL;
 static const int conf_default_prio[] = {
-/*	CFR_INTERNAL */ 100,
-/*	CFR_SYSTEM */   200,
-/*	CFR_USER */     300,
-/*	CFR_ENV */      400, 
-/*	CFR_PROJECT */  500,
-/*	CFR_DESIGN */   600,
-/*	CFR_CLI */      700
+/*	CFR_INTERNAL */   100,
+/*	CFR_SYSTEM */     200,
+/*	CFR_DEFAULTPCB */ 300,
+/*	CFR_USER */       400,
+/*	CFR_ENV */        500,
+/*	CFR_PROJECT */    600,
+/*	CFR_DESIGN */     700,
+/*	CFR_CLI */        800
 };
 
 extern const char *conf_internal;
@@ -149,12 +150,14 @@ conf_policy_t conf_policy_parse(const char *s)
 
 conf_role_t conf_role_parse(const char *s)
 {
-	if (strcasecmp(s, "system") == 0)  return CFR_SYSTEM;
-	if (strcasecmp(s, "user") == 0)    return CFR_USER;
-	if (strcasecmp(s, "project") == 0) return CFR_PROJECT;
-	if (strcasecmp(s, "design") == 0)  return CFR_DESIGN;
-	if (strcasecmp(s, "cli") == 0)     return CFR_CLI;
-	return POL_invalid;
+	if (strcasecmp(s, "internal") == 0)   return CFR_INTERNAL;
+	if (strcasecmp(s, "system") == 0)     return CFR_SYSTEM;
+	if (strcasecmp(s, "defaultpcb") == 0) return CFR_DEFAULTPCB;
+	if (strcasecmp(s, "user") == 0)       return CFR_USER;
+	if (strcasecmp(s, "project") == 0)    return CFR_PROJECT;
+	if (strcasecmp(s, "design") == 0)     return CFR_DESIGN;
+	if (strcasecmp(s, "cli") == 0)        return CFR_CLI;
+	return CFR_invalid;
 }
 
 

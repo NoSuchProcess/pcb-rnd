@@ -34,7 +34,7 @@
 #include "global.h"
 #include "plug_io.h"
 
-int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr, char *, int load_settings);
+int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, conf_role_t settings_dest);
 int io_pcb_ParseElement(plug_io_t *ctx, DataTypePtr, const char *);
 int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr, char *);
 

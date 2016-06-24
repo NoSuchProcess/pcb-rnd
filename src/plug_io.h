@@ -29,6 +29,7 @@
 #define PCB_PLUG_IO_H
 
 #include "global.h"
+#include "conf.h"
 
 /**************************** API definition *********************************/
 struct plug_io_s {
@@ -36,9 +37,10 @@ struct plug_io_s {
 	void *plugin_data;
 
 	/* Attempt to load a pcb design from Filename to Ptr.
-	   If load_settings is non-zero, CRF_DESIGN is replaced by settings loaded from the file.
+	   Conf subtree at settings_dest is replaced by settings loaded from the
+	   file unless it's CFR_invalid.
 	   Return 0 on success. */
-	int (*parse_pcb)(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, int load_settings);
+	int (*parse_pcb)(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, conf_role_t settings_dest);
 
 	/* Attempt to load an element from Filename to Ptr. Return 0 on success. */
 	int (*parse_element)(plug_io_t *ctx, DataTypePtr Ptr, const char *name);
@@ -73,7 +75,7 @@ int WritePCB(FILE *f);
 FILE *CheckAndOpenFile(char *, bool, bool, bool *, bool *);
 FILE *OpenConnectionDataFile(void);
 int SavePCB(char *);
-int LoadPCB(char *, bool, bool);
+int LoadPCB(char *, bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) */
 void EnableAutosave(void);
 void Backup(void);
 void SaveInTMP(void);
@@ -88,8 +90,6 @@ void sort_library(LibraryTypePtr lib);
 void set_some_route_style();
 int WritePCBFile(char *);
 int WritePipe(char *, bool);
-int real_load_pcb(char *Filename, bool revert, bool require_font, bool is_misc);
-
 
 #ifndef HAS_ATEXIT
 #ifdef HAS_ON_EXIT
