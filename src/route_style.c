@@ -129,7 +129,7 @@ int ParseRouteString(char *s, vtroutestyle_t *styles, const char *default_unit)
 	for(n = 0;;n++) {
 		vtroutestyle_enlarge(styles, n+1);
 		if (ParseRoutingString1(&s, &styles->array[n], default_unit) != 0) {
-			vtroutestyle_truncate(styles, n);
+			n--;
 			break;
 		}
 		while (*s && isspace((int) *s))
@@ -141,5 +141,6 @@ int ParseRouteString(char *s, vtroutestyle_t *styles, const char *default_unit)
 			return -1;
 		}
 	}
+	vtroutestyle_truncate(styles, n+1);
 	return 0;
 }
