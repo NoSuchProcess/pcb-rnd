@@ -620,7 +620,7 @@ void conf_load_all(void)
 		char buf[20];
 		if (dln == NULL) {
 			sprintf(buf, "signal%d", i + 1);
-			if (conf_set(CFR_INTERNAL, "design/default_layer_name", i, buf, POL_OVERWRITE) != 0)
+			if (conf_set_dry(CFR_INTERNAL, "design/default_layer_name", i, buf, POL_OVERWRITE) != 0)
 				printf("Can't set layer name\n");
 		}
 		else
