@@ -332,9 +332,10 @@ int main(int argc, char *argv[])
 				}
 			}
 			if (arg_match(cmd, "c", "-conf")) {
+				const char *why;
 				n++; /* eat up arg */
-				if (conf_set_from_cli(NULL, arg, &stmp) != 0) {
-					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, stmp);
+				if (conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
+					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
 					exit(1);
 				}
 				goto next_arg;

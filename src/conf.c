@@ -912,9 +912,9 @@ int conf_set_native(conf_native_t *field, int arr_idx, const char *new_val)
 }
 
 
-int conf_set_from_cli(const char *prefix, const char *arg_, char **why)
+int conf_set_from_cli(const char *prefix, const char *arg_, const char *val, const char **why)
 {
-	char *arg = NULL, *val, *op, *s;
+	char *arg = NULL, *op, *s;
 	conf_policy_t pol = POL_OVERWRITE;
 	int ret;
 
@@ -935,29 +935,31 @@ int conf_set_from_cli(const char *prefix, const char *arg_, char **why)
 	else
 		arg = strdup(arg_);
 
-	*op = strchr(arg, '=');
-	*why = "";
-	if (op == val) {
-		free(arg);
-		*why = "value not specified; syntax is path=val";
-		return -1;
-	}
-	if (op == NULL) {
-		conf_native_t *n = conf_get_field(arg_);
-		if ((n == NULL) || (n->type != CFN_BOOLEAN)) {
+	if (val == NULL) {
+		*op = strchr(arg, '=');
+		*why = "";
+		if (op == val) {
 			free(arg);
-			*why = "value not specified for non-boolean variable; syntax is path=val";
+			*why = "value not specified; syntax is path=val";
 			return -1;
 		}
-		val = "1"; /* auto-value for boolean */
-	}
-	else {
-		*op = '\0';
-		val = op+1;
-		op--;
-		switch(*op) {
-			case '+': pol = POL_APPEND; *op = '\0'; break;
-			case '^': pol = POL_PREPEND; *op = '\0'; break;
+		if (op == NULL) {
+			conf_native_t *n = conf_get_field(arg_);
+			if ((n == NULL) || (n->type != CFN_BOOLEAN)) {
+				free(arg);
+				*why = "value not specified for non-boolean variable; syntax is path=val";
+				return -1;
+			}
+			val = "1"; /* auto-value for boolean */
+		}
+		else {
+			*op = '\0';
+			val = op+1;
+			op--;
+			switch(*op) {
+				case '+': pol = POL_APPEND; *op = '\0'; break;
+				case '^': pol = POL_PREPEND; *op = '\0'; break;
+			}
 		}
 	}
 
@@ -967,6 +969,29 @@ int conf_set_from_cli(const char *prefix, const char *arg_, char **why)
 
 	free(arg);
 	return ret;
+}
+
+void conf_parse_arguments(const char *prefix, int *argc, char ***argv)
+{
+	int n, dst;
+
+	for(n = 0, dst = 0; n < *argc; n++,dst++) {
+		char *a = (*argv)[n];
+		const char *why;
+		int try_again = -1;
+
+		if (strchr(a, '=') != NULL) {
+			try_again = conf_set_from_cli(prefix, a, NULL, &why);
+			dst--;
+		}
+		if (try_again && (n < (*argv) - 1)) {
+			try_again = conf_set_from_cli(prefix, a, (*argv)[n+1], &why);
+			dst -= 2;
+		}
+		if (try_again)
+			(*argv)[dst] = (*argv)[n];
+	}
+	*argc = dst-1;
 }
 
 void conf_save_file(conf_role_t role)

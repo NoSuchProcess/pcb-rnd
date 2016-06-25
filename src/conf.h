@@ -154,7 +154,16 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
    the lihata node backing the native field */
 int conf_set_native(conf_native_t *field, int arr_idx, const char *new_val);
 
-int conf_set_from_cli(const char *prefix, const char *arg_, char **why);
+/* Process a command line argument arg_ (if val == NULL) or a pair of command line
+   arguments arg_ and val. In the first case assume arg_ has both a config path
+   and a value (may be implicit true for a boolean). In the second case val
+   is always the value. If prefix is not NULL, the path is prefixed with it.
+   On error always set *why to a const string reason.
+   Returns 0 on success. */
+int conf_set_from_cli(const char *prefix, const char *arg_, const char *val, const char **why);
+
+/* Attempt to consume argv[] using conf_set_from_cli */
+void conf_parse_arguments(const char *prefix, int *argc, char ***argv);
 
 #define conf_reg_field_array(globvar, field, type_name, path, desc) \
 	conf_reg_field_((void *)&globvar.field, (sizeof(globvar.field) / sizeof(globvar.field[0])), type_name, path, desc)
