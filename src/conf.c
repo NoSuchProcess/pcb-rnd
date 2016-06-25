@@ -912,32 +912,58 @@ int conf_set_native(conf_native_t *field, int arr_idx, const char *new_val)
 }
 
 
-int conf_set_from_cli(const char *arg_, char **why)
+int conf_set_from_cli(const char *prefix, const char *arg_, char **why)
 {
-	char *arg = strdup(arg_);
-	char *val, *op = strchr(arg, '=');
+	char *arg = NULL, *val, *op, *s;
 	conf_policy_t pol = POL_OVERWRITE;
 	int ret;
 
+	if (prefix != NULL) {
+		for(s = arg_; (*s != '=') && (*s != '\0'); s++)
+			if (*s == '/')
+				arg = strdup(arg_); /* full path, don't use prefix */
+
+		if (arg == NULL) { /* insert prefix */
+			int pl = strlen(prefix), al = strlen(arg_);
+			while((pl > 0) && (prefix[pl-1] == '/')) pl--;
+			arg = malloc(pl+al+2);
+			memcpy(arg, prefix, pl);
+			arg[pl] = '/';
+			strcpy(arg+pl+1, arg_);
+		}
+	}
+	else
+		arg = strdup(arg_);
+
+	*op = strchr(arg, '=');
 	*why = "";
-	if ((op == NULL) || (op == val)) {
+	if (op == val) {
 		free(arg);
 		*why = "value not specified; syntax is path=val";
 		return -1;
 	}
-	*op = '\0';
-	val = op+1;
-	op--;
-	switch(*op) {
-		case '+': pol = POL_APPEND; break;
-		case '^': pol = POL_PREPEND; break;
+	if (op == NULL) {
+		conf_native_t *n = conf_get_field(arg_);
+		if ((n == NULL) || (n->type != CFN_BOOLEAN)) {
+			free(arg);
+			*why = "value not specified for non-boolean variable; syntax is path=val";
+			return -1;
+		}
+		val = "1"; /* auto-value for boolean */
+	}
+	else {
+		*op = '\0';
+		val = op+1;
+		op--;
+		switch(*op) {
+			case '+': pol = POL_APPEND; *op = '\0'; break;
+			case '^': pol = POL_PREPEND; *op = '\0'; break;
+		}
 	}
 
 	ret = conf_set(CFR_CLI, arg, -1, val, pol);
 	if (ret != 0)
 		*why = "invalid config path";
-
-/*	lht_dom_ptree(conf_root[CFR_CLI]->root, stdout, "[cli] ");*/
 
 	free(arg);
 	return ret;

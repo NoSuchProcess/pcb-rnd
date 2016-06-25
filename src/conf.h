@@ -154,7 +154,7 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
    the lihata node backing the native field */
 int conf_set_native(conf_native_t *field, int arr_idx, const char *new_val);
 
-int conf_set_from_cli(const char *arg_, char **why);
+int conf_set_from_cli(const char *prefix, const char *arg_, char **why);
 
 #define conf_reg_field_array(globvar, field, type_name, path, desc) \
 	conf_reg_field_((void *)&globvar.field, (sizeof(globvar.field) / sizeof(globvar.field[0])), type_name, path, desc)

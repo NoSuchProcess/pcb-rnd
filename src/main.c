@@ -333,7 +333,7 @@ int main(int argc, char *argv[])
 			}
 			if (arg_match(cmd, "c", "-conf")) {
 				n++; /* eat up arg */
-				if (conf_set_from_cli(arg, &stmp) != 0) {
+				if (conf_set_from_cli(NULL, arg, &stmp) != 0) {
 					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, stmp);
 					exit(1);
 				}
@@ -448,8 +448,8 @@ int main(int argc, char *argv[])
 
 	/* Add silk layers to newly created PCB */
 	CreateNewPCBPost(PCB, 1);
-	if (argc > 1)
-		command_line_pcb = hid_argv[1];
+	if (hid_argc > 0)
+		command_line_pcb = hid_argv[0];
 
 	ResetStackAndVisibility();
 
