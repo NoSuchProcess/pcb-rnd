@@ -2011,7 +2011,6 @@ void gtkhid_begin(void)
 	REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
 	REGISTER_ACTIONS(ghid_netlist_action_list, ghid_cookie)
 	REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)
-	REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
 	REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 	REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
 }
