@@ -1408,7 +1408,7 @@ int ghid_usage(char *topic)
 
 REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
 
-		 HID_Attribute *ghid_get_export_options(int *n_ret)
+HID_Attribute *ghid_get_export_options(int *n_ret)
 {
 	*n_ret = sizeof(ghid_attribute_list) / sizeof(HID_Attribute);
 	return ghid_attribute_list;
