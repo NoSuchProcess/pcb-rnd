@@ -52,9 +52,23 @@ awk '
 		if (desc == "")
 			desc = "<" name ">"
 
+		flags = "";
+		while(match("@[a-zA-Z_]+", desc)) {
+			flag=substr(desc, RSTART, RLENGTH)
+			sub("[ \t]*" flag "[ \t]*", " ", desc)
+			sub("^@", "",flag)
+			flag="CFF_" toupper(flag)
+			if (flags == "")
+				flags = flag
+			else
+				flags = flags " | " flag
+		}
+		if (flags == "")
+			flags = 0;
+
 		path_tmp=path
 		sub("^/", "", path_tmp)
-		printf("conf_reg(%-36s %s %-16s %-25s %-25s %s)\n", id cm, (array ? "array, " : "scalar,"), type cm, q path_tmp q cm, q name q cm, q desc q)
+		printf("conf_reg(%-36s %s %-16s %-25s %-25s %s, %s)\n", id cm, (array ? "array, " : "scalar,"), type cm, q path_tmp q cm, q name q cm, q desc q, flags)
 		
 	}
 

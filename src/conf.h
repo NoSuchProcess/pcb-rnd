@@ -40,6 +40,10 @@ typedef enum {
 	POL_invalid
 } conf_policy_t;
 
+typedef enum { /* bitfield */
+	CFF_USAGE = 1    /* settings should be printed in usage help */
+} conf_flag_t;
+
 typedef union conflist_u conflist_t;
 
 typedef char *      CFT_STRING;
@@ -88,6 +92,7 @@ typedef struct {
 	const char *hash_path;     /* points to the hash key once its added in the hash (else: NULL) */
 	int array_size;
 	conf_native_type_t type;
+	conf_flag_t flags;
 	struct {
 		unsigned io_pcb_no_attrib:1;
 		unsigned read_only:1;         /* set by conf_core, has no lihata, should not be overwritten */
@@ -137,7 +142,7 @@ void conf_load_all(void);
 void conf_update(const char *path);
 
 conf_native_t *conf_get_field(const char *path);
-void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc);
+void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc, conf_flag_t flags);
 
 void conf_unreg_fields(const char *prefix);
 
@@ -165,15 +170,15 @@ int conf_set_from_cli(const char *prefix, const char *arg_, const char *val, con
 /* Attempt to consume argv[] using conf_set_from_cli */
 void conf_parse_arguments(const char *prefix, int *argc, char ***argv);
 
-#define conf_reg_field_array(globvar, field, type_name, path, desc) \
-	conf_reg_field_((void *)&globvar.field, (sizeof(globvar.field) / sizeof(globvar.field[0])), type_name, path, desc)
+#define conf_reg_field_array(globvar, field, type_name, path, desc, flags) \
+	conf_reg_field_((void *)&globvar.field, (sizeof(globvar.field) / sizeof(globvar.field[0])), type_name, path, desc, flags)
 
-#define conf_reg_field_scalar(globvar, field, type_name, path, desc) \
-	conf_reg_field_((void *)&globvar.field, 1, type_name, path, desc)
+#define conf_reg_field_scalar(globvar, field, type_name, path, desc, flags) \
+	conf_reg_field_((void *)&globvar.field, 1, type_name, path, desc, flags)
 
 /* register a config field, array or scalar, selecting the right macro */
-#define conf_reg_field(globvar,   field,isarray,type_name,cpath,cname, desc) \
-	conf_reg_field_ ## isarray(globvar, field,type_name,cpath "/" cname, desc)
+#define conf_reg_field(globvar,   field,isarray,type_name,cpath,cname, desc, flags) \
+	conf_reg_field_ ## isarray(globvar, field,type_name,cpath "/" cname, desc, flags)
 
 /* convert a policy text to policy value - return POL_invalid on error */
 conf_policy_t conf_policy_parse(const char *s);

@@ -645,7 +645,7 @@ static int keyeq(char *a, char *b)
 	return !strcmp(a, b);
 }
 
-void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc)
+void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc, conf_flag_t flags)
 {
 	conf_native_t *node;
 
@@ -664,6 +664,7 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 	node->prop        = calloc(sizeof(confprop_t), array_size);
 	node->description = desc;
 	node->hash_path   = path;
+	node->flags       = flags;
 	vtp0_init(&(node->hid_data));
 
 	htsp_set(conf_fields, (char *)path, node);

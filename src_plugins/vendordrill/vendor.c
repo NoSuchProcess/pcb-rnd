@@ -751,8 +751,8 @@ static void hid_vendordrill_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_vendordrill_init(void)
 {
-#define conf_reg(field,isarray,type_name,cpath,cname,desc) \
-	conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc);
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc,flags);
 #include "vendor_conf_fields.h"
 
 	stub_vendorDrillMap = vendorDrillMap;

@@ -2696,8 +2696,8 @@ static void hid_djopt_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_djopt_init(void)
 {
-#define conf_reg(field,isarray,type_name,cpath,cname,desc) \
-	conf_reg_field(conf_djopt, field,isarray,type_name,cpath,cname,desc);
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_djopt, field,isarray,type_name,cpath,cname,desc,flags);
 #include "djopt_conf_fields.h"
 
 	REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
