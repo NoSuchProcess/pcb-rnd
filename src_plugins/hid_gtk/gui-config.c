@@ -124,6 +124,14 @@ void ghid_config_init(void)
 #warning CONF TODO: inject the internal part here?
 }
 
+/* Replace a list of paths in dst with src */
+void config_any_replace(conf_role_t dst_role, conf_role_t src_role, const char **paths)
+{
+	char **p;
+	for(p = paths; *p != NULL; p++)
+		conf_replace_subtree(dst_role, *p, src_role, *p);
+}
+
 /* =================== OK, now the gui stuff ======================
 */
 static GtkWidget *config_window;
@@ -181,7 +189,7 @@ static void config_compact_horizontal_toggle_cb(GtkToggleButton * button, gpoint
 {
 	gboolean active = gtk_toggle_button_get_active(button);
 
-	conf_setf(CFR_USER, "plugins/hid_gtk/compact_horizontal", -1, "%d", active);
+	conf_setf(CFR_DESIGN, "plugins/hid_gtk/compact_horizontal", -1, "%d", active);
 	ghid_set_status_line_label();
 }
 
@@ -189,7 +197,7 @@ static void config_compact_vertical_toggle_cb(GtkToggleButton * button, gpointer
 {
 	gboolean active = gtk_toggle_button_get_active(button);
 
-	conf_setf(CFR_USER, "plugins/hid_gtk/compact_vertical", -1, "%d", active);
+	conf_setf(CFR_DESIGN, "plugins/hid_gtk/compact_vertical", -1, "%d", active);
 	ghid_pack_mode_buttons();
 }
 
@@ -210,13 +218,20 @@ static void config_backup_spin_button_cb(GtkSpinButton * spin_button, gpointer d
 
 static void config_history_spin_button_cb(GtkSpinButton * spin_button, gpointer data)
 {
-	conf_setf(CFR_USER, "plugins/hid_gtk/history_size", -1, "%d", gtk_spin_button_get_value_as_int(spin_button));
+	conf_setf(CFR_DESIGN, "plugins/hid_gtk/history_size", -1, "%d", gtk_spin_button_get_value_as_int(spin_button));
 }
 
 void config_general_save(GtkButton *widget, conf_role_t *role)
 {
+	const char *paths[] = {
+		"plugins/hid_gtk/use_command_window",
+		"plugins/hid_gtk/compact_horizontal",
+		"rc/backup_interval",
+		"plugins/hid_gtk/history_size",
+		NULL
+	};
 	printf("General save: %d\n", *role);
-#warning CONF TODO
+	config_any_replace(*role, CFR_DESIGN, paths);
 }
 
 static void config_general_tab_create(GtkWidget * tab_vbox)
@@ -300,7 +315,21 @@ static void coord_entry_cb(GHidCoordEntry * ce, void *dst)
 
 void config_sizes_save(GtkButton *widget, conf_role_t *role)
 {
-#warning CONF TODO
+	const char *paths[] = {
+		"design/max_width",
+		"design/max_height",
+		"design/bloat",
+		"design/shrink",
+		"design/min_wid",
+		"design/min_slk",
+		"design/poly_isle_area",
+		"design/min_drill",
+		"design/min_ring",
+		"design/text_scale",
+		NULL
+	};
+
+	config_any_replace(*role, CFR_DESIGN, paths);
 }
 
 
@@ -498,7 +527,13 @@ static GtkWidget *config_increments_table_attach(GtkWidget *table, int x, int y,
 
 void config_increments_save(GtkButton *widget, conf_role_t *role)
 {
-#warning CONF TODO
+	const char *paths[] = {
+		"editor/increments_mm",
+		"editor/increments_mil",
+		NULL
+	};
+
+	config_any_replace(*role, CFR_DESIGN, paths);
 }
 
 static void config_increments_tab_create(GtkWidget * tab_vbox)
@@ -708,7 +743,12 @@ static GtkWidget *config_library_append_paths(int post_sep)
 
 void config_library_save(GtkButton *widget, conf_role_t *role)
 {
+	const char *paths[] = {
 #warning CONF TODO
+		NULL
+	};
+
+	config_any_replace(*role, CFR_DESIGN, paths);
 }
 
 static void config_library_tab_create(GtkWidget * tab_vbox)
@@ -1046,7 +1086,12 @@ static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 
 void config_layers_save(GtkButton *widget, conf_role_t *role)
 {
+	const char *paths[] = {
 #warning CONF TODO
+		NULL
+	};
+
+	config_any_replace(*role, CFR_DESIGN, paths);
 #if 0 
 	if (use_as_default) {
 		s = make_layer_group_string(&PCB->LayerGroups);
@@ -1245,7 +1290,12 @@ void config_colors_tab_create_array(GtkWidget *parent_vbox, const char *path)
 
 void config_colors_save(GtkButton *widget, conf_role_t *role)
 {
-#warning CONF TODO
+	const char *paths[] = {
+		"appearance/color",
+		NULL
+	};
+
+	config_any_replace(*role, CFR_DESIGN, paths);
 }
 
 static void config_colors_tab_create(GtkWidget * tab_vbox)
