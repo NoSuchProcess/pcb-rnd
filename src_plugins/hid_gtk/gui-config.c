@@ -129,12 +129,18 @@ typedef struct {
 	conf_role_t src_role;
 } save_ctx_t;
 
+static void ghid_config_window_close(void);
+
 /* Replace a list of paths in dst with src */
 void config_any_replace(save_ctx_t *ctx, const char **paths)
 {
 	char **p;
-	for(p = paths; *p != NULL; p++)
+
+	for(p = paths; *p != NULL; p++) {
 		conf_replace_subtree(ctx->dst_role, *p, ctx->src_role, *p);
+		if (ctx->dst_role < CFR_max_real)
+			conf_update(*p);
+	}
 
 	if (ctx->dst_role == CFR_file) {
 		GtkWidget *fcd = gtk_file_chooser_dialog_new("Save config settings to...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
@@ -154,6 +160,16 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 		}
 		gtk_widget_destroy(fcd);
 	}
+
+	if (ctx->dst_role == CFR_DESIGN) {
+		/* do all the gui updates */
+		ghid_set_status_line_label();
+		ghid_pack_mode_buttons();
+
+		/* need to reopen the preferences dialog to show the new settings */
+		ghid_config_window_close();
+		ghid_config_window_show();
+	}
 }
 
 /* =================== OK, now the gui stuff ======================
@@ -166,6 +182,7 @@ static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton
 	static save_ctx_t ctx_all2project = { CFR_PROJECT, CFR_DESIGN };
 	static save_ctx_t ctx_all2user    = { CFR_USER, CFR_DESIGN };
 	static save_ctx_t ctx_all2file    = { CFR_file, CFR_DESIGN };
+	static save_ctx_t ctx_int2design  = { CFR_DESIGN, CFR_INTERNAL };
 
 	hbox = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 4);
@@ -187,6 +204,10 @@ static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton
 	button = gtk_button_new_with_label("Save to file");
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
 	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2file);
+
+	button = gtk_button_new_with_label("Restore factory defaults");
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
+	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_int2design);
 }
 
 	/* -------------- The General config page ----------------
@@ -212,7 +233,6 @@ static void config_command_window_toggle_cb(GtkToggleButton * button, gpointer d
 	conf_set(CFR_DESIGN, "plugins/hid_gtk/use_command_window", -1, "1", POL_OVERWRITE);
 	ghid_command_use_command_window_sync();
 }
-
 
 static void config_compact_horizontal_toggle_cb(GtkToggleButton * button, gpointer data)
 {
@@ -1709,4 +1729,10 @@ void ghid_config_window_show(void)
 	gtk_widget_grab_default(button);
 
 	gtk_widget_show_all(config_window);
+}
+
+static void ghid_config_window_close(void)
+{
+	gtk_widget_destroy(config_window);
+	config_window = NULL;
 }
