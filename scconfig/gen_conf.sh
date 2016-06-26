@@ -53,7 +53,7 @@ awk '
 			desc = "<" name ">"
 
 		flags = "";
-		while(match("@[a-zA-Z_]+", desc)) {
+		while(match(desc, "@[a-zA-Z_]+")) {
 			flag=substr(desc, RSTART, RLENGTH)
 			sub("[ \t]*" flag "[ \t]*", " ", desc)
 			sub("^@", "",flag)
@@ -65,6 +65,8 @@ awk '
 		}
 		if (flags == "")
 			flags = 0;
+		sub("^[ \t]*", "", desc)
+		sub("[ \t]*$", "", desc)
 
 		path_tmp=path
 		sub("^/", "", path_tmp)
