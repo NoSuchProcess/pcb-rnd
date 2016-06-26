@@ -917,12 +917,13 @@ int conf_set_native(conf_native_t *field, int arr_idx, const char *new_val)
 int conf_set_from_cli(const char *prefix, const char *arg_, const char *val, const char **why)
 {
 	char *arg = NULL, *op, *s;
+	const char *sc;
 	conf_policy_t pol = POL_OVERWRITE;
 	int ret;
 
 	if (prefix != NULL) {
-		for(s = arg_; (*s != '=') && (*s != '\0'); s++)
-			if (*s == '/')
+		for(sc = arg_; (*sc != '=') && (*sc != '\0'); sc++)
+			if (*sc == '/')
 				arg = strdup(arg_); /* full path, don't use prefix */
 
 		if (arg == NULL) { /* insert prefix */
@@ -996,7 +997,7 @@ void conf_parse_arguments(const char *prefix, int *argc, char ***argv)
 		if (a[0] == '-') a++;
 
 		try_again = conf_set_from_cli(prefix, a, NULL, &why);
-		if (try_again && (n < (*argv) - 1)) {
+		if (try_again && (n < (*argc) - 1)) {
 			try_again = conf_set_from_cli(prefix, a, (*argv)[n+1], &why);
 			if (!try_again)
 				n++;
@@ -1020,7 +1021,8 @@ void conf_usage(char *prefix)
 			if (n->flags & CFF_USAGE) {
 				int kl = strlen(n->hash_path);
 				char *s, *name = malloc(kl+32);
-				for(s = n->hash_path + pl; *s == '/'; s++) ;
+				const char *sc;
+				for(sc = n->hash_path + pl; *sc == '/'; sc++) ;
 				name[0] = '-';
 				name[1] = '-';
 				strcpy(name+2, s);
