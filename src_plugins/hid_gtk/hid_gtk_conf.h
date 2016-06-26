@@ -7,6 +7,9 @@
 typedef struct {
 	const struct plugins {
 		const struct hid_gtk {
+			CFT_BOOLEAN listen;                          /* @usage Listen for actions on stdin. */
+			CFT_STRING  bg_image;                        /* @usage File name of an image to put into the background of the GUI canvas. The image must be a color PPM image, in binary (not ASCII) format. It can be any size, and will be automatically scaled to fit the canvas. */
+
 			CFT_BOOLEAN compact_horizontal;
 			CFT_BOOLEAN compact_vertical;
 			CFT_BOOLEAN use_command_window;
