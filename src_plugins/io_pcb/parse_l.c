@@ -2527,6 +2527,9 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, conf_role_t 
 		/* don't save these to reduce noise - they are reset by the GUI anyway */
 		CONF_NO_ATTRIB("editor/mode");
 
+		/* it's saved in [styles] */
+		CONF_NO_ATTRIB("design/routes");
+
 		/* load config nodes not disabled above, from optional attributes */
 		io_pcb_attrib_a2c(Ptr);
 
