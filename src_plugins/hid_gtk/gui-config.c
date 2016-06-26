@@ -124,12 +124,17 @@ void ghid_config_init(void)
 #warning CONF TODO: inject the internal part here?
 }
 
+typedef struct {
+	conf_role_t dst_role;
+	conf_role_t src_role;
+} save_ctx_t;
+
 /* Replace a list of paths in dst with src */
-void config_any_replace(conf_role_t dst_role, conf_role_t src_role, const char **paths)
+void config_any_replace(save_ctx_t *ctx, const char **paths)
 {
 	char **p;
 	for(p = paths; *p != NULL; p++)
-		conf_replace_subtree(dst_role, *p, src_role, *p);
+		conf_replace_subtree(ctx->dst_role, *p, ctx->src_role, *p);
 }
 
 /* =================== OK, now the gui stuff ======================
@@ -139,8 +144,9 @@ static GtkWidget *config_window;
 static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton *widget, conf_role_t *role))
 {
 	GtkWidget *config_color_warn_label, *button, *hbox;
-	static conf_role_t role_project = CFR_PROJECT;
-	static conf_role_t role_user    = CFR_USER;
+	static save_ctx_t ctx_all2project = { CFR_PROJECT, CFR_DESIGN };
+	static save_ctx_t ctx_all2user    = { CFR_USER, CFR_DESIGN };
+	static save_ctx_t ctx_all2file    = { CFR_file, CFR_DESIGN };
 
 	hbox = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 4);
@@ -153,11 +159,15 @@ static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton
 
 	button = gtk_button_new_with_label("Save in project config");
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
-	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &role_project);
+	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2project);
 
 	button = gtk_button_new_with_label("Save in user config");
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
-	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &role_user);
+	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2user);
+
+	button = gtk_button_new_with_label("Save to file");
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
+	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2file);
 }
 
 	/* -------------- The General config page ----------------
@@ -221,7 +231,7 @@ static void config_history_spin_button_cb(GtkSpinButton * spin_button, gpointer 
 	conf_setf(CFR_DESIGN, "plugins/hid_gtk/history_size", -1, "%d", gtk_spin_button_get_value_as_int(spin_button));
 }
 
-void config_general_save(GtkButton *widget, conf_role_t *role)
+void config_general_save(GtkButton *widget, save_ctx_t *ctx)
 {
 	const char *paths[] = {
 		"plugins/hid_gtk/use_command_window",
@@ -231,8 +241,8 @@ void config_general_save(GtkButton *widget, conf_role_t *role)
 		"plugins/hid_gtk/history_size",
 		NULL
 	};
-	printf("General save: %d\n", *role);
-	config_any_replace(*role, CFR_DESIGN, paths);
+
+	config_any_replace(ctx, paths);
 }
 
 static void config_general_tab_create(GtkWidget * tab_vbox)
@@ -314,7 +324,7 @@ static void coord_entry_cb(GHidCoordEntry * ce, void *dst)
 	*(Coord *) dst = ghid_coord_entry_get_value(ce);
 }
 
-void config_sizes_save(GtkButton *widget, conf_role_t *role)
+void config_sizes_save(GtkButton *widget, save_ctx_t *ctx)
 {
 	const char *paths[] = {
 		"design/max_width",
@@ -330,7 +340,7 @@ void config_sizes_save(GtkButton *widget, conf_role_t *role)
 		NULL
 	};
 
-	config_any_replace(*role, CFR_DESIGN, paths);
+	config_any_replace(ctx, paths);
 }
 
 
@@ -526,7 +536,7 @@ static GtkWidget *config_increments_table_attach(GtkWidget *table, int x, int y,
 	return label;
 }
 
-void config_increments_save(GtkButton *widget, conf_role_t *role)
+void config_increments_save(GtkButton *widget, save_ctx_t *ctx)
 {
 	const char *paths[] = {
 		"editor/increments_mm",
@@ -534,7 +544,7 @@ void config_increments_save(GtkButton *widget, conf_role_t *role)
 		NULL
 	};
 
-	config_any_replace(*role, CFR_DESIGN, paths);
+	config_any_replace(ctx, paths);
 }
 
 static void config_increments_tab_create(GtkWidget * tab_vbox)
@@ -742,14 +752,14 @@ static GtkWidget *config_library_append_paths(int post_sep)
 	return hbox;
 }
 
-void config_library_save(GtkButton *widget, conf_role_t *role)
+void config_library_save(GtkButton *widget, save_ctx_t *ctx)
 {
 	const char *paths[] = {
 #warning CONF TODO
 		NULL
 	};
 
-	config_any_replace(*role, CFR_DESIGN, paths);
+	config_any_replace(ctx, paths);
 }
 
 static void config_library_tab_create(GtkWidget * tab_vbox)
@@ -1085,14 +1095,14 @@ static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 	g_strfreev(argv);
 }
 
-void config_layers_save(GtkButton *widget, conf_role_t *role)
+void config_layers_save(GtkButton *widget, save_ctx_t *ctx)
 {
 	const char *paths[] = {
 #warning CONF TODO
 		NULL
 	};
 
-	config_any_replace(*role, CFR_DESIGN, paths);
+	config_any_replace(ctx, paths);
 #if 0 
 	if (use_as_default) {
 		s = make_layer_group_string(&PCB->LayerGroups);
@@ -1289,14 +1299,14 @@ void config_colors_tab_create_array(GtkWidget *parent_vbox, const char *path)
 		config_color_button_create(parent_vbox, cfg, n);
 }
 
-void config_colors_save(GtkButton *widget, conf_role_t *role)
+void config_colors_save(GtkButton *widget, save_ctx_t *ctx)
 {
 	const char *paths[] = {
 		"appearance/color",
 		NULL
 	};
 
-	config_any_replace(*role, CFR_DESIGN, paths);
+	config_any_replace(ctx, paths);
 }
 
 static void config_colors_tab_create(GtkWidget * tab_vbox)

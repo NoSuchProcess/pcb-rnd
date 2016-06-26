@@ -34,8 +34,8 @@
 /* conf list node's name */
 const char *conf_list_name = "pcb-rnd-conf-v1";
 
-lht_doc_t *conf_root[CFR_max];
-int conf_root_lock[CFR_max];
+lht_doc_t *conf_root[CFR_max_alloc];
+int conf_root_lock[CFR_max_alloc];
 htsp_t *conf_fields = NULL;
 static const int conf_default_prio[] = {
 /*	CFR_INTERNAL */   100,
@@ -493,7 +493,7 @@ int conf_merge_patch(lht_node_t *root, long gprio)
 int conf_merge_all(const char *path)
 {
 	int n, ret = 0;
-	for(n = 0; n < CFR_max; n++) {
+	for(n = 0; n < CFR_max_real; n++) {
 		lht_node_t *cr, *r, *r2;
 		if (conf_root[n] == NULL)
 			continue;

@@ -128,8 +128,13 @@ typedef enum {
 	CFR_PROJECT,    /* project specific, from a local file */
 	CFR_DESIGN,     /* from the design file */
 	CFR_CLI,        /* from the command line */
-	CFR_max,
-	CFR_invalid = CFR_max
+	CFR_max_real,   /* all the above are real files and should be merged */
+	/* these ones are not real roles and are used in internal communication in the GUI HIDs */
+	CFR_file,       /* custom file */
+	CFR_binary,     /* the in-memory binary representation */
+	CFR_max_alloc,  /* all the above should have a root */
+
+	CFR_invalid,
 } conf_role_t;
 
 void conf_init(void);
