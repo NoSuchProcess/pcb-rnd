@@ -95,7 +95,6 @@ static int bak_done, need_PKG_purge;
 
 conf_gsch2pcb_rnd_t conf_g2pr;
 
-#warning CONF TODO: remove this in favor of rc/library_search_path
 static char *element_search_path = NULL;
 
 #warning CONF TODO: remove this in favor of rc/default_pcb_file
@@ -1002,11 +1001,6 @@ static int parse_config(char * config, char * arg)
 		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/preserve", -1, "1", POL_OVERWRITE);
 		return 0;
 	}
-	if (!strcmp(config, "elements-dir-clr") || !strcmp(config, "c")) {
-		free(element_search_path);
-		element_search_path = strdup("");
-		return 0;
-	}
 
 	if (!strcmp(config, "elements-shell") || !strcmp(config, "s")) {
 		conf_set(CFR_CLI, "rc/library_shell", -1, arg, POL_OVERWRITE);
@@ -1162,12 +1156,6 @@ void * GetLibraryMenuMemory(void *lib, int *idx)       { bozo(); }
 void DeleteLibraryMenuMemory(void *lib, int menuidx)   { bozo(); }
 void sort_library(void *lib)                           { bozo(); }
 
-#warning TODO: delete this API
-const char *fp_get_library_shell(void)
-{
-	return conf_core.rc.library_shell;
-}
-
 void plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
 {
 
@@ -1212,7 +1200,7 @@ int main(int argc, char ** argv)
 	gadl_list_init(&extra_gnetlist_arg_list, sizeof(char *), NULL, NULL);
 	gadl_list_init(&extra_gnetlist_list, sizeof(char *), NULL, NULL);
 
-	element_search_path = strdup(PCB_LIBRARY_SEARCH_PATHS);
+	element_search_path = fp_default_search_path();
 
 	get_args(argc, argv);
 
