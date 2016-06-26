@@ -172,8 +172,7 @@ static void config_command_window_toggle_cb(GtkToggleButton * button, gpointer d
 		holdoff = FALSE;
 		return;
 	}
-#warning CONF TODO: conf_set() this 
-/*	conf_hid_gtk.plugins.hid_gtk.use_command_window = active;*/
+	conf_set(CFR_DESIGN, "plugins/hid_gtk/use_command_window", -1, "1", POL_OVERWRITE);
 	ghid_command_use_command_window_sync();
 }
 
