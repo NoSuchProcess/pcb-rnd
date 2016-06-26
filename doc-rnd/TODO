@@ -1,8 +1,8 @@
 - replace settings with lihata (conf_*)
-	- try to remove globalconst.h in favor of config
-	- color file: a plugin for importing/exporting colors
+	- BUG: place text, edit -> assert
+	- try to remove globalconst.h in favor of config - on hold: mail
+	- color file: a plugin for importing/exporting colors - or is this more generic and can be used for any subtree?
 	- gtk hid: clean up the #warnings
-	- gsch2pcb: use the same conf as pcb-rnd
 	- finish gtk preferences user pov (change is always saved to the design)
 		- layer colors not saved
 		- color dialog:
