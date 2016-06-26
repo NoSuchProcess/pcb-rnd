@@ -19,7 +19,7 @@
 
 /* Forward dec'ls */
 struct _route_style;
-struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteStyleSelector *, RouteStyleType *, gboolean temp);
+struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteStyleSelector *, RouteStyleType *);
 static void ghid_route_style_selector_finalize(GObject * object);
 
 /*! \brief Global action creation counter */
@@ -64,7 +64,6 @@ struct _GHidRouteStyleSelectorClass {
 };
 
 struct _route_style {
-	gboolean temporary;						/* TODO: actually use this for something */
 	GtkRadioAction *action;
 	GtkWidget *button;
 	GtkWidget *menu_item;
@@ -194,7 +193,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 
 	/* Add "new style" option to list */
 	gtk_list_store_append(rss->model, &tmp_iter);
-	gtk_list_store_set(rss->model, &tmp_iter, TEXT_COL, _("New (this session only)"), DATA_COL, NULL, -1);
+	gtk_list_store_set(rss->model, &tmp_iter, TEXT_COL, _("<New>"), DATA_COL, NULL, -1);
 
 	/* Display dialog */
 	dialog_data.rss = rss;
@@ -209,8 +208,10 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 		gboolean save;
 		gtk_combo_box_get_active_iter(GTK_COMBO_BOX(select_box), &iter);
 		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &style, -1);
-		if (style == NULL)
-			rst = g_malloc(sizeof *rst);
+		if (style == NULL) {
+			int n = vtroutestyle_len(&PCB->RouteStyle);
+			rst = vtroutestyle_get(&PCB->RouteStyle, n, 1);
+		}
 		else {
 			rst = style->rst;
 			*rst->name = '\0';
@@ -228,9 +229,8 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 		rst->Diameter = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_size_entry));
 		rst->Clearance = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry));
 		save = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_box));
-
 		if (style == NULL)
-			style = ghid_route_style_selector_real_add_route_style(rss, rst, TRUE);
+			style = ghid_route_style_selector_real_add_route_style(rss, rst);
 		else {
 			gtk_action_set_label(GTK_ACTION(style->action), rst->name);
 			gtk_list_store_set(rss->model, &iter, TEXT_COL, rst->name, -1);
@@ -349,10 +349,9 @@ GtkWidget *ghid_route_style_selector_new()
  *
  *  \param [in] rss     The selector to be acted on
  *  \param [in] data    PCB's route style object that will be edited
- *  \param [in] temp    Whether the style is "real" or session-only
  */
 struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteStyleSelector * rss,
-																																		RouteStyleType * data, gboolean temp)
+																																		RouteStyleType * data)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
@@ -361,7 +360,6 @@ struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteSty
 
 	/* Key the route style data with the RouteStyleType it controls */
 	new_style->rst = data;
-	new_style->temporary = temp;
 	new_style->action = gtk_radio_action_new(action_name, data->name, NULL, NULL, action_count);
 	gtk_radio_action_set_group(new_style->action, rss->action_radio_group);
 	rss->action_radio_group = gtk_radio_action_get_group(new_style->action);
@@ -404,7 +402,7 @@ struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteSty
  */
 void ghid_route_style_selector_add_route_style(GHidRouteStyleSelector * rss, RouteStyleType * data)
 {
-	ghid_route_style_selector_real_add_route_style(rss, data, FALSE);
+	ghid_route_style_selector_real_add_route_style(rss, data);
 }
 
 
