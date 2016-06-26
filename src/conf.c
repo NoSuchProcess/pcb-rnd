@@ -938,15 +938,15 @@ int conf_set_from_cli(const char *prefix, const char *arg_, const char *val, con
 		arg = strdup(arg_);
 
 	if (val == NULL) {
-		*op = strchr(arg, '=');
+		op = strchr(arg, '=');
 		*why = "";
-		if (op == val) {
+		if (op == arg) {
 			free(arg);
 			*why = "value not specified; syntax is path=val";
 			return -1;
 		}
 		if (op == NULL) {
-			conf_native_t *n = conf_get_field(arg_);
+			conf_native_t *n = conf_get_field(arg);
 			if ((n == NULL) || (n->type != CFN_BOOLEAN)) {
 				free(arg);
 				*why = "value not specified for non-boolean variable; syntax is path=val";
@@ -982,18 +982,21 @@ void conf_parse_arguments(const char *prefix, int *argc, char ***argv)
 		const char *why;
 		int try_again = -1;
 
-		if (strchr(a, '=') != NULL) {
-			try_again = conf_set_from_cli(prefix, a, NULL, &why);
-			dst--;
-		}
+		if (a[0] == '-') a++;
+		if (a[0] == '-') a++;
+
+		try_again = conf_set_from_cli(prefix, a, NULL, &why);
 		if (try_again && (n < (*argv) - 1)) {
 			try_again = conf_set_from_cli(prefix, a, (*argv)[n+1], &why);
-			dst -= 2;
+			if (!try_again)
+				n++;
 		}
 		if (try_again)
 			(*argv)[dst] = (*argv)[n];
+		else
+			dst--;
 	}
-	*argc = dst-1;
+	*argc = dst;
 }
 
 void conf_usage(char *prefix)
