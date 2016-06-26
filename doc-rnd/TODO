@@ -1,11 +1,5 @@
 - replace settings with lihata (conf_*)
-	- segfault: --gui lesstif
-	- do not save route styles as attribute? or maybe this is the way to keep more than 4 with pcb mainline?
-	- dynamic route style bugs:
-		- gtk hid new style is not "this session only"
-		- check why there is an extra empty route style
 	- try to remove globalconst.h in favor of config
-	- make route style number dynamic?
 	- color file: a plugin for importing/exporting colors
 	- gtk hid: clean up the #warnings
 	- gsch2pcb: use the same conf as pcb-rnd
@@ -53,6 +47,7 @@
 BUGS:
 	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
 	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
+	- bg image png crashes in extreme pan
 
 CLEANUP #5
 - conf:
@@ -115,6 +110,7 @@ CLEANUP #6:
 
 FEATURES
 - BUILD: menuconfig and a config file for scconfig
+- dynstyle: remove existing style (gtk hid, maybe key 'del'?)
 
 Low prio:
 - display net names on pins, vias (and maybe tracks?) when zoomed in enough
