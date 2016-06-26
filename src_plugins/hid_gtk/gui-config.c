@@ -795,7 +795,7 @@ static GtkWidget *config_library_append_paths(int post_sep)
 void config_library_save(GtkButton *widget, save_ctx_t *ctx)
 {
 	const char *paths[] = {
-#warning CONF TODO
+		"rc/library_search_paths",
 		NULL
 	};
 
@@ -1137,21 +1137,17 @@ static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 
 void config_layers_save(GtkButton *widget, save_ctx_t *ctx)
 {
+	gchar *s;
 	const char *paths[] = {
-#warning CONF TODO
+		"design/groups",
 		NULL
 	};
 
+	config_layers_apply();
+	s = make_layer_group_string(&PCB->LayerGroups);
+	conf_set(CFR_DESIGN, "design/groups", -1, s, POL_OVERWRITE);
+	g_free(s);
 	config_any_replace(ctx, paths);
-#if 0 
-	if (use_as_default) {
-		s = make_layer_group_string(&PCB->LayerGroups);
-		if (dup_string(&conf_core.design.groups, s)) {
-			ParseGroupString(conf_core.design.groups, &Settings.LayerGroups, max_copper_layer);
-		}
-		g_free(s);
-	}
-#endif
 }
 
 static void config_layers_tab_create(GtkWidget * tab_vbox)
