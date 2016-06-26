@@ -25,8 +25,14 @@
  */
 
 
-/* Glue between plug_footrpint and pcb-rnd; this is a separate file so a
-   different glue can be used with gsch2pcb */
+#warning TODO:
+/*
+   OBSOLETE:
+   Glue between plug_footrpint and pcb-rnd; this is a separate file so a
+   different glue can be used with gsch2pcb
+
+   fp lib depends on conf anyway.
+*/
 
 #include <dirent.h>
 #include <sys/stat.h>
