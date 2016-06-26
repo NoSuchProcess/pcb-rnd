@@ -226,6 +226,7 @@ void config_general_save(GtkButton *widget, conf_role_t *role)
 	const char *paths[] = {
 		"plugins/hid_gtk/use_command_window",
 		"plugins/hid_gtk/compact_horizontal",
+		"plugins/hid_gtk/compact_vertical",
 		"rc/backup_interval",
 		"plugins/hid_gtk/history_size",
 		NULL
