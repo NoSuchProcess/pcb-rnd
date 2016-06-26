@@ -58,6 +58,7 @@ switch /local/pcb/mod/CONF
 	default
 		put /local/pcb/mod/CONFOUT /local/pcb/mod/CONF
 		sub {/local/pcb/mod/CONFOUT} {.h$} {_fields.h}
+		append /local/pcb/CLEANFILES /local/pcb/mod/CONFOUT
 		append /local/pcb/RULES [@
 # conf generation for @/local/pcb/mod@ '@/local/pcb/mod/CONF@'
 @/local/pcb/mod/CONFOUT@: @/local/pcb/mod/CONF@
