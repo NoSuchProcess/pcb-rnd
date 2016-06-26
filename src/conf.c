@@ -937,8 +937,17 @@ int conf_set_from_cli(const char *prefix, const char *arg_, const char *val, con
 	else
 		arg = strdup(arg_);
 
+	/* replace any - with _ in the path part; cli accepts dash but the backing C
+	   struct field names don't */
+	for(s = arg, op = NULL; (*s != '\0') && (op == NULL); s++) {
+		if (*s == '=')
+			op = s;
+		else if (*s == '-')
+			*s = '_';
+	}
+
+	/* extract val, if we need to */
 	if (val == NULL) {
-		op = strchr(arg, '=');
 		*why = "";
 		if (op == arg) {
 			free(arg);
@@ -965,6 +974,7 @@ int conf_set_from_cli(const char *prefix, const char *arg_, const char *val, con
 		}
 	}
 
+	/* now that we have a clean path (arg) and a value, try to set the config */
 	ret = conf_set(CFR_CLI, arg, -1, val, pol);
 	if (ret != 0)
 		*why = "invalid config path";
