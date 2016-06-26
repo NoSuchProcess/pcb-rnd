@@ -51,6 +51,9 @@
 #include "plugins.h"
 #include "hid_actions.h"
 #include "misc_util.h"
+#include "report_conf.h"
+
+conf_report_t conf_report;
 
 #ifdef HAVE_REGEX_H
 #include <regex.h>
@@ -483,13 +486,13 @@ static int ReportFoundPins(int argc, char **argv, Coord x, Coord y)
 		PIN_LOOP(element);
 		{
 			if (TEST_FLAG(FOUNDFLAG, pin))
-				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pin->Number, ((col++ % (COLUMNS + 1)) == COLUMNS) ? '\n' : ' ');
+				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pin->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
 		}
 		END_LOOP;
 		PAD_LOOP(element);
 		{
 			if (TEST_FLAG(FOUNDFLAG, pad))
-				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pad->Number, ((col++ % (COLUMNS + 1)) == COLUMNS) ? '\n' : ' ');
+				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pad->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
 		}
 		END_LOOP;
 	}
@@ -941,6 +944,9 @@ static void hid_report_uninit(void)
 pcb_uninit_t hid_report_init(void)
 {
 	REGISTER_ACTIONS(report_action_list, report_cookie)
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_report, field,isarray,type_name,cpath,cname,desc,flags);
+#include "report_conf_fields.h"
 	return hid_report_uninit;
 }
 
