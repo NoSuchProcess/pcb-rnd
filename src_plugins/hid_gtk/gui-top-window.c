@@ -116,8 +116,6 @@ hid_cfg_t *ghid_cfg = NULL;
 hid_cfg_mouse_t ghid_mouse;
 hid_cfg_keys_t ghid_keymap;
 
-static gchar *bg_image_file;
-
 /*! \brief callback for ghid_main_menu_update_toggle_state () */
 void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag)
 {
@@ -1290,8 +1288,8 @@ void ghid_create_pcb_widgets(void)
 	GHidPort *port = &ghid_port;
 	GError *err = NULL;
 
-	if (bg_image_file)
-		ghidgui->bg_pixbuf = gdk_pixbuf_new_from_file(bg_image_file, &err);
+	if (conf_hid_gtk.plugins.hid_gtk.bg_image)
+		ghidgui->bg_pixbuf = gdk_pixbuf_new_from_file(conf_hid_gtk.plugins.hid_gtk.bg_image, &err);
 	if (err) {
 		g_error("%s", err->message);
 		g_error_free(err);
@@ -1366,52 +1364,13 @@ static void ghid_create_listener(void)
 
 
 /* ------------------------------------------------------------ */
-
-static int stdin_listen = 0;
-
 static char **pcbmenu_paths = NULL;
-
-HID_Attribute ghid_attribute_list[] = {
-
-/* %start-doc options "21 GTK+ GUI Options"
-@ftable @code
-@item --listen
-Listen for actions on stdin.
-@end ftable
-%end-doc
-*/
-	{"listen", "Listen for actions on stdin",
-	 HID_Boolean, 0, 0, {0, 0, 0}, 0, &stdin_listen},
-#define HA_listen 0
-
-/* %start-doc options "21 GTK+ GUI Options"
-@ftable @code
-@item --bg-image <string>
-File name of an image to put into the background of the GUI canvas. The image must
-be a color PPM image, in binary (not ASCII) format. It can be any size, and will be
-automatically scaled to fit the canvas.
-@end ftable
-%end-doc
-*/
-	{"bg-image", "Background Image",
-	 HID_String, 0, 0, {0, 0, 0}, 0, &bg_image_file},
-#define HA_bg_image 1
-};
 
 int ghid_usage(char *topic)
 {
 	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
-	hid_usage(ghid_attribute_list, sizeof(ghid_attribute_list) / sizeof(ghid_attribute_list[0]));
+	conf_usage("plugins/hid_gtk");
 	fprintf(stderr, "\nInvocation: pcb-rnd --gui gtk [options]\n");
-}
-
-
-REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
-
-HID_Attribute *ghid_get_export_options(int *n_ret)
-{
-	*n_ret = sizeof(ghid_attribute_list) / sizeof(HID_Attribute);
-	return ghid_attribute_list;
 }
 
 	/* Create top level window for routines that will need top_window
@@ -1459,14 +1418,16 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	setlocale(LC_NUMERIC, "C");		/* use decimal point instead of comma */
 #endif
 
+	conf_parse_arguments("plugins/hid_gtk/", argc, argv);
+
 	/*
 	 * Prevent gtk_init() and gtk_init_check() from automatically
 	 * calling setlocale (LC_ALL, "") which would undo LC_NUMERIC if ENABLE_NLS
 	 * We also don't want locale set if no ENABLE_NLS to keep "C" LC_NUMERIC.
 	 */
 	gtk_disable_setlocale();
-
 	gtk_init(argc, argv);
+
 
 	gport = &ghid_port;
 	gport->view.coord_per_px = 300.0;
@@ -1539,7 +1500,7 @@ void ghid_do_export(HID_Attr_Val * options)
 	ghid_main_menu_install_route_style_selector
 		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
 
-	if (stdin_listen)
+	if (conf_hid_gtk.plugins.hid_gtk.listen)
 		ghid_create_listener();
 
 	ghid_notify_gui_is_up();

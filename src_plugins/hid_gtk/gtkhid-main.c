@@ -1934,7 +1934,6 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghid_hid.gui = 1;
 	ghid_hid.poly_after = 1;
 
-	ghid_hid.get_export_options = ghid_get_export_options;
 	ghid_hid.do_export = ghid_do_export;
 	ghid_hid.do_exit = ghid_do_exit;
 	ghid_hid.parse_arguments = ghid_parse_arguments;
@@ -2008,7 +2007,6 @@ pcb_uninit_t hid_hid_gtk_init()
 void gtkhid_begin(void)
 {
 	REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
-	REGISTER_ATTRIBUTES(ghid_attribute_list, ghid_cookie)
 	REGISTER_ACTIONS(ghid_netlist_action_list, ghid_cookie)
 	REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)
 	REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
