@@ -80,6 +80,8 @@ include {../scconfig/Makefile.comp.inc}
 
 print [@
 
+gsch2pcb.o: gsch2pcb_rnd_conf_fields.h
+
 gsch2pcb_rnd_conf_fields.h: gsch2pcb_rnd_conf.h
 	../../scconfig/gen_conf.sh < gsch2pcb_rnd_conf.h > gsch2pcb_rnd_conf_fields.h
 
@@ -100,7 +102,7 @@ uninstall:
 
 
 clean:
-	$(RM) gsch2pcb-rnd$(EXE) $(OBJS)
+	$(RM) gsch2pcb-rnd$(EXE) $(OBJS) gsch2pcb_rnd_conf_fields.h
 
 include ../../Makefile.conf
 

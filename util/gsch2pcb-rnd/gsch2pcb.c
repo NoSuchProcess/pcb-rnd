@@ -161,6 +161,10 @@ void Message(char *err)
 	fprintf(stderr, "gsch2pcb-rnd: %s\n", err);
 }
 
+void hid_usage_option(const char *name, const char *desc)
+{
+}
+
 /**
  * Build and run a command. No redirection or error handling is
  * done.  Format string is split on whitespace. Specifiers %l and %s
@@ -1103,7 +1107,7 @@ static void get_args(int argc, char ** argv)
 			}
 			else if (!strcmp(opt, "c") || !strcmp(opt, "conf")) {
 				char *stmp;
-				if (conf_set_from_cli(arg, &stmp) != 0) {
+				if (conf_set_from_cli(NULL, arg, NULL, &stmp) != 0) {
 					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, stmp);
 					exit(1);
 				}
@@ -1195,8 +1199,8 @@ int main(int argc, char ** argv)
 	conf_init();
 	conf_core_init();
 
-#define conf_reg(field,isarray,type_name,cpath,cname,desc) \
-	conf_reg_field(conf_g2pr, field,isarray,type_name,cpath,cname,desc);
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_g2pr, field,isarray,type_name,cpath,cname,desc,flags);
 #include "gsch2pcb_rnd_conf_fields.h"
 
 	conf_load_all();
