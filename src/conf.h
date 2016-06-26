@@ -195,6 +195,10 @@ conf_role_t conf_role_parse(const char *s);
 void conf_lock(conf_role_t target);
 void conf_unlock(conf_role_t target);
 
+
+/* replace dst_role:dst_path with a copy of src_role:src_path */
+int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t src_role, const char *src_path);
+
 /* Throw out a subtree (remove all nodes from the lihata representation).
    Useful for io_ plugins, on CFR_DESIGN, before loading a new file. */
 void conf_reset(conf_role_t target, const char *source_fn);

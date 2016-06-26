@@ -600,6 +600,16 @@ lht_node_t *conf_lht_get_first(conf_role_t target)
 	return conf_lht_get_first_(conf_root[target]->root);
 }
 
+#warning TODO: use this instead of get_first where possible
+lht_node_t *conf_lht_get_at(conf_role_t target, const char *path)
+{
+	lht_node_t *n = conf_lht_get_first(target);
+	if (n == NULL)
+		return NULL;
+	return lht_tree_path_(n->doc, n, path, 1, 0, NULL);
+}
+
+
 void conf_load_all(void)
 {
 	int i;
@@ -1048,6 +1058,35 @@ void conf_usage(char *prefix)
 		}
 	}
 }
+
+int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t src_role, const char *src_path)
+{
+	lht_node_t *dst = conf_lht_get_at(dst_role, dst_path);
+	lht_node_t *src = conf_lht_get_at(src_role, src_path), *new_src;
+
+	if ((src == NULL) && (dst != NULL)) {
+		lht_tree_del(dst);
+		return 0;
+	}
+
+	if (dst == NULL) {
+		conf_set_dry(dst_role, dst_path, -1, "", POL_OVERWRITE);
+		dst = conf_lht_get_at(dst_role, dst_path);
+		if (dst == NULL)
+			return -1;
+	}
+
+	new_src = lht_dom_duptree(src);
+	if (new_src == NULL)
+		return -1;
+
+	if (lht_tree_replace(dst, src) != LHTE_SUCCESS)
+		return -1; /* ... and leak new_src */
+
+	lht_tree_del(dst);
+	return 0;
+}
+
 
 void conf_save_file(conf_role_t role)
 {
