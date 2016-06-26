@@ -1,5 +1,6 @@
+- BUG: place text, edit -> assert
 - replace settings with lihata (conf_*)
-	- BUG: place text, edit -> assert
+	- implement binary->lht setter and use it in config_any_replace() if the source role sais so
 	- try to remove globalconst.h in favor of config - on hold: mail
 	- color file: a plugin for importing/exporting colors - or is this more generic and can be used for any subtree?
 	- gtk hid: clean up the #warnings
