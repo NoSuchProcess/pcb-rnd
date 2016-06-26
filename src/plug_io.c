@@ -542,7 +542,7 @@ void SaveInTMP(void)
 
 	/* memory might have been released before this function is called */
 	if (PCB && PCB->Changed) {
-		sprintf(filename, EMERGENCY_NAME, (int) getpid());
+		sprintf(filename, conf_core.rc.emergency_name, (int) getpid());
 		Message(_("Trying to save your layout in '%s'\n"), filename);
 		WritePCBFile(filename);
 	}
@@ -605,7 +605,7 @@ void EnableAutosave(void)
 /* ---------------------------------------------------------------------------
  * creates backup file.  The default is to use the pcb file name with
  * a "-" appended (like "foo.pcb-") and if we don't have a pcb file name
- * then use the template in BACKUP_NAME
+ * then use the template in conf_core.rc.backup_name
  */
 void Backup(void)
 {
@@ -620,13 +620,13 @@ void Backup(void)
 		sprintf(filename, "%s-", PCB->Filename);
 	}
 	else {
-		/* BACKUP_NAME has %.8i which  will be replaced by the process ID */
-		filename = (char *) malloc(sizeof(char) * (strlen(BACKUP_NAME) + 8));
+		/* conf_core.rc.backup_name has %.8i which  will be replaced by the process ID */
+		filename = (char *) malloc(sizeof(char) * (strlen(conf_core.rc.backup_name) + 8));
 		if (filename == NULL) {
 			fprintf(stderr, "Backup():  malloc failed\n");
 			exit(1);
 		}
-		sprintf(filename, BACKUP_NAME, (int) getpid());
+		sprintf(filename, conf_core.rc.backup_name, (int) getpid());
 	}
 
 	WritePCBFile(filename);
@@ -642,7 +642,7 @@ void Backup(void)
  */
 void SaveTMPData(void)
 {
-	sprintf(TMPFilename, EMERGENCY_NAME, (int) getpid());
+	sprintf(TMPFilename, conf_core.rc.emergency_name, (int) getpid());
 	WritePCBFile(TMPFilename);
 }
 
