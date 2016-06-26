@@ -24,8 +24,6 @@
   - use rnd-specific .scm
   - use popen() instead of glib's spawn (stderr is always printed to stderr)
  */
-
-#define PCB_NO_GLUE
 #include "config.h"
 
 #include <stdarg.h>
@@ -45,6 +43,7 @@
 #include "../src_3rd/qparse/qparse.h"
 #include "../config.h"
 #include "../src/plugins.h"
+#include "../src/plug_footprint.h"
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"
 
@@ -59,6 +58,8 @@
 
 /* from scconfig str lib: */
 char *str_concat(const char *sep, ...);
+
+char *DefaultPcbFile = NULL;
 
 typedef struct {
 	char *refdes, *value, *description, *changed_description, *changed_value;
@@ -95,10 +96,7 @@ static int bak_done, need_PKG_purge;
 
 conf_gsch2pcb_rnd_t conf_g2pr;
 
-static char *element_search_path = NULL;
-
-#warning CONF TODO: remove this in favor of rc/default_pcb_file
-static char *DefaultPcbFile = PCB_DEFAULT_PCB_FILE;
+static const char *element_search_path = NULL;
 
 #warning CONF TODO: move this to the conf
 static char *sch_basename;
@@ -721,6 +719,7 @@ static int add_elements(char * pcb_file)
 	char *tmp_file, *s, buf[1024];
 	int total, paren_level = 0;
 	int skipping = FALSE;
+	int dpcb;
 	fp_fopen_ctx_t fctx;
 
 	if ((f_in = fopen(pcb_file, "r")) == NULL)
@@ -732,9 +731,19 @@ static int add_elements(char * pcb_file)
 		return 0;
 	}
 
-	if ((CatPCB(f_out, DefaultPcbFile) != 0) && (CatPCB(f_out, "../src/" PCB_DEFAULT_PCB_FILE_SRC) != 0)) {
-		fprintf(stderr, "ERROR: can't load default pcb (%s)\n", DefaultPcbFile);
-		exit(1);
+	if (DefaultPcbFile == NULL) {
+		dpcb = -1;
+		conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, CatPCB(f_out, __path__));
+		if (dpcb != 0) {
+			fprintf(stderr, "ERROR: can't load default pcb (using the configured search paths)\n");
+			exit(1);
+		}
+	}
+	else {
+		if (CatPCB(f_out, DefaultPcbFile) != 0) {
+			fprintf(stderr, "ERROR: can't load default pcb (using user defined %s)\n", DefaultPcbFile);
+			exit(1);
+		}
 	}
 
 	while ((fgets(buf, sizeof(buf), f_in)) != NULL) {
@@ -1015,7 +1024,6 @@ static int parse_config(char * config, char * arg)
 		memcpy(s, arg, la);
 		s[la] = ':';
 		memcpy(s + la + 1, element_search_path, lp + 1);
-		free(element_search_path);
 		element_search_path = s;
 	}
 	else if (!strcmp(config, "output-name") || !strcmp(config, "o"))
@@ -1100,7 +1108,7 @@ static void get_args(int argc, char ** argv)
 				continue;
 			}
 			else if (!strcmp(opt, "c") || !strcmp(opt, "conf")) {
-				char *stmp;
+				const char *stmp;
 				if (conf_set_from_cli(NULL, arg, NULL, &stmp) != 0) {
 					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, stmp);
 					exit(1);

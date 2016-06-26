@@ -11,9 +11,6 @@ typedef struct {
 			CFT_INTEGER verbose;
 			CFT_BOOLEAN preserve;
 			CFT_BOOLEAN fix_elements;
-			CFT_STRING element_search_path; /* = NULL; */
-			CFT_STRING element_shell; /* = PCB_LIBRARY_SHELL; */
-			CFT_STRING DefaultPcbFile; /* = PCB_DEFAULT_PCB_FILE; */
 			CFT_STRING sch_basename;
 		} gsch2pcb_rnd;
 	} utils;
