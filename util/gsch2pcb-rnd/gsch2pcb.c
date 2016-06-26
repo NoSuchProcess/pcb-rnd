@@ -84,8 +84,6 @@ typedef struct {
 gdl_list_t pcb_element_list; /* initialized to 0 */
 gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
 
-static char *empty_footprint_name;
-
 static int n_deleted, n_added_ef, n_fixed, n_PKG_removed_new,
            n_PKG_removed_old, n_preserved, n_changed_value, n_not_found,
            n_unknown, n_none, n_empty;
@@ -657,7 +655,7 @@ fprintf(stderr, "   val: %s\n", value);*/
 //  if ((s = strchr (el->value, (int) ')')) != NULL)
 //    *s = '\0';
 
-	if (empty_footprint_name && !strcmp(el->description, empty_footprint_name)) {
+	if (conf_g2pr.utils.gsch2pcb_rnd.empty_footprint_name && !strcmp(el->description, conf_g2pr.utils.gsch2pcb_rnd.empty_footprint_name)) {
 		if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 			printf("%s: has the empty footprint attribute \"%s\" so won't be in the layout.\n", el->refdes, el->description);
 		n_empty += 1;
@@ -1007,10 +1005,8 @@ static int parse_config(char * config, char * arg)
 		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/preserve", -1, "1", POL_OVERWRITE);
 		return 0;
 	}
-
-	if (!strcmp(config, "elements-shell") || !strcmp(config, "s")) {
+	if (!strcmp(config, "elements-shell") || !strcmp(config, "s"))
 		conf_set(CFR_CLI, "rc/library_shell", -1, arg, POL_OVERWRITE);
-	}
 	else if (!strcmp(config, "elements-dir") || !strcmp(config, "d"))
 		conf_set(CFR_CLI, "rc/library_search_paths", -1, arg, POL_PREPEND);
 	else if (!strcmp(config, "output-name") || !strcmp(config, "o"))
@@ -1026,7 +1022,7 @@ static int parse_config(char * config, char * arg)
 		gadl_append(&extra_gnetlist_list, n);
 	}
 	else if (!strcmp(config, "empty-footprint"))
-		empty_footprint_name = strdup(arg);
+		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/empty_footprint_name", -1, arg, POL_OVERWRITE);
 	else
 		return -1;
 
@@ -1276,7 +1272,7 @@ int main(int argc, char ** argv)
 	if (n_none > 0)
 		printf("%d components with footprint \"none\" omitted from %s.\n", n_none, pcb_new_file_name);
 	if (n_empty > 0)
-		printf("%d components with empty footprint \"%s\" omitted from %s.\n", n_empty, empty_footprint_name, pcb_new_file_name);
+		printf("%d components with empty footprint \"%s\" omitted from %s.\n", n_empty, conf_g2pr.utils.gsch2pcb_rnd.empty_footprint_name, pcb_new_file_name);
 	if (n_changed_value > 0)
 		printf("%d elements had a value change in %s.\n", n_changed_value, pcb_file_name);
 	if (n_fixed > 0)
