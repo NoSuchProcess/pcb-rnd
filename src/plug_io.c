@@ -297,7 +297,7 @@ static int real_load_pcb(char *Filename, bool revert, bool require_font, int how
  * some local identifiers for OS without an atexit() or on_exit()
  * call
  */
-static char TMPFilename[80];
+static char *TMPFilename = NULL;
 #endif
 
 /* ---------------------------------------------------------------------------
@@ -602,6 +602,39 @@ void EnableAutosave(void)
 		backup_timer = gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, x);
 }
 
+char *build_fn(const char *template)
+{
+	gds_t s;
+	char *next, *curr, buff[16];
+
+	gds_init(&s);
+	for(curr = template;;) {
+		next = strchr(curr, '%');
+		if (next == NULL) {
+			gds_append_str(&s, curr);
+			return s.array;
+		}
+		if (next > curr)
+			gds_append_len(&s, curr, next-curr);
+		next++;
+		switch(*next) {
+			case '%':
+				gds_append(&s, '%');
+				curr = next+1;
+				break;
+			case 'P':
+				sprintf(buff, "%.8i", getpid());
+				gds_append_str(&s, buff);
+				curr = next+1;
+				break;
+			default:
+				gds_append(&s, '%');
+				curr = next;
+		}
+	}
+	abort(); /* can't get here */
+}
+
 /* ---------------------------------------------------------------------------
  * creates backup file.  The default is to use the pcb file name with
  * a "-" appended (like "foo.pcb-") and if we don't have a pcb file name
@@ -621,12 +654,11 @@ void Backup(void)
 	}
 	else {
 		/* conf_core.rc.backup_name has %.8i which  will be replaced by the process ID */
-		filename = (char *) malloc(sizeof(char) * (strlen(conf_core.rc.backup_name) + 8));
+		filename = build_fn(conf_core.rc.backup_name);
 		if (filename == NULL) {
-			fprintf(stderr, "Backup():  malloc failed\n");
+			fprintf(stderr, "Backup(): can't build file name for a backup\n");
 			exit(1);
 		}
-		sprintf(filename, conf_core.rc.backup_name, (int) getpid());
 	}
 
 	WritePCBFile(filename);
@@ -642,8 +674,11 @@ void Backup(void)
  */
 void SaveTMPData(void)
 {
-	sprintf(TMPFilename, conf_core.rc.emergency_name, (int) getpid());
-	WritePCBFile(TMPFilename);
+	char *fn = build_fn(conf_core.rc.emergency_name);
+	WritePCBFile(fn);
+	if (TMPFilename != NULL)
+		free(TMPFilename);
+	TMPFilename = fn;
 }
 
 /* ---------------------------------------------------------------------------

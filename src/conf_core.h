@@ -79,8 +79,8 @@ typedef struct {
 		CFT_STRING library_shell;
 		CFT_LIST library_search_paths;
 
-		CFT_STRING emergency_name;         /* file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional fields: %i --> pid */
-		CFT_STRING backup_name;            /* file name template for periodic backup anonymous .pcb files; optional fields: %i --> pid */
+		CFT_STRING emergency_name;         /* file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional fields: %P --> pid */
+		CFT_STRING backup_name;            /* file name template for periodic backup anonymous .pcb files; optional fields: %P --> pid */
 
 
 		CFT_STRING save_command;
