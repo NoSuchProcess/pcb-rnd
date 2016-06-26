@@ -1174,6 +1174,7 @@ void conf_reset(conf_role_t target, const char *source_fn)
 	conf_root[target] = lht_dom_init();
 	lht_dom_loc_newfile(conf_root[target], source_fn);
 	conf_root[target]->root = lht_dom_node_alloc(LHT_LIST, conf_list_name);
+	conf_root[target]->root->doc = conf_root[target];
 	n = lht_dom_node_alloc(LHT_HASH, "main");
 	lht_dom_list_insert(conf_root[target]->root, n);
 }
