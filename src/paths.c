@@ -9,7 +9,7 @@
 
 void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra_room)
 {
-	char *subst_to;
+	const char *subst_to;
 	int subst_offs;
 	for (out; numpaths > 0; numpaths--, in++, out++) {
 		if (*in != NULL) {
@@ -36,7 +36,8 @@ void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra
 						int len = end - (*in);
 						if (len < sizeof(hash_path)-1) {
 							conf_native_t *cn;
-							char *si, *so;
+							const char *si;
+							char *so;
 							int n;
 
 							(*in) += 2;
