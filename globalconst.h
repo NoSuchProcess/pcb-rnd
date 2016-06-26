@@ -45,7 +45,6 @@
  * some default values
  */
 #define	DEFAULT_CELLSIZE	50		/* default cell size for symbols */
-#define CLICK_TIME		200		/* default time for click expiration */
 
 /* ---------------------------------------------------------------------------
  * frame between the groundplane and the copper

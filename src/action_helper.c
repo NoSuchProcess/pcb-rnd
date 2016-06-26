@@ -495,7 +495,7 @@ void NotifyMode(void)
 
 			Note.Click = true;
 			/* do something after click time */
-			gui->add_timer(click_cb, CLICK_TIME, hv);
+			gui->add_timer(click_cb, conf_core.editor.click_time, hv);
 
 			/* see if we clicked on something already selected
 			 * (Note.Moving) or clicked on a MOVE_TYPE

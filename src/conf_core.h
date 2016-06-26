@@ -54,6 +54,8 @@ typedef struct {
 		CFT_BOOLEAN description;           /* display element description as element name, instead of value */
 		CFT_BOOLEAN name_on_pcb;           /* display Reference Designator as element name, instead of value */
 
+		CFT_INTEGER click_time;            /* default time for click expiration, in ms */
+
 		struct view {
 			CFT_BOOLEAN flip_x;              /* view: flip the board along the X (horizontal) axis */
 			CFT_BOOLEAN flip_y;              /* view: flip the board along the Y (vertical) axis */
