@@ -414,6 +414,7 @@ void lesstif_insert_style_buttons(Widget menu)
 	s = num_style_buttons * sizeof(StyleButtons);
 	style_button_list = (StyleButtons *) realloc(style_button_list, s);
 	sb = style_button_list + num_style_buttons - 1;
+	sb->w = NULL;
 
 	alloced_styles = vtroutestyle_len(&PCB->RouteStyle);
 	style_pb = realloc(style_pb, sizeof(style_pb[0]) * alloced_styles);
