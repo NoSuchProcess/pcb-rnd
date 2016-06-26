@@ -1988,7 +1988,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghid_hid.notify_save_pcb = ghid_notify_save_pcb;
 	ghid_hid.notify_filename_changed = ghid_notify_filename_changed;
 
-#warning TODO: call cond_hid_unreg on uninit
+#warning TODO: call conf_hid_unreg on uninit
 	ghid_conf_id = conf_hid_reg(ghid_cookie, NULL);
 
 	ghid_hid.create_menu = ghid_create_menu;
