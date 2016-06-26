@@ -42,13 +42,9 @@
 #endif
 
 /* ---------------------------------------------------------------------------
- * some default values
- */
-#define	DEFAULT_CELLSIZE	50		/* default cell size for symbols */
-
-/* ---------------------------------------------------------------------------
  * frame between the groundplane and the copper
  */
+/* TODO: make these configurable? */
 #define	GROUNDPLANEFRAME	MIL_TO_COORD(15)
 #define MASKFRAME               MIL_TO_COORD(3)
 
@@ -117,6 +113,12 @@
 	/* size of diamond element mark */
 #define EMARK_SIZE	MIL_TO_COORD (10)
 
-/* (Approximate) capheight size of the default PCB font */
-#define FONT_CAPHEIGHT  MIL_TO_COORD (45)
+
+/**** Font ***/
+/* These are used in debug draw font rendering (e.g. pin names) and reverse
+   scale calcualtions (e.g. when report is trying to figure how the font
+   is scaled. Changing these values is not really supported. */
+#define  FONT_CAPHEIGHT    MIL_TO_COORD (45)   /* (Approximate) capheight size of the default PCB font */
+#define  DEFAULT_CELLSIZE  50                  /* default cell size for symbols */
+
 #endif
