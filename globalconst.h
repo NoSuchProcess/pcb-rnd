@@ -50,11 +50,8 @@
 /* ---------------------------------------------------------------------------
  * some default values
  */
-#define	DEFAULT_SIZE		"7000x5000"	/* default layout size */
-#define	DEFAULT_MEDIASIZE	"a4"		/* default output media */
 #define	DEFAULT_CELLSIZE	50		/* default cell size for symbols */
 #define CLICK_TIME		200		/* default time for click expiration */
-#define SCROLL_TIME 		25		/* time between scrolls when drawing beyond border */
 #define COLUMNS			8		/* number of columns for found pin report */
 
 /* ---------------------------------------------------------------------------
@@ -70,7 +67,6 @@
  
 #define	MAX_LAYER		16	/* max number of layer, check source */
 					/* code for more changes, a *lot* more changes */
-#define DEF_LAYER		8	/* default number of layers for new boards */
 #define	MIN_LINESIZE		MIL_TO_COORD(0.01)	/* thickness of lines */
 #define	MAX_LINESIZE		LARGE_VALUE
 #define	MIN_TEXTSCALE		10	/* scaling of text objects in percent */
@@ -122,11 +118,8 @@
 						/* polygon points */
 #define	MAX_ELEMENTNAMES		3	/* number of supported names of */
 						/* an element */
-#define	MAX_LIBRARY_LINE_LENGTH		255	/* maximum line length in the */
-						/* library-description file */
 #define MAX_NETLIST_LINE_LENGTH		255	/* maximum line length for netlist files */
 #define	MAX_MODESTACK_DEPTH		16	/* maximum depth of mode stack */
-#define	MAX_CROSSHAIRSTACK_DEPTH	16	/* maximum depth of state stack */
 #define	MIN_GRID_DISTANCE		4	/* minimum distance between point */
 						/* to enable grid drawing */
 	/* size of diamond element mark */
