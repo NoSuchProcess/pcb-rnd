@@ -59,4 +59,5 @@ typedef struct HID_AttrNode {
 extern HID_AttrNode *hid_attr_nodes;
 
 void hid_usage(HID_Attribute * a, int numa);
+void hid_usage_option(const char *name, const char *help);
 #endif

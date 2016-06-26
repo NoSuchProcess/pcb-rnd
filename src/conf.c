@@ -27,6 +27,7 @@
 #include "conf_core.h"
 #include "hid_cfg.h"
 #include "hid_init.h"
+#include "hid_attrib.h"
 #include "misc_util.h"
 #include "error.h"
 
@@ -993,6 +994,44 @@ void conf_parse_arguments(const char *prefix, int *argc, char ***argv)
 			(*argv)[dst] = (*argv)[n];
 	}
 	*argc = dst-1;
+}
+
+void conf_usage(char *prefix)
+{
+	htsp_entry_t *e;
+	int pl = (prefix == NULL ? 0 : strlen(prefix));
+
+	conf_fields_foreach(e) {
+		if ((prefix == NULL) || (strncmp(prefix, e->key, pl) == 0)) {
+			conf_native_t *n = e->value;
+			if (n->flags & CFF_USAGE) {
+				int kl = strlen(n->hash_path);
+				char *s, *name = malloc(kl+32);
+				for(s = n->hash_path + pl; *s == '/'; s++) ;
+				name[0] = '-';
+				name[1] = '-';
+				strcpy(name+2, s);
+				for(s = name; *s != '\0'; s++)
+					if (*s == '_')
+						*s = '-';
+				switch(n->type) {
+					case CFN_BOOLEAN: /* implicit true */ break;
+					case CFN_STRING:  strcpy(s, " str"); break;
+					case CFN_INTEGER: strcpy(s, " int"); break;
+					case CFN_REAL:    strcpy(s, " num"); break;
+					case CFN_COORD:   strcpy(s, " coord"); break;
+					case CFN_UNIT:    strcpy(s, " unit"); break;
+					case CFN_COLOR:   strcpy(s, " color"); break;
+					case CFN_LIST:
+					case CFN_INCREMENTS:
+						strcpy(s, " ???");
+						break;
+				}
+				hid_usage_option(name, n->description);
+				free(name);
+			}
+		}
+	}
 }
 
 void conf_save_file(conf_role_t role)

@@ -281,5 +281,8 @@ conf_listitem_t *conf_list_next_str(conf_listitem_t *item_li, const char **item_
 
 const char *conf_concat_strlist(const conflist_t *lst, gds_t *buff, int *inited, char sep);
 
+/* Print usage help for all nodes that have the CFF_USAGE flag and whose
+   path starts with prefix (if prefix != NULL) */
+void conf_usage(char *prefix);
 #endif
 
