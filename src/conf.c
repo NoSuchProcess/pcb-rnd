@@ -1087,7 +1087,7 @@ int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t
 	if (new_src == NULL)
 		return -1;
 
-	if (lht_tree_replace(dst, src) != LHTE_SUCCESS)
+	if (lht_tree_replace(dst, new_src) != LHTE_SUCCESS)
 		return -1; /* ... and leak new_src */
 
 	lht_tree_del(dst);
@@ -1176,9 +1176,6 @@ void conf_reset(conf_role_t target, const char *source_fn)
 	conf_root[target]->root = lht_dom_node_alloc(LHT_LIST, conf_list_name);
 	n = lht_dom_node_alloc(LHT_HASH, "main");
 	lht_dom_list_insert(conf_root[target]->root, n);
-	p = lht_dom_node_alloc(LHT_TEXT, "priority");
-	p->data.text.value = strdup("500");
-	lht_dom_hash_put(n, p);
 }
 
 void conf_init(void)
