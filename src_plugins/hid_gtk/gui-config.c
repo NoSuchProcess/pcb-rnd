@@ -135,13 +135,32 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 	char **p;
 	for(p = paths; *p != NULL; p++)
 		conf_replace_subtree(ctx->dst_role, *p, ctx->src_role, *p);
+
+	if (ctx->dst_role == CFR_file) {
+		GtkWidget *fcd = gtk_file_chooser_dialog_new("Save config settings to...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+		if (gtk_dialog_run(GTK_DIALOG(fcd)) == GTK_RESPONSE_ACCEPT) {
+			char *fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fcd));
+			FILE *f = fopen(fn, "w");
+			if (f != NULL) {
+				lht_node_t *r = conf_lht_get_first(CFR_file);
+				if (r != NULL) {
+					lht_dom_export(r->doc->root, f, "");
+					lht_tree_del(r);
+					conf_reset(CFR_file, "<internal>");
+				}
+			}
+			fclose(f);
+			g_free(fn);
+		}
+		gtk_widget_destroy(fcd);
+	}
 }
 
 /* =================== OK, now the gui stuff ======================
 */
 static GtkWidget *config_window;
 
-static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton *widget, conf_role_t *role))
+static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton *widget, save_ctx_t *sctx))
 {
 	GtkWidget *config_color_warn_label, *button, *hbox;
 	static save_ctx_t ctx_all2project = { CFR_PROJECT, CFR_DESIGN };
@@ -340,6 +359,7 @@ void config_sizes_save(GtkButton *widget, save_ctx_t *ctx)
 		NULL
 	};
 
+	config_sizes_apply();
 	config_any_replace(ctx, paths);
 }
 
