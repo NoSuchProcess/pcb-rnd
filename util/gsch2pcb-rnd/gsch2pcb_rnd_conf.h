@@ -12,6 +12,7 @@ typedef struct {
 			CFT_BOOLEAN preserve;
 			CFT_BOOLEAN fix_elements;
 			CFT_STRING sch_basename;
+			CFT_STRING default_pcb;   /* override default pcb with a given file */
 		} gsch2pcb_rnd;
 	} utils;
 } conf_gsch2pcb_rnd_t;

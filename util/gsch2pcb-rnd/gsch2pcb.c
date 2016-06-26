@@ -59,8 +59,6 @@
 /* from scconfig str lib: */
 char *str_concat(const char *sep, ...);
 
-char *DefaultPcbFile = NULL;
-
 typedef struct {
 	char *refdes, *value, *description, *changed_description, *changed_value;
 	char *flags, *tail;
@@ -96,11 +94,7 @@ static int bak_done, need_PKG_purge;
 
 conf_gsch2pcb_rnd_t conf_g2pr;
 
-static const char *element_search_path = NULL;
-
-#warning CONF TODO: move this to the conf
-static char *sch_basename;
-
+static const char *element_search_path = NULL; /* queried once from the config, when the config is already stable */
 
 static char *loc_strndup(const char *str, size_t len)
 {
@@ -731,7 +725,7 @@ static int add_elements(char * pcb_file)
 		return 0;
 	}
 
-	if (DefaultPcbFile == NULL) {
+	if (conf_g2pr.utils.gsch2pcb_rnd.default_pcb == NULL) {
 		dpcb = -1;
 		conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, CatPCB(f_out, __path__));
 		if (dpcb != 0) {
@@ -740,8 +734,8 @@ static int add_elements(char * pcb_file)
 		}
 	}
 	else {
-		if (CatPCB(f_out, DefaultPcbFile) != 0) {
-			fprintf(stderr, "ERROR: can't load default pcb (using user defined %s)\n", DefaultPcbFile);
+		if (CatPCB(f_out, conf_g2pr.utils.gsch2pcb_rnd.default_pcb) != 0) {
+			fprintf(stderr, "ERROR: can't load default pcb (using user defined %s)\n", conf_g2pr.utils.gsch2pcb_rnd.default_pcb);
 			exit(1);
 		}
 	}
@@ -950,10 +944,13 @@ static void add_schematic(char * sch)
 	n = gadl_new(&schematics);
 	*n = strdup(sch);
 	gadl_append(&schematics, n);
-	if (!sch_basename) {
+	if (!conf_g2pr.utils.gsch2pcb_rnd.sch_basename) {
 		char *suff = loc_str_has_suffix(sch, ".sch", 4);
-		if (suff != NULL)
-			sch_basename = loc_strndup(sch, suff - sch);
+		if (suff != NULL) {
+			char *tmp = loc_strndup(sch, suff - sch);
+			conf_set(CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, tmp, POL_OVERWRITE);
+			free(tmp);
+		}
 	}
 }
 
@@ -1014,22 +1011,12 @@ static int parse_config(char * config, char * arg)
 	if (!strcmp(config, "elements-shell") || !strcmp(config, "s")) {
 		conf_set(CFR_CLI, "rc/library_shell", -1, arg, POL_OVERWRITE);
 	}
-	else if (!strcmp(config, "elements-dir") || !strcmp(config, "d")) {
-		char *s;
-		int la, lp;
-
-		lp = strlen(element_search_path);
-		la = strlen(arg);
-		s = malloc(la + lp + 2);
-		memcpy(s, arg, la);
-		s[la] = ':';
-		memcpy(s + la + 1, element_search_path, lp + 1);
-		element_search_path = s;
-	}
+	else if (!strcmp(config, "elements-dir") || !strcmp(config, "d"))
+		conf_set(CFR_CLI, "rc/library_search_paths", -1, arg, POL_PREPEND);
 	else if (!strcmp(config, "output-name") || !strcmp(config, "o"))
-		sch_basename = strdup(arg);
+		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/sch_base", -1, arg, POL_OVERWRITE);
 	else if (!strcmp(config, "default-pcb") || !strcmp(config, "P"))
-		DefaultPcbFile = strdup(arg);
+		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/default_pcb", -1, arg, POL_OVERWRITE);
 	else if (!strcmp(config, "schematics"))
 		add_multiple_schematics(arg);
 	else if (!strcmp(config, "gnetlist")) {
@@ -1208,29 +1195,29 @@ int main(int argc, char ** argv)
 	gadl_list_init(&extra_gnetlist_arg_list, sizeof(char *), NULL, NULL);
 	gadl_list_init(&extra_gnetlist_list, sizeof(char *), NULL, NULL);
 
-	element_search_path = fp_default_search_path();
-
 	get_args(argc, argv);
 
 	conf_update(NULL); /* because of CLI changes */
 
 	load_extra_project_files();
 
+	element_search_path = fp_default_search_path();
+
 	if (gadl_length(&schematics) == 0)
 		usage();
 
-	pins_file_name = str_concat(NULL, sch_basename, ".cmd", NULL);
-	net_file_name = str_concat(NULL, sch_basename, ".net", NULL);
-	pcb_file_name = str_concat(NULL, sch_basename, ".pcb", NULL);
+	pins_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".cmd", NULL);
+	net_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".net", NULL);
+	pcb_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
 
 
 	{ /* set bak_file_name, finding the first number that results in a non-existing bak */
 		int len;
 		char *end;
 
-		len = strlen(sch_basename);
+		len = strlen(conf_g2pr.utils.gsch2pcb_rnd.sch_basename);
 		bak_file_name = malloc(len+8+64); /* make room for ".pcb.bak" and an integer */
-		memcpy(bak_file_name, sch_basename, len);
+		memcpy(bak_file_name, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, len);
 		end = bak_file_name + len;
 		strcpy(end, ".pcb.bak");
 		end += 8;
@@ -1241,13 +1228,13 @@ int main(int argc, char ** argv)
 
 	if (file_exists(pcb_file_name)) {
 		initial_pcb = FALSE;
-		pcb_new_file_name = str_concat(NULL, sch_basename, ".new.pcb", NULL);
+		pcb_new_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".new.pcb", NULL);
 		get_pcb_element_list(pcb_file_name);
 	}
 	else
 		pcb_new_file_name = strdup(pcb_file_name);
 
-	if (!run_gnetlist(pins_file_name, net_file_name, pcb_new_file_name, sch_basename, &schematics)) {
+	if (!run_gnetlist(pins_file_name, net_file_name, pcb_new_file_name, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, &schematics)) {
 		fprintf(stderr, "Failed to run gnetlist\n");
 		exit(1);
 	}
