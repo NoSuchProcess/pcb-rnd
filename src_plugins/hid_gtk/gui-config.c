@@ -334,7 +334,6 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 															_("Alternate window layout to allow smaller vertical size"));
 
 	vbox = ghid_category_vbox(content_vbox, _("Backups"), 4, 2, TRUE, TRUE);
-#warning this all should be more generic code...
 	ghid_check_button_connected(vbox, NULL, conf_core.editor.save_in_tmp,
 															TRUE, FALSE, FALSE, 2,
 															config_general_toggle_cb, (void *)&conf_core.editor.save_in_tmp,
