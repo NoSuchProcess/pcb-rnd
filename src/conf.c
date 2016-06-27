@@ -1184,4 +1184,8 @@ void conf_init(void)
 	conf_reset(CFR_ENV, "<environment-variables>");
 	conf_reset(CFR_CLI, "<commandline>");
 	conf_reset(CFR_DESIGN, "<null-design>");
+
+	conf_reset(CFR_file, "<conf_init>");
+	conf_reset(CFR_binary, "<conf_init>");
 }
+
