@@ -1182,7 +1182,10 @@ int main(int argc, char ** argv)
 	conf_reg_field(conf_g2pr, field,isarray,type_name,cpath,cname,desc,flags);
 #include "gsch2pcb_rnd_conf_fields.h"
 
-	conf_load_all();
+	get_args(argc, argv);
+
+#warning TODO: do not use NULL,NULL here
+	conf_load_all(NULL, NULL);
 	conf_update(NULL);
 
 	fp_init();
@@ -1190,8 +1193,6 @@ int main(int argc, char ** argv)
 	gadl_list_init(&schematics, sizeof(char *), NULL, NULL);
 	gadl_list_init(&extra_gnetlist_arg_list, sizeof(char *), NULL, NULL);
 	gadl_list_init(&extra_gnetlist_list, sizeof(char *), NULL, NULL);
-
-	get_args(argc, argv);
 
 	conf_update(NULL); /* because of CLI changes */
 
