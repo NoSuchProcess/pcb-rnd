@@ -141,7 +141,7 @@ void conf_init(void);
 
 /* Load all config files from disk into memory-lht and run conf_update to
    get the binary representation updated */
-void conf_load_all(void);
+void conf_load_all(const char *project_fn, const char *pcb_fn);
 
 /* Update the binary representation from the memory-lht representation */
 void conf_update(const char *path);
@@ -209,7 +209,7 @@ int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t
 void conf_reset(conf_role_t target, const char *source_fn);
 
 /* Save an in-memory lihata representation to the disk */
-void conf_save_file(conf_role_t role);
+int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn);
 
 /* Returns whether a given lihata tree is locked */
 int conf_islocked(conf_role_t target);

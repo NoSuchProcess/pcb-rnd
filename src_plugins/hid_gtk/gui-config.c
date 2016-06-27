@@ -195,6 +195,9 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 		ghid_config_window_close();
 		ghid_config_window_show();
 	}
+
+	if ((ctx->dst_role == CFR_USER) || (ctx->dst_role == CFR_PROJECT))
+		conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), ctx->dst_role, NULL);
 }
 
 /* =================== OK, now the gui stuff ======================

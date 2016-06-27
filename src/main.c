@@ -347,7 +347,7 @@ int main(int argc, char *argv[])
 
 		next_arg:;
 	}
-	conf_load_all();
+	conf_load_all(NULL, NULL);
 
 	setbuf(stdout, 0);
 	InitPaths(argv[0]);

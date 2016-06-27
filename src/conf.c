@@ -33,6 +33,7 @@
 
 /* conf list node's name */
 const char *conf_list_name = "pcb-rnd-conf-v1";
+static const char *conf_user_fn = "~/" DOT_PCB_RND "/pcb-conf.lht";
 
 lht_doc_t *conf_root[CFR_max_alloc];
 int conf_root_lock[CFR_max_alloc];
@@ -220,6 +221,52 @@ static int conf_parse_increments(Increments *inc, lht_node_t *node)
 	incload(clear_max);
 
 #undef incload
+}
+
+static const char *get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **try)
+{
+	static char res[MAXPATHLEN];
+	static const char *project_name = "project.lht";
+	FILE *f;
+
+#warning TODO: implement projects; check all callers in this file and make sure they pass a project name
+
+	if (project_fn != NULL) {
+		strncpy(res, project_fn, sizeof(res)-1);
+		res[sizeof(res)-1] = '\0';
+		goto check;
+	}
+
+	if (pcb_fn != NULL) {
+		char *end;
+		/* replace pcb name with project_name and test */
+		strncpy(res, pcb_fn, sizeof(res)-1);
+		res[sizeof(res)-1] = '\0';
+		end = strrchr(res, PCB_DIR_SEPARATOR_C);
+		if (end != NULL) {
+			if (end+1+sizeof(project_name) >= res + sizeof(res))
+				return NULL;
+			strcpy(end+1, project_name);
+			goto check;
+		}
+		/* no path in pcb, try cwd */
+		strcpy(res, project_name);
+		goto check;
+	}
+
+	/* no pcb - no project */
+	*try = "<no pcb file, no path to try>";
+	return NULL;
+
+	check:;
+	*try = res;
+	f = fopen(res, "r");
+	if (f != NULL) {
+		fclose(f);
+		return res;
+	}
+
+	return NULL;
 }
 
 int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const char *text, lht_node_t *err_node)
@@ -621,11 +668,11 @@ lht_node_t *conf_lht_get_at(conf_role_t target, const char *path, int create)
 }
 
 
-void conf_load_all(void)
+void conf_load_all(const char *project_fn, const char *pcb_fn)
 {
 	int i;
 	lht_node_t *dln;
-	const char *conf_user_fn = "~/" DOT_PCB_RND "/pcb-conf.lht";
+	const char *pc, *try;
 
 	/* get the lihata node for design/default_layer_name */
 	conf_load_as(CFR_INTERNAL, conf_internal, 1);
@@ -652,7 +699,9 @@ void conf_load_all(void)
 	/* load config files */
 	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht", 0);
 	conf_load_as(CFR_USER, conf_user_fn, 0);
-	conf_load_as(CFR_PROJECT, "./project.lht", 0);
+	pc = get_project_conf_name(project_fn, pcb_fn, &try);
+	if (pc != NULL)
+		conf_load_as(CFR_PROJECT, pc, 0);
 	conf_merge_all(NULL);
 
 	/* create the user config (in-memory-lht) if it does not exist on disk;
@@ -1095,9 +1144,39 @@ int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t
 }
 
 
-void conf_save_file(conf_role_t role)
+int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn)
 {
-#warning TODO
+	int fail = 1;
+	lht_node_t *r = conf_lht_get_first(role);
+	const char *try;
+	if (fn == NULL) {
+		switch(role) {
+			case CFR_USER:
+				fn = conf_user_fn;
+				break;
+			case CFR_PROJECT:
+				fn = get_project_conf_name(project_fn, pcb_fn, &try);
+				if (fn == NULL) {
+					Message("Error: can not save config to project file: %s does not exist - please create an empty file there first\n", try);
+					return -1;
+				}
+				break;
+			default: return -1;
+		}
+	}
+
+	if (r != NULL) {
+		FILE *f;
+		f = fopen(fn, "w");
+		if (f != NULL) {
+#warning CONF TODO: a project file needs to be loaded, merged, then written (to preserve non-config nodes)
+			lht_dom_export(r->doc->root, f, "");
+			fail = 0;
+		}
+		fclose(f);
+	}
+
+	return fail;
 }
 
 conf_listitem_t *conf_list_first_str(conflist_t *list, const char **item_str, int *idx)
