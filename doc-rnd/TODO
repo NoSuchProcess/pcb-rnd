@@ -1,14 +1,15 @@
 - BUG: place text, edit -> assert
 - replace settings with lihata (conf_*)
+	- project files:
+		- load project conf (replacing the original) after loading a .pcb
+		- save project conf properly
 	- implement binary->lht setter and use it in config_any_replace() if the source role sais so
 	- try to remove globalconst.h in favor of config - on hold: mail
-	- color file: a plugin for importing/exporting colors - or is this more generic and can be used for any subtree?
 	- gtk hid: clean up the #warnings
 	- finish gtk preferences user pov (change is always saved to the design)
-		- layer colors not saved
+		- layer colors not saved in pcb attribs
 		- color dialog:
-			- background color not loaded: catch conf change event in the gtk hid to reconfigure the color
-			- add a button to restore colors from the internal config
+			- background color not loaded into the gtk cache: catch conf change event in the gtk hid to reconfigure the color
 		- library path: remap the library after a change, test!
 	- menu bug:
 		- view/show layers stopped working (broke before 1.0.10)
