@@ -132,7 +132,7 @@ li:pcb-rnd-conf-v1 {
 #			initial_layer_stack = {}
 			groups = {}
 			routes = {}
-	} # design
+		} # design
 
 		ha:appearance {
 			rat_thickness = 0.25 mm
