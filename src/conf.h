@@ -224,21 +224,23 @@ do { \
 	conf_listitem_t *__n__; \
 	const conflist_t *__lst1__ = (conf_list); \
 	conflist_t *__lst__ = (conflist_t *)(__lst1__); \
-	printf("conf_list_foreach_path_first: %s using %s\n", # call, # conf_list); \
-	for(__n__ = conflist_first(__lst__); __n__ != NULL; __n__ = conflist_next(__n__)) { \
-		char *__path__; \
-		const char **__in__ = __n__->val.string; \
-		if (__in__ == NULL) \
-			continue; \
-		resolve_path(*__in__, &__path__, 0); \
-		res = call; \
-		printf("  %s -> %d\n", __path__, res); \
-		free(__path__); \
-		if (res == 0) \
-			break; \
+	if (__lst__ != NULL) { \
+		for(__n__ = conflist_first(__lst__); __n__ != NULL; __n__ = conflist_next(__n__)) { \
+			char *__path__; \
+			const char **__in__ = __n__->val.string; \
+			if (__in__ == NULL) \
+				continue; \
+			resolve_path(*__in__, &__path__, 0); \
+			res = call; \
+			printf("  %s -> %d\n", __path__, res); \
+			free(__path__); \
+			if (res == 0) \
+				break; \
+		} \
 	} \
 } while(0)
 
+/*	printf("conf_list_foreach_path_first: %s using %s\n", # call, # conf_list); \*/
 
 /* htsp_entry_t *e; */
 #define conf_fields_foreach(e) \
