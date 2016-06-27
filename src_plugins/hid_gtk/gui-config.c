@@ -138,6 +138,7 @@ static void ghid_config_window_close(void);
 void config_any_replace(save_ctx_t *ctx, const char **paths)
 {
 	char **p;
+	int need_update = 0;
 
 	for(p = paths; *p != NULL; p++) {
 		/* wildcards - match subtree */
@@ -148,16 +149,20 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 			conf_fields_foreach(e) {
 				if (strncmp(e->key, wildp, pl) == 0) {
 					conf_replace_subtree(ctx->dst_role, e->key, ctx->src_role, e->key);
-					if (ctx->dst_role < CFR_max_real)
+					if (ctx->dst_role < CFR_max_real) {
 						conf_update(e->key);
+						need_update++;
+					}
 				}
 			}
 		}
 		else {
 			/* plain node */
 			conf_replace_subtree(ctx->dst_role, *p, ctx->src_role, *p);
-			if (ctx->dst_role < CFR_max_real)
+			if (ctx->dst_role < CFR_max_real) {
 				conf_update(*p);
+				need_update++;
+			}
 		}
 	}
 
@@ -181,8 +186,7 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 		gtk_widget_destroy(fcd);
 	}
 
-#warning TODO: collect the return values of conf_update above to decide whether we need to do this
-	if (ctx->dst_role == CFR_DESIGN) {
+	if (need_update) {
 		/* do all the gui updates */
 		ghid_set_status_line_label();
 		ghid_pack_mode_buttons();
