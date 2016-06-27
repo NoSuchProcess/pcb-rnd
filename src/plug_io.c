@@ -686,7 +686,8 @@ void SaveTMPData(void)
  */
 void RemoveTMPData(void)
 {
-	unlink(TMPFilename);
+	if (TMPFilename != NULL)
+		unlink(TMPFilename);
 }
 #endif
 
