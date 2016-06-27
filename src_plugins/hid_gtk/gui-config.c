@@ -131,17 +131,37 @@ typedef struct {
 
 static void ghid_config_window_close(void);
 
-/* Replace a list of paths in dst with src */
+/* Replace a list of paths in dst with src; each path must be either:
+   - a path to a config filed that presents in the hash (not a ha:subtree)
+   - a subtree or multiple subtrees matching a prefix (e.g. "*appearance/color")
+*/
 void config_any_replace(save_ctx_t *ctx, const char **paths)
 {
 	char **p;
 
 	for(p = paths; *p != NULL; p++) {
-		conf_replace_subtree(ctx->dst_role, *p, ctx->src_role, *p);
-		if (ctx->dst_role < CFR_max_real)
-			conf_update(*p);
+		/* wildcards - match subtree */
+		if (**p == '*') {
+			const char *wildp = (*p)+1;
+			int pl = strlen(wildp);
+			htsp_entry_t *e;
+			conf_fields_foreach(e) {
+				if (strncmp(e->key, wildp, pl) == 0) {
+					conf_replace_subtree(ctx->dst_role, e->key, ctx->src_role, e->key);
+					if (ctx->dst_role < CFR_max_real)
+						conf_update(e->key);
+				}
+			}
+		}
+		else {
+			/* plain node */
+			conf_replace_subtree(ctx->dst_role, *p, ctx->src_role, *p);
+			if (ctx->dst_role < CFR_max_real)
+				conf_update(*p);
+		}
 	}
 
+	/* present a file choose dialog box on save */
 	if (ctx->dst_role == CFR_file) {
 		GtkWidget *fcd = gtk_file_chooser_dialog_new("Save config settings to...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 		if (gtk_dialog_run(GTK_DIALOG(fcd)) == GTK_RESPONSE_ACCEPT) {
@@ -161,6 +181,7 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 		gtk_widget_destroy(fcd);
 	}
 
+#warning TODO: collect the return values of conf_update above to decide whether we need to do this
 	if (ctx->dst_role == CFR_DESIGN) {
 		/* do all the gui updates */
 		ghid_set_status_line_label();
@@ -1338,7 +1359,7 @@ void config_colors_tab_create_array(GtkWidget *parent_vbox, const char *path)
 void config_colors_save(GtkButton *widget, save_ctx_t *ctx)
 {
 	const char *paths[] = {
-		"appearance/color",
+		"*appearance/color/",
 		NULL
 	};
 
