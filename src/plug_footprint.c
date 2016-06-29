@@ -140,6 +140,7 @@ library_t *fp_append_entry(library_t *parent, const char *name, fp_type_t type, 
 	entry->data.fp.tags = tags;
 	entry->data.fp.loc_info = NULL;
 	entry->data.fp.backend_data = NULL;
+	return entry;
 }
 
 library_t *fp_lib_search_len(library_t *dir, const char *name, int name_len)
