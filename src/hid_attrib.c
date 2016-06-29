@@ -214,67 +214,6 @@ void hid_parse_command_line(int *argc, char ***argv)
 	(*argv)--;
 }
 
-static void hid_set_attribute(char *name, char *value)
-{
-	const Unit *unit;
-	HID_AttrNode *ha;
-	int i, e, ok;
-
-	for (ha = hid_attr_nodes; ha; ha = ha->next)
-		for (i = 0; i < ha->n; i++)
-			if (strcmp(name, ha->attributes[i].name) == 0) {
-				HID_Attribute *a = ha->attributes + i;
-				switch (ha->attributes[i].type) {
-				case HID_Label:
-					break;
-				case HID_Integer:
-					a->default_val.int_value = strtol(value, 0, 0);
-					break;
-				case HID_Coord:
-					a->default_val.coord_value = GetValue(value, NULL, NULL, NULL);
-					break;
-				case HID_Real:
-					a->default_val.real_value = strtod(value, 0);
-					break;
-				case HID_String:
-					a->default_val.str_value = strdup(value);
-					break;
-				case HID_Boolean:
-					a->default_val.int_value = 1;
-					break;
-				case HID_Mixed:
-					a->default_val.real_value = strtod(value, &value);
-					/* fall through */
-				case HID_Enum:
-					ok = 0;
-					for (e = 0; a->enumerations[e]; e++)
-						if (strcmp(a->enumerations[e], value) == 0) {
-							ok = 1;
-							a->default_val.int_value = e;
-							a->default_val.str_value = value;
-							break;
-						}
-					if (!ok) {
-						fprintf(stderr, "ERROR:  \"%s\" is an unknown value for the %s option\n", value, a->name);
-						exit(1);
-					}
-					break;
-				case HID_Path:
-					a->default_val.str_value = value;
-					break;
-				case HID_Unit:
-					unit = get_unit_struct(value);
-					if (unit == NULL) {
-						fprintf(stderr, "ERROR:  unit \"%s\" is unknown to pcb (option --%s)\n", value, a->name);
-						exit(1);
-					}
-					a->default_val.int_value = unit->index;
-					a->default_val.str_value = unit->suffix;
-					break;
-				}
-			}
-}
-
 void hid_usage_option(const char *name, const char *help)
 {
 	fprintf(stderr, "%-20s %s\n", name, help);
