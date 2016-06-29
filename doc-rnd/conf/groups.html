@@ -1,4 +1,112 @@
 <html>
 <body>
 <H1> The new config system in pcb-rnd </H1>
-<H2> Why, what was wrong with the old one? </H2>
+<H2> grouping - flat vs. tree </H2>
+The original settings and HID attribute system in pcb were both flat:
+basically a list of type:key=val triplets. All settings in a few big bags;
+which bag sometimes doesn't depend on some logical categorizing, but
+historical reasons (e.g. which part of the code needs the given setting).
+<p>
+This works well for a small amount of settings but lack of categories or
+hierarchy (or sets or groups) makes it harder to understand what setting
+does what and orients users to just accept defaults. After a while it
+also makes programmers think twice before adding a new setting,
+increasing the crowd in a bag. This in turn results in a less configurable.
+<p>
+Introducing a hierarchy of settings can solve these problems by grouping
+and categorizing settings. If the user is interested in how footprints are
+searched, he can ignore the settings the editor/ subtree has. It is also
+easier to save and reload selectively: when the hierarchy is done right,
+closely related settings end up in the same category (thus the same subtree).
+Thus saving or loading a subtree can fully save or restore a property of the
+program, even if that property is affected by multiple settings.
+
+<h2> pcb-rnd config tree </h2>
+The config tree, the full tree is, something that exists in memory. Actual
+config files often contain only a subset of the tree. Multiple config files
+(e.g. system level, user level, settings from the .pcb file) are loaded and
+merged to form the final config tree. The hierarchy of the tree is represented
+by setting groups, which are like directories on a file system. Actual settings
+are always leaves of the tree, placed in a specific group at any level (just
+like in file systems). A full <i>path</i> to a setting is written like a
+path on a file system: group1/group2/item, where group1 and group2 are
+names of setting groups and item is the name of the setting. Note: unlike
+with real file systems, the leading slash (representing the root) is omitted.
+<p>
+Details/constraints: <small>
+A valid path unambiguously identifies a setting (or a setting group). Settings
+and groups always have exactly one parent (except for the root group that
+has no parent). There is only one root of the config tree. </small>
+<p>
+The main groups in the logical tree are:
+
+<dl>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr><td colspan=2> (root)              <td width=30%> &nbsp; <td> (config root)
+<tr><td> | &nbsp;<td colspan=2> &nbsp; <td> &nbsp;
+<tr><td colspan=3> +- rc               <td> run control (program startup)
+<tr><td> | &nbsp;<td colspan=2> &nbsp; <td> &nbsp;
+<tr><td colspan=3> +- design           <td> some default settings of a new design; minimum/maximum value of some design settings
+<tr><td> | &nbsp;<td colspan=2> &nbsp; <td> &nbsp;
+<tr><td colspan=3> +- editor           <td> how the pcb editor <i>behaves</i> - independent of HIDs or the GUI
+<tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
+<tr><td> | &nbsp;<td colspan=2> +- increments_mm  <td> interactive increment/decrement steps when active unit is mm
+<tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
+<tr><td> | &nbsp;<td colspan=2> +- increments_mil <td> interactive increment/decrement steps when active unit is mil
+<tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
+<tr><td> | &nbsp;<td colspan=2> +- view           <td> default view parameters
+<tr><td> | &nbsp;<td colspan=2> &nbsp; <td> &nbsp;
+<tr><td colspan=3> +- appearance       <td> how the GUI <i>looks like</i> - common to all GUI HIDs
+<tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
+<tr><td> | &nbsp;<td colspan=2> +- color    <td> layer colors, GUI colors, misc design colors
+<tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
+<tr><td> | &nbsp;<td colspan=2> +- pinout   <td> pin label properties
+<tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
+<tr><td> | &nbsp;<td colspan=2> +- messages <td> message window properties
+<tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
+<tr><td> | &nbsp;<td colspan=2> +- misc     <td> non-GUI settings handled by the GUI HIDs
+<tr><td> | &nbsp;<td colspan=2> &nbsp; <td> &nbsp;
+<tr><td colspan=3> +- plugins          <td> dynamic subtree for various plugin settings
+<tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
+<tr><td> | &nbsp;<td colspan=2> +- <i>foo</i> <td> all settings of the imaginary <i>foo</i> plugin are registered in this group
+<tr><td> | &nbsp;<td colspan=2> &nbsp; <td> &nbsp;
+<tr><td colspan=3> +- utils            <td> dynamic subtree for various plugin settings
+<tr><td>   &nbsp;<td colspan=2> |      <td> &nbsp;
+<tr><td>   &nbsp;<td colspan=2> +- <i>bar</i> <td> all settings of the imaginary <i>bar</i> utility are registered in this group
+</table>
+</dl>
+
+<h2> dynamic subtrees </h2>
+
+The plugins/ and utils/ subtree are <i>dynamic</i>, which means their contents
+are not defined by core pcb.
+<p>
+In plugins/ each plugin should create a group for its own settings. What
+this subtree should contain depends on what plugins are actually loaded.
+The benefit of this approach is that plugins can use the central config
+infrastructure instead of inventing their own config files. This makes
+user's life easier on many levels: single config syntax to learn; uniform
+GUI (gtk HID's preferences window) to change all settings; uniform way to
+save/restore parts of the settings.
+<p>
+The utils/ subtree is very similar in all aspects except that it is for
+external utility programs. Utils that are closely related to pcb-rnd, such
+as gsch2pcb-rnd, should work from the same configuration (e.g. to
+make sure the same footprint paths are searched). If they already load the
+pcb-rnd config files it's easier to keep their settings in the same tree,
+in the same format.
+<p>
+Pcb-rnd doesn't generate warning for unrecognized settings in dynamic subtrees.
+This lets the user configure plugins that are not always loaded and let util
+settings sit in their subtree.
+
+<h2> what happens to all these settings </h2>
+
+After loading all config files they are merged: if the same setting is
+described in multiple files, the higher priority wins or if the setting is
+a list (e.g. library search paths) the items are merged in a final list.
+At this point the full logical config tree is built. Next the textual values
+from the logical tree are converted into binary (native C values like
+"long int" or "double") and are saved in C variables for the code to
+access them directly. 
+
