@@ -167,7 +167,6 @@ static const int get_hash_policy(conf_policy_t *out, lht_node_t *parent, const c
 {
 	lht_node_t *n;
 	const char *s;
-	char *end;
 	conf_policy_t p;
 
 	s = get_hash_text(parent, name, &n);
@@ -201,10 +200,10 @@ static int conf_parse_increments(Increments *inc, lht_node_t *node)
 			bool succ; \
 			inc->field = GetValue(val->data.text.value, NULL, NULL, &succ); \
 			if (!succ) \
-				hid_cfg_error(node, "invalid numeric value in increment field " #field "\n", val); \
+				hid_cfg_error(node, "invalid numeric value in increment field " #field ": %s\n", val->data.text.value); \
 		} \
 		else\
-			hid_cfg_error(node, "increment field " #field " needs to be a text node\n", val); \
+			hid_cfg_error(node, "increment field " #field " needs to be a text node\n"); \
 	}
 
 	incload(grid);
@@ -221,6 +220,7 @@ static int conf_parse_increments(Increments *inc, lht_node_t *node)
 	incload(clear_max);
 
 #undef incload
+	return 0;
 }
 
 static const char *get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **try)
@@ -367,7 +367,7 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 	lht_node_t *s;
 	int res, idx, didx;
 
-	if (pol == POL_DISABLE)
+	if ((pol == POL_DISABLE) || (pol == POL_invalid))
 		return 0;
 
 	for(s = src_lst->data.list.first, idx = 0; s != NULL; s = s->next, idx++) {
@@ -386,6 +386,7 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 				case POL_OVERWRITE:
 					didx = idx;
 				break;
+				case POL_DISABLE: case POL_invalid: return 0; /* compiler warning */
 			}
 
 			if (didx >= dest->array_size) {
@@ -416,10 +417,10 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 	int res = 0;
 	conf_listitem_t *i;
 
-	if (pol == POL_DISABLE)
+	if ((pol == POL_DISABLE) || (pol == POL_invalid))
 		return 0;
 
-	if (pol = POL_OVERWRITE) {
+	if (pol == POL_OVERWRITE) {
 		/* overwrite the whole list: make it empty then append new elements */
 		while((i = conflist_first(dest->val.list)) != NULL)
 			conflist_remove(i);
@@ -443,6 +444,7 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 				case POL_OVERWRITE:
 					conflist_append(dest->val.list, i);
 					break;
+				case POL_DISABLE: case POL_invalid: return 0; /* compiler warning */
 			}
 		}
 		else {
@@ -485,6 +487,13 @@ int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, con
 			else
 				hid_cfg_error(n, "Attempt to initialize a scalar with a list - this node should be a text node\n");
 			break;
+		case LHT_SYMLINK:
+#warning TODO
+			break;
+		case LHT_INVALID_TYPE:
+		case LHT_TABLE:
+			/* intentionally unhandled types */
+			break;
 	}
 	return res;
 }
@@ -494,9 +503,9 @@ int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, con
 int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t default_policy, const char *path_prefix)
 {
 	lht_dom_iterator_t it;
-	lht_node_t *n, *h;
+	lht_node_t *n;
 	char path[256], *pathe;
-	char name[256], *namee;
+	char *namee;
 	int nl, ppl = strlen(path_prefix), res = 0;
 
 	memcpy(path, path_prefix, ppl);
@@ -516,7 +525,6 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 int conf_merge_patch(lht_node_t *root, long gprio)
 {
 	conf_policy_t gpolicy = POL_OVERWRITE;
-	const char *ps;
 	lht_node_t *n;
 	lht_dom_iterator_t it;
 
@@ -1249,7 +1257,7 @@ void conf_reset(conf_role_t target, const char *source_fn)
 {
 	if (conf_root[target] != NULL)
 		lht_dom_uninit(conf_root[target]);
-	lht_node_t *n, *p;
+	lht_node_t *n;
 	conf_root[target] = lht_dom_init();
 	lht_dom_loc_newfile(conf_root[target], source_fn);
 	conf_root[target]->root = lht_dom_node_alloc(LHT_LIST, conf_list_name);
