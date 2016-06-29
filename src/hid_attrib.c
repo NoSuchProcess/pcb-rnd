@@ -214,15 +214,6 @@ void hid_parse_command_line(int *argc, char ***argv)
 	(*argv)--;
 }
 
-static int attr_hash(HID_Attribute * a)
-{
-	unsigned char *cp = (unsigned char *) a;
-	int i, rv = 0;
-	for (i = 0; i < (int) ((char *) &(a->hash) - (char *) a); i++)
-		rv = (rv * 13) ^ (rv >> 16) ^ cp[i];
-	return rv;
-}
-
 static void hid_set_attribute(char *name, char *value)
 {
 	const Unit *unit;
