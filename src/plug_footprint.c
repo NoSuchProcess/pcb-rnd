@@ -106,6 +106,7 @@ FILE *fp_fopen(const char *path, const char *name, fp_fopen_ctx_t *fctx)
 {
 	FILE *res = NULL;
 	HOOK_CALL(plug_fp_t, plug_fp_chain, fopen, res, != NULL, path, name, fctx);
+	return res;
 }
 
 void fp_fclose(FILE * f, fp_fopen_ctx_t *fctx)
@@ -117,7 +118,6 @@ void fp_fclose(FILE * f, fp_fopen_ctx_t *fctx)
 library_t *fp_append_entry(library_t *parent, const char *name, fp_type_t type, void *tags[])
 {
 	library_t *entry;   /* Pointer to individual menu entry */
-	size_t len;
 
 	assert(parent->type == LIB_DIR);
 	entry = get_library_memory(parent);
@@ -256,6 +256,7 @@ void fp_free_entry(library_t *l)
 			if (l->data.fp.tags != NULL)
 				free(l->data.fp.tags);
 			break;
+		case LIB_INVALID: break; /* suppress compiler warning */
 	}
 	if (l->name != NULL) {
 		free(l->name);
@@ -285,7 +286,7 @@ void fp_rmdir(library_t *dir)
 	fp_free_entry(dir);
 	if (parent != NULL) {
 		for(n = 0, l = parent->data.dir.children.array; n < parent->data.dir.children.used; n++,l++) {
-			if (l = dir) {
+			if (l == dir) {
 				vtlib_remove(&(parent->data.dir.children), n, 1);
 				break;
 			}

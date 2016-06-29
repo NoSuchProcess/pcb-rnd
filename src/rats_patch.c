@@ -360,6 +360,7 @@ int rats_patch_fexport(PCBTypePtr pcb, FILE * f, int fmt_pcb)
 			break;
 		}
 	}
+	return 0;
 }
 
 /* ---------------------------------------------------------------- */
@@ -423,6 +424,7 @@ static int ReplaceFootprint(int argc, char **argv, Coord x, Coord y)
 		}
 	}
 	END_LOOP;
+	return 0;
 }
 
 static const char savepatch_syntax[] = "SavePatch(filename)";

@@ -103,7 +103,6 @@ static void InitHandler(void)
 static void InitPaths(char *argv0)
 {
 	size_t l;
-	int i;
 	int haspath;
 	char *t1, *t2;
 	int found_bindir = 0;
@@ -217,7 +216,6 @@ static char **hid_argv_orig;
 void pcb_main_uninit(void)
 {
 	int i;
-	char **s;
 
 	UninitBuffers();
 
@@ -269,8 +267,8 @@ int main(int argc, char *argv[])
 		DO_EXPORT,
 		DO_GUI
 	} do_what = DO_SOMETHING;
-	int i, n, hid_argc = 0;
-	char *cmd, *arg, *stmp, *hid_name = NULL, **hid_argv;
+	int n, hid_argc = 0;
+	char *cmd, *arg, *hid_name = NULL, **hid_argv;
 	const char **cs;
 	const char *main_action = NULL;
 	char *command_line_pcb = NULL;

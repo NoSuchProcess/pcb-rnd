@@ -62,9 +62,6 @@ static int fp_read_lib_all_(const char *searchpath)
 	char toppath[MAXPATHLEN + 1];	/* String holding abs path to top level library dir */
 	char *libpaths;								/* String holding list of library paths to search */
 	char *p;											/* Helper string used in iteration */
-	DIR *dirobj;									/* Iterable directory object */
-	struct dirent *direntry = NULL;	/* Object holding individual directory entries */
-	struct stat buffer;						/* buffer used in stat */
 	int n_footprints = 0;					/* Running count of footprints found */
 	int res;
 
@@ -112,8 +109,8 @@ int fp_host_uninit(void)
 {
 	if (fpds_inited)
 		gds_uninit(&fpds_paths);
+	return 0;
 }
-
 
 int fp_read_lib_all(void)
 {

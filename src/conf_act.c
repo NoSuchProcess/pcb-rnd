@@ -133,7 +133,6 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 
 	else if (NSTRCMP(cmd, "reset") == 0) {
 		conf_role_t role;
-		int res;
 		role = conf_role_parse(argv[1]);
 		if (role == CFR_invalid) {
 			Message("Invalid role: '%s'", argv[1]);

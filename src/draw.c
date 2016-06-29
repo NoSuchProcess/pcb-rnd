@@ -898,7 +898,7 @@ static int poly_callback(const BoxType * b, void *cl)
 		color = i->layer->Color;
 	gui->set_color(Output.fgGC, color);
 
-	if (gui->thindraw_pcb_polygon != NULL && conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly)
+	if ((gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly))
 		gui->thindraw_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
 	else
 		gui->fill_pcb_polygon(Output.fgGC, polygon, i->drawn_area);

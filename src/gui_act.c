@@ -799,7 +799,6 @@ static int ActionCycleDrag(int argc, char **argv, Coord x, Coord y)
 		if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], LINE_TYPE) != NO_TYPE) {
 			/* line has two endpoints, check which one is close to the original x;y */
 			LineType *l = ptr2;
-			long int d1, d2;
 			if (close_enough(Note.X, l->Point1.X) && close_enough(Note.Y, l->Point1.Y)) {
 				Crosshair.AttachedObject.Type = LINEPOINT_TYPE;
 				Crosshair.AttachedObject.Ptr1 = ptr1;

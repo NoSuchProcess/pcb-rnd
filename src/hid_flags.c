@@ -21,8 +21,6 @@ RCSID("$Id$");
 
 int hid_get_flag(const char *name)
 {
-	static char *buf = 0;
-	static int nbuf = 0;
 	const char *cp;
 
 	if (name == NULL)
@@ -54,7 +52,6 @@ int hid_get_flag(const char *name)
 			buff[len] = '\0';
 			a = hid_find_action(buff);
 			if (!a) {
-				int i;
 				Message("hid_get_flag: no action %s\n", name);
 				return -1;
 			}

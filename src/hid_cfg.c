@@ -326,7 +326,6 @@ lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path)
 
 lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, hid_cfg_menufield_t field, const char **field_name)
 {
-	lht_node_t *n;
 	lht_err_t err;
 	const char *fieldstr = NULL;
 

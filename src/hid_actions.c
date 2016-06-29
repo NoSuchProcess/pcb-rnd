@@ -106,12 +106,12 @@ void hid_remove_actions_by_cookie(const char *cookie)
 	}
 }
 
-HID_Action *hid_remove_action(const HID_Action * a)
+void hid_remove_action(const HID_Action * a)
 {
 	htsp_entry_t *e;
 
 	if (all_actions == NULL)
-		return NULL;
+		return;
 
 	e = htsp_popentry(all_actions, a->name);
 	if (e != NULL) {
@@ -123,7 +123,6 @@ HID_Action *hid_remove_action(const HID_Action * a)
 const HID_Action *hid_find_action(const char *name)
 {
 	hid_cookie_action_t *ca;
-	int i;
 
 	if ((name == NULL) && (all_actions == NULL))
 		return 0;
@@ -183,7 +182,6 @@ static void dump_string(char prefix, const char *str)
 
 void dump_actions(void)
 {
-	int i;
 	htsp_entry_t *e;
 
 	fprintf(stderr, "Registered Actions:\n");

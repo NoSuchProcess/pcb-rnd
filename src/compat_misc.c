@@ -83,6 +83,7 @@ const char *get_user_name(void)
 	}
 	memcpy(fab_author, gecos, len);
 	fab_author[len] = 0;
+	return fab_author;
 #else
 	return "Unknown";
 #endif

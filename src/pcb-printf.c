@@ -544,7 +544,6 @@ int pcb_fprintf(FILE * fh, const char *fmt, ...)
 int pcb_printf(const char *fmt, ...)
 {
 	int rv;
-	char *tmp;
 	gds_t str;
 	gds_init(&str);
 

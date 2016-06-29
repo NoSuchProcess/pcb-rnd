@@ -88,7 +88,6 @@ void event_unbind_allcookie(const char *cookie)
 void event(event_id_t ev, const char *fmt, ...)
 {
 	va_list ap;
-	const char *f;
 	event_arg_t argv[EVENT_MAX_ARG], *a;
 	event_t *e;
 	int argc;

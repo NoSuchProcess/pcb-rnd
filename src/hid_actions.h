@@ -12,7 +12,7 @@ void dump_actions(void);
 const HID_Action *hid_find_action(const char *name);
 
 extern void hid_remove_actions(const HID_Action * a, int n);
-extern HID_Action *hid_remove_action(const HID_Action * a);
+extern void hid_remove_action(const HID_Action * a);
 extern void hid_remove_actions_by_cookie(const char *cookie);
 
 int hid_action(const char *action_);

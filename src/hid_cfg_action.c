@@ -42,6 +42,7 @@ int hid_cfg_action(const lht_node_t *node)
 					return -1;
 			}
 			return 0;
+		default: ; /* suppress compiler warning: can't handle any other type */
 	}
 	return -1;
 }

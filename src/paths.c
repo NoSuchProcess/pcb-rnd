@@ -11,7 +11,7 @@ void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra
 {
 	const char *subst_to;
 	int subst_offs;
-	for (out; numpaths > 0; numpaths--, in++, out++) {
+	for (; numpaths > 0; numpaths--, in++, out++) {
 		if (*in != NULL) {
 			if (**in == '~') {
 				int l1, l2;

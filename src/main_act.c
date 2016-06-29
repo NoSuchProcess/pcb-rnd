@@ -47,6 +47,7 @@ static const char printactions_help[] = "Print all actions available.";
 int ActionPrintActions(int argc, char **argv, Coord x, Coord y)
 {
 	print_actions();
+	return 0;
 }
 /* --------------------------------------------------------------------------- */
 
@@ -57,6 +58,7 @@ static const char dumpactions_help[] = "Dump all actions available.";
 int ActionDumpActions(int argc, char **argv, Coord x, Coord y)
 {
 	dump_actions();
+	return 0;
 }
 
 /* print usage lines */
@@ -111,7 +113,6 @@ static int help_main(void) {
 static int help_invoc(void)
 {
 	HID **hl = hid_enumerate();
-	HID_AttrNode *ha;
 	int i;
 	int n_printer = 0, n_gui = 0, n_exporter = 0;
 
@@ -168,6 +169,7 @@ int ActionPrintUsage(int argc, char **argv, Coord x, Coord y)
 	}
 	else
 		help0();
+	return 0;
 }
 
 
@@ -179,6 +181,7 @@ static const char printversion_help[] = "Print version.";
 int ActionPrintVersion(int argc, char **argv, Coord x, Coord y)
 {
 	printf("PCB version %s\n", VERSION);
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -207,6 +210,7 @@ int ActionPrintCopyright(int argc, char **argv, Coord x, Coord y)
 				 "    You should have received a copy of the GNU General Public License\n"
 				 "    along with this program; if not, write to the Free Software\n"
 				 "    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n\n", Progname, VERSION);
+	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -238,6 +242,7 @@ int ActionPrintPaths(int argc, char **argv, Coord x, Coord y)
 	printf("rc/default_font_file             ="); print_list(&conf_core.rc.default_font_file);
 	printf("rc/library_search_paths          ="); print_list(&conf_core.rc.library_search_paths);
 	printf("rc/library_shell                 = \"%s\"\n", conf_core.rc.library_shell);
+	return 0;
 }
 
 

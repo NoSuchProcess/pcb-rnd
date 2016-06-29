@@ -169,12 +169,14 @@ void hid_cfg_mouse_action(hid_cfg_mouse_t *mouse, hid_cfg_mod_t button_and_mask)
 int hid_cfg_keys_init(hid_cfg_keys_t *km)
 {
 	htip_init(&km->keys, keyhash_int, keyeq_int);
+	return 0;
 }
 
 int hid_cfg_keys_uninit(hid_cfg_keys_t *km)
 {
 #warning TODO: recursive free of nodes
 	htip_uninit(&km->keys);
+	return 0;
 }
 
 hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *parent, hid_cfg_mod_t mods, unsigned short int key_char, int terminal)
@@ -245,7 +247,7 @@ static unsigned short int translate_key(hid_cfg_keys_t *km, const char *desc, in
 static int parse_keydesc(hid_cfg_keys_t *km, const char *keydesc, hid_cfg_mod_t *mods, unsigned short int *key_chars, int arr_len)
 {
 	const char *curr, *next, *last, *k;
-	int n, slen, len;
+	int slen, len;
 
 	slen = 0;
 	curr = keydesc;
@@ -362,7 +364,6 @@ static void gen_accel(gds_t *s, hid_cfg_keys_t *km, const char *keydesc, int *cn
 {
 	hid_cfg_mod_t mods[HIDCFG_MAX_KEYSEQ_LEN];
 	unsigned short int key_chars[HIDCFG_MAX_KEYSEQ_LEN];
-	hid_cfg_keyseq_t *lasts;
 	int slen, n;
 
 	slen = parse_keydesc(km, keydesc, mods, key_chars, HIDCFG_MAX_KEYSEQ_LEN);
@@ -402,7 +403,7 @@ char *hid_cfg_keys_gen_accel(hid_cfg_keys_t *km, const lht_node_t *keydescn, uns
 			break;
 		case LHT_LIST:
 		{
-			int ret = -1, cnt;
+			int cnt;
 			lht_node_t *n;
 			for(n = keydescn->data.list.first, cnt = 0; n != NULL; n = n->next, cnt++, mask >>= 1) {
 				if (n->type != LHT_TEXT)

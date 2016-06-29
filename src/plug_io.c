@@ -605,7 +605,8 @@ void EnableAutosave(void)
 char *build_fn(const char *template)
 {
 	gds_t s;
-	char *next, *curr, buff[16];
+	char buff[16];
+	const char *curr, *next;
 
 	gds_init(&s);
 	for(curr = template;;) {
