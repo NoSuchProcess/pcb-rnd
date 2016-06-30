@@ -1,0 +1,25 @@
+<html>
+<body>
+<H1> The new config system in pcb-rnd </H1>
+<H2> Lists and arrays </H2>
+
+Non-scalar settings are arrays or lists. Arrays can be explicitly indexed
+
+The default <i>policy</i> is always <i>overwrite</i>.
+<p>
+There are three active policies: <i>overwrite</i>, <i>prepend</i> and <i>append</i>.
+When dealing with lists:
+<ul>
+	<li> step 1: the output list is reset to empty
+	<li> step 2: all sources that describe the list are sorted by priority 
+	<li> step 3: sources are applied in order
+</ul>
+Step 3 is straight-forward: if policy is <i>overwrite</i>, reset the output
+list and copy the source's list into the output list. If policy is
+<i>prepend</i> (or <i>append</i>), keep the current output list and prepend
+(or append) the list provided  by the source. 
+<p>
+In practice this means the user can replace, prepend or append ordered lists
+from various sources. A common example is setting the library search paths.
+
+TODO: EXAMPLES
