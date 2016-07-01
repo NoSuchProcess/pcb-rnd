@@ -2,12 +2,31 @@
 
 # TODO: rewrite this in C for better portability
 
-awk '
+awk -v "docdir=$1" '
 	BEGIN {
 		level = -1
 		q = "\""
 		cm = ","
 	}
+
+	function doc_head(fn, path)
+	{
+		if (fn in DOCS)
+			return
+		DOCS[fn]++
+		print "<html><body>" > fn
+		print "<h1>pcb-rnd conf tree</h1>" > fn
+		print "<h2>subtree: " path "</h2>" > fn
+		print "<table border=1>" > fn
+		print "<tr><th>node name <th> type <td> flags <td> description" > fn
+
+	}
+
+	function doc_foot(fn)
+	{
+		print "</table></body></html>" > fn
+	}
+
 	/[{]/ { level++ }
 
 	/struct.*/ {
@@ -71,7 +90,16 @@ awk '
 		path_tmp=path
 		sub("^/", "", path_tmp)
 		printf("conf_reg(%-36s %s %-16s %-25s %-25s %s, %s)\n", id cm, (array ? "array, " : "scalar,"), type cm, q path_tmp q cm, q name q cm, q desc q, flags)
-		
+		if (docdir != "") {
+			path_tmp2 = path_tmp
+			gsub("/", "_", path_tmp2)
+			fn = docdir "/" path_tmp2 ".html"
+			doc_head(fn, path_tmp)
+			type2 = tolower(type)
+			sub("^cfn_", "", type2)
+			
+			print "<tr><td>", name, "<td><a href=\"" type ".html\">", type2, "</a><td>", flags, "<td>", desc > fn
+		}
 	}
 
 	/[}]/ {
@@ -83,5 +111,7 @@ awk '
 	END {
 		if (level != -1)
 			print "Error: unbalanced braces" > "/dev/stderr"
+		for(fn in DOCS)
+			doc_foot(fn)
 	}
 '

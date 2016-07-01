@@ -370,6 +370,8 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 	if ((pol == POL_DISABLE) || (pol == POL_invalid))
 		return 0;
 
+#warning TODO: revise if it does what the doc says; do auto tests!
+
 	for(s = src_lst->data.list.first, idx = 0; s != NULL; s = s->next, idx++) {
 		if (s->type == LHT_TEXT) {
 
@@ -426,6 +428,7 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 			conflist_remove(i);
 	}
 
+#warning TODO: revise if it does what the doc says; do auto tests!
 	for(s = src_lst->data.list.first; s != NULL; s = s->next) {
 		if (s->type == LHT_TEXT) {
 			i = calloc(sizeof(conf_listitem_t), 1);

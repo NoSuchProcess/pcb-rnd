@@ -239,7 +239,7 @@ generated_lists.h: @/local/pcb/ACTION_REG_SRC@ Makefile
 	../scconfig/gen_core_lists.sh @/local/pcb/ACTION_REG_SRC@ > generated_lists.h
 
 conf_core_fields.h: conf_core.h
-	../scconfig/gen_conf.sh < conf_core.h > conf_core_fields.h
+	../scconfig/gen_conf.sh ../doc-rnd/conf/tree < conf_core.h > conf_core_fields.h
 
 conf_internal.c: pcb-conf.lht
 	$(CQUOTE) -n conf_internal < pcb-conf.lht > conf_internal.c
