@@ -40,7 +40,7 @@ Config sources (ordered by priority):
 	<tr><td> 2.   <td> apply <i>user</i>   <td> A,B,C   <td> "not defined" doesn't mean "empty", so the list is not deleted - no change
 	<tr><td> 3.   <td> apply <i>project</i><td> D,E     <td> replace the original output because of the overwrite policy
 </table>
-<p>Situation: the project is restricted to local footprint libs; this setup
+<p>Example scenario: the project is restricted to local footprint libs; this setup
 makes sure no system or user configuration injects external footprint paths.
 
 <h3> empty overwrite </h3>
@@ -76,7 +76,7 @@ Config sources (ordered by priority):
 	<tr><td> 2.   <td> apply <i>user</i>   <td> A,B,C   <td> "not defined" doesn't mean "empty", so the list is not deleted - no change
 	<tr><td> 3.   <td> apply <i>project</i><td> D,E,A,B,C <td> &nbsp;
 </table>
-<p>Situation: the project has its own footprint libs with two paths; these
+<p>Example scenario: the project has its own footprint libs with two paths; these
 should be searched before system and user paths, still, system path is also
 kept so stock footprints can be found.
 <p>
@@ -101,7 +101,7 @@ Config sources (ordered by priority):
 	<tr><td> 2.   <td> apply <i>user</i>   <td> A,B,C   <td> "not defined" doesn't mean "empty", so the list is not deleted - no change
 	<tr><td> 3.   <td> apply <i>project</i><td> A,B,C,D,E <td> &nbsp;
 </table>
-<p>Situation: the project has its own footprint libs with two paths; these
+<p>Example scenario: the project has its own footprint libs with two paths; these
 should be searched after system and user paths. This means the local footprint
 lib has lower priority than the stock footprints. See system-dependent
 installation remarks in the previous point.
