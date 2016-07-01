@@ -70,7 +70,10 @@ priority decides the final value. Most settings are scalar:
 a single integer, string or a single "yes/no" or "on/off" value (e.g.
 the background color or whether polygons are thin-drawn). For scalars
 the rule is simple: the higher priority value wins and all lower priority
-values are discarded when putting the values into the hash.
+values are discarded when putting the values into the hash. More
+details: <a href="scalars.html"> how different roles and priorities
+can be used with scalars.</a>
+
 <p>
 There are some settings that are represented as an array or list of
 values. They are described in a lihata list item ("li:") in the config
@@ -79,4 +82,11 @@ are merged is controlled by the merging <i>policy</i>, which can be
 in each source, just like the prioirty is set. Check out the
 <a href="lists.html">list merging section</a> for more details.
 
-<h2> the override trick </h2>
+<h3> blind spots </h3>
+At the end the code does need a value for each setting, so in the final
+render (after the hash) every setting must have a value. To avoid blind spots,
+values not initialized, there is a built-in configuration file, compiled into
+the executable. This file is loaded into role <i>CFR_INTERNAL</i>, and has
+the lowest priority. This configuration file contains the default value for
+all settings.
+

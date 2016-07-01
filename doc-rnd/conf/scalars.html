@@ -1,0 +1,56 @@
+<html>
+<body>
+<H1> The new config system in pcb-rnd </H1>
+<H2> Scalars </H2>
+
+Scalar settings have only one value after the merge. The only <i>policy</i>
+available is <i>overwrite</i> - this policy is applied regardless of the
+current policy setting.
+
+<h2> examples </h2>
+
+<h3> simple overwrite </h3>
+Config sources:
+<table border=1>
+	<tr><th> role    <th> priority <th> policy    <th> content
+	<tr><td> system  <td> 200      <td> overwrite <th> A
+	<tr><td> user    <td> 400      <td> overwrite <th> (not defined)
+	<tr><td> project <td> 600      <td> overwrite <th> Q
+</table>
+<p>
+Merge iterations:
+<table border=1>
+	<tr><th> step <th> description         <th> output list after executing this step <th> remarks
+	<tr><td> 0.   <td> reset the output    <td> (empty) <td> &nbsp;
+	<tr><td> 1.   <td> apply <i>system</i> <td> A       <td> &nbsp;
+	<tr><td> 2.   <td> apply <i>user</i>   <td> A       <td> "not defined" doesn't mean "empty", so the list is not deleted - no change
+	<tr><td> 3.   <td> apply <i>project</i><td> Q       <td> replace the original output because of the overwrite policy
+</table>
+<p>Situation: system default overriden by a project setting.
+
+<h3> user-forced value </h3>
+Config sources append:
+<table border=1>
+	<tr><th> role    <th> priority <th> policy    <th> content
+	<tr><td> system  <td> 200      <td> overwrite <th> A
+	<tr><td> user    <td> 650      <td> overwrite <th> E
+	<tr><td> project <td> 600      <td> overwrite <th> Q
+</table>
+<p>
+Merge iterations:
+<table border=1>
+	<tr><th> step <th> description         <th> output list after executing this step <th> remarks
+	<tr><td> 0.   <td> reset the output    <td> (empty) <td> &nbsp;
+	<tr><td> 1.   <td> apply <i>system</i> <td> A       <td> &nbsp;
+	<tr><td> 2.   <td> apply <i>project</i><td> Q       <td> &nbsp;
+	<tr><td> 3.   <td> apply <i>user</i>   <td> E       <td> &nbsp;
+</table>
+<p>Situation: user preference enforced: even if the project file would use
+'Q' for the given setting, the user prefers 'E'. This affects runtime
+(the value of the setting after the merge, in other words how pcb-rnd works),
+but does nto change the project configuration. This allows the given user to
+always use 'E' for the given setting while lets other users working on the
+same project use the value set in the project file.
+
+
+

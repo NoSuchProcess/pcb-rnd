@@ -22,4 +22,104 @@ list and copy the source's list into the output list. If policy is
 In practice this means the user can replace, prepend or append ordered lists
 from various sources. A common example is setting the library search paths.
 
-TODO: EXAMPLES
+<h2> examples </h2>
+
+<h3> simple overwrite </h3>
+Config sources (ordered by priority):
+<table border=1>
+	<tr><th> role    <th> priority <th> policy    <th> content
+	<tr><td> system  <td> 200      <td> overwrite <th> A,B,C
+	<tr><td> user    <td> 400      <td> overwrite <th> (not defined)
+	<tr><td> project <td> 600      <td> overwrite <th> D,E
+</table>
+<p>Merge iterations:
+<table border=1>
+	<tr><th> step <th> description         <th> output list after executing this step <th> remarks
+	<tr><td> 0.   <td> reset the output    <td> (empty) <td> &nbsp;
+	<tr><td> 1.   <td> apply <i>system</i> <td> A,B,C   <td> &nbsp;
+	<tr><td> 2.   <td> apply <i>user</i>   <td> A,B,C   <td> "not defined" doesn't mean "empty", so the list is not deleted - no change
+	<tr><td> 3.   <td> apply <i>project</i><td> D,E     <td> replace the original output because of the overwrite policy
+</table>
+<p>Situation: the project is restricted to local footprint libs; this setup
+makes sure no system or user configuration injects external footprint paths.
+
+<h3> empty overwrite </h3>
+Config sources (ordered by priority):
+<table border=1>
+	<tr><th> role    <th> priority <th> policy    <th> content
+	<tr><td> system  <td> 200      <td> overwrite <th> A,B,C
+	<tr><td> user    <td> 400      <td> overwrite <th> (not defined)
+	<tr><td> project <td> 600      <td> overwrite <th> defined to be an empty list
+</table>
+<p>Merge iterations:
+<table border=1>
+	<tr><th> step <th> description         <th> output list after executing this step <th> remarks
+	<tr><td> 0.   <td> reset the output    <td> (empty) <td> &nbsp;
+	<tr><td> 1.   <td> apply <i>system</i> <td> A,B,C   <td> &nbsp;
+	<tr><td> 2.   <td> apply <i>user</i>   <td> A,B,C   <td> "not defined" doesn't mean "empty", so the list is not deleted - no change
+	<tr><td> 3.   <td> apply <i>project</i><td> (empty) <td> replace the original output because of the overwrite policy
+</table>
+
+<h3> prepend </h3>
+Config sources (ordered by priority):
+<table border=1>
+	<tr><th> role    <th> priority <th> policy    <th> content
+	<tr><td> system  <td> 200      <td> overwrite <th> A,B,C
+	<tr><td> user    <td> 400      <td> prepend   <th> (not defined)
+	<tr><td> project <td> 600      <td> prepend   <th> D,E
+</table>
+<p>Merge iterations:
+<table border=1>
+	<tr><th> step <th> description         <th> output list after executing this step <th> remarks
+	<tr><td> 0.   <td> reset the output    <td> (empty) <td> &nbsp;
+	<tr><td> 1.   <td> apply <i>system</i> <td> A,B,C   <td> &nbsp;
+	<tr><td> 2.   <td> apply <i>user</i>   <td> A,B,C   <td> "not defined" doesn't mean "empty", so the list is not deleted - no change
+	<tr><td> 3.   <td> apply <i>project</i><td> D,E,A,B,C <td> &nbsp;
+</table>
+<p>Situation: the project has its own footprint libs with two paths; these
+should be searched before system and user paths, still, system path is also
+kept so stock footprints can be found.
+<p>
+This is better than hardwiring A,B,C in the project's list: A, B and C may
+depend on the installation on a given system. A project file has no idea
+about how the system is installed but it is assumed system installation
+and the system configuration file are consistent.
+
+<h3> append </h3>
+Config sources (ordered by priority):
+<table border=1>
+	<tr><th> role    <th> priority <th> policy    <th> content
+	<tr><td> system  <td> 200      <td> overwrite <th> A,B,C
+	<tr><td> user    <td> 400      <td> append   <th> (not defined)
+	<tr><td> project <td> 600      <td> append   <th> D,E
+</table>
+<p>Merge iterations:
+<table border=1>
+	<tr><th> step <th> description         <th> output list after executing this step <th> remarks
+	<tr><td> 0.   <td> reset the output    <td> (empty) <td> &nbsp;
+	<tr><td> 1.   <td> apply <i>system</i> <td> A,B,C   <td> &nbsp;
+	<tr><td> 2.   <td> apply <i>user</i>   <td> A,B,C   <td> "not defined" doesn't mean "empty", so the list is not deleted - no change
+	<tr><td> 3.   <td> apply <i>project</i><td> A,B,C,D,E <td> &nbsp;
+</table>
+<p>Situation: the project has its own footprint libs with two paths; these
+should be searched after system and user paths. This means the local footprint
+lib has lower priority than the stock footprints. See system-dependent
+installation remarks in the previous point.
+
+
+<h3> prepend+append </h3>
+Config sources (ordered by priority):
+<table border=1>
+	<tr><th> role    <th> priority <th> policy    <th> content
+	<tr><td> system  <td> 200      <td> overwrite <th> A,B,C
+	<tr><td> user    <td> 400      <td> prepend   <th> X,Y,Z
+	<tr><td> project <td> 600      <td> append    <th> D,E
+</table>
+<p>Merge iterations:
+<table border=1>
+	<tr><th> step <th> description         <th> output list after executing this step <th> remarks
+	<tr><td> 0.   <td> reset the output    <td> (empty) <td> &nbsp;
+	<tr><td> 1.   <td> apply <i>system</i> <td> A,B,C   <td> &nbsp;
+	<tr><td> 2.   <td> apply <i>user</i>   <td> X,Y,Z,A,B,C <td> &nbsp;
+	<tr><td> 3.   <td> apply <i>project</i><td> X,Y,Z,A,B,C,D,E <td> &nbsp;
+</table>
