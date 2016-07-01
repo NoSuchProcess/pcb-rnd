@@ -1,6 +1,7 @@
 <html>
 <body>
 <H1> pcb-rnd motivation </H1>
+<H2> Phase 1: At the beginning... </H2>
 I use PCB a lot on various computers. I used to try to join the mainstream
 development with small contribution (minor patches) and was active on
 IRC and the mailing lists for a while. However, it didn't work out well,
@@ -13,6 +14,7 @@ and:
 			<li> dbus
 			<li> gl - transparency makes even simple 2 sided boards unusable; slower than the classic version sw render on all my computers
 			<li> preparation for a C++ transition
+			<li> 3d support in core (I believe communication to 3d cad programs should be via exporter plugins)
 		</ul>
 	<li> the official Debian package enables (requires, depends on) both dbus and gl
 	<li> DVCS - it almost always results in chaos, and has no benefit for such a small group of developers; there are posts from time to time on the mailing list about how to handle the chaos; my choice is to stick with a simple, centralized version control system
@@ -20,12 +22,12 @@ and:
 	<li> it's nearly impossible to get small patches applied^1:
 		<ul>
 			<li> often no one has the time to revise and commit them
-			<li> communication requires web2.0
+			<li> communication requires web2.0 (lp)
 			<li> there are too many cycles of "please fix this and change that first"
-			<li> with the chaos VCS, it's too likely that new feature patches would require ongoing maintenance to avoid that a large scale merge (or rebase, whatever) of another feature branch breaks it
+			<li> with the chaos VCS, it's too likely that new feature patches would require ongoing maintenance while sitting in a "feature branch", to avoid that a large scale merge (or rebase, whatever) breaks it when it finally hits the official branch
 			<li> there are too much pondering and too less prototyping; there are features that are being considered for years (for example back annotation, internal connections) with multiple concurrent ideas, but no code. Instead, I'd like to implement some code from the early phase of the idea, test it, and deprecate it if it didn't work out well.
+			<li> I wouldn't even dream about getting larger patches in the official release
 		</ul>
-	<li> I don't even dream about getting larger patches in the official release^1
 	<li> no stable release for years; maintaining a set of patches (like pcb-gpmi) and porting them to new releases is too much hassle
 </ul>
 I was pondering a fork for years. The trigger was that one day I've upgraded
@@ -39,20 +41,48 @@ an extra effort), so I can add some of the features I miss in daily use.
 My plans with this fork:
 <ul>
 	<li> I stick with my fork and will use it on all my computers for all my designs
-	<li> Because of that, there's no emphasis on keeping the file formats compatible
+	<li> Because of that, there's no emphasis on keeping the file formats compatible - breaking compatibility is not a goal either; as long as mainline doesn't change the format, pcb-rnd is about 98% compatible (the 2% is where pcb-rnd features are not supported by mainline)
 	<li> I won't actively seek ways to get my changes into the mainstream; I will keep on using my svn repo in a manner that (as a side effect) makes such merges easier, tho. If PCB developers decide to pick them up from svn and merge them in the official repo, it's fine (but I personally will keep using my fork anyway).
 	<li> Most probably I won't merge anything back from the mainstream to my fork - the past few years showed that it's unlikely there would be new features I'd need
-	<li> plans for new features:
+	<li> My plans for new features were:
 		<ul>
 			<li> pin shapes (a <a href="square.html">preliminary version</a> is already implemented)
 			<li> 1206 jumpers without having to add them on the schematics/netlist (done: <a href="intconn.html">[intconn]</a> and <a href="nonetlist.html"> [nonetlist] </a> are the PCB-side features for this)
-			<li> merge pcb-gpmi; GPMI would be an optional addon, it'd probably stay a plugin, but there should not be a separate repo (done)
+			<li> merge pcb-gpmi; GPMI would be an optional addon, it'd probably stay a plugin, but there should not be a separate repo (<a href="gpmi"> done </a>)
 		</ul>
 </ul>
 <p>
 Footnotes:
 <ul>
-	<li> ^1: this may have changed lately and pcb developers are more open to newcomers
+	<li> ^1: this may have changed lately and pcb developers are more open to newcomers; there seems to be a shortage of developers tho, which still makes it slow to get bigger patches through
 </ul>
+
+<H2> Phase 2: major cleanups </H2>
+In the first phase I was mostly implementing a set of small features and fixes.
+As I got more familiar with the code base, I decided to bite the bullet and
+do some refactoring:
+<ul>
+	<li> replaced the <a href="pcb-fp.html">footprint mapping/loading code</a>; instead of a hardwired m4 dependency, parametric (generated-on-the-fly) footprints can be written in any language
+	<li> replaced the default footprint library shipped with the software; the <a href="pcblib.html"> new library </a> ships a small, well organized collection of essentials, omitting special/rarely used footprints
+	<li> got the code much more modular - <a href="mods3"> a lot of core code got converted into plugins </a>
+	<li> threw out the resource parser and file format (manu.res and friends) <a href="res.html"> in favor of lihata;</a> this removed a lot of code duplication and a strangely designed resource tree data structure I really hated; as a side effect the gtk hid has multi-stroke hotkeys
+	<li> <a href="unglib.html">replaced glib</a> with a set of <a href="http://repo.hu/projects/articles/minilibs"> mini libs </a> in core and most of the plugins; at the end only the gtk hid should depend on glib; this made the code easier to maintain and debug; a lot of checks are now compile-time (through the C type system) instead of runtime (glib lists)
+	<li> replaced the settings/rc/preferences system with a central, <a href="conf/"> lihata based configuration system </a> - long term hid attributes will be converted too
+</ul>
+<p>
+Plans for the future includes:
+<ul>
+	<li> turning most of the core code into a library for external tools to reuse
+	<li> extending the core to provide an infrastructure for composite objects handled by plugins
+	<li> support for saving and loading pcb and footprint files in the lihata format
+	<li> plans for a set of smallish features that can be implemented in a weekend or two each.
+</ul>
+
+<H2> Phase 3: community requested features </H2>
+Overlapping phase 2 there is an ongoing
+<a href="igor2.repo.hu/cgi-bin/pcb-rnd-poll.cgi"> feature poll </a>. If there
+are enough <b>active</b> users/testers for a feature, it gets implemented in
+phase 3.
+
 </html>
 </body>
