@@ -3,7 +3,7 @@
 <h1> pcb-rnd - the [intconn] patch </h1>
 
 There are parts with internal connections (e.g. pin 2 and 4 of a SO8
-package are internally connected). Vanilla PCB can not handle this,
+package are internally connected). Mainline PCB can not handle this,
 leaving the following options:
 <ul>
 	<li> connect both pins to the net from the schematics - this works if all the internally connected pins are required to connect to copper (common with GND or power pins) but is very inconvenient for signal pins where only one of them needs to be connected
@@ -50,11 +50,11 @@ Pin[40000 60000 6000 3000 6600 2800 "2" "2" "square,intconn(9)"]
 Pin[40000 50000 6000 3000 6600 2800 "3" "3" "square"]
 Pin[40000 40000 6000 3000 6600 2800 "4" "4" "square,intconn(9)"]
 </pre>
-Vanilla PCB will load the design ignoring internal connections -
+Mainline PCB will load the design ignoring internal connections -
 this may introduce new rats.
 <p>
-Vanilla PCB doesn't save intconn() and elements are embedded in the file -
-once the design is loaded and saved with vanilla PCB, internal connection
+Mainline PCB doesn't save intconn() and elements are embedded in the file -
+once the design is loaded and saved with mainline PCB, internal connection
 info is lost.
 
 <h2> plans </h2>

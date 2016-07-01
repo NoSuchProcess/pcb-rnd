@@ -32,12 +32,12 @@ selecting the shape of the pin when the square flag is also set:
 <pre>
 Pin[40000 60000 6000 3000 6600 2800 "8" "8" "square,shape(3)"]
 </pre>
-Vanilla PCB will load the design ignoring the custom shape and will use a
+Mainline PCB will load the design ignoring the custom shape and will use a
 square pin. As long a traces end in the center point of the pin, this
 should not break connections.
 <p>
-Vanilla PCB doesn't save shape() - once the design is loaded and saved with
-vanilla PCB pin shape info is lost.
+Mainline PCB doesn't save shape() - once the design is loaded and saved with
+mainline PCB pin shape info is lost.
 
 <h2> plans </h2>
 In the original code there are separate code paths for round, octagonal and
@@ -61,7 +61,7 @@ moving toward a generic pin shape patch:
 	<li> octagon flag shall be removed - it should be a configuration of the x;y const table
 	<li> square flag shall be removed - it should be a configuration
 	<li> the only flag remaining should be shape(); if a pin is not shaped, it's round
-	<li> the pin shape struct should have a field for compatibility - to mark the entry corresponding to the original square and octagon pins so PCB-rnd format can be converted to and from the vanilla PCB format.
+	<li> the pin shape struct should have a field for compatibility - to mark the entry corresponding to the original square and octagon pins so PCB-rnd format can be converted to and from the mainline PCB format.
 	<li> there should be a set of pin shapes in a default configuration table, including square and octagonal; these should be static
 	<li> the PCB file format should be extended with an option to expand the pin shape table with custom shapes
 	<li> UI: shapes could be imported (converted) from polys around vias

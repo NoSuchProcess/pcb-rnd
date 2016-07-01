@@ -38,14 +38,14 @@ Element["nonetlist" "1206 jumper, 0 ohm" "" "1206" 0 0 -3150 -3150 0 100 ""]
 	ElementLine[-2362 3740 2362 3740 800]
 )
 </pre>
-Vanilla PCB will load the design ignoring internal connections and nonetlist
+Mainline PCB will load the design ignoring internal connections and nonetlist
 flag - this will cause shorts on all connected pins/pads and will break
 the connection.
 <p>
-Vanilla PCB doesn't save nonetlist and elements are embedded in the file -
-once the design is loaded and saved with vanilla PCB, the flag is lost.
+Mainline PCB doesn't save nonetlist and elements are embedded in the file -
+once the design is loaded and saved with mainline PCB, the flag is lost.
 After reloading the file in pcb-rnd, the element causes the same shorts
-as in vanilla PCB.
+as in mainline PCB.
 
 <h2> plans </h2>
 No plans, the feature is complete.
