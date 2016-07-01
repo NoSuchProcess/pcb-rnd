@@ -167,10 +167,10 @@ typedef struct {
 		struct pinout {
 			CFT_INTEGER name_length;
 			CFT_REAL zoom;
-			CFT_COORD offset_x;           /* offset of origin */
-			CFT_COORD offset_y;
-			CFT_COORD text_offset_x;      /* offset of text from pin center */
-			CFT_COORD text_offset_y;
+			CFT_COORD offset_x;           /* X offset of origin */
+			CFT_COORD offset_y;           /* Y offset of origin */
+			CFT_COORD text_offset_x;      /* X offset of text from pin center */
+			CFT_COORD text_offset_y;      /* Y offset of text from pin center */
 		} pinout;
 		struct messages {
 			CFT_INTEGER char_per_line;   /* width of an output line in characters (used by separator drawing in find.c) */		

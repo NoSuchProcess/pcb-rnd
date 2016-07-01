@@ -1,5 +1,6 @@
 - BUG: place text, edit -> assert
 - replace settings with lihata (conf_*)
+	- do we need bg image in core config?
 	- project files:
 		- load project conf (replacing the original) after loading a .pcb
 		- save project conf properly
