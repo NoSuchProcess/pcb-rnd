@@ -1,0 +1,59 @@
+<html>
+<body>
+<H1> The OLD config system in pcb-rnd </H1>
+<H2> If the config system is too static </H2>
+
+This document describes the old situation, focusing on drawbacks for
+a purpose: to give a hint on why some of the design decisions are made
+the way they are, in the new conf system.
+
+<h3> Settings, preferences, colors, and... </h3>
+The core implemented a so called Settings. It was a flat list of items,
+each bound to a C variable. There was a bunch of metadata attached to
+the items: name, type, description. Generic code could query or change
+the value of any setting, the C code could read and write them directly
+too. The content is saved to ~/.pcb/settings.
+<p>
+On the downside, the actual items this system knew about was pretty much
+static, hardwired in core. A plugin could not register its own settings.
+Multiple parallel methods were present in the code to overcome this
+limitation:
+<ul>
+	<li> HID attributes: another way to describe name-type-metadata lists; this
+	was used to pass on some rc-like parameters to the GUI HIDs. It's also the
+	main API to describe export parameters for the export HIDs. However,
+	HID attributes is not well suited for saving plugin (or HID) user
+	preferences, it is more about a per action configuration.
+
+	<li> The gtk HID also saved its own settings to a separate file called
+	~/.pcb/preferences.
+
+	<li> Some gtk HID settings didn't quiet fit in the preferences - the color
+	scheme can be saved in another file, usually under ~/.pcb/colors
+
+	<li> A random plugin could either use the HID attributes to get a limited
+	service or like the gtk HID did, had to implement its own save-restore of
+	persistent settings.
+</ul>
+
+<h3> Meta-drawbacks </h3>
+This also introduced a more subtle drawback: the configuration was now
+scattered into different files, <i>randomly</i> (looking from the
+user's point of view). In other words, the actual structure did not reflect
+some logical groupping, but mostly historical or source code organizational
+reasons.
+<p>
+In turn, this also limited (again somewhat randomly) what settings can be
+stored system-wise, user-wise, or on project or design level.
+<p>
+Finally, handling of file search paths was not very sophisticated. There
+was the system and user configuration that reflected where the stock
+library or the user's generic library were installed.  And then
+there was the per-project local footprint libs that had to be somehow
+added too.
+<p>
+There was a hardwired way of handling the situation where multiple set
+of paths were specified. In practice it was usually possible to get this
+to work for the simpler cases, but it was not powerful enough to express
+things like "use all system and user libraries first, then the project's local
+library" vs. "the project's local library has priority over system libraries".
