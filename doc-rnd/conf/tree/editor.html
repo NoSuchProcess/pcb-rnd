@@ -1,0 +1,47 @@
+<html><body>
+<h1>pcb-rnd conf tree</h1>
+<h2>subtree: editor</h2>
+<table border=1>
+<tr><th>node name <th> type <td> flags <td> description
+<tr><td> grid_unit <td><a href="CFN_UNIT.html"> unit </a><td> 0 <td> select whether you draw in mm or mil
+<tr><td> grid <td><a href="CFN_COORD.html"> coord </a><td> 0 <td> grid in pcb-units
+<tr><td> increments_mm <td><a href="CFN_INCREMENTS.html"> increments </a><td> 0 <td> increments (size deltas) when drawing in mil
+<tr><td> increments_mil <td><a href="CFN_INCREMENTS.html"> increments </a><td> 0 <td> increments (size deltas) when drawing in mil
+<tr><td> zoom <td><a href="CFN_REAL.html"> real </a><td> 0 <td> default zoom
+<tr><td> mode <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> currently active mode
+<tr><td> buffer_number <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> number of the current buffer
+<tr><td> clear_line <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> new lines/arc clear polygons.
+<tr><td> full_poly <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> new polygons are full polygons.
+<tr><td> unique_names <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> force unique names
+<tr><td> snap_pin <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> snap to pins and pads
+<tr><td> snap_offgrid_line <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> Snap to certain off-grid points along a line.
+<tr><td> highlight_on_point <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> Highlight if crosshair is on endpoints.
+<tr><td> show_solder_side <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> mirror output
+<tr><td> save_last_command <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> save the last command entered by user
+<tr><td> save_in_tmp <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> always save data in /tmp
+<tr><td> draw_grid <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> draw grid points
+<tr><td> stipple_polygons <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> draw polygons with stipple
+<tr><td> all_direction_lines <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> enable lines to all directions
+<tr><td> rubber_band_mode <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> move, rotate use rubberband connections
+<tr><td> swap_start_direction <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> change starting direction after each click
+<tr><td> show_drc <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> show drc region on crosshair
+<tr><td> auto_drc <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> when set, PCB doesn't let you place copper that violates DRC.
+<tr><td> show_number <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> pinout shows number
+<tr><td> orthogonal_moves <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> move items orthogonally.
+<tr><td> reset_after_element <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> reset connections after each element
+<tr><td> auto_place <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> flag which says we should force placement of the windows on startup
+<tr><td> lock_names <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> lock down text so they can not be moved or selected
+<tr><td> only_names <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> lock down everything else but text so only text objects can be moved or selected
+<tr><td> thin_draw <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> if set, objects on the screen are drawn as outlines (lines are drawn as center-lines).  This lets you see line endpoints hidden under pins, for example.
+<tr><td> thin_draw_poly <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> if set, polygons on the screen are drawn as outlines.
+<tr><td> local_ref <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> use local reference for moves, by setting the mark at the beginning of each move.
+<tr><td> check_planes <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> when set, only polygons and their clearances are drawn, to see if polygons have isolated regions.
+<tr><td> show_mask <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> show the solder mask layer
+<tr><td> hide_names <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> when set, element names are not drawn.
+<tr><td> description <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> display element description as element name, instead of value
+<tr><td> name_on_pcb <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> display Reference Designator as element name, instead of value
+<tr><td> click_time <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> default time for click expiration, in ms
+<tr><td> enable_stroke <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> Enable libstroke gesutres on middle mouse button when non-zero
+<tr><td> live_routing <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> autorouter shows tracks in progress
+<tr><td> beep_when_finished <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> flag if a signal should be produced when searching of  connections is done
+</table></body></html>

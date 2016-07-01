@@ -1,0 +1,24 @@
+<html><body>
+<h1>pcb-rnd conf tree</h1>
+<h2>subtree: rc</h2>
+<table border=1>
+<tr><th>node name <th> type <td> flags <td> description
+<tr><td> verbose <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> <verbose>
+<tr><td> backup_interval <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> time between two backups in seconds
+<tr><td> font_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> commands for file loading...
+<tr><td> file_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <file_command>
+<tr><td> file_path <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <file_path>
+<tr><td> library_shell <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <library_shell>
+<tr><td> library_search_paths <td><a href="CFN_LIST.html"> list </a><td> 0 <td> <library_search_paths>
+<tr><td> emergency_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional fields: %P --> pid
+<tr><td> backup_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for periodic backup anonymous .pcb files; optional fields: %P --> pid
+<tr><td> save_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <save_command>
+<tr><td> default_font_file <td><a href="CFN_LIST.html"> list </a><td> 0 <td> name of default font file (list of names to search)
+<tr><td> default_pcb_file <td><a href="CFN_LIST.html"> list </a><td> 0 <td> <default_pcb_file>
+<tr><td> script_filename <td><a href="CFN_STRING.html"> string </a><td> 0 <td> PCB Actions script to execute on startup
+<tr><td> action_string <td><a href="CFN_STRING.html"> string </a><td> 0 <td> PCB Actions string to execute on startup
+<tr><td> rat_path <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <rat_path>
+<tr><td> rat_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <rat_command>
+<tr><td> preferred_gui <td><a href="CFN_LIST.html"> list </a><td> 0 <td> if set, try GUI HIDs in this order when no GUI is explicitly selected
+<tr><td> have_regex <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> whether we have regex compiled in
+</table></body></html>

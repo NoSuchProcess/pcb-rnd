@@ -44,27 +44,30 @@ The main groups in the logical tree are:
 <table border=0 cellspacing=0 cellpadding=0>
 <tr><td colspan=2> (root)              <td width=30%> &nbsp; <td> (config root)
 <tr><td> | &nbsp;<td colspan=2> &nbsp; <td> &nbsp;
-<tr><td colspan=3> +- rc               <td> run control (program startup)
+<tr><td colspan=3> +- rc               <td> <a href="tree/rc.html"> run control (program startup) </a>
 <tr><td> | &nbsp;<td colspan=2> &nbsp; <td> &nbsp;
-<tr><td colspan=3> +- design           <td> some default settings of a new design; minimum/maximum value of some design settings
+<tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
+<tr><td> | &nbsp;<td colspan=2> +- path        <td> <a href="tree/rc_path.html">paths automatically set up by the program at startup - do not specify these </a>
 <tr><td> | &nbsp;<td colspan=2> &nbsp; <td> &nbsp;
-<tr><td colspan=3> +- editor           <td> how the pcb editor <i>behaves</i> - independent of HIDs or the GUI
+<tr><td colspan=3> +- design           <td>  <a href="tree/design.html">some default settings of a new design; minimum/maximum value of some design settings </a>
+<tr><td> | &nbsp;<td colspan=2> &nbsp; <td> &nbsp;
+<tr><td colspan=3> +- editor           <td> <a href="tree/editor.html"> how the pcb editor <i>behaves</i> - independent of HIDs or the GUI </a>
 <tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
 <tr><td> | &nbsp;<td colspan=2> +- increments_mm  <td> interactive increment/decrement steps when active unit is mm
 <tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
 <tr><td> | &nbsp;<td colspan=2> +- increments_mil <td> interactive increment/decrement steps when active unit is mil
 <tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
-<tr><td> | &nbsp;<td colspan=2> +- view           <td> default view parameters
+<tr><td> | &nbsp;<td colspan=2> +- view           <td> <a href="tree/editor_view.html">default view parameters</a>
 <tr><td> | &nbsp;<td colspan=2> &nbsp; <td> &nbsp;
-<tr><td colspan=3> +- appearance       <td> how the GUI <i>looks like</i> - common to all GUI HIDs
+<tr><td colspan=3> +- appearance       <td> <a href="tree/appearance.html">how the GUI <i>looks like</i> - common to all GUI HIDs </a>
 <tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
-<tr><td> | &nbsp;<td colspan=2> +- color    <td> layer colors, GUI colors, misc design colors
+<tr><td> | &nbsp;<td colspan=2> +- color    <td> <a href="tree/appearance_color.html">layer colors, GUI colors, misc design colors </a>
 <tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
-<tr><td> | &nbsp;<td colspan=2> +- pinout   <td> pin label properties
+<tr><td> | &nbsp;<td colspan=2> +- pinout   <td> <a href="tree/pinout.html">pin label properties </a>
 <tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
-<tr><td> | &nbsp;<td colspan=2> +- messages <td> message window properties
+<tr><td> | &nbsp;<td colspan=2> +- messages <td> <a href="tree/messages.html">message window properties </a>
 <tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
-<tr><td> | &nbsp;<td colspan=2> +- misc     <td> non-GUI settings handled by the GUI HIDs
+<tr><td> | &nbsp;<td colspan=2> +- misc     <td> <a href="tree/misc.html">non-GUI settings handled by the GUI HIDs </a>
 <tr><td> | &nbsp;<td colspan=2> &nbsp; <td> &nbsp;
 <tr><td colspan=3> +- plugins          <td> dynamic subtree for various plugin settings
 <tr><td> | &nbsp;<td colspan=2> |      <td> &nbsp;
