@@ -48,6 +48,7 @@
 
 #include "rtree.h"
 #include "heap.h"
+#include "pcb-printf.h"
 
 #define ROUND(a) (long)((a) > 0 ? ((a) + 0.5) : ((a) - 0.5))
 
@@ -2893,13 +2894,13 @@ BOOLp poly_ChkContour(PLINE * a)
 void poly_bbox(POLYAREA * p, BoxType * b)
 {
 	PLINE *n;
-	int cnt;
+	/*int cnt;*/
 
 	n = p->contours;
 	b->X1 = b->X2 = n->xmin;
 	b->Y1 = b->Y2 = n->ymin;
 
-	for (cnt = 0; /*cnt < 2 */ n != NULL; n = n->next) {
+	for (/*cnt = 0*/; /*cnt < 2 */ n != NULL; n = n->next) {
 		if (n->xmin < b->X1)
 			b->X1 = n->xmin;
 		if (n->ymin < b->Y1)
