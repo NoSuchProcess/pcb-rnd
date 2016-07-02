@@ -69,6 +69,8 @@ typedef struct {
 
 		/* Keep it here instead of the router plugin: more than one router plugin may share these */
 		CFT_BOOLEAN beep_when_finished;    /* flag if a signal should be produced when searching of  connections is done */
+
+		CFT_INTEGER undo_warning_size;     /* warn the user when undo list exceeds this amount of kilobytes in memory */
 	} editor;
 
 	const struct rc {
@@ -137,6 +139,7 @@ typedef struct {
 /* @path appearance/color */
 	const struct appearance {
 		CFT_COORD rat_thickness;
+		CFT_COORD mark_size;               /* relative marker size */
 		struct color {
 			CFT_COLOR black;
 			CFT_COLOR white;

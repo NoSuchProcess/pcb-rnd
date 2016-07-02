@@ -42,13 +42,6 @@
 #define	COMPONENT_LAYER		1
 
 /* ---------------------------------------------------------------------------
- * misc constants
- */
-#define	MARK_SIZE		MIL_TO_COORD(50)	/* relative marker size */
-#define	UNDO_WARNING_SIZE	(1024*1024)	/* warning limit of undo */
-#define	USERMEDIANAME		"user defined"	/* label of default media */
-
-/* ---------------------------------------------------------------------------
  * some math constants
  */
 #ifndef	M_PI

@@ -565,12 +565,14 @@ void DrawAttached(void)
  */
 void DrawMark(void)
 {
+	Coord ms = conf_core.appearance.mark_size;
+
 	/* Mark is not drawn when it is not set */
 	if (!Marked.status)
 		return;
 
-	gui->draw_line(Crosshair.GC, Marked.X - MARK_SIZE, Marked.Y - MARK_SIZE, Marked.X + MARK_SIZE, Marked.Y + MARK_SIZE);
-	gui->draw_line(Crosshair.GC, Marked.X + MARK_SIZE, Marked.Y - MARK_SIZE, Marked.X - MARK_SIZE, Marked.Y + MARK_SIZE);
+	gui->draw_line(Crosshair.GC, Marked.X - ms, Marked.Y - ms, Marked.X + ms, Marked.Y + ms);
+	gui->draw_line(Crosshair.GC, Marked.X + ms, Marked.Y - ms, Marked.X - ms, Marked.Y + ms);
 }
 
 /* ---------------------------------------------------------------------------

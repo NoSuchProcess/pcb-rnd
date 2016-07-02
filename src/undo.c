@@ -182,7 +182,7 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
 	UndoListTypePtr ptr;
 	void *ptr1, *ptr2, *ptr3;
 	int type;
-	static size_t limit = UNDO_WARNING_SIZE;
+	size_t limit = ((size_t)conf_core.editor.undo_warning_size) * 1024;
 
 #ifdef DEBUG_ID
 	if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, ID, Kind) == NO_TYPE)
@@ -200,8 +200,9 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
 
 		/* ask user to flush the table because of it's size */
 		if (size > limit) {
-			limit = (size / UNDO_WARNING_SIZE + 1) * UNDO_WARNING_SIZE;
-			Message(_("Size of 'undo-list' exceeds %li kb\n"), (long) (size >> 10));
+			size_t l2;
+			l2 = (size / limit + 1) * limit;
+			Message(_("Size of 'undo-list' exceeds %li kb\n"), (long) (l2 >> 10));
 		}
 	}
 
