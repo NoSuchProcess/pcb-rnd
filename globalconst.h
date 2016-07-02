@@ -35,17 +35,11 @@
 
 #include "config.h"
 
-#include <limits.h>
 
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
-
-/* ---------------------------------------------------------------------------
- * frame between the groundplane and the copper
- */
-/* TODO: make these configurable? */
-#define	GROUNDPLANEFRAME	MIL_TO_COORD(15)
+/* frame between the groundplane and the copper or mask - noone seems
+   to remember what these two are for; changing them may have unforeseen
+   side effects. */
+#define	GROUNDPLANEFRAME        MIL_TO_COORD(15)
 #define MASKFRAME               MIL_TO_COORD(3)
 
 /* ---------------------------------------------------------------------------
