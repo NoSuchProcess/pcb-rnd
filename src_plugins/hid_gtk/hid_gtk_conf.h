@@ -1,7 +1,6 @@
 #ifndef PCB_HID_GTK_CONF_H
 #define PCB_HID_GTK_CONF_H
 
-#include "globalconst.h"
 #include "conf.h"
 
 typedef struct {

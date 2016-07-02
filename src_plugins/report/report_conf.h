@@ -1,7 +1,6 @@
 #ifndef PCB_MINCUT_CONF_H
 #define PCB_MINCUT_CONF_H
 
-#include "globalconst.h"
 #include "conf.h"
 
 typedef struct {

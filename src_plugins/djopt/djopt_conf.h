@@ -1,7 +1,6 @@
 #ifndef PCB_DJOPT_CONF_H
 #define PCB_DJOPT_CONF_H
 
-#include "globalconst.h"
 #include "conf.h"
 
 typedef struct {
