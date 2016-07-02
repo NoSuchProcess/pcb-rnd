@@ -120,10 +120,13 @@ static void InitPaths(char *argv0)
 #ifdef FAKE_BINDIR
 	haspath = 1;
 #else
-	haspath = 0;
-	for (i = 0; i < strlen(argv0); i++) {
-		if (argv0[i] == PCB_DIR_SEPARATOR_C)
-			haspath = 1;
+	{
+		int i;
+		haspath = 0;
+		for (i = 0; i < strlen(argv0); i++) {
+			if (argv0[i] == PCB_DIR_SEPARATOR_C)
+				haspath = 1;
+		}
 	}
 #endif
 
