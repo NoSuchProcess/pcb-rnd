@@ -2,7 +2,7 @@
 
 ../src_plugins/autoplace/action.o: ../src_plugins/autoplace/action.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -13,7 +13,7 @@
  plugins.h set.h global.h hid_actions.h dolists.h
 ../src_plugins/autoplace/autoplace.o: \
  ../src_plugins/autoplace/autoplace.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -27,7 +27,7 @@
  rotate.h
 ../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -38,7 +38,7 @@
  action_helper.h global.h plugins.h set.h hid_actions.h dolists.h
 ../src_plugins/autoroute/autoroute.o: \
  ../src_plugins/autoroute/autoroute.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -58,7 +58,7 @@
  mymem.h polygon.h rats.h remove.h thermal.h undo.h pcb-printf.h set.h
 ../src_plugins/autoroute/mtspace.o: ../src_plugins/autoroute/mtspace.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -70,7 +70,7 @@
  ../src_plugins/autoroute/vector.h
 ../src_plugins/autoroute/vector.o: ../src_plugins/autoroute/vector.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -79,7 +79,7 @@
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h ../src_plugins/autoroute/vector.h
 ../src_plugins/debug/debug.o: ../src_plugins/debug/debug.c ../config.h \
- ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
+ ../config.manual.h ../config.auto.h global.h const.h globalconst.h \
  ../config.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -97,7 +97,7 @@
  list_conf.h conf.h error.h dolists.h
 ../src_plugins/debug/debug_conf.o: ../src_plugins/debug/debug_conf.c \
  conf.h global.h ../config.h ../config.manual.h ../config.auto.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -111,7 +111,7 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h
 ../src_plugins/djopt/djopt.o: ../src_plugins/djopt/djopt.c ../config.h \
- ../config.manual.h ../config.auto.h conf_core.h ../globalconst.h \
+ ../config.manual.h ../config.auto.h conf_core.h globalconst.h \
  ../config.h conf.h global.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -130,7 +130,7 @@
  dolists.h ../src_plugins/djopt/djopt_conf_fields.h
 ../src_plugins/export_bom/bom.o: ../src_plugins/export_bom/bom.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -160,7 +160,7 @@
  ../src_plugins/export_gcode/decompose.h
 ../src_plugins/export_gcode/gcode.o: ../src_plugins/export_gcode/gcode.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -184,7 +184,7 @@
  hid_attrib.h hid_flags.h hid_color.h dolists.h
 ../src_plugins/export_gcode/trace.o: ../src_plugins/export_gcode/trace.c \
  global.h ../config.h ../config.manual.h ../config.auto.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -197,7 +197,7 @@
  ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/trace.h
 ../src_plugins/export_gerber/gerber.o: \
  ../src_plugins/export_gerber/gerber.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -215,7 +215,7 @@
  list_conf.h
 ../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -228,7 +228,7 @@
  hid_attrib.h hid_actions.h
 ../src_plugins/export_nelma/nelma.o: ../src_plugins/export_nelma/nelma.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -241,7 +241,7 @@
  hid_color.h dolists.h
 ../src_plugins/export_png/png.o: ../src_plugins/export_png/png.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -259,7 +259,7 @@
  hid_helper.h hid_flags.h dolists.h
 ../src_plugins/export_ps/eps.o: ../src_plugins/export_ps/eps.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -276,7 +276,7 @@
  ../src_plugins/export_ps/ps.h hid_init.h hid_attrib.h hid_helper.h \
  hid_flags.h hid_color.h
 ../src_plugins/export_ps/ps.o: ../src_plugins/export_ps/ps.c ../config.h \
- ../config.manual.h ../config.auto.h global.h const.h ../globalconst.h \
+ ../config.manual.h ../config.auto.h global.h const.h globalconst.h \
  ../config.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -296,7 +296,7 @@
  list_conf.h dolists.h
 ../src_plugins/fontmode/fontmode.o: ../src_plugins/fontmode/fontmode.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -313,7 +313,7 @@
  plugins.h hid_actions.h dolists.h
 ../src_plugins/fp_fs/fp_fs.o: ../src_plugins/fp_fs/fp_fs.c ../config.h \
  ../config.manual.h ../config.auto.h mymem.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -325,7 +325,7 @@
  ../src_3rd/genvector/gds_char.h mymem.h
 ../src_plugins/fp_wget/fp_wget.o: ../src_plugins/fp_wget/fp_wget.c \
  global.h ../config.h ../config.manual.h ../config.auto.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -340,7 +340,7 @@
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -354,7 +354,7 @@
  ../src_plugins/fp_wget/wget_common.h
 ../src_plugins/hid_batch/batch.o: ../src_plugins/hid_batch/batch.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -367,7 +367,7 @@
 ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.o: \
  ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.c \
  ../src_plugins/hid_gtk/gtkhid.h conf_hid.h conf.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -393,7 +393,7 @@
 ../src_plugins/hid_gtk/ghid-coord-entry.o: \
  ../src_plugins/hid_gtk/ghid-coord-entry.c \
  ../src_plugins/hid_gtk/gtkhid.h conf_hid.h conf.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -418,7 +418,7 @@
 ../src_plugins/hid_gtk/ghid-layer-selector.o: \
  ../src_plugins/hid_gtk/ghid-layer-selector.c \
  ../src_plugins/hid_gtk/gtkhid.h conf_hid.h conf.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -447,7 +447,7 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_plugins/hid_gtk/gtkhid.h conf_hid.h conf.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -469,7 +469,7 @@
  ../src_plugins/hid_gtk/gschem_accel_label.h
 ../src_plugins/hid_gtk/ghid-route-style-selector.o: \
  ../src_plugins/hid_gtk/ghid-route-style-selector.c global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -497,7 +497,7 @@
 ../src_plugins/hid_gtk/gtk_conf_list.o: \
  ../src_plugins/hid_gtk/gtk_conf_list.c \
  ../src_plugins/hid_gtk/gtk_conf_list.h conf.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -513,7 +513,7 @@
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h
 ../src_plugins/hid_gtk/gtkhid-gdk.o: ../src_plugins/hid_gtk/gtkhid-gdk.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -537,7 +537,7 @@
  hid_attrib.h hid_helper.h hid_color.h
 ../src_plugins/hid_gtk/gtkhid-main.o: \
  ../src_plugins/hid_gtk/gtkhid-main.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -565,7 +565,7 @@
  ../src_plugins/hid_gtk/hid_gtk_conf_fields.h
 ../src_plugins/hid_gtk/gui-command-window.o: \
  ../src_plugins/hid_gtk/gui-command-window.c ../config.h \
- ../config.manual.h ../config.auto.h conf_core.h ../globalconst.h \
+ ../config.manual.h ../config.auto.h conf_core.h globalconst.h \
  ../config.h conf.h global.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -589,7 +589,7 @@
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h crosshair.h hid_actions.h
 ../src_plugins/hid_gtk/gui-config.o: ../src_plugins/hid_gtk/gui-config.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -617,7 +617,7 @@
  ../src_3rd/liblihata/tree.h compat_fs.h
 ../src_plugins/hid_gtk/gui-dialog-print.o: \
  ../src_plugins/hid_gtk/gui-dialog-print.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -642,7 +642,7 @@
  hid_init.h misc_util.h
 ../src_plugins/hid_gtk/gui-dialog.o: ../src_plugins/hid_gtk/gui-dialog.c \
  ../config.h ../config.manual.h ../config.auto.h data.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -664,7 +664,7 @@
  list_conf.h ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h
 ../src_plugins/hid_gtk/gui-drc-window.o: \
  ../src_plugins/hid_gtk/gui-drc-window.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -691,7 +691,7 @@
 ../src_plugins/hid_gtk/gui-keyref-window.o: \
  ../src_plugins/hid_gtk/gui-keyref-window.c ../config.h \
  ../config.manual.h ../config.auto.h ../src_plugins/hid_gtk/gui.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -713,7 +713,7 @@
  list_conf.h ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h
 ../src_plugins/hid_gtk/gui-library-window.o: \
  ../src_plugins/hid_gtk/gui-library-window.c ../config.h \
- ../config.manual.h ../config.auto.h conf_core.h ../globalconst.h \
+ ../config.manual.h ../config.auto.h conf_core.h globalconst.h \
  ../config.h conf.h global.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -738,7 +738,7 @@
  plug_footprint.h vtlibrary.h ../src_plugins/hid_gtk/gui-library-window.h
 ../src_plugins/hid_gtk/gui-log-window.o: \
  ../src_plugins/hid_gtk/gui-log-window.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -762,7 +762,7 @@
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h pcb-printf.h
 ../src_plugins/hid_gtk/gui-misc.o: ../src_plugins/hid_gtk/gui-misc.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -786,7 +786,7 @@
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h
 ../src_plugins/hid_gtk/gui-netlist-window.o: \
  ../src_plugins/hid_gtk/gui-netlist-window.c ../config.h \
- ../config.manual.h ../config.auto.h conf_core.h ../globalconst.h \
+ ../config.manual.h ../config.auto.h conf_core.h globalconst.h \
  ../config.h conf.h global.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -812,7 +812,7 @@
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h
 ../src_plugins/hid_gtk/gui-output-events.o: \
  ../src_plugins/hid_gtk/gui-output-events.c ../config.h \
- ../config.manual.h ../config.auto.h conf_core.h ../globalconst.h \
+ ../config.manual.h ../config.auto.h conf_core.h globalconst.h \
  ../config.h conf.h global.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -838,7 +838,7 @@
  draw.h error.h set.h find.h search.h misc_util.h rats.h
 ../src_plugins/hid_gtk/gui-pinout-preview.o: \
  ../src_plugins/hid_gtk/gui-pinout-preview.c ../config.h \
- ../config.manual.h ../config.auto.h conf_core.h ../globalconst.h \
+ ../config.manual.h ../config.auto.h conf_core.h globalconst.h \
  ../config.h conf.h global.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -863,7 +863,7 @@
  move.h rotate.h
 ../src_plugins/hid_gtk/gui-pinout-window.o: \
  ../src_plugins/hid_gtk/gui-pinout-window.c ../config.h \
- ../config.manual.h ../config.auto.h conf_core.h ../globalconst.h \
+ ../config.manual.h ../config.auto.h conf_core.h globalconst.h \
  ../config.h conf.h global.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -888,7 +888,7 @@
  move.h rotate.h
 ../src_plugins/hid_gtk/gui-top-window.o: \
  ../src_plugins/hid_gtk/gui-top-window.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -920,7 +920,7 @@
  hid_flags.h route_style.h
 ../src_plugins/hid_gtk/gui-utils.o: ../src_plugins/hid_gtk/gui-utils.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -944,7 +944,7 @@
 ../src_plugins/hid_gtk/menu_lht.o: ../src_plugins/hid_gtk/menu_lht.c
 ../src_plugins/hid_lesstif/dialogs.o: \
  ../src_plugins/hid_lesstif/dialogs.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -965,7 +965,7 @@
  hid_init.h ../src_plugins/hid_lesstif/stdarg.h misc_util.h
 ../src_plugins/hid_lesstif/library.o: \
  ../src_plugins/hid_lesstif/library.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -986,7 +986,7 @@
  ../src_plugins/hid_lesstif/stdarg.h
 ../src_plugins/hid_lesstif/main.o: ../src_plugins/hid_lesstif/main.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1008,7 +1008,7 @@
  ../src_plugins/hid_lesstif/stdarg.h misc_util.h dolists.h
 ../src_plugins/hid_lesstif/menu.o: ../src_plugins/hid_lesstif/menu.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1032,7 +1032,7 @@
 ../src_plugins/hid_lesstif/netlist.o: \
  ../src_plugins/hid_lesstif/netlist.c ../config.h ../config.manual.h \
  ../config.auto.h ../src_plugins/hid_lesstif/xincludes.h compat_misc.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1052,7 +1052,7 @@
  ../src_plugins/hid_lesstif/xincludes.h
 ../src_plugins/hid_lesstif/styles.o: ../src_plugins/hid_lesstif/styles.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1072,7 +1072,7 @@
  ../src_plugins/hid_lesstif/stdarg.h misc_util.h
 ../src_plugins/import_edif/edif.o: ../src_plugins/import_edif/edif.c \
  global.h ../config.h ../config.manual.h ../config.auto.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1083,7 +1083,7 @@
  stub_edif.h
 ../src_plugins/import_sch/import_sch.o: \
  ../src_plugins/import_sch/import_sch.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1103,7 +1103,7 @@
  ../src_plugins/import_sch/import_sch_conf_fields.h
 ../src_plugins/io_pcb/attribs.o: ../src_plugins/io_pcb/attribs.c conf.h \
  global.h ../config.h ../config.manual.h ../config.auto.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1117,7 +1117,7 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h misc.h mymem.h
 ../src_plugins/io_pcb/file.o: ../src_plugins/io_pcb/file.c ../config.h \
- ../config.manual.h ../config.auto.h conf_core.h ../globalconst.h \
+ ../config.manual.h ../config.auto.h conf_core.h globalconst.h \
  ../config.h conf.h global.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -1139,12 +1139,12 @@
  ../src_plugins/io_pcb/attribs.h route_style.h
 ../src_plugins/io_pcb/flags.o: ../src_plugins/io_pcb/flags.c strflags.h \
  global_objs.h ../src_3rd/genlist/gendlist.h ../config.h \
- ../config.manual.h ../config.auto.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h globalconst.h ../config.h \
  global_typedefs.h unit.h polyarea.h ../src_plugins/io_pcb/flags.h \
  const.h macro.h
 ../src_plugins/io_pcb/io_pcb.o: ../src_plugins/io_pcb/io_pcb.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1160,7 +1160,7 @@
  ../src_3rd/genvector/vtp0.h list_conf.h ../src_plugins/io_pcb/file.h
 ../src_plugins/io_pcb/parse_l.o: ../src_plugins/io_pcb/parse_l.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1179,7 +1179,7 @@
  plug_footprint.h vtlibrary.h ../src_plugins/io_pcb/attribs.h
 ../src_plugins/io_pcb/parse_y.o: ../src_plugins/io_pcb/parse_y.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1200,7 +1200,7 @@
  ../src_plugins/legacy_func/legacy_func.c ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1216,7 +1216,7 @@
  ../src_plugins/mincut/pcb-mincut/graph.h
 ../src_plugins/mincut/rats_mincut.o: ../src_plugins/mincut/rats_mincut.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1238,7 +1238,7 @@
  ../src_plugins/mincut/rats_mincut_conf_fields.h
 ../src_plugins/oldactions/oldactions.o: \
  ../src_plugins/oldactions/oldactions.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1249,7 +1249,7 @@
  error.h undo.h plugins.h dolists.h
 ../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1266,7 +1266,7 @@
  plugins.h hid_actions.h misc_util.h dolists.h
 ../src_plugins/renumber/renumber.o: ../src_plugins/renumber/renumber.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1283,7 +1283,7 @@
  list_conf.h pcb-printf.h dolists.h
 ../src_plugins/report/report.o: ../src_plugins/report/report.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1303,7 +1303,7 @@
  ../src_plugins/report/report_conf_fields.h
 ../src_plugins/shand_cmd/command.o: ../src_plugins/shand_cmd/command.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1320,7 +1320,7 @@
  mymem.h misc.h mymem.h rats.h set.h plugins.h hid_actions.h dolists.h
 ../src_plugins/stroke/stroke.o: ../src_plugins/stroke/stroke.c \
  ../config.h ../config.manual.h ../config.auto.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1333,7 +1333,7 @@
 ../src_plugins/toporouter/toporouter.o: \
  ../src_plugins/toporouter/toporouter.c \
  ../src_plugins/toporouter/toporouter.h data.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1348,7 +1348,7 @@
  remove.h thermal.h undo.h ../src_3rd/gts/gts.h pcb-printf.h
 ../src_plugins/vendordrill/vendor.o: ../src_plugins/vendordrill/vendor.c \
  ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1446,7 +1446,7 @@ tree_table.o: ../src_3rd/liblihata/tree_table.c \
  ../src_3rd/liblihata/dom.h
 action_act.o: action_act.c ../config.h ../config.manual.h \
  ../config.auto.h error.h action_helper.h global.h const.h \
- ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1455,7 +1455,7 @@ action_act.o: action_act.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h hid_actions.h undo.h
 action_helper.o: action_helper.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1475,7 +1475,7 @@ action_helper.o: action_helper.c ../config.h ../config.manual.h \
  stub_stroke.h funchash_core.h funchash.h funchash_core_list.h \
  hid_actions.h
 buffer.o: buffer.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1493,7 +1493,7 @@ buffer.o: buffer.c ../config.h ../config.manual.h ../config.auto.h \
  funchash_core.h funchash.h funchash_core_list.h
 buildin.o: buildin.c plugins.h buildin.h
 change.o: change.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1509,7 +1509,7 @@ change.o: change.c ../config.h ../config.manual.h ../config.auto.h \
  error.h misc.h mymem.h mirror.h polygon.h rtree.h select.h undo.h \
  hid_actions.h
 change_act.o: change_act.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1527,7 +1527,7 @@ change_act.o: change_act.c ../config.h ../config.manual.h \
  draw.h search.h misc_util.h misc.h mymem.h set.h error.h undo.h \
  rubberband.h
 clip.o: clip.c ../config.h ../config.manual.h ../config.auto.h clip.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1536,7 +1536,7 @@ clip.o: clip.c ../config.h ../config.manual.h ../config.auto.h clip.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h
 compat_dl.o: compat_dl.c ../config.h ../config.manual.h ../config.auto.h \
- compat_dl.h global.h const.h ../globalconst.h ../config.h macro.h \
+ compat_dl.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1546,7 +1546,7 @@ compat_dl.o: compat_dl.c ../config.h ../config.manual.h ../config.auto.h \
  global_element.h list_element.h
 compat_fs.o: compat_fs.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h global.h const.h ../globalconst.h \
+ ../src_3rd/genvector/genvector_undef.h global.h const.h globalconst.h \
  ../config.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1556,7 +1556,7 @@ compat_fs.o: compat_fs.c ../config.h ../config.manual.h ../config.auto.h \
 compat_lrealpath.o: compat_lrealpath.c ../config.h ../config.manual.h \
  ../config.auto.h compat_lrealpath.h
 compat_misc.o: compat_misc.c ../config.h ../config.manual.h \
- ../config.auto.h compat_misc.h global.h const.h ../globalconst.h \
+ ../config.auto.h compat_misc.h global.h const.h globalconst.h \
  ../config.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1570,7 +1570,7 @@ conf.o: conf.c ../src_3rd/liblihata/genht/hash.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h conf.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1583,7 +1583,7 @@ conf.o: conf.c ../src_3rd/liblihata/genht/hash.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf_core.h hid_cfg.h hid_init.h \
  hid_attrib.h misc_util.h error.h
 conf_act.o: conf_act.c global.h ../config.h ../config.manual.h \
- ../config.auto.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1598,7 +1598,7 @@ conf_act.o: conf_act.c global.h ../config.h ../config.manual.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf_core.h error.h misc.h \
  mymem.h misc_util.h route_style.h
 conf_core.o: conf_core.c conf.h global.h ../config.h ../config.manual.h \
- ../config.auto.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1612,7 +1612,7 @@ conf_core.o: conf_core.c conf.h global.h ../config.h ../config.manual.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf_core.h conf_core_fields.h
 conf_hid.o: conf_hid.c conf_hid.h conf.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1629,7 +1629,7 @@ conf_hid.o: conf_hid.c conf_hid.h conf.h global.h ../config.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/liblihata/genht/htpp.h
 conf_internal.o: conf_internal.c
 copy.o: copy.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1644,7 +1644,7 @@ copy.o: copy.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/vtp0.h list_conf.h create.h data.h draw.h misc.h \
  mymem.h move.h polygon.h rtree.h select.h undo.h
 create.o: create.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1660,7 +1660,7 @@ create.o: create.c ../config.h ../config.manual.h ../config.auto.h \
  mymem.h rtree.h search.h misc_util.h undo.h plug_io.h stub_vendor.h \
  hid_actions.h paths.h
 crosshair.o: crosshair.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1676,7 +1676,7 @@ crosshair.o: crosshair.c ../config.h ../config.manual.h ../config.auto.h \
  data.h draw.h error.h line.h rtree.h search.h polygon.h misc.h mymem.h \
  hid_actions.h
 data.o: data.c ../config.h ../config.manual.h ../config.auto.h data.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1685,7 +1685,7 @@ data.o: data.c ../config.h ../config.manual.h ../config.auto.h data.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h
 draw.o: draw.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1700,7 +1700,7 @@ draw.o: draw.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/vtp0.h list_conf.h data.h draw.h error.h misc.h \
  mymem.h rotate.h rtree.h draw_fab.h hid_helper.h
 draw_fab.o: draw_fab.c ../config.h ../config.manual.h ../config.auto.h \
- data.h global.h const.h ../globalconst.h ../config.h macro.h \
+ data.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1710,7 +1710,7 @@ draw_fab.o: draw_fab.c ../config.h ../config.manual.h ../config.auto.h \
  global_element.h list_element.h draw.h drill.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h draw_fab.h polygon.h
 drill.o: drill.c ../config.h ../config.manual.h ../config.auto.h mymem.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1719,7 +1719,7 @@ drill.o: drill.c ../config.h ../config.manual.h ../config.auto.h mymem.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h
 error.o: error.c ../config.h ../config.manual.h ../config.auto.h global.h \
- const.h ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ const.h globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1735,7 +1735,7 @@ error.o: error.c ../config.h ../config.manual.h ../config.auto.h global.h \
  list_conf.h
 event.o: event.c event.h error.h
 file_act.o: file_act.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1751,7 +1751,7 @@ file_act.o: file_act.c ../config.h ../config.manual.h ../config.auto.h \
  crosshair.h set.h plug_io.h buffer.h misc.h mymem.h remove.h create.h \
  draw.h find.h search.h misc_util.h hid_actions.h hid_attrib.h
 find.o: find.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1767,7 +1767,7 @@ find.o: find.c ../config.h ../config.manual.h ../config.auto.h \
  misc.h mymem.h rtree.h polygon.h search.h misc_util.h set.h undo.h \
  rats.h plug_io.h hid_actions.h
 find_act.o: find_act.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1786,7 +1786,7 @@ funchash.o: funchash.c ../src_3rd/liblihata/genht/htpi.h \
  ../src_3rd/liblihata/genht/hash.h funchash_core.h funchash.h \
  funchash_core_list.h macro.h
 gui_act.o: gui_act.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1803,7 +1803,7 @@ gui_act.o: gui_act.c ../config.h ../config.manual.h ../config.auto.h \
  misc_util.h crosshair.h find.h set.h misc.h mymem.h stub_stroke.h \
  hid_actions.h hid_init.h
 heap.o: heap.c ../config.h ../config.manual.h ../config.auto.h heap.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1812,7 +1812,7 @@ heap.o: heap.c ../config.h ../config.manual.h ../config.auto.h heap.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h
 hid_actions.o: hid_actions.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1829,7 +1829,7 @@ hid_actions.o: hid_actions.c ../config.h ../config.manual.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/liblihata/genht/htsp.h \
  error.h event.h hid_actions.h
 hid_attrib.o: hid_attrib.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1844,7 +1844,7 @@ hid_cfg.o: hid_cfg.c ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1854,7 +1854,7 @@ hid_cfg.o: hid_cfg.c ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h hid_cfg.h error.h paths.h
 hid_cfg_action.o: hid_cfg_action.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1874,7 +1874,7 @@ hid_cfg_input.o: hid_cfg_input.c ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1883,7 +1883,7 @@ hid_cfg_input.o: hid_cfg_input.c ../src_3rd/liblihata/lihata.h \
  global_element.h list_element.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_actions.h hid_cfg_action.h error.h
 hid_color.o: hid_color.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1892,7 +1892,7 @@ hid_color.o: hid_color.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h hid_color.h
 hid_draw_helpers.o: hid_draw_helpers.c global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1902,7 +1902,7 @@ hid_draw_helpers.o: hid_draw_helpers.c global.h ../config.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h polygon.h
 hid_extents.o: hid_extents.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1911,7 +1911,7 @@ hid_extents.o: hid_extents.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h data.h hid_draw_helpers.h hid_helper.h
 hid_flags.o: hid_flags.c ../config.h ../config.manual.h ../config.auto.h \
- data.h global.h const.h ../globalconst.h ../config.h macro.h \
+ data.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1927,7 +1927,7 @@ hid_flags.o: hid_flags.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/liblihata/genht/htsp.h \
  error.h hid_actions.h
 hid_helper.o: hid_helper.c ../config.h ../config.manual.h \
- ../config.auto.h data.h global.h const.h ../globalconst.h ../config.h \
+ ../config.auto.h data.h global.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1938,7 +1938,7 @@ hid_helper.o: hid_helper.c ../config.h ../config.manual.h \
  global_element.h list_element.h misc.h ../src_3rd/genvector/gds_char.h \
  mymem.h hid_helper.h hid_attrib.h
 hid_init.o: hid_init.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1954,7 +1954,7 @@ hid_init.o: hid_init.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
  list_conf.h
 hid_nogui.o: hid_nogui.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1963,7 +1963,7 @@ hid_nogui.o: hid_nogui.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h
 insert.o: insert.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1979,7 +1979,7 @@ insert.o: insert.c ../config.h ../config.manual.h ../config.auto.h \
  draw.h line.h misc.h mymem.h polygon.h rtree.h search.h misc_util.h \
  select.h set.h undo.h
 intersect.o: intersect.c ../config.h ../config.manual.h ../config.auto.h \
- intersect.h global.h const.h ../globalconst.h ../config.h macro.h \
+ intersect.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -1988,7 +1988,7 @@ intersect.o: intersect.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h
 line.o: line.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2003,12 +2003,12 @@ line.o: line.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/vtp0.h list_conf.h data.h crosshair.h find.h line.h \
  misc.h mymem.h rtree.h
 list_arc.o: list_arc.c global_objs.h ../src_3rd/genlist/gendlist.h \
- ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
+ ../config.h ../config.manual.h ../config.auto.h globalconst.h \
  ../config.h global_typedefs.h unit.h polyarea.h list_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
 list_conf.o: list_conf.c conf.h global.h ../config.h ../config.manual.h \
- ../config.auto.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2023,7 +2023,7 @@ list_conf.o: list_conf.c conf.h global.h ../config.h ../config.manual.h \
  ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_impl.c
 list_element.o: list_element.c global.h ../config.h ../config.manual.h \
- ../config.auto.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2032,37 +2032,37 @@ list_element.o: list_element.c global.h ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h ../src_3rd/genlist/gentdlist_impl.c
 list_line.o: list_line.c global_objs.h ../src_3rd/genlist/gendlist.h \
- ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
+ ../config.h ../config.manual.h ../config.auto.h globalconst.h \
  ../config.h global_typedefs.h unit.h polyarea.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
 list_pad.o: list_pad.c global_objs.h ../src_3rd/genlist/gendlist.h \
- ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
+ ../config.h ../config.manual.h ../config.auto.h globalconst.h \
  ../config.h global_typedefs.h unit.h polyarea.h list_pad.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
 list_pin.o: list_pin.c global_objs.h ../src_3rd/genlist/gendlist.h \
- ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
+ ../config.h ../config.manual.h ../config.auto.h globalconst.h \
  ../config.h global_typedefs.h unit.h polyarea.h list_pin.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
 list_poly.o: list_poly.c global_objs.h ../src_3rd/genlist/gendlist.h \
- ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
+ ../config.h ../config.manual.h ../config.auto.h globalconst.h \
  ../config.h global_typedefs.h unit.h polyarea.h list_poly.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
 list_rat.o: list_rat.c global_objs.h ../src_3rd/genlist/gendlist.h \
- ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
+ ../config.h ../config.manual.h ../config.auto.h globalconst.h \
  ../config.h global_typedefs.h unit.h polyarea.h list_rat.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
 list_text.o: list_text.c global_objs.h ../src_3rd/genlist/gendlist.h \
- ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
+ ../config.h ../config.manual.h ../config.auto.h globalconst.h \
  ../config.h global_typedefs.h unit.h polyarea.h list_text.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.c
 main.o: main.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2080,7 +2080,7 @@ main.o: main.c ../config.h ../config.manual.h ../config.auto.h \
  plug_footprint.h vtlibrary.h event.h funchash.h hid_actions.h \
  hid_attrib.h hid_init.h dolists.h generated_lists.h
 main_act.o: main_act.c ../config.h ../config.manual.h ../config.auto.h \
- action_helper.h global.h const.h ../globalconst.h ../config.h macro.h \
+ action_helper.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2095,7 +2095,7 @@ main_act.o: main_act.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
  list_conf.h
 mirror.o: mirror.c ../config.h ../config.manual.h ../config.auto.h data.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2105,7 +2105,7 @@ mirror.o: mirror.c ../config.h ../config.manual.h ../config.auto.h data.h \
  global_element.h list_element.h mirror.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h polygon.h
 misc.o: misc.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2124,7 +2124,7 @@ misc.o: misc.c ../config.h ../config.manual.h ../config.auto.h \
 misc_util.o: misc_util.c ../config.h ../config.manual.h ../config.auto.h \
  misc_util.h unit.h
 move.o: move.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2140,7 +2140,7 @@ move.o: move.c ../config.h ../config.manual.h ../config.auto.h \
  misc.h mymem.h move.h polygon.h rtree.h search.h misc_util.h select.h \
  undo.h hid_actions.h
 mymem.o: mymem.c ../config.h ../config.manual.h ../config.auto.h data.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2149,7 +2149,7 @@ mymem.o: mymem.c ../config.h ../config.manual.h ../config.auto.h data.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h mymem.h rtree.h rats_patch.h
 netlist.o: netlist.c ../config.h ../config.manual.h ../config.auto.h \
- action_helper.h global.h const.h ../globalconst.h ../config.h macro.h \
+ action_helper.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2164,7 +2164,7 @@ netlist.o: netlist.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
  list_conf.h find.h mymem.h rats.h create.h rats_patch.h hid_actions.h
 object_act.o: object_act.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -2182,7 +2182,7 @@ object_act.o: object_act.c ../config.h ../config.manual.h \
  misc_util.h move.h draw.h mirror.h rotate.h set.h copy.h misc.h mymem.h \
  rubberband.h buffer.h remove.h create.h
 paths.o: paths.c ../config.h ../config.manual.h ../config.auto.h paths.h \
- error.h conf.h global.h const.h ../globalconst.h ../config.h macro.h \
+ error.h conf.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2196,7 +2196,7 @@ paths.o: paths.c ../config.h ../config.manual.h ../config.auto.h paths.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf_core.h
 pcb-printf.o: pcb-printf.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2207,7 +2207,7 @@ pcb-printf.o: pcb-printf.c ../config.h ../config.manual.h \
  ../src_3rd/genvector/gds_char.h
 plug_footprint.o: plug_footprint.c ../config.h ../config.manual.h \
  ../config.auto.h plug_footprint.h vtlibrary.h global_objs.h \
- ../src_3rd/genlist/gendlist.h ../globalconst.h ../config.h \
+ ../src_3rd/genlist/gendlist.h globalconst.h ../config.h \
  global_typedefs.h unit.h polyarea.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h plugins.h \
@@ -2215,7 +2215,7 @@ plug_footprint.o: plug_footprint.c ../config.h ../config.manual.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h
 plug_footprint_host.o: plug_footprint_host.c ../config.h \
- ../config.manual.h ../config.auto.h conf_core.h ../globalconst.h \
+ ../config.manual.h ../config.auto.h conf_core.h globalconst.h \
  ../config.h conf.h global.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -2231,7 +2231,7 @@ plug_footprint_host.o: plug_footprint_host.c ../config.h \
  ../src_3rd/genvector/vtp0.h list_conf.h plug_footprint.h vtlibrary.h \
  plugins.h error.h
 plug_io.o: plug_io.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2247,7 +2247,7 @@ plug_io.o: plug_io.c ../config.h ../config.manual.h ../config.auto.h \
  data.h error.h plug_io.h misc.h mymem.h remove.h set.h paths.h \
  rats_patch.h stub_edif.h hid_actions.h hid_flags.h plugins.h
 plugins.o: plugins.c plugins.h global.h ../config.h ../config.manual.h \
- ../config.auto.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2256,7 +2256,7 @@ plugins.o: plugins.c plugins.h global.h ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h ../src_3rd/genvector/gds_char.h
 polygon.o: polygon.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2272,7 +2272,7 @@ polygon.o: polygon.c ../config.h ../config.manual.h ../config.auto.h \
  crosshair.h data.h draw.h error.h polygon.h remove.h rtree.h search.h \
  set.h thermal.h mymem.h undo.h misc.h
 polygon1.o: polygon1.c rtree.h global.h ../config.h ../config.manual.h \
- ../config.auto.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2281,7 +2281,7 @@ polygon1.o: polygon1.c rtree.h global.h ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h heap.h
 polygon_act.o: polygon_act.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -2298,7 +2298,7 @@ polygon_act.o: polygon_act.c ../config.h ../config.manual.h \
  funchash_core.h funchash.h funchash_core_list.h polygon.h draw.h \
  search.h misc_util.h crosshair.h
 rats.o: rats.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2314,7 +2314,7 @@ rats.o: rats.c ../config.h ../config.manual.h ../config.auto.h \
  find.h misc.h mymem.h polygon.h rats.h search.h misc_util.h undo.h \
  stub_mincut.h route_style.h
 rats_act.o: rats_act.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2330,7 +2330,7 @@ rats_act.o: rats_act.c ../config.h ../config.manual.h ../config.auto.h \
  undo.h set.h misc.h mymem.h find.h remove.h funchash_core.h funchash.h \
  funchash_core_list.h rats.h draw.h
 rats_patch.o: rats_patch.c rats_patch.h global.h ../config.h \
- ../config.manual.h ../config.auto.h const.h ../globalconst.h ../config.h \
+ ../config.manual.h ../config.auto.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -2343,7 +2343,7 @@ rats_patch.o: rats_patch.c rats_patch.h global.h ../config.h \
  ../src_3rd/liblihata/genht/hash.h create.h data.h error.h buffer.h \
  remove.h copy.h
 remove.o: remove.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2358,7 +2358,7 @@ remove.o: remove.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/vtp0.h list_conf.h data.h draw.h misc.h mymem.h \
  move.h polygon.h remove.h rtree.h select.h undo.h
 remove_act.o: remove_act.c ../config.h ../config.manual.h \
- ../config.auto.h data.h global.h const.h ../globalconst.h ../config.h \
+ ../config.auto.h data.h global.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -2369,7 +2369,7 @@ remove_act.o: remove_act.c ../config.h ../config.manual.h \
  global_element.h list_element.h action_helper.h set.h remove.h \
  funchash_core.h funchash.h funchash_core_list.h
 rotate.o: rotate.c ../config.h ../config.manual.h ../config.auto.h data.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2385,7 +2385,7 @@ rotate.o: rotate.c ../config.h ../config.manual.h ../config.auto.h data.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h list_conf.h
 route_style.o: route_style.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2395,7 +2395,7 @@ route_style.o: route_style.c ../config.h ../config.manual.h \
  global_element.h list_element.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h route_style.h misc.h mymem.h error.h
 rtree.o: rtree.c ../config.h ../config.manual.h ../config.auto.h rtree.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2404,7 +2404,7 @@ rtree.o: rtree.c ../config.h ../config.manual.h ../config.auto.h rtree.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h
 rubberband.o: rubberband.c ../config.h ../config.manual.h \
- ../config.auto.h create.h global.h const.h ../globalconst.h ../config.h \
+ ../config.auto.h create.h global.h const.h globalconst.h ../config.h \
  macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -2415,7 +2415,7 @@ rubberband.o: rubberband.c ../config.h ../config.manual.h \
  global_element.h list_element.h data.h error.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h polygon.h rtree.h
 search.o: search.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2430,7 +2430,7 @@ search.o: search.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/vtp0.h list_conf.h box.h misc_util.h data.h error.h \
  find.h polygon.h rtree.h search.h misc.h mymem.h
 select.o: select.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2445,7 +2445,7 @@ select.o: select.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/vtp0.h list_conf.h data.h draw.h error.h search.h \
  misc_util.h select.h undo.h rats.h misc.h mymem.h find.h
 select_act.o: select_act.c ../config.h ../config.manual.h \
- ../config.auto.h conf_core.h ../globalconst.h ../config.h conf.h \
+ ../config.auto.h conf_core.h globalconst.h ../config.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h polyarea.h list_common.h list_line.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -2462,7 +2462,7 @@ select_act.o: select_act.c ../config.h ../config.manual.h \
  undo.h funchash_core.h funchash.h funchash_core_list.h select.h \
  crosshair.h set.h buffer.h draw.h remove.h copy.h hid_attrib.h
 set.o: set.c ../config.h ../config.manual.h ../config.auto.h conf_core.h \
- ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2478,7 +2478,7 @@ set.o: set.c ../config.h ../config.manual.h ../config.auto.h conf_core.h \
  crosshair.h data.h draw.h error.h find.h set.h undo.h hid_actions.h \
  route_style.h
 strflags.o: strflags.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2487,7 +2487,7 @@ strflags.o: strflags.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h strflags.h
 stub_edif.o: stub_edif.c ../config.h ../config.manual.h ../config.auto.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2496,7 +2496,7 @@ stub_edif.o: stub_edif.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h error.h stub_edif.h
 stub_mincut.o: stub_mincut.c ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2506,7 +2506,7 @@ stub_mincut.o: stub_mincut.c ../config.h ../config.manual.h \
  global_element.h list_element.h stub_mincut.h
 stub_stroke.o: stub_stroke.c error.h
 stub_vendor.o: stub_vendor.c stub_vendor.h ../config.h ../config.manual.h \
- ../config.auto.h global.h const.h ../globalconst.h ../config.h macro.h \
+ ../config.auto.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2515,7 +2515,7 @@ stub_vendor.o: stub_vendor.c stub_vendor.h ../config.h ../config.manual.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h
 thermal.o: thermal.c ../config.h ../config.manual.h ../config.auto.h \
- misc.h global.h const.h ../globalconst.h ../config.h macro.h \
+ misc.h global.h const.h globalconst.h ../config.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2525,7 +2525,7 @@ thermal.o: thermal.c ../config.h ../config.manual.h ../config.auto.h \
  global_element.h list_element.h ../src_3rd/genvector/gds_char.h mymem.h \
  polygon.h thermal.h
 undo.o: undo.c ../config.h ../config.manual.h ../config.auto.h buffer.h \
- global.h const.h ../globalconst.h ../config.h macro.h global_typedefs.h \
+ global.h const.h globalconst.h ../config.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2541,7 +2541,7 @@ undo.o: undo.c ../config.h ../config.manual.h ../config.auto.h buffer.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h list_conf.h
 undo_act.o: undo_act.c ../config.h ../config.manual.h ../config.auto.h \
- conf_core.h ../globalconst.h ../config.h conf.h global.h const.h macro.h \
+ conf_core.h globalconst.h ../config.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2557,7 +2557,7 @@ undo_act.o: undo_act.c ../config.h ../config.manual.h ../config.auto.h \
  funchash_core.h funchash.h funchash_core_list.h crosshair.h undo.h \
  polygon.h set.h search.h misc_util.h draw.h misc.h mymem.h
 unit.o: unit.c ../config.h ../config.manual.h ../config.auto.h global.h \
- const.h ../globalconst.h ../config.h macro.h global_typedefs.h unit.h \
+ const.h globalconst.h ../config.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h polyarea.h list_common.h \
  list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2567,18 +2567,18 @@ unit.o: unit.c ../config.h ../config.manual.h ../config.auto.h global.h \
  global_element.h list_element.h
 vtlibrary.o: vtlibrary.c vtlibrary.h global_objs.h \
  ../src_3rd/genlist/gendlist.h ../config.h ../config.manual.h \
- ../config.auto.h ../globalconst.h ../config.h global_typedefs.h unit.h \
+ ../config.auto.h globalconst.h ../config.h global_typedefs.h unit.h \
  polyarea.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genvector/genvector_impl.c
 vtonpoint.o: vtonpoint.c vtonpoint.h global_objs.h \
  ../src_3rd/genlist/gendlist.h ../config.h ../config.manual.h \
- ../config.auto.h ../globalconst.h ../config.h global_typedefs.h unit.h \
+ ../config.auto.h globalconst.h ../config.h global_typedefs.h unit.h \
  polyarea.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genvector/genvector_impl.c
 vtptr.o: vtptr.c vtptr.h global_objs.h ../src_3rd/genlist/gendlist.h \
- ../config.h ../config.manual.h ../config.auto.h ../globalconst.h \
+ ../config.h ../config.manual.h ../config.auto.h globalconst.h \
  ../config.h global_typedefs.h unit.h polyarea.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
