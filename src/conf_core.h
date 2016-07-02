@@ -1,7 +1,6 @@
 #ifndef PCB_CONF_CORE_H
 #define PCB_CONF_CORE_H
 
-#include "globalconst.h"
 #include "conf.h"
 
 /* NOTE: this struct has a strict format because a code generator needs to

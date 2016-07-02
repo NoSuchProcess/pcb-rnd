@@ -34,8 +34,6 @@
 #include <limits.h>
 #include <math.h>
 
-#include "globalconst.h"
-
 /* ---------------------------------------------------------------------------
  * the layer-numbers of the two additional special layers
  * 'component' and 'solder'. The offset of MAX_LAYER is not added
