@@ -10,6 +10,10 @@ clean:
 	cd pcblib && make clean
 	cd tutorial && make clean
 
+distclean:
+	make clean ; true
+	cd scconfig && make clean ; true
+
 install:
 	cd src && make install
 	cd util && make install
