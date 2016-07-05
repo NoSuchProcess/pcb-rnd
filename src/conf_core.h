@@ -128,7 +128,6 @@ typedef struct {
 		CFT_INTEGER text_scale;   /* text scaling in % */
 		CFT_REAL poly_isle_area;  /* polygon min area */
 		CFT_STRING default_layer_name[MAX_LAYER];
-		CFT_STRING background_image;            /* PPM file for board background */
 		CFT_STRING fab_author;                  /* Full name of author for FAB drawings */
 		CFT_STRING initial_layer_stack;         /* If set, the initial layer stack is set to this */
 
