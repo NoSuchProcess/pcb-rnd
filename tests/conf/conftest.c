@@ -53,6 +53,29 @@ void cmd_dump(char *arg)
 		Message("Invalid dump mode: '%s'", arg);
 }
 
+conf_policy_t current_policy = POL_OVERWRITE;
+conf_role_t current_role = CFR_DESIGN;
+
+void cmd_set(char *arg)
+{
+	char *path, *val;
+	int res;
+
+	path = arg;
+	val = strpbrk(path, " \t=");
+	if (val == NULL) {
+		Message("set needs a value");
+		return;
+	}
+	*val = '\0';
+	val++;
+	while(isspace(*val) || (*val == '=')) val++;
+
+	res = conf_set(current_role, path, -1, val, current_policy);
+	printf("set result: %d\n", res);
+}
+
+
 int main()
 {
 	char line[1024];
@@ -85,6 +108,8 @@ int main()
 
 		if (strcmp(cmd, "dump") == 0)
 			cmd_dump(arg);
+		else if (strcmp(cmd, "set") == 0)
+			cmd_set(arg);
 		else
 			Message("unknown command '%s'", cmd);
 	}
