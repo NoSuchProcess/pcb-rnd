@@ -63,7 +63,7 @@ static int ActionDumpConf(int argc, char **argv, Coord x, Coord y)
 		}
 		role = conf_role_parse(argv[1]);
 		if (role == CFR_invalid) {
-			Message("Invalid role: '%s'", argv[3]);
+			Message("Invalid role: '%s'", argv[1]);
 			return 1;
 		}
 		if (argc > 2)
