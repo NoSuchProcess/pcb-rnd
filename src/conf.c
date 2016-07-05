@@ -1322,10 +1322,20 @@ void conf_init(void)
 void conf_uninit(void)
 {
 	int n;
+	htsp_entry_t *e;
 
 	for(n = 0; n < CFR_max_alloc; n++)
 		if (conf_root[n] != NULL)
 			lht_dom_uninit(conf_root[n]);
+
+	conf_fields_foreach(e) {
+		conf_native_t *c = e->value;
+		free(c->prop);
+		vtp0_uninit(&(c->hid_data));
+		free(c);
+		htsp_delentry(conf_fields, e);
+	}
+	htsp_free(conf_fields);
 
 	vmst_uninit(&merge_subtree);
 }
