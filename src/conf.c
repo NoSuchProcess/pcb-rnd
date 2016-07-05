@@ -1330,6 +1330,13 @@ void conf_uninit(void)
 
 	conf_fields_foreach(e) {
 		conf_native_t *c = e->value;
+		if (c->type == CFN_LIST) {
+			while(conflist_first(c->val.list) != NULL) {
+				conf_listitem_t *first = conflist_first(c->val.list);
+				conflist_remove(first);
+				free(first);
+			}
+		}
 		free(c->prop);
 		vtp0_uninit(&(c->hid_data));
 		free(c);
