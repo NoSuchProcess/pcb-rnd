@@ -209,9 +209,6 @@ void hid_parse_command_line(int *argc, char ***argv)
 		exit(1);
 	got_match:;
 	}
-
-	(*argc)++;
-	(*argv)--;
 }
 
 void hid_usage_option(const char *name, const char *help)
