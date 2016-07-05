@@ -372,10 +372,6 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 
 	for(s = src_lst->data.list.first, idx = 0; s != NULL; s = s->next, idx++) {
 		if (s->type == LHT_TEXT) {
-
-			if ((dest->prop[dest->used].prio > prio))
-				continue;
-
 			switch(pol) {
 				case POL_PREPEND:
 #warning TODO
