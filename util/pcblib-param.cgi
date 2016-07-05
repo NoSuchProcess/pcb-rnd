@@ -406,7 +406,7 @@ are sort of a function call. The actual syntax is similar to the on in
 parameters are separated by commas, and they are either positional (value)
 or named (name=value).
 <p>
-For exmaple a simple pin-grid
+For example a simple pin-grid
 connector has the "prototype" of <i>connector(nx, ny, spacing)</i>, where
 nx and ny are the number of pins needed in X and Y directions, spacing is
 the distance between pin centers, with a default of 100 mil. The following
