@@ -9,7 +9,11 @@ LIB_PCB_OBJS= \
 	../../src/paths.o \
 	../../src/conf.o \
 	../../src/conf_core.o \
-	../../src/conf_internal.o
+	../../src/conf_internal.o \
+	../../src/pcb-printf.o
+
+LIB_PLUGIN_OBJS=\
+	../../src_plugins/debug/debug_conf.o
 
 LIB_3RD_OBJS= \
 	../../src_3rd/liblihata/parser.o \
@@ -33,7 +37,7 @@ LIB_3RD_OBJS= \
 	../../src_3rd/genvector/gds_char.o \
 	../../src_3rd/genvector/vtp0.o
 
-conftest: conftest.o $(LIB_3RD_OBJS) $(LIB_PCB_OBJS)
+conftest: conftest.o $(LIB_3RD_OBJS) $(LIB_PCB_OBJS) $(LIB_PLUGIN_OBJS)
 
 conftest.o: conftest.c
 
