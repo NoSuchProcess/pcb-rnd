@@ -51,7 +51,7 @@ static int ActionDumpConf(int argc, char **argv, Coord x, Coord y)
 			verbose = atoi(argv[1]);
 		if (argc > 2)
 			prefix = argv[2];
-		conf_dump(stdout, prefix, verbose);
+		conf_dump(stdout, prefix, verbose, NULL);
 	}
 
 	else if (NSTRCMP(cmd, "lihata") == 0) {
