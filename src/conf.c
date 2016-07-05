@@ -1321,5 +1321,11 @@ void conf_init(void)
 
 void conf_uninit(void)
 {
+	int n;
+
+	for(n = 0; n < CFR_max_alloc; n++)
+		if (conf_root[n] != NULL)
+			lht_dom_uninit(conf_root[n]);
+
 	vmst_uninit(&merge_subtree);
 }
