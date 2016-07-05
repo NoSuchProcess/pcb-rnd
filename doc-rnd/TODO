@@ -1,18 +1,22 @@
-- BUG: place text, edit -> assert
+- BUGS
+	- place text, edit -> assert (used to work because of NDEBUG?)
+	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
+	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
+	- bg image png crashes in extreme pan
+
 - replace settings with lihata (conf_*)
-	- do we need bg image in core config?
 	- project files:
 		- load project conf (replacing the original) after loading a .pcb
 		- save project conf properly
 	- implement binary->lht setter and use it in config_any_replace() if the source role sais so
-	- try to remove globalconst.h in favor of config - on hold: mail
+	- revise gsch2pcb-rnd warnings
 	- gtk hid: clean up the #warnings
 	- finish gtk preferences user pov (change is always saved to the design)
 		- layer colors not saved in pcb attribs
 		- color dialog:
 			- background color not loaded into the gtk cache: catch conf change event in the gtk hid to reconfigure the color
 		- library path: remap the library after a change, test!
-	- menu bug:
+	- menu bug broke between r1533 and r1534:
 		- view/show layers stopped working (broke before 1.0.10)
 		- view/show current layer stopped working (broke before 1.0.10)
 	- TEST:
@@ -47,13 +51,9 @@
 		- route style in gtk and lesstif, save, load, 0, 1 or a lot of styles
 		- route style vs. autorouter
 
-BUGS:
-	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
-	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
-	- bg image png crashes in extreme pan
-
 CLEANUP #5
 - conf:
+	- switch the lesstif HID over from attribs to conf
 	- remove redundancy: don't store values in the PCB struct that are in the design conf
 	- increments are not really implemented
 	- if font file is not found:
