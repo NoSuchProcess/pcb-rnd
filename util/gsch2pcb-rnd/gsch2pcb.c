@@ -1307,5 +1307,7 @@ int main(int argc, char ** argv)
 	free(pcb_file_name);
 	free(bak_file_name);
 
+	conf_uninit();
+
 	return 0;
 }
