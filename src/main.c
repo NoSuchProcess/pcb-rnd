@@ -244,6 +244,7 @@ void pcb_main_uninit(void)
 	fp_host_uninit();
 	funchash_uninit();
 	free(hid_argv_orig);
+	conf_uninit();
 }
 
 static int arg_match(const char *in, const char *shrt, const char *lng)
