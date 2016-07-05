@@ -56,6 +56,34 @@ void cmd_dump(char *arg)
 conf_policy_t current_policy = POL_OVERWRITE;
 conf_role_t current_role = CFR_DESIGN;
 
+void cmd_policy(char *arg)
+{
+	conf_policy_t np = conf_policy_parse(arg);
+	if (np == POL_invalid)
+		Message("Invalid/unknown policy: '%s'", arg);
+	else
+		current_policy = np;
+}
+
+void cmd_role(char *arg)
+{
+	conf_policy_t nr = conf_role_parse(arg);
+	if (nr == CFR_invalid)
+		Message("Invalid/unknown role: '%s'", arg);
+	else
+		current_role = nr;
+}
+
+/*void cmd_prio(char *arg)
+{
+	char *end;
+	int np = strtol(arg, &end, 10);
+	if (*end == '\0')
+		Message("Invalid integer prio: '%s'", arg);
+	else
+		current_priority = np;
+}*/
+
 void cmd_set(char *arg)
 {
 	char *path, *val;
@@ -110,6 +138,13 @@ int main()
 			cmd_dump(arg);
 		else if (strcmp(cmd, "set") == 0)
 			cmd_set(arg);
+		else if (strcmp(cmd, "policy") == 0)
+			cmd_policy(arg);
+/*		else if (strcmp(cmd, "prio") == 0)
+			cmd_policy(arg);*/
+		else if (strcmp(cmd, "role") == 0)
+			cmd_role(arg);
+
 		else
 			Message("unknown command '%s'", cmd);
 	}
