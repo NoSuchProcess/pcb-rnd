@@ -370,8 +370,6 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 	if ((pol == POL_DISABLE) || (pol == POL_invalid))
 		return 0;
 
-#warning TODO: revise if it does what the doc says; do auto tests!
-
 	for(s = src_lst->data.list.first, idx = 0; s != NULL; s = s->next, idx++) {
 		if (s->type == LHT_TEXT) {
 
@@ -428,7 +426,6 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 			conflist_remove(i);
 	}
 
-#warning TODO: revise if it does what the doc says; do auto tests!
 	for(s = src_lst->data.list.first; s != NULL; s = s->next) {
 		if (s->type == LHT_TEXT) {
 			i = calloc(sizeof(conf_listitem_t), 1);
@@ -548,9 +545,50 @@ int conf_merge_patch(lht_node_t *root, long gprio)
 	return 0;
 }
 
+typedef struct {
+	long prio;
+	conf_policy_t policy;
+	lht_node_t *subtree;
+} merge_subtree_t;
+
+#define GVT(x) vmst_ ## x
+#define GVT_ELEM_TYPE merge_subtree_t
+#define GVT_SIZE_TYPE size_t
+#define GVT_DOUBLING_THRS 64
+#define GVT_START_SIZE 32
+/*#define GVT_FUNC static*/
+#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+#define GVT_FREE(vect, ptr)           free(ptr)
+#include <genvector/genvector_impl.h>
+#include <genvector/genvector_impl.c>
+#include <genvector/genvector_undef.h>
+
+vmst_t merge_subtree; /* automatically initialized to all-zero */
+
+static void add_subtree(int role, lht_node_t *subtree_parent_root, lht_node_t *subtree_root)
+{
+	merge_subtree_t *m;
+
+	m = vmst_alloc_append(&merge_subtree, 1);
+	m->policy = POL_OVERWRITE;
+	m->prio = conf_default_prio[role];
+	get_hash_policy(&m->policy, subtree_parent_root, "policy");
+	get_hash_int(&m->prio, subtree_parent_root, "priority");
+	m->subtree = subtree_root;
+}
+
+static int mst_prio_cmp(const void *a, const void *b)
+{
+	const merge_subtree_t *s1 = a, *s2 = b;
+	return s1->prio > s2->prio;
+}
+
 int conf_merge_all(const char *path)
 {
 	int n, ret = 0;
+
+	vmst_truncate(&merge_subtree, 0);
+
 	for(n = 0; n < CFR_max_real; n++) {
 		lht_node_t *cr, *r, *r2;
 		if (conf_root[n] == NULL)
@@ -562,14 +600,20 @@ int conf_merge_all(const char *path)
 			if (path != NULL) {
 				conf_policy_t gpolicy = POL_OVERWRITE;
 				r2 = lht_tree_path_(r->doc, r, path, 1, 0, NULL);
-				get_hash_policy(&gpolicy, r, "policy");
-				if ((r2 == NULL) || (conf_merge_patch_item(path, r2, conf_default_prio[n], gpolicy) != 0))
-					ret = -1;
+				if (r2 != NULL)
+					add_subtree(n, r, r2);
 			}
 			else
-				if (conf_merge_patch(r, conf_default_prio[n]) != 0)
-					ret = -1;
+				add_subtree(n, r, r);
 		}
+	}
+
+	qsort(merge_subtree.array, vmst_len(&merge_subtree), sizeof(merge_subtree_t), mst_prio_cmp);
+	for(n = 0; n < vmst_len(&merge_subtree); n++) {
+		if (path != NULL)
+			ret |= conf_merge_patch_item(path, merge_subtree.array[n].subtree, merge_subtree.array[n].prio, merge_subtree.array[n].policy);
+		else
+			ret |= conf_merge_patch(merge_subtree.array[n].subtree, merge_subtree.array[n].prio);
 	}
 	return ret;
 }
@@ -1279,3 +1323,7 @@ void conf_init(void)
 	conf_reset(CFR_binary, "<conf_init>");
 }
 
+void conf_uninit(void)
+{
+	vmst_uninit(&merge_subtree);
+}

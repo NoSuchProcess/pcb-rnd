@@ -138,6 +138,7 @@ typedef enum {
 } conf_role_t;
 
 void conf_init(void);
+void conf_uninit(void);
 
 /* Load all config files from disk into memory-lht and run conf_update to
    get the binary representation updated */
