@@ -3,6 +3,10 @@
 	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
 	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 	- bg image png crashes in extreme pan
+	- 2 holes in the same poly withotu switching tool
+		- the second hole dups the poly
+		- first click when starting the first hole is lost
+		- marker not moved to the second hole starting point
 
 - replace settings with lihata (conf_*)
 	- project files:
