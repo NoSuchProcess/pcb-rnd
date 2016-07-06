@@ -137,6 +137,9 @@ int ParsePCB(PCBTypePtr Ptr, char *Filename, int load_settings)
 	int res = -1;
 	HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, Ptr, Filename, load_settings);
 
+	if ((res == NULL) && (load_settings))
+		conf_load_project(NULL, Filename);
+
 	plug_io_err(res, "load pcb", Filename);
 	return res;
 }

@@ -144,6 +144,11 @@ void conf_uninit(void);
    get the binary representation updated */
 void conf_load_all(const char *project_fn, const char *pcb_fn);
 
+/* Load a project file into CFR_PROJECT. Both project_fn and pcb_fn can't be NULL.
+   Leaves an initialized but empty CFR_PROJECT root if no project file was
+   found. Runs conf_update(NULL); */
+void conf_load_project(const char *project_fn, const char *pcb_fn);
+
 /* Update the binary representation from the memory-lht representation */
 void conf_update(const char *path);
 

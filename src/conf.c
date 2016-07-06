@@ -75,8 +75,10 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 	lht_doc_t *d;
 	if (conf_root_lock[role])
 		return -1;
-	if (conf_root[role] != NULL)
+	if (conf_root[role] != NULL) {
 		lht_dom_uninit(conf_root[role]);
+		conf_root[role] = NULL;
+	}
 	if (fn_is_text)
 		d = hid_cfg_load_str(fn);
 	else
@@ -88,12 +90,11 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 			Message("error: failed to load lht config: %s\n", fn);
 			fclose(f);
 		}
-		conf_root[role] = NULL;
 		return -1;
 	}
 	if (d->root->type != LHT_LIST) {
 		hid_cfg_error(d->root, "Config root must be a list\n");
-		conf_root[role] = NULL;
+		lht_dom_uninit(conf_root[role]);
 		return -1;
 	}
 	conf_root[role] = d;
@@ -729,6 +730,21 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 	   get saved. */
 	if (conf_root[CFR_USER] == NULL)
 		conf_reset(CFR_USER, conf_user_fn);
+}
+
+void conf_load_project(const char *project_fn, const char *pcb_fn)
+{
+	const char *pc, *try;
+
+	assert((project_fn != NULL) || (pcb_fn != NULL));
+
+	pc = get_project_conf_name(project_fn, pcb_fn, &try);
+	if (pc != NULL)
+		if (conf_load_as(CFR_PROJECT, pc, 0) != 0)
+			pc = NULL;
+	if (pc == NULL)
+		conf_reset(CFR_PROJECT, "<conf_load_project>");
+	conf_update(NULL);
 }
 
 static int keyeq(char *a, char *b)
