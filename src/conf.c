@@ -92,13 +92,32 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		}
 		return -1;
 	}
-	if (d->root->type != LHT_LIST) {
-		hid_cfg_error(d->root, "Config root must be a list\n");
-		lht_dom_uninit(conf_root[role]);
-		return -1;
+
+	if ((d->root->type == LHT_LIST) && (strcmp(d->root->name, "pcb-rnd-conf-v1") == 0)) {
+		conf_root[role] = d;
+		return 0;
 	}
-	conf_root[role] = d;
-	return 0;
+
+	if ((d->root->type == LHT_HASH) && (strcmp(d->root->name, "geda-project-v1") == 0)) {
+		lht_node_t *confroot;
+		confroot = lht_tree_path_(d, d->root, "pcb-rnd-conf-v1", 1, 0, NULL);
+		if ((confroot != NULL)  && (confroot->type == LHT_LIST) && (strcmp(confroot->name, "li:pcb-rnd-conf-v1") == 0)) {
+			conf_root[role] = d;
+			return 0;
+		}
+
+		/* project file with no config root */
+		confroot = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
+		lht_dom_hash_put(d->root, confroot);
+		conf_root[role] = d;
+		return 0;
+	}
+
+	hid_cfg_error(d->root, "Root node must be either li:pcb-rnd-conf-v1 or ha:geda-project-v1\n");
+
+	if (d != NULL)
+		lht_dom_uninit(d);
+	return -1;
 }
 
 conf_policy_t conf_policy_parse(const char *s)
@@ -206,8 +225,6 @@ static const char *get_project_conf_name(const char *project_fn, const char *pcb
 	static char res[MAXPATHLEN];
 	static const char *project_name = "project.lht";
 	FILE *f;
-
-#warning TODO: implement projects; check all callers in this file and make sure they pass a project name
 
 	if (project_fn != NULL) {
 		strncpy(res, project_fn, sizeof(res)-1);
