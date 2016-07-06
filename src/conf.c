@@ -100,53 +100,6 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 	return 0;
 }
 
-#warning TODO: del
-/*
-static const char *get_hash_text(lht_node_t *parent, const char *name, lht_node_t **nout)
-{
-	lht_node_t *n;
-
-	if ((parent == NULL) || (parent->type != LHT_HASH)) {
-		if (nout != NULL)
-			*nout = NULL;
-		return NULL;
-	}
-
-	n = lht_dom_hash_get(parent, name);
-	if (nout != NULL)
-		*nout = n;
-
-	if ((n == NULL) || (n->type != LHT_TEXT))
-		return NULL;
-
-	return n->data.text.value;
-}
-*/
-
-#warning TODO: del
-/*
-static const int get_hash_int(long *out, lht_node_t *parent, const char *name)
-{
-	lht_node_t *n;
-	const char *s;
-	char *end;
-	long l;
-
-	s = get_hash_text(parent, name, &n);
-	if (s == NULL)
-		return -1;
-
-	l = strtol(s, &end, 10);
-	if (*end != '\0') {
-		hid_cfg_error(parent, "%s should be an integer\n", s);
-		return -1;
-	}
-	if (out != NULL)
-		*out = l;
-	return 0;
-}
-*/
-
 conf_policy_t conf_policy_parse(const char *s)
 {
 	if (strcasecmp(s, "overwrite") == 0)  return POL_OVERWRITE;
@@ -167,30 +120,6 @@ conf_role_t conf_role_parse(const char *s)
 	if (strcasecmp(s, "cli") == 0)        return CFR_CLI;
 	return CFR_invalid;
 }
-
-#warning TODO: del
-/*
-static const int get_hash_policy(conf_policy_t *out, lht_node_t *parent, const char *name)
-{
-	lht_node_t *n;
-	const char *s;
-	conf_policy_t p;
-
-	s = get_hash_text(parent, name, &n);
-	if (s == NULL)
-		return -1;
-
-	p = conf_policy_parse(s);
-	if (p == POL_invalid) {
-		hid_cfg_error(parent, "invalid policy %s\n", s);
-		return -1;
-	}
-
-	if (out != NULL)
-		*out = p;
-	return 0;
-}
-*/
 
 void extract_poliprio(lht_node_t *root, conf_policy_t *gpolicy, long *gprio)
 {
@@ -639,8 +568,6 @@ int conf_merge_all(const char *path)
 			continue;
 		for(r = cr->data.list.first; r != NULL; r = r->next) {
 			if (path != NULL) {
-#warning TODO: del
-/*				conf_policy_t gpolicy = POL_OVERWRITE;*/
 				r2 = lht_tree_path_(r->doc, r, path, 1, 0, NULL);
 				if (r2 != NULL)
 					add_subtree(n, r, r2);
