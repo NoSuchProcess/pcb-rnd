@@ -234,9 +234,6 @@ void pcb_main_uninit(void)
 	hid_uninit();
 	events_uninit();
 
-	for (i = 0; i < MAX_LAYER; i++)
-		free(conf_core.design.default_layer_name[i]);
-
 	uninit_strflags_buf();
 	uninit_strflags_layerlist();
 
