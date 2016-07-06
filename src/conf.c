@@ -671,7 +671,6 @@ lht_node_t *conf_lht_get_first(conf_role_t target)
 	return conf_lht_get_first_(conf_root[target]->root);
 }
 
-#warning TODO: use this instead of get_first where possible
 lht_node_t *conf_lht_get_at(conf_role_t target, const char *path, int create)
 {
 	lht_node_t *n, *r;
@@ -700,13 +699,10 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 
 	/* get the lihata node for design/default_layer_name */
 	conf_load_as(CFR_INTERNAL, conf_internal, 1);
-	dln = conf_lht_get_first(CFR_INTERNAL);
+	dln = conf_lht_get_at(CFR_INTERNAL, "design/default_layer_name", 1);
 	assert(dln != NULL);
-	dln = lht_tree_path_(conf_root[CFR_INTERNAL], dln, "design/default_layer_name", 1, 0, NULL);
-	if (dln != NULL) {
-		assert(dln->type == LHT_LIST);
-		dln = dln->data.list.first;
-	}
+	assert(dln->type == LHT_LIST);
+	dln = dln->data.list.first;
 
 	/* Set up default layer names - make sure there are enough layers (over the hardwired ones, if any) */
 	for (i = 0; i < MAX_LAYER; i++) {
