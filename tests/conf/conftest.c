@@ -68,21 +68,35 @@ void cmd_policy(char *arg)
 void cmd_role(char *arg)
 {
 	conf_policy_t nr = conf_role_parse(arg);
-	if (nr == CFR_invalid)
+	if (nr == POL_invalid)
 		Message("Invalid/unknown role: '%s'", arg);
 	else
 		current_role = nr;
 }
 
-/*void cmd_prio(char *arg)
+void cmd_prio(char *arg)
 {
 	char *end;
-	int np = strtol(arg, &end, 10);
-	if (*end == '\0')
+	int np = strtol(arg == NULL ? "" : arg, &end, 10);
+	lht_node_t *first;
+
+	if ((*end != '\0') || (np < 0)) {
 		Message("Invalid integer prio: '%s'", arg);
-	else
-		current_priority = np;
-}*/
+		return;
+	}
+	first = conf_lht_get_first(current_role);
+	if (first != NULL) {
+		char tmp[128];
+		char *end;
+		end = strchr(first->name, '-');
+		if (end != NULL)
+			*end = '\0';
+		sprintf(tmp, "%s-%d", first->name, np);
+		free(first->name);
+		first->name = strdup(tmp);
+		conf_update(NULL);
+	}
+}
 
 void cmd_set(char *arg)
 {
@@ -140,8 +154,8 @@ int main()
 			cmd_set(arg);
 		else if (strcmp(cmd, "policy") == 0)
 			cmd_policy(arg);
-/*		else if (strcmp(cmd, "prio") == 0)
-			cmd_policy(arg);*/
+		else if (strcmp(cmd, "prio") == 0)
+			cmd_prio(arg);
 		else if (strcmp(cmd, "role") == 0)
 			cmd_role(arg);
 
