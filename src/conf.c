@@ -765,6 +765,21 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 	htsp_set(conf_fields, (char *)path, node);
 }
 
+void conf_free_native(conf_native_t *node)
+{
+	if (node->type == CFN_LIST) {
+		while(conflist_first(node->val.list) != NULL) {
+			conf_listitem_t *first = conflist_first(node->val.list);
+			conflist_remove(first);
+			free(first);
+		}
+	}
+
+	vtp0_uninit(&(node->hid_data));
+	free(node->prop);
+	free(node);
+}
+
 void conf_unreg_fields(const char *prefix)
 {
 	int len = strlen(prefix);
@@ -774,11 +789,8 @@ void conf_unreg_fields(const char *prefix)
 
 	conf_fields_foreach(e) {
 		if (strncmp(e->key, prefix, len) == 0) {
-			conf_native_t *node = e->value;
-			htsp_pop(conf_fields, e->value);
-			vtp0_uninit(&(node->hid_data));
-			free(node->prop);
-			free(node);
+			conf_free_native(e->value);
+			htsp_delentry(conf_fields, e);
 		}
 	}
 }
@@ -1302,17 +1314,7 @@ void conf_uninit(void)
 			lht_dom_uninit(conf_root[n]);
 
 	conf_fields_foreach(e) {
-		conf_native_t *c = e->value;
-		if (c->type == CFN_LIST) {
-			while(conflist_first(c->val.list) != NULL) {
-				conf_listitem_t *first = conflist_first(c->val.list);
-				conflist_remove(first);
-				free(first);
-			}
-		}
-		free(c->prop);
-		vtp0_uninit(&(c->hid_data));
-		free(c);
+		conf_free_native(e->value);
 		htsp_delentry(conf_fields, e);
 	}
 	htsp_free(conf_fields);
