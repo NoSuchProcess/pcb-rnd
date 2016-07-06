@@ -1,7 +1,5 @@
 li:pcb-rnd-conf-v1 {
-	ha:main {
-		priority = 100
-		policy = overwrite
+	ha:overwrite {
 		ha:editor {
 			grid_unit = mil
 			grid = 25 mil

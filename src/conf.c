@@ -100,6 +100,8 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 	return 0;
 }
 
+#warning TODO: del
+/*
 static const char *get_hash_text(lht_node_t *parent, const char *name, lht_node_t **nout)
 {
 	lht_node_t *n;
@@ -119,7 +121,10 @@ static const char *get_hash_text(lht_node_t *parent, const char *name, lht_node_
 
 	return n->data.text.value;
 }
+*/
 
+#warning TODO: del
+/*
 static const int get_hash_int(long *out, lht_node_t *parent, const char *name)
 {
 	lht_node_t *n;
@@ -140,6 +145,7 @@ static const int get_hash_int(long *out, lht_node_t *parent, const char *name)
 		*out = l;
 	return 0;
 }
+*/
 
 conf_policy_t conf_policy_parse(const char *s)
 {
@@ -162,7 +168,8 @@ conf_role_t conf_role_parse(const char *s)
 	return CFR_invalid;
 }
 
-
+#warning TODO: del
+/*
 static const int get_hash_policy(conf_policy_t *out, lht_node_t *parent, const char *name)
 {
 	lht_node_t *n;
@@ -183,6 +190,47 @@ static const int get_hash_policy(conf_policy_t *out, lht_node_t *parent, const c
 		*out = p;
 	return 0;
 }
+*/
+
+void extract_poliprio(lht_node_t *root, conf_policy_t *gpolicy, long *gprio)
+{
+	long len = strlen(root->name), p = -1;
+	char tmp[128];
+	char *sprio, *end;
+	conf_policy_t pol;
+
+	if (len >= sizeof(tmp)) {
+		hid_cfg_error(root, "Invalid policy-prio '%s', subtree is ignored\n", root->name);
+		return;
+	}
+
+	memcpy(tmp, root->name, len+1);
+
+	/* split and convert prio */
+	sprio = strchr(tmp, '-');
+	if (sprio != NULL) {
+		*sprio = '\0';
+		sprio++;
+		p = strtol(sprio, &end, 10);
+		if ((*end != '\0') || (p < 0)) {
+			hid_cfg_error(root, "Invalid prio in '%s', subtree is ignored\n", root->name);
+			return;
+		}
+	}
+
+	/* convert policy */
+	pol = conf_policy_parse(tmp);
+	if (pol == POL_invalid) {
+		hid_cfg_error(root, "Invalid policy in '%s', subtree is ignored\n", root->name);
+		return;
+	}
+
+	/* by now the syntax is checked; save the output */
+	*gpolicy = pol;
+	if (p >= 0)
+		*gprio = p;
+}
+
 
 static int conf_parse_increments(Increments *inc, lht_node_t *node)
 {
@@ -520,7 +568,7 @@ int conf_merge_patch_recurse(lht_node_t *sect, int default_prio, conf_policy_t d
 
 int conf_merge_patch(lht_node_t *root, long gprio)
 {
-	conf_policy_t gpolicy = POL_OVERWRITE;
+	conf_policy_t gpolicy;
 	lht_node_t *n;
 	lht_dom_iterator_t it;
 
@@ -529,9 +577,7 @@ int conf_merge_patch(lht_node_t *root, long gprio)
 		return -1;
 	}
 
-	/* get global settings */
-	get_hash_int(&gprio, root, "priority");
-	get_hash_policy(&gpolicy, root, "policy");
+	extract_poliprio(root, &gpolicy, &gprio);
 
 	/* iterate over all hashes and insert them recursively */
 	for(n = lht_dom_first(&it, root); n != NULL; n = lht_dom_next(&it))
@@ -566,10 +612,9 @@ static void add_subtree(int role, lht_node_t *subtree_parent_root, lht_node_t *s
 	merge_subtree_t *m;
 
 	m = vmst_alloc_append(&merge_subtree, 1);
-	m->policy = POL_OVERWRITE;
 	m->prio = conf_default_prio[role];
-	get_hash_policy(&m->policy, subtree_parent_root, "policy");
-	get_hash_int(&m->prio, subtree_parent_root, "priority");
+
+	extract_poliprio(subtree_parent_root, &m->policy, &m->prio);
 	m->subtree = subtree_root;
 }
 
@@ -594,7 +639,8 @@ int conf_merge_all(const char *path)
 			continue;
 		for(r = cr->data.list.first; r != NULL; r = r->next) {
 			if (path != NULL) {
-				conf_policy_t gpolicy = POL_OVERWRITE;
+#warning TODO: del
+/*				conf_policy_t gpolicy = POL_OVERWRITE;*/
 				r2 = lht_tree_path_(r->doc, r, path, 1, 0, NULL);
 				if (r2 != NULL)
 					add_subtree(n, r, r2);
@@ -1305,7 +1351,7 @@ void conf_reset(conf_role_t target, const char *source_fn)
 	lht_dom_loc_newfile(conf_root[target], source_fn);
 	conf_root[target]->root = lht_dom_node_alloc(LHT_LIST, conf_list_name);
 	conf_root[target]->root->doc = conf_root[target];
-	n = lht_dom_node_alloc(LHT_HASH, "main");
+	n = lht_dom_node_alloc(LHT_HASH, "overwrite");
 	lht_dom_list_insert(conf_root[target]->root, n);
 }
 
