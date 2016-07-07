@@ -36,8 +36,10 @@ static void conf_hid_init(void)
 
 void conf_hid_uninit(void)
 {
-	htpp_free(conf_hid_ids);
-	conf_hid_ids = NULL;
+	if (conf_hid_ids != NULL) {
+		htpp_free(conf_hid_ids);
+		conf_hid_ids = NULL;
+	}
 }
 
 conf_hid_id_t conf_hid_reg(const char *cookie, const conf_hid_callbacks_t *cb)
