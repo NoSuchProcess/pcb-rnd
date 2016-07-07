@@ -10,8 +10,9 @@
 
 - replace settings with lihata (conf_*)
 	- project files:
-		- load project conf (replacing the original) after loading a .pcb
-		- save project conf properly
+		- save only if changed
+		- save project conf properly (needs lihata smart save long term, test with plain save now)
+		
 	- implement binary->lht setter and use it in config_any_replace() if the source role sais so
 	- revise gsch2pcb-rnd warnings
 	- gtk hid: clean up the #warnings

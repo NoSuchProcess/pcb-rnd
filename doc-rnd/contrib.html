@@ -1,0 +1,48 @@
+<html>
+<body>
+<h1> pcb-rnd - contribution </h1>
+
+If you are interested to help out, please contact me using
+<a href="irc.html"> the live chat (CET daytime)</a> or mail to:
+pcb-rnd (at) igor2.repo.hu.
+
+<H2> Contributing as a user </h2>
+Using pcb-rnd in production and just reporting bugs is already a huge contribution.
+<p>
+More dedicated users can join in scheduled, systematic testing. Such testing
+is split up into independent chunks that each can be done in an hour.
+<p>
+Even more dedicated users can join developing the documentation.
+<p>
+None of the above requires or assumes any programming skill.
+
+<H2> Contributing as a programmer </h2>
+
+The project is lead in an autocratic way by Igor2.
+
+Developer freedom taken away:
+<ul>
+	<li> the basic concept of pcb-rnd is set and won't change
+	<li> the toolchain is chosen, and won't change; the usual hot topics: svn, scconfig, <a href="c89.html">C</a>.
+	<li> don't add code that restricts usability for others; add code that increases usability for some; thus prefer to add code in plugins!
+</ul>
+<p>
+Developer freedom promptly granted:
+<ul>
+	<li> svn commit access from day 0
+	<li> work together in trunk/, not alone in a branch
+	<li> pcb-rnd has a strong plugin support; want to implement a strange/contrversial feature? In a plugin, almost anything goes
+	<li> especially in plugins, work on whatever you want, even if noone else needs that feature
+</ul>
+<p>
+Coding style/indentation: there's an <a href="indent.html">unified style</a>
+in core and core plugins. If you work on those parts, try to stick to it. If you
+are working on a new plugin, it's still the preferred style but you can use
+a different style. However, the rule is that if someone else starts hacking
+that part too, he is allowed to convert the code to the unified format; but
+unified format can not be converted to anything else. So it's a one way
+process which long term grants unified style while not demotivates a plugin
+developer by forcing a syle on him in the early, "when the bulk of the code
+is written" phase.
+</body>
+</html>
