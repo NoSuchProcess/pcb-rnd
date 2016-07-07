@@ -2,8 +2,14 @@
 #include <stdarg.h>
 #include <ctype.h>
 #include "conf.h"
+#include "conf_hid.h"
+#include "conf_core.h"
+#include "src_plugins/debug/debug_conf.h"
 
 int lineno = 0;
+int global_notify = 0;
+conf_hid_id_t hid_id;
+const char *hid_cookie = "conftest cookie";
 
 void Message(const char *Format, ...)
 {
@@ -18,10 +24,37 @@ void Message(const char *Format, ...)
 	fprintf(stderr, "\n");
 }
 
-extern lht_doc_t *conf_root[];
+void watch_pre(conf_native_t *cfg)
+{
+	printf("watch_pre:  '%s' old value\n", cfg->hash_path);
+}
 
+void watch_post(conf_native_t *cfg)
+{
+	printf("watch_post: '%s' new value\n", cfg->hash_path);
+}
+
+void notify_pre(conf_native_t *cfg)
+{
+	printf("notify_pre:  '%s' old value\n", cfg->hash_path);
+}
+
+void notify_post(conf_native_t *cfg)
+{
+	printf("notify_post: '%s' new value\n", cfg->hash_path);
+}
+
+conf_hid_callbacks_t watch_cbs = {watch_pre, watch_post, NULL, NULL};
+conf_hid_callbacks_t global_cbs = {notify_pre, notify_post, NULL, NULL};
+
+
+extern lht_doc_t *conf_root[];
 void cmd_dump(char *arg)
 {
+	if (arg == NULL) {
+		Message("Need an arg: native or lohata");
+		return;
+	}
 	if (strncmp(arg, "native", 6) == 0) {
 		arg+=7;
 		while(isspace(*arg)) arg++;
@@ -108,10 +141,32 @@ void cmd_set(char *arg)
 	printf("set result: %d\n", res);
 }
 
+void cmd_watch(char *arg, int add)
+{
+	conf_native_t *n = conf_get_field(arg);
+	if (n == NULL) {
+		Message("unknown path");
+		return;
+	}
+	conf_hid_set_cb(n, hid_id, (add ? &watch_cbs : NULL));
+}
+
+void cmd_notify(char *arg)
+{
+	if (arg != NULL) {
+		if (strcmp(arg, "on") == 0)
+			global_notify = 1;
+		else if (strcmp(arg, "off") == 0)
+			global_notify = 0;
+	}
+	printf("Notify is %s\n", global_notify ? "on" : "off");
+}
 
 int main()
 {
 	char line[1024];
+
+	hid_id = conf_hid_reg(hid_cookie, &global_cbs);
 
 	conf_init();
 	conf_core_init();
@@ -149,10 +204,16 @@ int main()
 			cmd_prio(arg);
 		else if (strcmp(cmd, "role") == 0)
 			cmd_role(arg);
-
+		else if (strcmp(cmd, "watch") == 0)
+			cmd_watch(arg, 1);
+		else if (strcmp(cmd, "unwatch") == 0)
+			cmd_watch(arg, 0);
+		else if (strcmp(cmd, "notify") == 0)
+			cmd_notify(arg);
 		else
 			Message("unknown command '%s'", cmd);
 	}
 
+	conf_hid_unreg(hid_cookie);
 	conf_uninit();
 }
