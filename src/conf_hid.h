@@ -4,7 +4,7 @@
 #include "conf.h"
 
 typedef struct conf_hid_callbacks_s {
-	/* Called before/after a value of a config item is changed */
+	/* Called before/after a value of a config item is updated - this doesn't necessarily mean the value actually changes */
 	void (*val_change_pre)(conf_native_t *cfg, int arr_idx);
 	void (*val_change_post)(conf_native_t *cfg, int arr_idx);
 
@@ -17,15 +17,22 @@ typedef struct conf_hid_callbacks_s {
 
 typedef int conf_hid_id_t;
 
+/* Set local hid data in a native item; returns the previous value set or NULL */
 void *conf_hid_set_data(conf_native_t *cfg, conf_hid_id_t id, void *data);
+
+/* Returns local hid data in a native item */
 void *conf_hid_get_data(conf_native_t *cfg, conf_hid_id_t id);
+
+/* Set local callbacks in a native item; returns the previous callbacks set or NULL */
+const conf_hid_callbacks_t *conf_hid_set_cb(conf_native_t *cfg, conf_hid_id_t id, const conf_hid_callbacks_t *cbs);
+
 
 /* register a hid with a cookie; this is necessary only if:
      - the HID wants to store per-config-item hid_data with the above calls
      - the HID wants to get notified about changes in the config tree using callback functions
    NOTE: cookie is taken by pointer, the string value does not matter. One pointer
          can be registered only once.
-   cb can be NULL.
+   cb holds the global notification callbacks - called when anything changed; it can be NULL.
    Returns a new HID id that can be used to access hid data, or -1 on error.
 */
 conf_hid_id_t conf_hid_reg(const char *cookie, const conf_hid_callbacks_t *cb);

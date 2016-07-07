@@ -106,6 +106,7 @@ typedef struct {
 
 	/* dynamic fields for HIDs storing their data */
 	vtp0_t hid_data;
+	vtp0_t hid_callbacks; /* vector of (const conf_hid_callbacks_t *) */
 } conf_native_t;
 
 typedef struct conf_listitem_s conf_listitem_t;
