@@ -49,7 +49,7 @@ do { \
 	int __n__; \
 	for(__n__ = 0; __n__ < vtp0_len(&((native)->hid_callbacks)); __n__++) { \
 		const conf_hid_callbacks_t *cbs = (native)->hid_callbacks.array[__n__]; \
-		if (cbs != NULL) \
+		if ((cbs != NULL) && (cbs->cb != NULL)) \
 			cbs->cb(native); \
 	} \
 } while(0)

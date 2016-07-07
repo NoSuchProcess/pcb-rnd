@@ -106,6 +106,7 @@ void conf_hid_unreg(const char *cookie)
 	free(h);
 }
 
+typedef void (*cb_t)(conf_native_t *cfg);
 void conf_hid_global_cb_(conf_native_t *item, int offs)
 {
 	htpp_entry_t *e;
@@ -115,9 +116,10 @@ void conf_hid_global_cb_(conf_native_t *item, int offs)
 		conf_hid_t *h = e->value;
 		const conf_hid_callbacks_t *cbs = h->cb;
 		if (cbs != NULL) {
-			void (*cb)(conf_native_t *cfg) = (void (*)(conf_native_t *cfg)) ((char *)cbs) + offs;
-			if (cb != NULL)
-				cb(item);
+			char *s = (char *)&cbs->val_change_pre;
+			cb_t *cb = (cb_t *)(s + offs);
+			if ((*cb) != NULL)
+				(*cb)(item);
 		}
 	}
 }
