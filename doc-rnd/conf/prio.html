@@ -3,5 +3,20 @@
 <H1> The new config system in pcb-rnd </H1>
 <H2> Priorities </H2>
 
-TODO: needs a few design decisions before it an be documented
+Priority is an integer property of each config root.
+<a href="syntax.html">Syntax-wise</a> it is part of the name of the config
+root. In the lihata config file it is either specified or omitted. When
+omitted,  <a href="sources.html"> a role dependent default value</a> is
+used. The default values are chosen in an intuitive way, thus most
+commonly the priority value is omitted.
+<p>
+For <a href="scalars.html">scalar</a> settings, the highest priority
+value determines the final value of a setting after the merge. If there
+is a tie, role decides: the role closer to the CLI is stronger.
+<p>
+For <a href="lists.html">lists</a> and arrays, priority determines the
+order of merge, which changes the order of itmes in the final list as
+config roots prepend and append items.
+
+
 

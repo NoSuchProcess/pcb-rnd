@@ -1,0 +1,45 @@
+<html>
+<body>
+<H1> The new config system in pcb-rnd </H1>
+<H2> Config file syntax </H2>
+
+The config file sytnax is <a href="http://repo.hu/projects/lihata">lihata</a>.
+Most users don't need to understand most of the syntax, just follow the
+patterns seen in the examples. A few thumb of rules:
+<ul>
+	<li> srtuctural nodes usually start with a ha: or li: prefix; which one needs to be used is pretty much tied to the node name; thus casual users don't need to care about what they are for, just remember them as part of the name
+	<li> non-structural nodes are usually given in the form of name = value; use braces around the value if it contains any non-alphanumeric, non-whitespace character
+	<li> list and array members should better be braced
+	<li> list and array separator should be semicolon (not comma)
+</ul>
+
+<H3> config root syntax </H3>
+<p>
+A pcb-rnd config file, (or <i>document</i> for short) has a single root
+node whose name must be li:pcb-rnd-conf-v1 - this is the signature of the
+document. It is a flat list of one or more <i>config root/<i> subtrees.
+TODO: is this really a list or a hash?
+<p>
+Each config root is a partial description of the
+<a href=index_user.html"> config tree </a> (which is the logical
+confgiuration of all possible settings). Config roots have a policy and
+a <a href="prio.html">priority</a> attached. This is done in the name
+of the config root, which must be of the form of <i>policy-priority</i>,
+e.g. "overwrite-300" or "append-125". The priority part (with the dash)
+can be omitted (and then the per role default priority is used), e.g.
+"overwrite" or "append" are valid config root names.
+<p>
+Under the config root, a tree of sections (hashes) and setting values
+(text nodes) are built. These structures and values are in 1:1 
+correspondance with <a href="groups.html">the config tree</a>. Excess
+(unknown) keys are considered a warning (except in the plugin/ and
+utils/ subtrees). Missing keys or missing subtrees is normal because a config
+root can be partial.
+<p>
+TODO: examples
+
+<H3> list syntax </h3>
+TODO: list syntax
+
+<H3> in project files </H3>
+TODO
