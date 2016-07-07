@@ -640,14 +640,17 @@ static void conf_notify_hids()
 
 void conf_update(const char *path)
 {
+	conf_native_t *n;
+
 	/* clear memory-bin data first */
 	if (path == NULL) {
 		htsp_entry_t *e;
-		conf_fields_foreach(e)
+		conf_fields_foreach(e) {
+			conf_hid_cb((conf_native_t *)e->value, val_change_pre);
 			conf_field_clear(e->value);
+		}
 	}
 	else {
-		conf_native_t *n;
 		n = conf_get_field(path);
 		if (n == NULL) {
 			char *path_, *field;
@@ -665,11 +668,20 @@ void conf_update(const char *path)
 			return;
 		}
 		conf_field_clear(n);
+		conf_hid_cb(n, val_change_pre);
 	}
 
 	/* merge all memory-lht data to memory-bin */
 	conf_merge_all(path);
 	conf_core_postproc();
+
+	if (path == NULL) {
+		htsp_entry_t *e;
+		conf_fields_foreach(e)
+			conf_hid_cb((conf_native_t *)e->value, val_change_post);
+	}
+	else
+		conf_hid_cb(n, val_change_post);
 	conf_notify_hids();
 }
 

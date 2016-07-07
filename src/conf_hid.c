@@ -23,7 +23,7 @@ void *conf_hid_get_data(conf_native_t *cfg, conf_hid_id_t id)
 const conf_hid_callbacks_t *conf_hid_set_cb(conf_native_t *cfg, conf_hid_id_t id, const conf_hid_callbacks_t *cbs)
 {
 	void **old = vtp0_get(&cfg->hid_callbacks, id, 0);
-	vtp0_set(&cfg->hid_callbacks, id, cbs);
+	vtp0_set(&cfg->hid_callbacks, id, (void *)cbs);
 	return (const conf_hid_callbacks_t *)(old == NULL ? NULL : *old);
 }
 
@@ -76,21 +76,14 @@ void conf_hid_unreg(const char *cookie)
 	if (h == NULL)
 		return;
 
-	if ((h->cb != NULL) && (h->cb->unreg_item != NULL)) {
-		conf_fields_foreach(e) {
-			int n;
-			conf_native_t *cfg = e->value;
-			/* call global unreg item for each array element */
-			for(n = 0; n < cfg->used; n++)
-				h->cb->unreg_item(cfg, n);
-		}
-	}
-
 	/* remove local callbacks */
 	conf_fields_foreach(e) {
 		int len;
 		conf_native_t *cfg = e->value;
 		len = vtp0_len(&cfg->hid_callbacks);
+
+		conf_hid_cb(cfg, unreg_item);
+
 		/* truncate the list if there are empty items at the end */
 		if (len > h->id) {
 			int last;
@@ -100,6 +93,13 @@ void conf_hid_unreg(const char *cookie)
 					break;
 			if (last < len)
 				vtp0_truncate(&cfg->hid_callbacks, last+1);
+		}
+	}
+
+	if ((h->cb != NULL) && (h->cb->unreg_item != NULL)) {
+		conf_fields_foreach(e) {
+			conf_native_t *cfg = e->value;
+			h->cb->unreg_item(cfg);
 		}
 	}
 
