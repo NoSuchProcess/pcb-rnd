@@ -1369,7 +1369,7 @@ static char **pcbmenu_paths = NULL;
 int ghid_usage(char *topic)
 {
 	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
-	conf_usage("plugins/hid_gtk");
+	conf_usage("plugins/hid_gtk", hid_usage_option);
 	fprintf(stderr, "\nInvocation: pcb-rnd --gui gtk [options]\n");
 }
 

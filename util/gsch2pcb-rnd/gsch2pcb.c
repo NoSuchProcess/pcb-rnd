@@ -150,10 +150,6 @@ void Message(char *err)
 	fprintf(stderr, "gsch2pcb-rnd: %s\n", err);
 }
 
-void hid_usage_option(const char *name, const char *desc)
-{
-}
-
 /**
  * Build and run a command. No redirection or error handling is
  * done.  Format string is split on whitespace. Specifiers %l and %s

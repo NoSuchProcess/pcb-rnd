@@ -18,10 +18,6 @@ void Message(const char *Format, ...)
 	fprintf(stderr, "\n");
 }
 
-void hid_usage_option(const char *name, const char *help)
-{
-}
-
 extern lht_doc_t *conf_root[];
 
 void cmd_dump(char *arg)

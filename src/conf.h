@@ -301,6 +301,6 @@ const char *conf_concat_strlist(const conflist_t *lst, gds_t *buff, int *inited,
 
 /* Print usage help for all nodes that have the CFF_USAGE flag and whose
    path starts with prefix (if prefix != NULL) */
-void conf_usage(char *prefix);
+void conf_usage(char *prefix, void (*print)(const char *name, const char *help));
 #endif
 
