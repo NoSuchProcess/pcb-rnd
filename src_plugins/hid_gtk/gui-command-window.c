@@ -284,7 +284,7 @@ void ghid_command_window_show(gboolean raise)
 	}
 	command_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_signal_connect(G_OBJECT(command_window), "destroy", G_CALLBACK(command_destroy_cb), NULL);
-	gtk_window_set_title(GTK_WINDOW(command_window), _("PCB Command Entry"));
+	gtk_window_set_title(GTK_WINDOW(command_window), _("pcb-rnd Command Entry"));
 	gtk_window_set_wmclass(GTK_WINDOW(command_window), "PCB_Command", "PCB");
 	gtk_window_set_resizable(GTK_WINDOW(command_window), FALSE);
 

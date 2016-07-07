@@ -564,7 +564,7 @@ void ghid_window_set_name_label(gchar * name)
 	else
 		filename = g_strdup(PCB->Filename);
 
-	str = g_strdup_printf("%s%s (%s) - PCB", PCB->Changed ? "*" : "", ghidgui->name_label_string, filename);
+	str = g_strdup_printf("%s%s (%s) - pcb-rnd", PCB->Changed ? "*" : "", ghidgui->name_label_string, filename);
 	gtk_window_set_title(GTK_WINDOW(gport->top_window), str);
 	g_free(str);
 	g_free(filename);
@@ -1447,7 +1447,7 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	gtk_window_set_default_icon(icon);
 
 	window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window), "PCB");
+	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
 	gtk_window_set_default_size(GTK_WINDOW(window), hid_gtk_wgeo.top_width, hid_gtk_wgeo.top_height);
 
 	if (conf_core.editor.auto_place)

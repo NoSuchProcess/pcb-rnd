@@ -156,7 +156,7 @@ void ghid_library_window_create(GHidPort * out)
 	g_signal_connect(G_OBJECT(library_window), "configure_event", G_CALLBACK(library_window_configure_event_cb), NULL);
 	gtk_window_set_default_size(GTK_WINDOW(library_window), hid_gtk_wgeo.library_width, hid_gtk_wgeo.library_height);
 
-	gtk_window_set_title(GTK_WINDOW(library_window), _("PCB Library"));
+	gtk_window_set_title(GTK_WINDOW(library_window), _("pcb-rnd Library"));
 	gtk_window_set_wmclass(GTK_WINDOW(library_window), "PCB_Library", "PCB");
 
 	gtk_widget_realize(library_window);

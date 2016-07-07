@@ -337,7 +337,7 @@ void ghid_keyref_window_show(gboolean raise)
 	keyref_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_signal_connect(G_OBJECT(keyref_window), "destroy", G_CALLBACK(keyref_destroy_cb), NULL);
 	g_signal_connect(G_OBJECT(keyref_window), "configure_event", G_CALLBACK(keyref_window_configure_event_cb), NULL);
-	gtk_window_set_title(GTK_WINDOW(keyref_window), _("PCB Key Reference"));
+	gtk_window_set_title(GTK_WINDOW(keyref_window), _("pcb-rnd Key Reference"));
 	gtk_window_set_wmclass(GTK_WINDOW(keyref_window), "PCB_Keyref", "PCB");
 	gtk_window_set_default_size(GTK_WINDOW(keyref_window), hid_gtk_wgeo.keyref_width, hid_gtk_wgeo.keyref_height);
 

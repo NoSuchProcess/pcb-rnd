@@ -296,7 +296,7 @@ void lesstif_logv(const char *fmt, va_list ap)
 		stdarg(XmNautoUnmanage, False);
 		stdarg(XmNwidth, 600);
 		stdarg(XmNheight, 200);
-		stdarg(XmNtitle, "PCB Log");
+		stdarg(XmNtitle, "pcb-rnd Log");
 		log_form = XmCreateFormDialog(mainwind, "log", stdarg_args, stdarg_n);
 
 		stdarg_n = 0;
@@ -495,7 +495,7 @@ char *lesstif_prompt_for(const char *msg, const char *default_string)
 	if (prompt_dialog == 0) {
 		stdarg_n = 0;
 		stdarg(XmNautoUnmanage, False);
-		stdarg(XmNtitle, "PCB Prompt");
+		stdarg(XmNtitle, "pcb-rnd Prompt");
 		prompt_dialog = XmCreateFormDialog(mainwind, "prompt", stdarg_args, stdarg_n);
 
 		stdarg_n = 0;
@@ -867,7 +867,7 @@ static int About(int argc, char **argv, Coord x, Coord y)
 		stdarg_n = 0;
 		XmString xs = XmStringCreatePCB(GetInfoString());
 		stdarg(XmNmessageString, xs);
-		stdarg(XmNtitle, "About PCB");
+		stdarg(XmNtitle, "About pcb-rnd");
 		about = XmCreateInformationDialog(mainwind, "about", stdarg_args, stdarg_n);
 		XtUnmanageChild(XmMessageBoxGetChild(about, XmDIALOG_CANCEL_BUTTON));
 		XtUnmanageChild(XmMessageBoxGetChild(about, XmDIALOG_HELP_BUTTON));

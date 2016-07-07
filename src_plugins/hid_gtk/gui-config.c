@@ -1311,7 +1311,7 @@ static void config_color_button_create(GtkWidget * box, conf_native_t *cfg, int 
 
 	ghid_map_color_string(cfg->val.color[idx], &(ci->color[idx]));
 
-	title = g_strdup_printf(_("PCB %s Color"), cfg->description);
+	title = g_strdup_printf(_("pcb-rnd %s Color"), cfg->description);
 	ci->button = gtk_color_button_new_with_color(&(ci->color[idx]));
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(ci->button), title);
 	g_free(title);
@@ -1691,7 +1691,7 @@ void ghid_config_window_show(void)
 	config_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_signal_connect(G_OBJECT(config_window), "delete_event", G_CALLBACK(config_destroy_cb), NULL);
 
-	gtk_window_set_title(GTK_WINDOW(config_window), _("PCB Preferences"));
+	gtk_window_set_title(GTK_WINDOW(config_window), _("pcb-rnd Preferences"));
 	gtk_window_set_wmclass(GTK_WINDOW(config_window), "Pcb_Conf", "PCB");
 	gtk_container_set_border_width(GTK_CONTAINER(config_window), 2);
 

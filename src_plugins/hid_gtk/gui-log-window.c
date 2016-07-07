@@ -76,7 +76,7 @@ void ghid_log_window_create()
 	log_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_signal_connect(G_OBJECT(log_window), "destroy", G_CALLBACK(log_destroy_cb), NULL);
 	g_signal_connect(G_OBJECT(log_window), "configure_event", G_CALLBACK(log_window_configure_event_cb), NULL);
-	gtk_window_set_title(GTK_WINDOW(log_window), _("PCB Log"));
+	gtk_window_set_title(GTK_WINDOW(log_window), _("pcb-rnd Log"));
 	gtk_window_set_wmclass(GTK_WINDOW(log_window), "PCB_Log", "PCB");
 	gtk_window_set_default_size(GTK_WINDOW(log_window), hid_gtk_wgeo.log_width, hid_gtk_wgeo.log_height);
 
