@@ -25,6 +25,7 @@
 #include <liblihata/tree.h>
 #include "conf.h"
 #include "conf_core.h"
+#include "conf_hid.h"
 #include "hid_cfg.h"
 #include "hid_init.h"
 #include "hid_attrib.h"
@@ -1337,6 +1338,8 @@ void conf_uninit(void)
 {
 	int n;
 	htsp_entry_t *e;
+
+	conf_hid_uninit();
 
 	for(n = 0; n < CFR_max_alloc; n++)
 		if (conf_root[n] != NULL)

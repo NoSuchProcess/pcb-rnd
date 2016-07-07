@@ -34,7 +34,6 @@ static void conf_hid_init(void)
 		conf_hid_ids = htpp_alloc(ptrhash, keyeq);
 }
 
-#warning TODO: get this called from conf_uninit()
 void conf_hid_uninit(void)
 {
 	htpp_free(conf_hid_ids);

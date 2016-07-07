@@ -33,4 +33,5 @@ conf_hid_id_t conf_hid_reg(const char *cookie, const conf_hid_callbacks_t *cb);
 /* Unregister a hid; if unreg_item cb is specified, call it on each config item */
 void conf_hid_unreg(const char *cookie);
 
+void conf_hid_uninit(void);
 #endif
