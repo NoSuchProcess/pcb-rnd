@@ -144,7 +144,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	GtkWidget *content_area;
 	GtkWidget *vbox, *hbox, *sub_vbox, *table;
 	GtkWidget *label, *select_box, *check_box;
-	char *new_name;
+	const char *new_name;
 
 	/* Build dialog */
 	dialog = gtk_dialog_new_with_buttons(_("Edit Route Styles"),
@@ -217,7 +217,6 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 			*rst->name = '\0';
 		}
 
-#warning TODO: doesn't this leak?
 		new_name = gtk_entry_get_text(GTK_ENTRY(dialog_data.name_entry));
 
 		while(isspace(*new_name)) new_name++;
