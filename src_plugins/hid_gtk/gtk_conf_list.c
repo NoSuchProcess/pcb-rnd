@@ -207,6 +207,7 @@ gboolean key_release_cb(GtkWidget *widget, GdkEventKey *event, gtk_conf_list_t *
 				button_sel_cb(NULL, cl);
 			break;
 	}
+	return 0;
 }
 
 GtkWidget *gtk_conf_list_widget(gtk_conf_list_t *cl)

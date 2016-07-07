@@ -137,7 +137,7 @@ static void ghid_config_window_close(void);
 */
 void config_any_replace(save_ctx_t *ctx, const char **paths)
 {
-	char **p;
+	const char **p;
 	int need_update = 0;
 
 	for(p = paths; *p != NULL; p++) {
@@ -243,7 +243,7 @@ static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton
 
 static void config_command_window_toggle_cb(GtkToggleButton * button, gpointer data)
 {
-	gboolean active = gtk_toggle_button_get_active(button);
+/*	gboolean active =*/ gtk_toggle_button_get_active(button);
 	static gboolean holdoff;
 
 	if (holdoff)
@@ -722,7 +722,6 @@ static void lht_clean_list(lht_node_t *lst)
 /* Create a lihata list of the current library paths - to be tuned into CFR design upon the first modification */
 static lht_node_t *config_library_list()
 {
-	lht_node_t *rt = conf_lht_get_first(CFR_INTERNAL), *n;
 	conf_listitem_t *i;
 	int idx;
 	const char *s;
@@ -761,7 +760,7 @@ static lht_node_t *config_library_list()
 
 static void pre_rebuild(gtk_conf_list_t *cl)
 {
-	lht_node_t *m, *l;
+	lht_node_t *m;
 	lht_clean_list(config_library_lst);
 
 	m = conf_lht_get_first(CFR_DESIGN);
@@ -1374,8 +1373,7 @@ void config_colors_save(GtkButton *widget, save_ctx_t *ctx)
 
 static void config_colors_tab_create(GtkWidget * tab_vbox)
 {
-	GtkWidget *scrolled_vbox, *vbox, *hbox, *expander, *sep;
-	GList *list;
+	GtkWidget *scrolled_vbox, *vbox, *expander;
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
@@ -1412,8 +1410,6 @@ static void config_colors_tab_create(GtkWidget * tab_vbox)
 	vbox = ghid_category_vbox(vbox, NULL, 0, 2, TRUE, FALSE);
 
 	config_colors_tab_create_scalar(vbox, "appearance/color", 1);
-
-	sep = gtk_hseparator_new();
 
 	config_colors_tab_create_array(vbox, "appearance/color/layer_selected");
 	config_user_role_section(config_colors_vbox, config_colors_save);
@@ -1580,6 +1576,8 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename, c
 		case CFN_UNIT:
 		case CFN_COLOR:
 		case CFN_LIST:
+		case CFN_INCREMENTS:
+
 /*			gtk_entry_set_text(GTK_ENTRY(entry), *item->val.string);
 			gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 4);*/
 			break;
@@ -1673,7 +1671,7 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 
 void ghid_config_window_show(void)
 {
-	GtkWidget *widget, *main_vbox, *vbox, *config_hbox, *hbox;
+	GtkWidget *widget, *main_vbox, *config_hbox, *hbox;
 	GtkWidget *scrolled;
 	GtkWidget *button;
 	GtkTreeStore *model;

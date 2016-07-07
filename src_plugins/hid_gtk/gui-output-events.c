@@ -109,10 +109,9 @@ void ghid_get_coords(const char *msg, Coord * x, Coord * y)
 	}
 }
 
-gboolean ghid_note_event_location(GdkEventButton * ev)
+void ghid_note_event_location(GdkEventButton * ev)
 {
 	gint event_x, event_y;
-	gboolean moved;
 
 	if (!ev) {
 		gdk_window_get_pointer(gtk_widget_get_window(ghid_port.drawing_area), &event_x, &event_y, NULL);
@@ -126,7 +125,6 @@ gboolean ghid_note_event_location(GdkEventButton * ev)
 
 	EventMoveCrosshair(gport->pcb_x, gport->pcb_y);
 	ghid_set_cursor_position_labels();
-	return moved;
 }
 
 static gboolean ghid_idle_cb(gpointer data)

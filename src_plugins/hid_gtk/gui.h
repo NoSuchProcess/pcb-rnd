@@ -238,7 +238,7 @@ void ghid_get_pointer(gint *, gint *);
 void ghid_port_ranges_changed(void);
 void ghid_port_ranges_scale(void);
 
-gboolean ghid_note_event_location(GdkEventButton * ev);
+void ghid_note_event_location(GdkEventButton * ev);
 gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data);
 gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data);
 gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);
@@ -501,7 +501,7 @@ extern hid_cfg_mouse_t ghid_mouse;
 extern hid_cfg_keys_t ghid_keymap;
 extern int ghid_wheel_zoom;
 
-int ghid_usage(char *topic);
+int ghid_usage(const char *topic);
 void hid_gtk_wgeo_update(void);
 void config_color_button_update(conf_native_t *cfg, int idx);
 

@@ -570,8 +570,8 @@ static void library_window_callback_filter_button_clicked(GtkButton * button, gp
 static GtkTreeModel *create_lib_tree_model_recurse(GtkTreeStore *tree, GhidLibraryWindow *library_window, library_t *parent, GtkTreeIter *iter_parent)
 {
 	GtkTreeIter p_iter;
-	library_t *menu, *entry;
-	int n, m;
+	library_t *menu;
+	int n;
 
 	for(menu = parent->data.dir.children.array, n = 0; n < parent->data.dir.children.used; n++, menu++)
 	{

@@ -399,7 +399,6 @@ ghid_layer_selector_add_layer(GHidLayerSelector * ls,
 	gboolean last_activatable = TRUE;
 	GtkTreePath *path;
 	GtkTreeIter iter;
-	int i;
 
 	/* Look for existing layer with this ID */
 	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(ls->list_store), &iter))

@@ -62,7 +62,6 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 {
 	const char *tmp_val;
 	gchar mnemonic = 0;
-	int j;
 	GtkAction *action = NULL;
 	char *accel = NULL;
 	char *menu_label;
@@ -193,8 +192,6 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
  * */
 void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t *base)
 {
-	lht_node_t *n;
-
 	switch(base->type) {
 		case LHT_HASH: /* leaf submenu */
 			{
@@ -433,8 +430,8 @@ GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu)
 /* Create a new popup window */
 static GtkWidget *new_popup(lht_node_t *menu_item)
 {
-	GtkWidget *new_menu = gtk_menu_new();;
-	GHidMainMenu *menu  = GHID_MAIN_MENU(ghidgui->menu_bar);
+	GtkWidget *new_menu = gtk_menu_new();
+/*	GHidMainMenu *menu  = GHID_MAIN_MENU(ghidgui->menu_bar);*/
 
 	g_object_ref_sink(new_menu);
 	menu_item->user_data = new_menu;

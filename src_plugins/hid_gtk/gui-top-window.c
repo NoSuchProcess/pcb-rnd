@@ -295,8 +295,6 @@ static gboolean top_window_enter_cb(GtkWidget * widget, GdkEvent * event, GHidPo
 
 static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
 {
-	int i;
-
 	if (action == NULL || node == NULL)
 		return;
 
@@ -1364,13 +1362,12 @@ static void ghid_create_listener(void)
 
 
 /* ------------------------------------------------------------ */
-static char **pcbmenu_paths = NULL;
-
-int ghid_usage(char *topic)
+int ghid_usage(const char *topic)
 {
 	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
 	conf_usage("plugins/hid_gtk", hid_usage_option);
 	fprintf(stderr, "\nInvocation: pcb-rnd --gui gtk [options]\n");
+	return 0;
 }
 
 	/* Create top level window for routines that will need top_window
@@ -1379,7 +1376,6 @@ int ghid_usage(char *topic)
 void ghid_parse_arguments(int *argc, char ***argv)
 {
 	GtkWidget *window;
-	gint i;
 	GdkPixbuf *icon;
 
 	ghid_config_init();
@@ -1402,8 +1398,10 @@ void ghid_parse_arguments(int *argc, char ***argv)
 #endif
 
 #if defined (DEBUG)
-	for (i = 0; i < *argc; i++) {
-		printf("ghid_parse_arguments():  *argv[%d] = \"%s\"\n", i, (*argv)[i]);
+	{
+		int i;
+		for (i = 0; i < *argc; i++)
+			printf("ghid_parse_arguments():  *argv[%d] = \"%s\"\n", i, (*argv)[i]);
 	}
 #endif
 
@@ -1661,7 +1659,6 @@ static GtkWidget *ghid_load_menus(void)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;
-	int i;
 	extern const char *hid_gtk_menu_default;
 
 	ghid_cfg = hid_cfg_load("gtk", 0, hid_gtk_menu_default);
