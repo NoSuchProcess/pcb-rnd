@@ -1812,7 +1812,9 @@ static int SaveWinGeo(int argc, char **argv, Coord x, Coord y)
 {
 	conf_role_t geo_dest = ghid_wgeo_save();
 	conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), geo_dest, NULL);
+	return 0;
 }
+
 
 
 /* ------------------------------------------------------------ */
@@ -1892,6 +1894,11 @@ REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 #endif
 
 HID ghid_hid;
+
+void hid_hid_gtk_uninit()
+{
+	conf_hid_unreg(ghid_cookie);
+}
 
 pcb_uninit_t hid_hid_gtk_init()
 {
@@ -1988,7 +1995,6 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghid_hid.notify_save_pcb = ghid_notify_save_pcb;
 	ghid_hid.notify_filename_changed = ghid_notify_filename_changed;
 
-#warning TODO: call conf_hid_unreg on uninit
 	ghid_conf_id = conf_hid_reg(ghid_cookie, NULL);
 
 	ghid_hid.create_menu = ghid_create_menu;
@@ -2001,7 +2007,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	conf_reg_field(conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);
 #include "hid_gtk_conf_fields.h"
 
-	return NULL;
+	return hid_hid_gtk_uninit;
 }
 
 void gtkhid_begin(void)
