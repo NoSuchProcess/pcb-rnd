@@ -8,7 +8,7 @@ LDFLAGS=-lm
 EXE=@sys/ext_exe@
 CC=@cc/cc@
 
-HASHOBJ=../../src_3rd/liblihata/genht/hash.o ../../src_3rd/liblihata/genht/htsp.o
+HASHOBJ=../../src_3rd/liblihata/genht/hash.o ../../src_3rd/liblihata/genht/htsp.o ../../src_3rd/liblihata/genht/htpp.o
 VECTOBJ=../../src_3rd/genvector/genvector.a
 LISTOBJ=../../src_3rd/genlist/genlist.a
 SCCFOBJ=../../scconfig/src/default/str.o
@@ -44,7 +44,7 @@ include {../src_plugins/plugins_fp.tmpasm}
 print [@
 
 FP_OBJS    = @/local/pcb/OBJS@ ../../src/plug_footprint.o ../../src/plug_footprint_host.o
-CONF_OBJS  = ../../src/vtlibrary.o ../../src/compat_fs.o ../../src/paths.o ../../src/conf.o ../../src/conf_core.o ../../src/hid_cfg.o ../../src/misc_util.o ../../src/unit.o ../../src/conf_internal.o ../../src/list_conf.o
+CONF_OBJS  = ../../src/vtlibrary.o ../../src/compat_fs.o ../../src/paths.o ../../src/conf.o ../../src/conf_core.o ../../src/hid_cfg.o ../../src/misc_util.o ../../src/unit.o ../../src/conf_internal.o ../../src/list_conf.o ../../src/conf_hid.o
 FP_LDFLAGS = @/local/pcb/LDFLAGS@
 FP_CFLAGS  = @/local/pcb/CFLAGS@
 OBJS=gsch2pcb.o help.o
