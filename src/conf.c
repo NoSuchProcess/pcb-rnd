@@ -646,7 +646,8 @@ void conf_update(const char *path)
 	if (path == NULL) {
 		htsp_entry_t *e;
 		conf_fields_foreach(e) {
-			conf_hid_cb((conf_native_t *)e->value, val_change_pre);
+			conf_hid_global_cb((conf_native_t *)e->value, val_change_pre);
+			conf_hid_local_cb((conf_native_t *)e->value, val_change_pre);
 			conf_field_clear(e->value);
 		}
 	}
@@ -668,7 +669,8 @@ void conf_update(const char *path)
 			return;
 		}
 		conf_field_clear(n);
-		conf_hid_cb(n, val_change_pre);
+		conf_hid_global_cb(n, val_change_pre);
+		conf_hid_local_cb(n, val_change_pre);
 	}
 
 	/* merge all memory-lht data to memory-bin */
@@ -677,11 +679,15 @@ void conf_update(const char *path)
 
 	if (path == NULL) {
 		htsp_entry_t *e;
-		conf_fields_foreach(e)
-			conf_hid_cb((conf_native_t *)e->value, val_change_post);
+		conf_fields_foreach(e) {
+			conf_hid_local_cb((conf_native_t *)e->value, val_change_post);
+			conf_hid_global_cb((conf_native_t *)e->value, val_change_post);
+		}
 	}
-	else
-		conf_hid_cb(n, val_change_post);
+	else {
+		conf_hid_local_cb(n, val_change_post);
+		conf_hid_global_cb(n, val_change_post);
+	}
 	conf_notify_hids();
 }
 

@@ -82,7 +82,7 @@ void conf_hid_unreg(const char *cookie)
 		conf_native_t *cfg = e->value;
 		len = vtp0_len(&cfg->hid_callbacks);
 
-		conf_hid_cb(cfg, unreg_item);
+		conf_hid_local_cb(cfg, unreg_item);
 
 		/* truncate the list if there are empty items at the end */
 		if (len > h->id) {
@@ -106,4 +106,19 @@ void conf_hid_unreg(const char *cookie)
 	free(h);
 }
 
-#warning TODO: call other callbacks as well
+void conf_hid_global_cb_(conf_native_t *item, int offs)
+{
+	htpp_entry_t *e;
+	if (conf_hid_ids == NULL)
+		return;
+	for (e = htpp_first(conf_hid_ids); e; e = htpp_next(conf_hid_ids, e)) {
+		conf_hid_t *h = e->value;
+		const conf_hid_callbacks_t *cbs = h->cb;
+		if (cbs != NULL) {
+			void (*cb)(conf_native_t *cfg) = (void (*)(conf_native_t *cfg)) ((char *)cbs) + offs;
+			if (cb != NULL)
+				cb(item);
+		}
+	}
+}
+

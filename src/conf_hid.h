@@ -8,7 +8,7 @@ typedef struct conf_hid_callbacks_s {
 	void (*val_change_pre)(conf_native_t *cfg);
 	void (*val_change_post)(conf_native_t *cfg);
 
-	/* Called when a new config item is added to the database */
+	/* Called when a new config item is added to the database; global-only */
 	void (*new_item_post)(conf_native_t *cfg);
 
 	/* Called during conf_hid_unreg to get hid-data cleaned up */
@@ -42,8 +42,9 @@ void conf_hid_unreg(const char *cookie);
 
 void conf_hid_uninit(void);
 
+
 /* Call the local callback of a native item */
-#define conf_hid_cb(native, cb) \
+#define conf_hid_local_cb(native, cb) \
 do { \
 	int __n__; \
 	for(__n__ = 0; __n__ < vtp0_len(&((native)->hid_callbacks)); __n__++) { \
@@ -52,5 +53,17 @@ do { \
 			cbs->cb(native); \
 	} \
 } while(0)
+
+/* Call the local callback of a native item */
+#define conf_hid_global_cb(native, cb) \
+do { \
+	conf_hid_callbacks_t __cbs__; \
+	int __offs__ = ((char *)&(__cbs__.cb)) - ((char *)&(__cbs__)); \
+	conf_hid_global_cb_(native, __offs__); \
+} while(0)
+
+
+/* Internal */
+void conf_hid_global_cb_(conf_native_t *item, int offs);
 
 #endif
