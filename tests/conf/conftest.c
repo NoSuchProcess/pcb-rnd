@@ -18,11 +18,6 @@ void Message(const char *Format, ...)
 	fprintf(stderr, "\n");
 }
 
-void hid_notify_conf_changed(void)
-{
-
-}
-
 void hid_usage_option(const char *name, const char *help)
 {
 }

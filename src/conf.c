@@ -632,12 +632,6 @@ static void conf_field_clear(conf_native_t *f)
 }
 
 int conf_rev = 0;
-static void conf_notify_hids()
-{
-	conf_rev++;
-	hid_notify_conf_changed();
-}
-
 void conf_update(const char *path)
 {
 	conf_native_t *n;
@@ -688,7 +682,7 @@ void conf_update(const char *path)
 		conf_hid_local_cb(n, val_change_post);
 		conf_hid_global_cb(n, val_change_post);
 	}
-	conf_notify_hids();
+	conf_rev++;
 }
 
 static lht_node_t *conf_lht_get_first_(lht_node_t *cwd)

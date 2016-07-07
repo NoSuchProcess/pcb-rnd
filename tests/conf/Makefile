@@ -9,6 +9,7 @@ LIB_PCB_OBJS= \
 	../../src/paths.o \
 	../../src/conf.o \
 	../../src/conf_core.o \
+	../../src/conf_hid.o \
 	../../src/conf_internal.o \
 	../../src/pcb-printf.o
 

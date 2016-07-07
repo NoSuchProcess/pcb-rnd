@@ -1152,12 +1152,6 @@ void plugin_register(const char *name, const char *path, void *handle, int dynam
 
 }
 
-void hid_notify_conf_changed(void)
-{
-
-}
-
-
 /************************ main ***********************/
 char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name, *net_file_name;
 int main(int argc, char ** argv)

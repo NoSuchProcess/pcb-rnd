@@ -32,11 +32,6 @@ HID *hid_find_exporter(const char *);
    real reason to use this is to locate all the export-style HIDs. */
 HID **hid_enumerate(void);
 
-/* Notify all HIDs about a change in the config */
-void hid_notify_conf_changed(void);
-
-
-
 /* HID internal interfaces.  These may ONLY be called from the HID
    modules, not from the common PCB code.  */
 
