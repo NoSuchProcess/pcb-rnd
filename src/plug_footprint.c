@@ -326,12 +326,6 @@ void fp_dump()
 	fp_dump_dir(&library, 0);
 }
 
-
-const char *fp_get_library_shell(void)
-{
-	return conf_core.rc.library_shell;
-}
-
 /* This function loads the newlib footprints into the Library.
  * It examines all directories pointed to by the search paths
  * (normally Settings.LibraryTree).

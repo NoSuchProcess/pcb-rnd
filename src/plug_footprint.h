@@ -78,9 +78,6 @@ library_t *fp_mkdir_len(library_t *parent, const char *name, int name_len);
 library_t *fp_lib_search(library_t *dir, const char *name);
 
 #ifndef PCB_NO_GLUE
-/* Return the library shell string (from Settings) */
-const char *fp_get_library_shell(void);
-
 /* Append a menu entry in the tree */
 library_t *fp_append_entry(library_t *parent, const char *name, fp_type_t type, void *tags[]);
 
