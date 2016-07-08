@@ -980,13 +980,14 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 
 	/* set value */
 	if (ty == LHT_LIST) {
-		lht_err_t err;
+		lht_err_t err = 0;
 		nn = lht_dom_node_alloc(LHT_TEXT, "");
 		if (pol == POL_OVERWRITE) {
 			if (idx == -1) {
 				/* empty the list so that we insert to an empty list which is overwriting the list */
 				while(cwd->data.list.first != NULL)
 					lht_tree_del(cwd->data.list.first);
+				lht_dom_list_append(cwd, nn);
 			}
 			else {
 				lht_node_t *old = lht_tree_list_nth(cwd, idx);
@@ -1022,8 +1023,10 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 		cwd = nn;
 	}
 	else {
-		if (idx > 0)
+		if (idx > 0) {
+			free(path);
 			return -1; /* only lists/array path should have index larger than 0 */
+		}
 		cwd = nn;
 	}
 
