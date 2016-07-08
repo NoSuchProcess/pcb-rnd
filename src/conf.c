@@ -431,10 +431,12 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 			switch(pol) {
 				case POL_PREPEND:
 					conflist_insert(dest->val.list, i);
+					dest->used |= 1;
 					break;
 				case POL_APPEND:
 				case POL_OVERWRITE:
 					conflist_append(dest->val.list, i);
+					dest->used |= 1;
 					break;
 				case POL_DISABLE: case POL_invalid: return 0; /* compiler warning */
 			}
