@@ -164,7 +164,6 @@ void Message(char *err)
 static int build_and_run_command(const char * format_, ...)
 {
 	va_list vargs;
-	int i, status;
 	int result = FALSE;
 	vts0_t args;
 	char *format, *s, *start;
@@ -933,7 +932,6 @@ static void prune_elements(char * pcb_file, char * bak)
 
 static void add_schematic(char * sch)
 {
-	const char *s;
 	char **n;
 	n = gadl_new(&schematics);
 	*n = strdup(sch);
@@ -1082,7 +1080,7 @@ static void get_args(int argc, char ** argv)
 			}
 			else if (!strcmp(opt, "verbose") || !strcmp(opt, "v")) {
 				char tmp[16];
-				sprintf(tmp, "%d", conf_g2pr.utils.gsch2pcb_rnd.verbose + 1);
+				sprintf(tmp, "%ld", conf_g2pr.utils.gsch2pcb_rnd.verbose + 1);
 				conf_set(CFR_CLI, "utils/gsch2pcb_rnd/verbose", -1, tmp, POL_OVERWRITE);
 				continue;
 			}
@@ -1132,27 +1130,28 @@ static void get_args(int argc, char ** argv)
 /* Dummy pcb-rnd for the fp lib to work */
 int Library;
 
+#warning remove these after testing:
+/*
 static void bozo()
 {
 	fprintf(stderr, "bozo: pcb-rnd footprint plugin compatibility error.\n");
 	abort();
 }
 
-void *GetLibraryEntryMemory(void *Menu)                { bozo(); }
-void * GetLibraryMenuMemory(void *lib, int *idx)       { bozo(); }
+void *GetLibraryEntryMemory(void *Menu)                { bozo(); return NULL; }
+void * GetLibraryMenuMemory(void *lib, int *idx)       { bozo(); return NULL; }
 void DeleteLibraryMenuMemory(void *lib, int menuidx)   { bozo(); }
 void sort_library(void *lib)                           { bozo(); }
+*/
 
 void plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
 {
 
 }
-
 /************************ main ***********************/
 char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name, *net_file_name;
 int main(int argc, char ** argv)
 {
-	char *tmp;
 	int i;
 	int initial_pcb = TRUE;
 	int created_pcb_file = TRUE;
