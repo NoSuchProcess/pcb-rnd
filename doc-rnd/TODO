@@ -9,19 +9,23 @@
 		- marker not moved to the second hole starting point
 
 - replace settings with lihata (conf_*)
+	- fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
 	- project files:
 		- save only if changed
 		- save project conf properly (needs lihata smart save long term, test with plain save now)
-		
 	- implement binary->lht setter and use it in config_any_replace() if the source role sais so
 	- revise gsch2pcb-rnd warnings
 	- gtk hid: clean up the #warnings
 	- finish gtk preferences user pov (change is always saved to the design)
+		- library search path:
+			- use two file listings, CFR_DESIGN on the left and the merged one on the right
+			- select policy on the left
+			- disable the save-to-project and save-to-user settings
+			- remap the library after a change (config_library_apply()), test!
 		- layer colors not saved in pcb attribs
 		- color dialog:
 			- background color not loaded into the gtk cache: catch conf change event in the gtk hid to reconfigure the color
-		- library path: remap the library after a change, test!
-	- menu bug broke between r1533 and r1534:
+	- menu bug, broke between r1533 and r1534:
 		- view/show layers stopped working (broke before 1.0.10)
 		- view/show current layer stopped working (broke before 1.0.10)
 	- TEST:
