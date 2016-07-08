@@ -36,12 +36,14 @@ void watch_post(conf_native_t *cfg)
 
 void notify_pre(conf_native_t *cfg)
 {
-	printf("notify_pre:  '%s' old value\n", cfg->hash_path);
+	if (global_notify)
+		printf("notify_pre:  '%s' old value\n", cfg->hash_path);
 }
 
 void notify_post(conf_native_t *cfg)
 {
-	printf("notify_post: '%s' new value\n", cfg->hash_path);
+	if (global_notify)
+		printf("notify_post: '%s' new value\n", cfg->hash_path);
 }
 
 conf_hid_callbacks_t watch_cbs = {watch_pre, watch_post, NULL, NULL};
