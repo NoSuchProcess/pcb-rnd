@@ -165,7 +165,8 @@ void cmd_set(char *arg)
 	while(isspace(*val) || (*val == '=')) val++;
 
 	res = conf_set(current_role, path, -1, val, current_policy);
-	printf("set result: %d\n", res);
+	if (res != 0)
+		printf("set error: %d\n", res);
 }
 
 void cmd_watch(char *arg, int add)
