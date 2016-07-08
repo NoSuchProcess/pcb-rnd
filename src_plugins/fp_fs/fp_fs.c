@@ -53,16 +53,6 @@ static fp_type_t pcb_fp_file_type(const char *fn, void ***tags);
 /* ---------------------------------------------------------------------------
  * Parse the directory tree where newlib footprints are found
  */
-
-/* Helper function for ParseLibraryTree */
-static const char *pcb_basename(const char *p)
-{
-	char *rv = strrchr(p, '/');
-	if (rv)
-		return rv + 1;
-	return p;
-}
-
 typedef struct list_dir_s list_dir_t;
 
 struct list_dir_s {
@@ -124,9 +114,7 @@ static int fp_fs_list(library_t *pl, const char *subdir, int recurse,
 	struct dirent *subdirentry;		/* Individual subdir entry */
 	struct stat buffer;						/* Buffer used in stat */
 	size_t l;
-	size_t len;
 	int n_footprints = 0;					/* Running count of footprints found in this subdir */
-	char *full_path;
 
 	/* Cache old dir, then cd into subdir because stat is given relative file names. */
 	memset(olddir, 0, sizeof olddir);
@@ -173,7 +161,6 @@ static int fp_fs_list(library_t *pl, const char *subdir, int recurse,
 #ifdef DEBUG
 /*    printf("...  Examining file %s ... \n", subdirentry->d_name); */
 #endif
-
 
 		/* Ignore non-footprint files found in this directory
 		 * We're skipping .png and .html because those
@@ -233,7 +220,6 @@ static int fp_fs_load_dir_(library_t *pl, const char *subdir, const char *toppat
 	char working_[MAXPATHLEN + 1];
 	const char *visible_subdir;
 	char *working;								/* String holding abs path to working dir */
-	int menuidx;
 
 	sprintf(working_, "%s%c%s", toppath, PCB_DIR_SEPARATOR_C, subdir);
 	resolve_path(working_, &working, 0);
@@ -298,7 +284,6 @@ static int fp_search_cb(void *cookie, const char *subdir, const char *name, fp_t
 /* TODO: make this static */
 char *fp_fs_search(const char *search_path, const char *basename, int parametric)
 {
-	int found;
 	const char *p, *end;
 	char path[MAXPATHLEN + 1];
 	fp_search_t ctx;
@@ -313,7 +298,7 @@ char *fp_fs_search(const char *search_path, const char *basename, int parametric
 
 /*	fprintf("Looking for %s\n", ctx.target);*/
 
-	for (p = search_path; end = strchr(p, ':'); p = end + 1) {
+	for (p = search_path; (end = strchr(p, ':')) != NULL; p = end + 1) {
 		char *fpath;
 		memcpy(path, p, end - p);
 		path[end - p] = '\0';
