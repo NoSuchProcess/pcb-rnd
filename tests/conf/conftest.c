@@ -118,8 +118,8 @@ void cmd_policy(char *arg)
 
 void cmd_role(char *arg)
 {
-	conf_policy_t nr = conf_role_parse(arg);
-	if (nr == POL_invalid)
+	conf_role_t nr = conf_role_parse(arg);
+	if (nr == CFR_invalid)
 		Message("Invalid/unknown role: '%s'", arg);
 	else
 		current_role = nr;
@@ -196,6 +196,27 @@ void cmd_echo(char *arg)
 		printf("%s\n", arg);
 }
 
+void cmd_reset(char *arg)
+{
+	if (arg == NULL) {
+		conf_reset(current_role, "<cmd_reset current>");
+	}
+	else if (*arg == '*') {
+		int n;
+		for(n = 0; n < CFR_max_real; n++)
+			conf_reset(n, "<cmd_reset *>");
+	}
+	else {
+		conf_role_t role = conf_role_parse(arg);
+		if (role == CFR_invalid) {
+			Message("Invalid role: '%s'", arg);
+			return;
+		}
+		conf_reset(role, "<cmd_reset role>");
+	}
+	conf_update(NULL);
+}
+
 char line[8192];
 
 /* returns 1 if there's more to read */
@@ -244,6 +265,8 @@ int main()
 	conf_core_postproc();
 	conf_load_all(NULL, NULL);
 
+	conf_reset(CFR_SYSTEM, "<conftest>");
+
 	while(getline_cont(stdin)) {
 		char *arg, *cmd = line;
 		while(isspace(*cmd)) cmd++;
@@ -262,6 +285,8 @@ int main()
 			cmd_load(arg, 0);
 		else if (strcmp(cmd, "paste") == 0)
 			cmd_load(arg, 1);
+		else if (strcmp(cmd, "reset") == 0)
+			cmd_reset(arg);
 		else if (strcmp(cmd, "set") == 0)
 			cmd_set(arg);
 		else if (strcmp(cmd, "policy") == 0)
