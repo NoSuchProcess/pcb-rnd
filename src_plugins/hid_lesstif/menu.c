@@ -401,17 +401,17 @@ static void insert_layerview_buttons(Widget menu)
 	for (i = 0; i < LB_NUM; i++) {
 		static char namestr[] = "Label ";
 		char *name = namestr;
-		int accel_idx = i;
+		/*int accel_idx = i;*/
 		Widget btn;
 		name[5] = 'A' + i;
 		switch (i) {
 		case LB_SILK:
 			name = "Silk";
-			accel_idx = max_copper_layer;
+			/*accel_idx = max_copper_layer;*/
 			break;
 		case LB_RATS:
 			name = "Rat Lines";
-			accel_idx = max_copper_layer + 1;
+			/*accel_idx = max_copper_layer + 1;*/
 			break;
 		case LB_PINS:
 			name = "Pins/Pads";
@@ -455,19 +455,19 @@ static void insert_layerpick_buttons(Widget menu)
 	for (i = 0; i < LB_NUMPICK; i++) {
 		static char namestr[] = "Label ";
 		char *name = namestr;
-		int accel_idx = i;
-		char buf[20], av[30];
+		/*int accel_idx = i;*/
+		char av[30];
 		Widget btn;
 		name[5] = 'A' + i;
 		switch (i) {
 		case LB_SILK:
 			name = "Silk";
-			accel_idx = max_copper_layer;
+			/*accel_idx = max_copper_layer;*/
 			strcpy(av, "SelectLayer(Silk)");
 			break;
 		case LB_RATS:
 			name = "Rat Lines";
-			accel_idx = max_copper_layer + 1;
+			/*accel_idx = max_copper_layer + 1;*/
 			strcpy(av, "SelectLayer(Rats)");
 			break;
 		default:
@@ -627,7 +627,6 @@ void lesstif_get_coords(const char *msg, Coord * px, Coord * py)
 
 static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * pbcs)
 {
-	int vi;
 	have_xy = 0;
 	lesstif_show_crosshair(0);
 	if (pbcs->event && pbcs->event->type == KeyPress) {
@@ -723,7 +722,7 @@ int lesstif_key_event(XKeyEvent * e)
 		}
 	}
 
-	printf("KEY lookup: mod=%x sym=%x/%d\n", mods, sym, slen);
+/*	printf("KEY lookup: mod=%x sym=%x/%d\n", mods, sym, slen); */
 
 	slen = hid_cfg_keys_input(&lesstif_keymap, mods, sym, seq, &seq_len);
 	if (slen <= 0)
@@ -916,6 +915,7 @@ static void add_node_to_menu(Widget in_menu, lht_node_t *node, XtCallbackProc ca
 	switch(node->type) {
 		case LHT_HASH: add_res2menu_named(in_menu, node, callback, level); break;
 		case LHT_TEXT: add_res2menu_text_special(in_menu, node, callback); break;
+		default: /* ignore them */;
 	}
 }
 
@@ -924,8 +924,6 @@ extern char *lesstif_pcbmenu_path;
 Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 {
 	Widget mb = XmCreateMenuBar(parent, name, margs, mn);
-	char *filename;
-	char *home_pcbmenu, *home;
 	int screen;
 	lht_node_t *mr;
 

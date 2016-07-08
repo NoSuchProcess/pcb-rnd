@@ -658,11 +658,10 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 {
 	char buf[10];
 	KeySym sym;
-	int slen;
 
 	switch (e->type) {
 	case KeyPress:
-		slen = XLookupString((XKeyEvent *) e, buf, sizeof(buf), &sym, NULL);
+		XLookupString((XKeyEvent *) e, buf, sizeof(buf), &sym, NULL);
 		switch (sym) {
 		case XK_Escape:
 			XtUnmanageChild(m_cmd);
@@ -1270,7 +1269,6 @@ static hid_cfg_mod_t lesstif_mb2cfg(int but)
 static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 {
 	static int pressed_button = 0;
-	static int ignore_release = 0;
 
 	show_crosshair(0);
 	switch (e->type) {
@@ -1290,11 +1288,8 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			if (pressed_button)
 				return;
 			/*printf("click %d\n", e->xbutton.button); */
-			if (lesstif_button_event(w, e)) {
-				ignore_release = 1;
+			if (lesstif_button_event(w, e))
 				return;
-			}
-			ignore_release = 0;
 
 			notify_crosshair_change(false);
 			pressed_button = e->xbutton.button;
@@ -3673,7 +3668,6 @@ static void lesstif_progress_dialog(int so_far, int total, const char *msg)
 
 static int lesstif_progress(int so_far, int total, const char *message)
 {
-	static bool visible = false;
 	static bool started = false;
 	XEvent e;
 	struct timeval time;
@@ -3683,7 +3677,6 @@ static int lesstif_progress(int so_far, int total, const char *message)
 
 	if (so_far == 0 && total == 0 && message == NULL) {
 		XtUnmanageChild(progress_dialog);
-		visible = false;
 		started = false;
 		progress_cancelled = false;
 		return retval;
@@ -3747,11 +3740,12 @@ static void lesstif_finish_debug_draw(void)
 	 */
 }
 
-static int lesstif_usage(char *topic)
+static int lesstif_usage(const char *topic)
 {
 	fprintf(stderr, "\nLesstif GUI command line arguments:\n\n");
 	hid_usage(lesstif_attribute_list, sizeof(lesstif_attribute_list) / sizeof(lesstif_attribute_list[0]));
 	fprintf(stderr, "\nInvocation: pcb-rnd --gui lesstif [options]\n");
+	return 0;
 }
 
 #include "dolists.h"

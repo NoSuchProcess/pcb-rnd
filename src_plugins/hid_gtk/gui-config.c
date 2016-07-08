@@ -551,7 +551,7 @@ static void config_increments_sect_create(GtkWidget * vbox, const Increments *in
 	*pe = '/';
 	pe++;
 
-#warning leak: strdup(path) never free'd
+#warning leak: strdup(path) never free()d
 	/* ---- Grid Increment/Decrement ---- */
 	strcpy(pe, "grid");
 	ghid_coord_entry(vbox, NULL,
@@ -698,7 +698,7 @@ static char *get_misc_col_data(int row, int col, lht_node_t *nd)
 	return NULL;
 }
 
-#warning TODO: leak: this is never free'd
+#warning TODO: leak: this is never free()d
 lht_doc_t *config_library_lst_doc;
 lht_node_t *config_library_lst;
 

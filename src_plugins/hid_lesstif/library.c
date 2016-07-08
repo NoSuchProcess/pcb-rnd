@@ -68,7 +68,6 @@ static void library_browse(Widget w, void *v, XmListCallbackStruct * cbs)
 
 static void libnode_select(Widget w, void *v, XmListCallbackStruct * cbs)
 {
-	char *args;
 	library_t *e = picks.array[last_pick];
 	e = &e->data.dir.children.array[cbs->item_position - 1];
 	if (LoadElementToBuffer(PASTEBUFFER, e->data.fp.loc_info))

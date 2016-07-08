@@ -171,13 +171,11 @@ be prompted to enter one.
 
 int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 {
-	int i;
 	char *fname = NULL;
 	static char *default_file = NULL;
 	const char *sval;
 	lht_doc_t *doc;
 	lht_node_t *drlres;
-	int type;
 	bool free_fname = false;
 
 	cached_drill = -1;
@@ -254,7 +252,7 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 	/* extract the drillmap resource */
 	drlres = lht_tree_path(doc, "/", "/drillmap", 1, NULL);
 	if (drlres != NULL) {
-		if (drlres->type = LHT_LIST) {
+		if (drlres->type == LHT_LIST) {
 			lht_node_t *n;
 			for(n = drlres->data.list.first; n != NULL; n = n->next) {
 				if (n->type != LHT_TEXT)
@@ -318,7 +316,6 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 
 static void apply_vendor_map(void)
 {
-	int i;
 	int changed, tot;
 	bool state;
 
@@ -544,7 +541,6 @@ static void add_to_drills(char *sval)
 /* deal with the "skip" subresource */
 static void process_skips(lht_node_t *res)
 {
-	int type;
 	char *sval;
 	int *cnt;
 	char ***lst = NULL;

@@ -860,7 +860,7 @@ static void gcode_set_crosshair(int x, int y, int a)
 {
 }
 
-static int gcode_usage(char *topic)
+static int gcode_usage(const char *topic)
 {
 	fprintf(stderr, "\ngcode exporter command line arguments:\n\n");
 	hid_usage(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]));

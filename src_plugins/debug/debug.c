@@ -28,6 +28,7 @@
 #include "data.h"
 #include "debug_conf.h"
 #include "action_helper.h"
+#include "hid_actions.h"
 #include "plugins.h"
 #include "conf.h"
 #include "error.h"

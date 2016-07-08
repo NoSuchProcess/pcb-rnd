@@ -1475,7 +1475,7 @@ static void png_set_crosshair(int x, int y, int a)
 {
 }
 
-static int png_usage(char *topic)
+static int png_usage(const char *topic)
 {
 	fprintf(stderr, "\npng exporter command line arguments:\n\n");
 	hid_usage(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]));

@@ -1166,7 +1166,7 @@ static void gerber_calibrate(double xval, double yval)
 	CRASH;
 }
 
-static int gerber_usage(char *topic)
+static int gerber_usage(const char *topic)
 {
 	fprintf(stderr, "\ngerber exporter command line arguments:\n\n");
 	hid_usage(gerber_options, sizeof(gerber_options) / sizeof(gerber_options[0]));

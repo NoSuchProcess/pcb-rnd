@@ -1592,7 +1592,7 @@ void ps_ps_init(HID * hid)
 	ps_inited = 1;
 }
 
-static int ps_usage(char *topic)
+static int ps_usage(const char *topic)
 {
 	fprintf(stderr, "\nps exporter command line arguments:\n\n");
 	hid_usage(ps_attribute_list, sizeof(ps_attribute_list) / sizeof(ps_attribute_list[0]));

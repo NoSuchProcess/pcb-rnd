@@ -198,12 +198,12 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 			TextType *name;
 			name = &parent->Name[1];
 			if ((name->TextString == NULL) || (*name->TextString == '\0'))
-				sprintf(s, "%s #%d \\nof #%d", typ, n->to->ID, parent->ID);
+				sprintf(s, "%s #%ld \\nof #%ld", typ, n->to->ID, parent->ID);
 			else
-				sprintf(s, "%s #%d \\nof %s", typ, n->to->ID, name->TextString);
+				sprintf(s, "%s #%ld \\nof %s", typ, n->to->ID, name->TextString);
 		}
 		else
-			sprintf(s, "%s #%d", typ, n->to->ID);
+			sprintf(s, "%s #%ld", typ, n->to->ID);
 		g->node2name[n->gid] = s;
 	}
 	g->node2name[0] = strdup("S");
@@ -238,7 +238,6 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 	S = NULL;
 	T = NULL;
 	for (n = short_conns; n != NULL; n = n->next) {
-		short_conn_t *from;
 		void *spare;
 
 		spare = NULL;

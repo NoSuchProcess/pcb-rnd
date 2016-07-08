@@ -1341,7 +1341,7 @@ static void lgbutton_resize(Widget w, XtPointer u, XmDrawingAreaCallbackStruct *
 void lesstif_update_layer_groups()
 {
 	int sets[MAX_LAYER + 2][MAX_LAYER];
-	int i, j, n;
+	int i, j;
 	LayerGroupType *l = &(PCB->LayerGroups);
 
 	if (!layer_groups_form)

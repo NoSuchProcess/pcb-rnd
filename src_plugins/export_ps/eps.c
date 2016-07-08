@@ -594,7 +594,7 @@ static void eps_set_crosshair(int x, int y, int action)
 {
 }
 
-static int eps_usage(char *topic)
+static int eps_usage(const char *topic)
 {
 	fprintf(stderr, "\neps exporter command line arguments:\n\n");
 	hid_usage(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]));

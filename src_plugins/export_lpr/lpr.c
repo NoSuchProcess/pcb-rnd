@@ -114,7 +114,7 @@ static void lpr_calibrate(double xval, double yval)
 
 static HID lpr_hid;
 
-static int lpr_usage(char *topic)
+static int lpr_usage(const char *topic)
 {
 	fprintf(stderr, "\nlpr exporter command line arguments:\n\n");
 	hid_usage(base_lpr_options, sizeof(base_lpr_options) / sizeof(base_lpr_options[0]));

@@ -995,7 +995,7 @@ static void nelma_set_crosshair(int x, int y, int a)
 {
 }
 
-static int nelma_usage(char *topic)
+static int nelma_usage(const char *topic)
 {
 	fprintf(stderr, "\nnelma exporter command line arguments:\n\n");
 	hid_usage(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]));

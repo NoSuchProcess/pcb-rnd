@@ -502,7 +502,7 @@ static void bom_do_export(HID_Attr_Val * options)
 	PrintBOM();
 }
 
-static int bom_usage(char *topic)
+static int bom_usage(const char *topic)
 {
 	fprintf(stderr, "\nbom exporter command line arguments:\n\n");
 	hid_usage(bom_options, sizeof(bom_options) / sizeof(bom_options[0]));

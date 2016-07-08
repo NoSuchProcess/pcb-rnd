@@ -146,13 +146,12 @@ static void update_style_buttons()
 
 static void style_value_cb(Widget w, int i, void *cbs)
 {
-	Coord n;
 	char *s;
 
 	if (local_update)
 		return;
 	s = XmTextGetString(w);
-	n = GetValueEx(s, NULL, NULL, NULL, unit->suffix, NULL);
+	GetValueEx(s, NULL, NULL, NULL, unit->suffix, NULL);
 	switch (i) {
 	case SSthick:
 		conf_set_design("design/line_thickness", "%s", s);

@@ -110,14 +110,6 @@
 
 RCSID("$Id$");
 
-#if !defined(HAS_ATEXIT) && !defined(HAS_ON_EXIT)
-/* ---------------------------------------------------------------------------
- * some local identifiers for OS without an atexit() or on_exit()
- * call
- */
-static char TMPFilename[80];
-#endif
-
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */

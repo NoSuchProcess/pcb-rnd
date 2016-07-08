@@ -425,7 +425,6 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, conf_role_t 
 int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr Ptr, char *Filename)
 {
 	int r = 0;
-	char *path, *p;
 	yyPCB = NULL;
 	yyFont = Ptr;
 	yyElement = NULL;
