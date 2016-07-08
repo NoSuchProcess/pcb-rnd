@@ -80,7 +80,6 @@ put /local/pcb/OBJS [@
 	plugins.o
 	plug_io.o
 	plug_footprint.o
-	plug_footprint_host.o
 	polygon.o
 	polygon1.o
 	polygon_act.o

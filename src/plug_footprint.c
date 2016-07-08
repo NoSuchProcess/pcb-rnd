@@ -32,6 +32,13 @@
 #include <genht/htsp.h>
 #include <genht/hash.h>
 
+#include <dirent.h>
+#include <sys/stat.h>
+
+#include "conf_core.h"
+#include "plugins.h"
+#include "error.h"
+
 plug_fp_t *plug_fp_chain = NULL;
 library_t library;
 
@@ -319,3 +326,86 @@ void fp_dump()
 	fp_dump_dir(&library, 0);
 }
 
+
+const char *fp_get_library_shell(void)
+{
+	return conf_core.rc.library_shell;
+}
+
+/* This function loads the newlib footprints into the Library.
+ * It examines all directories pointed to by the search paths
+ * (normally Settings.LibraryTree).
+ * In each directory specified there, it looks both in that directory,
+ * as well as *one* level down.  It calls the subfunction 
+ * fp_fs_load_dir to put the footprints into PCB's internal
+ * datastructures.
+ */
+static int fp_read_lib_all_(const char *searchpath)
+{
+	char toppath[MAXPATHLEN + 1];	/* String holding abs path to top level library dir */
+	char *libpaths;								/* String holding list of library paths to search */
+	char *p;											/* Helper string used in iteration */
+	int n_footprints = 0;					/* Running count of footprints found */
+	int res;
+
+	/* Initialize path, working by writing 0 into every byte. */
+	memset(toppath, 0, sizeof toppath);
+
+	/* Additional loop to allow for multiple 'newlib' style library directories 
+	 * called out in Settings.LibraryTree
+	 */
+	libpaths = strdup(searchpath);
+	for (p = strtok(libpaths, PCB_PATH_DELIMETER); p && *p; p = strtok(NULL, PCB_PATH_DELIMETER)) {
+		/* remove trailing path delimeter */
+		strncpy(toppath, p, sizeof(toppath) - 1);
+
+#ifdef DEBUG
+		printf("In ParseLibraryTree, looking for newlib footprints inside top level directory %s ... \n", toppath);
+#endif
+
+		/* Next read in any footprints in the top level dir */
+		res = -1;
+		HOOK_CALL(plug_fp_t, plug_fp_chain, load_dir, res, >= 0, toppath);
+		if (res >= 0)
+			n_footprints += res;
+		else
+			Message("Warning: footprint library list error on %s\n", toppath);
+	}
+
+#ifdef DEBUG
+	printf("Leaving ParseLibraryTree, found %d footprints.\n", n_footprints);
+#endif
+
+	free(libpaths);
+	return n_footprints;
+}
+
+static gds_t fpds_paths;
+static int fpds_inited = 0;
+
+const char *fp_default_search_path(void)
+{
+	return conf_concat_strlist(&conf_core.rc.library_search_paths, &fpds_paths, &fpds_inited, ':');
+}
+
+int fp_host_uninit(void)
+{
+	if (fpds_inited)
+		gds_uninit(&fpds_paths);
+	return 0;
+}
+
+int fp_read_lib_all(void)
+{
+	FILE *resultFP = NULL;
+
+	/* List all footprint libraries.  Then sort the whole
+	 * library.
+	 */
+	if (fp_read_lib_all_(fp_default_search_path()) > 0 || resultFP != NULL) {
+		fp_sort_children(&library);
+		return 0;
+	}
+
+	return (1);
+}
