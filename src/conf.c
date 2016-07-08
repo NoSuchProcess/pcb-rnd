@@ -708,6 +708,11 @@ static lht_node_t *conf_lht_get_first_(lht_node_t *cwd)
 
 lht_node_t *conf_lht_get_first(conf_role_t target)
 {
+	assert(target != CFR_invalid);
+	assert(target >= 0);
+	assert(target < CFR_max_alloc);
+	if (conf_root[target] == NULL)
+		return NULL;
 	return conf_lht_get_first_(conf_root[target]->root);
 }
 
