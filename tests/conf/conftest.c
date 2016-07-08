@@ -244,7 +244,7 @@ int main()
 	while(getline_cont(stdin)) {
 		char *arg, *cmd = line;
 		while(isspace(*cmd)) cmd++;
-		if (*cmd == '#')
+		if ((*cmd == '#') || (*cmd == '\0'))
 			continue;
 		arg = strpbrk(cmd, " \t");
 		if (arg != NULL) {
