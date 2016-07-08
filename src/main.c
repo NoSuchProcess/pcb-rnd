@@ -218,8 +218,6 @@ static char **hid_argv_orig;
 
 void pcb_main_uninit(void)
 {
-	int i;
-
 	UninitBuffers();
 
 	/* Free up memory allocated to the PCB. Why bother when we're about to exit ?

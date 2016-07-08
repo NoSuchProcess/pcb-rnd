@@ -137,7 +137,7 @@ int ParsePCB(PCBTypePtr Ptr, char *Filename, int load_settings)
 	int res = -1;
 	HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, Ptr, Filename, load_settings);
 
-	if ((res == NULL) && (load_settings))
+	if ((res == 0) && (load_settings))
 		conf_load_project(NULL, Filename);
 
 	plug_io_err(res, "load pcb", Filename);
@@ -486,7 +486,7 @@ void set_some_route_style()
 		return;
 
 	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
-#warning TODO: call some central setter instead so we don't need to know the field names here
+#warning TODO: call some central setter instead so we do not need to know the field names here
 		SetLineSize(PCB->RouteStyle.array[0].Thick);
 		SetViaSize(PCB->RouteStyle.array[0].Diameter, true);
 		SetViaDrillingHole(PCB->RouteStyle.array[0].Hole, true);

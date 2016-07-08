@@ -1372,7 +1372,7 @@ int SearchScreenGridSlop(Coord X, Coord Y, int Type, void **Result1, void **Resu
 int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord by1, Coord bx2, Coord by2)
 {
 /* TODO: this should be long double if Coord is 64 bits */
-	double ua, ub, xi, yi, X1, Y1, X2, Y2, X3, Y3, X4, Y4, tmp;
+	double ua, xi, yi, X1, Y1, X2, Y2, X3, Y3, X4, Y4, tmp;
 	int is_a_pt, is_b_pt;
 
 	/* degenerate cases: a line is actually a point */
@@ -1400,7 +1400,7 @@ int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord
 
 	tmp = ((Y4 - Y3) * (X2 - X1) - (X4 - X3) * (Y2 - Y1));
 	ua = ((X4 - X3) * (Y1 - Y3) - (Y4 - Y3) * (X1 - X3)) / tmp;
-	ub = ((X2 - X1) * (Y1 - Y3) - (Y2 - Y1) * (X1 - X3)) / tmp;
+/*	ub = ((X2 - X1) * (Y1 - Y3) - (Y2 - Y1) * (X1 - X3)) / tmp;*/
 	xi = X1 + ua * (X2 - X1);
 	yi = Y1 + ua * (Y2 - Y1);
 
