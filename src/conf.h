@@ -145,6 +145,9 @@ void conf_uninit(void);
    get the binary representation updated */
 void conf_load_all(const char *project_fn, const char *pcb_fn);
 
+/* Load a file or a string as a role */
+int conf_load_as(conf_role_t role, const char *fn, int fn_is_text);
+
 /* Load a project file into CFR_PROJECT. Both project_fn and pcb_fn can't be NULL.
    Leaves an initialized but empty CFR_PROJECT root if no project file was
    found. Runs conf_update(NULL); */
