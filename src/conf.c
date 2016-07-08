@@ -622,8 +622,15 @@ static void conf_field_clear(conf_native_t *f)
 			case CFN_COORD:       clr(coord); break;
 			case CFN_UNIT:        clr(unit); break;
 			case CFN_COLOR:       clr(color); break;
-			case CFN_LIST:        clr(list); break;
 			case CFN_INCREMENTS:  clr(increments); break;
+			case CFN_LIST:
+				while(conflist_first(f->val.list)) { /* need to free all items of a list before clearing the main struct */
+					conf_listitem_t *i = conflist_first(f->val.list);
+					conflist_remove(i);
+					free(i);
+				}
+				clr(list);
+				break;
 		}
 		memset(f->prop, 0, sizeof(confprop_t) * f->used);
 #undef clr
