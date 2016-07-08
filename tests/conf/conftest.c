@@ -52,7 +52,7 @@ extern lht_doc_t *conf_root[];
 void cmd_dump(char *arg)
 {
 	if (arg == NULL) {
-		Message("Need an arg: native or lohata");
+		Message("Need an arg: native or lihata");
 		return;
 	}
 	if (strncmp(arg, "native", 6) == 0) {
@@ -75,6 +75,31 @@ void cmd_dump(char *arg)
 	}
 	else
 		Message("Invalid dump mode: '%s'", arg);
+}
+
+void cmd_load(char *arg, int is_text)
+{
+	char *fn;
+	conf_role_t role ;
+
+	if (arg == NULL) {
+		help:;
+		Message("Need 2 args: policy and %s", (is_text ? "lihata text" : "file name"));
+		return;
+	}
+	fn = strchr(arg, ' ');
+	if (fn == NULL)
+		goto help;
+	*fn = '\0';
+	fn++;
+	while(isspace(*fn)) fn++;
+
+	role = conf_role_parse(arg);
+	if (role == CFR_invalid) {
+		Message("Invalid role: '%s'", arg);
+		return;
+	}
+	printf("Result: %d\n", conf_load_as(role, fn, is_text));
 }
 
 conf_policy_t current_policy = POL_OVERWRITE;
@@ -162,9 +187,52 @@ void cmd_notify(char *arg)
 	printf("Notify is %s\n", global_notify ? "on" : "off");
 }
 
+void cmd_echo(char *arg)
+{
+	if (arg != NULL)
+		printf("%s\n", arg);
+}
+
+char line[8192];
+
+/* returns 1 if there's more to read */
+int getline_cont(FILE *f)
+{
+	char *end = line + strlen(line) - 1;
+	int offs = 0, cont;
+
+	if (feof(f))
+		return 0;
+
+	do {
+		int remain = sizeof(line)-offs;
+		assert(remain > 0);
+		cont = 0;
+		if (fgets(line+offs, remain, f)) {
+			char *start = line+offs;
+			int len = strlen(start);
+			lineno++;
+			end = start + len - 1;
+			while((end >= start) && ((*end == '\n') || (*end == '\r'))) {
+				*end = '\0';
+				end--;
+			}
+			if ((end >= start) && (*end == '\\')) {
+				cont = 1;
+				*end = '\n';
+			}
+			offs += len-1;
+		}
+		else {
+			if (offs == 0)
+				return 0;
+		}
+	} while(cont);
+	return 1;
+}
+
 int main()
 {
-	char line[1024];
 
 	hid_id = conf_hid_reg(hid_cookie, &global_cbs);
 
@@ -173,17 +241,8 @@ int main()
 	conf_core_postproc();
 	conf_load_all(NULL, NULL);
 
-	while(fgets(line, sizeof(line), stdin)) {
-		char *end = line + strlen(line) - 1;
-		char *cmd, *arg;
-
-		lineno++;
-
-		while((end >= line) && ((*end == '\n') || (*end == '\r'))) {
-			*end = '\0';
-			end--;
-		}
-		cmd = line;
+	while(getline_cont(stdin)) {
+		char *arg, *cmd = line;
 		while(isspace(*cmd)) cmd++;
 		if (*cmd == '#')
 			continue;
@@ -196,6 +255,10 @@ int main()
 
 		if (strcmp(cmd, "dump") == 0)
 			cmd_dump(arg);
+		else if (strcmp(cmd, "load") == 0)
+			cmd_load(arg, 0);
+		else if (strcmp(cmd, "paste") == 0)
+			cmd_load(arg, 1);
 		else if (strcmp(cmd, "set") == 0)
 			cmd_set(arg);
 		else if (strcmp(cmd, "policy") == 0)
@@ -210,6 +273,8 @@ int main()
 			cmd_watch(arg, 0);
 		else if (strcmp(cmd, "notify") == 0)
 			cmd_notify(arg);
+		else if (strcmp(cmd, "echo") == 0)
+			cmd_echo(arg);
 		else
 			Message("unknown command '%s'", cmd);
 	}
