@@ -677,7 +677,7 @@ static gtk_conf_list_t library_cl;
 
 static void config_library_apply(void)
 {
-#warning CONF TODO: what to do here?
+#warning CONF TODO: what to do here? probably reload the lib...
 }
 
 static const char *fn_postproc(char *path)

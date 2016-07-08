@@ -77,7 +77,6 @@ library_t *fp_mkdir_p(const char *path);
 library_t *fp_mkdir_len(library_t *parent, const char *name, int name_len);
 library_t *fp_lib_search(library_t *dir, const char *name);
 
-#ifndef PCB_NO_GLUE
 /* Append a menu entry in the tree */
 library_t *fp_append_entry(library_t *parent, const char *name, fp_type_t type, void *tags[]);
 
@@ -88,6 +87,4 @@ int fp_read_lib_all(void);
 const char *fp_default_search_path(void);
 
 int fp_host_uninit(void);
-
-#endif
 #endif

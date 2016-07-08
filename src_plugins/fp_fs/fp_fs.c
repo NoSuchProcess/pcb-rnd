@@ -45,6 +45,8 @@
 #include "compat_fs.h"
 #include "error.h"
 #include "misc.h"
+#include "conf.h"
+#include "conf_core.h"
 
 static fp_type_t pcb_fp_file_type(const char *fn, void ***tags);
 
@@ -455,7 +457,7 @@ static FILE *fp_fs_fopen(plug_fp_t *ctx, const char *path, const char *name, fp_
 {
 	char *basename, *params, *fullname;
 	FILE *f = NULL;
-	const char *libshell = fp_get_library_shell();
+	const char *libshell = conf_core.rc.library_shell;
 
 	fctx->field[F_IS_PARAMETRIC].i = fp_dupname(name, &basename, &params);
 	if (basename == NULL)
