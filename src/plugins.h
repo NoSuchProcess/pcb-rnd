@@ -25,6 +25,9 @@
  *
  */
 
+#ifndef PCB_RND_PLUGINS_H
+#define PCB_RND_PLUGINS_H
+
 typedef struct plugin_info_s plugin_info_t;
 
 typedef void (*pcb_uninit_t)(void);
@@ -85,3 +88,4 @@ do { \
 		chain = chain->next; \
 } while(0)
 
+#endif
