@@ -25,10 +25,6 @@ void fp_fclose(FILE * f, fp_fopen_ctx_t *fctx);
    */
 int fp_dupname(const char *name, char **basename, char **params);
 
-/* walk the search_path for finding the first footprint for basename (shall not contain "(") */
-////// TODO
-char *fp_fs_search(const char *search_path, const char *basename, int parametric);
-
 /**** tag management ****/
 /* Resolve a tag name to an unique void * ID; create unknown tag if alloc != 0 */
 const void *fp_tag(const char *tag, int alloc);

@@ -281,8 +281,8 @@ static int fp_search_cb(void *cookie, const char *subdir, const char *name, fp_t
 	return 0;
 }
 
-/* TODO: make this static */
-char *fp_fs_search(const char *search_path, const char *basename, int parametric)
+/* walk the search_path for finding the first footprint for basename (shall not contain "(") */
+static char *fp_fs_search(const char *search_path, const char *basename, int parametric)
 {
 	const char *p, *end;
 	char path[MAXPATHLEN + 1];
