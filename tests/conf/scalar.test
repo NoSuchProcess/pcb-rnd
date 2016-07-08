@@ -1,0 +1,29 @@
+echo === initial state ===
+dump native rc/library_shell
+
+echo === setting new values on higher prio should change the final render ===
+role user
+set rc/library_shell from_user
+dump native rc/library_shell
+
+role design
+set rc/library_shell from_design
+dump native rc/library_shell
+
+role cli
+set rc/library_shell from_cli
+dump native rc/library_shell
+
+echo === setting new values on lower prio should NOT change the final render ===
+role user
+set rc/library_shell from_user2
+dump native rc/library_shell
+
+role design
+set rc/library_shell from_design2
+dump native rc/library_shell
+
+echo === change prio to reorder ===
+role cli
+prio 1
+dump native rc/library_shell
