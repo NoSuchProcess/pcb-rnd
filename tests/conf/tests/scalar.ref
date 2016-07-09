@@ -1,0 +1,11 @@
+=== initial state ===
+ I rc/library_shell = <NULL> <<prio=0>> conf_rev=0
+=== setting new values on higher prio should change the final render ===
+ I rc/library_shell = from_user <<prio=400 from=<main>:0>> conf_rev=0
+ I rc/library_shell = from_design <<prio=700 from=<null-design>:0>> conf_rev=1
+ I rc/library_shell = from_cli <<prio=800 from=<commandline>:0>> conf_rev=2
+=== setting new values on lower prio should NOT change the final render ===
+ I rc/library_shell = from_cli <<prio=800 from=<commandline>:0>> conf_rev=3
+ I rc/library_shell = from_cli <<prio=800 from=<commandline>:0>> conf_rev=4
+=== change prio to reorder ===
+ I rc/library_shell = from_design2 <<prio=700 from=<null-design>:0>> conf_rev=5

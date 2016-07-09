@@ -1,0 +1,10 @@
+=== initial state: empty ===
+ I rc/library_search_paths = <empty list> <<prio=0>> conf_rev=0
+=== append two items ===
+ I rc/library_search_paths = {{foo <<prio=700 from=<cmd_reset *>:0>>};} <<prio=0>> conf_rev=1
+ I rc/library_search_paths = {{foo <<prio=700 from=<cmd_reset *>:0>>};{bar <<prio=700 from=<cmd_reset *>:0>>};} <<prio=0>> conf_rev=2
+=== prepend two items ===
+ I rc/library_search_paths = {{pre1 <<prio=700 from=<cmd_reset *>:0>>};{foo <<prio=700 from=<cmd_reset *>:0>>};{bar <<prio=700 from=<cmd_reset *>:0>>};} <<prio=0>> conf_rev=3
+ I rc/library_search_paths = {{pre2 <<prio=700 from=<cmd_reset *>:0>>};{pre1 <<prio=700 from=<cmd_reset *>:0>>};{foo <<prio=700 from=<cmd_reset *>:0>>};{bar <<prio=700 from=<cmd_reset *>:0>>};} <<prio=0>> conf_rev=4
+=== overwrite ===
+ I rc/library_search_paths = {{new <<prio=700 from=<cmd_reset *>:0>>};} <<prio=0>> conf_rev=5
