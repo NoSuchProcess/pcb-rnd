@@ -86,7 +86,7 @@ void cmd_load(char *arg, int is_text)
 
 	if (arg == NULL) {
 		help:;
-		Message("Need 2 args: policy and %s", (is_text ? "lihata text" : "file name"));
+		Message("Need 2 args: role and %s", (is_text ? "lihata text" : "file name"));
 		return;
 	}
 
@@ -108,6 +108,7 @@ void cmd_load(char *arg, int is_text)
 		return;
 	}
 	printf("Result: %d\n", conf_load_as(role, fn, is_text));
+	conf_update(NULL);
 }
 
 conf_policy_t current_policy = POL_OVERWRITE;
@@ -131,7 +132,7 @@ void cmd_role(char *arg)
 		current_role = nr;
 }
 
-void cmd_prio(char *arg)
+void cmd_chprio(char *arg)
 {
 	char *end;
 	int np = strtol(arg == NULL ? "" : arg, &end, 10);
@@ -151,6 +152,39 @@ void cmd_prio(char *arg)
 		sprintf(tmp, "%s-%d", first->name, np);
 		free(first->name);
 		first->name = strdup(tmp);
+		conf_update(NULL);
+	}
+}
+
+void cmd_chpolicy(char *arg)
+{
+	conf_policy_t np;
+	lht_node_t *first;
+
+	if (arg == NULL) {
+		Message("need a policy", arg);
+		return;
+	}
+	np = conf_policy_parse(arg);
+	if (np == POL_invalid) {
+		Message("Invalid integer policy: '%s'", arg);
+		return;
+	}
+
+	first = conf_lht_get_first(current_role);
+	if (first != NULL) {
+		char tmp[128];
+		char *end;
+		end = strchr(first->name, '-');
+		if (end != NULL) {
+			sprintf(tmp, "%s%s", arg, end);
+			free(first->name);
+			first->name = strdup(tmp);
+		}
+		else {
+			free(first->name);
+			first->name = strdup(arg);
+		}
 		conf_update(NULL);
 	}
 }
@@ -296,8 +330,10 @@ int main()
 			cmd_set(arg);
 		else if (strcmp(cmd, "policy") == 0)
 			cmd_policy(arg);
-		else if (strcmp(cmd, "prio") == 0)
-			cmd_prio(arg);
+		else if (strcmp(cmd, "chprio") == 0)
+			cmd_chprio(arg);
+		else if (strcmp(cmd, "chpolicy") == 0)
+			cmd_chpolicy(arg);
 		else if (strcmp(cmd, "role") == 0)
 			cmd_role(arg);
 		else if (strcmp(cmd, "watch") == 0)
