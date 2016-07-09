@@ -32,6 +32,7 @@
 
 #define FLAG_TEST
 #include "strflags.c"
+#include "flags.c"
 
 static void dump_flag(FlagType * f)
 {
