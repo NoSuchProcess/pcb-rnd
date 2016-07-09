@@ -9,8 +9,57 @@ static const char *help[] = {
 	"dump", "lihata role",
 	"Dump all in-memory lihata settings of a given role. For roles, see: help roles",
 
+	"load", "role filename",
+	"Load a lihata file as role",
+
+	"load", "*",
+	"Load all roles from disk - the same way as it happens on a normal pcb-rnd startup.",
+
+	"paste", "role lhttxt",
+	"Paste in-line lihata document lhttxt as role, like if it was loaded from a file",
+
+	"policy", "pol",
+	"Change current set-policy to pol. This only affects whether a set command inserts, appends or overwrites list-type settings. For valid policies, see: help policies",
+
+	"role", "rol",
+	"Change current set-policy to rol. This only affects the destination of subsequent set commands. For valid roles, see: help roles",
+
+	"chprio", "prio",
+	"Change the priority of the first confroot of the current role's in-memory lihata document to prio and merge. Prio is an integer value.",
+
+	"chpolicy", "pol",
+	"Change the policy of the first confroot of the current role's in-memory lihata document to pol and merge. Pol is a policy, see: help policies",
+
+	"set", "path value",
+	"Call conf_set() on a given path with the given value, using the current set-role and the current set-policy. See also: help role; help policy.",
+
+	"watch", "path",
+	"Announce changes of a given path. See also: help unwatch",
+
+	"unwatch", "path",
+	"Stop announcing changes of a given path. See also: help watch",
+
+	"notify", "on",
+	"Turn on global notification on config changes.",
+
+	"notify", "off",
+	"Turn off global notification on config changes.",
+
+	"echo", "text...",
+	"Print multi-word text.",
+
+	"reset", "role",
+	"Reset (make empty) the in-memory lihata document of role; see also: help roles",
+
+	"reset", "*",
+	"Reset (make empty) all in-memory lihata documents",
+
+/* misc */
 	"roles", NULL,
 	"Valid roles: system, defaultpcb, user, env, project, design, cli",
+
+	"policies", NULL,
+	"Valid policies: prepend, append, overwrite",
 
 	NULL, NULL, NULL
 };
