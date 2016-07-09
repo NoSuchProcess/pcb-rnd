@@ -25,5 +25,5 @@ dump native rc/library_shell
 
 echo === change prio to reorder ===
 role cli
-prio 1
+chprio 1
 dump native rc/library_shell
