@@ -257,6 +257,9 @@ void cmd_reset(char *arg)
 	conf_update(NULL);
 }
 
+extern void cmd_help(char *arg);
+
+
 char line[8192];
 
 /* returns 1 if there's more to read */
@@ -344,6 +347,8 @@ int main()
 			cmd_notify(arg);
 		else if (strcmp(cmd, "echo") == 0)
 			cmd_echo(arg);
+		else if (strcmp(cmd, "help") == 0)
+			cmd_help(arg);
 		else
 			Message("unknown command '%s'", cmd);
 	}
