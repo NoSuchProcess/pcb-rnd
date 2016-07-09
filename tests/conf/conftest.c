@@ -90,8 +90,10 @@ void cmd_load(char *arg, int is_text)
 		return;
 	}
 
-	if (*arg == '*')
+	if (*arg == '*') {
 		conf_load_all(NULL, NULL);
+		return;
+	}
 
 	fn = strchr(arg, ' ');
 	if (fn == NULL)
