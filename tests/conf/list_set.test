@@ -1,0 +1,29 @@
+role design
+
+echo === initial state: empty ===
+reset *
+dump native rc/library_search_paths
+
+echo === append two items ===
+policy append
+
+set rc/library_search_paths foo
+dump native rc/library_search_paths
+
+set rc/library_search_paths bar
+dump native rc/library_search_paths
+
+echo === prepend two items ===
+policy prepend
+
+set rc/library_search_paths pre1
+dump native rc/library_search_paths
+
+set rc/library_search_paths pre2
+dump native rc/library_search_paths
+
+echo === overwrite ===
+policy overwrite
+
+set rc/library_search_paths new
+dump native rc/library_search_paths
