@@ -89,6 +89,10 @@ void cmd_load(char *arg, int is_text)
 		Message("Need 2 args: policy and %s", (is_text ? "lihata text" : "file name"));
 		return;
 	}
+
+	if (*arg == '*')
+		conf_load_all(NULL, NULL);
+
 	fn = strchr(arg, ' ');
 	if (fn == NULL)
 		goto help;
@@ -263,9 +267,8 @@ int main()
 	conf_init();
 	conf_core_init();
 	conf_core_postproc();
-	conf_load_all(NULL, NULL);
-
-	conf_reset(CFR_SYSTEM, "<conftest>");
+	conf_reset(CFR_SYSTEM, "<main>");
+	conf_reset(CFR_USER, "<main>");
 
 	while(getline_cont(stdin)) {
 		char *arg, *cmd = line;
