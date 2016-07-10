@@ -3,3 +3,16 @@ having to worry whether you break other people's compilation. You need to
 enable it in your compilation, tho, when running configure:
 
 ./configure --buildin-io_kicad_legacy
+
+Then run make (maybe only in src/)
+
+After making modifications to the plugin code, it's enough to run make in
+the plugin dir - as the module is a buildin, it will recompile pcb-rnd.
+
+Run pcb-rnd from the src/ directory (cd there, it won't find its
+files otherwise).
+
+TODO: how to run
+
+SVN: when commiting, please prefix all your commit message lines with string
+[io_kicad_legacy] to make my job easier when generating Changelog.
