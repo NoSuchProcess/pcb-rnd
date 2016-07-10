@@ -1137,27 +1137,8 @@ static void get_args(int argc, char ** argv)
 	}
 }
 
-
-#warning remove these after testing:
-
-/* Dummy pcb-rnd for the fp lib to work
-int Library;
-
-static void bozo()
-{
-	fprintf(stderr, "bozo: pcb-rnd footprint plugin compatibility error.\n");
-	abort();
-}
-
-void *GetLibraryEntryMemory(void *Menu)                { bozo(); return NULL; }
-void * GetLibraryMenuMemory(void *lib, int *idx)       { bozo(); return NULL; }
-void DeleteLibraryMenuMemory(void *lib, int menuidx)   { bozo(); }
-void sort_library(void *lib)                           { bozo(); }
-*/
-
 void plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
 {
-
 }
 
 void free_strlist(gadl_list_t *lst)
