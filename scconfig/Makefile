@@ -1,6 +1,9 @@
 # --- configuration part --
 
 # - generic configuration -
+SRC=src
+BIN=src
+
 #  what cflags to use to compile scconfig
 USER_CFLAGS = -Wall -g -DGENCALL -Isrc
 

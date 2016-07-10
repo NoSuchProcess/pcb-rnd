@@ -1,0 +1,5 @@
+The plugin is disabled by default for now. This lets you work on it without
+having to worry whether you break other people's compilation. You need to
+enable it in your compilation, tho, when running configure:
+
+./configure --buildin-io_kicad_legacy
