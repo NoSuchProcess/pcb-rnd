@@ -554,7 +554,10 @@ static PcbElement *pcb_element_exists(PcbElement * el_test, int record)
  */
 static void simple_translate(PcbElement * el)
 {
-
+	if (el->x != NULL)
+		free(el->x);
+	if (el->y != NULL)
+		free(el->y);
 	el->x = strdup("0");
 	el->y = strdup("0");
 }
@@ -635,6 +638,12 @@ fprintf(stderr, "   val: %s\n", value);*/
 
 
 	if (!refdes || !fp || !value) {
+		if (refdes != NULL)
+			free(refdes);
+		if (fp != NULL)
+			free(fp);
+		if (value != NULL)
+			free(value);
 		fprintf(stderr, "Bad package line: %s\n", pkg_line);
 		return NULL;
 	}
@@ -643,9 +652,9 @@ fprintf(stderr, "   val: %s\n", value);*/
 	fix_spaces(value);
 
 	el = calloc(sizeof(PcbElement), 1);
-	el->description = strdup(fp);
-	el->refdes = strdup(refdes);
-	el->value = strdup(value);
+	el->description = fp;
+	el->refdes = refdes;
+	el->value = value;
 
 // wtf?
 //  if ((s = strchr (el->value, (int) ')')) != NULL)
@@ -1150,6 +1159,18 @@ void plugin_register(const char *name, const char *path, void *handle, int dynam
 {
 
 }
+
+void free_strlist(gadl_list_t *lst)
+{
+	char **s;
+
+	while((s = gadl_first(lst)) != NULL) {
+		char *str = *s;
+		gadl_free(s);
+		free(str);
+	}
+}
+
 /************************ main ***********************/
 char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name, *net_file_name;
 int main(int argc, char ** argv)
@@ -1301,6 +1322,13 @@ int main(int argc, char ** argv)
 	free(bak_file_name);
 
 	conf_uninit();
+
+	free_strlist(&schematics);
+	free_strlist(&extra_gnetlist_arg_list);
+	free_strlist(&extra_gnetlist_list);
+
+	if (pcb_new_file_name != NULL)
+		free(pcb_new_file_name);
 
 	return 0;
 }
