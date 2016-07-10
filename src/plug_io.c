@@ -165,8 +165,46 @@ int ParseFont(FontTypePtr Ptr, char *Filename)
 	return res;
 }
 
+typedef struct {
+	plug_io_t *plug;
+	int prio;
+} find_t;
 
-#warning TODO: when we have multiple io_* plugins: write function should not be run on all available IO hooks but on the IO hook saved in the pcb struct (at load or creation time) so we save with the same format all the time
+static int find_prio_cmp(const void *p1, const void *p2)
+{
+	const find_t *f1 = p1, *f2 = p2;
+	return f1->prio > f2->prio;
+}
+
+/* Find the plugin that offers the highest write prio for the format */
+static plug_io_t *find_writer(const char *fmt)
+{
+	find_t available[32]; /* wish we had more than 32 IO plugins... */
+	int len = 0;
+
+	if (fmt == NULL) {
+#warning TODO: rather save format information on load
+		fmt = "pcb";
+	}
+
+#define cb_append(pl, pr) \
+	do { \
+		if (pr > 0) { \
+			assert(len < sizeof(available)/sizeof(available[0])); \
+			available[len].plug = pl; \
+			available[len++].prio = pr; \
+		} \
+	} while(0)
+
+	HOOK_CALL_ALL(plug_io_t, plug_io_chain, fmt_support_prio, cb_append, 1, fmt);
+	if (len == 0)
+		return NULL;
+
+	qsort(available, len, sizeof(available[0]), find_prio_cmp);
+	return available[0].plug;
+#undef cb_append
+}
+
 int WriteBuffer(FILE *f, BufferType *buff, const char *fmt)
 {
 	int res = -1;
@@ -186,8 +224,11 @@ int WriteElementData(FILE *f, DataTypePtr e, const char *fmt)
 
 int WritePCB(FILE *f, const char *fmt)
 {
-	int res = -1;
-	HOOK_CALL(plug_io_t, plug_io_chain, write_pcb, res, == 0, f);
+	int res;
+	plug_io_t *p = find_writer(fmt);
+
+	if (p != NULL)
+		res = p->write_pcb(p, f);
 	plug_io_err(res, "write pcb", NULL);
 	return res;
 }

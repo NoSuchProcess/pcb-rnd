@@ -69,6 +69,16 @@ do { \
 	} \
 } while(0)
 
+#define HOOK_CALL_ALL(chain_type, chain, func, cb, ...) \
+do { \
+	chain_type *__ch__; \
+	for(__ch__ = (chain); __ch__ != NULL; __ch__ = __ch__->next) { \
+		if (__ch__->func == NULL) \
+			continue; \
+		cb(__ch__, __ch__->func(__ch__, __VA_ARGS__)); \
+	} \
+} while(0)
+
 #define HOOK_REGISTER(chain_type, chain, hstruct) \
 do { \
 	(hstruct)->next = chain; \
