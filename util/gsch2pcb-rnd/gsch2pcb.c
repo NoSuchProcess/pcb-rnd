@@ -1139,6 +1139,8 @@ static void get_args(int argc, char ** argv)
 
 void plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
 {
+	if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
+		printf("Plugin loaded: %s (%s)\n", name, path);
 }
 
 void free_strlist(gadl_list_t *lst)
@@ -1163,10 +1165,6 @@ int main(int argc, char ** argv)
 	if (argc < 2)
 		usage();
 
-	{
-		pcb_uninit_t uninit_func;
-#		include "fp_init.c"
-	}
 
 	conf_init();
 	conf_core_init();
@@ -1185,6 +1183,10 @@ int main(int argc, char ** argv)
 	conf_load_all(NULL, NULL);
 	conf_update(NULL);
 
+	{
+		pcb_uninit_t uninit_func;
+#		include "fp_init.c"
+	}
 
 	load_extra_project_files();
 
@@ -1202,6 +1204,7 @@ int main(int argc, char ** argv)
 	pcb_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
 
 	conf_load_project(NULL, pcb_file_name);
+	conf_update(NULL); /* because of the project file */
 
 	{ /* set bak_file_name, finding the first number that results in a non-existing bak */
 		int len;
