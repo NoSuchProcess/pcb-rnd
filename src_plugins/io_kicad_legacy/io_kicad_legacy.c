@@ -31,7 +31,7 @@
 
 static plug_io_t io_kicad_legacy;
 
-int io_kicad_legacy_fmt(int wr, const char *fmt)
+int io_kicad_legacy_fmt(plug_io_t *ctx, int wr, const char *fmt)
 {
 	if (strcmp(fmt, "kicadl") != 0)
 		return 0;

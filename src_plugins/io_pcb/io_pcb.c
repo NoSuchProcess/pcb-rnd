@@ -31,7 +31,7 @@
 
 static plug_io_t io_pcb;
 
-int io_pcb_fmt(int wr, const char *fmt)
+int io_pcb_fmt(plug_io_t *ctx, int wr, const char *fmt)
 {
 	if (strcmp(fmt, "pcb") != 0)
 		return 0;

@@ -40,7 +40,7 @@ struct plug_io_s {
 	   reading (if wr == 0). Return 0 if not supported or an integer priority
 	   if supported. The higher the prio is the more likely the plugin gets
 	   the next operation on the file. Base prio should be 100 for native formats. */
-	int (*fmt_support_prio)(int wr, const char *fmt);
+	int (*fmt_support_prio)(plug_io_t *ctx, int wr, const char *fmt);
 
 	/* Attempt to load a pcb design from Filename to Ptr.
 	   Conf subtree at settings_dest is replaced by settings loaded from the
