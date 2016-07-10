@@ -27,31 +27,9 @@
  */
 
 #include "config.h"
-#include "conf_core.h"
-#include <stdlib.h>
-#include "write.h"
+#include <stdio.h>
+#include "global.h"
 
-RCSID("$Id$");
-
-/* writes element data */
-int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
-{
-	fputs("io_kicad_legacy_write_element()", FP);
-	return 0;
-}
-
-/* writes the buffer to file */
-int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
-{
-	fputs("io_kicad_legacy_write_buffer()", FP);
-	return 0;
-}
-
-/* ---------------------------------------------------------------------------
- * writes PCB to file
- */
-int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
-{
-	fputs("io_kicad_legacy_write_pcb()", FP);
-	return 0;
-}
+int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data);
+int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff);
+int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP);

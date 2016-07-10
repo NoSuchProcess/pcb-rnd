@@ -26,8 +26,8 @@
 #include "config.h"
 #include "global.h"
 #include "plugins.h"
-#include "parse_l.h"
-#include "file.h"
+#include "plug_io.h"
+#include "write.h"
 
 static plug_io_t io_kicad_legacy;
 
