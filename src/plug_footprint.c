@@ -98,10 +98,12 @@ void fp_uninit()
 {
 	htsp_entry_t *e;
 	fp_free_children(&library);
-	for (e = htsp_first(fp_tags); e; e = htsp_next(fp_tags, e))
-		free(e->key);
-	htsp_free(fp_tags);
-	fp_tags = NULL;
+	if (fp_tags != NULL) {
+		for (e = htsp_first(fp_tags); e; e = htsp_next(fp_tags, e))
+			free(e->key);
+		htsp_free(fp_tags);
+		fp_tags = NULL;
+	}
 }
 
 const char *fp_tagname(const void *tagid)
