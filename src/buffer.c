@@ -1306,6 +1306,7 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = argc ? argv[0] : (char *) "";
 	char *sbufnum = argc > 1 ? argv[1] : (char *) "";
+	char *fmt = argc > 2 ? argv[2] : NULL;
 	char *name;
 	static char *default_file = NULL;
 	int free_name = 0;
@@ -1375,10 +1376,10 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 				if ((exist = fopen(name, "r"))) {
 					fclose(exist);
 					if (gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0))
-						SaveBufferElements(name);
+						SaveBufferElements(name, fmt);
 				}
 				else
-					SaveBufferElements(name);
+					SaveBufferElements(name, fmt);
 
 				if (free_name && name)
 					free(name);

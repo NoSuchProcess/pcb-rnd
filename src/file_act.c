@@ -245,21 +245,25 @@ static int ActionSaveTo(int argc, char **argv, Coord x, Coord y)
 {
 	char *function;
 	char *name;
+	char *fmt = NULL;
 
 	function = argv[0];
 	name = argv[1];
 
 	if (strcasecmp(function, "Layout") == 0) {
-		if (SavePCB(PCB->Filename) == 0)
+		if (SavePCB(PCB->Filename, NULL) == 0)
 			SetChangedFlag(false);
 		return 0;
 	}
 
-	if (argc != 2)
+	if ((argc != 2) && (argc != 3))
 		AFAIL(saveto);
 
+	if (argc >= 3)
+		fmt = argv[2];
+
 	if (strcasecmp(function, "LayoutAs") == 0) {
-		if (SavePCB(name) == 0) {
+		if (SavePCB(name, fmt) == 0) {
 			SetChangedFlag(false);
 			free(PCB->Filename);
 			PCB->Filename = strdup(name);
@@ -309,7 +313,7 @@ static int ActionSaveTo(int argc, char **argv, Coord x, Coord y)
 	}
 
 	if (strcasecmp(function, "PasteBuffer") == 0) {
-		return SaveBufferElements(name);
+		return SaveBufferElements(name, fmt);
 	}
 
 	AFAIL(saveto);

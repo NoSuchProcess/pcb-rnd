@@ -36,6 +36,9 @@
  * on several architectures
  */
 
+#warning TODO: do not hardwire this, make a function to decide
+#define DEFAULT_FMT "pcb"
+
 #include "config.h"
 #include "conf_core.h"
 
@@ -164,7 +167,7 @@ int ParseFont(FontTypePtr Ptr, char *Filename)
 
 
 #warning TODO: when we have multiple io_* plugins: write function should not be run on all available IO hooks but on the IO hook saved in the pcb struct (at load or creation time) so we save with the same format all the time
-int WriteBuffer(FILE *f, BufferType *buff)
+int WriteBuffer(FILE *f, BufferType *buff, const char *fmt)
 {
 	int res = -1;
 	HOOK_CALL(plug_io_t, plug_io_chain, write_buffer, res, == 0, f, buff);
@@ -173,7 +176,7 @@ int WriteBuffer(FILE *f, BufferType *buff)
 	return res;
 }
 
-int WriteElementData(FILE *f, DataTypePtr e)
+int WriteElementData(FILE *f, DataTypePtr e, const char *fmt)
 {
 	int res = -1;
 	HOOK_CALL(plug_io_t, plug_io_chain, write_element, res, == 0, f, e);
@@ -181,7 +184,7 @@ int WriteElementData(FILE *f, DataTypePtr e)
 	return res;
 }
 
-int WritePCB(FILE *f)
+int WritePCB(FILE *f, const char *fmt)
 {
 	int res = -1;
 	HOOK_CALL(plug_io_t, plug_io_chain, write_pcb, res, == 0, f);
@@ -446,13 +449,13 @@ FILE *OpenConnectionDataFile(void)
 /* ---------------------------------------------------------------------------
  * save elements in the current buffer
  */
-int SaveBufferElements(char *Filename)
+int SaveBufferElements(char *Filename, const char *fmt)
 {
 	int result;
 
 	if (SWAP_IDENT)
 		SwapBuffers();
-	result = WritePipe(Filename, false);
+	result = WritePipe(Filename, false, fmt);
 	if (SWAP_IDENT)
 		SwapBuffers();
 	return (result);
@@ -461,15 +464,15 @@ int SaveBufferElements(char *Filename)
 /* ---------------------------------------------------------------------------
  * save PCB
  */
-int SavePCB(char *file)
+int SavePCB(char *file, const char *fmt)
 {
 	int retcode;
 
 	if (gui->notify_save_pcb == NULL)
-		return WritePipe(file, true);
+		return WritePipe(file, true, fmt);
 
 	gui->notify_save_pcb(file, false);
-	retcode = WritePipe(file, true);
+	retcode = WritePipe(file, true, fmt);
 	gui->notify_save_pcb(file, true);
 
 	return retcode;
@@ -547,7 +550,7 @@ void SaveInTMP(void)
 	if (PCB && PCB->Changed) {
 		sprintf(filename, conf_core.rc.emergency_name, (int) getpid());
 		Message(_("Trying to save your layout in '%s'\n"), filename);
-		WritePCBFile(filename);
+		WritePCBFile(filename, DEFAULT_FMT);
 	}
 }
 
@@ -665,7 +668,7 @@ void Backup(void)
 		}
 	}
 
-	WritePCBFile(filename);
+	WritePCBFile(filename, DEFAULT_FMT);
 	free(filename);
 }
 
@@ -679,7 +682,7 @@ void Backup(void)
 void SaveTMPData(void)
 {
 	char *fn = build_fn(conf_core.rc.emergency_name);
-	WritePCBFile(fn);
+	WritePCBFile(fn, DEFAULT_FMT);
 	if (TMPFilename != NULL)
 		free(TMPFilename);
 	TMPFilename = fn;
@@ -698,7 +701,7 @@ void RemoveTMPData(void)
 /* ---------------------------------------------------------------------------
  * writes PCB to file
  */
-int WritePCBFile(char *Filename)
+int WritePCBFile(char *Filename, const char *fmt)
 {
 	FILE *fp;
 	int result;
@@ -707,7 +710,7 @@ int WritePCBFile(char *Filename)
 		OpenErrorMessage(Filename);
 		return (STATUS_ERROR);
 	}
-	result = WritePCB(fp);
+	result = WritePCB(fp, fmt);
 	fclose(fp);
 	return (result);
 }
@@ -717,7 +720,7 @@ int WritePCBFile(char *Filename)
  * writes to pipe using the command defined by conf_core.rc.save_command
  * %f are replaced by the passed filename
  */
-int WritePipe(char *Filename, bool thePcb)
+int WritePipe(char *Filename, bool thePcb, const char *fmt)
 {
 	FILE *fp;
 	int result;
@@ -755,14 +758,14 @@ int WritePipe(char *Filename, bool thePcb)
 	}
 	if (thePcb) {
 		if (PCB->is_footprint) {
-			WriteElementData(fp, PCB->Data);
+			WriteElementData(fp, PCB->Data, fmt);
 			result = 0;
 		}
 		else
-			result = WritePCB(fp);
+			result = WritePCB(fp, fmt);
 	}
 	else
-		result = WriteBuffer(fp, PASTEBUFFER);
+		result = WriteBuffer(fp, PASTEBUFFER, fmt);
 
 	if (used_popen)
 		return (pclose(fp) ? STATUS_ERROR : result);

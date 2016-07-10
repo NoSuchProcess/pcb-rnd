@@ -319,7 +319,7 @@ static int CommandSaveLayout(int argc, char **argv, Coord x, Coord y)
 	switch (argc) {
 	case 0:
 		if (PCB->Filename) {
-			if (SavePCB(PCB->Filename) == 0)
+			if (SavePCB(PCB->Filename, NULL) == 0)
 				SetChangedFlag(false);
 		}
 		else
@@ -327,7 +327,7 @@ static int CommandSaveLayout(int argc, char **argv, Coord x, Coord y)
 		break;
 
 	case 1:
-		if (SavePCB(argv[0]) == 0) {
+		if (SavePCB(argv[0], NULL) == 0) {
 			SetChangedFlag(false);
 			free(PCB->Filename);
 			PCB->Filename = strdup(argv[0]);

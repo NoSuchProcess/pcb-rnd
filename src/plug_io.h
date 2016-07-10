@@ -66,15 +66,15 @@ extern plug_io_t *plug_io_chain;
 int ParsePCB(PCBTypePtr Ptr, char *Filename, int load_settings);
 int ParseElement(DataTypePtr Ptr, const char *name);
 int ParseFont(FontTypePtr Ptr, char *Filename);
-int WriteBuffer(FILE *f, BufferType *buff);
-int WriteElementData(FILE *f, DataTypePtr e);
-int WritePCB(FILE *f);
+int WriteBuffer(FILE *f, BufferType *buff, const char *fmt);
+int WriteElementData(FILE *f, DataTypePtr e, const char *fmt);
+int WritePCB(FILE *f, const char *fmt);
 
 
 /********** common function used to be part of file.[ch] and friends **********/
 FILE *CheckAndOpenFile(char *, bool, bool, bool *, bool *);
 FILE *OpenConnectionDataFile(void);
-int SavePCB(char *);
+int SavePCB(char *, const char *fmt);
 int LoadPCB(char *, bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) */
 void EnableAutosave(void);
 void Backup(void);
@@ -83,13 +83,13 @@ void EmergencySave(void);
 void DisableEmergencySave(void);
 int RevertPCB(void);
 int ImportNetlist(char *);
-int SaveBufferElements(char *);
+int SaveBufferElements(char *, const char *fmt);
 void sort_netlist(void);
 void PrintQuotedString(FILE *, const char *);
 void sort_library(LibraryTypePtr lib);
 void set_some_route_style();
-int WritePCBFile(char *);
-int WritePipe(char *, bool);
+int WritePCBFile(char *, const char *fmt);
+int WritePipe(char *, bool, const char *fmt);
 
 #ifndef HAS_ATEXIT
 #ifdef HAS_ON_EXIT

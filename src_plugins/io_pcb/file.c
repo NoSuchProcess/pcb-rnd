@@ -549,7 +549,7 @@ int io_pcb_WriteBuffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
 	Cardinal i;
 
 	WriteViaData(FP, buff->Data);
-	WriteElementData(FP, buff->Data);
+	WriteElementData(FP, buff->Data, "pcb");
 	for (i = 0; i < max_copper_layer + 2; i++)
 		WriteLayerData(FP, i, &(buff->Data->Layer[i]));
 	return (STATUS_OK);
@@ -567,7 +567,7 @@ int io_pcb_WritePCB(plug_io_t *ctx, FILE * FP)
 	WritePCBFontData(FP);
 	WriteAttributeList(FP, &PCB->Attributes, "");
 	WriteViaData(FP, PCB->Data);
-	WriteElementData(FP, PCB->Data);
+	WriteElementData(FP, PCB->Data, "pcb");
 	WritePCBRatData(FP);
 	for (i = 0; i < max_copper_layer + 2; i++)
 		WriteLayerData(FP, i, &(PCB->Data->Layer[i]));
