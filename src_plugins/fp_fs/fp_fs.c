@@ -298,8 +298,11 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 
 /*	fprintf("Looking for %s\n", ctx.target);*/
 
-	for (p = search_path; (end = strchr(p, ':')) != NULL; p = end + 1) {
+	for (p = search_path; *p != '\0'; p = end + 1) {
 		char *fpath;
+		end = strchr(p, ':');
+		if (end == NULL)
+			end = p + strlen(p);
 		memcpy(path, p, end - p);
 		path[end - p] = '\0';
 
