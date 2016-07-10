@@ -22,6 +22,7 @@
  Behavior different from the original:
   - use getenv() instead of g_getenv(): on windows this won't do recursive variable expansion
   - use rnd-specific .scm
+  - use pcb-rnd's conf system
   - use popen() instead of glib's spawn (stderr is always printed to stderr)
  */
 #include "config.h"
@@ -1127,11 +1128,12 @@ static void get_args(int argc, char ** argv)
 	}
 }
 
-/* Dummy pcb-rnd for the fp lib to work */
-int Library;
 
 #warning remove these after testing:
-/*
+
+/* Dummy pcb-rnd for the fp lib to work
+int Library;
+
 static void bozo()
 {
 	fprintf(stderr, "bozo: pcb-rnd footprint plugin compatibility error.\n");
