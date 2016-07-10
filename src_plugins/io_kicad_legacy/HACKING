@@ -12,7 +12,19 @@ the plugin dir - as the module is a buildin, it will recompile pcb-rnd.
 Run pcb-rnd from the src/ directory (cd there, it won't find its
 files otherwise).
 
-TODO: how to run
+How to run the plugin (GUI version):
+1. run pcb-rnd (from src/)
+2. load a pcb 
+3. open the command prompt (press ':')
+4. type: SaveTo(LayoutAs, foobar.mod, kicadl)
+
+This will save the current design to foobar.mod using io_kicad_legacy.
+
+How to run the plugin (CLI version):
+
+echo "SaveTo(LayoutAs, foobar.mod, kicadl)" | ./pcb-rnd  --gui batch my.pcb
+
+(This loads my.pcb and saves it to foobar.mod and then exits)
 
 SVN: when commiting, please prefix all your commit message lines with string
 [io_kicad_legacy] to make my job easier when generating Changelog.
