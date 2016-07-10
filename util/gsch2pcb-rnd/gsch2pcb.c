@@ -1169,25 +1169,26 @@ int main(int argc, char ** argv)
 	conf_init();
 	conf_core_init();
 
+
+	gadl_list_init(&schematics, sizeof(char *), NULL, NULL);
+	gadl_list_init(&extra_gnetlist_arg_list, sizeof(char *), NULL, NULL);
+	gadl_list_init(&extra_gnetlist_list, sizeof(char *), NULL, NULL);
+
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_g2pr, field,isarray,type_name,cpath,cname,desc,flags);
 #include "gsch2pcb_rnd_conf_fields.h"
 
 	get_args(argc, argv);
 
-#warning TODO: do not use NULL,NULL here
 	conf_load_all(NULL, NULL);
 	conf_update(NULL);
 
-	fp_init();
 
-	gadl_list_init(&schematics, sizeof(char *), NULL, NULL);
-	gadl_list_init(&extra_gnetlist_arg_list, sizeof(char *), NULL, NULL);
-	gadl_list_init(&extra_gnetlist_list, sizeof(char *), NULL, NULL);
+	load_extra_project_files();
 
 	conf_update(NULL); /* because of CLI changes */
 
-	load_extra_project_files();
+	fp_init();
 
 	element_search_path = fp_default_search_path();
 
@@ -1198,6 +1199,7 @@ int main(int argc, char ** argv)
 	net_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".net", NULL);
 	pcb_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
 
+	conf_load_project(NULL, pcb_file_name);
 
 	{ /* set bak_file_name, finding the first number that results in a non-existing bak */
 		int len;
