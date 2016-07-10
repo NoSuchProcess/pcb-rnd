@@ -9,6 +9,7 @@ all: tester_spd
 
 test: tester.diff
 	@echo "*** all ok, QC PASS ***"
+	@rm tester.stdout ; true
 
 tester: tester.o $(SRC)/pcb-printf.o $(SRC)/unit.o $(GDS)
 
