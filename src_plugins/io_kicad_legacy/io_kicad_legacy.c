@@ -31,6 +31,15 @@
 
 static plug_io_t io_kicad_legacy;
 
+int io_kicad_legacy_fmt(int wr, const char *fmt)
+{
+	if (strcmp(fmt, "kicadl") != 0)
+		return 0;
+	if (wr)
+		return 100;
+	return 0; /* no read support yet */
+}
+
 static void hid_io_kicad_legacy_uninit(void)
 {
 	/* Runs once when the plugin is unloaded. TODO: free plugin-globals here. */
@@ -41,6 +50,7 @@ pcb_uninit_t hid_io_kicad_legacy_init(void)
 
 	/* register the IO hook */
 	io_kicad_legacy.plugin_data = NULL;
+	io_kicad_legacy.fmt_support_prio = io_kicad_legacy_fmt;
 	io_kicad_legacy.parse_pcb = NULL;
 	io_kicad_legacy.parse_element = NULL;
 	io_kicad_legacy.parse_font = NULL;

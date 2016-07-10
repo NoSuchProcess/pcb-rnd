@@ -36,6 +36,12 @@ struct plug_io_s {
 	plug_io_t *next;
 	void *plugin_data;
 
+	/* Check if the plugin supports format fmt, for writing (if wr != 0) or for
+	   reading (if wr == 0). Return 0 if not supported or an integer priority
+	   if supported. The higher the prio is the more likely the plugin gets
+	   the next operation on the file. Base prio should be 100 for native formats. */
+	int (*fmt_support_prio)(int wr, const char *fmt);
+
 	/* Attempt to load a pcb design from Filename to Ptr.
 	   Conf subtree at settings_dest is replaced by settings loaded from the
 	   file unless it's CFR_invalid.

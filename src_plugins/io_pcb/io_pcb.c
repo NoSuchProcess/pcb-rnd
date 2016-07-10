@@ -31,6 +31,13 @@
 
 static plug_io_t io_pcb;
 
+int io_pcb_fmt(int wr, const char *fmt)
+{
+	if (strcmp(fmt, "pcb") != 0)
+		return 0;
+	return 100; /* read-write */
+}
+
 extern void yylex_destroy(void);
 static void hid_io_pcb_uninit(void)
 {
@@ -43,6 +50,7 @@ pcb_uninit_t hid_io_pcb_init(void)
 
 	/* register the IO hook */
 	io_pcb.plugin_data = NULL;
+	io_pcb.fmt_support_prio = io_pcb_fmt;
 	io_pcb.parse_pcb = io_pcb_ParsePCB;
 	io_pcb.parse_element = io_pcb_ParseElement;
 	io_pcb.parse_font = io_pcb_ParseFont;
