@@ -38,6 +38,8 @@ static const char *conf_user_fn = "~/" DOT_PCB_RND "/pcb-conf.lht";
 
 lht_doc_t *conf_root[CFR_max_alloc];
 int conf_root_lock[CFR_max_alloc];
+int conf_lht_dirty[CFR_max_alloc];
+
 htsp_t *conf_fields = NULL;
 static const int conf_default_prio[] = {
 /*	CFR_INTERNAL */   100,
@@ -1048,6 +1050,8 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 	cwd->data.text.value = strdup(new_val);
 	cwd->file_name = conf_root[target]->active_file;
 
+	conf_lht_dirty[target]++;
+
 	free(path);
 	return 0;
 }
@@ -1244,6 +1248,11 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 	int fail = 1;
 	lht_node_t *r = conf_lht_get_first(role);
 	const char *try;
+
+	/* do not save if there's no change */
+	if (conf_lht_dirty[role] == 0)
+		return 0;
+
 	if (fn == NULL) {
 		switch(role) {
 			case CFR_USER:
@@ -1267,6 +1276,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 #warning CONF TODO: a project file needs to be loaded, merged, then written (to preserve non-config nodes)
 			lht_dom_export(r->doc->root, f, "");
 			fail = 0;
+			conf_lht_dirty[role] = 0;
 		}
 		fclose(f);
 	}
