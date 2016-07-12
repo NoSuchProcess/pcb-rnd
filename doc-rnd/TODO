@@ -7,14 +7,14 @@
 		- the second hole dups the poly
 		- first click when starting the first hole is lost
 		- marker not moved to the second hole starting point
+	- menu bug, broke between r1533 and r1534:
+		- view/show layers stopped working (broke before 1.0.10)
+		- view/show current layer stopped working (broke before 1.0.10)
 
 - replace settings with lihata (conf_*)
+	- check how many times WritePCB is called during _startup_ with a pcb from the command line -> enable HAS_ATEXIT
 	- fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
-	- project files:
-		- save only if changed
-		- save project conf properly (needs lihata smart save long term, test with plain save now)
 	- implement binary->lht setter and use it in config_any_replace() if the source role sais so
-	- revise gsch2pcb-rnd warnings
 	- gtk hid: clean up the #warnings
 	- finish gtk preferences user pov (change is always saved to the design)
 		- library search path:
@@ -25,10 +25,10 @@
 		- layer colors not saved in pcb attribs
 		- color dialog:
 			- background color not loaded into the gtk cache: catch conf change event in the gtk hid to reconfigure the color
-	- menu bug, broke between r1533 and r1534:
-		- view/show layers stopped working (broke before 1.0.10)
-		- view/show current layer stopped working (broke before 1.0.10)
 	- TEST:
+		- project files:
+			- save only if changed
+			- save project conf properly (needs lihata smart save long term, test with plain save now)
 		- vendor drill mapping
 		- djopt, auto_only flag
 		- gsch2pcb
