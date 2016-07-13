@@ -7,9 +7,6 @@
 		- the second hole dups the poly
 		- first click when starting the first hole is lost
 		- marker not moved to the second hole starting point
-	- menu bug, broke between r1533 and r1534:
-		- view/show layers stopped working (broke before 1.0.10)
-		- view/show current layer stopped working (broke before 1.0.10)
 
 - replace settings with lihata (conf_*)
 	- check how many times WritePCB is called during _startup_ with a pcb from the command line -> enable HAS_ATEXIT
