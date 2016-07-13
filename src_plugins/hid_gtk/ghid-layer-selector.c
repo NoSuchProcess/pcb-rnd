@@ -399,6 +399,7 @@ ghid_layer_selector_add_layer(GHidLayerSelector * ls,
 	gboolean last_activatable = TRUE;
 	GtkTreePath *path;
 	GtkTreeIter iter;
+	int i;
 
 	/* Look for existing layer with this ID */
 	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(ls->list_store), &iter))
@@ -470,8 +471,40 @@ ghid_layer_selector_add_layer(GHidLayerSelector * ls,
 	/* Create visibility action */
 	new_layer->view_action = gtk_toggle_action_new(vname, name, NULL, NULL);
 	gtk_toggle_action_set_active(new_layer->view_action, visible);
-	new_layer->accel_index = -1;
 
+	/* Determine keyboard accelerators */
+	for (i = 0; i < 20; ++i)
+		if (ls->accel_available[i])
+			break;
+	if (i < 20) {
+		/* Map 1-0 to actions 1-10 (with '0' meaning 10) */
+		gchar *accel1 = g_strdup_printf("%s%d",
+																		i < 10 ? "" : "<Alt>",
+																		(i + 1) % 10);
+		gchar *accel2 = g_strdup_printf("<Ctrl>%s%d",
+																		i < 10 ? "" : "<Alt>",
+																		(i + 1) % 10);
+
+		if (activatable) {
+			GtkAction *action = GTK_ACTION(new_layer->pick_action);
+			gtk_action_set_accel_group(action, ls->accel_group);
+			gtk_action_group_add_action_with_accel(ls->action_group, action, accel1);
+			gtk_action_connect_accelerator(action);
+			g_signal_connect(G_OBJECT(action), "activate", G_CALLBACK(menu_pick_cb), new_layer);
+		}
+		gtk_action_set_accel_group(GTK_ACTION(new_layer->view_action), ls->accel_group);
+		gtk_action_group_add_action_with_accel(ls->action_group, GTK_ACTION(new_layer->view_action), accel2);
+		gtk_action_connect_accelerator(GTK_ACTION(new_layer->view_action));
+		g_signal_connect(G_OBJECT(new_layer->view_action), "activate", G_CALLBACK(menu_view_cb), new_layer);
+
+		ls->accel_available[i] = FALSE;
+		new_layer->accel_index = i;
+		g_free(accel2);
+		g_free(accel1);
+	}
+	else {
+		new_layer->accel_index = -1;
+	}
 	/* finalize new layer struct */
 	new_layer->pick_item = new_layer->view_item = NULL;
 
