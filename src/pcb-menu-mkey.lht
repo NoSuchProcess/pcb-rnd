@@ -64,7 +64,12 @@ ha:{
 				-
 				ha:Print layout...      = { a={<key>f;<key>p}; action=Print()}
 				ha:Export layout...     = { a={<key>f;<key>i}; action=Export()}
-				ha:Calibrate Printer... = {               action=PrintCalibrate()}
+				ha:Maintenance {
+					li:submenu {
+						ha:Calibrate Printer...           = { action=PrintCalibrate() }
+						ha:Re-scan the footprint library  = { action=fp_rehash() }
+					}
+				}
 				-
 				ha:Start New Layout     = { li:a={{<key>f;<key>n}; {Ctrl<Key>n};}; action=New() }
 				-

@@ -43,7 +43,12 @@ ha:{
 				ha:Load vendor resource file = { action=LoadVendor() }
 				ha:Print layout... = { action=Print() }
 				ha:Export layout... = { action=Export() }
-				ha:Calibrate Printer... = { action=PrintCalibrate() }
+				ha:Maintenance {
+					li:submenu {
+						ha:Calibrate Printer...           = { action=PrintCalibrate() }
+						ha:Re-scan the footprint library  = { action=fp_rehash() }
+					}
+				}
 				-
 				ha:Save connection data of... = { foreground=grey50; sensitive=false }
 				ha: a single element = { li:action={GetXY(Click to set the element mark <>); Save(ElementConnections)} }
