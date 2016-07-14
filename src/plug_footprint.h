@@ -83,4 +83,8 @@ int fp_read_lib_all(void);
 const char *fp_default_search_path(void);
 
 int fp_host_uninit(void);
+
+/* rescan/reload all footprints in the library cache */
+int fp_rehash(void);
+
 #endif

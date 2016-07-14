@@ -2249,6 +2249,15 @@ plug_footprint.o: plug_footprint.c ../config.h ../config.manual.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genvector/vtp0.h \
  list_conf.h error.h
+plug_footprint_act.o: plug_footprint_act.c ../config.h ../config.manual.h \
+ ../config.auto.h global.h const.h macro.h global_typedefs.h unit.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
+ global_element.h list_element.h plug_footprint.h vtlibrary.h
 plug_io.o: plug_io.c ../config.h ../config.manual.h ../config.auto.h \
  conf_core.h conf.h global.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
