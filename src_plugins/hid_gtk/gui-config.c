@@ -52,6 +52,7 @@
 #include "hid_gtk_conf.h"
 #include "gtk_conf_list.h"
 #include "paths.h"
+#include "plug_footprint.h"
 #include <liblihata/tree.h>
 
 /* for MKDIR() */
@@ -76,28 +77,62 @@ window_geometry_t hid_gtk_wgeo, hid_gtk_wgeo_old;
 	}
 void hid_gtk_wgeo_update(void)
 {
-	conf_role_t dest_role = CFR_USER;
-
-	if (!conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry)
-		return;
-	if (conf_hid_gtk.plugins.hid_gtk.save_window_geometry_in_design)
-		dest_role = CFR_DESIGN;
-	GHID_WGEO_ALL(hid_gtk_wgeo_update_, dest_role);
+	if (conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_design)
+		GHID_WGEO_ALL(hid_gtk_wgeo_update_, CFR_DESIGN);
+	if (conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_project)
+		GHID_WGEO_ALL(hid_gtk_wgeo_update_, CFR_PROJECT);
+	if (conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_user)
+		GHID_WGEO_ALL(hid_gtk_wgeo_update_, CFR_USER);
 }
 #undef hid_gtk_wgeo_update_
 
 
-conf_role_t ghid_wgeo_save(void)
+void ghid_wgeo_save(int save_to_file)
 {
-	conf_role_t dest_role = CFR_USER;
+	if (conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_design) {
+		GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_DESIGN);
+		if (save_to_file)
+			conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_DESIGN, NULL);
+	}
 
-	if (conf_hid_gtk.plugins.hid_gtk.save_window_geometry_in_design)
-		dest_role = CFR_DESIGN;
-	GHID_WGEO_ALL(hid_gtk_wgeo_save_, dest_role);
+	if (conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_project) {
+		GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_PROJECT);
+		if (save_to_file)
+			conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_PROJECT, NULL);
+	}
 
-	return dest_role;
+	if (conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_user) {
+		GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_USER);
+		if (save_to_file)
+			conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_USER, NULL);
+	}
 }
+
+static void wgeo_save_direct(GtkButton *widget, const char *ctx)
+{
+	if (*ctx == '*') {
+		switch(ctx[1]) {
+			case 'd':
+				GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_DESIGN);
+				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_DESIGN, NULL);
+				break;
+			case 'p':
+				GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_PROJECT);
+				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_PROJECT, NULL);
+				break;
+			case 'u':
+				GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_USER);
+				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_USER, NULL);
+				break;
+		}
+	}
+	else {
+#warning TODO: save to the file name specified in ctx
+	}
+}
+
 #undef hid_gtk_wgeo_save_
+
 
 RCSID("$Id$");
 
@@ -498,6 +533,73 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 	config_user_role_section(tab_vbox, config_sizes_save);
 
 	gtk_widget_show_all(config_sizes_vbox);
+}
+
+
+	/* -------------- The window config page ----------------
+	 */
+static GtkWidget *config_window_vbox;
+
+static void config_window_apply(void)
+{
+}
+
+static void config_window_row(GtkWidget *parent, const char *desc, int load, const char *wgeo_save_str)
+{
+	GtkWidget *hbox, *lab, *button;
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+
+	lab = gtk_label_new(desc);
+	gtk_box_pack_start(GTK_BOX(hbox), lab, TRUE, FALSE, 0);
+	gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 0.5);
+
+	button = gtk_button_new_with_label(_("now"));
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(wgeo_save_direct), (void *)wgeo_save_str);
+
+	if (load) {
+		button = gtk_button_new_with_label(_("Load from file"));
+		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	}
+	else {
+		ghid_check_button_connected(hbox, NULL, conf_hid_gtk.plugins.hid_gtk.use_command_window,
+															TRUE, FALSE, FALSE, 2,
+															config_command_window_toggle_cb, NULL, _("every time pcb-rnd exits"));
+	}
+}
+
+static void config_window_tab_create(GtkWidget *tab_vbox)
+{
+	GtkWidget *lab;
+
+	config_window_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tab_vbox), config_window_vbox, FALSE, FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(config_window_vbox), 6);
+
+	lab = gtk_label_new("");
+	gtk_label_set_use_markup(GTK_LABEL(lab), TRUE);
+	gtk_label_set_markup(GTK_LABEL(lab),
+											 _("<b>Save window geometry...</b>"));
+	gtk_box_pack_start(GTK_BOX(config_window_vbox), lab, FALSE, FALSE, 4);
+	gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 0.5);
+
+
+	config_window_row(config_window_vbox, "... in the design (.pcb) file", 0, "*d");
+	config_window_row(config_window_vbox, "... in the project file", 0, "*p");
+	config_window_row(config_window_vbox, "... in the central user configuration", 0, "*u");
+#warning TODO
+/*	config_window_row(config_window_vbox, "... in a custom file", 1);*/
+
+	lab = gtk_label_new("");
+	gtk_label_set_use_markup(GTK_LABEL(lab), TRUE);
+	gtk_label_set_markup(GTK_LABEL(lab),
+											 _("<small>Note: checkbox values are saved in the user config</small>"));
+	gtk_box_pack_start(GTK_BOX(config_window_vbox), lab, FALSE, FALSE, 4);
+	gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 0.5);
+
+
+	gtk_widget_show_all(config_window_vbox);
 }
 
 
@@ -1715,6 +1817,7 @@ void ghid_config_window_show(void)
 	config_tree_sect(model, NULL, &config_pov, _("Config PoV"), _("\n<b>Config PoV</b>\nAccess all configuration fields presented in a tree that matches the configuration file (lht) structure."));
 
 	config_tree_leaf(model, &user_pov, _("General"), config_general_tab_create);
+	config_tree_leaf(model, &user_pov, _("Window"), config_window_tab_create);
 	config_tree_leaf(model, &user_pov, _("Sizes"), config_sizes_tab_create);
 	config_tree_leaf(model, &user_pov, _("Increments"), config_increments_tab_create);
 	config_tree_leaf(model, &user_pov, _("Library"), config_library_tab_create);

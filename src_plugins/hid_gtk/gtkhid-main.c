@@ -1810,8 +1810,7 @@ static const char savewingeo_help[] = N_("Saves window geometry in the config.\n
 
 static int SaveWinGeo(int argc, char **argv, Coord x, Coord y)
 {
-	conf_role_t geo_dest = ghid_wgeo_save();
-	conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), geo_dest, NULL);
+	ghid_wgeo_save(1);
 	return 0;
 }
 

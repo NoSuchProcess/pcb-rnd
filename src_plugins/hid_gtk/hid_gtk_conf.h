@@ -15,8 +15,12 @@ typedef struct {
 			CFT_INTEGER history_size;
 			CFT_INTEGER n_mode_button_columns;
 
-			CFT_BOOLEAN auto_save_window_geometry;       /* true=save window geometry so they are preserved after a restart of pcb */
-			CFT_BOOLEAN save_window_geometry_in_design;  /* true=save window geometry per design; false=save it per user */
+			const struct auto_save_window_geometry {
+				CFT_BOOLEAN to_design;
+				CFT_BOOLEAN to_project;
+				CFT_BOOLEAN to_user;
+			} auto_save_window_geometry;
+
 			const struct window_geometry {
 				CFT_INTEGER top_width;
 				CFT_INTEGER top_height;
