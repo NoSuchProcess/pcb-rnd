@@ -1277,8 +1277,10 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 			lht_dom_export(r->doc->root, f, "");
 			fail = 0;
 			conf_lht_dirty[role] = 0;
+			fclose(f);
 		}
-		fclose(f);
+		else
+			Message("Error: can't save config to %s - can't open the file for write\n", fn);
 	}
 
 	return fail;
