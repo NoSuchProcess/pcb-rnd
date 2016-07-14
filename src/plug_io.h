@@ -98,12 +98,8 @@ int WritePCBFile(char *, const char *fmt);
 int WritePipe(char *, bool, const char *fmt);
 
 #ifndef HAS_ATEXIT
-#ifdef HAS_ON_EXIT
-void GlueEmergencySave(int, caddr_t);
-#else
 void SaveTMPData(void);
 void RemoveTMPData(void);
-#endif
 #endif
 
 #endif

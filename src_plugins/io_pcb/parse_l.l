@@ -293,7 +293,7 @@ printf("OPENING: %s -> %p\n", tmps, yyin);
 
 	CreateBeLenient (true);
 
-#if !defined(HAS_ATEXIT) && !defined(HAS_ON_EXIT)
+#if !defined(HAS_ATEXIT)
 	if (PCB && PCB->Data)
 	  SaveTMPData();
 	returncode = yyparse();

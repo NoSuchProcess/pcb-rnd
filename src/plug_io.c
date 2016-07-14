@@ -339,10 +339,9 @@ static int real_load_pcb(char *Filename, bool revert, bool require_font, int how
 }
 
 
-#if !defined(HAS_ATEXIT) && !defined(HAS_ON_EXIT)
+#if !defined(HAS_ATEXIT)
 /* ---------------------------------------------------------------------------
- * some local identifiers for OS without an atexit() or on_exit()
- * call
+ * some local identifiers for OS without an atexit() call
  */
 static char *TMPFilename = NULL;
 #endif
@@ -713,7 +712,7 @@ void Backup(void)
 	free(filename);
 }
 
-#if !defined(HAS_ATEXIT) && !defined(HAS_ON_EXIT)
+#if !defined(HAS_ATEXIT)
 /* ---------------------------------------------------------------------------
  * makes a temporary copy of the data. This is useful for systems which
  * doesn't support calling functions on exit. We use this to save the data
