@@ -1248,6 +1248,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 	int fail = 1;
 	lht_node_t *r = conf_lht_get_first(role);
 	const char *try;
+	char *efn;
 
 	/* do not save if there's no change */
 	if (conf_lht_dirty[role] == 0)
@@ -1269,9 +1270,29 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 		}
 	}
 
+	resolve_path(fn, &efn, 0);
+
 	if (r != NULL) {
 		FILE *f;
-		f = fopen(fn, "w");
+		f = fopen(efn, "w");
+
+		if ((f == NULL) && (role == CFR_USER)) {
+			/* create the directory and try again */
+			char *path = strdup(efn), *end;
+			end = strrchr(path, '/');
+			if (end != NULL) {
+				*end = '\0';
+#warning TODO: more portable mkdir
+				if (mkdir(path, 0755) == 0) {
+					Message("Created directory %s for saving %s\n", path, fn);
+					f = fopen(efn, "w");
+				}
+				else
+					Message("Error: failed to creat directory %s for saving %s\n", path, efn);
+			}
+			free(path);
+		}
+
 		if (f != NULL) {
 #warning CONF TODO: a project file needs to be loaded, merged, then written (to preserve non-config nodes)
 			lht_dom_export(r->doc->root, f, "");
@@ -1283,6 +1304,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 			Message("Error: can't save config to %s - can't open the file for write\n", fn);
 	}
 
+	free(efn);
 	return fail;
 }
 
