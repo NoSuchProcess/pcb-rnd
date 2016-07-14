@@ -152,12 +152,17 @@ lht_doc_t *hid_cfg_load_lht(const char *filename)
 	FILE *f;
 	lht_doc_t *doc;
 	int error = 0;
+	char *efn;
 
-	f = fopen(filename, "r");
-	if (f == NULL)
+	resolve_path(filename, &efn, 0);
+
+	f = fopen(efn, "r");
+	if (f == NULL) {
+		free(efn);
 		return NULL;
+	}
 	doc = lht_dom_init();
-	lht_dom_loc_newfile(doc, filename);
+	lht_dom_loc_newfile(doc, efn);
 
 	while(!(feof(f))) {
 		lht_err_t err;
@@ -165,7 +170,7 @@ lht_doc_t *hid_cfg_load_lht(const char *filename)
 		err = lht_dom_parser_char(doc, c);
 		if (err != LHTE_SUCCESS) {
 			if (err != LHTE_STOP) {
-				error = hid_cfg_load_error(doc, filename, err);
+				error = hid_cfg_load_error(doc, efn, err);
 				break;
 			}
 			break; /* error or stop, do not read anymore (would get LHTE_STOP without any processing all the time) */
@@ -178,6 +183,7 @@ lht_doc_t *hid_cfg_load_lht(const char *filename)
 	}
 	fclose(f);
 
+	free(efn);
 	return doc;
 }
 

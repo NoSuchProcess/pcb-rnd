@@ -88,11 +88,14 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		d = hid_cfg_load_lht(fn);
 	if (d == NULL) {
 		FILE *f;
-		f = fopen(fn, "r");
+		char *efn;
+		resolve_path(fn, &efn, 0);
+		f = fopen(efn, "r");
 		if (f != NULL) { /* warn only if the file is there - missing file is normal */
-			Message("error: failed to load lht config: %s\n", fn);
+			Message("error: failed to load lht config: %s\n", efn);
 			fclose(f);
 		}
+		free(efn);
 		return -1;
 	}
 
@@ -300,6 +303,8 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 				base = 16;
 			}
 			l = strtol(text, &end, base);
+			while(isspace(*end))
+				end++;
 			if (*end == '\0') {
 				dst->integer[idx] = l;
 				return 0;
