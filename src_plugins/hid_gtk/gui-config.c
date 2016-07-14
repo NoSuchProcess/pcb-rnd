@@ -540,11 +540,24 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 	 */
 static GtkWidget *config_window_vbox;
 
-static void config_window_apply(void)
+static void config_window_toggle_cb(GtkToggleButton * button, gpointer data)
 {
+	gboolean active = gtk_toggle_button_get_active(button);
+	const char *path = NULL, *ctx = data;
+
+	if (*ctx == '*') {
+		switch(ctx[1]) {
+			case 'd': path = "plugins/hid_gtk/auto_save_window_geometry/to_design"; break;
+			case 'p': path = "plugins/hid_gtk/auto_save_window_geometry/to_project"; break;
+			case 'u': path = "plugins/hid_gtk/auto_save_window_geometry/to_user"; break;
+		}
+		if (path != NULL)
+			conf_set(CFR_USER, path, -1, (active ? "1" : "0"), POL_OVERWRITE);
+	}
 }
 
-static void config_window_row(GtkWidget *parent, const char *desc, int load, const char *wgeo_save_str)
+
+static void config_window_row(GtkWidget *parent, const char *desc, int load, const char *wgeo_save_str, CFT_BOOLEAN chk)
 {
 	GtkWidget *hbox, *lab, *button;
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -563,9 +576,9 @@ static void config_window_row(GtkWidget *parent, const char *desc, int load, con
 		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	}
 	else {
-		ghid_check_button_connected(hbox, NULL, conf_hid_gtk.plugins.hid_gtk.use_command_window,
+		ghid_check_button_connected(hbox, NULL, chk,
 															TRUE, FALSE, FALSE, 2,
-															config_command_window_toggle_cb, NULL, _("every time pcb-rnd exits"));
+															config_window_toggle_cb, (void *)wgeo_save_str, _("every time pcb-rnd exits"));
 	}
 }
 
@@ -585,9 +598,9 @@ static void config_window_tab_create(GtkWidget *tab_vbox)
 	gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 0.5);
 
 
-	config_window_row(config_window_vbox, "... in the design (.pcb) file", 0, "*d");
-	config_window_row(config_window_vbox, "... in the project file", 0, "*p");
-	config_window_row(config_window_vbox, "... in the central user configuration", 0, "*u");
+	config_window_row(config_window_vbox, "... in the design (.pcb) file", 0, "*d", conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_design);
+	config_window_row(config_window_vbox, "... in the project file", 0, "*p", conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_project);
+	config_window_row(config_window_vbox, "... in the central user configuration", 0, "*u", conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_user);
 #warning TODO
 /*	config_window_row(config_window_vbox, "... in a custom file", 1);*/
 
