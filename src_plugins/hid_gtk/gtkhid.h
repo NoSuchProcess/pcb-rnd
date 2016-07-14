@@ -7,6 +7,7 @@
 
 void ghid_notify_gui_is_up(void);
 
+int gtkhid_active;
 void gtkhid_begin(void);
 void gtkhid_end(void);
 

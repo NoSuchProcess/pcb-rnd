@@ -69,8 +69,9 @@ static void log_destroy_cb(GtkWidget * widget, gpointer data)
 void ghid_log_window_create()
 {
 	GtkWidget *vbox, *hbox, *button;
+	extern int gtkhid_active;
 
-	if ((log_window) || (ghidgui == NULL))
+	if ((log_window) || (ghidgui == NULL) || (!gtkhid_active))
 		return;
 
 	log_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);

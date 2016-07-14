@@ -2009,6 +2009,8 @@ pcb_uninit_t hid_hid_gtk_init()
 	return hid_hid_gtk_uninit;
 }
 
+int gtkhid_active = 0;
+
 void gtkhid_begin(void)
 {
 	REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
@@ -2016,10 +2018,12 @@ void gtkhid_begin(void)
 	REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)
 	REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 	REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
+	gtkhid_active = 1;
 }
 
 void gtkhid_end(void)
 {
 	hid_remove_actions_by_cookie(ghid_cookie);
 	hid_remove_attributes_by_cookie(ghid_cookie);
+	gtkhid_active = 0;
 }
