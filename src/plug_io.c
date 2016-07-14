@@ -207,8 +207,12 @@ static plug_io_t *find_writer(const char *fmt)
 
 int WriteBuffer(FILE *f, BufferType *buff, const char *fmt)
 {
-	int res = -1;
-	HOOK_CALL(plug_io_t, plug_io_chain, write_buffer, res, == 0, f, buff);
+	int res;
+
+	plug_io_t *p = find_writer(fmt);
+
+	if (p != NULL)
+		res = p->write_buffer(p, f, buff);
 
 	plug_io_err(res, "write buffer", NULL);
 	return res;
@@ -216,8 +220,13 @@ int WriteBuffer(FILE *f, BufferType *buff, const char *fmt)
 
 int WriteElementData(FILE *f, DataTypePtr e, const char *fmt)
 {
-	int res = -1;
-	HOOK_CALL(plug_io_t, plug_io_chain, write_element, res, == 0, f, e);
+	int res;
+
+	plug_io_t *p = find_writer(fmt);
+
+	if (p != NULL)
+		res = p->write_element(p, f, e);
+
 	plug_io_err(res, "write element", NULL);
 	return res;
 }
