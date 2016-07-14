@@ -285,13 +285,14 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 			dst->string[idx] = text;
 			break;
 		case CFN_BOOLEAN:
+			while(isspace(*text)) text++;
 			for(s = strue; *s != NULL; s++)
-				if (strcasecmp(*s, text) == 0) {
+				if (strncasecmp(*s, text, strlen(*s)) == 0) {
 					dst->boolean[idx] = 1;
 					return 0;
 				}
 			for(s = sfalse; *s != NULL; s++)
-				if (strcasecmp(*s, text) == 0) {
+				if (strncasecmp(*s, text, strlen(*s)) == 0) {
 					dst->boolean[idx] = 0;
 					return 0;
 				}
