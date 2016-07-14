@@ -405,3 +405,9 @@ int fp_read_lib_all(void)
 
 	return (1);
 }
+
+int fp_rehash(void)
+{
+	fp_free_children(&library);
+	return fp_read_lib_all();
+}
