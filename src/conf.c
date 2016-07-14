@@ -1380,6 +1380,11 @@ int conf_islocked(conf_role_t target)
 	return conf_root_lock[target];
 }
 
+int conf_isdirty(conf_role_t target)
+{
+	return conf_lht_dirty[target];
+}
+
 void conf_reset(conf_role_t target, const char *source_fn)
 {
 	if (conf_root[target] != NULL)
