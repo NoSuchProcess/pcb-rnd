@@ -940,7 +940,7 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 	/* create parents if they do not exist */
 	last = next = path;
 	do {
-		next = strchr(next, '/');
+		next = strchr(last, '/');
 		if (next != NULL)
 			*next = '\0';
 
