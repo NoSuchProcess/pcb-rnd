@@ -1,0 +1,31 @@
+=== initial state: empty ===
+ I design/default_layer_name[] = <empty>
+=== import 3 levels ===
+Result: 0
+ I design/default_layer_name[0] = sys1 <<prio=200 from=embedded:3>> conf_rev=1
+ I design/default_layer_name[1] = sys2 <<prio=200 from=embedded:4>> conf_rev=1
+Result: 0
+ I design/default_layer_name[0] = user1 <<prio=400 from=embedded:3>> conf_rev=2
+ I design/default_layer_name[1] = user2 <<prio=400 from=embedded:4>> conf_rev=2
+Result: 0
+ I design/default_layer_name[0] = design1 <<prio=700 from=embedded:3>> conf_rev=3
+ I design/default_layer_name[1] = design2 <<prio=700 from=embedded:4>> conf_rev=3
+=== change policy: design->prepend (design, user) ===
+ I design/default_layer_name[0] = design1 <<prio=700 from=embedded:3>> conf_rev=4
+ I design/default_layer_name[1] = design2 <<prio=700 from=embedded:4>> conf_rev=4
+ I design/default_layer_name[2] = user1 <<prio=400 from=embedded:3>> conf_rev=4
+ I design/default_layer_name[3] = user2 <<prio=400 from=embedded:4>> conf_rev=4
+=== change policy: user->append (design, sys, user) ===
+ I design/default_layer_name[0] = design1 <<prio=700 from=embedded:3>> conf_rev=5
+ I design/default_layer_name[1] = design2 <<prio=700 from=embedded:4>> conf_rev=5
+ I design/default_layer_name[2] = sys1 <<prio=200 from=embedded:3>> conf_rev=5
+ I design/default_layer_name[3] = sys2 <<prio=200 from=embedded:4>> conf_rev=5
+ I design/default_layer_name[4] = user1 <<prio=400 from=embedded:3>> conf_rev=5
+ I design/default_layer_name[5] = user2 <<prio=400 from=embedded:4>> conf_rev=5
+=== change policy: design->append (sys, user, design) ===
+ I design/default_layer_name[0] = sys1 <<prio=200 from=embedded:3>> conf_rev=6
+ I design/default_layer_name[1] = sys2 <<prio=200 from=embedded:4>> conf_rev=6
+ I design/default_layer_name[2] = user1 <<prio=400 from=embedded:3>> conf_rev=6
+ I design/default_layer_name[3] = user2 <<prio=400 from=embedded:4>> conf_rev=6
+ I design/default_layer_name[4] = design1 <<prio=700 from=embedded:3>> conf_rev=6
+ I design/default_layer_name[5] = design2 <<prio=700 from=embedded:4>> conf_rev=6

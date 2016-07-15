@@ -1,6 +1,7 @@
 TESTS =  \
 	list_merge.diff \
 	list_set.diff \
+	arr_merge.diff \
 	arr_set.diff \
 	scalar.diff
 
