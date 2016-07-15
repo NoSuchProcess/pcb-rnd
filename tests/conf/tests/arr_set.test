@@ -1,0 +1,29 @@
+role design
+
+echo === initial state: empty ===
+reset *
+dump native design/default_layer_name
+
+echo === append two items ===
+policy append
+
+set design/default_layer_name foo
+dump native design/default_layer_name
+
+set design/default_layer_name bar
+dump native design/default_layer_name
+
+echo === prepend two items ===
+policy prepend
+
+set design/default_layer_name pre1
+dump native design/default_layer_name
+
+set design/default_layer_name pre2
+dump native design/default_layer_name
+
+echo === overwrite ===
+policy overwrite
+
+set design/default_layer_name new
+dump native design/default_layer_name

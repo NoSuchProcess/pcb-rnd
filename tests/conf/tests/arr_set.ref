@@ -1,0 +1,16 @@
+=== initial state: empty ===
+ I design/default_layer_name[] = <empty>
+=== append two items ===
+ I design/default_layer_name[0] = foo <<prio=700 from=<cmd_reset *>:0>> conf_rev=1
+ I design/default_layer_name[0] = foo <<prio=700 from=<cmd_reset *>:0>> conf_rev=2
+ I design/default_layer_name[1] = bar <<prio=700 from=<cmd_reset *>:0>> conf_rev=2
+=== prepend two items ===
+ I design/default_layer_name[0] = pre1 <<prio=700 from=<cmd_reset *>:0>> conf_rev=3
+ I design/default_layer_name[1] = foo <<prio=700 from=<cmd_reset *>:0>> conf_rev=3
+ I design/default_layer_name[2] = bar <<prio=700 from=<cmd_reset *>:0>> conf_rev=3
+ I design/default_layer_name[0] = pre2 <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
+ I design/default_layer_name[1] = pre1 <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
+ I design/default_layer_name[2] = foo <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
+ I design/default_layer_name[3] = bar <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
+=== overwrite ===
+ I design/default_layer_name[0] = new <<prio=700 from=<cmd_reset *>:0>> conf_rev=5
