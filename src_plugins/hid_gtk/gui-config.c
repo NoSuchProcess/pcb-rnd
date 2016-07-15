@@ -87,7 +87,7 @@ void hid_gtk_wgeo_update(void)
 }
 
 
-void ghid_wgeo_save(int save_to_file)
+void ghid_wgeo_save(int save_to_file, int skip_user)
 {
 	if (conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_design) {
 		GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_DESIGN);
@@ -101,10 +101,12 @@ void ghid_wgeo_save(int save_to_file)
 			conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_PROJECT, NULL);
 	}
 
-	if (conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_user) {
-		GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_USER);
-		if (save_to_file)
-			conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_USER, NULL);
+	if (!skip_user) {
+		if (conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_user) {
+			GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_USER);
+			if (save_to_file)
+				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_USER, NULL);
+		}
 	}
 }
 
@@ -133,6 +135,13 @@ static void wgeo_save_direct(GtkButton *widget, const char *ctx)
 
 #undef hid_gtk_wgeo_update_
 #undef hid_gtk_wgeo_save_
+
+/* event handler that runs before the current pcb is saved - save win geo
+   in the corresponding lihata trees if the checkbox is selected. */
+void ghid_conf_save_pre_wgeo(void *user_data, int argc, event_arg_t * argv[])
+{
+	ghid_wgeo_save(1, 1);
+}
 
 
 RCSID("$Id$");

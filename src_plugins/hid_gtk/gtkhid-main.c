@@ -1810,7 +1810,7 @@ static const char savewingeo_help[] = N_("Saves window geometry in the config.\n
 
 static int SaveWinGeo(int argc, char **argv, Coord x, Coord y)
 {
-	ghid_wgeo_save(1);
+	ghid_wgeo_save(1, 0);
 	return 0;
 }
 
@@ -1896,6 +1896,7 @@ HID ghid_hid;
 
 void hid_hid_gtk_uninit()
 {
+	event_unbind_allcookie(ghid_cookie);
 	conf_hid_unreg(ghid_cookie);
 }
 
@@ -2005,6 +2006,8 @@ pcb_uninit_t hid_hid_gtk_init()
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);
 #include "hid_gtk_conf_fields.h"
+
+	event_bind(EVENT_SAVE_PRE, ghid_conf_save_pre_wgeo, NULL, ghid_cookie);
 
 	return hid_hid_gtk_uninit;
 }

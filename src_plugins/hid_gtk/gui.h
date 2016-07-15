@@ -41,6 +41,7 @@
 #include "ghid-main-menu.h"
 #include "gui-pinout-preview.h"
 #include "conf_core.h"
+#include "event.h"
 
 #include "hid_gtk_conf.h"
 
@@ -206,7 +207,8 @@ void ghid_config_layer_name_update(gchar * name, gint layer);
 void ghid_config_groups_changed(void);
 
 void ghid_config_init(void);
-void ghid_wgeo_save(int save_to_file);
+void ghid_wgeo_save(int save_to_file, int skip_user);
+void ghid_conf_save_pre_wgeo(void *user_data, int argc, event_arg_t * argv[]);
 
 void ghid_mode_buttons_update(void);
 void ghid_pack_mode_buttons(void);
