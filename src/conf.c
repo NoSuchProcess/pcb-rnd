@@ -1385,6 +1385,16 @@ int conf_isdirty(conf_role_t target)
 	return conf_lht_dirty[target];
 }
 
+conf_role_t conf_lookup_role(const lht_node_t *nd)
+{
+	conf_role_t r;
+	for(r = 0; r < CFR_max_real; r++)
+		if (conf_root[r] == nd->doc)
+			return r;
+
+	return CFR_invalid;
+}
+
 void conf_reset(conf_role_t target, const char *source_fn)
 {
 	if (conf_root[target] != NULL)

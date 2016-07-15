@@ -308,5 +308,9 @@ const char *conf_concat_strlist(const conflist_t *lst, gds_t *buff, int *inited,
 /* Print usage help for all nodes that have the CFF_USAGE flag and whose
    path starts with prefix (if prefix != NULL) */
 void conf_usage(char *prefix, void (*print)(const char *name, const char *help));
+
+/* Determine under which role a node is */
+conf_role_t conf_lookup_role(const lht_node_t *nd);
+
 #endif
 

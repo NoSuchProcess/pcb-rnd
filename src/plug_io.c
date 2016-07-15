@@ -139,10 +139,17 @@ static void plug_io_err(int res, const char *what, const char *filename)
 int ParsePCB(PCBTypePtr Ptr, char *Filename, int load_settings)
 {
 	int res = -1;
+
+	if (load_settings)
+		event(EVENT_LOAD_PRE, "s", Filename);
+
 	HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, Ptr, Filename, load_settings);
 
 	if ((res == 0) && (load_settings))
 		conf_load_project(NULL, Filename);
+
+	if (load_settings)
+		event(EVENT_LOAD_POST, "si", Filename, res);
 
 	plug_io_err(res, "load pcb", Filename);
 	return res;
@@ -240,7 +247,7 @@ int WritePCB(FILE *f, const char *fmt)
 	if (p != NULL) {
 		event(EVENT_SAVE_PRE, "s", fmt);
 		res = p->write_pcb(p, f);
-		event(EVENT_SAVE_POST, "s", fmt);
+		event(EVENT_SAVE_POST, "si", fmt, res);
 	}
 	plug_io_err(res, "write pcb", NULL);
 	return res;

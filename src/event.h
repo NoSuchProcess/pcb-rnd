@@ -5,6 +5,8 @@ typedef enum {
 	EVENT_CLI_ENTER,              /* the user pressed enter on a CLI command - called before parsing the line for actions; args: (str commandline) */
 	EVENT_SAVE_PRE,               /* called before saving the design */
 	EVENT_SAVE_POST,              /* called after saving the design */
+	EVENT_LOAD_PRE,               /* called before loading a new design */
+	EVENT_LOAD_POST,              /* called after loading a new design, whether it was succesful or not */
 	EVENT_last                    /* not a real event */
 } event_id_t;
 
