@@ -4,7 +4,7 @@ TESTS =  \
 	arr_set.diff \
 	scalar.diff
 
-.SUFFIXES: .ref .test .out .diff
+.SUFFIXES: .ref .test .out .diff .REF
 
 all: $(TESTS)
 	@echo "*** QC pass. ***"
