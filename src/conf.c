@@ -366,6 +366,29 @@ int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, conf_p
 	return 0;
 }
 
+static void conf_insert_arr(conf_native_t *dest)
+{
+#define CASE_MOVE(typ, fld) \
+	case typ: memmove(dest->val.fld+1, dest->val.fld, dest->used * sizeof(dest->val.fld[0])); return
+
+	memmove(dest->prop+1, dest->prop, dest->used * sizeof(dest->prop[0]));
+	if (dest->used > 0) {
+		switch(dest->type) {
+			CASE_MOVE(CFN_STRING, string);
+			CASE_MOVE(CFN_BOOLEAN, boolean);
+			CASE_MOVE(CFN_INTEGER, integer);
+			CASE_MOVE(CFN_REAL, real);
+			CASE_MOVE(CFN_COORD, coord);
+			CASE_MOVE(CFN_UNIT, unit);
+			CASE_MOVE(CFN_COLOR, color);
+			CASE_MOVE(CFN_LIST, list);
+			CASE_MOVE(CFN_INCREMENTS, increments);
+		}
+	}
+#undef CASE_MOVE
+	abort(); /* unhandled type */
+}
+
 int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, conf_policy_t pol)
 {
 	lht_node_t *s;
@@ -378,8 +401,13 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 		if (s->type == LHT_TEXT) {
 			switch(pol) {
 				case POL_PREPEND:
-#warning TODO
-					abort();
+					if (dest->used < dest->array_size) {
+						didx = 0;
+						conf_insert_arr(dest);
+					}
+					else
+						didx = dest->array_size+1; /* indicate that array is full */
+					break;
 				case POL_APPEND:
 					didx = dest->used++;
 					break;
