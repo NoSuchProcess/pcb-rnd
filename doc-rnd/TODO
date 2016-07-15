@@ -9,7 +9,7 @@
 		- marker not moved to the second hole starting point
 
 - replace settings with lihata (conf_*)
-	- check if saving window geo to design or project file works - should run an update from a hook before the save
+	- change window sizes when loaded from a design or project file: not only for top window
 	- implement binary->lht setter and use it in config_any_replace() if the source role sais so (this is requred for saving current config (from native) to project or user)
 	- gtk hid: clean up the #warnings
 	- finish gtk preferences user pov (change is always saved to the design)
