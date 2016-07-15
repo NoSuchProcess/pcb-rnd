@@ -1,3 +1,5 @@
+#ifndef PCB_EVENT_H
+#define PCB_EVENT_H
 typedef enum {
 	EVENT_GUI_INIT,               /* finished initializing the GUI called right before the main loop of the GUI; args: (void) */
 	EVENT_CLI_ENTER,              /* the user pressed enter on a CLI command - called before parsing the line for actions; args: (str commandline) */
@@ -54,3 +56,4 @@ void event_unbind_allcookie(const char *cookie);
 /* Event trigger: call all handlers for an event. Fmt is a list of
    format characters (e.g. i for ARG_INT). */
 void event(event_id_t ev, const char *fmt, ...);
+#endif
