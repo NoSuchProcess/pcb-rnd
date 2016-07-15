@@ -1,0 +1,136 @@
+# release: pcb 20110918
+
+# To read pcb files, the pcb version (or the git source date) must be >= the file version
+FileVersion[20070407]
+
+PCB["" 600000 500000]
+
+Grid[2500.0 0 0 1]
+Cursor[2500 62500 0.000000]
+PolyArea[3100.006200]
+Thermal[0.500000]
+DRC[1200 900 1000 700 1500 1000]
+Flags("nameonpcb,clearnew,snappin")
+Groups("1,3,4,c:2,5,6,s:7:8")
+Styles["Signal,1000,7874,3150,2000:Power,2000,8661,3937,2000:Fat,8000,13780,4724,2500:Sig-tight,1000,6400,3150,1200"]
+
+Attribute("PCB::grid::unit" "mil")
+Layer(1 "component")
+(
+)
+Layer(2 "solder")
+(
+)
+Layer(3 "comp-GND")
+(
+)
+Layer(4 "comp-power")
+(
+)
+Layer(5 "sold-GND")
+(
+)
+Layer(6 "sold-power")
+(
+)
+Layer(7 "signal3")
+(
+)
+Layer(8 "outline")
+(
+)
+Layer(9 "silk")
+(
+)
+Layer(10 "silk")
+(
+)
+
+Element[0x00000000 "1206" "C3" "unknown" 0 0 -3150 -3150 0 100 ""]
+(
+	Pad[-5905 -1181
+		-5905 1181
+		5118 2000 5718 "1" "1" "square"]
+	    Pad[5905 -1181
+		5905 1181
+		5118 2000 5718 "2" "2" "square"]
+	ElementLine[-2362 -3740 2362 -3740 800]
+	    ElementLine[-2362 3740 2362 3740 800]
+)
+Element["" "connector(1,2)" "CONN2" "unknown" 0 0 0 -10000 0 100 ""]
+(
+	Pin[0 0 8000 5000 8600 3937 "" "1" "square"]
+	Pin[0 10000 8000 5000 8600 3937 "" "2" ""]
+	ElementLine[-5000 -5000 -5000 15000 1000]
+	ElementLine[-5000 -5000 5000 -5000 1000]
+	ElementLine[5000 15000 -5000 15000 1000]
+	ElementLine[5000 15000 5000 -5000 1000]
+	ElementLine[-5000 5000 5000 5000 1000]
+	ElementLine[5000 -5000 5000 5000 1000]
+)
+Element["" "connector(1,2)" "CONN1" "unknown" 0 0 0 -10000 0 100 ""]
+(
+	Pin[0 0 8000 5000 8600 3937 "" "1" "square"]
+	Pin[0 10000 8000 5000 8600 3937 "" "2" ""]
+	ElementLine[-5000 -5000 -5000 15000 1000]
+	ElementLine[-5000 -5000 5000 -5000 1000]
+	ElementLine[5000 15000 -5000 15000 1000]
+	ElementLine[5000 15000 5000 -5000 1000]
+	ElementLine[-5000 5000 5000 5000 1000]
+	ElementLine[5000 -5000 5000 5000 1000]
+)
+
+Element(0x00 "TANT_A" "C1" "unknown" 0 0 106 0 3 100 0x00)
+(
+	ElementLine(-96 -43 -96 43 20)
+	    ElementLine(-96 43 -72 55 10)
+	    ElementLine(-72 55 86 55 10)
+	    ElementLine(86 55 86 -55 10)
+	    ElementLine(86 -55 -72 -55 10)
+	    ElementLine(-72 -55 -96 -43 10)
+	Pad(-50 -18 
+		-50 18
+		49 20 55 "1" "1" 0x00000100)
+	    Pad(50 -18 
+		50 18
+		49 20 55 "2" "2" 0x00000100)
+)
+
+Element[0x00000000 "1206" "C2" "unknown" 0 0 -3150 -3150 0 100 ""]
+(
+	Pad[-5905 -1181
+		-5905 1181
+		5118 2000 5718 "1" "1" "square"]
+	    Pad[5905 -1181
+		5905 1181
+		5118 2000 5718 "2" "2" "square"]
+	ElementLine[-2362 -3740 2362 -3740 800]
+	    ElementLine[-2362 3740 2362 3740 800]
+)
+Element(0x00 "TO220" "U1" "unknown" 0 0 1 100 0x00)
+(
+	Pin(100 800 90 60 "1" 0x101)
+	Pin(200 800 90 60 "2" 0x01)
+	Pin(300 800 90 60 "3" 0x01)
+	Pin(200 130 150 130 "4" 0x01)
+	ElementLine(100 800 100 620 30)
+	ElementLine(200 800 200 620 30)
+	ElementLine(300 800 300 620 30)
+	ElementLine(  0 620 400 620 20)
+	ElementLine(400 620 400 245 20)
+	ElementLine(400 245   0 245 20)
+	ElementLine(  0 245   0 620 20)
+	ElementLine(  0 245 400 245 20)
+	ElementLine(400 245 400 120 20)
+	ElementLine(400 120 385 120 20)
+	ElementLine(385 120 385  50 20)
+	ElementLine(385  50 400  50 20)
+	ElementLine(400  50 400  10 20)
+	ElementLine(400  10   0  10 20)
+	ElementLine(  0  10   0  50 20)
+	ElementLine(  0  50  15  50 20)
+	ElementLine( 15  50  15 120 20)
+	ElementLine( 15 120   0 120 20)
+	ElementLine(  0 120   0 245 20)
+	Mark(200 800)
+)

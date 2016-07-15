@@ -1,0 +1,3 @@
+unnamed_net2	C3-2 CONN2-1 U1-3 
+GND	C3-1 CONN2-2 CONN1-2 C1-2 C2-1 U1-2 
+unnamed_net1	C2-2 C1-1 CONN1-1 U1-1 

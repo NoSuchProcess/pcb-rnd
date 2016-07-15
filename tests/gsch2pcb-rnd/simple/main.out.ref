@@ -1,0 +1,20 @@
+  ../../../src/default.pcb -> 0
+
+----------------------------------
+Done processing.  Work performed:
+6 file elements added to main.pcb.
+
+Next step:
+1.  Run pcb on your file main.pcb.
+    You will find all your footprints in a bundle ready for you to place
+    or disperse with "Select -> Disperse all elements" in PCB.
+
+2.  From within PCB, select "File -> Load netlist file" and select 
+    main.net to load the netlist.
+
+3.  From within PCB, enter
+
+           :ExecuteFile(main.cmd)
+
+    to propagate the pin names of all footprints to the layout.
+
