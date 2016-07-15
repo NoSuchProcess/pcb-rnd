@@ -75,6 +75,7 @@ window_geometry_t hid_gtk_wgeo, hid_gtk_wgeo_old;
 		hid_gtk_wgeo_old.field = hid_gtk_wgeo.field; \
 		hid_gtk_wgeo_save_(field, dest_role); \
 	}
+
 void hid_gtk_wgeo_update(void)
 {
 	if (conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_design)
@@ -112,15 +113,15 @@ static void wgeo_save_direct(GtkButton *widget, const char *ctx)
 	if (*ctx == '*') {
 		switch(ctx[1]) {
 			case 'd':
-				GHID_WGEO_ALL(hid_gtk_wgeo_update_, CFR_DESIGN);
+				GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_DESIGN);
 				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_DESIGN, NULL);
 				break;
 			case 'p':
-				GHID_WGEO_ALL(hid_gtk_wgeo_update_, CFR_PROJECT);
+				GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_PROJECT);
 				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_PROJECT, NULL);
 				break;
 			case 'u':
-				GHID_WGEO_ALL(hid_gtk_wgeo_update_, CFR_USER);
+				GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_USER);
 				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_USER, NULL);
 				break;
 		}
