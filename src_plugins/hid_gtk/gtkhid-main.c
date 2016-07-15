@@ -2008,6 +2008,7 @@ pcb_uninit_t hid_hid_gtk_init()
 #include "hid_gtk_conf_fields.h"
 
 	event_bind(EVENT_SAVE_PRE, ghid_conf_save_pre_wgeo, NULL, ghid_cookie);
+	event_bind(EVENT_LOAD_POST, ghid_conf_load_post_wgeo, NULL, ghid_cookie);
 
 	return hid_hid_gtk_uninit;
 }

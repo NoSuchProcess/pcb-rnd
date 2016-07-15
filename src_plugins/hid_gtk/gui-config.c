@@ -144,6 +144,32 @@ void ghid_conf_save_pre_wgeo(void *user_data, int argc, event_arg_t * argv[])
 }
 
 
+static int just_loaded(const char *path)
+{
+	conf_native_t *n = conf_get_field(path);
+	conf_role_t r;
+	if ((n == NULL) || (n->used == 0))
+		return 0;
+	r = conf_lookup_role(n->prop[0].src);
+	return (r == CFR_DESIGN) || (r == CFR_PROJECT);
+}
+
+#define just_loaded_geo(path_prefix) (just_loaded(path_prefix "_width") || just_loaded(path_prefix "_height"))
+
+void ghid_conf_load_post_wgeo(void *user_data, int argc, event_arg_t * argv[])
+{
+	if (just_loaded_geo("plugins/hid_gtk/window_geometry/top")) {
+		hid_gtk_wgeo.top_width  = conf_hid_gtk.plugins.hid_gtk.window_geometry.top_width;
+		hid_gtk_wgeo.top_height = conf_hid_gtk.plugins.hid_gtk.window_geometry.top_height;
+/*		printf("Resize top: %d %d\n", hid_gtk_wgeo.top_width, hid_gtk_wgeo.top_height);*/
+		gtk_window_resize(GTK_WINDOW(gport->top_window), hid_gtk_wgeo.top_width, hid_gtk_wgeo.top_height);
+	}
+
+
+}
+
+#undef just_loaded_geo
+
 RCSID("$Id$");
 
 enum ConfigType {
