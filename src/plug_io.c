@@ -100,6 +100,7 @@
 #include "hid_actions.h"
 #include "hid_flags.h"
 #include "plugins.h"
+#include "event.h"
 
 plug_io_t *plug_io_chain = NULL;
 
@@ -236,8 +237,11 @@ int WritePCB(FILE *f, const char *fmt)
 	int res;
 	plug_io_t *p = find_writer(fmt);
 
-	if (p != NULL)
+	if (p != NULL) {
+		event(EVENT_SAVE_PRE, "s", fmt);
 		res = p->write_pcb(p, f);
+		event(EVENT_SAVE_POST, "s", fmt);
+	}
 	plug_io_err(res, "write pcb", NULL);
 	return res;
 }
