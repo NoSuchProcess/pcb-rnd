@@ -3,28 +3,27 @@
 	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
 	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 	- bg image png crashes in extreme pan
-	- 2 holes in the same poly withotu switching tool
+	- 2 holes in the same poly without switching tool
 		- the second hole dups the poly
 		- first click when starting the first hole is lost
 		- marker not moved to the second hole starting point
 
 - replace settings with lihata (conf_*)
-	- check how many times WritePCB is called during _startup_ with a pcb from the command line -> enable HAS_ATEXIT
-	- fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
-	- implement binary->lht setter and use it in config_any_replace() if the source role sais so
+	- check if saving window geo to design or project file works - should run an update from a hook before the save
+	- implement binary->lht setter and use it in config_any_replace() if the source role sais so (this is requred for saving current config (from native) to project or user)
 	- gtk hid: clean up the #warnings
 	- finish gtk preferences user pov (change is always saved to the design)
 		- library search path:
 			- use two file listings, CFR_DESIGN on the left and the merged one on the right
 			- select policy on the left
 			- disable the save-to-project and save-to-user settings
-			- remap the library after a change (config_library_apply()), test!
 		- layer colors not saved in pcb attribs
 		- color dialog:
 			- background color not loaded into the gtk cache: catch conf change event in the gtk hid to reconfigure the color
 	- TEST:
+		- atexit change -> is the design saved periodically? is it saved on a crash?
 		- project files:
-			- save only if changed
+			- save only if changed, when the project is saved
 			- save project conf properly (needs lihata smart save long term, test with plain save now)
 		- vendor drill mapping
 		- djopt, auto_only flag
@@ -59,6 +58,7 @@
 
 CLEANUP #5
 - conf:
+	- fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
 	- switch the lesstif HID over from attribs to conf
 	- remove redundancy: don't store values in the PCB struct that are in the design conf
 	- increments are not really implemented
