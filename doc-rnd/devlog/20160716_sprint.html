@@ -1,0 +1,81 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> Testing guide for the test sprint </H2>
+
+Please step with procedure I and proceed to procedure II then to procedure III.
+You can postpone or stop any time, even partial results are useful.
+<p>
+The most important procedures are I. and II., which together are estimated
+to take something between 40 and 90 minutes.
+<p>
+No installation, no root privileges required. No interference expected with
+your pcb mainline installation. What you'll need is about the same you would
+need for compiling mainline or a random application:
+<ul>
+	<li> an svn client (e.g. apt-get install subversion)
+	<li> a C compiler (e.g. apt-get install gcc - anything that supports C99 should work)
+	<li> the normal development libs (e.g. libc)
+	<li> extra libs depending on your desired setup (e.g. libgtk2-0-dev)
+	<li> make
+</ul>
+
+<h3> I. Setup [10..30 minutes] </h3>
+<ul>
+	<li> Objective: get a running pcb-rnd.
+	<li> steps:
+		<ul>
+			<li> 1. check out the code in a new directory: <tt>svn checkout svn://repo.hu/pcb-rnd/trunk</tt>
+			<li> 2. configure: <tt>cd trunk; ./configure </tt>
+			<li> 3. check the summary the last step produced; if you don't like it or anything is suspicious, consult Igor2 on IRC
+			<li> 4. compile: <tt>cd trunk; make</tt>
+			<li> 5. check if the compilation terminated with error (-&gt;Igor2 on IRC)
+			<li> 6. dry run: <tt>cd trunk/src; ./pcb-rnd</tt>
+			<li> 7. check if it generally runs as expected (note: there's no opengl, the menu layout and some default settings are slightly different)
+			<li> 8. please <b>report even if everything worked</b>: it's for the record/statistics; please include, in your report:
+			<ul>
+				<li> a. your system: <tt>uname -a</tt>
+				<li> b. whether you used the gtk HID or the lesstif HID or both
+			</ul>
+		</ul>
+</ul>
+
+<h3> II. Test drive [30..60 minutes] </h3>
+
+<ul>
+	<li> Objective: find random bugs and make suggestions via a simulated production test drive.
+	<li> steps:
+		<ul>
+			<li> 1. take on of your existing .pcb (preferrably one that you can share in case of a bugreport is needed)
+			<li> 2. copy the .pcb to trunk/src as foo.pcb
+			<li> 3. run <tt> cd trunk/src; ./pcb-rnd foo.pcb </tt>
+			<li> 4. pretend carrying out a real modification; e.g. replace one of the ICs with a footprint of the same pin count but different dimensions (e.g. so8 -> ssop8 or sot23->to220). Pretend you really want to do this modification and pretend that the board will go in production. Do <b>your</b> usual routine (e.g. check gerbers).
+			<li> 5. if you see anything strange, find bugs, have suggestions:
+			<ul>
+				<li> a. consult Igor2 on IRC
+				<li> b. if there are files to be "attached" or your observation/question can only be stated in a medium sized novel, please send an email to pcb-rnd (at) igor2.repo.hu (and then we can still discuss it on IRC)
+				<li> c. it is sometimes worth checking the behavior of a recent mainline pcb; there are bugs and strangenesses present in both current mainline and pcb-rnd (because of the common ancestor)
+			</ul>
+		</ul>
+</ul>
+
+<h3> III. Systematic testing [60..90] </h3>
+<ul>
+	<li> Objective: systematic testing of specific features that are affected
+	     by recent code rewrite/development.
+	<li> steps:
+		<ul>
+			<li> 1. contact Igor2 on IRC to get a chunk of a testing chunk
+			<li> 2. understand the subsystem in question (from user perspective)
+			<li> 3. use your fantasy to invent test methods to see whether the
+			        subsystem works in common or normal use cases
+			<li> 4. use your fantasy to invent test methods to see whether the
+			        subsystem works in corner cases
+			<li> 5. report anything that seems like a bug or undesired behavior or regression
+			<li> 6. please <b>do report</b> if there's no bug and the given subsystem
+			     worked as expected; positive results are just as important as negative ones
+			<li> 7. start over from step III/1.
+</ul>
+</body>
+</html>
