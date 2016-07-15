@@ -667,15 +667,31 @@ void conf_update(const char *path)
 		if (n == NULL) {
 			char *path_, *field;
 			path_ = strdup(path);
-			field = strrchr(path_, '/');
-			if (field == NULL) {
-				free(path_);
-				return;
+
+			/* It might be an array element - truncate */
+			field = strrchr(path_, '[');
+			if (field != NULL) {
+				*field = '\0';
+				n = conf_get_field(path_);
 			}
-			*field = '\0';
-			n = conf_get_field(path_);
-			if ((n != NULL) && (n->type == CFN_INCREMENTS))
+
+			/* It may be a field of an increment, truncate last portion */
+			if (n == NULL) {
+				field = strrchr(path_, '/');
+				if (field == NULL) {
+					free(path_);
+					return;
+				}
+				*field = '\0';
+				n = conf_get_field(path_);
+				if (n->type != CFN_INCREMENTS)
+					n = NULL;
+			}
+
+			/* if a valid node is found, update it */
+			if (n != NULL)
 				conf_update(path_);
+
 			free(path_);
 			return;
 		}
