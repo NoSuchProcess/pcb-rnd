@@ -230,6 +230,22 @@ int conf_isdirty(conf_role_t target);
 /* all configuration fields ever seen */
 extern htsp_t *conf_fields;
 
+/***** print fields from binary to lihata/text *****/
+
+typedef int (*conf_pfn)(void *ctx, const char *fmt, ...);
+
+/* Prints the value of a node in a form that is suitable for lihata. Prints
+   a single element of an array, but prints lists as lists. Returns
+   the sum of conf_pfn call return values - this is usually the number of
+   bytes printed. */
+int conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, confitem_t *val, conf_native_type_t type, confprop_t *prop, int idx);
+
+/* Prints the value of a node in a form that is suitable for lihata. Prints
+   full arrays. Returns the sum of conf_pfn call return values - this is
+   usually the number of bytes printed. */
+int conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose, conf_native_t *node);
+
+
 /****** utility ******/
 
 #define conf_list_foreach_path_first(res, conf_list, call) \
