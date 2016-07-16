@@ -16,7 +16,7 @@ typedef int (*conf_pfn)(void *ctx, const char *fmt, ...);
 /* Prints the value of a node in a form that is suitable for lihata. Returns
    the sum of conf_pfn call return values - this is usually the number of
    bytes printed. */
-static int conf_print_native_(conf_pfn pfn, void *ctx, int verbose, confitem_t *val, conf_native_type_t type, confprop_t *prop, int idx)
+static int conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, confitem_t *val, conf_native_type_t type, confprop_t *prop, int idx)
 {
 	int ret = 0;
 	switch(type) {
@@ -44,7 +44,7 @@ static int conf_print_native_(conf_pfn pfn, void *ctx, int verbose, confitem_t *
 					ret += pfn(ctx, "{");
 					for(n = conflist_first(val->list); n != NULL; n = conflist_next(n)) {
 						ret += pfn(ctx, "{");
-						conf_print_native_(pfn, ctx, verbose, &n->val, n->type, &n->prop, 0);
+						conf_print_native_field(pfn, ctx, verbose, &n->val, n->type, &n->prop, 0);
 						ret += pfn(ctx, "};");
 					}
 					ret += pfn(ctx, "}");
@@ -68,6 +68,31 @@ static int conf_print_native_(conf_pfn pfn, void *ctx, int verbose, confitem_t *
 	return ret;
 }
 
+static int conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose, conf_native_t *node)
+{
+	int ret = 0;
+	if (node->array_size > 1) {
+		int n;
+		for(n = 0; n < node->used; n++) {
+			if (verbose)
+				ret += pfn(ctx, "%s I %s[%d] = ", prefix, node->hash_path, n);
+			ret += conf_print_native_field(pfn, ctx, verbose, &node->val, node->type, node->prop, n);
+			if (verbose)
+				ret += pfn(ctx, " conf_rev=%d\n", node->conf_rev);
+		}
+		if ((node->used == 0) && (verbose))
+			ret += pfn(ctx, "%s I %s[] = <empty>\n", prefix, node->hash_path);
+	}
+	else {
+		if (verbose)
+			ret += pfn(ctx, "%s I %s = ", prefix, node->hash_path);
+		ret += conf_print_native_field(pfn, ctx, verbose, &node->val, node->type, node->prop, 0);
+		if (verbose)
+			ret += pfn(ctx, " conf_rev=%d\n", node->conf_rev);
+	}
+	return ret;
+}
+
 void conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefix)
 {
 	htsp_entry_t *e;
@@ -82,20 +107,6 @@ void conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefi
 			if (strncmp(node->hash_path, match_prefix, pl) != 0)
 				continue;
 		}
-		if (node->array_size > 1) {
-			int n;
-			for(n = 0; n < node->used; n++) {
-				fprintf(f, "%s I %s[%d] = ", prefix, e->key, n);
-				conf_print_native_((conf_pfn)pcb_fprintf, f, verbose, &node->val, node->type, node->prop, n);
-				fprintf(f, " conf_rev=%d\n", node->conf_rev);
-			}
-			if (node->used == 0)
-				fprintf(f, "%s I %s[] = <empty>\n", prefix, e->key);
-		}
-		else {
-			fprintf(f, "%s I %s = ", prefix, e->key);
-			conf_print_native_((conf_pfn)pcb_fprintf, f, verbose, &node->val, node->type, node->prop, 0);
-			fprintf(f, " conf_rev=%d\n", node->conf_rev);
-		}
+		conf_print_native((conf_pfn)pcb_fprintf, f, prefix, verbose, node);
 	}
 }
