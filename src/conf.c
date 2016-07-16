@@ -31,6 +31,7 @@
 #include "hid_attrib.h"
 #include "misc_util.h"
 #include "error.h"
+#include "paths.h"
 
 /* conf list node's name */
 const char *conf_list_name = "pcb-rnd-conf-v1";
