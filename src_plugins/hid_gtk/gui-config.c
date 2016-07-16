@@ -219,7 +219,8 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 			htsp_entry_t *e;
 			conf_fields_foreach(e) {
 				if (strncmp(e->key, wildp, pl) == 0) {
-					conf_replace_subtree(ctx->dst_role, e->key, ctx->src_role, e->key);
+					if (conf_replace_subtree(ctx->dst_role, e->key, ctx->src_role, e->key) != 0)
+						Message("Error: failed to save config item %s\n", *p);
 					if (ctx->dst_role < CFR_max_real) {
 						conf_update(e->key);
 						need_update++;
@@ -229,7 +230,8 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 		}
 		else {
 			/* plain node */
-			conf_replace_subtree(ctx->dst_role, *p, ctx->src_role, *p);
+			if (conf_replace_subtree(ctx->dst_role, *p, ctx->src_role, *p) != 0)
+					Message("Error: failed to save config item %s\n", *p);
 			if (ctx->dst_role < CFR_max_real) {
 				conf_update(*p);
 				need_update++;
@@ -237,7 +239,7 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 		}
 	}
 
-	/* present a file choose dialog box on save */
+	/* present a file choose dialog box on save to custom file */
 	if (ctx->dst_role == CFR_file) {
 		GtkWidget *fcd = gtk_file_chooser_dialog_new("Save config settings to...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 		if (gtk_dialog_run(GTK_DIALOG(fcd)) == GTK_RESPONSE_ACCEPT) {
@@ -278,9 +280,9 @@ static GtkWidget *config_window;
 static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton *widget, save_ctx_t *sctx))
 {
 	GtkWidget *config_color_warn_label, *button, *hbox;
-	static save_ctx_t ctx_all2project = { CFR_PROJECT, CFR_DESIGN };
-	static save_ctx_t ctx_all2user    = { CFR_USER, CFR_DESIGN };
-	static save_ctx_t ctx_all2file    = { CFR_file, CFR_DESIGN };
+	static save_ctx_t ctx_all2project = { CFR_PROJECT, CFR_binary };
+	static save_ctx_t ctx_all2user    = { CFR_USER, CFR_binary };
+	static save_ctx_t ctx_all2file    = { CFR_file, CFR_binary };
 	static save_ctx_t ctx_int2design  = { CFR_DESIGN, CFR_INTERNAL };
 
 	hbox = gtk_hbox_new(FALSE, 4);
