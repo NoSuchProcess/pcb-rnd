@@ -79,6 +79,26 @@ void cmd_dump(char *arg)
 		Message("Invalid dump mode: '%s'", arg);
 }
 
+void cmd_print(char *arg)
+{
+	conf_native_t *node;
+	gds_t s;
+
+	if (arg == NULL) {
+		Message("Need an arg: a native path");
+		return;
+	}
+	node = conf_get_field(arg);
+	if (node == NULL) {
+		Message("No such path: '%s'", arg);
+		return;
+	}
+	gds_init(&s);
+	conf_print_native((conf_pfn)pcb_append_printf, &s, NULL, 0, node);
+	printf("%s='%s'\n", node->hash_path, s.array);
+	gds_uninit(&s);
+}
+
 void cmd_load(char *arg, int is_text)
 {
 	char *fn;
@@ -323,6 +343,8 @@ int main()
 
 		if (strcmp(cmd, "dump") == 0)
 			cmd_dump(arg);
+		else if (strcmp(cmd, "print") == 0)
+			cmd_print(arg);
 		else if (strcmp(cmd, "load") == 0)
 			cmd_load(arg, 0);
 		else if (strcmp(cmd, "paste") == 0)
