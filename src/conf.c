@@ -1280,7 +1280,29 @@ void conf_usage(char *prefix, void (*print)(const char *name, const char *help))
 int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t src_role, const char *src_path)
 {
 	lht_node_t *dst = conf_lht_get_at(dst_role, dst_path, 1);
-	lht_node_t *src = conf_lht_get_at(src_role, src_path, 0), *new_src;
+	lht_node_t *src, *new_src = NULL;
+
+	if (src_role == CFR_binary) {
+		char *name;
+		gds_t s;
+		conf_native_t *n = conf_get_field(src_path);
+		if (n == NULL)
+			return -1;
+#warning TODO: handle array and list
+		if (n->array_size > 1)
+			return -1;
+		name = strrchr(n->hash_path, '/');
+		if (name == NULL)
+			return -1;
+		gds_init(&s);
+		conf_print_native((conf_pfn)pcb_append_printf, &s, NULL, 0, n);
+		src = lht_dom_node_alloc(LHT_TEXT, name+1);
+		src->data.text.value = s.array;
+		s.array = NULL;
+		gds_uninit(&s);
+	}
+	else
+		src = conf_lht_get_at(src_role, src_path, 0);
 
 	if ((src == NULL) && (dst != NULL)) {
 		lht_tree_del(dst);
@@ -1288,17 +1310,26 @@ int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t
 	}
 
 	if (dst == NULL)
-		return -1;
+		goto err;
 
 	new_src = lht_dom_duptree(src);
 	if (new_src == NULL)
-		return -1;
+		goto err;
 
 	if (lht_tree_replace(dst, new_src) != LHTE_SUCCESS)
-		return -1; /* ... and leak new_src */
+		goto err;
 
 	lht_tree_del(dst);
+	if (src_role == CFR_binary)
+		lht_dom_node_free(src);
 	return 0;
+
+	err:;
+	if (src_role == CFR_binary)
+		lht_dom_node_free(src);
+	if (new_src != NULL)
+		lht_dom_node_free(new_src);
+	return -1;
 }
 
 
@@ -1539,7 +1570,7 @@ int conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose,
 {
 	int ret = 0;
 	if ((node->used <= 0) && (!verbose))
-		return;
+		return 0;
 	if (node->array_size > 1) {
 		int n;
 		if (!verbose)
