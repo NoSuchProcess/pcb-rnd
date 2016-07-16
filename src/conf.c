@@ -1333,6 +1333,8 @@ int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t
 	if (lht_tree_replace(dst, new_src) != LHTE_SUCCESS)
 		goto err;
 
+	conf_lht_dirty[dst_role]++;
+
 	lht_tree_del(dst);
 	if (src_role == CFR_binary)
 		lht_dom_node_free(src);
