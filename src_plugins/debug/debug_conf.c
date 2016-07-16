@@ -1,15 +1,26 @@
 #include "conf.h"
 
+static int needs_braces(const char *s)
+{
+	for(; *s != '\0'; s++)
+		if (!isalnum(*s) && (*s != '_') && (*s != '-') && (*s != '+') && (*s != '/') && (*s != ':') && (*s != '.') && (*s != ','))
+			return 1;
+	return 0;
+}
+
 #define print_str_or_null(pfn, ctx, verbose, chk, out) \
 	do { \
 			if (chk == NULL) { \
 				if (verbose) \
 					ret += pfn(ctx, "<NULL>");\
 			} \
-			else \
-				ret += pfn(ctx, "%s", out); \
+			else {\
+				if (needs_braces(out)) \
+					ret += pfn(ctx, "{%s}", out); \
+				else \
+					ret += pfn(ctx, "%s", out); \
+			} \
 	} while(0)
-
 
 typedef int (*conf_pfn)(void *ctx, const char *fmt, ...);
 
@@ -43,9 +54,8 @@ static int conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, confite
 				if (conflist_length(val->list) > 0) {
 					ret += pfn(ctx, "{");
 					for(n = conflist_first(val->list); n != NULL; n = conflist_next(n)) {
-						ret += pfn(ctx, "{");
 						conf_print_native_field(pfn, ctx, verbose, &n->val, n->type, &n->prop, 0);
-						ret += pfn(ctx, "};");
+						ret += pfn(ctx, ";");
 					}
 					ret += pfn(ctx, "}");
 				}
