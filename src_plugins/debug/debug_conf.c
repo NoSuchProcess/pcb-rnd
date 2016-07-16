@@ -1,15 +1,27 @@
 #include "conf.h"
 
-static void conf_dump_(FILE *f, const char *prefix, int verbose, confitem_t *val, conf_native_type_t type, confprop_t *prop, int idx)
+#define print_str_or_null(pfn, ctx, verbose, chk, out) \
+	do { \
+			if (chk == NULL) { \
+				if (verbose) \
+					pfn(ctx, "<NULL>");\
+				return 0; \
+			} \
+			pfn(ctx, "%s", out); \
+	} while(0)
+
+/* Prints the value of a node in a form that is suitable for lihata. Returns 1
+   if field is printed, 0 if not (e.g. the field was empty). */
+static int conf_dump_(FILE *f, const char *prefix, int verbose, confitem_t *val, conf_native_type_t type, confprop_t *prop, int idx)
 {
 	switch(type) {
-		case CFN_STRING:  fprintf(f, "%s", val->string[idx] == NULL ? "<NULL>" : val->string[idx]); break;
+		case CFN_STRING:  print_str_or_null(fprintf, f, verbose, val->string[idx], val->string[idx]); break;
 		case CFN_BOOLEAN: fprintf(f, "%d", val->boolean[idx]); break;
 		case CFN_INTEGER: fprintf(f, "%ld", val->integer[idx]); break;
 		case CFN_REAL:    fprintf(f, "%f", val->real[idx]); break;
 		case CFN_COORD:   pcb_fprintf(f, "%$mS", val->coord[idx]); break;
-		case CFN_UNIT:    pcb_fprintf(f, "%s", val->unit[idx] == NULL ? "<NULL>" : val->unit[idx]->suffix); break;
-		case CFN_COLOR:   fprintf(f, "%s", val->color[idx] == NULL ? "<NULL>" : val->color[idx]); break;
+		case CFN_UNIT:    print_str_or_null(fprintf, f, verbose, val->unit[idx], val->unit[idx]->suffix); break;
+		case CFN_COLOR:   print_str_or_null(fprintf, f, verbose, val->color[idx], val->color[idx]); break;
 		case CFN_INCREMENTS:
 			{
 				Increments *i = &val->increments[idx];
@@ -32,8 +44,13 @@ static void conf_dump_(FILE *f, const char *prefix, int verbose, confitem_t *val
 					}
 					fprintf(f, "}");
 				}
-				else
-					fprintf(f, "<empty list>");
+				else {
+					if (verbose)
+						fprintf(f, "<empty list>");
+					else
+						fprintf(f, "{}");
+					return 0;
+				}
 			}
 			break;
 	}
@@ -44,6 +61,7 @@ static void conf_dump_(FILE *f, const char *prefix, int verbose, confitem_t *val
 		}
 		fprintf(f, ">>");
 	}
+	return 1;
 }
 
 void conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefix)
