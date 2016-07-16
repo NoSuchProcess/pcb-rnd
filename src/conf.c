@@ -1487,13 +1487,13 @@ int conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, confitem_t *va
 {
 	int ret = 0;
 	switch(type) {
-		case CFN_STRING:  print_str_or_null(fprintf, ctx, verbose, val->string[idx], val->string[idx]); break;
+		case CFN_STRING:  print_str_or_null(pfn, ctx, verbose, val->string[idx], val->string[idx]); break;
 		case CFN_BOOLEAN: ret += pfn(ctx, "%d", val->boolean[idx]); break;
 		case CFN_INTEGER: ret += pfn(ctx, "%ld", val->integer[idx]); break;
 		case CFN_REAL:    ret += pfn(ctx, "%f", val->real[idx]); break;
 		case CFN_COORD:   ret += pfn(ctx, "%$mS", val->coord[idx]); break;
-		case CFN_UNIT:    print_str_or_null(fprintf, ctx, verbose, val->unit[idx], val->unit[idx]->suffix); break;
-		case CFN_COLOR:   print_str_or_null(fprintf, ctx, verbose, val->color[idx], val->color[idx]); break;
+		case CFN_UNIT:    print_str_or_null(pfn, ctx, verbose, val->unit[idx], val->unit[idx]->suffix); break;
+		case CFN_COLOR:   print_str_or_null(pfn, ctx, verbose, val->color[idx], val->color[idx]); break;
 		case CFN_INCREMENTS:
 			{
 				Increments *i = &val->increments[idx];
