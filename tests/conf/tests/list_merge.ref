@@ -2,12 +2,12 @@
  I rc/library_search_paths = <empty list> <<prio=0>> conf_rev=0
 === import 3 levels ===
 Result: 0
- I rc/library_search_paths = {{sys1 <<prio=200 from=embedded:3>>};{sys2 <<prio=200 from=embedded:4>>};} <<prio=0>> conf_rev=1
+ I rc/library_search_paths = {sys1 <<prio=200 from=embedded:3>>;sys2 <<prio=200 from=embedded:4>>;} <<prio=0>> conf_rev=1
 Result: 0
- I rc/library_search_paths = {{user1 <<prio=400 from=embedded:3>>};{user2 <<prio=400 from=embedded:4>>};} <<prio=0>> conf_rev=2
+ I rc/library_search_paths = {user1 <<prio=400 from=embedded:3>>;user2 <<prio=400 from=embedded:4>>;} <<prio=0>> conf_rev=2
 Result: 0
- I rc/library_search_paths = {{design1 <<prio=700 from=embedded:3>>};{design2 <<prio=700 from=embedded:4>>};} <<prio=0>> conf_rev=3
+ I rc/library_search_paths = {design1 <<prio=700 from=embedded:3>>;design2 <<prio=700 from=embedded:4>>;} <<prio=0>> conf_rev=3
 === change policies ===
- I rc/library_search_paths = {{design2 <<prio=700 from=embedded:4>>};{design1 <<prio=700 from=embedded:3>>};{user1 <<prio=400 from=embedded:3>>};{user2 <<prio=400 from=embedded:4>>};} <<prio=0>> conf_rev=4
- I rc/library_search_paths = {{design2 <<prio=700 from=embedded:4>>};{design1 <<prio=700 from=embedded:3>>};{sys1 <<prio=200 from=embedded:3>>};{sys2 <<prio=200 from=embedded:4>>};{user1 <<prio=400 from=embedded:3>>};{user2 <<prio=400 from=embedded:4>>};} <<prio=0>> conf_rev=5
- I rc/library_search_paths = {{sys1 <<prio=200 from=embedded:3>>};{sys2 <<prio=200 from=embedded:4>>};{user1 <<prio=400 from=embedded:3>>};{user2 <<prio=400 from=embedded:4>>};{design1 <<prio=700 from=embedded:3>>};{design2 <<prio=700 from=embedded:4>>};} <<prio=0>> conf_rev=6
+ I rc/library_search_paths = {design2 <<prio=700 from=embedded:4>>;design1 <<prio=700 from=embedded:3>>;user1 <<prio=400 from=embedded:3>>;user2 <<prio=400 from=embedded:4>>;} <<prio=0>> conf_rev=4
+ I rc/library_search_paths = {design2 <<prio=700 from=embedded:4>>;design1 <<prio=700 from=embedded:3>>;sys1 <<prio=200 from=embedded:3>>;sys2 <<prio=200 from=embedded:4>>;user1 <<prio=400 from=embedded:3>>;user2 <<prio=400 from=embedded:4>>;} <<prio=0>> conf_rev=5
+ I rc/library_search_paths = {sys1 <<prio=200 from=embedded:3>>;sys2 <<prio=200 from=embedded:4>>;user1 <<prio=400 from=embedded:3>>;user2 <<prio=400 from=embedded:4>>;design1 <<prio=700 from=embedded:3>>;design2 <<prio=700 from=embedded:4>>;} <<prio=0>> conf_rev=6
