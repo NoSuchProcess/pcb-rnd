@@ -4,28 +4,33 @@
 	do { \
 			if (chk == NULL) { \
 				if (verbose) \
-					pfn(ctx, "<NULL>");\
-				return 0; \
+					ret += pfn(ctx, "<NULL>");\
 			} \
-			pfn(ctx, "%s", out); \
+			else \
+				ret += pfn(ctx, "%s", out); \
 	} while(0)
 
-/* Prints the value of a node in a form that is suitable for lihata. Returns 1
-   if field is printed, 0 if not (e.g. the field was empty). */
-static int conf_dump_(FILE *f, const char *prefix, int verbose, confitem_t *val, conf_native_type_t type, confprop_t *prop, int idx)
+
+typedef int (*conf_pfn)(void *ctx, const char *fmt, ...);
+
+/* Prints the value of a node in a form that is suitable for lihata. Returns
+   the sum of conf_pfn call return values - this is usually the number of
+   bytes printed. */
+static int conf_print_native_(conf_pfn pfn, void *ctx, int verbose, confitem_t *val, conf_native_type_t type, confprop_t *prop, int idx)
 {
+	int ret = 0;
 	switch(type) {
-		case CFN_STRING:  print_str_or_null(fprintf, f, verbose, val->string[idx], val->string[idx]); break;
-		case CFN_BOOLEAN: fprintf(f, "%d", val->boolean[idx]); break;
-		case CFN_INTEGER: fprintf(f, "%ld", val->integer[idx]); break;
-		case CFN_REAL:    fprintf(f, "%f", val->real[idx]); break;
-		case CFN_COORD:   pcb_fprintf(f, "%$mS", val->coord[idx]); break;
-		case CFN_UNIT:    print_str_or_null(fprintf, f, verbose, val->unit[idx], val->unit[idx]->suffix); break;
-		case CFN_COLOR:   print_str_or_null(fprintf, f, verbose, val->color[idx], val->color[idx]); break;
+		case CFN_STRING:  print_str_or_null(fprintf, ctx, verbose, val->string[idx], val->string[idx]); break;
+		case CFN_BOOLEAN: ret += pfn(ctx, "%d", val->boolean[idx]); break;
+		case CFN_INTEGER: ret += pfn(ctx, "%ld", val->integer[idx]); break;
+		case CFN_REAL:    ret += pfn(ctx, "%f", val->real[idx]); break;
+		case CFN_COORD:   ret += pfn(ctx, "%$mS", val->coord[idx]); break;
+		case CFN_UNIT:    print_str_or_null(fprintf, ctx, verbose, val->unit[idx], val->unit[idx]->suffix); break;
+		case CFN_COLOR:   print_str_or_null(fprintf, ctx, verbose, val->color[idx], val->color[idx]); break;
 		case CFN_INCREMENTS:
 			{
 				Increments *i = &val->increments[idx];
-				pcb_fprintf(f, "{ grid=%$mS/%$mS/%$mS size=%$mS/%$mS/%$mS line=%$mS/%$mS/%$mS clear=%$mS/%$mS/%$mS}",
+				ret += pfn(ctx, "{ grid=%$mS/%$mS/%$mS size=%$mS/%$mS/%$mS line=%$mS/%$mS/%$mS clear=%$mS/%$mS/%$mS}",
 				i->grid, i->grid_min, i->grid_max,
 				i->size, i->size_min, i->size_max,
 				i->line, i->line_min, i->line_max,
@@ -36,32 +41,31 @@ static int conf_dump_(FILE *f, const char *prefix, int verbose, confitem_t *val,
 			{
 				conf_listitem_t *n;
 				if (conflist_length(val->list) > 0) {
-					fprintf(f, "{");
+					ret += pfn(ctx, "{");
 					for(n = conflist_first(val->list); n != NULL; n = conflist_next(n)) {
-						fprintf(f, "{");
-						conf_dump_(f, prefix, verbose, &n->val, n->type, &n->prop, 0);
-						fprintf(f, "};");
+						ret += pfn(ctx, "{");
+						conf_print_native_(pfn, ctx, verbose, &n->val, n->type, &n->prop, 0);
+						ret += pfn(ctx, "};");
 					}
-					fprintf(f, "}");
+					ret += pfn(ctx, "}");
 				}
 				else {
 					if (verbose)
-						fprintf(f, "<empty list>");
+						ret += pfn(ctx, "<empty list>");
 					else
-						fprintf(f, "{}");
-					return 0;
+						ret += pfn(ctx, "{}");
 				}
 			}
 			break;
 	}
 	if (verbose) {
-		fprintf(f, " <<prio=%d", prop[idx].prio);
+		ret += pfn(ctx, " <<prio=%d", prop[idx].prio);
 		if (prop[idx].src != NULL) {
-			fprintf(f, " from=%s:%d", prop[idx].src->file_name, prop[idx].src->line);
+			ret += pfn(ctx, " from=%s:%d", prop[idx].src->file_name, prop[idx].src->line);
 		}
-		fprintf(f, ">>");
+		ret += pfn(ctx, ">>");
 	}
-	return 1;
+	return ret;
 }
 
 void conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefix)
@@ -82,7 +86,7 @@ void conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefi
 			int n;
 			for(n = 0; n < node->used; n++) {
 				fprintf(f, "%s I %s[%d] = ", prefix, e->key, n);
-				conf_dump_(f, prefix, verbose, &node->val, node->type, node->prop, n);
+				conf_print_native_((conf_pfn)pcb_fprintf, f, verbose, &node->val, node->type, node->prop, n);
 				fprintf(f, " conf_rev=%d\n", node->conf_rev);
 			}
 			if (node->used == 0)
@@ -90,7 +94,7 @@ void conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefi
 		}
 		else {
 			fprintf(f, "%s I %s = ", prefix, e->key);
-			conf_dump_(f, prefix, verbose, &node->val, node->type, node->prop, 0);
+			conf_print_native_((conf_pfn)pcb_fprintf, f, verbose, &node->val, node->type, node->prop, 0);
 			fprintf(f, " conf_rev=%d\n", node->conf_rev);
 		}
 	}
