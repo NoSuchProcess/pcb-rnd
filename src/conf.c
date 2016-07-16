@@ -1284,22 +1284,36 @@ int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t
 
 	if (src_role == CFR_binary) {
 		char *name;
-		gds_t s;
+		lht_node_t *ch = NULL;
+		int isarr, i;
 		conf_native_t *n = conf_get_field(src_path);
+
 		if (n == NULL)
-			return -1;
-#warning TODO: handle array and list
-		if (n->array_size > 1)
 			return -1;
 		name = strrchr(n->hash_path, '/');
 		if (name == NULL)
 			return -1;
-		gds_init(&s);
-		conf_print_native((conf_pfn)pcb_append_printf, &s, NULL, 0, n);
-		src = lht_dom_node_alloc(LHT_TEXT, name+1);
-		src->data.text.value = s.array;
-		s.array = NULL;
-		gds_uninit(&s);
+
+		isarr = n->array_size > 1;
+		if (isarr)
+			src = lht_dom_node_alloc(LHT_LIST, name+1);
+
+		for(i = 0; i < n->array_size; i++) {
+			gds_t s;
+
+			gds_init(&s);
+			conf_print_native_field((conf_pfn)pcb_append_printf, &s, 0, &n->val, n->type, n->prop+i, i);
+			ch = lht_dom_node_alloc(LHT_TEXT, isarr ? "" : name+1);
+			ch->data.text.value = s.array;
+			if (isarr) {
+				lht_dom_list_append(src, ch);
+			}
+			s.array = NULL;
+			gds_uninit(&s);
+		}
+
+		if (!isarr)
+			src = ch;
 	}
 	else
 		src = conf_lht_get_at(src_role, src_path, 0);
