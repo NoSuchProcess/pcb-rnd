@@ -1538,17 +1538,27 @@ int conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, confitem_t *va
 int conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose, conf_native_t *node)
 {
 	int ret = 0;
+	if ((node->used <= 0) && (!verbose))
+		return;
 	if (node->array_size > 1) {
 		int n;
+		if (!verbose)
+			ret += pfn(ctx, "{");
 		for(n = 0; n < node->used; n++) {
 			if (verbose)
 				ret += pfn(ctx, "%s I %s[%d] = ", prefix, node->hash_path, n);
 			ret += conf_print_native_field(pfn, ctx, verbose, &node->val, node->type, node->prop, n);
 			if (verbose)
 				ret += pfn(ctx, " conf_rev=%d\n", node->conf_rev);
+			else
+				ret += pfn(ctx, ";");
 		}
-		if ((node->used == 0) && (verbose))
-			ret += pfn(ctx, "%s I %s[] = <empty>\n", prefix, node->hash_path);
+		if (verbose) {
+			if (node->used == 0)
+				ret += pfn(ctx, "%s I %s[] = <empty>\n", prefix, node->hash_path);
+		}
+		else
+			ret += pfn(ctx, "}");
 	}
 	else {
 		if (verbose)
