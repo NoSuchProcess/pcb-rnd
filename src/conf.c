@@ -1464,7 +1464,7 @@ void conf_reset(conf_role_t target, const char *source_fn)
 static int needs_braces(const char *s)
 {
 	for(; *s != '\0'; s++)
-		if (!isalnum(*s) && (*s != '_') && (*s != '-') && (*s != '+') && (*s != '/') && (*s != ':') && (*s != '.') && (*s != ','))
+		if (!isalnum(*s) && (*s != '_') && (*s != '-') && (*s != '+') && (*s != '/') && (*s != ':') && (*s != '.') && (*s != ',') && (*s != '$') && (*s != '(') && (*s != ')') && (*s != '~'))
 			return 1;
 	return 0;
 }
