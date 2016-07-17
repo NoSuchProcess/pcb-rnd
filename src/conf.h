@@ -30,6 +30,11 @@
 #include <genvector/vtp0.h>
 #include "unit.h"
 
+typedef union confitem_u confitem_t ;
+typedef struct conf_listitem_s conf_listitem_t;
+
+#include "list_conf.h"
+
 int conf_rev; /* icreased by one each time there's a change in any of the config binaries */
 
 typedef enum {
@@ -44,7 +49,6 @@ typedef enum { /* bitfield */
 	CFF_USAGE = 1    /* settings should be printed in usage help */
 } conf_flag_t;
 
-typedef union conflist_u conflist_t;
 
 typedef char *      CFT_STRING;
 typedef int         CFT_BOOLEAN;
@@ -68,7 +72,7 @@ typedef enum {
 	CFN_INCREMENTS
 } conf_native_type_t;
 
-typedef union confitem_u {
+union confitem_u {
 	const char **string;
 	int *boolean;
 	long *integer;
@@ -79,7 +83,7 @@ typedef union confitem_u {
 	conflist_t *list;
 	Increments *increments;
 	void *any;
-} confitem_t ;
+};
 
 typedef struct {
 	int prio;
@@ -109,7 +113,7 @@ typedef struct {
 	vtp0_t hid_callbacks; /* vector of (const conf_hid_callbacks_t *) */
 } conf_native_t;
 
-typedef struct conf_listitem_s conf_listitem_t;
+
 struct conf_listitem_s {
 	conf_native_type_t type;
 	confitem_t val;   /* value is always an array (len 1 for the common case)  */
@@ -118,7 +122,6 @@ struct conf_listitem_s {
 	gdl_elem_t link;
 };
 
-#include "list_conf.h"
 
 typedef enum {
 	CFR_INTERNAL,
