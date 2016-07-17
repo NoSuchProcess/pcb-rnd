@@ -3,6 +3,8 @@
 all:
 	cd gsch2pcb-rnd && make all
 
+include ../Makefile.conf
+
 clean:
 	cd gsch2pcb-rnd && make clean
 
