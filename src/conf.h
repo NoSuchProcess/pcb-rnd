@@ -226,6 +226,7 @@ int conf_islocked(conf_role_t target);
 
 /* Returns whether a given lihata tree has changed since load or last save */
 int conf_isdirty(conf_role_t target);
+void conf_makedirty(conf_role_t target);
 
 /* all configuration fields ever seen */
 extern htsp_t *conf_fields;

@@ -777,21 +777,42 @@ lht_node_t *conf_lht_get_first(conf_role_t target)
 	return conf_lht_get_first_(conf_root[target]->root);
 }
 
+static lht_node_t *conf_lht_get_at_(conf_role_t target, const char *conf_path, const char *lht_path, int create)
+{
+	lht_node_t *n, *r;
+	n = conf_lht_get_first(target);
+	if (n == NULL)
+		return NULL;
+	r = lht_tree_path_(n->doc, n, lht_path, 1, 0, NULL);
+	if ((r == NULL) && (create)) {
+		conf_set_dry(target, conf_path, -1, "", POL_OVERWRITE);
+		r = lht_tree_path_(n->doc, n, lht_path, 1, 0, NULL);
+	}
+	return r;
+}
+
 lht_node_t *conf_lht_get_at(conf_role_t target, const char *path, int create)
 {
 	lht_node_t *n, *r;
+	char *pc, *end;
 	if (conf_root[target] == NULL) {
 		if (!create)
 			return NULL;
 		conf_reset(target, "<conf_lht_get_at>");
 	}
-	n = conf_lht_get_first(target);
-	if (n == NULL)
-		return NULL;
-	r = lht_tree_path_(n->doc, n, path, 1, 0, NULL);
-	if ((r == NULL) && (create)) {
-		conf_set_dry(target, path, -1, "", POL_OVERWRITE);
-		r = lht_tree_path_(n->doc, n, path, 1, 0, NULL);
+	end = strchr(path, '[');
+	if (end == NULL) {
+		r = conf_lht_get_at_(target, path, path, create);
+	}
+	else {
+		/* lihata syntax differs from conf syntax in array indexing */
+		pc = strdup(path);
+		pc[end-path] = '/';
+		end = strchr(pc+(end-path), ']');
+		if (end != NULL)
+			*end = '\0';
+		r = conf_lht_get_at_(target, path, pc, create);
+		free(pc);
 	}
 	return r;
 }
@@ -1303,6 +1324,7 @@ int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t
 
 			gds_init(&s);
 			conf_print_native_field((conf_pfn)pcb_append_printf, &s, 0, &n->val, n->type, n->prop+i, i);
+fprintf(stderr, "ly1 '%s'\n", s.array);
 			ch = lht_dom_node_alloc(LHT_TEXT, isarr ? "" : name+1);
 			ch->data.text.value = s.array;
 			if (isarr) {
@@ -1485,6 +1507,10 @@ int conf_isdirty(conf_role_t target)
 	return conf_lht_dirty[target];
 }
 
+void conf_makedirty(conf_role_t target)
+{
+	conf_lht_dirty[target]++;
+}
 conf_role_t conf_lookup_role(const lht_node_t *nd)
 {
 	conf_role_t r;
