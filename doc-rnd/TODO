@@ -8,6 +8,13 @@
 		- first click when starting the first hole is lost
 		- marker not moved to the second hole starting point
 
+- Bert:
+	- get gtk smaller (target: 800x600):
+		- http://git.geda-project.org/pcb/commit/?h=LP1354662
+		- http://git.geda-project.org/pcb/log/?h=home/bert/LP699164 (preferred)
+		- why the preferences window is so huge -> bisect widgets?
+	- make clean should clean in src_3rd
+
 - replace settings with lihata (conf_*)
 	- change window sizes when loaded from a design or project file: not only for top window
 	- implement binary->lht setter and use it in config_any_replace() if the source role sais so (this is requred for saving current config (from native) to project or user)
