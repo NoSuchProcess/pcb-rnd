@@ -193,12 +193,22 @@ gboolean key_release_cb(GtkWidget *widget, GdkEventKey *event, gtk_conf_list_t *
 		return FALSE;
 /*	printf("REL! %d %d\n", cl->editing, kv);*/
 	switch(kv) {
+#ifdef GDK_KEY_KP_Insert
 		case GDK_KEY_KP_Insert:
+#endif
+#ifdef GDK_KEY_Insert
 		case GDK_KEY_Insert:
+#endif
+		case 'i':
 			button_ins_cb(NULL, cl);
 			break;
+#ifdef GDK_KEY_KP_Delete
 		case GDK_KEY_KP_Delete:
+#endif
+#ifdef GDK_KEY_Delete
 		case GDK_KEY_Delete:
+#endif
+		case 'd':
 			button_del_cb(NULL, cl);
 			break;
 		case 'c':
