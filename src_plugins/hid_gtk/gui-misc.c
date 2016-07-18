@@ -394,7 +394,9 @@ void ghid_set_status_line_label(void)
  */
 void ghid_set_cursor_position_labels(void)
 {
-	char *text;
+	char *text, sep = ' ';
+	if (conf_hid_gtk.plugins.hid_gtk.compact_vertical)
+		sep = '\n';
 
 	if (Marked.status) {
 		Coord dx = Crosshair.X - Marked.X;
@@ -402,15 +404,19 @@ void ghid_set_cursor_position_labels(void)
 		Coord r = Distance(Crosshair.X, Crosshair.Y, Marked.X, Marked.Y);
 		double a = atan2(dy, dx) * RAD_TO_DEG;
 
-		text = pcb_strdup_printf(_("%m+r %-mS;\nphi %-.1f;\n%-mS %-mS"), conf_core.editor.grid_unit->allow, r, a, dx, dy);
+
+		text = pcb_strdup_printf(_("%m+r %-mS;%cphi %-.1f;%c%-mS %-mS"), conf_core.editor.grid_unit->allow, r, sep, a, sep, dx, dy);
 		ghid_cursor_position_relative_label_set_text(text);
 		free(text);
 	}
-	else
-		ghid_cursor_position_relative_label_set_text (_("r __.__;\nphi __._;\n__.__ __.__"));
+	else {
+		char text[64];
+		sprintf(text, _("r __.__;%cphi __._;%c__.__ __.__"), sep, sep);
+		ghid_cursor_position_relative_label_set_text(text);
+	}
 
 
-	text = pcb_strdup_printf("%m+%-mS %-mS", conf_core.editor.grid_unit->allow, Crosshair.X, Crosshair.Y);
+	text = pcb_strdup_printf("%m+%-mS%c%-mS", conf_core.editor.grid_unit->allow, Crosshair.X, sep, Crosshair.Y);
 	ghid_cursor_position_label_set_text(text);
 	free(text);
 }
