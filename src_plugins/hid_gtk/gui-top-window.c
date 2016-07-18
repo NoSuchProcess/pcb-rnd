@@ -621,7 +621,7 @@ static void make_cursor_position_labels(GtkWidget * hbox, GHidPort * port)
 	 */
 	frame = gtk_frame_new(NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), frame, FALSE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(frame), 2);
+	gtk_container_set_border_width(GTK_CONTAINER(frame), 0);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
 
 	label = gtk_label_new("");
@@ -634,7 +634,7 @@ static void make_cursor_position_labels(GtkWidget * hbox, GHidPort * port)
 	 */
 	frame = gtk_frame_new(NULL);
 	gtk_box_pack_end(GTK_BOX(hbox), frame, FALSE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(frame), 2);
+	gtk_container_set_border_width(GTK_CONTAINER(frame), 0);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
 	label = gtk_label_new(" __.__  __.__ ");
 	gtk_container_add(GTK_CONTAINER(frame), label);
@@ -1061,7 +1061,7 @@ static void ghid_build_pcb_top_window(void)
 	ghidgui->top_bar_background = gtk_event_box_new();
 	gtk_box_pack_start(GTK_BOX(vbox_main), ghidgui->top_bar_background, FALSE, FALSE, 0);
 
-	ghidgui->top_hbox = gtk_hbox_new(FALSE, 4);
+	ghidgui->top_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(ghidgui->top_bar_background), ghidgui->top_hbox);
 
 	/*
@@ -1088,12 +1088,12 @@ static void ghid_build_pcb_top_window(void)
 	gtk_box_pack_start(GTK_BOX(ghidgui->menubar_toolbar_vbox), ghidgui->mode_toolbar, FALSE, FALSE, 0);
 
 	ghidgui->position_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(ghidgui->top_hbox), ghidgui->position_hbox, FALSE, FALSE, 4);
+	gtk_box_pack_end(GTK_BOX(ghidgui->top_hbox), ghidgui->position_hbox, FALSE, FALSE, 0);
 
 	make_cursor_position_labels(ghidgui->position_hbox, port);
 
 	hbox_middle = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_main), hbox_middle, TRUE, TRUE, 3);
+	gtk_box_pack_start(GTK_BOX(vbox_main), hbox_middle, TRUE, TRUE, 0);
 
 	fix_topbar_theming();					/* Must be called after toolbar is created */
 
@@ -1103,7 +1103,7 @@ static void ghid_build_pcb_top_window(void)
 	 * a modal button GetLocation button press.
 	 */
 	ghidgui->left_toolbar = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_middle), ghidgui->left_toolbar, FALSE, FALSE, 3);
+	gtk_box_pack_start(GTK_BOX(hbox_middle), ghidgui->left_toolbar, FALSE, FALSE, 0);
 
 	vbox = ghid_scrolled_vbox(ghidgui->left_toolbar, &scrolled, GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(vbox), ghidgui->layer_selector, FALSE, FALSE, 0);
@@ -1121,7 +1121,7 @@ static void ghid_build_pcb_top_window(void)
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 1);
 	ghidgui->route_style_selector = ghid_route_style_selector_new();
 	make_route_style_buttons(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
-	gtk_box_pack_start(GTK_BOX(hbox), ghidgui->route_style_selector, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(hbox), ghidgui->route_style_selector, FALSE, FALSE, 0);
 
 	ghidgui->vbox_middle = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_middle), ghidgui->vbox_middle, TRUE, TRUE, 0);
@@ -1164,7 +1164,7 @@ static void ghid_build_pcb_top_window(void)
 
 	/* -- The bottom status line label */
 	ghidgui->status_line_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(ghidgui->vbox_middle), ghidgui->status_line_hbox, FALSE, FALSE, 2);
+	gtk_box_pack_start(GTK_BOX(ghidgui->vbox_middle), ghidgui->status_line_hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
