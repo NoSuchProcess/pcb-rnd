@@ -279,7 +279,7 @@ static GtkWidget *config_window;
 
 static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton *widget, save_ctx_t *sctx))
 {
-	GtkWidget *config_color_warn_label, *button, *hbox;
+	GtkWidget *config_color_warn_label, *button, *hbox, *vbox2;
 	static save_ctx_t ctx_all2project = { CFR_PROJECT, CFR_binary };
 	static save_ctx_t ctx_all2user    = { CFR_USER, CFR_binary };
 	static save_ctx_t ctx_all2file    = { CFR_file, CFR_binary };
@@ -291,23 +291,29 @@ static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton
 	config_color_warn_label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(config_color_warn_label), TRUE);
 	gtk_label_set_markup(GTK_LABEL(config_color_warn_label),
-											 _("The above are <i>design-level</i> configuration, saved with the pcb file.\nUse these buttons to save all settings on this page:"));
+											 _("The above are <i>design-level</i> configuration,\nsaved with the pcb file.\nUse these buttons to save\nall settings on this page:"));
 	gtk_box_pack_start(GTK_BOX(hbox), config_color_warn_label, FALSE, FALSE, 4);
 
+	vbox2 = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox2, FALSE, FALSE, 4);
+
 	button = gtk_button_new_with_label("Save in project config");
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 4);
 	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2project);
 
 	button = gtk_button_new_with_label("Save in user config");
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 4);
 	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2user);
 
+	vbox2 = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox2, FALSE, FALSE, 4);
+
 	button = gtk_button_new_with_label("Save to file");
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 4);
 	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_all2file);
 
 	button = gtk_button_new_with_label("Restore factory defaults");
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 4);
 	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(save_cb), &ctx_int2design);
 }
 
