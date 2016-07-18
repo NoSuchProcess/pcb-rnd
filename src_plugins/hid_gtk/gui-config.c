@@ -1713,12 +1713,29 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename, c
 	GtkWidget *vbox, *label;
 	GtkWidget *w;
 	GtkObject *o;
+	char *tmp, *so;
+	const char *si;
+	int l;
 
 	gtk_container_set_border_width(GTK_CONTAINER(tab_vbox), 6);
 	vbox = ghid_category_vbox(tab_vbox, basename, 4, 2, TRUE, TRUE);
-	label = gtk_label_new(item->description);
 
+	/* split long description strings at whitepsace to make the preferences window narrower */
+	tmp = malloc(strlen(item->description) * 2);
+	for(si = item->description, so = tmp, l = 0; *si != '\0'; si++,so++,l++) {
+		if (isspace(*si) && (l > 64))
+			*so = '\n';
+		else
+			*so = *si;
+
+		if (*so == '\n')
+			l = 0;
+	}
+	*so = '\0';
+
+	label = gtk_label_new(tmp);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	free(tmp);
 
 	switch(item->type) {
 		case CFN_STRING:
