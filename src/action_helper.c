@@ -890,7 +890,7 @@ void NotifyMode(void)
 					else
 						Crosshair.AttachedObject.State = STATE_SECOND;
 				}
-				break;
+				/* fall thru: first click is also the first point of the poly hole */
 
 				/* second notify, insert new point into object */
 			case STATE_SECOND:
