@@ -17,7 +17,13 @@ $(PLUGIDIR)/pcb-rnd-gpmi: $(PCB_GPMI)/gpmi_plugin/gpmi_plugin.o FORCE
 	$(MKDIR) $(PLUGIDIR)
 	$(MKDIR) $(PLUGIDIR)/pcb-rnd-gpmi
 	$(CP) $(PLUGDIR)/gpmi/pcb-gpmi/gpmi_plugin/gpmi_pkg/*.so $(PLUGIDIR)/pcb-rnd-gpmi
+
+# HACK: the gpmi plugin, for historical reasons, have an own build system,
+# need to go there to properly build it with prefixes.
+$(PCB_GPMI)/gpmi_plugin/gpmi_plugin.o:
+	cd $(PCB_GPMI)/gpmi_plugin && make
 @]
+
 
 append /local/pcb/all   [@ $(PLUGIDIR)/pcb-rnd-gpmi @]
 
