@@ -61,7 +61,7 @@ typedef struct {
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void XORPolygon(PolygonTypePtr, Coord, Coord);
+static void XORPolygon(PolygonTypePtr, Coord, Coord, int);
 static void XORDrawElement(ElementTypePtr, Coord, Coord);
 static void XORDrawBuffer(BufferTypePtr);
 static void XORDrawInsertPointObject(void);
@@ -110,24 +110,28 @@ static void draw_dashed_line(hidGC GC, Coord x1, Coord y1, Coord x2, Coord y2)
 /* ---------------------------------------------------------------------------
  * creates a tmp polygon with coordinates converted to screen system
  */
-static void XORPolygon(PolygonTypePtr polygon, Coord dx, Coord dy)
+static void XORPolygon(PolygonTypePtr polygon, Coord dx, Coord dy, int dash_last)
 {
 	Cardinal i;
 	for (i = 0; i < polygon->PointN; i++) {
 		Cardinal next = next_contour_point(polygon, i);
-		if (next == 0) {
-			/* the implicit closing line */
-			if (i != 1) /* corner case: don't draw two lines on top of eachother - with XOR it looks bad */
+
+		if (next == 0) { /* last line: sometimes the implicit closing line */
+			if (i == 1) /* corner case: don't draw two lines on top of eachother - with XOR it looks bad */
+				continue;
+
+			if (dash_last) {
 				draw_dashed_line(Crosshair.GC,
 									 polygon->Points[i].X + dx,
 									 polygon->Points[i].Y + dy, polygon->Points[next].X + dx, polygon->Points[next].Y + dy);
+				break; /* skip normal line draw below */
+			}
 		}
-		else {
-			/* any other line */
-			gui->draw_line(Crosshair.GC,
-									 polygon->Points[i].X + dx,
-									 polygon->Points[i].Y + dy, polygon->Points[next].X + dx, polygon->Points[next].Y + dy);
-		}
+
+		/* normal contour line */
+		gui->draw_line(Crosshair.GC,
+								 polygon->Points[i].X + dx,
+								 polygon->Points[i].Y + dy, polygon->Points[next].X + dx, polygon->Points[next].Y + dy);
 	}
 }
 
@@ -318,7 +322,7 @@ static void XORDrawBuffer(BufferTypePtr Buffer)
 			 */
 			POLYGON_LOOP(layer);
 			{
-				XORPolygon(polygon, x, y);
+				XORPolygon(polygon, x, y, 0);
 			}
 			END_LOOP;
 		}
@@ -395,7 +399,7 @@ static void XORDrawMoveOrCopyObject(void)
 			/* the tmp polygon has n+1 points because the first
 			 * and the last one are set to the same coordinates
 			 */
-			XORPolygon(polygon, dx, dy);
+			XORPolygon(polygon, dx, dy, 0);
 			break;
 		}
 
@@ -528,7 +532,7 @@ void DrawAttached(void)
 
 		/* draw attached polygon only if in POLYGON_MODE or POLYGONHOLE_MODE */
 		if (Crosshair.AttachedPolygon.PointN > 1) {
-			XORPolygon(&Crosshair.AttachedPolygon, 0, 0);
+			XORPolygon(&Crosshair.AttachedPolygon, 0, 0, 1);
 		}
 		break;
 
