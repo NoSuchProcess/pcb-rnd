@@ -880,17 +880,20 @@ void NotifyMode(void)
 					SearchScreen(Note.X, Note.Y, POLYGON_TYPE,
 											 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 
-				if (Crosshair.AttachedObject.Type != NO_TYPE) {
-					if (TEST_FLAG(LOCKFLAG, (PolygonTypePtr)
-												Crosshair.AttachedObject.Ptr2)) {
-						Message(_("Sorry, the object is locked\n"));
-						Crosshair.AttachedObject.Type = NO_TYPE;
-						break;
-					}
-					else
-						Crosshair.AttachedObject.State = STATE_SECOND;
+				if (Crosshair.AttachedObject.Type == NO_TYPE) {
+					Message("The first point of a polygon hole must be on a polygon.\n");
+					break; /* don't start doing anything if clicket out of polys */
 				}
-				/* fall thru: first click is also the first point of the poly hole */
+
+				if (TEST_FLAG(LOCKFLAG, (PolygonTypePtr)
+											Crosshair.AttachedObject.Ptr2)) {
+					Message(_("Sorry, the object is locked\n"));
+					Crosshair.AttachedObject.Type = NO_TYPE;
+					break;
+				}
+				else
+					Crosshair.AttachedObject.State = STATE_SECOND;
+			/* fall thru: first click is also the first point of the poly hole */
 
 				/* second notify, insert new point into object */
 			case STATE_SECOND:
