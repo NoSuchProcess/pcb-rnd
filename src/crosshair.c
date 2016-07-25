@@ -85,7 +85,7 @@ static void draw_dashed_line(hidGC GC, Coord x1, Coord y1, Coord x2, Coord y2)
 	double dx = x2-x1, dy = y2-y1;
 	double len_squared = dx*dx + dy*dy;
 	int n;
-	const int segs = 10;
+	const int segs = 11; /* must be odd */
 
 	if (len_squared < 1000000) {
 		/* line too short, just draw it - TODO: magic value; with a proper geo lib this would be gone anyway */
@@ -93,10 +93,18 @@ static void draw_dashed_line(hidGC GC, Coord x1, Coord y1, Coord x2, Coord y2)
 		return;
 	}
 
+	/* first seg is drawn from x1, y1 with no rounding error due to n-1 == 0 */
 	for(n = 1; n < segs; n+=2)
 		gui->draw_line(Crosshair.GC,
 			x1 + (dx * (double)(n-1) / (double)segs), y1 + (dy * (double)(n-1) / (double)segs),
 			x1 + (dx * (double)n / (double)segs), y1 + (dy * (double)n / (double)segs));
+
+
+	/* make sure the last segment is drawn properly to x2 and y2, don't leave
+	   room for rounding errors */
+	gui->draw_line(Crosshair.GC,
+		x2 - (dx / (double)segs), y2 - (dy / (double)segs),
+		x2, y2);
 }
 
 /* ---------------------------------------------------------------------------
