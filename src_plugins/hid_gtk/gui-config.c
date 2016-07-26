@@ -291,7 +291,7 @@ static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton
 	config_color_warn_label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(config_color_warn_label), TRUE);
 	gtk_label_set_markup(GTK_LABEL(config_color_warn_label),
-											 _("The above are <i>design-level</i> configuration,\nsaved with the pcb file. Use these buttons\nto save all settings on this page:"));
+											 _("The above are <i>design-level</i>\nconfiguration, saved with the\npcb file. Use these buttons\nto save all the above settings:"));
 	gtk_box_pack_start(GTK_BOX(hbox), config_color_warn_label, FALSE, FALSE, 4);
 
 	vbox2 = gtk_vbox_new(FALSE, 0);
