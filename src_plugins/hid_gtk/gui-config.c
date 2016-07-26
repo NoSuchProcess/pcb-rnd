@@ -1892,8 +1892,9 @@ void ghid_config_window_show(void)
 	gtk_container_add(GTK_CONTAINER(config_window), config_hbox);
 
 	scrolled = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start(GTK_BOX(config_hbox), scrolled, FALSE, FALSE, 0);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+	gtk_widget_set_size_request(scrolled, 150, 0);
+	gtk_box_pack_start(GTK_BOX(config_hbox), scrolled, TRUE, TRUE, 0);
 
 	main_vbox = gtk_vbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(config_hbox), main_vbox, TRUE, TRUE, 0);
