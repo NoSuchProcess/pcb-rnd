@@ -699,18 +699,6 @@ static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
 	increment_tbl_update();
 }
 
-#if 0
-//const Increments *inc, const Unit *u, const char *base_path
-
-&conf_core.editor.increments_mm
-get_unit_struct("mm")
-"editor/increments_mm"
-
-&conf_core.editor.increments_mil
-get_unit_struct("mil")
-"editor/increments_mil"
-#endif
-
 static void config_increments_sect_create(GtkWidget * vbox)
 {
 	GtkWidget * hbox;
@@ -859,10 +847,6 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 
 	catvbox = ghid_category_vbox (config_increments_vbox, "Increment Settings", 4, 2, TRUE, TRUE);
 	config_increments_sect_create(catvbox);
-
-
-//	catvbox = ghid_category_vbox (config_increments_vbox, _("Imperial Increment Settings"), 4, 2, TRUE, TRUE);
-//	config_increments_sect_create(catvbox, &conf_core.editor.increments_mil, get_unit_struct("mil"), "editor/increments_mil");
 
 	catvbox = ghid_category_vbox (config_increments_vbox, _("Comparison table"), 4, 2, TRUE, TRUE);
 
