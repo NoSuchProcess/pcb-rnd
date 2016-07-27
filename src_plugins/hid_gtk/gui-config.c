@@ -699,54 +699,121 @@ static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
 	increment_tbl_update();
 }
 
-static void config_increments_sect_create(GtkWidget * vbox, const Increments *inc, const Unit *u, const char *base_path)
-{
-	const int width = 128;
-	int l = strlen(base_path);
-	char path[256], *pe;
+#if 0
+//const Increments *inc, const Unit *u, const char *base_path
 
-	memcpy(path, base_path, l);
-	pe = path+l;
-	*pe = '/';
-	pe++;
+&conf_core.editor.increments_mm
+get_unit_struct("mm")
+"editor/increments_mm"
+
+&conf_core.editor.increments_mil
+get_unit_struct("mil")
+"editor/increments_mil"
+#endif
+
+static void config_increments_sect_create(GtkWidget * vbox)
+{
+	GtkWidget * hbox;
+	const int width = 128;
+	char pathmm[256], *pemm;
+	char pathmil[256], *pemil;
+	const Unit *umm = get_unit_struct("mm");
+	const Unit *umil = get_unit_struct("mil");
+	const char *base_pathmm = "editor/increments_mm";
+	const char *base_pathmil = "editor/increments_mil";
+	int lmm = strlen(base_pathmm);
+	int lmil = strlen(base_pathmil);
+
+	memcpy(pathmm, base_pathmm, lmm);
+	pemm = pathmm+lmm;
+	*pemm = '/';
+	pemm++;
+
+	memcpy(pathmil, base_pathmil, lmil);
+	pemil = pathmil+lmil;
+	*pemil = '/';
+	pemil++;
 
 #warning leak: strdup(path) never free()d
 	/* ---- Grid Increment/Decrement ---- */
-	strcpy(pe, "grid");
-	ghid_coord_entry(vbox, NULL,
-									 inc->grid,
-									 inc->grid_min,
-									 inc->grid_max,
-									 CE_SMALL, u, width, increment_spin_button_cb, strdup(path), _("Grid:"), _("For 'g' and '<shift>g' grid change actions"));
+	strcpy(pemm, "grid");
+	strcpy(pemil, "grid");
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
+	ghid_coord_entry(hbox, NULL,
+									 conf_core.editor.increments_mm.grid,
+									 conf_core.editor.increments_mm.grid_min,
+									 conf_core.editor.increments_mm.grid_max,
+									 CE_SMALL, umm, width, increment_spin_button_cb, strdup(pathmm), _("Grid:"), NULL);
+
+	ghid_coord_entry(hbox, NULL,
+									 conf_core.editor.increments_mil.grid,
+									 conf_core.editor.increments_mil.grid_min,
+									 conf_core.editor.increments_mil.grid_max,
+									 CE_SMALL, umil, width, increment_spin_button_cb, strdup(pathmil), NULL, _("For 'g' and '<shift>g'\ngrid change actions"));
+
 
 	/* ---- Size Increment/Decrement ---- */
-	strcpy(pe, "size");
-	ghid_coord_entry(vbox, NULL,
-									 inc->size,
-									 inc->size_min,
-									 inc->size_max,
-									 CE_SMALL, u, width, increment_spin_button_cb,
-									 strdup(path), _("Size:"),
-									 _("For 's' and '<shift>s' size change actions on lines,\n"
-										 "pads, pins and text.\n" "Use '<ctrl>s' and '<shift><ctrl>s' for drill holes."));
+	strcpy(pemm, "size");
+	strcpy(pemil, "size");
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
+
+	ghid_coord_entry(hbox, NULL,
+									 conf_core.editor.increments_mm.size,
+									 conf_core.editor.increments_mm.size_min,
+									 conf_core.editor.increments_mm.size_max,
+									 CE_SMALL, umm, width, increment_spin_button_cb,
+									 strdup(pathmm), _("Size:"), NULL);
+
+	ghid_coord_entry(hbox, NULL,
+									 conf_core.editor.increments_mil.size,
+									 conf_core.editor.increments_mil.size_min,
+									 conf_core.editor.increments_mil.size_max,
+									 CE_SMALL, umil, width, increment_spin_button_cb,
+									 strdup(pathmil), NULL,
+									 _("For 's' and '<shift>s'\nsize change actions on lines,\n"
+										 "pads, pins and text. Use\n'<ctrl>s' and '<shift><ctrl>s'\nfor drill holes."));
 
 	/* ---- Line Increment/Decrement ---- */
-	strcpy(pe, "line");
-	ghid_coord_entry(vbox, NULL,
-									 inc->line,
-									 inc->line_min,
-									 inc->line_max,
-									 CE_SMALL, u, width, increment_spin_button_cb,
-									 strdup(path), _("Line:"), _("For 'l' and '<shift>l' routing line width change actions"));
+	strcpy(pemm, "line");
+	strcpy(pemil, "line");
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
+
+	ghid_coord_entry(hbox, NULL,
+									 conf_core.editor.increments_mm.line,
+									 conf_core.editor.increments_mm.line_min,
+									 conf_core.editor.increments_mm.line_max,
+									 CE_SMALL, umm, width, increment_spin_button_cb,
+									 strdup(pathmm), _("Line:"), NULL);
+
+	ghid_coord_entry(hbox, NULL,
+									 conf_core.editor.increments_mil.line,
+									 conf_core.editor.increments_mil.line_min,
+									 conf_core.editor.increments_mil.line_max,
+									 CE_SMALL, umil, width, increment_spin_button_cb,
+									 strdup(pathmil), NULL, _("For 'l' and '<shift>l'\nrouting line width\nchange actions"));
 
 	/* ---- Clear Increment/Decrement ---- */
-	strcpy(pe, "clear");
-	ghid_coord_entry(vbox, NULL,
-									 inc->clear,
-									 inc->clear_min,
-									 inc->clear_max,
-									 CE_SMALL, u, width, increment_spin_button_cb,
-									 strdup(path), _("Clear:"), _("For 'k' and '<shift>k' line clearance inside polygon size\n" "change actions"));
+	strcpy(pemm, "clear");
+	strcpy(pemil, "clear");
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 2);
+
+	ghid_coord_entry(hbox, NULL,
+									 conf_core.editor.increments_mm.clear,
+									 conf_core.editor.increments_mm.clear_min,
+									 conf_core.editor.increments_mm.clear_max,
+									 CE_SMALL, umm, width, increment_spin_button_cb,
+									 strdup(pathmm), _("Clear:"), NULL);
+
+	ghid_coord_entry(hbox, NULL,
+									 conf_core.editor.increments_mil.clear,
+									 conf_core.editor.increments_mil.clear_min,
+									 conf_core.editor.increments_mil.clear_max,
+									 CE_SMALL, umil, width, increment_spin_button_cb,
+									 strdup(pathmil), NULL, _("For 'k' and '<shift>k'\nline clearance inside\npolygon size\nchange actions"));
 
 	gtk_widget_show_all(config_increments_vbox);
 }
@@ -790,11 +857,12 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 		config_increments_tab_vbox = content_vbox;
 	}
 
-	catvbox = ghid_category_vbox (config_increments_vbox, _("Metric Increment Settings"), 4, 2, TRUE, TRUE);
-	config_increments_sect_create(catvbox, &conf_core.editor.increments_mm, get_unit_struct("mm"), "editor/increments_mm");
+	catvbox = ghid_category_vbox (config_increments_vbox, "Increment Settings", 4, 2, TRUE, TRUE);
+	config_increments_sect_create(catvbox);
 
-	catvbox = ghid_category_vbox (config_increments_vbox, _("Imperial Increment Settings"), 4, 2, TRUE, TRUE);
-	config_increments_sect_create(catvbox, &conf_core.editor.increments_mil, get_unit_struct("mil"), "editor/increments_mil");
+
+//	catvbox = ghid_category_vbox (config_increments_vbox, _("Imperial Increment Settings"), 4, 2, TRUE, TRUE);
+//	config_increments_sect_create(catvbox, &conf_core.editor.increments_mil, get_unit_struct("mil"), "editor/increments_mil");
 
 	catvbox = ghid_category_vbox (config_increments_vbox, _("Comparison table"), 4, 2, TRUE, TRUE);
 
