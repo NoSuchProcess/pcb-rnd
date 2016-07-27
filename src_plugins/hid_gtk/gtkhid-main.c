@@ -1085,6 +1085,16 @@ static int Command(int argc, char **argv, Coord x, Coord y)
 
 /* ---------------------------------------------------------------------- */
 
+static char *dup_cwd()
+{
+#if defined (PATH_MAX)
+	char tmp[PATH_MAX+1];
+#else
+	char tmp[8193];
+#endif
+	return strdup(getcwd(tmp, sizeof(tmp)));
+}
+
 static int Load(int argc, char **argv, Coord x, Coord y)
 {
 	char *function;
@@ -1095,11 +1105,11 @@ static int Load(int argc, char **argv, Coord x, Coord y)
 	static gchar *current_netlist_dir = NULL;
 
 	if (!current_element_dir)
-		current_element_dir = get_current_dir_name();
+		current_element_dir = dup_cwd();
 	if (!current_layout_dir)
-		current_layout_dir = get_current_dir_name();
+		current_layout_dir = dup_cwd();
 	if (!current_netlist_dir)
-		current_netlist_dir = get_current_dir_name();
+		current_netlist_dir = dup_cwd();
 
 	/* we've been given the file name */
 	if (argc > 1)
@@ -1157,7 +1167,7 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 	static gchar *current_dir = NULL;
 
 	if (!current_dir)
-		current_dir = get_current_dir_name();
+		current_dir = dup_cwd();
 
 	if (argc > 1)
 		return hid_actionv("SaveTo", argc, argv);
@@ -1781,7 +1791,7 @@ static int ImportGUI(int argc, char **argv, Coord x, Coord y)
 	int rv;
 
 	if (!current_layout_dir)
-		current_layout_dir = get_current_dir_name();
+		current_layout_dir = dup_cwd();
 
 	if (I_am_recursing)
 		return 1;
