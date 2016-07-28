@@ -22,6 +22,7 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-gd-gif",    "libs/gui/gd/gdImageGif",       arg_lib_nodes, "$no gif support in the png exporter"},
 	{"disable-gd-png",    "libs/gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png exporter"},
 	{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png exporter"},
+	{"disable-bison",     "parsgen/bison",                arg_lib_nodes, "$do not regenerate language files"},
 
 #undef plugin_def
 #undef plugin_header
@@ -275,10 +276,21 @@ int hook_detect_target()
 	require("libs/script/m4/bin/*", 0, 0);
 	require("libs/fs/stat/macros/*", 0, 0);
 
+	/* yacc/lex - are we able to regenerate languages? */
+	if (!isfalse(get("parsgen/bison/presents"))) {
+		require("parsgen/flex/*", 0, 0);
+		require("parsgen/bison/*", 0, 0);
+	}
+	else
+		report("Bison/flex are disabled, among with parser generation.\n");
+
+	if (!istrue(get("parsgen/flex/presents")) || !istrue(get("parsgen/bison/presents")))
+		put("/local/pcb/parsgen", sfalse);
+	else
+		put("/local/pcb/parsgen", strue);
 
 	if (get("cc/rdynamic") == NULL)
 		put("cc/rdynamic", "");
-
 
 	{
 		const char *tmp, *fpic, *debug;
@@ -360,6 +372,19 @@ static void plugin_stat(const char *header, const char *path, const char *name)
 	printf("   [%s]\n", name);
 }
 
+static void print_sum_setting(const char *node, const char *desc)
+{
+	const char *res, *state;
+	state = get(node);
+	if (istrue(state))
+		res = "enabled";
+	else if (isfalse(state))
+		res = "disabled";
+	else
+		res = "UNKNOWN - disabled?";
+	printf("%-55s %s\n", desc, res);
+}
+
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
 int hook_generate()
 {
@@ -399,6 +424,9 @@ int hook_generate()
 	printf("=====================\n");
 	printf("Configuration summary\n");
 	printf("=====================\n");
+
+	print_sum_setting("/local/pcb/parsgen",   "Regenerating languages with bison & flex");
+	print_sum_setting("/local/pcb/want_nls",  "Internationalization with gettext");
 
 #undef plugin_def
 #undef plugin_header
