@@ -285,9 +285,9 @@ int hook_detect_target()
 		report("Bison/flex are disabled, among with parser generation.\n");
 
 	if (!istrue(get("parsgen/flex/presents")) || !istrue(get("parsgen/bison/presents")))
-		put("/local/pcb/parsgen", sfalse);
+		put("/local/pcb/want_parsgen", sfalse);
 	else
-		put("/local/pcb/parsgen", strue);
+		put("/local/pcb/want_parsgen", strue);
 
 	if (get("cc/rdynamic") == NULL)
 		put("cc/rdynamic", "");
@@ -425,8 +425,8 @@ int hook_generate()
 	printf("Configuration summary\n");
 	printf("=====================\n");
 
-	print_sum_setting("/local/pcb/parsgen",   "Regenerating languages with bison & flex");
-	print_sum_setting("/local/pcb/want_nls",  "Internationalization with gettext");
+	print_sum_setting("/local/pcb/want_parsgen",   "Regenerating languages with bison & flex");
+	print_sum_setting("/local/pcb/want_nls",       "Internationalization with gettext");
 
 #undef plugin_def
 #undef plugin_header
