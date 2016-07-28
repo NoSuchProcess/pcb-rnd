@@ -1,3 +1,11 @@
+if /local/pcb/want_parsgen 
+then
+# generate parsegen rules only if the user wants them
+else
+	put /local/pcb/mod/YACC {}
+	put /local/pcb/mod/LEX {}
+end
+
 # explicit rules: .y -> .c
 #  do not assume old yacc to work to different file names, do the generation
 #  in a separate directory to allow parallel compilation with -j
