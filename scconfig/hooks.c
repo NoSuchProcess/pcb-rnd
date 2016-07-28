@@ -218,10 +218,13 @@ int hook_detect_target()
 	else {
 		report("No need for glib, skipping GLIB detection\n");
 		put("libs/sul/glib/presents", "false");
+	}
+
+	if (isfalse(get("libs/sul/glib/presents"))) {
+		/* Makefile templates will still reference these variables, they should be empty */
 		put("libs/sul/glib/cflags", "");
 		put("libs/sul/glib/ldflags", "");
 	}
-
 
 	if (want_gd) {
 		require("libs/gui/gd/presents", 0, 0);
