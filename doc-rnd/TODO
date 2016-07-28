@@ -3,16 +3,11 @@
 	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
 	- the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 	- bg image png crashes in extreme pan
-	- 2 holes in the same poly without switching tool
-		- the second hole dups the poly
-		- first click when starting the first hole is lost
-		- marker not moved to the second hole starting point
+	- poly hole bug when starting the hole off-poly
 
 - Bert:
 	- get gtk smaller (target: 800x600):
-		- http://git.geda-project.org/pcb/commit/?h=LP1354662
-		- http://git.geda-project.org/pcb/log/?h=home/bert/LP699164 (preferred)
-		- why the preferences window is so huge -> bisect widgets?
+		- check how to save about +20 pixels on the height
 	- make clean should clean in src_3rd
 
 - replace settings with lihata (conf_*)
