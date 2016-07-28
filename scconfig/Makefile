@@ -81,5 +81,5 @@ hooks.o: plugin_3state.h plugins.h
 cquote: cquote.c
 
 clean:
-	rm $(OBJS) configure
+	rm $(OBJS) $(DEFAULT_MAIN_OBJS) configure
 

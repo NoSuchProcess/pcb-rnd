@@ -13,6 +13,8 @@
 
 #include "plugin_3state.h"
 
+int want_intl = 0;
+
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
 	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
 	{"disable-xinerama",  "libs/gui/xinerama",            arg_lib_nodes, "$do not use xinerama for lesstif"},
@@ -60,6 +62,10 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 	if (strcmp(key, "debug") == 0) {
 		put("/local/pcb/debug", strue);
+		return 1;
+	}
+	if ((strcmp(key, "with-intl") == 0) || (strcmp(key, "enable-intl") == 0)) {
+		want_intl = 1;
 		return 1;
 	}
 	else if (strcmp(key, "help") == 0) {
@@ -135,6 +141,14 @@ int hook_detect_target()
 
 	require("cc/fpic",  0, 1);
 	require("fstools/mkdir", 0, 1);
+
+	if (want_intl) {
+		require("libs/sul/gettext/presents", 0, 0);
+		if (!istrue(get("libs/sul/gettext/presents"))) {
+			report_repeat("\nERROR: intl support explicitly requested but gettext is not found on your system.\n\n");
+			return 1;
+		}
+	}
 
 	if (want_stroke) {
 		require("libs/gui/libstroke/presents", 0, 0);
