@@ -24,8 +24,8 @@ switch /local/pcb/mod/YACC
 			append /local/pcb/RULES [@
 # yacc for @/local/pcb/mod@
 @/local/n@.c @/local/n@.h: @/local/n@.y
-	mkdir @/local/tmp@
-	cp @/local/n@.y @/local/tmp@
+	$(MKDIR) @/local/tmp@ ; true
+	cp @/local/n@.y @/local/tmp@/
 	cd @/local/tmp@ && bison -d ../@/local/n@.y
 	mv @/local/tmp@/@/local/bn@.tab.h @/local/n@.h
 	mv @/local/tmp@/@/local/bn@.tab.c @/local/n@.c
@@ -51,8 +51,8 @@ switch /local/pcb/mod/LEX
 			append /local/pcb/RULES [@
 # lex for @/local/pcb/mod@
 @/local/n@.c: @/local/n@.l
-	mkdir @/local/tmp@
-	cp @/local/n@.l @/local/tmp@
+	$(MKDIR) @/local/tmp@ ; true
+	cp @/local/n@.l @/local/tmp@/
 	cd @/local/tmp@ && flex ../@/local/n@.l
 	mv @/local/tmp@/lex.yy.c @/local/n@.c
 	rm -rf @/local/tmp@
