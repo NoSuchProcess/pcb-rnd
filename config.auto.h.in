@@ -230,7 +230,8 @@ print_ternary libs/gui/xinerama/presents {#define HAVE_XINERAMA 1} {/*#undef HAV
 print {\n\n/* Define to 1 if Xrender is available */\n}
 print_ternary libs/gui/xrender/presents {#define HAVE_XRENDER 1} {/*#undef HAVE_XRENDER */}
 
-
+print {\n\n/* Define to 1 if translation of program messages to the user's native language is requested. */\n}
+print_ternary /local/pcb/want_nls {#define ENABLE_NLS 1} {/*#undef ENABLE_NLS */}
 
 print [@
 

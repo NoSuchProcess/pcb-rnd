@@ -22,10 +22,6 @@ print [@
 /* Define to 1 to enable toporouter graphical output */
 #define TOPO_OUTPUT_ENABLED 0
 
-/* Define to 1 if translation of program messages to the user's native
-   language is requested. */
-#define ENABLE_NLS 1
-
 /* the dot-dir: where to save user config under ther user's home; it's used
    as ~/DOT_PCB_RND/ */
 #define DOT_PCB_RND ".pcb-rnd"

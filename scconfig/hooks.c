@@ -148,7 +148,10 @@ int hook_detect_target()
 			report_repeat("\nERROR: intl support explicitly requested but gettext is not found on your system.\n\n");
 			return 1;
 		}
+		put("/local/pcb/want_nls", strue);
 	}
+	else
+		put("/local/pcb/want_nls", sfalse);
 
 	if (want_stroke) {
 		require("libs/gui/libstroke/presents", 0, 0);
