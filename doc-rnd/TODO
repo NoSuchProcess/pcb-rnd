@@ -12,7 +12,7 @@
 
 - replace settings with lihata (conf_*)
 	- change window sizes when loaded from a design or project file: not only for top window
-	- implement binary->lht setter and use it in config_any_replace() if the source role sais so (this is requred for saving current config (from native) to project or user)
+	- remove CFN_INCREMENTS, test if saving increments from preferences works
 	- gtk hid: clean up the #warnings
 	- finish gtk preferences user pov (change is always saved to the design)
 		- library search path:
@@ -59,7 +59,11 @@
 		- route style vs. autorouter
 
 CLEANUP #5
+- scconfig:
+	- revise the bison/flex rule templates; rather use bison/flex output name
+	  feature instead of the mkdir hack.
 - conf:
+	- debug why default layer names from the user config are ignored
 	- fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
 	- switch the lesstif HID over from attribs to conf
 	- remove redundancy: don't store values in the PCB struct that are in the design conf
