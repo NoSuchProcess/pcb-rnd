@@ -39,7 +39,7 @@ awk -v "docdir=$1" '
 			path = path "/" name
 	}
 
-	/^[ \t]*[/][/]/ { next }
+	/^[ \t]*[\/][\/]/ { next }
 
 	/CFT_/ {
 		if (level < 1)
