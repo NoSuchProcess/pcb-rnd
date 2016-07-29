@@ -344,10 +344,14 @@ static char *describe_location(Coord X, Coord Y)
 	return description;
 }
 
-
+static int tooltip_update_timeout_id = 0;
 static gboolean check_object_tooltips(GHidPort * out)
 {
 	char *description;
+
+	/* Make sure the timer is not removed - we are called by the timer and it is
+	   automatically removed because we are returning false */
+	tooltip_update_timeout_id = 0;
 
 	/* check if there are any pins or pads at that position */
 	description = describe_location(out->crosshair_x, out->crosshair_y);
@@ -360,8 +364,6 @@ static gboolean check_object_tooltips(GHidPort * out)
 
 	return FALSE;
 }
-
-static int tooltip_update_timeout_id = 0;
 
 static void cancel_tooltip_update()
 {
