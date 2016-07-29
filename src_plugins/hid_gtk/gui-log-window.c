@@ -109,6 +109,10 @@ void ghid_log_window_show(gboolean raise)
 
 static void ghid_log_append_string(gchar * s)
 {
+	extern int gtkhid_active;
+#warning TODO msg: store these
+	if (!gtkhid_active)
+		return;
 	if (log_show_on_append)
 		ghid_log_window_show(FALSE);
 	else
