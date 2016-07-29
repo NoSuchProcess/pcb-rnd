@@ -296,7 +296,6 @@ static void WritePCBDataHeader(FILE * FP)
 	fprintf(FP, "Flags(%s)\n", pcbflags_to_string(pcb_flags));
 	fprintf(FP, "Groups(\"%s\")\n", LayerGroupsToString(&PCB->LayerGroups));
 	fputs("Styles[\"", FP);
-printf("groups=%d\n", vtroutestyle_len(&PCB->RouteStyle));
 
 	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
 		for (group = 0; group < vtroutestyle_len(&PCB->RouteStyle) - 1; group++)

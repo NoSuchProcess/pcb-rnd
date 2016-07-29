@@ -53,7 +53,7 @@ static void c2a(PCBType *pcb, lht_node_t *tree, char *path1)
 		if (n->type == LHT_TEXT) {
 			conf_native_t *nv = conf_get_field(path);
 			if ((nv != NULL) && (!nv->random_flags.io_pcb_no_attrib)) {
-				printf("C2A: '%s' %d\n", path, nv->random_flags.io_pcb_no_attrib);
+/*				printf("C2A: '%s' %d\n", path, nv->random_flags.io_pcb_no_attrib);*/
 				AttributePutToList(&pcb->Attributes, apath, n->data.text.value, 1);
 			}
 		}
