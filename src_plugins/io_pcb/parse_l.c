@@ -2495,7 +2495,7 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, conf_role_t 
 	setlocale(LC_ALL, "C"); /* make sure numerics are read predictably */
 	retval = Parse(NULL, conf_core.rc.file_command, conf_core.rc.file_path, Filename, NULL);
 	setlocale(LC_ALL, "");
-	if (settings_dest != CFR_invalid) {
+	if ((settings_dest != CFR_invalid) && (retval == 0)) {
 		/* overwrite settings from the flags, mark them not-to-save */
 		CONF_SET(settings_dest, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(ENABLEMINCUTFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/show_number", -1, CONF_BOOL_FLAG(SHOWNUMBERFLAG, yy_pcb_flags), POL_OVERWRITE);
