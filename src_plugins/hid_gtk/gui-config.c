@@ -867,10 +867,10 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 		config_increments_tab_vbox = content_vbox;
 	}
 
-	catvbox = ghid_category_vbox (config_increments_vbox, "Increment Settings", 4, 2, TRUE, TRUE);
+	catvbox = ghid_category_vbox (config_increments_vbox, "Increment Settings", 0, 0, TRUE, TRUE);
 	config_increments_sect_create(catvbox);
 
-	catvbox = ghid_category_vbox (config_increments_vbox, _("Comparison table"), 4, 2, TRUE, TRUE);
+	catvbox = ghid_category_vbox (config_increments_vbox, _("Comparison table"), 0, 0, TRUE, TRUE);
 
 	/* increment summary table */
 	{
