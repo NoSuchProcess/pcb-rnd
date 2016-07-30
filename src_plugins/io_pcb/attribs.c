@@ -101,7 +101,26 @@ void io_pcb_attrib_a2c(PCBType *pcb)
 {
 	int n;
 
-	for (n = 0; n < pcb->Attributes.Number; n++)
-		if (path_ok(pcb->Attributes.List[n].name))
+	for (n = 0; n < pcb->Attributes.Number; n++) {
+		if (path_ok(pcb->Attributes.List[n].name)) {
+			conf_native_t *nv = conf_get_field(pcb->Attributes.List[n].name + conf_attr_prefix_len);
+			if (nv == NULL)
+				continue;
+			if (nv->type == CFN_LIST) {
+				char *tmp = strdup(pcb->Attributes.List[n].value);
+				char *next, *curr;
+				for(curr = tmp; curr != NULL; curr = next) {
+					next = strstr(curr, LISTSEP);
+					if (next != NULL) {
+						*next = '\0';
+						next += strlen(LISTSEP);
+					}
+					conf_set(CFR_DESIGN, pcb->Attributes.List[n].name + conf_attr_prefix_len, -1, curr, POL_APPEND);
+				}
+				free(tmp);
+			}
+			else /* assume plain string */
 				conf_set(CFR_DESIGN, pcb->Attributes.List[n].name + conf_attr_prefix_len, -1, pcb->Attributes.List[n].value, POL_OVERWRITE);
+		}
+	}
 }
