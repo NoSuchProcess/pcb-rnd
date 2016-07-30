@@ -209,7 +209,7 @@ CQUOTE=../scconfig/cquote
 all: pcb-rnd @/local/pcb/all@
 
 pcb-rnd: $(OBJS) $(EXEDEPS)
-	$(CC) $(LDFLAGS) $(OBJS) -o pcb-rnd $(LIBS)
+	$(CC) $(OBJS) -o pcb-rnd $(LDFLAGS) $(LIBS)
 @]
 
 print [@
