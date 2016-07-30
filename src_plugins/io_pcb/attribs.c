@@ -23,6 +23,8 @@
 #include "conf.h"
 #include "misc.h"
 
+#define LISTSEP " [[pcb-rnd]] "
+
 /* Save and load pcb conf attributes, but do not save ::design:: (because they have flags) */
 static const char *conf_attr_prefix = "PCB::conf::";
 static const char *conf_attr_prefix_inhibit = "design::";
@@ -57,19 +59,32 @@ static void c2a(PCBType *pcb, lht_node_t *tree, char *path1)
 	else
 		pe = path;
 
-
-	/* a depth-first-search for symlinks or broken symlinks */
+	/* a depth-first-search and save config items from the tree */
 	for(n = lht_dom_first(&it, tree); n != NULL; n = lht_dom_next(&it)) {
 		strcpy(pe, n->name);
 		if (n->type == LHT_HASH)
 			c2a(pcb, n, path);
-		if (!path_ok(path))
+		if (strncmp(path, "design/",7) == 0) {
 			continue;
+		}
 		if (n->type == LHT_TEXT) {
 			conf_native_t *nv = conf_get_field(path);
-			if ((nv != NULL) && (!nv->random_flags.io_pcb_no_attrib)) {
-/*				printf("C2A: '%s' %d\n", path, nv->random_flags.io_pcb_no_attrib);*/
+			if ((nv != NULL) && (!nv->random_flags.io_pcb_no_attrib))
 				AttributePutToList(&pcb->Attributes, apath, n->data.text.value, 1);
+		}
+		else if (n->type == LHT_LIST) {
+			lht_node_t *i;
+			conf_native_t *nv = conf_get_field(path);
+			if ((nv != NULL) && (!nv->random_flags.io_pcb_no_attrib)) {
+				gds_t conc;
+				gds_init(&conc);
+				for(i = n->data.list.first; i != NULL; i = i->next) {
+					if (i != n->data.list.first)
+						gds_append_str(&conc, LISTSEP);
+					gds_append_str(&conc, i->data.text.value);
+				}
+				AttributePutToList(&pcb->Attributes, apath,  conc.array, 1);
+				gds_uninit(&conc);
 			}
 		}
 	}
