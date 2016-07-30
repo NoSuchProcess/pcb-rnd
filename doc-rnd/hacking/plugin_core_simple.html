@@ -24,15 +24,15 @@ put /local/pcb/mod/OBJS [@ $(PLUGDIR)/<i>plg</i>/foo.o $(PLUGDIR)/<i>plg</i>/bar
 put /local/pcb/mod/CONF {$(PLUGDIR)/<i>plg</i>/foo_conf.h}
 put /local/pcb/mod/YACC [@ $(PLUGDIR)/<i>plg</i>/bary @]
 put /local/pcb/mod/LEX  [@ $(PLUGDIR)/<i>plg</i>/barl @]
-
-
 		</pre>
+
 		<ul>
 			<li> /local/pcb/mod: the name of the module we are compiling
 			<li> /local/pcb/mod/OBJS: a space separated list of object files to compile 
 			<li> /local/pcb/mod/CONF: optional: the name of the <a href="plugin_conf.h"> conf struct header </a> - if the plugin doesn't have runtime configuration settings, remove this line
 			<li> /local/pcb/mod/YACC: optional: if you have files for yacc-processing, list them without the .y suffix here (space separated)
 			<li> /local/pcb/mod/LEX: optional: if you have files for lex-processing, list them without the .l suffix here (space separated)
+			<li> Leave the switch part on the bottom intact.
 		</ul>
 	<li> 7. create your C sources and headers in src_plugins/<i>plg</i>/
 	<li> 8. edit scconfig/plugins.h: copy an existing line and edit it:
