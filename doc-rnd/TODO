@@ -9,7 +9,6 @@
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
 	- gtk hid: clean up the #warnings
 	- finish gtk preferences user pov (change is always saved to the design)
-		- layer colors not saved in pcb attribs
 		- color dialog:
 			- background color not loaded into the gtk cache: catch conf change event in the gtk hid to reconfigure the color
 	- TEST:
