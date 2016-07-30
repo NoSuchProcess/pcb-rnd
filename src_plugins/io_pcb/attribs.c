@@ -23,9 +23,21 @@
 #include "conf.h"
 #include "misc.h"
 
+/* Save and load pcb conf attributes, but do not save ::design:: (because they have flags) */
 static const char *conf_attr_prefix = "PCB::conf::";
+static const char *conf_attr_prefix_inhibit = "design::";
 /* The optimizer will fix this */
 #define conf_attr_prefix_len strlen(conf_attr_prefix)
+#define conf_attr_prefix_inhibit_len strlen(conf_attr_prefix_inhibit)
+
+static int path_ok(const char *path)
+{
+	if (strncmp(path, conf_attr_prefix, conf_attr_prefix_len) != 0)
+		return 0;
+	if (strncmp(path + conf_attr_prefix_len, conf_attr_prefix_inhibit, conf_attr_prefix_inhibit_len) == 0)
+		return 0;
+	return 1;
+}
 
 static void c2a(PCBType *pcb, lht_node_t *tree, char *path1)
 {
@@ -45,11 +57,14 @@ static void c2a(PCBType *pcb, lht_node_t *tree, char *path1)
 	else
 		pe = path;
 
+
 	/* a depth-first-search for symlinks or broken symlinks */
 	for(n = lht_dom_first(&it, tree); n != NULL; n = lht_dom_next(&it)) {
 		strcpy(pe, n->name);
 		if (n->type == LHT_HASH)
 			c2a(pcb, n, path);
+		if (!path_ok(path))
+			continue;
 		if (n->type == LHT_TEXT) {
 			conf_native_t *nv = conf_get_field(path);
 			if ((nv != NULL) && (!nv->random_flags.io_pcb_no_attrib)) {
@@ -72,6 +87,6 @@ void io_pcb_attrib_a2c(PCBType *pcb)
 	int n;
 
 	for (n = 0; n < pcb->Attributes.Number; n++)
-		if (strncmp(pcb->Attributes.List[n].name, conf_attr_prefix, conf_attr_prefix_len) == 0)
-			conf_set(CFR_DESIGN, pcb->Attributes.List[n].name + conf_attr_prefix_len, -1, pcb->Attributes.List[n].value, POL_OVERWRITE);
+		if (path_ok(pcb->Attributes.List[n].name))
+				conf_set(CFR_DESIGN, pcb->Attributes.List[n].name + conf_attr_prefix_len, -1, pcb->Attributes.List[n].value, POL_OVERWRITE);
 }
