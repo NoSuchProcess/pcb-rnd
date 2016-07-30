@@ -4,5 +4,55 @@
 
 <h2> Introduction </h2>
 
+<h2> Setting up a new core plugin </h2>
+<ul>
+	<li> 1. make up a name for the plugin. There are a few <a href="plugin_naming.html"> conventions. </a> This document will refer to the name as <i>plg</i>, always replace it with your chosen name.
+	<li> 2. cd src_plugins; svn mkdir <i>plg</i>
+	<li> 3. copy Makefile, Plug.tmpasm and README from another, small plugin, for example from the <i>report</i> plugin (the next points will assume you picked this plugin as the source of the copy)
+	<li> 4. edit Makefile: replace <b>report</b> to <i>plg</i>
+	<li> 5. edit README; there should be short summary about the purpose of the plugin then "#key: value" pairs for statistics:
+		<ul>
+			<li> <i>#state:</i> either <b>works</b> or <b>disabled</b>
+			<li> <i>#lstate:</i> if state is disabled, add a new line <b>#lstate:</b> with a few words on why the plugin is disabled
+			<li> <i>#default:</i> <b>disabled</b> or <b>builtin</b> or <b>plugin</b> (this field might be removed later because of redundancy)
+			<li> <i>#implements:</i> the same as the plugin name prefix (see <a href="plugin_naming.html"> conventions. </a>) or <b>(feature)</b> for feature plugins; it's redundant but is kept for supporting external plugins
+		</ul>
+	<li> 6. edit Plug.tmpasm:
+		<pre>
+put /local/pcb/mod {<i>plg</i>}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/<i>plg</i>/foo.o $(PLUGDIR)/<i>plg</i>/bar.o @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/<i>plg</i>/foo_conf.h}
+put /local/pcb/mod/YACC [@ $(PLUGDIR)/<i>plg</i>/bary @]
+put /local/pcb/mod/LEX  [@ $(PLUGDIR)/<i>plg</i>/barl @]
+
+
+		</pre>
+		<ul>
+			<li> /local/pcb/mod: the name of the module we are compiling
+			<li> /local/pcb/mod/OBJS: a space separated list of object files to compile 
+			<li> /local/pcb/mod/CONF: optional: the name of the <a href="plugin_conf.h"> conf struct header </a> - if the plugin doesn't have runtime configuration settings, remove this line
+			<li> /local/pcb/mod/YACC: optional: if you have files for yacc-processing, list them without the .y suffix here (space separated)
+			<li> /local/pcb/mod/LEX: optional: if you have files for lex-processing, list them without the .l suffix here (space separated)
+		</ul>
+	<li> 7. create your C sources and headers in src_plugins/<i>plg</i>/
+	<li> 8. edit scconfig/plugins.h: copy an existing line and edit it:
+<pre>
+plugin_def("<i>plg</i>",       "<i>short description</i>",       <i>default</i>)
+</pre>
+	Default is one of:
+	<ul>
+		<li> sbuildin - unless the user requests otherwise, your plugin is linked into the executable
+		<li> sdisabled - unless the user requests otherwise, your plugin is not compiled (recommended until the plugin gets some user testing)
+		<li> splugin - unless the user requests otherwise, your plugin is dynamically linked; not recommended: the policy is to let users explicitly request dynamic linking
+	</ul>
+	The order of entries in the file is the same as the order in the summary table
+	at the end of ./configure; insert your plugin in the right group!
+	<li> 9. run ./configure --buildin-<i>plg</i>
+	<li> 10. run make to see if it compiles and test
+	<li> (11. while developing, you can run make from src_plugins/<i>plg</i> - if
+	your plugin is a builtin, it will recompile pcb-rnd. For some of us it's convenient
+	to run make in the same directory where all the source files are.)
+</ul>
+
 </body>
 </html>
