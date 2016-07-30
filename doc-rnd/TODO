@@ -5,11 +5,6 @@
 	- bg image png crashes in extreme pan
 	- poly hole bug when starting the hole off-poly
 
-- Bert:
-	- get gtk smaller (target: 800x600):
-		- check how to save about +20 pixels on the height
-	- make clean should clean in src_3rd
-
 - replace settings with lihata (conf_*)
 	- change window sizes when loaded from a design or project file: not only for top window
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
