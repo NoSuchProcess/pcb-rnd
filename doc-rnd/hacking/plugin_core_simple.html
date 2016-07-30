@@ -47,9 +47,10 @@ plugin_def("<i>plg</i>",       "<i>short description</i>",       <i>default</i>)
 	</ul>
 	The order of entries in the file is the same as the order in the summary table
 	at the end of ./configure; insert your plugin in the right group!
-	<li> 9. run ./configure --buildin-<i>plg</i>
-	<li> 10. run make to see if it compiles and test
-	<li> (11. while developing, you can run make from src_plugins/<i>plg</i> - if
+	<li> 9. add your plugin to the build list in one of the src_plugins/plugins_*.tmpasm files; choose the file that lists plugins similar to yours.
+	<li> 10. run ./configure --buildin-<i>plg</i>
+	<li> 11. run make to see if it compiles and test
+	<li> (12. while developing, you can run make from src_plugins/<i>plg</i> - if
 	your plugin is a builtin, it will recompile pcb-rnd. For some of us it's convenient
 	to run make in the same directory where all the source files are.)
 </ul>
