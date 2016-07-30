@@ -1,0 +1,9 @@
+put /local/pcb/mod {export_test}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_test/export_test.o @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/export_test/export_test_conf.h}
+
+switch /local/pcb/export_test/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

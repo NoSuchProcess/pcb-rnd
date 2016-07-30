@@ -1,0 +1,6 @@
+A thin layer of code to dump exporter calls for testing the HID exporter API.
+
+#state: disabled
+#lstate: work in progress
+#default: buildin
+#implements: export
