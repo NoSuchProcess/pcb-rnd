@@ -701,7 +701,7 @@ static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
 
 static void config_increments_sect_create(GtkWidget * vbox)
 {
-	GtkWidget * hbox;
+	GtkWidget * hbox, *label;
 	const int width = 128;
 	char pathmm[256], *pemm;
 	char pathmil[256], *pemil;
@@ -738,7 +738,10 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 conf_core.editor.increments_mil.grid,
 									 conf_core.editor.increments_mil.grid_min,
 									 conf_core.editor.increments_mil.grid_max,
-									 CE_SMALL, umil, width, increment_spin_button_cb, strdup(pathmil), NULL, _("For 'g' and '<shift>g'\ngrid change actions"));
+									 CE_SMALL, umil, width, increment_spin_button_cb, strdup(pathmil), NULL, NULL);
+
+	label = gtk_label_new(_("For 'g' and '<shift>g' grid change actions"));
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
 
 
 	/* ---- Size Increment/Decrement ---- */
@@ -759,9 +762,10 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 conf_core.editor.increments_mil.size_min,
 									 conf_core.editor.increments_mil.size_max,
 									 CE_SMALL, umil, width, increment_spin_button_cb,
-									 strdup(pathmil), NULL,
-									 _("For 's' and '<shift>s'\nsize change actions on lines,\n"
-										 "pads, pins and text. Use\n'<ctrl>s' and '<shift><ctrl>s'\nfor drill holes."));
+									 strdup(pathmil), NULL, NULL);
+
+	label = gtk_label_new(_("For 's' and '<shift>s' size change actions on lines, pads, pins and text.\nUse '<ctrl>s' and '<shift><ctrl>s' for drill holes."));
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
 
 	/* ---- Line Increment/Decrement ---- */
 	strcpy(pemm, "line");
@@ -781,7 +785,10 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 conf_core.editor.increments_mil.line_min,
 									 conf_core.editor.increments_mil.line_max,
 									 CE_SMALL, umil, width, increment_spin_button_cb,
-									 strdup(pathmil), NULL, _("For 'l' and '<shift>l'\nrouting line width\nchange actions"));
+									 strdup(pathmil), NULL, NULL);
+
+	label = gtk_label_new(_("For 'l' and '<shift>l' routing line width change actions"));
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
 
 	/* ---- Clear Increment/Decrement ---- */
 	strcpy(pemm, "clear");
@@ -801,7 +808,11 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 conf_core.editor.increments_mil.clear_min,
 									 conf_core.editor.increments_mil.clear_max,
 									 CE_SMALL, umil, width, increment_spin_button_cb,
-									 strdup(pathmil), NULL, _("For 'k' and '<shift>k'\nline clearance inside\npolygon size\nchange actions"));
+									 strdup(pathmil), NULL, NULL);
+
+	label = gtk_label_new(_("For 'k' and '<shift>k' line clearance inside polygon size change actions"));
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
+
 
 	gtk_widget_show_all(config_increments_vbox);
 }
