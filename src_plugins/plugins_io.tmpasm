@@ -9,6 +9,7 @@ include {../src_plugins/export_nelma/Plug.tmpasm}
 include {../src_plugins/export_png/Plug.tmpasm}
 include {../src_plugins/export_gerber/Plug.tmpasm}
 include {../src_plugins/export_bom/Plug.tmpasm}
+include {../src_plugins/export_test/Plug.tmpasm}
 include {../src_plugins/hid_batch/Plug.tmpasm}
 include {../src_plugins/hid_gtk/Plug.tmpasm}
 include {../src_plugins/hid_lesstif/Plug.tmpasm}
