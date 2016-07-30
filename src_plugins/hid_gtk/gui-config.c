@@ -1301,7 +1301,7 @@ void ghid_config_groups_changed(void)
 		gtk_widget_destroy(config_groups_window);
 
 	config_groups_window = scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_set_size_request(scrolled_window, 34, 408);
+	gtk_widget_set_size_request(scrolled_window, (max_group + 1)*34, 300);
 	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 3);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
@@ -1465,12 +1465,16 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 
 /* -- Groups tab */
 	vbox = ghid_notebook_page(tabs, _("Groups"), 0, 6);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+
 	config_groups_vbox = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), config_groups_vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), config_groups_vbox, TRUE, TRUE, 0);
 	ghid_config_groups_changed();
 
-	sep = gtk_hseparator_new();
-	gtk_box_pack_start(GTK_BOX(vbox), sep, FALSE, FALSE, 4);
+	/* A dummy vbox on the right to take up excess horizontal space so the layer list is not scretched horizontally */
+	vbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 
 /* -- Info tab */
 	vbox = ghid_notebook_page(tabs, _("Info"), 0, 6);
