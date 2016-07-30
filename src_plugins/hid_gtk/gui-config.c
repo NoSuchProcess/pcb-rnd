@@ -291,7 +291,7 @@ static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton
 	config_color_warn_label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(config_color_warn_label), TRUE);
 	gtk_label_set_markup(GTK_LABEL(config_color_warn_label),
-											 _("The above are <i>design-level</i>\nconfiguration, saved with the\npcb file. Use these buttons\nto save all the above settings:"));
+											 _("<small>The above are <i>design-level</i>\nconfiguration, <u>saved</u> with the\npcb file. Use these buttons\nto save all the above settings:</small>"));
 	gtk_box_pack_start(GTK_BOX(hbox), config_color_warn_label, FALSE, FALSE, 4);
 
 	vbox2 = gtk_vbox_new(FALSE, 0);
@@ -740,9 +740,11 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 conf_core.editor.increments_mil.grid_max,
 									 CE_SMALL, umil, width, increment_spin_button_cb, strdup(pathmil), NULL, NULL);
 
-	label = gtk_label_new(_("For 'g' and '<shift>g' grid change actions"));
+	label = gtk_label_new("");
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_label_set_markup(GTK_LABEL(label), _("<small>For 'g' and '&lt;shift&gt;g' grid change actions</small>"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
-
 
 	/* ---- Size Increment/Decrement ---- */
 	strcpy(pemm, "size");
@@ -764,7 +766,10 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 CE_SMALL, umil, width, increment_spin_button_cb,
 									 strdup(pathmil), NULL, NULL);
 
-	label = gtk_label_new(_("For 's' and '<shift>s' size change actions on lines, pads, pins and text.\nUse '<ctrl>s' and '<shift><ctrl>s' for drill holes."));
+	label = gtk_label_new("");
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_label_set_markup(GTK_LABEL(label), _("For <small>'s' and '&lt;shift&gt;s' on lines, pads, text; '&lt;ctrl&gt;s' and '&lt;shift&gt;&lt;ctrl&gt;s' on holes.</small>"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
 
 	/* ---- Line Increment/Decrement ---- */
@@ -787,7 +792,10 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 CE_SMALL, umil, width, increment_spin_button_cb,
 									 strdup(pathmil), NULL, NULL);
 
-	label = gtk_label_new(_("For 'l' and '<shift>l' routing line width change actions"));
+	label = gtk_label_new("");
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_label_set_markup(GTK_LABEL(label), _("<small>For 'l' and '&lt;shift&gt;l' routing line width change actions</small>"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
 
 	/* ---- Clear Increment/Decrement ---- */
@@ -810,7 +818,10 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 CE_SMALL, umil, width, increment_spin_button_cb,
 									 strdup(pathmil), NULL, NULL);
 
-	label = gtk_label_new(_("For 'k' and '<shift>k' line clearance inside polygon size change actions"));
+	label = gtk_label_new("");
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_label_set_markup(GTK_LABEL(label),_("<small>For 'k' and '&lt;shift&gt;k' line clearance inside polygon size change actions</small>"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
 
 
