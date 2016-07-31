@@ -253,16 +253,8 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 		GtkWidget *fcd = gtk_file_chooser_dialog_new("Save config settings to...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 		if (gtk_dialog_run(GTK_DIALOG(fcd)) == GTK_RESPONSE_ACCEPT) {
 			char *fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fcd));
-			FILE *f = fopen(fn, "w");
-			if (f != NULL) {
-				lht_node_t *r = conf_lht_get_first(CFR_file);
-				if (r != NULL) {
-					lht_dom_export(r->doc->root, f, "");
-					lht_tree_del(r);
-					conf_reset(CFR_file, "<internal>");
-				}
-			}
-			fclose(f);
+			conf_export_to_file(fn, CFR_file, "/");
+			conf_reset(CFR_file, "<internal>");
 			g_free(fn);
 		}
 		gtk_widget_destroy(fcd);
