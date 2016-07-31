@@ -7,7 +7,6 @@
 - replace settings with lihata (conf_*)
 	- change window sizes when loaded from a design or project file: not only for top window
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
-	- gtk hid: clean up the #warnings
 	- TEST:
 		- atexit change -> is the design saved periodically? is it saved on a crash?
 		- project files:
