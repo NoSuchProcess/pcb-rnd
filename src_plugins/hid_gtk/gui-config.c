@@ -370,6 +370,25 @@ static void config_compact_vertical_toggle_cb(GtkToggleButton * button, gpointer
 	ghid_pack_mode_buttons();
 }
 
+static GtkWidget *pref_auto_place_lab;
+static void pref_auto_place_update(void)
+{
+	const char *warn;
+	if (conf_core.editor.auto_place)
+		warn = "Restoring window geometry is <b>enabled</b>:\npcb-rnd will attempt to move and resize windows.\nIt can be disabled in General/";
+	else
+		warn = "Restoring window geometry is <b>disabled</b>:\npcb-rnd will <b>not</b> attempt to move and resize windows.\nConsider changing it in General/";
+	gtk_label_set_markup(GTK_LABEL(pref_auto_place_lab), _(warn));
+}
+
+static void config_auto_place_toggle_cb(GtkToggleButton * button, gpointer data)
+{
+	gboolean active = gtk_toggle_button_get_active(button);
+
+	conf_setf(CFR_DESIGN, "editor/auto_place", -1, "%d", active);
+	pref_auto_place_update();
+}
+
 static void config_general_toggle_cb(GtkToggleButton * button, void *setting)
 {
 	*(gint *) setting = gtk_toggle_button_get_active(button);
@@ -427,6 +446,11 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 															TRUE, FALSE, FALSE, 2,
 															config_compact_vertical_toggle_cb, NULL,
 															_("Alternate window layout to allow smaller vertical size"));
+
+	ghid_check_button_connected(vbox, NULL, conf_core.editor.auto_place,
+															TRUE, FALSE, FALSE, 2,
+															config_auto_place_toggle_cb, NULL,
+															_("Restore window geometry (when saved geometry is available)"));
 
 	vbox = ghid_category_vbox(content_vbox, _("Backups"), 4, 2, TRUE, TRUE);
 	ghid_check_button_connected(vbox, NULL, conf_core.editor.save_in_tmp,
@@ -668,13 +692,22 @@ static void config_window_tab_create(GtkWidget *tab_vbox)
 	config_window_row(config_window_vbox, "... in the central user configuration", 0, "*u", conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_user);
 	config_window_row(config_window_vbox, "... in a custom file", 0, NULL, 0);
 
+
+
+
 	lab = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(lab), TRUE);
 	gtk_label_set_markup(GTK_LABEL(lab),
-											 _("<small>Note: checkbox values are saved in the user config</small>"));
+											 _("<small>Note: the above checkbox values are saved in the user config</small>"));
 	gtk_box_pack_start(GTK_BOX(config_window_vbox), lab, FALSE, FALSE, 4);
 	gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 0.5);
 
+	lab = gtk_label_new("");
+	gtk_label_set_use_markup(GTK_LABEL(lab), TRUE);
+	pref_auto_place_lab = lab;
+	pref_auto_place_update();
+	gtk_box_pack_start(GTK_BOX(config_window_vbox), lab, FALSE, FALSE, 4);
+	gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 0.5);
 
 	gtk_widget_show_all(config_window_vbox);
 }
