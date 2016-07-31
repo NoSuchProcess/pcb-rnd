@@ -186,6 +186,11 @@ static void node_model_update(LibraryMenuType * menu)
 {
 	GtkTreeModel *model;
 
+	if (menu == NULL) {
+		Message("Error: can't update netlist window: there is no netlist loaded.\n");
+		return;
+	}
+
 	model = node_model;
 	node_model = node_model_create(menu);
 	gtk_tree_view_set_model(node_treeview, node_model);
