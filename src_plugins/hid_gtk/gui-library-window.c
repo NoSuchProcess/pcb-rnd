@@ -57,6 +57,7 @@
 #include "conf_core.h"
 
 #include "gui.h"
+#include "win_place.h"
 #include "global.h"
 #include "buffer.h"
 #include "data.h"
@@ -88,14 +89,7 @@ static GtkWidget *library_window;
 
 static gint library_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	GtkAllocation allocation;
-
-	gtk_widget_get_allocation(widget, &allocation);
-
-	hid_gtk_wgeo.library_width = allocation.width;
-	hid_gtk_wgeo.library_height = allocation.height;
-	hid_gtk_wgeo_update();
-
+	wplc_config_event(widget, &hid_gtk_wgeo.library_x, &hid_gtk_wgeo.library_y, &hid_gtk_wgeo.library_width, &hid_gtk_wgeo.library_height);
 	return FALSE;
 }
 
@@ -159,9 +153,9 @@ void ghid_library_window_create(GHidPort * out)
 	gtk_window_set_title(GTK_WINDOW(library_window), _("pcb-rnd Library"));
 	gtk_window_set_wmclass(GTK_WINDOW(library_window), "PCB_Library", "PCB");
 
+	wplc_place(WPLC_LIBRARY, library_window);
+
 	gtk_widget_realize(library_window);
-	if (conf_core.editor.auto_place)
-		gtk_window_move(GTK_WINDOW(library_window), 10, 10);
 
 	gtk_editable_select_region(GTK_EDITABLE(GHID_LIBRARY_WINDOW(library_window)->entry_filter), 0, -1);
 

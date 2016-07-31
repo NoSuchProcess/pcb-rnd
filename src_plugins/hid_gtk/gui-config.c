@@ -34,6 +34,7 @@
 #include <genht/hash.h>
 
 #include "gui.h"
+#include "win_place.h"
 #include "hid.h"
 #include "gtkhid.h"
 
@@ -163,19 +164,30 @@ static int just_loaded(const char *path)
 	return (r == CFR_DESIGN) || (r == CFR_PROJECT);
 }
 
-#define just_loaded_geo(path_prefix) (just_loaded(path_prefix "_width") || just_loaded(path_prefix "_height"))
+#define path_prefix "plugins/hid_gtk/window_geometry/"
+#define did_just_load_geo(win, id) \
+	if (just_loaded(path_prefix #win "_width") || just_loaded(path_prefix #win "_height") \
+	 || just_loaded(path_prefix #win "_x") || just_loaded(path_prefix #win "_y")) { \
+		hid_gtk_wgeo.win ## _width  = conf_hid_gtk.plugins.hid_gtk.window_geometry.win ## _width; \
+		hid_gtk_wgeo.win ## _height = conf_hid_gtk.plugins.hid_gtk.window_geometry.win ## _height; \
+		hid_gtk_wgeo.win ## _x      = conf_hid_gtk.plugins.hid_gtk.window_geometry.win ## _x; \
+		hid_gtk_wgeo.win ## _y      = conf_hid_gtk.plugins.hid_gtk.window_geometry.win ## _y; \
+		wplc_place(id, NULL); \
+	}
 
 void ghid_conf_load_post_wgeo(void *user_data, int argc, event_arg_t * argv[])
 {
-	if (just_loaded_geo("plugins/hid_gtk/window_geometry/top")) {
-		hid_gtk_wgeo.top_width  = conf_hid_gtk.plugins.hid_gtk.window_geometry.top_width;
-		hid_gtk_wgeo.top_height = conf_hid_gtk.plugins.hid_gtk.window_geometry.top_height;
-/*		printf("Resize top: %d %d\n", hid_gtk_wgeo.top_width, hid_gtk_wgeo.top_height);*/
-		gtk_window_resize(GTK_WINDOW(gport->top_window), hid_gtk_wgeo.top_width, hid_gtk_wgeo.top_height);
-	}
-
-
+	did_just_load_geo(top, WPLC_TOP);
+	did_just_load_geo(log, WPLC_LOG);
+	did_just_load_geo(drc, WPLC_DRC);
+	did_just_load_geo(library, WPLC_LIBRARY);
+	did_just_load_geo(netlist, WPLC_NETLIST);
+	did_just_load_geo(keyref, WPLC_KEYREF);
+	did_just_load_geo(pinout, WPLC_PINOUT);
 }
+
+#undef path_prefix
+
 
 #undef just_loaded_geo
 

@@ -34,6 +34,7 @@
 #include "global.h"
 
 #include "gui.h"
+#include "win_place.h"
 
 #include "copy.h"
 #include "data.h"
@@ -90,7 +91,6 @@ void ghid_pinout_window_show(GHidPort * out, ElementType * element)
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
 	gtk_widget_realize(top_window);
-	if (conf_core.editor.auto_place)
-		gtk_window_move(GTK_WINDOW(top_window), 10, 10);
+	wplc_place(WPLC_PINOUT, top_window);
 	gtk_widget_show_all(top_window);
 }

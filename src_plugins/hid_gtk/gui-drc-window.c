@@ -36,6 +36,7 @@
 #include "undo.h"
 #include "set.h"
 #include "gui.h"
+#include "win_place.h"
 #include "gui-drc-window.h"
 #include "hid_actions.h"
 
@@ -52,14 +53,7 @@ static int num_violations = 0;
 /* Remember user window resizes. */
 static gint drc_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	GtkAllocation allocation;
-
-	gtk_widget_get_allocation(widget, &allocation);
-
-	hid_gtk_wgeo.drc_width = allocation.width;
-	hid_gtk_wgeo.drc_height = allocation.height;
-	hid_gtk_wgeo_update();
-
+	wplc_config_event(widget, &hid_gtk_wgeo.drc_x, &hid_gtk_wgeo.drc_y, &hid_gtk_wgeo.drc_width, &hid_gtk_wgeo.drc_height);
 	return FALSE;
 }
 
@@ -777,9 +771,9 @@ void ghid_drc_window_show(gboolean raise)
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(drc_close_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
+	wplc_place(WPLC_DRC, drc_window);
+
 	gtk_widget_realize(drc_window);
-	if (conf_core.editor.auto_place)
-		gtk_window_move(GTK_WINDOW(drc_window), 10, 10);
 	gtk_widget_show_all(drc_window);
 }
 

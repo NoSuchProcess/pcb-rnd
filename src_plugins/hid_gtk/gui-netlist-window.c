@@ -41,6 +41,8 @@
 
 #include "global.h"
 
+#include "win_place.h"
+
 #include "create.h"
 #include "data.h"
 #include "draw.h"
@@ -620,13 +622,7 @@ LibraryEntryType *node_get_node_from_name(gchar * node_name, LibraryMenuType ** 
  */
 static gint netlist_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	GtkAllocation allocation;
-
-	gtk_widget_get_allocation(widget, &allocation);
-
-	hid_gtk_wgeo.netlist_height = allocation.height;
-	hid_gtk_wgeo_update();
-
+	wplc_config_event(widget, &hid_gtk_wgeo.netlist_x, &hid_gtk_wgeo.netlist_y, &hid_gtk_wgeo.netlist_width, &hid_gtk_wgeo.netlist_height);
 	return FALSE;
 }
 
@@ -765,11 +761,9 @@ void ghid_netlist_window_create(GHidPort * out)
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(netlist_close_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
+	wplc_place(WPLC_NETLIST, netlist_window);
 
 	gtk_widget_realize(netlist_window);
-	if (conf_core.editor.auto_place)
-		gtk_window_move(GTK_WINDOW(netlist_window), 10, 10);
-
 }
 
 void ghid_netlist_window_show(GHidPort * out, gboolean raise)

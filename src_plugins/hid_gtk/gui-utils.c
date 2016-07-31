@@ -37,6 +37,11 @@
 
 RCSID("$Id$");
 
+#warning TODO: get this compield in a separate .o
+
+#include "win_place.c"
+
+
 /* Not a gui function, but no better place to put it...
  */
 gboolean dup_string(gchar ** dst, const gchar * src)

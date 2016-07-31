@@ -22,36 +22,61 @@ typedef struct {
 			} auto_save_window_geometry;
 
 			const struct window_geometry {
+				CFT_INTEGER top_x;
+				CFT_INTEGER top_y;
 				CFT_INTEGER top_width;
 				CFT_INTEGER top_height;
+
+				CFT_INTEGER log_x;
+				CFT_INTEGER log_y;
 				CFT_INTEGER log_width;
 				CFT_INTEGER log_height;
+
+				CFT_INTEGER drc_x;
+				CFT_INTEGER drc_y;
 				CFT_INTEGER drc_width;
 				CFT_INTEGER drc_height;
+
+				CFT_INTEGER library_x;
+				CFT_INTEGER library_y;
 				CFT_INTEGER library_width;
 				CFT_INTEGER library_height;
-				CFT_INTEGER netlist_height;
+
+				CFT_INTEGER keyref_x;
+				CFT_INTEGER keyref_y;
 				CFT_INTEGER keyref_width;
 				CFT_INTEGER keyref_height;
+
+				CFT_INTEGER netlist_x;
+				CFT_INTEGER netlist_y;
+				CFT_INTEGER netlist_height;
+				CFT_INTEGER netlist_width;
+
+				CFT_INTEGER pinout_x;
+				CFT_INTEGER pinout_y;
+				CFT_INTEGER pinout_height;
+				CFT_INTEGER pinout_width;
 			} window_geometry;
 		} hid_gtk;
 	} plugins;
 } conf_hid_gtk_t;
 
+#define GHID_WGEO1(win, op, ...) \
+	op(win ## _x, __VA_ARGS__); \
+	op(win ## _y, __VA_ARGS__); \
+	op(win ## _width, __VA_ARGS__); \
+	op(win ## _height, __VA_ARGS__);
+
 /* Call macro op(field_name, ...) for each window geometry field */
 #define GHID_WGEO_ALL(op, ...) \
 do { \
-	op(top_width, __VA_ARGS__); \
-	op(top_height, __VA_ARGS__); \
-	op(log_width, __VA_ARGS__); \
-	op(log_height, __VA_ARGS__); \
-	op(drc_width, __VA_ARGS__); \
-	op(drc_height, __VA_ARGS__); \
-	op(library_width, __VA_ARGS__); \
-	op(library_height, __VA_ARGS__); \
-	op(netlist_height, __VA_ARGS__); \
-	op(keyref_width, __VA_ARGS__); \
-	op(keyref_height, __VA_ARGS__); \
+	GHID_WGEO1(top, op, __VA_ARGS__); \
+	GHID_WGEO1(log, op, __VA_ARGS__); \
+	GHID_WGEO1(drc, op, __VA_ARGS__); \
+	GHID_WGEO1(library, op, __VA_ARGS__); \
+	GHID_WGEO1(keyref, op, __VA_ARGS__); \
+	GHID_WGEO1(netlist, op, __VA_ARGS__); \
+	GHID_WGEO1(pinout, op, __VA_ARGS__); \
 } while(0)
 
 typedef struct window_geometry window_geometry_t;

@@ -31,7 +31,7 @@
 #include "config.h"
 
 #include "gui.h"
-
+#include "win_place.h"
 
 RCSID("$Id$");
 
@@ -303,13 +303,7 @@ static gchar *key_ref_text[] = {
 	 */
 static gint keyref_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	GtkAllocation allocation;
-
-	gtk_widget_get_allocation(widget, &allocation);
-	hid_gtk_wgeo.keyref_width = allocation.width;
-	hid_gtk_wgeo.keyref_height = allocation.height;
-	hid_gtk_wgeo_update();
-
+	wplc_config_event(widget, &hid_gtk_wgeo.keyref_x, &hid_gtk_wgeo.keyref_y, &hid_gtk_wgeo.keyref_width, &hid_gtk_wgeo.keyref_height);
 	return FALSE;
 }
 

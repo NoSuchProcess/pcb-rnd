@@ -97,6 +97,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "gui-icons-mode-buttons.data"
 #include "gui-icons-misc.data"
 #include "gui.h"
+#include "win_place.h"
 #include "hid_attrib.h"
 #include "hid_actions.h"
 #include "hid_flags.h"
@@ -160,19 +161,7 @@ static void v_adjustment_changed_cb(GtkAdjustment * adj, GhidGui * g)
 	 */
 static gint top_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, GHidPort * port)
 {
-	GtkAllocation allocation;
-	gboolean new_w, new_h;
-
-	gtk_widget_get_allocation(widget, &allocation);
-
-	new_w = (hid_gtk_wgeo.top_width != allocation.width);
-	new_h = (hid_gtk_wgeo.top_height != allocation.height);
-
-	hid_gtk_wgeo.top_width = allocation.width;
-	hid_gtk_wgeo.top_height = allocation.height;
-
-	if (new_w || new_h)
-		hid_gtk_wgeo_update();
+	wplc_config_event(widget, &hid_gtk_wgeo.top_x, &hid_gtk_wgeo.top_y, &hid_gtk_wgeo.top_width, &hid_gtk_wgeo.top_height);
 
 	return FALSE;
 }
@@ -1445,10 +1434,8 @@ void ghid_parse_arguments(int *argc, char ***argv)
 
 	window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
-	gtk_window_set_default_size(GTK_WINDOW(window), hid_gtk_wgeo.top_width, hid_gtk_wgeo.top_height);
 
-	if (conf_core.editor.auto_place)
-		gtk_window_move(GTK_WINDOW(window), 10, 10);
+	wplc_place(WPLC_TOP, window);
 
 	gtk_widget_show_all(gport->top_window);
 	ghidgui->creating = TRUE;
