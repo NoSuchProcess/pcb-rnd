@@ -429,6 +429,7 @@ int hook_generate()
 
 	print_sum_setting("/local/pcb/want_parsgen",   "Regenerating languages with bison & flex");
 	print_sum_setting("/local/pcb/want_nls",       "Internationalization with gettext");
+	print_sum_setting("/local/pcb/debug",          "Compilation for debugging");
 
 #undef plugin_def
 #undef plugin_header
