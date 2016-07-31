@@ -331,5 +331,8 @@ void conf_usage(char *prefix, void (*print)(const char *name, const char *help))
 /* Determine under which role a node is */
 conf_role_t conf_lookup_role(const lht_node_t *nd);
 
+/* Return the lihata node of a path in target, optionally creating it with the right type */
+lht_node_t *conf_lht_get_at(conf_role_t target, const char *path, int create);
+
 #endif
 
