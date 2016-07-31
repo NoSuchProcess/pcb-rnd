@@ -780,9 +780,16 @@ void NotifyMode(void)
 				Crosshair.AttachedLine.Point1.Y = Note.Y;
 				Crosshair.AttachedLine.Point2.X = Note.X;
 				Crosshair.AttachedLine.Point2.Y = Note.Y;
+
+
 				if (conf_core.editor.swap_start_direction) {
 					PCB->Clipping ^= 3;
 				}
+			}
+			if (conf_core.editor.orthogonal_moves) {
+				/* set the mark to the new starting point so ortho works as expected and we can draw a perpendicular line from here */
+				Marked.X = Note.X;
+				Marked.Y = Note.Y;
 			}
 			Draw();
 		}
