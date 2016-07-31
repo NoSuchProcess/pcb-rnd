@@ -1436,6 +1436,25 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 	return fail;
 }
 
+int conf_export_to_file(const char *fn, conf_role_t role, const char *conf_path)
+{
+	lht_node_t *at = conf_lht_get_at(role, conf_path, 0);
+	lht_err_t r;
+	FILE *f;
+
+	if (at == NULL)
+		return -1;
+
+	f = fopen(fn, "w");
+	if (f == NULL)
+		return -1;
+
+	r = lht_dom_export(at, f, "");
+	fclose(f);
+	return r;
+}
+
+
 conf_listitem_t *conf_list_first_str(conflist_t *list, const char **item_str, int *idx)
 {
 	conf_listitem_t *item_li;
