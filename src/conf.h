@@ -265,7 +265,6 @@ do { \
 				continue; \
 			resolve_path(*__in__, &__path__, 0); \
 			res = call; \
-			printf("  %s -> %d\n", __path__, res); \
 			free(__path__); \
 			if (res == 0) \
 				break; \
