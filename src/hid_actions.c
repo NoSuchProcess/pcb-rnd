@@ -17,6 +17,22 @@
 
 RCSID("$Id$");
 
+/* do not throw "unknown action" warning for these: they are known
+   actions, the GUI HID may register them, but nothing bad happens if
+   they are not registered or not handled by the GUI. */
+static const char *action_no_warn[] = {
+	"LayersChanged", "PointCursor", "LibraryChanged", "RouteStylesChanged",
+	NULL
+};
+static int action_legal_unknown(const char *name)
+{
+	const char **s;
+	for(s = action_no_warn; *s != NULL; s++)
+		if (strcmp(*s, name) == 0)
+			return 1;
+	return 0;
+}
+
 static htsp_t *all_actions = NULL;
 const HID_Action *current_action = NULL;
 
@@ -132,7 +148,8 @@ const HID_Action *hid_find_action(const char *name)
 	if (ca)
 		return ca->action;
 
-	printf("unknown action `%s'\n", name);
+	if (!action_legal_unknown(name))
+		Message("unknown action `%s'\n", name);
 	return 0;
 }
 
@@ -252,6 +269,8 @@ int hid_actionv(const char *name, int argc, char **argv)
 	a = hid_find_action(name);
 	if (!a) {
 		int i;
+		if (action_legal_unknown(name))
+			return 1;
 		Message("no action %s(", name);
 		for (i = 0; i < argc; i++)
 			Message("%s%s", i ? ", " : "", argv[i]);
