@@ -1430,7 +1430,7 @@ void config_layers_save(GtkButton *widget, save_ctx_t *ctx)
 
 static void config_layers_tab_create(GtkWidget * tab_vbox)
 {
-	GtkWidget *tabs, *vbox, *vbox1, *button, *text, *sep, *content_vbox;
+	GtkWidget *tabs, *vbox, *vbox1, *button, *text, *content_vbox;
 	GtkWidget *hbox, *arrow;
 	gint i;
 
