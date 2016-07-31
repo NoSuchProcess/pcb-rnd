@@ -920,6 +920,12 @@ void NotifyMode(void)
 					/* do update of position; use the 'LINE_MODE' mechanism */
 					NotifyLine();
 
+					if (conf_core.editor.orthogonal_moves) {
+						/* set the mark to the new starting point so ortho works */
+						Marked.X = Note.X;
+						Marked.Y = Note.Y;
+					}
+
 					/* check if this is the last point of a polygon */
 					if (n >= 3 && points->X == Crosshair.AttachedLine.Point2.X && points->Y == Crosshair.AttachedLine.Point2.Y) {
 						/* Create POLYAREAs from the original polygon
