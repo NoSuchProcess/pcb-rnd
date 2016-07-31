@@ -590,6 +590,9 @@ static void config_window_toggle_cb(GtkToggleButton * button, gpointer data)
 	gboolean active = gtk_toggle_button_get_active(button);
 	const char *path = NULL, *ctx = data;
 
+	if (ctx == NULL)
+		return;
+
 	if (*ctx == '*') {
 		switch(ctx[1]) {
 			case 'd': path = "plugins/hid_gtk/auto_save_window_geometry/to_design"; break;
@@ -608,9 +611,12 @@ static void config_window_row(GtkWidget *parent, const char *desc, int load, con
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
-	lab = gtk_label_new(desc);
+	lab = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), lab, TRUE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 0.5);
+	gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 1.0);
+
+	lab = gtk_label_new(desc);
+	gtk_box_pack_start(GTK_BOX(hbox), lab, FALSE, FALSE, 4);
 
 	button = gtk_button_new_with_label(_("now"));
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
@@ -621,11 +627,12 @@ static void config_window_row(GtkWidget *parent, const char *desc, int load, con
 		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	}
 	else {
-		if (wgeo_save_str != NULL) {
-			ghid_check_button_connected(hbox, NULL, chk,
+		GtkWidget *btn;
+		ghid_check_button_connected(hbox, &btn, chk,
 															TRUE, FALSE, FALSE, 2,
 															config_window_toggle_cb, (void *)wgeo_save_str, _("every time pcb-rnd exits"));
-		}
+		if (wgeo_save_str == NULL)
+			gtk_widget_set_sensitive(btn, FALSE);
 	}
 }
 
@@ -643,7 +650,6 @@ static void config_window_tab_create(GtkWidget *tab_vbox)
 											 _("<b>Save window geometry...</b>"));
 	gtk_box_pack_start(GTK_BOX(config_window_vbox), lab, FALSE, FALSE, 4);
 	gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 0.5);
-
 
 	config_window_row(config_window_vbox, "... in the design (.pcb) file", 0, "*d", conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_design);
 	config_window_row(config_window_vbox, "... in the project file", 0, "*p", conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_project);
