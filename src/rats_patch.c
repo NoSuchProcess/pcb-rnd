@@ -170,25 +170,29 @@ static void netlist_copy(LibraryTypePtr dst, LibraryTypePtr src)
 {
 	int n, p;
 	dst->MenuMax = dst->MenuN = src->MenuN;
-	dst->Menu = calloc(sizeof(LibraryMenuType), dst->MenuN);
-	for (n = 0; n < src->MenuN; n++) {
-		LibraryMenuTypePtr smenu = &src->Menu[n];
-		LibraryMenuTypePtr dmenu = &dst->Menu[n];
+	if (src->MenuN != 0) {
+		dst->Menu = calloc(sizeof(LibraryMenuType), dst->MenuN);
+		for (n = 0; n < src->MenuN; n++) {
+			LibraryMenuTypePtr smenu = &src->Menu[n];
+			LibraryMenuTypePtr dmenu = &dst->Menu[n];
 /*		fprintf(stderr, "Net %d name='%s': ", n, smenu->Name+2);*/
-		dmenu->Name = strdup(smenu->Name);
-		dmenu->EntryMax = dmenu->EntryN = smenu->EntryN;
-		dmenu->Entry = calloc(sizeof(LibraryEntryType), dmenu->EntryN);
-		dmenu->flag = smenu->flag;
-		dmenu->internal = smenu->internal;
-		for (p = 0; p < smenu->EntryN; p++) {
+			dmenu->Name = strdup(smenu->Name);
+			dmenu->EntryMax = dmenu->EntryN = smenu->EntryN;
+			dmenu->Entry = calloc(sizeof(LibraryEntryType), dmenu->EntryN);
+			dmenu->flag = smenu->flag;
+			dmenu->internal = smenu->internal;
+			for (p = 0; p < smenu->EntryN; p++) {
 			LibraryEntryTypePtr sentry = &smenu->Entry[p];
-			LibraryEntryTypePtr dentry = &dmenu->Entry[p];
-			dentry->ListEntry = strdup(sentry->ListEntry);
-			dentry->ListEntry_dontfree = 0;
+				LibraryEntryTypePtr dentry = &dmenu->Entry[p];
+				dentry->ListEntry = strdup(sentry->ListEntry);
+				dentry->ListEntry_dontfree = 0;
 /*			fprintf (stderr, " '%s'/%p", dentry->ListEntry, dentry->ListEntry);*/
-		}
+			}
 /*		fprintf(stderr, "\n");*/
+		}
 	}
+	else
+		dst->Menu = NULL;
 }
 
 
