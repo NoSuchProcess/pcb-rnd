@@ -857,7 +857,7 @@ void ghid_pack_mode_buttons(void)
 	}
 }
 
-static void make_mode_buttons_and_toolbar(GtkWidget ** mode_frame, GtkWidget ** mode_toolbar)
+static void make_mode_buttons_and_toolbar(GtkWidget ** mode_frame, GtkWidget ** mode_toolbar, GtkWidget ** mode_toolbar_vbox)
 {
 	GtkToolItem *tool_item;
 	GtkWidget *vbox, *hbox = NULL;
@@ -923,9 +923,8 @@ static void make_mode_buttons_and_toolbar(GtkWidget ** mode_frame, GtkWidget ** 
 		mb->toolbar_button_cb_id = g_signal_connect(mb->toolbar_button, "toggled", G_CALLBACK(mode_toolbar_button_toggled_cb), mb);
 	}
 
-	vbox = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), *mode_toolbar, FALSE, FALSE, 0);
-	*mode_toolbar = vbox;
+	*mode_toolbar_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(*mode_toolbar_vbox), *mode_toolbar, FALSE, FALSE, 0);
 
 	/* Pack an empty, wide hbox right below the toolbar and make it as wide
 	   as the calculated width of the toolbar with some tuning. Toolbar icons
@@ -935,7 +934,7 @@ static void make_mode_buttons_and_toolbar(GtkWidget ** mode_frame, GtkWidget ** 
 	pad_hbox = gtk_hbox_new(FALSE, 0);
 	pad_vbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(pad_hbox), pad_vbox, FALSE, FALSE, tb_width * 3 / 4);
-	gtk_box_pack_start(GTK_BOX(*mode_toolbar), pad_hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(*mode_toolbar_vbox), pad_hbox, FALSE, FALSE, 0);
 }
 
 
@@ -1084,8 +1083,8 @@ static void ghid_build_pcb_top_window(void)
 	ghidgui->menu_bar = ghid_load_menus();
 	gtk_box_pack_start(GTK_BOX(ghidgui->menubar_toolbar_vbox), ghidgui->menu_bar, FALSE, FALSE, 0);
 
-	make_mode_buttons_and_toolbar(&ghidgui->mode_buttons_frame, &ghidgui->mode_toolbar);
-	gtk_box_pack_start(GTK_BOX(ghidgui->menubar_toolbar_vbox), ghidgui->mode_toolbar, FALSE, FALSE, 0);
+	make_mode_buttons_and_toolbar(&ghidgui->mode_buttons_frame, &ghidgui->mode_toolbar, &ghidgui->mode_toolbar_vbox);
+	gtk_box_pack_start(GTK_BOX(ghidgui->menubar_toolbar_vbox), ghidgui->mode_toolbar_vbox, FALSE, FALSE, 0);
 
 	ghidgui->position_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(ghidgui->top_hbox), ghidgui->position_hbox, FALSE, FALSE, 0);

@@ -104,6 +104,7 @@ typedef struct {
 	GtkWidget *grid_units_button;
 	GtkWidget *menu_bar, *layer_selector, *route_style_selector;
 	GtkWidget *mode_toolbar;
+	GtkWidget *mode_toolbar_vbox;
 	GtkWidget *vbox_middle;
 
 	GtkWidget *info_bar;
