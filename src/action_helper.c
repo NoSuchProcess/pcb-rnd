@@ -875,6 +875,13 @@ void NotifyMode(void)
 				Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X;
 				Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y;
 			}
+
+			if (conf_core.editor.orthogonal_moves) {
+				/* set the mark to the new starting point so ortho works */
+				Marked.X = Note.X;
+				Marked.Y = Note.Y;
+			}
+
 			break;
 		}
 
@@ -958,7 +965,6 @@ void NotifyMode(void)
 					break;
 				}
 			}
-
 			break;
 		}
 
