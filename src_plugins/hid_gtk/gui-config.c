@@ -112,7 +112,19 @@ void ghid_wgeo_save(int save_to_file, int skip_user)
 
 static void wgeo_save_direct(GtkButton *widget, const char *ctx)
 {
-	if (*ctx == '*') {
+	if (ctx == NULL) {
+		GtkWidget *fcd = gtk_file_chooser_dialog_new("Save window geometry to...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+		if (gtk_dialog_run(GTK_DIALOG(fcd)) == GTK_RESPONSE_ACCEPT) {
+			char *fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fcd));
+			conf_reset(CFR_file, "<wgeo_save_direct>");
+			GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_file);
+			conf_export_to_file(fn, CFR_file, "/");
+			gtk_widget_destroy(fcd);
+			g_free(fn);
+			conf_reset(CFR_file, "<internal>");
+		}
+	}
+	else if (*ctx == '*') {
 		switch(ctx[1]) {
 			case 'd':
 				GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_DESIGN);
@@ -127,9 +139,6 @@ static void wgeo_save_direct(GtkButton *widget, const char *ctx)
 				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_USER, NULL);
 				break;
 		}
-	}
-	else {
-#warning TODO: save to the file name specified in ctx
 	}
 }
 
@@ -620,9 +629,11 @@ static void config_window_row(GtkWidget *parent, const char *desc, int load, con
 		gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	}
 	else {
-		ghid_check_button_connected(hbox, NULL, chk,
+		if (wgeo_save_str != NULL) {
+			ghid_check_button_connected(hbox, NULL, chk,
 															TRUE, FALSE, FALSE, 2,
 															config_window_toggle_cb, (void *)wgeo_save_str, _("every time pcb-rnd exits"));
+		}
 	}
 }
 
@@ -645,8 +656,7 @@ static void config_window_tab_create(GtkWidget *tab_vbox)
 	config_window_row(config_window_vbox, "... in the design (.pcb) file", 0, "*d", conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_design);
 	config_window_row(config_window_vbox, "... in the project file", 0, "*p", conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_project);
 	config_window_row(config_window_vbox, "... in the central user configuration", 0, "*u", conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_user);
-#warning TODO
-/*	config_window_row(config_window_vbox, "... in a custom file", 1);*/
+	config_window_row(config_window_vbox, "... in a custom file", 0, NULL, 0);
 
 	lab = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(lab), TRUE);
