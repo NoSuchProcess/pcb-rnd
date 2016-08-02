@@ -36,7 +36,7 @@
  */
 
 /* This file has been copied from gschem sources. It seems gtk's bondage
-and discipline menu item simply cna not handle arbitrary accel label text
+and discipline menu item simply can not handle arbitrary accel label text
 and the default accel label widget works only if gtk takes over handling
 accel key input. In pbc-rnd there's a central input key handling and support
 for multi-key sequences. gschem had the same problem because of multi-key,
