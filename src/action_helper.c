@@ -1058,6 +1058,7 @@ void NotifyMode(void)
 		/* both are almost the same */
 	case COPY_MODE:
 	case MOVE_MODE:
+pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.AttachedObject.State);
 		switch (Crosshair.AttachedObject.State) {
 			/* first notify, lookup object */
 		case STATE_FIRST:
@@ -1101,6 +1102,7 @@ void NotifyMode(void)
 			Crosshair.AttachedObject.State = STATE_FIRST;
 			break;
 		}
+		pcb_trace("}\n");
 		break;
 
 		/* insert a point into a polygon/line/... */

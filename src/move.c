@@ -99,6 +99,7 @@ MoveLineToLayer, MoveTextToLayer, MovePolygonToLayer, NULL, NULL, NULL, NULL, NU
  */
 void MoveElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord DX, Coord DY)
 {
+	pcb_trace("MoveElementLowLevel() %p {\n", Element);
 	if (Data)
 		r_delete_entry(Data->element_tree, (BoxType *) Element);
 	ELEMENTLINE_LOOP(Element);
@@ -151,6 +152,7 @@ void MoveElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord DX, Coo
 	MOVE(Element->MarkX, Element->MarkY, DX, DY);
 	if (Data)
 		r_insert_entry(Data->element_tree, (BoxType *) Element, 0);
+	pcb_trace("}\n", Element);
 }
 
 /* ----------------------------------------------------------------------
@@ -193,7 +195,10 @@ static void *MoveElement(ElementTypePtr Element)
 {
 	bool didDraw = false;
 
+	pcb_trace("MoveElement() enter %p {\n", Element);
+
 	if (PCB->ElementOn && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
+		pcb_trace(" ME b1\n");
 		EraseElement(Element);
 		MoveElementLowLevel(PCB->Data, Element, DeltaX, DeltaY);
 		DrawElementName(Element);
@@ -201,16 +206,19 @@ static void *MoveElement(ElementTypePtr Element)
 		didDraw = true;
 	}
 	else {
+		pcb_trace(" ME b2\n");
 		if (PCB->PinOn)
 			EraseElementPinsAndPads(Element);
 		MoveElementLowLevel(PCB->Data, Element, DeltaX, DeltaY);
 	}
 	if (PCB->PinOn) {
+		pcb_trace(" ME b3\n");
 		DrawElementPinsAndPads(Element);
 		didDraw = true;
 	}
 	if (didDraw)
 		Draw();
+	pcb_trace(" ME end %p\n}\n", Element);
 	return (Element);
 }
 

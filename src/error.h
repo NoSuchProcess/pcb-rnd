@@ -43,5 +43,6 @@ void PopenErrorMessage(const char *);
 void OpendirErrorMessage(const char *);
 void ChdirErrorMessage(const char *);
 void CatchSignal(int);
+void pcb_trace(const char *Format, ...);
 
 #endif

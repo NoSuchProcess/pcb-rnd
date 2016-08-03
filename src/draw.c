@@ -1540,19 +1540,23 @@ void ErasePolygon(PolygonTypePtr Polygon)
  */
 void EraseElement(ElementTypePtr Element)
 {
+	pcb_trace("EraseElement() enter %p {\n", Element);
 	ELEMENTLINE_LOOP(Element);
 	{
+		pcb_trace("line\n");
 		EraseLine(line);
 	}
 	END_LOOP;
 	ARC_LOOP(Element);
 	{
+		pcb_trace("arc\n");
 		EraseArc(arc);
 	}
 	END_LOOP;
 	EraseElementName(Element);
 	EraseElementPinsAndPads(Element);
 	EraseFlags(&Element->Flags);
+	pcb_trace("}\n");
 }
 
 /* ---------------------------------------------------------------------------
@@ -1577,9 +1581,13 @@ void EraseElementPinsAndPads(ElementTypePtr Element)
  */
 void EraseElementName(ElementTypePtr Element)
 {
-	if (TEST_FLAG(HIDENAMEFLAG, Element))
+	pcb_trace("EraseElementName enter %p {\n", Element);
+	if (TEST_FLAG(HIDENAMEFLAG, Element)) {
+		pcb_trace("EE nope\n}\n", Element);
 		return;
+	}
 	DrawText(NULL, &ELEMENT_TEXT(PCB, Element));
+	pcb_trace("}\n", Element);
 }
 
 

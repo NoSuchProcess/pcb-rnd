@@ -98,6 +98,16 @@ void Message(const char *Format, ...)
 #endif
 }
 
+void pcb_trace(const char *Format, ...)
+{
+#ifndef NDEBUG
+	va_list args;
+	va_start(args, Format);
+	vfprintf(stderr, Format, args);
+	va_end(args);
+#endif
+}
+
 
 /* ---------------------------------------------------------------------------
  * print standard 'open error'
