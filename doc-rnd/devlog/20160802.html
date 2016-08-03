@@ -1,0 +1,25 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> Languages and libs </H2>
+
+Reflecting to (but not joining) the annual geda-user language/libs debate,
+the standpoint of pcb-rnd (and later cschem) on this:
+<ul>
+	<li> the core part of the code is in C - not in C++, C#, cobol, ada, haskell, etc.
+	<li> external dependencies are minimized, especially core shouldn't depend on too many external libs and tools (e.g. core shouldn't depend on glib)
+	<li> core doesn't know anyhting about [turing complete] scripting languages, user scripting is provided by a plugin
+	<li> the scripting plugin does not attempt restrict the user to My Favorite Language - it rather supports 10+ different langauges, from ruby through awk through python to lua; it even supports an older version of guile; all languages are options.
+</ul>
+The above set of rules is crafted so that compiling core funcitonality is easy
+and excess external libs (gtk, glib) are needed only for optional features
+(such as the gtk hid in pcb-rnd). However, it's equally important not to
+restrict users in optional extras that may require more dependencies. This is
+solved by minimizing core and moving functionality behind APIs in a plugin
+system.
+<p>
+<b>This policy is very unlikely to change in the future</b> - if you believe
+the core should be rewritten in your favorite language, please fork the
+project or start a new one.
+
