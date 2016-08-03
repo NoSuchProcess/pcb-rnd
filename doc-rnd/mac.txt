@@ -1,0 +1,11 @@
+State on MacOSX
+~~~~~~~~~~~~~~~
+
+Should compile and run out-of-the-box.
+
+Known issues:
+  - application window opens behind other windows; it seems to be a gtk bug
+    that can not be worked around from the application
+  - element sometimes duplicated on move
+  - slow rendering and error messages about invalid numerics on the console
+
