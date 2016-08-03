@@ -9,10 +9,10 @@ the policy of pcb-rnd (and later cschem) on this:
 <ul>
 	<li> the core part of the code is in C - not in C++, C#, cobol, ada, haskell, etc.
 	<li> external dependencies are minimized, especially core shouldn't depend on too many external libs and tools (e.g. core shouldn't depend on glib)
-	<li> core doesn't know anyhting about [turing complete] scripting languages, user scripting is provided by a plugin
-	<li> the scripting plugin does not attempt to restrict the user to My Favorite Language - it rather supports 10+ different langauges, from ruby through awk through python to lua; it even supports an older version of guile; all languages are options.
+	<li> core doesn't know anything about [turing complete] scripting languages, user scripting is provided by a plugin
+	<li> the scripting plugin does not attempt to restrict the user to My Favorite Language - it rather supports 10+ different languages, from ruby through awk through python to lua; it even supports an older version of guile; all languages are options.
 </ul>
-The above set of rules is crafted so that compiling core funcitonality is easy
+The above set of rules is crafted so that compiling core functionality is easy
 and excess external libs (gtk, glib) are needed only for optional features
 (such as the gtk hid in pcb-rnd). However, it's equally important not to
 restrict users in optional extras that may require more dependencies. This is
