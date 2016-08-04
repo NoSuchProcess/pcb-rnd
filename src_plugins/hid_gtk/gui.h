@@ -456,27 +456,27 @@ extern GdkPixmap *XC_clock_source, *XC_clock_mask;
 /* Px converts view->pcb, Vx converts pcb->view */
 static inline int Vx(Coord x)
 {
-	int rv;
+	double rv;
 	if (conf_core.editor.view.flip_x)
 		rv = (PCB->MaxWidth - x - gport->view.x0) / gport->view.coord_per_px + 0.5;
 	else
 		rv = (x - gport->view.x0) / gport->view.coord_per_px + 0.5;
-	return rv;
+	return round(rv);
 }
 
 static inline int Vy(Coord y)
 {
-	int rv;
+	double rv;
 	if (conf_core.editor.view.flip_y)
 		rv = (PCB->MaxHeight - y - gport->view.y0) / gport->view.coord_per_px + 0.5;
 	else
 		rv = (y - gport->view.y0) / gport->view.coord_per_px + 0.5;
-	return rv;
+	return round(rv);
 }
 
 static inline int Vz(Coord z)
 {
-	return z / gport->view.coord_per_px + 0.5;
+	return round((double)z / gport->view.coord_per_px + 0.5);
 }
 
 static inline Coord Px(int x)
