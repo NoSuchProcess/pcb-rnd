@@ -229,7 +229,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 			if (menu->Style) {
 				STYLE_LOOP(PCB);
 				{
-					if (style->name && !NSTRCMP(style->name, menu->Style)) {
+					if (!NSTRCMP(style->name, menu->Style)) {
 						net->Style = style;
 						break;
 					}
