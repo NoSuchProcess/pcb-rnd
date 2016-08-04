@@ -456,7 +456,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 			break;
 		}
 	case NO_TYPE:
-		report[0] = '\0';
+		report = NULL;
 		break;
 
 	default:
@@ -468,9 +468,12 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 		Message(_("Nothing found to report on\n"));
 		return 1;
 	}
-	/* create dialog box */
-	gui->report_dialog("Report", report);
-	free(report);
+
+	if (report != NULL) {
+		/* create dialog box */
+		gui->report_dialog("Report", report);
+		free(report);
+	}
 	return 0;
 }
 
