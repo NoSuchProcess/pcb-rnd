@@ -1763,7 +1763,7 @@ int ElementOrientation(ElementType * e)
 	else
 		return 0;
 
-	if (labs(dx) > labs(dy))
+	if (coord_abs(dx) > coord_abs(dy))
 		return dx > 0 ? 0 : 2;
 	return dy > 0 ? 3 : 1;
 }

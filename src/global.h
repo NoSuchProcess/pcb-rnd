@@ -558,4 +558,12 @@ struct rats_patch_line_s {
 #define AUSAGE(x) Message ("Usage:\n%s\n", (x##_syntax))
 #define AFAIL(x) { Message ("Syntax error.  Usage:\n%s\n", (x##_syntax)); return 1; }
 
+#if COORD_MAX == LONG_MAX
+#define coord_abs labs
+#elif COORD_MAX == INT_MAX
+#define coord_abs abs
+#else
+#error Can not find abs() for coord type.
+#endif
+
 #endif /* PCB_GLOBAL_H  */
