@@ -2212,7 +2212,7 @@ void *ChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
 	void *result;
 	/* setup identifier */
 	NewName = Name;
-	if ((result = ObjectOperation(&ChangeNameFunctions, Type, Ptr1, Ptr2, Ptr3)));
+	result = ObjectOperation(&ChangeNameFunctions, Type, Ptr1, Ptr2, Ptr3);
 	Draw();
 	return (result);
 }
@@ -2229,7 +2229,7 @@ void *ChangeObjectPinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Nam
 	void *result;
 	/* setup identifier */
 	NewName = Name;
-	if ((result = ObjectOperation(&ChangePinnumFunctions, Type, Ptr1, Ptr2, Ptr3)));
+	result = ObjectOperation(&ChangePinnumFunctions, Type, Ptr1, Ptr2, Ptr3);
 	Draw();
 	return (result);
 }
