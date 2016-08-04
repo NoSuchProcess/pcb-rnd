@@ -20,6 +20,7 @@
  *
  */
 
+#include <sys/stat.h>
 #include <assert.h>
 #include <genht/hash.h>
 #include <liblihata/tree.h>
