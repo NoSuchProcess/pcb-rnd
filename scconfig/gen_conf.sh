@@ -97,7 +97,7 @@ awk -v "docdir=$1" '
 			doc_head(fn, path_tmp)
 			type2 = tolower(type)
 			sub("^cfn_", "", type2)
-			
+
 			print "<tr><td>", name, "<td><a href=\"" type ".html\">", type2, "</a><td>", flags, "<td>", desc > fn
 		}
 	}

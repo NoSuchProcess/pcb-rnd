@@ -36,7 +36,7 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 
 static void help1(void)
 {
-	printf("./configure: configure pcn-rnd.\n");
+	printf("./configure: configure pcb-rnd.\n");
 	printf("\n");
 	printf("Usage: ./configure [options]\n");
 	printf("\n");
@@ -53,7 +53,7 @@ static void help2(void)
 }
 
 /* Runs when a custom command line argument is found
- returns true if no furhter argument processing should be done */
+ returns true if no further argument processing should be done */
 int hook_custom_arg(const char *key, const char *value)
 {
 	if (strcmp(key, "prefix") == 0) {
@@ -157,7 +157,7 @@ int hook_detect_target()
 	if (want_stroke) {
 		require("libs/gui/libstroke/presents", 0, 0);
 		if (!istrue(get("libs/gui/libstroke/presents"))) {
-			report_repeat("WARNING: Since there's no libstroke found, disabling the stroke plugin...\n");	
+			report_repeat("WARNING: Since there's no libstroke found, disabling the stroke plugin...\n");
 			hook_custom_arg("disable-stroke", NULL);
 		}
 	}
@@ -165,7 +165,7 @@ int hook_detect_target()
 	if (want_gtk) {
 		require("libs/gui/gtk2/presents", 0, 0);
 		if (!istrue(get("libs/gui/gtk2/presents"))) {
-			report_repeat("WARNING: Since there's no libgtk2 found, disabling the gtk hid...\n");	
+			report_repeat("WARNING: Since there's no libgtk2 found, disabling the gtk hid...\n");
 			hook_custom_arg("disable-hid_gtk", NULL);
 		}
 	}
@@ -177,7 +177,7 @@ int hook_detect_target()
 			require("libs/gui/xrender/presents", 0, 0);
 		}
 		else {
-			report_repeat("WARNING: Since there's no lesstif2 found, disabling the lesstif HID and xinerama and xrender...\n");	
+			report_repeat("WARNING: Since there's no lesstif2 found, disabling the lesstif HID and xinerama and xrender...\n");
 			hook_custom_arg("disable-xinerama", NULL);
 			hook_custom_arg("disable-xrender", NULL);
 			hook_custom_arg("disable-hid_lesstif", NULL);
@@ -229,7 +229,7 @@ int hook_detect_target()
 	if (want_gd) {
 		require("libs/gui/gd/presents", 0, 0);
 		if (!istrue(get("libs/gui/gd/presents"))) {
-			report_repeat("WARNING: Since there's no libgd, disabling gd based exportes (png, nelma, gcode)...\n");
+			report_repeat("WARNING: Since there's no libgd, disabling gd based exports (png, nelma, gcode)...\n");
 			hook_custom_arg("disable-gd-gif", NULL);
 			hook_custom_arg("disable-gd-png", NULL);
 			hook_custom_arg("disable-gd-jpg", NULL);

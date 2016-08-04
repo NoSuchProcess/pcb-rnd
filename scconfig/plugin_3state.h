@@ -1,7 +1,7 @@
 /* 3-state plugin system; possible states of each plugin, stored in
    /local/pcb/PLUGIN_NAME/controls:
     "disable" = do not compile it at all
-    "buildin" = enable, static link into the executabe
+    "buildin" = enable, static link into the executable
     "plugin"  = enable, make it a dynamic link library (runtime load plugin)
 */
 
