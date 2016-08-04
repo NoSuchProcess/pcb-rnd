@@ -1306,8 +1306,8 @@ void ClosePolygon(void)
 		if (!conf_core.editor.all_direction_lines) {
 			Coord dx, dy;
 
-			dx = abs(Crosshair.AttachedPolygon.Points[n - 1].X - Crosshair.AttachedPolygon.Points[0].X);
-			dy = abs(Crosshair.AttachedPolygon.Points[n - 1].Y - Crosshair.AttachedPolygon.Points[0].Y);
+			dx = labs(Crosshair.AttachedPolygon.Points[n - 1].X - Crosshair.AttachedPolygon.Points[0].X);
+			dy = labs(Crosshair.AttachedPolygon.Points[n - 1].Y - Crosshair.AttachedPolygon.Points[0].Y);
 			if (!(dx == 0 || dy == 0 || dx == dy)) {
 				Message(_("Cannot close polygon because 45 degree lines are requested.\n"));
 				return;

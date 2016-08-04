@@ -423,11 +423,11 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 			if (lastbox != NULL &&
 					((lastbox->X1 == box->X1 &&
 						lastbox->X2 == box->X2 &&
-						MIN(abs(lastbox->Y1 - box->Y2),
-								abs(box->Y1 - lastbox->Y2)) <
+						MIN(labs(lastbox->Y1 - box->Y2),
+								labs(box->Y1 - lastbox->Y2)) <
 						clearance) || (lastbox->Y1 == box->Y1
 													 && lastbox->Y2 == box->Y2
-													 && MIN(abs(lastbox->X1 - box->X2), abs(box->X1 - lastbox->X2)) < clearance))) {
+													 && MIN(labs(lastbox->X1 - box->X2), labs(box->X1 - lastbox->X2)) < clearance))) {
 				EXPANDRECT(lastbox, box);
 				otherside->BoxN--;
 			}

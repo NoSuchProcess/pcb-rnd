@@ -538,7 +538,7 @@ static double XYtoNetLength(Coord x, Coord y, int *found)
 		if (TEST_FLAG(FOUNDFLAG, arc)) {
 			double l;
 			/* FIXME: we assume width==height here */
-			l = M_PI * 2 * arc->Width * abs(arc->Delta) / 360.0;
+			l = M_PI * 2 * arc->Width * fabs(arc->Delta) / 360.0;
 			length += l;
 			*found = 1;
 		}

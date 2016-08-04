@@ -112,9 +112,9 @@ static int rubber_callback(const BoxType * b, void *cl)
 				 * circle to the corners of the rectangle since the
 				 * closest part of the rectangular region is the corner.
 				 */
-				x = MIN(abs(i->box.X1 - line->Point1.X), abs(i->box.X2 - line->Point1.X));
+				x = MIN(labs(i->box.X1 - line->Point1.X), labs(i->box.X2 - line->Point1.X));
 				x *= x;
-				y = MIN(abs(i->box.Y1 - line->Point1.Y), abs(i->box.Y2 - line->Point1.Y));
+				y = MIN(labs(i->box.Y1 - line->Point1.Y), labs(i->box.Y2 - line->Point1.Y));
 				y *= y;
 				x = x + y - (t * t);
 
@@ -133,9 +133,9 @@ static int rubber_callback(const BoxType * b, void *cl)
 				touches = 1;
 			}
 			else {
-				x = MIN(abs(i->box.X1 - line->Point2.X), abs(i->box.X2 - line->Point2.X));
+				x = MIN(labs(i->box.X1 - line->Point2.X), labs(i->box.X2 - line->Point2.X));
 				x *= x;
-				y = MIN(abs(i->box.Y1 - line->Point2.Y), abs(i->box.Y2 - line->Point2.Y));
+				y = MIN(labs(i->box.Y1 - line->Point2.Y), labs(i->box.Y2 - line->Point2.Y));
 				y *= y;
 				x = x + y - (t * t);
 

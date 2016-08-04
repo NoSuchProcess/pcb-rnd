@@ -1254,11 +1254,11 @@ bool TargetPoint(CheapPointType * nextpoint, const routebox_t * target)
 		return true;
 	}
 	else if (target->type == PAD) {
-		if (abs(target->parent.pad->Point1.X - nextpoint->X) < abs(target->parent.pad->Point2.X - nextpoint->X))
+		if (labs(target->parent.pad->Point1.X - nextpoint->X) < labs(target->parent.pad->Point2.X - nextpoint->X))
 			nextpoint->X = target->parent.pad->Point1.X;
 		else
 			nextpoint->X = target->parent.pad->Point2.X;
-		if (abs(target->parent.pad->Point1.Y - nextpoint->Y) < abs(target->parent.pad->Point2.Y - nextpoint->Y))
+		if (labs(target->parent.pad->Point1.Y - nextpoint->Y) < labs(target->parent.pad->Point2.Y - nextpoint->Y))
 			nextpoint->Y = target->parent.pad->Point1.Y;
 		else
 			nextpoint->Y = target->parent.pad->Point2.Y;

@@ -1021,7 +1021,7 @@ static void gerber_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord hei
 		step = acos((double) minr / (double) max) * 180.0 / M_PI;
 		if (step > 5)
 			step = 5;
-		nsteps = abs(delta_angle) / step + 1;
+		nsteps = fabs(delta_angle) / step + 1;
 		step = (double) delta_angle / nsteps;
 
 		x0 = arcStartX;

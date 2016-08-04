@@ -111,8 +111,8 @@ void FortyFiveLine(AttachedLineTypePtr Line)
 	if (dx < 0)
 		direction += 4;
 
-	dx = abs(dx);
-	dy = abs(dy);
+	dx = labs(dx);
+	dy = labs(dy);
 	min = MIN(dx, dy);
 
 	/* now set up the second pair of coordinates */
@@ -179,23 +179,23 @@ void AdjustTwoLine(bool way)
 	dx = Crosshair.X - line->Point1.X;
 	dy = Crosshair.Y - line->Point1.Y;
 	if (!way) {
-		if (abs(dx) > abs(dy)) {
-			line->Point2.X = Crosshair.X - SGN(dx) * abs(dy);
+		if (labs(dx) > labs(dy)) {
+			line->Point2.X = Crosshair.X - SGN(dx) * labs(dy);
 			line->Point2.Y = line->Point1.Y;
 		}
 		else {
 			line->Point2.X = line->Point1.X;
-			line->Point2.Y = Crosshair.Y - SGN(dy) * abs(dx);
+			line->Point2.Y = Crosshair.Y - SGN(dy) * labs(dx);
 		}
 	}
 	else {
-		if (abs(dx) > abs(dy)) {
-			line->Point2.X = line->Point1.X + SGN(dx) * abs(dy);
+		if (labs(dx) > labs(dy)) {
+			line->Point2.X = line->Point1.X + SGN(dx) * labs(dy);
 			line->Point2.Y = Crosshair.Y;
 		}
 		else {
 			line->Point2.X = Crosshair.X;
-			line->Point2.Y = line->Point1.Y + SGN(dy) * abs(dx);;
+			line->Point2.Y = line->Point1.Y + SGN(dy) * labs(dx);;
 		}
 	}
 }
@@ -278,13 +278,13 @@ static double drc_lines(PointTypePtr end, bool way)
 	line1.Point1.Y = Crosshair.AttachedLine.Point1.Y;
 	dy = end->Y - line1.Point1.Y;
 	dx = end->X - line1.Point1.X;
-	if (abs(dx) > abs(dy)) {
+	if (labs(dx) > labs(dy)) {
 		x_is_long = true;
-		length = abs(dx);
+		length = labs(dx);
 	}
 	else {
 		x_is_long = false;
-		length = abs(dy);
+		length = labs(dy);
 	}
 	group = GetGroupOfLayer(INDEXOFCURRENT);
 	comp = max_group + 10;				/* this out-of-range group might save a call */
@@ -304,12 +304,12 @@ static double drc_lines(PointTypePtr end, bool way)
 		if (x_is_long) {
 			dx = SGN(dx) * length;
 			dy = end->Y - line1.Point1.Y;
-			length2 = abs(dy);
+			length2 = labs(dy);
 		}
 		else {
 			dy = SGN(dy) * length;
 			dx = end->X - line1.Point1.X;
-			length2 = abs(dx);
+			length2 = labs(dx);
 		}
 		temp2 = length2;
 		f2 = 1.0;
@@ -322,24 +322,24 @@ static double drc_lines(PointTypePtr end, bool way)
 			else
 				dx = SGN(dx) * length2;
 			two_lines = true;
-			if (abs(dx) > abs(dy) && x_is_long) {
-				line1.Point2.X = line1.Point1.X + (way ? SGN(dx) * abs(dy) : dx - SGN(dx) * abs(dy));
+			if (labs(dx) > labs(dy) && x_is_long) {
+				line1.Point2.X = line1.Point1.X + (way ? SGN(dx) * labs(dy) : dx - SGN(dx) * labs(dy));
 				line1.Point2.Y = line1.Point1.Y + (way ? dy : 0);
 			}
-			else if (abs(dy) >= abs(dx) && !x_is_long) {
+			else if (labs(dy) >= labs(dx) && !x_is_long) {
 				line1.Point2.X = line1.Point1.X + (way ? dx : 0);
-				line1.Point2.Y = line1.Point1.Y + (way ? SGN(dy) * abs(dx) : dy - SGN(dy) * abs(dx));
+				line1.Point2.Y = line1.Point1.Y + (way ? SGN(dy) * labs(dx) : dy - SGN(dy) * labs(dx));
 			}
 			else if (x_is_long) {
 				/* we've changed which axis is long, so only do one line */
 				line1.Point2.X = line1.Point1.X + dx;
-				line1.Point2.Y = line1.Point1.Y + (way ? SGN(dy) * abs(dx) : 0);
+				line1.Point2.Y = line1.Point1.Y + (way ? SGN(dy) * labs(dx) : 0);
 				two_lines = false;
 			}
 			else {
 				/* we've changed which axis is long, so only do one line */
 				line1.Point2.Y = line1.Point1.Y + dy;
-				line1.Point2.X = line1.Point1.X + (way ? SGN(dx) * abs(dy) : 0);
+				line1.Point2.X = line1.Point1.X + (way ? SGN(dx) * labs(dy) : 0);
 				two_lines = false;
 			}
 			line2.Point1.X = line1.Point2.X;
