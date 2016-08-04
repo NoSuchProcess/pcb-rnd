@@ -5,7 +5,8 @@ SRC=src
 BIN=src
 
 #  what cflags to use to compile scconfig
-USER_CFLAGS = -Wall -g -DGENCALL -Isrc
+USER_CFLAGS = -DGENCALL -Isrc
+#USER_CFLAGS = -Wall -Wextra -g -DGENCALL -Isrc
 
 #  what ldflags to use to link scconfig
 USER_LDFLAGS =
