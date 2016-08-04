@@ -43,6 +43,7 @@
 		- route style vs. autorouter
 
 CLEANUP #5
+- conf: throw an error if user config can not be written
 - get scconfig to set coord type:
 	- remove the #if's at the end of global.h, set abs()
 	- detect whether we have long long int at all
