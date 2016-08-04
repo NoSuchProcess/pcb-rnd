@@ -43,6 +43,10 @@
 		- route style vs. autorouter
 
 CLEANUP #5
+- get scconfig to set coord type:
+	- remove the #if's at the end of global.h, set abs()
+	- detect whether we have long long int at all
+	- remove this from config manual
 - the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 - mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
 - scconfig:
