@@ -603,6 +603,7 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 			SetMode(ARROW_MODE);
 			break;
 		case F_Copy:
+			pcb_trace("ActionMode() copy\n");
 			SetMode(COPY_MODE);
 			break;
 		case F_InsertPoint:
