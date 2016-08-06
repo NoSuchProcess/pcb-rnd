@@ -1820,7 +1820,8 @@ find.o: find.c ../config.h ../config.manual.h ../config.auto.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h list_conf.h data.h draw.h error.h find.h \
  misc.h mymem.h rtree.h polygon.h search.h misc_util.h set.h undo.h \
- rats.h plug_io.h hid_actions.h
+ rats.h plug_io.h hid_actions.h find_geo.c find_lookup.c find_drc.c \
+ find_misc.c find_debug.c find_print.c
 find_act.o: find_act.c ../config.h ../config.manual.h ../config.auto.h \
  conf_core.h conf.h global.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
