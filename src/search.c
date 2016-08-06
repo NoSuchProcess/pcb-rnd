@@ -35,7 +35,6 @@
 #include "conf_core.h"
 
 #include <math.h>
-#include <setjmp.h>
 
 #include "box.h"
 #include "data.h"
@@ -82,7 +81,6 @@ struct ans_info {
 	void **ptr1, **ptr2, **ptr3;
 	bool BackToo;
 	double area;
-	jmp_buf env;
 	int locked;										/* This will be zero or LOCKFLAG */
 };
 
@@ -99,8 +97,7 @@ static r_dir_t pinorvia_callback(const BoxType * box, void *cl)
 		return R_DIR_NOT_FOUND;
 	*i->ptr1 = ptr1;
 	*i->ptr2 = *i->ptr3 = pin;
-	longjmp(i->env, 1);
-	return R_DIR_FOUND_CONTINUE;											/* never reached */
+	return R_DIR_CANCEL; /* found, stop searching */
 }
 
 static bool SearchViaByLocation(int locked, PinTypePtr * Via, PinTypePtr * Dummy1, PinTypePtr * Dummy2)
@@ -116,11 +113,9 @@ static bool SearchViaByLocation(int locked, PinTypePtr * Via, PinTypePtr * Dummy
 	info.ptr3 = (void **) Dummy2;
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 
-	if (setjmp(info.env) == 0) {
-		r_search(PCB->Data->via_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL);
-		return false;
-	}
-	return true;
+	if (r_search(PCB->Data->via_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL) != R_DIR_NOT_FOUND)
+		return true;
+	return false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -139,9 +134,7 @@ static bool SearchPinByLocation(int locked, ElementTypePtr * Element, PinTypePtr
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 
-	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->pin_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL);
-	else
+	if (r_search(PCB->Data->pin_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL)  != R_DIR_NOT_FOUND)
 		return true;
 	return false;
 }
@@ -159,7 +152,7 @@ static r_dir_t pad_callback(const BoxType * b, void *cl)
 		if (IsPointInPad(PosX, PosY, SearchRadius, pad)) {
 			*i->ptr1 = ptr1;
 			*i->ptr2 = *i->ptr3 = pad;
-			longjmp(i->env, 1);
+			return R_DIR_CANCEL; /* found */
 		}
 	}
 	return R_DIR_NOT_FOUND;
@@ -181,9 +174,7 @@ static bool SearchPadByLocation(int locked, ElementTypePtr * Element, PadTypePtr
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 	info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
-	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->pad_tree, &SearchBox, NULL, pad_callback, &info, NULL);
-	else
+	if (r_search(PCB->Data->pad_tree, &SearchBox, NULL, pad_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return true;
 	return false;
 }
@@ -243,7 +234,7 @@ static r_dir_t rat_callback(const BoxType * box, void *cl)
 			(Distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
 			 line->Thickness * 2 + SearchRadius) : IsPointOnLine(PosX, PosY, SearchRadius, line)) {
 		*i->ptr1 = *i->ptr2 = *i->ptr3 = line;
-		longjmp(i->env, 1);
+		return R_DIR_CANCEL;
 	}
 	return R_DIR_NOT_FOUND;
 }
@@ -260,11 +251,9 @@ static bool SearchRatLineByLocation(int locked, RatTypePtr * Line, RatTypePtr * 
 	info.ptr3 = (void **) Dummy2;
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 
-	if (setjmp(info.env) == 0) {
-		r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL);
-		return false;
-	}
-	return (true);
+	if (r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL) != R_DIR_NOT_FOUND)
+		return true;
+	return false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -272,7 +261,6 @@ static bool SearchRatLineByLocation(int locked, RatTypePtr * Line, RatTypePtr * 
  */
 struct arc_info {
 	ArcTypePtr *Arc, *Dummy;
-	jmp_buf env;
 	int locked;
 };
 
@@ -288,8 +276,7 @@ static r_dir_t arc_callback(const BoxType * box, void *cl)
 		return 0;
 	*i->Arc = a;
 	*i->Dummy = a;
-	longjmp(i->env, 1);
-	return R_DIR_FOUND_CONTINUE;											/* never reached */
+	return R_DIR_CANCEL; /* found */
 }
 
 
@@ -302,11 +289,9 @@ static bool SearchArcByLocation(int locked, LayerTypePtr * Layer, ArcTypePtr * A
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 
 	*Layer = SearchLayer;
-	if (setjmp(info.env) == 0) {
-		r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL);
-		return false;
-	}
-	return (true);
+	if (r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != R_DIR_NOT_FOUND)
+		return true;
+	return false;
 }
 
 static r_dir_t text_callback(const BoxType * box, void *cl)
@@ -319,7 +304,7 @@ static r_dir_t text_callback(const BoxType * box, void *cl)
 
 	if (POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		*i->ptr2 = *i->ptr3 = text;
-		longjmp(i->env, 1);
+		return R_DIR_CANCEL; /* found */
 	}
 	return R_DIR_NOT_FOUND;
 }
@@ -336,11 +321,9 @@ static bool SearchTextByLocation(int locked, LayerTypePtr * Layer, TextTypePtr *
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 
-	if (setjmp(info.env) == 0) {
-		r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL);
-		return false;
-	}
-	return (true);
+	if (r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL) != R_DIR_NOT_FOUND)
+		return true;
+	return false;
 }
 
 static r_dir_t polygon_callback(const BoxType * box, void *cl)
@@ -353,7 +336,7 @@ static r_dir_t polygon_callback(const BoxType * box, void *cl)
 
 	if (IsPointInPolygon(PosX, PosY, SearchRadius, polygon)) {
 		*i->ptr2 = *i->ptr3 = polygon;
-		longjmp(i->env, 1);
+		return R_DIR_CANCEL; /* found */
 	}
 	return R_DIR_NOT_FOUND;
 }
@@ -371,11 +354,9 @@ static bool SearchPolygonByLocation(int locked, LayerTypePtr * Layer, PolygonTyp
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 
-	if (setjmp(info.env) == 0) {
-		r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL);
-		return false;
-	}
-	return (true);
+	if (r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL) != R_DIR_NOT_FOUND)
+		return true;
+	return false;
 }
 
 static r_dir_t linepoint_callback(const BoxType * b, void *cl)
