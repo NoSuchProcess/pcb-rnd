@@ -4056,7 +4056,7 @@ r_dir_t bad_boy(const BoxType * b, void *cl)
 {
 	routebox_t *box = (routebox_t *) b;
 	if (box->type == EXPANSION_AREA)
-		return R_DIR_FOUND_COTINUE;
+		return R_DIR_FOUND_CONTINUE;
 	return R_DIR_NOT_FOUND;
 }
 
