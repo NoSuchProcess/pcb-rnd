@@ -29,6 +29,8 @@
 
 /* Connection export/output functions */
 
+static bool PrepareNextLoop(FILE * FP);
+
 /* ---------------------------------------------------------------------------
  * prints all unused pins of an element to file FP
  */
@@ -209,3 +211,52 @@ static bool PrintElementConnections(ElementTypePtr Element, FILE * FP, bool AndD
 	fputs("}\n\n", FP);
 	return (false);
 }
+
+/* ---------------------------------------------------------------------------
+ * find all unused pins of all element
+ */
+void LookupUnusedPins(FILE * FP)
+{
+	/* reset all currently marked connections */
+	User = true;
+	ResetConnections(true);
+	InitConnectionLookup();
+
+	ELEMENT_LOOP(PCB->Data);
+	{
+		/* break if abort dialog returned true;
+		 * passing NULL as filedescriptor discards the normal output
+		 */
+		if (PrintAndSelectUnusedPinsAndPadsOfElement(element, FP))
+			break;
+	}
+	END_LOOP;
+
+	if (conf_core.editor.beep_when_finished)
+		gui->beep();
+	FreeConnectionLookupMemory();
+	IncrementUndoSerialNumber();
+	User = false;
+	Draw();
+}
+
+/* ---------------------------------------------------------------------------
+ * find all connections to pins within one element
+ */
+void LookupElementConnections(ElementTypePtr Element, FILE * FP)
+{
+	/* reset all currently marked connections */
+	User = true;
+	TheFlag = FOUNDFLAG;
+	ResetConnections(true);
+	InitConnectionLookup();
+	PrintElementConnections(Element, FP, true);
+	SetChangedFlag(true);
+	if (conf_core.editor.beep_when_finished)
+		gui->beep();
+	FreeConnectionLookupMemory();
+	IncrementUndoSerialNumber();
+	User = false;
+	Draw();
+}
+

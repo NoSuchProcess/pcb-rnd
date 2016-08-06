@@ -27,6 +27,7 @@
  *
  */
 
+static void DrawNewConnections(void);
 
 /* ---------------------------------------------------------------------------
  * checks if all lists of new objects are handled
@@ -76,20 +77,6 @@ static bool DoIt(bool AndRats, bool AndDraw)
 	if (AndDraw)
 		Draw();
 	return (newone);
-}
-
-/* returns true if nothing un-found touches the passed line
- * returns false if it would touch something not yet found
- * doesn't include rat-lines in the search
- */
-
-bool lineClear(LineTypePtr line, Cardinal group)
-{
-	if (LOTouchesLine(line, group))
-		return (false);
-	if (PVTouchesLine(line))
-		return (false);
-	return (true);
 }
 
 /* ---------------------------------------------------------------------------
@@ -157,26 +144,6 @@ static void DrawNewConnections(void)
 			DrawRat(RATLIST_ENTRY(position));
 		RatList.DrawLocation = RatList.Number;
 	}
-}
-
-/* ---------------------------------------------------------------------------
- * find all connections to pins within one element
- */
-void LookupElementConnections(ElementTypePtr Element, FILE * FP)
-{
-	/* reset all currently marked connections */
-	User = true;
-	TheFlag = FOUNDFLAG;
-	ResetConnections(true);
-	InitConnectionLookup();
-	PrintElementConnections(Element, FP, true);
-	SetChangedFlag(true);
-	if (conf_core.editor.beep_when_finished)
-		gui->beep();
-	FreeConnectionLookupMemory();
-	IncrementUndoSerialNumber();
-	User = false;
-	Draw();
 }
 
 /* ---------------------------------------------------------------------------
@@ -341,34 +308,6 @@ void RatFindHook(int type, void *ptr1, void *ptr2, void *ptr3, bool undo, bool A
 }
 
 /* ---------------------------------------------------------------------------
- * find all unused pins of all element
- */
-void LookupUnusedPins(FILE * FP)
-{
-	/* reset all currently marked connections */
-	User = true;
-	ResetConnections(true);
-	InitConnectionLookup();
-
-	ELEMENT_LOOP(PCB->Data);
-	{
-		/* break if abort dialog returned true;
-		 * passing NULL as filedescriptor discards the normal output
-		 */
-		if (PrintAndSelectUnusedPinsAndPadsOfElement(element, FP))
-			break;
-	}
-	END_LOOP;
-
-	if (conf_core.editor.beep_when_finished)
-		gui->beep();
-	FreeConnectionLookupMemory();
-	IncrementUndoSerialNumber();
-	User = false;
-	Draw();
-}
-
-/* ---------------------------------------------------------------------------
  * resets all used flags of pins and vias
  */
 bool ResetFoundPinsViasAndPads(bool AndDraw)
@@ -525,127 +464,6 @@ static void DumpList(void)
 	RatList.DrawLocation = 0;
 }
 
-/*-----------------------------------------------------------------------------
- * Check for DRC violations on a single net starting from the pad or pin
- * sees if the connectivity changes when everything is bloated, or shrunk
- */
-static bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
-{
-	Coord x, y;
-	int object_count;
-	long int *object_id_list;
-	int *object_type_list;
-	DrcViolationType *violation;
-
-	if (PCB->Shrink != 0) {
-		Bloat = -PCB->Shrink;
-		TheFlag = DRCFLAG | SELECTEDFLAG;
-		ListStart(What, ptr1, ptr2, ptr3);
-		DoIt(true, false);
-		/* ok now the shrunk net has the SELECTEDFLAG set */
-		DumpList();
-		TheFlag = FOUNDFLAG;
-		ListStart(What, ptr1, ptr2, ptr3);
-		Bloat = 0;
-		drc = true;									/* abort the search if we find anything not already found */
-		if (DoIt(true, false)) {
-			DumpList();
-			/* make the flag changes undoable */
-			TheFlag = FOUNDFLAG | SELECTEDFLAG;
-			ResetConnections(false);
-			User = true;
-			drc = false;
-			Bloat = -PCB->Shrink;
-			TheFlag = SELECTEDFLAG;
-			ListStart(What, ptr1, ptr2, ptr3);
-			DoIt(true, true);
-			DumpList();
-			ListStart(What, ptr1, ptr2, ptr3);
-			TheFlag = FOUNDFLAG;
-			Bloat = 0;
-			drc = true;
-			DoIt(true, true);
-			DumpList();
-			User = false;
-			drc = false;
-			drcerr_count++;
-			LocateError(&x, &y);
-			BuildObjectList(&object_count, &object_id_list, &object_type_list);
-			violation = pcb_drc_violation_new(_("Potential for broken trace"), _("Insufficient overlap between objects can lead to broken tracks\n" "due to registration errors with old wheel style photo-plotters."), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																				FALSE,	/* MEASUREMENT OF ERROR UNKNOWN */
-																				0,	/* MAGNITUDE OF ERROR UNKNOWN */
-																				PCB->Shrink, object_count, object_id_list, object_type_list);
-			append_drc_violation(violation);
-			pcb_drc_violation_free(violation);
-			free(object_id_list);
-			free(object_type_list);
-
-			if (!throw_drc_dialog())
-				return (true);
-			IncrementUndoSerialNumber();
-			Undo(true);
-		}
-		DumpList();
-	}
-	/* now check the bloated condition */
-	drc = false;
-	ResetConnections(false);
-	TheFlag = FOUNDFLAG;
-	ListStart(What, ptr1, ptr2, ptr3);
-	Bloat = PCB->Bloat;
-	drc = true;
-	while (DoIt(true, false)) {
-		DumpList();
-		/* make the flag changes undoable */
-		TheFlag = FOUNDFLAG | SELECTEDFLAG;
-		ResetConnections(false);
-		User = true;
-		drc = false;
-		Bloat = 0;
-		TheFlag = SELECTEDFLAG;
-		ListStart(What, ptr1, ptr2, ptr3);
-		DoIt(true, true);
-		DumpList();
-		TheFlag = FOUNDFLAG;
-		ListStart(What, ptr1, ptr2, ptr3);
-		Bloat = PCB->Bloat;
-		drc = true;
-		DoIt(true, true);
-		DumpList();
-		drcerr_count++;
-		LocateError(&x, &y);
-		BuildObjectList(&object_count, &object_id_list, &object_type_list);
-		violation = pcb_drc_violation_new(_("Copper areas too close"), _("Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short."), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																			FALSE,	/* MEASUREMENT OF ERROR UNKNOWN */
-																			0,	/* MAGNITUDE OF ERROR UNKNOWN */
-																			PCB->Bloat, object_count, object_id_list, object_type_list);
-		append_drc_violation(violation);
-		pcb_drc_violation_free(violation);
-		free(object_id_list);
-		free(object_type_list);
-		User = false;
-		drc = false;
-		if (!throw_drc_dialog())
-			return (true);
-		IncrementUndoSerialNumber();
-		Undo(true);
-		/* highlight the rest of the encroaching net so it's not reported again */
-		TheFlag |= SELECTEDFLAG;
-		Bloat = 0;
-		ListStart(thing_type, thing_ptr1, thing_ptr2, thing_ptr3);
-		DoIt(true, true);
-		DumpList();
-		drc = true;
-		Bloat = PCB->Bloat;
-		ListStart(What, ptr1, ptr2, ptr3);
-	}
-	drc = false;
-	DumpList();
-	TheFlag = FOUNDFLAG | SELECTEDFLAG;
-	ResetConnections(false);
-	return (false);
-}
-
 /*----------------------------------------------------------------------------
  * set up a temporary flag to use
  */
@@ -661,110 +479,6 @@ void SaveFindFlag(int NewFlag)
 void RestoreFindFlag(void)
 {
 	TheFlag = OldFlag;
-}
-
-/*----------------------------------------------------------------------------
- * Locate the coordinatates of offending item (thing)
- */
-static void LocateError(Coord * x, Coord * y)
-{
-	switch (thing_type) {
-	case LINE_TYPE:
-		{
-			LineTypePtr line = (LineTypePtr) thing_ptr3;
-			*x = (line->Point1.X + line->Point2.X) / 2;
-			*y = (line->Point1.Y + line->Point2.Y) / 2;
-			break;
-		}
-	case ARC_TYPE:
-		{
-			ArcTypePtr arc = (ArcTypePtr) thing_ptr3;
-			*x = arc->X;
-			*y = arc->Y;
-			break;
-		}
-	case POLYGON_TYPE:
-		{
-			PolygonTypePtr polygon = (PolygonTypePtr) thing_ptr3;
-			*x = (polygon->Clipped->contours->xmin + polygon->Clipped->contours->xmax) / 2;
-			*y = (polygon->Clipped->contours->ymin + polygon->Clipped->contours->ymax) / 2;
-			break;
-		}
-	case PIN_TYPE:
-	case VIA_TYPE:
-		{
-			PinTypePtr pin = (PinTypePtr) thing_ptr3;
-			*x = pin->X;
-			*y = pin->Y;
-			break;
-		}
-	case PAD_TYPE:
-		{
-			PadTypePtr pad = (PadTypePtr) thing_ptr3;
-			*x = (pad->Point1.X + pad->Point2.X) / 2;
-			*y = (pad->Point1.Y + pad->Point2.Y) / 2;
-			break;
-		}
-	case ELEMENT_TYPE:
-		{
-			ElementTypePtr element = (ElementTypePtr) thing_ptr3;
-			*x = element->MarkX;
-			*y = element->MarkY;
-			break;
-		}
-	default:
-		return;
-	}
-}
-
-
-/*----------------------------------------------------------------------------
- * Build a list of the of offending items by ID. (Currently just "thing")
- */
-static void BuildObjectList(int *object_count, long int **object_id_list, int **object_type_list)
-{
-	*object_count = 0;
-	*object_id_list = NULL;
-	*object_type_list = NULL;
-
-	switch (thing_type) {
-	case LINE_TYPE:
-	case ARC_TYPE:
-	case POLYGON_TYPE:
-	case PIN_TYPE:
-	case VIA_TYPE:
-	case PAD_TYPE:
-	case ELEMENT_TYPE:
-	case RATLINE_TYPE:
-		*object_count = 1;
-		*object_id_list = (long int *) malloc(sizeof(long int));
-		*object_type_list = (int *) malloc(sizeof(int));
-		**object_id_list = ((AnyObjectType *) thing_ptr3)->ID;
-		**object_type_list = thing_type;
-		return;
-
-	default:
-		fprintf(stderr, _("Internal error in BuildObjectList: unknown object type %i\n"), thing_type);
-	}
-}
-
-
-/*----------------------------------------------------------------------------
- * center the display to show the offending item (thing)
- */
-static void GotoError(void)
-{
-	Coord X, Y;
-
-	LocateError(&X, &Y);
-
-	switch (thing_type) {
-	case LINE_TYPE:
-	case ARC_TYPE:
-	case POLYGON_TYPE:
-		ChangeGroupVisibility(GetLayerNumber(PCB->Data, (LayerTypePtr) thing_ptr1), true, true);
-	}
-	CenterDisplay(X, Y);
 }
 
 void InitConnectionLookup(void)

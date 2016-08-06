@@ -807,24 +807,6 @@ int pv_touch_callback(const BoxType * b, void *cl)
 	return 0;
 }
 
-static bool PVTouchesLine(LineTypePtr line)
-{
-	struct lo_info info;
-
-	info.line = *line;
-	EXPAND_BOUNDS(&info.line);
-	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->via_tree, (BoxType *) & info.line, NULL, pv_touch_callback, &info);
-	else
-		return true;
-	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->pin_tree, (BoxType *) & info.line, NULL, pv_touch_callback, &info);
-	else
-		return true;
-
-	return (false);
-}
-
 static int LOCtoArcLine_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
@@ -1038,88 +1020,6 @@ static bool LookupLOConnectionsToLine(LineTypePtr Line, Cardinal LayerGroup, boo
 	return (false);
 }
 
-static int LOT_Linecallback(const BoxType * b, void *cl)
-{
-	LineTypePtr line = (LineTypePtr) b;
-	struct lo_info *i = (struct lo_info *) cl;
-
-	if (!TEST_FLAG(TheFlag, line) && LineLineIntersect(&i->line, line))
-		longjmp(i->env, 1);
-	return 0;
-}
-
-static int LOT_Arccallback(const BoxType * b, void *cl)
-{
-	ArcTypePtr arc = (ArcTypePtr) b;
-	struct lo_info *i = (struct lo_info *) cl;
-
-	if (!arc->Thickness)
-		return 0;
-	if (!TEST_FLAG(TheFlag, arc) && LineArcIntersect(&i->line, arc))
-		longjmp(i->env, 1);
-	return 0;
-}
-
-static int LOT_Padcallback(const BoxType * b, void *cl)
-{
-	PadTypePtr pad = (PadTypePtr) b;
-	struct lo_info *i = (struct lo_info *) cl;
-
-	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(ONSOLDERFLAG, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
-			&& LinePadIntersect(&i->line, pad))
-		longjmp(i->env, 1);
-	return 0;
-}
-
-static bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup)
-{
-	Cardinal entry;
-	struct lo_info info;
-
-
-	/* the maximum possible distance */
-
-	info.line = *Line;
-	EXPAND_BOUNDS(&info.line);
-
-	/* loop over all layers of the group */
-	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-		Cardinal layer = PCB->LayerGroups.Entries[LayerGroup][entry];
-
-		/* handle normal layers */
-		if (layer < max_copper_layer) {
-			gdl_iterator_t it;
-			PolygonType *polygon;
-
-			/* find the first line that touches coordinates */
-
-			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->line_tree, (BoxType *) & info.line, NULL, LOT_Linecallback, &info);
-			else
-				return (true);
-			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->arc_tree, (BoxType *) & info.line, NULL, LOT_Arccallback, &info);
-			else
-				return (true);
-
-			/* now check all polygons */
-			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
-				if (!TEST_FLAG(TheFlag, polygon)
-						&& IsLineInPolygon(Line, polygon))
-					return (true);
-			}
-		}
-		else {
-			/* handle special 'pad' layers */
-			info.layer = layer - max_copper_layer;
-			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->pad_tree, &info.line.BoundingBox, NULL, LOT_Padcallback, &info);
-			else
-				return true;
-		}
-	}
-	return (false);
-}
 
 struct rat_info {
 	Cardinal layer;

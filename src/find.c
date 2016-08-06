@@ -171,7 +171,6 @@ static bool LookupLOConnectionsToArc(ArcTypePtr, Cardinal);
 static bool LookupLOConnectionsToRatEnd(PointTypePtr, Cardinal);
 static bool IsRatPointOnLineEnd(PointTypePtr, LineTypePtr);
 static bool ArcArcIntersect(ArcTypePtr, ArcTypePtr);
-static bool PrepareNextLoop(FILE *);
 static bool PrintElementConnections(ElementTypePtr, FILE *, bool);
 static bool ListsEmpty(bool);
 static bool DoIt(bool, bool);
@@ -180,16 +179,8 @@ static void PrintConnectionElementName(ElementTypePtr, FILE *);
 static void PrintConnectionListEntry(char *, ElementTypePtr, bool, FILE *);
 static void PrintPadConnections(Cardinal, FILE *, bool);
 static void PrintPinConnections(FILE *, bool);
-static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr, FILE *);
-static void DrawNewConnections(void);
 static void DumpList(void);
-static void LocateError(Coord *, Coord *);
-static void BuildObjectList(int *, long int **, int **);
-static void GotoError(void);
-static bool DRCFind(int, void *, void *, void *);
 static bool ListStart(int, void *, void *, void *);
-static bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup);
-static bool PVTouchesLine(LineTypePtr line);
 static bool SetThing(int, void *, void *, void *);
 
 

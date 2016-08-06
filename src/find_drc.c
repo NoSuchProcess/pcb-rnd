@@ -29,6 +29,9 @@
 
 /* DRC related functions */
 
+static void GotoError(void);
+static bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3);
+
 static DrcViolationType
 	* pcb_drc_violation_new(const char *title,
 													const char *explanation,
@@ -80,6 +83,93 @@ static void append_drc_dialog_message(const char *fmt, ...)
 
 static void GotoError(void);
 
+/*----------------------------------------------------------------------------
+ * Build a list of the of offending items by ID. (Currently just "thing")
+ */
+static void BuildObjectList(int *object_count, long int **object_id_list, int **object_type_list)
+{
+	*object_count = 0;
+	*object_id_list = NULL;
+	*object_type_list = NULL;
+
+	switch (thing_type) {
+	case LINE_TYPE:
+	case ARC_TYPE:
+	case POLYGON_TYPE:
+	case PIN_TYPE:
+	case VIA_TYPE:
+	case PAD_TYPE:
+	case ELEMENT_TYPE:
+	case RATLINE_TYPE:
+		*object_count = 1;
+		*object_id_list = (long int *) malloc(sizeof(long int));
+		*object_type_list = (int *) malloc(sizeof(int));
+		**object_id_list = ((AnyObjectType *) thing_ptr3)->ID;
+		**object_type_list = thing_type;
+		return;
+
+	default:
+		fprintf(stderr, _("Internal error in BuildObjectList: unknown object type %i\n"), thing_type);
+	}
+}
+
+
+
+/*----------------------------------------------------------------------------
+ * Locate the coordinatates of offending item (thing)
+ */
+static void LocateError(Coord * x, Coord * y)
+{
+	switch (thing_type) {
+	case LINE_TYPE:
+		{
+			LineTypePtr line = (LineTypePtr) thing_ptr3;
+			*x = (line->Point1.X + line->Point2.X) / 2;
+			*y = (line->Point1.Y + line->Point2.Y) / 2;
+			break;
+		}
+	case ARC_TYPE:
+		{
+			ArcTypePtr arc = (ArcTypePtr) thing_ptr3;
+			*x = arc->X;
+			*y = arc->Y;
+			break;
+		}
+	case POLYGON_TYPE:
+		{
+			PolygonTypePtr polygon = (PolygonTypePtr) thing_ptr3;
+			*x = (polygon->Clipped->contours->xmin + polygon->Clipped->contours->xmax) / 2;
+			*y = (polygon->Clipped->contours->ymin + polygon->Clipped->contours->ymax) / 2;
+			break;
+		}
+	case PIN_TYPE:
+	case VIA_TYPE:
+		{
+			PinTypePtr pin = (PinTypePtr) thing_ptr3;
+			*x = pin->X;
+			*y = pin->Y;
+			break;
+		}
+	case PAD_TYPE:
+		{
+			PadTypePtr pad = (PadTypePtr) thing_ptr3;
+			*x = (pad->Point1.X + pad->Point2.X) / 2;
+			*y = (pad->Point1.Y + pad->Point2.Y) / 2;
+			break;
+		}
+	case ELEMENT_TYPE:
+		{
+			ElementTypePtr element = (ElementTypePtr) thing_ptr3;
+			*x = element->MarkX;
+			*y = element->MarkY;
+			break;
+		}
+	default:
+		return;
+	}
+}
+
+
 static void append_drc_violation(DrcViolationType * violation)
 {
 	if (gui->drc_gui != NULL) {
@@ -97,6 +187,7 @@ static void append_drc_violation(DrcViolationType * violation)
 		Message(_("%m+near location %$mD\n"), conf_core.editor.grid_unit->allow, violation->x, violation->y);
 	}
 }
+
 
 /*
  * message when asked about continuing DRC checks after next 
@@ -598,4 +689,145 @@ int DRCAll(void)
 		Message(_("Warning:  %d pad%s the nopaste flag set.\n"), nopastecnt, nopastecnt > 1 ? "s have" : " has");
 	}
 	return IsBad ? -drcerr_count : drcerr_count;
+}
+
+
+
+/*-----------------------------------------------------------------------------
+ * Check for DRC violations on a single net starting from the pad or pin
+ * sees if the connectivity changes when everything is bloated, or shrunk
+ */
+static bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
+{
+	Coord x, y;
+	int object_count;
+	long int *object_id_list;
+	int *object_type_list;
+	DrcViolationType *violation;
+
+	if (PCB->Shrink != 0) {
+		Bloat = -PCB->Shrink;
+		TheFlag = DRCFLAG | SELECTEDFLAG;
+		ListStart(What, ptr1, ptr2, ptr3);
+		DoIt(true, false);
+		/* ok now the shrunk net has the SELECTEDFLAG set */
+		DumpList();
+		TheFlag = FOUNDFLAG;
+		ListStart(What, ptr1, ptr2, ptr3);
+		Bloat = 0;
+		drc = true;									/* abort the search if we find anything not already found */
+		if (DoIt(true, false)) {
+			DumpList();
+			/* make the flag changes undoable */
+			TheFlag = FOUNDFLAG | SELECTEDFLAG;
+			ResetConnections(false);
+			User = true;
+			drc = false;
+			Bloat = -PCB->Shrink;
+			TheFlag = SELECTEDFLAG;
+			ListStart(What, ptr1, ptr2, ptr3);
+			DoIt(true, true);
+			DumpList();
+			ListStart(What, ptr1, ptr2, ptr3);
+			TheFlag = FOUNDFLAG;
+			Bloat = 0;
+			drc = true;
+			DoIt(true, true);
+			DumpList();
+			User = false;
+			drc = false;
+			drcerr_count++;
+			LocateError(&x, &y);
+			BuildObjectList(&object_count, &object_id_list, &object_type_list);
+			violation = pcb_drc_violation_new(_("Potential for broken trace"), _("Insufficient overlap between objects can lead to broken tracks\n" "due to registration errors with old wheel style photo-plotters."), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
+																				FALSE,	/* MEASUREMENT OF ERROR UNKNOWN */
+																				0,	/* MAGNITUDE OF ERROR UNKNOWN */
+																				PCB->Shrink, object_count, object_id_list, object_type_list);
+			append_drc_violation(violation);
+			pcb_drc_violation_free(violation);
+			free(object_id_list);
+			free(object_type_list);
+
+			if (!throw_drc_dialog())
+				return (true);
+			IncrementUndoSerialNumber();
+			Undo(true);
+		}
+		DumpList();
+	}
+	/* now check the bloated condition */
+	drc = false;
+	ResetConnections(false);
+	TheFlag = FOUNDFLAG;
+	ListStart(What, ptr1, ptr2, ptr3);
+	Bloat = PCB->Bloat;
+	drc = true;
+	while (DoIt(true, false)) {
+		DumpList();
+		/* make the flag changes undoable */
+		TheFlag = FOUNDFLAG | SELECTEDFLAG;
+		ResetConnections(false);
+		User = true;
+		drc = false;
+		Bloat = 0;
+		TheFlag = SELECTEDFLAG;
+		ListStart(What, ptr1, ptr2, ptr3);
+		DoIt(true, true);
+		DumpList();
+		TheFlag = FOUNDFLAG;
+		ListStart(What, ptr1, ptr2, ptr3);
+		Bloat = PCB->Bloat;
+		drc = true;
+		DoIt(true, true);
+		DumpList();
+		drcerr_count++;
+		LocateError(&x, &y);
+		BuildObjectList(&object_count, &object_id_list, &object_type_list);
+		violation = pcb_drc_violation_new(_("Copper areas too close"), _("Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short."), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
+																			FALSE,	/* MEASUREMENT OF ERROR UNKNOWN */
+																			0,	/* MAGNITUDE OF ERROR UNKNOWN */
+																			PCB->Bloat, object_count, object_id_list, object_type_list);
+		append_drc_violation(violation);
+		pcb_drc_violation_free(violation);
+		free(object_id_list);
+		free(object_type_list);
+		User = false;
+		drc = false;
+		if (!throw_drc_dialog())
+			return (true);
+		IncrementUndoSerialNumber();
+		Undo(true);
+		/* highlight the rest of the encroaching net so it's not reported again */
+		TheFlag |= SELECTEDFLAG;
+		Bloat = 0;
+		ListStart(thing_type, thing_ptr1, thing_ptr2, thing_ptr3);
+		DoIt(true, true);
+		DumpList();
+		drc = true;
+		Bloat = PCB->Bloat;
+		ListStart(What, ptr1, ptr2, ptr3);
+	}
+	drc = false;
+	DumpList();
+	TheFlag = FOUNDFLAG | SELECTEDFLAG;
+	ResetConnections(false);
+	return (false);
+}
+
+/*----------------------------------------------------------------------------
+ * center the display to show the offending item (thing)
+ */
+static void GotoError(void)
+{
+	Coord X, Y;
+
+	LocateError(&X, &Y);
+
+	switch (thing_type) {
+	case LINE_TYPE:
+	case ARC_TYPE:
+	case POLYGON_TYPE:
+		ChangeGroupVisibility(GetLayerNumber(PCB->Data, (LayerTypePtr) thing_ptr1), true, true);
+	}
+	CenterDisplay(X, Y);
 }
