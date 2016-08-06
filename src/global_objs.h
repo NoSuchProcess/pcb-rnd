@@ -74,7 +74,7 @@ typedef struct line_st {								/* holds information about one line */
 	ANYLINEFIELDS;
 	char *Number;
 	gdl_elem_t link;  /* a line is in a list: either on a layer or in an element */
-} LineType, *LineTypePtr;;
+} LineType, *LineTypePtr;
 
 typedef struct text_st {
 	ANYOBJECTFIELDS;

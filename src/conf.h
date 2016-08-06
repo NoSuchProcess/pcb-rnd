@@ -138,7 +138,7 @@ typedef enum {
 	CFR_binary,     /* the in-memory binary representation */
 	CFR_max_alloc,  /* all the above should have a root */
 
-	CFR_invalid,
+	CFR_invalid
 } conf_role_t;
 
 void conf_init(void);
