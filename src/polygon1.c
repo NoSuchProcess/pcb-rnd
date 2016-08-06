@@ -649,7 +649,7 @@ static r_dir_t get_seg(const BoxType * b, void *cl)
 	struct seg *s = (struct seg *) b;
 	if (i->v == s->v) {
 		i->s = s;
-		longjmp(i->sego, 1);
+		return R_DIR_CANCEL; /* found */
 	}
 	return R_DIR_NOT_FOUND;
 }
@@ -705,6 +705,7 @@ static r_dir_t contour_bounds_touch(const BoxType * b, void *cl)
 
 	av = &looping_over->head;
 	do {													/* Loop over the nodes in the smaller contour */
+		r_dir_t rres;
 		/* check this edge for any insertions */
 		double dx;
 		info.v = av;
@@ -720,10 +721,8 @@ static r_dir_t contour_bounds_touch(const BoxType * b, void *cl)
 		box.Y2 = (box.Y1 = av->point[1]) + 1;
 
 		/* fill in the segment in info corresponding to this node */
-		if (setjmp(info.sego) == 0) {
-			r_search(looping_over->tree, &box, NULL, get_seg, &info, NULL);
-			assert(0);
-		}
+		rres = r_search(looping_over->tree, &box, NULL, get_seg, &info, NULL);
+		assert(rres == R_DIR_CANCEL);
 
 		/* If we're going to have another pass anyway, skip this */
 		if (info.s->intersected && info.node_insert_list != NULL)
