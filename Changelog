@@ -1,3 +1,64 @@
+pcb-rnd 1.1.0
+~~~~~~~~~~~~~
+	[conf] - full rewrite of the config settings subsystem
+		- Del: settings, color files, preferences - everything is in the conf system from now
+		- Add: config settings are stored in structured lihata files on different levels
+		- Add: all config setting are equal - they can be stored in system, user, project or design file
+
+	[core] - cleanup
+		-Fix: editing text should properly update the rtree
+		-Fix: Display(PinOrPadName) doesn't use crosshair directly, without checking validity, but uses getxy which asks the user in turn, if the crosshair is invalid
+		-Fix: ortho draw lines, polys and poly holes did not update last drawn point and generally did not work
+
+		-Cleanup: remove a bunch of excess #includes to reduce the amount of deps
+		-Cleanup: rename keepaway to clearance; terminology: clearance is copper vs. copper spacing; keepaway is any other spacing
+		-Cleanup: generic dead-code and compiler warning removal
+		-Change: menus: make a new Maintenance submenu in the File menu, move printer calibration and library rescan there
+
+	[poly] - bugfix
+		-Fix: don't xor-overdraw the first line of a poly rubber band while drawing the second line so it doesn't cancel itself out
+		-Fix: first click of the poly hole is also the first point of the hole
+		-Fix: reset attached object state after finishing a poly hole so that the second hole doesn't start in invalid state (caused poly duplication)
+		-Fix: don't let the user start drawing a poly hole if first click is not a poly
+		-Add: draw assumed closing rubber band line dashed
+
+	[dynstyle]
+		-Fix: number of styles is not limited anymore (styles is a dynamic vector)
+
+	[res]
+		-Fix: dynamic menu insertion bug: don't add new level if it is already added
+
+	[mods]
+		-Fix: report doesn't crash if there's nothing to report
+		-Add: debug plugin to host core debugging actions so thta they can be removed from core
+		-Add: debug plugin to tmpasm lists
+		-Add: io_* hooks - native file formats are plugins now
+		-Change: turn .pcb (.fp) file IO code into plugin io_pcb
+		-Add: io_pcb can save (CFR_DESIGN) config in the design as attributes
+		-Add: central infrastructure for per plugin help (usage), plus the help text in each plugin
+		-Add: fp_rehash() action to trigger a rehash
+
+	[gtk]
+		-Fix: double-zoom GUI lockup, pan+scroll wheel lockup
+		-Fix: shift+mouse click should work
+		-Fix: preferences window now easily fit in 800x600
+		-Fix: don't destroy the tooptip timer when it destroys itself - fixes the famous tooltip glib warning
+		-Fix: gtk warning/assert introduced by r1439: toolbar can not be a vbox, the parent vbox needs to be tracket separately
+		-Fix: abs() handling with non-int types - more proper handling of coords on corner cases like tiny objects (contributed by Chris Smith)
+		-Cleanup: dialog titles should be pcb-rnd, not PCB
+		-Add: properly remember window positions and sizes, save and reload them if the user enabled the feature
+
+	[scconfig]
+		-Fix: really compile if there's no glib installed and no glib-dependent plugin selected
+		-Fix: remove m4 bin from config.h template - no code uses this anymore; do not even detect m4, it's not needed anywhere
+		-Fix: reorder link command for the main executable so that libs end up at the end of the link list (some linkers are sensitive to this)
+		-Fix: various random fixes for a mac port
+		-Del: hid.conf: not needed anymore, hid types are managed differently
+		-Cleanup: C89 always has atexit() and there's no on_exit
+		-Add: --debug (that shoudl enable asserts and -g) and a tmpasm script to set cflags accordingly
+		-Add: detect gettext if intl is requested
+		-Add: detect bison/flex (with an option to disable it)
+
 pcb-rnd 1.0.10
 ~~~~~~~~~~~~~~
 	[res] - resource->lihata conversion
