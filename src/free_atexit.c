@@ -46,7 +46,7 @@ static leaky_idx_t free_size = 0;
 
 void *leaky_malloc(size_t size)
 {
-	void *new_memory = malloc(size + sizeof(leaky_admin_t));
+	char *new_memory = malloc(size + sizeof(leaky_admin_t));
 
 	free_list = (void **) realloc(free_list, (free_size + 1) * sizeof(void *));
 	free_list[free_size] = new_memory;
