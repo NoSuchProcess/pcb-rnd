@@ -260,3 +260,32 @@ void LookupElementConnections(ElementTypePtr Element, FILE * FP)
 	Draw();
 }
 
+
+/* ---------------------------------------------------------------------------
+ * find all connections to pins of all element
+ */
+void LookupConnectionsToAllElements(FILE * FP)
+{
+	/* reset all currently marked connections */
+	User = false;
+	TheFlag = FOUNDFLAG;
+	ResetConnections(false);
+	InitConnectionLookup();
+
+	ELEMENT_LOOP(PCB->Data);
+	{
+		/* break if abort dialog returned true */
+		if (PrintElementConnections(element, FP, false))
+			break;
+		SEPARATE(FP);
+		if (conf_core.editor.reset_after_element && gdl_it_idx(&__it__) != 1)
+			ResetConnections(false);
+	}
+	END_LOOP;
+	if (conf_core.editor.beep_when_finished)
+		gui->beep();
+	ResetConnections(false);
+	FreeConnectionLookupMemory();
+	Redraw();
+}
+
