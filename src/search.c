@@ -117,7 +117,7 @@ static bool SearchViaByLocation(int locked, PinTypePtr * Via, PinTypePtr * Dummy
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 
 	if (setjmp(info.env) == 0) {
-		r_search(PCB->Data->via_tree, &SearchBox, NULL, pinorvia_callback, &info);
+		r_search(PCB->Data->via_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL);
 		return false;
 	}
 	return true;
@@ -140,7 +140,7 @@ static bool SearchPinByLocation(int locked, ElementTypePtr * Element, PinTypePtr
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 
 	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->pin_tree, &SearchBox, NULL, pinorvia_callback, &info);
+		r_search(PCB->Data->pin_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL);
 	else
 		return true;
 	return false;
@@ -182,7 +182,7 @@ static bool SearchPadByLocation(int locked, ElementTypePtr * Element, PadTypePtr
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 	info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->pad_tree, &SearchBox, NULL, pad_callback, &info);
+		r_search(PCB->Data->pad_tree, &SearchBox, NULL, pad_callback, &info, NULL);
 	else
 		return true;
 	return false;
@@ -196,7 +196,6 @@ struct line_info {
 	LineTypePtr *Line;
 	PointTypePtr *Point;
 	double least;
-	jmp_buf env;
 	int locked;
 };
 
@@ -212,8 +211,8 @@ static r_dir_t line_callback(const BoxType * box, void *cl)
 		return R_DIR_NOT_FOUND;
 	*i->Line = l;
 	*i->Point = (PointTypePtr) l;
-	longjmp(i->env, 1);
-	return R_DIR_FOUND_CONTINUE;											/* never reached */
+
+	return R_DIR_CANCEL; /* found what we were looking for */
 }
 
 
@@ -226,11 +225,10 @@ static bool SearchLineByLocation(int locked, LayerTypePtr * Layer, LineTypePtr *
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 
 	*Layer = SearchLayer;
-	if (setjmp(info.env) == 0) {
-		r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info);
-		return false;
-	}
-	return (true);
+	if (r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info, NULL) != R_DIR_NOT_FOUND)
+		return true;
+
+	return false;
 }
 
 static r_dir_t rat_callback(const BoxType * box, void *cl)
@@ -263,7 +261,7 @@ static bool SearchRatLineByLocation(int locked, RatTypePtr * Line, RatTypePtr * 
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 
 	if (setjmp(info.env) == 0) {
-		r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info);
+		r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL);
 		return false;
 	}
 	return (true);
@@ -305,7 +303,7 @@ static bool SearchArcByLocation(int locked, LayerTypePtr * Layer, ArcTypePtr * A
 
 	*Layer = SearchLayer;
 	if (setjmp(info.env) == 0) {
-		r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info);
+		r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL);
 		return false;
 	}
 	return (true);
@@ -339,7 +337,7 @@ static bool SearchTextByLocation(int locked, LayerTypePtr * Layer, TextTypePtr *
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 
 	if (setjmp(info.env) == 0) {
-		r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info);
+		r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL);
 		return false;
 	}
 	return (true);
@@ -374,7 +372,7 @@ static bool SearchPolygonByLocation(int locked, LayerTypePtr * Layer, PolygonTyp
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
 
 	if (setjmp(info.env) == 0) {
-		r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info);
+		r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL);
 		return false;
 	}
 	return (true);
@@ -421,7 +419,7 @@ static bool SearchLinePointByLocation(int locked, LayerTypePtr * Layer, LineType
 	*Point = NULL;
 	info.least = MAX_LINE_POINT_DISTANCE + SearchRadius;
 	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
-	if (r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info))
+	if (r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info, NULL))
 		return true;
 	return false;
 }
@@ -497,7 +495,7 @@ SearchElementNameByLocation(int locked, ElementTypePtr * Element, TextTypePtr * 
 		info.area = SQUARE(MAX_COORD);
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 		info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
-		if (r_search(PCB->Data->name_tree[NAME_INDEX()], &SearchBox, NULL, name_callback, &info))
+		if (r_search(PCB->Data->name_tree[NAME_INDEX()], &SearchBox, NULL, name_callback, &info, NULL))
 			return true;
 	}
 	return (false);
@@ -542,7 +540,7 @@ SearchElementByLocation(int locked, ElementTypePtr * Element, ElementTypePtr * D
 		info.area = SQUARE(MAX_COORD);
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 		info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
-		if (r_search(PCB->Data->element_tree, &SearchBox, NULL, element_callback, &info))
+		if (r_search(PCB->Data->element_tree, &SearchBox, NULL, element_callback, &info, NULL))
 			return true;
 	}
 	return false;

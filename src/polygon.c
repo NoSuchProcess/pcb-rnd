@@ -1000,7 +1000,7 @@ static int Group(DataTypePtr Data, Cardinal layer)
 
 static int clearPoly(DataTypePtr Data, LayerTypePtr Layer, PolygonType * polygon, const BoxType * here, Coord expand)
 {
-	int r = 0;
+	int r = 0, seen;
 	BoxType region;
 	struct cpInfo info;
 	Cardinal group;
@@ -1024,18 +1024,25 @@ static int clearPoly(DataTypePtr Data, LayerTypePtr Layer, PolygonType * polygon
 		r = 0;
 		info.accumulate = NULL;
 		info.batch_size = 0;
-		if (info.solder || group == Group(Data, component_silk_layer))
-			r += r_search(Data->pad_tree, &region, NULL, pad_sub_callback, &info);
+		if (info.solder || group == Group(Data, component_silk_layer)) {
+			r_search(Data->pad_tree, &region, NULL, pad_sub_callback, &info, &seen);
+			r += seen;
+		}
 		GROUP_LOOP(Data, group);
 		{
-			r += r_search(layer->line_tree, &region, NULL, line_sub_callback, &info);
+			r_search(layer->line_tree, &region, NULL, line_sub_callback, &info, &seen);
+			r += seen;
 			subtract_accumulated(&info, polygon);
-			r += r_search(layer->arc_tree, &region, NULL, arc_sub_callback, &info);
-			r += r_search(layer->text_tree, &region, NULL, text_sub_callback, &info);
+			r_search(layer->arc_tree, &region, NULL, arc_sub_callback, &info, &seen);
+			r += seen;
+			r_search(layer->text_tree, &region, NULL, text_sub_callback, &info, &seen);
+			r += seen;
 		}
 		END_LOOP;
-		r += r_search(Data->via_tree, &region, NULL, pin_sub_callback, &info);
-		r += r_search(Data->pin_tree, &region, NULL, pin_sub_callback, &info);
+		r_search(Data->via_tree, &region, NULL, pin_sub_callback, &info, &seen);
+		r += seen;
+		r_search(Data->pin_tree, &region, NULL, pin_sub_callback, &info, &seen);
+		r += seen;
 		subtract_accumulated(&info, polygon);
 	}
 	polygon->NoHolesValid = 0;
@@ -1454,7 +1461,7 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 						 r_dir_t (*call_back) (DataTypePtr data, LayerTypePtr lay, PolygonTypePtr poly, int type, void *ptr1, void *ptr2))
 {
 	BoxType sb = ((PinTypePtr) ptr2)->BoundingBox;
-	int r = 0;
+	int r = 0, seen;
 	struct plow_info info;
 
 	info.type = type;
@@ -1469,7 +1476,8 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 			LAYER_LOOP(Data, max_copper_layer);
 			{
 				info.layer = layer;
-				r += r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info);
+				r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
+				r += seen;
 			}
 			END_LOOP;
 		}
@@ -1477,7 +1485,8 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 			GROUP_LOOP(Data, GetLayerGroupNumberByNumber(GetLayerNumber(Data, ((LayerTypePtr) ptr1))));
 			{
 				info.layer = layer;
-				r += r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info);
+				r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
+				r += seen;
 			}
 			END_LOOP;
 		}
@@ -1494,7 +1503,8 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 		GROUP_LOOP(Data, GetLayerGroupNumberByNumber(GetLayerNumber(Data, ((LayerTypePtr) ptr1))));
 		{
 			info.layer = layer;
-			r += r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info);
+			r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
+			r += seen;
 		}
 		END_LOOP;
 		break;
@@ -1505,7 +1515,8 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 			GROUP_LOOP(Data, group);
 			{
 				info.layer = layer;
-				r += r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info);
+				r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
+				r += seen;
 			}
 			END_LOOP;
 		}

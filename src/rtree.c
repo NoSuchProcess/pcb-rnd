@@ -399,6 +399,7 @@ typedef struct {
 	r_dir_t (*check_it) (const BoxType * region, void *cl);
 	r_dir_t (*found_it) (const BoxType * box, void *cl);
 	void *closure;
+	int cancel;
 } r_arg;
 
 /* most of the auto-routing time is spent in this routine
@@ -407,6 +408,8 @@ typedef struct {
  */
 int __r_search(struct rtree_node *node, const BoxType * query, r_arg * arg)
 {
+	r_dir_t res;
+
 	assert(node);
 	/** assert that starting_region is well formed */
 	assert(query->X1 < query->X2 && query->Y1 < query->Y2);
@@ -427,8 +430,15 @@ int __r_search(struct rtree_node *node, const BoxType * query, r_arg * arg)
 				if ((node->u.rects[i].bounds.X1 < query->X2) &&
 						(node->u.rects[i].bounds.X2 > query->X1) &&
 						(node->u.rects[i].bounds.Y1 < query->Y2) &&
-						(node->u.rects[i].bounds.Y2 > query->Y1) && arg->found_it(node->u.rects[i].bptr, arg->closure))
-					seen++;
+						(node->u.rects[i].bounds.Y2 > query->Y1)) {
+					res = arg->found_it(node->u.rects[i].bptr, arg->closure);
+					if (res == R_DIR_CANCEL) {
+						arg->cancel = 1;
+						return seen;
+					}
+					if (res != R_DIR_NOT_FOUND)
+						seen++;
+				}
 			}
 			return seen;
 		}
@@ -445,15 +455,24 @@ int __r_search(struct rtree_node *node, const BoxType * query, r_arg * arg)
 	}
 
 	/* not a leaf, recurse on lower nodes */
-	if (arg->check_it) {
+	if (arg->check_it != NULL) {
 		int seen = 0;
 		struct rtree_node **n;
 		for (n = &node->u.kids[0]; *n; n++) {
 			if ((*n)->box.X1 >= query->X2 ||
 					(*n)->box.X2 <= query->X1 ||
-					(*n)->box.Y1 >= query->Y2 || (*n)->box.Y2 <= query->Y1 || !arg->check_it(&(*n)->box, arg->closure))
+					(*n)->box.Y1 >= query->Y2 || (*n)->box.Y2 <= query->Y1)
+				continue;
+			res = arg->check_it(&(*n)->box, arg->closure);
+			if (res == R_DIR_CANCEL) {
+				arg->cancel = 1;
+				return seen;
+			}
+			if (!res)
 				continue;
 			seen += __r_search(*n, query, arg);
+			if (arg->cancel)
+				break;
 		}
 		return seen;
 	}
@@ -463,50 +482,67 @@ int __r_search(struct rtree_node *node, const BoxType * query, r_arg * arg)
 		for (n = &node->u.kids[0]; *n; n++) {
 			if ((*n)->box.X1 >= query->X2 || (*n)->box.X2 <= query->X1 || (*n)->box.Y1 >= query->Y2 || (*n)->box.Y2 <= query->Y1)
 				continue;
-			seen += __r_search(*n, query, arg);
+			seen  += __r_search(*n, query, arg);
+			if (arg->cancel)
+				break;
 		}
 		return seen;
 	}
 }
 
 /* Parameterized search in the rtree.
- * Returns the number of rectangles found.
+ * Sets num_found to the number of rectangles found.
  * calls found_rectangle for each intersection seen
  * and calls check_region with the current sub-region
  * to see whether deeper searching is desired
+ * Returns how the search ended.
  */
-int
+r_dir_t
 r_search(rtree_t * rtree, const BoxType * query,
 				 r_dir_t (*check_region) (const BoxType * region, void *cl),
-				 r_dir_t (*found_rectangle) (const BoxType * box, void *cl), void *cl)
+				 r_dir_t (*found_rectangle) (const BoxType * box, void *cl), void *cl,
+				 int *num_found)
 {
 	r_arg arg;
+	int res = 0;
+
+	arg.cancel = 0;
 
 	if (!rtree || rtree->size < 1)
-		return 0;
+		goto ret;
 	if (query) {
 #ifdef SLOW_ASSERTS
 		assert(__r_tree_is_good(rtree->root));
 #endif
 #ifdef DEBUG
 		if (query->X2 <= query->X1 || query->Y2 <= query->Y1)
-			return 0;
+			goto ret;
 #endif
 		/* check this box. If it's not touched we're done here */
 		if (rtree->root->box.X1 >= query->X2 ||
 				rtree->root->box.X2 <= query->X1 || rtree->root->box.Y1 >= query->Y2 || rtree->root->box.Y2 <= query->Y1)
-			return 0;
+			goto ret;
 		arg.check_it = check_region;
 		arg.found_it = found_rectangle;
 		arg.closure = cl;
-		return __r_search(rtree->root, query, &arg);
+
+		res = __r_search(rtree->root, query, &arg);
 	}
 	else {
 		arg.check_it = check_region;
 		arg.found_it = found_rectangle;
 		arg.closure = cl;
-		return __r_search(rtree->root, &rtree->root->box, &arg);
+		res = __r_search(rtree->root, &rtree->root->box, &arg);
 	}
+
+ret:;
+	if (num_found != NULL)
+		*num_found = res;
+	if (arg.cancel)
+		return R_DIR_CANCEL;
+	if (res == 0)
+		return R_DIR_NOT_FOUND;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 /*------ r_region_is_empty ------*/
@@ -520,19 +556,12 @@ static r_dir_t __r_region_is_empty_rect_in_reg(const BoxType * box, void *cl)
 int r_region_is_empty(rtree_t * rtree, const BoxType * region)
 {
 	jmp_buf env;
-#ifndef NDEBUG
 	int r;
-#endif
 
 	if (setjmp(env))
 		return 0;
-#ifndef NDEBUG
-	r =
-#endif
-		r_search(rtree, region, NULL, __r_region_is_empty_rect_in_reg, &env);
-#ifndef NDEBUG
+	r_search(rtree, region, NULL, __r_region_is_empty_rect_in_reg, &env, &r);
 	assert(r == 0);								/* otherwise longjmp would have been called */
-#endif
 	return 1;											/* no rectangles found */
 }
 

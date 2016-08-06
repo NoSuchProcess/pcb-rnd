@@ -545,7 +545,7 @@ static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
 		info.X = newone->Point1.X;
 		info.Y = newone->Point1.Y;
 		if (setjmp(info.env) == 0)
-			r_search(Layer->line_tree, &sb, NULL, moveline_callback, &info);
+			r_search(Layer->line_tree, &sb, NULL, moveline_callback, &info, NULL);
 	}
 	/* consider via at Point2 */
 	sb.X1 = newone->Point2.X - newone->Thickness / 2;
@@ -557,7 +557,7 @@ static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
 		info.X = newone->Point2.X;
 		info.Y = newone->Point2.Y;
 		if (setjmp(info.env) == 0)
-			r_search(Layer->line_tree, &sb, NULL, moveline_callback, &info);
+			r_search(Layer->line_tree, &sb, NULL, moveline_callback, &info, NULL);
 	}
 	Draw();
 	return (newone);
@@ -671,9 +671,9 @@ static void *MovePolygonToLayer(LayerType * Layer, PolygonType * Polygon)
 	d.dnum = GetLayerNumber(PCB->Data, Dest);
 	d.polygon = Polygon;
 	d.type = PIN_TYPE;
-	r_search(PCB->Data->pin_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d);
+	r_search(PCB->Data->pin_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
 	d.type = VIA_TYPE;
-	r_search(PCB->Data->via_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d);
+	r_search(PCB->Data->via_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
 	newone = (struct polygon_st *) MovePolygonToLayerLowLevel(Layer, Polygon, Dest);
 	InitClip(PCB->Data, Dest, newone);
 	if (Dest->On) {

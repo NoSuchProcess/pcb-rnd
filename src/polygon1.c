@@ -721,7 +721,7 @@ static r_dir_t contour_bounds_touch(const BoxType * b, void *cl)
 
 		/* fill in the segment in info corresponding to this node */
 		if (setjmp(info.sego) == 0) {
-			r_search(looping_over->tree, &box, NULL, get_seg, &info);
+			r_search(looping_over->tree, &box, NULL, get_seg, &info, NULL);
 			assert(0);
 		}
 
@@ -734,9 +734,12 @@ static r_dir_t contour_bounds_touch(const BoxType * b, void *cl)
 
 		/* NB: If this actually hits anything, we are teleported back to the beginning */
 		info.tree = rtree_over->tree;
-		if (info.tree)
-			if (UNLIKELY(r_search(info.tree, &info.s->box, seg_in_region, seg_in_seg, &info)))
+		if (info.tree) {
+			int seen;
+			r_search(info.tree, &info.s->box, seg_in_region, seg_in_seg, &info, &seen);
+			if (UNLIKELY(seen))
 				assert(0);							/* XXX: Memory allocation failure */
+		}
 	}
 	while ((av = av->next) != &looping_over->head);
 
@@ -788,7 +791,7 @@ static int intersect_impl(jmp_buf * jb, POLYAREA * b, POLYAREA * a, int add)
 		sb.X2 = pa->xmax + 1;
 		sb.Y2 = pa->ymax + 1;
 
-		r_search(b->contour_tree, &sb, NULL, contour_bounds_touch, &c_info);
+		r_search(b->contour_tree, &sb, NULL, contour_bounds_touch, &c_info, NULL);
 		if (c_info.need_restart)
 			need_restart = 1;
 	}
@@ -903,11 +906,14 @@ static int cntr_in_M_POLYAREA(PLINE * poly, POLYAREA * outfst, BOOLp test)
 	 * but we must loop in case the box containter is not
 	 * the poly container */
 	do {
+		int cnt;
+
 		if (heap_is_empty(heap))
 			break;
 		outer = (POLYAREA *) heap_remove_smallest(heap);
 
-		switch (r_search(outer->contour_tree, (BoxType *) poly, NULL, count_contours_i_am_inside, poly)) {
+		r_search(outer->contour_tree, (BoxType *) poly, NULL, count_contours_i_am_inside, poly, &cnt);
+		switch (cnt) {
 		case 0:										/* Didn't find anything in this piece, Keep looking */
 			break;
 		case 1:										/* Found we are inside this piece, and not any of its holes */
@@ -1205,7 +1211,7 @@ static void InsertHoles(jmp_buf * e, POLYAREA * dest, PLINE ** src)
 		container = NULL;
 		/* build a heap of all of the polys that the hole is inside its bounding box */
 		heap = heap_create();
-		r_search(tree, (BoxType *) curh, NULL, heap_it, heap);
+		r_search(tree, (BoxType *) curh, NULL, heap_it, heap, NULL);
 		if (heap_is_empty(heap)) {
 #ifndef NDEBUG
 #ifdef DEBUG
@@ -1264,7 +1270,7 @@ static void InsertHoles(jmp_buf * e, POLYAREA * dest, PLINE ** src)
 					info.result = NULL;
 					/* Rtree search, calling back a routine to longjmp back with data about any hole inside the added one */
 					/*   Be sure not to bother jumping back to report the main contour! */
-					r_search(pa_info->pa->contour_tree, (BoxType *) curh, NULL, find_inside, &info);
+					r_search(pa_info->pa->contour_tree, (BoxType *) curh, NULL, find_inside, &info, NULL);
 
 					/* Nothing found? */
 					break;
@@ -1855,7 +1861,7 @@ static void M_POLYAREA_update_primary(jmp_buf * e, POLYAREA ** pieces, PLINE ** 
 					 * data about any hole inside the B polygon.
 					 * NB: Does not jump back to report the main contour!
 					 */
-					r_search(a->contour_tree, &box, NULL, find_inside_m_pa, &info);
+					r_search(a->contour_tree, &box, NULL, find_inside_m_pa, &info, NULL);
 
 					/* Nothing found? */
 					break;
@@ -2371,7 +2377,7 @@ void poly_InvContour(PLINE * c)
 #ifndef NDEBUG
 		r =
 #endif
-			r_search(c->tree, NULL, NULL, flip_cb, NULL);
+			r_search(c->tree, NULL, NULL, flip_cb, NULL, NULL);
 #ifndef NDEBUG
 		assert(r == c->Count);
 #endif
@@ -2579,7 +2585,7 @@ int poly_InsideContour(PLINE * c, Vector p)
 	ray.X2 = 0x7fffffff;
 	ray.Y2 = p[1] + 1;
 	if (setjmp(info.env) == 0)
-		r_search(c->tree, &ray, NULL, crossing, &info);
+		r_search(c->tree, &ray, NULL, crossing, &info, NULL);
 	return info.f;
 }
 

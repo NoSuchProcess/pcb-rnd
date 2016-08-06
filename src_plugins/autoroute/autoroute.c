@@ -803,7 +803,7 @@ static routebox_t *FindRouteBoxOnLayerGroup(routedata_t * rd, Coord X, Coord Y, 
 	info.winner = NULL;
 	info.query = point_box(X, Y);
 	if (setjmp(info.env) == 0)
-		r_search(rd->layergrouptree[layergroup], &info.query, NULL, __found_one_on_lg, &info);
+		r_search(rd->layergrouptree[layergroup], &info.query, NULL, __found_one_on_lg, &info, NULL);
 	return info.winner;
 }
 
@@ -1517,7 +1517,7 @@ static routebox_t *mincost_target_to_point(const CheapPointType * CostPoint,
 		mtc.nearest_cost = cost_to_routebox(mtc.CostPoint, mtc.CostPointLayer, mtc.nearest);
 	else
 		mtc.nearest_cost = EXPENSIVE;
-	r_search(targets, NULL, __region_within_guess, __found_new_guess, &mtc);
+	r_search(targets, NULL, __region_within_guess, __found_new_guess, &mtc, NULL);
 	assert(mtc.nearest != NULL && mtc.nearest_cost >= 0);
 	assert(mtc.nearest->flags.target);	/* this is a target, right? */
 	return mtc.nearest;
@@ -2091,7 +2091,7 @@ struct E_result *Expand(rtree_t * rtree, edge_t * e, const BoxType * box)
 	}
 	ans.keep = e->rb->style->Clearance;
 	ans.parent = nonhomeless_parent(e->rb);
-	r_search(rtree, &ans.inflated, NULL, __Expand_this_rect, &ans);
+	r_search(rtree, &ans.inflated, NULL, __Expand_this_rect, &ans, NULL);
 /* because the overlaping boxes are found in random order, some blockers
  * may have limited edges prematurely, so we check if the blockers realy
  * are blocking, and make another try if not
@@ -2113,7 +2113,7 @@ struct E_result *Expand(rtree_t * rtree, edge_t * e, const BoxType * box)
 	else
 		ans.done |= _WEST;
 	if (ans.done != _NORTH + _EAST + _SOUTH + _WEST) {
-		r_search(rtree, &ans.inflated, NULL, __Expand_this_rect, &ans);
+		r_search(rtree, &ans.inflated, NULL, __Expand_this_rect, &ans, NULL);
 	}
 	if ((noshrink & _NORTH) == 0)
 		ans.inflated.Y1 += ans.bloat;
@@ -2486,6 +2486,7 @@ vector_t *BreakManyEdges(struct routeone_state * s, rtree_t * targets, rtree_t *
 	 * be expanded.
 	 */
 	for (dir = NORTH; dir <= WEST; dir = directionIncrement(dir)) {
+		int tmp;
 		/* don't break the edge we came from */
 		if (e->expand_dir != ((dir + 2) % 4)) {
 			heap[dir] = heap_create();
@@ -2505,7 +2506,8 @@ vector_t *BreakManyEdges(struct routeone_state * s, rtree_t * targets, rtree_t *
 					bi.box.X1 = e->rb->sbox.X2;
 				if (e->expand_dir == SW)
 					bi.box.X2 = e->rb->sbox.X1;
-				rb->n = r_search(tree, &bi.box, NULL, __GatherBlockers, &bi);
+				r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
+				rb->n = tmp;
 				break;
 			case EAST:
 				bi.box.X1 = bi.box.X2 - bloat - 1;
@@ -2516,7 +2518,8 @@ vector_t *BreakManyEdges(struct routeone_state * s, rtree_t * targets, rtree_t *
 					bi.box.Y1 = e->rb->sbox.Y2;
 				if (e->expand_dir == NW)
 					bi.box.Y2 = e->rb->sbox.Y1;
-				rb->e = r_search(tree, &bi.box, NULL, __GatherBlockers, &bi);
+				r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
+				rb->e = tmp;
 				break;
 			case SOUTH:
 				bi.box.Y1 = bi.box.Y2 - bloat - 1;
@@ -2527,7 +2530,8 @@ vector_t *BreakManyEdges(struct routeone_state * s, rtree_t * targets, rtree_t *
 					bi.box.X1 = e->rb->sbox.X2;
 				if (e->expand_dir == NW)
 					bi.box.X2 = e->rb->sbox.X1;
-				rb->s = r_search(tree, &bi.box, NULL, __GatherBlockers, &bi);
+				r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
+				rb->s = tmp;
 				break;
 			case WEST:
 				bi.box.X2 = bi.box.X1 + bloat + 1;
@@ -2538,7 +2542,8 @@ vector_t *BreakManyEdges(struct routeone_state * s, rtree_t * targets, rtree_t *
 					bi.box.Y1 = e->rb->sbox.Y2;
 				if (e->expand_dir == NE)
 					bi.box.Y2 = e->rb->sbox.Y1;
-				rb->w = r_search(tree, &bi.box, NULL, __GatherBlockers, &bi);
+				r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
+				rb->w = tmp;
 				break;
 			default:
 				assert(0);
@@ -2746,7 +2751,7 @@ static routebox_t *FindOneInBox(rtree_t * rtree, routebox_t * rb)
 	foib.intersect = NULL;
 
 	if (setjmp(foib.env) == 0)
-		r_search(rtree, &r, NULL, foib_rect_in_reg, &foib);
+		r_search(rtree, &r, NULL, foib_rect_in_reg, &foib, NULL);
 	return foib.intersect;
 }
 
@@ -2813,7 +2818,7 @@ routebox_t *FindThermable(rtree_t * rtree, routebox_t * rb)
 	info.query = shrink_routebox(rb);
 
 	if (setjmp(info.env) == 0) {
-		r_search(rtree, &info.query, NULL, ftherm_rect_in_reg, &info);
+		r_search(rtree, &info.query, NULL, ftherm_rect_in_reg, &info, NULL);
 		return NULL;
 	}
 	return info.plane;
@@ -3526,7 +3531,7 @@ static void source_conflicts(rtree_t * tree, routebox_t * rb)
 {
 	if (!AutoRouteParameters.with_conflicts)
 		return;
-	r_search(tree, &rb->sbox, NULL, __conflict_source, rb);
+	r_search(tree, &rb->sbox, NULL, __conflict_source, rb, NULL);
 	touch_conflicts(NULL, 1);
 }
 
@@ -4064,7 +4069,7 @@ bool no_expansion_boxes(routedata_t * rd)
 	big.Y1 = 0;
 	big.Y2 = MAX_COORD;
 	for (i = 0; i < max_group; i++) {
-		if (r_search(rd->layergrouptree[i], &big, NULL, bad_boy, NULL))
+		if (r_search(rd->layergrouptree[i], &big, NULL, bad_boy, NULL, NULL))
 			return false;
 	}
 	return true;
@@ -4405,13 +4410,13 @@ static int FindPin(const BoxType * box, PinTypePtr * pin)
 	info.X = box->X1;
 	info.Y = box->Y1;
 	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->pin_tree, box, NULL, fpin_rect, &info);
+		r_search(PCB->Data->pin_tree, box, NULL, fpin_rect, &info, NULL);
 	else {
 		*pin = info.pin;
 		return PIN_TYPE;
 	}
 	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->via_tree, box, NULL, fpin_rect, &info);
+		r_search(PCB->Data->via_tree, box, NULL, fpin_rect, &info, NULL);
 	else {
 		*pin = info.pin;
 		return VIA_TYPE;
@@ -4685,7 +4690,7 @@ donerouting:
 		int i;
 		BoxType big = { 0, 0, MAX_COORD, MAX_COORD };
 		for (i = 0; i < max_group; i++) {
-			r_search(rd->layergrouptree[i], &big, NULL, ripout_livedraw_obj_cb, NULL);
+			r_search(rd->layergrouptree[i], &big, NULL, ripout_livedraw_obj_cb, NULL, NULL);
 		}
 	}
 #ifdef ROUTE_DEBUG

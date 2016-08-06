@@ -329,7 +329,7 @@ static void *RemoveLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr 
 	info.line = Line;
 	info.point = Point;
 	if (setjmp(info.env) == 0) {
-		r_search(Layer->line_tree, (const BoxType *) Point, NULL, remove_point, &info);
+		r_search(Layer->line_tree, (const BoxType *) Point, NULL, remove_point, &info, NULL);
 		return RemoveLine(Layer, Line);
 	}
 	MoveObject(LINEPOINT_TYPE, Layer, info.line, info.point, other.X - Point->X, other.Y - Point->Y);

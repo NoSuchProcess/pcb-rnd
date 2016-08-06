@@ -357,26 +357,26 @@ static double drc_lines(PointTypePtr end, bool way)
 			last2 = length2;
 			if (setjmp(info.env) == 0) {
 				info.line = &line1;
-				r_search(PCB->Data->via_tree, &line1.BoundingBox, NULL, drcVia_callback, &info);
-				r_search(PCB->Data->pin_tree, &line1.BoundingBox, NULL, drcVia_callback, &info);
+				r_search(PCB->Data->via_tree, &line1.BoundingBox, NULL, drcVia_callback, &info, NULL);
+				r_search(PCB->Data->pin_tree, &line1.BoundingBox, NULL, drcVia_callback, &info, NULL);
 				if (info.solder || comp == group)
-					r_search(PCB->Data->pad_tree, &line1.BoundingBox, NULL, drcPad_callback, &info);
+					r_search(PCB->Data->pad_tree, &line1.BoundingBox, NULL, drcPad_callback, &info, NULL);
 				if (two_lines) {
 					info.line = &line2;
-					r_search(PCB->Data->via_tree, &line2.BoundingBox, NULL, drcVia_callback, &info);
-					r_search(PCB->Data->pin_tree, &line2.BoundingBox, NULL, drcVia_callback, &info);
+					r_search(PCB->Data->via_tree, &line2.BoundingBox, NULL, drcVia_callback, &info, NULL);
+					r_search(PCB->Data->pin_tree, &line2.BoundingBox, NULL, drcVia_callback, &info, NULL);
 					if (info.solder || comp == group)
-						r_search(PCB->Data->pad_tree, &line2.BoundingBox, NULL, drcPad_callback, &info);
+						r_search(PCB->Data->pad_tree, &line2.BoundingBox, NULL, drcPad_callback, &info, NULL);
 				}
 				GROUP_LOOP(PCB->Data, group);
 				{
 					info.line = &line1;
-					r_search(layer->line_tree, &line1.BoundingBox, NULL, drcLine_callback, &info);
-					r_search(layer->arc_tree, &line1.BoundingBox, NULL, drcArc_callback, &info);
+					r_search(layer->line_tree, &line1.BoundingBox, NULL, drcLine_callback, &info, NULL);
+					r_search(layer->arc_tree, &line1.BoundingBox, NULL, drcArc_callback, &info, NULL);
 					if (two_lines) {
 						info.line = &line2;
-						r_search(layer->line_tree, &line2.BoundingBox, NULL, drcLine_callback, &info);
-						r_search(layer->arc_tree, &line2.BoundingBox, NULL, drcArc_callback, &info);
+						r_search(layer->line_tree, &line2.BoundingBox, NULL, drcLine_callback, &info, NULL);
+						r_search(layer->arc_tree, &line2.BoundingBox, NULL, drcArc_callback, &info, NULL);
 					}
 				}
 				END_LOOP;

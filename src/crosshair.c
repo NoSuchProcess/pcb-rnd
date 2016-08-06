@@ -841,8 +841,8 @@ static void onpoint_work(CrosshairType * crosshair, Coord X, Coord Y)
 		/* Only find points of arcs and lines on currently visible layers. */
 		if (!layer->On)
 			continue;
-		r_search(layer->line_tree, &SearchBox, NULL, onpoint_line_callback, &info);
-		r_search(layer->arc_tree, &SearchBox, NULL, onpoint_arc_callback, &info);
+		r_search(layer->line_tree, &SearchBox, NULL, onpoint_line_callback, &info, NULL);
+		r_search(layer->arc_tree, &SearchBox, NULL, onpoint_arc_callback, &info, NULL);
 	}
 
 	/* Undraw the old objects */

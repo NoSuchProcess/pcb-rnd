@@ -43,7 +43,7 @@
 typedef enum r_dir_e {
 	R_DIR_NOT_FOUND = 0,         /* object not found or not accepted */
 	R_DIR_FOUND_CONTINUE = 1,    /* object found or accepted, go on searching */
-	R_DIR_FOUND_CANCEL           /* object found or accepted, cancel the search and return */
+	R_DIR_CANCEL                 /* cancel the search and return immediately */
 } r_dir_t;
 
 /* create an rtree from the list of boxes.  if 'manage' is true, then
@@ -70,13 +70,15 @@ void r_insert_entry(rtree_t * rtree, const BoxType * which, int manage);
  * abort the search if that is the desired behavior.
  */
 
-int r_search(rtree_t * rtree, const BoxType * starting_region,
+r_dir_t r_search(rtree_t * rtree, const BoxType * starting_region,
 						 r_dir_t (*region_in_search) (const BoxType * region, void *cl),
-						 r_dir_t (*rectangle_in_region) (const BoxType * box, void *cl), void *closure);
-static inline int r_search_pt(rtree_t * rtree, const PointType * pt,
+						 r_dir_t (*rectangle_in_region) (const BoxType * box, void *cl), void *closure,
+						 int *num_found);
+static inline r_dir_t r_search_pt(rtree_t * rtree, const PointType * pt,
 															int radius,
 															r_dir_t (*region_in_search) (const BoxType * region, void *cl),
-															r_dir_t (*rectangle_in_region) (const BoxType * box, void *cl), void *closure)
+															r_dir_t (*rectangle_in_region) (const BoxType * box, void *cl), void *closure,
+															int *num_found)
 {
 	BoxType box;
 
@@ -85,7 +87,7 @@ static inline int r_search_pt(rtree_t * rtree, const PointType * pt,
 	box.Y1 = pt->Y - radius;
 	box.Y2 = pt->Y + radius;
 
-	return r_search(rtree, &box, region_in_search, rectangle_in_region, closure);
+	return r_search(rtree, &box, region_in_search, rectangle_in_region, closure, num_found);
 }
 
 /* -- special-purpose searches build upon r_search -- */

@@ -551,8 +551,8 @@ void CountHoles(int *plated, int *unplated, const BoxType * within_area)
 {
 	HoleCountStruct hcs = { 0, 0 };
 
-	r_search(PCB->Data->pin_tree, within_area, NULL, hole_counting_callback, &hcs);
-	r_search(PCB->Data->via_tree, within_area, NULL, hole_counting_callback, &hcs);
+	r_search(PCB->Data->pin_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
+	r_search(PCB->Data->via_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
 
 	if (plated != NULL)
 		*plated = hcs.nplated;

@@ -177,7 +177,7 @@ void mtspace_remove(mtspace_t * mtspace, const BoxType * box, mtspace_type_t whi
 	cl.tree = which_tree(mtspace, which);
 	small_search = box_center(box);
 	if (setjmp(cl.env) == 0) {
-		r_search(cl.tree, &small_search, NULL, mts_remove_one, &cl);
+		r_search(cl.tree, &small_search, NULL, mts_remove_one, &cl, NULL);
 		assert(0);									/* didn't find it?? */
 	}
 }
@@ -305,18 +305,14 @@ static r_dir_t query_one(const BoxType * box, void *cl)
 static void qloop(struct query_closure *qc, rtree_t * tree, heap_or_vector res, bool is_vec)
 {
 	BoxType *cbox;
-#ifndef NDEBUG
 	int n;
-#endif
+
 	while (!(qc->desired ? heap_is_empty(qc->checking.h) : vector_is_empty(qc->checking.v))) {
 		cbox = qc->desired ? (BoxTypePtr) heap_remove_smallest(qc->checking.h) : (BoxTypePtr) vector_remove_last(qc->checking.v);
 		if (setjmp(qc->env) == 0) {
 			assert(box_is_good(cbox));
 			qc->cbox = cbox;
-#ifndef NDEBUG
-			n =
-#endif
-				r_search(tree, cbox, NULL, query_one, qc);
+			r_search(tree, cbox, NULL, query_one, qc, &n);
 			assert(n == 0);
 			/* nothing intersected with this tree, put it in the result vector */
 			if (is_vec)

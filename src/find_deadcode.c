@@ -69,11 +69,11 @@ static bool PVTouchesLine(LineTypePtr line)
 	info.line = *line;
 	EXPAND_BOUNDS(&info.line);
 	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->via_tree, (BoxType *) & info.line, NULL, pv_touch_callback, &info);
+		r_search(PCB->Data->via_tree, (BoxType *) & info.line, NULL, pv_touch_callback, &info, NULL);
 	else
 		return true;
 	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->pin_tree, (BoxType *) & info.line, NULL, pv_touch_callback, &info);
+		r_search(PCB->Data->pin_tree, (BoxType *) & info.line, NULL, pv_touch_callback, &info, NULL);
 	else
 		return true;
 
@@ -103,11 +103,11 @@ static bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup)
 			/* find the first line that touches coordinates */
 
 			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->line_tree, (BoxType *) & info.line, NULL, LOT_Linecallback, &info);
+				r_search(LAYER_PTR(layer)->line_tree, (BoxType *) & info.line, NULL, LOT_Linecallback, &info, NULL);
 			else
 				return (true);
 			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->arc_tree, (BoxType *) & info.line, NULL, LOT_Arccallback, &info);
+				r_search(LAYER_PTR(layer)->arc_tree, (BoxType *) & info.line, NULL, LOT_Arccallback, &info, NULL);
 			else
 				return (true);
 
@@ -122,7 +122,7 @@ static bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup)
 			/* handle special 'pad' layers */
 			info.layer = layer - max_copper_layer;
 			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->pad_tree, &info.line.BoundingBox, NULL, LOT_Padcallback, &info);
+				r_search(PCB->Data->pad_tree, &info.line.BoundingBox, NULL, LOT_Padcallback, &info, NULL);
 			else
 				return true;
 		}

@@ -373,7 +373,7 @@ CreateDrawnLineOnLayer(LayerTypePtr Layer,
 	 * verify that the layer is on the board first!
 	 */
 	if (setjmp(info.env) == 0) {
-		r_search(Layer->line_tree, &search, NULL, line_callback, &info);
+		r_search(Layer->line_tree, &search, NULL, line_callback, &info, NULL);
 		return CreateNewLineOnLayer(Layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 	}
 

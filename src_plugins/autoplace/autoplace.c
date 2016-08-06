@@ -281,7 +281,7 @@ static const BoxType *r_find_neighbor(rtree_t * rtree, const BoxType * box, dire
 	ni.trap.Y2 = ni.trap.Y1;
 	ni.trap.Y1 = bbox.Y1;
 	/* do the search! */
-	r_search(rtree, NULL, __r_find_neighbor_reg_in_sea, __r_find_neighbor_rect_in_reg, &ni);
+	r_search(rtree, NULL, __r_find_neighbor_reg_in_sea, __r_find_neighbor_rect_in_reg, &ni, NULL);
 	return ni.neighbor;
 }
 
