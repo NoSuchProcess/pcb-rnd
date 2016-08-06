@@ -294,12 +294,12 @@ struct rlp_info {
 	LineTypePtr line;
 	PointTypePtr point;
 };
-static int remove_point(const BoxType * b, void *cl)
+static r_dir_t remove_point(const BoxType * b, void *cl)
 {
 	LineType *line = (LineType *) b;
 	struct rlp_info *info = (struct rlp_info *) cl;
 	if (line == info->line)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if ((line->Point1.X == info->point->X)
 			&& (line->Point1.Y == info->point->Y)) {
 		info->line = line;
@@ -312,7 +312,7 @@ static int remove_point(const BoxType * b, void *cl)
 		info->point = &line->Point2;
 		longjmp(info->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------

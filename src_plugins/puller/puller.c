@@ -279,7 +279,7 @@ static double dist_lsp(int x1, int y1, int x2, int y2, int px, int py)
 /*                                                                           */
 /*****************************************************************************/
 
-static int line_callback(const BoxType * b, void *cl)
+static r_dir_t line_callback(const BoxType * b, void *cl)
 {
 	/* LayerTypePtr layer = (LayerTypePtr)cl; */
 	LineTypePtr l = (LineTypePtr) b;
@@ -302,10 +302,10 @@ static int line_callback(const BoxType * b, void *cl)
 		printf("picked, exact %d\n", line_exact);
 #endif
 	}
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
-static int arc_callback(const BoxType * b, void *cl)
+static r_dir_t arc_callback(const BoxType * b, void *cl)
 {
 	/* LayerTypePtr layer = (LayerTypePtr) cl; */
 	ArcTypePtr a = (ArcTypePtr) b;
@@ -336,7 +336,7 @@ static int arc_callback(const BoxType * b, void *cl)
 		printf("picked, exact %d\n", arc_exact);
 #endif
 	}
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 static int find_pair(int Px, int Py)
@@ -652,7 +652,7 @@ typedef struct {
 
 #define NEAR(a,b) ((a) <= (b) + 2 && (a) >= (b) - 2)
 
-static int find_pair_line_callback(const BoxType * b, void *cl)
+static r_dir_t find_pair_line_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 #if TRACE1
@@ -661,7 +661,7 @@ static int find_pair_line_callback(const BoxType * b, void *cl)
 	FindPairCallbackStruct *fpcs = (FindPairCallbackStruct *) cl;
 
 	if (line == fpcs->me)
-		return 0;
+		return R_DIR_NOT_FOUND;
 #ifdef CHECK_LINE_PT_NEG
 	if (line->Point1.X < 0)
 		abort1();
@@ -684,17 +684,17 @@ static int find_pair_line_callback(const BoxType * b, void *cl)
 #endif
 		}
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int find_pair_arc_callback(const BoxType * b, void *cl)
+static r_dir_t find_pair_arc_callback(const BoxType * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	Extra *e = ARC2EXTRA(arc);
 	FindPairCallbackStruct *fpcs = (FindPairCallbackStruct *) cl;
 
 	if (arc == fpcs->me)
-		return 0;
+		return R_DIR_NOT_FOUND;
 #if TRACE1
 	pcb_printf(" - %p arc %#mD or %#mD\n", e, e->start.x, e->start.y, e->end.x, e->end.y);
 #endif
@@ -709,7 +709,7 @@ static int find_pair_arc_callback(const BoxType * b, void *cl)
 		else
 			*fpcs->extra_ptr = e;
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 static void find_pairs_1(void *me, Extra ** e, int x, int y)
@@ -754,7 +754,7 @@ static int check_point_in_pin(PinTypePtr pin, int x, int y, End * e)
 	return 0;
 }
 
-static int find_pair_pinline_callback(const BoxType * b, void *cl)
+static r_dir_t find_pair_pinline_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	PinTypePtr pin = (PinTypePtr) cl;
@@ -770,7 +770,7 @@ static int find_pair_pinline_callback(const BoxType * b, void *cl)
 	hits += check_point_in_pin(pin, line->Point2.X, line->Point2.Y, &(e->end));
 
 	if (hits)
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	/* See if the line passes through this pin.  */
 	/* FIXME: this assumes round pads, but it's good enough for square
@@ -783,10 +783,10 @@ static int find_pair_pinline_callback(const BoxType * b, void *cl)
 		unlink_end(e, &e->start.next);
 		unlink_end(e, &e->end.next);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int find_pair_pinarc_callback(const BoxType * b, void *cl)
+static r_dir_t find_pair_pinarc_callback(const BoxType * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	PinTypePtr pin = (PinTypePtr) cl;
@@ -795,10 +795,10 @@ static int find_pair_pinarc_callback(const BoxType * b, void *cl)
 
 	hits = check_point_in_pin(pin, e->start.x, e->start.y, &(e->start));
 	hits += check_point_in_pin(pin, e->end.x, e->end.y, &(e->end));
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int check_point_in_pad(PadTypePtr pad, int x, int y, End * e)
+static r_dir_t check_point_in_pad(PadTypePtr pad, int x, int y, End * e)
 {
 	int inside_p;
 	int t;
@@ -837,12 +837,12 @@ static int check_point_in_pad(PadTypePtr pad, int x, int y, End * e)
 			e->at_pin = 1;
 		e->pin = pad;
 		e->is_pad = 1;
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int find_pair_padline_callback(const BoxType * b, void *cl)
+static r_dir_t find_pair_padline_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	PadTypePtr pad = (PadTypePtr) cl;
@@ -854,11 +854,11 @@ static int find_pair_padline_callback(const BoxType * b, void *cl)
 
 	if (TEST_FLAG(ONSOLDERFLAG, pad)) {
 		if (!current_is_solder)
-			return 0;
+			return R_DIR_NOT_FOUND;
 	}
 	else {
 		if (!current_is_component)
-			return 0;
+			return R_DIR_NOT_FOUND;
 	}
 
 #ifdef CHECK_LINE_PT_NEG
@@ -870,7 +870,7 @@ static int find_pair_padline_callback(const BoxType * b, void *cl)
 	hits += check_point_in_pad(pad, line->Point2.X, line->Point2.Y, &(e->end));
 
 	if (hits)
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	/* Ok, something strange.  The line intersects our space, but
 	   doesn't end in our space.  See if it just passes through us, and
@@ -897,10 +897,10 @@ static int find_pair_padline_callback(const BoxType * b, void *cl)
 		unlink_end(e, &e->end.next);
 	}
 
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int find_pair_padarc_callback(const BoxType * b, void *cl)
+static r_dir_t find_pair_padarc_callback(const BoxType * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	PadTypePtr pad = (PadTypePtr) cl;
@@ -909,16 +909,16 @@ static int find_pair_padarc_callback(const BoxType * b, void *cl)
 
 	if (TEST_FLAG(ONSOLDERFLAG, pad)) {
 		if (!current_is_solder)
-			return 0;
+			return R_DIR_NOT_FOUND;
 	}
 	else {
 		if (!current_is_component)
-			return 0;
+			return R_DIR_NOT_FOUND;
 	}
 
 	hits = check_point_in_pad(pad, e->start.x, e->start.y, &(e->start));
 	hits += check_point_in_pad(pad, e->end.x, e->end.y, &(e->end));
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 static void null_multi_next_ends(AnyObjectType * ptr, Extra * extra, void *userdata)
@@ -1494,14 +1494,14 @@ static int gp_point_2(int x, int y, int t, End * e, int esa, int eda, const char
 	return gp_point_force(x, y, t, e, esa, eda, 0, func);
 }
 
-static int gp_line_cb(const BoxType * b, void *cb)
+static r_dir_t gp_line_cb(const BoxType * b, void *cb)
 {
 	const LineTypePtr l = (LineTypePtr) b;
 	Extra *e = LINE2EXTRA(l);
 	if (l == start_line || l == end_line)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if (e->deleted)
-		return 0;
+		return R_DIR_NOT_FOUND;
 #ifdef CHECK_LINE_PT_NEG
 	if (l->Point1.X < 0)
 		abort1();
@@ -1510,32 +1510,32 @@ static int gp_line_cb(const BoxType * b, void *cb)
 		gp_point(l->Point1.X, l->Point1.Y, l->Thickness / 2, &e->start);
 	if (!e->end.next || !EXTRA_IS_ARC(e->end.next))
 		gp_point(l->Point2.X, l->Point2.Y, l->Thickness / 2, &e->end);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int gp_arc_cb(const BoxType * b, void *cb)
+static r_dir_t gp_arc_cb(const BoxType * b, void *cb)
 {
 	const ArcTypePtr a = (ArcTypePtr) b;
 	Extra *e = ARC2EXTRA(a);
 	if (a == start_arc || a == end_arc)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if (e->deleted)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	gp_point_2(a->X, a->Y, a->Width + a->Thickness / 2, 0, a->StartAngle, a->Delta, __FUNCTION__);
 	if (start_arc && a->X == start_arc->X && a->Y == start_arc->Y)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if (end_arc && a->X != end_arc->X && a->Y != end_arc->Y)
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if (e->start.next || e->end.next)
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	gp_point(e->start.x, e->start.y, a->Thickness / 2, 0);
 	gp_point(e->end.x, e->end.y, a->Thickness / 2, 0);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int gp_text_cb(const BoxType * b, void *cb)
+static r_dir_t gp_text_cb(const BoxType * b, void *cb)
 {
 	const TextTypePtr t = (TextTypePtr) b;
 	/* FIXME: drop in the actual text-line endpoints later. */
@@ -1543,25 +1543,25 @@ static int gp_text_cb(const BoxType * b, void *cb)
 	gp_point(t->BoundingBox.X1, t->BoundingBox.Y2, 0, 0);
 	gp_point(t->BoundingBox.X2, t->BoundingBox.Y2, 0, 0);
 	gp_point(t->BoundingBox.X2, t->BoundingBox.Y1, 0, 0);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int gp_poly_cb(const BoxType * b, void *cb)
+static r_dir_t gp_poly_cb(const BoxType * b, void *cb)
 {
 	int i;
 	const PolygonTypePtr p = (PolygonTypePtr) b;
 	for (i = 0; i < p->PointN; i++)
 		gp_point(p->Points[i].X, p->Points[i].Y, 0, 0);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int gp_pin_cb(const BoxType * b, void *cb)
+static r_dir_t gp_pin_cb(const BoxType * b, void *cb)
 {
 	const PinTypePtr p = (PinTypePtr) b;
 	int t2 = (p->Thickness + 1) / 2;
 
 	if (p == start_pinpad || p == end_pinpad)
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	/* FIXME: we lump octagonal pins in with square; safe, but not
 	   optimal.  */
@@ -1574,24 +1574,24 @@ static int gp_pin_cb(const BoxType * b, void *cb)
 	else {
 		gp_point(p->X, p->Y, t2, 0);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int gp_pad_cb(const BoxType * b, void *cb)
+static r_dir_t gp_pad_cb(const BoxType * b, void *cb)
 {
 	const PadTypePtr p = (PadTypePtr) b;
 	int t2 = (p->Thickness + 1) / 2;
 
 	if (p == start_pinpad || p == end_pinpad)
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if (TEST_FLAG(ONSOLDERFLAG, p)) {
 		if (!current_is_solder)
-			return 0;
+			return R_DIR_NOT_FOUND;
 	}
 	else {
 		if (!current_is_component)
-			return 0;
+			return R_DIR_NOT_FOUND;
 	}
 
 	/* FIXME: we lump octagonal pads in with square; safe, but not
@@ -1620,7 +1620,7 @@ static int gp_pad_cb(const BoxType * b, void *cb)
 		gp_point(p->Point1.X, p->Point1.Y, t2, 0);
 		gp_point(p->Point2.X, p->Point2.Y, t2, 0);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 static LineTypePtr create_line(LineTypePtr sample, int x1, int y1, int x2, int y2)

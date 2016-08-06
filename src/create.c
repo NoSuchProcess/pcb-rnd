@@ -274,7 +274,7 @@ struct line_info {
 	jmp_buf env;
 };
 
-static int line_callback(const BoxType * b, void *cl)
+static r_dir_t line_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct line_info *i = (struct line_info *) cl;
@@ -337,7 +337,7 @@ static int line_callback(const BoxType * b, void *cl)
 			}
 		}
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 

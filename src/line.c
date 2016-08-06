@@ -206,44 +206,44 @@ struct drc_info {
 	jmp_buf env;
 };
 
-static int drcVia_callback(const BoxType * b, void *cl)
+static r_dir_t drcVia_callback(const BoxType * b, void *cl)
 {
 	PinTypePtr via = (PinTypePtr) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
 	if (!TEST_FLAG(FOUNDFLAG, via) && PinLineIntersect(via, i->line))
 		longjmp(i->env, 1);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
-static int drcPad_callback(const BoxType * b, void *cl)
+static r_dir_t drcPad_callback(const BoxType * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
 	if (TEST_FLAG(ONSOLDERFLAG, pad) == i->solder && !TEST_FLAG(FOUNDFLAG, pad) && LinePadIntersect(i->line, pad))
 		longjmp(i->env, 1);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
-static int drcLine_callback(const BoxType * b, void *cl)
+static r_dir_t drcLine_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
 	if (!TEST_FLAG(FOUNDFLAG, line) && LineLineIntersect(line, i->line))
 		longjmp(i->env, 1);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
-static int drcArc_callback(const BoxType * b, void *cl)
+static r_dir_t drcArc_callback(const BoxType * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
 	if (!TEST_FLAG(FOUNDFLAG, arc) && LineArcIntersect(i->line, arc))
 		longjmp(i->env, 1);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 /* drc_lines() checks for intersectors against two lines and

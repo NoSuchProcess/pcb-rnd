@@ -531,7 +531,7 @@ typedef struct {
 	int nunplated;
 } HoleCountStruct;
 
-static int hole_counting_callback(const BoxType * b, void *cl)
+static r_dir_t hole_counting_callback(const BoxType * b, void *cl)
 {
 	PinTypePtr pin = (PinTypePtr) b;
 	HoleCountStruct *hcs = (HoleCountStruct *) cl;
@@ -539,7 +539,7 @@ static int hole_counting_callback(const BoxType * b, void *cl)
 		hcs->nunplated++;
 	else
 		hcs->nplated++;
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 /* ---------------------------------------------------------------------------

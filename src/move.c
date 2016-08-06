@@ -489,7 +489,7 @@ struct via_info {
 	jmp_buf env;
 };
 
-static int moveline_callback(const BoxType * b, void *cl)
+static r_dir_t moveline_callback(const BoxType * b, void *cl)
 {
 	struct via_info *i = (struct via_info *) cl;
 	PinTypePtr via;
@@ -634,19 +634,19 @@ struct mptlc {
 	PolygonTypePtr polygon;
 } mptlc;
 
-int mptl_pin_callback(const BoxType * b, void *cl)
+r_dir_t mptl_pin_callback(const BoxType * b, void *cl)
 {
 	struct mptlc *d = (struct mptlc *) cl;
 	PinTypePtr pin = (PinTypePtr) b;
 	if (!TEST_THERM(d->snum, pin) || !IsPointInPolygon(pin->X, pin->Y, pin->Thickness + pin->Clearance + 2, d->polygon))
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if (d->type == PIN_TYPE)
 		AddObjectToFlagUndoList(PIN_TYPE, pin->Element, pin, pin);
 	else
 		AddObjectToFlagUndoList(VIA_TYPE, pin, pin, pin);
 	ASSIGN_THERM(d->dnum, GET_THERM(d->snum, pin), pin);
 	CLEAR_THERM(d->snum, pin);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 /* ---------------------------------------------------------------------------

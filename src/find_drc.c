@@ -214,8 +214,7 @@ static int throw_drc_dialog(void)
 }
 
 /* DRC clearance callback */
-
-static int drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr polygon, int type, void *ptr1, void *ptr2)
+static r_dir_t drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr polygon, int type, void *ptr1, void *ptr2)
 {
 	char *message;
 	Coord x, y;
@@ -278,7 +277,7 @@ static int drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr pol
 	default:
 		Message("hace: Bad Plow object in callback\n");
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 
 doIsBad:
 	AddObjectToFlagUndoList(POLYGON_TYPE, layer, polygon, polygon);
@@ -298,11 +297,11 @@ doIsBad:
 	free(object_type_list);
 	if (!throw_drc_dialog()) {
 		IsBad = true;
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	}
 	IncrementUndoSerialNumber();
 	Undo(true);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 

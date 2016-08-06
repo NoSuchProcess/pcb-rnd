@@ -522,20 +522,20 @@ static int adjust_tree(rtree_t * tree, struct seg *s)
  * (C) 2006, harry eaton
  * This prunes the search for boxes that don't intersect the segment.
  */
-static int seg_in_region(const BoxType * b, void *cl)
+static r_dir_t seg_in_region(const BoxType * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	double y1, y2;
 	/* for zero slope the search is aligned on the axis so it is already pruned */
 	if (i->m == 0.)
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	y1 = i->m * b->X1 + i->b;
 	y2 = i->m * b->X2 + i->b;
 	if (min(y1, y2) >= b->Y2)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if (max(y1, y2) < b->Y1)
-		return 0;
-	return 1;											/* might intersect */
+		return R_DIR_NOT_FOUND;
+	return R_DIR_FOUND_CONTINUE;											/* might intersect */
 }
 
 /* Prepend a deferred node-insersion task to a list */
@@ -559,7 +559,7 @@ static insert_node_task *prepend_insert_node_task(insert_node_task * list, seg *
  * problem. There are efficient algorithms for finding intersections with snap
  * rounding, but I don't have time to implement them right now.
  */
-static int seg_in_seg(const BoxType * b, void *cl)
+static r_dir_t seg_in_seg(const BoxType * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	struct seg *s = (struct seg *) b;
@@ -572,11 +572,11 @@ static int seg_in_seg(const BoxType * b, void *cl)
 	 * already been intersected this pass, skip it until the next pass.
 	 */
 	if (s->intersected || i->s->intersected)
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	cnt = vect_inters2(s->v->point, s->v->next->point, i->v->point, i->v->next->point, s1, s2);
 	if (!cnt)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if (i->touch)									/* if checking touches one find and we're done */
 		longjmp(*i->touch, TOUCHES);
 	i->s->p->Flags.status = ISECTED;
@@ -599,7 +599,7 @@ static int seg_in_seg(const BoxType * b, void *cl)
 #endif
 			i->node_insert_list = prepend_insert_node_task(i->node_insert_list, s, new_node);
 			s->intersected = 1;
-			return 0;									/* Keep looking for intersections with segment "i" */
+			return R_DIR_NOT_FOUND;									/* Keep looking for intersections with segment "i" */
 		}
 		/* Skip any remaining r_search hits against segment i, as any futher
 		 * intersections will be rejected until the next pass anyway.
@@ -607,7 +607,7 @@ static int seg_in_seg(const BoxType * b, void *cl)
 		if (done_insert_on_i)
 			longjmp(*i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 static void *make_edge_tree(PLINE * pb)
@@ -643,7 +643,7 @@ static void *make_edge_tree(PLINE * pb)
 	return (void *) ans;
 }
 
-static int get_seg(const BoxType * b, void *cl)
+static r_dir_t get_seg(const BoxType * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	struct seg *s = (struct seg *) b;
@@ -651,7 +651,7 @@ static int get_seg(const BoxType * b, void *cl)
 		i->s = s;
 		longjmp(i->sego, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /*
@@ -672,7 +672,7 @@ static int get_seg(const BoxType * b, void *cl)
  *
  */
 
-static int contour_bounds_touch(const BoxType * b, void *cl)
+static r_dir_t contour_bounds_touch(const BoxType * b, void *cl)
 {
 	contour_info *c_info = (contour_info *) cl;
 	PLINE *pa = c_info->pa;
@@ -743,7 +743,7 @@ static int contour_bounds_touch(const BoxType * b, void *cl)
 	c_info->node_insert_list = info.node_insert_list;
 	if (info.need_restart)
 		c_info->need_restart = 1;
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 static int intersect_impl(jmp_buf * jb, POLYAREA * b, POLYAREA * a, int add)
@@ -872,14 +872,14 @@ static inline int cntrbox_inside(PLINE * c1, PLINE * c2)
 /*****************************************************************/
 /* Routines for making labels */
 
-static int count_contours_i_am_inside(const BoxType * b, void *cl)
+static r_dir_t count_contours_i_am_inside(const BoxType * b, void *cl)
 {
 	PLINE *me = (PLINE *) cl;
 	PLINE *check = (PLINE *) b;
 
 	if (poly_ContourInContour(check, me))
-		return 1;
-	return 0;
+		return R_DIR_FOUND_CONTINUE;
+	return R_DIR_NOT_FOUND;
 }
 
 /* cntr_in_M_POLYAREA
@@ -1126,15 +1126,15 @@ struct polyarea_info {
 	POLYAREA *pa;
 };
 
-static int heap_it(const BoxType * b, void *cl)
+static r_dir_t heap_it(const BoxType * b, void *cl)
 {
 	heap_t *heap = (heap_t *) cl;
 	struct polyarea_info *pa_info = (struct polyarea_info *) b;
 	PLINE *p = pa_info->pa->contours;
 	if (p->Count == 0)
-		return 0;										/* how did this happen? */
+		return R_DIR_NOT_FOUND;										/* how did this happen? */
 	heap_insert(heap, p->area, pa_info);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 struct find_inside_info {
@@ -1143,20 +1143,20 @@ struct find_inside_info {
 	PLINE *result;
 };
 
-static int find_inside(const BoxType * b, void *cl)
+static r_dir_t find_inside(const BoxType * b, void *cl)
 {
 	struct find_inside_info *info = (struct find_inside_info *) cl;
 	PLINE *check = (PLINE *) b;
 	/* Do test on check to see if it inside info->want_inside */
 	/* If it is: */
 	if (check->Flags.orient == PLF_DIR) {
-		return 0;
+		return R_DIR_NOT_FOUND;
 	}
 	if (poly_ContourInContour(info->want_inside, check)) {
 		info->result = check;
 		longjmp(info->jb, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 static void InsertHoles(jmp_buf * e, POLYAREA * dest, PLINE ** src)
@@ -1738,21 +1738,21 @@ struct find_inside_m_pa_info {
 	PLINE *result;
 };
 
-static int find_inside_m_pa(const BoxType * b, void *cl)
+static r_dir_t find_inside_m_pa(const BoxType * b, void *cl)
 {
 	struct find_inside_m_pa_info *info = (struct find_inside_m_pa_info *) cl;
 	PLINE *check = (PLINE *) b;
 	/* Don't report for the main contour */
 	if (check->Flags.orient == PLF_DIR)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	/* Don't look at contours marked as being intersected */
 	if (check->Flags.status == ISECTED)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if (cntr_in_M_POLYAREA(check, info->want_inside, FALSE)) {
 		info->result = check;
 		longjmp(info->jb, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 
@@ -2343,11 +2343,11 @@ void poly_PreContour(PLINE * C, BOOLp optimize)
 	C->tree = (rtree_t *) make_edge_tree(C);
 }																/* poly_PreContour */
 
-static int flip_cb(const BoxType * b, void *cl)
+static r_dir_t flip_cb(const BoxType * b, void *cl)
 {
 	struct seg *s = (struct seg *) b;
 	s->v = s->v->prev;
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 void poly_InvContour(PLINE * c)
@@ -2528,7 +2528,7 @@ typedef struct pip {
 } pip;
 
 
-static int crossing(const BoxType * b, void *cl)
+static r_dir_t crossing(const BoxType * b, void *cl)
 {
 	struct seg *s = (struct seg *) b;
 	struct pip *p = (struct pip *) cl;
@@ -2563,7 +2563,7 @@ static int crossing(const BoxType * b, void *cl)
 				p->f -= 1;
 		}
 	}
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 int poly_InsideContour(PLINE * c, Vector p)

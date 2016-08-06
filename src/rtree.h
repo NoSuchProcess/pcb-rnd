@@ -39,6 +39,12 @@
 
 #include "global.h"
 
+/* callback direction to the search engine */
+typedef enum r_dir_e {
+	R_DIR_NOT_FOUND = 0,         /* object not found or not accepted */
+	R_DIR_FOUND_CONTINUE = 1,    /* object found or accepted, go on searching */
+	R_DIR_FOUND_CANCEL           /* object found or accepted, cancel the search and return */
+} r_dir_t;
 
 /* create an rtree from the list of boxes.  if 'manage' is true, then
  * the tree will take ownership of 'boxlist' and free it when the tree
@@ -65,12 +71,12 @@ void r_insert_entry(rtree_t * rtree, const BoxType * which, int manage);
  */
 
 int r_search(rtree_t * rtree, const BoxType * starting_region,
-						 int (*region_in_search) (const BoxType * region, void *cl),
-						 int (*rectangle_in_region) (const BoxType * box, void *cl), void *closure);
+						 r_dir_t (*region_in_search) (const BoxType * region, void *cl),
+						 r_dir_t (*rectangle_in_region) (const BoxType * box, void *cl), void *closure);
 static inline int r_search_pt(rtree_t * rtree, const PointType * pt,
 															int radius,
-															int (*region_in_search) (const BoxType * region, void *cl),
-															int (*rectangle_in_region) (const BoxType * box, void *cl), void *closure)
+															r_dir_t (*region_in_search) (const BoxType * region, void *cl),
+															r_dir_t (*rectangle_in_region) (const BoxType * box, void *cl), void *closure)
 {
 	BoxType box;
 

@@ -29,10 +29,10 @@ static inline void search_append(layout_search_t *s, void *obj)
 	}
 }
 
-static int search_callback (const BoxType * b, void *cl)
+static r_dir_t search_callback (const BoxType * b, void *cl)
 {
 	search_append(cl, (void *)b);
-  return 1;
+  return R_DIR_FOUND_CONTINUE;
 }
 
 hash_t *layout_searches = NULL;

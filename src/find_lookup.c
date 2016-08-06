@@ -274,7 +274,7 @@ struct pv_info {
 	jmp_buf env;
 };
 
-static int LOCtoPVline_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPVline_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -283,10 +283,10 @@ static int LOCtoPVline_callback(const BoxType * b, void *cl)
 		if (ADD_LINE_TO_LIST(i->layer, line, PIN_TYPE, &i->pv, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoPVarc_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPVarc_callback(const BoxType * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -295,10 +295,10 @@ static int LOCtoPVarc_callback(const BoxType * b, void *cl)
 		if (ADD_ARC_TO_LIST(i->layer, arc, PIN_TYPE, &i->pv, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoPVpad_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPVpad_callback(const BoxType * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -307,20 +307,20 @@ static int LOCtoPVpad_callback(const BoxType * b, void *cl)
 			!TEST_FLAG(HOLEFLAG, &i->pv) &&
 			ADD_PAD_TO_LIST(TEST_FLAG(ONSOLDERFLAG, pad) ? SOLDER_LAYER : COMPONENT_LAYER, pad, PIN_TYPE, &i->pv, FCT_COPPER))
 		longjmp(i->env, 1);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoPVrat_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPVrat_callback(const BoxType * b, void *cl)
 {
 	RatTypePtr rat = (RatTypePtr) b;
 	struct pv_info *i = (struct pv_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, rat) && IS_PV_ON_RAT(&i->pv, rat) && ADD_RAT_TO_LIST(rat, PIN_TYPE, &i->pv, FCT_RAT))
 		longjmp(i->env, 1);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoPVpoly_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPVpoly_callback(const BoxType * b, void *cl)
 {
 	PolygonTypePtr polygon = (PolygonTypePtr) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -354,7 +354,7 @@ static int LOCtoPVpoly_callback(const BoxType * b, void *cl)
 						 && ADD_POLYGON_TO_LIST(i->layer, polygon, PIN_TYPE, &i->pv, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -511,7 +511,7 @@ static bool LookupLOConnectionsToLOList(bool AndRats)
 	return (false);
 }
 
-static int pv_pv_callback(const BoxType * b, void *cl)
+static r_dir_t pv_pv_callback(const BoxType * b, void *cl)
 {
 	PinTypePtr pin = (PinTypePtr) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -528,7 +528,7 @@ static int pv_pv_callback(const BoxType * b, void *cl)
 		else if (ADD_PV_TO_LIST(pin, PIN_TYPE, &i->pv, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -590,7 +590,7 @@ struct lo_info {
 	jmp_buf env;
 };
 
-static int pv_line_callback(const BoxType * b, void *cl)
+static r_dir_t pv_line_callback(const BoxType * b, void *cl)
 {
 	PinTypePtr pv = (PinTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -604,10 +604,10 @@ static int pv_line_callback(const BoxType * b, void *cl)
 		else if (ADD_PV_TO_LIST(pv, LINE_TYPE, &i->line, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int pv_pad_callback(const BoxType * b, void *cl)
+static r_dir_t pv_pad_callback(const BoxType * b, void *cl)
 {
 	PinTypePtr pv = (PinTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -621,10 +621,10 @@ static int pv_pad_callback(const BoxType * b, void *cl)
 		else if (ADD_PV_TO_LIST(pv, PAD_TYPE, &i->pad, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int pv_arc_callback(const BoxType * b, void *cl)
+static r_dir_t pv_arc_callback(const BoxType * b, void *cl)
 {
 	PinTypePtr pv = (PinTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -638,10 +638,10 @@ static int pv_arc_callback(const BoxType * b, void *cl)
 		else if (ADD_PV_TO_LIST(pv, ARC_TYPE, &i->arc, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int pv_poly_callback(const BoxType * b, void *cl)
+static r_dir_t pv_poly_callback(const BoxType * b, void *cl)
 {
 	PinTypePtr pv = (PinTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -670,10 +670,10 @@ static int pv_poly_callback(const BoxType * b, void *cl)
 				longjmp(i->env, 1);
 		}
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int pv_rat_callback(const BoxType * b, void *cl)
+static r_dir_t pv_rat_callback(const BoxType * b, void *cl)
 {
 	PinTypePtr pv = (PinTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -681,7 +681,7 @@ static int pv_rat_callback(const BoxType * b, void *cl)
 	/* rats can't cause DRC so there is no early exit */
 	if (!TEST_FLAG(TheFlag, pv) && IS_PV_ON_RAT(pv, &i->rat))
 		ADD_PV_TO_LIST(pv, RATLINE_TYPE, &i->rat, FCT_RAT);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -797,17 +797,17 @@ static bool LookupPVConnectionsToLOList(bool AndRats)
 	return (false);
 }
 
-int pv_touch_callback(const BoxType * b, void *cl)
+r_dir_t pv_touch_callback(const BoxType * b, void *cl)
 {
 	PinTypePtr pin = (PinTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pin) && PinLineIntersect(pin, &i->line))
 		longjmp(i->env, 1);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoArcLine_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoArcLine_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -816,10 +816,10 @@ static int LOCtoArcLine_callback(const BoxType * b, void *cl)
 		if (ADD_LINE_TO_LIST(i->layer, line, ARC_TYPE, &i->arc, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoArcArc_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoArcArc_callback(const BoxType * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -830,10 +830,10 @@ static int LOCtoArcArc_callback(const BoxType * b, void *cl)
 		if (ADD_ARC_TO_LIST(i->layer, arc, ARC_TYPE, &i->arc, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoArcPad_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoArcPad_callback(const BoxType * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -841,7 +841,7 @@ static int LOCtoArcPad_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(ONSOLDERFLAG, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
 			&& ArcPadIntersect(&i->arc, pad) && ADD_PAD_TO_LIST(i->layer, pad, ARC_TYPE, &i->arc, FCT_COPPER))
 		longjmp(i->env, 1);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -899,7 +899,7 @@ static bool LookupLOConnectionsToArc(ArcTypePtr Arc, Cardinal LayerGroup)
 	return (false);
 }
 
-static int LOCtoLineLine_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoLineLine_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -908,10 +908,10 @@ static int LOCtoLineLine_callback(const BoxType * b, void *cl)
 		if (ADD_LINE_TO_LIST(i->layer, line, LINE_TYPE, &i->line, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoLineArc_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoLineArc_callback(const BoxType * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -922,10 +922,10 @@ static int LOCtoLineArc_callback(const BoxType * b, void *cl)
 		if (ADD_ARC_TO_LIST(i->layer, arc, LINE_TYPE, &i->line, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoLineRat_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoLineRat_callback(const BoxType * b, void *cl)
 {
 	RatTypePtr rat = (RatTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -942,10 +942,10 @@ static int LOCtoLineRat_callback(const BoxType * b, void *cl)
 				longjmp(i->env, 1);
 		}
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoLinePad_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoLinePad_callback(const BoxType * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -953,7 +953,7 @@ static int LOCtoLinePad_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(ONSOLDERFLAG, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
 			&& LinePadIntersect(&i->line, pad) && ADD_PAD_TO_LIST(i->layer, pad, LINE_TYPE, &i->line, FCT_COPPER))
 		longjmp(i->env, 1);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1027,7 +1027,7 @@ struct rat_info {
 	jmp_buf env;
 };
 
-static int LOCtoRat_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoRat_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct rat_info *i = (struct rat_info *) cl;
@@ -1038,10 +1038,10 @@ static int LOCtoRat_callback(const BoxType * b, void *cl)
 		if (ADD_LINE_TO_LIST(i->layer, line, RATLINE_TYPE, &i->Point, FCT_RAT))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int PolygonToRat_callback(const BoxType * b, void *cl)
+static r_dir_t PolygonToRat_callback(const BoxType * b, void *cl)
 {
 	PolygonTypePtr polygon = (PolygonTypePtr) b;
 	struct rat_info *i = (struct rat_info *) cl;
@@ -1052,10 +1052,10 @@ static int PolygonToRat_callback(const BoxType * b, void *cl)
 		if (ADD_POLYGON_TO_LIST(i->layer, polygon, RATLINE_TYPE, &i->Point, FCT_RAT))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoPad_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPad_callback(const BoxType * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct rat_info *i = (struct rat_info *) cl;
@@ -1068,7 +1068,7 @@ static int LOCtoPad_callback(const BoxType * b, void *cl)
 				(pad->Point1.Y + pad->Point2.Y) / 2 == i->Point->Y)) &&
 			ADD_PAD_TO_LIST(i->layer, pad, RATLINE_TYPE, &i->Point, FCT_RAT))
 		longjmp(i->env, 1);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1115,7 +1115,7 @@ static bool LookupLOConnectionsToRatEnd(PointTypePtr Point, Cardinal LayerGroup)
 	return (false);
 }
 
-static int LOCtoPadLine_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPadLine_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1124,10 +1124,10 @@ static int LOCtoPadLine_callback(const BoxType * b, void *cl)
 		if (ADD_LINE_TO_LIST(i->layer, line, PAD_TYPE, &i->pad, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoPadArc_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPadArc_callback(const BoxType * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1138,10 +1138,10 @@ static int LOCtoPadArc_callback(const BoxType * b, void *cl)
 		if (ADD_ARC_TO_LIST(i->layer, arc, PAD_TYPE, &i->pad, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoPadPoly_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPadPoly_callback(const BoxType * b, void *cl)
 {
 	PolygonTypePtr polygon = (PolygonTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1151,10 +1151,10 @@ static int LOCtoPadPoly_callback(const BoxType * b, void *cl)
 		if (IsPadInPolygon(&i->pad, polygon) && ADD_POLYGON_TO_LIST(i->layer, polygon, PAD_TYPE, &i->pad, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoPadRat_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPadRat_callback(const BoxType * b, void *cl)
 {
 	RatTypePtr rat = (RatTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1177,10 +1177,10 @@ static int LOCtoPadRat_callback(const BoxType * b, void *cl)
 				longjmp(i->env, 1);
 		}
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoPadPad_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPadPad_callback(const BoxType * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1188,7 +1188,7 @@ static int LOCtoPadPad_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(ONSOLDERFLAG, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
 			&& PadPadIntersect(pad, &i->pad) && ADD_PAD_TO_LIST(i->layer, pad, PAD_TYPE, &i->pad, FCT_COPPER))
 		longjmp(i->env, 1);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1291,7 +1291,7 @@ static bool LookupLOConnectionsToPad(PadTypePtr Pad, Cardinal LayerGroup)
 	return retv;
 }
 
-static int LOCtoPolyLine_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPolyLine_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1300,10 +1300,10 @@ static int LOCtoPolyLine_callback(const BoxType * b, void *cl)
 		if (ADD_LINE_TO_LIST(i->layer, line, POLYGON_TYPE, &i->polygon, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoPolyArc_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPolyArc_callback(const BoxType * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1317,7 +1317,7 @@ static int LOCtoPolyArc_callback(const BoxType * b, void *cl)
 	return 0;
 }
 
-static int LOCtoPolyPad_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPolyPad_callback(const BoxType * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1327,10 +1327,10 @@ static int LOCtoPolyPad_callback(const BoxType * b, void *cl)
 		if (ADD_PAD_TO_LIST(i->layer, pad, POLYGON_TYPE, &i->polygon, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int LOCtoPolyRat_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPolyRat_callback(const BoxType * b, void *cl)
 {
 	RatTypePtr rat = (RatTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1344,7 +1344,7 @@ static int LOCtoPolyRat_callback(const BoxType * b, void *cl)
 			if (ADD_RAT_TO_LIST(rat, POLYGON_TYPE, &i->polygon, FCT_RAT))
 				longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 

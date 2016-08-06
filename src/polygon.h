@@ -32,6 +32,7 @@
 #define	PCB_POLYGON_H
 
 #include "global.h"
+#include "rtree.h"
 
 /* Implementation constants */
 
@@ -61,7 +62,7 @@ void ClosePolygon(void);
 void CopyAttachedPolygonToLayer(void);
 int PolygonHoles(PolygonType * ptr, const BoxType * range, int (*callback) (PLINE *, void *user_data), void *user_data);
 int PlowsPolygon(DataType *, int, void *, void *,
-								 int (*callback) (DataTypePtr, LayerTypePtr, PolygonTypePtr, int, void *, void *));
+								 r_dir_t (*callback) (DataTypePtr, LayerTypePtr, PolygonTypePtr, int, void *, void *));
 void ComputeNoHoles(PolygonType * poly);
 POLYAREA *ContourToPoly(PLINE *);
 POLYAREA *PolygonToPoly(PolygonType *);

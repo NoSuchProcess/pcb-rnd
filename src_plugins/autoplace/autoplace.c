@@ -222,7 +222,7 @@ struct r_neighbor_info {
     t = (box).X1; (box).X1 =   (box).X2; (box).X2 = t;\
 }
 /* helper methods for __r_find_neighbor */
-static int __r_find_neighbor_reg_in_sea(const BoxType * region, void *cl)
+static r_dir_t __r_find_neighbor_reg_in_sea(const BoxType * region, void *cl)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
 	BoxType query = *region;
@@ -233,11 +233,12 @@ static int __r_find_neighbor_reg_in_sea(const BoxType * region, void *cl)
 	 *   |          |
 	 *   trap.x1    trap.x2   sides at 45-degree angle
 	 */
-	return (query.Y2 > ni->trap.Y1) && (query.Y1 < ni->trap.Y2) &&
-		(query.X2 + ni->trap.Y2 > ni->trap.X1 + query.Y1) && (query.X1 + query.Y1 < ni->trap.X2 + ni->trap.Y2);
+	if ((query.Y2 > ni->trap.Y1) && (query.Y1 < ni->trap.Y2) && (query.X2 + ni->trap.Y2 > ni->trap.X1 + query.Y1) && (query.X1 + query.Y1 < ni->trap.X2 + ni->trap.Y2))
+		return R_DIR_FOUND_CONTINUE;
+	return R_DIR_NOT_FOUND;
 }
 
-static int __r_find_neighbor_rect_in_reg(const BoxType * box, void *cl)
+static r_dir_t __r_find_neighbor_rect_in_reg(const BoxType * box, void *cl)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
 	BoxType query = *box;
@@ -256,7 +257,7 @@ static int __r_find_neighbor_rect_in_reg(const BoxType * box, void *cl)
 		ni->trap.Y1 = query.Y2;
 		ni->neighbor = box;
 	}
-	return r;
+	return r ? R_DIR_FOUND_CONTINUE : R_DIR_NOT_FOUND;
 }
 
 /* main r_find_neighbor routine.  Returns NULL if no neighbor in the

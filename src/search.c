@@ -86,21 +86,21 @@ struct ans_info {
 	int locked;										/* This will be zero or LOCKFLAG */
 };
 
-static int pinorvia_callback(const BoxType * box, void *cl)
+static r_dir_t pinorvia_callback(const BoxType * box, void *cl)
 {
 	struct ans_info *i = (struct ans_info *) cl;
 	PinTypePtr pin = (PinTypePtr) box;
 	AnyObjectType *ptr1 = pin->Element ? pin->Element : pin;
 
 	if (TEST_FLAG(i->locked, ptr1))
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if (!IsPointOnPin(PosX, PosY, SearchRadius, pin))
-		return 0;
+		return R_DIR_NOT_FOUND;
 	*i->ptr1 = ptr1;
 	*i->ptr2 = *i->ptr3 = pin;
 	longjmp(i->env, 1);
-	return 1;											/* never reached */
+	return R_DIR_FOUND_CONTINUE;											/* never reached */
 }
 
 static bool SearchViaByLocation(int locked, PinTypePtr * Via, PinTypePtr * Dummy1, PinTypePtr * Dummy2)
@@ -146,14 +146,14 @@ static bool SearchPinByLocation(int locked, ElementTypePtr * Element, PinTypePtr
 	return false;
 }
 
-static int pad_callback(const BoxType * b, void *cl)
+static r_dir_t pad_callback(const BoxType * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct ans_info *i = (struct ans_info *) cl;
 	AnyObjectType *ptr1 = pad->Element;
 
 	if (TEST_FLAG(i->locked, ptr1))
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if (FRONT(pad) || i->BackToo) {
 		if (IsPointInPad(PosX, PosY, SearchRadius, pad)) {
@@ -162,7 +162,7 @@ static int pad_callback(const BoxType * b, void *cl)
 			longjmp(i->env, 1);
 		}
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -200,20 +200,20 @@ struct line_info {
 	int locked;
 };
 
-static int line_callback(const BoxType * box, void *cl)
+static r_dir_t line_callback(const BoxType * box, void *cl)
 {
 	struct line_info *i = (struct line_info *) cl;
 	LineTypePtr l = (LineTypePtr) box;
 
 	if (TEST_FLAG(i->locked, l))
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if (!IsPointInPad(PosX, PosY, SearchRadius, (PadTypePtr) l))
-		return 0;
+		return R_DIR_NOT_FOUND;
 	*i->Line = l;
 	*i->Point = (PointTypePtr) l;
 	longjmp(i->env, 1);
-	return 1;											/* never reached */
+	return R_DIR_FOUND_CONTINUE;											/* never reached */
 }
 
 
@@ -233,13 +233,13 @@ static bool SearchLineByLocation(int locked, LayerTypePtr * Layer, LineTypePtr *
 	return (true);
 }
 
-static int rat_callback(const BoxType * box, void *cl)
+static r_dir_t rat_callback(const BoxType * box, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) box;
 	struct ans_info *i = (struct ans_info *) cl;
 
 	if (TEST_FLAG(i->locked, line))
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if (TEST_FLAG(VIAFLAG, line) ?
 			(Distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
@@ -247,7 +247,7 @@ static int rat_callback(const BoxType * box, void *cl)
 		*i->ptr1 = *i->ptr2 = *i->ptr3 = line;
 		longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -278,20 +278,20 @@ struct arc_info {
 	int locked;
 };
 
-static int arc_callback(const BoxType * box, void *cl)
+static r_dir_t arc_callback(const BoxType * box, void *cl)
 {
 	struct arc_info *i = (struct arc_info *) cl;
 	ArcTypePtr a = (ArcTypePtr) box;
 
 	if (TEST_FLAG(i->locked, a))
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if (!IsPointOnArc(PosX, PosY, SearchRadius, a))
 		return 0;
 	*i->Arc = a;
 	*i->Dummy = a;
 	longjmp(i->env, 1);
-	return 1;											/* never reached */
+	return R_DIR_FOUND_CONTINUE;											/* never reached */
 }
 
 
@@ -311,19 +311,19 @@ static bool SearchArcByLocation(int locked, LayerTypePtr * Layer, ArcTypePtr * A
 	return (true);
 }
 
-static int text_callback(const BoxType * box, void *cl)
+static r_dir_t text_callback(const BoxType * box, void *cl)
 {
 	TextTypePtr text = (TextTypePtr) box;
 	struct ans_info *i = (struct ans_info *) cl;
 
 	if (TEST_FLAG(i->locked, text))
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if (POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		*i->ptr2 = *i->ptr3 = text;
 		longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -345,19 +345,19 @@ static bool SearchTextByLocation(int locked, LayerTypePtr * Layer, TextTypePtr *
 	return (true);
 }
 
-static int polygon_callback(const BoxType * box, void *cl)
+static r_dir_t polygon_callback(const BoxType * box, void *cl)
 {
 	PolygonTypePtr polygon = (PolygonTypePtr) box;
 	struct ans_info *i = (struct ans_info *) cl;
 
 	if (TEST_FLAG(i->locked, polygon))
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if (IsPointInPolygon(PosX, PosY, SearchRadius, polygon)) {
 		*i->ptr2 = *i->ptr3 = polygon;
 		longjmp(i->env, 1);
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 
@@ -380,15 +380,15 @@ static bool SearchPolygonByLocation(int locked, LayerTypePtr * Layer, PolygonTyp
 	return (true);
 }
 
-static int linepoint_callback(const BoxType * b, void *cl)
+static r_dir_t linepoint_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct line_info *i = (struct line_info *) cl;
-	int ret_val = 0;
+	r_dir_t ret_val = R_DIR_NOT_FOUND;
 	double d;
 
 	if (TEST_FLAG(i->locked, line))
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	/* some stupid code to check both points */
 	d = Distance(PosX, PosY, line->Point1.X, line->Point1.Y);
@@ -396,7 +396,7 @@ static int linepoint_callback(const BoxType * b, void *cl)
 		i->least = d;
 		*i->Line = line;
 		*i->Point = &line->Point1;
-		ret_val = 1;
+		ret_val = R_DIR_FOUND_CONTINUE;
 	}
 
 	d = Distance(PosX, PosY, line->Point2.X, line->Point2.Y);
@@ -404,7 +404,7 @@ static int linepoint_callback(const BoxType * b, void *cl)
 		i->least = d;
 		*i->Line = line;
 		*i->Point = &line->Point2;
-		ret_val = 1;
+		ret_val = R_DIR_FOUND_CONTINUE;
 	}
 	return ret_val;
 }
@@ -457,7 +457,7 @@ static bool SearchPointByLocation(int locked, LayerTypePtr * Layer, PolygonTypeP
 	return (false);
 }
 
-static int name_callback(const BoxType * box, void *cl)
+static r_dir_t name_callback(const BoxType * box, void *cl)
 {
 	TextTypePtr text = (TextTypePtr) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -465,7 +465,7 @@ static int name_callback(const BoxType * box, void *cl)
 	double newarea;
 
 	if (TEST_FLAG(i->locked, text))
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if ((FRONT(element) || i->BackToo) && !TEST_FLAG(HIDENAMEFLAG, element) && POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		/* use the text with the smallest bounding box */
@@ -475,9 +475,9 @@ static int name_callback(const BoxType * box, void *cl)
 			*i->ptr1 = element;
 			*i->ptr2 = *i->ptr3 = text;
 		}
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -503,14 +503,14 @@ SearchElementNameByLocation(int locked, ElementTypePtr * Element, TextTypePtr * 
 	return (false);
 }
 
-static int element_callback(const BoxType * box, void *cl)
+static r_dir_t element_callback(const BoxType * box, void *cl)
 {
 	ElementTypePtr element = (ElementTypePtr) box;
 	struct ans_info *i = (struct ans_info *) cl;
 	double newarea;
 
 	if (TEST_FLAG(i->locked, element))
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if ((FRONT(element) || i->BackToo) && POINT_IN_BOX(PosX, PosY, &element->VBox)) {
 		/* use the element with the smallest bounding box */
@@ -518,10 +518,10 @@ static int element_callback(const BoxType * box, void *cl)
 		if (newarea < i->area) {
 			i->area = newarea;
 			*i->ptr1 = *i->ptr2 = *i->ptr3 = element;
-			return 1;
+			return R_DIR_FOUND_CONTINUE;
 		}
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------

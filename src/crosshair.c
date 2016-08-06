@@ -719,7 +719,7 @@ struct onpoint_search_info {
 	Coord Y;
 };
 
-static int onpoint_line_callback(const BoxType * box, void *cl)
+static r_dir_t onpoint_line_callback(const BoxType * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	CrosshairType *crosshair = info->crosshair;
@@ -736,16 +736,16 @@ static int onpoint_line_callback(const BoxType * box, void *cl)
 		vtop_append(&crosshair->onpoint_objs, op);
 		SET_FLAG(ONPOINTFLAG, (AnyObjectType *) line);
 		DrawLine(NULL, line);
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	}
 	else {
-		return 0;
+		return R_DIR_NOT_FOUND;
 	}
 }
 
 #define close_enough(v1, v2) (coord_abs((v1)-(v2)) < 10)
 
-static int onpoint_arc_callback(const BoxType * box, void *cl)
+static r_dir_t onpoint_arc_callback(const BoxType * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	CrosshairType *crosshair = info->crosshair;
@@ -766,10 +766,10 @@ static int onpoint_arc_callback(const BoxType * box, void *cl)
 		vtop_append(&crosshair->onpoint_objs, op);
 		SET_FLAG(ONPOINTFLAG, (AnyObjectType *) arc);
 		DrawArc(NULL, arc);
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	}
 	else {
-		return 0;
+		return R_DIR_NOT_FOUND;
 	}
 }
 

@@ -243,10 +243,10 @@ static void draw_pin(PinTypePtr pin, bool draw_hole)
 	_draw_pv(pin, draw_hole);
 }
 
-static int pin_callback(const BoxType * b, void *cl)
+static r_dir_t pin_callback(const BoxType * b, void *cl)
 {
 	draw_pin((PinType *) b, false);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 static void draw_via(PinTypePtr via, bool draw_hole)
@@ -255,10 +255,10 @@ static void draw_via(PinTypePtr via, bool draw_hole)
 	_draw_pv(via, draw_hole);
 }
 
-static int via_callback(const BoxType * b, void *cl)
+static r_dir_t via_callback(const BoxType * b, void *cl)
 {
 	draw_via((PinType *) b, false);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 static void draw_pad_name(PadType * pad)
@@ -355,14 +355,14 @@ static void draw_pad(PadType * pad)
 		draw_pad_name(pad);
 }
 
-static int pad_callback(const BoxType * b, void *cl)
+static r_dir_t pad_callback(const BoxType * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	int *side = cl;
 
 	if (ON_SIDE(pad, *side))
 		draw_pad(pad);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 static void draw_element_name(ElementType * element)
@@ -387,18 +387,18 @@ static void draw_element_name(ElementType * element)
 
 }
 
-static int name_callback(const BoxType * b, void *cl)
+static r_dir_t name_callback(const BoxType * b, void *cl)
 {
 	TextTypePtr text = (TextTypePtr) b;
 	ElementTypePtr element = (ElementTypePtr) text->Element;
 	int *side = cl;
 
 	if (TEST_FLAG(HIDENAMEFLAG, element))
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if (ON_SIDE(element, *side))
 		draw_element_name(element);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 static void draw_element_pins_and_pads(ElementType * element)
@@ -416,15 +416,15 @@ static void draw_element_pins_and_pads(ElementType * element)
 	END_LOOP;
 }
 
-static int EMark_callback(const BoxType * b, void *cl)
+static r_dir_t EMark_callback(const BoxType * b, void *cl)
 {
 	ElementTypePtr element = (ElementTypePtr) b;
 
 	DrawEMark(element, element->MarkX, element->MarkY, !FRONT(element));
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
-static int hole_callback(const BoxType * b, void *cl)
+static r_dir_t hole_callback(const BoxType * b, void *cl)
 {
 	PinTypePtr pv = (PinTypePtr) b;
 	int plated = cl ? *(int *) cl : -1;
@@ -432,7 +432,7 @@ static int hole_callback(const BoxType * b, void *cl)
 	char buf[sizeof("#XXXXXX")];
 
 	if ((plated == 0 && !TEST_FLAG(HOLEFLAG, pv)) || (plated == 1 && TEST_FLAG(HOLEFLAG, pv)))
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 
 	if (conf_core.editor.thin_draw) {
 		if (!TEST_FLAG(HOLEFLAG, pv)) {
@@ -463,7 +463,7 @@ static int hole_callback(const BoxType * b, void *cl)
 		gui->set_line_width(Output.fgGC, 0);
 		gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
 	}
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 static void DrawHoles(bool draw_plated, bool draw_unplated, const BoxType * drawn_area)
@@ -516,13 +516,13 @@ static void draw_line(LayerType * layer, LineType * line)
 	_draw_line(line);
 }
 
-static int line_callback(const BoxType * b, void *cl)
+static r_dir_t line_callback(const BoxType * b, void *cl)
 {
 	draw_line((LayerType *) cl, (LineType *) b);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
-static int rat_callback(const BoxType * b, void *cl)
+static r_dir_t rat_callback(const BoxType * b, void *cl)
 {
 	RatType *rat = (RatType *) b;
 
@@ -549,7 +549,7 @@ static int rat_callback(const BoxType * b, void *cl)
 	}
 	else
 		_draw_line((LineType *) rat);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 static void _draw_arc(ArcType * arc)
@@ -591,10 +591,10 @@ static void draw_arc(LayerType * layer, ArcType * arc)
 	_draw_arc(arc);
 }
 
-static int arc_callback(const BoxType * b, void *cl)
+static r_dir_t arc_callback(const BoxType * b, void *cl)
 {
 	draw_arc((LayerTypePtr) cl, (ArcTypePtr) b);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 static void draw_element_package(ElementType * element)
@@ -622,14 +622,14 @@ static void draw_element_package(ElementType * element)
 	END_LOOP;
 }
 
-static int element_callback(const BoxType * b, void *cl)
+static r_dir_t element_callback(const BoxType * b, void *cl)
 {
 	ElementTypePtr element = (ElementTypePtr) b;
 	int *side = cl;
 
 	if (ON_SIDE(element, *side))
 		draw_element_package(element);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 /* ---------------------------------------------------------------------------
@@ -858,14 +858,14 @@ static void DrawPPV(int group, const BoxType * drawn_area)
 		r_search(PCB->Data->pin_tree, drawn_area, NULL, hole_callback, NULL);
 }
 
-static int clearPin_callback(const BoxType * b, void *cl)
+static r_dir_t clearPin_callback(const BoxType * b, void *cl)
 {
 	PinType *pin = (PinTypePtr) b;
 	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly)
 		gui->thindraw_pcb_pv(Output.pmGC, Output.pmGC, pin, false, true);
 	else
 		gui->fill_pcb_pv(Output.pmGC, Output.pmGC, pin, false, true);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 struct poly_info {
@@ -873,7 +873,7 @@ struct poly_info {
 	LayerType *layer;
 };
 
-static int poly_callback(const BoxType * b, void *cl)
+static r_dir_t poly_callback(const BoxType * b, void *cl)
 {
 	struct poly_info *i = cl;
 	PolygonType *polygon = (PolygonType *) b;
@@ -881,7 +881,7 @@ static int poly_callback(const BoxType * b, void *cl)
 	char buf[sizeof("#XXXXXX")];
 
 	if (!polygon->Clipped)
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 	if (TEST_FLAG(WARNFLAG, polygon))
 		color = PCB->WarnColor;
@@ -911,16 +911,16 @@ static int poly_callback(const BoxType * b, void *cl)
 			gui->thindraw_pcb_polygon(Output.fgGC, &poly, i->drawn_area);
 	}
 
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
-static int clearPad_callback(const BoxType * b, void *cl)
+static r_dir_t clearPad_callback(const BoxType * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	int *side = cl;
 	if (ON_SIDE(pad, *side) && pad->Mask)
 		_draw_pad(Output.pmGC, pad, true, true);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1037,7 +1037,7 @@ static void DrawRats(const BoxType * drawn_area)
 		gui->use_mask(HID_MASK_OFF);
 }
 
-static int text_callback(const BoxType * b, void *cl)
+static r_dir_t text_callback(const BoxType * b, void *cl)
 {
 	LayerType *layer = cl;
 	TextType *text = (TextType *) b;
@@ -1052,7 +1052,7 @@ static int text_callback(const BoxType * b, void *cl)
 	else
 		min_silk_line = PCB->minWid;
 	DrawTextLowLevel(text, min_silk_line);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 void DrawLayer(LayerTypePtr Layer, const BoxType * screen)

@@ -396,8 +396,8 @@ void r_destroy_tree(rtree_t ** rtree)
 }
 
 typedef struct {
-	int (*check_it) (const BoxType * region, void *cl);
-	int (*found_it) (const BoxType * box, void *cl);
+	r_dir_t (*check_it) (const BoxType * region, void *cl);
+	r_dir_t (*found_it) (const BoxType * box, void *cl);
 	void *closure;
 } r_arg;
 
@@ -477,8 +477,8 @@ int __r_search(struct rtree_node *node, const BoxType * query, r_arg * arg)
  */
 int
 r_search(rtree_t * rtree, const BoxType * query,
-				 int (*check_region) (const BoxType * region, void *cl),
-				 int (*found_rectangle) (const BoxType * box, void *cl), void *cl)
+				 r_dir_t (*check_region) (const BoxType * region, void *cl),
+				 r_dir_t (*found_rectangle) (const BoxType * box, void *cl), void *cl)
 {
 	r_arg arg;
 
@@ -510,7 +510,7 @@ r_search(rtree_t * rtree, const BoxType * query,
 }
 
 /*------ r_region_is_empty ------*/
-static int __r_region_is_empty_rect_in_reg(const BoxType * box, void *cl)
+static r_dir_t __r_region_is_empty_rect_in_reg(const BoxType * box, void *cl)
 {
 	jmp_buf *envp = (jmp_buf *) cl;
 	longjmp(*envp, 1);						/* found one! */

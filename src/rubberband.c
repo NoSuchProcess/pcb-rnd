@@ -61,7 +61,7 @@ static void CheckPinForRubberbandConnection(PinTypePtr);
 static void CheckLinePointForRubberbandConnection(LayerTypePtr, LineTypePtr, PointTypePtr, bool);
 static void CheckPolygonForRubberbandConnection(LayerTypePtr, PolygonTypePtr);
 static void CheckLinePointForRat(LayerTypePtr, PointTypePtr);
-static int rubber_callback(const BoxType * b, void *cl);
+static r_dir_t rubber_callback(const BoxType * b, void *cl);
 
 struct rubber_info {
 	Coord radius;
@@ -71,7 +71,7 @@ struct rubber_info {
 	LayerTypePtr layer;
 };
 
-static int rubber_callback(const BoxType * b, void *cl)
+static r_dir_t rubber_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct rubber_info *i = (struct rubber_info *) cl;
@@ -82,9 +82,9 @@ static int rubber_callback(const BoxType * b, void *cl)
 	t = line->Thickness / 2;
 
 	if (TEST_FLAG(LOCKFLAG, line))
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if (line == i->line)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	/* 
 	 * Check to see if the line touches a rectangular region.
 	 * To do this we need to look for the intersection of a circular
@@ -147,7 +147,7 @@ static int rubber_callback(const BoxType * b, void *cl)
 				found++;
 			}
 		}
-		return found;
+		return found ? R_DIR_FOUND_CONTINUE : R_DIR_NOT_FOUND;
 	}
 	/* circular search region */
 	if (i->radius < 0)
@@ -168,7 +168,7 @@ static int rubber_callback(const BoxType * b, void *cl)
 	dist2 = x + y - rad;
 
 	if (dist1 > 0 && dist2 > 0)
-		return 0;
+		return R_DIR_NOT_FOUND;
 
 #ifdef CLOSEST_ONLY							/* keep this to remind me */
 	if (dist1 < dist2)
@@ -181,7 +181,7 @@ static int rubber_callback(const BoxType * b, void *cl)
 	if (dist2 <= 0)
 		CreateNewRubberbandEntry(i->layer, line, &line->Point2);
 #endif
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 /* ---------------------------------------------------------------------------
@@ -224,7 +224,7 @@ struct rinfo {
 	PointTypePtr point;
 };
 
-static int rat_callback(const BoxType * box, void *cl)
+static r_dir_t rat_callback(const BoxType * box, void *cl)
 {
 	RatTypePtr rat = (RatTypePtr) box;
 	struct rinfo *i = (struct rinfo *) cl;
@@ -263,7 +263,7 @@ static int rat_callback(const BoxType * box, void *cl)
 	default:
 		Message("hace: bad rubber-rat lookup callback\n");
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 static void CheckPadForRat(PadTypePtr Pad)

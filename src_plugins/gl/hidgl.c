@@ -551,18 +551,18 @@ struct do_hole_info {
 	double scale;
 };
 
-static int do_hole(const BoxType * b, void *cl)
+static r_dir_t do_hole(const BoxType * b, void *cl)
 {
 	struct do_hole_info *info = cl;
 	PLINE *curc = (PLINE *) b;
 
 	/* Ignore the outer contour - we draw it first explicitly */
 	if (curc->Flags.orient == PLF_DIR) {
-		return 0;
+		return R_DIR_NOT_FOUND;
 	}
 
 	tesselate_contour(info->tobj, curc, info->vertices, info->scale);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 static GLint stencil_bits;

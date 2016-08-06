@@ -867,7 +867,7 @@ static void subtract_accumulated(struct cpInfo *info, PolygonTypePtr polygon)
 	info->batch_size = 0;
 }
 
-static int pin_sub_callback(const BoxType * b, void *cl)
+static r_dir_t pin_sub_callback(const BoxType * b, void *cl)
 {
 	PinTypePtr pin = (PinTypePtr) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -878,16 +878,16 @@ static int pin_sub_callback(const BoxType * b, void *cl)
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 
 	if (pin->Clearance == 0)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	i = GetLayerNumber(info->data, info->layer);
 	if (TEST_THERM(i, pin)) {
 		np = ThermPoly((PCBTypePtr) (info->data->pcb), pin, i);
 		if (!np)
-			return 1;
+			return R_DIR_FOUND_CONTINUE;
 	}
 	else {
 		np = PinPoly(pin, PIN_SIZE(pin), pin->Clearance);
@@ -903,10 +903,10 @@ static int pin_sub_callback(const BoxType * b, void *cl)
 	if (info->batch_size == SUBTRACT_PIN_VIA_BATCH_SIZE)
 		subtract_accumulated(info, polygon);
 
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
-static int arc_sub_callback(const BoxType * b, void *cl)
+static r_dir_t arc_sub_callback(const BoxType * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -914,16 +914,16 @@ static int arc_sub_callback(const BoxType * b, void *cl)
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if (!TEST_FLAG(CLEARLINEFLAG, arc))
-		return 0;
+		return R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 	if (SubtractArc(arc, polygon) < 0)
 		longjmp(info->env, 1);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
-static int pad_sub_callback(const BoxType * b, void *cl)
+static r_dir_t pad_sub_callback(const BoxType * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -931,19 +931,19 @@ static int pad_sub_callback(const BoxType * b, void *cl)
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if (pad->Clearance == 0)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 	if (XOR(TEST_FLAG(ONSOLDERFLAG, pad), !info->solder)) {
 		if (SubtractPad(pad, polygon) < 0)
 			longjmp(info->env, 1);
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int line_sub_callback(const BoxType * b, void *cl)
+static r_dir_t line_sub_callback(const BoxType * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -953,9 +953,9 @@ static int line_sub_callback(const BoxType * b, void *cl)
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if (!TEST_FLAG(CLEARLINEFLAG, line))
-		return 0;
+		return R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 
 	if (!(np = LinePoly(line, line->Thickness + line->Clearance)))
@@ -968,10 +968,10 @@ static int line_sub_callback(const BoxType * b, void *cl)
 	if (info->batch_size == SUBTRACT_LINE_BATCH_SIZE)
 		subtract_accumulated(info, polygon);
 
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
-static int text_sub_callback(const BoxType * b, void *cl)
+static r_dir_t text_sub_callback(const BoxType * b, void *cl)
 {
 	TextTypePtr text = (TextTypePtr) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -979,13 +979,13 @@ static int text_sub_callback(const BoxType * b, void *cl)
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
-		return 0;
+		return R_DIR_NOT_FOUND;
 	if (!TEST_FLAG(CLEARLINEFLAG, text))
-		return 0;
+		return R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 	if (SubtractText(text, polygon) < 0)
 		longjmp(info->env, 1);
-	return 1;
+	return R_DIR_FOUND_CONTINUE;
 }
 
 static int Group(DataTypePtr Data, Cardinal layer)
@@ -1383,10 +1383,10 @@ struct plow_info {
 	void *ptr1, *ptr2;
 	LayerTypePtr layer;
 	DataTypePtr data;
-	int (*callback) (DataTypePtr, LayerTypePtr, PolygonTypePtr, int, void *, void *);
+	r_dir_t (*callback) (DataTypePtr, LayerTypePtr, PolygonTypePtr, int, void *, void *);
 };
 
-static int subtract_plow(DataTypePtr Data, LayerTypePtr Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
+static r_dir_t subtract_plow(DataTypePtr Data, LayerTypePtr Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
 {
 	if (!Polygon->Clipped)
 		return 0;
@@ -1395,63 +1395,63 @@ static int subtract_plow(DataTypePtr Data, LayerTypePtr Layer, PolygonTypePtr Po
 	case VIA_TYPE:
 		SubtractPin(Data, (PinTypePtr) ptr2, Layer, Polygon);
 		Polygon->NoHolesValid = 0;
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	case LINE_TYPE:
 		SubtractLine((LineTypePtr) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	case ARC_TYPE:
 		SubtractArc((ArcTypePtr) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	case PAD_TYPE:
 		SubtractPad((PadTypePtr) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	case TEXT_TYPE:
 		SubtractText((TextTypePtr) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int add_plow(DataTypePtr Data, LayerTypePtr Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
+static r_dir_t add_plow(DataTypePtr Data, LayerTypePtr Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
 {
 	switch (type) {
 	case PIN_TYPE:
 	case VIA_TYPE:
 		UnsubtractPin((PinTypePtr) ptr2, Layer, Polygon);
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	case LINE_TYPE:
 		UnsubtractLine((LineTypePtr) ptr2, Layer, Polygon);
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	case ARC_TYPE:
 		UnsubtractArc((ArcTypePtr) ptr2, Layer, Polygon);
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	case PAD_TYPE:
 		UnsubtractPad((PadTypePtr) ptr2, Layer, Polygon);
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	case TEXT_TYPE:
 		UnsubtractText((TextTypePtr) ptr2, Layer, Polygon);
-		return 1;
+		return R_DIR_FOUND_CONTINUE;
 	}
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
-static int plow_callback(const BoxType * b, void *cl)
+static r_dir_t plow_callback(const BoxType * b, void *cl)
 {
 	struct plow_info *plow = (struct plow_info *) cl;
 	PolygonTypePtr polygon = (PolygonTypePtr) b;
 
 	if (TEST_FLAG(CLEARPOLYFLAG, polygon))
 		return plow->callback(plow->data, plow->layer, polygon, plow->type, plow->ptr1, plow->ptr2);
-	return 0;
+	return R_DIR_NOT_FOUND;
 }
 
 int
 PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
-						 int (*call_back) (DataTypePtr data, LayerTypePtr lay, PolygonTypePtr poly, int type, void *ptr1, void *ptr2))
+						 r_dir_t (*call_back) (DataTypePtr data, LayerTypePtr lay, PolygonTypePtr poly, int type, void *ptr1, void *ptr2))
 {
 	BoxType sb = ((PinTypePtr) ptr2)->BoundingBox;
 	int r = 0;
