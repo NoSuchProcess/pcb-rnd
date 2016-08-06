@@ -794,7 +794,7 @@ static lht_node_t *conf_lht_get_at_(conf_role_t target, const char *conf_path, c
 
 lht_node_t *conf_lht_get_at(conf_role_t target, const char *path, int create)
 {
-	lht_node_t *n, *r;
+	lht_node_t *r;
 	char *pc, *end;
 	if (conf_root[target] == NULL) {
 		if (!create)
