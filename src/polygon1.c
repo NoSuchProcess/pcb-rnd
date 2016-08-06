@@ -2359,9 +2359,7 @@ static r_dir_t flip_cb(const BoxType * b, void *cl)
 void poly_InvContour(PLINE * c)
 {
 	VNODE *cur, *next;
-#ifndef NDEBUG
 	int r;
-#endif
 
 	assert(c != NULL);
 	cur = &c->head;
@@ -2374,13 +2372,8 @@ void poly_InvContour(PLINE * c)
 	while ((cur = next) != &c->head);
 	c->Flags.orient ^= 1;
 	if (c->tree) {
-#ifndef NDEBUG
-		r =
-#endif
-			r_search(c->tree, NULL, NULL, flip_cb, NULL, NULL);
-#ifndef NDEBUG
+		r_search(c->tree, NULL, NULL, flip_cb, NULL, &r);
 		assert(r == c->Count);
-#endif
 	}
 }
 
