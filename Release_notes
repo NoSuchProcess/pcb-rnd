@@ -8,10 +8,10 @@ orthogonal system. This introduces a few features, like per .pcb
 color map, saving and restoring window layout per user or even per design.
 
 Beside the conf rewrite, the new release features a lot of dead-code removal,
-compiler warnign cleanup and code simplification all over the place.
+compiler warning cleanup and code simplification all over the place.
 
 The build system and portability got some care too, pcb-rnd should compile
-on Mac OS X out of the box. On Linux, pcb-rnd builds succesfully with Motif
+on Mac OS X out of the box. On Linux, pcb-rnd builds successfully with Motif
 installed instead of lesstif. Build dependencies are relaxed: no m4,
 no bison and no yacc required.
 

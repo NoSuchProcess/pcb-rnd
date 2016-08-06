@@ -30,7 +30,7 @@ pcb-rnd 1.1.0
 
 	[mods]
 		-Fix: report doesn't crash if there's nothing to report
-		-Add: debug plugin to host core debugging actions so thta they can be removed from core
+		-Add: debug plugin to host core debugging actions so that they can be removed from core
 		-Add: debug plugin to tmpasm lists
 		-Add: io_* hooks - native file formats are plugins now
 		-Change: turn .pcb (.fp) file IO code into plugin io_pcb
