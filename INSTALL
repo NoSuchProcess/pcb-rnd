@@ -2,13 +2,11 @@
 
 Run ./configure.
 
-You may want to edit config.manual.h and globalconst.h to change
-user preference defaults.
-
 Run make.
 
 Run make install.
 
+For compile-time options run ./configure --help
 
 2. Running from source
 
