@@ -9,12 +9,6 @@ print [@
 */
 /* #define FAKE_BINDIR BINDIR */
 
-/* Maximum value of coordinate type */
-#define COORD_MAX LONG_MAX
-
-/* C type for Coordinates */
-#define COORD_TYPE long
-
 /* Define to 1 if you have the `dmalloc' library (-ldmalloc);
    (memory debugging without valgrind) */
 /* #define HAVE_LIBDMALLOC 1 */
