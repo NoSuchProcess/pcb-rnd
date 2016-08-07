@@ -43,6 +43,7 @@ static void help1(void)
 	printf("options are:\n");
 	printf(" --prefix=path              change installation prefix from /usr to path\n");
 	printf(" --debug                    configure for building a debug version (-g -O0)\n");
+	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
 }
 
 static void help2(void)
@@ -63,6 +64,15 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 	if (strcmp(key, "debug") == 0) {
 		put("/local/pcb/debug", strue);
+		return 1;
+	}
+	if (strcmp(key, "coord") == 0) {
+		int v = atoi(value);
+		if ((v != 32) && (v != 64)) {
+			report("ERROR: --coord needs to be 32 or 64.\n");
+			exit(1);
+		}
+		put("/local/pcb/coord_bits", value);
 		return 1;
 	}
 	if ((strcmp(key, "with-intl") == 0) || (strcmp(key, "enable-intl") == 0)) {
@@ -102,6 +112,7 @@ int hook_postinit()
 #include "plugins.h"
 
 	put("/local/pcb/debug", sfalse);
+	put("/local/pcb/coord_bits", "32");
 
 	return 0;
 }
@@ -267,6 +278,7 @@ int hook_detect_target()
 
 	/* options for config.h */
 	require("sys/path_sep", 0, 1);
+	require("sys/types/size/*", 0, 1);
 	require("cc/alloca/presents", 0, 0);
 	require("cc/rdynamic", 0, 0);
 	require("libs/env/putenv/presents", 0, 0);
@@ -319,6 +331,29 @@ int hook_detect_target()
 			report_repeat("WARNING: disabling the gpmi scripting because libgpmi is not found or not configured...\n");
 			hook_custom_arg("disable-gpmi", NULL);
 		}
+	}
+
+	/* figure coordinate bits */
+	{
+		int want_c_bits    = atoi(get("/local/pcb/coord_bits"));
+		int int_bits       = atoi(get("sys/types/size/signed_int")) * 8;
+		int long_bits      = atoi(get("sys/types/size/signed_long_int")) * 8;
+		int long_long_bits = atoi(get("sys/types/size/signed_long_long_int")) * 8;
+		const char *chosen, *abs_name, *postfix;
+		char tmp[64];
+
+		if (want_c_bits == int_bits)             { postfix="U";   chosen = "int";           abs_name="abs"; }
+		else if (want_c_bits == long_bits)       { postfix="UL";  chosen = "long int";      abs_name="labs"; }
+		else if (want_c_bits == long_long_bits)  { postfix="ULL"; chosen = "long long int"; abs_name="llabs"; }
+		else {
+			report("ERROR: can't find a suitable integer type for coord to be %d bits wide\n", want_c_bits);
+			exit(1);
+		}
+
+		sprintf(tmp, "((1%s<<%d)-1)", postfix, want_c_bits - 1);
+		put("/local/pcb/coord_type", chosen);
+		put("/local/pcb/coord_max", tmp);
+		put("/local/pcb/coord_abs", abs_name);
 	}
 
 	return 0;
@@ -387,6 +422,12 @@ static void print_sum_setting(const char *node, const char *desc)
 	printf("%-55s %s\n", desc, res);
 }
 
+static void print_sum_cfg_val(const char *node, const char *desc)
+{
+	const char *state = get(node);
+	printf("%-55s %s\n", desc, state);
+}
+
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
 int hook_generate()
 {
@@ -430,6 +471,7 @@ int hook_generate()
 	print_sum_setting("/local/pcb/want_parsgen",   "Regenerating languages with bison & flex");
 	print_sum_setting("/local/pcb/want_nls",       "Internationalization with gettext");
 	print_sum_setting("/local/pcb/debug",          "Compilation for debugging");
+	print_sum_cfg_val("/local/pcb/coord_bits",     "Coordinate type bits");
 
 #undef plugin_def
 #undef plugin_header
@@ -445,7 +487,6 @@ int hook_generate()
 	}
 	else
 		fprintf(stderr, "Error generating some of the files\n");
-
 
 	return 0;
 }

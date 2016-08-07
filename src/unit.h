@@ -30,7 +30,7 @@
 
 #include "config.h"
 
-typedef COORD_TYPE Coord;				/* pcb base unit */
+/* typedef ... Coord;				pcb base unit, typedef'd in config.auto.h */
 typedef double Angle;						/* degrees */
 
 enum e_allow {

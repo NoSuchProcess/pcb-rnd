@@ -290,6 +290,9 @@ print [@
 #include <dmalloc.h>
 #endif
 
+typedef @/local/pcb/coord_type@ Coord;
+#define COORD_MAX @/local/pcb/coord_max@
+#define coord_abs @/local/pcb/coord_abs@
 @]
 
 
