@@ -461,11 +461,6 @@ int hook_generate()
 	if (plug_is_enabled("gpmi"))
 		gpmi_config();
 
-	if (!exists("../config.manual.h")) {
-		printf("Generating config.manual.h (%d)\n", generr |= tmpasm("..", "config.manual.h.in", "config.manual.h"));
-		manual_config = 1;
-	}
-
 	if (!generr) {
 	printf("\n\n");
 	printf("=====================\n");
@@ -486,9 +481,6 @@ int hook_generate()
 
 	if (repeat != NULL)
 		printf("\n%s\n", repeat);
-
-	if (manual_config)
-		printf("\n\n * NOTE: you may want to edit config.manual.h (user preferences) *\n");
 	}
 	else
 		fprintf(stderr, "Error generating some of the files\n");
