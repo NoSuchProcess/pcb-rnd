@@ -44,6 +44,7 @@ static void help1(void)
 	printf(" --prefix=path              change installation prefix from /usr to path\n");
 	printf(" --debug                    configure for building a debug version (-g -O0)\n");
 	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
+	printf(" --dot_pcb_pcb=path         .pcb-rnd config path under $HOME/\n");
 }
 
 static void help2(void)
@@ -75,6 +76,8 @@ int hook_custom_arg(const char *key, const char *value)
 		put("/local/pcb/coord_bits", value);
 		return 1;
 	}
+	if (strcmp(key, "coord") == 0)
+		put("/local/pcb/dot_pcb_rnd", value);
 	if ((strcmp(key, "with-intl") == 0) || (strcmp(key, "enable-intl") == 0)) {
 		want_intl = 1;
 		return 1;
@@ -113,6 +116,7 @@ int hook_postinit()
 
 	put("/local/pcb/debug", sfalse);
 	put("/local/pcb/coord_bits", "32");
+	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 
 	return 0;
 }
@@ -472,6 +476,7 @@ int hook_generate()
 	print_sum_setting("/local/pcb/want_nls",       "Internationalization with gettext");
 	print_sum_setting("/local/pcb/debug",          "Compilation for debugging");
 	print_sum_cfg_val("/local/pcb/coord_bits",     "Coordinate type bits");
+	print_sum_cfg_val("/local/pcb/dot_pcb_rnd",    ".pcb_rnd config dir under /$HOME");
 
 #undef plugin_def
 #undef plugin_header
