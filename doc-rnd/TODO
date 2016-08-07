@@ -1,8 +1,8 @@
 - BUGS
 	- bg image png crashes in extreme pan
 	- CRASH: p_crash.pcb (route styles on gtk!) [miloh]
-	- mac slowdown with an error msg on console [Chris]
-	- duplicate-element-on-copy bug [James]
+	- mac sw rendering slowdown [Chris]
+	- duplicate-element-on-copy bug: ctrl pressed? [James]
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
