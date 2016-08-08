@@ -1,6 +1,5 @@
 - BUGS
 	- bg image png crashes in extreme pan
-	- CRASH: p_crash.pcb (route styles on gtk!) [miloh]
 	- mac sw rendering slowdown [Chris]
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
 
