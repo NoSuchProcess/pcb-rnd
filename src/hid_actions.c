@@ -51,7 +51,7 @@ void hid_register_actions(const HID_Action * a, int n, const char *cookie, int c
 	hid_cookie_action_t *ca;
 
 	if (all_actions == NULL)
-		all_actions = htsp_alloc(strhash, strkeyeq);
+		all_actions = htsp_alloc(strhash_case, strkeyeq_case);
 
 	for (i = 0; i < n; i++) {
 		if (check_action_name(a[i].name)) {
