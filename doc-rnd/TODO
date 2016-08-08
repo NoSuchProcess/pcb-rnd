@@ -49,7 +49,6 @@ CLEANUP #5
 - scconfig:
 	- revise the bison/flex rule templates; rather use bison/flex output name
 	  feature instead of the mkdir hack.
-- gtk: grep for "TODO msg": store messages while the hid is not active but is already called
 - conf:
 	- debug why default layer names from the user config are ignored
 	- fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
