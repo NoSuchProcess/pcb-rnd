@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for misc routines - PCB data type dependent ones
- */
+/* prototypes for misc routines - PCB data type dependent ones */
 
 #ifndef	PCB_MISC_H
 #define	PCB_MISC_H

@@ -3,6 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996, 2004 Thomas Nau
+ *  15 Oct 2008 Ineiev: add different crosshair shapes
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,12 +23,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
-/* 15 Oct 2008 Ineiev: add different crosshair shapes */
 
-/* definition of types
- */
+/* definition of types */
 
 /* Change History:
  * 10/11/96 11:37 AJF Added support for a Text() driver function.
@@ -548,8 +546,6 @@ struct rats_patch_line_s {
 #else
 #define ATTRIBUTE_UNUSED
 #endif
-
-#define RCSID(x) static char *rcsid  ATTRIBUTE_UNUSED = x
 
 /* ---------------------------------------------------------------------------
  * Macros called by various action routines to show usage or to report

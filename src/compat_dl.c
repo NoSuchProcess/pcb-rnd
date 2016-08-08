@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -26,10 +24,6 @@
 
 #include "compat_dl.h"
 #include "global.h"
-
-
-RCSID("$Id$");
-
 
 #if !defined(HAVE_DLFCN_H) && defined(WIN32)
 #include <windows.h>

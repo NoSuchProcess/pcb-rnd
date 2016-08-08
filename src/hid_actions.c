@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 #include "conf_core.h"
 
@@ -14,8 +12,6 @@
 #include "error.h"
 #include "event.h"
 #include "hid_actions.h"
-
-RCSID("$Id$");
 
 /* do not throw "unknown action" warning for these: they are known
    actions, the GUI HID may register them, but nothing bad happens if

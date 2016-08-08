@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -30,8 +28,6 @@
 #include "config.h"
 
 #include "mymem.h"
-
-RCSID("$Id$");
 
 /*
  * some local prototypes

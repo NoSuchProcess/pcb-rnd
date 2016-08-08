@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for remove routines
- */
+/* prototypes for remove routines */
 
 #ifndef	PCB_REMOVE_H
 #define	PCB_REMOVE_H

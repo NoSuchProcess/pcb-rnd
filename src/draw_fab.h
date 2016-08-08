@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for printing routines
- */
+/* prototypes for printing routines */
 
 #ifndef	PCB_PRINT_H
 #define	PCB_PRINT_H

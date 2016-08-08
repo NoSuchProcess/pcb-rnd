@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -46,11 +44,6 @@
 #include "set.h"
 #include "undo.h"
 #include "misc_util.h"
-
-RCSID("$Id$");
-
-
-
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

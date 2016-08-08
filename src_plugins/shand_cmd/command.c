@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -51,9 +49,6 @@
 #include "set.h"
 #include "plugins.h"
 #include "hid_actions.h"
-
-
-RCSID("$Id$");
 
 /* ---------------------------------------------------------------------- */
 

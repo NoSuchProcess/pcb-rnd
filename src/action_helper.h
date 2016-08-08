@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for action routines
- */
+/* prototypes for action routines */
 
 #ifndef	PCB_ACTION_HELPER_H
 #define	PCB_ACTION_HELPER_H

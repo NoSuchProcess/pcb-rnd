@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 
 #include <stdio.h>
@@ -25,10 +23,6 @@
 #include <gtk/gtkgl.h>
 #include "hid/common/hidgl.h"
 #include "hid_draw_helpers.h"
-
-
-RCSID("$Id$");
-
 
 extern HID ghid_hid;
 

@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -34,9 +32,6 @@
 
 #include "data.h"
 #include "gui.h"
-
-
-RCSID("$Id$");
 
 /* ---------------------------------------------- */
 gchar *ghid_dialog_input(const char *prompt, const char *initial)

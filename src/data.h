@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* common identifiers
- */
+/* common identifiers */
 
 #ifndef	PCB_DATA_H
 #define	PCB_DATA_H

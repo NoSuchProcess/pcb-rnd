@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -40,9 +38,6 @@
 #include "line.h"
 #include "misc.h"
 #include "rtree.h"
-
-
-RCSID("$Id$");
 
 static double drc_lines(PointTypePtr end, bool way);
 

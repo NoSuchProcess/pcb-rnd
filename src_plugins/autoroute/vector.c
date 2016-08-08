@@ -1,11 +1,12 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1998,1999,2000,2001 harry eaton
+ *
+ *  this file, vector.c, was written and is
+ *  Copyright (c) 2001 C. Scott Ananian.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,12 +28,7 @@
  *
  */
 
-/* this file, vector.c, was written and is
- * Copyright (c) 2001 C. Scott Ananian.
- */
-
-/* operations on vectors.
- */
+/* operations on vectors. */
 
 #include "config.h"
 
@@ -44,9 +40,6 @@
 
 #include "global.h"
 #include "vector.h"
-
-
-RCSID("$Id$");
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for transform routines
- */
+/* prototypes for transform routines */
 
 #ifndef	PCB_ROTATE_H
 #define	PCB_ROTATE_H

@@ -1,11 +1,13 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1998,1999,2000,2001 harry eaton
+ *
+ *  this file, mtspace.c, was written and is
+ *  Copyright (c) 2001 C. Scott Ananian.
+ *  Copyright (c) 2006 harry eaton.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,10 +29,6 @@
  *
  */
 
-/* this file, mtspace.c, was written and is
- * Copyright (c) 2001 C. Scott Ananian.
- * Copyright (c) 2006 harry eaton.
- */
 
 /* implementation for "empty space" routines (needed for via-space tracking
  * in the auto-router.
@@ -48,9 +46,6 @@
 #include "rtree.h"
 #include "mtspace.h"
 #include "vector.h"
-
-
-RCSID("$Id$");
 
 /* mtspace data structures are built on r-trees. */
 

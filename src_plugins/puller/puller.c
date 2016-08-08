@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -70,8 +68,6 @@
 #include "plugins.h"
 #include "hid_actions.h"
 #include "misc_util.h"
-
-RCSID("$Id$");
 
 #define abort1() fprintf(stderr, "abort at line %d\n", __LINE__), abort()
 

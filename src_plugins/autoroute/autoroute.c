@@ -1,11 +1,14 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1998,1999,2000,2001 harry eaton
+ *
+ *  this file, autoroute.c, was written and is
+ *  Copyright (c) 2001 C. Scott Ananian
+ *  Copyright (c) 2006 harry eaton
+ *  Copyright (c) 2009 harry eaton
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,11 +28,6 @@
  *  harry eaton, 6697 Buttonhole Ct, Columbia, MD 21044 USA
  *  haceaton@aplcomm.jhuapl.edu
  *
- */
-/* this file, autoroute.c, was written and is
- * Copyright (c) 2001 C. Scott Ananian
- * Copyright (c) 2006 harry eaton
- * Copyright (c) 2009 harry eaton
  */
 /* functions used to autoroute nets.
  */
@@ -81,9 +79,6 @@
 #include "vector.h"
 #include "pcb-printf.h"
 #include "set.h"
-
-
-RCSID("$Id$");
 
 /* #defines to enable some debugging output */
 /*

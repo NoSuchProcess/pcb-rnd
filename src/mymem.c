@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -38,9 +36,6 @@
 #include "mymem.h"
 #include "rtree.h"
 #include "rats_patch.h"
-
-
-RCSID("$Id$");
 
 /* ---------------------------------------------------------------------------
  * local prototypes

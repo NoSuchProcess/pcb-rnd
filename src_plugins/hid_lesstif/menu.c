@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 #include "conf_core.h"
 
@@ -29,9 +27,6 @@
 #include "hid_flags.h"
 #include "stdarg.h"
 #include <genht/hash.h>
-
-
-RCSID("$Id$");
 
 Widget lesstif_menubar;
 hid_cfg_t *lesstif_cfg;

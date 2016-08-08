@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for search routines
- */
+/* prototypes for search routines */
 
 #ifndef	PCB_SEARCH_H
 #define	PCB_SEARCH_H

@@ -80,9 +80,6 @@
 #include "hid_flags.h"
 #include "hid_color.h"
 
-
-RCSID("$Id$");
-
 const char *nelma_cookie = "nelma HID";
 
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", __FUNCTION__); abort()

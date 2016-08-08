@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *
  *                            COPYRIGHT
@@ -84,11 +82,6 @@
 #include "misc_util.h"
 
 #undef DEBUG
-
-RCSID("$Id$");
-
-
-
 
 /* ---------------------------------------------------------------------------
  * some local macros

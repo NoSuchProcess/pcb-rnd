@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -26,9 +24,7 @@
  *
  */
 
-
-/* functions used to remove vias, pins ...
- */
+/* functions used to remove vias, pins ... */
 
 #include "config.h"
 #include "conf_core.h"
@@ -45,10 +41,6 @@
 #include "rtree.h"
 #include "select.h"
 #include "undo.h"
-
-
-RCSID("$Id$");
-
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

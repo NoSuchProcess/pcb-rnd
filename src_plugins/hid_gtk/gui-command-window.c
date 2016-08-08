@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -37,8 +35,6 @@
 #include "crosshair.h"
 #include "hid_actions.h"
 #include "hid_gtk_conf.h"
-
-RCSID("$Id$");
 
 static GtkWidget *command_window;
 static GtkWidget *combo_vbox;

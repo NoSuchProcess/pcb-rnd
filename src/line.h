@@ -23,11 +23,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for inserting points into objects
- */
+/* prototypes for inserting points into objects */
 
 #ifndef	PCB_LINE_H
 #define	PCB_LINE_H

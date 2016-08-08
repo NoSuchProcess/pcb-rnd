@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -30,8 +28,6 @@
 #include "conf_core.h"
 #include <stdlib.h>
 #include "write.h"
-
-RCSID("$Id$");
 
 /* writes element data */
 int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)

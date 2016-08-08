@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -65,8 +63,6 @@
 #include "vendor_conf.h"
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
-
-RCSID("$Id$");
 
 conf_vendor_t conf_vendor;
 

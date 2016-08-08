@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -35,9 +33,6 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
-
-RCSID("$Id$");
 
 #ifndef HAVE_EXPF
 float expf(float x)

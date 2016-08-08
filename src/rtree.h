@@ -1,11 +1,12 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1998,1999,2000,2001 harry eaton
+ *
+ *  this file, rtree.h, was written and is
+ *  Copyright (c) 2004 harry eaton, it's based on C. Scott's kdtree.h template
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,9 +28,7 @@
  *
  */
 
-/* this file, rtree.h, was written and is
- * Copyright (c) 2004 harry eaton, it's based on C. Scott's kdtree.h template
- */
+
 
 /* prototypes for r-tree routines.
  */

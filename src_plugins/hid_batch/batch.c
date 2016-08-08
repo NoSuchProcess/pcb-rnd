@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 
 #include <stdio.h>
@@ -20,9 +18,6 @@
 #include "hid_nogui.h"
 #include "hid_actions.h"
 #include "hid_init.h"
-
-
-RCSID("$Id$");
 
 static const char *batch_cookie = "batch HID";
 

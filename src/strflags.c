@@ -1,4 +1,3 @@
-/* $Id$ */
 /*
  *                            COPYRIGHT
  *
@@ -38,9 +37,6 @@
 
 #include "global.h"
 #include "strflags.h"
-
-
-RCSID("$Id$");
 
 /* Because all the macros expect it, that's why.  */
 typedef struct {

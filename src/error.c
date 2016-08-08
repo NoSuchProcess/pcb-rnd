@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -55,9 +53,6 @@
 #include "data.h"
 #include "error.h"
 #include "plug_io.h"
-
-
-RCSID("$Id$");
 
 #define utf8_dup_string(a,b) *(a) = strdup(b)
 

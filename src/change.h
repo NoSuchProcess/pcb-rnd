@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes to change object properties
- */
+/* prototypes to change object properties */
 
 #ifndef	PCB_CHANGE_H
 #define	PCB_CHANGE_H

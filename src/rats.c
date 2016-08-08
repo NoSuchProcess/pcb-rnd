@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -25,15 +23,8 @@
  *
  */
 
-/* Change History:
- * Started 6/10/97
- * Added support for minimum length rat lines 6/13/97
- * rat lines to nearest line/via 8/29/98
- * support for netlist window 10/24/98
- */
+/* rats nest routines */
 
-/* rats nest routines
- */
 #include "config.h"
 #include "conf_core.h"
 
@@ -53,9 +44,6 @@
 #include "undo.h"
 #include "stub_mincut.h"
 #include "route_style.h"
-
-RCSID("$Id$");
-
 
 #define TRIEDFIRST 0x1
 #define BESTFOUND 0x2

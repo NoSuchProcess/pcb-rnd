@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for drawing routines
- */
+/* prototypes for drawing routines */
 
 #ifndef	PCB_DRAW_H
 #define	PCB_DRAW_H

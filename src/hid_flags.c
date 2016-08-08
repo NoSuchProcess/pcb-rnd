@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 
 #include <stdio.h>
@@ -16,8 +14,6 @@
 #include "genht/htsp.h"
 #include "error.h"
 #include "hid_actions.h"
-
-RCSID("$Id$");
 
 int hid_get_flag(const char *name)
 {

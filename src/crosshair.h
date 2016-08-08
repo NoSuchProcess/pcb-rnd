@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for crosshair routines
- */
+/* prototypes for crosshair routines */
 
 #ifndef	PCB_CROSSHAIR_H
 #define	PCB_CROSSHAIR_H

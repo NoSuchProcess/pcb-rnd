@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 
 #include <stdio.h>
@@ -13,8 +11,6 @@
 #include "hid.h"
 #include "hid_draw_helpers.h"
 #include "hid_helper.h"
-
-RCSID("$Id$");
 
 #ifndef MAXINT
 #define MAXINT (((unsigned int)(~0))>>1)

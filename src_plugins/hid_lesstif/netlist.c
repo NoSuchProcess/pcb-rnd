@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 
 #include <stdio.h>
@@ -25,8 +23,6 @@
 #include "hid_actions.h"
 #include "lesstif.h"
 #include "stdarg.h"
-
-RCSID("$Id$");
 
 static Widget netlist_dialog = 0;
 static Widget netlist_list, netnode_list;

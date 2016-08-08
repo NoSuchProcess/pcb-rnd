@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes to change objects mirror flag
- */
+/* prototypes to change objects mirror flag */
 
 #ifndef	PCB_MIRROR_H
 #define	PCB_MIRROR_H

@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 #include "conf_core.h"
 
@@ -24,8 +22,6 @@
 #include "hid_init.h"
 #include "stdarg.h"
 #include "misc_util.h"
-
-RCSID("$Id$");
 
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented GUI function %s\n", __FUNCTION__), abort()
 

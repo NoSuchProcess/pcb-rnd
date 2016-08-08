@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 #include "conf_core.h"
 
@@ -29,8 +27,6 @@
 #include "misc_util.h"
 
 #include "gtkhid.h"
-
-RCSID("$Id$");
 
 conf_hid_id_t ghid_conf_id = -1;
 

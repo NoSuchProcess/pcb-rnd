@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -190,8 +188,6 @@ void ghid_conf_load_post_wgeo(void *user_data, int argc, event_arg_t * argv[])
 
 
 #undef just_loaded_geo
-
-RCSID("$Id$");
 
 enum ConfigType {
 	CONFIG_Boolean,

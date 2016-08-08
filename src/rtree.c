@@ -1,11 +1,12 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1998,1999,2000,2001,2002,2003,2004 harry eaton
+ *
+ *  this file, rtree.c, was written and is
+ *  Copyright (c) 2004, harry eaton
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,9 +28,6 @@
  *
  */
 
-/* this file, rtree.c, was written and is
- * Copyright (c) 2004, harry eaton
- */
 
 /* implements r-tree structures.
  * these should be much faster for the auto-router
@@ -42,10 +40,6 @@
 #include <setjmp.h>
 
 #include "rtree.h"
-
-
-RCSID("$Id$");
-
 
 #define SLOW_ASSERTS
 /* All rectangles are closed on the bottom left and open on the

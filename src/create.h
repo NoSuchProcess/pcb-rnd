@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for create routines
- */
+/* prototypes for create routines */
 
 #ifndef	PCB_CREATE_H
 #define	PCB_CREATE_H

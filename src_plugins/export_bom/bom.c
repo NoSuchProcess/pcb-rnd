@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 #include "conf_core.h"
 
@@ -21,9 +19,6 @@
 #include "hid_attrib.h"
 #include "hid_helper.h"
 #include "hid_init.h"
-
-
-RCSID("$Id$");
 
 const char *bom_cookie = "bom HID";
 

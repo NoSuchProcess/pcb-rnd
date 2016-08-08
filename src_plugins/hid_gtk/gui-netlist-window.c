@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -62,8 +60,6 @@
 
 
 #define NET_HIERARCHY_SEPARATOR "/"
-
-RCSID("$Id$");
 
 static GtkWidget *netlist_window;
 static GtkWidget *disable_all_button;

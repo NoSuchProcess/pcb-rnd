@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -41,11 +39,6 @@
 #include "mirror.h"
 #include "misc.h"
 #include "polygon.h"
-
-RCSID("$Id$");
-
-
-
 
 /* ---------------------------------------------------------------------------
  * mirrors the coordinates of an element

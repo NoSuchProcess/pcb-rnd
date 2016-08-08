@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -48,8 +46,6 @@
 #include "hid_flags.h"
 #include "hid_actions.h"
 #include "djopt_conf.h"
-
-RCSID("$Id$");
 
 conf_djopt_t conf_djopt;
 

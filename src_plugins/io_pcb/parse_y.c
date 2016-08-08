@@ -117,7 +117,7 @@
 # include <dmalloc.h> /* see http://dmalloc.com */
 #endif
 
-RCSID("$Id$");
+
 
 static	LayerTypePtr	Layer;
 static	PolygonTypePtr	Polygon;

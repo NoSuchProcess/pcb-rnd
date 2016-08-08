@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -26,9 +24,7 @@
  *
  */
 
-
-/* misc functions used by several modules
- */
+/* misc functions used by several modules */
 
 #include "config.h"
 #include "conf_core.h"
@@ -67,10 +63,7 @@
 #include "hid_actions.h"
 #include "hid_init.h"
 
-RCSID("$Id$");
-
-
-/*	forward declarations	*/
+/* forward declarations */
 static char *BumpName(char *);
 static void GetGridLockCoordinates(int, void *, void *, void *, Coord *, Coord *);
 

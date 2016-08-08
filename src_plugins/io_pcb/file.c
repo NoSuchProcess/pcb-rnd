@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -106,9 +104,6 @@
 #include "flags.h"
 #include "attribs.h"
 #include "route_style.h"
-
-
-RCSID("$Id$");
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

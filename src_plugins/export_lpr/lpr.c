@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 
 #include <stdio.h>
@@ -19,9 +17,6 @@
 #include "hid_init.h"
 #include "hid_attrib.h"
 #include "hid_actions.h"
-
-
-RCSID("$Id$");
 
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented PS function %s.\n", __FUNCTION__); abort()
 

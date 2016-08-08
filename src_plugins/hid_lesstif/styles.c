@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 #include "conf_core.h"
 
@@ -23,9 +21,6 @@
 #include "hid_flags.h"
 #include "stdarg.h"
 #include "misc_util.h"
-
-
-RCSID("$Id$");
 
 /* There are three places where styles are kept:
 

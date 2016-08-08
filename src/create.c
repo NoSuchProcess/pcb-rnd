@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -26,8 +24,7 @@
  *
  */
 
-/* functions used to create vias, pins ...
- */
+/* functions used to create vias, pins ... */
 
 #include "config.h"
 
@@ -50,8 +47,6 @@
 #include "hid_actions.h"
 #include "paths.h"
 #include "misc_util.h"
-
-RCSID("$Id$");
 
 /* ---------------------------------------------------------------------------
  * some local identifiers

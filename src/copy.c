@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -46,8 +44,6 @@
 #include "rtree.h"
 #include "select.h"
 #include "undo.h"
-
-RCSID("$Id$");
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

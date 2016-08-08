@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -34,13 +32,9 @@
 #include "gui.h"
 #include <gdk/gdkkeysyms.h>
 
-
-RCSID("$Id$");
-
 #warning TODO: get this compield in a separate .o
 
 #include "win_place.c"
-
 
 /* Not a gui function, but no better place to put it...
  */

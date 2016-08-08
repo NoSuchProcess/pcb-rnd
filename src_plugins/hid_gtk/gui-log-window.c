@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -35,9 +33,6 @@
 #include "gui.h"
 #include "win_place.h"
 #include "pcb-printf.h"
-
-
-RCSID("$Id$");
 
 static GtkWidget *log_window, *log_text;
 static gboolean log_show_on_append = FALSE;

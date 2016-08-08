@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 #include "conf_core.h"
 
@@ -23,8 +21,6 @@
 #include "hid_helper.h"
 #include "hid_flags.h"
 #include "hid_color.h"
-
-RCSID("$Id$");
 
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented EPS function %s.\n", __FUNCTION__); abort()
 

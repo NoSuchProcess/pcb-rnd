@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -70,8 +68,6 @@
 #if ENABLE_NLS
 #include <libintl.h>
 #endif
-
-RCSID("$Id$");
 
 /* ----------------------------------------------------------------------
  * initialize signal and error handlers

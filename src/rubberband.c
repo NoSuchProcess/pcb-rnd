@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -27,8 +25,7 @@
  */
 
 
-/* functions used by 'rubberband moves'
- */
+/* functions used by 'rubberband moves' */
 
 #include "config.h"
 
@@ -48,10 +45,6 @@
 #include "misc.h"
 #include "polygon.h"
 #include "rtree.h"
-
-
-RCSID("$Id$");
-
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

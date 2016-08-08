@@ -616,7 +616,6 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "../../src_plugins/io_pcb/parse_l.l"
-/* $Id$ */
 #line 4 "../../src_plugins/io_pcb/parse_l.l"
 /*
  *                            COPYRIGHT
@@ -666,7 +665,7 @@ char *yytext;
 # include <dmalloc.h> /* see http://dmalloc.com */
 #endif
 
-RCSID("$Id$");
+
 
 
 #include "global.h"
@@ -713,7 +712,7 @@ int	yyparse(void);
  */
 static	int		Parse(FILE *, char *, char *, char *, char *);
 
-#line 717 "lex.yy.c"
+#line 716 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -903,7 +902,7 @@ YY_DECL
 #line 108 "../../src_plugins/io_pcb/parse_l.l"
 
 
-#line 907 "lex.yy.c"
+#line 906 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -1314,7 +1313,7 @@ YY_RULE_SETUP
 #line 210 "../../src_plugins/io_pcb/parse_l.l"
 ECHO;
 	YY_BREAK
-#line 1318 "lex.yy.c"
+#line 1317 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2363,6 +2362,7 @@ static int Parse(FILE *Pipe, char *Executable, char *Path, char *Filename, char 
               sprintf (tmps, "%s", Filename);
 
 	    yyin = fopen (tmps, "r");
+printf("OPENING: %s -> %p\n", tmps, yyin);
 	    if (!yyin)
 	      {
 	        /* Special case this one, we get it all the time... */

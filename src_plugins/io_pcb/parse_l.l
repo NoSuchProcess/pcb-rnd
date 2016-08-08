@@ -1,4 +1,4 @@
-/* $Id$ */
+
 
 %{
 /*
@@ -49,7 +49,7 @@
 # include <dmalloc.h> /* see http://dmalloc.com */
 #endif
 
-RCSID("$Id$");
+
 
 
 #include "global.h"

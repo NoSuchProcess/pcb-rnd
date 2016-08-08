@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -50,9 +48,6 @@
 #include "misc.h"
 #include "draw_fab.h"
 #include "polygon.h"
-
-
-RCSID("$Id$");
 
 /* ---------------------------------------------------------------------------
  * prints a FAB drawing.

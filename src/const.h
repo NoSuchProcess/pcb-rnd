@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* global source constants
- */
+/* global source constants */
 
 #ifndef	PCB_CONST_H
 #define	PCB_CONST_H

@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -65,9 +63,6 @@
 #include "plug_footprint.h"
 
 #include <gdk/gdkkeysyms.h>
-
-
-RCSID("$Id$");
 
 static GtkWidget *library_window;
 

@@ -100,7 +100,6 @@ CLEANUP #6:
 		- hash in hid_color.c; test: eps
 		- nelma and gcode both invent .png name locally
 		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
-		- revise RCSID and $id$
 		- vendordrill
 			- search for /units, replace it with pcb-printf something
 			- add round down

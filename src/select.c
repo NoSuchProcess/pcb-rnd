@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -51,9 +49,6 @@
 #include <unistd.h>
 #endif
 #endif
-
-
-RCSID("$Id$");
 
 /* ---------------------------------------------------------------------------
  * toggles the selection of any kind of object

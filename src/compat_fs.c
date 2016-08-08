@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -27,8 +25,7 @@
  */
 
 
-/* misc functions used by several modules
- */
+/* misc functions used by several modules */
 
 #include "config.h"
 

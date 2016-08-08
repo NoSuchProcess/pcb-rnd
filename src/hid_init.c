@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 
 #include <stdio.h>
@@ -33,8 +31,6 @@
 #include "hid_flags.h"
 #include "misc_util.h"
 #include "conf_core.h"
-
-RCSID("$Id$");
 
 HID **hid_list = 0;
 int hid_num_hids = 0;

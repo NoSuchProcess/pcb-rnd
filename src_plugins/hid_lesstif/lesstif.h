@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "hid_cfg_input.h"
 
 #define app_context lesstif_app_context

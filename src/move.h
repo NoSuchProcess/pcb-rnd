@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for move routines
- */
+/* prototypes for move routines */
 
 #ifndef	PCB_MOVE_H
 #define	PCB_MOVE_H

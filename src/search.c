@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -44,10 +42,6 @@
 #include "rtree.h"
 #include "search.h"
 #include "misc.h"
-
-
-RCSID("$Id$");
-
 
 /* ---------------------------------------------------------------------------
  * some local identifiers

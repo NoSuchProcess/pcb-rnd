@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -53,8 +51,6 @@
 #include "select.h"
 #include "set.h"
 #include "funchash_core.h"
-
-RCSID("$Id$");
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

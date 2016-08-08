@@ -24,11 +24,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for rats routines
- */
+/* prototypes for rats routines */
 
 #ifndef	PCB_RATS_H
 #define	PCB_RATS_H

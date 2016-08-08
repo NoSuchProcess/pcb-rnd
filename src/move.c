@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -48,11 +46,6 @@
 #include "select.h"
 #include "undo.h"
 #include "hid_actions.h"
-
-RCSID("$Id$");
-
-
-
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

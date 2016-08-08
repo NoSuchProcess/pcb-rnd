@@ -1,4 +1,3 @@
-/* $Id$ */
 /* 15 Oct 2008 Ineiev: add different crosshair shapes */
 
 #include "config.h"
@@ -45,8 +44,6 @@
 #include "misc_util.h"
 
 #include <sys/poll.h>
-
-RCSID("$Id$");
 
 const char *lesstif_cookie = "lesstif HID";
 

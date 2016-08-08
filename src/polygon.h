@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for polygon editing routines
- */
+/* prototypes for polygon editing routines */
 
 #ifndef	PCB_POLYGON_H
 #define	PCB_POLYGON_H

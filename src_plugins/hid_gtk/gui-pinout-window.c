@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -44,10 +42,6 @@
 #include "rotate.h"
 
 #include "gui-pinout-preview.h"
-
-
-RCSID("$Id$");
-
 
 static void pinout_close_cb(GtkWidget * widget, GtkWidget * top_window)
 {

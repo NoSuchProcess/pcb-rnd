@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -27,12 +25,9 @@
  *
  */
 
-
 #include "config.h"
 #include "clip.h"
 #include <math.h>
-
-RCSID("$Id$");
 
 /* Clip the line to the clipBox
  * return true if something to be drawn

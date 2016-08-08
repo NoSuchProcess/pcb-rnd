@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -33,10 +31,7 @@
 #include "gui.h"
 #include "win_place.h"
 
-RCSID("$Id$");
-
 static GtkWidget *keyref_window;
-
 
 static gchar *key_ref_text[] = {
 	"<h>",

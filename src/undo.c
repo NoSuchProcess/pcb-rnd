@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -66,9 +64,6 @@
 #include "undo.h"
 #include "strflags.h"
 #include "conf_core.h"
-
-
-RCSID("$Id$");
 
 static bool between_increment_and_restore = false;
 static bool added_undo_between_increment_and_restore = false;

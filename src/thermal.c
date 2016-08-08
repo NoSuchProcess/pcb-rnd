@@ -1,10 +1,11 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996,2004,2006 Thomas Nau
+ *
+ *  this file, thermal.c was written by and is
+ *  (C) Copyright 2006, harry eaton
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,12 +27,7 @@
  *
  */
 
-/* this file, thermal.c was written by and is
- * (C) Copyright 2006, harry eaton
- */
-
-/* negative thermal finger polygons
- */
+/* negative thermal finger polygons */
 
 #include "config.h"
 
@@ -41,9 +37,6 @@
 #include "misc.h"
 #include "polygon.h"
 #include "thermal.h"
-
-
-RCSID("$Id$");
 
 static PCBTypePtr pcb;
 

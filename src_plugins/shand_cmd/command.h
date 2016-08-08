@@ -22,11 +22,9 @@
  *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
  *  Thomas.Nau@rz.uni-ulm.de
  *
- *  RCS: $Id$
  */
 
-/* prototypes for command execution
- */
+/* prototypes for command execution */
 
 #ifndef	PCB_COMMAND_H
 #define	PCB_COMMAND_H

@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 
 #include <stdio.h>
@@ -35,9 +33,6 @@
 #include "hid_attrib.h"
 #include "hid_flags.h"
 #include "conf_core.h"
-
-
-RCSID("$Id$");
 
 const char *gerber_cookie = "gerber HID";
 

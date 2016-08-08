@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 
 #include <stdio.h>
@@ -9,9 +7,6 @@
 
 #include "global.h"
 #include "hid.h"
-
-
-RCSID("$Id$");
 
 /* This is the "gui" that is installed at startup, and is used when
    there is no other real GUI to use.  For the most part, it just

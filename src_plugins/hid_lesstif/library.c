@@ -1,5 +1,3 @@
-/* $Id$ */
-
 #include "config.h"
 #include "conf_core.h"
 
@@ -22,8 +20,6 @@
 #include "hid.h"
 #include "lesstif.h"
 #include "stdarg.h"
-
-RCSID("$Id$");
 
 static Widget library_dialog = 0;
 static Widget library_list, libnode_list;

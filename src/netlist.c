@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -59,9 +57,6 @@
 #if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
 #define USE_RE
 #endif
-
-
-RCSID("$Id$");
 
 /*
   int    PCB->NetlistLib[n].MenuN

@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -31,9 +29,6 @@
 #include "config.h"
 
 #include "data.h"
-
-
-RCSID("$Id$");
 
 /* ---------------------------------------------------------------------------
  * some shared identifiers

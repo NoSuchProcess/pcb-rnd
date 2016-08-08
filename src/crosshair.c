@@ -1,11 +1,9 @@
-/* $Id$ */
-/* 15 Oct 2008 Ineiev: add different crosshair shapes */
-
 /*
  *                            COPYRIGHT
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  15 Oct 2008 Ineiev: add different crosshair shapes
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,9 +25,7 @@
  *
  */
 
-
-/* crosshair stuff
- */
+/* crosshair stuff */
 
 #include "config.h"
 
@@ -50,9 +46,6 @@
 #include "misc.h"
 #include "misc_util.h"
 #include "hid_actions.h"
-
-
-RCSID("$Id$");
 
 typedef struct {
 	int x, y;

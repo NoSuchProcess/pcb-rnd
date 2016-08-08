@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -38,9 +36,6 @@
 
 #include "gui.h"
 #include <gdk/gdkkeysyms.h>
-
-
-RCSID("$Id$");
 
 const char *ghid_cookie = "gtk hid";
 

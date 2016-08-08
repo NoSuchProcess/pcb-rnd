@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  *                            COPYRIGHT
  *
@@ -102,8 +100,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "hid_actions.h"
 #include "hid_flags.h"
 #include "route_style.h"
-
-RCSID("$Id$");
 
 static bool ignore_layer_update;
 
