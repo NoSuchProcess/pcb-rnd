@@ -61,7 +61,6 @@ CLEANUP #5
 		- warn when try to write text on pcb?
 	- finish gtk hid preferences config pov
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
-- scconfig: check for bison/flex, do not regenerate languages if they are missing
 - next_gui: keep them open, hide
 - look for #warnings
 - fix librarychanged: disable update of gedasymbols on-start, make it an explicit refresh button
