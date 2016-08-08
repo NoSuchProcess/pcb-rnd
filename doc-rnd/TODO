@@ -95,7 +95,6 @@ CLEANUP #6:
 		- gui load dialog with tags listed
 
 - reduce
-		- centralize all keyeq() calls
 		- hash in hid_attrib.c?
 		- hash in hid_color.c; test: eps
 		- nelma and gcode both invent .png name locally
