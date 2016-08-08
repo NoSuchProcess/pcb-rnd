@@ -197,10 +197,12 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 
 	/* Display dialog */
 	dialog_data.rss = rss;
-	path = gtk_tree_row_reference_get_path(rss->active_style->rref);
-	gtk_tree_model_get_iter(GTK_TREE_MODEL(rss->model), &iter, path);
-	g_signal_connect(G_OBJECT(select_box), "changed", G_CALLBACK(dialog_style_changed_cb), &dialog_data);
-	gtk_combo_box_set_active_iter(GTK_COMBO_BOX(select_box), &iter);
+	if (rss->active_style != NULL) {
+		path = gtk_tree_row_reference_get_path(rss->active_style->rref);
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(rss->model), &iter, path);
+		g_signal_connect(G_OBJECT(select_box), "changed", G_CALLBACK(dialog_style_changed_cb), &dialog_data);
+		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(select_box), &iter);
+	}
 	gtk_widget_show_all(dialog);
 	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
 		RouteStyleType *rst;
@@ -423,7 +425,8 @@ gint ghid_route_style_selector_install_items(GHidRouteStyleSelector * rss, GtkMe
 	gint n = 0;
 	GtkTreeIter iter;
 
-	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter);
+	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter))
+		return 0;
 	do {
 		GtkAction *action;
 		struct _route_style *style;
@@ -495,7 +498,8 @@ GtkAccelGroup *ghid_route_style_selector_get_accel_group(GHidRouteStyleSelector 
 void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, Coord Hole, Coord Diameter, Coord Clearance)
 {
 	GtkTreeIter iter;
-	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter);
+	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter))
+		return;
 	do {
 		struct _route_style *style;
 		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &style, -1);
@@ -514,21 +518,21 @@ void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, C
 void ghid_route_style_selector_empty(GHidRouteStyleSelector * rss)
 {
 	GtkTreeIter iter;
-	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter);
-	do {
-		struct _route_style *rsdata;
-		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &rsdata, -1);
-		if (rsdata->action) {
-			gtk_action_disconnect_accelerator(GTK_ACTION(rsdata->action));
-			gtk_action_group_remove_action(rss->action_group, GTK_ACTION(rsdata->action));
-			g_object_unref(G_OBJECT(rsdata->action));
-		}
-		if (rsdata->button)
-			gtk_widget_destroy(GTK_WIDGET(rsdata->button));;
-		gtk_tree_row_reference_free(rsdata->rref);
-		free(rsdata);
+	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter)) {
+		do {
+			struct _route_style *rsdata;
+			gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &rsdata, -1);
+			if (rsdata->action) {
+				gtk_action_disconnect_accelerator(GTK_ACTION(rsdata->action));
+				gtk_action_group_remove_action(rss->action_group, GTK_ACTION(rsdata->action));
+				g_object_unref(G_OBJECT(rsdata->action));
+			}
+			if (rsdata->button)
+				gtk_widget_destroy(GTK_WIDGET(rsdata->button));;
+			gtk_tree_row_reference_free(rsdata->rref);
+			free(rsdata);
+		} while (gtk_list_store_remove(rss->model, &iter));
 	}
-	while (gtk_list_store_remove(rss->model, &iter));
 	rss->action_radio_group = NULL;
 	rss->button_radio_group = NULL;
 }
