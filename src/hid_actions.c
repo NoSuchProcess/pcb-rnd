@@ -32,17 +32,6 @@ static int action_legal_unknown(const char *name)
 static htsp_t *all_actions = NULL;
 const HID_Action *current_action = NULL;
 
-static int keyeq(char *a, char *b)
-{
-	return !strcmp(a, b);
-}
-
-static unsigned int keyhash(char *key)
-{
-	return strhash(key);
-}
-
-
 static const char *check_action_name(const char *s)
 {
 	while (*s)
@@ -62,7 +51,7 @@ void hid_register_actions(const HID_Action * a, int n, const char *cookie, int c
 	hid_cookie_action_t *ca;
 
 	if (all_actions == NULL)
-		all_actions = htsp_alloc(keyhash, keyeq);
+		all_actions = htsp_alloc(strhash, strkeyeq);
 
 	for (i = 0; i < n; i++) {
 		if (check_action_name(a[i].name)) {

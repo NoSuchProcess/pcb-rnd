@@ -92,8 +92,6 @@ static hid_cfg_mod_t button_name2mask(const char *name)
 	}
 }
 
-
-static int keyeq_int(htip_key_t a, htip_key_t b)   { return a == b; }
 static unsigned int keyhash_int(htip_key_t a)      { return murmurhash32(a & 0xFFFF); }
 
 /************************** MOUSE ***************************/
@@ -115,7 +113,7 @@ int hid_cfg_mouse_init(hid_cfg_t *hr, hid_cfg_mouse_t *mouse)
 	}
 
 	if (mouse->mouse_mask == NULL)
-		mouse->mouse_mask = htip_alloc(keyhash_int, keyeq_int);
+		mouse->mouse_mask = htip_alloc(keyhash_int, htip_keyeq);
 	else
 		htip_clear(mouse->mouse_mask);
 
@@ -170,7 +168,7 @@ void hid_cfg_mouse_action(hid_cfg_mouse_t *mouse, hid_cfg_mod_t button_and_mask)
 /************************** KEYBOARD ***************************/
 int hid_cfg_keys_init(hid_cfg_keys_t *km)
 {
-	htip_init(&km->keys, keyhash_int, keyeq_int);
+	htip_init(&km->keys, keyhash_int, htip_keyeq);
 	return 0;
 }
 
@@ -207,7 +205,7 @@ hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *p
 	/* new node on this level */
 	ns = calloc(sizeof(hid_cfg_keyseq_t), 1);
 	if (!terminal)
-		htip_init(&ns->seq_next, keyhash_int, keyeq_int);
+		htip_init(&ns->seq_next, keyhash_int, htip_keyeq);
 	htip_set(phash, addr.hash, ns);
 	return ns;
 }

@@ -874,17 +874,12 @@ void conf_load_project(const char *project_fn, const char *pcb_fn)
 	conf_update(NULL);
 }
 
-static int keyeq(char *a, char *b)
-{
-	return !strcmp(a, b);
-}
-
 void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc, conf_flag_t flags)
 {
 	conf_native_t *node;
 
 	if (conf_fields == NULL) {
-		conf_fields = htsp_alloc(strhash, keyeq);
+		conf_fields = htsp_alloc(strhash, strkeyeq);
 		assert(conf_fields != NULL);
 	}
 	assert(array_size >= 1);

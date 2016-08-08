@@ -31,15 +31,10 @@ const conf_hid_callbacks_t *conf_hid_set_cb(conf_native_t *cfg, conf_hid_id_t id
 static int conf_hid_id_next = 0;
 static htpp_t *conf_hid_ids = NULL;
 
-static int keyeq(void *a, void *b) {
-	return a == b;
-}
-
-
 static void conf_hid_init(void)
 {
 	if (conf_hid_ids == NULL)
-		conf_hid_ids = htpp_alloc(ptrhash, keyeq);
+		conf_hid_ids = htpp_alloc(ptrhash, ptrkeyeq);
 }
 
 void conf_hid_uninit(void)

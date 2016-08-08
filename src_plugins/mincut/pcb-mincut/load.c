@@ -51,17 +51,6 @@ static unsigned int keyhash(char *key) {
 	return hash;
 }
 
-static int keyeq(char *a, char *b) {
-	char *pa = (char *)a;
-	char *pb = (char *)b;
-
-	for (; *pa == *pb; pa++, pb++)
-		if (*pa == '\0')
-			return 1;
-	return 0;
-}
-
-
 gr_t *load(FILE *f)
 {
 	int lineno;
@@ -197,7 +186,7 @@ gr_t *load(FILE *f)
 		}
 	}
 
-	name2node = htsi_alloc(keyhash, keyeq);
+	name2node = htsi_alloc(keyhash, strkeyeq);
 	node2name[0] = strdup("(S)"); htsi_set(name2node, node2name[0], 0);
 	node2name[1] = strdup("(T)"); htsi_set(name2node, node2name[1], 1);
 	num_nodes = 2;

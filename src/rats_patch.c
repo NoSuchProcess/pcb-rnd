@@ -291,12 +291,6 @@ static LibraryMenuTypePtr rats_patch_find_net(PCBTypePtr pcb, const char *netnam
 	return NULL;
 }
 
-
-static int keyeq(char *a, char *b)
-{
-	return !strcmp(a, b);
-}
-
 int rats_patch_fexport(PCBTypePtr pcb, FILE * f, int fmt_pcb)
 {
 	rats_patch_line_t *n;
@@ -317,7 +311,7 @@ int rats_patch_fexport(PCBTypePtr pcb, FILE * f, int fmt_pcb)
 
 	if (!fmt_pcb) {
 		htsp_t *seen;
-		seen = htsp_alloc(strhash, keyeq);
+		seen = htsp_alloc(strhash, strkeyeq);
 
 		/* have to print net_info lines */
 		for (n = pcb->NetlistPatches; n != NULL; n = n->next) {

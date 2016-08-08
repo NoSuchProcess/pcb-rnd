@@ -1906,13 +1906,6 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename, c
 	}
 }
 
-
-
-static int keyeq(char *a, char *b)
-{
-	return !strcmp(a, b);
-}
-
 static GtkTreeIter *config_tree_auto_mkdirp(GtkTreeStore *model, GtkTreeIter *main_parent, htsp_t *dirs, char *path)
 {
 	char *basename;
@@ -1958,7 +1951,7 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 	int num_paths, n;
 
 	/* remember the parent for each dir */
-	dirs = htsp_alloc(strhash, keyeq);
+	dirs = htsp_alloc(strhash, strkeyeq);
 
 	/* alpha sort keys for the more consistend UI */
 	for (e = htsp_first(conf_fields), num_paths = 0; e; e = htsp_next(conf_fields, e))

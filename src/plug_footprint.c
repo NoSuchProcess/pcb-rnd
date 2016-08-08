@@ -67,18 +67,13 @@ int fp_dupname(const char *name, char **basename, char **params)
 
 static htsp_t *fp_tags = NULL;
 
-static int keyeq(char *a, char *b)
-{
-	return !strcmp(a, b);
-}
-
 const void *fp_tag(const char *tag, int alloc)
 {
 	htsp_entry_t *e;
 	static char *counter = NULL;
 
 	if (fp_tags == NULL)
-		fp_tags = htsp_alloc(strhash, keyeq);
+		fp_tags = htsp_alloc(strhash, strkeyeq);
 	e = htsp_getentry(fp_tags, (char *) tag);
 	if ((e == NULL) && alloc) {
 		htsp_set(fp_tags, strdup(tag), (void *) counter);
