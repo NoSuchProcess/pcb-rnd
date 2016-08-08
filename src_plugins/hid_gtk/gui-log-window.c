@@ -96,16 +96,48 @@ void ghid_log_window_show(gboolean raise)
 		gtk_window_present(GTK_WINDOW(log_window));
 }
 
+typedef struct log_pending_s log_pending_t;
+struct log_pending_s {
+	log_pending_t *next;
+	char msg[1];
+};
+
+log_pending_t *log_pending_first = NULL, *log_pending_last = NULL;
+
+
+
 static void ghid_log_append_string(gchar * s)
 {
 	extern int gtkhid_active;
-#warning TODO msg: store these
-	if (!gtkhid_active)
+	log_pending_t *m, *next;
+
+	if (!gtkhid_active) {
+		/* GUI not initialized yet - save these messages for later
+		   NOTE: no need to free this at quit: the GUI will be inited and then it'll be freed */
+		m = malloc(sizeof(log_pending_t) + strlen(s));
+		strcpy(m->msg, s);
+		m->next = NULL;
+		if (log_pending_last != NULL)
+			log_pending_last->next = m;
+		log_pending_last = m;
+		if (log_pending_first == NULL)
+			log_pending_first = m;
 		return;
-	if (log_show_on_append)
-		ghid_log_window_show(FALSE);
-	else
+	}
+
+	if (!log_show_on_append) {
 		ghid_log_window_create();
+		/* display and free pending messages */
+		for(m = log_pending_first; m != NULL; m = next) {
+			next = m->next;
+			ghid_text_view_append(log_text, m->msg);
+			free(m);
+		}
+		log_pending_last = log_pending_first = NULL;
+	}
+	else
+		ghid_log_window_show(FALSE);
+
 	ghid_text_view_append(log_text, s);
 }
 
