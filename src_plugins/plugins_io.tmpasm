@@ -1,6 +1,7 @@
 # I/O plugins: import, export, UI
 
 include {../src_plugins/import_edif/Plug.tmpasm}
+include {../src_plugins/import_netlist/Plug.tmpasm}
 include {../src_plugins/import_sch/Plug.tmpasm}
 include {../src_plugins/export_ps/Plug.tmpasm}
 include {../src_plugins/export_lpr/Plug.tmpasm}

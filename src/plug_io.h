@@ -88,7 +88,6 @@ void SaveInTMP(void);
 void EmergencySave(void);
 void DisableEmergencySave(void);
 int RevertPCB(void);
-int ImportNetlist(char *);
 int SaveBufferElements(char *, const char *fmt);
 void sort_netlist(void);
 void PrintQuotedString(FILE *, const char *);

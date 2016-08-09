@@ -77,6 +77,7 @@ put /local/pcb/OBJS [@
 	paths.o
 	pcb-printf.o
 	plugins.o
+	plug_import.o
 	plug_io.o
 	plug_footprint.o
 	plug_footprint_act.o
@@ -97,7 +98,6 @@ put /local/pcb/OBJS [@
 	select_act.o
 	set.o
 	strflags.o
-	stub_edif.o
 	stub_mincut.o
 	stub_stroke.o
 	stub_vendor.o

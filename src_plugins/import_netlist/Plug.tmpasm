@@ -1,0 +1,9 @@
+put /local/pcb/mod {import_netlist}
+append /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_netlist/import_netlist.o @]
+append /local/pcb/mod/YACC {$(PLUGDIR)/import_netlist/netlist}
+
+switch /local/pcb/import_netlist/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

@@ -6239,10 +6239,3 @@ int ReadEdifNetlist(char *filename)
 
 	return 0;
 }
-
-#include "stub_edif.h"
-pcb_uninit_t hid_edif_init(void)
-{
-	stub_ReadEdifNetlist = ReadEdifNetlist;
-	return NULL;
-}

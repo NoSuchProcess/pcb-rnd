@@ -23,6 +23,7 @@ plugin_def("fp_wget",         "web footprints",            sbuildin)
 plugin_header("\nImport plugins:\n")
 plugin_def("import_sch",      "import sch",                sbuildin)
 plugin_def("import_edif",     "import edif",               sbuildin)
+plugin_def("import_netlist",  "import netlist",            sbuildin)
 
 plugin_header("\nExport plugins:\n")
 plugin_def("export_gcode",    "gcode exporter",            sbuildin)

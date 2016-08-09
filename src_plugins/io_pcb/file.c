@@ -98,7 +98,6 @@
 #include "compat_fs.h"
 #include "paths.h"
 #include "rats_patch.h"
-#include "stub_edif.h"
 #include "hid_actions.h"
 #include "hid_flags.h"
 #include "flags.h"
