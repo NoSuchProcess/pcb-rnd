@@ -167,7 +167,9 @@ put /local/pcb/tmpasm/common_enabled  {../src_plugins/Common_enabled.tmpasm}
 include {../src_plugins/plugins_ALL.tmpasm}
 
 append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags
+append /local/pcb/CFLAGS  /target/libs/sul/dmalloc/cflags
 append /local/pcb/LIBS    /target/libs/sul/glib/ldflags
+append /local/pcb/LIBS    /target/libs/sul/dmalloc/ldflags
 
 # ---- logic ----
 

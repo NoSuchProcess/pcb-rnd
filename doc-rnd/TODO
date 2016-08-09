@@ -129,6 +129,7 @@ Low prio:
 	- fix debug draw in the gtk hid
 	- ACTE_action(): coords should not be int but Coord
 	- get timers to work
+- dmalloc: #include from the bottom from each file. Is this a good idea?!
 - win32 port {large}
 	- clean up central Makefile.in rules:
 		- remove cat, sed, grep where possible, use scconfig instead

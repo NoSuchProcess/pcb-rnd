@@ -296,10 +296,14 @@ int hook_detect_target()
 	require("libs/math/logf", 0, 0);
 	require("libs/fs/stat/macros/*", 0, 0);
 
-	if (istrue(get("/local/pcb/want_dmalloc")))
+	if (istrue(get("/local/pcb/want_dmalloc"))) {
 		require("libs/sul/dmalloc/*", 0, 1);
-	else
+	}
+	else {
 		put("libs/sul/dmalloc/presents", sfalse);
+		put("libs/sul/dmalloc/cflags", "");
+		put("libs/sul/dmalloc/ldflags", "");
+	}
 
 	/* yacc/lex - are we able to regenerate languages? */
 	if (!isfalse(get("parsgen/bison/presents"))) {
