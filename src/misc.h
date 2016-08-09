@@ -59,7 +59,7 @@ int ParseGroupString(char *, LayerGroupTypePtr, int /* LayerN */ );
 Coord GetNum(char **s, const char *default_unit);
 
 void QuitApplication(void);
-char *EvaluateFilename(char *, char *, char *, char *);
+char *EvaluateFilename(const char *, const char *, const char *, const char *);
 void SetTextBoundingBox(FontTypePtr, TextTypePtr);
 
 void SaveOutputWindow(void);

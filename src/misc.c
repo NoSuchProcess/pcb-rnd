@@ -836,10 +836,10 @@ void QuitApplication(void)
  * %f is replaced by the filename 
  * %p by the searchpath
  */
-char *EvaluateFilename(char *Template, char *Path, char *Filename, char *Parameter)
+char *EvaluateFilename(const char *Template, const char *Path, const char *Filename, const char *Parameter)
 {
 	gds_t command;
-	char *p;
+	const char *p;
 
 	if (conf_core.rc.verbose) {
 		printf("EvaluateFilename:\n");
