@@ -23,6 +23,8 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-gd-png",    "libs/gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png exporter"},
 	{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png exporter"},
 	{"disable-bison",     "parsgen/bison",                arg_lib_nodes, "$do not regenerate language files"},
+	{"enable-dmalloc",    "/local/pcb/want_dmalloc",      arg_true,      "$compile with lib dmalloc"},
+	{"disable-dmalloc",   "/local/pcb/want_dmalloc",      arg_false,     "$compile without lib dmalloc"},
 
 #undef plugin_def
 #undef plugin_header
@@ -294,6 +296,11 @@ int hook_detect_target()
 	require("libs/math/logf", 0, 0);
 	require("libs/fs/stat/macros/*", 0, 0);
 
+	if (istrue(get("/local/pcb/want_dmalloc")))
+		require("libs/sul/dmalloc/*", 0, 1);
+	else
+		put("libs/sul/dmalloc/presents", sfalse);
+
 	/* yacc/lex - are we able to regenerate languages? */
 	if (!isfalse(get("parsgen/bison/presents"))) {
 		require("parsgen/flex/*", 0, 0);
@@ -470,8 +477,11 @@ int hook_generate()
 	print_sum_setting("/local/pcb/want_parsgen",   "Regenerating languages with bison & flex");
 	print_sum_setting("/local/pcb/want_nls",       "Internationalization with gettext");
 	print_sum_setting("/local/pcb/debug",          "Compilation for debugging");
+	print_sum_setting("libs/sul/dmalloc/presents", "Compile with dmalloc");
 	print_sum_cfg_val("/local/pcb/coord_bits",     "Coordinate type bits");
-	print_sum_cfg_val("/local/pcb/dot_pcb_rnd",    ".pcb_rnd config dir under /$HOME");
+	print_sum_cfg_val("/local/pcb/dot_pcb_rnd",    ".pcb_rnd config dir under $HOME");
+
+
 
 #undef plugin_def
 #undef plugin_header
