@@ -20,6 +20,7 @@
 #include <string.h>
 #include <math.h>
 #include "solve.h"
+#include "compat_misc.h"
 
 /* Karger's algorithm as described in the wikipedia article
    http://en.wikipedia.org/wiki/Karger%27s_algorithm

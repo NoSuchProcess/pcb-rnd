@@ -39,6 +39,7 @@
 #include "error.h"
 #include "misc.h"
 #include "misc_util.h"
+#include "compat_misc.h"
 #include "plugins.h"
 
 #include "hid.h"
