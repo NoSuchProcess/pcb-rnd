@@ -48,8 +48,17 @@ float logf(float x)
 }
 #endif
 
-#ifndef HAVE_RANDOM
-long random(void)
+/* On some old systems random() works better than rand(). Unfrtunately
+random() is less portable than rand(), which is C89. By default, just
+use rand(). Later on: scconfig should detect and enable random() if
+we find a system where it really breaks. */
+#ifdef HAVE_RANDOM
+long pcb_rand(void)
+{
+	return (long) random();
+}
+#else
+long pcb_rand(void)
 {
 	return (long) rand();
 }

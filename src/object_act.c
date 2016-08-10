@@ -568,8 +568,8 @@ static int ActionElementList(int argc, char **argv, Coord x, Coord y)
 		d = parse_layout_attribute_units("import::disperse", d);
 
 		if (d > 0) {
-			nx += rand() % (d * 2) - d;
-			ny += rand() % (d * 2) - d;
+			nx += pcb_rand() % (d * 2) - d;
+			ny += pcb_rand() % (d * 2) - d;
 		}
 
 		if (nx < 0)
