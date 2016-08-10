@@ -35,7 +35,7 @@ float expf(float);
 float logf(float);
 #endif
 
-long pcb_random(void);
+long pcb_rand(void);
 
 const char *get_user_name(void);
 
