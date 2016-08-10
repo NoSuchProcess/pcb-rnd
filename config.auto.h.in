@@ -231,9 +231,6 @@ print [@
 /* Relative path from bindir to exec_prefix */
 #define BINDIR_TO_EXECPREFIX ".."
 
-/* Relative path from bindir to pcbsharedir TODO: do we still need this? */
-#define BINDIR_TO_PCBSHAREDIR "../share/pcb-rnd"
-
 /* Version number of package */
 #define VERSION "@/local/version@"
 #define REVISION "@/local/revision@"
