@@ -1,0 +1,28 @@
+put /local/pcb/mod {dbus}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/dbus/dbus.o $(PLUGDIR)/dbus/dbus-pcbmain.o @]
+
+switch /local/pcb/dbus/controls
+	case {disable} end;
+	default
+		put /local/pcb/mod/CFLAGS   /target/libs/sul/dbus/cflags
+		put /local/pcb/mod/LDFLAGS  /target/libs/sul/dbus/ldflags
+
+		put /local/tmp { $(PLUGDIR)/dbus/dbus-introspect.tmp }
+		append /local/pcb/RULES [@
+# DBUS xml embedded
+$(PLUGDIR)/dbus/dbus-introspect.h: $(PLUGDIR)/dbus/dbus.xml
+	echo '/* AUTOMATICALLY GENERATED FROM dbus.xml DO NOT EDIT */' > @/local/tmp@
+	echo "static char *pcb_dbus_introspect_xml ="  > @/local/tmp@
+	sed 's/\\/\\\\/g; s/"/\\"/g; s/^/"/; s/$$/"/' < $(PLUGDIR)/dbus/dbus.xml >> @/local/tmp@
+	echo ";" >> @/local/tmp@
+	mv @/local/tmp@ $(PLUGDIR)/dbus/dbus-introspect.h
+@]
+
+	end
+end
+
+switch /local/pcb/dbus/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

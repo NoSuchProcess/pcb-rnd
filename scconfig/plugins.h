@@ -14,6 +14,7 @@ plugin_def("fontmode",        "font editor",               sbuildin)
 plugin_def("legacy_func",     "legacy functions",          sbuildin)
 plugin_def("stroke",          "libstroke gestures",        sdisable)
 plugin_def("report",          "reprot actions",            sbuildin)
+plugin_def("dbus",            "DBUS interface",            sdisable)
 plugin_def("shand_cmd",       "command shorthands",        sbuildin)
 
 plugin_header("\nFootprint backends:\n")

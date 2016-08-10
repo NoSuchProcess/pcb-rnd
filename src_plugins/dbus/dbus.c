@@ -26,11 +26,11 @@
 #include <dbus/dbus.h>
 #include <string.h>
 
-#include "dbus.h"
 #include "dbus-pcbmain.h"
 #include "dbus-introspect.h"
 #include "global.h"
 #include "data.h"
+#include "plugins.h"
 
 /* For lrealpath */
 #include "compat_lrealpath.h"
@@ -275,7 +275,7 @@ static DBusHandlerResult handle_dbus_message(DBusConnection * connection, DBusMe
 }
 
 
-void pcb_dbus_setup(void)
+static void pcb_dbus_setup(void)
 {
 	DBusError err;
 	int ret;
@@ -322,7 +322,7 @@ void pcb_dbus_setup(void)
 }
 
 
-void pcb_dbus_finish(void)
+static void pcb_dbus_finish(void)
 {
 	DBusError err;
 
@@ -350,3 +350,18 @@ void pcb_dbus_finish(void)
 	   we must remove this call. DBus will get shut-down when the app exits. */
 	dbus_shutdown();
 }
+
+static void hid_dbus_uninit(void)
+{
+	pcb_dbus_finish();
+/*	hid_remove_actions_by_cookie(dbus_cookie);*/
+}
+
+#include "dolists.h"
+pcb_uninit_t hid_dbus_init(void)
+{
+/*	REGISTER_ACTIONS(debug_action_list, dbus_cookie)*/
+	pcb_dbus_setup();
+	return hid_dbus_uninit;
+}
+

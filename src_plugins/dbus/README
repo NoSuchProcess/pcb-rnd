@@ -1,6 +1,6 @@
 Remote control PCB using DBUS.
 
-#state: disabled
-#lstate: TODO: needs scconfig support
+#state: WIP
+#lstate: needs to install the xml?
 #default: disabled
 #implements: (feature)

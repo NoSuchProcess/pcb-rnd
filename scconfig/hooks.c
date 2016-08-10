@@ -328,14 +328,22 @@ int hook_detect_target()
 		put("/local/global_cflags", tmp);
 	}
 
+
 	/* plugin dependencies */
+	if (plug_is_enabled("dbus")) {
+		require("libs/sul/dbus/presents", 0, 0);
+		if (!istrue(get("libs/sul/dbus/presents"))) {
+			report_repeat("WARNING: disabling the DBUS interface plugin because libdbus is not found or not configured...\n");
+			hook_custom_arg("disable-dbus", NULL);
+		}
+	}
+
 	if (!plug_is_buildin("export_ps")) {
 		if (plug_is_enabled("export_lpr")) {
 			report_repeat("WARNING: disabling the lpr exporter because the ps exporter is not enabled as a buildin...\n");
 			hook_custom_arg("disable-export_lpr", NULL);
 		}
 	}
-
 
 	if (plug_is_enabled("gpmi")) {
 		require("libs/script/gpmi/presents", 0, 0);

@@ -74,6 +74,26 @@
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h ../src_plugins/autoroute/vector.h
+../src_plugins/dbus/dbus-pcbmain.o: ../src_plugins/dbus/dbus-pcbmain.c \
+ ../config.h ../config.auto.h global.h const.h macro.h global_typedefs.h \
+ unit.h global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h \
+ polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
+ global_element.h list_element.h ../src_plugins/dbus/dbus-pcbmain.h
+../src_plugins/dbus/dbus.o: ../src_plugins/dbus/dbus.c \
+ ../src_plugins/dbus/dbus-pcbmain.h ../src_plugins/dbus/dbus-introspect.h \
+ global.h ../config.h ../config.auto.h const.h macro.h global_typedefs.h \
+ unit.h global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h \
+ polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
+ global_element.h list_element.h data.h global.h plugins.h \
+ compat_lrealpath.h dolists.h
 ../src_plugins/debug/debug.o: ../src_plugins/debug/debug.c ../config.h \
  ../config.auto.h global.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
@@ -198,13 +218,13 @@
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h data.h global.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h error.h draw.h pcb-printf.h \
- plugins.h hid_helper.h hid.h hid_nogui.h hid_draw_helpers.h hid_init.h \
- hid_attrib.h hid_flags.h conf_core.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/liblihata/genht/ht_inlines.h ../src_3rd/genvector/vtp0.h \
- list_conf.h
+ plugins.h hid_helper.h compat_misc.h hid.h hid_nogui.h \
+ hid_draw_helpers.h hid_init.h hid_attrib.h hid_flags.h conf_core.h \
+ conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h
 ../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c \
  ../config.h ../config.auto.h global.h const.h macro.h global_typedefs.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h \
