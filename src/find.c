@@ -61,10 +61,6 @@
 #include <setjmp.h>
 #include <assert.h>
 
-#ifdef HAVE_SYS_TIMES_H
-#include <sys/times.h>
-#endif
-
 #include "conf_core.h"
 #include "data.h"
 #include "draw.h"
