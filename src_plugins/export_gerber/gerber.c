@@ -10,10 +10,6 @@
 #include <ctype.h>
 #include <math.h>
 
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
-
 #include <time.h>
 
 #include "config.h"
@@ -25,6 +21,7 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_helper.h"
+#include "compat_misc.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -661,9 +658,6 @@ static int gerber_set_layer(const char *name, int group, int empty)
 	if (group < 0 || group != lastgroup) {
 		time_t currenttime;
 		char utcTime[64];
-#ifdef HAVE_GETPWUID
-		struct passwd *pwentry;
-#endif
 		ApertureList *aptr_list;
 		Aperture *search;
 
@@ -725,11 +719,8 @@ static int gerber_set_layer(const char *name, int group, int empty)
 		fprintf(f, "G04 Creator: pcb-rnd " VERSION " *\r\n");
 		fprintf(f, "G04 CreationDate: %s *\r\n", utcTime);
 
-#ifdef HAVE_GETPWUID
 		/* ID the user. */
-		pwentry = getpwuid(getuid());
-		fprintf(f, "G04 For: %s *\r\n", pwentry->pw_name);
-#endif
+		fprintf(f, "G04 For: %s *\r\n", get_user_name());
 
 		fprintf(f, "G04 Format: Gerber/RS-274X *\r\n");
 		pcb_fprintf(f, "G04 PCB-Dimensions: %.0mc %.0mc *\r\n", PCB->MaxWidth, PCB->MaxHeight);

@@ -42,9 +42,6 @@
 #include "global.h"
 
 #include <dirent.h>
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
 #include <time.h>
 
 #include <sys/stat.h>
