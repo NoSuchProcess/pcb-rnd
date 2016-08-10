@@ -2,6 +2,7 @@
 	- bg image png crashes in extreme pan
 	- mac sw rendering slowdown [Chris]
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
+	- using SetSame() in gtk doesn't immediately display new trace style
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
