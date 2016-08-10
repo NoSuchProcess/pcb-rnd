@@ -11,7 +11,7 @@ clean:
 install_:
 	$(MKDIR) "$(BINDIR)" "$(LIBDIR)"
 	$(CPC) "`pwd`/fp2anim" "$(BINDIR)/fp2anim"
-	cd gsch2pcb-rnd && make install_ CPC="$(CP)"
+	cd gsch2pcb-rnd && make install_ CPC="$(CPC)"
 
 install:
 	make install_ CPC="$(CP)"
