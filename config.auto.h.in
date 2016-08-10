@@ -222,28 +222,9 @@ print [@
 /****************************************************************************/
 /* Paths */
 
-/* library file name */
-#define LIBRARYFILENAME "pcblib"
-
 #define PCB_PREFIX "@/local/prefix@"
 #define PCBSHAREDIR PCB_PREFIX "/share/pcb-rnd"
 #define PCBLIBDIR PCB_PREFIX "/lib/pcb-rnd"
-#define PCB_LIBRARY_SHELL NULL
-#define PCB_LIBRARY_SEARCH_PATHS \
-	"./pcblib"\
-	":" \
-	"./footprints"\
-	":" \
-	"../pcblib"\
-	":" \
-	PCB_PREFIX  "/share/pcb-rnd/pcblib"\
-	":"\
-	PCB_PREFIX  "/share/pcb/pcblib-newlib"
-
-/* NOTE: /share/pcb/pcblib-newlib is kept as a temporary hack for compatibility */
-
-#define PCB_DEFAULT_PCB_FILE       PCBSHAREDIR "/default.pcb"
-#define PCB_DEFAULT_PCB_FILE_SRC   "./default.pcb"
 
 #define BINDIR PCB_PREFIX "/bin"
 

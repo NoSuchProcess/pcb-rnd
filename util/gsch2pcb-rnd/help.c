@@ -107,11 +107,6 @@ static char *usage_string1 =
 	"   GNETLIST              If set, this specifies the name of the gnetlist program\n"
 	"                         to execute.\n"
 	"\n"
-	"Defaults:\n"
-	"   Element search paths:\n"
-	" " PCB_LIBRARY_SEARCH_PATHS "\n"
-	"   Element shell paths: %s\n"
-	"\n"
 	"Additional Resources:\n"
 	"\n"
 	"  gnetlist user guide:  http://wiki.geda-project.org/geda:gnetlist_ug\n"
@@ -122,7 +117,7 @@ static char *usage_string1 =
 void usage(void)
 {
 	puts(usage_string0);
-	printf(usage_string1, (PCB_LIBRARY_SHELL == NULL ? "<empty>" : PCB_LIBRARY_SHELL));
+	printf(usage_string1);
 	exit(0);
 }
 
