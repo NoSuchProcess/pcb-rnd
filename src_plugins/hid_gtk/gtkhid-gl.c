@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+#include "gtkhid-gl-config.h"
 #include "crosshair.h"
 #include "clip.h"
 #include "gui.h"
