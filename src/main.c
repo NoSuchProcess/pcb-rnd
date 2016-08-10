@@ -31,9 +31,7 @@
 #include "conf_core.h"
 
 #include <stdlib.h>
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
 #include <signal.h>
 #include <unistd.h>
 #include <sys/stat.h>

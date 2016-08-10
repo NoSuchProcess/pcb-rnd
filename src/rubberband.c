@@ -30,9 +30,7 @@
 #include "config.h"
 
 #include <stdlib.h>
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
 #include <memory.h>
 #include <math.h>
 #ifdef HAVE_UNISTD_H

@@ -34,9 +34,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
 
 #include "global.h"
 #include "vector.h"

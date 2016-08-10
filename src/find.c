@@ -54,9 +54,7 @@
 #include "config.h"
 
 #include <stdlib.h>
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
 #include <math.h>
 #include <setjmp.h>
 #include <assert.h>

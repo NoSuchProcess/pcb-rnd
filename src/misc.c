@@ -32,9 +32,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <math.h>
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
 #include <memory.h>
 #include <ctype.h>
 #include <signal.h>

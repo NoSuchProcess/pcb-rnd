@@ -28,10 +28,7 @@
 
 #include "config.h"
 #include "conf_core.h"
-
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#endif
 
 #include "gui.h"
 #include "pcb-printf.h"

@@ -37,12 +37,8 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <signal.h>
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
-#ifdef HAVE_STDARG_H
 #include <stdarg.h>
-#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -86,11 +82,9 @@ void Message(const char *Format, ...)
 		va_end(args);
 	}
 
-#ifdef HAVE_STDARG_H
 	va_start(args, Format);
 	vfprintf(stderr, Format, args);
 	va_end(args);
-#endif
 }
 
 void pcb_trace(const char *Format, ...)

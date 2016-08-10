@@ -26,9 +26,7 @@
 #include "config.h"
 #include "conf_core.h"
 
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#endif
 #include <genht/hash.h>
 
 #include "gui.h"

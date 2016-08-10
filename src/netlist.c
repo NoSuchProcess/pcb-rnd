@@ -30,9 +30,7 @@
 #include "config.h"
 
 #include <stdlib.h>
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
 #include <ctype.h>
 #include <sys/types.h>
 #ifdef HAVE_REGEX_H
