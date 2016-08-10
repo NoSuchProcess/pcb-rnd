@@ -56,11 +56,6 @@
  * some external identifiers
  */
 
-#if !defined(HAVE_STRERROR)
-extern int sys_nerr;						/* number of messages available from array */
-#define USE_SYS_ERRLIST
-#endif
-
 /* the list is already defined for some OS */
 #if !defined(__NetBSD__) && !defined(__FreeBSD__) && !defined(__linux__) && !defined(__DragonFly__)
 #ifdef USE_SYS_ERRLIST
@@ -106,11 +101,7 @@ void OpenErrorMessage(const char *Filename)
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, Filename);
-#ifdef USE_SYS_ERRLIST
-	Message(_("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), utf8, errno <= sys_nerr ? sys_errlist[errno] : "???");
-#else
 	Message(_("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), utf8, strerror(errno));
-#endif
 	free(utf8);
 }
 
@@ -122,12 +113,7 @@ void PopenErrorMessage(const char *Filename)
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, Filename);
-#ifdef USE_SYS_ERRLIST
-	Message(_("Can't execute command\n"
-						"   '%s'\npopen() returned: '%s'\n"), utf8, errno <= sys_nerr ? sys_errlist[errno] : "???");
-#else
 	Message(_("Can't execute command\n" "   '%s'\npopen() returned: '%s'\n"), utf8, strerror(errno));
-#endif
 	free(utf8);
 }
 
@@ -139,12 +125,7 @@ void OpendirErrorMessage(const char *DirName)
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, DirName);
-#ifdef USE_SYS_ERRLIST
-	Message(_("Can't scan directory\n"
-						"   '%s'\nopendir() returned: '%s'\n"), utf8, errno <= sys_nerr ? sys_errlist[errno] : "???");
-#else
 	Message(_("Can't scan directory\n" "   '%s'\nopendir() returned: '%s'\n"), utf8, strerror(errno));
-#endif
 	free(utf8);
 }
 
@@ -156,12 +137,7 @@ void ChdirErrorMessage(const char *DirName)
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, DirName);
-#ifdef USE_SYS_ERRLIST
-	Message(_("Can't change working directory to\n"
-						"   '%s'\nchdir() returned: '%s'\n"), utf8, errno <= sys_nerr ? sys_errlist[errno] : "???");
-#else
 	Message(_("Can't change working directory to\n" "   '%s'\nchdir() returned: '%s'\n"), utf8, strerror(errno));
-#endif
 	free(utf8);
 }
 
