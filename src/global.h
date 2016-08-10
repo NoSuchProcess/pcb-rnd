@@ -40,10 +40,6 @@
 
 #include "const.h"
 #include "macro.h"
-
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
