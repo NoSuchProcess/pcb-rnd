@@ -286,8 +286,6 @@ int hook_detect_target()
 	require("sys/path_sep", 0, 1);
 	require("sys/types/size/*", 0, 1);
 	require("cc/rdynamic", 0, 0);
-	require("libs/env/putenv/presents", 0, 0);
-	require("libs/env/setenv/presents", 0, 0);
 	require("libs/snprintf", 0, 0);
 	require("libs/vsnprintf", 0, 0);
 	require("libs/fs/getcwd", 0, 0);
