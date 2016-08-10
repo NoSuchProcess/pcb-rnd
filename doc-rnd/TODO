@@ -6,6 +6,7 @@
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
 	- TEST:
+		- import netlist and import EDIF (File/Load Netlist in gtk - file format should be autodetected usign file content)
 		- atexit change -> is the design saved periodically? is it saved on a crash?
 		- project files:
 			- save only if changed, when the project is saved
