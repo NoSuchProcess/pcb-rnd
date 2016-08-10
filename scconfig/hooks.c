@@ -285,7 +285,6 @@ int hook_detect_target()
 	/* options for config.h */
 	require("sys/path_sep", 0, 1);
 	require("sys/types/size/*", 0, 1);
-	require("cc/alloca/presents", 0, 0);
 	require("cc/rdynamic", 0, 0);
 	require("libs/env/putenv/presents", 0, 0);
 	require("libs/env/setenv/presents", 0, 0);
