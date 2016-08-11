@@ -3,6 +3,12 @@ State on MacOSX
 
 Should compile and run out-of-the-box.
 
+Requirements:  x11 and gtk+
+  - X11 server and client libraries for OS X are available from the XQuartz 
+     download and install
+  - gtk+ is available from brew
+     * brew install gtk+
+
 Known issues:
   - application window opens behind other windows; it seems to be a gtk bug
     that can not be worked around from the application
