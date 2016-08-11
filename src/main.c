@@ -111,9 +111,7 @@ static void InitPaths(char *argv0)
 	 * just get back pcb again.
 	 */
 
-#ifdef FAKE_BINDIR
-	haspath = 1;
-#else
+#ifndef NO_BINDIR_HEURISTICS
 	{
 		int i;
 		haspath = 0;
@@ -129,9 +127,7 @@ static void InitPaths(char *argv0)
 #endif
 
 	if (haspath) {
-#ifdef FAKE_BINDIR
-		bindir = strdup(FAKE_BINDIR "/");
-#else
+#ifndef NO_BINDIR_HEURISTICS
 		bindir = strdup(lrealpath(argv0));
 #endif
 		found_bindir = 1;
