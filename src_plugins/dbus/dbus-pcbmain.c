@@ -70,7 +70,8 @@ static void io_watch_handler_dbus_freed(void *data)
 	handler = (IOWatchHandler *) data;
 
 	/* Remove the watch registered with the HID */
-	gui->unwatch_file(handler->pcb_watch);
+	if (gui != NULL)
+		gui->unwatch_file(handler->pcb_watch);
 	free(handler);
 }
 
@@ -188,6 +189,10 @@ static dbus_bool_t timeout_add(DBusTimeout * timeout, void *data)
 {
 	TimeoutHandler *handler;
 	hidval temp;
+
+	/* We can't create a timeout without a GUI */
+	if (gui == NULL)
+		return TRUE;
 
 	/* We won't create a timeout until it becomes enabled. */
 	if (!dbus_timeout_get_enabled(timeout))

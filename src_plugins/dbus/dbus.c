@@ -37,6 +37,8 @@
 #include "global.h"
 #include "data.h"
 #include "plugins.h"
+#include "hid_actions.h"
+#include "event.h"
 
 /* For lrealpath */
 #include "compat_lrealpath.h"
@@ -47,8 +49,9 @@
 #define PCB_DBUS_INTERFACE         "org.seul.geda.pcb"
 #define PCB_DBUS_ACTIONS_INTERFACE "org.seul.geda.pcb.actions"
 
-static DBusConnection *pcb_dbus_conn;
+const char *dbus_cookie = "dbus plugin";
 
+static DBusConnection *pcb_dbus_conn;
 
 static DBusHandlerResult handle_get_filename(DBusConnection * connection, DBusMessage * message, void *data)
 {
@@ -357,9 +360,20 @@ static void pcb_dbus_finish(void)
 	dbus_shutdown();
 }
 
+static void dbus_gui_init(void *user_data, int argc, event_arg_t * argv[])
+{
+	
+	/* this can not be done from init, before the gui starts, as it needs
+	to register fd watches in the GUI. Also won't play well together with GUI
+	switches... */
+
+	pcb_dbus_setup();
+}
+
 static void hid_dbus_uninit(void)
 {
 	pcb_dbus_finish();
+	event_unbind_allcookie(dbus_cookie);
 /*	hid_remove_actions_by_cookie(dbus_cookie);*/
 }
 
@@ -367,7 +381,7 @@ static void hid_dbus_uninit(void)
 pcb_uninit_t hid_dbus_init(void)
 {
 /*	REGISTER_ACTIONS(debug_action_list, dbus_cookie)*/
-	pcb_dbus_setup();
+	event_bind(EVENT_GUI_INIT, dbus_gui_init, NULL, dbus_cookie);
 	return hid_dbus_uninit;
 }
 
