@@ -48,8 +48,9 @@ do_get_source()
 
   mkdir -p $sourcedir/partial
   cd $sourcedir/partial
-  echo Downloading $name from $pkg_download ...
-  wget -c $pkg_download
+  pkg_download_nm=`echo "$pkg_download" | sed "s/[?].*$//;s_^.*/__"`
+  echo Downloading $name from $pkg_download as $pkg_download_nm ...
+  wget -c $pkg_download -O $pkg_download_nm
 
   if [ $? != 0 ]; then
     echo >&2 "$(basename $0) source: Failed to download $name"
