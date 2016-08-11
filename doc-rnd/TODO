@@ -5,6 +5,14 @@
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
 	- using SetSame() in gtk doesn't immediately display new trace style
 
+- "rebranding"
+	- "name contest", what rnd should mean
+		- Research & Development (referring to how we experiment with new ideas)
+		- RespoNsive Developers (referring to how user input is handled)
+		- Razons, Nagy Dontesek (Risky, Big Decisions [we are not affraid to take])
+		- Rants Now Dissipating (e.g. solve the problems instead ranting about them)
+
+
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
 	- TEST:
