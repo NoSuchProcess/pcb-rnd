@@ -33,6 +33,7 @@
 #include "misc_util.h"
 #include "error.h"
 #include "paths.h"
+#include "compat_fs.h"
 
 /* conf list node's name */
 const char *conf_list_name = "pcb-rnd-conf-v1";
@@ -1406,8 +1407,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 			end = strrchr(path, '/');
 			if (end != NULL) {
 				*end = '\0';
-#warning TODO: more portable mkdir
-				if (mkdir(path, 0755) == 0) {
+				if (pcb_mkdir(path, 0755) == 0) {
 					Message("Created directory %s for saving %s\n", path, fn);
 					f = fopen(efn, "w");
 				}

@@ -52,10 +52,6 @@
 #include "plug_footprint.h"
 #include <liblihata/tree.h>
 
-/* for MKDIR() */
-#include "compat_fs.h"
-
-
 #if 0
 #include <locale.h>
 #endif

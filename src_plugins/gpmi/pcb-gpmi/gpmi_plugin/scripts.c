@@ -357,11 +357,11 @@ int gpmi_hid_script_addcfg(hid_gpmi_script_info_t *i)
 
 	if (conf_core.rc.path.home != NULL) {
 		fn = Concat(home, PCB_DIR_SEPARATOR_S ".pcb", NULL);
-		mkdir(fn, 0755);
+		pcb_mkdir(fn, 0755);
 		free(fn);
 
 		fn = Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL);
-		mkdir(fn, 0755);
+		pcb_mkdir(fn, 0755);
 		free(fn);
 		
 		fn = Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, CONFNAME, NULL);
