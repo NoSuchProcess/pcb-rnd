@@ -63,14 +63,14 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Automatically place elements. 
-<tr><th align=left>autoroute<td>4342
+<tr><th align=left>autoroute<td>4339
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Automatically route selected or all rats. This is the original autorouter. 
-<tr><th align=left>dbus<td>438
-<td bgcolor="red" > disabled
-<br> (TODO: needs scconfig support)
+<tr><th align=left>dbus<td>482
+<td  > WIP
+<br> (needs to install the xml?)
 <td bgcolor="red"> disabled
 <td> (feature)
 <td> Remote control PCB using DBUS. 
@@ -79,12 +79,12 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disabled
 <td> (feature)
 <td> Actions that help developer to debug pcb core. These are not in core because end users normally don't need these. As a plugin, due to dynamic loading, it can be dropped on an existing pcb installation with minimal risk of scaring away a reproducible bug. 
-<tr><th align=left>djopt<td>2320
+<tr><th align=left>djopt<td>2319
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Various board optimization algorithms. 
-<tr><th align=left>export_bom<td>385
+<tr><th align=left>export_bom<td>384
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
@@ -94,38 +94,38 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to gcode 
-<tr><th align=left>export_gerber<td>981
+<tr><th align=left>export_gerber<td>972
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to gerber 
-<tr><th align=left>export_lpr<td>105
+<tr><th align=left>export_lpr<td>104
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to lpr (using export_ps to generate postscript) 
-<tr><th align=left>export_nelma<td>696
+<tr><th align=left>export_nelma<td>695
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to nelma (Numerical capacitance calculator) 
-<tr><th align=left>export_png<td>1115
+<tr><th align=left>export_png<td>1116
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to png, gif and jpeg 
-<tr><th align=left>export_ps<td>1634
+<tr><th align=left>export_ps<td>1632
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export postscript or embedded postscript. 
-<tr><th align=left>export_test<td>258
+<tr><th align=left>export_test<td>257
 <td bgcolor="red" > disabled
 <br> (work in progress)
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> A thin layer of code to dump exporter calls for testing the HID exporter API. 
-<tr><th align=left>fontmode<td>166
+<tr><th align=left>fontmode<td>165
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
@@ -140,7 +140,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> fp
 <td> Footprint: get static (file) footprints from the web, e.g. from http://gedasymbols.org 
-<tr><th align=left>gl<td>592
+<tr><th align=left>gl<td>590
 <td bgcolor="red" > disabled
 <br> (pcb-rnd has no support for opengl.)
 <td bgcolor="red"> disabled
@@ -152,37 +152,42 @@ Below is a table with the summary of core plugins.
 <br> (if gpmi is installed)
 <td> (feature)
 <td> Scriptable plugin system with about 10 scripting languages supported and dynamic load/unload of scripts that can manipulate the GUI, the board, can implement exporters, etc. 
-<tr><th align=left>hid_batch<td>305
+<tr><th align=left>hid_batch<td>304
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> HID without GUI; read actions from stdin. 
-<tr><th align=left>hid_gtk<td>13709
+<tr><th align=left>hid_gtk<td>13705
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> GUI: the GTK HID. 
-<tr><th align=left>hid_lesstif<td>6914
+<tr><th align=left>hid_lesstif<td>6908
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> GUI: the lesstif HID. 
-<tr><th align=left>import_edif<td>3578
+<tr><th align=left>import_edif<td>3610
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
-<td> Import code for netlists in the EDIF format. 
+<td> Import plugin for netlists in the EDIF format. 
+<tr><th align=left>import_netlist<td>128
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> import
+<td> Import plugin for netlists in the classic pcb netlist format. 
 <tr><th align=left>import_sch<td>291
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Imports element and netlist data from the schematics (or some other source). 
-<tr><th align=left>io_kicad_legacy<td>56
+<tr><th align=left>io_kicad_legacy<td>55
 <td  > work-in-progress
 <td bgcolor="red"> disabled
 <td> io
 <td> Load and save the design and elements in Kicad's legacy format. 
-<tr><th align=left>io_pcb<td>2155
+<tr><th align=left>io_pcb<td>2136
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
@@ -192,7 +197,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> (lib)
 <td> Random collection of old/obsolete (legacy) functions. 3rd party plugins may depend on them. This module implements C functions and variables and does not register actions or flags. 
-<tr><th align=left>mincut<td>905
+<tr><th align=left>mincut<td>898
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
@@ -202,7 +207,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disabled
 <td> (feature)
 <td> Random collection of old/obsolete actions. Bell(): audible feedback; DumpLibrary(): print footprint library on stdout; a set of debug actions useful for writing pcb scripts: Debug(), DebugXY(), Return(). Old plugin actions to toggle or set settings that are now accessible via the unified config system (vendordrill, djopt) 
-<tr><th align=left>puller<td>1887
+<tr><th align=left>puller<td>1886
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
@@ -217,7 +222,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Report() and ReportObject() actions - print a report about design objects. 
-<tr><th align=left>shand_cmd<td>212
+<tr><th align=left>shand_cmd<td>209
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
@@ -227,13 +232,13 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disabled
 <td> (feature)
 <td> Gesture recognition with libstroke. 
-<tr><th align=left>toporouter<td>6165
+<tr><th align=left>toporouter<td>6166
 <td bgcolor="red" > fails
 <br> (infinite loop in gts)
 <td bgcolor="red"> disabled
 <td> (feature)
 <td> Automatically route selected or all rats using a topological algorithm. This is the new autorouter from 2009. 
-<tr><th align=left>vendordrill<td>552
+<tr><th align=left>vendordrill<td>547
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
