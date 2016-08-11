@@ -46,8 +46,8 @@ My plans with this fork:
 	<li> Most probably I won't merge anything back from the mainstream to my fork - the past few years showed that it's unlikely there would be new features I'd need
 	<li> My plans for new features were:
 		<ul>
-			<li> pin shapes (a <a href="square.html">preliminary version</a> is already implemented)
-			<li> 1206 jumpers without having to add them on the schematics/netlist (done: <a href="intconn.html">[intconn]</a> and <a href="nonetlist.html"> [nonetlist] </a> are the PCB-side features for this)
+			<li> pin shapes (a <a href="features/square.html">preliminary version</a> is already implemented)
+			<li> 1206 jumpers without having to add them on the schematics/netlist (done: <a href="features/intconn.html">[intconn]</a> and <a href="features/nonetlist.html"> [nonetlist] </a> are the PCB-side features for this)
 			<li> merge pcb-gpmi; GPMI would be an optional addon, it'd probably stay a plugin, but there should not be a separate repo (<a href="gpmi"> done </a>)
 		</ul>
 </ul>
@@ -62,11 +62,11 @@ In the first phase I was mostly implementing a set of small features and fixes.
 As I got more familiar with the code base, I decided to bite the bullet and
 do some refactoring:
 <ul>
-	<li> replaced the <a href="pcb-fp.html">footprint mapping/loading code</a>; instead of a hardwired m4 dependency, parametric (generated-on-the-fly) footprints can be written in any language
-	<li> replaced the default footprint library shipped with the software; the <a href="pcblib.html"> new library </a> ships a small, well organized collection of essentials, omitting special/rarely used footprints
+	<li> replaced the <a href="features/pcb-fp.html">footprint mapping/loading code</a>; instead of a hardwired m4 dependency, parametric (generated-on-the-fly) footprints can be written in any language
+	<li> replaced the default footprint library shipped with the software; the <a href="features/pcblib.html"> new library </a> ships a small, well organized collection of essentials, omitting special/rarely used footprints
 	<li> got the code much more modular - <a href="mods3"> a lot of core code got converted into plugins </a>
-	<li> threw out the resource parser and file format (manu.res and friends) <a href="res.html"> in favor of lihata;</a> this removed a lot of code duplication and a strangely designed resource tree data structure I really hated; as a side effect the gtk hid has multi-stroke hotkeys
-	<li> <a href="unglib.html">replaced glib</a> with a set of <a href="http://repo.hu/projects/articles/minilibs"> mini libs </a> in core and most of the plugins; at the end only the gtk hid should depend on glib; this made the code easier to maintain and debug; a lot of checks are now compile-time (through the C type system) instead of runtime (glib lists)
+	<li> threw out the resource parser and file format (manu.res and friends) <a href="features/res.html"> in favor of lihata;</a> this removed a lot of code duplication and a strangely designed resource tree data structure I really hated; as a side effect the gtk hid has multi-stroke hotkeys
+	<li> <a href="features/unglib.html">replaced glib</a> with a set of <a href="http://repo.hu/projects/articles/minilibs"> mini libs </a> in core and most of the plugins; at the end only the gtk hid should depend on glib; this made the code easier to maintain and debug; a lot of checks are now compile-time (through the C type system) instead of runtime (glib lists)
 	<li> replaced the settings/rc/preferences system with a central, <a href="conf/"> lihata based configuration system </a> - long term hid attributes will be converted too
 </ul>
 <p>
