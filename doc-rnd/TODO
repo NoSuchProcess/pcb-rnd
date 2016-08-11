@@ -1,5 +1,4 @@
 - BUGS
-	- gtk, empty design, select by name, cancel -> crash
 	- bg image png crashes in extreme pan
 	- mac sw rendering slowdown [Chris]
 	- duplicate-element-on-copy bug: ctrl pressed? [James]

@@ -61,6 +61,8 @@ static char *gui_get_pat(search_method_t * method)
 	gui->attribute_dialog(attrs, nattr, results, "Find element", "Find element by name");
 
 	*method = results[1].int_value;
+	if (results[0].str_value == NULL)
+		return NULL;
 	return strdup(results[0].str_value);
 #undef nattr
 }
