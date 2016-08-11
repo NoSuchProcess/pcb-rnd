@@ -41,6 +41,7 @@
 #include <sys/types.h>
 #include <math.h>
 #include <assert.h>
+#include "compat_fs.h"
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -71,13 +72,10 @@ char *GetWorkingDirectory(char *path)
 #endif
 }
 
-#ifdef MKDIR_IS_PCBMKDIR
-#error "Don't know how to create a directory on this system."
 int pcb_mkdir(const char *path, int mode)
 {
 	return MKDIR(path, mode);
 }
-#endif
 
 int pcb_spawnvp(char **argv)
 {

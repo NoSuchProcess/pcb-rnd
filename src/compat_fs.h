@@ -1,10 +1,11 @@
 char *GetWorkingDirectory(char *);
 
-/* mkdir() implentation, mostly for plugins, which don't have our config.h.
+/* Portable mkdir() implentation.
  * Check whether mkdir() is mkdir or _mkdir, and whether it takes one
  * or two arguments.  WIN32 mkdir takes one argument and POSIX takes
  * two.
  */
+int pcb_mkdir(const char *path, int mode);
 #if HAVE_MKDIR
 #if MKDIR_TAKES_ONE_ARG
 				 /* MinGW32 */
@@ -17,11 +18,11 @@ char *GetWorkingDirectory(char *);
 #if HAVE__MKDIR
 				 /* plain Windows 32 */
 #define MKDIR(a, b) _mkdir(a)
-#else
-#define MKDIR(a, b) pcb_mkdir(a, b)
-#define MKDIR_IS_PCBMKDIR 1
-int pcb_mkdir(const char *path, int mode);
 #endif
+#endif
+
+#ifndef MKDIR
+#	error "Don't know how to create a directory on this system."
 #endif
 
 /* for access(), fork() and friends */
