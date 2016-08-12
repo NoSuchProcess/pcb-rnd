@@ -211,32 +211,34 @@ pad.  Primarily used for pads used as fiducials.
 #define NOCOPY_FLAGS (FOUNDFLAG | CONNECTEDFLAG | ONPOINTFLAG)
 
 /* ---------------------------------------------------------------------------
- * object types
+ * object types (bitfield)
  */
-#define	NO_TYPE			0x00000			/* no object */
-#define	VIA_TYPE		0x00001
-#define	ELEMENT_TYPE		0x00002
-#define	LINE_TYPE		0x00004
-#define	POLYGON_TYPE		0x00008
-#define	TEXT_TYPE		0x00010
-#define RATLINE_TYPE		0x00020
+typedef enum {
+	NO_TYPE           = 0x00000, /* special: no object */
+	VIA_TYPE          = 0x00001,
+	ELEMENT_TYPE      = 0x00002,
+	LINE_TYPE         = 0x00004,
+	POLYGON_TYPE      = 0x00008,
+	TEXT_TYPE         = 0x00010,
+	RATLINE_TYPE      = 0x00020,
 
-#define	PIN_TYPE		0x00100			/* objects that are part */
-#define	PAD_TYPE		0x00200			/* 'pin' of SMD element */
-#define	ELEMENTNAME_TYPE	0x00400	/* of others */
-#define	POLYGONPOINT_TYPE	0x00800
-#define	LINEPOINT_TYPE		0x01000
-#define ELEMENTLINE_TYPE        0x02000
-#define ARC_TYPE                0x04000
-#define ELEMENTARC_TYPE		0x08000
+	PIN_TYPE          = 0x00100, /* objects that are part */
+	PAD_TYPE          = 0x00200, /* 'pin' of SMD element */
+	ELEMENTNAME_TYPE  = 0x00400, /* of others */
+	POLYGONPOINT_TYPE = 0x00800,
+	LINEPOINT_TYPE    = 0x01000,
+	ELEMENTLINE_TYPE  = 0x02000,
+	ARC_TYPE          = 0x04000,
+	ELEMENTARC_TYPE   = 0x08000,
 
-#define LOCKED_TYPE 		0x10000	/* used to tell search to include locked items. */
-#define NET_TYPE		0x20000			/* used to select whole net. */
+	LOCKED_TYPE       = 0x10000, /* used to tell search to include locked items. */
+	NET_TYPE          = 0x20000, /* used to select whole net. */
 
-#define PIN_TYPES     (VIA_TYPE | PIN_TYPE)
-#define LOCK_TYPES    (VIA_TYPE | LINE_TYPE | ARC_TYPE | POLYGON_TYPE | ELEMENT_TYPE \
-                      | TEXT_TYPE | ELEMENTNAME_TYPE | LOCKED_TYPE)
+	/* groups/properties */
+	PIN_TYPES         = (VIA_TYPE | PIN_TYPE),
+	LOCK_TYPES        = (VIA_TYPE | LINE_TYPE | ARC_TYPE | POLYGON_TYPE | ELEMENT_TYPE | TEXT_TYPE | ELEMENTNAME_TYPE | LOCKED_TYPE),
 
-#define	ALL_TYPES		(~0)				/* all bits set */
+	ALL_TYPES         = (~0)   /* all bits set */
+} pcb_obj_type_t;
 
 #endif
