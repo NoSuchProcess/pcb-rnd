@@ -127,7 +127,7 @@ static void DrawNewConnections(void)
 	while (PVList.DrawLocation < PVList.Number) {
 		PinTypePtr pv = PVLIST_ENTRY(PVList.DrawLocation);
 
-		if (TEST_FLAG(PINFLAG, pv)) {
+		if (TEST_FLAG(PCB_FLAG_PIN, pv)) {
 			if (PCB->PinOn)
 				DrawPin(pv);
 		}
@@ -199,7 +199,7 @@ static bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 	case PCB_TYPE_PAD:
 		{
 			PadTypePtr pad = (PadTypePtr) ptr2;
-			if (ADD_PAD_TO_LIST(TEST_FLAG(ONSOLDERFLAG, pad) ? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, FCT_START))
+			if (ADD_PAD_TO_LIST(TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, FCT_START))
 				return true;
 			break;
 		}
@@ -210,7 +210,7 @@ static bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 
 /* ---------------------------------------------------------------------------
  * looks up all connections from the object at the given coordinates
- * the TheFlag (normally 'FOUNDFLAG') is set for all objects found
+ * the TheFlag (normally 'PCB_FLAG_FOUND') is set for all objects found
  * the objects are re-drawn if AndDraw is true
  * also the action is marked as undoable if AndDraw is true
  */

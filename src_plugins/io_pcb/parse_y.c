@@ -2269,7 +2269,7 @@ yyreduce:
 #line 970 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				/* eliminate old-style rat-lines */
-			if ((IV ((yyvsp[-1].measure)) & RATFLAG) == 0)
+			if ((IV ((yyvsp[-1].measure)) & PCB_FLAG_RAT) == 0)
 				CreateNewLineOnLayer(Layer, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)),
 					200*GROUNDPLANEFRAME, OldFlags(IV ((yyvsp[-1].measure))));
 			}
@@ -2316,10 +2316,10 @@ yyreduce:
   case 99:
 #line 1083 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
-				if ((yyvsp[-1].integer) & ONSILKFLAG)
+				if ((yyvsp[-1].integer) & PCB_FLAG_ONSILK)
 				{
 					LayerTypePtr lay = &yyData->Layer[yyData->LayerN +
-						(((yyvsp[-1].integer) & ONSOLDERFLAG) ? SOLDER_LAYER : COMPONENT_LAYER)];
+						(((yyvsp[-1].integer) & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
 
 					CreateNewText(lay ,yyFont, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), (yyvsp[-2].string),
 						      OldFlags((yyvsp[-1].integer)));
@@ -2338,14 +2338,14 @@ yyreduce:
 				/* FIXME: shouldn't know about .f */
 				/* I don't think this matters because anything with hi_format
 				 * will have the silk on its own layer in the file rather
-				 * than using the ONSILKFLAG and having it in a copper layer.
+				 * than using the PCB_FLAG_ONSILK and having it in a copper layer.
 				 * Thus there is no need for anything besides the 'else'
 				 * part of this code.
 				 */
-				if ((yyvsp[-1].flagtype).f & ONSILKFLAG)
+				if ((yyvsp[-1].flagtype).f & PCB_FLAG_ONSILK)
 				{
 					LayerTypePtr lay = &yyData->Layer[yyData->LayerN +
-						(((yyvsp[-1].flagtype).f & ONSOLDERFLAG) ? SOLDER_LAYER : COMPONENT_LAYER)];
+						(((yyvsp[-1].flagtype).f & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
 
 					CreateNewText(lay, yyFont, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), (yyvsp[-2].string), (yyvsp[-1].flagtype));
 				}

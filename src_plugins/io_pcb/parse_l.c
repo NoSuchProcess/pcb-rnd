@@ -2496,17 +2496,17 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, conf_role_t 
 	setlocale(LC_ALL, "");
 	if ((settings_dest != CFR_invalid) && (retval == 0)) {
 		/* overwrite settings from the flags, mark them not-to-save */
-		CONF_SET(settings_dest, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(ENABLEMINCUTFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(settings_dest, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(ENABLEPCB_FLAG_MINCUT, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/show_number", -1, CONF_BOOL_FLAG(SHOWNUMBERFLAG, yy_pcb_flags), POL_OVERWRITE);
-		CONF_SET(settings_dest, "editor/show_drc", -1, CONF_BOOL_FLAG(SHOWDRCFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(settings_dest, "editor/show_drc", -1, CONF_BOOL_FLAG(SHOWPCB_FLAG_DRC, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/rubber_band_mode", -1, CONF_BOOL_FLAG(RUBBERBANDFLAG, yy_pcb_flags), POL_OVERWRITE);
-		CONF_SET(settings_dest, "editor/auto_drc", -1, CONF_BOOL_FLAG(AUTODRCFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(settings_dest, "editor/auto_drc", -1, CONF_BOOL_FLAG(AUTOPCB_FLAG_DRC, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/all_direction_lines", -1, CONF_BOOL_FLAG(ALLDIRECTIONFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/swap_start_direction", -1, CONF_BOOL_FLAG(SWAPSTARTDIRFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/unique_names", -1, CONF_BOOL_FLAG(UNIQUENAMEFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/clear_line", -1, CONF_BOOL_FLAG(CLEARNEWFLAG, yy_pcb_flags), POL_OVERWRITE);
-		CONF_SET(settings_dest, "editor/full_poly", -1, CONF_BOOL_FLAG(NEWFULLPOLYFLAG, yy_pcb_flags), POL_OVERWRITE);
-		CONF_SET(settings_dest, "editor/snap_pin", -1, CONF_BOOL_FLAG(SNAPPINFLAG, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(settings_dest, "editor/full_poly", -1, CONF_BOOL_FLAG(NEWPCB_FLAG_FULLPOLY, yy_pcb_flags), POL_OVERWRITE);
+		CONF_SET(settings_dest, "editor/snap_pin", -1, CONF_BOOL_FLAG(SNAPPCB_FLAG_PIN, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/orthogonal_moves", -1, CONF_BOOL_FLAG(ORTHOMOVEFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/live_routing", -1, CONF_BOOL_FLAG(LIVEROUTEFLAG, yy_pcb_flags), POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/lock_names", -1, CONF_BOOL_FLAG(LOCKNAMESFLAG, yy_pcb_flags), POL_OVERWRITE);

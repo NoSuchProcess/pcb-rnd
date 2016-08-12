@@ -105,7 +105,7 @@ void SetPinBoundingBox(PinTypePtr Pin)
 {
 	Coord width;
 
-	if ((GET_SQUARE(Pin) > 1) && (TEST_FLAG(SQUAREFLAG, Pin))) {
+	if ((GET_SQUARE(Pin) > 1) && (TEST_FLAG(PCB_FLAG_SQUARE, Pin))) {
 		POLYAREA *p = PinPoly(Pin, PIN_SIZE(Pin), Pin->Clearance);
 		poly_bbox(p, &Pin->BoundingBox);
 		poly_Free(&p);
@@ -143,7 +143,7 @@ void SetPadBoundingBox(PadTypePtr Pad)
 	deltax = Pad->Point2.X - Pad->Point1.X;
 	deltay = Pad->Point2.Y - Pad->Point1.Y;
 
-	if (TEST_FLAG(SQUAREFLAG, Pad) && deltax != 0 && deltay != 0) {
+	if (TEST_FLAG(PCB_FLAG_SQUARE, Pad) && deltax != 0 && deltay != 0) {
 		/* slanted square pad */
 		double theta;
 		Coord btx, bty;
@@ -302,7 +302,7 @@ void SetElementBoundingBox(DataTypePtr Data, ElementTypePtr Element, FontTypePtr
 		MAKEMAX(vbox->Y2, MAX(pad->Point1.Y, pad->Point2.Y) + pad->Thickness / 2);
 	}
 	END_LOOP;
-	/* now we set the EDGE2FLAG of the pad if Point2
+	/* now we set the PCB_FLAG_EDGE2 of the pad if Point2
 	 * is closer to the outside edge than Point1
 	 */
 	PAD_LOOP(Element);
@@ -310,16 +310,16 @@ void SetElementBoundingBox(DataTypePtr Data, ElementTypePtr Element, FontTypePtr
 		if (pad->Point1.Y == pad->Point2.Y) {
 			/* horizontal pad */
 			if (box->X2 - pad->Point2.X < pad->Point1.X - box->X1)
-				SET_FLAG(EDGE2FLAG, pad);
+				SET_FLAG(PCB_FLAG_EDGE2, pad);
 			else
-				CLEAR_FLAG(EDGE2FLAG, pad);
+				CLEAR_FLAG(PCB_FLAG_EDGE2, pad);
 		}
 		else {
 			/* vertical pad */
 			if (box->Y2 - pad->Point2.Y < pad->Point1.Y - box->Y1)
-				SET_FLAG(EDGE2FLAG, pad);
+				SET_FLAG(PCB_FLAG_EDGE2, pad);
 			else
-				CLEAR_FLAG(EDGE2FLAG, pad);
+				CLEAR_FLAG(PCB_FLAG_EDGE2, pad);
 		}
 	}
 	END_LOOP;
@@ -328,14 +328,14 @@ void SetElementBoundingBox(DataTypePtr Data, ElementTypePtr Element, FontTypePtr
 	if ((box->X2 - box->X1) > (box->Y2 - box->Y1)) {
 		PIN_LOOP(Element);
 		{
-			SET_FLAG(EDGE2FLAG, pin);
+			SET_FLAG(PCB_FLAG_EDGE2, pin);
 		}
 		END_LOOP;
 	}
 	else {
 		PIN_LOOP(Element);
 		{
-			CLEAR_FLAG(EDGE2FLAG, pin);
+			CLEAR_FLAG(PCB_FLAG_EDGE2, pin);
 		}
 		END_LOOP;
 	}
@@ -434,7 +434,7 @@ void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text)
 	 * and rotate box
 	 */
 
-	if (TEST_FLAG(ONSOLDERFLAG, Text)) {
+	if (TEST_FLAG(PCB_FLAG_ONSOLDER, Text)) {
 		Text->BoundingBox.X1 = Text->X + minx;
 		Text->BoundingBox.Y1 = Text->Y - miny;
 		Text->BoundingBox.X2 = Text->X + maxx;
@@ -507,7 +507,7 @@ bool IsPasteEmpty(int side)
 	bool paste_empty = true;
 	ALLPAD_LOOP(PCB->Data);
 	{
-		if (ON_SIDE(pad, side) && !TEST_FLAG(NOPASTEFLAG, pad) && pad->Mask > 0) {
+		if (ON_SIDE(pad, side) && !TEST_FLAG(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
 			paste_empty = false;
 			break;
 		}
@@ -526,7 +526,7 @@ static r_dir_t hole_counting_callback(const BoxType * b, void *cl)
 {
 	PinTypePtr pin = (PinTypePtr) b;
 	HoleCountStruct *hcs = (HoleCountStruct *) cl;
-	if (TEST_FLAG(HOLEFLAG, pin))
+	if (TEST_FLAG(PCB_FLAG_HOLE, pin))
 		hcs->nunplated++;
 	else
 		hcs->nplated++;

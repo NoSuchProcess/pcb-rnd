@@ -198,7 +198,7 @@ static void ChangeFlag(char *what, char *flag_name, int value, char *cmd_name)
 			void *ptr1, *ptr2, *ptr3;
 
 			if ((type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-				if (TEST_FLAG(LOCKFLAG, (PinTypePtr) ptr2))
+				if (TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2))
 					Message(_("Sorry, the object is locked\n"));
 			if (set_object(type, ptr1, ptr2, ptr3))
 				SetChangedFlag(true);
@@ -410,7 +410,7 @@ static int ActionChangeSize(int argc, char **argv, Coord x, Coord y)
 		case F_Object:
 			{
 				if (type != PCB_TYPE_NONE)
-					if (TEST_FLAG(LOCKFLAG, (PinTypePtr) ptr2))
+					if (TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2))
 						Message(_("Sorry, the object is locked\n"));
 				if (tostyle) {
 					if (ChangeObject1stSize(type, ptr1, ptr2, ptr3, value, absolute))

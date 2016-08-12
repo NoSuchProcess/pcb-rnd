@@ -103,15 +103,15 @@ static void SetPVColor(PinTypePtr Pin, int Type)
 	char buf[sizeof("#XXXXXX")];
 
 	if (Type == PCB_TYPE_VIA) {
-		if (!doing_pinout && TEST_FLAG(WARNFLAG | SELECTEDFLAG | FOUNDFLAG, Pin)) {
-			if (TEST_FLAG(WARNFLAG, Pin))
+		if (!doing_pinout && TEST_FLAG(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
+			if (TEST_FLAG(PCB_FLAG_WARN, Pin))
 				color = PCB->WarnColor;
-			else if (TEST_FLAG(SELECTEDFLAG, Pin))
+			else if (TEST_FLAG(PCB_FLAG_SELECTED, Pin))
 				color = PCB->ViaSelectedColor;
 			else
 				color = PCB->ConnectedColor;
 
-			if (TEST_FLAG(ONPOINTFLAG, Pin)) {
+			if (TEST_FLAG(PCB_FLAG_ONPOINT, Pin)) {
 				assert(color != NULL);
 				LightenColor(color, buf, 1.75);
 				color = buf;
@@ -121,15 +121,15 @@ static void SetPVColor(PinTypePtr Pin, int Type)
 			color = PCB->ViaColor;
 	}
 	else {
-		if (!doing_pinout && TEST_FLAG(WARNFLAG | SELECTEDFLAG | FOUNDFLAG, Pin)) {
-			if (TEST_FLAG(WARNFLAG, Pin))
+		if (!doing_pinout && TEST_FLAG(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
+			if (TEST_FLAG(PCB_FLAG_WARN, Pin))
 				color = PCB->WarnColor;
-			else if (TEST_FLAG(SELECTEDFLAG, Pin))
+			else if (TEST_FLAG(PCB_FLAG_SELECTED, Pin))
 				color = PCB->PinSelectedColor;
 			else
 				color = PCB->ConnectedColor;
 
-			if (TEST_FLAG(ONPOINTFLAG, Pin)) {
+			if (TEST_FLAG(PCB_FLAG_ONPOINT, Pin)) {
 				assert(color != NULL);
 				LightenColor(color, buf, 1.75);
 				color = buf;
@@ -194,7 +194,7 @@ static void _draw_pv_name(PinType * pv)
 		strcpy(buff, pn);
 	text.TextString = buff;
 
-	vert = TEST_FLAG(EDGE2FLAG, pv);
+	vert = TEST_FLAG(PCB_FLAG_EDGE2, pv);
 
 	if (vert) {
 		box.X1 = pv->X - pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
@@ -228,7 +228,7 @@ static void _draw_pv(PinTypePtr pv, bool draw_hole)
 	else
 		gui->fill_pcb_pv(Output.fgGC, Output.bgGC, pv, draw_hole, false);
 
-	if (!TEST_FLAG(HOLEFLAG, pv) && TEST_FLAG(DISPLAYNAMEFLAG, pv))
+	if (!TEST_FLAG(PCB_FLAG_HOLE, pv) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, pv))
 		_draw_pv_name(pv);
 }
 
@@ -322,10 +322,10 @@ static void draw_pad(PadType * pad)
 
 	if (doing_pinout)
 		gui->set_color(Output.fgGC, PCB->PinColor);
-	else if (TEST_FLAG(WARNFLAG | SELECTEDFLAG | FOUNDFLAG, pad)) {
-		if (TEST_FLAG(WARNFLAG, pad))
+	else if (TEST_FLAG(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, pad)) {
+		if (TEST_FLAG(PCB_FLAG_WARN, pad))
 			color = PCB->WarnColor;
-		else if (TEST_FLAG(SELECTEDFLAG, pad))
+		else if (TEST_FLAG(PCB_FLAG_SELECTED, pad))
 			color = PCB->PinSelectedColor;
 		else
 			color = PCB->ConnectedColor;
@@ -335,7 +335,7 @@ static void draw_pad(PadType * pad)
 	else
 		color = PCB->InvisibleObjectsColor;
 
-	if (TEST_FLAG(ONPOINTFLAG, pad)) {
+	if (TEST_FLAG(PCB_FLAG_ONPOINT, pad)) {
 		assert(color != NULL);
 		LightenColor(color, buf, 1.75);
 		color = buf;
@@ -346,7 +346,7 @@ static void draw_pad(PadType * pad)
 
 	_draw_pad(Output.fgGC, pad, false, false);
 
-	if (doing_pinout || TEST_FLAG(DISPLAYNAMEFLAG, pad))
+	if (doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, pad))
 		draw_pad_name(pad);
 }
 
@@ -362,15 +362,15 @@ static r_dir_t pad_callback(const BoxType * b, void *cl)
 
 static void draw_element_name(ElementType * element)
 {
-	if ((conf_core.editor.hide_names && gui->gui) || TEST_FLAG(HIDENAMEFLAG, element))
+	if ((conf_core.editor.hide_names && gui->gui) || TEST_FLAG(PCB_FLAG_HIDENAME, element))
 		return;
 	if (doing_pinout || doing_assy)
 		gui->set_color(Output.fgGC, PCB->ElementColor);
-	else if (TEST_FLAG(SELECTEDFLAG, &ELEMENT_TEXT(PCB, element)))
+	else if (TEST_FLAG(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)))
 		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
 	else if (FRONT(element)) {
 /* TODO: why do we test for Name's flag here? */
-		if (TEST_FLAG(NONETLISTFLAG, element))
+		if (TEST_FLAG(PCB_FLAG_NONETLIST, element))
 			gui->set_color(Output.fgGC, PCB->ElementColor_nonetlist);
 		else
 			gui->set_color(Output.fgGC, PCB->ElementColor);
@@ -388,7 +388,7 @@ static r_dir_t name_callback(const BoxType * b, void *cl)
 	ElementTypePtr element = (ElementTypePtr) text->Element;
 	int *side = cl;
 
-	if (TEST_FLAG(HIDENAMEFLAG, element))
+	if (TEST_FLAG(PCB_FLAG_HIDENAME, element))
 		return R_DIR_NOT_FOUND;
 
 	if (ON_SIDE(element, *side))
@@ -426,11 +426,11 @@ static r_dir_t hole_callback(const BoxType * b, void *cl)
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
 
-	if ((plated == 0 && !TEST_FLAG(HOLEFLAG, pv)) || (plated == 1 && TEST_FLAG(HOLEFLAG, pv)))
+	if ((plated == 0 && !TEST_FLAG(PCB_FLAG_HOLE, pv)) || (plated == 1 && TEST_FLAG(PCB_FLAG_HOLE, pv)))
 		return R_DIR_FOUND_CONTINUE;
 
 	if (conf_core.editor.thin_draw) {
-		if (!TEST_FLAG(HOLEFLAG, pv)) {
+		if (!TEST_FLAG(PCB_FLAG_HOLE, pv)) {
 			gui->set_line_cap(Output.fgGC, Round_Cap);
 			gui->set_line_width(Output.fgGC, 0);
 			gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
@@ -439,15 +439,15 @@ static r_dir_t hole_callback(const BoxType * b, void *cl)
 	else
 		gui->fill_circle(Output.bgGC, pv->X, pv->Y, pv->DrillingHole / 2);
 
-	if (TEST_FLAG(HOLEFLAG, pv)) {
-		if (TEST_FLAG(WARNFLAG, pv))
+	if (TEST_FLAG(PCB_FLAG_HOLE, pv)) {
+		if (TEST_FLAG(PCB_FLAG_WARN, pv))
 			color = PCB->WarnColor;
-		else if (TEST_FLAG(SELECTEDFLAG, pv))
+		else if (TEST_FLAG(PCB_FLAG_SELECTED, pv))
 			color = PCB->ViaSelectedColor;
 		else
 			color = conf_core.appearance.color.black;
 
-		if (TEST_FLAG(ONPOINTFLAG, pv)) {
+		if (TEST_FLAG(PCB_FLAG_ONPOINT, pv)) {
 			assert(color != NULL);
 			LightenColor(color, buf, 1.75);
 			color = buf;
@@ -490,10 +490,10 @@ static void draw_line(LayerType * layer, LineType * line)
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
 
-	if (TEST_FLAG(WARNFLAG, line))
+	if (TEST_FLAG(PCB_FLAG_WARN, line))
 		color = PCB->WarnColor;
-	else if (TEST_FLAG(SELECTEDFLAG | FOUNDFLAG, line)) {
-		if (TEST_FLAG(SELECTEDFLAG, line))
+	else if (TEST_FLAG(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, line)) {
+		if (TEST_FLAG(PCB_FLAG_SELECTED, line))
 			color = layer->SelectedColor;
 		else
 			color = PCB->ConnectedColor;
@@ -501,7 +501,7 @@ static void draw_line(LayerType * layer, LineType * line)
 	else
 		color = layer->Color;
 
-	if (TEST_FLAG(ONPOINTFLAG, line)) {
+	if (TEST_FLAG(PCB_FLAG_ONPOINT, line)) {
 		assert(color != NULL);
 		LightenColor(color, buf, 1.75);
 		color = buf;
@@ -521,8 +521,8 @@ static r_dir_t rat_callback(const BoxType * b, void *cl)
 {
 	RatType *rat = (RatType *) b;
 
-	if (TEST_FLAG(SELECTEDFLAG | FOUNDFLAG, rat)) {
-		if (TEST_FLAG(SELECTEDFLAG, rat))
+	if (TEST_FLAG(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, rat)) {
+		if (TEST_FLAG(PCB_FLAG_SELECTED, rat))
 			gui->set_color(Output.fgGC, PCB->RatSelectedColor);
 		else
 			gui->set_color(Output.fgGC, PCB->ConnectedColor);
@@ -532,8 +532,8 @@ static r_dir_t rat_callback(const BoxType * b, void *cl)
 
 	if (conf_core.appearance.rat_thickness < 20)
 		rat->Thickness = pixel_slop * conf_core.appearance.rat_thickness;
-	/* rats.c set VIAFLAG if this rat goes to a containing poly: draw a donut */
-	if (TEST_FLAG(VIAFLAG, rat)) {
+	/* rats.c set PCB_FLAG_VIA if this rat goes to a containing poly: draw a donut */
+	if (TEST_FLAG(PCB_FLAG_VIA, rat)) {
 		int w = rat->Thickness;
 
 		if (conf_core.editor.thin_draw)
@@ -566,10 +566,10 @@ static void draw_arc(LayerType * layer, ArcType * arc)
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
 
-	if (TEST_FLAG(WARNFLAG, arc))
+	if (TEST_FLAG(PCB_FLAG_WARN, arc))
 		color = PCB->WarnColor;
-	else if (TEST_FLAG(SELECTEDFLAG | FOUNDFLAG, arc)) {
-		if (TEST_FLAG(SELECTEDFLAG, arc))
+	else if (TEST_FLAG(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, arc)) {
+		if (TEST_FLAG(PCB_FLAG_SELECTED, arc))
 			color = layer->SelectedColor;
 		else
 			color = PCB->ConnectedColor;
@@ -577,7 +577,7 @@ static void draw_arc(LayerType * layer, ArcType * arc)
 	else
 		color = layer->Color;
 
-	if (TEST_FLAG(ONPOINTFLAG, arc)) {
+	if (TEST_FLAG(PCB_FLAG_ONPOINT, arc)) {
 		assert(color != NULL);
 		LightenColor(color, buf, 1.75);
 		color = buf;
@@ -597,7 +597,7 @@ static void draw_element_package(ElementType * element)
 	/* set color and draw lines, arcs, text and pins */
 	if (doing_pinout || doing_assy)
 		gui->set_color(Output.fgGC, PCB->ElementColor);
-	else if (TEST_FLAG(SELECTEDFLAG, element))
+	else if (TEST_FLAG(PCB_FLAG_SELECTED, element))
 		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
 	else if (FRONT(element))
 		gui->set_color(Output.fgGC, PCB->ElementColor);
@@ -788,7 +788,7 @@ static void DrawEMark(ElementTypePtr e, Coord X, Coord Y, bool invisible)
 
 	if (pinlist_length(&e->Pin) != 0) {
 		PinType *pin0 = pinlist_first(&e->Pin);
-		if (TEST_FLAG(HOLEFLAG, pin0))
+		if (TEST_FLAG(PCB_FLAG_HOLE, pin0))
 			mark_size = MIN(mark_size, pin0->DrillingHole / 2);
 		else
 			mark_size = MIN(mark_size, pin0->Thickness / 2);
@@ -812,7 +812,7 @@ static void DrawEMark(ElementTypePtr e, Coord X, Coord Y, bool invisible)
 	 * This provides a nice visual indication that it is locked that
 	 * works even for color blind users.
 	 */
-	if (TEST_FLAG(LOCKFLAG, e)) {
+	if (TEST_FLAG(PCB_FLAG_LOCK, e)) {
 		gui->draw_line(Output.fgGC, X, Y, X + 2 * mark_size, Y);
 		gui->draw_line(Output.fgGC, X, Y, X, Y - 4 * mark_size);
 	}
@@ -878,13 +878,13 @@ static r_dir_t poly_callback(const BoxType * b, void *cl)
 	if (!polygon->Clipped)
 		return R_DIR_NOT_FOUND;
 
-	if (TEST_FLAG(WARNFLAG, polygon))
+	if (TEST_FLAG(PCB_FLAG_WARN, polygon))
 		color = PCB->WarnColor;
-	else if (TEST_FLAG(SELECTEDFLAG, polygon))
+	else if (TEST_FLAG(PCB_FLAG_SELECTED, polygon))
 		color = i->layer->SelectedColor;
-	else if (TEST_FLAG(FOUNDFLAG, polygon))
+	else if (TEST_FLAG(PCB_FLAG_FOUND, polygon))
 		color = PCB->ConnectedColor;
-	else if (TEST_FLAG(ONPOINTFLAG, polygon)) {
+	else if (TEST_FLAG(PCB_FLAG_ONPOINT, polygon)) {
 		assert(color != NULL);
 		LightenColor(color, buf, 1.75);
 		color = buf;
@@ -899,7 +899,7 @@ static r_dir_t poly_callback(const BoxType * b, void *cl)
 		gui->fill_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
 
 	/* If checking planes, thin-draw any pieces which have been clipped away */
-	if (gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !TEST_FLAG(FULLPOLYFLAG, polygon)) {
+	if (gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !TEST_FLAG(PCB_FLAG_FULLPOLY, polygon)) {
 		PolygonType poly = *polygon;
 
 		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)
@@ -1006,7 +1006,7 @@ static void DrawPaste(int side, const BoxType * drawn_area)
 	gui->set_color(Output.fgGC, PCB->ElementColor);
 	ALLPAD_LOOP(PCB->Data);
 	{
-		if (ON_SIDE(pad, side) && !TEST_FLAG(NOPASTEFLAG, pad) && pad->Mask > 0) {
+		if (ON_SIDE(pad, side) && !TEST_FLAG(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
 			if (pad->Mask < pad->Thickness)
 				_draw_pad(Output.fgGC, pad, true, true);
 			else
@@ -1038,7 +1038,7 @@ static r_dir_t text_callback(const BoxType * b, void *cl)
 	TextType *text = (TextType *) b;
 	int min_silk_line;
 
-	if (TEST_FLAG(SELECTEDFLAG, text))
+	if (TEST_FLAG(PCB_FLAG_SELECTED, text))
 		gui->set_color(Output.fgGC, layer->SelectedColor);
 	else
 		gui->set_color(Output.fgGC, layer->Color);
@@ -1110,7 +1110,7 @@ static void DrawLayerGroup(int group, const BoxType * drawn_area)
 static void GatherPVName(PinTypePtr Ptr)
 {
 	BoxType box;
-	bool vert = TEST_FLAG(EDGE2FLAG, Ptr);
+	bool vert = TEST_FLAG(PCB_FLAG_EDGE2, Ptr);
 
 	if (vert) {
 		box.X1 = Ptr->X - Ptr->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
@@ -1193,7 +1193,7 @@ void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width)
 				/* the labels of SMD objects on the bottom
 				 * side haven't been swapped yet, only their offset
 				 */
-				if (TEST_FLAG(ONSOLDERFLAG, Text)) {
+				if (TEST_FLAG(PCB_FLAG_ONSOLDER, Text)) {
 					newline.Point1.X = SWAP_SIGN_X(newline.Point1.X);
 					newline.Point1.Y = SWAP_SIGN_Y(newline.Point1.Y);
 					newline.Point2.X = SWAP_SIGN_X(newline.Point2.X);
@@ -1242,7 +1242,7 @@ void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width)
 void DrawVia(PinTypePtr Via)
 {
 	AddPart(Via);
-	if (!TEST_FLAG(HOLEFLAG, Via) && TEST_FLAG(DISPLAYNAMEFLAG, Via))
+	if (!TEST_FLAG(PCB_FLAG_HOLE, Via) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via))
 		DrawViaName(Via);
 }
 
@@ -1260,7 +1260,7 @@ void DrawViaName(PinTypePtr Via)
 void DrawPin(PinTypePtr Pin)
 {
 	AddPart(Pin);
-	if ((!TEST_FLAG(HOLEFLAG, Pin) && TEST_FLAG(DISPLAYNAMEFLAG, Pin))
+	if ((!TEST_FLAG(PCB_FLAG_HOLE, Pin) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin))
 			|| doing_pinout)
 		DrawPinName(Pin);
 }
@@ -1279,7 +1279,7 @@ void DrawPinName(PinTypePtr Pin)
 void DrawPad(PadTypePtr Pad)
 {
 	AddPart(Pad);
-	if (doing_pinout || TEST_FLAG(DISPLAYNAMEFLAG, Pad))
+	if (doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
 		DrawPadName(Pad);
 }
 
@@ -1306,8 +1306,8 @@ void DrawRat(RatTypePtr Rat)
 {
 	if (conf_core.appearance.rat_thickness < 20)
 		Rat->Thickness = pixel_slop * conf_core.appearance.rat_thickness;
-	/* rats.c set VIAFLAG if this rat goes to a containing poly: draw a donut */
-	if (TEST_FLAG(VIAFLAG, Rat)) {
+	/* rats.c set PCB_FLAG_VIA if this rat goes to a containing poly: draw a donut */
+	if (TEST_FLAG(PCB_FLAG_VIA, Rat)) {
 		Coord w = Rat->Thickness;
 
 		BoxType b;
@@ -1362,7 +1362,7 @@ void DrawElement(ElementTypePtr Element)
  */
 void DrawElementName(ElementTypePtr Element)
 {
-	if (TEST_FLAG(HIDENAMEFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_HIDENAME, Element))
 		return;
 	DrawText(NULL, &ELEMENT_TEXT(PCB, Element));
 }
@@ -1419,7 +1419,7 @@ void EraseFlags(FlagType * f)
 void EraseVia(PinTypePtr Via)
 {
 	AddPart(Via);
-	if (TEST_FLAG(DISPLAYNAMEFLAG, Via))
+	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via))
 		EraseViaName(Via);
 	EraseFlags(&Via->Flags);
 }
@@ -1429,7 +1429,7 @@ void EraseVia(PinTypePtr Via)
  */
 void EraseRat(RatTypePtr Rat)
 {
-	if (TEST_FLAG(VIAFLAG, Rat)) {
+	if (TEST_FLAG(PCB_FLAG_VIA, Rat)) {
 		Coord w = Rat->Thickness;
 
 		BoxType b;
@@ -1460,7 +1460,7 @@ void EraseViaName(PinTypePtr Via)
 void ErasePad(PadTypePtr Pad)
 {
 	AddPart(Pad);
-	if (TEST_FLAG(DISPLAYNAMEFLAG, Pad))
+	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
 		ErasePadName(Pad);
 	EraseFlags(&Pad->Flags);
 }
@@ -1479,7 +1479,7 @@ void ErasePadName(PadTypePtr Pad)
 void ErasePin(PinTypePtr Pin)
 {
 	AddPart(Pin);
-	if (TEST_FLAG(DISPLAYNAMEFLAG, Pin))
+	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin))
 		ErasePinName(Pin);
 	EraseFlags(&Pin->Flags);
 }
@@ -1577,7 +1577,7 @@ void EraseElementPinsAndPads(ElementTypePtr Element)
 void EraseElementName(ElementTypePtr Element)
 {
 	pcb_trace("EraseElementName enter %p {\n", Element);
-	if (TEST_FLAG(HIDENAMEFLAG, Element)) {
+	if (TEST_FLAG(PCB_FLAG_HIDENAME, Element)) {
 		pcb_trace("EE nope\n}\n", Element);
 		return;
 	}

@@ -969,7 +969,7 @@ line_oldformat
 		: T_LINE '(' measure measure measure measure measure measure ')'
 			{
 				/* eliminate old-style rat-lines */
-			if ((IV ($8) & RATFLAG) == 0)
+			if ((IV ($8) & PCB_FLAG_RAT) == 0)
 				CreateNewLineOnLayer(Layer, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7),
 					200*GROUNDPLANEFRAME, OldFlags(IV ($8)));
 			}
@@ -1081,10 +1081,10 @@ text_newformat
 			/* x, y, direction, scale, text, flags */
 		: T_TEXT '(' measure measure number number STRING INTEGER ')'
 			{
-				if ($8 & ONSILKFLAG)
+				if ($8 & PCB_FLAG_ONSILK)
 				{
 					LayerTypePtr lay = &yyData->Layer[yyData->LayerN +
-						(($8 & ONSOLDERFLAG) ? SOLDER_LAYER : COMPONENT_LAYER)];
+						(($8 & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
 
 					CreateNewText(lay ,yyFont, OU ($3), OU ($4), $5, $6, $7,
 						      OldFlags($8));
@@ -1102,14 +1102,14 @@ text_hi_format
 				/* FIXME: shouldn't know about .f */
 				/* I don't think this matters because anything with hi_format
 				 * will have the silk on its own layer in the file rather
-				 * than using the ONSILKFLAG and having it in a copper layer.
+				 * than using the PCB_FLAG_ONSILK and having it in a copper layer.
 				 * Thus there is no need for anything besides the 'else'
 				 * part of this code.
 				 */
-				if ($8.f & ONSILKFLAG)
+				if ($8.f & PCB_FLAG_ONSILK)
 				{
 					LayerTypePtr lay = &yyData->Layer[yyData->LayerN +
-						(($8.f & ONSOLDERFLAG) ? SOLDER_LAYER : COMPONENT_LAYER)];
+						(($8.f & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
 
 					CreateNewText(lay, yyFont, NU ($3), NU ($4), $5, $6, $7, $8);
 				}

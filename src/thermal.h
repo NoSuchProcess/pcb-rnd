@@ -27,7 +27,7 @@
 /* prototypes for thermal routines
  *
  * Thermals are normal lines on the layout. The only thing unique
- * about them is that they have the USETHERMALFLAG set so that they
+ * about them is that they have the PCB_FLAG_USETHERMAL set so that they
  * can be identified as thermals. It is handy for pcb to automatically
  * make adjustments to the thermals when the user performs certain
  * operations, and the functions in thermal.h help implement that.

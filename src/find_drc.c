@@ -279,7 +279,7 @@ static r_dir_t drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr
 
 doIsBad:
 	AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
-	SET_FLAG(FOUNDFLAG, polygon);
+	SET_FLAG(PCB_FLAG_FOUND, polygon);
 	DrawPolygon(layer, polygon);
 	DrawObject(type, ptr1, ptr2);
 	drcerr_count++;
@@ -327,7 +327,7 @@ int DRCAll(void)
 	hid_action("LayersChanged");
 	InitConnectionLookup();
 
-	TheFlag = FOUNDFLAG | DRCFLAG | SELECTEDFLAG;
+	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED;
 
 	if (ResetConnections(true)) {
 		IncrementUndoSerialNumber();
@@ -340,7 +340,7 @@ int DRCAll(void)
 	{
 		PIN_LOOP(element);
 		{
-			if (!TEST_FLAG(DRCFLAG, pin)
+			if (!TEST_FLAG(PCB_FLAG_DRC, pin)
 					&& DRCFind(PCB_TYPE_PIN, (void *) element, (void *) pin, (void *) pin)) {
 				IsBad = true;
 				break;
@@ -353,10 +353,10 @@ int DRCAll(void)
 		{
 
 			/* count up how many pads have no solderpaste openings */
-			if (TEST_FLAG(NOPASTEFLAG, pad))
+			if (TEST_FLAG(PCB_FLAG_NOPASTE, pad))
 				nopastecnt++;
 
-			if (!TEST_FLAG(DRCFLAG, pad)
+			if (!TEST_FLAG(PCB_FLAG_DRC, pad)
 					&& DRCFind(PCB_TYPE_PAD, (void *) element, (void *) pad, (void *) pad)) {
 				IsBad = true;
 				break;
@@ -370,7 +370,7 @@ int DRCAll(void)
 	if (!IsBad)
 		VIA_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(DRCFLAG, via)
+		if (!TEST_FLAG(PCB_FLAG_DRC, via)
 				&& DRCFind(PCB_TYPE_VIA, (void *) via, (void *) via, (void *) via)) {
 			IsBad = true;
 			break;
@@ -378,9 +378,9 @@ int DRCAll(void)
 	}
 	END_LOOP;
 
-	TheFlag = (IsBad) ? DRCFLAG : (FOUNDFLAG | DRCFLAG | SELECTEDFLAG);
+	TheFlag = (IsBad) ? PCB_FLAG_DRC : (PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED);
 	ResetConnections(false);
-	TheFlag = SELECTEDFLAG;
+	TheFlag = PCB_FLAG_SELECTED;
 	/* check minimum widths and polygon clearances */
 	if (!IsBad) {
 		COPPERLINE_LOOP(PCB->Data);
@@ -451,7 +451,7 @@ int DRCAll(void)
 			PlowsPolygon(PCB->Data, PCB_TYPE_PIN, element, pin, drc_callback);
 			if (IsBad)
 				break;
-			if (!TEST_FLAG(HOLEFLAG, pin) && pin->Thickness - pin->DrillingHole < 2 * PCB->minRing) {
+			if (!TEST_FLAG(PCB_FLAG_HOLE, pin) && pin->Thickness - pin->DrillingHole < 2 * PCB->minRing) {
 				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
 				SET_FLAG(TheFlag, pin);
 				DrawPin(pin);
@@ -536,7 +536,7 @@ int DRCAll(void)
 			PlowsPolygon(PCB->Data, PCB_TYPE_VIA, via, via, drc_callback);
 			if (IsBad)
 				break;
-			if (!TEST_FLAG(HOLEFLAG, via) && via->Thickness - via->DrillingHole < 2 * PCB->minRing) {
+			if (!TEST_FLAG(PCB_FLAG_HOLE, via) && via->Thickness - via->DrillingHole < 2 * PCB->minRing) {
 				AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
 				SET_FLAG(TheFlag, via);
 				DrawVia(via);
@@ -586,12 +586,12 @@ int DRCAll(void)
 	}
 
 	FreeConnectionLookupMemory();
-	TheFlag = FOUNDFLAG;
+	TheFlag = PCB_FLAG_FOUND;
 	Bloat = 0;
 
 	/* check silkscreen minimum widths outside of elements */
 	/* XXX - need to check text and polygons too! */
-	TheFlag = SELECTEDFLAG;
+	TheFlag = PCB_FLAG_SELECTED;
 	if (!IsBad) {
 		SILKLINE_LOOP(PCB->Data);
 		{
@@ -620,7 +620,7 @@ int DRCAll(void)
 
 	/* check silkscreen minimum widths inside of elements */
 	/* XXX - need to check text and polygons too! */
-	TheFlag = SELECTEDFLAG;
+	TheFlag = PCB_FLAG_SELECTED;
 	if (!IsBad) {
 		ELEMENT_LOOP(PCB->Data);
 		{
@@ -704,29 +704,29 @@ static bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 
 	if (PCB->Shrink != 0) {
 		Bloat = -PCB->Shrink;
-		TheFlag = DRCFLAG | SELECTEDFLAG;
+		TheFlag = PCB_FLAG_DRC | PCB_FLAG_SELECTED;
 		ListStart(What, ptr1, ptr2, ptr3);
 		DoIt(true, false);
-		/* ok now the shrunk net has the SELECTEDFLAG set */
+		/* ok now the shrunk net has the PCB_FLAG_SELECTED set */
 		DumpList();
-		TheFlag = FOUNDFLAG;
+		TheFlag = PCB_FLAG_FOUND;
 		ListStart(What, ptr1, ptr2, ptr3);
 		Bloat = 0;
 		drc = true;									/* abort the search if we find anything not already found */
 		if (DoIt(true, false)) {
 			DumpList();
 			/* make the flag changes undoable */
-			TheFlag = FOUNDFLAG | SELECTEDFLAG;
+			TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
 			ResetConnections(false);
 			User = true;
 			drc = false;
 			Bloat = -PCB->Shrink;
-			TheFlag = SELECTEDFLAG;
+			TheFlag = PCB_FLAG_SELECTED;
 			ListStart(What, ptr1, ptr2, ptr3);
 			DoIt(true, true);
 			DumpList();
 			ListStart(What, ptr1, ptr2, ptr3);
-			TheFlag = FOUNDFLAG;
+			TheFlag = PCB_FLAG_FOUND;
 			Bloat = 0;
 			drc = true;
 			DoIt(true, true);
@@ -755,23 +755,23 @@ static bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 	/* now check the bloated condition */
 	drc = false;
 	ResetConnections(false);
-	TheFlag = FOUNDFLAG;
+	TheFlag = PCB_FLAG_FOUND;
 	ListStart(What, ptr1, ptr2, ptr3);
 	Bloat = PCB->Bloat;
 	drc = true;
 	while (DoIt(true, false)) {
 		DumpList();
 		/* make the flag changes undoable */
-		TheFlag = FOUNDFLAG | SELECTEDFLAG;
+		TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
 		ResetConnections(false);
 		User = true;
 		drc = false;
 		Bloat = 0;
-		TheFlag = SELECTEDFLAG;
+		TheFlag = PCB_FLAG_SELECTED;
 		ListStart(What, ptr1, ptr2, ptr3);
 		DoIt(true, true);
 		DumpList();
-		TheFlag = FOUNDFLAG;
+		TheFlag = PCB_FLAG_FOUND;
 		ListStart(What, ptr1, ptr2, ptr3);
 		Bloat = PCB->Bloat;
 		drc = true;
@@ -795,7 +795,7 @@ static bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 		IncrementUndoSerialNumber();
 		Undo(true);
 		/* highlight the rest of the encroaching net so it's not reported again */
-		TheFlag |= SELECTEDFLAG;
+		TheFlag |= PCB_FLAG_SELECTED;
 		Bloat = 0;
 		ListStart(thing_type, thing_ptr1, thing_ptr2, thing_ptr3);
 		DoIt(true, true);
@@ -806,7 +806,7 @@ static bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 	}
 	drc = false;
 	DumpList();
-	TheFlag = FOUNDFLAG | SELECTEDFLAG;
+	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
 	ResetConnections(false);
 	return (false);
 }

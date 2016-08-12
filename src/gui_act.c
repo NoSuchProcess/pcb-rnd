@@ -363,7 +363,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 					Draw();
 				}
 				if (Crosshair.AttachedLine.State != STATE_FIRST)
-					LookupConnection(Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, true, 1, FOUNDFLAG);
+					LookupConnection(Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, true, 1, PCB_FLAG_FOUND);
 			}
 			notify_crosshair_change(true);
 			break;
@@ -441,22 +441,22 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 				case PCB_TYPE_ELEMENT:
 					PIN_LOOP((ElementTypePtr) ptr1);
 					{
-						if (TEST_FLAG(DISPLAYNAMEFLAG, pin))
+						if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, pin))
 							ErasePinName(pin);
 						else
 							DrawPinName(pin);
 						AddObjectToFlagUndoList(PCB_TYPE_PIN, ptr1, pin, pin);
-						TOGGLE_FLAG(DISPLAYNAMEFLAG, pin);
+						TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, pin);
 					}
 					END_LOOP;
 					PAD_LOOP((ElementTypePtr) ptr1);
 					{
-						if (TEST_FLAG(DISPLAYNAMEFLAG, pad))
+						if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, pad))
 							ErasePadName(pad);
 						else
 							DrawPadName(pad);
 						AddObjectToFlagUndoList(PCB_TYPE_PAD, ptr1, pad, pad);
-						TOGGLE_FLAG(DISPLAYNAMEFLAG, pad);
+						TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, pad);
 					}
 					END_LOOP;
 					SetChangedFlag(true);
@@ -465,35 +465,35 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 					break;
 
 				case PCB_TYPE_PIN:
-					if (TEST_FLAG(DISPLAYNAMEFLAG, (PinTypePtr) ptr2))
+					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (PinTypePtr) ptr2))
 						ErasePinName((PinTypePtr) ptr2);
 					else
 						DrawPinName((PinTypePtr) ptr2);
 					AddObjectToFlagUndoList(PCB_TYPE_PIN, ptr1, ptr2, ptr3);
-					TOGGLE_FLAG(DISPLAYNAMEFLAG, (PinTypePtr) ptr2);
+					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (PinTypePtr) ptr2);
 					SetChangedFlag(true);
 					IncrementUndoSerialNumber();
 					Draw();
 					break;
 
 				case PCB_TYPE_PAD:
-					if (TEST_FLAG(DISPLAYNAMEFLAG, (PadTypePtr) ptr2))
+					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (PadTypePtr) ptr2))
 						ErasePadName((PadTypePtr) ptr2);
 					else
 						DrawPadName((PadTypePtr) ptr2);
 					AddObjectToFlagUndoList(PCB_TYPE_PAD, ptr1, ptr2, ptr3);
-					TOGGLE_FLAG(DISPLAYNAMEFLAG, (PadTypePtr) ptr2);
+					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (PadTypePtr) ptr2);
 					SetChangedFlag(true);
 					IncrementUndoSerialNumber();
 					Draw();
 					break;
 				case PCB_TYPE_VIA:
-					if (TEST_FLAG(DISPLAYNAMEFLAG, (PinTypePtr) ptr2))
+					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (PinTypePtr) ptr2))
 						EraseViaName((PinTypePtr) ptr2);
 					else
 						DrawViaName((PinTypePtr) ptr2);
 					AddObjectToFlagUndoList(PCB_TYPE_VIA, ptr1, ptr2, ptr3);
-					TOGGLE_FLAG(DISPLAYNAMEFLAG, (PinTypePtr) ptr2);
+					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (PinTypePtr) ptr2);
 					SetChangedFlag(true);
 					IncrementUndoSerialNumber();
 					Draw();
@@ -901,7 +901,7 @@ static int ActionToggleHideName(int argc, char **argv, Coord x, Coord y)
 				if ((type = SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					AddObjectToFlagUndoList(type, ptr1, ptr2, ptr3);
 					EraseElementName((ElementTypePtr) ptr2);
-					TOGGLE_FLAG(HIDENAMEFLAG, (ElementTypePtr) ptr2);
+					TOGGLE_FLAG(PCB_FLAG_HIDENAME, (ElementTypePtr) ptr2);
 					DrawElementName((ElementTypePtr) ptr2);
 					Draw();
 					IncrementUndoSerialNumber();
@@ -914,11 +914,11 @@ static int ActionToggleHideName(int argc, char **argv, Coord x, Coord y)
 				bool changed = false;
 				ELEMENT_LOOP(PCB->Data);
 				{
-					if ((TEST_FLAG(SELECTEDFLAG, element) || TEST_FLAG(SELECTEDFLAG, &NAMEONPCB_TEXT(element)))
+					if ((TEST_FLAG(PCB_FLAG_SELECTED, element) || TEST_FLAG(PCB_FLAG_SELECTED, &NAMEONPCB_TEXT(element)))
 							&& (FRONT(element) || PCB->InvisibleObjectsOn)) {
 						AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
 						EraseElementName(element);
-						TOGGLE_FLAG(HIDENAMEFLAG, element);
+						TOGGLE_FLAG(PCB_FLAG_HIDENAME, element);
 						DrawElementName(element);
 						changed = true;
 					}

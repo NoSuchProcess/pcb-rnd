@@ -32,9 +32,9 @@ static void stub_rat_found_short_dummy(PinType * pin, PadType * pad, const char 
 {
 	/* original behavior: just warn at random pins/pads */
 	if (pin != NULL)
-		SET_FLAG(WARNFLAG, pin);
+		SET_FLAG(PCB_FLAG_WARN, pin);
 	if (pad != NULL)
-		SET_FLAG(WARNFLAG, pad);
+		SET_FLAG(PCB_FLAG_WARN, pad);
 
 	stub_rat_proc_shorts_dummy();
 }

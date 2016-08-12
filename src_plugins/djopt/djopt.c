@@ -57,8 +57,8 @@ static const char *djopt_cookie = "djopt";
 
 #define dprintf if(0)pcb_printf
 
-#define selected(x) TEST_FLAG (SELECTEDFLAG, (x))
-#define autorouted(x) TEST_FLAG (AUTOFLAG, (x))
+#define selected(x) TEST_FLAG (PCB_FLAG_SELECTED, (x))
+#define autorouted(x) TEST_FLAG (PCB_FLAG_AUTO, (x))
 
 #define SB (PCB->Bloat+1)
 
@@ -1008,9 +1008,9 @@ static int simple_optimize_corner(corner_s * c)
 		if (o == line_orient(c->lines[1], c2) && o != DIAGONAL) {
 			dprintf("straight %#mD to %#mD to %#mD\n", c0->x, c0->y, c->x, c->y, c2->x, c2->y);
 			if (selected(c->lines[0]->line))
-				SET_FLAG(SELECTEDFLAG, c->lines[1]->line);
+				SET_FLAG(PCB_FLAG_SELECTED, c->lines[1]->line);
 			if (selected(c->lines[1]->line))
-				SET_FLAG(SELECTEDFLAG, c->lines[0]->line);
+				SET_FLAG(PCB_FLAG_SELECTED, c->lines[0]->line);
 			move_corner(c, c2->x, c2->y);
 		}
 	}
@@ -2434,7 +2434,7 @@ static void padcleaner()
 
 		ALLPAD_LOOP(PCB->Data);
 		{
-			int layerflag = TEST_FLAG(ONSOLDERFLAG, element) ? LT_SOLDER : LT_COMPONENT;
+			int layerflag = TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? LT_SOLDER : LT_COMPONENT;
 
 			if (layer_type[l->layer] != layerflag)
 				continue;
@@ -2571,7 +2571,7 @@ static int ActionDJopt(int argc, char **argv, Coord x, Coord y)
 	END_LOOP;
 	PAD_LOOP(element);
 	{
-		int layern = TEST_FLAG(ONSOLDERFLAG, pad) ? solder_layer : component_layer;
+		int layern = TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? solder_layer : component_layer;
 		line_s *ls = (line_s *) malloc(sizeof(line_s));
 		ls->next = lines;
 		lines = ls;
@@ -2617,7 +2617,7 @@ static int ActionDJopt(int argc, char **argv, Coord x, Coord y)
 				continue;
 
 			/* don't mess with thermals */
-			if (TEST_FLAG(USETHERMALFLAG, line))
+			if (TEST_FLAG(PCB_FLAG_USETHERMAL, line))
 				continue;
 
 			if (line->Point1.X == line->Point2.X && line->Point1.Y == line->Point2.Y) {

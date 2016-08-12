@@ -536,7 +536,7 @@ bool DeleteRats(bool selected)
 	Bulk = true;
 	RAT_LOOP(PCB->Data);
 	{
-		if ((!selected) || TEST_FLAG(SELECTEDFLAG, line)) {
+		if ((!selected) || TEST_FLAG(PCB_FLAG_SELECTED, line)) {
 			changed = true;
 			RemoveRat(line);
 		}

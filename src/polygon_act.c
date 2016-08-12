@@ -75,7 +75,7 @@ static int ActionMorphPolygon(int argc, char **argv, Coord x, Coord y)
 		case F_SelectedObjects:
 			ALLPOLYGON_LOOP(PCB->Data);
 			{
-				if (TEST_FLAG(SELECTEDFLAG, polygon))
+				if (TEST_FLAG(PCB_FLAG_SELECTED, polygon))
 					MorphPolygon(layer, polygon);
 			}
 			ENDALL_LOOP;

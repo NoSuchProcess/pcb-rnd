@@ -92,7 +92,7 @@ PolygonTypePtr CopyPolygonLowLevel(PolygonTypePtr Dest, PolygonTypePtr Src)
 	}
 	SetPolygonBoundingBox(Dest);
 	Dest->Flags = Src->Flags;
-	CLEAR_FLAG(FOUNDFLAG, Dest);
+	CLEAR_FLAG(PCB_FLAG_FOUND, Dest);
 	return (Dest);
 }
 
@@ -110,12 +110,12 @@ CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, ElementTypePtr Src, b
 
 	/* both coordinates and flags are the same */
 	Dest = CreateNewElement(Data, Dest, &PCB->Font,
-													MaskFlags(Src->Flags, FOUNDFLAG),
+													MaskFlags(Src->Flags, PCB_FLAG_FOUND),
 													DESCRIPTION_NAME(Src), NAMEONPCB_NAME(Src),
 													VALUE_NAME(Src), DESCRIPTION_TEXT(Src).X + dx,
 													DESCRIPTION_TEXT(Src).Y + dy,
 													DESCRIPTION_TEXT(Src).Direction,
-													DESCRIPTION_TEXT(Src).Scale, MaskFlags(DESCRIPTION_TEXT(Src).Flags, FOUNDFLAG), uniqueName);
+													DESCRIPTION_TEXT(Src).Scale, MaskFlags(DESCRIPTION_TEXT(Src).Flags, PCB_FLAG_FOUND), uniqueName);
 
 	/* abort on error */
 	if (!Dest)
@@ -130,14 +130,14 @@ CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, ElementTypePtr Src, b
 	PIN_LOOP(Src);
 	{
 		CreateNewPin(Dest, pin->X + dx, pin->Y + dy, pin->Thickness,
-								 pin->Clearance, pin->Mask, pin->DrillingHole, pin->Name, pin->Number, MaskFlags(pin->Flags, FOUNDFLAG));
+								 pin->Clearance, pin->Mask, pin->DrillingHole, pin->Name, pin->Number, MaskFlags(pin->Flags, PCB_FLAG_FOUND));
 	}
 	END_LOOP;
 	PAD_LOOP(Src);
 	{
 		CreateNewPad(Dest, pad->Point1.X + dx, pad->Point1.Y + dy,
 								 pad->Point2.X + dx, pad->Point2.Y + dy, pad->Thickness,
-								 pad->Clearance, pad->Mask, pad->Name, pad->Number, MaskFlags(pad->Flags, FOUNDFLAG));
+								 pad->Clearance, pad->Mask, pad->Name, pad->Number, MaskFlags(pad->Flags, PCB_FLAG_FOUND));
 	}
 	END_LOOP;
 	ARC_LOOP(Src);
@@ -164,7 +164,7 @@ static void *CopyVia(PinTypePtr Via)
 	PinTypePtr via;
 
 	via = CreateNewVia(PCB->Data, Via->X + DeltaX, Via->Y + DeltaY,
-										 Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, FOUNDFLAG));
+										 Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, PCB_FLAG_FOUND));
 	if (!via)
 		return (via);
 	DrawVia(via);
@@ -182,7 +182,7 @@ static void *CopyLine(LayerTypePtr Layer, LineTypePtr Line)
 	line = CreateDrawnLineOnLayer(Layer, Line->Point1.X + DeltaX,
 																Line->Point1.Y + DeltaY,
 																Line->Point2.X + DeltaX,
-																Line->Point2.Y + DeltaY, Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, FOUNDFLAG));
+																Line->Point2.Y + DeltaY, Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, PCB_FLAG_FOUND));
 	if (!line)
 		return (line);
 	if (Line->Number)
@@ -201,7 +201,7 @@ static void *CopyArc(LayerTypePtr Layer, ArcTypePtr Arc)
 
 	arc = CreateNewArcOnLayer(Layer, Arc->X + DeltaX,
 														Arc->Y + DeltaY, Arc->Width, Arc->Height, Arc->StartAngle,
-														Arc->Delta, Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, FOUNDFLAG));
+														Arc->Delta, Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, PCB_FLAG_FOUND));
 	if (!arc)
 		return (arc);
 	DrawArc(Layer, arc);
@@ -217,7 +217,7 @@ static void *CopyText(LayerTypePtr Layer, TextTypePtr Text)
 	TextTypePtr text;
 
 	text = CreateNewText(Layer, &PCB->Font, Text->X + DeltaX,
-											 Text->Y + DeltaY, Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, FOUNDFLAG));
+											 Text->Y + DeltaY, Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, PCB_FLAG_FOUND));
 	DrawText(Layer, text);
 	AddObjectToCreateUndoList(PCB_TYPE_TEXT, Layer, text, text);
 	return (text);

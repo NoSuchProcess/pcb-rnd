@@ -41,7 +41,7 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 
 	PIN_LOOP(Element);
 	{
-		if (!TEST_FLAG(HOLEFLAG, pin)) {
+		if (!TEST_FLAG(PCB_FLAG_HOLE, pin)) {
 			/* pin might have bee checked before, add to list if not */
 			if (!TEST_FLAG(TheFlag, pin) && FP) {
 				int i;
@@ -66,7 +66,7 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 					fputc('\t', FP);
 					PrintQuotedString(FP, (char *) EMPTY(pin->Name));
 					fputc('\n', FP);
-					SET_FLAG(SELECTEDFLAG, pin);
+					SET_FLAG(PCB_FLAG_SELECTED, pin);
 					DrawPin(pin);
 				}
 
@@ -85,7 +85,7 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 		/* pad might has bee checked before, add to list if not */
 		if (!TEST_FLAG(TheFlag, pad) && FP) {
 			int i;
-			if (ADD_PAD_TO_LIST(TEST_FLAG(ONSOLDERFLAG, pad)
+			if (ADD_PAD_TO_LIST(TEST_FLAG(PCB_FLAG_ONSOLDER, pad)
 													? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, 0))
 				return true;
 			DoIt(true, true);
@@ -108,7 +108,7 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 				PrintQuotedString(FP, (char *) EMPTY(pad->Name));
 				fputc('\n', FP);
 
-				SET_FLAG(SELECTEDFLAG, pad);
+				SET_FLAG(PCB_FLAG_SELECTED, pad);
 				DrawPad(pad);
 			}
 
@@ -193,7 +193,7 @@ static bool PrintElementConnections(ElementTypePtr Element, FILE * FP, bool AndD
 			fputs("\t\t__CHECKED_BEFORE__\n\t}\n", FP);
 			continue;
 		}
-		layer = TEST_FLAG(ONSOLDERFLAG, pad) ? SOLDER_LAYER : COMPONENT_LAYER;
+		layer = TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER;
 		if (ADD_PAD_TO_LIST(layer, pad, PCB_TYPE_ELEMENT, Element, FCT_ELEMENT))
 			return true;
 		DoIt(true, AndDraw);
@@ -245,7 +245,7 @@ void LookupElementConnections(ElementTypePtr Element, FILE * FP)
 {
 	/* reset all currently marked connections */
 	User = true;
-	TheFlag = FOUNDFLAG;
+	TheFlag = PCB_FLAG_FOUND;
 	ResetConnections(true);
 	InitConnectionLookup();
 	PrintElementConnections(Element, FP, true);
@@ -266,7 +266,7 @@ void LookupConnectionsToAllElements(FILE * FP)
 {
 	/* reset all currently marked connections */
 	User = false;
-	TheFlag = FOUNDFLAG;
+	TheFlag = PCB_FLAG_FOUND;
 	ResetConnections(false);
 	InitConnectionLookup();
 

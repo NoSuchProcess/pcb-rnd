@@ -608,7 +608,7 @@ static routebox_t *AddPin(PointerListType layergroupboxes[], PinTypePtr pin, boo
 		(*rbpp)->flags.fixed = 1;
 		(*rbpp)->came_from = ALL;
 		(*rbpp)->style = style;
-		(*rbpp)->flags.circular = !TEST_FLAG(SQUAREFLAG, pin);
+		(*rbpp)->flags.circular = !TEST_FLAG(PCB_FLAG_SQUARE, pin);
 		/* circular lists */
 		InitLists(*rbpp);
 		/* link together */
@@ -626,7 +626,7 @@ static routebox_t *AddPad(PointerListType layergroupboxes[], ElementTypePtr elem
 {
 	Coord halfthick;
 	routebox_t **rbpp;
-	int layergroup = (TEST_FLAG(ONSOLDERFLAG, pad) ? back : front);
+	int layergroup = (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? back : front);
 	assert(0 <= layergroup && layergroup < max_group);
 	assert(PCB->LayerGroups.Number[layergroup] > 0);
 	rbpp = (routebox_t **) GetPointerMemory(&layergroupboxes[layergroup]);
@@ -746,7 +746,7 @@ static routebox_t *AddPolygon(PointerListType layergroupboxes[], Cardinal layer,
 	rb->flags.nonstraight = is_not_rectangle;
 	rb->layer = layer;
 	rb->came_from = ALL;
-	if (TEST_FLAG(CLEARPOLYFLAG, polygon)) {
+	if (TEST_FLAG(PCB_FLAG_CLEARPOLY, polygon)) {
 		rb->flags.clear_poly = 1;
 		if (!is_not_rectangle)
 			rb->type = PLANE;
@@ -930,7 +930,7 @@ static routedata_t *CreateRouteData()
 	 *
 	 * this saves on searching the trees to find the nets
 	 */
-	/* use the DRCFLAG to mark objects as they are entered */
+	/* use the PCB_FLAG_DRC to mark objects as they are entered */
 	ResetConnections(false);
 	Nets = CollectSubnets(false);
 	{
@@ -949,7 +949,7 @@ static routedata_t *CreateRouteData()
 				CONNECTION_LOOP(net);
 				{
 					routebox_t *rb = NULL;
-					SET_FLAG(DRCFLAG, (PinTypePtr) connection->ptr2);
+					SET_FLAG(PCB_FLAG_DRC, (PinTypePtr) connection->ptr2);
 					if (connection->type == PCB_TYPE_LINE) {
 						LineType *line = (LineType *) connection->ptr2;
 
@@ -1039,16 +1039,16 @@ static routedata_t *CreateRouteData()
 	/* add pins and pads of elements */
 	ALLPIN_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(DRCFLAG, pin))
-			CLEAR_FLAG(DRCFLAG, pin);
+		if (TEST_FLAG(PCB_FLAG_DRC, pin))
+			CLEAR_FLAG(PCB_FLAG_DRC, pin);
 		else
 			AddPin(layergroupboxes, pin, false, rd->styles[rd->max_styles]);
 	}
 	ENDALL_LOOP;
 	ALLPAD_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(DRCFLAG, pad))
-			CLEAR_FLAG(DRCFLAG, pad);
+		if (TEST_FLAG(PCB_FLAG_DRC, pad))
+			CLEAR_FLAG(PCB_FLAG_DRC, pad);
 		else
 			AddPad(layergroupboxes, element, pad, rd->styles[rd->max_styles]);
 	}
@@ -1056,8 +1056,8 @@ static routedata_t *CreateRouteData()
 	/* add all vias */
 	VIA_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(DRCFLAG, via))
-			CLEAR_FLAG(DRCFLAG, via);
+		if (TEST_FLAG(PCB_FLAG_DRC, via))
+			CLEAR_FLAG(PCB_FLAG_DRC, via);
 		else
 			AddPin(layergroupboxes, via, true, rd->styles[rd->max_styles]);
 	}
@@ -1068,8 +1068,8 @@ static routedata_t *CreateRouteData()
 		/* add all (non-rat) lines */
 		LINE_LOOP(LAYER_PTR(i));
 		{
-			if (TEST_FLAG(DRCFLAG, line)) {
-				CLEAR_FLAG(DRCFLAG, line);
+			if (TEST_FLAG(PCB_FLAG_DRC, line)) {
+				CLEAR_FLAG(PCB_FLAG_DRC, line);
 				continue;
 			}
 			/* dice up non-straight lines into many tiny obstacles */
@@ -1101,8 +1101,8 @@ static routedata_t *CreateRouteData()
 		/* add all polygons */
 		POLYGON_LOOP(LAYER_PTR(i));
 		{
-			if (TEST_FLAG(DRCFLAG, polygon))
-				CLEAR_FLAG(DRCFLAG, polygon);
+			if (TEST_FLAG(PCB_FLAG_DRC, polygon))
+				CLEAR_FLAG(PCB_FLAG_DRC, polygon);
 			else
 				AddPolygon(layergroupboxes, i, polygon, rd->styles[rd->max_styles]);
 		}
@@ -4467,7 +4467,7 @@ bool IronDownAllUnfixedPaths(routedata_t * rd)
 					/* using CreateDrawn instead of CreateNew concatenates sequential lines */
 					p->parent.line = CreateDrawnLineOnLayer
 						(layer, b.X1, b.Y1, b.X2, b.Y2,
-						 p->style->Thick, p->style->Clearance * 2, MakeFlags(AUTOFLAG | (conf_core.editor.clear_line ? CLEARLINEFLAG : 0)));
+						 p->style->Thick, p->style->Clearance * 2, MakeFlags(PCB_FLAG_AUTO | (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)));
 
 					if (p->parent.line) {
 						AddObjectToCreateUndoList(PCB_TYPE_LINE, layer, p->parent.line, p->parent.line);
@@ -4486,7 +4486,7 @@ bool IronDownAllUnfixedPaths(routedata_t * rd)
 						pp->parent.via =
 							CreateNewVia(PCB->Data, b.X1 + radius,
 													 b.Y1 + radius,
-													 pp->style->Diameter, 2 * pp->style->Clearance, 0, pp->style->Hole, NULL, MakeFlags(AUTOFLAG));
+													 pp->style->Diameter, 2 * pp->style->Clearance, 0, pp->style->Hole, NULL, MakeFlags(PCB_FLAG_AUTO));
 						assert(pp->parent.via);
 						if (pp->parent.via) {
 							AddObjectToCreateUndoList(PCB_TYPE_VIA, pp->parent.via, pp->parent.via, pp->parent.via);
@@ -4556,7 +4556,7 @@ bool AutoRoute(bool selected)
 	}
 	if (ratlist_length(&PCB->Data->Rat) == 0)
 		return (false);
-	SaveFindFlag(DRCFLAG);
+	SaveFindFlag(PCB_FLAG_DRC);
 	rd = CreateRouteData();
 
 	if (1) {
@@ -4565,7 +4565,7 @@ bool AutoRoute(bool selected)
 		/* count number of rats selected */
 		RAT_LOOP(PCB->Data);
 		{
-			if (!selected || TEST_FLAG(SELECTEDFLAG, line))
+			if (!selected || TEST_FLAG(PCB_FLAG_SELECTED, line))
 				i++;
 		}
 		END_LOOP;
@@ -4577,7 +4577,7 @@ bool AutoRoute(bool selected)
 		/* if only one rat selected, do things the quick way. =) */
 		if (i == 1) {
 			RAT_LOOP(PCB->Data);
-			if (!selected || TEST_FLAG(SELECTEDFLAG, line)) {
+			if (!selected || TEST_FLAG(PCB_FLAG_SELECTED, line)) {
 				/* look up the end points of this rat line */
 				routebox_t *a;
 				routebox_t *b;
@@ -4633,7 +4633,7 @@ bool AutoRoute(bool selected)
 
 		/* now merge only those subnets connected by a rat line */
 		RAT_LOOP(PCB->Data);
-		if (!selected || TEST_FLAG(SELECTEDFLAG, line)) {
+		if (!selected || TEST_FLAG(PCB_FLAG_SELECTED, line)) {
 			/* look up the end points of this rat line */
 			routebox_t *a;
 			routebox_t *b;
@@ -4642,7 +4642,7 @@ bool AutoRoute(bool selected)
 			if (!a || !b) {
 #ifdef DEBUG_STALE_RATS
 				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
-				ASSIGN_FLAG(SELECTEDFLAG, true, line);
+				ASSIGN_FLAG(PCB_FLAG_SELECTED, true, line);
 				DrawRat(line, 0);
 #endif /* DEBUG_STALE_RATS */
 				Message("The rats nest is stale! Aborting autoroute...\n");

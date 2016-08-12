@@ -183,8 +183,8 @@ int ActionUndo(int argc, char **argv, Coord x, Coord y)
 																 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y, 0);
 					ptr2 = (LineTypePtr) ptrtmp;
 					if (conf_core.editor.auto_drc) {
-						/* undo loses FOUNDFLAG */
-						SET_FLAG(FOUNDFLAG, ptr2);
+						/* undo loses PCB_FLAG_FOUND */
+						SET_FLAG(PCB_FLAG_FOUND, ptr2);
 						DrawLine(CURRENT, ptr2);
 					}
 					Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = ptr2->Point2.X;

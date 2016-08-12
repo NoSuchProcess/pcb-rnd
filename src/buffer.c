@@ -102,7 +102,7 @@ static int ExtraFlag = 0;
 static void *AddViaToBuffer(PinTypePtr Via)
 {
 	return (CreateNewVia(Dest, Via->X, Via->Y, Via->Thickness, Via->Clearance,
-											 Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, FOUNDFLAG | ExtraFlag)));
+											 Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, PCB_FLAG_FOUND | ExtraFlag)));
 }
 
 /* ---------------------------------------------------------------------------
@@ -112,7 +112,7 @@ static void *AddRatToBuffer(RatTypePtr Rat)
 {
 	return (CreateNewRat(Dest, Rat->Point1.X, Rat->Point1.Y,
 											 Rat->Point2.X, Rat->Point2.Y, Rat->group1,
-											 Rat->group2, Rat->Thickness, MaskFlags(Rat->Flags, FOUNDFLAG | ExtraFlag)));
+											 Rat->group2, Rat->Thickness, MaskFlags(Rat->Flags, PCB_FLAG_FOUND | ExtraFlag)));
 }
 
 /* ---------------------------------------------------------------------------
@@ -125,7 +125,7 @@ static void *AddLineToBuffer(LayerTypePtr Layer, LineTypePtr Line)
 
 	line = CreateNewLineOnLayer(layer, Line->Point1.X, Line->Point1.Y,
 															Line->Point2.X, Line->Point2.Y,
-															Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, FOUNDFLAG | ExtraFlag));
+															Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, PCB_FLAG_FOUND | ExtraFlag));
 	if (line && Line->Number)
 		line->Number = strdup(Line->Number);
 	return (line);
@@ -140,7 +140,7 @@ static void *AddArcToBuffer(LayerTypePtr Layer, ArcTypePtr Arc)
 
 	return (CreateNewArcOnLayer(layer, Arc->X, Arc->Y,
 															Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
-															Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, FOUNDFLAG | ExtraFlag)));
+															Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, PCB_FLAG_FOUND | ExtraFlag)));
 }
 
 /* ---------------------------------------------------------------------------
@@ -173,7 +173,7 @@ static void *AddPolygonToBuffer(LayerTypePtr Layer, PolygonTypePtr Polygon)
 		layer->polygon_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(layer->polygon_tree, (BoxType *) polygon, 0);
 
-	CLEAR_FLAG(FOUNDFLAG | ExtraFlag, polygon);
+	CLEAR_FLAG(PCB_FLAG_FOUND | ExtraFlag, polygon);
 	return (polygon);
 }
 
@@ -195,12 +195,12 @@ static void *AddElementToBuffer(ElementTypePtr Element)
 		END_LOOP;
 		PIN_LOOP(element);
 		{
-			CLEAR_FLAG(FOUNDFLAG | ExtraFlag, pin);
+			CLEAR_FLAG(PCB_FLAG_FOUND | ExtraFlag, pin);
 		}
 		END_LOOP;
 		PAD_LOOP(element);
 		{
-			CLEAR_FLAG(FOUNDFLAG | ExtraFlag, pad);
+			CLEAR_FLAG(PCB_FLAG_FOUND | ExtraFlag, pad);
 		}
 		END_LOOP;
 	}
@@ -218,7 +218,7 @@ static void *MoveViaToBuffer(PinType * via)
 	pinlist_remove(via);
 	pinlist_append(&Dest->Via, via);
 
-	CLEAR_FLAG(WARNFLAG | FOUNDFLAG, via);
+	CLEAR_FLAG(PCB_FLAG_WARN | PCB_FLAG_FOUND, via);
 
 	if (!Dest->via_tree)
 		Dest->via_tree = r_create_tree(NULL, 0, 0);
@@ -237,7 +237,7 @@ static void *MoveRatToBuffer(RatType * rat)
 	ratlist_remove(rat);
 	ratlist_append(&Dest->Rat, rat);
 
-	CLEAR_FLAG(FOUNDFLAG, rat);
+	CLEAR_FLAG(PCB_FLAG_FOUND, rat);
 
 	if (!Dest->rat_tree)
 		Dest->rat_tree = r_create_tree(NULL, 0, 0);
@@ -258,7 +258,7 @@ static void *MoveLineToBuffer(LayerType * layer, LineType * line)
 	linelist_remove(line);
 	linelist_append(&(lay->Line), line);
 
-	CLEAR_FLAG(FOUNDFLAG, line);
+	CLEAR_FLAG(PCB_FLAG_FOUND, line);
 
 	if (!lay->line_tree)
 		lay->line_tree = r_create_tree(NULL, 0, 0);
@@ -280,7 +280,7 @@ static void *MoveArcToBuffer(LayerType * layer, ArcType * arc)
 	arclist_remove(arc);
 	arclist_append(&lay->Arc, arc);
 
-	CLEAR_FLAG(FOUNDFLAG, arc);
+	CLEAR_FLAG(PCB_FLAG_FOUND, arc);
 
 	if (!lay->arc_tree)
 		lay->arc_tree = r_create_tree(NULL, 0, 0);
@@ -321,7 +321,7 @@ static void *MovePolygonToBuffer(LayerType * layer, PolygonType * polygon)
 	polylist_remove(polygon);
 	polylist_append(&lay->Polygon, polygon);
 
-	CLEAR_FLAG(FOUNDFLAG, polygon);
+	CLEAR_FLAG(PCB_FLAG_FOUND, polygon);
 
 	if (!lay->polygon_tree)
 		lay->polygon_tree = r_create_tree(NULL, 0, 0);
@@ -346,13 +346,13 @@ static void *MoveElementToBuffer(ElementType * element)
 	PIN_LOOP(element);
 	{
 		RestoreToPolygon(Source, PCB_TYPE_PIN, element, pin);
-		CLEAR_FLAG(WARNFLAG | FOUNDFLAG, pin);
+		CLEAR_FLAG(PCB_FLAG_WARN | PCB_FLAG_FOUND, pin);
 	}
 	END_LOOP;
 	PAD_LOOP(element);
 	{
 		RestoreToPolygon(Source, PCB_TYPE_PAD, element, pad);
-		CLEAR_FLAG(WARNFLAG | FOUNDFLAG, pad);
+		CLEAR_FLAG(PCB_FLAG_WARN | PCB_FLAG_FOUND, pad);
 	}
 	END_LOOP;
 	SetElementBoundingBox(Dest, element, &PCB->Font);
@@ -405,7 +405,7 @@ void AddSelectedToBuffer(BufferTypePtr Buffer, Coord X, Coord Y, bool LeaveSelec
 	 * may change the 'valid' area for the cursor
 	 */
 	if (!LeaveSelected)
-		ExtraFlag = SELECTEDFLAG;
+		ExtraFlag = PCB_FLAG_SELECTED;
 	notify_crosshair_change(false);
 	Source = PCB->Data;
 	Dest = Buffer->Data;
@@ -563,9 +563,9 @@ bool SmashBufferElement(BufferTypePtr Buffer)
 	PIN_LOOP(element);
 	{
 		FlagType f = NoFlags();
-		AddFlags(f, VIAFLAG);
-		if (TEST_FLAG(HOLEFLAG, pin))
-			AddFlags(f, HOLEFLAG);
+		AddFlags(f, PCB_FLAG_VIA);
+		if (TEST_FLAG(PCB_FLAG_HOLE, pin))
+			AddFlags(f, PCB_FLAG_HOLE);
 
 		CreateNewVia(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
 	}
@@ -577,7 +577,7 @@ bool SmashBufferElement(BufferTypePtr Buffer)
 	PAD_LOOP(element);
 	{
 		LineTypePtr line;
-		line = CreateNewLineOnLayer(TEST_FLAG(ONSOLDERFLAG, pad) ? slayer : clayer,
+		line = CreateNewLineOnLayer(TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? slayer : clayer,
 																pad->Point1.X, pad->Point1.Y,
 																pad->Point2.X, pad->Point2.Y, pad->Thickness, pad->Clearance, NoFlags());
 		if (line)
@@ -640,7 +640,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 
 	Element = CreateNewElement(PCB->Data, NULL, &PCB->Font, NoFlags(),
 														 NULL, NULL, NULL, PASTEBUFFER->X,
-														 PASTEBUFFER->Y, 0, 100, MakeFlags(SWAP_IDENT ? ONSOLDERFLAG : NOFLAG), false);
+														 PASTEBUFFER->Y, 0, 100, MakeFlags(SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), false);
 	if (!Element)
 		return (false);
 	VIA_LOOP(Buffer->Data);
@@ -651,12 +651,12 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 		if (via->Name)
 			CreateNewPin(Element, via->X, via->Y, via->Thickness,
 									 via->Clearance, via->Mask, via->DrillingHole,
-									 NULL, via->Name, MaskFlags(via->Flags, VIAFLAG | FOUNDFLAG | SELECTEDFLAG | WARNFLAG));
+									 NULL, via->Name, MaskFlags(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
 		else {
 			sprintf(num, "%d", pin_n++);
 			CreateNewPin(Element, via->X, via->Y, via->Thickness,
 									 via->Clearance, via->Mask, via->DrillingHole,
-									 NULL, num, MaskFlags(via->Flags, VIAFLAG | FOUNDFLAG | SELECTEDFLAG | WARNFLAG));
+									 NULL, num, MaskFlags(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
 		}
 		hasParts = true;
 	}
@@ -668,11 +668,11 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 
 		if ((!onsolder) == (!SWAP_IDENT)) {
 			silk_layer = component_silk_layer;
-			onsolderflag = NOFLAG;
+			onsolderflag = PCB_FLAG_NO;
 		}
 		else {
 			silk_layer = solder_silk_layer;
-			onsolderflag = ONSOLDERFLAG;
+			onsolderflag = PCB_FLAG_ONSOLDER;
 		}
 
 #define MAYBE_WARN() \
@@ -722,7 +722,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 				sprintf(num, "%d", pin_n++);
 				CreateNewPad(Element,
 										 x1, y1, x2, y2, t,
-										 2 * conf_core.design.clearance, t + conf_core.design.clearance, NULL, num, MakeFlags(SQUAREFLAG | onsolderflag));
+										 2 * conf_core.design.clearance, t + conf_core.design.clearance, NULL, num, MakeFlags(PCB_FLAG_SQUARE | onsolderflag));
 				MAYBE_WARN();
 				hasParts = true;
 			}
@@ -756,7 +756,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 	Element->MarkX = Buffer->X;
 	Element->MarkY = Buffer->Y;
 	if (SWAP_IDENT)
-		SET_FLAG(ONSOLDERFLAG, Element);
+		SET_FLAG(PCB_FLAG_ONSOLDER, Element);
 	SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
 	ClearBuffer(Buffer);
 	MoveObjectToBuffer(Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
@@ -1164,7 +1164,7 @@ static void SwapBuffer(BufferTypePtr Buffer)
 		r_delete_entry(layer->text_tree, (BoxType *) text);
 		text->X = SWAP_X(text->X);
 		text->Y = SWAP_Y(text->Y);
-		TOGGLE_FLAG(ONSOLDERFLAG, text);
+		TOGGLE_FLAG(PCB_FLAG_ONSOLDER, text);
 		SetTextBoundingBox(&PCB->Font, text);
 		r_insert_entry(layer->text_tree, (BoxType *) text, 0);
 	}

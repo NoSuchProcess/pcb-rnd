@@ -125,8 +125,8 @@ typedef struct {
  * some local identifiers
  */
 static Coord Bloat = 0;
-static int TheFlag = FOUNDFLAG;
-static int OldFlag = FOUNDFLAG;
+static int TheFlag = PCB_FLAG_FOUND;
+static int OldFlag = PCB_FLAG_FOUND;
 static void *thing_ptr1, *thing_ptr2, *thing_ptr3;
 static int thing_type;
 find_callback_t find_callback = NULL;

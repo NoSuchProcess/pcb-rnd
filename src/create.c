@@ -240,15 +240,15 @@ CreateNewVia(DataTypePtr Data,
 
 	Via->Name = STRDUP(Name);
 	Via->Flags = Flags;
-	CLEAR_FLAG(WARNFLAG, Via);
-	SET_FLAG(VIAFLAG, Via);
+	CLEAR_FLAG(PCB_FLAG_WARN, Via);
+	SET_FLAG(PCB_FLAG_VIA, Via);
 	Via->ID = ID++;
 
 	/* 
 	 * don't complain about MIN_PINORVIACOPPER on a mounting hole (pure
 	 * hole)
 	 */
-	if (!TEST_FLAG(HOLEFLAG, Via) && (Via->Thickness < Via->DrillingHole + MIN_PINORVIACOPPER)) {
+	if (!TEST_FLAG(PCB_FLAG_HOLE, Via) && (Via->Thickness < Via->DrillingHole + MIN_PINORVIACOPPER)) {
 		Via->Thickness = Via->DrillingHole + MIN_PINORVIACOPPER;
 		Message(_("%m+Increased via thickness to %$mS to allow enough copper"
 							" at %$mD.\n"), conf_core.editor.grid_unit->allow, Via->Thickness, Via->X, Via->Y);
@@ -290,7 +290,7 @@ static r_dir_t line_callback(const BoxType * b, void *cl)
 	/* remove unnecessary line points */
 	if (line->Thickness == i->Thickness
 			/* don't merge lines if the clear flags differ  */
-			&& TEST_FLAG(CLEARLINEFLAG, line) == TEST_FLAG(CLEARLINEFLAG, i)) {
+			&& TEST_FLAG(PCB_FLAG_CLEARLINE, line) == TEST_FLAG(PCB_FLAG_CLEARLINE, i)) {
 		if (line->Point1.X == i->X1 && line->Point1.Y == i->Y1) {
 			i->test.Point1.X = line->Point2.X;
 			i->test.Point1.Y = line->Point2.Y;
@@ -397,7 +397,7 @@ CreateNewLineOnLayer(LayerTypePtr Layer,
 		return (Line);
 	Line->ID = ID++;
 	Line->Flags = Flags;
-	CLEAR_FLAG(RATFLAG, Line);
+	CLEAR_FLAG(PCB_FLAG_RAT, Line);
 	Line->Thickness = Thickness;
 	Line->Clearance = Clearance;
 	Line->Point1.X = X1;
@@ -427,7 +427,7 @@ CreateNewRat(DataTypePtr Data, Coord X1, Coord Y1,
 
 	Line->ID = ID++;
 	Line->Flags = Flags;
-	SET_FLAG(RATFLAG, Line);
+	SET_FLAG(PCB_FLAG_RAT, Line);
 	Line->Thickness = Thickness;
 	Line->Point1.X = X1;
 	Line->Point1.Y = Y1;
@@ -693,8 +693,8 @@ CreateNewPin(ElementTypePtr Element,
 	pin->Name = STRDUP(Name);
 	pin->Number = STRDUP(Number);
 	pin->Flags = Flags;
-	CLEAR_FLAG(WARNFLAG, pin);
-	SET_FLAG(PINFLAG, pin);
+	CLEAR_FLAG(PCB_FLAG_WARN, pin);
+	SET_FLAG(PCB_FLAG_PIN, pin);
 	pin->ID = ID++;
 	pin->Element = Element;
 
@@ -716,7 +716,7 @@ CreateNewPin(ElementTypePtr Element,
 							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
-		else if (!TEST_FLAG(HOLEFLAG, pin)
+		else if (!TEST_FLAG(PCB_FLAG_HOLE, pin)
 						 && (pin->DrillingHole > pin->Thickness - MIN_PINORVIACOPPER)) {
 			Message(_("%m+Did not map pin #%s (%s) drill hole because %$mS does not leave enough copper\n"),
 							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
@@ -764,7 +764,7 @@ CreateNewPad(ElementTypePtr Element,
 	pad->Name = STRDUP(Name);
 	pad->Number = STRDUP(Number);
 	pad->Flags = Flags;
-	CLEAR_FLAG(WARNFLAG, pad);
+	CLEAR_FLAG(PCB_FLAG_WARN, pad);
 	pad->ID = ID++;
 	pad->Element = Element;
 	return (pad);
@@ -843,9 +843,9 @@ RubberbandTypePtr CreateNewRubberbandEntry(LayerTypePtr Layer, LineTypePtr Line,
 {
 	RubberbandTypePtr ptr = GetRubberbandMemory();
 
-	/* we toggle the RUBBERENDFLAG of the line to determine if */
+	/* we toggle the PCB_FLAG_RUBBEREND of the line to determine if */
 	/* both points are being moved. */
-	TOGGLE_FLAG(RUBBERENDFLAG, Line);
+	TOGGLE_FLAG(PCB_FLAG_RUBBEREND, Line);
 	ptr->Layer = Layer;
 	ptr->Line = Line;
 	ptr->MovedPoint = MovedPoint;

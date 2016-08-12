@@ -75,7 +75,7 @@ struct ans_info {
 	void **ptr1, **ptr2, **ptr3;
 	bool BackToo;
 	double area;
-	int locked;										/* This will be zero or LOCKFLAG */
+	int locked;										/* This will be zero or PCB_FLAG_LOCK */
 };
 
 static r_dir_t pinorvia_callback(const BoxType * box, void *cl)
@@ -105,7 +105,7 @@ static bool SearchViaByLocation(int locked, PinTypePtr * Via, PinTypePtr * Dummy
 	info.ptr1 = (void **) Via;
 	info.ptr2 = (void **) Dummy1;
 	info.ptr3 = (void **) Dummy2;
-	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	if (r_search(PCB->Data->via_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return true;
@@ -126,7 +126,7 @@ static bool SearchPinByLocation(int locked, ElementTypePtr * Element, PinTypePtr
 	info.ptr1 = (void **) Element;
 	info.ptr2 = (void **) Pin;
 	info.ptr3 = (void **) Dummy;
-	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	if (r_search(PCB->Data->pin_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL)  != R_DIR_NOT_FOUND)
 		return true;
@@ -166,7 +166,7 @@ static bool SearchPadByLocation(int locked, ElementTypePtr * Element, PadTypePtr
 	info.ptr1 = (void **) Element;
 	info.ptr2 = (void **) Pad;
 	info.ptr3 = (void **) Dummy;
-	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 	info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 	if (r_search(PCB->Data->pad_tree, &SearchBox, NULL, pad_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return true;
@@ -207,7 +207,7 @@ static bool SearchLineByLocation(int locked, LayerTypePtr * Layer, LineTypePtr *
 
 	info.Line = Line;
 	info.Point = (PointTypePtr *) Dummy;
-	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	*Layer = SearchLayer;
 	if (r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info, NULL) != R_DIR_NOT_FOUND)
@@ -224,7 +224,7 @@ static r_dir_t rat_callback(const BoxType * box, void *cl)
 	if (TEST_FLAG(i->locked, line))
 		return R_DIR_NOT_FOUND;
 
-	if (TEST_FLAG(VIAFLAG, line) ?
+	if (TEST_FLAG(PCB_FLAG_VIA, line) ?
 			(Distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
 			 line->Thickness * 2 + SearchRadius) : IsPointOnLine(PosX, PosY, SearchRadius, line)) {
 		*i->ptr1 = *i->ptr2 = *i->ptr3 = line;
@@ -243,7 +243,7 @@ static bool SearchRatLineByLocation(int locked, RatTypePtr * Line, RatTypePtr * 
 	info.ptr1 = (void **) Line;
 	info.ptr2 = (void **) Dummy1;
 	info.ptr3 = (void **) Dummy2;
-	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	if (r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return true;
@@ -280,7 +280,7 @@ static bool SearchArcByLocation(int locked, LayerTypePtr * Layer, ArcTypePtr * A
 
 	info.Arc = Arc;
 	info.Dummy = Dummy;
-	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	*Layer = SearchLayer;
 	if (r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != R_DIR_NOT_FOUND)
@@ -313,7 +313,7 @@ static bool SearchTextByLocation(int locked, LayerTypePtr * Layer, TextTypePtr *
 	*Layer = SearchLayer;
 	info.ptr2 = (void **) Text;
 	info.ptr3 = (void **) Dummy;
-	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	if (r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return true;
@@ -346,7 +346,7 @@ static bool SearchPolygonByLocation(int locked, LayerTypePtr * Layer, PolygonTyp
 	*Layer = SearchLayer;
 	info.ptr2 = (void **) Polygon;
 	info.ptr3 = (void **) Dummy;
-	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	if (r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return true;
@@ -393,7 +393,7 @@ static bool SearchLinePointByLocation(int locked, LayerTypePtr * Layer, LineType
 	info.Point = Point;
 	*Point = NULL;
 	info.least = MAX_LINE_POINT_DISTANCE + SearchRadius;
-	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 	if (r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info, NULL))
 		return true;
 	return false;
@@ -440,7 +440,7 @@ static r_dir_t name_callback(const BoxType * box, void *cl)
 	if (TEST_FLAG(i->locked, text))
 		return R_DIR_NOT_FOUND;
 
-	if ((FRONT(element) || i->BackToo) && !TEST_FLAG(HIDENAMEFLAG, element) && POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
+	if ((FRONT(element) || i->BackToo) && !TEST_FLAG(PCB_FLAG_HIDENAME, element) && POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		/* use the text with the smallest bounding box */
 		newarea = (text->BoundingBox.X2 - text->BoundingBox.X1) * (double) (text->BoundingBox.Y2 - text->BoundingBox.Y1);
 		if (newarea < i->area) {
@@ -469,7 +469,7 @@ SearchElementNameByLocation(int locked, ElementTypePtr * Element, TextTypePtr * 
 		info.ptr3 = (void **) Dummy;
 		info.area = SQUARE(MAX_COORD);
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
-		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
+		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 		if (r_search(PCB->Data->name_tree[NAME_INDEX()], &SearchBox, NULL, name_callback, &info, NULL))
 			return true;
 	}
@@ -514,7 +514,7 @@ SearchElementByLocation(int locked, ElementTypePtr * Element, ElementTypePtr * D
 		info.ptr3 = (void **) Dummy2;
 		info.area = SQUARE(MAX_COORD);
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
-		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
+		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 		if (r_search(PCB->Data->element_tree, &SearchBox, NULL, element_callback, &info, NULL))
 			return true;
 	}
@@ -527,7 +527,7 @@ SearchElementByLocation(int locked, ElementTypePtr * Element, ElementTypePtr * D
 bool IsPointOnPin(Coord X, Coord Y, Coord Radius, PinTypePtr pin)
 {
 	Coord t = PIN_SIZE(pin) / 2;
-	if (TEST_FLAG(SQUAREFLAG, pin)) {
+	if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
 		BoxType b;
 
 		b.X1 = pin->X - t;
@@ -823,14 +823,14 @@ bool IsPointInPad(Coord X, Coord Y, Coord Radius, PadTypePtr Pad)
 	/* now pad.Point2.X = r; pad.Point2.Y = 0; */
 
 	/* take into account the ends */
-	if (TEST_FLAG(SQUAREFLAG, Pad)) {
+	if (TEST_FLAG(PCB_FLAG_SQUARE, Pad)) {
 		r += Pad->Thickness;
 		X += t2;
 	}
 	if (Y < 0)
 		Y = -Y;											/* range value is evident now */
 
-	if (TEST_FLAG(SQUAREFLAG, Pad)) {
+	if (TEST_FLAG(PCB_FLAG_SQUARE, Pad)) {
 		if (X <= 0) {
 			if (Y <= t2)
 				range = -X;

@@ -229,17 +229,17 @@ static void WritePCBDataHeader(FILE * FP)
 
 	/* set binary flags from conf hash; these flags used to be checked
 	   with TEST_FLAG() but got moved to the conf system */
-	conf_update_pcb_flag(&pcb_flags, "plugins/mincut/enable", ENABLEMINCUTFLAG);
+	conf_update_pcb_flag(&pcb_flags, "plugins/mincut/enable", ENABLEPCB_FLAG_MINCUT);
 	conf_update_pcb_flag(&pcb_flags, "editor/show_number", SHOWNUMBERFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/show_drc", SHOWDRCFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/show_drc", SHOWPCB_FLAG_DRC);
 	conf_update_pcb_flag(&pcb_flags, "editor/rubber_band_mode", RUBBERBANDFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/auto_drc", AUTODRCFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/auto_drc", AUTOPCB_FLAG_DRC);
 	conf_update_pcb_flag(&pcb_flags, "editor/all_direction_lines", ALLDIRECTIONFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/swap_start_direction", SWAPSTARTDIRFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/unique_names", UNIQUENAMEFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/clear_line", CLEARNEWFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/full_poly", NEWFULLPOLYFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/snap_pin", SNAPPINFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/full_poly", NEWPCB_FLAG_FULLPOLY);
+	conf_update_pcb_flag(&pcb_flags, "editor/snap_pin", SNAPPCB_FLAG_PIN);
 	conf_update_pcb_flag(&pcb_flags, "editor/orthogonal_moves", ORTHOMOVEFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/live_routing", LIVEROUTEFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/lock_names", LOCKNAMESFLAG);

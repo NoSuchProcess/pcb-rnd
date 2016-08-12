@@ -602,7 +602,7 @@ gdouble vertex_net_thickness(toporouter_vertex_t * v)
 	else {
 		if (box->type == PIN || box->type == VIA) {
 			PinType *pin = (PinType *) box->data;
-			if (TEST_FLAG(SQUAREFLAG, pin) || TEST_FLAG(OCTAGONFLAG, pin)) {
+			if (TEST_FLAG(PCB_FLAG_SQUARE, pin) || TEST_FLAG(PCB_FLAG_OCTAGON, pin)) {
 				return 0.;
 			}
 /*      return ((PinType *)box->data)->Thickness + 1.;*/
@@ -610,7 +610,7 @@ gdouble vertex_net_thickness(toporouter_vertex_t * v)
 		}
 		else if (box->type == PAD) {
 			PadType *pad = (PadType *) box->data;
-			if (pad->Point1.X == pad->Point2.X && pad->Point1.Y == pad->Point2.Y && !TEST_FLAG(SQUAREFLAG, pad)) {
+			if (pad->Point1.X == pad->Point2.X && pad->Point1.Y == pad->Point2.Y && !TEST_FLAG(PCB_FLAG_SQUARE, pad)) {
 				return pad->Thickness;
 			}
 			return 0.;
@@ -1822,7 +1822,7 @@ int read_pads(toporouter_t * r, toporouter_layer_t * l, guint layer)
 	{
 		PAD_LOOP(element);
 		{
-			if ((l - r->layers == back && TEST_FLAG(ONSOLDERFLAG, pad)) || (l - r->layers == front && !TEST_FLAG(ONSOLDERFLAG, pad))) {
+			if ((l - r->layers == back && TEST_FLAG(PCB_FLAG_ONSOLDER, pad)) || (l - r->layers == front && !TEST_FLAG(PCB_FLAG_ONSOLDER, pad))) {
 
 				t = (gdouble) pad->Thickness / 2.0f;
 				x[0] = pad->Point1.X;
@@ -1831,7 +1831,7 @@ int read_pads(toporouter_t * r, toporouter_layer_t * l, guint layer)
 				y[1] = pad->Point2.Y;
 
 
-				if (TEST_FLAG(SQUAREFLAG, pad)) {
+				if (TEST_FLAG(PCB_FLAG_SQUARE, pad)) {
 					/* Square or oblong pad. Four points and four constraint edges are
 					 * used */
 
@@ -1990,7 +1990,7 @@ int read_points(toporouter_t * r, toporouter_layer_t * l, int layer)
 			x = pin->X;
 			y = pin->Y;
 
-			if (TEST_FLAG(SQUAREFLAG, pin)) {
+			if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
 
 				vlist = rect_with_attachments(pin_rad(pin), x - t, y - t, x - t, y + t, x + t, y + t, x + t, y - t, l - r->layers);
 				bbox = toporouter_bbox_create(l - r->layers, vlist, PIN, pin);
@@ -2000,7 +2000,7 @@ int read_points(toporouter_t * r, toporouter_layer_t * l, int layer)
 				bbox->point = GTS_POINT(insert_vertex(r, l, x, y, bbox));
 
 			}
-			else if (TEST_FLAG(OCTAGONFLAG, pin)) {
+			else if (TEST_FLAG(PCB_FLAG_OCTAGON, pin)) {
 				/* TODO: Handle octagon pins */
 				fprintf(stderr, "No support for octagon pins yet\n");
 			}
@@ -2023,7 +2023,7 @@ int read_points(toporouter_t * r, toporouter_layer_t * l, int layer)
 		x = via->X;
 		y = via->Y;
 
-		if (TEST_FLAG(SQUAREFLAG, via)) {
+		if (TEST_FLAG(PCB_FLAG_SQUARE, via)) {
 
 			vlist = rect_with_attachments(pin_rad((PinType *) via),
 																		x - t, y - t, x - t, y + t, x + t, y + t, x + t, y - t, l - r->layers);
@@ -2034,7 +2034,7 @@ int read_points(toporouter_t * r, toporouter_layer_t * l, int layer)
 			bbox->point = GTS_POINT(insert_vertex(r, l, x, y, bbox));
 
 		}
-		else if (TEST_FLAG(OCTAGONFLAG, via)) {
+		else if (TEST_FLAG(PCB_FLAG_OCTAGON, via)) {
 			/* TODO: Handle octagon vias */
 			fprintf(stderr, "No support for octagon vias yet\n");
 		}
@@ -5536,7 +5536,7 @@ gdouble export_pcb_drawline(guint layer, guint x0, guint y0, guint x1, guint y1,
 	gdouble d = 0.;
 	LineTypePtr line;
 	line = CreateDrawnLineOnLayer(LAYER_PTR(layer), x0, y0, x1, y1,
-																thickness, clearance, MakeFlags(AUTOFLAG | (TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)));
+																thickness, clearance, MakeFlags(PCB_FLAG_AUTO | (TEST_FLAG(CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
 
 	if (line) {
 		AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(layer), line, line);
@@ -5585,7 +5585,7 @@ gdouble export_pcb_drawarc(guint layer, toporouter_arc_t * a, guint thickness, g
 
 	arc = CreateNewArcOnLayer(LAYER_PTR(layer), vx(a->centre), vy(a->centre), a->r, a->r,
 														sa, da, thickness, clearance,
-														MakeFlags(AUTOFLAG | (TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)));
+														MakeFlags(PCB_FLAG_AUTO | (TEST_FLAG(CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
 
 	if (arc) {
 		AddObjectToCreateUndoList(PCB_TYPE_ARC, LAYER_PTR(layer), arc, arc);
@@ -8069,7 +8069,7 @@ toporouter_t *toporouter_new(void)
 void acquire_twonets(toporouter_t * r)
 {
 	RAT_LOOP(PCB->Data);
-	if (TEST_FLAG(SELECTEDFLAG, line))
+	if (TEST_FLAG(PCB_FLAG_SELECTED, line))
 		import_route(r, line);
 	END_LOOP;
 
@@ -8151,7 +8151,7 @@ static int escape(int argc, char **argv, Coord x, Coord y)
 
 	ALLPAD_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(SELECTEDFLAG, pad)) {
+		if (TEST_FLAG(PCB_FLAG_SELECTED, pad)) {
 			PinTypePtr via;
 			LineTypePtr line;
 

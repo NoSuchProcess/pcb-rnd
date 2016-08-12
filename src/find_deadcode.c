@@ -56,7 +56,7 @@ static int LOT_Padcallback(const BoxType * b, void *cl)
 	PadTypePtr pad = (PadTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(ONSOLDERFLAG, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
+	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
 			&& LinePadIntersect(&i->line, pad))
 		longjmp(i->env, 1);
 	return 0;

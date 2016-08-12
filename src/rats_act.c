@@ -89,7 +89,7 @@ static int ActionAddRats(int argc, char **argv, Coord x, Coord y)
 			shorty = NULL;
 			RAT_LOOP(PCB->Data);
 			{
-				if (TEST_FLAG(SELECTEDFLAG, line))
+				if (TEST_FLAG(PCB_FLAG_SELECTED, line))
 					continue;
 				len = SQUARE(line->Point1.X - line->Point2.X) + SQUARE(line->Point1.Y - line->Point2.Y);
 				if (len < small) {
@@ -100,7 +100,7 @@ static int ActionAddRats(int argc, char **argv, Coord x, Coord y)
 			END_LOOP;
 			if (shorty) {
 				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, shorty, shorty, shorty);
-				SET_FLAG(SELECTEDFLAG, shorty);
+				SET_FLAG(PCB_FLAG_SELECTED, shorty);
 				DrawRat(shorty);
 				Draw();
 				CenterDisplay((shorty->Point2.X + shorty->Point1.X) / 2, (shorty->Point2.Y + shorty->Point1.Y) / 2);
@@ -148,7 +148,7 @@ static int ActionConnection(int argc, char **argv, Coord x, Coord y)
 		case F_Find:
 			{
 				gui->get_coords(_("Click on a connection"), &x, &y);
-				LookupConnection(x, y, true, 1, FOUNDFLAG);
+				LookupConnection(x, y, true, 1, PCB_FLAG_FOUND);
 				break;
 			}
 

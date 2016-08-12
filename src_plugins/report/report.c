@@ -148,13 +148,13 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 			}
 #endif
 			via = (PinTypePtr) ptr2;
-			if (TEST_FLAG(HOLEFLAG, via))
+			if (TEST_FLAG(PCB_FLAG_HOLE, via))
 				report = pcb_strdup_printf("%m+VIA ID# %ld; Flags:%s\n"
 										"(X,Y) = %$mD.\n"
 										"It is a pure hole of diameter %$mS.\n"
 										"Name = \"%s\"."
 										"%s", USER_UNITMASK, via->ID, flags_to_string(via->Flags, PCB_TYPE_VIA),
-										via->X, via->Y, via->DrillingHole, EMPTY(via->Name), TEST_FLAG(LOCKFLAG, via) ? "It is LOCKED.\n" : "");
+										via->X, via->Y, via->DrillingHole, EMPTY(via->Name), TEST_FLAG(PCB_FLAG_LOCK, via) ? "It is LOCKED.\n" : "");
 			else
 				report = pcb_strdup_printf("%m+VIA ID# %ld;  Flags:%s\n"
 										"(X,Y) = %$mD.\n"
@@ -170,7 +170,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 										via->Clearance / 2,
 										(via->Thickness - via->DrillingHole) / 2,
 										via->Mask,
-										(via->Mask - via->Thickness) / 2, EMPTY(via->Name), TEST_FLAG(LOCKFLAG, via) ? "It is LOCKED.\n" : "");
+										(via->Mask - via->Thickness) / 2, EMPTY(via->Name), TEST_FLAG(PCB_FLAG_LOCK, via) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_PIN:
@@ -192,14 +192,14 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 					break;
 			}
 			END_LOOP;
-			if (TEST_FLAG(HOLEFLAG, Pin))
+			if (TEST_FLAG(PCB_FLAG_HOLE, Pin))
 				report = pcb_strdup_printf("%m+PIN ID# %ld; Flags:%s\n"
 										"(X,Y) = %$mD.\n"
 										"It is a mounting hole. Drill width = %$mS.\n"
 										"It is owned by element %$mS.\n"
 										"%s", USER_UNITMASK, Pin->ID, flags_to_string(Pin->Flags, PCB_TYPE_PIN),
 										Pin->X, Pin->Y, Pin->DrillingHole,
-										EMPTY(element->Name[1].TextString), TEST_FLAG(LOCKFLAG, Pin) ? "It is LOCKED.\n" : "");
+										EMPTY(element->Name[1].TextString), TEST_FLAG(PCB_FLAG_LOCK, Pin) ? "It is LOCKED.\n" : "");
 			else
 				report = pcb_strdup_printf(
 										"%m+PIN ID# %ld;  Flags:%s\n" "(X,Y) = %$mD.\n"
@@ -218,7 +218,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 										Pin->Mask,
 										(Pin->Mask - Pin->Thickness) / 2,
 										EMPTY(Pin->Name),
-										EMPTY(element->Name[1].TextString), EMPTY(Pin->Number), TEST_FLAG(LOCKFLAG, Pin) ? "It is LOCKED.\n" : "");
+										EMPTY(element->Name[1].TextString), EMPTY(Pin->Number), TEST_FLAG(PCB_FLAG_LOCK, Pin) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_LINE:
@@ -244,7 +244,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									line->Point2.X, line->Point2.Y, line->Point2.ID,
 									line->Thickness, line->Clearance / 2,
 									GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1),
-									UNKNOWN(line->Number), TEST_FLAG(LOCKFLAG, line) ? "It is LOCKED.\n" : "");
+									UNKNOWN(line->Number), TEST_FLAG(PCB_FLAG_LOCK, line) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_RATLINE:
@@ -297,7 +297,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									Arc->BoundingBox.X2, Arc->BoundingBox.Y2,
 									box->X1, box->Y1,
 									box->X2, box->Y2,
-									GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1), TEST_FLAG(LOCKFLAG, Arc) ? "It is LOCKED.\n" : "");
+									GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1), TEST_FLAG(PCB_FLAG_LOCK, Arc) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_POLYGON:
@@ -323,7 +323,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
 									Polygon->PointN, Polygon->PointMax - Polygon->PointN,
 									Polygon->HoleIndexN,
-									GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1), TEST_FLAG(LOCKFLAG, Polygon) ? "It is LOCKED.\n" : "");
+									GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1), TEST_FLAG(PCB_FLAG_LOCK, Polygon) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_PAD:
@@ -370,8 +370,8 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									EMPTY(Pad->Name),
 									EMPTY(element->Name[1].TextString),
 									EMPTY(Pad->Number),
-									TEST_FLAG(ONSOLDERFLAG,
-														Pad) ? "solder (bottom)" : "component", TEST_FLAG(LOCKFLAG, Pad) ? "It is LOCKED.\n" : "");
+									TEST_FLAG(PCB_FLAG_ONSOLDER,
+														Pad) ? "solder (bottom)" : "component", TEST_FLAG(PCB_FLAG_LOCK, Pad) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_ELEMENT:
@@ -401,10 +401,10 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									EMPTY(element->Name[2].TextString),
 									SCALE_TEXT(FONT_CAPHEIGHT, element->Name[1].Scale),
 									element->Name[1].X, element->Name[1].Y,
-									TEST_FLAG(HIDENAMEFLAG, element) ? ",\n  but it's hidden" : "",
+									TEST_FLAG(PCB_FLAG_HIDENAME, element) ? ",\n  but it's hidden" : "",
 									element->MarkX, element->MarkY,
-									TEST_FLAG(ONSOLDERFLAG, element) ? "solder (bottom)" : "component",
-									TEST_FLAG(LOCKFLAG, element) ? "It is LOCKED.\n" : "");
+									TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? "solder (bottom)" : "component",
+									TEST_FLAG(PCB_FLAG_LOCK, element) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_TEXT:
@@ -441,7 +441,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									text->TextString, text->Direction,
 									text->BoundingBox.X1, text->BoundingBox.Y1,
 									text->BoundingBox.X2, text->BoundingBox.Y2,
-									(type == PCB_TYPE_TEXT) ? laynum : "It is an element name.", TEST_FLAG(LOCKFLAG, text) ? "It is LOCKED.\n" : "");
+									(type == PCB_TYPE_TEXT) ? laynum : "It is an element name.", TEST_FLAG(PCB_FLAG_LOCK, text) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_LINE_POINT:
@@ -488,13 +488,13 @@ static int ReportFoundPins(int argc, char **argv, Coord x, Coord y)
 	{
 		PIN_LOOP(element);
 		{
-			if (TEST_FLAG(FOUNDFLAG, pin))
+			if (TEST_FLAG(PCB_FLAG_FOUND, pin))
 				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pin->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
 		}
 		END_LOOP;
 		PAD_LOOP(element);
 		{
-			if (TEST_FLAG(FOUNDFLAG, pad))
+			if (TEST_FLAG(PCB_FLAG_FOUND, pad))
 				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pad->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
 		}
 		END_LOOP;
@@ -520,11 +520,11 @@ static double XYtoNetLength(Coord x, Coord y, int *found)
 	/* NB: The third argument here, 'false' ensures LookupConnection
 	 *     does not add its changes to the undo system.
 	 */
-	LookupConnection(x, y, false, PCB->Grid, FOUNDFLAG);
+	LookupConnection(x, y, false, PCB->Grid, PCB_FLAG_FOUND);
 
 	ALLLINE_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(FOUNDFLAG, line)) {
+		if (TEST_FLAG(PCB_FLAG_FOUND, line)) {
 			double l;
 			int dx, dy;
 			dx = line->Point1.X - line->Point2.X;
@@ -538,7 +538,7 @@ static double XYtoNetLength(Coord x, Coord y, int *found)
 
 	ALLARC_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(FOUNDFLAG, arc)) {
+		if (TEST_FLAG(PCB_FLAG_FOUND, arc)) {
 			double l;
 			/* FIXME: we assume width==height here */
 			l = M_PI * 2 * arc->Width * fabs(arc->Delta) / 360.0;
@@ -664,7 +664,7 @@ static int ReportNetLength(int argc, char **argv, Coord x, Coord y)
 	{
 		PIN_LOOP(element);
 		{
-			if (TEST_FLAG(FOUNDFLAG, pin)) {
+			if (TEST_FLAG(PCB_FLAG_FOUND, pin)) {
 				int ni, nei;
 				char *ename = element->Name[NAMEONPCB_INDEX].TextString;
 				char *pname = pin->Number;
@@ -685,7 +685,7 @@ static int ReportNetLength(int argc, char **argv, Coord x, Coord y)
 		END_LOOP;
 		PAD_LOOP(element);
 		{
-			if (TEST_FLAG(FOUNDFLAG, pad)) {
+			if (TEST_FLAG(PCB_FLAG_FOUND, pad)) {
 				int ni, nei;
 				char *ename = element->Name[NAMEONPCB_INDEX].TextString;
 				char *pname = pad->Number;

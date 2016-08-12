@@ -154,7 +154,7 @@ void common_fill_pcb_polygon(hidGC gc, PolygonType * poly, const BoxType * clip_
 
 	/* Draw other parts of the polygon if fullpoly flag is set */
 	/* NB: No "NoHoles" cache for these */
-	if (TEST_FLAG(FULLPOLYFLAG, poly)) {
+	if (TEST_FLAG(PCB_FLAG_FULLPOLY, poly)) {
 		PolygonType p = *poly;
 
 		for (p.Clipped = poly->Clipped->f; p.Clipped != poly->Clipped; p.Clipped = p.Clipped->f)
@@ -195,7 +195,7 @@ void common_thindraw_pcb_pad(hidGC gc, PadType * pad, bool clear, bool mask)
 	}
 	gui->set_line_cap(gc, Round_Cap);
 	gui->set_line_width(gc, 0);
-	if (TEST_FLAG(SQUAREFLAG, pad)) {
+	if (TEST_FLAG(PCB_FLAG_SQUARE, pad)) {
 		/* slanted square pad */
 		double tx, ty, theta;
 
@@ -245,7 +245,7 @@ void common_fill_pcb_pad(hidGC gc, PadType * pad, bool clear, bool mask)
 		: pad->Thickness;
 
 	if (pad->Point1.X == pad->Point2.X && pad->Point1.Y == pad->Point2.Y) {
-		if (TEST_FLAG(SQUAREFLAG, pad)) {
+		if (TEST_FLAG(PCB_FLAG_SQUARE, pad)) {
 			Coord l, r, t, b;
 			l = pad->Point1.X - w / 2;
 			b = pad->Point1.Y - w / 2;
@@ -258,7 +258,7 @@ void common_fill_pcb_pad(hidGC gc, PadType * pad, bool clear, bool mask)
 		}
 	}
 	else {
-		gui->set_line_cap(gc, TEST_FLAG(SQUAREFLAG, pad) ? Square_Cap : Round_Cap);
+		gui->set_line_cap(gc, TEST_FLAG(PCB_FLAG_SQUARE, pad) ? Square_Cap : Round_Cap);
 		gui->set_line_width(gc, w);
 
 		gui->draw_line(gc, pad->Point1.X, pad->Point1.Y, pad->Point2.X, pad->Point2.Y);
@@ -342,7 +342,7 @@ void common_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHole, b
 	Coord w = mask ? pv->Mask : pv->Thickness;
 	Coord r = w / 2;
 
-	if (TEST_FLAG(HOLEFLAG, pv)) {
+	if (TEST_FLAG(PCB_FLAG_HOLE, pv)) {
 		if (mask)
 			gui->fill_circle(bg_gc, pv->X, pv->Y, r);
 		if (drawHole) {
@@ -354,7 +354,7 @@ void common_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHole, b
 		return;
 	}
 
-	if (TEST_FLAG(SQUAREFLAG, pv)) {
+	if (TEST_FLAG(PCB_FLAG_SQUARE, pv)) {
 		/* use the original code for now */
 		if ((GET_SQUARE(pv) == 0) || (GET_SQUARE(pv) == 1)) {
 			Coord l = pv->X - r;
@@ -366,7 +366,7 @@ void common_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHole, b
 		else
 			draw_square_pin_poly(fg_gc, pv->X, pv->Y, w, false, GET_SQUARE(pv));
 	}
-	else if (TEST_FLAG(OCTAGONFLAG, pv))
+	else if (TEST_FLAG(PCB_FLAG_OCTAGON, pv))
 		draw_octagon_poly(fg_gc, pv->X, pv->Y, w, false);
 	else													/* draw a round pin or via */
 		gui->fill_circle(fg_gc, pv->X, pv->Y, r);
@@ -381,7 +381,7 @@ void common_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHol
 	Coord w = mask ? pv->Mask : pv->Thickness;
 	Coord r = w / 2;
 
-	if (TEST_FLAG(HOLEFLAG, pv)) {
+	if (TEST_FLAG(PCB_FLAG_HOLE, pv)) {
 		if (mask)
 			gui->draw_arc(fg_gc, pv->X, pv->Y, r, r, 0, 360);
 		if (drawHole) {
@@ -393,7 +393,7 @@ void common_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHol
 		return;
 	}
 
-	if (TEST_FLAG(SQUAREFLAG, pv)) {
+	if (TEST_FLAG(PCB_FLAG_SQUARE, pv)) {
 		Coord l = pv->X - r;
 		Coord b = pv->Y - r;
 		Coord r = l + w;
@@ -407,7 +407,7 @@ void common_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHol
 		gui->draw_line(fg_gc, r, b, l, b);
 
 	}
-	else if (TEST_FLAG(OCTAGONFLAG, pv)) {
+	else if (TEST_FLAG(PCB_FLAG_OCTAGON, pv)) {
 		draw_octagon_poly(fg_gc, pv->X, pv->Y, w, true);
 	}
 	else {												/* draw a round pin or via */

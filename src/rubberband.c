@@ -72,7 +72,7 @@ static r_dir_t rubber_callback(const BoxType * b, void *cl)
 
 	t = line->Thickness / 2;
 
-	if (TEST_FLAG(LOCKFLAG, line))
+	if (TEST_FLAG(PCB_FLAG_LOCK, line))
 		return R_DIR_NOT_FOUND;
 	if (line == i->line)
 		return R_DIR_NOT_FOUND;
@@ -192,7 +192,7 @@ static void CheckPadForRubberbandConnection(PadTypePtr Pad)
 	info.box.Y2 = MAX(Pad->Point1.Y, Pad->Point2.Y) + half;
 	info.radius = 0;
 	info.line = NULL;
-	i = TEST_FLAG(ONSOLDERFLAG, Pad) ? solder_silk_layer : component_silk_layer;
+	i = TEST_FLAG(PCB_FLAG_ONSOLDER, Pad) ? solder_silk_layer : component_silk_layer;
 	group = GetLayerGroupNumberByNumber(i);
 
 	/* check all visible layers in the same group */
@@ -262,7 +262,7 @@ static void CheckPadForRat(PadTypePtr Pad)
 	struct rinfo info;
 	Cardinal i;
 
-	i = TEST_FLAG(ONSOLDERFLAG, Pad) ? solder_silk_layer : component_silk_layer;
+	i = TEST_FLAG(PCB_FLAG_ONSOLDER, Pad) ? solder_silk_layer : component_silk_layer;
 	info.group = GetLayerGroupNumberByNumber(i);
 	info.pad = Pad;
 	info.type = PCB_TYPE_PAD;
@@ -308,7 +308,7 @@ static void CheckPinForRubberbandConnection(PinTypePtr Pin)
 	info.box.Y1 = Pin->Y - t;
 	info.box.Y2 = Pin->Y + t;
 	info.line = NULL;
-	if (TEST_FLAG(SQUAREFLAG, Pin))
+	if (TEST_FLAG(PCB_FLAG_SQUARE, Pin))
 		info.radius = 0;
 	else {
 		info.radius = t;
@@ -375,9 +375,9 @@ static void CheckPolygonForRubberbandConnection(LayerTypePtr Layer, PolygonTypeP
 			 */
 			LINE_LOOP(layer);
 			{
-				if (TEST_FLAG(LOCKFLAG, line))
+				if (TEST_FLAG(PCB_FLAG_LOCK, line))
 					continue;
-				if (TEST_FLAG(CLEARLINEFLAG, line))
+				if (TEST_FLAG(PCB_FLAG_CLEARLINE, line))
 					continue;
 				thick = (line->Thickness + 1) / 2;
 				if (IsPointInPolygon(line->Point1.X, line->Point1.Y, thick, Polygon))

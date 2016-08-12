@@ -98,7 +98,7 @@ int layout_search_box(const char *search_ID, layout_object_mask_t obj_types, int
 	return s->used;
 }
 
-/* SELECTEDFLAG */
+/* PCB_FLAG_SELECTED */
 
 typedef struct {
 	int flag;
@@ -147,12 +147,12 @@ static int layout_search_flag(const char *search_ID, multiple layout_object_mask
 
 int layout_search_selected(const char *search_ID, multiple layout_object_mask_t obj_types)
 {
-	return layout_search_flag(search_ID, obj_types, SELECTEDFLAG);
+	return layout_search_flag(search_ID, obj_types, PCB_FLAG_SELECTED);
 }
 
 int layout_search_found(const char *search_ID, multiple layout_object_mask_t obj_types)
 {
-	return layout_search_flag(search_ID, obj_types, FOUNDFLAG);
+	return layout_search_flag(search_ID, obj_types, PCB_FLAG_FOUND);
 }
 
 layout_object_t *layout_search_get(const char *search_ID, int n)

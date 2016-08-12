@@ -163,48 +163,48 @@ void ClearWarnings()
 	conf_core.temp.rat_warn = false;
 	ALLPIN_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(WARNFLAG, pin)) {
-			CLEAR_FLAG(WARNFLAG, pin);
+		if (TEST_FLAG(PCB_FLAG_WARN, pin)) {
+			CLEAR_FLAG(PCB_FLAG_WARN, pin);
 			DrawPin(pin);
 		}
 	}
 	ENDALL_LOOP;
 	VIA_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(WARNFLAG, via)) {
-			CLEAR_FLAG(WARNFLAG, via);
+		if (TEST_FLAG(PCB_FLAG_WARN, via)) {
+			CLEAR_FLAG(PCB_FLAG_WARN, via);
 			DrawVia(via);
 		}
 	}
 	END_LOOP;
 	ALLPAD_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(WARNFLAG, pad)) {
-			CLEAR_FLAG(WARNFLAG, pad);
+		if (TEST_FLAG(PCB_FLAG_WARN, pad)) {
+			CLEAR_FLAG(PCB_FLAG_WARN, pad);
 			DrawPad(pad);
 		}
 	}
 	ENDALL_LOOP;
 	ALLLINE_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(WARNFLAG, line)) {
-			CLEAR_FLAG(WARNFLAG, line);
+		if (TEST_FLAG(PCB_FLAG_WARN, line)) {
+			CLEAR_FLAG(PCB_FLAG_WARN, line);
 			DrawLine(layer, line);
 		}
 	}
 	ENDALL_LOOP;
 	ALLARC_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(WARNFLAG, arc)) {
-			CLEAR_FLAG(WARNFLAG, arc);
+		if (TEST_FLAG(PCB_FLAG_WARN, arc)) {
+			CLEAR_FLAG(PCB_FLAG_WARN, arc);
 			DrawArc(layer, arc);
 		}
 	}
 	ENDALL_LOOP;
 	ALLPOLYGON_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(WARNFLAG, polygon)) {
-			CLEAR_FLAG(WARNFLAG, polygon);
+		if (TEST_FLAG(PCB_FLAG_WARN, polygon)) {
+			CLEAR_FLAG(PCB_FLAG_WARN, polygon);
 			DrawPolygon(layer, polygon);
 		}
 	}
@@ -419,7 +419,7 @@ void NotifyLine(void)
 		}
 		if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
 			type = SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
-			LookupConnection(Crosshair.X, Crosshair.Y, true, 1, FOUNDFLAG);
+			LookupConnection(Crosshair.X, Crosshair.Y, true, 1, PCB_FLAG_FOUND);
 		}
 		if (type == PCB_TYPE_PIN || type == PCB_TYPE_VIA) {
 			Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = ((PinTypePtr) ptr2)->X;
@@ -503,13 +503,13 @@ void NotifyMode(void)
 			 */
 			for (test = (SELECT_TYPES | MOVE_TYPES) & ~PCB_TYPE_RATLINE; test; test &= ~type) {
 				type = SearchScreen(Note.X, Note.Y, test, &ptr1, &ptr2, &ptr3);
-				if (!Note.Hit && (type & MOVE_TYPES) && !TEST_FLAG(LOCKFLAG, (PinTypePtr) ptr2)) {
+				if (!Note.Hit && (type & MOVE_TYPES) && !TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2)) {
 					Note.Hit = type;
 					Note.ptr1 = ptr1;
 					Note.ptr2 = ptr2;
 					Note.ptr3 = ptr3;
 				}
-				if (!Note.Moving && (type & SELECT_TYPES) && TEST_FLAG(SELECTEDFLAG, (PinTypePtr) ptr2))
+				if (!Note.Moving && (type & SELECT_TYPES) && TEST_FLAG(PCB_FLAG_SELECTED, (PinTypePtr) ptr2))
 					Note.Moving = true;
 				if ((Note.Hit && Note.Moving) || type == PCB_TYPE_NONE)
 					break;
@@ -586,7 +586,7 @@ void NotifyMode(void)
 																												dir,
 																												conf_core.design.line_thickness,
 																												2 * conf_core.design.clearance,
-																												MakeFlags(conf_core.editor.clear_line ? CLEARLINEFLAG : 0)))) {
+																												MakeFlags(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) {
 						BoxTypePtr bx;
 
 						bx = GetArcEnds(arc);
@@ -610,20 +610,20 @@ void NotifyMode(void)
 			if (type == PCB_TYPE_ELEMENT) {
 				ElementTypePtr element = (ElementTypePtr) ptr2;
 
-				TOGGLE_FLAG(LOCKFLAG, element);
+				TOGGLE_FLAG(PCB_FLAG_LOCK, element);
 				PIN_LOOP(element);
 				{
-					TOGGLE_FLAG(LOCKFLAG, pin);
-					CLEAR_FLAG(SELECTEDFLAG, pin);
+					TOGGLE_FLAG(PCB_FLAG_LOCK, pin);
+					CLEAR_FLAG(PCB_FLAG_SELECTED, pin);
 				}
 				END_LOOP;
 				PAD_LOOP(element);
 				{
-					TOGGLE_FLAG(LOCKFLAG, pad);
-					CLEAR_FLAG(SELECTEDFLAG, pad);
+					TOGGLE_FLAG(PCB_FLAG_LOCK, pad);
+					CLEAR_FLAG(PCB_FLAG_SELECTED, pad);
 				}
 				END_LOOP;
-				CLEAR_FLAG(SELECTEDFLAG, element);
+				CLEAR_FLAG(PCB_FLAG_SELECTED, element);
 				/* always re-draw it since I'm too lazy
 				 * to tell if a selected flag changed
 				 */
@@ -633,11 +633,11 @@ void NotifyMode(void)
 			}
 			else if (type != PCB_TYPE_NONE) {
 				TextTypePtr thing = (TextTypePtr) ptr3;
-				TOGGLE_FLAG(LOCKFLAG, thing);
-				if (TEST_FLAG(LOCKFLAG, thing)
-						&& TEST_FLAG(SELECTEDFLAG, thing)) {
+				TOGGLE_FLAG(PCB_FLAG_LOCK, thing);
+				if (TEST_FLAG(PCB_FLAG_LOCK, thing)
+						&& TEST_FLAG(PCB_FLAG_SELECTED, thing)) {
 					/* this is not un-doable since LOCK isn't */
-					CLEAR_FLAG(SELECTEDFLAG, thing);
+					CLEAR_FLAG(PCB_FLAG_SELECTED, thing);
 					DrawObject(type, ptr1, ptr2);
 					Draw();
 				}
@@ -648,7 +648,7 @@ void NotifyMode(void)
 	case PCB_MODE_THERMAL:
 		{
 			if (((type = SearchScreen(Note.X, Note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-					&& !TEST_FLAG(HOLEFLAG, (PinTypePtr) ptr3)) {
+					&& !TEST_FLAG(PCB_FLAG_HOLE, (PinTypePtr) ptr3)) {
 				if (gui->shift_is_pressed()) {
 					int tstyle = GET_THERM(INDEXOFCURRENT, (PinTypePtr) ptr3);
 					tstyle++;
@@ -715,7 +715,7 @@ void NotifyMode(void)
 
 			if (conf_core.editor.auto_drc
 					&& !TEST_SILK_LAYER(CURRENT))
-				maybe_found_flag = FOUNDFLAG;
+				maybe_found_flag = PCB_FLAG_FOUND;
 			else
 				maybe_found_flag = 0;
 
@@ -730,7 +730,7 @@ void NotifyMode(void)
 																		 conf_core.design.line_thickness,
 																		 2 * conf_core.design.clearance,
 																		 MakeFlags(maybe_found_flag |
-																							 (conf_core.editor.clear_line ? CLEARLINEFLAG : 0)))) != NULL) {
+																							 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
 				PinTypePtr via;
 
 				addedLines++;
@@ -769,8 +769,8 @@ void NotifyMode(void)
 																		 Note.X, Note.Y,
 																		 conf_core.design.line_thickness,
 																		 2 * conf_core.design.clearance,
-																		 MakeFlags((conf_core.editor.auto_drc ? FOUNDFLAG : 0) |
-																							 (conf_core.editor.clear_line ? CLEARLINEFLAG : 0)))) != NULL) {
+																		 MakeFlags((conf_core.editor.auto_drc ? PCB_FLAG_FOUND : 0) |
+																							 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
 				addedLines++;
 				AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);
 				IncrementUndoSerialNumber();
@@ -807,9 +807,9 @@ void NotifyMode(void)
 				Crosshair.AttachedBox.Point1.Y != Crosshair.AttachedBox.Point2.Y) {
 			PolygonTypePtr polygon;
 
-			int flags = CLEARPOLYFLAG;
+			int flags = PCB_FLAG_CLEARPOLY;
 			if (conf_core.editor.full_poly)
-				flags |= FULLPOLYFLAG;
+				flags |= PCB_FLAG_FULLPOLY;
 			if ((polygon = CreateNewPolygonFromRectangle(CURRENT,
 																									 Crosshair.AttachedBox.Point1.X,
 																									 Crosshair.AttachedBox.Point1.Y,
@@ -833,10 +833,10 @@ void NotifyMode(void)
 			if ((string = gui->prompt_for(_("Enter text:"), "")) != NULL) {
 				if (strlen(string) > 0) {
 					TextTypePtr text;
-					int flag = CLEARLINEFLAG;
+					int flag = PCB_FLAG_CLEARLINE;
 
 					if (GetLayerGroupNumberByNumber(INDEXOFCURRENT) == GetLayerGroupNumberByNumber(solder_silk_layer))
-						flag |= ONSOLDERFLAG;
+						flag |= PCB_FLAG_ONSOLDER;
 					if ((text = CreateNewText(CURRENT, &PCB->Font, Note.X,
 																		Note.Y, 0, conf_core.design.text_scale, string, MakeFlags(flag))) != NULL) {
 						AddObjectToCreateUndoList(PCB_TYPE_TEXT, CURRENT, text, text);
@@ -899,7 +899,7 @@ void NotifyMode(void)
 					break; /* don't start doing anything if clicket out of polys */
 				}
 
-				if (TEST_FLAG(LOCKFLAG, (PolygonTypePtr)
+				if (TEST_FLAG(PCB_FLAG_LOCK, (PolygonTypePtr)
 											Crosshair.AttachedObject.Ptr2)) {
 					Message(_("Sorry, the object is locked\n"));
 					Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
@@ -1023,7 +1023,7 @@ void NotifyMode(void)
 
 	case PCB_MODE_REMOVE:
 		if ((type = SearchScreen(Note.X, Note.Y, REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-			if (TEST_FLAG(LOCKFLAG, (LineTypePtr) ptr2)) {
+			if (TEST_FLAG(PCB_FLAG_LOCK, (LineTypePtr) ptr2)) {
 				Message(_("Sorry, the object is locked\n"));
 				break;
 			}
@@ -1037,10 +1037,10 @@ void NotifyMode(void)
 				for (i = 0; i < Crosshair.AttachedObject.RubberbandN; i++) {
 					if (PCB->RatOn)
 						EraseRat((RatTypePtr) ptr->Line);
-					if (TEST_FLAG(RUBBERENDFLAG, ptr->Line))
+					if (TEST_FLAG(PCB_FLAG_RUBBEREND, ptr->Line))
 						MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
 					else
-						TOGGLE_FLAG(RUBBERENDFLAG, ptr->Line);	/* only remove line once */
+						TOGGLE_FLAG(PCB_FLAG_RUBBEREND, ptr->Line);	/* only remove line once */
 					ptr++;
 				}
 			}
@@ -1069,7 +1069,7 @@ pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.At
 					SearchScreen(Note.X, Note.Y, types,
 											 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 				if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
-					if (conf_core.editor.mode == PCB_MODE_MOVE && TEST_FLAG(LOCKFLAG, (PinTypePtr)
+					if (conf_core.editor.mode == PCB_MODE_MOVE && TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr)
 																											Crosshair.AttachedObject.Ptr2)) {
 						Message(_("Sorry, the object is locked\n"));
 						Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
@@ -1115,7 +1115,7 @@ pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.At
 										 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 
 			if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
-				if (TEST_FLAG(LOCKFLAG, (PolygonTypePtr)
+				if (TEST_FLAG(PCB_FLAG_LOCK, (PolygonTypePtr)
 											Crosshair.AttachedObject.Ptr2)) {
 					Message(_("Sorry, the object is locked\n"));
 					Crosshair.AttachedObject.Type = PCB_TYPE_NONE;

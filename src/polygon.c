@@ -580,7 +580,7 @@ POLYAREA *LinePoly(LineType * L, Coord thick)
 		return NULL;
 	half = (thick + 1) / 2;
 	d = sqrt(SQUARE(l->Point1.X - l->Point2.X) + SQUARE(l->Point1.Y - l->Point2.Y));
-	if (!TEST_FLAG(SQUAREFLAG, l))
+	if (!TEST_FLAG(PCB_FLAG_SQUARE, l))
 		if (d == 0)									/* line is a point */
 			return CirclePoly(l->Point1.X, l->Point1.Y, half);
 	if (d != 0) {
@@ -592,7 +592,7 @@ POLYAREA *LinePoly(LineType * L, Coord thick)
 		dx = half;
 		dy = 0;
 	}
-	if (TEST_FLAG(SQUAREFLAG, l)) {	/* take into account the ends */
+	if (TEST_FLAG(PCB_FLAG_SQUARE, l)) {	/* take into account the ends */
 		l->Point1.X -= dy;
 		l->Point1.Y += dx;
 		l->Point2.X += dy;
@@ -604,7 +604,7 @@ POLYAREA *LinePoly(LineType * L, Coord thick)
 		return 0;
 	v[0] = l->Point2.X - dx;
 	v[1] = l->Point2.Y - dy;
-	if (TEST_FLAG(SQUAREFLAG, l))
+	if (TEST_FLAG(PCB_FLAG_SQUARE, l))
 		poly_InclVertex(contour->head.prev, poly_CreateNode(v));
 	else
 		frac_circle(contour, l->Point2.X, l->Point2.Y, v, 2);
@@ -613,7 +613,7 @@ POLYAREA *LinePoly(LineType * L, Coord thick)
 	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
 	v[0] = l->Point1.X + dx;
 	v[1] = l->Point1.Y + dy;
-	if (TEST_FLAG(SQUAREFLAG, l))
+	if (TEST_FLAG(PCB_FLAG_SQUARE, l))
 		poly_InclVertex(contour->head.prev, poly_CreateNode(v));
 	else
 		frac_circle(contour, l->Point1.X, l->Point1.Y, v, 2);
@@ -737,7 +737,7 @@ POLYAREA *PinPoly(PinType * pin, Coord thick, Coord clear)
 {
 	int size;
 
-	if (TEST_FLAG(SQUAREFLAG, pin)) {
+	if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
 		if (GET_SQUARE(pin) <= 1) {
 			size = (thick + 1) / 2;
 			return RoundRect(pin->X - size, pin->X + size, pin->Y - size, pin->Y + size, (clear + 1) / 2);
@@ -750,7 +750,7 @@ POLYAREA *PinPoly(PinType * pin, Coord thick, Coord clear)
 	}
 	else {
 		size = (thick + clear + 1) / 2;
-		if (TEST_FLAG(OCTAGONFLAG, pin)) {
+		if (TEST_FLAG(PCB_FLAG_OCTAGON, pin)) {
 			return OctagonPoly(pin->X, pin->Y, size + size, GET_SQUARE(pin));
 		}
 	}
@@ -800,7 +800,7 @@ static int SubtractLine(LineType * line, PolygonType * p)
 {
 	POLYAREA *np;
 
-	if (!TEST_FLAG(CLEARLINEFLAG, line))
+	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, line))
 		return 0;
 	if (!(np = LinePoly(line, line->Thickness + line->Clearance)))
 		return -1;
@@ -811,7 +811,7 @@ static int SubtractArc(ArcType * arc, PolygonType * p)
 {
 	POLYAREA *np;
 
-	if (!TEST_FLAG(CLEARLINEFLAG, arc))
+	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, arc))
 		return 0;
 	if (!(np = ArcPoly(arc, arc->Thickness + arc->Clearance)))
 		return -1;
@@ -823,7 +823,7 @@ static int SubtractText(TextType * text, PolygonType * p)
 	POLYAREA *np;
 	const BoxType *b = &text->BoundingBox;
 
-	if (!TEST_FLAG(CLEARLINEFLAG, text))
+	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, text))
 		return 0;
 	if (!(np = RoundRect(b->X1 + PCB->Bloat, b->X2 - PCB->Bloat, b->Y1 + PCB->Bloat, b->Y2 - PCB->Bloat, PCB->Bloat)))
 		return -1;
@@ -836,7 +836,7 @@ static int SubtractPad(PadType * pad, PolygonType * p)
 
 	if (pad->Clearance == 0)
 		return 0;
-	if (TEST_FLAG(SQUAREFLAG, pad)) {
+	if (TEST_FLAG(PCB_FLAG_SQUARE, pad)) {
 		if (!(np = SquarePadPoly(pad, pad->Thickness + pad->Clearance)))
 			return -1;
 	}
@@ -915,7 +915,7 @@ static r_dir_t arc_sub_callback(const BoxType * b, void *cl)
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
 		return R_DIR_NOT_FOUND;
-	if (!TEST_FLAG(CLEARLINEFLAG, arc))
+	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, arc))
 		return R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 	if (SubtractArc(arc, polygon) < 0)
@@ -935,7 +935,7 @@ static r_dir_t pad_sub_callback(const BoxType * b, void *cl)
 	if (pad->Clearance == 0)
 		return R_DIR_NOT_FOUND;
 	polygon = info->polygon;
-	if (XOR(TEST_FLAG(ONSOLDERFLAG, pad), !info->solder)) {
+	if (XOR(TEST_FLAG(PCB_FLAG_ONSOLDER, pad), !info->solder)) {
 		if (SubtractPad(pad, polygon) < 0)
 			longjmp(info->env, 1);
 		return R_DIR_FOUND_CONTINUE;
@@ -954,7 +954,7 @@ static r_dir_t line_sub_callback(const BoxType * b, void *cl)
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
 		return R_DIR_NOT_FOUND;
-	if (!TEST_FLAG(CLEARLINEFLAG, line))
+	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, line))
 		return R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 
@@ -980,7 +980,7 @@ static r_dir_t text_sub_callback(const BoxType * b, void *cl)
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
 		return R_DIR_NOT_FOUND;
-	if (!TEST_FLAG(CLEARLINEFLAG, text))
+	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, text))
 		return R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 	if (SubtractText(text, polygon) < 0)
@@ -1005,7 +1005,7 @@ static int clearPoly(DataTypePtr Data, LayerTypePtr Layer, PolygonType * polygon
 	struct cpInfo info;
 	Cardinal group;
 
-	if (!TEST_FLAG(CLEARPOLYFLAG, polygon)
+	if (!TEST_FLAG(PCB_FLAG_CLEARPOLY, polygon)
 			|| GetLayerNumber(Data, Layer) >= max_copper_layer)
 		return 0;
 	group = Group(Data, GetLayerNumber(Data, Layer));
@@ -1104,7 +1104,7 @@ static int UnsubtractArc(ArcType * arc, LayerType * l, PolygonType * p)
 {
 	POLYAREA *np;
 
-	if (!TEST_FLAG(CLEARLINEFLAG, arc))
+	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, arc))
 		return 0;
 
 	/* overlap a bit to prevent gaps from rounding errors */
@@ -1122,7 +1122,7 @@ static int UnsubtractLine(LineType * line, LayerType * l, PolygonType * p)
 {
 	POLYAREA *np;
 
-	if (!TEST_FLAG(CLEARLINEFLAG, line))
+	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, line))
 		return 0;
 
 	/* overlap a bit to prevent notches from rounding errors */
@@ -1140,7 +1140,7 @@ static int UnsubtractText(TextType * text, LayerType * l, PolygonType * p)
 {
 	POLYAREA *np;
 
-	if (!TEST_FLAG(CLEARLINEFLAG, text))
+	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, text))
 		return 0;
 
 	/* overlap a bit to prevent notches from rounding errors */
@@ -1182,7 +1182,7 @@ int InitClip(DataTypePtr Data, LayerTypePtr layer, PolygonType * p)
 	if (!p->Clipped)
 		return 0;
 	assert(poly_Valid(p->Clipped));
-	if (TEST_FLAG(CLEARPOLYFLAG, p))
+	if (TEST_FLAG(PCB_FLAG_CLEARPOLY, p))
 		clearPoly(Data, layer, p, NULL, 0);
 	else
 		p->NoHolesValid = 0;
@@ -1340,9 +1340,9 @@ void CopyAttachedPolygonToLayer(void)
 	saveID = polygon->ID;
 	*polygon = Crosshair.AttachedPolygon;
 	polygon->ID = saveID;
-	SET_FLAG(CLEARPOLYFLAG, polygon);
+	SET_FLAG(PCB_FLAG_CLEARPOLY, polygon);
 	if (conf_core.editor.full_poly)
-		SET_FLAG(FULLPOLYFLAG, polygon);
+		SET_FLAG(PCB_FLAG_FULLPOLY, polygon);
 	memset(&Crosshair.AttachedPolygon, 0, sizeof(PolygonType));
 	SetPolygonBoundingBox(polygon);
 	if (!CURRENT->polygon_tree)
@@ -1451,7 +1451,7 @@ static r_dir_t plow_callback(const BoxType * b, void *cl)
 	struct plow_info *plow = (struct plow_info *) cl;
 	PolygonTypePtr polygon = (PolygonTypePtr) b;
 
-	if (TEST_FLAG(CLEARPOLYFLAG, polygon))
+	if (TEST_FLAG(PCB_FLAG_CLEARPOLY, polygon))
 		return plow->callback(plow->data, plow->layer, polygon, plow->type, plow->ptr1, plow->ptr2);
 	return R_DIR_NOT_FOUND;
 }
@@ -1495,7 +1495,7 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 	case PCB_TYPE_ARC:
 	case PCB_TYPE_TEXT:
 		/* the cast works equally well for lines and arcs */
-		if (!TEST_FLAG(CLEARLINEFLAG, (LineTypePtr) ptr2))
+		if (!TEST_FLAG(PCB_FLAG_CLEARLINE, (LineTypePtr) ptr2))
 			return 0;
 		/* silk doesn't plow */
 		if (GetLayerNumber(Data, (LayerTypePtr) ptr1) >= max_copper_layer)
@@ -1510,7 +1510,7 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 		break;
 	case PCB_TYPE_PAD:
 		{
-			Cardinal group = GetLayerGroupNumberByNumber(TEST_FLAG(ONSOLDERFLAG, (PadType *) ptr2) ?
+			Cardinal group = GetLayerGroupNumberByNumber(TEST_FLAG(PCB_FLAG_ONSOLDER, (PadType *) ptr2) ?
 																									 solder_silk_layer : component_silk_layer);
 			GROUP_LOOP(Data, group);
 			{
@@ -1681,7 +1681,7 @@ bool MorphPolygon(LayerTypePtr layer, PolygonTypePtr poly)
 	bool many = false;
 	FlagType flags;
 
-	if (!poly->Clipped || TEST_FLAG(LOCKFLAG, poly))
+	if (!poly->Clipped || TEST_FLAG(PCB_FLAG_LOCK, poly))
 		return false;
 	if (poly->Clipped->f == poly->Clipped)
 		return false;

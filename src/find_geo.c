@@ -50,7 +50,7 @@
 	(IsPointOnLineEnd((PV)->X,(PV)->Y, (Rat)))
 
 #define IS_PV_ON_ARC(PV, Arc)	\
-	(TEST_FLAG(SQUAREFLAG, (PV)) ? \
+	(TEST_FLAG(PCB_FLAG_SQUARE, (PV)) ? \
 		IsArcInRectangle( \
 			(PV)->X -MAX(((PV)->Thickness+1)/2 +Bloat,0), (PV)->Y -MAX(((PV)->Thickness+1)/2 +Bloat,0), \
 			(PV)->X +MAX(((PV)->Thickness+1)/2 +Bloat,0), (PV)->Y +MAX(((PV)->Thickness+1)/2 +Bloat,0), \
@@ -321,14 +321,14 @@ bool LineLineIntersect(LineTypePtr Line1, LineTypePtr Line2)
 {
 	double s, r;
 	double line1_dx, line1_dy, line2_dx, line2_dy, point1_dx, point1_dy;
-	if (TEST_FLAG(SQUAREFLAG, Line1)) {	/* pretty reckless recursion */
+	if (TEST_FLAG(PCB_FLAG_SQUARE, Line1)) {	/* pretty reckless recursion */
 		PointType p[4];
 		form_slanted_rectangle(p, Line1);
 		return IsLineInQuadrangle(p, Line2);
 	}
 	/* here come only round Line1 because IsLineInQuadrangle()
 	   calls LineLineIntersect() with first argument rounded */
-	if (TEST_FLAG(SQUAREFLAG, Line2)) {
+	if (TEST_FLAG(PCB_FLAG_SQUARE, Line2)) {
 		PointType p[4];
 		form_slanted_rectangle(p, Line2);
 		return IsLineInQuadrangle(p, Line1);
@@ -474,7 +474,7 @@ bool IsArcInPolygon(ArcTypePtr Arc, PolygonTypePtr Polygon)
 	BoxTypePtr Box = (BoxType *) Arc;
 
 	/* arcs with clearance never touch polys */
-	if (TEST_FLAG(CLEARPOLYFLAG, Polygon) && TEST_FLAG(CLEARLINEFLAG, Arc))
+	if (TEST_FLAG(PCB_FLAG_CLEARPOLY, Polygon) && TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
 		return false;
 	if (!Polygon->Clipped)
 		return false;
@@ -504,11 +504,11 @@ bool IsLineInPolygon(LineTypePtr Line, PolygonTypePtr Polygon)
 	POLYAREA *lp;
 
 	/* lines with clearance never touch polygons */
-	if (TEST_FLAG(CLEARPOLYFLAG, Polygon) && TEST_FLAG(CLEARLINEFLAG, Line))
+	if (TEST_FLAG(PCB_FLAG_CLEARPOLY, Polygon) && TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
 		return false;
 	if (!Polygon->Clipped)
 		return false;
-	if (TEST_FLAG(SQUAREFLAG, Line) && (Line->Point1.X == Line->Point2.X || Line->Point1.Y == Line->Point2.Y)) {
+	if (TEST_FLAG(PCB_FLAG_SQUARE, Line) && (Line->Point1.X == Line->Point2.X || Line->Point1.Y == Line->Point2.Y)) {
 		Coord wid = (Line->Thickness + Bloat + 1) / 2;
 		Coord x1, x2, y1, y2;
 
@@ -648,7 +648,7 @@ static inline bool PV_TOUCH_PV(PinTypePtr PV1, PinTypePtr PV2)
 	if (IsPointOnPin(PV1->X, PV1->Y, t1, PV2)
 			|| IsPointOnPin(PV2->X, PV2->Y, t2, PV1))
 		return true;
-	if (!TEST_FLAG(SQUAREFLAG, PV1) || !TEST_FLAG(SQUAREFLAG, PV2))
+	if (!TEST_FLAG(PCB_FLAG_SQUARE, PV1) || !TEST_FLAG(PCB_FLAG_SQUARE, PV2))
 		return false;
 	/* check for square/square overlap */
 	b1.X1 = PV1->X - t1;
@@ -665,7 +665,7 @@ static inline bool PV_TOUCH_PV(PinTypePtr PV1, PinTypePtr PV2)
 
 bool PinLineIntersect(PinTypePtr PV, LineTypePtr Line)
 {
-	if (TEST_FLAG(SQUAREFLAG, PV)) {
+	if (TEST_FLAG(PCB_FLAG_SQUARE, PV)) {
 		int shape = GET_SQUARE(PV);
 		if (shape <= 1) {
 			/* the original square case */

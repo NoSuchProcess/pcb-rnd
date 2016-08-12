@@ -120,7 +120,7 @@ void RotateTextLowLevel(TextTypePtr Text, Coord X, Coord Y, unsigned Number)
 {
 	BYTE number;
 
-	number = TEST_FLAG(ONSOLDERFLAG, Text) ? (4 - Number) & 3 : Number;
+	number = TEST_FLAG(PCB_FLAG_ONSOLDER, Text) ? (4 - Number) & 3 : Number;
 	RotateBoxLowLevel(&Text->BoundingBox, X, Y, Number);
 	ROTATE(Text->X, Text->Y, X, Y, Number);
 
@@ -336,7 +336,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 	ptr = Crosshair.AttachedObject.Rubberband;
 	while (Crosshair.AttachedObject.RubberbandN) {
 		changed = true;
-		CLEAR_FLAG(RUBBERENDFLAG, ptr->Line);
+		CLEAR_FLAG(PCB_FLAG_RUBBEREND, ptr->Line);
 		AddObjectToRotateUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, CenterX, CenterY, Steps);
 		EraseLine(ptr->Line);
 		if (ptr->Layer) {
@@ -374,7 +374,7 @@ void RotateScreenObject(Coord X, Coord Y, unsigned Steps)
 	int type;
 	void *ptr1, *ptr2, *ptr3;
 	if ((type = SearchScreen(X, Y, ROTATE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-		if (TEST_FLAG(LOCKFLAG, (ArcTypePtr) ptr2)) {
+		if (TEST_FLAG(PCB_FLAG_LOCK, (ArcTypePtr) ptr2)) {
 			Message(_("Sorry, the object is locked\n"));
 			return;
 		}

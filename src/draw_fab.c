@@ -206,7 +206,7 @@ void DrawFab(hidGC gc)
 			unplated_sym = --ds;
 		gui->set_color(gc, PCB->PinColor);
 		for (i = 0; i < drill->PinN; i++)
-			drill_sym(gc, TEST_FLAG(HOLEFLAG, drill->Pin[i]) ? unplated_sym : plated_sym, drill->Pin[i]->X, drill->Pin[i]->Y);
+			drill_sym(gc, TEST_FLAG(PCB_FLAG_HOLE, drill->Pin[i]) ? unplated_sym : plated_sym, drill->Pin[i]->X, drill->Pin[i]->Y);
 		if (plated_sym != -1) {
 			drill_sym(gc, plated_sym, TEXT_SIZE, yoff + TEXT_SIZE / 4);
 			text_at(gc, MIL_TO_COORD(1350), yoff, MIL_TO_COORD(2), "YES");

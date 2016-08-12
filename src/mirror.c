@@ -69,7 +69,7 @@ void MirrorElementCoordinates(DataTypePtr Data, ElementTypePtr Element, Coord yo
 		pad->Point1.Y = SWAP_Y(pad->Point1.Y) + yoff;
 		pad->Point2.X = SWAP_X(pad->Point2.X);
 		pad->Point2.Y = SWAP_Y(pad->Point2.Y) + yoff;
-		TOGGLE_FLAG(ONSOLDERFLAG, pad);
+		TOGGLE_FLAG(PCB_FLAG_ONSOLDER, pad);
 	}
 	END_LOOP;
 	ARC_LOOP(Element);
@@ -84,14 +84,14 @@ void MirrorElementCoordinates(DataTypePtr Data, ElementTypePtr Element, Coord yo
 	{
 		text->X = SWAP_X(text->X);
 		text->Y = SWAP_Y(text->Y) + yoff;
-		TOGGLE_FLAG(ONSOLDERFLAG, text);
+		TOGGLE_FLAG(PCB_FLAG_ONSOLDER, text);
 	}
 	END_LOOP;
 	Element->MarkX = SWAP_X(Element->MarkX);
 	Element->MarkY = SWAP_Y(Element->MarkY) + yoff;
 
 	/* now toggle the solder-side flag */
-	TOGGLE_FLAG(ONSOLDERFLAG, Element);
+	TOGGLE_FLAG(PCB_FLAG_ONSOLDER, Element);
 	/* this inserts all of the rtree data too */
 	SetElementBoundingBox(Data, Element, &PCB->Font);
 	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);

@@ -143,7 +143,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	lock_cnt = 0;
 	ELEMENT_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(LOCKFLAG, element->Name) || TEST_FLAG(LOCKFLAG, element)) {
+		if (TEST_FLAG(PCB_FLAG_LOCK, element->Name) || TEST_FLAG(PCB_FLAG_LOCK, element)) {
 			/* 
 			 * add to the list of locked elements which we won't try to
 			 * renumber and whose reference designators are now reserved.

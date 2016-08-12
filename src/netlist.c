@@ -138,7 +138,7 @@ static void netlist_find(LibraryMenuType * net, LibraryEntryType * pin)
 	int x, y;
 	if (pin_name_to_xy(net->Entry, &x, &y))
 		return;
-	LookupConnection(x, y, 1, 1, FOUNDFLAG);
+	LookupConnection(x, y, 1, 1, PCB_FLAG_FOUND);
 }
 
 static void netlist_select(LibraryMenuType * net, LibraryEntryType * pin)
@@ -146,7 +146,7 @@ static void netlist_select(LibraryMenuType * net, LibraryEntryType * pin)
 	int x, y;
 	if (pin_name_to_xy(net->Entry, &x, &y))
 		return;
-	LookupConnection(x, y, 1, 1, SELECTEDFLAG);
+	LookupConnection(x, y, 1, 1, PCB_FLAG_SELECTED);
 }
 
 static void netlist_rats(LibraryMenuType * net, LibraryEntryType * pin)
@@ -219,7 +219,7 @@ static int netlist_swap()
 	{
 		PIN_LOOP(element);
 		{
-			if (TEST_FLAG(SELECTEDFLAG, pin)) {
+			if (TEST_FLAG(PCB_FLAG_SELECTED, pin)) {
 				int le, lp;
 
 				if (next > 2) {

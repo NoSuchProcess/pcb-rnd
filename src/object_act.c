@@ -155,7 +155,7 @@ static int ActionAttributes(int argc, char **argv, Coord x, Coord y)
 			ElementType *e = NULL;
 			ELEMENT_LOOP(PCB->Data);
 			{
-				if (TEST_FLAG(SELECTEDFLAG, element)) {
+				if (TEST_FLAG(PCB_FLAG_SELECTED, element)) {
 					e = element;
 					n_found++;
 				}
@@ -251,7 +251,7 @@ static int ActionDisperseElements(int argc, char **argv, Coord x, Coord y)
 		 * going to be used either with a brand new design or a scratch
 		 * design holding some new components
 		 */
-		if (!TEST_FLAG(LOCKFLAG, element) && (all || TEST_FLAG(SELECTEDFLAG, element))) {
+		if (!TEST_FLAG(PCB_FLAG_LOCK, element) && (all || TEST_FLAG(PCB_FLAG_SELECTED, element))) {
 
 			/* figure out how much to move the element */
 			dx = minx - element->BoundingBox.X1;
@@ -498,7 +498,7 @@ static int ActionElementList(int argc, char **argv, Coord x, Coord y)
 	if (strcasecmp(function, "start") == 0) {
 		ELEMENT_LOOP(PCB->Data);
 		{
-			CLEAR_FLAG(FOUNDFLAG, element);
+			CLEAR_FLAG(PCB_FLAG_FOUND, element);
 		}
 		END_LOOP;
 		element_cache = NULL;
@@ -509,12 +509,12 @@ static int ActionElementList(int argc, char **argv, Coord x, Coord y)
 	if (strcasecmp(function, "done") == 0) {
 		ELEMENT_LOOP(PCB->Data);
 		{
-			if (TEST_FLAG(FOUNDFLAG, element)) {
-				CLEAR_FLAG(FOUNDFLAG, element);
+			if (TEST_FLAG(PCB_FLAG_FOUND, element)) {
+				CLEAR_FLAG(PCB_FLAG_FOUND, element);
 			}
 			else if (!EMPTY_STRING_P(NAMEONPCB_NAME(element))) {
 				/* Unnamed elements should remain untouched */
-				SET_FLAG(SELECTEDFLAG, element);
+				SET_FLAG(PCB_FLAG_SELECTED, element);
 			}
 		}
 		END_LOOP;
@@ -637,7 +637,7 @@ static int ActionElementList(int argc, char **argv, Coord x, Coord y)
 	if (old)
 		free(old);
 
-	SET_FLAG(FOUNDFLAG, e);
+	SET_FLAG(PCB_FLAG_FOUND, e);
 
 #ifdef DEBUG
 	printf(" ... Leaving ActionElementList.\n");
@@ -738,7 +738,7 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 		case F_All:
 			ALLLINE_LOOP(PCB->Data);
 			{
-				if (TEST_FLAG(AUTOFLAG, line) && !TEST_FLAG(LOCKFLAG, line)) {
+				if (TEST_FLAG(PCB_FLAG_AUTO, line) && !TEST_FLAG(PCB_FLAG_LOCK, line)) {
 					RemoveObject(PCB_TYPE_LINE, layer, line, line);
 					changed = true;
 				}
@@ -746,7 +746,7 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 			ENDALL_LOOP;
 			ALLARC_LOOP(PCB->Data);
 			{
-				if (TEST_FLAG(AUTOFLAG, arc) && !TEST_FLAG(LOCKFLAG, arc)) {
+				if (TEST_FLAG(PCB_FLAG_AUTO, arc) && !TEST_FLAG(PCB_FLAG_LOCK, arc)) {
 					RemoveObject(PCB_TYPE_ARC, layer, arc, arc);
 					changed = true;
 				}
@@ -754,7 +754,7 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 			ENDALL_LOOP;
 			VIA_LOOP(PCB->Data);
 			{
-				if (TEST_FLAG(AUTOFLAG, via) && !TEST_FLAG(LOCKFLAG, via)) {
+				if (TEST_FLAG(PCB_FLAG_AUTO, via) && !TEST_FLAG(PCB_FLAG_LOCK, via)) {
 					RemoveObject(PCB_TYPE_VIA, via, via, via);
 					changed = true;
 				}
@@ -769,8 +769,8 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 		case F_Selected:
 			VISIBLELINE_LOOP(PCB->Data);
 			{
-				if (TEST_FLAGS(AUTOFLAG | SELECTEDFLAG, line)
-						&& !TEST_FLAG(LOCKFLAG, line)) {
+				if (TEST_FLAGS(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, line)
+						&& !TEST_FLAG(PCB_FLAG_LOCK, line)) {
 					RemoveObject(PCB_TYPE_LINE, layer, line, line);
 					changed = true;
 				}
@@ -779,8 +779,8 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 			if (PCB->ViaOn)
 				VIA_LOOP(PCB->Data);
 			{
-				if (TEST_FLAGS(AUTOFLAG | SELECTEDFLAG, via)
-						&& !TEST_FLAG(LOCKFLAG, via)) {
+				if (TEST_FLAGS(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, via)
+						&& !TEST_FLAG(PCB_FLAG_LOCK, via)) {
 					RemoveObject(PCB_TYPE_VIA, via, via, via);
 					changed = true;
 				}
@@ -844,7 +844,7 @@ static int ActionMinMaskGap(int argc, char **argv, Coord x, Coord y)
 	if (!function)
 		return 1;
 	if (strcasecmp(function, "Selected") == 0)
-		flags = SELECTEDFLAG;
+		flags = PCB_FLAG_SELECTED;
 	else {
 		units = delta;
 		delta = function;
@@ -918,7 +918,7 @@ static int ActionMinClearGap(int argc, char **argv, Coord x, Coord y)
 	if (!function)
 		return 1;
 	if (strcasecmp(function, "Selected") == 0)
-		flags = SELECTEDFLAG;
+		flags = PCB_FLAG_SELECTED;
 	else {
 		units = delta;
 		delta = function;

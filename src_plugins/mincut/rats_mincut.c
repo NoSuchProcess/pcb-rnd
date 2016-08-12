@@ -122,14 +122,14 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 
 	if (pin != NULL) {
 		debprintf("short on pin!\n");
-		SET_FLAG(WARNFLAG, pin);
+		SET_FLAG(PCB_FLAG_WARN, pin);
 		x = pin->X;
 		y = pin->Y;
 	}
 	else if (pad != NULL) {
 		debprintf("short on pad!\n");
-		SET_FLAG(WARNFLAG, pad);
-		if (TEST_FLAG(EDGE2FLAG, pad)) {
+		SET_FLAG(PCB_FLAG_WARN, pad);
+		if (TEST_FLAG(PCB_FLAG_EDGE2, pad)) {
 			x = pad->Point2.X;
 			y = pad->Point2.Y;
 		}
@@ -147,11 +147,11 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 	num_short_conns = 0;
 	short_conns_maxid = 0;
 
-	/* perform a search using MINCUTFLAG, calling back proc_short_cb() with the connections */
+	/* perform a search using PCB_FLAG_MINCUT, calling back proc_short_cb() with the connections */
 	old_cb = find_callback;
 	find_callback = proc_short_cb;
-	SaveFindFlag(MINCUTFLAG);
-	LookupConnection(x, y, false, 1, MINCUTFLAG);
+	SaveFindFlag(PCB_FLAG_MINCUT);
+	LookupConnection(x, y, false, 1, PCB_FLAG_MINCUT);
 
 	debprintf("- alloced for %d\n", (short_conns_maxid + 1));
 	lut_by_oid = calloc(sizeof(short_conn_t *), (short_conns_maxid + 1));
@@ -308,7 +308,7 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 				s = lut_by_gid[solution[i]];
 				debprintf("%d %p", solution[i], s);
 				if (s != NULL) {
-					SET_FLAG(WARNFLAG, s->to);
+					SET_FLAG(PCB_FLAG_WARN, s->to);
 					debprintf("  -> %d", s->to->ID);
 				}
 				debprintf("\n");
@@ -369,9 +369,9 @@ void rat_proc_shorts(void)
 		next = n->next;
 
 		if (n->pin != NULL)
-			SET_FLAG(WARNFLAG, n->pin);
+			SET_FLAG(PCB_FLAG_WARN, n->pin);
 		if (n->pad != NULL)
-			SET_FLAG(WARNFLAG, n->pad);
+			SET_FLAG(PCB_FLAG_WARN, n->pad);
 
 
 		/* run only if net is not ignored */

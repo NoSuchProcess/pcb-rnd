@@ -108,13 +108,13 @@ static bool FindPad(char *ElementName, char *PinNum, ConnectionType * conn, bool
 		return false;
 
 	padlist_foreach(&element->Pad, &it, pad) {
-		if (NSTRCMP(PinNum, pad->Number) == 0 && (!Same || !TEST_FLAG(DRCFLAG, pad))) {
+		if (NSTRCMP(PinNum, pad->Number) == 0 && (!Same || !TEST_FLAG(PCB_FLAG_DRC, pad))) {
 			conn->type = PCB_TYPE_PAD;
 			conn->ptr1 = element;
 			conn->ptr2 = pad;
-			conn->group = TEST_FLAG(ONSOLDERFLAG, pad) ? SLayer : CLayer;
+			conn->group = TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SLayer : CLayer;
 
-			if (TEST_FLAG(EDGE2FLAG, pad)) {
+			if (TEST_FLAG(PCB_FLAG_EDGE2, pad)) {
 				conn->X = pad->Point2.X;
 				conn->Y = pad->Point2.Y;
 			}
@@ -127,7 +127,7 @@ static bool FindPad(char *ElementName, char *PinNum, ConnectionType * conn, bool
 	}
 
 	padlist_foreach(&element->Pin, &it, pin) {
-		if (!TEST_FLAG(HOLEFLAG, pin) && pin->Number && NSTRCMP(PinNum, pin->Number) == 0 && (!Same || !TEST_FLAG(DRCFLAG, pin))) {
+		if (!TEST_FLAG(PCB_FLAG_HOLE, pin) && pin->Number && NSTRCMP(PinNum, pin->Number) == 0 && (!Same || !TEST_FLAG(PCB_FLAG_DRC, pin))) {
 			conn->type = PCB_TYPE_PIN;
 			conn->ptr1 = element;
 			conn->ptr2 = pin;
@@ -198,13 +198,13 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 		ALLPIN_LOOP(PCB->Data);
 		{
 			pin->Spare = NULL;
-			CLEAR_FLAG(DRCFLAG, pin);
+			CLEAR_FLAG(PCB_FLAG_DRC, pin);
 		}
 		ENDALL_LOOP;
 		ALLPAD_LOOP(PCB->Data);
 		{
 			pad->Spare = NULL;
-			CLEAR_FLAG(DRCFLAG, pad);
+			CLEAR_FLAG(PCB_FLAG_DRC, pad);
 		}
 		ENDALL_LOOP;
 		MENU_LOOP(net_menu);
@@ -229,7 +229,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 			ENTRY_LOOP(menu);
 			{
 				if (SeekPad(entry, &LastPoint, false)) {
-					if (TEST_FLAG(DRCFLAG, (PinTypePtr) LastPoint.ptr2))
+					if (TEST_FLAG(PCB_FLAG_DRC, (PinTypePtr) LastPoint.ptr2))
 						Message(_
 										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
 										NAMEONPCB_NAME((ElementTypePtr) LastPoint.ptr1),
@@ -241,7 +241,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 						/* indicate expect net */
 						connection->menu = menu;
 						/* mark as visited */
-						SET_FLAG(DRCFLAG, (PinTypePtr) LastPoint.ptr2);
+						SET_FLAG(PCB_FLAG_DRC, (PinTypePtr) LastPoint.ptr2);
 						if (LastPoint.type == PCB_TYPE_PIN)
 							((PinTypePtr) LastPoint.ptr2)->Spare = (void *) menu;
 						else
@@ -257,7 +257,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 					/* indicate expect net */
 					connection->menu = menu;
 					/* mark as visited */
-					SET_FLAG(DRCFLAG, (PinTypePtr) LastPoint.ptr2);
+					SET_FLAG(PCB_FLAG_DRC, (PinTypePtr) LastPoint.ptr2);
 					if (LastPoint.type == PCB_TYPE_PIN)
 						((PinTypePtr) LastPoint.ptr2)->Spare = (void *) menu;
 					else
@@ -271,12 +271,12 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 	/* clear all visit marks */
 	ALLPIN_LOOP(PCB->Data);
 	{
-		CLEAR_FLAG(DRCFLAG, pin);
+		CLEAR_FLAG(PCB_FLAG_DRC, pin);
 	}
 	ENDALL_LOOP;
 	ALLPAD_LOOP(PCB->Data);
 	{
-		CLEAR_FLAG(DRCFLAG, pad);
+		CLEAR_FLAG(PCB_FLAG_DRC, pad);
 	}
 	ENDALL_LOOP;
 	return (Wantlist);
@@ -319,8 +319,8 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
 	ALLPIN_LOOP(PCB->Data);
 	{
 		ElementType *e = pin->Element;
-/* TODO: should be: !TEST_FLAG(NONETLISTFLAG, (ElementType *)pin->Element)*/
-		if ((TEST_FLAG(DRCFLAG, pin)) && (!(e->Flags.f & NONETLISTFLAG))) {
+/* TODO: should be: !TEST_FLAG(PCB_FLAG_NONETLIST, (ElementType *)pin->Element)*/
+		if ((TEST_FLAG(PCB_FLAG_DRC, pin)) && (!(e->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = true;
 			if (!pin->Spare) {
 				Message(_("Warning! Net \"%s\" is shorted to %s pin %s\n"),
@@ -350,8 +350,8 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
 	ALLPAD_LOOP(PCB->Data);
 	{
 		ElementType *e = pad->Element;
-/* TODO: should be: !TEST_FLAG(NONETLISTFLAG, (ElementType *)pad->Element)*/
-		if ((TEST_FLAG(DRCFLAG, pad)) && (!(e->Flags.f & NONETLISTFLAG)) && (!(e->Name->Flags.f & NONETLISTFLAG))) {
+/* TODO: should be: !TEST_FLAG(PCB_FLAG_NONETLIST, (ElementType *)pad->Element)*/
+		if ((TEST_FLAG(PCB_FLAG_DRC, pad)) && (!(e->Flags.f & PCB_FLAG_NONETLIST)) && (!(e->Name->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = true;
 			if (!pad->Spare) {
 				Message(_("Warning! Net \"%s\" is shorted  to %s pad %s\n"),
@@ -401,14 +401,14 @@ static bool GatherSubnets(NetListTypePtr Netl, bool NoWarn, bool AndRats)
 		a = &Netl->Net[m];
 		ResetConnections(false);
 		RatFindHook(a->Connection[0].type, a->Connection[0].ptr1, a->Connection[0].ptr2, a->Connection[0].ptr2, false, AndRats);
-		/* now anybody connected to the first point has DRCFLAG set */
+		/* now anybody connected to the first point has PCB_FLAG_DRC set */
 		/* so move those to this subnet */
-		CLEAR_FLAG(DRCFLAG, (PinTypePtr) a->Connection[0].ptr2);
+		CLEAR_FLAG(PCB_FLAG_DRC, (PinTypePtr) a->Connection[0].ptr2);
 		for (n = m + 1; n < Netl->NetN; n++) {
 			b = &Netl->Net[n];
 			/* There can be only one connection in net b */
-			if (TEST_FLAG(DRCFLAG, (PinTypePtr) b->Connection[0].ptr2)) {
-				CLEAR_FLAG(DRCFLAG, (PinTypePtr) b->Connection[0].ptr2);
+			if (TEST_FLAG(PCB_FLAG_DRC, (PinTypePtr) b->Connection[0].ptr2)) {
+				CLEAR_FLAG(PCB_FLAG_DRC, (PinTypePtr) b->Connection[0].ptr2);
 				TransferNet(Netl, b, a);
 				/* back up since new subnet is now at old index */
 				n--;
@@ -419,7 +419,7 @@ static bool GatherSubnets(NetListTypePtr Netl, bool NoWarn, bool AndRats)
 		/* don't add non-manhattan lines, the auto-router can't route to them */
 		ALLLINE_LOOP(PCB->Data);
 		{
-			if (TEST_FLAG(DRCFLAG, line)
+			if (TEST_FLAG(PCB_FLAG_DRC, line)
 					&& ((line->Point1.X == line->Point2.X)
 							|| (line->Point1.Y == line->Point2.Y))) {
 				conn = GetConnectionMemory(a);
@@ -444,7 +444,7 @@ static bool GatherSubnets(NetListTypePtr Netl, bool NoWarn, bool AndRats)
 		/* add polygons so the auto-router can see them as targets */
 		ALLPOLYGON_LOOP(PCB->Data);
 		{
-			if (TEST_FLAG(DRCFLAG, polygon)) {
+			if (TEST_FLAG(PCB_FLAG_DRC, polygon)) {
 				conn = GetConnectionMemory(a);
 				/* make point on a vertex */
 				conn->X = polygon->Clipped->contours->head.point[0];
@@ -459,7 +459,7 @@ static bool GatherSubnets(NetListTypePtr Netl, bool NoWarn, bool AndRats)
 		ENDALL_LOOP;
 		VIA_LOOP(PCB->Data);
 		{
-			if (TEST_FLAG(DRCFLAG, via)) {
+			if (TEST_FLAG(PCB_FLAG_DRC, via)) {
 				conn = GetConnectionMemory(a);
 				conn->X = via->X;
 				conn->Y = via->Y;
@@ -611,7 +611,7 @@ DrawShortestRats(NetListTypePtr Netl,
 																 secondpoint->X, secondpoint->Y,
 																 firstpoint->group, secondpoint->group, conf_core.appearance.rat_thickness, NoFlags())) != NULL) {
 					if (distance == 0)
-						SET_FLAG(VIAFLAG, line);
+						SET_FLAG(PCB_FLAG_VIA, line);
 					AddObjectToCreateUndoList(PCB_TYPE_RATLINE, line, line, line);
 					DrawRat(line);
 					changed = true;
@@ -662,7 +662,7 @@ AddAllRats(bool SelectedOnly,
 	changed = false;
 	/* initialize finding engine */
 	InitConnectionLookup();
-	SaveFindFlag(DRCFLAG);
+	SaveFindFlag(PCB_FLAG_DRC);
 	Nets = (NetListTypePtr) calloc(1, sizeof(NetListType));
 	/* now we build another netlist (Nets) for each
 	 * net in Wantlist that shows how it actually looks now,
@@ -680,7 +680,7 @@ AddAllRats(bool SelectedOnly,
 	{
 		CONNECTION_LOOP(net);
 		{
-			if (!SelectedOnly || TEST_FLAG(SELECTEDFLAG, (PinTypePtr) connection->ptr2)) {
+			if (!SelectedOnly || TEST_FLAG(PCB_FLAG_SELECTED, (PinTypePtr) connection->ptr2)) {
 				lonesome = GetNetMemory(Nets);
 				onepin = GetConnectionMemory(lonesome);
 				*onepin = *connection;
@@ -747,7 +747,7 @@ NetListListType CollectSubnets(bool SelectedOnly)
 	}
 	/* initialize finding engine */
 	InitConnectionLookup();
-	SaveFindFlag(DRCFLAG);
+	SaveFindFlag(PCB_FLAG_DRC);
 	/* now we build another netlist (Nets) for each
 	 * net in Wantlist that shows how it actually looks now,
 	 * then fill in any missing connections with rat lines.
@@ -765,7 +765,7 @@ NetListListType CollectSubnets(bool SelectedOnly)
 		Nets = GetNetListMemory(&result);
 		CONNECTION_LOOP(net);
 		{
-			if (!SelectedOnly || TEST_FLAG(SELECTEDFLAG, (PinTypePtr) connection->ptr2)) {
+			if (!SelectedOnly || TEST_FLAG(PCB_FLAG_SELECTED, (PinTypePtr) connection->ptr2)) {
 				lonesome = GetNetMemory(Nets);
 				onepin = GetConnectionMemory(lonesome);
 				*onepin = *connection;
@@ -831,7 +831,7 @@ RatTypePtr AddNet(void)
 	}
 
 	/* will work for pins to since the FLAG is common */
-	group1 = (TEST_FLAG(ONSOLDERFLAG, (PadTypePtr) ptr2) ?
+	group1 = (TEST_FLAG(PCB_FLAG_ONSOLDER, (PadTypePtr) ptr2) ?
 						GetLayerGroupNumberByNumber(solder_silk_layer) : GetLayerGroupNumberByNumber(component_silk_layer));
 	strcpy(name1, ConnectionName(found, ptr1, ptr2));
 	found = SearchObjectByLocation(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
@@ -844,7 +844,7 @@ RatTypePtr AddNet(void)
 		Message(_("You must name the ending element first\n"));
 		return (NULL);
 	}
-	group2 = (TEST_FLAG(ONSOLDERFLAG, (PadTypePtr) ptr2) ?
+	group2 = (TEST_FLAG(PCB_FLAG_ONSOLDER, (PadTypePtr) ptr2) ?
 						GetLayerGroupNumberByNumber(solder_silk_layer) : GetLayerGroupNumberByNumber(component_silk_layer));
 	name2 = ConnectionName(found, ptr1, ptr2);
 

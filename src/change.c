@@ -440,9 +440,9 @@ static void *ChangeViaSize(PinTypePtr Via)
 {
 	Coord value = Absolute ? Absolute : Via->Thickness + Delta;
 
-	if (TEST_FLAG(LOCKFLAG, Via))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
-	if (!TEST_FLAG(HOLEFLAG, Via) && value <= MAX_PINORVIASIZE &&
+	if (!TEST_FLAG(PCB_FLAG_HOLE, Via) && value <= MAX_PINORVIASIZE &&
 			value >= MIN_PINORVIASIZE && value >= Via->DrillingHole + MIN_PINORVIACOPPER && value != Via->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
@@ -470,16 +470,16 @@ static void *ChangeVia2ndSize(PinTypePtr Via)
 {
 	Coord value = (Absolute) ? Absolute : Via->DrillingHole + Delta;
 
-	if (TEST_FLAG(LOCKFLAG, Via))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
 	if (value <= MAX_PINORVIASIZE &&
-			value >= MIN_PINORVIAHOLE && (TEST_FLAG(HOLEFLAG, Via) || value <= Via->Thickness - MIN_PINORVIACOPPER)
+			value >= MIN_PINORVIAHOLE && (TEST_FLAG(PCB_FLAG_HOLE, Via) || value <= Via->Thickness - MIN_PINORVIACOPPER)
 			&& value != Via->DrillingHole) {
 		AddObjectTo2ndSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		Via->DrillingHole = value;
-		if (TEST_FLAG(HOLEFLAG, Via)) {
+		if (TEST_FLAG(PCB_FLAG_HOLE, Via)) {
 			AddObjectToSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 			Via->Thickness = value;
 		}
@@ -498,7 +498,7 @@ static void *ChangeViaClearSize(PinTypePtr Via)
 {
 	Coord value = (Absolute) ? Absolute : Via->Clearance + Delta;
 
-	if (TEST_FLAG(LOCKFLAG, Via))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, value);
 	if (value < 0)
@@ -531,9 +531,9 @@ static void *ChangePinSize(ElementTypePtr Element, PinTypePtr Pin)
 {
 	Coord value = (Absolute) ? Absolute : Pin->Thickness + Delta;
 
-	if (TEST_FLAG(LOCKFLAG, Pin))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
-	if (!TEST_FLAG(HOLEFLAG, Pin) && value <= MAX_PINORVIASIZE &&
+	if (!TEST_FLAG(PCB_FLAG_HOLE, Pin) && value <= MAX_PINORVIASIZE &&
 			value >= MIN_PINORVIASIZE && value >= Pin->DrillingHole + MIN_PINORVIACOPPER && value != Pin->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 		AddObjectToMaskSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
@@ -559,7 +559,7 @@ static void *ChangePinClearSize(ElementTypePtr Element, PinTypePtr Pin)
 {
 	Coord value = (Absolute) ? Absolute : Pin->Clearance + Delta;
 
-	if (TEST_FLAG(LOCKFLAG, Pin))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, value);
 	if (value < 0)
@@ -590,7 +590,7 @@ static void *ChangePadSize(ElementTypePtr Element, PadTypePtr Pad)
 {
 	Coord value = (Absolute) ? Absolute : Pad->Thickness + Delta;
 
-	if (TEST_FLAG(LOCKFLAG, Pad))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
 		return (NULL);
 	if (value <= MAX_PADSIZE && value >= MIN_PADSIZE && value != Pad->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
@@ -617,7 +617,7 @@ static void *ChangePadClearSize(ElementTypePtr Element, PadTypePtr Pad)
 {
 	Coord value = (Absolute) ? Absolute : Pad->Clearance + Delta;
 
-	if (TEST_FLAG(LOCKFLAG, Pad))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, value);
 	if (value < 0)
@@ -649,20 +649,20 @@ static void *ChangeElement2ndSize(ElementTypePtr Element)
 	bool changed = false;
 	Coord value;
 
-	if (TEST_FLAG(LOCKFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
 		value = (Absolute) ? Absolute : pin->DrillingHole + Delta;
 		if (value <= MAX_PINORVIASIZE &&
-				value >= MIN_PINORVIAHOLE && (TEST_FLAG(HOLEFLAG, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
+				value >= MIN_PINORVIAHOLE && (TEST_FLAG(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
 				&& value != pin->DrillingHole) {
 			changed = true;
 			AddObjectTo2ndSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
 			RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->DrillingHole = value;
-			if (TEST_FLAG(HOLEFLAG, pin)) {
+			if (TEST_FLAG(PCB_FLAG_HOLE, pin)) {
 				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
@@ -686,7 +686,7 @@ static void *ChangeElement1stSize(ElementTypePtr Element)
 	bool changed = false;
 	Coord value;
 
-	if (TEST_FLAG(LOCKFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -697,7 +697,7 @@ static void *ChangeElement1stSize(ElementTypePtr Element)
 			ErasePin(pin);
 			RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->Thickness = value;
-			if (TEST_FLAG(HOLEFLAG, pin)) {
+			if (TEST_FLAG(PCB_FLAG_HOLE, pin)) {
 				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
@@ -721,20 +721,20 @@ static void *ChangeElementClearSize(ElementTypePtr Element)
 	bool changed = false;
 	Coord value;
 
-	if (TEST_FLAG(LOCKFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
 		value = (Absolute) ? Absolute : pin->Clearance + Delta;
 		if (value <= MAX_PINORVIASIZE &&
-				value >= MIN_PINORVIAHOLE && (TEST_FLAG(HOLEFLAG, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
+				value >= MIN_PINORVIAHOLE && (TEST_FLAG(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
 				&& value != pin->Clearance) {
 			changed = true;
 			AddObjectToClearSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
 			RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->Clearance = value;
-			if (TEST_FLAG(HOLEFLAG, pin)) {
+			if (TEST_FLAG(PCB_FLAG_HOLE, pin)) {
 				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
@@ -754,7 +754,7 @@ static void *ChangeElementClearSize(ElementTypePtr Element)
 			RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, pad);
 			r_delete_entry(PCB->Data->pad_tree, &pad->BoundingBox);
 			pad->Clearance = value;
-			if (TEST_FLAG(HOLEFLAG, pad)) {
+			if (TEST_FLAG(PCB_FLAG_HOLE, pad)) {
 				AddObjectToSizeUndoList(PCB_TYPE_PAD, Element, pad, pad);
 				pad->Thickness = value;
 			}
@@ -781,16 +781,16 @@ static void *ChangePin2ndSize(ElementTypePtr Element, PinTypePtr Pin)
 {
 	Coord value = (Absolute) ? Absolute : Pin->DrillingHole + Delta;
 
-	if (TEST_FLAG(LOCKFLAG, Pin))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
 	if (value <= MAX_PINORVIASIZE &&
-			value >= MIN_PINORVIAHOLE && (TEST_FLAG(HOLEFLAG, Pin) || value <= Pin->Thickness - MIN_PINORVIACOPPER)
+			value >= MIN_PINORVIAHOLE && (TEST_FLAG(PCB_FLAG_HOLE, Pin) || value <= Pin->Thickness - MIN_PINORVIACOPPER)
 			&& value != Pin->DrillingHole) {
 		AddObjectTo2ndSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 		ErasePin(Pin);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		Pin->DrillingHole = value;
-		if (TEST_FLAG(HOLEFLAG, Pin)) {
+		if (TEST_FLAG(PCB_FLAG_HOLE, Pin)) {
 			AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 			Pin->Thickness = value;
 		}
@@ -809,7 +809,7 @@ static void *ChangeLineSize(LayerTypePtr Layer, LineTypePtr Line)
 {
 	Coord value = (Absolute) ? Absolute : Line->Thickness + Delta;
 
-	if (TEST_FLAG(LOCKFLAG, Line))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Line))
 		return (NULL);
 	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Line->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_LINE, Layer, Line, Line);
@@ -834,7 +834,7 @@ static void *ChangeLineClearSize(LayerTypePtr Layer, LineTypePtr Line)
 {
 	Coord value = (Absolute) ? Absolute : Line->Clearance + Delta;
 
-	if (TEST_FLAG(LOCKFLAG, Line) || !TEST_FLAG(CLEARLINEFLAG, Line))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
 	if (value != Line->Clearance) {
@@ -844,7 +844,7 @@ static void *ChangeLineClearSize(LayerTypePtr Layer, LineTypePtr Line)
 		r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
 		Line->Clearance = value;
 		if (Line->Clearance == 0) {
-			CLEAR_FLAG(CLEARLINEFLAG, Line);
+			CLEAR_FLAG(PCB_FLAG_CLEARLINE, Line);
 			Line->Clearance = MIL_TO_COORD(10);
 		}
 		SetLineBoundingBox(Line);
@@ -881,7 +881,7 @@ static void *ChangeArcSize(LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	Coord value = (Absolute) ? Absolute : Arc->Thickness + Delta;
 
-	if (TEST_FLAG(LOCKFLAG, Arc))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
 		return (NULL);
 	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Arc->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
@@ -906,7 +906,7 @@ static void *ChangeArcClearSize(LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	Coord value = (Absolute) ? Absolute : Arc->Clearance + Delta;
 
-	if (TEST_FLAG(LOCKFLAG, Arc) || !TEST_FLAG(CLEARLINEFLAG, Arc))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
 	if (value != Arc->Clearance) {
@@ -916,7 +916,7 @@ static void *ChangeArcClearSize(LayerTypePtr Layer, ArcTypePtr Arc)
 		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		Arc->Clearance = value;
 		if (Arc->Clearance == 0) {
-			CLEAR_FLAG(CLEARLINEFLAG, Arc);
+			CLEAR_FLAG(PCB_FLAG_CLEARLINE, Arc);
 			Arc->Clearance = MIL_TO_COORD(10);
 		}
 		SetArcBoundingBox(Arc);
@@ -937,7 +937,7 @@ static void *ChangeTextSize(LayerTypePtr Layer, TextTypePtr Text)
 	int value = Absolute ? COORD_TO_MIL(Absolute)
 		: Text->Scale + COORD_TO_MIL(Delta);
 
-	if (TEST_FLAG(LOCKFLAG, Text))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
 		return (NULL);
 	if (value <= MAX_TEXTSCALE && value >= MIN_TEXTSCALE && value != Text->Scale) {
 		AddObjectToSizeUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
@@ -963,7 +963,7 @@ static void *ChangeElementSize(ElementTypePtr Element)
 	Coord value;
 	bool changed = false;
 
-	if (TEST_FLAG(LOCKFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	if (PCB->ElementOn)
 		EraseElement(Element);
@@ -1004,7 +1004,7 @@ static void *ChangeElementNameSize(ElementTypePtr Element)
 	int value = Absolute ? COORD_TO_MIL(Absolute)
 		: DESCRIPTION_TEXT(Element).Scale + COORD_TO_MIL(Delta);
 
-	if (TEST_FLAG(LOCKFLAG, &Element->Name[0]))
+	if (TEST_FLAG(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
 	if (value <= MAX_TEXTSCALE && value >= MIN_TEXTSCALE) {
 		EraseElementName(Element);
@@ -1030,7 +1030,7 @@ static void *ChangeViaName(PinTypePtr Via)
 {
 	char *old = Via->Name;
 
-	if (TEST_FLAG(DISPLAYNAMEFLAG, Via)) {
+	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via)) {
 		ErasePinName(Via);
 		Via->Name = NewName;
 		DrawPinName(Via);
@@ -1048,7 +1048,7 @@ static void *ChangePinName(ElementTypePtr Element, PinTypePtr Pin)
 	char *old = Pin->Name;
 
 	Element = Element;						/* get rid of 'unused...' warnings */
-	if (TEST_FLAG(DISPLAYNAMEFLAG, Pin)) {
+	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin)) {
 		ErasePinName(Pin);
 		Pin->Name = NewName;
 		DrawPinName(Pin);
@@ -1066,7 +1066,7 @@ static void *ChangePadName(ElementTypePtr Element, PadTypePtr Pad)
 	char *old = Pad->Name;
 
 	Element = Element;						/* get rid of 'unused...' warnings */
-	if (TEST_FLAG(DISPLAYNAMEFLAG, Pad)) {
+	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad)) {
 		ErasePadName(Pad);
 		Pad->Name = NewName;
 		DrawPadName(Pad);
@@ -1084,7 +1084,7 @@ static void *ChangePinNum(ElementTypePtr Element, PinTypePtr Pin)
 	char *old = Pin->Number;
 
 	Element = Element;						/* get rid of 'unused...' warnings */
-	if (TEST_FLAG(DISPLAYNAMEFLAG, Pin)) {
+	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin)) {
 		ErasePinName(Pin);
 		Pin->Number = NewName;
 		DrawPinName(Pin);
@@ -1102,7 +1102,7 @@ static void *ChangePadNum(ElementTypePtr Element, PadTypePtr Pad)
 	char *old = Pad->Number;
 
 	Element = Element;						/* get rid of 'unused...' warnings */
-	if (TEST_FLAG(DISPLAYNAMEFLAG, Pad)) {
+	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad)) {
 		ErasePadName(Pad);
 		Pad->Number = NewName;
 		DrawPadName(Pad);
@@ -1154,7 +1154,7 @@ char *ChangeElementText(PCBType * pcb, DataType * data, ElementTypePtr Element, 
 
 static void *ChangeElementName(ElementTypePtr Element)
 {
-	if (TEST_FLAG(LOCKFLAG, &Element->Name[0]))
+	if (TEST_FLAG(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
 	if (NAME_INDEX() == NAMEONPCB_INDEX) {
 		if (conf_core.editor.unique_names && UniqueElementName(PCB->Data, NewName) != NewName) {
@@ -1168,9 +1168,9 @@ static void *ChangeElementName(ElementTypePtr Element)
 
 static void *ChangeElementNonetlist(ElementTypePtr Element)
 {
-	if (TEST_FLAG(LOCKFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
-	TOGGLE_FLAG(NONETLISTFLAG, Element);
+	TOGGLE_FLAG(PCB_FLAG_NONETLIST, Element);
 	return Element;
 }
 
@@ -1184,7 +1184,7 @@ static void *ChangeTextName(LayerTypePtr Layer, TextTypePtr Text)
 {
 	char *old = Text->TextString;
 
-	if (TEST_FLAG(LOCKFLAG, Text))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
 		return (NULL);
 	EraseText(Layer, Text);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
@@ -1215,7 +1215,7 @@ bool ChangeLayoutName(char *Name)
  */
 bool ChangeElementSide(ElementTypePtr Element, Coord yoff)
 {
-	if (TEST_FLAG(LOCKFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (false);
 	EraseElement(Element);
 	AddObjectToMirrorUndoList(PCB_TYPE_ELEMENT, Element, Element, Element, yoff);
@@ -1240,16 +1240,16 @@ bool ChangeLayerName(LayerTypePtr Layer, char *Name)
  */
 static void *ChangeLineJoin(LayerTypePtr Layer, LineTypePtr Line)
 {
-	if (TEST_FLAG(LOCKFLAG, Line))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Line))
 		return (NULL);
 	EraseLine(Line);
-	if (TEST_FLAG(CLEARLINEFLAG, Line)) {
+	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Line)) {
 		AddObjectToClearPolyUndoList(PCB_TYPE_LINE, Layer, Line, Line, false);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	}
 	AddObjectToFlagUndoList(PCB_TYPE_LINE, Layer, Line, Line);
-	TOGGLE_FLAG(CLEARLINEFLAG, Line);
-	if (TEST_FLAG(CLEARLINEFLAG, Line)) {
+	TOGGLE_FLAG(PCB_FLAG_CLEARLINE, Line);
+	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Line)) {
 		AddObjectToClearPolyUndoList(PCB_TYPE_LINE, Layer, Line, Line, true);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	}
@@ -1262,7 +1262,7 @@ static void *ChangeLineJoin(LayerTypePtr Layer, LineTypePtr Line)
  */
 static void *SetLineJoin(LayerTypePtr Layer, LineTypePtr Line)
 {
-	if (TEST_FLAG(LOCKFLAG, Line) || TEST_FLAG(CLEARLINEFLAG, Line))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
 	return ChangeLineJoin(Layer, Line);
 }
@@ -1272,7 +1272,7 @@ static void *SetLineJoin(LayerTypePtr Layer, LineTypePtr Line)
  */
 static void *ClrLineJoin(LayerTypePtr Layer, LineTypePtr Line)
 {
-	if (TEST_FLAG(LOCKFLAG, Line) || !TEST_FLAG(CLEARLINEFLAG, Line))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
 	return ChangeLineJoin(Layer, Line);
 }
@@ -1282,16 +1282,16 @@ static void *ClrLineJoin(LayerTypePtr Layer, LineTypePtr Line)
  */
 static void *ChangeArcJoin(LayerTypePtr Layer, ArcTypePtr Arc)
 {
-	if (TEST_FLAG(LOCKFLAG, Arc))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
 		return (NULL);
 	EraseArc(Arc);
-	if (TEST_FLAG(CLEARLINEFLAG, Arc)) {
+	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Arc)) {
 		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		AddObjectToClearPolyUndoList(PCB_TYPE_ARC, Layer, Arc, Arc, false);
 	}
 	AddObjectToFlagUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
-	TOGGLE_FLAG(CLEARLINEFLAG, Arc);
-	if (TEST_FLAG(CLEARLINEFLAG, Arc)) {
+	TOGGLE_FLAG(PCB_FLAG_CLEARLINE, Arc);
+	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Arc)) {
 		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		AddObjectToClearPolyUndoList(PCB_TYPE_ARC, Layer, Arc, Arc, true);
 	}
@@ -1304,7 +1304,7 @@ static void *ChangeArcJoin(LayerTypePtr Layer, ArcTypePtr Arc)
  */
 static void *SetArcJoin(LayerTypePtr Layer, ArcTypePtr Arc)
 {
-	if (TEST_FLAG(LOCKFLAG, Arc) || TEST_FLAG(CLEARLINEFLAG, Arc))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
 	return ChangeArcJoin(Layer, Arc);
 }
@@ -1314,7 +1314,7 @@ static void *SetArcJoin(LayerTypePtr Layer, ArcTypePtr Arc)
  */
 static void *ClrArcJoin(LayerTypePtr Layer, ArcTypePtr Arc)
 {
-	if (TEST_FLAG(LOCKFLAG, Arc) || !TEST_FLAG(CLEARLINEFLAG, Arc))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
 	return ChangeArcJoin(Layer, Arc);
 }
@@ -1324,16 +1324,16 @@ static void *ClrArcJoin(LayerTypePtr Layer, ArcTypePtr Arc)
  */
 static void *ChangeTextJoin(LayerTypePtr Layer, TextTypePtr Text)
 {
-	if (TEST_FLAG(LOCKFLAG, Text))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
 		return (NULL);
 	EraseText(Layer, Text);
-	if (TEST_FLAG(CLEARLINEFLAG, Text)) {
+	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Text)) {
 		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, false);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
 	AddObjectToFlagUndoList(PCB_TYPE_LINE, Layer, Text, Text);
-	TOGGLE_FLAG(CLEARLINEFLAG, Text);
-	if (TEST_FLAG(CLEARLINEFLAG, Text)) {
+	TOGGLE_FLAG(PCB_FLAG_CLEARLINE, Text);
+	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Text)) {
 		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, true);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
@@ -1346,7 +1346,7 @@ static void *ChangeTextJoin(LayerTypePtr Layer, TextTypePtr Text)
  */
 static void *SetTextJoin(LayerTypePtr Layer, TextTypePtr Text)
 {
-	if (TEST_FLAG(LOCKFLAG, Text) || TEST_FLAG(CLEARLINEFLAG, Text))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Text) || TEST_FLAG(PCB_FLAG_CLEARLINE, Text))
 		return (NULL);
 	return ChangeTextJoin(Layer, Text);
 }
@@ -1356,7 +1356,7 @@ static void *SetTextJoin(LayerTypePtr Layer, TextTypePtr Text)
  */
 static void *ClrTextJoin(LayerTypePtr Layer, TextTypePtr Text)
 {
-	if (TEST_FLAG(LOCKFLAG, Text) || !TEST_FLAG(CLEARLINEFLAG, Text))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Text) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Text))
 		return (NULL);
 	return ChangeTextJoin(Layer, Text);
 }
@@ -1368,7 +1368,7 @@ static void *ChangeElementSquare(ElementTypePtr Element)
 {
 	void *ans = NULL;
 
-	if (TEST_FLAG(LOCKFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1390,7 +1390,7 @@ static void *SetElementSquare(ElementTypePtr Element)
 {
 	void *ans = NULL;
 
-	if (TEST_FLAG(LOCKFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1412,7 +1412,7 @@ static void *ClrElementSquare(ElementTypePtr Element)
 {
 	void *ans = NULL;
 
-	if (TEST_FLAG(LOCKFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1434,7 +1434,7 @@ static void *ChangeElementOctagon(ElementTypePtr Element)
 {
 	void *result = NULL;
 
-	if (TEST_FLAG(LOCKFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1452,7 +1452,7 @@ static void *SetElementOctagon(ElementTypePtr Element)
 {
 	void *result = NULL;
 
-	if (TEST_FLAG(LOCKFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1470,7 +1470,7 @@ static void *ClrElementOctagon(ElementTypePtr Element)
 {
 	void *result = NULL;
 
-	if (TEST_FLAG(LOCKFLAG, Element))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1486,13 +1486,13 @@ static void *ClrElementOctagon(ElementTypePtr Element)
  */
 static void *ChangePadSquare(ElementTypePtr Element, PadTypePtr Pad)
 {
-	if (TEST_FLAG(LOCKFLAG, Pad))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
 		return (NULL);
 	ErasePad(Pad);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PAD, Element, Pad, Pad, false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	AddObjectToFlagUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
-	TOGGLE_FLAG(SQUAREFLAG, Pad);
+	TOGGLE_FLAG(PCB_FLAG_SQUARE, Pad);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PAD, Element, Pad, Pad, true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	DrawPad(Pad);
@@ -1505,7 +1505,7 @@ static void *ChangePadSquare(ElementTypePtr Element, PadTypePtr Pad)
 static void *SetPadSquare(ElementTypePtr Element, PadTypePtr Pad)
 {
 
-	if (TEST_FLAG(LOCKFLAG, Pad) || TEST_FLAG(SQUAREFLAG, Pad))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pad) || TEST_FLAG(PCB_FLAG_SQUARE, Pad))
 		return (NULL);
 
 	return (ChangePadSquare(Element, Pad));
@@ -1518,7 +1518,7 @@ static void *SetPadSquare(ElementTypePtr Element, PadTypePtr Pad)
 static void *ClrPadSquare(ElementTypePtr Element, PadTypePtr Pad)
 {
 
-	if (TEST_FLAG(LOCKFLAG, Pad) || !TEST_FLAG(SQUAREFLAG, Pad))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pad) || !TEST_FLAG(PCB_FLAG_SQUARE, Pad))
 		return (NULL);
 
 	return (ChangePadSquare(Element, Pad));
@@ -1530,7 +1530,7 @@ static void *ClrPadSquare(ElementTypePtr Element, PadTypePtr Pad)
  */
 static void *ChangeViaSquare(PinTypePtr Via)
 {
-	if (TEST_FLAG(LOCKFLAG, Via))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
 	EraseVia(Via);
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, false);
@@ -1538,9 +1538,9 @@ static void *ChangeViaSquare(PinTypePtr Via)
 	AddObjectToFlagUndoList(PCB_TYPE_VIA, NULL, Via, Via);
 	ASSIGN_SQUARE(Absolute, Via);
 	if (Absolute == 0)
-		CLEAR_FLAG(SQUAREFLAG, Via);
+		CLEAR_FLAG(PCB_FLAG_SQUARE, Via);
 	else
-		SET_FLAG(SQUAREFLAG, Via);
+		SET_FLAG(PCB_FLAG_SQUARE, Via);
 	SetPinBoundingBox(Via);
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, NULL, Via);
@@ -1553,7 +1553,7 @@ static void *ChangeViaSquare(PinTypePtr Via)
  */
 static void *ChangePinSquare(ElementTypePtr Element, PinTypePtr Pin)
 {
-	if (TEST_FLAG(LOCKFLAG, Pin))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
 	ErasePin(Pin);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, false);
@@ -1561,9 +1561,9 @@ static void *ChangePinSquare(ElementTypePtr Element, PinTypePtr Pin)
 	AddObjectToFlagUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 	ASSIGN_SQUARE(Absolute, Pin);
 	if (Absolute == 0)
-		CLEAR_FLAG(SQUAREFLAG, Pin);
+		CLEAR_FLAG(PCB_FLAG_SQUARE, Pin);
 	else
-		SET_FLAG(SQUAREFLAG, Pin);
+		SET_FLAG(PCB_FLAG_SQUARE, Pin);
 	SetPinBoundingBox(Pin);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
@@ -1576,7 +1576,7 @@ static void *ChangePinSquare(ElementTypePtr Element, PinTypePtr Pin)
  */
 static void *SetPinSquare(ElementTypePtr Element, PinTypePtr Pin)
 {
-	if (TEST_FLAG(LOCKFLAG, Pin) || TEST_FLAG(SQUAREFLAG, Pin))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || TEST_FLAG(PCB_FLAG_SQUARE, Pin))
 		return (NULL);
 
 	return (ChangePinSquare(Element, Pin));
@@ -1587,7 +1587,7 @@ static void *SetPinSquare(ElementTypePtr Element, PinTypePtr Pin)
  */
 static void *ClrPinSquare(ElementTypePtr Element, PinTypePtr Pin)
 {
-	if (TEST_FLAG(LOCKFLAG, Pin) || !TEST_FLAG(SQUAREFLAG, Pin))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || !TEST_FLAG(PCB_FLAG_SQUARE, Pin))
 		return (NULL);
 
 	return (ChangePinSquare(Element, Pin));
@@ -1598,13 +1598,13 @@ static void *ClrPinSquare(ElementTypePtr Element, PinTypePtr Pin)
  */
 static void *ChangeViaOctagon(PinTypePtr Via)
 {
-	if (TEST_FLAG(LOCKFLAG, Via))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
 	EraseVia(Via);
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
-	TOGGLE_FLAG(OCTAGONFLAG, Via);
+	TOGGLE_FLAG(PCB_FLAG_OCTAGON, Via);
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
@@ -1616,7 +1616,7 @@ static void *ChangeViaOctagon(PinTypePtr Via)
  */
 static void *SetViaOctagon(PinTypePtr Via)
 {
-	if (TEST_FLAG(LOCKFLAG, Via) || TEST_FLAG(OCTAGONFLAG, Via))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Via) || TEST_FLAG(PCB_FLAG_OCTAGON, Via))
 		return (NULL);
 
 	return (ChangeViaOctagon(Via));
@@ -1627,7 +1627,7 @@ static void *SetViaOctagon(PinTypePtr Via)
  */
 static void *ClrViaOctagon(PinTypePtr Via)
 {
-	if (TEST_FLAG(LOCKFLAG, Via) || !TEST_FLAG(OCTAGONFLAG, Via))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Via) || !TEST_FLAG(PCB_FLAG_OCTAGON, Via))
 		return (NULL);
 
 	return (ChangeViaOctagon(Via));
@@ -1638,13 +1638,13 @@ static void *ClrViaOctagon(PinTypePtr Via)
  */
 static void *ChangePinOctagon(ElementTypePtr Element, PinTypePtr Pin)
 {
-	if (TEST_FLAG(LOCKFLAG, Pin))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
 	ErasePin(Pin);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	AddObjectToFlagUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-	TOGGLE_FLAG(OCTAGONFLAG, Pin);
+	TOGGLE_FLAG(PCB_FLAG_OCTAGON, Pin);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	DrawPin(Pin);
@@ -1656,7 +1656,7 @@ static void *ChangePinOctagon(ElementTypePtr Element, PinTypePtr Pin)
  */
 static void *SetPinOctagon(ElementTypePtr Element, PinTypePtr Pin)
 {
-	if (TEST_FLAG(LOCKFLAG, Pin) || TEST_FLAG(OCTAGONFLAG, Pin))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || TEST_FLAG(PCB_FLAG_OCTAGON, Pin))
 		return (NULL);
 
 	return (ChangePinOctagon(Element, Pin));
@@ -1667,7 +1667,7 @@ static void *SetPinOctagon(ElementTypePtr Element, PinTypePtr Pin)
  */
 static void *ClrPinOctagon(ElementTypePtr Element, PinTypePtr Pin)
 {
-	if (TEST_FLAG(LOCKFLAG, Pin) || !TEST_FLAG(OCTAGONFLAG, Pin))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || !TEST_FLAG(PCB_FLAG_OCTAGON, Pin))
 		return (NULL);
 
 	return (ChangePinOctagon(Element, Pin));
@@ -1678,16 +1678,16 @@ static void *ClrPinOctagon(ElementTypePtr Element, PinTypePtr Pin)
  */
 bool ChangeHole(PinTypePtr Via)
 {
-	if (TEST_FLAG(LOCKFLAG, Via))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (false);
 	EraseVia(Via);
 	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	TOGGLE_FLAG(HOLEFLAG, Via);
+	TOGGLE_FLAG(PCB_FLAG_HOLE, Via);
 
-	if (TEST_FLAG(HOLEFLAG, Via)) {
+	if (TEST_FLAG(PCB_FLAG_HOLE, Via)) {
 		/* A tented via becomes an minimally untented hole.  An untented
 		   via retains its mask clearance.  */
 		if (Via->Mask > Via->Thickness) {
@@ -1714,11 +1714,11 @@ bool ChangeHole(PinTypePtr Via)
  */
 bool ChangePaste(PadTypePtr Pad)
 {
-	if (TEST_FLAG(LOCKFLAG, Pad))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
 		return (false);
 	ErasePad(Pad);
 	AddObjectToFlagUndoList(PCB_TYPE_PAD, Pad, Pad, Pad);
-	TOGGLE_FLAG(NOPASTEFLAG, Pad);
+	TOGGLE_FLAG(PCB_FLAG_NOPASTE, Pad);
 	DrawPad(Pad);
 	Draw();
 	return (true);
@@ -1729,11 +1729,11 @@ bool ChangePaste(PadTypePtr Pad)
  */
 static void *ChangePolyClear(LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
-	if (TEST_FLAG(LOCKFLAG, Polygon))
+	if (TEST_FLAG(PCB_FLAG_LOCK, Polygon))
 		return (NULL);
 	AddObjectToClearPolyUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon, true);
 	AddObjectToFlagUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
-	TOGGLE_FLAG(CLEARPOLYFLAG, Polygon);
+	TOGGLE_FLAG(PCB_FLAG_CLEARPOLY, Polygon);
 	InitClip(PCB->Data, Layer, Polygon);
 	DrawPolygon(Layer, Polygon);
 	return (Polygon);
@@ -1751,7 +1751,7 @@ bool ChangeSelectedElementSide(void)
 	if (PCB->PinOn && PCB->ElementOn)
 		ELEMENT_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(SELECTEDFLAG, element)) {
+		if (TEST_FLAG(PCB_FLAG_SELECTED, element)) {
 			change |= ChangeElementSide(element, 0);
 		}
 	}
@@ -2046,7 +2046,7 @@ bool ChangeSelectedHole(void)
 	if (PCB->ViaOn)
 		VIA_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(SELECTEDFLAG, via))
+		if (TEST_FLAG(PCB_FLAG_SELECTED, via))
 			change |= ChangeHole(via);
 	}
 	END_LOOP;
@@ -2067,7 +2067,7 @@ bool ChangeSelectedPaste(void)
 
 	ALLPAD_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(SELECTEDFLAG, pad))
+		if (TEST_FLAG(PCB_FLAG_SELECTED, pad))
 			change |= ChangePaste(pad);
 	}
 	ENDALL_LOOP;

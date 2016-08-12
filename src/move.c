@@ -423,7 +423,7 @@ static void *MoveArcToLayer(LayerType * Layer, ArcType * Arc)
 {
 	ArcTypePtr newone;
 
-	if (TEST_FLAG(LOCKFLAG, Arc)) {
+	if (TEST_FLAG(PCB_FLAG_LOCK, Arc)) {
 		Message(_("Sorry, the object is locked\n"));
 		return NULL;
 	}
@@ -453,7 +453,7 @@ static void *MoveRatToLayer(RatType * Rat)
 	LineTypePtr newone;
 	/*Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
 	   Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
-	   if VIAFLAG
+	   if PCB_FLAG_VIA
 	   if we're on a pin, add a thermal
 	   else make a via and a wire, but 0-length wire not good
 	   else as before */
@@ -489,7 +489,7 @@ static r_dir_t moveline_callback(const BoxType * b, void *cl)
 
 	if ((via =
 			 CreateNewVia(PCB->Data, i->X, i->Y,
-										conf_core.design.via_thickness, 2 * conf_core.design.clearance, NOFLAG, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
+										conf_core.design.via_thickness, 2 * conf_core.design.clearance, PCB_FLAG_NO, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
 		AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 		DrawVia(via);
 	}
@@ -503,7 +503,7 @@ static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
 	LineTypePtr newone;
 	void *ptr1, *ptr2, *ptr3;
 
-	if (TEST_FLAG(LOCKFLAG, Line)) {
+	if (TEST_FLAG(PCB_FLAG_LOCK, Line)) {
 		Message(_("Sorry, the object is locked\n"));
 		return NULL;
 	}
@@ -568,9 +568,9 @@ static void *MoveTextToLayerLowLevel(LayerType * Source, TextType * text, LayerT
 	textlist_append(&Destination->Text, text);
 
 	if (GetLayerGroupNumberByNumber(solder_silk_layer) == GetLayerGroupNumberByPointer(Destination))
-		SET_FLAG(ONSOLDERFLAG, text);
+		SET_FLAG(PCB_FLAG_ONSOLDER, text);
 	else
-		CLEAR_FLAG(ONSOLDERFLAG, text);
+		CLEAR_FLAG(PCB_FLAG_ONSOLDER, text);
 
 	/* re-calculate the bounding box (it could be mirrored now) */
 	SetTextBoundingBox(&PCB->Font, text);
@@ -587,7 +587,7 @@ static void *MoveTextToLayerLowLevel(LayerType * Source, TextType * text, LayerT
  */
 static void *MoveTextToLayer(LayerType * layer, TextType * text)
 {
-	if (TEST_FLAG(LOCKFLAG, text)) {
+	if (TEST_FLAG(PCB_FLAG_LOCK, text)) {
 		Message(_("Sorry, the object is locked\n"));
 		return NULL;
 	}
@@ -650,7 +650,7 @@ static void *MovePolygonToLayer(LayerType * Layer, PolygonType * Polygon)
 	PolygonTypePtr newone;
 	struct mptlc d;
 
-	if (TEST_FLAG(LOCKFLAG, Polygon)) {
+	if (TEST_FLAG(PCB_FLAG_LOCK, Polygon)) {
 		Message(_("Sorry, the object is locked\n"));
 		return NULL;
 	}
@@ -710,7 +710,7 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coor
 	ptr = Crosshair.AttachedObject.Rubberband;
 	while (Crosshair.AttachedObject.RubberbandN) {
 		/* first clear any marks that we made in the line flags */
-		CLEAR_FLAG(RUBBERENDFLAG, ptr->Line);
+		CLEAR_FLAG(PCB_FLAG_RUBBEREND, ptr->Line);
 		AddObjectToMoveUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, DX, DY);
 		MoveLinePoint(ptr->Layer, ptr->Line, ptr->MovedPoint);
 		Crosshair.AttachedObject.RubberbandN--;

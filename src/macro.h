@@ -156,14 +156,14 @@ extern int mem_any_set(unsigned char *, int);
  *  Determines if object is on front or back
  */
 #define FRONT(o)	\
-	((TEST_FLAG(ONSOLDERFLAG, (o)) != 0) == SWAP_IDENT)
+	((TEST_FLAG(PCB_FLAG_ONSOLDER, (o)) != 0) == SWAP_IDENT)
 
 /* ---------------------------------------------------------------------------
  *  Determines if an object is on the given side. side is either SOLDER_LAYER
  *  or COMPONENT_LAYER.
  */
 #define ON_SIDE(element, side) \
-        (TEST_FLAG (ONSOLDERFLAG, element) == (side == SOLDER_LAYER))
+        (TEST_FLAG (PCB_FLAG_ONSOLDER, element) == (side == SOLDER_LAYER))
 
 /* ---------------------------------------------------------------------------
  * some loop shortcuts
