@@ -129,68 +129,68 @@ void ghid_watch_cursor(void)
 void ghid_mode_cursor(int Mode)
 {
 	switch (Mode) {
-	case NO_MODE:
+	case PCB_MODE_NO:
 		gport_set_cursor((GdkCursorType) CUSTOM_CURSOR_DRAG);
 		break;
 
-	case VIA_MODE:
+	case PCB_MODE_VIA:
 		gport_set_cursor(GDK_ARROW);
 		break;
 
-	case LINE_MODE:
+	case PCB_MODE_LINE:
 		gport_set_cursor(GDK_PENCIL);
 		break;
 
-	case ARC_MODE:
+	case PCB_MODE_ARC:
 		gport_set_cursor(GDK_QUESTION_ARROW);
 		break;
 
-	case ARROW_MODE:
+	case PCB_MODE_ARROW:
 		gport_set_cursor(GDK_LEFT_PTR);
 		break;
 
-	case POLYGON_MODE:
-	case POLYGONHOLE_MODE:
+	case PCB_MODE_POLYGON:
+	case PCB_MODE_POLYGON_HOLE:
 		gport_set_cursor(GDK_SB_UP_ARROW);
 		break;
 
-	case PASTEBUFFER_MODE:
+	case PCB_MODE_PASTE_BUFFER:
 		gport_set_cursor(GDK_HAND1);
 		break;
 
-	case TEXT_MODE:
+	case PCB_MODE_TEXT:
 		gport_set_cursor(GDK_XTERM);
 		break;
 
-	case RECTANGLE_MODE:
+	case PCB_MODE_RECTANGLE:
 		gport_set_cursor(GDK_UL_ANGLE);
 		break;
 
-	case THERMAL_MODE:
+	case PCB_MODE_THERMAL:
 		gport_set_cursor(GDK_IRON_CROSS);
 		break;
 
-	case REMOVE_MODE:
+	case PCB_MODE_REMOVE:
 		gport_set_cursor(GDK_PIRATE);
 		break;
 
-	case ROTATE_MODE:
+	case PCB_MODE_ROTATE:
 		if (ghid_shift_is_pressed())
 			gport_set_cursor((GdkCursorType) CUSTOM_CURSOR_CLOCKWISE);
 		else
 			gport_set_cursor(GDK_EXCHANGE);
 		break;
 
-	case COPY_MODE:
-	case MOVE_MODE:
+	case PCB_MODE_COPY:
+	case PCB_MODE_MOVE:
 		gport_set_cursor(GDK_CROSSHAIR);
 		break;
 
-	case INSERTPOINT_MODE:
+	case PCB_MODE_INSERT_POINT:
 		gport_set_cursor(GDK_DOTBOX);
 		break;
 
-	case LOCK_MODE:
+	case PCB_MODE_LOCK:
 		gport_set_cursor((GdkCursorType) CUSTOM_CURSOR_LOCK);
 	}
 }

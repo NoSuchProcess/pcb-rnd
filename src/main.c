@@ -449,7 +449,7 @@ int main(int argc, char *argv[])
 	InitHandler();
 	InitBuffers();
 
-	SetMode(ARROW_MODE);
+	SetMode(PCB_MODE_ARROW);
 
 	if (command_line_pcb) {
 		/* keep filename even if initial load command failed;
@@ -496,7 +496,7 @@ int main(int argc, char *argv[])
 			gui->parse_arguments(&hid_argc, &hid_argv);
 			if (gui->gui)
 				InitCrosshair();
-			SetMode(ARROW_MODE);
+			SetMode(PCB_MODE_ARROW);
 				hid_action("LibraryChanged");
 		}
 	} while(gui != NULL);

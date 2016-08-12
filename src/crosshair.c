@@ -353,7 +353,7 @@ static void XORDrawInsertPointObject(void)
 }
 
 /* ---------------------------------------------------------------------------
- * draws the attached object while in MOVE_MODE or COPY_MODE
+ * draws the attached object while in PCB_MODE_MOVE or PCB_MODE_COPY
  */
 static void XORDrawMoveOrCopyObject(void)
 {
@@ -490,7 +490,7 @@ static void XORDrawMoveOrCopyObject(void)
 void DrawAttached(void)
 {
 	switch (conf_core.editor.mode) {
-	case VIA_MODE:
+	case PCB_MODE_VIA:
 		{
 			/* Make a dummy via structure to draw from */
 			PinType via;
@@ -514,22 +514,22 @@ void DrawAttached(void)
 			break;
 		}
 
-		/* the attached line is used by both LINEMODE, POLYGON_MODE and POLYGONHOLE_MODE */
-	case POLYGON_MODE:
-	case POLYGONHOLE_MODE:
+		/* the attached line is used by both LINEMODE, PCB_MODE_POLYGON and PCB_MODE_POLYGON_HOLE */
+	case PCB_MODE_POLYGON:
+	case PCB_MODE_POLYGON_HOLE:
 		/* draw only if starting point is set */
 		if (Crosshair.AttachedLine.State != STATE_FIRST)
 			gui->draw_line(Crosshair.GC,
 										 Crosshair.AttachedLine.Point1.X,
 										 Crosshair.AttachedLine.Point1.Y, Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y);
 
-		/* draw attached polygon only if in POLYGON_MODE or POLYGONHOLE_MODE */
+		/* draw attached polygon only if in PCB_MODE_POLYGON or PCB_MODE_POLYGON_HOLE */
 		if (Crosshair.AttachedPolygon.PointN > 1) {
 			XORPolygon(&Crosshair.AttachedPolygon, 0, 0, 1);
 		}
 		break;
 
-	case ARC_MODE:
+	case PCB_MODE_ARC:
 		if (Crosshair.AttachedBox.State != STATE_FIRST) {
 			XORDrawAttachedArc(conf_core.design.line_thickness);
 			if (conf_core.editor.show_drc) {
@@ -541,7 +541,7 @@ void DrawAttached(void)
 		}
 		break;
 
-	case LINE_MODE:
+	case PCB_MODE_LINE:
 		/* draw only if starting point exists and the line has length */
 		if (Crosshair.AttachedLine.State != STATE_FIRST && Crosshair.AttachedLine.draw) {
 			XORDrawAttachedLine(Crosshair.AttachedLine.Point1.X,
@@ -568,16 +568,16 @@ void DrawAttached(void)
 		}
 		break;
 
-	case PASTEBUFFER_MODE:
+	case PCB_MODE_PASTE_BUFFER:
 		XORDrawBuffer(PASTEBUFFER);
 		break;
 
-	case COPY_MODE:
-	case MOVE_MODE:
+	case PCB_MODE_COPY:
+	case PCB_MODE_MOVE:
 		XORDrawMoveOrCopyObject();
 		break;
 
-	case INSERTPOINT_MODE:
+	case PCB_MODE_INSERT_POINT:
 		XORDrawInsertPointObject();
 		break;
 	}
@@ -933,8 +933,8 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, Coord nearest_g
 	 * the same layer), and when moving a line end-point
 	 * (but don't snap to the same line)
 	 */
-	if ((conf_core.editor.mode != LINE_MODE || CURRENT != ptr1) &&
-			(conf_core.editor.mode != MOVE_MODE ||
+	if ((conf_core.editor.mode != PCB_MODE_LINE || CURRENT != ptr1) &&
+			(conf_core.editor.mode != PCB_MODE_MOVE ||
 			 Crosshair.AttachedObject.Ptr1 != ptr1 ||
 			 Crosshair.AttachedObject.Type != PCB_TYPE_LINE_POINT || Crosshair.AttachedObject.Ptr2 == line))
 		return;
@@ -1039,11 +1039,11 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 
 	/* Avoid self-snapping when moving */
 	if (ans != PCB_TYPE_NONE &&
-			conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT && ptr1 == Crosshair.AttachedObject.Ptr1)
+			conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT && ptr1 == Crosshair.AttachedObject.Ptr1)
 		ans = PCB_TYPE_NONE;
 
 	if (ans != PCB_TYPE_NONE &&
-			(conf_core.editor.mode == LINE_MODE || (conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))) {
+			(conf_core.editor.mode == PCB_MODE_LINE || (conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))) {
 		PadTypePtr pad = (PadTypePtr) ptr2;
 		LayerType *desired_layer;
 		Cardinal desired_group;
@@ -1051,7 +1051,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		int found_our_layer = false;
 
 		desired_layer = CURRENT;
-		if (conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT) {
+		if (conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT) {
 			desired_layer = (LayerType *) Crosshair.AttachedObject.Ptr1;
 		}
 
@@ -1084,7 +1084,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 
 	/* Avoid self-snapping when moving */
 	if (ans != PCB_TYPE_NONE &&
-			conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT && ptr1 == Crosshair.AttachedObject.Ptr1)
+			conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT && ptr1 == Crosshair.AttachedObject.Ptr1)
 		ans = PCB_TYPE_NONE;
 
 	if (ans != PCB_TYPE_NONE) {
@@ -1097,7 +1097,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid snapping vias to any other vias */
-	if (conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == PCB_TYPE_VIA && (ans & PCB_TYPEMASK_PIN))
+	if (conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_VIA && (ans & PCB_TYPEMASK_PIN))
 		ans = PCB_TYPE_NONE;
 
 	if (ans != PCB_TYPE_NONE) {
@@ -1137,7 +1137,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	if (conf_core.editor.highlight_on_point)
 		onpoint_work(&Crosshair, Crosshair.X, Crosshair.Y);
 
-	if (conf_core.editor.mode == ARROW_MODE) {
+	if (conf_core.editor.mode == PCB_MODE_ARROW) {
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
 		if (ans == PCB_TYPE_NONE)
 			hid_action("PointCursor");
@@ -1145,7 +1145,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 			hid_actionl("PointCursor", "True", NULL);
 	}
 
-	if (conf_core.editor.mode == LINE_MODE && Crosshair.AttachedLine.State != STATE_FIRST && conf_core.editor.auto_drc)
+	if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != STATE_FIRST && conf_core.editor.auto_drc)
 		EnforceLineDRC();
 
 	gui->set_crosshair(Crosshair.X, Crosshair.Y, HID_SC_DO_NOTHING);

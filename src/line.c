@@ -52,7 +52,7 @@ void AdjustAttachedLine(void)
 	if (line->State == STATE_FIRST)
 		return;
 	/* don't draw outline when ctrl key is pressed */
-	if (conf_core.editor.mode == LINE_MODE && gui->control_is_pressed()) {
+	if (conf_core.editor.mode == PCB_MODE_LINE && gui->control_is_pressed()) {
 		line->draw = false;
 		return;
 	}

@@ -755,20 +755,20 @@ typedef struct {
 
 
 static ModeButton mode_buttons[] = {
-	{NULL, NULL, 0, 0, "via", VIA_MODE, via},
-	{NULL, NULL, 0, 0, "line", LINE_MODE, line},
-	{NULL, NULL, 0, 0, "arc", ARC_MODE, arc},
-	{NULL, NULL, 0, 0, "text", TEXT_MODE, text},
-	{NULL, NULL, 0, 0, "rectangle", RECTANGLE_MODE, rect},
-	{NULL, NULL, 0, 0, "polygon", POLYGON_MODE, poly},
-	{NULL, NULL, 0, 0, "polygonhole", POLYGONHOLE_MODE, polyhole},
-	{NULL, NULL, 0, 0, "buffer", PASTEBUFFER_MODE, buf},
-	{NULL, NULL, 0, 0, "remove", REMOVE_MODE, del},
-	{NULL, NULL, 0, 0, "rotate", ROTATE_MODE, rot},
-	{NULL, NULL, 0, 0, "insertPoint", INSERTPOINT_MODE, ins},
-	{NULL, NULL, 0, 0, "thermal", THERMAL_MODE, thrm},
-	{NULL, NULL, 0, 0, "select", ARROW_MODE, sel},
-	{NULL, NULL, 0, 0, "lock", LOCK_MODE, lock}
+	{NULL, NULL, 0, 0, "via", PCB_MODE_VIA, via},
+	{NULL, NULL, 0, 0, "line", PCB_MODE_LINE, line},
+	{NULL, NULL, 0, 0, "arc", PCB_MODE_ARC, arc},
+	{NULL, NULL, 0, 0, "text", PCB_MODE_TEXT, text},
+	{NULL, NULL, 0, 0, "rectangle", PCB_MODE_RECTANGLE, rect},
+	{NULL, NULL, 0, 0, "polygon", PCB_MODE_POLYGON, poly},
+	{NULL, NULL, 0, 0, "polygonhole", PCB_MODE_POLYGON_HOLE, polyhole},
+	{NULL, NULL, 0, 0, "buffer", PCB_MODE_PASTE_BUFFER, buf},
+	{NULL, NULL, 0, 0, "remove", PCB_MODE_REMOVE, del},
+	{NULL, NULL, 0, 0, "rotate", PCB_MODE_ROTATE, rot},
+	{NULL, NULL, 0, 0, "insertPoint", PCB_MODE_INSERT_POINT, ins},
+	{NULL, NULL, 0, 0, "thermal", PCB_MODE_THERMAL, thrm},
+	{NULL, NULL, 0, 0, "select", PCB_MODE_ARROW, sel},
+	{NULL, NULL, 0, 0, "lock", PCB_MODE_LOCK, lock}
 };
 
 static gint n_mode_buttons = G_N_ELEMENTS(mode_buttons);
@@ -1279,7 +1279,7 @@ void ghid_create_pcb_widgets(void)
 	ghid_update_toggle_flags();
 
 	ghid_init_icons(port);
-	SetMode(ARROW_MODE);
+	SetMode(PCB_MODE_ARROW);
 	ghid_mode_buttons_update();
 }
 

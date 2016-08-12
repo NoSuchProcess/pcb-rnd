@@ -227,14 +227,14 @@ static void click_cb(hidval hv)
 			RemoveSelected();
 			SaveMode();
 			saved_mode = true;
-			SetMode(PASTEBUFFER_MODE);
+			SetMode(PCB_MODE_PASTE_BUFFER);
 		}
 		else if (Note.Hit && !gui->shift_is_pressed()) {
 			BoxType box;
 
 			SaveMode();
 			saved_mode = true;
-			SetMode(gui->control_is_pressed()? COPY_MODE : MOVE_MODE);
+			SetMode(gui->control_is_pressed()? PCB_MODE_COPY : PCB_MODE_MOVE);
 			Crosshair.AttachedObject.Ptr1 = Note.ptr1;
 			Crosshair.AttachedObject.Ptr2 = Note.ptr2;
 			Crosshair.AttachedObject.Ptr3 = Note.ptr3;
@@ -317,7 +317,7 @@ void ReleaseMode(void)
 		NotifyMode();
 		Note.Hit = 0;
 	}
-	else if (conf_core.editor.mode == ARROW_MODE) {
+	else if (conf_core.editor.mode == PCB_MODE_ARROW) {
 		box.X1 = Crosshair.AttachedBox.Point1.X;
 		box.Y1 = Crosshair.AttachedBox.Point1.Y;
 		box.X2 = Crosshair.AttachedBox.Point2.X;
@@ -341,7 +341,7 @@ void ReleaseMode(void)
  */
 static void AdjustAttachedBox(void)
 {
-	if (conf_core.editor.mode == ARC_MODE) {
+	if (conf_core.editor.mode == PCB_MODE_ARC) {
 		Crosshair.AttachedBox.otherway = gui->shift_is_pressed();
 		return;
 	}
@@ -364,8 +364,8 @@ void AdjustAttachedObjects(void)
 	PointTypePtr pnt;
 	switch (conf_core.editor.mode) {
 		/* update at least an attached block (selection) */
-	case NO_MODE:
-	case ARROW_MODE:
+	case PCB_MODE_NO:
+	case PCB_MODE_ARROW:
 		if (Crosshair.AttachedBox.State) {
 			Crosshair.AttachedBox.Point2.X = Crosshair.X;
 			Crosshair.AttachedBox.Point2.Y = Crosshair.Y;
@@ -373,30 +373,30 @@ void AdjustAttachedObjects(void)
 		break;
 
 		/* rectangle creation mode */
-	case RECTANGLE_MODE:
-	case ARC_MODE:
+	case PCB_MODE_RECTANGLE:
+	case PCB_MODE_ARC:
 		AdjustAttachedBox();
 		break;
 
 		/* polygon creation mode */
-	case POLYGON_MODE:
-	case POLYGONHOLE_MODE:
+	case PCB_MODE_POLYGON:
+	case PCB_MODE_POLYGON_HOLE:
 		AdjustAttachedLine();
 		break;
 		/* line creation mode */
-	case LINE_MODE:
+	case PCB_MODE_LINE:
 		if (PCB->RatDraw || PCB->Clipping == 0)
 			AdjustAttachedLine();
 		else
 			AdjustTwoLine(PCB->Clipping - 1);
 		break;
 		/* point insertion mode */
-	case INSERTPOINT_MODE:
+	case PCB_MODE_INSERT_POINT:
 		pnt = AdjustInsertPoint();
 		if (pnt)
 			InsertedPoint = *pnt;
 		break;
-	case ROTATE_MODE:
+	case PCB_MODE_ROTATE:
 		break;
 	}
 }
@@ -417,7 +417,7 @@ void NotifyLine(void)
 			gui->beep();
 			break;
 		}
-		if (conf_core.editor.auto_drc && conf_core.editor.mode == LINE_MODE) {
+		if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
 			type = SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
 			LookupConnection(Crosshair.X, Crosshair.Y, true, 1, FOUNDFLAG);
 		}
@@ -488,7 +488,7 @@ void NotifyMode(void)
 	if (conf_core.temp.rat_warn)
 		ClearWarnings();
 	switch (conf_core.editor.mode) {
-	case ARROW_MODE:
+	case PCB_MODE_ARROW:
 		{
 			int test;
 			hidval hv;
@@ -517,7 +517,7 @@ void NotifyMode(void)
 			break;
 		}
 
-	case VIA_MODE:
+	case PCB_MODE_VIA:
 		{
 			PinTypePtr via;
 
@@ -538,7 +538,7 @@ void NotifyMode(void)
 			break;
 		}
 
-	case ARC_MODE:
+	case PCB_MODE_ARC:
 		{
 			switch (Crosshair.AttachedBox.State) {
 			case STATE_FIRST:
@@ -604,7 +604,7 @@ void NotifyMode(void)
 			}
 			break;
 		}
-	case LOCK_MODE:
+	case PCB_MODE_LOCK:
 		{
 			type = SearchScreen(Note.X, Note.Y, PCB_TYPEMASK_LOCK, &ptr1, &ptr2, &ptr3);
 			if (type == PCB_TYPE_ELEMENT) {
@@ -645,7 +645,7 @@ void NotifyMode(void)
 			}
 			break;
 		}
-	case THERMAL_MODE:
+	case PCB_MODE_THERMAL:
 		{
 			if (((type = SearchScreen(Note.X, Note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					&& !TEST_FLAG(HOLEFLAG, (PinTypePtr) ptr3)) {
@@ -664,7 +664,7 @@ void NotifyMode(void)
 			break;
 		}
 
-	case LINE_MODE:
+	case PCB_MODE_LINE:
 		/* do update of position */
 		NotifyLine();
 		if (Crosshair.AttachedLine.State != STATE_THIRD)
@@ -677,7 +677,7 @@ void NotifyMode(void)
 		 * the file after saving.
 		 */
 		if (Crosshair.X == Crosshair.AttachedLine.Point1.X && Crosshair.Y == Crosshair.AttachedLine.Point1.Y) {
-			SetMode(LINE_MODE);
+			SetMode(PCB_MODE_LINE);
 			break;
 		}
 
@@ -795,7 +795,7 @@ void NotifyMode(void)
 		}
 		break;
 
-	case RECTANGLE_MODE:
+	case PCB_MODE_RECTANGLE:
 		/* do update of position */
 		NotifyBlock();
 
@@ -826,7 +826,7 @@ void NotifyMode(void)
 		}
 		break;
 
-	case TEXT_MODE:
+	case PCB_MODE_TEXT:
 		{
 			char *string;
 
@@ -850,12 +850,12 @@ void NotifyMode(void)
 			break;
 		}
 
-	case POLYGON_MODE:
+	case PCB_MODE_POLYGON:
 		{
 			PointTypePtr points = Crosshair.AttachedPolygon.Points;
 			Cardinal n = Crosshair.AttachedPolygon.PointN;
 
-			/* do update of position; use the 'LINE_MODE' mechanism */
+			/* do update of position; use the 'PCB_MODE_LINE' mechanism */
 			NotifyLine();
 
 			/* check if this is the last point of a polygon */
@@ -885,7 +885,7 @@ void NotifyMode(void)
 			break;
 		}
 
-	case POLYGONHOLE_MODE:
+	case PCB_MODE_POLYGON_HOLE:
 		{
 			switch (Crosshair.AttachedObject.State) {
 				/* first notify, lookup object */
@@ -917,7 +917,7 @@ void NotifyMode(void)
 					POLYAREA *original, *new_hole, *result;
 					FlagType Flags;
 
-					/* do update of position; use the 'LINE_MODE' mechanism */
+					/* do update of position; use the 'PCB_MODE_LINE' mechanism */
 					NotifyLine();
 
 					if (conf_core.editor.orthogonal_moves) {
@@ -974,7 +974,7 @@ void NotifyMode(void)
 			break;
 		}
 
-	case PASTEBUFFER_MODE:
+	case PCB_MODE_PASTE_BUFFER:
 		{
 			TextType estr[MAX_ELEMENTNAMES];
 			ElementTypePtr e = 0;
@@ -1021,7 +1021,7 @@ void NotifyMode(void)
 			break;
 		}
 
-	case REMOVE_MODE:
+	case PCB_MODE_REMOVE:
 		if ((type = SearchScreen(Note.X, Note.Y, REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 			if (TEST_FLAG(LOCKFLAG, (LineTypePtr) ptr2)) {
 				Message(_("Sorry, the object is locked\n"));
@@ -1050,26 +1050,26 @@ void NotifyMode(void)
 		}
 		break;
 
-	case ROTATE_MODE:
+	case PCB_MODE_ROTATE:
 		RotateScreenObject(Note.X, Note.Y, gui->shift_is_pressed()? (SWAP_IDENT ? 1 : 3)
 											 : (SWAP_IDENT ? 3 : 1));
 		break;
 
 		/* both are almost the same */
-	case COPY_MODE:
-	case MOVE_MODE:
+	case PCB_MODE_COPY:
+	case PCB_MODE_MOVE:
 pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.AttachedObject.State);
 		switch (Crosshair.AttachedObject.State) {
 			/* first notify, lookup object */
 		case STATE_FIRST:
 			{
-				int types = (conf_core.editor.mode == COPY_MODE) ? COPY_TYPES : MOVE_TYPES;
+				int types = (conf_core.editor.mode == PCB_MODE_COPY) ? COPY_TYPES : MOVE_TYPES;
 
 				Crosshair.AttachedObject.Type =
 					SearchScreen(Note.X, Note.Y, types,
 											 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 				if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
-					if (conf_core.editor.mode == MOVE_MODE && TEST_FLAG(LOCKFLAG, (PinTypePtr)
+					if (conf_core.editor.mode == PCB_MODE_MOVE && TEST_FLAG(LOCKFLAG, (PinTypePtr)
 																											Crosshair.AttachedObject.Ptr2)) {
 						Message(_("Sorry, the object is locked\n"));
 						Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
@@ -1082,7 +1082,7 @@ pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.At
 
 			/* second notify, move or copy object */
 		case STATE_SECOND:
-			if (conf_core.editor.mode == COPY_MODE)
+			if (conf_core.editor.mode == PCB_MODE_COPY)
 				CopyObject(Crosshair.AttachedObject.Type,
 									 Crosshair.AttachedObject.Ptr1,
 									 Crosshair.AttachedObject.Ptr2,
@@ -1106,7 +1106,7 @@ pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.At
 		break;
 
 		/* insert a point into a polygon/line/... */
-	case INSERTPOINT_MODE:
+	case PCB_MODE_INSERT_POINT:
 		switch (Crosshair.AttachedObject.State) {
 			/* first notify, lookup object */
 		case STATE_FIRST:

@@ -1416,10 +1416,10 @@ void AttachForCopy(Coord PlaceX, Coord PlaceY)
 										PCB->MaxHeight - (box->Y2 - Crosshair.AttachedObject.Y));
 
 	/* get all attached objects if necessary */
-	if ((conf_core.editor.mode != COPY_MODE) && conf_core.editor.rubber_band_mode)
+	if ((conf_core.editor.mode != PCB_MODE_COPY) && conf_core.editor.rubber_band_mode)
 		LookupRubberbandLines(Crosshair.AttachedObject.Type,
 													Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
-	if (conf_core.editor.mode != COPY_MODE &&
+	if (conf_core.editor.mode != PCB_MODE_COPY &&
 			(Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT ||
 			 Crosshair.AttachedObject.Type == PCB_TYPE_VIA ||
 			 Crosshair.AttachedObject.Type == PCB_TYPE_LINE || Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))

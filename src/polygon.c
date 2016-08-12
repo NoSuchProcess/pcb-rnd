@@ -1277,7 +1277,7 @@ void GoToPreviousPoint(void)
 	case 0:
 		break;
 
-		/* reset number of points and 'LINE_MODE' state */
+		/* reset number of points and 'PCB_MODE_LINE' state */
 	case 1:
 		Crosshair.AttachedPolygon.PointN = 0;
 		Crosshair.AttachedLine.State = STATE_FIRST;

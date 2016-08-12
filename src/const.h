@@ -73,25 +73,25 @@
  * modes
  */
 typedef enum {
-	NO_MODE             = 0,   /* no mode selected */
-	VIA_MODE            = 1,   /* draw vias */
-	LINE_MODE           = 2,   /* draw lines */
-	RECTANGLE_MODE      = 3,   /* create rectangles */
-	POLYGON_MODE        = 4,   /* draw filled polygons */
-	PASTEBUFFER_MODE    = 5,   /* paste objects from buffer */
-	TEXT_MODE           = 6,   /* create text objects */
-	ROTATE_MODE         = 102, /* rotate objects */
-	REMOVE_MODE         = 103, /* remove objects */
-	MOVE_MODE           = 104, /* move objects */
-	COPY_MODE           = 105, /* copy objects */
-	INSERTPOINT_MODE    = 106, /* insert point into line/polygon */
-	RUBBERBANDMOVE_MODE = 107, /* move objects and attached lines */
-	THERMAL_MODE        = 108, /* toggle thermal layer flag */
-	ARC_MODE            = 109, /* draw arcs */
-	ARROW_MODE          = 110, /* selection with arrow mode */
-	PAN_MODE            = 0,   /* same as no mode */
-	LOCK_MODE           = 111, /* lock/unlock objects */
-	POLYGONHOLE_MODE    = 112  /* cut holes in filled polygons */
+	PCB_MODE_NO              = 0,   /* no mode selected */
+	PCB_MODE_VIA             = 1,   /* draw vias */
+	PCB_MODE_LINE            = 2,   /* draw lines */
+	PCB_MODE_RECTANGLE       = 3,   /* create rectangles */
+	PCB_MODE_POLYGON         = 4,   /* draw filled polygons */
+	PCB_MODE_PASTE_BUFFER    = 5,   /* paste objects from buffer */
+	PCB_MODE_TEXT            = 6,   /* create text objects */
+	PCB_MODE_ROTATE          = 102, /* rotate objects */
+	PCB_MODE_REMOVE          = 103, /* remove objects */
+	PCB_MODE_MOVE            = 104, /* move objects */
+	PCB_MODE_COPY            = 105, /* copy objects */
+	PCB_MODE_INSERT_POINT    = 106, /* insert point into line/polygon */
+	PCB_MODE_RUBBERBAND_MOVE = 107, /* move objects and attached lines */
+	PCB_MODE_THERMAL         = 108, /* toggle thermal layer flag */
+	PCB_MODE_ARC             = 109, /* draw arcs */
+	PCB_MODE_ARROW           = 110, /* selection with arrow mode */
+	PCB_MODE_PAN             = 0,   /* same as no mode */
+	PCB_MODE_LOCK            = 111, /* lock/unlock objects */
+	PCB_MODE_POLYGON_HOLE    = 112  /* cut holes in filled polygons */
 } pcb_mode_t;
 
 /* ---------------------------------------------------------------------------

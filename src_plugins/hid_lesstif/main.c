@@ -2298,36 +2298,36 @@ void lesstif_update_status_line()
 	XmString xs;
 
 	switch (conf_core.editor.mode) {
-	case VIA_MODE:
+	case PCB_MODE_VIA:
 		buf = pcb_strdup_printf("%m+%.2mS/%.2mS \370=%.2mS", UUNIT, conf_core.design.via_thickness, conf_core.design.clearance, conf_core.design.via_drilling_hole);
 		break;
-	case LINE_MODE:
-	case ARC_MODE:
+	case PCB_MODE_LINE:
+	case PCB_MODE_ARC:
 		buf = pcb_strdup_printf("%m+%.2mS/%.2mS %s", UUNIT, conf_core.design.line_thickness, conf_core.design.clearance, s45);
 		break;
-	case RECTANGLE_MODE:
-	case POLYGON_MODE:
+	case PCB_MODE_RECTANGLE:
+	case PCB_MODE_POLYGON:
 		buf = pcb_strdup_printf("%m+%.2mS %s", UUNIT, conf_core.design.clearance, s45);
 		break;
-	case TEXT_MODE:
+	case PCB_MODE_TEXT:
 		buf = pcb_strdup_printf("%d %%", conf_core.design.text_scale);
 		break;
-	case MOVE_MODE:
-	case COPY_MODE:
-	case INSERTPOINT_MODE:
-	case RUBBERBANDMOVE_MODE:
+	case PCB_MODE_MOVE:
+	case PCB_MODE_COPY:
+	case PCB_MODE_INSERT_POINT:
+	case PCB_MODE_RUBBERBAND_MOVE:
 		if (s45 != NULL)
 			buf = strdup(s45);
 		else
 			buf = empty;
 		break;
-	case NO_MODE:
-	case PASTEBUFFER_MODE:
-	case ROTATE_MODE:
-	case REMOVE_MODE:
-	case THERMAL_MODE:
-	case ARROW_MODE:
-	case LOCK_MODE:
+	case PCB_MODE_NO:
+	case PCB_MODE_PASTE_BUFFER:
+	case PCB_MODE_ROTATE:
+	case PCB_MODE_REMOVE:
+	case PCB_MODE_THERMAL:
+	case PCB_MODE_ARROW:
+	case PCB_MODE_LOCK:
 	default:
 		buf = empty;
 		break;
@@ -2555,78 +2555,78 @@ static Boolean idle_proc(XtPointer dummy)
 
 			old_cursor_mode = conf_core.editor.mode;
 			switch (conf_core.editor.mode) {
-			case NO_MODE:
+			case PCB_MODE_NO:
 				s = "None";
 				cursor = XC_X_cursor;
 				break;
-			case VIA_MODE:
+			case PCB_MODE_VIA:
 				s = "Via";
 				cursor = -1;
 				break;
-			case LINE_MODE:
+			case PCB_MODE_LINE:
 				s = "Line";
 				cursor = XC_pencil;
 				break;
-			case RECTANGLE_MODE:
+			case PCB_MODE_RECTANGLE:
 				s = "Rectangle";
 				cursor = XC_ul_angle;
 				break;
-			case POLYGON_MODE:
+			case PCB_MODE_POLYGON:
 				s = "Polygon";
 				cursor = XC_sb_up_arrow;
 				break;
-			case POLYGONHOLE_MODE:
+			case PCB_MODE_POLYGON_HOLE:
 				s = "Polygon Hole";
 				cursor = XC_sb_up_arrow;
 				break;
-			case PASTEBUFFER_MODE:
+			case PCB_MODE_PASTE_BUFFER:
 				s = "Paste";
 				cursor = XC_hand1;
 				break;
-			case TEXT_MODE:
+			case PCB_MODE_TEXT:
 				s = "Text";
 				cursor = XC_xterm;
 				break;
-			case ROTATE_MODE:
+			case PCB_MODE_ROTATE:
 				s = "Rotate";
 				cursor = XC_exchange;
 				break;
-			case REMOVE_MODE:
+			case PCB_MODE_REMOVE:
 				s = "Remove";
 				cursor = XC_pirate;
 				break;
-			case MOVE_MODE:
+			case PCB_MODE_MOVE:
 				s = "Move";
 				cursor = XC_crosshair;
 				break;
-			case COPY_MODE:
+			case PCB_MODE_COPY:
 				s = "Copy";
 				cursor = XC_crosshair;
 				break;
-			case INSERTPOINT_MODE:
+			case PCB_MODE_INSERT_POINT:
 				s = "Insert";
 				cursor = XC_dotbox;
 				break;
-			case RUBBERBANDMOVE_MODE:
+			case PCB_MODE_RUBBERBAND_MOVE:
 				s = "RBMove";
 				cursor = XC_top_left_corner;
 				break;
-			case THERMAL_MODE:
+			case PCB_MODE_THERMAL:
 				s = "Thermal";
 				cursor = XC_iron_cross;
 				break;
-			case ARC_MODE:
+			case PCB_MODE_ARC:
 				s = "Arc";
 				cursor = XC_question_arrow;
 				break;
-			case ARROW_MODE:
+			case PCB_MODE_ARROW:
 				s = "Arrow";
 				if (over_point)
 					cursor = XC_draped_box;
 				else
 					cursor = XC_left_ptr;
 				break;
-			case LOCK_MODE:
+			case PCB_MODE_LOCK:
 				s = "Lock";
 				cursor = XC_hand2;
 				break;

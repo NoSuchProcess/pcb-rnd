@@ -57,8 +57,8 @@ static void real_stroke_finish(void)
 		num = atoi(msg);
 		switch (num) {
 		case 456:
-			if (Settings.Mode == LINE_MODE) {
-				SetMode(LINE_MODE);
+			if (Settings.Mode == PCB_MODE_LINE) {
+				SetMode(PCB_MODE_LINE);
 			}
 			break;
 		case 9874123:
@@ -75,10 +75,10 @@ static void real_stroke_finish(void)
 			RotateScreenObject(StrokeBox.X1, StrokeBox.Y1, SWAP_IDENT ? 3 : 1);
 			break;
 		case 258:
-			SetMode(LINE_MODE);
+			SetMode(PCB_MODE_LINE);
 			break;
 		case 852:
-			SetMode(ARROW_MODE);
+			SetMode(PCB_MODE_ARROW);
 			break;
 		case 1478963:
 			ActionUndo(0, NULL, 0, 0);
@@ -92,7 +92,7 @@ static void real_stroke_finish(void)
 		case 147863:
 		case 147853:
 		case 145863:
-			SetMode(VIA_MODE);
+			SetMode(PCB_MODE_VIA);
 			break;
 		case 951:
 		case 9651:

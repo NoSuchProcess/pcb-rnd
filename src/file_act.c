@@ -121,14 +121,14 @@ static int ActionLoadFrom(int argc, char **argv, Coord x, Coord y)
 	if (strcasecmp(function, "ElementToBuffer") == 0) {
 		notify_crosshair_change(false);
 		if (LoadElementToBuffer(PASTEBUFFER, name))
-			SetMode(PASTEBUFFER_MODE);
+			SetMode(PCB_MODE_PASTE_BUFFER);
 		notify_crosshair_change(true);
 	}
 
 	else if (strcasecmp(function, "LayoutToBuffer") == 0) {
 		notify_crosshair_change(false);
 		if (LoadLayoutToBuffer(PASTEBUFFER, name))
-			SetMode(PASTEBUFFER_MODE);
+			SetMode(PCB_MODE_PASTE_BUFFER);
 		notify_crosshair_change(true);
 	}
 

@@ -2456,7 +2456,7 @@ void ChangePCBSize(Coord Width, Coord Height)
 	/* crosshair range is different if pastebuffer-mode
 	 * is enabled
 	 */
-	if (conf_core.editor.mode == PASTEBUFFER_MODE)
+	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER)
 		SetCrosshairRange(PASTEBUFFER->X - PASTEBUFFER->BoundingBox.X1,
 											PASTEBUFFER->Y - PASTEBUFFER->BoundingBox.Y1,
 											MAX(0,

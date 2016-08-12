@@ -144,7 +144,7 @@ void SetChangedFlag(bool New)
  */
 void SetCrosshairRangeToBuffer(void)
 {
-	if (conf_core.editor.mode == PASTEBUFFER_MODE) {
+	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER) {
 		SetBufferBoundingBox(PASTEBUFFER);
 		SetCrosshairRange(PASTEBUFFER->X - PASTEBUFFER->BoundingBox.X1,
 											PASTEBUFFER->Y - PASTEBUFFER->BoundingBox.Y1,
@@ -207,21 +207,21 @@ void SetMode(int Mode)
 	Crosshair.AttachedObject.State = STATE_FIRST;
 	Crosshair.AttachedPolygon.PointN = 0;
 	if (PCB->RatDraw) {
-		if (Mode == ARC_MODE || Mode == RECTANGLE_MODE ||
-				Mode == VIA_MODE || Mode == POLYGON_MODE ||
-				Mode == POLYGONHOLE_MODE || Mode == TEXT_MODE || Mode == INSERTPOINT_MODE || Mode == THERMAL_MODE) {
+		if (Mode == PCB_MODE_ARC || Mode == PCB_MODE_RECTANGLE ||
+				Mode == PCB_MODE_VIA || Mode == PCB_MODE_POLYGON ||
+				Mode == PCB_MODE_POLYGON_HOLE || Mode == PCB_MODE_TEXT || Mode == PCB_MODE_INSERT_POINT || Mode == PCB_MODE_THERMAL) {
 			Message(_("That mode is NOT allowed when drawing ratlines!\n"));
-			Mode = NO_MODE;
+			Mode = PCB_MODE_NO;
 		}
 	}
-	if (conf_core.editor.mode == LINE_MODE && Mode == ARC_MODE && Crosshair.AttachedLine.State != STATE_FIRST) {
+	if (conf_core.editor.mode == PCB_MODE_LINE && Mode == PCB_MODE_ARC && Crosshair.AttachedLine.State != STATE_FIRST) {
 		Crosshair.AttachedLine.State = STATE_FIRST;
 		Crosshair.AttachedBox.State = STATE_SECOND;
 		Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = Crosshair.AttachedLine.Point1.X;
 		Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = Crosshair.AttachedLine.Point1.Y;
 		AdjustAttachedObjects();
 	}
-	else if (conf_core.editor.mode == ARC_MODE && Mode == LINE_MODE && Crosshair.AttachedBox.State != STATE_FIRST) {
+	else if (conf_core.editor.mode == PCB_MODE_ARC && Mode == PCB_MODE_LINE && Crosshair.AttachedBox.State != STATE_FIRST) {
 		Crosshair.AttachedBox.State = STATE_FIRST;
 		Crosshair.AttachedLine.State = STATE_SECOND;
 		Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = Crosshair.AttachedBox.Point1.X;
@@ -231,11 +231,11 @@ void SetMode(int Mode)
 		AdjustAttachedObjects();
 	}
 	else {
-		if (conf_core.editor.mode == ARC_MODE || conf_core.editor.mode == LINE_MODE)
+		if (conf_core.editor.mode == PCB_MODE_ARC || conf_core.editor.mode == PCB_MODE_LINE)
 			SetLocalRef(0, 0, false);
 		Crosshair.AttachedBox.State = STATE_FIRST;
 		Crosshair.AttachedLine.State = STATE_FIRST;
-		if (Mode == LINE_MODE && conf_core.editor.auto_drc) {
+		if (Mode == PCB_MODE_LINE && conf_core.editor.auto_drc) {
 			if (ResetConnections(true)) {
 				IncrementUndoSerialNumber();
 				Draw();
@@ -246,7 +246,7 @@ void SetMode(int Mode)
 	sprintf(sMode, "%d", Mode);
 	conf_set(CFR_DESIGN, "editor/mode", -1, sMode, POL_OVERWRITE);
 
-	if (Mode == PASTEBUFFER_MODE)
+	if (Mode == PCB_MODE_PASTE_BUFFER)
 		/* do an update on the crosshair range */
 		SetCrosshairRangeToBuffer();
 	else

@@ -361,7 +361,7 @@ typedef struct {								/* currently marked block */
 } AttachedBoxType, *AttachedBoxTypePtr;
 
 typedef struct {								/* currently attached object */
-	Coord X, Y;										/* saved position when MOVE_MODE */
+	Coord X, Y;										/* saved position when PCB_MODE_MOVE */
 	BoxType BoundingBox;
 	long int Type,								/* object type */
 	  State;

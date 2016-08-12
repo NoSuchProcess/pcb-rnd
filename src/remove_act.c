@@ -57,7 +57,7 @@ static int ActionDelete(int argc, char **argv, Coord x, Coord y)
 	switch (id) {
 	case F_Object:
 		SaveMode();
-		SetMode(REMOVE_MODE);
+		SetMode(PCB_MODE_REMOVE);
 		NotifyMode();
 		RestoreMode();
 		break;

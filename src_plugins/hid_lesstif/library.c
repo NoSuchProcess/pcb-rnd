@@ -67,7 +67,7 @@ static void libnode_select(Widget w, void *v, XmListCallbackStruct * cbs)
 	library_t *e = picks.array[last_pick];
 	e = &e->data.dir.children.array[cbs->item_position - 1];
 	if (LoadElementToBuffer(PASTEBUFFER, e->data.fp.loc_info))
-		SetMode(PASTEBUFFER_MODE);
+		SetMode(PCB_MODE_PASTE_BUFFER);
 }
 
 static int build_library_dialog()

@@ -357,7 +357,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 		case F_ToggleAutoDRC:
 			notify_crosshair_change(false);
 			conf_toggle_editor(auto_drc);
-			if (conf_core.editor.auto_drc && conf_core.editor.mode == LINE_MODE) {
+			if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
 				if (ResetConnections(true)) {
 					IncrementUndoSerialNumber();
 					Draw();
@@ -597,101 +597,101 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 		notify_crosshair_change(false);
 		switch (funchash_get(function, NULL)) {
 		case F_Arc:
-			SetMode(ARC_MODE);
+			SetMode(PCB_MODE_ARC);
 			break;
 		case F_Arrow:
-			SetMode(ARROW_MODE);
+			SetMode(PCB_MODE_ARROW);
 			break;
 		case F_Copy:
 			pcb_trace("ActionMode() copy\n");
-			SetMode(COPY_MODE);
+			SetMode(PCB_MODE_COPY);
 			break;
 		case F_InsertPoint:
-			SetMode(INSERTPOINT_MODE);
+			SetMode(PCB_MODE_INSERT_POINT);
 			break;
 		case F_Line:
-			SetMode(LINE_MODE);
+			SetMode(PCB_MODE_LINE);
 			break;
 		case F_Lock:
-			SetMode(LOCK_MODE);
+			SetMode(PCB_MODE_LOCK);
 			break;
 		case F_Move:
-			SetMode(MOVE_MODE);
+			SetMode(PCB_MODE_MOVE);
 			break;
 		case F_None:
-			SetMode(NO_MODE);
+			SetMode(PCB_MODE_NO);
 			break;
 		case F_Cancel:
 			{
 				int saved_mode = conf_core.editor.mode;
-				SetMode(NO_MODE);
+				SetMode(PCB_MODE_NO);
 				SetMode(saved_mode);
 			}
 			break;
 		case F_Escape:
 			{
 				switch (conf_core.editor.mode) {
-				case VIA_MODE:
-				case PASTEBUFFER_MODE:
-				case TEXT_MODE:
-				case ROTATE_MODE:
-				case REMOVE_MODE:
-				case MOVE_MODE:
-				case COPY_MODE:
-				case INSERTPOINT_MODE:
-				case RUBBERBANDMOVE_MODE:
-				case THERMAL_MODE:
-				case LOCK_MODE:
-					SetMode(NO_MODE);
-					SetMode(ARROW_MODE);
+				case PCB_MODE_VIA:
+				case PCB_MODE_PASTE_BUFFER:
+				case PCB_MODE_TEXT:
+				case PCB_MODE_ROTATE:
+				case PCB_MODE_REMOVE:
+				case PCB_MODE_MOVE:
+				case PCB_MODE_COPY:
+				case PCB_MODE_INSERT_POINT:
+				case PCB_MODE_RUBBERBAND_MOVE:
+				case PCB_MODE_THERMAL:
+				case PCB_MODE_LOCK:
+					SetMode(PCB_MODE_NO);
+					SetMode(PCB_MODE_ARROW);
 					break;
 
-				case LINE_MODE:
+				case PCB_MODE_LINE:
 					if (Crosshair.AttachedLine.State == STATE_FIRST)
-						SetMode(ARROW_MODE);
+						SetMode(PCB_MODE_ARROW);
 					else {
-						SetMode(NO_MODE);
-						SetMode(LINE_MODE);
+						SetMode(PCB_MODE_NO);
+						SetMode(PCB_MODE_LINE);
 					}
 					break;
 
-				case RECTANGLE_MODE:
+				case PCB_MODE_RECTANGLE:
 					if (Crosshair.AttachedBox.State == STATE_FIRST)
-						SetMode(ARROW_MODE);
+						SetMode(PCB_MODE_ARROW);
 					else {
-						SetMode(NO_MODE);
-						SetMode(RECTANGLE_MODE);
+						SetMode(PCB_MODE_NO);
+						SetMode(PCB_MODE_RECTANGLE);
 					}
 					break;
 
-				case POLYGON_MODE:
+				case PCB_MODE_POLYGON:
 					if (Crosshair.AttachedLine.State == STATE_FIRST)
-						SetMode(ARROW_MODE);
+						SetMode(PCB_MODE_ARROW);
 					else {
-						SetMode(NO_MODE);
-						SetMode(POLYGON_MODE);
+						SetMode(PCB_MODE_NO);
+						SetMode(PCB_MODE_POLYGON);
 					}
 					break;
 
-				case POLYGONHOLE_MODE:
+				case PCB_MODE_POLYGON_HOLE:
 					if (Crosshair.AttachedLine.State == STATE_FIRST)
-						SetMode(ARROW_MODE);
+						SetMode(PCB_MODE_ARROW);
 					else {
-						SetMode(NO_MODE);
-						SetMode(POLYGONHOLE_MODE);
+						SetMode(PCB_MODE_NO);
+						SetMode(PCB_MODE_POLYGON_HOLE);
 					}
 					break;
 
-				case ARC_MODE:
+				case PCB_MODE_ARC:
 					if (Crosshair.AttachedBox.State == STATE_FIRST)
-						SetMode(ARROW_MODE);
+						SetMode(PCB_MODE_ARROW);
 					else {
-						SetMode(NO_MODE);
-						SetMode(ARC_MODE);
+						SetMode(PCB_MODE_NO);
+						SetMode(PCB_MODE_ARC);
 					}
 					break;
 
-				case ARROW_MODE:
+				case PCB_MODE_ARROW:
 					break;
 
 				default:
@@ -704,13 +704,13 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 			NotifyMode();
 			break;
 		case F_PasteBuffer:
-			SetMode(PASTEBUFFER_MODE);
+			SetMode(PCB_MODE_PASTE_BUFFER);
 			break;
 		case F_Polygon:
-			SetMode(POLYGON_MODE);
+			SetMode(PCB_MODE_POLYGON);
 			break;
 		case F_PolygonHole:
-			SetMode(POLYGONHOLE_MODE);
+			SetMode(PCB_MODE_POLYGON_HOLE);
 			break;
 		case F_Release:
 			if ((mid_stroke) && (conf_core.editor.enable_stroke))
@@ -719,13 +719,13 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 				ReleaseMode();
 			break;
 		case F_Remove:
-			SetMode(REMOVE_MODE);
+			SetMode(PCB_MODE_REMOVE);
 			break;
 		case F_Rectangle:
-			SetMode(RECTANGLE_MODE);
+			SetMode(PCB_MODE_RECTANGLE);
 			break;
 		case F_Rotate:
-			SetMode(ROTATE_MODE);
+			SetMode(PCB_MODE_ROTATE);
 			break;
 		case F_Stroke:
 			if (conf_core.editor.enable_stroke) {
@@ -735,30 +735,30 @@ static int ActionMode(int argc, char **argv, Coord x, Coord y)
 			/* Handle middle mouse button restarts of drawing mode.  If not in
 			   |  a drawing mode, middle mouse button will select objects.
 			 */
-			if (conf_core.editor.mode == LINE_MODE && Crosshair.AttachedLine.State != STATE_FIRST) {
-				SetMode(LINE_MODE);
+			if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != STATE_FIRST) {
+				SetMode(PCB_MODE_LINE);
 			}
-			else if (conf_core.editor.mode == ARC_MODE && Crosshair.AttachedBox.State != STATE_FIRST)
-				SetMode(ARC_MODE);
-			else if (conf_core.editor.mode == RECTANGLE_MODE && Crosshair.AttachedBox.State != STATE_FIRST)
-				SetMode(RECTANGLE_MODE);
-			else if (conf_core.editor.mode == POLYGON_MODE && Crosshair.AttachedLine.State != STATE_FIRST)
-				SetMode(POLYGON_MODE);
+			else if (conf_core.editor.mode == PCB_MODE_ARC && Crosshair.AttachedBox.State != STATE_FIRST)
+				SetMode(PCB_MODE_ARC);
+			else if (conf_core.editor.mode == PCB_MODE_RECTANGLE && Crosshair.AttachedBox.State != STATE_FIRST)
+				SetMode(PCB_MODE_RECTANGLE);
+			else if (conf_core.editor.mode == PCB_MODE_POLYGON && Crosshair.AttachedLine.State != STATE_FIRST)
+				SetMode(PCB_MODE_POLYGON);
 			else {
 				SaveMode();
 				saved_mode = true;
-				SetMode(ARROW_MODE);
+				SetMode(PCB_MODE_ARROW);
 				NotifyMode();
 			}
 			break;
 		case F_Text:
-			SetMode(TEXT_MODE);
+			SetMode(PCB_MODE_TEXT);
 			break;
 		case F_Thermal:
-			SetMode(THERMAL_MODE);
+			SetMode(PCB_MODE_THERMAL);
 			break;
 		case F_Via:
-			SetMode(VIA_MODE);
+			SetMode(PCB_MODE_VIA);
 			break;
 
 		case F_Restore:						/* restore the last saved mode */
@@ -1064,8 +1064,8 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 		conf_set_design("design/line_thickness", "%$mS", ((LineTypePtr) ptr2)->Thickness);
 		conf_set_design("design/clearance", "%$mS", ((LineTypePtr) ptr2)->Clearance / 2);
 		layer = (LayerTypePtr) ptr1;
-		if (conf_core.editor.mode != LINE_MODE)
-			SetMode(LINE_MODE);
+		if (conf_core.editor.mode != PCB_MODE_LINE)
+			SetMode(PCB_MODE_LINE);
 		notify_crosshair_change(true);
 		hid_action("RouteStylesChanged");
 		break;
@@ -1075,8 +1075,8 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 		conf_set_design("design/line_thickness", "%$mS", ((ArcTypePtr) ptr2)->Thickness);
 		conf_set_design("design/clearance", "%$mS", ((ArcTypePtr) ptr2)->Clearance / 2);
 		layer = (LayerTypePtr) ptr1;
-		if (conf_core.editor.mode != ARC_MODE)
-			SetMode(ARC_MODE);
+		if (conf_core.editor.mode != PCB_MODE_ARC)
+			SetMode(PCB_MODE_ARC);
 		notify_crosshair_change(true);
 		hid_action("RouteStylesChanged");
 		break;
@@ -1090,8 +1090,8 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 		conf_set_design("design/via_thickness", "%$mS", ((PinTypePtr) ptr2)->Thickness);
 		conf_set_design("design/via_drilling_hole", "%$mS", ((PinTypePtr) ptr2)->DrillingHole);
 		conf_set_design("design/clearance", "%$mS", ((PinTypePtr) ptr2)->Clearance / 2);
-		if (conf_core.editor.mode != VIA_MODE)
-			SetMode(VIA_MODE);
+		if (conf_core.editor.mode != PCB_MODE_VIA)
+			SetMode(PCB_MODE_VIA);
 		notify_crosshair_change(true);
 		hid_action("RouteStylesChanged");
 		break;

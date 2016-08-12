@@ -152,7 +152,7 @@ static int CommandLoadElementToBuffer(int argc, char **argv, Coord x, Coord y)
 	case 1:											/* filename is passed in commandline */
 		filename = argv[0];
 		if (filename && LoadElementToBuffer(PASTEBUFFER, filename))
-			SetMode(PASTEBUFFER_MODE);
+			SetMode(PCB_MODE_PASTE_BUFFER);
 		break;
 
 	default:											/* usage */
@@ -186,7 +186,7 @@ static int CommandLoadLayoutToBuffer(int argc, char **argv, Coord x, Coord y)
 	case 1:											/* filename is passed in commandline */
 		filename = argv[0];
 		if (filename && LoadLayoutToBuffer(PASTEBUFFER, filename))
-			SetMode(PASTEBUFFER_MODE);
+			SetMode(PCB_MODE_PASTE_BUFFER);
 		break;
 
 	default:											/* usage */
