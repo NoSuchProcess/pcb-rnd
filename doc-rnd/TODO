@@ -107,7 +107,7 @@ CLEANUP #6:
 	- action (--show-paths!) and dialog box to print where the actual files are coming from
 	- project specific menus from extra lihata files - maybe from project.lht
 - main.c:
-	- SIGPIPE - do we need it? probably yes, because we can run commands
+	- SIGPIPE - detect it (needed for popen)
 
 FEATURES
 - BUILD: menuconfig and a config file for scconfig
