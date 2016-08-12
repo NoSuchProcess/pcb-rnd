@@ -93,7 +93,6 @@ CLEANUP #6:
 
 - reduce
 		- hash in hid_attrib.c?
-		- hash in hid_color.c; test: eps
 		- nelma and gcode both invent .png name locally
 		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
 		- vendordrill
