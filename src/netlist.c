@@ -121,11 +121,11 @@ static int pin_name_to_xy(LibraryEntryType * pin, int *x, int *y)
 	if (!SeekPad(pin, &conn, false))
 		return 1;
 	switch (conn.type) {
-	case PIN_TYPE:
+	case PCB_TYPE_PIN:
 		*x = ((PinType *) (conn.ptr2))->X;
 		*y = ((PinType *) (conn.ptr2))->Y;
 		return 0;
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		*x = ((PadType *) (conn.ptr2))->Point1.X;
 		*y = ((PadType *) (conn.ptr2))->Point1.Y;
 		return 0;

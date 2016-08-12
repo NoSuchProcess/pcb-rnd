@@ -31,7 +31,7 @@
 
 #include "global.h"
 
-#define CLONE_TYPES LINE_TYPE | ARC_TYPE | VIA_TYPE | POLYGON_TYPE
+#define CLONE_TYPES PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_VIA | PCB_TYPE_POLYGON
 
 void ActionAdjustStyle(char *);
 void EventMoveCrosshair(int, int);

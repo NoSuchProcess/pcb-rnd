@@ -156,7 +156,7 @@ int ActionUndo(int argc, char **argv, Coord x, Coord y)
 				void *ptr1, *ptr3, *ptrtmp;
 				LineTypePtr ptr2;
 				/* this search is guaranteed to succeed */
-				SearchObjectByLocation(LINE_TYPE | RATLINE_TYPE, &ptr1,
+				SearchObjectByLocation(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 															 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, 0);
 				ptr2 = (LineTypePtr) ptrtmp;
 
@@ -179,7 +179,7 @@ int ActionUndo(int argc, char **argv, Coord x, Coord y)
 				/* check if an intermediate point was removed */
 				if (type & UNDO_REMOVE) {
 					/* this search should find the restored line */
-					SearchObjectByLocation(LINE_TYPE | RATLINE_TYPE, &ptr1,
+					SearchObjectByLocation(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 																 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y, 0);
 					ptr2 = (LineTypePtr) ptrtmp;
 					if (conf_core.editor.auto_drc) {
@@ -198,7 +198,7 @@ int ActionUndo(int argc, char **argv, Coord x, Coord y)
 				}
 				else {
 					/* this search is guaranteed to succeed too */
-					SearchObjectByLocation(LINE_TYPE | RATLINE_TYPE, &ptr1,
+					SearchObjectByLocation(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 																 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, 0);
 					ptr2 = (LineTypePtr) ptrtmp;
 					lastLayer = (LayerTypePtr) ptr1;
@@ -217,7 +217,7 @@ int ActionUndo(int argc, char **argv, Coord x, Coord y)
 				void *ptr1, *ptr2, *ptr3;
 				BoxTypePtr bx;
 				/* guaranteed to succeed */
-				SearchObjectByLocation(ARC_TYPE, &ptr1, &ptr2, &ptr3,
+				SearchObjectByLocation(PCB_TYPE_ARC, &ptr1, &ptr2, &ptr3,
 															 Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point1.Y, 0);
 				bx = GetArcEnds((ArcTypePtr) ptr2);
 				Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = bx->X1;

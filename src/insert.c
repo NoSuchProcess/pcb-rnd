@@ -85,16 +85,16 @@ static void *InsertPointIntoRat(RatTypePtr Rat)
 																	InsertX, InsertY, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (!newone)
 		return newone;
-	AddObjectToCreateUndoList(LINE_TYPE, CURRENT, newone, newone);
+	AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, newone, newone);
 	EraseRat(Rat);
 	DrawLine(CURRENT, newone);
 	newone = CreateDrawnLineOnLayer(CURRENT, Rat->Point2.X, Rat->Point2.Y,
 																	InsertX, InsertY, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (newone) {
-		AddObjectToCreateUndoList(LINE_TYPE, CURRENT, newone, newone);
+		AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, newone, newone);
 		DrawLine(CURRENT, newone);
 	}
-	MoveObjectToRemoveUndoList(RATLINE_TYPE, Rat, Rat, Rat);
+	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	Draw();
 	return (newone);
 }
@@ -112,23 +112,23 @@ static void *InsertPointIntoLine(LayerTypePtr Layer, LineTypePtr Line)
 		return (NULL);
 	X = Line->Point2.X;
 	Y = Line->Point2.Y;
-	AddObjectToMoveUndoList(LINEPOINT_TYPE, Layer, Line, &Line->Point2, InsertX - X, InsertY - Y);
+	AddObjectToMoveUndoList(PCB_TYPE_LINE_POINT, Layer, Line, &Line->Point2, InsertX - X, InsertY - Y);
 	EraseLine(Line);
 	r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
-	RestoreToPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	Line->Point2.X = InsertX;
 	Line->Point2.Y = InsertY;
 	SetLineBoundingBox(Line);
 	r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
-	ClearFromPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	DrawLine(Layer, Line);
 	/* we must create after playing with Line since creation may
 	 * invalidate the line pointer
 	 */
 	if ((line = CreateDrawnLineOnLayer(Layer, InsertX, InsertY, X, Y, Line->Thickness, Line->Clearance, Line->Flags))) {
-		AddObjectToCreateUndoList(LINE_TYPE, Layer, line, line);
+		AddObjectToCreateUndoList(PCB_TYPE_LINE, Layer, line, line);
 		DrawLine(Layer, line);
-		ClearFromPolygon(PCB->Data, LINE_TYPE, Layer, line);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, line);
 		/* creation call adds it to the rtree */
 	}
 	Draw();
@@ -170,7 +170,7 @@ static void *InsertPointIntoPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 
 	Polygon->Points[InsertAt] = save;
 	SetChangedFlag(true);
-	AddObjectToInsertPointUndoList(POLYGONPOINT_TYPE, Layer, Polygon, &Polygon->Points[InsertAt]);
+	AddObjectToInsertPointUndoList(PCB_TYPE_POLYGON_POINT, Layer, Polygon, &Polygon->Points[InsertAt]);
 
 	SetPolygonBoundingBox(Polygon);
 	r_insert_entry(Layer->polygon_tree, (BoxType *) Polygon, 0);

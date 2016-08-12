@@ -406,26 +406,26 @@ void AdjustAttachedObjects(void)
  */
 void NotifyLine(void)
 {
-	int type = NO_TYPE;
+	int type = PCB_TYPE_NONE;
 	void *ptr1, *ptr2, *ptr3;
 
 	if (!Marked.status || conf_core.editor.local_ref)
 		SetLocalRef(Crosshair.X, Crosshair.Y, true);
 	switch (Crosshair.AttachedLine.State) {
 	case STATE_FIRST:						/* first point */
-		if (PCB->RatDraw && SearchScreen(Crosshair.X, Crosshair.Y, PAD_TYPE | PIN_TYPE, &ptr1, &ptr1, &ptr1) == NO_TYPE) {
+		if (PCB->RatDraw && SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
 			gui->beep();
 			break;
 		}
 		if (conf_core.editor.auto_drc && conf_core.editor.mode == LINE_MODE) {
-			type = SearchScreen(Crosshair.X, Crosshair.Y, PIN_TYPE | PAD_TYPE | VIA_TYPE, &ptr1, &ptr2, &ptr3);
+			type = SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
 			LookupConnection(Crosshair.X, Crosshair.Y, true, 1, FOUNDFLAG);
 		}
-		if (type == PIN_TYPE || type == VIA_TYPE) {
+		if (type == PCB_TYPE_PIN || type == PCB_TYPE_VIA) {
 			Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = ((PinTypePtr) ptr2)->X;
 			Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = ((PinTypePtr) ptr2)->Y;
 		}
-		else if (type == PAD_TYPE) {
+		else if (type == PCB_TYPE_PAD) {
 			PadTypePtr pad = (PadTypePtr) ptr2;
 			double d1 = Distance(Crosshair.X, Crosshair.Y, pad->Point1.X, pad->Point1.Y);
 			double d2 = Distance(Crosshair.X, Crosshair.Y, pad->Point2.X, pad->Point2.Y);
@@ -501,7 +501,7 @@ void NotifyMode(void)
 			 * (Note.Moving) or clicked on a MOVE_TYPE
 			 * (Note.Hit)
 			 */
-			for (test = (SELECT_TYPES | MOVE_TYPES) & ~RATLINE_TYPE; test; test &= ~type) {
+			for (test = (SELECT_TYPES | MOVE_TYPES) & ~PCB_TYPE_RATLINE; test; test &= ~type) {
 				type = SearchScreen(Note.X, Note.Y, test, &ptr1, &ptr2, &ptr3);
 				if (!Note.Hit && (type & MOVE_TYPES) && !TEST_FLAG(LOCKFLAG, (PinTypePtr) ptr2)) {
 					Note.Hit = type;
@@ -511,7 +511,7 @@ void NotifyMode(void)
 				}
 				if (!Note.Moving && (type & SELECT_TYPES) && TEST_FLAG(SELECTEDFLAG, (PinTypePtr) ptr2))
 					Note.Moving = true;
-				if ((Note.Hit && Note.Moving) || type == NO_TYPE)
+				if ((Note.Hit && Note.Moving) || type == PCB_TYPE_NONE)
 					break;
 			}
 			break;
@@ -528,9 +528,9 @@ void NotifyMode(void)
 			if ((via = CreateNewVia(PCB->Data, Note.X, Note.Y,
 															conf_core.design.via_thickness, 2 * conf_core.design.clearance,
 															0, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
-				AddObjectToCreateUndoList(VIA_TYPE, via, via, via);
+				AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 				if (gui->shift_is_pressed())
-					ChangeObjectThermal(VIA_TYPE, via, via, via, PCB->ThermStyle);
+					ChangeObjectThermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);
 				IncrementUndoSerialNumber();
 				DrawVia(via);
 				Draw();
@@ -592,7 +592,7 @@ void NotifyMode(void)
 						bx = GetArcEnds(arc);
 						Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = bx->X2;
 						Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = bx->Y2;
-						AddObjectToCreateUndoList(ARC_TYPE, CURRENT, arc, arc);
+						AddObjectToCreateUndoList(PCB_TYPE_ARC, CURRENT, arc, arc);
 						IncrementUndoSerialNumber();
 						addedLines++;
 						DrawArc(CURRENT, arc);
@@ -606,8 +606,8 @@ void NotifyMode(void)
 		}
 	case LOCK_MODE:
 		{
-			type = SearchScreen(Note.X, Note.Y, LOCK_TYPES, &ptr1, &ptr2, &ptr3);
-			if (type == ELEMENT_TYPE) {
+			type = SearchScreen(Note.X, Note.Y, PCB_TYPEMASK_LOCK, &ptr1, &ptr2, &ptr3);
+			if (type == PCB_TYPE_ELEMENT) {
 				ElementTypePtr element = (ElementTypePtr) ptr2;
 
 				TOGGLE_FLAG(LOCKFLAG, element);
@@ -631,7 +631,7 @@ void NotifyMode(void)
 				Draw();
 				hid_actionl("Report", "Object", NULL);
 			}
-			else if (type != NO_TYPE) {
+			else if (type != PCB_TYPE_NONE) {
 				TextTypePtr thing = (TextTypePtr) ptr3;
 				TOGGLE_FLAG(LOCKFLAG, thing);
 				if (TEST_FLAG(LOCKFLAG, thing)
@@ -647,7 +647,7 @@ void NotifyMode(void)
 		}
 	case THERMAL_MODE:
 		{
-			if (((type = SearchScreen(Note.X, Note.Y, PIN_TYPES, &ptr1, &ptr2, &ptr3)) != NO_TYPE)
+			if (((type = SearchScreen(Note.X, Note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					&& !TEST_FLAG(HOLEFLAG, (PinTypePtr) ptr3)) {
 				if (gui->shift_is_pressed()) {
 					int tstyle = GET_THERM(INDEXOFCURRENT, (PinTypePtr) ptr3);
@@ -685,7 +685,7 @@ void NotifyMode(void)
 			RatTypePtr line;
 			if ((line = AddNet())) {
 				addedLines++;
-				AddObjectToCreateUndoList(RATLINE_TYPE, line, line, line);
+				AddObjectToCreateUndoList(PCB_TYPE_RATLINE, line, line, line);
 				IncrementUndoSerialNumber();
 				DrawRat(line);
 				Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X;
@@ -734,25 +734,25 @@ void NotifyMode(void)
 				PinTypePtr via;
 
 				addedLines++;
-				AddObjectToCreateUndoList(LINE_TYPE, CURRENT, line, line);
+				AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);
 				DrawLine(CURRENT, line);
 				/* place a via if vias are visible, the layer is
 				   in a new group since the last line and there
 				   isn't a pin already here */
 				if (PCB->ViaOn && GetLayerGroupNumberByPointer(CURRENT) !=
 						GetLayerGroupNumberByPointer(lastLayer) &&
-						SearchObjectByLocation(PIN_TYPES, &ptr1, &ptr2, &ptr3,
+						SearchObjectByLocation(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
 																	 Crosshair.AttachedLine.Point1.X,
 																	 Crosshair.AttachedLine.Point1.Y,
 																	 conf_core.design.via_thickness / 2) ==
-						NO_TYPE
+						PCB_TYPE_NONE
 						&& (via =
 								CreateNewVia(PCB->Data,
 														 Crosshair.AttachedLine.Point1.X,
 														 Crosshair.AttachedLine.Point1.Y,
 														 conf_core.design.via_thickness,
 														 2 * conf_core.design.clearance, 0, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
-					AddObjectToCreateUndoList(VIA_TYPE, via, via, via);
+					AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 					DrawVia(via);
 				}
 				/* copy the coordinates */
@@ -772,7 +772,7 @@ void NotifyMode(void)
 																		 MakeFlags((conf_core.editor.auto_drc ? FOUNDFLAG : 0) |
 																							 (conf_core.editor.clear_line ? CLEARLINEFLAG : 0)))) != NULL) {
 				addedLines++;
-				AddObjectToCreateUndoList(LINE_TYPE, CURRENT, line, line);
+				AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);
 				IncrementUndoSerialNumber();
 				DrawLine(CURRENT, line);
 				/* move to new start point */
@@ -815,7 +815,7 @@ void NotifyMode(void)
 																									 Crosshair.AttachedBox.Point1.Y,
 																									 Crosshair.AttachedBox.Point2.X,
 																									 Crosshair.AttachedBox.Point2.Y, MakeFlags(flags))) != NULL) {
-				AddObjectToCreateUndoList(POLYGON_TYPE, CURRENT, polygon, polygon);
+				AddObjectToCreateUndoList(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
 				IncrementUndoSerialNumber();
 				DrawPolygon(CURRENT, polygon);
 				Draw();
@@ -839,7 +839,7 @@ void NotifyMode(void)
 						flag |= ONSOLDERFLAG;
 					if ((text = CreateNewText(CURRENT, &PCB->Font, Note.X,
 																		Note.Y, 0, conf_core.design.text_scale, string, MakeFlags(flag))) != NULL) {
-						AddObjectToCreateUndoList(TEXT_TYPE, CURRENT, text, text);
+						AddObjectToCreateUndoList(PCB_TYPE_TEXT, CURRENT, text, text);
 						IncrementUndoSerialNumber();
 						DrawText(CURRENT, text);
 						Draw();
@@ -891,10 +891,10 @@ void NotifyMode(void)
 				/* first notify, lookup object */
 			case STATE_FIRST:
 				Crosshair.AttachedObject.Type =
-					SearchScreen(Note.X, Note.Y, POLYGON_TYPE,
+					SearchScreen(Note.X, Note.Y, PCB_TYPE_POLYGON,
 											 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 
-				if (Crosshair.AttachedObject.Type == NO_TYPE) {
+				if (Crosshair.AttachedObject.Type == PCB_TYPE_NONE) {
 					Message("The first point of a polygon hole must be on a polygon.\n");
 					break; /* don't start doing anything if clicket out of polys */
 				}
@@ -902,7 +902,7 @@ void NotifyMode(void)
 				if (TEST_FLAG(LOCKFLAG, (PolygonTypePtr)
 											Crosshair.AttachedObject.Ptr2)) {
 					Message(_("Sorry, the object is locked\n"));
-					Crosshair.AttachedObject.Type = NO_TYPE;
+					Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					break;
 				}
 				else
@@ -942,7 +942,7 @@ void NotifyMode(void)
 						SaveUndoSerialNumber();
 						Flags = ((PolygonType *) Crosshair.AttachedObject.Ptr2)->Flags;
 						PolyToPolygonsOnLayer(PCB->Data, (LayerType *) Crosshair.AttachedObject.Ptr1, result, Flags);
-						RemoveObject(POLYGON_TYPE,
+						RemoveObject(PCB_TYPE_POLYGON,
 												 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 						RestoreUndoSerialNumber();
 						IncrementUndoSerialNumber();
@@ -980,9 +980,9 @@ void NotifyMode(void)
 			ElementTypePtr e = 0;
 
 			if (gui->shift_is_pressed()) {
-				int type = SearchScreen(Note.X, Note.Y, ELEMENT_TYPE, &ptr1, &ptr2,
+				int type = SearchScreen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,
 																&ptr3);
-				if (type == ELEMENT_TYPE) {
+				if (type == PCB_TYPE_ELEMENT) {
 					e = (ElementTypePtr) ptr1;
 					if (e) {
 						int i;
@@ -997,9 +997,9 @@ void NotifyMode(void)
 			if (CopyPastebufferToLayout(Note.X, Note.Y))
 				SetChangedFlag(true);
 			if (e) {
-				int type = SearchScreen(Note.X, Note.Y, ELEMENT_TYPE, &ptr1, &ptr2,
+				int type = SearchScreen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,
 																&ptr3);
-				if (type == ELEMENT_TYPE && ptr1) {
+				if (type == PCB_TYPE_ELEMENT && ptr1) {
 					int i, save_n;
 					e = (ElementTypePtr) ptr1;
 
@@ -1022,12 +1022,12 @@ void NotifyMode(void)
 		}
 
 	case REMOVE_MODE:
-		if ((type = SearchScreen(Note.X, Note.Y, REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != NO_TYPE) {
+		if ((type = SearchScreen(Note.X, Note.Y, REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 			if (TEST_FLAG(LOCKFLAG, (LineTypePtr) ptr2)) {
 				Message(_("Sorry, the object is locked\n"));
 				break;
 			}
-			if (type == ELEMENT_TYPE) {
+			if (type == PCB_TYPE_ELEMENT) {
 				RubberbandTypePtr ptr;
 				int i;
 
@@ -1038,7 +1038,7 @@ void NotifyMode(void)
 					if (PCB->RatOn)
 						EraseRat((RatTypePtr) ptr->Line);
 					if (TEST_FLAG(RUBBERENDFLAG, ptr->Line))
-						MoveObjectToRemoveUndoList(RATLINE_TYPE, ptr->Line, ptr->Line, ptr->Line);
+						MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
 					else
 						TOGGLE_FLAG(RUBBERENDFLAG, ptr->Line);	/* only remove line once */
 					ptr++;
@@ -1068,11 +1068,11 @@ pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.At
 				Crosshair.AttachedObject.Type =
 					SearchScreen(Note.X, Note.Y, types,
 											 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
-				if (Crosshair.AttachedObject.Type != NO_TYPE) {
+				if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
 					if (conf_core.editor.mode == MOVE_MODE && TEST_FLAG(LOCKFLAG, (PinTypePtr)
 																											Crosshair.AttachedObject.Ptr2)) {
 						Message(_("Sorry, the object is locked\n"));
-						Crosshair.AttachedObject.Type = NO_TYPE;
+						Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					}
 					else
 						AttachForCopy(Note.X, Note.Y);
@@ -1098,7 +1098,7 @@ pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.At
 			SetChangedFlag(true);
 
 			/* reset identifiers */
-			Crosshair.AttachedObject.Type = NO_TYPE;
+			Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 			Crosshair.AttachedObject.State = STATE_FIRST;
 			break;
 		}
@@ -1114,16 +1114,16 @@ pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.At
 				SearchScreen(Note.X, Note.Y, INSERT_TYPES,
 										 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 
-			if (Crosshair.AttachedObject.Type != NO_TYPE) {
+			if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
 				if (TEST_FLAG(LOCKFLAG, (PolygonTypePtr)
 											Crosshair.AttachedObject.Ptr2)) {
 					Message(_("Sorry, the object is locked\n"));
-					Crosshair.AttachedObject.Type = NO_TYPE;
+					Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					break;
 				}
 				else {
 					/* get starting point of nearest segment */
-					if (Crosshair.AttachedObject.Type == POLYGON_TYPE) {
+					if (Crosshair.AttachedObject.Type == PCB_TYPE_POLYGON) {
 						fake.poly = (PolygonTypePtr) Crosshair.AttachedObject.Ptr2;
 						polyIndex = GetLowestDistancePolygonPoint(fake.poly, Note.X, Note.Y);
 						fake.line.Point1 = fake.poly->Points[polyIndex];
@@ -1139,8 +1139,8 @@ pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.At
 
 			/* second notify, insert new point into object */
 		case STATE_SECOND:
-			if (Crosshair.AttachedObject.Type == POLYGON_TYPE)
-				InsertPointIntoObject(POLYGON_TYPE,
+			if (Crosshair.AttachedObject.Type == PCB_TYPE_POLYGON)
+				InsertPointIntoObject(PCB_TYPE_POLYGON,
 															Crosshair.AttachedObject.Ptr1, fake.poly,
 															&polyIndex, InsertedPoint.X, InsertedPoint.Y, false, false);
 			else
@@ -1150,7 +1150,7 @@ pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.At
 			SetChangedFlag(true);
 
 			/* reset identifiers */
-			Crosshair.AttachedObject.Type = NO_TYPE;
+			Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 			Crosshair.AttachedObject.State = STATE_FIRST;
 			break;
 		}
@@ -1183,15 +1183,15 @@ int get_style_size(int funcid, Coord * out, int type, int size_id)
 	switch (funcid) {
 	case F_Object:
 		switch (type) {
-		case ELEMENT_TYPE:					/* we'd set pin/pad properties, so fall thru */
-		case VIA_TYPE:
-		case PIN_TYPE:
+		case PCB_TYPE_ELEMENT:					/* we'd set pin/pad properties, so fall thru */
+		case PCB_TYPE_VIA:
+		case PCB_TYPE_PIN:
 			return get_style_size(F_SelectedVias, out, 0, size_id);
-		case PAD_TYPE:
+		case PCB_TYPE_PAD:
 			return get_style_size(F_SelectedPads, out, 0, size_id);
-		case LINE_TYPE:
+		case PCB_TYPE_LINE:
 			return get_style_size(F_SelectedLines, out, 0, size_id);
-		case ARC_TYPE:
+		case PCB_TYPE_ARC:
 			return get_style_size(F_SelectedArcs, out, 0, size_id);
 		}
 		Message(_("Sorry, can't fetch the style of that object tpye (%x)\n"), type);

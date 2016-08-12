@@ -950,7 +950,7 @@ static routedata_t *CreateRouteData()
 				{
 					routebox_t *rb = NULL;
 					SET_FLAG(DRCFLAG, (PinTypePtr) connection->ptr2);
-					if (connection->type == LINE_TYPE) {
+					if (connection->type == PCB_TYPE_LINE) {
 						LineType *line = (LineType *) connection->ptr2;
 
 						/* lines are listed at each end, so skip one */
@@ -990,16 +990,16 @@ static routedata_t *CreateRouteData()
 					}
 					else
 						switch (connection->type) {
-						case PAD_TYPE:
+						case PCB_TYPE_PAD:
 							rb = AddPad(layergroupboxes, (ElementType *) connection->ptr1, (PadType *) connection->ptr2, rd->styles[j]);
 							break;
-						case PIN_TYPE:
+						case PCB_TYPE_PIN:
 							rb = AddPin(layergroupboxes, (PinType *) connection->ptr2, false, rd->styles[j]);
 							break;
-						case VIA_TYPE:
+						case PCB_TYPE_VIA:
 							rb = AddPin(layergroupboxes, (PinType *) connection->ptr2, true, rd->styles[j]);
 							break;
-						case POLYGON_TYPE:
+						case PCB_TYPE_POLYGON:
 							rb =
 								AddPolygon(layergroupboxes,
 													 GetLayerNumber(PCB->Data, (LayerType *) connection->ptr1),
@@ -1335,16 +1335,16 @@ void showbox(BoxType b, dimension_t thickness, int group)
 	if (b.Y1 == b.Y2 || b.X1 == b.X2)
 		thickness = 5;
 	line = CreateNewLineOnLayer(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X2, b.Y1, thickness, 0, MakeFlags(0));
-	AddObjectToCreateUndoList(LINE_TYPE, LAYER_PTR(component_silk_layer), line, line);
+	AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	if (b.Y1 != b.Y2) {
 		line = CreateNewLineOnLayer(LAYER_PTR(component_silk_layer), b.X1, b.Y2, b.X2, b.Y2, thickness, 0, MakeFlags(0));
-		AddObjectToCreateUndoList(LINE_TYPE, LAYER_PTR(component_silk_layer), line, line);
+		AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	}
 	line = CreateNewLineOnLayer(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X1, b.Y2, thickness, 0, MakeFlags(0));
-	AddObjectToCreateUndoList(LINE_TYPE, LAYER_PTR(component_silk_layer), line, line);
+	AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	if (b.X1 != b.X2) {
 		line = CreateNewLineOnLayer(LAYER_PTR(component_silk_layer), b.X2, b.Y1, b.X2, b.Y2, thickness, 0, MakeFlags(0));
-		AddObjectToCreateUndoList(LINE_TYPE, LAYER_PTR(component_silk_layer), line, line);
+		AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	}
 #endif
 }
@@ -4076,12 +4076,12 @@ static void ripout_livedraw_obj(routebox_t * rb)
 	if (rb->type == LINE && rb->livedraw_obj.line) {
 		LayerType *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
 		EraseLine(rb->livedraw_obj.line);
-		DestroyObject(PCB->Data, LINE_TYPE, layer, rb->livedraw_obj.line, NULL);
+		DestroyObject(PCB->Data, PCB_TYPE_LINE, layer, rb->livedraw_obj.line, NULL);
 		rb->livedraw_obj.line = NULL;
 	}
 	if (rb->type == VIA && rb->livedraw_obj.via) {
 		EraseVia(rb->livedraw_obj.via);
-		DestroyObject(PCB->Data, VIA_TYPE, rb->livedraw_obj.via, NULL, NULL);
+		DestroyObject(PCB->Data, PCB_TYPE_VIA, rb->livedraw_obj.via, NULL, NULL);
 		rb->livedraw_obj.via = NULL;
 	}
 }
@@ -4408,16 +4408,16 @@ static int FindPin(const BoxType * box, PinTypePtr * pin)
 		r_search(PCB->Data->pin_tree, box, NULL, fpin_rect, &info, NULL);
 	else {
 		*pin = info.pin;
-		return PIN_TYPE;
+		return PCB_TYPE_PIN;
 	}
 	if (setjmp(info.env) == 0)
 		r_search(PCB->Data->via_tree, box, NULL, fpin_rect, &info, NULL);
 	else {
 		*pin = info.pin;
-		return VIA_TYPE;
+		return PCB_TYPE_VIA;
 	}
 	*pin = NULL;
-	return NO_TYPE;
+	return PCB_TYPE_NONE;
 }
 
 
@@ -4470,7 +4470,7 @@ bool IronDownAllUnfixedPaths(routedata_t * rd)
 						 p->style->Thick, p->style->Clearance * 2, MakeFlags(AUTOFLAG | (conf_core.editor.clear_line ? CLEARLINEFLAG : 0)));
 
 					if (p->parent.line) {
-						AddObjectToCreateUndoList(LINE_TYPE, layer, p->parent.line, p->parent.line);
+						AddObjectToCreateUndoList(PCB_TYPE_LINE, layer, p->parent.line, p->parent.line);
 						changed = true;
 					}
 				}
@@ -4489,7 +4489,7 @@ bool IronDownAllUnfixedPaths(routedata_t * rd)
 													 pp->style->Diameter, 2 * pp->style->Clearance, 0, pp->style->Hole, NULL, MakeFlags(AUTOFLAG));
 						assert(pp->parent.via);
 						if (pp->parent.via) {
-							AddObjectToCreateUndoList(VIA_TYPE, pp->parent.via, pp->parent.via, pp->parent.via);
+							AddObjectToCreateUndoList(PCB_TYPE_VIA, pp->parent.via, pp->parent.via, pp->parent.via);
 							changed = true;
 						}
 					}
@@ -4515,11 +4515,11 @@ bool IronDownAllUnfixedPaths(routedata_t * rd)
 				int type = FindPin(&p->box, &pin);
 				if (pin) {
 					AddObjectToClearPolyUndoList(type, pin->Element ? pin->Element : pin, pin, pin, false);
-					RestoreToPolygon(PCB->Data, VIA_TYPE, LAYER_PTR(p->layer), pin);
+					RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
 					AddObjectToFlagUndoList(type, pin->Element ? pin->Element : pin, pin, pin);
 					ASSIGN_THERM(p->layer, PCB->ThermStyle, pin);
 					AddObjectToClearPolyUndoList(type, pin->Element ? pin->Element : pin, pin, pin, true);
-					ClearFromPolygon(PCB->Data, VIA_TYPE, LAYER_PTR(p->layer), pin);
+					ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
 					changed = true;
 				}
 			}
@@ -4641,7 +4641,7 @@ bool AutoRoute(bool selected)
 			b = FindRouteBoxOnLayerGroup(rd, line->Point2.X, line->Point2.Y, line->group2);
 			if (!a || !b) {
 #ifdef DEBUG_STALE_RATS
-				AddObjectToFlagUndoList(RATLINE_TYPE, line, line, line);
+				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
 				ASSIGN_FLAG(SELECTEDFLAG, true, line);
 				DrawRat(line, 0);
 #endif /* DEBUG_STALE_RATS */

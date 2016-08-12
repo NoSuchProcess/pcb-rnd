@@ -50,30 +50,30 @@ typedef struct {
 
 #define N(x) x, sizeof(x)-1
 static FlagBitsType object_flagbits[] = {
-	{PINFLAG, N("pin"), ALL_TYPES},
-	{VIAFLAG, N("via"), ALL_TYPES},
-	{FOUNDFLAG, N("found"), ALL_TYPES},
-	{HOLEFLAG, N("hole"), PIN_TYPES},
-	{RATFLAG, N("rat"), RATLINE_TYPE},
-	{PININPOLYFLAG, N("pininpoly"), PIN_TYPES | PAD_TYPE},
-	{CLEARPOLYFLAG, N("clearpoly"), POLYGON_TYPE},
-	{HIDENAMEFLAG, N("hidename"), ELEMENT_TYPE},
-	{DISPLAYNAMEFLAG, N("showname"), ELEMENT_TYPE},
-	{CLEARLINEFLAG, N("clearline"), LINE_TYPE | ARC_TYPE | TEXT_TYPE},
-	{SELECTEDFLAG, N("selected"), ALL_TYPES},
-	{ONSOLDERFLAG, N("onsolder"), ELEMENT_TYPE | PAD_TYPE | TEXT_TYPE},
-	{AUTOFLAG, N("auto"), ALL_TYPES},
-	{SQUAREFLAG, N("square"), PIN_TYPES | PAD_TYPE},
-	{RUBBERENDFLAG, N("rubberend"), LINE_TYPE | ARC_TYPE},
-	{WARNFLAG, N("warn"), PIN_TYPES | PAD_TYPE},
-	{USETHERMALFLAG, N("usetherm"), PIN_TYPES | LINE_TYPE | ARC_TYPE},
-	{OCTAGONFLAG, N("octagon"), PIN_TYPES | PAD_TYPE},
-	{DRCFLAG, N("drc"), ALL_TYPES},
-	{LOCKFLAG, N("lock"), ALL_TYPES},
-	{EDGE2FLAG, N("edge2"), ALL_TYPES},
-	{FULLPOLYFLAG, N("fullpoly"), POLYGON_TYPE},
-	{NOPASTEFLAG, N("nopaste"), PAD_TYPE},
-	{NONETLISTFLAG, N("nonetlist"), ALL_TYPES}
+	{PINFLAG, N("pin"), PCB_TYPEMASK_ALL},
+	{VIAFLAG, N("via"), PCB_TYPEMASK_ALL},
+	{FOUNDFLAG, N("found"), PCB_TYPEMASK_ALL},
+	{HOLEFLAG, N("hole"), PCB_TYPEMASK_PIN},
+	{RATFLAG, N("rat"), PCB_TYPE_RATLINE},
+	{PININPOLYFLAG, N("pininpoly"), PCB_TYPEMASK_PIN | PCB_TYPE_PAD},
+	{CLEARPOLYFLAG, N("clearpoly"), PCB_TYPE_POLYGON},
+	{HIDENAMEFLAG, N("hidename"), PCB_TYPE_ELEMENT},
+	{DISPLAYNAMEFLAG, N("showname"), PCB_TYPE_ELEMENT},
+	{CLEARLINEFLAG, N("clearline"), PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_TEXT},
+	{SELECTEDFLAG, N("selected"), PCB_TYPEMASK_ALL},
+	{ONSOLDERFLAG, N("onsolder"), PCB_TYPE_ELEMENT | PCB_TYPE_PAD | PCB_TYPE_TEXT},
+	{AUTOFLAG, N("auto"), PCB_TYPEMASK_ALL},
+	{SQUAREFLAG, N("square"), PCB_TYPEMASK_PIN | PCB_TYPE_PAD},
+	{RUBBERENDFLAG, N("rubberend"), PCB_TYPE_LINE | PCB_TYPE_ARC},
+	{WARNFLAG, N("warn"), PCB_TYPEMASK_PIN | PCB_TYPE_PAD},
+	{USETHERMALFLAG, N("usetherm"), PCB_TYPEMASK_PIN | PCB_TYPE_LINE | PCB_TYPE_ARC},
+	{OCTAGONFLAG, N("octagon"), PCB_TYPEMASK_PIN | PCB_TYPE_PAD},
+	{DRCFLAG, N("drc"), PCB_TYPEMASK_ALL},
+	{LOCKFLAG, N("lock"), PCB_TYPEMASK_ALL},
+	{EDGE2FLAG, N("edge2"), PCB_TYPEMASK_ALL},
+	{FULLPOLYFLAG, N("fullpoly"), PCB_TYPE_POLYGON},
+	{NOPASTEFLAG, N("nopaste"), PCB_TYPE_PAD},
+	{NONETLISTFLAG, N("nonetlist"), PCB_TYPEMASK_ALL}
 };
 #undef N
 
@@ -412,7 +412,7 @@ FlagType string_to_flags(const char *flagstring, int (*error) (const char *msg))
  *
  * Note that this function knows a little about what kinds of flags
  * will be automatically set by parsing, so it won't (for example)
- * include the "via" flag for VIA_TYPEs because it knows those get
+ * include the "via" flag for PCB_TYPE_VIAs because it knows those get
  * forcibly set when vias are parsed.
  */
 
@@ -428,13 +428,13 @@ char *common_flags_to_string(FlagType flags, int object_type, FlagBitsType * fla
 
 #ifndef FLAG_TEST
 	switch (object_type) {
-	case VIA_TYPE:
+	case PCB_TYPE_VIA:
 		CLEAR_FLAG(VIAFLAG, &fh);
 		break;
-	case RATLINE_TYPE:
+	case PCB_TYPE_RATLINE:
 		CLEAR_FLAG(RATFLAG, &fh);
 		break;
-	case PIN_TYPE:
+	case PCB_TYPE_PIN:
 		CLEAR_FLAG(PINFLAG, &fh);
 		break;
 	}

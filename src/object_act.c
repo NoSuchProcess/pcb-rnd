@@ -168,7 +168,7 @@ static int ActionAttributes(int argc, char **argv, Coord x, Coord y)
 			if (n_found == 0) {
 				void *ptrtmp;
 				gui->get_coords(_("Click on an element"), &x, &y);
-				if ((SearchScreen(x, y, ELEMENT_TYPE, &ptrtmp, &ptrtmp, &ptrtmp)) != NO_TYPE)
+				if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE)
 					e = (ElementTypePtr) ptrtmp;
 				else {
 					Message(_("No element found there\n"));
@@ -285,7 +285,7 @@ static int ActionDisperseElements(int argc, char **argv, Coord x, Coord y)
 			MoveElementLowLevel(PCB->Data, element, dx, dy);
 
 			/* and add to the undo list so we can undo this operation */
-			AddObjectToMoveUndoList(ELEMENT_TYPE, NULL, NULL, element, dx, dy);
+			AddObjectToMoveUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
 
 			/* keep track of how tall this row is */
 			minx += element->BoundingBox.X2 - element->BoundingBox.X1 + GAP;
@@ -334,7 +334,7 @@ static int ActionFlip(int argc, char **argv, Coord x, Coord y)
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_Object:
-			if ((SearchScreen(x, y, ELEMENT_TYPE, &ptrtmp, &ptrtmp, &ptrtmp)) != NO_TYPE) {
+			if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 				element = (ElementTypePtr) ptrtmp;
 				ChangeElementSide(element, 2 * Crosshair.Y - PCB->MaxHeight);
 				IncrementUndoSerialNumber();
@@ -385,7 +385,7 @@ static int ActionMoveObject(int argc, char **argv, Coord x, Coord y)
 	nx = GetValue(x_str, units, &absolute2, NULL);
 
 	type = SearchScreen(x, y, MOVE_TYPES, &ptr1, &ptr2, &ptr3);
-	if (type == NO_TYPE) {
+	if (type == PCB_TYPE_NONE) {
 		Message(_("Nothing found under crosshair\n"));
 		return 1;
 	}
@@ -396,7 +396,7 @@ static int ActionMoveObject(int argc, char **argv, Coord x, Coord y)
 	Crosshair.AttachedObject.RubberbandN = 0;
 	if (conf_core.editor.rubber_band_mode)
 		LookupRubberbandLines(type, ptr1, ptr2, ptr3);
-	if (type == ELEMENT_TYPE)
+	if (type == PCB_TYPE_ELEMENT)
 		LookupRatLines(type, ptr1, ptr2, ptr3);
 	MoveObjectAndRubberband(type, ptr1, ptr2, ptr3, nx, ny);
 	SetChangedFlag(true);
@@ -428,7 +428,7 @@ static int ActionMoveToCurrentLayer(int argc, char **argv, Coord x, Coord y)
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, MOVETOLAYER_TYPES, &ptr1, &ptr2, &ptr3)) != NO_TYPE)
+				if ((type = SearchScreen(x, y, MOVETOLAYER_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (MoveObjectToLayer(type, ptr1, ptr2, ptr3, CURRENT, false))
 						SetChangedFlag(true);
 				break;
@@ -739,7 +739,7 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 			ALLLINE_LOOP(PCB->Data);
 			{
 				if (TEST_FLAG(AUTOFLAG, line) && !TEST_FLAG(LOCKFLAG, line)) {
-					RemoveObject(LINE_TYPE, layer, line, line);
+					RemoveObject(PCB_TYPE_LINE, layer, line, line);
 					changed = true;
 				}
 			}
@@ -747,7 +747,7 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 			ALLARC_LOOP(PCB->Data);
 			{
 				if (TEST_FLAG(AUTOFLAG, arc) && !TEST_FLAG(LOCKFLAG, arc)) {
-					RemoveObject(ARC_TYPE, layer, arc, arc);
+					RemoveObject(PCB_TYPE_ARC, layer, arc, arc);
 					changed = true;
 				}
 			}
@@ -755,7 +755,7 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 			VIA_LOOP(PCB->Data);
 			{
 				if (TEST_FLAG(AUTOFLAG, via) && !TEST_FLAG(LOCKFLAG, via)) {
-					RemoveObject(VIA_TYPE, via, via, via);
+					RemoveObject(PCB_TYPE_VIA, via, via, via);
 					changed = true;
 				}
 			}
@@ -771,7 +771,7 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 			{
 				if (TEST_FLAGS(AUTOFLAG | SELECTEDFLAG, line)
 						&& !TEST_FLAG(LOCKFLAG, line)) {
-					RemoveObject(LINE_TYPE, layer, line, line);
+					RemoveObject(PCB_TYPE_LINE, layer, line, line);
 					changed = true;
 				}
 			}
@@ -781,7 +781,7 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 			{
 				if (TEST_FLAGS(AUTOFLAG | SELECTEDFLAG, via)
 						&& !TEST_FLAG(LOCKFLAG, via)) {
-					RemoveObject(VIA_TYPE, via, via, via);
+					RemoveObject(PCB_TYPE_VIA, via, via, via);
 					changed = true;
 				}
 			}
@@ -795,17 +795,17 @@ static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
 			{
 				void *ptr1, *ptr2, *ptr3;
 
-				if (SearchScreen(Crosshair.X, Crosshair.Y, ELEMENT_TYPE, &ptr1, &ptr2, &ptr3) != NO_TYPE) {
+				if (SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3) != PCB_TYPE_NONE) {
 					Note.Buffer = conf_core.editor.buffer_number;
 					SetBufferNumber(MAX_BUFFER - 1);
 					ClearBuffer(PASTEBUFFER);
-					CopyObjectToBuffer(PASTEBUFFER->Data, PCB->Data, ELEMENT_TYPE, ptr1, ptr2, ptr3);
+					CopyObjectToBuffer(PASTEBUFFER->Data, PCB->Data, PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
 					SmashBufferElement(PASTEBUFFER);
 					PASTEBUFFER->X = 0;
 					PASTEBUFFER->Y = 0;
 					SaveUndoSerialNumber();
-					EraseObject(ELEMENT_TYPE, ptr1, ptr1);
-					MoveObjectToRemoveUndoList(ELEMENT_TYPE, ptr1, ptr2, ptr3);
+					EraseObject(PCB_TYPE_ELEMENT, ptr1, ptr1);
+					MoveObjectToRemoveUndoList(PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
 					RestoreUndoSerialNumber();
 					CopyPastebufferToLayout(0, 0);
 					SetBufferNumber(Note.Buffer);
@@ -860,7 +860,7 @@ static int ActionMinMaskGap(int argc, char **argv, Coord x, Coord y)
 			if (!TEST_FLAGS(flags, pin))
 				continue;
 			if (pin->Mask < pin->Thickness + value) {
-				ChangeObjectMaskSize(PIN_TYPE, element, pin, 0, pin->Thickness + value, 1);
+				ChangeObjectMaskSize(PCB_TYPE_PIN, element, pin, 0, pin->Thickness + value, 1);
 				RestoreUndoSerialNumber();
 			}
 		}
@@ -870,7 +870,7 @@ static int ActionMinMaskGap(int argc, char **argv, Coord x, Coord y)
 			if (!TEST_FLAGS(flags, pad))
 				continue;
 			if (pad->Mask < pad->Thickness + value) {
-				ChangeObjectMaskSize(PAD_TYPE, element, pad, 0, pad->Thickness + value, 1);
+				ChangeObjectMaskSize(PCB_TYPE_PAD, element, pad, 0, pad->Thickness + value, 1);
 				RestoreUndoSerialNumber();
 			}
 		}
@@ -882,7 +882,7 @@ static int ActionMinMaskGap(int argc, char **argv, Coord x, Coord y)
 		if (!TEST_FLAGS(flags, via))
 			continue;
 		if (via->Mask && via->Mask < via->Thickness + value) {
-			ChangeObjectMaskSize(VIA_TYPE, via, 0, 0, via->Thickness + value, 1);
+			ChangeObjectMaskSize(PCB_TYPE_VIA, via, 0, 0, via->Thickness + value, 1);
 			RestoreUndoSerialNumber();
 		}
 	}
@@ -934,7 +934,7 @@ static int ActionMinClearGap(int argc, char **argv, Coord x, Coord y)
 			if (!TEST_FLAGS(flags, pin))
 				continue;
 			if (pin->Clearance < value) {
-				ChangeObjectClearSize(PIN_TYPE, element, pin, 0, value, 1);
+				ChangeObjectClearSize(PCB_TYPE_PIN, element, pin, 0, value, 1);
 				RestoreUndoSerialNumber();
 			}
 		}
@@ -944,7 +944,7 @@ static int ActionMinClearGap(int argc, char **argv, Coord x, Coord y)
 			if (!TEST_FLAGS(flags, pad))
 				continue;
 			if (pad->Clearance < value) {
-				ChangeObjectClearSize(PAD_TYPE, element, pad, 0, value, 1);
+				ChangeObjectClearSize(PCB_TYPE_PAD, element, pad, 0, value, 1);
 				RestoreUndoSerialNumber();
 			}
 		}
@@ -956,7 +956,7 @@ static int ActionMinClearGap(int argc, char **argv, Coord x, Coord y)
 		if (!TEST_FLAGS(flags, via))
 			continue;
 		if (via->Clearance < value) {
-			ChangeObjectClearSize(VIA_TYPE, via, 0, 0, value, 1);
+			ChangeObjectClearSize(PCB_TYPE_VIA, via, 0, 0, value, 1);
 			RestoreUndoSerialNumber();
 		}
 	}
@@ -966,7 +966,7 @@ static int ActionMinClearGap(int argc, char **argv, Coord x, Coord y)
 		if (!TEST_FLAGS(flags, line))
 			continue;
 		if (line->Clearance < value) {
-			ChangeObjectClearSize(LINE_TYPE, layer, line, 0, value, 1);
+			ChangeObjectClearSize(PCB_TYPE_LINE, layer, line, 0, value, 1);
 			RestoreUndoSerialNumber();
 		}
 	}
@@ -976,7 +976,7 @@ static int ActionMinClearGap(int argc, char **argv, Coord x, Coord y)
 		if (!TEST_FLAGS(flags, arc))
 			continue;
 		if (arc->Clearance < value) {
-			ChangeObjectClearSize(ARC_TYPE, layer, arc, 0, value, 1);
+			ChangeObjectClearSize(PCB_TYPE_ARC, layer, arc, 0, value, 1);
 			RestoreUndoSerialNumber();
 		}
 	}

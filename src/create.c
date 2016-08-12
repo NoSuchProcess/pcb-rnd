@@ -377,7 +377,7 @@ CreateDrawnLineOnLayer(LayerTypePtr Layer,
 	/* remove unnecessary points */
 	if (info.ans) {
 		/* must do this BEFORE getting new line memory */
-		MoveObjectToRemoveUndoList(LINE_TYPE, Layer, info.ans, info.ans);
+		MoveObjectToRemoveUndoList(PCB_TYPE_LINE, Layer, info.ans, info.ans);
 		X1 = info.test.Point1.X;
 		X2 = info.test.Point2.X;
 		Y1 = info.test.Point1.Y;

@@ -278,9 +278,9 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 				is[c_cnt] = strdup(tmps);
 				c_cnt++;
 
-				AddObjectToChangeNameUndoList(ELEMENT_TYPE, NULL, NULL, element_list[i], NAMEONPCB_NAME(element_list[i]));
+				AddObjectToChangeNameUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element_list[i], NAMEONPCB_NAME(element_list[i]));
 
-				ChangeObjectName(ELEMENT_TYPE, element_list[i], NULL, NULL, tmps);
+				ChangeObjectName(PCB_TYPE_ELEMENT, element_list[i], NULL, NULL, tmps);
 				changed = true;
 
 				/* we don't free tmps in this case because it is used */

@@ -151,22 +151,22 @@ static bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 {
 	DumpList();
 	switch (type) {
-	case PIN_TYPE:
-	case VIA_TYPE:
+	case PCB_TYPE_PIN:
+	case PCB_TYPE_VIA:
 		{
 			if (ADD_PV_TO_LIST((PinTypePtr) ptr2, 0, NULL, FCT_START))
 				return true;
 			break;
 		}
 
-	case RATLINE_TYPE:
+	case PCB_TYPE_RATLINE:
 		{
 			if (ADD_RAT_TO_LIST((RatTypePtr) ptr1, 0, NULL, FCT_START))
 				return true;
 			break;
 		}
 
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		{
 			int layer = GetLayerNumber(PCB->Data,
 																 (LayerTypePtr) ptr1);
@@ -176,7 +176,7 @@ static bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 			break;
 		}
 
-	case ARC_TYPE:
+	case PCB_TYPE_ARC:
 		{
 			int layer = GetLayerNumber(PCB->Data,
 																 (LayerTypePtr) ptr1);
@@ -186,7 +186,7 @@ static bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 			break;
 		}
 
-	case POLYGON_TYPE:
+	case PCB_TYPE_POLYGON:
 		{
 			int layer = GetLayerNumber(PCB->Data,
 																 (LayerTypePtr) ptr1);
@@ -196,7 +196,7 @@ static bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 			break;
 		}
 
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		{
 			PadTypePtr pad = (PadTypePtr) ptr2;
 			if (ADD_PAD_TO_LIST(TEST_FLAG(ONSOLDERFLAG, pad) ? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, FCT_START))
@@ -225,9 +225,9 @@ void LookupConnection(Coord X, Coord Y, bool AndDraw, Coord Range, int which_fla
 	reassign_no_drc_flags();
 
 	type = SearchObjectByLocation(LOOKUP_FIRST, &ptr1, &ptr2, &ptr3, X, Y, Range);
-	if (type == NO_TYPE) {
+	if (type == PCB_TYPE_NONE) {
 		type = SearchObjectByLocation(LOOKUP_MORE, &ptr1, &ptr2, &ptr3, X, Y, Range);
-		if (type == NO_TYPE)
+		if (type == PCB_TYPE_NONE)
 			return;
 		if (type & SILK_TYPE) {
 			int laynum = GetLayerNumber(PCB->Data,
@@ -288,7 +288,7 @@ bool ResetFoundPinsViasAndPads(bool AndDraw)
 	{
 		if (TEST_FLAG(TheFlag, via)) {
 			if (AndDraw)
-				AddObjectToFlagUndoList(VIA_TYPE, via, via, via);
+				AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
 			CLEAR_FLAG(TheFlag, via);
 			if (AndDraw)
 				DrawVia(via);
@@ -302,7 +302,7 @@ bool ResetFoundPinsViasAndPads(bool AndDraw)
 		{
 			if (TEST_FLAG(TheFlag, pin)) {
 				if (AndDraw)
-					AddObjectToFlagUndoList(PIN_TYPE, element, pin, pin);
+					AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
 				CLEAR_FLAG(TheFlag, pin);
 				if (AndDraw)
 					DrawPin(pin);
@@ -314,7 +314,7 @@ bool ResetFoundPinsViasAndPads(bool AndDraw)
 		{
 			if (TEST_FLAG(TheFlag, pad)) {
 				if (AndDraw)
-					AddObjectToFlagUndoList(PAD_TYPE, element, pad, pad);
+					AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
 				CLEAR_FLAG(TheFlag, pad);
 				if (AndDraw)
 					DrawPad(pad);
@@ -340,7 +340,7 @@ bool ResetFoundLinesAndPolygons(bool AndDraw)
 	{
 		if (TEST_FLAG(TheFlag, line)) {
 			if (AndDraw)
-				AddObjectToFlagUndoList(RATLINE_TYPE, line, line, line);
+				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
 			CLEAR_FLAG(TheFlag, line);
 			if (AndDraw)
 				DrawRat(line);
@@ -352,7 +352,7 @@ bool ResetFoundLinesAndPolygons(bool AndDraw)
 	{
 		if (TEST_FLAG(TheFlag, line)) {
 			if (AndDraw)
-				AddObjectToFlagUndoList(LINE_TYPE, layer, line, line);
+				AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);
 			CLEAR_FLAG(TheFlag, line);
 			if (AndDraw)
 				DrawLine(layer, line);
@@ -364,7 +364,7 @@ bool ResetFoundLinesAndPolygons(bool AndDraw)
 	{
 		if (TEST_FLAG(TheFlag, arc)) {
 			if (AndDraw)
-				AddObjectToFlagUndoList(ARC_TYPE, layer, arc, arc);
+				AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);
 			CLEAR_FLAG(TheFlag, arc);
 			if (AndDraw)
 				DrawArc(layer, arc);
@@ -376,7 +376,7 @@ bool ResetFoundLinesAndPolygons(bool AndDraw)
 	{
 		if (TEST_FLAG(TheFlag, polygon)) {
 			if (AndDraw)
-				AddObjectToFlagUndoList(POLYGON_TYPE, layer, polygon, polygon);
+				AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
 			CLEAR_FLAG(TheFlag, polygon);
 			if (AndDraw)
 				DrawPolygon(layer, polygon);

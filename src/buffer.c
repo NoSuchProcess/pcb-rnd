@@ -212,7 +212,7 @@ static void *AddElementToBuffer(ElementTypePtr Element)
  */
 static void *MoveViaToBuffer(PinType * via)
 {
-	RestoreToPolygon(Source, VIA_TYPE, via, via);
+	RestoreToPolygon(Source, PCB_TYPE_VIA, via, via);
 
 	r_delete_entry(Source->via_tree, (BoxType *) via);
 	pinlist_remove(via);
@@ -223,7 +223,7 @@ static void *MoveViaToBuffer(PinType * via)
 	if (!Dest->via_tree)
 		Dest->via_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Dest->via_tree, (BoxType *) via, 0);
-	ClearFromPolygon(Dest, VIA_TYPE, via, via);
+	ClearFromPolygon(Dest, PCB_TYPE_VIA, via, via);
 	return via;
 }
 
@@ -252,7 +252,7 @@ static void *MoveLineToBuffer(LayerType * layer, LineType * line)
 {
 	LayerTypePtr lay = &Dest->Layer[GetLayerNumber(Source, layer)];
 
-	RestoreToPolygon(Source, LINE_TYPE, layer, line);
+	RestoreToPolygon(Source, PCB_TYPE_LINE, layer, line);
 	r_delete_entry(layer->line_tree, (BoxType *) line);
 
 	linelist_remove(line);
@@ -263,7 +263,7 @@ static void *MoveLineToBuffer(LayerType * layer, LineType * line)
 	if (!lay->line_tree)
 		lay->line_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(lay->line_tree, (BoxType *) line, 0);
-	ClearFromPolygon(Dest, LINE_TYPE, lay, line);
+	ClearFromPolygon(Dest, PCB_TYPE_LINE, lay, line);
 	return (line);
 }
 
@@ -274,7 +274,7 @@ static void *MoveArcToBuffer(LayerType * layer, ArcType * arc)
 {
 	LayerType *lay = &Dest->Layer[GetLayerNumber(Source, layer)];
 
-	RestoreToPolygon(Source, ARC_TYPE, layer, arc);
+	RestoreToPolygon(Source, PCB_TYPE_ARC, layer, arc);
 	r_delete_entry(layer->arc_tree, (BoxType *) arc);
 
 	arclist_remove(arc);
@@ -285,7 +285,7 @@ static void *MoveArcToBuffer(LayerType * layer, ArcType * arc)
 	if (!lay->arc_tree)
 		lay->arc_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(lay->arc_tree, (BoxType *) arc, 0);
-	ClearFromPolygon(Dest, ARC_TYPE, lay, arc);
+	ClearFromPolygon(Dest, PCB_TYPE_ARC, lay, arc);
 	return (arc);
 }
 
@@ -297,7 +297,7 @@ static void *MoveTextToBuffer(LayerType * layer, TextType * text)
 	LayerType *lay = &Dest->Layer[GetLayerNumber(Source, layer)];
 
 	r_delete_entry(layer->text_tree, (BoxType *) text);
-	RestoreToPolygon(Source, TEXT_TYPE, layer, text);
+	RestoreToPolygon(Source, PCB_TYPE_TEXT, layer, text);
 
 	textlist_remove(text);
 	textlist_append(&lay->Text, text);
@@ -305,7 +305,7 @@ static void *MoveTextToBuffer(LayerType * layer, TextType * text)
 	if (!lay->text_tree)
 		lay->text_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(lay->text_tree, (BoxType *) text, 0);
-	ClearFromPolygon(Dest, TEXT_TYPE, lay, text);
+	ClearFromPolygon(Dest, PCB_TYPE_TEXT, lay, text);
 	return (text);
 }
 
@@ -345,13 +345,13 @@ static void *MoveElementToBuffer(ElementType * element)
 
 	PIN_LOOP(element);
 	{
-		RestoreToPolygon(Source, PIN_TYPE, element, pin);
+		RestoreToPolygon(Source, PCB_TYPE_PIN, element, pin);
 		CLEAR_FLAG(WARNFLAG | FOUNDFLAG, pin);
 	}
 	END_LOOP;
 	PAD_LOOP(element);
 	{
-		RestoreToPolygon(Source, PAD_TYPE, element, pad);
+		RestoreToPolygon(Source, PCB_TYPE_PAD, element, pad);
 		CLEAR_FLAG(WARNFLAG | FOUNDFLAG, pad);
 	}
 	END_LOOP;
@@ -361,12 +361,12 @@ static void *MoveElementToBuffer(ElementType * element)
 	 */
 	PIN_LOOP(element);
 	{
-		ClearFromPolygon(Dest, PIN_TYPE, element, pin);
+		ClearFromPolygon(Dest, PCB_TYPE_PIN, element, pin);
 	}
 	END_LOOP;
 	PAD_LOOP(element);
 	{
-		ClearFromPolygon(Dest, PAD_TYPE, element, pad);
+		ClearFromPolygon(Dest, PCB_TYPE_PAD, element, pad);
 	}
 	END_LOOP;
 
@@ -409,7 +409,7 @@ void AddSelectedToBuffer(BufferTypePtr Buffer, Coord X, Coord Y, bool LeaveSelec
 	notify_crosshair_change(false);
 	Source = PCB->Data;
 	Dest = Buffer->Data;
-	SelectedOperation(&AddBufferFunctions, false, ALL_TYPES);
+	SelectedOperation(&AddBufferFunctions, false, PCB_TYPEMASK_ALL);
 
 	/* set origin to passed or current position */
 	if (X || Y) {
@@ -747,7 +747,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 	}
 	END_LOOP;
 	if (!hasParts) {
-		DestroyObject(PCB->Data, ELEMENT_TYPE, Element, Element, Element);
+		DestroyObject(PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 		Message(_("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
 		return (false);
 	}
@@ -759,7 +759,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 		SET_FLAG(ONSOLDERFLAG, Element);
 	SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
 	ClearBuffer(Buffer);
-	MoveObjectToBuffer(Buffer->Data, PCB->Data, ELEMENT_TYPE, Element, Element, Element);
+	MoveObjectToBuffer(Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 	SetBufferBoundingBox(Buffer);
 	return (true);
 }
@@ -892,7 +892,7 @@ FreeRotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coo
 		/* pre-delete the pins from the pin-tree before their coordinates change */
 		if (Data)
 			r_delete_entry(Data->pin_tree, (BoxType *) pin);
-		RestoreToPolygon(Data, PIN_TYPE, Element, pin);
+		RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
 		free_rotate(&pin->X, &pin->Y, X, Y, cosa, sina);
 		SetPinBoundingBox(pin);
 	}
@@ -902,7 +902,7 @@ FreeRotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coo
 		/* pre-delete the pads before their coordinates change */
 		if (Data)
 			r_delete_entry(Data->pad_tree, (BoxType *) pad);
-		RestoreToPolygon(Data, PAD_TYPE, Element, pad);
+		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
 		free_rotate(&pad->Point1.X, &pad->Point1.Y, X, Y, cosa, sina);
 		free_rotate(&pad->Point2.X, &pad->Point2.Y, X, Y, cosa, sina);
 		SetLineBoundingBox((LineType *) pad);
@@ -917,7 +917,7 @@ FreeRotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coo
 
 	free_rotate(&Element->MarkX, &Element->MarkY, X, Y, cosa, sina);
 	SetElementBoundingBox(Data, Element, &PCB->Font);
-	ClearFromPolygon(Data, ELEMENT_TYPE, Element, Element);
+	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
 void FreeRotateBuffer(BufferTypePtr Buffer, Angle angle)

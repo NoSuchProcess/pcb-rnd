@@ -109,7 +109,7 @@ static bool FindPad(char *ElementName, char *PinNum, ConnectionType * conn, bool
 
 	padlist_foreach(&element->Pad, &it, pad) {
 		if (NSTRCMP(PinNum, pad->Number) == 0 && (!Same || !TEST_FLAG(DRCFLAG, pad))) {
-			conn->type = PAD_TYPE;
+			conn->type = PCB_TYPE_PAD;
 			conn->ptr1 = element;
 			conn->ptr2 = pad;
 			conn->group = TEST_FLAG(ONSOLDERFLAG, pad) ? SLayer : CLayer;
@@ -128,7 +128,7 @@ static bool FindPad(char *ElementName, char *PinNum, ConnectionType * conn, bool
 
 	padlist_foreach(&element->Pin, &it, pin) {
 		if (!TEST_FLAG(HOLEFLAG, pin) && pin->Number && NSTRCMP(PinNum, pin->Number) == 0 && (!Same || !TEST_FLAG(DRCFLAG, pin))) {
-			conn->type = PIN_TYPE;
+			conn->type = PCB_TYPE_PIN;
 			conn->ptr1 = element;
 			conn->ptr2 = pin;
 			conn->group = SLayer;			/* any layer will do */
@@ -234,7 +234,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
 										NAMEONPCB_NAME((ElementTypePtr) LastPoint.ptr1),
 										(LastPoint.type ==
-										 PIN_TYPE) ? ((PinTypePtr) LastPoint.ptr2)->Number : ((PadTypePtr) LastPoint.ptr2)->Number);
+										 PCB_TYPE_PIN) ? ((PinTypePtr) LastPoint.ptr2)->Number : ((PadTypePtr) LastPoint.ptr2)->Number);
 					else {
 						connection = GetConnectionMemory(net);
 						*connection = LastPoint;
@@ -242,7 +242,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 						connection->menu = menu;
 						/* mark as visited */
 						SET_FLAG(DRCFLAG, (PinTypePtr) LastPoint.ptr2);
-						if (LastPoint.type == PIN_TYPE)
+						if (LastPoint.type == PCB_TYPE_PIN)
 							((PinTypePtr) LastPoint.ptr2)->Spare = (void *) menu;
 						else
 							((PadTypePtr) LastPoint.ptr2)->Spare = (void *) menu;
@@ -258,7 +258,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 					connection->menu = menu;
 					/* mark as visited */
 					SET_FLAG(DRCFLAG, (PinTypePtr) LastPoint.ptr2);
-					if (LastPoint.type == PIN_TYPE)
+					if (LastPoint.type == PCB_TYPE_PIN)
 						((PinTypePtr) LastPoint.ptr2)->Spare = (void *) menu;
 					else
 						((PadTypePtr) LastPoint.ptr2)->Spare = (void *) menu;
@@ -425,7 +425,7 @@ static bool GatherSubnets(NetListTypePtr Netl, bool NoWarn, bool AndRats)
 				conn = GetConnectionMemory(a);
 				conn->X = line->Point1.X;
 				conn->Y = line->Point1.Y;
-				conn->type = LINE_TYPE;
+				conn->type = PCB_TYPE_LINE;
 				conn->ptr1 = layer;
 				conn->ptr2 = line;
 				conn->group = GetLayerGroupNumberByPointer(layer);
@@ -433,7 +433,7 @@ static bool GatherSubnets(NetListTypePtr Netl, bool NoWarn, bool AndRats)
 				conn = GetConnectionMemory(a);
 				conn->X = line->Point2.X;
 				conn->Y = line->Point2.Y;
-				conn->type = LINE_TYPE;
+				conn->type = PCB_TYPE_LINE;
 				conn->ptr1 = layer;
 				conn->ptr2 = line;
 				conn->group = GetLayerGroupNumberByPointer(layer);
@@ -449,7 +449,7 @@ static bool GatherSubnets(NetListTypePtr Netl, bool NoWarn, bool AndRats)
 				/* make point on a vertex */
 				conn->X = polygon->Clipped->contours->head.point[0];
 				conn->Y = polygon->Clipped->contours->head.point[1];
-				conn->type = POLYGON_TYPE;
+				conn->type = PCB_TYPE_POLYGON;
 				conn->ptr1 = layer;
 				conn->ptr2 = polygon;
 				conn->group = GetLayerGroupNumberByPointer(layer);
@@ -463,7 +463,7 @@ static bool GatherSubnets(NetListTypePtr Netl, bool NoWarn, bool AndRats)
 				conn = GetConnectionMemory(a);
 				conn->X = via->X;
 				conn->Y = via->Y;
-				conn->type = VIA_TYPE;
+				conn->type = PCB_TYPE_VIA;
 				conn->ptr1 = via;
 				conn->ptr2 = via;
 				conn->group = SLayer;
@@ -565,20 +565,20 @@ DrawShortestRats(NetListTypePtr Netl,
 					 * not a daisy chain).  Further prefer to pick an existing
 					 * via in the Net to make that connection.
 					 */
-					if (conn1->type == POLYGON_TYPE &&
+					if (conn1->type == PCB_TYPE_POLYGON &&
 							(polygon = (PolygonTypePtr) conn1->ptr2) &&
 							!(distance == 0 &&
-								firstpoint && firstpoint->type == VIA_TYPE) && IsPointInPolygonIgnoreHoles(conn2->X, conn2->Y, polygon)) {
+								firstpoint && firstpoint->type == PCB_TYPE_VIA) && IsPointInPolygonIgnoreHoles(conn2->X, conn2->Y, polygon)) {
 						distance = 0;
 						firstpoint = conn2;
 						secondpoint = conn1;
 						theSubnet = next;
 						havepoints = true;
 					}
-					else if (conn2->type == POLYGON_TYPE &&
+					else if (conn2->type == PCB_TYPE_POLYGON &&
 									 (polygon = (PolygonTypePtr) conn2->ptr2) &&
 									 !(distance == 0 &&
-										 firstpoint && firstpoint->type == VIA_TYPE) && IsPointInPolygonIgnoreHoles(conn1->X, conn1->Y, polygon)) {
+										 firstpoint && firstpoint->type == PCB_TYPE_VIA) && IsPointInPolygonIgnoreHoles(conn1->X, conn1->Y, polygon)) {
 						distance = 0;
 						firstpoint = conn1;
 						secondpoint = conn2;
@@ -612,7 +612,7 @@ DrawShortestRats(NetListTypePtr Netl,
 																 firstpoint->group, secondpoint->group, conf_core.appearance.rat_thickness, NoFlags())) != NULL) {
 					if (distance == 0)
 						SET_FLAG(VIAFLAG, line);
-					AddObjectToCreateUndoList(RATLINE_TYPE, line, line, line);
+					AddObjectToCreateUndoList(PCB_TYPE_RATLINE, line, line, line);
 					DrawRat(line);
 					changed = true;
 				}
@@ -819,9 +819,9 @@ RatTypePtr AddNet(void)
 			&& Crosshair.AttachedLine.Point1.Y == Crosshair.AttachedLine.Point2.Y)
 		return (NULL);
 
-	found = SearchObjectByLocation(PAD_TYPE | PIN_TYPE, &ptr1, &ptr2, &ptr3,
+	found = SearchObjectByLocation(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
 																 Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, 5);
-	if (found == NO_TYPE) {
+	if (found == PCB_TYPE_NONE) {
 		Message(_("No pad/pin under rat line\n"));
 		return (NULL);
 	}
@@ -834,9 +834,9 @@ RatTypePtr AddNet(void)
 	group1 = (TEST_FLAG(ONSOLDERFLAG, (PadTypePtr) ptr2) ?
 						GetLayerGroupNumberByNumber(solder_silk_layer) : GetLayerGroupNumberByNumber(component_silk_layer));
 	strcpy(name1, ConnectionName(found, ptr1, ptr2));
-	found = SearchObjectByLocation(PAD_TYPE | PIN_TYPE, &ptr1, &ptr2, &ptr3,
+	found = SearchObjectByLocation(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
 																 Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y, 5);
-	if (found == NO_TYPE) {
+	if (found == PCB_TYPE_NONE) {
 		Message(_("No pad/pin under rat line\n"));
 		return (NULL);
 	}
@@ -907,10 +907,10 @@ char *ConnectionName(int type, void *ptr1, void *ptr2)
 	char *num;
 
 	switch (type) {
-	case PIN_TYPE:
+	case PCB_TYPE_PIN:
 		num = ((PinTypePtr) ptr2)->Number;
 		break;
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		num = ((PadTypePtr) ptr2)->Number;
 		break;
 	default:

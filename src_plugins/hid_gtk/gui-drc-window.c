@@ -84,7 +84,7 @@ static void unset_found_flags(int AndDraw)
 	VIA_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(flag, via)) {
-			AddObjectToFlagUndoList(VIA_TYPE, via, via, via);
+			AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
 			CLEAR_FLAG(flag, via);
 			DrawVia(via);
 			change = true;
@@ -96,7 +96,7 @@ static void unset_found_flags(int AndDraw)
 		PIN_LOOP(element);
 		{
 			if (TEST_FLAG(flag, pin)) {
-				AddObjectToFlagUndoList(PIN_TYPE, element, pin, pin);
+				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
 				CLEAR_FLAG(flag, pin);
 				DrawPin(pin);
 				change = true;
@@ -106,7 +106,7 @@ static void unset_found_flags(int AndDraw)
 		PAD_LOOP(element);
 		{
 			if (TEST_FLAG(flag, pad)) {
-				AddObjectToFlagUndoList(PAD_TYPE, element, pad, pad);
+				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
 				CLEAR_FLAG(flag, pad);
 				DrawPad(pad);
 				change = true;
@@ -118,7 +118,7 @@ static void unset_found_flags(int AndDraw)
 	RAT_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(flag, line)) {
-			AddObjectToFlagUndoList(RATLINE_TYPE, line, line, line);
+			AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
 			CLEAR_FLAG(flag, line);
 			DrawRat(line);
 			change = true;
@@ -128,7 +128,7 @@ static void unset_found_flags(int AndDraw)
 	COPPERLINE_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(flag, line)) {
-			AddObjectToFlagUndoList(LINE_TYPE, layer, line, line);
+			AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);
 			CLEAR_FLAG(flag, line);
 			DrawLine(layer, line);
 			change = true;
@@ -138,7 +138,7 @@ static void unset_found_flags(int AndDraw)
 	COPPERARC_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(flag, arc)) {
-			AddObjectToFlagUndoList(ARC_TYPE, layer, arc, arc);
+			AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);
 			CLEAR_FLAG(flag, arc);
 			DrawArc(layer, arc);
 			change = true;
@@ -148,7 +148,7 @@ static void unset_found_flags(int AndDraw)
 	COPPERPOLYGON_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(flag, polygon)) {
-			AddObjectToFlagUndoList(POLYGON_TYPE, layer, polygon, polygon);
+			AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
 			CLEAR_FLAG(flag, polygon);
 			DrawPolygon(layer, polygon);
 			change = true;
@@ -195,16 +195,16 @@ static void selection_changed_cb(GtkTreeSelection * selection, gpointer user_dat
 		void *ptr1, *ptr2, *ptr3;
 
 		found_type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, object_id, object_type);
-		if (found_type == NO_TYPE) {
+		if (found_type == PCB_TYPE_NONE) {
 			Message(_("Object ID %i identified during DRC was not found. Stale DRC window?\n"), object_id);
 			continue;
 		}
 		AddObjectToFlagUndoList(object_type, ptr1, ptr2, ptr3);
 		SET_FLAG(FOUNDFLAG, (AnyObjectType *) ptr2);
 		switch (violation->object_type_list[i]) {
-		case LINE_TYPE:
-		case ARC_TYPE:
-		case POLYGON_TYPE:
+		case PCB_TYPE_LINE:
+		case PCB_TYPE_ARC:
+		case PCB_TYPE_POLYGON:
 			ChangeGroupVisibility(GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1), true, true);
 		}
 		DrawObject(object_type, ptr1, ptr2);

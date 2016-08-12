@@ -268,7 +268,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	/* And lead the user to the location */
 	if (SeekPad(node, &conn, false))
 		switch (conn.type) {
-		case PIN_TYPE:
+		case PCB_TYPE_PIN:
 			{
 				PinTypePtr pin = (PinTypePtr) conn.ptr2;
 				x = pin->X;
@@ -277,7 +277,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 				ghid_lead_user_to_location(x, y);
 				break;
 			}
-		case PAD_TYPE:
+		case PCB_TYPE_PAD:
 			{
 				PadTypePtr pad = (PadTypePtr) conn.ptr2;
 				x = pad->Point1.X + (pad->Point2.X - pad->Point1.X) / 2;
@@ -539,14 +539,14 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 	VISIBLELINE_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(FOUNDFLAG, line) && !TEST_FLAG(LOCKFLAG, line))
-			RemoveObject(LINE_TYPE, layer, line, line);
+			RemoveObject(PCB_TYPE_LINE, layer, line, line);
 	}
 	ENDALL_LOOP;
 
 	VISIBLEARC_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(FOUNDFLAG, arc) && !TEST_FLAG(LOCKFLAG, arc))
-			RemoveObject(ARC_TYPE, layer, arc, arc);
+			RemoveObject(PCB_TYPE_ARC, layer, arc, arc);
 	}
 	ENDALL_LOOP;
 
@@ -554,7 +554,7 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 		VIA_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(FOUNDFLAG, via) && !TEST_FLAG(LOCKFLAG, via))
-			RemoveObject(VIA_TYPE, via, via, via);
+			RemoveObject(PCB_TYPE_VIA, via, via, via);
 	}
 	END_LOOP;
 

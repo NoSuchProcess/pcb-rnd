@@ -35,8 +35,8 @@
  * some defines
  */
 #define	COPY_TYPES              \
-	(VIA_TYPE | LINE_TYPE | TEXT_TYPE | \
-	ELEMENT_TYPE | ELEMENTNAME_TYPE | POLYGON_TYPE | ARC_TYPE)
+	(PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_TEXT | \
+	PCB_TYPE_ELEMENT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_POLYGON | PCB_TYPE_ARC)
 
 
 PolygonTypePtr CopyPolygonLowLevel(PolygonTypePtr, PolygonTypePtr);

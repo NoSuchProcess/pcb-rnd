@@ -57,14 +57,14 @@ void MirrorElementCoordinates(DataTypePtr Data, ElementTypePtr Element, Coord yo
 	END_LOOP;
 	PIN_LOOP(Element);
 	{
-		RestoreToPolygon(Data, PIN_TYPE, Element, pin);
+		RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
 		pin->X = SWAP_X(pin->X);
 		pin->Y = SWAP_Y(pin->Y) + yoff;
 	}
 	END_LOOP;
 	PAD_LOOP(Element);
 	{
-		RestoreToPolygon(Data, PAD_TYPE, Element, pad);
+		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
 		pad->Point1.X = SWAP_X(pad->Point1.X);
 		pad->Point1.Y = SWAP_Y(pad->Point1.Y) + yoff;
 		pad->Point2.X = SWAP_X(pad->Point2.X);
@@ -94,5 +94,5 @@ void MirrorElementCoordinates(DataTypePtr Data, ElementTypePtr Element, Coord yo
 	TOGGLE_FLAG(ONSOLDERFLAG, Element);
 	/* this inserts all of the rtree data too */
 	SetElementBoundingBox(Data, Element, &PCB->Font);
-	ClearFromPolygon(Data, ELEMENT_TYPE, Element, Element);
+	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
 }

@@ -421,7 +421,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 				Coord x, y;
 
 				gui->get_coords(_("Click on an element"), &x, &y);
-				if ((SearchScreen(x, y, ELEMENT_TYPE, &ptrtmp, &ptrtmp, &ptrtmp)) != NO_TYPE) {
+				if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 					element = (ElementTypePtr) ptrtmp;
 					gui->show_item(element);
 				}
@@ -436,16 +436,16 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 				gui->get_coords(_("Click on an element"), &x, &y);
 
 				switch (SearchScreen(x, y,
-														 ELEMENT_TYPE | PIN_TYPE | PAD_TYPE |
-														 VIA_TYPE, (void **) &ptr1, (void **) &ptr2, (void **) &ptr3)) {
-				case ELEMENT_TYPE:
+														 PCB_TYPE_ELEMENT | PCB_TYPE_PIN | PCB_TYPE_PAD |
+														 PCB_TYPE_VIA, (void **) &ptr1, (void **) &ptr2, (void **) &ptr3)) {
+				case PCB_TYPE_ELEMENT:
 					PIN_LOOP((ElementTypePtr) ptr1);
 					{
 						if (TEST_FLAG(DISPLAYNAMEFLAG, pin))
 							ErasePinName(pin);
 						else
 							DrawPinName(pin);
-						AddObjectToFlagUndoList(PIN_TYPE, ptr1, pin, pin);
+						AddObjectToFlagUndoList(PCB_TYPE_PIN, ptr1, pin, pin);
 						TOGGLE_FLAG(DISPLAYNAMEFLAG, pin);
 					}
 					END_LOOP;
@@ -455,7 +455,7 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 							ErasePadName(pad);
 						else
 							DrawPadName(pad);
-						AddObjectToFlagUndoList(PAD_TYPE, ptr1, pad, pad);
+						AddObjectToFlagUndoList(PCB_TYPE_PAD, ptr1, pad, pad);
 						TOGGLE_FLAG(DISPLAYNAMEFLAG, pad);
 					}
 					END_LOOP;
@@ -464,35 +464,35 @@ static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
 					Draw();
 					break;
 
-				case PIN_TYPE:
+				case PCB_TYPE_PIN:
 					if (TEST_FLAG(DISPLAYNAMEFLAG, (PinTypePtr) ptr2))
 						ErasePinName((PinTypePtr) ptr2);
 					else
 						DrawPinName((PinTypePtr) ptr2);
-					AddObjectToFlagUndoList(PIN_TYPE, ptr1, ptr2, ptr3);
+					AddObjectToFlagUndoList(PCB_TYPE_PIN, ptr1, ptr2, ptr3);
 					TOGGLE_FLAG(DISPLAYNAMEFLAG, (PinTypePtr) ptr2);
 					SetChangedFlag(true);
 					IncrementUndoSerialNumber();
 					Draw();
 					break;
 
-				case PAD_TYPE:
+				case PCB_TYPE_PAD:
 					if (TEST_FLAG(DISPLAYNAMEFLAG, (PadTypePtr) ptr2))
 						ErasePadName((PadTypePtr) ptr2);
 					else
 						DrawPadName((PadTypePtr) ptr2);
-					AddObjectToFlagUndoList(PAD_TYPE, ptr1, ptr2, ptr3);
+					AddObjectToFlagUndoList(PCB_TYPE_PAD, ptr1, ptr2, ptr3);
 					TOGGLE_FLAG(DISPLAYNAMEFLAG, (PadTypePtr) ptr2);
 					SetChangedFlag(true);
 					IncrementUndoSerialNumber();
 					Draw();
 					break;
-				case VIA_TYPE:
+				case PCB_TYPE_VIA:
 					if (TEST_FLAG(DISPLAYNAMEFLAG, (PinTypePtr) ptr2))
 						EraseViaName((PinTypePtr) ptr2);
 					else
 						DrawViaName((PinTypePtr) ptr2);
-					AddObjectToFlagUndoList(VIA_TYPE, ptr1, ptr2, ptr3);
+					AddObjectToFlagUndoList(PCB_TYPE_VIA, ptr1, ptr2, ptr3);
 					TOGGLE_FLAG(DISPLAYNAMEFLAG, (PinTypePtr) ptr2);
 					SetChangedFlag(true);
 					IncrementUndoSerialNumber();
@@ -797,40 +797,40 @@ static int ActionCycleDrag(int argc, char **argv, Coord x, Coord y)
 			over++;
 		}
 
-		if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], LINE_TYPE) != NO_TYPE) {
+		if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_LINE) != PCB_TYPE_NONE) {
 			/* line has two endpoints, check which one is close to the original x;y */
 			LineType *l = ptr2;
 			if (close_enough(Note.X, l->Point1.X) && close_enough(Note.Y, l->Point1.Y)) {
-				Crosshair.AttachedObject.Type = LINEPOINT_TYPE;
+				Crosshair.AttachedObject.Type = PCB_TYPE_LINE_POINT;
 				Crosshair.AttachedObject.Ptr1 = ptr1;
 				Crosshair.AttachedObject.Ptr2 = ptr2;
 				Crosshair.AttachedObject.Ptr3 = &l->Point1;
 				return 0;
 			}
 			if (close_enough(Note.X, l->Point2.X) && close_enough(Note.Y, l->Point2.Y)) {
-				Crosshair.AttachedObject.Type = LINEPOINT_TYPE;
+				Crosshair.AttachedObject.Type = PCB_TYPE_LINE_POINT;
 				Crosshair.AttachedObject.Ptr1 = ptr1;
 				Crosshair.AttachedObject.Ptr2 = ptr2;
 				Crosshair.AttachedObject.Ptr3 = &l->Point2;
 				return 0;
 			}
 		}
-		else if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], VIA_TYPE) != NO_TYPE) {
-			Crosshair.AttachedObject.Type = VIA_TYPE;
+		else if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_VIA) != PCB_TYPE_NONE) {
+			Crosshair.AttachedObject.Type = PCB_TYPE_VIA;
 			Crosshair.AttachedObject.Ptr1 = ptr1;
 			Crosshair.AttachedObject.Ptr2 = ptr2;
 			Crosshair.AttachedObject.Ptr3 = ptr3;
 			return 0;
 		}
-		else if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PAD_TYPE) != NO_TYPE) {
-			Crosshair.AttachedObject.Type = ELEMENT_TYPE;
+		else if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_PAD) != PCB_TYPE_NONE) {
+			Crosshair.AttachedObject.Type = PCB_TYPE_ELEMENT;
 			Crosshair.AttachedObject.Ptr1 = ptr1;
 			Crosshair.AttachedObject.Ptr2 = ptr1;
 			Crosshair.AttachedObject.Ptr3 = ptr1;
 			return 0;
 		}
-		else if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], ARC_TYPE) != NO_TYPE) {
-			Crosshair.AttachedObject.Type = ARC_TYPE;
+		else if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_ARC) != PCB_TYPE_NONE) {
+			Crosshair.AttachedObject.Type = PCB_TYPE_ARC;
 			Crosshair.AttachedObject.Ptr1 = ptr1;
 			Crosshair.AttachedObject.Ptr2 = ptr2;
 			Crosshair.AttachedObject.Ptr3 = ptr3;
@@ -898,7 +898,7 @@ static int ActionToggleHideName(int argc, char **argv, Coord x, Coord y)
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, ELEMENT_TYPE, &ptr1, &ptr2, &ptr3)) != NO_TYPE) {
+				if ((type = SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					AddObjectToFlagUndoList(type, ptr1, ptr2, ptr3);
 					EraseElementName((ElementTypePtr) ptr2);
 					TOGGLE_FLAG(HIDENAMEFLAG, (ElementTypePtr) ptr2);
@@ -916,7 +916,7 @@ static int ActionToggleHideName(int argc, char **argv, Coord x, Coord y)
 				{
 					if ((TEST_FLAG(SELECTEDFLAG, element) || TEST_FLAG(SELECTEDFLAG, &NAMEONPCB_TEXT(element)))
 							&& (FRONT(element) || PCB->InvisibleObjectsOn)) {
-						AddObjectToFlagUndoList(ELEMENT_TYPE, element, element, element);
+						AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
 						EraseElementName(element);
 						TOGGLE_FLAG(HIDENAMEFLAG, element);
 						DrawElementName(element);
@@ -1059,7 +1059,7 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 	type = SearchScreen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
 /* set layer current and size from line or arc */
 	switch (type) {
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		notify_crosshair_change(false);
 		conf_set_design("design/line_thickness", "%$mS", ((LineTypePtr) ptr2)->Thickness);
 		conf_set_design("design/clearance", "%$mS", ((LineTypePtr) ptr2)->Clearance / 2);
@@ -1070,7 +1070,7 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 		hid_action("RouteStylesChanged");
 		break;
 
-	case ARC_TYPE:
+	case PCB_TYPE_ARC:
 		notify_crosshair_change(false);
 		conf_set_design("design/line_thickness", "%$mS", ((ArcTypePtr) ptr2)->Thickness);
 		conf_set_design("design/clearance", "%$mS", ((ArcTypePtr) ptr2)->Clearance / 2);
@@ -1081,11 +1081,11 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 		hid_action("RouteStylesChanged");
 		break;
 
-	case POLYGON_TYPE:
+	case PCB_TYPE_POLYGON:
 		layer = (LayerTypePtr) ptr1;
 		break;
 
-	case VIA_TYPE:
+	case PCB_TYPE_VIA:
 		notify_crosshair_change(false);
 		conf_set_design("design/via_thickness", "%$mS", ((PinTypePtr) ptr2)->Thickness);
 		conf_set_design("design/via_drilling_hole", "%$mS", ((PinTypePtr) ptr2)->DrillingHole);

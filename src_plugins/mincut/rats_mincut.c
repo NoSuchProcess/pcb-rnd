@@ -173,19 +173,19 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 		s = malloc(256);
 		parent = NULL;
 		switch (n->to_type) {
-		case PIN_TYPE:
+		case PCB_TYPE_PIN:
 			typ = "pin";
 			parent = ((PinType *) (n->to))->Element;
 			break;
-		case VIA_TYPE:
+		case PCB_TYPE_VIA:
 			typ = "via";
 			parent = ((PinType *) (n->to))->Element;
 			break;
-		case PAD_TYPE:
+		case PCB_TYPE_PAD:
 			typ = "pad";
 			parent = ((PadType *) (n->to))->Element;
 			break;
-		case LINE_TYPE:
+		case PCB_TYPE_LINE:
 			typ = "line";
 			break;
 		default:
@@ -239,9 +239,9 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 		void *spare;
 
 		spare = NULL;
-		if (n->to_type == PIN_TYPE)
+		if (n->to_type == PCB_TYPE_PIN)
 			spare = ((PinType *) n->to)->Spare;
-		if (n->to_type == PAD_TYPE)
+		if (n->to_type == PCB_TYPE_PAD)
 			spare = ((PadType *) n->to)->Spare;
 		if (spare != NULL) {
 			void *net = &(((LibraryMenuTypePtr) spare)->Name[2]);
@@ -271,7 +271,7 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 				/* connection to a pin/pad is slightly stronger than the
 				   strongest obj-obj conn; obj-obj conns are weaker at junctions where many
 				   objects connect */
-				if ((n->from_type == PIN_TYPE) || (n->from_type == PAD_TYPE) || (n->to_type == PIN_TYPE) || (n->to_type == PAD_TYPE))
+				if ((n->from_type == PCB_TYPE_PIN) || (n->from_type == PCB_TYPE_PAD) || (n->to_type == PCB_TYPE_PIN) || (n->to_type == PCB_TYPE_PAD))
 					weight = maxedges * 2 + 2;
 				else
 					weight = maxedges * 2 - n->edges - from->edges + 1;

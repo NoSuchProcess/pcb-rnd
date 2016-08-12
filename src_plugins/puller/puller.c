@@ -472,7 +472,7 @@ static int Puller(int argc, char **argv, Coord Ux, Coord Uy)
 	x = the_arc->X - the_arc->Width * cos(d2r(arc_angle)) + 0.5;
 	y = the_arc->Y + the_arc->Height * sin(d2r(arc_angle)) + 0.5;
 
-	MoveObject(LINEPOINT_TYPE, CURRENT, the_line, &(the_line->Point2), x - the_line->Point2.X, y - the_line->Point2.Y);
+	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, the_line, &(the_line->Point2), x - the_line->Point2.X, y - the_line->Point2.Y);
 
 	gui->invalidate_all();
 	IncrementUndoSerialNumber();
@@ -586,8 +586,8 @@ static void mark_line_for_deletion(LineTypePtr);
 #define ARC2EXTRA(a)     ((Extra *)g_hash_table_lookup (arcs, a))
 #define EXTRA2LINE(e)    (e->parent.line)
 #define EXTRA2ARC(e)     (e->parent.arc)
-#define EXTRA_IS_LINE(e) (e->type == LINE_TYPE)
-#define EXTRA_IS_ARC(e)  (e->type == ARC_TYPE)
+#define EXTRA_IS_LINE(e) (e->type == PCB_TYPE_LINE)
+#define EXTRA_IS_ARC(e)  (e->type == PCB_TYPE_ARC)
 
 static void unlink_end(Extra * x, Extra ** e)
 {
@@ -931,7 +931,7 @@ static Extra *new_line_extra(LineType * line)
 	Extra *extra = g_slice_new0(Extra);
 	g_hash_table_insert(lines, line, extra);
 	extra->parent.line = line;
-	extra->type = LINE_TYPE;
+	extra->type = PCB_TYPE_LINE;
 	return extra;
 }
 
@@ -940,7 +940,7 @@ static Extra *new_arc_extra(ArcType * arc)
 	Extra *extra = g_slice_new0(Extra);
 	g_hash_table_insert(arcs, arc, extra);
 	extra->parent.arc = arc;
-	extra->type = ARC_TYPE;
+	extra->type = PCB_TYPE_ARC;
 	return extra;
 }
 
@@ -1191,8 +1191,8 @@ static void reverse_line(LineTypePtr line)
 	x = line->Point1.X;
 	y = line->Point1.Y;
 #if 1
-	MoveObject(LINEPOINT_TYPE, CURRENT, line, &(line->Point1), line->Point2.X - line->Point1.X, line->Point2.Y - line->Point1.Y);
-	MoveObject(LINEPOINT_TYPE, CURRENT, line, &(line->Point2), x - line->Point2.X, y - line->Point2.Y);
+	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, line, &(line->Point1), line->Point2.X - line->Point1.X, line->Point2.Y - line->Point1.Y);
+	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, line, &(line->Point2), x - line->Point2.X, y - line->Point2.Y);
 #else
 	/* In theory, we should be using the above so that undo works.  */
 	line->Point1.X = line->Point2.X;
@@ -1627,7 +1627,7 @@ static LineTypePtr create_line(LineTypePtr sample, int x1, int y1, int x2, int y
 #endif
 	LineTypePtr line = CreateNewLineOnLayer(CURRENT, x1, y1, x2, y2,
 																					sample->Thickness, sample->Clearance, sample->Flags);
-	AddObjectToCreateUndoList(LINE_TYPE, CURRENT, line, line);
+	AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);
 
 #if TRACE1
 	e =
@@ -1655,7 +1655,7 @@ static ArcTypePtr create_arc(LineTypePtr sample, int x, int y, int r, int sa, in
 	if (arc == 0) {
 		arc = CreateNewArcOnLayer(CURRENT, x, y, r, r, sa, da * 2, sample->Thickness, sample->Clearance, sample->Flags);
 	}
-	AddObjectToCreateUndoList(ARC_TYPE, CURRENT, arc, arc);
+	AddObjectToCreateUndoList(PCB_TYPE_ARC, CURRENT, arc, arc);
 
 	if (!arc)
 		longjmp(abort_buf, 1);
@@ -1736,8 +1736,8 @@ static void mark_line_for_deletion(LineTypePtr l)
 		fprintf(stderr, "double neg move?\n");
 		abort();
 	}
-	MoveObject(LINEPOINT_TYPE, CURRENT, l, &(l->Point1), -1 - l->Point1.X, -1 - l->Point1.Y);
-	MoveObject(LINEPOINT_TYPE, CURRENT, l, &(l->Point2), -1 - l->Point2.X, -1 - l->Point2.Y);
+	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, l, &(l->Point1), -1 - l->Point1.X, -1 - l->Point1.Y);
+	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, l, &(l->Point2), -1 - l->Point2.X, -1 - l->Point2.Y);
 #endif
 }
 
@@ -2019,11 +2019,11 @@ static void maybe_pull_1(LineTypePtr line)
 
 		ChangeArcAngles(CURRENT, start_arc, start_arc->StartAngle, new_delta);
 		fix_arc_extra(start_arc, sarc_extra);
-		MoveObject(LINEPOINT_TYPE, CURRENT, start_line, &(start_line->Point1),
+		MoveObject(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point1),
 							 sarc_extra->end.x - start_line->Point1.X, sarc_extra->end.y - start_line->Point1.Y);
 
 		if (del_arc) {
-			MoveObject(LINEPOINT_TYPE, CURRENT, start_line, &(start_line->Point1),
+			MoveObject(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point1),
 								 sarc_extra->start.x - start_line->Point1.X, sarc_extra->start.y - start_line->Point1.Y);
 			mark_arc_for_deletion(start_arc);
 		}
@@ -2085,17 +2085,17 @@ static void maybe_pull_1(LineTypePtr line)
 
 			ChangeArcAngles(CURRENT, end_arc, end_arc->StartAngle, new_delta);
 			fix_arc_extra(end_arc, earc_extra);
-			MoveObject(LINEPOINT_TYPE, CURRENT, start_line, &(start_line->Point2),
+			MoveObject(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
 								 earc_extra->end.x - start_line->Point2.X, earc_extra->end.y - start_line->Point2.Y);
 
 			if (del_arc) {
-				MoveObject(LINEPOINT_TYPE, CURRENT, start_line, &(start_line->Point2),
+				MoveObject(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
 									 earc_extra->start.x - start_line->Point2.X, earc_extra->start.y - start_line->Point2.Y);
 				mark_arc_for_deletion(end_arc);
 			}
 		}
 		else {
-			MoveObject(LINEPOINT_TYPE, CURRENT, start_line, &(start_line->Point2),
+			MoveObject(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
 								 end_line->Point2.X - start_line->Point2.X, end_line->Point2.Y - start_line->Point2.Y);
 		}
 		mark_line_for_deletion(end_line);
@@ -2129,7 +2129,7 @@ static void maybe_pull_1(LineTypePtr line)
 #if TRACE1
 	pcb_printf("new point %#mS\n", ex, ey);
 #endif
-	MoveObject(LINEPOINT_TYPE, CURRENT, end_line, &(end_line->Point1), ex - end_line->Point1.X, ey - end_line->Point1.Y);
+	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, end_line, &(end_line->Point1), ex - end_line->Point1.X, ey - end_line->Point1.Y);
 
 	/* Step 4: Split start_line at the obstacle and insert a zero-delta
 	   arc at it.  */
@@ -2142,7 +2142,7 @@ static void maybe_pull_1(LineTypePtr line)
 	if (end_arc)
 		earc_extra = ARC2EXTRA(end_arc);
 
-	MoveObject(LINEPOINT_TYPE, CURRENT, start_line, &(start_line->Point2),
+	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
 						 new_aextra->start.x - start_line->Point2.X, new_aextra->start.y - start_line->Point2.Y);
 
 	new_line = create_line(start_line, new_aextra->end.x, new_aextra->end.y, ex, ey);

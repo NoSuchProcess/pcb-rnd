@@ -134,11 +134,11 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 	char *report = NULL;
 
 	type = SearchScreen(x, y, REPORT_TYPES, &ptr1, &ptr2, &ptr3);
-	if (type == NO_TYPE)
-		type = SearchScreen(x, y, REPORT_TYPES | LOCKED_TYPE, &ptr1, &ptr2, &ptr3);
+	if (type == PCB_TYPE_NONE)
+		type = SearchScreen(x, y, REPORT_TYPES | PCB_TYPE_LOCKED, &ptr1, &ptr2, &ptr3);
 
 	switch (type) {
-	case VIA_TYPE:
+	case PCB_TYPE_VIA:
 		{
 			PinTypePtr via;
 #ifndef NDEBUG
@@ -153,7 +153,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 										"(X,Y) = %$mD.\n"
 										"It is a pure hole of diameter %$mS.\n"
 										"Name = \"%s\"."
-										"%s", USER_UNITMASK, via->ID, flags_to_string(via->Flags, VIA_TYPE),
+										"%s", USER_UNITMASK, via->ID, flags_to_string(via->Flags, PCB_TYPE_VIA),
 										via->X, via->Y, via->DrillingHole, EMPTY(via->Name), TEST_FLAG(LOCKFLAG, via) ? "It is LOCKED.\n" : "");
 			else
 				report = pcb_strdup_printf("%m+VIA ID# %ld;  Flags:%s\n"
@@ -163,7 +163,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 										"Annulus = %$mS.\n"
 										"Solder mask hole = %$mS (gap = %$mS).\n"
 										"Name = \"%s\"."
-										"%s", USER_UNITMASK, via->ID, flags_to_string(via->Flags, VIA_TYPE),
+										"%s", USER_UNITMASK, via->ID, flags_to_string(via->Flags, PCB_TYPE_VIA),
 										via->X, via->Y,
 										via->Thickness,
 										via->DrillingHole,
@@ -173,7 +173,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 										(via->Mask - via->Thickness) / 2, EMPTY(via->Name), TEST_FLAG(LOCKFLAG, via) ? "It is LOCKED.\n" : "");
 			break;
 		}
-	case PIN_TYPE:
+	case PCB_TYPE_PIN:
 		{
 			PinTypePtr Pin;
 			ElementTypePtr element;
@@ -197,7 +197,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 										"(X,Y) = %$mD.\n"
 										"It is a mounting hole. Drill width = %$mS.\n"
 										"It is owned by element %$mS.\n"
-										"%s", USER_UNITMASK, Pin->ID, flags_to_string(Pin->Flags, PIN_TYPE),
+										"%s", USER_UNITMASK, Pin->ID, flags_to_string(Pin->Flags, PCB_TYPE_PIN),
 										Pin->X, Pin->Y, Pin->DrillingHole,
 										EMPTY(element->Name[1].TextString), TEST_FLAG(LOCKFLAG, Pin) ? "It is LOCKED.\n" : "");
 			else
@@ -210,7 +210,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 										"Name = \"%s\".\n"
 										"It is owned by element %s\n as pin number %s.\n"
 										"%s", USER_UNITMASK,
-										Pin->ID, flags_to_string(Pin->Flags, PIN_TYPE),
+										Pin->ID, flags_to_string(Pin->Flags, PCB_TYPE_PIN),
 										Pin->X, Pin->Y, Pin->Thickness,
 										Pin->DrillingHole,
 										Pin->Clearance / 2,
@@ -221,7 +221,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 										EMPTY(element->Name[1].TextString), EMPTY(Pin->Number), TEST_FLAG(LOCKFLAG, Pin) ? "It is LOCKED.\n" : "");
 			break;
 		}
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		{
 			LineTypePtr line;
 #ifndef NDEBUG
@@ -239,7 +239,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									"It is on layer %d\n"
 									"and has name \"%s\".\n"
 									"%s", USER_UNITMASK,
-									line->ID, flags_to_string(line->Flags, LINE_TYPE),
+									line->ID, flags_to_string(line->Flags, PCB_TYPE_LINE),
 									line->Point1.X, line->Point1.Y, line->Point1.ID,
 									line->Point2.X, line->Point2.Y, line->Point2.ID,
 									line->Thickness, line->Clearance / 2,
@@ -247,7 +247,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									UNKNOWN(line->Number), TEST_FLAG(LOCKFLAG, line) ? "It is LOCKED.\n" : "");
 			break;
 		}
-	case RATLINE_TYPE:
+	case PCB_TYPE_RATLINE:
 		{
 			RatTypePtr line;
 #ifndef NDEBUG
@@ -262,12 +262,12 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									"connects to layer group %d.\n"
 									"SecondPoint(X,Y) = %$mD; ID = %ld; "
 									"connects to layer group %d.\n",
-									USER_UNITMASK, line->ID, flags_to_string(line->Flags, LINE_TYPE),
+									USER_UNITMASK, line->ID, flags_to_string(line->Flags, PCB_TYPE_LINE),
 									line->Point1.X, line->Point1.Y,
 									line->Point1.ID, line->group1, line->Point2.X, line->Point2.Y, line->Point2.ID, line->group2);
 			break;
 		}
-	case ARC_TYPE:
+	case PCB_TYPE_ARC:
 		{
 			ArcTypePtr Arc;
 			BoxTypePtr box;
@@ -289,7 +289,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									"Bounding Box is %$mD, %$mD.\n"
 									"That makes the end points at %$mD and %$mD.\n"
 									"It is on layer %d.\n"
-									"%s", USER_UNITMASK, Arc->ID, flags_to_string(Arc->Flags, ARC_TYPE),
+									"%s", USER_UNITMASK, Arc->ID, flags_to_string(Arc->Flags, PCB_TYPE_ARC),
 									Arc->X, Arc->Y,
 									Arc->Width, Arc->Thickness,
 									Arc->Clearance / 2, Arc->StartAngle, Arc->Delta,
@@ -300,7 +300,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1), TEST_FLAG(LOCKFLAG, Arc) ? "It is LOCKED.\n" : "");
 			break;
 		}
-	case POLYGON_TYPE:
+	case PCB_TYPE_POLYGON:
 		{
 			PolygonTypePtr Polygon;
 #ifndef NDEBUG
@@ -318,7 +318,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									"  without using more memory.\n"
 									"It has %d holes and resides on layer %d.\n"
 									"%s", USER_UNITMASK, Polygon->ID,
-									flags_to_string(Polygon->Flags, POLYGON_TYPE),
+									flags_to_string(Polygon->Flags, PCB_TYPE_POLYGON),
 									Polygon->BoundingBox.X1, Polygon->BoundingBox.Y1,
 									Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
 									Polygon->PointN, Polygon->PointMax - Polygon->PointN,
@@ -326,7 +326,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1), TEST_FLAG(LOCKFLAG, Polygon) ? "It is LOCKED.\n" : "");
 			break;
 		}
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		{
 			Coord len;
 			PadTypePtr Pad;
@@ -360,7 +360,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									"  as pin number %s and is on the %s\n"
 									"side of the board.\n"
 									"%s", USER_UNITMASK, Pad->ID,
-									flags_to_string(Pad->Flags, PAD_TYPE),
+									flags_to_string(Pad->Flags, PCB_TYPE_PAD),
 									Pad->Point1.X, Pad->Point1.Y, Pad->Point1.ID,
 									Pad->Point2.X, Pad->Point2.Y, Pad->Point2.ID,
 									Pad->Thickness, len + Pad->Thickness,
@@ -374,7 +374,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 														Pad) ? "solder (bottom)" : "component", TEST_FLAG(LOCKFLAG, Pad) ? "It is LOCKED.\n" : "");
 			break;
 		}
-	case ELEMENT_TYPE:
+	case PCB_TYPE_ELEMENT:
 		{
 			ElementTypePtr element;
 #ifndef NDEBUG
@@ -393,7 +393,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									"Mark located at point (X,Y) = %$mD.\n"
 									"It is on the %s side of the board.\n"
 									"%s", USER_UNITMASK,
-									element->ID, flags_to_string(element->Flags, ELEMENT_TYPE),
+									element->ID, flags_to_string(element->Flags, PCB_TYPE_ELEMENT),
 									element->BoundingBox.X1, element->BoundingBox.Y1,
 									element->BoundingBox.X2, element->BoundingBox.Y2,
 									EMPTY(element->Name[0].TextString),
@@ -407,7 +407,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									TEST_FLAG(LOCKFLAG, element) ? "It is LOCKED.\n" : "");
 			break;
 		}
-	case TEXT_TYPE:
+	case PCB_TYPE_TEXT:
 #ifndef NDEBUG
 		if (gui->shift_is_pressed()) {
 			LayerTypePtr layer = (LayerTypePtr) ptr1;
@@ -415,7 +415,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 			return 0;
 		}
 #endif
-	case ELEMENTNAME_TYPE:
+	case PCB_TYPE_ELEMENT_NAME:
 		{
 			char laynum[32];
 			TextTypePtr text;
@@ -427,7 +427,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 #endif
 			text = (TextTypePtr) ptr2;
 
-			if (type == TEXT_TYPE)
+			if (type == PCB_TYPE_TEXT)
 				sprintf(laynum, "It is on layer %d.", GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1));
 			report = pcb_strdup_printf("%m+TEXT ID# %ld;  Flags:%s\n"
 									"Located at (X,Y) = %$mD.\n"
@@ -436,26 +436,26 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 									"Direction is %d.\n"
 									"The bounding box is %$mD %$mD.\n"
 									"%s\n"
-									"%s", USER_UNITMASK, text->ID, flags_to_string(text->Flags, TEXT_TYPE),
+									"%s", USER_UNITMASK, text->ID, flags_to_string(text->Flags, PCB_TYPE_TEXT),
 									text->X, text->Y, SCALE_TEXT(FONT_CAPHEIGHT, text->Scale),
 									text->TextString, text->Direction,
 									text->BoundingBox.X1, text->BoundingBox.Y1,
 									text->BoundingBox.X2, text->BoundingBox.Y2,
-									(type == TEXT_TYPE) ? laynum : "It is an element name.", TEST_FLAG(LOCKFLAG, text) ? "It is LOCKED.\n" : "");
+									(type == PCB_TYPE_TEXT) ? laynum : "It is an element name.", TEST_FLAG(LOCKFLAG, text) ? "It is LOCKED.\n" : "");
 			break;
 		}
-	case LINEPOINT_TYPE:
-	case POLYGONPOINT_TYPE:
+	case PCB_TYPE_LINE_POINT:
+	case PCB_TYPE_POLYGON_POINT:
 		{
 			PointTypePtr point = (PointTypePtr) ptr2;
 			report = pcb_strdup_printf("%m+POINT ID# %ld.\n"
 									"Located at (X,Y) = %$mD.\n"
 									"It belongs to a %s on layer %d.\n", USER_UNITMASK, point->ID,
 									point->X, point->Y,
-									(type == LINEPOINT_TYPE) ? "line" : "polygon", GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1));
+									(type == PCB_TYPE_LINE_POINT) ? "line" : "polygon", GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1));
 			break;
 		}
-	case NO_TYPE:
+	case PCB_TYPE_NONE:
 		report = NULL;
 		break;
 
@@ -799,12 +799,12 @@ static int ReportNetLengthByName(char *tofind, int x, int y)
 
 		if (SeekPad(net->Entry, &conn, false)) {
 			switch (conn.type) {
-			case PIN_TYPE:
+			case PCB_TYPE_PIN:
 				x = ((PinType *) (conn.ptr2))->X;
 				y = ((PinType *) (conn.ptr2))->Y;
 				net_found = 1;
 				break;
-			case PAD_TYPE:
+			case PCB_TYPE_PAD:
 				x = ((PadType *) (conn.ptr2))->Point1.X;
 				y = ((PadType *) (conn.ptr2))->Point1.Y;
 				net_found = 1;

@@ -203,7 +203,7 @@ void SetMode(int Mode)
 	recursing = true;
 	notify_crosshair_change(false);
 	addedLines = 0;
-	Crosshair.AttachedObject.Type = NO_TYPE;
+	Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 	Crosshair.AttachedObject.State = STATE_FIRST;
 	Crosshair.AttachedPolygon.PointN = 0;
 	if (PCB->RatDraw) {

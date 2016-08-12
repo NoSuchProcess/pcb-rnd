@@ -1213,7 +1213,7 @@ bool RemoveExcessPolygonPoints(LayerTypePtr Layer, PolygonTypePtr Polygon)
 		line.Point2 = Polygon->Points[next];
 		line.Thickness = 0;
 		if (IsPointOnLine(p->X, p->Y, 0.0, &line)) {
-			RemoveObject(POLYGONPOINT_TYPE, Layer, Polygon, p);
+			RemoveObject(PCB_TYPE_POLYGON_POINT, Layer, Polygon, p);
 			changed = true;
 		}
 	}
@@ -1357,7 +1357,7 @@ void CopyAttachedPolygonToLayer(void)
 	addedLines = 0;
 
 	/* add to undo list */
-	AddObjectToCreateUndoList(POLYGON_TYPE, CURRENT, polygon, polygon);
+	AddObjectToCreateUndoList(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
 	IncrementUndoSerialNumber();
 }
 
@@ -1398,24 +1398,24 @@ static r_dir_t subtract_plow(DataTypePtr Data, LayerTypePtr Layer, PolygonTypePt
 	if (!Polygon->Clipped)
 		return 0;
 	switch (type) {
-	case PIN_TYPE:
-	case VIA_TYPE:
+	case PCB_TYPE_PIN:
+	case PCB_TYPE_VIA:
 		SubtractPin(Data, (PinTypePtr) ptr2, Layer, Polygon);
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		SubtractLine((LineTypePtr) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
-	case ARC_TYPE:
+	case PCB_TYPE_ARC:
 		SubtractArc((ArcTypePtr) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		SubtractPad((PadTypePtr) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
-	case TEXT_TYPE:
+	case PCB_TYPE_TEXT:
 		SubtractText((TextTypePtr) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
@@ -1426,20 +1426,20 @@ static r_dir_t subtract_plow(DataTypePtr Data, LayerTypePtr Layer, PolygonTypePt
 static r_dir_t add_plow(DataTypePtr Data, LayerTypePtr Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
 {
 	switch (type) {
-	case PIN_TYPE:
-	case VIA_TYPE:
+	case PCB_TYPE_PIN:
+	case PCB_TYPE_VIA:
 		UnsubtractPin((PinTypePtr) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		UnsubtractLine((LineTypePtr) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
-	case ARC_TYPE:
+	case PCB_TYPE_ARC:
 		UnsubtractArc((ArcTypePtr) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		UnsubtractPad((PadTypePtr) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
-	case TEXT_TYPE:
+	case PCB_TYPE_TEXT:
 		UnsubtractText((TextTypePtr) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
 	}
@@ -1470,9 +1470,9 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 	info.data = Data;
 	info.callback = call_back;
 	switch (type) {
-	case PIN_TYPE:
-	case VIA_TYPE:
-		if (type == PIN_TYPE || ptr1 == ptr2 || ptr1 == NULL) {
+	case PCB_TYPE_PIN:
+	case PCB_TYPE_VIA:
+		if (type == PCB_TYPE_PIN || ptr1 == ptr2 || ptr1 == NULL) {
 			LAYER_LOOP(Data, max_copper_layer);
 			{
 				info.layer = layer;
@@ -1491,9 +1491,9 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 			END_LOOP;
 		}
 		break;
-	case LINE_TYPE:
-	case ARC_TYPE:
-	case TEXT_TYPE:
+	case PCB_TYPE_LINE:
+	case PCB_TYPE_ARC:
+	case PCB_TYPE_TEXT:
 		/* the cast works equally well for lines and arcs */
 		if (!TEST_FLAG(CLEARLINEFLAG, (LineTypePtr) ptr2))
 			return 0;
@@ -1508,7 +1508,7 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 		}
 		END_LOOP;
 		break;
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		{
 			Cardinal group = GetLayerGroupNumberByNumber(TEST_FLAG(ONSOLDERFLAG, (PadType *) ptr2) ?
 																									 solder_silk_layer : component_silk_layer);
@@ -1522,16 +1522,16 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 		}
 		break;
 
-	case ELEMENT_TYPE:
+	case PCB_TYPE_ELEMENT:
 		{
 			PIN_LOOP((ElementType *) ptr1);
 			{
-				PlowsPolygon(Data, PIN_TYPE, ptr1, pin, call_back);
+				PlowsPolygon(Data, PCB_TYPE_PIN, ptr1, pin, call_back);
 			}
 			END_LOOP;
 			PAD_LOOP((ElementType *) ptr1);
 			{
-				PlowsPolygon(Data, PAD_TYPE, ptr1, pad, call_back);
+				PlowsPolygon(Data, PCB_TYPE_PAD, ptr1, pad, call_back);
 			}
 			END_LOOP;
 		}
@@ -1542,7 +1542,7 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 
 void RestoreToPolygon(DataType * Data, int type, void *ptr1, void *ptr2)
 {
-	if (type == POLYGON_TYPE)
+	if (type == PCB_TYPE_POLYGON)
 		InitClip(PCB->Data, (LayerTypePtr) ptr1, (PolygonTypePtr) ptr2);
 	else
 		PlowsPolygon(Data, type, ptr1, ptr2, add_plow);
@@ -1550,7 +1550,7 @@ void RestoreToPolygon(DataType * Data, int type, void *ptr1, void *ptr2)
 
 void ClearFromPolygon(DataType * Data, int type, void *ptr1, void *ptr2)
 {
-	if (type == POLYGON_TYPE)
+	if (type == PCB_TYPE_POLYGON)
 		InitClip(PCB->Data, (LayerTypePtr) ptr1, (PolygonTypePtr) ptr2);
 	else
 		PlowsPolygon(Data, type, ptr1, ptr2, subtract_plow);
@@ -1719,7 +1719,7 @@ bool MorphPolygon(LayerTypePtr layer, PolygonTypePtr poly)
 			newone->BoundingBox.X2 = p->contours->xmax + 1;
 			newone->BoundingBox.Y1 = p->contours->ymin;
 			newone->BoundingBox.Y2 = p->contours->ymax + 1;
-			AddObjectToCreateUndoList(POLYGON_TYPE, layer, newone, newone);
+			AddObjectToCreateUndoList(PCB_TYPE_POLYGON, layer, newone, newone);
 			newone->Clipped = p;
 			p = p->f;									/* go to next pline */
 			newone->Clipped->b = newone->Clipped->f = newone->Clipped;	/* unlink from others */
@@ -1828,7 +1828,7 @@ void PolyToPolygonsOnLayer(DataType * Destination, LayerType * Layer, POLYAREA *
 
 		DrawPolygon(Layer, Polygon);
 		/* add to undo list */
-		AddObjectToCreateUndoList(POLYGON_TYPE, Layer, Polygon, Polygon);
+		AddObjectToCreateUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 	}
 	while ((pa = pa->f) != Input);
 

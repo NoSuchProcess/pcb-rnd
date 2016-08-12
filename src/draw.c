@@ -102,7 +102,7 @@ static void SetPVColor(PinTypePtr Pin, int Type)
 	char *color;
 	char buf[sizeof("#XXXXXX")];
 
-	if (Type == VIA_TYPE) {
+	if (Type == PCB_TYPE_VIA) {
 		if (!doing_pinout && TEST_FLAG(WARNFLAG | SELECTEDFLAG | FOUNDFLAG, Pin)) {
 			if (TEST_FLAG(WARNFLAG, Pin))
 				color = PCB->WarnColor;
@@ -234,7 +234,7 @@ static void _draw_pv(PinTypePtr pv, bool draw_hole)
 
 static void draw_pin(PinTypePtr pin, bool draw_hole)
 {
-	SetPVColor(pin, PIN_TYPE);
+	SetPVColor(pin, PCB_TYPE_PIN);
 	_draw_pv(pin, draw_hole);
 }
 
@@ -246,7 +246,7 @@ static r_dir_t pin_callback(const BoxType * b, void *cl)
 
 static void draw_via(PinTypePtr via, bool draw_hole)
 {
-	SetPVColor(via, VIA_TYPE);
+	SetPVColor(via, PCB_TYPE_VIA);
 	_draw_pv(via, draw_hole);
 }
 
@@ -1589,30 +1589,30 @@ void EraseElementName(ElementTypePtr Element)
 void EraseObject(int type, void *lptr, void *ptr)
 {
 	switch (type) {
-	case VIA_TYPE:
-	case PIN_TYPE:
+	case PCB_TYPE_VIA:
+	case PCB_TYPE_PIN:
 		ErasePin((PinTypePtr) ptr);
 		break;
-	case TEXT_TYPE:
-	case ELEMENTNAME_TYPE:
+	case PCB_TYPE_TEXT:
+	case PCB_TYPE_ELEMENT_NAME:
 		EraseText((LayerTypePtr) lptr, (TextTypePtr) ptr);
 		break;
-	case POLYGON_TYPE:
+	case PCB_TYPE_POLYGON:
 		ErasePolygon((PolygonTypePtr) ptr);
 		break;
-	case ELEMENT_TYPE:
+	case PCB_TYPE_ELEMENT:
 		EraseElement((ElementTypePtr) ptr);
 		break;
-	case LINE_TYPE:
-	case ELEMENTLINE_TYPE:
-	case RATLINE_TYPE:
+	case PCB_TYPE_LINE:
+	case PCB_TYPE_ELEMENT_LINE:
+	case PCB_TYPE_RATLINE:
 		EraseLine((LineTypePtr) ptr);
 		break;
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		ErasePad((PadTypePtr) ptr);
 		break;
-	case ARC_TYPE:
-	case ELEMENTARC_TYPE:
+	case PCB_TYPE_ARC:
+	case PCB_TYPE_ELEMENT_ARC:
 		EraseArc((ArcTypePtr) ptr);
 		break;
 	default:
@@ -1624,43 +1624,43 @@ void EraseObject(int type, void *lptr, void *ptr)
 void DrawObject(int type, void *ptr1, void *ptr2)
 {
 	switch (type) {
-	case VIA_TYPE:
+	case PCB_TYPE_VIA:
 		if (PCB->ViaOn)
 			DrawVia((PinTypePtr) ptr2);
 		break;
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		if (((LayerTypePtr) ptr1)->On)
 			DrawLine((LayerTypePtr) ptr1, (LineTypePtr) ptr2);
 		break;
-	case ARC_TYPE:
+	case PCB_TYPE_ARC:
 		if (((LayerTypePtr) ptr1)->On)
 			DrawArc((LayerTypePtr) ptr1, (ArcTypePtr) ptr2);
 		break;
-	case TEXT_TYPE:
+	case PCB_TYPE_TEXT:
 		if (((LayerTypePtr) ptr1)->On)
 			DrawText((LayerTypePtr) ptr1, (TextTypePtr) ptr2);
 		break;
-	case POLYGON_TYPE:
+	case PCB_TYPE_POLYGON:
 		if (((LayerTypePtr) ptr1)->On)
 			DrawPolygon((LayerTypePtr) ptr1, (PolygonTypePtr) ptr2);
 		break;
-	case ELEMENT_TYPE:
+	case PCB_TYPE_ELEMENT:
 		if (PCB->ElementOn && (FRONT((ElementTypePtr) ptr2) || PCB->InvisibleObjectsOn))
 			DrawElement((ElementTypePtr) ptr2);
 		break;
-	case RATLINE_TYPE:
+	case PCB_TYPE_RATLINE:
 		if (PCB->RatOn)
 			DrawRat((RatTypePtr) ptr2);
 		break;
-	case PIN_TYPE:
+	case PCB_TYPE_PIN:
 		if (PCB->PinOn)
 			DrawPin((PinTypePtr) ptr2);
 		break;
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		if (PCB->PinOn)
 			DrawPad((PadTypePtr) ptr2);
 		break;
-	case ELEMENTNAME_TYPE:
+	case PCB_TYPE_ELEMENT_NAME:
 		if (PCB->ElementOn && (FRONT((ElementTypePtr) ptr2) || PCB->InvisibleObjectsOn))
 			DrawElementName((ElementTypePtr) ptr1);
 		break;

@@ -36,7 +36,7 @@
  */
 #define	MIRROR(object)	TOGGLE_FLAG(MIRRORFLAG, (object))
 
-#define	MIRROR_TYPES	(TEXT_TYPE | ELEMENTNAME_TYPE)
+#define	MIRROR_TYPES	(PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME)
 
 
 void MirrorElementCoordinates(DataTypePtr, ElementTypePtr, Coord);

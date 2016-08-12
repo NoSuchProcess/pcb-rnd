@@ -320,7 +320,7 @@ static void WriteViaData(FILE * FP, DataTypePtr Data)
 		pcb_fprintf(FP, "Via[%mr %mr %mr %mr %mr %mr ", via->X, via->Y,
 								via->Thickness, via->Clearance, via->Mask, via->DrillingHole);
 		PrintQuotedString(FP, (char *) EMPTY(via->Name));
-		fprintf(FP, " %s]\n", F2S(via, VIA_TYPE));
+		fprintf(FP, " %s]\n", F2S(via, PCB_TYPE_VIA));
 	}
 }
 
@@ -336,7 +336,7 @@ static void WritePCBRatData(FILE * FP)
 	ratlist_foreach(&PCB->Data->Rat, &it, line) {
 		pcb_fprintf(FP, "Rat[%mr %mr %d %mr %mr %d ",
 								line->Point1.X, line->Point1.Y, line->group1, line->Point2.X, line->Point2.Y, line->group2);
-		fprintf(FP, " %s]\n", F2S(line, RATLINE_TYPE));
+		fprintf(FP, " %s]\n", F2S(line, PCB_TYPE_RATLINE));
 	}
 }
 
@@ -402,7 +402,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 		/* the coordinates and text-flags are the same for
 		 * both names of an element
 		 */
-		fprintf(FP, "\nElement[%s ", F2S(element, ELEMENT_TYPE));
+		fprintf(FP, "\nElement[%s ", F2S(element, PCB_TYPE_ELEMENT));
 		PrintQuotedString(FP, (char *) EMPTY(DESCRIPTION_NAME(element)));
 		fputc(' ', FP);
 		PrintQuotedString(FP, (char *) EMPTY(NAMEONPCB_NAME(element)));
@@ -413,7 +413,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 								DESCRIPTION_TEXT(element).X - element->MarkX,
 								DESCRIPTION_TEXT(element).Y - element->MarkY,
 								DESCRIPTION_TEXT(element).Direction,
-								DESCRIPTION_TEXT(element).Scale, F2S(&(DESCRIPTION_TEXT(element)), ELEMENTNAME_TYPE));
+								DESCRIPTION_TEXT(element).Scale, F2S(&(DESCRIPTION_TEXT(element)), PCB_TYPE_ELEMENT_NAME));
 		WriteAttributeList(FP, &element->Attributes, "\t");
 		pinlist_foreach(&element->Pin, &it, pin) {
 			pcb_fprintf(FP, "\tPin[%mr %mr %mr %mr %mr %mr ",
@@ -422,7 +422,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 			PrintQuotedString(FP, (char *) EMPTY(pin->Name));
 			fprintf(FP, " ");
 			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
-			fprintf(FP, " %s]\n", F2S(pin, PIN_TYPE));
+			fprintf(FP, " %s]\n", F2S(pin, PCB_TYPE_PIN));
 		}
 		pinlist_foreach(&element->Pad, &it, pad) {
 			pcb_fprintf(FP, "\tPad[%mr %mr %mr %mr %mr %mr %mr ",
@@ -432,7 +432,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 			PrintQuotedString(FP, (char *) EMPTY(pad->Name));
 			fprintf(FP, " ");
 			PrintQuotedString(FP, (char *) EMPTY(pad->Number));
-			fprintf(FP, " %s]\n", F2S(pad, PAD_TYPE));
+			fprintf(FP, " %s]\n", F2S(pad, PCB_TYPE_PAD));
 		}
 		linelist_foreach(&element->Line, &it, line) {
 			pcb_fprintf(FP, "\tElementLine [%mr %mr %mr %mr %mr]\n",
@@ -471,22 +471,22 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 		linelist_foreach(&layer->Line, &it, line) {
 			pcb_fprintf(FP, "\tLine[%mr %mr %mr %mr %mr %mr %s]\n",
 									line->Point1.X, line->Point1.Y,
-									line->Point2.X, line->Point2.Y, line->Thickness, line->Clearance, F2S(line, LINE_TYPE));
+									line->Point2.X, line->Point2.Y, line->Thickness, line->Clearance, F2S(line, PCB_TYPE_LINE));
 		}
 		arclist_foreach(&layer->Arc, &it, arc) {
 			pcb_fprintf(FP, "\tArc[%mr %mr %mr %mr %mr %mr %ma %ma %s]\n",
 									arc->X, arc->Y, arc->Width,
-									arc->Height, arc->Thickness, arc->Clearance, arc->StartAngle, arc->Delta, F2S(arc, ARC_TYPE));
+									arc->Height, arc->Thickness, arc->Clearance, arc->StartAngle, arc->Delta, F2S(arc, PCB_TYPE_ARC));
 		}
 		textlist_foreach(&layer->Text, &it, text) {
 			pcb_fprintf(FP, "\tText[%mr %mr %d %d ", text->X, text->Y, text->Direction, text->Scale);
 			PrintQuotedString(FP, (char *) EMPTY(text->TextString));
-			fprintf(FP, " %s]\n", F2S(text, TEXT_TYPE));
+			fprintf(FP, " %s]\n", F2S(text, PCB_TYPE_TEXT));
 		}
 		textlist_foreach(&layer->Polygon, &it, polygon) {
 			int p, i = 0;
 			Cardinal hole = 0;
-			fprintf(FP, "\tPolygon(%s)\n\t(", F2S(polygon, POLYGON_TYPE));
+			fprintf(FP, "\tPolygon(%s)\n\t(", F2S(polygon, PCB_TYPE_POLYGON));
 			for (p = 0; p < polygon->PointN; p++) {
 				PointTypePtr point = &polygon->Points[p];
 

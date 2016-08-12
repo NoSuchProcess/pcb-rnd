@@ -168,7 +168,7 @@ static void *CopyVia(PinTypePtr Via)
 	if (!via)
 		return (via);
 	DrawVia(via);
-	AddObjectToCreateUndoList(VIA_TYPE, via, via, via);
+	AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 	return (via);
 }
 
@@ -188,7 +188,7 @@ static void *CopyLine(LayerTypePtr Layer, LineTypePtr Line)
 	if (Line->Number)
 		line->Number = strdup(Line->Number);
 	DrawLine(Layer, line);
-	AddObjectToCreateUndoList(LINE_TYPE, Layer, line, line);
+	AddObjectToCreateUndoList(PCB_TYPE_LINE, Layer, line, line);
 	return (line);
 }
 
@@ -205,7 +205,7 @@ static void *CopyArc(LayerTypePtr Layer, ArcTypePtr Arc)
 	if (!arc)
 		return (arc);
 	DrawArc(Layer, arc);
-	AddObjectToCreateUndoList(ARC_TYPE, Layer, arc, arc);
+	AddObjectToCreateUndoList(PCB_TYPE_ARC, Layer, arc, arc);
 	return (arc);
 }
 
@@ -219,7 +219,7 @@ static void *CopyText(LayerTypePtr Layer, TextTypePtr Text)
 	text = CreateNewText(Layer, &PCB->Font, Text->X + DeltaX,
 											 Text->Y + DeltaY, Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, FOUNDFLAG));
 	DrawText(Layer, text);
-	AddObjectToCreateUndoList(TEXT_TYPE, Layer, text, text);
+	AddObjectToCreateUndoList(PCB_TYPE_TEXT, Layer, text, text);
 	return (text);
 }
 
@@ -238,7 +238,7 @@ static void *CopyPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 	r_insert_entry(Layer->polygon_tree, (BoxTypePtr) polygon, 0);
 	InitClip(PCB->Data, Layer, polygon);
 	DrawPolygon(Layer, polygon);
-	AddObjectToCreateUndoList(POLYGON_TYPE, Layer, polygon, polygon);
+	AddObjectToCreateUndoList(PCB_TYPE_POLYGON, Layer, polygon, polygon);
 	return (polygon);
 }
 
@@ -258,7 +258,7 @@ static void *CopyElement(ElementTypePtr Element)
 																							 DeltaY);
 
 	/* this call clears the polygons */
-	AddObjectToCreateUndoList(ELEMENT_TYPE, element, element, element);
+	AddObjectToCreateUndoList(PCB_TYPE_ELEMENT, element, element, element);
 	if (PCB->ElementOn && (FRONT(element) || PCB->InvisibleObjectsOn)) {
 		DrawElementName(element);
 		DrawElementPackage(element);

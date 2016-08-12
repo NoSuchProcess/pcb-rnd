@@ -99,7 +99,7 @@ static int ActionAddRats(int argc, char **argv, Coord x, Coord y)
 			}
 			END_LOOP;
 			if (shorty) {
-				AddObjectToFlagUndoList(RATLINE_TYPE, shorty, shorty, shorty);
+				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, shorty, shorty, shorty);
 				SET_FLAG(SELECTEDFLAG, shorty);
 				DrawRat(shorty);
 				Draw();

@@ -59,7 +59,7 @@ static FlagBitsType pcb_flagbits[] = {
 
 char *pcbflags_to_string(FlagType flags)
 {
-	return common_flags_to_string(flags, ALL_TYPES, pcb_flagbits, ENTRIES(pcb_flagbits));
+	return common_flags_to_string(flags, PCB_TYPEMASK_ALL, pcb_flagbits, ENTRIES(pcb_flagbits));
 }
 
 FlagType string_to_pcbflags(const char *flagstring, int (*error) (const char *msg))

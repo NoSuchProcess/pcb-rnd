@@ -214,31 +214,31 @@ pad.  Primarily used for pads used as fiducials.
  * object types (bitfield)
  */
 typedef enum {
-	NO_TYPE           = 0x00000, /* special: no object */
-	VIA_TYPE          = 0x00001,
-	ELEMENT_TYPE      = 0x00002,
-	LINE_TYPE         = 0x00004,
-	POLYGON_TYPE      = 0x00008,
-	TEXT_TYPE         = 0x00010,
-	RATLINE_TYPE      = 0x00020,
+	PCB_TYPE_NONE          = 0x00000, /* special: no object */
+	PCB_TYPE_VIA           = 0x00001,
+	PCB_TYPE_ELEMENT       = 0x00002,
+	PCB_TYPE_LINE          = 0x00004,
+	PCB_TYPE_POLYGON       = 0x00008,
+	PCB_TYPE_TEXT          = 0x00010,
+	PCB_TYPE_RATLINE       = 0x00020,
 
-	PIN_TYPE          = 0x00100, /* objects that are part */
-	PAD_TYPE          = 0x00200, /* 'pin' of SMD element */
-	ELEMENTNAME_TYPE  = 0x00400, /* of others */
-	POLYGONPOINT_TYPE = 0x00800,
-	LINEPOINT_TYPE    = 0x01000,
-	ELEMENTLINE_TYPE  = 0x02000,
-	ARC_TYPE          = 0x04000,
-	ELEMENTARC_TYPE   = 0x08000,
+	PCB_TYPE_PIN           = 0x00100, /* objects that are part */
+	PCB_TYPE_PAD           = 0x00200, /* 'pin' of SMD element */
+	PCB_TYPE_ELEMENT_NAME  = 0x00400, /* of others */
+	PCB_TYPE_POLYGON_POINT = 0x00800,
+	PCB_TYPE_LINE_POINT    = 0x01000,
+	PCB_TYPE_ELEMENT_LINE  = 0x02000,
+	PCB_TYPE_ARC           = 0x04000,
+	PCB_TYPE_ELEMENT_ARC   = 0x08000,
 
-	LOCKED_TYPE       = 0x10000, /* used to tell search to include locked items. */
-	NET_TYPE          = 0x20000, /* used to select whole net. */
+	PCB_TYPE_LOCKED        = 0x10000, /* used to tell search to include locked items. */
+	PCB_TYPE_NET           = 0x20000, /* used to select whole net. */
 
 	/* groups/properties */
-	PIN_TYPES         = (VIA_TYPE | PIN_TYPE),
-	LOCK_TYPES        = (VIA_TYPE | LINE_TYPE | ARC_TYPE | POLYGON_TYPE | ELEMENT_TYPE | TEXT_TYPE | ELEMENTNAME_TYPE | LOCKED_TYPE),
+	PCB_TYPEMASK_PIN       = (PCB_TYPE_VIA | PCB_TYPE_PIN),
+	PCB_TYPEMASK_LOCK      = (PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON | PCB_TYPE_ELEMENT | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_LOCKED),
 
-	ALL_TYPES         = (~0)   /* all bits set */
+	PCB_TYPEMASK_ALL       = (~0)   /* all bits set */
 } pcb_obj_type_t;
 
 #endif

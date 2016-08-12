@@ -88,7 +88,7 @@ do { \
 #define	ROTATE_PAD_LOWLEVEL(p,x0,y0,n)	\
 	RotateLineLowLevel(((LineTypePtr) (p)),(x0),(y0),(n))
 
-#define	ROTATE_TYPES	(ELEMENT_TYPE | TEXT_TYPE | ELEMENTNAME_TYPE | ARC_TYPE)
+#define	ROTATE_TYPES	(PCB_TYPE_ELEMENT | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_ARC)
 
 
 void RotateLineLowLevel(LineTypePtr, Coord, Coord, unsigned);

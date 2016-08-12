@@ -150,11 +150,11 @@ void RotatePolygonLowLevel(PolygonTypePtr Polygon, Coord X, Coord Y, unsigned Nu
 static void *RotateText(LayerTypePtr Layer, TextTypePtr Text)
 {
 	EraseText(Layer, Text);
-	RestoreToPolygon(PCB->Data, TEXT_TYPE, Layer, Text);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	r_delete_entry(Layer->text_tree, (BoxTypePtr) Text);
 	RotateTextLowLevel(Text, CenterX, CenterY, Number);
 	r_insert_entry(Layer->text_tree, (BoxTypePtr) Text, 0);
-	ClearFromPolygon(PCB->Data, TEXT_TYPE, Layer, Text);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	DrawText(Layer, Text);
 	Draw();
 	return (Text);
@@ -207,7 +207,7 @@ void RotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Co
 		/* pre-delete the pins from the pin-tree before their coordinates change */
 		if (Data)
 			r_delete_entry(Data->pin_tree, (BoxType *) pin);
-		RestoreToPolygon(Data, PIN_TYPE, Element, pin);
+		RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
 		ROTATE_PIN_LOWLEVEL(pin, X, Y, Number);
 	}
 	END_LOOP;
@@ -216,7 +216,7 @@ void RotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Co
 		/* pre-delete the pads before their coordinates change */
 		if (Data)
 			r_delete_entry(Data->pad_tree, (BoxType *) pad);
-		RestoreToPolygon(Data, PAD_TYPE, Element, pad);
+		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
 		ROTATE_PAD_LOWLEVEL(pad, X, Y, Number);
 	}
 	END_LOOP;
@@ -228,7 +228,7 @@ void RotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Co
 	ROTATE(Element->MarkX, Element->MarkY, X, Y, Number);
 	/* SetElementBoundingBox reenters the rtree data */
 	SetElementBoundingBox(Data, Element, &PCB->Font);
-	ClearFromPolygon(Data, ELEMENT_TYPE, Element, Element);
+	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
 /* ---------------------------------------------------------------------------
@@ -238,7 +238,7 @@ static void *RotateLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr 
 {
 	EraseLine(Line);
 	if (Layer) {
-		RestoreToPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
 	}
 	else
@@ -247,7 +247,7 @@ static void *RotateLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr 
 	SetLineBoundingBox(Line);
 	if (Layer) {
 		r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
-		ClearFromPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		DrawLine(Layer, Line);
 	}
 	else {
@@ -337,10 +337,10 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 	while (Crosshair.AttachedObject.RubberbandN) {
 		changed = true;
 		CLEAR_FLAG(RUBBERENDFLAG, ptr->Line);
-		AddObjectToRotateUndoList(LINEPOINT_TYPE, ptr->Layer, ptr->Line, ptr->MovedPoint, CenterX, CenterY, Steps);
+		AddObjectToRotateUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, CenterX, CenterY, Steps);
 		EraseLine(ptr->Line);
 		if (ptr->Layer) {
-			RestoreToPolygon(PCB->Data, LINE_TYPE, ptr->Layer, ptr->Line);
+			RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
 			r_delete_entry(ptr->Layer->line_tree, (BoxType *) ptr->Line);
 		}
 		else
@@ -349,7 +349,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 		SetLineBoundingBox(ptr->Line);
 		if (ptr->Layer) {
 			r_insert_entry(ptr->Layer->line_tree, (BoxType *) ptr->Line, 0);
-			ClearFromPolygon(PCB->Data, LINE_TYPE, ptr->Layer, ptr->Line);
+			ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
 			DrawLine(ptr->Layer, ptr->Line);
 		}
 		else {
@@ -373,7 +373,7 @@ void RotateScreenObject(Coord X, Coord Y, unsigned Steps)
 {
 	int type;
 	void *ptr1, *ptr2, *ptr3;
-	if ((type = SearchScreen(X, Y, ROTATE_TYPES, &ptr1, &ptr2, &ptr3)) != NO_TYPE) {
+	if ((type = SearchScreen(X, Y, ROTATE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 		if (TEST_FLAG(LOCKFLAG, (ArcTypePtr) ptr2)) {
 			Message(_("Sorry, the object is locked\n"));
 			return;
@@ -381,7 +381,7 @@ void RotateScreenObject(Coord X, Coord Y, unsigned Steps)
 		Crosshair.AttachedObject.RubberbandN = 0;
 		if (conf_core.editor.rubber_band_mode)
 			LookupRubberbandLines(type, ptr1, ptr2, ptr3);
-		if (type == ELEMENT_TYPE)
+		if (type == PCB_TYPE_ELEMENT)
 			LookupRatLines(type, ptr1, ptr2, ptr3);
 		RotateObject(type, ptr1, ptr2, ptr3, X, Y, Steps);
 		SetChangedFlag(true);

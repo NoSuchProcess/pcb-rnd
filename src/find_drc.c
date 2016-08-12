@@ -91,14 +91,14 @@ static void BuildObjectList(int *object_count, long int **object_id_list, int **
 	*object_type_list = NULL;
 
 	switch (thing_type) {
-	case LINE_TYPE:
-	case ARC_TYPE:
-	case POLYGON_TYPE:
-	case PIN_TYPE:
-	case VIA_TYPE:
-	case PAD_TYPE:
-	case ELEMENT_TYPE:
-	case RATLINE_TYPE:
+	case PCB_TYPE_LINE:
+	case PCB_TYPE_ARC:
+	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_PIN:
+	case PCB_TYPE_VIA:
+	case PCB_TYPE_PAD:
+	case PCB_TYPE_ELEMENT:
+	case PCB_TYPE_RATLINE:
 		*object_count = 1;
 		*object_id_list = (long int *) malloc(sizeof(long int));
 		*object_type_list = (int *) malloc(sizeof(int));
@@ -119,43 +119,43 @@ static void BuildObjectList(int *object_count, long int **object_id_list, int **
 static void LocateError(Coord * x, Coord * y)
 {
 	switch (thing_type) {
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		{
 			LineTypePtr line = (LineTypePtr) thing_ptr3;
 			*x = (line->Point1.X + line->Point2.X) / 2;
 			*y = (line->Point1.Y + line->Point2.Y) / 2;
 			break;
 		}
-	case ARC_TYPE:
+	case PCB_TYPE_ARC:
 		{
 			ArcTypePtr arc = (ArcTypePtr) thing_ptr3;
 			*x = arc->X;
 			*y = arc->Y;
 			break;
 		}
-	case POLYGON_TYPE:
+	case PCB_TYPE_POLYGON:
 		{
 			PolygonTypePtr polygon = (PolygonTypePtr) thing_ptr3;
 			*x = (polygon->Clipped->contours->xmin + polygon->Clipped->contours->xmax) / 2;
 			*y = (polygon->Clipped->contours->ymin + polygon->Clipped->contours->ymax) / 2;
 			break;
 		}
-	case PIN_TYPE:
-	case VIA_TYPE:
+	case PCB_TYPE_PIN:
+	case PCB_TYPE_VIA:
 		{
 			PinTypePtr pin = (PinTypePtr) thing_ptr3;
 			*x = pin->X;
 			*y = pin->Y;
 			break;
 		}
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		{
 			PadTypePtr pad = (PadTypePtr) thing_ptr3;
 			*x = (pad->Point1.X + pad->Point2.X) / 2;
 			*y = (pad->Point1.Y + pad->Point2.Y) / 2;
 			break;
 		}
-	case ELEMENT_TYPE:
+	case PCB_TYPE_ELEMENT:
 		{
 			ElementTypePtr element = (ElementTypePtr) thing_ptr3;
 			*x = element->MarkX;
@@ -231,7 +231,7 @@ static r_dir_t drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr
 	thing_ptr2 = ptr2;
 	thing_ptr3 = ptr2;
 	switch (type) {
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		if (line->Clearance < 2 * PCB->Bloat) {
 			AddObjectToFlagUndoList(type, ptr1, ptr2, ptr2);
 			SET_FLAG(TheFlag, line);
@@ -239,7 +239,7 @@ static r_dir_t drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr
 			goto doIsBad;
 		}
 		break;
-	case ARC_TYPE:
+	case PCB_TYPE_ARC:
 		if (arc->Clearance < 2 * PCB->Bloat) {
 			AddObjectToFlagUndoList(type, ptr1, ptr2, ptr2);
 			SET_FLAG(TheFlag, arc);
@@ -247,7 +247,7 @@ static r_dir_t drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr
 			goto doIsBad;
 		}
 		break;
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		if (pad->Clearance && pad->Clearance < 2 * PCB->Bloat)
 			if (IsPadInPolygon(pad, polygon)) {
 				AddObjectToFlagUndoList(type, ptr1, ptr2, ptr2);
@@ -256,7 +256,7 @@ static r_dir_t drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr
 				goto doIsBad;
 			}
 		break;
-	case PIN_TYPE:
+	case PCB_TYPE_PIN:
 		if (pin->Clearance && pin->Clearance < 2 * PCB->Bloat) {
 			AddObjectToFlagUndoList(type, ptr1, ptr2, ptr2);
 			SET_FLAG(TheFlag, pin);
@@ -264,7 +264,7 @@ static r_dir_t drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr
 			goto doIsBad;
 		}
 		break;
-	case VIA_TYPE:
+	case PCB_TYPE_VIA:
 		if (pin->Clearance && pin->Clearance < 2 * PCB->Bloat) {
 			AddObjectToFlagUndoList(type, ptr1, ptr2, ptr2);
 			SET_FLAG(TheFlag, pin);
@@ -278,7 +278,7 @@ static r_dir_t drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr
 	return R_DIR_NOT_FOUND;
 
 doIsBad:
-	AddObjectToFlagUndoList(POLYGON_TYPE, layer, polygon, polygon);
+	AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
 	SET_FLAG(FOUNDFLAG, polygon);
 	DrawPolygon(layer, polygon);
 	DrawObject(type, ptr1, ptr2);
@@ -341,7 +341,7 @@ int DRCAll(void)
 		PIN_LOOP(element);
 		{
 			if (!TEST_FLAG(DRCFLAG, pin)
-					&& DRCFind(PIN_TYPE, (void *) element, (void *) pin, (void *) pin)) {
+					&& DRCFind(PCB_TYPE_PIN, (void *) element, (void *) pin, (void *) pin)) {
 				IsBad = true;
 				break;
 			}
@@ -357,7 +357,7 @@ int DRCAll(void)
 				nopastecnt++;
 
 			if (!TEST_FLAG(DRCFLAG, pad)
-					&& DRCFind(PAD_TYPE, (void *) element, (void *) pad, (void *) pad)) {
+					&& DRCFind(PCB_TYPE_PAD, (void *) element, (void *) pad, (void *) pad)) {
 				IsBad = true;
 				break;
 			}
@@ -371,7 +371,7 @@ int DRCAll(void)
 		VIA_LOOP(PCB->Data);
 	{
 		if (!TEST_FLAG(DRCFLAG, via)
-				&& DRCFind(VIA_TYPE, (void *) via, (void *) via, (void *) via)) {
+				&& DRCFind(PCB_TYPE_VIA, (void *) via, (void *) via, (void *) via)) {
 			IsBad = true;
 			break;
 		}
@@ -386,15 +386,15 @@ int DRCAll(void)
 		COPPERLINE_LOOP(PCB->Data);
 		{
 			/* check line clearances in polygons */
-			PlowsPolygon(PCB->Data, LINE_TYPE, layer, line, drc_callback);
+			PlowsPolygon(PCB->Data, PCB_TYPE_LINE, layer, line, drc_callback);
 			if (IsBad)
 				break;
 			if (line->Thickness < PCB->minWid) {
-				AddObjectToFlagUndoList(LINE_TYPE, layer, line, line);
+				AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);
 				SET_FLAG(TheFlag, line);
 				DrawLine(layer, line);
 				drcerr_count++;
-				SetThing(LINE_TYPE, layer, line, line);
+				SetThing(PCB_TYPE_LINE, layer, line, line);
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Line width is too thin"), _("Process specifications dictate a minimum feature-width\n" "that can reliably be reproduced"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -417,15 +417,15 @@ int DRCAll(void)
 	if (!IsBad) {
 		COPPERARC_LOOP(PCB->Data);
 		{
-			PlowsPolygon(PCB->Data, ARC_TYPE, layer, arc, drc_callback);
+			PlowsPolygon(PCB->Data, PCB_TYPE_ARC, layer, arc, drc_callback);
 			if (IsBad)
 				break;
 			if (arc->Thickness < PCB->minWid) {
-				AddObjectToFlagUndoList(ARC_TYPE, layer, arc, arc);
+				AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);
 				SET_FLAG(TheFlag, arc);
 				DrawArc(layer, arc);
 				drcerr_count++;
-				SetThing(ARC_TYPE, layer, arc, arc);
+				SetThing(PCB_TYPE_ARC, layer, arc, arc);
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Arc width is too thin"), _("Process specifications dictate a minimum feature-width\n" "that can reliably be reproduced"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -448,15 +448,15 @@ int DRCAll(void)
 	if (!IsBad) {
 		ALLPIN_LOOP(PCB->Data);
 		{
-			PlowsPolygon(PCB->Data, PIN_TYPE, element, pin, drc_callback);
+			PlowsPolygon(PCB->Data, PCB_TYPE_PIN, element, pin, drc_callback);
 			if (IsBad)
 				break;
 			if (!TEST_FLAG(HOLEFLAG, pin) && pin->Thickness - pin->DrillingHole < 2 * PCB->minRing) {
-				AddObjectToFlagUndoList(PIN_TYPE, element, pin, pin);
+				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
 				SET_FLAG(TheFlag, pin);
 				DrawPin(pin);
 				drcerr_count++;
-				SetThing(PIN_TYPE, element, pin, pin);
+				SetThing(PCB_TYPE_PIN, element, pin, pin);
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Pin annular ring too small"), _("Annular rings that are too small may erode during etching,\n" "resulting in a broken connection"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -475,11 +475,11 @@ int DRCAll(void)
 				Undo(false);
 			}
 			if (pin->DrillingHole < PCB->minDrill) {
-				AddObjectToFlagUndoList(PIN_TYPE, element, pin, pin);
+				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
 				SET_FLAG(TheFlag, pin);
 				DrawPin(pin);
 				drcerr_count++;
-				SetThing(PIN_TYPE, element, pin, pin);
+				SetThing(PCB_TYPE_PIN, element, pin, pin);
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Pin drill size is too small"), _("Process rules dictate the minimum drill size which can be used"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -502,15 +502,15 @@ int DRCAll(void)
 	if (!IsBad) {
 		ALLPAD_LOOP(PCB->Data);
 		{
-			PlowsPolygon(PCB->Data, PAD_TYPE, element, pad, drc_callback);
+			PlowsPolygon(PCB->Data, PCB_TYPE_PAD, element, pad, drc_callback);
 			if (IsBad)
 				break;
 			if (pad->Thickness < PCB->minWid) {
-				AddObjectToFlagUndoList(PAD_TYPE, element, pad, pad);
+				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
 				SET_FLAG(TheFlag, pad);
 				DrawPad(pad);
 				drcerr_count++;
-				SetThing(PAD_TYPE, element, pad, pad);
+				SetThing(PCB_TYPE_PAD, element, pad, pad);
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Pad is too thin"), _("Pads which are too thin may erode during etching,\n" "resulting in a broken or unreliable connection"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -533,15 +533,15 @@ int DRCAll(void)
 	if (!IsBad) {
 		VIA_LOOP(PCB->Data);
 		{
-			PlowsPolygon(PCB->Data, VIA_TYPE, via, via, drc_callback);
+			PlowsPolygon(PCB->Data, PCB_TYPE_VIA, via, via, drc_callback);
 			if (IsBad)
 				break;
 			if (!TEST_FLAG(HOLEFLAG, via) && via->Thickness - via->DrillingHole < 2 * PCB->minRing) {
-				AddObjectToFlagUndoList(VIA_TYPE, via, via, via);
+				AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
 				SET_FLAG(TheFlag, via);
 				DrawVia(via);
 				drcerr_count++;
-				SetThing(VIA_TYPE, via, via, via);
+				SetThing(PCB_TYPE_VIA, via, via, via);
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Via annular ring too small"), _("Annular rings that are too small may erode during etching,\n" "resulting in a broken connection"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -560,11 +560,11 @@ int DRCAll(void)
 				Undo(false);
 			}
 			if (via->DrillingHole < PCB->minDrill) {
-				AddObjectToFlagUndoList(VIA_TYPE, via, via, via);
+				AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
 				SET_FLAG(TheFlag, via);
 				DrawVia(via);
 				drcerr_count++;
-				SetThing(VIA_TYPE, via, via, via);
+				SetThing(PCB_TYPE_VIA, via, via, via);
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Via drill size is too small"), _("Process rules dictate the minimum drill size which can be used"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -599,7 +599,7 @@ int DRCAll(void)
 				SET_FLAG(TheFlag, line);
 				DrawLine(layer, line);
 				drcerr_count++;
-				SetThing(LINE_TYPE, layer, line, line);
+				SetThing(PCB_TYPE_LINE, layer, line, line);
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Silk line is too thin"), _("Process specifications dictate a minimum silkscreen feature-width\n" "that can reliably be reproduced"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
@@ -640,7 +640,7 @@ int DRCAll(void)
 				SET_FLAG(TheFlag, element);
 				DrawElement(element);
 				drcerr_count++;
-				SetThing(ELEMENT_TYPE, element, element, element);
+				SetThing(PCB_TYPE_ELEMENT, element, element, element);
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 
@@ -821,9 +821,9 @@ static void GotoError(void)
 	LocateError(&X, &Y);
 
 	switch (thing_type) {
-	case LINE_TYPE:
-	case ARC_TYPE:
-	case POLYGON_TYPE:
+	case PCB_TYPE_LINE:
+	case PCB_TYPE_ARC:
+	case PCB_TYPE_POLYGON:
 		ChangeGroupVisibility(GetLayerNumber(PCB->Data, (LayerTypePtr) thing_ptr1), true, true);
 	}
 	CenterDisplay(X, Y);

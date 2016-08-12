@@ -126,25 +126,25 @@ static int ActionSelect(int argc, char **argv, Coord x, Coord y)
 			int type;
 			/* select objects by their names */
 		case F_ElementByName:
-			type = ELEMENT_TYPE;
+			type = PCB_TYPE_ELEMENT;
 			goto commonByName;
 		case F_ObjectByName:
-			type = ALL_TYPES;
+			type = PCB_TYPEMASK_ALL;
 			goto commonByName;
 		case F_PadByName:
-			type = PAD_TYPE;
+			type = PCB_TYPE_PAD;
 			goto commonByName;
 		case F_PinByName:
-			type = PIN_TYPE;
+			type = PCB_TYPE_PIN;
 			goto commonByName;
 		case F_TextByName:
-			type = TEXT_TYPE;
+			type = PCB_TYPE_TEXT;
 			goto commonByName;
 		case F_ViaByName:
-			type = VIA_TYPE;
+			type = PCB_TYPE_VIA;
 			goto commonByName;
 		case F_NetByName:
-			type = NET_TYPE;
+			type = PCB_TYPE_NET;
 			goto commonByName;
 
 		commonByName:
@@ -287,25 +287,25 @@ static int ActionUnselect(int argc, char **argv, Coord x, Coord y)
 			int type;
 			/* select objects by their names */
 		case F_ElementByName:
-			type = ELEMENT_TYPE;
+			type = PCB_TYPE_ELEMENT;
 			goto commonByName;
 		case F_ObjectByName:
-			type = ALL_TYPES;
+			type = PCB_TYPEMASK_ALL;
 			goto commonByName;
 		case F_PadByName:
-			type = PAD_TYPE;
+			type = PCB_TYPE_PAD;
 			goto commonByName;
 		case F_PinByName:
-			type = PIN_TYPE;
+			type = PCB_TYPE_PIN;
 			goto commonByName;
 		case F_TextByName:
-			type = TEXT_TYPE;
+			type = PCB_TYPE_TEXT;
 			goto commonByName;
 		case F_ViaByName:
-			type = VIA_TYPE;
+			type = PCB_TYPE_VIA;
 			goto commonByName;
 		case F_NetByName:
-			type = NET_TYPE;
+			type = PCB_TYPE_NET;
 			goto commonByName;
 
 		commonByName:

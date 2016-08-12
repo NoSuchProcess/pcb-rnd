@@ -346,7 +346,7 @@ static void XORDrawInsertPointObject(void)
 	LineTypePtr line = (LineTypePtr) Crosshair.AttachedObject.Ptr2;
 	PointTypePtr point = (PointTypePtr) Crosshair.AttachedObject.Ptr3;
 
-	if (Crosshair.AttachedObject.Type != NO_TYPE) {
+	if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
 		gui->draw_line(Crosshair.GC, point->X, point->Y, line->Point1.X, line->Point1.Y);
 		gui->draw_line(Crosshair.GC, point->X, point->Y, line->Point2.X, line->Point2.Y);
 	}
@@ -362,14 +362,14 @@ static void XORDrawMoveOrCopyObject(void)
 	Coord dx = Crosshair.X - Crosshair.AttachedObject.X, dy = Crosshair.Y - Crosshair.AttachedObject.Y;
 
 	switch (Crosshair.AttachedObject.Type) {
-	case VIA_TYPE:
+	case PCB_TYPE_VIA:
 		{
 			PinTypePtr via = (PinTypePtr) Crosshair.AttachedObject.Ptr1;
 			thindraw_moved_pv(via, dx, dy);
 			break;
 		}
 
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		{
 			LineTypePtr line = (LineTypePtr) Crosshair.AttachedObject.Ptr2;
 
@@ -377,7 +377,7 @@ static void XORDrawMoveOrCopyObject(void)
 			break;
 		}
 
-	case ARC_TYPE:
+	case PCB_TYPE_ARC:
 		{
 			ArcTypePtr Arc = (ArcTypePtr) Crosshair.AttachedObject.Ptr2;
 
@@ -385,7 +385,7 @@ static void XORDrawMoveOrCopyObject(void)
 			break;
 		}
 
-	case POLYGON_TYPE:
+	case PCB_TYPE_POLYGON:
 		{
 			PolygonTypePtr polygon = (PolygonTypePtr) Crosshair.AttachedObject.Ptr2;
 
@@ -396,7 +396,7 @@ static void XORDrawMoveOrCopyObject(void)
 			break;
 		}
 
-	case LINEPOINT_TYPE:
+	case PCB_TYPE_LINE_POINT:
 		{
 			LineTypePtr line;
 			PointTypePtr point;
@@ -410,7 +410,7 @@ static void XORDrawMoveOrCopyObject(void)
 			break;
 		}
 
-	case POLYGONPOINT_TYPE:
+	case PCB_TYPE_POLYGON_POINT:
 		{
 			PolygonTypePtr polygon;
 			PointTypePtr point;
@@ -430,7 +430,7 @@ static void XORDrawMoveOrCopyObject(void)
 			break;
 		}
 
-	case ELEMENTNAME_TYPE:
+	case PCB_TYPE_ELEMENT_NAME:
 		{
 			/* locate the element "mark" and draw an association line from crosshair to it */
 			ElementTypePtr element = (ElementTypePtr) Crosshair.AttachedObject.Ptr1;
@@ -438,7 +438,7 @@ static void XORDrawMoveOrCopyObject(void)
 			gui->draw_line(Crosshair.GC, element->MarkX, element->MarkY, Crosshair.X, Crosshair.Y);
 			/* fall through to move the text as a box outline */
 		}
-	case TEXT_TYPE:
+	case PCB_TYPE_TEXT:
 		{
 			TextTypePtr text = (TextTypePtr) Crosshair.AttachedObject.Ptr2;
 			BoxTypePtr box = &text->BoundingBox;
@@ -447,9 +447,9 @@ static void XORDrawMoveOrCopyObject(void)
 		}
 
 		/* pin/pad movements result in moving an element */
-	case PAD_TYPE:
-	case PIN_TYPE:
-	case ELEMENT_TYPE:
+	case PCB_TYPE_PAD:
+	case PCB_TYPE_PIN:
+	case PCB_TYPE_ELEMENT:
 		XORDrawElement((ElementTypePtr) Crosshair.AttachedObject.Ptr2, dx, dy);
 		break;
 	}
@@ -724,7 +724,7 @@ static r_dir_t onpoint_line_callback(const BoxType * box, void *cl)
 #endif
 	if ((line->Point1.X == info->X && line->Point1.Y == info->Y) || (line->Point2.X == info->X && line->Point2.Y == info->Y)) {
 		OnpointType op;
-		op.type = LINE_TYPE;
+		op.type = PCB_TYPE_LINE;
 		op.obj.line = line;
 		vtop_append(&crosshair->onpoint_objs, op);
 		SET_FLAG(ONPOINTFLAG, (AnyObjectType *) line);
@@ -754,7 +754,7 @@ static r_dir_t onpoint_arc_callback(const BoxType * box, void *cl)
 
 	if ((close_enough(p1x, info->X) && close_enough(p1y, info->Y)) || (close_enough(p2x, info->X) && close_enough(p2y, info->Y))) {
 		OnpointType op;
-		op.type = ARC_TYPE;
+		op.type = PCB_TYPE_ARC;
 		op.obj.arc = arc;
 		vtop_append(&crosshair->onpoint_objs, op);
 		SET_FLAG(ONPOINTFLAG, (AnyObjectType *) arc);
@@ -769,7 +769,7 @@ static r_dir_t onpoint_arc_callback(const BoxType * box, void *cl)
 void DrawLineOrArc(int type, void *obj)
 {
 	switch (type) {
-	case LINEPOINT_TYPE:
+	case PCB_TYPE_LINE_POINT:
 		/* Attention: We can use a NULL pointer here for the layer,
 		 * because it is not used in the DrawLine() function anyways.
 		 * ATM DrawLine() only alls AddPart() internally, which invalidates
@@ -922,9 +922,9 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, Coord nearest_g
 	/* Pick the nearest grid-point in the x or y direction
 	 * to align with, then adjust until we hit the line
 	 */
-	ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, LINE_TYPE, &ptr1, &ptr2, &ptr3);
+	ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE, &ptr1, &ptr2, &ptr3);
 
-	if (ans == NO_TYPE)
+	if (ans == PCB_TYPE_NONE)
 		return;
 
 	line = (LineType *) ptr2;
@@ -936,7 +936,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, Coord nearest_g
 	if ((conf_core.editor.mode != LINE_MODE || CURRENT != ptr1) &&
 			(conf_core.editor.mode != MOVE_MODE ||
 			 Crosshair.AttachedObject.Ptr1 != ptr1 ||
-			 Crosshair.AttachedObject.Type != LINEPOINT_TYPE || Crosshair.AttachedObject.Ptr2 == line))
+			 Crosshair.AttachedObject.Type != PCB_TYPE_LINE_POINT || Crosshair.AttachedObject.Ptr2 == line))
 		return;
 
 	dx = line->Point2.X - line->Point1.X;
@@ -1024,26 +1024,26 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	snap_data.x = nearest_grid_x;
 	snap_data.y = nearest_grid_y;
 
-	ans = NO_TYPE;
+	ans = PCB_TYPE_NONE;
 	if (!PCB->RatDraw)
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, ELEMENT_TYPE, &ptr1, &ptr2, &ptr3);
+		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3);
 
-	if (ans & ELEMENT_TYPE) {
+	if (ans & PCB_TYPE_ELEMENT) {
 		ElementType *el = (ElementType *) ptr1;
 		check_snap_object(&snap_data, el->MarkX, el->MarkY, false);
 	}
 
-	ans = NO_TYPE;
+	ans = PCB_TYPE_NONE;
 	if (PCB->RatDraw || conf_core.editor.snap_pin)
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PAD_TYPE, &ptr1, &ptr2, &ptr3);
+		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid self-snapping when moving */
-	if (ans != NO_TYPE &&
-			conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == ELEMENT_TYPE && ptr1 == Crosshair.AttachedObject.Ptr1)
-		ans = NO_TYPE;
+	if (ans != PCB_TYPE_NONE &&
+			conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT && ptr1 == Crosshair.AttachedObject.Ptr1)
+		ans = PCB_TYPE_NONE;
 
-	if (ans != NO_TYPE &&
-			(conf_core.editor.mode == LINE_MODE || (conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == LINEPOINT_TYPE))) {
+	if (ans != PCB_TYPE_NONE &&
+			(conf_core.editor.mode == LINE_MODE || (conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))) {
 		PadTypePtr pad = (PadTypePtr) ptr2;
 		LayerType *desired_layer;
 		Cardinal desired_group;
@@ -1051,7 +1051,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		int found_our_layer = false;
 
 		desired_layer = CURRENT;
-		if (conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == LINEPOINT_TYPE) {
+		if (conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT) {
 			desired_layer = (LayerType *) Crosshair.AttachedObject.Ptr1;
 		}
 
@@ -1070,46 +1070,46 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		END_LOOP;
 
 		if (found_our_layer == false)
-			ans = NO_TYPE;
+			ans = PCB_TYPE_NONE;
 	}
 
-	if (ans != NO_TYPE) {
+	if (ans != PCB_TYPE_NONE) {
 		PadType *pad = (PadType *) ptr2;
 		check_snap_object(&snap_data, (pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y) / 2, true);
 	}
 
-	ans = NO_TYPE;
+	ans = PCB_TYPE_NONE;
 	if (PCB->RatDraw || conf_core.editor.snap_pin)
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PIN_TYPE, &ptr1, &ptr2, &ptr3);
+		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid self-snapping when moving */
-	if (ans != NO_TYPE &&
-			conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == ELEMENT_TYPE && ptr1 == Crosshair.AttachedObject.Ptr1)
-		ans = NO_TYPE;
+	if (ans != PCB_TYPE_NONE &&
+			conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT && ptr1 == Crosshair.AttachedObject.Ptr1)
+		ans = PCB_TYPE_NONE;
 
-	if (ans != NO_TYPE) {
+	if (ans != PCB_TYPE_NONE) {
 		PinType *pin = (PinType *) ptr2;
 		check_snap_object(&snap_data, pin->X, pin->Y, true);
 	}
 
-	ans = NO_TYPE;
+	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, VIA_TYPE, &ptr1, &ptr2, &ptr3);
+		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid snapping vias to any other vias */
-	if (conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == VIA_TYPE && (ans & PIN_TYPES))
-		ans = NO_TYPE;
+	if (conf_core.editor.mode == MOVE_MODE && Crosshair.AttachedObject.Type == PCB_TYPE_VIA && (ans & PCB_TYPEMASK_PIN))
+		ans = PCB_TYPE_NONE;
 
-	if (ans != NO_TYPE) {
+	if (ans != PCB_TYPE_NONE) {
 		PinType *pin = (PinType *) ptr2;
 		check_snap_object(&snap_data, pin->X, pin->Y, true);
 	}
 
-	ans = NO_TYPE;
+	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, LINEPOINT_TYPE, &ptr1, &ptr2, &ptr3);
+		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
 
-	if (ans != NO_TYPE) {
+	if (ans != PCB_TYPE_NONE) {
 		PointType *pnt = (PointType *) ptr3;
 		check_snap_object(&snap_data, pnt->X, pnt->Y, true);
 	}
@@ -1120,11 +1120,11 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	if (conf_core.editor.snap_offgrid_line)
 		check_snap_offgrid_line(&snap_data, nearest_grid_x, nearest_grid_y);
 
-	ans = NO_TYPE;
+	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, POLYGONPOINT_TYPE, &ptr1, &ptr2, &ptr3);
+		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_POLYGON_POINT, &ptr1, &ptr2, &ptr3);
 
-	if (ans != NO_TYPE) {
+	if (ans != PCB_TYPE_NONE) {
 		PointType *pnt = (PointType *) ptr3;
 		check_snap_object(&snap_data, pnt->X, pnt->Y, true);
 	}
@@ -1138,8 +1138,8 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		onpoint_work(&Crosshair, Crosshair.X, Crosshair.Y);
 
 	if (conf_core.editor.mode == ARROW_MODE) {
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, LINEPOINT_TYPE, &ptr1, &ptr2, &ptr3);
-		if (ans == NO_TYPE)
+		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
+		if (ans == PCB_TYPE_NONE)
 			hid_action("PointCursor");
 		else if (!TEST_FLAG(SELECTEDFLAG, (LineType *) ptr2))
 			hid_actionl("PointCursor", "True", NULL);

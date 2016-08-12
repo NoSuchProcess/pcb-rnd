@@ -1091,19 +1091,19 @@ int GetLayerGroupNumberByNumber(Cardinal Layer)
 BoxTypePtr GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	switch (Type) {
-	case LINE_TYPE:
-	case ARC_TYPE:
-	case TEXT_TYPE:
-	case POLYGON_TYPE:
-	case PAD_TYPE:
-	case PIN_TYPE:
-	case ELEMENTNAME_TYPE:
+	case PCB_TYPE_LINE:
+	case PCB_TYPE_ARC:
+	case PCB_TYPE_TEXT:
+	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_PAD:
+	case PCB_TYPE_PIN:
+	case PCB_TYPE_ELEMENT_NAME:
 		return (BoxType *) Ptr2;
-	case VIA_TYPE:
-	case ELEMENT_TYPE:
+	case PCB_TYPE_VIA:
+	case PCB_TYPE_ELEMENT:
 		return (BoxType *) Ptr1;
-	case POLYGONPOINT_TYPE:
-	case LINEPOINT_TYPE:
+	case PCB_TYPE_POLYGON_POINT:
+	case PCB_TYPE_LINE_POINT:
 		return (BoxType *) Ptr3;
 	default:
 		Message("Request for bounding box of unsupported type %d\n", Type);
@@ -1280,14 +1280,14 @@ void ChangeArcAngles(LayerTypePtr Layer, ArcTypePtr a, Angle new_sa, Angle new_d
 		new_da = 360;
 		new_sa = 0;
 	}
-	RestoreToPolygon(PCB->Data, ARC_TYPE, Layer, a);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
 	r_delete_entry(Layer->arc_tree, (BoxTypePtr) a);
-	AddObjectToChangeAnglesUndoList(ARC_TYPE, a, a, a);
+	AddObjectToChangeAnglesUndoList(PCB_TYPE_ARC, a, a, a);
 	a->StartAngle = new_sa;
 	a->Delta = new_da;
 	SetArcBoundingBox(a);
 	r_insert_entry(Layer->arc_tree, (BoxTypePtr) a, 0);
-	ClearFromPolygon(PCB->Data, ARC_TYPE, Layer, a);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
 }
 
 static char *BumpName(char *Name)
@@ -1346,34 +1346,34 @@ char *UniqueElementName(DataTypePtr Data, char *Name)
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, Coord * x, Coord * y)
 {
 	switch (type) {
-	case VIA_TYPE:
+	case PCB_TYPE_VIA:
 		*x = ((PinTypePtr) ptr2)->X;
 		*y = ((PinTypePtr) ptr2)->Y;
 		break;
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		*x = ((LineTypePtr) ptr2)->Point1.X;
 		*y = ((LineTypePtr) ptr2)->Point1.Y;
 		break;
-	case TEXT_TYPE:
-	case ELEMENTNAME_TYPE:
+	case PCB_TYPE_TEXT:
+	case PCB_TYPE_ELEMENT_NAME:
 		*x = ((TextTypePtr) ptr2)->X;
 		*y = ((TextTypePtr) ptr2)->Y;
 		break;
-	case ELEMENT_TYPE:
+	case PCB_TYPE_ELEMENT:
 		*x = ((ElementTypePtr) ptr2)->MarkX;
 		*y = ((ElementTypePtr) ptr2)->MarkY;
 		break;
-	case POLYGON_TYPE:
+	case PCB_TYPE_POLYGON:
 		*x = ((PolygonTypePtr) ptr2)->Points[0].X;
 		*y = ((PolygonTypePtr) ptr2)->Points[0].Y;
 		break;
 
-	case LINEPOINT_TYPE:
-	case POLYGONPOINT_TYPE:
+	case PCB_TYPE_LINE_POINT:
+	case PCB_TYPE_POLYGON_POINT:
 		*x = ((PointTypePtr) ptr3)->X;
 		*y = ((PointTypePtr) ptr3)->Y;
 		break;
-	case ARC_TYPE:
+	case PCB_TYPE_ARC:
 		{
 			BoxTypePtr box;
 
@@ -1420,9 +1420,9 @@ void AttachForCopy(Coord PlaceX, Coord PlaceY)
 		LookupRubberbandLines(Crosshair.AttachedObject.Type,
 													Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 	if (conf_core.editor.mode != COPY_MODE &&
-			(Crosshair.AttachedObject.Type == ELEMENT_TYPE ||
-			 Crosshair.AttachedObject.Type == VIA_TYPE ||
-			 Crosshair.AttachedObject.Type == LINE_TYPE || Crosshair.AttachedObject.Type == LINEPOINT_TYPE))
+			(Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT ||
+			 Crosshair.AttachedObject.Type == PCB_TYPE_VIA ||
+			 Crosshair.AttachedObject.Type == PCB_TYPE_LINE || Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))
 		LookupRatLines(Crosshair.AttachedObject.Type,
 									 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 }

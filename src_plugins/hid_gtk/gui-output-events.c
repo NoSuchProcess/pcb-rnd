@@ -298,15 +298,15 @@ static char *describe_location(Coord X, Coord Y)
 
 	/* check if there are any pins or pads at that position */
 
-	type = SearchObjectByLocation(PIN_TYPE | PAD_TYPE, &ptr1, &ptr2, &ptr3, X, Y, Range);
-	if (type == NO_TYPE)
+	type = SearchObjectByLocation(PCB_TYPE_PIN | PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3, X, Y, Range);
+	if (type == PCB_TYPE_NONE)
 		return NULL;
 
 	/* don't mess with silk objects! */
 	if (type & SILK_TYPE && GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1) >= max_copper_layer)
 		return NULL;
 
-	if (type == PIN_TYPE || type == PAD_TYPE)
+	if (type == PCB_TYPE_PIN || type == PCB_TYPE_PAD)
 		elename = (char *) UNKNOWN(NAMEONPCB_NAME((ElementTypePtr) ptr1));
 
 	pinname = ConnectionName(type, ptr1, ptr2);

@@ -148,13 +148,13 @@ static void UpdateXY(NetListTypePtr Nets)
 		for (j = 0; j < Nets->Net[i].ConnectionN; j++) {
 			ConnectionTypePtr c = &(Nets->Net[i].Connection[j]);
 			switch (c->type) {
-			case PAD_TYPE:
+			case PCB_TYPE_PAD:
 				c->group = TEST_FLAG(ONSOLDERFLAG, (ElementTypePtr) c->ptr1)
 					? SLayer : CLayer;
 				c->X = ((PadTypePtr) c->ptr2)->Point1.X;
 				c->Y = ((PadTypePtr) c->ptr2)->Point1.Y;
 				break;
-			case PIN_TYPE:
+			case PCB_TYPE_PIN:
 				c->group = SLayer;			/* any layer will do */
 				c->X = ((PinTypePtr) c->ptr2)->X;
 				c->Y = ((PinTypePtr) c->ptr2)->Y;
@@ -317,7 +317,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 		minx = maxx = n->Connection[0].X;
 		miny = maxy = n->Connection[0].Y;
 		thegroup = n->Connection[0].group;
-		allpads = (n->Connection[0].type == PAD_TYPE);
+		allpads = (n->Connection[0].type == PCB_TYPE_PAD);
 		allsameside = true;
 		for (j = 1; j < n->ConnectionN; j++) {
 			ConnectionTypePtr c = &(n->Connection[j]);
@@ -325,7 +325,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 			MAKEMAX(maxx, c->X);
 			MAKEMIN(miny, c->Y);
 			MAKEMAX(maxy, c->Y);
-			if (c->type != PAD_TYPE)
+			if (c->type != PCB_TYPE_PAD)
 				allpads = false;
 			if (c->group != thegroup)
 				allsameside = false;

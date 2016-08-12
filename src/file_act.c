@@ -302,7 +302,7 @@ static int ActionSaveTo(int argc, char **argv, Coord x, Coord y)
 		FILE *fp;
 		bool result;
 
-		if ((SearchScreen(Crosshair.X, Crosshair.Y, ELEMENT_TYPE, &ptrtmp, &ptrtmp, &ptrtmp)) != NO_TYPE) {
+		if ((SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 			element = (ElementTypePtr) ptrtmp;
 			if ((fp = CheckAndOpenFile(name, true, false, &result, NULL)) != NULL) {
 				LookupElementConnections(element, fp);

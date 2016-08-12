@@ -400,15 +400,15 @@ static ObjectFunctionType ClrOctagonFunctions = {
  */
 static void *ChangeViaThermal(PinTypePtr Via)
 {
-	AddObjectToClearPolyUndoList(VIA_TYPE, Via, Via, Via, false);
-	RestoreToPolygon(PCB->Data, VIA_TYPE, CURRENT, Via);
-	AddObjectToFlagUndoList(VIA_TYPE, Via, Via, Via);
+	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, false);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
+	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	if (!Delta)										/* remove the thermals */
 		CLEAR_THERM(INDEXOFCURRENT, Via);
 	else
 		ASSIGN_THERM(INDEXOFCURRENT, Delta, Via);
-	AddObjectToClearPolyUndoList(VIA_TYPE, Via, Via, Via, true);
-	ClearFromPolygon(PCB->Data, VIA_TYPE, CURRENT, Via);
+	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, true);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
 	DrawVia(Via);
 	return Via;
 }
@@ -419,15 +419,15 @@ static void *ChangeViaThermal(PinTypePtr Via)
  */
 static void *ChangePinThermal(ElementTypePtr element, PinTypePtr Pin)
 {
-	AddObjectToClearPolyUndoList(PIN_TYPE, element, Pin, Pin, false);
-	RestoreToPolygon(PCB->Data, VIA_TYPE, CURRENT, Pin);
-	AddObjectToFlagUndoList(PIN_TYPE, element, Pin, Pin);
+	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, element, Pin, Pin, false);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
+	AddObjectToFlagUndoList(PCB_TYPE_PIN, element, Pin, Pin);
 	if (!Delta)										/* remove the thermals */
 		CLEAR_THERM(INDEXOFCURRENT, Pin);
 	else
 		ASSIGN_THERM(INDEXOFCURRENT, Delta, Pin);
-	AddObjectToClearPolyUndoList(PIN_TYPE, element, Pin, Pin, true);
-	ClearFromPolygon(PCB->Data, VIA_TYPE, CURRENT, Pin);
+	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, element, Pin, Pin, true);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
 	DrawPin(Pin);
 	return Pin;
 }
@@ -444,18 +444,18 @@ static void *ChangeViaSize(PinTypePtr Via)
 		return (NULL);
 	if (!TEST_FLAG(HOLEFLAG, Via) && value <= MAX_PINORVIASIZE &&
 			value >= MIN_PINORVIASIZE && value >= Via->DrillingHole + MIN_PINORVIACOPPER && value != Via->Thickness) {
-		AddObjectToSizeUndoList(VIA_TYPE, Via, Via, Via);
+		AddObjectToSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
 		r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
-		RestoreToPolygon(PCB->Data, PIN_TYPE, Via, Via);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Via, Via);
 		if (Via->Mask) {
-			AddObjectToMaskSizeUndoList(VIA_TYPE, Via, Via, Via);
+			AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 			Via->Mask += value - Via->Thickness;
 		}
 		Via->Thickness = value;
 		SetPinBoundingBox(Via);
 		r_insert_entry(PCB->Data->via_tree, (BoxType *) Via, 0);
-		ClearFromPolygon(PCB->Data, VIA_TYPE, Via, Via);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		DrawVia(Via);
 		return (Via);
 	}
@@ -475,15 +475,15 @@ static void *ChangeVia2ndSize(PinTypePtr Via)
 	if (value <= MAX_PINORVIASIZE &&
 			value >= MIN_PINORVIAHOLE && (TEST_FLAG(HOLEFLAG, Via) || value <= Via->Thickness - MIN_PINORVIACOPPER)
 			&& value != Via->DrillingHole) {
-		AddObjectTo2ndSizeUndoList(VIA_TYPE, Via, Via, Via);
+		AddObjectTo2ndSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
-		RestoreToPolygon(PCB->Data, VIA_TYPE, Via, Via);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		Via->DrillingHole = value;
 		if (TEST_FLAG(HOLEFLAG, Via)) {
-			AddObjectToSizeUndoList(VIA_TYPE, Via, Via, Via);
+			AddObjectToSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 			Via->Thickness = value;
 		}
-		ClearFromPolygon(PCB->Data, VIA_TYPE, Via, Via);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		DrawVia(Via);
 		return (Via);
 	}
@@ -509,14 +509,14 @@ static void *ChangeViaClearSize(PinTypePtr Via)
 		value = PCB->Bloat * 2 + 2;
 	if (Via->Clearance == value)
 		return NULL;
-	RestoreToPolygon(PCB->Data, VIA_TYPE, Via, Via);
-	AddObjectToClearSizeUndoList(VIA_TYPE, Via, Via, Via);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
+	AddObjectToClearSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	EraseVia(Via);
 	r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
 	Via->Clearance = value;
 	SetPinBoundingBox(Via);
 	r_insert_entry(PCB->Data->via_tree, (BoxType *) Via, 0);
-	ClearFromPolygon(PCB->Data, VIA_TYPE, Via, Via);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
 	Via->Element = NULL;
 	return (Via);
@@ -535,16 +535,16 @@ static void *ChangePinSize(ElementTypePtr Element, PinTypePtr Pin)
 		return (NULL);
 	if (!TEST_FLAG(HOLEFLAG, Pin) && value <= MAX_PINORVIASIZE &&
 			value >= MIN_PINORVIASIZE && value >= Pin->DrillingHole + MIN_PINORVIACOPPER && value != Pin->Thickness) {
-		AddObjectToSizeUndoList(PIN_TYPE, Element, Pin, Pin);
-		AddObjectToMaskSizeUndoList(PIN_TYPE, Element, Pin, Pin);
+		AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
+		AddObjectToMaskSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 		ErasePin(Pin);
 		r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
-		RestoreToPolygon(PCB->Data, PIN_TYPE, Element, Pin);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		Pin->Mask += value - Pin->Thickness;
 		Pin->Thickness = value;
 		/* SetElementBB updates all associated rtrees */
 		SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
-		ClearFromPolygon(PCB->Data, PIN_TYPE, Element, Pin);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		DrawPin(Pin);
 		return (Pin);
 	}
@@ -570,14 +570,14 @@ static void *ChangePinClearSize(ElementTypePtr Element, PinTypePtr Pin)
 		value = PCB->Bloat * 2 + 2;
 	if (Pin->Clearance == value)
 		return NULL;
-	RestoreToPolygon(PCB->Data, PIN_TYPE, Element, Pin);
-	AddObjectToClearSizeUndoList(PIN_TYPE, Element, Pin, Pin);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
+	AddObjectToClearSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 	ErasePin(Pin);
 	r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 	Pin->Clearance = value;
 	/* SetElementBB updates all associated rtrees */
 	SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
-	ClearFromPolygon(PCB->Data, PIN_TYPE, Element, Pin);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	DrawPin(Pin);
 	return (Pin);
 }
@@ -593,16 +593,16 @@ static void *ChangePadSize(ElementTypePtr Element, PadTypePtr Pad)
 	if (TEST_FLAG(LOCKFLAG, Pad))
 		return (NULL);
 	if (value <= MAX_PADSIZE && value >= MIN_PADSIZE && value != Pad->Thickness) {
-		AddObjectToSizeUndoList(PAD_TYPE, Element, Pad, Pad);
-		AddObjectToMaskSizeUndoList(PAD_TYPE, Element, Pad, Pad);
-		RestoreToPolygon(PCB->Data, PAD_TYPE, Element, Pad);
+		AddObjectToSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
+		AddObjectToMaskSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 		ErasePad(Pad);
 		r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 		Pad->Mask += value - Pad->Thickness;
 		Pad->Thickness = value;
 		/* SetElementBB updates all associated rtrees */
 		SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
-		ClearFromPolygon(PCB->Data, PAD_TYPE, Element, Pad);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 		DrawPad(Pad);
 		return (Pad);
 	}
@@ -628,14 +628,14 @@ static void *ChangePadClearSize(ElementTypePtr Element, PadTypePtr Pad)
 		value = PCB->Bloat * 2 + 2;
 	if (value == Pad->Clearance)
 		return NULL;
-	AddObjectToClearSizeUndoList(PAD_TYPE, Element, Pad, Pad);
-	RestoreToPolygon(PCB->Data, PAD_TYPE, Element, Pad);
+	AddObjectToClearSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	ErasePad(Pad);
 	r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 	Pad->Clearance = value;
 	/* SetElementBB updates all associated rtrees */
 	SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
-	ClearFromPolygon(PCB->Data, PAD_TYPE, Element, Pad);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	DrawPad(Pad);
 	return Pad;
 }
@@ -658,15 +658,15 @@ static void *ChangeElement2ndSize(ElementTypePtr Element)
 				value >= MIN_PINORVIAHOLE && (TEST_FLAG(HOLEFLAG, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
 				&& value != pin->DrillingHole) {
 			changed = true;
-			AddObjectTo2ndSizeUndoList(PIN_TYPE, Element, pin, pin);
+			AddObjectTo2ndSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
-			RestoreToPolygon(PCB->Data, PIN_TYPE, Element, pin);
+			RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->DrillingHole = value;
 			if (TEST_FLAG(HOLEFLAG, pin)) {
-				AddObjectToSizeUndoList(PIN_TYPE, Element, pin, pin);
+				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
-			ClearFromPolygon(PCB->Data, PIN_TYPE, Element, pin);
+			ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			DrawPin(pin);
 		}
 	}
@@ -693,15 +693,15 @@ static void *ChangeElement1stSize(ElementTypePtr Element)
 		value = (Absolute) ? Absolute : pin->DrillingHole + Delta;
 		if (value <= MAX_PINORVIASIZE && value >= pin->DrillingHole + MIN_PINORVIACOPPER && value != pin->Thickness) {
 			changed = true;
-			AddObjectToSizeUndoList(PIN_TYPE, Element, pin, pin);
+			AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
-			RestoreToPolygon(PCB->Data, PIN_TYPE, Element, pin);
+			RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->Thickness = value;
 			if (TEST_FLAG(HOLEFLAG, pin)) {
-				AddObjectToSizeUndoList(PIN_TYPE, Element, pin, pin);
+				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
-			ClearFromPolygon(PCB->Data, PIN_TYPE, Element, pin);
+			ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			DrawPin(pin);
 		}
 	}
@@ -730,15 +730,15 @@ static void *ChangeElementClearSize(ElementTypePtr Element)
 				value >= MIN_PINORVIAHOLE && (TEST_FLAG(HOLEFLAG, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
 				&& value != pin->Clearance) {
 			changed = true;
-			AddObjectToClearSizeUndoList(PIN_TYPE, Element, pin, pin);
+			AddObjectToClearSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
-			RestoreToPolygon(PCB->Data, PIN_TYPE, Element, pin);
+			RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->Clearance = value;
 			if (TEST_FLAG(HOLEFLAG, pin)) {
-				AddObjectToSizeUndoList(PIN_TYPE, Element, pin, pin);
+				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
-			ClearFromPolygon(PCB->Data, PIN_TYPE, Element, pin);
+			ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			DrawPin(pin);
 		}
 	}
@@ -749,19 +749,19 @@ static void *ChangeElementClearSize(ElementTypePtr Element)
 		value = (Absolute) ? Absolute : pad->Clearance + Delta;
 		if (value <= MAX_PINORVIASIZE && value >= MIN_PINORVIAHOLE && value != pad->Clearance) {
 			changed = true;
-			AddObjectToClearSizeUndoList(PAD_TYPE, Element, pad, pad);
+			AddObjectToClearSizeUndoList(PCB_TYPE_PAD, Element, pad, pad);
 			ErasePad(pad);
-			RestoreToPolygon(PCB->Data, PAD_TYPE, Element, pad);
+			RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, pad);
 			r_delete_entry(PCB->Data->pad_tree, &pad->BoundingBox);
 			pad->Clearance = value;
 			if (TEST_FLAG(HOLEFLAG, pad)) {
-				AddObjectToSizeUndoList(PAD_TYPE, Element, pad, pad);
+				AddObjectToSizeUndoList(PCB_TYPE_PAD, Element, pad, pad);
 				pad->Thickness = value;
 			}
 			/* SetElementBB updates all associated rtrees */
 			SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
 
-			ClearFromPolygon(PCB->Data, PAD_TYPE, Element, pad);
+			ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, pad);
 			DrawPad(pad);
 		}
 	}
@@ -786,15 +786,15 @@ static void *ChangePin2ndSize(ElementTypePtr Element, PinTypePtr Pin)
 	if (value <= MAX_PINORVIASIZE &&
 			value >= MIN_PINORVIAHOLE && (TEST_FLAG(HOLEFLAG, Pin) || value <= Pin->Thickness - MIN_PINORVIACOPPER)
 			&& value != Pin->DrillingHole) {
-		AddObjectTo2ndSizeUndoList(PIN_TYPE, Element, Pin, Pin);
+		AddObjectTo2ndSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 		ErasePin(Pin);
-		RestoreToPolygon(PCB->Data, PIN_TYPE, Element, Pin);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		Pin->DrillingHole = value;
 		if (TEST_FLAG(HOLEFLAG, Pin)) {
-			AddObjectToSizeUndoList(PIN_TYPE, Element, Pin, Pin);
+			AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 			Pin->Thickness = value;
 		}
-		ClearFromPolygon(PCB->Data, PIN_TYPE, Element, Pin);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		DrawPin(Pin);
 		return (Pin);
 	}
@@ -812,14 +812,14 @@ static void *ChangeLineSize(LayerTypePtr Layer, LineTypePtr Line)
 	if (TEST_FLAG(LOCKFLAG, Line))
 		return (NULL);
 	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Line->Thickness) {
-		AddObjectToSizeUndoList(LINE_TYPE, Layer, Line, Line);
+		AddObjectToSizeUndoList(PCB_TYPE_LINE, Layer, Line, Line);
 		EraseLine(Line);
 		r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
-		RestoreToPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		Line->Thickness = value;
 		SetLineBoundingBox(Line);
 		r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
-		ClearFromPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		DrawLine(Layer, Line);
 		return (Line);
 	}
@@ -838,8 +838,8 @@ static void *ChangeLineClearSize(LayerTypePtr Layer, LineTypePtr Line)
 		return (NULL);
 	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
 	if (value != Line->Clearance) {
-		AddObjectToClearSizeUndoList(LINE_TYPE, Layer, Line, Line);
-		RestoreToPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+		AddObjectToClearSizeUndoList(PCB_TYPE_LINE, Layer, Line, Line);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		EraseLine(Line);
 		r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
 		Line->Clearance = value;
@@ -849,7 +849,7 @@ static void *ChangeLineClearSize(LayerTypePtr Layer, LineTypePtr Line)
 		}
 		SetLineBoundingBox(Line);
 		r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
-		ClearFromPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		DrawLine(Layer, Line);
 		return (Line);
 	}
@@ -884,14 +884,14 @@ static void *ChangeArcSize(LayerTypePtr Layer, ArcTypePtr Arc)
 	if (TEST_FLAG(LOCKFLAG, Arc))
 		return (NULL);
 	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Arc->Thickness) {
-		AddObjectToSizeUndoList(ARC_TYPE, Layer, Arc, Arc);
+		AddObjectToSizeUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
 		EraseArc(Arc);
 		r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
-		RestoreToPolygon(PCB->Data, ARC_TYPE, Layer, Arc);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		Arc->Thickness = value;
 		SetArcBoundingBox(Arc);
 		r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
-		ClearFromPolygon(PCB->Data, ARC_TYPE, Layer, Arc);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		DrawArc(Layer, Arc);
 		return (Arc);
 	}
@@ -910,10 +910,10 @@ static void *ChangeArcClearSize(LayerTypePtr Layer, ArcTypePtr Arc)
 		return (NULL);
 	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
 	if (value != Arc->Clearance) {
-		AddObjectToClearSizeUndoList(ARC_TYPE, Layer, Arc, Arc);
+		AddObjectToClearSizeUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
 		EraseArc(Arc);
 		r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
-		RestoreToPolygon(PCB->Data, ARC_TYPE, Layer, Arc);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		Arc->Clearance = value;
 		if (Arc->Clearance == 0) {
 			CLEAR_FLAG(CLEARLINEFLAG, Arc);
@@ -921,7 +921,7 @@ static void *ChangeArcClearSize(LayerTypePtr Layer, ArcTypePtr Arc)
 		}
 		SetArcBoundingBox(Arc);
 		r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
-		ClearFromPolygon(PCB->Data, ARC_TYPE, Layer, Arc);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		DrawArc(Layer, Arc);
 		return (Arc);
 	}
@@ -940,14 +940,14 @@ static void *ChangeTextSize(LayerTypePtr Layer, TextTypePtr Text)
 	if (TEST_FLAG(LOCKFLAG, Text))
 		return (NULL);
 	if (value <= MAX_TEXTSCALE && value >= MIN_TEXTSCALE && value != Text->Scale) {
-		AddObjectToSizeUndoList(TEXT_TYPE, Layer, Text, Text);
+		AddObjectToSizeUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
 		EraseText(Layer, Text);
 		r_delete_entry(Layer->text_tree, (BoxTypePtr) Text);
-		RestoreToPolygon(PCB->Data, TEXT_TYPE, Layer, Text);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 		Text->Scale = value;
 		SetTextBoundingBox(&PCB->Font, Text);
 		r_insert_entry(Layer->text_tree, (BoxTypePtr) Text, 0);
-		ClearFromPolygon(PCB->Data, TEXT_TYPE, Layer, Text);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 		DrawText(Layer, Text);
 		return (Text);
 	}
@@ -971,7 +971,7 @@ static void *ChangeElementSize(ElementTypePtr Element)
 	{
 		value = (Absolute) ? Absolute : line->Thickness + Delta;
 		if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != line->Thickness) {
-			AddObjectToSizeUndoList(ELEMENTLINE_TYPE, Element, line, line);
+			AddObjectToSizeUndoList(PCB_TYPE_ELEMENT_LINE, Element, line, line);
 			line->Thickness = value;
 			changed = true;
 		}
@@ -981,7 +981,7 @@ static void *ChangeElementSize(ElementTypePtr Element)
 	{
 		value = (Absolute) ? Absolute : arc->Thickness + Delta;
 		if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != arc->Thickness) {
-			AddObjectToSizeUndoList(ELEMENTARC_TYPE, Element, arc, arc);
+			AddObjectToSizeUndoList(PCB_TYPE_ELEMENT_ARC, Element, arc, arc);
 			arc->Thickness = value;
 			changed = true;
 		}
@@ -1010,7 +1010,7 @@ static void *ChangeElementNameSize(ElementTypePtr Element)
 		EraseElementName(Element);
 		ELEMENTTEXT_LOOP(Element);
 		{
-			AddObjectToSizeUndoList(ELEMENTNAME_TYPE, Element, text, text);
+			AddObjectToSizeUndoList(PCB_TYPE_ELEMENT_NAME, Element, text, text);
 			r_delete_entry(PCB->Data->name_tree[n], (BoxType *) text);
 			text->Scale = value;
 			SetTextBoundingBox(&PCB->Font, text);
@@ -1187,13 +1187,13 @@ static void *ChangeTextName(LayerTypePtr Layer, TextTypePtr Text)
 	if (TEST_FLAG(LOCKFLAG, Text))
 		return (NULL);
 	EraseText(Layer, Text);
-	RestoreToPolygon(PCB->Data, TEXT_TYPE, Layer, Text);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	Text->TextString = NewName;
 
 	/* calculate size of the bounding box */
 	SetTextBoundingBox(&PCB->Font, Text);
 	r_insert_entry(Layer->text_tree, (BoxTypePtr) Text, 0);
-	ClearFromPolygon(PCB->Data, TEXT_TYPE, Layer, Text);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	DrawText(Layer, Text);
 	return (old);
 }
@@ -1218,7 +1218,7 @@ bool ChangeElementSide(ElementTypePtr Element, Coord yoff)
 	if (TEST_FLAG(LOCKFLAG, Element))
 		return (false);
 	EraseElement(Element);
-	AddObjectToMirrorUndoList(ELEMENT_TYPE, Element, Element, Element, yoff);
+	AddObjectToMirrorUndoList(PCB_TYPE_ELEMENT, Element, Element, Element, yoff);
 	MirrorElementCoordinates(PCB->Data, Element, yoff);
 	DrawElement(Element);
 	return (true);
@@ -1244,14 +1244,14 @@ static void *ChangeLineJoin(LayerTypePtr Layer, LineTypePtr Line)
 		return (NULL);
 	EraseLine(Line);
 	if (TEST_FLAG(CLEARLINEFLAG, Line)) {
-		AddObjectToClearPolyUndoList(LINE_TYPE, Layer, Line, Line, false);
-		RestoreToPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+		AddObjectToClearPolyUndoList(PCB_TYPE_LINE, Layer, Line, Line, false);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	}
-	AddObjectToFlagUndoList(LINE_TYPE, Layer, Line, Line);
+	AddObjectToFlagUndoList(PCB_TYPE_LINE, Layer, Line, Line);
 	TOGGLE_FLAG(CLEARLINEFLAG, Line);
 	if (TEST_FLAG(CLEARLINEFLAG, Line)) {
-		AddObjectToClearPolyUndoList(LINE_TYPE, Layer, Line, Line, true);
-		ClearFromPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+		AddObjectToClearPolyUndoList(PCB_TYPE_LINE, Layer, Line, Line, true);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	}
 	DrawLine(Layer, Line);
 	return (Line);
@@ -1286,14 +1286,14 @@ static void *ChangeArcJoin(LayerTypePtr Layer, ArcTypePtr Arc)
 		return (NULL);
 	EraseArc(Arc);
 	if (TEST_FLAG(CLEARLINEFLAG, Arc)) {
-		RestoreToPolygon(PCB->Data, ARC_TYPE, Layer, Arc);
-		AddObjectToClearPolyUndoList(ARC_TYPE, Layer, Arc, Arc, false);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
+		AddObjectToClearPolyUndoList(PCB_TYPE_ARC, Layer, Arc, Arc, false);
 	}
-	AddObjectToFlagUndoList(ARC_TYPE, Layer, Arc, Arc);
+	AddObjectToFlagUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
 	TOGGLE_FLAG(CLEARLINEFLAG, Arc);
 	if (TEST_FLAG(CLEARLINEFLAG, Arc)) {
-		ClearFromPolygon(PCB->Data, ARC_TYPE, Layer, Arc);
-		AddObjectToClearPolyUndoList(ARC_TYPE, Layer, Arc, Arc, true);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
+		AddObjectToClearPolyUndoList(PCB_TYPE_ARC, Layer, Arc, Arc, true);
 	}
 	DrawArc(Layer, Arc);
 	return (Arc);
@@ -1328,14 +1328,14 @@ static void *ChangeTextJoin(LayerTypePtr Layer, TextTypePtr Text)
 		return (NULL);
 	EraseText(Layer, Text);
 	if (TEST_FLAG(CLEARLINEFLAG, Text)) {
-		AddObjectToClearPolyUndoList(TEXT_TYPE, Layer, Text, Text, false);
-		RestoreToPolygon(PCB->Data, TEXT_TYPE, Layer, Text);
+		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, false);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
-	AddObjectToFlagUndoList(LINE_TYPE, Layer, Text, Text);
+	AddObjectToFlagUndoList(PCB_TYPE_LINE, Layer, Text, Text);
 	TOGGLE_FLAG(CLEARLINEFLAG, Text);
 	if (TEST_FLAG(CLEARLINEFLAG, Text)) {
-		AddObjectToClearPolyUndoList(TEXT_TYPE, Layer, Text, Text, true);
-		ClearFromPolygon(PCB->Data, TEXT_TYPE, Layer, Text);
+		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, true);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
 	DrawText(Layer, Text);
 	return (Text);
@@ -1489,12 +1489,12 @@ static void *ChangePadSquare(ElementTypePtr Element, PadTypePtr Pad)
 	if (TEST_FLAG(LOCKFLAG, Pad))
 		return (NULL);
 	ErasePad(Pad);
-	AddObjectToClearPolyUndoList(PAD_TYPE, Element, Pad, Pad, false);
-	RestoreToPolygon(PCB->Data, PAD_TYPE, Element, Pad);
-	AddObjectToFlagUndoList(PAD_TYPE, Element, Pad, Pad);
+	AddObjectToClearPolyUndoList(PCB_TYPE_PAD, Element, Pad, Pad, false);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
+	AddObjectToFlagUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
 	TOGGLE_FLAG(SQUAREFLAG, Pad);
-	AddObjectToClearPolyUndoList(PAD_TYPE, Element, Pad, Pad, true);
-	ClearFromPolygon(PCB->Data, PAD_TYPE, Element, Pad);
+	AddObjectToClearPolyUndoList(PCB_TYPE_PAD, Element, Pad, Pad, true);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	DrawPad(Pad);
 	return (Pad);
 }
@@ -1533,17 +1533,17 @@ static void *ChangeViaSquare(PinTypePtr Via)
 	if (TEST_FLAG(LOCKFLAG, Via))
 		return (NULL);
 	EraseVia(Via);
-	AddObjectToClearPolyUndoList(VIA_TYPE, NULL, Via, Via, false);
-	RestoreToPolygon(PCB->Data, VIA_TYPE, NULL, Via);
-	AddObjectToFlagUndoList(VIA_TYPE, NULL, Via, Via);
+	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, false);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, NULL, Via);
+	AddObjectToFlagUndoList(PCB_TYPE_VIA, NULL, Via, Via);
 	ASSIGN_SQUARE(Absolute, Via);
 	if (Absolute == 0)
 		CLEAR_FLAG(SQUAREFLAG, Via);
 	else
 		SET_FLAG(SQUAREFLAG, Via);
 	SetPinBoundingBox(Via);
-	AddObjectToClearPolyUndoList(VIA_TYPE, NULL, Via, Via, true);
-	ClearFromPolygon(PCB->Data, VIA_TYPE, NULL, Via);
+	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, true);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, NULL, Via);
 	DrawVia(Via);
 	return (Via);
 }
@@ -1556,17 +1556,17 @@ static void *ChangePinSquare(ElementTypePtr Element, PinTypePtr Pin)
 	if (TEST_FLAG(LOCKFLAG, Pin))
 		return (NULL);
 	ErasePin(Pin);
-	AddObjectToClearPolyUndoList(PIN_TYPE, Element, Pin, Pin, false);
-	RestoreToPolygon(PCB->Data, PIN_TYPE, Element, Pin);
-	AddObjectToFlagUndoList(PIN_TYPE, Element, Pin, Pin);
+	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, false);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
+	AddObjectToFlagUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 	ASSIGN_SQUARE(Absolute, Pin);
 	if (Absolute == 0)
 		CLEAR_FLAG(SQUAREFLAG, Pin);
 	else
 		SET_FLAG(SQUAREFLAG, Pin);
 	SetPinBoundingBox(Pin);
-	AddObjectToClearPolyUndoList(PIN_TYPE, Element, Pin, Pin, true);
-	ClearFromPolygon(PCB->Data, PIN_TYPE, Element, Pin);
+	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, true);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	DrawPin(Pin);
 	return (Pin);
 }
@@ -1601,12 +1601,12 @@ static void *ChangeViaOctagon(PinTypePtr Via)
 	if (TEST_FLAG(LOCKFLAG, Via))
 		return (NULL);
 	EraseVia(Via);
-	AddObjectToClearPolyUndoList(VIA_TYPE, Via, Via, Via, false);
-	RestoreToPolygon(PCB->Data, VIA_TYPE, Via, Via);
-	AddObjectToFlagUndoList(VIA_TYPE, Via, Via, Via);
+	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, false);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
+	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	TOGGLE_FLAG(OCTAGONFLAG, Via);
-	AddObjectToClearPolyUndoList(VIA_TYPE, Via, Via, Via, true);
-	ClearFromPolygon(PCB->Data, VIA_TYPE, Via, Via);
+	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, true);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
 	return (Via);
 }
@@ -1641,12 +1641,12 @@ static void *ChangePinOctagon(ElementTypePtr Element, PinTypePtr Pin)
 	if (TEST_FLAG(LOCKFLAG, Pin))
 		return (NULL);
 	ErasePin(Pin);
-	AddObjectToClearPolyUndoList(PIN_TYPE, Element, Pin, Pin, false);
-	RestoreToPolygon(PCB->Data, PIN_TYPE, Element, Pin);
-	AddObjectToFlagUndoList(PIN_TYPE, Element, Pin, Pin);
+	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, false);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
+	AddObjectToFlagUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 	TOGGLE_FLAG(OCTAGONFLAG, Pin);
-	AddObjectToClearPolyUndoList(PIN_TYPE, Element, Pin, Pin, true);
-	ClearFromPolygon(PCB->Data, PIN_TYPE, Element, Pin);
+	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, true);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	DrawPin(Pin);
 	return (Pin);
 }
@@ -1681,10 +1681,10 @@ bool ChangeHole(PinTypePtr Via)
 	if (TEST_FLAG(LOCKFLAG, Via))
 		return (false);
 	EraseVia(Via);
-	AddObjectToFlagUndoList(VIA_TYPE, Via, Via, Via);
-	AddObjectToMaskSizeUndoList(VIA_TYPE, Via, Via, Via);
+	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
+	AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
-	RestoreToPolygon(PCB->Data, VIA_TYPE, Via, Via);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	TOGGLE_FLAG(HOLEFLAG, Via);
 
 	if (TEST_FLAG(HOLEFLAG, Via)) {
@@ -1703,7 +1703,7 @@ bool ChangeHole(PinTypePtr Via)
 
 	SetPinBoundingBox(Via);
 	r_insert_entry(PCB->Data->via_tree, (BoxType *) Via, 0);
-	ClearFromPolygon(PCB->Data, VIA_TYPE, Via, Via);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
 	Draw();
 	return (true);
@@ -1717,7 +1717,7 @@ bool ChangePaste(PadTypePtr Pad)
 	if (TEST_FLAG(LOCKFLAG, Pad))
 		return (false);
 	ErasePad(Pad);
-	AddObjectToFlagUndoList(PAD_TYPE, Pad, Pad, Pad);
+	AddObjectToFlagUndoList(PCB_TYPE_PAD, Pad, Pad, Pad);
 	TOGGLE_FLAG(NOPASTEFLAG, Pad);
 	DrawPad(Pad);
 	Draw();
@@ -1731,8 +1731,8 @@ static void *ChangePolyClear(LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
 	if (TEST_FLAG(LOCKFLAG, Polygon))
 		return (NULL);
-	AddObjectToClearPolyUndoList(POLYGON_TYPE, Layer, Polygon, Polygon, true);
-	AddObjectToFlagUndoList(POLYGON_TYPE, Layer, Polygon, Polygon);
+	AddObjectToClearPolyUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon, true);
+	AddObjectToFlagUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 	TOGGLE_FLAG(CLEARPOLYFLAG, Polygon);
 	InitClip(PCB->Data, Layer, Polygon);
 	DrawPolygon(Layer, Polygon);
@@ -2383,21 +2383,21 @@ void *QueryInputAndChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 	char msg[513];
 
 	/* if passed an element name, make it an element reference instead */
-	if (Type == ELEMENTNAME_TYPE) {
-		Type = ELEMENT_TYPE;
+	if (Type == PCB_TYPE_ELEMENT_NAME) {
+		Type = PCB_TYPE_ELEMENT;
 		Ptr2 = Ptr1;
 		Ptr3 = Ptr1;
 	}
 	switch (Type) {
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		name = gui->prompt_for(_("Linename:"), EMPTY(((LineTypePtr) Ptr2)->Number));
 		break;
 
-	case VIA_TYPE:
+	case PCB_TYPE_VIA:
 		name = gui->prompt_for(_("Vianame:"), EMPTY(((PinTypePtr) Ptr2)->Name));
 		break;
 
-	case PIN_TYPE:
+	case PCB_TYPE_PIN:
 		if (pinnum)
 			sprintf(msg, _("%s Pin Number:"), EMPTY(((PinTypePtr) Ptr2)->Number));
 		else
@@ -2405,7 +2405,7 @@ void *QueryInputAndChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 		name = gui->prompt_for(msg, EMPTY(((PinTypePtr) Ptr2)->Name));
 		break;
 
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		if (pinnum)
 			sprintf(msg, _("%s Pad Number:"), EMPTY(((PadTypePtr) Ptr2)->Number));
 		else
@@ -2413,11 +2413,11 @@ void *QueryInputAndChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 		name = gui->prompt_for(msg, EMPTY(((PadTypePtr) Ptr2)->Name));
 		break;
 
-	case TEXT_TYPE:
+	case PCB_TYPE_TEXT:
 		name = gui->prompt_for(_("Enter text:"), EMPTY(((TextTypePtr) Ptr2)->TextString));
 		break;
 
-	case ELEMENT_TYPE:
+	case PCB_TYPE_ELEMENT:
 		name = gui->prompt_for(_("Elementname:"), EMPTY(ELEMENT_NAME(PCB, (ElementTypePtr) Ptr2)));
 		break;
 	}
@@ -2479,7 +2479,7 @@ static void *ChangePadMaskSize(ElementTypePtr Element, PadTypePtr Pad)
 	if (value == Pad->Mask && Absolute == 0)
 		value = Pad->Thickness;
 	if (value != Pad->Mask) {
-		AddObjectToMaskSizeUndoList(PAD_TYPE, Element, Pad, Pad);
+		AddObjectToMaskSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
 		ErasePad(Pad);
 		r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 		Pad->Mask = value;
@@ -2502,7 +2502,7 @@ static void *ChangePinMaskSize(ElementTypePtr Element, PinTypePtr Pin)
 	if (value == Pin->Mask && Absolute == 0)
 		value = Pin->Thickness;
 	if (value != Pin->Mask) {
-		AddObjectToMaskSizeUndoList(PIN_TYPE, Element, Pin, Pin);
+		AddObjectToMaskSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 		ErasePin(Pin);
 		r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 		Pin->Mask = value;
@@ -2524,7 +2524,7 @@ static void *ChangeViaMaskSize(PinTypePtr Via)
 	value = (Absolute) ? Absolute : Via->Mask + Delta;
 	value = MAX(value, 0);
 	if (value != Via->Mask) {
-		AddObjectToMaskSizeUndoList(VIA_TYPE, Via, Via, Via);
+		AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
 		r_delete_entry(PCB->Data->via_tree, &Via->BoundingBox);
 		Via->Mask = value;

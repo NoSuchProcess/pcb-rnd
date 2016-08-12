@@ -104,12 +104,12 @@ void MoveElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord DX, Coo
 	{
 		if (Data) {
 			r_delete_entry(Data->pin_tree, (BoxType *) pin);
-			RestoreToPolygon(Data, PIN_TYPE, Element, pin);
+			RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
 		}
 		MOVE_PIN_LOWLEVEL(pin, DX, DY);
 		if (Data) {
 			r_insert_entry(Data->pin_tree, (BoxType *) pin, 0);
-			ClearFromPolygon(Data, PIN_TYPE, Element, pin);
+			ClearFromPolygon(Data, PCB_TYPE_PIN, Element, pin);
 		}
 	}
 	END_LOOP;
@@ -117,12 +117,12 @@ void MoveElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord DX, Coo
 	{
 		if (Data) {
 			r_delete_entry(Data->pad_tree, (BoxType *) pad);
-			RestoreToPolygon(Data, PAD_TYPE, Element, pad);
+			RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
 		}
 		MOVE_PAD_LOWLEVEL(pad, DX, DY);
 		if (Data) {
 			r_insert_entry(Data->pad_tree, (BoxType *) pad, 0);
-			ClearFromPolygon(Data, PAD_TYPE, Element, pad);
+			ClearFromPolygon(Data, PCB_TYPE_PAD, Element, pad);
 		}
 	}
 	END_LOOP;
@@ -221,12 +221,12 @@ static void *MoveElement(ElementTypePtr Element)
 static void *MoveVia(PinTypePtr Via)
 {
 	r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
-	RestoreToPolygon(PCB->Data, VIA_TYPE, Via, Via);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	MOVE_VIA_LOWLEVEL(Via, DeltaX, DeltaY);
 	if (PCB->ViaOn)
 		EraseVia(Via);
 	r_insert_entry(PCB->Data->via_tree, (BoxType *) Via, 0);
-	ClearFromPolygon(PCB->Data, VIA_TYPE, Via, Via);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	if (PCB->ViaOn) {
 		DrawVia(Via);
 		Draw();
@@ -241,11 +241,11 @@ static void *MoveLine(LayerTypePtr Layer, LineTypePtr Line)
 {
 	if (Layer->On)
 		EraseLine(Line);
-	RestoreToPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	r_delete_entry(Layer->line_tree, (BoxType *) Line);
 	MOVE_LINE_LOWLEVEL(Line, DeltaX, DeltaY);
 	r_insert_entry(Layer->line_tree, (BoxType *) Line, 0);
-	ClearFromPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	if (Layer->On) {
 		DrawLine(Layer, Line);
 		Draw();
@@ -258,7 +258,7 @@ static void *MoveLine(LayerTypePtr Layer, LineTypePtr Line)
  */
 static void *MoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
 {
-	RestoreToPolygon(PCB->Data, ARC_TYPE, Layer, Arc);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	r_delete_entry(Layer->arc_tree, (BoxType *) Arc);
 	if (Layer->On) {
 		EraseArc(Arc);
@@ -270,7 +270,7 @@ static void *MoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
 		MOVE_ARC_LOWLEVEL(Arc, DeltaX, DeltaY);
 	}
 	r_insert_entry(Layer->arc_tree, (BoxType *) Arc, 0);
-	ClearFromPolygon(PCB->Data, ARC_TYPE, Layer, Arc);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	return (Arc);
 }
 
@@ -279,7 +279,7 @@ static void *MoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
  */
 static void *MoveText(LayerTypePtr Layer, TextTypePtr Text)
 {
-	RestoreToPolygon(PCB->Data, TEXT_TYPE, Layer, Text);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	r_delete_entry(Layer->text_tree, (BoxType *) Text);
 	if (Layer->On) {
 		EraseText(Layer, Text);
@@ -290,7 +290,7 @@ static void *MoveText(LayerTypePtr Layer, TextTypePtr Text)
 	else
 		MOVE_TEXT_LOWLEVEL(Text, DeltaX, DeltaY);
 	r_insert_entry(Layer->text_tree, (BoxType *) Text, 0);
-	ClearFromPolygon(PCB->Data, TEXT_TYPE, Layer, Text);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	return (Text);
 }
 
@@ -334,12 +334,12 @@ static void *MoveLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Po
 	if (Layer) {
 		if (Layer->On)
 			EraseLine(Line);
-		RestoreToPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		r_delete_entry(Layer->line_tree, &Line->BoundingBox);
 		MOVE(Point->X, Point->Y, DeltaX, DeltaY);
 		SetLineBoundingBox(Line);
 		r_insert_entry(Layer->line_tree, &Line->BoundingBox, 0);
-		ClearFromPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		if (Layer->On) {
 			DrawLine(Layer, Line);
 			Draw();
@@ -433,12 +433,12 @@ static void *MoveArcToLayer(LayerType * Layer, ArcType * Arc)
 	}
 	if (((long int) Dest == -1) || Dest == Layer)
 		return (Arc);
-	AddObjectToMoveToLayerUndoList(ARC_TYPE, Layer, Arc, Arc);
-	RestoreToPolygon(PCB->Data, ARC_TYPE, Layer, Arc);
+	AddObjectToMoveToLayerUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	if (Layer->On)
 		EraseArc(Arc);
 	newone = (ArcTypePtr) MoveArcToLayerLowLevel(Layer, Arc, Dest);
-	ClearFromPolygon(PCB->Data, ARC_TYPE, Dest, Arc);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Dest, Arc);
 	if (Dest->On)
 		DrawArc(Dest, newone);
 	Draw();
@@ -464,10 +464,10 @@ static void *MoveRatToLayer(RatType * Rat)
 		conf_set_editor(clear_line, 1);
 	if (!newone)
 		return (NULL);
-	AddObjectToCreateUndoList(LINE_TYPE, Dest, newone, newone);
+	AddObjectToCreateUndoList(PCB_TYPE_LINE, Dest, newone, newone);
 	if (PCB->RatOn)
 		EraseRat(Rat);
-	MoveObjectToRemoveUndoList(RATLINE_TYPE, Rat, Rat, Rat);
+	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	DrawLine(Dest, newone);
 	Draw();
 	return (newone);
@@ -490,7 +490,7 @@ static r_dir_t moveline_callback(const BoxType * b, void *cl)
 	if ((via =
 			 CreateNewVia(PCB->Data, i->X, i->Y,
 										conf_core.design.via_thickness, 2 * conf_core.design.clearance, NOFLAG, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
-		AddObjectToCreateUndoList(VIA_TYPE, via, via, via);
+		AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 		DrawVia(via);
 	}
 	longjmp(i->env, 1);
@@ -514,13 +514,13 @@ static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
 	if (((long int) Dest == -1) || Dest == Layer)
 		return (Line);
 
-	AddObjectToMoveToLayerUndoList(LINE_TYPE, Layer, Line, Line);
+	AddObjectToMoveToLayerUndoList(PCB_TYPE_LINE, Layer, Line, Line);
 	if (Layer->On)
 		EraseLine(Line);
-	RestoreToPolygon(PCB->Data, LINE_TYPE, Layer, Line);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	newone = (LineTypePtr) MoveLineToLayerLowLevel(Layer, Line, Dest);
 	Line = NULL;
-	ClearFromPolygon(PCB->Data, LINE_TYPE, Dest, newone);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Dest, newone);
 	if (Dest->On)
 		DrawLine(Dest, newone);
 	Draw();
@@ -533,8 +533,8 @@ static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
 	sb.X2 = newone->Point1.X + newone->Thickness / 2;
 	sb.Y1 = newone->Point1.Y - newone->Thickness / 2;
 	sb.Y2 = newone->Point1.Y + newone->Thickness / 2;
-	if ((SearchObjectByLocation(PIN_TYPES, &ptr1, &ptr2, &ptr3,
-															newone->Point1.X, newone->Point1.Y, conf_core.design.via_thickness / 2) == NO_TYPE)) {
+	if ((SearchObjectByLocation(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
+															newone->Point1.X, newone->Point1.Y, conf_core.design.via_thickness / 2) == PCB_TYPE_NONE)) {
 		info.X = newone->Point1.X;
 		info.Y = newone->Point1.Y;
 		if (setjmp(info.env) == 0)
@@ -545,8 +545,8 @@ static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
 	sb.X2 = newone->Point2.X + newone->Thickness / 2;
 	sb.Y1 = newone->Point2.Y - newone->Thickness / 2;
 	sb.Y2 = newone->Point2.Y + newone->Thickness / 2;
-	if ((SearchObjectByLocation(PIN_TYPES, &ptr1, &ptr2, &ptr3,
-															newone->Point2.X, newone->Point2.Y, conf_core.design.via_thickness / 2) == NO_TYPE)) {
+	if ((SearchObjectByLocation(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
+															newone->Point2.X, newone->Point2.Y, conf_core.design.via_thickness / 2) == PCB_TYPE_NONE)) {
 		info.X = newone->Point2.X;
 		info.Y = newone->Point2.Y;
 		if (setjmp(info.env) == 0)
@@ -561,7 +561,7 @@ static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
  */
 static void *MoveTextToLayerLowLevel(LayerType * Source, TextType * text, LayerType * Destination)
 {
-	RestoreToPolygon(PCB->Data, TEXT_TYPE, Source, text);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Source, text);
 	r_delete_entry(Source->text_tree, (BoxType *) text);
 
 	textlist_remove(text);
@@ -577,7 +577,7 @@ static void *MoveTextToLayerLowLevel(LayerType * Source, TextType * text, LayerT
 	if (!Destination->text_tree)
 		Destination->text_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Destination->text_tree, (BoxType *) text, 0);
-	ClearFromPolygon(PCB->Data, TEXT_TYPE, Destination, text);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Destination, text);
 
 	return text;
 }
@@ -592,7 +592,7 @@ static void *MoveTextToLayer(LayerType * layer, TextType * text)
 		return NULL;
 	}
 	if (Dest != layer) {
-		AddObjectToMoveToLayerUndoList(TEXT_TYPE, layer, text, text);
+		AddObjectToMoveToLayerUndoList(PCB_TYPE_TEXT, layer, text, text);
 		if (layer->On)
 			EraseText(layer, text);
 		text = MoveTextToLayerLowLevel(layer, text, Dest);
@@ -633,10 +633,10 @@ r_dir_t mptl_pin_callback(const BoxType * b, void *cl)
 	PinTypePtr pin = (PinTypePtr) b;
 	if (!TEST_THERM(d->snum, pin) || !IsPointInPolygon(pin->X, pin->Y, pin->Thickness + pin->Clearance + 2, d->polygon))
 		return R_DIR_NOT_FOUND;
-	if (d->type == PIN_TYPE)
-		AddObjectToFlagUndoList(PIN_TYPE, pin->Element, pin, pin);
+	if (d->type == PCB_TYPE_PIN)
+		AddObjectToFlagUndoList(PCB_TYPE_PIN, pin->Element, pin, pin);
 	else
-		AddObjectToFlagUndoList(VIA_TYPE, pin, pin, pin);
+		AddObjectToFlagUndoList(PCB_TYPE_VIA, pin, pin, pin);
 	ASSIGN_THERM(d->dnum, GET_THERM(d->snum, pin), pin);
 	CLEAR_THERM(d->snum, pin);
 	return R_DIR_FOUND_CONTINUE;
@@ -656,16 +656,16 @@ static void *MovePolygonToLayer(LayerType * Layer, PolygonType * Polygon)
 	}
 	if (((long int) Dest == -1) || (Layer == Dest))
 		return (Polygon);
-	AddObjectToMoveToLayerUndoList(POLYGON_TYPE, Layer, Polygon, Polygon);
+	AddObjectToMoveToLayerUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 	if (Layer->On)
 		ErasePolygon(Polygon);
 	/* Move all of the thermals with the polygon */
 	d.snum = GetLayerNumber(PCB->Data, Layer);
 	d.dnum = GetLayerNumber(PCB->Data, Dest);
 	d.polygon = Polygon;
-	d.type = PIN_TYPE;
+	d.type = PCB_TYPE_PIN;
 	r_search(PCB->Data->pin_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
-	d.type = VIA_TYPE;
+	d.type = PCB_TYPE_VIA;
 	r_search(PCB->Data->via_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
 	newone = (struct polygon_st *) MovePolygonToLayerLowLevel(Layer, Polygon, Dest);
 	InitClip(PCB->Data, Dest, newone);
@@ -711,7 +711,7 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coor
 	while (Crosshair.AttachedObject.RubberbandN) {
 		/* first clear any marks that we made in the line flags */
 		CLEAR_FLAG(RUBBERENDFLAG, ptr->Line);
-		AddObjectToMoveUndoList(LINEPOINT_TYPE, ptr->Layer, ptr->Line, ptr->MovedPoint, DX, DY);
+		AddObjectToMoveUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, DX, DY);
 		MoveLinePoint(ptr->Layer, ptr->Line, ptr->MovedPoint);
 		Crosshair.AttachedObject.RubberbandN--;
 		ptr++;
@@ -750,7 +750,7 @@ bool MoveSelectedObjectsToLayer(LayerTypePtr Target)
 	/* setup global identifiers */
 	Dest = Target;
 	MoreToCome = true;
-	changed = SelectedOperation(&MoveToLayerFunctions, true, ALL_TYPES);
+	changed = SelectedOperation(&MoveToLayerFunctions, true, PCB_TYPEMASK_ALL);
 	/* passing true to above operation causes Undoserial to auto-increment */
 	return (changed);
 }

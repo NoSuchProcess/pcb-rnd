@@ -2719,7 +2719,7 @@ void import_clusters(toporouter_t * r)
 				CONNECTION_LOOP(net);
 				{
 
-					if (connection->type == LINE_TYPE) {
+					if (connection->type == PCB_TYPE_LINE) {
 						LineType *line = (LineType *) connection->ptr2;
 						toporouter_bbox_t *box = toporouter_bbox_locate(r, LINE, line, connection->X, connection->Y, connection->group);
 						cluster_join_bbox(cluster, box);
@@ -2728,7 +2728,7 @@ void import_clusters(toporouter_t * r)
 						pcb_printf("\tLINE %#mD\n", connection->X, connection->Y);
 #endif
 					}
-					else if (connection->type == PAD_TYPE) {
+					else if (connection->type == PCB_TYPE_PAD) {
 						PadType *pad = (PadType *) connection->ptr2;
 						toporouter_bbox_t *box = toporouter_bbox_locate(r, PAD, pad, connection->X, connection->Y, connection->group);
 						cluster_join_bbox(cluster, box);
@@ -2737,7 +2737,7 @@ void import_clusters(toporouter_t * r)
 						pcb_printf("\tPAD %#mD\n", connection->X, connection->Y);
 #endif
 					}
-					else if (connection->type == PIN_TYPE) {
+					else if (connection->type == PCB_TYPE_PIN) {
 						guint m;
 						for (m = 0; m < groupcount(); m++) {
 							PinType *pin = (PinType *) connection->ptr2;
@@ -2749,7 +2749,7 @@ void import_clusters(toporouter_t * r)
 						pcb_printf("\tPIN %#mD\n", connection->X, connection->Y);
 #endif
 					}
-					else if (connection->type == VIA_TYPE) {
+					else if (connection->type == PCB_TYPE_VIA) {
 						guint m;
 						for (m = 0; m < groupcount(); m++) {
 							PinType *pin = (PinType *) connection->ptr2;
@@ -2761,7 +2761,7 @@ void import_clusters(toporouter_t * r)
 						pcb_printf("\tVIA %#mD\n", connection->X, connection->Y);
 #endif
 					}
-					else if (connection->type == POLYGON_TYPE) {
+					else if (connection->type == PCB_TYPE_POLYGON) {
 						PolygonType *polygon = (PolygonType *) connection->ptr2;
 						toporouter_bbox_t *box =
 							toporouter_bbox_locate(r, POLYGON, polygon, connection->X, connection->Y, connection->group);
@@ -5539,7 +5539,7 @@ gdouble export_pcb_drawline(guint layer, guint x0, guint y0, guint x1, guint y1,
 																thickness, clearance, MakeFlags(AUTOFLAG | (TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)));
 
 	if (line) {
-		AddObjectToCreateUndoList(LINE_TYPE, LAYER_PTR(layer), line, line);
+		AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(layer), line, line);
 		d = coord_distance((double) x0, (double) y0, (double) x1, (double) y1) / 100.;
 	}
 	return d;
@@ -5588,7 +5588,7 @@ gdouble export_pcb_drawarc(guint layer, toporouter_arc_t * a, guint thickness, g
 														MakeFlags(AUTOFLAG | (TEST_FLAG(CLEARNEWFLAG, PCB) ? CLEARLINEFLAG : 0)));
 
 	if (arc) {
-		AddObjectToCreateUndoList(ARC_TYPE, LAYER_PTR(layer), arc, arc);
+		AddObjectToCreateUndoList(PCB_TYPE_ARC, LAYER_PTR(layer), arc, arc);
 		d = a->r * theta / 100.;
 	}
 
@@ -8205,14 +8205,14 @@ static int escape(int argc, char **argv, Coord x, Coord y)
 			if ((via = CreateNewVia(PCB->Data, viax, viay,
 															Settings.ViaThickness, 2 * Settings.Clearance,
 															0, Settings.ViaDrillingHole, NULL, NoFlags())) != NULL) {
-				AddObjectToCreateUndoList(VIA_TYPE, via, via, via);
+				AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 /*        if (gui->shift_is_pressed ())
-            ChangeObjectThermal (VIA_TYPE, via, via, via, PCB->ThermStyle);*/
+            ChangeObjectThermal (PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);*/
 				DrawVia(via);
 				if ((line = CreateDrawnLineOnLayer(CURRENT, pad->Point1.X + 1., pad->Point1.Y + 1., viax + 1., viay + 1.,
 																					 Settings.LineThickness, 2 * Settings.Clearance, NoFlags()))) {
 
-					AddObjectToCreateUndoList(LINE_TYPE, CURRENT, line, line);
+					AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);
 					DrawLine(CURRENT, line);
 
 				}

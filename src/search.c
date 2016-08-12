@@ -52,7 +52,7 @@ static BoxType SearchBox;
 static LayerTypePtr SearchLayer;
 
 /* ---------------------------------------------------------------------------
- * some local prototypes.  The first parameter includes LOCKED_TYPE if we
+ * some local prototypes.  The first parameter includes PCB_TYPE_LOCKED if we
  * want to include locked types in the search.
  */
 static bool SearchLineByLocation(int, LayerTypePtr *, LineTypePtr *, LineTypePtr *);
@@ -105,7 +105,7 @@ static bool SearchViaByLocation(int locked, PinTypePtr * Via, PinTypePtr * Dummy
 	info.ptr1 = (void **) Via;
 	info.ptr2 = (void **) Dummy1;
 	info.ptr3 = (void **) Dummy2;
-	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
 
 	if (r_search(PCB->Data->via_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return true;
@@ -126,7 +126,7 @@ static bool SearchPinByLocation(int locked, ElementTypePtr * Element, PinTypePtr
 	info.ptr1 = (void **) Element;
 	info.ptr2 = (void **) Pin;
 	info.ptr3 = (void **) Dummy;
-	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
 
 	if (r_search(PCB->Data->pin_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL)  != R_DIR_NOT_FOUND)
 		return true;
@@ -166,7 +166,7 @@ static bool SearchPadByLocation(int locked, ElementTypePtr * Element, PadTypePtr
 	info.ptr1 = (void **) Element;
 	info.ptr2 = (void **) Pad;
 	info.ptr3 = (void **) Dummy;
-	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
 	info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 	if (r_search(PCB->Data->pad_tree, &SearchBox, NULL, pad_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return true;
@@ -207,7 +207,7 @@ static bool SearchLineByLocation(int locked, LayerTypePtr * Layer, LineTypePtr *
 
 	info.Line = Line;
 	info.Point = (PointTypePtr *) Dummy;
-	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
 
 	*Layer = SearchLayer;
 	if (r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info, NULL) != R_DIR_NOT_FOUND)
@@ -243,7 +243,7 @@ static bool SearchRatLineByLocation(int locked, RatTypePtr * Line, RatTypePtr * 
 	info.ptr1 = (void **) Line;
 	info.ptr2 = (void **) Dummy1;
 	info.ptr3 = (void **) Dummy2;
-	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
 
 	if (r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return true;
@@ -280,7 +280,7 @@ static bool SearchArcByLocation(int locked, LayerTypePtr * Layer, ArcTypePtr * A
 
 	info.Arc = Arc;
 	info.Dummy = Dummy;
-	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
 
 	*Layer = SearchLayer;
 	if (r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != R_DIR_NOT_FOUND)
@@ -313,7 +313,7 @@ static bool SearchTextByLocation(int locked, LayerTypePtr * Layer, TextTypePtr *
 	*Layer = SearchLayer;
 	info.ptr2 = (void **) Text;
 	info.ptr3 = (void **) Dummy;
-	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
 
 	if (r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return true;
@@ -346,7 +346,7 @@ static bool SearchPolygonByLocation(int locked, LayerTypePtr * Layer, PolygonTyp
 	*Layer = SearchLayer;
 	info.ptr2 = (void **) Polygon;
 	info.ptr3 = (void **) Dummy;
-	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
 
 	if (r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return true;
@@ -393,7 +393,7 @@ static bool SearchLinePointByLocation(int locked, LayerTypePtr * Layer, LineType
 	info.Point = Point;
 	*Point = NULL;
 	info.least = MAX_LINE_POINT_DISTANCE + SearchRadius;
-	info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
 	if (r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info, NULL))
 		return true;
 	return false;
@@ -469,7 +469,7 @@ SearchElementNameByLocation(int locked, ElementTypePtr * Element, TextTypePtr * 
 		info.ptr3 = (void **) Dummy;
 		info.area = SQUARE(MAX_COORD);
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
-		info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
+		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
 		if (r_search(PCB->Data->name_tree[NAME_INDEX()], &SearchBox, NULL, name_callback, &info, NULL))
 			return true;
 	}
@@ -514,7 +514,7 @@ SearchElementByLocation(int locked, ElementTypePtr * Element, ElementTypePtr * D
 		info.ptr3 = (void **) Dummy2;
 		info.area = SQUARE(MAX_COORD);
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
-		info.locked = (locked & LOCKED_TYPE) ? 0 : LOCKFLAG;
+		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : LOCKFLAG;
 		if (r_search(PCB->Data->element_tree, &SearchBox, NULL, element_callback, &info, NULL))
 			return true;
 	}
@@ -953,14 +953,14 @@ bool IsPointOnArc(Coord X, Coord Y, Coord Radius, ArcTypePtr Arc)
  * searches for any kind of object or for a set of object types
  * the calling routine passes two pointers to allocated memory for storing
  * the results. 
- * A type value is returned too which is NO_TYPE if no objects has been found.
+ * A type value is returned too which is PCB_TYPE_NONE if no objects has been found.
  * A set of object types is passed in.
  * The object is located by it's position.
  *
  * The layout is checked in the following order:
  *   polygon-point, pin, via, line, text, elementname, polygon, element
  *
- * Note that if Type includes LOCKED_TYPE, then the search includes
+ * Note that if Type includes PCB_TYPE_LOCKED, then the search includes
  * locked items.  Otherwise, locked items are ignored.
  */
 int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void **Result3, Coord X, Coord Y, Coord Radius)
@@ -969,8 +969,8 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 	void **pr1 = &r1, **pr2 = &r2, **pr3 = &r3;
 	int i;
 	double HigherBound = 0;
-	int HigherAvail = NO_TYPE;
-	int locked = Type & LOCKED_TYPE;
+	int HigherAvail = PCB_TYPE_NONE;
+	int locked = Type & PCB_TYPE_LOCKED;
 	/* setup variables used by local functions */
 	PosX = X;
 	PosY = Y;
@@ -986,44 +986,44 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 	}
 
 	if (conf_core.editor.lock_names) {
-		Type &= ~(ELEMENTNAME_TYPE | TEXT_TYPE);
+		Type &= ~(PCB_TYPE_ELEMENT_NAME | PCB_TYPE_TEXT);
 	}
 	if (conf_core.editor.hide_names) {
-		Type &= ~ELEMENTNAME_TYPE;
+		Type &= ~PCB_TYPE_ELEMENT_NAME;
 	}
 	if (conf_core.editor.only_names) {
-		Type &= (ELEMENTNAME_TYPE | TEXT_TYPE);
+		Type &= (PCB_TYPE_ELEMENT_NAME | PCB_TYPE_TEXT);
 	}
 	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) {
-		Type &= ~POLYGON_TYPE;
+		Type &= ~PCB_TYPE_POLYGON;
 	}
 
-	if (Type & RATLINE_TYPE && PCB->RatOn &&
+	if (Type & PCB_TYPE_RATLINE && PCB->RatOn &&
 			SearchRatLineByLocation(locked, (RatTypePtr *) Result1, (RatTypePtr *) Result2, (RatTypePtr *) Result3))
-		return (RATLINE_TYPE);
+		return (PCB_TYPE_RATLINE);
 
-	if (Type & VIA_TYPE && SearchViaByLocation(locked, (PinTypePtr *) Result1, (PinTypePtr *) Result2, (PinTypePtr *) Result3))
-		return (VIA_TYPE);
+	if (Type & PCB_TYPE_VIA && SearchViaByLocation(locked, (PinTypePtr *) Result1, (PinTypePtr *) Result2, (PinTypePtr *) Result3))
+		return (PCB_TYPE_VIA);
 
-	if (Type & PIN_TYPE && SearchPinByLocation(locked, (ElementTypePtr *) pr1, (PinTypePtr *) pr2, (PinTypePtr *) pr3))
-		HigherAvail = PIN_TYPE;
+	if (Type & PCB_TYPE_PIN && SearchPinByLocation(locked, (ElementTypePtr *) pr1, (PinTypePtr *) pr2, (PinTypePtr *) pr3))
+		HigherAvail = PCB_TYPE_PIN;
 
-	if (!HigherAvail && Type & PAD_TYPE &&
+	if (!HigherAvail && Type & PCB_TYPE_PAD &&
 			SearchPadByLocation(locked, (ElementTypePtr *) pr1, (PadTypePtr *) pr2, (PadTypePtr *) pr3, false))
-		HigherAvail = PAD_TYPE;
+		HigherAvail = PCB_TYPE_PAD;
 
-	if (!HigherAvail && Type & ELEMENTNAME_TYPE &&
+	if (!HigherAvail && Type & PCB_TYPE_ELEMENT_NAME &&
 			SearchElementNameByLocation(locked, (ElementTypePtr *) pr1, (TextTypePtr *) pr2, (TextTypePtr *) pr3, false)) {
 		BoxTypePtr box = &((TextTypePtr) r2)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
-		HigherAvail = ELEMENTNAME_TYPE;
+		HigherAvail = PCB_TYPE_ELEMENT_NAME;
 	}
 
-	if (!HigherAvail && Type & ELEMENT_TYPE &&
+	if (!HigherAvail && Type & PCB_TYPE_ELEMENT &&
 			SearchElementByLocation(locked, (ElementTypePtr *) pr1, (ElementTypePtr *) pr2, (ElementTypePtr *) pr3, false)) {
 		BoxTypePtr box = &((ElementTypePtr) r1)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
-		HigherAvail = ELEMENT_TYPE;
+		HigherAvail = PCB_TYPE_ELEMENT;
 	}
 
 	for (i = -1; i < max_copper_layer + 1; i++) {
@@ -1037,29 +1037,29 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 				continue;
 		}
 		if (SearchLayer->On) {
-			if ((HigherAvail & (PIN_TYPE | PAD_TYPE)) == 0 &&
-					Type & POLYGONPOINT_TYPE &&
+			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
+					Type & PCB_TYPE_POLYGON_POINT &&
 					SearchPointByLocation(locked, (LayerTypePtr *) Result1, (PolygonTypePtr *) Result2, (PointTypePtr *) Result3))
-				return (POLYGONPOINT_TYPE);
+				return (PCB_TYPE_POLYGON_POINT);
 
-			if ((HigherAvail & (PIN_TYPE | PAD_TYPE)) == 0 &&
-					Type & LINEPOINT_TYPE &&
+			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
+					Type & PCB_TYPE_LINE_POINT &&
 					SearchLinePointByLocation(locked, (LayerTypePtr *) Result1, (LineTypePtr *) Result2, (PointTypePtr *) Result3))
-				return (LINEPOINT_TYPE);
+				return (PCB_TYPE_LINE_POINT);
 
-			if ((HigherAvail & (PIN_TYPE | PAD_TYPE)) == 0 && Type & LINE_TYPE
+			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_LINE
 					&& SearchLineByLocation(locked, (LayerTypePtr *) Result1, (LineTypePtr *) Result2, (LineTypePtr *) Result3))
-				return (LINE_TYPE);
+				return (PCB_TYPE_LINE);
 
-			if ((HigherAvail & (PIN_TYPE | PAD_TYPE)) == 0 && Type & ARC_TYPE &&
+			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_ARC &&
 					SearchArcByLocation(locked, (LayerTypePtr *) Result1, (ArcTypePtr *) Result2, (ArcTypePtr *) Result3))
-				return (ARC_TYPE);
+				return (PCB_TYPE_ARC);
 
-			if ((HigherAvail & (PIN_TYPE | PAD_TYPE)) == 0 && Type & TEXT_TYPE
+			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_TEXT
 					&& SearchTextByLocation(locked, (LayerTypePtr *) Result1, (TextTypePtr *) Result2, (TextTypePtr *) Result3))
-				return (TEXT_TYPE);
+				return (PCB_TYPE_TEXT);
 
-			if (Type & POLYGON_TYPE &&
+			if (Type & PCB_TYPE_POLYGON &&
 					SearchPolygonByLocation(locked, (LayerTypePtr *) Result1, (PolygonTypePtr *) Result2, (PolygonTypePtr *) Result3)) {
 				if (HigherAvail) {
 					BoxTypePtr box = &(*(PolygonTypePtr *) Result2)->BoundingBox;
@@ -1067,59 +1067,59 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 					if (HigherBound < area)
 						break;
 					else
-						return (POLYGON_TYPE);
+						return (PCB_TYPE_POLYGON);
 				}
 				else
-					return (POLYGON_TYPE);
+					return (PCB_TYPE_POLYGON);
 			}
 		}
 	}
 	/* return any previously found objects */
-	if (HigherAvail & PIN_TYPE) {
+	if (HigherAvail & PCB_TYPE_PIN) {
 		*Result1 = r1;
 		*Result2 = r2;
 		*Result3 = r3;
-		return (PIN_TYPE);
+		return (PCB_TYPE_PIN);
 	}
 
-	if (HigherAvail & PAD_TYPE) {
+	if (HigherAvail & PCB_TYPE_PAD) {
 		*Result1 = r1;
 		*Result2 = r2;
 		*Result3 = r3;
-		return (PAD_TYPE);
+		return (PCB_TYPE_PAD);
 	}
 
-	if (HigherAvail & ELEMENTNAME_TYPE) {
+	if (HigherAvail & PCB_TYPE_ELEMENT_NAME) {
 		*Result1 = r1;
 		*Result2 = r2;
 		*Result3 = r3;
-		return (ELEMENTNAME_TYPE);
+		return (PCB_TYPE_ELEMENT_NAME);
 	}
 
-	if (HigherAvail & ELEMENT_TYPE) {
+	if (HigherAvail & PCB_TYPE_ELEMENT) {
 		*Result1 = r1;
 		*Result2 = r2;
 		*Result3 = r3;
-		return (ELEMENT_TYPE);
+		return (PCB_TYPE_ELEMENT);
 	}
 
 	/* search the 'invisible objects' last */
 	if (!PCB->InvisibleObjectsOn)
-		return (NO_TYPE);
+		return (PCB_TYPE_NONE);
 
-	if (Type & PAD_TYPE &&
+	if (Type & PCB_TYPE_PAD &&
 			SearchPadByLocation(locked, (ElementTypePtr *) Result1, (PadTypePtr *) Result2, (PadTypePtr *) Result3, true))
-		return (PAD_TYPE);
+		return (PCB_TYPE_PAD);
 
-	if (Type & ELEMENTNAME_TYPE &&
+	if (Type & PCB_TYPE_ELEMENT_NAME &&
 			SearchElementNameByLocation(locked, (ElementTypePtr *) Result1, (TextTypePtr *) Result2, (TextTypePtr *) Result3, true))
-		return (ELEMENTNAME_TYPE);
+		return (PCB_TYPE_ELEMENT_NAME);
 
-	if (Type & ELEMENT_TYPE &&
+	if (Type & PCB_TYPE_ELEMENT &&
 			SearchElementByLocation(locked, (ElementTypePtr *) Result1, (ElementTypePtr *) Result2, (ElementTypePtr *) Result3, true))
-		return (ELEMENT_TYPE);
+		return (PCB_TYPE_ELEMENT);
 
-	return (NO_TYPE);
+	return (PCB_TYPE_NONE);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1128,169 +1128,169 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
  * buffer or on the remove list.
  * The calling routine passes two pointers to allocated memory for storing
  * the results. 
- * A type value is returned too which is NO_TYPE if no objects has been found.
+ * A type value is returned too which is PCB_TYPE_NONE if no objects has been found.
  */
 int SearchObjectByID(DataTypePtr Base, void **Result1, void **Result2, void **Result3, int ID, int type)
 {
-	if (type == LINE_TYPE || type == LINEPOINT_TYPE) {
+	if (type == PCB_TYPE_LINE || type == PCB_TYPE_LINE_POINT) {
 		ALLLINE_LOOP(Base);
 		{
 			if (line->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) line;
-				return (LINE_TYPE);
+				return (PCB_TYPE_LINE);
 			}
 			if (line->Point1.ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = (void *) line;
 				*Result3 = (void *) &line->Point1;
-				return (LINEPOINT_TYPE);
+				return (PCB_TYPE_LINE_POINT);
 			}
 			if (line->Point2.ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = (void *) line;
 				*Result3 = (void *) &line->Point2;
-				return (LINEPOINT_TYPE);
+				return (PCB_TYPE_LINE_POINT);
 			}
 		}
 		ENDALL_LOOP;
 	}
-	if (type == ARC_TYPE) {
+	if (type == PCB_TYPE_ARC) {
 		ALLARC_LOOP(Base);
 		{
 			if (arc->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) arc;
-				return (ARC_TYPE);
+				return (PCB_TYPE_ARC);
 			}
 		}
 		ENDALL_LOOP;
 	}
 
-	if (type == TEXT_TYPE) {
+	if (type == PCB_TYPE_TEXT) {
 		ALLTEXT_LOOP(Base);
 		{
 			if (text->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) text;
-				return (TEXT_TYPE);
+				return (PCB_TYPE_TEXT);
 			}
 		}
 		ENDALL_LOOP;
 	}
 
-	if (type == POLYGON_TYPE || type == POLYGONPOINT_TYPE) {
+	if (type == PCB_TYPE_POLYGON || type == PCB_TYPE_POLYGON_POINT) {
 		ALLPOLYGON_LOOP(Base);
 		{
 			if (polygon->ID == ID) {
 				*Result1 = (void *) layer;
 				*Result2 = *Result3 = (void *) polygon;
-				return (POLYGON_TYPE);
+				return (PCB_TYPE_POLYGON);
 			}
-			if (type == POLYGONPOINT_TYPE)
+			if (type == PCB_TYPE_POLYGON_POINT)
 				POLYGONPOINT_LOOP(polygon);
 			{
 				if (point->ID == ID) {
 					*Result1 = (void *) layer;
 					*Result2 = (void *) polygon;
 					*Result3 = (void *) point;
-					return (POLYGONPOINT_TYPE);
+					return (PCB_TYPE_POLYGON_POINT);
 				}
 			}
 			END_LOOP;
 		}
 		ENDALL_LOOP;
 	}
-	if (type == VIA_TYPE) {
+	if (type == PCB_TYPE_VIA) {
 		VIA_LOOP(Base);
 		{
 			if (via->ID == ID) {
 				*Result1 = *Result2 = *Result3 = (void *) via;
-				return (VIA_TYPE);
+				return (PCB_TYPE_VIA);
 			}
 		}
 		END_LOOP;
 	}
 
-	if (type == RATLINE_TYPE || type == LINEPOINT_TYPE) {
+	if (type == PCB_TYPE_RATLINE || type == PCB_TYPE_LINE_POINT) {
 		RAT_LOOP(Base);
 		{
 			if (line->ID == ID) {
 				*Result1 = *Result2 = *Result3 = (void *) line;
-				return (RATLINE_TYPE);
+				return (PCB_TYPE_RATLINE);
 			}
 			if (line->Point1.ID == ID) {
 				*Result1 = (void *) NULL;
 				*Result2 = (void *) line;
 				*Result3 = (void *) &line->Point1;
-				return (LINEPOINT_TYPE);
+				return (PCB_TYPE_LINE_POINT);
 			}
 			if (line->Point2.ID == ID) {
 				*Result1 = (void *) NULL;
 				*Result2 = (void *) line;
 				*Result3 = (void *) &line->Point2;
-				return (LINEPOINT_TYPE);
+				return (PCB_TYPE_LINE_POINT);
 			}
 		}
 		END_LOOP;
 	}
 
-	if (type == ELEMENT_TYPE || type == PAD_TYPE || type == PIN_TYPE
-			|| type == ELEMENTLINE_TYPE || type == ELEMENTNAME_TYPE || type == ELEMENTARC_TYPE)
+	if (type == PCB_TYPE_ELEMENT || type == PCB_TYPE_PAD || type == PCB_TYPE_PIN
+			|| type == PCB_TYPE_ELEMENT_LINE || type == PCB_TYPE_ELEMENT_NAME || type == PCB_TYPE_ELEMENT_ARC)
 		/* check pins and elementnames too */
 		ELEMENT_LOOP(Base);
 	{
 		if (element->ID == ID) {
 			*Result1 = *Result2 = *Result3 = (void *) element;
-			return (ELEMENT_TYPE);
+			return (PCB_TYPE_ELEMENT);
 		}
-		if (type == ELEMENTLINE_TYPE)
+		if (type == PCB_TYPE_ELEMENT_LINE)
 			ELEMENTLINE_LOOP(element);
 		{
 			if (line->ID == ID) {
 				*Result1 = (void *) element;
 				*Result2 = *Result3 = (void *) line;
-				return (ELEMENTLINE_TYPE);
+				return (PCB_TYPE_ELEMENT_LINE);
 			}
 		}
 		END_LOOP;
-		if (type == ELEMENTARC_TYPE)
+		if (type == PCB_TYPE_ELEMENT_ARC)
 			ARC_LOOP(element);
 		{
 			if (arc->ID == ID) {
 				*Result1 = (void *) element;
 				*Result2 = *Result3 = (void *) arc;
-				return (ELEMENTARC_TYPE);
+				return (PCB_TYPE_ELEMENT_ARC);
 			}
 		}
 		END_LOOP;
-		if (type == ELEMENTNAME_TYPE)
+		if (type == PCB_TYPE_ELEMENT_NAME)
 			ELEMENTTEXT_LOOP(element);
 		{
 			if (text->ID == ID) {
 				*Result1 = (void *) element;
 				*Result2 = *Result3 = (void *) text;
-				return (ELEMENTNAME_TYPE);
+				return (PCB_TYPE_ELEMENT_NAME);
 			}
 		}
 		END_LOOP;
-		if (type == PIN_TYPE)
+		if (type == PCB_TYPE_PIN)
 			PIN_LOOP(element);
 		{
 			if (pin->ID == ID) {
 				*Result1 = (void *) element;
 				*Result2 = *Result3 = (void *) pin;
-				return (PIN_TYPE);
+				return (PCB_TYPE_PIN);
 			}
 		}
 		END_LOOP;
-		if (type == PAD_TYPE)
+		if (type == PCB_TYPE_PAD)
 			PAD_LOOP(element);
 		{
 			if (pad->ID == ID) {
 				*Result1 = (void *) element;
 				*Result2 = *Result3 = (void *) pad;
-				return (PAD_TYPE);
+				return (PCB_TYPE_PAD);
 			}
 		}
 		END_LOOP;
@@ -1298,7 +1298,7 @@ int SearchObjectByID(DataTypePtr Base, void **Result1, void **Result2, void **Re
 	END_LOOP;
 
 	Message("hace: Internal error, search for ID %d failed\n", ID);
-	return (NO_TYPE);
+	return (PCB_TYPE_NONE);
 }
 
 /* ---------------------------------------------------------------------------

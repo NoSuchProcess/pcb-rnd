@@ -451,7 +451,7 @@ static LineType *create_pcb_line(int layer, int x1, int y1, int x2, int y2, int 
 
 	from = (char *) linelist_first(&lyr->Line);
 	nl = CreateNewLineOnLayer(PCB->Data->Layer + layer, x1, y1, x2, y2, thick, clear, flags);
-	AddObjectToCreateUndoList(LINE_TYPE, lyr, nl, nl);
+	AddObjectToCreateUndoList(PCB_TYPE_LINE, lyr, nl, nl);
 
 	to = (char *) linelist_first(&lyr->Line);
 	if (from != to) {
@@ -497,7 +497,7 @@ static void new_line(corner_s * s, corner_s * e, int layer, LineType * example)
 		LineType *nl;
 		dprintf
 			("New line \033[35m%#mD to %#mD from l%d t%#mS c%#mS f%s\033[0m\n",
-			 s->x, s->y, e->x, e->y, layer, example->Thickness, example->Clearance, flags_to_string(example->Flags, LINE_TYPE));
+			 s->x, s->y, e->x, e->y, layer, example->Thickness, example->Clearance, flags_to_string(example->Flags, PCB_TYPE_LINE));
 		nl = create_pcb_line(layer, s->x, s->y, e->x, e->y, example->Thickness, example->Clearance, example->Flags);
 
 		if (!nl)
@@ -678,13 +678,13 @@ static void move_line_to_layer(line_s * l, int layer)
 	ls = LAYER_PTR(l->layer);
 	ld = LAYER_PTR(layer);
 
-	MoveObjectToLayer(LINE_TYPE, ls, l->line, 0, ld, 0);
+	MoveObjectToLayer(PCB_TYPE_LINE, ls, l->line, 0, ld, 0);
 	l->layer = layer;
 }
 
 static void remove_via_at(corner_s * c)
 {
-	RemoveObject(VIA_TYPE, c->via, 0, 0);
+	RemoveObject(PCB_TYPE_VIA, c->via, 0, 0);
 	c->via = 0;
 }
 
@@ -749,17 +749,17 @@ static void move_corner(corner_s * c, int x, int y)
 	c->y = y;
 	via = c->via;
 	if (via) {
-		MoveObject(VIA_TYPE, via, via, via, x - via->X, y - via->Y);
+		MoveObject(PCB_TYPE_VIA, via, via, via, x - via->X, y - via->Y);
 		dprintf("via move %#mD to %#mD\n", via->X, via->Y, x, y);
 	}
 	for (i = 0; i < c->n_lines; i++) {
 		LineTypePtr tl = c->lines[i]->line;
 		if (tl) {
 			if (c->lines[i]->s == c) {
-				MoveObject(LINEPOINT_TYPE, LAYER_PTR(c->lines[i]->layer), tl, &tl->Point1, x - (tl->Point1.X), y - (tl->Point1.Y));
+				MoveObject(PCB_TYPE_LINE_POINT, LAYER_PTR(c->lines[i]->layer), tl, &tl->Point1, x - (tl->Point1.X), y - (tl->Point1.Y));
 			}
 			else {
-				MoveObject(LINEPOINT_TYPE, LAYER_PTR(c->lines[i]->layer), tl, &tl->Point2, x - (tl->Point2.X), y - (tl->Point2.Y));
+				MoveObject(PCB_TYPE_LINE_POINT, LAYER_PTR(c->lines[i]->layer), tl, &tl->Point2, x - (tl->Point2.X), y - (tl->Point2.Y));
 			}
 			dprintf("Line %p moved to %#mD %#mD\n", (void *) tl, tl->Point1.X, tl->Point1.Y, tl->Point2.X, tl->Point2.Y);
 		}
@@ -851,7 +851,7 @@ static int split_line(line_s * l, corner_s * c)
 	add_line_to_corner(l, c);
 	add_line_to_corner(ls, c);
 
-	MoveObject(LINEPOINT_TYPE, LAYER_PTR(l->layer), l->line, &l->line->Point2,
+	MoveObject(PCB_TYPE_LINE_POINT, LAYER_PTR(l->layer), l->line, &l->line->Point2,
 						 c->x - (l->line->Point2.X), c->y - (l->line->Point2.Y));
 
 	return 1;
@@ -2173,7 +2173,7 @@ static line_s *choose_example_line(corner_s * c1, corner_s * c2)
 							c[ci]->lines[li]->s->x, c[ci]->lines[li]->s->y,
 							c[ci]->lines[li]->e->x, c[ci]->lines[li]->e->y,
 							c[ci]->lines[li]->line->Thickness,
-							c[ci]->lines[li]->line->Clearance, flags_to_string(c[ci]->lines[li]->line->Flags, LINE_TYPE));
+							c[ci]->lines[li]->line->Clearance, flags_to_string(c[ci]->lines[li]->line->Flags, PCB_TYPE_LINE));
 			/* Pads are disqualified, as we want to mimic a trace line. */
 			if (c[ci]->lines[li]->line == (LineTypePtr) c[ci]->pad) {
 				dprintf("  bad, pad\n");

@@ -180,7 +180,7 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
 	size_t limit = ((size_t)conf_core.editor.undo_warning_size) * 1024;
 
 #ifdef DEBUG_ID
-	if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, ID, Kind) == NO_TYPE)
+	if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, ID, Kind) == PCB_TYPE_NONE)
 		Message("hace: ID (%d) and Type (%x) mismatch in AddObject...\n", ID, Kind);
 #endif
 
@@ -211,7 +211,7 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
 			break;
 		case UNDO_REMOVE:
 			type = SearchObjectByID(RemoveList, &ptr1, &ptr2, &ptr3, ptr->ID, ptr->Kind);
-			if (type != NO_TYPE) {
+			if (type != PCB_TYPE_NONE) {
 				DestroyObject(RemoveList, type, ptr1, ptr2, ptr3);
 			}
 			break;
@@ -236,7 +236,7 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
  */
 static void DrawRecoveredObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	if (Type & (LINE_TYPE | TEXT_TYPE | POLYGON_TYPE | ARC_TYPE)) {
+	if (Type & (PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_POLYGON | PCB_TYPE_ARC)) {
 		LayerTypePtr layer;
 
 		layer = LAYER_PTR(GetLayerNumber(RemoveList, (LayerTypePtr) Ptr1));
@@ -257,7 +257,7 @@ static bool UndoRotate(UndoListTypePtr Entry)
 
 	/* lookup entry by it's ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != NO_TYPE) {
+	if (type != PCB_TYPE_NONE) {
 		RotateObject(type, ptr1, ptr2, ptr3,
 								 Entry->Data.Rotate.CenterX, Entry->Data.Rotate.CenterY, (4 - Entry->Data.Rotate.Steps) & 0x03);
 		Entry->Data.Rotate.Steps = (4 - Entry->Data.Rotate.Steps) & 0x03;
@@ -276,7 +276,7 @@ static bool UndoClearPoly(UndoListTypePtr Entry)
 	int type;
 
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != NO_TYPE) {
+	if (type != PCB_TYPE_NONE) {
 		if (Entry->Data.ClearPoly.Clear)
 			RestoreToPolygon(PCB->Data, type, Entry->Data.ClearPoly.Layer, ptr3);
 		else
@@ -298,7 +298,7 @@ static bool UndoChangeName(UndoListTypePtr Entry)
 
 	/* lookup entry by it's ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != NO_TYPE) {
+	if (type != PCB_TYPE_NONE) {
 		Entry->Data.ChangeName.Name = (char *) (ChangeObjectName(type, ptr1, ptr2, ptr3, Entry->Data.ChangeName.Name));
 		return (true);
 	}
@@ -316,7 +316,7 @@ static bool UndoChangePinnum(UndoListTypePtr Entry)
 
 	/* lookup entry by it's ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != NO_TYPE) {
+	if (type != PCB_TYPE_NONE) {
 		Entry->Data.ChangeName.Name = (char *) (ChangeObjectPinnum(type, ptr1, ptr2, ptr3, Entry->Data.ChangeName.Name));
 		return (true);
 	}
@@ -334,7 +334,7 @@ static bool UndoChange2ndSize(UndoListTypePtr Entry)
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != NO_TYPE) {
+	if (type != PCB_TYPE_NONE) {
 		swap = ((PinTypePtr) ptr2)->DrillingHole;
 		if (andDraw)
 			EraseObject(type, ptr1, ptr2);
@@ -357,7 +357,7 @@ static bool UndoChangeAngles(UndoListTypePtr Entry)
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type == ARC_TYPE) {
+	if (type == PCB_TYPE_ARC) {
 		LayerTypePtr Layer = (LayerTypePtr) ptr1;
 		ArcTypePtr a = (ArcTypePtr) ptr2;
 		r_delete_entry(Layer->arc_tree, (BoxTypePtr) a);
@@ -388,7 +388,7 @@ static bool UndoChangeClearSize(UndoListTypePtr Entry)
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != NO_TYPE) {
+	if (type != PCB_TYPE_NONE) {
 		swap = ((PinTypePtr) ptr2)->Clearance;
 		RestoreToPolygon(PCB->Data, type, ptr1, ptr2);
 		if (andDraw)
@@ -414,11 +414,11 @@ static bool UndoChangeMaskSize(UndoListTypePtr Entry)
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type & (VIA_TYPE | PIN_TYPE | PAD_TYPE)) {
-		swap = (type == PAD_TYPE ? ((PadTypePtr) ptr2)->Mask : ((PinTypePtr) ptr2)->Mask);
+	if (type & (PCB_TYPE_VIA | PCB_TYPE_PIN | PCB_TYPE_PAD)) {
+		swap = (type == PCB_TYPE_PAD ? ((PadTypePtr) ptr2)->Mask : ((PinTypePtr) ptr2)->Mask);
 		if (andDraw)
 			EraseObject(type, ptr1, ptr2);
-		if (type == PAD_TYPE)
+		if (type == PCB_TYPE_PAD)
 			((PadTypePtr) ptr2)->Mask = Entry->Data.Size;
 		else
 			((PinTypePtr) ptr2)->Mask = Entry->Data.Size;
@@ -442,7 +442,7 @@ static bool UndoChangeSize(UndoListTypePtr Entry)
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != NO_TYPE) {
+	if (type != PCB_TYPE_NONE) {
 		/* Wow! can any object be treated as a pin type for size change?? */
 		/* pins, vias, lines, and arcs can. Text can't but it has it's own mechanism */
 		swap = ((PinTypePtr) ptr2)->Thickness;
@@ -471,7 +471,7 @@ static bool UndoFlag(UndoListTypePtr Entry)
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != NO_TYPE) {
+	if (type != PCB_TYPE_NONE) {
 		FlagType f1, f2;
 		PinTypePtr pin = (PinTypePtr) ptr2;
 
@@ -511,7 +511,7 @@ static bool UndoMirror(UndoListTypePtr Entry)
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type == ELEMENT_TYPE) {
+	if (type == PCB_TYPE_ELEMENT) {
 		ElementTypePtr element = (ElementTypePtr) ptr3;
 		if (andDraw)
 			EraseElement(element);
@@ -535,7 +535,7 @@ static bool UndoCopyOrCreate(UndoListTypePtr Entry)
 
 	/* lookup entry by it's ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != NO_TYPE) {
+	if (type != PCB_TYPE_NONE) {
 		if (!RemoveList)
 			RemoveList = CreateNewBuffer();
 		if (andDraw)
@@ -559,7 +559,7 @@ static bool UndoMove(UndoListTypePtr Entry)
 
 	/* lookup entry by it's ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != NO_TYPE) {
+	if (type != PCB_TYPE_NONE) {
 		MoveObject(type, ptr1, ptr2, ptr3, -Entry->Data.Move.DX, -Entry->Data.Move.DY);
 		Entry->Data.Move.DX *= -1;
 		Entry->Data.Move.DY *= -1;
@@ -579,7 +579,7 @@ static bool UndoRemove(UndoListTypePtr Entry)
 
 	/* lookup entry by it's ID */
 	type = SearchObjectByID(RemoveList, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != NO_TYPE) {
+	if (type != PCB_TYPE_NONE) {
 		if (andDraw)
 			DrawRecoveredObject(type, ptr1, ptr2, ptr3);
 		MoveObjectToBuffer(PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
@@ -600,7 +600,7 @@ static bool UndoMoveToLayer(UndoListTypePtr Entry)
 
 	/* lookup entry by it's ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	if (type != NO_TYPE) {
+	if (type != PCB_TYPE_NONE) {
 		swap = GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1);
 		MoveObjectToLayer(type, ptr1, ptr2, ptr3, LAYER_PTR(Entry->Data.MoveToLayer.OriginalLayer), true);
 		Entry->Data.MoveToLayer.OriginalLayer = swap;
@@ -621,15 +621,15 @@ static bool UndoRemovePoint(UndoListTypePtr Entry)
 	int type;
 
 	/* lookup entry (polygon not point was saved) by it's ID */
-	assert(Entry->Kind == POLYGON_TYPE);
+	assert(Entry->Kind == PCB_TYPE_POLYGON);
 	type = SearchObjectByID(PCB->Data, (void **) &layer, (void **) &polygon, &ptr3, Entry->ID, Entry->Kind);
 	switch (type) {
-	case POLYGON_TYPE:						/* restore the removed point */
+	case PCB_TYPE_POLYGON:						/* restore the removed point */
 		{
 			/* recover the point */
 			if (andDraw && layer->On)
 				ErasePolygon(polygon);
-			InsertPointIntoObject(POLYGON_TYPE, layer, polygon,
+			InsertPointIntoObject(PCB_TYPE_POLYGON, layer, polygon,
 														&Entry->Data.RemovedPoint.Index,
 														Entry->Data.RemovedPoint.X,
 														Entry->Data.RemovedPoint.Y, true, Entry->Data.RemovedPoint.last_in_contour);
@@ -639,7 +639,7 @@ static bool UndoRemovePoint(UndoListTypePtr Entry)
 				DrawPolygon(layer, polygon);
 			Entry->Type = UNDO_INSERT_POINT;
 			Entry->ID = Entry->Data.RemovedPoint.ID;
-			Entry->Kind = POLYGONPOINT_TYPE;
+			Entry->Kind = PCB_TYPE_POLYGON_POINT;
 			return (true);
 		}
 
@@ -662,11 +662,11 @@ static bool UndoInsertPoint(UndoListTypePtr Entry)
 	Cardinal hole;
 	bool last_in_contour = false;
 
-	assert(Entry->Kind == POLYGONPOINT_TYPE);
+	assert(Entry->Kind == PCB_TYPE_POLYGON_POINT);
 	/* lookup entry by it's ID */
 	type = SearchObjectByID(PCB->Data, (void **) &layer, (void **) &polygon, (void **) &pnt, Entry->ID, Entry->Kind);
 	switch (type) {
-	case POLYGONPOINT_TYPE:			/* removes an inserted polygon point */
+	case PCB_TYPE_POLYGON_POINT:			/* removes an inserted polygon point */
 		{
 			if (andDraw && layer->On)
 				ErasePolygon(polygon);
@@ -687,10 +687,10 @@ static bool UndoInsertPoint(UndoListTypePtr Entry)
 			Entry->Data.RemovedPoint.Y = pnt->Y;
 			Entry->Data.RemovedPoint.ID = pnt->ID;
 			Entry->ID = polygon->ID;
-			Entry->Kind = POLYGON_TYPE;
+			Entry->Kind = PCB_TYPE_POLYGON;
 			Entry->Type = UNDO_REMOVE_POINT;
 			Entry->Data.RemovedPoint.Index = point_idx;
-			DestroyObject(PCB->Data, POLYGONPOINT_TYPE, layer, polygon, pnt);
+			DestroyObject(PCB->Data, PCB_TYPE_POLYGON_POINT, layer, polygon, pnt);
 			if (andDraw && layer->On)
 				DrawPolygon(layer, polygon);
 			return (true);
@@ -711,11 +711,11 @@ static bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 
 	/* lookup entry by it's ID */
 	type = SearchObjectByID(RemoveList, &ptr1, &ptr2, &ptr3, Entry->Data.CopyID, Entry->Kind);
-	if (type == NO_TYPE)
+	if (type == PCB_TYPE_NONE)
 		return false;
 
 	type = SearchObjectByID(PCB->Data, &ptr1b, &ptr2b, &ptr3b, Entry->ID, Entry->Kind);
-	if (type == NO_TYPE)
+	if (type == PCB_TYPE_NONE)
 		return FALSE;
 
 	obj = (AnyObjectType *) ptr2;
@@ -731,7 +731,7 @@ static bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 		DrawRecoveredObject(Entry->Kind, ptr1, ptr2, ptr3);
 
 	obj = (AnyObjectType *) MoveObjectToBuffer(PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
-	if (Entry->Kind == POLYGON_TYPE)
+	if (Entry->Kind == PCB_TYPE_POLYGON)
 		InitClip(PCB->Data, (LayerTypePtr) ptr1b, (PolygonType *) obj);
 	return (true);
 }
@@ -742,7 +742,7 @@ static bool UndoSwapCopiedObject(UndoListTypePtr Entry)
  */
 static bool UndoRemoveContour(UndoListTypePtr Entry)
 {
-	assert(Entry->Kind == POLYGON_TYPE);
+	assert(Entry->Kind == PCB_TYPE_POLYGON);
 	return UndoSwapCopiedObject(Entry);
 }
 
@@ -752,7 +752,7 @@ static bool UndoRemoveContour(UndoListTypePtr Entry)
  */
 static bool UndoInsertContour(UndoListTypePtr Entry)
 {
-	assert(Entry->Kind == POLYGON_TYPE);
+	assert(Entry->Kind == PCB_TYPE_POLYGON);
 	return UndoSwapCopiedObject(Entry);
 }
 
@@ -1209,12 +1209,12 @@ void AddObjectToRemovePointUndoList(int Type, void *Ptr1, void *Ptr2, Cardinal i
 
 	if (!Locked) {
 		switch (Type) {
-		case POLYGONPOINT_TYPE:
+		case PCB_TYPE_POLYGON_POINT:
 			{
 				/* save the ID of the parent object; else it will be
 				 * impossible to recover the point
 				 */
-				undo = GetUndoSlot(UNDO_REMOVE_POINT, OBJECT_ID(polygon), POLYGON_TYPE);
+				undo = GetUndoSlot(UNDO_REMOVE_POINT, OBJECT_ID(polygon), PCB_TYPE_POLYGON);
 				undo->Data.RemovedPoint.X = polygon->Points[index].X;
 				undo->Data.RemovedPoint.Y = polygon->Points[index].Y;
 				undo->Data.RemovedPoint.ID = polygon->Points[index].ID;
@@ -1365,23 +1365,23 @@ void AddObjectToSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 	if (!Locked) {
 		undo = GetUndoSlot(UNDO_CHANGESIZE, OBJECT_ID(ptr2), Type);
 		switch (Type) {
-		case PIN_TYPE:
-		case VIA_TYPE:
+		case PCB_TYPE_PIN:
+		case PCB_TYPE_VIA:
 			undo->Data.Size = ((PinTypePtr) ptr2)->Thickness;
 			break;
-		case LINE_TYPE:
-		case ELEMENTLINE_TYPE:
+		case PCB_TYPE_LINE:
+		case PCB_TYPE_ELEMENT_LINE:
 			undo->Data.Size = ((LineTypePtr) ptr2)->Thickness;
 			break;
-		case TEXT_TYPE:
-		case ELEMENTNAME_TYPE:
+		case PCB_TYPE_TEXT:
+		case PCB_TYPE_ELEMENT_NAME:
 			undo->Data.Size = ((TextTypePtr) ptr2)->Scale;
 			break;
-		case PAD_TYPE:
+		case PCB_TYPE_PAD:
 			undo->Data.Size = ((PadTypePtr) ptr2)->Thickness;
 			break;
-		case ARC_TYPE:
-		case ELEMENTARC_TYPE:
+		case PCB_TYPE_ARC:
+		case PCB_TYPE_ELEMENT_ARC:
 			undo->Data.Size = ((ArcTypePtr) ptr2)->Thickness;
 			break;
 		}
@@ -1398,17 +1398,17 @@ void AddObjectToClearSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 	if (!Locked) {
 		undo = GetUndoSlot(UNDO_CHANGECLEARSIZE, OBJECT_ID(ptr2), Type);
 		switch (Type) {
-		case PIN_TYPE:
-		case VIA_TYPE:
+		case PCB_TYPE_PIN:
+		case PCB_TYPE_VIA:
 			undo->Data.Size = ((PinTypePtr) ptr2)->Clearance;
 			break;
-		case LINE_TYPE:
+		case PCB_TYPE_LINE:
 			undo->Data.Size = ((LineTypePtr) ptr2)->Clearance;
 			break;
-		case PAD_TYPE:
+		case PCB_TYPE_PAD:
 			undo->Data.Size = ((PadTypePtr) ptr2)->Clearance;
 			break;
-		case ARC_TYPE:
+		case PCB_TYPE_ARC:
 			undo->Data.Size = ((ArcTypePtr) ptr2)->Clearance;
 			break;
 		}
@@ -1425,11 +1425,11 @@ void AddObjectToMaskSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 	if (!Locked) {
 		undo = GetUndoSlot(UNDO_CHANGEMASKSIZE, OBJECT_ID(ptr2), Type);
 		switch (Type) {
-		case PIN_TYPE:
-		case VIA_TYPE:
+		case PCB_TYPE_PIN:
+		case PCB_TYPE_VIA:
 			undo->Data.Size = ((PinTypePtr) ptr2)->Mask;
 			break;
-		case PAD_TYPE:
+		case PCB_TYPE_PAD:
 			undo->Data.Size = ((PadTypePtr) ptr2)->Mask;
 			break;
 		}
@@ -1445,7 +1445,7 @@ void AddObjectTo2ndSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 
 	if (!Locked) {
 		undo = GetUndoSlot(UNDO_CHANGE2NDSIZE, OBJECT_ID(ptr2), Type);
-		if (Type == PIN_TYPE || Type == VIA_TYPE)
+		if (Type == PCB_TYPE_PIN || Type == PCB_TYPE_VIA)
 			undo->Data.Size = ((PinTypePtr) ptr2)->DrillingHole;
 	}
 }

@@ -54,11 +54,11 @@ find_callback_t find_callback;
  * some local defines
  */
 #define LOOKUP_FIRST	\
-	(PIN_TYPE | PAD_TYPE)
+	(PCB_TYPE_PIN | PCB_TYPE_PAD)
 #define LOOKUP_MORE	\
-	(VIA_TYPE | LINE_TYPE | RATLINE_TYPE | POLYGON_TYPE | ARC_TYPE)
+	(PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_RATLINE | PCB_TYPE_POLYGON | PCB_TYPE_ARC)
 #define SILK_TYPE	\
-	(LINE_TYPE | ARC_TYPE | POLYGON_TYPE)
+	(PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON)
 
 bool LineLineIntersect(LineTypePtr, LineTypePtr);
 bool LineArcIntersect(LineTypePtr, ArcTypePtr);

@@ -262,7 +262,7 @@ static void *RemoveVia(PinTypePtr Via)
 		if (!Bulk)
 			Draw();
 	}
-	MoveObjectToRemoveUndoList(VIA_TYPE, Via, Via, Via);
+	MoveObjectToRemoveUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	return NULL;
 }
 
@@ -277,7 +277,7 @@ static void *RemoveRat(RatTypePtr Rat)
 		if (!Bulk)
 			Draw();
 	}
-	MoveObjectToRemoveUndoList(RATLINE_TYPE, Rat, Rat, Rat);
+	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	return NULL;
 }
 
@@ -324,7 +324,7 @@ static void *RemoveLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr 
 		r_search(Layer->line_tree, (const BoxType *) Point, NULL, remove_point, &info, NULL);
 		return RemoveLine(Layer, Line);
 	}
-	MoveObject(LINEPOINT_TYPE, Layer, info.line, info.point, other.X - Point->X, other.Y - Point->Y);
+	MoveObject(PCB_TYPE_LINE_POINT, Layer, info.line, info.point, other.X - Point->X, other.Y - Point->Y);
 	return (RemoveLine(Layer, Line));
 }
 
@@ -339,7 +339,7 @@ void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line)
 		if (!Bulk)
 			Draw();
 	}
-	MoveObjectToRemoveUndoList(LINE_TYPE, Layer, Line, Line);
+	MoveObjectToRemoveUndoList(PCB_TYPE_LINE, Layer, Line, Line);
 	return NULL;
 }
 
@@ -354,7 +354,7 @@ void *RemoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
 		if (!Bulk)
 			Draw();
 	}
-	MoveObjectToRemoveUndoList(ARC_TYPE, Layer, Arc, Arc);
+	MoveObjectToRemoveUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
 	return NULL;
 }
 
@@ -369,7 +369,7 @@ void *RemoveText(LayerTypePtr Layer, TextTypePtr Text)
 		if (!Bulk)
 			Draw();
 	}
-	MoveObjectToRemoveUndoList(TEXT_TYPE, Layer, Text, Text);
+	MoveObjectToRemoveUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
 	return NULL;
 }
 
@@ -384,7 +384,7 @@ void *RemovePolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 		if (!Bulk)
 			Draw();
 	}
-	MoveObjectToRemoveUndoList(POLYGON_TYPE, Layer, Polygon, Polygon);
+	MoveObjectToRemoveUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 	return NULL;
 }
 
@@ -407,7 +407,7 @@ static void *RemovePolygonContour(LayerTypePtr Layer, PolygonTypePtr Polygon, Ca
 	}
 
 	/* Copy the polygon to the undo list */
-	AddObjectToRemoveContourUndoList(POLYGON_TYPE, Layer, Polygon);
+	AddObjectToRemoveContourUndoList(PCB_TYPE_POLYGON, Layer, Polygon);
 
 	contour_start = (contour == 0) ? 0 : Polygon->HoleIndex[contour - 1];
 	contour_end = (contour == Polygon->HoleIndexN) ? Polygon->PointN : Polygon->HoleIndex[contour];
@@ -456,7 +456,7 @@ static void *RemovePolygonPoint(LayerTypePtr Layer, PolygonTypePtr Polygon, Poin
 		ErasePolygon(Polygon);
 
 	/* insert the polygon-point into the undo list */
-	AddObjectToRemovePointUndoList(POLYGONPOINT_TYPE, Layer, Polygon, point_idx);
+	AddObjectToRemovePointUndoList(PCB_TYPE_POLYGON_POINT, Layer, Polygon, point_idx);
 	r_delete_entry(Layer->polygon_tree, (BoxType *) Polygon);
 
 	/* remove point from list, keep point order */
@@ -494,7 +494,7 @@ void *RemoveElement(ElementTypePtr Element)
 		if (!Bulk)
 			Draw();
 	}
-	MoveObjectToRemoveUndoList(ELEMENT_TYPE, Element, Element, Element);
+	MoveObjectToRemoveUndoList(PCB_TYPE_ELEMENT, Element, Element, Element);
 	return NULL;
 }
 
@@ -505,7 +505,7 @@ void *RemoveElement(ElementTypePtr Element)
 bool RemoveSelected(void)
 {
 	Bulk = true;
-	if (SelectedOperation(&RemoveFunctions, false, ALL_TYPES)) {
+	if (SelectedOperation(&RemoveFunctions, false, PCB_TYPEMASK_ALL)) {
 		IncrementUndoSerialNumber();
 		Draw();
 		Bulk = false;

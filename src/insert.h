@@ -31,7 +31,7 @@
 
 #include "global.h"
 
-#define	INSERT_TYPES	(POLYGON_TYPE | LINE_TYPE | RATLINE_TYPE)
+#define	INSERT_TYPES	(PCB_TYPE_POLYGON | PCB_TYPE_LINE | PCB_TYPE_RATLINE)
 
 /* ---------------------------------------------------------------------------
  * prototypes

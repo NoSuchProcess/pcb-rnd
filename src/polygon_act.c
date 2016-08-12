@@ -64,7 +64,7 @@ static int ActionMorphPolygon(int argc, char **argv, Coord x, Coord y)
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, POLYGON_TYPE, &ptr1, &ptr2, &ptr3)) != NO_TYPE) {
+				if ((type = SearchScreen(x, y, PCB_TYPE_POLYGON, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					MorphPolygon((LayerType *) ptr1, (PolygonType *) ptr3);
 					Draw();
 					IncrementUndoSerialNumber();

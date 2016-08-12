@@ -221,13 +221,13 @@ static r_dir_t rat_callback(const BoxType * box, void *cl)
 	struct rinfo *i = (struct rinfo *) cl;
 
 	switch (i->type) {
-	case PIN_TYPE:
+	case PCB_TYPE_PIN:
 		if (rat->Point1.X == i->pin->X && rat->Point1.Y == i->pin->Y)
 			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point1);
 		else if (rat->Point2.X == i->pin->X && rat->Point2.Y == i->pin->Y)
 			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point2);
 		break;
-	case PAD_TYPE:
+	case PCB_TYPE_PAD:
 		if (rat->Point1.X == i->pad->Point1.X && rat->Point1.Y == i->pad->Point1.Y && rat->group1 == i->group)
 			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point1);
 		else if (rat->Point2.X == i->pad->Point1.X && rat->Point2.Y == i->pad->Point1.Y && rat->group2 == i->group)
@@ -245,7 +245,7 @@ static r_dir_t rat_callback(const BoxType * box, void *cl)
 					rat->Point2.Y == (i->pad->Point1.Y + i->pad->Point2.Y) / 2 && rat->group2 == i->group)
 			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point2);
 		break;
-	case LINEPOINT_TYPE:
+	case PCB_TYPE_LINE_POINT:
 		if (rat->group1 == i->group && rat->Point1.X == i->point->X && rat->Point1.Y == i->point->Y)
 			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point1);
 		else if (rat->group2 == i->group && rat->Point2.X == i->point->X && rat->Point2.Y == i->point->Y)
@@ -265,7 +265,7 @@ static void CheckPadForRat(PadTypePtr Pad)
 	i = TEST_FLAG(ONSOLDERFLAG, Pad) ? solder_silk_layer : component_silk_layer;
 	info.group = GetLayerGroupNumberByNumber(i);
 	info.pad = Pad;
-	info.type = PAD_TYPE;
+	info.type = PCB_TYPE_PAD;
 
 	r_search(PCB->Data->rat_tree, &Pad->BoundingBox, NULL, rat_callback, &info, NULL);
 }
@@ -274,7 +274,7 @@ static void CheckPinForRat(PinTypePtr Pin)
 {
 	struct rinfo info;
 
-	info.type = PIN_TYPE;
+	info.type = PCB_TYPE_PIN;
 	info.pin = Pin;
 	r_search(PCB->Data->rat_tree, &Pin->BoundingBox, NULL, rat_callback, &info, NULL);
 }
@@ -284,7 +284,7 @@ static void CheckLinePointForRat(LayerTypePtr Layer, PointTypePtr Point)
 	struct rinfo info;
 	info.group = GetLayerGroupNumberByPointer(Layer);
 	info.point = Point;
-	info.type = LINEPOINT_TYPE;
+	info.type = PCB_TYPE_LINE_POINT;
 
 	r_search(PCB->Data->rat_tree, (BoxType *) Point, NULL, rat_callback, &info, NULL);
 }
@@ -405,7 +405,7 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	 * is connected
 	 */
 	switch (Type) {
-	case ELEMENT_TYPE:
+	case PCB_TYPE_ELEMENT:
 		{
 			ElementTypePtr element = (ElementTypePtr) Ptr1;
 
@@ -426,7 +426,7 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 			break;
 		}
 
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		{
 			LayerTypePtr layer = (LayerTypePtr) Ptr1;
 			LineTypePtr line = (LineTypePtr) Ptr2;
@@ -437,16 +437,16 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 			break;
 		}
 
-	case LINEPOINT_TYPE:
+	case PCB_TYPE_LINE_POINT:
 		if (GetLayerNumber(PCB->Data, (LayerTypePtr) Ptr1) < max_copper_layer)
 			CheckLinePointForRubberbandConnection((LayerTypePtr) Ptr1, (LineTypePtr) Ptr2, (PointTypePtr) Ptr3, true);
 		break;
 
-	case VIA_TYPE:
+	case PCB_TYPE_VIA:
 		CheckPinForRubberbandConnection((PinTypePtr) Ptr1);
 		break;
 
-	case POLYGON_TYPE:
+	case PCB_TYPE_POLYGON:
 		if (GetLayerNumber(PCB->Data, (LayerTypePtr) Ptr1) < max_copper_layer)
 			CheckPolygonForRubberbandConnection((LayerTypePtr) Ptr1, (PolygonTypePtr) Ptr2);
 		break;
@@ -456,7 +456,7 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 void LookupRatLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	switch (Type) {
-	case ELEMENT_TYPE:
+	case PCB_TYPE_ELEMENT:
 		{
 			ElementTypePtr element = (ElementTypePtr) Ptr1;
 
@@ -473,7 +473,7 @@ void LookupRatLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 			break;
 		}
 
-	case LINE_TYPE:
+	case PCB_TYPE_LINE:
 		{
 			LayerTypePtr layer = (LayerTypePtr) Ptr1;
 			LineTypePtr line = (LineTypePtr) Ptr2;
@@ -483,11 +483,11 @@ void LookupRatLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 			break;
 		}
 
-	case LINEPOINT_TYPE:
+	case PCB_TYPE_LINE_POINT:
 		CheckLinePointForRat((LayerTypePtr) Ptr1, (PointTypePtr) Ptr3);
 		break;
 
-	case VIA_TYPE:
+	case PCB_TYPE_VIA:
 		CheckPinForRat((PinTypePtr) Ptr1);
 		break;
 	}
