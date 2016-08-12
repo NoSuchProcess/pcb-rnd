@@ -106,99 +106,34 @@ Note that object flags can be given numerically (like @code{0x0147})
 or symbolically (like @code{"found,showname,square"}.  Some numeric
 values are reused for different object types.  The table below lists
 the numeric value followed by the symbolic name.
-
-@table @code
-@item 0x0001 pin
-If set, this object is a pin.  This flag is for internal use only.
-@item 0x0002 via
-Likewise, for vias.
-@item 0x0004 found
-If set, this object has been found by @code{FindConnection()}.
-@item 0x0008 hole
-For pins and vias, this flag means that the pin or via is a hole
-without a copper annulus.
-@item 0x0010 rat
-If set for a line, indicates that this line is a rat line instead of a
-copper trace.
-@item 0x0010 pininpoly
-For pins and pads, this flag is used internally to indicate that the
-pin or pad overlaps a polygon on some layer.
-@item 0x0010 clearpoly
-For polygons, this flag means that pins and vias will normally clear
-these polygons (thus, thermals are required for electrical
-connection).  When clear, polygons will solidly connect to pins and
-vias.
-@item 0x0010 hidename
-For elements, when set the name of the element is hidden.
-@item 0x0020 showname
-For elements, when set the names of pins are shown.
-@item 0x0020 clearline
-For lines and arcs, the line/arc will clear polygons instead of
-connecting to them.
-@item 0x0020 fullpoly
-For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one).
-@item 0x0040 selected
-Set when the object is selected.
-@item 0x0080 onsolder
-For elements and pads, indicates that they are on the solder side.
-@item 0x0080 auto
-For lines and vias, indicates that these were created by the
-autorouter.
-@item 0x0100 square
-For pins and pads, indicates a square (vs round) pin/pad.
-@item 0x0200 rubberend
-For lines, used internally for rubber band moves.
-@item 0x0200 warn
-For pins, vias, and pads, set to indicate a warning.
-@item 0x0400 usetherm
-Obsolete, indicates that pins/vias should be drawn with thermal
-fingers.
-@item 0x0400
-Obsolete, old files used this to indicate lines drawn on silk.
-@item 0x0800 octagon
-Draw pins and vias as octagons.
-@item 0x1000 drc
-Set for objects that fail DRC.
-@item 0x2000 lock
-Set for locked objects.
-@item 0x4000 edge2
-For pads, indicates that the second point is closer to the edge.  For
-pins, indicates that the pin is closer to a horizontal edge and thus
-pinout text should be vertical.
-@item 0x8000 marker
-Marker used internally to avoid revisiting an object.
-@item 0x10000 nopaste
-For pads, set to prevent a solderpaste stencil opening for the
-pad.  Primarily used for pads used as fiducials.
-@end table
 %end-doc */
 typedef enum {
 	NOFLAG           = 0x00000,
-	PINFLAG          = 0x00001, /* is a pin */
-	VIAFLAG          = 0x00002, /* is a via */
-	FOUNDFLAG        = 0x00004, /* used by 'FindConnection()' */
-	HOLEFLAG         = 0x00008, /* pin or via is only a hole */
-	NOPASTEFLAG      = 0x00008, /* pad should not receive solderpaste.  This is to support fiducials */
-	RATFLAG          = 0x00010, /* indicates line is a rat line */
-	PININPOLYFLAG    = 0x00010, /* pin found inside poly - same as rat line since not used on lines */
-	CLEARPOLYFLAG    = 0x00010, /* pins/vias clear these polygons */
-	HIDENAMEFLAG     = 0x00010, /* hide the element name */
-	DISPLAYNAMEFLAG  = 0x00020, /* display the names of pins/pads of an element */
-	CLEARLINEFLAG    = 0x00020, /* line doesn't touch polygons */
-	FULLPOLYFLAG     = 0x00020, /* full polygon is drawn (i.e. all parts instead of only the biggest one) */
-	SELECTEDFLAG     = 0x00040, /* object has been selected */
-	ONSOLDERFLAG     = 0x00080, /* element is on bottom side */
-	AUTOFLAG         = 0x00080, /* line/via created by auto-router */
-	SQUAREFLAG       = 0x00100, /* pin is square, not round */
-	RUBBERENDFLAG    = 0x00200, /* indicates one end already rubber banding same as warn flag since pins/pads won't use it */
-	WARNFLAG         = 0x00200, /* Warning for pin/via/pad */
-	USETHERMALFLAG   = 0x00400, /* draw pin, via with thermal fingers */
-	ONSILKFLAG       = 0x00400, /* old files use this to indicate silk */
-	OCTAGONFLAG      = 0x00800, /* draw pin/via as octagon instead of round */
-	DRCFLAG          = 0x01000, /* flag like FOUND flag for DRC checking */
-	LOCKFLAG         = 0x02000, /* object locked in place */
-	EDGE2FLAG        = 0x04000, /* Padr.Point2 is closer to outside edge also pinout text for pins is vertical */
-	VISITFLAG        = 0x08000, /* marker to avoid re-visiting an object */
+	PINFLAG          = 0x00001, /*!< If set, this object is a pin.  This flag is for internal use only. */
+	VIAFLAG          = 0x00002, /*!< Likewise, for vias. */
+	FOUNDFLAG        = 0x00004, /*!< If set, this object has been found by @code{FindConnection()}. */
+	HOLEFLAG         = 0x00008, /*!< For pins and vias, this flag means that the pin or via is a hole without a copper annulus. */
+	NOPASTEFLAG      = 0x00008, /*!< Pad should not receive solderpaste.  This is to support fiducials */
+	RATFLAG          = 0x00010, /*!< If set for a line, indicates that this line is a rat line instead of a copper trace. */
+	PININPOLYFLAG    = 0x00010, /*!< For pins and pads, this flag is used internally to indicate that the pin or pad overlaps a polygon on some layer.*/
+	CLEARPOLYFLAG    = 0x00010, /*!< For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. */
+	HIDENAMEFLAG     = 0x00010, /*!< For elements, when set the name of the element is hidden. */
+	DISPLAYNAMEFLAG  = 0x00020, /*!< For elements, when set the names of pins are shown. */
+	CLEARLINEFLAG    = 0x00020, /*!< For lines and arcs, the line/arc will clear polygons instead of connecting to them. */
+	FULLPOLYFLAG     = 0x00020, /*!< For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one). */
+	SELECTEDFLAG     = 0x00040, /*!< Set when the object is selected. */
+	ONSOLDERFLAG     = 0x00080, /*!< For elements and pads, indicates that they are on the solder side. */
+	AUTOFLAG         = 0x00080, /*!< For lines and vias, indicates that these were created by the autorouter. */
+	SQUAREFLAG       = 0x00100, /*!< For pins and pads, indicates a square (vs round) pin/pad. */
+	RUBBERENDFLAG    = 0x00200, /*!< For lines, used internally for rubber band moves: indicates one end already rubber banding. */
+	WARNFLAG         = 0x00200, /*!< For pins, vias, and pads, set to indicate a warning. */
+	USETHERMALFLAG   = 0x00400, /*!< Obsolete, indicates that pins/vias should be drawn with thermal fingers. */
+	ONSILKFLAG       = 0x00400, /*!< Obsolete, old files used this to indicate lines drawn on silk. (Used by io_pcb for compatibility.) */
+	OCTAGONFLAG      = 0x00800, /*!< Draw pins and vias as octagons. */
+	DRCFLAG          = 0x01000, /*!< Set for objects that fail DRC: flag like FOUND flag for DRC checking. */
+	LOCKFLAG         = 0x02000, /*!< Set for locked objects. */
+	EDGE2FLAG        = 0x04000, /*!< For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical) */
+	VISITFLAG        = 0x08000, /*!< marker to avoid re-visiting an object */
 	NONETLISTFLAG    = 0x10000, /* element is not on the netlist and should not interfere with the netlist */
 	MINCUTFLAG       = 0x20000, /* used by the mincut short find code */
 	ONPOINTFLAG      = 0x40000, /*!< crosshair is on line point or arc point */
