@@ -172,45 +172,38 @@ For pads, set to prevent a solderpaste stencil opening for the
 pad.  Primarily used for pads used as fiducials.
 @end table
 %end-doc */
-
-#define	NOFLAG			0x0000
-#define	PINFLAG			0x0001			/* is a pin */
-#define	VIAFLAG			0x0002			/* is a via */
-#define	FOUNDFLAG		0x0004			/* used by 'FindConnection()' */
-#define HOLEFLAG		0x0008			/* pin or via is only a hole */
-#define NOPASTEFLAG		0x0008		/* pad should not receive
-																   solderpaste.  This is to
-																   support fiducials */
-#define RATFLAG                 0x0010	/* indicates line is a rat line */
-#define PININPOLYFLAG           0x0010	/* pin found inside poly - same as */
-						/* rat line since not used on lines */
-#define CLEARPOLYFLAG           0x0010	/* pins/vias clear these polygons */
-#define HIDENAMEFLAG		0x0010	/* hide the element name */
-#define	DISPLAYNAMEFLAG		0x0020	/* display the names of pins/pads */
-					/* of an element */
-#define CLEARLINEFLAG		0x0020	/* line doesn't touch polygons */
-#define FULLPOLYFLAG            0x0020	/* full polygon is drawn (i.e. all parts instead of only the biggest one) */
-#define	SELECTEDFLAG		0x0040	/* object has been selected */
-#define	ONSOLDERFLAG		0x0080	/* element is on bottom side */
-#define AUTOFLAG		0x0080			/* line/via created by auto-router */
-#define	SQUAREFLAG		0x0100		/* pin is square, not round */
-#define RUBBERENDFLAG		0x0200	/* indicates one end already rubber */
-					/* banding same as warn flag */
-					/* since pins/pads won't use it */
-#define WARNFLAG		0x0200			/* Warning for pin/via/pad */
-#define USETHERMALFLAG		0x0400	/* draw pin, via with thermal fingers */
-#define ONSILKFLAG              0x0400	/* old files use this to indicate silk */
-#define OCTAGONFLAG		0x0800		/* draw pin/via as octagon instead of round */
-#define DRCFLAG			0x1000			/* flag like FOUND flag for DRC checking */
-#define LOCKFLAG                0x2000	/* object locked in place */
-#define EDGE2FLAG               0x4000	/* Padr.Point2 is closer to outside edge */
-					/* also pinout text for pins is vertical */
-#define VISITFLAG		0x8000			/* marker to avoid re-visiting an object */
-#define	NONETLISTFLAG		0x10000	/* element is not on the netlist and should not interfere with the netlist */
-#define MINCUTFLAG			0x20000	/* used by the mincut short find code */
-#define ONPOINTFLAG     0x40000	/*!< crosshair is on line point or arc point */
-
-#define NOCOPY_FLAGS (FOUNDFLAG | CONNECTEDFLAG | ONPOINTFLAG)
+typedef enum {
+	NOFLAG           = 0x00000,
+	PINFLAG          = 0x00001, /* is a pin */
+	VIAFLAG          = 0x00002, /* is a via */
+	FOUNDFLAG        = 0x00004, /* used by 'FindConnection()' */
+	HOLEFLAG         = 0x00008, /* pin or via is only a hole */
+	NOPASTEFLAG      = 0x00008, /* pad should not receive solderpaste.  This is to support fiducials */
+	RATFLAG          = 0x00010, /* indicates line is a rat line */
+	PININPOLYFLAG    = 0x00010, /* pin found inside poly - same as rat line since not used on lines */
+	CLEARPOLYFLAG    = 0x00010, /* pins/vias clear these polygons */
+	HIDENAMEFLAG     = 0x00010, /* hide the element name */
+	DISPLAYNAMEFLAG  = 0x00020, /* display the names of pins/pads of an element */
+	CLEARLINEFLAG    = 0x00020, /* line doesn't touch polygons */
+	FULLPOLYFLAG     = 0x00020, /* full polygon is drawn (i.e. all parts instead of only the biggest one) */
+	SELECTEDFLAG     = 0x00040, /* object has been selected */
+	ONSOLDERFLAG     = 0x00080, /* element is on bottom side */
+	AUTOFLAG         = 0x00080, /* line/via created by auto-router */
+	SQUAREFLAG       = 0x00100, /* pin is square, not round */
+	RUBBERENDFLAG    = 0x00200, /* indicates one end already rubber banding same as warn flag since pins/pads won't use it */
+	WARNFLAG         = 0x00200, /* Warning for pin/via/pad */
+	USETHERMALFLAG   = 0x00400, /* draw pin, via with thermal fingers */
+	ONSILKFLAG       = 0x00400, /* old files use this to indicate silk */
+	OCTAGONFLAG      = 0x00800, /* draw pin/via as octagon instead of round */
+	DRCFLAG          = 0x01000, /* flag like FOUND flag for DRC checking */
+	LOCKFLAG         = 0x02000, /* object locked in place */
+	EDGE2FLAG        = 0x04000, /* Padr.Point2 is closer to outside edge also pinout text for pins is vertical */
+	VISITFLAG        = 0x08000, /* marker to avoid re-visiting an object */
+	NONETLISTFLAG    = 0x10000, /* element is not on the netlist and should not interfere with the netlist */
+	MINCUTFLAG       = 0x20000, /* used by the mincut short find code */
+	ONPOINTFLAG      = 0x40000, /*!< crosshair is on line point or arc point */
+/*	NOCOPY_FLAGS     = (FOUNDFLAG | CONNECTEDFLAG | ONPOINTFLAG)*/
+} pcb_flag_t;
 
 /* ---------------------------------------------------------------------------
  * object types (bitfield)
