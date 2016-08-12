@@ -72,25 +72,27 @@
 /* ---------------------------------------------------------------------------
  * modes
  */
-#define	NO_MODE			0						/* no mode selected */
-#define	VIA_MODE		1						/* draw vias */
-#define	LINE_MODE		2						/* draw lines */
-#define	RECTANGLE_MODE		3			/* create rectangles */
-#define	POLYGON_MODE		4				/* draw filled polygons */
-#define	PASTEBUFFER_MODE	5			/* paste objects from buffer */
-#define	TEXT_MODE		6						/* create text objects */
-#define	ROTATE_MODE		102				/* rotate objects */
-#define	REMOVE_MODE		103				/* remove objects */
-#define	MOVE_MODE		104					/* move objects */
-#define	COPY_MODE		105					/* copy objects */
-#define	INSERTPOINT_MODE	106		/* insert point into line/polygon */
-#define	RUBBERBANDMOVE_MODE	107	/* move objects and attached lines */
-#define THERMAL_MODE            108	/* toggle thermal layer flag */
-#define ARC_MODE                109	/* draw arcs */
-#define ARROW_MODE		110				/* selection with arrow mode */
-#define PAN_MODE                0	/* same as no mode */
-#define LOCK_MODE               111	/* lock/unlock objects */
-#define	POLYGONHOLE_MODE	112		/* cut holes in filled polygons */
+typedef enum {
+	NO_MODE             = 0,   /* no mode selected */
+	VIA_MODE            = 1,   /* draw vias */
+	LINE_MODE           = 2,   /* draw lines */
+	RECTANGLE_MODE      = 3,   /* create rectangles */
+	POLYGON_MODE        = 4,   /* draw filled polygons */
+	PASTEBUFFER_MODE    = 5,   /* paste objects from buffer */
+	TEXT_MODE           = 6,   /* create text objects */
+	ROTATE_MODE         = 102, /* rotate objects */
+	REMOVE_MODE         = 103, /* remove objects */
+	MOVE_MODE           = 104, /* move objects */
+	COPY_MODE           = 105, /* copy objects */
+	INSERTPOINT_MODE    = 106, /* insert point into line/polygon */
+	RUBBERBANDMOVE_MODE = 107, /* move objects and attached lines */
+	THERMAL_MODE        = 108, /* toggle thermal layer flag */
+	ARC_MODE            = 109, /* draw arcs */
+	ARROW_MODE          = 110, /* selection with arrow mode */
+	PAN_MODE            = 0,   /* same as no mode */
+	LOCK_MODE           = 111, /* lock/unlock objects */
+	POLYGONHOLE_MODE    = 112  /* cut holes in filled polygons */
+} pcb_mode_t;
 
 /* ---------------------------------------------------------------------------
  * object flags
