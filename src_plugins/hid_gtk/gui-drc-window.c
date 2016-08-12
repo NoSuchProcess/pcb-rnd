@@ -40,7 +40,7 @@
 
 #define VIOLATION_PIXMAP_PIXEL_SIZE   100
 #define VIOLATION_PIXMAP_PIXEL_BORDER 5
-#define VIOLATION_PIXMAP_PCB_SIZE     MIL_TO_COORD (100)
+#define VIOLATION_PIXMAP_PCB_SIZE     PCB_MIL_TO_COORD (100)
 
 static GtkWidget *drc_window, *drc_list;
 static GtkListStore *drc_list_model = NULL;

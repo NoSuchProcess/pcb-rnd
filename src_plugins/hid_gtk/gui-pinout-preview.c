@@ -43,7 +43,7 @@
 #include "gui-pinout-preview.h"
 
 /* Just define a sensible scale, lets say (for example), 100 pixel per 150 mil */
-#define SENSIBLE_VIEW_SCALE  (100. / MIL_TO_COORD (150.))
+#define SENSIBLE_VIEW_SCALE  (100. / PCB_MIL_TO_COORD (150.))
 static void pinout_set_view(GhidPinoutPreview * pinout)
 {
 	float scale = SENSIBLE_VIEW_SCALE;

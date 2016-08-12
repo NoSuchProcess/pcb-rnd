@@ -218,7 +218,7 @@ REGISTER_ATTRIBUTES(nelma_attribute_list, nelma_cookie)
 /* convert from default PCB units to nelma units */
 		 static int pcb_to_nelma(Coord pcb)
 {
-	return COORD_TO_INCH(pcb) * nelma_dpi;
+	return PCB_COORD_TO_INCH(pcb) * nelma_dpi;
 }
 
 static char *nelma_get_png_name(const char *basename, const char *suffix)

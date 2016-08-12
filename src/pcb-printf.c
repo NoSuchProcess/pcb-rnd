@@ -112,7 +112,7 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 		int met_votes = 0, imp_votes = 0;
 
 		for (i = 0; i < n_coords; ++i)
-			if (min_sig_figs(COORD_TO_MIL(coord[i])) < min_sig_figs(COORD_TO_MM(coord[i])))
+			if (min_sig_figs(PCB_COORD_TO_MIL(coord[i])) < min_sig_figs(PCB_COORD_TO_MM(coord[i])))
 				++imp_votes;
 			else
 				++met_votes;
@@ -127,10 +127,10 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 	for (i = 0; i < n_coords; ++i) {
 		switch (family) {
 		case METRIC:
-			value[i] = COORD_TO_MM(coord[i]);
+			value[i] = PCB_COORD_TO_MM(coord[i]);
 			break;
 		case IMPERIAL:
-			value[i] = COORD_TO_MIL(coord[i]);
+			value[i] = PCB_COORD_TO_MIL(coord[i]);
 			break;
 		}
 	}

@@ -397,7 +397,7 @@ void ghid_set_cursor_position_labels(void)
 		Coord dx = Crosshair.X - Marked.X;
 		Coord dy = Crosshair.Y - Marked.Y;
 		Coord r = Distance(Crosshair.X, Crosshair.Y, Marked.X, Marked.Y);
-		double a = atan2(dy, dx) * RAD_TO_DEG;
+		double a = atan2(dy, dx) * PCB_RAD_TO_DEG;
 
 
 		text = pcb_strdup_printf(_("%m+r %-mS;%cphi %-.1f;%c%-mS %-mS"), conf_core.editor.grid_unit->allow, r, sep, a, sep, dx, dy);

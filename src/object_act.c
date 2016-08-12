@@ -211,7 +211,7 @@ from.
 
 %end-doc */
 
-#define GAP MIL_TO_COORD(100)
+#define GAP PCB_MIL_TO_COORD(100)
 
 static int ActionDisperseElements(int argc, char **argv, Coord x, Coord y)
 {

@@ -2006,7 +2006,7 @@ yyreduce:
 #line 468 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				/* Read in cmil^2 for now; in future this should be a noop. */
-				yyPCB->IsleArea = MIL_TO_COORD (MIL_TO_COORD ((yyvsp[-1].number)) / 100.0) / 100.0;
+				yyPCB->IsleArea = PCB_MIL_TO_COORD (PCB_MIL_TO_COORD ((yyvsp[-1].number)) / 100.0) / 100.0;
 			}
 #line 2012 "parse_y.tab.c" /* yacc.c:1646  */
     break;
@@ -2891,61 +2891,61 @@ yyreduce:
 
   case 205:
 #line 2000 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
-    { do_measure(&(yyval.measure), (yyvsp[0].number), MIL_TO_COORD ((yyvsp[0].number)) / 100.0, 0); }
+    { do_measure(&(yyval.measure), (yyvsp[0].number), PCB_MIL_TO_COORD ((yyvsp[0].number)) / 100.0, 0); }
 #line 2896 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 206:
 #line 2001 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
-    { M ((yyval.measure), (yyvsp[-1].number), MIL_TO_COORD ((yyvsp[-1].number)) / 100000.0); }
+    { M ((yyval.measure), (yyvsp[-1].number), PCB_MIL_TO_COORD ((yyvsp[-1].number)) / 100000.0); }
 #line 2902 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 207:
 #line 2002 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
-    { M ((yyval.measure), (yyvsp[-1].number), MIL_TO_COORD ((yyvsp[-1].number)) / 100.0); }
+    { M ((yyval.measure), (yyvsp[-1].number), PCB_MIL_TO_COORD ((yyvsp[-1].number)) / 100.0); }
 #line 2908 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 208:
 #line 2003 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
-    { M ((yyval.measure), (yyvsp[-1].number), MIL_TO_COORD ((yyvsp[-1].number))); }
+    { M ((yyval.measure), (yyvsp[-1].number), PCB_MIL_TO_COORD ((yyvsp[-1].number))); }
 #line 2914 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 209:
 #line 2004 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
-    { M ((yyval.measure), (yyvsp[-1].number), INCH_TO_COORD ((yyvsp[-1].number))); }
+    { M ((yyval.measure), (yyvsp[-1].number), PCB_INCH_TO_COORD ((yyvsp[-1].number))); }
 #line 2920 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 210:
 #line 2005 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
-    { M ((yyval.measure), (yyvsp[-1].number), MM_TO_COORD ((yyvsp[-1].number)) / 1000000.0); }
+    { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number)) / 1000000.0); }
 #line 2926 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 211:
 #line 2006 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
-    { M ((yyval.measure), (yyvsp[-1].number), MM_TO_COORD ((yyvsp[-1].number)) / 1000.0); }
+    { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number)) / 1000.0); }
 #line 2932 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 212:
 #line 2007 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
-    { M ((yyval.measure), (yyvsp[-1].number), MM_TO_COORD ((yyvsp[-1].number))); }
+    { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number))); }
 #line 2938 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 213:
 #line 2008 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
-    { M ((yyval.measure), (yyvsp[-1].number), MM_TO_COORD ((yyvsp[-1].number)) * 1000.0); }
+    { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number)) * 1000.0); }
 #line 2944 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
   case 214:
 #line 2009 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
-    { M ((yyval.measure), (yyvsp[-1].number), MM_TO_COORD ((yyvsp[-1].number)) * 1000000.0); }
+    { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number)) * 1000000.0); }
 #line 2950 "parse_y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -3236,7 +3236,7 @@ old_units (PLMeasure m)
 {
   if (m.has_units)
     return m.bval;
-  return round (MIL_TO_COORD (m.ival));
+  return round (PCB_MIL_TO_COORD (m.ival));
 }
 
 static Coord
@@ -3244,5 +3244,5 @@ new_units (PLMeasure m)
 {
   if (m.has_units)
     return m.bval;
-  return round (MIL_TO_COORD (m.ival) / 100.0);
+  return round (PCB_MIL_TO_COORD (m.ival) / 100.0);
 }

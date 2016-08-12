@@ -239,20 +239,20 @@ PointTypePtr AdjustInsertPoint(void)
 	else {
 		m = (double) (Crosshair.X - line->Point1.X) / (Crosshair.Y - line->Point1.Y);
 		m1 = 0;
-		if (m > TAN_30_DEGREE)
-			m1 = (m > TAN_60_DEGREE) ? 2 : 1;
-		else if (m < -TAN_30_DEGREE)
-			m1 = (m < -TAN_60_DEGREE) ? 2 : -1;
+		if (m > PCB_TAN_30_DEGREE)
+			m1 = (m > PCB_TAN_60_DEGREE) ? 2 : 1;
+		else if (m < -PCB_TAN_30_DEGREE)
+			m1 = (m < -PCB_TAN_60_DEGREE) ? 2 : -1;
 	}
 	if (Crosshair.X == line->Point2.X)
 		m2 = 2;											/* 2 signals infinite slope */
 	else {
 		m = (double) (Crosshair.X - line->Point1.X) / (Crosshair.Y - line->Point1.Y);
 		m2 = 0;
-		if (m > TAN_30_DEGREE)
-			m2 = (m > TAN_60_DEGREE) ? 2 : 1;
-		else if (m < -TAN_30_DEGREE)
-			m2 = (m < -TAN_60_DEGREE) ? 2 : -1;
+		if (m > PCB_TAN_30_DEGREE)
+			m2 = (m > PCB_TAN_60_DEGREE) ? 2 : 1;
+		else if (m < -PCB_TAN_30_DEGREE)
+			m2 = (m < -PCB_TAN_60_DEGREE) ? 2 : -1;
 	}
 	if (m1 == m2) {
 		InsertedPoint.X = line->Point1.X;

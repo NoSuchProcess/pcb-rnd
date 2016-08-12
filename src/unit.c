@@ -31,12 +31,12 @@
 #include "unit.h"
 
 /* Helper macros for tables */
-#define MM_TO_COORD3(a,b,c)		MM_TO_COORD (a), MM_TO_COORD (b), MM_TO_COORD (c)
-#define MIL_TO_COORD3(a,b,c)		MIL_TO_COORD (a), MIL_TO_COORD (b), MIL_TO_COORD (c)
-#define MM_TO_COORD5(a,b,c,d,e)		MM_TO_COORD (a), MM_TO_COORD (b), MM_TO_COORD (c),	\
-                              		MM_TO_COORD (d), MM_TO_COORD (e)
-#define MIL_TO_COORD5(a,b,c,d,e)	MIL_TO_COORD (a), MIL_TO_COORD (b), MIL_TO_COORD (c),	\
-                               		MIL_TO_COORD (d), MIL_TO_COORD (e)
+#define PCB_MM_TO_COORD3(a,b,c)		PCB_MM_TO_COORD (a), PCB_MM_TO_COORD (b), PCB_MM_TO_COORD (c)
+#define PCB_MIL_TO_COORD3(a,b,c)		PCB_MIL_TO_COORD (a), PCB_MIL_TO_COORD (b), PCB_MIL_TO_COORD (c)
+#define PCB_MM_TO_COORD5(a,b,c,d,e)		PCB_MM_TO_COORD (a), PCB_MM_TO_COORD (b), PCB_MM_TO_COORD (c),	\
+                              		PCB_MM_TO_COORD (d), PCB_MM_TO_COORD (e)
+#define PCB_MIL_TO_COORD5(a,b,c,d,e)	PCB_MIL_TO_COORD (a), PCB_MIL_TO_COORD (b), PCB_MIL_TO_COORD (c),	\
+                               		PCB_MIL_TO_COORD (d), PCB_MIL_TO_COORD (e)
 
 /* These should be kept in order of smallest scale_factor
  * to largest -- the code uses this ordering when finding
@@ -98,43 +98,43 @@ Increments increments[] = {
 	 *          line  |           |       |
 	 *         clear  |           |       |
 	 */
-	{"km", MM_TO_COORD3(0.1, 0.01, 1.0),
-	 MM_TO_COORD3(0.2, 0.01, 0.5),
-	 MM_TO_COORD3(0.1, 0.005, 0.5),
-	 MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"m", MM_TO_COORD3(0.1, 0.01, 1.0),
-	 MM_TO_COORD3(0.2, 0.01, 0.5),
-	 MM_TO_COORD3(0.1, 0.005, 0.5),
-	 MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"cm", MM_TO_COORD3(0.1, 0.01, 1.0),
-	 MM_TO_COORD3(0.2, 0.01, 0.5),
-	 MM_TO_COORD3(0.1, 0.005, 0.5),
-	 MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"mm", MM_TO_COORD3(0.1, 0.01, 1.0),
-	 MM_TO_COORD3(0.2, 0.01, 0.5),
-	 MM_TO_COORD3(0.1, 0.005, 0.5),
-	 MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"um", MM_TO_COORD3(0.1, 0.01, 1.0),
-	 MM_TO_COORD3(0.2, 0.01, 0.5),
-	 MM_TO_COORD3(0.1, 0.005, 0.5),
-	 MM_TO_COORD3(0.05, 0.005, 0.5)},
-	{"nm", MM_TO_COORD3(0.1, 0.01, 1.0),
-	 MM_TO_COORD3(0.2, 0.01, 0.5),
-	 MM_TO_COORD3(0.1, 0.005, 0.5),
-	 MM_TO_COORD3(0.05, 0.005, 0.5)},
+	{"km", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
+	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
+	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
+	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
+	{"m", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
+	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
+	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
+	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
+	{"cm", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
+	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
+	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
+	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
+	{"mm", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
+	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
+	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
+	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
+	{"um", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
+	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
+	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
+	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
+	{"nm", PCB_MM_TO_COORD3(0.1, 0.01, 1.0),
+	 PCB_MM_TO_COORD3(0.2, 0.01, 0.5),
+	 PCB_MM_TO_COORD3(0.1, 0.005, 0.5),
+	 PCB_MM_TO_COORD3(0.05, 0.005, 0.5)},
 
-	{"cmil", MIL_TO_COORD3(5, 1, 25),
-	 MIL_TO_COORD3(10, 1, 10),
-	 MIL_TO_COORD3(5, 0.5, 10),
-	 MIL_TO_COORD3(2, 0.5, 10)},
-	{"mil", MIL_TO_COORD3(5, 1, 25),
-	 MIL_TO_COORD3(10, 1, 10),
-	 MIL_TO_COORD3(5, 0.5, 10),
-	 MIL_TO_COORD3(2, 0.5, 10)},
-	{"in", MIL_TO_COORD3(5, 1, 25),
-	 MIL_TO_COORD3(10, 1, 10),
-	 MIL_TO_COORD3(5, 0.5, 10),
-	 MIL_TO_COORD3(2, 0.5, 10)},
+	{"cmil", PCB_MIL_TO_COORD3(5, 1, 25),
+	 PCB_MIL_TO_COORD3(10, 1, 10),
+	 PCB_MIL_TO_COORD3(5, 0.5, 10),
+	 PCB_MIL_TO_COORD3(2, 0.5, 10)},
+	{"mil", PCB_MIL_TO_COORD3(5, 1, 25),
+	 PCB_MIL_TO_COORD3(10, 1, 10),
+	 PCB_MIL_TO_COORD3(5, 0.5, 10),
+	 PCB_MIL_TO_COORD3(2, 0.5, 10)},
+	{"in", PCB_MIL_TO_COORD3(5, 1, 25),
+	 PCB_MIL_TO_COORD3(10, 1, 10),
+	 PCB_MIL_TO_COORD3(5, 0.5, 10),
+	 PCB_MIL_TO_COORD3(2, 0.5, 10)},
 };
 
 #define N_INCREMENTS (sizeof increments / sizeof increments[0])
@@ -210,8 +210,8 @@ double coord_to_unit(const Unit * unit, Coord x)
 	double base;
 	if (unit == NULL)
 		return -1;
-	base = unit->family == METRIC ? COORD_TO_MM(1)
-		: COORD_TO_MIL(1);
+	base = unit->family == METRIC ? PCB_COORD_TO_MM(1)
+		: PCB_COORD_TO_MIL(1);
 	return x * unit->scale_factor * base;
 }
 

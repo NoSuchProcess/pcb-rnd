@@ -845,7 +845,7 @@ static void *ChangeLineClearSize(LayerTypePtr Layer, LineTypePtr Line)
 		Line->Clearance = value;
 		if (Line->Clearance == 0) {
 			CLEAR_FLAG(PCB_FLAG_CLEARLINE, Line);
-			Line->Clearance = MIL_TO_COORD(10);
+			Line->Clearance = PCB_MIL_TO_COORD(10);
 		}
 		SetLineBoundingBox(Line);
 		r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
@@ -917,7 +917,7 @@ static void *ChangeArcClearSize(LayerTypePtr Layer, ArcTypePtr Arc)
 		Arc->Clearance = value;
 		if (Arc->Clearance == 0) {
 			CLEAR_FLAG(PCB_FLAG_CLEARLINE, Arc);
-			Arc->Clearance = MIL_TO_COORD(10);
+			Arc->Clearance = PCB_MIL_TO_COORD(10);
 		}
 		SetArcBoundingBox(Arc);
 		r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
@@ -934,8 +934,8 @@ static void *ChangeArcClearSize(LayerTypePtr Layer, ArcTypePtr Arc)
  */
 static void *ChangeTextSize(LayerTypePtr Layer, TextTypePtr Text)
 {
-	int value = Absolute ? COORD_TO_MIL(Absolute)
-		: Text->Scale + COORD_TO_MIL(Delta);
+	int value = Absolute ? PCB_COORD_TO_MIL(Absolute)
+		: Text->Scale + PCB_COORD_TO_MIL(Delta);
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
 		return (NULL);
@@ -1001,8 +1001,8 @@ static void *ChangeElementSize(ElementTypePtr Element)
  */
 static void *ChangeElementNameSize(ElementTypePtr Element)
 {
-	int value = Absolute ? COORD_TO_MIL(Absolute)
-		: DESCRIPTION_TEXT(Element).Scale + COORD_TO_MIL(Delta);
+	int value = Absolute ? PCB_COORD_TO_MIL(Absolute)
+		: DESCRIPTION_TEXT(Element).Scale + PCB_COORD_TO_MIL(Delta);
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);

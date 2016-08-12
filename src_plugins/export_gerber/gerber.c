@@ -129,7 +129,7 @@ int n_pending_drills = 0, max_pending_drills = 0;
 /*----------------------------------------------------------------------------*/
 /* Defined Constants                                                          */
 /*----------------------------------------------------------------------------*/
-#define AUTO_OUTLINE_WIDTH MIL_TO_COORD(8)	/* Auto-geneated outline width of 8 mils */
+#define AUTO_OUTLINE_WIDTH PCB_MIL_TO_COORD(8)	/* Auto-geneated outline width of 8 mils */
 
 /*----------------------------------------------------------------------------*/
 /* Aperture Routines                                                          */
@@ -217,7 +217,7 @@ static void fprintAperture(FILE * f, Aperture * aptr)
 		break;
 	case OCTAGON:
 		pcb_fprintf(f, "%%AMOCT%d*5,0,8,0,0,%.4mi,22.5*%%\r\n"
-								"%%ADD%dOCT%d*%%\r\n", aptr->dCode, (Coord) ((double) aptr->width / COS_22_5_DEGREE), aptr->dCode, aptr->dCode);
+								"%%ADD%dOCT%d*%%\r\n", aptr->dCode, (Coord) ((double) aptr->width / PCB_COS_22_5_DEGREE), aptr->dCode, aptr->dCode);
 		break;
 #if 0
 	case THERMAL:

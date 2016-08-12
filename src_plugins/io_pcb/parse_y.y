@@ -467,7 +467,7 @@ polyarea
 		| T_AREA '[' number ']'
 			{
 				/* Read in cmil^2 for now; in future this should be a noop. */
-				yyPCB->IsleArea = MIL_TO_COORD (MIL_TO_COORD ($3) / 100.0) / 100.0;
+				yyPCB->IsleArea = PCB_MIL_TO_COORD (PCB_MIL_TO_COORD ($3) / 100.0) / 100.0;
 			}
 		;
 
@@ -1997,16 +1997,16 @@ number
 
 measure
 		/* Default unit (no suffix) is cmil */
-		: number	{ do_measure(&$$, $1, MIL_TO_COORD ($1) / 100.0, 0); }
-		| number T_UMIL	{ M ($$, $1, MIL_TO_COORD ($1) / 100000.0); }
-		| number T_CMIL	{ M ($$, $1, MIL_TO_COORD ($1) / 100.0); }
-		| number T_MIL	{ M ($$, $1, MIL_TO_COORD ($1)); }
-		| number T_IN	{ M ($$, $1, INCH_TO_COORD ($1)); }
-		| number T_NM	{ M ($$, $1, MM_TO_COORD ($1) / 1000000.0); }
-		| number T_UM	{ M ($$, $1, MM_TO_COORD ($1) / 1000.0); }
-		| number T_MM	{ M ($$, $1, MM_TO_COORD ($1)); }
-		| number T_M	{ M ($$, $1, MM_TO_COORD ($1) * 1000.0); }
-		| number T_KM	{ M ($$, $1, MM_TO_COORD ($1) * 1000000.0); }
+		: number	{ do_measure(&$$, $1, PCB_MIL_TO_COORD ($1) / 100.0, 0); }
+		| number T_UMIL	{ M ($$, $1, PCB_MIL_TO_COORD ($1) / 100000.0); }
+		| number T_CMIL	{ M ($$, $1, PCB_MIL_TO_COORD ($1) / 100.0); }
+		| number T_MIL	{ M ($$, $1, PCB_MIL_TO_COORD ($1)); }
+		| number T_IN	{ M ($$, $1, PCB_INCH_TO_COORD ($1)); }
+		| number T_NM	{ M ($$, $1, PCB_MM_TO_COORD ($1) / 1000000.0); }
+		| number T_UM	{ M ($$, $1, PCB_MM_TO_COORD ($1) / 1000.0); }
+		| number T_MM	{ M ($$, $1, PCB_MM_TO_COORD ($1)); }
+		| number T_M	{ M ($$, $1, PCB_MM_TO_COORD ($1) * 1000.0); }
+		| number T_KM	{ M ($$, $1, PCB_MM_TO_COORD ($1) * 1000000.0); }
 		;
 
 %%
@@ -2066,7 +2066,7 @@ old_units (PLMeasure m)
 {
   if (m.has_units)
     return m.bval;
-  return round (MIL_TO_COORD (m.ival));
+  return round (PCB_MIL_TO_COORD (m.ival));
 }
 
 static Coord
@@ -2074,5 +2074,5 @@ new_units (PLMeasure m)
 {
   if (m.has_units)
     return m.bval;
-  return round (MIL_TO_COORD (m.ival) / 100.0);
+  return round (PCB_MIL_TO_COORD (m.ival) / 100.0);
 }

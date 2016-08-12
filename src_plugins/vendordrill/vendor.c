@@ -205,20 +205,20 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 	/* figure out the units, if specified */
 	sval = hid_cfg_text_value(doc, "/units");
 	if (sval == NULL) {
-		sf = MIL_TO_COORD(1);
+		sf = PCB_MIL_TO_COORD(1);
 	}
 	else if ((NSTRCMP(sval, "mil") == 0) || (NSTRCMP(sval, "mils") == 0)) {
-		sf = MIL_TO_COORD(1);
+		sf = PCB_MIL_TO_COORD(1);
 	}
 	else if ((NSTRCMP(sval, "inch") == 0) || (NSTRCMP(sval, "inches") == 0)) {
-		sf = INCH_TO_COORD(1);
+		sf = PCB_INCH_TO_COORD(1);
 	}
 	else if (NSTRCMP(sval, "mm") == 0) {
-		sf = MM_TO_COORD(1);
+		sf = PCB_MM_TO_COORD(1);
 	}
 	else {
 		Message("\"%s\" is not a supported units.  Defaulting to inch\n", sval);
-		sf = INCH_TO_COORD(1);
+		sf = PCB_INCH_TO_COORD(1);
 	}
 
 	/* default to ROUND_UP */

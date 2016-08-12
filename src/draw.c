@@ -1180,11 +1180,11 @@ void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width)
 			for (n = font->Symbol[*string].LineN; n; n--, line++) {
 				/* create one line, scale, move, rotate and swap it */
 				newline = *line;
-				newline.Point1.X = SCALE_TEXT(newline.Point1.X + x, Text->Scale);
-				newline.Point1.Y = SCALE_TEXT(newline.Point1.Y, Text->Scale);
-				newline.Point2.X = SCALE_TEXT(newline.Point2.X + x, Text->Scale);
-				newline.Point2.Y = SCALE_TEXT(newline.Point2.Y, Text->Scale);
-				newline.Thickness = SCALE_TEXT(newline.Thickness, Text->Scale / 2);
+				newline.Point1.X = PCB_SCALE_TEXT(newline.Point1.X + x, Text->Scale);
+				newline.Point1.Y = PCB_SCALE_TEXT(newline.Point1.Y, Text->Scale);
+				newline.Point2.X = PCB_SCALE_TEXT(newline.Point2.X + x, Text->Scale);
+				newline.Point2.Y = PCB_SCALE_TEXT(newline.Point2.Y, Text->Scale);
+				newline.Thickness = PCB_SCALE_TEXT(newline.Thickness, Text->Scale / 2);
 				if (newline.Thickness < min_line_width)
 					newline.Thickness = min_line_width;
 
@@ -1215,10 +1215,10 @@ void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width)
 			BoxType defaultsymbol = PCB->Font.DefaultSymbol;
 			Coord size = (defaultsymbol.X2 - defaultsymbol.X1) * 6 / 5;
 
-			defaultsymbol.X1 = SCALE_TEXT(defaultsymbol.X1 + x, Text->Scale);
-			defaultsymbol.Y1 = SCALE_TEXT(defaultsymbol.Y1, Text->Scale);
-			defaultsymbol.X2 = SCALE_TEXT(defaultsymbol.X2 + x, Text->Scale);
-			defaultsymbol.Y2 = SCALE_TEXT(defaultsymbol.Y2, Text->Scale);
+			defaultsymbol.X1 = PCB_SCALE_TEXT(defaultsymbol.X1 + x, Text->Scale);
+			defaultsymbol.Y1 = PCB_SCALE_TEXT(defaultsymbol.Y1, Text->Scale);
+			defaultsymbol.X2 = PCB_SCALE_TEXT(defaultsymbol.X2 + x, Text->Scale);
+			defaultsymbol.Y2 = PCB_SCALE_TEXT(defaultsymbol.Y2, Text->Scale);
 
 			RotateBoxLowLevel(&defaultsymbol, 0, 0, Text->Direction);
 

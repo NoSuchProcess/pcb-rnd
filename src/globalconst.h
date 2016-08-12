@@ -38,8 +38,8 @@
 /* frame between the groundplane and the copper or mask - noone seems
    to remember what these two are for; changing them may have unforeseen
    side effects. */
-#define	GROUNDPLANEFRAME        MIL_TO_COORD(15)
-#define MASKFRAME               MIL_TO_COORD(3)
+#define	GROUNDPLANEFRAME        PCB_MIL_TO_COORD(15)
+#define MASKFRAME               PCB_MIL_TO_COORD(3)
 
 /* ---------------------------------------------------------------------------
  * some limit specifications
@@ -48,30 +48,30 @@
  
 #define	MAX_LAYER		16	/* max number of layer, check source */
 					/* code for more changes, a *lot* more changes */
-#define	MIN_LINESIZE		MIL_TO_COORD(0.01)	/* thickness of lines */
+#define	MIN_LINESIZE		PCB_MIL_TO_COORD(0.01)	/* thickness of lines */
 #define	MAX_LINESIZE		LARGE_VALUE
 #define	MIN_TEXTSCALE		10	/* scaling of text objects in percent */
 #define	MAX_TEXTSCALE		10000
-#define	MIN_PINORVIASIZE	MIL_TO_COORD(20)	/* size of a pin or via */
-#define	MIN_PINORVIAHOLE	MIL_TO_COORD(4)	/* size of a pins or vias drilling hole */
+#define	MIN_PINORVIASIZE	PCB_MIL_TO_COORD(20)	/* size of a pin or via */
+#define	MIN_PINORVIAHOLE	PCB_MIL_TO_COORD(4)	/* size of a pins or vias drilling hole */
 #define	MAX_PINORVIASIZE	LARGE_VALUE
-#define	MIN_PINORVIACOPPER	MIL_TO_COORD(4)	/* min difference outer-inner diameter */
-#define	MIN_PADSIZE		MIL_TO_COORD(1)	/* min size of a pad */
+#define	MIN_PINORVIACOPPER	PCB_MIL_TO_COORD(4)	/* min difference outer-inner diameter */
+#define	MIN_PADSIZE		PCB_MIL_TO_COORD(1)	/* min size of a pad */
 #define	MAX_PADSIZE		LARGE_VALUE   /* max size of a pad */
-#define	MIN_DRC_VALUE		MIL_TO_COORD(0.1)
-#define	MAX_DRC_VALUE		MIL_TO_COORD(500)
-#define	MIN_DRC_SILK		MIL_TO_COORD(1)
-#define	MAX_DRC_SILK		MIL_TO_COORD(30)
-#define	MIN_DRC_DRILL		MIL_TO_COORD(1)
-#define	MAX_DRC_DRILL		MIL_TO_COORD(50)
+#define	MIN_DRC_VALUE		PCB_MIL_TO_COORD(0.1)
+#define	MAX_DRC_VALUE		PCB_MIL_TO_COORD(500)
+#define	MIN_DRC_SILK		PCB_MIL_TO_COORD(1)
+#define	MAX_DRC_SILK		PCB_MIL_TO_COORD(30)
+#define	MIN_DRC_DRILL		PCB_MIL_TO_COORD(1)
+#define	MAX_DRC_DRILL		PCB_MIL_TO_COORD(50)
 #define	MIN_DRC_RING		0
-#define	MAX_DRC_RING		MIL_TO_COORD(100)
+#define	MAX_DRC_RING		PCB_MIL_TO_COORD(100)
 #define	MIN_GRID		1
-#define	MAX_GRID		MIL_TO_COORD(1000)
+#define	MAX_GRID		PCB_MIL_TO_COORD(1000)
 #define	MAX_FONTPOSITION	255	/* upper limit of characters in my font */
 
 #define	MAX_COORD		LARGE_VALUE	/* coordinate limits */
-#define	MIN_SIZE		MIL_TO_COORD(10)	/* lowest width and height of the board */
+#define	MIN_SIZE		PCB_MIL_TO_COORD(10)	/* lowest width and height of the board */
 #define	MAX_BUFFER		5	/* number of pastebuffers */
 					/* additional changes in menu.c are */
 					/* also required to select more buffers */
@@ -104,14 +104,14 @@
 #define	MIN_GRID_DISTANCE		4	/* minimum distance between point */
 						/* to enable grid drawing */
 	/* size of diamond element mark */
-#define EMARK_SIZE	MIL_TO_COORD (10)
+#define EMARK_SIZE	PCB_MIL_TO_COORD (10)
 
 
 /**** Font ***/
 /* These are used in debug draw font rendering (e.g. pin names) and reverse
    scale calcualtions (e.g. when report is trying to figure how the font
    is scaled. Changing these values is not really supported. */
-#define  FONT_CAPHEIGHT    MIL_TO_COORD (45)   /* (Approximate) capheight size of the default PCB font */
+#define  FONT_CAPHEIGHT    PCB_MIL_TO_COORD (45)   /* (Approximate) capheight size of the default PCB font */
 #define  DEFAULT_CELLSIZE  50                  /* default cell size for symbols */
 
 #endif

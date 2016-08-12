@@ -109,8 +109,8 @@ const struct {
 		0.75,												/* annealing schedule constant: 0.85 */
 		40,													/* halt when there are 60 times as many moves as good moves */
 		false,											/* don't ignore SMD/pin conflicts */
-		MIL_TO_COORD(100),					/* coarse grid is 100 mils */
-		MIL_TO_COORD(10),						/* fine grid is 10 mils */
+		PCB_MIL_TO_COORD(100),					/* coarse grid is 100 mils */
+		PCB_MIL_TO_COORD(10),						/* fine grid is 10 mils */
 };
 
 typedef struct {
@@ -339,7 +339,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 			box->Y2 = maxy;
 		}
 		/* okay, add half-perimeter to cost! */
-		W += COORD_TO_MIL(maxx - minx) + COORD_TO_MIL(maxy - miny) + ((allpads && !allsameside) ? CostParameter.via_cost : 0);
+		W += PCB_COORD_TO_MIL(maxx - minx) + PCB_COORD_TO_MIL(maxy - miny) + ((allpads && !allsameside) ? CostParameter.via_cost : 0);
 	}
 	/* now compute penalty function Wc which is proportional to
 	 * amount of overlap and congestion. */
@@ -526,7 +526,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 		}
 		END_LOOP;
 		if (minX < maxX && minY < maxY)
-			delta5 = CostParameter.overall_area_penalty * sqrt(COORD_TO_MIL(maxX - minX) * COORD_TO_MIL(maxY - minY));
+			delta5 = CostParameter.overall_area_penalty * sqrt(PCB_COORD_TO_MIL(maxX - minX) * PCB_COORD_TO_MIL(maxY - minY));
 	}
 	if (T == 5) {
 		T = W + delta1 + delta2 + delta3 - delta4 + delta5;
@@ -555,13 +555,13 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 	case 0:
 		{														/* shift! */
 			Coord grid;
-			double scaleX = PCB_CLAMP(sqrt(T), MIL_TO_COORD(2.5), PCB->MaxWidth / 3);
-			double scaleY = PCB_CLAMP(sqrt(T), MIL_TO_COORD(2.5), PCB->MaxHeight / 3);
+			double scaleX = PCB_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->MaxWidth / 3);
+			double scaleY = PCB_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->MaxHeight / 3);
 			pt.which = SHIFT;
 			pt.DX = scaleX * 2 * ((((double) random()) / RAND_MAX) - 0.5);
 			pt.DY = scaleY * 2 * ((((double) random()) / RAND_MAX) - 0.5);
 			/* snap to grid. different grids for "high" and "low" T */
-			grid = (T > MIL_TO_COORD(10)) ? CostParameter.large_grid_size : CostParameter.small_grid_size;
+			grid = (T > PCB_MIL_TO_COORD(10)) ? CostParameter.large_grid_size : CostParameter.small_grid_size;
 			/* (round away from zero) */
 			pt.DX = ((pt.DX / grid) + SGN(pt.DX)) * grid;
 			pt.DY = ((pt.DY / grid) + SGN(pt.DY)) * grid;
@@ -696,12 +696,12 @@ bool AutoPlaceSelected(void)
 	/* simulated annealing */
 	{															/* compute T0 by doing a random series of moves. */
 		const int TRIALS = 10;
-		const double Tx = MIL_TO_COORD(300), P = 0.95;
+		const double Tx = PCB_MIL_TO_COORD(300), P = 0.95;
 		double Cs = 0.0;
 		int i;
 		C0 = ComputeCost(Nets, Tx, Tx);
 		for (i = 0; i < TRIALS; i++) {
-			pt = createPerturbation(&Selected, INCH_TO_COORD(1));
+			pt = createPerturbation(&Selected, PCB_INCH_TO_COORD(1));
 			doPerturb(&pt, false);
 			Cs += fabs(ComputeCost(Nets, Tx, Tx) - C0);
 			doPerturb(&pt, true);

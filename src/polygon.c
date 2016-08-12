@@ -357,36 +357,36 @@ POLYAREA *OctagonPoly(Coord x, Coord y, Coord radius, int style)
 #warning TODO: rewrite this to use the same table as the square/oct pin draw function
 	/* point 7 */
 	v[0] = x + ROUND(radius * 0.5) * xm[7];
-	v[1] = y + ROUND(radius * TAN_22_5_DEGREE_2) * ym[7];
+	v[1] = y + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[7];
 	if ((contour = poly_NewContour(v)) == NULL)
 		return NULL;
 	/* point 6 */
-	v[0] = x + ROUND(radius * TAN_22_5_DEGREE_2) * xm[6];
+	v[0] = x + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[6];
 	v[1] = y + ROUND(radius * 0.5) * ym[6];
 	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
 	/* point 5 */
-	v[0] = x - ROUND(radius * TAN_22_5_DEGREE_2) * xm[5];
+	v[0] = x - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[5];
 	v[1] = y + ROUND(radius * 0.5) * ym[5];
 	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
 	/* point 4 */
 	v[0] = x - ROUND(radius * 0.5) * xm[4];
-	v[1] = y + ROUND(radius * TAN_22_5_DEGREE_2) * ym[4];
+	v[1] = y + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[4];
 	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
 	/* point 3 */
 	v[0] = x - ROUND(radius * 0.5) * xm[3];
-	v[1] = y - ROUND(radius * TAN_22_5_DEGREE_2) * ym[3];
+	v[1] = y - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[3];
 	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
 	/* point 2 */
-	v[0] = x - ROUND(radius * TAN_22_5_DEGREE_2) * xm[2];
+	v[0] = x - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[2];
 	v[1] = y - ROUND(radius * 0.5) * ym[2];
 	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
 	/* point 1 */
-	v[0] = x + ROUND(radius * TAN_22_5_DEGREE_2) * xm[1];
+	v[0] = x + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[1];
 	v[1] = y - ROUND(radius * 0.5) * ym[1];
 	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
 	/* point 0 */
 	v[0] = x + ROUND(radius * 0.5) * xm[0];
-	v[1] = y - ROUND(radius * TAN_22_5_DEGREE_2) * ym[0];
+	v[1] = y - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[0];
 	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
 	return ContourToPoly(contour);
 }
@@ -501,20 +501,20 @@ static POLYAREA *ArcPolyNoIntersect(ArcType * a, Coord thick)
 	ang = a->StartAngle;
 	da = (1.0 * a->Delta) / segs;
 	radius_adj = (M_PI * da / 360) * (M_PI * da / 360) / 2;
-	v[0] = a->X - rx * cos(ang * M180);
-	v[1] = a->Y + ry * sin(ang * M180);
+	v[0] = a->X - rx * cos(ang * PCB_M180);
+	v[1] = a->Y + ry * sin(ang * PCB_M180);
 	if ((contour = poly_NewContour(v)) == NULL)
 		return 0;
 	for (i = 0; i < segs - 1; i++) {
 		ang += da;
-		v[0] = a->X - rx * cos(ang * M180);
-		v[1] = a->Y + ry * sin(ang * M180);
+		v[0] = a->X - rx * cos(ang * PCB_M180);
+		v[1] = a->Y + ry * sin(ang * PCB_M180);
 		poly_InclVertex(contour->head.prev, poly_CreateNode(v));
 	}
 	/* find last point */
 	ang = a->StartAngle + a->Delta;
-	v[0] = a->X - rx * cos(ang * M180) * (1 - radius_adj);
-	v[1] = a->Y + ry * sin(ang * M180) * (1 - radius_adj);
+	v[0] = a->X - rx * cos(ang * PCB_M180) * (1 - radius_adj);
+	v[1] = a->Y + ry * sin(ang * PCB_M180) * (1 - radius_adj);
 	/* add the round cap at the end */
 	frac_circle(contour, ends->X2, ends->Y2, v, 2);
 	/* and now do the outer arc (going backwards) */
@@ -522,15 +522,15 @@ static POLYAREA *ArcPolyNoIntersect(ArcType * a, Coord thick)
 	ry = (a->Width + half) * (1 + radius_adj);
 	da = -da;
 	for (i = 0; i < segs; i++) {
-		v[0] = a->X - rx * cos(ang * M180);
-		v[1] = a->Y + ry * sin(ang * M180);
+		v[0] = a->X - rx * cos(ang * PCB_M180);
+		v[1] = a->Y + ry * sin(ang * PCB_M180);
 		poly_InclVertex(contour->head.prev, poly_CreateNode(v));
 		ang += da;
 	}
 	/* now add other round cap */
 	ang = a->StartAngle;
-	v[0] = a->X - rx * cos(ang * M180) * (1 - radius_adj);
-	v[1] = a->Y + ry * sin(ang * M180) * (1 - radius_adj);
+	v[0] = a->X - rx * cos(ang * PCB_M180) * (1 - radius_adj);
+	v[1] = a->Y + ry * sin(ang * PCB_M180) * (1 - radius_adj);
 	frac_circle(contour, ends->X1, ends->Y1, v, 2);
 	/* now we have the whole contour */
 	if (!(np = ContourToPoly(contour)))

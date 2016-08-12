@@ -4023,7 +4023,7 @@ static void InitAutoRouteParameters(int pass, RouteStyleType * style, bool with_
 	AutoRouteParameters.style = style;
 	AutoRouteParameters.bloat = style->Clearance + HALF_THICK(style->Thick);
 	/* costs */
-	AutoRouteParameters.ViaCost = INCH_TO_COORD(3.5) + style->Diameter * (is_smoothing ? 80 : 30);
+	AutoRouteParameters.ViaCost = PCB_INCH_TO_COORD(3.5) + style->Diameter * (is_smoothing ? 80 : 30);
 	AutoRouteParameters.LastConflictPenalty = (400 * pass / passes + 2) / (pass + 1);
 	AutoRouteParameters.ConflictPenalty = 4 * AutoRouteParameters.LastConflictPenalty;
 	AutoRouteParameters.JogPenalty = 1000 * (is_smoothing ? 20 : 4);

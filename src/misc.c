@@ -373,7 +373,7 @@ void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text)
 	 * bounds of the un-scaled text, and the thickness clamping applies to
 	 * scaled text.
 	 */
-	min_unscaled_radius = UNSCALE_TEXT(min_final_radius, Text->Scale);
+	min_unscaled_radius = PCB_UNPCB_SCALE_TEXT(min_final_radius, Text->Scale);
 
 	/* calculate size of the bounding box */
 	for (; s && *s; s++) {
@@ -424,10 +424,10 @@ void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text)
 	}
 
 	/* scale values */
-	minx = SCALE_TEXT(minx, Text->Scale);
-	miny = SCALE_TEXT(miny, Text->Scale);
-	maxx = SCALE_TEXT(maxx, Text->Scale);
-	maxy = SCALE_TEXT(maxy, Text->Scale);
+	minx = PCB_SCALE_TEXT(minx, Text->Scale);
+	miny = PCB_SCALE_TEXT(miny, Text->Scale);
+	maxx = PCB_SCALE_TEXT(maxx, Text->Scale);
+	maxy = PCB_SCALE_TEXT(maxy, Text->Scale);
 
 	/* set upper-left and lower-right corner;
 	 * swap coordinates if necessary (origin is already in 'swapped')
@@ -1140,10 +1140,10 @@ void SetArcBoundingBox(ArcTypePtr Arc)
 		ang2 = ang1 + 360;
 
 	/* calculate sines, cosines */
-	sa1 = sin(M180 * ang1);
-	ca1 = cos(M180 * ang1);
-	sa2 = sin(M180 * ang2);
-	ca2 = cos(M180 * ang2);
+	sa1 = sin(PCB_M180 * ang1);
+	ca1 = cos(PCB_M180 * ang1);
+	sa2 = sin(PCB_M180 * ang2);
+	ca2 = cos(PCB_M180 * ang2);
 
 	minx = MIN(ca1, ca2);
 	maxx = MAX(ca1, ca2);
@@ -1265,10 +1265,10 @@ void RestoreStackAndVisibility(void)
 BoxTypePtr GetArcEnds(ArcTypePtr Arc)
 {
 	static BoxType box;
-	box.X1 = Arc->X - Arc->Width * cos(Arc->StartAngle * M180);
-	box.Y1 = Arc->Y + Arc->Height * sin(Arc->StartAngle * M180);
-	box.X2 = Arc->X - Arc->Width * cos((Arc->StartAngle + Arc->Delta) * M180);
-	box.Y2 = Arc->Y + Arc->Height * sin((Arc->StartAngle + Arc->Delta) * M180);
+	box.X1 = Arc->X - Arc->Width * cos(Arc->StartAngle * PCB_M180);
+	box.Y1 = Arc->Y + Arc->Height * sin(Arc->StartAngle * PCB_M180);
+	box.X2 = Arc->X - Arc->Width * cos((Arc->StartAngle + Arc->Delta) * PCB_M180);
+	box.Y2 = Arc->Y + Arc->Height * sin((Arc->StartAngle + Arc->Delta) * PCB_M180);
 	return &box;
 }
 

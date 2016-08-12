@@ -102,7 +102,7 @@ int ParseRoutingString1(char **str, RouteStyleTypePtr routeStyle, const char *de
 	/* for backwards-compatibility, we use a 10-mil default
 	 * for styles which omit the clearance specification. */
 	if (*s != ',')
-		routeStyle->Clearance = MIL_TO_COORD(10);
+		routeStyle->Clearance = PCB_MIL_TO_COORD(10);
 	else {
 		s++;
 		while (*s && isspace((int) *s))

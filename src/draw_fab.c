@@ -53,10 +53,10 @@
  * prints a FAB drawing.
  */
 
-#define TEXT_SIZE	MIL_TO_COORD(150)
-#define TEXT_LINE	MIL_TO_COORD(150)
-#define DRILL_MARK_SIZE	MIL_TO_COORD(16)
-#define FAB_LINE_W      MIL_TO_COORD(8)
+#define TEXT_SIZE	PCB_MIL_TO_COORD(150)
+#define TEXT_LINE	PCB_MIL_TO_COORD(150)
+#define DRILL_MARK_SIZE	PCB_MIL_TO_COORD(16)
+#define FAB_LINE_W      PCB_MIL_TO_COORD(8)
 
 static void fab_line(hidGC gc, int x1, int y1, int x2, int y2)
 {
@@ -82,21 +82,21 @@ static void text_at(hidGC gc, int x, int y, int align, char *fmt, ...)
 	va_end(a);
 	t.Direction = 0;
 	t.TextString = tmp;
-	t.Scale = COORD_TO_MIL(TEXT_SIZE);	/* pcnt of 100mil base height */
+	t.Scale = PCB_COORD_TO_MIL(TEXT_SIZE);	/* pcnt of 100mil base height */
 	t.Flags = NoFlags();
 	t.X = x;
 	t.Y = y;
 	for (i = 0; tmp[i]; i++)
 		w += (font->Symbol[(int) tmp[i]].Width + font->Symbol[(int) tmp[i]].Delta);
-	w = SCALE_TEXT(w, t.Scale);
+	w = PCB_SCALE_TEXT(w, t.Scale);
 	t.X -= w * (align & 3) / 2;
 	if (t.X < 0)
 		t.X = 0;
 	DrawTextLowLevel(&t, 0);
 	if (align & 8)
 		fab_line(gc, t.X,
-						 t.Y + SCALE_TEXT(font->MaxHeight, t.Scale) + MIL_TO_COORD(10),
-						 t.X + w, t.Y + SCALE_TEXT(font->MaxHeight, t.Scale) + MIL_TO_COORD(10));
+						 t.Y + PCB_SCALE_TEXT(font->MaxHeight, t.Scale) + PCB_MIL_TO_COORD(10),
+						 t.X + w, t.Y + PCB_SCALE_TEXT(font->MaxHeight, t.Scale) + PCB_MIL_TO_COORD(10));
 }
 
 /* Y, +, X, circle, square */
@@ -180,7 +180,7 @@ void DrawFab(hidGC gc)
 	time_t currenttime;
 	char utcTime[64];
 	AllDrills = GetDrillInfo(PCB->Data);
-	RoundDrillInfo(AllDrills, MIL_TO_COORD(1));
+	RoundDrillInfo(AllDrills, PCB_MIL_TO_COORD(1));
 	yoff = -TEXT_LINE;
 
 	/* count how many drill description lines will be needed */
@@ -209,31 +209,31 @@ void DrawFab(hidGC gc)
 			drill_sym(gc, TEST_FLAG(PCB_FLAG_HOLE, drill->Pin[i]) ? unplated_sym : plated_sym, drill->Pin[i]->X, drill->Pin[i]->Y);
 		if (plated_sym != -1) {
 			drill_sym(gc, plated_sym, TEXT_SIZE, yoff + TEXT_SIZE / 4);
-			text_at(gc, MIL_TO_COORD(1350), yoff, MIL_TO_COORD(2), "YES");
-			text_at(gc, MIL_TO_COORD(980), yoff, MIL_TO_COORD(2), "%d", drill->PinCount + drill->ViaCount - drill->UnplatedCount);
+			text_at(gc, PCB_MIL_TO_COORD(1350), yoff, PCB_MIL_TO_COORD(2), "YES");
+			text_at(gc, PCB_MIL_TO_COORD(980), yoff, PCB_MIL_TO_COORD(2), "%d", drill->PinCount + drill->ViaCount - drill->UnplatedCount);
 
 			if (unplated_sym != -1)
 				yoff -= TEXT_LINE;
 		}
 		if (unplated_sym != -1) {
 			drill_sym(gc, unplated_sym, TEXT_SIZE, yoff + TEXT_SIZE / 4);
-			text_at(gc, MIL_TO_COORD(1400), yoff, MIL_TO_COORD(2), "NO");
-			text_at(gc, MIL_TO_COORD(980), yoff, MIL_TO_COORD(2), "%d", drill->UnplatedCount);
+			text_at(gc, PCB_MIL_TO_COORD(1400), yoff, PCB_MIL_TO_COORD(2), "NO");
+			text_at(gc, PCB_MIL_TO_COORD(980), yoff, PCB_MIL_TO_COORD(2), "%d", drill->UnplatedCount);
 		}
 		gui->set_color(gc, PCB->ElementColor);
-		text_at(gc, MIL_TO_COORD(450), yoff, MIL_TO_COORD(2), "%0.3f", COORD_TO_INCH(drill->DrillSize) + 0.0004);
+		text_at(gc, PCB_MIL_TO_COORD(450), yoff, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize) + 0.0004);
 		if (plated_sym != -1 && unplated_sym != -1)
-			text_at(gc, MIL_TO_COORD(450), yoff + TEXT_LINE, MIL_TO_COORD(2), "%0.3f", COORD_TO_INCH(drill->DrillSize) + 0.0004);
+			text_at(gc, PCB_MIL_TO_COORD(450), yoff + TEXT_LINE, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize) + 0.0004);
 		yoff -= TEXT_LINE;
 		total_drills += drill->PinCount;
 		total_drills += drill->ViaCount;
 	}
 
 	gui->set_color(gc, PCB->ElementColor);
-	text_at(gc, 0, yoff, MIL_TO_COORD(9), "Symbol");
-	text_at(gc, MIL_TO_COORD(410), yoff, MIL_TO_COORD(9), "Diam. (Inch)");
-	text_at(gc, MIL_TO_COORD(950), yoff, MIL_TO_COORD(9), "Count");
-	text_at(gc, MIL_TO_COORD(1300), yoff, MIL_TO_COORD(9), "Plated?");
+	text_at(gc, 0, yoff, PCB_MIL_TO_COORD(9), "Symbol");
+	text_at(gc, PCB_MIL_TO_COORD(410), yoff, PCB_MIL_TO_COORD(9), "Diam. (Inch)");
+	text_at(gc, PCB_MIL_TO_COORD(950), yoff, PCB_MIL_TO_COORD(9), "Count");
+	text_at(gc, PCB_MIL_TO_COORD(1300), yoff, PCB_MIL_TO_COORD(9), "Plated?");
 	yoff -= TEXT_LINE;
 	text_at(gc, 0, yoff, 0,
 					"There are %d different drill sizes used in this layout, %d holes total", AllDrills->DrillN, total_drills);
@@ -255,23 +255,23 @@ void DrawFab(hidGC gc)
 		}
 	}
 	if (i == max_copper_layer) {
-		gui->set_line_width(gc, MIL_TO_COORD(10));
+		gui->set_line_width(gc, PCB_MIL_TO_COORD(10));
 		gui->draw_line(gc, 0, 0, PCB->MaxWidth, 0);
 		gui->draw_line(gc, 0, 0, 0, PCB->MaxHeight);
 		gui->draw_line(gc, PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight);
 		gui->draw_line(gc, 0, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
 		/*FPrintOutline (); */
 		gui->set_line_width(gc, FAB_LINE_W);
-		text_at(gc, MIL_TO_COORD(2000), yoff, 0,
-						"Maximum Dimensions: %f mils wide, %f mils high", COORD_TO_MIL(PCB->MaxWidth), COORD_TO_MIL(PCB->MaxHeight));
-		text_at(gc, PCB->MaxWidth / 2, PCB->MaxHeight + MIL_TO_COORD(20), 1,
+		text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0,
+						"Maximum Dimensions: %f mils wide, %f mils high", PCB_COORD_TO_MIL(PCB->MaxWidth), PCB_COORD_TO_MIL(PCB->MaxHeight));
+		text_at(gc, PCB->MaxWidth / 2, PCB->MaxHeight + PCB_MIL_TO_COORD(20), 1,
 						"Board outline is the centerline of this %f mil"
 						" rectangle - 0,0 to %f,%f mils",
-						COORD_TO_MIL(FAB_LINE_W), COORD_TO_MIL(PCB->MaxWidth), COORD_TO_MIL(PCB->MaxHeight));
+						PCB_COORD_TO_MIL(FAB_LINE_W), PCB_COORD_TO_MIL(PCB->MaxWidth), PCB_COORD_TO_MIL(PCB->MaxHeight));
 	}
 	else {
 		LayerTypePtr layer = LAYER_PTR(i);
-		gui->set_line_width(gc, MIL_TO_COORD(10));
+		gui->set_line_width(gc, PCB_MIL_TO_COORD(10));
 		LINE_LOOP(layer);
 		{
 			gui->draw_line(gc, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
@@ -288,12 +288,12 @@ void DrawFab(hidGC gc)
 		}
 		END_LOOP;
 		gui->set_line_width(gc, FAB_LINE_W);
-		text_at(gc, PCB->MaxWidth / 2, PCB->MaxHeight + MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
+		text_at(gc, PCB->MaxWidth / 2, PCB->MaxHeight + PCB_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
 	}
 	yoff -= TEXT_LINE;
-	text_at(gc, MIL_TO_COORD(2000), yoff, 0, "Date: %s", utcTime);
+	text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Date: %s", utcTime);
 	yoff -= TEXT_LINE;
-	text_at(gc, MIL_TO_COORD(2000), yoff, 0, "Author: %s", pcb_author());
+	text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Author: %s", pcb_author());
 	yoff -= TEXT_LINE;
-	text_at(gc, MIL_TO_COORD(2000), yoff, 0, "Title: %s - Fabrication Drawing", UNKNOWN(PCB->Name));
+	text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Title: %s - Fabrication Drawing", UNKNOWN(PCB->Name));
 }

@@ -286,14 +286,14 @@ typedef struct {
 static void draw_square_pin_poly(hidGC gc, Coord X, Coord Y, Coord Thickness, Coord thin_draw, int style)
 {
 	static FloatPolyType p[8] = {
-		{0.5, -TAN_22_5_DEGREE_2},
-		{TAN_22_5_DEGREE_2, -0.5},
-		{-TAN_22_5_DEGREE_2, -0.5},
-		{-0.5, -TAN_22_5_DEGREE_2},
-		{-0.5, TAN_22_5_DEGREE_2},
-		{-TAN_22_5_DEGREE_2, 0.5},
-		{TAN_22_5_DEGREE_2, 0.5},
-		{0.5, TAN_22_5_DEGREE_2}
+		{0.5, -PCB_TAN_22_5_DEGREE_2},
+		{PCB_TAN_22_5_DEGREE_2, -0.5},
+		{-PCB_TAN_22_5_DEGREE_2, -0.5},
+		{-0.5, -PCB_TAN_22_5_DEGREE_2},
+		{-0.5, PCB_TAN_22_5_DEGREE_2},
+		{-PCB_TAN_22_5_DEGREE_2, 0.5},
+		{PCB_TAN_22_5_DEGREE_2, 0.5},
+		{0.5, PCB_TAN_22_5_DEGREE_2}
 	};
 	static int special_size = 0;
 	static int scaled_x[8];

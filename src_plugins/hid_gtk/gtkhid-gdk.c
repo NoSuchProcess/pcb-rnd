@@ -1161,8 +1161,8 @@ static void draw_lead_user(render_priv * priv)
 	GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
 	int i;
 	Coord radius = priv->lead_user_radius;
-	Coord width = MM_TO_COORD(LEAD_USER_WIDTH);
-	Coord separation = MM_TO_COORD(LEAD_USER_ARC_SEPARATION);
+	Coord width = PCB_MM_TO_COORD(LEAD_USER_WIDTH);
+	Coord separation = PCB_MM_TO_COORD(LEAD_USER_ARC_SEPARATION);
 	static GdkGC *lead_gc = NULL;
 	GdkColor lead_color;
 
@@ -1189,7 +1189,7 @@ static void draw_lead_user(render_priv * priv)
 
 	for (i = 0; i < LEAD_USER_ARC_COUNT; i++, radius -= separation) {
 		if (radius < width)
-			radius += MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
+			radius += PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
 
 		/* Draw an arc at radius */
 		gdk_draw_arc(gport->drawable, lead_gc, FALSE,
@@ -1210,11 +1210,11 @@ gboolean lead_user_cb(gpointer data)
 	elapsed_time = g_timer_elapsed(priv->lead_user_timer, NULL);
 	g_timer_start(priv->lead_user_timer);
 
-	step = MM_TO_COORD(LEAD_USER_VELOCITY * elapsed_time);
+	step = PCB_MM_TO_COORD(LEAD_USER_VELOCITY * elapsed_time);
 	if (priv->lead_user_radius > step)
 		priv->lead_user_radius -= step;
 	else
-		priv->lead_user_radius = MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
+		priv->lead_user_radius = PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
 
 	return TRUE;
 }
@@ -1228,7 +1228,7 @@ void ghid_lead_user_to_location(Coord x, Coord y)
 	priv->lead_user = true;
 	priv->lead_user_x = x;
 	priv->lead_user_y = y;
-	priv->lead_user_radius = MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
+	priv->lead_user_radius = PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
 	priv->lead_user_timeout = g_timeout_add(LEAD_USER_PERIOD, lead_user_cb, priv);
 	priv->lead_user_timer = g_timer_new();
 }

@@ -908,7 +908,7 @@ bool IsPointOnArc(Coord X, Coord Y, Coord Radius, ArcTypePtr Arc)
 	/* Calculate angle of point from arc center */
 	double p_dist = Distance(X, Y, Arc->X, Arc->Y);
 	double p_cos = (X - Arc->X) / p_dist;
-	Angle p_ang = acos(p_cos) * RAD_TO_DEG;
+	Angle p_ang = acos(p_cos) * PCB_RAD_TO_DEG;
 	Angle ang1, ang2;
 
 	/* Convert StartAngle, Delta into bounding angles in [0, 720) */
@@ -934,13 +934,13 @@ bool IsPointOnArc(Coord X, Coord Y, Coord Radius, ArcTypePtr Arc)
 	if (ang1 >= p_ang || ang2 <= p_ang) {
 		Coord ArcX, ArcY;
 
-		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + 180) / RAD_TO_DEG);
-		ArcY = Arc->Y - Arc->Width * sin((Arc->StartAngle + 180) / RAD_TO_DEG);
+		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
+		ArcY = Arc->Y - Arc->Width * sin((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
 		if (Distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
 			return true;
 
-		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + Arc->Delta + 180) / RAD_TO_DEG);
-		ArcY = Arc->Y - Arc->Width * sin((Arc->StartAngle + Arc->Delta + 180) / RAD_TO_DEG);
+		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
+		ArcY = Arc->Y - Arc->Width * sin((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
 		if (Distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
 			return true;
 		return false;

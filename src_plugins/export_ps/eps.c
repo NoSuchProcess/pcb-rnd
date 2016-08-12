@@ -257,7 +257,7 @@ void eps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 
 	in_mono = options[HA_mono].int_value;
 
-#define pcb2em(x) 1 + COORD_TO_INCH (x) * 72.0 * options[HA_scale].real_value
+#define pcb2em(x) 1 + PCB_COORD_TO_INCH (x) * 72.0 * options[HA_scale].real_value
 	fprintf(f, "%%%%BoundingBox: 0 0 %f %f\n", pcb2em(bounds->X2 - bounds->X1), pcb2em(bounds->Y2 - bounds->Y1));
 #undef pcb2em
 	fprintf(f, "%%%%Pages: 1\n");
@@ -275,7 +275,7 @@ void eps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	linewidth = -1;
 	lastcap = -1;
 	lastcolor = -1;
-#define Q (Coord) MIL_TO_COORD(10)
+#define Q (Coord) PCB_MIL_TO_COORD(10)
 	pcb_fprintf(f,
 							"/nclip { %mi %mi moveto %mi %mi lineto %mi %mi lineto %mi %mi lineto %mi %mi lineto eoclip newpath } def\n",
 							bounds->X1 - Q, bounds->Y1 - Q, bounds->X1 - Q, bounds->Y2 + Q,

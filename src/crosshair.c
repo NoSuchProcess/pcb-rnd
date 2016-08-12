@@ -1000,8 +1000,8 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	Crosshair.Y = PCB_CLAMP(Y, Crosshair.MinY, Crosshair.MaxY);
 
 	if (PCB->RatDraw) {
-		nearest_grid_x = -MIL_TO_COORD(6);
-		nearest_grid_y = -MIL_TO_COORD(6);
+		nearest_grid_x = -PCB_MIL_TO_COORD(6);
+		nearest_grid_y = -PCB_MIL_TO_COORD(6);
 	}
 	else {
 		nearest_grid_x = GridFit(Crosshair.X, PCB->Grid, PCB->GridOffsetX);

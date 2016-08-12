@@ -48,26 +48,26 @@
 #ifndef M_SQRT1_2
 #define M_SQRT1_2 		0.707106781	/* 1/sqrt(2) */
 #endif
-#define	M180			(M_PI/180.0)
-#define RAD_TO_DEG		(180.0/M_PI)
-#define	TAN_22_5_DEGREE_2	0.207106781	/* 0.5*tan(22.5) */
-#define COS_22_5_DEGREE		0.923879533	/* cos(22.5) */
-#define	TAN_30_DEGREE		0.577350269	/* tan(30) */
-#define	TAN_60_DEGREE		1.732050808	/* tan(60) */
-#define LN_2_OVER_2		0.346573590
+#define	PCB_M180			(M_PI/180.0)
+#define PCB_RAD_TO_DEG		(180.0/M_PI)
+#define	PCB_TAN_22_5_DEGREE_2	0.207106781	/* 0.5*tan(22.5) */
+#define PCB_COS_22_5_DEGREE		0.923879533	/* cos(22.5) */
+#define	PCB_TAN_30_DEGREE		0.577350269	/* tan(30) */
+#define	PCB_TAN_60_DEGREE		1.732050808	/* tan(60) */
+#define PCB_LN_2_OVER_2		0.346573590
 
 /* PCB/physical unit conversions */
-#define COORD_TO_MIL(n)	((n) / 25400.0)
-#define MIL_TO_COORD(n)	((n) * 25400.0)
-#define COORD_TO_MM(n)	((n) / 1000000.0)
-#define MM_TO_COORD(n)	((n) * 1000000.0)
-#define COORD_TO_INCH(n)	(COORD_TO_MIL(n) / 1000.0)
-#define INCH_TO_COORD(n)	(MIL_TO_COORD(n) * 1000.0)
+#define PCB_COORD_TO_MIL(n)	((n) / 25400.0)
+#define PCB_MIL_TO_COORD(n)	((n) * 25400.0)
+#define PCB_COORD_TO_MM(n)	((n) / 1000000.0)
+#define PCB_MM_TO_COORD(n)	((n) * 1000000.0)
+#define PCB_COORD_TO_INCH(n)	(PCB_COORD_TO_MIL(n) / 1000.0)
+#define PCB_INCH_TO_COORD(n)	(PCB_MIL_TO_COORD(n) * 1000.0)
 
 /* These need to be carefully written to avoid overflows, and return
    a Coord type.  */
-#define SCALE_TEXT(COORD,TEXTSCALE) ((Coord)((COORD) * ((double)(TEXTSCALE) / 100.0)))
-#define UNSCALE_TEXT(COORD,TEXTSCALE) ((Coord)((COORD) * (100.0 / (double)(TEXTSCALE))))
+#define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((Coord)((COORD) * ((double)(TEXTSCALE) / 100.0)))
+#define PCB_UNPCB_SCALE_TEXT(COORD,TEXTSCALE) ((Coord)((COORD) * (100.0 / (double)(TEXTSCALE))))
 
 /* ---------------------------------------------------------------------------
  * modes

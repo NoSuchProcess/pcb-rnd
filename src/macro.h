@@ -67,7 +67,7 @@
 #define	EMPTY_STRING_P(a)	((a) ? (a)[0]==0 : 1)
 #define XOR(a,b)		(((a) && !(b)) || (!(a) && (b)))
 #define SQUARE(x)		((float) (x) * (float) (x))
-#define TO_RADIANS(degrees)	(M180 * (degrees))
+#define TO_RADIANS(degrees)	(PCB_M180 * (degrees))
 
 /* ---------------------------------------------------------------------------
  * layer macros

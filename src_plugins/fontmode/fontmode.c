@@ -53,8 +53,8 @@
    should search the grid for the gridlines and use them to figure out
    where the symbols are. */
 
-#define CELL_SIZE	MIL_TO_COORD (100)
-#define CELL_OFFSET	MIL_TO_COORD (10)
+#define CELL_SIZE	PCB_MIL_TO_COORD (100)
+#define CELL_OFFSET	PCB_MIL_TO_COORD (10)
 
 #define XYtoSym(x,y) ((x1 + CELL_OFFSET) / CELL_SIZE - 1 \
 		      + 16 * ((y1 + CELL_OFFSET) / CELL_SIZE - 1))
@@ -94,7 +94,7 @@ static int FontEdit(int argc, char **argv, Coord Ux, Coord Uy)
 	}
 	PCB->MaxWidth = CELL_SIZE * 18;
 	PCB->MaxHeight = CELL_SIZE * ((MAX_FONTPOSITION + 15) / 16 + 2);
-	PCB->Grid = MIL_TO_COORD(5);
+	PCB->Grid = PCB_MIL_TO_COORD(5);
 	PCB->Data->Layer[0].Name = strdup("Font");
 	PCB->Data->Layer[1].Name = strdup("OrigFont");
 	PCB->Data->Layer[2].Name = strdup("Width");
@@ -115,7 +115,7 @@ static int FontEdit(int argc, char **argv, Coord Ux, Coord Uy)
 
 		symbol = &font->Symbol[s];
 
-		miny = MIL_TO_COORD(5);
+		miny = PCB_MIL_TO_COORD(5);
 		maxy = font->MaxHeight;
 
 		for (l = 0; l < symbol->LineN; l++) {
@@ -134,16 +134,16 @@ static int FontEdit(int argc, char **argv, Coord Ux, Coord Uy)
 				maxx = symbol->Line[l].Point2.X;
 		}
 		w = maxx + symbol->Delta + ox;
-		CreateDrawnLineOnLayer(lwidth, w, miny + oy, w, maxy + oy, MIL_TO_COORD(1), MIL_TO_COORD(1), NoFlags());
+		CreateDrawnLineOnLayer(lwidth, w, miny + oy, w, maxy + oy, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), NoFlags());
 	}
 
 	for (l = 0; l < 16; l++) {
 		int x = (l + 1) * CELL_SIZE;
-		CreateDrawnLineOnLayer(lgrid, x, 0, x, PCB->MaxHeight, MIL_TO_COORD(1), MIL_TO_COORD(1), NoFlags());
+		CreateDrawnLineOnLayer(lgrid, x, 0, x, PCB->MaxHeight, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), NoFlags());
 	}
 	for (l = 0; l <= MAX_FONTPOSITION / 16 + 1; l++) {
 		int y = (l + 1) * CELL_SIZE;
-		CreateDrawnLineOnLayer(lgrid, 0, y, PCB->MaxWidth, y, MIL_TO_COORD(1), MIL_TO_COORD(1), NoFlags());
+		CreateDrawnLineOnLayer(lgrid, 0, y, PCB->MaxWidth, y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), NoFlags());
 	}
 	return 0;
 }

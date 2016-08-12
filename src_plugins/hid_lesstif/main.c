@@ -145,7 +145,7 @@ static int view_left_x = 0, view_top_y = 0;
 /* Denotes PCB units per screen pixel.  Larger numbers mean zooming
    out - the largest value means you are looking at the whole
    board.  */
-static double view_zoom = MIL_TO_COORD(10), prev_view_zoom = MIL_TO_COORD(10);
+static double view_zoom = PCB_MIL_TO_COORD(10), prev_view_zoom = PCB_MIL_TO_COORD(10);
 static bool autofade = 0;
 static bool crosshair_on = true;
 

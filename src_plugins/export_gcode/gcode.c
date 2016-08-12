@@ -183,7 +183,7 @@ REGISTER_ATTRIBUTES(gcode_attribute_list, gcode_cookie)
 /* convert from default PCB units to gcode units */
 		 static int pcb_to_gcode(int pcb)
 {
-	return round(COORD_TO_INCH(pcb) * gcode_dpi);
+	return round(PCB_COORD_TO_INCH(pcb) * gcode_dpi);
 }
 
 static char *gcode_get_png_name(const char *basename, const char *suffix)
@@ -389,14 +389,14 @@ static void gcode_do_export(HID_Attr_Val * options)
 	}
 	unit = &(get_unit_list()[options[HA_unit].int_value]);
 	metric = (unit->family == METRIC);
-	scale = metric ? 1.0 / coord_to_unit(unit, MM_TO_COORD(1.0))
-		: 1.0 / coord_to_unit(unit, INCH_TO_COORD(1.0));
+	scale = metric ? 1.0 / coord_to_unit(unit, PCB_MM_TO_COORD(1.0))
+		: 1.0 / coord_to_unit(unit, PCB_INCH_TO_COORD(1.0));
 
 	gcode_cutdepth = options[HA_cutdepth].real_value * scale;
 	gcode_drilldepth = options[HA_drilldepth].real_value * scale;
 	gcode_safeZ = options[HA_safeZ].real_value * scale;
-	gcode_toolradius = metric ? MM_TO_COORD(options[HA_toolradius].real_value * scale)
-		: INCH_TO_COORD(options[HA_toolradius].real_value * scale);
+	gcode_toolradius = metric ? PCB_MM_TO_COORD(options[HA_toolradius].real_value * scale)
+		: PCB_INCH_TO_COORD(options[HA_toolradius].real_value * scale);
 	gcode_choose_groups();
 
 	for (i = 0; i < MAX_LAYER; i++) {
@@ -822,8 +822,8 @@ static void gcode_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 			drill = (struct drill_struct *) realloc(drill, (nmax_drill + 100) * sizeof(struct drill_struct));
 			nmax_drill += 100;
 		}
-		drill[n_drill].x = COORD_TO_INCH(PCB->MaxWidth - cx);	/* convert to inch, flip: will drill from bottom side */
-		drill[n_drill].y = COORD_TO_INCH(PCB->MaxHeight - cy);	/* PCB reverses y axis */
+		drill[n_drill].x = PCB_COORD_TO_INCH(PCB->MaxWidth - cx);	/* convert to inch, flip: will drill from bottom side */
+		drill[n_drill].y = PCB_COORD_TO_INCH(PCB->MaxHeight - cy);	/* PCB reverses y axis */
 		n_drill++;
 /*              printf("Circle %d %d\n",cx,cy); */
 	}

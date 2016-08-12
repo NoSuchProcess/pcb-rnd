@@ -698,7 +698,7 @@ static void png_do_export(HID_Attr_Val * options)
 		 * a scale of 1  means 1 pixel is 1 inch
 		 * a scale of 10 means 1 pixel is 10 inches
 		 */
-		scale = INCH_TO_COORD(1) / dpi;
+		scale = PCB_INCH_TO_COORD(1) / dpi;
 		w = w / scale;
 		h = h / scale;
 	}

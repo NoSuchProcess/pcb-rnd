@@ -74,7 +74,7 @@ static void normalize_angles(Angle * sa, Angle * d)
 
 static int radius_crosses_arc(double x, double y, ArcTypePtr arc)
 {
-	double alpha = atan2(y - arc->Y, -x + arc->X) * RAD_TO_DEG;
+	double alpha = atan2(y - arc->Y, -x + arc->X) * PCB_RAD_TO_DEG;
 	Angle sa = arc->StartAngle, d = arc->Delta;
 
 	normalize_angles(&sa, &d);
@@ -87,10 +87,10 @@ static int radius_crosses_arc(double x, double y, ArcTypePtr arc)
 
 static void get_arc_ends(Coord * box, ArcTypePtr arc)
 {
-	box[0] = arc->X - arc->Width * cos(M180 * arc->StartAngle);
-	box[1] = arc->Y + arc->Height * sin(M180 * arc->StartAngle);
-	box[2] = arc->X - arc->Width * cos(M180 * (arc->StartAngle + arc->Delta));
-	box[3] = arc->Y + arc->Height * sin(M180 * (arc->StartAngle + arc->Delta));
+	box[0] = arc->X - arc->Width * cos(PCB_M180 * arc->StartAngle);
+	box[1] = arc->Y + arc->Height * sin(PCB_M180 * arc->StartAngle);
+	box[2] = arc->X - arc->Width * cos(PCB_M180 * (arc->StartAngle + arc->Delta));
+	box[3] = arc->Y + arc->Height * sin(PCB_M180 * (arc->StartAngle + arc->Delta));
 }
 
 /* ---------------------------------------------------------------------------
