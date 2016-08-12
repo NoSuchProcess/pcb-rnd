@@ -1246,8 +1246,8 @@ static void ps_fill_pcb_polygon(hidGC gc, PolygonType * poly, const BoxType * cl
 
 	if (POLYGRID > 0.1) {
 		Coord y, x, lx, ly, fx, fy, lsegs_xmin, lsegs_xmax, lsegs_ymin, lsegs_ymax;
-		lseg_t *lsegs = alloca(sizeof(lseg_t) * len);
-		Coord *lpoints = alloca(sizeof(Coord) * len);
+		lseg_t *lsegs = malloc(sizeof(lseg_t) * len);
+		Coord *lpoints = malloc(sizeof(Coord) * len);
 		int lsegs_used = 0;
 
 		lsegs_xmin = -1000000000;
@@ -1340,6 +1340,8 @@ static void ps_fill_pcb_polygon(hidGC gc, PolygonType * poly, const BoxType * cl
 
 
 		fprintf(global.f, "grestore\nnewpath\n");
+		free(lsegs);
+		free(lpoints);
 	}
 	else
 		fprintf(global.f, "fill\n");
