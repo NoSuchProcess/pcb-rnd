@@ -1,0 +1,15 @@
+State on windows
+~~~~~~~~~~~~~~~~
+
+Does not work yet. This file documents how far we got. The situation
+is constantly improving.
+
+1. cross compilation from Linux to win32
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TODO: deps
+
+Use mingw and wine:
+
+	./configure --emu="wine cmd /c" --target=i586-mingw32msvc "$@"
+
+(Replace i586- with whatever toolchain prefix you have)
