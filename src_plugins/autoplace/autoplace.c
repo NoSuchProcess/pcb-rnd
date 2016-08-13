@@ -549,17 +549,17 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 {
 	PerturbationType pt = { 0 };
 	/* pick element to perturb */
-	pt.element = (ElementTypePtr) selected->Ptr[random() % selected->PtrN];
+	pt.element = (ElementTypePtr) selected->Ptr[pcb_rand() % selected->PtrN];
 	/* exchange, flip/rotate or shift? */
-	switch (random() % ((selected->PtrN > 1) ? 3 : 2)) {
+	switch (pcb_rand() % ((selected->PtrN > 1) ? 3 : 2)) {
 	case 0:
 		{														/* shift! */
 			Coord grid;
 			double scaleX = PCB_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->MaxWidth / 3);
 			double scaleY = PCB_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->MaxHeight / 3);
 			pt.which = SHIFT;
-			pt.DX = scaleX * 2 * ((((double) random()) / RAND_MAX) - 0.5);
-			pt.DY = scaleY * 2 * ((((double) random()) / RAND_MAX) - 0.5);
+			pt.DX = scaleX * 2 * ((((double) pcb_rand()) / RAND_MAX) - 0.5);
+			pt.DY = scaleY * 2 * ((((double) pcb_rand()) / RAND_MAX) - 0.5);
 			/* snap to grid. different grids for "high" and "low" T */
 			grid = (T > PCB_MIL_TO_COORD(10)) ? CostParameter.large_grid_size : CostParameter.small_grid_size;
 			/* (round away from zero) */
@@ -578,7 +578,7 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 			/* only flip if it's an SMD component */
 			bool isSMD = padlist_length(&(pt.element->Pad)) != 0;
 			pt.which = ROTATE;
-			pt.rotate = isSMD ? (random() & 3) : (1 + (random() % 3));
+			pt.rotate = isSMD ? (pcb_rand() & 3) : (1 + (pcb_rand() % 3));
 			/* 0 - flip; 1-3, rotate. */
 			break;
 		}
@@ -586,7 +586,7 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 		{														/* exchange! */
 			pt.which = EXCHANGE;
 			pt.other = (ElementTypePtr)
-				selected->Ptr[random() % (selected->PtrN - 1)];
+				selected->Ptr[pcb_rand() % (selected->PtrN - 1)];
 			if (pt.other == pt.element)
 				pt.other = (ElementTypePtr) selected->Ptr[selected->PtrN - 1];
 			/* don't allow exchanging a solderside-side SMD component
@@ -728,7 +728,7 @@ bool AutoPlaceSelected(void)
 				good_moves++;
 				steps++;
 			}
-			else if ((random() / (double) RAND_MAX) < exp(MIN(MAX(-20, (C0 - Cprime) / T), 20))) {
+			else if ((pcb_rand() / (double) RAND_MAX) < exp(MIN(MAX(-20, (C0 - Cprime) / T), 20))) {
 				/* not good but keep it anyway */
 				C0 = Cprime;
 				steps++;
