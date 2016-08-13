@@ -33,9 +33,7 @@
 #include <sys/types.h>
 #endif
 
-#ifdef HAVE_REGEX_H
-#include <regex.h>
-#endif
+#include <genregex/regex_sei.h>
 
 #include "change.h"
 #include "data.h"
@@ -621,66 +619,24 @@ bool vendorIsElementMappable(ElementTypePtr element)
 
 static bool rematch(const char *re, const char *s)
 {
-	/*
-	 * If this system has regular expression capability, then
-	 * add support for regular expressions in the skip lists.
-	 */
-
-#if defined(HAVE_REGCOMP)
-
 	int result;
-	regmatch_t match;
-	regex_t compiled;
+	re_sei_t *regex;
 
 	/* compile the regular expression */
-	result = regcomp(&compiled, re, REG_EXTENDED | REG_ICASE | REG_NOSUB);
-	if (result) {
-		char errorstring[128];
-
-		regerror(result, &compiled, errorstring, sizeof(errorstring));
-		Message("regexp error: %s\n", errorstring);
-		regfree(&compiled);
-		return (false);
+	regex = re_sei_comp(re);
+	if (re_sei_errno(regex) != 0) {
+		Message(_("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
+		re_sei_free(regex);
+		return false;
 	}
 
-	result = regexec(&compiled, s, 1, &match, 0);
-	regfree(&compiled);
+	result = re_sei_exec(regex, s);
+	re_sei_free(regex);
 
-	if (result == 0)
-		return (true);
+	if (result != 0)
+		return true;
 	else
-		return (false);
-
-#elif defined(HAVE_RE_COMP)
-	int m;
-	char *rslt;
-
-	/* compile the regular expression */
-	if ((rslt = re_comp(re)) != NULL) {
-		Message("re_comp error: %s\n", rslt);
-		return (false);
-	}
-
-	m = re_exec(s);
-
-	switch m {
-	case 1:
-		return (true);
-		break;
-
-	case 0:
-		return (false);
-		break;
-
-	default:
-		Message("re_exec error\n");
-		break;
-	}
-
-#else
-	return (false);
-#endif
-
+		return false;
 }
 
 static const char *vendor_cookie = "vendor drill mapping";
