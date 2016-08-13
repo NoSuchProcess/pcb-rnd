@@ -36,7 +36,12 @@ do_get_source()
       *) echo >&2 "$name: Unknown origin."; exit 1;;
     esac
   fi
-  
+
+  if test -z "$download"
+  then
+    exit 0
+  fi
+
   if [ -n "$download" ]; then
     pkg_download=$download/$source
   fi
@@ -50,7 +55,7 @@ do_get_source()
   cd $sourcedir/partial
   pkg_download_nm=`echo "$pkg_download" | sed "s/[?].*$//;s_^.*/__"`
   echo Downloading $name from $pkg_download as $pkg_download_nm ...
-  wget -c $pkg_download -O $pkg_download_nm
+  wget --no-check-certificate -c $pkg_download -O $pkg_download_nm
 
   if [ $? != 0 ]; then
     echo >&2 "$(basename $0) source: Failed to download $name"
