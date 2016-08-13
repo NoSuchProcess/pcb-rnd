@@ -18,7 +18,6 @@ cairo
 pango
 gtk+
 gd
-pcb
 "
 
 fail()
