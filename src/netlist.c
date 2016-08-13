@@ -33,9 +33,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
-#ifdef HAVE_REGEX_H
-#include <regex.h>
-#endif
+#include <genregex/regex_sei.h>
 
 #include "action_helper.h"
 #include "data.h"
@@ -48,14 +46,6 @@
 #include "rats_patch.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
-
-#ifdef HAVE_REGCOMP
-#undef HAVE_RE_COMP
-#endif
-
-#if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
-#define USE_RE
-#endif
 
 /*
   int    PCB->NetlistLib[n].MenuN
@@ -374,16 +364,8 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 	LibraryEntryType *pin;
 	int net_found = 0;
 	int pin_found = 0;
-#if defined(USE_RE)
 	int use_re = 0;
-#endif
-#if defined(HAVE_REGCOMP)
-	regex_t elt_pattern;
-	regmatch_t match;
-#endif
-#if defined(HAVE_RE_COMP)
-	char *elt_pattern;
-#endif
+	re_sei_t *regex;
 
 	if (!PCB)
 		return 1;
@@ -441,9 +423,7 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 		return 1;
 	}
 
-#if defined(USE_RE)
 	if (argc > 1) {
-		int result;
 		use_re = 1;
 		for (i = 0; i < PCB->NetlistLib[NETLIST_EDITED].MenuN; i++) {
 			net = PCB->NetlistLib[NETLIST_EDITED].Menu + i;
@@ -451,46 +431,27 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 				use_re = 0;
 		}
 		if (use_re) {
-#if defined(HAVE_REGCOMP)
-			result = regcomp(&elt_pattern, argv[1], REG_EXTENDED | REG_ICASE | REG_NOSUB);
-			if (result) {
-				char errorstring[128];
-
-				regerror(result, &elt_pattern, errorstring, 128);
-				Message(_("regexp error: %s\n"), errorstring);
-				regfree(&elt_pattern);
+			regex = re_sei_comp(argv[1]);
+			if (re_sei_errno(regex) != 0) {
+				Message(_("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
+				re_sei_free(regex);
 				return (1);
 			}
-#endif
-#if defined(HAVE_RE_COMP)
-			if ((elt_pattern = re_comp(argv[1])) != NULL) {
-				Message(_("re_comp error: %s\n"), elt_pattern);
-				return (false);
-			}
-#endif
 		}
 	}
-#endif
 
 	for (i = PCB->NetlistLib[NETLIST_EDITED].MenuN - 1; i >= 0; i--) {
 		net = PCB->NetlistLib[NETLIST_EDITED].Menu + i;
 
 		if (argc > 1) {
-#if defined(USE_RE)
 			if (use_re) {
-#if defined(HAVE_REGCOMP)
-				if (regexec(&elt_pattern, net->Name + 2, 1, &match, 0) != 0)
+				if (re_sei_exec(regex, net->Name + 2) == 0)
 					continue;
-#endif
-#if defined(HAVE_RE_COMP)
-				if (re_exec(net->Name + 2) != 1)
-					continue;
-#endif
 			}
-			else
-#endif
-			if (strcasecmp(net->Name + 2, argv[1]))
-				continue;
+			else {
+				if (strcasecmp(net->Name + 2, argv[1]))
+					continue;
+			}
 		}
 		net_found = 1;
 
@@ -519,10 +480,9 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 	else if (!net_found) {
 		gui->log("No net named %s\n", argv[1]);
 	}
-#ifdef HAVE_REGCOMP
+
 	if (use_re)
-		regfree(&elt_pattern);
-#endif
+		re_sei_free(regex);
 
 	return 0;
 }
