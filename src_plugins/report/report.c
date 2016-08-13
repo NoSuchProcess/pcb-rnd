@@ -54,20 +54,9 @@
 #include "report_conf.h"
 #include "compat_misc.h"
 
+#include <genregex/regex_sei.h>
+
 conf_report_t conf_report;
-
-#ifdef HAVE_REGEX_H
-#include <regex.h>
-#endif
-
-#ifdef HAVE_REGCOMP
-#undef HAVE_RE_COMP
-#endif
-
-#if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
-#define USE_RE
-#endif
-
 
 #define USER_UNITMASK (conf_core.editor.grid_unit->allow)
 
@@ -726,7 +715,6 @@ got_net_name:
 
 static int ReportNetLengthByName(char *tofind, int x, int y)
 {
-	int result;
 	char *netname = 0;
 	Coord length = 0;
 	int found = 0;
@@ -734,16 +722,8 @@ static int ReportNetLengthByName(char *tofind, int x, int y)
 	LibraryMenuType *net;
 	ConnectionType conn;
 	int net_found = 0;
-#if defined(USE_RE)
 	int use_re = 0;
-#endif
-#if defined(HAVE_REGCOMP)
-	regex_t elt_pattern;
-	regmatch_t match;
-#endif
-#if defined(HAVE_RE_COMP)
-	char *elt_pattern;
-#endif
+	re_sei_t *regex;
 
 	if (!PCB)
 		return 1;
@@ -751,7 +731,6 @@ static int ReportNetLengthByName(char *tofind, int x, int y)
 	if (!tofind)
 		return 1;
 
-#if defined(USE_RE)
 	use_re = 1;
 	for (i = 0; i < PCB->NetlistLib[NETLIST_EDITED].MenuN; i++) {
 		net = PCB->NetlistLib[NETLIST_EDITED].Menu + i;
@@ -759,44 +738,25 @@ static int ReportNetLengthByName(char *tofind, int x, int y)
 			use_re = 0;
 	}
 	if (use_re) {
-#if defined(HAVE_REGCOMP)
-		result = regcomp(&elt_pattern, tofind, REG_EXTENDED | REG_ICASE | REG_NOSUB);
-		if (result) {
-			char errorstring[128];
-
-			regerror(result, &elt_pattern, errorstring, 128);
-			Message(_("regexp error: %s\n"), errorstring);
-			regfree(&elt_pattern);
+		regex = re_sei_comp(tofind);
+		if (re_sei_errno(regex) != 0) {
+			Message(_("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
+			re_sei_free(regex);
 			return (1);
 		}
-#endif
-#if defined(HAVE_RE_COMP)
-		if ((elt_pattern = re_comp(tofind)) != NULL) {
-			Message(_("re_comp error: %s\n"), elt_pattern);
-			return (1);
-		}
-#endif
 	}
-#endif
 
 	for (i = 0; i < PCB->NetlistLib[NETLIST_EDITED].MenuN; i++) {
 		net = PCB->NetlistLib[NETLIST_EDITED].Menu + i;
 
-#if defined(USE_RE)
 		if (use_re) {
-#if defined(HAVE_REGCOMP)
-			if (regexec(&elt_pattern, net->Name + 2, 1, &match, 0) != 0)
+			if (re_sei_exec(regex, net->Name + 2) == 0)
 				continue;
-#endif
-#if defined(HAVE_RE_COMP)
-			if (re_exec(net->Name + 2) != 1)
-				continue;
-#endif
 		}
-		else
-#endif
-		if (strcasecmp(net->Name + 2, tofind))
-			continue;
+		else {
+			if (strcasecmp(net->Name + 2, tofind))
+				continue;
+		}
 
 		if (SeekPad(net->Entry, &conn, false)) {
 			switch (conn.type) {
@@ -821,10 +781,8 @@ static int ReportNetLengthByName(char *tofind, int x, int y)
 		return 1;
 	}
 
-#ifdef HAVE_REGCOMP
 	if (use_re)
-		regfree(&elt_pattern);
-#endif
+		re_sei_free(regex);
 
 	/* Reset all connection flags and save an undo-state to get back
 	 * to the state the board was in when we started.
