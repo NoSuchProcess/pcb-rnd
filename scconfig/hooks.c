@@ -132,6 +132,13 @@ int hook_postarg()
 /* Runs when things should be detected for the host system */
 int hook_detect_host()
 {
+	require("fstools/ar",  0, 1);
+	require("fstools/mkdir", 0, 1);
+	require("fstools/rm",  0, 1);
+	require("fstools/cp",  0, 1);
+	require("fstools/ln",  0, 1);
+	require("fstools/mkdir",  0, 1);
+
 	return 0;
 }
 
@@ -158,7 +165,6 @@ int hook_detect_target()
 	want_stroke = plug_is_enabled("stroke");
 
 	require("cc/fpic",  0, 1);
-	require("fstools/mkdir", 0, 1);
 
 	if (want_intl) {
 		require("libs/sul/gettext/presents", 0, 0);
@@ -235,9 +241,11 @@ int hook_detect_target()
 	else {
 		report("No need for glib, skipping GLIB detection\n");
 		put("libs/sul/glib/presents", "false");
+		put("libs/sul/glib/cflags", "");
+		put("libs/sul/glib/ldflags", "");
 	}
 
-	if (isfalse(get("libs/sul/glib/presents"))) {
+	if (!istrue(get("libs/sul/glib/presents"))) {
 		/* Makefile templates will still reference these variables, they should be empty */
 		put("libs/sul/glib/cflags", "");
 		put("libs/sul/glib/ldflags", "");
@@ -274,11 +282,6 @@ int hook_detect_target()
 	}
 
 	/* generic utils for Makefiles */
-	require("fstools/rm",  0, 1);
-	require("fstools/ar",  0, 1);
-	require("fstools/cp",  0, 1);
-	require("fstools/ln",  0, 1);
-	require("fstools/mkdir",  0, 1);
 	require("sys/ext_exe", 0, 1);
 	require("sys/sysid", 0, 1);
 

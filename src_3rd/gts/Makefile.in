@@ -47,10 +47,10 @@ OBJS = @/local/gts/OBJS@
 CC=@cc/cc@
 
 libgts.a: $(OBJS)
-	@fstools/ar@ rvu libgts.a $(OBJS)
+	@/host/fstools/ar@ rvu libgts.a $(OBJS)
 
 clean:
-	-@fstools/rm@ $(OBJS) libgts.a
+	-@/host/fstools/rm@ $(OBJS) libgts.a
 @]
 
 # generate explicit rules for .c -> .o
