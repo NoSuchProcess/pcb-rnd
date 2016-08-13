@@ -5,7 +5,9 @@ put /local/pcb/compat_inc [@
 @?libs/fs/getcwd/includes@
 @?libs/fs/_getcwd/includes@
 @?libs/fs/getwd/includes@
-
+@?/target/libs/proc/wait/includes@
+@?/target/libs/proc/fork/includes@
+@?/target/libs/proc/_spawnvp/includes@
 @]
 
 put /tmpasm/IFS {\n}

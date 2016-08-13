@@ -45,13 +45,6 @@
 #include "compat_fs.h"
 #include "compat_misc.h"
 
-#ifndef HAVE__SPAWNVP
-/* The UNIX way of doing this: fork() and wait(). */
-#	include <sys/wait.h>
-#	include <unistd.h>
-#endif
-
-
 #include <genvector/gds_char.h>
 
 #include "global.h"
@@ -83,13 +76,13 @@ int pcb_mkdir(const char *path, int mode)
 
 int pcb_spawnvp(char **argv)
 {
-#ifdef HAVE__SPAWNVP
+#if defined(USE_SPAWNVP)
 	int result = _spawnvp(_P_WAIT, argv[0], (const char *const *) argv);
 	if (result == -1)
 		return 1;
 	else
 		return 0;
-#else
+#elif defined(USE_FORK_WAIT)
 	int pid;
 	pid = fork();
 	if (pid < 0) {
@@ -108,6 +101,8 @@ int pcb_spawnvp(char **argv)
 		wait(&rv);
 	}
 	return 0;
+#else
+#	error Do not know how to run a background process.
 #endif
 }
 

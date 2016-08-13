@@ -173,6 +173,13 @@ int hook_detect_target()
 		}
 	}
 
+	if (require("libs/proc/wait",  0, 0) != 0) {
+		if (require("libs/proc/_spawnvp",  0, 0) != 0) {
+			report_repeat("\nERROR: no fork or _spawnvp. Can not compile pcb-rnd.\n\n");
+			return 1;
+		}
+	}
+
 	if (require("libs/fs/getcwd/*",  0, 0) != 0)
 		if (require("libs/fs/_getcwd/*",  0, 0) != 0)
 			if (require("libs/fs/getwd/*",  0, 0) != 0) {
