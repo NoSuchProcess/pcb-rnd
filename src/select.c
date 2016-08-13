@@ -41,10 +41,9 @@
 #include "misc.h"
 #include "find.h"
 
+#include <genregex/regex_sei.h>
+
 #include <sys/types.h>
-#ifdef HAVE_REGEX_H
-#include <regex.h>
-#endif
 
 /* ---------------------------------------------------------------------------
  * toggles the selection of any kind of object
@@ -752,22 +751,18 @@ bool SelectConnection(bool Flag)
 	return (changed);
 }
 
-#if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
 /* ---------------------------------------------------------------------------
  * selects objects as defined by Type by name;
  * it's a case insensitive match
  * returns true if any object has been selected
  */
+#define REGEXEC(arg) \
+	(method == SM_REGEX ? regexec_match_all(regex, (arg)) : strlst_match(pat, (arg)))
 
-#if defined (HAVE_REGCOMP)
-static int regexec_match_all(const regex_t * preg, const char *string)
+static int regexec_match_all(re_sei_t *preg, const char *string)
 {
-	regmatch_t match;
-	if (regexec(preg, string, 1, &match, 0) != 0)
-		return 0;
-	return 1;
+	return !!re_sei_exec(preg, string);
 }
-#endif
 
 /* case insensitive match of each element in the array pat against name 
    returns 1 if any of them matched */
@@ -783,34 +778,16 @@ bool SelectObjectByName(int Type, char *Pattern, bool Flag, search_method_t meth
 {
 	bool changed = false;
 	const char **pat = NULL;
-	int result;
-	regex_t compiled;
+	re_sei_t *regex;
 
 	if (method == SM_REGEX) {
-#if defined(HAVE_REGCOMP)
-#define	REGEXEC(arg)	(method == SM_REGEX ? regexec_match_all(&compiled, (arg)) : strlst_match(pat, (arg)))
-
 		/* compile the regular expression */
-		result = regcomp(&compiled, Pattern, REG_EXTENDED | REG_ICASE);
-		if (result) {
-			char errorstring[128];
-
-			regerror(result, &compiled, errorstring, 128);
-			Message(_("regexp error: %s\n"), errorstring);
-			regfree(&compiled);
+		regex = re_sei_comp(Pattern);
+		if (regex == NULL) {
+			Message(_("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
+			re_sei_free(regex);
 			return (false);
 		}
-#else
-#define	REGEXEC(arg)	(method == SM_REGEX ? (re_exec((arg)) == 1) : strlst_match(pat, (arg)))
-
-		char *compiled;
-
-		/* compile the regular expression */
-		if ((compiled = re_comp(Pattern)) != NULL) {
-			Message(_("re_comp error: %s\n"), compiled);
-			return (false);
-		}
-#endif
 	}
 	else {
 		char *s, *next;
@@ -958,13 +935,8 @@ bool SelectObjectByName(int Type, char *Pattern, bool Flag, search_method_t meth
 		FreeConnectionLookupMemory();
 	}
 
-	if (method == SM_REGEX) {
-#if defined(HAVE_REGCOMP)
-#if !defined(sgi)
-		regfree(&compiled);
-#endif
-#endif
-	}
+	if (method == SM_REGEX)
+		re_sei_free(regex);
 
 	if (changed) {
 		IncrementUndoSerialNumber();
@@ -974,4 +946,4 @@ bool SelectObjectByName(int Type, char *Pattern, bool Flag, search_method_t meth
 		free(pat);
 	return (changed);
 }
-#endif /* defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP) */
+

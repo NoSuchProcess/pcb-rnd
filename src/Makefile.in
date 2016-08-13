@@ -130,6 +130,8 @@ put /local/pcb/OBJS [@
 	../src_3rd/liblihata/genht/htpp.o
 	../src_3rd/genvector/gds_char.o
 	../src_3rd/genvector/vtp0.o
+	../src_3rd/genregex/regex_sei.o
+	../src_3rd/genregex/regex.o
 @]
 
 # main: action registrations
