@@ -165,6 +165,7 @@ int hook_detect_target()
 	want_stroke = plug_is_enabled("stroke");
 
 	require("cc/fpic",  0, 1);
+	require("libs/fs/mkdtemp",  0, 0);
 
 	if (require("libs/ldl",  0, 0) != 0) {
 		if (require("libs/LoadLibrary",  0, 0) != 0) {
@@ -176,6 +177,13 @@ int hook_detect_target()
 	if (require("libs/proc/wait",  0, 0) != 0) {
 		if (require("libs/proc/_spawnvp",  0, 0) != 0) {
 			report_repeat("\nERROR: no fork or _spawnvp. Can not compile pcb-rnd.\n\n");
+			return 1;
+		}
+	}
+
+	if (require("libs/fs/_mkdir",  0, 0) != 0) {
+		if (require("libs/fs/mkdir",  0, 0) != 0) {
+			report_repeat("\nERROR: no mkdir() or _mkdir(). Can not compile pcb-rnd.\n\n");
 			return 1;
 		}
 	}

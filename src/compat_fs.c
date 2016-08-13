@@ -69,10 +69,24 @@ char *GetWorkingDirectory(char *path)
 #endif
 }
 
+#if defined(USE_MKDIR)
+#	define MKDIR mkdir
+#elif defined(USE__MKDIR)
+#	define MKDIR _mkdir
+#else
+#	error no mkdir() available
+#endif
 int pcb_mkdir(const char *path, int mode)
 {
+#if MKDIR_NUM_ARGS == 1
+	return MKDIR(path);
+#elif MKDIR_NUM_ARGS == 2
 	return MKDIR(path, mode);
+#else
+#	error invalid number of arguments for mkdir
+#endif
 }
+#undef MKDIR
 
 int pcb_spawnvp(char **argv)
 {

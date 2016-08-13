@@ -113,6 +113,7 @@ FEATURES
 - dynstyle: remove existing style (gtk hid, maybe key 'del'?)
 
 Low prio:
+- replace mkdtemp() with something safer
 - display net names on pins, vias (and maybe tracks?) when zoomed in enough
 - DRC should warn for thin poly hair
 - rotate shaped vias don't rotate the shape (is via rotated at all?)
