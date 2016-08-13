@@ -271,7 +271,7 @@ parsefont
 				yyFont->Valid = false;
 				for (i = 0; i <= MAX_FONTPOSITION; i++)
 					free (yyFont->Symbol[i].Line);
-				bzero(yyFont->Symbol, sizeof(yyFont->Symbol));
+				memset(yyFont->Symbol, 0, sizeof(yyFont->Symbol));
 			}
 		  symbols
 			{
