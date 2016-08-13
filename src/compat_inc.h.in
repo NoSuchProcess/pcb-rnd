@@ -8,6 +8,10 @@ put /local/pcb/compat_inc [@
 @?/target/libs/proc/wait/includes@
 @?/target/libs/proc/fork/includes@
 @?/target/libs/proc/_spawnvp/includes@
+@?/target/libs/fs/mkdir/includes@
+@?/target/libs/fs/_mkdir/includes@
+@?/target/libs/fs/mkdtemp/includes@
+
 @]
 
 put /tmpasm/IFS {\n}
