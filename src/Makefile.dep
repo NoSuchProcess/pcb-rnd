@@ -1375,7 +1375,9 @@
  global.h crosshair.h data.h drill.h error.h search.h misc_util.h misc.h \
  mymem.h mymem.h rats.h rtree.h strflags.h macro.h undo.h find.h draw.h \
  pcb-printf.h plugins.h hid_actions.h misc_util.h \
- ../src_plugins/report/report_conf.h conf.h compat_misc.h dolists.h \
+ ../src_plugins/report/report_conf.h conf.h compat_misc.h \
+ ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/genregex/regex.h dolists.h \
  ../src_plugins/report/report_conf_fields.h
 ../src_plugins/shand_cmd/command.o: ../src_plugins/shand_cmd/command.c \
  ../config.h ../config.auto.h conf_core.h conf.h global.h const.h macro.h \
@@ -1435,12 +1437,17 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- ../src_3rd/genvector/vtp0.h list_conf.h change.h data.h draw.h error.h \
- global.h set.h undo.h ../src_plugins/vendordrill/vendor.h stub_vendor.h \
- plugins.h hid_flags.h hid_actions.h hid_cfg.h \
- ../src_plugins/vendordrill/vendor_conf.h conf.h compat_misc.h \
- ../src_3rd/liblihata/tree.h dolists.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h ../src_3rd/genregex/regex_sei.h \
+ ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h change.h \
+ data.h draw.h error.h global.h set.h undo.h \
+ ../src_plugins/vendordrill/vendor.h stub_vendor.h plugins.h hid_flags.h \
+ hid_actions.h hid_cfg.h ../src_plugins/vendordrill/vendor_conf.h conf.h \
+ compat_misc.h ../src_3rd/liblihata/tree.h dolists.h \
  ../src_plugins/vendordrill/vendor_conf_fields.h
+regex.o: ../src_3rd/genregex/regex.c ../src_3rd/genregex/regex.h
+regex_sei.o: ../src_3rd/genregex/regex_sei.c \
+ ../src_3rd/genregex/regex_templ.c ../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/genregex/regex.h
 gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
@@ -1608,16 +1615,16 @@ clip.o: clip.c ../config.h ../config.auto.h clip.h global.h const.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h
 compat_dl.o: compat_dl.c ../config.h ../config.auto.h compat_dl.h \
- global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
- ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ compat_inc.h global.h const.h macro.h global_typedefs.h unit.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h
-compat_fs.o: compat_fs.c ../config.h ../config.auto.h compat_fs.h \
- compat_misc.h ../src_3rd/genvector/gds_char.h \
+compat_fs.o: compat_fs.c ../config.h ../config.auto.h compat_inc.h \
+ compat_fs.h compat_misc.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
@@ -1629,9 +1636,9 @@ compat_fs.o: compat_fs.c ../config.h ../config.auto.h compat_fs.h \
 compat_lrealpath.o: compat_lrealpath.c ../config.h ../config.auto.h \
  compat_lrealpath.h compat_misc.h
 compat_misc.o: compat_misc.c ../config.h ../config.auto.h compat_misc.h \
- global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
- ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ compat_inc.h global.h const.h macro.h global_typedefs.h unit.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
@@ -2016,8 +2023,8 @@ hid_init.o: hid_init.c ../config.h ../config.auto.h global.h const.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
- global_element.h list_element.h hid_nogui.h compat_dl.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h plugins.h hid_attrib.h \
+ global_element.h list_element.h hid_nogui.h compat_dl.h compat_inc.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h plugins.h hid_attrib.h \
  hid_flags.h misc_util.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -2218,13 +2225,15 @@ mymem.o: mymem.c ../config.h ../config.auto.h data.h global.h const.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h mymem.h rtree.h rats_patch.h
-netlist.o: netlist.c ../config.h ../config.auto.h action_helper.h \
- global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
- ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+netlist.o: netlist.c ../config.h ../config.auto.h \
+ ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/genregex/regex.h action_helper.h global.h const.h macro.h \
+ global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
+ globalconst.h polyarea.h list_common.h list_line.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h list_arc.h list_text.h list_poly.h \
+ list_pad.h list_pin.h list_rat.h vtonpoint.h \
+ ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
  global_element.h list_element.h data.h error.h plug_io.h conf.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -2526,7 +2535,9 @@ select.o: select.c ../config.h ../config.auto.h conf_core.h conf.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h list_conf.h data.h draw.h error.h search.h \
- misc_util.h select.h undo.h rats.h misc.h mymem.h find.h
+ misc_util.h select.h undo.h rats.h misc.h mymem.h find.h \
+ ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/genregex/regex.h
 select_act.o: select_act.c ../config.h ../config.auto.h conf_core.h \
  conf.h global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h list_common.h \

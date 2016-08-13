@@ -42,7 +42,7 @@ include src/math/Makefile.plugin
 # include src/socket/Makefile.plugin
 
 #  Comment this line if you do not need user/password API detection
-# include src/userpass/Makefile.plugin
+include src/userpass/Makefile.plugin
 
 #  Comment this line if you do not need gui (X11, toolkits)
 include src/gui/Makefile.plugin

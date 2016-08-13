@@ -25,11 +25,8 @@
 #include <sys/types.h>
 #include <math.h>
 #include "compat_misc.h"
+#include "compat_inc.h"
 #include "global.h"
-
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif

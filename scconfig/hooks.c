@@ -165,7 +165,8 @@ int hook_detect_target()
 	want_stroke = plug_is_enabled("stroke");
 
 	require("cc/fpic",  0, 1);
-	require("libs/fs/mkdtemp",  0, 0);
+	require("libs/fs/mkdtemp/*",  0, 0);
+	require("libs/userpass/getpwuid/*",  0, 0);
 
 	if (require("libs/ldl",  0, 0) != 0) {
 		if (require("libs/LoadLibrary",  0, 0) != 0) {
