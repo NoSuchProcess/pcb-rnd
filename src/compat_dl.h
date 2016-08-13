@@ -24,18 +24,26 @@
 #define PCB_COMPAT_DL_H
 
 #include "config.h"
+#include "compat_inc.h"
 
-
-#if !defined(HAVE_DLFCN_H) && defined(WIN32)
+#ifdef USE_LOADLIBRARY
 void *dlopen(const char *, int);
 void dlclose(void *);
 char *dlerror(void);
 
 void *dlsym(void *, const char *);
 
+#ifndef RTLD_NOW
 #define RTLD_NOW 2
+#endif
+
+#ifndef RTLD_LOCAL
 #define RTLD_LOCAL 0
+#endif
+
+#ifndef RTLD_GLOBAL
 #define RTLD_GLOBAL 4
+#endif
 
 #endif
 

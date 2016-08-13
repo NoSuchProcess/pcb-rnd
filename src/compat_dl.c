@@ -25,7 +25,7 @@
 #include "compat_dl.h"
 #include "global.h"
 
-#if !defined(HAVE_DLFCN_H) && defined(WIN32)
+#ifdef USE_LOADLIBRARY
 #include <windows.h>
 
 void *dlopen(const char *f, int ATTRIBUTE_UNUSED flag)

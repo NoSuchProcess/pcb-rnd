@@ -43,13 +43,10 @@
 #include "compat_fs.h"
 #include "compat_misc.h"
 
-#ifdef HAVE_SYS_WAIT_H
-#include <sys/wait.h>
-#endif
-
-/* for access(), fork() and friends */
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
+#ifndef HAVE__SPAWNVP
+/* The UNIX way of doing this: fork() and wait(). */
+#	include <sys/wait.h>
+#	include <unistd.h>
 #endif
 
 
