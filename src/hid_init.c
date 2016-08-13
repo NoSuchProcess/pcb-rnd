@@ -11,7 +11,6 @@
 #include <dirent.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
 #if defined(WIN32) && defined(HAVE_WINDOWS_H)
 #include <windows.h>

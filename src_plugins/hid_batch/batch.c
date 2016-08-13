@@ -4,7 +4,6 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "global.h"
 #include "hid.h"
@@ -120,6 +119,7 @@ HID_Action batch_action_list[] = {
 
 REGISTER_ACTIONS(batch_action_list, batch_cookie)
 
+extern int isatty();
 
 /* ----------------------------------------------------------------------------- */
 static int batch_stay;

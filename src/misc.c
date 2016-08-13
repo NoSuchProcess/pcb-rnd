@@ -40,9 +40,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <math.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 
 #include "box.h"
 #include "crosshair.h"

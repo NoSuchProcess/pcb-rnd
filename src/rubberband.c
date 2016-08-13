@@ -33,9 +33,6 @@
 #include <string.h>
 #include <memory.h>
 #include <math.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 
 #include "create.h"
 #include "data.h"

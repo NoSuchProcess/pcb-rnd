@@ -29,10 +29,7 @@
 /* This used to be file.c; some of the code landed in the io_pcb plugin,
    the format-independent parts ended up here. */
 
-/* file save, load, merge ... routines
- * getpid() needs a cast to (int) to get rid of compiler warnings
- * on several architectures
- */
+/* file save, load, merge ... routines */
 
 #warning TODO: do not hardwire this, make a function to decide
 #define DEFAULT_FMT "pcb"
@@ -56,12 +53,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
 
 #include "buffer.h"
 #include "change.h"
@@ -583,7 +574,7 @@ void SaveInTMP(void)
 
 	/* memory might have been released before this function is called */
 	if (PCB && PCB->Changed) {
-		sprintf(filename, conf_core.rc.emergency_name, (int) getpid());
+		sprintf(filename, conf_core.rc.emergency_name, pcb_getpid());
 		Message(_("Trying to save your layout in '%s'\n"), filename);
 		WritePCBFile(filename, DEFAULT_FMT);
 	}
@@ -665,7 +656,7 @@ char *build_fn(const char *template)
 				curr = next+1;
 				break;
 			case 'P':
-				sprintf(buff, "%.8i", getpid());
+				sprintf(buff, "%.8i", pcb_getpid());
 				gds_append_str(&s, buff);
 				curr = next+1;
 				break;

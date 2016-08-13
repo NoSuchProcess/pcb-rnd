@@ -25,10 +25,7 @@
  *
  */
 
-/* file save, load, merge ... routines
- * getpid() needs a cast to (int) to get rid of compiler warnings
- * on several architectures
- */
+/* file save, load, merge ... routines */
 
 #include "config.h"
 #include "conf_core.h"
@@ -49,11 +46,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
 
 #include "buffer.h"
 #include "change.h"

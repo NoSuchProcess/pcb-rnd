@@ -53,7 +53,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "config.h"
 #include "conf_core.h"
 
-#include <unistd.h>
 #include <locale.h>
 #include "ghid-layer-selector.h"
 #include "ghid-route-style-selector.h"

@@ -91,5 +91,9 @@ const char *get_user_name(void)
 #else
 	return "Unknown";
 #endif
+}
 
+int pcb_getpid(void)
+{
+	return getpid();
 }

@@ -36,9 +36,6 @@
 #include "config.h"
 
 #include <time.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #include <setjmp.h>
 
 

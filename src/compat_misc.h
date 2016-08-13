@@ -38,5 +38,6 @@ float logf(float);
 long pcb_rand(void);
 
 const char *get_user_name(void);
+int pcb_getpid(void);
 
 #endif /* PCB_COMPAT_MISC_H */

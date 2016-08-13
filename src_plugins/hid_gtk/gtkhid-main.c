@@ -6,8 +6,6 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
-#include <unistd.h>
-
 
 #include "action_helper.h"
 #include "crosshair.h"

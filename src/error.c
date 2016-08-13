@@ -25,10 +25,7 @@
  */
 
 
-/* error and debug functions
- * getpid() needs a cast to (int) to get rid of compiler warnings
- * on several architectures
- */
+/* error and debug functions */
 
 #include "config.h"
 
@@ -152,7 +149,7 @@ void MyFatal(const char *Format, ...)
 
 	/* try to save the layout and do some cleanup */
 	EmergencySave();
-	fprintf(stderr, "pcb-rnd (%i): fatal, ", (int) getpid());
+	fprintf(stderr, "pcb-rnd (%i): fatal, ", pcb_getpid());
 	vfprintf(stderr, Format, args);
 	fflush(stderr);
 	va_end(args);
