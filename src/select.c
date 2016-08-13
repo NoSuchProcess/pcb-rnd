@@ -44,10 +44,6 @@
 #include <sys/types.h>
 #ifdef HAVE_REGEX_H
 #include <regex.h>
-#else
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #endif
 
 /* ---------------------------------------------------------------------------

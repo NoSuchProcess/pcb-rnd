@@ -36,9 +36,6 @@
 #include <signal.h>
 #include <string.h>
 #include <stdarg.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #include <fcntl.h>
 
 #include "global.h"
@@ -46,6 +43,7 @@
 #include "data.h"
 #include "error.h"
 #include "plug_io.h"
+#include "compat_misc.h"
 
 #define utf8_dup_string(a,b) *(a) = strdup(b)
 
