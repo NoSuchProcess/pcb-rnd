@@ -166,6 +166,7 @@ int hook_detect_target()
 
 	require("cc/fpic",  0, 1);
 	require("libs/fs/mkdtemp/*",  0, 0);
+	require("libs/fs/realpath/*",  0, 0);
 	require("libs/userpass/getpwuid/*",  0, 0);
 
 	if (require("libs/ldl",  0, 0) != 0) {
