@@ -9,7 +9,7 @@ so we use dllexport in that case.
  gd.h |    8 ++++++++
  1 files changed, 8 insertions(+), 0 deletions(-)
 
-diff --git a/gd.h b/gd.h
+diff --git a/src/gd.h b/src/gd.h
 index f136ea6..4916373 100644
 --- a/gd.h
 +++ b/gd.h

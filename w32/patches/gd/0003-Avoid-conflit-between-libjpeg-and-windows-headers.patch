@@ -7,7 +7,7 @@ Subject: [PATCH] Avoid conflit between libjpeg and windows headers.
  gdhelpers.h |    4 ++++
  1 files changed, 4 insertions(+), 0 deletions(-)
 
-diff --git a/gdhelpers.h b/gdhelpers.h
+diff --git a/src/gdhelpers.h b/src/gdhelpers.h
 index 0c45ad3..6c4b52f 100644
 --- a/gdhelpers.h
 +++ b/gdhelpers.h
