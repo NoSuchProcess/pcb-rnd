@@ -44,6 +44,10 @@
 #include "import_sch_conf.h"
 #include "misc_util.h"
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 conf_import_sch_t conf_import_sch;
 
 extern int ActionExecuteFile(int argc, char **argv, Coord x, Coord y);

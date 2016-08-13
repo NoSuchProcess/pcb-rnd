@@ -42,13 +42,16 @@
 #include <math.h>
 #include <assert.h>
 #include "compat_fs.h"
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #endif
+
+/* for access(), fork() and friends */
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 
 #include <genvector/gds_char.h>
 
