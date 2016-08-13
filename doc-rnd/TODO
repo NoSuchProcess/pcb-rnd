@@ -135,6 +135,6 @@ Low prio:
 - win32 port {large}
 	- clean up central Makefile.in rules:
 		- remove cat, sed, grep where possible, use scconfig instead
-	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
-		-> AttachForCopy() calls SetCrosshairRange() that then sets corsshair max* which
-		limits the arc to move freely. Problem: this is not arc-specific, this happens with any buffer copy! going for no-design-limit is probably better
+- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
+	-> AttachForCopy() calls SetCrosshairRange() that then sets corsshair max* which
+	limits the arc to move freely. Problem: this is not arc-specific, this happens with any buffer copy! going for no-design-limit is probably better
