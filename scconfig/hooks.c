@@ -292,8 +292,6 @@ int hook_detect_target()
 	require("libs/snprintf", 0, 0);
 	require("libs/vsnprintf", 0, 0);
 	require("libs/fs/getcwd", 0, 0);
-	require("libs/math/expf", 0, 0);
-	require("libs/math/logf", 0, 0);
 	require("libs/fs/stat/macros/*", 0, 0);
 
 	if (istrue(get("/local/pcb/want_dmalloc"))) {

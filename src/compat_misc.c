@@ -34,20 +34,6 @@
 #include <unistd.h>
 #endif
 
-#ifndef HAVE_EXPF
-float expf(float x)
-{
-	return (float) exp((double) x);
-}
-#endif
-
-#ifndef HAVE_LOGF
-float logf(float x)
-{
-	return (float) log((double) x);
-}
-#endif
-
 /* On some old systems random() works better than rand(). Unfrtunately
 random() is less portable than rand(), which is C89. By default, just
 use rand(). Later on: scconfig should detect and enable random() if

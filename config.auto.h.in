@@ -91,12 +91,6 @@ print_ternary libs/vsnprintf {#define HAVE_VSNPRINTF 1} {/* #undef HAVE_VSNPRINT
 print {\n\n/* Define to 1 if you have the `getcwd' function. */\n}
 print_ternary libs/fs/getcwd/presents {#define HAVE_GETCWD 1} {/* #undef HAVE_GETCWD */}
 
-print {\n\n/* Define to 1 if you have the `expf' function. */\n}
-print_ternary libs/math/expf/presents {#define HAVE_EXPF 1} {/* #undef HAVE_EXPF */}
-
-print {\n\n/* Define to 1 if you have the `logf' function. */\n}
-print_ternary libs/math/logf/presents {#define HAVE_LOGF 1} {/* #undef HAVE_LOGF */}
-
 print {\n\n/* Define to 1 if you have the <gd.h> header file. */\n}
 print_ternary libs/gui/gd/presents {#define HAVE_GD_H 1} {/* #undef HAVE_GD_H */}
 
