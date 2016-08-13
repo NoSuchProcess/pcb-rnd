@@ -47,8 +47,6 @@ typedef enum {
 	SM_LIST = 1
 } search_method_t;
 
-#if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
 bool SelectObjectByName(int, char *, bool, search_method_t);
-#endif
 
 #endif

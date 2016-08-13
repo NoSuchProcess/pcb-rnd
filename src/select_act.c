@@ -122,10 +122,9 @@ static int ActionSelect(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
-#if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
-			int type;
-			/* select objects by their names */
+		int type;
+
+		switch (funchash_get(function, NULL)) { /* select objects by their names */
 		case F_ElementByName:
 			type = PCB_TYPE_ELEMENT;
 			goto commonByName;
@@ -161,7 +160,6 @@ static int ActionSelect(int argc, char **argv, Coord x, Coord y)
 				}
 				break;
 			}
-#endif /* defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP) */
 
 			/* select a single object */
 		case F_ToggleObject:
@@ -283,9 +281,8 @@ static int ActionUnselect(int argc, char **argv, Coord x, Coord y)
 {
 	char *function = ACTION_ARG(0);
 	if (function) {
+		int type;
 		switch (funchash_get(function, NULL)) {
-#if defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP)
-			int type;
 			/* select objects by their names */
 		case F_ElementByName:
 			type = PCB_TYPE_ELEMENT;
@@ -322,7 +319,6 @@ static int ActionUnselect(int argc, char **argv, Coord x, Coord y)
 				}
 				break;
 			}
-#endif /* defined(HAVE_REGCOMP) || defined(HAVE_RE_COMP) */
 
 			/* all objects in block */
 		case F_Block:
