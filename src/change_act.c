@@ -76,7 +76,7 @@ static int ActionChangeClearSize(int argc, char **argv, Coord x, Coord y)
 	char *units = ACTION_ARG(2);
 	bool absolute;
 	Coord value;
-	int type;
+	int type = PCB_TYPE_NONE;
 	void *ptr1, *ptr2, *ptr3;
 
 	if (function && delta) {
@@ -388,7 +388,7 @@ static int ActionChangeSize(int argc, char **argv, Coord x, Coord y)
 	char *units = ACTION_ARG(2);
 	bool absolute;								/* indicates if absolute size is given */
 	Coord value;
-	int type, tostyle = 0;
+	int type = PCB_TYPE_NONE, tostyle = 0;
 	void *ptr1, *ptr2, *ptr3;
 
 
@@ -488,7 +488,7 @@ static int ActionChange2ndSize(int argc, char **argv, Coord x, Coord y)
 	char *function = ACTION_ARG(0);
 	char *delta = ACTION_ARG(1);
 	char *units = ACTION_ARG(2);
-	int type;
+	int type = PCB_TYPE_NONE;
 	void *ptr1, *ptr2, *ptr3;
 
 	bool absolute;
