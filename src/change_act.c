@@ -47,6 +47,7 @@
 #include "undo.h"
 #include "rubberband.h"
 #include "misc_util.h"
+#include "compat_misc.h"
 
 static void ChangeFlag(char *, char *, int, char *);
 static int ActionChangeSize(int argc, char **argv, Coord x, Coord y);
@@ -581,7 +582,7 @@ static int ActionChangePinName(int argc, char **argv, Coord x, Coord y)
 					 * Note:  we can't free() pin->Name first because 
 					 * it is used in the undo list
 					 */
-					pin->Name = strdup(pinname);
+					pin->Name = pcb_strdup(pinname);
 					SetChangedFlag(true);
 					changed = 1;
 				}
@@ -596,7 +597,7 @@ static int ActionChangePinName(int argc, char **argv, Coord x, Coord y)
 					 * Note:  we can't free() pad->Name first because 
 					 * it is used in the undo list
 					 */
-					pad->Name = strdup(pinname);
+					pad->Name = pcb_strdup(pinname);
 					SetChangedFlag(true);
 					changed = 1;
 				}

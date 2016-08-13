@@ -181,7 +181,7 @@ static int ActionAttributes(int argc, char **argv, Coord x, Coord y)
 				sprintf(buf, "Element %s Attributes", NAMEONPCB_NAME(e));
 			}
 			else {
-				buf = strdup("Unnamed Element Attributes");
+				buf = pcb_strdup("Unnamed Element Attributes");
 			}
 			gui->edit_attributes(buf, &(e->Attributes));
 			free(buf);
@@ -630,10 +630,10 @@ static int ActionElementList(int argc, char **argv, Coord x, Coord y)
 	element_cache = NULL;
 	e = find_element_by_refdes(refdes);
 
-	old = ChangeElementText(PCB, PCB->Data, e, NAMEONPCB_INDEX, strdup(refdes));
+	old = ChangeElementText(PCB, PCB->Data, e, NAMEONPCB_INDEX, pcb_strdup(refdes));
 	if (old)
 		free(old);
-	old = ChangeElementText(PCB, PCB->Data, e, VALUE_INDEX, strdup(value));
+	old = ChangeElementText(PCB, PCB->Data, e, VALUE_INDEX, pcb_strdup(value));
 	if (old)
 		free(old);
 
@@ -691,7 +691,7 @@ static int ActionElementSetAttr(int argc, char **argv, Coord x, Coord y)
 
 	if (attr && value) {
 		free(attr->value);
-		attr->value = strdup(value);
+		attr->value = pcb_strdup(value);
 	}
 	if (attr && !value) {
 		delete_attr(&e->Attributes, attr);

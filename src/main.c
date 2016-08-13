@@ -61,6 +61,7 @@
 #include "hid_actions.h"
 #include "hid_attrib.h"
 #include "hid_init.h"
+#include "compat_misc.h"
 
 #if ENABLE_NLS
 #include <libintl.h>
@@ -127,7 +128,7 @@ static void InitPaths(char *argv0)
 
 	if (haspath) {
 #ifndef NO_BINDIR_HEURISTICS
-		bindir = strdup(lrealpath(argv0));
+		bindir = pcb_strdup(lrealpath(argv0));
 #endif
 		found_bindir = 1;
 	}
@@ -139,7 +140,7 @@ static void InitPaths(char *argv0)
 		tmps = getenv("PATH");
 
 		if (tmps != NULL) {
-			path = strdup(tmps);
+			path = pcb_strdup(tmps);
 
 			/* search through the font path for a font file */
 			for (p = strtok(path, PCB_PATH_DELIMETER); p && *p; p = strtok(NULL, PCB_PATH_DELIMETER)) {
@@ -182,7 +183,7 @@ static void InitPaths(char *argv0)
 		/* we have failed to find out anything from argv[0] so fall back to the original
 		 * install prefix
 		 */
-		bindir = strdup(BINDIR);
+		bindir = pcb_strdup(BINDIR);
 	}
 
 	/* now find the path to exec_prefix */
@@ -455,7 +456,7 @@ int main(int argc, char *argv[])
 		 * file might not exist
 		 */
 		if (LoadPCB(command_line_pcb, true, 0))
-			PCB->Filename = strdup(command_line_pcb);
+			PCB->Filename = pcb_strdup(command_line_pcb);
 	}
 
 	if (conf_core.design.initial_layer_stack && conf_core.design.initial_layer_stack[0]) {

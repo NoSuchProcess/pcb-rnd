@@ -45,7 +45,7 @@
 #include "plug_io.h"
 #include "compat_misc.h"
 
-#define utf8_dup_string(a,b) *(a) = strdup(b)
+#define utf8_dup_string(a,b) *(a) = pcb_strdup(b)
 
 /* ----------------------------------------------------------------------
  * some external identifiers

@@ -958,7 +958,7 @@ void LayerStringToLayerStack(char *s)
 	int i, argn, lno;
 	int prev_sep = 1;
 
-	s = strdup(s);
+	s = pcb_strdup(s);
 	args = (char **) malloc(l * sizeof(char *));
 	argn = 0;
 
@@ -1544,7 +1544,7 @@ int AttributePutToList(AttributeListType * list, const char *name, const char *v
 		for (i = 0; i < list->Number; i++)
 			if (strcmp(name, list->List[i].name) == 0) {
 				free(list->List[i].value);
-				list->List[i].value = STRDUP(value);
+				list->List[i].value = pcb_strdup_null(value);
 				return 1;
 			}
 	}
@@ -1558,8 +1558,8 @@ int AttributePutToList(AttributeListType * list, const char *name, const char *v
 
 	/* Now add the new attribute.  */
 	i = list->Number;
-	list->List[i].name = STRDUP(name);
-	list->List[i].value = STRDUP(value);
+	list->List[i].name = pcb_strdup_null(name);
+	list->List[i].value = pcb_strdup_null(value);
 	list->Number++;
 	return 0;
 }

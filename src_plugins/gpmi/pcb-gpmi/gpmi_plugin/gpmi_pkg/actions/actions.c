@@ -7,6 +7,7 @@
 #include "src/error.h"
 #include "actions.h"
 #include "src/hid_actions.h"
+#include "src/compat_misc.h"
 #include "../../gpmi_plugin.h"
 
 typedef struct acontext_s  acontext_t;
@@ -73,14 +74,14 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 
 
 	ctx = malloc(sizeof(acontext_t));
-	ctx->action.name           = strdup(name);
-	ctx->action.need_coord_msg = strdup_null(need_xy);
-	ctx->action.description    = strdup(description);
-	ctx->action.syntax         = strdup(syntax);
+	ctx->action.name           = pcb_strdup(name);
+	ctx->action.need_coord_msg = pcb_strdup_null(need_xy);
+	ctx->action.description    = pcb_strdup(description);
+	ctx->action.syntax         = pcb_strdup(syntax);
 	ctx->action.trigger_cb     = action_cb;
-	ctx->name   = strdup(name);
-	ctx->module = gpmi_get_current_module();
-	ctx->next   = NULL;
+	ctx->name                  = pcb_strdup(name);
+	ctx->module                = gpmi_get_current_module();
+	ctx->next                  = NULL;
 
 	hid_register_action(&ctx->action, gpmi_cookie, 0);
 

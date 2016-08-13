@@ -21,6 +21,7 @@
 #include "hid_actions.h"
 #include "plug_footprint.h"
 #include "misc_util.h"
+#include "compat_misc.h"
 
 #include "gtkhid.h"
 
@@ -913,8 +914,8 @@ static void ghid_attributes(char *owner, AttributeListType * attrs)
 				attributes_list->Max = attr_num_rows;
 			}
 			for (i = 0; i < attr_num_rows; i++) {
-				attributes_list->List[i].name = strdup(gtk_entry_get_text(GTK_ENTRY(attr_row[i].w_name)));
-				attributes_list->List[i].value = strdup(gtk_entry_get_text(GTK_ENTRY(attr_row[i].w_value)));
+				attributes_list->List[i].name = pcb_strdup(gtk_entry_get_text(GTK_ENTRY(attr_row[i].w_name)));
+				attributes_list->List[i].value = pcb_strdup(gtk_entry_get_text(GTK_ENTRY(attr_row[i].w_value)));
 				attributes_list->Number = attr_num_rows;
 			}
 
@@ -1084,7 +1085,7 @@ static char *dup_cwd()
 #else
 	char tmp[8193];
 #endif
-	return strdup(getcwd(tmp, sizeof(tmp)));
+	return pcb_strdup(getcwd(tmp, sizeof(tmp)));
 }
 
 static int Load(int argc, char **argv, Coord x, Coord y)

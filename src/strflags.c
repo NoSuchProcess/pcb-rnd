@@ -33,6 +33,7 @@
 
 #include "global.h"
 #include "strflags.h"
+#include "compat_misc.h"
 
 /* Because all the macros expect it, that's why.  */
 typedef struct {
@@ -382,7 +383,7 @@ common_string_to_flags(const char *flagstring, int (*error) (const char *msg), F
 				error(msg);
 
 				u = malloc(sizeof(unknown_flag_t));
-				u->str = strndup(fp, flen);
+				u->str = pcb_strndup(fp, flen);
 				u->next = NULL;
 				/* need to append, to keep order of flags */
 				if (rv.Flags.unknowns != NULL) {

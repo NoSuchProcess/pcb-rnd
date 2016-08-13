@@ -43,6 +43,7 @@
 #include "search.h"
 #include "hid_actions.h"
 #include "hid_attrib.h"
+#include "compat_misc.h"
 
 /* ---------------------------------------------------------------- */
 static const char execcommand_syntax[] = "ExecCommand(command)";
@@ -175,7 +176,7 @@ static int ActionNew(int argc, char **argv, Coord x, Coord y)
 
 	if (!PCB->Changed || gui->confirm_dialog(_("OK to clear layout data?"), 0)) {
 		if (name)
-			name = strdup(name);
+			name = pcb_strdup(name);
 		else
 			name = gui->prompt_for(_("Enter the layout name:"), "");
 
@@ -267,7 +268,7 @@ static int ActionSaveTo(int argc, char **argv, Coord x, Coord y)
 		if (SavePCB(name, fmt) == 0) {
 			SetChangedFlag(false);
 			free(PCB->Filename);
-			PCB->Filename = strdup(name);
+			PCB->Filename = pcb_strdup(name);
 			if (gui->notify_filename_changed != NULL)
 				gui->notify_filename_changed();
 		}

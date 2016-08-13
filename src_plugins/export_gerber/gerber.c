@@ -734,7 +734,7 @@ static int gerber_set_layer(const char *name, int group, int empty)
 		/* build a legal identifier. */
 		if (layername)
 			free(layername);
-		layername = strdup(filesuff);
+		layername = pcb_strdup(filesuff);
 		if (strrchr(layername, '.'))
 			*strrchr(layername, '.') = 0;
 

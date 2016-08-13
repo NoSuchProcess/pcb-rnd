@@ -12,6 +12,7 @@
 #include "hid.h"
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "compat_misc.h"
 
 #include "hid_draw_helpers.h"
 #include "hid_nogui.h"
@@ -62,10 +63,10 @@ static int PCBChanged(int argc, char **argv, Coord x, Coord y)
 		else
 			prompt = PCB->Filename;
 		if (prompt != NULL)
-			prompt = strdup(prompt);
+			prompt = pcb_strdup(prompt);
 	}
 	else
-		prompt = strdup("no-board");
+		prompt = pcb_strdup("no-board");
 	return 0;
 }
 

@@ -22,6 +22,7 @@
 #include <assert.h>
 #include "genht/htsi.h"
 #include "graph.h"
+#include "compat_misc.h"
 
 /*#define DEBUG_GR*/
 
@@ -114,7 +115,7 @@ gr_t *load(FILE *f)
 		if (htsi_has(name2node, (char *)id))
 			return htsi_get(name2node, (char *)id);
 		if (alloc) {
-			node2name[num_nodes] = strdup(id);
+			node2name[num_nodes] = pcb_strdup(id);
 			htsi_set(name2node, node2name[num_nodes], num_nodes);
 			return num_nodes++;
 		}
@@ -187,8 +188,8 @@ gr_t *load(FILE *f)
 	}
 
 	name2node = htsi_alloc(keyhash, strkeyeq);
-	node2name[0] = strdup("(S)"); htsi_set(name2node, node2name[0], 0);
-	node2name[1] = strdup("(T)"); htsi_set(name2node, node2name[1], 1);
+	node2name[0] = pcb_strdup("(S)"); htsi_set(name2node, node2name[0], 0);
+	node2name[1] = pcb_strdup("(T)"); htsi_set(name2node, node2name[1], 1);
 	num_nodes = 2;
 	nn_net[0] = 0;
 	nn_net[1] = 0;

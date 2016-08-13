@@ -34,6 +34,7 @@
 #include "error.h"
 #include "paths.h"
 #include "compat_fs.h"
+#include "compat_misc.h"
 
 /* conf list node's name */
 const char *conf_list_name = "pcb-rnd-conf-v1";
@@ -705,7 +706,7 @@ void conf_update(const char *path)
 		n = conf_get_field(path);
 		if (n == NULL) {
 			char *path_, *field;
-			path_ = strdup(path);
+			path_ = pcb_strdup(path);
 
 			/* It might be an array element - truncate */
 			field = strrchr(path_, '[');
@@ -808,7 +809,7 @@ lht_node_t *conf_lht_get_at(conf_role_t target, const char *path, int create)
 	}
 	else {
 		/* lihata syntax differs from conf syntax in array indexing */
-		pc = strdup(path);
+		pc = pcb_strdup(path);
 		pc[end-path] = '/';
 		end = strchr(pc+(end-path), ']');
 		if (end != NULL)
@@ -943,7 +944,7 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 	lht_node_type_t ty;
 	int idx = -1;
 
-	path = strdup(path_);
+	path = pcb_strdup(path_);
 	sidx = strrchr(path, '[');
 	if (sidx != NULL) {
 		char *end;
@@ -1124,7 +1125,7 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 	if (cwd->data.text.value != NULL)
 		free(cwd->data.text.value);
 
-	cwd->data.text.value = strdup(new_val);
+	cwd->data.text.value = pcb_strdup(new_val);
 	cwd->file_name = conf_root[target]->active_file;
 
 	conf_lht_dirty[target]++;
@@ -1155,7 +1156,7 @@ int conf_set_native(conf_native_t *field, int arr_idx, const char *new_val)
 	if (node->data.text.value != NULL)
 		free(node->data.text.value);
 
-	node->data.text.value = strdup(new_val);
+	node->data.text.value = pcb_strdup(new_val);
 	return 0;
 }
 
@@ -1170,7 +1171,7 @@ int conf_set_from_cli(const char *prefix, const char *arg_, const char *val, con
 	if (prefix != NULL) {
 		for(sc = arg_; (*sc != '=') && (*sc != '\0'); sc++)
 			if (*sc == '/')
-				arg = strdup(arg_); /* full path, don't use prefix */
+				arg = pcb_strdup(arg_); /* full path, don't use prefix */
 
 		if (arg == NULL) { /* insert prefix */
 			int pl = strlen(prefix), al = strlen(arg_);
@@ -1182,7 +1183,7 @@ int conf_set_from_cli(const char *prefix, const char *arg_, const char *val, con
 		}
 	}
 	else
-		arg = strdup(arg_);
+		arg = pcb_strdup(arg_);
 
 	/* replace any - with _ in the path part; cli accepts dash but the backing C
 	   struct field names don't */
@@ -1403,7 +1404,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 
 		if ((f == NULL) && (role == CFR_USER)) {
 			/* create the directory and try again */
-			char *path = strdup(efn), *end;
+			char *path = pcb_strdup(efn), *end;
 			end = strrchr(path, '/');
 			if (end != NULL) {
 				*end = '\0';

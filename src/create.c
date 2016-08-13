@@ -47,6 +47,7 @@
 #include "hid_actions.h"
 #include "paths.h"
 #include "misc_util.h"
+#include "compat_misc.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -154,7 +155,7 @@ PCBTypePtr CreateNewPCB_(bool SetDefaultNames)
 	ptr->minRing = conf_core.design.min_ring;
 
 	for (i = 0; i < MAX_LAYER; i++)
-		ptr->Data->Layer[i].Name = strdup(conf_core.design.default_layer_name[i]);
+		ptr->Data->Layer[i].Name = pcb_strdup(conf_core.design.default_layer_name[i]);
 
 	CreateDefaultFont(ptr);
 
@@ -238,7 +239,7 @@ CreateNewVia(DataTypePtr Data,
 						conf_core.editor.grid_unit->allow, Via->DrillingHole, DrillingHole);
 	}
 
-	Via->Name = STRDUP(Name);
+	Via->Name = pcb_strdup_null(Name);
 	Via->Flags = Flags;
 	CLEAR_FLAG(PCB_FLAG_WARN, Via);
 	SET_FLAG(PCB_FLAG_VIA, Via);
@@ -527,7 +528,7 @@ CreateNewText(LayerTypePtr Layer, FontTypePtr PCBFont,
 	text->Direction = Direction;
 	text->Flags = Flags;
 	text->Scale = Scale;
-	text->TextString = strdup(TextString);
+	text->TextString = pcb_strdup(TextString);
 
 	/* calculate size of the bounding box */
 	SetTextBoundingBox(PCBFont, text);
@@ -690,8 +691,8 @@ CreateNewPin(ElementTypePtr Element,
 	pin->Thickness = Thickness;
 	pin->Clearance = Clearance;
 	pin->Mask = Mask;
-	pin->Name = STRDUP(Name);
-	pin->Number = STRDUP(Number);
+	pin->Name = pcb_strdup_null(Name);
+	pin->Number = pcb_strdup_null(Number);
 	pin->Flags = Flags;
 	CLEAR_FLAG(PCB_FLAG_WARN, pin);
 	SET_FLAG(PCB_FLAG_PIN, pin);
@@ -761,8 +762,8 @@ CreateNewPad(ElementTypePtr Element,
 	pad->Thickness = Thickness;
 	pad->Clearance = Clearance;
 	pad->Mask = Mask;
-	pad->Name = STRDUP(Name);
-	pad->Number = STRDUP(Number);
+	pad->Name = pcb_strdup_null(Name);
+	pad->Number = pcb_strdup_null(Number);
 	pad->Flags = Flags;
 	CLEAR_FLAG(PCB_FLAG_WARN, pad);
 	pad->ID = ID++;
@@ -779,7 +780,7 @@ AddTextToElement(TextTypePtr Text, FontTypePtr PCBFont,
 								 Coord X, Coord Y, unsigned Direction, char *TextString, int Scale, FlagType Flags)
 {
 	free(Text->TextString);
-	Text->TextString = (TextString && *TextString) ? strdup(TextString) : NULL;
+	Text->TextString = (TextString && *TextString) ? pcb_strdup(TextString) : NULL;
 	Text->X = X;
 	Text->Y = Y;
 	Text->Direction = Direction;
@@ -862,12 +863,12 @@ LibraryMenuTypePtr CreateNewNet(LibraryTypePtr lib, char *name, char *style)
 
 	sprintf(temp, "  %s", name);
 	menu = GetLibraryMenuMemory(lib, NULL);
-	menu->Name = strdup(temp);
+	menu->Name = pcb_strdup(temp);
 	menu->flag = 1;								/* net is enabled by default */
 	if (style == NULL || NSTRCMP("(unknown)", style) == 0)
 		menu->Style = NULL;
 	else
-		menu->Style = strdup(style);
+		menu->Style = pcb_strdup(style);
 	return (menu);
 }
 
@@ -878,7 +879,7 @@ LibraryEntryTypePtr CreateNewConnection(LibraryMenuTypePtr net, char *conn)
 {
 	LibraryEntryTypePtr entry = GetLibraryEntryMemory(net);
 
-	entry->ListEntry = STRDUP(conn);
+	entry->ListEntry = pcb_strdup_null(conn);
 	entry->ListEntry_dontfree = 0;
 
 	return (entry);
@@ -893,8 +894,8 @@ AttributeTypePtr CreateNewAttribute(AttributeListTypePtr list, char *name, char 
 		list->Max += 10;
 		list->List = (AttributeType *) realloc(list->List, list->Max * sizeof(AttributeType));
 	}
-	list->List[list->Number].name = STRDUP(name);
-	list->List[list->Number].value = STRDUP(value);
+	list->List[list->Number].name = pcb_strdup_null(name);
+	list->List[list->Number].value = pcb_strdup_null(value);
 	list->Number++;
 	return &list->List[list->Number - 1];
 }

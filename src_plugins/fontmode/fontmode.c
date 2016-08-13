@@ -46,6 +46,7 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_actions.h"
+#include "compat_misc.h"
 
 /* FIXME - we currently hardcode the grid and PCB size.  What we
    should do in the future is scan the font for its extents, and size
@@ -95,10 +96,10 @@ static int FontEdit(int argc, char **argv, Coord Ux, Coord Uy)
 	PCB->MaxWidth = CELL_SIZE * 18;
 	PCB->MaxHeight = CELL_SIZE * ((MAX_FONTPOSITION + 15) / 16 + 2);
 	PCB->Grid = PCB_MIL_TO_COORD(5);
-	PCB->Data->Layer[0].Name = strdup("Font");
-	PCB->Data->Layer[1].Name = strdup("OrigFont");
-	PCB->Data->Layer[2].Name = strdup("Width");
-	PCB->Data->Layer[3].Name = strdup("Grid");
+	PCB->Data->Layer[0].Name = pcb_strdup("Font");
+	PCB->Data->Layer[1].Name = pcb_strdup("OrigFont");
+	PCB->Data->Layer[2].Name = pcb_strdup("Width");
+	PCB->Data->Layer[3].Name = pcb_strdup("Grid");
 	hid_action("PCBChanged");
 	hid_action("LayersChanged");
 

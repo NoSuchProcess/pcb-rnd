@@ -25,6 +25,7 @@
 #include "hid_actions.h"
 #include "hid_flags.h"
 #include "stdarg.h"
+#include "compat_misc.h"
 #include <genht/hash.h>
 
 Widget lesstif_menubar;
@@ -803,7 +804,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 	}
 
 	v = node->name;
-	stdarg(XmNlabelString, XmStringCreatePCB(strdup(v)));
+	stdarg(XmNlabelString, XmStringCreatePCB(pcb_strdup(v)));
 
 	if (hid_cfg_has_submenus(node)) {
 		int nn = stdarg_n;
@@ -812,7 +813,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 		lht_node_t *submenu_node = hid_cfg_menu_field(node, MF_SUBMENU, &field_name);
 
 		stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
-		sub = XmCreatePulldownMenu(menu, strdup(v), stdarg_args + nn, stdarg_n - nn);
+		sub = XmCreatePulldownMenu(menu, pcb_strdup(v), stdarg_args + nn, stdarg_n - nn);
 		node->user_data = sub;
 		stdarg_n = nn;
 		stdarg(XmNsubMenuId, sub);

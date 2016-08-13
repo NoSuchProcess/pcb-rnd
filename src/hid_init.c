@@ -30,6 +30,7 @@
 #include "hid_flags.h"
 #include "misc_util.h"
 #include "conf_core.h"
+#include "compat_misc.h"
 
 HID **hid_list = 0;
 int hid_num_hids = 0;
@@ -58,7 +59,7 @@ static void hid_load_dir(char *dirname)
 		char *basename, *path, *symname;
 		struct stat st;
 
-		basename = strdup(de->d_name);
+		basename = pcb_strdup(de->d_name);
 		if (strlen(basename) > 3 && strcasecmp(basename + strlen(basename) - 3, ".so") == 0)
 			basename[strlen(basename) - 3] = 0;
 		else if (strlen(basename) > 4 && strcasecmp(basename + strlen(basename) - 4, ".dll") == 0)

@@ -51,6 +51,7 @@
 #include "hid_actions.h"
 #include "hid_cfg.h"
 #include "vendor_conf.h"
+#include "compat_misc.h"
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 
@@ -183,7 +184,7 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 		default_file = NULL;
 
 		if (fname && *fname)
-			default_file = strdup(fname);
+			default_file = pcb_strdup(fname);
 	}
 
 	vendor_free_all();
@@ -563,7 +564,7 @@ static void process_skips(lht_node_t *res)
 				fprintf(stderr, "realloc() failed\n");
 				exit(-1);
 			}
-			(*lst)[*cnt - 1] = strdup(sval);
+			(*lst)[*cnt - 1] = pcb_strdup(sval);
 		}
 		else
 			hid_cfg_error(n, "invalid skip type; must be text");

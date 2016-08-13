@@ -22,6 +22,7 @@
 
 #include "conf.h"
 #include "misc.h"
+#include "compat_misc.h"
 
 #define LISTSEP " [[pcb-rnd]] "
 
@@ -107,7 +108,7 @@ void io_pcb_attrib_a2c(PCBType *pcb)
 			if (nv == NULL)
 				continue;
 			if (nv->type == CFN_LIST) {
-				char *tmp = strdup(pcb->Attributes.List[n].value);
+				char *tmp = pcb_strdup(pcb->Attributes.List[n].value);
 				char *next, *curr;
 				for(curr = tmp; curr != NULL; curr = next) {
 					next = strstr(curr, LISTSEP);

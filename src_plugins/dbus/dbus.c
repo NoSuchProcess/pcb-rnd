@@ -39,6 +39,7 @@
 #include "plugins.h"
 #include "hid_actions.h"
 #include "event.h"
+#include "compat_misc.h"
 
 /* For lrealpath */
 #include "compat_lrealpath.h"
@@ -80,9 +81,9 @@ static DBusHandlerResult handle_get_filename(DBusConnection * connection, DBusMe
 #ifdef DEBUG
 		fprintf(stderr, "pcb_dbus: DEBUG: Couldn't get working filename, assuming none\n");
 #endif
-		filename = strdup("");
+		filename = pcb_strdup("");
 		if (filename == NULL) {
-			fprintf(stderr, "pcb_dbus: Couldn't strdup( \"\" ) for the filename\n");
+			fprintf(stderr, "pcb_dbus: Couldn't pcb_strdup( \"\" ) for the filename\n");
 			goto out;
 		}
 	}

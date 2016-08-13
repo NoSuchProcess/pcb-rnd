@@ -31,6 +31,7 @@
 #include "global.h"
 #include "config.h"
 #include "genvector/gds_char.h"
+#include "compat_misc.h"
 
 plugin_info_t *plugins = NULL;
 
@@ -38,8 +39,8 @@ void plugin_register(const char *name, const char *path, void *handle, int dynam
 {
 	plugin_info_t *i = malloc(sizeof(plugin_info_t));
 
-	i->name = strdup(name);
-	i->path = strdup(path);
+	i->name = pcb_strdup(name);
+	i->path = pcb_strdup(path);
 	i->handle = handle;
 	i->dynamic_loaded = dynamic_loaded;
 	i->uninit = uninit;

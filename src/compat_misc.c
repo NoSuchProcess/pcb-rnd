@@ -97,3 +97,24 @@ int pcb_getpid(void)
 {
 	return getpid();
 }
+
+char *pcb_strndup(const char *s, int len)
+{
+	int a, l = strlen(s);
+	char *o;
+
+	a = (len < l) ? len : l;
+	o = malloc(a+1);
+	memcpy(o, s, a);
+	o[a] = '\0';
+	return o;
+}
+
+char *pcb_strdup(const char *s)
+{
+	int l = strlen(s);
+	char *o;
+	o = malloc(l+1);
+	memcpy(o, s, l+1);
+	return o;
+}

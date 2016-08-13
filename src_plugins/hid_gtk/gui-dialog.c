@@ -28,7 +28,7 @@
 */
 
 #include "config.h"
-
+#include "compat_misc.h"
 
 #include "data.h"
 #include "gui.h"
@@ -418,7 +418,7 @@ gchar *ghid_fileselect(const char *title, const char *descr,
 				exit(1);
 			}
 
-			recent_dirs[history_pool].id = strdup(history_tag);
+			recent_dirs[history_pool].id = pcb_strdup(history_tag);
 
 			/* Initialize the entries in our history list to all be NULL */
 			for (i = 0; i < NHIST; i++) {

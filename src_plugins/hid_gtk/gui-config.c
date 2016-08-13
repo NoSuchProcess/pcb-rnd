@@ -50,6 +50,7 @@
 #include "gtk_conf_list.h"
 #include "paths.h"
 #include "plug_footprint.h"
+#include "compat_misc.h"
 #include <liblihata/tree.h>
 
 #if 0
@@ -765,7 +766,7 @@ static void config_increments_sect_create(GtkWidget * vbox)
 	*pemil = '/';
 	pemil++;
 
-#warning leak: strdup(path) never free()d
+#warning leak: pcb_strdup(path) never free()d
 	/* ---- Grid Increment/Decrement ---- */
 	strcpy(pemm, "grid");
 	strcpy(pemil, "grid");
@@ -775,13 +776,13 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 conf_core.editor.increments_mm.grid,
 									 conf_core.editor.increments_mm.grid_min,
 									 conf_core.editor.increments_mm.grid_max,
-									 CE_SMALL, umm, width, increment_spin_button_cb, strdup(pathmm), _("Grid:"), NULL);
+									 CE_SMALL, umm, width, increment_spin_button_cb, pcb_strdup(pathmm), _("Grid:"), NULL);
 
 	ghid_coord_entry(hbox, NULL,
 									 conf_core.editor.increments_mil.grid,
 									 conf_core.editor.increments_mil.grid_min,
 									 conf_core.editor.increments_mil.grid_max,
-									 CE_SMALL, umil, width, increment_spin_button_cb, strdup(pathmil), NULL, NULL);
+									 CE_SMALL, umil, width, increment_spin_button_cb, pcb_strdup(pathmil), NULL, NULL);
 
 	label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
@@ -800,14 +801,14 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 conf_core.editor.increments_mm.size_min,
 									 conf_core.editor.increments_mm.size_max,
 									 CE_SMALL, umm, width, increment_spin_button_cb,
-									 strdup(pathmm), _("Size:"), NULL);
+									 pcb_strdup(pathmm), _("Size:"), NULL);
 
 	ghid_coord_entry(hbox, NULL,
 									 conf_core.editor.increments_mil.size,
 									 conf_core.editor.increments_mil.size_min,
 									 conf_core.editor.increments_mil.size_max,
 									 CE_SMALL, umil, width, increment_spin_button_cb,
-									 strdup(pathmil), NULL, NULL);
+									 pcb_strdup(pathmil), NULL, NULL);
 
 	label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
@@ -826,14 +827,14 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 conf_core.editor.increments_mm.line_min,
 									 conf_core.editor.increments_mm.line_max,
 									 CE_SMALL, umm, width, increment_spin_button_cb,
-									 strdup(pathmm), _("Line:"), NULL);
+									 pcb_strdup(pathmm), _("Line:"), NULL);
 
 	ghid_coord_entry(hbox, NULL,
 									 conf_core.editor.increments_mil.line,
 									 conf_core.editor.increments_mil.line_min,
 									 conf_core.editor.increments_mil.line_max,
 									 CE_SMALL, umil, width, increment_spin_button_cb,
-									 strdup(pathmil), NULL, NULL);
+									 pcb_strdup(pathmil), NULL, NULL);
 
 	label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
@@ -852,14 +853,14 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 conf_core.editor.increments_mm.clear_min,
 									 conf_core.editor.increments_mm.clear_max,
 									 CE_SMALL, umm, width, increment_spin_button_cb,
-									 strdup(pathmm), _("Clear:"), NULL);
+									 pcb_strdup(pathmm), _("Clear:"), NULL);
 
 	ghid_coord_entry(hbox, NULL,
 									 conf_core.editor.increments_mil.clear,
 									 conf_core.editor.increments_mil.clear_min,
 									 conf_core.editor.increments_mil.clear_max,
 									 CE_SMALL, umil, width, increment_spin_button_cb,
-									 strdup(pathmil), NULL, NULL);
+									 pcb_strdup(pathmil), NULL, NULL);
 
 	label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
@@ -1025,7 +1026,7 @@ static lht_node_t *config_library_list()
 			sfn = NULL;
 
 		txt = lht_dom_node_alloc(LHT_TEXT, "");
-		txt->data.text.value = strdup(i->payload);
+		txt->data.text.value = pcb_strdup(i->payload);
 		txt->file_name = sfn;
 		txt->doc = config_library_lst_doc;
 		printf("append: '%s' '%s'\n", txt->data.text.value, sfn);
@@ -1461,7 +1462,7 @@ void config_layers_save(GtkButton *widget, save_ctx_t *ctx)
 		layer = &PCB->Data->Layer[n];
 		if (strcmp(layer->Name, nd->data.text.value) != 0) {
 			free(nd->data.text.value);
-			nd->data.text.value = strdup(layer->Name);
+			nd->data.text.value = pcb_strdup(layer->Name);
 			conf_makedirty(ctx->dst_role);
 		}
 	}

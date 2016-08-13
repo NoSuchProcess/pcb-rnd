@@ -45,6 +45,7 @@
 #include "hid_actions.h"
 #include "stdarg.h"
 #include "misc_util.h"
+#include "compat_misc.h"
 
 #include <sys/poll.h>
 
@@ -2320,7 +2321,7 @@ void lesstif_update_status_line()
 	case PCB_MODE_INSERT_POINT:
 	case PCB_MODE_RUBBERBAND_MOVE:
 		if (s45 != NULL)
-			buf = strdup(s45);
+			buf = pcb_strdup(s45);
 		else
 			buf = empty;
 		break;
@@ -2921,7 +2922,7 @@ static void lesstif_set_color(hidGC gc, const char *name)
 	if (name != gc->colorname) {
 		if (gc->colorname != NULL)
 			free(gc->colorname);
-		gc->colorname = strdup(name);
+		gc->colorname = pcb_strdup(name);
 	}
 
 	if (strcmp(name, "erase") == 0) {

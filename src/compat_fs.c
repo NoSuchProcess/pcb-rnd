@@ -41,6 +41,7 @@
 #include <math.h>
 #include <assert.h>
 #include "compat_fs.h"
+#include "compat_misc.h"
 
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
@@ -182,10 +183,10 @@ char *tempfile_name_new(char *name)
 #undef TEMPLATE
 #else
 	/*
-	 * tmpnam() uses a static buffer so strdup() the result right away
+	 * tmpnam() uses a static buffer so pcb_strdup() the result right away
 	 * in case someone decides to create multiple temp names.
 	 */
-	tmpfile = strdup(tmpnam(NULL));
+	tmpfile = pcb_strdup(tmpnam(NULL));
 #ifdef __WIN32__
 	{
 		/* Guile doesn't like \ separators */
@@ -226,7 +227,7 @@ int tempfile_unlink(char *name)
 		e--;
 	}
 
-	dname = strdup(name);
+	dname = pcb_strdup(name);
 	dname[e] = '\0';
 
 	/* 

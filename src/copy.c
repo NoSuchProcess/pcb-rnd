@@ -44,6 +44,7 @@
 #include "rtree.h"
 #include "select.h"
 #include "undo.h"
+#include "compat_misc.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
@@ -186,7 +187,7 @@ static void *CopyLine(LayerTypePtr Layer, LineTypePtr Line)
 	if (!line)
 		return (line);
 	if (Line->Number)
-		line->Number = strdup(Line->Number);
+		line->Number = pcb_strdup(Line->Number);
 	DrawLine(Layer, line);
 	AddObjectToCreateUndoList(PCB_TYPE_LINE, Layer, line, line);
 	return (line);

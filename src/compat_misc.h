@@ -40,4 +40,9 @@ long pcb_rand(void);
 const char *get_user_name(void);
 int pcb_getpid(void);
 
+char *pcb_strndup(const char *s, int len);
+char *pcb_strdup(const char *s);
+
+#define pcb_strdup_null(x) (((x) != NULL) ? pcb_strdup (x) : NULL)
+
 #endif /* PCB_COMPAT_MISC_H */

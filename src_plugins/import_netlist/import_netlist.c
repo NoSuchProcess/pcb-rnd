@@ -31,7 +31,7 @@
 #include "misc.h"
 #include "data.h"
 #include "rats_patch.h"
-
+#include "compat_misc.h"
 
 static plug_import_t import_netlist;
 
@@ -116,18 +116,18 @@ static int ReadNetlist(const char *filename)
 				i++;
 			if (kind == 0) {
 				menu = GetLibraryMenuMemory(&PCB->NetlistLib[NETLIST_INPUT], NULL);
-				menu->Name = strdup(temp);
+				menu->Name = pcb_strdup(temp);
 				menu->flag = 1;
 				kind++;
 			}
 			else {
 				if (kind == 1 && strchr(temp, '-') == NULL) {
 					kind++;
-					menu->Style = strdup(temp);
+					menu->Style = pcb_strdup(temp);
 				}
 				else {
 					entry = GetLibraryEntryMemory(menu);
-					entry->ListEntry = strdup(temp);
+					entry->ListEntry = pcb_strdup(temp);
 					entry->ListEntry_dontfree = 0;
 				}
 			}

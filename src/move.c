@@ -46,6 +46,7 @@
 #include "select.h"
 #include "undo.h"
 #include "hid_actions.h"
+#include "compat_misc.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
@@ -871,7 +872,7 @@ int MoveLayer(int old_index, int new_index)
 		max_copper_layer++;
 		memset(lp, 0, sizeof(LayerType));
 		lp->On = 1;
-		lp->Name = strdup("New Layer");
+		lp->Name = pcb_strdup("New Layer");
 		lp->Color = conf_core.appearance.color.layer[new_index];
 		lp->SelectedColor = conf_core.appearance.color.layer_selected[new_index];
 		for (l = 0; l < max_copper_layer; l++)

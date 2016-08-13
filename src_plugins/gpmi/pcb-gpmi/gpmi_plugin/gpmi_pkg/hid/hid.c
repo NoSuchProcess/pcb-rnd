@@ -9,6 +9,7 @@
 #include "src/pcb-printf.h"
 #include "src/hid_attrib.h"
 #include "src/hid_init.h"
+#include "src/compat_misc.h"
 
 #define FROM_PKG
 #include "hid.h"
@@ -38,8 +39,8 @@ hid_t *hid_create(char *hid_name, char *description)
 
 	h->module = gpmi_get_current_module();
 
-	h->hid->name        = strdup(hid_name);
-	h->hid->description = strdup(description);
+	h->hid->name        = pcb_strdup(hid_name);
+	h->hid->description = pcb_strdup(description);
 	h->hid->exporter    = 1;
 	h->hid->gui         = 0;
 	h->hid->struct_size = sizeof(HID);
@@ -136,7 +137,7 @@ dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 	}
 	if (res == NULL)
 		return NULL;
-	return strdup(res);
+	return pcb_strdup(res);
 }
 
 
@@ -191,7 +192,7 @@ HID_Attr_Val hid_string2val(const hid_attr_type_t type, const char *str)
 		case HIDA_Label:
 		case HIDA_Enum:
 		case HIDA_Path:
-			v.str_value = strdup(str);
+			v.str_value = pcb_strdup(str);
 			break;
 		case HIDA_Mixed:
 		default:
@@ -246,8 +247,8 @@ int hid_add_attribute(hid_t *hid, char *attr_name, char *help, hid_attr_type_t t
 	hid->attr = realloc(hid->attr, sizeof(HID_Attribute) * hid->attr_num);
 	hid->type = realloc(hid->type, sizeof(hid_attr_type_t) * hid->attr_num);
 
-	hid->attr[current].name         = strdup(attr_name);
-	hid->attr[current].help_text    = strdup(help);
+	hid->attr[current].name         = pcb_strdup(attr_name);
+	hid->attr[current].help_text    = pcb_strdup(help);
 	hid->attr[current].type         = type;
 	hid->attr[current].min_val      = min;
 	hid->attr[current].max_val      = max;

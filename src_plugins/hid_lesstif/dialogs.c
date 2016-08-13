@@ -589,7 +589,7 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 			actual_nattrs++;
 		results[i] = attrs[i].default_val;
 		if (results[i].str_value)
-			results[i].str_value = strdup(results[i].str_value);
+			results[i].str_value = pcb_strdup(results[i].str_value);
 	}
 
 	wl = (Widget *) malloc(n_attrs * sizeof(Widget));
@@ -1807,8 +1807,8 @@ void lesstif_attributes_dialog(char *owner, AttributeListType * attrs_list)
 			attributes_list->Max = attr_num_rows;
 		}
 		for (i = 0; i < attr_num_rows; i++) {
-			attributes_list->List[i].name = strdup(XmTextFieldGetString(attr_row[i].w_name));
-			attributes_list->List[i].value = strdup(XmTextFieldGetString(attr_row[i].w_value));
+			attributes_list->List[i].name = pcb_strdup(XmTextFieldGetString(attr_row[i].w_name));
+			attributes_list->List[i].value = pcb_strdup(XmTextFieldGetString(attr_row[i].w_value));
 			attributes_list->Number = attr_num_rows;
 		}
 	}

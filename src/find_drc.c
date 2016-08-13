@@ -41,8 +41,8 @@ static DrcViolationType
 {
 	DrcViolationType *violation = (DrcViolationType *) malloc(sizeof(DrcViolationType));
 
-	violation->title = strdup(title);
-	violation->explanation = strdup(explanation);
+	violation->title = pcb_strdup(title);
+	violation->explanation = pcb_strdup(explanation);
 	violation->x = x;
 	violation->y = y;
 	violation->angle = angle;

@@ -51,6 +51,7 @@
 #include "select.h"
 #include "set.h"
 #include "funchash_core.h"
+#include "compat_misc.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
@@ -127,7 +128,7 @@ static void *AddLineToBuffer(LayerTypePtr Layer, LineTypePtr Line)
 															Line->Point2.X, Line->Point2.Y,
 															Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, PCB_FLAG_FOUND | ExtraFlag));
 	if (line && Line->Number)
-		line->Number = strdup(Line->Number);
+		line->Number = pcb_strdup(Line->Number);
 	return (line);
 }
 
@@ -507,15 +508,15 @@ int LoadFootprint(int argc, char **argv, Coord x, Coord y)
 
 	if (e->Name[0].TextString)
 		free(e->Name[0].TextString);
-	e->Name[0].TextString = strdup(name);
+	e->Name[0].TextString = pcb_strdup(name);
 
 	if (e->Name[1].TextString)
 		free(e->Name[1].TextString);
-	e->Name[1].TextString = refdes ? strdup(refdes) : 0;
+	e->Name[1].TextString = refdes ? pcb_strdup(refdes) : 0;
 
 	if (e->Name[2].TextString)
 		free(e->Name[2].TextString);
-	e->Name[2].TextString = value ? strdup(value) : 0;
+	e->Name[2].TextString = value ? pcb_strdup(value) : 0;
 
 	return 0;
 }
@@ -551,7 +552,7 @@ bool SmashBufferElement(BufferTypePtr Buffer)
 		CreateNewLineOnLayer(&Buffer->Data->SILKLAYER,
 												 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness, 0, NoFlags());
 		if (line)
-			line->Number = STRDUP(NAMEONPCB_NAME(element));
+			line->Number = pcb_strdup_null(NAMEONPCB_NAME(element));
 	}
 	END_LOOP;
 	ARC_LOOP(element);
@@ -581,7 +582,7 @@ bool SmashBufferElement(BufferTypePtr Buffer)
 																pad->Point1.X, pad->Point1.Y,
 																pad->Point2.X, pad->Point2.Y, pad->Thickness, pad->Clearance, NoFlags());
 		if (line)
-			line->Number = STRDUP(pad->Number);
+			line->Number = pcb_strdup_null(pad->Number);
 	}
 	END_LOOP;
 	FreeElementMemory(element);
@@ -735,7 +736,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 	LINE_LOOP(&Buffer->Data->SILKLAYER);
 	{
 		if (line->Number && !NAMEONPCB_NAME(Element))
-			NAMEONPCB_NAME(Element) = strdup(line->Number);
+			NAMEONPCB_NAME(Element) = pcb_strdup(line->Number);
 		CreateNewLineInElement(Element, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
 		hasParts = true;
 	}
@@ -1358,7 +1359,7 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 					default_file = NULL;
 				}
 				if (name && *name) {
-					default_file = strdup(name);
+					default_file = pcb_strdup(name);
 				}
 				free_name = 1;
 			}

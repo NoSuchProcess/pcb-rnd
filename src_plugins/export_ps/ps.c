@@ -27,6 +27,7 @@
 #include "hid_flags.h"
 #include "hid_actions.h"
 #include "conf_core.h"
+#include "compat_misc.h"
 
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented PS function %s.\n", __FUNCTION__); abort()
 
@@ -1492,7 +1493,7 @@ void ps_calibrate_1(double xval, double yval, int use_command)
 	}
 
 	if (ps_calib_attribute_list[0].default_val.str_value == NULL) {
-		ps_calib_attribute_list[0].default_val.str_value = strdup("lpr");
+		ps_calib_attribute_list[0].default_val.str_value = pcb_strdup("lpr");
 	}
 
 	if (gui->

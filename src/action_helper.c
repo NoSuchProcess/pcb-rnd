@@ -59,6 +59,7 @@
 #include "stub_stroke.h"
 #include "funchash_core.h"
 #include "hid_actions.h"
+#include "compat_misc.h"
 
 /* --------------------------------------------------------------------------- */
 
@@ -989,7 +990,7 @@ void NotifyMode(void)
 
 						memcpy(estr, e->Name, MAX_ELEMENTNAMES * sizeof(TextType));
 						for (i = 0; i < MAX_ELEMENTNAMES; ++i)
-							estr[i].TextString = estr[i].TextString ? strdup(estr[i].TextString) : NULL;
+							estr[i].TextString = estr[i].TextString ? pcb_strdup(estr[i].TextString) : NULL;
 						RemoveElement(e);
 					}
 				}

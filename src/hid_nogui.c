@@ -7,6 +7,7 @@
 
 #include "global.h"
 #include "hid.h"
+#include "compat_misc.h"
 
 /* This is the "gui" that is installed at startup, and is used when
    there is no other real GUI to use.  For the most part, it just
@@ -258,7 +259,7 @@ static char *read_stdin_line(void)
 	if (s[0] == '\0')
 		return NULL;
 
-	return strdup(s);
+	return pcb_strdup(s);
 }
 
 #undef MAX_LINE_LENGTH
@@ -319,9 +320,9 @@ static char *nogui_prompt_for(const char *msg, const char *default_string)
 
 	answer = read_stdin_line();
 	if (answer == NULL)
-		return strdup((default_string != NULL) ? default_string : "");
+		return pcb_strdup((default_string != NULL) ? default_string : "");
 	else
-		return strdup(answer);
+		return pcb_strdup(answer);
 }
 
 /* FIXME - this could use some enhancement to actually use the other
@@ -338,9 +339,9 @@ static char *nogui_fileselect(const char *title, const char *descr,
 
 	answer = read_stdin_line();
 	if (answer == NULL)
-		return (default_file != NULL) ? strdup(default_file) : NULL;
+		return (default_file != NULL) ? pcb_strdup(default_file) : NULL;
 	else
-		return strdup(answer);
+		return pcb_strdup(answer);
 }
 
 static int

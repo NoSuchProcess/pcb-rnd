@@ -202,7 +202,7 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 	char *name = menu->Entry[cbs->item_position - 1].ListEntry;
 	char *ename, *pname;
 
-	ename = strdup(name);
+	ename = pcb_strdup(name);
 	pname = strchr(ename, '-');
 	if (!pname) {
 		free(ename);

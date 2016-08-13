@@ -47,6 +47,7 @@
 #include "plugins.h"
 #include "plug_footprint.h"
 #include "compat_fs.h"
+#include "compat_misc.h"
 #include "error.h"
 #include "misc.h"
 #include "conf.h"
@@ -82,8 +83,8 @@ static int list_cb(void *cookie, const char *subdir, const char *name, fp_type_t
 		   pointer: GetLibraryMenuMemory (&Library) calls realloc()! 
 		   Build a list of directories to be visited later, instead. */
 		d = malloc(sizeof(list_dir_t));
-		d->subdir = strdup(name);
-		d->parent = strdup(subdir);
+		d->subdir = pcb_strdup(name);
+		d->parent = pcb_strdup(subdir);
 		d->next = l->subdirs;
 		l->subdirs = d;
 		return 0;
@@ -277,8 +278,8 @@ static int fp_search_cb(void *cookie, const char *subdir, const char *name, fp_t
 		const char *suffix = name + ctx->target_len;
 		/* ugly heuristics: footprint names may end in .fp or .ele */
 		if ((*suffix == '\0') || (strcasecmp(suffix, ".fp") == 0) || (strcasecmp(suffix, ".ele") == 0)) {
-			ctx->path = strdup(subdir);
-			ctx->real_name = strdup(name);
+			ctx->path = pcb_strdup(subdir);
+			ctx->real_name = pcb_strdup(name);
 			return 1;
 		}
 	}
@@ -293,7 +294,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 	fp_search_t ctx;
 
 	if ((*basename == '/') || (*basename == PCB_DIR_SEPARATOR_C))
-		return strdup(basename);
+		return pcb_strdup(basename);
 
 	ctx.target = basename;
 	ctx.target_len = strlen(ctx.target);
@@ -320,7 +321,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 			free(ctx.real_name);
 /*			fprintf("  found '%s'\n", path);*/
 			free(fpath);
-			return strdup(path);
+			return pcb_strdup(path);
 		}
 		free(fpath);
 		if (end == NULL)

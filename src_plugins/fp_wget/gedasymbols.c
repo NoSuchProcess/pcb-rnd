@@ -9,7 +9,7 @@
 #include "gedasymbols.h"
 #include "plugins.h"
 #include "plug_footprint.h"
-
+#include "compat_misc.h"
 
 #define REQUIRE_PATH_PREFIX "wget@gedasymbols"
 
@@ -36,7 +36,7 @@ static char *load_md5_sum(FILE *f)
 		if ((*s == '\0') || (isspace(*s))) {
 			if ((s - sum) == 32) {
 				*s = '\0';
-				return strdup(sum);
+				return pcb_strdup(sum);
 			}
 			else
 				return NULL;
@@ -139,7 +139,7 @@ int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 		l = fp_mkdir_p(vpath.array);
 		l = fp_append_entry(l, fn, PCB_FP_FILE, NULL);
 		fn[-1] = '/';
-		l->data.fp.loc_info = strdup(vpath.array);
+		l->data.fp.loc_info = pcb_strdup(vpath.array);
 	}
 	fp_wget_close(&f, &fctx);
 

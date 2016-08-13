@@ -38,6 +38,7 @@
 #include "conf_core.h"
 #include "plugins.h"
 #include "error.h"
+#include "compat_misc.h"
 
 plug_fp_t *plug_fp_chain = NULL;
 library_t library;
@@ -46,7 +47,7 @@ int fp_dupname(const char *name, char **basename, char **params)
 {
 	char *newname, *s;
 
-	*basename = newname = strdup(name);
+	*basename = newname = pcb_strdup(name);
 	s = strchr(newname, '(');
 	if (s == NULL) {
 		*params = NULL;
@@ -76,7 +77,7 @@ const void *fp_tag(const char *tag, int alloc)
 		fp_tags = htsp_alloc(strhash, strkeyeq);
 	e = htsp_getentry(fp_tags, (char *) tag);
 	if ((e == NULL) && alloc) {
-		htsp_set(fp_tags, strdup(tag), (void *) counter);
+		htsp_set(fp_tags, pcb_strdup(tag), (void *) counter);
 		counter++;
 		e = htsp_getentry(fp_tags, (char *) tag);
 	}
@@ -137,7 +138,7 @@ library_t *fp_append_entry(library_t *parent, const char *name, fp_type_t type, 
 		strcpy(entry->name+nl, "()");
 	}
 	else
-		entry->name = strdup(name);
+		entry->name = pcb_strdup(name);
 
 	entry->type = LIB_FOOTPRINT;
 	entry->data.fp.type = type;
@@ -183,9 +184,9 @@ library_t *fp_mkdir_len(library_t *parent, const char *name, int name_len)
 	library_t *l = get_library_memory(parent);
 
 	if (name_len > 0)
-		l->name = strndup(name, name_len);
+		l->name = pcb_strndup(name, name_len);
 	else
-		l->name = strdup(name);
+		l->name = pcb_strdup(name);
 	l->parent = parent;
 	l->type = LIB_DIR;
 	vtlib_init(&l->data.dir.children);
@@ -345,7 +346,7 @@ static int fp_read_lib_all_(const char *searchpath)
 	/* Additional loop to allow for multiple 'newlib' style library directories 
 	 * called out in Settings.LibraryTree
 	 */
-	libpaths = strdup(searchpath);
+	libpaths = pcb_strdup(searchpath);
 	for (p = strtok(libpaths, PCB_PATH_DELIMETER); p && *p; p = strtok(NULL, PCB_PATH_DELIMETER)) {
 		/* remove trailing path delimeter */
 		strncpy(toppath, p, sizeof(toppath) - 1);

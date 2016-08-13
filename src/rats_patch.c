@@ -34,6 +34,7 @@
 #include "buffer.h"
 #include "remove.h"
 #include "copy.h"
+#include "compat_misc.h"
 
 static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t * n, int do_free);
 
@@ -44,10 +45,10 @@ void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const
 	n = malloc(sizeof(rats_patch_line_t));
 
 	n->op = op;
-	n->id = strdup(id);
-	n->arg1.net_name = strdup(a1);
+	n->id = pcb_strdup(id);
+	n->arg1.net_name = pcb_strdup(a1);
 	if (a2 != NULL)
-		n->arg2.attrib_val = strdup(a2);
+		n->arg2.attrib_val = pcb_strdup(a2);
 	else
 		n->arg2.attrib_val = NULL;
 
@@ -174,7 +175,7 @@ static void netlist_copy(LibraryTypePtr dst, LibraryTypePtr src)
 			LibraryMenuTypePtr smenu = &src->Menu[n];
 			LibraryMenuTypePtr dmenu = &dst->Menu[n];
 /*		fprintf(stderr, "Net %d name='%s': ", n, smenu->Name+2);*/
-			dmenu->Name = strdup(smenu->Name);
+			dmenu->Name = pcb_strdup(smenu->Name);
 			dmenu->EntryMax = dmenu->EntryN = smenu->EntryN;
 			dmenu->Entry = calloc(sizeof(LibraryEntryType), dmenu->EntryN);
 			dmenu->flag = smenu->flag;
@@ -182,7 +183,7 @@ static void netlist_copy(LibraryTypePtr dst, LibraryTypePtr src)
 			for (p = 0; p < smenu->EntryN; p++) {
 			LibraryEntryTypePtr sentry = &smenu->Entry[p];
 				LibraryEntryTypePtr dentry = &dmenu->Entry[p];
-				dentry->ListEntry = strdup(sentry->ListEntry);
+				dentry->ListEntry = pcb_strdup(sentry->ListEntry);
 				dentry->ListEntry_dontfree = 0;
 /*			fprintf (stderr, " '%s'/%p", dentry->ListEntry, dentry->ListEntry);*/
 			}
@@ -450,7 +451,7 @@ static int SavePatch(int argc, char **argv, Coord x, Coord y)
 			strcpy(end, ".bap");
 		}
 		else
-			default_file = strdup("unnamed.bap");
+			default_file = pcb_strdup("unnamed.bap");
 
 		fn = gui->fileselect(_("Save netlist patch as ..."),
 												 _("Choose a file to save netlist patch to\n"

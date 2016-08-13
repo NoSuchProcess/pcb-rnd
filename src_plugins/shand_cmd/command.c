@@ -47,6 +47,7 @@
 #include "set.h"
 #include "plugins.h"
 #include "hid_actions.h"
+#include "compat_misc.h"
 
 /* ---------------------------------------------------------------------- */
 
@@ -323,7 +324,7 @@ static int CommandSaveLayout(int argc, char **argv, Coord x, Coord y)
 		if (SavePCB(argv[0], NULL) == 0) {
 			SetChangedFlag(false);
 			free(PCB->Filename);
-			PCB->Filename = strdup(argv[0]);
+			PCB->Filename = pcb_strdup(argv[0]);
 			if (gui->notify_filename_changed != NULL)
 				gui->notify_filename_changed();
 		}

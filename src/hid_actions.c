@@ -12,6 +12,7 @@
 #include "error.h"
 #include "event.h"
 #include "hid_actions.h"
+#include "compat_misc.h"
 
 /* do not throw "unknown action" warning for these: they are known
    actions, the GUI HID may register them, but nothing bad happens if
@@ -65,7 +66,7 @@ void hid_register_actions(const HID_Action * a, int n, const char *cookie, int c
 		ca = malloc(sizeof(hid_cookie_action_t));
 		ca->cookie = cookie;
 		ca->action = a+i;
-		htsp_set(all_actions, strdup(a[i].name), ca);
+		htsp_set(all_actions, pcb_strdup(a[i].name), ca);
 	}
 }
 

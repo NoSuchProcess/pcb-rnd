@@ -52,6 +52,7 @@
 #include "hid_actions.h"
 #include "misc_util.h"
 #include "report_conf.h"
+#include "compat_misc.h"
 
 conf_report_t conf_report;
 
@@ -573,7 +574,7 @@ static int ReportAllNetLengths(int argc, char **argv, Coord x, Coord y)
 		char *pname;
 		bool got_one = 0;
 
-		ename = strdup(ename);
+		ename = pcb_strdup(ename);
 		pname = strchr(ename, '-');
 		if (!pname) {
 			free(ename);

@@ -460,7 +460,7 @@ FILE *OpenConnectionDataFile(void)
 	}
 
 	if (fname && *fname)
-		default_file = strdup(fname);
+		default_file = pcb_strdup(fname);
 
 	fp = CheckAndOpenFile(fname, true, false, &result, NULL);
 	free(fname);

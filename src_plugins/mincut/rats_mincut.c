@@ -45,6 +45,7 @@
 #include "set.h"
 #include "undo.h"
 #include "plugins.h"
+#include "compat_misc.h"
 
 #include "rats.h"
 #include "pcb-mincut/graph.h"
@@ -204,8 +205,8 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 			sprintf(s, "%s #%ld", typ, n->to->ID);
 		g->node2name[n->gid] = s;
 	}
-	g->node2name[0] = strdup("S");
-	g->node2name[1] = strdup("T");
+	g->node2name[0] = pcb_strdup("S");
+	g->node2name[1] = pcb_strdup("T");
 
 	/* calculate how many edges each node has and the max edge count */
 	maxedges = 0;
@@ -390,7 +391,7 @@ void rat_proc_shorts(void)
 				if ((spn == NULL) || (spi == NULL))
 					continue;
 
-				/* can compare by pointer - names are never strdup()'d */
+				/* can compare by pointer - names are never pcb_strdup()'d */
 				if ((&spn->Name[2] == i->with_net) || (&spi->Name[2] == n->with_net))
 					i->ignore = 1;
 			}

@@ -30,6 +30,7 @@
 #include "data.h"
 #include "error.h"
 #include "plugins.h"
+#include "compat_misc.h"
 
 /* from mymem.h, not include because of the malloc junk */
 LibraryMenuTypePtr GetLibraryMenuMemory(LibraryTypePtr, int *idx);
@@ -114,7 +115,7 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
 	 pair_list_free(nodes);
 	 return;
      }
-     menu->Name = strdup (name->str1);
+     menu->Name = pcb_strdup (name->str1);
      free(name->str1);
      /* if renamed str2 also exists and must be freed */
      if ( name->str2 )  free(name->str2);
@@ -178,7 +179,7 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
 	 free(node->str1);
 	 free(node->str2);
 	 entry = GetLibraryEntryMemory (menu);
-	 entry->ListEntry = strdup(buf);
+	 entry->ListEntry = pcb_strdup(buf);
 	 done_node = node;
 	 node = node->next;
 	 free(done_node);

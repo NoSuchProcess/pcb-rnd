@@ -41,6 +41,7 @@
 #include "remove.h"
 #include "copy.h"
 #include "hid_attrib.h"
+#include "compat_misc.h"
 
 /* --------------------------------------------------------------------------- */
 /* Ask the user for a search pattern */
@@ -63,7 +64,7 @@ static char *gui_get_pat(search_method_t * method)
 	*method = results[1].int_value;
 	if (results[0].str_value == NULL)
 		return NULL;
-	return strdup(results[0].str_value);
+	return pcb_strdup(results[0].str_value);
 #undef nattr
 }
 

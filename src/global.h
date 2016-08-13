@@ -550,4 +550,10 @@ struct rats_patch_line_s {
 #define AUSAGE(x) Message ("Usage:\n%s\n", (x##_syntax))
 #define AFAIL(x) { Message ("Syntax error.  Usage:\n%s\n", (x##_syntax)); return 1; }
 
+/* Make sure to catch usage of non-portable functions in debug mode */
+#ifndef NDEBUG
+#	define strdup      never_use_strdup__use_pcb_strdup
+#	define strndup     never_use_strndup__use_pcb_strndup
+#endif
+
 #endif /* PCB_GLOBAL_H  */

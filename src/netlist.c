@@ -47,6 +47,7 @@
 #include "create.h"
 #include "rats_patch.h"
 #include "hid_actions.h"
+#include "compat_misc.h"
 
 #ifdef HAVE_REGCOMP
 #undef HAVE_RE_COMP
@@ -204,7 +205,7 @@ static void netlist_clear(LibraryMenuType * net, LibraryEntryType * pin)
 static void netlist_style(LibraryMenuType * net, const char *style)
 {
 	free(net->Style);
-	net->Style = STRDUP((char *) style);
+	net->Style = pcb_strdup_null((char *) style);
 }
 
 

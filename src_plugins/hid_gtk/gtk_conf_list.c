@@ -2,6 +2,7 @@
 #include <string.h>
 #include <gdk/gdkkeysyms.h>
 #include "gtk_conf_list.h"
+#include "compat_misc.h"
 
 static void fill_misc_cols(gtk_conf_list_t *cl, int row_idx, GtkTreeIter *iter, lht_node_t *nd)
 {
@@ -46,7 +47,7 @@ static void rebuild(gtk_conf_list_t *cl)
 			gtk_list_store_set(cl->l, &it, cl->col_src, "<not saved yet>", -1);
 
 		nd = lht_dom_node_alloc(LHT_TEXT, "");
-		nd->data.text.value = strdup(s == NULL ? "" : s);
+		nd->data.text.value = pcb_strdup(s == NULL ? "" : s);
 		nd->doc = cl->lst->doc;
 		lht_dom_list_append(cl->lst, nd);
 

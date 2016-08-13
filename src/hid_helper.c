@@ -30,6 +30,7 @@
 #include "misc.h"
 #include "hid_helper.h"
 #include "hid_attrib.h"
+#include "compat_misc.h"
 
 const char *layer_type_to_file_name(int idx, int style)
 {
@@ -97,9 +98,9 @@ void derive_default_filename(const char *pcbfile, HID_Attribute * filename_attri
 	char *pf;
 
 	if (pcbfile == NULL)
-		pf = strdup("unknown.pcb");
+		pf = pcb_strdup("unknown.pcb");
 	else
-		pf = strdup(pcbfile);
+		pf = pcb_strdup(pcbfile);
 
 	if (!pf || (memory && filename_attrib->default_val.str_value != *memory))
 		return;

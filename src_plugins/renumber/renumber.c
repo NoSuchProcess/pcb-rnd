@@ -36,6 +36,7 @@
 #include "plugins.h"
 #include "hid_actions.h"
 #include "conf_core.h"
+#include "compat_misc.h"
 
 #include "pcb-printf.h"
 
@@ -96,7 +97,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	}
 
 	if (name && *name) {
-		default_file = strdup(name);
+		default_file = pcb_strdup(name);
 	}
 
 	if ((out = fopen(name, "r"))) {
@@ -200,7 +201,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 		/* If there is no refdes, maybe just spit out a warning */
 		if (NAMEONPCB_NAME(element_list[i])) {
 			/* figure out the prefix */
-			tmps = strdup(NAMEONPCB_NAME(element_list[i]));
+			tmps = pcb_strdup(NAMEONPCB_NAME(element_list[i]));
 			j = 0;
 			while (tmps[j] && (tmps[j] < '0' || tmps[j] > '9')
 						 && tmps[j] != '?')
@@ -231,7 +232,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 			 * prefix 
 			 */
 			if (!cnt_list[j].name) {
-				cnt_list[j].name = strdup(tmps);
+				cnt_list[j].name = pcb_strdup(tmps);
 				cnt_list[j].cnt = 0;
 			}
 
@@ -274,8 +275,8 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 				fprintf(out, "*RENAME* \"%s\" \"%s\"\n", NAMEONPCB_NAME(element_list[i]), tmps);
 
 				/* add this rename to our table of renames so we can update the netlist */
-				was[c_cnt] = strdup(NAMEONPCB_NAME(element_list[i]));
-				is[c_cnt] = strdup(tmps);
+				was[c_cnt] = pcb_strdup(NAMEONPCB_NAME(element_list[i]));
+				is[c_cnt] = pcb_strdup(tmps);
 				c_cnt++;
 
 				AddObjectToChangeNameUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element_list[i], NAMEONPCB_NAME(element_list[i]));
@@ -311,7 +312,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 			for (j = 0; j < PCB->NetlistLib[WTF].Menu[i].EntryN; j++) {
 
 				/* figure out the pin number part from strings like U3-21 */
-				tmps = strdup(PCB->NetlistLib[WTF].Menu[i].Entry[j].ListEntry);
+				tmps = pcb_strdup(PCB->NetlistLib[WTF].Menu[i].Entry[j].ListEntry);
 				for (k = 0; tmps[k] && tmps[k] != '-'; k++);
 				tmps[k] = '\0';
 				pin = tmps + k + 1;

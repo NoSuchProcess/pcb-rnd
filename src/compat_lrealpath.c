@@ -41,6 +41,7 @@ components will be simplified.  The returned value will be allocated using
 #include <unistd.h>
 #endif
 #include <string.h>
+#include "compat_misc.h"
 
 /* On GNU libc systems the declaration is only visible with _GNU_SOURCE.  */
 #if defined(HAVE_CANONICALIZE_FILE_NAME) \
@@ -76,7 +77,7 @@ char *lrealpath(const char *filename)
 		const char *rp = realpath(filename, buf);
 		if (rp == NULL)
 			rp = filename;
-		return strdup(rp);
+		return pcb_strdup(rp);
 	}
 	/* REALPATH_LIMIT */
 
@@ -87,7 +88,7 @@ char *lrealpath(const char *filename)
 	{
 		char *rp = canonicalize_file_name(filename);
 		if (rp == NULL)
-			return strdup(filename);
+			return pcb_strdup(filename);
 		else
 			return rp;
 	}
@@ -111,7 +112,7 @@ char *lrealpath(const char *filename)
 			if (buf == NULL)
 				return NULL;
 			rp = realpath(filename, buf);
-			ret = strdup(rp ? rp : filename);
+			ret = pcb_strdup(rp ? rp : filename);
 			free(buf);
 			return ret;
 		}
@@ -130,18 +131,18 @@ char *lrealpath(const char *filename)
 		char *basename;
 		DWORD len = GetFullPathName(filename, MAX_PATH, buf, &basename);
 		if (len == 0 || len > MAX_PATH - 1)
-			return strdup(filename);
+			return pcb_strdup(filename);
 		else {
 			/* The file system is case-preserving but case-insensitive,
 			   Canonicalize to lowercase, using the codepage associated
 			   with the process locale.  */
 			CharLowerBuff(buf, len);
-			return strdup(buf);
+			return pcb_strdup(buf);
 		}
 	}
 #else
 
 	/* This system is a lost cause, just duplicate the filename.  */
-	return strdup(filename);
+	return pcb_strdup(filename);
 #endif
 }

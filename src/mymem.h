@@ -51,8 +51,6 @@
 #define	STEP_LIBRARYENTRY	20
 #define	STEP_RUBBERBAND		100
 
-#define STRDUP(x) (((x) != NULL) ? strdup (x) : NULL)
-
 /* ---------------------------------------------------------------------------
  * some memory types
  */
@@ -101,10 +99,6 @@ void RemoveFreePad(PadType * data);
 void RemoveFreeVia(PinType * data);
 void RemoveFreeElement(ElementType * data);
 void RemoveFreeRat(RatType * data);
-
-#ifdef NEED_STRDUP
-char *strdup(const char *);
-#endif
 
 #ifndef HAVE_LIBDMALLOC
 #define malloc(x) calloc(1,(x))

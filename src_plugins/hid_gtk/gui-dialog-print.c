@@ -35,6 +35,7 @@
 #include "hid_attrib.h"
 #include "hid_init.h"
 #include "misc_util.h"
+#include "compat_misc.h"
 
 static GtkWidget *export_dialog = NULL;
 
@@ -73,7 +74,7 @@ static void entry_changed_cb(GtkEntry * entry, char **str)
 
 	if (*str)
 		free(*str);
-	*str = strdup(s);
+	*str = pcb_strdup(s);
 }
 
 static void enum_changed_cb(GtkWidget * combo_box, int *val)
@@ -292,7 +293,7 @@ int ghid_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * res
 		for (i = 0; i < n_attrs; i++) {
 			results[i] = attrs[i].default_val;
 			if (results[i].str_value)
-				results[i].str_value = strdup(results[i].str_value);
+				results[i].str_value = pcb_strdup(results[i].str_value);
 		}
 		rc = 0;
 	}

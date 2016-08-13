@@ -13,6 +13,7 @@
 #include "misc.h"
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "compat_misc.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -173,7 +174,7 @@ static StringList *string_insert(char *str, StringList * list)
 	}
 
 	newlist->next = NULL;
-	newlist->str = strdup(str);
+	newlist->str = pcb_strdup(str);
 
 	if (list == NULL)
 		return (newlist);
@@ -199,8 +200,8 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
 		}
 
 		newlist->next = NULL;
-		newlist->descr = strdup(descr);
-		newlist->value = strdup(value);
+		newlist->descr = pcb_strdup(descr);
+		newlist->value = pcb_strdup(value);
 		newlist->num = 1;
 		newlist->refdes = string_insert(refdes, NULL);
 		return (newlist);
@@ -228,8 +229,8 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
 		prev->next = newlist;
 
 		newlist->next = NULL;
-		newlist->descr = strdup(descr);
-		newlist->value = strdup(value);
+		newlist->descr = pcb_strdup(descr);
+		newlist->value = pcb_strdup(value);
 		newlist->num = 1;
 		newlist->refdes = string_insert(refdes, NULL);
 	}

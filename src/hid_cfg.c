@@ -30,6 +30,7 @@
 #include "hid_cfg.h"
 #include "error.h"
 #include "paths.h"
+#include "compat_misc.h"
 
 char hid_cfg_error_shared[1024];
 
@@ -63,7 +64,7 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 
 		if (rel_level <= 1) {
 			/* creating a main menu */
-			char *end, *name = strdup(path);
+			char *end, *name = pcb_strdup(path);
 			for(end = name; *end == '/'; end++) ;
 			end = strchr(end, '/');
 			*end = '\0';
@@ -399,7 +400,7 @@ void hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap)
 
 		if (cval != NULL) {
 			t = lht_dom_node_alloc(LHT_TEXT, cname);
-			t->data.text.value = strdup(cval);
+			t->data.text.value = pcb_strdup(cval);
 			lht_dom_hash_put(node, t);
 		}
 	}

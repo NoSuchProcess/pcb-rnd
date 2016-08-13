@@ -10,6 +10,7 @@
 #include "data.h"
 #include "misc.h"
 #include "plugins.h"
+#include "compat_misc.h"
 
 #include "hid.h"
 #include "../export_ps/ps.h"
@@ -53,7 +54,7 @@ static HID_Attribute *lpr_get_export_options(int *n)
 	 * new one based on how a user fills out a print dialog.
 	 */
 	if (base_lpr_options[HA_lprcommand].default_val.str_value == NULL) {
-		base_lpr_options[HA_lprcommand].default_val.str_value = strdup("lpr");
+		base_lpr_options[HA_lprcommand].default_val.str_value = pcb_strdup("lpr");
 	}
 
 	if (lpr_options == 0) {

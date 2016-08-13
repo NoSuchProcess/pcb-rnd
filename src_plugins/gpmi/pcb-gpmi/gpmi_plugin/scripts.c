@@ -13,6 +13,7 @@
 #include "scripts.h"
 #include "src/conf_core.h"
 #include "src/compat_fs.h"
+#include "src/compat_misc.h"
 
 #define CONFNAME "pcb-rnd-gpmi.conf"
 
@@ -47,10 +48,10 @@ static hid_gpmi_script_info_t *hid_gpmi_script_info_add(hid_gpmi_script_info_t *
 	char *name, *module_name, *conffile_name;
 	/* make these copies before the free()'s because of reload calling us with
 	   the same pointers... */
-	name = strdup(name_);
-	module_name = strdup(module_name_);
+	name = pcb_strdup(name_);
+	module_name = pcb_strdup(module_name_);
 	if (conffile_name_ != NULL)
-		conffile_name = strdup(conffile_name_);
+		conffile_name = pcb_strdup(conffile_name_);
 	else
 		conffile_name = NULL;
 
@@ -153,7 +154,7 @@ hid_gpmi_script_info_t *hid_gpmi_reload_module(hid_gpmi_script_info_t *i)
 
 	if (i->conffile_name != NULL) {
 		char *end;
-		conf_dir = strdup(i->conffile_name);
+		conf_dir = pcb_strdup(i->conffile_name);
 		end = strrchr(conf_dir, PCB_DIR_SEPARATOR_C);
 		if (end == NULL) {
 			free((char *)conf_dir);
@@ -198,7 +199,7 @@ char line[1024], *module, *params, *s;
 					fprintf(fout, "%s", line);
 				break;
 			default:
-				module = strdup(line);
+				module = pcb_strdup(line);
 				params = module + strcspn(module, "\t ");
 				while((*params == ' ') || (*params == '\t')) {
 					*(params) = '\0';
@@ -267,17 +268,17 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 			if (conf_core.rc.path.home != NULL) {
 				snprintf(buffer, sizeof(buffer), "%s%c%s", conf_core.rc.path.home, PCB_DIR_SEPARATOR_C, file_name);
 				fprintf(stderr, "asm_scriptname FN=%s\n", buffer);
-				return strdup(buffer);
+				return pcb_strdup(buffer);
 			}
 			else {
 				fprintf(stderr, "pcb-gpmi error: can't access $HOME for substituting ~\n");
 #ifdef CONFIG_DEBUG
 				printf("FN=%s\n", file_name);
 #endif
-				return strdup(file_name);
+				return pcb_strdup(file_name);
 			}
 		case PCB_DIR_SEPARATOR_C: /* full path */
-			return strdup(file_name);
+			return pcb_strdup(file_name);
 		default: /* relative path - must be relative to the current conf_dir */
 			if ((file_name[0] == '.') && (file_name[1] == PCB_DIR_SEPARATOR_C))
 				file_name += 2;
@@ -289,7 +290,7 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 #ifdef CONFIG_DEBUG
 			printf("FN=%s\n", buffer);
 #endif
-			return strdup(buffer);
+			return pcb_strdup(buffer);
 	}
 	return NULL;
 }

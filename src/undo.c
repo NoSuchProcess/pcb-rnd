@@ -64,6 +64,7 @@
 #include "undo.h"
 #include "strflags.h"
 #include "conf_core.h"
+#include "compat_misc.h"
 
 static bool between_increment_and_restore = false;
 static bool added_undo_between_increment_and_restore = false;
@@ -1510,11 +1511,11 @@ void AddNetlistLibToUndoList(LibraryTypePtr lib)
 			old->Menu[i].EntryN = lib->Menu[i].EntryN;
 			old->Menu[i].EntryMax = lib->Menu[i].EntryMax;
 
-			old->Menu[i].Name = lib->Menu[i].Name ? strdup(lib->Menu[i].Name) : NULL;
+			old->Menu[i].Name = lib->Menu[i].Name ? pcb_strdup(lib->Menu[i].Name) : NULL;
 
-			old->Menu[i].directory = lib->Menu[i].directory ? strdup(lib->Menu[i].directory) : NULL;
+			old->Menu[i].directory = lib->Menu[i].directory ? pcb_strdup(lib->Menu[i].directory) : NULL;
 
-			old->Menu[i].Style = lib->Menu[i].Style ? strdup(lib->Menu[i].Style) : NULL;
+			old->Menu[i].Style = lib->Menu[i].Style ? pcb_strdup(lib->Menu[i].Style) : NULL;
 
 
 			old->Menu[i].Entry = (LibraryEntryTypePtr) malloc(old->Menu[i].EntryMax * sizeof(LibraryEntryType));
@@ -1526,18 +1527,18 @@ void AddNetlistLibToUndoList(LibraryTypePtr lib)
 			/* iterate over each pin on the net */
 			for (j = 0; j < lib->Menu[i].EntryN; j++) {
 
-				old->Menu[i].Entry[j].ListEntry = lib->Menu[i].Entry[j].ListEntry ? strdup(lib->Menu[i].Entry[j].ListEntry) : NULL;
+				old->Menu[i].Entry[j].ListEntry = lib->Menu[i].Entry[j].ListEntry ? pcb_strdup(lib->Menu[i].Entry[j].ListEntry) : NULL;
 				old->Menu[i].Entry[j].ListEntry_dontfree = 0;
 
 				old->Menu[i].Entry[j].AllocatedMemory =
-					lib->Menu[i].Entry[j].AllocatedMemory ? strdup(lib->Menu[i].Entry[j].AllocatedMemory) : NULL;
+					lib->Menu[i].Entry[j].AllocatedMemory ? pcb_strdup(lib->Menu[i].Entry[j].AllocatedMemory) : NULL;
 
-				old->Menu[i].Entry[j].Package = lib->Menu[i].Entry[j].Package ? strdup(lib->Menu[i].Entry[j].Package) : NULL;
+				old->Menu[i].Entry[j].Package = lib->Menu[i].Entry[j].Package ? pcb_strdup(lib->Menu[i].Entry[j].Package) : NULL;
 
-				old->Menu[i].Entry[j].Value = lib->Menu[i].Entry[j].Value ? strdup(lib->Menu[i].Entry[j].Value) : NULL;
+				old->Menu[i].Entry[j].Value = lib->Menu[i].Entry[j].Value ? pcb_strdup(lib->Menu[i].Entry[j].Value) : NULL;
 
 				old->Menu[i].Entry[j].Description =
-					lib->Menu[i].Entry[j].Description ? strdup(lib->Menu[i].Entry[j].Description) : NULL;
+					lib->Menu[i].Entry[j].Description ? pcb_strdup(lib->Menu[i].Entry[j].Description) : NULL;
 
 
 			}
