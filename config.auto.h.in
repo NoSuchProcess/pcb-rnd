@@ -77,6 +77,12 @@ print_ternary libs/vsnprintf {#define HAVE_VSNPRINTF 1} {/* #undef HAVE_VSNPRINT
 print {\n\n/* Define to 1 if you have the `getcwd' function. */\n}
 print_ternary libs/fs/getcwd/presents {#define HAVE_GETCWD 1} {/* #undef HAVE_GETCWD */}
 
+print {\n\n/* Define to 1 if you have the `_getcwd' function. */\n}
+print_ternary ?libs/fs/_getcwd/presents {#define HAVE__GETCWD 1} {/* #undef HAVE__GETCWD */}
+
+print {\n\n/* Define to 1 if you have the `getwd' function. */\n}
+print_ternary ?libs/fs/_getwd/presents {#define HAVE_GETWD 1} {/* #undef HAVE_GETWD */}
+
 print {\n\n/* Define to 1 if you have the <gd.h> header file. */\n}
 print_ternary libs/gui/gd/presents {#define HAVE_GD_H 1} {/* #undef HAVE_GD_H */}
 

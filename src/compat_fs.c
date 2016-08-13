@@ -29,6 +29,8 @@
 
 #include "config.h"
 
+#include "compat_inc.h"
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <math.h>
@@ -64,8 +66,10 @@
  */
 char *GetWorkingDirectory(char *path)
 {
-#ifdef HAVE_GETCWD
+#if defined(HAVE_GETCWD)
 	return getcwd(path, MAXPATHLEN);
+#elif defined(HAVE__GETCWD)
+	return _getcwd(path, MAXPATHLEN);
 #else
 	/* seems that some BSD releases lack of a prototype for getwd() */
 	return getwd(path);

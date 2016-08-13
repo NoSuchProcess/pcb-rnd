@@ -173,6 +173,13 @@ int hook_detect_target()
 		}
 	}
 
+	if (require("libs/fs/getcwd/*",  0, 0) != 0)
+		if (require("libs/fs/_getcwd/*",  0, 0) != 0)
+			if (require("libs/fs/getwd/*",  0, 0) != 0) {
+				report_repeat("\nERROR: Can not find any getcwd() variant.\n\n");
+				return 1;
+			}
+
 	if (want_intl) {
 		require("libs/sul/gettext/presents", 0, 0);
 		if (!istrue(get("libs/sul/gettext/presents"))) {
