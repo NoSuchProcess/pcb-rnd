@@ -12,7 +12,7 @@
 #include "gpmi_plugin.h"
 #include "scripts.h"
 #include "src/conf_core.h"
-
+#include "src/compat_fs.h"
 
 #define CONFNAME "pcb-rnd-gpmi.conf"
 
