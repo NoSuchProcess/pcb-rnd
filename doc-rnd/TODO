@@ -1,4 +1,5 @@
 - BUGS
+	- route style selector menu selects bad values or even crashes
 	- bg image png crashes in extreme pan
 	- mac sw rendering slowdown [Chris]
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
