@@ -1,39 +1,36 @@
 ### Generated file, do not edit, run make dep ###
 
-object.o: object.c gts.h gts-private.h
-point.o: point.c gts.h gts-private.h predicates.h
-vertex.o: vertex.c gts.h
-segment.o: segment.c gts.h
-edge.o: edge.c gts.h
-triangle.o: triangle.c gts.h
-face.o: face.c gts.h
-kdtree.o: kdtree.c gts.h
 bbtree.o: bbtree.c gts.h
-misc.o: misc.c gts.h gts-private.h ../../config.h \
- ../../config.auto.h
-predicates.o: predicates.c predicates.h rounding.h ../../config.h \
- ../../config.auto.h
-heap.o: heap.c gts.h
+boolean.o: boolean.c gts.h
+cdt.o: cdt.c ../../config.h gts.h
+container.o: container.c gts.h
+curvature.o: curvature.c gts.h
+edge.o: edge.c gts.h
 eheap.o: eheap.c gts.h
+face.o: face.c gts.h
 fifo.o: fifo.c gts.h
-matrix.o: matrix.c gts.h
-surface.o: surface.c gts.h gts-private.h
-stripe.o: stripe.c gts.h
-vopt.o: vopt.c gts.h
-refine.o: refine.c gts.h
+graph.o: graph.c gts.h
+heap.o: heap.c gts.h
+hsurface.o: hsurface.c gts.h
 iso.o: iso.c gts.h
 isotetra.o: isotetra.c gts.h
-split.o: split.c gts.h
-psurface.o: psurface.c gts.h
-hsurface.o: hsurface.c gts.h
-cdt.o: cdt.c ../../config.h ../../config.auto.h \
- gts.h
-boolean.o: boolean.c gts.h
+kdtree.o: kdtree.c gts.h
+matrix.o: matrix.c gts.h
+misc.o: misc.c gts.h gts-private.h ../../config.h
 named.o: named.c gts.h
+object.o: object.c gts.h gts-private.h
 oocs.o: oocs.c gts.h
-container.o: container.c gts.h
-graph.o: graph.c gts.h
-pgraph.o: pgraph.c gts.h
 partition.o: partition.c gts.h
-curvature.o: curvature.c gts.h
+pgraph.o: pgraph.c gts.h
+point.o: point.c gts.h gts-private.h predicates.h
+predicates.o: predicates.c predicates.h rounding.h ../../config.h
+psurface.o: psurface.c gts.h
+refine.o: refine.c gts.h
+segment.o: segment.c gts.h
+split.o: split.c gts.h
+stripe.o: stripe.c gts.h
+surface.o: surface.c gts.h gts-private.h
+triangle.o: triangle.c gts.h
 tribox3.o: tribox3.c
+vertex.o: vertex.c gts.h
+vopt.o: vopt.c gts.h
