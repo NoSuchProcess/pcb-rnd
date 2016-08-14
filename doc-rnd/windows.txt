@@ -6,10 +6,30 @@ is constantly improving.
 
 1. cross compilation from Linux to win32
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TODO: deps
+TODO: deps with mpk
 
 Use mingw and wine:
 
 	./configure --emu="wine cmd /c" --target=i586-mingw32msvc "$@"
 
 (Replace i586- with whatever toolchain prefix you have)
+
+2. download the binary pack
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Temporary URL: http://igor2.repo.hu/tmp/pcb-rnd-pack.zip
+
+Download, unpack, run setup.bat then pcb-rnd.bat
+
+All binaries in the pack are cross-compiled from source, using mingw and
+mpk. All binaries are 32-bit. The pack is self-contained, no gtk or other
+external dependencies.
+
+Known bugs:
+	- inserting elements fail (even static ones)
+	- no shell and awk in the pack -> parametric footprints fail
+	- text (including menu text) doesn't appear on XP
+
+Worked on systems:
+	- Windows 8.1, Hungarian, 32 bit
+	- Windows 7, Hungarian, 64 bit
+	- Windows 7 pro, English, 64 bit
