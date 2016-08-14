@@ -1,8 +1,6 @@
 name=glib
-version=2.22.2
+major=2.28
+minor=1
 release=1
-download=http://ftp.gnome.org/pub/gnome/sources/glib/2.22
-
-configure_opt="
-  CXX=${host:+$host-g++}
-"
+version=$major.$minor
+download=http://ftp.gnome.org/pub/gnome/sources/$name/$major

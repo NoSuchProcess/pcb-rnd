@@ -16,8 +16,10 @@ glib
 atk
 cairo
 pango
+gdk-pixbuf
 gtk+
 gd
+pkg-config
 "
 
 fail()
