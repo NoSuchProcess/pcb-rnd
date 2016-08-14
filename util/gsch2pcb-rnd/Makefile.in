@@ -54,7 +54,7 @@ all: gsch2pcb-rnd$(EXE)
 gsch2pcb-rnd$(EXE): $(OBJS)  $(CONF_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS) $(LHTOBJ)
 	$(CC) $(OBJS) $(CONF_OBJS)  $(FP_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(LHTOBJ) -o gsch2pcb-rnd$(EXE) $(LDFLAGS) $(FP_LDFLAGS)
 
-gsch2pcb.o: gsch2pcb.c ../../config.h ../../config.auto.h
+gsch2pcb.o: gsch2pcb.c ../../config.h
 	$(CC) -c $(CFLAGS) $(FP_CFLAGS) gsch2pcb.c -o gsch2pcb.o
 
 $(HASHOBJ):
