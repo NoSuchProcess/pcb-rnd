@@ -4,16 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#warning TODO: scconfig these:
-#include <dirent.h>
-#include <sys/stat.h>
-
 #include "global.h"
 #include "hid.h"
 #include "hid_nogui.h"
 
 /* for dlopen() and friends; will also solve all system-dependent includes
-   and provides a dl-compat layer on windows */
+   and provides a dl-compat layer on windows. Also solves the opendir related
+   includes. */
 #include "compat_dl.h"
 
 #include "global.h"
