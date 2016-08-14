@@ -498,8 +498,12 @@ GtkAccelGroup *ghid_route_style_selector_get_accel_group(GHidRouteStyleSelector 
 void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, Coord Hole, Coord Diameter, Coord Clearance)
 {
 	GtkTreeIter iter;
+	int found;
+
 	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter))
 		return;
+
+	found = 0;
 	do {
 		struct _route_style *style;
 		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &style, -1);
@@ -515,9 +519,14 @@ void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, C
 			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(style->action), TRUE);
 			g_signal_handler_unblock(G_OBJECT(style->action), style->sig_id);
 			rss->active_style = style;
+			found++;
 		}
 	}
 	while (gtk_tree_model_iter_next(GTK_TREE_MODEL(rss->model), &iter));
+
+#warning TODO: when !found, deselect style as the new pen setting will not match any existing style
+	if (!found) /* none of the styles matched: update the label... */
+		ghid_set_status_line_label();
 }
 
 /*! \brief Removes all styles from a route style selector */
