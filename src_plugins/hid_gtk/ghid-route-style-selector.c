@@ -72,6 +72,7 @@ struct _route_style {
 	GtkTreeRowReference *rref;
 	RouteStyleType *rst;
 	gulong sig_id;
+	int hidden;
 };
 
 /* SIGNAL HANDLERS */
@@ -362,6 +363,7 @@ struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteSty
 	struct _route_style *new_style = g_malloc(sizeof(*new_style));
 
 	/* Key the route style data with the RouteStyleType it controls */
+	new_style->hidden = hide;
 	new_style->rst = data;
 	new_style->action = gtk_radio_action_new(action_name, data->name, NULL, NULL, action_count);
 	gtk_radio_action_set_group(new_style->action, rss->action_radio_group);
@@ -445,6 +447,8 @@ gint ghid_route_style_selector_install_items(GHidRouteStyleSelector * rss, GtkMe
 		struct _route_style *style;
 
 		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &style, -1);
+		if (style->hidden)
+			continue;
 		action = GTK_ACTION(style->action);
 		style->menu_item = gtk_action_create_menu_item(action);
 		gtk_menu_shell_insert(shell, style->menu_item, pos + n);
