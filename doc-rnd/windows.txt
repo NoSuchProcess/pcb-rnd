@@ -32,6 +32,6 @@ Known bugs:
 	- text (including menu text) doesn't appear on XP
 
 Worked on systems:
-	- Windows 8.1, Hungarian, 32 bit
-	- Windows 7, Hungarian, 64 bit
+	- Windows 8.1 pro, Hungarian, 32 bit
+	- Windows 7 pro, Hungarian, 64 bit
 	- Windows 7 pro, English, 64 bit
