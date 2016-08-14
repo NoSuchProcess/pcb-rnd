@@ -4,23 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef HAVE_DLFCN_H
-#include <dlfcn.h>
-#endif
-
+#warning TODO: scconfig these:
 #include <dirent.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-
-#if defined(WIN32) && defined(HAVE_WINDOWS_H)
-#include <windows.h>
-#endif
 
 #include "global.h"
 #include "hid.h"
 #include "hid_nogui.h"
 
-/* for dlopen() and friends on windows */
+/* for dlopen() and friends; will also solve all system-dependent includes
+   and provides a dl-compat layer on windows */
 #include "compat_dl.h"
 
 #include "global.h"
