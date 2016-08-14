@@ -32,7 +32,6 @@
 
 #include "data.h"
 #include "misc.h"
-#include <sys/stat.h>
 
 #include <gtk/gtk.h>
 #include "ghid-coord-entry.h"

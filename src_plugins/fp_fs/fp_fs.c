@@ -30,10 +30,6 @@
 #include <unistd.h>
 #endif
 
-#include <dirent.h>
-#include <sys/stat.h>
-
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -48,6 +44,9 @@
 #include "misc.h"
 #include "conf.h"
 #include "conf_core.h"
+
+/* opendir, readdir */
+#include "compat_inc.h"
 
 static fp_type_t pcb_fp_file_type(const char *fn, void ***tags);
 

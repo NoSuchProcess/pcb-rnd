@@ -33,10 +33,7 @@
 #include <locale.h>
 #include "global.h"
 
-#include <dirent.h>
 #include <time.h>
-
-#include <sys/stat.h>
 
 #include <stdio.h>
 #include <stdlib.h>

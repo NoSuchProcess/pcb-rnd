@@ -43,8 +43,6 @@
 #include <dirent.h>
 #include <time.h>
 
-#include <sys/stat.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -65,6 +63,9 @@
 #include "plugins.h"
 #include "event.h"
 #include "compat_misc.h"
+
+/* for opendir */
+#include "compat_inc.h"
 
 plug_io_t *plug_io_chain = NULL;
 
