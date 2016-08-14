@@ -413,7 +413,7 @@ struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteSty
 void ghid_route_style_selector_add_route_style(GHidRouteStyleSelector * rss, RouteStyleType * data)
 {
 	if (!rss->hidden_button) {
-		RouteStyleType hidden;
+		static RouteStyleType hidden;
 		memset(&hidden, 0, sizeof(hidden));
 		strcpy(hidden.name, "<custom>");
 		ghid_route_style_selector_real_add_route_style(rss, &hidden, 1);
