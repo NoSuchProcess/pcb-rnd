@@ -19,7 +19,7 @@
 
 /* Forward dec'ls */
 struct _route_style;
-struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteStyleSelector *, RouteStyleType *);
+struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteStyleSelector *, RouteStyleType *, int);
 static void ghid_route_style_selector_finalize(GObject * object);
 
 /*! \brief Global action creation counter */
@@ -233,7 +233,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 		rst->Clearance = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry));
 		save = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_box));
 		if (style == NULL)
-			style = ghid_route_style_selector_real_add_route_style(rss, rst);
+			style = ghid_route_style_selector_real_add_route_style(rss, rst, 0);
 		else {
 			gtk_action_set_label(GTK_ACTION(style->action), rst->name);
 			gtk_list_store_set(rss->model, &iter, TEXT_COL, rst->name, -1);
@@ -354,7 +354,7 @@ GtkWidget *ghid_route_style_selector_new()
  *  \param [in] data    PCB's route style object that will be edited
  */
 struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteStyleSelector * rss,
-																																		RouteStyleType * data)
+																																		RouteStyleType * data, int hide)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
@@ -391,6 +391,10 @@ struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteSty
 
 	g_free(action_name);
 	++action_count;
+
+	if (hide)
+		gtk_widget_hide(new_style->button);
+
 	return new_style;
 }
 
@@ -409,10 +413,10 @@ void ghid_route_style_selector_add_route_style(GHidRouteStyleSelector * rss, Rou
 		RouteStyleType hidden;
 		memset(&hidden, 0, sizeof(hidden));
 		strcpy(hidden.name, "<custom>");
-		ghid_route_style_selector_real_add_route_style(rss, &hidden);
+		ghid_route_style_selector_real_add_route_style(rss, &hidden, 1);
 		rss->hidden_button = 1;
 	}
-	ghid_route_style_selector_real_add_route_style(rss, data);
+	ghid_route_style_selector_real_add_route_style(rss, data, 0);
 }
 
 
