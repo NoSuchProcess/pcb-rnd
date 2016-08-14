@@ -1920,8 +1920,8 @@ pcb_uninit_t hid_hid_gtk_init()
 	sprintf(share_dir, "%s%s", tmps, REST_OF_PATH);
 
 	/* Point to our gdk-pixbuf loader cache.  */
-	loader_cache = (char *) malloc(strlen(bindir) + strlen(REST_OF_CACHE) + 1);
-	sprintf(loader_cache, "%s%s", bindir, REST_OF_CACHE);
+	loader_cache = (char *) malloc(strlen("bindir_todo12") + strlen(REST_OF_CACHE) + 1);
+	sprintf(loader_cache, "%s%s", "bindir_todo12", REST_OF_CACHE);
 	loader_file = fopen(loader_cache, "r");
 	if (loader_file) {
 		fclose(loader_file);
@@ -1930,7 +1930,7 @@ pcb_uninit_t hid_hid_gtk_init()
 
 	free(tmps);
 #undef REST_OF_PATH
-	printf("\"Share\" installation path is \"%s\"\n", share_dir);
+	printf("\"Share\" installation path is \"%s\"\n", "share_dir_todo12");
 #endif
 
 	memset(&ghid_hid, 0, sizeof(HID));
