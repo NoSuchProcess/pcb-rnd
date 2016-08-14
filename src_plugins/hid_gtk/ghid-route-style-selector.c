@@ -503,6 +503,12 @@ void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, C
 	do {
 		struct _route_style *style;
 		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &style, -1);
+		printf("style match: thick: %d == %d hole: %d == %d dia: %d == %d clr: %d == %d\n", 
+			style->rst->Thick, Thick,
+			style->rst->Hole, Hole,
+			style->rst->Diameter, Diameter,
+			style->rst->Clearance, Clearance);
+			
 		if (style->rst->Thick == Thick &&
 				style->rst->Hole == Hole && style->rst->Diameter == Diameter && style->rst->Clearance == Clearance) {
 			g_signal_handler_block(G_OBJECT(style->action), style->sig_id);
