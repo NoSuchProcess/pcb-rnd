@@ -52,6 +52,8 @@ struct _GHidRouteStyleSelector {
 	GtkActionGroup *action_group;
 	GtkAccelGroup *accel_group;
 
+	int hidden_button; /* whether the hidden button is created */
+
 	GtkListStore *model;
 	struct _route_style *active_style;
 };
@@ -403,6 +405,13 @@ struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteSty
  */
 void ghid_route_style_selector_add_route_style(GHidRouteStyleSelector * rss, RouteStyleType * data)
 {
+	if (!rss->hidden_button) {
+		RouteStyleType hidden;
+		memset(&hidden, 0, sizeof(hidden));
+		strcpy(hidden.name, "<custom>");
+		ghid_route_style_selector_real_add_route_style(rss, &hidden);
+		rss->hidden_button = 1;
+	}
 	ghid_route_style_selector_real_add_route_style(rss, data);
 }
 
@@ -525,8 +534,22 @@ void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, C
 	while (gtk_tree_model_iter_next(GTK_TREE_MODEL(rss->model), &iter));
 
 #warning TODO: when !found, deselect style as the new pen setting will not match any existing style
-	if (!found) /* none of the styles matched: update the label... */
+	if (!found) {
+		struct _route_style *style;
+
+		/* none of the styles matched: update the label... */
 		ghid_set_status_line_label();
+
+		/* ... and select the custom button */
+		if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter))
+			return;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &style, -1);
+		g_signal_handler_block(G_OBJECT(style->action), style->sig_id);
+		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(style->action), TRUE);
+		g_signal_handler_unblock(G_OBJECT(style->action), style->sig_id);
+		rss->active_style = style;
+	}
 }
 
 /*! \brief Removes all styles from a route style selector */
@@ -550,4 +573,5 @@ void ghid_route_style_selector_empty(GHidRouteStyleSelector * rss)
 	}
 	rss->action_radio_group = NULL;
 	rss->button_radio_group = NULL;
+	rss->hidden_button = 0;
 }
