@@ -1,5 +1,3 @@
-#include <sys/types.h>
-#include <sys/stat.h>
 #include "config.h"
 #include "global.h"
 #include "hid_attrib.h"

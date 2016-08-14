@@ -43,8 +43,6 @@
 
 #include <genregex/regex_sei.h>
 
-#include <sys/types.h>
-
 /* ---------------------------------------------------------------------------
  * toggles the selection of any kind of object
  * the different types are defined by search.h

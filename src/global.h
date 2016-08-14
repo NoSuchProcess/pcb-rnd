@@ -47,7 +47,6 @@
 #include <stdarg.h>
 #include <math.h>
 #include <ctype.h>
-#include <sys/types.h>
 #include <stdbool.h>
 
 #include "global_typedefs.h"
