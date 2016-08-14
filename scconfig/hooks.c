@@ -506,7 +506,7 @@ int hook_generate()
 
 	printf("Generating util/gsch2pcb-rnd/Makefile (%d)\n", generr |= tmpasm("../util", "gsch2pcb-rnd/Makefile.in", "gsch2pcb-rnd/Makefile"));
 
-	printf("Generating config.auto.h (%d)\n", generr |= tmpasm("..", "config.auto.h.in", "config.auto.h"));
+	printf("Generating config.h (%d)\n", generr |= tmpasm("..", "config.h.in", "config.h"));
 
 	printf("Generating compat_inc.h (%d)\n", generr |= tmpasm("../src", "compat_inc.h.in", "compat_inc.h"));
 
