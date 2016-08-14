@@ -82,6 +82,7 @@ static void radio_select_cb(GtkToggleAction * action, GHidRouteStyleSelector * r
 	rss->active_style = g_object_get_data(G_OBJECT(action), "route-style");
 	if (gtk_toggle_action_get_active(action))
 		g_signal_emit(rss, ghid_route_style_selector_signals[SELECT_STYLE_SIGNAL], 0, rss->active_style->rst);
+	gtk_widget_set_sensitive(rss->edit_button, TRUE);
 }
 
 /* EDIT DIALOG */
@@ -538,6 +539,7 @@ void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, C
 			rss->active_style = style;
 			found++;
 		}
+		gtk_widget_set_sensitive(rss->edit_button, TRUE);
 	}
 	while (gtk_tree_model_iter_next(GTK_TREE_MODEL(rss->model), &iter));
 
@@ -557,6 +559,9 @@ void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, C
 		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(style->action), TRUE);
 		g_signal_handler_unblock(G_OBJECT(style->action), style->sig_id);
 		rss->active_style = style;
+
+		/* also disable the button */
+		gtk_widget_set_sensitive(rss->edit_button, FALSE);
 	}
 }
 
