@@ -25,6 +25,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/hid_gtk/menu_lht.o
 	$(PLUGDIR)/hid_gtk/gtk_conf_list.o
 	$(PLUGDIR)/hid_gtk/gschem_accel_label.o
+	$(PLUGDIR)/hid_gtk/win_place.o
 @]
 put /local/pcb/mod/CONF {$(PLUGDIR)/hid_gtk/hid_gtk_conf.h}
 
