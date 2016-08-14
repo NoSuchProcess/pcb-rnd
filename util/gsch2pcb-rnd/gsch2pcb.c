@@ -45,6 +45,7 @@
 #include "../config.h"
 #include "../src/plugins.h"
 #include "../src/plug_footprint.h"
+#include "../src/compat_misc.h"
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"
 
@@ -173,7 +174,7 @@ static int build_and_run_command(const char * format_, ...)
 	   within a copy of the format string. The format string is copied so
 	   that these parts can be terminated by overwriting whitepsace with \0 */
 	va_start(vargs, format_);
-	format = strdup(format_);
+	format = pcb_strdup(format_);
 	vts0_init(&args);
 	for(s = start = format; *s != '\0'; s++) {
 		/* if word separator is reached, save the previous word */
@@ -315,10 +316,10 @@ static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char
 		char *backend;
 		if (!s2) {
 			out_file = str_concat(NULL, basename, ".", s, NULL);
-			backend = strdup(s);
+			backend = pcb_strdup(s);
 		}
 		else {
-			out_file = strdup(s2 + 4);
+			out_file = pcb_strdup(s2 + 4);
 			backend = loc_strndup(s, s2 - s);
 		}
 
@@ -343,7 +344,7 @@ static char *token(char * string, char ** next, int * quoted_ret, int parenth)
 	if (!str || !*str) {
 		if (next)
 			*next = str;
-		return strdup("");
+		return pcb_strdup("");
 	}
 	while (*str == ' ' || *str == '\t' || *str == ',' || *str == '\n')
 		++str;
@@ -440,7 +441,7 @@ PcbElement *pcb_element_line_parse(char * line)
 	el->x = token(NULL, NULL, NULL, 0);
 	el->y = token(NULL, &t, NULL, 0);
 
-	el->tail = strdup(t ? t : "");
+	el->tail = pcb_strdup(t ? t : "");
 	if ((s = strrchr(el->tail, (int) '\n')) != NULL)
 		*s = '\0';
 
@@ -526,12 +527,12 @@ static PcbElement *pcb_element_exists(PcbElement * el_test, int record)
 			continue;
 		if (strcmp(el_test->description, el->description)) {	/* footprint */
 			if (record)
-				el->changed_description = strdup(el_test->description);
+				el->changed_description = pcb_strdup(el_test->description);
 		}
 		else {
 			if (record) {
 				if (strcmp(el_test->value, el->value))
-					el->changed_value = strdup(el_test->value);
+					el->changed_value = pcb_strdup(el_test->value);
 				el->still_exists = TRUE;
 			}
 			return el;
@@ -558,8 +559,8 @@ static void simple_translate(PcbElement * el)
 		free(el->x);
 	if (el->y != NULL)
 		free(el->y);
-	el->x = strdup("0");
-	el->y = strdup("0");
+	el->x = pcb_strdup("0");
+	el->y = pcb_strdup("0");
 }
 
 static int insert_element(FILE * f_out, FILE * f_elem, char * footprint, char * refdes, char * value)
@@ -593,7 +594,7 @@ char *search_element(PcbElement * el)
 	char *elname = NULL, *path = NULL;
 
 	if (!elname)
-		elname = strdup(el->description);
+		elname = pcb_strdup(el->description);
 
 	if (!strcmp(elname, "unknown")) {
 		free(elname);
@@ -944,7 +945,7 @@ static void add_schematic(char * sch)
 {
 	char **n;
 	n = gadl_new(&schematics);
-	*n = strdup(sch);
+	*n = pcb_strdup(sch);
 	gadl_append(&schematics, n);
 	if (!conf_g2pr.utils.gsch2pcb_rnd.sch_basename) {
 		char *suff = loc_str_has_suffix(sch, ".sch", 4);
@@ -961,7 +962,7 @@ static void add_multiple_schematics(const char * sch)
 	/* parse the string using shell semantics */
 	int count;
 	char **args;
-	char *tmp = strdup(sch);
+	char *tmp = pcb_strdup(sch);
 
 	count = qparse(tmp, &args);
 	free(tmp);
@@ -1022,7 +1023,7 @@ static int parse_config(char * config, char * arg)
 	else if (!strcmp(config, "gnetlist")) {
 		char **n;
 		n = gadl_new(&extra_gnetlist_list);
-		*n = strdup(arg);
+		*n = pcb_strdup(arg);
 		gadl_append(&extra_gnetlist_list, n);
 	}
 	else if (!strcmp(config, "empty-footprint"))
@@ -1110,7 +1111,7 @@ static void get_args(int argc, char ** argv)
 			else if (!strcmp(opt, "gnetlist-arg")) {
 				char **n;
 				n = gadl_new(&extra_gnetlist_arg_list);
-				*n = strdup(arg);
+				*n = pcb_strdup(arg);
 				gadl_append(&extra_gnetlist_arg_list, n);
 				i++;
 				continue;
@@ -1227,7 +1228,7 @@ int main(int argc, char ** argv)
 		get_pcb_element_list(pcb_file_name);
 	}
 	else
-		pcb_new_file_name = strdup(pcb_file_name);
+		pcb_new_file_name = pcb_strdup(pcb_file_name);
 
 	if (!run_gnetlist(pins_file_name, net_file_name, pcb_new_file_name, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, &schematics)) {
 		fprintf(stderr, "Failed to run gnetlist\n");
