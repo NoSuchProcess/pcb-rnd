@@ -1,0 +1,50 @@
+--- a/demos/gtk-demo/main.c	2011-08-16 04:30:51.000000000 +0200
++++ b/demos/gtk-demo/main.c	2016-08-13 20:15:10.629440222 +0200
+@@ -664,12 +664,13 @@
+ 
+   g_string_free (buffer, TRUE);
+ }
+-
+ void
+ row_activated_cb (GtkTreeView       *tree_view,
+                   GtkTreePath       *path,
+ 		  GtkTreeViewColumn *column)
+ {
++#if 0
++
+   GtkTreeIter iter;
+   PangoStyle style;
+   GDoDemoFunc func;
+@@ -705,6 +706,7 @@
+ 			    G_CALLBACK (window_closed_cb), cbdata);
+ 	}
+     }
++#endif
+ }
+ 
+ static void
+@@ -775,6 +777,7 @@
+ static GtkWidget *
+ create_tree (void)
+ {
++#if 0
+   GtkTreeSelection *selection;
+   GtkCellRenderer *cell;
+   GtkWidget *tree_view;
+@@ -870,6 +873,7 @@
+    g_object_unref (model);
+ 
+   return box;
++#endif
+ }
+ 
+ static void
+@@ -1005,7 +1009,7 @@
+   gtk_widget_show_all (window);
+   
+ 
+-  load_file (testgtk_demos[0].filename);
++//  load_file (testgtk_demos[0].filename);
+   
+   gtk_main ();
+ 
