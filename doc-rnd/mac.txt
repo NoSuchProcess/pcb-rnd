@@ -1,7 +1,7 @@
 State on MacOSX
 ~~~~~~~~~~~~~~~
 
-Should compile and run out-of-the-box.
+Source releases starting from 1.1.0 should compile and run out-of-the-box.
 
 Requirements:  x11 and gtk+
   - X11 server and client libraries for OS X are available from the XQuartz 
