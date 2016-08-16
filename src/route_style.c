@@ -154,6 +154,13 @@ void pcb_use_route_style(RouteStyleType * rst)
 	conf_set_design("design/clearance", "%$mS", rst->Clearance);
 }
 
+int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx)
+{
+	if ((idx < 0) || (idx >= vtroutestyle_len(styles)))
+		return -1;
+	pcb_use_route_style(styles->array+idx);
+	return 0;
+}
 
 #define cmp(a,b) (((a) != 0) && ((a) == (b)))
 #define cmps(a,b) (((a) != NULL) && (strcmp((a), (b)) == 0))

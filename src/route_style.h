@@ -43,7 +43,11 @@ int ParseRouteString(char *s, vtroutestyle_t *styles, const char *default_unit);
 char *make_route_string(vtroutestyle_t *styles);
 
 /* Set design configuration (the pen we draw with) to a given route style */
-void pcb_use_route_style(RouteStyleType *);
+void pcb_use_route_style(RouteStyleType *rst);
+
+/* Same as pcb_use_route_style() but uses one of the styles in a vector;
+   returns -1 if idx is out of bounds, 0 on success. */
+int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx);
 
 /* Compare supplied parameters to each style in the vector and return the index
    of the first mathcing style. All non-0 parameters need to match to accept
