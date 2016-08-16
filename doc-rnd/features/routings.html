@@ -1,0 +1,79 @@
+<html>
+<body>
+<h1> pcb-rnd - routing style fixes </h1>
+
+<h2> Number of styles </h2>
+In the original code there are a compile-time fixed number (4) of routing
+styles. This is often not enough for more complex designs. While in theory
+this limit can be raised, the resulting .pcb files will be incomatible with
+pcb compilations using a different number of styles.
+<p>
+Pcb-rnd uses a dynamic vector for storing styles and allows any number
+of styles from 0 up to a very large value (2^31-1). There is no compile-time
+configurable limit. The number of default styles (and the actual style
+configuration) is coming from the template pcb file.
+<p>
+Creating a new style in the Route Styles dialog is not "for this session only"
+anymore - styles are saved with the design.
+
+<h2> Explicit custom style </h2>
+Pcb had 4 explicit styles and a hidden, implicit style. All drawing
+action uses the hidden style. When the user selects one of the explicit
+styles, its properties are copied into the implicit style. Any drawing
+action uses the implicit style, this it's sort of the "pen style".
+<p>
+In mainline PCB the implicit (or pen) style is hidden. As long as it always
+matches one of the existing styles, the user doesn't even know about it.
+However, if there are objects that do not comform to any of the existing
+styles, it is possible to bump into this. For example:
+<ul>
+	<li> draw a line using one of the existing styles
+	<li> increase the width (with the 's' key) a few times - now the style of the line does not match any of the existing styles
+	<li> use the SetSame() action over the line (hover the pointer over the line and press 'a') - it will try to set the style that corresponds to the line
+	<li> since no style matches the line's, the radio button gets deselected - that's good
+	<li> now click on the Route Style button - it will show the properties of the last selected route style, even tho it is not selected at the moment
+</ul>
+<p>
+In contrast, pcb-rnd offers an explicit routing style called <i>&lt;custom&gt;</i>.
+If SetSame() is invoked on an object that doesn't match any of the existing styles,
+the <i>&lt;custom&gt;</i> style is selected:
+<ul>
+	<li> no style marked on the radio button (just like in mainline)
+	<li> the Route Style button opens with the <i>&lt;custom&gt;</i> style, with the values picked up from the object by SetSame
+	<li> the user can change the values, which will affect the implicit pen style
+	<li> this means the user can draw with the new settings, without having to create a permanent style
+</ul>
+<p>
+In other words, it is now possible to use the implicit pen style as temporal
+style, to explicitly set a line width, via diameter before placing a few
+unusual lines or vias, without having to create a new style. It is also
+possible to pick up the style of such an unusual object later, without the
+GUI confusing it with any of the existing styles.
+
+<h2> SetSame() bugs fixed </h2>
+A line does not have drill parameters. When mainline tries to pick up
+object properties for a line, it will pick thickness and clearance but
+will leave hole and ring diameters unchanged. This very often results in
+a mixed style: e.g. "signal" line properties picked up from a line while
+"power" hole/ring properties left over from the current style selection.
+Such a mixed pickup will result in the GUI get confused and not selecting any
+of the styles. The expected behaviour is to select the "signal" style if the
+line width/clearance matches the parameters of that style, and ignore the
+drill/ring parameters.
+<p>
+The same mixup happens for picking up arc parameters, and a similar mixup
+for via parameters (a via doesn't have a line width).
+<p>
+Pcb-rnd fixes this by searching for the matching style using only the parameters
+that the given object really had. This results in valid style selection
+the way the user may expect.
+
+<h2> save/load and compatibility </h2>
+Saving a design with number of styles not equal to 4 may cause problems
+when loading with mainline. The rest of these features do not affect
+compatibility.
+
+<h2> plans </h2>
+No plans - these features are fully implemented.
+</body>
+</html>
