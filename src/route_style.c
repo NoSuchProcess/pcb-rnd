@@ -153,3 +153,22 @@ void pcb_use_route_style(RouteStyleType * rst)
 	conf_set_design("design/via_drilling_hole", "%$mS", rst->Hole);
 	conf_set_design("design/clearance", "%$mS", rst->Clearance);
 }
+
+
+#define cmp(a,b) (((a) != 0) && ((a) == (b)))
+#define cmps(a,b) (((a) != NULL) && (strcmp((a), (b)) == 0))
+int pcb_route_style_lookup(vtroutestyle_t *styles, Coord Thick, Coord Diameter, Coord Hole, Coord Clearance, char *Name)
+{
+	int n;
+	for (n = 0; n < vtroutestyle_len(styles); n++) {
+		if (!cmp(Thick, styles->array[n].Thick)) continue;
+		if (!cmp(Diameter, styles->array[n].Diameter)) continue;
+		if (!cmp(Hole, styles->array[n].Hole)) continue;
+		if (!cmp(Clearance, styles->array[n].Clearance)) continue;
+		if (!cmps(Name, styles->array[n].name)) continue;
+		return n;
+	}
+	return -1;
+}
+#undef cmp
+
