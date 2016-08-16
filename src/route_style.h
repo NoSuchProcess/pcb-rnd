@@ -41,3 +41,6 @@ int ParseRoutingString1(char **str, RouteStyleTypePtr routeStyle, const char *de
 int ParseRouteString(char *s, vtroutestyle_t *styles, const char *default_unit);
 
 char *make_route_string(vtroutestyle_t *styles);
+
+/* Set design configuration (the pen we draw with) to a given route style */
+void pcb_use_route_style(RouteStyleType *);

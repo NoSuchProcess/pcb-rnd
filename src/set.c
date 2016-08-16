@@ -100,14 +100,6 @@ void SetViaDrillingHole(Coord Size, bool Force)
 	}
 }
 
-void pcb_use_route_style(RouteStyleType * rst)
-{
-	conf_set_design("design/line_thickness", "%$mS", rst->Thick);
-	conf_set_design("design/via_thickness", "%$mS", rst->Diameter);
-	conf_set_design("design/via_drilling_hole", "%$mS", rst->Hole);
-	conf_set_design("design/clearance", "%$mS", rst->Clearance);
-}
-
 /* ---------------------------------------------------------------------------
  * sets a clearance width
  */

@@ -47,6 +47,5 @@ void SetLocalRef(Coord, Coord, bool);
 void RedrawZoom(Coord, Coord);
 void SaveMode(void);
 void RestoreMode(void);
-void pcb_use_route_style(RouteStyleType *);
 
 #endif

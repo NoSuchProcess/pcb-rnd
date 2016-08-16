@@ -31,6 +31,7 @@
 #include "route_style.h"
 #include "misc.h"
 #include "error.h"
+#include "conf.h"
 
 /*! \brief Serializes the route style list 
  *  \par Function Description
@@ -143,4 +144,12 @@ int ParseRouteString(char *s, vtroutestyle_t *styles, const char *default_unit)
 	}
 	vtroutestyle_truncate(styles, n+1);
 	return 0;
+}
+
+void pcb_use_route_style(RouteStyleType * rst)
+{
+	conf_set_design("design/line_thickness", "%$mS", rst->Thick);
+	conf_set_design("design/via_thickness", "%$mS", rst->Diameter);
+	conf_set_design("design/via_drilling_hole", "%$mS", rst->Hole);
+	conf_set_design("design/clearance", "%$mS", rst->Clearance);
 }
