@@ -42,6 +42,7 @@
 #include "stub_stroke.h"
 #include "hid_actions.h"
 #include "hid_init.h"
+#include "route_style.h"
 
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */
@@ -1050,6 +1051,21 @@ sizes (thickness, clearance, drill, etc) according to that item.
 
 %end-doc */
 
+static void set_same_(Coord Thick, Coord Diameter, Coord Hole, Coord Clearance, char *Name)
+{
+	int known;
+	known = pcb_route_style_lookup(&PCB->RouteStyle, Thick, Diameter, Hole, Clearance, Name);
+	if (known < 0) {
+		/* unkown style, set properties */
+		if (Thick != 0)     conf_set_design("design/line_thickness", "%$mS", Thick);
+		if (Clearance != 0) conf_set_design("design/clearance", "%$mS", Clearance);
+		if (Diameter != 0)  conf_set_design("design/via_thickness", "%$mS", Diameter);
+		if (Hole != 0)      conf_set_design("design/via_drilling_hole", "%$mS", Hole);
+	}
+	else
+		pcb_use_route_style_idx(&PCB->RouteStyle, known);
+}
+
 static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -1061,8 +1077,7 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 	switch (type) {
 	case PCB_TYPE_LINE:
 		notify_crosshair_change(false);
-		conf_set_design("design/line_thickness", "%$mS", ((LineTypePtr) ptr2)->Thickness);
-		conf_set_design("design/clearance", "%$mS", ((LineTypePtr) ptr2)->Clearance / 2);
+		set_same_(((LineTypePtr) ptr2)->Thickness, 0, 0, ((LineTypePtr) ptr2)->Clearance / 2, NULL);
 		layer = (LayerTypePtr) ptr1;
 		if (conf_core.editor.mode != PCB_MODE_LINE)
 			SetMode(PCB_MODE_LINE);
@@ -1072,8 +1087,7 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 
 	case PCB_TYPE_ARC:
 		notify_crosshair_change(false);
-		conf_set_design("design/line_thickness", "%$mS", ((ArcTypePtr) ptr2)->Thickness);
-		conf_set_design("design/clearance", "%$mS", ((ArcTypePtr) ptr2)->Clearance / 2);
+		set_same_(((ArcTypePtr) ptr2)->Thickness, 0, 0, ((ArcTypePtr) ptr2)->Clearance / 2, NULL);
 		layer = (LayerTypePtr) ptr1;
 		if (conf_core.editor.mode != PCB_MODE_ARC)
 			SetMode(PCB_MODE_ARC);
@@ -1087,9 +1101,7 @@ static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
 
 	case PCB_TYPE_VIA:
 		notify_crosshair_change(false);
-		conf_set_design("design/via_thickness", "%$mS", ((PinTypePtr) ptr2)->Thickness);
-		conf_set_design("design/via_drilling_hole", "%$mS", ((PinTypePtr) ptr2)->DrillingHole);
-		conf_set_design("design/clearance", "%$mS", ((PinTypePtr) ptr2)->Clearance / 2);
+		set_same_(0, ((PinTypePtr) ptr2)->Thickness, ((PinTypePtr) ptr2)->DrillingHole, ((PinTypePtr) ptr2)->Clearance / 2, NULL);
 		if (conf_core.editor.mode != PCB_MODE_VIA)
 			SetMode(PCB_MODE_VIA);
 		notify_crosshair_change(true);
