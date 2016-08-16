@@ -1050,17 +1050,16 @@ current layer to be the layer that item is on, and changes the current
 sizes (thickness, clearance, drill, etc) according to that item.
 
 %end-doc */
-
 static void set_same_(Coord Thick, Coord Diameter, Coord Hole, Coord Clearance, char *Name)
 {
 	int known;
 	known = pcb_route_style_lookup(&PCB->RouteStyle, Thick, Diameter, Hole, Clearance, Name);
 	if (known < 0) {
 		/* unkown style, set properties */
-		if (Thick != 0)     conf_set_design("design/line_thickness", "%$mS", Thick);
-		if (Clearance != 0) conf_set_design("design/clearance", "%$mS", Clearance);
-		if (Diameter != 0)  conf_set_design("design/via_thickness", "%$mS", Diameter);
-		if (Hole != 0)      conf_set_design("design/via_drilling_hole", "%$mS", Hole);
+		if (Thick != 0)     { pcb_custom_route_style.Thick     = Thick;     conf_set_design("design/line_thickness", "%$mS", Thick); }
+		if (Clearance != 0) { pcb_custom_route_style.Clearance = Clearance; conf_set_design("design/clearance", "%$mS", Clearance); }
+		if (Diameter != 0)  { pcb_custom_route_style.Diameter  = Diameter;  conf_set_design("design/via_thickness", "%$mS", Diameter); }
+		if (Hole != 0)      { pcb_custom_route_style.Hole      = Hole;      conf_set_design("design/via_drilling_hole", "%$mS", Hole); }
 	}
 	else
 		pcb_use_route_style_idx(&PCB->RouteStyle, known);

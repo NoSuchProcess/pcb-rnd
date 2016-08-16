@@ -83,7 +83,6 @@ static void radio_select_cb(GtkToggleAction * action, GHidRouteStyleSelector * r
 	rss->active_style = g_object_get_data(G_OBJECT(action), "route-style");
 	if (gtk_toggle_action_get_active(action))
 		g_signal_emit(rss, ghid_route_style_selector_signals[SELECT_STYLE_SIGNAL], 0, rss->active_style->rst);
-	gtk_widget_set_sensitive(rss->edit_button, TRUE);
 }
 
 /* EDIT DIALOG */
@@ -414,10 +413,9 @@ struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteSty
 void ghid_route_style_selector_add_route_style(GHidRouteStyleSelector * rss, RouteStyleType * data)
 {
 	if (!rss->hidden_button) {
-		static RouteStyleType hidden;
-		memset(&hidden, 0, sizeof(hidden));
-		strcpy(hidden.name, "<custom>");
-		ghid_route_style_selector_real_add_route_style(rss, &hidden, 1);
+		memset(&pcb_custom_route_style, 0, sizeof(pcb_custom_route_style));
+		strcpy(pcb_custom_route_style.name, "<custom>");
+		ghid_route_style_selector_real_add_route_style(rss, &pcb_custom_route_style, 1);
 		rss->hidden_button = 1;
 	}
 	ghid_route_style_selector_real_add_route_style(rss, data, 0);
@@ -529,9 +527,6 @@ void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, C
 		/* none of the styles matched: update the label... */
 		ghid_set_status_line_label();
 
-		/* ... disable the button ...*/
-		gtk_widget_set_sensitive(rss->edit_button, FALSE);
-
 		/* ... and select the hidden custom button */
 		if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter))
 			return;
@@ -555,7 +550,6 @@ void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, C
 			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(style->action), TRUE);
 			g_signal_handler_unblock(G_OBJECT(style->action), style->sig_id);
 			rss->active_style = style;
-			gtk_widget_set_sensitive(rss->edit_button, TRUE);
 			break;
 		}
 		n++;

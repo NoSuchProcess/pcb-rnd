@@ -53,3 +53,5 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx);
    of the first mathcing style. All non-0 parameters need to match to accept
    a style. Return -1 on no match. */
 int pcb_route_style_lookup(vtroutestyle_t *styles, Coord Thick, Coord Diameter, Coord Hole, Coord Clearance, char *Name);
+
+extern RouteStyleType pcb_custom_route_style;

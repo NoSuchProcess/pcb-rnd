@@ -33,6 +33,8 @@
 #include "error.h"
 #include "conf.h"
 
+RouteStyleType pcb_custom_route_style;
+
 /*! \brief Serializes the route style list 
  *  \par Function Description
  *  Right now n_styles should always be set to NUM_STYLES,
