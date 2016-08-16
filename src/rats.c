@@ -216,14 +216,9 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 			}
 			net = GetNetMemory(Wantlist);
 			if (menu->Style) {
-				STYLE_LOOP(PCB);
-				{
-					if (!NSTRCMP(style->name, menu->Style)) {
-						net->Style = style;
-						break;
-					}
-				}
-				END_LOOP;
+				int idx = pcb_route_style_lookup(&PCB->RouteStyle, 0, 0, 0, 0, menu->Style);
+				if (idx >= 0)
+					net->Style = PCB->RouteStyle.array+idx;
 			}
 			else											/* default to NULL if none found */
 				net->Style = NULL;
