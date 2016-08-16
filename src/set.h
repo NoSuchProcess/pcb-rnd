@@ -42,7 +42,6 @@ void SetChangedFlag(bool);
 void SetBufferNumber(int);
 void SetMode(int);
 void SetCrosshairRangeToBuffer(void);
-void SetRouteStyle(char *);
 void SetLocalRef(Coord, Coord, bool);
 void RedrawZoom(Coord, Coord);
 void SaveMode(void);

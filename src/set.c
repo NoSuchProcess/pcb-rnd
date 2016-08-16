@@ -253,21 +253,6 @@ void SetMode(int Mode)
 	notify_crosshair_change(true);
 }
 
-void SetRouteStyle(char *name)
-{
-	char num[10];
-
-	STYLE_LOOP(PCB);
-	{
-		if (name && NSTRCMP(name, style->name) == 0) {
-			sprintf(num, "%d", n + 1);
-			hid_actionl("RouteStyle", num, NULL);
-			break;
-		}
-	}
-	END_LOOP;
-}
-
 void SetLocalRef(Coord X, Coord Y, bool Showing)
 {
 	static MarkType old;
