@@ -63,6 +63,7 @@
 #include "plugins.h"
 #include "event.h"
 #include "compat_misc.h"
+#include "route_style.h"
 
 /* for opendir */
 #include "compat_inc.h"
@@ -294,7 +295,10 @@ static int real_load_pcb(char *Filename, bool revert, bool require_font, int how
 		sort_netlist();
 		rats_patch_make_edited(PCB);
 
-		set_some_route_style();
+/* set route style to the first one, if the current one doesn't
+   happen to match any.  This way, "revert" won't change the route style. */
+		if (!hid_get_flag("GetStyle()"))
+			pcb_use_route_style_idx(&PCB->RouteStyle, 0);
 
 		if (how == 0) {
 			if (revert)
@@ -501,24 +505,6 @@ int SavePCB(char *file, const char *fmt)
 	return retcode;
 }
 
-/* ---------------------------------------------------------------------------
- * set the route style to the first one, if the current one doesn't
- * happen to match any.  This way, "revert" won't change the route
- * style.
- */
-void set_some_route_style()
-{
-	if (hid_get_flag("GetStyle()"))
-		return;
-
-	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
-#warning TODO: call some central setter instead so we do not need to know the field names here
-		SetLineSize(PCB->RouteStyle.array[0].Thick);
-		SetViaSize(PCB->RouteStyle.array[0].Diameter, true);
-		SetViaDrillingHole(PCB->RouteStyle.array[0].Hole, true);
-		SetClearanceWidth(PCB->RouteStyle.array[0].Clearance);
-	}
-}
 
 /* ---------------------------------------------------------------------------
  * Load PCB
