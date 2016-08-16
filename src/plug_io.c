@@ -297,7 +297,7 @@ static int real_load_pcb(char *Filename, bool revert, bool require_font, int how
 
 /* set route style to the first one, if the current one doesn't
    happen to match any.  This way, "revert" won't change the route style. */
-		if (!hid_get_flag("GetStyle()"))
+		if (hid_get_flag("GetStyle()") < 0)
 			pcb_use_route_style_idx(&PCB->RouteStyle, 0);
 
 		if (how == 0) {

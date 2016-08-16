@@ -125,14 +125,14 @@ static void update_style_buttons()
 
 	for (n = 0; n < num_style_buttons; n++) {
 		for (j = 0; j < vtroutestyle_len(&PCB->RouteStyle); j++)
-			if (j != i - 1)
+			if (j != i)
 				XmToggleButtonSetState(style_button_list[n].w[j], 0, 0);
 			else
 				XmToggleButtonSetState(style_button_list[n].w[j], 1, 0);
 	}
 	if (style_dialog) {
 		for (j = 0; j < vtroutestyle_len(&PCB->RouteStyle); j++)
-			if (j != i - 1)
+			if (j != i)
 				XmToggleButtonSetState(style_pb[j], 0, 0);
 			else
 				XmToggleButtonSetState(style_pb[j], 1, 0);

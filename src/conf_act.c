@@ -151,18 +151,10 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 
 /*------------ get/chk (check flag actions for menus) ------------------*/
 static const char GetStyle_syntax[] = "GetStyle()" ;
-static const char GetStyle_help[] = "Return integer index (>=1) of the currently active style or 0 if no style is selected";
+static const char GetStyle_help[] = "Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)";
 static int ActionGetStyle(int argc, char **argv, Coord x, Coord y)
 {
-	STYLE_LOOP(PCB);
-	{
-		if (style->Thick == conf_core.design.line_thickness &&
-				style->Diameter == conf_core.design.via_thickness &&
-				style->Hole == conf_core.design.via_drilling_hole && style->Clearance == conf_core.design.clearance)
-			return n + 1;
-	}
-	END_LOOP;
-	return 0;
+	return pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
 }
 
 static const char ChkMode_syntax[] = "ChkMode(expected_mode)" ;
