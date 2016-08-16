@@ -162,7 +162,7 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx)
 	return 0;
 }
 
-#define cmp(a,b) (((a) != 0) && ((a) != (b)))
+#define cmp(a,b) (((a) != 0) && (coord_abs((a)-(b)) > 32))
 #define cmps(a,b) (((a) != NULL) && (strcmp((a), (b)) != 0))
 int pcb_route_style_lookup(vtroutestyle_t *styles, Coord Thick, Coord Diameter, Coord Hole, Coord Clearance, char *Name)
 {
