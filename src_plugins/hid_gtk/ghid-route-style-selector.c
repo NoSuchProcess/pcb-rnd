@@ -14,6 +14,7 @@
 #include "gtkhid.h"
 #include "gui.h"
 #include "pcb-printf.h"
+#include "route_style.h"
 
 #include "ghid-route-style-selector.h"
 
@@ -516,41 +517,22 @@ GtkAccelGroup *ghid_route_style_selector_get_accel_group(GHidRouteStyleSelector 
 void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, Coord Hole, Coord Diameter, Coord Clearance)
 {
 	GtkTreeIter iter;
-	int found;
+	int target, n;
 
 	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter))
 		return;
 
-	found = 0;
-	do {
-		struct _route_style *style;
-		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &style, -1);
-		printf("style match: thick: %d == %d hole: %d == %d dia: %d == %d clr: %d == %d\n", 
-			style->rst->Thick, Thick,
-			style->rst->Hole, Hole,
-			style->rst->Diameter, Diameter,
-			style->rst->Clearance, Clearance);
-			
-		if (style->rst->Thick == Thick &&
-				style->rst->Hole == Hole && style->rst->Diameter == Diameter && style->rst->Clearance == Clearance) {
-			g_signal_handler_block(G_OBJECT(style->action), style->sig_id);
-			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(style->action), TRUE);
-			g_signal_handler_unblock(G_OBJECT(style->action), style->sig_id);
-			rss->active_style = style;
-			found++;
-		}
-		gtk_widget_set_sensitive(rss->edit_button, TRUE);
-	}
-	while (gtk_tree_model_iter_next(GTK_TREE_MODEL(rss->model), &iter));
-
-#warning TODO: when !found, deselect style as the new pen setting will not match any existing style
-	if (!found) {
+	target = pcb_route_style_lookup(&PCB->RouteStyle, Thick, Diameter, Hole, Clearance, NULL);
+	if (target == -1) {
 		struct _route_style *style;
 
 		/* none of the styles matched: update the label... */
 		ghid_set_status_line_label();
 
-		/* ... and select the custom button */
+		/* ... disable the button ...*/
+		gtk_widget_set_sensitive(rss->edit_button, FALSE);
+
+		/* ... and select the hidden custom button */
 		if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter))
 			return;
 
@@ -560,9 +542,24 @@ void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, C
 		g_signal_handler_unblock(G_OBJECT(style->action), style->sig_id);
 		rss->active_style = style;
 
-		/* also disable the button */
-		gtk_widget_set_sensitive(rss->edit_button, FALSE);
+		return;
 	}
+
+	/* need to select the style with index stored in target */
+	n = -1;
+	do {
+		struct _route_style *style;
+		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &style, -1);
+		if (n == target) {
+			g_signal_handler_block(G_OBJECT(style->action), style->sig_id);
+			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(style->action), TRUE);
+			g_signal_handler_unblock(G_OBJECT(style->action), style->sig_id);
+			rss->active_style = style;
+			gtk_widget_set_sensitive(rss->edit_button, TRUE);
+			break;
+		}
+		n++;
+	} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(rss->model), &iter));
 }
 
 /*! \brief Removes all styles from a route style selector */
