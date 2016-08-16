@@ -25,13 +25,6 @@
  *
  */
 
-#define STYLE_LOOP(top)  do {                                       \
-        Cardinal n;                                                 \
-        RouteStyleTypePtr style;                                    \
-        for (n = 0; n < vtroutestyle_len(&(top)->RouteStyle); n++)  \
-        {                                                           \
-                style = &(top)->RouteStyle.array[n]
-
 /* Parse a single route string into one RouteStyleTypePtr slot. Returns 0 on success.  */
 int ParseRoutingString1(char **str, RouteStyleTypePtr routeStyle, const char *default_unit);
 

@@ -266,27 +266,21 @@ void toporouter_output_close(drawing_context_t * dc)
 
 gdouble lookup_clearance(char *name)
 {
-	if (name)
-		STYLE_LOOP(PCB);
-	{
-/*    if(!strcmp(style->Name, name)) return style->Clearance + 1.; */
-		if (!strcmp(style->Name, name))
-			return style->Clearance;
+	if (name) {
+		int idx = pcb_route_style_lookup(&PCB->RouteStyle, 0, 0, 0, 0, menu->Style);
+		if (idx >= 0)
+			return PCB->RouteStyle.array[idx].Clearance;
 	}
-	END_LOOP;
-/*  return Settings.Clearance + 1.; */
 	return Settings.Clearance;
 }
 
 gdouble lookup_thickness(char *name)
 {
-	if (name)
-		STYLE_LOOP(PCB);
-	{
-		if (!strcmp(style->Name, name))
-			return style->Thick;
+	if (name) {
+		int idx = pcb_route_style_lookup(&PCB->RouteStyle, 0, 0, 0, 0, menu->Style);
+		if (idx >= 0)
+			return PCB->RouteStyle.array[idx].Thick;
 	}
-	END_LOOP;
 	return Settings.LineThickness;
 }
 
