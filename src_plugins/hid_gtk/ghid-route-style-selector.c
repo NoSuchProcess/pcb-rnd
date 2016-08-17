@@ -517,6 +517,9 @@ void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, C
 	GtkTreeIter iter;
 	int target, n;
 
+	/* Always update the label - even if there's no style, the current settings need to show */
+	ghid_set_status_line_label();
+
 	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter))
 		return;
 
@@ -524,10 +527,7 @@ void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, C
 	if (target == -1) {
 		struct _route_style *style;
 
-		/* none of the styles matched: update the label... */
-		ghid_set_status_line_label();
-
-		/* ... and select the hidden custom button */
+		/* None of the styles matched: select the hidden custom button */
 		if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter))
 			return;
 
