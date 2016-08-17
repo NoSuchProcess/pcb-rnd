@@ -117,7 +117,7 @@ static char *usage_string1 =
 void usage(void)
 {
 	puts(usage_string0);
-	printf(usage_string1);
+	puts(usage_string1);
 	exit(0);
 }
 
