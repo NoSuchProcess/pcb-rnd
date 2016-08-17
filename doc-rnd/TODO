@@ -1,4 +1,6 @@
 - BUGS
+	- crash: place an element, select it, move it, undo twice, crash [Erich]
+	- crash on "new layout" (route style vector messup) [Erich]
 	- bg image png crashes in extreme pan
 	- mac sw rendering slowdown [Chris]
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
@@ -44,6 +46,7 @@
 		- route style vs. autorouter
 
 CLEANUP #5
+- Erich's gtk lag report: press 's' a lot then move the mouse - 's' ends up in the new loc!
 - conf: throw an error if user config can not be written
 - the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 - mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
