@@ -2,6 +2,7 @@
 #include "global.h"
 #include "hid_color.h"
 #include <genht/hash.h>
+#include "compat_misc.h"
 
 static hidval invalid_color = { 0 };
 
@@ -32,7 +33,7 @@ int hid_cache_color(int set, const char *name, hidval * val, void **vcache)
 		memcpy(val, &e->value, sizeof(hidval));
 	}
 	else
-		htsh_set(cache, (char *)name, *val); /* write */
+		htsh_set(cache, pcb_strdup(name), *val); /* write */
 
 	return 1;
 }
