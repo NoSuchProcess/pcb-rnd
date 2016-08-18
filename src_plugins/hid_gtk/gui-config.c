@@ -1377,11 +1377,9 @@ void ghid_config_groups_changed(void)
 	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
 
 	for (i = 1; i < max_group + 1; ++i) {
-		if (i < 10)
-			snprintf(buf, sizeof(buf), "  %d", i);
-		else
-			snprintf(buf, sizeof(buf), "%d", i);
+		snprintf(buf, sizeof(buf), "% 3d", i);
 		label = gtk_label_new(buf);
+		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 		gtk_table_attach_defaults(GTK_TABLE(table), label, i, i + 1, 0, 1);
 	}
 
@@ -1410,10 +1408,8 @@ void ghid_config_groups_changed(void)
 
 		group = NULL;
 		for (i = 0; i < max_group; ++i) {
-			snprintf(buf, sizeof(buf), "%2.2d", i + 1);
-			button = gtk_radio_button_new_with_label(group, buf);
+			button = gtk_radio_button_new(group);
 
-			gtk_toggle_button_set_mode(GTK_TOGGLE_BUTTON(button), FALSE);
 			group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(button));
 			gtk_table_attach_defaults(GTK_TABLE(table), button, i + 1, i + 2, layer + 1, layer + 2);
 			g_signal_connect(G_OBJECT(button), "toggled",
