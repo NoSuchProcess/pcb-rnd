@@ -1570,3 +1570,47 @@ bool Undoing(void)
 {
 	return (Locked);
 }
+
+static const char *undo_type2str(int type)
+{
+	static char buff[32];
+	switch(type) {
+		case UNDO_CHANGENAME: return "changename";
+		case UNDO_MOVE: return "move";
+		case UNDO_REMOVE: return "remove";
+		case UNDO_REMOVE_POINT: return "remove_point";
+		case UNDO_INSERT_POINT: return "insert_point";
+		case UNDO_REMOVE_CONTOUR: return "remove_contour";
+		case UNDO_INSERT_CONTOUR: return "insert_contour";
+		case UNDO_ROTATE: return "rotate";
+		case UNDO_CREATE: return "create";
+		case UNDO_MOVETOLAYER: return "movetolayer";
+		case UNDO_FLAG: return "flag";
+		case UNDO_CHANGESIZE: return "changesize";
+		case UNDO_CHANGE2NDSIZE: return "change2ndsize";
+		case UNDO_MIRROR: return "mirror";
+		case UNDO_CHANGECLEARSIZE: return "chngeclearsize";
+		case UNDO_CHANGEMASKSIZE: return "changemasksize";
+		case UNDO_CHANGEANGLES: return "changeangles";
+		case UNDO_LAYERCHANGE: return "layerchange";
+		case UNDO_CLEAR: return "clear";
+		case UNDO_NETLISTCHANGE: return "netlistchange";
+		case UNDO_CHANGEPINNUM: return "changepinnum";
+	}
+	sprintf(buff, "Unknown %d", type);
+	return buff;
+}
+
+void undo_dump()
+{
+	size_t n;
+	int last_serial = -2;
+	for(n = 0; n < UndoN; n++) {
+		if (last_serial != UndoList[n].Serial) {
+			printf("--- serial=%d\n", UndoList[n].Serial);
+			last_serial = UndoList[n].Serial;
+		}
+		printf(" type=%s kind=%d ID=%d\n", undo_type2str(UndoList[n].Type), UndoList[n].Kind, UndoList[n].ID);
+	}
+}
+
