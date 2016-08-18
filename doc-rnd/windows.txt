@@ -30,6 +30,7 @@ Known bugs:
 	- inserting elements fail (even static ones)
 	- no shell and awk in the pack -> parametric footprints fail
 	- text (including menu text) doesn't appear on XP
+	- no exporters that depend on libgd (png, jpeg, gif, nelma)
 
 Worked on systems:
 	- Windows 8.1 pro, Hungarian, 32 bit
