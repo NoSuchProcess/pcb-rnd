@@ -1571,6 +1571,7 @@ bool Undoing(void)
 	return (Locked);
 }
 
+#ifndef NDEBUG
 static const char *undo_type2str(int type)
 {
 	static char buff[32];
@@ -1614,3 +1615,4 @@ void undo_dump()
 	}
 }
 
+#endif
