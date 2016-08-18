@@ -465,7 +465,7 @@ static bool UndoChangeSize(UndoListTypePtr Entry)
  */
 static bool UndoFlag(UndoListTypePtr Entry)
 {
-	void *ptr1, *ptr2, *ptr3;
+	void *ptr1, *ptr1e, *ptr2, *ptr3;
 	int type;
 	FlagType swap;
 	int must_redraw;
@@ -476,6 +476,11 @@ static bool UndoFlag(UndoListTypePtr Entry)
 		FlagType f1, f2;
 		PinTypePtr pin = (PinTypePtr) ptr2;
 
+		if ((type == PCB_TYPE_ELEMENT) || (type == PCB_TYPE_ELEMENT_NAME))
+			ptr1e = NULL;
+		else
+			ptr1e = ptr1;
+
 		swap = pin->Flags;
 
 		must_redraw = 0;
@@ -485,8 +490,8 @@ static bool UndoFlag(UndoListTypePtr Entry)
 		if (!FLAGS_EQUAL(f1, f2))
 			must_redraw = 1;
 
-		if (andDraw && must_redraw)
-			EraseObject(type, ptr1, ptr2);
+		if (andDraw && must_redraw && (ptr1e != NULL))
+			EraseObject(type, ptr1e, ptr2);
 
 		pin->Flags = Entry->Data.Flags;
 
