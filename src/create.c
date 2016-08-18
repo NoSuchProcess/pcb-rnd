@@ -122,7 +122,7 @@ void pcb_colors_from_settings(PCBTypePtr ptr)
  */
 PCBTypePtr CreateNewPCB_(bool SetDefaultNames)
 {
-	PCBTypePtr ptr;
+	PCBTypePtr ptr, save;
 	int i;
 
 	/* allocate memory, switch all layers on and copy resources */
@@ -140,7 +140,10 @@ PCBTypePtr CreateNewPCB_(bool SetDefaultNames)
 
 	ptr->Grid = conf_core.editor.grid;
 	ParseGroupString(conf_core.design.groups, &ptr->LayerGroups, MAX_LAYER);
+	save = PCB;
+	PCB = ptr;
 	hid_action("RouteStylesChanged");
+	PCB = save;
 	ptr->Zoom = conf_core.editor.zoom;
 	ptr->MaxWidth = conf_core.design.max_width;
 	ptr->MaxHeight = conf_core.design.max_height;
