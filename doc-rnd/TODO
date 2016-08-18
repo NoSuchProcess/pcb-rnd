@@ -1,5 +1,4 @@
 - BUGS
-	- layer selection preferences dialog is unreadable under ubuntu because there's no diff between pressed and unpressed - replace it with radio buttons maybe? [Erich]
 	- bg image png crashes in extreme pan
 	- mac sw rendering slowdown [Chris]
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
