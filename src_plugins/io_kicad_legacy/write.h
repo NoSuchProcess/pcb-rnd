@@ -31,3 +31,5 @@
 int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data);
 int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff);
 int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP);
+int write_kicad_legacy_module_header(FILE * FP);
+
