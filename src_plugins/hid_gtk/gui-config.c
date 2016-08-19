@@ -409,6 +409,7 @@ void config_general_save(GtkButton *widget, save_ctx_t *ctx)
 		"plugins/hid_gtk/history_size",
 		"rc/backup_interval",
 		"editor/auto_place",
+		"editor/save_in_tmp",
 		NULL
 	};
 
