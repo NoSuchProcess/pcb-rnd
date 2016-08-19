@@ -249,10 +249,17 @@ int ghid_control_is_pressed()
 	GdkModifierType mask;
 	GHidPort *out = &ghid_port;
 
+	pcb_trace("ghid_control_is_pressed() d1\n");
+
 	if (!ghid_gui_is_up)
 		return 0;
 
+	pcb_trace("ghid_control_is_pressed() d2\n");
+
 	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
+
+	pcb_trace("ghid_control_is_pressed() d3 %x %x\n", mask, GDK_CONTROL_MASK);
+
 	return (mask & GDK_CONTROL_MASK) ? TRUE : FALSE;
 }
 

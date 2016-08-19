@@ -235,7 +235,9 @@ static void click_cb(hidval hv)
 
 			SaveMode();
 			saved_mode = true;
+			pcb_trace("click_cb() SetMode, pre %d\n", conf_core.editor.mode);
 			SetMode(gui->control_is_pressed()? PCB_MODE_COPY : PCB_MODE_MOVE);
+			pcb_trace("click_cb() SetMode, post %d\n", conf_core.editor.mode);
 			Crosshair.AttachedObject.Ptr1 = Note.ptr1;
 			Crosshair.AttachedObject.Ptr2 = Note.ptr2;
 			Crosshair.AttachedObject.Ptr3 = Note.ptr3;
