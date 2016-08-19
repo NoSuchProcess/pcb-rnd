@@ -205,6 +205,9 @@ gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev
 	ModifierKeysState mk;
 	GdkModifierType state;
 
+GHidPort *out = &ghid_port;
+GdkModifierType mask;
+
 	/* Reject double and triple click events */
 	if (ev->type != GDK_BUTTON_PRESS)
 		return TRUE;
@@ -213,7 +216,9 @@ gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(&state);
 
-	pcb_trace("ghid_port_button_press_cb mk=%x\n", mk);
+
+	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
+	pcb_trace("ghid_port_button_press_cb mk=%x state=%x mask=%x\n", mk, state, mask);
 
 
 	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk);

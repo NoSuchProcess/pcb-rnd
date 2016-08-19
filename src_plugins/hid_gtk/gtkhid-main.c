@@ -254,7 +254,7 @@ int ghid_control_is_pressed()
 	if (!ghid_gui_is_up)
 		return 0;
 
-	pcb_trace("ghid_control_is_pressed() d2\n");
+	pcb_trace("ghid_control_is_pressed() d2 %x\n", gtk_widget_get_window(out->drawing_area));
 
 	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
 
