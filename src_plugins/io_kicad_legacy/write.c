@@ -145,13 +145,13 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 		pinlist_foreach(&element->Pin, &it, pin) {
 			fputs("$PAD\n",FP);  // start pad descriptor for a pin
 
-                        pcb_fprintf(FP, "Po %.3mm %.3mm %.3mm\n", // positions of pad
+                        pcb_fprintf(FP, "Po %.3mm %.3mm\n", // positions of pad
                                         pin->X - element->MarkX,
                                         pin->Y - element->MarkY);
 
                         fputs("Sh ",FP); // pin shape descriptor
 			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
-                        fputs(" C ",FP); 
+                        fputs(" C ",FP); // circular
                         pcb_fprintf(FP, "%.3mm %.3mm ", pin->Thickness, pin->Thickness); // height = width
                         fputs("0 0 0\n",FP);// deltaX deltaY Orientation as float in decidegrees
 
@@ -161,7 +161,6 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 			fputs("At STD N 00E0FFFF\n", FP); // through hole STD pin, all copper layers
 
                         fputs("Ne 0 \"\"\n",FP); // library parts have empty net descriptors
-
 /*
 			PrintQuotedString(FP, (char *) EMPTY(pin->Name));
 			fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
@@ -169,15 +168,47 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
                         fputs("$EndPAD\n",FP);
 		}
 		pinlist_foreach(&element->Pad, &it, pad) {
-			pcb_fprintf(FP, "DSpad %.3mm %.3mm %.3mm %.3mm %.3mm %.3mm %.3mm ",
-									pad->Point1.X - element->MarkX,
-									pad->Point1.Y - element->MarkY,
-									pad->Point2.X - element->MarkX,
- pad->Point2.Y - element->MarkY, pad->Thickness, pad->Clearance, pad->Mask);
-			PrintQuotedString(FP, (char *) EMPTY(pad->Name));
-			fprintf(FP, " ");
-			PrintQuotedString(FP, (char *) EMPTY(pad->Number));
-			fprintf(FP, " %s\n", F2S(pad, PCB_TYPE_PAD));
+                        fputs("$PAD\n",FP);  // start pad descriptor for an smd pad
+
+                        pcb_fprintf(FP, "Po %.3mm %.3mm\n", // positions of pad
+                                        (pad->Point1.X + pad->Point2.X)/2- element->MarkX,
+                                        (pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
+
+                        fputs("Sh ",FP); // pin shape descriptor
+                        PrintQuotedString(FP, (char *) EMPTY(pad->Number));
+                        fputs(" R ",FP); // rectangular, not a pin
+
+                        if ((pad->Point1.X-pad->Point2.X) <= 0 
+				&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
+	                        pcb_fprintf(FP, "%.3mm %.3mm ",
+                                        pad->Point2.X-pad->Point1.X + pad->Thickness,  // width
+                                        pad->Point2.Y-pad->Point1.Y + pad->Thickness); // height
+                        } else if ((pad->Point1.X-pad->Point2.X) <= 0 
+                                && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
+                                pcb_fprintf(FP, "%.3mm %.3mm ",
+                                        pad->Point2.X-pad->Point1.X + pad->Thickness,  // width
+                                        pad->Point1.Y-pad->Point2.Y + pad->Thickness); // height
+                        } else if ((pad->Point1.X-pad->Point2.X) > 0        
+                                && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
+                                pcb_fprintf(FP, "%.3mm %.3mm ",
+                                        pad->Point1.X-pad->Point2.X + pad->Thickness,  // width
+                                        pad->Point1.Y-pad->Point2.Y + pad->Thickness); // height
+                        } else if ((pad->Point1.X-pad->Point2.X) > 0        
+                                  && (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
+                                pcb_fprintf(FP, "%.3mm %.3mm ",
+                                        pad->Point1.X-pad->Point2.X + pad->Thickness,  // width
+                                        pad->Point2.Y-pad->Point1.Y + pad->Thickness); // height
+                        }
+
+                        fputs("0 0 0\n",FP);// deltaX deltaY Orientation as float in decidegrees
+
+                        fputs("Dr 0 0 0\n",FP); // drill details; zero size; x,y pos vs pad location
+
+                        fputs("At SMD N 00888000\n", FP); // SMD pin, need to use right layer mask 
+
+                        fputs("Ne 0 \"\"\n",FP); // library parts have empty net descriptors
+                        fputs("$EndPAD\n",FP);
+
 		}
 		linelist_foreach(&element->Line, &it, line) {
 			pcb_fprintf(FP, "DS %.3mm %.3mm %.3mm %.3mm %.3mm ",
