@@ -358,6 +358,7 @@ typedef struct {
 static gboolean ghid_timer(GuiTimer * timer)
 {
 	(*timer->func) (timer->user_data);
+pcb_trace("ghid_timer\n");
 	ghid_mode_cursor(conf_core.editor.mode);
 	return FALSE;									/* Turns timer off */
 }
