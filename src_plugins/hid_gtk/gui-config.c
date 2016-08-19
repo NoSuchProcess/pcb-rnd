@@ -406,8 +406,9 @@ void config_general_save(GtkButton *widget, save_ctx_t *ctx)
 		"plugins/hid_gtk/use_command_window",
 		"plugins/hid_gtk/compact_horizontal",
 		"plugins/hid_gtk/compact_vertical",
-		"rc/backup_interval",
 		"plugins/hid_gtk/history_size",
+		"rc/backup_interval",
+		"editor/auto_place",
 		NULL
 	};
 
