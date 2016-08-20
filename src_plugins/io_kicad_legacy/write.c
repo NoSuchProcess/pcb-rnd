@@ -23,6 +23,7 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
+#include <math.h>
 
 #include "plug_io.h"
 #include "error.h"
@@ -242,8 +243,8 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
                                 pcb_fprintf(FP, "DA %.3mm %.3mm %.3mm %.3mm %.3ma %.3mm ",
                                         arc->X - element->MarkX, // x_1 centre
                                         arc->Y - element->MarkY, // y_2 centre
-                                        arc->X - element->MarkX + (arc->Thickness/2)*cos(3.141592*(arc->StartAngle+180)/360), // x_2 on circle
-					arc->Y - element->MarkY + (arc->Thickness/2)*sin(3.141592*(arc->StartAngle+180)/360), // y_2 on circle
+                                        arc->X - element->MarkX + (arc->Thickness/2)*cos(M_PI*(arc->StartAngle+180)/360), // x_2 on circle
+					arc->Y - element->MarkY + (arc->Thickness/2)*sin(M_PI*(arc->StartAngle+180)/360), // y_2 on circle
                                         -arc->Delta*10,   // CW delta angle in decidegrees
                                         arc->Thickness); // stroke thickness
                         }
