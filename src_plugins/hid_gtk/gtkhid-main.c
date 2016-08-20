@@ -1205,7 +1205,7 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 			fprintf(stderr, "%s:  Calling SaveTo(%s, %s)\n", __FUNCTION__, function, name);
 
 		if (strcasecmp(function, "PasteBuffer") == 0) {
-			hid_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->default_fmt);
+			hid_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->default_fmt, "1", NULL);
 			pcb_io_list_free(&avail);
 		}
 		else {
