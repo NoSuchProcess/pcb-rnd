@@ -29,26 +29,29 @@
 #include "error.h"
 #define F2S(OBJ, TYPE) flags_to_string ((OBJ)->Flags, TYPE)
 
-// layer "0" is first copper layer = "0. Back - Solder"
-// and layer "15" is "15. Front - Component"
-// and layer "20" SilkScreen Back
-// and layer "21" SilkScreen Front
+/* layer "0" is first copper layer = "0. Back - Solder"
+* and layer "15" is "15. Front - Component"
+* and layer "20" SilkScreen Back
+* and layer "21" SilkScreen Front
+*/
 
-static int write_kicad_legacy_module_header(FILE * FP);
+/* generates a line by line listing of the elements being saved */
+static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data);
 
 /* writes the buffer to file */
 int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
 {
-        write_kicad_legacy_module_header(FP);
-	//fputs("io_kicad_legacy_write_buffer()", FP);
+	/*fputs("io_kicad_legacy_write_buffer()", FP); */
 
-        Cardinal i;
+        fputs("PCBNEW-LibModule-V1  jan 01 jan 2016 00:00:01 CET\n",FP);
+        fputs("Units mm\n",FP);
+        fputs("$INDEX\n",FP);
+	io_kicad_legacy_write_element_index(FP, buff->Data),
+        fputs("$EndINDEX\n",FP);
 
-        // WriteViaData(FP, buff->Data);
+        /* WriteViaData(FP, buff->Data); */
 
         WriteElementData(FP, buff->Data, "kicadl");
-
-	fprintf(FP, "$EndMODULE pcb-rnd-exported-module\n");
 
 /*
         for (i = 0; i < max_copper_layer + 2; i++)
@@ -67,35 +70,42 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 }
 
 /* ---------------------------------------------------------------------------
- * writes kicad element = module = footprint header information
+ * writes (eventually) de-duplicated list of element names in kicad legacy format module $INDEX
  */
-static int write_kicad_legacy_module_header(FILE * FP)
+static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data)
 {
-	/* write some useful comments */
+        gdl_iterator_t eit;
+        LineType *line;
+        ArcType *arc;
+        ElementType *element;
+        //elementlist_dedup_initializer(ededup);
 
-	fputs("PCBNEW-LibModule-V1  jan 01 jan 2016 00:00:01 CET\n",FP);
-        fputs("Units mm\n",FP);
-        fputs("$INDEX\n",FP);
-        fputs("pcb-rnd-exported-module\n",FP);
-        fputs("$EndINDEX\n",FP);
-        fputs("$MODULE pcb-rnd-exported-module\n",FP);
-        fputs("Po 0 0 0 15 51534DFF 00000000 ~~\n",FP);
-        fputs("Li pcb-rnd-exported-module\n",FP);
-        fputs("Cd pcb-rnd-exported-module\n",FP);
-        fputs("Sc 0\n",FP);
-        fputs("AR\n",FP);
-        fputs("Op 0 0 0\n",FP);
-        fputs("T0 0 -4134 600 600 0 120 N V 21 N \"S***\"\n",FP);
+        elementlist_foreach(&Data->Element, &eit, element) {
+                gdl_iterator_t it;
+                PinType *pin;
+                PadType *pad;
 
-	//fprintf(FP, "# release: pcb-rnd " VERSION "\n");
+                //elementlist_dedup_skip(ededup, element); 
+		/* skip duplicate elements */
+                /* only non empty elements */
 
-	//fprintf(FP, "$EndMODULE pcb-rnd-exported-module\n");
+                if (!linelist_length(&element->Line)
+				&& !pinlist_length(&element->Pin)
+				&& !arclist_length(&element->Arc)
+				&& !padlist_length(&element->Pad))
+                        continue;
 
-	/* avoid writing things like user name or date, as these cause merge
-	 * conflicts in collaborative environments using version control systems
-	 */
-	return 0;
+                if (element->Name[0].TextString == NULL) {
+                        fprintf(FP, "unnamed_%p\n",element); /* in case nameless footprint */
+                } else {
+                        fprintf(FP, "%s\n",element->Name[0].TextString);
+                }
+
+	}
+    ///    elementlist_dedup_free(ededup); /* free the state used for deduplication */ 
+        return 0;
 }
+
 
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format
@@ -113,14 +123,14 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 	LineType *line;
 	ArcType *arc;
 	ElementType *element;
-	elementlist_dedup_initializer(ededup);
+	////////elementlist_dedup_initializer(ededup);
 
 	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
 		PinType *pin;
 		PadType *pad;
 
-		elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
+		///////elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
 
 /* TOOD: Footprint name element->Name[0].TextString */
 
@@ -148,7 +158,27 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 				DESCRIPTION_TEXT(element).Scale, F2S(&(DESCRIPTION_TEXT(element)), PCB_TYPE_ELEMENT_NAME));
 
 */
-		//WriteAttributeList(FP, &element->Attributes, "\t");
+
+/*		//WriteAttributeList(FP, &element->Attributes, "\t");
+*/
+
+
+                if (element->Name[0].TextString == NULL) {
+                        fprintf(FP, "$MODULE unnamed_%p\n",element); /* in case nameless footprint */
+                	fputs("Po 0 0 0 15 51534DFF 00000000 ~~\n",FP);
+                	fprintf(FP, "Li unnamed_%p\n",element);
+                	fprintf(FP, "Cd unnamed_%p\n",element);
+                } else {
+                        fprintf(FP, "$MODULE %s\n",element->Name[0].TextString);
+                	fputs("Po 0 0 0 15 51534DFF 00000000 ~~\n",FP);
+                	fprintf(FP, "Li %s\n", element->Name[0].TextString);
+                	fprintf(FP, "Cd %s\n", element->Name[0].TextString);
+                }
+        	fputs("Sc 0\n",FP);
+        	fputs("AR\n",FP);
+        	fputs("Op 0 0 0\n",FP);
+        	fputs("T0 0 -4134 600 600 0 120 N V 21 N \"S***\"\n",FP);
+
 		pinlist_foreach(&element->Pin, &it, pin) {
 			fputs("$PAD\n",FP);  // start pad descriptor for a pin
 
@@ -256,9 +286,16 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
                         }
                         fputs("21\n",FP); // and now append a suitable Kicad layer, front silk = 21
 		}
+
+		if (element->Name[0].TextString == NULL) {
+			fprintf(FP, "$EndMODULE unnamed_%p\n",element);/* in case nameless footprint */
+		} else {
+			fprintf(FP, "$EndMODULE %s\n",element->Name[0].TextString);
+		}
+
 	}
 
-	elementlist_dedup_free(ededup); /* free the state used for deduplication */
+	/////////elementlist_dedup_free(ededup); /* free the state used for deduplication */
 
 	return 0;
 }
