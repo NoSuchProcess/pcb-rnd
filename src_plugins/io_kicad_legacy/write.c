@@ -34,6 +34,7 @@
 // and layer "20" SilkScreen Back
 // and layer "21" SilkScreen Front
 
+static int write_kicad_legacy_module_header(FILE * FP);
 
 /* writes the buffer to file */
 int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
@@ -68,7 +69,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 /* ---------------------------------------------------------------------------
  * writes kicad element = module = footprint header information
  */
-int write_kicad_legacy_module_header(FILE * FP)
+static int write_kicad_legacy_module_header(FILE * FP)
 {
 	/* write some useful comments */
 
