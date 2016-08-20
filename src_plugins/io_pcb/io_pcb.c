@@ -58,6 +58,9 @@ pcb_uninit_t hid_io_pcb_init(void)
 	io_pcb.write_buffer = io_pcb_WriteBuffer;
 	io_pcb.write_element = io_pcb_WriteElementData;
 	io_pcb.write_pcb = io_pcb_WritePCB;
+	io_pcb.default_fmt = "pcb";
+	io_pcb.description = "geda/pcb";
+
 	HOOK_REGISTER(plug_io_t, plug_io_chain, &io_pcb);
 
 	return hid_io_pcb_uninit;

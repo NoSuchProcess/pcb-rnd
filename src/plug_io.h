@@ -72,6 +72,8 @@ struct plug_io_s {
 	/* Writes PCB to a file. Return 0 on success. */
 	int (*write_pcb)(plug_io_t *ctx, FILE *f);
 
+	const char *default_fmt;
+	const char *description;
 };
 extern plug_io_t *plug_io_chain;
 
