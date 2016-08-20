@@ -239,7 +239,7 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 			//
 			// deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in gEDA
 			// NB it is in degrees in the newer s-file kicad module/footprint format
-                                pcb_fprintf(FP, "DA %.3mm %.3mm %.3mm %.3mm %.3ma %.3mm]\n",
+                                pcb_fprintf(FP, "DA %.3mm %.3mm %.3mm %.3mm %.3ma %.3mm ",
                                         arc->X - element->MarkX, // x_1 centre
                                         arc->Y - element->MarkY, // y_2 centre
                                         arc->X - element->MarkX + (arc->Thickness/2)*cos(3.141592*(arc->StartAngle+180)/360), // x_2 on circle
