@@ -63,12 +63,12 @@ typedef enum qp_state_e {
 	}
 
 
-int qparse(char *input, char **argv_ret[])
+int qparse(const char *input, char **argv_ret[])
 {
 	int argc;
 	int allocated;
 	qp_state_t state;
-	char *s;
+	const char *s;
 	char *buff;
 	int buff_len, buff_used;
 	char **argv;
