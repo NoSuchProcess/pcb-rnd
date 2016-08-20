@@ -260,7 +260,7 @@ gint ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfi
 #define		GUI_DIALOG_RESPONSE_ALL	1
 
 gchar *ghid_dialog_file_select_open(gchar * title, gchar ** path, gchar * shortcuts);
-gchar *ghid_dialog_file_select_save(gchar * title, gchar ** path, gchar * file, gchar * shortcuts);
+gchar *ghid_dialog_file_select_save(gchar * title, gchar ** path, gchar * file, gchar * shortcuts, const char **formats, int *format);
 void ghid_dialog_message(gchar * message);
 gboolean ghid_dialog_confirm(gchar * message, gchar * cancelmsg, gchar * okmsg);
 int ghid_dialog_close_confirm(void);

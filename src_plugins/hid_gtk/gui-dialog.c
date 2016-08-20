@@ -313,9 +313,9 @@ gchar *ghid_dialog_file_select_open(gchar * title, gchar ** path, gchar * shortc
 
 /* ---------------------------------------------- */
 /* Caller must g_free() the returned filename. */
-gchar *ghid_dialog_file_select_save(gchar * title, gchar ** path, gchar * file, gchar * shortcuts)
+gchar *ghid_dialog_file_select_save(gchar * title, gchar ** path, gchar * file, gchar * shortcuts, const char **formats, int *format)
 {
-	GtkWidget *dialog;
+	GtkWidget *dialog, *fmt, *tmp, *fmt_combo;
 	gchar *result = NULL, *folder, *seed;
 	GHidPort *out = &ghid_port;
 
@@ -326,6 +326,29 @@ gchar *ghid_dialog_file_select_save(gchar * title, gchar ** path, gchar * file, 
 
 	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
+
+	/* Create and add the file format widget */
+	if (format != NULL) {
+		const char **s;
+		fmt = gtk_hbox_new(FALSE, 0);
+
+		tmp = gtk_vbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(fmt), tmp, TRUE, TRUE, 0);
+
+		tmp = gtk_label_new("File format: ");
+		gtk_box_pack_start(GTK_BOX(fmt), tmp, FALSE, FALSE, 0);
+
+		fmt_combo = gtk_combo_box_new_text();
+		gtk_box_pack_start(GTK_BOX(fmt), fmt_combo, FALSE, FALSE, 0);
+
+		for(s = formats; *s != NULL; s++)
+			gtk_combo_box_append_text(GTK_COMBO_BOX(fmt_combo), *s);
+
+		gtk_combo_box_set_active(GTK_COMBO_BOX(fmt_combo), *format);
+
+		gtk_widget_show_all(fmt);
+		gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), fmt);
+	}
 
 	if (path && *path && **path)
 		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), *path);
@@ -352,8 +375,11 @@ gchar *ghid_dialog_file_select_save(gchar * title, gchar ** path, gchar * file, 
 			g_free(folder);
 		}
 	}
-	gtk_widget_destroy(dialog);
 
+	if (format != NULL)
+		*format = gtk_combo_box_get_active(GTK_COMBO_BOX(fmt_combo));
+
+	gtk_widget_destroy(dialog);
 
 	return result;
 }
