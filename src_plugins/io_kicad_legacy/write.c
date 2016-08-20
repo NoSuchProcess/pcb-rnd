@@ -221,11 +221,34 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 		}
 
 		linelist_foreach(&element->Arc, &it, arc) {
-			pcb_fprintf(FP, "DArc %.3mm %.3mm %.3mm %.3mm %.3ma %.3ma %.3mm]\n",
-									arc->X - element->MarkX,
-									arc->Y - element->MarkY, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
+			if ((arc->Delta == 360) || (arc->Delta == -360)) { // it's a circle
+				pcb_fprintf(FP, "DC %.3mm %.3mm %.3mm %.3mm %.3mm ",
+					arc->X - element->MarkX, // x_1 centre
+					arc->Y - element->MarkY, // y_2 centre
+					(arc->X - element->MarkX + arc->Thickness/2), // x_2 on circle
+					arc->Y - element->MarkY,                  // y_2 on circle
+					arc->Thickness); // stroke thickness
+			} else {
+			// as far as can be determined from the Kicad documentation,
+			// http://en.wikibooks.org/wiki/Kicad/file_formats#Drawings
+			// 
+			// the origin for rotation is the positive x direction, and going CW
+			//
+			// whereas in gEDA, the gEDA origin for rotation is the negative x axis,
+			// with rotation CCW, so we need to reverse delta angle
+			//
+			// deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in gEDA
+			// NB it is in degrees in the newer s-file kicad module/footprint format
+                                pcb_fprintf(FP, "DA %.3mm %.3mm %.3mm %.3mm %.3ma %.3mm]\n",
+                                        arc->X - element->MarkX, // x_1 centre
+                                        arc->Y - element->MarkY, // y_2 centre
+                                        arc->X - element->MarkX + (arc->Thickness/2)*cos(3.141592*(arc->StartAngle+180)/360), // x_2 on circle
+					arc->Y - element->MarkY + (arc->Thickness/2)*sin(3.141592*(arc->StartAngle+180)/360), // y_2 on circle
+                                        -arc->Delta*10,   // CW delta angle in decidegrees
+                                        arc->Thickness); // stroke thickness
+                        }
+                        fputs("21\n",FP); // and now append a suitable Kicad layer, front silk = 21
 		}
-		// fputs("\n", FP); // don't need extra white space
 	}
 	return 0;
 }

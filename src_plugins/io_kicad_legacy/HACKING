@@ -16,10 +16,16 @@ How to run the plugin (GUI version):
 1. run pcb-rnd (from src/)
 2. load a pcb 
 3. open the command prompt (press ':')
-4. type: SaveTo(LayoutAs, foobar.mod, kicadl)
+4. type: SaveTo(PasteBuffer, foobar.mod, kicadl)
 
-This will save the current design to foobar.mod using io_kicad_legacy.
+Now, the gtk dialog "Buffer: save buffer elements to file" allows kicad legacy format to be selected.
 
+Arc and Circle support has been implemented but not fully tested.
+
+This will save the current PasteBuffer contents to foobar.mod using io_kicad_legacy format.
+
+Once layout export has been implemented, the following will be possible:
+ 
 How to run the plugin (CLI version):
 
 echo "SaveTo(LayoutAs, foobar.mod, kicadl)" | ./pcb-rnd  --gui batch my.pcb
