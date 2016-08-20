@@ -27,5 +27,9 @@ print [@
 
 @/local/pcb/compat_inc@
 
+/* These are required for stat() but are C89. Keeping them here, just in case. */
+#include <sys/types.h>
+#include <sys/stat.h>
+
 @]
 

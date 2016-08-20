@@ -21,6 +21,7 @@
 #include "misc_util.h"
 #include "conf_core.h"
 #include "compat_misc.h"
+#include "compat_inc.h"
 
 HID **hid_list = 0;
 int hid_num_hids = 0;
