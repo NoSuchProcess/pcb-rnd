@@ -23,10 +23,7 @@
 #ifndef LIST_ELEMENT_H
 #define LIST_ELEMENT_H
 
-#include <genht/hash.h>
-#include <genht/htip.h>
-
-/* List of Lines */
+/* List of Elements */
 #define TDL(x)      elementlist_ ## x
 #define TDL_LIST_T  elementlist_t
 #define TDL_ITEM_T  ElementType
@@ -37,12 +34,18 @@
 #define elementlist_foreach(list, iterator, loop_elem) \
 	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
 
+#include "ht_element.h"
+#include <genht/hash.h>
+
 /* Calculate a hash value using the content of the element. The hash value
    represents the actual content of an element */
-long pcb_element_hash(const ElementType *e);
+unsigned int pcb_element_hash(const ElementType *e);
+
+/* Compare two elements and return 1 if they contain the same objects. */
+int pcb_element_eq(const ElementType *e1, const ElementType *e2);
 
 /* Create a new local variable to be used for deduplication */
-#define elementlist_dedup_initializer(state) htip_t *state = NULL;
+#define elementlist_dedup_initializer(state) htep_t *state = NULL;
 
 /* Do a "continue" if an element matching loop_elem has been seen already;
    Typically this is invoked as the first statement of an elementlist_foreach()
@@ -52,11 +55,10 @@ switch(1) { \
 	case 1: { \
 		long element_hash; \
 		if (state == NULL) \
-			state = htip_alloc(longhash, longkeyeq); \
-		element_hash = pcb_element_hash(loop_elem); \
-		if (htip_has(state, element_hash)) \
+			state = htep_alloc(pcb_element_hash, pcb_element_eq); \
+		if (htep_has(state, loop_elem)) \
 			continue; \
-		htip_set(state, element_hash, loop_elem); \
+		htep_set(state, loop_elem, 1); \
 	} \
 }
 
@@ -64,7 +66,7 @@ switch(1) { \
 #define elementlist_dedup_free(state) \
 	do { \
 		if (state != NULL) { \
-			htip_free(state); \
+			htep_free(state); \
 			state = NULL; \
 		} \
 	} while(0)

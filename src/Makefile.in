@@ -53,6 +53,7 @@ put /local/pcb/OBJS [@
 	hid_helper.o
 	hid_init.o
 	hid_nogui.o
+	ht_element.o
 	insert.o
 	intersect.o
 	line.o
