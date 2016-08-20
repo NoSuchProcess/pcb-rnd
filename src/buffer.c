@@ -1244,7 +1244,7 @@ void *CopyObjectToBuffer(DataTypePtr Destination, DataTypePtr Src, int Type, voi
 
 static const char pastebuffer_syntax[] =
 	"PasteBuffer(AddSelected|Clear|1..MAX_BUFFER)\n"
-	"PasteBuffer(Rotate, 1..3)\n" "PasteBuffer(Convert|Save|Restore|Mirror)\n" "PasteBuffer(ToLayout, X, Y, units)";
+	"PasteBuffer(Rotate, 1..3)\n" "PasteBuffer(Convert|Restore|Mirror)\n" "PasteBuffer(ToLayout, X, Y, units)\n" "PasteBuffer(Save, Filename, [format], [force])";
 
 static const char pastebuffer_help[] = "Various operations on the paste buffer.";
 
@@ -1280,7 +1280,9 @@ Rotates the current buffer.  The number to pass is 1..3, where 1 means
 degrees clockwise (270 CCW).
 
 @item Save
-Saves any elements in the current buffer to the indicated file.
+Saves any elements in the current buffer to the indicated file. If
+format is specified, try to use that file format, else use the default.
+If force is specified, overwrite target, don't ask.
 
 @item ToLayout
 Pastes any elements in the current buffer to the indicated X, Y
@@ -1304,9 +1306,11 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 	char *function = argc ? argv[0] : (char *) "";
 	char *sbufnum = argc > 1 ? argv[1] : (char *) "";
 	char *fmt = argc > 2 ? argv[2] : NULL;
+	char *forces = argc > 3 ? argv[3] : NULL;
 	char *name;
 	static char *default_file = NULL;
 	int free_name = 0;
+	int force = (forces != NULL) && ((*forces == '1') || (*forces == 'y') || (*forces == 'Y'));
 
 	notify_crosshair_change(false);
 	if (function) {
@@ -1370,7 +1374,7 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 			{
 				FILE *exist;
 
-				if ((exist = fopen(name, "r"))) {
+				if ((!force) && ((exist = fopen(name, "r")))) {
 					fclose(exist);
 					if (gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0))
 						SaveBufferElements(name, fmt);
