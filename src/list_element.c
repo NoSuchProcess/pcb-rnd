@@ -26,3 +26,9 @@
 #define TDL_DONT_UNDEF
 #include "list_element.h"
 #include <genlist/gentdlist_impl.c>
+
+long pcb_element_hash(const ElementType *e)
+{
+#warning TODO: hash the content, ignore the name
+	return strhash(e->Name[0].TextString);
+}

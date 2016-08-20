@@ -23,6 +23,9 @@
 #ifndef LIST_ELEMENT_H
 #define LIST_ELEMENT_H
 
+#include <genht/hash.h>
+#include <genht/htip.h>
+
 /* List of Lines */
 #define TDL(x)      elementlist_ ## x
 #define TDL_LIST_T  elementlist_t
@@ -33,6 +36,33 @@
 
 #define elementlist_foreach(list, iterator, loop_elem) \
 	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
+
+/* Calculate a hash value using the content of the element. The hash value
+   represents the actual content of an element */
+long pcb_element_hash(const ElementType *e);
+
+#define elementlist_dedup_initializer(state) htip_t *state = NULL;
+
+#define elementlist_dedup_skip(state, loop_elem) \
+switch(1) { \
+	case 1: { \
+		long element_hash; \
+		if (state == NULL) \
+			state = htip_alloc(longhash, longkeyeq); \
+		element_hash = pcb_element_hash(loop_elem); \
+		if (htip_has(state, element_hash)) \
+			continue; \
+		htip_set(state, element_hash, loop_elem); \
+	} \
+}
+
+#define elementlist_dedup_free(state) \
+	do { \
+		if (state != NULL) { \
+			htip_free(state); \
+			state = NULL; \
+		} \
+	} while(0)
 
 
 #ifndef LIST_ELEMENT_NOINSTANT
