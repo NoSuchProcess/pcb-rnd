@@ -113,11 +113,16 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 	LineType *line;
 	ArcType *arc;
 	ElementType *element;
+	elementlist_dedup_initializer(ededup);
 
 	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
 		PinType *pin;
 		PadType *pad;
+
+		elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
+
+/* TOOD: Footprint name element->Name[0].TextString */
 
 		/* only non empty elements */
 		if (!linelist_length(&element->Line) && !pinlist_length(&element->Pin) && !arclist_length(&element->Arc) && !padlist_length(&element->Pad))
@@ -252,6 +257,9 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
                         fputs("21\n",FP); // and now append a suitable Kicad layer, front silk = 21
 		}
 	}
+
+	elementlist_dedup_free(ededup); /* free the state used for deduplication */
+
 	return 0;
 }
 
