@@ -47,7 +47,11 @@ struct plug_io_s {
 	   reading (if wr == 0) for I/O type typ. Return 0 if not supported or an
 	   integer priority if supported. The higher the prio is the more likely
 	   the plugin gets the next operation on the file. Base prio should be
-	   100 for native formats. */
+	   100 for native formats.
+	   NOTE: if any format can be chosen for output, the user will have to pick
+	         one; for ordering plugins in that case, the format-neutral
+	         save_preference_prio field is used.
+	   */
 	int (*fmt_support_prio)(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt);
 
 	/* Attempt to load a pcb design from Filename to Ptr.
@@ -74,6 +78,8 @@ struct plug_io_s {
 
 	const char *default_fmt;
 	const char *description;
+
+	int save_preference_prio; /* all available save plugins are sorted by this before presenting them to the user to choose one */
 };
 extern plug_io_t *plug_io_chain;
 

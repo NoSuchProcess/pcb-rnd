@@ -145,7 +145,7 @@ typedef struct {
 static int find_prio_cmp(const void *p1, const void *p2)
 {
 	const find_t *f1 = p1, *f2 = p2;
-	return f1->prio > f2->prio;
+	return f1->prio < f2->prio;
 }
 
 /* Find all plugins that can handle typ/wr and build an ordered list in available[], 
@@ -155,13 +155,16 @@ static int find_io(find_t *available, int avail_len, plug_iot_t typ, const char 
 {
 	int len = 0;
 
-
 #define cb_append(pl, pr) \
 	do { \
 		if (pr > 0) { \
 			assert(len < avail_len ); \
 			available[len].plug = pl; \
-			available[len++].prio = pr; \
+			if (fmt == NULL) \
+				available[len].prio = pl->save_preference_prio; \
+			else \
+				available[len].prio = pr; \
+			len++; \
 		} \
 	} while(0)
 

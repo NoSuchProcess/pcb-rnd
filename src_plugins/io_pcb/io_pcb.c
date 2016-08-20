@@ -60,6 +60,7 @@ pcb_uninit_t hid_io_pcb_init(void)
 	io_pcb.write_pcb = io_pcb_WritePCB;
 	io_pcb.default_fmt = "pcb";
 	io_pcb.description = "geda/pcb";
+	io_pcb.save_preference_prio = 100;
 
 	HOOK_REGISTER(plug_io_t, plug_io_chain, &io_pcb);
 
