@@ -62,6 +62,10 @@
  *          ONLY be used for debug code since its output exposes
  *          pcb's base units).
  *
+ * The usual printf(3) precision and length modifiers should work with
+ * any format specifier that outputs coords, e.g. %.3mm will output in
+ * mm up to 3 decimal digits after the decimal point.
+ *
  * KNOWN ISSUES:
  *   No support for %zu size_t printf spec
  */

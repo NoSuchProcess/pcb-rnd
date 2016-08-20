@@ -1,5 +1,5 @@
 - BUGS
-	- pcb-printf.h lacks doc about %.3mm
+	- visible grid slowing down rendering [Erich]
 	- bg image png crashes in extreme pan
 	- mac sw rendering slowdown [Chris]
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
