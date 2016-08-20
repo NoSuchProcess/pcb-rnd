@@ -5,7 +5,6 @@ print [@
 PLUGDIR=../../src_plugins
 CFLAGS=@/local/pcb/CFLAGS@
 LDFLAGS=-lm
-EXE=@sys/ext_exe@
 CC=@cc/cc@
 
 HASHOBJ=../../src_3rd/liblihata/genht/hash.o ../../src_3rd/liblihata/genht/htsp.o ../../src_3rd/liblihata/genht/htpp.o

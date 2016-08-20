@@ -9,4 +9,5 @@ RM=@/host/fstools/rm@
 CP=@/host/fstools/cp@
 LN=@/host/fstools/ln@
 MKDIR=@/host/fstools/mkdir@
+EXE=@/target/sys/ext_exe@
 @]

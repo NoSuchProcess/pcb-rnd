@@ -209,10 +209,10 @@ CLEANRULES=@/local/pcb/CLEANRULES@
 CC=@cc/cc@
 CQUOTE=../scconfig/cquote
 
-all: pcb-rnd @/local/pcb/all@
+all: pcb-rnd$(EXE) @/local/pcb/all@
 
-pcb-rnd: $(OBJS) $(EXEDEPS)
-	$(CC) $(OBJS) -o pcb-rnd $(LDFLAGS) $(LIBS)
+pcb-rnd$(EXE): $(OBJS) $(EXEDEPS)
+	$(CC) $(OBJS) -o pcb-rnd$(EXE) $(LDFLAGS) $(LIBS)
 @]
 
 print [@
