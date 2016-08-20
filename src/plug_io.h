@@ -31,7 +31,7 @@
 #include "global.h"
 #include "conf.h"
 
-typedef enum {
+typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not all formats support all things */
 	PCB_IOT_PCB        = 1,
 	PCB_IOT_FOOTPRINT  = 2,
 	PCB_IOT_FONT       = 4,
@@ -110,5 +110,24 @@ int WritePipe(char *, bool, const char *fmt);
 void SaveTMPData(void);
 void RemoveTMPData(void);
 #endif
+
+/********** helpers **********/
+
+/* wish we had more than 32 IO plugins... */
+#define PCB_IO_MAX_FORMATS 32
+
+/* A list of format plugins available for a given purpose */
+typedef struct {
+	int len;
+	const plug_io_t *plug[PCB_IO_MAX_FORMATS+1];
+	char *digest[PCB_IO_MAX_FORMATS+1];           /* string that contains the format identifier and the description */
+} pcb_io_formats_t;
+
+/* Search all io plugins to see if typ/wr is supported. Return an ordered
+   list in out. If do_digest is non-zero, fill in the digest field. Returns
+   number of suitable io plugins. Call pcb_io_list_free() on out when it is not
+   needed anymore. */
+int pcb_io_list(pcb_io_formats_t *out, plug_iot_t typ, int wr, int do_digest);
+void pcb_io_list_free(pcb_io_formats_t *out);
 
 #endif

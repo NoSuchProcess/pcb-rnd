@@ -148,34 +148,51 @@ static int find_prio_cmp(const void *p1, const void *p2)
 	return f1->prio > f2->prio;
 }
 
+/* Find all plugins that can handle typ/wr and build an ordered list in available[], 
+   highest prio first. If fmt is NULL, use the default fmt for each plugin.
+   Return the length of the array. */
+static int find_io(find_t *available, int avail_len, plug_iot_t typ, const char *fmt)
+{
+	int len = 0;
+
+
+#define cb_append(pl, pr) \
+	do { \
+		if (pr > 0) { \
+			assert(len < avail_len ); \
+			available[len].plug = pl; \
+			available[len++].prio = pr; \
+		} \
+	} while(0)
+
+	HOOK_CALL_ALL(plug_io_t, plug_io_chain, fmt_support_prio, cb_append, typ, 1, (fmt == NULL ? __ch__->default_fmt : fmt));
+
+	if (len > 0)
+		qsort(available, len, sizeof(available[0]), find_prio_cmp);
+#undef cb_append
+
+	return len;
+}
+
 /* Find the plugin that offers the highest write prio for the format */
 static plug_io_t *find_writer(plug_iot_t typ, const char *fmt)
 {
-	find_t available[32]; /* wish we had more than 32 IO plugins... */
-	int len = 0;
+	find_t available[PCB_IO_MAX_FORMATS];
+	int len;
 
 	if (fmt == NULL) {
 #warning TODO: rather save format information on load
 		fmt = "pcb";
 	}
 
-#define cb_append(pl, pr) \
-	do { \
-		if (pr > 0) { \
-			assert(len < sizeof(available)/sizeof(available[0])); \
-			available[len].plug = pl; \
-			available[len++].prio = pr; \
-		} \
-	} while(0)
+	len = find_io(available, sizeof(available)/sizeof(available[0]), typ, fmt);
 
-	HOOK_CALL_ALL(plug_io_t, plug_io_chain, fmt_support_prio, cb_append, typ, 1, fmt);
 	if (len == 0)
 		return NULL;
 
-	qsort(available, len, sizeof(available[0]), find_prio_cmp);
 	return available[0].plug;
-#undef cb_append
 }
+
 
 int WriteBuffer(FILE *f, BufferType *buff, const char *fmt)
 {
@@ -779,5 +796,40 @@ int WritePipe(char *Filename, bool thePcb, const char *fmt)
 	if (used_popen)
 		return (pclose(fp) ? STATUS_ERROR : result);
 	return (fclose(fp) ? STATUS_ERROR : result);
+}
+
+
+int pcb_io_list(pcb_io_formats_t *out, plug_iot_t typ, int wr, int do_digest)
+{
+	find_t available[PCB_IO_MAX_FORMATS];
+	int n;
+
+	memset(out, 0, sizeof(pcb_io_formats_t));
+	out->len = find_io(available, sizeof(available)/sizeof(available[0]), typ, NULL);
+
+	if (out->len == 0) 
+		return 0;
+
+	for(n = 0; n < out->len; n++)
+		out->plug[n] = available[n].plug;
+
+	if (do_digest) {
+		for(n = 0; n < out->len; n++)
+			out->digest[n] = pcb_strdup_printf("%s (%s)", out->plug[n]->default_fmt, out->plug[n]->description);
+		out->digest[n] = NULL;
+	}
+	return out->len;
+}
+
+void pcb_io_list_free(pcb_io_formats_t *out)
+{
+	int n;
+
+	for(n = 0; n < out->len; n++) {
+		if (out->digest[n] != NULL) {
+			free(out->digest[n]);
+			out->digest[n] = NULL;
+		}
+	}
 }
 
