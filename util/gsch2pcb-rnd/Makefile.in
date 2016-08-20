@@ -1,4 +1,4 @@
-put /local/pcb/CFLAGS {-I../.. -I../../src_3rd -DSCMDIR="\\"$(LIBDIR)\\""}
+put /local/pcb/CFLAGS {-I../.. -I../../src_3rd -I../../src_3rd/liblihata -DSCMDIR="\\"$(LIBDIR)\\""}
 include {../scconfig/template/debug.tmpasm}
 
 print [@
