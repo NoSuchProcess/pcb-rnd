@@ -1164,6 +1164,9 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 	char *function;
 	char *name;
 	char *prompt;
+	const char *fp_formats[] = {".fp (geda/pcb)", ".mod (kicad legacy", NULL};
+	const char **formats_param = NULL;
+	int fmt, *fmt_param = NULL;
 
 	static gchar *current_dir = NULL;
 
@@ -1179,12 +1182,16 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 		if (PCB->Filename)
 			return hid_actionl("SaveTo", "Layout", PCB->Filename, NULL);
 
-	if (strcasecmp(function, "PasteBuffer") == 0)
+	if (strcasecmp(function, "PasteBuffer") == 0) {
 		prompt = _("Save element as");
+		formats_param = fp_formats;
+		fmt_param = &fmt;
+		fmt = 0;
+	}
 	else
 		prompt = _("Save layout as");
 
-	name = ghid_dialog_file_select_save(prompt, &current_dir, PCB->Filename, conf_core.rc.file_path);
+	name = ghid_dialog_file_select_save(prompt, &current_dir, PCB->Filename, conf_core.rc.file_path, formats_param, fmt_param);
 
 	if (name) {
 		if (conf_core.rc.verbose)
