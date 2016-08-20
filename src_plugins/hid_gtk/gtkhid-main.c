@@ -20,6 +20,7 @@
 #include "hid_flags.h"
 #include "hid_actions.h"
 #include "plug_footprint.h"
+#include "plug_io.h"
 #include "misc_util.h"
 #include "compat_misc.h"
 
@@ -1164,7 +1165,7 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 	char *function;
 	char *name;
 	char *prompt;
-	const char *fp_formats[] = {".fp (geda/pcb)", ".mod (kicad legacy", NULL};
+	pcb_io_formats_t avail;
 	const char **formats_param = NULL;
 	int fmt, *fmt_param = NULL;
 
@@ -1184,9 +1185,15 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 
 	if (strcasecmp(function, "PasteBuffer") == 0) {
 		prompt = _("Save element as");
-		formats_param = fp_formats;
-		fmt_param = &fmt;
-		fmt = 0;
+		if (pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1) > 0) {
+			formats_param = (const char **)avail.digest;
+			fmt_param = &fmt;
+			fmt = 0;
+		}
+		else {
+			Message("Error: no IO plugin avaialble for saving a buffer.");
+			return -1;
+		}
 	}
 	else
 		prompt = _("Save layout as");
@@ -1197,8 +1204,10 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 		if (conf_core.rc.verbose)
 			fprintf(stderr, "%s:  Calling SaveTo(%s, %s)\n", __FUNCTION__, function, name);
 
-		if (strcasecmp(function, "PasteBuffer") == 0)
-			hid_actionl("PasteBuffer", "Save", name, NULL);
+		if (strcasecmp(function, "PasteBuffer") == 0) {
+			hid_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->default_fmt);
+			pcb_io_list_free(&avail);
+		}
 		else {
 			/* 
 			 * if we got this far and the function is Layout, then
