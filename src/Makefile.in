@@ -209,7 +209,11 @@ CLEANRULES=@/local/pcb/CLEANRULES@
 CC=@cc/cc@
 CQUOTE=../scconfig/cquote
 
-all: pcb-rnd$(EXE) @/local/pcb/all@
+all: all_exe
+
+include ../Makefile.conf
+
+all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
 pcb-rnd$(EXE): $(OBJS) $(EXEDEPS)
 	$(CC) $(OBJS) -o pcb-rnd$(EXE) $(LDFLAGS) $(LIBS)
@@ -255,7 +259,6 @@ DISTCLEANFILES= core_lists.h
 clean: $(CLEANRULES)
 	-rm pcb-rnd $(OBJS) $(CLEANFILES)
 
-include ../Makefile.conf
 
 install_:
 	$(MKDIR) $(BINDIR) $(DATADIR) $(LIBDIR) $(LIBDIR)/plugins
