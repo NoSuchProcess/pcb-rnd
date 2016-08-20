@@ -31,16 +31,24 @@
 #include "global.h"
 #include "conf.h"
 
+typedef enum {
+	PCB_IOT_PCB        = 1,
+	PCB_IOT_FOOTPRINT  = 2,
+	PCB_IOT_FONT       = 4,
+	PCB_IOT_BUFFER     = 8
+} plug_iot_t;
+
 /**************************** API definition *********************************/
 struct plug_io_s {
 	plug_io_t *next;
 	void *plugin_data;
 
 	/* Check if the plugin supports format fmt, for writing (if wr != 0) or for
-	   reading (if wr == 0). Return 0 if not supported or an integer priority
-	   if supported. The higher the prio is the more likely the plugin gets
-	   the next operation on the file. Base prio should be 100 for native formats. */
-	int (*fmt_support_prio)(plug_io_t *ctx, int wr, const char *fmt);
+	   reading (if wr == 0) for I/O type typ. Return 0 if not supported or an
+	   integer priority if supported. The higher the prio is the more likely
+	   the plugin gets the next operation on the file. Base prio should be
+	   100 for native formats. */
+	int (*fmt_support_prio)(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt);
 
 	/* Attempt to load a pcb design from Filename to Ptr.
 	   Conf subtree at settings_dest is replaced by settings loaded from the

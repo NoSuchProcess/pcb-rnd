@@ -149,7 +149,7 @@ static int find_prio_cmp(const void *p1, const void *p2)
 }
 
 /* Find the plugin that offers the highest write prio for the format */
-static plug_io_t *find_writer(const char *fmt)
+static plug_io_t *find_writer(plug_iot_t typ, const char *fmt)
 {
 	find_t available[32]; /* wish we had more than 32 IO plugins... */
 	int len = 0;
@@ -168,7 +168,7 @@ static plug_io_t *find_writer(const char *fmt)
 		} \
 	} while(0)
 
-	HOOK_CALL_ALL(plug_io_t, plug_io_chain, fmt_support_prio, cb_append, 1, fmt);
+	HOOK_CALL_ALL(plug_io_t, plug_io_chain, fmt_support_prio, cb_append, typ, 1, fmt);
 	if (len == 0)
 		return NULL;
 
@@ -181,7 +181,7 @@ int WriteBuffer(FILE *f, BufferType *buff, const char *fmt)
 {
 	int res;
 
-	plug_io_t *p = find_writer(fmt);
+	plug_io_t *p = find_writer(PCB_IOT_BUFFER, fmt);
 
 	if (p != NULL)
 		res = p->write_buffer(p, f, buff);
@@ -194,7 +194,7 @@ int WriteElementData(FILE *f, DataTypePtr e, const char *fmt)
 {
 	int res;
 
-	plug_io_t *p = find_writer(fmt);
+	plug_io_t *p = find_writer(PCB_IOT_FOOTPRINT, fmt);
 
 	if (p != NULL)
 		res = p->write_element(p, f, e);
@@ -206,7 +206,7 @@ int WriteElementData(FILE *f, DataTypePtr e, const char *fmt)
 int WritePCB(FILE *f, const char *fmt)
 {
 	int res;
-	plug_io_t *p = find_writer(fmt);
+	plug_io_t *p = find_writer(PCB_IOT_PCB, fmt);
 
 	if (p != NULL) {
 		event(EVENT_SAVE_PRE, "s", fmt);

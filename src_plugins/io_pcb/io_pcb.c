@@ -31,8 +31,9 @@
 
 static plug_io_t io_pcb;
 
-int io_pcb_fmt(plug_io_t *ctx, int wr, const char *fmt)
+int io_pcb_fmt(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
 {
+	/* All types are supported. */
 	if (strcmp(fmt, "pcb") != 0)
 		return 0;
 	return 100; /* read-write */
