@@ -41,8 +41,12 @@
    represents the actual content of an element */
 long pcb_element_hash(const ElementType *e);
 
+/* Create a new local variable to be used for deduplication */
 #define elementlist_dedup_initializer(state) htip_t *state = NULL;
 
+/* Do a "continue" if an element matching loop_elem has been seen already;
+   Typically this is invoked as the first statement of an elementlist_foreach()
+   loop. */
 #define elementlist_dedup_skip(state, loop_elem) \
 switch(1) { \
 	case 1: { \
@@ -56,6 +60,7 @@ switch(1) { \
 	} \
 }
 
+/* use this after the loop to free all memory used by state */
 #define elementlist_dedup_free(state) \
 	do { \
 		if (state != NULL) { \
