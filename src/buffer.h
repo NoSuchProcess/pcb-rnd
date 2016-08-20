@@ -43,7 +43,7 @@ bool SmashBufferElement(BufferTypePtr);
 bool LoadLayoutToBuffer(BufferTypePtr, char *);
 void RotateBuffer(BufferTypePtr, BYTE);
 void SelectPasteBuffer(int);
-void SwapBuffers(void);
+void pcb_swap_buffers(void);
 void MirrorBuffer(BufferTypePtr);
 void InitBuffers(void);
 void UninitBuffers(void);

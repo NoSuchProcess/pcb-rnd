@@ -501,10 +501,10 @@ int SaveBufferElements(char *Filename, const char *fmt)
 	int result;
 
 	if (SWAP_IDENT)
-		SwapBuffers();
+		pcb_swap_buffers();
 	result = WritePipe(Filename, false, fmt);
 	if (SWAP_IDENT)
-		SwapBuffers();
+		pcb_swap_buffers();
 	return (result);
 }
 

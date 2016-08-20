@@ -1032,7 +1032,7 @@ void UninitBuffers(void)
 	}
 }
 
-void SwapBuffers(void)
+void pcb_swap_buffers(void)
 {
 	int i;
 
