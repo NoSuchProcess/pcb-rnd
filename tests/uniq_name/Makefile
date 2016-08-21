@@ -3,7 +3,7 @@ UNM=$(ROOT)/src_plugins/io_kicad_legacy
 LHT=$(ROOT)/src_3rd/liblihata
 SRC=$(ROOT)/src
 
-CFLAGS = -Wall -I$(UNM) -I$(LHT)
+CFLAGS = -Wall -I$(UNM) -I$(LHT) -I$(SRC) -I$(ROOT)
 LIB_OBJS=$(LHT)/genht/htsp.o $(LHT)/genht/hash.o $(SRC)/compat_misc.o
 
 all: tester
