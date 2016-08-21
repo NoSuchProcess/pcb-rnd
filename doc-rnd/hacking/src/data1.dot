@@ -1,0 +1,47 @@
+digraph pcb_data {
+	PCBType_misc [label="misc fields:\nID\nName\nFileName\ncolors\ndrc settings\ncursor coords\ngrid\nlayergroups\nroute styles\n..."]
+	PCBType_flags [label="flags:\nChanged\nViaOn (vias drawn?)\n..."]
+	PCBType -> PCBType_misc
+	PCBType -> PCBType_flags
+	PCBType -> DataType
+	PCBType [shape=box]
+
+	PCB [label="extern PCBType PCB\nglobal variable\nholding the current\nboard" shape=diamond]
+	PCB -> PCBType
+
+	Buffers [label="extern BufferType Buffers[]\nglobal variable holding\nall paste buffers" shape=diamond]
+	Buffers -> BufferType
+
+	BufferType_misc [label="misc fields:\nbounding box\noffset"]
+	BufferType -> BufferType_misc
+	BufferType -> DataType
+	BufferType [shape=box]
+
+	DataType_lists [label="layer-independent lists:\nrats\nvias\nelements"]
+	DataType_rtrees [label="layer-independent rtrees"]
+	DataType_LayerN [label="LayerN: number of\nlayers in use"]
+	DataType_layers [label="an array of layers"]
+
+	DataType -> DataType_misc
+	DataType -> DataType_LayerN
+	DataType -> DataType_layers
+	DataType -> DataType_lists
+	DataType -> DataType_rtrees
+	DataType [shape=box]
+
+	DataType_layers -> LayerType
+
+
+	LayerType_lines [label="list and rtree of lines"]
+	LayerType_arcs [label="list and rtree of arcs"]
+	LayerType_texts [label="list and rtree of text objects"]
+	LayerType_polygons [label="list and rtree of polygons"]
+	LayerType_misc [label="misc fields:\nflags\ncolors"]
+
+	LayerType -> LayerType_misc
+	LayerType -> LayerType_lines
+	LayerType -> LayerType_arcs
+	LayerType -> LayerType_texts
+	LayerType -> LayerType_polygons
+	LayerType [shape=box]
+}
