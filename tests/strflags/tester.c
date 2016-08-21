@@ -28,10 +28,12 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include "compat_misc.h"
 
 #define FLAG_TEST
 #include "strflags.c"
 #include "flags.c"
+#include "compat_misc.c"
 
 static void dump_flag(FlagType * f)
 {
@@ -83,7 +85,7 @@ int main()
 		int i;
 		int otype;
 
-		otype = ALL_TYPES;
+		otype = PCB_TYPEMASK_ALL;
 		fh.Flags = empty_flags;
 		for (i = 0; i < ENTRIES(object_flagbits); i++) {
 			if (TEST_FLAG(object_flagbits[i].mask, &fh))
@@ -97,7 +99,7 @@ int main()
 			SET_FLAG(object_flagbits[i].mask, &fh);
 		}
 
-		if (otype & PIN_TYPES)
+		if (otype & PCB_TYPEMASK_PIN)
 			for (i = 0; i < MAX_LAYER; i++)
 				if (random() & 4)
 					ASSIGN_THERM(i, 3, &fh);
@@ -123,7 +125,7 @@ int main()
 		int i;
 		int otype;
 
-		otype = ALL_TYPES;
+		otype = PCB_TYPEMASK_ALL;
 		fh.Flags = empty_flags;
 		for (i = 0; i < ENTRIES(pcb_flagbits); i++) {
 			if (TEST_FLAG(pcb_flagbits[i].mask, &fh))
