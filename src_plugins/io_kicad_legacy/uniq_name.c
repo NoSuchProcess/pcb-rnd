@@ -27,7 +27,7 @@ void unm_uninit(unm_t *state)
 	htsp_uninit(&state->seen);
 }
 
-const char *unm_name(unm_t *state, const char *orig_name)
+const char *unm_name(unm_t *state, const char *orig_name, void *user_data)
 {
 	int l1, l2;
 	char *name, *end;
@@ -46,7 +46,7 @@ const char *unm_name(unm_t *state, const char *orig_name)
 	else {
 		if (!htsp_has(&state->seen, (char *)orig_name)) {
 			name = pcb_strdup(orig_name);
-			htsp_set(&state->seen, name, name);
+			htsp_set(&state->seen, name, user_data);
 			return name;
 		}
 		else {
@@ -71,7 +71,7 @@ const char *unm_name(unm_t *state, const char *orig_name)
 		sprintf(end, "%lu", state->ctr++);
 	} while(htsp_has(&state->seen, name));
 
-	htsp_set(&state->seen, name, name);
+	htsp_set(&state->seen, name, user_data);
 	return name;
 }
 

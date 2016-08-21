@@ -27,6 +27,6 @@ void unm_uninit(unm_t *state);
 
    Strings returned are newly allocated and can be used until unm_uninit()
    is called on state. */
-const char *unm_name(unm_t *state, const char *orig_name);
+const char *unm_name(unm_t *state, const char *orig_name, void *user_data);
 
 #endif
