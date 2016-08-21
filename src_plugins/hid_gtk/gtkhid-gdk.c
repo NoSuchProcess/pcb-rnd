@@ -197,17 +197,33 @@ static void ghid_draw_bg_image(void)
 {
 	static GdkPixbuf *pixbuf;
 	GdkInterpType interp_type;
-	gint x, y, w, h, w_src, h_src;
+	gint src_x, src_y, dst_x, dst_y, x, y, w, h, w_src, h_src;
 	static gint w_scaled, h_scaled;
 	render_priv *priv = gport->render_priv;
 
 	if (!ghidgui->bg_pixbuf)
 		return;
 
+	src_x = gport->view.x0;
+	src_y = gport->view.y0;
+	dst_x = 0;
+	dst_y = 0;
+
+	if (src_x < 0) {
+		dst_x = -src_x;
+		src_x = 0;
+	}
+	if (src_y < 0) {
+		dst_y = -src_y;
+		src_y = 0;
+	}
+
 	w = PCB->MaxWidth / gport->view.coord_per_px;
 	h = PCB->MaxHeight / gport->view.coord_per_px;
-	x = gport->view.x0 / gport->view.coord_per_px;
-	y = gport->view.y0 / gport->view.coord_per_px;
+	src_x = src_x / gport->view.coord_per_px;
+	src_y = src_y / gport->view.coord_per_px;
+	dst_x = dst_x / gport->view.coord_per_px;
+	dst_y = dst_y / gport->view.coord_per_px;
 
 	if (w_scaled != w || h_scaled != h) {
 		if (pixbuf)
@@ -224,8 +240,9 @@ static void ghid_draw_bg_image(void)
 		w_scaled = w;
 		h_scaled = h;
 	}
+
 	if (pixbuf)
-		gdk_pixbuf_render_to_drawable(pixbuf, gport->drawable, priv->bg_gc, x, y, 0, 0, w - x, h - y, GDK_RGB_DITHER_NORMAL, 0, 0);
+		gdk_pixbuf_render_to_drawable(pixbuf, gport->drawable, priv->bg_gc, src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
 }
 
 #define WHICH_GC(gc) (cur_mask == HID_MASK_CLEAR ? priv->mask_gc : (gc)->gc)
