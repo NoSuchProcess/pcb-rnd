@@ -6,8 +6,21 @@ SRC=$(ROOT)/src
 CFLAGS = -Wall -I$(UNM) -I$(LHT)
 LIB_OBJS=$(LHT)/genht/htsp.o $(LHT)/genht/hash.o $(SRC)/compat_misc.o
 
+all: tester
+
+test: tester.diff
+	@echo "*** All ok, QC passed ***"
+	@rm tester.out
+
 tester: tester.o $(UNM)/uniq_name.o $(LIB_OBJS)
 
 tester.o: tester.c $(UNM)/uniq_name.h
 
 $(UNM)/uniq_name.o: $(UNM)/uniq_name.c $(UNM)/uniq_name.h
+
+tester.diff: tester.ref tester.out
+	@diff -u tester.ref tester.out
+
+tester.out: tester
+	./tester > tester.out
+
