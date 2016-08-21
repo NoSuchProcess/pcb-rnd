@@ -1271,7 +1271,7 @@ void conf_usage(char *prefix, void (*print)(const char *name, const char *help))
 				for(sc = n->hash_path + pl; *sc == '/'; sc++) ;
 				name[0] = '-';
 				name[1] = '-';
-				strcpy(name+2, s);
+				strcpy(name+2, sc);
 				for(s = name; *s != '\0'; s++)
 					if (*s == '_')
 						*s = '-';
