@@ -24,9 +24,10 @@
  *
  */
 #include <math.h>
-
 #include "plug_io.h"
 #include "error.h"
+#include "uniq_name.h"
+
 #define F2S(OBJ, TYPE) flags_to_string ((OBJ)->Flags, TYPE)
 
 /* layer "0" is first copper layer = "0. Back - Solder"
@@ -78,14 +79,19 @@ static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data)
         LineType *line;
         ArcType *arc;
         ElementType *element;
-        //elementlist_dedup_initializer(ededup);
+ 
+        elementlist_dedup_initializer(ededup);
+
+	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
+	/* Now initialize the group with defaults */
+	unm_init(&group1);
 
         elementlist_foreach(&Data->Element, &eit, element) {
                 gdl_iterator_t it;
                 PinType *pin;
                 PadType *pad;
 
-                //elementlist_dedup_skip(ededup, element); 
+                elementlist_dedup_skip(ededup, element); 
 		/* skip duplicate elements */
                 /* only non empty elements */
 
@@ -95,14 +101,13 @@ static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data)
 				&& !padlist_length(&element->Pad))
                         continue;
 
-                if (element->Name[0].TextString == NULL) {
-                        fprintf(FP, "unnamed_%p\n",element); /* in case nameless footprint */
-                } else {
-                        fprintf(FP, "%s\n",element->Name[0].TextString);
-                }
+                fprintf(FP, "%s\n", unm_name(&group1, element->Name[0].TextString, element));
 
 	}
-    ///    elementlist_dedup_free(ededup); /* free the state used for deduplication */ 
+        /* Release unique name utility memory */
+	unm_uninit(&group1);
+	/* free the state used for deduplication */
+        elementlist_dedup_free(ededup); 
         return 0;
 }
 
@@ -123,14 +128,18 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 	LineType *line;
 	ArcType *arc;
 	ElementType *element;
-	////////elementlist_dedup_initializer(ededup);
+	elementlist_dedup_initializer(ededup);
+
+        unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
+        /* Now initialize the group with defaults */
+        unm_init(&group1);
 
 	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
 		PinType *pin;
 		PadType *pad;
 
-		///////elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
+		elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
 
 /* TOOD: Footprint name element->Name[0].TextString */
 
@@ -162,18 +171,11 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 /*		//WriteAttributeList(FP, &element->Attributes, "\t");
 */
 
-
-                if (element->Name[0].TextString == NULL) {
-                        fprintf(FP, "$MODULE unnamed_%p\n",element); /* in case nameless footprint */
-                	fputs("Po 0 0 0 15 51534DFF 00000000 ~~\n",FP);
-                	fprintf(FP, "Li unnamed_%p\n",element);
-                	fprintf(FP, "Cd unnamed_%p\n",element);
-                } else {
-                        fprintf(FP, "$MODULE %s\n",element->Name[0].TextString);
-                	fputs("Po 0 0 0 15 51534DFF 00000000 ~~\n",FP);
-                	fprintf(FP, "Li %s\n", element->Name[0].TextString);
-                	fprintf(FP, "Cd %s\n", element->Name[0].TextString);
-                }
+		char * currentElementName = unm_name(&group1, element->Name[0].TextString, element);
+                fprintf(FP, "$MODULE %s\n", currentElementName);
+                fputs("Po 0 0 0 15 51534DFF 00000000 ~~\n",FP);
+               	fprintf(FP, "Li %s\n", currentElementName);
+               	fprintf(FP, "Cd %s\n", currentElementName);
         	fputs("Sc 0\n",FP);
         	fputs("AR\n",FP);
         	fputs("Op 0 0 0\n",FP);
@@ -287,15 +289,12 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
                         fputs("21\n",FP); // and now append a suitable Kicad layer, front silk = 21
 		}
 
-		if (element->Name[0].TextString == NULL) {
-			fprintf(FP, "$EndMODULE unnamed_%p\n",element);/* in case nameless footprint */
-		} else {
-			fprintf(FP, "$EndMODULE %s\n",element->Name[0].TextString);
-		}
-
+		fprintf(FP, "$EndMODULE %s\n", currentElementName);
 	}
-
-	/////////elementlist_dedup_free(ededup); /* free the state used for deduplication */
+        /* Release unique name utility memory */
+        unm_uninit(&group1);
+        /* free the state used for deduplication */
+        elementlist_dedup_free(ededup);  
 
 	return 0;
 }
