@@ -34,6 +34,11 @@ const char *unm_name(unm_t *state, const char *orig_name)
 	const char *head;
 
 	if ((orig_name == NULL) || (*orig_name == '\0')) {
+		if (!htsp_has(&state->seen, (char *)state->unnamed)) {
+			name = pcb_strdup(state->unnamed);
+			htsp_set(&state->seen, name, name);
+			return name;
+		}
 		head = state->unnamed;
 		l1 = strlen(state->unnamed);
 		l2 = strlen(state->suffix_sep);
