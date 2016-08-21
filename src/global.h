@@ -551,6 +551,8 @@ struct rats_patch_line_s {
 
 /* Make sure to catch usage of non-portable functions in debug mode */
 #ifndef NDEBUG
+#	undef strdup
+#	undef strndup
 #	define strdup      never_use_strdup__use_pcb_strdup
 #	define strndup     never_use_strndup__use_pcb_strndup
 #endif
