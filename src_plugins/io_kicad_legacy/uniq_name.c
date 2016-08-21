@@ -13,6 +13,7 @@ void unm_init(unm_t *state)
 	state->unnamed    = unm_default_unnamed;
 	state->suffix_sep = unm_default_suffix_sep;
 	htsp_init(&state->seen, strhash, strkeyeq);
+	state->ctr = 0;
 }
 
 
@@ -62,7 +63,7 @@ const char *unm_name(unm_t *state, const char *orig_name)
 	   it is possible that a new name collides with a past unsuffixed orig_name;
 	   all in all, this loop should exit in the first iteration */
 	do {
-		sprintf(end, "%ld", state->ctr++);
+		sprintf(end, "%lu", state->ctr++);
 	} while(htsp_has(&state->seen, name));
 
 	htsp_set(&state->seen, name, name);
