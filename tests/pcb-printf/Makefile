@@ -32,7 +32,7 @@ $(SRC)/pcb-printf.o: $(SRC)/pcb-printf.c $(SRC)/pcb-printf.h
 $(SRC)/unit.o: $(SRC)/unit.c $(SRC)/unit.h
 
 $(SRC)/pcb-printf_spd.o: $(SRC)/pcb-printf.c $(SRC)/pcb-printf.h
-	$(CC) -c $(CFLAGS_OP) -DSPEED $(CFLAGS) -o $@ ../../pcb-printf.c
+	$(CC) -c $(CFLAGS_OP) -DSPEED $(CFLAGS) -o $@ $(SRC)/pcb-printf.c
 
 clean:
 	rm tester tester.o 2>/dev/null ; true
