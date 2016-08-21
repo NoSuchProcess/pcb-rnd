@@ -36,7 +36,7 @@ const char *unm_name(unm_t *state, const char *orig_name, void *user_data)
 	if ((orig_name == NULL) || (*orig_name == '\0')) {
 		if (!htsp_has(&state->seen, (char *)state->unnamed)) {
 			name = pcb_strdup(state->unnamed);
-			htsp_set(&state->seen, name, name);
+			htsp_set(&state->seen, name, user_data);
 			return name;
 		}
 		head = state->unnamed;
