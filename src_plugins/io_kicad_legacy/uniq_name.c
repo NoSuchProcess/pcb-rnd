@@ -33,7 +33,7 @@ const char *unm_name(unm_t *state, const char *orig_name)
 	char *name, *end;
 	const char *head;
 
-	if (orig_name == NULL) {
+	if ((orig_name == NULL) || (*orig_name == '\0')) {
 		head = state->unnamed;
 		l1 = strlen(state->unnamed);
 		l2 = strlen(state->suffix_sep);

@@ -20,6 +20,7 @@ void unm_uninit(unm_t *state);
     - if orig_name is NULL, generate an unnamed item
     - if orig_name is not-NULL and is unseen so far, return a copy of orig_name
     - if orig_name is not-NULL and has been already seen, return a modified version
+    - an empty, non-NULL orig_name handled as if it was NULL
    Strings returned are newly allocated and can be used until unm_uninit()
    is called on state. */
 const char *unm_name(unm_t *state, const char *orig_name);
