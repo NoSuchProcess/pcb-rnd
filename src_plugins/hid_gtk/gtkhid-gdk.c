@@ -197,7 +197,7 @@ static void ghid_draw_bg_image(void)
 {
 	static GdkPixbuf *pixbuf;
 	GdkInterpType interp_type;
-	gint src_x, src_y, dst_x, dst_y, x, y, w, h, w_src, h_src;
+	gint src_x, src_y, dst_x, dst_y, w, h, w_src, h_src;
 	static gint w_scaled, h_scaled;
 	render_priv *priv = gport->render_priv;
 
