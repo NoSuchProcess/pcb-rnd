@@ -11,7 +11,9 @@ LIB_PCB_OBJS= \
 	../../src/conf_core.o \
 	../../src/conf_hid.o \
 	../../src/conf_internal.o \
-	../../src/pcb-printf.o
+	../../src/pcb-printf.o \
+	../../src/compat_misc.o \
+	../../src/compat_fs.o
 
 LIB_PLUGIN_OBJS=\
 	../../src_plugins/debug/debug_conf.o

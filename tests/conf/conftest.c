@@ -4,6 +4,7 @@
 #include "conf.h"
 #include "conf_hid.h"
 #include "conf_core.h"
+#include "compat_misc.h"
 #include "src_plugins/debug/debug_conf.h"
 
 int lineno = 0;
@@ -171,7 +172,7 @@ void cmd_chprio(char *arg)
 			*end = '\0';
 		sprintf(tmp, "%s-%d", first->name, np);
 		free(first->name);
-		first->name = strdup(tmp);
+		first->name = pcb_strdup(tmp);
 		conf_update(NULL);
 	}
 }
@@ -199,11 +200,11 @@ void cmd_chpolicy(char *arg)
 		if (end != NULL) {
 			sprintf(tmp, "%s%s", arg, end);
 			free(first->name);
-			first->name = strdup(tmp);
+			first->name = pcb_strdup(tmp);
 		}
 		else {
 			free(first->name);
-			first->name = strdup(arg);
+			first->name = pcb_strdup(arg);
 		}
 		conf_update(NULL);
 	}
