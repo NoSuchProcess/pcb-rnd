@@ -1,3 +1,76 @@
+pcb-rnd 1.1.0 (r2683)
+~~~~~~~~~~~~~
+	[io_kicad_legacy]
+		- Add: export paste buffer elements to kicad .mod
+
+	[scconfig]
+		-Change: remove config.manul.h (use scconfig CLI args instead), rename config.auto.h to config.h
+		-Change: coord type, the corresponding MAX value and abs() function should not be set manually in config.manual.h; ./configure --coord=32 or --coord=64 sets these all, 32 being the default value for now
+		-Change: move the dot_pcb_rnd setting from manual config header to scconfig (CLI arg)
+		-Fix: don't attempt to use -rdynamic for compilation, only for linking
+		-Fix: accept that IS_LNK may not be set (using conditional variable reference)
+		-Fix: working cross-compilation: proper separation of host and target tools (cp, ln, ar and friends are part of the build system, use the host version)
+		-Add: ./configure --enable-dmalloc detects dmalloc
+		-Add: detect dbus and compile the plugin if enabled
+		-Add: windows port: detect LoadLibrary(), _getcwd()/getwd(), _spawnvp, getpwuid, realpath, rint(), mkdtemp and mkdir/_mkdir
+		-Cleanup: split up config.auto.h.in: move dbus related item to dbus and gl related items to gtkhid-gl to keep central part plugin-neutral
+		-Cleanup: stop using HAVE_WHATEVER_H, rahter generate the #includes per function
+
+	[core]
+		-API change: rtree returns success and optionally sets the number of objects found - this allows the caller to avoid long jumps to stop the search at the first hit
+		-Fix: action names are case-insensitive again
+		-Fix: don't crash if select-by-text gets empty name or cancel
+		-Fix: undo crashes/asserts for updating NULL rtree with selected element text
+		-Split: huge find.c in smaller files, per topic
+		-Change: use genregex minilib instead of POSIX regex, for better portability
+		-Cleanup: remove find.c dead code
+		-Cleanup: rtree API names return values instead of using 0..1
+		-Cleanup: const correctness in EvaluateFileName
+		-Cleanup: introduce pcb_rnd(), which is a wrapper around rand() (or optionally, random()). rand() is portable, but on some very old system may be weak.
+		-Cleanup: introduce pcb_strdup() and pcb_strndup() and avoid using non-C89 libc calls
+		-Cleanup: always provide pcb_mkdir() as a portability wrapper around mkdir; all code should use this instead of mkdir()
+		-Cleanup: remove #ifdef wrapping of standard C89 header #includes - it's reasonable to assume/require proper C89 support more than 25 years after the standard came out
+		-Cleanup: a set of unused/obsolete #includes
+		-Cleanup: convert const.h #defines into enums (for the type, namespace and debugging); also proper name prefixing
+		-Cleanup: move route-style specific function from action-oriented set.c to object-oriented route-style.c
+		-Cleanup: rename SwapBuffers to pcb_swap_buffers for proper prefixing (win32 API name collision)
+		-Add: central function for looking up a routing style using a sparse list of properties
+
+	[gtk]
+		-Fix: gtk gdk background image drawing: clip for negative pan to avoid artifacts and segfault
+		-Fix: remember Messages() that are written before the message window is set up and append them in the window when it is already constructed
+		-Fix: do not crash if there is no route style defined, just go with an empty style section and let the user create new styles
+		-Fix: rework the win32-workarounds for corss-compiling
+		-Fix: always update bottom style printout when the style changes, even if there's no matching stock style (thanks to miloh for reporting this)
+		-Add: a mandatory <custom> route style to indicate non-matching types (hidden in the menu)
+		-Add: optional file format combo box on the save as dialog
+		-Change: use round radio buttons instead of rectangular toggle buttons for the layer preferences table - on some setups gtk theme made the buttons unreadable
+
+	[mods]
+		-Add: import plugin API
+		-Add: new features in the I/O API to support user-selected output format and listing available formats
+		-Split: move out netlist read from the io plug code to a separate import plugin
+		-Cleanup: remove edif stub, convert edif to an import plugin
+		-Cleanup: do not attempt to extract password entries manually in random plugins, use the central user name retrival function - easier to port, heuristics not duplicated
+		-Cleanup: ps export: get rid of non-portable alloca() - polygrid is used rarely, performance penalty of malloc() should not be a problem
+		-Cleanup: pcb I/O: do not use non-portable bzero, prefer memset()
+		-Fix: dbus: if there's no GUI by the time dbus is uninitialized, don't call it
+
+	[doc-rnd]
+		-Split: move out developer docs from doc-rnd/ to doc-rnd/hacking
+		-Add: windows cross-compilation notes
+		-Add: hacking doc for writing importers (incldues a description of the main pcb data structures)
+
+	[conf]
+		-Fix: gtk gui preferences saves editor/auto_place in the config file
+		-Fix: gtk preferences' general tab should also save editor/save_in_tmp
+
+	[w32]
+		-Add: minipack: recipe for pkg-config
+		-Fix: minipack: calculate output filename for wget so that ?download suffix can be truncated
+		-Fix: minipack: don't attempt to build pcb-rnd from minipack (policy: minipack builds all deps then we crosscompile pcb-rnd)
+		-Update: minipack: gd and tiff recipes for newer versions
+
 pcb-rnd 1.1.0
 ~~~~~~~~~~~~~
 	[conf] - full rewrite of the config settings subsystem
