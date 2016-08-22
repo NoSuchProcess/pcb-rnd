@@ -1,7 +1,7 @@
 pcb-rnd 1.1.1 (r2683)
 ~~~~~~~~~~~~~
 	[io_kicad_legacy]
-		- Add: export paste buffer elements to kicad .mod
+		- Add: save paste buffer elements to kicad (legacy) .mod as native format
 
 	[scconfig]
 		-Change: remove config.manul.h (use scconfig CLI args instead), rename config.auto.h to config.h
