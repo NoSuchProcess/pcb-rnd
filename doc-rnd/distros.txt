@@ -2,21 +2,25 @@ How to request packaging (distros sorted by popularity, 2016):
 
 Ubuntu:
 	easiest is to get in Debian, Ubuntu picks up packages from sid
+	alternative: ubuntu-devel-discuss@lists.ubuntu.com (pending)
 	alternative: https://bugs.launchpad.net/ubuntu/+filebug?no-redirect&field.tag=needs-packaging
 
 linux mint
 	https://blueprints.launchpad.net/linuxmint
+	(same maintainer as debian?)
 
 slackware:
+	Promised (AFK, ask again in 3rd week of sept)
+	geda/pcb maintainer: pfeifer[dot]felix[at]googlemail[dot]com (sent mail)
 	https://slackbuilds.org/guidelines/
 	needs an existing package
 	<MLanden> since the slackbuild needs slackware's pkgtools usually at the end of a ./configure --prefix=/usr --extrastuff..make.. make install DESTDIR=/tmp/NAMEOFPACKAGE..cd /tmp/NAMEOFPACKAGE..makepkg -l y -c n ../NAMEOFPACKAGE-123.txz
-	geda/pcb maintainer: pfeifer[dot]felix[at]googlemail[dot]com (sent mail)
 	installwatch can build a package
 	check out #slackbuilds
 
 Debian:
 	Bdale?
+	(alternative: pkg-electronics-devel@lists.alioth.debian.org - pending)
 	(alternative: RFP through reportbug)
 
 fedora:
@@ -27,4 +31,16 @@ OpenSuse:
 	adrian [at] suse.de (mail sent)
 
 Arch:
+	DONE! needs to be modularized
 	Kyle Keen <keenerd [at] gmail.com> (mail sent)
+
+Manjaro:
+	Same as arch
+
+----
+FreeBSD:
+	hrs [at] freebsd.org (Hiroki Sato - mail sent)
+
+OpenBSD:
+	andreas.bihlmaier [at] gmx.de (mail sent)
+
