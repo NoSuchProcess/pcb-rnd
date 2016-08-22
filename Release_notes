@@ -1,25 +1,14 @@
-pcb-rnd 1.1.0
+pcb-rnd 1.1.1
 ~~~~~~~~~~~~~~
-
-Fifth phase of the large scale cleanup, featuring a full rewrite of the
-configuration setting system: there's no separate settings, preferences,
-color files, every runtime configuration is part of a structured,
-orthogonal system. This introduces a few features, like per .pcb
-color map, saving and restoring window layout per user or even per design.
-
-Beside the conf rewrite, the new release features a lot of dead-code removal,
-compiler warning cleanup and code simplification all over the place.
-
-The build system and portability got some care too, pcb-rnd should compile
-on Mac OS X out of the box. On Linux, pcb-rnd builds successfully with Motif
-installed instead of lesstif. Build dependencies are relaxed: no m4,
-no bison and no yacc required.
-
-The library can be rescanned without restarting pcb-rnd.
-
-The file format is moved into a plugin called io_pcb; alternative
-native file format plugins are possible now.
-
-There's no artificial restriction on the number of styles; styles
-can be created on the fly. All styles are saved and loaded properly.
-
+Sixth phase of the large scale cleanup. Major features:
+ - a semi-working windows version (testers needed)
+ - resurrected the dbus plugin (testers needed)
+ - proper route style handling with explicit "pen style" and a real working
+   SetSame() action
+ - various gtk bugs fixed
+ - added the first working features in the Kicad legacy format I/O plugin
+ - scconfig improvements:
+  - no more config.manual.h, everything is detected by ./configure and the
+    user should use command line arguments to change settings
+  - only C89 is assumed
+  - proper cross-compilation (tested in GNU/Linux -> Windows relation)
