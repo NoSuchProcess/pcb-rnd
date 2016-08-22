@@ -1,7 +1,8 @@
-How to request packaging (sorted by popularity, 2016):
+How to request packaging (distros sorted by popularity, 2016):
 
 Ubuntu:
 	easiest is to get in Debian, Ubuntu picks up packages from sid
+	alternative: https://bugs.launchpad.net/ubuntu/+filebug?no-redirect&field.tag=needs-packaging
 
 linux mint
 	https://blueprints.launchpad.net/linuxmint
@@ -22,3 +23,8 @@ fedora:
 	https://fedoraproject.org/wiki/Package_maintainers_wishlist?rd=PackageMaintainers/WishList
 	(wrote mail to cicku)
 
+OpenSuse:
+	adrian [at] suse.de (mail sent)
+
+Arch:
+	Kyle Keen <keenerd [at] gmail.com> (mail sent)
