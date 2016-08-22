@@ -1,0 +1,24 @@
+How to request packaging (sorted by popularity, 2016):
+
+Ubuntu:
+	easiest is to get in Debian, Ubuntu picks up packages from sid
+
+linux mint
+	https://blueprints.launchpad.net/linuxmint
+
+slackware:
+	https://slackbuilds.org/guidelines/
+	needs an existing package
+	<MLanden> since the slackbuild needs slackware's pkgtools usually at the end of a ./configure --prefix=/usr --extrastuff..make.. make install DESTDIR=/tmp/NAMEOFPACKAGE..cd /tmp/NAMEOFPACKAGE..makepkg -l y -c n ../NAMEOFPACKAGE-123.txz
+	geda/pcb maintainer: pfeifer[dot]felix[at]googlemail[dot]com (sent mail)
+	installwatch can build a package
+	check out #slackbuilds
+
+Debian:
+	Bdale?
+	(alternative: RFP through reportbug)
+
+fedora:
+	https://fedoraproject.org/wiki/Package_maintainers_wishlist?rd=PackageMaintainers/WishList
+	(wrote mail to cicku)
+
