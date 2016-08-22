@@ -1,4 +1,4 @@
-pcb-rnd 1.1.0 (r2683)
+pcb-rnd 1.1.1 (r2683)
 ~~~~~~~~~~~~~
 	[io_kicad_legacy]
 		- Add: export paste buffer elements to kicad .mod
