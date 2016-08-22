@@ -1,4 +1,10 @@
 pcb-rnd "diff" documentation: this directory contains documentation
 on the features that differ from the original pcb version it was forked from.
 
+Most notable subdirectories:
+	features/           details of pcb-rnd features
+	conf/               documentation of the configuration system
+	hacking/            documentation for developers
+	devlog/             random thoughts and articles
+
 Documentation of the original version can be found in ../doc-orig
