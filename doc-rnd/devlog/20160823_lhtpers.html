@@ -1,0 +1,209 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> File format vs. VCS vs. script and manual editing </H2>
+
+<H3> The problem </H3>
+
+The file a CAD program loads and saves is likely to end up in a Version
+Control System (VCS) sooner or later. To make VCS more meaningful, the
+changes to the file need to be minimal and relevant. For example in a
+load-save round trip (i.e. load the file in the CAD and save it in another
+file without any modification) the diff should be empty. If the user adds a new
+object, the diff should contain only lines added for the new object. (And maybe
+a few lines of changes in an index, if there's an index, but I believe it's
+better if there's no index.) Likewise, if an object is deleted, it is expected
+to result a few lines removed, preferrably at a single location.
+
+<p>
+Terminology used in this document:
+<ul>
+	<li> <i>file</i> is the data file, represented in a structured text format;
+	     for the whole document except for the last chapter, any format may work:
+	     xml, json, ini, lihata, etc.
+	<li> <i>node</i> a data node; may be:
+		<ul>
+			<li> a leaf node with <i>payload</i>: an actual data item (like a number)
+			<li> a <i>hash</i> that contains an unordered set of other named nodes
+			<li> a <i>list</i> is an ordered list of named or unnamed nodes
+		</ul>
+</ul>
+<p>
+The file is a tree; even an ini file is a tree with 1 or 2 levels (bottom
+level is a hash of text nodes, top level, groups, represent another hash). An
+xml is a list of lists with text nodes and non-text-node attributes
+representing a hash.
+
+<H4> Problem #0: order </H4>
+To achieve the above goals, both gschem and pcb and pcb-rnd are prudent:
+objects are ordered in memory. This is necessary because in an unordered
+list or hash if the number of objects changes (objects added or removed)
+the saving order may shuffle, causing a lot of unnecessary changes.
+<p>
+This problem is already solved.
+
+<H4> Problem #1: canonical form </H4>
+Our file formats are plain text. While there are certain constructs that have
+strict format, e.g. a string in quotes can be described only one way without
+changing the content of the string, other parts have alternatives:
+<ul>
+	<li> white spaces and other field separators
+	<li> numerical formats: is 8 the same as 08 or 8.0?
+	<li> pcb flag formats, old/new style: the same object can be described
+	     using different syntax constructions, sometimes resulting the same
+	     object
+</ul>
+<p>
+This problem is <b>seemingly</b> solved by using a canonical form: even if the
+loader may accept alternatives, the save code always generates the same formatted
+output, down to the last whitespace indentation.
+
+<H4> Problem #2: hand editing, external scripts </H4>
+However, the canonical format is not always the most convenient for the user.
+Sometimes different indentation, maybe even locally, may improve readability.
+Unfortunately a CAD round-trip brings back the file to canonical format, removing
+any user formatting. Or in other words, the user needs to learn the syntax
+of the file format <b>and</b> how the canonical format looks like, else user
+changes to a file may cause VCS noise later.
+<p>
+Even worse, 3rd party scripts need to learn the canonical format too, for the
+same reason.
+
+
+<H3> The solution </H3>
+One solution is to merge the canonical format and the syntax, so the resulting
+specification is so strict that there are no alternatives but everything can
+be written using only a single, well described format. This solves problem
+#1 and #2, but creates problem #3: a text file format as rigid as a binary
+format would be. While it could be still parsed by text tools easily, it
+would be much harder to emit properly using the same tools or even harder to
+edit manually, with a text editor. In this sense it may start losing its
+most important text-file-property: free form, to some extent.
+<p>
+An alternative is that the CAD program doesn't save canonical format over
+an existing file but tries to accomodate to the format the file already featurs.
+This solves problem #0, #1, #2 and #3, allowing the user (or 3rd party scripts)
+to use whatever formatting they prefer, with clean round trips.
+
+<H3> How to implement it (in theory) </H3>
+A few unusual features are required:
+<ul>
+	<li> F1: the parser needs to be aware of otherwise unimportant
+	     characters (e.g. whitespaces in indentation)
+	<li> F2: if (payload) data is to be converted to a native format by
+	     the program, the original text representaton needs to be saved;
+	     e.g. the input file contins 4.99999999, the program loads it to
+	     a float and later saved back, it may end up as 4.999997836;
+	     instead if the data did not change, the original text shall be
+	     saved back; this also solves the 005 vs 5 vs 5.0 problem
+	<li> F3: new data should be inserted, obsolete data should be removed
+	     without reordering stationary data
+</ul>
+
+<H4> The obvious approach </H4>
+An obvious approach would be to smarten the parser and store delimiters
+(e.g. whitespace) and the original text version for each data node, along with
+the order of nodes in the original file.
+
+<H4> The less obvious approach </H4>
+A second approach is to ignore these details on load and keep on storing data
+in native binary format in memory. On save, start parsing the original file
+(or a snapshot of it taken load-time), and:
+<ul>
+	<li> any non-data-payload character should be copied the the output;
+	     this includes whitespace, delimiters, comments, syntax sugar;
+	     this <b>solves F1</b>
+	<li> if a node did not change, the parser copies it byte-to-byte to
+	     the output (<b>solves F2 partially</b> - no format change if data is
+	     unchanged in memory);
+	<li> value change check: while parsing, convert the original value to
+	     native format again and compare, which <b>solves F2</b>: the same
+	     string->native conversion should yield the same native result;
+	     if our in-memory representation differs, it has changed and the
+	     new value should be copied to the output instead of the old value;
+	     the format of the new value doesn't matter, can be canonical, since
+	     the diff is already caused by the fact that the value has changed.
+	<li> if the language supports ordered lists: before emitting list items,
+	     the input list must be read through (pre-read) and the in-memory and
+	     just-parse lists need to be compared to detect changes in order;
+	     existing list items are copied as described above; list items
+	     deleted in-memory are ignored; list items added in-memory are
+	     written out (<b>solves F3</b>)
+	<li> if the language supports unordered hashes: check each key parsed;
+	     if it exists in-memory, copy/write it normally; if it doesn't,
+	     delete it; add new hash items (the ones present in-memory but
+	     not seen when the parser reaches the end of the hash; <b>solves F3</b>)
+</ul>
+<p>
+This may sound more expensive than the first approach, because the parser needs
+to run again on save. However, the costs of the previous approach are
+high too:
+<ul>
+	<li> essentially the whole file needs to be stored in-memory
+	     (for whitespaces), but not in one bug chunk but in many
+	     little chunks among with the data nodes (which leads to
+	     allocation overhead); the original values need to be stored in
+	     text too, to solve the numeric problems
+	<li> either the same string->native conversion needs to be done using
+	     stored text values; or the code needs to keep track of which node
+	     changed using some data-changed bit
+	<li> the same list/hash merging needs to be done
+</ul>
+<p>
+If the syntax-sugar overhead of the file format is low, majority of all
+bytes will be actual node data (need to be stored) and delimiters/indentation
+(need to be stored). Then it might be cheaper to store it all in one bug chunk
+and reparse it (without building a DOM) than storing the same data in small
+chunks.
+
+
+<H4> An even less obvious approach </H4>
+Take the previous method, but assume the application does not change the
+order of objects on ordered lists and each object has some sort of unique
+identifer (so two identical looking objects can't be on a list).
+This makes list merging much simpler and doable in a single pass, keeping
+a list item pointer with the in-memory list:
+<ul>
+	<li> initialization: set the pointer to the first element of the list
+	<li> iteration: parse the first (next) item of the list
+	<li> check if it exists in-memory and is the first
+		<ul>
+			<li> if yes, copy from the original file, increase the pointer by
+			     one element
+			<li> if not, check if it got deleted (not present on the list
+			     in-memory) and skip it if so; pointer stays in place
+			<li> if not, check if it is on the in-memory list as a later entry;
+			     if so, insert all preceding entries from the in-memory list,
+			     increasing the pointer by one for each element written
+		</ul>
+	<li> repeat the iteration until there are no more items on the input list
+	<li> check if there are items remaining from the pointer, if so output
+	     them (they will end up at the end of the list in the output file)
+	<li> finished: the output file's list now matches the in-memory list.
+</ul>
+<p>
+Empty lists may need special (but trivial) treatment.
+<p>
+While copying an existing node, it is possible to "pick up" style
+e.g. indentation. When a new item needs to be added, such picked up local
+style info can be used to generat otuput that looks similar to other items
+in its local environment. For example the first time a list or hash item
+needs to be added is right after at least one item of the given hash or
+list is already parsed, which means the style of an item is already know.
+
+<H3> How it is implemented in practice </H3>
+Using the last approach from the above list, with an utility library for
+lihata. The full list of requirements (on the application and the tree
+structure):
+<ul>
+	<li> the root element of the input file and the in-memory representation
+	     must fully match
+	<li> list items must have names that are unique to the list, even accross
+	     item removal from the list within a session (so a newly added item
+	     never has the same name as a past item parsed back from the file)
+	<li> the application must not change the order of elements on a list -
+	     new elements may be inserted anywhere and old elements may be
+	     removed from anywhere but the order of any two remaining old
+	     elements must be preserved
+</ul>
