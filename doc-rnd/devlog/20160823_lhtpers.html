@@ -14,7 +14,7 @@ file without any modification) the diff should be empty. If the user adds a new
 object, the diff should contain only lines added for the new object. (And maybe
 a few lines of changes in an index, if there's an index, but I believe it's
 better if there's no index.) Likewise, if an object is deleted, it is expected
-to result a few lines removed, preferrably at a single location.
+to result a few lines removed, preferably at a single location.
 
 <p>
 Terminology used in this document:
@@ -82,7 +82,7 @@ edit manually, with a text editor. In this sense it may start losing its
 most important text-file-property: free form, to some extent.
 <p>
 An alternative is that the CAD program doesn't save canonical format over
-an existing file but tries to accomodate to the format the file already featurs.
+an existing file but tries to accommodate to the format the file already features.
 This solves problem #0, #1, #2 and #3, allowing the user (or 3rd party scripts)
 to use whatever formatting they prefer, with clean round trips.
 
@@ -90,10 +90,10 @@ to use whatever formatting they prefer, with clean round trips.
 A few unusual features are required:
 <ul>
 	<li> F1: the parser needs to be aware of otherwise unimportant
-	     characters (e.g. whitespaces in indentation)
+	     characters (e.g. whitespace in indentation)
 	<li> F2: if (payload) data is to be converted to a native format by
-	     the program, the original text representaton needs to be saved;
-	     e.g. the input file contins 4.99999999, the program loads it to
+	     the program, the original text representation needs to be saved;
+	     e.g. the input file contains 4.99999999, the program loads it to
 	     a float and later saved back, it may end up as 4.999997836;
 	     instead if the data did not change, the original text shall be
 	     saved back; this also solves the 005 vs 5 vs 5.0 problem
@@ -141,7 +141,7 @@ to run again on save. However, the costs of the previous approach are
 high too:
 <ul>
 	<li> essentially the whole file needs to be stored in-memory
-	     (for whitespaces), but not in one bug chunk but in many
+	     (for whitespace), but not in one bug chunk but in many
 	     little chunks among with the data nodes (which leads to
 	     allocation overhead); the original values need to be stored in
 	     text too, to solve the numeric problems
@@ -154,14 +154,14 @@ high too:
 If the syntax-sugar overhead of the file format is low, majority of all
 bytes will be actual node data (need to be stored) and delimiters/indentation
 (need to be stored). Then it might be cheaper to store it all in one bug chunk
-and reparse it (without building a DOM) than storing the same data in small
+and re-parse it (without building a DOM) than storing the same data in small
 chunks.
 
 
 <H4> An even less obvious approach </H4>
 Take the previous method, but assume the application does not change the
 order of objects on ordered lists and each object has some sort of unique
-identifer (so two identical looking objects can't be on a list).
+identifier (so two identical looking objects can't be on a list).
 This makes list merging much simpler and doable in a single pass, keeping
 a list item pointer with the in-memory list:
 <ul>
@@ -187,7 +187,7 @@ Empty lists may need special (but trivial) treatment.
 <p>
 While copying an existing node, it is possible to "pick up" style
 e.g. indentation. When a new item needs to be added, such picked up local
-style info can be used to generat otuput that looks similar to other items
+style info can be used to generate output that looks similar to other items
 in its local environment. For example the first time a list or hash item
 needs to be added is right after at least one item of the given hash or
 list is already parsed, which means the style of an item is already know.
@@ -199,7 +199,7 @@ structure):
 <ul>
 	<li> the root element of the input file and the in-memory representation
 	     must fully match
-	<li> list items must have names that are unique to the list, even accross
+	<li> list items must have names that are unique to the list, even across
 	     item removal from the list within a session (so a newly added item
 	     never has the same name as a past item parsed back from the file)
 	<li> the application must not change the order of elements on a list -
