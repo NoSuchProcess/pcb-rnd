@@ -20,9 +20,13 @@ Plan (parallel threads of development):
 				- footprints should have optional attachments (e.g. 3d models) -> W5
 		This helps us testing out the persistent-lihata idea that'd be
 		later used in chscem from the start -> W1
+		This is also needed for more generic footprint implementation -> W3
 
 	B. visible attribute support
 		Steps:
 			1. GTK dialog box for attribute edition
 			2. search & select should work by attribute
-			-> W6
+			3. extend the routing style system to auto-add attributes
+			   (this needs A., the new file format)
+		Allows the user to manage properties like "50 ohm net" in attributes,
+		to group objects by property, and to select them by property. -> W6
