@@ -1,9 +1,28 @@
-	- cschem [Chris]
-	- proper primitives [Chris]
-	- more generic footprints [Chris, Evan]
-	- user doc [Miloh]
-	- 3d modeller export [Miloh, Evan]
-	- GUI access to object attributes: gtk editor, find/select by attrib [James]
-	- programmable drc (star grounding) [James]
-	- gl support [Erich, Evan]
-	- push & shove [Erich, Evan]
+Active user wishes:
+	W1: cschem [Chris]
+	W2: proper primitives [Chris]
+	W3: more generic footprints [Chris, Evan]
+	W4: user doc [Miloh]
+	W5: 3d modeller export [Miloh, Evan]
+	W6: GUI access to object attributes: gtk editor, find/select by attrib [James]
+	W7: programmable drc (star grounding) [James]
+	W8: gl support [Erich, Evan]
+	W9: push & shove [Erich, Evan]
+
+Plan (parallel threads of development):
+
+	A. file format and model
+		Steps:
+			1. lihata persistency
+			2. native lihata file format
+			3. extend the file format
+				- everything should have an attribute hash -> W6
+				- footprints should have optional attachments (e.g. 3d models) -> W5
+		This helps us testing out the persistent-lihata idea that'd be
+		later used in chscem from the start -> W1
+
+	B. visible attribute support
+		Steps:
+			1. GTK dialog box for attribute edition
+			2. search & select should work by attribute
+			-> W6
