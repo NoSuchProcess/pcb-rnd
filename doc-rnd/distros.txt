@@ -42,5 +42,6 @@ FreeBSD:
 	hrs [at] freebsd.org (Hiroki Sato - mail sent)
 
 OpenBSD:
-	andreas.bihlmaier [at] gmx.de (mail sent)
+	andreas.bihlmaier [at] gmx.de -> ENOTIME, he suggests ports@openbsd.org
+
 
