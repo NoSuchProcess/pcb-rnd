@@ -8,7 +8,8 @@ PCB_CFLAGS= \
  @/local/global_cflags@ \
  @/target/libs/sul/glib/cflags@ \
  @/target/libs/script/gpmi/cflags@ \
- -I$(PCB_SRC)/src_3rd
+ -I$(PCB_SRC)/src_3rd \
+ -I$(PCB_SRC)/src_3rd/liblihata
 
 PCB_LDFLAGS= @/target/libs/script/gpmi/ldflags@
 
