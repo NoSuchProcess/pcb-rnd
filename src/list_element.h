@@ -35,7 +35,7 @@
 	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
 
 #include "ht_element.h"
-#include <genht/hash.h>
+#include <liblihata/genht/hash.h>
 
 /* Calculate a hash value using the content of the element. The hash value
    represents the actual content of an element */

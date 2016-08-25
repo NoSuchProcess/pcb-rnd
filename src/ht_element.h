@@ -5,7 +5,7 @@
 typedef ElementType *htep_key_t;
 typedef int htep_value_t;
 #define HT(x) htep_ ## x
-#include <genht/ht.h>
+#include <liblihata/genht/ht.h>
 #undef HT
 
 #endif
