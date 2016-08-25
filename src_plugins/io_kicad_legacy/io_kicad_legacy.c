@@ -33,7 +33,8 @@ static plug_io_t io_kicad_legacy;
 
 int io_kicad_legacy_fmt(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
 {
-	if ((strcmp(fmt, "kicadl") != 0) || ((typ & (~(PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER))) != 0))
+	if ((strcmp(fmt, "kicadl") != 0) ||
+		((typ & (~(PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER | PCB_IOT_PCB))) != 0))
 		return 0;
 	if (wr)
 		return 100;

@@ -27,6 +27,7 @@
 #include "plug_io.h"
 #include "error.h"
 #include "uniq_name.h"
+#include "data.h"
 
 #define F2S(OBJ, TYPE) flags_to_string ((OBJ)->Flags, TYPE)
 
@@ -47,7 +48,7 @@ int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
         fputs("PCBNEW-LibModule-V1  jan 01 jan 2016 00:00:01 CET\n",FP);
         fputs("Units mm\n",FP);
         fputs("$INDEX\n",FP);
-	io_kicad_legacy_write_element_index(FP, buff->Data),
+	io_kicad_legacy_write_element_index(FP, buff->Data);
         fputs("$EndINDEX\n",FP);
 
         /* WriteViaData(FP, buff->Data); */
@@ -66,8 +67,20 @@ int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
  */
 int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 {
-	fputs("io_kicad_legacy_write_pcb()", FP);
-	return 0;
+	/* this is the first step in exporting a layout;
+         * creating a kicd module containing the elements used in the layout
+	 */ 
+
+	/*fputs("io_kicad_legacy_write_pcb()", FP);*/
+
+	fputs("PCBNEW-LibModule-V1  jan 01 jan 2016 00:00:01 CET\n",FP);
+	fputs("Units mm\n",FP);
+	fputs("$INDEX\n",FP);
+	io_kicad_legacy_write_element_index(FP, PCB->Data);
+	fputs("$EndINDEX\n",FP);
+
+	WriteElementData(FP, PCB->Data, "kicadl");
+	return (STATUS_OK);
 }
 
 /* ---------------------------------------------------------------------------

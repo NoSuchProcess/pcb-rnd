@@ -27,6 +27,7 @@
 #include "config.h"
 #include <stdio.h>
 #include "global.h"
+#include "data.h"
 
 int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data);
 int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff);
