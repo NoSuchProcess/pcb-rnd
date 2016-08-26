@@ -148,6 +148,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	GtkWidget *content_area;
 	GtkWidget *vbox, *hbox, *sub_vbox, *table;
 	GtkWidget *label, *select_box, *check_box;
+	GtkWidget *button;
 	const char *new_name;
 
 	/* Build dialog */
@@ -190,6 +191,9 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	_table_attach(table, 3, _("Via ring size:"),
 								&dialog_data.via_size_entry, MIN_PINORVIAHOLE + MIN_PINORVIACOPPER, MAX_PINORVIASIZE);
 	_table_attach(table, 4, _("Clearance:"), &dialog_data.clearance_entry, MIN_LINESIZE, MAX_LINESIZE);
+
+	label = gtk_label_new(_("Delete"));
+	gtk_button_new_with_label (label);
 
 	sub_vbox = ghid_category_vbox(vbox, _("Set as Default"), 4, 2, TRUE, TRUE);
 	check_box = gtk_check_button_new_with_label(_("Save route style settings as default"));
