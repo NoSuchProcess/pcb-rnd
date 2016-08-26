@@ -194,7 +194,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 
 	label = gtk_label_new(_("Delete"));
 	button = gtk_button_new_with_label (label);
-	gtk_box_pack_start(GTK_BOX(sub_vbox), button , TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), button , TRUE, TRUE, 0);
 
 	sub_vbox = ghid_category_vbox(vbox, _("Set as Default"), 4, 2, TRUE, TRUE);
 	check_box = gtk_check_button_new_with_label(_("Save route style settings as default"));
