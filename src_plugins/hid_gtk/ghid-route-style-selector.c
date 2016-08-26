@@ -192,8 +192,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 								&dialog_data.via_size_entry, MIN_PINORVIAHOLE + MIN_PINORVIACOPPER, MAX_PINORVIASIZE);
 	_table_attach(table, 4, _("Clearance:"), &dialog_data.clearance_entry, MIN_LINESIZE, MAX_LINESIZE);
 
-	label = gtk_label_new(_("Delete"));
-	button = gtk_button_new_with_label (label);
+	button = gtk_button_new_with_label (_("Delete"));
 	gtk_box_pack_start(GTK_BOX(vbox), button , TRUE, TRUE, 0);
 
 	sub_vbox = ghid_category_vbox(vbox, _("Set as Default"), 4, 2, TRUE, TRUE);
