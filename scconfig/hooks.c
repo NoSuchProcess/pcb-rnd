@@ -135,7 +135,8 @@ void plugin_dep1(int require, const char *plugin, const char *deps_on)
 		}
 	}
 	else {
-		
+		if ((strcmp(st_plugin, sbuildin) == 0) || (strcmp(st_plugin, splugin) == 0))
+			put(buff, sbuildin);
 	}
 }
 
@@ -184,6 +185,7 @@ int hook_postinit()
 /* Runs after all arguments are read and parsed */
 int hook_postarg()
 {
+	plugin_deps(0);
 	return 0;
 }
 
