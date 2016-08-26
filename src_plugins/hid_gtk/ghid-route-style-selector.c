@@ -125,6 +125,12 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 
 }
 
+/*  Callback for Delete route style button */
+static void delete_button_cb()
+{
+	printf("hello world\n");
+}
+
 /* \brief Helper for edit_button_cb */
 static void _table_attach(GtkWidget * table, gint row, const gchar * label, GtkWidget ** entry, Coord min, Coord max)
 {
@@ -192,7 +198,9 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 								&dialog_data.via_size_entry, MIN_PINORVIAHOLE + MIN_PINORVIACOPPER, MAX_PINORVIASIZE);
 	_table_attach(table, 4, _("Clearance:"), &dialog_data.clearance_entry, MIN_LINESIZE, MAX_LINESIZE);
 
-	button = gtk_button_new_with_label (_("Delete"));
+	/* create delete button */
+	button = gtk_button_new_with_label (_("Delete this style"));
+	g_signal_connect(G_OBJECT(button), "clicked",G_CALLBACK(delete_button_cb), button);
 	gtk_box_pack_start(GTK_BOX(vbox), button , TRUE, TRUE, 0);
 
 	sub_vbox = ghid_category_vbox(vbox, _("Set as Default"), 4, 2, TRUE, TRUE);
