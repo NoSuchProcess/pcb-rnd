@@ -109,17 +109,22 @@ int hook_custom_arg(const char *key, const char *value)
 	return arg_auto_set(key, value, disable_libs);
 }
 
+/* execute plugin dependency statements, depending on "require":
+	require = 0 - attempt to mark any dep as buildin
+	require = 1 - check if dependencies are met, disable plugins that have
+	              unmet deps
+*/
 void plugin_dep1(int require, const char *plugin, const char *deps_on)
 {
-	if (require) {
-		char buff[1024];
-		const char *st_plugin, *st_deps_on;
+	char buff[1024];
+	const char *st_plugin, *st_deps_on;
 
-		sprintf(buff, "/local/pcb/%s/controls", plugin);
-		st_plugin = get(buff);
-		sprintf(buff, "/local/pcb/%s/controls", deps_on);
-		st_deps_on = get(buff);
-		
+	sprintf(buff, "/local/pcb/%s/controls", plugin);
+	st_plugin = get(buff);
+	sprintf(buff, "/local/pcb/%s/controls", deps_on);
+	st_deps_on = get(buff);
+
+	if (require) {
 		if ((strcmp(st_plugin, sbuildin) == 0) || (strcmp(st_plugin, splugin) == 0)) {
 			if (strcmp(st_deps_on, sbuildin) != 0) {
 				sprintf(buff, "WARNING: disabling %s because the %s is not enabled as a buildin...\n", plugin, deps_on);
@@ -128,6 +133,9 @@ void plugin_dep1(int require, const char *plugin, const char *deps_on)
 				hook_custom_arg(buff, NULL);
 			}
 		}
+	}
+	else {
+		
 	}
 }
 
