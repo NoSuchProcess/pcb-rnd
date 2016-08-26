@@ -1,0 +1,65 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> Offer vs. pull (virtual users vs. active users) </H2>
+Pcb-rnd has an pulled-by-users policy on deciding what features to implement.
+Below I try to explain how we ended up using this policy.
+
+<h3> Past: offer, virtual users </H3>
+
+When I started pcb-rnd, although I published it, I didn't think anyone else
+would use it. It was just about having mainline with different default
+settings.
+<p>
+Later on I added a few features, and pcb-rnd slowly became much more than
+just different defaults. I felt other users may find the new features useful,
+so I had <i>put</i> it on offer: advertised the repository. I thought users
+would download and try the software. Judging from the feedback, they didn't. I
+didn't mind, becuase I was working on features I needed, to get pcb-rnd do what
+I wanted: I was my own target audience and anyone else trying pcb-rnd could
+only be a side effect. Until when I ran out of features because it already
+had everything I needed.
+<p>
+The next step was to implement features for other users. Between summer
+of 2015 and summer of 2016, I tried to be a bit more proactive: made
+public polls to map what users needed and tried to focus implementing
+those features. This did not bring too many users either.
+<p>
+This was when I realized what was really happening: I was <i>offering</i>
+features for <i>virtual</i> users, addressing my communication to the wide
+auidence. Noone really felt it was for him. Even if he was complaining about
+a missing feature in pcb and a few days later I announced the fix in pcb-rnd, it
+was not specifically for him, but for the Greater Good.
+<p>
+Virtual users nearly never became real users. My conclusion was that there
+was no point in implementing features for virtual users as noone ever would
+use those features.
+
+<h3> Present: pull, active users </H3>
+Mid summer 2016, I switched strategy. Instead of polling the crowd, I picked
+a few users with known feature requests and asked them if they were willing to
+test pcb-rnd if I implemented their feature. More than half of them said yes
+and many of them got hooked up. They all became productive, active members
+of the pcb-rnd community.
+<p>
+Learning from this experiece, the new strategy of pcb-rnd is as follows:
+<ul>
+	<li> pull instead of offer: do not hope a new feature would attract users,
+	     rather arrange active users who then pull the project with their
+	     feature requests;
+	<li> do not invest too much time in anything that is not currently pulled
+	     by actual, existing, active users; rather invest that time in fulfilling
+	     the needs of already existing users
+	<li> reaching 100 users with an average of 0.1% activity will result in
+	     0 active useres whereas reaching only 10 users with 30% activity
+	     will result in 3 active users; thus a small active communit around
+	     pcb-rnd is more efficient than the much larger geda community;
+	<li> users really appreciate fast response on bugreports and feature requests.
+	     Instead of trying to impress virtual users, rather keep already interested
+	     users happy.
+</ul>
+
+
+
+
