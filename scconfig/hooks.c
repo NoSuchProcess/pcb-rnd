@@ -28,13 +28,14 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 
 #undef plugin_def
 #undef plugin_header
+#undef plugin_dep
 #define plugin_def(name, desc, default_) plugin3_args(name, desc)
 #define plugin_header(sect)
+#define plugin_dep(plg, on)
 #include "plugins.h"
 
 	{NULL, NULL, NULL, NULL}
 };
-
 
 static void help1(void)
 {
@@ -55,6 +56,20 @@ static void help2(void)
 	printf("Some of the --disable options will make ./configure to skip detection of the given feature and mark them \"not found\".");
 	printf("\n");
 }
+
+char *repeat = NULL;
+#define report_repeat(msg) \
+do { \
+	report(msg); \
+	if (repeat != NULL) { \
+		char *old = repeat; \
+		repeat = str_concat("", old, msg, NULL); \
+		free(old); \
+	} \
+	else \
+		repeat = strclone(msg); \
+} while(0)
+
 
 /* Runs when a custom command line argument is found
  returns true if no further argument processing should be done */
@@ -94,6 +109,39 @@ int hook_custom_arg(const char *key, const char *value)
 	return arg_auto_set(key, value, disable_libs);
 }
 
+void plugin_dep1(int require, const char *plugin, const char *deps_on)
+{
+	if (require) {
+		char buff[1024];
+		const char *st_plugin, *st_deps_on;
+
+		sprintf(buff, "/local/pcb/%s/controls", plugin);
+		st_plugin = get(buff);
+		sprintf(buff, "/local/pcb/%s/controls", deps_on);
+		st_deps_on = get(buff);
+		
+		if ((strcmp(st_plugin, sbuildin) == 0) || (strcmp(st_plugin, splugin) == 0)) {
+			if (strcmp(st_deps_on, sbuildin) != 0) {
+				sprintf(buff, "WARNING: disabling %s because the %s is not enabled as a buildin...\n", plugin, deps_on);
+				report_repeat(buff);
+				sprintf(buff, "disable-%s", plugin);
+				hook_custom_arg(buff, NULL);
+			}
+		}
+	}
+}
+
+void plugin_deps(int require)
+{
+#undef plugin_def
+#undef plugin_header
+#undef plugin_dep
+#define plugin_def(name, desc, default_)
+#define plugin_header(sect)
+#define plugin_dep(plg, on) plugin_dep1(require, plg, on);
+#include "plugins.h"
+}
+
 
 /* Runs before anything else */
 int hook_preinit()
@@ -112,8 +160,10 @@ int hook_postinit()
 
 #undef plugin_def
 #undef plugin_header
+#undef plugin_dep
 #define plugin_def(name, desc, default_) plugin3_default(name, default_)
 #define plugin_header(sect)
+#define plugin_dep(plg, on)
 #include "plugins.h"
 
 	put("/local/pcb/debug", sfalse);
@@ -129,6 +179,8 @@ int hook_postarg()
 	return 0;
 }
 
+
+
 /* Runs when things should be detected for the host system */
 int hook_detect_host()
 {
@@ -142,18 +194,6 @@ int hook_detect_host()
 	return 0;
 }
 
-char *repeat = NULL;
-#define report_repeat(msg) \
-do { \
-	report(msg); \
-	if (repeat != NULL) { \
-		char *old = repeat; \
-		repeat = str_concat("", old, msg, NULL); \
-		free(old); \
-	} \
-	else \
-		repeat = strclone(msg); \
-} while(0)
 
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
@@ -372,12 +412,7 @@ int hook_detect_target()
 		}
 	}
 
-	if (!plug_is_buildin("export_ps")) {
-		if (plug_is_enabled("export_lpr")) {
-			report_repeat("WARNING: disabling the lpr exporter because the ps exporter is not enabled as a buildin...\n");
-			hook_custom_arg("disable-export_lpr", NULL);
-		}
-	}
+	plugin_deps(1);
 
 	if (plug_is_enabled("gpmi")) {
 		require("libs/script/gpmi/presents", 0, 0);
@@ -530,8 +565,10 @@ int hook_generate()
 
 #undef plugin_def
 #undef plugin_header
+#undef plugin_dep
 #define plugin_def(name, desc, default_) plugin3_stat(name, desc)
 #define plugin_header(sect) printf(sect);
+#define plugin_dep(plg, on)
 #include "plugins.h"
 
 	if (repeat != NULL)
