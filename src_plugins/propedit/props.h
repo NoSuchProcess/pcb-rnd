@@ -21,28 +21,51 @@
  */
 
 #include "global.h"
+#include <genht/htsp.h>
 
 typedef enum {
 	PCB_PROPT_invalid,
 	PCB_PROPT_STRING,
 	PCB_PROPT_COORD,
 	PCB_PROPT_ANGLE,
-	PCB_PROPT_INT
-} pcb_obj_prop_type_t;
+	PCB_PROPT_INT,
+	PCB_PROPT_max
+} pcb_prop_type_t;
 
-typedef struct {
-	pcb_obj_prop_type_t type;
-	union {
-		const char *string;
-		Coord coord;
-		Angle angle;
-		int i;
-	} value;
-} pcb_obj_prop_t;
+typedef union {
+	const char *string;
+	Coord coord;
+	Angle angle;
+	int i;
+} pcb_propval_t;
 
-
-typedef char *htprop_key_t;
-typedef pcb_obj_prop_t htprop_value_t;
+typedef pcb_propval_t htprop_key_t;
+typedef unsigned long int htprop_value_t;
 #define HT(x) htprop_ ## x
 #include <genht/ht.h>
 #undef HT
+
+typedef struct {
+	pcb_prop_type_t type;
+	htprop_t values;
+	unsigned core:1;  /* 1 if it is a core property */
+} pcb_props_t;
+
+/* A property list (props) is a string->pcb_props_t. Each entry is a named
+   property with a value that's a type and a value hash (vhash). vhash's
+   key is each value that the property ever took, and vhash's value is an
+   integer value of how many times the given property is taken */
+htsp_t *pcb_props_init(void);
+void pcb_props_uninit(htsp_t *props);
+
+/* Add a value of a named property; if the value is already known, its counter
+   is increased. If propname didn't exist, create it. Returns NULL on error.
+   Error conditions:
+    - invalid type
+    - mismatching type for the property (all values of a given property must be the same)
+*/
+pcb_props_t *pcb_props_add(htsp_t *props, const char *propname, pcb_prop_type_t type, pcb_propval_t val);
+
+/* Return the type name of a property type or NULL on error. */
+const char *pcb_props_type_name(pcb_prop_type_t type);
+
