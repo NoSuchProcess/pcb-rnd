@@ -497,6 +497,29 @@ struct hid_st {
 	   Return 0 on success.
 	*/
 	int (*usage)(const char *subtopic);
+
+
+	/*** PROPEDIT (optional) ****/
+	/* Optional: start a propedit session: a series of propedit calls will follow
+	   Return 0 on success; non-zero aborts the session.
+	*/
+	int (*propedit_start)(void *pe, int num_props);
+
+	/* Optional: end a propedit session: all data has been sent, no more; this call
+	   should present and run the user dialog and should return only when the
+	   propedit section can be closed. */
+	void (*propedit_end)(void *pe);
+
+	/* Optional: register a new property
+	   Returns a prop context passed with each value
+	*/
+	void *(*propedit_add_prop)(void *pe, const char *propname, int is_mutable, int num_vals);
+
+	/* Optional: register a new value for a property */
+	void (*propedit_add_value)(void *pe, const char *propname, void *propctx, const char *value, int repeat_cnt);
+
+	/* Optional: register statistical info for a property */
+	void (*propedit_add_stat)(void *pe, const char *propname, void *propctx, const char *most_common, const char *min, const char *max, const char *avg);
 };
 
 /* This function (in the common code) will be called whenever the GUI
