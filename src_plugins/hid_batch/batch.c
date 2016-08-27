@@ -308,6 +308,33 @@ static void batch_create_menu(const char *menu, const char *action, const char *
 {
 }
 
+static int batch_propedit_start(void *pe, int num_props)
+{
+	printf("propedit start %d\n", num_props);
+}
+
+static void batch_propedit_end(void *pe)
+{
+	printf("propedit end\n");
+}
+
+static void *batch_propedit_add_prop(void *pe, const char *propname, int is_mutable, int num_vals)
+{
+	printf("  %s (%d) %s\n", propname, num_vals, is_mutable ? "mutable" : "immutable");
+	return NULL;
+}
+
+static void batch_propedit_add_value(void *pe, const char *propname, void *propctx, const char *value, int repeat_cnt)
+{
+	printf("    %s (%d)\n", value, repeat_cnt);
+}
+
+static void batch_propedit_add_stat(void *pe, const char *propname, void *propctx, const char *most_common, const char *min, const char *max, const char *avg)
+{
+	printf("    [%s|%s|%s|%s]\n", most_common, min, max, avg);
+}
+
+
 #include "dolists.h"
 
 static HID batch_hid;
@@ -359,6 +386,13 @@ pcb_uninit_t hid_hid_batch_init()
 	batch_hid.attribute_dialog = batch_attribute_dialog;
 	batch_hid.show_item = batch_show_item;
 	batch_hid.create_menu = batch_create_menu;
+
+	batch_hid.propedit_start = batch_propedit_start;
+	batch_hid.propedit_end = batch_propedit_end;
+	batch_hid.propedit_add_prop = batch_propedit_add_prop;
+	batch_hid.propedit_add_value = batch_propedit_add_value;
+	batch_hid.propedit_add_stat = batch_propedit_add_stat;
+
 
 	hid_register_hid(&batch_hid);
 	return NULL;
