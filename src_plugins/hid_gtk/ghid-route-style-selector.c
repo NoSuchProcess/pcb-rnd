@@ -54,6 +54,7 @@ struct _GHidRouteStyleSelector {
 	GtkAccelGroup *accel_group;
 
 	int hidden_button; /* whether the hidden button is created */
+	int selected; /* index of the currently selected route style */
 
 	GtkListStore *model;
 	struct _route_style *active_style;
@@ -74,6 +75,7 @@ struct _route_style {
 	RouteStyleType *rst;
 	gulong sig_id;
 	int hidden;
+
 };
 
 /* SIGNAL HANDLERS */
@@ -114,6 +116,7 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 
 	if (style == NULL) {
 		gtk_entry_set_text(GTK_ENTRY(dialog->name_entry), _("New Style"));
+		dialog->rss->selected = -1;
 		return;
 	}
 
@@ -123,12 +126,17 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_size_entry), style->rst->Diameter);
 	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->clearance_entry), style->rst->Clearance);
 
+	if (style->hidden)
+		dialog->rss->selected = -1;
+	else
+		dialog->rss->selected = style->rst - PCB->RouteStyle.array;
 }
 
 /*  Callback for Delete route style button */
-static void delete_button_cb(GtkButton *button, void *data)
+static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 {
-	printf("hello world\n");
+	vtroutestyle_remove(&PCB->RouteStyle, dialog->rss->selected, 1);
+	printf("hello world %d\n", dialog->rss->selected);
 }
 
 /* \brief Helper for edit_button_cb */
@@ -200,7 +208,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 
 	/* create delete button */
 	button = gtk_button_new_with_label (_("Delete this style"));
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(delete_button_cb), NULL);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(delete_button_cb), &dialog_data);
 	gtk_box_pack_start(GTK_BOX(vbox), button , TRUE, TRUE, 0);
 
 	sub_vbox = ghid_category_vbox(vbox, _("Set as Default"), 4, 2, TRUE, TRUE);
