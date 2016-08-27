@@ -126,7 +126,7 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 }
 
 /*  Callback for Delete route style button */
-static void delete_button_cb()
+static void delete_button_cb(GtkButton *button, void *data)
 {
 	printf("hello world\n");
 }
@@ -200,7 +200,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 
 	/* create delete button */
 	button = gtk_button_new_with_label (_("Delete this style"));
-	g_signal_connect(G_OBJECT(button), "clicked",G_CALLBACK(delete_button_cb), button);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(delete_button_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(vbox), button , TRUE, TRUE, 0);
 
 	sub_vbox = ghid_category_vbox(vbox, _("Set as Default"), 4, 2, TRUE, TRUE);
