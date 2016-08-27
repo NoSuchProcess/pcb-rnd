@@ -1000,7 +1000,21 @@ static int ActionRouteStyle(int argc, char **argv, Coord x, Coord y)
 	int number;
 
 	if (str) {
-		number = atoi(str);
+		char *end;
+		number = strtol(str, &end, 10);
+
+		if (*end != '\0') { /* if not an integer, find by name */
+			int n;
+			number = -1;
+			for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
+				rts = &PCB->RouteStyle.array[n];
+				if (strcasecmp(rts->name, str) == 0) {
+					number = n + 1;
+					break;
+				}
+			}
+		}
+		
 		if (number > 0 && number <= vtroutestyle_len(&PCB->RouteStyle)) {
 			rts = &PCB->RouteStyle.array[number - 1];
 			SetLineSize(rts->Thick);
@@ -1009,6 +1023,8 @@ static int ActionRouteStyle(int argc, char **argv, Coord x, Coord y)
 			SetClearanceWidth(rts->Clearance);
 			hid_action("RouteStylesChanged");
 		}
+		else
+			Message("Error: invalid route style name or index\n");
 	}
 	return 0;
 }
