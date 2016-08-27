@@ -2,7 +2,18 @@
 #include <assert.h>
 #include "props.h"
 
-void print_all(htsp_t *props)
+static void print_val(pcb_prop_type_t type, pcb_propval_t val)
+{
+	switch(type) {
+		case PCB_PROPT_STRING: printf("%s", val.string); break;
+		case PCB_PROPT_COORD:  printf("%d", val.coord); break;
+		case PCB_PROPT_ANGLE:  printf("%f", val.angle); break;
+		case PCB_PROPT_INT:    printf("%d", val.i); break;
+		default: printf(" ???");
+	}
+}
+
+static void print_all(htsp_t *props)
 {
 	htsp_entry_t *pe;
 	for (pe = htsp_first(props); pe; pe = htsp_next(props, pe)) {
@@ -10,16 +21,36 @@ void print_all(htsp_t *props)
 		pcb_props_t *p = pe->value;
 		printf("%s [%s]\n", pe->key, pcb_props_type_name(p->type));
 		for (e = htprop_first(&p->values); e; e = htprop_next(&p->values, e)) {
-			switch(p->type) {
-				case PCB_PROPT_STRING: printf(" %s", e->key.string); break;
-				case PCB_PROPT_COORD:  printf(" %d", e->key.coord); break;
-				case PCB_PROPT_ANGLE:  printf(" %f", e->key.angle); break;
-				case PCB_PROPT_INT:    printf(" %d", e->key.i); break;
-				default: printf(" ???");
-			}
+			printf(" ");
+			print_val(p->type, e->key);
 			printf(" (%lu)\n", e->value);
 		}
 	}
+}
+
+static pcb_props_t *print_stat(htsp_t *props, const char *name, int all)
+{
+	pcb_propval_t most_common, min, max, avg;
+	pcb_props_t *p;
+
+	if (all)
+		p = pcb_props_stat(props, name, &most_common, &min, &max, &avg);
+	else
+		p = pcb_props_stat(props, name, &most_common, NULL, NULL, NULL);
+
+	if (p == NULL)
+		return NULL;
+
+	printf("Stats %s:", name);
+	printf("  common: "); print_val(p->type, most_common);
+	if (all) {
+		printf("  min: "); print_val(p->type, min);
+		printf("  max: "); print_val(p->type, max);
+		printf("  avg: "); print_val(p->type, avg);
+	}
+	printf("\n");
+
+	return p;
 }
 
 int main()
@@ -60,6 +91,19 @@ int main()
 	v.i = 42; assert(pcb_props_add(props, "crd", 1234, v) == NULL);
 	v.i = 42; assert(pcb_props_add(props, "ang", 1234, v) == NULL);
 
-
 	print_all(props);
+
+	/* --- get some stats --- */
+
+	/* these should work */
+	assert(print_stat(props, "crd", 1) != NULL);
+	assert(print_stat(props, "num", 1) != NULL);
+	assert(print_stat(props, "ang", 1) != NULL);
+	assert(print_stat(props, "str", 0) != NULL);
+
+	/* these should fail */
+	assert(print_stat(props, "str", 1) == NULL);
+	assert(print_stat(props, "HAH", 1) == NULL);
+
+	return 0;
 }
