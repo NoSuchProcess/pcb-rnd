@@ -28,9 +28,9 @@ Once layout export has been implemented, the following will be possible:
  
 How to run the plugin (CLI version):
 
-echo "SaveTo(LayoutAs, foobar.mod, kicadl)" | ./pcb-rnd  --gui batch my.pcb
+echo "SaveTo(LayoutAs, foobar.brd, kicadl)" | ./pcb-rnd  --gui batch my.pcb
 
-(This loads my.pcb and saves it to foobar.mod and then exits)
+(This loads my.pcb and saves it to foobar.brd and then exits)
 
 SVN: when commiting, please prefix all your commit message lines with string
 [io_kicad_legacy] to make my job easier when generating Changelog.

@@ -40,6 +40,9 @@
 /* generates a line by line listing of the elements being saved */
 static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data);
 
+/* generates a default via drill size for the layout */
+static int write_kicad_legacy_layout_via_drill_size(FILE * FP);
+
 /* writes the buffer to file */
 int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
 {
@@ -73,13 +76,34 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	/*fputs("io_kicad_legacy_write_pcb()", FP);*/
 
-	fputs("PCBNEW-LibModule-V1  jan 01 jan 2016 00:00:01 CET\n",FP);
-	fputs("Units mm\n",FP);
-	fputs("$INDEX\n",FP);
-	io_kicad_legacy_write_element_index(FP, PCB->Data);
-	fputs("$EndINDEX\n",FP);
+	Cardinal i;
 
-	WriteElementData(FP, PCB->Data, "kicadl");
+	fputs("PCBNEW-BOARD Version 2 jan 01 jan 2016 00:00:01 CET\n",FP);
+
+	fputs("$GENERAL\n",FP);
+        fputs("Units mm\n",FP);
+	fputs("$EndGENERAL\n",FP);
+
+	fputs("$SHEETDESCR\n",FP);
+	fputs("$EndSHEETDESCR\n",FP);
+
+	fputs("$SETUP\n",FP);
+	fputs("InternalUnit 1.000 mm\n",FP);
+	write_kicad_legacy_layout_via_drill_size(FP);	
+	fputs("$EndSETUP\n",FP);
+
+	/* module desription stuff would go here */
+
+	fputs("$TRACK\n",FP);
+	write_kicad_legacy_layout_vias(FP, PCB->Data);
+
+	for (i = 0; i < max_copper_layer + 2; i++)
+	{
+		write_kicad_legacy_layout_tracks(FP, i, &(PCB->Data->Layer[i]));
+	}
+	fputs("$EndTRACK\n",FP);
+	fputs("$EndBOARD\n",FP);
+	/*WriteElementData(FP, PCB->Data, "kicadl");*/  /* this may be needed in a different file */
 	return (STATUS_OK);
 }
 
@@ -122,6 +146,64 @@ static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data)
 	/* free the state used for deduplication */
         elementlist_dedup_free(ededup); 
         return 0;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * writes kicad format via data
+	For a track segment:
+	Position shape Xstart Ystart Xend Yend width
+	Description layer 0 netcode timestamp status
+		Shape parameter is set to 0 (reserved for futu
+ */
+
+
+int write_kicad_legacy_layout_vias(FILE * FP, DataTypePtr Data)
+{
+	gdl_iterator_t it;
+	PinType *via;
+
+	/* write information about vias */
+	pinlist_foreach(&Data->Via, &it, via) {
+		pcb_fprintf(FP, "Po 3 %.3mm %.3mm %.3mm %.3mm %.3mm\n",
+				via->X, via->Y, via->X, via->Y, via->Thickness);
+                pcb_fprintf(FP, "De F0 1 0 0 0\n");
+	}
+	return 0;
+}
+
+static int write_kicad_legacy_layout_via_drill_size(FILE * FP)
+{
+	pcb_fprintf(FP, "ViaDrill 0.300mm\n"); /* mm format, default for now */
+	return 0;
+}
+
+int write_kicad_legacy_layout_tracks(FILE * FP, Cardinal number, LayerTypePtr layer) 
+{
+	gdl_iterator_t it;
+	LineType *line;
+	/*ArcType *arc;
+	TextType *text;
+	PolygonType *polygon;
+	*/
+	/* write information about non empty layers */
+	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
+		/*
+		fprintf(FP, "Layer(%i ", (int) Number + 1);
+		PrintQuotedString(FP, (char *) EMPTY(layer->Name));
+		fputs(")\n(\n", FP);
+		WriteAttributeList(FP, &layer->Attributes, "\t");
+		*/
+
+		linelist_foreach(&layer->Line, &it, line) {
+	                pcb_fprintf(FP, "Po 0 %.3mm %.3mm %.3mm %.3mm %.3mm\n",
+                                line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
+				line->Thickness);
+        	        pcb_fprintf(FP, "De %d 0 0 0 0\n", number); /* omitting net info */
+
+		}
+	}
+		return 0;
 }
 
 
