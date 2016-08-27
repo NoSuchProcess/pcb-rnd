@@ -20,6 +20,16 @@
  *
  */
 
+/* This API builds and maintains a collection of values for each named property.
+   A value can be added any time. All values ever seen for a property is stored.
+   Duplicate values per property are stored only once, but number of occurence
+   per value (per property) is kept track on. Typically at the end of
+   a query, but generally ny time, the caller may query for:
+    - all known properties (it's a htsp)
+    - all known values of a property
+    - statistics of values of a property
+*/
+
 #include "global.h"
 #include <genht/htsp.h>
 
