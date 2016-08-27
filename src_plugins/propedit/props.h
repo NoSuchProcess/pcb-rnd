@@ -76,6 +76,10 @@ void pcb_props_uninit(htsp_t *props);
 */
 pcb_props_t *pcb_props_add(htsp_t *props, const char *propname, pcb_prop_type_t type, pcb_propval_t val);
 
+/* Retrieve values for a prop - returns NULL if propname doesn't exist */
+pcb_props_t *pcb_props_get(htsp_t *props, const char *propname);
+
+
 /* Return the type name of a property type or NULL on error. */
 const char *pcb_props_type_name(pcb_prop_type_t type);
 

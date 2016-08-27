@@ -62,6 +62,12 @@ void pcb_props_uninit(htsp_t *props)
 #warning TODO
 }
 
+/* Retrieve values for a prop */
+pcb_props_t *pcb_props_get(htsp_t *props, const char *propname)
+{
+	return htsp_get(props, (char *)propname);
+}
+
 /* Store a new value */
 pcb_props_t *pcb_props_add(htsp_t *props, const char *propname, pcb_prop_type_t type, pcb_propval_t val)
 {
