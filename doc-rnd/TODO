@@ -1,8 +1,6 @@
 - BUGS
 	- visible grid slowing down rendering [Erich]
-	- mac sw rendering slowdown [Chris]
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
-	- RouteStyle() action (gui_act.c) should also work matching style names [miloh]
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
