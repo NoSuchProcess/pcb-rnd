@@ -4,3 +4,4 @@ test:
 	cd strflags && make all && make test
 	cd pcb-printf && make all && make test
 	cd uniq_name && make all && make test
+	cd propedit && make all && make test

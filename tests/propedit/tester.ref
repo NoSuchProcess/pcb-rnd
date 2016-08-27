@@ -1,0 +1,13 @@
+num [int]
+ 42 (3)
+ 10 (1)
+ang [angle]
+ 42.000000 (3)
+ 10.500000 (1)
+crd [coord]
+ 42 (3)
+ 10 (1)
+str [string]
+ foo (3)
+ bar (1)
+ BAZ (1)
