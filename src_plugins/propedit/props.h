@@ -69,3 +69,10 @@ pcb_props_t *pcb_props_add(htsp_t *props, const char *propname, pcb_prop_type_t 
 /* Return the type name of a property type or NULL on error. */
 const char *pcb_props_type_name(pcb_prop_type_t type);
 
+/* Look up property propname and calculate statistics for all values occured so far.
+   Any of most_common, min, max and avg can be NULL. Returns NULL if propname
+   doesn't exist or stat values that can not be calculated for the given type
+   are not NULL. Invalid type/stat combinations:
+     type=string   min, max, avg
+*/
+pcb_props_t *pcb_props_stat(htsp_t *props, const char *propname, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg);

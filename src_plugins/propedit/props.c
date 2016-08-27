@@ -102,3 +102,74 @@ const char *pcb_props_type_name(pcb_prop_type_t type)
 
 	return type_names[type];
 }
+
+#define STAT(val, field, cnt) \
+do { \
+	if (val.field < minp.field) minp = val; \
+	if (val.field > maxp.field) maxp = val; \
+	avgp.field += val.field * cnt; \
+} while(0)
+
+pcb_props_t *pcb_props_stat(htsp_t *props, const char *propname, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg)
+{
+	pcb_props_t *p;
+	htprop_entry_t *e;
+	pcb_propval_t bestp, minp, maxp, avgp;
+	unsigned long best = 0, num_vals = 0;
+
+
+	p = htsp_get(props, (char *)propname);
+	if (p == NULL)
+		return NULL;
+
+	if ((p->type == PCB_PROPT_STRING) && ((min != NULL) || (max != NULL) || (avg != NULL)))
+		return NULL;
+
+	/* set up internal avg, min, max */
+	memset(&avgp, 0, sizeof(avgp));
+	switch(p->type) {
+		case PCB_PROPT_invalid: break;
+		case PCB_PROPT_max: break;
+		case PCB_PROPT_STRING: break;
+		case PCB_PROPT_COORD:  minp.coord = COORD_MAX; maxp.coord = -minp.coord;  break;
+		case PCB_PROPT_ANGLE:  minp.angle = 100000;    maxp.angle = -minp.angle; break;
+		case PCB_PROPT_INT:    minp.i     = INT_MAX;   maxp.i = -minp.i; break;
+	}
+
+	/* walk through all known values */
+	for (e = htprop_first(&p->values); e; e = htprop_next(&p->values, e)) {
+		if (e->value > best) {
+			best = e->value;
+			bestp = e->key;
+		}
+		num_vals += e->value;
+		switch(p->type) {
+			case PCB_PROPT_invalid: break;
+			case PCB_PROPT_max: break;
+			case PCB_PROPT_STRING: break;
+			case PCB_PROPT_COORD:  STAT(e->key, coord, e->value); break;
+			case PCB_PROPT_ANGLE:  STAT(e->key, angle, e->value); break;
+			case PCB_PROPT_INT:    STAT(e->key, i,     e->value); break;
+		}
+	}
+
+	/* generate the result */
+	if (num_vals != 0) {
+		switch(p->type) {
+			case PCB_PROPT_invalid: break;
+			case PCB_PROPT_max: break;
+			case PCB_PROPT_STRING: break;
+			case PCB_PROPT_COORD:  avgp.coord = avgp.coord/num_vals;  break;
+			case PCB_PROPT_ANGLE:  avgp.angle = avgp.angle/num_vals;  break;
+			case PCB_PROPT_INT:    avgp.i     = avgp.i/num_vals;  break;
+		}
+		if (avg != NULL) *avg = avgp;
+		if (min != NULL) *min = minp;
+		if (max != NULL) *max = maxp;
+		if (most_common != NULL) *most_common = bestp;
+	}
+
+	return p;
+}
+
+#undef STAT
