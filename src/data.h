@@ -64,4 +64,49 @@ extern FlagType no_flags;
 
 extern int netlist_frozen;
 
+/****** callback based loops *****/
+
+/* The functions returning int are called once when processing of a new layer
+   or element starts, with enter=1. If they return non-zero, the current layer
+   or element is skipped. If it is not skipped, the function is called once
+   at the end of processing the given layer or element, with enter=0 (and
+   return value ignored).
+
+   Any of the callbacks for any loop function can be NULL.
+   */
+
+/* layer object callbacks */
+typedef int (*pcb_layer_cb_t)(void *ctx, PCBType *pcb, LayerType *layer, int enter);
+typedef void (*pcb_line_cb_t)(void *ctx, PCBType *pcb, LayerType *layer, LineType *line);
+typedef void (*pcb_arc_cb_t)(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc);
+typedef void (*pcb_text_cb_t)(void *ctx, PCBType *pcb, LayerType *layer, TextType *text);
+typedef void (*pcb_poly_cb_t)(void *ctx, PCBType *pcb, LayerType *layer, PolygonType *poly);
+
+/* element callbacks */
+typedef int (*pcb_element_cb_t)(void *ctx, PCBType *pcb, ElementType *element, int enter);
+typedef void (*pcb_eline_cb_t)(void *ctx, PCBType *pcb, ElementType *element, LineType *line);
+typedef void (*pcb_earc_cb_t)(void *ctx, PCBType *pcb, ElementType *element, ArcType *arc);
+typedef void (*pcb_etext_cb_t)(void *ctx, PCBType *pcb, ElementType *element, TextType *text);
+typedef void (*pcb_epin_cb_t)(void *ctx, PCBType *pcb, ElementType *element, PinType *pin);
+typedef void (*pcb_epad_cb_t)(void *ctx, PCBType *pcb, ElementType *element, PadType *pad);
+
+/* via callbacks */
+typedef void (*pcb_via_cb_t)(void *ctx, PCBType *pcb, PinType *via);
+
+/* Loop over all layer objects on each layer. Layer is the outer loop. */
+void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb);
+
+/* Loop over all elements and element primitives. Element is the outer loop. */
+void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb);
+
+/* Loop over all vias. */
+void pcb_loop_vias(void *ctx, pcb_via_cb_t vcb);
+
+/* Loop over all design objects. (So all the above three in one call.) */
+void pcb_loop_all(void *ctx,
+	pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb,
+	pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb,
+	pcb_via_cb_t vcb
+);
+
 #endif
