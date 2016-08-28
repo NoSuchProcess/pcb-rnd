@@ -769,6 +769,24 @@ static int ghid_progress(int so_far, int total, const char *message)
 
 /* ---------------------------------------------------------------------- */
 
+static int ghid_propedit_start(void *pe, int num_props)
+{
+	
+	ghidgui->propedit_widget = ghid_propedit_dialog_create(&ghidgui->propedit_dlg);
+}
+
+static void ghid_propedit_end(void *pe)
+{
+
+}
+
+static void ghid_propedit_add_stat(void *pe, const char *propname, void *propctx, const char *most_common, const char *min, const char *max, const char *avg)
+{
+	ghid_propedit_prop_add(&ghidgui->propedit_dlg, propname, most_common, min, max, avg);
+}
+
+/* ---------------------------------------------------------------------- */
+
 
 typedef struct {
 	GtkWidget *del;
@@ -2021,6 +2039,13 @@ pcb_uninit_t hid_hid_gtk_init()
 
 	ghid_hid.notify_save_pcb = ghid_notify_save_pcb;
 	ghid_hid.notify_filename_changed = ghid_notify_filename_changed;
+
+	ghid_hid.propedit_start = ghid_propedit_start;
+	ghid_hid.propedit_end = ghid_propedit_end;
+	ghid_hid.propedit_add_stat = ghid_propedit_add_stat;
+/*	ghid_hid.propedit_add_prop = ghid_propedit_add_prop;*/
+/*	ghid_hid.propedit_add_value = ghid_propedit_add_value;*/
+
 
 	ghid_conf_id = conf_hid_reg(ghid_cookie, NULL);
 

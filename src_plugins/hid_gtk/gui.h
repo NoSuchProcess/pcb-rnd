@@ -37,6 +37,7 @@
 #include "ghid-coord-entry.h"
 #include "ghid-main-menu.h"
 #include "gui-pinout-preview.h"
+#include "ghid-propedit.h"
 #include "conf_core.h"
 #include "event.h"
 
@@ -120,6 +121,9 @@ typedef struct {
 	gboolean small_label_markup, creating;
 
 	gint settings_mode;
+
+	ghid_propedit_dialog_t propedit_dlg;
+	GtkWidget *propedit_widget;
 } GhidGui;
 
 extern GhidGui _ghidgui, *ghidgui;
