@@ -20,6 +20,7 @@
  *
  */
 #include "props.h"
+#include "pcb-printf.h"
 /*#define HT_INVALID_VALUE ((pcb_propval_t){PCB_PROPT_invalid, {0}})*/
 #define HT(x) htprop_ ## x
 #include <genht/ht.c>
@@ -180,8 +181,47 @@ pcb_props_t *pcb_props_stat(htsp_t *props, const char *propname, pcb_propval_t *
 
 #undef STAT
 
+static char buff[8][128];
+static int buff_idx = 0;
+const char *propedit_sprint_val(pcb_prop_type_t type, pcb_propval_t val)
+{
+	char *b;
+	buff_idx++;
+	if (buff_idx > 7)
+		buff_idx = 0;
+	b = buff[buff_idx];
+	switch(type) {
+		case PCB_PROPT_STRING: return val.string; break;
+		case PCB_PROPT_COORD:  pcb_snprintf(b, 128, "%$mm (%$ml)", val.coord, val.coord); break;
+		case PCB_PROPT_ANGLE:  sprintf(b, "%f", val.angle); break;
+		case PCB_PROPT_INT:    sprintf(b, "%d", val.i); break;
+		default: strcpy(b, "<unknown type>");
+	}
+	return b;
+}
+
 const char *propedit_query(void *pe, const char *cmd, const char *key, const char *val, int idx)
 {
+	pe_ctx_t *ctx = pe;
+	const char *s;
 
+	if (memcmp(cmd, "c1st", 4) == 0) {
+		ctx->qprop = htsp_get(ctx->core_props, (char *)key);
+		if (ctx->qprop == NULL)
+			return NULL;
+
+		ctx->qprope = htprop_first(&ctx->qprop->values);
+		goto vnxt;
+	}
+	if (memcmp(cmd, "cnxt", 4) == 0) {
+		vnxt:;
+		if (ctx->qprope == NULL)
+			return NULL;
+		s = propedit_sprint_val(ctx->qprop->type, ctx->qprope->key);
+		ctx->qprope = htprop_next(&ctx->qprop->values, ctx->qprope);
+		return s;
+	}
+
+	return NULL;
 }
 

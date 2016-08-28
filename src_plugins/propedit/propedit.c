@@ -40,33 +40,6 @@ static const char propedit_help[] = "Run the property editor";
 TODO
 %end-doc */
 
-typedef struct {
-	htsp_t *core_props;
-} pe_ctx_t;
-
-
-static char buff[8][128];
-static int buff_idx = 0;
-static const char *sprint_val(pcb_prop_type_t type, pcb_propval_t val)
-{
-	char *b;
-	buff_idx++;
-	if (buff_idx > 7)
-		buff_idx = 0;
-	b = buff[buff_idx];
-	switch(type) {
-		case PCB_PROPT_STRING: return val.string; break;
-		case PCB_PROPT_COORD:  pcb_snprintf(b, 128, "%$mm (%$ml)", val.coord, val.coord); break;
-		case PCB_PROPT_ANGLE:  sprintf(b, "%f", val.angle); break;
-		case PCB_PROPT_INT:    sprintf(b, "%d", val.i); break;
-		default: strcpy(b, "<unknown type>");
-	}
-	return b;
-}
-
-
-
-
 int propedit_action(int argc, char **argv, Coord x, Coord y)
 {
 	pe_ctx_t ctx;
@@ -93,17 +66,17 @@ int propedit_action(int argc, char **argv, Coord x, Coord y)
 		if (gui->propedit_add_stat != NULL) {
 			if (p->type == PCB_PROPT_STRING) {
 				pcb_props_stat(ctx.core_props, pe->key, &common, NULL, NULL, NULL);
-				gui->propedit_add_stat(&ctx, pe->key, rowid, sprint_val(p->type, common), NULL, NULL, NULL);
+				gui->propedit_add_stat(&ctx, pe->key, rowid, propedit_sprint_val(p->type, common), NULL, NULL, NULL);
 			}
 			else {
 				pcb_props_stat(ctx.core_props, pe->key, &common, &min, &max, &avg);
-				gui->propedit_add_stat(&ctx, pe->key, rowid, sprint_val(p->type, common), sprint_val(p->type, min), sprint_val(p->type, max), sprint_val(p->type, avg));
+				gui->propedit_add_stat(&ctx, pe->key, rowid, propedit_sprint_val(p->type, common), propedit_sprint_val(p->type, min), propedit_sprint_val(p->type, max), propedit_sprint_val(p->type, avg));
 			}
 		}
 
 		if (gui->propedit_add_value != NULL)
 			for (e = htprop_first(&p->values); e; e = htprop_next(&p->values, e))
-				gui->propedit_add_value(&ctx, pe->key, rowid, sprint_val(p->type, e->key), e->value);
+				gui->propedit_add_value(&ctx, pe->key, rowid, propedit_sprint_val(p->type, e->key), e->value);
 	}
 
 	gui->propedit_end(&ctx);
