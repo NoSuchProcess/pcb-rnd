@@ -136,7 +136,7 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 {
 	vtroutestyle_remove(&PCB->RouteStyle, dialog->rss->selected, 1);
-	printf("hello world %d\n", dialog->rss->selected);
+	printf("Style: %d deleted\n", dialog->rss->selected);
 }
 
 /* \brief Helper for edit_button_cb */
@@ -207,7 +207,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	_table_attach(table, 4, _("Clearance:"), &dialog_data.clearance_entry, MIN_LINESIZE, MAX_LINESIZE);
 
 	/* create delete button */
-	button = gtk_button_new_with_label (_("Delete this style"));
+	button = gtk_button_new_with_label (_("Delete Style"));
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(delete_button_cb), &dialog_data);
 	gtk_box_pack_start(GTK_BOX(vbox), button , TRUE, TRUE, 0);
 
