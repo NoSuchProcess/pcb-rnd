@@ -5,6 +5,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/hid_gtk/ghid-layer-selector.o
 	$(PLUGDIR)/hid_gtk/ghid-main-menu.o
 	$(PLUGDIR)/hid_gtk/ghid-route-style-selector.o
+	$(PLUGDIR)/hid_gtk/ghid-propedit.o
 	$(PLUGDIR)/hid_gtk/gtkhid-main.o
 	$(PLUGDIR)/hid_gtk/gui-command-window.o
 	$(PLUGDIR)/hid_gtk/gui-config.o
