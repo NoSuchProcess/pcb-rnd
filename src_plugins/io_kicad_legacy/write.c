@@ -77,19 +77,24 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	/*fputs("io_kicad_legacy_write_pcb()", FP);*/
 
 	Cardinal i;
+	Cardinal j;
 
-	fputs("PCBNEW-BOARD Version 2 jan 01 jan 2016 00:00:01 CET\n",FP);
+	fputs("PCBNEW-BOARD Version 1 jan 01 jan 2016 00:00:01 CET\n",FP);
 
 	fputs("$GENERAL\n",FP);
-        fputs("Units mm\n",FP);
+	fputs("Ly 1FFF8001\n",FP); /* obsolete, needed for old pcbnew */
+        /*ifputs("Units mm\n",FP);*/ /*decimils most universal legacy format */
 	fputs("$EndGENERAL\n",FP);
 
 	fputs("$SHEETDESCR\n",FP);
 	fputs("$EndSHEETDESCR\n",FP);
 
 	fputs("$SETUP\n",FP);
-	fputs("InternalUnit 1.000 mm\n",FP);
-	write_kicad_legacy_layout_via_drill_size(FP);	
+	fputs("InternalUnit 0.000100 INCH\n",FP);
+	fputs("Layers 2\n",FP);
+	fputs("Layer[0] Cuivre signal\n",FP);
+	fputs("Layer[15] Composant signal\n",FP);
+	write_kicad_legacy_layout_via_drill_size(FP);
 	fputs("$EndSETUP\n",FP);
 
 	/* module desription stuff would go here */
@@ -97,9 +102,9 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	fputs("$TRACK\n",FP);
 	write_kicad_legacy_layout_vias(FP, PCB->Data);
 
-	for (i = 0; i < max_copper_layer + 2; i++)
+	for (i = 0, j = 0; i < max_copper_layer + 2; i++)
 	{
-		write_kicad_legacy_layout_tracks(FP, i, &(PCB->Data->Layer[i]));
+		j += write_kicad_legacy_layout_tracks(FP, j, &(PCB->Data->Layer[i]));
 	}
 	fputs("$EndTRACK\n",FP);
 	fputs("$EndBOARD\n",FP);
@@ -165,19 +170,19 @@ int write_kicad_legacy_layout_vias(FILE * FP, DataTypePtr Data)
 
 	/* write information about vias */
 	pinlist_foreach(&Data->Via, &it, via) {
-		pcb_fprintf(FP, "Po 3 %.3mm %.3mm %.3mm %.3mm %.3mm\n",
+/*		pcb_fprintf(FP, "Po 3 %.3mm %.3mm %.3mm %.3mm %.3mm\n",
 				via->X, via->Y, via->X, via->Y, via->Thickness);
-                pcb_fprintf(FP, "De F0 1 0 0 0\n");
+                pcb_fprintf(FP, "De F0 1 0 0 0\n"); */
                 pcb_fprintf(FP, "Po 3 %.0mk %.0mk %.0mk %.0mk %.0mk\n", /* testing kicad printf */
                                 via->X, via->Y, via->X, via->Y, via->Thickness);
-                pcb_fprintf(FP, "De F0 1 0 0 0\n");
+                pcb_fprintf(FP, "De 15 1 0 0 0\n"); /* this is equivalent to 0F, via from 15 -> 0 */
 	}
 	return 0;
 }
 
 static int write_kicad_legacy_layout_via_drill_size(FILE * FP)
 {
-	pcb_fprintf(FP, "ViaDrill 0.300mm\n"); /* mm format, default for now */
+	pcb_fprintf(FP, "ViaDrill 250\n"); /* decimil format, default for now, ~= 0.635mm */
 	return 0;
 }
 
@@ -197,16 +202,18 @@ int write_kicad_legacy_layout_tracks(FILE * FP, Cardinal number, LayerTypePtr la
 		fputs(")\n(\n", FP);
 		WriteAttributeList(FP, &layer->Attributes, "\t");
 		*/
-
+		int localFlag = 0;
 		linelist_foreach(&layer->Line, &it, line) {
-	                pcb_fprintf(FP, "Po 0 %.3mm %.3mm %.3mm %.3mm %.3mm\n",
+	                pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n",
                                 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
 				line->Thickness);
         	        pcb_fprintf(FP, "De %d 0 0 0 0\n", number); /* omitting net info */
-
+			localFlag |= 1;
 		}
-	}
+		return localFlag;
+	} else {
 		return 0;
+	}
 }
 
 
