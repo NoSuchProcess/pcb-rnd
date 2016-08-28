@@ -26,6 +26,7 @@
 #include "propsel.h"
 #include "hid_actions.h"
 #include "pcb-printf.h"
+#include "error.h"
 
 /* ************************************************************ */
 
@@ -86,19 +87,23 @@ int propedit_action(int argc, char **argv, Coord x, Coord y)
 		pcb_props_t *p = pe->value;
 		pcb_propval_t common, min, max, avg;
 
-		rowid = gui->propedit_add_prop(&ctx, pe->key, 1, p->values.fill);
+		if (gui->propedit_add_prop != NULL)
+			rowid = gui->propedit_add_prop(&ctx, pe->key, 1, p->values.fill);
 
-		if (p->type == PCB_PROPT_STRING) {
-			pcb_props_stat(ctx.core_props, pe->key, &common, NULL, NULL, NULL);
-			gui->propedit_add_stat(&ctx, pe->key, rowid, sprint_val(p->type, common), NULL, NULL, NULL);
-		}
-		else {
-			pcb_props_stat(ctx.core_props, pe->key, &common, &min, &max, &avg);
-			gui->propedit_add_stat(&ctx, pe->key, rowid, sprint_val(p->type, common), sprint_val(p->type, min), sprint_val(p->type, max), sprint_val(p->type, avg));
+		if (gui->propedit_add_stat != NULL) {
+			if (p->type == PCB_PROPT_STRING) {
+				pcb_props_stat(ctx.core_props, pe->key, &common, NULL, NULL, NULL);
+				gui->propedit_add_stat(&ctx, pe->key, rowid, sprint_val(p->type, common), NULL, NULL, NULL);
+			}
+			else {
+				pcb_props_stat(ctx.core_props, pe->key, &common, &min, &max, &avg);
+				gui->propedit_add_stat(&ctx, pe->key, rowid, sprint_val(p->type, common), sprint_val(p->type, min), sprint_val(p->type, max), sprint_val(p->type, avg));
+			}
 		}
 
-		for (e = htprop_first(&p->values); e; e = htprop_next(&p->values, e))
-			gui->propedit_add_value(&ctx, pe->key, rowid, sprint_val(p->type, e->key), e->value);
+		if (gui->propedit_add_value != NULL)
+			for (e = htprop_first(&p->values); e; e = htprop_next(&p->values, e))
+				gui->propedit_add_value(&ctx, pe->key, rowid, sprint_val(p->type, e->key), e->value);
 	}
 
 	gui->propedit_end(&ctx);
