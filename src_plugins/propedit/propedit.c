@@ -72,8 +72,10 @@ int propedit_action(int argc, char **argv, Coord x, Coord y)
 	ctx.core_props = pcb_props_init();
 	htsp_entry_t *pe;
 
-	if ((gui == NULL) || (gui->propedit_start == NULL))
+	if ((gui == NULL) || (gui->propedit_start == NULL)) {
+		Message("Error: there's no GUI or the active GUI can't edit properties.\n");
 		return 1;
+	}
 
 	pcb_propsel_map_core(ctx.core_props);
 
