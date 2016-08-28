@@ -308,7 +308,7 @@ static void batch_create_menu(const char *menu, const char *action, const char *
 {
 }
 
-static int batch_propedit_start(void *pe, int num_props)
+static int batch_propedit_start(void *pe, int num_props, const char *(*query)(void *pe, const char *cmd, const char *key, const char *val, int idx))
 {
 	printf("propedit start %d\n", num_props);
 }

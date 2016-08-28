@@ -80,7 +80,7 @@ int propedit_action(int argc, char **argv, Coord x, Coord y)
 
 	pcb_propsel_map_core(ctx.core_props);
 
-	gui->propedit_start(&ctx, ctx.core_props->fill);
+	gui->propedit_start(&ctx, ctx.core_props->fill, propedit_query);
 	for (pe = htsp_first(ctx.core_props); pe; pe = htsp_next(ctx.core_props, pe)) {
 		htprop_entry_t *e;
 		void *rowid;

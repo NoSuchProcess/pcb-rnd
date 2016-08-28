@@ -179,3 +179,9 @@ pcb_props_t *pcb_props_stat(htsp_t *props, const char *propname, pcb_propval_t *
 }
 
 #undef STAT
+
+const char *propedit_query(void *pe, const char *cmd, const char *key, const char *val, int idx)
+{
+
+}
+

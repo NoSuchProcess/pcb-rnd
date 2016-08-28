@@ -769,10 +769,12 @@ static int ghid_progress(int so_far, int total, const char *message)
 
 /* ---------------------------------------------------------------------- */
 
-static int ghid_propedit_start(void *pe, int num_props)
+static int ghid_propedit_start(void *pe, int num_props, const char *(*query)(void *pe, const char *cmd, const char *key, const char *val, int idx))
 {
 	
 	ghidgui->propedit_widget = ghid_propedit_dialog_create(&ghidgui->propedit_dlg);
+	ghidgui->propedit_query = query;
+	ghidgui->propedit_pe = pe;
 }
 
 static void ghid_propedit_end(void *pe)

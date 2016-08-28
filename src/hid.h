@@ -503,7 +503,7 @@ struct hid_st {
 	/* Optional: start a propedit session: a series of propedit calls will follow
 	   Return 0 on success; non-zero aborts the session.
 	*/
-	int (*propedit_start)(void *pe, int num_props);
+	int (*propedit_start)(void *pe, int num_props, const char *(*query)(void *pe, const char *cmd, const char *key, const char *val, int idx));
 
 	/* Optional: end a propedit session: all data has been sent, no more; this call
 	   should present and run the user dialog and should return only when the

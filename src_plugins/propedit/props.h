@@ -90,3 +90,6 @@ const char *pcb_props_type_name(pcb_prop_type_t type);
      type=string   min, max, avg
 */
 pcb_props_t *pcb_props_stat(htsp_t *props, const char *propname, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg);
+
+/* String query API for HIDs to call back without having to link */
+const char *propedit_query(void *pe, const char *cmd, const char *key, const char *val, int idx);
