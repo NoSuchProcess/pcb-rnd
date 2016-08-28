@@ -158,9 +158,6 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 	dummy = gtk_vbox_new(FALSE, 0); /* dummy box to eat up free space on the left */
 	gtk_box_pack_start(GTK_BOX(hbx), dummy, TRUE, TRUE, 4);
 
-	btn = gtk_button_new_with_label("Close");
-	gtk_box_pack_start(GTK_BOX(hbx), btn, FALSE, TRUE, 4);
-
 	dlg->apply = gtk_button_new_with_label("Apply");
 	gtk_box_pack_start(GTK_BOX(hbx), dlg->apply, FALSE, TRUE, 4);
 	g_signal_connect(G_OBJECT(dlg->apply), "clicked", G_CALLBACK(do_apply), dlg);
