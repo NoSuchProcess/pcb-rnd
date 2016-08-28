@@ -39,6 +39,7 @@
  *   %mm    output a measure in mm
  *   %mM    output a measure in scaled (mm/um) metric
  *   %ml    output a measure in mil
+ *   %mk    output a measure in decimil (kicad legacy format)
  *   %mL    output a measure in scaled (mil/in) imperial
  *   %ms    output a measure in most natural mm/mil units
  *   %mS    output a measure in most natural scaled units

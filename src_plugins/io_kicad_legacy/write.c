@@ -168,6 +168,9 @@ int write_kicad_legacy_layout_vias(FILE * FP, DataTypePtr Data)
 		pcb_fprintf(FP, "Po 3 %.3mm %.3mm %.3mm %.3mm %.3mm\n",
 				via->X, via->Y, via->X, via->Y, via->Thickness);
                 pcb_fprintf(FP, "De F0 1 0 0 0\n");
+                pcb_fprintf(FP, "Po 3 %.0mk %.0mk %.0mk %.0mk %.0mk\n", /* testing kicad printf */
+                                via->X, via->Y, via->X, via->Y, via->Thickness);
+                pcb_fprintf(FP, "De F0 1 0 0 0\n");
 	}
 	return 0;
 }

@@ -67,6 +67,9 @@ Unit Units[] = {
 	{0, "mil", NULL, 'l', 1, IMPERIAL, ALLOW_MIL, 2,
 	 0.1, 1.0, 10, 100, 1000,
 	 {""}},
+        {0, "dmil", NULL, 'k', 10, IMPERIAL, ALLOW_DMIL, 1,	/* kicad legacy decimil unit */
+         0.1, 1.0, 10, 100, 1000,				/* wild guess at factors */
+         {""}},
 	{0, "cmil", NULL, 'c', 100, IMPERIAL, ALLOW_CMIL, 0,
 	 1, 10, 100, 1000, 10000,
 	 {"pcb"}}
@@ -127,6 +130,10 @@ Increments increments[] = {
 	 PCB_MIL_TO_COORD3(10, 1, 10),
 	 PCB_MIL_TO_COORD3(5, 0.5, 10),
 	 PCB_MIL_TO_COORD3(2, 0.5, 10)},
+        {"dmil", PCB_MIL_TO_COORD3(5, 1, 25), /* kicad legacy decimil unit */
+         PCB_MIL_TO_COORD3(10, 1, 10),
+         PCB_MIL_TO_COORD3(5, 0.5, 10),
+         PCB_MIL_TO_COORD3(2, 0.5, 10)},
 	{"mil", PCB_MIL_TO_COORD3(5, 1, 25),
 	 PCB_MIL_TO_COORD3(10, 1, 10),
 	 PCB_MIL_TO_COORD3(5, 0.5, 10),

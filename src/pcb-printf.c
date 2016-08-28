@@ -367,6 +367,10 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				case 'L':
 					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_IMPERIAL, suffix) != 0) goto err;
 					break;
+                                case 'k':
+                                        if (CoordsToString(string, value, 1, &spec, mask & ALLOW_DMIL, suffix) != 0) goto err;
+                                        break;
+
 #if 0
 				case 'r':
 					if (CoordsToString(string, value, 1, &spec, ALLOW_READABLE, FILE_MODE) != 0) goto err;
