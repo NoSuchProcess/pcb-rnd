@@ -1,7 +1,7 @@
 TRUNK = ../..
 SRC=$(TRUNK)/src
 CFLAGS_OP = -O3
-CFLAGS = -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd
+CFLAGS = -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd -I$(TRUNK)/src_3rd/liblihata
 
 GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
 
