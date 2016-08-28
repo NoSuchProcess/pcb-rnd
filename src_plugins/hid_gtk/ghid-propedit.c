@@ -2,6 +2,7 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include "gui.h"
+#include "create.h"
 
 static void val_combo_changed_cb(GtkComboBox * combo, ghid_propedit_dialog_t *dlg)
 {
@@ -80,9 +81,69 @@ static void do_apply(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	printf("Apply!\n");
 }
 
+static GdkPixmap *pm;
+static gboolean preview_expose_event(GtkWidget *w, GdkEventExpose *event)
+{
+	gdk_draw_drawable(w->window, w->style->fg_gc[gtk_widget_get_state(w)],
+		pm,
+		event->area.x, event->area.y,
+		event->area.x, event->area.y,
+		event->area.width, event->area.height);
+	return FALSE;
+}
+
+static PCBType preview_pcb;
+
+static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
+{
+	GtkWidget *area = gtk_drawing_area_new();
+	PCBType *old_pcb;
+	int n;
+
+	memset(&preview_pcb, 0, sizeof(preview_pcb));
+	preview_pcb.Data = CreateNewBuffer();
+	preview_pcb.MaxWidth = preview_pcb.MaxHeight = PCB_MIL_TO_COORD(2000);
+	pcb_colors_from_settings(&preview_pcb);
+	CreateDefaultFont(&preview_pcb);
+	preview_pcb.ViaOn = 1;
+
+	for(n = 0; n < max_copper_layer+2; n++) {
+		preview_pcb.Data->Layer[n].On = 1;
+		preview_pcb.Data->Layer[n].Color = pcb_strdup(PCB->Data->Layer[n].Color);
+		preview_pcb.Data->Layer[n].Name = pcb_strdup("preview dummy");
+	}
+
+	memcpy(&preview_pcb.LayerGroups, &PCB->LayerGroups, sizeof(PCB->LayerGroups));
+	preview_pcb.Data->LayerN = max_copper_layer;
+	preview_pcb.Data->pcb = &preview_pcb;
+
+#warning TODO: preview_pcb is never freed
+
+	CreateNewVia(preview_pcb.Data,
+							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
+							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(10), 0, PCB_MIL_TO_COORD(30), "", NoFlags());
+
+	CreateNewLineOnLayer(preview_pcb.Data->Layer+1,
+		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
+		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1300),
+		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), NoFlags());
+
+	gtk_drawing_area_size(GTK_DRAWING_AREA(area), 300, 400);
+
+	old_pcb = PCB;
+	PCB = &preview_pcb;
+
+	pm = ghid_render_pixmap(PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
+	20000, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(gport->top_window->window)));
+	PCB = old_pcb;
+
+	g_signal_connect(G_OBJECT(area), "expose-event", G_CALLBACK(preview_expose_event), pm);
+	return area;
+}
+
 GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 {
-	GtkWidget *window, *vbox_tree, *vbox_edit, *hbox_win, *label, *hbx, *btn, *dummy, *box_val_edit;
+	GtkWidget *window, *vbox_tree, *vbox_edit, *hbox_win, *label, *hbx, *btn, *dummy, *box_val_edit, *preview;
 	GtkCellRenderer *renderer ;
 	GtkWidget *content_area, *top_window = gport->top_window;
 
@@ -124,8 +185,10 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 	hdr_add(dlg, "max", 3);
 	hdr_add(dlg, "avg", 4);
 
-	label = gtk_label_new("(preview)");
-	gtk_box_pack_start(GTK_BOX(vbox_edit), label, TRUE, TRUE, 4);
+/*	label = gtk_label_new("(preview)");
+	gtk_box_pack_start(GTK_BOX(vbox_edit), label, TRUE, TRUE, 4);*/
+	preview = preview_init(dlg);
+	gtk_box_pack_start(GTK_BOX(vbox_edit), preview, TRUE, TRUE, 4);
 
 	label = gtk_label_new("Change property of all objects");
 	gtk_box_pack_start(GTK_BOX(vbox_edit), label, FALSE, TRUE, 4);
