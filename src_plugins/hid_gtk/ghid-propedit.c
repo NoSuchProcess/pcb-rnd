@@ -50,7 +50,7 @@ static void list_cursor_changed_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	GtkTreeModel *tm;
 	GtkTreePath *path;
 	GtkTreeIter iter;
-	const char *prop, *comm;
+	const char *prop, *comm, *val;
 
 	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dlg->tree));
 	if (tsel == NULL)
@@ -65,9 +65,12 @@ static void list_cursor_changed_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	printf("prop: %s!\n", prop);
 
 	val_combo_reset(dlg);
-	val_combo_add(dlg, prop);
-	val_combo_add(dlg, "val0");
-	val_combo_add(dlg, "val1");
+
+	val = ghidgui->propedit_query(ghidgui->propedit_pe, "v1st", prop, NULL, 0);
+	while(val != NULL) {
+		val_combo_add(dlg, val);
+		val = ghidgui->propedit_query(ghidgui->propedit_pe, "vnxt", prop, NULL, 0);
+	}
 
 	gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), comm);
 }

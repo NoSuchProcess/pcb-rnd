@@ -205,7 +205,7 @@ const char *propedit_query(void *pe, const char *cmd, const char *key, const cha
 	pe_ctx_t *ctx = pe;
 	const char *s;
 
-	if (memcmp(cmd, "c1st", 4) == 0) {
+	if (memcmp(cmd, "v1st", 4) == 0) {
 		ctx->qprop = htsp_get(ctx->core_props, (char *)key);
 		if (ctx->qprop == NULL)
 			return NULL;
@@ -213,7 +213,7 @@ const char *propedit_query(void *pe, const char *cmd, const char *key, const cha
 		ctx->qprope = htprop_first(&ctx->qprop->values);
 		goto vnxt;
 	}
-	if (memcmp(cmd, "cnxt", 4) == 0) {
+	if (memcmp(cmd, "vnxt", 4) == 0) {
 		vnxt:;
 		if (ctx->qprope == NULL)
 			return NULL;
