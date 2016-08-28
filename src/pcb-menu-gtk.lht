@@ -287,6 +287,7 @@ ha:{
 				ha:Auto-route selected rats              = { a=Alt<Key>r; action=AutoRoute(SelectedRats) }
 				ha:Rip up selected auto-routed tracks    = { action=RipUp(Selected) }
 				-
+				ha:Edit properties of selected...        = { a=Ctrl<Key>e; action=PropEdit(Selected) }
 				ha:Change size of selected objects {
 					li:submenu {
 						ha:Lines -10 mil = { li:action={ChangeSize(SelectedLines,-10,mil); ChangeSize(SelectedArcs,-10,mil)} }
