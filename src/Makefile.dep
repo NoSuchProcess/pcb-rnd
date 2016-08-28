@@ -456,7 +456,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h conf_core.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h \
  ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.h
 ../src_plugins/hid_gtk/ghid-coord-entry.o: \
@@ -482,7 +483,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h conf_core.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h pcb-printf.h
 ../src_plugins/hid_gtk/ghid-layer-selector.o: \
  ../src_plugins/hid_gtk/ghid-layer-selector.c \
@@ -507,7 +509,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h conf_core.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h pcb-printf.h \
  ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.h
 ../src_plugins/hid_gtk/ghid-main-menu.o: \
@@ -533,7 +536,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h conf_core.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h pcb-printf.h misc_util.h \
  ../src_plugins/hid_gtk/gschem_accel_label.h
 ../src_plugins/hid_gtk/ghid-propedit.o: \
@@ -562,7 +566,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h pcb-printf.h route_style.h
 ../src_plugins/hid_gtk/gschem_accel_label.o: \
  ../src_plugins/hid_gtk/gschem_accel_label.c \
@@ -607,7 +612,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h hid_draw_helpers.h \
  hid_attrib.h hid_helper.h hid_color.h
 ../src_plugins/hid_gtk/gtkhid-main.o: \
@@ -633,7 +639,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h hid_nogui.h \
  hid_draw_helpers.h pcb-printf.h plugins.h hid_attrib.h hid_init.h \
  hid_flags.h hid_actions.h plug_footprint.h vtlibrary.h plug_io.h \
@@ -661,7 +668,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h crosshair.h hid_actions.h
 ../src_plugins/hid_gtk/gui-config.o: ../src_plugins/hid_gtk/gui-config.c \
  ../config.h conf_core.h conf.h global.h const.h macro.h \
@@ -685,7 +693,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h \
  ../src_plugins/hid_gtk/win_place.h ../src_plugins/hid_gtk/gtkhid.h \
  conf_hid.h action_helper.h change.h plug_io.h error.h draw.h \
@@ -714,7 +723,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h pcb-printf.h hid_attrib.h \
  hid_init.h misc_util.h compat_misc.h
 ../src_plugins/hid_gtk/gui-dialog.o: ../src_plugins/hid_gtk/gui-dialog.c \
@@ -738,9 +748,10 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h conf_core.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h event.h ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ event.h ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h
 ../src_plugins/hid_gtk/gui-drc-window.o: \
  ../src_plugins/hid_gtk/gui-drc-window.c ../config.h conf_core.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
@@ -764,7 +775,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h \
  ../src_plugins/hid_gtk/win_place.h \
  ../src_plugins/hid_gtk/gui-drc-window.h hid_actions.h
@@ -789,9 +801,10 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h conf_core.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h event.h ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ event.h ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h \
  ../src_plugins/hid_gtk/win_place.h
 ../src_plugins/hid_gtk/gui-library-window.o: \
  ../src_plugins/hid_gtk/gui-library-window.c ../config.h conf_core.h \
@@ -815,7 +828,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h \
  ../src_plugins/hid_gtk/win_place.h buffer.h set.h plug_footprint.h \
  vtlibrary.h ../src_plugins/hid_gtk/gui-library-window.h
@@ -841,7 +855,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h \
  ../src_plugins/hid_gtk/win_place.h pcb-printf.h
 ../src_plugins/hid_gtk/gui-misc.o: ../src_plugins/hid_gtk/gui-misc.c \
@@ -867,7 +882,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h
 ../src_plugins/hid_gtk/gui-netlist-window.o: \
  ../src_plugins/hid_gtk/gui-netlist-window.c ../config.h conf_core.h \
@@ -892,7 +908,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h create.h draw.h error.h \
  find.h mymem.h rats.h remove.h search.h misc_util.h select.h set.h \
  undo.h hid_actions.h
@@ -918,7 +935,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h \
  ../src_plugins/hid_gtk/gtkhid.h conf_hid.h action_helper.h crosshair.h \
  draw.h error.h set.h find.h search.h misc_util.h rats.h
@@ -944,7 +962,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h copy.h draw.h mymem.h \
  move.h rotate.h
 ../src_plugins/hid_gtk/gui-pinout-window.o: \
@@ -969,7 +988,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h \
  ../src_plugins/hid_gtk/win_place.h copy.h draw.h mymem.h move.h rotate.h
 ../src_plugins/hid_gtk/gui-top-window.o: \
@@ -995,7 +1015,8 @@
  hid_cfg.h data.h misc.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h hid_cfg_action.h \
  action_helper.h buffer.h change.h copy.h create.h crosshair.h draw.h \
  error.h plug_io.h find.h insert.h line.h mymem.h move.h pcb-printf.h \
@@ -1027,7 +1048,8 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h event.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h event.h \
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h
 ../src_plugins/hid_gtk/menu_lht.o: ../src_plugins/hid_gtk/menu_lht.c
 ../src_plugins/hid_gtk/win_place.o: ../src_plugins/hid_gtk/win_place.c \
@@ -1051,9 +1073,10 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
- ../src_plugins/hid_gtk/gui-pinout-preview.h conf_core.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h event.h ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ event.h ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h
 ../src_plugins/hid_lesstif/dialogs.o: \
  ../src_plugins/hid_lesstif/dialogs.c ../config.h conf_core.h conf.h \
  global.h const.h macro.h global_typedefs.h unit.h global_objs.h \
@@ -1462,7 +1485,8 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_plugins/propedit/propsel.h \
- hid_actions.h pcb-printf.h ../src_3rd/genvector/gds_char.h dolists.h
+ hid_actions.h pcb-printf.h ../src_3rd/genvector/gds_char.h error.h \
+ dolists.h
 ../src_plugins/propedit/props.o: ../src_plugins/propedit/props.c \
  ../src_plugins/propedit/props.h global.h ../config.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
