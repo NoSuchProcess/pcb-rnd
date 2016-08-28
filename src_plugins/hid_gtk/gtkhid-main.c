@@ -777,7 +777,9 @@ static int ghid_propedit_start(void *pe, int num_props)
 
 static void ghid_propedit_end(void *pe)
 {
-
+	if (gtk_dialog_run(GTK_DIALOG(ghidgui->propedit_widget)) == GTK_RESPONSE_OK) {
+	}
+	gtk_widget_destroy(ghidgui->propedit_widget);
 }
 
 static void ghid_propedit_add_stat(void *pe, const char *propname, void *propctx, const char *most_common, const char *min, const char *max, const char *avg)

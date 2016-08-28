@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
-#include "ghid-propedit.h"
+#include "gui.h"
 
 static void val_combo_changed_cb(GtkComboBox * combo, ghid_propedit_dialog_t *dlg)
 {
@@ -81,14 +81,18 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 {
 	GtkWidget *window, *vbox_tree, *vbox_edit, *hbox_win, *label, *hbx, *btn, *dummy, *box_val_edit;
 	GtkCellRenderer *renderer ;
+	GtkWidget *content_area, *top_window = gport->top_window;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
-	gtk_window_set_title(GTK_WINDOW(window), "Property edit");
+	window = gtk_dialog_new_with_buttons(_("Edit Properties"),
+																			 GTK_WINDOW(top_window),
+																			 GTK_DIALOG_DESTROY_WITH_PARENT,
+																			 GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(window));
 
 	hbox_win = gtk_hbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(window), hbox_win);
+	gtk_container_add(GTK_CONTAINER(content_area), hbox_win);
 
 
 	vbox_tree = gtk_vbox_new(FALSE, 0);
