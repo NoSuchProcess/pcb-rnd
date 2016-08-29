@@ -1,0 +1,206 @@
+Dynamic DRC proposal 1: a Declarative DRC language.
+
+P0  A DRC program is an unordered list of rules. Rules are evaluated and
+    violations reported. The advantage of a declarative language is that
+    intermediate results can be cached and reused.
+
+P1  The language is intended to be human readable and human writable, but
+    the main goal is to let programs and scripts (e.g. netlisters) to
+    generate it.
+
+P2  A rule consists of three parts:
+     - the rule keyword; syntax: rule NAME
+     - build variables (lists) using search statements
+     - state assertions about those lists.
+     - comments, empty lines
+
+P3  Variables are named by the user and are local to the rule (TODO)
+
+P4  Lists are ordered.
+
+P5  A list is consists of zero or more objects. An object is:
+P6   - the board
+P7   - a layer
+P8   - a board drawing primitive (line, arc, polygon, via, text)
+P9   - an element primitive (element line, element arc, pin, pad, element name)
+P10  - an element as a whole
+P11  - a net
+
+P12 Objects have named properties (or fields):
+P13  - core attributes: for each object type a predefined set of key=value
+       pairs that always exist (e.g. thickness of a line, start angle of
+       an arc); these field names starts with "p."
+P14  - user attributes: free-form key=value pairs optionally assigned by
+       the user; these field names start with "a."
+
+P15 Note: the language is case sensitive with keywords and builtins using
+    lowercase only. For better readability, in syntax description in this
+    document uppercase words are user choosen identifiers or fields. Whitepace
+    character sequences are usually threated as a single whitespace. (This
+    does not mean identifiers have to be uppercase in a program.)
+
+    The syntax of a search statement is:
+
+P16   let LISTNAME EXPR
+
+P17 It creates a list called LISTNAME and evaluates expression EXPR to all
+    available objects and adds the objects that match EXPR to the list. Each
+    matching object is added only once. The particular order of objects on
+    the list is random. Object "matches EXPR" when the EXPR evaluated on
+    the object yields true.
+
+P18 The current object used in the iteration during the search is called
+    @.
+
+P19 An expression returns a value. A value can be:
+P20   - an object
+P21   - a list
+P22   - scalar: a number or string (might be suffixed, like "42 mm")
+P23   - void (empty, also known as false)
+
+P23 A value is considered true if:
+P24  - it is an existing object
+P25  - it is a non-empty list
+P26  - it is a non-zero number or non-empty string
+
+    An expression is one of:
+
+    syntax                      meaning
+    ----------------------------------------------------------------
+P27 (EXPR)                      change precedence
+P28 EXPR || EXPR                logical OR (result: number)
+P29 EXPR && EXPR                logical AND (result: number)
+P30 EXPR + EXPR                 add (number only)
+P31 EXPR - EXPR                 subtract (number only)
+P32 EXPR * EXPR                 multiply or ... (number only)
+P32 EXPR / EXPR                 multiply or ... (number only)
+P32 EXPR == EXPR                the two values are equal
+P33 EXPR != EXPR                the two values are not equal
+P34 EXPR > EXPR                 left EXPR is greater than right EXPR (number only)
+P35 EXPR >= EXPR                left EXPR is greater than or equal to right EXPR (number only)
+P36 EXPR < EXPR                 left EXPR is less than right EXPR (number only)
+P37 EXPR <= EXPR                left EXPR is less than or equal to right EXPR (number only)
+P38 !EXPR                       logical NOT (result: number, 0 or 1)
+P39 FUNC(EXPR, EXPR, ...)       call a function with 0 or more arguments
+P40 EXPR.field                  evaluated to the value of an object field (see P45, P46)
+
+    The syntax of an assertion is:
+
+P41   assert EXPR
+
+P42 If the EXPR in an assert evaluates to false, a DRC violation is generated.
+
+P43 If an assert EXPR is a list anywhere else than in a function argument, it is
+    evaluated for all valid memebers of the list (see P45, P46). For example
+    if there is a variable called FOO, which is a list of objects
+    (built using a search statement), expression
+
+      FOO.p.thickness
+
+    is evaluated as many times as many objects are on the list, and the
+    full assert is checked each case. If there is another similar list
+    called BAR, an expression:
+
+     (FOO.p.thickness < BAR.p.thickness)
+
+    will compare each possible pair of FOO and BAR objects. That is, if
+    FOO has 4 objects and BAR has 15 objects, that is 4*15 = 60 comparisons.
+
+P44 However, each list is iterated only once, even if it is referenced multiple
+    times in the same expression. For example, with the above lists:
+
+    (FOO.p.clearance > 10 mil) && (FOO.p.thickness < BAR.p.thickness)
+
+    the potential number of iterations is still 4*15, and not 4*4*15. In
+    practice the engine leverages lazy evaluation so if FOO.p.clearance
+    is smaller than 10 mil, the right size is not evaluated. See also: P45, P46.
+
+P45 A field reference is valid if the field exists. For example a line object
+    has a thicnkess attribute, thus the .p.thickness is valid, but a polygon
+    object does not have a thickness and .p.thicnkess on a polygon is invalid.
+    An user attribute reference (e.g. field .a.baz) is valid if the attribute
+    key exists in the given object.
+
+P46 Invalid fields are skipped in iterations. Thus if variable BLOBB is a list
+    that consists of 3 line, 2 arc and a layer objects, the following assert
+    will result in 2 comparisons only:
+
+      (BLOBB.p.width >= 10 mm)
+
+    (because only arc objects have valid .p.width field).
+
+P47. An invalid field in an expression is never considered an
+     error. In an assert statement it causes skipping an iteration. In a
+     search statement it evaluates to void.
+
+P48. A void value is never equal to anything. A void value is not equal
+     even to another void value.
+
+P49. Comments are lines starting with #
+
+
+     BUILTIN FUNCTIONS
+
+P50 llen(EXPR)
+    Returns to the number of items of a list (an integer number >= 0).
+
+P51 lvalid(EXPR, field)
+    Returns a list of items on the list for which field is valid.
+    EXPR can be a list or an object.
+
+P52 lunion(EXPR1, EXPR2)
+    A new list is created; items of EXPR1 are copied to the new list in order.
+    Those items from EXPR2 that are not on the list already are appended,
+    keeping their order. The new list is returned.
+
+    Both EXPR1 and EXPR2 can be either a list or an object.
+
+    Note: order of arguments does matter (affects order of objects on the
+    resulting list).
+
+P53 lintersect(EXPR1, EXPR2)
+    A new list is created; items that are present on both EXPR1 and EXPR2
+    are copied onto the new list. The new list is returned.
+
+    Both EXPR1 and EXPR2 can be either a list or an object.
+
+    Note 1: this function can be used as "is this object on the list" query:
+    list_intersection(LIST, OBJ) will result an empty list (which means false)
+    if OBJ is not on the list.
+
+    Note 2: similarly, if both argument are objects, the result is false
+    if the two arguments are not the same object.
+
+P54 lcomplement(EXPR1, EXPR2)
+    Creates a new list with all items that are present in EXPR1 but not in
+    EXPR2. The new list is returned.
+
+    Both EXPR1 and EXPR2 can be either a list or an object.
+
+
+P55 ldiff(EXPR1, EXPR2)
+    Creates a new list with all items that are present either in EXPR1 or in
+    EXPR2 but not in both. The new list is returned.
+
+
+P56 distance(EXPR1, EXPR2)
+    Calculates the shortest distance between two objects. Returns a number.
+
+    Note: if any expression is a layer, the stack distance is calculated
+    (which will be 0 for now, as pcb-rnd doesn't yet know about layer thickness).
+    If the expression is a net, the whole shape of the net is used
+    (expensive! use is_closer() instead)
+    If the expression is the board, the operation is invalid (see P46).
+
+P57 is_closer(EXPR1, EXPR2, NUMBER)
+    Checks if EXPR1 and EXPR2 are closer to each-other than NUMBER. It uses
+    the classic bloat-and-find algorithm originally used by the classic DRC,
+    thus it is much cheaper than distance(EXPR1, EXPR2) < NUMBER.
+
+P58 netlen(EXPR)
+    Network length of EXRP1: sum of all non-overlapping trace/arc lengths that
+    make up a network; polygons are approximated with their average diameter
+    (TODO). If EXPR is an object, its length is returned.
+
+P59 netobjs(EXPR)
+    Creates and returns a list of objects consists of a net.

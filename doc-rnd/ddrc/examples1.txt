@@ -1,0 +1,52 @@
+# Example 1: Sensitive RF elements should be close
+#
+# e1 is the list of elements that have the user tag RF
+# e2 is a copy of e1; it's needed to get two loops (e1 vs. e2 objects form pairs)
+# Assert that any two components are closer than 25 mm to each other
+
+rule sensitive RF elements
+	let e1 (@.p.type == type(element)) && (@.a.group == "RF")
+	let e2 e1
+	assert (distance(e1, e2) < 25 mm)
+
+# Example 2: matched trace lengths on dram data 0
+#
+# e1 is the list of dram traces
+# e2 is a copy of e1 (see Example 1)
+# Assert that any two net lengths are matched within 2 mm
+
+rule sensitive RF elements
+	let e1 (@.p.type == type(net)) && (@.a.group == "dram_data_0")
+	let e2 e1
+	assert abs(netlen(e1) - netlen(e2)) < 2 mm
+
+# Example 3: check if isolation gap is mantained between any HV and LV nets
+# (Lazy: assume any copper is part of a network, compare net-to-net only)
+#
+# hv  is the list of high voltage nets
+# lv  is a list of non-hv networks
+#
+rule sensitive RF elements1
+	let hv  (@.p.type == type(net)) && (@.a.high_voltage)
+	let lv  (@.p.type == type(net)) && !(@.a.high_voltage)
+	assert !is_closer(lv, hv, 4 mm) 
+
+# Example 4: check if isolation gap is mantained between any HV and LV nets
+# (Proper way: do not forget about copper not part of any network!)
+#
+# hv  is the list of high voltage nets
+# hvo is a list of all objects found in hv
+# cp  is a list of all copper object
+# There are two iterators in the assert: cp (all copper objects) and hv.
+# For each hv and cp pair:
+#   - lcomplement returns a cp object if the cp object is not in hv (i.e.
+#     the object is low voltage); else the return value is empty and is_closer
+#     returns invalid which is not a violation
+#   - hvo is required because cp is an object while hv is a list of nets
+#     (so cp is never on the hv list)
+#   - if there was a valid (low voltage) cp object found, 
+rule sensitive RF elements2
+	let hv  (@.p.type == type(net)) && (@.a.high_voltage)
+	let hvo lobjs(hv)
+	let cp  (@.p.type == type(copper))
+	assert !is_closer(lcomplement(cp, hvo), hv, 4 mm) 

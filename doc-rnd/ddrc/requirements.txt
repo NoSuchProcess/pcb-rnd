@@ -1,0 +1,21 @@
+The Dynamic DRC should be able to solve at least these tasks:
+	- check start grounding
+	- require element placement:
+		- specific elements to be close to eachother
+		- element close to the edge
+		- element close to a network or other copper feature
+	- perform copper vs. copper checks
+		- minimal gap between an object or network and anything else
+		- minimal gap between high voltage and low voltage networks
+	- perform copper geometry checks
+		- minimal width (high current)
+		- poly hairpin
+		- number and length of stubs (hight freq)
+	- network related copper checks
+		- matched length lines (e.g. fast dram bus)
+		- balanced transmission line (distance between the tracks)
+		- match and/or limit number of vias
+		- limit layer usage
+		- require layer stackup properties, e.g. microstrip, stripline
+			- e.g. require ground poly on the next layer
+			- e.g. number of gaps in the ground poly the line jumps
