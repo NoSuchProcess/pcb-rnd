@@ -76,7 +76,17 @@ static void list_cursor_changed_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), comm);
 }
 
-static void do_apply(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
+static void do_remove_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
+{
+	printf("Remove!\n");
+}
+
+static void do_addattr_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
+{
+	printf("Addattr!\n");
+}
+
+static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 {
 	printf("Apply!\n");
 }
@@ -189,6 +199,7 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 	vbox_edit = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_win), vbox_edit, TRUE, TRUE, 4);
 
+/***** LEFT *****/
 
 	label = gtk_label_new("Properies");
 	gtk_box_pack_start(GTK_BOX(vbox_tree), label, FALSE, FALSE, 4);
@@ -210,8 +221,25 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 	hdr_add(dlg, "max", 3);
 	hdr_add(dlg, "avg", 4);
 
-/*	label = gtk_label_new("(preview)");
-	gtk_box_pack_start(GTK_BOX(vbox_edit), label, TRUE, TRUE, 4);*/
+	/* dummy box to eat up vertical space */
+	hbx = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_tree), hbx, TRUE, TRUE, 4);
+
+	/* list manipulation */
+	hbx = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_tree), hbx, FALSE, TRUE, 4);
+
+	dlg->remove = gtk_button_new_with_label("Remove");
+	gtk_box_pack_start(GTK_BOX(hbx), dlg->remove, FALSE, TRUE, 4);
+	g_signal_connect(G_OBJECT(dlg->apply), "clicked", G_CALLBACK(do_remove_cb), dlg);
+
+	dlg->addattr = gtk_button_new_with_label("Add attribute");
+	gtk_box_pack_start(GTK_BOX(hbx), dlg->addattr, FALSE, TRUE, 4);
+	g_signal_connect(G_OBJECT(dlg->apply), "clicked", G_CALLBACK(do_addattr_cb), dlg);
+
+
+/***** RIGHT *****/
+/* preview */
 	preview = preview_init(dlg);
 	gtk_box_pack_start(GTK_BOX(vbox_edit), preview, TRUE, TRUE, 4);
 
@@ -251,7 +279,7 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 
 	dlg->apply = gtk_button_new_with_label("Apply");
 	gtk_box_pack_start(GTK_BOX(hbx), dlg->apply, FALSE, TRUE, 4);
-	g_signal_connect(G_OBJECT(dlg->apply), "clicked", G_CALLBACK(do_apply), dlg);
+	g_signal_connect(G_OBJECT(dlg->apply), "clicked", G_CALLBACK(do_apply_cb), dlg);
 
 
 	gtk_widget_show_all(window);

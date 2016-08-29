@@ -10,7 +10,7 @@ typedef struct {
 	int stock_val;          /* 1 if the value in the entry box is being edited from the combo */
 
 	/* buttons */
-	GtkWidget *apply;
+	GtkWidget *apply, *remove, *addattr;
 } ghid_propedit_dialog_t;
 
 GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg);
