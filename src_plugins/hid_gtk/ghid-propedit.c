@@ -3,6 +3,7 @@
 #include <gtk/gtk.h>
 #include "gui.h"
 #include "create.h"
+#include "compat_misc.h"
 
 static void val_combo_changed_cb(GtkComboBox * combo, ghid_propedit_dialog_t *dlg)
 {
@@ -49,7 +50,6 @@ static void list_cursor_changed_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 {
 	GtkTreeSelection *tsel;
 	GtkTreeModel *tm;
-	GtkTreePath *path;
 	GtkTreeIter iter;
 	const char *prop, *comm, *val;
 
@@ -168,7 +168,7 @@ printf("poly=%p\n", v);
 
 GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 {
-	GtkWidget *window, *vbox_tree, *vbox_edit, *hbox_win, *label, *hbx, *btn, *dummy, *box_val_edit, *preview;
+	GtkWidget *window, *vbox_tree, *vbox_edit, *hbox_win, *label, *hbx, *dummy, *box_val_edit, *preview;
 	GtkCellRenderer *renderer ;
 	GtkWidget *content_area, *top_window = gport->top_window;
 
