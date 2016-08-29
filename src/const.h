@@ -63,6 +63,8 @@
 #define PCB_MM_TO_COORD(n)	((n) * 1000000.0)
 #define PCB_COORD_TO_INCH(n)	(PCB_COORD_TO_MIL(n) / 1000.0)
 #define PCB_INCH_TO_COORD(n)	(PCB_MIL_TO_COORD(n) * 1000.0)
+#define PCB_COORD_TO_DECIMIL(n)    (PCB_COORD_TO_MIL(n) * 10.0)
+#define PCB_DECIMIL_TO_COORD(n)    (PCB_MIL_TO_COORD(n) / 10.0)
 
 /* These need to be carefully written to avoid overflows, and return
    a Coord type.  */

@@ -79,14 +79,33 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	Cardinal i;
 	Cardinal j;
 
+	Coord LayoutXOffset;
+	Coord LayoutYOffset;
+
 	fputs("PCBNEW-BOARD Version 1 jan 01 jan 2016 00:00:01 CET\n",FP);
 
 	fputs("$GENERAL\n",FP);
 	fputs("Ly 1FFF8001\n",FP); /* obsolete, needed for old pcbnew */
-        /*ifputs("Units mm\n",FP);*/ /*decimils most universal legacy format */
+        /*puts("Units mm\n",FP);*/ /*decimils most universal legacy format */
 	fputs("$EndGENERAL\n",FP);
 
 	fputs("$SHEETDESCR\n",FP);
+	fputs("Sheet A4 ", FP); /* we sort out the needed kicad sheet size here */
+	if (11700 > PCB_COORD_TO_MIL(PCB->MaxWidth)) {  /* usually A4, but make it bigger if needed */
+		fputs("11700 ", FP); /* legacy kicad wants elements in decimils but sheet size in mil*/
+		LayoutXOffset = PCB_MIL_TO_COORD(11700)/2 - PCB->MaxWidth/2;
+	} else {
+		pcb_fprintf(FP, "%.0ml ", PCB->MaxWidth);
+		LayoutXOffset = 0;
+	}
+	if (8267 > PCB_COORD_TO_MIL(PCB->MaxHeight)) {
+		fputs("8267", FP);
+		LayoutYOffset = PCB_MIL_TO_COORD(8267)/2 - PCB->MaxHeight/2;
+	} else {
+		pcb_fprintf(FP, "%.0ml", PCB->MaxHeight);
+		LayoutYOffset = 0;
+	}
+        fputs("\n", FP);
 	fputs("$EndSHEETDESCR\n",FP);
 
 	fputs("$SETUP\n",FP);
@@ -100,11 +119,12 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	/* module desription stuff would go here */
 
 	fputs("$TRACK\n",FP);
-	write_kicad_legacy_layout_vias(FP, PCB->Data);
+	write_kicad_legacy_layout_vias(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	for (i = 0, j = 0; i < max_copper_layer + 2; i++)
 	{
-		j += write_kicad_legacy_layout_tracks(FP, j, &(PCB->Data->Layer[i]));
+		j += write_kicad_legacy_layout_tracks(FP, j, &(PCB->Data->Layer[i]),
+							LayoutXOffset, LayoutYOffset);
 	}
 	fputs("$EndTRACK\n",FP);
 	fputs("$EndBOARD\n",FP);
@@ -163,18 +183,18 @@ static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data)
  */
 
 
-int write_kicad_legacy_layout_vias(FILE * FP, DataTypePtr Data)
+int write_kicad_legacy_layout_vias(FILE * FP, DataTypePtr Data, Coord xOffset, Coord yOffset)
 {
 	gdl_iterator_t it;
 	PinType *via;
-
 	/* write information about vias */
 	pinlist_foreach(&Data->Via, &it, via) {
 /*		pcb_fprintf(FP, "Po 3 %.3mm %.3mm %.3mm %.3mm %.3mm\n",
 				via->X, via->Y, via->X, via->Y, via->Thickness);
                 pcb_fprintf(FP, "De F0 1 0 0 0\n"); */
                 pcb_fprintf(FP, "Po 3 %.0mk %.0mk %.0mk %.0mk %.0mk\n", /* testing kicad printf */
-                                via->X, via->Y, via->X, via->Y, via->Thickness);
+                                via->X + xOffset, via->Y + yOffset,
+				via->X + xOffset, via->Y + yOffset, via->Thickness);
                 pcb_fprintf(FP, "De 15 1 0 0 0\n"); /* this is equivalent to 0F, via from 15 -> 0 */
 	}
 	return 0;
@@ -186,7 +206,8 @@ static int write_kicad_legacy_layout_via_drill_size(FILE * FP)
 	return 0;
 }
 
-int write_kicad_legacy_layout_tracks(FILE * FP, Cardinal number, LayerTypePtr layer) 
+int write_kicad_legacy_layout_tracks(FILE * FP, Cardinal number,
+					LayerTypePtr layer, Coord xOffset, Coord yOffset) 
 {
 	gdl_iterator_t it;
 	LineType *line;
@@ -205,7 +226,8 @@ int write_kicad_legacy_layout_tracks(FILE * FP, Cardinal number, LayerTypePtr la
 		int localFlag = 0;
 		linelist_foreach(&layer->Line, &it, line) {
 	                pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n",
-                                line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
+                                line->Point1.X + xOffset, line->Point1.Y + yOffset,
+				line->Point2.X + xOffset, line->Point2.Y + yOffset,
 				line->Thickness);
         	        pcb_fprintf(FP, "De %d 0 0 0 0\n", number); /* omitting net info */
 			localFlag |= 1;
