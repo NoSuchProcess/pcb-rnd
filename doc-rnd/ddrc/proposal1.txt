@@ -35,8 +35,8 @@ P14  - user attributes: free-form key=value pairs optionally assigned by
 
 P15 Note: the language is case sensitive with keywords and builtins using
     lowercase only. For better readability, in syntax description in this
-    document uppercase words are user choosen identifiers or fields. Whitepace
-    character sequences are usually threated as a single whitespace. (This
+    document uppercase words are user chosen identifiers or fields. Whitespace
+    character sequences are usually treated as a single whitespace. (This
     does not mean identifiers have to be uppercase in a program.)
 
     The syntax of a search statement is:
@@ -91,7 +91,7 @@ P41   assert EXPR
 P42 If the EXPR in an assert evaluates to false, a DRC violation is generated.
 
 P43 If an assert EXPR is a list anywhere else than in a function argument, it is
-    evaluated for all valid memebers of the list (see P45, P46). For example
+    evaluated for all valid members of the list (see P45, P46). For example
     if there is a variable called FOO, which is a list of objects
     (built using a search statement), expression
 
@@ -116,8 +116,8 @@ P44 However, each list is iterated only once, even if it is referenced multiple
     is smaller than 10 mil, the right size is not evaluated. See also: P45, P46.
 
 P45 A field reference is valid if the field exists. For example a line object
-    has a thicnkess attribute, thus the .p.thickness is valid, but a polygon
-    object does not have a thickness and .p.thicnkess on a polygon is invalid.
+    has a thickness attribute, thus the .p.thickness is valid, but a polygon
+    object does not have a thickness and .p.thickness on a polygon is invalid.
     An user attribute reference (e.g. field .a.baz) is valid if the attribute
     key exists in the given object.
 

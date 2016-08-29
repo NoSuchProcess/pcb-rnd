@@ -20,7 +20,7 @@ rule sensitive RF elements
 	let e2 e1
 	assert abs(netlen(e1) - netlen(e2)) < 2 mm
 
-# Example 3: check if isolation gap is mantained between any HV and LV nets
+# Example 3: check if isolation gap is maintained between any HV and LV nets
 # (Lazy: assume any copper is part of a network, compare net-to-net only)
 #
 # hv  is the list of high voltage nets
@@ -31,7 +31,7 @@ rule sensitive RF elements1
 	let lv  (@.p.type == type(net)) && !(@.a.high_voltage)
 	assert !is_closer(lv, hv, 4 mm) 
 
-# Example 4: check if isolation gap is mantained between any HV and LV nets
+# Example 4: check if isolation gap is maintained between any HV and LV nets
 # (Proper way: do not forget about copper not part of any network!)
 #
 # hv  is the list of high voltage nets

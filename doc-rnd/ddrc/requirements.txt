@@ -1,7 +1,7 @@
 The Dynamic DRC should be able to solve at least these tasks:
 	- check start grounding
 	- require element placement:
-		- specific elements to be close to eachother
+		- specific elements to be close to each other
 		- element close to the edge
 		- element close to a network or other copper feature
 	- perform copper vs. copper checks
