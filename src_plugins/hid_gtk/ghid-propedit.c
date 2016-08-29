@@ -5,14 +5,26 @@
 #include "create.h"
 #include "compat_misc.h"
 
+static char *str_sub(const char *val, char sepi, char sepo)
+{
+	char *tmp, *sep;
+	tmp = pcb_strdup(val);
+	sep = strchr(tmp, sepi);
+	if (sep != NULL)
+		*sep = sepo;
+	return tmp;
+}
+
 static void val_combo_changed_cb(GtkComboBox * combo, ghid_propedit_dialog_t *dlg)
 {
-	char *cval;
+	char *cval, *tmp;
 	GtkTreeIter iter;
 	if (gtk_combo_box_get_active_iter(combo, &iter)) {
 		gtk_tree_model_get(GTK_TREE_MODEL(dlg->vals), &iter, 0, &cval, -1);
 		dlg->stock_val = 1;
-		gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), cval);
+		tmp = str_sub(cval, '=', '\0');
+		gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), tmp);
+		free(tmp);
 	}
 }
 
@@ -46,12 +58,14 @@ static void hdr_add(ghid_propedit_dialog_t *dlg, const char *name, int col)
 	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(dlg->tree), -1, name, renderer, "text", col, NULL);
 }
 
+
 static void list_cursor_changed_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 {
 	GtkTreeSelection *tsel;
 	GtkTreeModel *tm;
 	GtkTreeIter iter;
 	const char *prop, *comm, *val;
+	char *tmp;
 
 	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dlg->tree));
 	if (tsel == NULL)
@@ -69,11 +83,15 @@ static void list_cursor_changed_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 
 	val = ghidgui->propedit_query(ghidgui->propedit_pe, "v1st", prop, NULL, 0);
 	while(val != NULL) {
-		val_combo_add(dlg, val);
+		tmp = str_sub(val, '\n', '=');
+		val_combo_add(dlg, tmp);
+		free(tmp);
 		val = ghidgui->propedit_query(ghidgui->propedit_pe, "vnxt", prop, NULL, 0);
 	}
 
-	gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), comm);
+	tmp = str_sub(comm, '\n', '\0');
+	gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), tmp);
+	free(tmp);
 }
 
 static void do_remove_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)

@@ -192,7 +192,7 @@ const char *propedit_sprint_val(pcb_prop_type_t type, pcb_propval_t val)
 	b = buff[buff_idx];
 	switch(type) {
 		case PCB_PROPT_STRING: return val.string; break;
-		case PCB_PROPT_COORD:  pcb_snprintf(b, 128, "%$mm (%$ml)", val.coord, val.coord); break;
+		case PCB_PROPT_COORD:  pcb_snprintf(b, 128, "%$mm\n%$ml", val.coord, val.coord); break;
 		case PCB_PROPT_ANGLE:  sprintf(b, "%f", val.angle); break;
 		case PCB_PROPT_INT:    sprintf(b, "%d", val.i); break;
 		default: strcpy(b, "<unknown type>");
