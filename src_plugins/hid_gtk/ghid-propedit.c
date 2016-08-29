@@ -99,6 +99,19 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	GtkWidget *area = gtk_drawing_area_new();
 	PCBType *old_pcb;
 	int n;
+	void *v;
+
+/*
+	v = CreateNewPolygonFromRectangle(PCB->Data->Layer+1,
+		PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(0),
+		PCB_MIL_TO_COORD(1500), PCB_MIL_TO_COORD(1500),
+		MakeFlags(PCB_FLAG_CLEARPOLY | PCB_FLAG_FULLPOLY));
+	printf("poly2=%p -----------\n", v);
+	DrawPolygon(PCB->Data->Layer+1, v);
+	Draw();
+	gtk_drawing_area_size(GTK_DRAWING_AREA(area), 300, 400);
+	return;
+*/
 
 	memset(&preview_pcb, 0, sizeof(preview_pcb));
 	preview_pcb.Data = CreateNewBuffer();
@@ -123,12 +136,24 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(10), 0, PCB_MIL_TO_COORD(30), "", NoFlags());
 
-	CreateNewLineOnLayer(preview_pcb.Data->Layer+1,
+	CreateNewLineOnLayer(preview_pcb.Data->Layer+0,
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1300),
 		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), NoFlags());
 
-	gtk_drawing_area_size(GTK_DRAWING_AREA(area), 300, 400);
+	CreateNewArcOnLayer(preview_pcb.Data->Layer+0,
+		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
+		PCB_MIL_TO_COORD(100), PCB_MIL_TO_COORD(100),
+		0.0, 90.0, 
+		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), NoFlags());
+
+/*	v = CreateNewPolygonFromRectangle(preview_pcb.Data->Layer+0,
+		PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(0),
+		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
+		NoFlags());
+printf("poly=%p\n", v);
+			DrawPolygon(preview_pcb.Data->Layer+0, v);*/
+
 
 	old_pcb = PCB;
 	PCB = &preview_pcb;
