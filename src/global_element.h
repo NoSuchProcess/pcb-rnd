@@ -11,7 +11,6 @@ typedef struct element_st {
 	linelist_t Line;
 	arclist_t Arc;
 	BoxType VBox;
-	AttributeListType Attributes;
 	gdl_elem_t link;
 } ElementType, *ElementTypePtr, **ElementTypeHandle;
 

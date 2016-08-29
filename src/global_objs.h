@@ -7,6 +7,15 @@
 #include "global_typedefs.h"
 #include "polyarea.h"
 
+typedef struct {
+	char *name;
+	char *value;
+} AttributeType, *AttributeTypePtr;
+
+struct AttributeListType {
+	int Number, Max;
+	AttributeType *List;
+};
 
 /* ---------------------------------------------------------------------------
  * Do not change the following definitions even if they're not very
@@ -20,7 +29,9 @@
 #define ANYOBJECTFIELDS			\
 	BoxType		BoundingBox;	\
 	long int	ID;		\
-	FlagType	Flags
+	FlagType	Flags; \
+	AttributeListType Attributes
+
 	/*  struct LibraryEntryType *net */
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */

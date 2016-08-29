@@ -160,16 +160,6 @@ typedef struct {
 	Coord width, height;
 } RectangleType, *RectangleTypePtr;
 
-typedef struct {
-	char *name;
-	char *value;
-} AttributeType, *AttributeTypePtr;
-
-struct AttributeListType {
-	int Number, Max;
-	AttributeType *List;
-};
-
 /* ---------------------------------------------------------------------------
  * the basic object types supported by PCB
  */
