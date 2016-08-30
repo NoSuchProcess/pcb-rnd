@@ -17,7 +17,7 @@ convince me to switch to git.
 <H3> 1. Why did you fork? </H3>
 <a id="1"><a id="fork">
 <H4> 1.1. Fragmentation is bad, your fork is harmful! </H4>
-I agree that fragmentation is bad. I believe the some aspects of
+I agree that fragmentation is bad. I believe the same aspects of
 the current project management and especially the choice of VCS inevitably
 leads to forks (just look at how many git forks are out there!). Such
 fragmentation of developer and user resources may be bad for a project.
@@ -45,6 +45,9 @@ happy if it's also useful for others, so I publish it. Having users
 may increase code quality - but other than that, I don't get paid for having
 more users, the project doesn't die if I code it alone, so I am not worried
 about this.
+<p>
+<b>Update (Aug 2016):</b> an active user/contributor community is forming
+around pcb-rnd. It is not a one-man-show anymore.
 
 <H4> 1.5. I'd like to merge something from pcb-rnd to mainline </H4>
 Go ahead. I can help you by explaining my code. I won't generate
@@ -77,7 +80,8 @@ convert affected scheme code to C. Long term, explicit plan: convert all
 scheme code to C and remove the guile dependency."
 <p>
 I don't expect any of this to happen.
-
+<p>
+<b>Update (Aug 2016):</b> Instead, I'll launch <a href="20160101_cschem.html"> cschem </a>.
 
 
 <H3> 2. git: did you know... </H3>
@@ -131,12 +135,18 @@ explained why I won't.
 <a id="3"><a id="opengl">
 <H4> 3.1. But I need opengl! </H4>
 Use the mainline then. Or contribute the code for sane opengl support
-in pcb-rnd. I can live with a solution where opengl is a separate HID and
-is not the default one. 
+in pcb-rnd. 
+<p>
+<b>Update (Aug 2016):</b> GUI HIDs are plugins now, multiple GUIs can
+be compiled and chosen run-time. Default GUI is a runtime configuration too.
+All we need to have an opengl GUI HID now is a gl-capable volunteer.
 
 <H4> 3.2. ... good, then please make that opengl hid!</H4>
 No, thanks. I don't need it, I wouldn't use it, there's no point in spending
 my time on it. If you need it, I invite you to do it.
+<p>
+<b>Update (Aug 2016):</b> I can do the build system and plugin administration
+part for you.
 
 <H4> 3.3. Did you know that opengl can be turned off in mainline? </H4>
 Yes. If I have a fork, I want its defaults to reflect my preferences.
@@ -162,9 +172,15 @@ C++ class is committed.
 <H4> 4.4. we need SQL for the file format </H4>
 No, we don't. I prefer human readable text formats. No, converters won't
 solve that. No, I don't care if python has support for loading SQL files.
+<p>
+<b>Update (Aug 2016):</b> the file format is a replacable plugin now;
+it's even possible to have multiple alternative formats active in the same
+time. It's up to you to implement your format in a plugin.
 
 <H4> 4.3. we need to switch to xml/json (or python or perl arrays) </H4>
 No, we don't need to.
+<p>
+<b>Update (Aug 2016):</b> ... unless you implement it in a plugin, see point 4.4.
 
 <h4> 4.4. ... but they are easier to parse because of existing libs </h4>
 Yup, but in any real life task that part of the parsing is like 5%. The
@@ -172,12 +188,18 @@ rest 95% needs to be programmed anyway. The costs of such a file format change
 is not justified by this minor gain.
 
 <h4> 4.5. ... but the current file format doesn't support feature X </h4>
+<small>
 True. And that's because the internal model (the in-core representation
 and <b>all the code handling that</b>) doesn't support the feature either.
 Changing the file format won't help that. It's similar to point 4.4.: 95%
 of the effort is needed to get the code to support the feature, and by that
 time the cost of getting it into the file format is very small. Costs
 are not justified.
+</small>
+<p>
+<b>Update (Aug 2016):</b> long term the new primary file format will be
+lihata to overcome the above limitations. Later on the internal representation
+may change too.
 
 <H4> 4.6. ... but I can't build a database of the current lib </h4>
 Too bad. Either figure how to do it, or just don't do it. pcb-rnd
@@ -222,6 +244,9 @@ write it from scratch.
 <h4> 5.7. But scconfig doesn't do cross compilation! </H4>
 False. It does. It's been supported since May 2008. It's been added
 about 1.5 months after the very first file.
+<p>
+<b>Update (Aug 2016):</b> as a practical example, windows .exe has
+been cross-compiled on a Linux box.
 
 <h4> 5.8. I just don't like scconfig. </H4>
 If you have something particular that makes you dislike scconfig,
@@ -229,6 +254,4 @@ a missing feature for example, please let me know.
 <p>
 Else maybe you don't like using anything else than autotools. It's your
 choice; mine is that I do keep on using scconfig in my projects.
-
-
 
