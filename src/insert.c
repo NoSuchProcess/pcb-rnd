@@ -44,6 +44,7 @@
 #include "set.h"
 #include "undo.h"
 #include "misc_util.h"
+#include "layer.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

@@ -42,6 +42,7 @@
 #include "rtree.h"
 #include "search.h"
 #include "misc.h"
+#include "layer.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers

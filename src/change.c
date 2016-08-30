@@ -47,6 +47,7 @@
 #include "select.h"
 #include "undo.h"
 #include "hid_actions.h"
+#include "layer.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

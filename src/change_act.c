@@ -48,6 +48,7 @@
 #include "rubberband.h"
 #include "misc_util.h"
 #include "compat_misc.h"
+#include "layer.h"
 
 static void ChangeFlag(char *, char *, int, char *);
 static int ActionChangeSize(int argc, char **argv, Coord x, Coord y);

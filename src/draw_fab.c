@@ -45,6 +45,7 @@
 #include "misc.h"
 #include "draw_fab.h"
 #include "polygon.h"
+#include "layer.h"
 
 /* ---------------------------------------------------------------------------
  * prints a FAB drawing.

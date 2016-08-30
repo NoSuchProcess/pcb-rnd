@@ -5,6 +5,7 @@
 #include "src/misc.h"
 #include "src/move.h"
 #include "src/conf_core.h"
+#include "src/layer.h"
 
 int layout_obj_coord(layout_object_t *obj, layout_object_coord_t coord)
 {

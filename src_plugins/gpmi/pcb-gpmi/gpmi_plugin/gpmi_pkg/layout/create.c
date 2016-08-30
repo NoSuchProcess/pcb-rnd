@@ -3,6 +3,7 @@
 #include "layout.h"
 #include "src/undo.h"
 #include "src/conf_core.h"
+#include "src/layer.h"
 
 
 typedef struct flag_tr_s {

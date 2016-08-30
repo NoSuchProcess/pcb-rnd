@@ -47,15 +47,11 @@ void SetPadBoundingBox(PadTypePtr);
 void SetPolygonBoundingBox(PolygonTypePtr);
 void SetElementBoundingBox(DataTypePtr, ElementTypePtr, FontTypePtr);
 bool IsDataEmpty(DataTypePtr);
-bool IsLayerEmpty(LayerTypePtr);
-bool IsLayerNumEmpty(int);
-bool IsLayerGroupEmpty(int);
 bool IsPasteEmpty(int);
 void CountHoles(int *, int *, const BoxType *);
 BoxTypePtr GetDataBoundingBox(DataTypePtr);
 void CenterDisplay(Coord, Coord);
 void SetFontInfo(FontTypePtr);
-int ParseGroupString(char *, LayerGroupTypePtr, int /* LayerN */ );
 Coord GetNum(char **s, const char *default_unit);
 
 void QuitApplication(void);
@@ -63,13 +59,6 @@ char *EvaluateFilename(const char *, const char *, const char *, const char *);
 void SetTextBoundingBox(FontTypePtr, TextTypePtr);
 
 void SaveOutputWindow(void);
-int GetLayerNumber(DataTypePtr, LayerTypePtr);
-int GetLayerGroupNumberByPointer(LayerTypePtr);
-int GetLayerGroupNumberByNumber(Cardinal);
-int GetGroupOfLayer(int);
-int ChangeGroupVisibility(int, bool, bool);
-void LayerStringToLayerStack(char *);
-
 
 BoxTypePtr GetObjectBoundingBox(int, void *, void *, void *);
 void ResetStackAndVisibility(void);
@@ -102,15 +91,6 @@ FlagType OldFlags(unsigned int);
 FlagType AddFlags(FlagType, unsigned int);
 FlagType MaskFlags(FlagType, unsigned int);
 #define		NoFlags() MakeFlags(0)
-
-/* Layer Group Functions */
-
-/* Returns group actually moved to (i.e. either group or previous) */
-int MoveLayerToGroup(int layer, int group);
-/* returns pointer to private buffer */
-char *LayerGroupsToString(LayerGroupTypePtr);
-/* Make the current layer groups the default.  */
-void MakeLayerGroupsDefault();
 
 /* Returns a string with info about this copy of pcb. */
 char *GetInfoString(void);

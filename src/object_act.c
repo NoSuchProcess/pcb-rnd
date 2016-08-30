@@ -48,6 +48,7 @@
 #include "create.h"
 #include "misc_util.h"
 #include "compat_misc.h"
+#include "layer.h"
 
 /* --------------------------------------------------------------------------- */
 

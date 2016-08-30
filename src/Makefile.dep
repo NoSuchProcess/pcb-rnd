@@ -541,8 +541,31 @@
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h pcb-printf.h misc_util.h \
  ../src_plugins/hid_gtk/gschem_accel_label.h
 ../src_plugins/hid_gtk/ghid-propedit.o: \
- ../src_plugins/hid_gtk/ghid-propedit.c \
- ../src_plugins/hid_gtk/ghid-propedit.h
+ ../src_plugins/hid_gtk/ghid-propedit.c ../src_plugins/hid_gtk/gui.h \
+ global.h ../config.h const.h macro.h global_typedefs.h unit.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h vtroutestyle.h \
+ global_element.h list_element.h ht_element.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/liblihata/genht/hash.h hid.h hid_cfg.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h global.h misc.h \
+ ../src_3rd/genvector/gds_char.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
+ ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/hid_gtk/ghid-route-style-selector.h \
+ ../src_plugins/hid_gtk/gui-pinout-preview.h \
+ ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ event.h ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h create.h \
+ compat_misc.h
 ../src_plugins/hid_gtk/ghid-route-style-selector.o: \
  ../src_plugins/hid_gtk/ghid-route-style-selector.c global.h ../config.h \
  const.h macro.h global_typedefs.h unit.h global_objs.h \
@@ -1499,7 +1522,8 @@
  global_element.h list_element.h ht_element.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht.c
+ ../src_3rd/liblihata/genht/ht.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/genht/ht.c
 ../src_plugins/propedit/propsel.o: ../src_plugins/propedit/propsel.c \
  data.h global.h ../config.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \

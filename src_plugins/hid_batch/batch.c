@@ -9,6 +9,7 @@
 #include "hid.h"
 #include "data.h"
 #include "misc.h"
+#include "layer.h"
 #include "hid.h"
 #include "pcb-printf.h"
 #include "plugins.h"

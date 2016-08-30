@@ -4,6 +4,7 @@
 #include "src/misc.h"
 #include "src/draw.h"
 #include "src/conf_core.h"
+#include "src/layer.h"
 
 #define layer_check(layer) \
 	if ((layer < 0) || (layer >= MAX_LAYER+2)) \

@@ -23,6 +23,7 @@
 #include "plug_io.h"
 #include "misc_util.h"
 #include "compat_misc.h"
+#include "layer.h"
 
 #include "gtkhid.h"
 

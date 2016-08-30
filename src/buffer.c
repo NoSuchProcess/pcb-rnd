@@ -52,6 +52,7 @@
 #include "set.h"
 #include "funchash_core.h"
 #include "compat_misc.h"
+#include "layer.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

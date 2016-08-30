@@ -38,6 +38,7 @@
 #include "data.h"
 #include "error.h"
 #include "misc.h"
+#include "layer.h"
 #include "polygon.h"
 #include "rtree.h"
 

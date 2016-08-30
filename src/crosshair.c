@@ -46,6 +46,7 @@
 #include "misc.h"
 #include "misc_util.h"
 #include "hid_actions.h"
+#include "layer.h"
 
 typedef struct {
 	int x, y;

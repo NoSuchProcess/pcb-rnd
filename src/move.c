@@ -47,6 +47,7 @@
 #include "undo.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
+#include "layer.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

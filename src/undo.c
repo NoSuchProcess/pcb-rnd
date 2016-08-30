@@ -52,6 +52,7 @@
 #include "draw.h"
 #include "error.h"
 #include "insert.h"
+#include "layer.h"
 #include "misc.h"
 #include "mirror.h"
 #include "move.h"

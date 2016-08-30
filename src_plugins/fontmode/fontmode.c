@@ -37,6 +37,7 @@
 #include "create.h"
 #include "data.h"
 #include "draw.h"
+#include "layer.h"
 #include "misc.h"
 #include "move.h"
 #include "remove.h"

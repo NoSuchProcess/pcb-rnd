@@ -38,6 +38,7 @@
 #include "error.h"
 #include "find.h"
 #include "misc.h"
+#include "layer.h"
 #include "polygon.h"
 #include "rats.h"
 #include "search.h"

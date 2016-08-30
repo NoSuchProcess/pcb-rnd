@@ -3,6 +3,7 @@
 #include <string.h>
 #include <assert.h>
 #include "src/conf_core.h"
+#include "src/layer.h"
 #include "layout.h"
 #include "config.h"
 

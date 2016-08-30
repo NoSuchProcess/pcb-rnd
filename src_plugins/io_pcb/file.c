@@ -48,6 +48,7 @@
 #include "file.h"
 #include "plug_io.h"
 #include "hid.h"
+#include "layer.h"
 #include "misc.h"
 #include "move.h"
 #include "mymem.h"

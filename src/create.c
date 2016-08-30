@@ -39,6 +39,7 @@
 #include "data.h"
 #include "error.h"
 #include "misc.h"
+#include "layer.h"
 #include "rtree.h"
 #include "search.h"
 #include "undo.h"

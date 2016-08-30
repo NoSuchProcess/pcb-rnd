@@ -10,6 +10,7 @@
 #include "global.h"
 #include "data.h"
 #include "misc.h"
+#include "layer.h"
 #include "error.h"
 #include "draw.h"
 #include "pcb-printf.h"

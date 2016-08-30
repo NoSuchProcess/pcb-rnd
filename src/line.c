@@ -38,6 +38,7 @@
 #include "line.h"
 #include "misc.h"
 #include "rtree.h"
+#include "layer.h"
 
 static double drc_lines(PointTypePtr end, bool way);
 

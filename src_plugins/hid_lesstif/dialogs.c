@@ -12,6 +12,7 @@
 #include "global.h"
 #include "data.h"
 #include "crosshair.h"
+#include "layer.h"
 #include "misc.h"
 #include "pcb-printf.h"
 

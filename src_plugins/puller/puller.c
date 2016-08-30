@@ -65,6 +65,7 @@
 #include "rtree.h"
 #include "strflags.h"
 #include "undo.h"
+#include "layer.h"
 #include "plugins.h"
 #include "hid_actions.h"
 #include "misc_util.h"

@@ -70,25 +70,6 @@
 #define TO_RADIANS(degrees)	(PCB_M180 * (degrees))
 
 /* ---------------------------------------------------------------------------
- * layer macros
- */
-#define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[LayerStack[(n)]])
-#define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])
-#define	CURRENT			(PCB->SilkActive ? &PCB->Data->Layer[ \
-				(conf_core.editor.show_solder_side ? solder_silk_layer : component_silk_layer)] \
-				: LAYER_ON_STACK(0))
-#define	INDEXOFCURRENT		(PCB->SilkActive ? \
-				(conf_core.editor.show_solder_side ? solder_silk_layer : component_silk_layer) \
-				: LayerStack[0])
-#define SILKLAYER		Layer[ \
-				(conf_core.editor.show_solder_side ? solder_silk_layer : component_silk_layer)]
-#define BACKSILKLAYER		Layer[ \
-				(conf_core.editor.show_solder_side ? component_silk_layer : solder_silk_layer)]
-
-#define TEST_SILK_LAYER(layer)	(GetLayerNumber (PCB->Data, layer) >= max_copper_layer)
-
-
-/* ---------------------------------------------------------------------------
  * returns the object ID
  */
 #define	OBJECT_ID(p)		(((AnyObjectTypePtr) p)->ID)

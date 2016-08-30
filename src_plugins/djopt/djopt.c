@@ -41,6 +41,7 @@
 #include "undo.h"
 #include "strflags.h"
 #include "find.h"
+#include "layer.h"
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_flags.h"

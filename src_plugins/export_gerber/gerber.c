@@ -16,6 +16,7 @@
 #include "misc.h"
 #include "error.h"
 #include "draw.h"
+#include "layer.h"
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_helper.h"

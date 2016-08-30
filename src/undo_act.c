@@ -39,6 +39,7 @@
 #include "search.h"
 #include "draw.h"
 #include "misc.h"
+#include "layer.h"
 
 /* --------------------------------------------------------------------------- */
 

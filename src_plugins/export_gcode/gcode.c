@@ -50,6 +50,7 @@
 #include "misc.h"
 #include "rats.h"
 #include "hid_helper.h"
+#include "layer.h"
 
 #include "hid.h"
 #include <gd.h>

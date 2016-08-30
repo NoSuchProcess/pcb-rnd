@@ -30,6 +30,7 @@
 #include "error.h"
 #include "search.h"
 #include "draw.h"
+#include "layer.h"
 #include "pcb-printf.h"
 #include "undo.h"
 #include "set.h"

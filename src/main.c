@@ -44,6 +44,7 @@
 #include "error.h"
 #include "plug_io.h"
 #include "set.h"
+#include "layer.h"
 #include "misc.h"
 #include "compat_lrealpath.h"
 #include "free_atexit.h"

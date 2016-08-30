@@ -43,6 +43,7 @@
 #include "hid_actions.h"
 #include "hid_init.h"
 #include "route_style.h"
+#include "layer.h"
 
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */

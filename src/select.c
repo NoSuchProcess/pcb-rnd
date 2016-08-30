@@ -40,6 +40,7 @@
 #include "rats.h"
 #include "misc.h"
 #include "find.h"
+#include "layer.h"
 
 #include <genregex/regex_sei.h>
 

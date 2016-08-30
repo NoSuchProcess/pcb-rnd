@@ -48,6 +48,7 @@
 #include "data.h"
 #include "draw.h"
 #include "error.h"
+#include "layer.h"
 #include "intersect.h"
 #include "rtree.h"
 #include "macro.h"

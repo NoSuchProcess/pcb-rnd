@@ -39,6 +39,7 @@
 #include "crosshair.h"
 #include "draw.h"
 #include "error.h"
+#include "layer.h"
 #include "misc.h"
 #include "set.h"
 #include "find.h"

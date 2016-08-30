@@ -79,6 +79,7 @@
 #include "vector.h"
 #include "pcb-printf.h"
 #include "set.h"
+#include "layer.h"
 
 /* #defines to enable some debugging output */
 /*
