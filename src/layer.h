@@ -73,3 +73,30 @@ char *LayerGroupsToString(LayerGroupTypePtr);
 
 /************ NEW API - new code should use these **************/
 
+/* Layer type bitfield */
+typedef {
+	/* Stack-up (vertical position): */
+	PCB_LYT_TOP      = 0x0001, /* layer is on the top side of the board */
+	PCB_LYT_BOTTOM   = 0x0002, /* layer is on the bottom side of the board */
+	PCB_LYT_INTERN   = 0x0004, /* layer is internal */
+	PCB_LYT_ANYWHERE = 0x00FF, /* MASK: layer is anywhere on the stack */
+
+	/* What the layer consists of */
+	PCB_LYT_COPPER   = 0x0100, /* copper objects */
+	PCB_LYT_SILK     = 0x0200, /* silk objects */
+	PCB_LYT_MASK     = 0x0400, /* solder mask */
+	PCB_LYT_PASTE    = 0x0800, /* paste */
+	PCB_LYT_OUTLINE  = 0x1000, /* outline (contour of the board) */
+	PCB_LYT_ANYTHING = 0xFF00, /* MASK */
+} pcb_layer_type_t;
+
+/* List layer IDs that matches mask - write the first res_len items in res,
+   if res is not NULL. Returns:
+    - the total number of layers matching the query, if res is NULL
+    - the number of layers copied into res if res is not NULL
+*/
+int pcb_layer_list(pcb_layer_type_t mask, int *res, int res_len);
+
+/* Same as pcb_layer_list but lists layer groups. A group is matching
+   if any layer in that group matches mask. */
+int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len);
