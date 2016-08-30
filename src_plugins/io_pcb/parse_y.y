@@ -40,8 +40,8 @@
 
 #include "config.h"
 #include "conf_core.h"
-
 #include "global.h"
+#include "layer.h"
 #include "create.h"
 #include "data.h"
 #include "error.h"
