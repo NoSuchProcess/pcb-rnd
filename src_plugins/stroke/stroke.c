@@ -28,6 +28,8 @@
 #include "config.h"
 #include <stroke.h>
 #include "global.h"
+#include "conf.h"
+#include "conf_core.h"
 #include "data.h"
 #include "crosshair.h"
 #include "stub_stroke.h"
@@ -57,7 +59,7 @@ static void real_stroke_finish(void)
 		num = atoi(msg);
 		switch (num) {
 		case 456:
-			if (Settings.Mode == PCB_MODE_LINE) {
+			if (conf_core.editor.mode == PCB_MODE_LINE) {
 				SetMode(PCB_MODE_LINE);
 			}
 			break;
