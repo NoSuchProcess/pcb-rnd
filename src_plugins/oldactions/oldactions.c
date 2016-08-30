@@ -33,6 +33,23 @@
 #include "error.h"
 #include "undo.h"
 #include "plugins.h"
+
+
+static void conf_toggle(conf_role_t role, const char *path)
+{
+	conf_native_t *n = conf_get_field(path);
+	if (n == NULL) {
+		Message("Error: can't find config node %s to toggle\n", path);
+		return;
+	}
+	if (n->type != CFN_BOOLEAN) {
+		Message("Error: config node %s is not a boolean, can't toggle\n", path);
+		return;
+	}
+
+	conf_set(role, path, -1, n->val.boolean[0] ? "0" : "1", POL_OVERWRITE);
+}
+
 /* -------------------------------------------------------------------------- */
 
 static const char dumplibrary_syntax[] = "DumpLibrary()";
@@ -46,7 +63,8 @@ static const char dumplibrary_help[] = "Display the entire contents of the libra
 
 static int ActionDumpLibrary(int argc, char **argv, Coord x, Coord y)
 {
-	int i, j;
+#warning TODO: rewrite this code for the plug_footprint library_t
+/*	int i, j;
 
 	printf("**** Do not count on this format.  It will change ****\n\n");
 	printf("MenuN   = %d\n", Library.MenuN);
@@ -65,7 +83,7 @@ static int ActionDumpLibrary(int argc, char **argv, Coord x, Coord y)
 			printf("newlib: \"%s\"\n", UNKNOWN(Library.Menu[i].Entry[j].ListEntry));
 		}
 	}
-
+*/
 	return 0;
 }
 
@@ -151,9 +169,11 @@ optimize hand-routed traces also.
 
 %end-doc */
 
+
+
 int djopt_set_auto_only(int argc, char **argv, Coord x, Coord y)
 {
-	conf_set(CFR_DESIGN, "plugins/djopt/auto_only", -1, conf_djopt.plugins.djopt.auto_only ? "0" : "1", POL_OVERWRITE);
+	conf_toggle(CFR_DESIGN, "plugins/djopt/auto_only");
 	return 0;
 }
 
@@ -179,7 +199,7 @@ loaded first.
 
 int ActionToggleVendor(int argc, char **argv, Coord x, Coord y)
 {
-	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, conf_vendor.plugins.vendor.enable ? "0" : "1", POL_OVERWRITE);
+	conf_toggle(CFR_DESIGN, "plugins/vendor/enable");
 	return 0;
 }
 
