@@ -89,19 +89,53 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
         /*puts("Units mm\n",FP);*/ /*decimils most universal legacy format */
 	fputs("$EndGENERAL\n",FP);
 
-	fputs("$SHEETDESCR\n",FP);
-	fputs("Sheet A4 ", FP); /* we sort out the needed kicad sheet size here */
-	if (11700 > PCB_COORD_TO_MIL(PCB->MaxWidth)) {  /* usually A4, but make it bigger if needed */
-		fputs("11700 ", FP); /* legacy kicad wants elements in decimils but sheet size in mil*/
-		LayoutXOffset = PCB_MIL_TO_COORD(11700)/2 - PCB->MaxWidth/2;
-	} else {
+        fputs("$SHEETDESCR\n",FP);
+
+	/* Kicad expects a layout "sheet" size to be specified in mils, and A4, A3 etc... */
+	int A4HeightMil = 8267;
+	int A4WidthMil = 11700;
+	int sheetHeight = A4HeightMil;
+        int sheetWidth = A4WidthMil;
+	int paperSize = 4; /* default paper size is A4 */
+
+ 	/* we sort out the needed kicad sheet size here, using A4, A3, A2, A1 or A0 size as needed */
+	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > A4WidthMil ||
+		PCB_COORD_TO_MIL(PCB->MaxHeight) > A4HeightMil) {
+		sheetHeight = A4WidthMil;   /* 11.7" */
+		sheetWidth = 2*A4HeightMil; /* 16.5" */
+		paperSize = 3; /* this is A3 size */
+	}
+	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > sheetWidth ||
+	PCB_COORD_TO_MIL(PCB->MaxHeight) > sheetHeight) {
+		sheetHeight = 2*A4HeightMil; /* 16.5" */
+		sheetWidth = 2*A4WidthMil;   /* 23.4" */
+		paperSize = 2; /* this is A2 size */
+	}
+	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > sheetWidth ||
+	PCB_COORD_TO_MIL(PCB->MaxHeight) > sheetHeight) {
+		sheetHeight = 2*A4WidthMil; /* 23.4" */
+		sheetWidth = 4*A4HeightMil; /* 33.1" */
+		paperSize = 1; /* this is A1 size */
+	}
+	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > sheetWidth ||
+	PCB_COORD_TO_MIL(PCB->MaxHeight) > sheetHeight) {
+		sheetHeight = 4*A4HeightMil; /* 33.1" */
+		sheetWidth = 4*A4WidthMil; /* 46.8"  */
+		paperSize = 0; /* this is A0 size; where would you get it made ?!?! */
+	}
+	fprintf(FP, "Sheet A%d ", paperSize);
+	/* we now sort out the offsets for centring the layout in the chosen sheet size here */
+	if (sheetWidth > PCB_COORD_TO_MIL(PCB->MaxWidth)) {  /* usually A4, bigger if needed */
+		fprintf(FP, "%d ", sheetWidth); /* legacy kicad: elements decimils, sheet size mils*/
+		LayoutXOffset = PCB_MIL_TO_COORD(sheetWidth)/2 - PCB->MaxWidth/2;
+	} else { /* the layout is bigger than A0; most unlikely, but... */
 		pcb_fprintf(FP, "%.0ml ", PCB->MaxWidth);
 		LayoutXOffset = 0;
 	}
-	if (8267 > PCB_COORD_TO_MIL(PCB->MaxHeight)) {
-		fputs("8267", FP);
-		LayoutYOffset = PCB_MIL_TO_COORD(8267)/2 - PCB->MaxHeight/2;
-	} else {
+	if (sheetHeight > PCB_COORD_TO_MIL(PCB->MaxHeight)) {
+		fprintf(FP, "%d", sheetHeight);
+		LayoutYOffset = PCB_MIL_TO_COORD(sheetHeight)/2 - PCB->MaxHeight/2;
+	} else { /* the layout is bigger than A0; most unlikely, but... */ 
 		pcb_fprintf(FP, "%.0ml", PCB->MaxHeight);
 		LayoutYOffset = 0;
 	}
@@ -109,14 +143,14 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	fputs("$EndSHEETDESCR\n",FP);
 
 	fputs("$SETUP\n",FP);
-	fputs("InternalUnit 0.000100 INCH\n",FP);
+	fputs("InternalUnit 0.000100 INCH\n",FP); /* decimil is the default v1 kicad legacy unit */
 	fputs("Layers 2\n",FP);
 	fputs("Layer[0] Cuivre signal\n",FP);
 	fputs("Layer[15] Composant signal\n",FP);
 	write_kicad_legacy_layout_via_drill_size(FP);
 	fputs("$EndSETUP\n",FP);
 
-	/* module desription stuff would go here */
+	/* module description stuff would go here */
 
 	fputs("$TRACK\n",FP);
 	write_kicad_legacy_layout_vias(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
