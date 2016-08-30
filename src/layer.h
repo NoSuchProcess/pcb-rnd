@@ -74,7 +74,7 @@ char *LayerGroupsToString(LayerGroupTypePtr);
 /************ NEW API - new code should use these **************/
 
 /* Layer type bitfield */
-typedef {
+typedef enum {
 	/* Stack-up (vertical position): */
 	PCB_LYT_TOP      = 0x0001, /* layer is on the top side of the board */
 	PCB_LYT_BOTTOM   = 0x0002, /* layer is on the bottom side of the board */
