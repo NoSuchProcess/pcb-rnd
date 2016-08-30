@@ -22,7 +22,7 @@ P5  A list is consists of zero or more objects. An object is:
 P6   - the board
 P7   - a layer
 P8   - a board drawing primitive (line, arc, polygon, via, text)
-P9   - an element primitive (element line, element arc, pin, pad, element name)
+P9   - an element primitive (element line, element arc(?), pin, pad, element name)
 P10  - an element as a whole
 P11  - a net
 
@@ -204,3 +204,14 @@ P58 netlen(EXPR)
 
 P59 netobjs(EXPR)
     Creates and returns a list of objects consists of a net.
+
+P60 type(EXPR, TYPENAME)
+    EXPR is an object. Returns the object if it's type matches TYPENAME, else
+    returns void (a.k.a. false). This call is useful to decide whether an
+    object is of a specific type. TYPENAME is one of:
+     - drawing primitive type: arc, line, polygon, text, via, element
+     - element primitive type: element_line, element_name, pin, pad
+     - misc type: layer, net
+     - meta-type, or a group:
+       - copper: primitive that results in copper (arc, line, polygon, text (on copper), via, pin, pad)
+       - drilled: anything that drills the board (via, pin)

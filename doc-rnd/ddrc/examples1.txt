@@ -5,7 +5,7 @@
 # Assert that any two components are closer than 25 mm to each other
 
 rule sensitive RF elements
-	let e1 (@.p.type == type(element)) && (@.a.group == "RF")
+	let e1 (type(@, element)) && (@.a.group == "RF")
 	let e2 e1
 	assert (distance(e1, e2) < 25 mm)
 
@@ -16,7 +16,7 @@ rule sensitive RF elements
 # Assert that any two net lengths are matched within 2 mm
 
 rule matched length dram traces
-	let e1 (@.p.type == type(net)) && (@.a.group == "dram_data_0")
+	let e1 (type(@, net)) && (@.a.group == "dram_data_0")
 	let e2 e1
 	assert abs(netlen(e1) - netlen(e2)) < 2 mm
 
@@ -28,8 +28,8 @@ rule matched length dram traces
 #
 
 rule isolation gap 1
-	let hv  (@.p.type == type(net)) && (@.a.high_voltage)
-	let lv  (@.p.type == type(net)) && !(@.a.high_voltage)
+	let hv  (type(@, net)) && (@.a.high_voltage)
+	let lv  (type(@, net)) && !(@.a.high_voltage)
 	assert !is_closer(lv, hv, 4 mm) 
 
 # Example 4: check if isolation gap is maintained between any HV and LV nets
@@ -48,7 +48,7 @@ rule isolation gap 1
 #   - if there was a valid (low voltage) cp object found, 
 
 rule isolation gap 2
-	let hv  (@.p.type == type(net)) && (@.a.high_voltage)
+	let hv  (type(@, net)) && (@.a.high_voltage)
 	let hvo lobjs(hv)
-	let cp  (@.p.type == type(copper))
+	let cp  (type(@, copper))
 	assert !is_closer(lcomplement(cp, hvo), hv, 4 mm) 
