@@ -15,7 +15,7 @@ rule sensitive RF elements
 # e2 is a copy of e1 (see Example 1)
 # Assert that any two net lengths are matched within 2 mm
 
-rule sensitive RF elements
+rule matched length dram traces
 	let e1 (@.p.type == type(net)) && (@.a.group == "dram_data_0")
 	let e2 e1
 	assert abs(netlen(e1) - netlen(e2)) < 2 mm
@@ -26,7 +26,8 @@ rule sensitive RF elements
 # hv  is the list of high voltage nets
 # lv  is a list of non-hv networks
 #
-rule sensitive RF elements1
+
+rule isolation gap 1
 	let hv  (@.p.type == type(net)) && (@.a.high_voltage)
 	let lv  (@.p.type == type(net)) && !(@.a.high_voltage)
 	assert !is_closer(lv, hv, 4 mm) 
@@ -45,7 +46,8 @@ rule sensitive RF elements1
 #   - hvo is required because cp is an object while hv is a list of nets
 #     (so cp is never on the hv list)
 #   - if there was a valid (low voltage) cp object found, 
-rule sensitive RF elements2
+
+rule isolation gap 2
 	let hv  (@.p.type == type(net)) && (@.a.high_voltage)
 	let hvo lobjs(hv)
 	let cp  (@.p.type == type(copper))
