@@ -1,9 +1,10 @@
 The Dynamic DRC should be able to solve at least these tasks:
 	- check start grounding
-	- require element placement on same layer or multiple layers:
-		- specify element proximity to each other
+	- require element placement on same layer 
+		- specify element proximity to each other on same layer
 		- specify element proximity to the edge
 		- specify element proximity to network or other copper feature
+		on the same layer
 	- perform copper vs. copper checks
 		- minimal gap between an object or network and anything else
 		- minimal gap between high voltage and low voltage networks
