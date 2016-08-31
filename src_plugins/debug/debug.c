@@ -97,16 +97,18 @@ static int ActionDumpLayers(int argc, char **argv, Coord x, Coord y)
 	printf("Max: theoretical=%d current_board=%d\n", MAX_LAYER+2, max_copper_layer);
 	for(n = 0; n < MAX_LAYER+2; n++) {
 		int grp = GetGroupOfLayer(n);
-		printf(" [%d] %04x grp=%d %s \n", n, pcb_layer_flags(n), grp, PCB->Data->Layer[n].Name);
+		printf(" [%d] %04x group=%d %s\n", n, pcb_layer_flags(n), grp, PCB->Data->Layer[n].Name);
 	}
 
 	/* query by logical layer: any bottom copper */
 	used = pcb_layer_list(PCB_LYT_COPPER | PCB_LYT_BOTTOM, arr, sizeof(arr)/sizeof(arr[0]));
 	printf("All %d bottom copper layers are:\n", used);
-	for(n = 0; n < used; n++)
-		printf(" [%d] %s \n", arr[n], PCB->Data->Layer[arr[n]].Name);
+	for(n = 0; n < used; n++) {
+		int layer_id = arr[n];
+		printf(" [%d] %s \n", layer_id, PCB->Data->Layer[layer_id].Name);
+	}
 
-	/* query by groups (physical layers): any copper group */
+	/* query by groups (physical layers): any copper in group */
 	used = pcb_layer_group_list(PCB_LYT_COPPER, arr, sizeof(arr)/sizeof(arr[0]));
 	printf("All %d groups containing copper layers are:\n", used);
 	for(g = 0; g < used; g++) {
@@ -114,7 +116,7 @@ static int ActionDumpLayers(int argc, char **argv, Coord x, Coord y)
 		printf(" group %d\n", group_id);
 		for(n = 0; n < PCB->LayerGroups.Number[group_id]; n++) {
 			int layer_id = PCB->LayerGroups.Entries[group_id][n];
-			printf("  [%d] %s \n", layer_id, PCB->Data->Layer[layer_id].Name);
+			printf("  [%d] %s\n", layer_id, PCB->Data->Layer[layer_id].Name);
 		}
 	}
 
