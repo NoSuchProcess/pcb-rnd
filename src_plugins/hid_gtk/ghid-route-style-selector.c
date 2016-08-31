@@ -75,7 +75,6 @@ struct _route_style {
 	RouteStyleType *rst;
 	gulong sig_id;
 	int hidden;
-
 };
 
 /* SIGNAL HANDLERS */
@@ -95,6 +94,8 @@ struct _dialog {
 	GtkWidget *via_hole_entry;
 	GtkWidget *via_size_entry;
 	GtkWidget *clearance_entry;
+
+	int inhibit_style_change; /* when 1, do not do anything when style changes */
 };
 
 /*! \brief Callback for dialog box's combobox being changed
@@ -111,6 +112,10 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 {
 	struct _route_style *style;
 	GtkTreeIter iter;
+
+	if (dialog->inhibit_style_change)
+		return;
+
 	gtk_combo_box_get_active_iter(combo, &iter);
 	gtk_tree_model_get(GTK_TREE_MODEL(dialog->rss->model), &iter, DATA_COL, &style, -1);
 
@@ -137,8 +142,10 @@ static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 {
 	GtkTreeIter iter;
 	vtroutestyle_remove(&PCB->RouteStyle, dialog->rss->selected, 1);
+	dialog->inhibit_style_change = 1;
 	gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(dialog->rss->model),&iter,NULL,dialog->rss->selected+1);
 	gtk_list_store_remove(dialog->rss->model , &iter );
+	dialog->inhibit_style_change = 0;
 	printf("Style: %d deleted\n", dialog->rss->selected);
 }
 
