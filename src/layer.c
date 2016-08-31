@@ -541,23 +541,43 @@ unsigned int pcb_layer_flags(int layer_idx)
 	return res;
 }
 
+#define APPEND(n) \
+	do { \
+		if (res != NULL) { \
+			if (used < res_len) { \
+				res[used] = n; \
+				used++; \
+			} \
+		} \
+		else \
+			used++; \
+	} while(0)
 
 int pcb_layer_list(pcb_layer_type_t mask, int *res, int res_len)
 {
 	int n, used = 0;
 
 	for (n = 0; n < MAX_LAYER + 2; n++) {
-		if ((pcb_layer_flags(n) & mask) == mask) {
-			if (res != NULL) {
-				if (used < res_len) {
-					res[used] = n;
-					used++;
-				}
-			}
-			else
-				used++;
-		}
+		if ((pcb_layer_flags(n) & mask) == mask)
+			APPEND(n);
 	}
 	return used;
 }
 
+int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len)
+{
+	int group, layeri, used = 0;
+	for (group = 0; group < max_group; group++) {
+		for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++) {
+			int layer = PCB->LayerGroups.Entries[group][layeri];
+			if ((pcb_layer_flags(layer) & mask) == mask) {
+				APPEND(group);
+				goto added; /* do not add a group twice */
+			}
+		}
+		added:;
+	}
+	return used;
+}
+
+#undef APPEND
