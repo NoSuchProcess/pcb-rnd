@@ -7,7 +7,12 @@ Requirements:  x11 and gtk+
   - X11 server and client libraries for OS X are available from the XQuartz 
      download and install
   - gtk+ is available from brew
-     * brew install gtk+
+     * brew install dependencies (gtk+ and libgd) with the following commands
+       brew install libgd
+       brew install gtk+
+     * if you want to use gEDA with PCB-RND you may want to install it as well
+       via brew
+       brew install homebrew/science/geda-gaf
 
 Known issues:
   - application window opens behind other windows; it seems to be a gtk bug
