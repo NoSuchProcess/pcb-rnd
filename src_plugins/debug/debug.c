@@ -82,10 +82,30 @@ static int ActionDumpConf(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
+static const char dump_layers_syntax[] =
+	"dumplayers()\n"
+	;
+
+static const char dump_layers_help[] = "Print info about each layer";
+
+extern lht_doc_t *conf_root[];
+static int ActionDumpLayers(int argc, char **argv, Coord x, Coord y)
+{
+	int n;
+	printf("Max: theoretical=%d current_board=%d\n", MAX_LAYER+2, max_copper_layer);
+	for(n = 0; n < MAX_LAYER+2; n++) {
+		int grp = GetGroupOfLayer(n);
+		printf("[%d] %04x grp=%d %s \n", n, pcb_layer_flags(n), grp, PCB->Data->Layer[n].Name);
+	}
+	return 0;
+}
+
 
 HID_Action debug_action_list[] = {
 	{"dumpconf", 0, ActionDumpConf,
-	 conf_help, conf_syntax}
+	 conf_help, conf_syntax},
+	{"dumplayers", 0, ActionDumpLayers,
+	 dump_layers_help, dump_layers_syntax}
 };
 
 static const char *debug_cookie = "debug plugin";
