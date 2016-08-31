@@ -7,6 +7,7 @@
 
 #include "global.h"
 #include "data.h"
+#include "layer.h"
 
 #include "hid.h"
 #include "hid_draw_helpers.h"

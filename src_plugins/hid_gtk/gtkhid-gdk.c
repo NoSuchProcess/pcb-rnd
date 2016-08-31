@@ -5,6 +5,7 @@
 
 #include "crosshair.h"
 #include "clip.h"
+#include "layer.h"
 #include "gui.h"
 #include "hid_draw_helpers.h"
 #include "hid_attrib.h"

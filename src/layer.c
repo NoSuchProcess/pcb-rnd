@@ -494,3 +494,41 @@ char *LayerGroupsToString(LayerGroupTypePtr lg)
 	*cp++ = 0;
 	return buf;
 }
+
+unsigned int pcb_layer_flags(int layer_idx)
+{
+	unsigned int res = 0;
+
+
+	if (layer_idx == solder_silk_layer)
+		return PCB_LYT_SILK | PCB_LYT_BOTTOM;
+
+	if (layer_idx == component_silk_layer)
+		return PCB_LYT_SILK | PCB_LYT_TOP;
+
+	if (layer_idx < max_copper_layer) {
+		res |= PCB_LYT_COPPER;
+	}
+
+}
+
+
+int pcb_layer_list(pcb_layer_type_t mask, int *res, int res_len)
+{
+	int n, used = 0;
+
+	for (n = 0; n < MAX_LAYER + 2; n++) {
+		if ((pcb_layer_flags(n) & mask) == mask) {
+			if (res != NULL) {
+				if (used < res_len) {
+					res[used] = n;
+					used++;
+				}
+			}
+			else
+				used++;
+		}
+	}
+	return used;
+}
+

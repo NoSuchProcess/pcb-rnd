@@ -69,7 +69,28 @@ char *LayerGroupsToString(LayerGroupTypePtr);
 
 #define TEST_SILK_LAYER(layer)	(GetLayerNumber (PCB->Data, layer) >= max_copper_layer)
 
+/* These decode the set_layer index. */
+#define SL_TYPE(x) ((x) < 0 ? (x) & 0x0f0 : 0)
+#define SL_SIDE(x) ((x) & 0x00f)
+#define SL_MYSIDE(x) ((((x) & SL_BOTTOM_SIDE)!=0) == (SWAP_IDENT != 0))
 
+#define SL_0_SIDE	0x0000
+#define SL_TOP_SIDE	0x0001
+#define SL_BOTTOM_SIDE	0x0002
+#define SL_SILK		0x0010
+#define SL_MASK		0x0020
+#define SL_PDRILL	0x0030
+#define SL_UDRILL	0x0040
+#define SL_PASTE	0x0050
+#define SL_INVISIBLE	0x0060
+#define SL_FAB		0x0070
+#define SL_ASSY		0x0080
+#define SL_RATS		0x0090
+/* Callers should use this.  */
+#define SL(type,side) (~0xfff | SL_##type | SL_##side##_SIDE)
+
+
+#define LAYER_IS_OUTLINE(idx) (strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[idx].Name, "outline") == 0)
 
 /************ NEW API - new code should use these **************/
 
@@ -89,6 +110,10 @@ typedef enum {
 	PCB_LYT_OUTLINE  = 0x1000, /* outline (contour of the board) */
 	PCB_LYT_ANYTHING = 0xFF00, /* MASK */
 } pcb_layer_type_t;
+
+
+/* returns a bitfield of pcb_layer_type_t */
+unsigned int pcb_layer_flags(int layer_idx);
 
 /* List layer IDs that matches mask - write the first res_len items in res,
    if res is not NULL. Returns:
