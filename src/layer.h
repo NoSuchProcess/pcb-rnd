@@ -112,7 +112,7 @@ typedef enum {
 } pcb_layer_type_t;
 
 
-/* returns a bitfield of pcb_layer_type_t */
+/* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx is invalid. */
 unsigned int pcb_layer_flags(int layer_idx);
 
 /* List layer IDs that matches mask - write the first res_len items in res,

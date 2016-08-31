@@ -499,17 +499,46 @@ unsigned int pcb_layer_flags(int layer_idx)
 {
 	unsigned int res = 0;
 
-
 	if (layer_idx == solder_silk_layer)
 		return PCB_LYT_SILK | PCB_LYT_BOTTOM;
 
 	if (layer_idx == component_silk_layer)
 		return PCB_LYT_SILK | PCB_LYT_TOP;
 
+	if (layer_idx > max_copper_layer+2)
+		return 0;
+
 	if (layer_idx < max_copper_layer) {
-		res |= PCB_LYT_COPPER;
+		if (!LAYER_IS_OUTLINE(layer_idx)) {
+			/* check whether it's top, bottom or internal */
+			int group, entry;
+			for (group = 0; group < max_group; group++) {
+				if (PCB->LayerGroups.Number[group]) {
+					unsigned int my_group = 0, gf = 0;
+					for (entry = 0; entry < PCB->LayerGroups.Number[group]; entry++) {
+						int layer = PCB->LayerGroups.Entries[group][entry];
+						if (layer == layer_idx)
+							my_group = 1;
+						if (layer == component_silk_layer)
+							gf |= PCB_LYT_TOP;
+						else if (layer == solder_silk_layer)
+							gf |= PCB_LYT_BOTTOM;
+					}
+					if (my_group) {
+						res |= gf;
+						if (gf == 0)
+							res |= PCB_LYT_INTERN;
+						break; /* stop searching groups */
+					}
+				}
+			}
+			res |= PCB_LYT_COPPER;
+		}
+		else
+			res |= PCB_LYT_OUTLINE;
 	}
 
+	return res;
 }
 
 
