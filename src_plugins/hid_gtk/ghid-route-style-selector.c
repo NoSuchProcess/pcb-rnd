@@ -133,11 +133,11 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 }
 
 /*  Callback for Delete route style button */
-static void delete_button_cb(GtkButton *button, struct _dialog *dialog,
-GtkTreeIter iter)
+static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 {
+	GtkTreeIter iter;
 	vtroutestyle_remove(&PCB->RouteStyle, dialog->rss->selected, 1);
-	gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(dialog->rss->model),&iter,NULL,dialog->rss->selected);
+	gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(dialog->rss->model),&iter,NULL,dialog->rss->selected+1);
 	gtk_list_store_remove(dialog->rss->model , &iter );
 	printf("Style: %d deleted\n", dialog->rss->selected);
 }
