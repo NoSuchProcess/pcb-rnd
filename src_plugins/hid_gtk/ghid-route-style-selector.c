@@ -180,6 +180,8 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	GtkWidget *button;
 	const char *new_name;
 
+	memset(&dialog_data, 0, sizeof(dialog_data)); /* make sure all flags are cleared */
+
 	/* Build dialog */
 	dialog = gtk_dialog_new_with_buttons(_("Edit Route Styles"),
 																			 GTK_WINDOW(window),
