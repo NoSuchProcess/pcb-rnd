@@ -25,6 +25,7 @@
 #include "data.h"
 #include "plugins.h"
 #include "plug_io.h"
+#include "compat_misc.h"
 
 static void build_board_meta(PCBType *pcb, lht_doc_t *brd)
 {
@@ -40,11 +41,33 @@ static void build_board_meta(PCBType *pcb, lht_doc_t *brd)
 	}
 }
 
+static void build_data_layer(DataType *data, lht_node_t *parent, LayerType *layer)
+{
+	lht_node_t *meta, *field;
+
+	meta = lht_dom_node_alloc(LHT_HASH, layer->Name);
+	lht_dom_list_append(parent, meta);
+
+}
+
+static void build_data_layers(DataType *data, lht_doc_t *brd)
+{
+	int n;
+	lht_node_t *layers;
+
+	layers = lht_dom_node_alloc(LHT_LIST, "layers");
+	lht_dom_hash_put(brd->root, layers);
+
+	for(n = 0; n < max_copper_layer + 2; n++)
+		build_data_layer(data, layers, data->Layer+n);
+}
+
 static lht_doc_t *build_board(PCBType *pcb)
 {
 	lht_doc_t *brd = lht_dom_init();
 	brd->root = lht_dom_node_alloc(LHT_HASH, "pcb-rnd-board-v1");
 	build_board_meta(pcb, brd);
+	build_data_layers(pcb->Data, brd);
 	return brd;
 }
 
