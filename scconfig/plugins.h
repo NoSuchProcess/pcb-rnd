@@ -38,6 +38,7 @@ plugin_def("export_ps",       "postscript exporter",       sbuildin)
 plugin_def("export_test",     "dummy test exporter",       sdisable)
 
 plugin_header("\nIO plugins (file formats):\n")
+plugin_def("io_lihata",       "lihata board format",       sbuildin)
 plugin_def("io_pcb",          "the original pcb format",   sbuildin)
 plugin_def("io_kicad_legacy", "Kicad's legacy format ",    sdisable)
 
