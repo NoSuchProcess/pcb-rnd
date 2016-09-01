@@ -39,7 +39,7 @@ static lht_node_t *build_text(const char *key, const char *value)
 
 static void build_board_meta(PCBType *pcb, lht_doc_t *brd)
 {
-	lht_node_t *meta, *f;
+	lht_node_t *meta;
 
 	meta = lht_dom_node_alloc(LHT_HASH, "meta");
 	lht_dom_hash_put(brd->root, meta);
@@ -47,12 +47,27 @@ static void build_board_meta(PCBType *pcb, lht_doc_t *brd)
 	lht_dom_hash_put(meta, build_text("board_name", pcb->Name));
 }
 
+static void build_attributes(lht_node_t *parent, AttributeListType *lst)
+{
+	int n;
+	lht_node_t *ln;
+
+	ln = lht_dom_node_alloc(LHT_HASH, "attributes");
+	lht_dom_hash_put(parent, ln);
+
+	for (n = 0; n < lst->Number; n++)
+		lht_dom_hash_put(ln, build_text(lst->List[n].name, lst->List[n].value));
+}
+
 static void build_data_layer(DataType *data, lht_node_t *parent, LayerType *layer)
 {
-	lht_node_t *meta;
+	lht_node_t *ln;
 
-	meta = lht_dom_node_alloc(LHT_HASH, layer->Name);
-	lht_dom_list_append(parent, meta);
+	ln = lht_dom_node_alloc(LHT_HASH, layer->Name);
+	lht_dom_list_append(parent, ln);
+
+	lht_dom_hash_put(ln, build_text("visible", layer->On ? "1" : "0"));
+	build_attributes(ln, &layer->Attributes);
 }
 
 static void build_data_layers(DataType *data, lht_doc_t *brd)
