@@ -142,6 +142,7 @@ static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 {
 	GtkTreeIter iter;
 
+	printf("Style increment %d currently selected \n", dialog->rss->selected);
 	if (dialog->rss->selected < 0)
 		return;
 
