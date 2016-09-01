@@ -12,6 +12,7 @@ The Dynamic DRC should be able to solve at least these tasks:
 		- detect minimal width (high current)
 		- detect poly hairpin
 		- number and length of stubs (hight freq)
+		- "via cage": a given network needs to be sorrounded by a set of gnd vias
 	- network related copper checks
 		- matched length lines (e.g. fast dram bus)
 		- balanced transmission line (distance between the tracks)
