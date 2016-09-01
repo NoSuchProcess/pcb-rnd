@@ -92,6 +92,10 @@ CLEANUP #6:
 		- low level reload code (re-add the dynamic menus too!)
 		- action to reload if file name is known
 		- gui load dialog with tags listed
+- decide about exporter policy:
+	- png exports selection (even in not-as-shown), others don't
+	- extend png hid attribs with a flag for this, maybe do the same for others
+	- document the decision in "hacking"
 
 - reduce
 		- hash in hid_attrib.c?
