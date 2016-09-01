@@ -59,15 +59,39 @@ static void build_attributes(lht_node_t *parent, AttributeListType *lst)
 		lht_dom_hash_put(ln, build_text(lst->List[n].name, lst->List[n].value));
 }
 
+static void build_line(lht_node_t *parent, LineType *line)
+{
+	char buff[128];
+	lht_node_t *ln;
+
+	sprintf(buff, "%d", line->ID);
+	ln = lht_dom_node_alloc(LHT_HASH, buff);
+	lht_dom_hash_put(parent, ln);
+
+#warning TODO: Flags
+	build_attributes(ln, &line->Attributes);
+	lht_dom_hash_put(ln, build_text("thickness", "line->Thickness"));
+	lht_dom_hash_put(ln, build_text("thickness", "line->Clearance"));
+
+}
+
 static void build_data_layer(DataType *data, lht_node_t *parent, LayerType *layer)
 {
-	lht_node_t *ln;
+	lht_node_t *ln, *grp;
+	LineType *li;
+	int n;
 
 	ln = lht_dom_node_alloc(LHT_HASH, layer->Name);
 	lht_dom_list_append(parent, ln);
 
 	lht_dom_hash_put(ln, build_text("visible", layer->On ? "1" : "0"));
 	build_attributes(ln, &layer->Attributes);
+
+	grp = lht_dom_node_alloc(LHT_HASH, "lines");
+	lht_dom_hash_put(ln, grp);
+
+	for(li = linelist_first(&layer->Line); li != NULL; li = linelist_next(li))
+		build_line(grp, li);
 }
 
 static void build_data_layers(DataType *data, lht_doc_t *brd)
