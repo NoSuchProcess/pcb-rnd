@@ -21,10 +21,22 @@
  */
 
 #include <stdio.h>
+#include "global.h"
+#include "data.h"
 #include "plugins.h"
 #include "plug_io.h"
 
+static lht_doc_t *build_board(PCBType *pcb)
+{
+	lht_doc_t *brd = lht_dom_init();
+	brd->root = lht_dom_node_alloc(LHT_HASH, "pcb-rnd-board-v1");
+}
+
 int io_lihata_write_pcb(plug_io_t *ctx, FILE * FP)
 {
-
+	int res;
+	lht_doc_t *brd = build_board(PCB);
+	res = lht_dom_export(brd->root, FP, "");
+	lht_dom_uninit(brd);
+	return res;
 }
