@@ -77,7 +77,7 @@ static void build_line(lht_node_t *parent, LineType *line)
 	char buff[128];
 	lht_node_t *ln;
 
-	sprintf(buff, "%d", line->ID);
+	sprintf(buff, "line.%d", line->ID);
 	ln = lht_dom_node_alloc(LHT_HASH, buff);
 	lht_dom_hash_put(parent, ln);
 
@@ -103,7 +103,7 @@ static void build_data_layer(DataType *data, lht_node_t *parent, LayerType *laye
 	lht_dom_hash_put(ln, build_text("visible", layer->On ? "1" : "0"));
 	build_attributes(ln, &layer->Attributes);
 
-	grp = lht_dom_node_alloc(LHT_HASH, "lines");
+	grp = lht_dom_node_alloc(LHT_HASH, "objects");
 	lht_dom_hash_put(ln, grp);
 
 	for(li = linelist_first(&layer->Line); li != NULL; li = linelist_next(li))
