@@ -72,14 +72,13 @@ static void build_attributes(lht_node_t *parent, AttributeListType *lst)
 		lht_dom_hash_put(ln, build_text(lst->List[n].name, lst->List[n].value));
 }
 
-static void build_line(lht_node_t *parent, LineType *line)
+static lht_node_t *build_line(LineType *line)
 {
 	char buff[128];
 	lht_node_t *ln;
 
 	sprintf(buff, "line.%d", line->ID);
 	ln = lht_dom_node_alloc(LHT_HASH, buff);
-	lht_dom_hash_put(parent, ln);
 
 #warning TODO: Flags
 	build_attributes(ln, &line->Attributes);
@@ -89,16 +88,17 @@ static void build_line(lht_node_t *parent, LineType *line)
 	lht_dom_hash_put(ln, build_textf("y1", "%mr", line->Point1.Y));
 	lht_dom_hash_put(ln, build_textf("x2", "%mr", line->Point2.X));
 	lht_dom_hash_put(ln, build_textf("y2", "%mr", line->Point2.Y));
+
+	return ln;
 }
 
-static void build_arc(lht_node_t *parent, ArcType *arc)
+static lht_node_t *build_arc(ArcType *arc)
 {
 	char buff[128];
 	lht_node_t *ln;
 
 	sprintf(buff, "arc.%d", arc->ID);
 	ln = lht_dom_node_alloc(LHT_HASH, buff);
-	lht_dom_hash_put(parent, ln);
 
 #warning TODO: Flags
 	build_attributes(ln, &arc->Attributes);
@@ -110,9 +110,11 @@ static void build_arc(lht_node_t *parent, ArcType *arc)
 	lht_dom_hash_put(ln, build_textf("height", "%mr", arc->Height));
 	lht_dom_hash_put(ln, build_textf("astart", "%ma", arc->StartAngle));
 	lht_dom_hash_put(ln, build_textf("adelta", "%ma", arc->Delta));
+
+	return ln;
 }
 
-static void build_data_layer(DataType *data, lht_node_t *parent, LayerType *layer)
+static lht_node_t *build_data_layer(DataType *data, LayerType *layer)
 {
 	lht_node_t *ln, *grp;
 	LineType *li;
@@ -120,7 +122,6 @@ static void build_data_layer(DataType *data, lht_node_t *parent, LayerType *laye
 	int n;
 
 	ln = lht_dom_node_alloc(LHT_HASH, layer->Name);
-	lht_dom_list_append(parent, ln);
 
 	lht_dom_hash_put(ln, build_text("visible", layer->On ? "1" : "0"));
 	build_attributes(ln, &layer->Attributes);
@@ -129,22 +130,25 @@ static void build_data_layer(DataType *data, lht_node_t *parent, LayerType *laye
 	lht_dom_hash_put(ln, grp);
 
 	for(li = linelist_first(&layer->Line); li != NULL; li = linelist_next(li))
-		build_line(grp, li);
+		lht_dom_hash_put(grp, build_line(li));
 
 	for(ar = arclist_first(&layer->Arc); ar != NULL; ar = arclist_next(li))
-		build_arc(grp, ar);
+		lht_dom_hash_put(grp, build_arc(ar));
+
+	return ln;
 }
 
-static void build_data_layers(DataType *data, lht_doc_t *brd)
+static lht_node_t *build_data_layers(DataType *data)
 {
 	int n;
 	lht_node_t *layers;
 
 	layers = lht_dom_node_alloc(LHT_LIST, "layers");
-	lht_dom_hash_put(brd->root, layers);
 
 	for(n = 0; n < max_copper_layer + 2; n++)
-		build_data_layer(data, layers, data->Layer+n);
+		lht_dom_list_append(layers, build_data_layer(data, data->Layer+n));
+
+	return layers;
 }
 
 static lht_doc_t *build_board(PCBType *pcb)
@@ -152,7 +156,7 @@ static lht_doc_t *build_board(PCBType *pcb)
 	lht_doc_t *brd = lht_dom_init();
 	brd->root = lht_dom_node_alloc(LHT_HASH, "pcb-rnd-board-v1");
 	build_board_meta(pcb, brd);
-	build_data_layers(pcb->Data, brd);
+	lht_dom_hash_put(brd->root, build_data_layers(pcb->Data));
 	return brd;
 }
 
