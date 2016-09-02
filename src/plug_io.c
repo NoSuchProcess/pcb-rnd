@@ -337,6 +337,14 @@ static int real_load_pcb(char *Filename, bool revert, bool require_font, int how
 	}
 
 	PCB = oldPCB;
+	if (PCB == NULL) {
+		/* bozo: we are trying to revert back to a non-existing pcb... create one to avoid a segfault */
+		PCB = CreateNewPCB_(false);
+		if (PCB == NULL) {
+			Message("FATAL: can't create a new empty pcb!");
+			exit(1);
+		}
+	}
 	hid_action("PCBChanged");
 
 	/* release unused memory */
