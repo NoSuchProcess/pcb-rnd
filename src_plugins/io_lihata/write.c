@@ -21,6 +21,7 @@
  */
 
 #include <stdio.h>
+#include <stdarg.h>
 #include "global.h"
 #include "data.h"
 #include "plugins.h"
@@ -34,6 +35,18 @@ static lht_node_t *build_text(const char *key, const char *value)
 	field = lht_dom_node_alloc(LHT_TEXT, key);
 	if (value != NULL)
 		field->data.text.value = pcb_strdup(value);
+	return field;
+}
+
+static lht_node_t *build_textf(const char *key, const char *fmt, ...)
+{
+	lht_node_t *field;
+	va_list ap;
+
+	field = lht_dom_node_alloc(LHT_TEXT, key);
+	va_start(ap, fmt);
+	field->data.text.value = pcb_strdup_vprintf(fmt, ap);
+	va_end(ap);
 	return field;
 }
 
@@ -70,9 +83,12 @@ static void build_line(lht_node_t *parent, LineType *line)
 
 #warning TODO: Flags
 	build_attributes(ln, &line->Attributes);
-	lht_dom_hash_put(ln, build_text("thickness", "line->Thickness"));
-	lht_dom_hash_put(ln, build_text("thickness", "line->Clearance"));
-
+	lht_dom_hash_put(ln, build_textf("thickness", "%mr", line->Thickness));
+	lht_dom_hash_put(ln, build_textf("clearance", "%mr", line->Clearance));
+	lht_dom_hash_put(ln, build_textf("x1", "%mr", line->Point1.X));
+	lht_dom_hash_put(ln, build_textf("y1", "%mr", line->Point1.Y));
+	lht_dom_hash_put(ln, build_textf("x2", "%mr", line->Point2.X));
+	lht_dom_hash_put(ln, build_textf("y2", "%mr", line->Point2.Y));
 }
 
 static void build_data_layer(DataType *data, lht_node_t *parent, LayerType *layer)
