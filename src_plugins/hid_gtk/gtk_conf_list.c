@@ -146,6 +146,8 @@ static void button_sel_cb(GtkButton * button, gtk_conf_list_t *cl)
 	if (idx < 0)
 		return;
 	fcd = gtk_file_chooser_dialog_new(cl->file_chooser_title, NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+	gtk_file_chooser_set_action(GTK_FILE_CHOOSER(fcd), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+
 	if (gtk_dialog_run(GTK_DIALOG(fcd)) == GTK_RESPONSE_ACCEPT) {
 		char *fno = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fcd));
 		const char *fn = fno;

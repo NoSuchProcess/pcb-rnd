@@ -959,14 +959,6 @@ static void config_library_apply(void)
 	fp_rehash();
 }
 
-static const char *fn_postproc(char *path)
-{
-	char *end = strrchr(path, '/');
-	if (end != NULL)
-		*end = '\0';
-	return path;
-}
-
 static char *get_misc_col_data(int row, int col, lht_node_t *nd)
 {
 	if ((nd != NULL) && (col == 1)) {
@@ -1119,7 +1111,7 @@ static void config_library_tab_create(GtkWidget * tab_vbox)
 	library_cl.reorder = 1;
 	library_cl.get_misc_col_data = NULL;
 	library_cl.file_chooser_title = "Select footprint library directory";
-	library_cl.file_chooser_postproc = fn_postproc;
+	library_cl.file_chooser_postproc = NULL;
 	library_cl.get_misc_col_data = get_misc_col_data;
 	library_cl.lst = config_library_list();
 	library_cl.pre_rebuild = pre_rebuild;
