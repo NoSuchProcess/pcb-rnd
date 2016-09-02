@@ -91,10 +91,32 @@ static void build_line(lht_node_t *parent, LineType *line)
 	lht_dom_hash_put(ln, build_textf("y2", "%mr", line->Point2.Y));
 }
 
+static void build_arc(lht_node_t *parent, ArcType *arc)
+{
+	char buff[128];
+	lht_node_t *ln;
+
+	sprintf(buff, "arc.%d", arc->ID);
+	ln = lht_dom_node_alloc(LHT_HASH, buff);
+	lht_dom_hash_put(parent, ln);
+
+#warning TODO: Flags
+	build_attributes(ln, &arc->Attributes);
+	lht_dom_hash_put(ln, build_textf("thickness", "%mr", arc->Thickness));
+	lht_dom_hash_put(ln, build_textf("clearance", "%mr", arc->Clearance));
+	lht_dom_hash_put(ln, build_textf("x", "%mr", arc->X));
+	lht_dom_hash_put(ln, build_textf("y", "%mr", arc->Y));
+	lht_dom_hash_put(ln, build_textf("width", "%mr", arc->Width));
+	lht_dom_hash_put(ln, build_textf("height", "%mr", arc->Height));
+	lht_dom_hash_put(ln, build_textf("astart", "%ma", arc->StartAngle));
+	lht_dom_hash_put(ln, build_textf("adelta", "%ma", arc->Delta));
+}
+
 static void build_data_layer(DataType *data, lht_node_t *parent, LayerType *layer)
 {
 	lht_node_t *ln, *grp;
 	LineType *li;
+	ArcType *ar;
 	int n;
 
 	ln = lht_dom_node_alloc(LHT_HASH, layer->Name);
@@ -108,6 +130,9 @@ static void build_data_layer(DataType *data, lht_node_t *parent, LayerType *laye
 
 	for(li = linelist_first(&layer->Line); li != NULL; li = linelist_next(li))
 		build_line(grp, li);
+
+	for(ar = arclist_first(&layer->Arc); ar != NULL; ar = arclist_next(li))
+		build_arc(grp, ar);
 }
 
 static void build_data_layers(DataType *data, lht_doc_t *brd)
