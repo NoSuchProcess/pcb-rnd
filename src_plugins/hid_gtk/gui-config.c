@@ -1071,7 +1071,7 @@ static GtkWidget *config_library_append_paths(int post_sep)
 			conf_native_t *nat = e->value;
 			char tmp[256];
 
-			sprintf(tmp, "  $(%s)", e->key+8);
+			sprintf(tmp, "  $(rc.path.%s)", e->key+8);
 			label = gtk_label_new(tmp);
 			gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 			gtk_box_pack_start(GTK_BOX(vbox_key), label, FALSE, FALSE, 0);
