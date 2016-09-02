@@ -2,6 +2,10 @@
 	- visible grid slowing down rendering [Erich]
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
 	- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
+	- gui window quit queues and doesn't work when action command is
+	active[report:miloh]
+	- prefernces->userPOV->increments window can get out of sync and
+	disappear[report:miloh]
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
