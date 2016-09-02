@@ -1,6 +1,7 @@
 - BUGS
 	- visible grid slowing down rendering [Erich]
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
+	- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
