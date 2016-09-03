@@ -26,6 +26,7 @@
 #include "data.h"
 #include "plugins.h"
 #include "plug_io.h"
+#include "strflags.h"
 #include "compat_misc.h"
 
 static lht_node_t *build_text(const char *key, const char *value)
@@ -72,6 +73,42 @@ static void build_attributes(lht_node_t *parent, AttributeListType *lst)
 		lht_dom_hash_put(ln, build_text(lst->List[n].name, lst->List[n].value));
 }
 
+/* Because all the macros expect it, that's why.  */
+typedef struct {
+	FlagType Flags;
+} flag_holder;
+
+static lht_node_t *build_flags(FlagType *f, int object_type)
+{
+	int n;
+	lht_node_t *hsh, *txt, *lst;
+	flag_holder fh;
+
+	fh.Flags = *f;
+
+	hsh = lht_dom_node_alloc(LHT_HASH, "flags");
+
+	/* create normal flag nodes */
+	for (n = 0; n < pcb_object_flagbits_len; n++) {
+		if ((pcb_object_flagbits[n].object_types & object_type) && (TEST_FLAG(pcb_object_flagbits[n].mask, &fh))) {
+			lht_dom_hash_put(hsh, lht_dom_node_alloc(LHT_TEXT, pcb_object_flagbits[n].name));
+			CLEAR_FLAG(pcb_object_flagbits[n].mask, &fh);
+		}
+	}
+
+	/* thermal flags per layer */
+	lst = lht_dom_node_alloc(LHT_HASH, "thermal");
+	lht_dom_hash_put(hsh, lst);
+	if (TEST_ANY_THERMS(&fh)) {
+		int t = GET_THERM(n, &fh);
+		char tmp[16];
+		sprintf(tmp, "%d", t);
+		lht_dom_hash_put(hsh, lht_dom_node_alloc(LHT_TEXT, t));
+	}
+
+	return hsh;
+}
+
 static lht_node_t *build_line(LineType *line)
 {
 	char buff[128];
@@ -80,8 +117,8 @@ static lht_node_t *build_line(LineType *line)
 	sprintf(buff, "line.%d", line->ID);
 	ln = lht_dom_node_alloc(LHT_HASH, buff);
 
-#warning TODO: Flags
 	build_attributes(ln, &line->Attributes);
+	lht_dom_hash_put(ln, build_flags(&line->Flags, PCB_TYPE_LINE));
 	lht_dom_hash_put(ln, build_textf("thickness", "%mr", line->Thickness));
 	lht_dom_hash_put(ln, build_textf("clearance", "%mr", line->Clearance));
 	lht_dom_hash_put(ln, build_textf("x1", "%mr", line->Point1.X));
@@ -100,8 +137,8 @@ static lht_node_t *build_arc(ArcType *arc)
 	sprintf(buff, "arc.%d", arc->ID);
 	ln = lht_dom_node_alloc(LHT_HASH, buff);
 
-#warning TODO: Flags
 	build_attributes(ln, &arc->Attributes);
+	lht_dom_hash_put(ln, build_flags(&arc->Flags, PCB_TYPE_ARC));
 	lht_dom_hash_put(ln, build_textf("thickness", "%mr", arc->Thickness));
 	lht_dom_hash_put(ln, build_textf("clearance", "%mr", arc->Clearance));
 	lht_dom_hash_put(ln, build_textf("x", "%mr", arc->X));
