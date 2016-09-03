@@ -22,6 +22,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <liblihata/tree.h>
 #include "global.h"
 #include "data.h"
 #include "plugins.h"
@@ -195,11 +196,50 @@ static lht_node_t *build_pin(PinType *pin, int is_via)
 	return ln;
 }
 
+static lht_node_t *build_polygon(PolygonType *poly)
+{
+	char buff[128];
+	lht_node_t *ln, *tbl, *geo;
+	Cardinal n, hole = 0;
+
+	sprintf(buff, "polygon.%ld", poly->ID);
+	ln = lht_dom_node_alloc(LHT_HASH, buff);
+
+	build_attributes(ln, &poly->Attributes);
+	lht_dom_hash_put(ln, build_flags(&poly->Flags, PCB_TYPE_VIA));
+
+	geo = lht_dom_node_alloc(LHT_LIST, "geometry");
+	lht_dom_hash_put(ln, geo);
+
+	tbl = lht_dom_node_alloc(LHT_TABLE, "contour");
+	tbl->data.table.cols = 2;
+	lht_dom_list_append(geo, tbl);
+
+	for(n = 0; n < poly->PointN; n++) {
+		int row;
+		if ((hole < poly->HoleIndexN) && (n == poly->HoleIndex[hole])) {
+			tbl = lht_dom_node_alloc(LHT_TABLE, "hole");
+			tbl->data.table.cols = 2;
+			lht_dom_list_append(geo, tbl);
+			hole++;
+		}
+
+		row = tbl->data.table.rows;
+		lht_tree_table_ins_row(tbl, row);
+		tbl->data.table.r[row][0] = build_textf(NULL, "%mr", poly->Points[n].X);
+		tbl->data.table.r[row][1] = build_textf(NULL, "%mr", poly->Points[n].Y);
+	}
+
+	return ln;
+}
+
+
 static lht_node_t *build_data_layer(DataType *data, LayerType *layer)
 {
 	lht_node_t *ln, *grp;
 	LineType *li;
 	ArcType *ar;
+	PolygonType *po;
 
 	ln = lht_dom_node_alloc(LHT_HASH, layer->Name);
 
@@ -214,6 +254,9 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer)
 
 	for(ar = arclist_first(&layer->Arc); ar != NULL; ar = arclist_next(ar))
 		lht_dom_list_append(grp, build_arc(ar));
+
+	for(po = polylist_first(&layer->Polygon); po != NULL; po = polylist_next(po))
+		lht_dom_list_append(grp, build_polygon(po));
 
 
 	return ln;
