@@ -275,21 +275,33 @@ static lht_node_t *build_data_layers(DataType *data)
 	return layers;
 }
 
+static lht_node_t *build_data(DataType *data)
+{
+	lht_node_t *grp, *ndt;
+	PinType *pi;
+
+	ndt = lht_dom_node_alloc(LHT_HASH, "data");
+
+	/* build layers */
+	lht_dom_hash_put(ndt, build_data_layers(data));
+
+	/* build a list of all global objects */
+	grp = lht_dom_node_alloc(LHT_LIST, "objects");
+	lht_dom_hash_put(ndt, grp);
+
+	for(pi = pinlist_first(&data->Via); pi != NULL; pi = pinlist_next(pi))
+		lht_dom_list_append(grp, build_pin(pi, 1));
+
+	return ndt;
+}
+
 static lht_doc_t *build_board(PCBType *pcb)
 {
 	lht_doc_t *brd = lht_dom_init();
-	lht_node_t *grp;
-	PinType *pi;
 
 	brd->root = lht_dom_node_alloc(LHT_HASH, "pcb-rnd-board-v1");
 	build_board_meta(pcb, brd);
-	lht_dom_hash_put(brd->root, build_data_layers(pcb->Data));
-
-	grp = lht_dom_node_alloc(LHT_LIST, "objects");
-	lht_dom_hash_put(brd->root, grp);
-
-	for(pi = pinlist_first(&pcb->Data->Via); pi != NULL; pi = pinlist_next(pi))
-		lht_dom_list_append(grp, build_pin(pi, 1));
+	lht_dom_hash_put(brd->root, build_data(pcb->Data));
 
 	return brd;
 }
