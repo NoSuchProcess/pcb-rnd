@@ -122,9 +122,14 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 				else
 					txt->data.text.value = pcb_strdup_printf("%d", t);
 				lht_dom_hash_put(lst, txt);
-				
 			}
 		}
+	}
+
+	if (f->q > 0) {
+		txt = lht_dom_node_alloc(LHT_TEXT, "shape");
+		txt->data.text.value = pcb_strdup_printf("%d", f->q);
+		lht_dom_hash_put(hsh, txt);
 	}
 
 	return hsh;
