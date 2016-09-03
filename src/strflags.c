@@ -50,7 +50,7 @@ typedef struct {
  */
 
 #define N(x) x, sizeof(x)-1
-static FlagBitsType object_flagbits[] = {
+FlagBitsType pcb_object_flagbits[] = {
 	{PCB_FLAG_PIN, N("pin"), PCB_TYPEMASK_ALL},
 	{PCB_FLAG_VIA, N("via"), PCB_TYPEMASK_ALL},
 	{PCB_FLAG_FOUND, N("found"), PCB_TYPEMASK_ALL},
@@ -402,7 +402,7 @@ common_string_to_flags(const char *flagstring, int (*error) (const char *msg), F
 
 FlagType string_to_flags(const char *flagstring, int (*error) (const char *msg))
 {
-	return common_string_to_flags(flagstring, error, object_flagbits, ENTRIES(object_flagbits));
+	return common_string_to_flags(flagstring, error, pcb_object_flagbits, ENTRIES(pcb_object_flagbits));
 }
 
 
@@ -533,6 +533,6 @@ char *common_flags_to_string(FlagType flags, int object_type, FlagBitsType * fla
 
 char *flags_to_string(FlagType flags, int object_type)
 {
-	return common_flags_to_string(flags, object_type, object_flagbits, ENTRIES(object_flagbits));
+	return common_flags_to_string(flags, object_type, pcb_object_flagbits, ENTRIES(pcb_object_flagbits));
 }
 

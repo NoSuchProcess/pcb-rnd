@@ -45,6 +45,8 @@ typedef struct {
 
 } FlagBitsType;
 
+/* All flags natively known by the core */
+extern FlagBitsType pcb_object_flagbits[];
 
 /* The purpose of this interface is to make the file format able to
    handle more than 32 flags, and to hide the internal details of
