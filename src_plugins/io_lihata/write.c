@@ -116,7 +116,7 @@ static lht_node_t *build_line(LineType *line)
 	char buff[128];
 	lht_node_t *ln;
 
-	sprintf(buff, "line.%d", line->ID);
+	sprintf(buff, "line.%ld", line->ID);
 	ln = lht_dom_node_alloc(LHT_HASH, buff);
 
 	build_attributes(ln, &line->Attributes);
@@ -136,7 +136,7 @@ static lht_node_t *build_arc(ArcType *arc)
 	char buff[128];
 	lht_node_t *ln;
 
-	sprintf(buff, "arc.%d", arc->ID);
+	sprintf(buff, "arc.%ld", arc->ID);
 	ln = lht_dom_node_alloc(LHT_HASH, buff);
 
 	build_attributes(ln, &arc->Attributes);
@@ -179,8 +179,6 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer)
 	LineType *li;
 	ArcType *ar;
 
-	int n;
-
 	ln = lht_dom_node_alloc(LHT_HASH, layer->Name);
 
 	lht_dom_hash_put(ln, build_text("visible", layer->On ? "1" : "0"));
@@ -192,7 +190,7 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer)
 	for(li = linelist_first(&layer->Line); li != NULL; li = linelist_next(li))
 		lht_dom_hash_put(grp, build_line(li));
 
-	for(ar = arclist_first(&layer->Arc); ar != NULL; ar = arclist_next(li))
+	for(ar = arclist_first(&layer->Arc); ar != NULL; ar = arclist_next(ar))
 		lht_dom_hash_put(grp, build_arc(ar));
 
 
@@ -214,7 +212,8 @@ static lht_node_t *build_data_layers(DataType *data)
 
 static lht_doc_t *build_board(PCBType *pcb)
 {
-	lht_doc_t *grp, *brd = lht_dom_init();
+	lht_doc_t *brd = lht_dom_init();
+	lht_node_t *grp;
 	PinType *pi;
 
 	brd->root = lht_dom_node_alloc(LHT_HASH, "pcb-rnd-board-v1");
