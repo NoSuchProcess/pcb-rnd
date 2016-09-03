@@ -38,6 +38,13 @@
 
 #include "pcb-printf.h"
 
+const char *pcb_printf_slot[PCB_PRINTF_SLOT_max] = 
+{
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, /* 8 user formats */
+	"%mr",      /* original file format coord */
+	"%.07$mS"   /* safe file format coord */
+};
+
 static int min_sig_figs(double d)
 {
 	char buf[50];
@@ -255,12 +262,15 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 {
 	gds_t spec;
 	char tmp[128]; /* large enough for rendering a long long int */
-	int tmplen, retval = -1;
+	int tmplen, retval = -1, slot_recursion = 0;
+	char *free_fmt = NULL;
+
 
 	enum e_allow mask = ALLOW_ALL;
 
 	gds_init(&spec);
 
+	new_fmt:;
 	while (*fmt) {
 		enum e_suffix suffix = NO_SUFFIX;
 
@@ -274,7 +284,8 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 			/* Get printf sub-specifiers */
 			if (gds_append(&spec, *fmt++) != 0) goto err;
 			while (isdigit(*fmt) || *fmt == '.' || *fmt == ' ' || *fmt == '*'
-						 || *fmt == '#' || *fmt == 'l' || *fmt == 'L' || *fmt == 'h' || *fmt == '+' || *fmt == '-') {
+						 || *fmt == '#' || *fmt == 'l' || *fmt == 'L' || *fmt == 'h'
+						 || *fmt == '+' || *fmt == '-' || *fmt == '[' || *fmt == ']') {
 				if (*fmt == '*') {
 					char itmp[32];
 					int ilen;
@@ -285,6 +296,34 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				else
 					if (gds_append(&spec, *fmt++) != 0) goto err;
 			}
+			if ((gds_len(&spec) > 2) && (spec.array[1] == '[')) {
+				int slot = atoi(spec.array+2);
+				gds_t new_spec;
+				if ((slot < 0) || (slot > PCB_PRINTF_SLOT_max)) {
+					fprintf(stderr, "Internal error: invalid printf slot addressed: '%s'\n", spec.array);
+					abort();
+				}
+				slot_recursion++;
+				if (slot_recursion > 16) {
+					fprintf(stderr, "Internal error: printf slot recursion too deep on addressed: '%s'\n", spec.array);
+					abort();
+				}
+				if (pcb_printf_slot[slot] == NULL) {
+					fprintf(stderr, "Internal error: printf empty slot reference: '%s'\n", spec.array);
+					abort();
+				}
+				gds_init(&new_spec);
+				gds_append_str(&new_spec, pcb_printf_slot[slot]);
+				gds_append_str(&new_spec, fmt);
+				if (free_fmt != NULL)
+					free(free_fmt);
+				fmt = free_fmt = new_spec.array;
+				memset(&new_spec, 0, sizeof(new_spec));
+				gds_truncate(&spec, 0);
+				goto new_fmt;
+			}
+			else
+				slot_recursion = 0;
 			/* Get our sub-specifiers */
 			if (*fmt == '#') {
 				mask = ALLOW_CMIL;			/* This must be pcb's base unit */
@@ -471,6 +510,8 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 	retval = 0;
 err:;
 	gds_uninit(&spec);
+	if (free_fmt != NULL)
+		free(free_fmt);
 
 	return retval;
 }

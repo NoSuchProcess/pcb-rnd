@@ -60,6 +60,7 @@
  * These accept the usual printf modifiers for %f, as well as
  *     $    output a unit suffix after the measure
  *     .0n  where n is a digit; same as %.n, but truncates trailing zeros
+ *     [n]  use stored format n
  *     #    prevents all scaling for %mS/D/1/.../9 (this should
  *          ONLY be used for debug code since its output exposes
  *          pcb's base units).
@@ -89,5 +90,22 @@ char *pcb_strdup_vprintf(const char *fmt, va_list args);
 
 int pcb_append_printf(gds_t *str, const char *fmt, ...);
 int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args);
+
+/* Predefined slots (macros): %[n] will use the nth string from this list.
+   The first 8 are user-definable. */
+typedef enum {
+	PCB_PRINTF_SLOT_USER0,
+	PCB_PRINTF_SLOT_USER1,
+	PCB_PRINTF_SLOT_USER2,
+	PCB_PRINTF_SLOT_USER3,
+	PCB_PRINTF_SLOT_USER4,
+	PCB_PRINTF_SLOT_USER5,
+	PCB_PRINTF_SLOT_USER6,
+	PCB_PRINTF_SLOT_USER7,
+	PCB_PRINTF_SLOT_FF_ORIG_COORD, /* %[8] original .pcb file format coord prints */
+	PCB_PRINTF_SLOT_FF_SAFE_COORD, /* %[9] safe .pcb file format coord print that doesn't lose precision */
+	PCB_PRINTF_SLOT_max
+} pcb_printf_slot_idx_t;
+extern const char *pcb_printf_slot[PCB_PRINTF_SLOT_max];
 
 #endif
