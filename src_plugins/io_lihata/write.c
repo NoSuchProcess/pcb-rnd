@@ -91,7 +91,9 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 	/* create normal flag nodes */
 	for (n = 0; n < pcb_object_flagbits_len; n++) {
 		if ((pcb_object_flagbits[n].object_types & object_type) && (TEST_FLAG(pcb_object_flagbits[n].mask, &fh))) {
-			lht_dom_hash_put(hsh, lht_dom_node_alloc(LHT_TEXT, pcb_object_flagbits[n].name));
+			txt = lht_dom_node_alloc(LHT_TEXT, pcb_object_flagbits[n].name);
+			txt->data.text.value = pcb_strdup("1");
+			lht_dom_hash_put(hsh, txt);
 			CLEAR_FLAG(pcb_object_flagbits[n].mask, &fh);
 		}
 	}
@@ -103,7 +105,7 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 		int t = GET_THERM(n, &fh);
 		char tmp[16];
 		sprintf(tmp, "%d", t);
-		lht_dom_hash_put(hsh, lht_dom_node_alloc(LHT_TEXT, t));
+		lht_dom_hash_put(lst, lht_dom_node_alloc(LHT_TEXT, tmp));
 	}
 
 	return hsh;
@@ -151,11 +153,32 @@ static lht_node_t *build_arc(ArcType *arc)
 	return ln;
 }
 
+static lht_node_t *build_pin(PinType *pin, int is_via)
+{
+	char buff[128];
+	lht_node_t *ln;
+
+	sprintf(buff, "%s.%ld", is_via ? "via" : "pin", pin->ID);
+	ln = lht_dom_node_alloc(LHT_HASH, buff);
+
+	build_attributes(ln, &pin->Attributes);
+	lht_dom_hash_put(ln, build_flags(&pin->Flags, PCB_TYPE_VIA));
+	lht_dom_hash_put(ln, build_textf("thickness", "%mr", pin->Thickness));
+	lht_dom_hash_put(ln, build_textf("clearance", "%mr", pin->Clearance));
+	lht_dom_hash_put(ln, build_textf("mask", "%mr", pin->Mask));
+	lht_dom_hash_put(ln, build_textf("hole", "%mr", pin->DrillingHole));
+	lht_dom_hash_put(ln, build_textf("x", "%mr", pin->X));
+	lht_dom_hash_put(ln, build_textf("y", "%mr", pin->Y));
+	lht_dom_hash_put(ln, build_text("name", pin->Name));
+	return ln;
+}
+
 static lht_node_t *build_data_layer(DataType *data, LayerType *layer)
 {
 	lht_node_t *ln, *grp;
 	LineType *li;
 	ArcType *ar;
+
 	int n;
 
 	ln = lht_dom_node_alloc(LHT_HASH, layer->Name);
@@ -171,6 +194,7 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer)
 
 	for(ar = arclist_first(&layer->Arc); ar != NULL; ar = arclist_next(li))
 		lht_dom_hash_put(grp, build_arc(ar));
+
 
 	return ln;
 }
@@ -190,10 +214,19 @@ static lht_node_t *build_data_layers(DataType *data)
 
 static lht_doc_t *build_board(PCBType *pcb)
 {
-	lht_doc_t *brd = lht_dom_init();
+	lht_doc_t *grp, *brd = lht_dom_init();
+	PinType *pi;
+
 	brd->root = lht_dom_node_alloc(LHT_HASH, "pcb-rnd-board-v1");
 	build_board_meta(pcb, brd);
 	lht_dom_hash_put(brd->root, build_data_layers(pcb->Data));
+
+	grp = lht_dom_node_alloc(LHT_HASH, "objects");
+	lht_dom_hash_put(brd->root, grp);
+
+	for(pi = pinlist_first(&pcb->Data->Via); pi != NULL; pi = pinlist_next(pi))
+		lht_dom_hash_put(grp, build_pin(pi, 1));
+
 	return brd;
 }
 
