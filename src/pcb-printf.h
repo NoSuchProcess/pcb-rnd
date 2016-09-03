@@ -59,6 +59,7 @@
  *
  * These accept the usual printf modifiers for %f, as well as
  *     $    output a unit suffix after the measure
+ *     .0n  where n is a digit; same as %.n, but truncates trailing zeros
  *     #    prevents all scaling for %mS/D/1/.../9 (this should
  *          ONLY be used for debug code since its output exposes
  *          pcb's base units).

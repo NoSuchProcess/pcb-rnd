@@ -58,6 +58,17 @@ static int min_sig_figs(double d)
 	return rv;
 }
 
+/* Truncate trailing 0's from str */
+static void do_trunc0(char *str)
+{
+	char *end = str + strlen(str) - 1;
+	while((end > str) && (*end == '0') && (end[-1] != '.')) {
+		*end = '\0';
+		end--;
+	}
+}
+
+
 /* \brief Internal coord-to-string converter for pcb-printf
  * \par Function Description
  * Converts a (group of) measurement(s) to a comma-deliminated
@@ -82,7 +93,7 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 	double *value, value_local[32];
 	enum e_family family;
 	const char *suffix;
-	int i, n, retval = -1;
+	int i, n, retval = -1, trunc0 = 0;
 	const char *printf_spec = printf_spec_->array;
 	char *printf_spec_new;
 
@@ -166,8 +177,11 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 				 printf_spec[i] == '-' || printf_spec[i] == '+' || printf_spec[i] == '#' || printf_spec[i] == '0')
 		++i;
 
-	if (printf_spec[i] == '.')
+	if (printf_spec[i] == '.') {
+		if (printf_spec[i+1] == '0')
+			trunc0 = 1;
 		sprintf(printf_spec_new, ", %sf", printf_spec);
+	}
 	else
 		sprintf(printf_spec_new, ", %s.%df", printf_spec, Units[n].default_prec);
 
@@ -183,6 +197,8 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 	}
 	else
 		sprintf(filemode_buff, printf_spec_new + 2, value[0]);
+	if (trunc0)
+		do_trunc0(filemode_buff);
 	if (gds_append_str(dest, filemode_buff) != 0) goto err;
 	for (i = 1; i < n_coords; ++i) {
 		if (suffix_type == FILE_MODE) {
@@ -195,6 +211,8 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 		if (gds_append_str(dest, filemode_buff) != 0)
 			goto err;
 	}
+	if (trunc0)
+		do_trunc0(filemode_buff);
 	if (n_coords > 1)
 		if (gds_append(dest, ')') != 0) goto err;
 	/* Append suffix */
