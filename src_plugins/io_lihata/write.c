@@ -101,9 +101,7 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 	/* create normal flag nodes */
 	for (n = 0; n < pcb_object_flagbits_len; n++) {
 		if ((pcb_object_flagbits[n].object_types & object_type) && (TEST_FLAG(pcb_object_flagbits[n].mask, &fh))) {
-			txt = lht_dom_node_alloc(LHT_TEXT, pcb_object_flagbits[n].name);
-			txt->data.text.value = pcb_strdup("1");
-			lht_dom_hash_put(hsh, txt);
+			lht_dom_hash_put(hsh, build_text(pcb_object_flagbits[n].name, "1"));
 			CLEAR_FLAG(pcb_object_flagbits[n].mask, &fh);
 		}
 	}
@@ -126,11 +124,11 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 		}
 	}
 
-	if (f->q > 0) {
-		txt = lht_dom_node_alloc(LHT_TEXT, "shape");
-		txt->data.text.value = pcb_strdup_printf("%d", f->q);
-		lht_dom_hash_put(hsh, txt);
-	}
+	if (f->q > 0)
+		lht_dom_hash_put(hsh, build_textf("shape", "%d", f->q));
+
+	if (f->int_conn_grp > 0)
+		lht_dom_hash_put(hsh, build_textf("intconn", "%d", f->int_conn_grp));
 
 	return hsh;
 }
