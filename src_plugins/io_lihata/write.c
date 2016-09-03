@@ -254,6 +254,38 @@ static lht_node_t *build_polygon(PolygonType *poly)
 	return obj;
 }
 
+static lht_node_t *build_element(ElementType *elem)
+{
+	char buff[128];
+	LineType *li;
+	ArcType *ar;
+	PinType *pi;
+	PadType *pa;
+	lht_node_t *obj, *lst;
+
+	sprintf(buff, "element.%ld", elem->ID);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	lht_dom_hash_put(obj, build_text("desc", elem->Name[DESCRIPTION_INDEX].TextString));
+	lht_dom_hash_put(obj, build_text("name", elem->Name[NAMEONPCB_INDEX].TextString));
+	lht_dom_hash_put(obj, build_text("value", elem->Name[VALUE_INDEX].TextString));
+
+	/* build drawing primitives */
+	lst = lht_dom_node_alloc(LHT_LIST, "objects");
+	lht_dom_hash_put(obj, lst);
+
+	for(li = linelist_first(&elem->Line); li != NULL; li = linelist_next(li))
+		lht_dom_list_append(lst, build_line(li));
+
+	for(ar = arclist_first(&elem->Arc); ar != NULL; ar = arclist_next(ar))
+		lht_dom_list_append(lst, build_arc(ar));
+
+	for(pi = pinlist_first(&elem->Pin); pi != NULL; pi = pinlist_next(pi))
+		lht_dom_list_append(lst, build_pin(pi, 0));
+
+	return obj;
+}
+
 
 static lht_node_t *build_data_layer(DataType *data, LayerType *layer)
 {
@@ -296,10 +328,12 @@ static lht_node_t *build_data_layers(DataType *data)
 	return layers;
 }
 
+
 static lht_node_t *build_data(DataType *data)
 {
 	lht_node_t *grp, *ndt;
 	PinType *pi;
+	ElementType *el;
 
 	ndt = lht_dom_node_alloc(LHT_HASH, "data");
 
@@ -312,6 +346,9 @@ static lht_node_t *build_data(DataType *data)
 
 	for(pi = pinlist_first(&data->Via); pi != NULL; pi = pinlist_next(pi))
 		lht_dom_list_append(grp, build_pin(pi, 1));
+
+	for(el = elementlist_first(&data->Element); el != NULL; el = elementlist_next(el))
+		lht_dom_list_append(grp, build_element(el));
 
 	return ndt;
 }
