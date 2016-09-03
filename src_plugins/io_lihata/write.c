@@ -31,6 +31,8 @@
 #include "compat_misc.h"
 #include "macro.h"
 
+#define CFMT "%[9]"
+
 static lht_node_t *build_text(const char *key, const char *value)
 {
 	lht_node_t *field;
@@ -62,23 +64,23 @@ static lht_node_t *build_board_meta(PCBType *pcb)
 
 	grp = lht_dom_node_alloc(LHT_HASH, "grid");
 	lht_dom_hash_put(meta, grp);
-	lht_dom_hash_put(grp, build_textf("offs_x", "%mr", pcb->GridOffsetX));
-	lht_dom_hash_put(grp, build_textf("offs_y", "%mr", pcb->GridOffsetY));
-	lht_dom_hash_put(grp, build_textf("spacing", "%mr", pcb->Grid));
+	lht_dom_hash_put(grp, build_textf("offs_x", CFMT, pcb->GridOffsetX));
+	lht_dom_hash_put(grp, build_textf("offs_y", CFMT, pcb->GridOffsetY));
+	lht_dom_hash_put(grp, build_textf("spacing", CFMT, pcb->Grid));
 
 	grp = lht_dom_node_alloc(LHT_HASH, "size");
 	lht_dom_hash_put(meta, grp);
-	lht_dom_hash_put(grp, build_textf("x", "%mr", pcb->MaxWidth));
-	lht_dom_hash_put(grp, build_textf("y", "%mr", pcb->MaxHeight));
+	lht_dom_hash_put(grp, build_textf("x", CFMT, pcb->MaxWidth));
+	lht_dom_hash_put(grp, build_textf("y", CFMT, pcb->MaxHeight));
 
 	grp = lht_dom_node_alloc(LHT_HASH, "drc");
 	lht_dom_hash_put(meta, grp);
-	lht_dom_hash_put(grp, build_textf("bloat",     "%mr", pcb->Bloat));
-	lht_dom_hash_put(grp, build_textf("shrink",    "%mr", pcb->Shrink));
-	lht_dom_hash_put(grp, build_textf("min_width", "%mr", pcb->minWid));
-	lht_dom_hash_put(grp, build_textf("min_silk",  "%mr", pcb->minSlk));
-	lht_dom_hash_put(grp, build_textf("min_drill", "%mr", pcb->minDrill));
-	lht_dom_hash_put(grp, build_textf("min_ring",  "%mr", pcb->minRing));
+	lht_dom_hash_put(grp, build_textf("bloat",     CFMT, pcb->Bloat));
+	lht_dom_hash_put(grp, build_textf("shrink",    CFMT, pcb->Shrink));
+	lht_dom_hash_put(grp, build_textf("min_width", CFMT, pcb->minWid));
+	lht_dom_hash_put(grp, build_textf("min_silk",  CFMT, pcb->minSlk));
+	lht_dom_hash_put(grp, build_textf("min_drill", CFMT, pcb->minDrill));
+	lht_dom_hash_put(grp, build_textf("min_ring",  CFMT, pcb->minRing));
 
 	return meta;
 }
@@ -165,12 +167,12 @@ static lht_node_t *build_line(LineType *line)
 
 	lht_dom_hash_put(obj, build_attributes(&line->Attributes));
 	lht_dom_hash_put(obj, build_flags(&line->Flags, PCB_TYPE_LINE));
-	lht_dom_hash_put(obj, build_textf("thickness", "%mr", line->Thickness));
-	lht_dom_hash_put(obj, build_textf("clearance", "%mr", line->Clearance));
-	lht_dom_hash_put(obj, build_textf("x1", "%mr", line->Point1.X));
-	lht_dom_hash_put(obj, build_textf("y1", "%mr", line->Point1.Y));
-	lht_dom_hash_put(obj, build_textf("x2", "%mr", line->Point2.X));
-	lht_dom_hash_put(obj, build_textf("y2", "%mr", line->Point2.Y));
+	lht_dom_hash_put(obj, build_textf("thickness", CFMT, line->Thickness));
+	lht_dom_hash_put(obj, build_textf("clearance", CFMT, line->Clearance));
+	lht_dom_hash_put(obj, build_textf("x1", CFMT, line->Point1.X));
+	lht_dom_hash_put(obj, build_textf("y1", CFMT, line->Point1.Y));
+	lht_dom_hash_put(obj, build_textf("x2", CFMT, line->Point2.X));
+	lht_dom_hash_put(obj, build_textf("y2", CFMT, line->Point2.Y));
 
 	return obj;
 }
@@ -185,12 +187,12 @@ static lht_node_t *build_arc(ArcType *arc)
 
 	lht_dom_hash_put(obj, build_attributes(&arc->Attributes));
 	lht_dom_hash_put(obj, build_flags(&arc->Flags, PCB_TYPE_ARC));
-	lht_dom_hash_put(obj, build_textf("thickness", "%mr", arc->Thickness));
-	lht_dom_hash_put(obj, build_textf("clearance", "%mr", arc->Clearance));
-	lht_dom_hash_put(obj, build_textf("x", "%mr", arc->X));
-	lht_dom_hash_put(obj, build_textf("y", "%mr", arc->Y));
-	lht_dom_hash_put(obj, build_textf("width", "%mr", arc->Width));
-	lht_dom_hash_put(obj, build_textf("height", "%mr", arc->Height));
+	lht_dom_hash_put(obj, build_textf("thickness", CFMT, arc->Thickness));
+	lht_dom_hash_put(obj, build_textf("clearance", CFMT, arc->Clearance));
+	lht_dom_hash_put(obj, build_textf("x", CFMT, arc->X));
+	lht_dom_hash_put(obj, build_textf("y", CFMT, arc->Y));
+	lht_dom_hash_put(obj, build_textf("width", CFMT, arc->Width));
+	lht_dom_hash_put(obj, build_textf("height", CFMT, arc->Height));
 	lht_dom_hash_put(obj, build_textf("astart", "%ma", arc->StartAngle));
 	lht_dom_hash_put(obj, build_textf("adelta", "%ma", arc->Delta));
 
@@ -207,12 +209,12 @@ static lht_node_t *build_pin(PinType *pin, int is_via)
 
 	lht_dom_hash_put(obj, build_attributes(&pin->Attributes));
 	lht_dom_hash_put(obj, build_flags(&pin->Flags, PCB_TYPE_VIA));
-	lht_dom_hash_put(obj, build_textf("thickness", "%mr", pin->Thickness));
-	lht_dom_hash_put(obj, build_textf("clearance", "%mr", pin->Clearance));
-	lht_dom_hash_put(obj, build_textf("mask", "%mr", pin->Mask));
-	lht_dom_hash_put(obj, build_textf("hole", "%mr", pin->DrillingHole));
-	lht_dom_hash_put(obj, build_textf("x", "%mr", pin->X));
-	lht_dom_hash_put(obj, build_textf("y", "%mr", pin->Y));
+	lht_dom_hash_put(obj, build_textf("thickness", CFMT, pin->Thickness));
+	lht_dom_hash_put(obj, build_textf("clearance", CFMT, pin->Clearance));
+	lht_dom_hash_put(obj, build_textf("mask", CFMT, pin->Mask));
+	lht_dom_hash_put(obj, build_textf("hole", CFMT, pin->DrillingHole));
+	lht_dom_hash_put(obj, build_textf("x", CFMT, pin->X));
+	lht_dom_hash_put(obj, build_textf("y", CFMT, pin->Y));
 	lht_dom_hash_put(obj, build_text("name", pin->Name));
 	return obj;
 }
@@ -247,8 +249,8 @@ static lht_node_t *build_polygon(PolygonType *poly)
 
 		row = tbl->data.table.rows;
 		lht_tree_table_ins_row(tbl, row);
-		tbl->data.table.r[row][0] = build_textf(NULL, "%mr", poly->Points[n].X);
-		tbl->data.table.r[row][1] = build_textf(NULL, "%mr", poly->Points[n].Y);
+		tbl->data.table.r[row][0] = build_textf(NULL, CFMT, poly->Points[n].X);
+		tbl->data.table.r[row][1] = build_textf(NULL, CFMT, poly->Points[n].Y);
 	}
 
 	return obj;
