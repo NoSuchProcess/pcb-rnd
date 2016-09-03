@@ -2,14 +2,19 @@ TRUNK = ../..
 SRC=$(TRUNK)/src
 CFLAGS_OP = -O3
 CFLAGS = -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd -I$(TRUNK)/src_3rd/liblihata
+LDFLAGS = -lm
 
 GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
 
-all: tester_spd
+all: tester_spd prcli
 
 test: tester.diff
 	@echo "*** all ok, QC PASS ***"
 	@rm tester.stdout ; true
+
+prcli: prcli.o $(SRC)/pcb-printf.o $(SRC)/unit.o $(GDS) $(SRC)/misc_util.o $(GDS)
+
+prcli.o: prcli.c
 
 tester: tester.o $(SRC)/pcb-printf.o $(SRC)/unit.o $(GDS)
 
