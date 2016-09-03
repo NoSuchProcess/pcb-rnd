@@ -137,79 +137,79 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 static lht_node_t *build_line(LineType *line)
 {
 	char buff[128];
-	lht_node_t *ln;
+	lht_node_t *obj;
 
 	sprintf(buff, "line.%ld", line->ID);
-	ln = lht_dom_node_alloc(LHT_HASH, buff);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
-	build_attributes(ln, &line->Attributes);
-	lht_dom_hash_put(ln, build_flags(&line->Flags, PCB_TYPE_LINE));
-	lht_dom_hash_put(ln, build_textf("thickness", "%mr", line->Thickness));
-	lht_dom_hash_put(ln, build_textf("clearance", "%mr", line->Clearance));
-	lht_dom_hash_put(ln, build_textf("x1", "%mr", line->Point1.X));
-	lht_dom_hash_put(ln, build_textf("y1", "%mr", line->Point1.Y));
-	lht_dom_hash_put(ln, build_textf("x2", "%mr", line->Point2.X));
-	lht_dom_hash_put(ln, build_textf("y2", "%mr", line->Point2.Y));
+	build_attributes(obj, &line->Attributes);
+	lht_dom_hash_put(obj, build_flags(&line->Flags, PCB_TYPE_LINE));
+	lht_dom_hash_put(obj, build_textf("thickness", "%mr", line->Thickness));
+	lht_dom_hash_put(obj, build_textf("clearance", "%mr", line->Clearance));
+	lht_dom_hash_put(obj, build_textf("x1", "%mr", line->Point1.X));
+	lht_dom_hash_put(obj, build_textf("y1", "%mr", line->Point1.Y));
+	lht_dom_hash_put(obj, build_textf("x2", "%mr", line->Point2.X));
+	lht_dom_hash_put(obj, build_textf("y2", "%mr", line->Point2.Y));
 
-	return ln;
+	return obj;
 }
 
 static lht_node_t *build_arc(ArcType *arc)
 {
 	char buff[128];
-	lht_node_t *ln;
+	lht_node_t *obj;
 
 	sprintf(buff, "arc.%ld", arc->ID);
-	ln = lht_dom_node_alloc(LHT_HASH, buff);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
-	build_attributes(ln, &arc->Attributes);
-	lht_dom_hash_put(ln, build_flags(&arc->Flags, PCB_TYPE_ARC));
-	lht_dom_hash_put(ln, build_textf("thickness", "%mr", arc->Thickness));
-	lht_dom_hash_put(ln, build_textf("clearance", "%mr", arc->Clearance));
-	lht_dom_hash_put(ln, build_textf("x", "%mr", arc->X));
-	lht_dom_hash_put(ln, build_textf("y", "%mr", arc->Y));
-	lht_dom_hash_put(ln, build_textf("width", "%mr", arc->Width));
-	lht_dom_hash_put(ln, build_textf("height", "%mr", arc->Height));
-	lht_dom_hash_put(ln, build_textf("astart", "%ma", arc->StartAngle));
-	lht_dom_hash_put(ln, build_textf("adelta", "%ma", arc->Delta));
+	build_attributes(obj, &arc->Attributes);
+	lht_dom_hash_put(obj, build_flags(&arc->Flags, PCB_TYPE_ARC));
+	lht_dom_hash_put(obj, build_textf("thickness", "%mr", arc->Thickness));
+	lht_dom_hash_put(obj, build_textf("clearance", "%mr", arc->Clearance));
+	lht_dom_hash_put(obj, build_textf("x", "%mr", arc->X));
+	lht_dom_hash_put(obj, build_textf("y", "%mr", arc->Y));
+	lht_dom_hash_put(obj, build_textf("width", "%mr", arc->Width));
+	lht_dom_hash_put(obj, build_textf("height", "%mr", arc->Height));
+	lht_dom_hash_put(obj, build_textf("astart", "%ma", arc->StartAngle));
+	lht_dom_hash_put(obj, build_textf("adelta", "%ma", arc->Delta));
 
-	return ln;
+	return obj;
 }
 
 static lht_node_t *build_pin(PinType *pin, int is_via)
 {
 	char buff[128];
-	lht_node_t *ln;
+	lht_node_t *obj;
 
 	sprintf(buff, "%s.%ld", is_via ? "via" : "pin", pin->ID);
-	ln = lht_dom_node_alloc(LHT_HASH, buff);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
-	build_attributes(ln, &pin->Attributes);
-	lht_dom_hash_put(ln, build_flags(&pin->Flags, PCB_TYPE_VIA));
-	lht_dom_hash_put(ln, build_textf("thickness", "%mr", pin->Thickness));
-	lht_dom_hash_put(ln, build_textf("clearance", "%mr", pin->Clearance));
-	lht_dom_hash_put(ln, build_textf("mask", "%mr", pin->Mask));
-	lht_dom_hash_put(ln, build_textf("hole", "%mr", pin->DrillingHole));
-	lht_dom_hash_put(ln, build_textf("x", "%mr", pin->X));
-	lht_dom_hash_put(ln, build_textf("y", "%mr", pin->Y));
-	lht_dom_hash_put(ln, build_text("name", pin->Name));
-	return ln;
+	build_attributes(obj, &pin->Attributes);
+	lht_dom_hash_put(obj, build_flags(&pin->Flags, PCB_TYPE_VIA));
+	lht_dom_hash_put(obj, build_textf("thickness", "%mr", pin->Thickness));
+	lht_dom_hash_put(obj, build_textf("clearance", "%mr", pin->Clearance));
+	lht_dom_hash_put(obj, build_textf("mask", "%mr", pin->Mask));
+	lht_dom_hash_put(obj, build_textf("hole", "%mr", pin->DrillingHole));
+	lht_dom_hash_put(obj, build_textf("x", "%mr", pin->X));
+	lht_dom_hash_put(obj, build_textf("y", "%mr", pin->Y));
+	lht_dom_hash_put(obj, build_text("name", pin->Name));
+	return obj;
 }
 
 static lht_node_t *build_polygon(PolygonType *poly)
 {
 	char buff[128];
-	lht_node_t *ln, *tbl, *geo;
+	lht_node_t *obj, *tbl, *geo;
 	Cardinal n, hole = 0;
 
 	sprintf(buff, "polygon.%ld", poly->ID);
-	ln = lht_dom_node_alloc(LHT_HASH, buff);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
-	build_attributes(ln, &poly->Attributes);
-	lht_dom_hash_put(ln, build_flags(&poly->Flags, PCB_TYPE_VIA));
+	build_attributes(obj, &poly->Attributes);
+	lht_dom_hash_put(obj, build_flags(&poly->Flags, PCB_TYPE_VIA));
 
 	geo = lht_dom_node_alloc(LHT_LIST, "geometry");
-	lht_dom_hash_put(ln, geo);
+	lht_dom_hash_put(obj, geo);
 
 	tbl = lht_dom_node_alloc(LHT_TABLE, "contour");
 	tbl->data.table.cols = 2;
@@ -230,24 +230,24 @@ static lht_node_t *build_polygon(PolygonType *poly)
 		tbl->data.table.r[row][1] = build_textf(NULL, "%mr", poly->Points[n].Y);
 	}
 
-	return ln;
+	return obj;
 }
 
 
 static lht_node_t *build_data_layer(DataType *data, LayerType *layer)
 {
-	lht_node_t *ln, *grp;
+	lht_node_t *obj, *grp;
 	LineType *li;
 	ArcType *ar;
 	PolygonType *po;
 
-	ln = lht_dom_node_alloc(LHT_HASH, layer->Name);
+	obj = lht_dom_node_alloc(LHT_HASH, layer->Name);
 
-	lht_dom_hash_put(ln, build_text("visible", layer->On ? "1" : "0"));
-	build_attributes(ln, &layer->Attributes);
+	lht_dom_hash_put(obj, build_text("visible", layer->On ? "1" : "0"));
+	build_attributes(obj, &layer->Attributes);
 
 	grp = lht_dom_node_alloc(LHT_LIST, "objects");
-	lht_dom_hash_put(ln, grp);
+	lht_dom_hash_put(obj, grp);
 
 	for(li = linelist_first(&layer->Line); li != NULL; li = linelist_next(li))
 		lht_dom_list_append(grp, build_line(li));
@@ -259,7 +259,7 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer)
 		lht_dom_list_append(grp, build_polygon(po));
 
 
-	return ln;
+	return obj;
 }
 
 static lht_node_t *build_data_layers(DataType *data)
