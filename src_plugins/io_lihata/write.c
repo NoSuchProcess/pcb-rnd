@@ -303,6 +303,8 @@ static lht_doc_t *build_board(PCBType *pcb)
 	build_board_meta(pcb, brd);
 	lht_dom_hash_put(brd->root, build_data(pcb->Data));
 
+	build_attributes(brd->root, &pcb->Attributes);
+
 	return brd;
 }
 
