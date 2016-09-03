@@ -3244,5 +3244,6 @@ new_units (PLMeasure m)
 {
   if (m.has_units)
     return m.bval;
-  return round (PCB_MIL_TO_COORD (m.ival) / 100.0);
+  /* if there's no unit m.dval already contains the converted value */
+  return round (m.dval);
 }
