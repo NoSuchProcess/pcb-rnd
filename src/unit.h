@@ -57,6 +57,9 @@ enum e_allow {
 	ALLOW_READABLE = ALLOW_CMIL,
 #endif
 
+	/* Used for pcb-printf %mS - should not include unusual units like km, cmil and dmil */
+	ALLOW_NATURAL = ALLOW_NM | ALLOW_UM | ALLOW_MM | ALLOW_M | ALLOW_MIL | ALLOW_IN,
+
 	ALLOW_ALL = ~0
 };
 

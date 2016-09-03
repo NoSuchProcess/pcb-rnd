@@ -359,7 +359,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 					if (CoordsToString(string, value, 1, &spec, ALLOW_MM | ALLOW_MIL, suffix) != 0) goto err;
 					break;
 				case 'S':
-					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_ALL, suffix) != 0) goto err;
+					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_NATURAL, suffix) != 0) goto err;
 					break;
 				case 'M':
 					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_METRIC, suffix) != 0) goto err;
