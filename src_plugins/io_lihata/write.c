@@ -184,14 +184,14 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer)
 	lht_dom_hash_put(ln, build_text("visible", layer->On ? "1" : "0"));
 	build_attributes(ln, &layer->Attributes);
 
-	grp = lht_dom_node_alloc(LHT_HASH, "objects");
+	grp = lht_dom_node_alloc(LHT_LIST, "objects");
 	lht_dom_hash_put(ln, grp);
 
 	for(li = linelist_first(&layer->Line); li != NULL; li = linelist_next(li))
-		lht_dom_hash_put(grp, build_line(li));
+		lht_dom_list_append(grp, build_line(li));
 
 	for(ar = arclist_first(&layer->Arc); ar != NULL; ar = arclist_next(ar))
-		lht_dom_hash_put(grp, build_arc(ar));
+		lht_dom_list_append(grp, build_arc(ar));
 
 
 	return ln;
@@ -220,11 +220,11 @@ static lht_doc_t *build_board(PCBType *pcb)
 	build_board_meta(pcb, brd);
 	lht_dom_hash_put(brd->root, build_data_layers(pcb->Data));
 
-	grp = lht_dom_node_alloc(LHT_HASH, "objects");
+	grp = lht_dom_node_alloc(LHT_LIST, "objects");
 	lht_dom_hash_put(brd->root, grp);
 
 	for(pi = pinlist_first(&pcb->Data->Via); pi != NULL; pi = pinlist_next(pi))
-		lht_dom_hash_put(grp, build_pin(pi, 1));
+		lht_dom_list_append(grp, build_pin(pi, 1));
 
 	return brd;
 }
