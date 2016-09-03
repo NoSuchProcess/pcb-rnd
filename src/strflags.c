@@ -78,6 +78,9 @@ FlagBitsType pcb_object_flagbits[] = {
 };
 #undef N
 
+const int pcb_object_flagbits_len = ENTRIES(pcb_object_flagbits);
+
+
 /*
  * This helper function maintains a small list of buffers which are
  * used by flags_to_string().  Each buffer is allocated from the heap,
