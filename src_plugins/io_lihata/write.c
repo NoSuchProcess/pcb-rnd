@@ -28,6 +28,7 @@
 #include "plug_io.h"
 #include "strflags.h"
 #include "compat_misc.h"
+#include "macro.h"
 
 static lht_node_t *build_text(const char *key, const char *value)
 {
@@ -78,9 +79,18 @@ typedef struct {
 	FlagType Flags;
 } flag_holder;
 
+const char *thermal_style[] = {
+	NULL,
+	"diagonal-sharp",
+	"horver-sharp",
+	"solid",
+	"diagonal-round",
+	"horver-round"
+};
+
 static lht_node_t *build_flags(FlagType *f, int object_type)
 {
-	int n;
+	int n, layer;
 	lht_node_t *hsh, *txt, *lst;
 	flag_holder fh;
 
@@ -101,11 +111,20 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 	/* thermal flags per layer */
 	lst = lht_dom_node_alloc(LHT_HASH, "thermal");
 	lht_dom_hash_put(hsh, lst);
-	if (TEST_ANY_THERMS(&fh)) {
-		int t = GET_THERM(n, &fh);
-		char tmp[16];
-		sprintf(tmp, "%d", t);
-		lht_dom_hash_put(lst, lht_dom_node_alloc(LHT_TEXT, tmp));
+
+	for(layer = 0; layer < max_copper_layer; layer++) {
+		if (TEST_ANY_THERMS(&fh)) {
+			int t = GET_THERM(layer, &fh);
+			if (t != 0) {
+				txt = lht_dom_node_alloc(LHT_TEXT, PCB->Data->Layer[layer].Name);
+				if (t < ENTRIES(thermal_style))
+					txt->data.text.value = pcb_strdup(thermal_style[t]);
+				else
+					txt->data.text.value = pcb_strdup_printf("%d", t);
+				lht_dom_hash_put(lst, txt);
+				
+			}
+		}
 	}
 
 	return hsh;
