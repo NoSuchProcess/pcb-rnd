@@ -55,10 +55,31 @@ static lht_node_t *build_textf(const char *key, const char *fmt, ...)
 
 static lht_node_t *build_board_meta(PCBType *pcb)
 {
-	lht_node_t *meta;
+	lht_node_t *meta, *grp;
 
 	meta = lht_dom_node_alloc(LHT_HASH, "meta");
 	lht_dom_hash_put(meta, build_text("board_name", pcb->Name));
+
+	grp = lht_dom_node_alloc(LHT_HASH, "grid");
+	lht_dom_hash_put(meta, grp);
+	lht_dom_hash_put(grp, build_textf("offs_x", "%mr", pcb->GridOffsetX));
+	lht_dom_hash_put(grp, build_textf("offs_y", "%mr", pcb->GridOffsetY));
+	lht_dom_hash_put(grp, build_textf("spacing", "%mr", pcb->Grid));
+
+	grp = lht_dom_node_alloc(LHT_HASH, "size");
+	lht_dom_hash_put(meta, grp);
+	lht_dom_hash_put(grp, build_textf("x", "%mr", pcb->MaxWidth));
+	lht_dom_hash_put(grp, build_textf("y", "%mr", pcb->MaxHeight));
+
+	grp = lht_dom_node_alloc(LHT_HASH, "drc");
+	lht_dom_hash_put(meta, grp);
+	lht_dom_hash_put(grp, build_textf("bloat",     "%mr", pcb->Bloat));
+	lht_dom_hash_put(grp, build_textf("shrink",    "%mr", pcb->Shrink));
+	lht_dom_hash_put(grp, build_textf("min_width", "%mr", pcb->minWid));
+	lht_dom_hash_put(grp, build_textf("min_silk",  "%mr", pcb->minSlk));
+	lht_dom_hash_put(grp, build_textf("min_drill", "%mr", pcb->minDrill));
+	lht_dom_hash_put(grp, build_textf("min_ring",  "%mr", pcb->minRing));
+
 	return meta;
 }
 
