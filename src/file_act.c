@@ -255,6 +255,8 @@ static int ActionSaveTo(int argc, char **argv, Coord x, Coord y)
 	if (strcasecmp(function, "Layout") == 0) {
 		if (SavePCB(PCB->Filename, NULL) == 0)
 			SetChangedFlag(false);
+		if (gui->notify_filename_changed != NULL)
+			gui->notify_filename_changed();
 		return 0;
 	}
 
