@@ -1218,8 +1218,18 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 			return -1;
 		}
 	}
-	else
+	else {
 		prompt = _("Save layout as");
+		if (pcb_io_list(&avail, PCB_IOT_PCB, 1, 1) > 0) {
+			formats_param = (const char **)avail.digest;
+			fmt_param = &fmt;
+			fmt = 0;
+		}
+		else {
+			Message("Error: no IO plugin avaialble for saving a buffer.");
+			return -1;
+		}
+	}
 
 	name = ghid_dialog_file_select_save(prompt, &current_dir, PCB->Filename, conf_core.rc.file_path, formats_param, fmt_param);
 
@@ -1228,20 +1238,23 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 			fprintf(stderr, "%s:  Calling SaveTo(%s, %s)\n", __FUNCTION__, function, name);
 
 		if (strcasecmp(function, "PasteBuffer") == 0) {
-			hid_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->default_fmt, "1", NULL);
+			hid_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->description, "1", NULL);
 			pcb_io_list_free(&avail);
 		}
 		else {
+			const char *sfmt = NULL;
 			/* 
 			 * if we got this far and the function is Layout, then
 			 * we really needed it to be a LayoutAs.  Otherwise 
 			 * ActionSaveTo() will ignore the new file name we
 			 * just obtained.
 			 */
+			if (fmt_param != NULL)
+				sfmt = avail.plug[fmt]->description;
 			if (strcasecmp(function, "Layout") == 0)
-				hid_actionl("SaveTo", "LayoutAs", name, NULL);
+				hid_actionl("SaveTo", "LayoutAs", name, sfmt, NULL);
 			else
-				hid_actionl("SaveTo", function, name, NULL);
+				hid_actionl("SaveTo", function, name, sfmt, NULL);
 		}
 		g_free(name);
 	}
