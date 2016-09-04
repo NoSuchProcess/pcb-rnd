@@ -1,67 +1,121 @@
 <html>
+<head>
+	<title> pcb-rnd - main </title>
+<!--AUTO head begin-->
+	<link rel="icon" href="logo16.png">
+<!--AUTO head end-->
+</head>
 <body>
-<h1> pcb-rnd </h1>
-PCB-rnd is a fork of <a href="http://pcb.geda-project.org">PCB</a>, part of
-the geda project. This fork features embedded scripting and a set of random
-smaller features and bugfixes.
-I don't plan to submit these patches to the upstream or merge changes from
-the official repo (<a href="motivation.html">motivation</a>).
-<p>
-When I work on pcb-rnd, I also write a <a href="devlog/"> developer log</a>.
-<p>
-Feel free to give it a try:
-<ul>
-	<li> version control: svn://repo.hu/pcb-rnd/trunk
-	<li> source <a href="releases/"> releases </a>
-	<li> <a href="http://debian.repo.hu/debian"> debian packages </a>
-	<li> comments, feedback, patches: <a href="irc.html"> live chat with the developer </a> or mail to: pcb-rnd (at) igor2.repo.hu
-	<li> Scripting PCB? Check the <a href="gpmi/rosetta/index.html"> rosetta stone </a> of pcb-rnd example scripts and the <a href="gpmi/index.html"> scripting documentation </a>
-	<li> the project is open for <a href="contrib.html"> contribution </a> and is looking for <a href="help.html"> help with various tasks</a>; if your favorite feature is not supported, <a href="myfeature.html">please read this howto</a>.
-</ul>
 
-<p>
-Change summary, per topic:
-<table border=1>
-<tr><th>commit message tag and doc<th>description
-<tr><td><a href="features/gpmi.html">[gpmi]</a>           <td> scripting PCB (including GUI dialogs, actions, menus, changing the layout)
-<tr><td><a href="features/intconn.html">[intconn]</a>     <td> component internal connections
-<tr><td><a href="features/nonetlist.html">[nonetlist]</a> <td> components that are not part of the netlist and should not cause shorts
-<tr><td><a href="features/tostyle.html">[tostyle]</a>     <td> actions, menu and hotkey to change ring dia, line width, drill dia and clearance sizes to match the values defined for the current routing style
-<tr><td><a href="features/mincut.html">[mincut]</a>       <td> minimal cut based warnings on shorts
-<tr><td><a href="features/square.html">[square]</a>       <td> change square pad to a generic shaped-pin based on the octagon pin code - this is an alternative to teardrops
-<tr><td><a href="features/flagcomp.html">[flagcomp]</a>   <td> unknown flag compatibility
-<tr><td><a href="features/scconfig.html">[scconfig]</a>   <td> use scconfig instead of autotools
-<tr><td><a href="features/pcb-fp.html">[pcb-fp]</a>       <td> generic parametric footprints; on-the-fly footprint generation by external tools written in any language (remove m4 hardwirings)
-<tr><td><a href="features/pcblib.html">[pcblib], [fp_fs],
-                                       [pcblib-param]</a> <td> clean up the footprint library shipped
-<tr><td><a href="features/library_t.html">[library_t]</a> <td> footprint library is an arbitrary tree instead of a special, 2 level tree
-<tr><td><a href="features/fp_wget.html">[fp_wget]</a>     <td> web based footprint libraries, integration of gedasymbols.org
-<tr><td><a href="features/res.html">[res]</a>             <td> replace resource files with lihata and enable multi-key hotkeys in both gtk and lesstif hids
-<tr><td><a href="features/debian.html">[debian]</a>       <td> Debian packaging the binaries configured to my own taste
-<tr><td><a href="features/ba.html">[ba]</a>               <td> back annotation
-<tr><td><a href="features/onpoint.html">[onpoint]</a>     <td> on-point by Robert Drehmel
-<tr><td><a href="features/cycdrag.html">[cycdrag]</a>     <td> cycle drag; with additional feature: <a href="features/negselect.html"> negative box select </a>
-<tr><td><a href="mods3/">[mods]</a>                       <td> modularize the code to reduce core size - for comparison, previous stats: <a href="mods/">1.0.8</a>, <a href="mods2/">1.0.9</a>
-<tr><td><a href="features/unglib.html">[unglib]</a>       <td> remove glib dependency from core
-<tr><td><a href="features/io.html">[io_*]</a>             <td> .pcb and .fp file format plugins
-<tr><td><a href="features/dynstyle.html">[dynstyle]</a>   <td> dynamic routuing style: sypport more than 4 of them - with no limit
-<tr><td><a href="conf/index.html">[conf]</a>              <td> new, unified, config file system
-<tr><td><a href="features/settings.html">settings</a>     <td> minor changes in default settings
-<tr><td><a href="routings.html">routing styles</a>        <td> routing style fixes
-
-<!--<tr><td><a href="features/polygrid.html">[polygrid]</a>   <td> ps output: an option to draw grids in polygons instead of filling them -->
+<!--AUTO navbar begin-->
+<table border=0 cellspacing=2 cellpadding=10  bgcolor=#eeeeee width=100%>
+<tr>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/projects/pcb-rnd/"> Main </a>
+<th align=center bgcolor=#ccc0cc> <a href="news.txt"> News </a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi">People</a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=events">Events</a>
+<td align=right width=60%> <font size=+2><i>pcb-rnd</i></font> <img src="logo32.png">
 </table>
-I have plans on my <a href="TODO">TODO</a> list - these have lower priority
-compared to the features above.
+<!--AUTO navbar end-->
 
-<p>
-Extra documentation:
-<ul>
-	<li> <a href="keys.html">key binding table</a> for both gui HIDs
-	<li> <a href="hacking/indent.html">indentation</a> in the source code
-	<li> <a href="djopt/">djopt</a> examples illustrated - action djopt() implements various optmization of traces
-</ul>
+<br>
+<!--content-->
+<table border=0 cellpadding=10> <tr>
+<td valign=top bgcolor=#f2f2f2>
+	<h2> Summary </h2>
+	<table border=0 cellpadding=20>
+	<tr><th align=right valign=top bgcolor=#ccccff> 
+		<table border=0 width=100% cellpadding=0 cellspacing=0><tr><td align=left><img src="logo128.png"><th align=right>pcb-rnd</table>
+		<td bgcolor=#ddddff>
+		    <b>is a flexible, modular Printed Circuit Board editor</b>
+		<p><a href="motivation.html">historically</a> is a fork of <a href="http://pcb.geda-project.org">PCB</a>
+		<p>is an informal part of the geda project
+		<p>features a lot of small and large <a href="features/index.html">improvements and bugfixes</a>
+		
 
+	<tr><th align=right valign=top bgcolor=#ccccff> Version Control              <td bgcolor=#ddddff> <a href="http://igor2.repo.hu/cgi-bin/minisvn.cgi?cmd=browse&repo=pcb-rnd"> svn://repo.hu/pcb-rnd/trunk </a>
+	<tr><th align=right valign=top bgcolor=#ccccff> Download                     <td bgcolor=#ddddff> <a href="releases/"> source releases </a>
+	<tr><th align=right valign=top bgcolor=#ccccff> Comments, feedback, patches  <td bgcolor=#ddddff> <a href="irc.html"> live chat with the developer </a><br>or mail to: pcb-rnd (at) igor2.repo.hu
+	<tr><th align=right valign=top bgcolor=#ccccff> Contribution and support     <td bgcolor=#ddddff>
+		    How to <a href="contrib.html"> join or contribute </a>
+		<br>We are looking for <a href="help.html"> help</a>.
+		<br>Do you have a <a href="myfeature.html">feature request</a>?
+
+	<tr><th align=right valign=top bgcolor=#ccccff> Key features <td bgcolor=#ddddff>
+		     editor for multilayer Printed Circuit Boards
+		<br> <a href="features/gpmi.html"> scriptable </a> in 10+ different scripting languages
+		<br> <a href="features/pcblib.html">parametric footprint</a> generation, <a href="features/fp_wget.html"> web footprints </a>
+		<br> <a href="mods3/">modular code</a> with a flexible plugin system
+		<br> fits well in a UNIXy workflow
+		<br> supports CLI and server applications
+		<br> active development, frequent releases
+		<br> friendly and efficient developer and user community
+
+
+	<tr><th align=right valign=top bgcolor=#ccccff> Suported platforms <td bgcolor=#ddddff>
+		     Linux desktop (various distributions, from source)
+		<br> <a href="mac.txt"> Mac OS X </a>
+		<br> <a href="https://aur.archlinux.org/packages/pcb-rnd-svn/"> Arch Linux (user package) </a>
+<!--		<br> <a href="windows.txt"> Windows </a> -->
+		<br> Screen resolution as small as 800x600
+		<br> GUI options: motif/lesstif, gtk
+		<br><table border=0 width=100%><tr><td align=right><img src="screenshot.jpg"></table>
+</table>
+
+<!-- spacer -->
+	<td width=0>
+
+<!-- rnd -->
+	<td width=20% bgcolor=#f2f2f2>
+	<h2> What is -rnd? </h2>
+	<br>
+	<table border=0 cellspacing=10 cellpadding=0  bgcolor=#ccffcc>
+	<tr><td><font size=+2><b>R</b>a<b>ND</b>om</font> <td>
+	    When it started, it used to be a <a href="motivation.html">random collection of small fixes and improvements.</a> We got much further than that by now.
+	</table>
+
+	<p>
+
+	<table border=0 cellspacing=10 cellpadding=0  bgcolor=#ccffcc>
+	<tr>
+	<td><font size=+2><b>R</b>espo<b>N</b>sive <b>D</b>evelopers</font>
+	<td> Developers try to respond on user needs, adding features that are actually needed by current users.
+	</table>
+
+	<p>
+
+	<table border=0 cellspacing=10 cellpadding=0  bgcolor=#ccffcc>
+	<tr><td>
+	<font size=+2><b>R</b>esponose <b>N</b>ot <b>D</b>elayed</font>
+	<td> Bugrepots, user requests and patches submitted are answered ASAP. There are no patches bitrotting for months. There are no forgotton bugreports.
+	</table>
+
+	<p>
+
+	<table border=0 cellspacing=10 cellpadding=0  bgcolor=#ccffcc width=400>
+	<tr>
+	<td><font size=+2><b>R</b>esearch <br><b>&</b> <br><b>D</b>evelopment</font>
+	<br>
+	<br>
+	<b>R</b>ázós, <br><b>N</b>ehéz <br><b>D</b>öntések <br><small>(Brave, hard decisions)</small>
+	<td> There is a constant experimentation with new features and directions. We are willing to try strange/unusual ideas without risking the stability of the daily workflow.
+	</table>
+
+	<p>
+
+	<table border=0 cellspacing=10 cellpadding=0  bgcolor=#ccffcc>
+	<tr>
+	<td><font size=+2><b>R</b>ants <br><b>N</b>ow <br><b>D</b>issipating</font>
+	<td> Instead of talking and ranting a lot about what could work better, we just sit down and make it work better.
+	</table>
+
+	<p>
+
+	<table border=0 cellspacing=10 cellpadding=0  bgcolor=#ccffcc>
+	<tr>
+	<td><font size=+2><b>R</b>ather <br><b>N</b>icely <br><b>D</b>ecentralized</font>
+	<td> <a href="mods3/"> Slim, generic core</a>; most of the code organized in replacable plugins. Most plugins depend only on the core.
+	</table>
 
 </body>
 </html>
