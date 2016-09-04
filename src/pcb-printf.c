@@ -285,7 +285,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 			if (gds_append(&spec, *fmt++) != 0) goto err;
 			while (isdigit(*fmt) || *fmt == '.' || *fmt == ' ' || *fmt == '*'
 						 || *fmt == '#' || *fmt == 'l' || *fmt == 'L' || *fmt == 'h'
-						 || *fmt == '+' || *fmt == '-' || *fmt == '[' || *fmt == ']') {
+						 || *fmt == '+' || *fmt == '-' || *fmt == '[') {
 				if (*fmt == '*') {
 					char itmp[32];
 					int ilen;
@@ -296,6 +296,8 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				else
 					if (gds_append(&spec, *fmt++) != 0) goto err;
 			}
+
+			/* check if specifier is %[] */
 			if ((gds_len(&spec) > 2) && (spec.array[1] == '[')) {
 				int slot = atoi(spec.array+2);
 				gds_t new_spec;
@@ -314,6 +316,8 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				}
 				gds_init(&new_spec);
 				gds_append_str(&new_spec, pcb_printf_slot[slot]);
+				if (*fmt == ']')
+					fmt++;
 				gds_append_str(&new_spec, fmt);
 				if (free_fmt != NULL)
 					free(free_fmt);
@@ -324,6 +328,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 			}
 			else
 				slot_recursion = 0;
+
 			/* Get our sub-specifiers */
 			if (*fmt == '#') {
 				mask = ALLOW_CMIL;			/* This must be pcb's base unit */
