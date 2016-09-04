@@ -54,11 +54,13 @@
  *          "natural" (S/D/3/.../9) specifiers to only use certain
  *          units
  *   %mr    output a measure in a unit readable by parse_l.l
- *          (this will always append a unit suffix)
+ *          (outputs in centimil without units - compatibility with mainline)
  *   %ma    output an angle in degrees (expects degrees)
  *
  * These accept the usual printf modifiers for %f, as well as
- *     $    output a unit suffix after the measure
+ *     $    output a unit suffix after the measure (with space between measure and unit)
+ *     $$   output a unit suffix after the measure (without space)
+ *     .n   number of digits after the decimal point (the usual %f modifier)
  *     .0n  where n is a digit; same as %.n, but truncates trailing zeros
  *     [n]  use stored format n
  *     #    prevents all scaling for %mS/D/1/.../9 (this should

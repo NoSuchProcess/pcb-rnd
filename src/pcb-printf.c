@@ -41,8 +41,8 @@
 const char *pcb_printf_slot[PCB_PRINTF_SLOT_max] = 
 {
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, /* 8 user formats */
-	"%mr",      /* original file format coord */
-	"%.07$mS"   /* safe file format coord */
+	"%mr",      /* original unitless cmil file format coord */
+	"%.07$$mS"  /* safe file format coord */
 };
 
 static int min_sig_figs(double d)
@@ -264,8 +264,6 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 	char tmp[128]; /* large enough for rendering a long long int */
 	int tmplen, retval = -1, slot_recursion = 0;
 	char *free_fmt = NULL;
-
-
 	enum e_allow mask = ALLOW_ALL;
 
 	gds_init(&spec);
@@ -337,6 +335,10 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 			if (*fmt == '$') {
 				suffix = SUFFIX;
 				fmt++;
+				if (*fmt == '$') {
+					fmt++;
+					suffix = FILE_MODE;
+				}
 			}
 			/* Tack full specifier onto specifier */
 			if (*fmt != 'm')
@@ -432,15 +434,9 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				case 'k':
 					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_DMIL, suffix) != 0) goto err;
 					break;
-#if 0
-				case 'r':
-					if (CoordsToString(string, value, 1, &spec, ALLOW_READABLE, FILE_MODE) != 0) goto err;
-					break;
-#else
 				case 'r':
 					if (CoordsToString(string, value, 1, &spec, ALLOW_READABLE, NO_SUFFIX) != 0) goto err;
 					break;
-#endif
 					/* All these fallthroughs are deliberate */
 				case '9':
 					value[count++] = va_arg(args, Coord);
