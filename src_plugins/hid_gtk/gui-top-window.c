@@ -352,6 +352,7 @@ void ghid_notify_filename_changed(void)
 {
 	/* Pick up the mtime of the new PCB file */
 	update_board_mtime_from_disk();
+	ghid_window_set_name_label(PCB->Name);
 }
 
 /* ---------------------------------------------------------------------------
