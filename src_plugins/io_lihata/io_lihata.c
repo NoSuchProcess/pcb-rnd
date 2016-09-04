@@ -30,6 +30,9 @@ static plug_io_t io_lihata;
 
 int io_lihata_fmt(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
 {
+	if (strcmp(ctx->description, fmt) == 0)
+		return 200;
+
 	if ((strcmp(fmt, "lihata") != 0) ||
 		((typ & (~(/*PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER |*/ PCB_IOT_PCB))) != 0))
 		return 0;
