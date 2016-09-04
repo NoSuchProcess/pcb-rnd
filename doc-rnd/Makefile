@@ -3,7 +3,7 @@ MENU_RES_MKEY=../src/pcb-menu-mkey.lht
 KEYLIST=../util/keylist.sh
 
 all: keys.html keys_mkey.html
-	./Autostyle.sh *.html
+	./Autostyle.sh *.html features/*.html
 
 keys.html: $(MENU_RES) $(KEYLIST)
 	$(KEYLIST) $(MENU_RES) > keys.html
