@@ -1320,15 +1320,25 @@ int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t
 			gds_t s;
 
 			gds_init(&s);
-			conf_print_native_field((conf_pfn)pcb_append_printf, &s, 0, &n->val, n->type, n->prop+i, i);
-fprintf(stderr, "ly1 '%s'\n", s.array);
-			ch = lht_dom_node_alloc(LHT_TEXT, isarr ? "" : name+1);
-			ch->data.text.value = s.array;
-			if (isarr) {
-				lht_dom_list_append(src, ch);
+			if (n->type == CFN_LIST) {
+				conf_listitem_t *it;
+				ch = lht_dom_node_alloc(LHT_LIST, name+1);
+				for(it = conflist_first(n->val.list); it != NULL; it = conflist_next(it)) {
+					lht_node_t *txt;
+					txt = lht_dom_node_alloc(LHT_TEXT, "");
+					txt->data.text.value = pcb_strdup(it->payload);
+					lht_dom_list_append(ch, txt);
+				}
 			}
-			s.array = NULL;
-			gds_uninit(&s);
+			else {
+				conf_print_native_field((conf_pfn)pcb_append_printf, &s, 0, &n->val, n->type, n->prop+i, i);
+				ch = lht_dom_node_alloc(LHT_TEXT, isarr ? "" : name+1);
+				ch->data.text.value = s.array;
+				if (isarr)
+					lht_dom_list_append(src, ch);
+				s.array = NULL;
+				gds_uninit(&s);
+			}
 		}
 
 		if (!isarr)
