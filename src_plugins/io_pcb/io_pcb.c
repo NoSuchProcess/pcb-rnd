@@ -85,7 +85,7 @@ pcb_uninit_t hid_io_pcb_init(void)
 	io_pcb[1].save_preference_prio = 99;
 	HOOK_REGISTER(plug_io_t, plug_io_chain, &(io_pcb[1]));
 
-	ctx[2].write_coord_fmt = "%mI";
+	ctx[2].write_coord_fmt = "%$$mn";
 	io_pcb[2].plugin_data = &ctx[2];
 	io_pcb[2].fmt_support_prio = io_pcb_fmt;
 	io_pcb[2].write_buffer = io_pcb_WriteBuffer;
