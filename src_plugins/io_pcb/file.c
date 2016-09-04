@@ -244,7 +244,7 @@ static void WritePCBDataHeader(FILE * FP)
 	fputs("\nPCB[", FP);
 	PrintQuotedString(FP, (char *) EMPTY(PCB->Name));
 	pcb_fprintf(FP, " %[0] %[0]]\n\n", PCB->MaxWidth, PCB->MaxHeight);
-	pcb_fprintf(FP, "Grid[%.1mr %[0] %[0] %d]\n", PCB->Grid, PCB->GridOffsetX, PCB->GridOffsetY, conf_core.editor.draw_grid);
+	pcb_fprintf(FP, "Grid[%[0] %[0] %[0] %d]\n", PCB->Grid, PCB->GridOffsetX, PCB->GridOffsetY, conf_core.editor.draw_grid);
 	pcb_fprintf(FP, "Cursor[%[0] %[0] %s]\n", Crosshair.X, Crosshair.Y, c_dtostr(PCB->Zoom));
 	/* PolyArea should be output in square cmils, no suffix */
 	fprintf(FP, "PolyArea[%s]\n", c_dtostr(PCB_COORD_TO_MIL(PCB_COORD_TO_MIL(PCB->IsleArea) * 100) * 100));
