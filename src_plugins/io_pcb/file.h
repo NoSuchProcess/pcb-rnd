@@ -34,6 +34,10 @@
 #include "global.h"
 #include "plug_io.h"
 
+typedef struct {
+	const char *write_coord_fmt;
+} io_pcb_ctx_t;
+
 int io_pcb_WriteBuffer(plug_io_t *ctx, FILE *f, BufferType *buff);
 int io_pcb_WriteElementData(plug_io_t *ctx, FILE *f, DataTypePtr);
 int io_pcb_WritePCB(plug_io_t *ctx, FILE *f);

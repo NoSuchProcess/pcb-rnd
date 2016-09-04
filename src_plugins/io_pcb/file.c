@@ -243,13 +243,13 @@ static void WritePCBDataHeader(FILE * FP)
 
 	fputs("\nPCB[", FP);
 	PrintQuotedString(FP, (char *) EMPTY(PCB->Name));
-	pcb_fprintf(FP, " %mr %mr]\n\n", PCB->MaxWidth, PCB->MaxHeight);
-	pcb_fprintf(FP, "Grid[%.1mr %mr %mr %d]\n", PCB->Grid, PCB->GridOffsetX, PCB->GridOffsetY, conf_core.editor.draw_grid);
-	pcb_fprintf(FP, "Cursor[%mr %mr %s]\n", Crosshair.X, Crosshair.Y, c_dtostr(PCB->Zoom));
+	pcb_fprintf(FP, " %[0] %[0]]\n\n", PCB->MaxWidth, PCB->MaxHeight);
+	pcb_fprintf(FP, "Grid[%.1mr %[0] %[0] %d]\n", PCB->Grid, PCB->GridOffsetX, PCB->GridOffsetY, conf_core.editor.draw_grid);
+	pcb_fprintf(FP, "Cursor[%[0] %[0] %s]\n", Crosshair.X, Crosshair.Y, c_dtostr(PCB->Zoom));
 	/* PolyArea should be output in square cmils, no suffix */
 	fprintf(FP, "PolyArea[%s]\n", c_dtostr(PCB_COORD_TO_MIL(PCB_COORD_TO_MIL(PCB->IsleArea) * 100) * 100));
 	pcb_fprintf(FP, "Thermal[%s]\n", c_dtostr(PCB->ThermScale));
-	pcb_fprintf(FP, "DRC[%mr %mr %mr %mr %mr %mr]\n", PCB->Bloat, PCB->Shrink,
+	pcb_fprintf(FP, "DRC[%[0] %[0] %[0] %[0] %[0] %[0]]\n", PCB->Bloat, PCB->Shrink,
 							PCB->minWid, PCB->minSlk, PCB->minDrill, PCB->minRing);
 	fprintf(FP, "Flags(%s)\n", pcbflags_to_string(pcb_flags));
 	fprintf(FP, "Groups(\"%s\")\n", LayerGroupsToString(&PCB->LayerGroups));
@@ -257,10 +257,10 @@ static void WritePCBDataHeader(FILE * FP)
 
 	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
 		for (group = 0; group < vtroutestyle_len(&PCB->RouteStyle) - 1; group++)
-			pcb_fprintf(FP, "%s,%mr,%mr,%mr,%mr:", PCB->RouteStyle.array[group].name,
+			pcb_fprintf(FP, "%s,%[0],%[0],%[0],%[0]:", PCB->RouteStyle.array[group].name,
 									PCB->RouteStyle.array[group].Thick,
 									PCB->RouteStyle.array[group].Diameter, PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
-		pcb_fprintf(FP, "%s,%mr,%mr,%mr,%mr\"]\n\n", PCB->RouteStyle.array[group].name,
+		pcb_fprintf(FP, "%s,%[0],%[0],%[0],%[0]\"]\n\n", PCB->RouteStyle.array[group].name,
 								PCB->RouteStyle.array[group].Thick,
 								PCB->RouteStyle.array[group].Diameter, PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
 	}
@@ -280,13 +280,13 @@ static void WritePCBFontData(FILE * FP)
 			continue;
 
 		if (isprint(i))
-			pcb_fprintf(FP, "Symbol['%c' %mr]\n(\n", i, font->Symbol[i].Delta);
+			pcb_fprintf(FP, "Symbol['%c' %[0]]\n(\n", i, font->Symbol[i].Delta);
 		else
-			pcb_fprintf(FP, "Symbol[%i %mr]\n(\n", i, font->Symbol[i].Delta);
+			pcb_fprintf(FP, "Symbol[%i %[0]]\n(\n", i, font->Symbol[i].Delta);
 
 		line = font->Symbol[i].Line;
 		for (j = font->Symbol[i].LineN; j; j--, line++)
-			pcb_fprintf(FP, "\tSymbolLine[%mr %mr %mr %mr %mr]\n",
+			pcb_fprintf(FP, "\tSymbolLine[%[0] %[0] %[0] %[0] %[0]]\n",
 									line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
 		fputs(")\n", FP);
 	}
@@ -302,7 +302,7 @@ static void WriteViaData(FILE * FP, DataTypePtr Data)
 
 	/* write information about vias */
 	pinlist_foreach(&Data->Via, &it, via) {
-		pcb_fprintf(FP, "Via[%mr %mr %mr %mr %mr %mr ", via->X, via->Y,
+		pcb_fprintf(FP, "Via[%[0] %[0] %[0] %[0] %[0] %[0] ", via->X, via->Y,
 								via->Thickness, via->Clearance, via->Mask, via->DrillingHole);
 		PrintQuotedString(FP, (char *) EMPTY(via->Name));
 		fprintf(FP, " %s]\n", F2S(via, PCB_TYPE_VIA));
@@ -319,7 +319,7 @@ static void WritePCBRatData(FILE * FP)
 
 	/* write information about rats */
 	ratlist_foreach(&PCB->Data->Rat, &it, line) {
-		pcb_fprintf(FP, "Rat[%mr %mr %d %mr %mr %d ",
+		pcb_fprintf(FP, "Rat[%[0] %[0] %d %[0] %[0] %d ",
 								line->Point1.X, line->Point1.Y, line->group1, line->Point2.X, line->Point2.Y, line->group2);
 		fprintf(FP, " %s]\n", F2S(line, PCB_TYPE_RATLINE));
 	}
@@ -376,6 +376,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 	ArcType *arc;
 	ElementType *element;
 
+	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
 		PinType *pin;
@@ -393,7 +394,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 		PrintQuotedString(FP, (char *) EMPTY(NAMEONPCB_NAME(element)));
 		fputc(' ', FP);
 		PrintQuotedString(FP, (char *) EMPTY(VALUE_NAME(element)));
-		pcb_fprintf(FP, " %mr %mr %mr %mr %d %d %s]\n(\n",
+		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n",
 								element->MarkX, element->MarkY,
 								DESCRIPTION_TEXT(element).X - element->MarkX,
 								DESCRIPTION_TEXT(element).Y - element->MarkY,
@@ -401,7 +402,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 								DESCRIPTION_TEXT(element).Scale, F2S(&(DESCRIPTION_TEXT(element)), PCB_TYPE_ELEMENT_NAME));
 		WriteAttributeList(FP, &element->Attributes, "\t");
 		pinlist_foreach(&element->Pin, &it, pin) {
-			pcb_fprintf(FP, "\tPin[%mr %mr %mr %mr %mr %mr ",
+			pcb_fprintf(FP, "\tPin[%[0] %[0] %[0] %[0] %[0] %[0] ",
 									pin->X - element->MarkX,
 									pin->Y - element->MarkY, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole);
 			PrintQuotedString(FP, (char *) EMPTY(pin->Name));
@@ -410,7 +411,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 			fprintf(FP, " %s]\n", F2S(pin, PCB_TYPE_PIN));
 		}
 		pinlist_foreach(&element->Pad, &it, pad) {
-			pcb_fprintf(FP, "\tPad[%mr %mr %mr %mr %mr %mr %mr ",
+			pcb_fprintf(FP, "\tPad[%[0] %[0] %[0] %[0] %[0] %[0] %[0] ",
 									pad->Point1.X - element->MarkX,
 									pad->Point1.Y - element->MarkY,
 									pad->Point2.X - element->MarkX, pad->Point2.Y - element->MarkY, pad->Thickness, pad->Clearance, pad->Mask);
@@ -420,13 +421,13 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 			fprintf(FP, " %s]\n", F2S(pad, PCB_TYPE_PAD));
 		}
 		linelist_foreach(&element->Line, &it, line) {
-			pcb_fprintf(FP, "\tElementLine [%mr %mr %mr %mr %mr]\n",
+			pcb_fprintf(FP, "\tElementLine [%[0] %[0] %[0] %[0] %[0]]\n",
 									line->Point1.X - element->MarkX,
 									line->Point1.Y - element->MarkY,
 									line->Point2.X - element->MarkX, line->Point2.Y - element->MarkY, line->Thickness);
 		}
 		linelist_foreach(&element->Arc, &it, arc) {
-			pcb_fprintf(FP, "\tElementArc [%mr %mr %mr %mr %ma %ma %mr]\n",
+			pcb_fprintf(FP, "\tElementArc [%[0] %[0] %[0] %[0] %ma %ma %[0]]\n",
 									arc->X - element->MarkX,
 									arc->Y - element->MarkY, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
 		}
@@ -454,17 +455,17 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 		WriteAttributeList(FP, &layer->Attributes, "\t");
 
 		linelist_foreach(&layer->Line, &it, line) {
-			pcb_fprintf(FP, "\tLine[%mr %mr %mr %mr %mr %mr %s]\n",
+			pcb_fprintf(FP, "\tLine[%[0] %[0] %[0] %[0] %[0] %[0] %s]\n",
 									line->Point1.X, line->Point1.Y,
 									line->Point2.X, line->Point2.Y, line->Thickness, line->Clearance, F2S(line, PCB_TYPE_LINE));
 		}
 		arclist_foreach(&layer->Arc, &it, arc) {
-			pcb_fprintf(FP, "\tArc[%mr %mr %mr %mr %mr %mr %ma %ma %s]\n",
+			pcb_fprintf(FP, "\tArc[%[0] %[0] %[0] %[0] %[0] %[0] %ma %ma %s]\n",
 									arc->X, arc->Y, arc->Width,
 									arc->Height, arc->Thickness, arc->Clearance, arc->StartAngle, arc->Delta, F2S(arc, PCB_TYPE_ARC));
 		}
 		textlist_foreach(&layer->Text, &it, text) {
-			pcb_fprintf(FP, "\tText[%mr %mr %d %d ", text->X, text->Y, text->Direction, text->Scale);
+			pcb_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, text->Direction, text->Scale);
 			PrintQuotedString(FP, (char *) EMPTY(text->TextString));
 			fprintf(FP, " %s]\n", F2S(text, PCB_TYPE_TEXT));
 		}
@@ -488,7 +489,7 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 					if (hole)
 						fputs("\t", FP);
 				}
-				pcb_fprintf(FP, "[%mr %mr] ", point->X, point->Y);
+				pcb_fprintf(FP, "[%[0] %[0]] ", point->X, point->Y);
 			}
 			if (hole > 0)
 				fputs("\n\t\t)", FP);
@@ -505,6 +506,7 @@ int io_pcb_WriteBuffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
 {
 	Cardinal i;
 
+	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	WriteViaData(FP, buff->Data);
 	WriteElementData(FP, buff->Data, "pcb");
 	for (i = 0; i < max_copper_layer + 2; i++)
@@ -519,6 +521,7 @@ int io_pcb_WritePCB(plug_io_t *ctx, FILE * FP)
 {
 	Cardinal i;
 
+	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	WritePCBInfoHeader(FP);
 	WritePCBDataHeader(FP);
 	WritePCBFontData(FP);
