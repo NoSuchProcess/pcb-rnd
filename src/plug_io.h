@@ -85,7 +85,7 @@ extern plug_io_t *plug_io_chain;
 
 
 /********** hook wrappers **********/
-int ParsePCB(PCBTypePtr Ptr, char *Filename, int load_settings);
+int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_settings);
 int ParseElement(DataTypePtr Ptr, const char *name);
 int ParseFont(FontTypePtr Ptr, char *Filename);
 int WriteBuffer(FILE *f, BufferType *buff, const char *fmt);

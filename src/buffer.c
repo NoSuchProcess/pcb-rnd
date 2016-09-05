@@ -771,12 +771,12 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
  * parse the file with enabled 'PCB mode' (see parser)
  * if successful, update some other stuff
  */
-bool LoadLayoutToBuffer(BufferTypePtr Buffer, char *Filename)
+bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const char *fmt)
 {
 	PCBTypePtr newPCB = CreateNewPCB();
 
 	/* new data isn't added to the undo list */
-	if (!ParsePCB(newPCB, Filename, CFR_invalid)) {
+	if (!ParsePCB(newPCB, Filename, fmt, CFR_invalid)) {
 		/* clear data area and replace pointer */
 		ClearBuffer(Buffer);
 		free(Buffer->Data);

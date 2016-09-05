@@ -129,7 +129,7 @@ static int ActionLoadFrom(int argc, char **argv, Coord x, Coord y)
 
 	else if (strcasecmp(function, "LayoutToBuffer") == 0) {
 		notify_crosshair_change(false);
-		if (LoadLayoutToBuffer(PASTEBUFFER, name))
+		if (LoadLayoutToBuffer(PASTEBUFFER, name, format))
 			SetMode(PCB_MODE_PASTE_BUFFER);
 		notify_crosshair_change(true);
 	}

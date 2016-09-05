@@ -100,7 +100,7 @@ static void plug_io_err(int res, const char *what, const char *filename)
 	}
 }
 
-int ParsePCB(PCBTypePtr Ptr, char *Filename, int load_settings)
+int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_settings)
 {
 	int res = -1;
 
@@ -246,7 +246,7 @@ int WritePCB(FILE *f, const char *fmt)
  * If revert is true, we pass "revert" as a parameter
  * to the HID's PCBChanged action.
  */
-static int real_load_pcb(char *Filename, bool revert, bool require_font, int how)
+static int real_load_pcb(const char *Filename, const char *fmt, bool revert, bool require_font, int how)
 {
 	const char *unit_suffix;
 	char *new_filename;
@@ -276,7 +276,7 @@ static int real_load_pcb(char *Filename, bool revert, bool require_font, int how
 	}
 
 	/* new data isn't added to the undo list */
-	if (!ParsePCB(PCB, new_filename, settings_dest)) {
+	if (!ParsePCB(PCB, new_filename, fmt, settings_dest)) {
 		RemovePCB(oldPCB);
 
 		CreateNewPCBPost(PCB, 0);
@@ -539,7 +539,7 @@ int SavePCB(char *file, const char *fmt)
  */
 int LoadPCB(const char *file, const char *fmt, bool require_font, int how)
 {
-	return real_load_pcb(file, false, require_font, how);
+	return real_load_pcb(file, fmt, false, require_font, how);
 }
 
 /* ---------------------------------------------------------------------------
@@ -547,7 +547,8 @@ int LoadPCB(const char *file, const char *fmt, bool require_font, int how)
  */
 int RevertPCB(void)
 {
-	return real_load_pcb(PCB->Filename, true, true, true);
+#warning TODO: use the format saved with PCB
+	return real_load_pcb(PCB->Filename, NULL, true, true, true);
 }
 
 /* ---------------------------------------------------------------------------

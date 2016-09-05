@@ -40,7 +40,7 @@ void AddSelectedToBuffer(BufferTypePtr, Coord, Coord, bool);
 bool LoadElementToBuffer(BufferTypePtr, const char *);
 bool ConvertBufferToElement(BufferTypePtr);
 bool SmashBufferElement(BufferTypePtr);
-bool LoadLayoutToBuffer(BufferTypePtr, char *);
+bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const char *fmt);
 void RotateBuffer(BufferTypePtr, BYTE);
 void SelectPasteBuffer(int);
 void pcb_swap_buffers(void);
