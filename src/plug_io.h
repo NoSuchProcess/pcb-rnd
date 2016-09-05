@@ -58,13 +58,13 @@ struct plug_io_s {
 	   Conf subtree at settings_dest is replaced by settings loaded from the
 	   file unless it's CFR_invalid.
 	   Return 0 on success. */
-	int (*parse_pcb)(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, conf_role_t settings_dest);
+	int (*parse_pcb)(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf_role_t settings_dest);
 
 	/* Attempt to load an element from Filename to Ptr. Return 0 on success. */
 	int (*parse_element)(plug_io_t *ctx, DataTypePtr Ptr, const char *name);
 
 	/* Attempt to load fonts from a file. Return 0 on success. */
-	int (*parse_font)(plug_io_t *ctx, FontTypePtr Ptr, char *Filename);
+	int (*parse_font)(plug_io_t *ctx, FontTypePtr Ptr, const char *Filename);
 
 
 	/* Write the buffer to a file. Return 0 on success. */
