@@ -117,7 +117,7 @@ static int ActionLoadFrom(int argc, char **argv, Coord x, Coord y)
 
 	function = argv[0];
 	name = argv[1];
-	if (argc >= 2)
+	if (argc > 2)
 		format = argv[2];
 
 	if (strcasecmp(function, "ElementToBuffer") == 0) {
