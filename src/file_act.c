@@ -73,7 +73,7 @@ static int ActionExecCommand(int argc, char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char loadfrom_syntax[] = "LoadFrom(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert,filename)";
+static const char loadfrom_syntax[] = "LoadFrom(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert,filename[,format])";
 
 static const char loadfrom_help[] = "Load layout data from a file.";
 
@@ -110,14 +110,15 @@ you may have made.
 
 static int ActionLoadFrom(int argc, char **argv, Coord x, Coord y)
 {
-	char *function;
-	char *name;
+	char *function, *name, *format = NULL;
 
 	if (argc < 2)
 		AFAIL(loadfrom);
 
 	function = argv[0];
 	name = argv[1];
+	if (argc >= 2)
+		format = argv[2];
 
 	if (strcasecmp(function, "ElementToBuffer") == 0) {
 		notify_crosshair_change(false);
@@ -135,7 +136,7 @@ static int ActionLoadFrom(int argc, char **argv, Coord x, Coord y)
 
 	else if (strcasecmp(function, "Layout") == 0) {
 		if (!PCB->Changed || gui->confirm_dialog(_("OK to override layout data?"), 0))
-			LoadPCB(name, true, 0);
+			LoadPCB(name, format, true, 0);
 	}
 
 	else if (strcasecmp(function, "Netlist") == 0) {

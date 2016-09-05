@@ -97,7 +97,7 @@ int WritePCB(FILE *f, const char *fmt);
 FILE *CheckAndOpenFile(char *, bool, bool, bool *, bool *);
 FILE *OpenConnectionDataFile(void);
 int SavePCB(char *, const char *fmt);
-int LoadPCB(char *, bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) */
+int LoadPCB(const char *name, const char *fmt, bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) */
 void EnableAutosave(void);
 void Backup(void);
 void SaveInTMP(void);

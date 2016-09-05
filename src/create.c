@@ -176,7 +176,7 @@ PCBTypePtr CreateNewPCB()
 	PCB = NULL;
 
 	dpcb = -1;
-	conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, LoadPCB(__path__, false, 1));
+	conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, LoadPCB(__path__, NULL, false, 1));
 
 	if (dpcb == 0) {
 		nw = PCB;

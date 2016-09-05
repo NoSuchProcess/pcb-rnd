@@ -537,7 +537,7 @@ int SavePCB(char *file, const char *fmt)
 /* ---------------------------------------------------------------------------
  * Load PCB
  */
-int LoadPCB(char *file, bool require_font, int how)
+int LoadPCB(const char *file, const char *fmt, bool require_font, int how)
 {
 	return real_load_pcb(file, false, require_font, how);
 }
