@@ -115,9 +115,61 @@ static int parse_meta(PCBType *pcb, lht_node_t *nd)
 	return 0;
 }
 
+static int parse_data_layers(DataType *dt, lht_node_t *grp)
+{
+#warning TODO
+	return 0;
+}
+
+
+static int parse_pin(DataType *dt, lht_node_t *obj, int is_via)
+{
+#warning TODO
+	return 0;
+}
+
+static int parse_element(DataType *dt, lht_node_t *obj)
+{
+#warning TODO
+	return 0;
+}
+
+static int parse_data_objects(DataType *dt, lht_node_t *grp)
+{
+	lht_node_t *n;
+	lht_dom_iterator_t it;
+
+	if (grp->type != LHT_LIST)
+		return -1;
+
+	for(n = lht_dom_first(&it, grp); n != NULL; n = lht_dom_next(&it)) {
+		if (strncmp(n->name, "via.", 4) == 0)
+			parse_pin(dt, n, 1);
+		else if (strncmp(n->name, "element.", 8) == 0)
+			parse_element(dt, n);
+	}
+
+	return 0;
+}
+
 static DataType *parse_data(lht_node_t *nd)
 {
-	return 1;
+	DataType *dt;
+	lht_node_t *grp;
+	if (nd->type != LHT_HASH)
+		return NULL;
+
+	dt = calloc(sizeof(DataType), 1);
+
+	grp = lht_dom_hash_get(nd, "layers");
+	if ((grp != NULL) && (grp->type == LHT_LIST))
+		parse_data_layers(dt, grp);
+
+	grp = lht_dom_hash_get(nd, "objects");
+	if (grp != NULL)
+		parse_data_objects(dt, grp);
+
+	return dt;
 }
 
 static int parse_board(PCBType *pcb, lht_node_t *nd)
