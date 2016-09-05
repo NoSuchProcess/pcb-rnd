@@ -132,7 +132,7 @@ extern	DataTypePtr		yyData;
 extern	ElementTypePtr	yyElement;
 extern	FontTypePtr		yyFont;
 extern	int				yylineno;		/* linenumber */
-extern	char			*yyfilename;	/* in this file */
+extern	const char			*yyfilename;	/* in this file */
 extern	conf_role_t yy_settings_dest;
 extern FlagType yy_pcb_flags;
 

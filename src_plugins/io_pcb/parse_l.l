@@ -76,7 +76,7 @@
 #define yyunput ATTRIBUTE_UNUSED yyunput
 #endif
 
-char			*yyfilename;	/* in this file */
+const char			*yyfilename;	/* in this file */
 PCBTypePtr		yyPCB;			/* used by parser */
 DataTypePtr		yyData;
 ElementTypePtr		yyElement;
@@ -94,7 +94,7 @@ int	yyparse(void);
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static	int		Parse(FILE *, char *, char *, char *, char *);
+static int Parse(FILE *Pipe, char *Executable, char *Path, const char *Filename, char *Parameter);
 
 %}
 
@@ -212,7 +212,7 @@ in	{ return T_IN; }
 /* ---------------------------------------------------------------------------
  * sets up the preprocessor command
  */
-static int Parse(FILE *Pipe, char *Executable, char *Path, char *Filename, char *Parameter)
+static int Parse(FILE *Pipe, char *Executable, char *Path, const char *Filename, char *Parameter)
 {
 	static	char	*command = NULL;
 	int		returncode;
@@ -363,7 +363,7 @@ do { \
 	conf_set(target, path, arr_idx, new_val, pol); \
 } while(0) \
 
-int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, conf_role_t settings_dest)
+int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf_role_t settings_dest)
 {
 	int retval;
 	yyPCB = Ptr;
@@ -422,7 +422,7 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, char *Filename, conf_role_t 
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a font
  */
-int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr Ptr, char *Filename)
+int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr Ptr, const char *Filename)
 {
 	int r = 0;
 	yyPCB = NULL;
