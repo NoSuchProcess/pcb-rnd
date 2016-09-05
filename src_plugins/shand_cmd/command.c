@@ -94,7 +94,7 @@ static int CommandHelp(int argc, char **argv, Coord x, Coord y)
 
 /* ---------------------------------------------------------------------- */
 
-static const char l_syntax[] = "l [name]";
+static const char l_syntax[] = "l [name] [format]";
 
 static const char l_help[] = "Loads layout data.";
 
@@ -112,20 +112,22 @@ will popup.
 
 static int CommandLoadLayout(int argc, char **argv, Coord x, Coord y)
 {
-	char *filename, *name = NULL;
+	char *filename, *name = NULL, *format = NULL;
 
 	switch (argc) {
-	case 1:											/* filename is passed in commandline */
+	case 2:
+		format = argv[1];
+	case 1: /* filename is passed in commandline */
 		filename = argv[0];
 		break;
 
-	default:											/* usage */
+	default: /* usage */
 		Message("Usage: l [name]\n  loads layout data\n");
 		return (1);
 	}
 
 	if (!PCB->Changed || gui->confirm_dialog("OK to override layout data?", 0))
-		LoadPCB(filename, true, 0);
+		LoadPCB(filename, format, true, 0);
 	free(name);
 	return (0);
 }
