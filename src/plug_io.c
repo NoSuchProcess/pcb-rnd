@@ -68,6 +68,13 @@
 /* for opendir */
 #include "compat_inc.h"
 
+typedef struct {
+	plug_io_t *plug;
+	int prio;
+} find_t;
+
+static int find_io(find_t *available, int avail_len, plug_iot_t typ, int is_wr, const char *fmt);
+
 plug_io_t *plug_io_chain = NULL;
 
 static void plug_io_err(int res, const char *what, const char *filename)
@@ -107,7 +114,17 @@ int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_set
 	if (load_settings)
 		event(EVENT_LOAD_PRE, "s", Filename);
 
-	HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, Ptr, Filename, load_settings);
+	if (fmt != NULL) {
+		find_t available[PCB_IO_MAX_FORMATS];
+		int len;
+		len = find_io(available, sizeof(available)/sizeof(available[0]), PCB_IOT_PCB, 0, fmt);
+		if (len <= 0) {
+			Message("Error: can't find a IO_ plugin to load a PCB using format %s\n", fmt);
+			return -1;
+		}
+	}
+	else /* try all parsers until we find one that works */
+		HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, Ptr, Filename, load_settings);
 
 	if ((res == 0) && (load_settings))
 		conf_load_project(NULL, Filename);
@@ -137,21 +154,16 @@ int ParseFont(FontTypePtr Ptr, char *Filename)
 	return res;
 }
 
-typedef struct {
-	plug_io_t *plug;
-	int prio;
-} find_t;
-
 static int find_prio_cmp(const void *p1, const void *p2)
 {
 	const find_t *f1 = p1, *f2 = p2;
 	return f1->prio < f2->prio;
 }
 
-/* Find all plugins that can handle typ/wr and build an ordered list in available[], 
+/* Find all plugins that can handle typ/is_wr and build an ordered list in available[], 
    highest prio first. If fmt is NULL, use the default fmt for each plugin.
    Return the length of the array. */
-static int find_io(find_t *available, int avail_len, plug_iot_t typ, const char *fmt)
+static int find_io(find_t *available, int avail_len, plug_iot_t typ, int is_wr, const char *fmt)
 {
 	int len = 0;
 
@@ -168,7 +180,7 @@ static int find_io(find_t *available, int avail_len, plug_iot_t typ, const char 
 		} \
 	} while(0)
 
-	HOOK_CALL_ALL(plug_io_t, plug_io_chain, fmt_support_prio, cb_append, typ, 1, (fmt == NULL ? __ch__->default_fmt : fmt));
+	HOOK_CALL_ALL(plug_io_t, plug_io_chain, fmt_support_prio, cb_append, typ, is_wr, (fmt == NULL ? __ch__->default_fmt : fmt));
 
 	if (len > 0)
 		qsort(available, len, sizeof(available[0]), find_prio_cmp);
@@ -188,7 +200,7 @@ static plug_io_t *find_writer(plug_iot_t typ, const char *fmt)
 		fmt = "pcb";
 	}
 
-	len = find_io(available, sizeof(available)/sizeof(available[0]), typ, fmt);
+	len = find_io(available, sizeof(available)/sizeof(available[0]), typ, 1, fmt);
 
 	if (len == 0)
 		return NULL;
@@ -817,7 +829,7 @@ int pcb_io_list(pcb_io_formats_t *out, plug_iot_t typ, int wr, int do_digest)
 	int n;
 
 	memset(out, 0, sizeof(pcb_io_formats_t));
-	out->len = find_io(available, sizeof(available)/sizeof(available[0]), typ, NULL);
+	out->len = find_io(available, sizeof(available)/sizeof(available[0]), typ, 1, NULL);
 
 	if (out->len == 0) 
 		return 0;
