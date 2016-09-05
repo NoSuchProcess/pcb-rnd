@@ -219,6 +219,26 @@ static lht_node_t *build_pin(PinType *pin, int is_via)
 	return obj;
 }
 
+static lht_node_t *build_pad(PadType *pad)
+{
+	char buff[128];
+	lht_node_t *obj;
+
+	sprintf(buff, "pad.%ld", pad->ID);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	lht_dom_hash_put(obj, build_attributes(&pad->Attributes));
+	lht_dom_hash_put(obj, build_flags(&pad->Flags, PCB_TYPE_PAD));
+	lht_dom_hash_put(obj, build_textf("thickness", CFMT, pad->Thickness));
+	lht_dom_hash_put(obj, build_textf("clearance", CFMT, pad->Clearance));
+	lht_dom_hash_put(obj, build_textf("x1", CFMT, pad->Point1.X));
+	lht_dom_hash_put(obj, build_textf("y1", CFMT, pad->Point1.Y));
+	lht_dom_hash_put(obj, build_textf("x2", CFMT, pad->Point2.X));
+	lht_dom_hash_put(obj, build_textf("y2", CFMT, pad->Point2.Y));
+	lht_dom_hash_put(obj, build_text("name", pad->Name));
+	return obj;
+}
+
 static lht_node_t *build_polygon(PolygonType *poly)
 {
 	char buff[128];
@@ -284,6 +304,9 @@ static lht_node_t *build_element(ElementType *elem)
 
 	for(pi = pinlist_first(&elem->Pin); pi != NULL; pi = pinlist_next(pi))
 		lht_dom_list_append(lst, build_pin(pi, 0));
+
+	for(pa = padlist_first(&elem->Pad); pi != NULL; pa = padlist_next(pa))
+		lht_dom_list_append(lst, build_pad(pa));
 
 	return obj;
 }
