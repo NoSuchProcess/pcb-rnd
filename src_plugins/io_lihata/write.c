@@ -288,6 +288,9 @@ static lht_node_t *build_element(ElementType *elem)
 	sprintf(buff, "element.%ld", elem->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
+	lht_dom_hash_put(obj, build_attributes(&elem->Attributes));
+	lht_dom_hash_put(obj, build_flags(&elem->Flags, PCB_TYPE_ELEMENT));
+
 	lht_dom_hash_put(obj, build_text("desc", elem->Name[DESCRIPTION_INDEX].TextString));
 	lht_dom_hash_put(obj, build_text("name", elem->Name[NAMEONPCB_INDEX].TextString));
 	lht_dom_hash_put(obj, build_text("value", elem->Name[VALUE_INDEX].TextString));
