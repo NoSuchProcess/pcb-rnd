@@ -20,6 +20,10 @@
  *
  */
 
+/* Load a lihata document in-memory and walk the tree and build pcb native
+   structs. A full dom load is used instead of the event parser so that
+   symlinks and tree merges can be supported later. */
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <liblihata/tree.h>

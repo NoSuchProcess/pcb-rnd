@@ -20,6 +20,9 @@
  *
  */
 
+/* Build an in-memory lihata document that represents the board then save it.
+   A document is built for the merge-save. */
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <liblihata/tree.h>
