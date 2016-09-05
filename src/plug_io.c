@@ -122,6 +122,7 @@ int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_set
 			Message("Error: can't find a IO_ plugin to load a PCB using format %s\n", fmt);
 			return -1;
 		}
+		res = available[0].plug->parse_pcb(available[0].plug, Ptr, Filename, load_settings);
 	}
 	else /* try all parsers until we find one that works */
 		HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, Ptr, Filename, load_settings);
