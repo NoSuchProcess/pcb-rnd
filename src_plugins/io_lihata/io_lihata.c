@@ -24,6 +24,7 @@
 #include "global.h"
 #include "plugins.h"
 #include "plug_io.h"
+#include "read.h"
 #include "write.h"
 
 static plug_io_t io_lihata;
@@ -38,7 +39,7 @@ int io_lihata_fmt(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
 		return 0;
 	if (wr)
 		return 100;
-	return 0; /* no read support yet */
+	return 100;
 }
 
 static void hid_io_lihata_uninit(void)
@@ -51,7 +52,7 @@ pcb_uninit_t hid_io_lihata_init(void)
 	/* register the IO hook */
 	io_lihata.plugin_data = NULL;
 	io_lihata.fmt_support_prio = io_lihata_fmt;
-	io_lihata.parse_pcb = NULL;
+	io_lihata.parse_pcb = io_lihata_parse_pcb;
 	io_lihata.parse_element = NULL;
 	io_lihata.parse_font = NULL;
 	io_lihata.write_buffer = NULL;

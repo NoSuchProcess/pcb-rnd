@@ -20,4 +20,6 @@
  *
  */
 
+int io_lihata_parse_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf_role_t settings_dest);
+
 

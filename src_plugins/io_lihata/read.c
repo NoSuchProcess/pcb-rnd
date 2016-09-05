@@ -34,4 +34,18 @@
 #include "strflags.h"
 #include "compat_misc.h"
 #include "macro.h"
+#include "error.h"
+
+int io_lihata_parse_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf_role_t settings_dest)
+{
+	char *errmsg;
+	lht_doc_t *doc = lht_dom_load(Filename, &errmsg);
+
+	if (doc == NULL) {
+		Message("Error loading '%s': %s\n", errmsg);
+		return -1;
+	}
+
+	return 0;
+}
 
