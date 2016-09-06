@@ -38,6 +38,7 @@
 #include "error.h"
 #include "misc.h"
 #include "misc_util.h"
+#include "layer.h"
 
 static int parse_attributes(AttributeListType *list, lht_node_t *nd)
 {
@@ -84,7 +85,27 @@ static int parse_coord(Coord *res, lht_node_t *nd)
 	return 0;
 }
 
-/* Load the id value of a text node (with a prefixed name) into res.
+/* Load the Coord value of a text node into res. Return 0 on success */
+static int parse_int(int *res, lht_node_t *nd)
+{
+	long int tmp;
+	int base = 10;
+	char *end;
+
+	if ((nd == NULL) || (nd->type != LHT_TEXT))
+		return -1;
+
+	if ((nd->data.text.value[0] == '0') && (nd->data.text.value[1] == 'x'))
+		base = 16;
+	tmp = strtol(nd->data.text.value, &end, base);
+	if (*end != '\0')
+		return -1;
+
+	*res = tmp;
+	return 0;
+}
+
+/* Load the id name of a text node (with a prefixed name) into res.
    Return 0 on success */
 static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 {
@@ -159,15 +180,21 @@ static int parse_meta(PCBType *pcb, lht_node_t *nd)
 	return 0;
 }
 
-static int parse_data_layer(DataType *dt, lht_node_t *grp)
+static int parse_data_layer(PCBType *pcb, DataType *dt, lht_node_t *grp, int layer_id)
 {
 	lht_node_t *n, *lst;
 	lht_dom_iterator_t it;
+
 	LayerType *ly = &dt->Layer[dt->LayerN];
 	dt->LayerN++;
 
 	ly->Name = pcb_strdup(grp->name);
 	parse_bool(&ly->On, lht_dom_hash_get(grp, "visible"));
+	if (pcb != NULL) {
+		int grp_id;
+		parse_int(&grp_id, lht_dom_hash_get(grp, "group"));
+		MoveLayerToGroup(layer_id, grp_id);
+	}
 
 	lst = lht_dom_hash_get(grp, "objects");
 	if (lst->type != LHT_LIST)
@@ -183,14 +210,15 @@ static int parse_data_layer(DataType *dt, lht_node_t *grp)
 	return 0;
 }
 
-static int parse_data_layers(DataType *dt, lht_node_t *grp)
+static int parse_data_layers(PCBType *pcb, DataType *dt, lht_node_t *grp)
 {
+	int id;
 	lht_node_t *n;
 	lht_dom_iterator_t it;
 
-	for(n = lht_dom_first(&it, grp); n != NULL; n = lht_dom_next(&it))
+	for(id = 0, n = lht_dom_first(&it, grp); n != NULL; id++, n = lht_dom_next(&it))
 		if (n->type == LHT_HASH)
-			parse_data_layer(dt, n);
+			parse_data_layer(pcb, dt, n, id);
 
 	dt->LayerN -= 2; /* for the silk layers... */
 	return 0;
@@ -238,7 +266,7 @@ static int parse_data_objects(DataType *dt, lht_node_t *grp)
 	return 0;
 }
 
-static DataType *parse_data(lht_node_t *nd)
+static DataType *parse_data(PCBType *pcb, lht_node_t *nd)
 {
 	DataType *dt;
 	lht_node_t *grp;
@@ -249,7 +277,7 @@ static DataType *parse_data(lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "layers");
 	if ((grp != NULL) && (grp->type == LHT_LIST))
-		parse_data_layers(dt, grp);
+		parse_data_layers(pcb, dt, grp);
 
 	grp = lht_dom_hash_get(nd, "objects");
 	if (grp != NULL)
@@ -267,6 +295,8 @@ static int parse_board(PCBType *pcb, lht_node_t *nd)
 		return -1;
 	}
 
+	memset(&pcb->LayerGroups, 0, sizeof(pcb->LayerGroups));
+
 	if (parse_attributes(&pcb->Attributes, lht_dom_hash_get(nd, "attributes")) != 0)
 		return -1;
 
@@ -275,7 +305,7 @@ static int parse_board(PCBType *pcb, lht_node_t *nd)
 		return -1;
 
 	sub = lht_dom_hash_get(nd, "data");
-	if ((sub != NULL) && ((pcb->Data = parse_data(sub)) == NULL))
+	if ((sub != NULL) && ((pcb->Data = parse_data(pcb, sub)) == NULL))
 		return -1;
 
 	return 0;
