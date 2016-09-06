@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 #include <liblihata/tree.h>
 #include "global.h"
 #include "data.h"
@@ -101,6 +102,28 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 	return 0;
 }
 
+/* Load the boolean value of a text node into res.
+   Return 0 on success */
+static int parse_bool(bool *res, lht_node_t *nd)
+{
+	if (nd == NULL)
+		return -1;
+
+	if ((strcmp(nd->name, "1") == 0) || (strcasecmp(nd->name, "on") == 0) ||
+	    (strcasecmp(nd->name, "true") == 0) || (strcasecmp(nd->name, "yes") == 0)) {
+		*res = 1;
+		return 0;
+	}
+
+	if ((strcmp(nd->name, "0") == 0) || (strcasecmp(nd->name, "off") == 0) ||
+	    (strcasecmp(nd->name, "false") == 0) || (strcasecmp(nd->name, "no") == 0)) {
+		*res = 0;
+		return 0;
+	}
+
+	return -1;
+}
+
 static int parse_meta(PCBType *pcb, lht_node_t *nd)
 {
 	lht_node_t *grp;
@@ -136,12 +159,42 @@ static int parse_meta(PCBType *pcb, lht_node_t *nd)
 	return 0;
 }
 
-static int parse_data_layers(DataType *dt, lht_node_t *grp)
+static int parse_data_layer(DataType *dt, lht_node_t *grp)
 {
-#warning TODO
+	lht_node_t *n, *lst;
+	lht_dom_iterator_t it;
+	LayerType *ly = &dt->Layer[dt->LayerN];
+	dt->LayerN++;
+
+	ly->Name = pcb_strdup(grp->name);
+	parse_bool(&ly->On, lht_dom_hash_get(grp, "visible"));
+
+	lst = lht_dom_hash_get(grp, "objects");
+	if (lst->type != LHT_LIST)
+		return -1;
+
+	for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
+/*		if (strncmp(n->name, "via.", 4) == 0)
+			parse_pin(dt, n, 1);
+		else if (strncmp(n->name, "element.", 8) == 0)
+			parse_element(dt, n);*/
+	}
+
 	return 0;
 }
 
+static int parse_data_layers(DataType *dt, lht_node_t *grp)
+{
+	lht_node_t *n;
+	lht_dom_iterator_t it;
+
+	for(n = lht_dom_first(&it, grp); n != NULL; n = lht_dom_next(&it))
+		if (n->type == LHT_HASH)
+			parse_data_layer(dt, n);
+
+	dt->LayerN -= 2; /* for the silk layers... */
+	return 0;
+}
 
 static int parse_pin(DataType *dt, lht_node_t *obj, int is_via)
 {
