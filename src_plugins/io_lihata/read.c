@@ -43,7 +43,10 @@ static int parse_attributes(AttributeListType *list, lht_node_t *nd)
 	lht_node_t *n;
 	lht_dom_iterator_t it;
 
-	if ((nd == NULL) || (nd->type != LHT_HASH))
+	if (nd == NULL)
+		return 0;
+
+	if (nd->type != LHT_HASH)
 		return -1;
 
 	for(n = lht_dom_first(&it, nd); n != NULL; n = lht_dom_next(&it)) {
@@ -211,8 +214,7 @@ static int parse_board(PCBType *pcb, lht_node_t *nd)
 		return -1;
 	}
 
-	sub = lht_dom_hash_get(nd, "attributes");
-	if ((sub != NULL) && (parse_attributes(&pcb->Attributes, sub) != 0))
+	if (parse_attributes(&pcb->Attributes, lht_dom_hash_get(nd, "attributes")) != 0)
 		return -1;
 
 	sub = lht_dom_hash_get(nd, "meta");
