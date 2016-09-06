@@ -582,7 +582,7 @@ int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len)
 
 int pcb_layer_lookup_group(int layer_id)
 {
-	int group, layeri, used = 0;
+	int group, layeri;
 	for (group = 0; group < max_group; group++) {
 		for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++) {
 			int layer = PCB->LayerGroups.Entries[group][layeri];
