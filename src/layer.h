@@ -125,3 +125,6 @@ int pcb_layer_list(pcb_layer_type_t mask, int *res, int res_len);
 /* Same as pcb_layer_list but lists layer groups. A group is matching
    if any layer in that group matches mask. */
 int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len);
+
+/* Looks up which group a layer is in. Returns group ID. */
+int pcb_layer_lookup_group(int layer_id);

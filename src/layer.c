@@ -580,4 +580,17 @@ int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len)
 	return used;
 }
 
+int pcb_layer_lookup_group(int layer_id)
+{
+	int group, layeri, used = 0;
+	for (group = 0; group < max_group; group++) {
+		for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++) {
+			int layer = PCB->LayerGroups.Entries[group][layeri];
+			if (layer == layer_id)
+				return group;
+		}
+	}
+	return -1;
+}
+
 #undef APPEND
