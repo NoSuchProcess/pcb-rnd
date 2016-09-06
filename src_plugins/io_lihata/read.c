@@ -39,6 +39,7 @@
 #include "misc.h"
 #include "misc_util.h"
 #include "layer.h"
+#include "create.h"
 
 static int parse_attributes(AttributeListType *list, lht_node_t *nd)
 {
@@ -180,6 +181,41 @@ static int parse_meta(PCBType *pcb, lht_node_t *nd)
 	return 0;
 }
 
+static int parse_line(LayerType *ly, lht_node_t *obj)
+{
+	LineType *line = GetLineMemory(ly);
+
+	parse_id(&line->ID, obj, 5);
+	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
+
+#warning TODO: flags are lost!
+
+	parse_coord(&line->Thickness, lht_dom_hash_get(obj, "thickness"));
+	parse_coord(&line->Clearance, lht_dom_hash_get(obj, "clearance"));
+	parse_coord(&line->Point1.X, lht_dom_hash_get(obj, "x1"));
+	parse_coord(&line->Point1.Y, lht_dom_hash_get(obj, "y1"));
+	parse_coord(&line->Point2.X, lht_dom_hash_get(obj, "x2"));
+	parse_coord(&line->Point2.Y, lht_dom_hash_get(obj, "y2"));
+/*	parse_text(&line->Name, lht_dom_hash_get(obj, "name")); */
+
+	pcb_add_line_on_layer(ly, line);
+
+	return 0;
+}
+
+static int parse_arc(LayerType *ly, lht_node_t *obj)
+{
+#warning TODO
+	return 0;
+}
+
+static int parse_poly(LayerType *ly, lht_node_t *obj)
+{
+#warning TODO
+	return 0;
+}
+
+
 static int parse_data_layer(PCBType *pcb, DataType *dt, lht_node_t *grp, int layer_id)
 {
 	lht_node_t *n, *lst;
@@ -201,10 +237,12 @@ static int parse_data_layer(PCBType *pcb, DataType *dt, lht_node_t *grp, int lay
 		return -1;
 
 	for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
-/*		if (strncmp(n->name, "via.", 4) == 0)
-			parse_pin(dt, n, 1);
-		else if (strncmp(n->name, "element.", 8) == 0)
-			parse_element(dt, n);*/
+		if (strncmp(n->name, "line.", 5) == 0)
+			parse_line(ly, n);
+		if (strncmp(n->name, "arc.", 4) == 0)
+			parse_arc(ly, n);
+		if (strncmp(n->name, "polygon.", 8) == 0)
+			parse_poly(ly, n);
 	}
 
 	return 0;
