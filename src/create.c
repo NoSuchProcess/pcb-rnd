@@ -260,11 +260,16 @@ CreateNewVia(DataTypePtr Data,
 							" at %$mD.\n"), conf_core.editor.grid_unit->allow, Via->Thickness, Via->X, Via->Y);
 	}
 
+	pcb_add_via(Data, Via);
+	return (Via);
+}
+
+void pcb_add_via(DataType *Data, PinType *Via)
+{
 	SetPinBoundingBox(Via);
 	if (!Data->via_tree)
 		Data->via_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Data->via_tree, (BoxTypePtr) Via, 0);
-	return (Via);
 }
 
 struct line_info {
