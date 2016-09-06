@@ -231,6 +231,8 @@ static int parse_pin(DataType *dt, lht_node_t *obj, int is_via)
 	parse_id(&via->ID, obj, 4);
 	parse_attributes(&via->Attributes, lht_dom_hash_get(obj, "attributes"));
 
+#warning TODO: flags are lost!
+
 	parse_coord(&via->Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&via->Clearance, lht_dom_hash_get(obj, "clearance"));
 	parse_coord(&via->Mask, lht_dom_hash_get(obj, "mask"));
@@ -238,6 +240,8 @@ static int parse_pin(DataType *dt, lht_node_t *obj, int is_via)
 	parse_coord(&via->X, lht_dom_hash_get(obj, "x"));
 	parse_coord(&via->Y, lht_dom_hash_get(obj, "y"));
 	parse_text(&via->Name, lht_dom_hash_get(obj, "name"));
+
+	pcb_add_via(dt, via);
 
 	return 0;
 }
