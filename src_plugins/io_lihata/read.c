@@ -43,7 +43,7 @@ static int parse_attributes(AttributeListType *list, lht_node_t *nd)
 	lht_node_t *n;
 	lht_dom_iterator_t it;
 
-	if (nd->type != LHT_HASH)
+	if ((nd == NULL) || (nd->type != LHT_HASH))
 		return -1;
 
 	for(n = lht_dom_first(&it, nd); n != NULL; n = lht_dom_next(&it)) {
@@ -74,6 +74,24 @@ static int parse_coord(Coord *res, lht_node_t *nd)
 	
 	tmp = GetValueEx(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
 	if (!success)
+		return -1;
+
+	*res = tmp;
+	return 0;
+}
+
+/* Load the id value of a text node (with a prefixed name) into res.
+   Return 0 on success */
+static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
+{
+	long int tmp;
+	char *end;
+
+	if (nd == NULL)
+		return -1;
+	
+	tmp = strtol(nd->name + prefix_len, &end, 10);
+	if (*end != '\0')
 		return -1;
 
 	*res = tmp;
@@ -124,7 +142,19 @@ static int parse_data_layers(DataType *dt, lht_node_t *grp)
 
 static int parse_pin(DataType *dt, lht_node_t *obj, int is_via)
 {
-#warning TODO
+	PinType *via = GetViaMemory(dt);
+
+	parse_id(&via->ID, obj, 4);
+	parse_attributes(&via->Attributes, lht_dom_hash_get(obj, "attributes"));
+
+	parse_coord(&via->Thickness, lht_dom_hash_get(obj, "thickness"));
+	parse_coord(&via->Clearance, lht_dom_hash_get(obj, "clearance"));
+	parse_coord(&via->Mask, lht_dom_hash_get(obj, "mask"));
+	parse_coord(&via->DrillingHole, lht_dom_hash_get(obj, "hole"));
+	parse_coord(&via->X, lht_dom_hash_get(obj, "x"));
+	parse_coord(&via->Y, lht_dom_hash_get(obj, "y"));
+	parse_text(&via->Name, lht_dom_hash_get(obj, "name"));
+
 	return 0;
 }
 
