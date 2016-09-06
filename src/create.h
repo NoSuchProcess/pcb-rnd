@@ -72,5 +72,7 @@ void CreateIDReset(void);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_via(DataType *Data, PinType *Via);
+void pcb_add_line_on_layer(LayerType *Layer, LineType *Line);
+
 
 #endif

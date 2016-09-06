@@ -417,12 +417,18 @@ CreateNewLineOnLayer(LayerTypePtr Layer,
 	Line->Point2.X = X2;
 	Line->Point2.Y = Y2;
 	Line->Point2.ID = ID++;
+	pcb_add_line_on_layer(Layer, Line);
+	return (Line);
+}
+
+void pcb_add_line_on_layer(LayerType *Layer, LineType *Line)
+{
 	SetLineBoundingBox(Line);
 	if (!Layer->line_tree)
 		Layer->line_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
-	return (Line);
 }
+
 
 /* ---------------------------------------------------------------------------
  * creates a new rat-line
