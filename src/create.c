@@ -53,8 +53,9 @@
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-static long int ID = 1;							/* current object ID; incremented after */
-				/* each creation of an object */
+
+/* current object ID; incremented after each creation of an object */
+static long int ID = 1;
 
 static bool be_lenient = false;
 
