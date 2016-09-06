@@ -33,6 +33,7 @@
 #include "strflags.h"
 #include "compat_misc.h"
 #include "macro.h"
+#include "layer.h"
 
 #define CFMT "%[9]"
 
@@ -318,17 +319,20 @@ static lht_node_t *build_element(ElementType *elem)
 }
 
 
-static lht_node_t *build_data_layer(DataType *data, LayerType *layer)
+static lht_node_t *build_data_layer(DataType *data, LayerType *layer, int layer_group)
 {
 	lht_node_t *obj, *grp;
 	LineType *li;
 	ArcType *ar;
 	PolygonType *po;
+	char tmp[16];
 
 	obj = lht_dom_node_alloc(LHT_HASH, layer->Name);
 
 	lht_dom_hash_put(obj, build_text("visible", layer->On ? "1" : "0"));
 	lht_dom_hash_put(obj, build_attributes(&layer->Attributes));
+	sprintf(tmp, "%d", layer_group);
+	lht_dom_hash_put(obj, build_text("group", tmp));
 
 	grp = lht_dom_node_alloc(LHT_LIST, "objects");
 	lht_dom_hash_put(obj, grp);
@@ -354,7 +358,7 @@ static lht_node_t *build_data_layers(DataType *data)
 	layers = lht_dom_node_alloc(LHT_LIST, "layers");
 
 	for(n = 0; n < max_copper_layer + 2; n++)
-		lht_dom_list_append(layers, build_data_layer(data, data->Layer+n));
+		lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, pcb_layer_lookup_group(n)));
 
 	return layers;
 }
