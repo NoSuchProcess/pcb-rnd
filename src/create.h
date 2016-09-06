@@ -67,4 +67,7 @@ LibraryEntryTypePtr CreateNewConnection(LibraryMenuTypePtr, char *);
 
 AttributeTypePtr CreateNewAttribute(AttributeListTypePtr list, char *name, char *value);
 
+void CreateIDBump(int min_id);
+void CreateIDReset(void);
+
 #endif

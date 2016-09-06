@@ -903,3 +903,15 @@ AttributeTypePtr CreateNewAttribute(AttributeListTypePtr list, char *name, char 
 	list->Number++;
 	return &list->List[list->Number - 1];
 }
+
+void CreateIDBump(int min_id)
+{
+	if (ID < min_id)
+		ID = min_id;
+}
+
+void CreateIDReset(void)
+{
+	ID = 1;
+}
+
