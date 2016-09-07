@@ -75,5 +75,7 @@ long int CreateIDGet(void);
 void pcb_add_via(DataType *Data, PinType *Via);
 void pcb_add_line_on_layer(LayerType *Layer, LineType *Line);
 void pcb_add_arc_on_layer(LayerType *Layer, ArcType *Arc);
+void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon);
+
 
 #endif

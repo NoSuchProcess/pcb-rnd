@@ -517,6 +517,12 @@ PolygonTypePtr CreateNewPolygonFromRectangle(LayerTypePtr Layer, Coord X1, Coord
 	CreateNewPointInPolygon(polygon, X2, Y1);
 	CreateNewPointInPolygon(polygon, X2, Y2);
 	CreateNewPointInPolygon(polygon, X1, Y2);
+
+	pcb_add_polygon_on_layer(Layer, polygon);
+}
+
+void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon)
+{
 	SetPolygonBoundingBox(polygon);
 	if (!Layer->polygon_tree)
 		Layer->polygon_tree = r_create_tree(NULL, 0, 0);
