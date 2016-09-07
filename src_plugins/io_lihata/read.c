@@ -221,7 +221,7 @@ static int parse_arc(LayerType *ly, lht_node_t *obj)
 {
 	ArcType *arc = GetArcMemory(ly);
 
-	parse_id(&arc->ID, obj, 5);
+	parse_id(&arc->ID, obj, 4);
 	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 #warning TODO: flags are lost!
@@ -241,9 +241,51 @@ static int parse_arc(LayerType *ly, lht_node_t *obj)
 
 }
 
-static int parse_poly(LayerType *ly, lht_node_t *obj)
+static int parse_polygon(LayerType *ly, lht_node_t *obj)
 {
-#warning TODO
+	PolygonType *poly = GetPolygonMemory(ly);
+	lht_node_t *geo;
+	Cardinal n, c;
+
+	parse_id(&poly->ID, obj, 8);
+	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
+
+#warning TODO: flags are lost!
+
+	geo = lht_dom_hash_get(obj, "geometry");
+	if ((geo != NULL) && (geo->type == LHT_LIST)) {
+		lht_node_t *cnt;
+		lht_dom_iterator_t it;
+
+		/* count points and holes */
+		poly->PointN = 0;
+		for(c = 0, cnt = lht_dom_first(&it, geo); cnt != NULL; c++, cnt = lht_dom_next(&it)) {
+			if (cnt->type != LHT_TABLE)
+				continue;
+			poly->PointN += cnt->data.table.rows;
+		}
+		poly->PointMax = poly->PointN;
+		poly->Points = malloc(sizeof(PointType) * poly->PointMax);
+		poly->HoleIndexMax = poly->HoleIndexN = c-1;
+		poly->HoleIndex = malloc(sizeof(Cardinal) * poly->HoleIndexMax);
+
+		/* convert points and build hole index */
+		for(c = 0, cnt = lht_dom_first(&it, geo); cnt != NULL; c++, cnt = lht_dom_next(&it)) {
+			Cardinal r;
+			if (cnt->type != LHT_TABLE)
+				continue;
+			if (c > 0)
+				poly->HoleIndex[c-1] = n;
+			for(r = 0; r < cnt->data.table.rows; r++) {
+				parse_coord(&poly->Points[n].X, cnt->data.table.r[r][0]);
+				parse_coord(&poly->Points[n].Y, cnt->data.table.r[r][1]);
+				n++;
+			}
+		}
+	}
+
+	pcb_add_polygon_on_layer(ly, poly);
+
 	return 0;
 }
 
@@ -274,7 +316,7 @@ static int parse_data_layer(PCBType *pcb, DataType *dt, lht_node_t *grp, int lay
 		if (strncmp(n->name, "arc.", 4) == 0)
 			parse_arc(ly, n);
 		if (strncmp(n->name, "polygon.", 8) == 0)
-			parse_poly(ly, n);
+			parse_polygon(ly, n);
 	}
 
 	return 0;
