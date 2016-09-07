@@ -492,13 +492,17 @@ CreateNewArcOnLayer(LayerTypePtr Layer,
 	Arc->Height = height;
 	Arc->StartAngle = sa;
 	Arc->Delta = dir;
+	pcb_add_arc_on_layer(Layer, Arc);
+}
+
+void pcb_add_arc_on_layer(LayerType *Layer, ArcType *Arc)
+{
 	SetArcBoundingBox(Arc);
 	if (!Layer->arc_tree)
 		Layer->arc_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
 	return (Arc);
 }
-
 
 /* ---------------------------------------------------------------------------
  * creates a new polygon from the old formats rectangle data
