@@ -927,3 +927,8 @@ void CreateIDReset(void)
 	ID = 1;
 }
 
+long int CreateIDGet(void)
+{
+	return ID++;
+}
+

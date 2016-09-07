@@ -69,6 +69,7 @@ AttributeTypePtr CreateNewAttribute(AttributeListTypePtr list, char *name, char 
 
 void CreateIDBump(int min_id);
 void CreateIDReset(void);
+long int CreateIDGet(void);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_via(DataType *Data, PinType *Via);
