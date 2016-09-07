@@ -40,6 +40,16 @@
 #include "misc_util.h"
 #include "layer.h"
 #include "create.h"
+#include "vtptr.h"
+
+#warning TODO: put these in a gloal load-context-struct
+vtptr_t post_ids;
+
+/* Collect objects that has unknown ID on a list. Once all objects with
+   known-IDs are allocated, the unknonw-ID objects are allocated a fresh
+   ID. This makes sure they don't occupy IDs that would be used by known-ID
+   objects during the load. */
+#define post_id_req(obj) vtptr_append(&post_ids, &((obj)->ID))
 
 static int parse_attributes(AttributeListType *list, lht_node_t *nd)
 {
@@ -120,6 +130,8 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 	if (*end != '\0')
 		return -1;
 
+	CreateIDBump(tmp+1);
+
 	*res = tmp;
 	return 0;
 }
@@ -196,10 +208,9 @@ static int parse_line(LayerType *ly, lht_node_t *obj)
 	parse_coord(&line->Point1.Y, lht_dom_hash_get(obj, "y1"));
 	parse_coord(&line->Point2.X, lht_dom_hash_get(obj, "x2"));
 	parse_coord(&line->Point2.Y, lht_dom_hash_get(obj, "y2"));
-/*	parse_text(&line->Name, lht_dom_hash_get(obj, "name")); */
 
-#warning TODO: Point IDs are not set!
-
+	post_id_req(&line->Point1);
+	post_id_req(&line->Point2);
 
 	pcb_add_line_on_layer(ly, line);
 
@@ -331,6 +342,16 @@ static DataType *parse_data(PCBType *pcb, lht_node_t *nd)
 	return dt;
 }
 
+static void post_ids_assign(vtptr_t *ids)
+{
+	int n;
+	for(n = 0; n < vtptr_len(ids); n++) {
+		long int *id = ids->array[n];
+		*id = CreateIDGet();
+	}
+	vtptr_uninit(ids);
+}
+
 static int parse_board(PCBType *pcb, lht_node_t *nd)
 {
 	lht_node_t *sub;
@@ -339,6 +360,8 @@ static int parse_board(PCBType *pcb, lht_node_t *nd)
 		Message("Not a board lihata.\n");
 		return -1;
 	}
+
+	vtptr_init(&post_ids);
 
 	memset(&pcb->LayerGroups, 0, sizeof(pcb->LayerGroups));
 
@@ -352,6 +375,8 @@ static int parse_board(PCBType *pcb, lht_node_t *nd)
 	sub = lht_dom_hash_get(nd, "data");
 	if ((sub != NULL) && ((pcb->Data = parse_data(pcb, sub)) == NULL))
 		return -1;
+
+	post_ids_assign(&post_ids);
 
 	return 0;
 }
