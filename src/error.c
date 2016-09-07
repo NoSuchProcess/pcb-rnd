@@ -44,6 +44,7 @@
 #include "error.h"
 #include "plug_io.h"
 #include "compat_misc.h"
+#include "pcb-printf.h"
 
 #define utf8_dup_string(a,b) *(a) = pcb_strdup(b)
 
@@ -73,7 +74,7 @@ void Message(const char *Format, ...)
 	}
 
 	va_start(args, Format);
-	vfprintf(stderr, Format, args);
+	pcb_vfprintf(stderr, Format, args);
 	va_end(args);
 }
 
