@@ -219,8 +219,26 @@ static int parse_line(LayerType *ly, lht_node_t *obj)
 
 static int parse_arc(LayerType *ly, lht_node_t *obj)
 {
-#warning TODO
+	ArcType *arc = GetArcMemory(ly);
+
+	parse_id(&arc->ID, obj, 5);
+	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
+
+#warning TODO: flags are lost!
+
+	parse_coord(&arc->Thickness, lht_dom_hash_get(obj, "thickness"));
+	parse_coord(&arc->Clearance, lht_dom_hash_get(obj, "clearance"));
+	parse_coord(&arc->X, lht_dom_hash_get(obj, "x"));
+	parse_coord(&arc->Y, lht_dom_hash_get(obj, "y"));
+	parse_coord(&arc->Width, lht_dom_hash_get(obj, "width"));
+	parse_coord(&arc->Height, lht_dom_hash_get(obj, "height"));
+	parse_coord(&arc->StartAngle, lht_dom_hash_get(obj, "astart"));
+	parse_coord(&arc->Delta, lht_dom_hash_get(obj, "adelta"));
+
+	pcb_add_arc_on_layer(ly, arc);
+
 	return 0;
+
 }
 
 static int parse_poly(LayerType *ly, lht_node_t *obj)
