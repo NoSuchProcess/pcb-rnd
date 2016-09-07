@@ -198,6 +198,9 @@ static int parse_line(LayerType *ly, lht_node_t *obj)
 	parse_coord(&line->Point2.Y, lht_dom_hash_get(obj, "y2"));
 /*	parse_text(&line->Name, lht_dom_hash_get(obj, "name")); */
 
+#warning TODO: Point IDs are not set!
+
+
 	pcb_add_line_on_layer(ly, line);
 
 	return 0;
@@ -229,7 +232,7 @@ static int parse_data_layer(PCBType *pcb, DataType *dt, lht_node_t *grp, int lay
 	if (pcb != NULL) {
 		int grp_id;
 		parse_int(&grp_id, lht_dom_hash_get(grp, "group"));
-		MoveLayerToGroup(layer_id, grp_id);
+		pcb_layer_add_in_group(layer_id, grp_id);
 	}
 
 	lst = lht_dom_hash_get(grp, "objects");
