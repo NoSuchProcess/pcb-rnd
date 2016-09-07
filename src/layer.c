@@ -593,4 +593,11 @@ int pcb_layer_lookup_group(int layer_id)
 	return -1;
 }
 
+void pcb_layer_add_in_group(int layer_id, int group_id)
+{
+	int glen = PCB->LayerGroups.Number[group_id];
+	PCB->LayerGroups.Entries[group_id][glen] = layer_id;
+	PCB->LayerGroups.Number[group_id]++;
+}
+
 #undef APPEND

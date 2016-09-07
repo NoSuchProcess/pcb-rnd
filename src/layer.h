@@ -128,3 +128,6 @@ int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len);
 
 /* Looks up which group a layer is in. Returns group ID. */
 int pcb_layer_lookup_group(int layer_id);
+
+/* Put a layer in a group (the layer should not be in any other group) */
+void pcb_layer_add_in_group(int layer_id, int group_id);
