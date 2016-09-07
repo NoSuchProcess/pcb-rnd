@@ -493,6 +493,7 @@ CreateNewArcOnLayer(LayerTypePtr Layer,
 	Arc->StartAngle = sa;
 	Arc->Delta = dir;
 	pcb_add_arc_on_layer(Layer, Arc);
+	return (Arc);
 }
 
 void pcb_add_arc_on_layer(LayerType *Layer, ArcType *Arc)
@@ -501,7 +502,6 @@ void pcb_add_arc_on_layer(LayerType *Layer, ArcType *Arc)
 	if (!Layer->arc_tree)
 		Layer->arc_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
-	return (Arc);
 }
 
 /* ---------------------------------------------------------------------------
@@ -519,6 +519,7 @@ PolygonTypePtr CreateNewPolygonFromRectangle(LayerTypePtr Layer, Coord X1, Coord
 	CreateNewPointInPolygon(polygon, X1, Y2);
 
 	pcb_add_polygon_on_layer(Layer, polygon);
+	return (polygon);
 }
 
 void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon)
@@ -527,7 +528,6 @@ void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon)
 	if (!Layer->polygon_tree)
 		Layer->polygon_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Layer->polygon_tree, (BoxTypePtr) polygon, 0);
-	return (polygon);
 }
 
 /* ---------------------------------------------------------------------------
