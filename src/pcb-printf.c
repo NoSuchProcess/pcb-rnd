@@ -580,11 +580,28 @@ int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
 int pcb_fprintf(FILE * fh, const char *fmt, ...)
 {
 	int rv;
+	va_list args;
+
+	va_start(args, fmt);
+	rv = pcb_vfprintf(fh, fmt, args);
+	va_end(args);
+
+	return rv;
+}
+
+/* \brief Wrapper for pcb_append_vprintf that outputs to a file
+ *
+ * \param [in] fh   File to output to
+ * \param [in] fmt  Format specifier
+ * \param [in] args   Arguments to specifier
+ *
+ * \return The length of the written string
+ */
+int pcb_vfprintf(FILE * fh, const char *fmt, va_list args)
+{
+	int rv;
 	gds_t str;
 	gds_init(&str);
-
-	va_list args;
-	va_start(args, fmt);
 
 	if (fh == NULL)
 		rv = -1;
@@ -592,7 +609,6 @@ int pcb_fprintf(FILE * fh, const char *fmt, ...)
 		pcb_append_vprintf(&str, fmt, args);
 		rv = fprintf(fh, "%s", str.array);
 	}
-	va_end(args);
 
 	gds_uninit(&str);
 	return rv;
