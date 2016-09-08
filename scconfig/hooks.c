@@ -8,6 +8,7 @@
 #include "tmpasm.h"
 #include "tmpasm_scconfig.h"
 #include "util/arg_auto_set.h"
+#include "Rev.h"
 
 #define version "1.1.1"
 
@@ -581,8 +582,17 @@ int hook_generate()
 #define plugin_dep(plg, on)
 #include "plugins.h"
 
-	if (repeat != NULL)
+	if (repeat != NULL) {
 		printf("\n%s\n", repeat);
+	}
+
+	{
+		FILE *f;
+		f = fopen("Rev.stamp", "w");
+		fprintf(f, "%d", myrev);
+		fclose(f);
+	}
+
 	}
 	else
 		fprintf(stderr, "Error generating some of the files\n");
