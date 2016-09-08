@@ -34,6 +34,7 @@
 #include "compat_misc.h"
 #include "macro.h"
 #include "layer.h"
+#include "common.h"
 
 #define CFMT "%[9]"
 
@@ -102,11 +103,7 @@ static lht_node_t *build_attributes(AttributeListType *lst)
 	return ln;
 }
 
-/* Because all the macros expect it, that's why.  */
-typedef struct {
-	FlagType Flags;
-} flag_holder;
-
+#warning TODO: move this to common
 const char *thermal_style[] = {
 	NULL,
 	"diagonal-sharp",
@@ -115,6 +112,25 @@ const char *thermal_style[] = {
 	"diagonal-round",
 	"horver-round"
 };
+
+int io_lihata_resolve_thermal_style(const char *name)
+{
+	int n;
+	char *end;
+
+	if (name == NULL)
+		return 0;
+
+	for(n = 1; n < ENTRIES(thermal_style); n++)
+		if (strcmp(name, thermal_style[n]) == 0)
+			return n;
+
+	n = strtol(name, &end, 10);
+	if (*end == '\0')
+		return n;
+
+	return 0;
+}
 
 static lht_node_t *build_flags(FlagType *f, int object_type)
 {

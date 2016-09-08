@@ -41,6 +41,7 @@
 #include "layer.h"
 #include "create.h"
 #include "vtptr.h"
+#include "common.h"
 
 #warning TODO: put these in a gloal load-context-struct
 vtptr_t post_ids;
@@ -192,6 +193,44 @@ static int parse_meta(PCBType *pcb, lht_node_t *nd)
 
 	return 0;
 }
+
+static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
+{
+	int n;
+	lht_node_t *thr;
+	flag_holder fh;
+
+	memset(&fh, 0, sizeof(fh));
+
+	for (n = 0; n < pcb_object_flagbits_len; n++) {
+		if (pcb_object_flagbits[n].object_types & object_type) {
+			bool b;
+			if ((parse_bool(&b, lht_dom_hash_get(fn, pcb_object_flagbits[n].name)) == 0) && b)
+				SET_FLAG(pcb_object_flagbits[n].mask, &fh);
+		}
+	}
+
+	thr = lht_dom_hash_get(fn, "thermal");
+	if (thr != NULL) {
+		lht_node_t *n;
+		lht_dom_iterator_t it;
+		int layer;
+
+		for(layer = 0, n = lht_dom_first(&it, thr); n != NULL; layer++, n = lht_dom_next(&it))
+			if (n->type == LHT_TEXT)
+				ASSIGN_THERM(layer, io_lihata_resolve_thermal_style(n->data.text.value), &fh);
+	}
+
+	if (parse_int(&n, lht_dom_hash_get(fn, "shape")) == 0)
+		fh.Flags.q = n;
+
+	if (parse_int(&n, lht_dom_hash_get(fn, "intconn")) == 0)
+		fh.Flags.int_conn_grp = n;
+
+	*f = fh.Flags;
+	return 0;
+}
+
 
 static int parse_line(LayerType *ly, lht_node_t *obj)
 {
