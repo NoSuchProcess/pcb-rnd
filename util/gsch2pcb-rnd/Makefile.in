@@ -48,7 +48,12 @@ FP_LDFLAGS = @/local/pcb/LDFLAGS@
 FP_CFLAGS  = @/local/pcb/CFLAGS@
 OBJS=gsch2pcb.o help.o
 
-all: gsch2pcb-rnd$(EXE)
+all:
+	make revcheck
+	make gsch2pcb-rnd$(EXE)
+
+revcheck:
+	cd ../../scconfig && ./revtest Rev.stamp < Rev.tab
 
 gsch2pcb-rnd$(EXE): $(OBJS)  $(CONF_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(FP_OBJS) $(LHTOBJ)
 	$(CC) $(OBJS) $(CONF_OBJS)  $(FP_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCCFOBJ) $(QPARSE) $(LHTOBJ) -o gsch2pcb-rnd$(EXE) $(LDFLAGS) $(FP_LDFLAGS)

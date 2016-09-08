@@ -210,9 +210,14 @@ CLEANRULES=@/local/pcb/CLEANRULES@
 CC=@cc/cc@
 CQUOTE=../scconfig/cquote
 
-all: all_exe
+all:
+	make revcheck
+	make all_exe
 
 include ../Makefile.conf
+
+revcheck:
+	cd ../scconfig && ./revtest Rev.stamp < Rev.tab
 
 all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
