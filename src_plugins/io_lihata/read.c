@@ -144,14 +144,14 @@ static int parse_bool(bool *res, lht_node_t *nd)
 	if (nd == NULL)
 		return -1;
 
-	if ((strcmp(nd->name, "1") == 0) || (strcasecmp(nd->name, "on") == 0) ||
-	    (strcasecmp(nd->name, "true") == 0) || (strcasecmp(nd->name, "yes") == 0)) {
+	if ((strcmp(nd->data.text.value, "1") == 0) || (strcasecmp(nd->data.text.value, "on") == 0) ||
+	    (strcasecmp(nd->data.text.value, "true") == 0) || (strcasecmp(nd->data.text.value, "yes") == 0)) {
 		*res = 1;
 		return 0;
 	}
 
-	if ((strcmp(nd->name, "0") == 0) || (strcasecmp(nd->name, "off") == 0) ||
-	    (strcasecmp(nd->name, "false") == 0) || (strcasecmp(nd->name, "no") == 0)) {
+	if ((strcmp(nd->data.text.value, "0") == 0) || (strcasecmp(nd->data.text.value, "off") == 0) ||
+	    (strcasecmp(nd->data.text.value, "false") == 0) || (strcasecmp(nd->data.text.value, "no") == 0)) {
 		*res = 0;
 		return 0;
 	}
