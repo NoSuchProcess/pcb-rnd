@@ -1,11 +1,15 @@
 - BUGS
+	- genht config bug in gpmi
+	- strdup bug in gpmi
 	- visible grid slowing down rendering [Erich]
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
 	- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
-	- gui window quit queues and doesn't work when action command is
-	active[report:miloh]
-	- prefernces->userPOV->increments window can get out of sync and
-	disappear[report:miloh]
+	- gui window quit queues and doesn't work when action command is active [report:miloh]
+	- prefernces->userPOV->increments window can get out of sync and disappear [report:miloh]
+	- File->Revert, or re-loading after external change of .pcb file leads to corruption of routing styles. [report:Chris]
+	- Creating new lines doesn?t snap to pads correctly sometimes when AutoDRC is enabled. [report:Chris]
+	- shift (add to selection) broken [report:Chris]
+	- gerber-on-mac [report:Evan]
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
