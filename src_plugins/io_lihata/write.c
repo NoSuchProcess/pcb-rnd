@@ -103,40 +103,11 @@ static lht_node_t *build_attributes(AttributeListType *lst)
 	return ln;
 }
 
-#warning TODO: move this to common
-const char *thermal_style[] = {
-	NULL,
-	"diagonal-sharp",
-	"horver-sharp",
-	"solid",
-	"diagonal-round",
-	"horver-round"
-};
-
-int io_lihata_resolve_thermal_style(const char *name)
-{
-	int n;
-	char *end;
-
-	if (name == NULL)
-		return 0;
-
-	for(n = 1; n < ENTRIES(thermal_style); n++)
-		if (strcmp(name, thermal_style[n]) == 0)
-			return n;
-
-	n = strtol(name, &end, 10);
-	if (*end == '\0')
-		return n;
-
-	return 0;
-}
-
 static lht_node_t *build_flags(FlagType *f, int object_type)
 {
 	int n, layer;
 	lht_node_t *hsh, *txt, *lst;
-	flag_holder fh;
+	io_lihata_flag_holder fh;
 
 	fh.Flags = *f;
 
@@ -158,9 +129,11 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 		if (TEST_ANY_THERMS(&fh)) {
 			int t = GET_THERM(layer, &fh);
 			if (t != 0) {
+				const char *name;
 				txt = lht_dom_node_alloc(LHT_TEXT, PCB->Data->Layer[layer].Name);
-				if (t < ENTRIES(thermal_style))
-					txt->data.text.value = pcb_strdup(thermal_style[t]);
+				name = io_lihata_thermal_style(t);
+				if (name != NULL)
+					txt->data.text.value = pcb_strdup(name);
 				else
 					txt->data.text.value = pcb_strdup_printf("%d", t);
 				lht_dom_hash_put(lst, txt);

@@ -198,7 +198,7 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 {
 	int n;
 	lht_node_t *thr;
-	flag_holder fh;
+	io_lihata_flag_holder fh;
 
 	memset(&fh, 0, sizeof(fh));
 
