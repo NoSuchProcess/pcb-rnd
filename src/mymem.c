@@ -748,3 +748,11 @@ char *StripWhiteSpaceAndDup(const char *S)
 	else
 		return (NULL);
 }
+
+LineType *GetElementLineMemory(ElementType *Element)
+{
+	LineType *line = calloc(sizeof(LineType), 1);
+	linelist_append(&Element->Line, line);
+
+	return line;
+}

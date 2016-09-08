@@ -687,8 +687,7 @@ LineTypePtr CreateNewLineInElement(ElementTypePtr Element, Coord X1, Coord Y1, C
 	if (Thickness == 0)
 		return NULL;
 
-	line = calloc(sizeof(LineType), 1);
-	linelist_append(&Element->Line, line);
+	line = GetElementLineMemory(Element);
 
 	/* copy values */
 	line->Point1.X = X1;

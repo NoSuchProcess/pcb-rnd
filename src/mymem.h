@@ -100,6 +100,9 @@ void RemoveFreeVia(PinType * data);
 void RemoveFreeElement(ElementType * data);
 void RemoveFreeRat(RatType * data);
 
+/* Allocate element-objects */
+LineType *GetElementLineMemory(ElementType *Element);
+
 #ifndef HAVE_LIBDMALLOC
 #define malloc(x) calloc(1,(x))
 #endif
