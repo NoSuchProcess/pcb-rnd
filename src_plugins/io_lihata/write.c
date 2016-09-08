@@ -269,6 +269,26 @@ static lht_node_t *build_polygon(PolygonType *poly)
 	return obj;
 }
 
+static lht_node_t *build_pcb_text(const char *role, TextType *text)
+{
+	char buff[128];
+
+	sprintf(buff, "text.%ld", text->ID);
+	lht_node_t *obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	lht_dom_hash_put(obj, build_attributes(&text->Attributes));
+	lht_dom_hash_put(obj, build_text("string", text->TextString));
+	lht_dom_hash_put(obj, build_textf("scale", "%d", text->Scale));
+	lht_dom_hash_put(obj, build_textf("direction", "%d", text->Direction));
+	lht_dom_hash_put(obj, build_textf("x", CFMT, text->X));
+	lht_dom_hash_put(obj, build_textf("y", CFMT, text->Y));
+
+	if (role != NULL)
+		lht_dom_hash_put(obj, build_text("role", role));
+
+	return obj;
+}
+
 static lht_node_t *build_element(ElementType *elem)
 {
 	char buff[128];
@@ -284,13 +304,15 @@ static lht_node_t *build_element(ElementType *elem)
 	lht_dom_hash_put(obj, build_attributes(&elem->Attributes));
 	lht_dom_hash_put(obj, build_flags(&elem->Flags, PCB_TYPE_ELEMENT));
 
-	lht_dom_hash_put(obj, build_text("desc", elem->Name[DESCRIPTION_INDEX].TextString));
-	lht_dom_hash_put(obj, build_text("name", elem->Name[NAMEONPCB_INDEX].TextString));
-	lht_dom_hash_put(obj, build_text("value", elem->Name[VALUE_INDEX].TextString));
 
 	/* build drawing primitives */
 	lst = lht_dom_node_alloc(LHT_LIST, "objects");
 	lht_dom_hash_put(obj, lst);
+
+	lht_dom_list_append(lst, build_pcb_text("desc", &elem->Name[DESCRIPTION_INDEX]));
+	lht_dom_list_append(lst, build_pcb_text("name", &elem->Name[NAMEONPCB_INDEX]));
+	lht_dom_list_append(lst, build_pcb_text("value", &elem->Name[VALUE_INDEX]));
+
 
 	for(li = linelist_first(&elem->Line); li != NULL; li = linelist_next(li))
 		lht_dom_list_append(lst, build_line(li));
