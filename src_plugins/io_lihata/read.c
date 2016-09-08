@@ -234,7 +234,7 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 }
 
 
-static int parse_line(LayerType *ly, lht_node_t *obj)
+static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj)
 {
 	LineType *line = GetLineMemory(ly);
 
@@ -257,7 +257,7 @@ static int parse_line(LayerType *ly, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_arc(LayerType *ly, lht_node_t *obj)
+static int parse_arc(LayerType *ly, ElementType *el, lht_node_t *obj)
 {
 	ArcType *arc = GetArcMemory(ly);
 
@@ -280,7 +280,7 @@ static int parse_arc(LayerType *ly, lht_node_t *obj)
 
 }
 
-static int parse_polygon(LayerType *ly, lht_node_t *obj)
+static int parse_polygon(LayerType *ly, ElementType *el, lht_node_t *obj)
 {
 	PolygonType *poly = GetPolygonMemory(ly);
 	lht_node_t *geo;
@@ -327,6 +327,11 @@ static int parse_polygon(LayerType *ly, lht_node_t *obj)
 	return 0;
 }
 
+static int parse_pcb_text(LayerType *ly, ElementType *el, lht_node_t *obj)
+{
+#warning TODO
+	return 0;
+}
 
 static int parse_data_layer(PCBType *pcb, DataType *dt, lht_node_t *grp, int layer_id)
 {
@@ -350,11 +355,13 @@ static int parse_data_layer(PCBType *pcb, DataType *dt, lht_node_t *grp, int lay
 
 	for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 		if (strncmp(n->name, "line.", 5) == 0)
-			parse_line(ly, n);
+			parse_line(ly, NULL, n);
 		if (strncmp(n->name, "arc.", 4) == 0)
-			parse_arc(ly, n);
+			parse_arc(ly, NULL, n);
 		if (strncmp(n->name, "polygon.", 8) == 0)
-			parse_polygon(ly, n);
+			parse_polygon(ly, NULL, n);
+		if (strncmp(n->name, "text.", 5) == 0)
+			parse_pcb_text(ly, NULL, n);
 	}
 
 	return 0;
@@ -374,7 +381,8 @@ static int parse_data_layers(PCBType *pcb, DataType *dt, lht_node_t *grp)
 	return 0;
 }
 
-static int parse_pin(DataType *dt, lht_node_t *obj, int is_via)
+/* If el == NULL and dt != NULL it is a via (for now). */
+static int parse_pin(DataType *dt, ElementType *el, lht_node_t *obj)
 {
 	PinType *via = GetViaMemory(dt);
 
@@ -395,9 +403,54 @@ static int parse_pin(DataType *dt, lht_node_t *obj, int is_via)
 	return 0;
 }
 
-static int parse_element(DataType *dt, lht_node_t *obj)
+static int parse_pad(ElementType *el, lht_node_t *obj)
 {
 #warning TODO
+	return 0;
+}
+
+
+static int parse_element(DataType *dt, lht_node_t *obj)
+{
+	ElementType *elem = GetElementMemory(dt);
+	lht_node_t *lst, *n;
+	lht_dom_iterator_t it;
+
+	parse_id(&elem->ID, obj, 4);
+	parse_attributes(&elem->Attributes, lht_dom_hash_get(obj, "attributes"));
+	parse_flags(&elem->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_VIA);
+
+	lst = lht_dom_hash_get(obj, "objects");
+	if (lst->type == LHT_LIST) {
+		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
+#if 0
+			if (strncmp(n->name, "line.", 5) == 0)
+				parse_line(NULL, elem, n);
+			if (strncmp(n->name, "arc.", 4) == 0)
+				parse_arc(NULL, elem, n);
+/*		if (strncmp(n->name, "polygon.", 8) == 0)
+			parse_polygon(ly, elem, n);*/
+			if (strncmp(n->name, "text.", 5) == 0)
+				parse_pcb_text(NULL, elem, n);
+			if (strncmp(n->name, "pin.", 4) == 0)
+				parse_pin(NULL, elem, n);
+			if (strncmp(n->name, "pad.", 4) == 0)
+				parse_pad(elem, n);
+#endif
+		}
+	}
+
+#if 0
+	parse_text(&, lht_dom_hash_get(obj, "desc"));
+	parse_text(&, lht_dom_hash_get(obj, "name"));
+	parse_text(&, lht_dom_hash_get(obj, "value"));
+
+	AddTextToElement(&DESCRIPTION_TEXT(Element), PCBFont, TextX, TextY, Direction, Description, TextScale, TextFlags);
+
+	lht_dom_hash_put(obj, build_text("desc", elem->Name[DESCRIPTION_INDEX].TextString));
+	lht_dom_hash_put(obj, build_text("name", elem->Name[NAMEONPCB_INDEX].TextString));
+	lht_dom_hash_put(obj, build_text("value", elem->Name[VALUE_INDEX].TextString));
+#endif
 	return 0;
 }
 
@@ -411,7 +464,7 @@ static int parse_data_objects(DataType *dt, lht_node_t *grp)
 
 	for(n = lht_dom_first(&it, grp); n != NULL; n = lht_dom_next(&it)) {
 		if (strncmp(n->name, "via.", 4) == 0)
-			parse_pin(dt, n, 1);
+			parse_pin(dt, NULL, n);
 		else if (strncmp(n->name, "element.", 8) == 0)
 			parse_element(dt, n);
 	}
