@@ -196,12 +196,13 @@ static int parse_meta(PCBType *pcb, lht_node_t *nd)
 
 static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 {
-	int n;
-	lht_node_t *thr;
 	io_lihata_flag_holder fh;
 
 	memset(&fh, 0, sizeof(fh));
 
+	if (fn != NULL) {
+	int n;
+	lht_node_t *thr;
 	for (n = 0; n < pcb_object_flagbits_len; n++) {
 		if (pcb_object_flagbits[n].object_types & object_type) {
 			bool b;
@@ -226,6 +227,7 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 
 	if (parse_int(&n, lht_dom_hash_get(fn, "intconn")) == 0)
 		fh.Flags.int_conn_grp = n;
+	}
 
 	*f = fh.Flags;
 	return 0;
@@ -238,8 +240,7 @@ static int parse_line(LayerType *ly, lht_node_t *obj)
 
 	parse_id(&line->ID, obj, 5);
 	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
-
-#warning TODO: flags are lost!
+	parse_flags(&line->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_LINE);
 
 	parse_coord(&line->Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&line->Clearance, lht_dom_hash_get(obj, "clearance"));
@@ -262,8 +263,7 @@ static int parse_arc(LayerType *ly, lht_node_t *obj)
 
 	parse_id(&arc->ID, obj, 4);
 	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
-
-#warning TODO: flags are lost!
+	parse_flags(&arc->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ARC);
 
 	parse_coord(&arc->Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&arc->Clearance, lht_dom_hash_get(obj, "clearance"));
@@ -288,8 +288,7 @@ static int parse_polygon(LayerType *ly, lht_node_t *obj)
 
 	parse_id(&poly->ID, obj, 8);
 	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
-
-#warning TODO: flags are lost!
+	parse_flags(&poly->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_POLYGON);
 
 	geo = lht_dom_hash_get(obj, "geometry");
 	if ((geo != NULL) && (geo->type == LHT_LIST)) {
@@ -381,8 +380,7 @@ static int parse_pin(DataType *dt, lht_node_t *obj, int is_via)
 
 	parse_id(&via->ID, obj, 4);
 	parse_attributes(&via->Attributes, lht_dom_hash_get(obj, "attributes"));
-
-#warning TODO: flags are lost!
+	parse_flags(&via->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_VIA);
 
 	parse_coord(&via->Thickness, lht_dom_hash_get(obj, "thickness"));
 	parse_coord(&via->Clearance, lht_dom_hash_get(obj, "clearance"));
