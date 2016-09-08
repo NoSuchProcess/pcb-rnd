@@ -436,6 +436,8 @@ static DataType *parse_data(PCBType *pcb, lht_node_t *nd)
 	if (grp != NULL)
 		parse_data_objects(dt, grp);
 
+	dt->pcb = pcb;
+
 	return dt;
 }
 
