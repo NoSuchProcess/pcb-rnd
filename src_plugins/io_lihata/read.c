@@ -201,32 +201,32 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 	memset(&fh, 0, sizeof(fh));
 
 	if (fn != NULL) {
-	int n;
-	lht_node_t *thr;
-	for (n = 0; n < pcb_object_flagbits_len; n++) {
-		if (pcb_object_flagbits[n].object_types & object_type) {
-			bool b;
-			if ((parse_bool(&b, lht_dom_hash_get(fn, pcb_object_flagbits[n].name)) == 0) && b)
-				SET_FLAG(pcb_object_flagbits[n].mask, &fh);
+		int n;
+		lht_node_t *thr;
+		for (n = 0; n < pcb_object_flagbits_len; n++) {
+			if (pcb_object_flagbits[n].object_types & object_type) {
+				bool b;
+				if ((parse_bool(&b, lht_dom_hash_get(fn, pcb_object_flagbits[n].name)) == 0) && b)
+					SET_FLAG(pcb_object_flagbits[n].mask, &fh);
+			}
 		}
-	}
 
-	thr = lht_dom_hash_get(fn, "thermal");
-	if (thr != NULL) {
-		lht_node_t *n;
-		lht_dom_iterator_t it;
-		int layer;
+		thr = lht_dom_hash_get(fn, "thermal");
+		if (thr != NULL) {
+			lht_node_t *n;
+			lht_dom_iterator_t it;
+			int layer;
 
-		for(layer = 0, n = lht_dom_first(&it, thr); n != NULL; layer++, n = lht_dom_next(&it))
-			if (n->type == LHT_TEXT)
-				ASSIGN_THERM(layer, io_lihata_resolve_thermal_style(n->data.text.value), &fh);
-	}
+			for(layer = 0, n = lht_dom_first(&it, thr); n != NULL; layer++, n = lht_dom_next(&it))
+				if (n->type == LHT_TEXT)
+					ASSIGN_THERM(layer, io_lihata_resolve_thermal_style(n->data.text.value), &fh);
+		}
 
-	if (parse_int(&n, lht_dom_hash_get(fn, "shape")) == 0)
-		fh.Flags.q = n;
+		if (parse_int(&n, lht_dom_hash_get(fn, "shape")) == 0)
+			fh.Flags.q = n;
 
-	if (parse_int(&n, lht_dom_hash_get(fn, "intconn")) == 0)
-		fh.Flags.int_conn_grp = n;
+		if (parse_int(&n, lht_dom_hash_get(fn, "intconn")) == 0)
+			fh.Flags.int_conn_grp = n;
 	}
 
 	*f = fh.Flags;
