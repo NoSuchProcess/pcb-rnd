@@ -336,6 +336,7 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer, int layer_
 	LineType *li;
 	ArcType *ar;
 	PolygonType *po;
+	TextType *tx;
 	char tmp[16];
 
 	obj = lht_dom_node_alloc(LHT_HASH, layer->Name);
@@ -356,6 +357,9 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer, int layer_
 
 	for(po = polylist_first(&layer->Polygon); po != NULL; po = polylist_next(po))
 		lht_dom_list_append(grp, build_polygon(po));
+
+	for(tx = textlist_first(&layer->Text); tx != NULL; tx = textlist_next(tx))
+		lht_dom_list_append(grp, build_pcb_text(NULL, tx));
 
 
 	return obj;
