@@ -9,7 +9,7 @@
 	- File->Revert, or re-loading after external change of .pcb file leads to corruption of routing styles. [report:Chris]
 	- Creating new lines doesn?t snap to pads correctly sometimes when AutoDRC is enabled. [report:Chris]
 	- shift (add to selection) broken [report:Chris]
-	- gerber-on-mac [report:Evan]
+	- gerber export is broken with the torture-board [report:Evan]
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
