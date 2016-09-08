@@ -10,7 +10,8 @@ int main(int argc, char *argv[])
 	Coord crd;
 	int n;
 
-	
+	pcb_printf_slot[0] = "%mr";
+
 	for(n = 2; n < argc; n++) {
 		bool success;
 		double val = GetValueEx(argv[n], NULL, NULL, NULL, "", &success);
@@ -21,7 +22,7 @@ int main(int argc, char *argv[])
 		crd = val;
 	}
 
-	pcb_printf(fmt, crd);
+	pcb_fprintf(stdout, fmt, crd, 70000, 70000, 70000, 70000);
 
 	printf("\n");
 
