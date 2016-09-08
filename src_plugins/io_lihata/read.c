@@ -236,7 +236,12 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 
 static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj)
 {
-	LineType *line = GetLineMemory(ly);
+	LineType *line;
+
+	if (ly != NULL)
+		line = GetLineMemory(ly);
+	else if (el != NULL)
+		line = GetElementLineMemory(el);
 
 	parse_id(&line->ID, obj, 5);
 	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
@@ -252,7 +257,8 @@ static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj)
 	post_id_req(&line->Point1);
 	post_id_req(&line->Point2);
 
-	pcb_add_line_on_layer(ly, line);
+	if (ly != NULL)
+		pcb_add_line_on_layer(ly, line);
 
 	return 0;
 }
@@ -423,9 +429,9 @@ static int parse_element(DataType *dt, lht_node_t *obj)
 	lst = lht_dom_hash_get(obj, "objects");
 	if (lst->type == LHT_LIST) {
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
-#if 0
 			if (strncmp(n->name, "line.", 5) == 0)
 				parse_line(NULL, elem, n);
+#if 0
 			if (strncmp(n->name, "arc.", 4) == 0)
 				parse_arc(NULL, elem, n);
 /*		if (strncmp(n->name, "polygon.", 8) == 0)
