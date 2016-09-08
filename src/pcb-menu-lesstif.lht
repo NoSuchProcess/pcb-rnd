@@ -15,16 +15,16 @@ ha:{
 			li:press-ctrl    = { Pan(thumb,1) }
 			li:release-ctrl  = { Pan(thumb,0) }
 		}
-		li:up {
+		li:scroll-up {
 			li:press         = { Zoom(0.8) }
 		}
-		li:down {
+		li:scroll-down {
 			li:press         = { Zoom(1.25) }
 		}
 		#If you want zoom to center, do this instead.
-		#in up:
+		#in scroll-up:
 		#li:press = {Zoom(0.8); Center()}
-		#in down:
+		#in scroll-down:
 		#li:perss = {Zoom(1.25); Center()}
 	}
 

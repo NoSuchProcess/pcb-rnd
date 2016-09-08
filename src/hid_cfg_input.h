@@ -18,12 +18,16 @@ typedef enum {
 	MB_LEFT   = M_Mod0(7),
 	MB_MIDDLE = M_Mod0(8),
 	MB_RIGHT  = M_Mod0(9),
-	MB_UP     = M_Mod0(10), /* scroll wheel */
-	MB_DOWN   = M_Mod0(11)  /* scroll wheel */
+
+/* scroll wheel */
+	MB_SCROLL_UP     = M_Mod0(10),
+	MB_SCROLL_DOWN   = M_Mod0(11),
+	MB_SCROLL_LEFT   = M_Mod0(12),
+	MB_SCROLL_RIGHT  = M_Mod0(13)
 } hid_cfg_mod_t;
 #undef M_Mod0
 
-#define MB_ANY (MB_LEFT | MB_MIDDLE | MB_RIGHT | MB_UP | MB_DOWN)
+#define MB_ANY (MB_LEFT | MB_MIDDLE | MB_RIGHT | MB_SCROLL_UP | MB_SCROLL_DOWN | MB_SCROLL_LEFT | MB_SCROLL_RIGHT)
 #define M_ANY  (M_Release-1)
 
 /************************** MOUSE ***************************/

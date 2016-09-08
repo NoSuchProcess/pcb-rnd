@@ -21,19 +21,19 @@ ha:{
 			li:press-shift-ctrl    = { conf(toggle, editor/rubber_band_mode, design); Mode(Save); Mode(Move); Mode(Notify) }
 			li:release-shift-ctrl  = { Mode(Notify); Mode(Restore); conf(toggle, editor/rubber_band_mode, design) }
 		}
-		li:up {
+		li:scroll-up {
 			li:press        = { Zoom(0.8) }
 			li:press-shift  = { Scroll(up) }
 			li:press-ctrl   = { Scroll(left) }
 		}
-		li:down {
+		li:scroll-down {
 			li:press       = { Zoom(1.25) }
 			li:press-shift = { Scroll(down) }
 			li:press-ctrl  = { Scroll(right) }
 		}
 # If you want zoom to center, do this instead.
-		#ha:Up = { li:{} = {Zoom(0.8); Center()} }
-		#ha:Down = { li:{} = {Zoom(1.25); Center()} }
+		#ha:scroll-up = { li:{} = {Zoom(0.8); Center()} }
+		#ha:scroll-down = { li:{} = {Zoom(1.25); Center()} }
 	}
 	
 	li:main_menu {

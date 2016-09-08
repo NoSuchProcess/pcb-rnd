@@ -84,8 +84,11 @@ static hid_cfg_mod_t button_name2mask(const char *name)
 	else if (strcasecmp(name, "left") == 0)   return MB_LEFT;
 	else if (strcasecmp(name, "middle") == 0) return MB_MIDDLE;
 	else if (strcasecmp(name, "right") == 0)  return MB_RIGHT;
-	else if (strcasecmp(name, "up") == 0)     return MB_UP;
-	else if (strcasecmp(name, "down") == 0)   return MB_DOWN;
+
+	else if (strcasecmp(name, "scroll-up") == 0)     return MB_SCROLL_UP;
+	else if (strcasecmp(name, "scroll-down") == 0)   return MB_SCROLL_DOWN;
+	else if (strcasecmp(name, "scroll-left") == 0)   return MB_SCROLL_UP;
+	else if (strcasecmp(name, "scroll-right") == 0)  return MB_SCROLL_DOWN;
 	else {
 		Message("Error: unknown mouse button: %s\n", name);
 		return 0;

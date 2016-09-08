@@ -1262,8 +1262,8 @@ static hid_cfg_mod_t lesstif_mb2cfg(int but)
 		case 1: return MB_LEFT;
 		case 2: return MB_MIDDLE;
 		case 3: return MB_RIGHT;
-		case 4: return MB_UP;
-		case 5: return MB_DOWN;
+		case 4: return MB_SCROLL_UP;
+		case 5: return MB_SCROLL_DOWN;
 	}
 	return 0;
 }

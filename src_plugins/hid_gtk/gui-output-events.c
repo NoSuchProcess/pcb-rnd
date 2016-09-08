@@ -490,10 +490,10 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget * widget, GdkEventScroll * ev, G
 	 * who has buttons 4 - 7 that aren't the scroll wheel?
 	 */
 	switch (ev->direction) {
-		case GDK_SCROLL_UP:    button = MB_UP; break;
-		case GDK_SCROLL_DOWN:  button = MB_DOWN; break;
-		case GDK_SCROLL_LEFT:  button = MB_LEFT; break;
-		case GDK_SCROLL_RIGHT: button = MB_RIGHT; break;
+		case GDK_SCROLL_UP:    button = MB_SCROLL_UP; break;
+		case GDK_SCROLL_DOWN:  button = MB_SCROLL_DOWN; break;
+		case GDK_SCROLL_LEFT:  button = MB_SCROLL_LEFT; break;
+		case GDK_SCROLL_RIGHT: button = MB_SCROLL_RIGHT; break;
 		default: return FALSE;
 	}
 
