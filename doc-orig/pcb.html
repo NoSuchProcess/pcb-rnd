@@ -1,13 +1,14 @@
 <html lang="en">
 <head>
-<title>Pcb</title>
+<title>pcb-rnd documentation</title>
 <meta http-equiv="Content-Type" content="text/html">
-<meta name="description" content="Pcb">
-<meta name="generator" content="makeinfo 4.13">
+<meta name="description" content="pcb-rnd">
 <link title="Top" rel="top" href="#Top">
-<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <style type="text/css"><!--
+body {
+  font-family: arial, sans-serif;
+}
   pre.display { font-family:inherit }
   pre.format  { font-family:inherit }
   pre.smalldisplay { font-family:inherit; font-size:smaller }
@@ -18,44 +19,55 @@
   span.roman { font-family:serif; font-weight:normal; } 
   span.sansserif { font-family:sans-serif; font-weight:normal; } 
 table.cartouche {
+  font-family: arial, sans-serif;
   border-collapse: collapse;
   border: 1px solid #800000;
   width: 100%;
+  }
+table.cartouche td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
 }
-table.cartouche td {
-  padding: 4px;
+tr:nth-child(even) {
+    background-color: #dddddd;
 }
 pre.format {
-  font-family: monospace;
+  font-family: arial, sans-serif;
+<!-- font-family: monospace;-->
 }
 --></style>
 </head>
 <body>
-<h1 class="settitle">Pcb</h1>
+<h1 class="settitle"><code>pcb-rnd</code> documentation</h1>
 <div class="node">
 <a name="Top"></a>
 <p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Copying">Copying</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Copying-License-Attribution">Copying, License & Attribution</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#dir">(dir)</a>
 
 </div>
 
-<h2 class="unnumbered">Pcb</h2>
+<h2 class="unnumbered">pcb-rnd</h2>
 
-<p>This document is a manual for <code>Pcb</code>, the open source, interactive printed circuit
-board layout system.
+<p>This document is a temporary manual for the geda-related project
+<code>pcb-rnd</code>, which is forked from <code>pcb</code>.
+
+<p><code>pcb-rnd</code> is a program used for designing printed circuit board
+layouts.
+
 
 <ul class="menu">
-<li><a accesskey="1" href="#Copying">Copying</a>:                 <code>Pcb</code> is freely redistributable! 
-<li><a accesskey="2" href="#History">History</a>:                 How it all began. 
-<li><a accesskey="3" href="#Overview">Overview</a>:                An overview of <code>Pcb</code>. 
+<li><a accesskey="1" href="#Copying-License-Attribution">Copying, License & Attribution</a>:      <code>pcb-rnd</code> is freely redistributable! 
+<li><a accesskey="2" href="#Background">Background</a>:            Background of pcb-rnd 
+<li><a accesskey="3" href="#Overview">Overview</a>:                An overview of <code>pcb-rnd</code>. 
 <li><a accesskey="4" href="#Intro">Intro</a>:                   A short description of the basic objects. 
-<li><a accesskey="5" href="#Getting-Started">Getting Started</a>:         Introduction to <code>Pcb</code>. 
+<li><a accesskey="5" href="#Getting-Started">Getting Started</a>:         Introduction to <code>pcb-rnd</code>. 
 <li><a accesskey="6" href="#Autorouter">Autorouter</a>:              Using the autorouter. 
-<li><a accesskey="7" href="#User-Commands">User Commands</a>:           User commands of <code>Pcb</code>. 
-<li><a accesskey="8" href="#Command_002dLine-Options">Command-Line Options</a>:    Calling <code>Pcb</code> from a shell. 
+<li><a accesskey="7" href="#User-Commands">User Commands</a>:           User commands of <code>pcb-rnd</code>. 
+<li><a accesskey="8" href="#Command_002dLine-Options">Command-Line Options</a>:    Calling <code>pcb-rnd</code> from a shell. 
 <li><a accesskey="9" href="#X11-Interface">X11 Interface</a>:           Action routines, resources and default translation. 
-<li><a href="#File-Formats">File Formats</a>:            Description of <code>ASCII</code> files used by <code>Pcb</code>. 
+<li><a href="#File-Formats">File Formats</a>:            Description of <code>ASCII</code> files used by <code>pcb-rnd</code>. 
 <li><a href="#Library-Creation">Library Creation</a>:        Detailed description of symbol library creation. 
 <li><a href="#Schematic-Frontends">Schematic Frontends</a>:     Schematic capture programs that work with PCB. 
 <li><a href="#Installation">Installation</a>:            Compiling, installing and troubleshooting. 
@@ -70,139 +82,61 @@ board layout system.
 
 <!--  -->
 <div class="node">
-<a name="Copying"></a>
+<a name="Copying-License-Attribution"></a>
 <p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#History">History</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Background">Background</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="#Top">Top</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 </div>
 
-<h2 class="unnumbered">Copying</h2>
-
+<h2 class="unnumbered">Copying, License & Attribution</h2>
 <p>Copyright &copy; 1994,1995,1996,1997 Thomas Nau
 
-   <p>Copyright &copy; 1998,1999,2000,2001,2002 harry eaton
+<p>Copyright &copy; 1998,1999,2000,2001,2002 harry eaton
 
-   <p>This program is free software; you may redistribute it and/or modify
+<p style="color:red;"> &copy; insert new copyright here:  </p>
+
+<p style="color:red;">This program is free software; you may redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-   <p>This program is distributed in the hope that it will be useful,
+<p style="color:red;">This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANT-ABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 <b>GNU General Public License</b> for more details.
 
 <!--  chapter 0 - -->
 <div class="node">
-<a name="History"></a>
+<a name="Background"></a>
 <p><hr>
 Next:&nbsp;<a rel="next" accesskey="n" href="#Overview">Overview</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Copying">Copying</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p"href="#Copying-license-attribution">Copying, License, & Atribution</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 </div>
 
-<h2 class="unnumbered">History</h2>
+<h2 class="unnumbered">Background</h2>
 
-<p><a name="index-Atari-version-1"></a><code>Pcb</code> is a handy tool for laying out printed circuit
-boards.
+<p><a name="index-pcb-rnd-origin"></a><code>pcb-rnd</code> is a  tool for
+laying out cicuit boards and creating export files required to fabricate them.
+   
+   <p><code>Pcb</code> was first written by Thomas Nau for an
+   Atari ST in 1990 and ported to <code>UNIX</code> and <code>X11</code> in
+   1994.  It was not intended as a professional layout system, but as a tool
+   which supports people who do some home-developing of hardware.
 
-   <p><code>Pcb</code> was first written by Thomas Nau for an Atari ST in 1990 and
-ported to <code>UNIX</code> and <code>X11</code> in 1994. 
-It was not intended as a professional layout system,
-but as a tool which supports people who do some
-home-developing of hardware.
-
-   <p>The second release 1.2 included menus for the first time. This made
-<code>Pcb</code> easier to use and thus a more important tool.
-
-   <p>Release 1.3 introduced undo for highly-destructive commands,
-more straightforward action handling and scalable fonts. Layer-groups
-were introduced to group signal-layers together.
-
-   <p>Release 1.4 provided support for add-on device drivers. 
-Two layers (the solder and the component side)
-were added to support SMD elements. The handling of libraries
-was also improved in 1.4.1. Support for additional devices like
-GERBER plotters started in 1.4.4. The undo feature was expanded
-and the redo-feature added in 1.4.5.
-
-   <p>harry eaton took over pcb development beginning with Release 1.5,
-although he contributed some code beginning with Release 1.4.3
-
-   <p>Release 1.5 provides support for rats-nest generation from simple net
-lists.  It also allows for automatic clearances around pins that pierce
-a polygon.  A variety of other enhancements including a Gerber RS-274X
-driver and NC drill file generation have also been added.
-
-   <p>Release 1.6 provides automatic screen updates of changed regions. 
-This should eliminate most of the need for the redraw ((<em>R</em> key). 
-Also some changes to what order items under the cursor are selected
-were made for better consistency - it is no longer possible to
-accidentally move a line or line point that is completely obscured
-by a polygon laying over top of it.  Larger objects on the upper
-most layers can be selected ahead of smaller objects on lower layers. 
-These changes make operations more intuitive.  A new mode of line
-creation was added that creates two line on 45 degree angles
-with a single click. The actual outline of the prospective line(s) are
-now shown during line creation.  An arc creation mode was added. 
-Drawn arcs are quarter circles and can be useful for high frequency
-controlled impedance lines.  (You can have eighth circle arc if the
-source is compiled with -DARC45, but be aware that the ends of such
-arcs can never intersect a grid point).  Two new flags for pins and
-vias were created - one indicates that the pin or via is purely a
-drill hole and has no copper annulus.  You can only toggle this flag
-for vias - for elements, it must be an integral part of the element
-definition.  The other flag controls whether the pad will be round
-or octagonal.  There is also now a feature for converting the contents
-of a buffer into an element.
-
-   <p>Release 1.6.1 added the ability to make groups of action commands bound to
-a single X11 event to be undone by a single undo. Also a simple design rule
-checker was added - it checks for minimum spacing and overlap rules. Plus
-many fixes for bugs introduced with the many changes of 1.6
-
-   <p>Release 1.7 added support for routing tracks through polygons without touching
-them. It also added support for unplated drill files, and drawing directly
-on the silk layer. A Netlist window for easily working with netlist was also added.
-
-   <p>Release 2.0 adds an auto-router, a new simpler library mechanism, much improved
-support for graphically creating (and editing) elements, viewable solder-mask
-layers (and editing), snap to pins and pads, netlist entry by drawing rats, element
-files (and libraries) that can contain whole sub-layouts, metric grids, improved
-user interface, a GNU autoconf/automake based build system, and a host
-of other improvements.
-
-   <p>Special thanks goes to:
-<pre class="display">     Thomas Nau (who started the project and wrote the early versions).
-     C. Scott Ananian (who wrote the auto-router code).
-     Bernhard Daeubler (Bernhard.Daeubler@physik.uni-ulm.de)
-     Harald Daeubler (Harald.Daeubler@physik.uni-ulm.de)
-     DJ Delorie (djdelorie@users.sourceforge.net)
-     Larry Doolittle (ldoolitt@recycle.lbl.gov)
-     Dan McMahill (danmc@users.sourceforge.net)
-     Roland Merk (merk@faw.uni-ulm.de)
-     Erland Unruh (Erland.Unruh@malmo.trab.se)
-     Albert John FitzPatrick III (ajf_nylorac@acm.org)
-     Boerge Strand (borges@ifi.uio.no)
-     Andre M. Hedrick (hedrick@Astro.Dyer.Vanderbilt.Edu)
-</pre>
-   <p class="noindent">who provided all sorts of help including porting <code>Pcb</code> to
-several operating systems and platforms, bug fixes, library enhancement,
-user interface suggestions and more. In addition to these people,
-many others donated time for bug-fixing and
-other important work. Some of them can be identified in the source code
-files.  Thanks to all of them. If you feel left out of this list, I
-apologize; please send me an e-mail and I'll try to correct the omission.
+   <p>Release history and credits for <code>Pcb</code> can be found in
+   the documentation files in mainline <code>Pcb</code>, and currently as of this writing at
+   <a href="http://pcb.geda-project.org/manual.html">http://pcb.geda-project.org/manual.html</a>
 
 <!--  overview chapter - -->
 <div class="node">
 <a name="Overview"></a>
 <p><hr>
 Next:&nbsp;<a rel="next" accesskey="n" href="#Intro">Intro</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#History">History</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Background">Background</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 </div>
@@ -210,8 +144,8 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <h2 class="chapter">1 Overview</h2>
 
 <p><a name="index-PCB_002c-an-overview-2"></a>
-<code>Pcb</code> is an open source printed circuit board editor. 
-<code>Pcb</code> includes many professional features such as:
+<code>pcb-rnd</code> is an open source printed circuit board editor. 
+<code>pcb-rnd</code> includes many professional features such as:
      <ul>
 <li>Up to 16 copper layer designs by default.  By changing a compile time setting, this
 can be set as high as needed. 
@@ -224,7 +158,7 @@ can be set as high as needed.
 <li>Rats nest
 <li>Design Rule Checker (DRC)
 <li>Connectivity verification
-<li><code>Pcb</code> is Free Software
+<li><code>pcb-rnd</code> is Free Software
 <li>Can interoperate with free schematic capture tools such as gEDA and
   xcircuit
 <li>Runs under Linux, NetBSD, Solaris, and other similar operating
@@ -243,20 +177,20 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 </div>
 
 <h2 class="chapter">2 Introduction</h2>
-
+<!-- note absolute and relative origins are recorded -->
 <p><a name="index-layout-objects_002c-an-overview-3"></a>
 Each layout consists of several, mostly independent, objects. This chapter
 gives an overview of the object types and their relationship to each other. 
-For a complete description of how to use <code>Pcb</code>, refer to
+For a complete description of how to use <code>pcb-rnd</code>, refer to
 <a href="#Getting-Started">Getting Started</a>. 
 The layout is generated on-screen on a grid that can have its origin
 at any desired location. 
 The X coordinate increases to the right, Y increases down to the bottom. 
-All distances and sizes in <code>Pcb</code> are measured in mils
+All distances and sizes in <code>pcb-rnd</code> are measured in mils
 (0.001 inch).  One unit on the coordinate display is one mil in
 distance on the board. 
 The grid may be set on a metric pitch, but is only correct to within
-the nearest +/- 0.01 mil because <code>Pcb</code> stores all dimensions as
+the nearest +/- 0.01 mil because <code>pcb-rnd</code> stores all dimensions as
 integer multiples of 1/100 of a mil or 0.00001 inch.
 
    <p>The sections in this chapter are sorted by the
@@ -391,7 +325,7 @@ of objects (silkscreen and pads) that are on the far (<em>i.e.</em> not currentl
 of the board.
 
    <p>The &ldquo;oldlib&rdquo; style of footprint libraries distributed with
-<code>Pcb</code> rely upon the M4 macro processor.  M4 is typically
+<code>pcb-rnd</code> rely upon the M4 macro processor.  M4 is typically
 installed under the name <code>m4</code> on most unix-like operating
 systems.  It is recommended that you use the GNU version of M4 to
 avoid limitations found in some vendor implementations.  See the m4
@@ -400,12 +334,12 @@ Every element file is preprocessed by a user-defined command when the file is re
 For details see &lsquo;<samp><span class="samp">elementCommand</span></samp>&rsquo;, <a href="#Resources">Resources</a>. <code>m4</code>, the default
 value of &lsquo;<samp><span class="samp">elementCommand</span></samp>&rsquo;, allows you to create libraries for
 package definitions that are shared by all elements. 
-The old element libraries distributed with <code>Pcb</code> expect <code>m4</code> or an
+The old element libraries distributed with <code>pcb-rnd</code> expect <code>m4</code> or an
 equivalent to be the <em>elementCommand</em>. The new library scheme simply has
 each element stored in a self-contained file, so there is no need to learn
 <code>m4</code> to add to the libraries.
 
-   <p><code>Pcb</code> can create a list of
+   <p><code>pcb-rnd</code> can create a list of
 all connections from one (or all) elements to the others or a list of
 unconnected pins. 
 It can also verify the layout connections against a netlist file. 
@@ -414,7 +348,7 @@ in a netlist file (see <a href="#Netlist-File">Netlist File</a>).
 
    <p>The old libraries, or very old (pre-1.6) layout files may have
 incorrect pin numbering since there was no concept of pin numbers
-when they were created. <code>Pcb</code> uses the order of appearance of
+when they were created. <code>pcb-rnd</code> uses the order of appearance of
 the pin definitions in the layout or library file if it uses the
 old format, but there is no guarantee that it will be correct for
 these old objects.
@@ -425,7 +359,7 @@ Inline-Pins) parts are correct and most of the others are too,
 but you should verify the pin numbering
 of any non-DIL part before using an old library part. 
 (use the &lsquo;<samp><span class="samp">generate object report</span></samp>&rsquo; in the <b>Info</b> menu
-to see what <code>Pcb</code> thinks a pin's number is)
+to see what <code>pcb-rnd</code> thinks a pin's number is)
 All of the old
 library names begin with a ~, so you can easily identify them. 
 The old libraries also <em>may</em> contain other sorts of errors,
@@ -465,7 +399,7 @@ convert it back into an element. If the pin numbers haven't changed,
 there is no need to name each via/line as they are pre-named when
 the element was broken apart. When you create a new element, you
 can save it to a file in order to have easy access to it the next
-time you run <code>Pcb</code>.
+time you run <code>pcb-rnd</code>.
 
 <div class="node">
 <a name="Layer-Objects"></a>
@@ -527,7 +461,7 @@ entries into the netlist, or to delete connections from the netlist
 window. Except for these two purposes, you should not
 make the netlist layer the active layer. Usually there is no need to
 do this because a separate schematic package should be used to create the
-netlist. <code>Pcb</code> can automatically draw all of the rats from
+netlist. <code>pcb-rnd</code> can automatically draw all of the rats from
 the netlist. In some cases you may want to make a small change without
 going to the trouble of modifying the schematic, which is why this
 facility is provided.
@@ -574,7 +508,7 @@ to the active layer).
 In the case when two line segments meet at exactly the same
 point you can delete the intermediate point, otherwise the delete tool removes an entire line. 
 Feel free to experiment
-since <code>Pcb</code> will allow you to undo and redo anything that materially affects your work. 
+since <code>pcb-rnd</code> will allow you to undo and redo anything that materially affects your work. 
 If you switch active layers in the midst of placing lines a via will automatically be
 placed, when necessary, in order to continue the connection.
 
@@ -591,7 +525,7 @@ The clearance can be also increased, decreased and set
 by the <em>ChangeClearSize</em> action.
 
    <p>Lines do not need to intersect the center of a pin, pad, via, or other
-line for <code>Pcb</code> to understand that they make electrical connection. 
+line for <code>pcb-rnd</code> to understand that they make electrical connection. 
 If the connection is too tenuous, running the design rule checker will report
 that the connection may break if the line width shrinks slightly.
 
@@ -607,7 +541,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Intro">Intro</a>
 <h3 class="section">2.6 Arcs</h3>
 
 <p><a name="index-arc-16"></a>
-<code>Pcb</code> can handle arcs of any angular extent, but when you
+<code>pcb-rnd</code> can handle arcs of any angular extent, but when you
 create an arc with the Arc tool, it will
 be a quarter circle (this means they always bend a right angle).  Arcs are very similar
 to lines otherwise.  They are created on the active layer and have the same thickness
@@ -669,7 +603,7 @@ on the active layer.  You can change the style of thermal used or make
 a solid connection by holding down <em>Shift</em> while clicking
 <em>Btn1</em> with the thermal tool over the pin or via.
 
-   <p><code>Pcb</code> is capable of handling complex polygons, but
+   <p><code>pcb-rnd</code> is capable of handling complex polygons, but
 using a number of simpler ones improves performance of the connection tracing code. 
 You also must be careful not to create polygons that touch or overlap themselves. 
 The fabricated board may not look the way you expect if you violate this
@@ -679,7 +613,7 @@ each other, but not for points within the same polygon to do so.
    <p>The great advantage to this new polygon behavior is that simple or complex ground
 and/or power planes can be easily made with polygons and seen on the screen. 
 If you don't want this auto-clearance behavior, or you load a layout created by
-an early version of <code>Pcb</code>, the old behavior
+an early version of <code>pcb-rnd</code>, the old behavior
 (shorts to all piercing pins and vias) is available.  A &lsquo;<samp><span class="samp">ChangeSize</span></samp>&rsquo;
 operation (<em>S</em> key) toggles a polygon between the new and old polygon/pin
 behavior.
@@ -749,18 +683,18 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 <p><a name="index-how-to-start-22"></a>
 The goal of this chapter is to give you enough information to learn how
-<code>Pcb</code> works and how to develop your layouts to make the best use of <code>Pcb</code>'s
+<code>pcb-rnd</code> works and how to develop your layouts to make the best use of <code>pcb-rnd</code>'s
 features. All event translations (<em>i.e.</em> the buttons and keys you
-press) refer to the default application resource file shipped with <code>Pcb</code>. 
+press) refer to the default application resource file shipped with <code>pcb-rnd</code>. 
 There is probably no need to change this unless your window
 manager uses some of the button events itself; however, if you <em>want</em>
-to customize the behavior of <code>Pcb</code> then changing the resource file
+to customize the behavior of <code>pcb-rnd</code> then changing the resource file
 is usually the best way to do it.
 
    <p>Get yourself a printout of this chapter and <em>User Commands</em>, if you
 haven't already done so, and follow the examples.
 
-   <p>Start <code>Pcb</code> (the actual command will use all lower-case letters)
+   <p>Start <code>pcb-rnd</code> (the actual command will use all lower-case letters)
 without any additional options. 
 If you get the error message:
 
@@ -772,7 +706,7 @@ If not, get <code>GNU m4</code>.
 For other messages, see <a href="#problems">problems</a>. 
 Another quick-start is provided by <code>pcbtest.sh</code> in the <samp><span class="file">src</span></samp>
 directory. If some features don't seem to work, try running <code>pcbtest.sh</code>,
-if that works, then <code>Pcb</code> hasn't been installed properly.
+if that works, then <code>pcb-rnd</code> hasn't been installed properly.
 
 <ul class="menu">
 <li><a accesskey="1" href="#Application-Window">Application Window</a>:      The elements of the main window. 
@@ -877,7 +811,7 @@ the whole Layout area. There are various entries to change the grid to some popu
 values, the zoom factor, and which kind of element name is displayed. 
 You can also re-align the grid origin and turn on and off the display
 of the grid. 
-Before changing the grid alignment, I recommend that you zoom in as close as
+<u style="color:red;"><u>Before changing the grid alignment, I recommend that you zoom in as close as</u></u>
 possible so that you're sure the grid
 points appear exactly where you want them.
 
@@ -952,7 +886,7 @@ layers you don't want it to use. The auto-router will automatically
 understand and avoid any traces that are already on the board, but
 it is not restricted to the grid. Finally,
 the auto-router routes using the active sizes (except for nets that
-have a route-style defined). <code>Pcb</code> always knows which tracks
+have a route-style defined). <code>pcb-rnd</code> always knows which tracks
 were routed by the auto-router, and you can selectively remove them
 without fear of changing tracks that you have manually routed
 with the &lsquo;<samp><span class="samp">rip-up all auto-routed tracks</span></samp>&rsquo; entry in the <b>Connects</b>
@@ -971,11 +905,11 @@ used on the board with &lsquo;<samp><span class="samp">generate drill summary</s
 you can get a list of all pins, pads and vias that were
 found during a connection search.
 
-     <p><a name="index-Window_002c-popup-menu-55"></a><br><dt><b>Window</b><dd>The <b>Window</b> menu provides a way to bring each of <code>Pcb's</code>
+     <p><a name="index-Window_002c-popup-menu-55"></a><br><dt><b>Window</b><dd>The <b>Window</b> menu provides a way to bring each of <code>pcb-rnd's</code>
 windows to the front. The <em>Library</em> window is used to
 bring elements from the library into the paste-buffer. The
 <em>Message Log</em> window holds the various messages that
-<code>Pcb</code> sends to the user. The <em>Netlist</em> window shows
+<code>pcb-rnd</code> sends to the user. The <em>Netlist</em> window shows
 the list of connections desired.
 
    </dl>
@@ -1182,7 +1116,7 @@ by pressing the <em>L</em> key. Note that the status line updates
 to reflect the new active line thickness. Now draw another line. Before completing the
 next line, make the component layer active by pressing the <em>4</em> key. 
 Now finish the line. Notice that a via was automatically placed where
-you switched layers. <code>Pcb</code> does not do any checks to make sure that
+you switched layers. <code>pcb-rnd</code> does not do any checks to make sure that
 the via could safely be placed there. Neither does it interfere with
 your desire to place lines haphazardly. It is up to you to place
 things properly when doing manual routing with the Line tool.
@@ -1295,8 +1229,8 @@ of using it is
 that its contents are saved in a scrolling list until the
 program exits. Disabling this feature by setting the resource
 <em>useLogWindow</em> to <em>false</em> will generate popup windows to display
-messages. The <em>stderr</em> of external commands will appear on <code>Pcb</code>s
-<em>stderr</em> which normally is the parent shell. I suggest you iconify
+messages. The <em>stderr</em> of external commands will appear on <code>pcb-rnd</code>s
+<u style="color:red;"><u><em>stderr</em> which normally is the parent shell. I suggest you iconify</u></u>
 the log window after startup for example by setting <em>*log.iconic</em> to
 <em>true</em> in the resource file. If <em>raiseLogWindow</em> is set <em>true</em>,
 the window will deiconify and raise itself whenever new messages are to be
@@ -1845,12 +1779,12 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Getting-Started">Getting Started</a>
 <h3 class="section">3.7 Loading and Saving</h3>
 
 <p><a name="index-loading_002c-an-example-114"></a><a name="index-saving_002c-an-example-115"></a><a name="index-example-of-saving-116"></a><a name="index-example-of-loading-117"></a>
-After your first experience with <code>Pcb</code> you will probably want to save
+After your first experience with <code>pcb-rnd</code> you will probably want to save
 your work. <kbd>:s name</kbd> passes the data to an external program which
 is responsible for saving it. For details see <em>saveCommand</em> in
 <a href="#Resources">Resources</a>. 
 Saving also is available from the <em>File</em> menu, either with or
-without supplying a filename. <code>Pcb</code> reuses the last
+without supplying a filename. <code>pcb-rnd</code> reuses the last
 filename if you do not pass a new one to the save routine.
 
    <p>To load an existing layout either select <em>load layout data</em> from the
@@ -1858,12 +1792,12 @@ filename if you do not pass a new one to the save routine.
 don't specify a filename. Merging existing layouts into the new one is
 supported either by the <em>File</em> menu or by <kbd>:m filename</kbd>.
 
-   <p><a name="index-backup-118"></a><a name="index-saving-layouts-119"></a><a name="index-preventing-loss-of-data-120"></a><a name="index-g_t_002ftmp-121"></a><a name="index-directory-_002ftmp-122"></a><a name="index-temporary-files-123"></a><code>Pcb</code> saves a backup of the current layout at a user specified interval. 
+   <p><a name="index-backup-118"></a><a name="index-saving-layouts-119"></a><a name="index-preventing-loss-of-data-120"></a><a name="index-g_t_002ftmp-121"></a><a name="index-directory-_002ftmp-122"></a><a name="index-temporary-files-123"></a><code>pcb-rnd</code> saves a backup of the current layout at a user specified interval. 
 The backup filename is created by appending a dash, "-", to the <samp><span class="file">.pcb</span></samp> filename. 
 For example, if you are editing the layout in <samp><span class="file">projects/board.pcb</span></samp> then the
 backup file name will be <samp><span class="file">projects/board.pcb-</span></samp>.  If the layout is new and
 has not been saved yet, then the backup file name is <samp><span class="file">PCB.####.backup</span></samp> where the "####"
-will be replaced by the process ID of the currenting running copy of <code>Pcb</code>. 
+will be replaced by the process ID of the currenting running copy of <code>pcb-rnd</code>. 
 This default backup file name may be changed at compilation time via the
 <code>BACKUP_NAME</code>
 variable in <samp><span class="file">globalconfig.h</span></samp>).  During critical
@@ -1883,7 +1817,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Getting-Started">Getting Started</a>
 <h3 class="section">3.8 Printing</h3>
 
 <p><a name="index-printing_002c-an-example-124"></a><a name="index-example-of-printing-125"></a>
-<code>Pcb</code> now has support for device drivers,
+<code>pcb-rnd</code> now has support for device drivers,
 <code>PostScript</code>, <em>encapsulated PostScript</em>,
 and <em>Gerber RS-274X</em> drivers are
 available so far.  The <em>Gerber RS-274X</em>
@@ -1893,7 +1827,7 @@ a bill of materials file to assist in materials procurement and
 inventory control, and a centroid (X-Y) file which includes the
 centroid data needed
 by automatic assembly (pick and place) machines. 
- I recommend the use of <code>GhostScript</code> if you
+<u style="color:red;"><u><u> I recommend the use of <code>GhostScript</code> if you</u></u></u>
 don't have a <code>PostScript</code> printer for handling the PostScript
 output. Printing always generates
 a complete set of files for a specified driver. 
@@ -2186,7 +2120,7 @@ the connections.
          3) optionally add some vias and connections to them
 </pre>
    <p>Now select <em>lookup connection</em> from the <em>Connections</em> menu,
-move the cursor to a pin or via and press any mouse button. <code>Pcb</code>
+move the cursor to a pin or via and press any mouse button. <code>pcb-rnd</code>
 will look for all other pins and/or vias connected to the one you have
 selected and display the objects in a different color. 
 Now try some of the reset options available from the same menu.
@@ -2248,7 +2182,7 @@ to select it first.
 object, then turn off its visibility with the Layer controls, it won't
 be moved if you move the remaining visible selection.
 
-   <p>If you have not configured to use strokes in the <code>Pcb</code> user interface, then
+   <p>If you have not configured to use strokes in the <code>pcb-rnd</code> user interface, then
 the middle mouse button is automatically bound to the arrow tool, regardless
 of the active tool (which is bound to the first mouse button). So using
 the middle button any time is just like using the first mouse button
@@ -2490,7 +2424,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Getting-Started">Getting Started</a>
 <h3 class="section">3.17 Vendor Drill Mapping</h3>
 
 <p><a name="index-Vendor-rules-174"></a><a name="index-Vendor-mapping-175"></a><a name="index-Drill-table-176"></a><a name="index-Vendor-drill-table-177"></a>
-<code>Pcb</code> includes support for mapping drill holes to a specified set
+<code>pcb-rnd</code> includes support for mapping drill holes to a specified set
 of sizes used by a particular vendor.  Many PCB manufacturers have a
 prefered set of drill sizes and charge extra when others are used. 
 The mapping can be performed on an existing design and can also be
@@ -2555,7 +2489,7 @@ A complete example is given below.
 This is invoked by entering:
 <pre class="example">     :LoadVendor(vendorfile)
 </pre>
-   <p>from within <code>Pcb</code>.  Substitute the file name of your vendor
+   <p>from within <code>pcb-rnd</code>.  Substitute the file name of your vendor
 resource file for &lsquo;<samp><span class="samp">vendorfile</span></samp>&rsquo;.  This action will load the vendor
 resource and modify all the drill holes in the design as well as the
 default via hole size for the various routing styles.
@@ -2586,7 +2520,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <h2 class="chapter">4 Autorouter</h2>
 
 <p><a name="index-autorouter-178"></a>
-<code>Pcb</code> includes an autorouter which can greatly speed up the
+<code>pcb-rnd</code> includes an autorouter which can greatly speed up the
 layout of a circuit board.  The autorouter is a rectangle-expansion
 type of autorouter based on
 &ldquo;A Method for Gridless Routing of Printed Circuit Boards&rdquo; by
@@ -3704,7 +3638,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 <p><a name="index-X11-368"></a>
 This chapter gives an overview about the additional <code>X11</code> resources which
-are defined by <code>Pcb</code> as well as the defined action routines.
+are defined by <code>pcb-rnd</code> as well as the defined action routines.
 
 <ul class="menu">
 <li><a accesskey="1" href="#Resources">Resources</a>:       Non-standard <code>X11</code> application resources. 
@@ -3723,7 +3657,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#X11-Interface">X11 Interface</a>
 <h3 class="section">7.1 Non-Standard X11 Application Resources</h3>
 
 <p><a name="index-resources-369"></a><a name="index-X11-resources-370"></a>
-In addition to the toolkit resources, <code>Pcb</code> defines the
+In addition to the toolkit resources, <code>pcb-rnd</code> defines the
 following resources:
 
      
@@ -3747,7 +3681,7 @@ exactly.  Note that it may be scaled unevenly if the image doesn't
 have the same aspect ratio of your board.  You must ensure that the
 image does not use more colors than are available on your system
 (mostly this is for pseudo-color displays, like old 8-bit displays). 
-For best results, I suggest the following procedure using The Gimp:
+<u style="color:red;"><u>For best results, I suggest the following procedure using The Gimp:</u></u>
 Load your image (any type).  Image-&gt;Scale if needed. 
 Image-&gt;Colors-&gt;Curves and for each of Red, Green, and Blue channel
 move the lower left point up to about the 3/4 line (value 192).  This
@@ -3756,7 +3690,7 @@ you'll be adding.  Image-&gt;Mode-&gt;Indexed and select, say, 32 colors
 with Normal F-S dithering.  File-&gt;Save As, file type by extension,
 use <samp><span class="file">.ppm</span></samp> as the extension.  Select Raw formatting.
 
-     <p><a name="index-backupInterval-380"></a><a name="index-backup-381"></a><br><dt>&lsquo;<samp><span class="samp">backupInterval (int)</span></samp>&rsquo;<dd><code>Pcb</code> has an automatic backup feature which saves the current data
+     <p><a name="index-backupInterval-380"></a><a name="index-backup-381"></a><br><dt>&lsquo;<samp><span class="samp">backupInterval (int)</span></samp>&rsquo;<dd><code>pcb-rnd</code> has an automatic backup feature which saves the current data
 every n seconds. The default is <em>300</em> seconds. A value of zero disables
 the feature. The backup file is named <samp><span class="file">/tmp/PCB.%i.backup</span></samp> by
 default (this may have been changed at compilation time via the
@@ -3774,13 +3708,13 @@ search are drawn with this color. The default value is determined by
      <p><a name="index-cross-hairColor-388"></a><a name="index-colors-389"></a><a name="index-cursor-color-390"></a><br><dt>&lsquo;<samp><span class="samp">cross hairColor (color)</span></samp>&rsquo;<dd>This color is used to draw the cross hair cursor. The color is a result of
 a <em>XOR</em> operation with the contents of the Layout area. The result
 also depends on the default colormap of the <code>X11</code> server because only
-the colormap index is used in the boolean operation and <code>Pcb</code> doesn't
+the colormap index is used in the boolean operation and <code>pcb-rnd</code> doesn't
 create its own colormap. The default setting is <em>XtDefaultForeground</em>.
 
      <p><a name="index-elementColor-391"></a><a name="index-elementSelectedColor-392"></a><a name="index-colors-393"></a><a name="index-element_002c-color-394"></a><br><dt>&lsquo;<samp><span class="samp">elementColor (color)</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">elementSelectedColor (color)</span></samp>&rsquo;<dd>The elements package part is drawn in these colors, for normal and selected
 mode, respectively, which both default to <em>XtDefaultForeground</em>.
 
-     <p><a name="index-elementCommand-395"></a><a name="index-element_002c-command-396"></a><a name="index-element_002c-files-397"></a><a name="index-loading-elements-398"></a><a name="index-preprocessing-element-data-399"></a><a name="index-unix-command-400"></a><a name="index-m4-401"></a><br><dt>&lsquo;<samp><span class="samp">elementCommand (string)</span></samp>&rsquo;<dd><code>Pcb</code> uses a user defined command to read element files. This resources
+     <p><a name="index-elementCommand-395"></a><a name="index-element_002c-command-396"></a><a name="index-element_002c-files-397"></a><a name="index-loading-elements-398"></a><a name="index-preprocessing-element-data-399"></a><a name="index-unix-command-400"></a><a name="index-m4-401"></a><br><dt>&lsquo;<samp><span class="samp">elementCommand (string)</span></samp>&rsquo;<dd><code>pcb-rnd</code> uses a user defined command to read element files. This resources
 is used to set the command which is executed by the users default shell. 
 Two escape sequences are defined to pass the selected filename (%f) and the
 current search path (%p). The command must write the element data
@@ -3835,7 +3769,7 @@ to <em>100 mil</em> and any changes are saved together with the layout data.
      <p><a name="index-gridColor-439"></a><a name="index-colors-440"></a><a name="index-grid-color-441"></a><br><dt>&lsquo;<samp><span class="samp">gridColor (color)</span></samp>&rsquo;<dd>This color is used to draw the grid. The color is a result of
 a <em>INVERT</em> operation with the contents of the Layout area. The result
 also depends on the default colormap of the <code>X11</code> server because only
-the colormap index is used in the boolean operation and <code>Pcb</code> doesn't
+the colormap index is used in the boolean operation and <code>pcb-rnd</code> doesn't
 create its own colormap. The default setting is <em>XtDefaultForeground</em>.
 
      <p><a name="index-invisibleObjectsColor-442"></a><a name="index-colors-443"></a><a name="index-element_002c-color-444"></a><br><dt>&lsquo;<samp><span class="samp">invisibleObjectsColor (color)</span></samp>&rsquo;<dd>Elements located on the opposite side of the board are drawn in this color. 
@@ -3853,7 +3787,7 @@ all layers are handled separately. Grouping layers one to three looks like
      <p><a name="index-layerName-452"></a><a name="index-layer_002c-name-of-453"></a><br><dt>&lsquo;<samp><span class="samp">layerName1..MAX_LAYER (string)</span></samp>&rsquo;<dd>The default name of the layers in a new layout are determined by these
 resources. The defaults are empty strings.
 
-     <p><a name="index-libraryCommand-454"></a><a name="index-library-command-455"></a><a name="index-loading-elements-456"></a><a name="index-unix-command-457"></a><br><dt>&lsquo;<samp><span class="samp">libraryCommand (string)</span></samp>&rsquo;<dd><code>Pcb</code> uses a command to read element data from libraries. 
+     <p><a name="index-libraryCommand-454"></a><a name="index-library-command-455"></a><a name="index-loading-elements-456"></a><a name="index-unix-command-457"></a><br><dt>&lsquo;<samp><span class="samp">libraryCommand (string)</span></samp>&rsquo;<dd><code>pcb-rnd</code> uses a command to read element data from libraries. 
 The resources is used to set the command which is executed by the users
 default shell.  Three escape sequences are defined to pass the selected
 filename (%f), the current search path (%p) as well (%a) as the three
@@ -3861,7 +3795,7 @@ parameters <em>template</em>, <em>value</em> and <em>package</em> to the command
 It must write the element data to its standard output. The default value is
      <pre class="example">              NONE/share/pcb/oldlib/QueryLibrary.sh %p %f %a
 </pre>
-     <p><a name="index-elementContentsCommand-458"></a><a name="index-library-contents-command-459"></a><a name="index-listing-library-contents-460"></a><a name="index-unix-command-461"></a><br><dt>&lsquo;<samp><span class="samp">libraryContentsCommand (string)</span></samp>&rsquo;<dd>Similar to <em>libraryCommand</em>, <code>Pcb</code> uses the command specified
+     <p><a name="index-elementContentsCommand-458"></a><a name="index-library-contents-command-459"></a><a name="index-listing-library-contents-460"></a><a name="index-unix-command-461"></a><br><dt>&lsquo;<samp><span class="samp">libraryContentsCommand (string)</span></samp>&rsquo;<dd>Similar to <em>libraryCommand</em>, <code>pcb-rnd</code> uses the command specified
 by this resource to list the contents of a library.
      <pre class="example">          	NONE/share/pcb/oldlib/ListLibraryContents.sh %p %f
 </pre>
@@ -4025,7 +3959,7 @@ All user accessible commands may be bound to almost any <code>X</code> event. Al
 no default binding for commands is done in the binaries, so it is vital for the
 application that at least a system-wide application resource file exists. 
 This file normally resides in the <samp><span class="file">share/pcb</span></samp> directory and
-is called <samp><span class="file">Pcb</span></samp>. The bindings to which the manual refers to are the
+is called <samp><span class="file">pcb-rnd</span></samp>. The bindings to which the manual refers to are the
 ones as defined by the shipped resource file. Besides binding an action to
 an X11 event, you can also execute any action command using a ":" command
 (see <a href="#User-Commands">User Commands</a>).
@@ -4203,12 +4137,12 @@ output area optionally after clearing the window.
 Centering is done with respect to the <em>grid</em> setting. Displaying the
 grid itself may be switched on and off by <em>Grid</em> but only if
 the distance between two pixels exceeds 4 pixels. 
-<code>Pcb</code> is able to handle several labels of an element. One of them
+<code>pcb-rnd</code> is able to handle several labels of an element. One of them
 is a description of the functionality (eg resistor), the second should be
 a unique identifier (R1) whereas the last one is a value (100k). 
 The <em>Display()</em> action selects which of the names is displayed. 
 It also controls which name will be affected by the <em>ChangeName</em> command. 
-If <em>ToggleGrid</em> is passed, <code>Pcb</code> changes between relative
+If <em>ToggleGrid</em> is passed, <code>pcb-rnd</code> changes between relative
 ('rel' in the statusline) and absolute grid (an 'abs' in the statusline). 
 Relative grid means the pointer position when the command is issued is
 used as the grid origin; while (0,0) is used in the absolute grid case. 
@@ -4266,7 +4200,7 @@ Defaults:
 </pre>
      <p><a name="index-Mode_0028_0029-686"></a><a name="index-mode_002c-selecting-of-687"></a><a name="index-operation-modes_002c-selecting-of-688"></a><br><dt>&lsquo;<samp><span class="samp">Mode(Copy|InsertPoint|Line|Move|None|PasteBuffer|Polygon|Thermal)</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">Mode(Remove|Rectangle|RubberbandMove|Text|Via)</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">Mode(Cycle)</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">Mode(Notify)</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">Mode(Save|Restore)</span></samp>&rsquo;<dd>Switches to a new mode of operation. The active mode is displayed by a thick
 line around the matching mode selector button. 
-Most of the functionality of <code>Pcb</code> is implemented by selecting a mode
+Most of the functionality of <code>pcb-rnd</code> is implemented by selecting a mode
 and calling <em>Mode(Notify)</em>. The arguments <em>Line</em>, <em>Polygon</em>,
 <em>Rectangle</em>, <em>Text</em> and <em>Via</em> are used to create the
 appropriate object whenever <em>Mode(Notify)</em> is called. Some of them,
@@ -4311,7 +4245,7 @@ Default:
 </pre>
      <p><a name="index-MovePointer_0028_0029-689"></a><a name="index-pointer_002c-moving-of-690"></a><a name="index-cursor-movements-691"></a><br><dt>&lsquo;<samp><span class="samp">MovePointer(delta_x, delta_y)</span></samp>&rsquo;<dd>With this function it is possible to move the cross hair cursor by using the
 cursor keys. The <code>X</code> server's pointer follows because the necessary
-events are generated by <code>Pcb</code>. All movements are performed with respect
+events are generated by <code>pcb-rnd</code>. All movements are performed with respect
 to the currently set grid value. 
 Default:
      <pre class="example">          None&lt;Key&gt;Up:      MovePointer(0, -1)
@@ -4496,7 +4430,7 @@ on the silk layer when you print the layout.
           Mod1&lt;Key&gt;3:	ToggleVisibility(3)
           Mod1&lt;Key&gt;4:	ToggleVisibility(4)
 </pre>
-     <p><a name="index-Undo_0028_0029-762"></a><a name="index-undo-763"></a><a name="index-recover-764"></a><br><dt>&lsquo;<samp><span class="samp">Undo()</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">Undo(ClearList)</span></samp>&rsquo;<dd>The unlimited undo feature of <code>Pcb</code> allows you to recover
+     <p><a name="index-Undo_0028_0029-762"></a><a name="index-undo-763"></a><a name="index-recover-764"></a><br><dt>&lsquo;<samp><span class="samp">Undo()</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">Undo(ClearList)</span></samp>&rsquo;<dd>The unlimited undo feature of <code>pcb-rnd</code> allows you to recover
 from most operations that materially affect you work. 
 Calling <em>Undo()</em> without any parameter recovers
 from the last (non-undo) operation. <em>ClearList</em> is used to release the
@@ -4530,7 +4464,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#X11-Interface">X11 Interface</a>
 <p><a name="index-translations-771"></a><a name="index-default-translations-772"></a><a name="index-X11-default-translations-773"></a>
 This section covers some default translations of key and button events as
 defined in the shipped default application resource file. Most of them have
-already been listed in <a href="#Actions">Actions</a>. <code>Pcb</code> makes use of a nice <code>X11</code>
+already been listed in <a href="#Actions">Actions</a>. <code>pcb-rnd</code> makes use of a nice <code>X11</code>
 feature; calling several action routines for one event.
 
      
@@ -4570,17 +4504,17 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <h2 class="chapter">8 File Formats</h2>
 
 <p><a name="index-file-formats-787"></a><a name="index-ASCII-files_002c-format-of-788"></a>
-All files used by <code>Pcb</code> are read from the standard output of a command
+All files used by <code>pcb-rnd</code> are read from the standard output of a command
 or written to the standard input of one as plain seven bit <code>ASCII</code>. This
 makes it possible to use any editor to change the contents of a layout file. 
 It is the only way for element or font description files to be created. 
 To do so you'll need to study the example files <samp><span class="file">example/*</span></samp> and
-<samp><span class="file">default_font</span></samp> which are shipped with <code>Pcb</code>. 
+<samp><span class="file">default_font</span></samp> which are shipped with <code>pcb-rnd</code>. 
 For an overview refer to <a href="#Intro">Intro</a>.
 
    <p><a name="index-elementCommand-789"></a><a name="index-fileCommand-790"></a><a name="index-fontCommand-791"></a><a name="index-libraryCommand-792"></a><a name="index-libraryContentsCommand-793"></a><a name="index-saveCommand-794"></a>The following sections provide the necessary information about the syntax of
 the files. 
-Netlist files are not created by <code>Pcb</code>, but it does use them. For information
+Netlist files are not created by <code>pcb-rnd</code>, but it does use them. For information
 on the format of a netlist file see the <em>:rn</em>,
 <a href="#User-Commands">User Commands</a>. 
 The commands described allow you to add almost any additional
@@ -4648,16 +4582,16 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#File-Formats">File Formats</a>
 <p><a name="index-layout-files_002c-format-of-797"></a><a name="index-format-of-layout-files-798"></a><a name="index-file-format_002c-layout-data-799"></a>
 The layout file describes a complete layout including symbols, vias,
 elements and layers with lines, rectangles and text. This is the most
-complex file of all.  As <code>Pcb</code> has evolved, the file format has
-changed several times to accommodate new features.  <code>Pcb</code> has
+complex file of all.  As <code>pcb-rnd</code> has evolved, the file format has
+changed several times to accommodate new features.  <code>pcb-rnd</code> has
 always been able to read all older versions of the <code>.pcb</code> file. 
 This allows the migration of older designs to newer versions of the
-program.  Obviously older versions of <code>Pcb</code> will not be able
+program.  Obviously older versions of <code>pcb-rnd</code> will not be able
 to properly read layout files stored in newer versions of the file
 format.
 
    <p>In practice it is very common for footprint libraries to contain
-elements which have been defined in various versions of the <code>Pcb</code>
+elements which have been defined in various versions of the <code>pcb-rnd</code>
 file format.  When faced with trying to understand an element file or
 layout file which includes syntax not defined here, the best approach
 is to examine the file <samp><span class="file">src/parse_y.y</span></samp> which is the definitive
@@ -4746,7 +4680,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#File-Formats">File Formats</a>
 <h3 class="section">8.5 Netlist File Format</h3>
 
 <p><a name="index-netlist_002c-file-format-806"></a><a name="index-netlist_002c-reading-807"></a>
-Netlists read by <code>Pcb</code> must have this simple text form:
+Netlists read by <code>pcb-rnd</code> must have this simple text form:
 
 <pre class="example">     netname [style] NAME-PINNUM NAME2-PINNUM2 NAME3-PINNUM3 ... [\]
 </pre>
@@ -5905,28 +5839,15 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 <p><a name="index-library-creation-816"></a>
 This chapter provides a detailed look at how footprint libraries are
-created and used.  The chapter is split into two section, the first
-section covers the "old" style libraries which use the <code>m4</code> macro
-processor and the second section covers the "new" style libraries.
+created and used.
 
-   <p>Despite the names "old" and "new", both styles of libraries are useful
-and the "old" style should not be discounted because of its name.  The
-advantage of the old style libraries is that one can define a family of
-footprints, say a DIP package, and then quickly produce all the members
-of that family.  Because the individual packages make use of a base
-definition, corrections made to the base definition propagate to all the
-members of a family.  The primary drawback to using this library
-approach is that the effort to create a single footprint is more than a
-graphical interface and may take even longer if the user has not used
-the <code>m4</code> macro language previously.
-
-   <p>The new style of footprint libraries stores each footprint in its own
-file.  The footprints are created graphically by placing pads and then
-converting a group of pads to a component.  This library method has the
+   <p>pcb-rnd footprint libraries store each footprint in its own
+file. The footprints are created graphically by placing pads and then
+converting a group of pads to a component. This library method has the
 advantage of being quick to learn and it is easily to build single
-footprints quickly.  If you are building a family of parts, however, the
+footprints quickly. If you are building a family of parts, however, the
 additional effort in creating each one individually makes this approach
-undesirable.  In addition, creating a part with a large pin count
+undesirable. In addition, creating a part with a large pin count
 can be quite tedious when done by hand.
 
 <h3 class="section">9.1 Old Style (m4) Libraries</h3>
@@ -6307,7 +6228,7 @@ save the new footprint to a file.
 <h4 class="subsection">9.2.2 Modifying Newlib Footprints</h4>
 
      <ol type=1 start=1>
-<li>In the <code>Pcb</code> program, instantiate the footprint you wish to modify. 
+<li>In the <code>pcb-rnd</code> program, instantiate the footprint you wish to modify. 
 <li>Using the selection tool, select the footprint. 
 <li>Now left-click on the selected element, this brings up a popup menu, choose
 "Cut Selection to Buffer" from the popup menu. 
@@ -6593,7 +6514,7 @@ This section covers the steps which are necessary to compile the package.
 
 <ul class="menu">
 <li><a accesskey="1" href="#quickstart">quickstart</a>:                  Quick start. 
-<li><a accesskey="2" href="#running-configure">running configure</a>:           Customizing Pcb with Configure
+<li><a accesskey="2" href="#running-configure">running configure</a>:           Customizing pcb-rnd with Configure
 </ul>
 
 <div class="node">
@@ -6607,8 +6528,8 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#compiling">compiling</a>
 <h4 class="subsection">A.1.1 Quick Start</h4>
 
 <p><a name="index-GNU-build-system-825"></a>
-Starting with version 2.0, <code>Pcb</code> has switched to a GNU
-autoconf/automake build system.  Installation of <code>Pcb</code> consists of
+Starting with version 2.0, <code>pcb-rnd</code> has switched to a GNU
+autoconf/automake build system.  Installation of <code>pcb-rnd</code> consists of
 three steps:  configuration, building, and installing. 
 In a typical installation, these steps are as simple as
 <pre class="example">     ./configure
@@ -6653,7 +6574,7 @@ that) and mail a copy to the maintainer, harry eaton,  at
 <a href="mailto:haceaton@aplcomm.jhuapl.edu">haceaton@aplcomm.jhuapl.edu</a>.
 
    <p>If you do not have the appropriate permissions you should run
-<samp><span class="file">./pcbtest.sh</span></samp> in the <samp><span class="file">src</span></samp> directory to run <code>Pcb</code> from
+<samp><span class="file">./pcbtest.sh</span></samp> in the <samp><span class="file">src</span></samp> directory to run <code>pcb-rnd</code> from
 the installation directory.
 
 <div class="node">
@@ -6674,16 +6595,16 @@ complete please mail your problems and, if available, solutions to the author.
 The mail address may be found at the beginning of this chapter. 
 In any case, read <a href="#X11">X11</a>.
 
-   <p>By the way, you <code>MUST HAVE AN ANSI COMPILER</code> to make <code>Pcb</code> work.
+   <p>By the way, you <code>MUST HAVE AN ANSI COMPILER</code> to make <code>pcb-rnd</code> work.
 
    <p>Another source of problems are older versions of <code>flex</code> and <code>bison</code>. 
-<code>Pcb</code> definitely works with <code>flex-2.4.7</code> and <code>bison-1.22</code> or
+<code>pcb-rnd</code> definitely works with <code>flex-2.4.7</code> and <code>bison-1.22</code> or
 later. The problems will result in a <em>syntax error</em> while parsing files. 
 This should only be a problem if you have modified the <code>flex</code> or
 <code>bison</code> input files.
 
    <p>The following list gives you just an idea because I'm not able to test
-all <code>Pcb</code> releases on all platforms.
+all <code>pcb-rnd</code> releases on all platforms.
 
 <ul class="menu">
 <li><a accesskey="1" href="#HP">HP</a>:               Hewlett-Packard series 700 and 800 running HP-UX 10.*
@@ -6716,7 +6637,7 @@ They also do not ship the <code>ANSI</code> compiler with the normal operating
 system release so you have to buy one or use <code>GCC</code>. 
 Some of the tools are available as patches.
 
-   <p>In addition, <code>Pcb</code> has been successfully tested on these platforms with
+   <p>In addition, <code>pcb-rnd</code> has been successfully tested on these platforms with
 <code>HPUX 9.*, 10.*</code> running self-compiled <code>X11R5</code>.
 
 <div class="node">
@@ -6732,7 +6653,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#problems">problems</a>
 
 <p><a name="index-architecture-839"></a><a name="index-Sun-840"></a><a name="index-Solaris-841"></a><a name="index-OpenWindows-842"></a>
 There are no known problems with Sun machines if they use <code>X11R5</code> instead
-of <code>OpenWindows</code>. <code>Pcb</code> compiled successfully with all kinds of
+of <code>OpenWindows</code>. <code>pcb-rnd</code> compiled successfully with all kinds of
 SPARCstations <code>Solaris-2.[345]</code>.
 
    <p>For problems with <code>OpenWindows</code> refer to <a href="#X11">X11</a>.
@@ -6749,7 +6670,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#problems">problems</a>
 <h4 class="subsection">A.2.3 Silicon Graphics</h4>
 
 <p><a name="index-architecture-843"></a><a name="index-Silicon-Graphics-844"></a><a name="index-SGI-845"></a>
-<code>Pcb</code> has been tested on some boxes running either <code>IRIX-4.0.5</code> or
+<code>pcb-rnd</code> has been tested on some boxes running either <code>IRIX-4.0.5</code> or
 <code>IRIX-5.3</code>. The former one uses a <code>X11R4</code> server. 
 There are no problems. 
 For known problems
@@ -6767,7 +6688,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#problems">problems</a>
 <h4 class="subsection">A.2.4 DEC Alpha</h4>
 
 <p><a name="index-architecture-846"></a><a name="index-DEC-847"></a><a name="index-Alpha-848"></a>
-<code>Pcb</code> compiled and runs without problems on <code>DEC UNIX V3.2c</code>.
+<code>pcb-rnd</code> compiled and runs without problems on <code>DEC UNIX V3.2c</code>.
 
 <div class="node">
 <a name="SCO"></a>
@@ -6784,10 +6705,10 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#problems">problems</a>
 John DuBois &lt;spcecdt@deeptht.armory.com&gt; wrote:
 <pre class="example">     <code>SCO-ODT-3.0</code> requires the latest version of tls003, the Athena
      widget library (available from sosco.sco.com). The main problems
-     I have encountered are it core dumps fairly often, especially
+<u style="color:red;"><u>     I have encountered are it core dumps fairly often, especially</u></u>
      while loading/dropping elements...
 </pre>
-   <p>I'll see what I am able to do as soon as I have access to an <code>SCO</code> system.
+<u style="color:red;"><u>   <p>I'll see what I am able to do as soon as I have access to an <code>SCO</code> system.</u></u>
 
 <div class="node">
 <a name="Linux"></a>
@@ -6801,7 +6722,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#problems">problems</a>
 <h4 class="subsection">A.2.6 Linux</h4>
 
 <p><a name="index-architecture-852"></a><a name="index-Linux-853"></a><a name="index-PC-UNIX-854"></a>
-Since the <code>X11</code> version of <code>Pcb</code> has been developed on a Linux
+Since the <code>X11</code> version of <code>pcb-rnd</code> has been developed on a Linux
 system here are no known problems.
 
 <div class="node">
@@ -6816,7 +6737,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#problems">problems</a>
 <h4 class="subsection">A.2.7 FreeBSD and NetBSD</h4>
 
 <p><a name="index-FreeBSD-855"></a><a name="index-NetBSD-856"></a><a name="index-PC-UNIX-857"></a>
-<code>Pcb</code> has been tested on NetBSD and works without any problems. 
+<code>pcb-rnd</code> has been tested on NetBSD and works without any problems. 
 You may also be able to find a NetBSD package at
 <a href="ftp://ftp.netbsd.org/pub/NetBSD/packages/cad/pcb/README.html">ftp://ftp.netbsd.org/pub/NetBSD/packages/cad/pcb/README.html</a> or a
 FreeBSD port at
@@ -6848,7 +6769,7 @@ page.
    <p>You may have some problems in a mixed <code>X11-OpenWindows</code>
 environment.
 
-   <p><code>Pcb</code> has been tested successfully with <code>X11R6</code> under Linux 1.1.59
+   <p><code>pcb-rnd</code> has been tested successfully with <code>X11R6</code> under Linux 1.1.59
 and later.
 
 <div class="node">
@@ -6885,12 +6806,12 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <p>The menu system is driven off a data file that contains
 <dfn>resources</dfn>.  A resource is a hierarchical description of a data
 tree which, in this case, is mapped to the hierarchical menus used by
-Pcb.
+pcb-rnd.
 
 <ul class="menu">
 <li><a accesskey="1" href="#Resource-Syntax">Resource Syntax</a>:           What a resource file looks like. 
 <li><a accesskey="2" href="#Menu-Definitions">Menu Definitions</a>:          Using a resource to define a menu. 
-<li><a accesskey="3" href="#Menu-Files-and-Defaults">Menu Files and Defaults</a>:   Where Pcb looks for its menu resource. 
+<li><a accesskey="3" href="#Menu-Files-and-Defaults">Menu Files and Defaults</a>:   Where pcb-rnd looks for its menu resource. 
 </ul>
 
 <div class="node">
@@ -6978,7 +6899,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Custom-Menus">Custom Menus</a>
 <h3 class="section">B.2 Menu Definitions</h3>
 
 <p>To best understand this section, you should find the
-<samp><span class="file">pcb-menu.res</span></samp> file that your Pcb uses and refer to it for
+<samp><span class="file">pcb-menu.res</span></samp> file that your pcb-rnd uses and refer to it for
 examples (see <a href="#Menu-Files-and-Defaults">Menu Files and Defaults</a>).  Note that the lesstif
 GUI uses <samp><span class="file">pcb-menu.res</span></samp> and the GTK+ GUI uses <samp><span class="file">gpcb-menu.res</span></samp>. 
 The file format is identical however and if so desired, one can make
@@ -7011,7 +6932,7 @@ without needing to quote the action.
 resources can be used to set the font, color, and spacing of buttons. 
 As a convenience, &ldquo;fg&rdquo; can be used as an abbreviation for &ldquo;foreground&rdquo;.
 
-   <p>Within the menu's resource file, Pcb will look for a few key named
+   <p>Within the menu's resource file, pcb-rnd will look for a few key named
 subresources.  At the moment, the only one it looks for is one called
 <code>MainMenu</code>.  This will be used for the main menu bar.  In the
 future, other named subresources will be used for popup resources.
@@ -7026,9 +6947,9 @@ future, other named subresources will be used for popup resources.
        }
      }
 </pre>
-   <p>Within the Pcb sources are specially crafted comments that mark all
-the actions, flags, menu hooks, and whatnot that Pcb offers.  Read the
-file <samp><span class="file">src/gather-actions</span></samp> in the Pcb source tree for
+   <p>Within the pcb-rnd sources are specially crafted comments that mark all
+the actions, flags, menu hooks, and whatnot that pcb-rnd offers.  Read the
+file <samp><span class="file">src/gather-actions</span></samp> in the pcb-rnd source tree for
 documentation for these comments.
 
 <div class="node">
@@ -7041,7 +6962,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Custom-Menus">Custom Menus</a>
 
 <h3 class="section">B.3 Menu Files and Defaults</h3>
 
-<p>Pcb will look for a file which defines its menus, trying the following
+<p>pcb-rnd will look for a file which defines its menus, trying the following
 names (the example is for the lesstif GUI, the GTK+ GUI has &ldquo;gpcb-menu.res&rdquo;
 in place of &ldquo;pcb-menu.res&rdquo;):
 
@@ -7052,9 +6973,9 @@ in place of &ldquo;pcb-menu.res&rdquo;):
 </pre>
    <p>Note that <var>pcblibdir</var> defaults to <samp><span class="file">/usr/local/share/pcb</span></samp>
 (hence, <samp><span class="file">/usr/local/share/pcb/pcb-menu.res</span></samp>).  The
-<samp><span class="file">&lt;internal&gt;</span></samp> entry refers to a menu definition within the Pcb
+<samp><span class="file">&lt;internal&gt;</span></samp> entry refers to a menu definition within the pcb-rnd
 application itself.  The master file for all this is the file
-<samp><span class="file">src/pcb-menu.res</span></samp> in the Pcb source tree.  This master source is
+<samp><span class="file">src/pcb-menu.res</span></samp> in the pcb-rnd source tree.  This master source is
 used to create the internal menu definition as well as being installed
 in <samp><span class="file">$pcblibdir</span></samp>.
 
@@ -7074,9 +6995,9 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 <h3 class="section">C.1 Element Search/Regular Expressions</h3>
 
-<p><code>Pcb</code>'s search is based on POSIX 1003.2 Regular Expressions.  Full POSIX
-Regular Expressions are supported by <code>Pcb</code> if the regex library was
-available when <code>Pcb</code> was built.  One difference from the regular
+<p><code>pcb-rnd</code>'s search is based on POSIX 1003.2 Regular Expressions.  Full POSIX
+Regular Expressions are supported by <code>pcb-rnd</code> if the regex library was
+available when <code>pcb-rnd</code> was built.  One difference from the regular
 expressions found in tools like awk or grep is that PCB implicitly
 adds a &ldquo;^&rdquo; to the begining of a regular expression and &ldquo;$&rdquo; to the
 end of the regular expression.  For example, if you enter &ldquo;C1&rdquo;, the
@@ -7370,7 +7291,7 @@ comment describing the remainder of the file format.
 
 <pre class="example">     
      # <tt>$</tt>Id<tt>$</tt>
-     # PcbXY Version 1.0
+     # pcb-rndXY Version 1.0
      # Date: Fri Jul 22 03:40:08 2005 UTC
      # Author: PCB User
      # Title: MyBoard - PCB X-Y
@@ -8773,8 +8694,8 @@ will be invoked with the following variables set:
      <br><dt><code>SRCLIST</code><dd>A space-separated list of source files
 
      <br><dt><code>OUT</code><dd>The name of the file in which to put the command script, which may
-contain any <code>Pcb</code> actions.  By default, this is a temporary file
-selected by <code>Pcb</code>, but if you specify an <code>import::outfile</code>
+contain any <code>pcb-rnd</code> actions.  By default, this is a temporary file
+selected by <code>pcb-rnd</code>, but if you specify an <code>import::outfile</code>
 attribute, that file name is used instead (and not automatically
 deleted afterwards).
 
@@ -8811,7 +8732,7 @@ overridden by the user via the <code>make-program</code> and <code>gnetlist</cod
 <code>pcb</code> settings (i.e. in <code>~/.pcb/settings</code> or on the command
 line).
 
-   <p>If <code>Pcb</code> cannot determine which schematic(s) to import from, the GUI
+   <p>If <code>pcb-rnd</code> cannot determine which schematic(s) to import from, the GUI
 is called to let user choose (see <code>ImportGUI()</code>).
 
    <p>Note that Import() doesn't delete anything - after an Import, elements
@@ -10190,7 +10111,7 @@ Undo(ClearList)</pre>
    <p>Undo recent changes. 
 <!-- ./../src/action.c 5304 -->
 
-   <p>The unlimited undo feature of <code>Pcb</code> allows you to recover from
+   <p>The unlimited undo feature of <code>pcb-rnd</code> allows you to recover from
 most operations that materially affect you work.  Calling
 <code>Undo()</code> without any parameter recovers from the last (non-undo)
 operation. <code>ClearList</code> is used to release the allocated
@@ -12602,7 +12523,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-standard-drill-sizes-865">standard drill sizes</a>: <a href="#Standard-Drill-Sizes">Standard Drill Sizes</a></li>
 <li><a href="#index-start-user-input-631">start user input</a>: <a href="#Actions">Actions</a></li>
 <li><a href="#index-starting-a-new-layout-697">starting a new layout</a>: <a href="#Actions">Actions</a></li>
-<li><a href="#index-starting-_0040pcb_007b_007d-207">starting <code>Pcb</code></a>: <a href="#Command_002dLine-Options">Command-Line Options</a></li>
+<li><a href="#index-starting-_0040pcb_007b_007d-207">starting <code>pcb-rnd</code></a>: <a href="#Command_002dLine-Options">Command-Line Options</a></li>
 <li><a href="#index-status-information-56">status information</a>: <a href="#Status_002dline-and-Input_002dfield">Status-line and Input-field</a></li>
 <li><a href="#index-strings_002c-an-example-89">strings, an example</a>: <a href="#Text">Text</a></li>
 <li><a href="#index-strings_002c-an-overview-19">strings, an overview</a>: <a href="#Text-Objects">Text Objects</a></li>
@@ -12693,7 +12614,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <div class="contents">
 <h2>Table of Contents</h2>
 <ul>
-<li><a name="toc_Top" href="#Top">Pcb</a>
+<li><a name="toc_Top" href="#Top">pcb-rnd</a>
 <li><a name="toc_Copying" href="#Copying">Copying</a>
 <li><a name="toc_History" href="#History">History</a>
 <li><a name="toc_Overview" href="#Overview">1 Overview</a>
