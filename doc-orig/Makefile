@@ -54,7 +54,13 @@ EXTRA_DIST= \
 	${tab_texi} \
 	${images}
 
-all: $(html_docs)
+all:
+	@echo "***"
+	@echo "*** Compiling the old docs is disabled. We keep last compilation as static doc to edit until it is replaced with the new docs. ***"
+	@echo "***"
+	@false
+
+old_all: $(html_docs)
 
 # use this to avoid having the clean target delete pcb.{dvi,html,pdf,ps}
 # which unfortunately deletes files which are part of the distfile
