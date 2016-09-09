@@ -1,6 +1,9 @@
 pcb-rnd maintainer: Tibor 'Igor2' Palinkas
 email:      pcb-rnd (at) igor2.repo.hu
-Chat, IRC:  http://igor2.repo.hu/projects/pcb-rnd/irc.html
+Chat, IRC:  http://repo.hu/projects/pcb-rnd/irc.html
+
+An always up-to-date list of developers and contributors can be found at
+http://repo.hu/cgi-bin/pcb-rnd-people.cgi
 
 PCB was originally written by Thomas Nau
 Development was later taken over by harry eaton
