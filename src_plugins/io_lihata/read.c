@@ -394,6 +394,8 @@ static int parse_pcb_text(LayerType *ly, ElementType *el, lht_node_t *obj)
 #warning TODO: get the font
 	if (ly != NULL)
 		pcb_add_text_on_layer(ly, text, &PCB->Font);
+	if (el != NULL)
+		text->Element = el;
 
 	return 0;
 }
@@ -529,6 +531,9 @@ static int parse_element(DataType *dt, lht_node_t *obj)
 				parse_pad(elem, n);
 		}
 	}
+
+#warning TODO: get PCB here
+	SetElementBoundingBox(dt, elem, &PCB->Font);
 	return 0;
 }
 
