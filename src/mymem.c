@@ -756,3 +756,11 @@ LineType *GetElementLineMemory(ElementType *Element)
 
 	return line;
 }
+
+ArcType *GetElementArcMemory(ElementType *Element)
+{
+	ArcType *arc = calloc(sizeof(ArcType), 1);
+
+	arclist_append(&Element->Arc, arc);
+	return arc;
+}

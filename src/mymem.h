@@ -102,6 +102,7 @@ void RemoveFreeRat(RatType * data);
 
 /* Allocate element-objects */
 LineType *GetElementLineMemory(ElementType *Element);
+ArcType *GetElementArcMemory(ElementType *Element);
 
 #ifndef HAVE_LIBDMALLOC
 #define malloc(x) calloc(1,(x))

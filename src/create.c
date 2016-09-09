@@ -650,10 +650,7 @@ ArcTypePtr
 CreateNewArcInElement(ElementTypePtr Element,
 											Coord X, Coord Y, Coord Width, Coord Height, Angle angle, Angle delta, Coord Thickness)
 {
-	ArcType *arc;
-
-	arc = calloc(sizeof(ArcType), 1);
-	arclist_append(&Element->Arc, arc);
+	ArcType *arc = GetElementArcMemory(Element);
 
 	/* set Delta (0,360], StartAngle in [0,360) */
 	if (delta < 0) {
