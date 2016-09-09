@@ -259,6 +259,8 @@ static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj)
 		line = GetLineMemory(ly);
 	else if (el != NULL)
 		line = GetElementLineMemory(el);
+	else
+		return -1;
 
 	parse_id(&line->ID, obj, 5);
 	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
@@ -286,8 +288,10 @@ static int parse_arc(LayerType *ly, ElementType *el, lht_node_t *obj)
 
 	if (ly != NULL)
 		arc = GetArcMemory(ly);
-	else
+	else if (el != NULL)
 		arc = GetElementArcMemory(el);
+	else
+		return -1;
 
 	parse_id(&arc->ID, obj, 4);
 	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
@@ -360,6 +364,7 @@ static int parse_pcb_text(LayerType *ly, ElementType *el, lht_node_t *obj)
 {
 	TextType *text;
 	lht_node_t *role;
+	int tmp;
 
 	role = lht_dom_hash_get(obj, "role");
 
@@ -380,7 +385,8 @@ static int parse_pcb_text(LayerType *ly, ElementType *el, lht_node_t *obj)
 
 	parse_attributes(&text->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_int(&text->Scale, lht_dom_hash_get(obj, "scale"));
-	parse_int(&text->Direction, lht_dom_hash_get(obj, "direction"));
+	parse_int(&tmp, lht_dom_hash_get(obj, "direction"));
+	text->Direction = tmp;
 	parse_coord(&text->X, lht_dom_hash_get(obj, "x"));
 	parse_coord(&text->Y, lht_dom_hash_get(obj, "y"));
 	parse_text(&text->TextString, lht_dom_hash_get(obj, "string"));
@@ -443,7 +449,14 @@ static int parse_data_layers(PCBType *pcb, DataType *dt, lht_node_t *grp)
 /* If el == NULL and dt != NULL it is a via (for now). */
 static int parse_pin(DataType *dt, ElementType *el, lht_node_t *obj)
 {
-	PinType *via = GetViaMemory(dt);
+	PinType *via;
+
+	if (dt != NULL)
+		via = GetViaMemory(dt);
+	else if (el != NULL)
+		via = GetPinMemory(el);
+	else
+		return -1;
 
 	parse_id(&via->ID, obj, 4);
 	parse_attributes(&via->Attributes, lht_dom_hash_get(obj, "attributes"));
@@ -457,7 +470,8 @@ static int parse_pin(DataType *dt, ElementType *el, lht_node_t *obj)
 	parse_coord(&via->Y, lht_dom_hash_get(obj, "y"));
 	parse_text(&via->Name, lht_dom_hash_get(obj, "name"));
 
-	pcb_add_via(dt, via);
+	if (dt != NULL)
+		pcb_add_via(dt, via);
 
 	return 0;
 }
@@ -490,26 +504,14 @@ static int parse_element(DataType *dt, lht_node_t *obj)
 			parse_polygon(ly, elem, n);*/
 			if (strncmp(n->name, "text.", 5) == 0)
 				parse_pcb_text(NULL, elem, n);
-#if 0
 			if (strncmp(n->name, "pin.", 4) == 0)
 				parse_pin(NULL, elem, n);
+#if 0
 			if (strncmp(n->name, "pad.", 4) == 0)
 				parse_pad(elem, n);
 #endif
 		}
 	}
-
-#if 0
-	parse_text(&, lht_dom_hash_get(obj, "desc"));
-	parse_text(&, lht_dom_hash_get(obj, "name"));
-	parse_text(&, lht_dom_hash_get(obj, "value"));
-
-	AddTextToElement(&DESCRIPTION_TEXT(Element), PCBFont, TextX, TextY, Direction, Description, TextScale, TextFlags);
-
-	lht_dom_hash_put(obj, build_text("desc", elem->Name[DESCRIPTION_INDEX].TextString));
-	lht_dom_hash_put(obj, build_text("name", elem->Name[NAMEONPCB_INDEX].TextString));
-	lht_dom_hash_put(obj, build_text("value", elem->Name[VALUE_INDEX].TextString));
-#endif
 	return 0;
 }
 
