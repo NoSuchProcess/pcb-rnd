@@ -15,67 +15,17 @@ cd src && ./pcb-rnd
 (Note: it is important to cd to src to run pcb-rnd from source; src/pcb-rnd
 won't work unless pcb-rnd is installed).
 
-
-
 --
 
-PCB is organized into a core program that deals with all of the internal
-database procedures and a collection of plugins, of which a few are Human
-Interface Devices (HID's). The HID's provide exporting/printing
-capabilityas well as a graphical user interface.  At the time of writing
-this document PCB includes the following HIDs:
+PCB is organized into:
+  src/            a core program that deals with all of the internal
+                  database procedures
+  src_plugins/    a collection of plugins
+  src_3rd/        third-party minilibs (dependencies, not integral parts)
 
-HID's:
-     gtk -- GTK based GUI.  This is the default GUI.  You will
-            need gtk-2.4 or newer installed (both the runtime
-            files as well as the developer headers).  You only
-            need gtk if you want the gtk HID.
-
-     lesstif -- motif/lesstif based GUI.  To use the lesstif HID
-                you will need Motif, OpenMotif, or Lesstif installed.
-                Again you need both libraries and headers.
-
-     batch -- no GUI; read commands oin stdin.
-
-     ./configure will compile all HIDs for which the dependencies are
-     available - look at the summary at the end to see which ones found.
-     It's possible to manually disable HIDs with the --disable-lesstif,
-     --disable-gtk and --disable-batch. It's also possible to build
-     them as shared objects (dynamic loadable plugin): --plugin-lesstif,
-     --plugin-gtk, --plugin-batch for ./configure.
-
-Export plugins:
-     ps       -- Postscript and Encapsulated Postscript output.  No
-                 additional libraries are needed for this.
-
-     gcode    -- CNC G-CODE output (experimental).  The gdlib library
-                 is used by this HID.  gdlib may be found at
-                 http://www.libgd.org
-
-     gerber   -- RS-274-X (Gerber) and Excellon drill output.  No
-                 additional libraries are needed for this.
-
-     bom      -- Bill of materials (BOM) and Centroid (X-Y) output.
-                 No additional libraries are needed for this.
-
-     png      -- png/gif/jpeg output.  This HID uses gdlib to do
-                 the majority of the work.  gdlib may be obtained
-                 from http://www.libgd.org.
-
-Printer plugins:
-
-     lpr     -- Unix line printer support.  No additional libraries are
-                needed for this.
-
-
-NOTE: plugins can be enabled as buildin (compiled into the main executable),
-plugin (dynamic loadable) or disabled (not compiled at all). Please refer to
-the output of
-
-  ./configure --help
-
-for the most up to date details on the options.
-
+./configure will try to static link most plugins and disable ones that
+have missing dependencies. This process can be controlled using configure
+command line switches, see ./configure --help.
 
 After running ./configure with your selected options, run
 
@@ -86,7 +36,7 @@ to build pcb-rnd.  You can try out the program by running
   cd src
   ./pcb-rnd
 
-prior to installation.
+prior to installation (CWD _must_ be src/).
 
 To install PCB after it has been built run:
 
