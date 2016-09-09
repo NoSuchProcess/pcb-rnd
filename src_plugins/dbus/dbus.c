@@ -22,7 +22,7 @@
  *  D-Bus code originally derrived from example-service.c in the dbus-glib bindings
  */
 
-#warning TODO: detect this in scconfig:
+#warning scconfig TODO: detect this in scconfig:
 /* Define to 1 if you have the `dbus_watch_get_unix_fd' function. */
 /* #undef HAVE_DBUS_WATCH_GET_UNIX_FD */
 

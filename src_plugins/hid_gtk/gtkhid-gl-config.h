@@ -1,4 +1,4 @@
-#warning these need to be detectet by scconfig
+#warning scconfig TODO: these need to be detectet by scconfig
 /**** GL ****/
 
 /* Define to 1 if GL support is to be compiled in */
