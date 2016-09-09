@@ -556,14 +556,22 @@ CreateNewText(LayerTypePtr Layer, FontTypePtr PCBFont,
 	text->Scale = Scale;
 	text->TextString = pcb_strdup(TextString);
 
+	pcb_add_text_on_layer(Layer, text, PCBFont);
+
+	return (text);
+}
+
+void pcb_add_text_on_layer(LayerType *Layer, TextType *text, FontType *PCBFont)
+{
 	/* calculate size of the bounding box */
 	SetTextBoundingBox(PCBFont, text);
 	text->ID = ID++;
 	if (!Layer->text_tree)
 		Layer->text_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Layer->text_tree, (BoxTypePtr) text, 0);
-	return (text);
 }
+
+
 
 /* ---------------------------------------------------------------------------
  * creates a new polygon on a layer
