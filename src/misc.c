@@ -1307,5 +1307,5 @@ HID_Action misc_action_list[] = {
 
 REGISTER_ACTIONS(misc_action_list, NULL)
 
-#warning TODO: make this a separate object
+#warning scconfig TODO: make this a separate object
 #include "layer.c"
