@@ -97,6 +97,23 @@ static int parse_coord(Coord *res, lht_node_t *nd)
 	return 0;
 }
 
+/* Load the Angle value of a text node into res. Return 0 on success */
+static int parse_angle(Angle *res, lht_node_t *nd)
+{
+	double tmp;
+	bool success;
+
+	if ((nd == NULL) || (nd->type != LHT_TEXT))
+		return -1;
+	
+	tmp = GetValueEx(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
+	if (!success)
+		return -1;
+
+	*res = tmp;
+	return 0;
+}
+
 /* Load the Coord value of a text node into res. Return 0 on success */
 static int parse_int(int *res, lht_node_t *nd)
 {
@@ -277,8 +294,8 @@ static int parse_arc(LayerType *ly, ElementType *el, lht_node_t *obj)
 	parse_coord(&arc->Y, lht_dom_hash_get(obj, "y"));
 	parse_coord(&arc->Width, lht_dom_hash_get(obj, "width"));
 	parse_coord(&arc->Height, lht_dom_hash_get(obj, "height"));
-	parse_coord(&arc->StartAngle, lht_dom_hash_get(obj, "astart"));
-	parse_coord(&arc->Delta, lht_dom_hash_get(obj, "adelta"));
+	parse_angle(&arc->StartAngle, lht_dom_hash_get(obj, "astart"));
+	parse_angle(&arc->Delta, lht_dom_hash_get(obj, "adelta"));
 
 	pcb_add_arc_on_layer(ly, arc);
 
