@@ -1,7 +1,6 @@
 - BUGS
 	- genht config bug in gpmi
 	- strdup bug in gpmi
-	- visible grid slowing down rendering [Erich]
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
 	- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
 	- gui window quit queues and doesn't work when action command is active [report:miloh]
@@ -10,6 +9,9 @@
 	- Creating new lines doesn?t snap to pads correctly sometimes when AutoDRC is enabled. [report:Chris]
 	- shift (add to selection) broken [report:Chris]
 	- gerber export is broken with the torture-board [report:Evan]
+	- render:
+		- visible grid slowing down rendering [Erich]
+		- drawing a lot of rats is slow - does it redraw/flush after each rat? [report:Chris]
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
