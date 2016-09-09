@@ -478,7 +478,26 @@ static int parse_pin(DataType *dt, ElementType *el, lht_node_t *obj)
 
 static int parse_pad(ElementType *el, lht_node_t *obj)
 {
-#warning TODO
+	PadType *pad;
+
+	pad = GetPadMemory(el);
+
+	parse_id(&pad->ID, obj, 4);
+	parse_attributes(&pad->Attributes, lht_dom_hash_get(obj, "attributes"));
+	parse_flags(&pad->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_PAD);
+
+	parse_coord(&pad->Thickness, lht_dom_hash_get(obj, "thickness"));
+	parse_coord(&pad->Clearance, lht_dom_hash_get(obj, "clearance"));
+	parse_coord(&pad->Mask, lht_dom_hash_get(obj, "mask"));
+	parse_coord(&pad->Point1.X, lht_dom_hash_get(obj, "x1"));
+	parse_coord(&pad->Point1.Y, lht_dom_hash_get(obj, "y1"));
+	parse_coord(&pad->Point2.X, lht_dom_hash_get(obj, "x2"));
+	parse_coord(&pad->Point2.Y, lht_dom_hash_get(obj, "y2"));
+	parse_text(&pad->Name, lht_dom_hash_get(obj, "name"));
+
+	post_id_req(&pad->Point1);
+	post_id_req(&pad->Point2);
+
 	return 0;
 }
 
@@ -506,10 +525,8 @@ static int parse_element(DataType *dt, lht_node_t *obj)
 				parse_pcb_text(NULL, elem, n);
 			if (strncmp(n->name, "pin.", 4) == 0)
 				parse_pin(NULL, elem, n);
-#if 0
 			if (strncmp(n->name, "pad.", 4) == 0)
 				parse_pad(elem, n);
-#endif
 		}
 	}
 	return 0;
