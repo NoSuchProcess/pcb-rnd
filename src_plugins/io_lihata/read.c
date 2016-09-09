@@ -358,7 +358,37 @@ static int parse_polygon(LayerType *ly, ElementType *el, lht_node_t *obj)
 
 static int parse_pcb_text(LayerType *ly, ElementType *el, lht_node_t *obj)
 {
-#warning TODO
+	TextType *text;
+	lht_node_t *role;
+
+	role = lht_dom_hash_get(obj, "role");
+
+	if (ly != NULL) {
+		if (role != NULL)
+			return -1;
+		text = GetTextMemory(ly);
+	}
+	else if (el != NULL) {
+		if (role == NULL)
+			return -1;
+		if (strcmp(role->data.text.value, "desc") == 0) text = &DESCRIPTION_TEXT(el);
+		else if (strcmp(role->data.text.value, "name") == 0) text = &NAMEONPCB_TEXT(el);
+		else if (strcmp(role->data.text.value, "value") == 0) text = &VALUE_TEXT(el);
+		else
+			return -1;
+	}
+
+	parse_attributes(&text->Attributes, lht_dom_hash_get(obj, "attributes"));
+	parse_int(&text->Scale, lht_dom_hash_get(obj, "scale"));
+	parse_int(&text->Direction, lht_dom_hash_get(obj, "direction"));
+	parse_coord(&text->X, lht_dom_hash_get(obj, "x"));
+	parse_coord(&text->Y, lht_dom_hash_get(obj, "y"));
+	parse_text(&text->TextString, lht_dom_hash_get(obj, "string"));
+
+#warning TODO: get the font
+	if (ly != NULL)
+		pcb_add_text_on_layer(ly, text, &PCB->Font);
+
 	return 0;
 }
 
@@ -456,11 +486,11 @@ static int parse_element(DataType *dt, lht_node_t *obj)
 				parse_line(NULL, elem, n);
 			if (strncmp(n->name, "arc.", 4) == 0)
 				parse_arc(NULL, elem, n);
-#if 0
 /*		if (strncmp(n->name, "polygon.", 8) == 0)
 			parse_polygon(ly, elem, n);*/
 			if (strncmp(n->name, "text.", 5) == 0)
 				parse_pcb_text(NULL, elem, n);
+#if 0
 			if (strncmp(n->name, "pin.", 4) == 0)
 				parse_pin(NULL, elem, n);
 			if (strncmp(n->name, "pad.", 4) == 0)
