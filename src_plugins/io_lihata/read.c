@@ -282,7 +282,12 @@ static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj)
 
 static int parse_arc(LayerType *ly, ElementType *el, lht_node_t *obj)
 {
-	ArcType *arc = GetArcMemory(ly);
+	ArcType *arc;
+
+	if (ly != NULL)
+		arc = GetArcMemory(ly);
+	else
+		arc = GetElementArcMemory(el);
 
 	parse_id(&arc->ID, obj, 4);
 	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
@@ -297,7 +302,8 @@ static int parse_arc(LayerType *ly, ElementType *el, lht_node_t *obj)
 	parse_angle(&arc->StartAngle, lht_dom_hash_get(obj, "astart"));
 	parse_angle(&arc->Delta, lht_dom_hash_get(obj, "adelta"));
 
-	pcb_add_arc_on_layer(ly, arc);
+	if (ly != NULL)
+		pcb_add_arc_on_layer(ly, arc);
 
 	return 0;
 
@@ -448,9 +454,9 @@ static int parse_element(DataType *dt, lht_node_t *obj)
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 			if (strncmp(n->name, "line.", 5) == 0)
 				parse_line(NULL, elem, n);
-#if 0
 			if (strncmp(n->name, "arc.", 4) == 0)
 				parse_arc(NULL, elem, n);
+#if 0
 /*		if (strncmp(n->name, "polygon.", 8) == 0)
 			parse_polygon(ly, elem, n);*/
 			if (strncmp(n->name, "text.", 5) == 0)
