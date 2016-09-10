@@ -77,7 +77,7 @@
 /*
  * Used to intercept "special" hotkeys that gtk doesn't usually pass
  * on to the menu hotkeys.  We catch them and put them back where we
- * want them. 
+ * want them.
  */
 
 /* The modifier keys */
