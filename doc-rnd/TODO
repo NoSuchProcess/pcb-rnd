@@ -11,7 +11,7 @@
 	- render:
 		- visible grid slowing down rendering [Erich]
 		- drawing a lot of rats is slow - does it redraw/flush after each rat? [report:Chris]
-	- pcb-rnd preferences: clicking Library option 'Restore factory defaults' collapses tree view  
+	+ pcb-rnd preferences: clicking Library option 'Restore factory defaults' collapses tree view  
 	- gui doesn't show lookahead mode change ( _/ \_ and whitespace) when toggling using / key or --listen and display(cycleclip) on stdin
 
 - replace settings with lihata (conf_*)
