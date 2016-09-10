@@ -199,7 +199,7 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 {
 	LibraryMenuType *menu = PCB->NetlistLib[NETLIST_EDITED].Menu + last_pick;
-	char *name = menu->Entry[cbs->item_position - 1].ListEntry;
+	const char *name = menu->Entry[cbs->item_position - 1].ListEntry;
 	char *ename, *pname;
 
 	ename = pcb_strdup(name);
