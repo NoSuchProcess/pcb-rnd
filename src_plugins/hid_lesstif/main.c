@@ -898,7 +898,7 @@ HID_Action lesstif_main_action_list[] = {
 REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
 
 
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  * redraws the background image
  */
 		 static int bg_w, bg_h, bgi_w, bgi_h;
