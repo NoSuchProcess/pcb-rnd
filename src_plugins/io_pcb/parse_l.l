@@ -433,7 +433,7 @@ int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr Ptr, const char *Filename)
 	r = Parse(NULL, conf_core.rc.font_command, NULL, Filename, NULL);
 	if (r == 0) {
 #ifdef DEBUG
-		Message ("Found %s in %s\n", Filename, p);
+		Message ("Found %s in %s\n", Filename, conf_core.rc.font_command);
 #endif
 	}
 	return r;
