@@ -188,7 +188,7 @@ static int build_and_run_command(const char * format_, ...)
 			start = s+1;
 			continue;
 		}
-		
+
 		/* check if current word is a format */
 		if ((s == start) && (s[0] == '%') && (s[1] != '\0') && ((s[2] == '\0') || isspace(s[2]))) {
 			switch(s[1]) {
