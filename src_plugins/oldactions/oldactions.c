@@ -33,6 +33,7 @@
 #include "error.h"
 #include "undo.h"
 #include "plugins.h"
+#include "hid_actions.h"
 
 
 static void conf_toggle(conf_role_t role, const char *path)
