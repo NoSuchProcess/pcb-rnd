@@ -1316,7 +1316,7 @@ void ClosePolygon(void)
 			dx = coord_abs(Crosshair.AttachedPolygon.Points[n - 1].X - Crosshair.AttachedPolygon.Points[0].X);
 			dy = coord_abs(Crosshair.AttachedPolygon.Points[n - 1].Y - Crosshair.AttachedPolygon.Points[0].Y);
 			if (!(dx == 0 || dy == 0 || dx == dy)) {
-				Message(PCB_MSG_DEFAULT, _("Cannot close polygon because 45 degree lines are requested.\n"));
+				Message(PCB_MSG_ERROR, _("Cannot close polygon because 45 degree lines are requested.\n"));
 				return;
 			}
 		}
