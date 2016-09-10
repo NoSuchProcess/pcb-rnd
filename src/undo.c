@@ -797,39 +797,23 @@ static bool UndoNetlistChange(UndoListTypePtr Entry)
 
 	/* iterate over each net */
 	for (i = 0; i < lib->MenuN; i++) {
-		if (lib->Menu[i].Name)
-			free(lib->Menu[i].Name);
-
-		if (lib->Menu[i].directory)
-			free(lib->Menu[i].directory);
-
-		if (lib->Menu[i].Style)
-			free(lib->Menu[i].Style);
+		free(lib->Menu[i].Name);
+		free(lib->Menu[i].directory);
+		free(lib->Menu[i].Style);
 
 		/* iterate over each pin on the net */
 		for (j = 0; j < lib->Menu[i].EntryN; j++) {
+			if (!lib->Menu[i].Entry[j].ListEntry_dontfree)
+				free(lib->Menu[i].Entry[j].ListEntry);
 
-			if (lib->Menu[i].Entry[j].ListEntry)
-				if (!lib->Menu[i].Entry[j].ListEntry_dontfree)
-					free(lib->Menu[i].Entry[j].ListEntry);
-
-			if (lib->Menu[i].Entry[j].AllocatedMemory)
-				free(lib->Menu[i].Entry[j].AllocatedMemory);
-
-			if (lib->Menu[i].Entry[j].Package)
-				free(lib->Menu[i].Entry[j].Package);
-
-			if (lib->Menu[i].Entry[j].Value)
-				free(lib->Menu[i].Entry[j].Value);
-
-			if (lib->Menu[i].Entry[j].Description)
-				free(lib->Menu[i].Entry[j].Description);
-
+			free(lib->Menu[i].Entry[j].AllocatedMemory);
+			free(lib->Menu[i].Entry[j].Package);
+			free(lib->Menu[i].Entry[j].Value);
+			free(lib->Menu[i].Entry[j].Description);
 		}
 	}
 
-	if (lib->Menu)
-		free(lib->Menu);
+	free(lib->Menu);
 
 	*lib = *saved;
 
