@@ -10,8 +10,8 @@ struct gtk_conf_list_s {
 	int reorder;                /* 0 to disable reordering */
 
 	lht_node_t *lst;            /* the list (of text nodes!) to build the initial GUI list from */
-//	lht_node_t *lst_out;        /* the list to overwrite */
-//	char *lst_update_path;      /* path to conf_update after an overwrite */
+/*	lht_node_t *lst_out;        /* the list to overwrite */
+/*	char *lst_update_path;      /* path to conf_update after an overwrite */
 	void (*pre_rebuild)(gtk_conf_list_t *cl); /* called before rebuilding lst */
 	void (*post_rebuild)(gtk_conf_list_t *cl); /* called after rebuilding lst */
 

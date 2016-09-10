@@ -165,7 +165,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 	if (action) {
 		GtkWidget *item;
 		gtk_action_set_accel_group(action, menu->accel_group);
-//		gtk_action_group_add_action_with_accel(menu->action_group, action, accel);
+/*		gtk_action_group_add_action_with_accel(menu->action_group, action, accel);*/
 		gtk_action_connect_accelerator(action);
 		g_signal_connect(G_OBJECT(action), "activate", menu->action_cb, (gpointer) n_action);
 		g_object_set_data(G_OBJECT(action), "resource", (gpointer) sub_res);
