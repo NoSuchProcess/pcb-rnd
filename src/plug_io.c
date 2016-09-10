@@ -449,7 +449,7 @@ void sort_netlist()
 /* ---------------------------------------------------------------------------
  * opens a file and check if it exists
  */
-FILE *CheckAndOpenFile(char *Filename, bool Confirm, bool AllButton, bool * WasAllButton, bool * WasCancelButton)
+FILE *CheckAndOpenFile(const char *Filename, bool Confirm, bool AllButton, bool * WasAllButton, bool * WasCancelButton)
 {
 	FILE *fp = NULL;
 	struct stat buffer;
