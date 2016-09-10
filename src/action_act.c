@@ -80,7 +80,7 @@ int ActionExecuteFile(int argc, char **argv, Coord x, Coord y)
 		while (*sp && (*sp == ' ' || *sp == '\t'))
 			sp++;
 
-		/* 
+		/*
 		 * if we have anything left and its not a comment line
 		 * then execute it
 		 */
