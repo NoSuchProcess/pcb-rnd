@@ -904,14 +904,16 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 	gtk_box_pack_start(GTK_BOX(tab_vbox), content_vbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
 
-	if (!config_increments_vbox) {
-		/* the actual content */
-		vbox = gtk_vbox_new(FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(content_vbox), vbox, FALSE, FALSE, 0);
-		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
-		config_increments_vbox = vbox;
-		config_increments_tab_vbox = content_vbox;
-	}
+	if (!config_increments_vbox)
+		gtk_widget_destroy(GTK_BOX(config_increments_vbox));
+
+	/* the actual content */
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(content_vbox), vbox, FALSE, FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
+	config_increments_vbox = vbox;
+	config_increments_tab_vbox = content_vbox;
+
 
 	catvbox = ghid_category_vbox (config_increments_vbox, "Increment Settings", 0, 0, TRUE, TRUE);
 	config_increments_sect_create(catvbox);
