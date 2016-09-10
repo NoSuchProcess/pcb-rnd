@@ -43,6 +43,7 @@
 #include "../src_3rd/genlist/genadlist.h"
 #include "../src_3rd/qparse/qparse.h"
 #include "../config.h"
+#include "../src/error.h"
 #include "../src/plugins.h"
 #include "../src/plug_footprint.h"
 #include "../src/compat_misc.h"
@@ -132,24 +133,29 @@ static int file_exists(const char *fn)
 	return 1;
 }
 
-void ChdirErrorMessage(char *DirName)
+void ChdirErrorMessage(const char *DirName)
 {
 	fprintf(stderr, "gsch2pcb-rnd: warning: can't cd to %s\n", DirName);
 }
 
-void OpendirErrorMessage(char *DirName)
+void OpendirErrorMessage(const char *DirName)
 {
 	fprintf(stderr, "gsch2pcb-rnd: warning: can't opendir %s\n", DirName);
 }
 
-void PopenErrorMessage(char *cmd)
+void PopenErrorMessage(const char *cmd)
 {
 	fprintf(stderr, "gsch2pcb-rnd: warning: can't popen %s\n", cmd);
 }
 
-void Message(char *err)
+void Message(enum pcb_message_level level, const char *fmt, ...)
 {
-	fprintf(stderr, "gsch2pcb-rnd: %s\n", err);
+	va_list args;
+	fprintf(stderr, "gsch2pcb-rnd: ");
+	va_start(args, fmt);
+	vfprintf(stderr, fmt, args);
+	va_end(args);
+	fprintf(stderr, "\n");
 }
 
 /**
