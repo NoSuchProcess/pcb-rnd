@@ -580,7 +580,7 @@ static int ActionChangePinName(int argc, char **argv, Coord x, Coord y)
 				if (NSTRCMP(pinnum, pin->Number) == 0) {
 					AddObjectToChangeNameUndoList(PCB_TYPE_PIN, NULL, NULL, pin, pin->Name);
 					/*
-					 * Note:  we can't free() pin->Name first because 
+					 * Note:  we can't free() pin->Name first because
 					 * it is used in the undo list
 					 */
 					pin->Name = pcb_strdup(pinname);
@@ -594,8 +594,8 @@ static int ActionChangePinName(int argc, char **argv, Coord x, Coord y)
 			{
 				if (NSTRCMP(pinnum, pad->Number) == 0) {
 					AddObjectToChangeNameUndoList(PCB_TYPE_PAD, NULL, NULL, pad, pad->Name);
-					/* 
-					 * Note:  we can't free() pad->Name first because 
+					/*
+					 * Note:  we can't free() pad->Name first because
 					 * it is used in the undo list
 					 */
 					pad->Name = pcb_strdup(pinname);
@@ -607,7 +607,7 @@ static int ActionChangePinName(int argc, char **argv, Coord x, Coord y)
 		}
 	}
 	END_LOOP;
-	/* 
+	/*
 	 * done with our action so increment the undo # if we actually
 	 * changed anything
 	 */
@@ -1171,7 +1171,7 @@ There are 5 possibilities:
 4 - 45 degree fingers with rounded corners,
 5 - horizontal & vertical fingers with rounded corners.
 
-Pins and Vias may have thermals whether or not there is a polygon available 
+Pins and Vias may have thermals whether or not there is a polygon available
 to connect with. However, they will have no effect without the polygon.
 %end-doc */
 
@@ -1331,7 +1331,7 @@ static int ActionSetValue(int argc, char **argv, Coord x, Coord y)
 			if (absolute)
 				SetGrid(value, false);
 			else {
-				/* On the way down, short against the minimum 
+				/* On the way down, short against the minimum
 				 * PCB drawing unit */
 				if ((value + PCB->Grid) < 1)
 					SetGrid(1, false);
