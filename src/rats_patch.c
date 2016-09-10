@@ -382,7 +382,7 @@ static int ReplaceFootprint(int argc, char **argv, Coord x, Coord y)
 	END_LOOP;
 
 	if (!(found)) {
-		Message("ReplaceFootprint works on selected elements, please select elements first!\n");
+		Message(PCB_MSG_DEFAULT, "ReplaceFootprint works on selected elements, please select elements first!\n");
 		return 1;
 	}
 
@@ -390,7 +390,7 @@ static int ReplaceFootprint(int argc, char **argv, Coord x, Coord y)
 	if (argc == 0) {
 		fpname = gui->prompt_for("Footprint name", "");
 		if (fpname == NULL) {
-			Message("No footprint name supplied\n");
+			Message(PCB_MSG_DEFAULT, "No footprint name supplied\n");
 			return 1;
 		}
 	}
@@ -401,7 +401,7 @@ static int ReplaceFootprint(int argc, char **argv, Coord x, Coord y)
 	a[0] = fpname;
 	a[1] = NULL;
 	if (LoadFootprint(1, a, x, y) != 0) {
-		Message("Can't load footprint %s\n", fpname);
+		Message(PCB_MSG_DEFAULT, "Can't load footprint %s\n", fpname);
 		return 1;
 	}
 
@@ -463,7 +463,7 @@ static int SavePatch(int argc, char **argv, Coord x, Coord y)
 		fn = argv[0];
 	f = fopen(fn, "w");
 	if (f == NULL) {
-		Message("Can't open netlist patch file %s for writing\n", fn);
+		Message(PCB_MSG_DEFAULT, "Can't open netlist patch file %s for writing\n", fn);
 		return 1;
 	}
 	rats_patch_fexport(PCB, f, 0);

@@ -526,7 +526,7 @@ void NotifyMode(void)
 			PinTypePtr via;
 
 			if (!PCB->ViaOn) {
-				Message(_("You must turn via visibility on before\n" "you can place vias\n"));
+				Message(PCB_MSG_DEFAULT, _("You must turn via visibility on before\n" "you can place vias\n"));
 				break;
 			}
 			if ((via = CreateNewVia(PCB->Data, Note.X, Note.Y,
@@ -905,13 +905,13 @@ void NotifyMode(void)
 											 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 
 				if (Crosshair.AttachedObject.Type == PCB_TYPE_NONE) {
-					Message("The first point of a polygon hole must be on a polygon.\n");
+					Message(PCB_MSG_DEFAULT, "The first point of a polygon hole must be on a polygon.\n");
 					break; /* don't start doing anything if clicket out of polys */
 				}
 
 				if (TEST_FLAG(PCB_FLAG_LOCK, (PolygonTypePtr)
 											Crosshair.AttachedObject.Ptr2)) {
-					Message(_("Sorry, the object is locked\n"));
+					Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 					Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					break;
 				}
@@ -1034,7 +1034,7 @@ void NotifyMode(void)
 	case PCB_MODE_REMOVE:
 		if ((type = SearchScreen(Note.X, Note.Y, REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 			if (TEST_FLAG(PCB_FLAG_LOCK, (LineTypePtr) ptr2)) {
-				Message(_("Sorry, the object is locked\n"));
+				Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 				break;
 			}
 			if (type == PCB_TYPE_ELEMENT) {
@@ -1081,7 +1081,7 @@ pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.At
 				if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
 					if (conf_core.editor.mode == PCB_MODE_MOVE && TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr)
 																											Crosshair.AttachedObject.Ptr2)) {
-						Message(_("Sorry, the object is locked\n"));
+						Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 						Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					}
 					else
@@ -1127,7 +1127,7 @@ pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.At
 			if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
 				if (TEST_FLAG(PCB_FLAG_LOCK, (PolygonTypePtr)
 											Crosshair.AttachedObject.Ptr2)) {
-					Message(_("Sorry, the object is locked\n"));
+					Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 					Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					break;
 				}
@@ -1204,7 +1204,7 @@ int get_style_size(int funcid, Coord * out, int type, int size_id)
 		case PCB_TYPE_ARC:
 			return get_style_size(F_SelectedArcs, out, 0, size_id);
 		}
-		Message(_("Sorry, can't fetch the style of that object tpye (%x)\n"), type);
+		Message(PCB_MSG_DEFAULT, _("Sorry, can't fetch the style of that object tpye (%x)\n"), type);
 		return -1;
 	case F_SelectedPads:
 		if (size_id != 2)						/* don't mess with pad size */
@@ -1230,7 +1230,7 @@ int get_style_size(int funcid, Coord * out, int type, int size_id)
 		return 0;
 	case F_SelectedTexts:
 	case F_SelectedNames:
-		Message(_("Sorry, can't change style of every selected object\n"));
+		Message(PCB_MSG_DEFAULT, _("Sorry, can't change style of every selected object\n"));
 		return -1;
 	}
 	return 0;

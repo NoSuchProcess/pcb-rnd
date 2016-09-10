@@ -29,12 +29,25 @@
 #ifndef	PCB_ERROR_H
 #define	PCB_ERROR_H
 
-
+// Common return codes.
 #define	STATUS_OK		0
 #define	STATUS_BREAK	1
 #define	STATUS_ERROR	-1
 
-void Message(const char *Format, ...);
+enum pcb_message_level {
+	// MSG_DEFAULT is the default level when a message is not converted yet
+	// to any of the levels below. This level will go away once all messages
+	// are converted. Please grep for this and convert the message to the
+	// more specific.
+	PCB_MSG_DEFAULT = 1,
+
+	PCB_MSG_DEBUG = 0,   // Debug message. Should probably not be shown in regular operation.
+	PCB_MSG_INFO,        // Info message. FYI for the user, no action needed.
+	PCB_MSG_WARNING,     // Something the user should probably take note
+	PCB_MSG_ERROR,       // Couldn't finish an action, needs user attention.
+};
+
+void Message(enum pcb_message_level level, const char *Format, ...);
 void MyFatal(const char *Format, ...);
 void OpenErrorMessage(const char *);
 void PopenErrorMessage(const char *);

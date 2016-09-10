@@ -181,8 +181,8 @@ static void append_drc_violation(DrcViolationType * violation)
 	}
 
 	if (gui->drc_gui == NULL || gui->drc_gui->log_drc_violations) {
-		Message(_("WARNING!  Design Rule error - %s\n"), violation->title);
-		Message(_("%m+near location %$mD\n"), conf_core.editor.grid_unit->allow, violation->x, violation->y);
+		Message(PCB_MSG_DEFAULT, _("WARNING!  Design Rule error - %s\n"), violation->title);
+		Message(PCB_MSG_DEFAULT, _("%m+near location %$mD\n"), conf_core.editor.grid_unit->allow, violation->x, violation->y);
 	}
 }
 
@@ -273,7 +273,7 @@ static r_dir_t drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr
 		}
 		break;
 	default:
-		Message("hace: Bad Plow object in callback\n");
+		Message(PCB_MSG_DEFAULT, "hace: Bad Plow object in callback\n");
 	}
 	return R_DIR_NOT_FOUND;
 
@@ -683,7 +683,7 @@ int DRCAll(void)
 	gui->invalidate_all();
 
 	if (nopastecnt > 0) {
-		Message(_("Warning:  %d pad%s the nopaste flag set.\n"), nopastecnt, nopastecnt > 1 ? "s have" : " has");
+		Message(PCB_MSG_DEFAULT, _("Warning:  %d pad%s the nopaste flag set.\n"), nopastecnt, nopastecnt > 1 ? "s have" : " has");
 	}
 	return IsBad ? -drcerr_count : drcerr_count;
 }

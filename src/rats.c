@@ -91,7 +91,7 @@ static bool ParseConnection(char *InString, char *ElementName, char *PinNum)
 	}
 	else {
 		ElementName[j] = '\0';
-		Message(_("Bad net-list format encountered near: \"%s\"\n"), ElementName);
+		Message(PCB_MSG_DEFAULT, _("Bad net-list format encountered near: \"%s\"\n"), ElementName);
 		return (true);
 	}
 }
@@ -157,7 +157,7 @@ bool SeekPad(LibraryEntryType * entry, ConnectionType * conn, bool Same)
 		return (false);
 	for (j = 0; PinNum[j] != '\0'; j++);
 	if (j == 0) {
-		Message(_("Error! Netlist file is missing pin!\n" "white space after \"%s-\"\n"), ElementName);
+		Message(PCB_MSG_DEFAULT, _("Error! Netlist file is missing pin!\n" "white space after \"%s-\"\n"), ElementName);
 		badnet = true;
 	}
 	else {
@@ -166,11 +166,11 @@ bool SeekPad(LibraryEntryType * entry, ConnectionType * conn, bool Same)
 		if (Same)
 			return (false);
 		if (PinNum[j - 1] < '0' || PinNum[j - 1] > '9') {
-			Message("WARNING! Pin number ending with '%c'"
+			Message(PCB_MSG_DEFAULT, "WARNING! Pin number ending with '%c'"
 							" encountered in netlist file\n" "Probably a bad netlist file format\n", PinNum[j - 1]);
 		}
 	}
-	Message(_("Can't find %s pin %s called for in netlist.\n"), ElementName, PinNum);
+	Message(PCB_MSG_DEFAULT, _("Can't find %s pin %s called for in netlist.\n"), ElementName, PinNum);
 	return (false);
 }
 
@@ -227,7 +227,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 			{
 				if (SeekPad(entry, &LastPoint, false)) {
 					if (TEST_FLAG(PCB_FLAG_DRC, (PinTypePtr) LastPoint.ptr2))
-						Message(_
+						Message(PCB_MSG_DEFAULT, _
 										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
 										NAMEONPCB_NAME((ElementTypePtr) LastPoint.ptr1),
 										(LastPoint.type ==
@@ -320,7 +320,7 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
 		if ((TEST_FLAG(PCB_FLAG_DRC, pin)) && (!(e->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = true;
 			if (!pin->Spare) {
-				Message(_("Warning! Net \"%s\" is shorted to %s pin %s\n"),
+				Message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to %s pin %s\n"),
 								&theNet->Name[2], UNKNOWN(NAMEONPCB_NAME(element)), UNKNOWN(pin->Number));
 				stub_rat_found_short(pin, NULL, &theNet->Name[2]);
 				continue;
@@ -337,7 +337,7 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
 			if (newone) {
 				menu = GetPointerMemory(generic);
 				*menu = pin->Spare;
-				Message(_("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
+				Message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 								&theNet->Name[2], &((LibraryMenuTypePtr) (pin->Spare))->Name[2]);
 				stub_rat_found_short(pin, NULL, &theNet->Name[2]);
 			}
@@ -351,7 +351,7 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
 		if ((TEST_FLAG(PCB_FLAG_DRC, pad)) && (!(e->Flags.f & PCB_FLAG_NONETLIST)) && (!(e->Name->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = true;
 			if (!pad->Spare) {
-				Message(_("Warning! Net \"%s\" is shorted  to %s pad %s\n"),
+				Message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted  to %s pad %s\n"),
 								&theNet->Name[2], UNKNOWN(NAMEONPCB_NAME(element)), UNKNOWN(pad->Number));
 				stub_rat_found_short(NULL, pad, &theNet->Name[2]);
 				continue;
@@ -368,7 +368,7 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
 			if (newone) {
 				menu = GetPointerMemory(generic);
 				*menu = pad->Spare;
-				Message(_("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
+				Message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 								&theNet->Name[2], &((LibraryMenuTypePtr) (pad->Spare))->Name[2]);
 				stub_rat_found_short(NULL, pad, &theNet->Name[2]);
 			}
@@ -653,7 +653,7 @@ AddAllRats(bool SelectedOnly,
 	 */
 	Wantlist = ProcNetlist(&(PCB->NetlistLib[NETLIST_EDITED]));
 	if (!Wantlist) {
-		Message(_("Can't add rat lines because no netlist is loaded.\n"));
+		Message(PCB_MSG_DEFAULT, _("Can't add rat lines because no netlist is loaded.\n"));
 		return (false);
 	}
 	changed = false;
@@ -708,15 +708,15 @@ AddAllRats(bool SelectedOnly,
 	if (changed) {
 		IncrementUndoSerialNumber();
 		if (ratlist_length(&PCB->Data->Rat) > 0) {
-			Message("%d rat line%s remaining\n", ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) > 1 ? "s" : "");
+			Message(PCB_MSG_DEFAULT, "%d rat line%s remaining\n", ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) > 1 ? "s" : "");
 		}
 		return (true);
 	}
 	if (!SelectedOnly && !Warned) {
 		if (!ratlist_length(&PCB->Data->Rat) && !badnet)
-			Message(_("Congratulations!!\n" "The layout is complete and has no shorted nets.\n"));
+			Message(PCB_MSG_DEFAULT, _("Congratulations!!\n" "The layout is complete and has no shorted nets.\n"));
 		else
-			Message(_("Nothing more to add, but there are\n"
+			Message(PCB_MSG_DEFAULT, _("Nothing more to add, but there are\n"
 								"either rat-lines in the layout, disabled nets\n" "in the net-list, or missing components\n"));
 	}
 	return (false);
@@ -739,7 +739,7 @@ NetListListType CollectSubnets(bool SelectedOnly)
 	 */
 	Wantlist = ProcNetlist(&(PCB->NetlistLib[NETLIST_EDITED]));
 	if (!Wantlist) {
-		Message(_("Can't add rat lines because no netlist is loaded.\n"));
+		Message(PCB_MSG_DEFAULT, _("Can't add rat lines because no netlist is loaded.\n"));
 		return result;
 	}
 	/* initialize finding engine */
@@ -819,11 +819,11 @@ RatTypePtr AddNet(void)
 	found = SearchObjectByLocation(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
 																 Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, 5);
 	if (found == PCB_TYPE_NONE) {
-		Message(_("No pad/pin under rat line\n"));
+		Message(PCB_MSG_DEFAULT, _("No pad/pin under rat line\n"));
 		return (NULL);
 	}
 	if (NAMEONPCB_NAME((ElementTypePtr) ptr1) == NULL || *NAMEONPCB_NAME((ElementTypePtr) ptr1) == 0) {
-		Message(_("You must name the starting element first\n"));
+		Message(PCB_MSG_DEFAULT, _("You must name the starting element first\n"));
 		return (NULL);
 	}
 
@@ -834,11 +834,11 @@ RatTypePtr AddNet(void)
 	found = SearchObjectByLocation(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
 																 Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y, 5);
 	if (found == PCB_TYPE_NONE) {
-		Message(_("No pad/pin under rat line\n"));
+		Message(PCB_MSG_DEFAULT, _("No pad/pin under rat line\n"));
 		return (NULL);
 	}
 	if (NAMEONPCB_NAME((ElementTypePtr) ptr1) == NULL || *NAMEONPCB_NAME((ElementTypePtr) ptr1) == 0) {
-		Message(_("You must name the ending element first\n"));
+		Message(PCB_MSG_DEFAULT, _("You must name the ending element first\n"));
 		return (NULL);
 	}
 	group2 = (TEST_FLAG(PCB_FLAG_ONSOLDER, (PadTypePtr) ptr2) ?
@@ -848,7 +848,7 @@ RatTypePtr AddNet(void)
 	menu = netnode_to_netname(name1);
 	if (menu) {
 		if (netnode_to_netname(name2)) {
-			Message(_("Both connections already in netlist - cannot merge nets\n"));
+			Message(PCB_MSG_DEFAULT, _("Both connections already in netlist - cannot merge nets\n"));
 			return (NULL);
 		}
 		entry = GetLibraryEntryMemory(menu);

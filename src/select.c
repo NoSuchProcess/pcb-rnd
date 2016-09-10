@@ -783,7 +783,7 @@ bool SelectObjectByName(int Type, char *Pattern, bool Flag, search_method_t meth
 		/* compile the regular expression */
 		regex = re_sei_comp(Pattern);
 		if (re_sei_errno(regex) != 0) {
-			Message(_("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
+			Message(PCB_MSG_DEFAULT, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 			re_sei_free(regex);
 			return (false);
 		}

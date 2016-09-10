@@ -680,7 +680,7 @@ void HideCrosshair(void)
 {
 	static bool warned_old_api = false;
 	if (!warned_old_api) {
-		Message(_("WARNING: A plugin is using the deprecated API HideCrosshair().\n"
+		Message(PCB_MSG_DEFAULT, _("WARNING: A plugin is using the deprecated API HideCrosshair().\n"
 							"         This API may be removed in a future release of PCB.\n"));
 		warned_old_api = true;
 	}
@@ -693,7 +693,7 @@ void RestoreCrosshair(void)
 {
 	static bool warned_old_api = false;
 	if (!warned_old_api) {
-		Message(_("WARNING: A plugin is using the deprecated API RestoreCrosshair().\n"
+		Message(PCB_MSG_DEFAULT, _("WARNING: A plugin is using the deprecated API RestoreCrosshair().\n"
 							"         This API may be removed in a future release of PCB.\n"));
 		warned_old_api = true;
 	}

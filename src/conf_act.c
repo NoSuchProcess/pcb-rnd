@@ -53,20 +53,20 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 		int res;
 
 		if (argc < 3) {
-			Message("conf(set) needs at least two arguments");
+			Message(PCB_MSG_DEFAULT, "conf(set) needs at least two arguments");
 			return 1;
 		}
 		if (argc > 3) {
 			role = conf_role_parse(argv[3]);
 			if (role == CFR_invalid) {
-				Message("Invalid role: '%s'", argv[3]);
+				Message(PCB_MSG_DEFAULT, "Invalid role: '%s'", argv[3]);
 				return 1;
 			}
 		}
 		if (argc > 4) {
 			pol = conf_policy_parse(argv[4]);
 			if (pol == POL_invalid) {
-				Message("Invalid policy: '%s'", argv[4]);
+				Message(PCB_MSG_DEFAULT, "Invalid policy: '%s'", argv[4]);
 				return 1;
 			}
 		}
@@ -77,7 +77,7 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 		if (role == CFR_invalid) {
 			conf_native_t *n = conf_get_field(argv[1]);
 			if (n == NULL) {
-				Message("Invalid conf field '%s': no such path\n", argv[1]);
+				Message(PCB_MSG_DEFAULT, "Invalid conf field '%s': no such path\n", argv[1]);
 				return 1;
 			}
 			res = conf_set_native(n, 0, val);
@@ -85,7 +85,7 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 		else
 			res = conf_set(role, path, -1, val, pol);
 		if (res != 0) {
-			Message("conf(set) failed.\n");
+			Message(PCB_MSG_DEFAULT, "conf(set) failed.\n");
 			return 1;
 		}
 	}
@@ -97,21 +97,21 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 		int res;
 
 		if (n == NULL) {
-			Message("Invalid conf field '%s': no such path\n", argv[1]);
+			Message(PCB_MSG_DEFAULT, "Invalid conf field '%s': no such path\n", argv[1]);
 			return 1;
 		}
 		if (n->type != CFN_BOOLEAN) {
-			Message("Can not toggle '%s': not a boolean\n", argv[1]);
+			Message(PCB_MSG_DEFAULT, "Can not toggle '%s': not a boolean\n", argv[1]);
 			return 1;
 		}
 		if (n->used != 1) {
-			Message("Can not toggle '%s': array size should be 1, not %d\n", argv[1], n->used);
+			Message(PCB_MSG_DEFAULT, "Can not toggle '%s': array size should be 1, not %d\n", argv[1], n->used);
 			return 1;
 		}
 		if (argc > 2) {
 			role = conf_role_parse(argv[2]);
 			if (role == CFR_invalid) {
-				Message("Invalid role: '%s'", argv[2]);
+				Message(PCB_MSG_DEFAULT, "Invalid role: '%s'", argv[2]);
 				return 1;
 			}
 		}
@@ -125,7 +125,7 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 			res = conf_set(role, argv[1], -1, new_value, POL_OVERWRITE);
 		
 		if (res != 0) {
-			Message("Can not toggle '%s': failed to set new value\n", argv[1]);
+			Message(PCB_MSG_DEFAULT, "Can not toggle '%s': failed to set new value\n", argv[1]);
 			return 1;
 		}
 		conf_update(argv[1]);
@@ -135,7 +135,7 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 		conf_role_t role;
 		role = conf_role_parse(argv[1]);
 		if (role == CFR_invalid) {
-			Message("Invalid role: '%s'", argv[1]);
+			Message(PCB_MSG_DEFAULT, "Invalid role: '%s'", argv[1]);
 			return 1;
 		}
 		conf_reset(role, "<action>");
@@ -143,7 +143,7 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 	}
 
 	else {
-		Message("Invalid conf command '%s'\n", argv[0]);
+		Message(PCB_MSG_DEFAULT, "Invalid conf command '%s'\n", argv[0]);
 		return 1;
 	}
 	return 0;
@@ -191,7 +191,7 @@ static int ActionChkMode(int argc, char **argv, Coord x, Coord y)
 		if (strcmp(m->name, argv[0]) == 0)
 			return conf_core.editor.mode == m->mode;
 	}
-	Message("Unknown mode in ChkMode(): %s\n", argv[1]);
+	Message(PCB_MSG_DEFAULT, "Unknown mode in ChkMode(): %s\n", argv[1]);
 	abort();
 	return -1;
 }

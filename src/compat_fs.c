@@ -101,7 +101,7 @@ int pcb_spawnvp(char **argv)
 	pid = fork();
 	if (pid < 0) {
 		/* error */
-		Message(_("Cannot fork!"));
+		Message(PCB_MSG_DEFAULT, _("Cannot fork!"));
 		return 1;
 	}
 	else if (pid == 0) {

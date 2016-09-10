@@ -387,7 +387,7 @@ int main(int argc, char *argv[])
 		case DO_GUI:
 			gui = hid_find_gui(argv[2]);
 			if (gui == NULL) {
-				Message("Can't find the gui requested.\n");
+				Message(PCB_MSG_DEFAULT, "Can't find the gui requested.\n");
 				exit(1);
 			}
 			break;
@@ -405,7 +405,7 @@ int main(int argc, char *argv[])
 
 			/* try anything */
 			if (gui == NULL) {
-				Message("Warning: can't find any of the preferred GUIs, falling back to anything available...\n");
+				Message(PCB_MSG_DEFAULT, "Warning: can't find any of the preferred GUIs, falling back to anything available...\n");
 				gui = hid_find_gui(NULL);
 			}
 		}
@@ -434,7 +434,7 @@ int main(int argc, char *argv[])
 	PCB = CreateNewPCB();
 
 	if (PCB == NULL) {
-		Message("Can't load the default pcb for creating an empty layout\n");
+		Message(PCB_MSG_DEFAULT, "Can't load the default pcb for creating an empty layout\n");
 		exit(1);
 	}
 
@@ -470,11 +470,11 @@ int main(int argc, char *argv[])
 		hid_action("LibraryChanged");
 
 	if (conf_core.rc.script_filename) {
-		Message(_("Executing startup script file %s\n"), conf_core.rc.script_filename);
+		Message(PCB_MSG_DEFAULT, _("Executing startup script file %s\n"), conf_core.rc.script_filename);
 		hid_actionl("ExecuteFile", conf_core.rc.script_filename, NULL);
 	}
 	if (conf_core.rc.action_string) {
-		Message(_("Executing startup action %s\n"), conf_core.rc.action_string);
+		Message(PCB_MSG_DEFAULT, _("Executing startup action %s\n"), conf_core.rc.action_string);
 		hid_parse_actions(conf_core.rc.action_string);
 	}
 

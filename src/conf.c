@@ -95,7 +95,7 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		resolve_path(fn, &efn, 0);
 		f = fopen(efn, "r");
 		if (f != NULL) { /* warn only if the file is there - missing file is normal */
-			Message("error: failed to load lht config: %s\n", efn);
+			Message(PCB_MSG_DEFAULT, "error: failed to load lht config: %s\n", efn);
 			fclose(f);
 		}
 		free(efn);
@@ -1001,7 +1001,7 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 	}
 
 	if (idx >= nat->array_size) {
-		Message("Error: can't conf_set() %s[%d]: %d is beyond the end of the array (%d)\n", path, idx, idx, nat->array_size);
+		Message(PCB_MSG_DEFAULT, "Error: can't conf_set() %s[%d]: %d is beyond the end of the array (%d)\n", path, idx, idx, nat->array_size);
 		free(path);
 		return -1;
 	}
@@ -1024,7 +1024,7 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 		nn = lht_tree_path_(conf_root[target], cwd, last, 1, 0, NULL);
 		if (nn == NULL) {
 			if (conf_root_lock[target]) {
-				Message("WARNING: can't set config item %s because target in-memory lihata does not have the node and is tree-locked\n", path_);
+				Message(PCB_MSG_DEFAULT, "WARNING: can't set config item %s because target in-memory lihata does not have the node and is tree-locked\n", path_);
 				free(path);
 				return -1;
 			}
@@ -1397,7 +1397,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 			case CFR_PROJECT:
 				fn = get_project_conf_name(project_fn, pcb_fn, &try);
 				if (fn == NULL) {
-					Message("Error: can not save config to project file: %s does not exist - please create an empty file there first\n", try);
+					Message(PCB_MSG_DEFAULT, "Error: can not save config to project file: %s does not exist - please create an empty file there first\n", try);
 					return -1;
 				}
 				break;
@@ -1418,11 +1418,11 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 			if (end != NULL) {
 				*end = '\0';
 				if (pcb_mkdir(path, 0755) == 0) {
-					Message("Created directory %s for saving %s\n", path, fn);
+					Message(PCB_MSG_DEFAULT, "Created directory %s for saving %s\n", path, fn);
 					f = fopen(efn, "w");
 				}
 				else
-					Message("Error: failed to creat directory %s for saving %s\n", path, efn);
+					Message(PCB_MSG_DEFAULT, "Error: failed to creat directory %s for saving %s\n", path, efn);
 			}
 			free(path);
 		}
@@ -1435,7 +1435,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 			fclose(f);
 		}
 		else
-			Message("Error: can't save config to %s - can't open the file for write\n", fn);
+			Message(PCB_MSG_DEFAULT, "Error: can't save config to %s - can't open the file for write\n", fn);
 	}
 
 	free(efn);

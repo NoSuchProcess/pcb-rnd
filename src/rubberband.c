@@ -250,7 +250,7 @@ static r_dir_t rat_callback(const BoxType * box, void *cl)
 			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point2);
 		break;
 	default:
-		Message("hace: bad rubber-rat lookup callback\n");
+		Message(PCB_MSG_DEFAULT, "hace: bad rubber-rat lookup callback\n");
 	}
 	return R_DIR_NOT_FOUND;
 }

@@ -183,7 +183,7 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
 
 #ifdef DEBUG_ID
 	if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, ID, Kind) == PCB_TYPE_NONE)
-		Message("hace: ID (%d) and Type (%x) mismatch in AddObject...\n", ID, Kind);
+		Message(PCB_MSG_DEFAULT, "hace: ID (%d) and Type (%x) mismatch in AddObject...\n", ID, Kind);
 #endif
 
 	/* allocate memory */
@@ -199,7 +199,7 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
 		if (size > limit) {
 			size_t l2;
 			l2 = (size / limit + 1) * limit;
-			Message(_("Size of 'undo-list' exceeds %li kb\n"), (long) (l2 >> 10));
+			Message(PCB_MSG_DEFAULT, _("Size of 'undo-list' exceeds %li kb\n"), (long) (l2 >> 10));
 		}
 	}
 
@@ -502,8 +502,8 @@ static bool UndoFlag(UndoListTypePtr Entry)
 			DrawObject(type, ptr1, ptr2);
 		return (true);
 	}
-	Message("hace Internal error: Can't find ID %d type %08x\n", Entry->ID, Entry->Kind);
-	Message("for UndoFlag Operation. Previous flags: %s\n", flags_to_string(Entry->Data.Flags, 0));
+	Message(PCB_MSG_DEFAULT, "hace Internal error: Can't find ID %d type %08x\n", Entry->ID, Entry->Kind);
+	Message(PCB_MSG_DEFAULT, "for UndoFlag Operation. Previous flags: %s\n", flags_to_string(Entry->Data.Flags, 0));
 	return (false);
 }
 
@@ -527,7 +527,7 @@ static bool UndoMirror(UndoListTypePtr Entry)
 			DrawElement(element);
 		return (true);
 	}
-	Message("hace Internal error: UndoMirror on object type %d\n", type);
+	Message(PCB_MSG_DEFAULT, "hace Internal error: UndoMirror on object type %d\n", type);
 	return (false);
 }
 
@@ -855,12 +855,12 @@ int Undo(bool draw)
 	andDraw = draw;
 
 	if (Serial == 0) {
-		Message(_("ERROR: Attempt to Undo() with Serial == 0\n" "       Please save your work and report this bug.\n"));
+		Message(PCB_MSG_DEFAULT, _("ERROR: Attempt to Undo() with Serial == 0\n" "       Please save your work and report this bug.\n"));
 		return 0;
 	}
 
 	if (UndoN == 0) {
-		Message(_("Nothing to undo - buffer is empty\n"));
+		Message(PCB_MSG_DEFAULT, _("Nothing to undo - buffer is empty\n"));
 		return 0;
 	}
 
@@ -869,7 +869,7 @@ int Undo(bool draw)
 	ptr = &UndoList[UndoN - 1];
 
 	if (ptr->Serial > Serial) {
-		Message(_("ERROR: Bad undo serial number %d in undo stack - expecting %d or lower\n"
+		Message(PCB_MSG_DEFAULT, _("ERROR: Bad undo serial number %d in undo stack - expecting %d or lower\n"
 							"       Please save your work and report this bug.\n"), ptr->Serial, Serial);
 
 	/* It is likely that the serial number got corrupted through some bad
@@ -896,7 +896,7 @@ int Undo(bool draw)
 	UnlockUndo();
 
 	if (error_undoing)
-		Message(_("ERROR: Failed to undo some operations\n"));
+		Message(PCB_MSG_DEFAULT, _("ERROR: Failed to undo some operations\n"));
 
 	if (Types && andDraw)
 		Draw();
@@ -1032,14 +1032,14 @@ int Redo(bool draw)
 	andDraw = draw;
 
 	if (RedoN == 0) {
-		Message(_("Nothing to redo. Perhaps changes have been made since last undo\n"));
+		Message(PCB_MSG_DEFAULT, _("Nothing to redo. Perhaps changes have been made since last undo\n"));
 		return 0;
 	}
 
 	ptr = &UndoList[UndoN];
 
 	if (ptr->Serial < Serial) {
-		Message(_("ERROR: Bad undo serial number %d in redo stack - expecting %d or higher\n"
+		Message(PCB_MSG_DEFAULT, _("ERROR: Bad undo serial number %d in redo stack - expecting %d or higher\n"
 							"       Please save your work and report this bug.\n"), ptr->Serial, Serial);
 
 		/* It is likely that the serial number got corrupted through some bad
@@ -1069,7 +1069,7 @@ int Redo(bool draw)
 	UnlockUndo();
 
 	if (error_undoing)
-		Message(_("ERROR: Failed to redo some operations\n"));
+		Message(PCB_MSG_DEFAULT, _("ERROR: Failed to redo some operations\n"));
 
 	if (Types && andDraw)
 		Draw();
@@ -1083,7 +1083,7 @@ int Redo(bool draw)
 void RestoreUndoSerialNumber(void)
 {
 	if (added_undo_between_increment_and_restore)
-		Message(_("ERROR: Operations were added to the Undo stack with an incorrect serial number\n"));
+		Message(PCB_MSG_DEFAULT, _("ERROR: Operations were added to the Undo stack with an incorrect serial number\n"));
 	between_increment_and_restore = false;
 	added_undo_between_increment_and_restore = false;
 	Serial = SavedSerial;

@@ -16,7 +16,7 @@ void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra
 			if (**in == '~') {
 				int l1, l2;
 				if (conf_core.rc.path.home == NULL) {
-					Message("can't resolve home dir required for path %s\n", *in);
+					Message(PCB_MSG_DEFAULT, "can't resolve home dir required for path %s\n", *in);
 					exit(1);
 				}
 				subst_to = conf_core.rc.path.home;
@@ -57,7 +57,7 @@ void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra
 							}
 						}
 					}
-					Message("can't resolve conf-hash dir required for path %s\n", *in);
+					Message(PCB_MSG_DEFAULT, "can't resolve conf-hash dir required for path %s\n", *in);
 					*out = NULL;
 				}
 				else

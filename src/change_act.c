@@ -189,7 +189,7 @@ static void ChangeFlag(char *what, char *flag_name, int value, char *cmd_name)
 		set_selected = value ? ClrSelectedJoin : SetSelectedJoin;
 	}
 	else {
-		Message(_("%s():  Flag \"%s\" is not valid\n"), cmd_name, flag_name);
+		Message(PCB_MSG_DEFAULT, _("%s():  Flag \"%s\" is not valid\n"), cmd_name, flag_name);
 		return;
 	}
 
@@ -201,7 +201,7 @@ static void ChangeFlag(char *what, char *flag_name, int value, char *cmd_name)
 
 			if ((type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 				if (TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2))
-					Message(_("Sorry, the object is locked\n"));
+					Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			if (set_object(type, ptr1, ptr2, ptr3))
 				SetChangedFlag(true);
 			break;
@@ -413,7 +413,7 @@ static int ActionChangeSize(int argc, char **argv, Coord x, Coord y)
 			{
 				if (type != PCB_TYPE_NONE)
 					if (TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2))
-						Message(_("Sorry, the object is locked\n"));
+						Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 				if (tostyle) {
 					if (ChangeObject1stSize(type, ptr1, ptr2, ptr3, value, absolute))
 						SetChangedFlag(true);

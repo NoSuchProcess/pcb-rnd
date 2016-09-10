@@ -41,21 +41,21 @@ int hid_get_flag(const char *name)
 			int len;
 			len = cp - name;
 			if (len > sizeof(buff)-1) {
-				Message("hid_get_flag: action name too long: %s()\n", name);
+				Message(PCB_MSG_DEFAULT, "hid_get_flag: action name too long: %s()\n", name);
 				return -1;
 			}
 			memcpy(buff, name, len);
 			buff[len] = '\0';
 			a = hid_find_action(buff);
 			if (!a) {
-				Message("hid_get_flag: no action %s\n", name);
+				Message(PCB_MSG_DEFAULT, "hid_get_flag: no action %s\n", name);
 				return -1;
 			}
 			cp++;
 			len = strlen(cp);
 			end = strchr(cp, ')');
 			if ((len > sizeof(buff)-1) || (end == NULL)) {
-				Message("hid_get_flag: action arg too long or unterminated: %s\n", name);
+				Message(PCB_MSG_DEFAULT, "hid_get_flag: action arg too long or unterminated: %s\n", name);
 				return -1;
 			}
 			len = end - cp;

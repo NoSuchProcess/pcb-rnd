@@ -144,7 +144,7 @@ static int hid_cfg_load_error(lht_doc_t *doc, const char *filename, lht_err_t er
 	const char *fn;
 	int line, col;
 	lht_dom_loc_active(doc, &fn, &line, &col);
-	Message("Resource error: %s (%s:%d.%d)*\n", lht_err_str(err), filename, line+1, col+1);
+	Message(PCB_MSG_DEFAULT, "Resource error: %s (%s:%d.%d)*\n", lht_err_str(err), filename, line+1, col+1);
 	return 1;
 }
 
@@ -248,7 +248,7 @@ hid_cfg_t *hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallb
 				sprintf(end, "pcb-menu-%s.lht", fn);
 				doc = hid_cfg_load_lht(*p);
 				if (doc != NULL)
-					Message("Loaded menu file '%s'\n", *p);
+					Message(PCB_MSG_DEFAULT, "Loaded menu file '%s'\n", *p);
 			}
 			free(*p);
 		}

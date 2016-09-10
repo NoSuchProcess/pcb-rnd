@@ -63,9 +63,11 @@ extern char *sys_errlist[];			/* array of error messages */
 /* ---------------------------------------------------------------------------
  * output of message in a dialog window or log window
  */
-void Message(const char *Format, ...)
+void Message(enum pcb_message_level level, const char *Format, ...)
 {
 	va_list args;
+
+	// TODO(hzeller): do something useful with the level, e.g. color coding.
 
 	if (gui != NULL) {
 		va_start(args, Format);
@@ -97,7 +99,7 @@ void OpenErrorMessage(const char *Filename)
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, Filename);
-	Message(_("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), utf8, strerror(errno));
+	Message(PCB_MSG_DEFAULT, _("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
 }
 
@@ -109,7 +111,7 @@ void PopenErrorMessage(const char *Filename)
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, Filename);
-	Message(_("Can't execute command\n" "   '%s'\npopen() returned: '%s'\n"), utf8, strerror(errno));
+	Message(PCB_MSG_DEFAULT, _("Can't execute command\n" "   '%s'\npopen() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
 }
 
@@ -121,7 +123,7 @@ void OpendirErrorMessage(const char *DirName)
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, DirName);
-	Message(_("Can't scan directory\n" "   '%s'\nopendir() returned: '%s'\n"), utf8, strerror(errno));
+	Message(PCB_MSG_DEFAULT, _("Can't scan directory\n" "   '%s'\nopendir() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
 }
 
@@ -133,7 +135,7 @@ void ChdirErrorMessage(const char *DirName)
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, DirName);
-	Message(_("Can't change working directory to\n" "   '%s'\nchdir() returned: '%s'\n"), utf8, strerror(errno));
+	Message(PCB_MSG_DEFAULT, _("Can't change working directory to\n" "   '%s'\nchdir() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
 }
 

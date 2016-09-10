@@ -1298,7 +1298,7 @@ int SearchObjectByID(DataTypePtr Base, void **Result1, void **Result2, void **Re
 	}
 	END_LOOP;
 
-	Message("hace: Internal error, search for ID %d failed\n", ID);
+	Message(PCB_MSG_DEFAULT, "hace: Internal error, search for ID %d failed\n", ID);
 	return (PCB_TYPE_NONE);
 }
 

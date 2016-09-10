@@ -116,7 +116,7 @@ static int ActionAttributes(int argc, char **argv, Coord x, Coord y)
 		AFAIL(attributes);
 
 	if (!gui->edit_attributes) {
-		Message(_("This GUI doesn't support Attribute Editing\n"));
+		Message(PCB_MSG_DEFAULT, _("This GUI doesn't support Attribute Editing\n"));
 		return 1;
 	}
 
@@ -139,7 +139,7 @@ static int ActionAttributes(int argc, char **argv, Coord x, Coord y)
 						break;
 					}
 				if (layer == NULL) {
-					Message(_("No layer named %s\n"), layername);
+					Message(PCB_MSG_DEFAULT, _("No layer named %s\n"), layername);
 					return 1;
 				}
 			}
@@ -163,7 +163,7 @@ static int ActionAttributes(int argc, char **argv, Coord x, Coord y)
 			}
 			END_LOOP;
 			if (n_found > 1) {
-				Message(_("Too many elements selected\n"));
+				Message(PCB_MSG_DEFAULT, _("Too many elements selected\n"));
 				return 1;
 			}
 			if (n_found == 0) {
@@ -172,7 +172,7 @@ static int ActionAttributes(int argc, char **argv, Coord x, Coord y)
 				if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE)
 					e = (ElementTypePtr) ptrtmp;
 				else {
-					Message(_("No element found there\n"));
+					Message(PCB_MSG_DEFAULT, _("No element found there\n"));
 					return 1;
 				}
 			}
@@ -387,7 +387,7 @@ static int ActionMoveObject(int argc, char **argv, Coord x, Coord y)
 
 	type = SearchScreen(x, y, MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_TYPE_NONE) {
-		Message(_("Nothing found under crosshair\n"));
+		Message(PCB_MSG_DEFAULT, _("Nothing found under crosshair\n"));
 		return 1;
 	}
 	if (absolute1)
@@ -684,7 +684,7 @@ static int ActionElementSetAttr(int argc, char **argv, Coord x, Coord y)
 	END_LOOP;
 
 	if (!e) {
-		Message(_("Cannot change attribute of %s - element not found\n"), refdes);
+		Message(PCB_MSG_DEFAULT, _("Cannot change attribute of %s - element not found\n"), refdes);
 		return 1;
 	}
 

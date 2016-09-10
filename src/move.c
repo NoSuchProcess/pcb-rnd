@@ -426,7 +426,7 @@ static void *MoveArcToLayer(LayerType * Layer, ArcType * Arc)
 	ArcTypePtr newone;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc)) {
-		Message(_("Sorry, the object is locked\n"));
+		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
 	if (Dest == Layer && Layer->On) {
@@ -506,7 +506,7 @@ static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
 	void *ptr1, *ptr2, *ptr3;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line)) {
-		Message(_("Sorry, the object is locked\n"));
+		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
 	if (Dest == Layer && Layer->On) {
@@ -590,7 +590,7 @@ static void *MoveTextToLayerLowLevel(LayerType * Source, TextType * text, LayerT
 static void *MoveTextToLayer(LayerType * layer, TextType * text)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, text)) {
-		Message(_("Sorry, the object is locked\n"));
+		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
 	if (Dest != layer) {
@@ -653,7 +653,7 @@ static void *MovePolygonToLayer(LayerType * Layer, PolygonType * Polygon)
 	struct mptlc d;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Polygon)) {
-		Message(_("Sorry, the object is locked\n"));
+		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
 	if (((long int) Dest == -1) || (Layer == Dest))
@@ -832,11 +832,11 @@ int MoveLayer(int old_index, int new_index)
 	IncrementUndoSerialNumber();
 
 	if (old_index < -1 || old_index >= max_copper_layer) {
-		Message("Invalid old layer %d for move: must be -1..%d\n", old_index, max_copper_layer - 1);
+		Message(PCB_MSG_DEFAULT, "Invalid old layer %d for move: must be -1..%d\n", old_index, max_copper_layer - 1);
 		return 1;
 	}
 	if (new_index < -1 || new_index > max_copper_layer || new_index >= MAX_LAYER) {
-		Message("Invalid new layer %d for move: must be -1..%d\n", new_index, max_copper_layer);
+		Message(PCB_MSG_DEFAULT, "Invalid new layer %d for move: must be -1..%d\n", new_index, max_copper_layer);
 		return 1;
 	}
 	if (old_index == new_index)
@@ -862,7 +862,7 @@ int MoveLayer(int old_index, int new_index)
 	if (old_index == -1) {
 		LayerTypePtr lp;
 		if (max_copper_layer == MAX_LAYER) {
-			Message("No room for new layers\n");
+			Message(PCB_MSG_DEFAULT, "No room for new layers\n");
 			return 1;
 		}
 		/* Create a new layer at new_index. */
@@ -991,7 +991,7 @@ int MoveLayerAction(int argc, char **argv, Coord x, Coord y)
 	int new_top = -1;
 
 	if (argc != 2) {
-		Message("Usage; MoveLayer(old,new)");
+		Message(PCB_MSG_DEFAULT, "Usage; MoveLayer(old,new)");
 		return 1;
 	}
 

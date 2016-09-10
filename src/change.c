@@ -1159,7 +1159,7 @@ static void *ChangeElementName(ElementTypePtr Element)
 		return (NULL);
 	if (NAME_INDEX() == NAMEONPCB_INDEX) {
 		if (conf_core.editor.unique_names && UniqueElementName(PCB->Data, NewName) != NewName) {
-			Message(_("Error: The name \"%s\" is not unique!\n"), NewName);
+			Message(PCB_MSG_DEFAULT, _("Error: The name \"%s\" is not unique!\n"), NewName);
 			return ((char *) -1);
 		}
 	}

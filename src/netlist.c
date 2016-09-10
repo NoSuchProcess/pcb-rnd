@@ -213,7 +213,7 @@ static int netlist_swap()
 				int le, lp;
 
 				if (next > 2) {
-					Message("Exactly two pins should be selected for swap (more than 2 selected at the moment)\n");
+					Message(PCB_MSG_DEFAULT, "Exactly two pins should be selected for swap (more than 2 selected at the moment)\n");
 					goto quit;
 				}
 
@@ -229,7 +229,7 @@ static int netlist_swap()
 	END_LOOP;
 
 	if (next < 2) {
-		Message("Exactly two pins should be selected for swap (less than 2 selected at the moment)\n");
+		Message(PCB_MSG_DEFAULT, "Exactly two pins should be selected for swap (less than 2 selected at the moment)\n");
 		goto quit;
 	}
 
@@ -237,11 +237,11 @@ static int netlist_swap()
 	nets[0] = rats_patch_find_net4pin(PCB, pins[0]);
 	nets[1] = rats_patch_find_net4pin(PCB, pins[1]);
 	if ((nets[0] == NULL) || (nets[1] == NULL)) {
-		Message("That pin is not on a net.\n");
+		Message(PCB_MSG_DEFAULT, "That pin is not on a net.\n");
 		goto quit;
 	}
 	if (nets[0] == nets[1]) {
-		Message("Those two pins are on the same net, can't swap them.\n");
+		Message(PCB_MSG_DEFAULT, "Those two pins are on the same net, can't swap them.\n");
 		goto quit;
 	}
 
@@ -369,7 +369,7 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 	if (!PCB)
 		return 1;
 	if (argc == 0) {
-		Message(netlist_syntax);
+		Message(PCB_MSG_DEFAULT, netlist_syntax);
 		return 1;
 	}
 	if (strcasecmp(argv[0], "find") == 0)
@@ -418,7 +418,7 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 		return 0;
 	}
 	else {
-		Message(netlist_syntax);
+		Message(PCB_MSG_DEFAULT, netlist_syntax);
 		return 1;
 	}
 
@@ -432,7 +432,7 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 		if (use_re) {
 			regex = re_sei_comp(argv[1]);
 			if (re_sei_errno(regex) != 0) {
-				Message(_("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
+				Message(PCB_MSG_DEFAULT, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 				re_sei_free(regex);
 				return (1);
 			}

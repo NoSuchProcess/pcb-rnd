@@ -79,11 +79,11 @@ lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, hid_cfg_menufield_t fi
    just a wrapper around lht_tree_path_ */
 lht_node_t *hid_cfg_menu_field_path(const lht_node_t *parent, const char *path);
 
-/* Return a text field of a submenu; return NULL and generate a Message() if
+/* Return a text field of a submenu; return NULL and generate a Message(PCB_MSG_DEFAULT, ) if
    the given field is not text */
 const char *hid_cfg_menu_field_str(const lht_node_t *submenu, hid_cfg_menufield_t field);
 
-/* Return non-zero if submenu has further submenus; generate Message() if
+/* Return non-zero if submenu has further submenus; generate Message(PCB_MSG_DEFAULT, ) if
    there is a submenu field with the wrong lihata type */
 int hid_cfg_has_submenus(const lht_node_t *submenu);
 
@@ -110,7 +110,7 @@ do { \
 	char *__end__; \
 	__end__ = hid_cfg_error_shared + sprintf(hid_cfg_error_shared, "Error in lihata node %s:%d.%d:", node->file_name, node->line, node->col); \
 	__end__ += sprintf(__end__, __VA_ARGS__); \
-	Message(hid_cfg_error_shared); \
+	Message(PCB_MSG_DEFAULT, hid_cfg_error_shared); \
 } while(0)
 
 #endif

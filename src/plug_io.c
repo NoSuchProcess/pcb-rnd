@@ -103,7 +103,7 @@ static void plug_io_err(int res, const char *what, const char *filename)
 			if (filename == NULL)
 				filename = "";
 		}
-		Message("IO error during %s: %s %s %s\n", what, reason, filename, comment);
+		Message(PCB_MSG_DEFAULT, "IO error during %s: %s %s %s\n", what, reason, filename, comment);
 	}
 }
 
@@ -119,7 +119,7 @@ int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_set
 		int len;
 		len = find_io(available, sizeof(available)/sizeof(available[0]), PCB_IOT_PCB, 0, fmt);
 		if (len <= 0) {
-			Message("Error: can't find a IO_ plugin to load a PCB using format %s\n", fmt);
+			Message(PCB_MSG_DEFAULT, "Error: can't find a IO_ plugin to load a PCB using format %s\n", fmt);
 			return -1;
 		}
 		res = available[0].plug->parse_pcb(available[0].plug, Ptr, Filename, load_settings);
@@ -307,7 +307,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, bool revert, boo
 		/* enable default font if necessary */
 		if (!PCB->Font.Valid) {
 			if (require_font)
-				Message(_("File '%s' has no font information, using default font\n"), new_filename);
+				Message(PCB_MSG_DEFAULT, _("File '%s' has no font information, using default font\n"), new_filename);
 			PCB->Font.Valid = true;
 		}
 
@@ -354,7 +354,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, bool revert, boo
 		/* bozo: we are trying to revert back to a non-existing pcb... create one to avoid a segfault */
 		PCB = CreateNewPCB_(false);
 		if (PCB == NULL) {
-			Message("FATAL: can't create a new empty pcb!");
+			Message(PCB_MSG_DEFAULT, "FATAL: can't create a new empty pcb!");
 			exit(1);
 		}
 	}
@@ -600,7 +600,7 @@ void SaveInTMP(void)
 	/* memory might have been released before this function is called */
 	if (PCB && PCB->Changed) {
 		sprintf(filename, conf_core.rc.emergency_name, pcb_getpid());
-		Message(_("Trying to save your layout in '%s'\n"), filename);
+		Message(PCB_MSG_DEFAULT, _("Trying to save your layout in '%s'\n"), filename);
 		WritePCBFile(filename, DEFAULT_FMT);
 	}
 }
@@ -782,7 +782,7 @@ int WritePipe(char *Filename, bool thePcb, const char *fmt)
 	if (EMPTY_STRING_P(conf_core.rc.save_command)) {
 		fp = fopen(Filename, "w");
 		if (fp == 0) {
-			Message("Unable to write to file %s\n", Filename);
+			Message(PCB_MSG_DEFAULT, "Unable to write to file %s\n", Filename);
 			return STATUS_ERROR;
 		}
 	}

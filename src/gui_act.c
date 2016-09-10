@@ -869,8 +869,8 @@ static int ActionMessage(int argc, char **argv, Coord x, Coord y)
 		AFAIL(message);
 
 	for (i = 0; i < argc; i++) {
-		Message(argv[i]);
-		Message("\n");
+		Message(PCB_MSG_DEFAULT, argv[i]);
+		Message(PCB_MSG_DEFAULT, "\n");
 	}
 
 	return 0;
@@ -1025,7 +1025,7 @@ static int ActionRouteStyle(int argc, char **argv, Coord x, Coord y)
 			hid_action("RouteStylesChanged");
 		}
 		else
-			Message("Error: invalid route style name or index\n");
+			Message(PCB_MSG_DEFAULT, "Error: invalid route style name or index\n");
 	}
 	return 0;
 }
@@ -1042,7 +1042,7 @@ static const char createmenu_help[] = "Creates a new menu, popup (only path spec
 static int ActionCreateMenu(int argc, char **argv, Coord x, Coord y)
 {
 	if (gui == NULL) {
-		Message("Error: can't create menu, there's no GUI hid loaded\n");
+		Message(PCB_MSG_DEFAULT, "Error: can't create menu, there's no GUI hid loaded\n");
 		return 1;
 	}
 
@@ -1152,7 +1152,7 @@ static int ActionSwitchHID(int argc, char **argv, Coord x, Coord y)
 	int chg;
 
 	if (ng == NULL) {
-		Message("No such HID.");
+		Message(PCB_MSG_DEFAULT, "No such HID.");
 		return 1;
 	}
 

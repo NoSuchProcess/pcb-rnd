@@ -1617,7 +1617,7 @@ void EraseObject(int type, void *lptr, void *ptr)
 		EraseArc((ArcTypePtr) ptr);
 		break;
 	default:
-		Message("hace: Internal ERROR, trying to erase an unknown type\n");
+		Message(PCB_MSG_DEFAULT, "hace: Internal ERROR, trying to erase an unknown type\n");
 	}
 }
 

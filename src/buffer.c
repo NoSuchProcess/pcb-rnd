@@ -118,7 +118,7 @@ static void *AddRatToBuffer(RatTypePtr Rat)
 }
 
 /* ---------------------------------------------------------------------------
- * copies a line to buffer  
+ * copies a line to buffer
  */
 static void *AddLineToBuffer(LayerTypePtr Layer, LineTypePtr Line)
 {
@@ -134,7 +134,7 @@ static void *AddLineToBuffer(LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /* ---------------------------------------------------------------------------
- * copies an arc to buffer  
+ * copies an arc to buffer
  */
 static void *AddArcToBuffer(LayerTypePtr Layer, ArcTypePtr Arc)
 {
@@ -248,7 +248,7 @@ static void *MoveRatToBuffer(RatType * rat)
 }
 
 /* ---------------------------------------------------------------------------
- * moves a line to buffer  
+ * moves a line to buffer
  */
 static void *MoveLineToBuffer(LayerType * layer, LineType * line)
 {
@@ -270,7 +270,7 @@ static void *MoveLineToBuffer(LayerType * layer, LineType * line)
 }
 
 /* ---------------------------------------------------------------------------
- * moves an arc to buffer  
+ * moves an arc to buffer
  */
 static void *MoveArcToBuffer(LayerType * layer, ArcType * arc)
 {
@@ -497,11 +497,11 @@ int LoadFootprint(int argc, char **argv, Coord x, Coord y)
 		return 1;
 
 	if (elementlist_length(&PASTEBUFFER->Data->Element) == 0) {
-		Message("Footprint %s contains no elements", name);
+		Message(PCB_MSG_DEFAULT, "Footprint %s contains no elements", name);
 		return 1;
 	}
 	if (elementlist_length(&PASTEBUFFER->Data->Element) > 1) {
-		Message("Footprint %s contains multiple elements", name);
+		Message(PCB_MSG_DEFAULT, "Footprint %s contains multiple elements", name);
 		return 1;
 	}
 
@@ -533,7 +533,7 @@ bool SmashBufferElement(BufferTypePtr Buffer)
 	LayerTypePtr clayer, slayer;
 
 	if (elementlist_length(&Buffer->Data->Element) != 1) {
-		Message(_("Error!  Buffer doesn't contain a single element\n"));
+		Message(PCB_MSG_DEFAULT, _("Error!  Buffer doesn't contain a single element\n"));
 		return (false);
 	}
 	/*
@@ -682,7 +682,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 	    { \
 	      warned = true; \
 	      Message \
-		(_("Warning: All of the pads are on the opposite\n" \
+					(PCB_MSG_WARNING, _("Warning: All of the pads are on the opposite\n" \
 		   "side from the component - that's probably not what\n" \
 		   "you wanted\n")); \
 	    } \
@@ -750,11 +750,11 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 	END_LOOP;
 	if (!hasParts) {
 		DestroyObject(PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
-		Message(_("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
+		Message(PCB_MSG_DEFAULT, _("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
 		return (false);
 	}
 	if (crooked)
-		Message(_("There were polygons that can't be made into pins!\n" "So they were not included in the element\n"));
+		Message(PCB_MSG_DEFAULT, _("There were polygons that can't be made into pins!\n" "So they were not included in the element\n"));
 	Element->MarkX = Buffer->X;
 	Element->MarkY = Buffer->Y;
 	if (SWAP_IDENT)
@@ -991,7 +991,7 @@ static const char freerotatebuffer_help[] =
 	"angle is given in degrees.  If no angle is given, the user is prompted\n" "for one.\n";
 
 /* %start-doc actions FreeRotateBuffer
-   
+
 Rotates the contents of the pastebuffer by an arbitrary angle.  If no
 angle is given, the user is prompted for one.
 
@@ -1047,13 +1047,13 @@ void MirrorBuffer(BufferTypePtr Buffer)
 	int i;
 
 	if (elementlist_length(&Buffer->Data->Element)) {
-		Message(_("You can't mirror a buffer that has elements!\n"));
+		Message(PCB_MSG_DEFAULT, _("You can't mirror a buffer that has elements!\n"));
 		return;
 	}
 	for (i = 0; i < max_copper_layer + 2; i++) {
 		LayerTypePtr layer = Buffer->Data->Layer + i;
 		if (textlist_length(&layer->Text)) {
-			Message(_("You can't mirror a buffer that has text!\n"));
+			Message(PCB_MSG_DEFAULT, _("You can't mirror a buffer that has text!\n"));
 			return;
 		}
 	}
@@ -1350,7 +1350,7 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 
 		case F_Save:
 			if (elementlist_length(&PASTEBUFFER->Data->Element) == 0) {
-				Message(_("Buffer has no elements!\n"));
+				Message(PCB_MSG_DEFAULT, _("Buffer has no elements!\n"));
 				break;
 			}
 			free_name = 0;

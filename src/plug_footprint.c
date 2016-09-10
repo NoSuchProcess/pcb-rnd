@@ -357,7 +357,7 @@ static int fp_read_lib_all_(const char *searchpath)
 		if (res >= 0)
 			n_footprints += res;
 		else
-			Message("Warning: footprint library list error on %s\n", toppath);
+			Message(PCB_MSG_DEFAULT, "Warning: footprint library list error on %s\n", toppath);
 	}
 
 #ifdef DEBUG

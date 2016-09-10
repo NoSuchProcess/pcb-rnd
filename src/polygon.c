@@ -727,7 +727,7 @@ static int Subtract(POLYAREA * np1, PolygonType * p, bool fnp)
 	p->Clipped = biggest(merged);
 	assert(!p->Clipped || poly_Valid(p->Clipped));
 	if (!p->Clipped)
-		Message("Polygon cleared out of existence near (%d, %d)\n",
+		Message(PCB_MSG_DEFAULT, "Polygon cleared out of existence near (%d, %d)\n",
 						(p->BoundingBox.X1 + p->BoundingBox.X2) / 2, (p->BoundingBox.Y1 + p->BoundingBox.Y2) / 2);
 	return 1;
 }
@@ -1316,7 +1316,7 @@ void ClosePolygon(void)
 			dx = coord_abs(Crosshair.AttachedPolygon.Points[n - 1].X - Crosshair.AttachedPolygon.Points[0].X);
 			dy = coord_abs(Crosshair.AttachedPolygon.Points[n - 1].Y - Crosshair.AttachedPolygon.Points[0].Y);
 			if (!(dx == 0 || dy == 0 || dx == dy)) {
-				Message(_("Cannot close polygon because 45 degree lines are requested.\n"));
+				Message(PCB_MSG_DEFAULT, _("Cannot close polygon because 45 degree lines are requested.\n"));
 				return;
 			}
 		}
@@ -1324,7 +1324,7 @@ void ClosePolygon(void)
 		Draw();
 	}
 	else
-		Message(_("A polygon has to have at least 3 points\n"));
+		Message(PCB_MSG_DEFAULT, _("A polygon has to have at least 3 points\n"));
 }
 
 /* ---------------------------------------------------------------------------

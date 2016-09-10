@@ -220,7 +220,7 @@ CreateNewVia(DataTypePtr Data,
 		VIA_LOOP(Data);
 		{
 			if (Distance(X, Y, via->X, via->Y) <= via->DrillingHole / 2 + DrillingHole / 2) {
-				Message(_("%m+Dropping via at %$mD because it's hole would overlap with the via "
+				Message(PCB_MSG_DEFAULT, _("%m+Dropping via at %$mD because it's hole would overlap with the via "
 									"at %$mD\n"), conf_core.editor.grid_unit->allow, X, Y, via->X, via->Y);
 				return (NULL);					/* don't allow via stacking */
 			}
@@ -240,7 +240,7 @@ CreateNewVia(DataTypePtr Data,
 	Via->Mask = Mask;
 	Via->DrillingHole = stub_vendorDrillMap(DrillingHole);
 	if (Via->DrillingHole != DrillingHole) {
-		Message(_("%m+Mapped via drill hole to %$mS from %$mS per vendor table\n"),
+		Message(PCB_MSG_DEFAULT, _("%m+Mapped via drill hole to %$mS from %$mS per vendor table\n"),
 						conf_core.editor.grid_unit->allow, Via->DrillingHole, DrillingHole);
 	}
 
@@ -256,7 +256,7 @@ CreateNewVia(DataTypePtr Data,
 	 */
 	if (!TEST_FLAG(PCB_FLAG_HOLE, Via) && (Via->Thickness < Via->DrillingHole + MIN_PINORVIACOPPER)) {
 		Via->Thickness = Via->DrillingHole + MIN_PINORVIACOPPER;
-		Message(_("%m+Increased via thickness to %$mS to allow enough copper"
+		Message(PCB_MSG_DEFAULT, _("%m+Increased via thickness to %$mS to allow enough copper"
 							" at %$mD.\n"), conf_core.editor.grid_unit->allow, Via->Thickness, Via->X, Via->Y);
 	}
 
@@ -738,18 +738,18 @@ CreateNewPin(ElementTypePtr Element,
 	/* Unless we should not map drills on this element, map them! */
 	if (stub_vendorIsElementMappable(Element)) {
 		if (pin->DrillingHole < MIN_PINORVIASIZE) {
-			Message(_("%m+Did not map pin #%s (%s) drill hole because %$mS is below the minimum allowed size\n"),
+			Message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is below the minimum allowed size\n"),
 							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
 		else if (pin->DrillingHole > MAX_PINORVIASIZE) {
-			Message(_("%m+Did not map pin #%s (%s) drill hole because %$mS is above the maximum allowed size\n"),
+			Message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is above the maximum allowed size\n"),
 							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
 		else if (!TEST_FLAG(PCB_FLAG_HOLE, pin)
 						 && (pin->DrillingHole > pin->Thickness - MIN_PINORVIACOPPER)) {
-			Message(_("%m+Did not map pin #%s (%s) drill hole because %$mS does not leave enough copper\n"),
+			Message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS does not leave enough copper\n"),
 							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
@@ -759,7 +759,7 @@ CreateNewPin(ElementTypePtr Element,
 	}
 
 	if (pin->DrillingHole != DrillingHole) {
-		Message(_("%m+Mapped pin drill hole to %$mS from %$mS per vendor table\n"),
+		Message(PCB_MSG_DEFAULT, _("%m+Mapped pin drill hole to %$mS from %$mS per vendor table\n"),
 						conf_core.editor.grid_unit->allow, pin->DrillingHole, DrillingHole);
 	}
 
@@ -861,7 +861,7 @@ void CreateDefaultFont(PCBTypePtr pcb)
 		const char *s;
 		gds_t buff;
 		s = conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
-		Message(_("Can't find font-symbol-file '%s'\n"), s);
+		Message(PCB_MSG_DEFAULT, _("Can't find font-symbol-file '%s'\n"), s);
 		gds_uninit(&buff);
 	}
 }

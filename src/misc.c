@@ -782,7 +782,7 @@ BoxTypePtr GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	case PCB_TYPE_LINE_POINT:
 		return (BoxType *) Ptr3;
 	default:
-		Message("Request for bounding box of unsupported type %d\n", Type);
+		Message(PCB_MSG_DEFAULT, "Request for bounding box of unsupported type %d\n", Type);
 		return (BoxType *) Ptr2;
 	}
 }
