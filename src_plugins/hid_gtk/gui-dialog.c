@@ -389,13 +389,13 @@ gchar *ghid_dialog_file_select_save(gchar * title, gchar ** path, gchar * file, 
 /* how many files and directories to keep for the shortcuts */
 #define NHIST 8
 typedef struct ghid_file_history_struct {
-	/* 
+	/*
 	 * an identifier as to which recent files pool this is.  For example
 	 * "boards", "eco", "netlists", etc.
 	 */
 	char *id;
 
-	/* 
+	/*
 	 * the array of files or directories
 	 */
 	char *history[NHIST];
@@ -417,7 +417,7 @@ gchar *ghid_fileselect(const char *title, const char *descr,
 	int i;
 
 	if (history_tag && *history_tag) {
-		/* 
+		/*
 		 * I used a simple linear search here because the number of
 		 * entries in the array is likely to be quite small (5, maybe 10 at
 		 * the absolute most) and this function is used when pulling up
@@ -496,7 +496,7 @@ gchar *ghid_fileselect(const char *title, const char *descr,
 			char *tmps, *tmps2;
 			int k = 0;
 
-			/* 
+			/*
 			 * Put this at the top of the list and bump everything else
 			 * down but skip any old entry of this directory
 			 *
@@ -527,7 +527,7 @@ gchar *ghid_fileselect(const char *title, const char *descr,
 				tmps = tmps2;
 			}
 
-			/* 
+			/*
 			 * the last one has fallen off the end of the history list
 			 * so we need to free() it.
 			 */
