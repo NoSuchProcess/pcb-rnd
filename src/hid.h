@@ -407,7 +407,7 @@ struct hid_st {
 	 */
 
 	char *(*fileselect) (const char *title_, const char *descr_,
-											 char *default_file_, char *default_ext_, const char *history_tag_, int flags_);
+											 const char *default_file_, const char *default_ext_, const char *history_tag_, int flags_);
 
 	/* A generic dialog to ask for a set of attributes.  If n_attrs is
 	   zero, attrs(.name) must be NULL terminated.  Returns non-zero if

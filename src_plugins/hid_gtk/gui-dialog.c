@@ -407,7 +407,7 @@ static ghid_file_history *recent_dirs = NULL;
 /* ---------------------------------------------- */
 /* Caller must g_free() the returned filename. */
 gchar *ghid_fileselect(const char *title, const char *descr,
-											 char *default_file, char *default_ext, const char *history_tag, int flags)
+											 const char *default_file, const char *default_ext, const char *history_tag, int flags)
 {
 	GtkWidget *dialog;
 	gchar *result = NULL;

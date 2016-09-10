@@ -342,7 +342,7 @@ static char *nogui_prompt_for(const char *msg, const char *default_string)
 /* FIXME - this could use some enhancement to actually use the other
    args */
 static char *nogui_fileselect(const char *title, const char *descr,
-															char *default_file, char *default_ext, const char *history_tag, int flags)
+															const char *default_file, const char *default_ext, const char *history_tag, int flags)
 {
 	char *answer;
 
