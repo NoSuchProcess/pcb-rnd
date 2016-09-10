@@ -495,7 +495,7 @@ void FreeBoxListMemory(BoxListTypePtr Boxlist)
 }
 
 /* ---------------------------------------------------------------------------
- * frees memory used by a net 
+ * frees memory used by a net
  */
 void FreeNetListMemory(NetListTypePtr Netlist)
 {
@@ -527,7 +527,7 @@ void FreeNetListListMemory(NetListListTypePtr Netlistlist)
 }
 
 /* ---------------------------------------------------------------------------
- * frees memory used by a subnet 
+ * frees memory used by a subnet
  */
 void FreeNetMemory(NetTypePtr Net)
 {

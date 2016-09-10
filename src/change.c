@@ -415,7 +415,7 @@ static void *ChangeViaThermal(PinTypePtr Via)
 }
 
 /* ---------------------------------------------------------------------------
- * changes the thermal on a pin 
+ * changes the thermal on a pin
  * returns TRUE if changed
  */
 static void *ChangePinThermal(ElementTypePtr element, PinTypePtr Pin)
@@ -492,7 +492,7 @@ static void *ChangeVia2ndSize(PinTypePtr Via)
 }
 
 /* ---------------------------------------------------------------------------
- * changes the clearance size of a via 
+ * changes the clearance size of a via
  * returns TRUE if changed
  */
 static void *ChangeViaClearSize(PinTypePtr Via)
@@ -1595,7 +1595,7 @@ static void *ClrPinSquare(ElementTypePtr Element, PinTypePtr Pin)
 }
 
 /* ---------------------------------------------------------------------------
- * changes the octagon flag of a via 
+ * changes the octagon flag of a via
  */
 static void *ChangeViaOctagon(PinTypePtr Via)
 {
@@ -1613,7 +1613,7 @@ static void *ChangeViaOctagon(PinTypePtr Via)
 }
 
 /* ---------------------------------------------------------------------------
- * sets the octagon flag of a via 
+ * sets the octagon flag of a via
  */
 static void *SetViaOctagon(PinTypePtr Via)
 {
@@ -1624,7 +1624,7 @@ static void *SetViaOctagon(PinTypePtr Via)
 }
 
 /* ---------------------------------------------------------------------------
- * clears the octagon flag of a via 
+ * clears the octagon flag of a via
  */
 static void *ClrViaOctagon(PinTypePtr Via)
 {
@@ -1741,7 +1741,7 @@ static void *ChangePolyClear(LayerTypePtr Layer, PolygonTypePtr Polygon)
 }
 
 /* ----------------------------------------------------------------------
- * changes the side of all selected and visible elements 
+ * changes the side of all selected and visible elements
  * returns true if anything has changed
  */
 bool ChangeSelectedElementSide(void)
@@ -1782,7 +1782,7 @@ bool ChangeSelectedThermals(int types, int therm_style)
 }
 
 /* ----------------------------------------------------------------------
- * changes the size of all selected and visible object types 
+ * changes the size of all selected and visible object types
  * returns true if anything has changed
  */
 bool ChangeSelectedSize(int types, Coord Difference, bool fixIt)
@@ -2037,7 +2037,7 @@ bool ClrSelectedOctagon(int types)
 }
 
 /* ----------------------------------------------------------------------
- * changes the hole-flag of all selected and visible vias 
+ * changes the hole-flag of all selected and visible vias
  * returns true if anything has changed
  */
 bool ChangeSelectedHole(void)
