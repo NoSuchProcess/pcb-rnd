@@ -281,7 +281,7 @@ static void log_dismiss(Widget w, void *up, void *cbp)
 
 void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap)
 {
-	// TODO(hzeller): do something useful with level (color etc.)
+	/* TODO(hzeller): do something useful with level (color etc.) */
 	char *buf, *scan;
 	if (!mainwind) {
 		vprintf(fmt, ap);
