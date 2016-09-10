@@ -332,7 +332,7 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 		/*		//WriteAttributeList(FP, &element->Attributes, "\t");
 		 */
 
-		char * currentElementName = unm_name(&group1, element->Name[0].TextString, element);
+		const char * currentElementName = unm_name(&group1, element->Name[0].TextString, element);
 		fprintf(FP, "$MODULE %s\n", currentElementName);
 		fputs("Po 0 0 0 15 51534DFF 00000000 ~~\n",FP);
 		fprintf(FP, "Li %s\n", currentElementName);
