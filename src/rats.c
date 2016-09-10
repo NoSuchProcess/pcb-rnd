@@ -53,8 +53,8 @@
 /* ---------------------------------------------------------------------------
  * some forward declarations
  */
-static bool FindPad(char *, char *, ConnectionType *, bool);
-static bool ParseConnection(char *, char *, char *);
+static bool FindPad(const char *, const char *, ConnectionType *, bool);
+static bool ParseConnection(const char *, char *, char *);
 static bool DrawShortestRats(NetListTypePtr,
 														 void (*)(register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr));
 static bool GatherSubnets(NetListTypePtr, bool, bool);
@@ -74,7 +74,7 @@ static Cardinal SLayer, CLayer;	/* layer group holding solder/component side */
  * number of characters processed from the string, otherwise
  * it returns 0
  */
-static bool ParseConnection(char *InString, char *ElementName, char *PinNum)
+static bool ParseConnection(const char *InString, char *ElementName, char *PinNum)
 {
 	int i, j;
 
@@ -99,7 +99,7 @@ static bool ParseConnection(char *InString, char *ElementName, char *PinNum)
 /* ---------------------------------------------------------------------------
  * Find a particular pad from an element name and pin number
  */
-static bool FindPad(char *ElementName, char *PinNum, ConnectionType * conn, bool Same)
+static bool FindPad(const char *ElementName, const char *PinNum, ConnectionType * conn, bool Same)
 {
 	ElementTypePtr element;
 	gdl_iterator_t it;
