@@ -614,6 +614,12 @@ static void text_view_append(GtkWidget * view, gchar * s)
 		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, s + 3, -1, "heading", NULL);
 	else if (strncmp(s, "<c>", 3) == 0)
 		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, s + 3, -1, "center", NULL);
+	else if (strncmp(s, "<R>", 3) == 0)
+		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, s + 3, -1, "red", NULL);
+	else if (strncmp(s, "<G>", 3) == 0)
+		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, s + 3, -1, "green", NULL);
+	else if (strncmp(s, "<B>", 3) == 0)
+		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, s + 3, -1, "blue", NULL);
 	else if (strncmp(s, "<ul>", 4) == 0)
 		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, s + 4, -1, "underline", NULL);
 	else
@@ -694,6 +700,9 @@ GtkWidget *ghid_scrolled_text_view(GtkWidget * box, GtkWidget ** scr, GtkPolicyT
 	gtk_text_buffer_create_tag(buffer, "bold", "weight", PANGO_WEIGHT_BOLD, NULL);
 	gtk_text_buffer_create_tag(buffer, "center", "justification", GTK_JUSTIFY_CENTER, NULL);
 	gtk_text_buffer_create_tag(buffer, "underline", "underline", PANGO_UNDERLINE_SINGLE, NULL);
+	gtk_text_buffer_create_tag(buffer, "red", "foreground", "#aa0000", NULL);
+	gtk_text_buffer_create_tag(buffer, "green", "foreground", "#00aa00", NULL);
+	gtk_text_buffer_create_tag(buffer, "blue", "foreground", "#0000aa", NULL);
 
 	gtk_container_add(GTK_CONTAINER(scrolled), view);
 	if (scr)

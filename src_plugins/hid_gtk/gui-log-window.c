@@ -107,7 +107,10 @@ log_pending_t *log_pending_first = NULL, *log_pending_last = NULL;
 
 static void ghid_log_append_string_(enum pcb_message_level level, gchar *msg)
 {
+	const char *tag;
+	int popup;
 	/* TODO(hzeller): use level to color things using m->level. */
+/*	conf_loglevel_props(level, &tag, &popup);*/
 	ghid_text_view_append(log_text, msg);
 }
 
