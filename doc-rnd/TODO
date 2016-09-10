@@ -85,7 +85,7 @@ CLEANUP #5
 - check whether local copy of gts is needed, bisect when toporouter broke 
 - check gpmi when pcb-rnd is fully linstalled - broken symlinks?
 - multi-key: display state on the gui
-- Message() should have a first param that tells if it is an error, info, etc.; pop up window on error, red
+- implement loglevels and log style tags in the lesstif HID
 - TODO#3: works only on US keyboard
 - gsch2pcb: generalize plugin/buildin loading for external tools, check if gsch2pcb can work from plugins
 
