@@ -411,10 +411,10 @@ static int netlist_sort_offset = 0;
 
 static int netlist_sort(const void *va, const void *vb)
 {
-	LibraryMenuType *am = (LibraryMenuType *) va;
-	LibraryMenuType *bm = (LibraryMenuType *) vb;
-	char *a = am->Name;
-	char *b = bm->Name;
+	const LibraryMenuType *am = (const LibraryMenuType *) va;
+	const LibraryMenuType *bm = (const LibraryMenuType *) vb;
+	const char *a = am->Name;
+	const char *b = bm->Name;
 	if (*a == '~')
 		a++;
 	if (*b == '~')
@@ -424,10 +424,10 @@ static int netlist_sort(const void *va, const void *vb)
 
 static int netnode_sort(const void *va, const void *vb)
 {
-	LibraryEntryType *am = (LibraryEntryType *) va;
-	LibraryEntryType *bm = (LibraryEntryType *) vb;
-	char *a = am->ListEntry;
-	char *b = bm->ListEntry;
+	const LibraryEntryType *am = (const LibraryEntryType *) va;
+	const LibraryEntryType *bm = (const LibraryEntryType *) vb;
+	const char *a = am->ListEntry;
+	const char *b = bm->ListEntry;
 	return string_cmp(a, b);
 }
 
