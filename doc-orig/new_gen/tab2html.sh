@@ -11,6 +11,7 @@ BEGIN {
 /^[@]/ {
 # print header
 	print "<tr>"
+	sub("^@", "", $0)
 	for(n = 0; n < cols; n++)
 		print "<th>" $1 "<th>" $2
 
