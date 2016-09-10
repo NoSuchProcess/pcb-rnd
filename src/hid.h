@@ -67,7 +67,7 @@ typedef struct hid_gc_struct *hidGC;
 */
 typedef struct {
 	/* This is matched against action names in the GUI configuration */
-	char *name;
+	const char *name;
 	/* If this string is non-NULL, the action needs to know the X,Y
 	   coordinates to act on, and this string may be used to prompt
 	   the user to select a coordinate.  If NULL, the coordinates may
