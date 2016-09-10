@@ -2223,8 +2223,8 @@ yyreduce:
 
 					/* memory for name is already allocated */
 				if (Layer->Name != NULL)
-					free(Layer->Name);
-				Layer->Name = (yyvsp[-3].string);
+					free((char*)Layer->Name);
+				Layer->Name = (yyvsp[-3].string);   /* shouldn't this be strdup()'ed ? */
 				LayerFlag[(yyvsp[-4].integer)-1] = true;
 				if (yyData->LayerN + 2 < (yyvsp[-4].integer))
 				  yyData->LayerN = (yyvsp[-4].integer) - 2;

@@ -880,8 +880,8 @@ layer
 
 					/* memory for name is already allocated */
 				if (Layer->Name != NULL)
-					free(Layer->Name);
-				Layer->Name = $4;
+					free((char*)Layer->Name);
+				Layer->Name = $4;   /* shouldn't this be strdup()'ed ? */
 				LayerFlag[$3-1] = true;
 				if (yyData->LayerN + 2 < $3)
 				  yyData->LayerN = $3 - 2;
