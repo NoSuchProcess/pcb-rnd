@@ -99,14 +99,19 @@ void ghid_log_window_show(gboolean raise)
 typedef struct log_pending_s log_pending_t;
 struct log_pending_s {
 	log_pending_t *next;
+	enum pcb_message_level level;
 	char msg[1];
 };
 
 log_pending_t *log_pending_first = NULL, *log_pending_last = NULL;
 
+static void ghid_log_append_string_(enum pcb_message_level level, gchar *msg)
+{
+	/* TODO(hzeller): use level to color things using m->level. */
+	ghid_text_view_append(log_text, msg);
+}
 
-
-static void ghid_log_append_string(gchar * s)
+static void ghid_log_append_string(enum pcb_message_level level, gchar *s)
 {
 	extern int gtkhid_active;
 	log_pending_t *m, *next;
@@ -116,6 +121,7 @@ static void ghid_log_append_string(gchar * s)
 		   NOTE: no need to free this at quit: the GUI will be inited and then it'll be freed */
 		m = malloc(sizeof(log_pending_t) + strlen(s));
 		strcpy(m->msg, s);
+		m->level = level;
 		m->next = NULL;
 		if (log_pending_last != NULL)
 			log_pending_last->next = m;
@@ -130,7 +136,7 @@ static void ghid_log_append_string(gchar * s)
 		/* display and free pending messages */
 		for(m = log_pending_first; m != NULL; m = next) {
 			next = m->next;
-			ghid_text_view_append(log_text, m->msg);
+			ghid_log_append_string_(m->level, m->msg);
 			free(m);
 		}
 		log_pending_last = log_pending_first = NULL;
@@ -138,7 +144,7 @@ static void ghid_log_append_string(gchar * s)
 	else
 		ghid_log_window_show(FALSE);
 
-	ghid_text_view_append(log_text, s);
+	ghid_log_append_string_(level, s);
 }
 
 void ghid_log(const char *fmt, ...)
@@ -151,9 +157,8 @@ void ghid_log(const char *fmt, ...)
 
 void ghid_logv(enum pcb_message_level level, const char *fmt, va_list args)
 {
-	// TODO(hzeller): use level to color things.
 	char *msg = pcb_strdup_vprintf(fmt, args);
-	ghid_log_append_string(msg);
+	ghid_log_append_string(level, msg);
 	free(msg);
 }
 
