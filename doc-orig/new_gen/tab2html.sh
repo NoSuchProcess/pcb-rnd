@@ -19,7 +19,7 @@ BEGIN {
 }
 
 # load data
-{
+(NF == 2) {
 	CELL[len] = "<td>" $1 "<td>" $2
 	len++
 }
@@ -35,7 +35,7 @@ END {
 			idx = c*rows + r
 			cell = CELL[idx]
 			if (cell == "")
-				cell = "&nbsp;"
+				cell = "<td>&nbsp;<td>&nbsp;"
 			print cell
 		}
 	}
