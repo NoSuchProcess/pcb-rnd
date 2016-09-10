@@ -74,4 +74,3 @@ const char *unm_name(unm_t *state, const char *orig_name, void *user_data)
 	htsp_set(&state->seen, name, user_data);
 	return name;
 }
-

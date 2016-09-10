@@ -332,7 +332,7 @@ another:
 
 	/* get the parameters to pass to the action */
 	while (1) {
-		/* 
+		/*
 		 * maybe_empty == 0 means that the last char examined was not a
 		 * ","
 		 */
@@ -353,7 +353,7 @@ another:
 		else {
 			maybe_empty = 0;
 			in_quotes = 0;
-			/* 
+			/*
 			 * if we have more parameters than memory in our array of
 			 * pointers, then either allocate some or grow the array
 			 */
@@ -376,7 +376,7 @@ another:
 																	 && (!parens || *sp != ')')
 																	 && (parens || !isspace((int) *sp))))) {
 				/*
-				 * single quotes give literal value inside, including '\'. 
+				 * single quotes give literal value inside, including '\'.
 				 * you can't have a single inside single quotes.
 				 * doubles quotes gives literal value inside, but allows escape.
 				 */

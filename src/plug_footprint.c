@@ -195,7 +195,7 @@ library_t *fp_mkdir_p(const char *path)
 	const char *next;
 
 	/* search for the last existing dir in the path */
-	
+
 	while(*path == '/') path++;
 	for(parent = l = &library; l != NULL; parent = l,path = next) {
 		next = strchr(path, '/');
@@ -217,7 +217,7 @@ library_t *fp_mkdir_p(const char *path)
 				return l;
 			break; /* found a non-existing node */
 		}
-		
+
 		if (l == NULL)
 			break;
 	}
@@ -324,7 +324,7 @@ void fp_dump()
  * It examines all directories pointed to by the search paths
  * (normally Settings.LibraryTree).
  * In each directory specified there, it looks both in that directory,
- * as well as *one* level down.  It calls the subfunction 
+ * as well as *one* level down.  It calls the subfunction
  * fp_fs_load_dir to put the footprints into PCB's internal
  * datastructures.
  */
@@ -339,7 +339,7 @@ static int fp_read_lib_all_(const char *searchpath)
 	/* Initialize path, working by writing 0 into every byte. */
 	memset(toppath, 0, sizeof toppath);
 
-	/* Additional loop to allow for multiple 'newlib' style library directories 
+	/* Additional loop to allow for multiple 'newlib' style library directories
 	 * called out in Settings.LibraryTree
 	 */
 	libpaths = pcb_strdup(searchpath);
