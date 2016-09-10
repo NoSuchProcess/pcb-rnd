@@ -864,13 +864,14 @@ void NotifyMode(void)
 
 			/* check if this is the last point of a polygon */
 			if (n >= 3 && points[0].X == Crosshair.AttachedLine.Point2.X && points[0].Y == Crosshair.AttachedLine.Point2.Y) {
+				hid_actionl("Polygon", "Close", NULL);
 				ClosePolygon();
 				break;
 			}
 
 			/* Someone clicking twice on the same point ('doubleclick'): close polygon */
 			if (n >= 3 && points[n - 1].X == Crosshair.AttachedLine.Point2.X && points[n - 1].Y == Crosshair.AttachedLine.Point2.Y) {
-				ClosePolygon();
+				hid_actionl("Polygon", "Close", NULL);
 				break;
 			}
 
