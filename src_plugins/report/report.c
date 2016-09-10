@@ -559,12 +559,13 @@ static int ReportAllNetLengths(int argc, char **argv, Coord x, Coord y)
 	IncrementUndoSerialNumber();
 
 	for (ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++) {
-		char *netname = PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Name + 2;
-		char *ename = PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Entry[0].ListEntry;
+		const char *netname = PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Name + 2;
+		const char *list_entry = PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Entry[0].ListEntry;
+		char *ename;
 		char *pname;
 		bool got_one = 0;
 
-		ename = pcb_strdup(ename);
+		ename = pcb_strdup(list_entry);
 		pname = strchr(ename, '-');
 		if (!pname) {
 			free(ename);
