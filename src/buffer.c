@@ -1437,10 +1437,10 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 
 HID_Action buffer_action_list[] = {
 	{"FreeRotateBuffer", 0, ActionFreeRotateBuffer,
-	 freerotatebuffer_syntax, freerotatebuffer_help}
+	 freerotatebuffer_help, freerotatebuffer_syntax}
 	,
 	{"LoadFootprint", 0, LoadFootprint,
-	 0, 0}
+	 loadfootprint_help, loadfootprint_syntax}
 	,
 	{"PasteBuffer", 0, ActionPasteBuffer,
 	 pastebuffer_help, pastebuffer_syntax}
