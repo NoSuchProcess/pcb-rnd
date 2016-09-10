@@ -34,6 +34,7 @@
 #include "gui.h"
 #include "win_place.h"
 #include "pcb-printf.h"
+#include "hid_actions.h"
 
 static GtkWidget *log_window, *log_text;
 static gboolean log_show_on_append = FALSE;
@@ -113,11 +114,12 @@ static void ghid_log_append_string_(enum pcb_message_level level, gchar *msg)
 
 	conf_loglevel_props(level, &tag, &popup);
 	if (tag != NULL)
-		ghid_text_view_append(log_text, tag);
+		ghid_text_view_append(log_text, (gchar *)tag);
 
 	ghid_text_view_append(log_text, msg);
 
-	/* TODO(hzeller): pop up the window if popup is non-zero. */
+	if (popup)
+		hid_actionl("DoWindows", "Log", NULL);
 }
 
 static void ghid_log_append_string(enum pcb_message_level level, gchar *s)
