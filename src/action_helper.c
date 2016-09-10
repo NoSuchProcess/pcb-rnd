@@ -803,7 +803,7 @@ void NotifyMode(void)
 		/* do update of position */
 		NotifyBlock();
 
-		/* create rectangle if both corners are determined 
+		/* create rectangle if both corners are determined
 		 * and width, height are != 0
 		 */
 		if (Crosshair.AttachedBox.State == STATE_THIRD &&
