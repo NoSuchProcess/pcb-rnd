@@ -169,7 +169,7 @@ void Draw(void)
 	Block.X2 = Block.Y2 = -MAXINT;
 }
 
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  * redraws all the data by the event handlers
  */
 void Redraw(void)
