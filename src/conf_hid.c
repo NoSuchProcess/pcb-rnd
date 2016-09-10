@@ -1,6 +1,8 @@
 #include "conf_hid.h"
 #include <genht/hash.h>
 #include <genht/htpp.h>
+#include "error.h"
+#include "conf_core.h"
 
 typedef struct {
 	const conf_hid_callbacks_t *cb;
@@ -124,5 +126,12 @@ void conf_loglevel_props(enum pcb_message_level level, const char **tag, int *po
 {
 	*tag = NULL;
 	*popup = 0;
+	switch(level) {
+		case PCB_MSG_DEBUG:   *tag = conf_core.appearance.loglevels.debug_tag; *popup = conf_core.appearance.loglevels.debug_popup; break;
+		case PCB_MSG_INFO:    *tag = conf_core.appearance.loglevels.info_tag; *popup = conf_core.appearance.loglevels.info_popup; break;
+		case PCB_MSG_WARNING: *tag = conf_core.appearance.loglevels.warning_tag; *popup = conf_core.appearance.loglevels.warning_popup; break;
+		case PCB_MSG_ERROR:   *tag = conf_core.appearance.loglevels.error_tag; *popup = conf_core.appearance.loglevels.error_popup; break;
+			break;
+	}
 }
 

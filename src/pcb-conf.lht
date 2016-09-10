@@ -136,6 +136,16 @@ li:pcb-rnd-conf-v1 {
 			rat_thickness = 0.25 mm
 			mark_size = 50 mil
 
+			ha:loglevels {
+				debug_tag      = {}
+				debug_popup    = false
+				info_tag       = {}
+				info_popup     = false
+				warning_tag    = {<B>}
+				warning_popup  = true
+				error_tag      = {<R>}
+				error_popup    = true
+			}
 			ha:color {
 				black = {#000000}
 				white = {#ffffff}

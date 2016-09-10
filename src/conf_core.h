@@ -138,6 +138,16 @@ typedef struct {
 	const struct appearance {
 		CFT_COORD rat_thickness;
 		CFT_COORD mark_size;               /* relative marker size */
+		struct loglevels {
+			CFT_STRING   debug_tag;          /* log style tag of debug messages */
+			CFT_BOOLEAN  debug_popup;        /* whether a debug line should pop up the log window */
+			CFT_STRING   info_tag;           /* log style tag of info messages */
+			CFT_BOOLEAN  info_popup;         /* whether an info line should pop up the log window */
+			CFT_STRING   warning_tag;        /* log style tag of warnings */
+			CFT_BOOLEAN  warning_popup;      /* whether a warning should pop up the log window */
+			CFT_STRING   error_tag;          /* log style tag of errors */
+			CFT_BOOLEAN  error_popup;        /* whether an error should pop up the log window */
+		} loglevels;
 		struct color {
 			CFT_COLOR black;
 			CFT_COLOR white;
