@@ -873,7 +873,7 @@ static r_dir_t poly_callback(const BoxType * b, void *cl)
 {
 	struct poly_info *i = cl;
 	PolygonType *polygon = (PolygonType *) b;
-	static char *color;
+	static const char *color;
 	char buf[sizeof("#XXXXXX")];
 
 	if (!polygon->Clipped)
