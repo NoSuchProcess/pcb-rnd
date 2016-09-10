@@ -215,6 +215,7 @@ typedef struct {
 static void ghid_config_window_close(void);
 
 static GtkTreeView *gui_config_treeview;
+static GtkNotebook *config_notebook;
 
 typedef struct tvmap_s tvmap_t;
 
@@ -293,13 +294,16 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 
 	if (need_update) { /* need to reopen the preferences dialog to show the new settings */
 		tvmap_t *first = NULL, *next;
-		/* save expansions */
+		int page;
+		
+		/* save expansions and notebook states */
 		gtk_tree_view_map_expanded_rows(gui_config_treeview, tvmap, &first);
+		page = gtk_notebook_get_current_page(config_notebook);
 
 		ghid_config_window_close();
 		ghid_config_window_show();
 
-		/* restore expansions */
+		/* restore expansions and notebook states */
 		for(; first != NULL; first = next) {
 /*			printf("exp2 %s\n", gtk_tree_path_to_string(first->path));*/
 			next = first->next;
@@ -307,6 +311,7 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 			gtk_tree_path_free(first->path);
 			free(first);
 		}
+		gtk_notebook_set_current_page(config_notebook, page);
 	}
 }
 
@@ -1751,7 +1756,6 @@ enum {
 	N_CONFIG_COLUMNS
 };
 
-static GtkNotebook *config_notebook;
 
 static GtkWidget *config_page_create(GtkTreeStore * tree, GtkTreeIter * iter, GtkNotebook * notebook)
 {
