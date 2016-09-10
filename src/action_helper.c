@@ -937,7 +937,7 @@ void NotifyMode(void)
 					}
 
 					/* check if this is the last point of a polygon */
-					if (n >= 3 && points->X == Crosshair.AttachedLine.Point2.X && points->Y == Crosshair.AttachedLine.Point2.Y) {
+					if (n >= 3 && points[0].X == Crosshair.AttachedLine.Point2.X && points[0].Y == Crosshair.AttachedLine.Point2.Y) {
 						/* Create POLYAREAs from the original polygon
 						 * and the new hole polygon */
 						original = PolygonToPoly((PolygonType *) Crosshair.AttachedObject.Ptr2);
