@@ -1235,4 +1235,3 @@ int get_style_size(int funcid, Coord * out, int type, int size_id)
 	}
 	return 0;
 }
-
