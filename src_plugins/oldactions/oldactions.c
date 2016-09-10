@@ -185,7 +185,7 @@ static const char toggle_vendor_help[] = "Toggles the state of automatic drill s
 
 /* %start-doc actions ToggleVendor
 
-@cindex vendor map 
+@cindex vendor map
 @cindex vendor drill table
 @findex ToggleVendor()
 
@@ -211,7 +211,7 @@ static const char enable_vendor_help[] = "Enables automatic drill size mapping."
 
 /* %start-doc actions EnableVendor
 
-@cindex vendor map 
+@cindex vendor map
 @cindex vendor drill table
 @findex EnableVendor()
 
@@ -237,7 +237,7 @@ static const char disable_vendor_help[] = "Disables automatic drill size mapping
 
 /* %start-doc actions DisableVendor
 
-@cindex vendor map 
+@cindex vendor map
 @cindex vendor drill table
 @findex DisableVendor()
 
@@ -290,4 +290,3 @@ pcb_uninit_t hid_oldactions_init(void)
 	REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
 	return hid_oldactions_uninit;
 }
-
