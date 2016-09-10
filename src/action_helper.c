@@ -869,6 +869,12 @@ void NotifyMode(void)
 				break;
 			}
 
+			/* Someone clicking twice on the same point ('doubleclick'): close polygon */
+			if (n >= 3 && points[n - 1].X == Crosshair.AttachedLine.Point2.X && points[n - 1].Y == Crosshair.AttachedLine.Point2.Y) {
+				ClosePolygon();
+				break;
+			}
+
 			/* create new point if it's the first one or if it's
 			 * different to the last one
 			 */
