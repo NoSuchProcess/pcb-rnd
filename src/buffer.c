@@ -485,9 +485,9 @@ into the footprint as well.  The footprint remains in the paste buffer.
 
 int LoadFootprint(int argc, char **argv, Coord x, Coord y)
 {
-	char *name = ACTION_ARG(0);
-	char *refdes = ACTION_ARG(1);
-	char *value = ACTION_ARG(2);
+	const char *name = ACTION_ARG(0);
+	const char *refdes = ACTION_ARG(1);
+	const char *value = ACTION_ARG(2);
 	ElementTypePtr e;
 
 	if (!name)
@@ -999,7 +999,7 @@ angle is given, the user is prompted for one.
 
 int ActionFreeRotateBuffer(int argc, char **argv, Coord x, Coord y)
 {
-	char *angle_s;
+	const char *angle_s;
 
 	if (argc < 1)
 		angle_s = gui->prompt_for("Enter Rotation (degrees, CCW):", "0");
@@ -1304,11 +1304,11 @@ Selects the given buffer to be the current paste buffer.
 
 static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = argc ? argv[0] : (char *) "";
-	char *sbufnum = argc > 1 ? argv[1] : (char *) "";
-	char *fmt = argc > 2 ? argv[2] : NULL;
-	char *forces = argc > 3 ? argv[3] : NULL;
-	char *name;
+	const char *function = argc ? argv[0] : "";
+	const char *sbufnum = argc > 1 ? argv[1] : "";
+	const char *fmt = argc > 2 ? argv[2] : NULL;
+	const char *forces = argc > 3 ? argv[3] : NULL;
+	const char *name;
 	static char *default_file = NULL;
 	bool free_name = false;
 	int force = (forces != NULL) && ((*forces == '1') || (*forces == 'y') || (*forces == 'Y'));
@@ -1384,7 +1384,7 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 					SaveBufferElements(name, fmt);
 
 				if (free_name && name)
-					free(name);
+					free((char*)name);
 			}
 			break;
 
