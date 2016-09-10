@@ -324,9 +324,10 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 					 * searching in the list.
 					 */
 					if (strcmp(tmps, was[k]) == 0) {
-						free(PCB->NetlistLib[WTF].Menu[i].Entry[j].ListEntry);
-						PCB->NetlistLib[WTF].Menu[i].Entry[j].ListEntry = (char *) malloc((strlen(is[k]) + strlen(pin) + 2) * sizeof(char));
-						sprintf(PCB->NetlistLib[WTF].Menu[i].Entry[j].ListEntry, "%s-%s", is[k], pin);
+						free((char*)PCB->NetlistLib[WTF].Menu[i].Entry[j].ListEntry);
+						char *buffer = (char *) malloc((strlen(is[k]) + 1 + strlen(pin) + 1) * sizeof(char));
+						sprintf(buffer, "%s-%s", is[k], pin);
+						PCB->NetlistLib[WTF].Menu[i].Entry[j].ListEntry = buffer;
 						k = c_cnt;
 					}
 
