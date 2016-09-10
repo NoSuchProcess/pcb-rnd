@@ -268,13 +268,16 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 		ghid_set_status_line_label();
 		ghid_pack_mode_buttons();
 
-		/* need to reopen the preferences dialog to show the new settings */
-		ghid_config_window_close();
-		ghid_config_window_show();
 	}
 
 	if ((ctx->dst_role == CFR_USER) || (ctx->dst_role == CFR_PROJECT))
 		conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), ctx->dst_role, NULL);
+
+	if (need_update) {
+		/* need to reopen the preferences dialog to show the new settings */
+		ghid_config_window_close();
+		ghid_config_window_show();
+	}
 }
 
 /* =================== OK, now the gui stuff ======================
@@ -2059,5 +2062,10 @@ void ghid_config_window_show(void)
 static void ghid_config_window_close(void)
 {
 	gtk_widget_destroy(config_window);
+
+	config_sizes_vbox = NULL;
+	config_increments_vbox = NULL;
+	config_groups_vbox = config_groups_table = NULL;
+	config_groups_window = NULL;
 	config_window = NULL;
 }
