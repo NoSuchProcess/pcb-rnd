@@ -79,7 +79,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	if (argc < 1) {
 		/*
 		 * We deal with the case where name already exists in this
-		 * function so the GUI doesn't need to deal with it 
+		 * function so the GUI doesn't need to deal with it
 		 */
 		name = gui->fileselect(_("Save Renumber Annotation File As ..."),
 													 _("Choose a file to record the renumbering to.\n"
@@ -145,7 +145,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	ELEMENT_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(PCB_FLAG_LOCK, element->Name) || TEST_FLAG(PCB_FLAG_LOCK, element)) {
-			/* 
+			/*
 			 * add to the list of locked elements which we won't try to
 			 * renumber and whose reference designators are now reserved.
 			 */
@@ -165,7 +165,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 			while (element_list[i] && element->MarkY > element_list[i]->MarkY)
 				i++;
 
-			/* 
+			/*
 			 * We have found the position where we have the first element that
 			 * has the same Y value or a lower Y value.  Now move forward if
 			 * needed through the X values
@@ -183,12 +183,12 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	END_LOOP;
 
 
-	/* 
+	/*
 	 * Now that the elements are sorted by board position, we go through
 	 * and renumber them.
 	 */
 
-	/* 
+	/*
 	 * turn off the flag which requires unique names so it doesn't get
 	 * in our way.  When we're done with the renumber we will have unique
 	 * names.
@@ -227,9 +227,9 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 				}
 			}
 
-			/* 
+			/*
 			 * start a new counter if we don't have a counter for this
-			 * prefix 
+			 * prefix
 			 */
 			if (!cnt_list[j].name) {
 				cnt_list[j].name = pcb_strdup(tmps);
@@ -257,9 +257,9 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 				tmps = (char *) malloc(sz * sizeof(char));
 				sprintf(tmps, "%s%d", cnt_list[j].name, cnt_list[j].cnt);
 
-				/* 
+				/*
 				 * now compare to the list of reserved (by locked
-				 * elements) names 
+				 * elements) names
 				 */
 				for (k = 0; k < lock_cnt; k++) {
 					if (strcmp(UNKNOWN(NAMEONPCB_NAME(locked_element_list[k])), tmps) == 0) {
@@ -321,7 +321,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 				for (k = 0; k < c_cnt; k++) {
 					/*
 					 * if the pin needs to change, change it and quit
-					 * searching in the list. 
+					 * searching in the list.
 					 */
 					if (strcmp(tmps, was[k]) == 0) {
 						free(PCB->NetlistLib[WTF].Menu[i].Entry[j].ListEntry);
@@ -370,4 +370,3 @@ pcb_uninit_t hid_renumber_init(void)
 	REGISTER_ACTIONS(renumber_action_list, renumber_cookie)
 	return hid_renumber_uninit;
 }
-
