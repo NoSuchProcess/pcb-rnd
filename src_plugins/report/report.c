@@ -53,6 +53,7 @@
 #include "misc_util.h"
 #include "report_conf.h"
 #include "compat_misc.h"
+#include "layer.h"
 
 #include <genregex/regex_sei.h>
 
