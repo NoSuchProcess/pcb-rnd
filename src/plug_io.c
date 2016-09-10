@@ -532,7 +532,7 @@ int SaveBufferElements(const char *Filename, const char *fmt)
 /* ---------------------------------------------------------------------------
  * save PCB
  */
-int SavePCB(char *file, const char *fmt)
+int SavePCB(const char *file, const char *fmt)
 {
 	int retcode;
 
@@ -752,7 +752,7 @@ void RemoveTMPData(void)
 /* ---------------------------------------------------------------------------
  * writes PCB to file
  */
-int WritePCBFile(char *Filename, const char *fmt)
+int WritePCBFile(const char *Filename, const char *fmt)
 {
 	FILE *fp;
 	int result;
@@ -771,7 +771,7 @@ int WritePCBFile(char *Filename, const char *fmt)
  * writes to pipe using the command defined by conf_core.rc.save_command
  * %f are replaced by the passed filename
  */
-int WritePipe(char *Filename, bool thePcb, const char *fmt)
+int WritePipe(const char *Filename, bool thePcb, const char *fmt)
 {
 	FILE *fp;
 	int result;

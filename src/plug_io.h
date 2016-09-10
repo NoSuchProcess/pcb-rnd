@@ -96,7 +96,7 @@ int WritePCB(FILE *f, const char *fmt);
 /********** common function used to be part of file.[ch] and friends **********/
 FILE *CheckAndOpenFile(char *, bool, bool, bool *, bool *);
 FILE *OpenConnectionDataFile(void);
-int SavePCB(char *, const char *fmt);
+int SavePCB(const char *, const char *fmt);
 int LoadPCB(const char *name, const char *fmt, bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) */
 void EnableAutosave(void);
 void Backup(void);
@@ -109,8 +109,8 @@ void sort_netlist(void);
 void PrintQuotedString(FILE *, const char *);
 void sort_library(LibraryTypePtr lib);
 void set_some_route_style();
-int WritePCBFile(char *, const char *fmt);
-int WritePipe(char *, bool, const char *fmt);
+int WritePCBFile(const char *, const char *fmt);
+int WritePipe(const char *, bool, const char *fmt);
 
 #ifndef HAS_ATEXIT
 void SaveTMPData(void);
