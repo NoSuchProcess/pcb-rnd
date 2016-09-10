@@ -806,7 +806,6 @@ static bool UndoNetlistChange(UndoListTypePtr Entry)
 			if (!lib->Menu[i].Entry[j].ListEntry_dontfree)
 				free(lib->Menu[i].Entry[j].ListEntry);
 
-			free(lib->Menu[i].Entry[j].AllocatedMemory);
 			free(lib->Menu[i].Entry[j].Package);
 			free(lib->Menu[i].Entry[j].Value);
 			free(lib->Menu[i].Entry[j].Description);
@@ -1519,9 +1518,6 @@ void AddNetlistLibToUndoList(LibraryTypePtr lib)
 
 				old->Menu[i].Entry[j].ListEntry = lib->Menu[i].Entry[j].ListEntry ? pcb_strdup(lib->Menu[i].Entry[j].ListEntry) : NULL;
 				old->Menu[i].Entry[j].ListEntry_dontfree = 0;
-
-				old->Menu[i].Entry[j].AllocatedMemory =
-					lib->Menu[i].Entry[j].AllocatedMemory ? pcb_strdup(lib->Menu[i].Entry[j].AllocatedMemory) : NULL;
 
 				old->Menu[i].Entry[j].Package = lib->Menu[i].Entry[j].Package ? pcb_strdup(lib->Menu[i].Entry[j].Package) : NULL;
 
