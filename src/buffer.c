@@ -465,7 +465,7 @@ bool LoadElementToBuffer(BufferTypePtr Buffer, const char *Name)
  */
 
 /* Returns zero on success, non-zero on error.  */
-int LoadFootprintByName(BufferTypePtr Buffer, char *Footprint)
+int LoadFootprintByName(BufferTypePtr Buffer, const char *Footprint)
 {
 	return !LoadElementToBuffer(Buffer, Footprint);
 }
