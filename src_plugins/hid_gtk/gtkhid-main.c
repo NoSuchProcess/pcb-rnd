@@ -157,30 +157,30 @@ modified.  The @var{factor} is a floating point number, such as
 @code{1.5} or @code{0.75}.
 
 @table @code
-  
+
 @item +@var{factor}
 Values greater than 1.0 cause the board to be drawn smaller; more of
 the board will be visible.  Values between 0.0 and 1.0 cause the board
 to be drawn bigger; less of the board will be visible.
-  
+
 @item -@var{factor}
 Values greater than 1.0 cause the board to be drawn bigger; less of
 the board will be visible.  Values between 0.0 and 1.0 cause the board
 to be drawn smaller; more of the board will be visible.
- 
+
 @item =@var{factor}
- 
+
 The @var{factor} is an absolute zoom factor; the unit for this value
 is "PCB units per screen pixel".  Since PCB units are 0.01 mil, a
 @var{factor} of 1000 means 10 mils (0.01 in) per pixel, or 100 DPI,
 about the actual resolution of most screens - resulting in an "actual
 size" board.  Similarly, a @var{factor} of 100 gives you a 10x actual
 size.
- 
+
 @end table
- 
+
 Note that zoom factors of zero are silently ignored.
- 
+
 
 
 %end-doc */
@@ -772,7 +772,7 @@ static int ghid_progress(int so_far, int total, const char *message)
 
 static int ghid_propedit_start(void *pe, int num_props, const char *(*query)(void *pe, const char *cmd, const char *key, const char *val, int idx))
 {
-	
+
 	ghidgui->propedit_widget = ghid_propedit_dialog_create(&ghidgui->propedit_dlg);
 	ghidgui->propedit_query = query;
 	ghidgui->propedit_pe = pe;
@@ -987,7 +987,7 @@ HID_DRC_GUI ghid_drc_gui = {
 extern HID_Attribute *ghid_get_export_options(int *);
 
 
-/* ------------------------------------------------------------ 
+/* ------------------------------------------------------------
  *
  * Actions specific to the GTK HID follow from here
  *
@@ -1243,9 +1243,9 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 		}
 		else {
 			const char *sfmt = NULL;
-			/* 
+			/*
 			 * if we got this far and the function is Layout, then
-			 * we really needed it to be a LayoutAs.  Otherwise 
+			 * we really needed it to be a LayoutAs.  Otherwise
 			 * ActionSaveTo() will ignore the new file name we
 			 * just obtained.
 			 */
