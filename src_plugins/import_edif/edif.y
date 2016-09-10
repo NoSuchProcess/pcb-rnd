@@ -3908,7 +3908,7 @@ static short TokenType[TS_DEPTH];	/* token types */
  *	  Add a token to the debug stack. The passed string and type are
  *	what is to be pushed.
  */
-static Stack(char * str, int typ)
+static void Stack(char * str, int typ)
 {
   /*
    *	Free any previous string, then push.
@@ -3924,7 +3924,7 @@ static Stack(char * str, int typ)
  *
  *	  This displays the last set of accumulated tokens.
  */
-static DumpStack()
+static void DumpStack()
 {
   /*
    *	Locals.
@@ -3933,6 +3933,7 @@ static DumpStack()
   register Context *cxt;
   register Token *tok;
   register char *nam;
+  FILE *Error = stderr;
   /*
    *	Run through the list displaying the oldest first.
    */
@@ -3942,15 +3943,15 @@ static DumpStack()
       /*
        *	Get the type name string.
        */
-      if (cxt = FindContext(TokenType[(TSP + i) & TS_MASK]))
+      if ((cxt = FindContext(TokenType[(TSP + i) & TS_MASK])) != NULL)
         nam = cxt->Name;
-      else if (tok = FindToken(TokenType[(TSP + i) & TS_MASK]))
+      else if ((tok = FindToken(TokenType[(TSP + i) & TS_MASK])) != NULL)
         nam = tok->Name;
       else switch (TokenType[(TSP + i) & TS_MASK]){
-      	case IDENT:	nam = "IDENT";		break;
-      	case INT:	nam = "INT";		break;
-      	case KEYWORD:	nam = "KEYWORD";	break;
-      	case STR:	nam = "STR";		break;
+      	case EDIF_TOK_IDENT:	nam = "IDENT";		break;
+      	case EDIF_TOK_INT:	nam = "INT";		break;
+      	case EDIF_TOK_KEYWORD:	nam = "KEYWORD";	break;
+      	case EDIF_TOK_STR:	nam = "STR";		break;
       	default:	nam = "?";		break;
       }
       /*
