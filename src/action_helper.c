@@ -863,7 +863,7 @@ void NotifyMode(void)
 			NotifyLine();
 
 			/* check if this is the last point of a polygon */
-			if (n >= 3 && points->X == Crosshair.AttachedLine.Point2.X && points->Y == Crosshair.AttachedLine.Point2.Y) {
+			if (n >= 3 && points[0].X == Crosshair.AttachedLine.Point2.X && points[0].Y == Crosshair.AttachedLine.Point2.Y) {
 				CopyAttachedPolygonToLayer();
 				Draw();
 				break;
