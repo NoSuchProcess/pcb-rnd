@@ -13,6 +13,7 @@
 		- drawing a lot of rats is slow - does it redraw/flush after each rat? [report:Chris]
 	- pcb-rnd preferences: clicking Library option 'Restore factory defaults' collapses tree view  
 	- lesstif: under menu Settings>'all direction lines' is	unselectable
+	- gui doesn't show lookahead mode change ( _/ \_ and whitespace) when toggling using / key or --listen and display(cycleclip) on stdin
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
