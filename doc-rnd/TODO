@@ -7,7 +7,6 @@
 	- prefernces->userPOV->increments window can get out of sync and disappear [report:miloh]
 	- File->Revert, or re-loading after external change of .pcb file leads to corruption of routing styles. [report:Chris]
 	- Creating new lines doesn?t snap to pads correctly sometimes when AutoDRC is enabled. [report:Chris]
-	- shift (add to selection) broken [report:Chris]
 	- gerber export is broken with the torture-board [report:Evan]
 	- render:
 		- visible grid slowing down rendering [Erich]
