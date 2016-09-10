@@ -1,19 +1,21 @@
 #!/bin/sh
 
-echo "<html><body><table border=1 cellspacing=0>"
-awk '
-BEGIN {
-# Configuration: number of col pairs in a row
-	cols = 4
+# Configuration: $1 is the number of col pairs in a row
 
-# print header
-	print "<tr>"
-	for(n = 0; n < cols; n++)
-		print "<th> Drill<br>Size <th> Diameter<br>(inches)"
-	print "<tr>"
+echo "<html><body><table border=1 cellspacing=0>"
+awk -F "[\t]*" -v "cols=$1" '
+BEGIN {
 	len = 0
 }
 
+/^[@]/ {
+# print header
+	print "<tr>"
+	for(n = 0; n < cols; n++)
+		print "<th>" $1 "<th>" $2
+
+	next
+}
 
 # load data
 {
