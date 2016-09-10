@@ -157,6 +157,6 @@ int SearchObjectByLocation(unsigned, void **, void **, void **, Coord, Coord, Co
 int SearchScreen(Coord, Coord, int, void **, void **, void **);
 int SearchScreenGridSlop(Coord, Coord, int, void **, void **, void **);
 int SearchObjectByID(DataTypePtr, void **, void **, void **, int, int);
-ElementTypePtr SearchElementByName(DataTypePtr, char *);
+ElementTypePtr SearchElementByName(DataTypePtr, const char *);
 
 #endif

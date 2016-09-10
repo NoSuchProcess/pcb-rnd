@@ -1306,7 +1306,7 @@ int SearchObjectByID(DataTypePtr Base, void **Result1, void **Result2, void **Re
  * searches for an element by its board name.
  * The function returns a pointer to the element, NULL if not found
  */
-ElementTypePtr SearchElementByName(DataTypePtr Base, char *Name)
+ElementTypePtr SearchElementByName(DataTypePtr Base, const char *Name)
 {
 	ElementTypePtr result = NULL;
 
