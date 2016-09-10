@@ -295,7 +295,7 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 	if (need_update) { /* need to reopen the preferences dialog to show the new settings */
 		tvmap_t *first = NULL, *next;
 		int page;
-		
+
 		/* save expansions and notebook states */
 		gtk_tree_view_map_expanded_rows(gui_config_treeview, tvmap, &first);
 		page = gtk_notebook_get_current_page(config_notebook);
@@ -1075,7 +1075,7 @@ static void pre_rebuild(gtk_conf_list_t *cl)
 	lht_clean_list(config_library_lst);
 
 	m = conf_lht_get_first(CFR_DESIGN);
-	
+
 	cl->lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
 	if (cl->lst == NULL) {
 		conf_set(CFR_DESIGN, "rc/library_search_paths", 0, "", POL_OVERWRITE);
@@ -2063,7 +2063,7 @@ void ghid_config_window_show(void)
 	config_tree_leaf(model, &user_pov, _("Colors"), config_colors_tab_create);
 
 	config_tree_auto(model, &config_pov);
-	
+
 	/* Create the tree view */
 	gui_config_treeview = treeview = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(model)));
 	g_object_unref(G_OBJECT(model));	/* Don't need the model anymore */
