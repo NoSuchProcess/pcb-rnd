@@ -47,13 +47,13 @@ static int keyeq(void *a_, void *b_)
 	fh_key_t *a = a_, *b = b_;
 	if (a->cookie != b->cookie)
 		return 1;
-	return !strcmp(a->key, b->key);
+	return !strcasecmp(a->key, b->key);
 }
 
 static unsigned fh_hash(void *key)
 {
 	fh_key_t *k = key;
-	return strhash((char *)k->key) ^ ptrhash((void *)k->cookie);
+	return strhash_case((char *)k->key) ^ ptrhash((void *)k->cookie);
 }
 
 void funchash_init(void)
