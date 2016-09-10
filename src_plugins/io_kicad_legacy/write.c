@@ -28,6 +28,7 @@
 #include "error.h"
 #include "uniq_name.h"
 #include "data.h"
+#include "write.h"
 
 #define F2S(OBJ, TYPE) flags_to_string ((OBJ)->Flags, TYPE)
 
