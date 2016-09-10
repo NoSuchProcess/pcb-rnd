@@ -474,6 +474,8 @@ static int parse_pin(DataType *dt, ElementType *el, lht_node_t *obj)
 
 	if (dt != NULL)
 		pcb_add_via(dt, via);
+	if (el != NULL)
+		via->Element = el;
 
 	return 0;
 }
@@ -499,6 +501,7 @@ static int parse_pad(ElementType *el, lht_node_t *obj)
 
 	post_id_req(&pad->Point1);
 	post_id_req(&pad->Point2);
+	pad->Element = el;
 
 	return 0;
 }
