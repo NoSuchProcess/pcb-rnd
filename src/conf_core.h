@@ -32,7 +32,6 @@ typedef struct {
 		CFT_BOOLEAN save_last_command;     /* save the last command entered by user */
 		CFT_BOOLEAN save_in_tmp;           /* always save data in /tmp */
 		CFT_BOOLEAN draw_grid;             /* draw grid points */
-		CFT_BOOLEAN stipple_polygons;      /* draw polygons with stipple */
 		CFT_BOOLEAN all_direction_lines;   /* enable lines to all directions */
 		CFT_BOOLEAN rubber_band_mode;      /* move, rotate use rubberband connections */
 		CFT_BOOLEAN swap_start_direction;  /* change starting direction after each click */
