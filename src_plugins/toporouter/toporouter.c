@@ -1205,7 +1205,7 @@ void toporouter_free(toporouter_t * r)
 		usecs += 1000;
 	}
 
-	Message(_("Elapsed time: %d.%02d seconds\n"), secs, usecs);
+	Message(PCB_MSG_DEFAULT, _("Elapsed time: %d.%02d seconds\n"), secs, usecs);
 	free(r->layers);
 	free(r);
 
@@ -6965,8 +6965,8 @@ void toporouter_export(toporouter_t * r)
 		i = i->next;
 	}
 
-	Message(_("Reticulating splines... successful\n\n"));
-	Message(_("Wiring cost: %f inches\n"), r->wiring_score / 1000.);
+	Message(PCB_MSG_DEFAULT, _("Reticulating splines... successful\n\n"));
+	Message(PCB_MSG_DEFAULT, _("Wiring cost: %f inches\n"), r->wiring_score / 1000.);
 	printf("Wiring cost: %f inches\n", r->wiring_score / 1000.);
 
 	g_list_free(oproutes);
@@ -7767,7 +7767,7 @@ gint roar_router(toporouter_t * r, gint failcount, gint threshold)
 	guint j;
 	gint pfailcount = failcount + 1;
 
-	Message(_("ROAR router: "));
+	Message(PCB_MSG_DEFAULT, _("ROAR router: "));
 	for (j = 0; j < 6; j++) {
 		GList *failed = g_list_copy(r->failednets), *k = failed;
 
@@ -7781,10 +7781,10 @@ gint roar_router(toporouter_t * r, gint failcount, gint threshold)
 		printf("\tROAR pass %d - %d routed -  %d failed\n", j, g_list_length(r->routednets), g_list_length(r->failednets));
 
 		if (!failcount || failcount >= pfailcount) {
-			Message(_("%d nets remaining\n"), failcount);
+			Message(PCB_MSG_DEFAULT, _("%d nets remaining\n"), failcount);
 			break;
 		}
-		Message(_("%d -> "), failcount);
+		Message(PCB_MSG_DEFAULT, _("%d -> "), failcount);
 		pfailcount = failcount;
 	}
 
@@ -7965,7 +7965,7 @@ guint hybrid_router(toporouter_t * r)
 	r->flags |= TOPOROUTER_FLAG_AFTERRUBIX;
 	failcount = rubix_router(r, failcount);
 
-	Message(_("RUBIX router: %d nets remaining\n"), failcount);
+	Message(PCB_MSG_DEFAULT, _("RUBIX router: %d nets remaining\n"), failcount);
 	printf("RUBIX router: %d nets remaining\n", failcount);
 
 	r->flags |= TOPOROUTER_FLAG_GOFAR;
@@ -8053,10 +8053,10 @@ toporouter_t *toporouter_new(void)
 
 	gts_predicates_init();
 
-	Message(_("Topological Autorouter\n"));
-	Message(_("Started %s"), asctime(localtime(&ltime)));
-	Message(_("-------------------------------------\n"));
-	Message(_("Copyright 2009 Anthony Blake (tonyb33@gmail.com)\n\n"));
+	Message(PCB_MSG_DEFAULT, _("Topological Autorouter\n"));
+	Message(PCB_MSG_DEFAULT, _("Started %s"), asctime(localtime(&ltime)));
+	Message(PCB_MSG_DEFAULT, _("-------------------------------------\n"));
+	Message(PCB_MSG_DEFAULT, _("Copyright 2009 Anthony Blake (tonyb33@gmail.com)\n\n"));
 	return r;
 }
 

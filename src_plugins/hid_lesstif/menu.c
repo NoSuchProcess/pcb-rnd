@@ -931,7 +931,7 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 
 	lesstif_cfg = hid_cfg_load("lesstif", 0, lesstif_menu_default);
 	if (lesstif_cfg == NULL) {
-		Message("FATAL: can't load the lesstif menu res either from file or from hardwired default.");
+		Message(PCB_MSG_DEFAULT, "FATAL: can't load the lesstif menu res either from file or from hardwired default.");
 		abort();
 	}
 

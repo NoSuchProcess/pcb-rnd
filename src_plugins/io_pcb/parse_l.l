@@ -249,7 +249,7 @@ printf("OPENING: %s -> %p\n", tmps, yyin);
 	      {
 	        /* Special case this one, we get it all the time... */
 	        if (strcmp (tmps, "./default_font"))
-		  Message("Can't open %s for reading\n", tmps);
+		  Message(PCB_MSG_ERROR, "Can't open %s for reading\n", tmps);
 		return(1);
 	      }
             free (tmps);
@@ -433,7 +433,7 @@ int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr Ptr, const char *Filename)
 	r = Parse(NULL, conf_core.rc.font_command, NULL, Filename, NULL);
 	if (r == 0) {
 #ifdef DEBUG
-		Message ("Found %s in %s\n", Filename, conf_core.rc.font_command);
+		Message (PCB_MSG_DEBUG, "Found %s in %s\n", Filename, conf_core.rc.font_command);
 #endif
 	}
 	return r;
@@ -445,4 +445,3 @@ parse_number ()
   yylval.number = strtod ((char *) yytext, NULL);
   return FLOATING;
 }
-

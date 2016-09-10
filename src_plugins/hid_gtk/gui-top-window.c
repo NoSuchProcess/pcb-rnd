@@ -1441,7 +1441,7 @@ static unsigned short int ghid_translate_key(char *desc, int len)
 
 	key = gdk_keyval_from_name(desc);
 	if (key > 0xffff) {
-		Message("Ignoring invalid/exotic key sym: '%s'\n", desc);
+		Message(PCB_MSG_DEFAULT, "Ignoring invalid/exotic key sym: '%s'\n", desc);
 		return 0;
 	}
 	return key;
@@ -1641,7 +1641,7 @@ static GtkWidget *ghid_load_menus(void)
 
 	ghid_cfg = hid_cfg_load("gtk", 0, hid_gtk_menu_default);
 	if (ghid_cfg == NULL) {
-		Message("FATAL: can't load the gtk menu res either from file or from hardwired default.");
+		Message(PCB_MSG_DEFAULT, "FATAL: can't load the gtk menu res either from file or from hardwired default.");
 		abort();
 	}
 
@@ -1668,7 +1668,7 @@ static GtkWidget *ghid_load_menus(void)
 
 	mr = hid_cfg_get_menu(ghid_cfg, "/mouse");
 	if (hid_cfg_mouse_init(ghid_cfg, &ghid_mouse) != 0)
-		Message("Error: failed to load mouse actions from the hid config lihata - mouse input will not work.");
+		Message(PCB_MSG_DEFAULT, "Error: failed to load mouse actions from the hid config lihata - mouse input will not work.");
 
 	return menu_bar;
 }

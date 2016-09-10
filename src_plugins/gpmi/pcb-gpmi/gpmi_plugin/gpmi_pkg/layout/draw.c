@@ -7,7 +7,7 @@
 #define setup \
 	hidGC gc = ctx->gc; \
 	HID  *hid = ctx->hid; \
-	if ((hid == NULL) && (gc == NULL)) Message("%s failed because of invalid hid or gc\n", __FUNCTION__); \
+	if ((hid == NULL) && (gc == NULL)) Message(PCB_MSG_DEFAULT, "%s failed because of invalid hid or gc\n", __FUNCTION__); \
 	if ((hid == NULL) && (gc == NULL)) return
 
 

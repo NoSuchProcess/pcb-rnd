@@ -119,7 +119,7 @@ static int fp_fs_list(library_t *pl, const char *subdir, int recurse,
 	/* Cache old dir, then cd into subdir because stat is given relative file names. */
 	memset(olddir, 0, sizeof olddir);
 	if (GetWorkingDirectory(olddir) == NULL) {
-		Message(_("fp_fs_list(): Could not determine initial working directory\n"));
+		Message(PCB_MSG_DEFAULT, _("fp_fs_list(): Could not determine initial working directory\n"));
 		return 0;
 	}
 
@@ -135,7 +135,7 @@ static int fp_fs_list(library_t *pl, const char *subdir, int recurse,
 
 	/* Determine subdir's abs path */
 	if (GetWorkingDirectory(new_subdir) == NULL) {
-		Message(_("fp_fs_list(): Could not determine new working directory\n"));
+		Message(PCB_MSG_DEFAULT, _("fp_fs_list(): Could not determine new working directory\n"));
 		if (chdir(olddir))
 			ChdirErrorMessage(olddir);
 		return 0;

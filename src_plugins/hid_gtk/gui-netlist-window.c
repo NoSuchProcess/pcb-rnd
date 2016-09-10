@@ -181,7 +181,7 @@ static void node_model_update(LibraryMenuType * menu)
 	GtkTreeModel *model;
 
 	if (menu == NULL) {
-		Message("Error: can't update netlist window: there is no netlist loaded.\n");
+		Message(PCB_MSG_DEFAULT, "Error: can't update netlist window: there is no netlist loaded.\n");
 		return;
 	}
 

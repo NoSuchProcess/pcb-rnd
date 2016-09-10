@@ -165,7 +165,7 @@ HID_Attr_Val hid_string2val(const hid_attr_type_t type, const char *str)
 					const Unit *u;
 					u = get_unit_struct(end);
 					if (u == NULL) {
-						Message("Invalid unit for HIDA_Coord in the script: '%s'\n", end);
+						Message(PCB_MSG_DEFAULT, "Invalid unit for HIDA_Coord in the script: '%s'\n", end);
 						v.coord_value = 0;
 					}
 					else

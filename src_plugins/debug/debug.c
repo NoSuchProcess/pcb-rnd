@@ -60,12 +60,12 @@ static int ActionDumpConf(int argc, char **argv, Coord x, Coord y)
 		conf_role_t role;
 		const char *prefix = "";
 		if (argc <= 1) {
-			Message("conf(dumplht) needs a role");
+			Message(PCB_MSG_DEFAULT, "conf(dumplht) needs a role");
 			return 1;
 		}
 		role = conf_role_parse(argv[1]);
 		if (role == CFR_invalid) {
-			Message("Invalid role: '%s'", argv[1]);
+			Message(PCB_MSG_DEFAULT, "Invalid role: '%s'", argv[1]);
 			return 1;
 		}
 		if (argc > 2)
@@ -77,7 +77,7 @@ static int ActionDumpConf(int argc, char **argv, Coord x, Coord y)
 	}
 
 	else {
-		Message("Invalid conf command '%s'\n", argv[0]);
+		Message(PCB_MSG_DEFAULT, "Invalid conf command '%s'\n", argv[0]);
 		return 1;
 	}
 	return 0;

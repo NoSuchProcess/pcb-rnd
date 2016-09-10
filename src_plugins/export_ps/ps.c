@@ -1480,7 +1480,7 @@ void ps_calibrate_1(double xval, double yval, int use_command)
 					if (xval < 2)
 						ps_attribute_list[HA_xcalib].default_val.real_value = global.calibration_x = xval;
 					else
-						Message("X value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 15.0, 7.5\n", xval);
+						Message(PCB_MSG_DEFAULT, "X value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 15.0, 7.5\n", xval);
 				}
 		if (guess(yval, 4, &global.calibration_y))
 			if (guess(yval, 20, &global.calibration_y))
@@ -1488,7 +1488,7 @@ void ps_calibrate_1(double xval, double yval, int use_command)
 					if (yval < 2)
 						ps_attribute_list[HA_ycalib].default_val.real_value = global.calibration_y = yval;
 					else
-						Message("Y value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 20.0, 10.0\n", yval);
+						Message(PCB_MSG_DEFAULT, "Y value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 20.0, 10.0\n", yval);
 				}
 		return;
 	}

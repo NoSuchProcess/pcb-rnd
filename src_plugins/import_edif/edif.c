@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "3.0.4"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -72,10 +72,10 @@
 /* Copy the first part of user declarations.  */
 #line 1 "../../src_plugins/import_edif/edif.y" /* yacc.c:339  */
 
-/* 
+/*
  * PCB Edif parser based heavily on:
  *
- *	Header: edif.y,v 1.18 87/12/07 19:59:49 roger Locked 
+ *	Header: edif.y,v 1.18 87/12/07 19:59:49 roger Locked
  */
 /************************************************************************
  *									*
@@ -140,7 +140,7 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
      ps->next = NULL;
      return ps;
  }
- 
+
  pair_list* new_pair_list(str_pair* ps)
  {
    pair_list* pl = (pair_list *)malloc(sizeof(pair_list));
@@ -161,7 +161,7 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
 	 free(node);
      }
  }
-  
+
  void pair_list_free(pair_list* pl)
  {
      str_pair_free(pl->list);
@@ -231,7 +231,7 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
 	 strcpy(buf,node->str1);
 	 /* make all upper case, because of PCB funky behaviour */
 	 p=buf;
-	 while ( *p ) 
+	 while ( *p )
 	 {
 	     *p = toupper( (int) *p);
 	     p++;
@@ -258,8 +258,8 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
 	 free(done_node);
      }
  }
- 
- 
+
+
 /* forward function declarations */
  static int yylex(void);
  static void yyerror(const char *);
@@ -597,7 +597,7 @@ extern int edifdebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE YYSTYPE;
+
 union YYSTYPE
 {
 #line 198 "../../src_plugins/import_edif/edif.y" /* yacc.c:355  */
@@ -608,6 +608,8 @@ union YYSTYPE
 
 #line 610 "edif.tab.c" /* yacc.c:355  */
 };
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -621,7 +623,7 @@ int edifparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 625 "edif.tab.c" /* yacc.c:358  */
+#line 627 "edif.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -3369,796 +3371,796 @@ yyreduce:
         case 2:
 #line 510 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { PopC(); }
-#line 3373 "edif.tab.c" /* yacc.c:1646  */
+#line 3375 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
 #line 525 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3379 "edif.tab.c" /* yacc.c:1646  */
+#line 3381 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
 #line 528 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3385 "edif.tab.c" /* yacc.c:1646  */
+#line 3387 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
 #line 532 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-3].s)); free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 3391 "edif.tab.c" /* yacc.c:1646  */
+#line 3393 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
 #line 556 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3397 "edif.tab.c" /* yacc.c:1646  */
+#line 3399 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
 #line 573 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[-3].ps)); free((yyvsp[-2].s)); }
-#line 3403 "edif.tab.c" /* yacc.c:1646  */
+#line 3405 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
 #line 577 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3409 "edif.tab.c" /* yacc.c:1646  */
+#line 3411 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
 #line 602 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3415 "edif.tab.c" /* yacc.c:1646  */
+#line 3417 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
 #line 650 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-3].s)); free((yyvsp[-2].s)); }
-#line 3421 "edif.tab.c" /* yacc.c:1646  */
+#line 3423 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
 #line 653 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3427 "edif.tab.c" /* yacc.c:1646  */
+#line 3429 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 80:
 #line 671 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3433 "edif.tab.c" /* yacc.c:1646  */
+#line 3435 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 84:
 #line 681 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3439 "edif.tab.c" /* yacc.c:1646  */
+#line 3441 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 91:
 #line 696 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3445 "edif.tab.c" /* yacc.c:1646  */
+#line 3447 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 102:
 #line 719 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3451 "edif.tab.c" /* yacc.c:1646  */
+#line 3453 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 140:
 #line 779 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3457 "edif.tab.c" /* yacc.c:1646  */
+#line 3459 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 147:
 #line 794 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); }
-#line 3463 "edif.tab.c" /* yacc.c:1646  */
+#line 3465 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 150:
 #line 801 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); }
-#line 3469 "edif.tab.c" /* yacc.c:1646  */
+#line 3471 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 182:
 #line 871 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3475 "edif.tab.c" /* yacc.c:1646  */
+#line 3477 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 184:
 #line 875 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3481 "edif.tab.c" /* yacc.c:1646  */
+#line 3483 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 240:
 #line 979 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3487 "edif.tab.c" /* yacc.c:1646  */
+#line 3489 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 247:
 #line 992 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3493 "edif.tab.c" /* yacc.c:1646  */
+#line 3495 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 278:
 #line 1039 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3499 "edif.tab.c" /* yacc.c:1646  */
+#line 3501 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 279:
 #line 1042 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3505 "edif.tab.c" /* yacc.c:1646  */
+#line 3507 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 333:
 #line 1128 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-3].s)); free((yyvsp[-2].s)); }
-#line 3511 "edif.tab.c" /* yacc.c:1646  */
+#line 3513 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 336:
 #line 1135 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3517 "edif.tab.c" /* yacc.c:1646  */
+#line 3519 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 337:
 #line 1138 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3523 "edif.tab.c" /* yacc.c:1646  */
+#line 3525 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 344:
 #line 1151 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); }
-#line 3529 "edif.tab.c" /* yacc.c:1646  */
+#line 3531 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 346:
 #line 1155 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3535 "edif.tab.c" /* yacc.c:1646  */
+#line 3537 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 347:
 #line 1156 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3541 "edif.tab.c" /* yacc.c:1646  */
+#line 3543 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 348:
 #line 1157 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3547 "edif.tab.c" /* yacc.c:1646  */
+#line 3549 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 369:
 #line 1198 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[-2].s); }
-#line 3553 "edif.tab.c" /* yacc.c:1646  */
+#line 3555 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 371:
 #line 1202 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3559 "edif.tab.c" /* yacc.c:1646  */
+#line 3561 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 374:
 #line 1209 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3565 "edif.tab.c" /* yacc.c:1646  */
+#line 3567 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 381:
 #line 1220 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3571 "edif.tab.c" /* yacc.c:1646  */
+#line 3573 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 384:
 #line 1227 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3577 "edif.tab.c" /* yacc.c:1646  */
+#line 3579 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 388:
 #line 1233 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3583 "edif.tab.c" /* yacc.c:1646  */
+#line 3585 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 390:
 #line 1237 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3589 "edif.tab.c" /* yacc.c:1646  */
+#line 3591 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 393:
 #line 1244 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3595 "edif.tab.c" /* yacc.c:1646  */
+#line 3597 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 397:
 #line 1252 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3601 "edif.tab.c" /* yacc.c:1646  */
+#line 3603 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 408:
 #line 1267 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { pair_list_free((yyvsp[0].pl)); }
-#line 3607 "edif.tab.c" /* yacc.c:1646  */
+#line 3609 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 437:
 #line 1317 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.pl) = new_pair_list((yyvsp[-1].ps)); }
-#line 3613 "edif.tab.c" /* yacc.c:1646  */
+#line 3615 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 438:
 #line 1320 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.ps)=NULL; }
-#line 3619 "edif.tab.c" /* yacc.c:1646  */
+#line 3621 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 439:
 #line 1321 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyvsp[0].ps)->next = (yyvsp[-1].ps); (yyval.ps) = (yyvsp[0].ps); }
-#line 3625 "edif.tab.c" /* yacc.c:1646  */
+#line 3627 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 455:
 #line 1347 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3631 "edif.tab.c" /* yacc.c:1646  */
+#line 3633 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 459:
 #line 1357 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3637 "edif.tab.c" /* yacc.c:1646  */
+#line 3639 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 460:
 #line 1360 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3643 "edif.tab.c" /* yacc.c:1646  */
+#line 3645 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 462:
 #line 1366 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3649 "edif.tab.c" /* yacc.c:1646  */
+#line 3651 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 463:
 #line 1369 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3655 "edif.tab.c" /* yacc.c:1646  */
+#line 3657 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 483:
 #line 1411 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3661 "edif.tab.c" /* yacc.c:1646  */
+#line 3663 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 484:
 #line 1414 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3667 "edif.tab.c" /* yacc.c:1646  */
+#line 3669 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 492:
 #line 1428 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3673 "edif.tab.c" /* yacc.c:1646  */
+#line 3675 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 506:
 #line 1456 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3679 "edif.tab.c" /* yacc.c:1646  */
+#line 3681 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 507:
 #line 1459 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3685 "edif.tab.c" /* yacc.c:1646  */
+#line 3687 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 514:
 #line 1474 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3691 "edif.tab.c" /* yacc.c:1646  */
+#line 3693 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 549:
 #line 1529 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3697 "edif.tab.c" /* yacc.c:1646  */
+#line 3699 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 555:
 #line 1541 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3703 "edif.tab.c" /* yacc.c:1646  */
+#line 3705 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 560:
 #line 1550 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); }
-#line 3709 "edif.tab.c" /* yacc.c:1646  */
+#line 3711 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 561:
 #line 1553 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3715 "edif.tab.c" /* yacc.c:1646  */
+#line 3717 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 562:
 #line 1554 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3721 "edif.tab.c" /* yacc.c:1646  */
+#line 3723 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 582:
 #line 1596 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3727 "edif.tab.c" /* yacc.c:1646  */
+#line 3729 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 585:
 #line 1599 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { pair_list_free((yyvsp[0].pl)); }
-#line 3733 "edif.tab.c" /* yacc.c:1646  */
+#line 3735 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 586:
 #line 1602 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[-1].s); }
-#line 3739 "edif.tab.c" /* yacc.c:1646  */
+#line 3741 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 587:
 #line 1605 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3745 "edif.tab.c" /* yacc.c:1646  */
+#line 3747 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 589:
 #line 1609 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.ps) = new_str_pair((yyvsp[0].s),NULL); }
-#line 3751 "edif.tab.c" /* yacc.c:1646  */
+#line 3753 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 590:
 #line 1610 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.ps) = new_str_pair((yyvsp[0].s),NULL); }
-#line 3757 "edif.tab.c" /* yacc.c:1646  */
+#line 3759 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 591:
 #line 1611 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.ps)=(yyvsp[0].ps); }
-#line 3763 "edif.tab.c" /* yacc.c:1646  */
+#line 3765 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 592:
 #line 1614 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3769 "edif.tab.c" /* yacc.c:1646  */
+#line 3771 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 593:
 #line 1615 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3775 "edif.tab.c" /* yacc.c:1646  */
+#line 3777 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 594:
 #line 1618 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { define_pcb_net((yyvsp[-2].ps), (yyvsp[-1].pl)); }
-#line 3781 "edif.tab.c" /* yacc.c:1646  */
+#line 3783 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 595:
 #line 1621 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.pl)=(yyvsp[0].pl); }
-#line 3787 "edif.tab.c" /* yacc.c:1646  */
+#line 3789 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 611:
 #line 1643 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[-2].ps)); }
-#line 3793 "edif.tab.c" /* yacc.c:1646  */
+#line 3795 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 632:
 #line 1680 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.ps)=(yyvsp[0].ps); }
-#line 3799 "edif.tab.c" /* yacc.c:1646  */
+#line 3801 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 633:
 #line 1681 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.ps)=NULL; }
-#line 3805 "edif.tab.c" /* yacc.c:1646  */
+#line 3807 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 634:
 #line 1685 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3811 "edif.tab.c" /* yacc.c:1646  */
+#line 3813 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 639:
 #line 1694 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3817 "edif.tab.c" /* yacc.c:1646  */
+#line 3819 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 644:
 #line 1705 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3823 "edif.tab.c" /* yacc.c:1646  */
+#line 3825 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 698:
 #line 1807 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-3].s)); }
-#line 3829 "edif.tab.c" /* yacc.c:1646  */
+#line 3831 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 701:
 #line 1814 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3835 "edif.tab.c" /* yacc.c:1646  */
+#line 3837 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 727:
 #line 1866 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3841 "edif.tab.c" /* yacc.c:1646  */
+#line 3843 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 730:
 #line 1873 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3847 "edif.tab.c" /* yacc.c:1646  */
+#line 3849 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 747:
 #line 1908 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 3853 "edif.tab.c" /* yacc.c:1646  */
+#line 3855 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 766:
 #line 1939 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3859 "edif.tab.c" /* yacc.c:1646  */
+#line 3861 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 789:
 #line 1974 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3865 "edif.tab.c" /* yacc.c:1646  */
+#line 3867 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 791:
 #line 1980 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3871 "edif.tab.c" /* yacc.c:1646  */
+#line 3873 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 803:
 #line 1996 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3877 "edif.tab.c" /* yacc.c:1646  */
+#line 3879 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 818:
 #line 2015 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3883 "edif.tab.c" /* yacc.c:1646  */
+#line 3885 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 823:
 #line 2026 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3889 "edif.tab.c" /* yacc.c:1646  */
+#line 3891 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 827:
 #line 2032 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3895 "edif.tab.c" /* yacc.c:1646  */
+#line 3897 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 829:
 #line 2036 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3901 "edif.tab.c" /* yacc.c:1646  */
+#line 3903 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 831:
 #line 2041 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
-    { 
+    {
     if ((yyvsp[-1].ps))
     {
 	(yyval.ps) = new_str_pair((yyvsp[-1].ps)->str1,(yyvsp[-2].s));
 	free((yyvsp[-1].ps));
     }
-    else 
+    else
     {
 	/* handle port with no instance by passing up the chain */
 	(yyval.ps) = new_str_pair(NULL,(yyvsp[-2].s));
     }
 }
-#line 3918 "edif.tab.c" /* yacc.c:1646  */
+#line 3920 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 832:
 #line 2055 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.ps)=NULL; }
-#line 3924 "edif.tab.c" /* yacc.c:1646  */
+#line 3926 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 833:
 #line 2056 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.ps)=(yyvsp[0].ps); }
-#line 3930 "edif.tab.c" /* yacc.c:1646  */
+#line 3932 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 834:
 #line 2057 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.ps) = new_str_pair((yyvsp[0].s),NULL); }
-#line 3936 "edif.tab.c" /* yacc.c:1646  */
+#line 3938 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 835:
 #line 2058 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.ps)=NULL; }
-#line 3942 "edif.tab.c" /* yacc.c:1646  */
+#line 3944 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 848:
 #line 2085 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3948 "edif.tab.c" /* yacc.c:1646  */
+#line 3950 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 849:
 #line 2088 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3954 "edif.tab.c" /* yacc.c:1646  */
+#line 3956 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 881:
 #line 2141 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.ps) = new_str_pair((yyvsp[-2].s),(yyvsp[-1].s)); }
-#line 3960 "edif.tab.c" /* yacc.c:1646  */
+#line 3962 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 882:
 #line 2144 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3966 "edif.tab.c" /* yacc.c:1646  */
+#line 3968 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 883:
 #line 2145 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3972 "edif.tab.c" /* yacc.c:1646  */
+#line 3974 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 884:
 #line 2148 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3978 "edif.tab.c" /* yacc.c:1646  */
+#line 3980 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 885:
 #line 2149 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=NULL; }
-#line 3984 "edif.tab.c" /* yacc.c:1646  */
+#line 3986 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 889:
 #line 2159 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3990 "edif.tab.c" /* yacc.c:1646  */
+#line 3992 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 891:
 #line 2165 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3996 "edif.tab.c" /* yacc.c:1646  */
+#line 3998 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 892:
 #line 2166 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4002 "edif.tab.c" /* yacc.c:1646  */
+#line 4004 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 893:
 #line 2169 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4008 "edif.tab.c" /* yacc.c:1646  */
+#line 4010 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 894:
 #line 2172 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4014 "edif.tab.c" /* yacc.c:1646  */
+#line 4016 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 896:
 #line 2178 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4020 "edif.tab.c" /* yacc.c:1646  */
+#line 4022 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 898:
 #line 2180 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4026 "edif.tab.c" /* yacc.c:1646  */
+#line 4028 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 903:
 #line 2191 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4032 "edif.tab.c" /* yacc.c:1646  */
+#line 4034 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 935:
 #line 2255 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4038 "edif.tab.c" /* yacc.c:1646  */
+#line 4040 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 943:
 #line 2271 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4044 "edif.tab.c" /* yacc.c:1646  */
+#line 4046 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 946:
 #line 2276 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4050 "edif.tab.c" /* yacc.c:1646  */
+#line 4052 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 973:
 #line 2321 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4056 "edif.tab.c" /* yacc.c:1646  */
+#line 4058 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 987:
 #line 2343 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 4062 "edif.tab.c" /* yacc.c:1646  */
+#line 4064 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 994:
 #line 2359 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-6].s)); free((yyvsp[-5].s)); free((yyvsp[-4].s)); free((yyvsp[-3].s)); free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4068 "edif.tab.c" /* yacc.c:1646  */
+#line 4070 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1054:
 #line 2466 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4074 "edif.tab.c" /* yacc.c:1646  */
+#line 4076 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1055:
 #line 2467 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4080 "edif.tab.c" /* yacc.c:1646  */
+#line 4082 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1056:
 #line 2468 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4086 "edif.tab.c" /* yacc.c:1646  */
+#line 4088 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1057:
 #line 2469 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4092 "edif.tab.c" /* yacc.c:1646  */
+#line 4094 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1059:
 #line 2473 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4098 "edif.tab.c" /* yacc.c:1646  */
+#line 4100 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1061:
 #line 2477 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4104 "edif.tab.c" /* yacc.c:1646  */
+#line 4106 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1063:
 #line 2481 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 4110 "edif.tab.c" /* yacc.c:1646  */
+#line 4112 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1085:
 #line 2517 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4116 "edif.tab.c" /* yacc.c:1646  */
+#line 4118 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1086:
 #line 2520 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4122 "edif.tab.c" /* yacc.c:1646  */
+#line 4124 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1107:
 #line 2561 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4128 "edif.tab.c" /* yacc.c:1646  */
+#line 4130 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1109:
 #line 2563 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { pair_list_free((yyvsp[0].pl)); }
-#line 4134 "edif.tab.c" /* yacc.c:1646  */
+#line 4136 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1126:
 #line 2590 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4140 "edif.tab.c" /* yacc.c:1646  */
+#line 4142 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1127:
 #line 2593 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4146 "edif.tab.c" /* yacc.c:1646  */
+#line 4148 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1128:
 #line 2596 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4152 "edif.tab.c" /* yacc.c:1646  */
+#line 4154 "edif.tab.c" /* yacc.c:1646  */
     break;
 
   case 1129:
 #line 2599 "../../src_plugins/import_edif/edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4158 "edif.tab.c" /* yacc.c:1646  */
+#line 4160 "edif.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 4162 "edif.tab.c" /* yacc.c:1646  */
+#line 4164 "edif.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -5555,7 +5557,7 @@ static Keyword *KeywordTable[KEYWORD_HASH];
  */
 static void EnterKeyword(char * str)
 {
-  /* 
+  /*
    *	Locals.
    */
   register Keyword *key;
@@ -5829,7 +5831,7 @@ static char *FormString()
    *	Allocate space for the string, set the pointer at the end.
    */
   cp = (char *) Malloc(StringSize + 1);
-  
+
   cp += StringSize;
   *cp-- = '\0';
   /*
@@ -6236,7 +6238,7 @@ static int yylex()
 
 int ReadEdifNetlist(char *filename)
 {
-	Message(_("Importing edif netlist %s\n"), filename);
+	Message(PCB_MSG_INFO, _("Importing edif netlist %s\n"), filename);
 	ParseEDIF(filename, NULL);
 
 	return 0;

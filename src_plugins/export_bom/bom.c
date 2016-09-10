@@ -124,7 +124,7 @@ static char *CleanBOMString(char *in)
 		exit(1);
 	}
 
-	/* 
+	/*
 	 * copy over in to out with some character conversions.
 	 * Go all the way to then end to get the terminating \0
 	 */
@@ -156,7 +156,7 @@ static double xyToAngle(double x, double y)
 		theta = 270.0;
 	else {
 		theta = 0.0;
-		Message("xyToAngle(): unable to figure out angle of element\n"
+		Message(PCB_MSG_DEFAULT, "xyToAngle(): unable to figure out angle of element\n"
 						"     because the pin is at the centroid of the part.\n"
 						"     This is a BUG!!!\n" "     Setting to %g degrees\n", theta);
 	}
@@ -239,7 +239,7 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
 
 }
 
-/* 
+/*
  * If fp is not NULL then print out the bill of materials contained in
  * bom.  Either way, free all memory which has been allocated for bom.
  */
@@ -317,7 +317,7 @@ static int PrintBOM(void)
 
 	/*
 	 * For each element we calculate the centroid of the footprint.
-	 * In addition, we need to extract some notion of rotation.  
+	 * In addition, we need to extract some notion of rotation.
 	 * While here generate the BOM list
 	 */
 
@@ -340,7 +340,7 @@ static int PrintBOM(void)
 		/*
 		 * iterate over the pins and pads keeping a running count of how
 		 * many pins/pads total and the sum of x and y coordinates
-		 * 
+		 *
 		 * While we're at it, store the location of pin/pad #1 and #2 if
 		 * we can find them
 		 */
@@ -412,7 +412,8 @@ static int PrintBOM(void)
 							theta = xyToAngle(pin2x, pin2y);
 						else {
 							Message
-								("PrintBOM(): unable to figure out angle of element\n"
+								(PCB_MSG_ERROR,
+								 "PrintBOM(): unable to figure out angle of element\n"
 								 "     %s because pin #1 is at the centroid of the part.\n"
 								 "     and I could not find pin #2's location\n"
 								 "     Setting to %g degrees\n", UNKNOWN(NAMEONPCB_NAME(element)), theta);
@@ -426,7 +427,8 @@ static int PrintBOM(void)
 			else {
 				theta = 0.0;
 				Message
-					("PrintBOM(): unable to figure out angle because I could\n"
+					(PCB_MSG_ERROR,
+					 "PrintBOM(): unable to figure out angle because I could\n"
 					 "     not find pin #1 of element %s\n" "     Setting to %g degrees\n", UNKNOWN(NAMEONPCB_NAME(element)), theta);
 			}
 

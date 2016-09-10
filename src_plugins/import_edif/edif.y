@@ -1,8 +1,8 @@
 %{
-/* 
+/*
  * PCB Edif parser based heavily on:
  *
- *	Header: edif.y,v 1.18 87/12/07 19:59:49 roger Locked 
+ *	Header: edif.y,v 1.18 87/12/07 19:59:49 roger Locked
  */
 /************************************************************************
  *									*
@@ -67,7 +67,7 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
      ps->next = NULL;
      return ps;
  }
- 
+
  pair_list* new_pair_list(str_pair* ps)
  {
    pair_list* pl = (pair_list *)malloc(sizeof(pair_list));
@@ -88,7 +88,7 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
 	 free(node);
      }
  }
-  
+
  void pair_list_free(pair_list* pl)
  {
      str_pair_free(pl->list);
@@ -158,7 +158,7 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
 	 strcpy(buf,node->str1);
 	 /* make all upper case, because of PCB funky behaviour */
 	 p=buf;
-	 while ( *p ) 
+	 while ( *p )
 	 {
 	     *p = toupper( (int) *p);
 	     p++;
@@ -185,8 +185,8 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
 	 free(done_node);
      }
  }
- 
- 
+
+
 /* forward function declarations */
  static int yylex(void);
  static void yyerror(const char *);
@@ -2037,14 +2037,14 @@ PortNameRef :	NameRef { $$=$1; }
 	    |	Member
 	    ;
 
-PortRef :	EDIF_TOK_PORTREF PortNameRef _PortRef PopC 
-{ 
+PortRef :	EDIF_TOK_PORTREF PortNameRef _PortRef PopC
+{
     if ($3)
     {
 	$$ = new_str_pair($3->str1,$2);
 	free($3);
     }
-    else 
+    else
     {
 	/* handle port with no instance by passing up the chain */
 	$$ = new_str_pair(NULL,$2);
@@ -3767,7 +3767,7 @@ static Keyword *KeywordTable[KEYWORD_HASH];
  */
 static void EnterKeyword(char * str)
 {
-  /* 
+  /*
    *	Locals.
    */
   register Keyword *key;
@@ -4041,7 +4041,7 @@ static char *FormString()
    *	Allocate space for the string, set the pointer at the end.
    */
   cp = (char *) Malloc(StringSize + 1);
-  
+
   cp += StringSize;
   *cp-- = '\0';
   /*
@@ -4448,7 +4448,7 @@ static int yylex()
 
 int ReadEdifNetlist(char *filename)
 {
-	Message(_("Importing edif netlist %s\n"), filename);
+	Message(PCB_MSG_INFO, _("Importing edif netlist %s\n"), filename);
 	ParseEDIF(filename, NULL);
 
 	return 0;

@@ -2419,7 +2419,7 @@ static inline BoxType previous_edge(Coord last, direction_t i, const BoxType * b
 		db.X2 = last;
 		break;
 	default:
-		Message("previous edge bogus direction!");
+		Message(PCB_MSG_DEFAULT, "previous edge bogus direction!");
 		assert(0);
 	}
 	return db;
@@ -4314,7 +4314,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 					if (request_cancel) {
 						ras.total_nets_routed = 0;
 						ras.conflict_subnets = 0;
-						Message("Autorouting cancelled\n");
+						Message(PCB_MSG_DEFAULT, "Autorouting cancelled\n");
 						goto out;
 					}
 				}
@@ -4366,7 +4366,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 		this_cost = 0;
 	}
 
-	Message("%d of %d nets successfully routed.\n", ras.routed_subnets, ras.total_subnets);
+	Message(PCB_MSG_DEFAULT, "%d of %d nets successfully routed.\n", ras.routed_subnets, ras.total_subnets);
 
 out:
 	heap_destroy(&this_pass);
@@ -4551,7 +4551,7 @@ bool AutoRoute(bool selected)
 	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); i++) {
 		if (PCB->RouteStyle.array[i].Thick == 0 ||
 				PCB->RouteStyle.array[i].Diameter == 0 || PCB->RouteStyle.array[i].Hole == 0 || PCB->RouteStyle.array[i].Clearance == 0) {
-			Message("You must define proper routing styles\n" "before auto-routing.\n");
+			Message(PCB_MSG_DEFAULT, "You must define proper routing styles\n" "before auto-routing.\n");
 			return (false);
 		}
 	}
@@ -4646,7 +4646,7 @@ bool AutoRoute(bool selected)
 				ASSIGN_FLAG(PCB_FLAG_SELECTED, true, line);
 				DrawRat(line, 0);
 #endif /* DEBUG_STALE_RATS */
-				Message("The rats nest is stale! Aborting autoroute...\n");
+				Message(PCB_MSG_DEFAULT, "The rats nest is stale! Aborting autoroute...\n");
 				goto donerouting;
 			}
 			/* merge subnets into a net! */
@@ -4696,7 +4696,7 @@ donerouting:
 
 	if (changed)
 		changed = IronDownAllUnfixedPaths(rd);
-	Message("Total added wire length = %$mS, %d vias added\n", (Coord) total_wire_length, total_via_count);
+	Message(PCB_MSG_DEFAULT, "Total added wire length = %$mS, %d vias added\n", (Coord) total_wire_length, total_via_count);
 	DestroyRouteData(&rd);
 	if (changed) {
 		SaveUndoSerialNumber();

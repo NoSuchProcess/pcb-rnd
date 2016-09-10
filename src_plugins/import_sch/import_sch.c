@@ -232,7 +232,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 			y = GetValue(ys, units, NULL, NULL);
 		}
 		else {
-			Message(_("Bad syntax for Import(setnewpoint)"));
+			Message(PCB_MSG_DEFAULT, _("Bad syntax for Import(setnewpoint)"));
 			return 1;
 		}
 
@@ -313,7 +313,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 		int i;
 
 		if (tmpfile == NULL) {
-			Message(_("Could not create temp file"));
+			Message(PCB_MSG_DEFAULT, _("Could not create temp file"));
 			return 1;
 		}
 
@@ -372,7 +372,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 		else {
 			tmpfile = tempfile_name_new("gnetlist_output");
 			if (tmpfile == NULL) {
-				Message(_("Could not create temp file"));
+				Message(PCB_MSG_DEFAULT, _("Could not create temp file"));
 				return 1;
 			}
 			must_free_tmpfile = 1;
@@ -422,7 +422,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 			tempfile_unlink(tmpfile);
 	}
 	else {
-		Message(_("Unknown import mode: %s\n"), mode);
+		Message(PCB_MSG_DEFAULT, _("Unknown import mode: %s\n"), mode);
 		return 1;
 	}
 

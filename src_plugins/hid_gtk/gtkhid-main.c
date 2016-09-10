@@ -1214,7 +1214,7 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 			fmt = 0;
 		}
 		else {
-			Message("Error: no IO plugin avaialble for saving a buffer.");
+			Message(PCB_MSG_DEFAULT, "Error: no IO plugin avaialble for saving a buffer.");
 			return -1;
 		}
 	}
@@ -1226,7 +1226,7 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 			fmt = 0;
 		}
 		else {
-			Message("Error: no IO plugin avaialble for saving a buffer.");
+			Message(PCB_MSG_DEFAULT, "Error: no IO plugin avaialble for saving a buffer.");
 			return -1;
 		}
 	}
@@ -1774,7 +1774,7 @@ static int PanAction(int argc, char **argv, Coord x, Coord y)
 		mode = atoi(argv[0]);
 	else {
 		mode = atoi(argv[1]);
-		Message(_("The gtk gui currently ignores the optional first argument "
+		Message(PCB_MSG_DEFAULT, _("The gtk gui currently ignores the optional first argument "
 							"to the Pan action.\nFeel free to provide patches.\n"));
 	}
 
@@ -1813,7 +1813,7 @@ static int Popup(int argc, char **argv, Coord x, Coord y)
 	}
 
 	if (!GTK_IS_MENU(menu)) {
-		Message(_("The specified popup menu \"%s\" has not been defined.\n"), argv[0]);
+		Message(PCB_MSG_DEFAULT, _("The specified popup menu \"%s\" has not been defined.\n"), argv[0]);
 		return 1;
 	}
 	else {

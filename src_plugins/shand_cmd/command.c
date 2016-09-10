@@ -78,7 +78,7 @@ static const char h_help[] = "Print a help message for commands.";
 
 static int CommandHelp(int argc, char **argv, Coord x, Coord y)
 {
-	Message("following commands are supported:\n"
+	Message(PCB_MSG_DEFAULT, "following commands are supported:\n"
 					"  Command()   execute an action command (too numerous to list)\n"
 					"              see the manual for the list of action commands\n"
 					"  h           display this help message\n"
@@ -122,7 +122,7 @@ static int CommandLoadLayout(int argc, char **argv, Coord x, Coord y)
 		break;
 
 	default: /* usage */
-		Message("Usage: l [name]\n  loads layout data\n");
+		Message(PCB_MSG_DEFAULT, "Usage: l [name]\n  loads layout data\n");
 		return (1);
 	}
 
@@ -159,7 +159,7 @@ static int CommandLoadElementToBuffer(int argc, char **argv, Coord x, Coord y)
 		break;
 
 	default:											/* usage */
-		Message(false, "Usage: le [name]\n  loads element data to buffer\n");
+		Message(PCB_MSG_DEFAULT, false, "Usage: le [name]\n  loads element data to buffer\n");
 		return (1);
 	}
 	return (0);
@@ -195,7 +195,7 @@ static int CommandLoadLayoutToBuffer(int argc, char **argv, Coord x, Coord y)
 		break;
 
 	default:  /* usage */
-		Message("Usage: m [name]\n  loads layout data to buffer\n");
+		Message(PCB_MSG_DEFAULT, "Usage: m [name]\n  loads layout data to buffer\n");
 		return (1);
 	}
 	return (0);
@@ -272,7 +272,7 @@ static int CommandLoadNetlist(int argc, char **argv, Coord x, Coord y)
 		break;
 
 	default:											/* usage */
-		Message("Usage: rn [name]\n  reads in a netlist file\n");
+		Message(PCB_MSG_DEFAULT, "Usage: rn [name]\n  reads in a netlist file\n");
 		return (1);
 	}
 	if (PCB->Netlistname)
@@ -321,7 +321,7 @@ static int CommandSaveLayout(int argc, char **argv, Coord x, Coord y)
 				SetChangedFlag(false);
 		}
 		else
-			Message("No filename to save to yet\n");
+			Message(PCB_MSG_DEFAULT, "No filename to save to yet\n");
 		break;
 
 	case 1:
@@ -335,7 +335,7 @@ static int CommandSaveLayout(int argc, char **argv, Coord x, Coord y)
 		break;
 
 	default:
-		Message("Usage: s [name] | w [name]\n  saves layout data\n");
+		Message(PCB_MSG_DEFAULT, "Usage: s [name] | w [name]\n  saves layout data\n");
 		return (1);
 	}
 	return (0);

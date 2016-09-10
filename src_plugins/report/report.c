@@ -455,7 +455,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 	}
 
 	if ((report == NULL) || (report == '\0')) {
-		Message(_("Nothing found to report on\n"));
+		Message(PCB_MSG_DEFAULT, _("Nothing found to report on\n"));
 		return 1;
 	}
 
@@ -740,7 +740,7 @@ static int ReportNetLengthByName(char *tofind, int x, int y)
 	if (use_re) {
 		regex = re_sei_comp(tofind);
 		if (re_sei_errno(regex) != 0) {
-			Message(_("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
+			Message(PCB_MSG_DEFAULT, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 			re_sei_free(regex);
 			return (1);
 		}

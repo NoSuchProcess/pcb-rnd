@@ -13,13 +13,11 @@
 #include "gui.h"
 #include "pcb-printf.h"
 #include "misc_util.h"
-
+#include "error.h"
 #include "ghid-main-menu.h"
 #include "ghid-layer-selector.h"
 #include "ghid-route-style-selector.h"
 #include "gschem_accel_label.h"
-
-void Message(const char *, ...);
 
 static int action_counter;
 
@@ -340,7 +338,7 @@ void ghid_main_menu_add_popup_node(GHidMainMenu * menu, lht_node_t *base)
 	gtk_widget_show_all(new_menu);
 }
 
-/*! \brief Updates the toggle/active state of all items 
+/*! \brief Updates the toggle/active state of all items
  *  \par Function Description
  *  Loops through all actions, passing the action, its toggle
  *  flag (maybe NULL), and its active flag (maybe NULL), to a
@@ -421,7 +419,7 @@ void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, GHidRouteSty
 GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu)
 {
 	if (menu == NULL) {
-		Message("ghid: can't initialize the menu - is your menu .lht valid?\n");
+		Message(PCB_MSG_DEFAULT, "ghid: can't initialize the menu - is your menu .lht valid?\n");
 		exit(1);
 	}
 	return menu->accel_group;

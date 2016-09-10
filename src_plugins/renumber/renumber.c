@@ -110,7 +110,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	}
 
 	if ((out = fopen(name, "w")) == NULL) {
-		Message(_("Could not open %s\n"), name);
+		Message(PCB_MSG_DEFAULT, _("Could not open %s\n"), name);
 		if (free_name && name)
 			free(name);
 		return 1;

@@ -4,7 +4,7 @@
  *
  * If the file format is modified in any way, update
  * PCB_FILE_VERSION in file.h
- * 
+ *
  * ************************** README *******************
  */
 
@@ -81,9 +81,9 @@ extern	char			*yyfilename;	/* in this file */
 extern	conf_role_t yy_settings_dest;
 extern FlagType yy_pcb_flags;
 
-static char *layer_group_string; 
+static char *layer_group_string;
 
-static AttributeListTypePtr attr_list; 
+static AttributeListTypePtr attr_list;
 
 int yyerror(const char *s);
 int yylex();
@@ -164,7 +164,7 @@ Symbolic and numeric flags (SFlags and NFlags) are described in
 @ref{Object Flags}.
 
 %end-doc */
-		
+
 parsepcb
 		:	{
 					/* reset flags for 'used layers';
@@ -174,7 +174,7 @@ parsepcb
 
 				if (!yyPCB)
 				{
-					Message("illegal fileformat\n");
+					Message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				for (i = 0; i < MAX_LAYER + 2; i++)
@@ -187,11 +187,11 @@ parsepcb
 				layer_group_string = NULL;
 			}
 		  pcbfileversion
-		  pcbname 
+		  pcbname
 		  pcbgrid
 		  pcbcursor
 		  polyarea
-		  pcbthermal 
+		  pcbthermal
 		  pcbdrc
 		  pcbflags
 		  pcbgroups
@@ -207,7 +207,7 @@ parsepcb
 			  CreateNewPCBPost (yyPCB, 0);
 			  if (ParseGroupString(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN))
 			    {
-			      Message("illegal layer-group string\n");
+			      Message(PCB_MSG_ERROR, "illegal layer-group string\n");
 			      YYABORT;
 			    }
 			/* initialize the polygon clipping now since
@@ -222,7 +222,7 @@ parsepcb
 			ENDALL_LOOP;
 			PCB = pcb_save;
 			}
-			   
+
 		| { PreLoadElementPCB ();
 		    layer_group_string = NULL; }
 		  element
@@ -242,7 +242,7 @@ parsedata
 
 				if (!yyData || !yyFont)
 				{
-					Message("illegal fileformat\n");
+					Message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				for (i = 0; i < MAX_LAYER + 2; i++)
@@ -265,7 +265,7 @@ parsefont
 
 				if (!yyFont)
 				{
-					Message("illegal fileformat\n");
+					Message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				yyFont->Valid = false;
@@ -308,7 +308,7 @@ T_FILEVERSION '[' INTEGER ']'
       YYABORT;
     }
 }
-;	
+;
 
 /* %start-doc pcbfile PCB
 
@@ -349,7 +349,7 @@ pcbname
 				yyPCB->MaxWidth = NU ($4);
 				yyPCB->MaxHeight = NU ($5);
 			}
-		;	
+		;
 
 /* %start-doc pcbfile Grid
 
@@ -456,7 +456,7 @@ PolyArea [Area]
 @end syntax
 
 @table @var
-@item Area 
+@item Area
 Minimum area of polygon island to retain. If a polygon has clearances that cause an isolated island to be created, then will only be retained if the area exceeds this minimum area.
 @end table
 
@@ -667,7 +667,7 @@ pcbstyles
 			{
 				if (ParseRouteString($3, &yyPCB->RouteStyle, "mil"))
 				{
-					Message("illegal route-style string\n");
+					Message(PCB_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;
 				}
 				free($3);
@@ -676,7 +676,7 @@ pcbstyles
 			{
 				if (ParseRouteString($3, &yyPCB->RouteStyle, "cmil"))
 				{
-					Message("illegal route-style string\n");
+					Message(PCB_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;
 				}
 				free($3);
@@ -701,7 +701,7 @@ pcbdefinition
 		| layer
 		|
 			{
-					/* clear pointer to force memory allocation by 
+					/* clear pointer to force memory allocation by
 					 * the appropriate subroutine
 					 */
 				yyElement = NULL;
@@ -797,7 +797,7 @@ via_oldformat
 				Coord	hole = (OU($5) * DEFAULT_DRILLINGHOLE);
 
 					/* make sure that there's enough copper left */
-				if (OU($5) - hole < MIN_PINORVIACOPPER && 
+				if (OU($5) - hole < MIN_PINORVIACOPPER &&
 					OU($5) > MIN_PINORVIACOPPER)
 					hole = OU($5) - MIN_PINORVIACOPPER;
 
@@ -1169,7 +1169,7 @@ polygon_format
 
 				if (bad_contour_found)
 				  {
-				    Message("WARNING parsing file '%s'\n"
+				    Message(PCB_MSG_WARNING, "WARNING parsing file '%s'\n"
 					    "    line:        %i\n"
 					    "    description: 'ignored polygon (< 3 points in a contour)'\n",
 					    yyfilename, yylineno);
@@ -1313,7 +1313,7 @@ element_1.3.4_format
 		;
 
 element_newformat
-			/* element_flags, description, pcb-name, value, 
+			/* element_flags, description, pcb-name, value,
 			 * text_x, text_y, text_direction, text_scale, text_flags
 			 */
 		: T_ELEMENT '(' INTEGER STRING STRING STRING measure measure measure measure INTEGER ')' '('
@@ -1614,7 +1614,7 @@ pin_oldformat
 				char	p_number[8];
 
 					/* make sure that there's enough copper left */
-				if (OU ($5) - hole < MIN_PINORVIACOPPER && 
+				if (OU ($5) - hole < MIN_PINORVIACOPPER &&
 					OU ($5) > MIN_PINORVIACOPPER)
 					hole = OU ($5) - MIN_PINORVIACOPPER;
 
@@ -1842,7 +1842,7 @@ nets
 		;
 
 netdefs
-		: net 
+		: net
 		| netdefs net
 		;
 
@@ -2016,7 +2016,7 @@ measure
  */
 int yyerror(const char * s)
 {
-	Message("ERROR parsing file '%s'\n"
+	Message(PCB_MSG_ERROR, "ERROR parsing file '%s'\n"
 		"    line:        %i\n"
 		"    description: '%s'\n",
 		yyfilename, yylineno, s);
@@ -2032,7 +2032,7 @@ static int
 check_file_version (int ver)
 {
   if ( ver > PCB_FILE_VERSION ) {
-    Message ("ERROR:  The file you are attempting to load is in a format\n"
+    Message (PCB_MSG_DEFAULT, "ERROR:  The file you are attempting to load is in a format\n"
 	     "which is too new for this version of pcb.  To load this file\n"
 	     "you need a version of pcb which is >= %d.  If you are\n"
 	     "using a version built from git source, the source date\n"
@@ -2040,7 +2040,7 @@ check_file_version (int ver)
 	     "up to file version %d.\n", ver, ver, PCB_FILE_VERSION);
     return 1;
   }
-  
+
   return 0;
 }
 
