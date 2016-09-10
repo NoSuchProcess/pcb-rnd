@@ -71,7 +71,7 @@ void Message(enum pcb_message_level level, const char *Format, ...)
 
 	if (gui != NULL) {
 		va_start(args, Format);
-		gui->logv(Format, args);
+		gui->logv(level, Format, args);
 		va_end(args);
 	}
 

@@ -3,6 +3,8 @@
 
 #include <stdarg.h>
 
+#include "error.h"
+
 typedef struct HID_Attr_Val_s  HID_Attr_Val;
 typedef struct HID_Attribute_s HID_Attribute;
 
@@ -343,7 +345,7 @@ struct hid_st {
 
 	/* Log a message to the log window.  */
 	void (*log) (const char *fmt_, ...);
-	void (*logv) (const char *fmt_, va_list args_);
+	void (*logv) (enum pcb_message_level, const char *fmt_, va_list args_);
 
 	/* A generic yes/no dialog.  Returns zero if the cancel button is
 	   pressed, one for the ok button.  If you specify alternate labels

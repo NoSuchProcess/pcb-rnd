@@ -279,8 +279,9 @@ static void log_dismiss(Widget w, void *up, void *cbp)
 	XtUnmanageChild(log_form);
 }
 
-void lesstif_logv(const char *fmt, va_list ap)
+void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap)
 {
+	// TODO(hzeller): do something useful with level (color etc.)
 	char *buf, *scan;
 	if (!mainwind) {
 		vprintf(fmt, ap);
@@ -351,7 +352,7 @@ void lesstif_log(const char *fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
-	lesstif_logv(fmt, ap);
+	lesstif_logv(PCB_MSG_INFO, fmt, ap);
 	va_end(ap);
 }
 

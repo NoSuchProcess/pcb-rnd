@@ -145,12 +145,13 @@ void ghid_log(const char *fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
-	ghid_logv(fmt, ap);
+	ghid_logv(PCB_MSG_INFO, fmt, ap);
 	va_end(ap);
 }
 
-void ghid_logv(const char *fmt, va_list args)
+void ghid_logv(enum pcb_message_level level, const char *fmt, va_list args)
 {
+	// TODO(hzeller): use level to color things.
 	char *msg = pcb_strdup_vprintf(fmt, args);
 	ghid_log_append_string(msg);
 	free(msg);

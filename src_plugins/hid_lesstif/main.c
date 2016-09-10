@@ -3444,7 +3444,7 @@ static void lesstif_stop_block_hook(hidval mlpoll)
 }
 
 
-extern void lesstif_logv(const char *fmt, va_list ap);
+extern void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap);
 
 extern int lesstif_confirm_dialog(const char *msg, ...);
 

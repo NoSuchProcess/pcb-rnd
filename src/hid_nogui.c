@@ -230,8 +230,22 @@ static void nogui_log(const char *fmt, ...)
 	va_end(ap);
 }
 
-static void nogui_logv(const char *fmt, va_list ap)
+static void nogui_logv(enum pcb_message_level level, const char *fmt, va_list ap)
 {
+	switch (level) {
+	case PCB_MSG_DEBUG:
+		printf("D:");
+		break;
+	case PCB_MSG_INFO:
+		printf("I:");
+		break;
+	case PCB_MSG_WARNING:
+		printf("W:");
+		break;
+	case PCB_MSG_ERROR:
+		printf("E:");
+		break;
+	}
 	vprintf(fmt, ap);
 }
 
