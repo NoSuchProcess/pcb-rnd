@@ -410,11 +410,11 @@ struct hid_st {
 	/* A generic dialog to ask for a set of attributes.  If n_attrs is
 	   zero, attrs(.name) must be NULL terminated.  Returns non-zero if
 	   an error occurred (usually, this means the user cancelled the
-	   dialog or something). title is the title of the dialog box 
+	   dialog or something). title is the title of the dialog box
 	   descr (if not NULL) can be a longer description of what the
 	   attributes are used for.  The HID may choose to ignore it or it
 	   may use it for a tooltip or text in a dialog box, or a help
-	   string. 
+	   string.
 	 */
 	int (*attribute_dialog) (HID_Attribute * attrs_,
 													 int n_attrs_, HID_Attr_Val * results_, const char *title_, const char *descr_);
