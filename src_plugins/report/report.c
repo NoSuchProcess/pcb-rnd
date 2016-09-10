@@ -823,8 +823,8 @@ static int ReportNetLengthByName(char *tofind, int x, int y)
 }
 
 /* ---------------------------------------------------------------------------
- * reports on an object 
- * syntax: 
+ * reports on an object
+ * syntax:
  */
 
 static const char report_syntax[] = "Report(Object|DrillReport|FoundPins|NetLength|AllNetLengths|[,name])";
@@ -911,4 +911,3 @@ pcb_uninit_t hid_report_init(void)
 #include "report_conf_fields.h"
 	return hid_report_uninit;
 }
-
