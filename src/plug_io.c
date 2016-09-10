@@ -161,7 +161,7 @@ static int find_prio_cmp(const void *p1, const void *p2)
 	return f1->prio < f2->prio;
 }
 
-/* Find all plugins that can handle typ/is_wr and build an ordered list in available[], 
+/* Find all plugins that can handle typ/is_wr and build an ordered list in available[],
    highest prio first. If fmt is NULL, use the default fmt for each plugin.
    Return the length of the array. */
 static int find_io(find_t *available, int avail_len, plug_iot_t typ, int is_wr, const char *fmt)
@@ -630,7 +630,7 @@ void DisableEmergencySave(void)
 
 static hidval backup_timer;
 
-/*  
+/*
  * If the backup interval is > 0 then set another timer.  Otherwise
  * we do nothing and it is up to the GUI to call EnableAutosave()
  * after setting conf_core.rc.backup_interval > 0 again.
@@ -832,7 +832,7 @@ int pcb_io_list(pcb_io_formats_t *out, plug_iot_t typ, int wr, int do_digest)
 	memset(out, 0, sizeof(pcb_io_formats_t));
 	out->len = find_io(available, sizeof(available)/sizeof(available[0]), typ, 1, NULL);
 
-	if (out->len == 0) 
+	if (out->len == 0)
 		return 0;
 
 	for(n = 0; n < out->len; n++)
@@ -857,4 +857,3 @@ void pcb_io_list_free(pcb_io_formats_t *out)
 		}
 	}
 }
-
