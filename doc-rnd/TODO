@@ -45,7 +45,6 @@
 		- import schematics:
 			- gnetlist_program, make_program from conf
 			- gnetlist_program, make_program from env var
-		- gtk, preferences dialog, user pov
 		- test if all plugins work from .so
 		- test clearance + drc clearance
 		- route style in gtk and lesstif, save, load, 0, 1 or a lot of styles
