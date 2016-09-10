@@ -119,3 +119,10 @@ void conf_hid_global_cb_(conf_native_t *item, int offs)
 	}
 }
 
+
+void conf_loglevel_props(enum pcb_message_level level, const char **tag, int *popup)
+{
+	*tag = NULL;
+	*popup = 0;
+}
+

@@ -62,8 +62,12 @@ do { \
 	conf_hid_global_cb_(native, __offs__); \
 } while(0)
 
+/****** Utility/helper functions  ******/
+/* Looking at the log level, return a log format tag and whether the window
+   should pop up. */
+void conf_loglevel_props(enum pcb_message_level level, const char **tag, int *popup);
 
-/* Internal */
+/****** Internal  ******/
 void conf_hid_global_cb_(conf_native_t *item, int offs);
 
 #endif
