@@ -153,3 +153,4 @@ Low prio:
 - arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
 	-> AttachForCopy() calls SetCrosshairRange() that then sets corsshair max* which
 	limits the arc to move freely. Problem: this is not arc-specific, this happens with any buffer copy! going for no-design-limit is probably better
+- while drawing a line, the temporary outline should reflect the layer color
