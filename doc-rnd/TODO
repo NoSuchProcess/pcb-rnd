@@ -35,15 +35,13 @@
 		- fontmode
 		- change style in both GUIs
 		- what are these and how to test them:
-			{"showmask", FlagTESTFLAG, SHOWMASKFLAG}
+			{"showmask", FlagTESTFLAG, SHOWMASKFLAG} - show solder mask
 			{"fullpoly", FlagSETTINGS, OffsetOf(conf_core_t, editor.full_poly)}
-			{"savelastcommand", FlagSETTINGS, OffsetOf(conf_core_t, editor.save_last_command)}
-			{"saveintmp", FlagSETTINGS, OffsetOf(conf_core_t, editor.save_in_tmp)}
-			{"ratwarn", FlagSETTINGS, OffsetOf(conf_core_t, temp.rat_warn)}
-			{"stipplepolygons", FlagSETTINGS, OffsetOf(conf_core_t, editor.stipple_polygons)}
-					{"showdrcmode", FlagSETTINGS, OffsetOf(conf_core_t, editor.show_drc)}
+			{"savelastcommand", FlagSETTINGS, OffsetOf(conf_core_t, editor.save_last_command)} - save last CLI command
+			{"saveintmp", FlagSETTINGS, OffsetOf(conf_core_t, editor.save_in_tmp)} - save in tmp on exit (hid-dep?)
+			{"showdrcmode", FlagSETTINGS, OffsetOf(conf_core_t, editor.show_drc)}
 			{"resetafterelement", FlagSETTINGS, OffsetOf(conf_core_t, editor.reset_after_element)}
-			{"ringbellwhenfinished", FlagSETTINGS, OffsetOf(conf_core_t, editor.beep_when_finished)}
+			{"ringbellwhenfinished", FlagSETTINGS, OffsetOf(conf_core_t, editor.beep_when_finished)} - find conn? lookup unused pins? 
 		- import schematics:
 			- gnetlist_program, make_program from conf
 			- gnetlist_program, make_program from env var
