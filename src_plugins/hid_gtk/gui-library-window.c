@@ -393,6 +393,7 @@ static void library_window_preview_refresh(GhidLibraryWindow * library_window, c
 			return;
 		fullp = entry->data.fp.loc_info;
 	}
+		SetMode(PCB_MODE_ARROW);
 	if (LoadElementToBuffer(PASTEBUFFER, name == NULL ? fullp : name))
 		SetMode(PCB_MODE_PASTE_BUFFER);
 
