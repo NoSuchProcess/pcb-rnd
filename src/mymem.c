@@ -648,7 +648,7 @@ void FreeDataMemory(DataType * data)
 		}
 		END_LOOP;
 		if (layer->Name)
-			free(layer->Name);
+			free((char*)layer->Name);
 		LINE_LOOP(layer);
 		{
 			if (line->Number)

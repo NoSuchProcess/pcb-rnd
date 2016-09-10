@@ -1230,7 +1230,7 @@ bool ChangeElementSide(ElementTypePtr Element, Coord yoff)
  */
 bool ChangeLayerName(LayerTypePtr Layer, char *Name)
 {
-	free(CURRENT->Name);
+	free((char*)CURRENT->Name);
 	CURRENT->Name = Name;
 	hid_action("LayersChanged");
 	return (true);

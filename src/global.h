@@ -172,15 +172,15 @@ struct rtree {
 };
 
 typedef struct {								/* holds information about one layer */
-	char *Name;										/* layer name */
+	const char *Name;		   				/* layer name */
 	linelist_t Line;
 	textlist_t Text;
 	polylist_t Polygon;
 	arclist_t Arc;
 	rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
 	bool On;											/* visible flag */
-	char *Color,									/* color */
-	 *SelectedColor;
+	const char *Color;						/* color */
+	const char *SelectedColor;
 	AttributeListType Attributes;
 	int no_drc;										/* whether to ignore the layer when checking the design rules */
 } LayerType, *LayerTypePtr;
