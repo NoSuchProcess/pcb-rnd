@@ -391,7 +391,7 @@ POLYAREA *OctagonPoly(Coord x, Coord y, Coord radius, int style)
 	return ContourToPoly(contour);
 }
 
-/* add verticies in a fractional-circle starting from v 
+/* add verticies in a fractional-circle starting from v
  * centered at X, Y and going counter-clockwise
  * does not include the first point
  * last argument is 1 for a full circle
