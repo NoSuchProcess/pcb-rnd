@@ -49,7 +49,7 @@ Lines starting with @code{#} are ignored.
 int ActionExecuteFile(int argc, char **argv, Coord x, Coord y)
 {
 	FILE *fp;
-	char *fname;
+	const char *fname;
 	char line[256];
 	int n = 0;
 	char *sp;
