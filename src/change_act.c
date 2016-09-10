@@ -50,7 +50,7 @@
 #include "compat_misc.h"
 #include "layer.h"
 
-static void ChangeFlag(char *, char *, int, char *);
+static void ChangeFlag(const char *, const char *, int, const char *);
 static int ActionChangeSize(int argc, char **argv, Coord x, Coord y);
 static int ActionChange2ndSize(int argc, char **argv, Coord x, Coord y);
 
@@ -158,8 +158,8 @@ cleared.  If the value is 1, the flag is set.
 
 static int ActionChangeFlag(int argc, char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
-	char *flag = ACTION_ARG(1);
+	const char *function = ACTION_ARG(0);
+	const char *flag = ACTION_ARG(1);
 	int value = argc > 2 ? atoi(argv[2]) : -1;
 	if (value != 0 && value != 1)
 		AFAIL(changeflag);
@@ -169,7 +169,8 @@ static int ActionChangeFlag(int argc, char **argv, Coord x, Coord y)
 }
 
 
-static void ChangeFlag(char *what, char *flag_name, int value, char *cmd_name)
+static void ChangeFlag(const char *what, const char *flag_name, int value,
+											 const char *cmd_name)
 {
 	bool(*set_object) (int, void *, void *, void *);
 	bool(*set_selected) (int);
