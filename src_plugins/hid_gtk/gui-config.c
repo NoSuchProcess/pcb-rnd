@@ -214,6 +214,24 @@ typedef struct {
 
 static void ghid_config_window_close(void);
 
+static GtkTreeView *gui_config_treeview;
+
+typedef struct tvmap_s tvmap_t;
+
+struct tvmap_s {
+	GtkTreePath *path;
+	tvmap_t *next;
+};
+
+static void tvmap(GtkTreeView *tree, GtkTreePath *path, gpointer user_data)
+{
+	tvmap_t **first = user_data, *m = malloc(sizeof(tvmap_t));
+	m->path = gtk_tree_path_copy(path);
+	m->next = *first;
+	*first = m;
+/*	printf("exp1 %s\n", gtk_tree_path_to_string(m->path));*/
+}
+
 /* Replace a list of paths in dst with src; each path must be either:
    - a path to a config filed that presents in the hash (not a ha:subtree)
    - a subtree or multiple subtrees matching a prefix (e.g. "*appearance/color")
@@ -273,10 +291,22 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 	if ((ctx->dst_role == CFR_USER) || (ctx->dst_role == CFR_PROJECT))
 		conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), ctx->dst_role, NULL);
 
-	if (need_update) {
-		/* need to reopen the preferences dialog to show the new settings */
+	if (need_update) { /* need to reopen the preferences dialog to show the new settings */
+		tvmap_t *first = NULL, *next;
+		/* save expansions */
+		gtk_tree_view_map_expanded_rows(gui_config_treeview, tvmap, &first);
+
 		ghid_config_window_close();
 		ghid_config_window_show();
+
+		/* restore expansions */
+		for(; first != NULL; first = next) {
+/*			printf("exp2 %s\n", gtk_tree_path_to_string(first->path));*/
+			next = first->next;
+			gtk_tree_view_expand_to_path(gui_config_treeview, first->path);
+			gtk_tree_path_free(first->path);
+			free(first);
+		}
 	}
 }
 
@@ -2029,9 +2059,9 @@ void ghid_config_window_show(void)
 	config_tree_leaf(model, &user_pov, _("Colors"), config_colors_tab_create);
 
 	config_tree_auto(model, &config_pov);
-
+	
 	/* Create the tree view */
-	treeview = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(model)));
+	gui_config_treeview = treeview = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(model)));
 	g_object_unref(G_OBJECT(model));	/* Don't need the model anymore */
 
 	renderer = gtk_cell_renderer_text_new();
@@ -2068,4 +2098,5 @@ static void ghid_config_window_close(void)
 	config_groups_vbox = config_groups_table = NULL;
 	config_groups_window = NULL;
 	config_window = NULL;
+	gui_config_treeview = NULL;
 }
