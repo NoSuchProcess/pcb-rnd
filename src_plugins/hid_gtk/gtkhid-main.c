@@ -776,6 +776,7 @@ static int ghid_propedit_start(void *pe, int num_props, const char *(*query)(voi
 	ghidgui->propedit_widget = ghid_propedit_dialog_create(&ghidgui->propedit_dlg);
 	ghidgui->propedit_query = query;
 	ghidgui->propedit_pe = pe;
+	return 0;
 }
 
 static void ghid_propedit_end(void *pe)
