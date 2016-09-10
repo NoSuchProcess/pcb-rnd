@@ -84,7 +84,7 @@ extern Widget lesstif_m_layer;
 static int LayersChanged(int argc, char **argv, Coord x, Coord y)
 {
 	int l, i, set;
-	char *name;
+	const char *name;
 	int current_layer;
 
 	if (!layer_button_list)
@@ -270,7 +270,7 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 static void layerpick_button_callback(Widget w, int layer, XmPushButtonCallbackStruct * pbcs)
 {
 	int l, i;
-	char *name;
+	const char *name;
 	PCB->RatDraw = (layer == LB_RATS);
 	PCB->SilkActive = (layer == LB_SILK);
 	if (layer < max_copper_layer)
