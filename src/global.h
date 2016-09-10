@@ -225,16 +225,16 @@ typedef struct LibraryMenuType_s   LibraryMenuType, *LibraryMenuTypePtr;
  * structure used by library routines
  */
 struct LibraryEntryTpye_s {
-	char *ListEntry;							/* the string for the selection box */
+	const char *ListEntry;				/* the string for the selection box */
 	int ListEntry_dontfree;       /* do not free(ListEntry) if non-zero */
 	/* This used to contain some char *AllocatedMemory, possibly with
 	 * the intention of the following fields pointing into it.
 	 * It was never used that way, so removing for now.
 	 * TODO: re-introduce and actually use it for the following fields?
 	 */
-	char *Package;	 						 /* package */
-	char *Value;								 /* the value field */
-	char *Description;					 /* some descritional text */
+	const char *Package;	 				/* package */
+	const char *Value;						/* the value field */
+	const char *Description;			/* some descritional text */
 #if 0
 	fp_type_t Type;
 	void **Tags;									/* an array of void * tag IDs; last tag ID is NULL */

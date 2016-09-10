@@ -157,7 +157,7 @@ static void netlist_free(LibraryTypePtr dst)
 		free(dmenu->Name);
 		for (p = 0; p < dmenu->EntryN; p++) {
 			LibraryEntryTypePtr dentry = &dmenu->Entry[p];
-			free(dentry->ListEntry);
+			free((char*)dentry->ListEntry);
 		}
 		free(dmenu->Entry);
 	}

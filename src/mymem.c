@@ -702,7 +702,7 @@ void FreeLibraryMemory(LibraryTypePtr lib)
 		ENTRY_LOOP(menu);
 		{
 			if (!entry->ListEntry_dontfree)
-				free(entry->ListEntry);
+				free((char*)entry->ListEntry);
 		}
 		END_LOOP;
 		free(menu->Entry);

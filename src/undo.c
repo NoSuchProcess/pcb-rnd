@@ -804,11 +804,11 @@ static bool UndoNetlistChange(UndoListTypePtr Entry)
 		/* iterate over each pin on the net */
 		for (j = 0; j < lib->Menu[i].EntryN; j++) {
 			if (!lib->Menu[i].Entry[j].ListEntry_dontfree)
-				free(lib->Menu[i].Entry[j].ListEntry);
+				free((char*)lib->Menu[i].Entry[j].ListEntry);
 
-			free(lib->Menu[i].Entry[j].Package);
-			free(lib->Menu[i].Entry[j].Value);
-			free(lib->Menu[i].Entry[j].Description);
+			free((char*)lib->Menu[i].Entry[j].Package);
+			free((char*)lib->Menu[i].Entry[j].Value);
+			free((char*)lib->Menu[i].Entry[j].Description);
 		}
 	}
 
