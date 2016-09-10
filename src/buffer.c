@@ -1310,7 +1310,7 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 	char *forces = argc > 3 ? argv[3] : NULL;
 	char *name;
 	static char *default_file = NULL;
-	int free_name = 0;
+	bool free_name = false;
 	int force = (forces != NULL) && ((*forces == '1') || (*forces == 'y') || (*forces == 'Y'));
 
 	notify_crosshair_change(false);
@@ -1353,7 +1353,7 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 				Message(PCB_MSG_DEFAULT, _("Buffer has no elements!\n"));
 				break;
 			}
-			free_name = 0;
+			free_name = false;
 			if (argc <= 1) {
 				name = gui->fileselect(_("Save Paste Buffer As ..."),
 															 _("Choose a file to save the contents of the\n"
@@ -1366,7 +1366,7 @@ static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
 				if (name && *name) {
 					default_file = pcb_strdup(name);
 				}
-				free_name = 1;
+				free_name = true;
 			}
 
 			else
