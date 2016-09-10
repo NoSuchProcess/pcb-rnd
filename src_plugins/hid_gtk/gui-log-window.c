@@ -29,6 +29,7 @@
 
 #include "config.h"
 #include "conf_core.h"
+#include "conf_hid.h"
 
 #include "gui.h"
 #include "win_place.h"
@@ -109,9 +110,14 @@ static void ghid_log_append_string_(enum pcb_message_level level, gchar *msg)
 {
 	const char *tag;
 	int popup;
-	/* TODO(hzeller): use level to color things using m->level. */
-/*	conf_loglevel_props(level, &tag, &popup);*/
+
+	conf_loglevel_props(level, &tag, &popup);
+	if (tag != NULL)
+		ghid_text_view_append(log_text, tag);
+
 	ghid_text_view_append(log_text, msg);
+
+	/* TODO(hzeller): pop up the window if popup is non-zero. */
 }
 
 static void ghid_log_append_string(enum pcb_message_level level, gchar *s)
