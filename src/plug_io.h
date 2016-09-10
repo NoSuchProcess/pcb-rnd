@@ -104,7 +104,7 @@ void SaveInTMP(void);
 void EmergencySave(void);
 void DisableEmergencySave(void);
 int RevertPCB(void);
-int SaveBufferElements(char *, const char *fmt);
+int SaveBufferElements(const char *, const char *fmt);
 void sort_netlist(void);
 void PrintQuotedString(FILE *, const char *);
 void sort_library(LibraryTypePtr lib);

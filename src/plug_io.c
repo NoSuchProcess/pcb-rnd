@@ -517,7 +517,7 @@ FILE *OpenConnectionDataFile(void)
 /* ---------------------------------------------------------------------------
  * save elements in the current buffer
  */
-int SaveBufferElements(char *Filename, const char *fmt)
+int SaveBufferElements(const char *Filename, const char *fmt)
 {
 	int result;
 
