@@ -175,7 +175,7 @@ static bool SearchPadByLocation(int locked, ElementTypePtr * Element, PadTypePtr
 }
 
 /* ---------------------------------------------------------------------------
- * searches ordinary line on the SearchLayer 
+ * searches ordinary line on the SearchLayer
  */
 
 struct line_info {
@@ -252,7 +252,7 @@ static bool SearchRatLineByLocation(int locked, RatTypePtr * Line, RatTypePtr * 
 }
 
 /* ---------------------------------------------------------------------------
- * searches arc on the SearchLayer 
+ * searches arc on the SearchLayer
  */
 struct arc_info {
 	ArcTypePtr *Arc, *Dummy;
@@ -338,7 +338,7 @@ static r_dir_t polygon_callback(const BoxType * box, void *cl)
 
 
 /* ---------------------------------------------------------------------------
- * searches a polygon on the SearchLayer 
+ * searches a polygon on the SearchLayer
  */
 static bool SearchPolygonByLocation(int locked, LayerTypePtr * Layer, PolygonTypePtr * Polygon, PolygonTypePtr * Dummy)
 {
@@ -560,12 +560,12 @@ bool IsPointOnLineEnd(Coord X, Coord Y, RatTypePtr Line)
  * the length of the line is
  *
  *   L = ((X2-X1)^2 + (Y2-Y1)^2)^0.5
- * 
+ *
  * let Q be the point of perpendicular projection of (X,Y) onto the line
  *
  *   QX = X1 + D1*(X2-X1) / L
  *   QY = Y1 + D1*(Y2-Y1) / L
- * 
+ *
  * with (from vector geometry)
  *
  *        (Y1-Y)(Y1-Y2)+(X1-X)(X1-X2)
@@ -953,7 +953,7 @@ bool IsPointOnArc(Coord X, Coord Y, Coord Radius, ArcTypePtr Arc)
 /* ---------------------------------------------------------------------------
  * searches for any kind of object or for a set of object types
  * the calling routine passes two pointers to allocated memory for storing
- * the results. 
+ * the results.
  * A type value is returned too which is PCB_TYPE_NONE if no objects has been found.
  * A set of object types is passed in.
  * The object is located by it's position.
@@ -1128,7 +1128,7 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
  * the object is visible or not. The search is performed on a PCB, a
  * buffer or on the remove list.
  * The calling routine passes two pointers to allocated memory for storing
- * the results. 
+ * the results.
  * A type value is returned too which is PCB_TYPE_NONE if no objects has been found.
  */
 int SearchObjectByID(DataTypePtr Base, void **Result1, void **Result2, void **Result3, int ID, int type)
@@ -1322,7 +1322,7 @@ ElementTypePtr SearchElementByName(DataTypePtr Base, char *Name)
 }
 
 /* ---------------------------------------------------------------------------
- * searches the cursor position for the type 
+ * searches the cursor position for the type
  */
 int SearchScreen(Coord X, Coord Y, int Type, void **Result1, void **Result2, void **Result3)
 {
