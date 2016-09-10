@@ -245,9 +245,9 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 	if (strcasecmp(function, "PasteBuffer") == 0)
 		hid_actionl("PasteBuffer", "Save", name, NULL);
 	else {
-		/* 
+		/*
 		 * if we got this far and the function is Layout, then
-		 * we really needed it to be a LayoutAs.  Otherwise 
+		 * we really needed it to be a LayoutAs.  Otherwise
 		 * ActionSaveTo() will ignore the new file name we
 		 * just obtained.
 		 */
