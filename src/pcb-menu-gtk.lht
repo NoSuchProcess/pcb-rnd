@@ -6,6 +6,9 @@ ha:{
 			li:press-ctrl       = { Mode(Save); Mode(None); Mode(Restore); Mode(Notify) }
 			li:press-shift-ctrl = { Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore) }
 			li:release          = { Mode(Release) }
+			li:release-shift    = { Mode(Release) }
+			li:release-ctrl     = { Mode(Release) }
+			li:release-shift-ctrl = { Mode(Release) }
 		}
 		li:right {
 			li:press         = { Pan(1) }

@@ -4,6 +4,7 @@ ha:{
 			li:press         = { Mode(Notify) }
 			li:press-shift   = { Mode(Notify) }
 			li:release       = { Mode(Release) }
+			li:release-shift = { Mode(Release) }
 		}
 		li:right {
 			li:press         = { Mode(Save); Mode(Rotate); Mode(Notify); Mode(Release); Mode(Restore); }
