@@ -1640,7 +1640,7 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 	lesstif_invalidate_all();
 }
 
-static Widget make_message(char *name, Widget left, int resizeable)
+static Widget make_message(const char *name, Widget left, int resizeable)
 {
 	Widget w, f;
 	stdarg_n = 0;
@@ -1660,14 +1660,14 @@ static Widget make_message(char *name, Widget left, int resizeable)
 	stdarg(XmNmarginHeight, 1);
 	if (!resizeable)
 		stdarg(XmNresizePolicy, XmRESIZE_GROW);
-	f = XmCreateForm(messages, name, stdarg_args, stdarg_n);
+	f = XmCreateForm(messages, XmStrCast(name), stdarg_args, stdarg_n);
 	XtManageChild(f);
 	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
-	w = XmCreateLabel(f, name, stdarg_args, stdarg_n);
+	w = XmCreateLabel(f, XmStrCast(name), stdarg_args, stdarg_n);
 	XtManageChild(w);
 	return w;
 }
