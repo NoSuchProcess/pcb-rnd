@@ -69,7 +69,7 @@ static XmString XmStringCreatePCB(const char *x)
 {
 	if (x && x[0])
 		x = gettext(x);
-	// Nasty 80'ies API uses char* instad of const char*.
+	/* Nasty 80'ies API uses char* instad of const char*. */
 	return XmStringCreateLtoR((char*)x, XmFONTLIST_DEFAULT_TAG);
 }
 
