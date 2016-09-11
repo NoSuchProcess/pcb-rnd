@@ -776,7 +776,7 @@ void ghid_netlist_window_show(GHidPort * out, gboolean raise)
 
 struct ggnfnn_task {
 	gboolean enabled_only;
-	gchar *node_name;
+	const gchar *node_name;
 	LibraryMenuType *found_net;
 	GtkTreeIter iter;
 };
@@ -814,7 +814,7 @@ static gboolean hunt_named_node(GtkTreeModel * model, GtkTreePath * path, GtkTre
 	return FALSE;
 }
 
-LibraryMenuType *ghid_get_net_from_node_name(gchar * node_name, gboolean enabled_only)
+LibraryMenuType *ghid_get_net_from_node_name(const gchar * node_name, gboolean enabled_only)
 {
 	GtkTreePath *path;
 	struct ggnfnn_task task;
@@ -859,7 +859,7 @@ LibraryMenuType *ghid_get_net_from_node_name(gchar * node_name, gboolean enabled
 /* PCB LookupConnection code in find.c calls this if it wants a node
    |  and its net highlighted.
 */
-void ghid_netlist_highlight_node(gchar * node_name)
+void ghid_netlist_highlight_node(const gchar * node_name)
 {
 	GtkTreePath *path;
 	GtkTreeIter iter;
