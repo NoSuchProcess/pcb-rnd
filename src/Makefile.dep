@@ -1339,7 +1339,8 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  error.h ../src_plugins/io_kicad_legacy/uniq_name.h \
- ../src_3rd/liblihata/genht/htsp.h data.h
+ ../src_3rd/liblihata/genht/htsp.h data.h \
+ ../src_plugins/io_kicad_legacy/write.h global.h
 ../src_plugins/io_lihata/common.o: ../src_plugins/io_lihata/common.c \
  global.h ../config.h const.h macro.h global_typedefs.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
@@ -1566,7 +1567,7 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h data.h action_helper.h change.h error.h undo.h plugins.h \
- dolists.h
+ hid_actions.h dolists.h
 ../src_plugins/propedit/propedit.o: ../src_plugins/propedit/propedit.c \
  plugins.h ../src_plugins/propedit/props.h global.h ../config.h const.h \
  macro.h global_typedefs.h unit.h global_objs.h \
@@ -1666,7 +1667,7 @@
  error.h search.h misc_util.h misc.h mymem.h mymem.h rats.h rtree.h \
  strflags.h macro.h undo.h find.h draw.h pcb-printf.h plugins.h \
  hid_actions.h misc_util.h ../src_plugins/report/report_conf.h conf.h \
- compat_misc.h ../src_3rd/genregex/regex_sei.h \
+ compat_misc.h layer.h ../src_3rd/genregex/regex_sei.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h dolists.h \
  ../src_plugins/report/report_conf_fields.h
 ../src_plugins/shand_cmd/command.o: ../src_plugins/shand_cmd/command.c \
@@ -2958,7 +2959,7 @@ select.o: select.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  data.h draw.h search.h misc_util.h select.h undo.h rats.h misc.h mymem.h \
- find.h layer.h ../src_3rd/genregex/regex_sei.h \
+ find.h layer.h compat_misc.h ../src_3rd/genregex/regex_sei.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h
 select_act.o: select_act.c ../config.h conf_core.h conf.h global.h \
  const.h macro.h global_typedefs.h unit.h global_objs.h \
