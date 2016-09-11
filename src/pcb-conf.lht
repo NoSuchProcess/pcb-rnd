@@ -45,7 +45,7 @@ li:pcb-rnd-conf-v1 {
 			save_in_tmp = 0
 			draw_grid = 1
 			all_direction_lines = 0
-		        line_refraction = 1
+			line_refraction = 1
 			rubber_band_mode = 0
 			swap_start_direction = 0
 			show_drc = 0
