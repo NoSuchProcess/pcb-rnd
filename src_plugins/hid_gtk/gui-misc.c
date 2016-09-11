@@ -362,26 +362,28 @@ void ghid_get_pointer(int *x, int *y)
 void ghid_set_status_line_label(void)
 {
 	gchar *flag = conf_core.editor.all_direction_lines
-		? "all" : (PCB->Clipping == 0 ? "45" : (PCB->Clipping == 1 ? "45_/" : "45\\_"));
-	char *text = pcb_strdup_printf(_("%m+<b>view</b>=%s  "
-																			"<b>grid</b>=%$mS  "
-																			"%s%s  "
-																			"<b>line</b>=%mS  "
-																			"<b>via</b>=%mS (%mS)  %s"
-																			"<b>clearance</b>=%mS  " "<b>text</b>=%i%%  " "<b>buffer</b>=#%i"),
-																		conf_core.editor.grid_unit->allow,
-																		conf_core.editor.show_solder_side ? _("solder") : _("component"),
-																		PCB->Grid,
-																		flag, conf_core.editor.rubber_band_mode ? ",R  " : "  ",
-																		conf_core.design.line_thickness,
-																		conf_core.design.via_thickness,
-																		conf_core.design.via_drilling_hole,
-																		conf_hid_gtk.plugins.hid_gtk.compact_horizontal ? "\n" : "",
-																		conf_core.design.clearance,
-																		conf_core.design.text_scale, conf_core.editor.buffer_number + 1);
+	    ? "all" : (PCB->Clipping == 0 ? "45" : (PCB->Clipping == 1 ? "45_/" : "45\\_"));
+	    char *text = pcb_strdup_printf(_("%m+<b>view</b>=%s  "
+	        "<b>grid</b>=%$mS  "
+	        "%s%s  "
+	        "<b>line</b>=%mS  "
+	        "<b>via</b>=%mS (%mS)  %s"
+	        "<b>clearance</b>=%mS  "
+	        "<b>text</b>=%i%%  "
+	        "<b>buffer</b>=#%i"),
+	conf_core.editor.grid_unit->allow,
+	conf_core.editor.show_solder_side ? _("solder") : _("component"),
+	PCB->Grid,
+	flag, conf_core.editor.rubber_band_mode ? ",R  " : "  ",
+	conf_core.design.line_thickness,
+	conf_core.design.via_thickness,
+	conf_core.design.via_drilling_hole,
+	conf_hid_gtk.plugins.hid_gtk.compact_horizontal ? "\n" : "",
+	conf_core.design.clearance,
+	conf_core.design.text_scale, conf_core.editor.buffer_number + 1);
 
-	ghid_status_line_set_text(text);
-	free(text);
+  ghid_status_line_set_text(text);
+  free(text);
 }
 
 /* ---------------------------------------------------------------------------
