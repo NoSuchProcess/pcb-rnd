@@ -295,7 +295,7 @@ Pixel lesstif_parse_color(const char *value)
 
 /* ------------------------------------------------------------ */
 
-static char *cur_clip()
+static const char *cur_clip()
 {
 	if (conf_core.editor.orthogonal_moves)
 		return "+";
@@ -2307,7 +2307,7 @@ void lesstif_update_status_line()
 {
 	char *empty = "";
 	char *buf = empty;
-	char *s45 = cur_clip();
+	const char *s45 = cur_clip();
 	XmString xs;
 
 	switch (conf_core.editor.mode) {
@@ -2678,9 +2678,9 @@ static Boolean idle_proc(XtPointer dummy)
 		}
 	}
 	{
-		static char *old_clip = 0;
+		static const char *old_clip = NULL;
 		static int old_tscale = -1;
-		char *new_clip = cur_clip();
+		const char *new_clip = cur_clip();
 
 		if (new_clip != old_clip || conf_core.design.text_scale != old_tscale) {
 			lesstif_update_status_line();
