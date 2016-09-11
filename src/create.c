@@ -250,7 +250,7 @@ CreateNewVia(DataTypePtr Data,
 	SET_FLAG(PCB_FLAG_VIA, Via);
 	Via->ID = ID++;
 
-	/* 
+	/*
 	 * don't complain about MIN_PINORVIACOPPER on a mounting hole (pure
 	 * hole)
 	 */
@@ -729,7 +729,7 @@ CreateNewPin(ElementTypePtr Element,
 	pin->ID = ID++;
 	pin->Element = Element;
 
-	/* 
+	/*
 	 * If there is no vendor drill map installed, this will simply
 	 * return DrillingHole.
 	 */
@@ -945,4 +945,3 @@ long int CreateIDGet(void)
 {
 	return ID++;
 }
-
