@@ -1015,7 +1015,7 @@ static int ActionRouteStyle(int argc, char **argv, Coord x, Coord y)
 				}
 			}
 		}
-		
+
 		if (number > 0 && number <= vtroutestyle_len(&PCB->RouteStyle)) {
 			rts = &PCB->RouteStyle.array[number - 1];
 			SetLineSize(rts->Thick);
