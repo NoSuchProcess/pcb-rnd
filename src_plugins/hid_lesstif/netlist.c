@@ -242,7 +242,7 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 
 #define NLB_FORM ((Widget)(~0))
 static Widget
-netlist_button(Widget parent, char *name, char *string,
+netlist_button(Widget parent, const char *name, const char *string,
 							 Widget top, Widget bottom, Widget left, Widget right, XtCallbackProc callback, void *user_data)
 {
 	Widget rv;
@@ -258,7 +258,7 @@ netlist_button(Widget parent, char *name, char *string,
 	NLB_W(right);
 	str = XmStringCreatePCB(string);
 	stdarg(XmNlabelString, str);
-	rv = XmCreatePushButton(parent, name, stdarg_args, stdarg_n);
+	rv = XmCreatePushButton(parent, XmStrCast(name), stdarg_args, stdarg_n);
 	XtManageChild(rv);
 	if (callback)
 		XtAddCallback(rv, XmNactivateCallback, callback, (XtPointer) user_data);
