@@ -67,7 +67,7 @@ void Message(enum pcb_message_level level, const char *Format, ...)
 {
 	va_list args;
 
-	// TODO(hzeller): do something useful with the level, e.g. color coding.
+	/* TODO(hzeller): do something useful with the level, e.g. color coding. */
 
 	if (gui != NULL) {
 		va_start(args, Format);

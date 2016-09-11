@@ -236,7 +236,7 @@ void dispatch_status_changed(DBusConnection * conn, DBusDispatchStatus new_statu
 	   *** NO DISPATCHING TO BE DONE INSIDE THIS FUNCTION *** */
 }
 
-// END INTERNALS
+/* END INTERNALS */
 
 
 /**

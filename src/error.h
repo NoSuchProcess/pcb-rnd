@@ -29,7 +29,7 @@
 #ifndef	PCB_ERROR_H
 #define	PCB_ERROR_H
 
-// Common return codes.
+/* Common return codes. */
 #define	STATUS_OK		0
 #define	STATUS_BREAK	1
 #define	STATUS_ERROR	-1

@@ -23,7 +23,7 @@ int main()
 	FILE *f;
 	char line[1024];
 
-//	fp_gedasymbols_load_dir(NULL, "gedasymbols://");
+/*	fp_gedasymbols_load_dir(NULL, "gedasymbols://"); */
 	f = fp_gedasymbols_fopen(NULL, NULL, "wget@gedasymbols/user/sean_depagnier/footprints/HDMI_CONN.fp", &fctx);
 
 	while(fgets(line, sizeof(line), f) != NULL)
