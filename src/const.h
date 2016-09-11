@@ -138,7 +138,7 @@ typedef enum {
 	PCB_FLAG_VISIT        = 0x08000, /*!< marker to avoid re-visiting an object */
 	PCB_FLAG_NONETLIST    = 0x10000, /* element is not on the netlist and should not interfere with the netlist */
 	PCB_FLAG_MINCUT       = 0x20000, /* used by the mincut short find code */
-	PCB_FLAG_ONPOINT      = 0x40000, /*!< crosshair is on line point or arc point */
+	PCB_FLAG_ONPOINT      = 0x40000  /*!< crosshair is on line point or arc point */
 /*	PCB_FLAG_NOCOPY     = (PCB_FLAG_FOUND | CONNECTEDFLAG | PCB_FLAG_ONPOINT)*/
 } pcb_flag_t;
 
