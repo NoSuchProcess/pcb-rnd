@@ -61,8 +61,8 @@ static void GetGridLockCoordinates(int, void *, void *, void *, Coord *, Coord *
 
 /* Local variables */
 
-/* 
- * Used by SaveStackAndVisibility() and 
+/*
+ * Used by SaveStackAndVisibility() and
  * RestoreStackAndVisibility()
  */
 
@@ -619,7 +619,7 @@ void CenterDisplay(Coord X, Coord Y)
 /* ---------------------------------------------------------------------------
  * transforms symbol coordinates so that the left edge of each symbol
  * is at the zero position. The y coordinates are moved so that min(y) = 0
- * 
+ *
  */
 void SetFontInfo(FontTypePtr Ptr)
 {
@@ -718,7 +718,7 @@ void QuitApplication(void)
 
 /* ---------------------------------------------------------------------------
  * creates a filename from a template
- * %f is replaced by the filename 
+ * %f is replaced by the filename
  * %p by the searchpath
  */
 char *EvaluateFilename(const char *Template, const char *Path, const char *Filename, const char *Parameter)
@@ -909,7 +909,7 @@ static char *BumpName(char *Name)
 }
 
 /*
- * make a unique name for the name on board 
+ * make a unique name for the name on board
  * this can alter the contents of the input string
  */
 char *UniqueElementName(DataTypePtr Data, char *Name)
