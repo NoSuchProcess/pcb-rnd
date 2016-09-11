@@ -355,7 +355,7 @@ updates the GUI.
 
 %end-doc */
 
-static int Netlist(int argc, char **argv, Coord x, Coord y)
+static int ActionNetlist(int argc, char **argv, Coord x, Coord y)
 {
 	NFunc func;
 	int i, j;
@@ -487,10 +487,10 @@ static int Netlist(int argc, char **argv, Coord x, Coord y)
 }
 
 HID_Action netlist_action_list[] = {
-	{"net", 0, Netlist,
+	{"net", 0, ActionNetlist,
 	 netlist_help, netlist_syntax}
 	,
-	{"netlist", 0, Netlist,
+	{"netlist", 0, ActionNetlist,
 	 netlist_help, netlist_syntax}
 };
 
