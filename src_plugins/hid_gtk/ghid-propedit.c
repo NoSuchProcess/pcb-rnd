@@ -172,7 +172,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	CreateNewArcOnLayer(preview_pcb.Data->Layer+0,
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 		PCB_MIL_TO_COORD(100), PCB_MIL_TO_COORD(100),
-		0.0, 90.0, 
+		0.0, 90.0,
 		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), NoFlags());
 
 /*	v = CreateNewPolygonFromRectangle(preview_pcb.Data->Layer+0,

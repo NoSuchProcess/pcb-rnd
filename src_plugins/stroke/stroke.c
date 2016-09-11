@@ -167,4 +167,3 @@ pcb_uninit_t hid_stroke_init(void)
 	stub_stroke_finish = real_stroke_finish;
 	return NULL;
 }
-
