@@ -22,7 +22,7 @@
 
 /* Table entry format for funchash_set_table() */
 typedef struct {
-	char *key;
+	const char *key;
 	int val;
 } funchash_table_t;
 
