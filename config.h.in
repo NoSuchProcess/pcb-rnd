@@ -178,6 +178,9 @@ typedef @/local/pcb/coord_type@ Coord;
 #define COORD_MAX @/local/pcb/coord_max@
 #define coord_abs @/local/pcb/coord_abs@
 
+/* Other autodetected types */
+typedef @/local/pcb/long64@    pcb_long64_t;
+
 /* the dot-dir: where to save user config under ther user's home; it's used
    as ~/DOT_PCB_RND/ */
 #define DOT_PCB_RND "@/local/pcb/dot_pcb_rnd@"

@@ -17,6 +17,8 @@
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
 	- TEST:
+		- png export: bloat settings in pixel (scale changed)
+		- whether polygon rendering breaks if pcb_long64_t is double
 		- import netlist and import EDIF (File/Load Netlist in gtk - file format should be autodetected usign file content)
 		- atexit change -> is the design saved periodically? is it saved on a crash?
 		- dbus support

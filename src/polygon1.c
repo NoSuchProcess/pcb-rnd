@@ -2534,10 +2534,10 @@ static r_dir_t crossing(const BoxType * b, void *cl)
 	if (s->v->point[1] <= p->p[1]) {
 		if (s->v->next->point[1] > p->p[1]) {
 			Vector v1, v2;
-			long long cross;
+			pcb_long64_t cross;
 			Vsub2(v1, s->v->next->point, s->v->point);
 			Vsub2(v2, p->p, s->v->point);
-			cross = (long long) v1[0] * v2[1] - (long long) v2[0] * v1[1];
+			cross = (pcb_long64_t) v1[0] * v2[1] - (pcb_long64_t) v2[0] * v1[1];
 			if (cross == 0) {
 				p->f = 1;
 				longjmp(p->env, 1);
@@ -2549,10 +2549,10 @@ static r_dir_t crossing(const BoxType * b, void *cl)
 	else {
 		if (s->v->next->point[1] <= p->p[1]) {
 			Vector v1, v2;
-			long long cross;
+			pcb_long64_t cross;
 			Vsub2(v1, s->v->next->point, s->v->point);
 			Vsub2(v2, p->p, s->v->point);
-			cross = (long long) v1[0] * v2[1] - (long long) v2[0] * v1[1];
+			cross = (pcb_long64_t) v1[0] * v2[1] - (pcb_long64_t) v2[0] * v1[1];
 			if (cross == 0) {
 				p->f = 1;
 				longjmp(p->env, 1);

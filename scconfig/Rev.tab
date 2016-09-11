@@ -1,2 +1,3 @@
+3179	configure	c89 correctness: do not depend on hardwired long long, detect it
 2985	configure	Revcheck installed in Makefiles.
 2984	configure	Introduction of the config-rev system.

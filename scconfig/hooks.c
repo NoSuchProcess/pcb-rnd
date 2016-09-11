@@ -454,6 +454,11 @@ int hook_detect_target()
 		put("/local/pcb/coord_type", chosen);
 		put("/local/pcb/coord_max", tmp);
 		put("/local/pcb/coord_abs", abs_name);
+
+		if (long_long_bits >= 64) chosen = "long long int";
+		else if (long_bits >= 64) chosen = "long int";
+		else chosen = "double";
+		put("/local/pcb/long64", chosen);
 	}
 
 	return 0;
