@@ -2687,7 +2687,7 @@ static Boolean idle_proc(XtPointer dummy)
 
 		if (old_nrats != ratlist_length(&PCB->Data->Rat)) {
 			old_nrats = ratlist_length(&PCB->Data->Rat);
-			sprintf(buf, "%d rat%s", ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) == 1 ? "" : "s");
+			sprintf(buf, "%ld rat%s", (long)ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) == 1 ? "" : "s");
 			if (ratlist_length(&PCB->Data->Rat)) {
 				XtManageChild(XtParent(m_rats));
 				XtManageChild(m_rats);
