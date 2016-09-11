@@ -127,9 +127,9 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	GtkWidget *area = gtk_drawing_area_new();
 	PCBType *old_pcb;
 	int n;
-	void *v;
 
 /*
+	void *v;
 	v = CreateNewPolygonFromRectangle(PCB->Data->Layer+1,
 		PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(0),
 		PCB_MIL_TO_COORD(1500), PCB_MIL_TO_COORD(1500),
