@@ -396,10 +396,10 @@ static void insert_layerview_buttons(Widget menu)
 
 	for (i = 0; i < LB_NUM; i++) {
 		static char namestr[] = "Label ";
-		char *name = namestr;
+		const char *name = namestr;
 		/*int accel_idx = i;*/
 		Widget btn;
-		name[5] = 'A' + i;
+		namestr[5] = 'A' + i;
 		switch (i) {
 		case LB_SILK:
 			name = "Silk";
@@ -423,7 +423,7 @@ static void insert_layerview_buttons(Widget menu)
 			break;
 		}
 		stdarg_n = 0;
-		btn = XmCreateToggleButton(menu, name, stdarg_args, stdarg_n);
+		btn = XmCreateToggleButton(menu, XmStrCast(name), stdarg_args, stdarg_n);
 		XtManageChild(btn);
 		XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) layer_button_callback, (XtPointer) (size_t) i);
 		lb->w[i] = btn;
@@ -450,11 +450,11 @@ static void insert_layerpick_buttons(Widget menu)
 
 	for (i = 0; i < LB_NUMPICK; i++) {
 		static char namestr[] = "Label ";
-		char *name = namestr;
+		const char *name = namestr;
 		/*int accel_idx = i;*/
 		char av[30];
 		Widget btn;
-		name[5] = 'A' + i;
+		namestr[5] = 'A' + i;
 		switch (i) {
 		case LB_SILK:
 			name = "Silk";
@@ -472,7 +472,7 @@ static void insert_layerpick_buttons(Widget menu)
 		}
 		stdarg_n = 0;
 		stdarg(XmNindicatorType, XmONE_OF_MANY);
-		btn = XmCreateToggleButton(menu, name, stdarg_args, stdarg_n);
+		btn = XmCreateToggleButton(menu, XmStrCast(name), stdarg_args, stdarg_n);
 		XtManageChild(btn);
 		XtAddCallback(btn, XmNvalueChangedCallback, (XtCallbackProc) layerpick_button_callback, (XtPointer) (size_t) i);
 		lb->w[i] = btn;
