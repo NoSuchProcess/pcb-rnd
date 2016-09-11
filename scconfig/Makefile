@@ -89,5 +89,5 @@ hooks.o: plugin_3state.h plugins.h Rev.h
 cquote: cquote.c
 
 clean:
-	rm $(OBJS) $(DEFAULT_MAIN_OBJS) configure
+	rm $(OBJS) $(DEFAULT_MAIN_OBJS) configure revtest revtest.o
 
