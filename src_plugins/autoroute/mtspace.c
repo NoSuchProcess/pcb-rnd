@@ -425,7 +425,9 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const BoxType * region,
 		qc.desired = &work->desired;
 	/* do the query */
 	do {
-		heap_or_vector temporary = { free_space_vec };
+		heap_or_vector temporary;
+		temporary.v = free_space_vec;
+
 		/* search the fixed object tree discarding any intersections
 		 * and placing empty regions in the no_fix vector.
 		 */
@@ -467,7 +469,9 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const BoxType * region,
 		 * and placing empty regions in the hi-conflict answer vector.
 		 */
 		if (with_conflicts) {
-			heap_or_vector temporary = { hi_conflict_space_vec };
+			heap_or_vector temporary;
+			temporary.v = hi_conflict_space_vec;
+
 			qc.checking = work->hi_candidate;
 			qc.touching.v = NULL;
 			qloop(&qc, is_odd ? mtspace->etree : mtspace->otree, temporary, true);
