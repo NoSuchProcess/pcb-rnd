@@ -202,6 +202,9 @@ int hook_detect_host()
 	require("fstools/ln",  0, 1);
 	require("fstools/mkdir",  0, 1);
 
+	if (istrue(get("/local/pcb/debug")))
+		require("cc/argstd/*", 0, 0);
+
 	return 0;
 }
 
@@ -461,6 +464,28 @@ int hook_detect_target()
 		put("/local/pcb/long64", chosen);
 	}
 
+	/* set cflags for C89 */
+	if (istrue(get("/local/pcb/debug"))) {
+		const char *ansi = get("/host/cc/argstd/ansi");
+		const char *ped = get("/host/cc/argstd/pedantic");
+		int need_inl = 0;
+
+		if ((ansi != NULL) && (*ansi != '\0')) {
+			append("/host/cc/cflags", " ");
+			append("/host/cc/cflags", ansi);
+			need_inl = 1;
+		}
+		if ((ped != NULL) && (*ped != '\0')) {
+			append("/host/cc/cflags", " ");
+			append("/host/cc/cflags", ped);
+			need_inl = 1;
+		}
+		if (need_inl) {
+			/* disable inline for C89 */
+			append("/host/cc/cflags", " ");
+			append("/host/cc/cflags", "-Dinline= ");
+		}
+	}
 	return 0;
 }
 
