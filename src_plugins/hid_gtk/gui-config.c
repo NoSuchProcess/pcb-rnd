@@ -1411,7 +1411,7 @@ void ghid_config_groups_changed(void)
 	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
 
 	for (i = 1; i < max_group + 1; ++i) {
-		snprintf(buf, sizeof(buf), "% 3d", i);
+		pcb_snprintf(buf, sizeof(buf), "% 3d", i);
 		label = gtk_label_new(buf);
 		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 		gtk_table_attach_defaults(GTK_TABLE(table), label, i, i + 1, 0, 1);

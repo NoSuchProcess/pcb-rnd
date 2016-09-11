@@ -14,6 +14,7 @@
 #include "src/conf_core.h"
 #include "src/compat_fs.h"
 #include "src/compat_misc.h"
+#include "src/pcb-printf.h"
 
 #define CONFNAME "pcb-rnd-gpmi.conf"
 
@@ -266,7 +267,7 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 		case '~':
 			file_name += 2;
 			if (conf_core.rc.path.home != NULL) {
-				snprintf(buffer, sizeof(buffer), "%s%c%s", conf_core.rc.path.home, PCB_DIR_SEPARATOR_C, file_name);
+				pcb_snprintf(buffer, sizeof(buffer), "%s%c%s", conf_core.rc.path.home, PCB_DIR_SEPARATOR_C, file_name);
 				fprintf(stderr, "asm_scriptname FN=%s\n", buffer);
 				return pcb_strdup(buffer);
 			}
@@ -286,7 +287,7 @@ char *gpmi_hid_asm_scriptname(const void *info, const char *file_name)
 				cd = ".";
 			else
 				cd = conf_dir;
-			snprintf(buffer, sizeof(buffer), "%s%c%s", cd, PCB_DIR_SEPARATOR_C, file_name);
+			pcb_snprintf(buffer, sizeof(buffer), "%s%c%s", cd, PCB_DIR_SEPARATOR_C, file_name);
 #ifdef CONFIG_DEBUG
 			printf("FN=%s\n", buffer);
 #endif

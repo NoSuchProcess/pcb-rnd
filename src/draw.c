@@ -91,7 +91,7 @@ static void LightenColor(const char *orig, char buf[8], double factor)
 		g = 0xff;
 		b = 0xff;
 	}
-	snprintf(buf, sizeof("#XXXXXX"), "#%02x%02x%02x", r, g, b);
+	pcb_snprintf(buf, sizeof("#XXXXXX"), "#%02x%02x%02x", r, g, b);
 }
 
 
@@ -190,7 +190,7 @@ static void _draw_pv_name(PinType * pv)
 		pn = EMPTY(conf_core.editor.show_number ? pv->Number : pv->Name);
 
 	if (GET_INTCONN(pv) > 0)
-		snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pv));
+		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pv));
 	else
 		strcpy(buff, pn);
 	text.TextString = buff;
@@ -272,7 +272,7 @@ static void draw_pad_name(PadType * pad)
 		pn = conf_core.editor.show_number ? pad->Number : pad->Name;
 
 	if (GET_INTCONN(pad) > 0)
-		snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pad));
+		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pad));
 	else
 		strcpy(buff, pn);
 	text.TextString = buff;

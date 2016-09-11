@@ -652,7 +652,7 @@ int DRCAll(void)
 				/* +1 is for the \0 termination */
 				buflen = strlen(title) - 4 + strlen(name) + 11 + 1;
 				buffer = (char *) malloc(buflen);
-				snprintf(buffer, buflen, title, name, tmpcnt);
+				pcb_snprintf(buffer, buflen, title, name, tmpcnt);
 
 				violation = pcb_drc_violation_new(buffer, _("Process specifications dictate a minimum silkscreen\n" "feature-width that can reliably be reproduced"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
 																					TRUE,	/* MEASUREMENT OF ERROR KNOWN */

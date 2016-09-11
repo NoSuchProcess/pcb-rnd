@@ -691,7 +691,7 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 		case HID_Real:
 			stdarg(XmNcolumns, 16);
 			stdarg(XmNresizeWidth, True);
-			snprintf(buf, sizeof(buf), "%g", results[i].real_value);
+			pcb_snprintf(buf, sizeof(buf), "%g", results[i].real_value);
 			stdarg(XmNvalue, buf);
 			wl[i] = XmCreateTextField(form, attrs[i].name, stdarg_args, stdarg_n);
 			break;
