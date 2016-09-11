@@ -1022,7 +1022,7 @@ static void fix_topbar_theming(void)
 	g_signal_connect(settings, "notify::gtk-font-name", G_CALLBACK(do_fix_topbar_theming), NULL);
 }
 
-/* 
+/*
  * Create the top_window contents.  The config settings should be loaded
  * before this is called.
  */
@@ -1390,7 +1390,7 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	/* g_thread_init (NULL); */
 
 #if defined (ENABLE_NLS)
-	/* Do our own setlocale() stufff since we want to override LC_NUMERIC   
+	/* Do our own setlocale() stufff since we want to override LC_NUMERIC
 	 */
 	gtk_set_locale();
 	setlocale(LC_NUMERIC, "C");		/* use decimal point instead of comma */
