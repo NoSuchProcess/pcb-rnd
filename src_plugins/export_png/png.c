@@ -415,11 +415,14 @@ static int in_mono, as_shown;
 
 static void parse_bloat(const char *str)
 {
+	int n;
 	UnitList extra_units = {
-		{"pix", scale, 0},
-		{"px", scale, 0},
+		{"pix", 0, 0},
+		{"px", 0, 0},
 		{"", 0, 0}
 	};
+	for(n = 0; n < (sizeof(extra_units)/sizeof(extra_units[0]))-1; n++)
+		extra_units[n].scale = scale;
 	if (str == NULL)
 		return;
 	bloat = GetValueEx(str, NULL, NULL, extra_units, "", NULL);
