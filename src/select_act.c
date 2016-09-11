@@ -150,6 +150,7 @@ static int ActionSelect(int argc, char **argv, Coord x, Coord y)
 		commonByName:
 			{
 				char *pattern = ACTION_ARG(1);
+#warning "TODO: this should have a default value in case gui_get_pat() is not called"
 				search_method_t method;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
@@ -309,6 +310,7 @@ static int ActionUnselect(int argc, char **argv, Coord x, Coord y)
 		commonByName:
 			{
 				char *pattern = ACTION_ARG(1);
+#warning "TODO: this should have a default value in case gui_get_pat() is not called"
 				search_method_t method;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
