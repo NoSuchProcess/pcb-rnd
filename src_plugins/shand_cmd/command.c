@@ -112,7 +112,7 @@ will popup.
 
 static int CommandLoadLayout(int argc, char **argv, Coord x, Coord y)
 {
-	char *filename, *name = NULL, *format = NULL;
+	char *filename, *format = NULL;
 
 	switch (argc) {
 	case 2:
@@ -128,7 +128,6 @@ static int CommandLoadLayout(int argc, char **argv, Coord x, Coord y)
 
 	if (!PCB->Changed || gui->confirm_dialog("OK to override layout data?", 0))
 		LoadPCB(filename, format, true, 0);
-	free(name);
 	return (0);
 }
 
@@ -264,7 +263,7 @@ for verifying the board layout (which is also accomplished by the
 
 static int CommandLoadNetlist(int argc, char **argv, Coord x, Coord y)
 {
-	char *filename, *name = NULL;
+	char *filename;
 
 	switch (argc) {
 	case 1:											/* filename is passed in commandline */
@@ -278,7 +277,7 @@ static int CommandLoadNetlist(int argc, char **argv, Coord x, Coord y)
 	if (PCB->Netlistname)
 		free(PCB->Netlistname);
 	PCB->Netlistname = StripWhiteSpaceAndDup(filename);
-	free(name);
+
 	return (0);
 }
 
@@ -413,4 +412,3 @@ pcb_uninit_t hid_shand_cmd_init(void)
 	REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
 	return hid_shand_cmd_uninit;
 }
-
