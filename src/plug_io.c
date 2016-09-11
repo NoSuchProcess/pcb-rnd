@@ -125,7 +125,7 @@ int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_set
 		res = available[0].plug->parse_pcb(available[0].plug, Ptr, Filename, load_settings);
 	}
 	else /* try all parsers until we find one that works */
-		HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, Ptr, Filename, load_settings);
+		HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, (self, Ptr, Filename, load_settings));
 
 	if ((res == 0) && (load_settings))
 		conf_load_project(NULL, Filename);
@@ -140,7 +140,7 @@ int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_set
 int ParseElement(DataTypePtr Ptr, const char *name)
 {
 	int res = -1;
-	HOOK_CALL(plug_io_t, plug_io_chain, parse_element, res, == 0, Ptr, name);
+	HOOK_CALL(plug_io_t, plug_io_chain, parse_element, res, == 0, (self, Ptr, name));
 
 	plug_io_err(res, "load element", name);
 	return res;
@@ -149,7 +149,7 @@ int ParseElement(DataTypePtr Ptr, const char *name)
 int ParseFont(FontTypePtr Ptr, char *Filename)
 {
 	int res = -1;
-	HOOK_CALL(plug_io_t, plug_io_chain, parse_font, res, == 0, Ptr, Filename);
+	HOOK_CALL(plug_io_t, plug_io_chain, parse_font, res, == 0, (self, Ptr, Filename));
 
 	plug_io_err(res, "load font", Filename);
 	return res;
@@ -181,7 +181,7 @@ static int find_io(find_t *available, int avail_len, plug_iot_t typ, int is_wr, 
 		} \
 	} while(0)
 
-	HOOK_CALL_ALL(plug_io_t, plug_io_chain, fmt_support_prio, cb_append, typ, is_wr, (fmt == NULL ? __ch__->default_fmt : fmt));
+	HOOK_CALL_ALL(plug_io_t, plug_io_chain, fmt_support_prio, cb_append, (self, typ, is_wr, (fmt == NULL ? self->default_fmt : fmt)));
 
 	if (len > 0)
 		qsort(available, len, sizeof(available[0]), find_prio_cmp);

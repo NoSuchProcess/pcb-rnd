@@ -55,25 +55,25 @@ void plugin_register(const char *name, const char *path, void *handle, int dynam
    HOOK_REGISTER with an api struct. The core should run the plugins using
    HOOK_CALL */
 
-#define HOOK_CALL(chain_type, chain, func, res, accept, ...) \
+#define HOOK_CALL(chain_type, chain, func, res, accept, funcargs) \
 do { \
-	chain_type *__ch__; \
-	for(__ch__ = (chain); __ch__ != NULL; __ch__ = __ch__->next) { \
-		if (__ch__->func == NULL) \
+	chain_type *self; \
+	for(self = (chain); self != NULL; self = self->next) { \
+		if (self->func == NULL) \
 			continue; \
-		res = __ch__->func(__ch__, __VA_ARGS__); \
+		res = self->func funcargs; \
 		if (res accept) \
 			break; \
 	} \
 } while(0)
 
-#define HOOK_CALL_ALL(chain_type, chain, func, cb, ...) \
+#define HOOK_CALL_ALL(chain_type, chain, func, cb, funcargs) \
 do { \
-	chain_type *__ch__; \
-	for(__ch__ = (chain); __ch__ != NULL; __ch__ = __ch__->next) { \
-		if (__ch__->func == NULL) \
+	chain_type *self; \
+	for(self = (chain); self != NULL; self = self->next) { \
+		if (self->func == NULL) \
 			continue; \
-		cb(__ch__, __ch__->func(__ch__, __VA_ARGS__)); \
+		cb(self, self->func funcargs); \
 	} \
 } while(0)
 

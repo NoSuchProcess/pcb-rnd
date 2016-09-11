@@ -106,7 +106,7 @@ const char *fp_tagname(const void *tagid)
 FILE *fp_fopen(const char *path, const char *name, fp_fopen_ctx_t *fctx)
 {
 	FILE *res = NULL;
-	HOOK_CALL(plug_fp_t, plug_fp_chain, fopen, res, != NULL, path, name, fctx);
+	HOOK_CALL(plug_fp_t, plug_fp_chain, fopen, res, != NULL, (self, path, name, fctx));
 	return res;
 }
 
@@ -353,7 +353,7 @@ static int fp_read_lib_all_(const char *searchpath)
 
 		/* Next read in any footprints in the top level dir */
 		res = -1;
-		HOOK_CALL(plug_fp_t, plug_fp_chain, load_dir, res, >= 0, toppath);
+		HOOK_CALL(plug_fp_t, plug_fp_chain, load_dir, res, >= 0, (self, toppath));
 		if (res >= 0)
 			n_footprints += res;
 		else

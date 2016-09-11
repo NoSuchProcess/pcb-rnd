@@ -68,7 +68,7 @@ static plug_import_t *find_importer(unsigned int aspects, FILE *f, const char *f
 		} \
 	} while(0)
 
-	HOOK_CALL_ALL(plug_import_t, plug_import_chain, fmt_support_prio, cb_append,   aspects, f, filename);
+	HOOK_CALL_ALL(plug_import_t, plug_import_chain, fmt_support_prio, cb_append,   (self, aspects, f, filename));
 	if (len == 0)
 		return NULL;
 
