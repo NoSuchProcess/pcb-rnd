@@ -65,12 +65,20 @@ extern void lesstif_attributes_dialog(char *, AttributeListType *);
 #define need_idle_proc lesstif_need_idle_proc
 #define show_crosshair lesstif_show_crosshair
 
+/*
+ * Motif comes from a time when even constant strings where
+ * passed as char*. These days, this requires to do ugly
+ * type-casting. To better identify all the places where this
+ * is necessary, we make this cast even more ugly but unique
+ * enough that it is simple to grep.
+ */
+inline char* XmStrCast(const char* s) { return (char*)s; }
+
 static XmString XmStringCreatePCB(const char *x)
 {
 	if (x && x[0])
 		x = gettext(x);
-	/* Nasty 80'ies API uses char* instad of const char*. */
-	return XmStringCreateLtoR((char*)x, XmFONTLIST_DEFAULT_TAG);
+	return XmStringCreateLtoR(XmStrCast(x), XmFONTLIST_DEFAULT_TAG);
 }
 
 extern const char *lesstif_cookie;
