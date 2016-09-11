@@ -108,7 +108,7 @@ typedef enum {
 	PCB_LYT_MASK     = 0x0400, /* solder mask */
 	PCB_LYT_PASTE    = 0x0800, /* paste */
 	PCB_LYT_OUTLINE  = 0x1000, /* outline (contour of the board) */
-	PCB_LYT_ANYTHING = 0xFF00, /* MASK */
+	PCB_LYT_ANYTHING = 0xFF00  /* MASK */
 } pcb_layer_type_t;
 
 

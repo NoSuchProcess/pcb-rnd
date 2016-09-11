@@ -8,7 +8,7 @@ enum File_Name_Style {
 	   layer name is used.  */
 	FNS_single,
 	/* The name of the first layer in each group is used.  */
-	FNS_first,
+	FNS_first
 };
 
 /* Returns a filename base that can be used to output the layer.  */
