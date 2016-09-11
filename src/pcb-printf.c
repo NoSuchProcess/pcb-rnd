@@ -352,9 +352,12 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 			case 'x':
 			case 'X':
 				if (spec.array[1] == 'l') {
+#if 0
+/* C89 does not have long long int - best to avoid %lld */
 					if (spec.array[2] == 'l')
 						tmplen = sprintf(tmp, spec.array, va_arg(args, long long));
 					else
+#endif
 						tmplen = sprintf(tmp, spec.array, va_arg(args, long));
 				}
 				else {
