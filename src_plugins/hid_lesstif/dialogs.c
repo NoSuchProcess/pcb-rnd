@@ -1096,7 +1096,7 @@ void lesstif_sizes_reset()
 	free(ls);
 }
 
-static Widget size_field(Widget parent, char *label, int posn)
+static Widget size_field(Widget parent, const char *label, int posn)
 {
 	Widget w, l;
 	stdarg_n = 0;
