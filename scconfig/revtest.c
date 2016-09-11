@@ -10,6 +10,13 @@ const char *act_names[] = {
 	NULL
 };
 
+const char *act_desc[] = {
+	"run 'make distclean' in trunk/",
+	"rerun ./configure",
+	"run 'make clean' in trunk/",
+	NULL
+};
+
 int act_needed[16];
 
 int main(int argc, char *argv[])
@@ -50,7 +57,7 @@ int main(int argc, char *argv[])
 					txt++;
 			}
 			if (!banner) {
-				fprintf(stderr, "\nYour source tree is stale (last configured at r%d). Recent new features:\n", stamp);
+				fprintf(stderr, "\nYour source tree is stale (last configured after config-milestone r%d).\nRecent new features:\n", stamp);
 				banner = 1;
 			}
 			fprintf(stderr, "\nr%d: %s\n", rev, txt);
@@ -68,7 +75,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "\nBefore running make, please do the following actions in this order:\n");
 		for(idx = 0, a = act_names; *a != NULL; idx++, a++)
 			if (act_needed[idx])
-				fprintf(stderr, "  run %s\n", *a);
+				fprintf(stderr, "  %s\n", act_desc[idx]);
 		fprintf(stderr, "\n");
 	}
 
