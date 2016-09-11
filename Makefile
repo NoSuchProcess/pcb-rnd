@@ -11,6 +11,13 @@ clean:
 distclean:
 	make clean ; true
 	cd scconfig && make clean ; true
+	cd src_3rd/genlist && make clean ; true
+	cd src_3rd/genregex && make clean ; true
+	cd src_3rd/genvector && make clean ; true
+	cd src_3rd/gts && make clean ; true
+	cd src_3rd/liblihata && make clean ; true
+	cd src_3rd/liblihata/genht && make clean ; true
+	cd src_3rd/qparse && make clean ; true
 
 install:
 	cd src && make install
