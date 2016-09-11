@@ -88,7 +88,7 @@ int pcb_mkdir(const char *path, int mode)
 }
 #undef MKDIR
 
-int pcb_spawnvp(char **argv)
+int pcb_spawnvp(const char **argv)
 {
 #if defined(USE_SPAWNVP)
 	int result = _spawnvp(_P_WAIT, argv[0], (const char *const *) argv);
@@ -106,7 +106,7 @@ int pcb_spawnvp(char **argv)
 	}
 	else if (pid == 0) {
 		/* Child */
-		execvp(argv[0], argv);
+		execvp(argv[0], (char* const*) argv);
 		exit(1);
 	}
 	else {
