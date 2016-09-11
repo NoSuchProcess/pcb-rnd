@@ -862,8 +862,9 @@ static int About(int argc, const char **argv, Coord x, Coord y)
 {
 	static Widget about = 0;
 	if (!about) {
+		XmString xs;
 		stdarg_n = 0;
-		XmString xs = XmStringCreatePCB(GetInfoString());
+		xs = XmStringCreatePCB(GetInfoString());
 		stdarg(XmNmessageString, xs);
 		stdarg(XmNtitle, "About pcb-rnd");
 		about = XmCreateInformationDialog(mainwind, "about", stdarg_args, stdarg_n);

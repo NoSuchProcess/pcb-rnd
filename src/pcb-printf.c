@@ -527,9 +527,9 @@ err:;
 int pcb_sprintf(char *string, const char *fmt, ...)
 {
 	gds_t str;
-	gds_init(&str);
-
 	va_list args;
+
+	gds_init(&str);
 	va_start(args, fmt);
 
 	/* pretend the string is already allocated to something huge; this doesn't
@@ -555,9 +555,9 @@ int pcb_sprintf(char *string, const char *fmt, ...)
 int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
 {
 	gds_t str;
-	gds_init(&str);
-
 	va_list args;
+
+	gds_init(&str);
 	va_start(args, fmt);
 
 	str.array = string;
@@ -624,9 +624,9 @@ int pcb_printf(const char *fmt, ...)
 {
 	int rv;
 	gds_t str;
-	gds_init(&str);
-
 	va_list args;
+
+	gds_init(&str);
 	va_start(args, fmt);
 
 	pcb_append_vprintf(&str, fmt, args);

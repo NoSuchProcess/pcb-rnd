@@ -43,8 +43,8 @@ TODO
 int propedit_action(int argc, const char **argv, Coord x, Coord y)
 {
 	pe_ctx_t ctx;
-	ctx.core_props = pcb_props_init();
 	htsp_entry_t *pe;
+	ctx.core_props = pcb_props_init();
 
 	if ((gui == NULL) || (gui->propedit_start == NULL)) {
 		Message(PCB_MSG_DEFAULT, "Error: there's no GUI or the active GUI can't edit properties.\n");

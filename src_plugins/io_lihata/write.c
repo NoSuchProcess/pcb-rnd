@@ -272,9 +272,10 @@ static lht_node_t *build_polygon(PolygonType *poly)
 static lht_node_t *build_pcb_text(const char *role, TextType *text)
 {
 	char buff[128];
+	lht_node_t *obj;
 
 	sprintf(buff, "text.%ld", text->ID);
-	lht_node_t *obj = lht_dom_node_alloc(LHT_HASH, buff);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&text->Attributes));
 	lht_dom_hash_put(obj, build_text("string", text->TextString));

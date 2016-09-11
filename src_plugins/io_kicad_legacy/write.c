@@ -83,6 +83,13 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	Coord LayoutXOffset;
 	Coord LayoutYOffset;
 
+	/* Kicad expects a layout "sheet" size to be specified in mils, and A4, A3 etc... */
+	int A4HeightMil = 8267;
+	int A4WidthMil = 11700;
+	int sheetHeight = A4HeightMil;
+	int sheetWidth = A4WidthMil;
+	int paperSize = 4; /* default paper size is A4 */
+
 	fputs("PCBNEW-BOARD Version 1 jan 01 jan 2016 00:00:01 CET\n",FP);
 
 	fputs("$GENERAL\n",FP);
@@ -92,12 +99,6 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	fputs("$SHEETDESCR\n",FP);
 
-	/* Kicad expects a layout "sheet" size to be specified in mils, and A4, A3 etc... */
-	int A4HeightMil = 8267;
-	int A4WidthMil = 11700;
-	int sheetHeight = A4HeightMil;
-	int sheetWidth = A4WidthMil;
-	int paperSize = 4; /* default paper size is A4 */
 
 	/* we sort out the needed kicad sheet size here, using A4, A3, A2, A1 or A0 size as needed */
 	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > A4WidthMil ||
@@ -174,10 +175,10 @@ static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data)
 {
 	gdl_iterator_t eit;
 	ElementType *element;
+	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 
 	elementlist_dedup_initializer(ededup);
 
-	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 	/* Now initialize the group with defaults */
 	unm_init(&group1);
 
@@ -286,9 +287,10 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 	LineType *line;
 	ArcType *arc;
 	ElementType *element;
-	elementlist_dedup_initializer(ededup);
-
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
+	const char * currentElementName;
+
+	elementlist_dedup_initializer(ededup);
 	/* Now initialize the group with defaults */
 	unm_init(&group1);
 
@@ -329,7 +331,7 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 		/*		//WriteAttributeList(FP, &element->Attributes, "\t");
 		 */
 
-		const char * currentElementName = unm_name(&group1, element->Name[0].TextString, element);
+		currentElementName = unm_name(&group1, element->Name[0].TextString, element);
 		fprintf(FP, "$MODULE %s\n", currentElementName);
 		fputs("Po 0 0 0 15 51534DFF 00000000 ~~\n",FP);
 		fprintf(FP, "Li %s\n", currentElementName);

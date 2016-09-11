@@ -791,10 +791,11 @@ bool SelectObjectByName(int Type, const char *name_pattern, bool Flag, search_me
 		}
 	}
 	else {
-		/* We're going to mess with the delimiters. Create a copy. */
-		pattern_copy = pcb_strdup(name_pattern);
 		char *s, *next;
 		int n, w;
+
+		/* We're going to mess with the delimiters. Create a copy. */
+		pattern_copy = pcb_strdup(name_pattern);
 
 		/* count the number of patterns */
 		for (s = pattern_copy, w = 0; *s != '\0'; s++) {

@@ -1549,9 +1549,11 @@ conf_role_t conf_lookup_role(const lht_node_t *nd)
 
 void conf_reset(conf_role_t target, const char *source_fn)
 {
+	lht_node_t *n;
+
 	if (conf_root[target] != NULL)
 		lht_dom_uninit(conf_root[target]);
-	lht_node_t *n;
+
 	conf_root[target] = lht_dom_init();
 	lht_dom_loc_newfile(conf_root[target], source_fn);
 	conf_root[target]->root = lht_dom_node_alloc(LHT_LIST, conf_list_name);

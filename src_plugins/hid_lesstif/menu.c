@@ -916,6 +916,8 @@ static void add_node_to_menu(Widget in_menu, lht_node_t *node, XtCallbackProc ca
 }
 
 extern char *lesstif_pcbmenu_path;
+extern const char *lesstif_menu_default;
+
 
 Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 {
@@ -926,8 +928,6 @@ Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
 	display = XtDisplay(mb);
 	screen = DefaultScreen(display);
 	cmap = DefaultColormap(display, screen);
-
-	extern const char *lesstif_menu_default;
 
 	lesstif_cfg = hid_cfg_load("lesstif", 0, lesstif_menu_default);
 	if (lesstif_cfg == NULL) {
