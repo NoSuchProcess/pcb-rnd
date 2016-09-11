@@ -50,9 +50,7 @@ BoxType StrokeBox;
 static void real_stroke_finish(void)
 {
 	char msg[255];
-	int type;
 	unsigned long num;
-	void *ptr1, *ptr2, *ptr3;
 
 	mid_stroke = false;
 	if (stroke_trans(msg)) {
