@@ -53,7 +53,6 @@ int pcb_element_eq(const ElementType *e1, const ElementType *e2);
 #define elementlist_dedup_skip(state, loop_elem) \
 switch(1) { \
 	case 1: { \
-		long element_hash; \
 		if (state == NULL) \
 			state = htep_alloc(pcb_element_hash, pcb_element_eq); \
 		if (htep_has(state, loop_elem)) \
