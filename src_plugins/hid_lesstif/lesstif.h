@@ -25,7 +25,7 @@ extern hid_cfg_keys_t lesstif_keymap;
 extern Widget mainwind, work_area, command, hscroll, vscroll;
 extern Widget m_click;
 
-extern Widget lesstif_menu(Widget, char *, Arg *, int);
+extern Widget lesstif_menu(Widget, const char *, Arg *, int);
 extern int lesstif_key_event(XKeyEvent *);
 extern int lesstif_button_event(Widget w, XEvent * e);
 

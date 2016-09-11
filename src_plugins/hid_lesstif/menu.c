@@ -919,9 +919,9 @@ extern char *lesstif_pcbmenu_path;
 extern const char *lesstif_menu_default;
 
 
-Widget lesstif_menu(Widget parent, char *name, Arg * margs, int mn)
+Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 {
-	Widget mb = XmCreateMenuBar(parent, name, margs, mn);
+	Widget mb = XmCreateMenuBar(parent, XmStrCast(name), margs, mn);
 	int screen;
 	lht_node_t *mr;
 
