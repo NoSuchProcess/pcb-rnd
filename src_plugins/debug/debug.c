@@ -3,7 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
- * 
+ *
  *  This module, debug, was written and is Copyright (C) 2016 by Tibor Palinkas
  *  this module is also subject to the GNU GPL as described below
  *
@@ -146,4 +146,3 @@ pcb_uninit_t hid_debug_init(void)
 	REGISTER_ACTIONS(debug_action_list, debug_cookie)
 	return hid_debug_uninit;
 }
-

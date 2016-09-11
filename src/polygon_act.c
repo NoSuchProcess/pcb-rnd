@@ -43,7 +43,7 @@ static const char morphpolygon_syntax[] = "MorphPolygon(Object|Selected)";
 
 static const char morphpolygon_help[] = "Converts dead polygon islands into separate polygons.";
 
-/* %start-doc actions MorphPolygon 
+/* %start-doc actions MorphPolygon
 
 If a polygon is divided into unconnected "islands", you can use
 this command to convert the otherwise disappeared islands into
