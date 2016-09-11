@@ -594,7 +594,7 @@ int lesstif_button_event(Widget w, XEvent * e)
 
 void lesstif_get_xy(const char *message)
 {
-	XmString ls = XmStringCreatePCB((char *) message);
+	XmString ls = XmStringCreatePCB(message);
 
 	XtManageChild(m_click);
 	stdarg_n = 0;

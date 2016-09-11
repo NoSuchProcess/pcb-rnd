@@ -3667,7 +3667,7 @@ static void lesstif_progress_dialog(int so_far, int total, const char *msg)
 	XtSetValues(progress_scale, stdarg_args, stdarg_n);
 
 	stdarg_n = 0;
-	xs = XmStringCreatePCB((char *) msg);
+	xs = XmStringCreatePCB(msg);
 	stdarg(XmNmessageString, xs);
 	XtSetValues(progress_dialog, stdarg_args, stdarg_n);
 

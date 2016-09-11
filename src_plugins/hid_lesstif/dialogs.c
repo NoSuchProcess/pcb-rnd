@@ -520,7 +520,7 @@ char *lesstif_prompt_for(const char *msg, const char *default_string)
 	if (!msg)
 		msg = "Enter text:";
 	stdarg_n = 0;
-	xs = XmStringCreatePCB((char *) msg);
+	xs = XmStringCreatePCB(msg);
 	stdarg(XmNlabelString, xs);
 	XtSetValues(prompt_label, stdarg_args, stdarg_n);
 	XmTextSetString(prompt_text, (char *) default_string);
@@ -715,7 +715,7 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 					Widget btn;
 					XmString label;
 					stdarg_n = 0;
-					label = XmStringCreatePCB((char *) attrs[i].enumerations[sn]);
+					label = XmStringCreatePCB(attrs[i].enumerations[sn]);
 					stdarg(XmNuserData, &attrs[i].enumerations[sn]);
 					stdarg(XmNlabelString, label);
 					btn = XmCreatePushButton(submenu, "menubutton", stdarg_args, stdarg_n);
