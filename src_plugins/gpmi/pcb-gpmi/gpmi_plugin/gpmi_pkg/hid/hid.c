@@ -96,11 +96,11 @@ dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 				res = "false";
 			break;
 		case HIDA_Integer:
-			snprintf(buff, sizeof(buff), "%d", v->int_value);
+			pcb_snprintf(buff, sizeof(buff), "%d", v->int_value);
 			res = buff;
 			break;
 		case HIDA_Real:
-			snprintf(buff, sizeof(buff), "%f", v->real_value);
+			pcb_snprintf(buff, sizeof(buff), "%f", v->real_value);
 			res = buff;
 			break;
 		case HIDA_String:
@@ -125,7 +125,7 @@ dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 					fact = 0;
 				else
 					fact = unit_to_factor(u);
-				snprintf(buff, sizeof(buff), "%f", fact);
+				pcb_snprintf(buff, sizeof(buff), "%f", fact);
 				res = buff;
 /*				fprintf(stderr, "unit idx: %d %p res='%s'\n", v->int_value, u, res);*/
 			}
