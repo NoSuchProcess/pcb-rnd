@@ -153,27 +153,27 @@ struct hid_st {
 	/* If set, this is the GUI HID.  Exactly one of these three flags
 	   must be set; setting "gui" lets the expose callback optimize and
 	   coordinate itself.  */
-	char gui:1;
+	unsigned gui:1;
 
 	/* If set, this is the printer-class HID.  The common part of PCB
 	   may use this to do command-line printing, without having
 	   instantiated any GUI HIDs.  Only one printer HID is normally
 	   defined at a time.  */
-	char printer:1;
+	unsigned printer:1;
 
 	/* If set, this HID provides an export option, and should be used as
 	   part of the File->Export menu option.  Examples are PNG, Gerber,
 	   and EPS exporters.  */
-	char exporter:1;
+	unsigned exporter:1;
 
 	/* If set, the redraw code will draw polygons before erasing the
 	   clearances.  */
-	char poly_before:1;
+	unsigned poly_before:1;
 
 	/* If set, the redraw code will draw polygons after erasing the
 	   clearances.  Note that HIDs may set both of these, in which case
 	   polygons will be drawn twice.  */
-	char poly_after:1;
+	unsigned poly_after:1;
 
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
