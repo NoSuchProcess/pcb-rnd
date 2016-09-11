@@ -921,7 +921,7 @@ void ghid_netlist_window_update(gboolean init_nodes)
 		node_model_update((&PCB->NetlistLib[NETLIST_EDITED])->Menu);
 }
 
-static gint GhidNetlistChanged(int argc, char **argv, Coord x, Coord y)
+static gint GhidNetlistChanged(int argc, const char **argv, Coord x, Coord y)
 {
 	loading_new_netlist = TRUE;
 	ghid_netlist_window_update(TRUE);
@@ -935,7 +935,7 @@ static const char netlistshow_syntax[] = "NetlistShow(pinname|netname)";
 static const char netlistshow_help[] = "Selects the given pinname or netname in the netlist window. Does not \
 show the window if it isn't already shown.";
 
-static gint GhidNetlistShow(int argc, char **argv, Coord x, Coord y)
+static gint GhidNetlistShow(int argc, const char **argv, Coord x, Coord y)
 {
 	ghid_netlist_window_create(gport);
 	if (argc > 0)
@@ -947,7 +947,7 @@ static const char netlistpresent_syntax[] = "NetlistPresent()";
 
 static const char netlistpresent_help[] = "Presents the netlist window.";
 
-static gint GhidNetlistPresent(int argc, char **argv, Coord x, Coord y)
+static gint GhidNetlistPresent(int argc, const char **argv, Coord x, Coord y)
 {
 	ghid_netlist_window_show(gport, TRUE);
 	return 0;

@@ -30,7 +30,7 @@
 
 static const char fp_rehash_syntax[] = "fp_rehash()" ;
 static const char fp_rehash_help[] = "Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.";
-static int Action_fp_rehash(int argc, char **argv, Coord x, Coord y)
+static int Action_fp_rehash(int argc, const char **argv, Coord x, Coord y)
 {
 	fp_rehash();
 	return 0;

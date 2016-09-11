@@ -53,9 +53,9 @@ off are automatically deleted.
 
 %end-doc */
 
-static int ActionMorphPolygon(int argc, char **argv, Coord x, Coord y)
+static int ActionMorphPolygon(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_Object:
@@ -111,9 +111,9 @@ will call Polygon(PreviousPoint) when appropriate to do so.
 
 %end-doc */
 
-static int ActionPolygon(int argc, char **argv, Coord x, Coord y)
+static int ActionPolygon(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function && conf_core.editor.mode == PCB_MODE_POLYGON) {
 		notify_crosshair_change(false);
 		switch (funchash_get(function, NULL)) {

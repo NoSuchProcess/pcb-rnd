@@ -54,7 +54,7 @@
 
 static ElementType *element_cache = NULL;
 
-static ElementType *find_element_by_refdes(char *refdes)
+static ElementType *find_element_by_refdes(const char *refdes)
 {
 	if (element_cache && NAMEONPCB_NAME(element_cache)
 			&& strcmp(NAMEONPCB_NAME(element_cache), refdes) == 0)
@@ -106,10 +106,10 @@ pcb, an element, or a layer.
 %end-doc */
 
 
-static int ActionAttributes(int argc, char **argv, Coord x, Coord y)
+static int ActionAttributes(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
-	char *layername = ACTION_ARG(1);
+	const char *function = ACTION_ARG(0);
+	const char *layername = ACTION_ARG(1);
 	char *buf;
 
 	if (!function)
@@ -214,9 +214,9 @@ from.
 
 #define GAP PCB_MIL_TO_COORD(100)
 
-static int ActionDisperseElements(int argc, char **argv, Coord x, Coord y)
+static int ActionDisperseElements(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	Coord minx = GAP, miny = GAP, maxy = GAP, dx, dy;
 	int all = 0, bad = 0;
 
@@ -325,9 +325,9 @@ other, not their absolute positions on the board.
 
 %end-doc */
 
-static int ActionFlip(int argc, char **argv, Coord x, Coord y)
+static int ActionFlip(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	ElementTypePtr element;
 	void *ptrtmp;
 	int err = 0;
@@ -372,11 +372,11 @@ units, currently 1/100 mil.
 
 %end-doc */
 
-static int ActionMoveObject(int argc, char **argv, Coord x, Coord y)
+static int ActionMoveObject(int argc, const char **argv, Coord x, Coord y)
 {
-	char *x_str = ACTION_ARG(0);
-	char *y_str = ACTION_ARG(1);
-	char *units = ACTION_ARG(2);
+	const char *x_str = ACTION_ARG(0);
+	const char *y_str = ACTION_ARG(1);
+	const char *units = ACTION_ARG(2);
 	Coord nx, ny;
 	bool absolute1, absolute2;
 	void *ptr1, *ptr2, *ptr3;
@@ -418,9 +418,9 @@ or from solder to component, won't automatically flip it.  Use the
 
 %end-doc */
 
-static int ActionMoveToCurrentLayer(int argc, char **argv, Coord x, Coord y)
+static int ActionMoveToCurrentLayer(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_Object:
@@ -485,12 +485,13 @@ static int parse_layout_attribute_units(char *name, int def)
 	return GetValue(as, NULL, NULL, NULL);
 }
 
-static int ActionElementList(int argc, char **argv, Coord x, Coord y)
+static int ActionElementList(int argc, const char **argv, Coord x, Coord y)
 {
 	ElementType *e = NULL;
-	char *refdes, *value, *footprint, *old;
-	char *args[3];
-	char *function = argv[0];
+	const char *refdes, *value, *footprint;
+	const char *args[3];
+	const char *function = argv[0];
+	char *old;
 
 #ifdef DEBUG
 	printf("Entered ActionElementList, executing function %s\n", function);
@@ -660,10 +661,10 @@ not specified, the given attribute is removed if present.
 
 %end-doc */
 
-static int ActionElementSetAttr(int argc, char **argv, Coord x, Coord y)
+static int ActionElementSetAttr(int argc, const char **argv, Coord x, Coord y)
 {
 	ElementType *e = NULL;
-	char *refdes, *name, *value;
+	const char *refdes, *name, *value;
 	AttributeType *attr;
 
 	if (argc < 2) {
@@ -729,9 +730,9 @@ that this uses the highest numbered paste buffer.
 
 %end-doc */
 
-static int ActionRipUp(int argc, char **argv, Coord x, Coord y)
+static int ActionRipUp(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	bool changed = false;
 
 	if (function) {
@@ -833,11 +834,11 @@ the mask edge.
 
 %end-doc */
 
-static int ActionMinMaskGap(int argc, char **argv, Coord x, Coord y)
+static int ActionMinMaskGap(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
-	char *delta = ACTION_ARG(1);
-	char *units = ACTION_ARG(2);
+	const char *function = ACTION_ARG(0);
+	const char *delta = ACTION_ARG(1);
+	const char *units = ACTION_ARG(2);
 	bool absolute;
 	Coord value;
 	int flags;
@@ -907,11 +908,11 @@ polygon edges.
 
 %end-doc */
 
-static int ActionMinClearGap(int argc, char **argv, Coord x, Coord y)
+static int ActionMinClearGap(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
-	char *delta = ACTION_ARG(1);
-	char *units = ACTION_ARG(2);
+	const char *function = ACTION_ARG(0);
+	const char *delta = ACTION_ARG(1);
+	const char *units = ACTION_ARG(2);
 	bool absolute;
 	Coord value;
 	int flags;

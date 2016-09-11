@@ -50,7 +50,7 @@
 
 conf_import_sch_t conf_import_sch;
 
-extern int ActionExecuteFile(int argc, char **argv, Coord x, Coord y);
+extern int ActionExecuteFile(int argc, const char **argv, Coord x, Coord y);
 
 /* ---------------------------------------------------------------- */
 static const char import_syntax[] =
@@ -171,10 +171,10 @@ smallest board dimension.  Dispersion is saved in the
 
 %end-doc */
 
-static int ActionImport(int argc, char **argv, Coord x, Coord y)
+static int ActionImport(int argc, const char **argv, Coord x, Coord y)
 {
-	char *mode;
-	char **sources = NULL;
+	const char *mode;
+	const char **sources = NULL;
 	int nsources = 0;
 
 #ifdef DEBUG
@@ -184,7 +184,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 	mode = ACTION_ARG(0);
 
 	if (mode && strcasecmp(mode, "setdisperse") == 0) {
-		char *ds, *units;
+		const char *ds, *units;
 		char buf[50];
 
 		ds = ACTION_ARG(1);
@@ -200,7 +200,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 		else
 			AttributePut(PCB, "import::disperse", ds);
 		if (ACTION_ARG(1) == NULL)
-			free(ds);
+			free((char*)ds);
 		return 0;
 	}
 
@@ -265,7 +265,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 		} while (src);
 
 		if (nsources > 0) {
-			sources = (char **) malloc((nsources + 1) * sizeof(char *));
+			sources = (const char **) malloc((nsources + 1) * sizeof(char *));
 			nsources = -1;
 			do {
 				nsources++;
@@ -301,7 +301,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 		if (access(schname, F_OK))
 			return hid_action("ImportGUI");
 
-		sources = (char **) malloc(2 * sizeof(char *));
+		sources = (const char **) malloc(2 * sizeof(char *));
 		sources[0] = schname;
 		sources[1] = NULL;
 		nsources = 1;
@@ -309,7 +309,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 
 	if (strcasecmp(mode, "gnetlist") == 0) {
 		char *tmpfile = tempfile_name_new("gnetlist_output");
-		char **cmd;
+		const char **cmd;
 		int i;
 
 		if (tmpfile == NULL) {
@@ -317,7 +317,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 			return 1;
 		}
 
-		cmd = (char **) malloc((7 + nsources) * sizeof(char *));
+		cmd = (const char **) malloc((7 + nsources) * sizeof(char *));
 		cmd[0] = conf_import_sch.plugins.import_sch.gnetlist_program;
 		cmd[1] = "-g";
 		cmd[2] = "pcbfwd";
@@ -352,7 +352,7 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 	else if (strcasecmp(mode, "make") == 0) {
 		int must_free_tmpfile = 0;
 		char *tmpfile;
-		char *cmd[10];
+		const char *cmd[10];
 		int i;
 		char *srclist;
 		int srclen;
@@ -405,9 +405,9 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 		if (pcb_spawnvp(cmd)) {
 			if (must_free_tmpfile)
 				unlink(tmpfile);
-			free(cmd[2]);
-			free(cmd[3]);
-			free(cmd[4]);
+			free((char*)cmd[2]);
+			free((char*)cmd[3]);
+			free((char*)cmd[4]);
 			return 1;
 		}
 
@@ -415,9 +415,9 @@ static int ActionImport(int argc, char **argv, Coord x, Coord y)
 		cmd[1] = NULL;
 		ActionExecuteFile(1, cmd, 0, 0);
 
-		free(cmd[2]);
-		free(cmd[3]);
-		free(cmd[4]);
+		free((char*)cmd[2]);
+		free((char*)cmd[3]);
+		free((char*)cmd[4]);
 		if (must_free_tmpfile)
 			tempfile_unlink(tmpfile);
 	}

@@ -310,7 +310,7 @@ static char *cur_clip()
 
 /* Called from the core when it's busy doing something and we need to
    indicate that to the user.  */
-static int Busy(int argc, char **argv, Coord x, Coord y)
+static int Busy(int argc, const char **argv, Coord x, Coord y)
 {
 	static Cursor busy_cursor = 0;
 	if (busy_cursor == 0)
@@ -325,7 +325,7 @@ static int Busy(int argc, char **argv, Coord x, Coord y)
 
 /* Local actions.  */
 
-static int PointCursor(int argc, char **argv, Coord x, Coord y)
+static int PointCursor(int argc, const char **argv, Coord x, Coord y)
 {
 	if (argc > 0)
 		over_point = 1;
@@ -335,7 +335,7 @@ static int PointCursor(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int PCBChanged(int argc, char **argv, Coord x, Coord y)
+static int PCBChanged(int argc, const char **argv, Coord x, Coord y)
 {
 	if (work_area == 0)
 		return 0;
@@ -389,7 +389,7 @@ Sets the display units to millimeters.
 
 %end-doc */
 
-static int SetUnits(int argc, char **argv, Coord x, Coord y)
+static int SetUnits(int argc, const char **argv, Coord x, Coord y)
 {
 	const Unit *new_unit;
 	if (argc == 0)
@@ -449,7 +449,7 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static int ZoomAction(int argc, char **argv, Coord x, Coord y)
+static int ZoomAction(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *vp;
 	double v;
@@ -494,7 +494,7 @@ static int ZoomAction(int argc, char **argv, Coord x, Coord y)
 
 static int pan_thumb_mode;
 
-static int PanAction(int argc, char **argv, Coord x, Coord y)
+static int PanAction(int argc, const char **argv, Coord x, Coord y)
 {
 	int mode;
 
@@ -563,7 +563,7 @@ static int group_showing(int g, int *c)
 	return 0;
 }
 
-static int SwapSides(int argc, char **argv, Coord x, Coord y)
+static int SwapSides(int argc, const char **argv, Coord x, Coord y)
 {
 	int old_shown_side = conf_core.editor.show_solder_side;
 	int comp_group = GetLayerGroupNumberByNumber(component_silk_layer);
@@ -716,7 +716,7 @@ before.
 
 %end-doc */
 
-static int Command(int argc, char **argv, Coord x, Coord y)
+static int Command(int argc, const char **argv, Coord x, Coord y)
 {
 	XtManageChild(m_cmd_label);
 	XtManageChild(m_cmd);
@@ -736,7 +736,7 @@ It reports the amount of time needed to draw the screen once.
 
 %end-doc */
 
-static int Benchmark(int argc, char **argv, Coord x, Coord y)
+static int Benchmark(int argc, const char **argv, Coord x, Coord y)
 {
 	int i = 0;
 	time_t start, end;
@@ -769,7 +769,7 @@ static int Benchmark(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int Center(int argc, char **argv, Coord x, Coord y)
+static int Center(int argc, const char **argv, Coord x, Coord y)
 {
 	x = GridFit(x, PCB->Grid, PCB->GridOffsetX);
 	y = GridFit(y, PCB->Grid, PCB->GridOffsetY);
@@ -822,7 +822,7 @@ The values are percentages of the board size.  Thus, a move of
 
 %end-doc */
 
-static int CursorAction(int argc, char **argv, Coord x, Coord y)
+static int CursorAction(int argc, const char **argv, Coord x, Coord y)
 {
 	UnitList extra_units_x = {
 		{"grid", PCB->Grid, 0},

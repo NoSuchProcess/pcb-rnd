@@ -91,7 +91,7 @@ called with that filename.
 
 %end-doc */
 
-static int Load(int argc, char **argv, Coord x, Coord y)
+static int Load(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *function;
 	char *name;
@@ -149,7 +149,7 @@ load that vendor file.
 
 %end-doc */
 
-static int LoadVendor(int argc, char **argv, Coord x, Coord y)
+static int LoadVendor(int argc, const char **argv, Coord x, Coord y)
 {
 	char *name;
 	XmString xmname, pattern;
@@ -202,7 +202,7 @@ called with that filename.
 
 %end-doc */
 
-static int Save(int argc, char **argv, Coord x, Coord y)
+static int Save(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *function;
 	char *name;
@@ -361,7 +361,7 @@ void lesstif_log(const char *fmt, ...)
 static Widget confirm_dialog = 0;
 static Widget confirm_cancel, confirm_ok, confirm_label;
 
-int lesstif_confirm_dialog(char *msg, ...)
+int lesstif_confirm_dialog(const char *msg, ...)
 {
 	char *cancelmsg, *okmsg;
 	va_list ap;
@@ -420,7 +420,7 @@ int lesstif_confirm_dialog(char *msg, ...)
 	return ok;
 }
 
-static int ConfirmAction(int argc, char **argv, Coord x, Coord y)
+static int ConfirmAction(int argc, const char **argv, Coord x, Coord y)
 {
 	int rv = lesstif_confirm_dialog(argc > 0 ? argv[0] : 0,
 																	argc > 1 ? argv[1] : 0,
@@ -543,7 +543,7 @@ user's stdout.
 
 %end-doc */
 
-static int PromptFor(int argc, char **argv, Coord x, Coord y)
+static int PromptFor(int argc, const char **argv, Coord x, Coord y)
 {
 	char *rv = lesstif_prompt_for(argc > 0 ? argv[0] : 0,
 																argc > 1 ? argv[1] : 0);
@@ -822,7 +822,7 @@ Open the netlist window.
 
 %end-doc */
 
-static int DoWindows(int argc, char **argv, Coord x, Coord y)
+static int DoWindows(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *a = argc == 1 ? argv[0] : "";
 	if (strcmp(a, "1") == 0 || strcasecmp(a, "Layout") == 0) {
@@ -858,7 +858,7 @@ This just pops up a dialog telling the user which version of
 %end-doc */
 
 
-static int About(int argc, char **argv, Coord x, Coord y)
+static int About(int argc, const char **argv, Coord x, Coord y)
 {
 	static Widget about = 0;
 	if (!about) {
@@ -887,7 +887,7 @@ options, and print the layout.
 
 %end-doc */
 
-static int Print(int argc, char **argv, Coord x, Coord y)
+static int Print(int argc, const char **argv, Coord x, Coord y)
 {
 	HID_Attribute *opts;
 	HID *printer;
@@ -932,7 +932,7 @@ the measurements in, so that future printouts will be more precise.
 
 %end-doc */
 
-static int PrintCalibrate(int argc, char **argv, Coord x, Coord y)
+static int PrintCalibrate(int argc, const char **argv, Coord x, Coord y)
 {
 	HID *printer = hid_find_printer();
 	printer->calibrate(0.0, 0.0);
@@ -955,7 +955,7 @@ that exporter's options, and exports the layout.
 
 %end-doc */
 
-static int Export(int argc, char **argv, Coord x, Coord y)
+static int Export(int argc, const char **argv, Coord x, Coord y)
 {
 	static Widget selector = 0;
 	HID_Attribute *opts;
@@ -1137,7 +1137,7 @@ The units are determined by the default display units.
 
 %end-doc */
 
-static int AdjustSizes(int argc, char **argv, Coord x, Coord y)
+static int AdjustSizes(int argc, const char **argv, Coord x, Coord y)
 {
 	if (!sizes_dialog) {
 		Widget inf, sep;
@@ -1438,7 +1438,7 @@ See @ref{ChangeName Action}.
 
 %end-doc */
 
-static int EditLayerGroups(int argc, char **argv, Coord x, Coord y)
+static int EditLayerGroups(int argc, const char **argv, Coord x, Coord y)
 {
 	if (!layer_groups_form) {
 
@@ -1832,7 +1832,7 @@ future imports.
 
 %end-doc */
 
-static int ImportGUI(int argc, char **argv, Coord x, Coord y)
+static int ImportGUI(int argc, const char **argv, Coord x, Coord y)
 {
 	static int I_am_recursing = 0;
 	static XmString xms_sch = 0, xms_import = 0;

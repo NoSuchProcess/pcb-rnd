@@ -126,7 +126,7 @@ static void lib_dfs(library_t *parent, int level)
 		lib_dfs(l, level+1);
 }
 
-static int LibraryChanged(int argc, char **argv, Coord x, Coord y)
+static int LibraryChanged(int argc, const char **argv, Coord x, Coord y)
 {
 	int i;
 	if (library.data.dir.children.used == 0)
@@ -167,7 +167,7 @@ static const char libraryshow_help[] = "Displays the library window.";
 
 %end-doc */
 
-static int LibraryShow(int argc, char **argv, Coord x, Coord y)
+static int LibraryShow(int argc, const char **argv, Coord x, Coord y)
 {
 	if (build_library_dialog())
 		return 0;

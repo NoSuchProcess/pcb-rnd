@@ -56,9 +56,9 @@ Runs the given command, which is a system executable.
 
 %end-doc */
 
-static int ActionExecCommand(int argc, char **argv, Coord x, Coord y)
+static int ActionExecCommand(int argc, const char **argv, Coord x, Coord y)
 {
-	char *command;
+	const char *command;
 
 	if (argc < 1) {
 		AFAIL(execcommand);
@@ -108,9 +108,9 @@ you may have made.
 
 %end-doc */
 
-static int ActionLoadFrom(int argc, char **argv, Coord x, Coord y)
+static int ActionLoadFrom(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function, *name, *format = NULL;
+	const char *function, *name, *format = NULL;
 
 	if (argc < 2)
 		AFAIL(loadfrom);
@@ -171,13 +171,14 @@ If a name is not given, one is prompted for.
 
 %end-doc */
 
-static int ActionNew(int argc, char **argv, Coord x, Coord y)
+static int ActionNew(int argc, const char **argv, Coord x, Coord y)
 {
-	char *name = ACTION_ARG(0);
+	const char *argument_name = ACTION_ARG(0);
+	char *name = NULL;
 
 	if (!PCB->Changed || gui->confirm_dialog(_("OK to clear layout data?"), 0)) {
-		if (name)
-			name = pcb_strdup(name);
+		if (argument_name)
+			name = pcb_strdup(argument_name);
 		else
 			name = gui->prompt_for(_("Enter the layout name:"), "");
 
@@ -244,11 +245,11 @@ Save the content of the active Buffer to a file. This is the graphical way to cr
 
 %end-doc */
 
-static int ActionSaveTo(int argc, char **argv, Coord x, Coord y)
+static int ActionSaveTo(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function;
-	char *name;
-	char *fmt = NULL;
+	const char *function;
+	const char *name;
+	const char *fmt = NULL;
 
 	function = argv[0];
 	name = argv[1];
@@ -337,9 +338,9 @@ save) before quitting.
 
 %end-doc */
 
-static int ActionQuit(int argc, char **argv, Coord x, Coord y)
+static int ActionQuit(int argc, const char **argv, Coord x, Coord y)
 {
-	char *force = ACTION_ARG(0);
+	const char *force = ACTION_ARG(0);
 	if (force && strcasecmp(force, "force") == 0) {
 		PCB->Changed = 0;
 		exit(0);

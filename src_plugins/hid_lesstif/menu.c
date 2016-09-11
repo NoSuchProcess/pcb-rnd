@@ -52,7 +52,7 @@ Prompts the user for a coordinate, if one is not already selected.
 
 %end-doc */
 
-static int GetXY(int argc, char **argv, Coord x, Coord y)
+static int GetXY(int argc, const char **argv, Coord x, Coord y)
 {
 	return 0;
 }
@@ -81,7 +81,7 @@ static int bg_color;
 
 extern Widget lesstif_m_layer;
 
-static int LayersChanged(int argc, char **argv, Coord x, Coord y)
+static int LayersChanged(int argc, const char **argv, Coord x, Coord y)
 {
 	int l, i, set;
 	const char *name;
@@ -312,7 +312,7 @@ visible if it is not already visible
 
 %end-doc */
 
-static int SelectLayer(int argc, char **argv, Coord x, Coord y)
+static int SelectLayer(int argc, const char **argv, Coord x, Coord y)
 {
 	int newl;
 	if (argc == 0)
@@ -345,7 +345,7 @@ the same as a special layer, the layer is chosen over the special layer.
 
 %end-doc */
 
-static int ToggleView(int argc, char **argv, Coord x, Coord y)
+static int ToggleView(int argc, const char **argv, Coord x, Coord y)
 {
 	int i, l;
 

@@ -79,7 +79,7 @@ Does a Restore if there was nothing to undo, else does a Close.
 
 %end-doc */
 
-int ActionAtomic(int argc, char **argv, Coord x, Coord y)
+int ActionAtomic(int argc, const char **argv, Coord x, Coord y)
 {
 	if (argc != 1)
 		AFAIL(atomic);
@@ -125,9 +125,9 @@ same serial number will be undone (or redone) as a group.  See
 
 %end-doc */
 
-int ActionUndo(int argc, char **argv, Coord x, Coord y)
+int ActionUndo(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (!function || !*function) {
 		/* don't allow undo in the middle of an operation */
 		if (conf_core.editor.mode != PCB_MODE_POLYGON_HOLE && Crosshair.AttachedObject.State != STATE_FIRST)
@@ -265,7 +265,7 @@ three "undone" lines.
 
 %end-doc */
 
-int ActionRedo(int argc, char **argv, Coord x, Coord y)
+int ActionRedo(int argc, const char **argv, Coord x, Coord y)
 {
 	if (((conf_core.editor.mode == PCB_MODE_POLYGON ||
 				conf_core.editor.mode == PCB_MODE_POLYGON_HOLE) && Crosshair.AttachedPolygon.PointN) || Crosshair.AttachedLine.State == STATE_SECOND)

@@ -42,12 +42,12 @@ static const char conf_syntax[] =
 static const char conf_help[] = "Perform various operations on the configuration tree.";
 
 extern lht_doc_t *conf_root[];
-static int ActionConf(int argc, char **argv, Coord x, Coord y)
+static int ActionConf(int argc, const char **argv, Coord x, Coord y)
 {
-	char *cmd = argc > 0 ? argv[0] : 0;
+	const char *cmd = argc > 0 ? argv[0] : 0;
 
 	if (NSTRCMP(cmd, "set") == 0) {
-		char *path, *val;
+		const char *path, *val;
 		conf_policy_t pol = POL_OVERWRITE;
 		conf_role_t role = CFR_invalid;
 		int res;
@@ -152,14 +152,14 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 /*------------ get/chk (check flag actions for menus) ------------------*/
 static const char GetStyle_syntax[] = "GetStyle()" ;
 static const char GetStyle_help[] = "Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)";
-static int ActionGetStyle(int argc, char **argv, Coord x, Coord y)
+static int ActionGetStyle(int argc, const char **argv, Coord x, Coord y)
 {
 	return pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
 }
 
 static const char ChkMode_syntax[] = "ChkMode(expected_mode)" ;
 static const char ChkMode_help[] = "Return 1 if the currently selected mode is the expected_mode";
-static int ActionChkMode(int argc, char **argv, Coord x, Coord y)
+static int ActionChkMode(int argc, const char **argv, Coord x, Coord y)
 {
 #warning TODO: convert this to a compile-time hash
 	struct {
@@ -202,7 +202,7 @@ static const char ChkGridSize_syntax[] =
 	"ChkGridSize(none)\n"
 	;
 static const char ChkGridSize_help[] = "Return 1 if the currently selected grid matches the expected_size. If argument is \"none\" return 1 if there is no grid.";
-static int ActionChkGridSize(int argc, char **argv, Coord x, Coord y)
+static int ActionChkGridSize(int argc, const char **argv, Coord x, Coord y)
 {
 	assert(argc == 1);
 	if (strcmp(argv[0], "none") == 0)
@@ -217,7 +217,7 @@ static const char ChkElementName_syntax[] =
 	"ChkElementName(3) - expect value\n"
 	;
 static const char ChkElementName_help[] = "Return 1 if currently shown element label (name) type matches the expected";
-static int ActionChkElementName(int argc, char **argv, Coord x, Coord y)
+static int ActionChkElementName(int argc, const char **argv, Coord x, Coord y)
 {
 	int have, expected = argv[0][0] - '0';
 
@@ -231,7 +231,7 @@ static int ActionChkElementName(int argc, char **argv, Coord x, Coord y)
 
 static const char ChkGridUnits_syntax[] = "ChkGridUnits(expected)";
 static const char ChkGridUnits_help[] = "Return 1 if currently selected grid unit matches the expected (normally mm or mil)";
-static int ActionChkGridUnits(int argc, char **argv, Coord x, Coord y)
+static int ActionChkGridUnits(int argc, const char **argv, Coord x, Coord y)
 {
 	assert(argc == 1);
 	return strcmp(conf_core.editor.grid_unit->suffix, argv[0]) == 0;
@@ -239,7 +239,7 @@ static int ActionChkGridUnits(int argc, char **argv, Coord x, Coord y)
 
 static const char ChkBuffer_syntax[] = "ChkBuffer(idx)";
 static const char ChkBuffer_help[] = "Return 1 if currently selected buffer's index matches idx";
-static int ActionChkBuffer(int argc, char **argv, Coord x, Coord y)
+static int ActionChkBuffer(int argc, const char **argv, Coord x, Coord y)
 {
 	int expected = argv[0][0] - '0';
 	assert(argc == 1);

@@ -1288,7 +1288,7 @@ int ElementOrientation(ElementType * e)
 	return dy > 0 ? 3 : 1;
 }
 
-int ActionListRotations(int argc, char **argv, Coord x, Coord y)
+int ActionListRotations(int argc, const char **argv, Coord x, Coord y)
 {
 	ELEMENT_LOOP(PCB->Data);
 	{

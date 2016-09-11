@@ -43,7 +43,7 @@ connecting them are minimized.  Note that you cannot undo this.
 
 %end-doc */
 
-static int ActionAutoPlaceSelected(int argc, char **argv, Coord x, Coord y)
+static int ActionAutoPlaceSelected(int argc, const char **argv, Coord x, Coord y)
 {
 	hid_action("Busy");
 	if (gui->confirm_dialog(_("Auto-placement can NOT be undone.\n" "Do you want to continue anyway?\n"), 0)) {

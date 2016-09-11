@@ -365,10 +365,10 @@ static const char replacefootprint_syntax[] = "ReplaceFootprint()\n";
 
 static const char replacefootprint_help[] = "Replace the footprint of the selected components with the footprint specified.";
 
-static int ReplaceFootprint(int argc, char **argv, Coord x, Coord y)
+static int ActionReplaceFootprint(int argc, const char **argv, Coord x, Coord y)
 {
-	char *a[4];
-	char *fpname;
+	const char *a[4];
+	const char *fpname;
 	int found = 0;
 
 	/* check if we have elements selected and quit if not */
@@ -431,7 +431,7 @@ static const char savepatch_help[] = "Save netlist patch for back annotation.";
 /* %start-doc actions SavePatch
 Save netlist patch for back annotation.
 %end-doc */
-static int SavePatch(int argc, char **argv, Coord x, Coord y)
+static int ActionSavePatch(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *fn;
 	FILE *f;
@@ -472,10 +472,10 @@ static int SavePatch(int argc, char **argv, Coord x, Coord y)
 }
 
 HID_Action rats_patch_action_list[] = {
-	{"ReplaceFootprint", 0, ReplaceFootprint,
+	{"ReplaceFootprint", 0, ActionReplaceFootprint,
 	 replacefootprint_help, replacefootprint_syntax}
 	,
-	{"SavePatch", 0, SavePatch,
+	{"SavePatch", 0, ActionSavePatch,
 	 savepatch_help, savepatch_syntax}
 };
 

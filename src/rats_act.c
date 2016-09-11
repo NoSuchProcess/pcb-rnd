@@ -65,9 +65,9 @@ Selects the shortest unselected rat on the board.
 
 %end-doc */
 
-static int ActionAddRats(int argc, char **argv, Coord x, Coord y)
+static int ActionAddRats(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	RatTypePtr shorty;
 	float len, small;
 
@@ -140,9 +140,9 @@ All ``found'' objects are marked ``not found''.
 
 %end-doc */
 
-static int ActionConnection(int argc, char **argv, Coord x, Coord y)
+static int ActionConnection(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_Find:
@@ -189,9 +189,9 @@ static const char deleterats_help[] = "Delete rat lines.";
 
 %end-doc */
 
-static int ActionDeleteRats(int argc, char **argv, Coord x, Coord y)
+static int ActionDeleteRats(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		if (conf_core.temp.rat_warn)
 			ClearWarnings();

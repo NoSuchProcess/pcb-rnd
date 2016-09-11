@@ -42,9 +42,9 @@ static const char conf_syntax[] =
 static const char conf_help[] = "Perform various operations on the configuration tree.";
 
 extern lht_doc_t *conf_root[];
-static int ActionDumpConf(int argc, char **argv, Coord x, Coord y)
+static int ActionDumpConf(int argc, const char **argv, Coord x, Coord y)
 {
-	char *cmd = argc > 0 ? argv[0] : 0;
+	const char *cmd = argc > 0 ? argv[0] : NULL;
 
 	if (NSTRCMP(cmd, "native") == 0) {
 		int verbose;
@@ -90,7 +90,7 @@ static const char dump_layers_syntax[] =
 static const char dump_layers_help[] = "Print info about each layer";
 
 extern lht_doc_t *conf_root[];
-static int ActionDumpLayers(int argc, char **argv, Coord x, Coord y)
+static int ActionDumpLayers(int argc, const char **argv, Coord x, Coord y)
 {
 	int g, n, used, arr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 

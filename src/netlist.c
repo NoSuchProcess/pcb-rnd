@@ -355,7 +355,7 @@ updates the GUI.
 
 %end-doc */
 
-static int ActionNetlist(int argc, char **argv, Coord x, Coord y)
+static int ActionNetlist(int argc, const char **argv, Coord x, Coord y)
 {
 	NFunc func;
 	int i, j;

@@ -101,7 +101,7 @@ This will modify all of your drill holes to match the list of allowed
 sizes for your vendor.
 %end-doc */
 
-int ActionApplyVendor(int argc, char **argv, Coord x, Coord y)
+int ActionApplyVendor(int argc, const char **argv, Coord x, Coord y)
 {
 	hid_action("Busy");
 	apply_vendor_map();
@@ -122,7 +122,7 @@ static const char unload_vendor_help[] = "Unloads the current vendor drill mappi
 
 %end-doc */
 
-int ActionUnloadVendor(int argc, char **argv, Coord x, Coord y)
+int ActionUnloadVendor(int argc, const char **argv, Coord x, Coord y)
 {
 	cached_drill = -1;
 
@@ -150,9 +150,9 @@ be prompted to enter one.
 
 %end-doc */
 
-int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
+int ActionLoadVendorFrom(int argc, const char **argv, Coord x, Coord y)
 {
-	char *fname = NULL;
+	const char *fname = NULL;
 	static char *default_file = NULL;
 	const char *sval;
 	lht_doc_t *doc;
@@ -161,7 +161,7 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 
 	cached_drill = -1;
 
-	fname = argc ? argv[0] : 0;
+	fname = argc ? argv[0] : NULL;
 
 	if (!fname || !*fname) {
 		fname = gui->fileselect(_("Load Vendor Resource File..."),
@@ -290,7 +290,7 @@ int ActionLoadVendorFrom(int argc, char **argv, Coord x, Coord y)
 
 	apply_vendor_map();
 	if (free_fname)
-		free(fname);
+		free((char*)fname);
 	lht_dom_uninit(doc);
 	return 0;
 }

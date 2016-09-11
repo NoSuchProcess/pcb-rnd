@@ -2546,9 +2546,9 @@ RF losses and trace length.
 
 %end-doc */
 
-static int ActionDJopt(int argc, char **argv, Coord x, Coord y)
+static int ActionDJopt(int argc, const char **argv, Coord x, Coord y)
 {
-	char *arg = argc > 0 ? argv[0] : 0;
+	const char *arg = argc > 0 ? argv[0] : NULL;
 	int layn, saved = 0;
 	corner_s *c;
 

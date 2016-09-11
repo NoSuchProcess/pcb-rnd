@@ -118,9 +118,9 @@ numbered paste buffer.
 
 %end-doc */
 
-static int ActionSelect(int argc, char **argv, Coord x, Coord y)
+static int ActionSelect(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		int type;
 
@@ -149,7 +149,7 @@ static int ActionSelect(int argc, char **argv, Coord x, Coord y)
 
 		commonByName:
 			{
-				char *pattern = ACTION_ARG(1);
+				const char *pattern = ACTION_ARG(1);
 #warning "TODO: this should have a default value in case gui_get_pat() is not called"
 				search_method_t method;
 
@@ -157,7 +157,7 @@ static int ActionSelect(int argc, char **argv, Coord x, Coord y)
 					if (SelectObjectByName(type, pattern, true, method))
 						SetChangedFlag(true);
 					if (ACTION_ARG(1) == NULL)
-						free(pattern);
+						free((char*)pattern);
 				}
 				break;
 			}
@@ -278,9 +278,9 @@ type specified are unselected.
 
 %end-doc */
 
-static int ActionUnselect(int argc, char **argv, Coord x, Coord y)
+static int ActionUnselect(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		int type;
 		switch (funchash_get(function, NULL)) {
@@ -309,7 +309,7 @@ static int ActionUnselect(int argc, char **argv, Coord x, Coord y)
 
 		commonByName:
 			{
-				char *pattern = ACTION_ARG(1);
+				const char *pattern = ACTION_ARG(1);
 #warning "TODO: this should have a default value in case gui_get_pat() is not called"
 				search_method_t method;
 
@@ -317,7 +317,7 @@ static int ActionUnselect(int argc, char **argv, Coord x, Coord y)
 					if (SelectObjectByName(type, pattern, false, method))
 						SetChangedFlag(true);
 					if (ACTION_ARG(1) == NULL)
-						free(pattern);
+						free((char*)pattern);
 				}
 				break;
 			}

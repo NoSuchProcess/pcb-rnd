@@ -54,7 +54,7 @@ static const char renumber_help[] =
 
 #define WTF 0
 
-static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
+static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 {
 	bool changed = false;
 	ElementTypePtr *element_list;
@@ -63,7 +63,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	unsigned int tmpi;
 	size_t sz;
 	char *tmps;
-	char *name;
+	const char *name;
 	FILE *out;
 	static char *default_file = NULL;
 	size_t cnt_list_sz = 100;
@@ -104,7 +104,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 		fclose(out);
 		if (!gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0)) {
 			if (free_name && name)
-				free(name);
+				free((char*)name);
 			return 0;
 		}
 	}
@@ -112,12 +112,12 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	if ((out = fopen(name, "w")) == NULL) {
 		Message(PCB_MSG_DEFAULT, _("Could not open %s\n"), name);
 		if (free_name && name)
-			free(name);
+			free((char*)name);
 		return 1;
 	}
 
 	if (free_name && name)
-		free(name);
+		free((char*)name);
 
 	fprintf(out, "*COMMENT* PCB Annotation File\n");
 	fprintf(out, "*FILEVERSION* 20061031\n");

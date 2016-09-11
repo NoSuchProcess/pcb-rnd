@@ -483,7 +483,7 @@ into the footprint as well.  The footprint remains in the paste buffer.
 
 %end-doc */
 
-int LoadFootprint(int argc, char **argv, Coord x, Coord y)
+int LoadFootprint(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *name = ACTION_ARG(0);
 	const char *refdes = ACTION_ARG(1);
@@ -997,7 +997,7 @@ angle is given, the user is prompted for one.
 
 %end-doc */
 
-int ActionFreeRotateBuffer(int argc, char **argv, Coord x, Coord y)
+int ActionFreeRotateBuffer(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *angle_s;
 
@@ -1302,7 +1302,7 @@ Selects the given buffer to be the current paste buffer.
 
 %end-doc */
 
-static int ActionPasteBuffer(int argc, char **argv, Coord x, Coord y)
+static int ActionPasteBuffer(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *function = argc ? argv[0] : "";
 	const char *sbufnum = argc > 1 ? argv[1] : "";

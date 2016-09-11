@@ -985,7 +985,7 @@ Creates a new layer.
 
 %end-doc */
 
-int MoveLayerAction(int argc, char **argv, Coord x, Coord y)
+int MoveLayerAction(int argc, const char **argv, Coord x, Coord y)
 {
 	int old_index, new_index;
 	int new_top = -1;

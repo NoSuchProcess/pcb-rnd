@@ -208,9 +208,9 @@ static enum crosshair_shape CrosshairShapeIncrement(enum crosshair_shape shape)
 	return shape;
 }
 
-static int ActionDisplay(int argc, char **argv, Coord childX, Coord childY)
+static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY)
 {
-	char *function, *str_dir;
+	const char *function, *str_dir;
 	int id;
 	int err = 0;
 
@@ -589,9 +589,9 @@ Restores the tool to the last saved tool.
 
 %end-doc */
 
-static int ActionMode(int argc, char **argv, Coord x, Coord y)
+static int ActionMode(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 
 	if (function) {
 		Note.X = Crosshair.X;
@@ -784,7 +784,7 @@ static const char cycledrag_syntax[] = "CycleDrag()\n";
 static const char cycledrag_help[] = "Cycle through which object is being dragged";
 
 #define close_enough(a, b) ((((a)-(b)) > 0) ? ((a)-(b) < (SLOP * pixel_slop)) : ((a)-(b) > -(SLOP * pixel_slop)))
-static int ActionCycleDrag(int argc, char **argv, Coord x, Coord y)
+static int ActionCycleDrag(int argc, const char **argv, Coord x, Coord y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int over = 0;
@@ -861,7 +861,7 @@ followed by a newline.
 
 %end-doc */
 
-static int ActionMessage(int argc, char **argv, Coord x, Coord y)
+static int ActionMessage(int argc, const char **argv, Coord x, Coord y)
 {
 	int i;
 
@@ -889,9 +889,9 @@ appear on the silk layer when you print the layout.
 
 %end-doc */
 
-static int ActionToggleHideName(int argc, char **argv, Coord x, Coord y)
+static int ActionToggleHideName(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function && PCB->ElementOn) {
 		switch (funchash_get(function, NULL)) {
 		case F_Object:
@@ -956,9 +956,9 @@ cursor location.
 
 %end-doc */
 
-static int ActionMarkCrosshair(int argc, char **argv, Coord x, Coord y)
+static int ActionMarkCrosshair(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (!function || !*function) {
 		if (Marked.status) {
 			notify_mark_change(false);
@@ -994,9 +994,9 @@ static const char routestyle_help[] = "Copies the indicated routing style into t
 
 %end-doc */
 
-static int ActionRouteStyle(int argc, char **argv, Coord x, Coord y)
+static int ActionRouteStyle(int argc, const char **argv, Coord x, Coord y)
 {
-	char *str = ACTION_ARG(0);
+	const char *str = ACTION_ARG(0);
 	RouteStyleType *rts;
 	int number;
 
@@ -1039,7 +1039,7 @@ static const char createmenu_help[] = "Creates a new menu, popup (only path spec
 
 %end-doc */
 
-static int ActionCreateMenu(int argc, char **argv, Coord x, Coord y)
+static int ActionCreateMenu(int argc, const char **argv, Coord x, Coord y)
 {
 	if (gui == NULL) {
 		Message(PCB_MSG_DEFAULT, "Error: can't create menu, there's no GUI hid loaded\n");
@@ -1082,7 +1082,7 @@ static void set_same_(Coord Thick, Coord Diameter, Coord Hole, Coord Clearance, 
 		pcb_use_route_style_idx(&PCB->RouteStyle, known);
 }
 
-static int ActionSetSame(int argc, char **argv, Coord x, Coord y)
+static int ActionSetSame(int argc, const char **argv, Coord x, Coord y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
@@ -1146,7 +1146,7 @@ Switch to another HID.
 
 %end-doc */
 
-static int ActionSwitchHID(int argc, char **argv, Coord x, Coord y)
+static int ActionSwitchHID(int argc, const char **argv, Coord x, Coord y)
 {
 	HID *ng = hid_find_gui(argv[0]);
 	int chg;

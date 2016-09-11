@@ -48,12 +48,12 @@ static void hid_batch_uninit(void)
 		free(prompt);
 }
 
-static int nop(int argc, char **argv, Coord x, Coord y)
+static int nop(int argc, const char **argv, Coord x, Coord y)
 {
 	return 0;
 }
 
-static int PCBChanged(int argc, char **argv, Coord x, Coord y)
+static int PCBChanged(int argc, const char **argv, Coord x, Coord y)
 {
 	if (prompt != NULL)
 		free(prompt);
@@ -71,13 +71,13 @@ static int PCBChanged(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int help(int argc, char **argv, Coord x, Coord y)
+static int help(int argc, const char **argv, Coord x, Coord y)
 {
 	print_actions();
 	return 0;
 }
 
-static int info(int argc, char **argv, Coord x, Coord y)
+static int info(int argc, const char **argv, Coord x, Coord y)
 {
 	int i, j;
 	int cg, sg;

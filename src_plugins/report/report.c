@@ -61,7 +61,7 @@ conf_report_t conf_report;
 
 #define USER_UNITMASK (conf_core.editor.grid_unit->allow)
 
-static int ReportDrills(int argc, char **argv, Coord x, Coord y)
+static int ReportDrills(int argc, const char **argv, Coord x, Coord y)
 {
 	DrillInfoTypePtr AllDrills;
 	Cardinal n;
@@ -118,7 +118,7 @@ This is a shortcut for @code{Report(Object)}.
 
 %end-doc */
 
-static int ReportDialog(int argc, char **argv, Coord x, Coord y)
+static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
@@ -468,7 +468,7 @@ static int ReportDialog(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int ReportFoundPins(int argc, char **argv, Coord x, Coord y)
+static int ReportFoundPins(int argc, const char **argv, Coord x, Coord y)
 {
 	gds_t list;
 	int col = 0;
@@ -542,7 +542,7 @@ static double XYtoNetLength(Coord x, Coord y, int *found)
 	return length;
 }
 
-static int ReportAllNetLengths(int argc, char **argv, Coord x, Coord y)
+static int ReportAllNetLengths(int argc, const char **argv, Coord x, Coord y)
 {
 	int ni;
 	int found;
@@ -624,7 +624,7 @@ static int ReportAllNetLengths(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int ReportNetLength(int argc, char **argv, Coord x, Coord y)
+static int ReportNetLength(int argc, const char **argv, Coord x, Coord y)
 {
 	Coord length = 0;
 	char *netname = 0;
@@ -715,7 +715,7 @@ got_net_name:
 	return 0;
 }
 
-static int ReportNetLengthByName(char *tofind, int x, int y)
+static int ReportNetLengthByName(const char *tofind, int x, int y)
 {
 	char *netname = 0;
 	Coord length = 0;
@@ -862,7 +862,7 @@ units
 
 %end-doc */
 
-static int Report(int argc, char **argv, Coord x, Coord y)
+static int Report(int argc, const char **argv, Coord x, Coord y)
 {
 	if ((argc < 1) || (argc > 2))
 		AUSAGE(report);

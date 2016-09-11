@@ -63,9 +63,9 @@ responsive.
 
 %end-doc */
 
-static int ActionAutoRoute(int argc, char **argv, Coord x, Coord y)
+static int ActionAutoRoute(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	hid_action("Busy");
 	if (function) {								/* one parameter */
 		if (strcmp(function, "AllRats") == 0) {

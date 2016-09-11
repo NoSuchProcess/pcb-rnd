@@ -219,7 +219,7 @@ int hid_action(const char *name)
 
 int hid_actionl(const char *name, ...)
 {
-	char *argv[20];
+	const char *argv[20];
 	int argc = 0;
 	va_list ap;
 	char *arg;
@@ -231,7 +231,7 @@ int hid_actionl(const char *name, ...)
 	return hid_actionv(name, argc, argv);
 }
 
-int hid_actionv_(const HID_Action *a, int argc, char **argv)
+int hid_actionv_(const HID_Action *a, int argc, const char **argv)
 {
 	Coord x = 0, y = 0;
 	int i, ret;
@@ -255,7 +255,7 @@ int hid_actionv_(const HID_Action *a, int argc, char **argv)
 	return ret;
 }
 
-int hid_actionv(const char *name, int argc, char **argv)
+int hid_actionv(const char *name, int argc, const char **argv)
 {
 	const HID_Action *a;
 
@@ -278,7 +278,7 @@ int hid_actionv(const char *name, int argc, char **argv)
 
 static int hid_parse_actionstring(const char *rstr, char require_parens)
 {
-	char **list = NULL;
+	const char **list = NULL;
 	int max = 0;
 	int num;
 	char *str = NULL;
@@ -370,9 +370,9 @@ another:
 			if (num >= max) {
 				max += 10;
 				if (list)
-					list = (char **) realloc(list, max * sizeof(char *));
+					list = (const char **) realloc(list, max * sizeof(char *));
 				else
-					list = (char **) malloc(max * sizeof(char *));
+					list = (const char **) malloc(max * sizeof(char *));
 			}
 			/* Strip leading whitespace.  */
 			while (*sp && isspace((int) *sp))

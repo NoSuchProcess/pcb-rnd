@@ -75,7 +75,7 @@ static const char manageplugins_syntax[] = "ManagePlugins()\n";
 
 static const char manageplugins_help[] = "Manage plugins dialog.";
 
-static int ManagePlugins(int argc, char **argv, Coord x, Coord y)
+static int ActionManagePlugins(int argc, const char **argv, Coord x, Coord y)
 {
 	plugin_info_t *i;
 	int nump = 0, numb = 0;
@@ -125,7 +125,7 @@ static int ManagePlugins(int argc, char **argv, Coord x, Coord y)
 
 
 HID_Action plugins_action_list[] = {
-	{"ManagePlugins", 0, ManagePlugins,
+	{"ManagePlugins", 0, ActionManagePlugins,
 	 manageplugins_help, manageplugins_syntax}
 };
 

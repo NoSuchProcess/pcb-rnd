@@ -43,7 +43,7 @@ not the current style settings.
 
 %end-doc */
 
-static int ActionDRCheck(int argc, char **argv, Coord x, Coord y)
+static int ActionDRCheck(int argc, const char **argv, Coord x, Coord y)
 {
 	int count;
 

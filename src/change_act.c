@@ -51,8 +51,8 @@
 #include "layer.h"
 
 static void ChangeFlag(const char *, const char *, int, const char *);
-static int ActionChangeSize(int argc, char **argv, Coord x, Coord y);
-static int ActionChange2ndSize(int argc, char **argv, Coord x, Coord y);
+static int ActionChangeSize(int argc, const char **argv, Coord x, Coord y);
+static int ActionChange2ndSize(int argc, const char **argv, Coord x, Coord y);
 
 /* --------------------------------------------------------------------------- */
 
@@ -71,11 +71,11 @@ changes the polygon clearance.
 
 %end-doc */
 
-static int ActionChangeClearSize(int argc, char **argv, Coord x, Coord y)
+static int ActionChangeClearSize(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
-	char *delta = ACTION_ARG(1);
-	char *units = ACTION_ARG(2);
+	const char *function = ACTION_ARG(0);
+	const char *delta = ACTION_ARG(1);
+	const char *units = ACTION_ARG(2);
 	bool absolute;
 	Coord value;
 	int type = PCB_TYPE_NONE;
@@ -156,7 +156,7 @@ cleared.  If the value is 1, the flag is set.
 
 %end-doc */
 
-static int ActionChangeFlag(int argc, char **argv, Coord x, Coord y)
+static int ActionChangeFlag(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *function = ACTION_ARG(0);
 	const char *flag = ACTION_ARG(1);
@@ -264,9 +264,9 @@ plated-through hole (not set), or an unplated hole (set).
 
 %end-doc */
 
-static int ActionChangeHole(int argc, char **argv, Coord x, Coord y)
+static int ActionChangeHole(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -306,9 +306,9 @@ The "no paste flag" of a pad determines whether the solderpaste
 
 %end-doc */
 
-static int ActionChangePaste(int argc, char **argv, Coord x, Coord y)
+static int ActionChangePaste(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -350,7 +350,7 @@ Call ActionChangeSize, ActionChangeDrillSize and ActionChangeClearSize
 with the same arguments. If any of them did not fail, return success.
 %end-doc */
 
-static int ActionChangeSizes(int argc, char **argv, Coord x, Coord y)
+static int ActionChangeSizes(int argc, const char **argv, Coord x, Coord y)
 {
 	int a, b, c;
 	SaveUndoSerialNumber();
@@ -384,11 +384,11 @@ of the silk layer lines and arcs for this element.
 
 %end-doc */
 
-static int ActionChangeSize(int argc, char **argv, Coord x, Coord y)
+static int ActionChangeSize(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
-	char *delta = ACTION_ARG(1);
-	char *units = ACTION_ARG(2);
+	const char *function = ACTION_ARG(0);
+	const char *delta = ACTION_ARG(1);
+	const char *units = ACTION_ARG(2);
 	bool absolute;								/* indicates if absolute size is given */
 	Coord value;
 	int type = PCB_TYPE_NONE, tostyle = 0;
@@ -486,11 +486,11 @@ static const char changedrillsize_help[] = "Changes the drilling hole size of ob
 
 %end-doc */
 
-static int ActionChange2ndSize(int argc, char **argv, Coord x, Coord y)
+static int ActionChange2ndSize(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
-	char *delta = ACTION_ARG(1);
-	char *units = ACTION_ARG(2);
+	const char *function = ACTION_ARG(0);
+	const char *delta = ACTION_ARG(1);
+	const char *units = ACTION_ARG(2);
 	int type = PCB_TYPE_NONE;
 	void *ptr1, *ptr2, *ptr3;
 
@@ -560,10 +560,10 @@ ChangePinName(U3, 7, VCC)
 
 %end-doc */
 
-static int ActionChangePinName(int argc, char **argv, Coord x, Coord y)
+static int ActionChangePinName(int argc, const char **argv, Coord x, Coord y)
 {
 	int changed = 0;
-	char *refdes, *pinnum, *pinname;
+	const char *refdes, *pinnum, *pinname;
 
 	if (argc != 3) {
 		AFAIL(changepinname);
@@ -647,10 +647,10 @@ Changes the name of the currently active layer.
 
 %end-doc */
 
-int ActionChangeName(int argc, char **argv, Coord x, Coord y)
+int ActionChangeName(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
-	char *pinnums = ACTION_ARG(1);
+	const char *function = ACTION_ARG(0);
+	const char *pinnums = ACTION_ARG(1);
 	char *name;
 	int pinnum;
 
@@ -728,9 +728,9 @@ polygon, insulating them from each other.
 
 %end-doc */
 
-static int ActionChangeJoin(int argc, char **argv, Coord x, Coord y)
+static int ActionChangeJoin(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -781,9 +781,9 @@ Note that @code{Pins} means both pins and pads.
 
 %end-doc */
 
-static int ActionChangeNonetlist(int argc, char **argv, Coord x, Coord y)
+static int ActionChangeNonetlist(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -827,9 +827,9 @@ Note that @code{Pins} means both pins and pads.
 
 %end-doc */
 
-static int ActionChangeSquare(int argc, char **argv, Coord x, Coord y)
+static int ActionChangeSquare(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -889,9 +889,9 @@ Note that @code{Pins} means pins and pads.
 
 %end-doc */
 
-static int ActionSetSquare(int argc, char **argv, Coord x, Coord y)
+static int ActionSetSquare(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function && *function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -941,9 +941,9 @@ Note that @code{Pins} means pins and pads.
 
 %end-doc */
 
-static int ActionClearSquare(int argc, char **argv, Coord x, Coord y)
+static int ActionClearSquare(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function && *function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -992,9 +992,9 @@ static const char changeoctagon_help[] = "Changes the octagon-flag of pins and v
 
 %end-doc */
 
-static int ActionChangeOctagon(int argc, char **argv, Coord x, Coord y)
+static int ActionChangeOctagon(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -1047,9 +1047,9 @@ static const char setoctagon_help[] = "Sets the octagon-flag of objects.";
 
 %end-doc */
 
-static int ActionSetOctagon(int argc, char **argv, Coord x, Coord y)
+static int ActionSetOctagon(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -1103,9 +1103,9 @@ static const char clearoctagon_help[] = "Clears the octagon-flag of pins and via
 
 %end-doc */
 
-static int ActionClearOctagon(int argc, char **argv, Coord x, Coord y)
+static int ActionClearOctagon(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -1176,10 +1176,10 @@ Pins and Vias may have thermals whether or not there is a polygon available
 to connect with. However, they will have no effect without the polygon.
 %end-doc */
 
-static int ActionSetThermal(int argc, char **argv, Coord x, Coord y)
+static int ActionSetThermal(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
-	char *style = ACTION_ARG(1);
+	const char *function = ACTION_ARG(0);
+	const char *style = ACTION_ARG(1);
 	void *ptr1, *ptr2, *ptr3;
 	int type, kind;
 	int err = 0;
@@ -1242,10 +1242,10 @@ SetFlag(SelectedPins,thermal)
 
 %end-doc */
 
-static int ActionSetFlag(int argc, char **argv, Coord x, Coord y)
+static int ActionSetFlag(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
-	char *flag = ACTION_ARG(1);
+	const char *function = ACTION_ARG(0);
+	const char *flag = ACTION_ARG(1);
 	ChangeFlag(function, flag, 1, "SetFlag");
 	return 0;
 }
@@ -1271,10 +1271,10 @@ ClrFlag(SelectedLines,join)
 
 %end-doc */
 
-static int ActionClrFlag(int argc, char **argv, Coord x, Coord y)
+static int ActionClrFlag(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
-	char *flag = ACTION_ARG(1);
+	const char *function = ACTION_ARG(0);
+	const char *flag = ACTION_ARG(1);
 	ChangeFlag(function, flag, 0, "ClrFlag");
 	return 0;
 }
@@ -1311,11 +1311,11 @@ Changes the size of new text.
 
 %end-doc */
 
-static int ActionSetValue(int argc, char **argv, Coord x, Coord y)
+static int ActionSetValue(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
-	char *val = ACTION_ARG(1);
-	char *units = ACTION_ARG(2);
+	const char *function = ACTION_ARG(0);
+	const char *val = ACTION_ARG(1);
+	const char *units = ACTION_ARG(2);
 	bool absolute;								/* flag for 'absolute' value */
 	double value;
 	int err = 0;

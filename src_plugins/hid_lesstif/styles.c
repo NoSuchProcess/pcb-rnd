@@ -83,7 +83,7 @@ static char *value_names[] = {
 	"Thickness", "Diameter", "Hole", "Clearance"
 };
 
-static int RouteStylesChanged(int argc, char **argv, Coord x, Coord y);
+static int RouteStylesChanged(int argc, const char **argv, Coord x, Coord y);
 
 static void update_one_value(int i, Coord v)
 {
@@ -312,7 +312,7 @@ static const char adjuststyle_help[] = "Displays the route style adjustment wind
 
 %end-doc */
 
-static int AdjustStyle(int argc, char **argv, Coord x, Coord y)
+static int AdjustStyle(int argc, const char **argv, Coord x, Coord y)
 {
 	if (!mainwind)
 		return 1;
@@ -375,7 +375,7 @@ static int AdjustStyle(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int RouteStylesChanged(int argc, char **argv, Coord x, Coord y)
+static int RouteStylesChanged(int argc, const char **argv, Coord x, Coord y)
 {
 	int i, j, h;
 	if (!PCB || vtroutestyle_len(&PCB->RouteStyle) == 0)

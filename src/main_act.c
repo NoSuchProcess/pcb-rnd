@@ -44,7 +44,7 @@ static const char printactions_syntax[] = "PrintActions()";
 
 static const char printactions_help[] = "Print all actions available.";
 
-int ActionPrintActions(int argc, char **argv, Coord x, Coord y)
+int ActionPrintActions(int argc, const char **argv, Coord x, Coord y)
 {
 	print_actions();
 	return 0;
@@ -55,7 +55,7 @@ static const char dumpactions_syntax[] = "DumpActions()";
 
 static const char dumpactions_help[] = "Dump all actions available.";
 
-int ActionDumpActions(int argc, char **argv, Coord x, Coord y)
+int ActionDumpActions(int argc, const char **argv, Coord x, Coord y)
 {
 	dump_actions();
 	return 0;
@@ -146,7 +146,7 @@ static int help_invoc(void)
 	return 0;
 }
 
-int ActionPrintUsage(int argc, char **argv, Coord x, Coord y)
+int ActionPrintUsage(int argc, const char **argv, Coord x, Coord y)
 {
 	u("");
 	if (argc > 0) {
@@ -178,7 +178,7 @@ static const char printversion_syntax[] = "PrintVersion()";
 
 static const char printversion_help[] = "Print version.";
 
-int ActionPrintVersion(int argc, char **argv, Coord x, Coord y)
+int ActionPrintVersion(int argc, const char **argv, Coord x, Coord y)
 {
 	printf("PCB version %s\n", VERSION);
 	return 0;
@@ -189,7 +189,7 @@ static const char printcopyright_syntax[] = "PrintCopyright()";
 
 static const char printcopyright_help[] = "Print copyright notice.";
 
-int ActionPrintCopyright(int argc, char **argv, Coord x, Coord y)
+int ActionPrintCopyright(int argc, const char **argv, Coord x, Coord y)
 {
 	printf("\n"
 				 "                COPYRIGHT for the original pcb program:\n\n"
@@ -231,7 +231,7 @@ static void print_list(const conflist_t *cl)
 	printf("\"\n");
 }
 
-int ActionPrintPaths(int argc, char **argv, Coord x, Coord y)
+int ActionPrintPaths(int argc, const char **argv, Coord x, Coord y)
 {
 	htsp_entry_t *e;
 	conf_fields_foreach(e) {

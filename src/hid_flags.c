@@ -33,7 +33,7 @@ int hid_get_flag(const char *name)
 	}
 	else {
 		char *end;
-		char *argv[2];
+		const char *argv[2];
 		cp = strchr(name, '(');
 		if (cp != NULL) {
 			const HID_Action *a;
@@ -87,4 +87,3 @@ void hid_restore_layer_ons(int *save_array)
 	for (i = 0; i < max_copper_layer + 2; i++)
 		PCB->Data->Layer[i].On = save_array[i];
 }
-

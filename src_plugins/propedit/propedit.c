@@ -40,7 +40,7 @@ static const char propedit_help[] = "Run the property editor";
 TODO
 %end-doc */
 
-int propedit_action(int argc, char **argv, Coord x, Coord y)
+int propedit_action(int argc, const char **argv, Coord x, Coord y)
 {
 	pe_ctx_t ctx;
 	ctx.core_props = pcb_props_init();
@@ -105,4 +105,3 @@ pcb_uninit_t hid_propedit_init(void)
 	REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
 	return hid_propedit_uninit;
 }
-

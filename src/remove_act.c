@@ -41,9 +41,9 @@ static const char delete_help[] = "Delete stuff.";
 
 %end-doc */
 
-static int ActionDelete(int argc, char **argv, Coord x, Coord y)
+static int ActionDelete(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ACTION_ARG(0);
+	const char *function = ACTION_ARG(0);
 	int id = funchash_get(function, NULL);
 
 	Note.X = Crosshair.X;
@@ -87,7 +87,7 @@ static const char removeselected_help[] = "Removes any selected objects.";
 
 %end-doc */
 
-static int ActionRemoveSelected(int argc, char **argv, Coord x, Coord y)
+static int ActionRemoveSelected(int argc, const char **argv, Coord x, Coord y)
 {
 	if (RemoveSelected())
 		SetChangedFlag(true);

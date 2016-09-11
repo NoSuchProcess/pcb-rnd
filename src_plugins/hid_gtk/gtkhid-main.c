@@ -185,7 +185,7 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static int Zoom(int argc, char **argv, Coord x, Coord y)
+static int Zoom(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *vp;
 	double v;
@@ -1008,7 +1008,7 @@ This just pops up a dialog telling the user which version of
 %end-doc */
 
 
-static int About(int argc, char **argv, Coord x, Coord y)
+static int About(int argc, const char **argv, Coord x, Coord y)
 {
 	ghid_dialog_about();
 	return 0;
@@ -1025,14 +1025,14 @@ Prompts the user for a coordinate, if one is not already selected.
 
 %end-doc */
 
-static int GetXY(int argc, char **argv, Coord x, Coord y)
+static int GetXY(int argc, const char **argv, Coord x, Coord y)
 {
 	return 0;
 }
 
 /* ---------------------------------------------------------------------- */
 
-static int PointCursor(int argc, char **argv, Coord x, Coord y)
+static int PointCursor(int argc, const char **argv, Coord x, Coord y)
 {
 	if (!ghidgui)
 		return 0;
@@ -1046,7 +1046,7 @@ static int PointCursor(int argc, char **argv, Coord x, Coord y)
 
 /* ---------------------------------------------------------------------- */
 
-static int RouteStylesChanged(int argc, char **argv, Coord x, Coord y)
+static int RouteStylesChanged(int argc, const char **argv, Coord x, Coord y)
 {
 	if (!ghidgui || !ghidgui->route_style_selector)
 		return 0;
@@ -1060,7 +1060,7 @@ static int RouteStylesChanged(int argc, char **argv, Coord x, Coord y)
 
 /* ---------------------------------------------------------------------- */
 
-int PCBChanged(int argc, char **argv, Coord x, Coord y)
+int PCBChanged(int argc, const char **argv, Coord x, Coord y)
 {
 	if (!ghidgui)
 		return 0;
@@ -1085,7 +1085,7 @@ int PCBChanged(int argc, char **argv, Coord x, Coord y)
 
 /* ---------------------------------------------------------------------- */
 
-static int LayerGroupsChanged(int argc, char **argv, Coord x, Coord y)
+static int LayerGroupsChanged(int argc, const char **argv, Coord x, Coord y)
 {
 	printf(_("LayerGroupsChanged -- not implemented\n"));
 	return 0;
@@ -1093,7 +1093,7 @@ static int LayerGroupsChanged(int argc, char **argv, Coord x, Coord y)
 
 /* ---------------------------------------------------------------------- */
 
-static int LibraryChanged(int argc, char **argv, Coord x, Coord y)
+static int LibraryChanged(int argc, const char **argv, Coord x, Coord y)
 {
 	/* No need to show the library window every time it changes...
 	 *  ghid_library_window_show (&ghid_port, FALSE);
@@ -1103,7 +1103,7 @@ static int LibraryChanged(int argc, char **argv, Coord x, Coord y)
 
 /* ---------------------------------------------------------------------- */
 
-static int Command(int argc, char **argv, Coord x, Coord y)
+static int Command(int argc, const char **argv, Coord x, Coord y)
 {
 	ghid_handle_user_command(TRUE);
 	return 0;
@@ -1121,9 +1121,9 @@ static char *dup_cwd()
 	return pcb_strdup(getcwd(tmp, sizeof(tmp)));
 }
 
-static int Load(int argc, char **argv, Coord x, Coord y)
+static int Load(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function;
+	const char *function;
 	char *name = NULL;
 
 	static gchar *current_element_dir = NULL;
@@ -1141,7 +1141,7 @@ static int Load(int argc, char **argv, Coord x, Coord y)
 	if (argc > 1)
 		return hid_actionv("LoadFrom", argc, argv);
 
-	function = argc ? argv[0] : (char *) "Layout";
+	function = argc ? argv[0] : "Layout";
 
 	if (strcasecmp(function, "Netlist") == 0) {
 		name = ghid_dialog_file_select_open(_("Load netlist file"), &current_netlist_dir, conf_core.rc.file_path);
@@ -1184,9 +1184,9 @@ called with that filename.
 
 %end-doc */
 
-static int Save(int argc, char **argv, Coord x, Coord y)
+static int Save(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function;
+	const char *function;
 	char *name;
 	char *prompt;
 	pcb_io_formats_t avail;
@@ -1201,7 +1201,7 @@ static int Save(int argc, char **argv, Coord x, Coord y)
 	if (argc > 1)
 		return hid_actionv("SaveTo", argc, argv);
 
-	function = argc ? argv[0] : (char *) "Layout";
+	function = argc ? argv[0] : "Layout";
 
 	if (strcasecmp(function, "Layout") == 0)
 		if (PCB->Filename)
@@ -1305,7 +1305,7 @@ side'' of the board.
 %end-doc */
 
 
-static int SwapSides(int argc, char **argv, Coord x, Coord y)
+static int SwapSides(int argc, const char **argv, Coord x, Coord y)
 {
 	int active_group = GetLayerGroupNumberByNumber(LayerStack[0]);
 	int comp_group = GetLayerGroupNumberByNumber(component_silk_layer);
@@ -1358,7 +1358,7 @@ options, and print the layout.
 
 %end-doc */
 
-static int Print(int argc, char **argv, Coord x, Coord y)
+static int Print(int argc, const char **argv, Coord x, Coord y)
 {
 	HID **hids;
 	int i;
@@ -1410,7 +1410,7 @@ the measurements in, so that future printouts will be more precise.
 
 %end-doc */
 
-static int PrintCalibrate(int argc, char **argv, Coord x, Coord y)
+static int PrintCalibrate(int argc, const char **argv, Coord x, Coord y)
 {
 	HID *printer = hid_find_printer();
 	printer->calibrate(0.0, 0.0);
@@ -1425,7 +1425,7 @@ static int PrintCalibrate(int argc, char **argv, Coord x, Coord y)
 
 /* ------------------------------------------------------------ */
 
-static int Export(int argc, char **argv, Coord x, Coord y)
+static int Export(int argc, const char **argv, Coord x, Coord y)
 {
 
 	/* check if layout is empty */
@@ -1440,7 +1440,7 @@ static int Export(int argc, char **argv, Coord x, Coord y)
 
 /* ------------------------------------------------------------ */
 
-static int Benchmark(int argc, char **argv, Coord x, Coord y)
+static int Benchmark(int argc, const char **argv, Coord x, Coord y)
 {
 	int i = 0;
 	time_t start, end;
@@ -1476,7 +1476,7 @@ currently within the window already.
 
 %end-doc */
 
-static int Center(int argc, char **argv, Coord pcb_x, Coord pcb_y)
+static int Center(int argc, const char **argv, Coord pcb_x, Coord pcb_y)
 {
 	GdkDisplay *display;
 	GdkScreen *screen;
@@ -1552,7 +1552,7 @@ The values are percentages of the board size.  Thus, a move of
 
 %end-doc */
 
-static int CursorAction(int argc, char **argv, Coord x, Coord y)
+static int CursorAction(int argc, const char **argv, Coord x, Coord y)
 {
 	UnitList extra_units_x = {
 		{"grid", PCB->Grid, 0},
@@ -1631,9 +1631,9 @@ Open the DRC violations window.
 
 %end-doc */
 
-static int DoWindows(int argc, char **argv, Coord x, Coord y)
+static int DoWindows(int argc, const char **argv, Coord x, Coord y)
 {
-	char *a = argc == 1 ? argv[0] : (char *) "";
+	const char *a = argc == 1 ? argv[0] : "";
 
 	if (strcmp(a, "1") == 0 || strcasecmp(a, "Layout") == 0) {
 	}
@@ -1678,7 +1678,7 @@ Sets the display units to millimeters.
 
 %end-doc */
 
-static int SetUnits(int argc, char **argv, Coord x, Coord y)
+static int SetUnits(int argc, const char **argv, Coord x, Coord y)
 {
 	const Unit *new_unit;
 	if (argc == 0)
@@ -1718,7 +1718,7 @@ default is given, div=40.
 
 %end-doc */
 
-static int ScrollAction(int argc, char **argv, Coord x, Coord y)
+static int ScrollAction(int argc, const char **argv, Coord x, Coord y)
 {
 	gdouble dx = 0.0, dy = 0.0;
 	int div = 40;
@@ -1761,7 +1761,7 @@ Mode = 0.
 
 %end-doc */
 
-static int PanAction(int argc, char **argv, Coord x, Coord y)
+static int PanAction(int argc, const char **argv, Coord x, Coord y)
 {
 	int mode;
 
@@ -1797,7 +1797,7 @@ This just pops up the specified menu.  The menu must have been defined
 in the popups subtree in the menu lht file.
 
 %end-doc */
-static int Popup(int argc, char **argv, Coord x, Coord y)
+static int Popup(int argc, const char **argv, Coord x, Coord y)
 {
 	GtkMenu *menu = NULL;
 	char name[256];
@@ -1837,7 +1837,7 @@ Asks user which schematics to import into PCB.
 %end-doc */
 
 
-static int ImportGUI(int argc, char **argv, Coord x, Coord y)
+static int ImportGUI(int argc, const char **argv, Coord x, Coord y)
 {
 	char *name = NULL;
 	static gchar *current_layout_dir = NULL;
@@ -1872,7 +1872,7 @@ static const char savewingeo_syntax[] = "SaveWindowGeometry()";
 
 static const char savewingeo_help[] = N_("Saves window geometry in the config.\n");
 
-static int SaveWinGeo(int argc, char **argv, Coord x, Coord y)
+static int SaveWinGeo(int argc, const char **argv, Coord x, Coord y)
 {
 	ghid_wgeo_save(1, 0);
 	return 0;
@@ -1881,7 +1881,7 @@ static int SaveWinGeo(int argc, char **argv, Coord x, Coord y)
 
 
 /* ------------------------------------------------------------ */
-static int Busy(int argc, char **argv, Coord x, Coord y)
+static int Busy(int argc, const char **argv, Coord x, Coord y)
 {
 	ghid_watch_cursor();
 	return 0;

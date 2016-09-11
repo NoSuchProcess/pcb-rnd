@@ -1542,7 +1542,7 @@ static void ps_set_crosshair(int x, int y, int action)
 {
 }
 
-static int ActionPSCalib(int argc, char **argv, Coord x, Coord y)
+static int ActionPSCalib(int argc, const char **argv, Coord x, Coord y)
 {
 	ps_calibrate(0.0, 0.0);
 	return 0;

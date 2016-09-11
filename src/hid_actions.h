@@ -17,8 +17,8 @@ extern void hid_remove_actions_by_cookie(const char *cookie);
 
 int hid_action(const char *action_);
 int hid_actionl(const char *action_, ...);	/* NULL terminated */
-int hid_actionv(const char *action_, int argc_, char **argv_);
-int hid_actionv_(const HID_Action *a, int argc, char **argv);
+int hid_actionv(const char *action_, int argc_, const char **argv_);
+int hid_actionv_(const HID_Action *a, int argc, const char **argv);
 
 /* Parse the given command string into action calls, and call
    hid_actionv for each action found.  Accepts both "action(arg1,

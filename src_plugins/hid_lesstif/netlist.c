@@ -32,7 +32,7 @@ static XmString *netnode_strings = 0;
 static int n_netnode_strings;
 static int last_pick = -1;
 
-static int LesstifNetlistChanged(int argc, char **argv, Coord x, Coord y);
+static int LesstifNetlistChanged(int argc, const char **argv, Coord x, Coord y);
 
 static void pick_net(int pick)
 {
@@ -343,7 +343,7 @@ static int build_netlist_dialog()
 	return 0;
 }
 
-static int LesstifNetlistChanged(int argc, char **argv, Coord x, Coord y)
+static int LesstifNetlistChanged(int argc, const char **argv, Coord x, Coord y)
 {
 	int i;
 	if (!PCB->NetlistLib[NETLIST_EDITED].MenuN)
@@ -372,7 +372,7 @@ static const char netlistshow_help[] = "Selects the given pinname or netname in 
 
 %end-doc */
 
-static int LesstifNetlistShow(int argc, char **argv, Coord x, Coord y)
+static int LesstifNetlistShow(int argc, const char **argv, Coord x, Coord y)
 {
 	if (build_netlist_dialog())
 		return 0;
