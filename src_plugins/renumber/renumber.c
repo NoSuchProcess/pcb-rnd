@@ -74,7 +74,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 	char **was, **is, *pin;
 	unsigned int c_cnt = 0, numele;
 	int ok;
-	int free_name = 0;
+	bool free_name = false;
 
 	if (argc < 1) {
 		/*
@@ -86,7 +86,7 @@ static int ActionRenumber(int argc, char **argv, Coord x, Coord y)
 														 "This file may be used to back annotate the\n"
 														 "change to the schematics.\n"), default_file, ".eco", "eco", 0);
 
-		free_name = 1;
+		free_name = true;
 	}
 	else
 		name = argv[0];
