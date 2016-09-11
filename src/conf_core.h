@@ -30,7 +30,7 @@ typedef struct {
 		CFT_BOOLEAN highlight_on_point;    /* Highlight if crosshair is on endpoints. */
 		CFT_BOOLEAN show_solder_side;      /* mirror output */
 		CFT_BOOLEAN save_last_command;     /* save the last command entered by user */
-		CFT_INTEGER line_refraction;	   /* value for line lookahead setting */
+		CFT_INTEGER line_refraction;       /* value for line lookahead setting */
 		CFT_BOOLEAN save_in_tmp;           /* always save data in /tmp */
 		CFT_BOOLEAN draw_grid;             /* draw grid points */
 		CFT_BOOLEAN all_direction_lines;   /* enable lines to all directions */
