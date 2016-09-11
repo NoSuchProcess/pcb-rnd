@@ -382,8 +382,8 @@ void ghid_set_status_line_label(void)
 	conf_core.design.clearance,
 	conf_core.design.text_scale, conf_core.editor.buffer_number + 1);
 
-  ghid_status_line_set_text(text);
-  free(text);
+	ghid_status_line_set_text(text);
+	free(text);
 }
 
 /* ---------------------------------------------------------------------------
