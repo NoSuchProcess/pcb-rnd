@@ -275,9 +275,11 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 {
 
 
-	//write_kicad_legacy_module_header(FP);
-	//fputs("io_kicad_legacy_write_element()", FP);
-	//return 0;
+	/*
+	write_kicad_legacy_module_header(FP);
+	fputs("io_kicad_legacy_write_element()", FP);
+	return 0;
+	*/
 
 
 	gdl_iterator_t eit;
@@ -338,24 +340,24 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 		fputs("T0 0 -4134 600 600 0 120 N V 21 N \"S***\"\n",FP);
 
 		pinlist_foreach(&element->Pin, &it, pin) {
-			fputs("$PAD\n",FP);	 // start pad descriptor for a pin
+			fputs("$PAD\n",FP);	 /* start pad descriptor for a pin */
 
-			pcb_fprintf(FP, "Po %.3mm %.3mm\n", // positions of pad
+			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
 									pin->X - element->MarkX,
 									pin->Y - element->MarkY);
 
-			fputs("Sh ",FP); // pin shape descriptor
+			fputs("Sh ",FP); /* pin shape descriptor */
 			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
-			fputs(" C ",FP); // circular
-			pcb_fprintf(FP, "%.3mm %.3mm ", pin->Thickness, pin->Thickness); // height = width
-			fputs("0 0 0\n",FP);// deltaX deltaY Orientation as float in decidegrees
+			fputs(" C ",FP); /* circular */
+			pcb_fprintf(FP, "%.3mm %.3mm ", pin->Thickness, pin->Thickness); /* height = width */
+			fputs("0 0 0\n",FP); /* deltaX deltaY Orientation as float in decidegrees */
 
-			fputs("Dr ",FP); // drill details; size and x,y pos relative to pad location
+			fputs("Dr ",FP); /* drill details; size and x,y pos relative to pad location */
 			pcb_fprintf(FP, "%mm 0 0\n", pin->DrillingHole);
 
-			fputs("At STD N 00E0FFFF\n", FP); // through hole STD pin, all copper layers
+			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
 
-			fputs("Ne 0 \"\"\n",FP); // library parts have empty net descriptors
+			fputs("Ne 0 \"\"\n",FP); /* library parts have empty net descriptors */
 			/*
 				PrintQuotedString(FP, (char *) EMPTY(pin->Name));
 				fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
@@ -363,45 +365,45 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 			fputs("$EndPAD\n",FP);
 		}
 		pinlist_foreach(&element->Pad, &it, pad) {
-			fputs("$PAD\n",FP);	 // start pad descriptor for an smd pad
+			fputs("$PAD\n",FP);	 /* start pad descriptor for an smd pad */
 
-			pcb_fprintf(FP, "Po %.3mm %.3mm\n", // positions of pad
+			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
 									(pad->Point1.X + pad->Point2.X)/2- element->MarkX,
 									(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
 
-			fputs("Sh ",FP); // pin shape descriptor
+			fputs("Sh ",FP); /* pin shape descriptor */
 			PrintQuotedString(FP, (char *) EMPTY(pad->Number));
-			fputs(" R ",FP); // rectangular, not a pin
+			fputs(" R ",FP); /* rectangular, not a pin */
 
 			if ((pad->Point1.X-pad->Point2.X) <= 0
 					&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
 				pcb_fprintf(FP, "%.3mm %.3mm ",
-										pad->Point2.X-pad->Point1.X + pad->Thickness,	 // width
-										pad->Point2.Y-pad->Point1.Y + pad->Thickness); // height
+										pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
+										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) <= 0
 								 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
 				pcb_fprintf(FP, "%.3mm %.3mm ",
-										pad->Point2.X-pad->Point1.X + pad->Thickness,	 // width
-										pad->Point1.Y-pad->Point2.Y + pad->Thickness); // height
+										pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
+										pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 								 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
 				pcb_fprintf(FP, "%.3mm %.3mm ",
-										pad->Point1.X-pad->Point2.X + pad->Thickness,	 // width
-										pad->Point1.Y-pad->Point2.Y + pad->Thickness); // height
+										pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
+										pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 								 && (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
 				pcb_fprintf(FP, "%.3mm %.3mm ",
-										pad->Point1.X-pad->Point2.X + pad->Thickness,	 // width
-										pad->Point2.Y-pad->Point1.Y + pad->Thickness); // height
+										pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
+										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			}
 
-			fputs("0 0 0\n",FP);// deltaX deltaY Orientation as float in decidegrees
+			fputs("0 0 0\n",FP); /* deltaX deltaY Orientation as float in decidegrees */
 
-			fputs("Dr 0 0 0\n",FP); // drill details; zero size; x,y pos vs pad location
+			fputs("Dr 0 0 0\n",FP); /* drill details; zero size; x,y pos vs pad location */
 
-			fputs("At SMD N 00888000\n", FP); // SMD pin, need to use right layer mask
+			fputs("At SMD N 00888000\n", FP); /* SMD pin, need to use right layer mask */
 
-			fputs("Ne 0 \"\"\n",FP); // library parts have empty net descriptors
+			fputs("Ne 0 \"\"\n",FP); /* library parts have empty net descriptors */
 			fputs("$EndPAD\n",FP);
 
 		}
@@ -412,37 +414,39 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 									line->Point2.X - element->MarkX,
 									line->Point2.Y - element->MarkY,
 									line->Thickness);
-			fputs("21\n",FP); // an arbitrary Kicad layer, front silk, need to refine this
+			fputs("21\n",FP); /* an arbitrary Kicad layer, front silk, need to refine this */
 		}
 
 		linelist_foreach(&element->Arc, &it, arc) {
-			if ((arc->Delta == 360) || (arc->Delta == -360)) { // it's a circle
+			if ((arc->Delta == 360) || (arc->Delta == -360)) { /* it's a circle */
 				pcb_fprintf(FP, "DC %.3mm %.3mm %.3mm %.3mm %.3mm ",
-										arc->X - element->MarkX, // x_1 centre
-										arc->Y - element->MarkY, // y_2 centre
-										(arc->X - element->MarkX + arc->Thickness/2), // x_2 on circle
-										arc->Y - element->MarkY,									// y_2 on circle
-										arc->Thickness); // stroke thickness
+										arc->X - element->MarkX, /* x_1 centre */
+										arc->Y - element->MarkY, /* y_2 centre */
+										(arc->X - element->MarkX + arc->Thickness/2), /* x_2 on circle */
+										arc->Y - element->MarkY,									/* y_2 on circle */
+										arc->Thickness); /* stroke thickness */
 			} else {
-				// as far as can be determined from the Kicad documentation,
-				// http://en.wikibooks.org/wiki/Kicad/file_formats#Drawings
-				//
-				// the origin for rotation is the positive x direction, and going CW
-				//
-				// whereas in gEDA, the gEDA origin for rotation is the negative x axis,
-				// with rotation CCW, so we need to reverse delta angle
-				//
-				// deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in gEDA
-				// NB it is in degrees in the newer s-file kicad module/footprint format
+				/*
+				   as far as can be determined from the Kicad documentation,
+				   http://en.wikibooks.org/wiki/Kicad/file_formats#Drawings
+				
+				   the origin for rotation is the positive x direction, and going CW
+				
+				   whereas in gEDA, the gEDA origin for rotation is the negative x axis,
+				   with rotation CCW, so we need to reverse delta angle
+				
+				   deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in gEDA
+				   NB it is in degrees in the newer s-file kicad module/footprint format
+				*/
 				pcb_fprintf(FP, "DA %.3mm %.3mm %.3mm %.3mm %.3ma %.3mm ",
-										arc->X - element->MarkX, // x_1 centre
-										arc->Y - element->MarkY, // y_2 centre
-										arc->X - element->MarkX + (arc->Thickness/2)*cos(M_PI*(arc->StartAngle+180)/360), // x_2 on circle
-										arc->Y - element->MarkY + (arc->Thickness/2)*sin(M_PI*(arc->StartAngle+180)/360), // y_2 on circle
-										-arc->Delta*10,		// CW delta angle in decidegrees
-										arc->Thickness); // stroke thickness
+										arc->X - element->MarkX, /* x_1 centre */
+										arc->Y - element->MarkY, /* y_2 centre */
+										arc->X - element->MarkX + (arc->Thickness/2)*cos(M_PI*(arc->StartAngle+180)/360), /* x_2 on circle */
+										arc->Y - element->MarkY + (arc->Thickness/2)*sin(M_PI*(arc->StartAngle+180)/360), /* y_2 on circle */
+										-arc->Delta*10,		/* CW delta angle in decidegrees */
+										arc->Thickness); /* stroke thickness */
 			}
-			fputs("21\n",FP); // and now append a suitable Kicad layer, front silk = 21
+			fputs("21\n",FP); /* and now append a suitable Kicad layer, front silk = 21 */
 		}
 
 		fprintf(FP, "$EndMODULE %s\n", currentElementName);
