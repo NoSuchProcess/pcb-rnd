@@ -173,8 +173,6 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data)
 {
 	gdl_iterator_t eit;
-	LineType *line;
-	ArcType *arc;
 	ElementType *element;
 
 	elementlist_dedup_initializer(ededup);
@@ -184,10 +182,6 @@ static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data)
 	unm_init(&group1);
 
 	elementlist_foreach(&Data->Element, &eit, element) {
-		gdl_iterator_t it;
-		PinType *pin;
-		PadType *pad;
-
 		elementlist_dedup_skip(ededup, element);
 		/* skip duplicate elements */
 		/* only non empty elements */
