@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include "coordgeo.h"
+#include "src/compat_misc.h"
+
 cg_obj_t *cg_objs = NULL;
 int cg_objs_used = 0, cg_objs_alloced = 0;
 
@@ -178,8 +180,8 @@ void cg_perp_line_(const cg_obj_t *i, cg_obj_t *o, int xp, int yp, int len)
 	o->type = CG_LINE;
 	o->x1 = xp;
 	o->y1 = yp;
-	o->x2 = round((double)xp + dx * (double)len);
-	o->y2 = round((double)yp + dy * (double)len);
+	o->x2 = pcb_round((double)xp + dx * (double)len);
+	o->y2 = pcb_round((double)yp + dy * (double)len);
 	o->r  = 0;
 }
 
@@ -275,8 +277,8 @@ int cg_intersect_ll(cg_obj_t *l1, cg_obj_t *l2, cg_obj_t *o)
 	yi = Y1 + ua * (Y2 - Y1);
 
 	o->type = CG_LINE;
-	o->x1 = o->x2 = round(xi);
-	o->y1 = o->y2 = round(yi);
+	o->x1 = o->x2 = pcb_round(xi);
+	o->y1 = o->y2 = pcb_round(yi);
 	o->r = 0;
 	return 1;
 }

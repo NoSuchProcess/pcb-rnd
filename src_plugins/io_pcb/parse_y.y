@@ -57,6 +57,7 @@
 #include "rats_patch.h"
 #include "flags.h"
 #include "route_style.h"
+#include "compat_misc.h"
 
 #ifdef HAVE_LIBDMALLOC
 # include <dmalloc.h> /* see http://dmalloc.com */
@@ -2048,7 +2049,7 @@ static void
 do_measure (PLMeasure *m, Coord i, double d, int u)
 {
   m->ival = i;
-  m->bval = round (d);
+  m->bval = pcb_round (d);
   m->dval = d;
   m->has_units = u;
 }
@@ -2066,7 +2067,7 @@ old_units (PLMeasure m)
 {
   if (m.has_units)
     return m.bval;
-  return round (PCB_MIL_TO_COORD (m.ival));
+  return pcb_round (PCB_MIL_TO_COORD (m.ival));
 }
 
 static Coord
@@ -2075,5 +2076,5 @@ new_units (PLMeasure m)
   if (m.has_units)
     return m.bval;
   /* if there's no unit m.dval already contains the converted value */
-  return round (m.dval);
+  return pcb_round (m.dval);
 }

@@ -40,6 +40,7 @@
 #include "ghid-propedit.h"
 #include "conf_core.h"
 #include "event.h"
+#include "compat_misc.h"
 
 #include "hid_gtk_conf.h"
 
@@ -464,7 +465,7 @@ static inline int Vx(Coord x)
 		rv = (PCB->MaxWidth - x - gport->view.x0) / gport->view.coord_per_px + 0.5;
 	else
 		rv = (x - gport->view.x0) / gport->view.coord_per_px + 0.5;
-	return round(rv);
+	return pcb_round(rv);
 }
 
 static inline int Vy(Coord y)
@@ -474,12 +475,12 @@ static inline int Vy(Coord y)
 		rv = (PCB->MaxHeight - y - gport->view.y0) / gport->view.coord_per_px + 0.5;
 	else
 		rv = (y - gport->view.y0) / gport->view.coord_per_px + 0.5;
-	return round(rv);
+	return pcb_round(rv);
 }
 
 static inline int Vz(Coord z)
 {
-	return round((double)z / gport->view.coord_per_px + 0.5);
+	return pcb_round((double)z / gport->view.coord_per_px + 0.5);
 }
 
 static inline Coord Px(int x)

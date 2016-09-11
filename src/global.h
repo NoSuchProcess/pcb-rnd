@@ -547,9 +547,11 @@ struct rats_patch_line_s {
 #	undef strdup
 #	undef strndup
 #	undef snprintf
+#	undef round
 #	define strdup      never_use_strdup__use_pcb_strdup
 #	define strndup     never_use_strndup__use_pcb_strndup
 #	define snprintf    never_use_snprintf__use_pcb_snprintf
+#	define round       never_use_round__use_pcb_round
 #endif
 
 #endif /* PCB_GLOBAL_H  */

@@ -1052,7 +1052,7 @@ static void gerber_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 	if (radius <= 0)
 		return;
 	if (is_drill)
-		radius = 50 * round(radius / 50.0);
+		radius = 50 * pcb_round(radius / 50.0);
 	use_gc(gc, radius);
 	if (!f)
 		return;

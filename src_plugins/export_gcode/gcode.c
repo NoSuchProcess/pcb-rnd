@@ -51,6 +51,7 @@
 #include "rats.h"
 #include "hid_helper.h"
 #include "layer.h"
+#include "compat_misc.h"
 
 #include "hid.h"
 #include <gd.h>
@@ -184,7 +185,7 @@ REGISTER_ATTRIBUTES(gcode_attribute_list, gcode_cookie)
 /* convert from default PCB units to gcode units */
 		 static int pcb_to_gcode(int pcb)
 {
-	return round(PCB_COORD_TO_INCH(pcb) * gcode_dpi);
+	return pcb_round(PCB_COORD_TO_INCH(pcb) * gcode_dpi);
 }
 
 static char *gcode_get_png_name(const char *basename, const char *suffix)

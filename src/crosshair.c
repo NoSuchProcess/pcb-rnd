@@ -47,6 +47,7 @@
 #include "misc_util.h"
 #include "hid_actions.h"
 #include "layer.h"
+#include "compat_misc.h"
 
 typedef struct {
 	int x, y;
@@ -617,7 +618,7 @@ void DrawMark(void)
 Coord GridFit(Coord x, Coord grid_spacing, Coord grid_offset)
 {
 	x -= grid_offset;
-	x = grid_spacing * round((double) x / grid_spacing);
+	x = grid_spacing * pcb_round((double) x / grid_spacing);
 	x += grid_offset;
 	return x;
 }

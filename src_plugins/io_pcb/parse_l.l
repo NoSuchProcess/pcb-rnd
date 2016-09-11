@@ -65,6 +65,7 @@
 #include "create.h"
 #include "plug_footprint.h"
 #include "attribs.h"
+#include "compat_misc.h"
 
 #define YY_NO_INPUT
 
@@ -158,7 +159,7 @@ in	{ return T_IN; }
 						return(CHAR_CONST);
 					}
 {FLOATING}		{	return parse_number(); }
-{INTEGER}		{	yylval.integer = round (strtod (yytext, NULL)); return INTEGER; }
+{INTEGER}		{	yylval.integer = pcb_round (strtod (yytext, NULL)); return INTEGER; }
 
 {HEX}			{	unsigned n;
 				sscanf((char *) yytext, "%x", &n);
