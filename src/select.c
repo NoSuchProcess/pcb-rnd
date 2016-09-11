@@ -773,15 +773,16 @@ static int strlst_match(const char **pat, const char *name)
 	return 0;
 }
 
-bool SelectObjectByName(int Type, char *Pattern, bool Flag, search_method_t method)
+bool SelectObjectByName(int Type, const char *name_pattern, bool Flag, search_method_t method)
 {
 	bool changed = false;
 	const char **pat = NULL;
+	char *pattern_copy = NULL;
 	re_sei_t *regex;
 
 	if (method == SM_REGEX) {
 		/* compile the regular expression */
-		regex = re_sei_comp(Pattern);
+		regex = re_sei_comp(name_pattern);
 		if (re_sei_errno(regex) != 0) {
 			Message(PCB_MSG_DEFAULT, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 			re_sei_free(regex);
@@ -789,15 +790,19 @@ bool SelectObjectByName(int Type, char *Pattern, bool Flag, search_method_t meth
 		}
 	}
 	else {
+		// We're going to mess with the delimiters. Create a copy.
+		pattern_copy = strdup(name_pattern);
 		char *s, *next;
 		int n, w;
 
 		/* count the number of patterns */
-		for (s = Pattern, w = 0; *s != '\0'; s++)
+		for (s = pattern_copy, w = 0; *s != '\0'; s++) {
 			if (*s == '|')
 				w++;
+		}
+
 		pat = malloc((w + 2) * sizeof(char *));	/* make room for the NULL too */
-		for (s = Pattern, n = 0; s != NULL; s = next) {
+		for (s = pattern_copy, n = 0; s != NULL; s = next) {
 			char *end;
 /*fprintf(stderr, "S: '%s'\n", s, next);*/
 			while (isspace(*s))
@@ -943,5 +948,7 @@ bool SelectObjectByName(int Type, char *Pattern, bool Flag, search_method_t meth
 	}
 	if (pat != NULL)
 		free(pat);
+	if (pattern_copy != NULL)
+		free(pattern_copy);
 	return (changed);
 }

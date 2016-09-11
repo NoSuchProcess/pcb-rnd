@@ -47,6 +47,6 @@ typedef enum {
 	SM_LIST = 1
 } search_method_t;
 
-bool SelectObjectByName(int, char *, bool, search_method_t);
+bool SelectObjectByName(int, const char *, bool, search_method_t);
 
 #endif
