@@ -553,11 +553,11 @@ static int PromptFor(int argc, const char **argv, Coord x, Coord y)
 
 /* ------------------------------------------------------------ */
 
-static Widget create_form_ok_dialog(char *name, int ok)
+static Widget create_form_ok_dialog(const char *name, int ok)
 {
 	Widget dialog, topform;
 	stdarg_n = 0;
-	dialog = XmCreateQuestionDialog(mainwind, name, stdarg_args, stdarg_n);
+	dialog = XmCreateQuestionDialog(mainwind, XmStrCast(name), stdarg_args, stdarg_n);
 
 	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_SYMBOL_LABEL));
 	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_MESSAGE_LABEL));
@@ -596,7 +596,7 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 
 	wl = (Widget *) malloc(n_attrs * sizeof(Widget));
 
-	topform = create_form_ok_dialog((char *) title, 1);
+	topform = create_form_ok_dialog(title, 1);
 	dialog = XtParent(topform);
 
 	stdarg_n = 0;
