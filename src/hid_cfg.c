@@ -457,4 +457,15 @@ int hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), void *c
 	return 0;
 }
 
+/* extern char hid_cfg_error_shared[]; */
+void hid_cfg_error(const lht_node_t *node, const char *fmt, ...)
+{
+	char *end;
+	va_list ap;
 
+	end = hid_cfg_error_shared + sprintf(hid_cfg_error_shared, "Error in lihata node %s:%d.%d:", node->file_name, node->line, node->col);
+	va_start(ap, fmt);
+	end += vsprintf(end, fmt, ap);
+	va_end(ap);
+	Message(PCB_MSG_DEFAULT, hid_cfg_error_shared);
+}

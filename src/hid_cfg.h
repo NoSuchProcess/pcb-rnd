@@ -104,13 +104,5 @@ void hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap);
 int hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), void *ctx);
 
 /* Report an error about a node */
-#define hid_cfg_error(node, ...) \
-do { \
-	extern char hid_cfg_error_shared[]; \
-	char *__end__; \
-	__end__ = hid_cfg_error_shared + sprintf(hid_cfg_error_shared, "Error in lihata node %s:%d.%d:", node->file_name, node->line, node->col); \
-	__end__ += sprintf(__end__, __VA_ARGS__); \
-	Message(PCB_MSG_DEFAULT, hid_cfg_error_shared); \
-} while(0)
-
+void hid_cfg_error(const lht_node_t *node, const char *fmt, ...);
 #endif
