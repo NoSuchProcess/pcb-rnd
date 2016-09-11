@@ -121,7 +121,7 @@ int pcb_spawnvp(char **argv)
 }
 
 
-/* 
+/*
  * Creates a new temporary file name.  Hopefully the operating system
  * provides a mkdtemp() function to securily create a temporary
  * directory with mode 0700.  If so then that directory is created and
@@ -133,7 +133,7 @@ int pcb_spawnvp(char **argv)
  *
  * If mkdtemp() is not available then 'name' is ignored and the
  * insecure tmpnam() function is used.
- *  
+ *
  * Files/names created with tempfile_name_new() should be unlinked
  * with tempfile_unlink to make sure the temporary directory is also
  * removed when mkdtemp() is used.
@@ -240,8 +240,8 @@ int tempfile_unlink(char *name)
 	dname = pcb_strdup(name);
 	dname[e] = '\0';
 
-	/* 
-	 * at this point, e *should* point to the end of the directory part 
+	/*
+	 * at this point, e *should* point to the end of the directory part
 	 * but lets make sure.
 	 */
 	if (e > 0) {
@@ -263,7 +263,7 @@ int tempfile_unlink(char *name)
 
 	/*
 	 * FIXME - should also return -1 if the temp file exists and was not
-	 * removed.  
+	 * removed.
 	 */
 	if (rc2 != 0) {
 		return -1;
