@@ -818,7 +818,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 		node->user_data = sub;
 		stdarg_n = nn;
 		stdarg(XmNsubMenuId, sub);
-		btn = XmCreateCascadeButton(menu, "menubutton", stdarg_args, stdarg_n);
+		btn = XmCreateCascadeButton(menu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 		XtManageChild(btn);
 
 		/* assume submenu is a list, hid_cfg_has_submenus() already checked that */
@@ -857,16 +857,16 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 				stdarg(XmNindicatorType, XmONE_OF_MANY);
 			else
 				stdarg(XmNindicatorType, XmN_OF_MANY);
-			btn = XmCreateToggleButton(menu, "menubutton", stdarg_args, stdarg_n);
+			btn = XmCreateToggleButton(menu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 			if (act != NULL)
 				XtAddCallback(btn, XmNvalueChangedCallback, callback, (XtPointer) act);
 		}
 		else if (label && strcmp(label, "false") == 0) {
 			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
-			btn = XmCreateLabel(menu, "menulabel", stdarg_args, stdarg_n);
+			btn = XmCreateLabel(menu, XmStrCast("menulabel"), stdarg_args, stdarg_n);
 		}
 		else {
-			btn = XmCreatePushButton(menu, "menubutton", stdarg_args, stdarg_n);
+			btn = XmCreatePushButton(menu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 			XtAddCallback(btn, XmNactivateCallback, callback, (XtPointer) act);
 		}
 
@@ -896,7 +896,7 @@ static void add_res2menu_text_special(Widget menu, lht_node_t *node, XtCallbackP
 			lesstif_insert_style_buttons(menu);
 	}
 	else if ((strcmp(node->data.text.value, "-") == 0) || (strcmp(node->data.text.value, "-"))) {
-		btn = XmCreateSeparator(menu, "sep", stdarg_args, stdarg_n);
+		btn = XmCreateSeparator(menu, XmStrCast("sep"), stdarg_args, stdarg_n);
 		XtManageChild(btn);
 	}
 }

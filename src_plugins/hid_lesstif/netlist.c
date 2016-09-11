@@ -280,7 +280,7 @@ static int build_netlist_dialog()
 	stdarg(XmNresizePolicy, XmRESIZE_GROW);
 	stdarg(XmNtitle, "Netlists");
 	stdarg(XmNautoUnmanage, False);
-	netlist_dialog = XmCreateFormDialog(mainwind, "netlist", stdarg_args, stdarg_n);
+	netlist_dialog = XmCreateFormDialog(mainwind, XmStrCast("netlist"), stdarg_args, stdarg_n);
 
 	stdarg_n = 0;
 	b_rat_on = netlist_button(netlist_dialog, "rat_on", "Enable for rats",
@@ -312,7 +312,7 @@ static int build_netlist_dialog()
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	ops_str = XmStringCreatePCB("Operations on selected net names:");
 	stdarg(XmNlabelString, ops_str);
-	l_ops = XmCreateLabel(netlist_dialog, "ops", stdarg_args, stdarg_n);
+	l_ops = XmCreateLabel(netlist_dialog, XmStrCast("ops"), stdarg_args, stdarg_n);
 	XtManageChild(l_ops);
 
 	stdarg_n = 0;
@@ -324,7 +324,7 @@ static int build_netlist_dialog()
 	stdarg(XmNrightPosition, 50);
 	stdarg(XmNvisibleItemCount, 10);
 	stdarg(XmNselectionPolicy, XmEXTENDED_SELECT);
-	netlist_list = XmCreateScrolledList(netlist_dialog, "nets", stdarg_args, stdarg_n);
+	netlist_list = XmCreateScrolledList(netlist_dialog, XmStrCast("nets"), stdarg_args, stdarg_n);
 	XtManageChild(netlist_list);
 	XtAddCallback(netlist_list, XmNdefaultActionCallback, (XtCallbackProc) netlist_select, 0);
 	XtAddCallback(netlist_list, XmNextendedSelectionCallback, (XtCallbackProc) netlist_extend, 0);
@@ -336,7 +336,7 @@ static int build_netlist_dialog()
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_POSITION);
 	stdarg(XmNleftPosition, 50);
-	netnode_list = XmCreateScrolledList(netlist_dialog, "nodes", stdarg_args, stdarg_n);
+	netnode_list = XmCreateScrolledList(netlist_dialog, XmStrCast("nodes"), stdarg_args, stdarg_n);
 	XtManageChild(netnode_list);
 	XtAddCallback(netnode_list, XmNbrowseSelectionCallback, (XtCallbackProc) netnode_browse, 0);
 

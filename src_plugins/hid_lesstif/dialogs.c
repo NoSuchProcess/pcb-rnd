@@ -71,7 +71,7 @@ static void setup_fsb_dialog()
 	xms_save = XmStringCreatePCB("Save As");
 
 	stdarg_n = 0;
-	fsb = XmCreateFileSelectionDialog(mainwind, "file", stdarg_args, stdarg_n);
+	fsb = XmCreateFileSelectionDialog(mainwind, XmStrCast("file"), stdarg_args, stdarg_n);
 
 	XtAddCallback(fsb, XmNokCallback, (XtCallbackProc) dialog_callback, (XtPointer) 1);
 	XtAddCallback(fsb, XmNcancelCallback, (XtCallbackProc) dialog_callback, (XtPointer) 0);
@@ -269,7 +269,7 @@ static int pending_newline = 0;
 
 static void log_clear(Widget w, void *up, void *cbp)
 {
-	XmTextSetString(log_text, "");
+	XmTextSetString(log_text, XmStrCast(""));
 	log_size = 0;
 	pending_newline = 0;
 }
@@ -295,12 +295,12 @@ void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap)
 		stdarg(XmNwidth, 600);
 		stdarg(XmNheight, 200);
 		stdarg(XmNtitle, "pcb-rnd Log");
-		log_form = XmCreateFormDialog(mainwind, "log", stdarg_args, stdarg_n);
+		log_form = XmCreateFormDialog(mainwind, XmStrCast("log"), stdarg_args, stdarg_n);
 
 		stdarg_n = 0;
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
 		stdarg(XmNbottomAttachment, XmATTACH_FORM);
-		clear_button = XmCreatePushButton(log_form, "clear", stdarg_args, stdarg_n);
+		clear_button = XmCreatePushButton(log_form, XmStrCast("clear"), stdarg_args, stdarg_n);
 		XtManageChild(clear_button);
 		XtAddCallback(clear_button, XmNactivateCallback, (XtCallbackProc) log_clear, 0);
 
@@ -308,7 +308,7 @@ void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap)
 		stdarg(XmNrightAttachment, XmATTACH_WIDGET);
 		stdarg(XmNrightWidget, clear_button);
 		stdarg(XmNbottomAttachment, XmATTACH_FORM);
-		dismiss_button = XmCreatePushButton(log_form, "dismiss", stdarg_args, stdarg_n);
+		dismiss_button = XmCreatePushButton(log_form, XmStrCast("dismiss"), stdarg_args, stdarg_n);
 		XtManageChild(dismiss_button);
 		XtAddCallback(dismiss_button, XmNactivateCallback, (XtCallbackProc) log_dismiss, 0);
 
@@ -321,13 +321,13 @@ void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap)
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
 		stdarg(XmNbottomAttachment, XmATTACH_WIDGET);
 		stdarg(XmNbottomWidget, clear_button);
-		log_text = XmCreateScrolledText(log_form, "text", stdarg_args, stdarg_n);
+		log_text = XmCreateScrolledText(log_form, XmStrCast("text"), stdarg_args, stdarg_n);
 		XtManageChild(log_text);
 
 		XtManageChild(log_form);
 	}
 	if (pending_newline) {
-		XmTextInsert(log_text, log_size++, "\n");
+		XmTextInsert(log_text, log_size++, XmStrCast("\n"));
 		pending_newline = 0;
 	}
 	buf = pcb_strdup_vprintf(fmt, ap);
@@ -374,7 +374,7 @@ int lesstif_confirm_dialog(const char *msg, ...)
 		stdarg_n = 0;
 		stdarg(XmNdefaultButtonType, XmDIALOG_OK_BUTTON);
 		stdarg(XmNtitle, "Confirm");
-		confirm_dialog = XmCreateQuestionDialog(mainwind, "confirm", stdarg_args, stdarg_n);
+		confirm_dialog = XmCreateQuestionDialog(mainwind, XmStrCast("confirm"), stdarg_args, stdarg_n);
 		XtAddCallback(confirm_dialog, XmNcancelCallback, (XtCallbackProc) dialog_callback, (XtPointer) 0);
 		XtAddCallback(confirm_dialog, XmNokCallback, (XtCallbackProc) dialog_callback, (XtPointer) 1);
 
@@ -451,7 +451,7 @@ void lesstif_report_dialog(const char *title, const char *msg)
 		stdarg(XmNwidth, 600);
 		stdarg(XmNheight, 200);
 		stdarg(XmNtitle, title);
-		report_form = XmCreateFormDialog(mainwind, "report", stdarg_args, stdarg_n);
+		report_form = XmCreateFormDialog(mainwind, XmStrCast("report"), stdarg_args, stdarg_n);
 
 		stdarg_n = 0;
 		stdarg(XmNeditable, False);
@@ -461,7 +461,7 @@ void lesstif_report_dialog(const char *title, const char *msg)
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
 		stdarg(XmNbottomAttachment, XmATTACH_FORM);
-		report = XmCreateScrolledText(report_form, "text", stdarg_args, stdarg_n);
+		report = XmCreateScrolledText(report_form, XmStrCast("text"), stdarg_args, stdarg_n);
 		XtManageChild(report);
 	}
 	stdarg_n = 0;
@@ -494,14 +494,14 @@ char *lesstif_prompt_for(const char *msg, const char *default_string)
 		stdarg_n = 0;
 		stdarg(XmNautoUnmanage, False);
 		stdarg(XmNtitle, "pcb-rnd Prompt");
-		prompt_dialog = XmCreateFormDialog(mainwind, "prompt", stdarg_args, stdarg_n);
+		prompt_dialog = XmCreateFormDialog(mainwind, XmStrCast("prompt"), stdarg_args, stdarg_n);
 
 		stdarg_n = 0;
 		stdarg(XmNtopAttachment, XmATTACH_FORM);
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
 		stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
-		prompt_label = XmCreateLabel(prompt_dialog, "label", stdarg_args, stdarg_n);
+		prompt_label = XmCreateLabel(prompt_dialog, XmStrCast("label"), stdarg_args, stdarg_n);
 		XtManageChild(prompt_label);
 
 		stdarg_n = 0;
@@ -511,7 +511,7 @@ char *lesstif_prompt_for(const char *msg, const char *default_string)
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
 		stdarg(XmNeditable, True);
-		prompt_text = XmCreateText(prompt_dialog, "text", stdarg_args, stdarg_n);
+		prompt_text = XmCreateText(prompt_dialog, XmStrCast("text"), stdarg_args, stdarg_n);
 		XtManageChild(prompt_text);
 		XtAddCallback(prompt_text, XmNactivateCallback, (XtCallbackProc) dialog_callback, (XtPointer) 1);
 	}
@@ -569,7 +569,7 @@ static Widget create_form_ok_dialog(const char *name, int ok)
 		XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_OK_BUTTON));
 
 	stdarg_n = 0;
-	topform = XmCreateForm(dialog, "attributes", stdarg_args, stdarg_n);
+	topform = XmCreateForm(dialog, XmStrCast("attributes"), stdarg_args, stdarg_n);
 	XtManageChild(topform);
 	return topform;
 }
@@ -608,7 +608,7 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNfractionBase, actual_nattrs);
-	lform = XmCreateForm(topform, "attributes", stdarg_args, stdarg_n);
+	lform = XmCreateForm(topform, XmStrCast("attributes"), stdarg_args, stdarg_n);
 	XtManageChild(lform);
 
 	stdarg_n = 0;
@@ -618,7 +618,7 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 	stdarg(XmNleftWidget, lform);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNfractionBase, actual_nattrs);
-	form = XmCreateForm(topform, "attributes", stdarg_args, stdarg_n);
+	form = XmCreateForm(topform, XmStrCast("attributes"), stdarg_args, stdarg_n);
 	XtManageChild(form);
 
 	attrcount = -1;
@@ -718,7 +718,7 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 					label = XmStringCreatePCB(attrs[i].enumerations[sn]);
 					stdarg(XmNuserData, &attrs[i].enumerations[sn]);
 					stdarg(XmNlabelString, label);
-					btn = XmCreatePushButton(submenu, "menubutton", stdarg_args, stdarg_n);
+					btn = XmCreatePushButton(submenu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 					XtManageChild(btn);
 					XmStringFree(label);
 					if (sn == attrs[i].default_val.int_value)
@@ -732,7 +732,7 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 			}
 			break;
 		default:
-			wl[i] = XmCreateLabel(form, "UNIMPLEMENTED", stdarg_args, stdarg_n);
+			wl[i] = XmCreateLabel(form, XmStrCast("UNIMPLEMENTED"), stdarg_args, stdarg_n);
 			break;
 		}
 
@@ -867,7 +867,7 @@ static int About(int argc, const char **argv, Coord x, Coord y)
 		xs = XmStringCreatePCB(GetInfoString());
 		stdarg(XmNmessageString, xs);
 		stdarg(XmNtitle, "About pcb-rnd");
-		about = XmCreateInformationDialog(mainwind, "about", stdarg_args, stdarg_n);
+		about = XmCreateInformationDialog(mainwind, XmStrCast("about"), stdarg_args, stdarg_n);
 		XtUnmanageChild(XmMessageBoxGetChild(about, XmDIALOG_CANCEL_BUTTON));
 		XtUnmanageChild(XmMessageBoxGetChild(about, XmDIALOG_HELP_BUTTON));
 	}
@@ -999,7 +999,7 @@ static int Export(int argc, const char **argv, Coord x, Coord y)
 			stdarg(XmNtopAttachment, XmATTACH_FORM);
 			stdarg(XmNrightAttachment, XmATTACH_FORM);
 			stdarg(XmNleftAttachment, XmATTACH_FORM);
-			label = XmCreateLabel(selector, "label", stdarg_args, stdarg_n);
+			label = XmCreateLabel(selector, XmStrCast("label"), stdarg_args, stdarg_n);
 			XtManageChild(label);
 		}
 		selector = XtParent(selector);
@@ -1106,7 +1106,7 @@ static Widget size_field(Widget parent, const char *label, int posn)
 	stdarg(XmNbottomAttachment, XmATTACH_POSITION);
 	stdarg(XmNbottomPosition, posn + 1);
 	stdarg(XmNcolumns, 10);
-	w = XmCreateTextField(parent, "field", stdarg_args, stdarg_n);
+	w = XmCreateTextField(parent, XmStrCast("field"), stdarg_args, stdarg_n);
 	XtManageChild(w);
 
 	stdarg_n = 0;
@@ -1119,7 +1119,7 @@ static Widget size_field(Widget parent, const char *label, int posn)
 	stdarg(XmNbottomPosition, posn + 1);
 	stdarg(XmNlabelString, XmStringCreatePCB(label));
 	stdarg(XmNalignment, XmALIGNMENT_END);
-	l = XmCreateLabel(parent, "label", stdarg_args, stdarg_n);
+	l = XmCreateLabel(parent, XmStrCast("label"), stdarg_args, stdarg_n);
 	XtManageChild(l);
 
 	return w;
@@ -1150,12 +1150,12 @@ static int AdjustSizes(int argc, const char **argv, Coord x, Coord y)
 		stdarg(XmNverticalSpacing, 3);
 		stdarg(XmNautoUnmanage, False);
 		stdarg(XmNtitle, "Board Sizes");
-		sizes_dialog = XmCreateFormDialog(mainwind, "sizes", stdarg_args, stdarg_n);
+		sizes_dialog = XmCreateFormDialog(mainwind, XmStrCast("sizes"), stdarg_args, stdarg_n);
 
 		stdarg_n = 0;
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
 		stdarg(XmNbottomAttachment, XmATTACH_FORM);
-		sz_reset = XmCreatePushButton(sizes_dialog, "Reset", stdarg_args, stdarg_n);
+		sz_reset = XmCreatePushButton(sizes_dialog, XmStrCast("Reset"), stdarg_args, stdarg_n);
 		XtManageChild(sz_reset);
 		XtAddCallback(sz_reset, XmNactivateCallback, (XtCallbackProc) lesstif_sizes_reset, 0);
 
@@ -1163,7 +1163,7 @@ static int AdjustSizes(int argc, const char **argv, Coord x, Coord y)
 		stdarg(XmNrightAttachment, XmATTACH_WIDGET);
 		stdarg(XmNrightWidget, sz_reset);
 		stdarg(XmNbottomAttachment, XmATTACH_FORM);
-		sz_set = XmCreatePushButton(sizes_dialog, "Set", stdarg_args, stdarg_n);
+		sz_set = XmCreatePushButton(sizes_dialog, XmStrCast("Set"), stdarg_args, stdarg_n);
 		XtManageChild(sz_set);
 		XtAddCallback(sz_set, XmNactivateCallback, (XtCallbackProc) sizes_set, 0);
 
@@ -1172,7 +1172,7 @@ static int AdjustSizes(int argc, const char **argv, Coord x, Coord y)
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNbottomAttachment, XmATTACH_WIDGET);
 		stdarg(XmNbottomWidget, sz_reset);
-		sep = XmCreateSeparator(sizes_dialog, "sep", stdarg_args, stdarg_n);
+		sep = XmCreateSeparator(sizes_dialog, XmStrCast("sep"), stdarg_args, stdarg_n);
 		XtManageChild(sep);
 
 		stdarg_n = 0;
@@ -1180,7 +1180,7 @@ static int AdjustSizes(int argc, const char **argv, Coord x, Coord y)
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNbottomAttachment, XmATTACH_WIDGET);
 		stdarg(XmNbottomWidget, sep);
-		sz_units = XmCreateLabel(sizes_dialog, "units", stdarg_args, stdarg_n);
+		sz_units = XmCreateLabel(sizes_dialog, XmStrCast("units"), stdarg_args, stdarg_n);
 		XtManageChild(sz_units);
 
 		stdarg_n = 0;
@@ -1190,7 +1190,7 @@ static int AdjustSizes(int argc, const char **argv, Coord x, Coord y)
 		stdarg(XmNbottomAttachment, XmATTACH_WIDGET);
 		stdarg(XmNbottomWidget, sz_units);
 		stdarg(XmNfractionBase, 9);
-		inf = XmCreateForm(sizes_dialog, "sizes", stdarg_args, stdarg_n);
+		inf = XmCreateForm(sizes_dialog, XmStrCast("sizes"), stdarg_args, stdarg_n);
 		XtManageChild(inf);
 
 		sz_pcb_w = size_field(inf, "PCB Width", 0);
@@ -1446,14 +1446,14 @@ static int EditLayerGroups(int argc, const char **argv, Coord x, Coord y)
 		stdarg_n = 0;
 		stdarg(XmNfractionBase, max_copper_layer + 2);
 		stdarg(XmNtitle, "Layer Groups");
-		layer_groups_form = XmCreateFormDialog(mainwind, "layers", stdarg_args, stdarg_n);
+		layer_groups_form = XmCreateFormDialog(mainwind, XmStrCast("layers"), stdarg_args, stdarg_n);
 
 		stdarg_n = 0;
 		stdarg(XmNtopAttachment, XmATTACH_FORM);
 		stdarg(XmNbottomAttachment, XmATTACH_FORM);
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
-		lg_buttonform = XmCreateDrawingArea(layer_groups_form, "layers", stdarg_args, stdarg_n);
+		lg_buttonform = XmCreateDrawingArea(layer_groups_form, XmStrCast("layers"), stdarg_args, stdarg_n);
 		XtManageChild(lg_buttonform);
 
 		XtAddCallback(lg_buttonform, XmNexposeCallback, (XtCallbackProc) lgbutton_expose, 0);
@@ -1625,20 +1625,20 @@ static void lesstif_attributes_need_rows(int new_max)
 
 	while (attr_max_rows < new_max) {
 		stdarg_n = 0;
-		attr_row[attr_max_rows].del = XmCreatePushButton(f_top, "del", stdarg_args, stdarg_n);
+		attr_row[attr_max_rows].del = XmCreatePushButton(f_top, XmStrCast("del"), stdarg_args, stdarg_n);
 		XtManageChild(attr_row[attr_max_rows].del);
 		XtAddCallback(attr_row[attr_max_rows].del, XmNactivateCallback,
 									(XtCallbackProc) attributes_delete_callback, (XtPointer) (size_t) attr_max_rows);
 
 		stdarg_n = 0;
 		stdarg(XmNresizeWidth, True);
-		attr_row[attr_max_rows].w_name = XmCreateTextField(f_top, "name", stdarg_args, stdarg_n);
+		attr_row[attr_max_rows].w_name = XmCreateTextField(f_top, XmStrCast("name"), stdarg_args, stdarg_n);
 		XtManageChild(attr_row[attr_max_rows].w_name);
 		XtAddCallback(attr_row[attr_max_rows].w_name, XmNvalueChangedCallback, (XtCallbackProc) fiddle_with_bb_layout, NULL);
 
 		stdarg_n = 0;
 		stdarg(XmNresizeWidth, True);
-		attr_row[attr_max_rows].w_value = XmCreateTextField(f_top, "value", stdarg_args, stdarg_n);
+		attr_row[attr_max_rows].w_value = XmCreateTextField(f_top, XmStrCast("value"), stdarg_args, stdarg_n);
 		XtManageChild(attr_row[attr_max_rows].w_value);
 		XtAddCallback(attr_row[attr_max_rows].w_value, XmNvalueChangedCallback, (XtCallbackProc) fiddle_with_bb_layout, NULL);
 
@@ -1680,8 +1680,8 @@ static void lesstif_attributes_revert()
 static void attributes_new_callback(Widget w, void *v, void *cbs)
 {
 	lesstif_attributes_need_rows(attr_num_rows + 1);	/* also bumps attr_num_rows */
-	XmTextFieldSetString(attr_row[attr_num_rows - 1].w_name, "");
-	XmTextFieldSetString(attr_row[attr_num_rows - 1].w_value, "");
+	XmTextFieldSetString(attr_row[attr_num_rows - 1].w_name, XmStrCast(""));
+	XmTextFieldSetString(attr_row[attr_num_rows - 1].w_value, XmStrCast(""));
 
 	fiddle_with_bb_layout();
 }
@@ -1726,7 +1726,7 @@ void lesstif_attributes_dialog(char *owner, AttributeListType * attrs_list)
 		stdarg(XmNtitle, owner);
 		stdarg(XmNwidth, 400);
 		stdarg(XmNheight, 300);
-		attr_dialog = XmCreateFormDialog(mainwind, "attributes", stdarg_args, stdarg_n);
+		attr_dialog = XmCreateFormDialog(mainwind, XmStrCast("attributes"), stdarg_args, stdarg_n);
 
 		stdarg_n = 0;
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
@@ -1734,26 +1734,26 @@ void lesstif_attributes_dialog(char *owner, AttributeListType * attrs_list)
 		stdarg(XmNorientation, XmHORIZONTAL);
 		stdarg(XmNentryAlignment, XmALIGNMENT_CENTER);
 		stdarg(XmNpacking, XmPACK_COLUMN);
-		bform = XmCreateRowColumn(attr_dialog, "attributes", stdarg_args, stdarg_n);
+		bform = XmCreateRowColumn(attr_dialog, XmStrCast("attributes"), stdarg_args, stdarg_n);
 		XtManageChild(bform);
 
 		stdarg_n = 0;
-		b_ok = XmCreatePushButton(bform, "OK", stdarg_args, stdarg_n);
+		b_ok = XmCreatePushButton(bform, XmStrCast("OK"), stdarg_args, stdarg_n);
 		XtManageChild(b_ok);
 		XtAddCallback(b_ok, XmNactivateCallback, (XtCallbackProc) dialog_callback, (XtPointer) 0);
 
 		stdarg_n = 0;
-		b_new = XmCreatePushButton(bform, "New", stdarg_args, stdarg_n);
+		b_new = XmCreatePushButton(bform, XmStrCast("New"), stdarg_args, stdarg_n);
 		XtManageChild(b_new);
 		XtAddCallback(b_new, XmNactivateCallback, (XtCallbackProc) attributes_new_callback, NULL);
 
 		stdarg_n = 0;
-		b_revert = XmCreatePushButton(bform, "Revert", stdarg_args, stdarg_n);
+		b_revert = XmCreatePushButton(bform, XmStrCast("Revert"), stdarg_args, stdarg_n);
 		XtManageChild(b_revert);
 		XtAddCallback(b_revert, XmNactivateCallback, (XtCallbackProc) attributes_revert_callback, NULL);
 
 		stdarg_n = 0;
-		b_cancel = XmCreatePushButton(bform, "Cancel", stdarg_args, stdarg_n);
+		b_cancel = XmCreatePushButton(bform, XmStrCast("Cancel"), stdarg_args, stdarg_n);
 		XtManageChild(b_cancel);
 		XtAddCallback(b_cancel, XmNactivateCallback, (XtCallbackProc) dialog_callback, (XtPointer) 1);
 
@@ -1762,7 +1762,7 @@ void lesstif_attributes_dialog(char *owner, AttributeListType * attrs_list)
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
 		stdarg(XmNbottomAttachment, XmATTACH_WIDGET);
 		stdarg(XmNbottomWidget, bform);
-		sep = XmCreateSeparator(attr_dialog, "attributes", stdarg_args, stdarg_n);
+		sep = XmCreateSeparator(attr_dialog, XmStrCast("attributes"), stdarg_args, stdarg_n);
 		XtManageChild(sep);
 
 		stdarg_n = 0;
@@ -1772,13 +1772,13 @@ void lesstif_attributes_dialog(char *owner, AttributeListType * attrs_list)
 		stdarg(XmNbottomAttachment, XmATTACH_WIDGET);
 		stdarg(XmNbottomWidget, sep);
 		stdarg(XmNscrollingPolicy, XmAUTOMATIC);
-		sw = XmCreateScrolledWindow(attr_dialog, "attributes", stdarg_args, stdarg_n);
+		sw = XmCreateScrolledWindow(attr_dialog, XmStrCast("attributes"), stdarg_args, stdarg_n);
 		XtManageChild(sw);
 
 		stdarg_n = 0;
 		stdarg(XmNmarginHeight, 0);
 		stdarg(XmNmarginWidth, 0);
-		f_top = XmCreateBulletinBoard(sw, "f_top", stdarg_args, stdarg_n);
+		f_top = XmCreateBulletinBoard(sw, XmStrCast("f_top"), stdarg_args, stdarg_n);
 		XtManageChild(f_top);
 	}
 	else {

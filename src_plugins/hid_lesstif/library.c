@@ -80,14 +80,14 @@ static int build_library_dialog()
 	stdarg_n = 0;
 	stdarg(XmNresizePolicy, XmRESIZE_GROW);
 	stdarg(XmNtitle, "Element Library");
-	library_dialog = XmCreateFormDialog(mainwind, "library", stdarg_args, stdarg_n);
+	library_dialog = XmCreateFormDialog(mainwind, XmStrCast("library"), stdarg_args, stdarg_n);
 
 	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNvisibleItemCount, 10);
-	library_list = XmCreateScrolledList(library_dialog, "nets", stdarg_args, stdarg_n);
+	library_list = XmCreateScrolledList(library_dialog, XmStrCast("nets"), stdarg_args, stdarg_n);
 	XtManageChild(library_list);
 	XtAddCallback(library_list, XmNbrowseSelectionCallback, (XtCallbackProc) library_browse, 0);
 
@@ -97,7 +97,7 @@ static int build_library_dialog()
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_WIDGET);
 	stdarg(XmNleftWidget, library_list);
-	libnode_list = XmCreateScrolledList(library_dialog, "nodes", stdarg_args, stdarg_n);
+	libnode_list = XmCreateScrolledList(library_dialog, XmStrCast("nodes"), stdarg_args, stdarg_n);
 	XtManageChild(libnode_list);
 	XtAddCallback(libnode_list, XmNbrowseSelectionCallback, (XtCallbackProc) libnode_select, 0);
 

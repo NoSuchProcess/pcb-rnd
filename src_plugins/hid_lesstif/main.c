@@ -648,7 +648,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 		lesstif_show_crosshair(0);
 		hid_parse_command(s);
 		XtFree(s);
-		XmTextSetString(w, "");
+		XmTextSetString(w, XmStrCast(""));
 	case XmCR_LOSING_FOCUS:
 		XtUnmanageChild(m_cmd);
 		XtUnmanageChild(m_cmd_label);
@@ -668,7 +668,7 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 		case XK_Escape:
 			XtUnmanageChild(m_cmd);
 			XtUnmanageChild(m_cmd_label);
-			XmTextSetString(w, "");
+			XmTextSetString(w, XmStrCast(""));
 			*cont = False;
 			break;
 		}
@@ -1734,7 +1734,7 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	XtSetValues(appwidget, stdarg_args, stdarg_n);
 
 	stdarg(XmNspacing, 0);
-	mainwind = XmCreateMainWindow(appwidget, "mainWind", stdarg_args, stdarg_n);
+	mainwind = XmCreateMainWindow(appwidget, XmStrCast("mainWind"), stdarg_args, stdarg_n);
 	XtManageChild(mainwind);
 
 	stdarg_n = 0;
@@ -1745,12 +1745,12 @@ static void lesstif_do_export(HID_Attr_Val * options)
 
 	stdarg_n = 0;
 	stdarg(XmNshadowType, XmSHADOW_IN);
-	work_area_frame = XmCreateFrame(mainwind, "work_area_frame", stdarg_args, stdarg_n);
+	work_area_frame = XmCreateFrame(mainwind, XmStrCast("work_area_frame"), stdarg_args, stdarg_n);
 	XtManageChild(work_area_frame);
 
 	stdarg_n = 0;
 	stdarg_do_color(conf_core.appearance.color.background, XmNbackground);
-	work_area = XmCreateDrawingArea(work_area_frame, "work_area", stdarg_args, stdarg_n);
+	work_area = XmCreateDrawingArea(work_area_frame, XmStrCast("work_area"), stdarg_args, stdarg_n);
 	XtManageChild(work_area);
 	XtAddCallback(work_area, XmNexposeCallback, (XtCallbackProc) work_area_first_expose, 0);
 	XtAddCallback(work_area, XmNresizeCallback, (XtCallbackProc) work_area_resize, 0);
@@ -1765,7 +1765,7 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	stdarg(XmNorientation, XmVERTICAL);
 	stdarg(XmNprocessingDirection, XmMAX_ON_BOTTOM);
 	stdarg(XmNmaximum, PCB->MaxHeight ? PCB->MaxHeight : 1);
-	vscroll = XmCreateScrollBar(mainwind, "vscroll", stdarg_args, stdarg_n);
+	vscroll = XmCreateScrollBar(mainwind, XmStrCast("vscroll"), stdarg_args, stdarg_n);
 	XtAddCallback(vscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
 	XtAddCallback(vscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
 	XtManageChild(vscroll);
@@ -1773,7 +1773,7 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	stdarg_n = 0;
 	stdarg(XmNorientation, XmHORIZONTAL);
 	stdarg(XmNmaximum, PCB->MaxWidth ? PCB->MaxWidth : 1);
-	hscroll = XmCreateScrollBar(mainwind, "hscroll", stdarg_args, stdarg_n);
+	hscroll = XmCreateScrollBar(mainwind, XmStrCast("hscroll"), stdarg_args, stdarg_n);
 	XtAddCallback(hscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
 	XtAddCallback(hscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
 	XtManageChild(hscroll);
@@ -1781,7 +1781,7 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	stdarg_n = 0;
 	stdarg(XmNresize, True);
 	stdarg(XmNresizePolicy, XmRESIZE_ANY);
-	messages = XmCreateForm(mainwind, "messages", stdarg_args, stdarg_n);
+	messages = XmCreateForm(mainwind, XmStrCast("messages"), stdarg_args, stdarg_n);
 	XtManageChild(messages);
 
 	stdarg_n = 0;
@@ -1791,14 +1791,14 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNalignment, XmALIGNMENT_CENTER);
 	stdarg(XmNshadowThickness, 2);
-	m_click = XmCreateLabel(messages, "click", stdarg_args, stdarg_n);
+	m_click = XmCreateLabel(messages, XmStrCast("click"), stdarg_args, stdarg_n);
 
 	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNlabelString, XmStringCreatePCB("Command: "));
-	m_cmd_label = XmCreateLabel(messages, "command", stdarg_args, stdarg_n);
+	m_cmd_label = XmCreateLabel(messages, XmStrCast("command"), stdarg_args, stdarg_n);
 
 	stdarg_n = 0;
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
@@ -1810,7 +1810,7 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	stdarg(XmNhighlightThickness, 0);
 	stdarg(XmNmarginWidth, 2);
 	stdarg(XmNmarginHeight, 2);
-	m_cmd = XmCreateTextField(messages, "command", stdarg_args, stdarg_n);
+	m_cmd = XmCreateTextField(messages, XmStrCast("command"), stdarg_args, stdarg_n);
 	XtAddCallback(m_cmd, XmNactivateCallback, (XtCallbackProc) command_callback, 0);
 	XtAddCallback(m_cmd, XmNlosingFocusCallback, (XtCallbackProc) command_callback, 0);
 	XtAddEventHandler(m_cmd, KeyPressMask, 0, command_event_handler, 0);
@@ -2090,7 +2090,7 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 	screen = XScreenNumberOfScreen(screen_s);
 	lesstif_colormap = XDefaultColormap(display, screen);
 
-	close_atom = XmInternAtom(display, "WM_DELETE_WINDOW", 0);
+	close_atom = XmInternAtom(display, XmStrCast("WM_DELETE_WINDOW"), 0);
 	XmAddWMProtocolCallback(appwidget, close_atom, (XtCallbackProc) mainwind_delete_cb, 0);
 
 	/*  XSynchronize(display, True); */
@@ -3579,7 +3579,7 @@ static void lesstif_show_item(void *item)
 	pd->zoom = 0;
 
 	stdarg_n = 0;
-	pd->form = XmCreateFormDialog(mainwind, "pinout", stdarg_args, stdarg_n);
+	pd->form = XmCreateFormDialog(mainwind, XmStrCast("pinout"), stdarg_args, stdarg_n);
 	pd->window = 0;
 	XtAddCallback(pd->form, XmNunmapCallback, (XtCallbackProc) pinout_unmap, (XtPointer) pd);
 
@@ -3592,7 +3592,7 @@ static void lesstif_show_item(void *item)
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
-	da = XmCreateDrawingArea(pd->form, "pinout", stdarg_args, stdarg_n);
+	da = XmCreateDrawingArea(pd->form, XmStrCast("pinout"), stdarg_args, stdarg_n);
 	XtManageChild(da);
 
 	XtAddCallback(da, XmNexposeCallback, (XtCallbackProc) pinout_callback, (XtPointer) pd);
@@ -3635,7 +3635,7 @@ static void lesstif_progress_dialog(int so_far, int total, const char *msg)
 		stdarg(XmNtitle, "Progress");
 		stdarg(XmNdialogStyle, XmDIALOG_APPLICATION_MODAL);
 		stdarg(XmNdialogStyle, XmDIALOG_FULL_APPLICATION_MODAL);
-		progress_dialog = XmCreateInformationDialog(mainwind, "progress", stdarg_args, stdarg_n);
+		progress_dialog = XmCreateInformationDialog(mainwind, XmStrCast("progress"), stdarg_args, stdarg_n);
 		XtAddCallback(progress_dialog, XmNcancelCallback, (XtCallbackProc) progress_cancel_callback, NULL);
 
 		progress_cancel = XmMessageBoxGetChild(progress_dialog, XmDIALOG_CANCEL_BUTTON);
@@ -3653,10 +3653,10 @@ static void lesstif_progress_dialog(int so_far, int total, const char *msg)
 		stdarg(XmNmaximum, total > 0 ? total : 1);
 		stdarg(XmNorientation, XmHORIZONTAL);
 		stdarg(XmNshowArrows, false);
-		progress_scale = XmCreateScrollBar(progress_dialog, "scale", stdarg_args, stdarg_n);
+		progress_scale = XmCreateScrollBar(progress_dialog, XmStrCast("scale"), stdarg_args, stdarg_n);
 		XtManageChild(progress_scale);
 
-		close_atom = XmInternAtom(display, "WM_DELETE_WINDOW", 0);
+		close_atom = XmInternAtom(display, XmStrCast("WM_DELETE_WINDOW"), 0);
 		XmAddWMProtocolCallback(XtParent(progress_dialog), close_atom, (XtCallbackProc) progress_cancel_callback, 0);
 	}
 
