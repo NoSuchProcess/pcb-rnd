@@ -74,7 +74,7 @@ void NetlistChanged(int force_unfreeze)
 	}
 }
 
-LibraryMenuTypePtr netnode_to_netname(char *nodename)
+LibraryMenuTypePtr netnode_to_netname(const char *nodename)
 {
 	int i, j;
 	/*printf("nodename [%s]\n", nodename); */
@@ -89,7 +89,7 @@ LibraryMenuTypePtr netnode_to_netname(char *nodename)
 	return 0;
 }
 
-LibraryMenuTypePtr netname_to_netname(char *netname)
+LibraryMenuTypePtr netname_to_netname(const char *netname)
 {
 	int i;
 

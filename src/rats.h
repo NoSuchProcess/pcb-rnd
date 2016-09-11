@@ -33,9 +33,9 @@
 
 #include "global.h"
 
-/* This one is actually in netlist.h, but it's used by rats.c */
-LibraryMenuTypePtr netnode_to_netname(char *nodename);
-LibraryMenuTypePtr netname_to_netname(char *netname);
+/* This one is actually in netlist.cc, but it's used by rats.c */
+LibraryMenuTypePtr netnode_to_netname(const char *nodename);
+LibraryMenuTypePtr netname_to_netname(const char *netname);
 
 RatTypePtr AddNet(void);
 char *ConnectionName(int, void *, void *);
