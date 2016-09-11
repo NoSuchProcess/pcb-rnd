@@ -2561,7 +2561,7 @@ static Boolean idle_proc(XtPointer dummy)
 
 	{
 		if (old_cursor_mode != conf_core.editor.mode) {
-			char *s = "None";
+			const char *s = "None";
 			XmString ms;
 			int cursor = -1;
 			static int free_cursor = 0;
