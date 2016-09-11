@@ -23,6 +23,7 @@
 #include <assert.h>
 #include <genht/hash.h>
 #include <liblihata/tree.h>
+#include <stdarg.h>
 #include "conf.h"
 #include "conf_core.h"
 #include "conf_hid.h"
@@ -1701,3 +1702,16 @@ void conf_uninit(void)
 	vmst_uninit(&merge_subtree);
 }
 
+void conf_setf(conf_role_t role, const char *path, int idx, const char *fmt, ...)
+{
+	char *tmp;
+	va_list ap;
+
+	va_start(ap, fmt);
+	tmp = pcb_strdup_vprintf(fmt, ap);
+	va_end(ap);
+
+	conf_set(role, path, idx, tmp, POL_OVERWRITE);
+
+	free(tmp);
+}

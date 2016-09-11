@@ -252,6 +252,8 @@ int conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose,
 
 /****** utility ******/
 
+void conf_setf(conf_role_t role, const char *path, int idx, const char *fmt, ...);
+
 #define conf_list_foreach_path_first(res, conf_list, call) \
 do { \
 	conf_listitem_t *__n__; \
@@ -277,15 +279,6 @@ do { \
 /* htsp_entry_t *e; */
 #define conf_fields_foreach(e) \
 	for (e = htsp_first(conf_fields); e; e = htsp_next(conf_fields, e))
-
-
-/* helpers to make the code shorter */
-#define conf_setf(role, path, idx, fmt, ...) \
-do { \
-	char *__tmp__ = pcb_strdup_printf(fmt, __VA_ARGS__); \
-	conf_set(role, path, idx, __tmp__, POL_OVERWRITE); \
-	free(__tmp__); \
-} while(0)
 
 /* helpers to make the code shorter */
 #define conf_set_design(path, fmt, new_val) \
