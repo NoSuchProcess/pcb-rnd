@@ -363,7 +363,7 @@ static Widget confirm_cancel, confirm_ok, confirm_label;
 
 int lesstif_confirm_dialog(const char *msg, ...)
 {
-	char *cancelmsg, *okmsg;
+	const char *cancelmsg, *okmsg;
 	va_list ap;
 	XmString xs;
 
@@ -385,8 +385,8 @@ int lesstif_confirm_dialog(const char *msg, ...)
 	}
 
 	va_start(ap, msg);
-	cancelmsg = va_arg(ap, char *);
-	okmsg = va_arg(ap, char *);
+	cancelmsg = va_arg(ap, const char *);
+	okmsg = va_arg(ap, const char *);
 	va_end(ap);
 
 	if (!cancelmsg) {
