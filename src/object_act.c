@@ -245,7 +245,7 @@ static int ActionDisperseElements(int argc, char **argv, Coord x, Coord y)
 
 	ELEMENT_LOOP(PCB->Data);
 	{
-		/* 
+		/*
 		 * If we want to disperse selected elements, maybe we need smarter
 		 * code here to avoid putting components on top of others which
 		 * are not selected.  For now, I'm assuming that this is typically
@@ -260,7 +260,7 @@ static int ActionDisperseElements(int argc, char **argv, Coord x, Coord y)
 			/* snap to the grid */
 			dx -= (element->MarkX + dx) % PCB->Grid;
 
-			/* 
+			/*
 			 * and add one grid size so we make sure we always space by GAP or
 			 * more
 			 */

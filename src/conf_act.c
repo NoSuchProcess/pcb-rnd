@@ -3,7 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
- * 
+ *
  *  This module, debug, was written and is Copyright (C) 2016 by Tibor Palinkas
  *  this module is also subject to the GNU GPL as described below
  *
@@ -123,7 +123,7 @@ static int ActionConf(int argc, char **argv, Coord x, Coord y)
 			res = conf_set_native(n, 0, new_value);
 		else
 			res = conf_set(role, argv[1], -1, new_value, POL_OVERWRITE);
-		
+
 		if (res != 0) {
 			Message(PCB_MSG_DEFAULT, "Can not toggle '%s': failed to set new value\n", argv[1]);
 			return 1;
@@ -197,7 +197,7 @@ static int ActionChkMode(int argc, char **argv, Coord x, Coord y)
 }
 
 
-static const char ChkGridSize_syntax[] = 
+static const char ChkGridSize_syntax[] =
 	"ChkGridSize(expected_size)\n"
 	"ChkGridSize(none)\n"
 	;
@@ -211,7 +211,7 @@ static int ActionChkGridSize(int argc, char **argv, Coord x, Coord y)
 	return (PCB->Grid == GetValueEx(argv[0], NULL, NULL, NULL, NULL, NULL));
 }
 
-static const char ChkElementName_syntax[] = 
+static const char ChkElementName_syntax[] =
 	"ChkElementName(1) - expect description\n"
 	"ChkElementName(2) - expect refdes\n"
 	"ChkElementName(3) - expect value\n"

@@ -221,7 +221,7 @@ static void style_name_cb(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 	strncpy(PCB->RouteStyle.array[i].name, newname, sizeof(PCB->RouteStyle.array[i].name)-1);
 	PCB->RouteStyle.array[i].name[sizeof(PCB->RouteStyle.array[i].name)-1] = '\0';
 	free(newname);
-	
+
 	RouteStylesChanged(0, 0, 0, 0);
 }
 

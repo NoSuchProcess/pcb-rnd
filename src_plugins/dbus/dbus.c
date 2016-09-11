@@ -363,7 +363,7 @@ static void pcb_dbus_finish(void)
 
 static void dbus_gui_init(void *user_data, int argc, event_arg_t * argv[])
 {
-	
+
 	/* this can not be done from init, before the gui starts, as it needs
 	to register fd watches in the GUI. Also won't play well together with GUI
 	switches... */
@@ -385,4 +385,3 @@ pcb_uninit_t hid_dbus_init(void)
 	event_bind(EVENT_GUI_INIT, dbus_gui_init, NULL, dbus_cookie);
 	return hid_dbus_uninit;
 }
-

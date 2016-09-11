@@ -163,7 +163,7 @@ static int FontSave(int argc, char **argv, Coord Ux, Coord Uy)
 	FontTypePtr font;
 	SymbolTypePtr symbol;
 	int i;
-	LineType *l; 
+	LineType *l;
 	gdl_iterator_t it;
 	LayerTypePtr lfont, lwidth;
 
@@ -245,4 +245,3 @@ pcb_uninit_t hid_fontmode_init(void)
 	REGISTER_ACTIONS(fontmode_action_list, fontmode_cookie)
 	return hid_fontmode_uninit;
 }
-

@@ -24,7 +24,7 @@
  *
  */
 
-/* 
+/*
  * This file written by Bill Wilson for the PCB Gtk port
  */
 
@@ -120,7 +120,7 @@ static LibraryMenuType *node_selected_net;
    |  contains an allocated array of LibraryMenuType structs.  Each of these
    |  structs represents a net in the netlist and contains an array
    |  of LibraryEntryType structs which represent the nodes connecting to
-   |  the net.  So we have: 
+   |  the net.  So we have:
    |
    |                      Nets              Nodes
    |       LibraryType    LibraryMenuType   LibraryEntryType

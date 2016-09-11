@@ -71,7 +71,7 @@ static inline void u(const char *fmt, ...)
 	va_end(ap);
 }
 
-static const char printusage_syntax[] = 
+static const char printusage_syntax[] =
 	"PrintUsage()\n"
 	"PrintUsage(plugin)";
 

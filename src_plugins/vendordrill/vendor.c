@@ -93,7 +93,7 @@ static const char apply_vendor_syntax[] = "ApplyVendor()";
 static const char apply_vendor_help[] = "Applies the currently loaded vendor drill table to the current design.";
 
 /* %start-doc actions ApplyVendor
-@cindex vendor map 
+@cindex vendor map
 @cindex vendor drill table
 @findex ApplyVendor()
 
@@ -116,7 +116,7 @@ static const char unload_vendor_help[] = "Unloads the current vendor drill mappi
 
 /* %start-doc actions UnloadVendor
 
-@cindex vendor map 
+@cindex vendor map
 @cindex vendor drill table
 @findex UnloadVendor()
 
@@ -138,7 +138,7 @@ static const char load_vendor_help[] = "Loads the specified vendor lihata file."
 
 /* %start-doc actions LoadVendorFrom
 
-@cindex vendor map 
+@cindex vendor map
 @cindex vendor drill table
 @findex LoadVendorFrom()
 
@@ -400,7 +400,7 @@ static void apply_vendor_map(void)
 			}
 		}
 #endif
-		/* 
+		/*
 		 * if we've changed anything, indicate that we need to save the
 		 * file, redraw things, and make sure we can undo.
 		 */
@@ -495,7 +495,7 @@ static void add_to_drills(char *sval)
 	tmpd = atof(sval);
 	val = floor(sf * tmpd + 0.5);
 
-	/* 
+	/*
 	 * We keep the array of vendor drills sorted to make it easier to
 	 * do the rounding later.  The algorithm used here is not so efficient,
 	 * but we're not dealing with much in the way of data.

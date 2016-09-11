@@ -262,7 +262,7 @@ static int djmin(int x, int y)
 	return x < y ? x : y;
 }
 
-/* 
+/*
  * Find distance between 2 points.  We use floating point math here
  * because we can fairly easily overflow a 32 bit integer here.  In
  * fact it only takes 0.46" to do so.
