@@ -763,7 +763,7 @@ static int regexec_match_all(re_sei_t *preg, const char *string)
 	return !!re_sei_exec(preg, string);
 }
 
-/* case insensitive match of each element in the array pat against name 
+/* case insensitive match of each element in the array pat against name
    returns 1 if any of them matched */
 static int strlst_match(const char **pat, const char *name)
 {
@@ -945,4 +945,3 @@ bool SelectObjectByName(int Type, char *Pattern, bool Flag, search_method_t meth
 		free(pat);
 	return (changed);
 }
-
