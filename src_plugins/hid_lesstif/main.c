@@ -825,19 +825,27 @@ The values are percentages of the board size.  Thus, a move of
 static int CursorAction(int argc, const char **argv, Coord x, Coord y)
 {
 	UnitList extra_units_x = {
-		{"grid", PCB->Grid, 0},
-		{"view", Pz(view_width), UNIT_PERCENT},
-		{"board", PCB->MaxWidth, UNIT_PERCENT},
+		{"grid", 0, 0},
+		{"view", 0, UNIT_PERCENT},
+		{"board", 0, UNIT_PERCENT},
 		{"", 0, 0}
 	};
 	UnitList extra_units_y = {
-		{"grid", PCB->Grid, 0},
-		{"view", Pz(view_height), UNIT_PERCENT},
-		{"board", PCB->MaxHeight, UNIT_PERCENT},
+		{"grid", 0, 0},
+		{"view", 0, UNIT_PERCENT},
+		{"board", 0, UNIT_PERCENT},
 		{"", 0, 0}
 	};
 	int pan_warp = HID_SC_DO_NOTHING;
 	double dx, dy;
+
+	extra_units_x[0].scale = PCB->Grid;
+	extra_units_x[1].scale = Pz(view_width);
+	extra_units_x[2].scale = PCB->MaxWidth;
+
+	extra_units_y[0].scale = PCB->Grid;
+	extra_units_y[1].scale = Pz(view_height);
+	extra_units_y[2].scale = PCB->MaxHeight;
 
 	if (argc != 4)
 		AFAIL(cursor);
