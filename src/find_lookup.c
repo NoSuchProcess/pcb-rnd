@@ -25,6 +25,23 @@
  *
  */
 
+static inline r_dir_t r_search_pt(rtree_t * rtree, const PointType * pt,
+															int radius,
+															r_dir_t (*region_in_search) (const BoxType * region, void *cl),
+															r_dir_t (*rectangle_in_region) (const BoxType * box, void *cl), void *closure,
+															int *num_found)
+{
+	BoxType box;
+
+	box.X1 = pt->X - radius;
+	box.X2 = pt->X + radius;
+	box.Y1 = pt->Y - radius;
+	box.Y2 = pt->Y + radius;
+
+	return r_search(rtree, &box, region_in_search, rectangle_in_region, closure, num_found);
+}
+
+
 /* Connection lookup functions */
 
 static bool ADD_PV_TO_LIST(PinTypePtr Pin, int from_type, void *from_ptr, found_conn_type_t type)

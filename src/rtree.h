@@ -73,21 +73,6 @@ r_dir_t r_search(rtree_t * rtree, const BoxType * starting_region,
 						 r_dir_t (*region_in_search) (const BoxType * region, void *cl),
 						 r_dir_t (*rectangle_in_region) (const BoxType * box, void *cl), void *closure,
 						 int *num_found);
-static inline r_dir_t r_search_pt(rtree_t * rtree, const PointType * pt,
-															int radius,
-															r_dir_t (*region_in_search) (const BoxType * region, void *cl),
-															r_dir_t (*rectangle_in_region) (const BoxType * box, void *cl), void *closure,
-															int *num_found)
-{
-	BoxType box;
-
-	box.X1 = pt->X - radius;
-	box.X2 = pt->X + radius;
-	box.Y1 = pt->Y - radius;
-	box.Y2 = pt->Y + radius;
-
-	return r_search(rtree, &box, region_in_search, rectangle_in_region, closure, num_found);
-}
 
 /* -- special-purpose searches build upon r_search -- */
 /* return 0 if there are any rectangles in the given region. */
