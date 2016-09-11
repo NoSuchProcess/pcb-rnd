@@ -48,15 +48,21 @@
 static char *gui_get_pat(search_method_t * method)
 {
 	const char *methods[] = { "regexp", "list of names", NULL };
-	HID_Attribute attrs[] = {
-		{.name = "Pattern",.help_text = "Name/refdes pattern",.type = HID_String},
-		{.name = "Method",.help_text = "method of search: either regular expression or a list of full names separated by |",.type =
-		 HID_Enum,.enumerations = methods}
-	};
+	HID_Attribute attrs[2];
 #define nattr sizeof(attrs)/sizeof(attrs[0])
 	static HID_Attr_Val results[nattr] = { 0 };
 
+	memset(attrs, 0, sizeof(attrs));
+
+	attrs[0].name = "Pattern";
+	attrs[0].help_text = "Name/refdes pattern";
+	attrs[0].type = HID_String;
 	attrs[0].default_val.str_value = results[0].str_value;
+
+	attrs[1].name = "Method";
+	attrs[1].help_text = "method of search: either regular expression or a list of full names separated by |";
+	attrs[1].type = HID_Enum;
+	attrs[1].enumerations = methods;
 	attrs[1].default_val.int_value = results[1].int_value;
 
 	gui->attribute_dialog(attrs, nattr, results, "Find element", "Find element by name");
