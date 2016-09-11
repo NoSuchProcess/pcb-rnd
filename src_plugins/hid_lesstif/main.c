@@ -2027,8 +2027,8 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 				break;
 			}
 
-			r->resource_name = a->name;
-			r->resource_class = a->name;
+			r->resource_name = (char*)a->name;
+			r->resource_class = (char*)a->name;
 			r->resource_offset = sizeof(val_union) * rcount;
 
 			switch (a->type) {

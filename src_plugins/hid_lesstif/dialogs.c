@@ -637,7 +637,7 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 		stdarg(XmNbottomAttachment, XmATTACH_POSITION);
 		stdarg(XmNbottomPosition, attrcount + 1);
 		stdarg(XmNalignment, XmALIGNMENT_END);
-		w = XmCreateLabel(lform, attrs[i].name, stdarg_args, stdarg_n);
+		w = XmCreateLabel(lform, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 		XtManageChild(w);
 	}
 
@@ -661,39 +661,39 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 		switch (attrs[i].type) {
 		case HID_Label:
 			stdarg(XmNlabelString, empty);
-			wl[i] = XmCreateLabel(form, attrs[i].name, stdarg_args, stdarg_n);
+			wl[i] = XmCreateLabel(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case HID_Boolean:
 			stdarg(XmNlabelString, empty);
 			stdarg(XmNset, results[i].int_value);
-			wl[i] = XmCreateToggleButton(form, attrs[i].name, stdarg_args, stdarg_n);
+			wl[i] = XmCreateToggleButton(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case HID_String:
 			stdarg(XmNcolumns, 40);
 			stdarg(XmNresizeWidth, True);
 			stdarg(XmNvalue, results[i].str_value);
-			wl[i] = XmCreateTextField(form, attrs[i].name, stdarg_args, stdarg_n);
+			wl[i] = XmCreateTextField(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case HID_Integer:
 			stdarg(XmNcolumns, 13);
 			stdarg(XmNresizeWidth, True);
 			sprintf(buf, "%d", results[i].int_value);
 			stdarg(XmNvalue, buf);
-			wl[i] = XmCreateTextField(form, attrs[i].name, stdarg_args, stdarg_n);
+			wl[i] = XmCreateTextField(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case HID_Coord:
 			stdarg(XmNcolumns, 13);
 			stdarg(XmNresizeWidth, True);
 			pcb_snprintf(buf, sizeof(buf), "%$mS", results[i].coord_value);
 			stdarg(XmNvalue, buf);
-			wl[i] = XmCreateTextField(form, attrs[i].name, stdarg_args, stdarg_n);
+			wl[i] = XmCreateTextField(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case HID_Real:
 			stdarg(XmNcolumns, 16);
 			stdarg(XmNresizeWidth, True);
 			pcb_snprintf(buf, sizeof(buf), "%g", results[i].real_value);
 			stdarg(XmNvalue, buf);
-			wl[i] = XmCreateTextField(form, attrs[i].name, stdarg_args, stdarg_n);
+			wl[i] = XmCreateTextField(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 			break;
 		case HID_Enum:
 			{
@@ -704,12 +704,12 @@ int lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * 
 				if (empty == 0)
 					empty = XmStringCreatePCB("");
 
-				submenu = XmCreatePulldownMenu(form, attrs[i].name, stdarg_args + sn, stdarg_n - sn);
+				submenu = XmCreatePulldownMenu(form, XmStrCast(attrs[i].name), stdarg_args + sn, stdarg_n - sn);
 
 				stdarg_n = sn;
 				stdarg(XmNlabelString, empty);
 				stdarg(XmNsubMenuId, submenu);
-				wl[i] = XmCreateOptionMenu(form, attrs[i].name, stdarg_args, stdarg_n);
+				wl[i] = XmCreateOptionMenu(form, XmStrCast(attrs[i].name), stdarg_args, stdarg_n);
 
 				for (sn = 0; attrs[i].enumerations[sn]; sn++) {
 					Widget btn;
