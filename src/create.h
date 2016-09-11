@@ -65,7 +65,7 @@ RubberbandTypePtr CreateNewRubberbandEntry(LayerTypePtr, LineTypePtr, PointTypeP
 LibraryMenuTypePtr CreateNewNet(LibraryTypePtr, char *, char *);
 LibraryEntryTypePtr CreateNewConnection(LibraryMenuTypePtr, char *);
 
-AttributeTypePtr CreateNewAttribute(AttributeListTypePtr list, char *name, char *value);
+AttributeTypePtr CreateNewAttribute(AttributeListTypePtr list, const char *name, const char *value);
 
 void CreateIDBump(int min_id);
 void CreateIDReset(void);

@@ -918,7 +918,7 @@ LibraryEntryTypePtr CreateNewConnection(LibraryMenuTypePtr net, char *conn)
 /* ---------------------------------------------------------------------------
  * Add an attribute to a list.
  */
-AttributeTypePtr CreateNewAttribute(AttributeListTypePtr list, char *name, char *value)
+AttributeTypePtr CreateNewAttribute(AttributeListTypePtr list, const char *name, const char *value)
 {
 	if (list->Number >= list->Max) {
 		list->Max += 10;
