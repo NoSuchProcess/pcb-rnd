@@ -33,22 +33,22 @@
 
 /*
  * FIXME:
- * 
+ *
  * If you have a section of a net that does not contain any pins then that
  * section will be missing from the Nelma's copper geometry.
- * 
+ *
  * For example:
- * 
+ *
  * this section will be ignored by Nelma |       |
- * 
+ *
  * ||             ||=======||            ||     component layer ||
  * ||       ||            || ||=============||       ||============||
  * solder layer
- * 
+ *
  * pin1           via      via           pin2
- * 
+ *
  * Single layer layouts are always exported correctly.
- * 
+ *
  */
 
 #include "config.h"
