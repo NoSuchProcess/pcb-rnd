@@ -166,12 +166,12 @@ void ghid_map_color_string(const char *color_string, GdkColor * color)
 }
 
 
-gchar *ghid_entry_get_text(GtkWidget * entry)
+const gchar *ghid_entry_get_text(GtkWidget * entry)
 {
-	gchar *s = "";
+	const gchar *s = "";
 
 	if (entry)
-		s = (gchar *) gtk_entry_get_text(GTK_ENTRY(entry));
+		s = gtk_entry_get_text(GTK_ENTRY(entry));
 	while (*s == ' ' || *s == '\t')
 		++s;
 	return s;

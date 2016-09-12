@@ -1289,7 +1289,7 @@ static gchar *make_layer_group_string(LayerGroupType * lg)
 static void config_layers_apply(void)
 {
 	LayerType *layer;
-	gchar *s;
+	const gchar *s;
 	gint group, i;
 	gint componentgroup = 0, soldergroup = 0;
 	gboolean layers_modified = FALSE;
@@ -1365,7 +1365,7 @@ static void layer_name_entry_cb(GtkWidget * entry, gpointer data)
 {
 	gint i = GPOINTER_TO_INT(data);
 	LayerType *layer;
-	gchar *name;
+	const gchar *name;
 
 	layer = &PCB->Data->Layer[i];
 	name = ghid_entry_get_text(entry);

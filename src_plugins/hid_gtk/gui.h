@@ -318,7 +318,7 @@ gboolean ghid_shift_is_pressed(void);
 void ghid_draw_area_update(GHidPort * out, GdkRectangle * rect);
 const gchar *ghid_get_color_name(GdkColor * color);
 void ghid_map_color_string(const gchar * color_string, GdkColor * color);
-gchar *ghid_entry_get_text(GtkWidget * entry);
+const gchar *ghid_entry_get_text(GtkWidget * entry);
 void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button,
 																 gboolean active, gboolean pack_start,
 																 gboolean expand, gboolean fill, gint pad,
