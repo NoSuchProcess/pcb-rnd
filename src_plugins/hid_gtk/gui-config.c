@@ -1193,7 +1193,7 @@ static LayerGroupType layer_groups,	/* Working copy */
 
 static gboolean groups_modified, groups_holdoff, layers_applying;
 
-static gchar *layer_info_text[] = {
+static const gchar *layer_info_text[] = {
 	N_("<h>Layer Names\n"),
 	N_("You may enter layer names for the layers drawn on the screen.\n"
 		 "The special 'component side' and 'solder side' are layers which\n"
