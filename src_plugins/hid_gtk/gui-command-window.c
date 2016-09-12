@@ -68,7 +68,7 @@ static GMainLoop *loop;
 	   |  abbreviated reference to available commands.
 	   |  This is currently just a start and can be expanded if it proves useful.
 	 */
-static gchar *command_ref_text[] = {
+static const gchar *command_ref_text[] = {
 	N_("Common commands easily accessible via the gui may not be included here.\n"),
 	"\n",
 	N_("In user commands below, 'size' values may be absolute or relative\n"
