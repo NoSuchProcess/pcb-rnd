@@ -1377,7 +1377,8 @@ void ghid_config_groups_changed(void)
 {
 	GtkWidget *vbox, *table, *button, *label, *scrolled_window;
 	GSList *group;
-	gchar buf[32], *name;
+	gchar buf[32];
+	const char *name;
 	gint layer, i;
 
 	if (!config_groups_vbox)
