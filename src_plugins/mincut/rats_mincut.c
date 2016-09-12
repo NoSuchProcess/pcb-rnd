@@ -164,7 +164,8 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 
 	/* conn 0 is S and conn 1 is T and set up lookup arrays */
 	for (n = short_conns, gids = 2; n != NULL; n = n->next, gids++) {
-		char *s, *typ;
+		char *s;
+		const char *typ;
 		ElementType *parent;
 		n->gid = gids;
 		debprintf(" {%d} found %d %d/%p type %d from %d\n", n->gid, n->to_type, n->to->ID, n->to, n->type, n->from_id);
