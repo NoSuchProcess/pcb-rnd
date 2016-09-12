@@ -3,7 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 2013..2015 Tibor 'Igor2' Palinkas
- * 
+ *
  *  This module, rats.c, was written and is Copyright (C) 1997 by harry eaton
  *  this module is also subject to the GNU GPL as described below
  *
@@ -416,4 +416,3 @@ pcb_uninit_t hid_mincut_init(void)
 #include "rats_mincut_conf_fields.h"
 	return hid_mincut_uninit;
 }
-
