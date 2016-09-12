@@ -112,7 +112,7 @@ int ghid_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * res
 
 	vbox = ghid_category_vbox(main_vbox, descr != NULL ? descr : "", 4, 2, TRUE, TRUE);
 
-	/* 
+	/*
 	 * Iterate over all the export options and build up a dialog box
 	 * that lets us control all of the options.  By doing things this
 	 * way, any changes to the exporter HID's automatically are
@@ -133,8 +133,8 @@ int ghid_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * res
 			hbox = gtk_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-			/* 
-			 * FIXME 
+			/*
+			 * FIXME
 			 * need to pick the "digits" argument based on min/max
 			 * values
 			 */
@@ -167,8 +167,8 @@ int ghid_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * res
 			hbox = gtk_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-			/* 
-			 * FIXME 
+			/*
+			 * FIXME
 			 * need to pick the "digits" and step size argument more
 			 * intelligently
 			 */
@@ -216,7 +216,7 @@ int ghid_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * res
 			g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j].default_val.int_value));
 
 
-			/* 
+			/*
 			 * Iterate through each value and add them to the
 			 * combo box
 			 */
@@ -269,7 +269,7 @@ int ghid_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * res
 			gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
 			g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(attrs[j].default_val.int_value));
 
-			/* 
+			/*
 			 * Iterate through each value and add them to the
 			 * combo box
 			 */
@@ -375,7 +375,7 @@ void ghid_dialog_export(void)
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 	gtk_container_add(GTK_CONTAINER(content_area), vbox);
 
-	/* 
+	/*
 	 * Iterate over all the export HID's and build up a dialog box that
 	 * lets us choose which one we want to use.
 	 * This way, any additions to the exporter HID's automatically are
