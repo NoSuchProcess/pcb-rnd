@@ -212,7 +212,7 @@ static const char *parse_layer_list(const char *bp, int (*error) (const char *))
 			l = l * 10 + (*bp - '0');
 
 		else if (error) {
-			char *fmt = "Syntax error parsing layer list \"%.*s\" at %c";
+			const char *fmt = "Syntax error parsing layer list \"%.*s\" at %c";
 			char *msg = alloc_buf(strlen(fmt) + strlen(orig_bp));
 			sprintf(msg, fmt, bp - orig_bp + 5, orig_bp, *bp);
 			error(msg);
