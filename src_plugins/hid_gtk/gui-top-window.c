@@ -364,11 +364,11 @@ void ghid_notify_filename_changed(void)
  * used by a couple of functions.
  *
  */
-static void layer_process(gchar ** color_string, char **text, int *set, int i)
+static void layer_process(const gchar ** color_string, const char **text, int *set, int i)
 {
 	int tmp;
-	char *tmps;
-	gchar *tmpc;
+	const char *tmps;
+	const gchar *tmpc;
 
 	/* cheap hack to let users pass in NULL for either text or set if
 	 * they don't care about the result
@@ -631,8 +631,8 @@ static void make_cursor_position_labels(GtkWidget * hbox, GHidPort * port)
 static void make_virtual_layer_buttons(GtkWidget * layer_selector)
 {
 	GHidLayerSelector *layersel = GHID_LAYER_SELECTOR(layer_selector);
-	gchar *text;
-	gchar *color_string;
+	const gchar *text;
+	const gchar *color_string;
 	gboolean active;
 
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_SILK);
@@ -652,7 +652,7 @@ static void make_virtual_layer_buttons(GtkWidget * layer_selector)
 /*! \brief callback for ghid_layer_selector_update_colors */
 const gchar *get_layer_color(gint layer)
 {
-	gchar *rv;
+	const gchar *rv;
 	layer_process(&rv, NULL, NULL, layer);
 	return rv;
 }
@@ -668,8 +668,8 @@ void ghid_layer_buttons_color_update(void)
 static void make_layer_buttons(GtkWidget * layersel)
 {
 	gint i;
-	gchar *text;
-	gchar *color_string;
+	const gchar *text;
+	const gchar *color_string;
 	gboolean active = TRUE;
 
 	for (i = 0; i < max_copper_layer; ++i) {
