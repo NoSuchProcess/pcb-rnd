@@ -214,7 +214,7 @@ static int throw_drc_dialog(void)
 /* DRC clearance callback */
 static r_dir_t drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr polygon, int type, void *ptr1, void *ptr2)
 {
-	char *message;
+	const char *message;
 	Coord x, y;
 	int object_count;
 	long int *object_id_list;
@@ -632,8 +632,8 @@ int DRCAll(void)
 			}
 			END_LOOP;
 			if (tmpcnt > 0) {
-				char *title;
-				char *name;
+				const char *title;
+				const char *name;
 				char *buffer;
 				int buflen;
 
@@ -645,7 +645,7 @@ int DRCAll(void)
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 
 				title = _("Element %s has %i silk lines which are too thin");
-				name = (char *) UNKNOWN(NAMEONPCB_NAME(element));
+				name = UNKNOWN(NAMEONPCB_NAME(element));
 
 				/* -4 is for the %s and %i place-holders */
 				/* +11 is the max printed length for a 32 bit integer */
