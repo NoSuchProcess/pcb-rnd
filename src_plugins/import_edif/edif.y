@@ -2639,7 +2639,7 @@ typedef struct ContextCar {
  *	strings must be in lower case.
  */
 typedef struct Token {
-  char *Name;			/* token name */
+  const char *Name;			/* token name */
   int Code;			/* '%token' value */
   struct Token *Next;		/* hash table linkage */
 } Token;
@@ -2769,7 +2769,7 @@ static int TieDefSize = sizeof(TieDef) / sizeof(Tie);
  *	must be lower case.
  */
 typedef struct Context {
-  char *Name;			/* keyword name */
+  const char *Name;			/* keyword name */
   short Code;			/* '%token' value */
   short Flags;			/* special operation flags */
   struct ContextCar *Context;	/* contexts which can be moved to */
@@ -3756,7 +3756,7 @@ static int BinderDefSize = sizeof(BinderDef) / sizeof(Binder);
  */
 typedef struct Keyword {
   struct Keyword *Next;	 	/* pointer to next entry */
-  char *String;			/* pointer to associated string */
+  const char *String;			/* pointer to associated string */
 } Keyword;
 #define	KEYWORD_HASH	127	/* hash table size */
 static Keyword *KeywordTable[KEYWORD_HASH];
@@ -3765,14 +3765,14 @@ static Keyword *KeywordTable[KEYWORD_HASH];
  *
  *	  The passed string is entered into the keyword hash table.
  */
-static void EnterKeyword(char * str)
+static void EnterKeyword(const char * str)
 {
   /*
    *	Locals.
    */
   register Keyword *key;
   register unsigned int hsh;
-  register char *cp;
+  register const char *cp;
   /*
    *	Create the hash code, and add an entry to the table.
    */
@@ -3790,7 +3790,7 @@ static void EnterKeyword(char * str)
  *	is real useful for doing string comparisons by pointer value later.
  *	If there is no match, a NULL is returned.
  */
-static char *FindKeyword(char * str)
+static const char *FindKeyword(const char * str)
 {
   /*
    *	Locals.
@@ -4175,7 +4175,7 @@ void ParseEDIF(char* filename,FILE* err)
  *	list to see if it is enabled. If so the token value is returned,
  *	if not then zero.
  */
-static int MatchToken(register char * str)
+static int MatchToken(register const char * str)
 {
   /*
    *	Locals.
@@ -4203,7 +4203,7 @@ static int MatchToken(register char * str)
  *	  If the passed keyword string is within the current context, the
  *	new context is pushed and token value is returned. A zero otherwise.
  */
-static int MatchContext(register char * str)
+static int MatchContext(register const char * str)
 {
   /*
    *	Locals.
