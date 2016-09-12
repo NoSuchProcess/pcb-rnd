@@ -92,7 +92,7 @@ static int ActionConf(int argc, const char **argv, Coord x, Coord y)
 
 	else if (NSTRCMP(cmd, "toggle") == 0) {
 		conf_native_t *n = conf_get_field(argv[1]);
-		char *new_value;
+		const char *new_value;
 		conf_role_t role = CFR_invalid;
 		int res;
 
@@ -163,7 +163,7 @@ static int ActionChkMode(int argc, const char **argv, Coord x, Coord y)
 {
 #warning TODO: convert this to a compile-time hash
 	struct {
-		char *name;
+		const char *name;
 		int mode;
 	} *m, modes[] = {
 		{"none", PCB_MODE_NO},
