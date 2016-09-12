@@ -91,7 +91,7 @@ typedef struct hid_cfg_keys_s {
 } hid_cfg_keys_t;
 
 
-/* Initialize a new keyboard context 
+/* Initialize a new keyboard context
    Returns 0 on success.
 */
 int hid_cfg_keys_init(hid_cfg_keys_t *km);
