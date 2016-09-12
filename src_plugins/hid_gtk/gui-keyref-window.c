@@ -33,7 +33,7 @@
 
 static GtkWidget *keyref_window;
 
-static gchar *key_ref_text[] = {
+static const gchar *key_ref_text[] = {
 	"<h>",
 	N_("Keyboard\n"),
 	N_("Keyboard shortcuts and actions available in PCB.\n"),
