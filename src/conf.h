@@ -3,7 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -331,4 +331,3 @@ lht_node_t *conf_lht_get_at(conf_role_t target, const char *path, int create);
 int conf_export_to_file(const char *fn, conf_role_t role, const char *conf_path);
 
 #endif
-
