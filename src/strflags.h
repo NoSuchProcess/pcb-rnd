@@ -36,7 +36,7 @@ typedef struct {
 	int mask;
 
 	/* The name used in the output file.  */
-	char *name;
+	const char *name;
 	int nlen;
 
 	/* If set, this entry won't be output unless the object type is one
