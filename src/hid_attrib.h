@@ -21,10 +21,10 @@ enum hids { HID_Label, HID_Integer, HID_Real, HID_String,
 };
 
 struct HID_Attribute_s {
-	char *name;
+	const char *name;
 	/* If the help_text is this, usage() won't show this option */
 #define ATTR_UNDOCUMENTED ((char *)(1))
-	char *help_text;
+	const char *help_text;
 	enum hids type;
 	int min_val, max_val;				/* for integer and real */
 	HID_Attr_Val default_val;		/* Also actual value for global attributes.  */
