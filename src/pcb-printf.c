@@ -392,7 +392,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 					abort();
 				}
 				else {
-					char *s = va_arg(args, char *);
+					const char *s = va_arg(args, const char *);
 					if (s == NULL) s = "(null)";
 					if (gds_append_str(string, s) != 0) goto err;
 				}
