@@ -263,9 +263,8 @@ static void draw_pad_name(PadType * pad)
 	BoxType box;
 	bool vert;
 	TextType text;
-	char buff[128], *pn;
-
-
+	char buff[128];
+	const char *pn;
 
 	if (!pad->Name || !pad->Name[0])
 		pn = EMPTY(pad->Number);
