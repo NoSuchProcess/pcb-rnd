@@ -1,6 +1,5 @@
 - BUGS
 	- genht config bug in gpmi
-	- strdup bug in gpmi
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
 	- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
 	- gui window quit queues and doesn't work when action command is active [report:miloh]
