@@ -79,7 +79,7 @@ typedef struct hid_cfg_keys_s {
 	/* translate key sym description (the portion after <Key>) to key_char;
 	   desc is a \0 terminated string, len is only a hint. Should return 0
 	   on error. */
-	unsigned short int (*translate_key)(char *desc, int len);
+	unsigned short int (*translate_key)(const char *desc, int len);
 
 	/* convert a key_char to human readable name, copy the string to out/out_len.
 	   Return 0 on success. */

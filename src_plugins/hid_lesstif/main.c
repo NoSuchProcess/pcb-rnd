@@ -1672,7 +1672,7 @@ static Widget make_message(const char *name, Widget left, int resizeable)
 	return w;
 }
 
-static unsigned short int lesstif_translate_key(char *desc, int len)
+static unsigned short int lesstif_translate_key(const char *desc, int len)
 {
 	KeySym key;
 

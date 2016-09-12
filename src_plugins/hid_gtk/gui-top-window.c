@@ -1433,7 +1433,7 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	ghidgui->creating = TRUE;
 }
 
-static unsigned short int ghid_translate_key(char *desc, int len)
+static unsigned short int ghid_translate_key(const char *desc, int len)
 {
 	guint key;
 
