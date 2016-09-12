@@ -399,7 +399,7 @@ static void assign_eagle_file_suffix(char *dest, int idx)
 {
 	int group;
 	int nlayers;
-	char *suff = "out";
+	const char *suff = "out";
 
 	switch (idx) {
 	case SL(SILK, TOP):
