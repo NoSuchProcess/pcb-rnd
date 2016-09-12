@@ -520,7 +520,7 @@ GtkTreeSelection *ghid_scrolled_selection(GtkTreeView * treeview, GtkWidget * bo
 	return selection;
 }
 
-GtkWidget *ghid_notebook_page(GtkWidget * tabs, char *name, gint pad, gint border)
+GtkWidget *ghid_notebook_page(GtkWidget * tabs, const char *name, gint pad, gint border)
 {
 	GtkWidget *label;
 	GtkWidget *vbox;
@@ -534,7 +534,7 @@ GtkWidget *ghid_notebook_page(GtkWidget * tabs, char *name, gint pad, gint borde
 	return vbox;
 }
 
-GtkWidget *ghid_framed_notebook_page(GtkWidget * tabs, char *name, gint border,
+GtkWidget *ghid_framed_notebook_page(GtkWidget * tabs, const char *name, gint border,
 																		 gint frame_border, gint vbox_pad, gint vbox_border)
 {
 	GtkWidget *vbox;

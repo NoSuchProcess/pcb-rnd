@@ -354,8 +354,8 @@ GtkWidget *ghid_framed_vbox_end(GtkWidget * box, gchar * label,
 																gint frame_border_width, gboolean frame_expand, gint vbox_pad, gint vbox_border_width);
 GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header,
 															gint header_pad, gint box_pad, gboolean pack_start, gboolean bottom_pad);
-GtkWidget *ghid_notebook_page(GtkWidget * tabs, char *name, gint pad, gint border);
-GtkWidget *ghid_framed_notebook_page(GtkWidget * tabs, char *name,
+GtkWidget *ghid_notebook_page(GtkWidget * tabs, const char *name, gint pad, gint border);
+GtkWidget *ghid_framed_notebook_page(GtkWidget * tabs, const char *name,
 																		 gint border, gint frame_border, gint vbox_pad, gint vbox_border);
 GtkWidget *ghid_scrolled_text_view(GtkWidget * box, GtkWidget ** scr, GtkPolicyType h_policy, GtkPolicyType v_policy);
 void ghid_text_view_append(GtkWidget * view, const gchar * string);
