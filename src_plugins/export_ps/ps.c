@@ -60,7 +60,7 @@ static const char *medias[] = {
 };
 
 typedef struct {
-	char *name;
+	const char *name;
 	Coord Width, Height;
 	Coord MarginX, MarginY;
 } MediaType, *MediaTypePtr;
@@ -1156,7 +1156,7 @@ static void ps_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 static void ps_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 {
 	int i;
-	char *op = "moveto";
+	const char *op = "moveto";
 	use_gc(gc);
 	for (i = 0; i < n_coords; i++) {
 		pcb_fprintf(global.f, "%mi %mi %s\n", x[i], y[i], op);
