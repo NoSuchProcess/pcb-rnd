@@ -138,7 +138,7 @@ int pcb_spawnvp(const char **argv)
  * with tempfile_unlink to make sure the temporary directory is also
  * removed when mkdtemp() is used.
  */
-char *tempfile_name_new(char *name)
+char *tempfile_name_new(const char *name)
 {
 	char *tmpfile = NULL;
 #ifdef HAVE_MKDTEMP
