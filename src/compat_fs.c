@@ -142,7 +142,8 @@ char *tempfile_name_new(char *name)
 {
 	char *tmpfile = NULL;
 #ifdef HAVE_MKDTEMP
-	char *tmpdir, *mytmpdir;
+	const char *tmpdir;
+	char *mytmpdir;
 	size_t len;
 #endif
 
