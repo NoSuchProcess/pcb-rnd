@@ -50,7 +50,7 @@ bool IsLayerGroupEmpty(int num)
  * parses the group definition string which is a colon separated list of
  * comma separated layer numbers (1,2,b:4,6,8,t)
  */
-int ParseGroupString(char *s, LayerGroupTypePtr LayerGroup, int LayerN)
+int ParseGroupString(const char *s, LayerGroupTypePtr LayerGroup, int LayerN)
 {
 	int group, member, layer;
 	bool c_set = false,						/* flags for the two special layers to */

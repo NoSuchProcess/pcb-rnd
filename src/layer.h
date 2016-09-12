@@ -37,7 +37,7 @@ bool IsLayerGroupEmpty(int);
 
 /************ OLD API - new code should not use these **************/
 
-int ParseGroupString(char *, LayerGroupTypePtr, int /* LayerN */ );
+int ParseGroupString(const char *, LayerGroupTypePtr, int /* LayerN */ );
 
 int GetLayerNumber(DataTypePtr, LayerTypePtr);
 int GetLayerGroupNumberByPointer(LayerTypePtr);
