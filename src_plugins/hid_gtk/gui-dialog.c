@@ -137,7 +137,7 @@ void ghid_dialog_message(gchar * message)
 }
 
 /* ---------------------------------------------- */
-gboolean ghid_dialog_confirm(gchar * message, gchar * cancelmsg, gchar * okmsg)
+gboolean ghid_dialog_confirm(const gchar * message, const gchar * cancelmsg, const gchar * okmsg)
 {
 	static gint x = -1, y = -1;
 	GtkWidget *dialog;
