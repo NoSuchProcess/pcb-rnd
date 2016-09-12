@@ -178,6 +178,7 @@ gint ghid_dialog_close_confirm()
 	GHidPort *out = &ghid_port;
 	gchar *tmp;
 	gchar *str;
+	const char *msg;
 
 	if (PCB->Filename == NULL) {
 		tmp = g_strdup_printf(_("Save the changes to layout before closing?"));
@@ -187,8 +188,8 @@ gint ghid_dialog_close_confirm()
 	}
 	str = g_strconcat("<big><b>", tmp, "</b></big>", NULL);
 	g_free(tmp);
-	tmp = _("If you don't save, all your changes will be permanently lost.");
-	str = g_strconcat(str, "\n\n", tmp, NULL);
+	msg = _("If you don't save, all your changes will be permanently lost.");
+	str = g_strconcat(str, "\n\n", msg, NULL);
 
 	dialog = gtk_message_dialog_new(GTK_WINDOW(out->top_window),
 																	(GtkDialogFlags) (GTK_DIALOG_MODAL |
