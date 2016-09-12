@@ -276,9 +276,10 @@ static const char *get_project_conf_name(const char *project_fn, const char *pcb
 
 int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const char *text, lht_node_t *err_node)
 {
-	char *strue[]  = {"true",  "yes",  "on",   "1", NULL};
-	char *sfalse[] = {"false", "no",   "off",  "0", NULL};
-	char **s, *end;
+	const char *strue[]  = {"true",  "yes",  "on",   "1", NULL};
+	const char *sfalse[] = {"false", "no",   "off",  "0", NULL};
+	const char **s;
+	char *end;
 	long l;
 	int base = 10;
 	double d;
