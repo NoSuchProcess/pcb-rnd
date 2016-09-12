@@ -182,7 +182,8 @@ static void _draw_pv_name(PinType * pv)
 	BoxType box;
 	bool vert;
 	TextType text;
-	char buff[128], *pn;
+	char buff[128];
+	const char *pn;
 
 	if (!pv->Name || !pv->Name[0])
 		pn = EMPTY(pv->Number);
