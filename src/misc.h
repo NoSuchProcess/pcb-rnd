@@ -71,7 +71,7 @@ void AttachForCopy(Coord, Coord);
 
 /* Returns NULL if the name isn't found, else the value for that named
    attribute.  */
-char *AttributeGetFromList(AttributeListType * list, char *name);
+char *AttributeGetFromList(AttributeListType * list, const char *name);
 /* Adds an attribute to the list.  If the attribute already exists,
    whether it's replaced or a second copy added depends on
    REPLACE.  Returns non-zero if an existing attribute was replaced.  */
@@ -81,7 +81,7 @@ int AttributePutToList(AttributeListType * list, const char *name, const char *v
 /* Simplistic version: Takes a pointer to an object, sets attributes in it.  */
 #define AttributePut(OBJ,name,value) AttributePutToList (&(OBJ->Attributes), name, value, 1)
 /* Remove an attribute by name.  */
-void AttributeRemoveFromList(AttributeListType * list, char *name);
+void AttributeRemoveFromList(AttributeListType * list, const char *name);
 /* Simplistic version of Remove.  */
 #define AttributeRemove(OBJ, name) AttributeRemoveFromList (&(OBJ->Attributes), name)
 

@@ -1058,7 +1058,7 @@ FlagType MaskFlags(FlagType flag, unsigned int flags)
 	return flag;
 }
 
-char *AttributeGetFromList(AttributeListType * list, char *name)
+char *AttributeGetFromList(AttributeListType * list, const char *name)
 {
 	int i;
 	for (i = 0; i < list->Number; i++)
@@ -1097,7 +1097,7 @@ int AttributePutToList(AttributeListType * list, const char *name, const char *v
 	return 0;
 }
 
-void AttributeRemoveFromList(AttributeListType * list, char *name)
+void AttributeRemoveFromList(AttributeListType * list, const char *name)
 {
 	int i, j;
 	for (i = 0; i < list->Number; i++)
