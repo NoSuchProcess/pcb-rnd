@@ -2015,20 +2015,20 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 			case HID_String:
 			case HID_Path:
 				o->argKind = XrmoptionSepArg;
-				o->value = 0;
+				o->value = NULL;
 				acount++;
 				break;
 			case HID_Boolean:
 				o->argKind = XrmoptionNoArg;
-				o->value = "True";
+				o->value = XmStrCast("True");
 				acount++;
 				break;
 			default:
 				break;
 			}
 
-			r->resource_name = (char*)a->name;
-			r->resource_class = (char*)a->name;
+			r->resource_name = XmStrCast(a->name);
+			r->resource_class = XmStrCast(a->name);
 			r->resource_offset = sizeof(val_union) * rcount;
 
 			switch (a->type) {
@@ -2040,15 +2040,15 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 				rcount++;
 				break;
 			case HID_Coord:
-				r->resource_type = XtRPCBCoord;
-				r->default_type = XtRPCBCoord;
+				r->resource_type = XmStrCast(XtRPCBCoord);
+				r->default_type = XmStrCast(XtRPCBCoord);
 				r->resource_size = sizeof(Coord);
 				r->default_addr = &(a->default_val.coord_value);
 				rcount++;
 				break;
 			case HID_Real:
-				r->resource_type = XtRDouble;
-				r->default_type = XtRDouble;
+				r->resource_type = XmStrCast(XtRDouble);
+				r->default_type = XmStrCast(XtRDouble);
 				r->resource_size = sizeof(double);
 				r->default_addr = &(a->default_val.real_value);
 				rcount++;
