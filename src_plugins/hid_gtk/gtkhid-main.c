@@ -513,7 +513,7 @@ int ghid_confirm_dialog(const char *msg, ...)
 {
 	int rv = 0;
 	va_list ap;
-	char *cancelmsg = NULL, *okmsg = NULL;
+	const char *cancelmsg = NULL, *okmsg = NULL;
 	static gint x = -1, y = -1;
 	GtkWidget *dialog;
 	GHidPort *out = &ghid_port;
@@ -1188,7 +1188,7 @@ static int Save(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *function;
 	char *name;
-	char *prompt;
+	const char *prompt;
 	pcb_io_formats_t avail;
 	const char **formats_param = NULL;
 	int fmt, *fmt_param = NULL;
