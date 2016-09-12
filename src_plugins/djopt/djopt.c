@@ -117,7 +117,7 @@ static char layer_type[MAX_LAYER];
 #define LT_COMPONENT 1
 #define LT_SOLDER 2
 
-static char *element_name_for(corner_s * c)
+static const char *element_name_for(corner_s * c)
 {
 	ELEMENT_LOOP(PCB->Data);
 	{
@@ -138,7 +138,7 @@ static char *element_name_for(corner_s * c)
 	return "unknown";
 }
 
-static char *corner_name(corner_s * c)
+static const char *corner_name(corner_s * c)
 {
 	static char buf[4][100];
 	static int bn = 0;
