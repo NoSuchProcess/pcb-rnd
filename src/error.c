@@ -162,7 +162,7 @@ void MyFatal(const char *Format, ...)
  */
 void CatchSignal(int Signal)
 {
-	char *s;
+	const char *s;
 
 	switch (Signal) {
 #ifdef SIGHUP
