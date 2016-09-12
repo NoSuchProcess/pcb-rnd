@@ -567,7 +567,7 @@ static void eps_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 static void eps_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 {
 	int i;
-	char *op = "moveto";
+	const char *op = "moveto";
 	use_gc(gc);
 	for (i = 0; i < n_coords; i++) {
 		pcb_fprintf(f, "%mi %mi %s\n", x[i], y[i], op);
