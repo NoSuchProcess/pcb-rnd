@@ -339,7 +339,7 @@ static gboolean command_escape_cb(GtkWidget * widget, GdkEventKey * kev, gpointe
 	   |  conf_hid_gtk.plugins.hid_gtk.use_command_window is FALSE.  The command_combo_box is already
 	   |  packed into the status line label hbox in this case.
 	 */
-gchar *ghid_command_entry_get(gchar * prompt, gchar * command)
+gchar *ghid_command_entry_get(const gchar * prompt, const gchar * command)
 {
 	gchar *s;
 	gint escape_sig_id;

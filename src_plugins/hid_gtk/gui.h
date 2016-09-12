@@ -266,8 +266,8 @@ gint ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfi
 */
 #define		GUI_DIALOG_RESPONSE_ALL	1
 
-gchar *ghid_dialog_file_select_open(gchar * title, gchar ** path, gchar * shortcuts);
-gchar *ghid_dialog_file_select_save(gchar * title, gchar ** path, gchar * file, gchar * shortcuts, const char **formats, int *format);
+gchar *ghid_dialog_file_select_open(const gchar * title, gchar ** path, gchar * shortcuts);
+gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, gchar * file, gchar * shortcuts, const char **formats, int *format);
 void ghid_dialog_message(gchar * message);
 gboolean ghid_dialog_confirm(gchar * message, gchar * cancelmsg, gchar * okmsg);
 int ghid_dialog_close_confirm(void);
@@ -316,7 +316,7 @@ gboolean ghid_mod1_is_pressed(void);
 gboolean ghid_shift_is_pressed(void);
 
 void ghid_draw_area_update(GHidPort * out, GdkRectangle * rect);
-gchar *ghid_get_color_name(GdkColor * color);
+const gchar *ghid_get_color_name(GdkColor * color);
 void ghid_map_color_string(const gchar * color_string, GdkColor * color);
 gchar *ghid_entry_get_text(GtkWidget * entry);
 void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button,
@@ -326,20 +326,20 @@ void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button,
 void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, Coord value,
 											Coord low, Coord high, enum ce_step_size step_size, const Unit *u,
 											gint width, void (*cb_func) (GHidCoordEntry *, gpointer),
-											gpointer data, gchar * string_pre, gchar * string_post);
+											gpointer data, const gchar * string_pre, const gchar * string_post);
 void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button,
 											gfloat value, gfloat low, gfloat high, gfloat step0,
 											gfloat step1, gint digits, gint width,
-											void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, gchar * string);
+											void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string);
 void ghid_table_coord_entry(GtkWidget * table, gint row, gint column,
 														GtkWidget ** coord_entry, Coord value,
 														Coord low, Coord high, enum ce_step_size, gint width,
-														void (*cb_func) (GHidCoordEntry *, gpointer), gpointer data, gboolean right_align, gchar * string);
+														void (*cb_func) (GHidCoordEntry *, gpointer), gpointer data, gboolean right_align, const gchar * string);
 void ghid_table_spin_button(GtkWidget * box, gint row, gint column,
 														GtkWidget ** spin_button, gfloat value,
 														gfloat low, gfloat high, gfloat step0,
 														gfloat step1, gint digits, gint width,
-														void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, gchar * string);
+														void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string);
 
 void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 												gboolean horizontal, GtkPositionType pos,
@@ -386,7 +386,7 @@ void ghid_netlist_highlight_node(const gchar * name);
 /* gui-command-window.c */
 void ghid_handle_user_command(gboolean raise);
 void ghid_command_window_show(gboolean raise);
-gchar *ghid_command_entry_get(gchar * prompt, gchar * command);
+gchar *ghid_command_entry_get(const gchar * prompt, const gchar * command);
 void ghid_command_use_command_window_sync(void);
 
 /* gui-keyref-window.c */

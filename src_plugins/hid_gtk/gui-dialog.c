@@ -226,7 +226,7 @@ gint ghid_dialog_close_confirm()
 
 /* ---------------------------------------------- */
 /* Caller must g_free() the returned filename.*/
-gchar *ghid_dialog_file_select_open(gchar * title, gchar ** path, gchar * shortcuts)
+gchar *ghid_dialog_file_select_open(const gchar * title, gchar ** path, gchar * shortcuts)
 {
 	GtkWidget *dialog;
 	gchar *result = NULL, *folder, *seed;
@@ -313,7 +313,7 @@ gchar *ghid_dialog_file_select_open(gchar * title, gchar ** path, gchar * shortc
 
 /* ---------------------------------------------- */
 /* Caller must g_free() the returned filename. */
-gchar *ghid_dialog_file_select_save(gchar * title, gchar ** path, gchar * file, gchar * shortcuts, const char **formats, int *format)
+gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, gchar * file, gchar * shortcuts, const char **formats, int *format)
 {
 	GtkWidget *dialog, *fmt, *tmp, *fmt_combo;
 	gchar *result = NULL, *folder, *seed;

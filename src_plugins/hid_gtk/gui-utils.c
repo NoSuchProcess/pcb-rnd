@@ -139,7 +139,7 @@ void ghid_draw_area_update(GHidPort * port, GdkRectangle * rect)
 }
 
 
-gchar *ghid_get_color_name(GdkColor * color)
+const gchar *ghid_get_color_name(GdkColor * color)
 {
 	static char tmp[16];
 
@@ -208,7 +208,7 @@ ghid_check_button_connected(GtkWidget * box,
 void
 ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, Coord value,
 								 Coord low, Coord high, enum ce_step_size step_size, const Unit *u,
-								 gint width, void (*cb_func) (GHidCoordEntry *, gpointer), gpointer data, gchar * string_pre, gchar * string_post)
+								 gint width, void (*cb_func) (GHidCoordEntry *, gpointer), gpointer data, const gchar * string_pre, const gchar * string_post)
 {
 	GtkWidget *hbox = NULL, *label, *entry_widget;
 	GHidCoordEntry *entry;
@@ -250,7 +250,7 @@ void
 ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button, gfloat value,
 								 gfloat low, gfloat high, gfloat step0, gfloat step1,
 								 gint digits, gint width,
-								 void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, gchar * string)
+								 void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string)
 {
 	GtkWidget *hbox = NULL, *label, *spin_but;
 	GtkSpinButton *spin;
@@ -293,7 +293,7 @@ ghid_table_coord_entry(GtkWidget * table, gint row, gint column,
 											 GtkWidget ** coord_entry, Coord value,
 											 Coord low, Coord high, enum ce_step_size step_size,
 											 gint width, void (*cb_func) (GHidCoordEntry *, gpointer),
-											 gpointer data, gboolean right_align, gchar * string)
+											 gpointer data, gboolean right_align, const gchar * string)
 {
 	GtkWidget *label, *entry_widget;
 	GHidCoordEntry *entry;
@@ -336,7 +336,7 @@ ghid_table_spin_button(GtkWidget * table, gint row, gint column,
 											 GtkWidget ** spin_button, gfloat value,
 											 gfloat low, gfloat high, gfloat step0, gfloat step1,
 											 gint digits, gint width,
-											 void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, gchar * string)
+											 void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string)
 {
 	GtkWidget *label, *spin_but;
 	GtkSpinButton *spin;
