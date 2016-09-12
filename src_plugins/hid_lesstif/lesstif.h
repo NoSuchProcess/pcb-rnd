@@ -72,7 +72,7 @@ extern void lesstif_attributes_dialog(const char *, AttributeListType *);
  * is necessary, we make this cast even more ugly but unique
  * enough that it is simple to grep.
  */
-inline char* XmStrCast(const char* s) { return (char*)s; }
+#define XmStrCast(s) ((char*)(s))
 
 static XmString XmStringCreatePCB(const char *x)
 {
