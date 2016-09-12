@@ -68,7 +68,7 @@ static void fab_circle(hidGC gc, int x, int y, int r)
 }
 
 /* align is 0=left, 1=center, 2=right, add 8 for underline */
-static void text_at(hidGC gc, int x, int y, int align, char *fmt, ...)
+static void text_at(hidGC gc, int x, int y, int align, const char *fmt, ...)
 {
 	char tmp[512];
 	int w = 0, i;
