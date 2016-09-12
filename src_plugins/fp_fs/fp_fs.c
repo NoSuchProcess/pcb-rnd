@@ -461,7 +461,8 @@ static FILE *fp_fs_fopen(plug_fp_t *ctx, const char *path, const char *name, fp_
 	if (fullname != NULL) {
 /*fprintf(stderr, "fullname=%s param=%d\n",  fullname, fctx->field[F_IS_PARAMETRIC].i);*/
 		if (fctx->field[F_IS_PARAMETRIC].i) {
-			char *cmd, *sep = " ";
+			char *cmd;
+			const char *sep = " ";
 			if (libshell == NULL) {
 				libshell = "";
 				sep = "";
