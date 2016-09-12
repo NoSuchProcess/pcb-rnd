@@ -96,7 +96,7 @@ void ghid_port_ranges_scale(void)
 }
 
 
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  * handles all events from PCB drawing area
  */
 
@@ -440,9 +440,9 @@ gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, GHidPo
 	}
 	ghidgui->in_popup = FALSE;
 
-	/* Following expression is true if a you open a menu from the menu bar, 
-	 * move the mouse to the viewport and click on it. This closes the menu 
-	 * and moves the pointer to the viewport without the pointer going over 
+	/* Following expression is true if a you open a menu from the menu bar,
+	 * move the mouse to the viewport and click on it. This closes the menu
+	 * and moves the pointer to the viewport without the pointer going over
 	 * the edge of the viewport */
 	if (ev->mode == GDK_CROSSING_UNGRAB && ev->detail == GDK_NOTIFY_NONLINEAR) {
 		ghid_screen_update();
@@ -458,7 +458,7 @@ gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev, GHidPo
 	 * X applications occasionally grab the focus and so trigger this function.
 	 * At least GNOME's window manager is known to do this on every mouse click.
 	 *
-	 * See http://bugzilla.gnome.org/show_bug.cgi?id=102209 
+	 * See http://bugzilla.gnome.org/show_bug.cgi?id=102209
 	 */
 
 	if (ev->mode != GDK_CROSSING_NORMAL) {
