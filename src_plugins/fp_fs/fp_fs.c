@@ -75,7 +75,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, fp_type_t
 	if (type == PCB_FP_DIR) {
 		list_dir_t *d;
 		/* can not recurse directly from here because that would ruin the menu
-		   pointer: GetLibraryMenuMemory (&Library) calls realloc()! 
+		   pointer: GetLibraryMenuMemory (&Library) calls realloc()!
 		   Build a list of directories to be visited later, instead. */
 		d = malloc(sizeof(list_dir_t));
 		d->subdir = pcb_strdup(name);
@@ -93,7 +93,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, fp_type_t
 		int sl = strlen(subdir);
 		int nl = strlen(name);
 		char *end;
-		
+
 		end = e->data.fp.loc_info = malloc(sl+nl+3);
 		memcpy(end, subdir, sl); end += sl;
 		*end = '/'; end++;
@@ -327,7 +327,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 
 /* Decide about the type of a footprint file:
    - it is a file element if the first non-comment is "Element(" or "Element["
-   - else it is a parametric element (footprint generator) if it contains 
+   - else it is a parametric element (footprint generator) if it contains
      "@@" "purpose"
    - else it's not an element.
    - if a line of a file element starts with ## and doesn't contain @, it's a tag
