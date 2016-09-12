@@ -175,7 +175,7 @@ static inline void set_layer_list(int layer, int v)
  * print_layer_list() does the opposite - it uses the flags set in
  * layers[] to build a string that represents them, using the syntax
  * above.
- * 
+ *
  */
 
 /* Returns a pointer to the first character past the list. */
@@ -538,4 +538,3 @@ char *flags_to_string(FlagType flags, int object_type)
 {
 	return common_flags_to_string(flags, object_type, pcb_object_flagbits, ENTRIES(pcb_object_flagbits));
 }
-
