@@ -1220,7 +1220,7 @@ static void ps_fill_pcb_polygon(hidGC gc, PolygonType * poly, const BoxType * cl
 
 	VNODE *v;
 	PLINE *pl;
-	char *op;
+	const char *op;
 	int len;
 	double POLYGRID = ps_attribute_list[HA_polygrid].default_val.real_value;
 
