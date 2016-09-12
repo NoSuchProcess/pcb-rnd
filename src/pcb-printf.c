@@ -38,7 +38,7 @@
 
 #include "pcb-printf.h"
 
-const char *pcb_printf_slot[PCB_PRINTF_SLOT_max] = 
+const char *pcb_printf_slot[PCB_PRINTF_SLOT_max] =
 {
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, /* 8 user formats */
 	"%mr",      /* original unitless cmil file format coord */
