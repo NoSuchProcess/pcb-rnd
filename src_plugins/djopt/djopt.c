@@ -170,7 +170,7 @@ static char *corner_name(corner_s * c)
 
 static int solder_layer, component_layer;
 
-static void dj_abort(char *msg, ...)
+static void dj_abort(const char *msg, ...)
 {
 	va_list a;
 	va_start(a, msg);
