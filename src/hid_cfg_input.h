@@ -66,7 +66,7 @@ struct hid_cfg_keyseq_s {
    for shortcuts like "Return -> '\r'" which are otherwise hard to describe
    in text format */
 typedef struct hid_cfg_keytrans_s {
-		char *name;
+		const char *name;
 		char sym;
 } hid_cfg_keytrans_t;
 
