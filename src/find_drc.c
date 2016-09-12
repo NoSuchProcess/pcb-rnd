@@ -188,7 +188,7 @@ static void append_drc_violation(DrcViolationType * violation)
 
 
 /*
- * message when asked about continuing DRC checks after next 
+ * message when asked about continuing DRC checks after next
  * violation is found.
  */
 #define DRC_CONTINUE _("Press Next to continue DRC checking")

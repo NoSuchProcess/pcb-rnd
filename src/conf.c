@@ -3,7 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -194,7 +194,7 @@ void extract_poliprio(lht_node_t *root, conf_policy_t *gpolicy, long *gprio)
 static int conf_parse_increments(Increments *inc, lht_node_t *node)
 {
 	lht_node_t *val;
-	
+
 	if (node->type != LHT_HASH) {
 		hid_cfg_error(node, "Increments need to be a hash\n");
 		return -1;
