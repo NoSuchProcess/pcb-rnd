@@ -1233,10 +1233,10 @@ typedef struct {
 static LgResource lgr;
 
 static XtResource lg_resources[] = {
-	{"font", "Font", XtRFontStruct, sizeof(XFontStruct *), XtOffset(LgResource *, font), XtRString, (void *) "fixed"},
-	{"foreground", "Foreground", XtRPixel, sizeof(Pixel), XtOffset(LgResource *, fg), XtRString, (void *) "black"},
-	{"selectColor", "Foreground", XtRPixel, sizeof(Pixel), XtOffset(LgResource *, sel), XtRString, (void *) "blue"},
-	{"background", "Background", XtRPixel, sizeof(Pixel), XtOffset(LgResource *, bg), XtRString, (void *) "white"}
+	{(char*)"font", (char*)"Font", XtRFontStruct, sizeof(XFontStruct *), XtOffset(LgResource *, font), XtRString, (void *) "fixed"},
+	{(char*)"foreground", (char*)"Foreground", XtRPixel, sizeof(Pixel), XtOffset(LgResource *, fg), XtRString, (void *) "black"},
+	{(char*)"selectColor", (char*)"Foreground", XtRPixel, sizeof(Pixel), XtOffset(LgResource *, sel), XtRString, (void *) "blue"},
+	{(char*)"background", (char*)"Background", XtRPixel, sizeof(Pixel), XtOffset(LgResource *, bg), XtRString, (void *) "white"}
 };
 
 #if 0
