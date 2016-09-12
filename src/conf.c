@@ -1258,7 +1258,7 @@ void conf_parse_arguments(const char *prefix, int *argc, char ***argv)
 	*argc = dst;
 }
 
-void conf_usage(char *prefix, void (*print)(const char *name, const char *help))
+void conf_usage(const char *prefix, void (*print)(const char *name, const char *help))
 {
 	htsp_entry_t *e;
 	int pl = (prefix == NULL ? 0 : strlen(prefix));
