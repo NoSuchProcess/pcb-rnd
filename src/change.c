@@ -858,7 +858,7 @@ static void *ChangeLineClearSize(LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /* ---------------------------------------------------------------------------
- * Handle attepts to change the clearance of a polygon.
+ * Handle attempts to change the clearance of a polygon.
  */
 static void *ChangePolygonClearSize(LayerTypePtr Layer, PolygonTypePtr poly)
 {

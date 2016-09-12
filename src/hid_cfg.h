@@ -75,7 +75,7 @@ typedef enum {
    field name expected in the lihata document (useful for error messages) */
 lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, hid_cfg_menufield_t field, const char **field_name);
 
-/* Return a lihata node usign a relative lihata path from parent - this is
+/* Return a lihata node using a relative lihata path from parent - this is
    just a wrapper around lht_tree_path_ */
 lht_node_t *hid_cfg_menu_field_path(const lht_node_t *parent, const char *path);
 

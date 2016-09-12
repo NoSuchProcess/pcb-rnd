@@ -583,7 +583,7 @@ bool IsPointOnLineEnd(Coord X, Coord Y, RatTypePtr Line)
  *                     L
  *
  * Finally, D1 and D2 are orthogonal, so we can sum them easily
- * by pythagorean theorem.
+ * by Pythagorean theorem.
  */
 bool IsPointOnLine(Coord X, Coord Y, Coord Radius, LineTypePtr Line)
 {
@@ -607,7 +607,7 @@ bool IsPointOnLine(Coord X, Coord Y, Coord Radius, LineTypePtr Line)
 	/* Get distance from (X, Y) to Q */
 	D2 = ((double) (X - Line->Point1.X) * (Line->Point2.Y - Line->Point1.Y)
 				- (double) (Y - Line->Point1.Y) * (Line->Point2.X - Line->Point1.X)) / L;
-	/* Total distance is then the pythagorean sum of these */
+	/* Total distance is then the Pythagorean sum of these */
 	return sqrt(D1 * D1 + D2 * D2) <= Radius + Line->Thickness / 2;
 }
 

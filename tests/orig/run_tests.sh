@@ -178,7 +178,7 @@ top_srcdir=${top_srcdir:-.}
 # so we need to look 3 levels up and then down to src
 PCB=${PCB:-../../../../src/pcb-rnd}
 
-# The gerbv executible 
+# The gerbv executable 
 GERBV=${GERBV:-gerbv}
 GERBV_DEFAULT_FLAGS=${GERBV_DEFAULT_FLAGS:---export=png --window=640x480}
 

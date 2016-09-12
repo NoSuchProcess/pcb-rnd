@@ -35,7 +35,7 @@ This is what is manipulated by the UI and stored in the saved PCB.
 
 A PolygonType also contains a POLYAREA called 'Clipped' which is
 computed dynamically by InitClip every time a board is loaded.  The
-point array is coverted to a POLYAREA by original_poly and then holes
+point array is converted to a POLYAREA by original_poly and then holes
 are cut in it by clearPoly.  After that it is maintained dynamically
 as parts are added, moved or removed (this is why sometimes bugs can
 be fixed by just re-loading the board).
@@ -391,7 +391,7 @@ POLYAREA *OctagonPoly(Coord x, Coord y, Coord radius, int style)
 	return ContourToPoly(contour);
 }
 
-/* add verticies in a fractional-circle starting from v
+/* add vertices in a fractional-circle starting from v
  * centered at X, Y and going counter-clockwise
  * does not include the first point
  * last argument is 1 for a full circle
@@ -762,7 +762,7 @@ POLYAREA *BoxPolyBloated(BoxType * box, Coord bloat)
 	return RectPoly(box->X1 - bloat, box->X2 + bloat, box->Y1 - bloat, box->Y2 + bloat);
 }
 
-/* return the clearence polygon for a pin */
+/* return the clearance polygon for a pin */
 static POLYAREA *pin_clearance_poly(Cardinal layernum, PCBTypePtr pcb, PinType * pin)
 {
 	POLYAREA *np;

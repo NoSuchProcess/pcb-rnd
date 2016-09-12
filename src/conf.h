@@ -35,7 +35,7 @@ typedef struct conf_listitem_s conf_listitem_t;
 
 #include "list_conf.h"
 
-int conf_rev; /* icreased by one each time there's a change in any of the config binaries */
+int conf_rev; /* increased by one each time there's a change in any of the config binaries */
 
 typedef enum {
 	POL_PREPEND,
@@ -104,7 +104,7 @@ typedef struct {
 
 	/* dynamic fields loaded from lihata */
 	confitem_t val;   /* value is always an array (len 1 for the common case)  */
-	confprop_t *prop; /* an array of properies allocated as big as val's array */
+	confprop_t *prop; /* an array of properties allocated as big as val's array */
 	int used;         /* number of items actually used in the arrays */
 	int conf_rev;     /* last changed rev */
 
@@ -117,7 +117,7 @@ typedef struct {
 struct conf_listitem_s {
 	conf_native_type_t type;
 	confitem_t val;   /* value is always an array (len 1 for the common case)  */
-	confprop_t prop; /* an array of properies allocated as big as val's array */
+	confprop_t prop; /* an array of properties allocated as big as val's array */
 	const char *payload;
 	gdl_elem_t link;
 };

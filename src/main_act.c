@@ -75,7 +75,7 @@ static const char printusage_syntax[] =
 	"PrintUsage()\n"
 	"PrintUsage(plugin)";
 
-static const char printusage_help[] = "Print command line aruments of pcb-rnd or a plugin loaded.";
+static const char printusage_help[] = "Print command line arguments of pcb-rnd or a plugin loaded.";
 
 static int help0(void)
 {

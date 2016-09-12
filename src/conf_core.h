@@ -4,7 +4,7 @@
 #include "conf.h"
 
 /* NOTE: this struct has a strict format because a code generator needs to
-   read it. Please always keep the format (preferrably even whitespace style).
+   read it. Please always keep the format (preferably even whitespace style).
    Use only the CFT_* prefixed types declared in conf.h.
    */
 
@@ -64,7 +64,7 @@ typedef struct {
 		   reasons to keep them here:
 		   - the original pcb and pcb-rnd file formats already have named/numbered flags for these, so io_pcb needs these
 		   - more than one router plugin may share these */
-		CFT_BOOLEAN enable_stroke;         /* Enable libstroke gesutres on middle mouse button when non-zero */
+		CFT_BOOLEAN enable_stroke;         /* Enable libstroke gestures on middle mouse button when non-zero */
 		CFT_BOOLEAN live_routing;          /* autorouter shows tracks in progress */
 
 		/* Keep it here instead of the router plugin: more than one router plugin may share these */
@@ -97,7 +97,7 @@ typedef struct {
 
 		CFT_LIST preferred_gui;            /* if set, try GUI HIDs in this order when no GUI is explicitly selected */
 
-		/***** automatically set (in postporc) *****/
+		/***** automatically set (in postproc) *****/
 		CFT_BOOLEAN have_regex;            /* whether we have regex compiled in */
 		struct path {
 			CFT_STRING prefix;               /* e.g. /usr/local */

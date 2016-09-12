@@ -344,7 +344,7 @@ static int fp_read_lib_all_(const char *searchpath)
 	 */
 	libpaths = pcb_strdup(searchpath);
 	for (p = strtok(libpaths, PCB_PATH_DELIMETER); p && *p; p = strtok(NULL, PCB_PATH_DELIMETER)) {
-		/* remove trailing path delimeter */
+		/* remove trailing path delimiter */
 		strncpy(toppath, p, sizeof(toppath) - 1);
 
 #ifdef DEBUG

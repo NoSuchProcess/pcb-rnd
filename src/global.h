@@ -234,7 +234,7 @@ struct LibraryEntryTpye_s {
 	 */
 	const char *Package;	 				/* package */
 	const char *Value;						/* the value field */
-	const char *Description;			/* some descritional text */
+	const char *Description;			/* some descriptive text */
 #if 0
 	fp_type_t Type;
 	void **Tags;									/* an array of void * tag IDs; last tag ID is NULL */

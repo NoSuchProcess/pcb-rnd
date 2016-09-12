@@ -194,7 +194,7 @@ bool SelectObject(void)
  * If len is NULL:
  *  Flag determines if the block is to be selected or unselected
  *  returns non-NULL if the state of any object has changed
- * if len is non-NULLL
+ * if len is non-NULL:
  *  returns a list of object IDs matched the search and loads len with the
  *  length of the list. Returns NULL on no match.
  */

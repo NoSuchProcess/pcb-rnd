@@ -170,7 +170,7 @@ static void InitPaths(char *argv0)
 	}
 
 	if (found_bindir) {
-		/* strip off the executible name leaving only the path */
+		/* strip off the executable name leaving only the path */
 		t2 = NULL;
 		t1 = strchr(bindir, PCB_DIR_SEPARATOR_C);
 		while (t1 != NULL && *t1 != '\0') {

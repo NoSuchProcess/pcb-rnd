@@ -78,7 +78,7 @@ static void do_trunc0(char *str)
 
 /* \brief Internal coord-to-string converter for pcb-printf
  * \par Function Description
- * Converts a (group of) measurement(s) to a comma-deliminated
+ * Converts a (group of) measurement(s) to a comma-delimited
  * string, with appropriate units. If more than one coord is
  * given, the list is enclosed in parens to make the scope of
  * the unit suffix clear.
@@ -178,7 +178,7 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 	for (i = 0; i < n_coords; ++i)
 		value[i] = value[i] * Units[n].scale_factor;
 
-	/* Create sprintf specifier, using default_prec no preciscion is given */
+	/* Create sprintf specifier, using default_prec no precision is given */
 	i = 0;
 	while (printf_spec[i] == '%' || isdigit(printf_spec[i]) ||
 				 printf_spec[i] == '-' || printf_spec[i] == '+' || printf_spec[i] == '#' || printf_spec[i] == '0')
@@ -399,7 +399,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				break;
 			case 'n':
 				/* Depending on gcc settings, this will probably break with
-				 *  some silly "can't put %n in writeable data space" message */
+				 *  some silly "can't put %n in writable data space" message */
 				tmplen = sprintf(tmp, spec.array, va_arg(args, int *));
 				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;

@@ -300,7 +300,7 @@ static const char changepaste_help[] = "Changes the no paste flag of objects.";
 /* %start-doc actions ChangePaste
 
 The "no paste flag" of a pad determines whether the solderpaste
- stencil will have an opening for the pad (no set) or if there wil be
+ stencil will have an opening for the pad (no set) or if there will be
  no solderpaste on the pad (set).  This is used for things such as
  fiducial pads.
 

@@ -51,7 +51,7 @@
 		}											\
 	}
 
-/* Rotate pin shape style by n_in * 90 degress */
+/* Rotate pin shape style by n_in * 90 degrees */
 #define PIN_ROTATE(p,n_in) \
 do { \
 	int _n_; \

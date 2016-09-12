@@ -112,7 +112,7 @@ static void XORPolygon(PolygonTypePtr polygon, Coord dx, Coord dy, int dash_last
 		Cardinal next = next_contour_point(polygon, i);
 
 		if (next == 0) { /* last line: sometimes the implicit closing line */
-			if (i == 1) /* corner case: don't draw two lines on top of eachother - with XOR it looks bad */
+			if (i == 1) /* corner case: don't draw two lines on top of each other - with XOR it looks bad */
 				continue;
 
 			if (dash_last) {
@@ -774,7 +774,7 @@ void DrawLineOrArc(int type, void *obj)
 	case PCB_TYPE_LINE_POINT:
 		/* Attention: We can use a NULL pointer here for the layer,
 		 * because it is not used in the DrawLine() function anyways.
-		 * ATM DrawLine() only alls AddPart() internally, which invalidates
+		 * ATM DrawLine() only calls AddPart() internally, which invalidates
 		 * the area specified by the line's bounding box.
 		 */
 		DrawLine(NULL, (LineType *) obj);
@@ -822,7 +822,7 @@ static void onpoint_work(CrosshairType * crosshair, Coord X, Coord Y)
 
 	op_swap(crosshair);
 	
-	/* Do not truncate to 0 becuase that may free the array */
+	/* Do not truncate to 0 because that may free the array */
 	vtop_truncate(&crosshair->onpoint_objs, 1);
 	crosshair->onpoint_objs.used = 0;
 

@@ -51,7 +51,7 @@ typedef struct {
 /*#define GVT_ELEM_CONSTRUCTOR */
 
 /* Enable GVT_ELEM_DESTRUCTOR and an user configured function is called
-   for each element that was once constructed and now getting beyong ->used.
+   for each element that was once constructed and now getting beyond ->used.
    See vt_construction(7) */
 /*#define GVT_ELEM_DESTRUCTOR */
 

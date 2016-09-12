@@ -431,7 +431,7 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 			}
 /*printf("   didx: %d / %d '%s'\n", didx, dest->array_size, s->data.text.value);*/
 			if (didx >= dest->array_size) {
-				hid_cfg_error(s, "Array is already full [%d] of [%d] ingored value: '%s' policy=%d\n", dest->used, dest->array_size, s->data.text.value, pol);
+				hid_cfg_error(s, "Array is already full [%d] of [%d] ignored value: '%s' policy=%d\n", dest->used, dest->array_size, s->data.text.value, pol);
 				res = -1;
 				break;
 			}
@@ -1424,7 +1424,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 					f = fopen(efn, "w");
 				}
 				else
-					Message(PCB_MSG_DEFAULT, "Error: failed to creat directory %s for saving %s\n", path, efn);
+					Message(PCB_MSG_DEFAULT, "Error: failed to create directory %s for saving %s\n", path, efn);
 			}
 			free(path);
 		}

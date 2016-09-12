@@ -8,7 +8,7 @@
 
 #warning TODO: move these in the big split
 
-/* compare two strings and return 0 if they are equal. NULL == NULL meanms equal. */
+/* compare two strings and return 0 if they are equal. NULL == NULL means equal. */
 static int neqs(const char *s1, const char *s2)
 {
 	if ((s1 == NULL) && (s2 == NULL)) return 0;

@@ -152,7 +152,7 @@ extern int mem_any_set(unsigned char *, int);
  * a pointer is created from index addressing because the base pointer
  * may change when new memory is allocated;
  *
- * all data is relativ to an objects name 'top' which can be either
+ * all data is relative to an objects name 'top' which can be either
  * PCB or PasteBuffer
  */
 #define END_LOOP  }} while (0)

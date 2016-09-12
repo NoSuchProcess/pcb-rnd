@@ -2,7 +2,7 @@
    by (growing) buffers allocated in static variables in functions. The
    library provides leaky_ prefixed variants of the common allocation
    routines. These wrappers will remember all pointers they return and
-   can free all memory used, at the end of the applocation.
+   can free all memory used, at the end of the application.
 */
 
 #include <stdlib.h>

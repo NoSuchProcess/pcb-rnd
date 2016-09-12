@@ -1209,7 +1209,7 @@ int get_style_size(int funcid, Coord * out, int type, int size_id)
 		case PCB_TYPE_ARC:
 			return get_style_size(F_SelectedArcs, out, 0, size_id);
 		}
-		Message(PCB_MSG_DEFAULT, _("Sorry, can't fetch the style of that object tpye (%x)\n"), type);
+		Message(PCB_MSG_DEFAULT, _("Sorry, can't fetch the style of that object type (%x)\n"), type);
 		return -1;
 	case F_SelectedPads:
 		if (size_id != 2)						/* don't mess with pad size */

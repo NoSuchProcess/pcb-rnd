@@ -83,12 +83,12 @@ static void plug_io_err(int res, const char *what, const char *filename)
 		const char *reason = "", *comment = "";
 		if (plug_io_chain != NULL) {
 			if (filename == NULL) {
-				reason = "none of io plugins could succesfully write the file";
+				reason = "none of io plugins could successfully write the file";
 				filename = "";
 			}
 			else {
 				FILE *f;
-				reason = "none of io plugins could succesfully read file";
+				reason = "none of io plugins could successfully read file";
 				f = fopen(filename, "r");
 				if (f != NULL) {
 					fclose(f);

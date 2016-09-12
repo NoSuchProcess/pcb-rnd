@@ -54,7 +54,7 @@ static hid_cfg_mod_t parse_mods(const char *value, const char **last, unsigned i
 		else if ((vlen >= 7) && (strncasecmp(value, "release", 7) == 0)) m |= M_Release;
 		else if ((vlen >= 5) && (strncasecmp(value, "press", 5) == 0))   press = 1;
 		else
-			Message(PCB_MSG_DEFAULT, "Unkown modifier: %s\n", value);
+			Message(PCB_MSG_DEFAULT, "Unknown modifier: %s\n", value);
 		/* skip to next word */
 		next = strpbrk(value, "<- \t");
 		if (next == NULL)

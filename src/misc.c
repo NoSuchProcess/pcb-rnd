@@ -700,7 +700,7 @@ void QuitApplication(void)
 {
 	/*
 	 * save data if necessary.  It not needed, then don't trigger EmergencySave
-	 * via our atexit() registering of EmergencySave().  We presumeably wanted to
+	 * via our atexit() registering of EmergencySave().  We presumably wanted to
 	 * exit here and thus it is not an emergency.
 	 */
 	if (PCB->Changed && conf_core.editor.save_in_tmp)
@@ -836,7 +836,7 @@ void SetArcBoundingBox(ArcTypePtr Arc)
 	if ((ang1 <= 270 && ang2 >= 270) || (ang1 <= 630 && ang2 >= 630))
 		miny = -1;
 
-	/* Finally, calcate bounds, converting sane geometry into pcb geometry */
+	/* Finally, calculate bounds, converting sane geometry into pcb geometry */
 	Arc->BoundingBox.X1 = Arc->X - Arc->Width * maxx;
 	Arc->BoundingBox.X2 = Arc->X - Arc->Width * minx;
 	Arc->BoundingBox.Y1 = Arc->Y + Arc->Height * miny;

@@ -109,7 +109,7 @@
 
 /**** Font ***/
 /* These are used in debug draw font rendering (e.g. pin names) and reverse
-   scale calcualtions (e.g. when report is trying to figure how the font
+   scale calculations (e.g. when report is trying to figure how the font
    is scaled. Changing these values is not really supported. */
 #define  FONT_CAPHEIGHT    PCB_MIL_TO_COORD (45)   /* (Approximate) capheight size of the default PCB font */
 #define  DEFAULT_CELLSIZE  50                  /* default cell size for symbols */

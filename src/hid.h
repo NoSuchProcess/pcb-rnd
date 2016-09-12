@@ -28,7 +28,7 @@ layers.
 The main structure is at the end of this file.
 
 Data structures passed to the HIDs will be copied if the HID needs to
-save them.  Data structures retured from the HIDs must not be freed,
+save them.  Data structures returned from the HIDs must not be freed,
 and may be changed by the HID in response to new information.
 
 */
@@ -444,7 +444,7 @@ struct hid_st {
 	 * but they do not have to be functional. request_debug_draw can
 	 * return NULL to indicate debug drawing is not permitted.
 	 *
-	 * Debug drawing is not gauranteed to be re-entrant.
+	 * Debug drawing is not guaranteed to be re-entrant.
 	 * The caller must not nest requests for debug drawing.
 	 */
 

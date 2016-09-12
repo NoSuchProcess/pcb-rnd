@@ -1072,7 +1072,7 @@ static void set_same_(Coord Thick, Coord Diameter, Coord Hole, Coord Clearance, 
 	int known;
 	known = pcb_route_style_lookup(&PCB->RouteStyle, Thick, Diameter, Hole, Clearance, Name);
 	if (known < 0) {
-		/* unkown style, set properties */
+		/* unknown style, set properties */
 		if (Thick != 0)     { pcb_custom_route_style.Thick     = Thick;     conf_set_design("design/line_thickness", "%$mS", Thick); }
 		if (Clearance != 0) { pcb_custom_route_style.Clearance = Clearance; conf_set_design("design/clearance", "%$mS", Clearance); }
 		if (Diameter != 0)  { pcb_custom_route_style.Diameter  = Diameter;  conf_set_design("design/via_thickness", "%$mS", Diameter); }

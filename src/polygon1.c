@@ -107,7 +107,7 @@ int vect_inters2(Vector A, Vector B, Vector C, Vector D, Vector S1, Vector S2);
 #endif
 
 /* ///////////////////////////////////////////////////////////////////////////// * /
-/ *  2-Dimentional stuff
+/ *  2-Dimensional stuff
 / * ///////////////////////////////////////////////////////////////////////////// */
 
 #define Vsub2(r,a,b)	{(r)[0] = (a)[0] - (b)[0]; (r)[1] = (a)[1] - (b)[1];}
@@ -538,7 +538,7 @@ static r_dir_t seg_in_region(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;											/* might intersect */
 }
 
-/* Prepend a deferred node-insersion task to a list */
+/* Prepend a deferred node-insertion task to a list */
 static insert_node_task *prepend_insert_node_task(insert_node_task * list, seg * seg, VNODE * new_node)
 {
 	insert_node_task *task = (insert_node_task *) malloc(sizeof(*task));
@@ -601,7 +601,7 @@ static r_dir_t seg_in_seg(const BoxType * b, void *cl)
 			s->intersected = 1;
 			return R_DIR_NOT_FOUND;									/* Keep looking for intersections with segment "i" */
 		}
-		/* Skip any remaining r_search hits against segment i, as any futher
+		/* Skip any remaining r_search hits against segment i, as any further
 		 * intersections will be rejected until the next pass anyway.
 		 */
 		if (done_insert_on_i)
@@ -661,10 +661,10 @@ static r_dir_t get_seg(const BoxType * b, void *cl)
  * added, the search for intersections is re-started because the rounding
  * could alter the topology otherwise. 
  * This should use a faster algorithm for snap rounding intersection finding.
- * The best algorthim is probably found in:
+ * The best algorithm is probably found in:
  *
  * "Improved output-sensitive snap rounding," John Hershberger, Proceedings
- * of the 22nd annual symposium on Computational geomerty, 2006, pp 357-366.
+ * of the 22nd annual symposium on Computational geometry, 2006, pp 357-366.
  * http://doi.acm.org/10.1145/1137856.1137909
  *
  * Algorithms described by de Berg, or Goodrich or Halperin, or Hobby would
@@ -795,12 +795,12 @@ static int intersect_impl(jmp_buf * jb, POLYAREA * b, POLYAREA * a, int add)
 			need_restart = 1;
 	}
 
-	/* Process any deferred node insersions */
+	/* Process any deferred node insertions */
 	task = c_info.node_insert_list;
 	while (task != NULL) {
 		insert_node_task *next = task->next;
 
-		/* Do insersion */
+		/* Do insertion */
 		task->new_node->prev = task->node_seg->v;
 		task->new_node->next = task->node_seg->v->next;
 		task->node_seg->v->next->prev = task->new_node;
@@ -902,7 +902,7 @@ static int cntr_in_M_POLYAREA(PLINE * poly, POLYAREA * outfst, BOOLp test)
 	/* if checking touching, use only the first polygon */
 	while (!test && (outer = outer->f) != outfst);
 	/* we need only check the smallest poly container
-	 * but we must loop in case the box containter is not
+	 * but we must loop in case the box container is not
 	 * the poly container */
 	do {
 		int cnt;
@@ -1493,7 +1493,7 @@ static void Collect1(jmp_buf * e, VNODE * cur, DIRECTION dir, POLYAREA ** contou
 	poly_PreContour(p, TRUE);
 	if (p->Count > 2) {
 #ifdef DEBUG_GATHER
-		DEBUGP("adding contour with %d verticies and direction %c\n", p->Count, p->Flags.orient ? 'F' : 'B');
+		DEBUGP("adding contour with %d vertices and direction %c\n", p->Count, p->Flags.orient ? 'F' : 'B');
 #endif
 		PutContour(e, p, contours, holes, NULL, NULL, NULL);
 	}
@@ -2652,7 +2652,7 @@ static int point_in_triangle(Vector A, Vector B, Vector C, Vector P)
 
 
 /* Returns the dot product of Vector A->B, and a vector
- * orthogonal to Vector C->D. The result is not normalisd, so will be
+ * orthogonal to Vector C->D. The result is not normalised, so will be
  * weighted by the magnitude of the C->D vector.
  */
 static double dot_orthogonal_to_direction(Vector A, Vector B, Vector C, Vector D)
@@ -2743,7 +2743,7 @@ static void poly_ComputeInteriorPoint(PLINE * poly, Vector v)
 /* NB: This function assumes the caller _knows_ the contours do not
  *     intersect. If the contours intersect, the result is undefined.
  *     It will return the correct result if the two contours share
- *     common points beteween their contours. (Identical contours
+ *     common points between their contours. (Identical contours
  *     are treated as being inside each other).
  */
 int poly_ContourInContour(PLINE * poly, PLINE * inner)
@@ -3173,7 +3173,7 @@ int vect_inters2(Vector p1, Vector p2, Vector q1, Vector q2, Vector S1, Vector S
  * The intersections of the two circles centered at the vertex points
  * would determine the two possible arc centers. If P2.x > P1.x then
  * the center with smaller Y is selected for positive r. If P2.y > P1.y
- * then the center with greate X is selected for positive r.
+ * then the center with greater X is selected for positive r.
  *
  * the vec_inters2() routine would then need to handle line-line
  * line-arc and arc-arc intersections.

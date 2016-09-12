@@ -42,6 +42,6 @@ int funchash_set_table(funchash_table_t *table, int numelem, const char *cookie)
 /* Remove all keys inserted for a cookie */
 void funchash_remove_cookie(const char *cookie);
 
-/* Init-ununit the hash */
+/* Init-uninit the hash */
 void funchash_init(void);
 void funchash_uninit(void);

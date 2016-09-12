@@ -19,7 +19,7 @@ BEGIN {
 
 	if (!(args ~ "pad_thickness=")) {
 		if (!(pitch in PT))
-			error("Unkown pitch, should be one of:" parri(PT))
+			error("Unknown pitch, should be one of:" parri(PT))
 		pt = PT[pitch]
 	}
 	else

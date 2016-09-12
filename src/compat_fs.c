@@ -123,7 +123,7 @@ int pcb_spawnvp(const char **argv)
 
 /*
  * Creates a new temporary file name.  Hopefully the operating system
- * provides a mkdtemp() function to securily create a temporary
+ * provides a mkdtemp() function to securely create a temporary
  * directory with mode 0700.  If so then that directory is created and
  * the returned string is made up of the directory plus the name
  * variable.  For example:
@@ -220,7 +220,7 @@ char *tempfile_name_new(const char *name)
 int tempfile_unlink(char *name)
 {
 #ifdef DEBUG
-	/* SDB says:  Want to keep old temp files for examiniation when debugging */
+	/* SDB says:  Want to keep old temp files for examination when debugging */
 	return 0;
 #endif
 

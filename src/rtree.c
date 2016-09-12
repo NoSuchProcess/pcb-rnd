@@ -922,7 +922,7 @@ bool __r_delete(struct rtree_node *node, const BoxType * query)
 					return (__r_delete(node->parent, &node->box));
 				}
 				else
-					/* propegate boundary adjust upward */
+					/* propagate boundary adjust upward */
 					while (node) {
 						adjust_bounds(node);
 						node = node->parent;
