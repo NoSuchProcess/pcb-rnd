@@ -152,7 +152,7 @@ static const char *c_dtostr(double d)
 /* ---------------------------------------------------------------------------
  * writes out an attribute list
  */
-static void WriteAttributeList(FILE * FP, AttributeListTypePtr list, char *prefix)
+static void WriteAttributeList(FILE * FP, AttributeListTypePtr list, const char *prefix)
 {
 	int i;
 
