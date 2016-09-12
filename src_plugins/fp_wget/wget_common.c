@@ -22,7 +22,8 @@ static int mkdirp(const char *dir)
 
 int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, fp_get_mode mode)
 {
-	char *cmd, *upds;
+	char *cmd;
+	const char *upds;
 	int wl = strlen(wget_cmd), ul = strlen(url), cl = strlen(cache_path);
 	cmd = malloc(wl+ul*2+cl+32);
 
