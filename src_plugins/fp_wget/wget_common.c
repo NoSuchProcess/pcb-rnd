@@ -99,4 +99,3 @@ int fp_wget_close(FILE **f, int *fctx)
 
 	return -1;
 }
-
