@@ -1054,7 +1054,7 @@ static r_dir_t text_callback(const BoxType * b, void *cl)
 void DrawLayer(LayerTypePtr Layer, const BoxType * screen)
 {
 	struct poly_info info;
-	
+
 	info.drawn_area = screen;
 	info.layer = Layer;
 
