@@ -897,7 +897,7 @@ static void attributes_delete_callback(GtkWidget * w, void *v)
 	ghid_attr_set_table_size();
 }
 
-static void ghid_attributes(char *owner, AttributeListType * attrs)
+static void ghid_attributes(const char *owner, AttributeListType * attrs)
 {
 	GtkWidget *content_area;
 	int response;

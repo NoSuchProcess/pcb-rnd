@@ -56,7 +56,7 @@ extern void lesstif_update_status_line();
 extern char *lesstif_prompt_for(const char *, const char *);
 extern char *lesstif_fileselect(const char *, const char *, const char *, const char *, const char *, int);
 extern void lesstif_log(const char *fmt, ...);
-extern void lesstif_attributes_dialog(char *, AttributeListType *);
+extern void lesstif_attributes_dialog(const char *, AttributeListType *);
 
 #ifndef XtRPCBCoord
 #define XtRPCBCoord	"PCBCoord"
