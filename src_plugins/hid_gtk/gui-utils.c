@@ -596,7 +596,7 @@ void ghid_label_set_markup(GtkWidget * label, const gchar * text)
 }
 
 
-static void text_view_append(GtkWidget * view, gchar * s)
+static void text_view_append(GtkWidget * view, const gchar * s)
 {
 	GtkTextIter iter;
 	GtkTextBuffer *buffer;
@@ -630,10 +630,10 @@ static void text_view_append(GtkWidget * view, gchar * s)
 	gtk_text_buffer_delete_mark(buffer, mark);
 }
 
-void ghid_text_view_append(GtkWidget * view, gchar * string)
+void ghid_text_view_append(GtkWidget * view, const gchar * string)
 {
 	static gchar *tag;
-	gchar *s;
+	const gchar *s;
 
 	s = string;
 	if (*s == '<' && ((*(s + 2) == '>' && !*(s + 3)) || (*(s + 3) == '>' && !*(s + 4)))) {
@@ -642,9 +642,10 @@ void ghid_text_view_append(GtkWidget * view, gchar * string)
 	}
 
 	if (tag) {
-		s = g_strconcat(tag, string, NULL);
-		text_view_append(view, s);
-		g_free(s);
+		char *concatenation;
+		concatenation = g_strconcat(tag, string, NULL);
+		text_view_append(view, concatenation);
+		g_free(concatenation);
 		g_free(tag);
 		tag = NULL;
 	}
@@ -652,10 +653,10 @@ void ghid_text_view_append(GtkWidget * view, gchar * string)
 		text_view_append(view, string);
 }
 
-void ghid_text_view_append_strings(GtkWidget * view, gchar ** string, gint n_strings)
+void ghid_text_view_append_strings(GtkWidget * view, const gchar ** string, gint n_strings)
 {
 	gchar *tag = NULL;
-	gchar *s, *t;
+	const gchar *s;
 	gint i;
 
 	for (i = 0; i < n_strings; ++i) {
@@ -671,9 +672,10 @@ void ghid_text_view_append_strings(GtkWidget * view, gchar ** string, gint n_str
 		s = string[i];
 #endif
 		if (tag) {
-			t = g_strconcat(tag, s, NULL);
-			text_view_append(view, t);
-			g_free(t);
+			char *concatenation;
+			concatenation = g_strconcat(tag, s, NULL);
+			text_view_append(view, concatenation);
+			g_free(concatenation);
 			g_free(tag);
 			tag = NULL;
 		}

@@ -358,8 +358,8 @@ GtkWidget *ghid_notebook_page(GtkWidget * tabs, char *name, gint pad, gint borde
 GtkWidget *ghid_framed_notebook_page(GtkWidget * tabs, char *name,
 																		 gint border, gint frame_border, gint vbox_pad, gint vbox_border);
 GtkWidget *ghid_scrolled_text_view(GtkWidget * box, GtkWidget ** scr, GtkPolicyType h_policy, GtkPolicyType v_policy);
-void ghid_text_view_append(GtkWidget * view, gchar * string);
-void ghid_text_view_append_strings(GtkWidget * view, gchar ** string, gint n_strings);
+void ghid_text_view_append(GtkWidget * view, const gchar * string);
+void ghid_text_view_append_strings(GtkWidget * view, const gchar ** string, gint n_strings);
 GtkTreeSelection *ghid_scrolled_selection(GtkTreeView * treeview,
 																					GtkWidget * box,
 																					GtkSelectionMode s_mode,
