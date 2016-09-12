@@ -207,7 +207,7 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 	   |  conf_hid_gtk.plugins.hid_gtk.use_command_window is TRUE, the command_combo_box will live
 	   |  in a command window vbox or float if the command window is not up.
 	   |  But if conf_hid_gtk.plugins.hid_gtk.use_command_window is FALSE, the command_combo_box
-	   |  will live in the status_line_hbox either shown or hidden. 
+	   |  will live in the status_line_hbox either shown or hidden.
 	   |  Since it's never destroyed, the combo history strings never need
 	   |  rebuilding and history is maintained if the combo box location is moved.
 	 */
