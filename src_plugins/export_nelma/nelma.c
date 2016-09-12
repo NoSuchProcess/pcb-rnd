@@ -297,7 +297,7 @@ static void nelma_write_space(FILE * out)
 }
 
 
-static void nelma_write_material(FILE * out, char *name, char *type, double e)
+static void nelma_write_material(FILE * out, const char *name, const char *type, double e)
 {
 	fprintf(out, "material %s {\n", name);
 	fprintf(out, "\ttype = \"%s\"\n", type);
@@ -360,7 +360,7 @@ static void nelma_write_nets(FILE * out)
 	}
 }
 
-static void nelma_write_layer(FILE * out, int z, int h, const char *name, int full, char *mat)
+static void nelma_write_layer(FILE * out, int z, int h, const char *name, int full, const char *mat)
 {
 	LibraryType netlist;
 	LibraryMenuTypePtr net;
