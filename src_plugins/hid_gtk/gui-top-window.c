@@ -184,7 +184,7 @@ static void show_file_modified_externally_prompt(void)
 	GtkWidget *label;
 	GtkWidget *content_area;
 	char *file_path_utf8;
-	char *secondary_text;
+	const char *secondary_text;
 	char *markup;
 
 	close_file_modified_externally_prompt();

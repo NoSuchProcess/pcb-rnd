@@ -361,7 +361,7 @@ void ghid_get_pointer(int *x, int *y)
  */
 void ghid_set_status_line_label(void)
 {
-	gchar *flag = conf_core.editor.all_direction_lines
+	const gchar *flag = conf_core.editor.all_direction_lines
 	    ? "all" : (PCB->Clipping == 0 ? "45" : (PCB->Clipping == 1 ? "45_/" : "45\\_"));
 	    char *text = pcb_strdup_printf(_("%m+<b>view</b>=%s  "
 	        "<b>grid</b>=%$mS  "

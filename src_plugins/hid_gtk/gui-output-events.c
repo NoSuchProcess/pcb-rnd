@@ -297,7 +297,7 @@ static char *describe_location(Coord X, Coord Y)
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 	int Range = 0;
-	char *elename = "";
+	const char *elename = "";
 	char *pinname;
 	char *netname = NULL;
 	char *description;
