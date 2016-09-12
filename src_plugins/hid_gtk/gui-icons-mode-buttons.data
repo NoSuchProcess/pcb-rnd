@@ -23,7 +23,7 @@
  */
 
 /* XPM */
-static char *arc[] = {
+static const char *arc[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 4 1",
 "  c black",
@@ -56,7 +56,7 @@ static char *arc[] = {
 
 
 /* XPM */
-static char *buf[] = {
+static const char *buf[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 4 1",
 "  c black",
@@ -89,7 +89,7 @@ static char *buf[] = {
 
 
 /* XPM */
-static char *del[] = {
+static const char *del[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 3 1",
 "  c black",
@@ -121,7 +121,7 @@ static char *del[] = {
 
 
 /* XPM */
-static char *ins[] = {
+static const char *ins[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 4 1",
 "  c black",
@@ -154,7 +154,7 @@ static char *ins[] = {
 
 
 /* XPM */
-static char *line[] = {
+static const char *line[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 5 1",
 "  c black",
@@ -188,7 +188,7 @@ static char *line[] = {
 
 
 /* XPM */
-static char *lock[] = {
+static const char *lock[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 3 1",
 "  c black",
@@ -220,7 +220,7 @@ static char *lock[] = {
 
 #if 0
 /* XPM */
-static char *pan[] = {
+static const char *pan[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 3 1",
 "  c black",
@@ -252,7 +252,7 @@ static char *pan[] = {
 
 #endif
 /* XPM */
-static char *poly[] = {
+static const char *poly[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 4 1",
 "  c black",
@@ -284,7 +284,7 @@ static char *poly[] = {
 };
 
 /* XPM */
-static char * polyhole[] = {
+static const char * polyhole[] = {
 "21 21 3 1",
 " 	c None",
 ".	c #6EA5D7",
@@ -313,7 +313,7 @@ static char * polyhole[] = {
 };
 
 /* XPM */
-static char *rect[] = {
+static const char *rect[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 4 1",
 "  c black",
@@ -346,7 +346,7 @@ static char *rect[] = {
 
 
 /* XPM */
-static char *rot[] = {
+static const char *rot[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 4 1",
 "  c black",
@@ -379,7 +379,7 @@ static char *rot[] = {
 
 
 /* XPM */
-static char *sel[] = {
+static const char *sel[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 4 1",
 "  c black",
@@ -412,7 +412,7 @@ static char *sel[] = {
 
 
 /* XPM */
-static char *text[] = {
+static const char *text[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 4 1",
 "  c black",
@@ -445,7 +445,7 @@ static char *text[] = {
 
 
 /* XPM */
-static char *thrm[] = {
+static const char *thrm[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 4 1",
 "  c black",
@@ -478,7 +478,7 @@ static char *thrm[] = {
 
 
 /* XPM */
-static char *via[] = {
+static const char *via[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 4 1",
 "  c black",

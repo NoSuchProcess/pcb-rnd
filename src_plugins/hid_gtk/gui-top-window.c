@@ -749,9 +749,9 @@ typedef struct {
 	GtkWidget *toolbar_button;
 	guint button_cb_id;
 	guint toolbar_button_cb_id;
-	gchar *name;
+	const gchar *name;
 	gint mode;
-	gchar **xpm;
+	const gchar **xpm;
 } ModeButton;
 
 
