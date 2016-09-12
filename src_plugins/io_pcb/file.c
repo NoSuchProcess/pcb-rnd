@@ -179,7 +179,7 @@ static void conf_update_pcb_flag(FlagType *dest, const char *hash_path, int binf
 	struct {
 		FlagType Flags;
 	} *tmp = (void *)dest;
-	
+
 	if ((n == NULL) || (n->type != CFN_BOOLEAN) || (n->used < 0) || (!n->val.boolean[0]))
 		CLEAR_FLAG(binflag, tmp);
 	else
@@ -205,7 +205,7 @@ static void WritePCBDataHeader(FILE * FP)
 	 * If the file format is modified in any way, update
 	 * PCB_FILE_VERSION in file.h as well as PCBFileVersionNeeded()
 	 * at the top of this file.
-	 *  
+	 *
 	 * ************************** README *******************
 	 * ************************** README *******************
 	 */
