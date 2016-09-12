@@ -79,7 +79,7 @@ static int hash(char *cp)
 	return h;
 }
 
-static char *value_names[] = {
+static const char *value_names[] = {
 	"Thickness", "Diameter", "Hole", "Clearance"
 };
 
@@ -185,7 +185,7 @@ static Widget style_value(int i)
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNalignment, XmALIGNMENT_END);
-	l = XmCreateLabel(value_labels, value_names[i], stdarg_args, stdarg_n);
+	l = XmCreateLabel(value_labels, XmStrCast(value_names[i]), stdarg_args, stdarg_n);
 	XtManageChild(l);
 
 	stdarg_n = 0;
@@ -196,7 +196,7 @@ static Widget style_value(int i)
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNcolumns, 8);
-	w = XmCreateTextField(value_texts, value_names[i], stdarg_args, stdarg_n);
+	w = XmCreateTextField(value_texts, XmStrCast(value_names[i]), stdarg_args, stdarg_n);
 	XtAddCallback(w, XmNvalueChangedCallback, (XtCallbackProc) style_value_cb, (XtPointer) (size_t) i);
 	XtManageChild(w);
 
@@ -208,7 +208,7 @@ static Widget style_value(int i)
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNlabelString, ustr);
-	units_pb[i] = XmCreatePushButton(units_form, value_names[i], stdarg_args, stdarg_n);
+	units_pb[i] = XmCreatePushButton(units_form, XmStrCast(value_names[i]), stdarg_args, stdarg_n);
 	XtAddCallback(units_pb[i], XmNactivateCallback, (XtCallbackProc) units_cb, (XtPointer) (size_t) i);
 	XtManageChild(units_pb[i]);
 
