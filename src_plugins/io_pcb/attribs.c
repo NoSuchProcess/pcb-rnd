@@ -42,7 +42,7 @@ static int path_ok(const char *path)
 	return 1;
 }
 
-static void c2a(PCBType *pcb, lht_node_t *tree, char *path1)
+static void c2a(PCBType *pcb, lht_node_t *tree, const char *path1)
 {
 	lht_dom_iterator_t it;
 	lht_node_t *n;
