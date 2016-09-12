@@ -2273,7 +2273,8 @@ static void mark_delta_to_widget(Coord dx, Coord dy, Widget w)
 static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
 {
 	int this_state = prev_state;
-	char *buf, *empty = "";
+	char *buf = NULL;
+	const char *msg = "";
 	double g = coord_to_unit(conf_core.editor.grid_unit, PCB->Grid);
 	XmString ms;
 	int prec;
@@ -2289,24 +2290,23 @@ static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
 		this_state = -conf_core.editor.grid_unit->allow;
 	}
 
-	if (x < 0)
-		buf = empty;
-	else
+	if (x >= 0) {
 		buf = pcb_strdup_printf("%m+%.*mS, %.*mS", UUNIT, prec, x, prec, y);
+		msg = buf;
+	}
 
-	ms = XmStringCreatePCB(buf);
+	ms = XmStringCreatePCB(msg);
 	stdarg_n = 0;
 	stdarg(XmNlabelString, ms);
 	XtSetValues(w, stdarg_args, stdarg_n);
-	if (buf != empty)
-		free(buf);
+	free(buf);
 	return this_state;
 }
 
 void lesstif_update_status_line()
 {
-	char *empty = "";
-	char *buf = empty;
+	const char *msg = "";
+	char *buf = NULL;
 	const char *s45 = cur_clip();
 	XmString xs;
 
@@ -2331,8 +2331,6 @@ void lesstif_update_status_line()
 	case PCB_MODE_RUBBERBAND_MOVE:
 		if (s45 != NULL)
 			buf = pcb_strdup(s45);
-		else
-			buf = empty;
 		break;
 	case PCB_MODE_NO:
 	case PCB_MODE_PASTE_BUFFER:
@@ -2342,16 +2340,17 @@ void lesstif_update_status_line()
 	case PCB_MODE_ARROW:
 	case PCB_MODE_LOCK:
 	default:
-		buf = empty;
 		break;
 	}
 
-	xs = XmStringCreatePCB(buf);
+	if (buf != NULL) {
+		msg = buf;
+	}
+	xs = XmStringCreatePCB(msg);
 	stdarg_n = 0;
 	stdarg(XmNlabelString, xs);
 	XtSetValues(m_status, stdarg_args, stdarg_n);
-	if (buf != empty)
-		free(buf);
+	free(buf);
 }
 
 static int idle_proc_set = 0;
