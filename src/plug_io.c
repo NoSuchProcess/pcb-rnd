@@ -80,7 +80,7 @@ plug_io_t *plug_io_chain = NULL;
 static void plug_io_err(int res, const char *what, const char *filename)
 {
 	if (res != 0) {
-		char *reason = "", *comment = "";
+		const char *reason = "", *comment = "";
 		if (plug_io_chain != NULL) {
 			if (filename == NULL) {
 				reason = "none of io plugins could succesfully write the file";
