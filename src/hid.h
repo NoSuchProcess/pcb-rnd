@@ -231,7 +231,7 @@ struct hid_st {
 	   (positive X) and 90 being "up" (positive Y).  */
 
 	/* Make an empty graphics context.  */
-	  hidGC(*make_gc) (void);
+	hidGC (*make_gc) (void);
 	void (*destroy_gc) (hidGC gc_);
 
 	/* Special note about the "erase" color: To use this color, you must
