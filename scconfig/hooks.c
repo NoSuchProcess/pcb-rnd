@@ -14,7 +14,7 @@
 
 #include "plugin_3state.h"
 
-int want_intl = 0;
+int want_intl = 0, want_coord_bits;
 
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
 	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
@@ -92,6 +92,7 @@ int hook_custom_arg(const char *key, const char *value)
 			exit(1);
 		}
 		put("/local/pcb/coord_bits", value);
+		want_coord_bits = v;
 		return 1;
 	}
 	if (strcmp(key, "coord") == 0)
@@ -178,6 +179,7 @@ int hook_postinit()
 
 	put("/local/pcb/debug", sfalse);
 	put("/local/pcb/coord_bits", "32");
+	want_coord_bits = 32;
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 
 	return 0;
@@ -444,23 +446,24 @@ int hook_detect_target()
 
 	/* figure coordinate bits */
 	{
-		int want_c_bits    = safe_atoi(get("/local/pcb/coord_bits"));
 		int int_bits       = safe_atoi(get("sys/types/size/signed_int")) * 8;
 		int long_bits      = safe_atoi(get("sys/types/size/signed_long_int")) * 8;
 		int long_long_bits = safe_atoi(get("sys/types/size/signed_long_long_int")) * 8;
 		int int64_bits     = safe_atoi(get("sys/types/size/uint64_t")) * 8;
 		const char *chosen, *abs_name, *postfix;
 		char tmp[64];
+		int need_stdint = 0;
 
-		if (want_c_bits == int_bits)             { postfix="U";   chosen = "int";           abs_name="abs"; }
-		else if (want_c_bits == long_bits)       { postfix="UL";  chosen = "long int";      abs_name="labs"; }
-		else if (want_c_bits == long_long_bits)  { postfix="ULL"; chosen = "long long int"; abs_name="llabs"; }
+		if (want_coord_bits == int_bits)             { postfix="U";   chosen = "int";           abs_name="abs"; }
+		else if (want_coord_bits == long_bits)       { postfix="UL";  chosen = "long int";      abs_name="labs"; }
+		else if (want_coord_bits == int64_bits)      { postfix="ULL"; chosen = "int64_t";       abs_name="llabs"; need_stdint = 1; }
+		else if (want_coord_bits == long_long_bits)  { postfix="ULL"; chosen = "long long int"; abs_name="llabs"; }
 		else {
-			report("ERROR: can't find a suitable integer type for coord to be %d bits wide\n", want_c_bits);
+			report("ERROR: can't find a suitable integer type for coord to be %d bits wide\n", want_coord_bits);
 			exit(1);
 		}
 
-		sprintf(tmp, "((1%s<<%d)-1)", postfix, want_c_bits - 1);
+		sprintf(tmp, "((1%s<<%d)-1)", postfix, want_coord_bits - 1);
 		put("/local/pcb/coord_type", chosen);
 		put("/local/pcb/coord_max", tmp);
 		put("/local/pcb/coord_abs", abs_name);
@@ -470,7 +473,7 @@ int hook_detect_target()
 			if (int64_bits >= 64) {
 				/* to suppress warnings on systems that support c99 but are forced to compile in c89 mode */
 				chosen = "int64_t";
-				put("/local/pcb/include_stdint", "#include <stdint.h>");
+				need_stdint = 1;
 			}
 		}
 
@@ -480,6 +483,8 @@ int hook_detect_target()
 			else chosen = "double";
 		}
 		put("/local/pcb/long64", chosen);
+		if (need_stdint)
+			put("/local/pcb/include_stdint", "#include <stdint.h>");
 	}
 
 	/* set cflags for C89 */
