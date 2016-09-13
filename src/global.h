@@ -92,12 +92,6 @@ typedef struct {
 	char has_units;
 } PLMeasure;
 
-#ifndef __GNUC__
-#define __FUNCTION1(a,b) a ":" #b
-#define __FUNCTION2(a,b) __FUNCTION1(a,b)
-#define __FUNCTION__ __FUNCTION2(__FILE__,__LINE__)
-#endif
-
 /* ---------------------------------------------------------------------------
  * Macros to annotate branch-prediction information.
  * Taken from GLib 2.16.3 (LGPL 2).G_ / g_ prefixes have

@@ -1491,7 +1491,7 @@ void AddNetlistLibToUndoList(LibraryTypePtr lib)
 		old->MenuMax = lib->MenuMax;
 		old->Menu = (LibraryMenuTypePtr) malloc(old->MenuMax * sizeof(LibraryMenuType));
 		if (old->Menu == NULL) {
-			fprintf(stderr, "malloc() failed in %s\n", __FUNCTION__);
+			fprintf(stderr, "malloc() failed in AddNetlistLibToUndoList\n");
 			exit(1);
 		}
 
@@ -1509,7 +1509,7 @@ void AddNetlistLibToUndoList(LibraryTypePtr lib)
 
 			old->Menu[i].Entry = (LibraryEntryTypePtr) malloc(old->Menu[i].EntryMax * sizeof(LibraryEntryType));
 			if (old->Menu[i].Entry == NULL) {
-				fprintf(stderr, "malloc() failed in %s\n", __FUNCTION__);
+				fprintf(stderr, "malloc() failed in AddNetlistLibToUndoList\n");
 				exit(1);
 			}
 

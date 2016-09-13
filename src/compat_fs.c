@@ -162,7 +162,7 @@ char *tempfile_name_new(const char *name)
 
 	mytmpdir = (char *) malloc(sizeof(char) * (strlen(tmpdir) + 1 + strlen(TEMPLATE) + 1));
 	if (mytmpdir == NULL) {
-		fprintf(stderr, "%s(): malloc failed()\n", __FUNCTION__);
+		fprintf(stderr, "tempfile_name_new(): malloc failed()\n");
 		exit(1);
 	}
 
@@ -171,7 +171,7 @@ char *tempfile_name_new(const char *name)
 	(void) strcat(mytmpdir, PCB_DIR_SEPARATOR_S);
 	(void) strcat(mytmpdir, TEMPLATE);
 	if (mkdtemp(mytmpdir) == NULL) {
-		fprintf(stderr, "%s():  mkdtemp (\"%s\") failed\n", __FUNCTION__, mytmpdir);
+		fprintf(stderr, "pcb_spawnvp():  mkdtemp (\"%s\") failed\n", mytmpdir);
 		free(mytmpdir);
 		return NULL;
 	}
@@ -253,8 +253,8 @@ int tempfile_unlink(char *name)
 
 	}
 	else {
-		fprintf(stderr, _("%s():  Unable to determine temp directory name from the temp file\n"), __FUNCTION__);
-		fprintf(stderr, "%s():  \"%s\"\n", __FUNCTION__, name);
+		fprintf(stderr, _("tempfile_unlink():  Unable to determine temp directory name from the temp file\n"));
+		fprintf(stderr, "tempfile_unlink():  \"%s\"\n", name);
 		rc2 = -1;
 	}
 
