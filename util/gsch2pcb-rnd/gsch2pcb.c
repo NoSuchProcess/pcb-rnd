@@ -277,7 +277,7 @@ static int build_and_run_command(const char * format_, ...)
  * stat() hoops to decide if gnetlist successfully generated the PCB
  * board file (only gnetlist >= 20030901 recognizes -m).
  */
-static int run_gnetlist(char * pins_file, char * net_file, char * pcb_file, char * basename, gadl_list_t *largs)
+static int run_gnetlist(const char * pins_file, const char * net_file, const char * pcb_file, const char * basename, const gadl_list_t *largs)
 {
 	struct stat st;
 	time_t mtime;
