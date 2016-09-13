@@ -17,6 +17,7 @@ plugin_def("report",          "report actions",            sbuildin)
 plugin_def("dbus",            "DBUS interface",            sdisable)
 plugin_def("shand_cmd",       "command shorthands",        sbuildin)
 plugin_def("propedit",        "object property editor",    sbuildin)
+plugin_def("loghid",          "diagnostics: log HID calls",sdisable)
 
 plugin_header("\nFootprint backends:\n")
 plugin_def("fp_fs",           "filesystem footprints",     sbuildin)
