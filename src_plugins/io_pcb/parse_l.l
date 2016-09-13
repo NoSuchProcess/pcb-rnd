@@ -95,7 +95,7 @@ int	yyparse(void);
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static int Parse(FILE *Pipe, char *Executable, char *Path, const char *Filename, char *Parameter);
+static int Parse(FILE *Pipe, const const char *Executable, const char *Path, const char *Filename, const char *Parameter);
 
 %}
 
@@ -213,7 +213,7 @@ in	{ return T_IN; }
 /* ---------------------------------------------------------------------------
  * sets up the preprocessor command
  */
-static int Parse(FILE *Pipe, char *Executable, char *Path, const char *Filename, char *Parameter)
+static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename, const char *Parameter)
 {
 	static	char	*command = NULL;
 	int		returncode;
