@@ -371,51 +371,51 @@ If non-zero grid polygons instead of filling them with gridlines spaced as speci
 REGISTER_ATTRIBUTES(ps_attribute_list, ps_cookie)
 
 /* All file-scope data is in global struct */
-		 static struct {
-			 double calibration_x, calibration_y;
+static struct {
+	double calibration_x, calibration_y;
 
-			 FILE *f;
-			 int pagecount;
-			 Coord linewidth;
-			 bool print_group[MAX_LAYER];
-			 bool print_layer[MAX_LAYER];
-			 double fade_ratio;
-			 bool multi_file;
-			 Coord media_width, media_height, ps_width, ps_height;
+	FILE *f;
+	int pagecount;
+	Coord linewidth;
+	bool print_group[MAX_LAYER];
+	bool print_layer[MAX_LAYER];
+	double fade_ratio;
+	bool multi_file;
+	Coord media_width, media_height, ps_width, ps_height;
 
-			 const char *filename;
-			 bool drill_helper;
-			 bool align_marks;
-			 bool outline;
-			 bool mirror;
-			 bool fillpage;
-			 bool automirror;
-			 bool incolor;
-			 bool doing_toc;
-			 Coord bloat;
-			 bool invert;
-			 int media_idx;
-			 bool drillcopper;
-			 bool legend;
+	const char *filename;
+	bool drill_helper;
+	bool align_marks;
+	bool outline;
+	bool mirror;
+	bool fillpage;
+	bool automirror;
+	bool incolor;
+	bool doing_toc;
+	Coord bloat;
+	bool invert;
+	int media_idx;
+	bool drillcopper;
+	bool legend;
 
-			 LayerTypePtr outline_layer;
+	LayerTypePtr outline_layer;
 
-			 double scale_factor;
+	double scale_factor;
 
-			 BoxType region;
+	BoxType region;
 
-			 HID_Attr_Val ps_values[NUM_OPTIONS];
+	HID_Attr_Val ps_values[NUM_OPTIONS];
 
-			 bool is_mask;
-			 bool is_drill;
-			 bool is_assy;
-			 bool is_copper;
-			 bool is_paste;
+	bool is_mask;
+	bool is_drill;
+	bool is_assy;
+	bool is_copper;
+	bool is_paste;
 
-			 double polygrid;
-		 } global;
+	double polygrid;
+} global;
 
-		 static HID_Attribute *ps_get_export_options(int *n)
+static HID_Attribute *ps_get_export_options(int *n)
 {
 	static char *last_made_filename = 0;
 	if (PCB)
