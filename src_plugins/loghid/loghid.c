@@ -33,6 +33,7 @@
 #include "error.h"
 #include "undo.h"
 #include "plugins.h"
+#include "hid_init.h"
 #include "hid_attrib.h"
 
 static const char *loghid_cookie = "loghid plugin";
@@ -44,7 +45,7 @@ HID_Attribute loghid_attribute_list[] = {
 };
 #define NUM_OPTIONS sizeof(loghid_attribute_list) / sizeof(loghid_attribute_list[0])
 
-static void loghid_parse_arguments(int *argc, char ***argv)
+static void loghid_parse_arguments_real(int *argc, char ***argv, int is_gui)
 {
 	HID *target;
 	const char *target_name;
@@ -53,19 +54,35 @@ static void loghid_parse_arguments(int *argc, char ***argv)
 	hid_parse_command_line(argc, argv);
 
 	target_name = loghid_attribute_list[HA_target_hid].default_val.str_value;
-	target = hid_find_gui(target_name);
+
+	if (is_gui)
+		target = hid_find_gui(target_name);
+	else
+		target = hid_find_exporter(target_name);
 
 #warning TODO:
-	fprintf(stderr, "Initialize for delegatee: '%s' -> %p\n", target_name, target);
+	fprintf(stderr, "Initialize for delegatee: '%s' -> %p\n", target_name, (void *)target);
 	exit(1); /* to avoid a segfault due to uninitialized hid fields now */
 }
+
+static void loghid_parse_arguments_gui(int *argc, char ***argv)
+{
+	loghid_parse_arguments_real(argc, argv, 1);
+}
+
+static void loghid_parse_arguments_exp(int *argc, char ***argv)
+{
+	loghid_parse_arguments_real(argc, argv, 0);
+}
+
 
 static int loghid_usage(const char *topic)
 {
 	fprintf(stderr, "\nhidlog command line arguments:\n\n");
 	hid_usage(loghid_attribute_list, NUM_OPTIONS);
-	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] --gui hidlog-gui --target-hid gtk foo.pcb\n");
-/*	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] --x hidlog-exp --target-hid png foo.pcb\n");*/
+	fprintf(stderr, "\n");
+	fprintf(stderr, "Usage: pcb-rnd [generic_options] --gui hidlog-gui --target-hid gtk foo.pcb\n");
+	fprintf(stderr, "Usage: pcb-rnd [generic_options] --x hidlog-exp --target-hid png foo.pcb\n");
 	fprintf(stderr, "\n");
 	return 0;
 }
@@ -86,7 +103,6 @@ static HID_Attribute *loghid_get_export_options(int *n)
 
 static void hid_loghid_uninit(void)
 {
-	hid_remove_actions_by_cookie(loghid_cookie);
 }
 
 static HID loghid_gui;
@@ -97,26 +113,27 @@ pcb_uninit_t hid_loghid_init(void)
 	memset(&loghid_gui, 0, sizeof(HID));
 	memset(&loghid_exp, 0, sizeof(HID));
 
+	/* gui version */
 	loghid_gui.struct_size = sizeof(HID);
 	loghid_gui.name = "loghid-gui";
 	loghid_gui.description = "log GUI HID calls";
 	loghid_gui.gui = 1;
 
 	loghid_gui.usage = loghid_usage;
-	loghid_gui.parse_arguments = loghid_parse_arguments;
+	loghid_gui.parse_arguments = loghid_parse_arguments_gui;
 
 	hid_register_hid(&loghid_gui);
 
-/*
+	/* export version */
 	loghid_exp.struct_size = sizeof(HID);
 	loghid_exp.name = "loghid-exp";
-	loghid_exp.description = "log export HID calls"
+	loghid_exp.description = "log export HID calls";
 	loghid_exp.exporter = 1;
 
 	loghid_exp.usage = loghid_usage;
-	loghid_exp.parse_arguments = loghid_parse_arguments;
+	loghid_exp.parse_arguments = loghid_parse_arguments_exp;
+
 	hid_register_hid(&loghid_exp);
-*/
 
 	return hid_loghid_uninit;
 }
