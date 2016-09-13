@@ -1266,7 +1266,8 @@ static int fx, fy, fr, fp;
 static End *fp_end;
 static double fa;								/* relative angle */
 
-#define gp_point(x,y,t,e) gp_point_2(x,y,t,e,0,0, __FILE__ ":" #__LINE__)
+#define gp_point_(x,y,t,e, file,line) gp_point_2(x,y,t,e,0,0, file ":" #line)
+#define gp_point_(x,y,t,e) gp_point_(x,y,t,e, __FILE__, __LINE__)
 
 static int gp_point_force(int x, int y, int t, End * e, int esa, int eda, int force, const char *name)
 {
