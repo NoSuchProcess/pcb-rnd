@@ -33,16 +33,90 @@
 #include "error.h"
 #include "undo.h"
 #include "plugins.h"
-#include "hid_actions.h"
+#include "hid_attrib.h"
 
 static const char *loghid_cookie = "loghid plugin";
+
+HID_Attribute loghid_attribute_list[] = {
+	{"target-hid", "the real GUI or export HID to relay calls to",
+	 HID_String, 0, 0, {0, 0, 0}, 0, 0}
+#define HA_target_hid 0
+};
+#define NUM_OPTIONS sizeof(loghid_attribute_list) / sizeof(loghid_attribute_list[0])
+
+static void loghid_parse_arguments(int *argc, char ***argv)
+{
+	HID *target;
+	const char *target_name;
+
+	hid_register_attributes(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
+	hid_parse_command_line(argc, argv);
+
+	target_name = loghid_attribute_list[HA_target_hid].default_val.str_value;
+	target = hid_find_gui(target_name);
+
+#warning TODO:
+	fprintf(stderr, "Initialize for delegatee: '%s' -> %p\n", target_name, target);
+	exit(1); /* to avoid a segfault due to uninitialized hid fields now */
+}
+
+static int loghid_usage(const char *topic)
+{
+	fprintf(stderr, "\nhidlog command line arguments:\n\n");
+	hid_usage(loghid_attribute_list, NUM_OPTIONS);
+	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] --gui hidlog-gui --target-hid gtk foo.pcb\n");
+/*	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] --x hidlog-exp --target-hid png foo.pcb\n");*/
+	fprintf(stderr, "\n");
+	return 0;
+}
+
+REGISTER_ATTRIBUTES(loghid_attribute_list, loghid_cookie)
+
+static HID_Attribute *loghid_get_export_options(int *n)
+{
+/*	loghid_attribute_list[HA_psfile] = pcb_strdup("default?");*/
+
+	if (n)
+		*n = (sizeof(loghid_attribute_list)/sizeof(loghid_attribute_list[0]));
+	return loghid_attribute_list;
+}
+
+
+#include "dolists.h"
 
 static void hid_loghid_uninit(void)
 {
 	hid_remove_actions_by_cookie(loghid_cookie);
 }
 
+static HID loghid_gui;
+static HID loghid_exp;
+
 pcb_uninit_t hid_loghid_init(void)
 {
+	memset(&loghid_gui, 0, sizeof(HID));
+	memset(&loghid_exp, 0, sizeof(HID));
+
+	loghid_gui.struct_size = sizeof(HID);
+	loghid_gui.name = "loghid-gui";
+	loghid_gui.description = "log GUI HID calls";
+	loghid_gui.gui = 1;
+
+	loghid_gui.usage = loghid_usage;
+	loghid_gui.parse_arguments = loghid_parse_arguments;
+
+	hid_register_hid(&loghid_gui);
+
+/*
+	loghid_exp.struct_size = sizeof(HID);
+	loghid_exp.name = "loghid-exp";
+	loghid_exp.description = "log export HID calls"
+	loghid_exp.exporter = 1;
+
+	loghid_exp.usage = loghid_usage;
+	loghid_exp.parse_arguments = loghid_parse_arguments;
+	hid_register_hid(&loghid_exp);
+*/
+
 	return hid_loghid_uninit;
 }
