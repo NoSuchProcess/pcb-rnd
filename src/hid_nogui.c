@@ -14,7 +14,7 @@
    stops the application from (1) crashing randomly, and (2) doing
    gui-specific things when it shouldn't.  */
 
-#define CRASH fprintf(stderr, "HID error: pcb called GUI function %s without having a GUI available.\n", __FUNCTION__); abort()
+#define CRASH(func) fprintf(stderr, "HID error: pcb called GUI function %s without having a GUI available.\n", func); abort()
 
 typedef struct hid_gc_struct {
 	int nothing_interesting_here;
@@ -22,33 +22,33 @@ typedef struct hid_gc_struct {
 
 static HID_Attribute *nogui_get_export_options(int *n_ret)
 {
-	CRASH;
+	CRASH("get_export_options");
 	return 0;
 }
 
 static void nogui_do_export(HID_Attr_Val * options)
 {
-	CRASH;
+	CRASH("do_export");
 }
 
 static void nogui_parse_arguments(int *argc, char ***argv)
 {
-	CRASH;
+	CRASH("parse_arguments");
 }
 
 static void nogui_invalidate_lr(int l, int r, int t, int b)
 {
-	CRASH;
+	CRASH("invalidate_lr");
 }
 
 static void nogui_invalidate_all(void)
 {
-	CRASH;
+	CRASH("invalidate_all");
 }
 
 static int nogui_set_layer(const char *name, int idx, int empty)
 {
-	CRASH;
+	CRASH("set_layer");
 	return 0;
 }
 
@@ -67,27 +67,27 @@ static void nogui_destroy_gc(hidGC gc)
 
 static void nogui_use_mask(int use_it)
 {
-	CRASH;
+	CRASH("use_mask");
 }
 
 static void nogui_set_color(hidGC gc, const char *name)
 {
-	CRASH;
+	CRASH("set_color");
 }
 
 static void nogui_set_line_cap(hidGC gc, EndCapStyle style)
 {
-	CRASH;
+	CRASH("set_line_cap");
 }
 
 static void nogui_set_line_width(hidGC gc, Coord width)
 {
-	CRASH;
+	CRASH("set_line_width");
 }
 
 static void nogui_set_draw_xor(hidGC gc, int xor_)
 {
-	CRASH;
+	CRASH("set_draw_xor");
 }
 
 static void nogui_set_draw_faded(hidGC gc, int faded)
@@ -96,62 +96,62 @@ static void nogui_set_draw_faded(hidGC gc, int faded)
 
 static void nogui_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
-	CRASH;
+	CRASH("draw_line");
 }
 
 static void nogui_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
 {
-	CRASH;
+	CRASH("draw_arc");
 }
 
 static void nogui_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
-	CRASH;
+	CRASH("draw_rect");
 }
 
 static void nogui_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 {
-	CRASH;
+	CRASH("fill_circle");
 }
 
 static void nogui_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 {
-	CRASH;
+	CRASH("fill_polygon");
 }
 
 static void nogui_fill_pcb_polygon(hidGC gc, PolygonType * poly, const BoxType * clip_box)
 {
-	CRASH;
+	CRASH("fill_pcb_polygon");
 }
 
 static void nogui_fill_pcb_pad(hidGC gc, PadType * pad, bool clear, bool mask)
 {
-	CRASH;
+	CRASH("fill_pcb_pad");
 }
 
 static void nogui_thindraw_pcb_pad(hidGC gc, PadType * pad, bool clear, bool mask)
 {
-	CRASH;
+	CRASH("thindraw_pcb_pad");
 }
 
 static void nogui_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pad, bool drawHole, bool mask)
 {
-	CRASH;
+	CRASH("fill_pcb_pv");
 }
 
 static void nogui_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pad, bool drawHole, bool mask)
 {
-	CRASH;
+	CRASH("thindraw_pcb_pv");
 }
 
 static void nogui_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
-	CRASH;
+	CRASH("fill_rect");
 }
 
 static void nogui_calibrate(double xval, double yval)
 {
-	CRASH;
+	CRASH("calibrate");
 }
 
 static int nogui_shift_is_pressed(void)
@@ -162,19 +162,19 @@ static int nogui_shift_is_pressed(void)
 
 static int nogui_control_is_pressed(void)
 {
-	CRASH;
+	CRASH("control_is_pressed");
 	return 0;
 }
 
 static int nogui_mod1_is_pressed(void)
 {
-	CRASH;
+	CRASH("mod1_is_pressed");
 	return 0;
 }
 
 static void nogui_get_coords(const char *msg, Coord * x, Coord * y)
 {
-	CRASH;
+	CRASH("get_coords");
 }
 
 static void nogui_set_crosshair(int x, int y, int action)
@@ -184,42 +184,40 @@ static void nogui_set_crosshair(int x, int y, int action)
 static hidval nogui_add_timer(void (*func) (hidval user_data), unsigned long milliseconds, hidval user_data)
 {
 	hidval rv;
-	CRASH;
+	CRASH("add_timer");
 	rv.lval = 0;
 	return rv;
 }
 
 static void nogui_stop_timer(hidval timer)
 {
-	CRASH;
+	CRASH("stop_timer");
 }
 
-static hidval
-nogui_watch_file(int fd, unsigned int condition, void (*func) (hidval watch, int fd, unsigned int condition, hidval user_data),
-								 hidval user_data)
+static hidval nogui_watch_file(int fd, unsigned int condition, void (*func) (hidval watch, int fd, unsigned int condition, hidval user_data), hidval user_data)
 {
 	hidval rv;
-	CRASH;
+	CRASH("watch_file");
 	rv.lval = 0;
 	return rv;
 }
 
 static void nogui_unwatch_file(hidval watch)
 {
-	CRASH;
+	CRASH("unwatch_file");
 }
 
 static hidval nogui_add_block_hook(void (*func) (hidval data), hidval data)
 {
 	hidval rv;
-	CRASH;
+	CRASH("add_block_hook");
 	rv.ptr = NULL;
 	return rv;
 }
 
 static void nogui_stop_block_hook(hidval block_hook)
 {
-	CRASH;
+	CRASH("stop_block_hook");
 }
 
 static void nogui_log(const char *fmt, ...)
@@ -358,15 +356,14 @@ static char *nogui_fileselect(const char *title, const char *descr,
 		return pcb_strdup(answer);
 }
 
-static int
-nogui_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * results, const char *title, const char *descr)
+static int nogui_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * results, const char *title, const char *descr)
 {
-	CRASH;
+	CRASH("attribute_dialog");
 }
 
 static void nogui_show_item(void *item)
 {
-	CRASH;
+	CRASH("show_item");
 }
 
 static void nogui_beep(void)
