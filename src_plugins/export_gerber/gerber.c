@@ -32,7 +32,7 @@
 
 const char *gerber_cookie = "gerber HID";
 
-#define CRASH fprintf(stderr, "HID error: pcb called unimplemented Gerber function %s.\n", __FUNCTION__); abort()
+#define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented Gerber function %s.\n", func); abort()
 
 /*----------------------------------------------------------------------------*/
 /* Function prototypes                                                        */
@@ -1148,7 +1148,7 @@ static void gerber_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 
 static void gerber_calibrate(double xval, double yval)
 {
-	CRASH;
+	CRASH("gerber_calibrate");
 }
 
 static int gerber_usage(const char *topic)

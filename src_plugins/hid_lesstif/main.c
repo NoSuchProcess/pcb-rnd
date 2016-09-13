@@ -76,7 +76,7 @@ typedef struct hid_gc_struct {
 
 static HID lesstif_hid;
 
-#define CRASH fprintf(stderr, "HID error: pcb called unimplemented GUI function %s\n", __FUNCTION__), abort()
+#define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented GUI function %s\n", func), abort()
 
 XtAppContext app_context;
 Widget appwidget;
@@ -3249,7 +3249,7 @@ static void lesstif_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 
 static void lesstif_calibrate(double xval, double yval)
 {
-	CRASH;
+	CRASH("lesstif_calibrate");
 }
 
 static int lesstif_shift_is_pressed(void)

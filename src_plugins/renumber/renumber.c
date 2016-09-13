@@ -135,7 +135,7 @@ static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 	was = (char **) calloc(numele, sizeof(char *));
 	is = (char **) calloc(numele, sizeof(char *));
 	if (element_list == NULL || locked_element_list == NULL || was == NULL || is == NULL) {
-		fprintf(stderr, "calloc() failed in %s\n", __FUNCTION__);
+		fprintf(stderr, "calloc() failed in ActionRenumber\n");
 		exit(1);
 	}
 
@@ -217,7 +217,7 @@ static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 				cnt_list_sz += 100;
 				cnt_list = (struct _cnt_list *) realloc(cnt_list, cnt_list_sz);
 				if (cnt_list == NULL) {
-					fprintf(stderr, "realloc failed() in %s\n", __FUNCTION__);
+					fprintf(stderr, "realloc() failed in ActionRenumber\n");
 					exit(1);
 				}
 				/* zero out the memory that we added */

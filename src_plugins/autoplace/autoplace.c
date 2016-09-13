@@ -470,7 +470,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 				GetPointerMemory(TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? &seboxes : &ceboxes);
 			*boxpp = (struct ebox *) malloc(sizeof(**boxpp));
 			if (*boxpp == NULL) {
-				fprintf(stderr, "malloc() failed in %s\n", __FUNCTION__);
+				fprintf(stderr, "malloc() failed in ComputeCost\n");
 				exit(1);
 			}
 

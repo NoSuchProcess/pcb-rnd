@@ -73,7 +73,7 @@
 
 const char *gcode_cookie = "gcode HID";
 
-#define CRASH fprintf(stderr, "HID error: pcb called unimplemented GCODE function %s.\n", __FUNCTION__); abort()
+#define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented GCODE function %s.\n", func); abort()
 struct color_struct {
 	/* the descriptor used by the gd library */
 	int c;
@@ -855,7 +855,7 @@ static void gcode_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 
 static void gcode_calibrate(double xval, double yval)
 {
-	CRASH;
+	CRASH("gcode_calibrate");
 }
 
 static void gcode_set_crosshair(int x, int y, int a)

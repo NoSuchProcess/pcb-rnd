@@ -19,8 +19,6 @@
 #include "hid_attrib.h"
 #include "hid_actions.h"
 
-#define CRASH fprintf(stderr, "HID error: pcb called unimplemented PS function %s.\n", __FUNCTION__); abort()
-
 const char *lpr_cookie = "lpr HID";
 
 static HID_Attribute base_lpr_options[] = {

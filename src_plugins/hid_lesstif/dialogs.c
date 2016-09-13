@@ -24,8 +24,6 @@
 #include "stdarg.h"
 #include "misc_util.h"
 
-#define CRASH fprintf(stderr, "HID error: pcb called unimplemented GUI function %s\n", __FUNCTION__), abort()
-
 static int ok;
 
 #define COMPONENT_SIDE_NAME "(top)"

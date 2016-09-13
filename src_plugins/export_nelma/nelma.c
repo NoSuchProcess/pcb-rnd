@@ -83,7 +83,7 @@
 
 const char *nelma_cookie = "nelma HID";
 
-#define CRASH fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", __FUNCTION__); abort()
+#define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", func); abort()
 
 /* Needed for PNG export */
 
@@ -986,7 +986,7 @@ static void nelma_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 
 static void nelma_calibrate(double xval, double yval)
 {
-	CRASH;
+	CRASH("nelma_calibrate");
 }
 
 static void nelma_set_crosshair(int x, int y, int a)

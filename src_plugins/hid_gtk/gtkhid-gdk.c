@@ -355,7 +355,7 @@ void ghid_set_color(hidGC gc, const char *name)
 	hidval cval;
 
 	if (name == NULL) {
-		fprintf(stderr, "%s():  name = NULL, setting to magenta\n", __FUNCTION__);
+		fprintf(stderr, "ghid_set_color():  name = NULL, setting to magenta\n");
 		name = "magenta";
 	}
 

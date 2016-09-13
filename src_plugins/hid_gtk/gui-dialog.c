@@ -441,7 +441,7 @@ gchar *ghid_fileselect(const char *title, const char *descr,
 			recent_dirs = (ghid_file_history *) realloc(recent_dirs, n_recent_dirs * sizeof(ghid_file_history));
 
 			if (recent_dirs == NULL) {
-				fprintf(stderr, "%s():  realloc failed\n", __FUNCTION__);
+				fprintf(stderr, "ghid_fileselect():  realloc failed\n");
 				exit(1);
 			}
 

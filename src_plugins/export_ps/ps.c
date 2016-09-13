@@ -30,8 +30,6 @@
 #include "conf_core.h"
 #include "compat_misc.h"
 
-#define CRASH fprintf(stderr, "HID error: pcb called unimplemented PS function %s.\n", __FUNCTION__); abort()
-
 const char *ps_cookie = "ps HID";
 
 static int ps_set_layer(const char *name, int group, int empty);

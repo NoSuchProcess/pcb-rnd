@@ -1159,7 +1159,7 @@ static int Load(int argc, const char **argv, Coord x, Coord y)
 
 	if (name) {
 		if (conf_core.rc.verbose)
-			fprintf(stderr, "%s:  Calling LoadFrom(%s, %s)\n", __FUNCTION__, function, name);
+			fprintf(stderr, "Load:  Calling LoadFrom(%s, %s)\n", function, name);
 		hid_actionl("LoadFrom", function, name, NULL);
 		g_free(name);
 	}
@@ -1236,7 +1236,7 @@ static int Save(int argc, const char **argv, Coord x, Coord y)
 
 	if (name) {
 		if (conf_core.rc.verbose)
-			fprintf(stderr, "%s:  Calling SaveTo(%s, %s)\n", __FUNCTION__, function, name);
+			fprintf(stderr, "Save:  Calling SaveTo(%s, %s)\n", function, name);
 
 		if (strcasecmp(function, "PasteBuffer") == 0) {
 			hid_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->description, "1", NULL);

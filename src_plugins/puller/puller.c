@@ -1266,7 +1266,7 @@ static int fx, fy, fr, fp;
 static End *fp_end;
 static double fa;								/* relative angle */
 
-#define gp_point(x,y,t,e) gp_point_2(x,y,t,e,0,0,__FUNCTION__)
+#define gp_point(x,y,t,e) gp_point_2(x,y,t,e,0,0, __FILE__ ":" #__LINE__)
 
 static int gp_point_force(int x, int y, int t, End * e, int esa, int eda, int force, const char *name)
 {
@@ -1382,7 +1382,7 @@ static int gp_point_force(int x, int y, int t, End * e, int esa, int eda, int fo
 		pcb_printf(" - new thickness %f old %#mS\n", new_r, t);
 #endif
 		if (new_r < t)
-			gp_point_force(x, y, new_r, e, esa, eda, 1, __FUNCTION__);
+			gp_point_force(x, y, new_r, e, esa, eda, 1, "gp_point_force");
 		return 0;
 	}
 
@@ -1518,7 +1518,7 @@ static r_dir_t gp_arc_cb(const BoxType * b, void *cb)
 		return R_DIR_NOT_FOUND;
 	if (e->deleted)
 		return R_DIR_NOT_FOUND;
-	gp_point_2(a->X, a->Y, a->Width + a->Thickness / 2, 0, a->StartAngle, a->Delta, __FUNCTION__);
+	gp_point_2(a->X, a->Y, a->Width + a->Thickness / 2, 0, a->StartAngle, a->Delta, "gp_arc_cb");
 	if (start_arc && a->X == start_arc->X && a->Y == start_arc->Y)
 		return R_DIR_NOT_FOUND;
 	if (end_arc && a->X != end_arc->X && a->Y != end_arc->Y)

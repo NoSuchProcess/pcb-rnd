@@ -280,7 +280,7 @@ int ghid_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * res
 			gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
 			break;
 		default:
-			printf("%s: unknown type of HID attribute\n", __FUNCTION__);
+			printf("ghid_attribute_dialog: unknown type of HID attribute\n");
 			break;
 		}
 	}
@@ -329,7 +329,7 @@ void ghid_dialog_print(HID * hid)
 	if (n > 0) {
 		results = (HID_Attr_Val *) malloc(n * sizeof(HID_Attr_Val));
 		if (results == NULL) {
-			fprintf(stderr, "%s() -- malloc failed\n", __FUNCTION__);
+			fprintf(stderr, "ghid_dialog_print() -- malloc failed\n");
 			exit(1);
 		}
 
