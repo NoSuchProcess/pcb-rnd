@@ -217,15 +217,16 @@ int ChangeGroupVisibility(int Layer, bool On, bool ChangeStackOrder)
  * to correspond.
 */
 
-void LayerStringToLayerStack(char *s)
+void LayerStringToLayerStack(const char *layer_string)
 {
 	static int listed_layers = 0;
-	int l = strlen(s);
+	int l = strlen(layer_string);
 	char **args;
 	int i, argn, lno;
 	int prev_sep = 1;
+	char *s;
 
-	s = pcb_strdup(s);
+	s = pcb_strdup(layer_string);
 	args = (char **) malloc(l * sizeof(char *));
 	argn = 0;
 

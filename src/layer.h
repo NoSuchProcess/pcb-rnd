@@ -44,7 +44,7 @@ int GetLayerGroupNumberByPointer(LayerTypePtr);
 int GetLayerGroupNumberByNumber(Cardinal);
 int GetGroupOfLayer(int);
 int ChangeGroupVisibility(int, bool, bool);
-void LayerStringToLayerStack(char *);
+void LayerStringToLayerStack(const char *);
 
 /* Layer Group Functions */
 
