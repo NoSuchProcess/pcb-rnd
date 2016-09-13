@@ -50,15 +50,15 @@ typedef enum { /* bitfield */
 } conf_flag_t;
 
 
-typedef const char *      CFT_STRING;
-typedef int         CFT_BOOLEAN;
-typedef long        CFT_INTEGER;
-typedef double      CFT_REAL;
-typedef Coord       CFT_COORD;
-typedef Unit *      CFT_UNIT;
-typedef char *      CFT_COLOR;
-typedef conflist_t  CFT_LIST;
-typedef Increments  CFT_INCREMENTS;
+typedef const char * CFT_STRING;
+typedef int          CFT_BOOLEAN;
+typedef long         CFT_INTEGER;
+typedef double       CFT_REAL;
+typedef Coord        CFT_COORD;
+typedef Unit *       CFT_UNIT;
+typedef char *       CFT_COLOR;
+typedef conflist_t   CFT_LIST;
+typedef Increments   CFT_INCREMENTS;
 
 typedef enum {
 	CFN_STRING,
