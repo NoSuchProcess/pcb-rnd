@@ -775,7 +775,7 @@ int WritePipe(const char *Filename, bool thePcb, const char *fmt)
 {
 	FILE *fp;
 	int result;
-	char *p;
+	const char *p;
 	static gds_t command;
 	int used_popen = 0;
 
