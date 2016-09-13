@@ -83,7 +83,7 @@ const void *fp_tag(const char *tag, int alloc)
 void fp_init()
 {
 	library.type = LIB_DIR;
-	library.name = "/";
+	library.name = pcb_strdup("/");  /* All names are eventually free()'d */
 }
 
 void fp_uninit()
