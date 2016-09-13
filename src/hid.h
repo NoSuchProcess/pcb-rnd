@@ -2,8 +2,11 @@
 #define PCB_HID_H
 
 #include <stdarg.h>
+#include <stdbool.h>
 
+#include "config.h"
 #include "error.h"
+#include "global_typedefs.h"
 
 typedef struct HID_Attr_Val_s  HID_Attr_Val;
 typedef struct HID_Attribute_s HID_Attribute;
