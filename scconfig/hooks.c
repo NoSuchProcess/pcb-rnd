@@ -208,6 +208,12 @@ int hook_detect_host()
 	return 0;
 }
 
+int safe_atoi(const char *s)
+{
+	if (s == NULL)
+		return 0;
+	return atoi(s);
+}
 
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
@@ -438,10 +444,11 @@ int hook_detect_target()
 
 	/* figure coordinate bits */
 	{
-		int want_c_bits    = atoi(get("/local/pcb/coord_bits"));
-		int int_bits       = atoi(get("sys/types/size/signed_int")) * 8;
-		int long_bits      = atoi(get("sys/types/size/signed_long_int")) * 8;
-		int long_long_bits = atoi(get("sys/types/size/signed_long_long_int")) * 8;
+		int want_c_bits    = safe_atoi(get("/local/pcb/coord_bits"));
+		int int_bits       = safe_atoi(get("sys/types/size/signed_int")) * 8;
+		int long_bits      = safe_atoi(get("sys/types/size/signed_long_int")) * 8;
+		int long_long_bits = safe_atoi(get("sys/types/size/signed_long_long_int")) * 8;
+		int int64_bits     = safe_atoi(get("sys/types/size/uint64_t")) * 8;
 		const char *chosen, *abs_name, *postfix;
 		char tmp[64];
 
@@ -458,9 +465,20 @@ int hook_detect_target()
 		put("/local/pcb/coord_max", tmp);
 		put("/local/pcb/coord_abs", abs_name);
 
-		if (long_long_bits >= 64) chosen = "long long int";
-		else if (long_bits >= 64) chosen = "long int";
-		else chosen = "double";
+		chosen = NULL;
+		if (istrue(get("/local/pcb/debug"))) { /* debug: c89 */
+			if (int64_bits >= 64) {
+				/* to suppress warnings on systems that support c99 but are forced to compile in c89 mode */
+				chosen = "int64_t";
+				put("/local/pcb/include_stdint", "#include <stdint.h>");
+			}
+		}
+
+		if (chosen == NULL) { /* non-debug, thus non-c89 */
+			if (long_long_bits >= 64) chosen = "long long int";
+			else if (long_bits >= 64) chosen = "long int";
+			else chosen = "double";
+		}
 		put("/local/pcb/long64", chosen);
 	}
 

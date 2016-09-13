@@ -179,6 +179,7 @@ typedef @/local/pcb/coord_type@ Coord;
 #define coord_abs @/local/pcb/coord_abs@
 
 /* Other autodetected types */
+@?/local/pcb/include_stdint@
 typedef @/local/pcb/long64@    pcb_long64_t;
 
 /* the dot-dir: where to save user config under ther user's home; it's used
