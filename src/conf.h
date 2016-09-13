@@ -50,7 +50,7 @@ typedef enum { /* bitfield */
 } conf_flag_t;
 
 
-typedef char *      CFT_STRING;
+typedef const char *      CFT_STRING;
 typedef int         CFT_BOOLEAN;
 typedef long        CFT_INTEGER;
 typedef double      CFT_REAL;
