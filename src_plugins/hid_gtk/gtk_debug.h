@@ -5,7 +5,7 @@
 
 static void print_widget(GtkWidget * w)
 {
-	fprintf(stderr, " %p %d;%d %d;%d %d;%d\n", w, w->allocation.x, w->allocation.y, w->allocation.width, w->allocation.height,
+	fprintf(stderr, " %p %d;%d %d;%d %d;%d\n", (void *)w, w->allocation.x, w->allocation.y, w->allocation.width, w->allocation.height,
 					w->requisition.width, w->requisition.height);
 	fprintf(stderr, "  flags=%x typ=%d realized=%d vis=%d\n", GTK_WIDGET_FLAGS(w), GTK_WIDGET_TYPE(w), GTK_WIDGET_REALIZED(w),
 					GTK_WIDGET_VISIBLE(w));

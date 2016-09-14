@@ -162,7 +162,7 @@ layout_object_t *layout_search_get(const char *search_ID, int n)
 
 	s = hash_find(layout_searches, search_ID);
 
-/*	printf("s=%p\n", s);*/
+/*	printf("s=%p\n", (void *)s);*/
 	if ((s == NULL) || (n < 0) || (n >= s->used))
 		return NULL;
 	return s->objects+n;

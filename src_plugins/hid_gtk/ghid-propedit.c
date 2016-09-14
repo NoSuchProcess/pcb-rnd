@@ -134,7 +134,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 		PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(0),
 		PCB_MIL_TO_COORD(1500), PCB_MIL_TO_COORD(1500),
 		MakeFlags(PCB_FLAG_CLEARPOLY | PCB_FLAG_FULLPOLY));
-	printf("poly2=%p -----------\n", v);
+	printf("poly2=%p -----------\n", (void *)v);
 	DrawPolygon(PCB->Data->Layer+1, v);
 	Draw();
 	gtk_drawing_area_size(GTK_DRAWING_AREA(area), 300, 400);
@@ -179,7 +179,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 		PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(0),
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 		NoFlags());
-printf("poly=%p\n", v);
+printf("poly=%p\n", (void *)v);
 			DrawPolygon(preview_pcb.Data->Layer+0, v);*/
 
 

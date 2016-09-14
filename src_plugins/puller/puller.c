@@ -595,19 +595,19 @@ static void unlink_end(Extra * x, Extra ** e)
 	if (*e) {
 		if ((*e)->start.next == x) {
 #if TRACE1
-			printf("%d: unlink_end, was %p\n", __LINE__, (*e)->start.next);
+			printf("%d: unlink_end, was %p\n", __LINE__, (void *)(*e)->start.next);
 #endif
 			(*e)->start.next = &multi_next;
 		}
 		if ((*e)->end.next == x) {
 #if TRACE1
-			printf("%d: unlink_end, was %p\n", __LINE__, (*e)->start.next);
+			printf("%d: unlink_end, was %p\n", __LINE__, (void *)(*e)->start.next);
 #endif
 			(*e)->end.next = &multi_next;
 		}
 	}
 #if TRACE1
-	printf("%d: unlink_end, was %p\n", __LINE__, (*e));
+	printf("%d: unlink_end, was %p\n", __LINE__, (void *)(*e));
 #endif
 	(*e) = &multi_next;
 }
@@ -664,20 +664,20 @@ static r_dir_t find_pair_line_callback(const BoxType * b, void *cl)
 		abort1();
 #endif
 #if TRACE1
-	pcb_printf(" - %p line %#mD or %#mD\n", e, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+	pcb_printf(" - %p line %#mD or %#mD\n", (void *)e, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 #endif
 	if ((NEAR(line->Point1.X, fpcs->x) && NEAR(line->Point1.Y, fpcs->y))
 			|| (NEAR(line->Point2.X, fpcs->x) && NEAR(line->Point2.Y, fpcs->y))) {
 		if (*fpcs->extra_ptr) {
 #if TRACE1
-			printf("multiple, was %p\n", *fpcs->extra_ptr);
+			printf("multiple, was %p\n", (void *)*fpcs->extra_ptr);
 #endif
 			*fpcs->extra_ptr = &multi_next;
 		}
 		else {
 			*fpcs->extra_ptr = LINE2EXTRA(line);
 #if TRACE1
-			printf(" - next now %p\n", *fpcs->extra_ptr);
+			printf(" - next now %p\n", (void *)*fpcs->extra_ptr);
 #endif
 		}
 	}
@@ -693,13 +693,13 @@ static r_dir_t find_pair_arc_callback(const BoxType * b, void *cl)
 	if (arc == fpcs->me)
 		return R_DIR_NOT_FOUND;
 #if TRACE1
-	pcb_printf(" - %p arc %#mD or %#mD\n", e, e->start.x, e->start.y, e->end.x, e->end.y);
+	pcb_printf(" - %p arc %#mD or %#mD\n", (void *)e, e->start.x, e->start.y, e->end.x, e->end.y);
 #endif
 	if ((NEAR(e->start.x, fpcs->x) && NEAR(e->start.y, fpcs->y))
 			|| (NEAR(e->end.x, fpcs->x) && NEAR(e->end.y, fpcs->y))) {
 		if (*fpcs->extra_ptr) {
 #if TRACE1
-			printf("multiple, was %p\n", *fpcs->extra_ptr);
+			printf("multiple, was %p\n", (void *)*fpcs->extra_ptr);
 #endif
 			*fpcs->extra_ptr = &multi_next;
 		}
@@ -1064,13 +1064,13 @@ static void propogate_end_step2_cb(AnyObjectType * ptr, Extra * extra, void *use
 {
 	if (extra->start.in_pin) {
 #if TRACE1
-		printf("MULTI at %d: was %p\n", __LINE__, extra->start.next);
+		printf("MULTI at %d: was %p\n", __LINE__, (void *)extra->start.next);
 #endif
 		extra->start.next = NULL;
 	}
 	if (extra->end.in_pin) {
 #if TRACE1
-		printf("MULTI at %d: was %p\n", __LINE__, extra->end.next);
+		printf("MULTI at %d: was %p\n", __LINE__, (void *)extra->end.next);
 #endif
 		extra->end.next = NULL;
 	}
@@ -1108,13 +1108,13 @@ static void print_extra(Extra * e, Extra * prev)
 		which = 2;
 	switch (which) {
 	case 0:
-		printf("%10p %10p %10p :", e, e->start.next, e->end.next);
+		printf("%10p %10p %10p :", (void *)e, (void *)e->start.next, (void *)e->end.next);
 		break;
 	case 1:
-		printf("%10p \033[33m%10p\033[0m %10p :", e, e->start.next, e->end.next);
+		printf("%10p \033[33m%10p\033[0m %10p :", (void *)e, (void *)e->start.next, (void *)e->end.next);
 		break;
 	case 2:
-		printf("%10p %10p \033[33m%10p\033[0m :", e, e->start.next, e->end.next);
+		printf("%10p %10p \033[33m%10p\033[0m :", (void *)e, (void *)e->start.next, (void *)e->end.next);
 		break;
 	}
 	last_pextra = e;
@@ -1126,19 +1126,19 @@ static void print_extra(Extra * e, Extra * prev)
 
 	if (EXTRA_IS_LINE(e)) {
 		LineTypePtr line = EXTRA2LINE(e);
-		pcb_printf(" %p L %#mD-%#mD", line, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
-		printf("  %s %p %s %p\n", e->start.is_pad ? "pad" : "pin", e->start.pin, e->end.is_pad ? "pad" : "pin", e->end.pin);
+		pcb_printf(" %p L %#mD-%#mD", (void *)line, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+		printf("  %s %p %s %p\n", e->start.is_pad ? "pad" : "pin", (void *)e->start.pin, e->end.is_pad ? "pad" : "pin", (void *)e->end.pin);
 	}
 	else if (EXTRA_IS_ARC(e)) {
 		ArcTypePtr arc = EXTRA2ARC(e);
-		pcb_printf(" %p A %#mD-%#mD", arc, e->start.x, e->start.y, e->end.x, e->end.y);
+		pcb_printf(" %p A %#mD-%#mD", (void *)arc, e->start.x, e->start.y, e->end.x, e->end.y);
 		pcb_printf(" at %#mD ang %ld,%ld\n", arc->X, arc->Y, arc->StartAngle, arc->Delta);
 	}
 	else if (e == &multi_next) {
 		printf("-- Multi-next\n");
 	}
 	else {
-		printf("-- Unknown extra: %p\n", e);
+		printf("-- Unknown extra: %p\n", (void *)e);
 	}
 }
 
@@ -1636,7 +1636,7 @@ static LineTypePtr create_line(LineTypePtr sample, int x1, int y1, int x2, int y
 #endif
 		new_line_extra(line);
 #if TRACE1
-	printf(" - line extra is %p\n", e);
+	printf(" - line extra is %p\n", (void *)e);
 #endif
 	return line;
 }
@@ -1664,7 +1664,7 @@ static ArcTypePtr create_arc(LineTypePtr sample, int x, int y, int r, int sa, in
 
 	e = new_arc_extra(arc);
 #if TRACE1
-	printf(" - arc extra is %p\n", e);
+	printf(" - arc extra is %p\n", (void *)e);
 #endif
 	fix_arc_extra(arc, e);
 	return arc;
@@ -1673,7 +1673,7 @@ static ArcTypePtr create_arc(LineTypePtr sample, int x, int y, int r, int sa, in
 static void unlink_extras(Extra * e)
 {
 #if TRACE1
-	fprintf(stderr, "unlink %p\n", e);
+	fprintf(stderr, "unlink %p\n", (void *)e);
 	print_extra(e, 0);
 #endif
 	if (e->start.next) {
@@ -1682,18 +1682,18 @@ static void unlink_extras(Extra * e)
 #endif
 		if (e->start.next->start.next == e) {
 #if TRACE1
-			fprintf(stderr, " - %p->start points to me\n", e->start.next);
+			fprintf(stderr, " - %p->start points to me\n", (void *)e->start.next);
 #endif
 			e->start.next->start.next = e->end.next;
 		}
 		else if (e->start.next->end.next == e) {
 #if TRACE1
-			fprintf(stderr, " - %p->end points to me\n", e->start.next);
+			fprintf(stderr, " - %p->end points to me\n", (void *)e->start.next);
 #endif
 			e->start.next->end.next = e->end.next;
 		}
 		else {
-			fprintf(stderr, " - %p doesn't point to me!\n", e->start.next);
+			fprintf(stderr, " - %p doesn't point to me!\n", (void *)e->start.next);
 			abort();
 		}
 	}
@@ -1703,18 +1703,18 @@ static void unlink_extras(Extra * e)
 #endif
 		if (e->end.next->start.next == e) {
 #if TRACE1
-			fprintf(stderr, " - %p->end points to me\n", e->end.next);
+			fprintf(stderr, " - %p->end points to me\n", (void *)e->end.next);
 #endif
 			e->end.next->start.next = e->start.next;
 		}
 		else if (e->end.next->end.next == e) {
 #if TRACE1
-			fprintf(stderr, " - %p->end points to me\n", e->end.next);
+			fprintf(stderr, " - %p->end points to me\n", (void *)e->end.next);
 #endif
 			e->end.next->end.next = e->start.next;
 		}
 		else {
-			fprintf(stderr, " - %p doesn't point to me!\n", e->end.next);
+			fprintf(stderr, " - %p doesn't point to me!\n", (void *)e->end.next);
 			abort();
 		}
 	}
@@ -1731,7 +1731,7 @@ static void mark_line_for_deletion(LineTypePtr l)
 	e->deleted = 1;
 	unlink_extras(e);
 #if TRACE1
-	pcb_printf("Marked line %p for deletion %#mD to %#mD\n", e, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y);
+	pcb_printf("Marked line %p for deletion %#mD to %#mD\n", (void *)e, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y);
 #endif
 #if 0
 	if (l->Point1.X < 0) {
@@ -1749,7 +1749,7 @@ static void mark_arc_for_deletion(ArcTypePtr a)
 	e->deleted = 1;
 	unlink_extras(e);
 #if TRACE1
-	printf("Marked arc %p for deletion %ld < %ld\n", e, a->StartAngle, a->Delta);
+	printf("Marked arc %p for deletion %ld < %ld\n", (void *)e, a->StartAngle, a->Delta);
 #endif
 }
 
@@ -1812,7 +1812,7 @@ static void maybe_pull_1(LineTypePtr line)
 	}
 
 #if TRACE1
-	printf("maybe_pull_1 %p %p %p %p\n", sarc_extra, start_extra, end_extra, earc_extra);
+	printf("maybe_pull_1 %p %p %p %p\n", (void *)sarc_extra, (void *)start_extra, (void *)end_extra, (void *)earc_extra);
 	if (sarc_extra)
 		print_extra(sarc_extra, 0);
 	print_extra(start_extra, 0);

@@ -3438,7 +3438,7 @@ static void list_conflicts(routebox_t * rb)
 		return;
 	n = vector_size(rb->conflicts_with);
 	for (i = 0; i < n; i++)
-		printf("%p, ", vector_element(rb->conflicts_with, i));
+		printf("%p, ", (void *)vector_element(rb->conflicts_with, i));
 }
 
 static void show_area_vec(int lay)
@@ -3469,11 +3469,11 @@ static bool net_id(routebox_t * rb, long int id)
 static void trace_parents(routebox_t * rb)
 {
 	while (rb && rb->type == EXPANSION_AREA) {
-		printf(" %p ->", rb);
+		printf(" %p ->", (void *)rb);
 		rb = rb->parent.expansion_area;
 	}
 	if (rb)
-		printf(" %p is source\n", rb);
+		printf(" %p is source\n", (void *)rb);
 	else
 		printf("NULL!\n");
 }

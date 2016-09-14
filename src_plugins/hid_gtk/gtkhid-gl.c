@@ -453,7 +453,7 @@ void ghid_set_draw_xor(hidGC gc, int xor)
 
 void ghid_set_draw_faded(hidGC gc, int faded)
 {
-	printf("ghid_set_draw_faded(%p,%d) -- not implemented\n", gc, faded);
+	printf("ghid_set_draw_faded(%p,%d) -- not implemented\n", (void *)gc, faded);
 }
 
 void ghid_set_line_cap_angle(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)

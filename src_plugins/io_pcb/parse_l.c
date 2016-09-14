@@ -2363,7 +2363,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
               sprintf (tmps, "%s", Filename);
 
 	    yyin = fopen (tmps, "r");
-printf("OPENING: %s -> %p\n", tmps, yyin);
+printf("OPENING: %s -> %p\n", tmps, (void *)yyin);
 	    if (!yyin)
 	      {
 	        /* Special case this one, we get it all the time... */

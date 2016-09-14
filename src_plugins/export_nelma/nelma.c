@@ -943,7 +943,7 @@ static void nelma_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord heig
 #if 0
 	printf("draw_arc %d,%d %dx%d %d..%d %d..%d\n", cx, cy, width, height, start_angle, delta_angle, sa, ea);
 	printf("gdImageArc (%p, %d, %d, %d, %d, %d, %d, %d)\n",
-				 im, SCALE_X(cx), SCALE_Y(cy), SCALE(width), SCALE(height), sa, ea, gc->color->c);
+				 (void *)im, SCALE_X(cx), SCALE_Y(cy), SCALE(width), SCALE(height), sa, ea, gc->color->c);
 #endif
 	use_gc(gc);
 	gdImageSetThickness(nelma_im, 0);

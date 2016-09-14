@@ -98,7 +98,7 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 		short_conns_maxid = curr->ID;
 	num_short_conns++;
 
-	debprintf(" found %d %d/%p type %d from %d\n", current_type, curr->ID, current_obj, type, from == NULL ? -1 : from->ID);
+	debprintf(" found %d %d/%p type %d from %d\n", current_type, curr->ID, (void *)current_obj, type, from == NULL ? -1 : from->ID);
 }
 
 /* returns 0 on succes */
@@ -168,7 +168,7 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 		const char *typ;
 		ElementType *parent;
 		n->gid = gids;
-		debprintf(" {%d} found %d %d/%p type %d from %d\n", n->gid, n->to_type, n->to->ID, n->to, n->type, n->from_id);
+		debprintf(" {%d} found %d %d/%p type %d from %d\n", n->gid, n->to_type, n->to->ID, (void *)n->to, n->type, n->from_id);
 		lut_by_oid[n->to->ID] = n;
 		lut_by_gid[n->gid] = n;
 
@@ -308,7 +308,7 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 				short_conn_t *s;
 				debprintf("%d:", i);
 				s = lut_by_gid[solution[i]];
-				debprintf("%d %p", solution[i], s);
+				debprintf("%d %p", solution[i], (void *)s);
 				if (s != NULL) {
 					SET_FLAG(PCB_FLAG_WARN, s->to);
 					debprintf("  -> %d", s->to->ID);

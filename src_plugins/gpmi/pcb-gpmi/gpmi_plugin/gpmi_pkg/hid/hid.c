@@ -127,7 +127,7 @@ dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 					fact = unit_to_factor(u);
 				pcb_snprintf(buff, sizeof(buff), "%f", fact);
 				res = buff;
-/*				fprintf(stderr, "unit idx: %d %p res='%s'\n", v->int_value, u, res);*/
+/*				fprintf(stderr, "unit idx: %d %p res='%s'\n", v->int_value, (void *)u, res);*/
 			}
 			break;
 		case HIDA_Mixed:

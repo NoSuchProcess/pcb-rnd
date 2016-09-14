@@ -39,7 +39,7 @@ dctx_t *debug_draw_dctx(void)
 	need_ddh(NULL);
 	gc = ddh->make_gc();
 	if (gc == NULL) {
-		Message(PCB_MSG_DEFAULT, "debug_draw_dctx(): failed to make a new gc on ddh %p\n", ddh);
+		Message(PCB_MSG_DEFAULT, "debug_draw_dctx(): failed to make a new gc on ddh %p\n", (void *)ddh);
 		return NULL;
 	}
 
