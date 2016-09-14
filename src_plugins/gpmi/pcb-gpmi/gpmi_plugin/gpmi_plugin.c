@@ -42,7 +42,7 @@ static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
 	gpmi_hid_gui_inited = 1;
 }
 
-static void cmd_reload(char *name)
+static void cmd_reload(const char *name)
 {
 	hid_gpmi_script_info_t *i;
 	if (name != NULL) {
@@ -58,7 +58,7 @@ static void cmd_reload(char *name)
 	}
 }
 
-static int action_gpmi_scripts(int argc, char **argv, Coord x, Coord y)
+static int action_gpmi_scripts(int argc, const char **argv, Coord x, Coord y)
 {
 	if (argc == 0) {
 		gpmi_hid_manage_scripts();
@@ -104,7 +104,7 @@ static int action_gpmi_scripts(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int action_gpmi_rehash(int argc, char **argv, Coord x, Coord y)
+static int action_gpmi_rehash(int argc, const char **argv, Coord x, Coord y)
 {
 	cmd_reload(NULL);
 	return 0;
@@ -138,7 +138,8 @@ static gpmi_package *pkg_scripts = NULL;
 
 static void load_base_and_cfg(void)
 {
-	char *dir, *libdirg, *libdirh, *wdir, *wdirh, *hdirh, *home;
+	char *dir, *libdirg, *libdirh, *wdir, *wdirh, *hdirh;
+	const char *home;
 	void **gpmi_asm_scriptname;
 
 	libdirg = resolve_path_inplace(Concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S "plugins", NULL), 0);
