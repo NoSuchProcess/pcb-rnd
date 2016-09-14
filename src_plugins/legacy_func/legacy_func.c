@@ -24,6 +24,11 @@
  *  haceaton@aplcomm.jhuapl.edu
  *
  */
+
+/* for popen() */
+#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
+
 #include <genvector/gds_char.h>
 #include "config.h"
 #include "global.h"
