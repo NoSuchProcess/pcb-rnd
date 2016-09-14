@@ -735,17 +735,17 @@ below the menu bar, the layer controls along the left, the layout area to the
 right of the layer controls, and the status line at the bottom of the window.
 
 <ul class="menu">
-<li><a accesskey="1" href="#Menu">Menu</a>
-<li><a accesskey="2" href="#Status_002dline-and-Input_002dfield">Status-line and Input-field</a>:   What is the program configuration. 
-<li><a accesskey="3" href="#Layer-Controls">Layer Controls</a>:                Switch layers on/off; change current one. 
-<li><a accesskey="4" href="#Tool-Selectors">Tool Selectors</a>:                Select a layout tool. 
-<li><a accesskey="5" href="#Layout-Area">Layout Area</a>: 		         Where the layout is drawn. 
+<li><a accesskey="1" href="#Menu">Menu Bar</a>:                                Use a menu
+<li><a accesskey="2" href="#Tool-Selectors">Tool Selectors</a>:                Select a layout tool.
+<li><a accesskey="3" href="#Layer-Controls">Layer Controls</a>:                Switch layers on/off; change current one.
+<li><a accesskey="4" href="#Layout-Area">Layout Area</a>: 		         Where the layout is drawn. 
+<li><a accesskey="5" href="#Status_002dline-and-Input_002dfield">Status-line and Input-field</a>:   Reporting the current configuration.
 </ul>
 
 <div class="node">
 <a name="Menu"></a>
 <p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Status_002dline-and-Input_002dfield">Status-line and Input-field</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Tool-Selectors">Tool Selectors</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Application-Window">Application Window</a>
 
 </div>
@@ -805,33 +805,7 @@ files.
      <a name="index-grid_002c-alignment-33"></a>
      <a name="index-zoom_002c-setting-34"></a>
      <br>
-<u style="color:red;">     <dt><b>Screen</b>
-     <dd>The <b>Screen</b> menu supports most functions related to the whole Layout
-     area. There are various entries to change the grid to some popular values,
-     the zoom factor, and which kind of element name is displayed.  You can
-     also re-align the grid origin and turn on and off the display of the
-     grid.</u>
-<u style="color:red;">Before changing the grid alignment, I recommend that you zoom in as close as</u> possible so that you're sure the grid points appear exactly where you want them.
 
-<u style=color:red;">     <p><a name="index-solder-mask_002c-viewing-and-editing-35"></a>The <b>Screen</b> menu also allows you to turn on and off the
-visibility of the solder-mask layer. When the solder-mask layer
-is made visible it obscures most of the layout, so only turn
-this on when you really want to know what the solder-mask will
-look like. The solder-mask that you see belongs to the
-side of the board you are viewing, which can be changed with
-the &lsquo;<samp><span class="samp">view solder side</span></samp>&rsquo; option, also found in the <b>Screen</b> menu. 
-When the solder-mask is displayed, the pin and pad clearance adjustments
-(see <a href="#Line-Objects">Line Objects</a>) alter the size of mask
-cut-outs.</u>
-
-   <u style="color:red;">  <p><a name="index-Sizes_002c-popup-menu-36"></a><br><dt><b>Sizes</b><dd>The <b>Sizes</b> menu allows you to select a group of line thickness, via diameter, via drill
-size, and clearance (keepaway) (collectively called a "routing style") to be copied to the "active" sizes. 
-You can also change the names given to the routing styles and adjust their values from
-this menu.  The "active" sizes are also adjustable from this menu. 
-The "active" sizes are shown in the status-line and control the initial size of new vias,
-drilling holes, lines, clearances, text-objects and also the maximum dimensions of the
-board layout.
-</u>
      <p><a name="index-Settings_002c-popup-menu-37"></a><a name="index-unique-names-38"></a><a name="index-rubber-band-39"></a><a name="index-snap-to-pins-40"></a><a name="index-clearance_002c-for-new-lines-41"></a><br><dt><b>Settings</b><dd>The <b>Settings</b> menu controls several operating configuration
 parameters. The &lsquo;<samp><span class="samp">edit layer groups</span></samp>&rsquo; entry brings up a dialog
 that allows you to change the way layers are grouped. Layer grouping
@@ -894,8 +868,11 @@ areas that are too close together, or connections that touch too
 tenuously for reliable production. The DRC stops when the first
 problem is encountered so after fixing a problem be sure to
 run it again until no problems are found.
-     <pre class="display">          <em>Warning:</em> <b>COPPER TEXT IS IGNORED BY THE DRC CHECKER</b>.
-</pre>
+     <pre class="display">          <em>Warning:</em> <b>COPPER TEXT IS IGNORED BY THE DRC CHECKER</b>. </pre>
+
+     <p><a name="index-Plugins_002c-popup-menu-55"></a><br><dt><b>Plugins</b><dd>The <b>Plugins</b> allows the user to
+		 manage <code>pcb-rnd's</code> plugins.
+
      <p><a name="index-Info_002c-popup-menu-51"></a><a name="index-report-52"></a><a name="index-object-report-53"></a><a name="index-drill-report-54"></a><br><dt><b>Info</b><dd>The &lsquo;<samp><span class="samp">generate object report</span></samp>&rsquo; entry from the <b>Info</b> menu
 provides a way to get detailed information
 about an object, such as its coordinates, dimensions, etc. 
@@ -919,8 +896,7 @@ to try some things out. From the <b>File</b> menu choose
 load the file &lsquo;<samp><span class="samp">tut1.pcb</span></samp>&rsquo;.
 
 <div class="node">
-<a name="Status-line-and-Input-field"></a>
-<a name="Status_002dline-and-Input_002dfield"></a>
+<a name="Tool-Selectors"></a>
 <p><hr>
 Next:&nbsp;<a rel="next" accesskey="n" href="#Layer-Controls">Layer Controls</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="#Menu">Menu</a>,
@@ -928,144 +904,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Application-Window">Application Window
 
 </div>
 
-<h4 class="subsection">3.1.2 The Status-line and Input-field</h4>
-
-<p><a name="index-status-information-56"></a><a name="index-displaying-status-information-57"></a><a name="index-input_002dfield_002c-position-of-58"></a>
-The status-line is located at the bottom edge of the main window. 
-During normal operation the status information is visible there. 
-When a selected menu operation requires an additional button click, the
-status-line is replaced by a message telling you to position the cursor
-and click. 
-When a text input is required, the status-line is replaced by the
-Input-field which has a prompt for typing the input.
-
-   <p>The status-line shows, from left to right, the side of the board that you
-are viewing (<em>Tab</em> key changes this), the current grid values,
-if new lines are restricted to 45 degrees,
-which type of 45 degree line mode is active, whether rubberband move and
-rotate mode is on (R), and the zoom factor. 
-This information is followed by the active line-width, via-size
-and drilling hole, keepaway spacing, and text scaling. Last is the active buffer number and the
-name of the layout. An asterisk appearing at the far left indicates that the
-layout has been modified since the last save. 
-Note that the name of the layout is not the same
-thing as the filename of the layout. 
-Change the grid factor to 1.0 mm from the <b>Screen</b> menu. Observe how the
-status line shows the new grid setting. Except for the case of the metric
-grid, all dimensions in the status line are in units of 0.001 inch (1 mil).
-
-   <p>The input-field pops up (temporarily replacing the status-line) whenever user input
-is required. Two keys are bound to the input field: the <em>Escape</em> key
-aborts the input, <em>Return</em> accepts it. Let's change the name of a component
-on the board to see how the input-field works. Position the cross hair over
-R5, and press the <em>N</em> key. The input field pops-up showing the name
-for you to edit. Go ahead and change the name, then hit return. Notice the name
-of the element changed. Now undo the change by pressing the <em>U</em> key. You can
-position the cross hair over the name, or the element before pressing the
-<em>N</em> key.
-
-   <p>Now select &lsquo;<samp><span class="samp">realign grid</span></samp>&rsquo; from the <b>Screen</b> menu. Notice that the
-status line has been replaced with an instruction to position the cursor
-where you want a grid point to fall. In this case, since the cross hair
-can only fall on a grid point, you must move the tip of the finger cursor
-to the place where you want a grid point to appear. Do not worry that
-the cross hair is not coincident with the cursor. Click <em>Btn1</em> at
-your chosen location. See how the grid has shifted, and the status line
-has returned.
-
-   <p>The present cross hair position is displayed in the upper right corner of the window. 
-Normally this position is an absolute coordinate, but you can anchor a marker at
-the cross hair location by pressing <em>Ctrl-M</em> (try it now) and then the
-display will read both the absolute cross hair position as well as the difference
-between it and the marker. The numbers enclosed in &lt; &gt; are the X and Y distances
-between the cross hair and the mark, while the numbers enclosed in parenthesis
-are the distance and angle from the mark to the cross hair. The values displayed
-are always in units of 0.001 inch (1 mil). 
-Pressing <em>Ctrl-M</em> again turns the marker off.
-
-<div class="node">
-<a name="Layer-Controls"></a>
-<p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Tool-Selectors">Tool Selectors</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Status_002dline-and-Input_002dfield">Status-line and Input-field</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="#Application-Window">Application Window</a>
-
-</div>
-
-<h4 class="subsection">3.1.3 The Layer Controls</h4>
-
-<p><a name="index-layer-controls-59"></a><a name="index-layers_002c-switching-on_002foff-60"></a><a name="index-layers_002c-changing-which-is-active-61"></a><a name="index-change-active-layer-62"></a>
-The layer control panel, located in the upper left, is used to turn on
-and off the display of layer groups and to select the active drawing layer. 
-If a layer hasn't been named, the label "<em>(unknown)</em>" is used as the default. 
-If this happens, it probably means the application resources are not installed
-properly.
-
-   <p>The upper buttons are used to switch layers on and off. Click
-<em>&lt;Btn1&gt;</em> on one or more of them. Each click toggles the setting. 
-If you turn off the currently active layer, another one that is visible
-will become active. If there are no others visible, you will not be
-able to turn off the active layer. 
-When the layers are grouped, clicking on these buttons will toggle
-the visibility of all layers in the same group. This is a good idea because
-layers in the same group reside on the same physical layer of
-the actual board. Notice that this example has 2 groups each having
-3 layers, plus two other layers named &lsquo;<samp><span class="samp">unused</span></samp>&rsquo;. 
-Use the &lsquo;<samp><span class="samp">Edit layer groups</span></samp>&rsquo; option in the &lsquo;<samp><span class="samp">Settings</span></samp>&rsquo; menu to
-change the layer groupings in the lesstif GUI or the &lsquo;<samp><span class="samp">Preferences</span></samp>&rsquo;
-dialog from the &lsquo;<samp><span class="samp">File</span></samp>&rsquo; menu in the GTK+ GUI. Note that changing the
-groupings can radically alter the connectivity on the board. 
-Grouping layers is only useful for helping you to color-code
-signals in your layout. Note that grouping layers actually reduces the number
-of different physical layers available for your board, so to make an eight
-layer board, you cannot group any layers.
-
-   <p>The <em>far side</em> button turns on and off the visibility of elements
-(including SMD pads) on the opposite (to the side you're viewing)
-board side, as well as silk screening on that side. It does not
-hide the x-ray view of the other copper layers, these must be turned off
-separately if desired.  Use the <em>tab</em> key to view the entire board from the other
-side.  To see a view of what the back side of the board will actually look like,
-make the solder layer the active layer then press <em>tab</em> until the status
-line says "solder" on the right, then turn off the visibility of all layers
-except solder, pins/pads, vias, and silk. Now turn them all back on.
-
-   <p>The lowest button, named <em>active</em>, is used to change the active
-drawing layer. Pressing <em>&lt;Btn1&gt;</em> on it pops up a menu to select which
-layer should be active. 
-Each entry is labeled with the layer's name and drawn in its color. 
-The active layer is automatically made visible. The active layer is
-always drawn on top of the other layers, so the ordering of layers
-on the screen does not generally reflect the ordering of the manufactured
-board. Only the solder, component, silkscreen, and solder-mask layers
-are always drawn in their physical order. Bringing the active layer
-to the top makes it easier to select and change objects on the active layer. 
-Try changing the active layer's name to <em>ABC</em> by selecting
-&lsquo;<samp><span class="samp">edit name of active layer</span></samp>&rsquo; from the &lsquo;<samp><span class="samp">Edit</span></samp>&rsquo; menu. 
-Changing the active layer can also be done by pressing keys
-<em>1..MAX_LAYER</em>.
-
-   <p>Turn off the visibility of the component layer. 
-Now make the component layer the active layer. Notice that it
-automatically became visible. Try setting a few
-other layers as the active layer. You should also experiment
-with turning on and off each of the layers to see what happens.
-
-   <p>The netlist layer is a special layer for adding connections to
-the netlist by drawing rat lines. This is not the recommended
-way to add to the netlist, but occasionally may be convenient. 
-To learn how to use the netlist layer see <a href="#Net-Objects">Net Objects</a>.
-
-<div class="node">
-<a name="Tool-Selectors"></a>
-<p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Layout-Area">Layout Area</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Layer-Controls">Layer Controls</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="#Application-Window">Application Window</a>
-
-</div>
-
-<h4 class="subsection">3.1.4 The Tool Selectors</h4>
+<h4 class="subsection">3.1.2 The Tool Selectors</h4>
 
 <p><a name="index-mode-selection-63"></a><a name="index-tool-selection-64"></a><a name="index-selecting-a-new-tool-65"></a>
 The tool selector buttons reside below the layer controls. 
@@ -1186,15 +1025,92 @@ Other than noticing your inability to manipulate something, the only
 way to tell an object is locked is with a report from the <b>Info</b>
 menu. Use the Lock tool sparingly.
 
+
 <div class="node">
-<a name="Layout-Area"></a>
+<a name="Layer-Controls"></a>
 <p><hr>
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Tool-Selectors">Tool Selectors</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Layout-Area">Layout Area</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Layer-Controls">Layer Controls</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Application-Window">Application Window</a>
 
 </div>
 
-<h4 class="subsection">3.1.5 Layout Area</h4>
+<h4 class="subsection">3.1.3 The Layer Controls</h4>
+
+<p><a name="index-layer-controls-59"></a><a name="index-layers_002c-switching-on_002foff-60"></a><a name="index-layers_002c-changing-which-is-active-61"></a><a name="index-change-active-layer-62"></a>
+The layer control panel, located in the upper left, is used to turn on
+and off the display of layer groups and to select the active drawing layer. 
+If a layer hasn't been named, the label "<em>(unknown)</em>" is used as the default. 
+If this happens, it probably means the application resources are not installed
+properly.
+
+   <p>The upper buttons are used to switch layers on and off. Click
+<em>&lt;Btn1&gt;</em> on one or more of them. Each click toggles the setting. 
+If you turn off the currently active layer, another one that is visible
+will become active. If there are no others visible, you will not be
+able to turn off the active layer. 
+When the layers are grouped, clicking on these buttons will toggle
+the visibility of all layers in the same group. This is a good idea because
+layers in the same group reside on the same physical layer of
+the actual board. Notice that this example has 2 groups each having
+3 layers, plus two other layers named &lsquo;<samp><span class="samp">unused</span></samp>&rsquo;. 
+Use the &lsquo;<samp><span class="samp">Edit layer groups</span></samp>&rsquo; option in the &lsquo;<samp><span class="samp">Settings</span></samp>&rsquo; menu to
+change the layer groupings in the lesstif GUI or the &lsquo;<samp><span class="samp">Preferences</span></samp>&rsquo;
+dialog from the &lsquo;<samp><span class="samp">File</span></samp>&rsquo; menu in the GTK+ GUI. Note that changing the
+groupings can radically alter the connectivity on the board. 
+Grouping layers is only useful for helping you to color-code
+signals in your layout. Note that grouping layers actually reduces the number
+of different physical layers available for your board, so to make an eight
+layer board, you cannot group any layers.
+
+   <p>The <em>far side</em> button turns on and off the visibility of elements
+(including SMD pads) on the opposite (to the side you're viewing)
+board side, as well as silk screening on that side. It does not
+hide the x-ray view of the other copper layers, these must be turned off
+separately if desired.  Use the <em>tab</em> key to view the entire board from the other
+side.  To see a view of what the back side of the board will actually look like,
+make the solder layer the active layer then press <em>tab</em> until the status
+line says "solder" on the right, then turn off the visibility of all layers
+except solder, pins/pads, vias, and silk. Now turn them all back on.
+
+   <p>The lowest button, named <em>active</em>, is used to change the active
+drawing layer. Pressing <em>&lt;Btn1&gt;</em> on it pops up a menu to select which
+layer should be active. 
+Each entry is labeled with the layer's name and drawn in its color. 
+The active layer is automatically made visible. The active layer is
+always drawn on top of the other layers, so the ordering of layers
+on the screen does not generally reflect the ordering of the manufactured
+board. Only the solder, component, silkscreen, and solder-mask layers
+are always drawn in their physical order. Bringing the active layer
+to the top makes it easier to select and change objects on the active layer. 
+Try changing the active layer's name to <em>ABC</em> by selecting
+&lsquo;<samp><span class="samp">edit name of active layer</span></samp>&rsquo; from the &lsquo;<samp><span class="samp">Edit</span></samp>&rsquo; menu. 
+Changing the active layer can also be done by pressing keys
+<em>1..MAX_LAYER</em>.
+
+   <p>Turn off the visibility of the component layer. 
+Now make the component layer the active layer. Notice that it
+automatically became visible. Try setting a few
+other layers as the active layer. You should also experiment
+with turning on and off each of the layers to see what happens.
+
+   <p>The netlist layer is a special layer for adding connections to
+the netlist by drawing rat lines. This is not the recommended
+way to add to the netlist, but occasionally may be convenient. 
+To learn how to use the netlist layer see <a href="#Net-Objects">Net Objects</a>.
+
+
+
+<div class="node">
+<a name="Layout-Area"></a>
+<p><hr>
+Next:&nbsp;<a rel="next" accesskey="n" href="#Status-line-and-Input-field">Status-line and Input-field</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Layer-Controls">Layer Controls</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Application-Window">Application Window</a>
+
+</div>
+
+<h4 class="subsection">3.1.4 Layout Area</h4>
 
 <p><a name="index-grid-66"></a>
 The layout area is where you see the layout. The cursor shape depends
@@ -1211,14 +1127,76 @@ The cursor can also be moved in the layout area with the cursor (arrow) keys or,
 distances, by pressing the <em>Shift</em> modifier together with a cursor key.
 
 <div class="node">
+<a name="Status-line-and-Input-field"></a>
+<a name="Status_002dline-and-Input_002dfield"></a>
+<p><hr>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Layout-Area">Layout Area</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Application-Window">Application Window</a>
+</div>
+
+<h4 class="subsection">3.1.5 The Status-line and Input-field</h4>
+
+<p><a name="index-status-information-56"></a><a name="index-displaying-status-information-57"></a><a name="index-input_002dfield_002c-position-of-58"></a>
+The status-line is located at the bottom edge of the main window. 
+During normal operation the status information is visible there. 
+When a selected menu operation requires an additional button click, the
+status-line is replaced by a message telling you to position the cursor
+and click. 
+When a text input is required, the status-line is replaced by the
+Input-field which has a prompt for typing the input.
+
+   <p>The status-line shows, from left to right, the side of the board that you
+are viewing (<em>Tab</em> key changes this), the current grid values,
+if new lines are restricted to 45 degrees,
+which type of 45 degree line mode is active, whether rubberband move and
+rotate mode is on (R), and the zoom factor. 
+This information is followed by the active line-width, via-size
+and drilling hole, keepaway spacing, and text scaling. Last is the active buffer number and the
+name of the layout. An asterisk appearing at the far left indicates that the
+layout has been modified since the last save. 
+Note that the name of the layout is not the same
+thing as the filename of the layout. 
+Change the grid factor to 1.0 mm from the <b>Screen</b> menu. Observe how the
+status line shows the new grid setting. Except for the case of the metric
+grid, all dimensions in the status line are in units of 0.001 inch (1 mil).
+
+   <p>The input-field pops up (temporarily replacing the status-line) whenever user input
+is required. Two keys are bound to the input field: the <em>Escape</em> key
+aborts the input, <em>Return</em> accepts it. Let's change the name of a component
+on the board to see how the input-field works. Position the cross hair over
+R5, and press the <em>N</em> key. The input field pops-up showing the name
+for you to edit. Go ahead and change the name, then hit return. Notice the name
+of the element changed. Now undo the change by pressing the <em>U</em> key. You can
+position the cross hair over the name, or the element before pressing the
+<em>N</em> key.
+
+   <p>Now select &lsquo;<samp><span class="samp">realign grid</span></samp>&rsquo; from the <b>Screen</b> menu. Notice that the
+status line has been replaced with an instruction to position the cursor
+where you want a grid point to fall. In this case, since the cross hair
+can only fall on a grid point, you must move the tip of the finger cursor
+to the place where you want a grid point to appear. Do not worry that
+the cross hair is not coincident with the cursor. Click <em>Btn1</em> at
+your chosen location. See how the grid has shifted, and the status line
+has returned.
+
+   <p>The present cross hair position is displayed in the upper right corner of the window. 
+Normally this position is an absolute coordinate, but you can anchor a marker at
+the cross hair location by pressing <em>Ctrl-M</em> (try it now) and then the
+display will read both the absolute cross hair position as well as the difference
+between it and the marker. The numbers enclosed in &lt; &gt; are the X and Y distances
+between the cross hair and the mark, while the numbers enclosed in parenthesis
+are the distance and angle from the mark to the cross hair. The values displayed
+are always in units of 0.001 inch (1 mil). 
+Pressing <em>Ctrl-M</em> again turns the marker off.
+
+<div class="node">
 <a name="Log-Window"></a>
 <p><hr>
 Next:&nbsp;<a rel="next" accesskey="n" href="#Library-Window">Library Window</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Application-Window">Application Window</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Status_002dline-and-Input_002dfield">Status-line and Input-field</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Getting-Started">Getting Started</a>
 
 </div>
-
 <h3 class="section">3.2 Log Window</h3>
 
 <p><a name="index-log-window-67"></a><a name="index-messages-68"></a>
@@ -2101,7 +2079,8 @@ Can be later converted to pdf.
 <div class="node">
 <a name="Connection-Lists"></a>
 <p><hr>
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Vendor-drill-mapping">Vendor drill mapping</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Connection-Lists">Connection Lists</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Exporting">Exporting</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Getting-Started">Getting Started</a>
 
 </div>
@@ -2414,7 +2393,6 @@ cursor coordinates.
 <div class="node">
 <a name="Vendor-drill-mapping"></a>
 <p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Connection-Lists">Connection Lists</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="#Measuring-distances">Measuring distances</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Getting-Started">Getting Started</a>
 
