@@ -24,6 +24,10 @@
  *
  */
 
+/* for popen() */
+#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
+
 #include "config.h"
 
 #ifdef HAVE_UNISTD_H
