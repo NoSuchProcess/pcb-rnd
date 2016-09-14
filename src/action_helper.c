@@ -792,8 +792,7 @@ void NotifyMode(void)
 
 
 				if (conf_core.editor.swap_start_direction) {
-					int line_refraction = conf_core.editor.line_refraction;
-					conf_setf(CFR_DESIGN,"editor/line_refraction", -1, "%d", line_refraction ^= 3);
+					conf_setf(CFR_DESIGN,"editor/line_refraction", -1, "%d",conf_core.editor.line_refraction ^ 3);
 				}
 			}
 			if (conf_core.editor.orthogonal_moves) {
