@@ -13,6 +13,7 @@ put /local/pcb/compat_inc [@
 @?/target/libs/fs/mkdtemp/includes@
 @?/target/libs/fs/readdir/includes@
 @?/target/libs/userpass/getpwuid/includes@
+@?/target/libs/math/round/includes@
 @]
 
 put /tmpasm/IFS {\n}

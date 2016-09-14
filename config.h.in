@@ -73,6 +73,9 @@ print_ternary libs/userpass/getpwuid/presents {#define HAVE_GETPWUID 1} {/* #und
 print {\n\n/* Define to 1 if you have the `rint' function. */\n}
 print_ternary libs/math/rint/presents {#define HAVE_RINT 1} {/* #undef HAVE_RINT */}
 
+print {\n\n/* Define to 1 if you have the `round' function. */\n}
+print_ternary libs/math/round/presents {#define HAVE_ROUND 1} {/* #undef HAVE_ROUND */}
+
 print {\n\n/* Wrapper for S_ISLNK(x); always return 0 if S_ISLNK doesn't exist */\n}
 switch ?/target/libs/fs/stat/macros/S_ISLNK
 	case {^$} print {#define WRAP_S_ISLNK(x) 0}; end;

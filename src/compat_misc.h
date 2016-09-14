@@ -37,10 +37,6 @@ char *pcb_strdup(const char *s);
 
 #define pcb_strdup_null(x) (((x) != NULL) ? pcb_strdup (x) : NULL)
 
-
-#warning TODO: detect this from scconfig
-#undef round
-extern double round(double x);
-#define pcb_round round
+double pcb_round(double x);
 
 #endif /* PCB_COMPAT_MISC_H */

@@ -231,6 +231,7 @@ int hook_detect_target()
 	require("libs/fs/realpath/*",  0, 0);
 	require("libs/fs/readdir/*",  0, 1);
 	require("libs/math/rint/*",  0, 0);
+	require("libs/math/round/*",  0, 0);
 	require("libs/userpass/getpwuid/*",  0, 0);
 
 	if (require("libs/ldl",  0, 0) != 0) {

@@ -101,3 +101,16 @@ char *pcb_strdup(const char *s)
 	memcpy(o, s, l+1);
 	return o;
 }
+
+#ifdef HAVE_ROUND
+#undef round
+double pcb_round(double x)
+{
+	return round(x);
+}
+#else
+double pcb_round(double x)
+{
+#error need to implement round()
+}
+#endif
