@@ -507,7 +507,7 @@ static int parse_pad(ElementType *el, lht_node_t *obj)
 }
 
 
-static int parse_element(PcbType *pcb, DataType *dt, lht_node_t *obj)
+static int parse_element(PCBType *pcb, DataType *dt, lht_node_t *obj)
 {
 	ElementType *elem = GetElementMemory(dt);
 	lht_node_t *lst, *n;
@@ -538,7 +538,7 @@ static int parse_element(PcbType *pcb, DataType *dt, lht_node_t *obj)
 	/* Make sure we use some sort of font */
 	if (pcb == NULL)
 		pcb = PCB;
-	SetElementBoundingBox(dt, elem, pcb->Font);
+	SetElementBoundingBox(dt, elem, &pcb->Font);
 	return 0;
 }
 
