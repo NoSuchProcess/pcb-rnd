@@ -346,7 +346,7 @@ static fp_type_t pcb_fp_file_type(const char *fn, void ***tags)
 		ST_WS,
 		ST_COMMENT,
 		ST_ELEMENT,
-		ST_TAG,
+		ST_TAG
 	} state = ST_WS;
 	char *tag = NULL;
 	int talloced = 0, tused = 0;
