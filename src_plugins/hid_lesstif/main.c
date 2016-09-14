@@ -301,9 +301,9 @@ static const char *cur_clip()
 		return "+";
 	if (conf_core.editor.all_direction_lines)
 		return "*";
-	if (PCB->Clipping == 0)
+	if (conf_core.editor.line_refraction == 0)
 		return "X";
-	if (PCB->Clipping == 1)
+	if (conf_core.editor.line_refraction == 1)
 		return "_/";
 	return "\\_";
 }

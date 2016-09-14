@@ -138,7 +138,7 @@ PCBTypePtr CreateNewPCB_(bool SetDefaultNames)
 	ptr->RatDraw = false;
 
 	/* NOTE: we used to set all the pcb flags on ptr here, but we don't need to do that anymore due to the new conf system */
-	ptr->Clipping = 1;						/* this is the most useful starting point for now */
+						/* this is the most useful starting point for now */
 
 	ptr->Grid = conf_core.editor.grid;
 	ParseGroupString(conf_core.design.groups, &ptr->LayerGroups, MAX_LAYER);

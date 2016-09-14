@@ -389,10 +389,10 @@ void AdjustAttachedObjects(void)
 		break;
 		/* line creation mode */
 	case PCB_MODE_LINE:
-		if (PCB->RatDraw || PCB->Clipping == 0)
+		if (PCB->RatDraw || conf_core.editor.line_refraction == 0)
 			AdjustAttachedLine();
 		else
-			AdjustTwoLine(PCB->Clipping - 1);
+			AdjustTwoLine(conf_core.editor.line_refraction - 1);
 		break;
 		/* point insertion mode */
 	case PCB_MODE_INSERT_POINT:
@@ -709,7 +709,7 @@ void NotifyMode(void)
 			LineTypePtr line;
 			int maybe_found_flag;
 
-			if (PCB->Clipping
+			if (conf_core.editor.line_refraction
 					&& Crosshair.AttachedLine.Point1.X ==
 					Crosshair.AttachedLine.Point2.X
 					&& Crosshair.AttachedLine.Point1.Y ==
@@ -792,7 +792,8 @@ void NotifyMode(void)
 
 
 				if (conf_core.editor.swap_start_direction) {
-					PCB->Clipping ^= 3;
+					int line_refraction = conf_core.editor.line_refraction;
+					conf_setf(CFR_DESIGN,"editor/line_refraction", -1, "%d", line_refraction ^= 3);
 				}
 			}
 			if (conf_core.editor.orthogonal_moves) {

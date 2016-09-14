@@ -551,7 +551,7 @@ void DrawAttached(void)
 													Crosshair.AttachedLine.Point2.X,
 													Crosshair.AttachedLine.Point2.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness);
 			/* draw two lines ? */
-			if (PCB->Clipping)
+			if (conf_core.editor.line_refraction)
 				XORDrawAttachedLine(Crosshair.AttachedLine.Point2.X,
 														Crosshair.AttachedLine.Point2.Y,
 														Crosshair.X, Crosshair.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness);
@@ -561,7 +561,7 @@ void DrawAttached(void)
 														Crosshair.AttachedLine.Point1.Y,
 														Crosshair.AttachedLine.Point2.X,
 														Crosshair.AttachedLine.Point2.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
-				if (PCB->Clipping)
+				if (conf_core.editor.line_refraction)
 					XORDrawAttachedLine(Crosshair.AttachedLine.Point2.X,
 															Crosshair.AttachedLine.Point2.Y,
 															Crosshair.X, Crosshair.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
