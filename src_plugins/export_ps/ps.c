@@ -936,8 +936,8 @@ static int ps_set_layer(const char *name, int group, int empty)
 						"/ty ts neg def /tx 0 def /Helvetica findfont ts scalefont setfont\n"
 						"/t { moveto lineto stroke } bind def\n"
 						"/dr { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
-						"      x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath stroke } bind def\n"
-						"/r { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
+						"      x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath stroke } bind def\n");
+		fprintf(global.f,"/r { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
 						"     x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath fill } bind def\n"
 						"/c { 0 360 arc fill } bind def\n"
 						"/a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def\n");
