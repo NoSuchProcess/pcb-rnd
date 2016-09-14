@@ -55,7 +55,7 @@
 #include "rats_mincut_conf.h"
 conf_mincut_t conf_mincut;
 
-#define debprintf(x...)
+static void debprintf(const char *fmt, ...) {}
 
 typedef struct short_conn_s short_conn_t;
 struct short_conn_s {
