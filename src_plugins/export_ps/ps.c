@@ -992,7 +992,7 @@ static void ps_set_color(hidGC gc, const char *name)
 		gc->erase = 1;
 	}
 	else if (global.incolor) {
-		int r, g, b;
+		unsigned int r, g, b;
 		sscanf(name + 1, "%02x%02x%02x", &r, &g, &b);
 		gc->r = r;
 		gc->g = g;
