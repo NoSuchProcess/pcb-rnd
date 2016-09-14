@@ -20,7 +20,7 @@ struct acontext_s {
 };
 
 static int action_argc = 0;
-static char **action_argv = NULL;
+static const char **action_argv = NULL;
 
 const char *action_arg(int argn)
 {
@@ -30,11 +30,11 @@ const char *action_arg(int argn)
 }
 
 
-static int action_cb(int argc, char **argv, Coord x, Coord y)
+static int action_cb(int argc, const char **argv, Coord x, Coord y)
 {
 	acontext_t *ctx = (acontext_t *)current_action;
 	int action_argc_old;
-	char **action_argv_old;
+	const char **action_argv_old;
 
 	/* save argc/argv for action_arg() */
 	action_argc_old = action_argc;
@@ -56,7 +56,7 @@ static void cleanup_action(gpmi_module *mod, gpmi_cleanup *cl)
 {
 	acontext_t *ctx = cl->argv[0].p;
 	hid_remove_action(&ctx->action);
-	free(ctx->action.name);
+	free((char *)ctx->action.name);
 	if (ctx->action.need_coord_msg != NULL)
 		free((char *)ctx->action.need_coord_msg);
 	free((char *)ctx->action.description);
