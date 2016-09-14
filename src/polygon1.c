@@ -101,9 +101,16 @@ int vect_inters2(Vector A, Vector B, Vector C, Vector D, Vector S1, Vector S2);
 #undef DEBUG_ANGLE
 #undef DEBUG
 #ifdef DEBUG
-#define DEBUGP(...) pcb_fprintf(stderr, ## __VA_ARGS__)
+#include <stdarg.h>
+static void DEBUGP(const char *fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+	pcb_vfprintf(stderr, fmt, ap);
+	va_end(ap);
+}
 #else
-#define DEBUGP(...)
+static void DEBUGP(const char *fmt, ...) { }
 #endif
 
 /* ///////////////////////////////////////////////////////////////////////////// * /
