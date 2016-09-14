@@ -195,21 +195,21 @@ int ActionPrintCopyright(int argc, const char **argv, Coord x, Coord y)
 				 "                COPYRIGHT for the original pcb program:\n\n"
 				 "    PCB, interactive printed circuit board design\n"
 				 "    Copyright (C) 1994,1995,1996,1997 Thomas Nau\n"
-				 "    Copyright (C) 1998, 1999, 2000 Harry Eaton\n\n"
-				 "                COPYRIGHT for %s (pcb-rnd) version %s:\n"
+				 "    Copyright (C) 1998, 1999, 2000 Harry Eaton\n\n");
+	printf("                COPYRIGHT for %s (pcb-rnd) version %s:\n"
 				 "    pcb-rnd, a fork of PCB with random improvements\n"
-				 "    Copyright (C) 2013, 2014, 2015, 2016 Tibor 'Igor2' Palinkas\n\n"
-				 "    This program is free software; you can redistribute it and/or modify\n"
+				 "    Copyright (C) 2013, 2014, 2015, 2016 Tibor 'Igor2' Palinkas\n\n", Progname, VERSION);
+	printf("    This program is free software; you can redistribute it and/or modify\n"
 				 "    it under the terms of the GNU General Public License as published by\n"
 				 "    the Free Software Foundation; either version 2 of the License, or\n"
-				 "    (at your option) any later version.\n\n"
-				 "    This program is distributed in the hope that it will be useful,\n"
+				 "    (at your option) any later version.\n\n");
+	printf("    This program is distributed in the hope that it will be useful,\n"
 				 "    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
 				 "    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-				 "    GNU General Public License for more details.\n\n"
-				 "    You should have received a copy of the GNU General Public License\n"
+				 "    GNU General Public License for more details.\n\n");
+	printf("    You should have received a copy of the GNU General Public License\n"
 				 "    along with this program; if not, write to the Free Software\n"
-				 "    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n\n", Progname, VERSION);
+				 "    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n\n");
 	return 0;
 }
 
