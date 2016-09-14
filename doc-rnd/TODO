@@ -8,7 +8,7 @@
 		- visible grid slowing down rendering [Erich]
 		- drawing a lot of rats is slow - does it redraw/flush after each rat? [report:Chris]
 	- gui doesn't show lookahead mode change ( _/ \_ and whitespace) when toggling using / key or --listen and display(cycleclip) on stdin
-	- coord bug. Zoom out max causes horizontally distorted view of drafting plane
+	- coord bug. Zoom out max causes horizontally distorted view of drafting plane. Happens only with gtk.
 	-  Display(cycleclip) [or line_refraction] while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	- c89: separate -Dinline -ansi -pedantic from CFLAGS
 		- plugin opt-out (for gtk) - but make sure hash inlines don't collide
@@ -158,3 +158,5 @@ Low prio:
 	-> AttachForCopy() calls SetCrosshairRange() that then sets corsshair max* which
 	limits the arc to move freely. Problem: this is not arc-specific, this happens with any buffer copy! going for no-design-limit is probably better
 - while drawing a line, the temporary outline should reflect the layer color
+- push&shove
+	- keep 45-deg knee when grabbing a point for drag&drop in non-all-dir
