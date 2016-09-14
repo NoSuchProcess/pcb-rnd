@@ -268,9 +268,7 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 				conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",0);
 				}
 			else {
-				int line_refraction = conf_core.editor.line_refraction;
-				line_refraction = (line_refraction + 1) % 3;
-				conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",line_refraction);
+				conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
 				}
 			AdjustAttachedObjects();
 			notify_crosshair_change(true);
