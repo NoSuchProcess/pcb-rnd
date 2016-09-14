@@ -21,6 +21,10 @@
  *
  */
 
+/* for popen() */
+#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
+
 #include "config.h"
 #include "global.h"
 #include "plugins.h"
