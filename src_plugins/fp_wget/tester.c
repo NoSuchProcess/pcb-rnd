@@ -1,6 +1,10 @@
 #include <stdlib.h>
+#include <string.h>
 #include "global.h"
 #include "gedasymbols.h"
+
+#undef strdup
+char *pcb_strdup(const char *s) { return strdup(s); }
 
 plug_fp_t *plug_fp_chain = NULL;
 
