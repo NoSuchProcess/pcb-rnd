@@ -109,8 +109,25 @@ double pcb_round(double x)
 	return round(x);
 }
 #else
+
+/* Implementation idea borrowed from an old gcc (GPL'd) */
 double pcb_round(double x)
 {
-#error need to implement round()
+	double t;
+
+/* We should check for inf here, but inf is not in C89; if we'd have isinf(),
+   we'd have round() as well and we wouldn't be here at all. */
+
+	if (x >= 0.0) {
+		t = ceil(x);
+		if (t - x > 0.5)
+			t -= 1.0;
+		return t;
+	}
+
+	t = ceil(-x);
+	if ((t + x) > 0.5)
+		t -= 1.0;
+	return -t;
 }
 #endif
