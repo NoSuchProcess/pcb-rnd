@@ -16,6 +16,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+/* for popen() */
+#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
+
 #include <stdlib.h>
 #include <string.h>
 #include "graph.h"
