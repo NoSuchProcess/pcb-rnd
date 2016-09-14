@@ -78,6 +78,7 @@
 #ifndef	PCB_PCB_PRINTF_H
 #define	PCB_PCB_PRINTF_H
 
+#include <stdio.h>
 #include <genvector/gds_char.h>
 #include "unit.h"
 
