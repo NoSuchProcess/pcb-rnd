@@ -34,6 +34,10 @@
 #warning TODO: do not hardwire this, make a function to decide
 #define DEFAULT_FMT "pcb"
 
+/* for popen() */
+#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
+
 #include "config.h"
 #include "conf_core.h"
 
