@@ -3,13 +3,12 @@
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
 	- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
 	- gui window quit queues and doesn't work when action command is active [report:miloh]
-	+ prefernces->userPOV->increments window can get out of sync and disappear [report:miloh]
 	- File->Revert, or re-loading after external change of .pcb file leads to corruption of routing styles. [report:Chris]
 	- render:
 		- visible grid slowing down rendering [Erich]
 		- drawing a lot of rats is slow - does it redraw/flush after each rat? [report:Chris]
-	+ pcb-rnd preferences: clicking Library option 'Restore factory defaults' collapses tree view  
 	- gui doesn't show lookahead mode change ( _/ \_ and whitespace) when toggling using / key or --listen and display(cycleclip) on stdin
+	- coord bug. Zoom out max causes horizontally distorted view of drafting plane
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
