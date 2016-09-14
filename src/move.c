@@ -94,7 +94,7 @@ MoveLineToLayer, MoveTextToLayer, MovePolygonToLayer, NULL, NULL, NULL, NULL, NU
  */
 void MoveElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord DX, Coord DY)
 {
-	pcb_trace("MoveElementLowLevel() %p {\n", Element);
+	pcb_trace("MoveElementLowLevel() %p {\n", (void *)Element);
 	if (Data)
 		r_delete_entry(Data->element_tree, (BoxType *) Element);
 	ELEMENTLINE_LOOP(Element);
@@ -190,7 +190,7 @@ static void *MoveElement(ElementTypePtr Element)
 {
 	bool didDraw = false;
 
-	pcb_trace("MoveElement() enter %p {\n", Element);
+	pcb_trace("MoveElement() enter %p {\n", (void *)Element);
 
 	if (PCB->ElementOn && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		pcb_trace(" ME b1\n");
@@ -213,7 +213,7 @@ static void *MoveElement(ElementTypePtr Element)
 	}
 	if (didDraw)
 		Draw();
-	pcb_trace(" ME end %p\n}\n", Element);
+	pcb_trace(" ME end %p\n}\n", (void *)Element);
 	return (Element);
 }
 

@@ -143,7 +143,7 @@ void events_uninit(void)
 		event_t *e, *next;
 		for(e = events[ev]; e != NULL; e = next) {
 			next = e->next;
-			fprintf(stderr, "WARNING: events_uninit: event %d still has %p registered for cookie %p\n", ev, e->handler, e->cookie);
+			fprintf(stderr, "WARNING: events_uninit: event %d still has %p registered for cookie %p\n", ev, (void *)e->handler, (void *)e->cookie);
 			free(e);
 		}
 	}

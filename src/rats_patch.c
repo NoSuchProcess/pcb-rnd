@@ -324,7 +324,7 @@ int rats_patch_fexport(PCBTypePtr pcb, FILE * f, int fmt_pcb)
 					int p;
 
 					net = rats_patch_find_net(pcb, n->arg1.net_name, NETLIST_INPUT);
-					printf("net: '%s' %p\n", n->arg1.net_name, net);
+					printf("net: '%s' %p\n", n->arg1.net_name, (void *)net);
 					if (net != NULL) {
 						htsp_set(seen, n->arg1.net_name, net);
 						fprintf(f, "%snet_info%s%s%s%s", line_prefix, po, q, n->arg1.net_name, q);

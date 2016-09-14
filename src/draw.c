@@ -1539,7 +1539,7 @@ void ErasePolygon(PolygonTypePtr Polygon)
  */
 void EraseElement(ElementTypePtr Element)
 {
-	pcb_trace("EraseElement() enter %p {\n", Element);
+	pcb_trace("EraseElement() enter %p {\n", (void *)Element);
 	ELEMENTLINE_LOOP(Element);
 	{
 		pcb_trace("line\n");
@@ -1580,7 +1580,7 @@ void EraseElementPinsAndPads(ElementTypePtr Element)
  */
 void EraseElementName(ElementTypePtr Element)
 {
-	pcb_trace("EraseElementName enter %p {\n", Element);
+	pcb_trace("EraseElementName enter %p {\n", (void *)Element);
 	if (TEST_FLAG(PCB_FLAG_HIDENAME, Element)) {
 		pcb_trace("EE nope\n}\n", Element);
 		return;

@@ -1757,7 +1757,7 @@ void debug_polyarea(POLYAREA * p)
 {
 	PLINE *pl;
 
-	fprintf(stderr, "POLYAREA %p\n", p);
+	fprintf(stderr, "POLYAREA %p\n", (void *)p);
 	for (pl = p->contours; pl; pl = pl->next)
 		debug_pline(pl);
 }
@@ -1766,7 +1766,7 @@ void debug_polygon(PolygonType * p)
 {
 	Cardinal i;
 	POLYAREA *pa;
-	fprintf(stderr, "POLYGON %p  %d pts\n", p, p->PointN);
+	fprintf(stderr, "POLYGON %p  %d pts\n", (void *)p, p->PointN);
 	for (i = 0; i < p->PointN; i++)
 		pcb_fprintf(stderr, "\t%d: %#mD\n", i, p->Points[i].X, p->Points[i].Y);
 	if (p->HoleIndexN) {
