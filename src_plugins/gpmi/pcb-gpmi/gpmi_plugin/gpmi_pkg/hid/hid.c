@@ -283,8 +283,8 @@ static void cleanup_hid_reg(gpmi_module *mod, gpmi_cleanup *cl)
 	hid_remove_hid(hid->hid);
 
 	for(n = 0; n < hid->attr_num; n++) {
-		free(hid->attr[n].name);
-		free(hid->attr[n].help_text);
+		free((char *)hid->attr[n].name);
+		free((char *)hid->attr[n].help_text);
 	}
 
 	if (hid->attr != NULL)
