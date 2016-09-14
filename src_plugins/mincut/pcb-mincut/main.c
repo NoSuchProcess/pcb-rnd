@@ -1,10 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "graph.h"
 #include "load.h"
 #include "solve.h"
 
 #define strempty(s) ((s) == NULL ? "" : (s))
+
+#undef strdup
+
+char *pcb_strdup(const char *s) { return strdup(s); }
+int pcb_rand() { return rand(); }
 
 int main()
 {

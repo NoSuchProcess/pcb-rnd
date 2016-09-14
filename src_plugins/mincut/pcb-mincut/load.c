@@ -21,6 +21,7 @@
 #include <string.h>
 #include <assert.h>
 #include "genht/htsi.h"
+#include "genht/hash.h"
 #include "graph.h"
 #include "compat_misc.h"
 
