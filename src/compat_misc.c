@@ -104,6 +104,7 @@ char *pcb_strdup(const char *s)
 
 #ifdef HAVE_ROUND
 #undef round
+extern double round(double x);
 double pcb_round(double x)
 {
 	return round(x);
