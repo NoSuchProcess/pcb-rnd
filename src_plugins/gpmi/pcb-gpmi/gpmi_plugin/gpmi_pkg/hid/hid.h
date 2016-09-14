@@ -1,4 +1,8 @@
 #include <gpmi.h>
+#include "src/pcb-printf.h"
+
+#undef snprintf
+#define snprintf pcb_snprintf
 
 /* Type of an HID attribute (usually a widget on an attribute dialog box) */
 typedef enum hid_attr_type_e {

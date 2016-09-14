@@ -1,4 +1,8 @@
 #include <gpmi.h>
+#include "src/pcb-printf.h"
+
+#undef snprintf
+#define snprintf pcb_snprintf
 
 typedef enum cg_obj_type_e {
 	CG_POINT,   /* x1;y1 */

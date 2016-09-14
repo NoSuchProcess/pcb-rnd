@@ -1,4 +1,8 @@
 #include <gpmi.h>
+#include "src/pcb-printf.h"
+
+#undef snprintf
+#define snprintf pcb_snprintf
 
 /* Generated when an action registered by the script is executed.
    Arguments:

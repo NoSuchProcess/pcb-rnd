@@ -2,6 +2,10 @@
 #include "src/global.h"
 #define FROM_PKG
 #include "hid/hid.h"
+#include "src/pcb-printf.h"
+
+#undef snprintf
+#define snprintf pcb_snprintf
 
 /* Filter on what files a file select dialog should list */
 typedef enum dialog_fileselect_e {

@@ -3,6 +3,11 @@
 #include "src/rtree.h"
 #include "src/create.h"
 #include "src/data.h"
+#include "src/pcb-printf.h"
+
+#undef snprintf
+#define snprintf pcb_snprintf
+
 
 /* Object type search mask bits */
 typedef enum layout_object_mask_e {
