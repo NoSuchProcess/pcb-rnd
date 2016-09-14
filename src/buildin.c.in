@@ -3,9 +3,12 @@ print [@
 #include <stdlib.h>
 #include "plugins.h"
 #include "buildin.h"
+
+@/local/pcb/buildin_init_extern@
+
 void buildin_init(void)
 {
 	pcb_uninit_t uninit_func;
-@/local/pcb/buildin_init@
+@/local/pcb/buildin_init_code@
 }
 @]

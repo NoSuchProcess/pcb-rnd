@@ -4,12 +4,13 @@
 #  /local/pcb/mod/OBJS  full path of all object files
 #  /local/pcb/mod/CONF  config file name
 
-append /local/pcb/buildin_init    [@
+append /local/pcb/buildin_init_extern    [@extern pcb_uninit_t hid_@/local/pcb/mod@_init();@] {\n}
 
-	extern pcb_uninit_t hid_@/local/pcb/mod@_init();
+append /local/pcb/buildin_init_code    [@
 	uninit_func = hid_@/local/pcb/mod@_init();
 	plugin_register("@/local/pcb/mod@", "<@/local/pcb/mod@>", NULL, 0, uninit_func);
-@]
+@]  {\n}
+
 append /local/pcb/OBJS            /local/pcb/mod/OBJS
 append /local/pcb/LDFLAGS         /local/pcb/mod/LDFLAGS
 append /local/pcb/CFLAGS          /local/pcb/mod/CFLAGS
