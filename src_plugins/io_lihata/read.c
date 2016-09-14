@@ -507,7 +507,7 @@ static int parse_pad(ElementType *el, lht_node_t *obj)
 }
 
 
-static int parse_element(DataType *dt, lht_node_t *obj)
+static int parse_element(PcbType *pcb, DataType *dt, lht_node_t *obj)
 {
 	ElementType *elem = GetElementMemory(dt);
 	lht_node_t *lst, *n;
@@ -535,12 +535,14 @@ static int parse_element(DataType *dt, lht_node_t *obj)
 		}
 	}
 
-#warning TODO: get PCB here
-	SetElementBoundingBox(dt, elem, &PCB->Font);
+	/* Make sure we use some sort of font */
+	if (pcb == NULL)
+		pcb = PCB;
+	SetElementBoundingBox(dt, elem, pcb->Font);
 	return 0;
 }
 
-static int parse_data_objects(DataType *dt, lht_node_t *grp)
+static int parse_data_objects(PCBType *pcb_for_font, DataType *dt, lht_node_t *grp)
 {
 	lht_node_t *n;
 	lht_dom_iterator_t it;
@@ -552,7 +554,7 @@ static int parse_data_objects(DataType *dt, lht_node_t *grp)
 		if (strncmp(n->name, "via.", 4) == 0)
 			parse_pin(dt, NULL, n);
 		else if (strncmp(n->name, "element.", 8) == 0)
-			parse_element(dt, n);
+			parse_element(pcb_for_font, dt, n);
 	}
 
 	return 0;
@@ -573,7 +575,7 @@ static DataType *parse_data(PCBType *pcb, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "objects");
 	if (grp != NULL)
-		parse_data_objects(dt, grp);
+		parse_data_objects(pcb, dt, grp);
 
 	dt->pcb = pcb;
 
