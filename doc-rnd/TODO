@@ -10,6 +10,10 @@
 	- gui doesn't show lookahead mode change ( _/ \_ and whitespace) when toggling using / key or --listen and display(cycleclip) on stdin
 	- coord bug. Zoom out max causes horizontally distorted view of drafting plane
 	-  Display(cycleclip) [or line_refraction] while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
+	- c89: separate -Dinline -ansi -pedantic from CFLAGS
+		- plugin opt-out (for gtk) - but make sure hash inlines don't collide
+		- make dep should not use -Dinline so that we get ht_inlines.h as dep (better to have it always)
+		- utilities (gsch2pcb-rnd) should do something similar
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
