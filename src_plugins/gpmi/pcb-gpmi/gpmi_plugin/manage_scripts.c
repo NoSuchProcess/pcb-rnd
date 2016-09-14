@@ -174,9 +174,9 @@ static void script_details(hid_gpmi_script_info_t *i)
 	attr_make_label_str(&attr[1], "GPMI module: ", i->module_name, "Name of the GPMI module that is interpreting the script");
 	attr_make_label_str(&attr[2], "Config file: ", cf, "Name of config file that requested the script to be loaded ");
 	gui->attribute_dialog(attr, 3, result, "GPMI manage scripts - script details", "Displaying detailed info on a script already loaded");
-	free(attr[0].name);
-	free(attr[1].name);
-	free(attr[2].name);
+	free((char *)attr[0].name);
+	free((char *)attr[1].name);
+	free((char *)attr[2].name);
 }
 
 void gpmi_hid_manage_scripts(void)
