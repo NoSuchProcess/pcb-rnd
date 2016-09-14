@@ -770,7 +770,7 @@ void NotifyMode(void)
 				IncrementUndoSerialNumber();
 				lastLayer = CURRENT;
 			}
-			if (PCB->Clipping && (Note.X != Crosshair.AttachedLine.Point2.X || Note.Y != Crosshair.AttachedLine.Point2.Y)
+			if (conf_core.editor.line_refraction && (Note.X != Crosshair.AttachedLine.Point2.X || Note.Y != Crosshair.AttachedLine.Point2.Y)
 					&& (line =
 							CreateDrawnLineOnLayer(CURRENT,
 																		 Crosshair.AttachedLine.Point2.X,

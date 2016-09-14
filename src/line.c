@@ -245,11 +245,11 @@ static r_dir_t drcArc_callback(const BoxType * b, void *cl)
 /* drc_lines() checks for intersectors against two lines and
  * adjusts the end point until there is no intersection or
  * it winds up back at the start. If way is false it checks
- * straight start, 45 end lines, otherwise it checks 45 start,
- * straight end. 
+ * an ortho start line with one 45 refraction to reach the endpoint,
+ * otherwise it checks a 45 start, with a ortho refraction to reach endpoint
  *
  * It returns the straight-line length of the best answer, and
- * changes the position of the input point to the best answer.
+ * changes the position of the input end point to the best answer.
  */
 
 static double drc_lines(PointTypePtr end, bool way)
@@ -418,6 +418,7 @@ void EnforceLineDRC(void)
 	PointType r45, rs;
 	bool shift;
 	double r1, r2;
+	int refraction = conf_core.editor.line_refraction; 
 
 	/* Silence a bogus compiler warning by storing this in a variable */
 	int layer_idx = INDEXOFCURRENT;
@@ -431,23 +432,32 @@ void EnforceLineDRC(void)
 	r1 = drc_lines(&rs, false);
 	/* then try starting at 45 */
 	r2 = drc_lines(&r45, true);
+	/* shift<Key> forces the line lookahead path to refract the alternate way */
 	shift = gui->shift_is_pressed();
 	if (XOR(r1 > r2, shift)) {
-		if (PCB->Clipping) {
-			if (shift)
-				PCB->Clipping = 2;
-			else
-				PCB->Clipping = 1;
+		if (conf_core.editor.line_refraction != 0) {
+			if (shift) {
+				conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
+				printf("line_refraction is set to: %d\n", conf_core.editor.line_refraction);
+			}
+			else{
+				conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
+				printf("line_refraction is set to: %d\n", conf_core.editor.line_refraction);
+			}
 		}
 		Crosshair.X = rs.X;
 		Crosshair.Y = rs.Y;
 	}
 	else {
-		if (PCB->Clipping) {
-			if (shift)
-				PCB->Clipping = 1;
-			else
-				PCB->Clipping = 2;
+		if (conf_core.editor.line_refraction !=0) {
+			if (shift) {
+				conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
+				printf("line_refraction is set to: %d\n", conf_core.editor.line_refraction);
+			}
+			else{
+				conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
+				printf("line_refraction is set to: %d\n", conf_core.editor.line_refraction);
+			}
 		}
 		Crosshair.X = r45.X;
 		Crosshair.Y = r45.Y;
