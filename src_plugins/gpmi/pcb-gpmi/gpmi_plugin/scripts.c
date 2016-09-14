@@ -350,7 +350,8 @@ int gpmi_hid_script_remove(hid_gpmi_script_info_t *i)
 
 int gpmi_hid_script_addcfg(hid_gpmi_script_info_t *i)
 {
-	char *fn, *home;
+	char *fn;
+	const char *home;
 	FILE *f;
 
 	home = getenv ("PCB_RND_GPMI_HOME");
