@@ -56,6 +56,7 @@ put /local/pcb/OBJS [@
 	ht_element.o
 	insert.o
 	intersect.o
+	layer.o
 	line.o
 	list_arc.o
 	list_conf.o

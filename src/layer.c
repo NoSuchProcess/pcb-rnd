@@ -25,7 +25,25 @@
  *
  */
 
+#include "global.h"
+#include "data.h"
+#include "conf_core.h"
 #include "layer.h"
+#include "hid_actions.h"
+#include "compat_misc.h"
+
+/*
+ * Used by SaveStackAndVisibility() and
+ * RestoreStackAndVisibility()
+ */
+
+static struct {
+	bool ElementOn, InvisibleObjectsOn, PinOn, ViaOn, RatOn;
+	int LayerStack[MAX_LAYER];
+	bool LayerOn[MAX_LAYER];
+	int cnt;
+} SavedStack;
+
 
 bool IsLayerEmpty(LayerTypePtr layer)
 {

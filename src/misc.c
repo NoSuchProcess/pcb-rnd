@@ -61,18 +61,6 @@ static void GetGridLockCoordinates(int, void *, void *, void *, Coord *, Coord *
 
 /* Local variables */
 
-/*
- * Used by SaveStackAndVisibility() and
- * RestoreStackAndVisibility()
- */
-
-static struct {
-	bool ElementOn, InvisibleObjectsOn, PinOn, ViaOn, RatOn;
-	int LayerStack[MAX_LAYER];
-	bool LayerOn[MAX_LAYER];
-	int cnt;
-} SavedStack;
-
 /* Bring an angle into [0, 360) range */
 Angle NormalizeAngle(Angle a)
 {
@@ -1306,6 +1294,3 @@ HID_Action misc_action_list[] = {
 };
 
 REGISTER_ACTIONS(misc_action_list, NULL)
-
-#warning scconfig TODO: make this a separate object
-#include "layer.c"
