@@ -61,22 +61,22 @@ typedef struct {
 	} plugins;
 } conf_hid_gtk_t;
 
-#define GHID_WGEO1(win, op, ...) \
-	op(win ## _x, __VA_ARGS__); \
-	op(win ## _y, __VA_ARGS__); \
-	op(win ## _width, __VA_ARGS__); \
-	op(win ## _height, __VA_ARGS__);
+#define GHID_WGEO1(win, op, arg) \
+	op(win ## _x, arg); \
+	op(win ## _y, arg); \
+	op(win ## _width, arg); \
+	op(win ## _height, arg);
 
-/* Call macro op(field_name, ...) for each window geometry field */
-#define GHID_WGEO_ALL(op, ...) \
+/* Call macro op(field_name, arg) for each window geometry field */
+#define GHID_WGEO_ALL(op, arg) \
 do { \
-	GHID_WGEO1(top, op, __VA_ARGS__); \
-	GHID_WGEO1(log, op, __VA_ARGS__); \
-	GHID_WGEO1(drc, op, __VA_ARGS__); \
-	GHID_WGEO1(library, op, __VA_ARGS__); \
-	GHID_WGEO1(keyref, op, __VA_ARGS__); \
-	GHID_WGEO1(netlist, op, __VA_ARGS__); \
-	GHID_WGEO1(pinout, op, __VA_ARGS__); \
+	GHID_WGEO1(top, op, arg); \
+	GHID_WGEO1(log, op, arg); \
+	GHID_WGEO1(drc, op, arg); \
+	GHID_WGEO1(library, op, arg); \
+	GHID_WGEO1(keyref, op, arg); \
+	GHID_WGEO1(netlist, op, arg); \
+	GHID_WGEO1(pinout, op, arg); \
 } while(0)
 
 typedef struct window_geometry window_geometry_t;
