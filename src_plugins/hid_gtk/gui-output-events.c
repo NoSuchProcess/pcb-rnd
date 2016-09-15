@@ -503,3 +503,8 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget * widget, GdkEventScroll * ev, G
 
 	return TRUE;
 }
+
+void ghid_confchg_line_refraction(conf_native_t *cfg)
+{
+	pcb_trace("line_refraction change!\n");
+}

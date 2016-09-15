@@ -1958,6 +1958,20 @@ REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 
 HID ghid_hid;
 
+static void ghid_conf_regs()
+{
+	static conf_hid_callbacks_t cbs;
+	conf_native_t *n;
+
+	memset(&cbs, 0, sizeof(cbs));
+
+	n = conf_get_field("editor/line_refraction");
+	if (n != NULL) {
+		cbs.val_change_post = ghid_confchg_line_refraction;
+		conf_hid_set_cb(n, ghid_conf_id, &cbs);
+	}
+}
+
 void hid_hid_gtk_uninit()
 {
 	event_unbind_allcookie(ghid_cookie);
@@ -2067,6 +2081,7 @@ pcb_uninit_t hid_hid_gtk_init()
 
 
 	ghid_conf_id = conf_hid_reg(ghid_cookie, NULL);
+	ghid_conf_regs();
 
 	ghid_hid.create_menu = ghid_create_menu;
 

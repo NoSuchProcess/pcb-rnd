@@ -513,4 +513,6 @@ int ghid_usage(const char *topic);
 void hid_gtk_wgeo_update(void);
 void config_color_button_update(conf_native_t *cfg, int idx);
 
+void ghid_confchg_line_refraction(conf_native_t *cfg);
+
 #endif /* PCB_HID_GTK_GHID_GUI_H */
