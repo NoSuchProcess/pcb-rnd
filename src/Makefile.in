@@ -156,6 +156,7 @@ put /local/pcb/rules/install {}
 put /local/pcb/rules/linstall {}
 put /local/pcb/rules/uninstall {}
 put /local/pcb/mod/OBJS {}
+put /local/pcb/mod/OBJS_C99 {}
 put /local/pcb/mod/CONF {}
 put /local/pcb/mod/LDFLAGS {}
 put /local/pcb/mod/CFLAGS {}
@@ -179,11 +180,13 @@ append /local/pcb/LIBS    /target/libs/sul/dmalloc/ldflags
 # Clean up variables
 put /tmpasm/OFS { }
 uniq /local/pcb/OBJS
+uniq /local/pcb/OBJS_C99
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/LDFLAGS
 uniq /local/pcb/LIBS
 uniq /local/pcb/ACTION_REG_SRC
-put /local/pcb/SRCS /local/pcb/OBJS
+put /local/pcb/SRCS /local/pcb/OBJS 
+append /local/pcb/SRCS ?/local/pcb/OBJS_C99
 gsub /local/pcb/SRCS {.o } {.c }
 
 # Makefile, static
@@ -200,8 +203,10 @@ PLUGIDIR=plugins
 
 @/local/pcb/TOPVARS@
 OBJS=@/local/pcb/OBJS@
+OBJS_C99=@/local/pcb/OBJS_C99@
 SRCS=@/local/pcb/SRCS@
 CFLAGS=@/local/pcb/CFLAGS@
+C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
 LDFLAGS=@/local/pcb/LDFLAGS@
 LIBS=@/local/pcb/LIBS@ -lm @?/target/libs/ldl@
 EXEDEPS=@/local/pcb/EXEDEPS@
@@ -221,8 +226,8 @@ revcheck:
 
 all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
-pcb-rnd$(EXE): $(OBJS) $(EXEDEPS)
-	$(CC) $(OBJS) -o pcb-rnd$(EXE) $(LDFLAGS) $(LIBS)
+pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS)
+	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LDFLAGS) $(LIBS)
 @]
 
 print [@
@@ -263,7 +268,7 @@ FORCE:
 DISTCLEANFILES= core_lists.h
 
 clean: $(CLEANRULES)
-	-rm pcb-rnd $(OBJS) $(CLEANFILES)
+	-rm pcb-rnd $(OBJS) $(OBJS_C99) $(CLEANFILES)
 
 
 install_:
@@ -294,6 +299,7 @@ uninstall:
 
 # generate explicit rules for .c -> .o
 put /local/comp/OBJS /local/pcb/OBJS
+put /local/comp/OBJS_C99 ?/local/pcb/OBJS_C99
 include {../scconfig/Makefile.comp.inc}
 
 # generate deps

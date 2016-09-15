@@ -86,6 +86,7 @@ switch /local/pcb/mod/CONF
 end
 
 put /local/pcb/mod/OBJS {}
+put /local/pcb/mod/OBJS_C99 {}
 put /local/pcb/mod/CONF {}
 put /local/pcb/mod/LDFLAGS {}
 put /local/pcb/mod/CFLAGS {}

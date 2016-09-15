@@ -2,15 +2,18 @@
 # Requires variables before the include:
 #  /local/pcb/mod       basename of the module (e.g. autoplace)
 #  /local/pcb/mod/OBJS  full path of all object files
+#  /local/pcb/mod/OBJS_C99  full path of all object files for non-c89
 
 # clean up input vars
 uniq /local/pcb/mod/OBJS
+uniq /local/pcb/mod/OBJS_C99
 uniq /local/pcb/mod/CFLAGS
 uniq /local/pcb/mod/LDFLAGS
 uniq /local/pcb/mod/LIBS
 
 # generate .c -> .o rules in /local/comp/output
-put /local/comp/OBJS /local/pcb/mod/OBJS
+put /local/comp/OBJS ?/local/pcb/mod/OBJS
+put /local/comp/OBJS_C99 ?/local/pcb/mod/OBJS_C99
 put /local/comp/CFLAGS /local/pcb/mod/CFLAGS
 include {../scconfig/Makefile.comp_var.inc}
 
@@ -19,14 +22,14 @@ append /local/pcb/all   [@ $(PLUGIDIR)/@/local/pcb/mod@.so @]
 append /local/pcb/rules/install_ [@
 	$(CPC) "`pwd`/$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so" "$(LIBDIR)/plugins/@/local/pcb/mod@.so"@]
 
-append /local/pcb/CLEANFILES [@ $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@ @]
+append /local/pcb/CLEANFILES [@ $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@  @/local/pcb/mod/OBJS_C99@ @]
 
 append /local/pcb/RULES [@
 
 ### Module @/local/pcb/mod@: plugin ###
 
-$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so: @/local/pcb/mod/OBJS@
-	$(CC) $(LDFLAGS) @/local/pcb/mod/LDFLAGS@ -shared @cc/rdynamic@ -o $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@
+$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so: @/local/pcb/mod/OBJS@ @/local/pcb/mod/OBJS_C99@
+	$(CC) $(LDFLAGS) @/local/pcb/mod/LDFLAGS@ -shared @cc/rdynamic@ -o $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@ @/local/pcb/mod/OBJS_C99@
 
 mod_@/local/pcb/mod@: $(PLUGIDIR)/@/local/pcb/mod@.so
 

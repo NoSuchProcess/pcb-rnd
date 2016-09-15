@@ -489,25 +489,26 @@ int hook_detect_target()
 	}
 
 	/* set cflags for C89 */
+	put("/local/pcb/c89flags", "");
 	if (istrue(get("/local/pcb/debug"))) {
 		const char *ansi = get("/host/cc/argstd/ansi");
 		const char *ped = get("/host/cc/argstd/pedantic");
 		int need_inl = 0;
 
 		if ((ansi != NULL) && (*ansi != '\0')) {
-			append("/host/cc/cflags", " ");
-			append("/host/cc/cflags", ansi);
+			append("/local/pcb/c89flags", " ");
+			append("/local/pcb/c89flags", ansi);
 			need_inl = 1;
 		}
 		if ((ped != NULL) && (*ped != '\0')) {
-			append("/host/cc/cflags", " ");
-			append("/host/cc/cflags", ped);
+			append("/local/pcb/c89flags", " ");
+			append("/local/pcb/c89flags", ped);
 			need_inl = 1;
 		}
 		if (need_inl) {
 			/* disable inline for C89 */
-			append("/host/cc/cflags", " ");
-			append("/host/cc/cflags", "-Dinline= ");
+			append("/local/pcb/c89flags", " ");
+			append("/local/pcb/c89flags", "-Dinline= ");
 		}
 	}
 	return 0;

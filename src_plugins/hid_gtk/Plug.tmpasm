@@ -1,5 +1,5 @@
 put /local/pcb/mod {hid_gtk}
-put /local/pcb/mod/OBJS [@
+put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk/ghid-cell-renderer-visibility.o
 	$(PLUGDIR)/hid_gtk/ghid-coord-entry.o
 	$(PLUGDIR)/hid_gtk/ghid-layer-selector.o
