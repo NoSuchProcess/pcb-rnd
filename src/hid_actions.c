@@ -21,8 +21,8 @@
  * type that we have to type-cast to in look-ups. Can be removed after htsp
  * can look up const char*'s.
  */
-#warning "TODO: The htsp should allow looking up values by const char*"
-typedef char* pcb_htsp_ugly_const_cast;
+
+typedef char *htsp_key_cast;
 
 /* do not throw "unknown action" warning for these: they are known
    actions, the GUI HID may register them, but nothing bad happens if
@@ -69,7 +69,7 @@ void hid_register_actions(const HID_Action * a, int n, const char *cookie, int c
 			Message(PCB_MSG_DEFAULT, _("ERROR! Invalid action name, " "action \"%s\" not registered.\n"), a[i].name);
 			continue;
 		}
-		if (htsp_get(all_actions, (pcb_htsp_ugly_const_cast)a[i].name) != NULL) {
+		if (htsp_get(all_actions, (htsp_key_cast)a[i].name) != NULL) {
 			Message(PCB_MSG_DEFAULT, _("ERROR! Invalid action name, " "action \"%s\" is already registered.\n"), a[i].name);
 			continue;
 		}
@@ -94,7 +94,7 @@ void hid_remove_actions(const HID_Action * a, int n)
 
 	for (i = 0; i < n; i++) {
 		htsp_entry_t *e;
-		e = htsp_popentry(all_actions, (pcb_htsp_ugly_const_cast)a[i].name);
+		e = htsp_popentry(all_actions, (htsp_key_cast)a[i].name);
 		free(e->key);
 		free(e->value);
 	}
@@ -125,7 +125,7 @@ void hid_remove_action(const HID_Action * a)
 	if (all_actions == NULL)
 		return;
 
-	e = htsp_popentry(all_actions, (pcb_htsp_ugly_const_cast)a->name);
+	e = htsp_popentry(all_actions, (htsp_key_cast)a->name);
 	if (e != NULL) {
 		free(e->key);
 		free(e->value);
