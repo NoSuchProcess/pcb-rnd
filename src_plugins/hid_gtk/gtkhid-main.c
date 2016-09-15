@@ -81,22 +81,33 @@ void ghid_pan_view_rel(Coord dx, Coord dy)
  * gport->view_width and gport->view_height are in PCB coordinates
  */
 
-#define ALLOW_ZOOM_OUT_BY 10		/* Arbitrary, and same as the lesstif HID */
+#define ALLOW_ZOOM_OUT_BY 10		/* Arbitrary, and same as the lesstif HID MAX_ZOOM_SCALE */
 static void ghid_zoom_view_abs(Coord center_x, Coord center_y, double new_zoom)
 {
 	double min_zoom, max_zoom;
 	double xtmp, ytmp;
+	Coord cmaxx, cmaxy;
 
 	/* Limit the "minimum" zoom constant (maximum zoom), at 1 pixel per PCB
 	 * unit, and set the "maximum" zoom constant (minimum zoom), such that
 	 * the entire board just fits inside the viewport
 	 */
-	min_zoom = 1;
+	min_zoom = 200;
 	max_zoom = MAX(PCB->MaxWidth / gport->width, PCB->MaxHeight / gport->height) * ALLOW_ZOOM_OUT_BY;
 	new_zoom = MIN(MAX(min_zoom, new_zoom), max_zoom);
 
+	if ((new_zoom > max_zoom) || (new_zoom < min_zoom))
+		return;
+
 	if (gport->view.coord_per_px == new_zoom)
 		return;
+
+	/* Do not allow zoom level that'd overflow the coord type */
+	cmaxx = gport->width  * (new_zoom / 2.0);
+	cmaxy = gport->height * (new_zoom / 2.0);
+	if ((cmaxx >= COORD_MAX/2) || (cmaxy >= COORD_MAX/2)) {
+		return;
+	}
 
 	xtmp = (SIDE_X(center_x) - gport->view.x0) / (double) gport->view.width;
 	ytmp = (SIDE_Y(center_y) - gport->view.y0) / (double) gport->view.height;
