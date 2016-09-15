@@ -106,7 +106,7 @@ uninstall:
 
 
 clean:
-	$(RM) gsch2pcb-rnd$(EXE) $(OBJS) gsch2pcb_rnd_conf_fields.h $(HASHOBJ) $(VECTOBJ) $(LISTOBJ)
+	$(RM) gsch2pcb-rnd$(EXE) $(OBJS) gsch2pcb_rnd_conf_fields.h
 
 include ../../Makefile.conf
 
