@@ -103,7 +103,7 @@ static bool ignore_layer_update;
 
 static GtkWidget *ghid_load_menus(void);
 
-GhidGui _ghidgui, *ghidgui = &_ghidgui;;
+GhidGui _ghidgui, *ghidgui = &_ghidgui;
 
 GHidPort ghid_port, *gport;
 
