@@ -1,4 +1,5 @@
 - BUGS
+	- if hid_gtk is compiled as buildin but is also available as a plugin the code tries to load it twice and segfaults
 	- genht config bug in gpmi
 	- duplicate-element-on-copy bug: ctrl pressed? [James]
 	- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
