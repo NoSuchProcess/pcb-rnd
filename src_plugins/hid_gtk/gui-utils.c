@@ -112,10 +112,16 @@ ButtonState ghid_button_state(GdkModifierType * state)
 	gboolean button1, button2, button3;
 	GHidPort *out = &ghid_port;
 
-	if (!state)
+	if (!state) {
 		gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
+	}
 	else
 		mask = *state;
+
+	extern GdkModifierType ghid_glob_mask;
+	ghid_glob_mask = mask;
+	pcb_trace("GLOB2 %x\n", ghid_glob_mask);
+
 
 	button1 = (mask & GDK_BUTTON1_MASK);
 	button2 = (mask & GDK_BUTTON2_MASK);

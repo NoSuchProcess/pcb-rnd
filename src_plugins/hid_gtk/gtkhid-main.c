@@ -28,6 +28,7 @@
 #include "gtkhid.h"
 
 conf_hid_id_t ghid_conf_id = -1;
+GdkModifierType ghid_glob_mask;
 
 static void pan_common(GHidPort * port)
 {
@@ -262,16 +263,16 @@ int ghid_control_is_pressed()
 	GdkModifierType mask;
 	GHidPort *out = &ghid_port;
 
-	pcb_trace("ghid_control_is_pressed() d1\n");
-
 	if (!ghid_gui_is_up)
 		return 0;
 
-	pcb_trace("ghid_control_is_pressed() d2 %x\n", gtk_widget_get_window(out->drawing_area));
-
 	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
 
-	pcb_trace("ghid_control_is_pressed() d3 %x %x\n", mask, GDK_CONTROL_MASK);
+	pcb_trace("ghid_control_is_pressed() d3 %x %x %x %s\n", mask, GDK_CONTROL_MASK, ghid_glob_mask, (ghid_glob_mask & GDK_CONTROL_MASK) ? "ctrl pressed" : "ctrl not pressed");
+
+/* James, please uncomment this:
+return ghid_glob_mask & GDK_CONTROL_MASK;
+*/
 
 	return (mask & GDK_CONTROL_MASK) ? TRUE : FALSE;
 }
