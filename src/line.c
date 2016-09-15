@@ -437,14 +437,12 @@ void EnforceLineDRC(void)
 	if (XOR(r1 > r2, shift)) {
 		if (conf_core.editor.line_refraction != 0) {
 			if (shift) {
-				if (conf_core.editor.line_refraction==1) {
+				if (conf_core.editor.line_refraction !=2)
 					conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
-					printf("line_refraction is set to: %d\n", conf_core.editor.line_refraction);
-					}
 			}
 			else{
+				if (conf_core.editor.line_refraction != 1)
 				conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
-				printf("line_refraction is set to: %d\n", conf_core.editor.line_refraction);
 			}
 		}
 		Crosshair.X = rs.X;
@@ -453,16 +451,12 @@ void EnforceLineDRC(void)
 	else {
 		if (conf_core.editor.line_refraction !=0) {
 			if (shift) {
-				if (conf_core.editor.line_refraction != 1) {
+				if (conf_core.editor.line_refraction != 1)
 					conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
-					printf("line_refraction is set to: %d\n", conf_core.editor.line_refraction);
-				}
 			}
 			else {
-				if (conf_core.editor.line_refraction != 2) {
+				if (conf_core.editor.line_refraction != 2)
 					conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
-					printf("line_refraction is set to: %d\n", conf_core.editor.line_refraction);
-				}
 			}
 		}
 		Crosshair.X = r45.X;
