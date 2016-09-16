@@ -404,6 +404,53 @@ static lht_node_t *build_data(DataType *data)
 	return ndt;
 }
 
+static lht_node_t *build_symbol(SymbolType *sym, const char *name)
+{
+	lht_node_t *lst, *ndt;
+
+	ndt = lht_dom_node_alloc(LHT_HASH, name);
+	lht_dom_hash_put(ndt, build_textf("width", CFMT, sym->Width));
+	lht_dom_hash_put(ndt, build_textf("height", CFMT, sym->Height));
+	lht_dom_hash_put(ndt, build_textf("delta", CFMT, sym->Delta));
+
+	lst = lht_dom_node_alloc(LHT_HASH, "lines");
+	lht_dom_hash_put(ndt, lst);
+
+	return ndt;
+}
+
+
+static lht_node_t *build_font(FontType *font)
+{
+	lht_node_t *syms, *ndt;
+	int n;
+
+	ndt = lht_dom_node_alloc(LHT_HASH, "font");
+
+	lht_dom_hash_put(ndt, build_textf("cell_height", CFMT, font->MaxHeight));
+	lht_dom_hash_put(ndt, build_textf("cell_width", CFMT, font->MaxWidth));
+/*	lht_dom_hash_put(ndt, build_symbol(&font->DefaultSymbol)); */
+
+
+	syms = lht_dom_node_alloc(LHT_HASH, "symbols");
+	lht_dom_hash_put(ndt, syms);
+	for(n = 0; n < MAX_FONTPOSITION + 1; n++) {
+		char sname[32];
+		if (!font->Symbol[n].Valid)
+			continue;
+		if ((n <= 32) || (n > 126) || (n == '#') || (n == '{') || (n == '}') || (n == '\\') || (n == ':'))
+			sprintf(sname, "#%d", n);
+		else {
+			sname[0] = n;
+			sname[1] = '\0';
+		}
+		lht_dom_hash_put(syms, build_symbol(&font->Symbol[n], sname));
+	}
+	return ndt;
+}
+
+
+
 static lht_doc_t *build_board(PCBType *pcb)
 {
 	lht_doc_t *brd = lht_dom_init();
@@ -412,6 +459,7 @@ static lht_doc_t *build_board(PCBType *pcb)
 	lht_dom_hash_put(brd->root, build_board_meta(pcb));
 	lht_dom_hash_put(brd->root, build_data(pcb->Data));
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
+	lht_dom_hash_put(brd->root, build_font(&pcb->Font));
 	return brd;
 }
 
