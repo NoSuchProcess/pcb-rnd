@@ -407,14 +407,19 @@ static lht_node_t *build_data(DataType *data)
 static lht_node_t *build_symbol(SymbolType *sym, const char *name)
 {
 	lht_node_t *lst, *ndt;
+	LineType *li;
+	int n;
 
 	ndt = lht_dom_node_alloc(LHT_HASH, name);
 	lht_dom_hash_put(ndt, build_textf("width", CFMT, sym->Width));
 	lht_dom_hash_put(ndt, build_textf("height", CFMT, sym->Height));
 	lht_dom_hash_put(ndt, build_textf("delta", CFMT, sym->Delta));
 
-	lst = lht_dom_node_alloc(LHT_HASH, "lines");
+	lst = lht_dom_node_alloc(LHT_LIST, "lines");
 	lht_dom_hash_put(ndt, lst);
+	for(n = 0, li = sym->Line; n < sym->LineN; n++, li++)
+		lht_dom_list_append(lst, build_line(li));
+
 
 	return ndt;
 }
