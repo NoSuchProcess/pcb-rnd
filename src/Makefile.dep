@@ -2457,6 +2457,21 @@ intersect.o: intersect.c ../config.h intersect.h global.h const.h macro.h \
  global_element.h list_element.h ht_element.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h
+layer.o: layer.c global.h ../config.h const.h macro.h global_typedefs.h \
+ unit.h global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h \
+ polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h error.h vtroutestyle.h \
+ global_element.h list_element.h ht_element.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/liblihata/genht/hash.h data.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ layer.h hid_actions.h compat_misc.h
 line.o: line.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
  globalconst.h polyarea.h list_common.h list_line.h \
@@ -2596,7 +2611,7 @@ misc.o: misc.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  box.h misc_util.h crosshair.h data.h plug_io.h misc.h mymem.h move.h \
  polygon.h rtree.h rotate.h rubberband.h set.h undo.h compat_misc.h \
- hid_actions.h hid_init.h layer.c layer.h
+ hid_actions.h hid_init.h
 misc_util.o: misc_util.c ../config.h misc_util.h unit.h
 move.o: move.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
