@@ -49,6 +49,7 @@ static void help1(void)
 	printf(" --debug                    configure for building a debug version (-g -O0)\n");
 	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
 	printf(" --dot_pcb_pcb=path         .pcb-rnd config path under $HOME/\n");
+	printf(" --workaround-gtk-ctrl      enable GTK control key query workaround\n");
 }
 
 static void help2(void)
@@ -97,6 +98,15 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 	if (strcmp(key, "coord") == 0)
 		put("/local/pcb/dot_pcb_rnd", value);
+	if (strncmp(key, "workaround-", 11) == 0) {
+		const char *what = key+11;
+		if (strcmp(what, "gtk-ctrl") == 0) append("/local/pcb/workaround_defs", "\n#define PCB_WORKAROUND_GTK_CTRL 1");
+		else {
+			report("ERROR: unknown workaround '%s'\n", what);
+			exit(1);
+		}
+		return 1;
+	}
 	if ((strcmp(key, "with-intl") == 0) || (strcmp(key, "enable-intl") == 0)) {
 		want_intl = 1;
 		return 1;

@@ -270,11 +270,12 @@ int ghid_control_is_pressed()
 
 	pcb_trace("ghid_control_is_pressed() d3 %x %x %x %s\n", mask, GDK_CONTROL_MASK, ghid_glob_mask, (ghid_glob_mask & GDK_CONTROL_MASK) ? "ctrl pressed" : "ctrl not pressed");
 
-/* James, please uncomment this:
-return ghid_glob_mask & GDK_CONTROL_MASK;
-*/
-
+#ifdef PCB_WORKAROUND_GTK_CTRL
+	/* On some systems the above query fails and we need to return the last known state instead */
+	return ghid_glob_mask & GDK_CONTROL_MASK;
+#else
 	return (mask & GDK_CONTROL_MASK) ? TRUE : FALSE;
+#endif
 }
 
 int ghid_mod1_is_pressed()
