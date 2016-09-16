@@ -438,8 +438,9 @@ static lht_node_t *build_font(FontType *font)
 		char sname[32];
 		if (!font->Symbol[n].Valid)
 			continue;
-		if ((n <= 32) || (n > 126) || (n == '#') || (n == '{') || (n == '}') || (n == '\\') || (n == ':'))
+		if ((n <= 32) || (n > 126) || (n == '#') || (n == '{') || (n == '}') || (n == '\\') || (n == ':')) {
 			sprintf(sname, "#%d", n);
+		}
 		else {
 			sname[0] = n;
 			sname[1] = '\0';
