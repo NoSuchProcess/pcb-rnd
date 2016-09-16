@@ -142,6 +142,12 @@ char *tempfile_name_new(const char *name)
 {
 	char *tmpfile = NULL;
 #ifdef HAVE_MKDTEMP
+#ifdef inline
+	/* Suppress compiler warnings; -Dinline means we are compiling in
+	   --debug with -ansi -pedantic; we do know that mkdtemp exists on the system,
+	   since HAVE_MKDTEMP is set. */
+	char *mkdtemp(char *template);
+#endif
 	const char *tmpdir;
 	char *mytmpdir;
 	size_t len;
