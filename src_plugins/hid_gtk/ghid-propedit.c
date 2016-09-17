@@ -175,19 +175,21 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 		0.0, 90.0,
 		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), NoFlags());
 
-/*	v = CreateNewPolygonFromRectangle(preview_pcb.Data->Layer+0,
+/*
+	void *v;
+	v = CreateNewPolygonFromRectangle(preview_pcb.Data->Layer+0,
 		PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(0),
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 		NoFlags());
 printf("poly=%p\n", (void *)v);
-			DrawPolygon(preview_pcb.Data->Layer+0, v);*/
-
+			DrawPolygon(preview_pcb.Data->Layer+0, v);
+*/
 
 	old_pcb = PCB;
 	PCB = &preview_pcb;
 
-	pm = ghid_render_pixmap(PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
-	20000, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(gport->top_window->window)));
+	pm = ghid_render_pixmap(PCB_MIL_TO_COORD(1150), PCB_MIL_TO_COORD(1150),
+	40000, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(gport->top_window->window)));
 	PCB = old_pcb;
 
 	g_signal_connect(G_OBJECT(area), "expose-event", G_CALLBACK(preview_expose_event), pm);
