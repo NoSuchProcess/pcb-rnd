@@ -34,11 +34,6 @@ typedef struct AttributeListType AttributeListType, *AttributeListTypePtr;
 typedef struct rats_patch_line_s rats_patch_line_t;
 
 typedef unsigned int pcb_cardinal_t;
-
-#ifndef XtSpecificationRelease
-/*typedef unsigned int	Pixel;*/
-typedef char *String;
-#endif
 typedef unsigned char BYTE;
 
 #include "pcb_bool.h"

@@ -849,7 +849,7 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, s
 		if (!TEST_FLAG(PCB_FLAG_LOCK, element)
 				&& ((TEST_FLAG(PCB_FLAG_ONSOLDER, element) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn)
 				&& TEST_FLAG(PCB_FLAG_SELECTED, element) != Flag) {
-			String name = ELEMENT_NAME(PCB, element);
+			const char* name = ELEMENT_NAME(PCB, element);
 			if (name && REGEXEC(name)) {
 				AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
 				ASSIGN_FLAG(PCB_FLAG_SELECTED, Flag, element);
