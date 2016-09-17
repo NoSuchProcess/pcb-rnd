@@ -622,7 +622,7 @@ CreateNewElement(DataTypePtr Data, ElementTypePtr Element,
 								 FontTypePtr PCBFont,
 								 FlagType Flags,
 								 char *Description, char *NameOnPCB, char *Value,
-								 Coord TextX, Coord TextY, BYTE Direction, int TextScale, FlagType TextFlags, pcb_bool uniqueName)
+								 Coord TextX, Coord TextY, pcb_uint8_t Direction, int TextScale, FlagType TextFlags, pcb_bool uniqueName)
 {
 #ifdef DEBUG
 	printf("Entered CreateNewElement.....\n");

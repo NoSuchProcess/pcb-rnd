@@ -34,7 +34,7 @@ typedef struct AttributeListType AttributeListType, *AttributeListTypePtr;
 typedef struct rats_patch_line_s rats_patch_line_t;
 
 typedef unsigned int pcb_cardinal_t;
-typedef unsigned char BYTE;
+typedef unsigned char pcb_uint8_t;   /* Don't use in new code. */
 
 #include "pcb_bool.h"
 

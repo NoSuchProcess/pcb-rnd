@@ -54,7 +54,7 @@ PolygonTypePtr CreateNewPolygon(LayerTypePtr, FlagType);
 PointTypePtr CreateNewPointInPolygon(PolygonTypePtr, Coord, Coord);
 PolygonType *CreateNewHoleInPolygon(PolygonType * polygon);
 ElementTypePtr CreateNewElement(DataTypePtr, ElementTypePtr,
-																FontTypePtr, FlagType, char *, char *, char *, Coord, Coord, BYTE, int, FlagType, pcb_bool);
+																FontTypePtr, FlagType, char *, char *, char *, Coord, Coord, pcb_uint8_t, int, FlagType, pcb_bool);
 LineTypePtr CreateNewLineInElement(ElementTypePtr, Coord, Coord, Coord, Coord, Coord);
 ArcTypePtr CreateNewArcInElement(ElementTypePtr, Coord, Coord, Coord, Coord, Angle, Angle, Coord);
 PinTypePtr CreateNewPin(ElementTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, char *, char *, FlagType);

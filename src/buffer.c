@@ -798,7 +798,7 @@ pcb_bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const ch
 /* ---------------------------------------------------------------------------
  * rotates the contents of the pastebuffer
  */
-void RotateBuffer(BufferTypePtr Buffer, BYTE Number)
+void RotateBuffer(BufferTypePtr Buffer, pcb_uint8_t Number)
 {
 	/* rotate vias */
 	VIA_LOOP(Buffer->Data);
@@ -1343,7 +1343,7 @@ static int ActionPasteBuffer(int argc, const char **argv, Coord x, Coord y)
 
 		case F_Rotate:
 			if (sbufnum) {
-				RotateBuffer(PASTEBUFFER, (BYTE) atoi(sbufnum));
+				RotateBuffer(PASTEBUFFER, (pcb_uint8_t) atoi(sbufnum));
 				SetCrosshairRangeToBuffer();
 			}
 			break;

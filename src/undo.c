@@ -1159,7 +1159,7 @@ void AddObjectToMirrorUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coo
 /* ---------------------------------------------------------------------------
  * adds an object to the list of rotated objects
  */
-void AddObjectToRotateUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord CenterX, Coord CenterY, BYTE Steps)
+void AddObjectToRotateUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord CenterX, Coord CenterY, pcb_uint8_t Steps)
 {
 	UndoListTypePtr undo;
 

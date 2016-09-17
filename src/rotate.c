@@ -118,7 +118,7 @@ void RotateLineLowLevel(LineTypePtr Line, Coord X, Coord Y, unsigned Number)
  */
 void RotateTextLowLevel(TextTypePtr Text, Coord X, Coord Y, unsigned Number)
 {
-	BYTE number;
+	pcb_uint8_t number;
 
 	number = TEST_FLAG(PCB_FLAG_ONSOLDER, Text) ? (4 - Number) & 3 : Number;
 	RotateBoxLowLevel(&Text->BoundingBox, X, Y, Number);

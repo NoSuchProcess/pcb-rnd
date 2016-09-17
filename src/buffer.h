@@ -41,7 +41,7 @@ pcb_bool LoadElementToBuffer(BufferTypePtr, const char *);
 pcb_bool ConvertBufferToElement(BufferTypePtr);
 pcb_bool SmashBufferElement(BufferTypePtr);
 pcb_bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const char *fmt);
-void RotateBuffer(BufferTypePtr, BYTE);
+void RotateBuffer(BufferTypePtr, pcb_uint8_t);
 void SelectPasteBuffer(int);
 void pcb_swap_buffers(void);
 void MirrorBuffer(BufferTypePtr);
