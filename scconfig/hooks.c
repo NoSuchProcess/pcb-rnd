@@ -521,6 +521,9 @@ int hook_detect_target()
 		}
 	}
 
+	if (!istrue(get("cc/inline")))
+		need_inl = 1;
+
 	if (need_inl) {
 		/* disable inline for C89 */
 		append("/local/pcb/c89flags", " ");
