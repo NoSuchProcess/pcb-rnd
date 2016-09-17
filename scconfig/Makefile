@@ -78,7 +78,7 @@ configure: $(OBJS)  $(DEFAULT_MAIN_OBJS)
 menuconfig: menucfg
 	./menucfg
 
-menucfg: $(OBJS) $(MENULIB_OBJS) src/default/main_lib.o src/default/main_custom_args.o menucfg.o src/util/arg_auto_menu.o
+menucfg: $(OBJS) $(MENULIB_OBJS) src/default/main_lib.o src/default/main_custom_args.o menucfg.o src/util/arg_auto_menu.o src/util/arg_auto_set.o
 	$(CC) -o menucfg $(OBJS) $(MENULIB_OBJS) menucfg.o src/default/main_lib.o src/default/main_custom_args.o src/util/arg_auto_menu.o
 
 menucfg.o: menucfg.c
