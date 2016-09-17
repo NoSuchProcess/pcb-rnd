@@ -126,7 +126,9 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 {
 	GtkWidget *area = gtk_drawing_area_new();
 	PCBType *old_pcb;
-	int n;
+	int n, zoom1;
+
+
 
 /*
 	void *v;
@@ -162,34 +164,38 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 
 	CreateNewVia(preview_pcb.Data,
 							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
-							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(10), 0, PCB_MIL_TO_COORD(30), "", NoFlags());
+							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(10), 0, PCB_MIL_TO_COORD(20), "", NoFlags());
 
 	CreateNewLineOnLayer(preview_pcb.Data->Layer+0,
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1300),
-		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), NoFlags());
+		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), MakeFlags(PCB_FLAG_CLEARLINE));
 
 	CreateNewArcOnLayer(preview_pcb.Data->Layer+0,
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 		PCB_MIL_TO_COORD(100), PCB_MIL_TO_COORD(100),
 		0.0, 90.0,
-		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), NoFlags());
+		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), MakeFlags(PCB_FLAG_CLEARLINE));
 
-/*
-	void *v;
-	v = CreateNewPolygonFromRectangle(preview_pcb.Data->Layer+0,
-		PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(0),
-		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
-		NoFlags());
-printf("poly=%p\n", (void *)v);
-			DrawPolygon(preview_pcb.Data->Layer+0, v);
-*/
+		CreateNewText(preview_pcb.Data->Layer+0, &PCB->Font,
+							PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", MakeFlags(PCB_FLAG_CLEARLINE));
 
+
+	{
+		PolygonType *v = CreateNewPolygonFromRectangle(preview_pcb.Data->Layer,
+			PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),
+			PCB_MIL_TO_COORD(1200), PCB_MIL_TO_COORD(1200),
+			MakeFlags(PCB_FLAG_CLEARPOLY));
+		InitClip(preview_pcb.Data, preview_pcb.Data->Layer, v);
+	}
+
+	
 	old_pcb = PCB;
 	PCB = &preview_pcb;
 
-	pm = ghid_render_pixmap(PCB_MIL_TO_COORD(1150), PCB_MIL_TO_COORD(1150),
-	40000, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(gport->top_window->window)));
+	zoom1 = 1;
+	pm = ghid_render_pixmap(PCB_MIL_TO_COORD(1000+(300/2*zoom1)), PCB_MIL_TO_COORD(1000+(400/2*zoom1)),
+	40000 * zoom1, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(gport->top_window->window)));
 	PCB = old_pcb;
 
 	g_signal_connect(G_OBJECT(area), "expose-event", G_CALLBACK(preview_expose_event), pm);
