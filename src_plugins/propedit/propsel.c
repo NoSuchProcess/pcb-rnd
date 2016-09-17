@@ -188,13 +188,12 @@ typedef struct set_ctx_s {
 	const char *value;
 	Coord c;
 	double d;
-	int is_trace;
-	pcb_bool c_absolute, d_absolute, c_valid, d_valid;
+	pcb_bool c_absolute, d_absolute, c_valid, d_valid, is_trace, is_attr;
 
 	int set_cnt;
 } set_ctx_t;
 
-static void set_attr(void *ctx, const AttributeListType *list)
+static void set_attr(set_ctx_t *st, const AttributeListType *list)
 {
 }
 
@@ -210,14 +209,16 @@ static void set_line_cb(void *ctx, PCBType *pcb, LayerType *layer, LineType *lin
 
 	set_chk_skip(st, line);
 
+	if (st->is_attr) {
+		set_attr(st, &line->Attributes);
+		return;
+	}
+
 	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
 	    ChangeObject1stSize(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
 	    ChangeObjectClearSize(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
-
-/*
-	set_attr(ctx, &line->Attributes);*/
 }
 
 static void set_arc_cb(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc)
@@ -226,6 +227,11 @@ static void set_arc_cb(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc)
 	const char *pn = st->name + 8;
 
 	set_chk_skip(st, arc);
+
+	if (st->is_attr) {
+		set_attr(st, &arc->Attributes);
+		return;
+	}
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
 	    ChangeObject1stSize(PCB_TYPE_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
@@ -325,6 +331,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 		return 0;
 
 	ctx.is_trace = (strncmp(prop, "p/trace/", 8) == 0);
+	ctx.is_attr = (prop[0] == 'a');
 	ctx.name = prop;
 	ctx.value = value;
 	ctx.c = GetValueEx(value, NULL, &ctx.c_absolute, NULL, NULL, &ctx.c_valid);
