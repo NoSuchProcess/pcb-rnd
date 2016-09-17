@@ -43,7 +43,7 @@ END {
 		if (TYPE[n] == "plugdir") {
 			vname = LIST[n]
 			sub("REGISTER_ACTIONS.*[(]", "", vname)
-			sub("[)].*[\n\r]*", "", vname)
+			sub("[)].*[\\n\\r]*", "", vname)
 			print "extern HID_Action " vname "[];"
 		}
 		print LIST[n]
