@@ -99,7 +99,7 @@ int	yyparse(void);
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static int Parse(FILE *Pipe, const const char *Executable, const char *Path, const char *Filename, const char *Parse_parameter);
+static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename, const char *Parse_parameter);
 
 %}
 
