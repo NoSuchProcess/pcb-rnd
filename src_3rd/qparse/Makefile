@@ -1,4 +1,5 @@
-CFLAGS = -Wall -Wextra -g
+#CFLAGS = -Wall -Wextra -g
+CFLAGS = -g
 
 example: example.o qparse.o
 
