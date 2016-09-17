@@ -14,7 +14,9 @@
 		- utilities (gsch2pcb-rnd) should use the C89 flags
 		- detect -Wall
 		- kill stdbool.h
-
+		- parse_l.l Parse() shouldn't call it's argument Parameter (collides with a type)
+		- detect awk with sub()
+	
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
 	- TEST:
