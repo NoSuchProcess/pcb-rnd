@@ -44,6 +44,8 @@ typedef short dimension_t;
 #endif
 typedef unsigned char BYTE;
 
+#include "pcb_bool.h"
+
 #include "unit.h"
 
 #endif

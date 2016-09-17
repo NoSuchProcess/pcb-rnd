@@ -69,7 +69,7 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const BoxType * region,
 															vetting_t * work,
 															vector_t * free_space_vec,
 															vector_t * lo_conflict_space_vec,
-															vector_t * hi_conflict_space_vec, bool is_odd, bool with_conflicts, CheapPointType * desired);
+															vector_t * hi_conflict_space_vec, pcb_bool is_odd, pcb_bool with_conflicts, CheapPointType * desired);
 
 void mtsFreeWork(vetting_t **);
 int mtsBoxCount(vetting_t *);

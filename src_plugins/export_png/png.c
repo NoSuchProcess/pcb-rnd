@@ -606,7 +606,7 @@ static void png_do_export(HID_Attr_Val * options)
 	int w, h;
 	int xmax, ymax, dpi;
 	const char *fmt;
-	bool format_error = false;
+	pcb_bool format_error = pcb_false;
 
 	if (color_cache) {
 		free(color_cache);
@@ -905,27 +905,27 @@ static void png_do_export(HID_Attr_Val * options)
 	fmt = filetypes[options[HA_filetype].int_value];
 
 	if (fmt == NULL)
-		format_error = true;
+		format_error = pcb_true;
 	else if (strcmp(fmt, FMT_gif) == 0)
 #ifdef HAVE_GDIMAGEGIF
 		gdImageGif(im, f);
 #else
-		format_error = true;
+		format_error = pcb_true;
 #endif
 	else if (strcmp(fmt, FMT_jpg) == 0)
 #ifdef HAVE_GDIMAGEJPEG
 		gdImageJpeg(im, f, -1);
 #else
-		format_error = true;
+		format_error = pcb_true;
 #endif
 	else if (strcmp(fmt, FMT_png) == 0)
 #ifdef HAVE_GDIMAGEPNG
 		gdImagePng(im, f);
 #else
-		format_error = true;
+		format_error = pcb_true;
 #endif
 	else
-		format_error = true;
+		format_error = pcb_true;
 
 	if (format_error)
 		fprintf(stderr, "Error:  Invalid graphic file format." "  This is a bug.  Please report it.\n");

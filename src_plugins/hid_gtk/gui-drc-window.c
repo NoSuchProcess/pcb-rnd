@@ -88,7 +88,7 @@ static void unset_found_flags(int AndDraw)
 			AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
 			CLEAR_FLAG(flag, via);
 			DrawVia(via);
-			change = true;
+			change = pcb_true;
 		}
 	}
 	END_LOOP;
@@ -100,7 +100,7 @@ static void unset_found_flags(int AndDraw)
 				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
 				CLEAR_FLAG(flag, pin);
 				DrawPin(pin);
-				change = true;
+				change = pcb_true;
 			}
 		}
 		END_LOOP;
@@ -110,7 +110,7 @@ static void unset_found_flags(int AndDraw)
 				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
 				CLEAR_FLAG(flag, pad);
 				DrawPad(pad);
-				change = true;
+				change = pcb_true;
 			}
 		}
 		END_LOOP;
@@ -122,7 +122,7 @@ static void unset_found_flags(int AndDraw)
 			AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
 			CLEAR_FLAG(flag, line);
 			DrawRat(line);
-			change = true;
+			change = pcb_true;
 		}
 	}
 	END_LOOP;
@@ -132,7 +132,7 @@ static void unset_found_flags(int AndDraw)
 			AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);
 			CLEAR_FLAG(flag, line);
 			DrawLine(layer, line);
-			change = true;
+			change = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -142,7 +142,7 @@ static void unset_found_flags(int AndDraw)
 			AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);
 			CLEAR_FLAG(flag, arc);
 			DrawArc(layer, arc);
-			change = true;
+			change = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -152,12 +152,12 @@ static void unset_found_flags(int AndDraw)
 			AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
 			CLEAR_FLAG(flag, polygon);
 			DrawPolygon(layer, polygon);
-			change = true;
+			change = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
 	if (change) {
-		SetChangedFlag(true);
+		SetChangedFlag(pcb_true);
 		if (AndDraw) {
 			IncrementUndoSerialNumber();
 			Draw();
@@ -173,7 +173,7 @@ static void selection_changed_cb(GtkTreeSelection * selection, gpointer user_dat
 	int i;
 
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter)) {
-		unset_found_flags(true);
+		unset_found_flags(pcb_true);
 		return;
 	}
 
@@ -183,7 +183,7 @@ static void selection_changed_cb(GtkTreeSelection * selection, gpointer user_dat
 
 	gtk_tree_model_get(model, &iter, DRC_VIOLATION_OBJ_COL, &violation, -1);
 
-	unset_found_flags(false);
+	unset_found_flags(pcb_false);
 
 	if (violation == NULL)
 		return;
@@ -206,11 +206,11 @@ static void selection_changed_cb(GtkTreeSelection * selection, gpointer user_dat
 		case PCB_TYPE_LINE:
 		case PCB_TYPE_ARC:
 		case PCB_TYPE_POLYGON:
-			ChangeGroupVisibility(GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1), true, true);
+			ChangeGroupVisibility(GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1), pcb_true, pcb_true);
 		}
 		DrawObject(object_type, ptr1, ptr2);
 	}
-	SetChangedFlag(true);
+	SetChangedFlag(pcb_true);
 	IncrementUndoSerialNumber();
 	Draw();
 }

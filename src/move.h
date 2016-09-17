@@ -94,9 +94,9 @@
 void MovePolygonLowLevel(PolygonTypePtr, Coord, Coord);
 void MoveElementLowLevel(DataTypePtr, ElementTypePtr, Coord, Coord);
 void *MoveObject(int, void *, void *, void *, Coord, Coord);
-void *MoveObjectToLayer(int, void *, void *, void *, LayerTypePtr, bool);
+void *MoveObjectToLayer(int, void *, void *, void *, LayerTypePtr, pcb_bool);
 void *MoveObjectAndRubberband(int, void *, void *, void *, Coord, Coord);
-bool MoveSelectedObjectsToLayer(LayerTypePtr);
+pcb_bool MoveSelectedObjectsToLayer(LayerTypePtr);
 
 /* index is 0..MAX_LAYER-1.  If old_index is -1, a new layer is
    inserted at that index.  If new_index is -1, the specified layer is

@@ -296,7 +296,7 @@ int ghid_drc_window_throw_dialog(void);
 
 /* In gui-top-window.c  */
 void ghid_update_toggle_flags(void);
-void ghid_notify_save_pcb(const char *file, bool done);
+void ghid_notify_save_pcb(const char *file, pcb_bool done);
 void ghid_notify_filename_changed(void);
 void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui);
 void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui);
@@ -423,8 +423,8 @@ void ghid_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y);
 void ghid_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
 void ghid_invalidate_lr(int left, int right, int top, int bottom);
 void ghid_invalidate_all();
-void ghid_notify_crosshair_change(bool changes_complete);
-void ghid_notify_mark_change(bool changes_complete);
+void ghid_notify_crosshair_change(pcb_bool changes_complete);
+void ghid_notify_mark_change(pcb_bool changes_complete);
 void ghid_init_renderer(int *, char ***, GHidPort *);
 void ghid_shutdown_renderer(GHidPort *);
 void ghid_init_drawing_widget(GtkWidget * widget, GHidPort *);
@@ -437,8 +437,8 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 HID *ghid_request_debug_draw(void);
 void ghid_flush_debug_draw(void);
 void ghid_finish_debug_draw(void);
-bool ghid_event_to_pcb_coords(int event_x, int event_y, Coord * pcb_x, Coord * pcb_y);
-bool ghid_pcb_to_event_coords(Coord pcb_x, Coord pcb_y, int *event_x, int *event_y);
+pcb_bool ghid_event_to_pcb_coords(int event_x, int event_y, Coord * pcb_x, Coord * pcb_y);
+pcb_bool ghid_pcb_to_event_coords(Coord pcb_x, Coord pcb_y, int *event_x, int *event_y);
 
 void ghid_lead_user_to_location(Coord x, Coord y);
 void ghid_cancel_lead_user(void);

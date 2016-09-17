@@ -14,7 +14,7 @@
 void layout_switch_to_layer(int layer)
 {
 	layer_check(layer);
-	ChangeGroupVisibility(layer, true, true);
+	ChangeGroupVisibility(layer, pcb_true, pcb_true);
 	Redraw();
 }
 

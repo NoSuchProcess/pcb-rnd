@@ -136,7 +136,7 @@ static void ghid_zoom_view_fit(void)
 	ghid_zoom_view_abs(SIDE_X(0), SIDE_Y(0), MAX(PCB->MaxWidth / gport->width, PCB->MaxHeight / gport->height));
 }
 
-static void ghid_flip_view(Coord center_x, Coord center_y, bool flip_x, bool flip_y)
+static void ghid_flip_view(Coord center_x, Coord center_y, pcb_bool flip_x, pcb_bool flip_y)
 {
 	int widget_x, widget_y;
 
@@ -687,16 +687,16 @@ static struct progress_dialog *make_progress_dialog(void)
 	pd->progress = gtk_progress_bar_new();
 	gtk_widget_set_size_request(pd->progress, -1, 26);
 
-	vbox = gtk_vbox_new(false, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), pd->message, true, true, 8);
-	gtk_box_pack_start(GTK_BOX(vbox), pd->progress, false, true, 8);
+	vbox = gtk_vbox_new(pcb_false, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), pd->message, pcb_true, pcb_true, 8);
+	gtk_box_pack_start(GTK_BOX(vbox), pd->progress, pcb_false, pcb_true, 8);
 
 	alignment = gtk_alignment_new(0., 0., 1., 1.);
 	gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 8, 8, 8, 8);
 	gtk_container_add(GTK_CONTAINER(alignment), vbox);
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(pd->dialog));
-	gtk_box_pack_start(GTK_BOX(content_area), alignment, true, true, 0);
+	gtk_box_pack_start(GTK_BOX(content_area), alignment, pcb_true, pcb_true, 0);
 
 	gtk_widget_show_all(alignment);
 
@@ -1306,7 +1306,7 @@ If no argument is given, the board isn't moved but the opposite side
 is shown.
 
 Normally, this action changes which pads and silk layer are drawn as
-true silk, and which are drawn as the "invisible" layer.  It also
+pcb_true silk, and which are drawn as the "invisible" layer.  It also
 determines which solder mask you see.
 
 As a special case, if the layer group for the side you're looking at
@@ -1323,22 +1323,22 @@ static int SwapSides(int argc, const char **argv, Coord x, Coord y)
 	int active_group = GetLayerGroupNumberByNumber(LayerStack[0]);
 	int comp_group = GetLayerGroupNumberByNumber(component_silk_layer);
 	int solder_group = GetLayerGroupNumberByNumber(solder_silk_layer);
-	bool comp_on = LAYER_PTR(PCB->LayerGroups.Entries[comp_group][0])->On;
-	bool solder_on = LAYER_PTR(PCB->LayerGroups.Entries[solder_group][0])->On;
+	pcb_bool comp_on = LAYER_PTR(PCB->LayerGroups.Entries[comp_group][0])->On;
+	pcb_bool solder_on = LAYER_PTR(PCB->LayerGroups.Entries[solder_group][0])->On;
 
 	if (argc > 0) {
 		switch (argv[0][0]) {
 		case 'h':
 		case 'H':
-			ghid_flip_view(gport->pcb_x, gport->pcb_y, true, false);
+			ghid_flip_view(gport->pcb_x, gport->pcb_y, pcb_true, pcb_false);
 			break;
 		case 'v':
 		case 'V':
-			ghid_flip_view(gport->pcb_x, gport->pcb_y, false, true);
+			ghid_flip_view(gport->pcb_x, gport->pcb_y, pcb_false, pcb_true);
 			break;
 		case 'r':
 		case 'R':
-			ghid_flip_view(gport->pcb_x, gport->pcb_y, true, true);
+			ghid_flip_view(gport->pcb_x, gport->pcb_y, pcb_true, pcb_true);
 			conf_toggle_editor(show_solder_side); /* Swapped back below */
 			break;
 		default:
@@ -1349,7 +1349,7 @@ static int SwapSides(int argc, const char **argv, Coord x, Coord y)
 	conf_toggle_editor(show_solder_side);
 
 	if ((active_group == comp_group && comp_on && !solder_on) || (active_group == solder_group && solder_on && !comp_on)) {
-		bool new_solder_vis = conf_core.editor.show_solder_side;
+		pcb_bool new_solder_vis = conf_core.editor.show_solder_side;
 
 		ChangeGroupVisibility(PCB->LayerGroups.Entries[comp_group][0], !new_solder_vis, !new_solder_vis);
 		ChangeGroupVisibility(PCB->LayerGroups.Entries[solder_group][0], new_solder_vis, new_solder_vis);

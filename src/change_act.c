@@ -76,7 +76,7 @@ static int ActionChangeClearSize(int argc, const char **argv, Coord x, Coord y)
 	const char *function = ACTION_ARG(0);
 	const char *delta = ACTION_ARG(1);
 	const char *units = ACTION_ARG(2);
-	bool absolute;
+	pcb_bool absolute;
 	Coord value;
 	int type = PCB_TYPE_NONE;
 	void *ptr1, *ptr2, *ptr3;
@@ -104,33 +104,33 @@ static int ActionChangeClearSize(int argc, const char **argv, Coord x, Coord y)
 			{
 				if (type != PCB_TYPE_NONE)
 					if (ChangeObjectClearSize(type, ptr1, ptr2, ptr3, value, absolute))
-						SetChangedFlag(true);
+						SetChangedFlag(pcb_true);
 				break;
 			}
 		case F_SelectedVias:
 			if (ChangeSelectedClearSize(PCB_TYPE_VIA, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		case F_SelectedPads:
 			if (ChangeSelectedClearSize(PCB_TYPE_PAD, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		case F_SelectedPins:
 			if (ChangeSelectedClearSize(PCB_TYPE_PIN, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		case F_SelectedLines:
 			if (ChangeSelectedClearSize(PCB_TYPE_LINE, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		case F_SelectedArcs:
 			if (ChangeSelectedClearSize(PCB_TYPE_ARC, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		case F_Selected:
 		case F_SelectedObjects:
 			if (ChangeSelectedClearSize(CHANGECLEARSIZE_TYPES, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -172,8 +172,8 @@ static int ActionChangeFlag(int argc, const char **argv, Coord x, Coord y)
 static void ChangeFlag(const char *what, const char *flag_name, int value,
 											 const char *cmd_name)
 {
-	bool(*set_object) (int, void *, void *, void *);
-	bool(*set_selected) (int);
+	pcb_bool(*set_object) (int, void *, void *, void *);
+	pcb_bool(*set_selected) (int);
 
 	if (NSTRCMP(flag_name, "square") == 0) {
 		set_object = value ? SetObjectSquare : ClrObjectSquare;
@@ -204,49 +204,49 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 				if (TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2))
 					Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			if (set_object(type, ptr1, ptr2, ptr3))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 
 	case F_SelectedVias:
 		if (set_selected(PCB_TYPE_VIA))
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 		break;
 
 	case F_SelectedPins:
 		if (set_selected(PCB_TYPE_PIN))
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 		break;
 
 	case F_SelectedPads:
 		if (set_selected(PCB_TYPE_PAD))
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 		break;
 
 	case F_SelectedLines:
 		if (set_selected(PCB_TYPE_LINE))
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 		break;
 
 	case F_SelectedTexts:
 		if (set_selected(PCB_TYPE_TEXT))
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 		break;
 
 	case F_SelectedNames:
 		if (set_selected(PCB_TYPE_ELEMENT_NAME))
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 		break;
 
 	case F_SelectedElements:
 		if (set_selected(PCB_TYPE_ELEMENT))
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 		break;
 
 	case F_Selected:
 	case F_SelectedObjects:
 		if (set_selected(CHANGESIZE_TYPES))
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 		break;
 	}
 }
@@ -284,7 +284,7 @@ static int ActionChangeHole(int argc, const char **argv, Coord x, Coord y)
 		case F_SelectedVias:
 		case F_Selected:
 			if (ChangeSelectedHole())
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -326,7 +326,7 @@ static int ActionChangePaste(int argc, const char **argv, Coord x, Coord y)
 		case F_SelectedPads:
 		case F_Selected:
 			if (ChangeSelectedPaste())
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -389,7 +389,7 @@ static int ActionChangeSize(int argc, const char **argv, Coord x, Coord y)
 	const char *function = ACTION_ARG(0);
 	const char *delta = ACTION_ARG(1);
 	const char *units = ACTION_ARG(2);
-	bool absolute;								/* indicates if absolute size is given */
+	pcb_bool absolute;								/* indicates if absolute size is given */
 	Coord value;
 	int type = PCB_TYPE_NONE, tostyle = 0;
 	void *ptr1, *ptr2, *ptr3;
@@ -417,58 +417,58 @@ static int ActionChangeSize(int argc, const char **argv, Coord x, Coord y)
 						Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 				if (tostyle) {
 					if (ChangeObject1stSize(type, ptr1, ptr2, ptr3, value, absolute))
-						SetChangedFlag(true);
+						SetChangedFlag(pcb_true);
 				}
 				else {
 					if (ChangeObjectSize(type, ptr1, ptr2, ptr3, value, absolute))
-						SetChangedFlag(true);
+						SetChangedFlag(pcb_true);
 				}
 				break;
 			}
 		case F_SelectedVias:
 			if (ChangeSelectedSize(PCB_TYPE_VIA, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedPins:
 			if (ChangeSelectedSize(PCB_TYPE_PIN, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedPads:
 			if (ChangeSelectedSize(PCB_TYPE_PAD, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedArcs:
 			if (ChangeSelectedSize(PCB_TYPE_ARC, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedLines:
 			if (ChangeSelectedSize(PCB_TYPE_LINE, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedTexts:
 			if (ChangeSelectedSize(PCB_TYPE_TEXT, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedNames:
 			if (ChangeSelectedSize(PCB_TYPE_ELEMENT_NAME, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedElements:
 			if (ChangeSelectedSize(PCB_TYPE_ELEMENT, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_Selected:
 		case F_SelectedObjects:
 			if (ChangeSelectedSize(CHANGESIZE_TYPES, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -494,7 +494,7 @@ static int ActionChange2ndSize(int argc, const char **argv, Coord x, Coord y)
 	int type = PCB_TYPE_NONE;
 	void *ptr1, *ptr2, *ptr3;
 
-	bool absolute;
+	pcb_bool absolute;
 	Coord value;
 
 	if (function && delta) {
@@ -518,24 +518,24 @@ static int ActionChange2ndSize(int argc, const char **argv, Coord x, Coord y)
 			{
 
 				if (type != PCB_TYPE_NONE)
-					if (ChangeObject2ndSize(type, ptr1, ptr2, ptr3, value, absolute, true))
-						SetChangedFlag(true);
+					if (ChangeObject2ndSize(type, ptr1, ptr2, ptr3, value, absolute, pcb_true))
+						SetChangedFlag(pcb_true);
 				break;
 			}
 
 		case F_SelectedVias:
 			if (ChangeSelected2ndSize(PCB_TYPE_VIA, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedPins:
 			if (ChangeSelected2ndSize(PCB_TYPE_PIN, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		case F_Selected:
 		case F_SelectedObjects:
 			if (ChangeSelected2ndSize(PCB_TYPEMASK_PIN, value, absolute))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -585,7 +585,7 @@ static int ActionChangePinName(int argc, const char **argv, Coord x, Coord y)
 					 * it is used in the undo list
 					 */
 					pin->Name = pcb_strdup(pinname);
-					SetChangedFlag(true);
+					SetChangedFlag(pcb_true);
 					changed = 1;
 				}
 			}
@@ -600,7 +600,7 @@ static int ActionChangePinName(int argc, const char **argv, Coord x, Coord y)
 					 * it is used in the undo list
 					 */
 					pad->Name = pcb_strdup(pinname);
-					SetChangedFlag(true);
+					SetChangedFlag(pcb_true);
 					changed = 1;
 				}
 			}
@@ -670,7 +670,7 @@ int ActionChangeName(int argc, const char **argv, Coord x, Coord y)
 					else
 						pinnum = 0;
 					if (QueryInputAndChangeObjectName(type, ptr1, ptr2, ptr3, pinnum)) {
-						SetChangedFlag(true);
+						SetChangedFlag(pcb_true);
 						if (type == PCB_TYPE_ELEMENT) {
 							RubberbandTypePtr ptr;
 							int i;
@@ -697,7 +697,7 @@ int ActionChangeName(int argc, const char **argv, Coord x, Coord y)
 			name = gui->prompt_for(_("Enter the layout name:"), EMPTY(PCB->Name));
 			/* NB: ChangeLayoutName takes ownership of the passed memory */
 			if (name && ChangeLayoutName(name))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 			/* change the name of the active layer */
@@ -705,7 +705,7 @@ int ActionChangeName(int argc, const char **argv, Coord x, Coord y)
 			name = gui->prompt_for(_("Enter the layer name:"), EMPTY(CURRENT->Name));
 			/* NB: ChangeLayerName takes ownership of the passed memory */
 			if (name && ChangeLayerName(CURRENT, name))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -742,24 +742,24 @@ static int ActionChangeJoin(int argc, const char **argv, Coord x, Coord y)
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = SearchScreen(x, y, CHANGEJOIN_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (ChangeObjectJoin(type, ptr1, ptr2, ptr3))
-						SetChangedFlag(true);
+						SetChangedFlag(pcb_true);
 				break;
 			}
 
 		case F_SelectedLines:
 			if (ChangeSelectedJoin(PCB_TYPE_LINE))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedArcs:
 			if (ChangeSelectedJoin(PCB_TYPE_ARC))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_Selected:
 		case F_SelectedObjects:
 			if (ChangeSelectedJoin(CHANGEJOIN_TYPES))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -797,14 +797,14 @@ static int ActionChangeNonetlist(int argc, const char **argv, Coord x, Coord y)
 				ptr3 = NULL;
 				type = SearchScreen(x, y, CHANGENONETLIST_TYPES, &ptr1, &ptr2, &ptr3);
 				if (ChangeObjectNonetlist(type, ptr1, ptr2, ptr3))
-					SetChangedFlag(true);
+					SetChangedFlag(pcb_true);
 				break;
 			}
 		case F_SelectedElements:
 		case F_Selected:
 		case F_SelectedObjects:
 			if (ChangeSelectedNonetlist(PCB_TYPE_ELEMENT))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -850,25 +850,25 @@ static int ActionChangeSquare(int argc, const char **argv, Coord x, Coord y)
 						qstyle = 0;
 					if (type != PCB_TYPE_NONE)
 						if (ChangeObjectSquare(type, ptr1, ptr2, ptr3, qstyle))
-							SetChangedFlag(true);
+							SetChangedFlag(pcb_true);
 				}
 				break;
 			}
 
 		case F_SelectedElements:
 			if (ChangeSelectedSquare(PCB_TYPE_ELEMENT))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedPins:
 			if (ChangeSelectedSquare(PCB_TYPE_PIN | PCB_TYPE_PAD))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_Selected:
 		case F_SelectedObjects:
 			if (ChangeSelectedSquare(PCB_TYPE_PIN | PCB_TYPE_PAD))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -903,24 +903,24 @@ static int ActionSetSquare(int argc, const char **argv, Coord x, Coord y)
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = SearchScreen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (SetObjectSquare(type, ptr1, ptr2, ptr3))
-						SetChangedFlag(true);
+						SetChangedFlag(pcb_true);
 				break;
 			}
 
 		case F_SelectedElements:
 			if (SetSelectedSquare(PCB_TYPE_ELEMENT))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedPins:
 			if (SetSelectedSquare(PCB_TYPE_PIN | PCB_TYPE_PAD))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_Selected:
 		case F_SelectedObjects:
 			if (SetSelectedSquare(PCB_TYPE_PIN | PCB_TYPE_PAD))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -955,24 +955,24 @@ static int ActionClearSquare(int argc, const char **argv, Coord x, Coord y)
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = SearchScreen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (ClrObjectSquare(type, ptr1, ptr2, ptr3))
-						SetChangedFlag(true);
+						SetChangedFlag(pcb_true);
 				break;
 			}
 
 		case F_SelectedElements:
 			if (ClrSelectedSquare(PCB_TYPE_ELEMENT))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedPins:
 			if (ClrSelectedSquare(PCB_TYPE_PIN | PCB_TYPE_PAD))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_Selected:
 		case F_SelectedObjects:
 			if (ClrSelectedSquare(PCB_TYPE_PIN | PCB_TYPE_PAD))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -1006,29 +1006,29 @@ static int ActionChangeOctagon(int argc, const char **argv, Coord x, Coord y)
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = SearchScreen(x, y, CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (ChangeObjectOctagon(type, ptr1, ptr2, ptr3))
-						SetChangedFlag(true);
+						SetChangedFlag(pcb_true);
 				break;
 			}
 
 		case F_SelectedElements:
 			if (ChangeSelectedOctagon(PCB_TYPE_ELEMENT))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedPins:
 			if (ChangeSelectedOctagon(PCB_TYPE_PIN))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedVias:
 			if (ChangeSelectedOctagon(PCB_TYPE_VIA))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_Selected:
 		case F_SelectedObjects:
 			if (ChangeSelectedOctagon(PCB_TYPEMASK_PIN))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -1061,29 +1061,29 @@ static int ActionSetOctagon(int argc, const char **argv, Coord x, Coord y)
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = SearchScreen(x, y, CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (SetObjectOctagon(type, ptr1, ptr2, ptr3))
-						SetChangedFlag(true);
+						SetChangedFlag(pcb_true);
 				break;
 			}
 
 		case F_SelectedElements:
 			if (SetSelectedOctagon(PCB_TYPE_ELEMENT))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedPins:
 			if (SetSelectedOctagon(PCB_TYPE_PIN))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedVias:
 			if (SetSelectedOctagon(PCB_TYPE_VIA))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_Selected:
 		case F_SelectedObjects:
 			if (SetSelectedOctagon(PCB_TYPEMASK_PIN))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -1117,29 +1117,29 @@ static int ActionClearOctagon(int argc, const char **argv, Coord x, Coord y)
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (ClrObjectOctagon(type, ptr1, ptr2, ptr3))
-						SetChangedFlag(true);
+						SetChangedFlag(pcb_true);
 				break;
 			}
 
 		case F_SelectedElements:
 			if (ClrSelectedOctagon(PCB_TYPE_ELEMENT))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedPins:
 			if (ClrSelectedOctagon(PCB_TYPE_PIN))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_SelectedVias:
 			if (ClrSelectedOctagon(PCB_TYPE_VIA))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 		case F_Selected:
 		case F_SelectedObjects:
 			if (ClrSelectedOctagon(PCB_TYPEMASK_PIN))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -1185,7 +1185,7 @@ static int ActionSetThermal(int argc, const char **argv, Coord x, Coord y)
 	int err = 0;
 
 	if (function && *function && style && *style) {
-		bool absolute;
+		pcb_bool absolute;
 
 		kind = GetValue(style, NULL, &absolute, NULL);
 		if (absolute)
@@ -1316,7 +1316,7 @@ static int ActionSetValue(int argc, const char **argv, Coord x, Coord y)
 	const char *function = ACTION_ARG(0);
 	const char *val = ACTION_ARG(1);
 	const char *units = ACTION_ARG(2);
-	bool absolute;								/* flag for 'absolute' value */
+	pcb_bool absolute;								/* flag for 'absolute' value */
 	double value;
 	int err = 0;
 
@@ -1324,22 +1324,22 @@ static int ActionSetValue(int argc, const char **argv, Coord x, Coord y)
 		value = GetValue(val, units, &absolute, NULL);
 		switch (funchash_get(function, NULL)) {
 		case F_ViaDrillingHole:
-			SetViaDrillingHole(absolute ? value : value + conf_core.design.via_drilling_hole, false);
+			SetViaDrillingHole(absolute ? value : value + conf_core.design.via_drilling_hole, pcb_false);
 			hid_action("RouteStylesChanged");
 			break;
 
 		case F_Grid:
 			if (absolute)
-				SetGrid(value, false);
+				SetGrid(value, pcb_false);
 			else {
 				/* On the way down, short against the minimum
 				 * PCB drawing unit */
 				if ((value + PCB->Grid) < 1)
-					SetGrid(1, false);
+					SetGrid(1, pcb_false);
 				else if (PCB->Grid == 1)
-					SetGrid(value, false);
+					SetGrid(value, pcb_false);
 				else
-					SetGrid(value + PCB->Grid, false);
+					SetGrid(value + PCB->Grid, pcb_false);
 			}
 			break;
 
@@ -1351,7 +1351,7 @@ static int ActionSetValue(int argc, const char **argv, Coord x, Coord y)
 
 		case F_Via:
 		case F_ViaSize:
-			SetViaSize(absolute ? value : value + conf_core.design.via_thickness, false);
+			SetViaSize(absolute ? value : value + conf_core.design.via_thickness, pcb_false);
 			hid_action("RouteStylesChanged");
 			break;
 

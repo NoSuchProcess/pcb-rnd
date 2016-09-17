@@ -27,14 +27,14 @@
 
 /* Connection export/output functions */
 
-static bool PrepareNextLoop(FILE * FP);
+static pcb_bool PrepareNextLoop(FILE * FP);
 
 /* ---------------------------------------------------------------------------
  * prints all unused pins of an element to file FP
  */
-static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FILE * FP)
+static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FILE * FP)
 {
-	bool first = true;
+	pcb_bool first = pcb_true;
 	Cardinal number;
 
 	/* check all pins in element */
@@ -46,8 +46,8 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 			if (!TEST_FLAG(TheFlag, pin) && FP) {
 				int i;
 				if (ADD_PV_TO_LIST(pin, 0, NULL, 0))
-					return true;
-				DoIt(true, true);
+					return pcb_true;
+				DoIt(pcb_true, pcb_true);
 				number = PadList[COMPONENT_LAYER].Number + PadList[SOLDER_LAYER].Number + PVList.Number;
 				/* the pin has no connection if it's the only
 				 * list entry; don't count vias
@@ -59,7 +59,7 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 					/* output of element name if not already done */
 					if (first) {
 						PrintConnectionElementName(Element, FP);
-						first = false;
+						first = pcb_false;
 					}
 
 					/* write name to list and draw selected object */
@@ -72,7 +72,7 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 
 				/* reset found objects for the next pin */
 				if (PrepareNextLoop(FP))
-					return (true);
+					return (pcb_true);
 			}
 		}
 	}
@@ -87,8 +87,8 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 			int i;
 			if (ADD_PAD_TO_LIST(TEST_FLAG(PCB_FLAG_ONSOLDER, pad)
 													? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, 0))
-				return true;
-			DoIt(true, true);
+				return pcb_true;
+			DoIt(pcb_true, pcb_true);
 			number = PadList[COMPONENT_LAYER].Number + PadList[SOLDER_LAYER].Number + PVList.Number;
 			/* the pin has no connection if it's the only
 			 * list entry; don't count vias
@@ -100,7 +100,7 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 				/* output of element name if not already done */
 				if (first) {
 					PrintConnectionElementName(Element, FP);
-					first = false;
+					first = pcb_false;
 				}
 
 				/* write name to list and draw selected object */
@@ -114,7 +114,7 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 
 			/* reset found objects for the next pin */
 			if (PrepareNextLoop(FP))
-				return (true);
+				return (pcb_true);
 		}
 	}
 	END_LOOP;
@@ -124,13 +124,13 @@ static bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FIL
 		fputs("}\n\n", FP);
 		SEPARATE(FP);
 	}
-	return (false);
+	return (pcb_false);
 }
 
 /* ---------------------------------------------------------------------------
  * resets some flags for looking up the next pin/pad
  */
-static bool PrepareNextLoop(FILE * FP)
+static pcb_bool PrepareNextLoop(FILE * FP)
 {
 	Cardinal layer;
 
@@ -149,15 +149,15 @@ static bool PrepareNextLoop(FILE * FP)
 	PVList.Number = PVList.Location = 0;
 	RatList.Number = RatList.Location = 0;
 
-	return (false);
+	return (pcb_false);
 }
 
 /* ---------------------------------------------------------------------------
  * finds all connections to the pins of the passed element.
  * The result is written to file FP
- * Returns true if operation was aborted
+ * Returns pcb_true if operation was aborted
  */
-static bool PrintElementConnections(ElementTypePtr Element, FILE * FP, bool AndDraw)
+static pcb_bool PrintElementConnections(ElementTypePtr Element, FILE * FP, pcb_bool AndDraw)
 {
 	PrintConnectionElementName(Element, FP);
 
@@ -166,20 +166,20 @@ static bool PrintElementConnections(ElementTypePtr Element, FILE * FP, bool AndD
 	{
 		/* pin might have been checked before, add to list if not */
 		if (TEST_FLAG(TheFlag, pin)) {
-			PrintConnectionListEntry((char *) EMPTY(pin->Name), NULL, true, FP);
+			PrintConnectionListEntry((char *) EMPTY(pin->Name), NULL, pcb_true, FP);
 			fputs("\t\t__CHECKED_BEFORE__\n\t}\n", FP);
 			continue;
 		}
 		if (ADD_PV_TO_LIST(pin, PCB_TYPE_ELEMENT, Element, FCT_ELEMENT))
-			return true;
-		DoIt(true, AndDraw);
+			return pcb_true;
+		DoIt(pcb_true, AndDraw);
 		/* printout all found connections */
-		PrintPinConnections(FP, true);
-		PrintPadConnections(COMPONENT_LAYER, FP, false);
-		PrintPadConnections(SOLDER_LAYER, FP, false);
+		PrintPinConnections(FP, pcb_true);
+		PrintPadConnections(COMPONENT_LAYER, FP, pcb_false);
+		PrintPadConnections(SOLDER_LAYER, FP, pcb_false);
 		fputs("\t}\n", FP);
 		if (PrepareNextLoop(FP))
-			return (true);
+			return (pcb_true);
 	}
 	END_LOOP;
 
@@ -189,25 +189,25 @@ static bool PrintElementConnections(ElementTypePtr Element, FILE * FP, bool AndD
 		Cardinal layer;
 		/* pad might have been checked before, add to list if not */
 		if (TEST_FLAG(TheFlag, pad)) {
-			PrintConnectionListEntry((char *) EMPTY(pad->Name), NULL, true, FP);
+			PrintConnectionListEntry((char *) EMPTY(pad->Name), NULL, pcb_true, FP);
 			fputs("\t\t__CHECKED_BEFORE__\n\t}\n", FP);
 			continue;
 		}
 		layer = TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER;
 		if (ADD_PAD_TO_LIST(layer, pad, PCB_TYPE_ELEMENT, Element, FCT_ELEMENT))
-			return true;
-		DoIt(true, AndDraw);
+			return pcb_true;
+		DoIt(pcb_true, AndDraw);
 		/* print all found connections */
-		PrintPadConnections(layer, FP, true);
-		PrintPadConnections(layer == (COMPONENT_LAYER ? SOLDER_LAYER : COMPONENT_LAYER), FP, false);
-		PrintPinConnections(FP, false);
+		PrintPadConnections(layer, FP, pcb_true);
+		PrintPadConnections(layer == (COMPONENT_LAYER ? SOLDER_LAYER : COMPONENT_LAYER), FP, pcb_false);
+		PrintPinConnections(FP, pcb_false);
 		fputs("\t}\n", FP);
 		if (PrepareNextLoop(FP))
-			return (true);
+			return (pcb_true);
 	}
 	END_LOOP;
 	fputs("}\n\n", FP);
-	return (false);
+	return (pcb_false);
 }
 
 /* ---------------------------------------------------------------------------
@@ -216,13 +216,13 @@ static bool PrintElementConnections(ElementTypePtr Element, FILE * FP, bool AndD
 void LookupUnusedPins(FILE * FP)
 {
 	/* reset all currently marked connections */
-	User = true;
-	ResetConnections(true);
+	User = pcb_true;
+	ResetConnections(pcb_true);
 	InitConnectionLookup();
 
 	ELEMENT_LOOP(PCB->Data);
 	{
-		/* break if abort dialog returned true;
+		/* break if abort dialog returned pcb_true;
 		 * passing NULL as filedescriptor discards the normal output
 		 */
 		if (PrintAndSelectUnusedPinsAndPadsOfElement(element, FP))
@@ -234,7 +234,7 @@ void LookupUnusedPins(FILE * FP)
 		gui->beep();
 	FreeConnectionLookupMemory();
 	IncrementUndoSerialNumber();
-	User = false;
+	User = pcb_false;
 	Draw();
 }
 
@@ -244,17 +244,17 @@ void LookupUnusedPins(FILE * FP)
 void LookupElementConnections(ElementTypePtr Element, FILE * FP)
 {
 	/* reset all currently marked connections */
-	User = true;
+	User = pcb_true;
 	TheFlag = PCB_FLAG_FOUND;
-	ResetConnections(true);
+	ResetConnections(pcb_true);
 	InitConnectionLookup();
-	PrintElementConnections(Element, FP, true);
-	SetChangedFlag(true);
+	PrintElementConnections(Element, FP, pcb_true);
+	SetChangedFlag(pcb_true);
 	if (conf_core.editor.beep_when_finished)
 		gui->beep();
 	FreeConnectionLookupMemory();
 	IncrementUndoSerialNumber();
-	User = false;
+	User = pcb_false;
 	Draw();
 }
 
@@ -265,24 +265,24 @@ void LookupElementConnections(ElementTypePtr Element, FILE * FP)
 void LookupConnectionsToAllElements(FILE * FP)
 {
 	/* reset all currently marked connections */
-	User = false;
+	User = pcb_false;
 	TheFlag = PCB_FLAG_FOUND;
-	ResetConnections(false);
+	ResetConnections(pcb_false);
 	InitConnectionLookup();
 
 	ELEMENT_LOOP(PCB->Data);
 	{
-		/* break if abort dialog returned true */
-		if (PrintElementConnections(element, FP, false))
+		/* break if abort dialog returned pcb_true */
+		if (PrintElementConnections(element, FP, pcb_false))
 			break;
 		SEPARATE(FP);
 		if (conf_core.editor.reset_after_element && gdl_it_idx(&__it__) != 1)
-			ResetConnections(false);
+			ResetConnections(pcb_false);
 	}
 	END_LOOP;
 	if (conf_core.editor.beep_when_finished)
 		gui->beep();
-	ResetConnections(false);
+	ResetConnections(pcb_false);
 	FreeConnectionLookupMemory();
 	Redraw();
 }

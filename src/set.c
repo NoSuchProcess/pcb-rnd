@@ -55,7 +55,7 @@ static int mode_stack[MAX_MODESTACK_DEPTH];
 /* ---------------------------------------------------------------------------
  * sets cursor grid with respect to grid offset values
  */
-void SetGrid(Coord Grid, bool align)
+void SetGrid(Coord Grid, pcb_bool align)
 {
 	if (Grid >= 1 && Grid <= MAX_GRID) {
 		if (align) {
@@ -83,7 +83,7 @@ void SetLineSize(Coord Size)
 /* ---------------------------------------------------------------------------
  * sets a new via thickness
  */
-void SetViaSize(Coord Size, bool Force)
+void SetViaSize(Coord Size, pcb_bool Force)
 {
 	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIASIZE && Size >= conf_core.design.via_drilling_hole + MIN_PINORVIACOPPER)) {
 		conf_set_design("design/via_thickness", "%$mS", Size);
@@ -93,7 +93,7 @@ void SetViaSize(Coord Size, bool Force)
 /* ---------------------------------------------------------------------------
  * sets a new via drilling hole
  */
-void SetViaDrillingHole(Coord Size, bool Force)
+void SetViaDrillingHole(Coord Size, pcb_bool Force)
 {
 	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - MIN_PINORVIACOPPER)) {
 		conf_set_design("design/via_drilling_hole", "%$mS", Size);
@@ -123,7 +123,7 @@ void SetTextScale(int Scale)
 /* ---------------------------------------------------------------------------
  * sets or resets changed flag and redraws status
  */
-void SetChangedFlag(bool New)
+void SetChangedFlag(pcb_bool New)
 {
 	if (PCB->Changed != New) {
 		PCB->Changed = New;
@@ -185,15 +185,15 @@ void RestoreMode(void)
 void SetMode(int Mode)
 {
 	char sMode[32];
-	static bool recursing = false;
+	static pcb_bool recursing = pcb_false;
 	/* protect the cursor while changing the mode
 	 * perform some additional stuff depending on the new mode
 	 * reset 'state' of attached objects
 	 */
 	if (recursing)
 		return;
-	recursing = true;
-	notify_crosshair_change(false);
+	recursing = pcb_true;
+	notify_crosshair_change(pcb_false);
 	addedLines = 0;
 	Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 	Crosshair.AttachedObject.State = STATE_FIRST;
@@ -224,11 +224,11 @@ void SetMode(int Mode)
 	}
 	else {
 		if (conf_core.editor.mode == PCB_MODE_ARC || conf_core.editor.mode == PCB_MODE_LINE)
-			SetLocalRef(0, 0, false);
+			SetLocalRef(0, 0, pcb_false);
 		Crosshair.AttachedBox.State = STATE_FIRST;
 		Crosshair.AttachedLine.State = STATE_FIRST;
 		if (Mode == PCB_MODE_LINE && conf_core.editor.auto_drc) {
-			if (ResetConnections(true)) {
+			if (ResetConnections(pcb_true)) {
 				IncrementUndoSerialNumber();
 				Draw();
 			}
@@ -244,34 +244,34 @@ void SetMode(int Mode)
 	else
 		SetCrosshairRange(0, 0, PCB->MaxWidth, PCB->MaxHeight);
 
-	recursing = false;
+	recursing = pcb_false;
 
 	/* force a crosshair grid update because the valid range
 	 * may have changed
 	 */
 	MoveCrosshairRelative(0, 0);
-	notify_crosshair_change(true);
+	notify_crosshair_change(pcb_true);
 }
 
-void SetLocalRef(Coord X, Coord Y, bool Showing)
+void SetLocalRef(Coord X, Coord Y, pcb_bool Showing)
 {
 	static MarkType old;
 	static int count = 0;
 
 	if (Showing) {
-		notify_mark_change(false);
+		notify_mark_change(pcb_false);
 		if (count == 0)
 			old = Marked;
 		Marked.X = X;
 		Marked.Y = Y;
-		Marked.status = true;
+		Marked.status = pcb_true;
 		count++;
-		notify_mark_change(true);
+		notify_mark_change(pcb_true);
 	}
 	else if (count > 0) {
-		notify_mark_change(false);
+		notify_mark_change(pcb_false);
 		count = 0;
 		Marked = old;
-		notify_mark_change(true);
+		notify_mark_change(pcb_true);
 	}
 }

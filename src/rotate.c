@@ -325,7 +325,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 {
 	RubberbandTypePtr ptr;
 	void *ptr2;
-	bool changed = false;
+	pcb_bool changed = pcb_false;
 
 	/* setup default  global identifiers */
 	Number = Steps;
@@ -335,7 +335,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 	/* move all the rubberband lines... and reset the counter */
 	ptr = Crosshair.AttachedObject.Rubberband;
 	while (Crosshair.AttachedObject.RubberbandN) {
-		changed = true;
+		changed = pcb_true;
 		CLEAR_FLAG(PCB_FLAG_RUBBEREND, ptr->Line);
 		AddObjectToRotateUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, CenterX, CenterY, Steps);
 		EraseLine(ptr->Line);
@@ -384,6 +384,6 @@ void RotateScreenObject(Coord X, Coord Y, unsigned Steps)
 		if (type == PCB_TYPE_ELEMENT)
 			LookupRatLines(type, ptr1, ptr2, ptr3);
 		RotateObject(type, ptr1, ptr2, ptr3, X, Y, Steps);
-		SetChangedFlag(true);
+		SetChangedFlag(pcb_true);
 	}
 }

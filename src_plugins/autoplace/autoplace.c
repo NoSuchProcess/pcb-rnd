@@ -91,7 +91,7 @@ const struct {
 	double m;											/* annealing stage cutoff constant */
 	double gamma;									/* annealing schedule constant */
 	int good_ratio;								/* ratio of moves to good moves for halting */
-	bool fast;										/* ignore SMD/pin conflicts */
+	pcb_bool fast;										/* ignore SMD/pin conflicts */
 	Coord large_grid_size;				/* snap perturbations to this grid when T is high */
 	Coord small_grid_size;				/* snap to this grid when T is small. */
 }
@@ -109,7 +109,7 @@ const struct {
 		20,													/* move on when each module has been profitably moved 20 times */
 		0.75,												/* annealing schedule constant: 0.85 */
 		40,													/* halt when there are 60 times as many moves as good moves */
-		false,											/* don't ignore SMD/pin conflicts */
+		pcb_false,											/* don't ignore SMD/pin conflicts */
 		PCB_MIL_TO_COORD(100),					/* coarse grid is 100 mils */
 		PCB_MIL_TO_COORD(10),						/* fine grid is 10 mils */
 };
@@ -300,7 +300,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 	double delta5 = 0;						/* total area penalty */
 	Cardinal i, j;
 	Coord minx, maxx, miny, maxy;
-	bool allpads, allsameside;
+	pcb_bool allpads, allsameside;
 	Cardinal thegroup;
 	BoxListType bounds = { 0, 0, NULL };	/* save bounding rectangles here */
 	BoxListType solderside = { 0, 0, NULL };	/* solder side component bounds */
@@ -319,7 +319,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 		miny = maxy = n->Connection[0].Y;
 		thegroup = n->Connection[0].group;
 		allpads = (n->Connection[0].type == PCB_TYPE_PAD);
-		allsameside = true;
+		allsameside = pcb_true;
 		for (j = 1; j < n->ConnectionN; j++) {
 			ConnectionTypePtr c = &(n->Connection[j]);
 			MAKEMIN(minx, c->X);
@@ -327,9 +327,9 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 			MAKEMIN(miny, c->Y);
 			MAKEMAX(maxy, c->Y);
 			if (c->type != PCB_TYPE_PAD)
-				allpads = false;
+				allpads = pcb_false;
 			if (c->group != thegroup)
-				allsameside = false;
+				allsameside = pcb_false;
 		}
 		/* save bounding rectangle */
 		{
@@ -577,7 +577,7 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 	case 1:
 		{														/* flip/rotate! */
 			/* only flip if it's an SMD component */
-			bool isSMD = padlist_length(&(pt.element->Pad)) != 0;
+			pcb_bool isSMD = padlist_length(&(pt.element->Pad)) != 0;
 			pt.which = ROTATE;
 			pt.rotate = isSMD ? (pcb_rand() & 3) : (1 + (pcb_rand() % 3));
 			/* 0 - flip; 1-3, rotate. */
@@ -604,7 +604,7 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 	return pt;
 }
 
-void doPerturb(PerturbationType * pt, bool undo)
+void doPerturb(PerturbationType * pt, pcb_bool undo)
 {
 	Coord bbcx, bbcy;
 	/* compute center of element bounding box */
@@ -668,13 +668,13 @@ void doPerturb(PerturbationType * pt, bool undo)
 /* ---------------------------------------------------------------------------
  * Auto-place selected components.
  */
-bool AutoPlaceSelected(void)
+pcb_bool AutoPlaceSelected(void)
 {
 	NetListTypePtr Nets;
 	PointerListType Selected = { 0, 0, NULL };
 	PerturbationType pt;
 	double C0, T0;
-	bool changed = false;
+	pcb_bool changed = pcb_false;
 
 	/* (initial netlist processing copied from AddAllRats) */
 	/* the netlist library has the text form
@@ -703,9 +703,9 @@ bool AutoPlaceSelected(void)
 		C0 = ComputeCost(Nets, Tx, Tx);
 		for (i = 0; i < TRIALS; i++) {
 			pt = createPerturbation(&Selected, PCB_INCH_TO_COORD(1));
-			doPerturb(&pt, false);
+			doPerturb(&pt, pcb_false);
 			Cs += fabs(ComputeCost(Nets, Tx, Tx) - C0);
-			doPerturb(&pt, true);
+			doPerturb(&pt, pcb_true);
 		}
 		T0 = -(Cs / TRIALS) / log(P);
 		printf("Initial T: %f\n", T0);
@@ -722,7 +722,7 @@ bool AutoPlaceSelected(void)
 		while (1) {
 			double Cprime;
 			pt = createPerturbation(&Selected, T);
-			doPerturb(&pt, false);
+			doPerturb(&pt, pcb_false);
 			Cprime = ComputeCost(Nets, T0, T);
 			if (Cprime < C0) {				/* good move! */
 				C0 = Cprime;
@@ -735,7 +735,7 @@ bool AutoPlaceSelected(void)
 				steps++;
 			}
 			else
-				doPerturb(&pt, true);		/* undo last change */
+				doPerturb(&pt, pcb_true);		/* undo last change */
 			moves++;
 			/* are we at the end of a stage? */
 			if (good_moves >= good_move_cutoff || moves >= move_cutoff) {
@@ -754,8 +754,8 @@ bool AutoPlaceSelected(void)
 	}
 done:
 	if (changed) {
-		DeleteRats(false);
-		AddAllRats(false, NULL);
+		DeleteRats(pcb_false);
+		AddAllRats(pcb_false, NULL);
 		Redraw();
 	}
 	FreePointerListMemory(&Selected);

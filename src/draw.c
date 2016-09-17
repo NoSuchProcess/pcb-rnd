@@ -60,7 +60,7 @@
 static BoxType Block = { MAXINT, MAXINT, -MAXINT, -MAXINT };
 
 static int doing_pinout = 0;
-static bool doing_assy = false;
+static pcb_bool doing_assy = pcb_false;
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
@@ -70,7 +70,7 @@ static void DrawPPV(int group, const BoxType *);
 static void DrawLayerGroup(int, const BoxType *);
 static void AddPart(void *);
 static void SetPVColor(PinTypePtr, int);
-static void DrawEMark(ElementTypePtr, Coord, Coord, bool);
+static void DrawEMark(ElementTypePtr, Coord, Coord, pcb_bool);
 static void DrawMask(int side, const BoxType *);
 static void DrawPaste(int side, const BoxType *);
 static void DrawRats(const BoxType *);
@@ -180,7 +180,7 @@ void Redraw(void)
 static void _draw_pv_name(PinType * pv)
 {
 	BoxType box;
-	bool vert;
+	pcb_bool vert;
 	TextType text;
 	char buff[128];
 	const char *pn;
@@ -223,18 +223,18 @@ static void _draw_pv_name(PinType * pv)
 		doing_pinout--;
 }
 
-static void _draw_pv(PinTypePtr pv, bool draw_hole)
+static void _draw_pv(PinTypePtr pv, pcb_bool draw_hole)
 {
 	if (conf_core.editor.thin_draw)
-		gui->thindraw_pcb_pv(Output.fgGC, Output.fgGC, pv, draw_hole, false);
+		gui->thindraw_pcb_pv(Output.fgGC, Output.fgGC, pv, draw_hole, pcb_false);
 	else
-		gui->fill_pcb_pv(Output.fgGC, Output.bgGC, pv, draw_hole, false);
+		gui->fill_pcb_pv(Output.fgGC, Output.bgGC, pv, draw_hole, pcb_false);
 
 	if (!TEST_FLAG(PCB_FLAG_HOLE, pv) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, pv))
 		_draw_pv_name(pv);
 }
 
-static void draw_pin(PinTypePtr pin, bool draw_hole)
+static void draw_pin(PinTypePtr pin, pcb_bool draw_hole)
 {
 	SetPVColor(pin, PCB_TYPE_PIN);
 	_draw_pv(pin, draw_hole);
@@ -242,11 +242,11 @@ static void draw_pin(PinTypePtr pin, bool draw_hole)
 
 static r_dir_t pin_callback(const BoxType * b, void *cl)
 {
-	draw_pin((PinType *) b, false);
+	draw_pin((PinType *) b, pcb_false);
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static void draw_via(PinTypePtr via, bool draw_hole)
+static void draw_via(PinTypePtr via, pcb_bool draw_hole)
 {
 	SetPVColor(via, PCB_TYPE_VIA);
 	_draw_pv(via, draw_hole);
@@ -254,14 +254,14 @@ static void draw_via(PinTypePtr via, bool draw_hole)
 
 static r_dir_t via_callback(const BoxType * b, void *cl)
 {
-	draw_via((PinType *) b, false);
+	draw_via((PinType *) b, pcb_false);
 	return R_DIR_FOUND_CONTINUE;
 }
 
 static void draw_pad_name(PadType * pad)
 {
 	BoxType box;
-	bool vert;
+	pcb_bool vert;
 	TextType text;
 	char buff[128];
 	const char *pn;
@@ -305,7 +305,7 @@ static void draw_pad_name(PadType * pad)
 	DrawTextLowLevel(&text, 0);
 }
 
-static void _draw_pad(hidGC gc, PadType * pad, bool clear, bool mask)
+static void _draw_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
 {
 	if (clear && !mask && pad->Clearance <= 0)
 		return;
@@ -345,7 +345,7 @@ static void draw_pad(PadType * pad)
 	if (color != NULL)
 		gui->set_color(Output.fgGC, color);
 
-	_draw_pad(Output.fgGC, pad, false, false);
+	_draw_pad(Output.fgGC, pad, pcb_false, pcb_false);
 
 	if (doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, pad))
 		draw_pad_name(pad);
@@ -407,7 +407,7 @@ static void draw_element_pins_and_pads(ElementType * element)
 	END_LOOP;
 	PIN_LOOP(element);
 	{
-		draw_pin(pin, true);
+		draw_pin(pin, pcb_true);
 	}
 	END_LOOP;
 }
@@ -462,7 +462,7 @@ static r_dir_t hole_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static void DrawHoles(bool draw_plated, bool draw_unplated, const BoxType * drawn_area)
+static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const BoxType * drawn_area)
 {
 	int plated = -1;
 
@@ -636,14 +636,14 @@ static void PrintAssembly(int side, const BoxType * drawn_area)
 {
 	int side_group = GetLayerGroupNumberByNumber(max_copper_layer + side);
 
-	doing_assy = true;
+	doing_assy = pcb_true;
 	gui->set_draw_faded(Output.fgGC, 1);
 	DrawLayerGroup(side_group, drawn_area);
 	gui->set_draw_faded(Output.fgGC, 0);
 
 	/* draw package */
 	DrawSilk(side, drawn_area);
-	doing_assy = false;
+	doing_assy = pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -658,7 +658,7 @@ static void DrawEverything(const BoxType * drawn_area)
 	/* This is the reverse of the order in which we draw them.  */
 	int drawn_groups[MAX_LAYER];
 	int plated, unplated;
-	bool paste_empty;
+	pcb_bool paste_empty;
 
 	PCB->Data->SILKLAYER.Color = PCB->ElementColor;
 	PCB->Data->BACKSILKLAYER.Color = PCB->InvisibleObjectsColor;
@@ -711,12 +711,12 @@ static void DrawEverything(const BoxType * drawn_area)
 		CountHoles(&plated, &unplated, drawn_area);
 
 		if (plated && gui->set_layer("plated-drill", SL(PDRILL, 0), 0)) {
-			DrawHoles(true, false, drawn_area);
+			DrawHoles(pcb_true, pcb_false, drawn_area);
 			gui->end_layer();
 		}
 
 		if (unplated && gui->set_layer("unplated-drill", SL(UDRILL, 0), 0)) {
-			DrawHoles(false, true, drawn_area);
+			DrawHoles(pcb_false, pcb_true, drawn_area);
 			gui->end_layer();
 		}
 	}
@@ -781,7 +781,7 @@ static void DrawEverything(const BoxType * drawn_area)
 	}
 }
 
-static void DrawEMark(ElementTypePtr e, Coord X, Coord Y, bool invisible)
+static void DrawEMark(ElementTypePtr e, Coord X, Coord Y, pcb_bool invisible)
 {
 	Coord mark_size = EMARK_SIZE;
 	if (!PCB->InvisibleObjectsOn && invisible)
@@ -858,9 +858,9 @@ static r_dir_t clearPin_callback(const BoxType * b, void *cl)
 {
 	PinType *pin = (PinTypePtr) b;
 	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly)
-		gui->thindraw_pcb_pv(Output.pmGC, Output.pmGC, pin, false, true);
+		gui->thindraw_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
 	else
-		gui->fill_pcb_pv(Output.pmGC, Output.pmGC, pin, false, true);
+		gui->fill_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
 	return R_DIR_FOUND_CONTINUE;
 }
 
@@ -915,7 +915,7 @@ static r_dir_t clearPad_callback(const BoxType * b, void *cl)
 	PadTypePtr pad = (PadTypePtr) b;
 	int *side = cl;
 	if (ON_SIDE(pad, *side) && pad->Mask)
-		_draw_pad(Output.pmGC, pad, true, true);
+		_draw_pad(Output.pmGC, pad, pcb_true, pcb_true);
 	return R_DIR_FOUND_CONTINUE;
 }
 
@@ -1009,9 +1009,9 @@ static void DrawPaste(int side, const BoxType * drawn_area)
 	{
 		if (ON_SIDE(pad, side) && !TEST_FLAG(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
 			if (pad->Mask < pad->Thickness)
-				_draw_pad(Output.fgGC, pad, true, true);
+				_draw_pad(Output.fgGC, pad, pcb_true, pcb_true);
 			else
-				_draw_pad(Output.fgGC, pad, false, false);
+				_draw_pad(Output.fgGC, pad, pcb_false, pcb_false);
 		}
 	}
 	ENDALL_LOOP;
@@ -1114,7 +1114,7 @@ static void DrawLayerGroup(int group, const BoxType * drawn_area)
 static void GatherPVName(PinTypePtr Ptr)
 {
 	BoxType box;
-	bool vert = TEST_FLAG(PCB_FLAG_EDGE2, Ptr);
+	pcb_bool vert = TEST_FLAG(PCB_FLAG_EDGE2, Ptr);
 
 	if (vert) {
 		box.X1 = Ptr->X - Ptr->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
@@ -1139,7 +1139,7 @@ static void GatherPVName(PinTypePtr Ptr)
 static void GatherPadName(PadTypePtr Pad)
 {
 	BoxType box;
-	bool vert;
+	pcb_bool vert;
 
 	/* should text be vertical ? */
 	vert = (Pad->Point1.X == Pad->Point2.X);
@@ -1695,9 +1695,9 @@ void hid_expose_callback(HID * hid, BoxType * region, void *item)
 	hid->set_color(Output.bgGC, "drill");
 
 	if (item) {
-		doing_pinout = true;
+		doing_pinout = pcb_true;
 		draw_element((ElementType *) item);
-		doing_pinout = false;
+		doing_pinout = pcb_false;
 	}
 	else
 		DrawEverything(region);

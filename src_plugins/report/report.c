@@ -511,7 +511,7 @@ static double XYtoNetLength(Coord x, Coord y, int *found)
 	/* NB: The third argument here, 'false' ensures LookupConnection
 	 *     does not add its changes to the undo system.
 	 */
-	LookupConnection(x, y, false, PCB->Grid, PCB_FLAG_FOUND);
+	LookupConnection(x, y, pcb_false, PCB->Grid, PCB_FLAG_FOUND);
 
 	ALLLINE_LOOP(PCB->Data);
 	{
@@ -555,7 +555,7 @@ static int ReportAllNetLengths(int argc, const char **argv, Coord x, Coord y)
 	 * by resetting the connections with ResetConnections() before
 	 * calling Undo() at the end of the procedure.
 	 */
-	ResetConnections(true);
+	ResetConnections(pcb_true);
 	IncrementUndoSerialNumber();
 
 	for (ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++) {
@@ -563,7 +563,7 @@ static int ReportAllNetLengths(int argc, const char **argv, Coord x, Coord y)
 		const char *list_entry = PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Entry[0].ListEntry;
 		char *ename;
 		char *pname;
-		bool got_one = 0;
+		pcb_bool got_one = 0;
 
 		ename = pcb_strdup(list_entry);
 		pname = strchr(ename, '-');
@@ -612,15 +612,15 @@ static int ReportAllNetLengths(int argc, const char **argv, Coord x, Coord y)
 			length = XYtoNetLength(x, y, &found);
 
 			/* Reset connectors for the next lookup */
-			ResetConnections(false);
+			ResetConnections(pcb_false);
 
 			pcb_snprintf(buf, sizeof(buf), "%$m*", units_name, length);
 			gui->log("Net %s length %s\n", netname, buf);
 		}
 	}
 
-	ResetConnections(false);
-	Undo(true);
+	ResetConnections(pcb_false);
+	Undo(pcb_true);
 	return 0;
 }
 
@@ -640,14 +640,14 @@ static int ReportNetLength(int argc, const char **argv, Coord x, Coord y)
 	 * by resetting the connections with ResetConnections() before
 	 * calling Undo() at the end of the procedure.
 	 */
-	ResetConnections(true);
+	ResetConnections(pcb_true);
 	IncrementUndoSerialNumber();
 
 	length = XYtoNetLength(x, y, &found);
 
 	if (!found) {
-		ResetConnections(false);
-		Undo(true);
+		ResetConnections(pcb_false);
+		Undo(pcb_true);
 		gui->log("No net under cursor.\n");
 		return 1;
 	}
@@ -700,8 +700,8 @@ static int ReportNetLength(int argc, const char **argv, Coord x, Coord y)
 	END_LOOP;
 
 got_net_name:
-	ResetConnections(false);
-	Undo(true);
+	ResetConnections(pcb_false);
+	Undo(pcb_true);
 
 	{
 		char buf[50];
@@ -760,7 +760,7 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 				continue;
 		}
 
-		if (SeekPad(net->Entry, &conn, false)) {
+		if (SeekPad(net->Entry, &conn, pcb_false)) {
 			switch (conn.type) {
 			case PCB_TYPE_PIN:
 				x = ((PinType *) (conn.ptr2))->X;
@@ -794,14 +794,14 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 	 * by resetting the connections with ResetConnections() before
 	 * calling Undo() when we are finished.
 	 */
-	ResetConnections(true);
+	ResetConnections(pcb_true);
 	IncrementUndoSerialNumber();
 
 	length = XYtoNetLength(x, y, &found);
 	netname = net->Name + 2;
 
-	ResetConnections(false);
-	Undo(true);
+	ResetConnections(pcb_false);
+	Undo(pcb_true);
 
 	if (!found) {
 		if (net_found)

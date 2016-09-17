@@ -69,12 +69,12 @@ static int ActionAutoRoute(int argc, const char **argv, Coord x, Coord y)
 	hid_action("Busy");
 	if (function) {								/* one parameter */
 		if (strcmp(function, "AllRats") == 0) {
-			if (AutoRoute(false))
-				SetChangedFlag(true);
+			if (AutoRoute(pcb_false))
+				SetChangedFlag(pcb_true);
 		}
 		else if ((strcmp(function, "SelectedRats") == 0) || (strcmp(function, "Selected") == 0)) {
-			if (AutoRoute(true))
-				SetChangedFlag(true);
+			if (AutoRoute(pcb_true))
+				SetChangedFlag(pcb_true);
 		}
 	}
 	return 0;

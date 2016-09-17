@@ -116,14 +116,14 @@ static void nbcb_select_common(LibraryMenuTypePtr net, int pos, int select_flag)
 	int i;
 
 	InitConnectionLookup();
-	ResetConnections(true);
+	ResetConnections(pcb_true);
 
 	for (i = net->EntryN, entry = net->Entry; i; i--, entry++)
-		if (SeekPad(entry, &conn, false))
-			RatFindHook(conn.type, conn.ptr1, conn.ptr2, conn.ptr2, true, true);
+		if (SeekPad(entry, &conn, pcb_false))
+			RatFindHook(conn.type, conn.ptr1, conn.ptr2, conn.ptr2, pcb_true, pcb_true);
 
 	SelectConnection(select_flag);
-	ResetConnections(false);
+	ResetConnections(pcb_false);
 	FreeConnectionLookupMemory();
 	IncrementUndoSerialNumber();
 	Draw();

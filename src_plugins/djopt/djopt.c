@@ -2553,7 +2553,7 @@ static int ActionDJopt(int argc, const char **argv, Coord x, Coord y)
 	corner_s *c;
 
 #ifdef ENDIF
-	SwitchDrawingWindow(PCB->Zoom, Output.drawing_area->window, conf_core.editor.show_solder_side, false);
+	SwitchDrawingWindow(PCB->Zoom, Output.drawing_area->window, conf_core.editor.show_solder_side, pcb_false);
 #endif
 
 	hid_action("Busy");

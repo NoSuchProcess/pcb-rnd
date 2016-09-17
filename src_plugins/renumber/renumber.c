@@ -56,7 +56,7 @@ static const char renumber_help[] =
 
 static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 {
-	bool changed = false;
+	pcb_bool changed = pcb_false;
 	ElementTypePtr *element_list;
 	ElementTypePtr *locked_element_list;
 	unsigned int i, j, k, cnt, lock_cnt;
@@ -74,7 +74,7 @@ static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 	char **was, **is, *pin;
 	unsigned int c_cnt = 0, numele;
 	int ok;
-	bool free_name = false;
+	pcb_bool free_name = pcb_false;
 
 	if (argc < 1) {
 		/*
@@ -86,7 +86,7 @@ static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 														 "This file may be used to back annotate the\n"
 														 "change to the schematics.\n"), default_file, ".eco", "eco", 0);
 
-		free_name = true;
+		free_name = pcb_true;
 	}
 	else
 		name = argv[0];
@@ -282,7 +282,7 @@ static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 				AddObjectToChangeNameUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element_list[i], NAMEONPCB_NAME(element_list[i]));
 
 				ChangeObjectName(PCB_TYPE_ELEMENT, element_list[i], NULL, NULL, tmps);
-				changed = true;
+				changed = pcb_true;
 
 				/* we don't free tmps in this case because it is used */
 			}
@@ -343,7 +343,7 @@ static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 
 		NetlistChanged(0);
 		IncrementUndoSerialNumber();
-		SetChangedFlag(true);
+		SetChangedFlag(pcb_true);
 	}
 
 	free(locked_element_list);

@@ -205,7 +205,7 @@ static double det(double a, double b, double c, double d)
 	return a * d - b * c;
 }
 
-/* The lines are x1y1-x2y2 and x3y3-x4y4.  Returns true if they
+/* The lines are x1y1-x2y2 and x3y3-x4y4.  Returns pcb_true if they
    intersect.  */
 static int intersection_of_lines(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int *xr, int *yr)
 {
@@ -220,7 +220,7 @@ static int intersection_of_lines(int x1, int y1, int x2, int y2, int x3, int y3,
 	return 1;
 }
 
-/* Same, for line segments.  Returns true if they intersect.  For this
+/* Same, for line segments.  Returns pcb_true if they intersect.  For this
    function, xr and yr may be NULL if you don't need the values.  */
 static int intersection_of_linesegs(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int *xr, int *yr)
 {

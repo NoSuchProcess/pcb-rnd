@@ -108,7 +108,7 @@ LibraryMenuTypePtr netname_to_netname(const char *netname)
 static int pin_name_to_xy(LibraryEntryType * pin, int *x, int *y)
 {
 	ConnectionType conn;
-	if (!SeekPad(pin, &conn, false))
+	if (!SeekPad(pin, &conn, pcb_false))
 		return 1;
 	switch (conn.type) {
 	case PCB_TYPE_PIN:

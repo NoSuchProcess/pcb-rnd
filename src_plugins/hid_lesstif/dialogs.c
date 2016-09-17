@@ -1032,7 +1032,7 @@ static Widget sz_pcb_w, sz_pcb_h, sz_bloat, sz_shrink, sz_drc_wid, sz_drc_slk, s
 static Widget sz_text;
 static Widget sz_set, sz_reset, sz_units;
 
-static int sz_str2val(Widget w, bool pcbu)
+static int sz_str2val(Widget w, pcb_bool pcbu)
 {
 	char *buf = XmTextGetString(w);
 	if (!pcbu)

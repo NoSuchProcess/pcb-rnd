@@ -342,7 +342,7 @@ void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text)
 	Coord minx, miny, maxx, maxy, tx;
 	Coord min_final_radius;
 	Coord min_unscaled_radius;
-	bool first_time = true;
+	pcb_bool first_time = pcb_true;
 
 	minx = miny = maxx = maxy = tx = 0;
 
@@ -373,7 +373,7 @@ void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text)
 				if (first_time) {
 					minx = maxx = line->Point1.X;
 					miny = maxy = line->Point1.Y;
-					first_time = false;
+					first_time = pcb_false;
 				}
 
 				minx = MIN(minx, line->Point1.X - unscaled_radius + tx);
@@ -442,11 +442,11 @@ void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text)
 }
 
 /* ---------------------------------------------------------------------------
- * returns true if data area is empty
+ * returns pcb_true if data area is empty
  */
-bool IsDataEmpty(DataTypePtr Data)
+pcb_bool IsDataEmpty(DataTypePtr Data)
 {
-	bool hasNoObjects;
+	pcb_bool hasNoObjects;
 	Cardinal i;
 
 	hasNoObjects = (pinlist_length(&Data->Via) == 0);
@@ -465,13 +465,13 @@ int FlagIsDataEmpty(int parm)
 /* FLAG(DataEmpty,FlagIsDataEmpty,0) */
 /* FLAG(DataNonEmpty,FlagIsDataEmpty,1) */
 
-bool IsPasteEmpty(int side)
+pcb_bool IsPasteEmpty(int side)
 {
-	bool paste_empty = true;
+	pcb_bool paste_empty = pcb_true;
 	ALLPAD_LOOP(PCB->Data);
 	{
 		if (ON_SIDE(pad, side) && !TEST_FLAG(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
-			paste_empty = false;
+			paste_empty = pcb_false;
 			break;
 		}
 	}
@@ -599,7 +599,7 @@ void CenterDisplay(Coord X, Coord Y)
 	Coord save_grid = PCB->Grid;
 	PCB->Grid = 1;
 	if (MoveCrosshairAbsolute(X, Y))
-		notify_crosshair_change(true);
+		notify_crosshair_change(pcb_true);
 	gui->set_crosshair(Crosshair.X, Crosshair.Y, HID_SC_WARP_POINTER);
 	PCB->Grid = save_grid;
 }
@@ -902,7 +902,7 @@ static char *BumpName(char *Name)
  */
 char *UniqueElementName(DataTypePtr Data, char *Name)
 {
-	bool unique = true;
+	pcb_bool unique = pcb_true;
 	/* null strings are ok */
 	if (!Name || !*Name)
 		return (Name);
@@ -912,14 +912,14 @@ char *UniqueElementName(DataTypePtr Data, char *Name)
 		{
 			if (NAMEONPCB_NAME(element) && NSTRCMP(NAMEONPCB_NAME(element), Name) == 0) {
 				Name = BumpName(Name);
-				unique = false;
+				unique = pcb_false;
 				break;
 			}
 		}
 		END_LOOP;
 		if (unique)
 			return (Name);
-		unique = true;
+		unique = pcb_true;
 	}
 }
 
@@ -984,7 +984,7 @@ void AttachForCopy(Coord PlaceX, Coord PlaceY)
 	Crosshair.AttachedObject.X = PlaceX - mx;
 	Crosshair.AttachedObject.Y = PlaceY - my;
 	if (!Marked.status || conf_core.editor.local_ref)
-		SetLocalRef(PlaceX - mx, PlaceY - my, true);
+		SetLocalRef(PlaceX - mx, PlaceY - my, pcb_true);
 	Crosshair.AttachedObject.State = STATE_SECOND;
 
 	/* get boundingbox of object and set cursor range */
@@ -1217,8 +1217,8 @@ const char *pcb_author(void)
 int ElementOrientation(ElementType * e)
 {
 	Coord pin1x, pin1y, pin2x, pin2y, dx, dy;
-	bool found_pin1 = 0;
-	bool found_pin2 = 0;
+	pcb_bool found_pin1 = 0;
+	pcb_bool found_pin2 = 0;
 
 	/* in case we don't find pin 1 or 2, make sure we have initialized these variables */
 	pin1x = 0;

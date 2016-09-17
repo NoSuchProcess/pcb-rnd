@@ -134,7 +134,7 @@ static HID extents_hid;
 
 void hid_extents_init(void)
 {
-	static bool initialised = false;
+	static pcb_bool initialised = pcb_false;
 
 	if (initialised)
 		return;
@@ -163,7 +163,7 @@ void hid_extents_init(void)
 	extents_hid.fill_polygon = extents_fill_polygon;
 	extents_hid.fill_rect = extents_fill_rect;
 
-	initialised = true;
+	initialised = pcb_true;
 }
 
 BoxType *hid_get_extents(void *item)

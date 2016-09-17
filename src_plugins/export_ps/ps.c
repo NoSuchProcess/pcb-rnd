@@ -379,26 +379,26 @@ static struct {
 	FILE *f;
 	int pagecount;
 	Coord linewidth;
-	bool print_group[MAX_LAYER];
-	bool print_layer[MAX_LAYER];
+	pcb_bool print_group[MAX_LAYER];
+	pcb_bool print_layer[MAX_LAYER];
 	double fade_ratio;
-	bool multi_file;
+	pcb_bool multi_file;
 	Coord media_width, media_height, ps_width, ps_height;
 
 	const char *filename;
-	bool drill_helper;
-	bool align_marks;
-	bool outline;
-	bool mirror;
-	bool fillpage;
-	bool automirror;
-	bool incolor;
-	bool doing_toc;
+	pcb_bool drill_helper;
+	pcb_bool align_marks;
+	pcb_bool outline;
+	pcb_bool mirror;
+	pcb_bool fillpage;
+	pcb_bool automirror;
+	pcb_bool incolor;
+	pcb_bool doing_toc;
 	Coord bloat;
-	bool invert;
+	pcb_bool invert;
 	int media_idx;
-	bool drillcopper;
-	bool legend;
+	pcb_bool drillcopper;
+	pcb_bool legend;
 
 	LayerTypePtr outline_layer;
 
@@ -408,11 +408,11 @@ static struct {
 
 	HID_Attr_Val ps_values[NUM_OPTIONS];
 
-	bool is_mask;
-	bool is_drill;
-	bool is_assy;
-	bool is_copper;
-	bool is_paste;
+	pcb_bool is_mask;
+	pcb_bool is_drill;
+	pcb_bool is_assy;
+	pcb_bool is_copper;
+	pcb_bool is_paste;
 
 	double polygrid;
 } global;

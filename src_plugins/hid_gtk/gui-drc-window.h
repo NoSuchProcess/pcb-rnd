@@ -50,7 +50,7 @@ struct _GhidDrcViolation {
 	Coord x_coord;
 	Coord y_coord;
 	Angle angle;
-	bool have_measured;
+	pcb_bool have_measured;
 	Coord measured_value;
 	Coord required_value;
 	int object_count;

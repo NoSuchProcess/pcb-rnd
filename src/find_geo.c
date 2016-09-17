@@ -32,7 +32,7 @@
  * - calculate the signed distance from the line to the center,
  *   return false if abs(distance) > R
  * - get the distance from the line <--> distancevector intersection to
- *   (X1,Y1) in range [0,1], return true if 0 <= distance <= 1
+ *   (X1,Y1) in range [0,1], return pcb_true if 0 <= distance <= 1
  * - depending on (r > 1.0 or r < 0.0) check the distance of X2,Y2 or X1,Y1
  *   to X,Y
  *
@@ -118,7 +118,7 @@ static void get_arc_ends(Coord * box, ArcTypePtr arc)
  *
  *
  */
-static bool ArcArcIntersect(ArcTypePtr Arc1, ArcTypePtr Arc2)
+static pcb_bool ArcArcIntersect(ArcTypePtr Arc1, ArcTypePtr Arc2)
 {
 	double x, y, dx, dy, r1, r2, a, d, l, t, t1, t2, dl;
 	Coord pdx, pdy;
@@ -130,7 +130,7 @@ static bool ArcArcIntersect(ArcTypePtr Arc1, ArcTypePtr Arc2)
 
 	/* too thin arc */
 	if (t < 0 || t1 < 0)
-		return false;
+		return pcb_false;
 
 	/* try the end points first */
 	get_arc_ends(&box[0], Arc1);
@@ -139,7 +139,7 @@ static bool ArcArcIntersect(ArcTypePtr Arc1, ArcTypePtr Arc2)
 			|| IsPointOnArc(box[2], box[3], t, Arc2)
 			|| IsPointOnArc(box[4], box[5], t, Arc1)
 			|| IsPointOnArc(box[6], box[7], t, Arc1))
-		return true;
+		return pcb_true;
 
 	pdx = Arc2->X - Arc1->X;
 	pdy = Arc2->Y - Arc1->Y;
@@ -158,12 +158,12 @@ static bool ArcArcIntersect(ArcTypePtr Arc1, ArcTypePtr Arc2)
 			/* sa1 == sa2 was caught when checking endpoints */
 			if (sa1 > sa2)
 				if (sa1 < sa2 + d2 || sa1 + d1 - 360 > sa2)
-					return true;
+					return pcb_true;
 			if (sa2 > sa1)
 				if (sa2 < sa1 + d1 || sa2 + d2 - 360 > sa1)
-					return true;
+					return pcb_true;
 		}
-		return false;
+		return pcb_false;
 	}
 	r1 = Arc1->Width;
 	r2 = Arc2->Width;
@@ -179,7 +179,7 @@ static bool ArcArcIntersect(ArcTypePtr Arc1, ArcTypePtr Arc2)
 
 		if (radius_crosses_arc(Arc1->X + dx, Arc1->Y + dy, Arc1)
 				&& IsPointOnArc(Arc1->X + dx, Arc1->Y + dy, t, Arc2))
-			return true;
+			return pcb_true;
 
 		dx = -pdx * r2 / dl;
 		dy = -pdy * r2 / dl;
@@ -190,8 +190,8 @@ static bool ArcArcIntersect(ArcTypePtr Arc1, ArcTypePtr Arc2)
 
 		if (radius_crosses_arc(Arc2->X + dx, Arc2->Y + dy, Arc2)
 				&& IsPointOnArc(Arc2->X + dx, Arc2->Y + dy, t1, Arc1))
-			return true;
-		return false;
+			return pcb_true;
+		return pcb_false;
 	}
 
 	l = dl * dl;
@@ -212,29 +212,29 @@ static bool ArcArcIntersect(ArcTypePtr Arc1, ArcTypePtr Arc2)
 	dy = d * pdy;
 	if (radius_crosses_arc(x + dy, y - dx, Arc1)
 			&& IsPointOnArc(x + dy, y - dx, t, Arc2))
-		return true;
+		return pcb_true;
 	if (radius_crosses_arc(x + dy, y - dx, Arc2)
 			&& IsPointOnArc(x + dy, y - dx, t1, Arc1))
-		return true;
+		return pcb_true;
 
 	if (radius_crosses_arc(x - dy, y + dx, Arc1)
 			&& IsPointOnArc(x - dy, y + dx, t, Arc2))
-		return true;
+		return pcb_true;
 	if (radius_crosses_arc(x - dy, y + dx, Arc2)
 			&& IsPointOnArc(x - dy, y + dx, t1, Arc1))
-		return true;
-	return false;
+		return pcb_true;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
  * Tests if point is same as line end point
  */
-static bool IsRatPointOnLineEnd(PointTypePtr Point, LineTypePtr Line)
+static pcb_bool IsRatPointOnLineEnd(PointTypePtr Point, LineTypePtr Line)
 {
 	if ((Point->X == Line->Point1.X && Point->Y == Line->Point1.Y)
 			|| (Point->X == Line->Point2.X && Point->Y == Line->Point2.Y))
-		return (true);
-	return (false);
+		return (pcb_true);
+	return (pcb_false);
 }
 
 static void form_slanted_rectangle(PointType p[4], LineTypePtr l)
@@ -317,7 +317,7 @@ static void form_slanted_rectangle(PointType p[4], LineTypePtr l)
  *  Also note that the denominators of eqn 1 & 2 are identical.
  *
  */
-bool LineLineIntersect(LineTypePtr Line1, LineTypePtr Line2)
+pcb_bool LineLineIntersect(LineTypePtr Line1, LineTypePtr Line2)
 {
 	double s, r;
 	double line1_dx, line1_dy, line2_dx, line2_dy, point1_dx, point1_dy;
@@ -343,7 +343,7 @@ bool LineLineIntersect(LineTypePtr Line1, LineTypePtr Line2)
 			|| IsPointInPad(Line2->Point2.X, Line2->Point2.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (PadTypePtr) Line1)
 			|| IsPointInPad(Line1->Point1.X, Line1->Point1.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (PadTypePtr) Line2)
 			|| IsPointInPad(Line1->Point2.X, Line1->Point2.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (PadTypePtr) Line2))
-		return true;
+		return pcb_true;
 
 	/* setup some constants */
 	line1_dx = Line1->Point2.X - Line1->Point1.X;
@@ -357,7 +357,7 @@ bool LineLineIntersect(LineTypePtr Line1, LineTypePtr Line2)
 	 *   endpoint check above will have caught an "intersection". */
 	if ((line1_dx == 0 && line1_dy == 0)
 			|| (line2_dx == 0 && line2_dy == 0))
-		return false;
+		return pcb_false;
 
 	/* set s to cross product of Line1 and the line
 	 *   Line1.Point1--Line2.Point1 (as vectors) */
@@ -371,7 +371,7 @@ bool LineLineIntersect(LineTypePtr Line1, LineTypePtr Line2)
 	 *  check before getting here, the above IsPointInPad() checks
 	 *  will have caught any intersections. */
 	if (r == 0.0)
-		return false;
+		return pcb_false;
 
 	s /= r;
 	r = (point1_dy * line2_dx - point1_dx * line2_dy) / r;
@@ -381,8 +381,8 @@ bool LineLineIntersect(LineTypePtr Line1, LineTypePtr Line2)
 		return (s >= 0.0 && s <= 1.0);
 
 	/* intersection is at least on CD */
-	/* [removed this case since it always returns false --asp] */
-	return false;
+	/* [removed this case since it always returns pcb_false --asp] */
+	return pcb_false;
 }
 
 /*---------------------------------------------------
@@ -414,7 +414,7 @@ bool LineLineIntersect(LineTypePtr Line1, LineTypePtr Line2)
  *
  * The end points are hell so they are checked individually
  */
-bool LineArcIntersect(LineTypePtr Line, ArcTypePtr Arc)
+pcb_bool LineArcIntersect(LineTypePtr Line, ArcTypePtr Arc)
 {
 	double dx, dy, dx1, dy1, l, d, r, r2, Radius;
 	BoxTypePtr box;
@@ -433,32 +433,32 @@ bool LineArcIntersect(LineTypePtr Line, ArcTypePtr Arc)
 	r2 = Radius * l - d;
 	/* projection doesn't even intersect circle when r2 < 0 */
 	if (r2 < 0)
-		return (false);
+		return (pcb_false);
 	/* check the ends of the line in case the projected point */
 	/* of intersection is beyond the line end */
 	if (IsPointOnArc(Line->Point1.X, Line->Point1.Y, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
-		return (true);
+		return (pcb_true);
 	if (IsPointOnArc(Line->Point2.X, Line->Point2.Y, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
-		return (true);
+		return (pcb_true);
 	if (l == 0.0)
-		return (false);
+		return (pcb_false);
 	r2 = sqrt(r2);
 	Radius = -(dx * dx1 + dy * dy1);
 	r = (Radius + r2) / l;
 	if (r >= 0 && r <= 1
 			&& IsPointOnArc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
-		return (true);
+		return (pcb_true);
 	r = (Radius - r2) / l;
 	if (r >= 0 && r <= 1
 			&& IsPointOnArc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
-		return (true);
+		return (pcb_true);
 	/* check arc end points */
 	box = GetArcEnds(Arc);
 	if (IsPointInPad(box->X1, box->Y1, Arc->Thickness * 0.5 + Bloat, (PadTypePtr) Line))
-		return true;
+		return pcb_true;
 	if (IsPointInPad(box->X2, box->Y2, Arc->Thickness * 0.5 + Bloat, (PadTypePtr) Line))
-		return true;
-	return false;
+		return pcb_true;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -469,25 +469,25 @@ bool LineArcIntersect(LineTypePtr Line, ArcTypePtr Arc)
  * - check the two end points of the arc. If none of them matches
  * - check all segments of the polygon against the arc.
  */
-bool IsArcInPolygon(ArcTypePtr Arc, PolygonTypePtr Polygon)
+pcb_bool IsArcInPolygon(ArcTypePtr Arc, PolygonTypePtr Polygon)
 {
 	BoxTypePtr Box = (BoxType *) Arc;
 
 	/* arcs with clearance never touch polys */
 	if (TEST_FLAG(PCB_FLAG_CLEARPOLY, Polygon) && TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
-		return false;
+		return pcb_false;
 	if (!Polygon->Clipped)
-		return false;
+		return pcb_false;
 	if (Box->X1 <= Polygon->Clipped->contours->xmax + Bloat
 			&& Box->X2 >= Polygon->Clipped->contours->xmin - Bloat
 			&& Box->Y1 <= Polygon->Clipped->contours->ymax + Bloat && Box->Y2 >= Polygon->Clipped->contours->ymin - Bloat) {
 		POLYAREA *ap;
 
 		if (!(ap = ArcPoly(Arc, Arc->Thickness + Bloat)))
-			return false;							/* error */
-		return isects(ap, Polygon, true);
+			return pcb_false;							/* error */
+		return isects(ap, Polygon, pcb_true);
 	}
-	return false;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -498,16 +498,16 @@ bool IsArcInPolygon(ArcTypePtr Arc, PolygonTypePtr Polygon)
  * - check the two end points of the line. If none of them matches
  * - check all segments of the polygon against the line.
  */
-bool IsLineInPolygon(LineTypePtr Line, PolygonTypePtr Polygon)
+pcb_bool IsLineInPolygon(LineTypePtr Line, PolygonTypePtr Polygon)
 {
 	BoxTypePtr Box = (BoxType *) Line;
 	POLYAREA *lp;
 
 	/* lines with clearance never touch polygons */
 	if (TEST_FLAG(PCB_FLAG_CLEARPOLY, Polygon) && TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
-		return false;
+		return pcb_false;
 	if (!Polygon->Clipped)
-		return false;
+		return pcb_false;
 	if (TEST_FLAG(PCB_FLAG_SQUARE, Line) && (Line->Point1.X == Line->Point2.X || Line->Point1.Y == Line->Point2.Y)) {
 		Coord wid = (Line->Thickness + Bloat + 1) / 2;
 		Coord x1, x2, y1, y2;
@@ -523,9 +523,9 @@ bool IsLineInPolygon(LineTypePtr Line, PolygonTypePtr Polygon)
 			&& Box->Y1 <= Polygon->Clipped->contours->ymax + Bloat && Box->Y2 >= Polygon->Clipped->contours->ymin - Bloat) {
 		if (!(lp = LinePoly(Line, Line->Thickness + Bloat)))
 			return FALSE;							/* error */
-		return isects(lp, Polygon, true);
+		return isects(lp, Polygon, pcb_true);
 	}
-	return false;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -533,7 +533,7 @@ bool IsLineInPolygon(LineTypePtr Line, PolygonTypePtr Polygon)
  *
  * The polygon is assumed to already have been proven non-clearing
  */
-bool IsPadInPolygon(PadTypePtr pad, PolygonTypePtr polygon)
+pcb_bool IsPadInPolygon(PadTypePtr pad, PolygonTypePtr polygon)
 {
 	return IsLineInPolygon((LineTypePtr) pad, polygon);
 }
@@ -544,10 +544,10 @@ bool IsPadInPolygon(PadTypePtr pad, PolygonTypePtr polygon)
  * First check all points out of P1 against P2 and vice versa.
  * If both fail check all lines of P1 against the ones of P2
  */
-bool IsPolygonInPolygon(PolygonTypePtr P1, PolygonTypePtr P2)
+pcb_bool IsPolygonInPolygon(PolygonTypePtr P1, PolygonTypePtr P2)
 {
 	if (!P1->Clipped || !P2->Clipped)
-		return false;
+		return pcb_false;
 	assert(P1->Clipped->contours);
 	assert(P2->Clipped->contours);
 
@@ -556,10 +556,10 @@ bool IsPolygonInPolygon(PolygonTypePtr P1, PolygonTypePtr P2)
 			P1->Clipped->contours->xmax + Bloat < P2->Clipped->contours->xmin ||
 			P1->Clipped->contours->ymin - Bloat > P2->Clipped->contours->ymax ||
 			P1->Clipped->contours->ymax + Bloat < P2->Clipped->contours->ymin)
-		return false;
+		return pcb_false;
 
 	/* first check un-bloated case */
-	if (isects(P1->Clipped, P2, false))
+	if (isects(P1->Clipped, P2, pcb_false))
 		return TRUE;
 
 	/* now the difficult case of bloated */
@@ -582,7 +582,7 @@ bool IsPolygonInPolygon(PolygonTypePtr P1, PolygonTypePtr P2)
 					line.Point2.Y = v->point[1];
 					SetLineBoundingBox(&line);
 					if (IsLineInPolygon(&line, P2))
-						return (true);
+						return (pcb_true);
 					line.Point1.X = line.Point2.X;
 					line.Point1.Y = line.Point2.Y;
 				}
@@ -590,38 +590,38 @@ bool IsPolygonInPolygon(PolygonTypePtr P1, PolygonTypePtr P2)
 		}
 	}
 
-	return (false);
+	return (pcb_false);
 }
 
 /* ---------------------------------------------------------------------------
  * some of the 'pad' routines are the same as for lines because the 'pad'
  * struct starts with a line struct. See global.h for details
  */
-bool LinePadIntersect(LineTypePtr Line, PadTypePtr Pad)
+pcb_bool LinePadIntersect(LineTypePtr Line, PadTypePtr Pad)
 {
 	return LineLineIntersect((Line), (LineTypePtr) Pad);
 }
 
-bool ArcPadIntersect(ArcTypePtr Arc, PadTypePtr Pad)
+pcb_bool ArcPadIntersect(ArcTypePtr Arc, PadTypePtr Pad)
 {
 	return LineArcIntersect((LineTypePtr) (Pad), (Arc));
 }
 
-bool BoxBoxIntersection(BoxTypePtr b1, BoxTypePtr b2)
+pcb_bool BoxBoxIntersection(BoxTypePtr b1, BoxTypePtr b2)
 {
 	if (b2->X2 < b1->X1 || b2->X1 > b1->X2)
-		return false;
+		return pcb_false;
 	if (b2->Y2 < b1->Y1 || b2->Y1 > b1->Y2)
-		return false;
-	return true;
+		return pcb_false;
+	return pcb_true;
 }
 
-static bool PadPadIntersect(PadTypePtr p1, PadTypePtr p2)
+static pcb_bool PadPadIntersect(PadTypePtr p1, PadTypePtr p2)
 {
 	return LinePadIntersect((LineTypePtr) p1, p2);
 }
 
-static inline bool PV_TOUCH_PV(PinTypePtr PV1, PinTypePtr PV2)
+static inline pcb_bool PV_TOUCH_PV(PinTypePtr PV1, PinTypePtr PV2)
 {
 	double t1, t2;
 	BoxType b1, b2;
@@ -647,9 +647,9 @@ static inline bool PV_TOUCH_PV(PinTypePtr PV1, PinTypePtr PV2)
 	t2 = MAX(PV2->Thickness / 2.0 + Bloat, 0);
 	if (IsPointOnPin(PV1->X, PV1->Y, t1, PV2)
 			|| IsPointOnPin(PV2->X, PV2->Y, t2, PV1))
-		return true;
+		return pcb_true;
 	if (!TEST_FLAG(PCB_FLAG_SQUARE, PV1) || !TEST_FLAG(PCB_FLAG_SQUARE, PV2))
-		return false;
+		return pcb_false;
 	/* check for square/square overlap */
 	b1.X1 = PV1->X - t1;
 	b1.X2 = PV1->X + t1;
@@ -663,7 +663,7 @@ static inline bool PV_TOUCH_PV(PinTypePtr PV1, PinTypePtr PV2)
 	return BoxBoxIntersection(&b1, &b2);
 }
 
-bool PinLineIntersect(PinTypePtr PV, LineTypePtr Line)
+pcb_bool PinLineIntersect(PinTypePtr PV, LineTypePtr Line)
 {
 	if (TEST_FLAG(PCB_FLAG_SQUARE, PV)) {
 		int shape = GET_SQUARE(PV);

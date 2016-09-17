@@ -221,7 +221,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	char *tmps;
 	size_t l;
 #ifdef FLEX_SCANNER
-	static	bool	firsttime = true;
+	static	pcb_bool	firsttime = pcb_true;
 #endif
 
 	if (Pipe == NULL) {
@@ -279,7 +279,7 @@ printf("OPENING: %s -> %p\n", tmps, (void *)yyin);
 		/* reset parser if not called the first time */
 	if (!firsttime)
 		yyrestart(yyin);
-	firsttime = false;
+	firsttime = pcb_false;
 #endif
 
 		/* init linenumber and filename for yyerror() */
@@ -292,7 +292,7 @@ printf("OPENING: %s -> %p\n", tmps, (void *)yyin);
 		 * on termination.
 		 */
 
-	CreateBeLenient (true);
+	CreateBeLenient (pcb_true);
 
 #if !defined(HAS_ATEXIT)
 	if (PCB && PCB->Data)
@@ -305,7 +305,7 @@ printf("OPENING: %s -> %p\n", tmps, (void *)yyin);
 	/* clean up parse buffer */
 	yy_delete_buffer(YY_CURRENT_BUFFER);
 
-	CreateBeLenient (false);
+	CreateBeLenient (pcb_false);
 
 	if (Pipe != NULL)
 		return returncode;

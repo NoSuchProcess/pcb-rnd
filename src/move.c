@@ -72,7 +72,7 @@ static void *MovePolygonToLayer(LayerTypePtr, PolygonTypePtr);
  */
 static Coord DeltaX, DeltaY;		/* used by local routines as offset */
 static LayerTypePtr Dest;
-static bool MoreToCome;
+static pcb_bool MoreToCome;
 static ObjectFunctionType MoveFunctions = {
 	MoveLine,
 	MoveText,
@@ -188,7 +188,7 @@ static void *MoveElementName(ElementTypePtr Element)
  */
 static void *MoveElement(ElementTypePtr Element)
 {
-	bool didDraw = false;
+	pcb_bool didDraw = pcb_false;
 
 	pcb_trace("MoveElement() enter %p {\n", (void *)Element);
 
@@ -198,7 +198,7 @@ static void *MoveElement(ElementTypePtr Element)
 		MoveElementLowLevel(PCB->Data, Element, DeltaX, DeltaY);
 		DrawElementName(Element);
 		DrawElementPackage(Element);
-		didDraw = true;
+		didDraw = pcb_true;
 	}
 	else {
 		pcb_trace(" ME b2\n");
@@ -209,7 +209,7 @@ static void *MoveElement(ElementTypePtr Element)
 	if (PCB->PinOn) {
 		pcb_trace(" ME b3\n");
 		DrawElementPinsAndPads(Element);
-		didDraw = true;
+		didDraw = pcb_true;
 	}
 	if (didDraw)
 		Draw();
@@ -729,7 +729,7 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coor
  * moves the object identified by its data pointers and the type
  * to a new layer without changing it's position
  */
-void *MoveObjectToLayer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, LayerTypePtr Target, bool enmasse)
+void *MoveObjectToLayer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, LayerTypePtr Target, pcb_bool enmasse)
 {
 	void *result;
 
@@ -745,15 +745,15 @@ void *MoveObjectToLayer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, LayerTypeP
  * moves the selected objects to a new layer without changing their
  * positions
  */
-bool MoveSelectedObjectsToLayer(LayerTypePtr Target)
+pcb_bool MoveSelectedObjectsToLayer(LayerTypePtr Target)
 {
-	bool changed;
+	pcb_bool changed;
 
 	/* setup global identifiers */
 	Dest = Target;
-	MoreToCome = true;
-	changed = SelectedOperation(&MoveToLayerFunctions, true, PCB_TYPEMASK_ALL);
-	/* passing true to above operation causes Undoserial to auto-increment */
+	MoreToCome = pcb_true;
+	changed = SelectedOperation(&MoveToLayerFunctions, pcb_true, PCB_TYPEMASK_ALL);
+	/* passing pcb_true to above operation causes Undoserial to auto-increment */
 	return (changed);
 }
 

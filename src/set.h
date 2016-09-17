@@ -32,17 +32,17 @@
 #include "global.h"
 
 void SetTextScale(int);
-void SetGrid(Coord, bool);
+void SetGrid(Coord, pcb_bool);
 void SetZoom(double);
 void SetLineSize(Coord);
-void SetViaSize(Coord, bool);
-void SetViaDrillingHole(Coord, bool);
+void SetViaSize(Coord, pcb_bool);
+void SetViaDrillingHole(Coord, pcb_bool);
 void SetClearanceWidth(Coord);
-void SetChangedFlag(bool);
+void SetChangedFlag(pcb_bool);
 void SetBufferNumber(int);
 void SetMode(int);
 void SetCrosshairRangeToBuffer(void);
-void SetLocalRef(Coord, Coord, bool);
+void SetLocalRef(Coord, Coord, pcb_bool);
 void RedrawZoom(Coord, Coord);
 void SaveMode(void);
 void RestoreMode(void);

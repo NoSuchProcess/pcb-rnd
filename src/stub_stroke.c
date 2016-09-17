@@ -19,10 +19,10 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
-#include <stdbool.h>
 #include "error.h"
+#include "pcb_bool.h"
 
-bool mid_stroke = false;
+pcb_bool mid_stroke = pcb_false;
 
 static void stub_stroke_record_dummy(int ev_x, int ev_y)
 {

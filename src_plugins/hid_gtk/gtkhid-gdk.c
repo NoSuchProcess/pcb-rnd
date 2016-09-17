@@ -28,7 +28,7 @@ typedef struct render_priv {
 	GdkGC *mask_gc;
 	GdkGC *u_gc;
 	GdkGC *grid_gc;
-	bool clip;
+	pcb_bool clip;
 	GdkRectangle clip_rect;
 	int attached_invalidate_depth;
 	int mark_invalidate_depth;
@@ -36,7 +36,7 @@ typedef struct render_priv {
 	/* Feature for leading the user to a particular location */
 	guint lead_user_timeout;
 	GTimer *lead_user_timer;
-	bool lead_user;
+	pcb_bool lead_user;
 	Coord lead_user_radius;
 	Coord lead_user_x;
 	Coord lead_user_y;
@@ -647,14 +647,14 @@ static void redraw_region(GdkRectangle * rect)
 
 	if (rect != NULL) {
 		priv->clip_rect = *rect;
-		priv->clip = true;
+		priv->clip = pcb_true;
 	}
 	else {
 		priv->clip_rect.x = 0;
 		priv->clip_rect.y = 0;
 		priv->clip_rect.width = gport->width;
 		priv->clip_rect.height = gport->height;
-		priv->clip = false;
+		priv->clip = pcb_false;
 	}
 
 	set_clip(priv, priv->bg_gc);
@@ -721,7 +721,7 @@ static void redraw_region(GdkRectangle * rect)
 
 	draw_lead_user(priv);
 
-	priv->clip = false;
+	priv->clip = pcb_false;
 
 	/* Rest the clip for bg_gc, as it is used outside this function */
 	gdk_gc_set_clip_mask(priv->bg_gc, NULL);
@@ -759,7 +759,7 @@ void ghid_invalidate_all()
 	ghid_screen_update();
 }
 
-void ghid_notify_crosshair_change(bool changes_complete)
+void ghid_notify_crosshair_change(pcb_bool changes_complete)
 {
 	render_priv *priv = gport->render_priv;
 
@@ -772,7 +772,7 @@ void ghid_notify_crosshair_change(bool changes_complete)
 
 	if (priv->attached_invalidate_depth < 0) {
 		priv->attached_invalidate_depth = 0;
-		/* A mismatch of changes_complete == false and == true notifications
+		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
 		 * is not expected to occur, but we will try to handle it gracefully.
 		 * As we know the crosshair will have been shown already, we must
 		 * repaint the entire view to be sure not to leave an artaefact.
@@ -793,7 +793,7 @@ void ghid_notify_crosshair_change(bool changes_complete)
 	}
 }
 
-void ghid_notify_mark_change(bool changes_complete)
+void ghid_notify_mark_change(pcb_bool changes_complete)
 {
 	render_priv *priv = gport->render_priv;
 
@@ -806,7 +806,7 @@ void ghid_notify_mark_change(bool changes_complete)
 
 	if (priv->mark_invalidate_depth < 0) {
 		priv->mark_invalidate_depth = 0;
-		/* A mismatch of changes_complete == false and == true notifications
+		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
 		 * is not expected to occur, but we will try to handle it gracefully.
 		 * As we know the mark will have been shown already, we must
 		 * repaint the entire view to be sure not to leave an artaefact.
@@ -1147,20 +1147,20 @@ void ghid_finish_debug_draw(void)
 	 */
 }
 
-bool ghid_event_to_pcb_coords(int event_x, int event_y, Coord * pcb_x, Coord * pcb_y)
+pcb_bool ghid_event_to_pcb_coords(int event_x, int event_y, Coord * pcb_x, Coord * pcb_y)
 {
 	*pcb_x = EVENT_TO_PCB_X(event_x);
 	*pcb_y = EVENT_TO_PCB_Y(event_y);
 
-	return true;
+	return pcb_true;
 }
 
-bool ghid_pcb_to_event_coords(Coord pcb_x, Coord pcb_y, int *event_x, int *event_y)
+pcb_bool ghid_pcb_to_event_coords(Coord pcb_x, Coord pcb_y, int *event_x, int *event_y)
 {
 	*event_x = DRAW_X(pcb_x);
 	*event_y = DRAW_Y(pcb_y);
 
-	return true;
+	return pcb_true;
 }
 
 
@@ -1244,7 +1244,7 @@ void ghid_lead_user_to_location(Coord x, Coord y)
 
 	ghid_cancel_lead_user();
 
-	priv->lead_user = true;
+	priv->lead_user = pcb_true;
 	priv->lead_user_x = x;
 	priv->lead_user_y = y;
 	priv->lead_user_radius = PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
@@ -1267,5 +1267,5 @@ void ghid_cancel_lead_user(void)
 
 	priv->lead_user_timeout = 0;
 	priv->lead_user_timer = NULL;
-	priv->lead_user = false;
+	priv->lead_user = pcb_false;
 }

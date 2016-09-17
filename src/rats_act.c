@@ -76,13 +76,13 @@ static int ActionAddRats(int argc, const char **argv, Coord x, Coord y)
 			ClearWarnings();
 		switch (funchash_get(function, NULL)) {
 		case F_AllRats:
-			if (AddAllRats(false, NULL))
-				SetChangedFlag(true);
+			if (AddAllRats(pcb_false, NULL))
+				SetChangedFlag(pcb_true);
 			break;
 		case F_SelectedRats:
 		case F_Selected:
-			if (AddAllRats(true, NULL))
-				SetChangedFlag(true);
+			if (AddAllRats(pcb_true, NULL))
+				SetChangedFlag(pcb_true);
 			break;
 		case F_Close:
 			small = SQUARE(MAX_COORD);
@@ -148,26 +148,26 @@ static int ActionConnection(int argc, const char **argv, Coord x, Coord y)
 		case F_Find:
 			{
 				gui->get_coords(_("Click on a connection"), &x, &y);
-				LookupConnection(x, y, true, 1, PCB_FLAG_FOUND);
+				LookupConnection(x, y, pcb_true, 1, PCB_FLAG_FOUND);
 				break;
 			}
 
 		case F_ResetLinesAndPolygons:
-			if (ResetFoundLinesAndPolygons(true)) {
+			if (ResetFoundLinesAndPolygons(pcb_true)) {
 				IncrementUndoSerialNumber();
 				Draw();
 			}
 			break;
 
 		case F_ResetPinsViasAndPads:
-			if (ResetFoundPinsViasAndPads(true)) {
+			if (ResetFoundPinsViasAndPads(pcb_true)) {
 				IncrementUndoSerialNumber();
 				Draw();
 			}
 			break;
 
 		case F_Reset:
-			if (ResetConnections(true)) {
+			if (ResetConnections(pcb_true)) {
 				IncrementUndoSerialNumber();
 				Draw();
 			}
@@ -197,13 +197,13 @@ static int ActionDeleteRats(int argc, const char **argv, Coord x, Coord y)
 			ClearWarnings();
 		switch (funchash_get(function, NULL)) {
 		case F_AllRats:
-			if (DeleteRats(false))
-				SetChangedFlag(true);
+			if (DeleteRats(pcb_false))
+				SetChangedFlag(pcb_true);
 			break;
 		case F_SelectedRats:
 		case F_Selected:
-			if (DeleteRats(true))
-				SetChangedFlag(true);
+			if (DeleteRats(pcb_true))
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}

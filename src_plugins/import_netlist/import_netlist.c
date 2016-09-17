@@ -55,7 +55,7 @@ static int ReadNetlist(const char *filename)
 	LibraryMenuTypePtr menu = NULL;
 	LibraryEntryTypePtr entry;
 	int i, j, lines, kind;
-	bool continued;
+	pcb_bool continued;
 	int used_popen = 0;
 
 	if (!filename)
@@ -98,7 +98,7 @@ static int ReadNetlist(const char *filename)
 			else
 				inputline[len] = '\0';
 		}
-		continued = (inputline[len - 1] == '\\') ? true : false;
+		continued = (inputline[len - 1] == '\\') ? pcb_true : pcb_false;
 		if (continued)
 			inputline[len - 1] = '\0';
 		lines++;

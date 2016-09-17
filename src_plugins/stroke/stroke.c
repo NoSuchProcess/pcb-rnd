@@ -52,7 +52,7 @@ static void real_stroke_finish(void)
 	char msg[255];
 	unsigned long num;
 
-	mid_stroke = false;
+	mid_stroke = pcb_false;
 	if (stroke_trans(msg)) {
 		num = atoi(msg);
 		switch (num) {
@@ -86,7 +86,7 @@ static void real_stroke_finish(void)
 		case 147423:
 		case 147523:
 		case 1474123:
-			Redo(true);
+			Redo(pcb_true);
 			break;
 		case 148963:
 		case 147863:
@@ -151,7 +151,7 @@ static void real_stroke_record(int ev_x, int ev_y)
 static void real_stroke_start(void)
 {
 	fprintf(stderr, "stroke: MIID!\n");
-	mid_stroke = true;
+	mid_stroke = pcb_true;
 	StrokeBox.X1 = Crosshair.X;
 	StrokeBox.Y1 = Crosshair.Y;
 }

@@ -41,8 +41,8 @@ PCBTypePtr PCB;									/* pointer to layout struct */
 
 int LayerStack[MAX_LAYER];			/* determines the layer draw order */
 
-BufferType Buffers[MAX_BUFFER];	/* my buffers */
-bool Bumped;										/* if the undo serial number has changed */
+BufferType Buffers[MAX_BUFFER]; /* my buffers */
+pcb_bool Bumped;                /* if the undo serial number has changed */
 
 int addedLines;
 

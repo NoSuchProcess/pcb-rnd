@@ -302,7 +302,7 @@ static int ActionDisperseElements(int argc, const char **argv, Coord x, Coord y)
 	IncrementUndoSerialNumber();
 
 	Redraw();
-	SetChangedFlag(true);
+	SetChangedFlag(pcb_true);
 
 	return 0;
 }
@@ -378,7 +378,7 @@ static int ActionMoveObject(int argc, const char **argv, Coord x, Coord y)
 	const char *y_str = ACTION_ARG(1);
 	const char *units = ACTION_ARG(2);
 	Coord nx, ny;
-	bool absolute1, absolute2;
+	pcb_bool absolute1, absolute2;
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
@@ -400,7 +400,7 @@ static int ActionMoveObject(int argc, const char **argv, Coord x, Coord y)
 	if (type == PCB_TYPE_ELEMENT)
 		LookupRatLines(type, ptr1, ptr2, ptr3);
 	MoveObjectAndRubberband(type, ptr1, ptr2, ptr3, nx, ny);
-	SetChangedFlag(true);
+	SetChangedFlag(pcb_true);
 	return 0;
 }
 
@@ -430,15 +430,15 @@ static int ActionMoveToCurrentLayer(int argc, const char **argv, Coord x, Coord 
 
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = SearchScreen(x, y, MOVETOLAYER_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-					if (MoveObjectToLayer(type, ptr1, ptr2, ptr3, CURRENT, false))
-						SetChangedFlag(true);
+					if (MoveObjectToLayer(type, ptr1, ptr2, ptr3, CURRENT, pcb_false))
+						SetChangedFlag(pcb_true);
 				break;
 			}
 
 		case F_SelectedObjects:
 		case F_Selected:
 			if (MoveSelectedObjectsToLayer(CURRENT))
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 		}
 	}
@@ -586,7 +586,7 @@ static int ActionElementList(int argc, const char **argv, Coord x, Coord y)
 
 		/* Place components onto center of board. */
 		if (CopyPastebufferToLayout(nx, ny))
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 	}
 
 	else if (e && strcmp(DESCRIPTION_NAME(e), footprint) != 0) {
@@ -625,7 +625,7 @@ static int ActionElementList(int argc, const char **argv, Coord x, Coord y)
 		RemoveElement(e);
 
 		if (CopyPastebufferToLayout(mx, my))
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 	}
 
 	/* Now reload footprint */
@@ -733,7 +733,7 @@ that this uses the highest numbered paste buffer.
 static int ActionRipUp(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *function = ACTION_ARG(0);
-	bool changed = false;
+	pcb_bool changed = pcb_false;
 
 	if (function) {
 		switch (funchash_get(function, NULL)) {
@@ -742,7 +742,7 @@ static int ActionRipUp(int argc, const char **argv, Coord x, Coord y)
 			{
 				if (TEST_FLAG(PCB_FLAG_AUTO, line) && !TEST_FLAG(PCB_FLAG_LOCK, line)) {
 					RemoveObject(PCB_TYPE_LINE, layer, line, line);
-					changed = true;
+					changed = pcb_true;
 				}
 			}
 			ENDALL_LOOP;
@@ -750,7 +750,7 @@ static int ActionRipUp(int argc, const char **argv, Coord x, Coord y)
 			{
 				if (TEST_FLAG(PCB_FLAG_AUTO, arc) && !TEST_FLAG(PCB_FLAG_LOCK, arc)) {
 					RemoveObject(PCB_TYPE_ARC, layer, arc, arc);
-					changed = true;
+					changed = pcb_true;
 				}
 			}
 			ENDALL_LOOP;
@@ -758,14 +758,14 @@ static int ActionRipUp(int argc, const char **argv, Coord x, Coord y)
 			{
 				if (TEST_FLAG(PCB_FLAG_AUTO, via) && !TEST_FLAG(PCB_FLAG_LOCK, via)) {
 					RemoveObject(PCB_TYPE_VIA, via, via, via);
-					changed = true;
+					changed = pcb_true;
 				}
 			}
 			END_LOOP;
 
 			if (changed) {
 				IncrementUndoSerialNumber();
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			}
 			break;
 		case F_Selected:
@@ -774,7 +774,7 @@ static int ActionRipUp(int argc, const char **argv, Coord x, Coord y)
 				if (TEST_FLAGS(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, line)
 						&& !TEST_FLAG(PCB_FLAG_LOCK, line)) {
 					RemoveObject(PCB_TYPE_LINE, layer, line, line);
-					changed = true;
+					changed = pcb_true;
 				}
 			}
 			ENDALL_LOOP;
@@ -784,13 +784,13 @@ static int ActionRipUp(int argc, const char **argv, Coord x, Coord y)
 				if (TEST_FLAGS(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, via)
 						&& !TEST_FLAG(PCB_FLAG_LOCK, via)) {
 					RemoveObject(PCB_TYPE_VIA, via, via, via);
-					changed = true;
+					changed = pcb_true;
 				}
 			}
 			END_LOOP;
 			if (changed) {
 				IncrementUndoSerialNumber();
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			}
 			break;
 		case F_Element:
@@ -811,7 +811,7 @@ static int ActionRipUp(int argc, const char **argv, Coord x, Coord y)
 					RestoreUndoSerialNumber();
 					CopyPastebufferToLayout(0, 0);
 					SetBufferNumber(Note.Buffer);
-					SetChangedFlag(true);
+					SetChangedFlag(pcb_true);
 				}
 			}
 			break;
@@ -839,7 +839,7 @@ static int ActionMinMaskGap(int argc, const char **argv, Coord x, Coord y)
 	const char *function = ACTION_ARG(0);
 	const char *delta = ACTION_ARG(1);
 	const char *units = ACTION_ARG(2);
-	bool absolute;
+	pcb_bool absolute;
 	Coord value;
 	int flags;
 
@@ -913,7 +913,7 @@ static int ActionMinClearGap(int argc, const char **argv, Coord x, Coord y)
 	const char *function = ACTION_ARG(0);
 	const char *delta = ACTION_ARG(1);
 	const char *units = ACTION_ARG(2);
-	bool absolute;
+	pcb_bool absolute;
 	Coord value;
 	int flags;
 

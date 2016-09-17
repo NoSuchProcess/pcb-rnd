@@ -124,22 +124,22 @@ static void nogui_fill_pcb_polygon(hidGC gc, PolygonType * poly, const BoxType *
 	CRASH("fill_pcb_polygon");
 }
 
-static void nogui_fill_pcb_pad(hidGC gc, PadType * pad, bool clear, bool mask)
+static void nogui_fill_pcb_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
 {
 	CRASH("fill_pcb_pad");
 }
 
-static void nogui_thindraw_pcb_pad(hidGC gc, PadType * pad, bool clear, bool mask)
+static void nogui_thindraw_pcb_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
 {
 	CRASH("thindraw_pcb_pad");
 }
 
-static void nogui_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pad, bool drawHole, bool mask)
+static void nogui_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pad, pcb_bool drawHole, pcb_bool mask)
 {
 	CRASH("fill_pcb_pv");
 }
 
-static void nogui_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pad, bool drawHole, bool mask)
+static void nogui_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pad, pcb_bool drawHole, pcb_bool mask)
 {
 	CRASH("thindraw_pcb_pv");
 }
@@ -280,7 +280,7 @@ static int nogui_confirm_dialog(const char *msg, ...)
 {
 	char *answer;
 	int ret = 0;
-	bool valid_answer = false;
+	pcb_bool valid_answer = pcb_false;
 	va_list args;
 
 	do {
@@ -297,12 +297,12 @@ static int nogui_confirm_dialog(const char *msg, ...)
 
 		if (answer[0] == '0' && answer[1] == '\0') {
 			ret = 0;
-			valid_answer = true;
+			valid_answer = pcb_true;
 		}
 
 		if (answer[0] == '1' && answer[1] == '\0') {
 			ret = 1;
-			valid_answer = true;
+			valid_answer = pcb_true;
 		}
 
 		free(answer);

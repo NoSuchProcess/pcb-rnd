@@ -31,7 +31,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include <stdbool.h>
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
@@ -59,19 +58,19 @@ double Distance2(double x1, double y1, double x2, double y2)
 }
 
 /* Get Value returns a numeric value passed from the string and sets the
- * bool variable absolute to false if it leads with a +/- character
+ * pcb_bool variable absolute to false if it leads with a +/- character
  */
-double GetValue(const char *val, const char *units, bool * absolute, bool *success)
+double GetValue(const char *val, const char *units, pcb_bool * absolute, pcb_bool *success)
 {
 	return GetValueEx(val, units, absolute, NULL, "cmil", success);
 }
 
-double GetValueEx(const char *val, const char *units, bool * absolute, UnitList extra_units, const char *default_unit, bool *success)
+double GetValueEx(const char *val, const char *units, pcb_bool * absolute, UnitList extra_units, const char *default_unit, pcb_bool *success)
 {
 	double value;
 	int n = -1;
-	bool scaled = 0;
-	bool dummy;
+	pcb_bool scaled = 0;
+	pcb_bool dummy;
 
 	/* Allow NULL to be passed for absolute */
 	if (absolute == NULL)
@@ -81,15 +80,15 @@ double GetValueEx(const char *val, const char *units, bool * absolute, UnitList 
 	 * value to the current one
 	 */
 	if (*val == '=') {
-		*absolute = true;
+		*absolute = pcb_true;
 		sscanf(val + 1, "%lf%n", &value, &n);
 		n++;
 	}
 	else {
 		if (isdigit((int) *val))
-			*absolute = true;
+			*absolute = pcb_true;
 		else
-			*absolute = false;
+			*absolute = pcb_false;
 		sscanf(val, "%lf%n", &value, &n);
 	}
 	if (n <= 0)

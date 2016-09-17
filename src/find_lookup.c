@@ -44,7 +44,7 @@ static inline r_dir_t r_search_pt(rtree_t * rtree, const PointType * pt,
 
 /* Connection lookup functions */
 
-static bool ADD_PV_TO_LIST(PinTypePtr Pin, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_PV_TO_LIST(PinTypePtr Pin, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(Pin->Element ? PCB_TYPE_PIN : PCB_TYPE_VIA, Pin->Element ? Pin->Element : Pin, Pin, Pin);
@@ -58,10 +58,10 @@ static bool ADD_PV_TO_LIST(PinTypePtr Pin, int from_type, void *from_ptr, found_
 #endif
 	if (drc && !TEST_FLAG(PCB_FLAG_SELECTED, Pin))
 		return (SetThing(PCB_TYPE_PIN, Pin->Element, Pin, Pin));
-	return false;
+	return pcb_false;
 }
 
-static bool ADD_PAD_TO_LIST(Cardinal L, PadTypePtr Pad, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_PAD_TO_LIST(Cardinal L, PadTypePtr Pad, int from_type, void *from_ptr, found_conn_type_t type)
 {
 /*fprintf(stderr, "ADD_PAD_TO_LIST cardinal %d %p %d\n", L, Pad, from_type);*/
 	if (User)
@@ -76,10 +76,10 @@ static bool ADD_PAD_TO_LIST(Cardinal L, PadTypePtr Pad, int from_type, void *fro
 #endif
 	if (drc && !TEST_FLAG(PCB_FLAG_SELECTED, Pad))
 		return (SetThing(PCB_TYPE_PAD, Pad->Element, Pad, Pad));
-	return false;
+	return pcb_false;
 }
 
-static bool ADD_LINE_TO_LIST(Cardinal L, LineTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_LINE_TO_LIST(Cardinal L, LineTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_LINE, LAYER_PTR(L), (Ptr), (Ptr));
@@ -93,10 +93,10 @@ static bool ADD_LINE_TO_LIST(Cardinal L, LineTypePtr Ptr, int from_type, void *f
 #endif
 	if (drc && !TEST_FLAG(PCB_FLAG_SELECTED, (Ptr)))
 		return (SetThing(PCB_TYPE_LINE, LAYER_PTR(L), (Ptr), (Ptr)));
-	return false;
+	return pcb_false;
 }
 
-static bool ADD_ARC_TO_LIST(Cardinal L, ArcTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_ARC_TO_LIST(Cardinal L, ArcTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_ARC, LAYER_PTR(L), (Ptr), (Ptr));
@@ -110,10 +110,10 @@ static bool ADD_ARC_TO_LIST(Cardinal L, ArcTypePtr Ptr, int from_type, void *fro
 #endif
 	if (drc && !TEST_FLAG(PCB_FLAG_SELECTED, (Ptr)))
 		return (SetThing(PCB_TYPE_ARC, LAYER_PTR(L), (Ptr), (Ptr)));
-	return false;
+	return pcb_false;
 }
 
-static bool ADD_RAT_TO_LIST(RatTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_RAT_TO_LIST(RatTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_RATLINE, (Ptr), (Ptr), (Ptr));
@@ -127,10 +127,10 @@ static bool ADD_RAT_TO_LIST(RatTypePtr Ptr, int from_type, void *from_ptr, found
 #endif
 	if (drc && !TEST_FLAG(PCB_FLAG_SELECTED, (Ptr)))
 		return (SetThing(PCB_TYPE_RATLINE, (Ptr), (Ptr), (Ptr)));
-	return false;
+	return pcb_false;
 }
 
-static bool ADD_POLYGON_TO_LIST(Cardinal L, PolygonTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_POLYGON_TO_LIST(Cardinal L, PolygonTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_POLYGON, LAYER_PTR(L), (Ptr), (Ptr));
@@ -144,10 +144,10 @@ static bool ADD_POLYGON_TO_LIST(Cardinal L, PolygonTypePtr Ptr, int from_type, v
 #endif
 	if (drc && !TEST_FLAG(PCB_FLAG_SELECTED, (Ptr)))
 		return (SetThing(PCB_TYPE_POLYGON, LAYER_PTR(L), (Ptr), (Ptr)));
-	return false;
+	return pcb_false;
 }
 
-bool SetThing(int type, void *ptr1, void *ptr2, void *ptr3)
+pcb_bool SetThing(int type, void *ptr1, void *ptr2, void *ptr3)
 {
 	thing_ptr1 = ptr1;
 	thing_ptr2 = ptr2;
@@ -157,7 +157,7 @@ bool SetThing(int type, void *ptr1, void *ptr2, void *ptr3)
 		thing_ptr1 = ptr3;
 		thing_type = PCB_TYPE_VIA;
 	}
-	return true;
+	return pcb_true;
 }
 
 /* ---------------------------------------------------------------------------
@@ -361,7 +361,7 @@ static r_dir_t LOCtoPVpoly_callback(const BoxType * b, void *cl)
 		}
 		else if (TEST_FLAG(PCB_FLAG_OCTAGON, &i->pv)) {
 			POLYAREA *oct = OctagonPoly(i->pv.X, i->pv.Y, i->pv.Thickness / 2, GET_SQUARE(&i->pv));
-			if (isects(oct, polygon, true)
+			if (isects(oct, polygon, pcb_true)
 					&& ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PIN, &i->pv, FCT_COPPER))
 				longjmp(i->env, 1);
 		}
@@ -376,7 +376,7 @@ static r_dir_t LOCtoPVpoly_callback(const BoxType * b, void *cl)
  * checks if a PV is connected to LOs, if it is, the LO is added to
  * the appropriate list and the 'used' flag is set
  */
-static bool LookupLOConnectionsToPVList(bool AndRats)
+static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 {
 	Cardinal layer;
 	struct pv_info info;
@@ -391,7 +391,7 @@ static bool LookupLOConnectionsToPVList(bool AndRats)
 		if (setjmp(info.env) == 0)
 			r_search(PCB->Data->pad_tree, (BoxType *) & info.pv, NULL, LOCtoPVpad_callback, &info, NULL);
 		else
-			return true;
+			return pcb_true;
 
 		/* now all lines, arcs and polygons of the several layers */
 		for (layer = 0; layer < max_copper_layer; layer++) {
@@ -402,36 +402,36 @@ static bool LookupLOConnectionsToPVList(bool AndRats)
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->line_tree, (BoxType *) & info.pv, NULL, LOCtoPVline_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			/* add touching arcs */
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->arc_tree, (BoxType *) & info.pv, NULL, LOCtoPVarc_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			/* check all polygons */
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->polygon_tree, (BoxType *) & info.pv, NULL, LOCtoPVpoly_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 		}
 		/* Check for rat-lines that may intersect the PV */
 		if (AndRats) {
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->rat_tree, (BoxType *) & info.pv, NULL, LOCtoPVrat_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 		}
 		PVList.Location++;
 	}
-	return false;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
  * find all connections between LO at the current list position and new LOs
  */
-static bool LookupLOConnectionsToLOList(bool AndRats)
+static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 {
-	bool done;
+	pcb_bool done;
 	Cardinal i, group, layer, ratposition,
 		lineposition[MAX_LAYER], polyposition[MAX_LAYER], arcposition[MAX_LAYER], padposition[2];
 
@@ -459,10 +459,10 @@ static bool LookupLOConnectionsToLOList(bool AndRats)
 			for (; *position < RatList.Number; (*position)++) {
 				group = RATLIST_ENTRY(*position)->group1;
 				if (LookupLOConnectionsToRatEnd(&(RATLIST_ENTRY(*position)->Point1), group))
-					return (true);
+					return (pcb_true);
 				group = RATLIST_ENTRY(*position)->group2;
 				if (LookupLOConnectionsToRatEnd(&(RATLIST_ENTRY(*position)->Point2), group))
-					return (true);
+					return (pcb_true);
 			}
 		}
 		/* loop over all layergroups */
@@ -479,32 +479,32 @@ static bool LookupLOConnectionsToLOList(bool AndRats)
 					/* try all new lines */
 					position = &lineposition[layer];
 					for (; *position < LineList[layer].Number; (*position)++)
-						if (LookupLOConnectionsToLine(LINELIST_ENTRY(layer, *position), group, true))
-							return (true);
+						if (LookupLOConnectionsToLine(LINELIST_ENTRY(layer, *position), group, pcb_true))
+							return (pcb_true);
 
 					/* try all new arcs */
 					position = &arcposition[layer];
 					for (; *position < ArcList[layer].Number; (*position)++)
 						if (LookupLOConnectionsToArc(ARCLIST_ENTRY(layer, *position), group))
-							return (true);
+							return (pcb_true);
 
 					/* try all new polygons */
 					position = &polyposition[layer];
 					for (; *position < PolygonList[layer].Number; (*position)++)
 						if (LookupLOConnectionsToPolygon(POLYGONLIST_ENTRY(layer, *position), group))
-							return (true);
+							return (pcb_true);
 				}
 				else {
 					/* try all new pads */
 					layer -= max_copper_layer;
 					if (layer > 1) {
 						Message(PCB_MSG_DEFAULT, _("bad layer number %d max_copper_layer=%d in find.c\n"), layer, max_copper_layer);
-						return false;
+						return pcb_false;
 					}
 					position = &padposition[layer];
 					for (; *position < PadList[layer].Number; (*position)++)
 						if (LookupLOConnectionsToPad(PADLIST_ENTRY(layer, *position), group))
-							return (true);
+							return (pcb_true);
 				}
 			}
 		}
@@ -523,7 +523,7 @@ static bool LookupLOConnectionsToLOList(bool AndRats)
 		}
 	}
 	while (!done);
-	return (false);
+	return (pcb_false);
 }
 
 static r_dir_t pv_pv_callback(const BoxType * b, void *cl)
@@ -534,7 +534,7 @@ static r_dir_t pv_pv_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pin) && PV_TOUCH_PV(&i->pv, pin)) {
 		if (TEST_FLAG(PCB_FLAG_HOLE, pin) || TEST_FLAG(PCB_FLAG_HOLE, &i->pv)) {
 			SET_FLAG(PCB_FLAG_WARN, pin);
-			conf_core.temp.rat_warn = true;
+			conf_core.temp.rat_warn = pcb_true;
 			if (pin->Element)
 				Message(PCB_MSG_DEFAULT, _("WARNING: Hole too close to pin.\n"));
 			else
@@ -549,7 +549,7 @@ static r_dir_t pv_pv_callback(const BoxType * b, void *cl)
 /* ---------------------------------------------------------------------------
  * searches for new PVs that are connected to PVs on the list
  */
-static bool LookupPVConnectionsToPVList(void)
+static pcb_bool LookupPVConnectionsToPVList(void)
 {
 	Cardinal save_place;
 	struct pv_info info;
@@ -584,15 +584,15 @@ static bool LookupPVConnectionsToPVList(void)
 		if (setjmp(info.env) == 0)
 			r_search(PCB->Data->via_tree, (BoxType *) & info.pv, NULL, pv_pv_callback, &info, NULL);
 		else
-			return true;
+			return pcb_true;
 		if (setjmp(info.env) == 0)
 			r_search(PCB->Data->pin_tree, (BoxType *) & info.pv, NULL, pv_pv_callback, &info, NULL);
 		else
-			return true;
+			return pcb_true;
 		PVList.Location++;
 	}
 	PVList.Location = save_place;
-	return (false);
+	return (pcb_false);
 }
 
 struct lo_info {
@@ -613,7 +613,7 @@ static r_dir_t pv_line_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pv) && PinLineIntersect(pv, &i->line)) {
 		if (TEST_FLAG(PCB_FLAG_HOLE, pv)) {
 			SET_FLAG(PCB_FLAG_WARN, pv);
-			conf_core.temp.rat_warn = true;
+			conf_core.temp.rat_warn = pcb_true;
 			Message(PCB_MSG_DEFAULT, _("WARNING: Hole too close to line.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, PCB_TYPE_LINE, &i->line, FCT_COPPER))
@@ -630,7 +630,7 @@ static r_dir_t pv_pad_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pv) && IS_PV_ON_PAD(pv, &i->pad)) {
 		if (TEST_FLAG(PCB_FLAG_HOLE, pv)) {
 			SET_FLAG(PCB_FLAG_WARN, pv);
-			conf_core.temp.rat_warn = true;
+			conf_core.temp.rat_warn = pcb_true;
 			Message(PCB_MSG_DEFAULT, _("WARNING: Hole too close to pad.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, PCB_TYPE_PAD, &i->pad, FCT_COPPER))
@@ -647,7 +647,7 @@ static r_dir_t pv_arc_callback(const BoxType * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pv) && IS_PV_ON_ARC(pv, &i->arc)) {
 		if (TEST_FLAG(PCB_FLAG_HOLE, pv)) {
 			SET_FLAG(PCB_FLAG_WARN, pv);
-			conf_core.temp.rat_warn = true;
+			conf_core.temp.rat_warn = pcb_true;
 			Message(PCB_MSG_DEFAULT, _("WARNING: Hole touches arc.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, PCB_TYPE_ARC, &i->arc, FCT_COPPER))
@@ -676,7 +676,7 @@ static r_dir_t pv_poly_callback(const BoxType * b, void *cl)
 		}
 		else if (TEST_FLAG(PCB_FLAG_OCTAGON, pv)) {
 			POLYAREA *oct = OctagonPoly(pv->X, pv->Y, PIN_SIZE(pv) / 2, GET_SQUARE(pv));
-			if (isects(oct, &i->polygon, true) && ADD_PV_TO_LIST(pv, PCB_TYPE_POLYGON, &i->polygon, FCT_COPPER))
+			if (isects(oct, &i->polygon, pcb_true) && ADD_PV_TO_LIST(pv, PCB_TYPE_POLYGON, &i->polygon, FCT_COPPER))
 				longjmp(i->env, 1);
 		}
 		else {
@@ -703,7 +703,7 @@ static r_dir_t pv_rat_callback(const BoxType * b, void *cl)
  * searches for new PVs that are connected to NEW LOs on the list
  * This routine updates the position counter of the lists too.
  */
-static bool LookupPVConnectionsToLOList(bool AndRats)
+static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 {
 	Cardinal layer;
 	struct lo_info info;
@@ -727,11 +727,11 @@ static bool LookupPVConnectionsToLOList(bool AndRats)
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->via_tree, (BoxType *) & info.line, NULL, pv_line_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->pin_tree, (BoxType *) & info.line, NULL, pv_line_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			LineList[layer].Location++;
 		}
 
@@ -742,11 +742,11 @@ static bool LookupPVConnectionsToLOList(bool AndRats)
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->via_tree, (BoxType *) & info.arc, NULL, pv_arc_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->pin_tree, (BoxType *) & info.arc, NULL, pv_arc_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			ArcList[layer].Location++;
 		}
 
@@ -758,11 +758,11 @@ static bool LookupPVConnectionsToLOList(bool AndRats)
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->via_tree, (BoxType *) & info.polygon, NULL, pv_poly_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->pin_tree, (BoxType *) & info.polygon, NULL, pv_poly_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			PolygonList[layer].Location++;
 		}
 	}
@@ -784,11 +784,11 @@ static bool LookupPVConnectionsToLOList(bool AndRats)
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->via_tree, (BoxType *) & info.pad, NULL, pv_pad_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->pin_tree, (BoxType *) & info.pad, NULL, pv_pad_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			PadList[layer].Location++;
 		}
 	}
@@ -809,7 +809,7 @@ static bool LookupPVConnectionsToLOList(bool AndRats)
 			RatList.Location++;
 		}
 	}
-	return (false);
+	return (pcb_false);
 }
 
 r_dir_t pv_touch_callback(const BoxType * b, void *cl)
@@ -866,7 +866,7 @@ static r_dir_t LOCtoArcPad_callback(const BoxType * b, void *cl)
  * the notation that is used is:
  * Xij means Xj at arc i
  */
-static bool LookupLOConnectionsToArc(ArcTypePtr Arc, Cardinal LayerGroup)
+static pcb_bool LookupLOConnectionsToArc(ArcTypePtr Arc, Cardinal LayerGroup)
 {
 	Cardinal entry;
 	struct lo_info info;
@@ -889,18 +889,18 @@ static bool LookupLOConnectionsToArc(ArcTypePtr Arc, Cardinal LayerGroup)
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->line_tree, &info.arc.BoundingBox, NULL, LOCtoArcLine_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->arc_tree, &info.arc.BoundingBox, NULL, LOCtoArcArc_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 
 			/* now check all polygons */
 			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
 				if (!TEST_FLAG(TheFlag, polygon) && IsArcInPolygon(Arc, polygon)
 						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_ARC, Arc, FCT_COPPER))
-					return true;
+					return pcb_true;
 			}
 		}
 		else {
@@ -908,10 +908,10 @@ static bool LookupLOConnectionsToArc(ArcTypePtr Arc, Cardinal LayerGroup)
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->pad_tree, &info.arc.BoundingBox, NULL, LOCtoArcPad_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 		}
 	}
-	return (false);
+	return (pcb_false);
 }
 
 static r_dir_t LOCtoLineLine_callback(const BoxType * b, void *cl)
@@ -978,7 +978,7 @@ static r_dir_t LOCtoLinePad_callback(const BoxType * b, void *cl)
  * the notation that is used is:
  * Xij means Xj at line i
  */
-static bool LookupLOConnectionsToLine(LineTypePtr Line, Cardinal LayerGroup, bool PolysTo)
+static pcb_bool LookupLOConnectionsToLine(LineTypePtr Line, Cardinal LayerGroup, pcb_bool PolysTo)
 {
 	Cardinal entry;
 	struct lo_info info;
@@ -990,7 +990,7 @@ static bool LookupLOConnectionsToLine(LineTypePtr Line, Cardinal LayerGroup, boo
 		if (setjmp(info.env) == 0)
 		r_search(PCB->Data->rat_tree, &info.line.BoundingBox, NULL, LOCtoLineRat_callback, &info, NULL);
 	else
-		return true;
+		return pcb_true;
 
 	/* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
@@ -1005,12 +1005,12 @@ static bool LookupLOConnectionsToLine(LineTypePtr Line, Cardinal LayerGroup, boo
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->line_tree, (BoxType *) & info.line, NULL, LOCtoLineLine_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			/* add arcs */
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->arc_tree, (BoxType *) & info.line, NULL, LOCtoLineArc_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			/* now check all polygons */
 			if (PolysTo) {
 				gdl_iterator_t it;
@@ -1019,7 +1019,7 @@ static bool LookupLOConnectionsToLine(LineTypePtr Line, Cardinal LayerGroup, boo
 				polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
 					if (!TEST_FLAG(TheFlag, polygon) && IsLineInPolygon(Line, polygon)
 							&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_LINE, Line, FCT_COPPER))
-						return true;
+						return pcb_true;
 				}
 			}
 		}
@@ -1029,10 +1029,10 @@ static bool LookupLOConnectionsToLine(LineTypePtr Line, Cardinal LayerGroup, boo
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->pad_tree, &info.line.BoundingBox, NULL, LOCtoLinePad_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 		}
 	}
-	return (false);
+	return (pcb_false);
 }
 
 
@@ -1093,7 +1093,7 @@ static r_dir_t LOCtoPad_callback(const BoxType * b, void *cl)
  * the notation that is used is:
  * Xij means Xj at line i
  */
-static bool LookupLOConnectionsToRatEnd(PointTypePtr Point, Cardinal LayerGroup)
+static pcb_bool LookupLOConnectionsToRatEnd(PointTypePtr Point, Cardinal LayerGroup)
 {
 	Cardinal entry;
 	struct rat_info info;
@@ -1114,7 +1114,7 @@ static bool LookupLOConnectionsToRatEnd(PointTypePtr Point, Cardinal LayerGroup)
 			if (setjmp(info.env) == 0)
 				r_search_pt(LAYER_PTR(layer)->line_tree, Point, 1, NULL, LOCtoRat_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			if (setjmp(info.env) == 0)
 				r_search_pt(LAYER_PTR(layer)->polygon_tree, Point, 1, NULL, PolygonToRat_callback, &info, NULL);
 		}
@@ -1124,10 +1124,10 @@ static bool LookupLOConnectionsToRatEnd(PointTypePtr Point, Cardinal LayerGroup)
 			if (setjmp(info.env) == 0)
 				r_search_pt(PCB->Data->pad_tree, Point, 1, NULL, LOCtoPad_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 		}
 	}
-	return (false);
+	return (pcb_false);
 }
 
 static r_dir_t LOCtoPadLine_callback(const BoxType * b, void *cl)
@@ -1210,12 +1210,12 @@ static r_dir_t LOCtoPadPad_callback(const BoxType * b, void *cl)
  * searches all LOs that are connected to the given pad on the given
  * layergroup. All found connections are added to the list
  */
-static bool LookupLOConnectionsToPad(PadTypePtr Pad, Cardinal LayerGroup)
+static pcb_bool LookupLOConnectionsToPad(PadTypePtr Pad, Cardinal LayerGroup)
 {
 	Cardinal entry;
 	struct lo_info info;
 	int ic;
-	bool retv = false;
+	pcb_bool retv = pcb_false;
 
 	/* Internal connection: if pads in the same element have the same
 	   internal connection group number, they are connected */
@@ -1248,7 +1248,7 @@ static bool LookupLOConnectionsToPad(PadTypePtr Pad, Cardinal LayerGroup)
 /*fprintf(stderr, "layergroup2\n");*/
 						ADD_PAD_TO_LIST(padlayer, pad, PCB_TYPE_PAD, orig_pad, FCT_INTERNAL);
 						if (LookupLOConnectionsToPad(pad, LayerGroup))
-							retv = true;
+							retv = pcb_true;
 					}
 				}
 			}
@@ -1258,7 +1258,7 @@ static bool LookupLOConnectionsToPad(PadTypePtr Pad, Cardinal LayerGroup)
 
 
 	if (!TEST_FLAG(PCB_FLAG_SQUARE, Pad))
-		return (LookupLOConnectionsToLine((LineTypePtr) Pad, LayerGroup, false));
+		return (LookupLOConnectionsToLine((LineTypePtr) Pad, LayerGroup, pcb_false));
 
 	info.pad = *Pad;
 	EXPAND_BOUNDS(&info.pad);
@@ -1267,7 +1267,7 @@ static bool LookupLOConnectionsToPad(PadTypePtr Pad, Cardinal LayerGroup)
 	if (setjmp(info.env) == 0)
 		r_search(PCB->Data->rat_tree, &info.pad.BoundingBox, NULL, LOCtoPadRat_callback, &info, NULL);
 	else
-		return true;
+		return pcb_true;
 
 	/* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
@@ -1281,17 +1281,17 @@ static bool LookupLOConnectionsToPad(PadTypePtr Pad, Cardinal LayerGroup)
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->line_tree, &info.pad.BoundingBox, NULL, LOCtoPadLine_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			/* add arcs */
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->arc_tree, &info.pad.BoundingBox, NULL, LOCtoPadArc_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			/* add polygons */
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->polygon_tree, &info.pad.BoundingBox, NULL, LOCtoPadPoly_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 		}
 		else {
 			/* handle special 'pad' layers */
@@ -1299,7 +1299,7 @@ static bool LookupLOConnectionsToPad(PadTypePtr Pad, Cardinal LayerGroup)
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->pad_tree, (BoxType *) & info.pad, NULL, LOCtoPadPad_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 		}
 
 	}
@@ -1367,13 +1367,13 @@ static r_dir_t LOCtoPolyRat_callback(const BoxType * b, void *cl)
  * looks up LOs that are connected to the given polygon
  * on the given layergroup. All found connections are added to the list
  */
-static bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, Cardinal LayerGroup)
+static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, Cardinal LayerGroup)
 {
 	Cardinal entry;
 	struct lo_info info;
 
 	if (!Polygon->Clipped)
-		return false;
+		return pcb_false;
 	info.polygon = *Polygon;
 	EXPAND_BOUNDS(&info.polygon);
 	info.layer = LayerGroup;
@@ -1381,7 +1381,7 @@ static bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, Cardinal LayerG
 	if (setjmp(info.env) == 0)
 		r_search(PCB->Data->rat_tree, (BoxType *) & info.polygon, NULL, LOCtoPolyRat_callback, &info, NULL);
 	else
-		return true;
+		return pcb_true;
 /* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
 		Cardinal layer;
@@ -1398,7 +1398,7 @@ static bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, Cardinal LayerG
 				if (!TEST_FLAG(TheFlag, polygon)
 						&& IsPolygonInPolygon(polygon, Polygon)
 						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_POLYGON, Polygon, FCT_COPPER))
-					return true;
+					return pcb_true;
 			}
 
 			info.layer = layer;
@@ -1406,20 +1406,20 @@ static bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, Cardinal LayerG
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->line_tree, (BoxType *) & info.polygon, NULL, LOCtoPolyLine_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 			/* check all arcs */
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->arc_tree, (BoxType *) & info.polygon, NULL, LOCtoPolyArc_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 		}
 		else {
 			info.layer = layer - max_copper_layer;
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->pad_tree, (BoxType *) & info.polygon, NULL, LOCtoPolyPad_callback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 		}
 	}
-	return (false);
+	return (pcb_false);
 }

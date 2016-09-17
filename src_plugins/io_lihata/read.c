@@ -84,7 +84,7 @@ static int parse_text(char **res, lht_node_t *nd)
 static int parse_coord(Coord *res, lht_node_t *nd)
 {
 	double tmp;
-	bool success;
+	pcb_bool success;
 
 	if ((nd == NULL) || (nd->type != LHT_TEXT))
 		return -1;
@@ -101,7 +101,7 @@ static int parse_coord(Coord *res, lht_node_t *nd)
 static int parse_angle(Angle *res, lht_node_t *nd)
 {
 	double tmp;
-	bool success;
+	pcb_bool success;
 
 	if ((nd == NULL) || (nd->type != LHT_TEXT))
 		return -1;
@@ -156,7 +156,7 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 
 /* Load the boolean value of a text node into res.
    Return 0 on success */
-static int parse_bool(bool *res, lht_node_t *nd)
+static int parse_bool(pcb_bool *res, lht_node_t *nd)
 {
 	if (nd == NULL)
 		return -1;
@@ -222,7 +222,7 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 		lht_node_t *thr;
 		for (n = 0; n < pcb_object_flagbits_len; n++) {
 			if (pcb_object_flagbits[n].object_types & object_type) {
-				bool b;
+				pcb_bool b;
 				if ((parse_bool(&b, lht_dom_hash_get(fn, pcb_object_flagbits[n].name)) == 0) && b)
 					SET_FLAG(pcb_object_flagbits[n].mask, &fh);
 			}

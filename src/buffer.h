@@ -36,11 +36,11 @@
  */
 void SetBufferBoundingBox(BufferTypePtr);
 void ClearBuffer(BufferTypePtr);
-void AddSelectedToBuffer(BufferTypePtr, Coord, Coord, bool);
-bool LoadElementToBuffer(BufferTypePtr, const char *);
-bool ConvertBufferToElement(BufferTypePtr);
-bool SmashBufferElement(BufferTypePtr);
-bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const char *fmt);
+void AddSelectedToBuffer(BufferTypePtr, Coord, Coord, pcb_bool);
+pcb_bool LoadElementToBuffer(BufferTypePtr, const char *);
+pcb_bool ConvertBufferToElement(BufferTypePtr);
+pcb_bool SmashBufferElement(BufferTypePtr);
+pcb_bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const char *fmt);
 void RotateBuffer(BufferTypePtr, BYTE);
 void SelectPasteBuffer(int);
 void pcb_swap_buffers(void);

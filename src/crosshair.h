@@ -39,14 +39,14 @@
 #define	STATE_THIRD		2
 
 Coord GridFit(Coord x, Coord grid_spacing, Coord grid_offset);
-void notify_crosshair_change(bool changes_complete);
-void notify_mark_change(bool changes_complete);
+void notify_crosshair_change(pcb_bool changes_complete);
+void notify_mark_change(pcb_bool changes_complete);
 void HideCrosshair(void);
 void RestoreCrosshair(void);
 void DrawAttached(void);
 void DrawMark(void);
 void MoveCrosshairRelative(Coord, Coord);
-bool MoveCrosshairAbsolute(Coord, Coord);
+pcb_bool MoveCrosshairAbsolute(Coord, Coord);
 void SetCrosshairRange(Coord, Coord, Coord, Coord);
 void InitCrosshair(void);
 void DestroyCrosshair(void);

@@ -47,7 +47,7 @@ struct cent {
 	POLYAREA *p;
 };
 
-static POLYAREA *diag_line(Coord X, Coord Y, Coord l, Coord w, bool rt)
+static POLYAREA *diag_line(Coord X, Coord Y, Coord l, Coord w, pcb_bool rt)
 {
 	PLINE *c;
 	Vector v;
@@ -322,9 +322,9 @@ static POLYAREA *oct_therm(PinTypePtr pin, Cardinal style)
 	switch (style) {
 	default:
 	case 1:
-		p = diag_line(pin->X, pin->Y, w, t, true);
+		p = diag_line(pin->X, pin->Y, w, t, pcb_true);
 		poly_Boolean_free(m, p, &p2, PBO_SUB);
-		p = diag_line(pin->X, pin->Y, w, t, false);
+		p = diag_line(pin->X, pin->Y, w, t, pcb_false);
 		poly_Boolean_free(p2, p, &m, PBO_SUB);
 		return m;
 	case 2:
@@ -391,9 +391,9 @@ POLYAREA *ThermPoly(PCBTypePtr p, PinTypePtr pin, Cardinal laynum)
 				/* t is the theoretically required length, but we use twice that
 				 * to avoid descritisation errors in our circle approximation.
 				 */
-				pa = diag_line(pin->X, pin->Y, t * 2, w, true);
+				pa = diag_line(pin->X, pin->Y, t * 2, w, pcb_true);
 				poly_Boolean_free(m, pa, &arc, PBO_SUB);
-				pa = diag_line(pin->X, pin->Y, t * 2, w, false);
+				pa = diag_line(pin->X, pin->Y, t * 2, w, pcb_false);
 			}
 			poly_Boolean_free(arc, pa, &m, PBO_SUB);
 			return m;

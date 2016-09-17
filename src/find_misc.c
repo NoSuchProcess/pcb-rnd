@@ -30,9 +30,9 @@ static void DrawNewConnections(void);
 /* ---------------------------------------------------------------------------
  * checks if all lists of new objects are handled
  */
-static bool ListsEmpty(bool AndRats)
+static pcb_bool ListsEmpty(pcb_bool AndRats)
 {
-	bool empty;
+	pcb_bool empty;
 	int i;
 
 	empty = (PVList.Location >= PVList.Number);
@@ -58,9 +58,9 @@ static void reassign_no_drc_flags(void)
 /* ---------------------------------------------------------------------------
  * loops till no more connections are found 
  */
-static bool DoIt(bool AndRats, bool AndDraw)
+static pcb_bool DoIt(pcb_bool AndRats, pcb_bool AndDraw)
 {
-	bool newone = false;
+	pcb_bool newone = pcb_false;
 	reassign_no_drc_flags();
 	do {
 		/* lookup connections; these are the steps (2) to (4)
@@ -147,7 +147,7 @@ static void DrawNewConnections(void)
 /*---------------------------------------------------------------------------
  * add the starting object to the list of found objects
  */
-static bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
+static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 {
 	DumpList();
 	switch (type) {
@@ -155,14 +155,14 @@ static bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 	case PCB_TYPE_VIA:
 		{
 			if (ADD_PV_TO_LIST((PinTypePtr) ptr2, 0, NULL, FCT_START))
-				return true;
+				return pcb_true;
 			break;
 		}
 
 	case PCB_TYPE_RATLINE:
 		{
 			if (ADD_RAT_TO_LIST((RatTypePtr) ptr1, 0, NULL, FCT_START))
-				return true;
+				return pcb_true;
 			break;
 		}
 
@@ -172,7 +172,7 @@ static bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 																 (LayerTypePtr) ptr1);
 
 			if (ADD_LINE_TO_LIST(layer, (LineTypePtr) ptr2, 0, NULL, FCT_START))
-				return true;
+				return pcb_true;
 			break;
 		}
 
@@ -182,7 +182,7 @@ static bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 																 (LayerTypePtr) ptr1);
 
 			if (ADD_ARC_TO_LIST(layer, (ArcTypePtr) ptr2, 0, NULL, FCT_START))
-				return true;
+				return pcb_true;
 			break;
 		}
 
@@ -192,7 +192,7 @@ static bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 																 (LayerTypePtr) ptr1);
 
 			if (ADD_POLYGON_TO_LIST(layer, (PolygonTypePtr) ptr2, 0, NULL, FCT_START))
-				return true;
+				return pcb_true;
 			break;
 		}
 
@@ -200,21 +200,21 @@ static bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 		{
 			PadTypePtr pad = (PadTypePtr) ptr2;
 			if (ADD_PAD_TO_LIST(TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, FCT_START))
-				return true;
+				return pcb_true;
 			break;
 		}
 	}
-	return (false);
+	return (pcb_false);
 }
 
 
 /* ---------------------------------------------------------------------------
  * looks up all connections from the object at the given coordinates
  * the TheFlag (normally 'PCB_FLAG_FOUND') is set for all objects found
- * the objects are re-drawn if AndDraw is true
- * also the action is marked as undoable if AndDraw is true
+ * the objects are re-drawn if AndDraw is pcb_true
+ * also the action is marked as undoable if AndDraw is pcb_true
  */
-void LookupConnection(Coord X, Coord Y, bool AndDraw, Coord Range, int which_flag)
+void LookupConnection(Coord X, Coord Y, pcb_bool AndDraw, Coord Range, int which_flag)
 {
 	void *ptr1, *ptr2, *ptr3;
 	char *name;
@@ -251,10 +251,10 @@ void LookupConnection(Coord X, Coord Y, bool AndDraw, Coord Range, int which_fla
 	 * This is step (1) from the description
 	 */
 	ListStart(type, ptr1, ptr2, ptr3);
-	DoIt(true, AndDraw);
+	DoIt(pcb_true, AndDraw);
 	if (User)
 		IncrementUndoSerialNumber();
-	User = false;
+	User = pcb_false;
 
 	/* we are done */
 	if (AndDraw)
@@ -268,21 +268,21 @@ void LookupConnection(Coord X, Coord Y, bool AndDraw, Coord Range, int which_fla
  * find connections for rats nesting
  * assumes InitConnectionLookup() has already been done
  */
-void RatFindHook(int type, void *ptr1, void *ptr2, void *ptr3, bool undo, bool AndRats)
+void RatFindHook(int type, void *ptr1, void *ptr2, void *ptr3, pcb_bool undo, pcb_bool AndRats)
 {
 	User = undo;
 	DumpList();
 	ListStart(type, ptr1, ptr2, ptr3);
-	DoIt(AndRats, false);
-	User = false;
+	DoIt(AndRats, pcb_false);
+	User = pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
  * resets all used flags of pins and vias
  */
-bool ResetFoundPinsViasAndPads(bool AndDraw)
+pcb_bool ResetFoundPinsViasAndPads(pcb_bool AndDraw)
 {
-	bool change = false;
+	pcb_bool change = pcb_false;
 
 	VIA_LOOP(PCB->Data);
 	{
@@ -292,7 +292,7 @@ bool ResetFoundPinsViasAndPads(bool AndDraw)
 			CLEAR_FLAG(TheFlag, via);
 			if (AndDraw)
 				DrawVia(via);
-			change = true;
+			change = pcb_true;
 		}
 	}
 	END_LOOP;
@@ -306,7 +306,7 @@ bool ResetFoundPinsViasAndPads(bool AndDraw)
 				CLEAR_FLAG(TheFlag, pin);
 				if (AndDraw)
 					DrawPin(pin);
-				change = true;
+				change = pcb_true;
 			}
 		}
 		END_LOOP;
@@ -318,23 +318,23 @@ bool ResetFoundPinsViasAndPads(bool AndDraw)
 				CLEAR_FLAG(TheFlag, pad);
 				if (AndDraw)
 					DrawPad(pad);
-				change = true;
+				change = pcb_true;
 			}
 		}
 		END_LOOP;
 	}
 	END_LOOP;
 	if (change)
-		SetChangedFlag(true);
+		SetChangedFlag(pcb_true);
 	return change;
 }
 
 /* ---------------------------------------------------------------------------
  * resets all used flags of LOs
  */
-bool ResetFoundLinesAndPolygons(bool AndDraw)
+pcb_bool ResetFoundLinesAndPolygons(pcb_bool AndDraw)
 {
-	bool change = false;
+	pcb_bool change = pcb_false;
 
 	RAT_LOOP(PCB->Data);
 	{
@@ -344,7 +344,7 @@ bool ResetFoundLinesAndPolygons(bool AndDraw)
 			CLEAR_FLAG(TheFlag, line);
 			if (AndDraw)
 				DrawRat(line);
-			change = true;
+			change = pcb_true;
 		}
 	}
 	END_LOOP;
@@ -356,7 +356,7 @@ bool ResetFoundLinesAndPolygons(bool AndDraw)
 			CLEAR_FLAG(TheFlag, line);
 			if (AndDraw)
 				DrawLine(layer, line);
-			change = true;
+			change = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -368,7 +368,7 @@ bool ResetFoundLinesAndPolygons(bool AndDraw)
 			CLEAR_FLAG(TheFlag, arc);
 			if (AndDraw)
 				DrawArc(layer, arc);
-			change = true;
+			change = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -380,21 +380,21 @@ bool ResetFoundLinesAndPolygons(bool AndDraw)
 			CLEAR_FLAG(TheFlag, polygon);
 			if (AndDraw)
 				DrawPolygon(layer, polygon);
-			change = true;
+			change = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
 	if (change)
-		SetChangedFlag(true);
+		SetChangedFlag(pcb_true);
 	return change;
 }
 
 /* ---------------------------------------------------------------------------
  * resets all found connections
  */
-bool ResetConnections(bool AndDraw)
+pcb_bool ResetConnections(pcb_bool AndDraw)
 {
-	bool change = false;
+	pcb_bool change = pcb_false;
 
 	change = ResetFoundPinsViasAndPads(AndDraw) || change;
 	change = ResetFoundLinesAndPolygons(AndDraw) || change;

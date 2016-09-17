@@ -144,15 +144,15 @@ int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-bool IsPointOnLine(Coord, Coord, Coord, LineTypePtr);
-bool IsPointOnPin(Coord, Coord, Coord, PinTypePtr);
-bool IsPointOnArc(Coord, Coord, Coord, ArcTypePtr);
-bool IsPointOnLineEnd(Coord, Coord, RatTypePtr);
-bool IsLineInRectangle(Coord, Coord, Coord, Coord, LineTypePtr);
-bool IsLineInQuadrangle(PointType p[4], LineTypePtr Line);
-bool IsArcInRectangle(Coord, Coord, Coord, Coord, ArcTypePtr);
-bool IsPointInPad(Coord, Coord, Coord, PadTypePtr);
-bool IsPointInBox(Coord, Coord, BoxTypePtr, Coord);
+pcb_bool IsPointOnLine(Coord, Coord, Coord, LineTypePtr);
+pcb_bool IsPointOnPin(Coord, Coord, Coord, PinTypePtr);
+pcb_bool IsPointOnArc(Coord, Coord, Coord, ArcTypePtr);
+pcb_bool IsPointOnLineEnd(Coord, Coord, RatTypePtr);
+pcb_bool IsLineInRectangle(Coord, Coord, Coord, Coord, LineTypePtr);
+pcb_bool IsLineInQuadrangle(PointType p[4], LineTypePtr Line);
+pcb_bool IsArcInRectangle(Coord, Coord, Coord, Coord, ArcTypePtr);
+pcb_bool IsPointInPad(Coord, Coord, Coord, PadTypePtr);
+pcb_bool IsPointInBox(Coord, Coord, BoxTypePtr, Coord);
 int SearchObjectByLocation(unsigned, void **, void **, void **, Coord, Coord, Coord);
 int SearchScreen(Coord, Coord, int, void **, void **, void **);
 int SearchScreenGridSlop(Coord, Coord, int, void **, void **, void **);

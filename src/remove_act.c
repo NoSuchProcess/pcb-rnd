@@ -50,7 +50,7 @@ static int ActionDelete(int argc, const char **argv, Coord x, Coord y)
 	Note.Y = Crosshair.Y;
 
 	if (id == -1) {								/* no arg */
-		if (RemoveSelected() == false)
+		if (RemoveSelected() == pcb_false)
 			id = F_Object;
 	}
 
@@ -65,12 +65,12 @@ static int ActionDelete(int argc, const char **argv, Coord x, Coord y)
 		RemoveSelected();
 		break;
 	case F_AllRats:
-		if (DeleteRats(false))
-			SetChangedFlag(true);
+		if (DeleteRats(pcb_false))
+			SetChangedFlag(pcb_true);
 		break;
 	case F_SelectedRats:
-		if (DeleteRats(true))
-			SetChangedFlag(true);
+		if (DeleteRats(pcb_true))
+			SetChangedFlag(pcb_true);
 		break;
 	}
 
@@ -90,7 +90,7 @@ static const char removeselected_help[] = "Removes any selected objects.";
 static int ActionRemoveSelected(int argc, const char **argv, Coord x, Coord y)
 {
 	if (RemoveSelected())
-		SetChangedFlag(true);
+		SetChangedFlag(pcb_true);
 	return 0;
 }
 

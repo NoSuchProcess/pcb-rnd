@@ -152,7 +152,7 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 	old_cb = find_callback;
 	find_callback = proc_short_cb;
 	SaveFindFlag(PCB_FLAG_MINCUT);
-	LookupConnection(x, y, false, 1, PCB_FLAG_MINCUT);
+	LookupConnection(x, y, pcb_false, 1, PCB_FLAG_MINCUT);
 
 	debprintf("- alloced for %d\n", (short_conns_maxid + 1));
 	lut_by_oid = calloc(sizeof(short_conn_t *), (short_conns_maxid + 1));
@@ -332,8 +332,8 @@ static int proc_short(PinType * pin, PadType * pad, int ignore)
 	}
 
 
-	ResetFoundLinesAndPolygons(false);
-	ResetFoundPinsViasAndPads(false);
+	ResetFoundLinesAndPolygons(pcb_false);
+	ResetFoundPinsViasAndPads(pcb_false);
 	RestoreFindFlag();
 
 	find_callback = old_cb;

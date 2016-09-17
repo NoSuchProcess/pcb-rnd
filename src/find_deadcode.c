@@ -62,7 +62,7 @@ static int LOT_Padcallback(const BoxType * b, void *cl)
 	return 0;
 }
 
-static bool PVTouchesLine(LineTypePtr line)
+static pcb_bool PVTouchesLine(LineTypePtr line)
 {
 	struct lo_info info;
 
@@ -71,16 +71,16 @@ static bool PVTouchesLine(LineTypePtr line)
 	if (setjmp(info.env) == 0)
 		r_search(PCB->Data->via_tree, (BoxType *) & info.line, NULL, pv_touch_callback, &info, NULL);
 	else
-		return true;
+		return pcb_true;
 	if (setjmp(info.env) == 0)
 		r_search(PCB->Data->pin_tree, (BoxType *) & info.line, NULL, pv_touch_callback, &info, NULL);
 	else
-		return true;
+		return pcb_true;
 
-	return (false);
+	return (pcb_false);
 }
 
-static bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup)
+static pcb_bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup)
 {
 	Cardinal entry;
 	struct lo_info info;
@@ -105,17 +105,17 @@ static bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup)
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->line_tree, (BoxType *) & info.line, NULL, LOT_Linecallback, &info, NULL);
 			else
-				return (true);
+				return (pcb_true);
 			if (setjmp(info.env) == 0)
 				r_search(LAYER_PTR(layer)->arc_tree, (BoxType *) & info.line, NULL, LOT_Arccallback, &info, NULL);
 			else
-				return (true);
+				return (pcb_true);
 
 			/* now check all polygons */
 			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
 				if (!TEST_FLAG(TheFlag, polygon)
 						&& IsLineInPolygon(Line, polygon))
-					return (true);
+					return (pcb_true);
 			}
 		}
 		else {
@@ -124,22 +124,22 @@ static bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup)
 			if (setjmp(info.env) == 0)
 				r_search(PCB->Data->pad_tree, &info.line.BoundingBox, NULL, LOT_Padcallback, &info, NULL);
 			else
-				return true;
+				return pcb_true;
 		}
 	}
-	return (false);
+	return (pcb_false);
 }
 
-/* returns true if nothing un-found touches the passed line
- * returns false if it would touch something not yet found
+/* returns pcb_true if nothing un-found touches the passed line
+ * returns pcb_false if it would touch something not yet found
  * doesn't include rat-lines in the search
  */
 
-bool lineClear(LineTypePtr line, Cardinal group)
+pcb_bool lineClear(LineTypePtr line, Cardinal group)
 {
 	if (LOTouchesLine(line, group))
-		return (false);
+		return (pcb_false);
 	if (PVTouchesLine(line))
-		return (false);
-	return (true);
+		return (pcb_false);
+	return (pcb_true);
 }

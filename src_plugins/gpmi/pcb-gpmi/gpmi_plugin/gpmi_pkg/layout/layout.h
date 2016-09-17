@@ -259,9 +259,9 @@ void fill_circle(dctx_t *ctx, int cx_, int cy_, int radius_);
 void fill_polygon(dctx_t *ctx, int n_ints_, int *x_, int *y_);
 void fill_pcb_polygon(dctx_t *ctx, PolygonType *poly, const BoxType *clip_box);
 void thindraw_pcb_polygon(dctx_t *ctx, PolygonType *poly, const BoxType *clip_box);
-void fill_pcb_pad(dctx_t *ctx, PadType *pad, bool clip, bool mask);
-void thindraw_pcb_pad(dctx_t *ctx, PadType *pad, bool clip, bool mask);
-void fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType *pv, bool drawHole, bool mask);
-void thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType *pv, bool drawHole, bool mask);
+void fill_pcb_pad(dctx_t *ctx, PadType *pad, pcb_bool clip, pcb_bool mask);
+void thindraw_pcb_pad(dctx_t *ctx, PadType *pad, pcb_bool clip, pcb_bool mask);
+void fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType *pv, pcb_bool drawHole, pcb_bool mask);
+void thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType *pv, pcb_bool drawHole, pcb_bool mask);
 void fill_rect(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
 */

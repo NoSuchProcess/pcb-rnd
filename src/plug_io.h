@@ -94,10 +94,10 @@ int WritePCB(FILE *f, const char *fmt);
 
 
 /********** common function used to be part of file.[ch] and friends **********/
-FILE *CheckAndOpenFile(const char *, bool, bool, bool *, bool *);
+FILE *CheckAndOpenFile(const char *, pcb_bool, pcb_bool, pcb_bool *, pcb_bool *);
 FILE *OpenConnectionDataFile(void);
 int SavePCB(const char *, const char *fmt);
-int LoadPCB(const char *name, const char *fmt, bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) */
+int LoadPCB(const char *name, const char *fmt, pcb_bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) */
 void EnableAutosave(void);
 void Backup(void);
 void SaveInTMP(void);
@@ -110,7 +110,7 @@ void PrintQuotedString(FILE *, const char *);
 void sort_library(LibraryTypePtr lib);
 void set_some_route_style();
 int WritePCBFile(const char *, const char *fmt);
-int WritePipe(const char *, bool, const char *fmt);
+int WritePipe(const char *, pcb_bool, const char *fmt);
 
 #ifndef HAS_ATEXIT
 void SaveTMPData(void);

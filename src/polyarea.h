@@ -91,7 +91,7 @@
 		unsigned int Count;
 		double area;
 		rtree_t *tree;
-		bool is_round;
+		pcb_bool is_round;
 		Coord cx, cy;
 		Coord radius;
 		struct {

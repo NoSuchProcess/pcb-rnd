@@ -71,7 +71,7 @@ static void thindraw_moved_pv(PinType * pv, Coord x, Coord y)
 	moved_pv.X += x;
 	moved_pv.Y += y;
 
-	gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &moved_pv, true, false);
+	gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &moved_pv, pcb_true, pcb_false);
 }
 
 static void draw_dashed_line(hidGC GC, Coord x1, Coord y1, Coord x2, Coord y2)
@@ -259,7 +259,7 @@ static void XORDrawElement(ElementTypePtr Element, Coord DX, Coord DY)
 			moved_pad.Point2.X += DX;
 			moved_pad.Point2.Y += DY;
 
-			gui->thindraw_pcb_pad(Crosshair.GC, &moved_pad, false, false);
+			gui->thindraw_pcb_pad(Crosshair.GC, &moved_pad, pcb_false, pcb_false);
 		}
 	}
 	END_LOOP;
@@ -504,13 +504,13 @@ void DrawAttached(void)
 			via.Mask = 0;
 			via.Flags = NoFlags();
 
-			gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &via, true, false);
+			gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &via, pcb_true, pcb_false);
 
 			if (conf_core.editor.show_drc) {
 				/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
 				via.Mask = conf_core.design.via_thickness + PCB->Bloat * 2;
 				gui->set_color(Crosshair.GC, conf_core.appearance.color.cross);
-				gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &via, false, true);
+				gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &via, pcb_false, pcb_true);
 				gui->set_color(Crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 			break;
@@ -627,19 +627,19 @@ Coord GridFit(Coord x, Coord grid_spacing, Coord grid_offset)
 /* ---------------------------------------------------------------------------
  * notify the GUI that data relating to the crosshair is being changed.
  *
- * The argument passed is false to notify "changes are about to happen",
- * and true to notify "changes have finished".
+ * The argument passed is pcb_false to notify "changes are about to happen",
+ * and pcb_true to notify "changes have finished".
  *
- * Each call with a 'false' parameter must be matched with a following one
- * with a 'true' parameter. Unmatched 'true' calls are currently not permitted,
+ * Each call with a 'pcb_false' parameter must be matched with a following one
+ * with a 'pcb_true' parameter. Unmatched 'pcb_true' calls are currently not permitted,
  * but might be allowed in the future.
  *
- * GUIs should not complain if they receive extra calls with 'true' as parameter.
+ * GUIs should not complain if they receive extra calls with 'pcb_true' as parameter.
  * They should initiate a redraw of the crosshair attached objects - which may
  * (if necessary) mean repainting the whole screen if the GUI hasn't tracked the
  * location of existing attached drawing.
  */
-void notify_crosshair_change(bool changes_complete)
+void notify_crosshair_change(pcb_bool changes_complete)
 {
 	if (gui->notify_crosshair_change)
 		gui->notify_crosshair_change(changes_complete);
@@ -649,18 +649,18 @@ void notify_crosshair_change(bool changes_complete)
 /* ---------------------------------------------------------------------------
  * notify the GUI that data relating to the mark is being changed.
  *
- * The argument passed is false to notify "changes are about to happen",
- * and true to notify "changes have finished".
+ * The argument passed is pcb_false to notify "changes are about to happen",
+ * and pcb_true to notify "changes have finished".
  *
- * Each call with a 'false' parameter must be matched with a following one
- * with a 'true' parameter. Unmatched 'true' calls are currently not permitted,
+ * Each call with a 'pcb_false' parameter must be matched with a following one
+ * with a 'pcb_true' parameter. Unmatched 'pcb_true' calls are currently not permitted,
  * but might be allowed in the future.
  *
- * GUIs should not complain if they receive extra calls with 'true' as parameter.
+ * GUIs should not complain if they receive extra calls with 'pcb_true' as parameter.
  * They should initiate a redraw of the mark - which may (if necessary) mean
  * repainting the whole screen if the GUI hasn't tracked the mark's location.
  */
-void notify_mark_change(bool changes_complete)
+void notify_mark_change(pcb_bool changes_complete)
 {
 	if (gui->notify_mark_change)
 		gui->notify_mark_change(changes_complete);
@@ -679,28 +679,28 @@ void notify_mark_change(bool changes_complete)
  */
 void HideCrosshair(void)
 {
-	static bool warned_old_api = false;
+	static pcb_bool warned_old_api = pcb_false;
 	if (!warned_old_api) {
 		Message(PCB_MSG_DEFAULT, _("WARNING: A plugin is using the deprecated API HideCrosshair().\n"
 							"         This API may be removed in a future release of PCB.\n"));
-		warned_old_api = true;
+		warned_old_api = pcb_true;
 	}
 
-	notify_crosshair_change(false);
-	notify_mark_change(false);
+	notify_crosshair_change(pcb_false);
+	notify_mark_change(pcb_false);
 }
 
 void RestoreCrosshair(void)
 {
-	static bool warned_old_api = false;
+	static pcb_bool warned_old_api = pcb_false;
 	if (!warned_old_api) {
 		Message(PCB_MSG_DEFAULT, _("WARNING: A plugin is using the deprecated API RestoreCrosshair().\n"
 							"         This API may be removed in a future release of PCB.\n"));
-		warned_old_api = true;
+		warned_old_api = pcb_true;
 	}
 
-	notify_crosshair_change(true);
-	notify_mark_change(true);
+	notify_crosshair_change(pcb_true);
+	notify_mark_change(pcb_true);
 }
 
 /*
@@ -818,7 +818,7 @@ static void onpoint_work(CrosshairType * crosshair, Coord X, Coord Y)
 	BoxType SearchBox = point_box(X, Y);
 	struct onpoint_search_info info;
 	int i;
-	bool redraw = false;
+	pcb_bool redraw = pcb_false;
 
 	op_swap(crosshair);
 	
@@ -850,7 +850,7 @@ static void onpoint_work(CrosshairType * crosshair, Coord X, Coord Y)
 
 		CLEAR_FLAG(PCB_FLAG_ONPOINT, (AnyObjectType *) op->obj.any);
 		DrawLineOrArc(op->type, op->obj.any);
-		redraw = true;
+		redraw = pcb_true;
 	}
 
 	/* draw the new objects */
@@ -861,7 +861,7 @@ static void onpoint_work(CrosshairType * crosshair, Coord X, Coord Y)
 		if (onpoint_find(&crosshair->old_onpoint_objs, op->obj.any) != NULL)
 			continue;
 		DrawLineOrArc(op->type, op->obj.any);
-		redraw = true;
+		redraw = pcb_true;
 	}
 
 	if (redraw) {
@@ -885,7 +885,7 @@ static double crosshair_sq_dist(CrosshairType * crosshair, Coord x, Coord y)
 struct snap_data {
 	CrosshairType *crosshair;
 	double nearest_sq_dist;
-	bool nearest_is_grid;
+	pcb_bool nearest_is_grid;
 	Coord x, y;
 };
 
@@ -895,7 +895,7 @@ struct snap_data {
  * pressing the SHIFT key. If the SHIFT key is pressed, the closest object
  * (including grid points), is always preferred.
  */
-static void check_snap_object(struct snap_data *snap_data, Coord x, Coord y, bool prefer_to_grid)
+static void check_snap_object(struct snap_data *snap_data, Coord x, Coord y, pcb_bool prefer_to_grid)
 {
 	double sq_dist;
 
@@ -904,7 +904,7 @@ static void check_snap_object(struct snap_data *snap_data, Coord x, Coord y, boo
 		snap_data->x = x;
 		snap_data->y = y;
 		snap_data->nearest_sq_dist = sq_dist;
-		snap_data->nearest_is_grid = false;
+		snap_data->nearest_is_grid = pcb_false;
 	}
 }
 
@@ -949,14 +949,14 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, Coord nearest_g
 		/* Move in the X direction until we hit the line */
 		try_x = (nearest_grid_y - line->Point1.Y) / dy * dx + line->Point1.X;
 		try_y = nearest_grid_y;
-		check_snap_object(snap_data, try_x, try_y, true);
+		check_snap_object(snap_data, try_x, try_y, pcb_true);
 	}
 
 	/* Try snapping along the Y axis */
 	if (dx != 0.) {
 		try_x = nearest_grid_x;
 		try_y = (nearest_grid_x - line->Point1.X) / dx * dy + line->Point1.Y;
-		check_snap_object(snap_data, try_x, try_y, true);
+		check_snap_object(snap_data, try_x, try_y, pcb_true);
 	}
 
 	if (dx != dy) {								/* If line not parallel with dX = dY direction.. */
@@ -970,7 +970,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, Coord nearest_g
 		try_x = nearest_grid_x + dist;
 		try_y = nearest_grid_y + dist;
 
-		check_snap_object(snap_data, try_x, try_y, true);
+		check_snap_object(snap_data, try_x, try_y, pcb_true);
 	}
 
 	if (dx != -dy) {							/* If line not parallel with dX = -dY direction.. */
@@ -984,7 +984,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, Coord nearest_g
 		try_x = nearest_grid_x + dist;
 		try_y = nearest_grid_y - dist;
 
-		check_snap_object(snap_data, try_x, try_y, true);
+		check_snap_object(snap_data, try_x, try_y, pcb_true);
 	}
 }
 
@@ -1022,7 +1022,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 
 	snap_data.crosshair = &Crosshair;
 	snap_data.nearest_sq_dist = crosshair_sq_dist(&Crosshair, nearest_grid_x, nearest_grid_y);
-	snap_data.nearest_is_grid = true;
+	snap_data.nearest_is_grid = pcb_true;
 	snap_data.x = nearest_grid_x;
 	snap_data.y = nearest_grid_y;
 
@@ -1032,7 +1032,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 
 	if (ans & PCB_TYPE_ELEMENT) {
 		ElementType *el = (ElementType *) ptr1;
-		check_snap_object(&snap_data, el->MarkX, el->MarkY, false);
+		check_snap_object(&snap_data, el->MarkX, el->MarkY, pcb_false);
 	}
 
 	ans = PCB_TYPE_NONE;
@@ -1050,7 +1050,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		LayerType *desired_layer;
 		Cardinal desired_group;
 		Cardinal SLayer, CLayer;
-		int found_our_layer = false;
+		int found_our_layer = pcb_false;
 
 		desired_layer = CURRENT;
 		if (conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT) {
@@ -1065,19 +1065,19 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		GROUP_LOOP(PCB->Data, desired_group);
 		{
 			if (layer == desired_layer) {
-				found_our_layer = true;
+				found_our_layer = pcb_true;
 				break;
 			}
 		}
 		END_LOOP;
 
-		if (found_our_layer == false)
+		if (found_our_layer == pcb_false)
 			ans = PCB_TYPE_NONE;
 	}
 
 	if (ans != PCB_TYPE_NONE) {
 		PadType *pad = (PadType *) ptr2;
-		check_snap_object(&snap_data, (pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y) / 2, true);
+		check_snap_object(&snap_data, (pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y) / 2, pcb_true);
 	}
 
 	ans = PCB_TYPE_NONE;
@@ -1091,7 +1091,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 
 	if (ans != PCB_TYPE_NONE) {
 		PinType *pin = (PinType *) ptr2;
-		check_snap_object(&snap_data, pin->X, pin->Y, true);
+		check_snap_object(&snap_data, pin->X, pin->Y, pcb_true);
 	}
 
 	ans = PCB_TYPE_NONE;
@@ -1104,7 +1104,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 
 	if (ans != PCB_TYPE_NONE) {
 		PinType *pin = (PinType *) ptr2;
-		check_snap_object(&snap_data, pin->X, pin->Y, true);
+		check_snap_object(&snap_data, pin->X, pin->Y, pcb_true);
 	}
 
 	ans = PCB_TYPE_NONE;
@@ -1113,7 +1113,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 
 	if (ans != PCB_TYPE_NONE) {
 		PointType *pnt = (PointType *) ptr3;
-		check_snap_object(&snap_data, pnt->X, pnt->Y, true);
+		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true);
 	}
 
 	/*
@@ -1128,7 +1128,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 
 	if (ans != PCB_TYPE_NONE) {
 		PointType *pnt = (PointType *) ptr3;
-		check_snap_object(&snap_data, pnt->X, pnt->Y, true);
+		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true);
 	}
 
 	if (snap_data.x >= 0 && snap_data.y >= 0) {
@@ -1163,9 +1163,9 @@ void MoveCrosshairRelative(Coord DeltaX, Coord DeltaY)
 
 /* ---------------------------------------------------------------------------
  * move crosshair absolute
- * return true if the crosshair was moved from its existing position
+ * return pcb_true if the crosshair was moved from its existing position
  */
-bool MoveCrosshairAbsolute(Coord X, Coord Y)
+pcb_bool MoveCrosshairAbsolute(Coord X, Coord Y)
 {
 	Coord x, y, z;
 	x = Crosshair.X;
@@ -1179,13 +1179,13 @@ bool MoveCrosshairAbsolute(Coord X, Coord Y)
 		x = z;
 		z = Crosshair.Y;
 		Crosshair.Y = y;
-		notify_crosshair_change(false);	/* Our caller notifies when it has done */
+		notify_crosshair_change(pcb_false);	/* Our caller notifies when it has done */
 		/* now move forward again */
 		Crosshair.X = x;
 		Crosshair.Y = z;
-		return (true);
+		return (pcb_true);
 	}
-	return (false);
+	return (pcb_false);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1228,7 +1228,7 @@ void InitCrosshair(void)
 	memset(&Crosshair.old_onpoint_objs, 0, sizeof(vtop_t));
 
 	/* clear the mark */
-	Marked.status = false;
+	Marked.status = pcb_false;
 }
 
 /* ---------------------------------------------------------------------------

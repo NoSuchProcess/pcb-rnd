@@ -37,6 +37,6 @@
 
 #include "global.h"
 
-bool AutoRoute(bool);
+pcb_bool AutoRoute(pcb_bool);
 
 #endif

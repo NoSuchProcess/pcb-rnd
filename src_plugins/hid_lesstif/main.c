@@ -151,26 +151,26 @@ static int view_left_x = 0, view_top_y = 0;
    out - the largest value means you are looking at the whole
    board.  */
 static double view_zoom = PCB_MIL_TO_COORD(10), prev_view_zoom = PCB_MIL_TO_COORD(10);
-static bool autofade = 0;
-static bool crosshair_on = true;
+static pcb_bool autofade = 0;
+static pcb_bool crosshair_on = pcb_true;
 
 static void lesstif_begin(void);
 static void lesstif_end(void);
 
-static void ShowCrosshair(bool show)
+static void ShowCrosshair(pcb_bool show)
 {
 	if (crosshair_on == show)
 		return;
 
-	notify_crosshair_change(false);
+	notify_crosshair_change(pcb_false);
 	if (Marked.status)
-		notify_mark_change(false);
+		notify_mark_change(pcb_false);
 
 	crosshair_on = show;
 
-	notify_crosshair_change(true);
+	notify_crosshair_change(pcb_true);
 	if (Marked.status)
-		notify_mark_change(true);
+		notify_mark_change(pcb_true);
 }
 
 /* This is the size of the current PCB work area.  */
@@ -537,7 +537,7 @@ If no argument is given, the board isn't moved but the opposite side
 is shown.
 
 Normally, this action changes which pads and silk layer are drawn as
-true silk, and which are drawn as the "invisible" layer.  It also
+pcb_true silk, and which are drawn as the "invisible" layer.  It also
 determines which solder mask you see.
 
 As a special case, if the layer group for the side you're looking at
@@ -1255,12 +1255,12 @@ static void mod_changed(XKeyEvent * e, int set)
 		return;
 	}
 	in_move_event = 1;
-	notify_crosshair_change(false);
+	notify_crosshair_change(pcb_false);
 	if (panning)
 		Pan(2, e->x, e->y);
 	EventMoveCrosshair(Px(e->x), Py(e->y));
 	AdjustAttachedObjects();
-	notify_crosshair_change(true);
+	notify_crosshair_change(pcb_true);
 	in_move_event = 0;
 }
 
@@ -1301,7 +1301,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			if (lesstif_button_event(w, e))
 				return;
 
-			notify_crosshair_change(false);
+			notify_crosshair_change(pcb_false);
 			pressed_button = e->xbutton.button;
 			mods = ((e->xbutton.state & ShiftMask) ? M_Shift : 0)
 				+ ((e->xbutton.state & ControlMask) ? M_Ctrl : 0)
@@ -1312,7 +1312,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #endif
 			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods);
 
-			notify_crosshair_change(true);
+			notify_crosshair_change(pcb_true);
 			break;
 		}
 
@@ -1322,7 +1322,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			if (e->xbutton.button != pressed_button)
 				return;
 			lesstif_button_event(w, e);
-			notify_crosshair_change(false);
+			notify_crosshair_change(pcb_false);
 			pressed_button = 0;
 			mods = ((e->xbutton.state & ShiftMask) ? M_Shift : 0)
 				+ ((e->xbutton.state & ControlMask) ? M_Ctrl : 0)
@@ -1333,7 +1333,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #endif
 				+ M_Release;
 			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods);
-			notify_crosshair_change(true);
+			notify_crosshair_change(pcb_true);
 			break;
 		}
 
@@ -1363,7 +1363,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 
 	case LeaveNotify:
 		crosshair_in_window = 0;
-		ShowCrosshair(false);
+		ShowCrosshair(pcb_false);
 		need_idle_proc();
 		break;
 
@@ -1371,7 +1371,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 		crosshair_in_window = 1;
 		in_move_event = 1;
 		EventMoveCrosshair(Px(e->xcrossing.x), Py(e->xcrossing.y));
-		ShowCrosshair(true);
+		ShowCrosshair(pcb_true);
 		in_move_event = 0;
 		need_idle_proc();
 		break;
@@ -2745,7 +2745,7 @@ void lesstif_invalidate_all(void)
 	lesstif_invalidate_lr(0, PCB->MaxWidth, 0, PCB->MaxHeight);
 }
 
-static void lesstif_notify_crosshair_change(bool changes_complete)
+static void lesstif_notify_crosshair_change(pcb_bool changes_complete)
 {
 	static int invalidate_depth = 0;
 	Pixmap save_pixmap;
@@ -2758,7 +2758,7 @@ static void lesstif_notify_crosshair_change(bool changes_complete)
 
 	if (invalidate_depth < 0) {
 		invalidate_depth = 0;
-		/* A mismatch of changes_complete == false and == true notifications
+		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
 		 * is not expected to occur, but we will try to handle it gracefully.
 		 * As we know the crosshair will have been shown already, we must
 		 * repaint the entire view to be sure not to leave an artaefact.
@@ -2778,7 +2778,7 @@ static void lesstif_notify_crosshair_change(bool changes_complete)
 		invalidate_depth++;
 }
 
-static void lesstif_notify_mark_change(bool changes_complete)
+static void lesstif_notify_mark_change(pcb_bool changes_complete)
 {
 	static int invalidate_depth = 0;
 	Pixmap save_pixmap;
@@ -2788,7 +2788,7 @@ static void lesstif_notify_mark_change(bool changes_complete)
 
 	if (invalidate_depth < 0) {
 		invalidate_depth = 0;
-		/* A mismatch of changes_complete == false and == true notifications
+		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
 		 * is not expected to occur, but we will try to handle it gracefully.
 		 * As we know the mark will have been shown already, we must
 		 * repaint the entire view to be sure not to leave an artaefact.
@@ -3608,11 +3608,11 @@ static void lesstif_beep(void)
 }
 
 
-static bool progress_cancelled = false;
+static pcb_bool progress_cancelled = pcb_false;
 
 static void progress_cancel_callback(Widget w, void *v, void *cbs)
 {
-	progress_cancelled = true;
+	progress_cancelled = pcb_true;
 }
 
 static Widget progress_dialog = 0;
@@ -3651,7 +3651,7 @@ static void lesstif_progress_dialog(int so_far, int total, const char *msg)
 		stdarg(XmNvalue, 0);
 		stdarg(XmNmaximum, total > 0 ? total : 1);
 		stdarg(XmNorientation, XmHORIZONTAL);
-		stdarg(XmNshowArrows, false);
+		stdarg(XmNshowArrows, pcb_false);
 		progress_scale = XmCreateScrollBar(progress_dialog, XmStrCast("scale"), stdarg_args, stdarg_n);
 		XtManageChild(progress_scale);
 
@@ -3677,7 +3677,7 @@ static void lesstif_progress_dialog(int so_far, int total, const char *msg)
 
 static int lesstif_progress(int so_far, int total, const char *message)
 {
-	static bool started = false;
+	static pcb_bool started = pcb_false;
 	XEvent e;
 	struct timeval time;
 	double time_delta, time_now;
@@ -3686,8 +3686,8 @@ static int lesstif_progress(int so_far, int total, const char *message)
 
 	if (so_far == 0 && total == 0 && message == NULL) {
 		XtUnmanageChild(progress_dialog);
-		started = false;
-		progress_cancelled = false;
+		started = pcb_false;
+		progress_cancelled = pcb_false;
 		return retval;
 	}
 
@@ -3704,7 +3704,7 @@ static int lesstif_progress(int so_far, int total, const char *message)
 
 	if (!started) {
 		XtManageChild(progress_dialog);
-		started = true;
+		started = pcb_true;
 	}
 
 	/* Dispatch pending events */

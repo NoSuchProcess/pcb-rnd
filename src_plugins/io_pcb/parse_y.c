@@ -125,7 +125,7 @@ static	PolygonTypePtr	Polygon;
 static	SymbolTypePtr	Symbol;
 static	int		pin_num;
 static	LibraryMenuTypePtr	Menu;
-static	bool			LayerFlag[MAX_LAYER + 2];
+static	pcb_bool			LayerFlag[MAX_LAYER + 2];
 
 extern	char			*yytext;		/* defined by LEX */
 extern	PCBTypePtr		yyPCB;
@@ -1797,7 +1797,7 @@ yyreduce:
 					YYABORT;
 				}
 				for (i = 0; i < MAX_LAYER + 2; i++)
-					LayerFlag[i] = false;
+					LayerFlag[i] = pcb_false;
 				yyFont = &yyPCB->Font;
 				yyData = yyPCB->Data;
 				yyData->pcb = yyPCB;
@@ -1844,8 +1844,8 @@ yyreduce:
 
   case 9:
 #line 230 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
-    { LayerFlag[0] = true;
-		    LayerFlag[1] = true;
+    { LayerFlag[0] = pcb_true;
+		    LayerFlag[1] = pcb_true;
 		    yyData->LayerN = 2;
 		    PostLoadElementPCB ();
 		  }
@@ -1866,7 +1866,7 @@ yyreduce:
 					YYABORT;
 				}
 				for (i = 0; i < MAX_LAYER + 2; i++)
-					LayerFlag[i] = false;
+					LayerFlag[i] = pcb_false;
 				yyData->LayerN = 0;
 			}
 #line 1873 "parse_y.tab.c" /* yacc.c:1646  */
@@ -1883,7 +1883,7 @@ yyreduce:
 					Message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
-				yyFont->Valid = false;
+				yyFont->Valid = pcb_false;
 				for (i = 0; i <= MAX_FONTPOSITION; i++)
 					free (yyFont->Symbol[i].Line);
 				memset(yyFont->Symbol, 0, sizeof(yyFont->Symbol));
@@ -1894,7 +1894,7 @@ yyreduce:
   case 15:
 #line 278 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
-				yyFont->Valid = true;
+				yyFont->Valid = pcb_true;
 		  		SetFontInfo(yyFont);
 			}
 #line 1901 "parse_y.tab.c" /* yacc.c:1646  */
@@ -2224,7 +2224,7 @@ yyreduce:
 				if (Layer->Name != NULL)
 					free((char*)Layer->Name);
 				Layer->Name = (yyvsp[-3].string);   /* shouldn't this be strdup()'ed ? */
-				LayerFlag[(yyvsp[-4].integer)-1] = true;
+				LayerFlag[(yyvsp[-4].integer)-1] = pcb_true;
 				if (yyData->LayerN + 2 < (yyvsp[-4].integer))
 				  yyData->LayerN = (yyvsp[-4].integer) - 2;
 				if ((yyvsp[-2].string) != NULL)
@@ -2369,7 +2369,7 @@ yyreduce:
 #line 1156 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				Cardinal contour, contour_start, contour_end;
-				bool bad_contour_found = false;
+				pcb_bool bad_contour_found = pcb_false;
 				/* ignore junk */
 				for (contour = 0; contour <= Polygon->HoleIndexN; contour++)
 				  {
@@ -2379,7 +2379,7 @@ yyreduce:
 						 Polygon->PointN :
 						 Polygon->HoleIndex[contour];
 				    if (contour_end - contour_start < 3)
-				      bad_contour_found = true;
+				      bad_contour_found = pcb_true;
 				  }
 
 				if (bad_contour_found)
@@ -2429,7 +2429,7 @@ yyreduce:
 #line 1285 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, NoFlags(),
-					(yyvsp[-6].string), (yyvsp[-5].string), NULL, OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-2].integer), 100, NoFlags(), false);
+					(yyvsp[-6].string), (yyvsp[-5].string), NULL, OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-2].integer), 100, NoFlags(), pcb_false);
 				free ((yyvsp[-6].string));
 				free ((yyvsp[-5].string));
 				pin_num = 1;
@@ -2449,7 +2449,7 @@ yyreduce:
 #line 1303 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, OldFlags((yyvsp[-9].integer)),
-					(yyvsp[-8].string), (yyvsp[-7].string), NULL, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), IV ((yyvsp[-4].measure)), IV ((yyvsp[-3].measure)), OldFlags((yyvsp[-2].integer)), false);
+					(yyvsp[-8].string), (yyvsp[-7].string), NULL, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), IV ((yyvsp[-4].measure)), IV ((yyvsp[-3].measure)), OldFlags((yyvsp[-2].integer)), pcb_false);
 				free ((yyvsp[-8].string));
 				free ((yyvsp[-7].string));
 				pin_num = 1;
@@ -2469,7 +2469,7 @@ yyreduce:
 #line 1321 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1646  */
     {
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, OldFlags((yyvsp[-10].integer)),
-					(yyvsp[-9].string), (yyvsp[-8].string), (yyvsp[-7].string), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), IV ((yyvsp[-4].measure)), IV ((yyvsp[-3].measure)), OldFlags((yyvsp[-2].integer)), false);
+					(yyvsp[-9].string), (yyvsp[-8].string), (yyvsp[-7].string), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), IV ((yyvsp[-4].measure)), IV ((yyvsp[-3].measure)), OldFlags((yyvsp[-2].integer)), pcb_false);
 				free ((yyvsp[-9].string));
 				free ((yyvsp[-8].string));
 				free ((yyvsp[-7].string));
@@ -2491,7 +2491,7 @@ yyreduce:
     {
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, OldFlags((yyvsp[-12].integer)),
 					(yyvsp[-11].string), (yyvsp[-10].string), (yyvsp[-9].string), OU ((yyvsp[-8].measure)) + OU ((yyvsp[-6].measure)), OU ((yyvsp[-7].measure)) + OU ((yyvsp[-5].measure)),
-					(yyvsp[-4].number), (yyvsp[-3].number), OldFlags((yyvsp[-2].integer)), false);
+					(yyvsp[-4].number), (yyvsp[-3].number), OldFlags((yyvsp[-2].integer)), pcb_false);
 				yyElement->MarkX = OU ((yyvsp[-8].measure));
 				yyElement->MarkY = OU ((yyvsp[-7].measure));
 				free ((yyvsp[-11].string));
@@ -2514,7 +2514,7 @@ yyreduce:
     {
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, (yyvsp[-12].flagtype),
 					(yyvsp[-11].string), (yyvsp[-10].string), (yyvsp[-9].string), NU ((yyvsp[-8].measure)) + NU ((yyvsp[-6].measure)), NU ((yyvsp[-7].measure)) + NU ((yyvsp[-5].measure)),
-					(yyvsp[-4].number), (yyvsp[-3].number), (yyvsp[-2].flagtype), false);
+					(yyvsp[-4].number), (yyvsp[-3].number), (yyvsp[-2].flagtype), pcb_false);
 				yyElement->MarkX = NU ((yyvsp[-8].measure));
 				yyElement->MarkY = NU ((yyvsp[-7].measure));
 				free ((yyvsp[-11].string));
@@ -2777,7 +2777,7 @@ yyreduce:
 					yyerror("symbol ID used twice");
 					YYABORT;
 				}
-				Symbol->Valid = true;
+				Symbol->Valid = pcb_true;
 				Symbol->Delta = NU ((yyvsp[-2].measure));
 			}
 #line 2784 "parse_y.tab.c" /* yacc.c:1646  */
@@ -2797,7 +2797,7 @@ yyreduce:
 					yyerror("symbol ID used twice");
 					YYABORT;
 				}
-				Symbol->Valid = true;
+				Symbol->Valid = pcb_true;
 				Symbol->Delta = OU ((yyvsp[-2].measure));
 			}
 #line 2804 "parse_y.tab.c" /* yacc.c:1646  */

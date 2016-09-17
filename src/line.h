@@ -36,7 +36,7 @@
  * prototypes
  */
 void AdjustAttachedLine(void);
-void AdjustTwoLine(bool);
+void AdjustTwoLine(pcb_bool);
 void FortyFiveLine(AttachedLineTypePtr);
 void EnforceLineDRC(void);
 #endif

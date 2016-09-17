@@ -103,7 +103,7 @@ PolygonTypePtr CopyPolygonLowLevel(PolygonTypePtr Dest, PolygonTypePtr Src)
  * if necessary
  */
 ElementTypePtr
-CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, ElementTypePtr Src, bool uniqueName, Coord dx, Coord dy)
+CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, ElementTypePtr Src, pcb_bool uniqueName, Coord dx, Coord dy)
 {
 	int i;
 	/* release old memory if necessary */
@@ -278,10 +278,10 @@ static void *CopyElement(ElementTypePtr Element)
  * pastes the contents of the buffer to the layout. Only visible objects
  * are handled by the routine.
  */
-bool CopyPastebufferToLayout(Coord X, Coord Y)
+pcb_bool CopyPastebufferToLayout(Coord X, Coord Y)
 {
 	Cardinal i;
-	bool changed = false;
+	pcb_bool changed = pcb_false;
 
 #ifdef DEBUG
 	printf("Entering CopyPastebufferToLayout.....\n");
@@ -328,7 +328,7 @@ bool CopyPastebufferToLayout(Coord X, Coord Y)
 #endif
 			if (FRONT(element) || PCB->InvisibleObjectsOn) {
 				CopyElement(element);
-				changed = true;
+				changed = pcb_true;
 			}
 		}
 		END_LOOP;

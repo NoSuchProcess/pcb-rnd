@@ -202,7 +202,7 @@ static void toggle_pin_selected(LibraryEntryType * entry)
 {
 	ConnectionType conn;
 
-	if (!SeekPad(entry, &conn, false))
+	if (!SeekPad(entry, &conn, pcb_false))
 		return;
 
 	AddObjectToFlagUndoList(conn.type, conn.ptr1, conn.ptr2, conn.ptr2);
@@ -266,7 +266,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	IncrementUndoSerialNumber();
 
 	/* And lead the user to the location */
-	if (SeekPad(node, &conn, false))
+	if (SeekPad(node, &conn, pcb_false))
 		switch (conn.type) {
 		case PCB_TYPE_PIN:
 			{
@@ -504,14 +504,14 @@ static void netlist_select_cb(GtkWidget * widget, gpointer data)
 		node_selected_net = NULL;
 
 	InitConnectionLookup();
-	ResetConnections(true);
+	ResetConnections(pcb_true);
 
 	for (i = selected_net->EntryN, entry = selected_net->Entry; i; i--, entry++)
-		if (SeekPad(entry, &conn, false))
-			RatFindHook(conn.type, conn.ptr1, conn.ptr2, conn.ptr2, true, true);
+		if (SeekPad(entry, &conn, pcb_false))
+			RatFindHook(conn.type, conn.ptr1, conn.ptr2, conn.ptr2, pcb_true, pcb_true);
 
 	SelectConnection(select_flag);
-	ResetConnections(false);
+	ResetConnections(pcb_false);
 	FreeConnectionLookupMemory();
 	IncrementUndoSerialNumber();
 	Draw();
@@ -564,7 +564,7 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 	LibraryEntryType *ret_val;
 	LibraryMenuType *node_net;
 	const gchar *node_name;
-	bool found;
+	pcb_bool found;
 } node_get_node_from_name_state;
 
 static gboolean node_get_node_from_name_helper(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * iter, gpointer data)

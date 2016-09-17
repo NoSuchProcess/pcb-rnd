@@ -695,7 +695,7 @@ POLYAREA *SquarePadPoly(PadType * pad, Coord clear)
 }
 
 /* clear np1 from the polygon */
-static int Subtract(POLYAREA * np1, PolygonType * p, bool fnp)
+static int Subtract(POLYAREA * np1, PolygonType * p, pcb_bool fnp)
 {
 	POLYAREA *merged = NULL, *np = np1;
 	int x;
@@ -804,7 +804,7 @@ static int SubtractLine(LineType * line, PolygonType * p)
 		return 0;
 	if (!(np = LinePoly(line, line->Thickness + line->Clearance)))
 		return -1;
-	return Subtract(np, p, true);
+	return Subtract(np, p, pcb_true);
 }
 
 static int SubtractArc(ArcType * arc, PolygonType * p)
@@ -815,7 +815,7 @@ static int SubtractArc(ArcType * arc, PolygonType * p)
 		return 0;
 	if (!(np = ArcPoly(arc, arc->Thickness + arc->Clearance)))
 		return -1;
-	return Subtract(np, p, true);
+	return Subtract(np, p, pcb_true);
 }
 
 static int SubtractText(TextType * text, PolygonType * p)
@@ -827,7 +827,7 @@ static int SubtractText(TextType * text, PolygonType * p)
 		return 0;
 	if (!(np = RoundRect(b->X1 + PCB->Bloat, b->X2 - PCB->Bloat, b->Y1 + PCB->Bloat, b->Y2 - PCB->Bloat, PCB->Bloat)))
 		return -1;
-	return Subtract(np, p, true);
+	return Subtract(np, p, pcb_true);
 }
 
 static int SubtractPad(PadType * pad, PolygonType * p)
@@ -844,7 +844,7 @@ static int SubtractPad(PadType * pad, PolygonType * p)
 		if (!(np = LinePoly((LineType *) pad, pad->Thickness + pad->Clearance)))
 			return -1;
 	}
-	return Subtract(np, p, true);
+	return Subtract(np, p, pcb_true);
 }
 
 struct cpInfo {
@@ -852,7 +852,7 @@ struct cpInfo {
 	DataType *data;
 	LayerType *layer;
 	PolygonType *polygon;
-	bool solder;
+	pcb_bool solder;
 	POLYAREA *accumulate;
 	int batch_size;
 	jmp_buf env;
@@ -862,7 +862,7 @@ static void subtract_accumulated(struct cpInfo *info, PolygonTypePtr polygon)
 {
 	if (info->accumulate == NULL)
 		return;
-	Subtract(info->accumulate, polygon, true);
+	Subtract(info->accumulate, polygon, pcb_true);
 	info->accumulate = NULL;
 	info->batch_size = 0;
 }
@@ -1169,7 +1169,7 @@ static int UnsubtractPad(PadType * pad, LayerType * l, PolygonType * p)
 	return 1;
 }
 
-static bool inhibit = false;
+static pcb_bool inhibit = pcb_false;
 
 int InitClip(DataTypePtr Data, LayerTypePtr layer, PolygonType * p)
 {
@@ -1192,17 +1192,17 @@ int InitClip(DataTypePtr Data, LayerTypePtr layer, PolygonType * p)
 /* --------------------------------------------------------------------------
  * remove redundant polygon points. Any point that lies on the straight
  * line between the points on either side of it is redundant.
- * returns true if any points are removed
+ * returns pcb_true if any points are removed
  */
-bool RemoveExcessPolygonPoints(LayerTypePtr Layer, PolygonTypePtr Polygon)
+pcb_bool RemoveExcessPolygonPoints(LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
 	PointTypePtr p;
 	Cardinal n, prev, next;
 	LineType line;
-	bool changed = false;
+	pcb_bool changed = pcb_false;
 
 	if (Undoing())
-		return (false);
+		return (pcb_false);
 
 	for (n = 0; n < Polygon->PointN; n++) {
 		prev = prev_contour_point(Polygon, n);
@@ -1214,7 +1214,7 @@ bool RemoveExcessPolygonPoints(LayerTypePtr Layer, PolygonTypePtr Polygon)
 		line.Thickness = 0;
 		if (IsPointOnLine(p->X, p->Y, 0.0, &line)) {
 			RemoveObject(PCB_TYPE_POLYGON_POINT, Layer, Polygon, p);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	return (changed);
@@ -1350,7 +1350,7 @@ void CopyAttachedPolygonToLayer(void)
 	r_insert_entry(CURRENT->polygon_tree, (BoxType *) polygon, 0);
 	InitClip(PCB->Data, CURRENT, polygon);
 	DrawPolygon(CURRENT, polygon);
-	SetChangedFlag(true);
+	SetChangedFlag(pcb_true);
 
 	/* reset state of attached line */
 	Crosshair.AttachedLine.State = STATE_FIRST;
@@ -1556,10 +1556,10 @@ void ClearFromPolygon(DataType * Data, int type, void *ptr1, void *ptr2)
 		PlowsPolygon(Data, type, ptr1, ptr2, subtract_plow);
 }
 
-bool isects(POLYAREA * a, PolygonTypePtr p, bool fr)
+pcb_bool isects(POLYAREA * a, PolygonTypePtr p, pcb_bool fr)
 {
 	POLYAREA *x;
-	bool ans;
+	pcb_bool ans;
 	ans = Touching(a, p->Clipped);
 	/* argument may be register, so we must copy it */
 	x = a;
@@ -1569,23 +1569,23 @@ bool isects(POLYAREA * a, PolygonTypePtr p, bool fr)
 }
 
 
-bool IsPointInPolygon(Coord X, Coord Y, Coord r, PolygonTypePtr p)
+pcb_bool IsPointInPolygon(Coord X, Coord Y, Coord r, PolygonTypePtr p)
 {
 	POLYAREA *c;
 	Vector v;
 	v[0] = X;
 	v[1] = Y;
 	if (poly_CheckInside(p->Clipped, v))
-		return true;
+		return pcb_true;
 	if (r < 1)
-		return false;
+		return pcb_false;
 	if (!(c = CirclePoly(X, Y, r)))
-		return false;
-	return isects(c, p, true);
+		return pcb_false;
+	return isects(c, p, pcb_true);
 }
 
 
-bool IsPointInPolygonIgnoreHoles(Coord X, Coord Y, PolygonTypePtr p)
+pcb_bool IsPointInPolygonIgnoreHoles(Coord X, Coord Y, PolygonTypePtr p)
 {
 	Vector v;
 	v[0] = X;
@@ -1593,12 +1593,12 @@ bool IsPointInPolygonIgnoreHoles(Coord X, Coord Y, PolygonTypePtr p)
 	return poly_InsideContour(p->Clipped->contours, v);
 }
 
-bool IsRectangleInPolygon(Coord X1, Coord Y1, Coord X2, Coord Y2, PolygonTypePtr p)
+pcb_bool IsRectangleInPolygon(Coord X1, Coord Y1, Coord X2, Coord Y2, PolygonTypePtr p)
 {
 	POLYAREA *s;
 	if (!(s = RectPoly(min(X1, X2), max(X1, X2), min(Y1, Y2), max(Y1, Y2))))
-		return false;
-	return isects(s, p, true);
+		return pcb_false;
+	return isects(s, p, pcb_true);
 }
 
 /* NB: This function will free the passed POLYAREA.
@@ -1675,16 +1675,16 @@ void NoHolesPolygonDicer(PolygonTypePtr p, const BoxType * clip, void (*emit) (P
 }
 
 /* make a polygon split into multiple parts into multiple polygons */
-bool MorphPolygon(LayerTypePtr layer, PolygonTypePtr poly)
+pcb_bool MorphPolygon(LayerTypePtr layer, PolygonTypePtr poly)
 {
 	POLYAREA *p, *start;
-	bool many = false;
+	pcb_bool many = pcb_false;
 	FlagType flags;
 
 	if (!poly->Clipped || TEST_FLAG(PCB_FLAG_LOCK, poly))
-		return false;
+		return pcb_false;
 	if (poly->Clipped->f == poly->Clipped)
-		return false;
+		return pcb_false;
 	ErasePolygon(poly);
 	start = p = poly->Clipped;
 	/* This is ugly. The creation of the new polygons can cause
@@ -1701,7 +1701,7 @@ bool MorphPolygon(LayerTypePtr layer, PolygonTypePtr poly)
 	poly->NoHoles = NULL;
 	flags = poly->Flags;
 	RemovePolygon(layer, poly);
-	inhibit = true;
+	inhibit = pcb_true;
 	do {
 		VNODE *v;
 		PolygonTypePtr newone;
@@ -1709,8 +1709,8 @@ bool MorphPolygon(LayerTypePtr layer, PolygonTypePtr poly)
 		if (p->contours->area > PCB->IsleArea) {
 			newone = CreateNewPolygon(layer, flags);
 			if (!newone)
-				return false;
-			many = true;
+				return pcb_false;
+			many = pcb_true;
 			v = &p->contours->head;
 			CreateNewPointInPolygon(newone, v->point[0], v->point[1]);
 			for (v = v->next; v != &p->contours->head; v = v->next)
@@ -1735,7 +1735,7 @@ bool MorphPolygon(LayerTypePtr layer, PolygonTypePtr poly)
 		}
 	}
 	while (p != start);
-	inhibit = false;
+	inhibit = pcb_false;
 	IncrementUndoSerialNumber();
 	return many;
 }
@@ -1794,7 +1794,7 @@ void PolyToPolygonsOnLayer(DataType * Destination, LayerType * Layer, POLYAREA *
 	POLYAREA *pa;
 	PLINE *pline;
 	VNODE *node;
-	bool outer;
+	pcb_bool outer;
 
 	if (Input == NULL)
 		return;
@@ -1804,12 +1804,12 @@ void PolyToPolygonsOnLayer(DataType * Destination, LayerType * Layer, POLYAREA *
 		Polygon = CreateNewPolygon(Layer, Flags);
 
 		pline = pa->contours;
-		outer = true;
+		outer = pcb_true;
 
 		do {
 			if (!outer)
 				CreateNewHoleInPolygon(Polygon);
-			outer = false;
+			outer = pcb_false;
 
 			node = &pline->head;
 			do {
@@ -1832,5 +1832,5 @@ void PolyToPolygonsOnLayer(DataType * Destination, LayerType * Layer, POLYAREA *
 	}
 	while ((pa = pa->f) != Input);
 
-	SetChangedFlag(true);
+	SetChangedFlag(pcb_true);
 }

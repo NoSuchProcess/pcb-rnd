@@ -60,31 +60,31 @@ find_callback_t find_callback;
 #define SILK_TYPE	\
 	(PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON)
 
-bool LineLineIntersect(LineTypePtr, LineTypePtr);
-bool LineArcIntersect(LineTypePtr, ArcTypePtr);
-bool PinLineIntersect(PinTypePtr, LineTypePtr);
-bool LinePadIntersect(LineTypePtr, PadTypePtr);
-bool ArcPadIntersect(ArcTypePtr, PadTypePtr);
-bool IsPolygonInPolygon(PolygonTypePtr, PolygonTypePtr);
+pcb_bool LineLineIntersect(LineTypePtr, LineTypePtr);
+pcb_bool LineArcIntersect(LineTypePtr, ArcTypePtr);
+pcb_bool PinLineIntersect(PinTypePtr, LineTypePtr);
+pcb_bool LinePadIntersect(LineTypePtr, PadTypePtr);
+pcb_bool ArcPadIntersect(ArcTypePtr, PadTypePtr);
+pcb_bool IsPolygonInPolygon(PolygonTypePtr, PolygonTypePtr);
 void LookupElementConnections(ElementTypePtr, FILE *);
 void LookupConnectionsToAllElements(FILE *);
-void LookupConnection(Coord, Coord, bool, Coord, int);
+void LookupConnection(Coord, Coord, pcb_bool, Coord, int);
 void LookupUnusedPins(FILE *);
-bool ResetFoundLinesAndPolygons(bool);
-bool ResetFoundPinsViasAndPads(bool);
-bool ResetConnections(bool);
+pcb_bool ResetFoundLinesAndPolygons(pcb_bool);
+pcb_bool ResetFoundPinsViasAndPads(pcb_bool);
+pcb_bool ResetConnections(pcb_bool);
 void InitConnectionLookup(void);
 void InitComponentLookup(void);
 void InitLayoutLookup(void);
 void FreeConnectionLookupMemory(void);
 void FreeComponentLookupMemory(void);
 void FreeLayoutLookupMemory(void);
-void RatFindHook(int, void *, void *, void *, bool, bool);
+void RatFindHook(int, void *, void *, void *, pcb_bool, pcb_bool);
 void SaveFindFlag(int);
 void RestoreFindFlag(void);
 int DRCAll(void);
-bool IsLineInPolygon(LineTypePtr, PolygonTypePtr);
-bool IsArcInPolygon(ArcTypePtr, PolygonTypePtr);
-bool IsPadInPolygon(PadTypePtr, PolygonTypePtr);
+pcb_bool IsLineInPolygon(LineTypePtr, PolygonTypePtr);
+pcb_bool IsArcInPolygon(ArcTypePtr, PolygonTypePtr);
+pcb_bool IsPadInPolygon(PadTypePtr, PolygonTypePtr);
 
 #endif

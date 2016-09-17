@@ -47,7 +47,6 @@
 #include <stdarg.h>
 #include <math.h>
 #include <ctype.h>
-#include <stdbool.h>
 
 #include "global_typedefs.h"
 #include "global_objs.h"
@@ -172,7 +171,7 @@ typedef struct {								/* holds information about one layer */
 	polylist_t Polygon;
 	arclist_t Arc;
 	rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
-	bool On;											/* visible flag */
+	pcb_bool On;											/* visible flag */
 	const char *Color;						/* color */
 	const char *SelectedColor;
 	AttributeListType Attributes;
@@ -278,7 +277,7 @@ typedef struct PCBType {
 	 *PrintFilename,							/* from print dialog */
 	 *Netlistname,								/* name of netlist file */
 	  ThermStyle;									/* type of thermal to place with thermal tool */
-	bool Changed,									/* layout has been changed */
+	pcb_bool Changed,									/* layout has been changed */
 	  ViaOn,											/* visibility flags */
 	  ElementOn, RatOn, InvisibleObjectsOn, PinOn, SilkActive,	/* active layer is actually silk */
 	  RatDraw;										/* we're drawing rats */
@@ -312,7 +311,7 @@ typedef struct PCBType {
 	AttributeListType Attributes;
 	DataTypePtr Data;							/* entire database */
 
-	bool is_footprint;						/* If set, the user has loaded a footprint, not a pcb. */
+	pcb_bool is_footprint;						/* If set, the user has loaded a footprint, not a pcb. */
 } PCBType, *PCBTypePtr;
 
 typedef struct {								/* information about the paste buffer */
@@ -336,14 +335,14 @@ typedef struct {								/* current marked line */
 	PointType Point1,							/* start- and end-position */
 	  Point2;
 	long int State;
-	bool draw;
+	pcb_bool draw;
 } AttachedLineType, *AttachedLineTypePtr;
 
 typedef struct {								/* currently marked block */
 	PointType Point1,							/* start- and end-position */
 	  Point2;
 	long int State;
-	bool otherway;
+	pcb_bool otherway;
 } AttachedBoxType, *AttachedBoxTypePtr;
 
 typedef struct {								/* currently attached object */
@@ -387,7 +386,7 @@ typedef struct {								/* holds cursor information */
 } CrosshairType, *CrosshairTypePtr;
 
 typedef struct {
-	bool status;
+	pcb_bool status;
 	Coord X, Y;
 } MarkType, *MarkTypePtr;
 

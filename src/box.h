@@ -92,22 +92,22 @@ typedef struct cheap_point {
 /* note that boxes are closed on top and left and open on bottom and right. */
 /* this means that top-left corner is in box, *but bottom-right corner is
  * not*.  */
-static inline bool point_in_box(const BoxType * box, Coord X, Coord Y)
+static inline pcb_bool point_in_box(const BoxType * box, Coord X, Coord Y)
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X < box->X2) && (Y < box->Y2);
 }
 
-static inline bool point_in_closed_box(const BoxType * box, Coord X, Coord Y)
+static inline pcb_bool point_in_closed_box(const BoxType * box, Coord X, Coord Y)
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X <= box->X2) && (Y <= box->Y2);
 }
 
-static inline bool box_is_good(const BoxType * b)
+static inline pcb_bool box_is_good(const BoxType * b)
 {
 	return (b->X1 < b->X2) && (b->Y1 < b->Y2);
 }
 
-static inline bool box_intersect(const BoxType * a, const BoxType * b)
+static inline pcb_bool box_intersect(const BoxType * a, const BoxType * b)
 {
 	return (a->X1 < b->X2) && (b->X1 < a->X2) && (a->Y1 < b->Y2) && (b->Y1 < a->Y2);
 }
@@ -122,7 +122,7 @@ static inline CheapPointType closest_point_in_box(const CheapPointType * from, c
 	return r;
 }
 
-static inline bool box_in_box(const BoxType * outer, const BoxType * inner)
+static inline pcb_bool box_in_box(const BoxType * outer, const BoxType * inner)
 {
 	return (outer->X1 <= inner->X1) && (inner->X2 <= outer->X2) && (outer->Y1 <= inner->Y1) && (inner->Y2 <= outer->Y2);
 }

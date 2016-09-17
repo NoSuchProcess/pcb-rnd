@@ -589,7 +589,7 @@ static r_dir_t seg_in_seg(const BoxType * b, void *cl)
 	i->s->p->Flags.status = ISECTED;
 	s->p->Flags.status = ISECTED;
 	for (; cnt; cnt--) {
-		bool done_insert_on_i = false;
+		pcb_bool done_insert_on_i = pcb_false;
 		new_node = node_add_single_point(i->v, cnt > 1 ? s2 : s1);
 		if (new_node != NULL) {
 #ifdef DEBUG_INTERSECT
@@ -597,7 +597,7 @@ static r_dir_t seg_in_seg(const BoxType * b, void *cl)
 #endif
 			i->node_insert_list = prepend_insert_node_task(i->node_insert_list, i->s, new_node);
 			i->s->intersected = 1;
-			done_insert_on_i = true;
+			done_insert_on_i = pcb_true;
 		}
 		new_node = node_add_single_point(s->v, cnt > 1 ? s2 : s1);
 		if (new_node != NULL) {
@@ -1015,7 +1015,7 @@ static BOOLp cntr_label_POLYAREA(PLINE * poly, POLYAREA * ppl, BOOLp test)
 {
 	assert(ppl != NULL && ppl->contours != NULL);
 	if (poly->Flags.status == ISECTED) {
-		label_contour(poly);				/* should never get here when BOOLp is true */
+		label_contour(poly);				/* should never get here when BOOLp is pcb_true */
 	}
 	else if (cntr_in_M_POLYAREA(poly, ppl, test)) {
 		if (test)
@@ -1024,7 +1024,7 @@ static BOOLp cntr_label_POLYAREA(PLINE * poly, POLYAREA * ppl, BOOLp test)
 	}
 	else {
 		if (test)
-			return false;
+			return pcb_false;
 		poly->Flags.status = OUTSIDE;
 	}
 	return FALSE;
@@ -1402,7 +1402,7 @@ static int SubJ_Rule(char p, VNODE * v, DIRECTION * cdir)
  * if the direction is BACKW, then we return the next vertex
  * so that prev vertex has the flags for the edge
  *
- * returns true if an edge is found, false otherwise
+ * returns pcb_true if an edge is found, pcb_false otherwise
  */
 static int jump(VNODE ** cur, DIRECTION * cdir, J_Rule rule)
 {
@@ -2030,7 +2030,7 @@ BOOLp Touching(POLYAREA * a, POLYAREA * b)
 		if (!poly_Valid(b))
 			return -1;
 #endif
-		M_POLYAREA_intersect(&e, a, b, false);
+		M_POLYAREA_intersect(&e, a, b, pcb_false);
 
 		if (M_POLYAREA_label(a, b, TRUE))
 			return TRUE;

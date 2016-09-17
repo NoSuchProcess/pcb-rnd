@@ -244,8 +244,8 @@ static void style_selected(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 	}
 	style = PCB->RouteStyle.array + i;
 	SetLineSize(style->Thick);
-	SetViaSize(style->Diameter, true);
-	SetViaDrillingHole(style->Hole, true);
+	SetViaSize(style->Diameter, pcb_true);
+	SetViaDrillingHole(style->Hole, pcb_true);
 	SetClearanceWidth(style->Clearance);
 	if (style_dialog) {
 		for (j = 0; j < vtroutestyle_len(&PCB->RouteStyle); j++)

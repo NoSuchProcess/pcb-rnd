@@ -99,7 +99,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "hid_flags.h"
 #include "route_style.h"
 
-static bool ignore_layer_update;
+static pcb_bool ignore_layer_update;
 
 static GtkWidget *ghid_load_menus(void);
 
@@ -227,7 +227,7 @@ static void show_file_modified_externally_prompt(void)
 	gtk_widget_show_all(ghidgui->info_bar);
 }
 
-static bool check_externally_modified(void)
+static pcb_bool check_externally_modified(void)
 {
 	GFile *file;
 	GFileInfo *info;
@@ -235,21 +235,21 @@ static bool check_externally_modified(void)
 
 	/* Treat zero time as a flag to indicate we've not got an mtime yet */
 	if (PCB->Filename == NULL || (ghidgui->our_mtime.tv_sec == 0 && ghidgui->our_mtime.tv_usec == 0))
-		return false;
+		return pcb_false;
 
 	file = g_file_new_for_path(PCB->Filename);
 	info = g_file_query_info(file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, NULL);
 	g_object_unref(file);
 
 	if (info == NULL || !g_file_info_has_attribute(info, G_FILE_ATTRIBUTE_TIME_MODIFIED))
-		return false;
+		return pcb_false;
 
 	g_file_info_get_modification_time(info, &timeval);	/*&ghidgui->last_seen_mtime); */
 	g_object_unref(info);
 
 	/* Ignore when the file on disk is the same age as when we last looked */
 	if (timeval.tv_sec == ghidgui->last_seen_mtime.tv_sec && timeval.tv_usec == ghidgui->last_seen_mtime.tv_usec)
-		return false;
+		return pcb_false;
 
 	ghidgui->last_seen_mtime = timeval;
 
@@ -337,7 +337,7 @@ void ghid_sync_with_new_layout(void)
 	update_board_mtime_from_disk();
 }
 
-void ghid_notify_save_pcb(const char *filename, bool done)
+void ghid_notify_save_pcb(const char *filename, pcb_bool done)
 {
 	/* Do nothing if it is not the active PCB file that is being saved.
 	 */
@@ -425,22 +425,22 @@ static void layer_process(const gchar ** color_string, const char **text, int *s
 /*! \brief Callback for GHidLayerSelector layer selection */
 static void layer_selector_select_callback(GHidLayerSelector * ls, int layer, gpointer d)
 {
-	ignore_layer_update = true;
+	ignore_layer_update = pcb_true;
 	/* Select Layer */
 	PCB->SilkActive = (layer == LAYER_BUTTON_SILK);
 	PCB->RatDraw = (layer == LAYER_BUTTON_RATS);
 	if (layer == LAYER_BUTTON_SILK) {
-		PCB->ElementOn = true;
+		PCB->ElementOn = pcb_true;
 		hid_action("LayersChanged");
 	}
 	else if (layer == LAYER_BUTTON_RATS) {
-		PCB->RatOn = true;
+		PCB->RatOn = pcb_true;
 		hid_action("LayersChanged");
 	}
 	else if (layer < max_copper_layer)
-		ChangeGroupVisibility(layer, TRUE, true);
+		ChangeGroupVisibility(layer, TRUE, pcb_true);
 
-	ignore_layer_update = false;
+	ignore_layer_update = pcb_false;
 
 	ghid_invalidate_all();
 }
@@ -453,7 +453,7 @@ static void layer_selector_toggle_callback(GHidLayerSelector * ls, int layer, gp
 	layer_process(NULL, NULL, &active, layer);
 
 	active = !active;
-	ignore_layer_update = true;
+	ignore_layer_update = pcb_true;
 	switch (layer) {
 	case LAYER_BUTTON_SILK:
 		PCB->ElementOn = active;
@@ -487,7 +487,7 @@ static void layer_selector_toggle_callback(GHidLayerSelector * ls, int layer, gp
 		break;
 	default:
 		/* Flip the visibility */
-		ChangeGroupVisibility(layer, active, false);
+		ChangeGroupVisibility(layer, active, pcb_false);
 		redraw = TRUE;
 		break;
 	}
@@ -500,7 +500,7 @@ static void layer_selector_toggle_callback(GHidLayerSelector * ls, int layer, gp
 	if (!active)
 		ghid_layer_selector_select_next_visible(ls);
 
-	ignore_layer_update = false;
+	ignore_layer_update = pcb_false;
 
 	if (redraw)
 		ghid_invalidate_all();

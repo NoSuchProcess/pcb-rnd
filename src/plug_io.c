@@ -260,14 +260,14 @@ int WritePCB(FILE *f, const char *fmt)
  * parse the file with enabled 'PCB mode' (see parser)
  * if successful, update some other stuff
  *
- * If revert is true, we pass "revert" as a parameter
+ * If revert is pcb_true, we pass "revert" as a parameter
  * to the HID's PCBChanged action.
  */
-static int real_load_pcb(const char *Filename, const char *fmt, bool revert, bool require_font, int how)
+static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert, pcb_bool require_font, int how)
 {
 	const char *unit_suffix;
 	char *new_filename;
-	PCBTypePtr newPCB = CreateNewPCB_(false);
+	PCBTypePtr newPCB = CreateNewPCB_(pcb_false);
 	PCBTypePtr oldPCB;
 	conf_role_t settings_dest;
 #ifdef DEBUG
@@ -283,7 +283,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, bool revert, boo
 	PCB = newPCB;
 
 	/* mark the default font invalid to know if the file has one */
-	newPCB->Font.Valid = false;
+	newPCB->Font.Valid = pcb_false;
 
 	switch(how) {
 		case 0: settings_dest = CFR_DESIGN; break;
@@ -312,11 +312,11 @@ static int real_load_pcb(const char *Filename, const char *fmt, bool revert, boo
 		if (!PCB->Font.Valid) {
 			if (require_font)
 				Message(PCB_MSG_DEFAULT, _("File '%s' has no font information, using default font\n"), new_filename);
-			PCB->Font.Valid = true;
+			PCB->Font.Valid = pcb_true;
 		}
 
 		/* clear 'changed flag' */
-		SetChangedFlag(false);
+		SetChangedFlag(pcb_false);
 		PCB->Filename = new_filename;
 		/* just in case a bad file saved file is loaded */
 
@@ -356,7 +356,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, bool revert, boo
 	PCB = oldPCB;
 	if (PCB == NULL) {
 		/* bozo: we are trying to revert back to a non-existing pcb... create one to avoid a segfault */
-		PCB = CreateNewPCB_(false);
+		PCB = CreateNewPCB_(pcb_false);
 		if (PCB == NULL) {
 			Message(PCB_MSG_DEFAULT, "FATAL: can't create a new empty pcb!");
 			exit(1);
@@ -453,7 +453,7 @@ void sort_netlist()
 /* ---------------------------------------------------------------------------
  * opens a file and check if it exists
  */
-FILE *CheckAndOpenFile(const char *Filename, bool Confirm, bool AllButton, bool * WasAllButton, bool * WasCancelButton)
+FILE *CheckAndOpenFile(const char *Filename, pcb_bool Confirm, pcb_bool AllButton, pcb_bool * WasAllButton, pcb_bool * WasCancelButton)
 {
 	FILE *fp = NULL;
 	struct stat buffer;
@@ -464,9 +464,9 @@ FILE *CheckAndOpenFile(const char *Filename, bool Confirm, bool AllButton, bool 
 		if (!stat(Filename, &buffer) && Confirm) {
 			sprintf(message, _("File '%s' exists, use anyway?"), Filename);
 			if (WasAllButton)
-				*WasAllButton = false;
+				*WasAllButton = pcb_false;
 			if (WasCancelButton)
-				*WasCancelButton = false;
+				*WasCancelButton = pcb_false;
 			if (AllButton)
 				response = gui->confirm_dialog(message, "Cancel", "Ok", AllButton ? "Sequence OK" : 0);
 			else
@@ -475,11 +475,11 @@ FILE *CheckAndOpenFile(const char *Filename, bool Confirm, bool AllButton, bool 
 			switch (response) {
 			case 2:
 				if (WasAllButton)
-					*WasAllButton = true;
+					*WasAllButton = pcb_true;
 				break;
 			case 0:
 				if (WasCancelButton)
-					*WasCancelButton = true;
+					*WasCancelButton = pcb_true;
 			}
 		}
 		if ((fp = fopen(Filename, "w")) == NULL)
@@ -496,7 +496,7 @@ FILE *OpenConnectionDataFile(void)
 	char *fname;
 	FILE *fp;
 	static char *default_file = NULL;
-	bool result;									/* not used */
+	pcb_bool result;									/* not used */
 
 	/* CheckAndOpenFile deals with the case where fname already exists */
 	fname = gui->fileselect(_("Save Connection Data As ..."),
@@ -512,7 +512,7 @@ FILE *OpenConnectionDataFile(void)
 	if (fname && *fname)
 		default_file = pcb_strdup(fname);
 
-	fp = CheckAndOpenFile(fname, true, false, &result, NULL);
+	fp = CheckAndOpenFile(fname, pcb_true, pcb_false, &result, NULL);
 	free(fname);
 
 	return fp;
@@ -527,7 +527,7 @@ int SaveBufferElements(const char *Filename, const char *fmt)
 
 	if (SWAP_IDENT)
 		pcb_swap_buffers();
-	result = WritePipe(Filename, false, fmt);
+	result = WritePipe(Filename, pcb_false, fmt);
 	if (SWAP_IDENT)
 		pcb_swap_buffers();
 	return (result);
@@ -541,11 +541,11 @@ int SavePCB(const char *file, const char *fmt)
 	int retcode;
 
 	if (gui->notify_save_pcb == NULL)
-		return WritePipe(file, true, fmt);
+		return WritePipe(file, pcb_true, fmt);
 
-	gui->notify_save_pcb(file, false);
-	retcode = WritePipe(file, true, fmt);
-	gui->notify_save_pcb(file, true);
+	gui->notify_save_pcb(file, pcb_false);
+	retcode = WritePipe(file, pcb_true, fmt);
+	gui->notify_save_pcb(file, pcb_true);
 
 	return retcode;
 }
@@ -554,9 +554,9 @@ int SavePCB(const char *file, const char *fmt)
 /* ---------------------------------------------------------------------------
  * Load PCB
  */
-int LoadPCB(const char *file, const char *fmt, bool require_font, int how)
+int LoadPCB(const char *file, const char *fmt, pcb_bool require_font, int how)
 {
-	return real_load_pcb(file, fmt, false, require_font, how);
+	return real_load_pcb(file, fmt, pcb_false, require_font, how);
 }
 
 /* ---------------------------------------------------------------------------
@@ -565,7 +565,7 @@ int LoadPCB(const char *file, const char *fmt, bool require_font, int how)
 int RevertPCB(void)
 {
 #warning TODO: use the format saved with PCB
-	return real_load_pcb(PCB->Filename, NULL, true, true, true);
+	return real_load_pcb(PCB->Filename, NULL, pcb_true, pcb_true, pcb_true);
 }
 
 /* ---------------------------------------------------------------------------
@@ -613,19 +613,19 @@ void SaveInTMP(void)
  * front-end for 'SaveInTMP()'
  * just makes sure that the routine is only called once
  */
-static bool dont_save_any_more = false;
+static pcb_bool dont_save_any_more = pcb_false;
 void EmergencySave(void)
 {
 
 	if (!dont_save_any_more) {
 		SaveInTMP();
-		dont_save_any_more = true;
+		dont_save_any_more = pcb_true;
 	}
 }
 
 void DisableEmergencySave(void)
 {
-	dont_save_any_more = true;
+	dont_save_any_more = pcb_true;
 }
 
 /* ----------------------------------------------------------------------
@@ -775,7 +775,7 @@ int WritePCBFile(const char *Filename, const char *fmt)
  * writes to pipe using the command defined by conf_core.rc.save_command
  * %f are replaced by the passed filename
  */
-int WritePipe(const char *Filename, bool thePcb, const char *fmt)
+int WritePipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 {
 	FILE *fp;
 	int result;

@@ -160,8 +160,8 @@ static int ActionSelect(int argc, const char **argv, Coord x, Coord y)
 				search_method_t method;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
-					if (SelectObjectByName(type, pattern, true, method))
-						SetChangedFlag(true);
+					if (SelectObjectByName(type, pattern, pcb_true, method))
+						SetChangedFlag(pcb_true);
 					if (ACTION_ARG(1) == NULL)
 						free((char*)pattern);
 				}
@@ -172,7 +172,7 @@ static int ActionSelect(int argc, const char **argv, Coord x, Coord y)
 		case F_ToggleObject:
 		case F_Object:
 			if (SelectObject())
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			break;
 
 			/* all objects in block */
@@ -184,13 +184,13 @@ static int ActionSelect(int argc, const char **argv, Coord x, Coord y)
 				box.Y1 = MIN(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
 				box.X2 = MAX(Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
-				notify_crosshair_change(false);
+				notify_crosshair_change(pcb_false);
 				NotifyBlock();
-				if (Crosshair.AttachedBox.State == STATE_THIRD && SelectBlock(&box, true)) {
-					SetChangedFlag(true);
+				if (Crosshair.AttachedBox.State == STATE_THIRD && SelectBlock(&box, pcb_true)) {
+					SetChangedFlag(pcb_true);
 					Crosshair.AttachedBox.State = STATE_FIRST;
 				}
-				notify_crosshair_change(true);
+				notify_crosshair_change(pcb_true);
 				break;
 			}
 
@@ -203,17 +203,17 @@ static int ActionSelect(int argc, const char **argv, Coord x, Coord y)
 				box.Y1 = -MAX_COORD;
 				box.X2 = MAX_COORD;
 				box.Y2 = MAX_COORD;
-				if (SelectBlock(&box, true))
-					SetChangedFlag(true);
+				if (SelectBlock(&box, pcb_true))
+					SetChangedFlag(pcb_true);
 				break;
 			}
 
 			/* all found connections */
 		case F_Connection:
-			if (SelectConnection(true)) {
+			if (SelectConnection(pcb_true)) {
 				Draw();
 				IncrementUndoSerialNumber();
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			}
 			break;
 
@@ -226,7 +226,7 @@ static int ActionSelect(int argc, const char **argv, Coord x, Coord y)
 				gui->get_coords(_("Select the Element's Mark Location"), &x, &y);
 				x = GridFit(x, PCB->Grid, PCB->GridOffsetX);
 				y = GridFit(y, PCB->Grid, PCB->GridOffsetY);
-				AddSelectedToBuffer(PASTEBUFFER, x, y, true);
+				AddSelectedToBuffer(PASTEBUFFER, x, y, pcb_true);
 				SaveUndoSerialNumber();
 				RemoveSelected();
 				ConvertBufferToElement(PASTEBUFFER);
@@ -319,8 +319,8 @@ static int ActionUnselect(int argc, const char **argv, Coord x, Coord y)
 				search_method_t method = SM_REGEX;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
-					if (SelectObjectByName(type, pattern, false, method))
-						SetChangedFlag(true);
+					if (SelectObjectByName(type, pattern, pcb_false, method))
+						SetChangedFlag(pcb_true);
 					if (ACTION_ARG(1) == NULL)
 						free((char*)pattern);
 				}
@@ -336,13 +336,13 @@ static int ActionUnselect(int argc, const char **argv, Coord x, Coord y)
 				box.Y1 = MIN(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
 				box.X2 = MAX(Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
-				notify_crosshair_change(false);
+				notify_crosshair_change(pcb_false);
 				NotifyBlock();
-				if (Crosshair.AttachedBox.State == STATE_THIRD && SelectBlock(&box, false)) {
-					SetChangedFlag(true);
+				if (Crosshair.AttachedBox.State == STATE_THIRD && SelectBlock(&box, pcb_false)) {
+					SetChangedFlag(pcb_true);
 					Crosshair.AttachedBox.State = STATE_FIRST;
 				}
-				notify_crosshair_change(true);
+				notify_crosshair_change(pcb_true);
 				break;
 			}
 
@@ -355,17 +355,17 @@ static int ActionUnselect(int argc, const char **argv, Coord x, Coord y)
 				box.Y1 = -MAX_COORD;
 				box.X2 = MAX_COORD;
 				box.Y2 = MAX_COORD;
-				if (SelectBlock(&box, false))
-					SetChangedFlag(true);
+				if (SelectBlock(&box, pcb_false))
+					SetChangedFlag(pcb_true);
 				break;
 			}
 
 			/* all found connections */
 		case F_Connection:
-			if (SelectConnection(false)) {
+			if (SelectConnection(pcb_false)) {
 				Draw();
 				IncrementUndoSerialNumber();
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			}
 			break;
 

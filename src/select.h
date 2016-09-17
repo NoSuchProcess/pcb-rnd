@@ -35,18 +35,18 @@
 	(PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_POLYGON | PCB_TYPE_ELEMENT |	\
 	 PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
 
-bool SelectObject(void);
-bool SelectBlock(BoxTypePtr, bool);
+pcb_bool SelectObject(void);
+pcb_bool SelectBlock(BoxTypePtr, pcb_bool);
 long int *ListBlock(BoxTypePtr Box, int *len);
-bool SelectedOperation(ObjectFunctionTypePtr, bool, int);
+pcb_bool SelectedOperation(ObjectFunctionTypePtr, pcb_bool, int);
 void *ObjectOperation(ObjectFunctionTypePtr, int, void *, void *, void *);
-bool SelectConnection(bool);
+pcb_bool SelectConnection(pcb_bool);
 
 typedef enum {
 	SM_REGEX = 0,
 	SM_LIST = 1
 } search_method_t;
 
-bool SelectObjectByName(int, const char *, bool, search_method_t);
+pcb_bool SelectObjectByName(int, const char *, pcb_bool, search_method_t);
 
 #endif

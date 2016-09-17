@@ -41,7 +41,7 @@ static void log_invalidate_all(void) {
 	delegatee_->invalidate_all();
 }
 
-static void log_notify_mark_change(bool changes_complete) {
+static void log_notify_mark_change(pcb_bool changes_complete) {
 	pcb_fprintf(out_, "notify_mark_change(%s)\n", changes_complete ? "true" : "false");
 	delegatee_->notify_mark_change(changes_complete);
 }
@@ -144,25 +144,25 @@ static void log_thindraw_pcb_polygon(hidGC gc, PolygonType *poly, const BoxType 
 	delegatee_->thindraw_pcb_polygon(gc, poly, clip_box);
 }
 
-static void log_fill_pcb_pad(hidGC gc, PadType *pad, bool clip, bool mask) {
+static void log_fill_pcb_pad(hidGC gc, PadType *pad, pcb_bool clip, pcb_bool mask) {
 	pcb_fprintf(out_, "fill_pcb_pad(gc, pad->name=%s, clip=%s, mask=%s)\n",
 							pad->Name, clip ? "true" : "false", mask ? "true" : "false");
 	delegatee_->fill_pcb_pad(gc, pad, clip, mask);
 }
 
-static void log_thindraw_pcb_pad(hidGC gc, PadType *pad, bool clip, bool mask) {
+static void log_thindraw_pcb_pad(hidGC gc, PadType *pad, pcb_bool clip, pcb_bool mask) {
 	pcb_fprintf(out_, "thindraw_pcb_pad(gc, pad->name=%s, clip=%s, mask=%s)\n",
 							pad->Name, clip ? "true" : "false", mask ? "true" : "false");
 	delegatee_->thindraw_pcb_pad(gc, pad, clip, mask);
 }
 
-static void log_fill_pcb_pv(hidGC fg, hidGC bg, PinType *pv, bool drawHole, bool mask) {
+static void log_fill_pcb_pv(hidGC fg, hidGC bg, PinType *pv, pcb_bool drawHole, pcb_bool mask) {
 	pcb_fprintf(out_, "fill_pcb_pv(fg, bg, (%mm, %mm), draw_hole=%s, mask=%s)\n",
 							pv->X, pv->Y, drawHole ? "true" : "false", mask ? "true" : "false");
 	delegatee_->fill_pcb_pv(fg, bg, pv, drawHole, mask);
 }
 
-static void log_thindraw_pcb_pv(hidGC fg, hidGC bg, PinType *pv, bool drawHole, bool mask) {
+static void log_thindraw_pcb_pv(hidGC fg, hidGC bg, PinType *pv, pcb_bool drawHole, pcb_bool mask) {
 	pcb_fprintf(out_, "thindraw_pcb_pv(fg, bg, (%mm, %mm), draw_hole=%s, mask=%s)\n",
 							pv->X, pv->Y, drawHole ? "true" : "false", mask ? "true" : "false");
 	delegatee_->thindraw_pcb_pv(fg, bg, pv, drawHole, mask);

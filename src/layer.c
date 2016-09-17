@@ -38,30 +38,30 @@
  */
 
 static struct {
-	bool ElementOn, InvisibleObjectsOn, PinOn, ViaOn, RatOn;
+	pcb_bool ElementOn, InvisibleObjectsOn, PinOn, ViaOn, RatOn;
 	int LayerStack[MAX_LAYER];
-	bool LayerOn[MAX_LAYER];
+	pcb_bool LayerOn[MAX_LAYER];
 	int cnt;
 } SavedStack;
 
 
-bool IsLayerEmpty(LayerTypePtr layer)
+pcb_bool IsLayerEmpty(LayerTypePtr layer)
 {
 	return LAYER_IS_EMPTY(layer);
 }
 
-bool IsLayerNumEmpty(int num)
+pcb_bool IsLayerNumEmpty(int num)
 {
 	return IsLayerEmpty(PCB->Data->Layer + num);
 }
 
-bool IsLayerGroupEmpty(int num)
+pcb_bool IsLayerGroupEmpty(int num)
 {
 	int i;
 	for (i = 0; i < PCB->LayerGroups.Number[num]; i++)
 		if (!IsLayerNumEmpty(PCB->LayerGroups.Entries[num][i]))
-			return false;
-	return true;
+			return pcb_false;
+	return pcb_true;
 }
 
 /* ----------------------------------------------------------------------
@@ -71,8 +71,8 @@ bool IsLayerGroupEmpty(int num)
 int ParseGroupString(const char *s, LayerGroupTypePtr LayerGroup, int LayerN)
 {
 	int group, member, layer;
-	bool c_set = false,						/* flags for the two special layers to */
-		s_set = false;							/* provide a default setting for old formats */
+	pcb_bool c_set = pcb_false,						/* flags for the two special layers to */
+		s_set = pcb_false;							/* provide a default setting for old formats */
 	int groupnum[MAX_LAYER + 2];
 
 	/* clear struct */
@@ -98,7 +98,7 @@ int ParseGroupString(const char *s, LayerGroupTypePtr LayerGroup, int LayerN)
 			case 't':
 			case 'T':
 				layer = LayerN + COMPONENT_LAYER;
-				c_set = true;
+				c_set = pcb_true;
 				break;
 
 			case 's':
@@ -106,7 +106,7 @@ int ParseGroupString(const char *s, LayerGroupTypePtr LayerGroup, int LayerN)
 			case 'b':
 			case 'B':
 				layer = LayerN + SOLDER_LAYER;
-				s_set = true;
+				s_set = pcb_true;
 				break;
 
 			default:
@@ -193,7 +193,7 @@ static void PushOnTopOfLayerStack(int NewTop)
  * changes the visibility of all layers in a group
  * returns the number of changed layers
  */
-int ChangeGroupVisibility(int Layer, bool On, bool ChangeStackOrder)
+int ChangeGroupVisibility(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 {
 	int group, i, changed = 1;		/* at least the current layer changes */
 
@@ -269,41 +269,41 @@ void LayerStringToLayerStack(const char *layer_string)
 	for (i = 0; i < max_copper_layer + 2; i++) {
 		if (i < max_copper_layer)
 			LayerStack[i] = i;
-		PCB->Data->Layer[i].On = false;
+		PCB->Data->Layer[i].On = pcb_false;
 	}
-	PCB->ElementOn = false;
-	PCB->InvisibleObjectsOn = false;
-	PCB->PinOn = false;
-	PCB->ViaOn = false;
-	PCB->RatOn = false;
+	PCB->ElementOn = pcb_false;
+	PCB->InvisibleObjectsOn = pcb_false;
+	PCB->PinOn = pcb_false;
+	PCB->ViaOn = pcb_false;
+	PCB->RatOn = pcb_false;
 
 	conf_set_editor(show_mask, 0);
 	conf_set_editor(show_solder_side, 0);
 
 	for (i = argn - 1; i >= 0; i--) {
 		if (strcasecmp(args[i], "rats") == 0)
-			PCB->RatOn = true;
+			PCB->RatOn = pcb_true;
 		else if (strcasecmp(args[i], "invisible") == 0)
-			PCB->InvisibleObjectsOn = true;
+			PCB->InvisibleObjectsOn = pcb_true;
 		else if (strcasecmp(args[i], "pins") == 0)
-			PCB->PinOn = true;
+			PCB->PinOn = pcb_true;
 		else if (strcasecmp(args[i], "vias") == 0)
-			PCB->ViaOn = true;
+			PCB->ViaOn = pcb_true;
 		else if (strcasecmp(args[i], "elements") == 0 || strcasecmp(args[i], "silk") == 0)
-			PCB->ElementOn = true;
+			PCB->ElementOn = pcb_true;
 		else if (strcasecmp(args[i], "mask") == 0)
 			conf_set_editor(show_mask, 1);
 		else if (strcasecmp(args[i], "solderside") == 0)
 			conf_set_editor(show_solder_side, 1);
 		else if (isdigit((int) args[i][0])) {
 			lno = atoi(args[i]);
-			ChangeGroupVisibility(lno, true, true);
+			ChangeGroupVisibility(lno, pcb_true, pcb_true);
 		}
 		else {
 			int found = 0;
 			for (lno = 0; lno < max_copper_layer; lno++)
 				if (strcasecmp(args[i], PCB->Data->Layer[lno].Name) == 0) {
-					ChangeGroupVisibility(lno, true, true);
+					ChangeGroupVisibility(lno, pcb_true, pcb_true);
 					found = 1;
 					break;
 				}
@@ -378,13 +378,13 @@ void ResetStackAndVisibility(void)
 	for (i = 0; i < max_copper_layer + 2; i++) {
 		if (i < max_copper_layer)
 			LayerStack[i] = i;
-		PCB->Data->Layer[i].On = true;
+		PCB->Data->Layer[i].On = pcb_true;
 	}
-	PCB->ElementOn = true;
-	PCB->InvisibleObjectsOn = true;
-	PCB->PinOn = true;
-	PCB->ViaOn = true;
-	PCB->RatOn = true;
+	PCB->ElementOn = pcb_true;
+	PCB->InvisibleObjectsOn = pcb_true;
+	PCB->PinOn = pcb_true;
+	PCB->ViaOn = pcb_true;
+	PCB->RatOn = pcb_true;
 
 	/* Bring the component group to the front and make it active.  */
 	comp_group = GetLayerGroupNumberByNumber(component_silk_layer);
@@ -397,11 +397,11 @@ void ResetStackAndVisibility(void)
 void SaveStackAndVisibility(void)
 {
 	Cardinal i;
-	static bool run = false;
+	static pcb_bool run = pcb_false;
 
-	if (run == false) {
+	if (run == pcb_false) {
 		SavedStack.cnt = 0;
-		run = true;
+		run = pcb_true;
 	}
 
 	if (SavedStack.cnt != 0) {

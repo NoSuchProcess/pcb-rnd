@@ -53,18 +53,18 @@
 /* ---------------------------------------------------------------------------
  * some forward declarations
  */
-static bool FindPad(const char *, const char *, ConnectionType *, bool);
-static bool ParseConnection(const char *, char *, char *);
-static bool DrawShortestRats(NetListTypePtr,
+static pcb_bool FindPad(const char *, const char *, ConnectionType *, pcb_bool);
+static pcb_bool ParseConnection(const char *, char *, char *);
+static pcb_bool DrawShortestRats(NetListTypePtr,
 														 void (*)(register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr));
-static bool GatherSubnets(NetListTypePtr, bool, bool);
-static bool CheckShorts(LibraryMenuTypePtr);
+static pcb_bool GatherSubnets(NetListTypePtr, pcb_bool, pcb_bool);
+static pcb_bool CheckShorts(LibraryMenuTypePtr);
 static void TransferNet(NetListTypePtr, NetTypePtr, NetTypePtr);
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-static bool badnet = false;
+static pcb_bool badnet = pcb_false;
 static Cardinal SLayer, CLayer;	/* layer group holding solder/component side */
 
 /* ---------------------------------------------------------------------------
@@ -74,7 +74,7 @@ static Cardinal SLayer, CLayer;	/* layer group holding solder/component side */
  * number of characters processed from the string, otherwise
  * it returns 0
  */
-static bool ParseConnection(const char *InString, char *ElementName, char *PinNum)
+static pcb_bool ParseConnection(const char *InString, char *ElementName, char *PinNum)
 {
 	int i, j;
 
@@ -87,19 +87,19 @@ static bool ParseConnection(const char *InString, char *ElementName, char *PinNu
 		for (i = 0, j++; InString[j] != '\0'; i++, j++)
 			PinNum[i] = InString[j];
 		PinNum[i] = '\0';
-		return (false);
+		return (pcb_false);
 	}
 	else {
 		ElementName[j] = '\0';
 		Message(PCB_MSG_DEFAULT, _("Bad net-list format encountered near: \"%s\"\n"), ElementName);
-		return (true);
+		return (pcb_true);
 	}
 }
 
 /* ---------------------------------------------------------------------------
  * Find a particular pad from an element name and pin number
  */
-static bool FindPad(const char *ElementName, const char *PinNum, ConnectionType * conn, bool Same)
+static pcb_bool FindPad(const char *ElementName, const char *PinNum, ConnectionType * conn, pcb_bool Same)
 {
 	ElementTypePtr element;
 	gdl_iterator_t it;
@@ -107,7 +107,7 @@ static bool FindPad(const char *ElementName, const char *PinNum, ConnectionType 
 	PinType *pin;
 
 	if ((element = SearchElementByName(PCB->Data, ElementName)) == NULL)
-		return false;
+		return pcb_false;
 
 	padlist_foreach(&element->Pad, &it, pad) {
 		if (NSTRCMP(PinNum, pad->Number) == 0 && (!Same || !TEST_FLAG(PCB_FLAG_DRC, pad))) {
@@ -124,7 +124,7 @@ static bool FindPad(const char *ElementName, const char *PinNum, ConnectionType 
 				conn->X = pad->Point1.X;
 				conn->Y = pad->Point1.Y;
 			}
-			return true;
+			return pcb_true;
 		}
 	}
 
@@ -136,46 +136,46 @@ static bool FindPad(const char *ElementName, const char *PinNum, ConnectionType 
 			conn->group = SLayer;			/* any layer will do */
 			conn->X = pin->X;
 			conn->Y = pin->Y;
-			return true;
+			return pcb_true;
 		}
 	}
 
-	return false;
+	return pcb_false;
 }
 
 /*--------------------------------------------------------------------------
  * parse a netlist menu entry and locate the corresponding pad
- * returns true if found, and fills in Connection information
+ * returns pcb_true if found, and fills in Connection information
  */
-bool SeekPad(LibraryEntryType * entry, ConnectionType * conn, bool Same)
+pcb_bool SeekPad(LibraryEntryType * entry, ConnectionType * conn, pcb_bool Same)
 {
 	int j;
 	char ElementName[256];
 	char PinNum[256];
 
 	if (ParseConnection(entry->ListEntry, ElementName, PinNum))
-		return (false);
+		return (pcb_false);
 	for (j = 0; PinNum[j] != '\0'; j++);
 	if (j == 0) {
 		Message(PCB_MSG_DEFAULT, _("Error! Netlist file is missing pin!\n" "white space after \"%s-\"\n"), ElementName);
-		badnet = true;
+		badnet = pcb_true;
 	}
 	else {
 		if (FindPad(ElementName, PinNum, conn, Same))
-			return (true);
+			return (pcb_true);
 		if (Same)
-			return (false);
+			return (pcb_false);
 		if (PinNum[j - 1] < '0' || PinNum[j - 1] > '9') {
 			Message(PCB_MSG_DEFAULT, "WARNING! Pin number ending with '%c'"
 							" encountered in netlist file\n" "Probably a bad netlist file format\n", PinNum[j - 1]);
 		}
 	}
 	Message(PCB_MSG_DEFAULT, _("Can't find %s pin %s called for in netlist.\n"), ElementName, PinNum);
-	return (false);
+	return (pcb_false);
 }
 
 /* ---------------------------------------------------------------------------
- * Read the library-netlist build a true Netlist structure
+ * Read the library-netlist build a pcb_true Netlist structure
  */
 
 NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
@@ -189,7 +189,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 		return (NULL);
 	FreeNetListMemory(Wantlist);
 	free(Wantlist);
-	badnet = false;
+	badnet = pcb_false;
 
 	/* find layer groups of the component side and solder side */
 	SLayer = GetLayerGroupNumberByNumber(solder_silk_layer);
@@ -212,7 +212,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 		MENU_LOOP(net_menu);
 		{
 			if (menu->Name[0] == '*' || menu->flag == 0) {
-				badnet = true;
+				badnet = pcb_true;
 				continue;
 			}
 			net = GetNetMemory(Wantlist);
@@ -225,7 +225,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 				net->Style = NULL;
 			ENTRY_LOOP(menu);
 			{
-				if (SeekPad(entry, &LastPoint, false)) {
+				if (SeekPad(entry, &LastPoint, pcb_false)) {
 					if (TEST_FLAG(PCB_FLAG_DRC, (PinTypePtr) LastPoint.ptr2))
 						Message(PCB_MSG_DEFAULT, _
 										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
@@ -246,9 +246,9 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 					}
 				}
 				else
-					badnet = true;
+					badnet = pcb_true;
 				/* check for more pins with the same number */
-				for (; SeekPad(entry, &LastPoint, true);) {
+				for (; SeekPad(entry, &LastPoint, pcb_true);) {
 					connection = GetConnectionMemory(net);
 					*connection = LastPoint;
 					/* indicate expect net */
@@ -303,9 +303,9 @@ static void TransferNet(NetListTypePtr Netl, NetTypePtr SourceNet, NetTypePtr De
 	memset(&Netl->Net[Netl->NetN], 0, sizeof(NetType));
 }
 
-static bool CheckShorts(LibraryMenuTypePtr theNet)
+static pcb_bool CheckShorts(LibraryMenuTypePtr theNet)
 {
-	bool newone, warn = false;
+	pcb_bool newone, warn = pcb_false;
 	PointerListTypePtr generic = (PointerListTypePtr) calloc(1, sizeof(PointerListType));
 	/* the first connection was starting point so
 	 * the menu is always non-null
@@ -318,18 +318,18 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
 		ElementType *e = pin->Element;
 /* TODO: should be: !TEST_FLAG(PCB_FLAG_NONETLIST, (ElementType *)pin->Element)*/
 		if ((TEST_FLAG(PCB_FLAG_DRC, pin)) && (!(e->Flags.f & PCB_FLAG_NONETLIST))) {
-			warn = true;
+			warn = pcb_true;
 			if (!pin->Spare) {
 				Message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to %s pin %s\n"),
 								&theNet->Name[2], UNKNOWN(NAMEONPCB_NAME(element)), UNKNOWN(pin->Number));
 				stub_rat_found_short(pin, NULL, &theNet->Name[2]);
 				continue;
 			}
-			newone = true;
+			newone = pcb_true;
 			POINTER_LOOP(generic);
 			{
 				if (*ptr == pin->Spare) {
-					newone = false;
+					newone = pcb_false;
 					break;
 				}
 			}
@@ -349,18 +349,18 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
 		ElementType *e = pad->Element;
 /* TODO: should be: !TEST_FLAG(PCB_FLAG_NONETLIST, (ElementType *)pad->Element)*/
 		if ((TEST_FLAG(PCB_FLAG_DRC, pad)) && (!(e->Flags.f & PCB_FLAG_NONETLIST)) && (!(e->Name->Flags.f & PCB_FLAG_NONETLIST))) {
-			warn = true;
+			warn = pcb_true;
 			if (!pad->Spare) {
 				Message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted  to %s pad %s\n"),
 								&theNet->Name[2], UNKNOWN(NAMEONPCB_NAME(element)), UNKNOWN(pad->Number));
 				stub_rat_found_short(NULL, pad, &theNet->Name[2]);
 				continue;
 			}
-			newone = true;
+			newone = pcb_true;
 			POINTER_LOOP(generic);
 			{
 				if (*ptr == pad->Spare) {
-					newone = false;
+					newone = pcb_false;
 					break;
 				}
 			}
@@ -387,17 +387,17 @@ static bool CheckShorts(LibraryMenuTypePtr theNet)
  * initially the netlist has each connection in its own individual net
  * afterwards there can be many fewer nets with multiple connections each
  */
-static bool GatherSubnets(NetListTypePtr Netl, bool NoWarn, bool AndRats)
+static pcb_bool GatherSubnets(NetListTypePtr Netl, pcb_bool NoWarn, pcb_bool AndRats)
 {
 	NetTypePtr a, b;
 	ConnectionTypePtr conn;
 	Cardinal m, n;
-	bool Warned = false;
+	pcb_bool Warned = pcb_false;
 
 	for (m = 0; Netl->NetN > 0 && m < Netl->NetN; m++) {
 		a = &Netl->Net[m];
-		ResetConnections(false);
-		RatFindHook(a->Connection[0].type, a->Connection[0].ptr1, a->Connection[0].ptr2, a->Connection[0].ptr2, false, AndRats);
+		ResetConnections(pcb_false);
+		RatFindHook(a->Connection[0].type, a->Connection[0].ptr1, a->Connection[0].ptr2, a->Connection[0].ptr2, pcb_false, AndRats);
 		/* now anybody connected to the first point has PCB_FLAG_DRC set */
 		/* so move those to this subnet */
 		CLEAR_FLAG(PCB_FLAG_DRC, (PinTypePtr) a->Connection[0].ptr2);
@@ -470,7 +470,7 @@ static bool GatherSubnets(NetListTypePtr Netl, bool NoWarn, bool AndRats)
 		if (!NoWarn)
 			Warned |= CheckShorts(a->Connection[0].menu);
 	}
-	ResetConnections(false);
+	ResetConnections(pcb_false);
 	return (Warned);
 }
 
@@ -484,7 +484,7 @@ static bool GatherSubnets(NetListTypePtr Netl, bool NoWarn, bool AndRats)
  * copper-connected subset of the net.
  */
 
-static bool
+static pcb_bool
 DrawShortestRats(NetListTypePtr Netl,
 								 void (*funcp) (register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr))
 {
@@ -492,8 +492,8 @@ DrawShortestRats(NetListTypePtr Netl,
 	register float distance, temp;
 	register ConnectionTypePtr conn1, conn2, firstpoint, secondpoint;
 	PolygonTypePtr polygon;
-	bool changed = false;
-	bool havepoints;
+	pcb_bool changed = pcb_false;
+	pcb_bool havepoints;
 	Cardinal n, m, j;
 	NetTypePtr next, subnet, theSubnet = NULL;
 
@@ -501,7 +501,7 @@ DrawShortestRats(NetListTypePtr Netl,
 	 * *something*.
 	 */
 	if (!Netl || Netl->NetN < 1)
-		return false;
+		return pcb_false;
 
 	/*
 	 * Everything inside the NetList Netl should be connected together.
@@ -530,10 +530,10 @@ DrawShortestRats(NetListTypePtr Netl,
 	 * I.e. once per rat we add.
 	 */
 	distance = 0.0;
-	havepoints = true;						/* so we run the loop at least once */
+	havepoints = pcb_true;						/* so we run the loop at least once */
 	while (Netl->NetN > 1 && havepoints) {
 		/* This is the top of the "find one rat" logic.  */
-		havepoints = false;
+		havepoints = pcb_false;
 		firstpoint = secondpoint = NULL;
 
 		/* Test Net[0] vs Net[N] for N=1..max.  Find the shortest
@@ -570,7 +570,7 @@ DrawShortestRats(NetListTypePtr Netl,
 						firstpoint = conn2;
 						secondpoint = conn1;
 						theSubnet = next;
-						havepoints = true;
+						havepoints = pcb_true;
 					}
 					else if (conn2->type == PCB_TYPE_POLYGON &&
 									 (polygon = (PolygonTypePtr) conn2->ptr2) &&
@@ -580,21 +580,21 @@ DrawShortestRats(NetListTypePtr Netl,
 						firstpoint = conn1;
 						secondpoint = conn2;
 						theSubnet = next;
-						havepoints = true;
+						havepoints = pcb_true;
 					}
 					else if ((temp = SQUARE(conn1->X - conn2->X) + SQUARE(conn1->Y - conn2->Y)) < distance || !firstpoint) {
 						distance = temp;
 						firstpoint = conn1;
 						secondpoint = conn2;
 						theSubnet = next;
-						havepoints = true;
+						havepoints = pcb_true;
 					}
 				}
 			}
 		}
 
 		/*
-		 * If HAVEPOINTS is true, we've found a pair of points in two
+		 * If HAVEPOINTS is pcb_true, we've found a pair of points in two
 		 * separate blobs of the net, and need to connect them together.
 		 */
 		if (havepoints) {
@@ -611,7 +611,7 @@ DrawShortestRats(NetListTypePtr Netl,
 						SET_FLAG(PCB_FLAG_VIA, line);
 					AddObjectToCreateUndoList(PCB_TYPE_RATLINE, line, line, line);
 					DrawRat(line);
-					changed = true;
+					changed = pcb_true;
 				}
 			}
 
@@ -635,16 +635,16 @@ DrawShortestRats(NetListTypePtr Netl,
 
 /* ---------------------------------------------------------------------------
  *  AddAllRats puts the rats nest into the layout from the loaded netlist
- *  if SelectedOnly is true, it will only draw rats to selected pins and pads
+ *  if SelectedOnly is pcb_true, it will only draw rats to selected pins and pads
  */
-bool
-AddAllRats(bool SelectedOnly,
+pcb_bool
+AddAllRats(pcb_bool SelectedOnly,
 					 void (*funcp) (register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr))
 {
 	NetListTypePtr Nets, Wantlist;
 	NetTypePtr lonesome;
 	ConnectionTypePtr onepin;
-	bool changed, Warned = false;
+	pcb_bool changed, Warned = pcb_false;
 
 	/* the netlist library has the text form
 	 * ProcNetlist fills in the Netlist
@@ -654,9 +654,9 @@ AddAllRats(bool SelectedOnly,
 	Wantlist = ProcNetlist(&(PCB->NetlistLib[NETLIST_EDITED]));
 	if (!Wantlist) {
 		Message(PCB_MSG_DEFAULT, _("Can't add rat lines because no netlist is loaded.\n"));
-		return (false);
+		return (pcb_false);
 	}
-	changed = false;
+	changed = pcb_false;
 	/* initialize finding engine */
 	InitConnectionLookup();
 	SaveFindFlag(PCB_FLAG_DRC);
@@ -685,7 +685,7 @@ AddAllRats(bool SelectedOnly,
 			}
 		}
 		END_LOOP;
-		Warned |= GatherSubnets(Nets, SelectedOnly, true);
+		Warned |= GatherSubnets(Nets, SelectedOnly, pcb_true);
 		if (Nets->NetN > 0)
 			changed |= DrawShortestRats(Nets, funcp);
 	}
@@ -695,7 +695,7 @@ AddAllRats(bool SelectedOnly,
 	FreeConnectionLookupMemory();
 	RestoreFindFlag();
 	if (funcp)
-		return (true);
+		return (pcb_true);
 
 	if (Warned || changed) {
 		stub_rat_proc_shorts();
@@ -703,14 +703,14 @@ AddAllRats(bool SelectedOnly,
 	}
 
 	if (Warned)
-		conf_core.temp.rat_warn = true;
+		conf_core.temp.rat_warn = pcb_true;
 
 	if (changed) {
 		IncrementUndoSerialNumber();
 		if (ratlist_length(&PCB->Data->Rat) > 0) {
 			Message(PCB_MSG_DEFAULT, "%d rat line%s remaining\n", ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) > 1 ? "s" : "");
 		}
-		return (true);
+		return (pcb_true);
 	}
 	if (!SelectedOnly && !Warned) {
 		if (!ratlist_length(&PCB->Data->Rat) && !badnet)
@@ -719,13 +719,13 @@ AddAllRats(bool SelectedOnly,
 			Message(PCB_MSG_DEFAULT, _("Nothing more to add, but there are\n"
 								"either rat-lines in the layout, disabled nets\n" "in the net-list, or missing components\n"));
 	}
-	return (false);
+	return (pcb_false);
 }
 
 /* XXX: This is copied in large part from AddAllRats above; for
  * maintainability, AddAllRats probably wants to be tweaked to use this
  * version of the code so that we don't have duplication. */
-NetListListType CollectSubnets(bool SelectedOnly)
+NetListListType CollectSubnets(pcb_bool SelectedOnly)
 {
 	NetListListType result = { 0, 0, NULL };
 	NetListTypePtr Nets, Wantlist;
@@ -771,7 +771,7 @@ NetListListType CollectSubnets(bool SelectedOnly)
 		}
 		END_LOOP;
 		/* Note that AndRats is *FALSE* here! */
-		GatherSubnets(Nets, SelectedOnly, false);
+		GatherSubnets(Nets, SelectedOnly, pcb_false);
 	}
 	END_LOOP;
 	FreeConnectionLookupMemory();

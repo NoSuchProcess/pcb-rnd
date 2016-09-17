@@ -204,7 +204,7 @@ static int conf_parse_increments(Increments *inc, lht_node_t *node)
 	val = lht_dom_hash_get(node, #field); \
 	if (val != NULL) {\
 		if (val->type == LHT_TEXT) {\
-			bool succ; \
+			pcb_bool succ; \
 			inc->field = GetValue(val->data.text.value, NULL, NULL, &succ); \
 			if (!succ) \
 				hid_cfg_error(node, "invalid numeric value in increment field " #field ": %s\n", val->data.text.value); \
@@ -327,7 +327,7 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 			return -1;
 		case CFN_COORD:
 			{
-				bool succ;
+				pcb_bool succ;
 				dst->coord[idx] = GetValue(text, NULL, NULL, &succ);
 				if (!succ)
 					hid_cfg_error(err_node, "Invalid numeric value (coordinate): %s\n", text);

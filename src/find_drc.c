@@ -28,14 +28,14 @@
 /* DRC related functions */
 
 static void GotoError(void);
-static bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3);
+static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3);
 
 static DrcViolationType
 	* pcb_drc_violation_new(const char *title,
 													const char *explanation,
 													Coord x, Coord y,
 													Angle angle,
-													bool have_measured,
+													pcb_bool have_measured,
 													Coord measured_value,
 													Coord required_value, int object_count, long int *object_id_list, int *object_type_list)
 {
@@ -294,11 +294,11 @@ doIsBad:
 	free(object_id_list);
 	free(object_type_list);
 	if (!throw_drc_dialog()) {
-		IsBad = true;
+		IsBad = pcb_true;
 		return R_DIR_FOUND_CONTINUE;
 	}
 	IncrementUndoSerialNumber();
-	Undo(true);
+	Undo(pcb_true);
 	return R_DIR_NOT_FOUND;
 }
 
@@ -320,7 +320,7 @@ int DRCAll(void)
 
 	reset_drc_dialog_message();
 
-	IsBad = false;
+	IsBad = pcb_false;
 	drcerr_count = 0;
 	SaveStackAndVisibility();
 	ResetStackAndVisibility();
@@ -329,12 +329,12 @@ int DRCAll(void)
 
 	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED;
 
-	if (ResetConnections(true)) {
+	if (ResetConnections(pcb_true)) {
 		IncrementUndoSerialNumber();
 		Draw();
 	}
 
-	User = false;
+	User = pcb_false;
 
 	ELEMENT_LOOP(PCB->Data);
 	{
@@ -342,7 +342,7 @@ int DRCAll(void)
 		{
 			if (!TEST_FLAG(PCB_FLAG_DRC, pin)
 					&& DRCFind(PCB_TYPE_PIN, (void *) element, (void *) pin, (void *) pin)) {
-				IsBad = true;
+				IsBad = pcb_true;
 				break;
 			}
 		}
@@ -358,7 +358,7 @@ int DRCAll(void)
 
 			if (!TEST_FLAG(PCB_FLAG_DRC, pad)
 					&& DRCFind(PCB_TYPE_PAD, (void *) element, (void *) pad, (void *) pad)) {
-				IsBad = true;
+				IsBad = pcb_true;
 				break;
 			}
 		}
@@ -372,14 +372,14 @@ int DRCAll(void)
 	{
 		if (!TEST_FLAG(PCB_FLAG_DRC, via)
 				&& DRCFind(PCB_TYPE_VIA, (void *) via, (void *) via, (void *) via)) {
-			IsBad = true;
+			IsBad = pcb_true;
 			break;
 		}
 	}
 	END_LOOP;
 
 	TheFlag = (IsBad) ? PCB_FLAG_DRC : (PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED);
-	ResetConnections(false);
+	ResetConnections(pcb_false);
 	TheFlag = PCB_FLAG_SELECTED;
 	/* check minimum widths and polygon clearances */
 	if (!IsBad) {
@@ -405,11 +405,11 @@ int DRCAll(void)
 				free(object_id_list);
 				free(object_type_list);
 				if (!throw_drc_dialog()) {
-					IsBad = true;
+					IsBad = pcb_true;
 					break;
 				}
 				IncrementUndoSerialNumber();
-				Undo(false);
+				Undo(pcb_false);
 			}
 		}
 		ENDALL_LOOP;
@@ -436,11 +436,11 @@ int DRCAll(void)
 				free(object_id_list);
 				free(object_type_list);
 				if (!throw_drc_dialog()) {
-					IsBad = true;
+					IsBad = pcb_true;
 					break;
 				}
 				IncrementUndoSerialNumber();
-				Undo(false);
+				Undo(pcb_false);
 			}
 		}
 		ENDALL_LOOP;
@@ -468,11 +468,11 @@ int DRCAll(void)
 				free(object_id_list);
 				free(object_type_list);
 				if (!throw_drc_dialog()) {
-					IsBad = true;
+					IsBad = pcb_true;
 					break;
 				}
 				IncrementUndoSerialNumber();
-				Undo(false);
+				Undo(pcb_false);
 			}
 			if (pin->DrillingHole < PCB->minDrill) {
 				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
@@ -490,11 +490,11 @@ int DRCAll(void)
 				free(object_id_list);
 				free(object_type_list);
 				if (!throw_drc_dialog()) {
-					IsBad = true;
+					IsBad = pcb_true;
 					break;
 				}
 				IncrementUndoSerialNumber();
-				Undo(false);
+				Undo(pcb_false);
 			}
 		}
 		ENDALL_LOOP;
@@ -521,11 +521,11 @@ int DRCAll(void)
 				free(object_id_list);
 				free(object_type_list);
 				if (!throw_drc_dialog()) {
-					IsBad = true;
+					IsBad = pcb_true;
 					break;
 				}
 				IncrementUndoSerialNumber();
-				Undo(false);
+				Undo(pcb_false);
 			}
 		}
 		ENDALL_LOOP;
@@ -553,11 +553,11 @@ int DRCAll(void)
 				free(object_id_list);
 				free(object_type_list);
 				if (!throw_drc_dialog()) {
-					IsBad = true;
+					IsBad = pcb_true;
 					break;
 				}
 				IncrementUndoSerialNumber();
-				Undo(false);
+				Undo(pcb_false);
 			}
 			if (via->DrillingHole < PCB->minDrill) {
 				AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
@@ -575,11 +575,11 @@ int DRCAll(void)
 				free(object_id_list);
 				free(object_type_list);
 				if (!throw_drc_dialog()) {
-					IsBad = true;
+					IsBad = pcb_true;
 					break;
 				}
 				IncrementUndoSerialNumber();
-				Undo(false);
+				Undo(pcb_false);
 			}
 		}
 		END_LOOP;
@@ -610,7 +610,7 @@ int DRCAll(void)
 				free(object_id_list);
 				free(object_type_list);
 				if (!throw_drc_dialog()) {
-					IsBad = true;
+					IsBad = pcb_true;
 					break;
 				}
 			}
@@ -664,7 +664,7 @@ int DRCAll(void)
 				free(object_id_list);
 				free(object_type_list);
 				if (!throw_drc_dialog()) {
-					IsBad = true;
+					IsBad = pcb_true;
 					break;
 				}
 			}
@@ -694,7 +694,7 @@ int DRCAll(void)
  * Check for DRC violations on a single net starting from the pad or pin
  * sees if the connectivity changes when everything is bloated, or shrunk
  */
-static bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
+static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 {
 	Coord x, y;
 	int object_count;
@@ -706,33 +706,33 @@ static bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 		Bloat = -PCB->Shrink;
 		TheFlag = PCB_FLAG_DRC | PCB_FLAG_SELECTED;
 		ListStart(What, ptr1, ptr2, ptr3);
-		DoIt(true, false);
+		DoIt(pcb_true, pcb_false);
 		/* ok now the shrunk net has the PCB_FLAG_SELECTED set */
 		DumpList();
 		TheFlag = PCB_FLAG_FOUND;
 		ListStart(What, ptr1, ptr2, ptr3);
 		Bloat = 0;
-		drc = true;									/* abort the search if we find anything not already found */
-		if (DoIt(true, false)) {
+		drc = pcb_true;									/* abort the search if we find anything not already found */
+		if (DoIt(pcb_true, pcb_false)) {
 			DumpList();
 			/* make the flag changes undoable */
 			TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
-			ResetConnections(false);
-			User = true;
-			drc = false;
+			ResetConnections(pcb_false);
+			User = pcb_true;
+			drc = pcb_false;
 			Bloat = -PCB->Shrink;
 			TheFlag = PCB_FLAG_SELECTED;
 			ListStart(What, ptr1, ptr2, ptr3);
-			DoIt(true, true);
+			DoIt(pcb_true, pcb_true);
 			DumpList();
 			ListStart(What, ptr1, ptr2, ptr3);
 			TheFlag = PCB_FLAG_FOUND;
 			Bloat = 0;
-			drc = true;
-			DoIt(true, true);
+			drc = pcb_true;
+			DoIt(pcb_true, pcb_true);
 			DumpList();
-			User = false;
-			drc = false;
+			User = pcb_false;
+			drc = pcb_false;
 			drcerr_count++;
 			LocateError(&x, &y);
 			BuildObjectList(&object_count, &object_id_list, &object_type_list);
@@ -746,36 +746,36 @@ static bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 			free(object_type_list);
 
 			if (!throw_drc_dialog())
-				return (true);
+				return (pcb_true);
 			IncrementUndoSerialNumber();
-			Undo(true);
+			Undo(pcb_true);
 		}
 		DumpList();
 	}
 	/* now check the bloated condition */
-	drc = false;
-	ResetConnections(false);
+	drc = pcb_false;
+	ResetConnections(pcb_false);
 	TheFlag = PCB_FLAG_FOUND;
 	ListStart(What, ptr1, ptr2, ptr3);
 	Bloat = PCB->Bloat;
-	drc = true;
-	while (DoIt(true, false)) {
+	drc = pcb_true;
+	while (DoIt(pcb_true, pcb_false)) {
 		DumpList();
 		/* make the flag changes undoable */
 		TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
-		ResetConnections(false);
-		User = true;
-		drc = false;
+		ResetConnections(pcb_false);
+		User = pcb_true;
+		drc = pcb_false;
 		Bloat = 0;
 		TheFlag = PCB_FLAG_SELECTED;
 		ListStart(What, ptr1, ptr2, ptr3);
-		DoIt(true, true);
+		DoIt(pcb_true, pcb_true);
 		DumpList();
 		TheFlag = PCB_FLAG_FOUND;
 		ListStart(What, ptr1, ptr2, ptr3);
 		Bloat = PCB->Bloat;
-		drc = true;
-		DoIt(true, true);
+		drc = pcb_true;
+		DoIt(pcb_true, pcb_true);
 		DumpList();
 		drcerr_count++;
 		LocateError(&x, &y);
@@ -788,27 +788,27 @@ static bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 		pcb_drc_violation_free(violation);
 		free(object_id_list);
 		free(object_type_list);
-		User = false;
-		drc = false;
+		User = pcb_false;
+		drc = pcb_false;
 		if (!throw_drc_dialog())
-			return (true);
+			return (pcb_true);
 		IncrementUndoSerialNumber();
-		Undo(true);
+		Undo(pcb_true);
 		/* highlight the rest of the encroaching net so it's not reported again */
 		TheFlag |= PCB_FLAG_SELECTED;
 		Bloat = 0;
 		ListStart(thing_type, thing_ptr1, thing_ptr2, thing_ptr3);
-		DoIt(true, true);
+		DoIt(pcb_true, pcb_true);
 		DumpList();
-		drc = true;
+		drc = pcb_true;
 		Bloat = PCB->Bloat;
 		ListStart(What, ptr1, ptr2, ptr3);
 	}
-	drc = false;
+	drc = pcb_false;
 	DumpList();
 	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
-	ResetConnections(false);
-	return (false);
+	ResetConnections(pcb_false);
+	return (pcb_false);
 }
 
 /*----------------------------------------------------------------------------
@@ -824,7 +824,7 @@ static void GotoError(void)
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ARC:
 	case PCB_TYPE_POLYGON:
-		ChangeGroupVisibility(GetLayerNumber(PCB->Data, (LayerTypePtr) thing_ptr1), true, true);
+		ChangeGroupVisibility(GetLayerNumber(PCB->Data, (LayerTypePtr) thing_ptr1), pcb_true, pcb_true);
 	}
 	CenterDisplay(X, Y);
 }

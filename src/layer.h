@@ -27,12 +27,12 @@
 
 /* prototypes for layer manipulation */
 
-/* Returns true if the given layer is empty (there are no objects on the layer) */
-bool IsLayerEmpty(LayerTypePtr);
-bool IsLayerNumEmpty(int);
+/* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
+pcb_bool IsLayerEmpty(LayerTypePtr);
+pcb_bool IsLayerNumEmpty(int);
 
-/* Returns true if all layers in a group are empty */
-bool IsLayerGroupEmpty(int);
+/* Returns pcb_true if all layers in a group are empty */
+pcb_bool IsLayerGroupEmpty(int);
 
 
 /************ OLD API - new code should not use these **************/
@@ -43,7 +43,7 @@ int GetLayerNumber(DataTypePtr, LayerTypePtr);
 int GetLayerGroupNumberByPointer(LayerTypePtr);
 int GetLayerGroupNumberByNumber(Cardinal);
 int GetGroupOfLayer(int);
-int ChangeGroupVisibility(int, bool, bool);
+int ChangeGroupVisibility(int, pcb_bool, pcb_bool);
 void LayerStringToLayerStack(const char *);
 
 /* Layer Group Functions */

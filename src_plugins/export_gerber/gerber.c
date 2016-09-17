@@ -912,7 +912,7 @@ static void gerber_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 
 static void gerber_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
-	bool m = false;
+	pcb_bool m = pcb_false;
 
 	if (x1 != x2 && y1 != y2 && gc->cap == Square_Cap) {
 		Coord x[5], y[5];
@@ -945,12 +945,12 @@ static void gerber_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 		return;
 
 	if (x1 != lastX) {
-		m = true;
+		m = pcb_true;
 		lastX = x1;
 		pcb_fprintf(f, "X%.0mc", gerberX(PCB, lastX));
 	}
 	if (y1 != lastY) {
-		m = true;
+		m = pcb_true;
 		lastY = y1;
 		pcb_fprintf(f, "Y%.0mc", gerberY(PCB, lastY));
 	}
@@ -975,7 +975,7 @@ static void gerber_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 
 static void gerber_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
 {
-	bool m = false;
+	pcb_bool m = pcb_false;
 	double arcStartX, arcStopX, arcStartY, arcStopY;
 
 	/* we never draw zero-width lines */
@@ -1027,12 +1027,12 @@ static void gerber_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord hei
 	arcStopX = cx - width * cos(TO_RADIANS(start_angle + delta_angle));
 	arcStopY = cy + height * sin(TO_RADIANS(start_angle + delta_angle));
 	if (arcStartX != lastX) {
-		m = true;
+		m = pcb_true;
 		lastX = arcStartX;
 		pcb_fprintf(f, "X%.0mc", gerberX(PCB, lastX));
 	}
 	if (arcStartY != lastY) {
-		m = true;
+		m = pcb_true;
 		lastY = arcStartY;
 		pcb_fprintf(f, "Y%.0mc", gerberY(PCB, lastY));
 	}
@@ -1082,7 +1082,7 @@ static void gerber_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 
 static void gerber_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 {
-	bool m = false;
+	pcb_bool m = pcb_false;
 	int i;
 	int firstTime = 1;
 	Coord startX = 0, startY = 0;
@@ -1096,12 +1096,12 @@ static void gerber_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 	fprintf(f, "G36*\r\n");
 	for (i = 0; i < n_coords; i++) {
 		if (x[i] != lastX) {
-			m = true;
+			m = pcb_true;
 			lastX = x[i];
 			pcb_fprintf(f, "X%.0mc", gerberX(PCB, lastX));
 		}
 		if (y[i] != lastY) {
-			m = true;
+			m = pcb_true;
 			lastY = y[i];
 			pcb_fprintf(f, "Y%.0mc", gerberY(PCB, lastY));
 		}
@@ -1114,15 +1114,15 @@ static void gerber_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 		}
 		else if (m)
 			fprintf(f, "D01*\r\n");
-		m = false;
+		m = pcb_false;
 	}
 	if (startX != lastX) {
-		m = true;
+		m = pcb_true;
 		lastX = startX;
 		pcb_fprintf(f, "X%.0mc", gerberX(PCB, startX));
 	}
 	if (startY != lastY) {
-		m = true;
+		m = pcb_true;
 		lastY = startY;
 		pcb_fprintf(f, "Y%.0mc", gerberY(PCB, lastY));
 	}

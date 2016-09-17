@@ -240,7 +240,7 @@ static char *nelma_get_png_name(const char *basename, const char *suffix)
 static int pin_name_to_xy(LibraryEntryType * pin, Coord * x, Coord * y)
 {
 	ConnectionType conn;
-	if (!SeekPad(pin, &conn, false))
+	if (!SeekPad(pin, &conn, pcb_false))
 		return 1;
 	switch (conn.type) {
 	case PCB_TYPE_PIN:

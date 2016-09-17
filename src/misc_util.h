@@ -29,6 +29,8 @@
 #ifndef	PCB_MISC_UTIL_H
 #define	PCB_MISC_UTIL_H
 
+#include "pcb_bool.h"
+
 double Distance(double x1, double y1, double x2, double y2);
 double Distance2(double x1, double y1, double x2, double y2);	/* distance square */
 
@@ -40,8 +42,8 @@ typedef struct {
 	enum unitflags flags;
 } UnitList[];
 
-double GetValue(const char *, const char *, bool *, bool *success);
-double GetValueEx(const char *, const char *, bool *, UnitList, const char *, bool *success);
+double GetValue(const char *, const char *, pcb_bool *, pcb_bool *success);
+double GetValueEx(const char *, const char *, pcb_bool *, UnitList, const char *, pcb_bool *success);
 
 char *Concat(const char *, ...);	/* end with NULL */
 int mem_any_set(unsigned char *ptr, int bytes);

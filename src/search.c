@@ -56,25 +56,25 @@ static LayerTypePtr SearchLayer;
  * some local prototypes.  The first parameter includes PCB_TYPE_LOCKED if we
  * want to include locked types in the search.
  */
-static bool SearchLineByLocation(int, LayerTypePtr *, LineTypePtr *, LineTypePtr *);
-static bool SearchArcByLocation(int, LayerTypePtr *, ArcTypePtr *, ArcTypePtr *);
-static bool SearchRatLineByLocation(int, RatTypePtr *, RatTypePtr *, RatTypePtr *);
-static bool SearchTextByLocation(int, LayerTypePtr *, TextTypePtr *, TextTypePtr *);
-static bool SearchPolygonByLocation(int, LayerTypePtr *, PolygonTypePtr *, PolygonTypePtr *);
-static bool SearchPinByLocation(int, ElementTypePtr *, PinTypePtr *, PinTypePtr *);
-static bool SearchPadByLocation(int, ElementTypePtr *, PadTypePtr *, PadTypePtr *, bool);
-static bool SearchViaByLocation(int, PinTypePtr *, PinTypePtr *, PinTypePtr *);
-static bool SearchElementNameByLocation(int, ElementTypePtr *, TextTypePtr *, TextTypePtr *, bool);
-static bool SearchLinePointByLocation(int, LayerTypePtr *, LineTypePtr *, PointTypePtr *);
-static bool SearchPointByLocation(int, LayerTypePtr *, PolygonTypePtr *, PointTypePtr *);
-static bool SearchElementByLocation(int, ElementTypePtr *, ElementTypePtr *, ElementTypePtr *, bool);
+static pcb_bool SearchLineByLocation(int, LayerTypePtr *, LineTypePtr *, LineTypePtr *);
+static pcb_bool SearchArcByLocation(int, LayerTypePtr *, ArcTypePtr *, ArcTypePtr *);
+static pcb_bool SearchRatLineByLocation(int, RatTypePtr *, RatTypePtr *, RatTypePtr *);
+static pcb_bool SearchTextByLocation(int, LayerTypePtr *, TextTypePtr *, TextTypePtr *);
+static pcb_bool SearchPolygonByLocation(int, LayerTypePtr *, PolygonTypePtr *, PolygonTypePtr *);
+static pcb_bool SearchPinByLocation(int, ElementTypePtr *, PinTypePtr *, PinTypePtr *);
+static pcb_bool SearchPadByLocation(int, ElementTypePtr *, PadTypePtr *, PadTypePtr *, pcb_bool);
+static pcb_bool SearchViaByLocation(int, PinTypePtr *, PinTypePtr *, PinTypePtr *);
+static pcb_bool SearchElementNameByLocation(int, ElementTypePtr *, TextTypePtr *, TextTypePtr *, pcb_bool);
+static pcb_bool SearchLinePointByLocation(int, LayerTypePtr *, LineTypePtr *, PointTypePtr *);
+static pcb_bool SearchPointByLocation(int, LayerTypePtr *, PolygonTypePtr *, PointTypePtr *);
+static pcb_bool SearchElementByLocation(int, ElementTypePtr *, ElementTypePtr *, ElementTypePtr *, pcb_bool);
 
 /* ---------------------------------------------------------------------------
  * searches a via
  */
 struct ans_info {
 	void **ptr1, **ptr2, **ptr3;
-	bool BackToo;
+	pcb_bool BackToo;
 	double area;
 	int locked;										/* This will be zero or PCB_FLAG_LOCK */
 };
@@ -95,13 +95,13 @@ static r_dir_t pinorvia_callback(const BoxType * box, void *cl)
 	return R_DIR_CANCEL; /* found, stop searching */
 }
 
-static bool SearchViaByLocation(int locked, PinTypePtr * Via, PinTypePtr * Dummy1, PinTypePtr * Dummy2)
+static pcb_bool SearchViaByLocation(int locked, PinTypePtr * Via, PinTypePtr * Dummy1, PinTypePtr * Dummy2)
 {
 	struct ans_info info;
 
 	/* search only if via-layer is visible */
 	if (!PCB->ViaOn)
-		return false;
+		return pcb_false;
 
 	info.ptr1 = (void **) Via;
 	info.ptr2 = (void **) Dummy1;
@@ -109,29 +109,29 @@ static bool SearchViaByLocation(int locked, PinTypePtr * Via, PinTypePtr * Dummy
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	if (r_search(PCB->Data->via_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL) != R_DIR_NOT_FOUND)
-		return true;
-	return false;
+		return pcb_true;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
  * searches a pin
  * starts with the newest element
  */
-static bool SearchPinByLocation(int locked, ElementTypePtr * Element, PinTypePtr * Pin, PinTypePtr * Dummy)
+static pcb_bool SearchPinByLocation(int locked, ElementTypePtr * Element, PinTypePtr * Pin, PinTypePtr * Dummy)
 {
 	struct ans_info info;
 
 	/* search only if pin-layer is visible */
 	if (!PCB->PinOn)
-		return false;
+		return pcb_false;
 	info.ptr1 = (void **) Element;
 	info.ptr2 = (void **) Pin;
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	if (r_search(PCB->Data->pin_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL)  != R_DIR_NOT_FOUND)
-		return true;
-	return false;
+		return pcb_true;
+	return pcb_false;
 }
 
 static r_dir_t pad_callback(const BoxType * b, void *cl)
@@ -157,21 +157,21 @@ static r_dir_t pad_callback(const BoxType * b, void *cl)
  * searches a pad
  * starts with the newest element
  */
-static bool SearchPadByLocation(int locked, ElementTypePtr * Element, PadTypePtr * Pad, PadTypePtr * Dummy, bool BackToo)
+static pcb_bool SearchPadByLocation(int locked, ElementTypePtr * Element, PadTypePtr * Pad, PadTypePtr * Dummy, pcb_bool BackToo)
 {
 	struct ans_info info;
 
 	/* search only if pin-layer is visible */
 	if (!PCB->PinOn)
-		return (false);
+		return (pcb_false);
 	info.ptr1 = (void **) Element;
 	info.ptr2 = (void **) Pad;
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 	info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 	if (r_search(PCB->Data->pad_tree, &SearchBox, NULL, pad_callback, &info, NULL) != R_DIR_NOT_FOUND)
-		return true;
-	return false;
+		return pcb_true;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -202,7 +202,7 @@ static r_dir_t line_callback(const BoxType * box, void *cl)
 }
 
 
-static bool SearchLineByLocation(int locked, LayerTypePtr * Layer, LineTypePtr * Line, LineTypePtr * Dummy)
+static pcb_bool SearchLineByLocation(int locked, LayerTypePtr * Layer, LineTypePtr * Line, LineTypePtr * Dummy)
 {
 	struct line_info info;
 
@@ -212,9 +212,9 @@ static bool SearchLineByLocation(int locked, LayerTypePtr * Layer, LineTypePtr *
 
 	*Layer = SearchLayer;
 	if (r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info, NULL) != R_DIR_NOT_FOUND)
-		return true;
+		return pcb_true;
 
-	return false;
+	return pcb_false;
 }
 
 static r_dir_t rat_callback(const BoxType * box, void *cl)
@@ -237,7 +237,7 @@ static r_dir_t rat_callback(const BoxType * box, void *cl)
 /* ---------------------------------------------------------------------------
  * searches rat lines if they are visible
  */
-static bool SearchRatLineByLocation(int locked, RatTypePtr * Line, RatTypePtr * Dummy1, RatTypePtr * Dummy2)
+static pcb_bool SearchRatLineByLocation(int locked, RatTypePtr * Line, RatTypePtr * Dummy1, RatTypePtr * Dummy2)
 {
 	struct ans_info info;
 
@@ -247,8 +247,8 @@ static bool SearchRatLineByLocation(int locked, RatTypePtr * Line, RatTypePtr * 
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	if (r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL) != R_DIR_NOT_FOUND)
-		return true;
-	return false;
+		return pcb_true;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -275,7 +275,7 @@ static r_dir_t arc_callback(const BoxType * box, void *cl)
 }
 
 
-static bool SearchArcByLocation(int locked, LayerTypePtr * Layer, ArcTypePtr * Arc, ArcTypePtr * Dummy)
+static pcb_bool SearchArcByLocation(int locked, LayerTypePtr * Layer, ArcTypePtr * Arc, ArcTypePtr * Dummy)
 {
 	struct arc_info info;
 
@@ -285,8 +285,8 @@ static bool SearchArcByLocation(int locked, LayerTypePtr * Layer, ArcTypePtr * A
 
 	*Layer = SearchLayer;
 	if (r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != R_DIR_NOT_FOUND)
-		return true;
-	return false;
+		return pcb_true;
+	return pcb_false;
 }
 
 static r_dir_t text_callback(const BoxType * box, void *cl)
@@ -307,7 +307,7 @@ static r_dir_t text_callback(const BoxType * box, void *cl)
 /* ---------------------------------------------------------------------------
  * searches text on the SearchLayer
  */
-static bool SearchTextByLocation(int locked, LayerTypePtr * Layer, TextTypePtr * Text, TextTypePtr * Dummy)
+static pcb_bool SearchTextByLocation(int locked, LayerTypePtr * Layer, TextTypePtr * Text, TextTypePtr * Dummy)
 {
 	struct ans_info info;
 
@@ -317,8 +317,8 @@ static bool SearchTextByLocation(int locked, LayerTypePtr * Layer, TextTypePtr *
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	if (r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL) != R_DIR_NOT_FOUND)
-		return true;
-	return false;
+		return pcb_true;
+	return pcb_false;
 }
 
 static r_dir_t polygon_callback(const BoxType * box, void *cl)
@@ -340,7 +340,7 @@ static r_dir_t polygon_callback(const BoxType * box, void *cl)
 /* ---------------------------------------------------------------------------
  * searches a polygon on the SearchLayer
  */
-static bool SearchPolygonByLocation(int locked, LayerTypePtr * Layer, PolygonTypePtr * Polygon, PolygonTypePtr * Dummy)
+static pcb_bool SearchPolygonByLocation(int locked, LayerTypePtr * Layer, PolygonTypePtr * Polygon, PolygonTypePtr * Dummy)
 {
 	struct ans_info info;
 
@@ -350,8 +350,8 @@ static bool SearchPolygonByLocation(int locked, LayerTypePtr * Layer, PolygonTyp
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	if (r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL) != R_DIR_NOT_FOUND)
-		return true;
-	return false;
+		return pcb_true;
+	return pcb_false;
 }
 
 static r_dir_t linepoint_callback(const BoxType * b, void *cl)
@@ -386,7 +386,7 @@ static r_dir_t linepoint_callback(const BoxType * b, void *cl)
 /* ---------------------------------------------------------------------------
  * searches a line-point on all the search layer
  */
-static bool SearchLinePointByLocation(int locked, LayerTypePtr * Layer, LineTypePtr * Line, PointTypePtr * Point)
+static pcb_bool SearchLinePointByLocation(int locked, LayerTypePtr * Layer, LineTypePtr * Line, PointTypePtr * Point)
 {
 	struct line_info info;
 	*Layer = SearchLayer;
@@ -396,18 +396,18 @@ static bool SearchLinePointByLocation(int locked, LayerTypePtr * Layer, LineType
 	info.least = MAX_LINE_POINT_DISTANCE + SearchRadius;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 	if (r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info, NULL))
-		return true;
-	return false;
+		return pcb_true;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
  * searches a polygon-point on all layers that are switched on
  * in layerstack order
  */
-static bool SearchPointByLocation(int locked, LayerTypePtr * Layer, PolygonTypePtr * Polygon, PointTypePtr * Point)
+static pcb_bool SearchPointByLocation(int locked, LayerTypePtr * Layer, PolygonTypePtr * Polygon, PointTypePtr * Point)
 {
 	double d, least;
-	bool found = false;
+	pcb_bool found = pcb_false;
 
 	least = SearchRadius + MAX_POLYGON_POINT_DISTANCE;
 	*Layer = SearchLayer;
@@ -420,15 +420,15 @@ static bool SearchPointByLocation(int locked, LayerTypePtr * Layer, PolygonTypeP
 				least = d;
 				*Polygon = polygon;
 				*Point = point;
-				found = true;
+				found = pcb_true;
 			}
 		}
 		END_LOOP;
 	}
 	END_LOOP;
 	if (found)
-		return (true);
-	return (false);
+		return (pcb_true);
+	return (pcb_false);
 }
 
 static r_dir_t name_callback(const BoxType * box, void *cl)
@@ -458,8 +458,8 @@ static r_dir_t name_callback(const BoxType * box, void *cl)
  * searches the name of an element
  * the search starts with the last element and goes back to the beginning
  */
-static bool
-SearchElementNameByLocation(int locked, ElementTypePtr * Element, TextTypePtr * Text, TextTypePtr * Dummy, bool BackToo)
+static pcb_bool
+SearchElementNameByLocation(int locked, ElementTypePtr * Element, TextTypePtr * Text, TextTypePtr * Dummy, pcb_bool BackToo)
 {
 	struct ans_info info;
 
@@ -472,9 +472,9 @@ SearchElementNameByLocation(int locked, ElementTypePtr * Element, TextTypePtr * 
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 		if (r_search(PCB->Data->name_tree[NAME_INDEX()], &SearchBox, NULL, name_callback, &info, NULL))
-			return true;
+			return pcb_true;
 	}
-	return (false);
+	return (pcb_false);
 }
 
 static r_dir_t element_callback(const BoxType * box, void *cl)
@@ -503,8 +503,8 @@ static r_dir_t element_callback(const BoxType * box, void *cl)
  * the search starts with the last element and goes back to the beginning
  * if more than one element matches, the smallest one is taken
  */
-static bool
-SearchElementByLocation(int locked, ElementTypePtr * Element, ElementTypePtr * Dummy1, ElementTypePtr * Dummy2, bool BackToo)
+static pcb_bool
+SearchElementByLocation(int locked, ElementTypePtr * Element, ElementTypePtr * Dummy1, ElementTypePtr * Dummy2, pcb_bool BackToo)
 {
 	struct ans_info info;
 
@@ -517,15 +517,15 @@ SearchElementByLocation(int locked, ElementTypePtr * Element, ElementTypePtr * D
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 		if (r_search(PCB->Data->element_tree, &SearchBox, NULL, element_callback, &info, NULL))
-			return true;
+			return pcb_true;
 	}
-	return false;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
  * checks if a point is on a pin
  */
-bool IsPointOnPin(Coord X, Coord Y, Coord Radius, PinTypePtr pin)
+pcb_bool IsPointOnPin(Coord X, Coord Y, Coord Radius, PinTypePtr pin)
 {
 	Coord t = PIN_SIZE(pin) / 2;
 	if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
@@ -536,21 +536,21 @@ bool IsPointOnPin(Coord X, Coord Y, Coord Radius, PinTypePtr pin)
 		b.Y1 = pin->Y - t;
 		b.Y2 = pin->Y + t;
 		if (IsPointInBox(X, Y, &b, Radius))
-			return true;
+			return pcb_true;
 	}
 	else if (Distance(pin->X, pin->Y, X, Y) <= Radius + t)
-		return true;
-	return false;
+		return pcb_true;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
  * checks if a rat-line end is on a PV
  */
-bool IsPointOnLineEnd(Coord X, Coord Y, RatTypePtr Line)
+pcb_bool IsPointOnLineEnd(Coord X, Coord Y, RatTypePtr Line)
 {
 	if (((X == Line->Point1.X) && (Y == Line->Point1.Y)) || ((X == Line->Point2.X) && (Y == Line->Point2.Y)))
-		return (true);
-	return (false);
+		return (pcb_true);
+	return (pcb_false);
 }
 
 /* ---------------------------------------------------------------------------
@@ -585,7 +585,7 @@ bool IsPointOnLineEnd(Coord X, Coord Y, RatTypePtr Line)
  * Finally, D1 and D2 are orthogonal, so we can sum them easily
  * by Pythagorean theorem.
  */
-bool IsPointOnLine(Coord X, Coord Y, Coord Radius, LineTypePtr Line)
+pcb_bool IsPointOnLine(Coord X, Coord Y, Coord Radius, LineTypePtr Line)
 {
 	double D1, D2, L;
 
@@ -626,14 +626,14 @@ static int is_point_on_line(Coord px, Coord py, Coord lx1, Coord ly1, Coord lx2,
 /* ---------------------------------------------------------------------------
  * checks if a line crosses a rectangle
  */
-bool IsLineInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, LineTypePtr Line)
+pcb_bool IsLineInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, LineTypePtr Line)
 {
 	LineType line;
 
 	/* first, see if point 1 is inside the rectangle */
 	/* in case the whole line is inside the rectangle */
 	if (X1 < Line->Point1.X && X2 > Line->Point1.X && Y1 < Line->Point1.Y && Y2 > Line->Point1.Y)
-		return (true);
+		return (pcb_true);
 	/* construct a set of dummy lines and check each of them */
 	line.Thickness = 0;
 	line.Flags = NoFlags();
@@ -643,30 +643,30 @@ bool IsLineInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, LineTypePtr Line)
 	line.Point1.X = X1;
 	line.Point2.X = X2;
 	if (LineLineIntersect(&line, Line))
-		return (true);
+		return (pcb_true);
 
 	/* upper-right to lower-right corner */
 	line.Point1.X = X2;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
 	if (LineLineIntersect(&line, Line))
-		return (true);
+		return (pcb_true);
 
 	/* lower-right to lower-left corner */
 	line.Point1.Y = Y2;
 	line.Point1.X = X1;
 	line.Point2.X = X2;
 	if (LineLineIntersect(&line, Line))
-		return (true);
+		return (pcb_true);
 
 	/* lower-left to upper-left corner */
 	line.Point2.X = X1;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
 	if (LineLineIntersect(&line, Line))
-		return (true);
+		return (pcb_true);
 
-	return (false);
+	return (pcb_false);
 }
 
 static int /*checks if a point (of null radius) is in a slanted rectangle */ IsPointInQuadrangle(PointType p[4], PointTypePtr l)
@@ -690,25 +690,25 @@ static int /*checks if a point (of null radius) is in a slanted rectangle */ IsP
 		y = l->Y - p[2].Y;
 		prod1 = (double) x *dx + (double) y *dy;
 		if (prod0 * prod1 <= 0)
-			return true;
+			return pcb_true;
 	}
-	return false;
+	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
  * checks if a line crosses a quadrangle: almost copied from IsLineInRectangle()
  * Note: actually this quadrangle is a slanted rectangle
  */
-bool IsLineInQuadrangle(PointType p[4], LineTypePtr Line)
+pcb_bool IsLineInQuadrangle(PointType p[4], LineTypePtr Line)
 {
 	LineType line;
 
 	/* first, see if point 1 is inside the rectangle */
 	/* in case the whole line is inside the rectangle */
 	if (IsPointInQuadrangle(p, &(Line->Point1)))
-		return true;
+		return pcb_true;
 	if (IsPointInQuadrangle(p, &(Line->Point2)))
-		return true;
+		return pcb_true;
 	/* construct a set of dummy lines and check each of them */
 	line.Thickness = 0;
 	line.Flags = NoFlags();
@@ -719,33 +719,33 @@ bool IsLineInQuadrangle(PointType p[4], LineTypePtr Line)
 	line.Point2.X = p[1].X;
 	line.Point2.Y = p[1].Y;
 	if (LineLineIntersect(&line, Line))
-		return (true);
+		return (pcb_true);
 
 	/* upper-right to lower-right corner */
 	line.Point1.X = p[2].X;
 	line.Point1.Y = p[2].Y;
 	if (LineLineIntersect(&line, Line))
-		return (true);
+		return (pcb_true);
 
 	/* lower-right to lower-left corner */
 	line.Point2.X = p[3].X;
 	line.Point2.Y = p[3].Y;
 	if (LineLineIntersect(&line, Line))
-		return (true);
+		return (pcb_true);
 
 	/* lower-left to upper-left corner */
 	line.Point1.X = p[0].X;
 	line.Point1.Y = p[0].Y;
 	if (LineLineIntersect(&line, Line))
-		return (true);
+		return (pcb_true);
 
-	return (false);
+	return (pcb_false);
 }
 
 /* ---------------------------------------------------------------------------
  * checks if an arc crosses a square
  */
-bool IsArcInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, ArcTypePtr Arc)
+pcb_bool IsArcInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, ArcTypePtr Arc)
 {
 	LineType line;
 
@@ -758,37 +758,37 @@ bool IsArcInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, ArcTypePtr Arc)
 	line.Point1.X = X1;
 	line.Point2.X = X2;
 	if (LineArcIntersect(&line, Arc))
-		return (true);
+		return (pcb_true);
 
 	/* upper-right to lower-right corner */
 	line.Point1.X = line.Point2.X = X2;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
 	if (LineArcIntersect(&line, Arc))
-		return (true);
+		return (pcb_true);
 
 	/* lower-right to lower-left corner */
 	line.Point1.Y = line.Point2.Y = Y2;
 	line.Point1.X = X1;
 	line.Point2.X = X2;
 	if (LineArcIntersect(&line, Arc))
-		return (true);
+		return (pcb_true);
 
 	/* lower-left to upper-left corner */
 	line.Point1.X = line.Point2.X = X1;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
 	if (LineArcIntersect(&line, Arc))
-		return (true);
+		return (pcb_true);
 
-	return (false);
+	return (pcb_false);
 }
 
 /* ---------------------------------------------------------------------------
  * Check if a circle of Radius with center at (X, Y) intersects a Pad.
  * Written to enable arbitrary pad directions; for rounded pads, too.
  */
-bool IsPointInPad(Coord X, Coord Y, Coord Radius, PadTypePtr Pad)
+pcb_bool IsPointInPad(Coord X, Coord Y, Coord Radius, PadTypePtr Pad)
 {
 	double r, Sin, Cos;
 	Coord x;
@@ -859,7 +859,7 @@ bool IsPointInPad(Coord X, Coord Y, Coord Radius, PadTypePtr Pad)
 	return range < Radius;
 }
 
-bool IsPointInBox(Coord X, Coord Y, BoxTypePtr box, Coord Radius)
+pcb_bool IsPointInBox(Coord X, Coord Y, BoxTypePtr box, Coord Radius)
 {
 	Coord width, height, range;
 
@@ -894,7 +894,7 @@ bool IsPointInBox(Coord X, Coord Y, BoxTypePtr box, Coord Radius)
 		else if (Y > height)
 			range = Y - height;
 		else
-			return true;
+			return pcb_true;
 	}
 
 	return range < Radius;
@@ -904,7 +904,7 @@ bool IsPointInBox(Coord X, Coord Y, BoxTypePtr box, Coord Radius)
  *       and in the case that the arc thickness is greater than
  *       the radius.
  */
-bool IsPointOnArc(Coord X, Coord Y, Coord Radius, ArcTypePtr Arc)
+pcb_bool IsPointOnArc(Coord X, Coord Y, Coord Radius, ArcTypePtr Arc)
 {
 	/* Calculate angle of point from arc center */
 	double p_dist = Distance(X, Y, Arc->X, Arc->Y);
@@ -938,13 +938,13 @@ bool IsPointOnArc(Coord X, Coord Y, Coord Radius, ArcTypePtr Arc)
 		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
 		ArcY = Arc->Y - Arc->Width * sin((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
 		if (Distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
-			return true;
+			return pcb_true;
 
 		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
 		ArcY = Arc->Y - Arc->Width * sin((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
 		if (Distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
-			return true;
-		return false;
+			return pcb_true;
+		return pcb_false;
 	}
 	/* If point is inside the arc range, just compare it to the arc */
 	return fabs(Distance(X, Y, Arc->X, Arc->Y) - Arc->Width) < Radius + Arc->Thickness / 2;
@@ -1010,18 +1010,18 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 		HigherAvail = PCB_TYPE_PIN;
 
 	if (!HigherAvail && Type & PCB_TYPE_PAD &&
-			SearchPadByLocation(locked, (ElementTypePtr *) pr1, (PadTypePtr *) pr2, (PadTypePtr *) pr3, false))
+			SearchPadByLocation(locked, (ElementTypePtr *) pr1, (PadTypePtr *) pr2, (PadTypePtr *) pr3, pcb_false))
 		HigherAvail = PCB_TYPE_PAD;
 
 	if (!HigherAvail && Type & PCB_TYPE_ELEMENT_NAME &&
-			SearchElementNameByLocation(locked, (ElementTypePtr *) pr1, (TextTypePtr *) pr2, (TextTypePtr *) pr3, false)) {
+			SearchElementNameByLocation(locked, (ElementTypePtr *) pr1, (TextTypePtr *) pr2, (TextTypePtr *) pr3, pcb_false)) {
 		BoxTypePtr box = &((TextTypePtr) r2)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
 		HigherAvail = PCB_TYPE_ELEMENT_NAME;
 	}
 
 	if (!HigherAvail && Type & PCB_TYPE_ELEMENT &&
-			SearchElementByLocation(locked, (ElementTypePtr *) pr1, (ElementTypePtr *) pr2, (ElementTypePtr *) pr3, false)) {
+			SearchElementByLocation(locked, (ElementTypePtr *) pr1, (ElementTypePtr *) pr2, (ElementTypePtr *) pr3, pcb_false)) {
 		BoxTypePtr box = &((ElementTypePtr) r1)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
 		HigherAvail = PCB_TYPE_ELEMENT;
@@ -1109,15 +1109,15 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 		return (PCB_TYPE_NONE);
 
 	if (Type & PCB_TYPE_PAD &&
-			SearchPadByLocation(locked, (ElementTypePtr *) Result1, (PadTypePtr *) Result2, (PadTypePtr *) Result3, true))
+			SearchPadByLocation(locked, (ElementTypePtr *) Result1, (PadTypePtr *) Result2, (PadTypePtr *) Result3, pcb_true))
 		return (PCB_TYPE_PAD);
 
 	if (Type & PCB_TYPE_ELEMENT_NAME &&
-			SearchElementNameByLocation(locked, (ElementTypePtr *) Result1, (TextTypePtr *) Result2, (TextTypePtr *) Result3, true))
+			SearchElementNameByLocation(locked, (ElementTypePtr *) Result1, (TextTypePtr *) Result2, (TextTypePtr *) Result3, pcb_true))
 		return (PCB_TYPE_ELEMENT_NAME);
 
 	if (Type & PCB_TYPE_ELEMENT &&
-			SearchElementByLocation(locked, (ElementTypePtr *) Result1, (ElementTypePtr *) Result2, (ElementTypePtr *) Result3, true))
+			SearchElementByLocation(locked, (ElementTypePtr *) Result1, (ElementTypePtr *) Result2, (ElementTypePtr *) Result3, pcb_true))
 		return (PCB_TYPE_ELEMENT);
 
 	return (PCB_TYPE_NONE);

@@ -262,7 +262,7 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 			break;
 
 		case F_CycleClip:
-			notify_crosshair_change(false);
+			notify_crosshair_change(pcb_false);
 			if (conf_core.editor.all_direction_lines) {
 				conf_toggle_editor(all_direction_lines);
 				conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",0);
@@ -271,27 +271,27 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 				conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
 				}
 			AdjustAttachedObjects();
-			notify_crosshair_change(true);
+			notify_crosshair_change(pcb_true);
 			break;
 
 		case F_CycleCrosshair:
-			notify_crosshair_change(false);
+			notify_crosshair_change(pcb_false);
 			Crosshair.shape = CrosshairShapeIncrement(Crosshair.shape);
 			if (Crosshair_Shapes_Number == Crosshair.shape)
 				Crosshair.shape = Basic_Crosshair_Shape;
-			notify_crosshair_change(true);
+			notify_crosshair_change(pcb_true);
 			break;
 
 		case F_ToggleRubberBandMode:
-			notify_crosshair_change(false);
+			notify_crosshair_change(pcb_false);
 			conf_toggle_editor(rubber_band_mode);
-			notify_crosshair_change(true);
+			notify_crosshair_change(pcb_true);
 			break;
 
 		case F_ToggleStartDirection:
-			notify_crosshair_change(false);
+			notify_crosshair_change(pcb_false);
 			conf_toggle_editor(swap_start_direction);
-			notify_crosshair_change(true);
+			notify_crosshair_change(pcb_true);
 			break;
 
 		case F_ToggleUniqueNames:
@@ -299,21 +299,21 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 			break;
 
 		case F_ToggleSnapPin:
-			notify_crosshair_change(false);
+			notify_crosshair_change(pcb_false);
 			conf_toggle_editor(snap_pin);
-			notify_crosshair_change(true);
+			notify_crosshair_change(pcb_true);
 			break;
 
 		case F_ToggleSnapOffGridLine:
-			notify_crosshair_change(false);
+			notify_crosshair_change(pcb_false);
 			conf_toggle_editor(snap_offgrid_line);
-			notify_crosshair_change(true);
+			notify_crosshair_change(pcb_true);
 			break;
 
 		case F_ToggleHighlightOnPoint:
-			notify_crosshair_change(false);
+			notify_crosshair_change(pcb_false);
 			conf_toggle_editor(highlight_on_point);
-			notify_crosshair_change(true);
+			notify_crosshair_change(pcb_true);
 			break;
 
 		case F_ToggleLocalRef:
@@ -358,17 +358,17 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 			break;
 
 		case F_ToggleAutoDRC:
-			notify_crosshair_change(false);
+			notify_crosshair_change(pcb_false);
 			conf_toggle_editor(auto_drc);
 			if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
-				if (ResetConnections(true)) {
+				if (ResetConnections(pcb_true)) {
 					IncrementUndoSerialNumber();
 					Draw();
 				}
 				if (Crosshair.AttachedLine.State != STATE_FIRST)
-					LookupConnection(Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, true, 1, PCB_FLAG_FOUND);
+					LookupConnection(Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, pcb_true, 1, PCB_FLAG_FOUND);
 			}
-			notify_crosshair_change(true);
+			notify_crosshair_change(pcb_true);
 			break;
 
 		case F_ToggleCheckPlanes:
@@ -405,8 +405,8 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 
 				PCB->Grid = 1;
 				if (MoveCrosshairAbsolute(Crosshair.X, Crosshair.Y))
-					notify_crosshair_change(true);	/* first notify was in MoveCrosshairAbs */
-				SetGrid(oldGrid, true);
+					notify_crosshair_change(pcb_true);	/* first notify was in MoveCrosshairAbs */
+				SetGrid(oldGrid, pcb_true);
 			}
 			break;
 
@@ -462,7 +462,7 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 						TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, pad);
 					}
 					END_LOOP;
-					SetChangedFlag(true);
+					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
 					Draw();
 					break;
@@ -474,7 +474,7 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 						DrawPinName((PinTypePtr) ptr2);
 					AddObjectToFlagUndoList(PCB_TYPE_PIN, ptr1, ptr2, ptr3);
 					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (PinTypePtr) ptr2);
-					SetChangedFlag(true);
+					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
 					Draw();
 					break;
@@ -486,7 +486,7 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 						DrawPadName((PadTypePtr) ptr2);
 					AddObjectToFlagUndoList(PCB_TYPE_PAD, ptr1, ptr2, ptr3);
 					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (PadTypePtr) ptr2);
-					SetChangedFlag(true);
+					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
 					Draw();
 					break;
@@ -497,7 +497,7 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 						DrawViaName((PinTypePtr) ptr2);
 					AddObjectToFlagUndoList(PCB_TYPE_VIA, ptr1, ptr2, ptr3);
 					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (PinTypePtr) ptr2);
-					SetChangedFlag(true);
+					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
 					Draw();
 					break;
@@ -597,7 +597,7 @@ static int ActionMode(int argc, const char **argv, Coord x, Coord y)
 	if (function) {
 		Note.X = Crosshair.X;
 		Note.Y = Crosshair.Y;
-		notify_crosshair_change(false);
+		notify_crosshair_change(pcb_false);
 		switch (funchash_get(function, NULL)) {
 		case F_Arc:
 			SetMode(PCB_MODE_ARC);
@@ -749,7 +749,7 @@ static int ActionMode(int argc, const char **argv, Coord x, Coord y)
 				SetMode(PCB_MODE_POLYGON);
 			else {
 				SaveMode();
-				saved_mode = true;
+				saved_mode = pcb_true;
 				SetMode(PCB_MODE_ARROW);
 				NotifyMode();
 			}
@@ -772,7 +772,7 @@ static int ActionMode(int argc, const char **argv, Coord x, Coord y)
 			SaveMode();
 			break;
 		}
-		notify_crosshair_change(true);
+		notify_crosshair_change(pcb_true);
 		return 0;
 	}
 
@@ -914,7 +914,7 @@ static int ActionToggleHideName(int argc, const char **argv, Coord x, Coord y)
 		case F_SelectedElements:
 		case F_Selected:
 			{
-				bool changed = false;
+				pcb_bool changed = pcb_false;
 				ELEMENT_LOOP(PCB->Data);
 				{
 					if ((TEST_FLAG(PCB_FLAG_SELECTED, element) || TEST_FLAG(PCB_FLAG_SELECTED, &NAMEONPCB_TEXT(element)))
@@ -923,7 +923,7 @@ static int ActionToggleHideName(int argc, const char **argv, Coord x, Coord y)
 						EraseElementName(element);
 						TOGGLE_FLAG(PCB_FLAG_HIDENAME, element);
 						DrawElementName(element);
-						changed = true;
+						changed = pcb_true;
 					}
 				}
 				END_LOOP;
@@ -962,25 +962,25 @@ static int ActionMarkCrosshair(int argc, const char **argv, Coord x, Coord y)
 	const char *function = ACTION_ARG(0);
 	if (!function || !*function) {
 		if (Marked.status) {
-			notify_mark_change(false);
-			Marked.status = false;
-			notify_mark_change(true);
+			notify_mark_change(pcb_false);
+			Marked.status = pcb_false;
+			notify_mark_change(pcb_true);
 		}
 		else {
-			notify_mark_change(false);
-			Marked.status = false;
-			Marked.status = true;
+			notify_mark_change(pcb_false);
+			Marked.status = pcb_false;
+			Marked.status = pcb_true;
 			Marked.X = Crosshair.X;
 			Marked.Y = Crosshair.Y;
-			notify_mark_change(true);
+			notify_mark_change(pcb_true);
 		}
 	}
 	else if (funchash_get(function, NULL) == F_Center) {
-		notify_mark_change(false);
-		Marked.status = true;
+		notify_mark_change(pcb_false);
+		Marked.status = pcb_true;
 		Marked.X = Crosshair.X;
 		Marked.Y = Crosshair.Y;
-		notify_mark_change(true);
+		notify_mark_change(pcb_true);
 	}
 	return 0;
 }
@@ -1020,8 +1020,8 @@ static int ActionRouteStyle(int argc, const char **argv, Coord x, Coord y)
 		if (number > 0 && number <= vtroutestyle_len(&PCB->RouteStyle)) {
 			rts = &PCB->RouteStyle.array[number - 1];
 			SetLineSize(rts->Thick);
-			SetViaSize(rts->Diameter, true);
-			SetViaDrillingHole(rts->Hole, true);
+			SetViaSize(rts->Diameter, pcb_true);
+			SetViaDrillingHole(rts->Hole, pcb_true);
 			SetClearanceWidth(rts->Clearance);
 			hid_action("RouteStylesChanged");
 		}
@@ -1093,22 +1093,22 @@ static int ActionSetSame(int argc, const char **argv, Coord x, Coord y)
 /* set layer current and size from line or arc */
 	switch (type) {
 	case PCB_TYPE_LINE:
-		notify_crosshair_change(false);
+		notify_crosshair_change(pcb_false);
 		set_same_(((LineTypePtr) ptr2)->Thickness, 0, 0, ((LineTypePtr) ptr2)->Clearance / 2, NULL);
 		layer = (LayerTypePtr) ptr1;
 		if (conf_core.editor.mode != PCB_MODE_LINE)
 			SetMode(PCB_MODE_LINE);
-		notify_crosshair_change(true);
+		notify_crosshair_change(pcb_true);
 		hid_action("RouteStylesChanged");
 		break;
 
 	case PCB_TYPE_ARC:
-		notify_crosshair_change(false);
+		notify_crosshair_change(pcb_false);
 		set_same_(((ArcTypePtr) ptr2)->Thickness, 0, 0, ((ArcTypePtr) ptr2)->Clearance / 2, NULL);
 		layer = (LayerTypePtr) ptr1;
 		if (conf_core.editor.mode != PCB_MODE_ARC)
 			SetMode(PCB_MODE_ARC);
-		notify_crosshair_change(true);
+		notify_crosshair_change(pcb_true);
 		hid_action("RouteStylesChanged");
 		break;
 
@@ -1117,11 +1117,11 @@ static int ActionSetSame(int argc, const char **argv, Coord x, Coord y)
 		break;
 
 	case PCB_TYPE_VIA:
-		notify_crosshair_change(false);
+		notify_crosshair_change(pcb_false);
 		set_same_(0, ((PinTypePtr) ptr2)->Thickness, ((PinTypePtr) ptr2)->DrillingHole, ((PinTypePtr) ptr2)->Clearance / 2, NULL);
 		if (conf_core.editor.mode != PCB_MODE_VIA)
 			SetMode(PCB_MODE_VIA);
-		notify_crosshair_change(true);
+		notify_crosshair_change(pcb_true);
 		hid_action("RouteStylesChanged");
 		break;
 
@@ -1129,7 +1129,7 @@ static int ActionSetSame(int argc, const char **argv, Coord x, Coord y)
 		return 1;
 	}
 	if (layer != CURRENT) {
-		ChangeGroupVisibility(GetLayerNumber(PCB->Data, layer), true, true);
+		ChangeGroupVisibility(GetLayerNumber(PCB->Data, layer), pcb_true, pcb_true);
 		Redraw();
 	}
 	return 0;

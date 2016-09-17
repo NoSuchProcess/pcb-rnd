@@ -121,22 +121,22 @@ static int ActionLoadFrom(int argc, const char **argv, Coord x, Coord y)
 		format = argv[2];
 
 	if (strcasecmp(function, "ElementToBuffer") == 0) {
-		notify_crosshair_change(false);
+		notify_crosshair_change(pcb_false);
 		if (LoadElementToBuffer(PASTEBUFFER, name))
 			SetMode(PCB_MODE_PASTE_BUFFER);
-		notify_crosshair_change(true);
+		notify_crosshair_change(pcb_true);
 	}
 
 	else if (strcasecmp(function, "LayoutToBuffer") == 0) {
-		notify_crosshair_change(false);
+		notify_crosshair_change(pcb_false);
 		if (LoadLayoutToBuffer(PASTEBUFFER, name, format))
 			SetMode(PCB_MODE_PASTE_BUFFER);
-		notify_crosshair_change(true);
+		notify_crosshair_change(pcb_true);
 	}
 
 	else if (strcasecmp(function, "Layout") == 0) {
 		if (!PCB->Changed || gui->confirm_dialog(_("OK to override layout data?"), 0))
-			LoadPCB(name, format, true, 0);
+			LoadPCB(name, format, pcb_true, 0);
 	}
 
 	else if (strcasecmp(function, "Netlist") == 0) {
@@ -185,7 +185,7 @@ static int ActionNew(int argc, const char **argv, Coord x, Coord y)
 		if (!name)
 			return 1;
 
-		notify_crosshair_change(false);
+		notify_crosshair_change(pcb_false);
 		/* do emergency saving
 		 * clear the old struct and allocate memory for the new one
 		 */
@@ -205,7 +205,7 @@ static int ActionNew(int argc, const char **argv, Coord x, Coord y)
 		Redraw();
 
 		hid_action("PCBChanged");
-		notify_crosshair_change(true);
+		notify_crosshair_change(pcb_true);
 		return 0;
 	}
 	return 1;
@@ -256,7 +256,7 @@ static int ActionSaveTo(int argc, const char **argv, Coord x, Coord y)
 
 	if (strcasecmp(function, "Layout") == 0) {
 		if (SavePCB(PCB->Filename, NULL) == 0)
-			SetChangedFlag(false);
+			SetChangedFlag(pcb_false);
 		if (gui->notify_filename_changed != NULL)
 			gui->notify_filename_changed();
 		return 0;
@@ -270,7 +270,7 @@ static int ActionSaveTo(int argc, const char **argv, Coord x, Coord y)
 
 	if (strcasecmp(function, "LayoutAs") == 0) {
 		if (SavePCB(name, fmt) == 0) {
-			SetChangedFlag(false);
+			SetChangedFlag(pcb_false);
 			free(PCB->Filename);
 			PCB->Filename = pcb_strdup(name);
 			if (gui->notify_filename_changed != NULL)
@@ -281,22 +281,22 @@ static int ActionSaveTo(int argc, const char **argv, Coord x, Coord y)
 
 	if (strcasecmp(function, "AllConnections") == 0) {
 		FILE *fp;
-		bool result;
-		if ((fp = CheckAndOpenFile(name, true, false, &result, NULL)) != NULL) {
+		pcb_bool result;
+		if ((fp = CheckAndOpenFile(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
 			LookupConnectionsToAllElements(fp);
 			fclose(fp);
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 		}
 		return 0;
 	}
 
 	if (strcasecmp(function, "AllUnusedPins") == 0) {
 		FILE *fp;
-		bool result;
-		if ((fp = CheckAndOpenFile(name, true, false, &result, NULL)) != NULL) {
+		pcb_bool result;
+		if ((fp = CheckAndOpenFile(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
 			LookupUnusedPins(fp);
 			fclose(fp);
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 		}
 		return 0;
 	}
@@ -305,14 +305,14 @@ static int ActionSaveTo(int argc, const char **argv, Coord x, Coord y)
 		ElementTypePtr element;
 		void *ptrtmp;
 		FILE *fp;
-		bool result;
+		pcb_bool result;
 
 		if ((SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 			element = (ElementTypePtr) ptrtmp;
-			if ((fp = CheckAndOpenFile(name, true, false, &result, NULL)) != NULL) {
+			if ((fp = CheckAndOpenFile(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
 				LookupElementConnections(element, fp);
 				fclose(fp);
-				SetChangedFlag(true);
+				SetChangedFlag(pcb_true);
 			}
 		}
 		return 0;

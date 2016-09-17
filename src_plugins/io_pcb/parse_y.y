@@ -70,7 +70,7 @@ static	PolygonTypePtr	Polygon;
 static	SymbolTypePtr	Symbol;
 static	int		pin_num;
 static	LibraryMenuTypePtr	Menu;
-static	bool			LayerFlag[MAX_LAYER + 2];
+static	pcb_bool			LayerFlag[MAX_LAYER + 2];
 
 extern	char			*yytext;		/* defined by LEX */
 extern	PCBTypePtr		yyPCB;
@@ -179,7 +179,7 @@ parsepcb
 					YYABORT;
 				}
 				for (i = 0; i < MAX_LAYER + 2; i++)
-					LayerFlag[i] = false;
+					LayerFlag[i] = pcb_false;
 				yyFont = &yyPCB->Font;
 				yyData = yyPCB->Data;
 				yyData->pcb = yyPCB;
@@ -227,8 +227,8 @@ parsepcb
 		| { PreLoadElementPCB ();
 		    layer_group_string = NULL; }
 		  element
-		  { LayerFlag[0] = true;
-		    LayerFlag[1] = true;
+		  { LayerFlag[0] = pcb_true;
+		    LayerFlag[1] = pcb_true;
 		    yyData->LayerN = 2;
 		    PostLoadElementPCB ();
 		  }
@@ -247,7 +247,7 @@ parsedata
 					YYABORT;
 				}
 				for (i = 0; i < MAX_LAYER + 2; i++)
-					LayerFlag[i] = false;
+					LayerFlag[i] = pcb_false;
 				yyData->LayerN = 0;
 			}
 		 pcbdata
@@ -269,14 +269,14 @@ parsefont
 					Message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
-				yyFont->Valid = false;
+				yyFont->Valid = pcb_false;
 				for (i = 0; i <= MAX_FONTPOSITION; i++)
 					free (yyFont->Symbol[i].Line);
 				memset(yyFont->Symbol, 0, sizeof(yyFont->Symbol));
 			}
 		  symbols
 			{
-				yyFont->Valid = true;
+				yyFont->Valid = pcb_true;
 		  		SetFontInfo(yyFont);
 			}
 		;
@@ -883,7 +883,7 @@ layer
 				if (Layer->Name != NULL)
 					free((char*)Layer->Name);
 				Layer->Name = $4;   /* shouldn't this be strdup()'ed ? */
-				LayerFlag[$3-1] = true;
+				LayerFlag[$3-1] = pcb_true;
 				if (yyData->LayerN + 2 < $3)
 				  yyData->LayerN = $3 - 2;
 				if ($5 != NULL)
@@ -1155,7 +1155,7 @@ polygon_format
 		  polygonholes ')'
 			{
 				Cardinal contour, contour_start, contour_end;
-				bool bad_contour_found = false;
+				pcb_bool bad_contour_found = pcb_false;
 				/* ignore junk */
 				for (contour = 0; contour <= Polygon->HoleIndexN; contour++)
 				  {
@@ -1165,7 +1165,7 @@ polygon_format
 						 Polygon->PointN :
 						 Polygon->HoleIndex[contour];
 				    if (contour_end - contour_start < 3)
-				      bad_contour_found = true;
+				      bad_contour_found = pcb_true;
 				  }
 
 				if (bad_contour_found)
@@ -1284,7 +1284,7 @@ element_oldformat
 		: T_ELEMENT '(' STRING STRING measure measure INTEGER ')' '('
 			{
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, NoFlags(),
-					$3, $4, NULL, OU ($5), OU ($6), $7, 100, NoFlags(), false);
+					$3, $4, NULL, OU ($5), OU ($6), $7, 100, NoFlags(), pcb_false);
 				free ($3);
 				free ($4);
 				pin_num = 1;
@@ -1302,7 +1302,7 @@ element_1.3.4_format
 		: T_ELEMENT '(' INTEGER STRING STRING measure measure measure measure INTEGER ')' '('
 			{
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, OldFlags($3),
-					$4, $5, NULL, OU ($6), OU ($7), IV ($8), IV ($9), OldFlags($10), false);
+					$4, $5, NULL, OU ($6), OU ($7), IV ($8), IV ($9), OldFlags($10), pcb_false);
 				free ($4);
 				free ($5);
 				pin_num = 1;
@@ -1320,7 +1320,7 @@ element_newformat
 		: T_ELEMENT '(' INTEGER STRING STRING STRING measure measure measure measure INTEGER ')' '('
 			{
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, OldFlags($3),
-					$4, $5, $6, OU ($7), OU ($8), IV ($9), IV ($10), OldFlags($11), false);
+					$4, $5, $6, OU ($7), OU ($8), IV ($9), IV ($10), OldFlags($11), pcb_false);
 				free ($4);
 				free ($5);
 				free ($6);
@@ -1341,7 +1341,7 @@ element_1.7_format
 			{
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, OldFlags($3),
 					$4, $5, $6, OU ($7) + OU ($9), OU ($8) + OU ($10),
-					$11, $12, OldFlags($13), false);
+					$11, $12, OldFlags($13), pcb_false);
 				yyElement->MarkX = OU ($7);
 				yyElement->MarkY = OU ($8);
 				free ($4);
@@ -1363,7 +1363,7 @@ element_hi_format
 			{
 				yyElement = CreateNewElement(yyData, yyElement, yyFont, $3,
 					$4, $5, $6, NU ($7) + NU ($9), NU ($8) + NU ($10),
-					$11, $12, $13, false);
+					$11, $12, $13, pcb_false);
 				yyElement->MarkX = NU ($7);
 				yyElement->MarkY = NU ($8);
 				free ($4);
@@ -1755,7 +1755,7 @@ symbolhead	: T_SYMBOL '[' symbolid measure ']' '('
 					yyerror("symbol ID used twice");
 					YYABORT;
 				}
-				Symbol->Valid = true;
+				Symbol->Valid = pcb_true;
 				Symbol->Delta = NU ($4);
 			}
 		| T_SYMBOL '(' symbolid measure ')' '('
@@ -1771,7 +1771,7 @@ symbolhead	: T_SYMBOL '[' symbolid measure ']' '('
 					yyerror("symbol ID used twice");
 					YYABORT;
 				}
-				Symbol->Valid = true;
+				Symbol->Valid = pcb_true;
 				Symbol->Delta = OU ($4);
 			}
 		;

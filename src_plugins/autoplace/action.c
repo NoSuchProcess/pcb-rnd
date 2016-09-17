@@ -48,7 +48,7 @@ static int ActionAutoPlaceSelected(int argc, const char **argv, Coord x, Coord y
 	hid_action("Busy");
 	if (gui->confirm_dialog(_("Auto-placement can NOT be undone.\n" "Do you want to continue anyway?\n"), 0)) {
 		if (AutoPlaceSelected())
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 	}
 	return 0;
 }

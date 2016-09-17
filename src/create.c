@@ -57,7 +57,7 @@
 /* current object ID; incremented after each creation of an object */
 static long int ID = 1;
 
-static bool be_lenient = false;
+static pcb_bool be_lenient = pcb_false;
 
 /* ----------------------------------------------------------------------
  * some local prototypes
@@ -68,7 +68,7 @@ static void AddTextToElement(TextTypePtr, FontTypePtr, Coord, Coord, unsigned, c
  *  Set the lenience mode.
  */
 
-void CreateBeLenient(bool v)
+void CreateBeLenient(pcb_bool v)
 {
 	be_lenient = v;
 }
@@ -122,7 +122,7 @@ void pcb_colors_from_settings(PCBTypePtr ptr)
 /* ---------------------------------------------------------------------------
  * creates a new PCB
  */
-PCBTypePtr CreateNewPCB_(bool SetDefaultNames)
+PCBTypePtr CreateNewPCB_(pcb_bool SetDefaultNames)
 {
 	PCBTypePtr ptr, save;
 	int i;
@@ -134,8 +134,8 @@ PCBTypePtr CreateNewPCB_(bool SetDefaultNames)
 
 	ptr->ThermStyle = 4;
 	ptr->IsleArea = 2.e8;
-	ptr->SilkActive = false;
-	ptr->RatDraw = false;
+	ptr->SilkActive = pcb_false;
+	ptr->RatDraw = pcb_false;
 
 	/* NOTE: we used to set all the pcb flags on ptr here, but we don't need to do that anymore due to the new conf system */
 						/* this is the most useful starting point for now */
@@ -177,7 +177,7 @@ PCBTypePtr CreateNewPCB()
 	PCB = NULL;
 
 	dpcb = -1;
-	conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, LoadPCB(__path__, NULL, false, 1));
+	conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, LoadPCB(__path__, NULL, pcb_false, 1));
 
 	if (dpcb == 0) {
 		nw = PCB;
@@ -622,7 +622,7 @@ CreateNewElement(DataTypePtr Data, ElementTypePtr Element,
 								 FontTypePtr PCBFont,
 								 FlagType Flags,
 								 char *Description, char *NameOnPCB, char *Value,
-								 Coord TextX, Coord TextY, BYTE Direction, int TextScale, FlagType TextFlags, bool uniqueName)
+								 Coord TextX, Coord TextY, BYTE Direction, int TextScale, FlagType TextFlags, pcb_bool uniqueName)
 {
 #ifdef DEBUG
 	printf("Entered CreateNewElement.....\n");

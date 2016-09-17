@@ -187,7 +187,7 @@ static void *AddElementToBuffer(ElementTypePtr Element)
 	ElementTypePtr element;
 
 	element = GetElementMemory(Dest);
-	CopyElementLowLevel(Dest, element, Element, false, 0, 0);
+	CopyElementLowLevel(Dest, element, Element, pcb_false, 0, 0);
 	CLEAR_FLAG(ExtraFlag, element);
 	if (ExtraFlag) {
 		ELEMENTTEXT_LOOP(element);
@@ -401,17 +401,17 @@ void ClearBuffer(BufferTypePtr Buffer)
  * copies all selected and visible objects to the paste buffer
  * returns true if any objects have been removed
  */
-void AddSelectedToBuffer(BufferTypePtr Buffer, Coord X, Coord Y, bool LeaveSelected)
+void AddSelectedToBuffer(BufferTypePtr Buffer, Coord X, Coord Y, pcb_bool LeaveSelected)
 {
 	/* switch crosshair off because adding objects to the pastebuffer
 	 * may change the 'valid' area for the cursor
 	 */
 	if (!LeaveSelected)
 		ExtraFlag = PCB_FLAG_SELECTED;
-	notify_crosshair_change(false);
+	notify_crosshair_change(pcb_false);
 	Source = PCB->Data;
 	Dest = Buffer->Data;
-	SelectedOperation(&AddBufferFunctions, false, PCB_TYPEMASK_ALL);
+	SelectedOperation(&AddBufferFunctions, pcb_false, PCB_TYPEMASK_ALL);
 
 	/* set origin to passed or current position */
 	if (X || Y) {
@@ -422,17 +422,17 @@ void AddSelectedToBuffer(BufferTypePtr Buffer, Coord X, Coord Y, bool LeaveSelec
 		Buffer->X = Crosshair.X;
 		Buffer->Y = Crosshair.Y;
 	}
-	notify_crosshair_change(true);
+	notify_crosshair_change(pcb_true);
 	ExtraFlag = 0;
 }
 
 /* ---------------------------------------------------------------------------
  * loads element data from file/library into buffer
  * parse the file with disabled 'PCB mode' (see parser)
- * returns false on error
+ * returns pcb_false on error
  * if successful, update some other stuff and reposition the pastebuffer
  */
-bool LoadElementToBuffer(BufferTypePtr Buffer, const char *Name)
+pcb_bool LoadElementToBuffer(BufferTypePtr Buffer, const char *Name)
 {
 	ElementTypePtr element;
 
@@ -450,12 +450,12 @@ bool LoadElementToBuffer(BufferTypePtr Buffer, const char *Name)
 			Buffer->X = 0;
 			Buffer->Y = 0;
 		}
-		return (true);
+		return (pcb_true);
 	}
 
 	/* release memory which might have been acquired */
 	ClearBuffer(Buffer);
-	return (false);
+	return (pcb_false);
 }
 
 
@@ -526,7 +526,7 @@ int LoadFootprint(int argc, const char **argv, Coord x, Coord y)
  *
  * break buffer element into pieces
  */
-bool SmashBufferElement(BufferTypePtr Buffer)
+pcb_bool SmashBufferElement(BufferTypePtr Buffer)
 {
 	ElementTypePtr element;
 	Cardinal group;
@@ -534,7 +534,7 @@ bool SmashBufferElement(BufferTypePtr Buffer)
 
 	if (elementlist_length(&Buffer->Data->Element) != 1) {
 		Message(PCB_MSG_DEFAULT, _("Error!  Buffer doesn't contain a single element\n"));
-		return (false);
+		return (pcb_false);
 	}
 	/*
 	 * At this point the buffer should contain just a single element.
@@ -588,7 +588,7 @@ bool SmashBufferElement(BufferTypePtr Buffer)
 	END_LOOP;
 	FreeElementMemory(element);
 	RemoveFreeElement(element);
-	return (true);
+	return (pcb_true);
 }
 
 /*---------------------------------------------------------------------------
@@ -628,23 +628,23 @@ static int polygon_is_rectangle(PolygonTypePtr poly)
  *
  * convert buffer contents into an element
  */
-bool ConvertBufferToElement(BufferTypePtr Buffer)
+pcb_bool ConvertBufferToElement(BufferTypePtr Buffer)
 {
 	ElementTypePtr Element;
 	Cardinal group;
 	Cardinal pin_n = 1;
-	bool hasParts = false, crooked = false;
+	pcb_bool hasParts = pcb_false, crooked = pcb_false;
 	int onsolder;
-	bool warned = false;
+	pcb_bool warned = pcb_false;
 
 	if (Buffer->Data->pcb == 0)
 		Buffer->Data->pcb = PCB;
 
 	Element = CreateNewElement(PCB->Data, NULL, &PCB->Font, NoFlags(),
 														 NULL, NULL, NULL, PASTEBUFFER->X,
-														 PASTEBUFFER->Y, 0, 100, MakeFlags(SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), false);
+														 PASTEBUFFER->Y, 0, 100, MakeFlags(SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), pcb_false);
 	if (!Element)
-		return (false);
+		return (pcb_false);
 	VIA_LOOP(Buffer->Data);
 	{
 		char num[8];
@@ -660,7 +660,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 									 via->Clearance, via->Mask, via->DrillingHole,
 									 NULL, num, MaskFlags(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
 		}
-		hasParts = true;
+		hasParts = pcb_true;
 	}
 	END_LOOP;
 
@@ -680,7 +680,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 #define MAYBE_WARN() \
 	  if (onsolder && !hasParts && !warned) \
 	    { \
-	      warned = true; \
+	      warned = pcb_true; \
 	      Message \
 					(PCB_MSG_WARNING, _("Warning: All of the pads are on the opposite\n" \
 		   "side from the component - that's probably not what\n" \
@@ -701,7 +701,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 										 line->Clearance,
 										 line->Thickness + line->Clearance, NULL, line->Number ? line->Number : num, MakeFlags(onsolderflag));
 				MAYBE_WARN();
-				hasParts = true;
+				hasParts = pcb_true;
 			}
 			END_LOOP;
 			POLYGON_LOOP(layer);
@@ -709,7 +709,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 				Coord x1, y1, x2, y2, w, h, t;
 
 				if (!polygon_is_rectangle(polygon)) {
-					crooked = true;
+					crooked = pcb_true;
 					continue;
 				}
 
@@ -726,7 +726,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 										 x1, y1, x2, y2, t,
 										 2 * conf_core.design.clearance, t + conf_core.design.clearance, NULL, num, MakeFlags(PCB_FLAG_SQUARE | onsolderflag));
 				MAYBE_WARN();
-				hasParts = true;
+				hasParts = pcb_true;
 			}
 			END_LOOP;
 		}
@@ -739,19 +739,19 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 		if (line->Number && !NAMEONPCB_NAME(Element))
 			NAMEONPCB_NAME(Element) = pcb_strdup(line->Number);
 		CreateNewLineInElement(Element, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
-		hasParts = true;
+		hasParts = pcb_true;
 	}
 	END_LOOP;
 	ARC_LOOP(&Buffer->Data->SILKLAYER);
 	{
 		CreateNewArcInElement(Element, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
-		hasParts = true;
+		hasParts = pcb_true;
 	}
 	END_LOOP;
 	if (!hasParts) {
 		DestroyObject(PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 		Message(PCB_MSG_DEFAULT, _("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
-		return (false);
+		return (pcb_false);
 	}
 	if (crooked)
 		Message(PCB_MSG_DEFAULT, _("There were polygons that can't be made into pins!\n" "So they were not included in the element\n"));
@@ -763,7 +763,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
 	ClearBuffer(Buffer);
 	MoveObjectToBuffer(Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 	SetBufferBoundingBox(Buffer);
-	return (true);
+	return (pcb_true);
 }
 
 /* ---------------------------------------------------------------------------
@@ -771,7 +771,7 @@ bool ConvertBufferToElement(BufferTypePtr Buffer)
  * parse the file with enabled 'PCB mode' (see parser)
  * if successful, update some other stuff
  */
-bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const char *fmt)
+pcb_bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const char *fmt)
 {
 	PCBTypePtr newPCB = CreateNewPCB();
 
@@ -786,13 +786,13 @@ bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const char *
 		Buffer->Y = newPCB->CursorY;
 		RemovePCB(newPCB);
 		Buffer->Data->pcb = PCB;
-		return (true);
+		return (pcb_true);
 	}
 
 	/* release unused memory */
 	RemovePCB(newPCB);
 	Buffer->Data->pcb = PCB;
-	return (false);
+	return (pcb_false);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1006,9 +1006,9 @@ int ActionFreeRotateBuffer(int argc, const char **argv, Coord x, Coord y)
 	else
 		angle_s = argv[0];
 
-	notify_crosshair_change(false);
+	notify_crosshair_change(pcb_false);
 	FreeRotateBuffer(PASTEBUFFER, strtod(angle_s, 0));
-	notify_crosshair_change(true);
+	notify_crosshair_change(pcb_true);
 	return 0;
 }
 
@@ -1310,10 +1310,10 @@ static int ActionPasteBuffer(int argc, const char **argv, Coord x, Coord y)
 	const char *forces = argc > 3 ? argv[3] : NULL;
 	const char *name;
 	static char *default_file = NULL;
-	bool free_name = false;
+	pcb_bool free_name = pcb_false;
 	int force = (forces != NULL) && ((*forces == '1') || (*forces == 'y') || (*forces == 'Y'));
 
-	notify_crosshair_change(false);
+	notify_crosshair_change(pcb_false);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 			/* clear contents of paste buffer */
@@ -1323,7 +1323,7 @@ static int ActionPasteBuffer(int argc, const char **argv, Coord x, Coord y)
 
 			/* copies objects to paste buffer */
 		case F_AddSelected:
-			AddSelectedToBuffer(PASTEBUFFER, 0, 0, false);
+			AddSelectedToBuffer(PASTEBUFFER, 0, 0, pcb_false);
 			break;
 
 			/* converts buffer contents into an element */
@@ -1353,7 +1353,7 @@ static int ActionPasteBuffer(int argc, const char **argv, Coord x, Coord y)
 				Message(PCB_MSG_DEFAULT, _("Buffer has no elements!\n"));
 				break;
 			}
-			free_name = false;
+			free_name = pcb_false;
 			if (argc <= 1) {
 				name = gui->fileselect(_("Save Paste Buffer As ..."),
 															 _("Choose a file to save the contents of the\n"
@@ -1366,7 +1366,7 @@ static int ActionPasteBuffer(int argc, const char **argv, Coord x, Coord y)
 				if (name && *name) {
 					default_file = pcb_strdup(name);
 				}
-				free_name = true;
+				free_name = pcb_true;
 			}
 
 			else
@@ -1392,7 +1392,7 @@ static int ActionPasteBuffer(int argc, const char **argv, Coord x, Coord y)
 			{
 				static Coord oldx = 0, oldy = 0;
 				Coord x, y;
-				bool absolute;
+				pcb_bool absolute;
 
 				if (argc == 1) {
 					x = y = 0;
@@ -1406,14 +1406,14 @@ static int ActionPasteBuffer(int argc, const char **argv, Coord x, Coord y)
 						y += oldy;
 				}
 				else {
-					notify_crosshair_change(true);
+					notify_crosshair_change(pcb_true);
 					AFAIL(pastebuffer);
 				}
 
 				oldx = x;
 				oldy = y;
 				if (CopyPastebufferToLayout(x, y))
-					SetChangedFlag(true);
+					SetChangedFlag(pcb_true);
 			}
 			break;
 
@@ -1429,7 +1429,7 @@ static int ActionPasteBuffer(int argc, const char **argv, Coord x, Coord y)
 		}
 	}
 
-	notify_crosshair_change(true);
+	notify_crosshair_change(pcb_true);
 	return 0;
 }
 

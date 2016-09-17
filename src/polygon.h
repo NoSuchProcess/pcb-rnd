@@ -54,7 +54,7 @@ Cardinal polygon_point_contour(PolygonTypePtr polygon, Cardinal point);
 Cardinal prev_contour_point(PolygonTypePtr polygon, Cardinal point);
 Cardinal next_contour_point(PolygonTypePtr polygon, Cardinal point);
 Cardinal GetLowestDistancePolygonPoint(PolygonTypePtr, Coord, Coord);
-bool RemoveExcessPolygonPoints(LayerTypePtr, PolygonTypePtr);
+pcb_bool RemoveExcessPolygonPoints(LayerTypePtr, PolygonTypePtr);
 void GoToPreviousPoint(void);
 void ClosePolygon(void);
 void CopyAttachedPolygonToLayer(void);
@@ -76,11 +76,11 @@ int InitClip(DataType * d, LayerType * l, PolygonType * p);
 void RestoreToPolygon(DataType *, int, void *, void *);
 void ClearFromPolygon(DataType *, int, void *, void *);
 
-bool IsPointInPolygon(Coord, Coord, Coord, PolygonTypePtr);
-bool IsPointInPolygonIgnoreHoles(Coord, Coord, PolygonTypePtr);
-bool IsRectangleInPolygon(Coord, Coord, Coord, Coord, PolygonTypePtr);
-bool isects(POLYAREA *, PolygonTypePtr, bool);
-bool MorphPolygon(LayerTypePtr, PolygonTypePtr);
+pcb_bool IsPointInPolygon(Coord, Coord, Coord, PolygonTypePtr);
+pcb_bool IsPointInPolygonIgnoreHoles(Coord, Coord, PolygonTypePtr);
+pcb_bool IsRectangleInPolygon(Coord, Coord, Coord, Coord, PolygonTypePtr);
+pcb_bool isects(POLYAREA *, PolygonTypePtr, pcb_bool);
+pcb_bool MorphPolygon(LayerTypePtr, PolygonTypePtr);
 void NoHolesPolygonDicer(PolygonType * p, const BoxType * clip, void (*emit) (PLINE *, void *), void *user_data);
 void PolyToPolygonsOnLayer(DataType *, LayerType *, POLYAREA *, FlagType);
 

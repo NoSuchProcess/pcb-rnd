@@ -127,7 +127,7 @@ static int CommandLoadLayout(int argc, const char **argv, Coord x, Coord y)
 	}
 
 	if (!PCB->Changed || gui->confirm_dialog("OK to override layout data?", 0))
-		LoadPCB(filename, format, true, 0);
+		LoadPCB(filename, format, pcb_true, 0);
 	return (0);
 }
 
@@ -158,7 +158,7 @@ static int CommandLoadElementToBuffer(int argc, const char **argv, Coord x, Coor
 		break;
 
 	default:											/* usage */
-		Message(PCB_MSG_DEFAULT, false, "Usage: le [name]\n  loads element data to buffer\n");
+		Message(PCB_MSG_DEFAULT, pcb_false, "Usage: le [name]\n  loads element data to buffer\n");
 		return (1);
 	}
 	return (0);
@@ -317,7 +317,7 @@ static int CommandSaveLayout(int argc, const char **argv, Coord x, Coord y)
 	case 0:
 		if (PCB->Filename) {
 			if (SavePCB(PCB->Filename, NULL) == 0)
-				SetChangedFlag(false);
+				SetChangedFlag(pcb_false);
 		}
 		else
 			Message(PCB_MSG_DEFAULT, "No filename to save to yet\n");
@@ -325,7 +325,7 @@ static int CommandSaveLayout(int argc, const char **argv, Coord x, Coord y)
 
 	case 1:
 		if (SavePCB(argv[0], NULL) == 0) {
-			SetChangedFlag(false);
+			SetChangedFlag(pcb_false);
 			free(PCB->Filename);
 			PCB->Filename = pcb_strdup(argv[0]);
 			if (gui->notify_filename_changed != NULL)

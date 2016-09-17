@@ -47,7 +47,7 @@
  */
 static void CheckPadForRubberbandConnection(PadTypePtr);
 static void CheckPinForRubberbandConnection(PinTypePtr);
-static void CheckLinePointForRubberbandConnection(LayerTypePtr, LineTypePtr, PointTypePtr, bool);
+static void CheckLinePointForRubberbandConnection(LayerTypePtr, LineTypePtr, PointTypePtr, pcb_bool);
 static void CheckPolygonForRubberbandConnection(LayerTypePtr, PolygonTypePtr);
 static void CheckLinePointForRat(LayerTypePtr, PointTypePtr);
 static r_dir_t rubber_callback(const BoxType * b, void *cl);
@@ -325,7 +325,7 @@ static void CheckPinForRubberbandConnection(PinTypePtr Pin)
  * If one of the endpoints of the line lays * inside the passed line,
  * the scanned line is added to the 'rubberband' list
  */
-static void CheckLinePointForRubberbandConnection(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr LinePoint, bool Exact)
+static void CheckLinePointForRubberbandConnection(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr LinePoint, pcb_bool Exact)
 {
 	Cardinal group;
 	struct rubber_info info;
@@ -429,15 +429,15 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 			LayerTypePtr layer = (LayerTypePtr) Ptr1;
 			LineTypePtr line = (LineTypePtr) Ptr2;
 			if (GetLayerNumber(PCB->Data, layer) < max_copper_layer) {
-				CheckLinePointForRubberbandConnection(layer, line, &line->Point1, false);
-				CheckLinePointForRubberbandConnection(layer, line, &line->Point2, false);
+				CheckLinePointForRubberbandConnection(layer, line, &line->Point1, pcb_false);
+				CheckLinePointForRubberbandConnection(layer, line, &line->Point2, pcb_false);
 			}
 			break;
 		}
 
 	case PCB_TYPE_LINE_POINT:
 		if (GetLayerNumber(PCB->Data, (LayerTypePtr) Ptr1) < max_copper_layer)
-			CheckLinePointForRubberbandConnection((LayerTypePtr) Ptr1, (LineTypePtr) Ptr2, (PointTypePtr) Ptr3, true);
+			CheckLinePointForRubberbandConnection((LayerTypePtr) Ptr1, (LineTypePtr) Ptr2, (PointTypePtr) Ptr3, pcb_true);
 		break;
 
 	case PCB_TYPE_VIA:

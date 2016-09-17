@@ -138,9 +138,9 @@ find_callback_t find_callback = NULL;
 			find_callback(current_type, current_ptr, from_type, from_ptr, type); \
 	} while(0)
 
-static bool User = false;				/* user action causing this */
-static bool drc = false;				/* whether to stop if finding something not found */
-static bool IsBad = false;
+static pcb_bool User = pcb_false;				/* user action causing this */
+static pcb_bool drc = pcb_false;				/* whether to stop if finding something not found */
+static pcb_bool IsBad = pcb_false;
 static Cardinal drcerr_count;		/* count of drc errors */
 static Cardinal TotalP, TotalV, NumberOfPads[2];
 static ListType LineList[MAX_LAYER],	/* list of objects to */
@@ -149,28 +149,28 @@ static ListType LineList[MAX_LAYER],	/* list of objects to */
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static bool LookupLOConnectionsToPVList(bool);
-static bool LookupLOConnectionsToLOList(bool);
-static bool LookupPVConnectionsToLOList(bool);
-static bool LookupPVConnectionsToPVList(void);
-static bool LookupLOConnectionsToLine(LineTypePtr, Cardinal, bool);
-static bool LookupLOConnectionsToPad(PadTypePtr, Cardinal);
-static bool LookupLOConnectionsToPolygon(PolygonTypePtr, Cardinal);
-static bool LookupLOConnectionsToArc(ArcTypePtr, Cardinal);
-static bool LookupLOConnectionsToRatEnd(PointTypePtr, Cardinal);
-static bool IsRatPointOnLineEnd(PointTypePtr, LineTypePtr);
-static bool ArcArcIntersect(ArcTypePtr, ArcTypePtr);
-static bool PrintElementConnections(ElementTypePtr, FILE *, bool);
-static bool ListsEmpty(bool);
-static bool DoIt(bool, bool);
+static pcb_bool LookupLOConnectionsToPVList(pcb_bool);
+static pcb_bool LookupLOConnectionsToLOList(pcb_bool);
+static pcb_bool LookupPVConnectionsToLOList(pcb_bool);
+static pcb_bool LookupPVConnectionsToPVList(void);
+static pcb_bool LookupLOConnectionsToLine(LineTypePtr, Cardinal, pcb_bool);
+static pcb_bool LookupLOConnectionsToPad(PadTypePtr, Cardinal);
+static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr, Cardinal);
+static pcb_bool LookupLOConnectionsToArc(ArcTypePtr, Cardinal);
+static pcb_bool LookupLOConnectionsToRatEnd(PointTypePtr, Cardinal);
+static pcb_bool IsRatPointOnLineEnd(PointTypePtr, LineTypePtr);
+static pcb_bool ArcArcIntersect(ArcTypePtr, ArcTypePtr);
+static pcb_bool PrintElementConnections(ElementTypePtr, FILE *, pcb_bool);
+static pcb_bool ListsEmpty(pcb_bool);
+static pcb_bool DoIt(pcb_bool, pcb_bool);
 static void PrintElementNameList(ElementTypePtr, FILE *);
 static void PrintConnectionElementName(ElementTypePtr, FILE *);
-static void PrintConnectionListEntry(char *, ElementTypePtr, bool, FILE *);
-static void PrintPadConnections(Cardinal, FILE *, bool);
-static void PrintPinConnections(FILE *, bool);
+static void PrintConnectionListEntry(char *, ElementTypePtr, pcb_bool, FILE *);
+static void PrintPadConnections(Cardinal, FILE *, pcb_bool);
+static void PrintPinConnections(FILE *, pcb_bool);
 static void DumpList(void);
-static bool ListStart(int, void *, void *, void *);
-static bool SetThing(int, void *, void *, void *);
+static pcb_bool ListStart(int, void *, void *, void *);
+static pcb_bool SetThing(int, void *, void *, void *);
 
 
 #include "find_geo.c"

@@ -121,7 +121,7 @@ int ghid_set_layer(const char *name, int group, int empty)
 	start_subcomposite();
 
 	if (idx >= 0 && idx < max_copper_layer + 2) {
-		priv->trans_lines = true;
+		priv->trans_lines = pcb_true;
 		return PCB->Data->Layer[idx].On;
 	}
 	if (idx < 0) {
@@ -133,7 +133,7 @@ int ghid_set_layer(const char *name, int group, int empty)
 				return TEST_FLAG(SHOWMASKFLAG, PCB);
 			return 0;
 		case SL_SILK:
-			priv->trans_lines = true;
+			priv->trans_lines = pcb_true;
 			if (SL_MYSIDE(idx))
 				return PCB->ElementOn;
 			return 0;
@@ -144,7 +144,7 @@ int ghid_set_layer(const char *name, int group, int empty)
 			return 1;
 		case SL_RATS:
 			if (PCB->RatOn)
-				priv->trans_lines = true;
+				priv->trans_lines = pcb_true;
 			return PCB->RatOn;
 		}
 	}
@@ -749,7 +749,7 @@ gboolean ghid_start_drawing(GHidPort * port)
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext))
 		return FALSE;
 
-	port->render_priv->in_context = true;
+	port->render_priv->in_context = pcb_true;
 
 	return TRUE;
 }
@@ -764,7 +764,7 @@ void ghid_end_drawing(GHidPort * port)
 	else
 		glFlush();
 
-	port->render_priv->in_context = false;
+	port->render_priv->in_context = pcb_false;
 
 	/* end drawing to current GL-context */
 	gdk_gl_drawable_gl_end(pGlDrawable);
@@ -924,7 +924,7 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext)) {
 		return FALSE;
 	}
-	gport->render_priv->in_context = true;
+	gport->render_priv->in_context = pcb_true;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -966,7 +966,7 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 		glFlush();
 
 	/* end drawing to current GL-context */
-	gport->render_priv->in_context = false;
+	gport->render_priv->in_context = pcb_false;
 	gdk_gl_drawable_gl_end(pGlDrawable);
 
 	gport->view = save_view;
@@ -1018,7 +1018,7 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	if (!gdk_gl_drawable_gl_begin(gldrawable, glcontext)) {
 		return NULL;
 	}
-	gport->render_priv->in_context = true;
+	gport->render_priv->in_context = pcb_true;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1067,7 +1067,7 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	glFlush();
 
 	/* end drawing to current GL-context */
-	gport->render_priv->in_context = false;
+	gport->render_priv->in_context = pcb_false;
 	gdk_gl_drawable_gl_end(gldrawable);
 
 	gdk_pixmap_unset_gl_capability(pixmap);
@@ -1142,7 +1142,7 @@ bool ghid_event_to_pcb_coords(int event_x, int event_y, Coord * pcb_x, Coord * p
 	*pcb_x = EVENT_TO_PCB_X(event_x);
 	*pcb_y = EVENT_TO_PCB_Y(event_y);
 
-	return true;
+	return pcb_true;
 }
 
 bool ghid_pcb_to_event_coords(Coord pcb_x, Coord pcb_y, int *event_x, int *event_y)
@@ -1150,7 +1150,7 @@ bool ghid_pcb_to_event_coords(Coord pcb_x, Coord pcb_y, int *event_x, int *event
 	*event_x = DRAW_X(pcb_x);
 	*event_y = DRAW_Y(pcb_y);
 
-	return true;
+	return pcb_true;
 }
 
 
@@ -1222,7 +1222,7 @@ void ghid_lead_user_to_location(Coord x, Coord y)
 
 	ghid_cancel_lead_user();
 
-	priv->lead_user = true;
+	priv->lead_user = pcb_true;
 	priv->lead_user_x = x;
 	priv->lead_user_y = y;
 	priv->lead_user_radius = PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
@@ -1245,5 +1245,5 @@ void ghid_cancel_lead_user(void)
 
 	priv->lead_user_timeout = 0;
 	priv->lead_user_timer = NULL;
-	priv->lead_user = false;
+	priv->lead_user = pcb_false;
 }

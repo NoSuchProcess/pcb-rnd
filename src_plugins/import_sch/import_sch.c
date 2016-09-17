@@ -426,8 +426,8 @@ static int ActionImport(int argc, const char **argv, Coord x, Coord y)
 		return 1;
 	}
 
-	DeleteRats(false);
-	AddAllRats(false, NULL);
+	DeleteRats(pcb_false);
+	AddAllRats(pcb_false, NULL);
 
 #ifdef DEBUG
 	printf("ActionImport:  ===========  Leaving ActionImport  ============\n");

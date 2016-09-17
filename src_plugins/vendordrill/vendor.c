@@ -54,7 +54,7 @@ conf_vendor_t conf_vendor;
 static void add_to_drills(char *);
 static void apply_vendor_map(void);
 static void process_skips(lht_node_t *);
-static bool rematch(const char *, const char *);
+static pcb_bool rematch(const char *, const char *);
 static void vendor_free_all(void);
 
 /* list of vendor drills and a count of them */
@@ -157,7 +157,7 @@ int ActionLoadVendorFrom(int argc, const char **argv, Coord x, Coord y)
 	const char *sval;
 	lht_doc_t *doc;
 	lht_node_t *drlres;
-	bool free_fname = false;
+	pcb_bool free_fname = pcb_false;
 
 	cached_drill = -1;
 
@@ -172,7 +172,7 @@ int ActionLoadVendorFrom(int argc, const char **argv, Coord x, Coord y)
 		if (fname == NULL)
 			AFAIL(load_vendor);
 
-		free_fname = true;
+		free_fname = pcb_true;
 
 		free(default_file);
 		default_file = NULL;
@@ -298,7 +298,7 @@ int ActionLoadVendorFrom(int argc, const char **argv, Coord x, Coord y)
 static void apply_vendor_map(void)
 {
 	int changed, tot;
-	bool state;
+	pcb_bool state;
 
 	state = conf_vendor.plugins.vendor.enable;
 
@@ -319,7 +319,7 @@ static void apply_vendor_map(void)
 			if (via->DrillingHole != vendorDrillMap(via->DrillingHole)) {
 				/* only change unlocked vias */
 				if (!TEST_FLAG(PCB_FLAG_LOCK, via)) {
-					if (ChangeObject2ndSize(PCB_TYPE_VIA, via, NULL, NULL, vendorDrillMap(via->DrillingHole), true, false))
+					if (ChangeObject2ndSize(PCB_TYPE_VIA, via, NULL, NULL, vendorDrillMap(via->DrillingHole), pcb_true, pcb_false))
 						changed++;
 					else {
 						Message(PCB_MSG_DEFAULT, _
@@ -349,7 +349,7 @@ static void apply_vendor_map(void)
 					tot++;
 					if (pin->DrillingHole != vendorDrillMap(pin->DrillingHole)) {
 						if (!TEST_FLAG(PCB_FLAG_LOCK, pin)) {
-							if (ChangeObject2ndSize(PCB_TYPE_PIN, element, pin, NULL, vendorDrillMap(pin->DrillingHole), true, false))
+							if (ChangeObject2ndSize(PCB_TYPE_PIN, element, pin, NULL, vendorDrillMap(pin->DrillingHole), pcb_true, pcb_false))
 								changed++;
 							else {
 								Message(PCB_MSG_DEFAULT, _
@@ -405,7 +405,7 @@ static void apply_vendor_map(void)
 		 * file, redraw things, and make sure we can undo.
 		 */
 		if (changed) {
-			SetChangedFlag(true);
+			SetChangedFlag(pcb_true);
 			Redraw();
 			IncrementUndoSerialNumber();
 		}
@@ -565,13 +565,13 @@ static void process_skips(lht_node_t *res)
 	}
 }
 
-bool vendorIsElementMappable(ElementTypePtr element)
+pcb_bool vendorIsElementMappable(ElementTypePtr element)
 {
 	int i;
 	int noskip;
 
 	if (!conf_vendor.plugins.vendor.enable)
-		return false;
+		return pcb_false;
 
 	noskip = 1;
 	for (i = 0; i < n_refdes; i++) {
@@ -608,12 +608,12 @@ bool vendorIsElementMappable(ElementTypePtr element)
 	}
 
 	if (noskip)
-		return true;
+		return pcb_true;
 	else
-		return false;
+		return pcb_false;
 }
 
-static bool rematch(const char *re, const char *s)
+static pcb_bool rematch(const char *re, const char *s)
 {
 	int result;
 	re_sei_t *regex;
@@ -623,16 +623,16 @@ static bool rematch(const char *re, const char *s)
 	if (re_sei_errno(regex) != 0) {
 		Message(PCB_MSG_DEFAULT, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 		re_sei_free(regex);
-		return false;
+		return pcb_false;
 	}
 
 	result = re_sei_exec(regex, s);
 	re_sei_free(regex);
 
 	if (result != 0)
-		return true;
+		return pcb_true;
 	else
-		return false;
+		return pcb_false;
 }
 
 static const char *vendor_cookie = "vendor drill mapping";

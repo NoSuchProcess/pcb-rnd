@@ -1,13 +1,9 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design
- *  Copyright (C) 1994,1995,1996 Thomas Nau
- *  Copyright (C) 1998,1999,2000,2001 harry eaton
- *
- *  this file, autoplace.h, was written and is
- *  Copyright (c) 2001 C. Scott Ananian.
- *
+ *  pcb-rnd, interactive printed circuit board design
+ *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -22,19 +18,14 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Contact addresses for paper mail and Email:
- *  harry eaton, 6697 Buttonhole Ct, Columbia, MD 21044 USA
- *  haceaton@aplcomm.jhuapl.edu
- *
  */
 
-/* prototypes for autoplace routines */
-
-#ifndef PCB_AUTOPLACE_H
-#define PCB_AUTOPLACE_H
-
-#include "global.h"
-
-pcb_bool AutoPlaceSelected(void);
-
+#ifndef PCB_BOOL_H
+#define PCB_BOOL_H
+/* Because stdbool is not c89 */
+typedef int pcb_bool;
+typedef enum pcb_bool_e {
+	pcb_false = 0,
+	pcb_true = 1
+} pcb_bool_t;
 #endif

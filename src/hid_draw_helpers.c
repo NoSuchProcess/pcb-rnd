@@ -175,7 +175,7 @@ void common_thindraw_pcb_polygon(hidGC gc, PolygonType * poly, const BoxType * c
 	PolygonHoles(poly, clip_box, thindraw_hole_cb, gc);
 }
 
-void common_thindraw_pcb_pad(hidGC gc, PadType * pad, bool clear, bool mask)
+void common_thindraw_pcb_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
 {
 	Coord w = clear ? (mask ? pad->Mask : pad->Thickness + pad->Clearance)
 		: pad->Thickness;
@@ -239,7 +239,7 @@ void common_thindraw_pcb_pad(hidGC gc, PadType * pad, bool clear, bool mask)
 	}
 }
 
-void common_fill_pcb_pad(hidGC gc, PadType * pad, bool clear, bool mask)
+void common_fill_pcb_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
 {
 	Coord w = clear ? (mask ? pad->Mask : pad->Thickness + pad->Clearance)
 		: pad->Thickness;
@@ -337,7 +337,7 @@ static void draw_octagon_poly(hidGC gc, Coord X, Coord Y, Coord Thickness, Coord
 }
 
 
-void common_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHole, bool mask)
+void common_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, pcb_bool drawHole, pcb_bool mask)
 {
 	Coord w = mask ? pv->Mask : pv->Thickness;
 	Coord r = w / 2;
@@ -364,10 +364,10 @@ void common_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHole, b
 			gui->fill_rect(fg_gc, l, b, r, t);
 		}
 		else
-			draw_square_pin_poly(fg_gc, pv->X, pv->Y, w, false, GET_SQUARE(pv));
+			draw_square_pin_poly(fg_gc, pv->X, pv->Y, w, pcb_false, GET_SQUARE(pv));
 	}
 	else if (TEST_FLAG(PCB_FLAG_OCTAGON, pv))
-		draw_octagon_poly(fg_gc, pv->X, pv->Y, w, false);
+		draw_octagon_poly(fg_gc, pv->X, pv->Y, w, pcb_false);
 	else													/* draw a round pin or via */
 		gui->fill_circle(fg_gc, pv->X, pv->Y, r);
 
@@ -376,7 +376,7 @@ void common_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHole, b
 		gui->fill_circle(bg_gc, pv->X, pv->Y, pv->DrillingHole / 2);
 }
 
-void common_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHole, bool mask)
+void common_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, pcb_bool drawHole, pcb_bool mask)
 {
 	Coord w = mask ? pv->Mask : pv->Thickness;
 	Coord r = w / 2;
@@ -408,7 +408,7 @@ void common_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHol
 
 	}
 	else if (TEST_FLAG(PCB_FLAG_OCTAGON, pv)) {
-		draw_octagon_poly(fg_gc, pv->X, pv->Y, w, true);
+		draw_octagon_poly(fg_gc, pv->X, pv->Y, w, pcb_true);
 	}
 	else {												/* draw a round pin or via */
 

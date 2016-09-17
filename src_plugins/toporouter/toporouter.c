@@ -2696,8 +2696,8 @@ toporouter_netlist_t *netlist_create(toporouter_t * r, char *netlist, char *styl
 void import_clusters(toporouter_t * r)
 {
 	NetListListType nets;
-	ResetConnections(false);
-	nets = CollectSubnets(false);
+	ResetConnections(pcb_false);
+	nets = CollectSubnets(pcb_false);
 	NETLIST_LOOP(&nets);
 	{
 		if (netlist->NetN > 0) {
@@ -8122,9 +8122,9 @@ static int toporouter(int argc, char **argv, Coord x, Coord y)
 	toporouter_free(r);
 
 	SaveUndoSerialNumber();
-	DeleteRats(false);
+	DeleteRats(pcb_false);
 	RestoreUndoSerialNumber();
-	AddAllRats(false, NULL);
+	AddAllRats(pcb_false, NULL);
 	RestoreUndoSerialNumber();
 	IncrementUndoSerialNumber();
 	Redraw();

@@ -40,7 +40,7 @@
 #include "rtree.h"
 #include "layer.h"
 
-static double drc_lines(PointTypePtr end, bool way);
+static double drc_lines(PointTypePtr end, pcb_bool way);
 
 /* ---------------------------------------------------------------------------
  * Adjust the attached line to 45 degrees if necessary
@@ -54,11 +54,11 @@ void AdjustAttachedLine(void)
 		return;
 	/* don't draw outline when ctrl key is pressed */
 	if (conf_core.editor.mode == PCB_MODE_LINE && gui->control_is_pressed()) {
-		line->draw = false;
+		line->draw = pcb_false;
 		return;
 	}
 	else
-		line->draw = true;
+		line->draw = pcb_true;
 	/* no 45 degree lines required */
 	if (PCB->RatDraw || conf_core.editor.all_direction_lines) {
 		line->Point2.X = Crosshair.X;
@@ -150,7 +150,7 @@ void FortyFiveLine(AttachedLineTypePtr Line)
 /* ---------------------------------------------------------------------------
  *  adjusts the insert lines to make them 45 degrees as necessary
  */
-void AdjustTwoLine(bool way)
+void AdjustTwoLine(pcb_bool way)
 {
 	Coord dx, dy;
 	AttachedLineTypePtr line = &Crosshair.AttachedLine;
@@ -159,11 +159,11 @@ void AdjustTwoLine(bool way)
 		return;
 	/* don't draw outline when ctrl key is pressed */
 	if (gui->control_is_pressed()) {
-		line->draw = false;
+		line->draw = pcb_false;
 		return;
 	}
 	else
-		line->draw = true;
+		line->draw = pcb_true;
 	if (conf_core.editor.all_direction_lines) {
 		line->Point2.X = Crosshair.X;
 		line->Point2.Y = Crosshair.Y;
@@ -198,7 +198,7 @@ void AdjustTwoLine(bool way)
 
 struct drc_info {
 	LineTypePtr line;
-	bool solder;
+	pcb_bool solder;
 	jmp_buf env;
 };
 
@@ -244,7 +244,7 @@ static r_dir_t drcArc_callback(const BoxType * b, void *cl)
 
 /* drc_lines() checks for intersectors against two lines and
  * adjusts the end point until there is no intersection or
- * it winds up back at the start. If way is false it checks
+ * it winds up back at the start. If way is pcb_false it checks
  * an ortho start line with one 45 refraction to reach the endpoint,
  * otherwise it checks a 45 start, with a ortho refraction to reach endpoint
  *
@@ -252,7 +252,7 @@ static r_dir_t drcArc_callback(const BoxType * b, void *cl)
  * changes the position of the input end point to the best answer.
  */
 
-static double drc_lines(PointTypePtr end, bool way)
+static double drc_lines(PointTypePtr end, pcb_bool way)
 {
 	double f, s, f2, s2, len, best;
 	Coord dx, dy, temp, last, length;
@@ -260,7 +260,7 @@ static double drc_lines(PointTypePtr end, bool way)
 	LineType line1, line2;
 	Cardinal group, comp;
 	struct drc_info info;
-	bool two_lines, x_is_long, blocker;
+	pcb_bool two_lines, x_is_long, blocker;
 	PointType ans;
 
 	f = 1.0;
@@ -275,19 +275,19 @@ static double drc_lines(PointTypePtr end, bool way)
 	dy = end->Y - line1.Point1.Y;
 	dx = end->X - line1.Point1.X;
 	if (coord_abs(dx) > coord_abs(dy)) {
-		x_is_long = true;
+		x_is_long = pcb_true;
 		length = coord_abs(dx);
 	}
 	else {
-		x_is_long = false;
+		x_is_long = pcb_false;
 		length = coord_abs(dy);
 	}
 	group = GetGroupOfLayer(INDEXOFCURRENT);
 	comp = max_group + 10;				/* this out-of-range group might save a call */
 	if (GetLayerGroupNumberByNumber(solder_silk_layer) == group)
-		info.solder = true;
+		info.solder = pcb_true;
 	else {
-		info.solder = false;
+		info.solder = pcb_false;
 		comp = GetLayerGroupNumberByNumber(component_silk_layer);
 	}
 	temp = length;
@@ -311,13 +311,13 @@ static double drc_lines(PointTypePtr end, bool way)
 		f2 = 1.0;
 		s2 = 0.5;
 		last2 = -1;
-		blocker = true;
+		blocker = pcb_true;
 		while (length2 != last2) {
 			if (x_is_long)
 				dy = SGN(dy) * length2;
 			else
 				dx = SGN(dx) * length2;
-			two_lines = true;
+			two_lines = pcb_true;
 			if (coord_abs(dx) > coord_abs(dy) && x_is_long) {
 				line1.Point2.X = line1.Point1.X + (way ? SGN(dx) * coord_abs(dy) : dx - SGN(dx) * coord_abs(dy));
 				line1.Point2.Y = line1.Point1.Y + (way ? dy : 0);
@@ -330,13 +330,13 @@ static double drc_lines(PointTypePtr end, bool way)
 				/* we've changed which axis is long, so only do one line */
 				line1.Point2.X = line1.Point1.X + dx;
 				line1.Point2.Y = line1.Point1.Y + (way ? SGN(dy) * coord_abs(dx) : 0);
-				two_lines = false;
+				two_lines = pcb_false;
 			}
 			else {
 				/* we've changed which axis is long, so only do one line */
 				line1.Point2.Y = line1.Point1.Y + dy;
 				line1.Point2.X = line1.Point1.X + (way ? SGN(dx) * coord_abs(dy) : 0);
-				two_lines = false;
+				two_lines = pcb_false;
 			}
 			line2.Point1.X = line1.Point2.X;
 			line2.Point1.Y = line1.Point2.Y;
@@ -377,7 +377,7 @@ static double drc_lines(PointTypePtr end, bool way)
 				}
 				END_LOOP;
 				/* no intersector! */
-				blocker = false;
+				blocker = pcb_false;
 				f2 += s2;
 				len = (line2.Point2.X - line1.Point1.X);
 				len *= len;
@@ -416,7 +416,7 @@ static double drc_lines(PointTypePtr end, bool way)
 void EnforceLineDRC(void)
 {
 	PointType r45, rs;
-	bool shift;
+	pcb_bool shift;
 	double r1, r2;
 	int refraction = conf_core.editor.line_refraction; 
 
@@ -429,9 +429,9 @@ void EnforceLineDRC(void)
 	rs.X = r45.X = Crosshair.X;
 	rs.Y = r45.Y = Crosshair.Y;
 	/* first try starting straight */
-	r1 = drc_lines(&rs, false);
+	r1 = drc_lines(&rs, pcb_false);
 	/* then try starting at 45 */
-	r2 = drc_lines(&r45, true);
+	r2 = drc_lines(&r45, pcb_true);
 	/* shift<Key> forces the line lookahead path to refract the alternate way */
 	shift = gui->shift_is_pressed();
 	if (XOR(r1 > r2, shift)) {

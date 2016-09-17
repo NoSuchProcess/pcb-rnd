@@ -58,8 +58,8 @@ static void *InsertPointIntoRat(RatTypePtr);
  */
 static Coord InsertX, InsertY;	/* used by local routines as offset */
 static Cardinal InsertAt;
-static bool InsertLast;
-static bool Forcible;
+static pcb_bool InsertLast;
+static pcb_bool Forcible;
 static ObjectFunctionType InsertFunctions = {
 	InsertPointIntoLine,
 	NULL,
@@ -170,7 +170,7 @@ static void *InsertPointIntoPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 			Polygon->HoleIndex[n]++;
 
 	Polygon->Points[InsertAt] = save;
-	SetChangedFlag(true);
+	SetChangedFlag(pcb_true);
 	AddObjectToInsertPointUndoList(PCB_TYPE_POLYGON_POINT, Layer, Polygon, &Polygon->Points[InsertAt]);
 
 	SetPolygonBoundingBox(Polygon);
@@ -186,7 +186,7 @@ static void *InsertPointIntoPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 /* ---------------------------------------------------------------------------
  * inserts point into objects
  */
-void *InsertPointIntoObject(int Type, void *Ptr1, void *Ptr2, Cardinal * Ptr3, Coord DX, Coord DY, bool Force, bool insert_last)
+void *InsertPointIntoObject(int Type, void *Ptr1, void *Ptr2, Cardinal * Ptr3, Coord DX, Coord DY, pcb_bool Force, pcb_bool insert_last)
 {
 	void *ptr;
 

@@ -49,17 +49,17 @@
  * toggles the selection of any kind of object
  * the different types are defined by search.h
  */
-bool SelectObject(void)
+pcb_bool SelectObject(void)
 {
 	void *ptr1, *ptr2, *ptr3;
 	LayerTypePtr layer;
 	int type;
 
-	bool changed = true;
+	pcb_bool changed = pcb_true;
 
 	type = SearchScreen(Crosshair.X, Crosshair.Y, SELECT_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_TYPE_NONE || TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2))
-		return (false);
+		return (pcb_false);
 	switch (type) {
 	case PCB_TYPE_VIA:
 		AddObjectToFlagUndoList(PCB_TYPE_VIA, ptr1, ptr1, ptr1);
@@ -198,7 +198,7 @@ bool SelectObject(void)
  *  returns a list of object IDs matched the search and loads len with the
  *  length of the list. Returns NULL on no match.
  */
-static long int *ListBlock_(BoxTypePtr Box, bool Flag, int *len)
+static long int *ListBlock_(BoxTypePtr Box, pcb_bool Flag, int *len)
 {
 	int changed = 0;
 	int used = 0, alloced = 0;
@@ -306,7 +306,7 @@ do { \
 	ELEMENT_LOOP(PCB->Data);
 	{
 		{
-			bool gotElement = false;
+			pcb_bool gotElement = pcb_false;
 			if ((PCB->ElementOn || !Flag)
 					&& !TEST_FLAG(PCB_FLAG_LOCK, element)
 					&& ((TEST_FLAG(PCB_FLAG_ONSOLDER, element) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn)) {
@@ -345,7 +345,7 @@ do { \
 						END_LOOP;
 						if (PCB->PinOn)
 							DrawElement(element);
-						gotElement = true;
+						gotElement = pcb_true;
 					}
 			}
 			if ((PCB->PinOn || !Flag) && !TEST_FLAG(PCB_FLAG_LOCK, element) && !gotElement) {
@@ -408,12 +408,12 @@ do { \
 /* ----------------------------------------------------------------------
  * selects/unselects all visible objects within the passed box
  * Flag determines if the block is to be selected or unselected
- * returns true if the state of any object has changed
+ * returns pcb_true if the state of any object has changed
  */
-bool SelectBlock(BoxTypePtr Box, bool Flag)
+pcb_bool SelectBlock(BoxTypePtr Box, pcb_bool Flag)
 {
 	/* do not list, set flag */
-	return (ListBlock_(Box, Flag, NULL) == NULL) ? false : true;
+	return (ListBlock_(Box, Flag, NULL) == NULL) ? pcb_false : pcb_true;
 }
 
 /* ----------------------------------------------------------------------
@@ -497,11 +497,11 @@ void *ObjectOperation(ObjectFunctionTypePtr F, int Type, void *Ptr1, void *Ptr2,
  * performs several operations on selected objects which are also visible
  * The lowlevel procedures are passed together with additional information
  * resets the selected flag if requested
- * returns true if anything has changed
+ * returns pcb_true if anything has changed
  */
-bool SelectedOperation(ObjectFunctionTypePtr F, bool Reset, int type)
+pcb_bool SelectedOperation(ObjectFunctionTypePtr F, pcb_bool Reset, int type)
 {
-	bool changed = false;
+	pcb_bool changed = pcb_false;
 
 	/* check lines */
 	if (type & PCB_TYPE_LINE && F->Line)
@@ -513,7 +513,7 @@ bool SelectedOperation(ObjectFunctionTypePtr F, bool Reset, int type)
 				CLEAR_FLAG(PCB_FLAG_SELECTED, line);
 			}
 			F->Line(layer, line);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -528,7 +528,7 @@ bool SelectedOperation(ObjectFunctionTypePtr F, bool Reset, int type)
 				CLEAR_FLAG(PCB_FLAG_SELECTED, arc);
 			}
 			F->Arc(layer, arc);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -543,7 +543,7 @@ bool SelectedOperation(ObjectFunctionTypePtr F, bool Reset, int type)
 				CLEAR_FLAG(PCB_FLAG_SELECTED, text);
 			}
 			F->Text(layer, text);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -558,7 +558,7 @@ bool SelectedOperation(ObjectFunctionTypePtr F, bool Reset, int type)
 				CLEAR_FLAG(PCB_FLAG_SELECTED, polygon);
 			}
 			F->Polygon(layer, polygon);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -573,7 +573,7 @@ bool SelectedOperation(ObjectFunctionTypePtr F, bool Reset, int type)
 				CLEAR_FLAG(PCB_FLAG_SELECTED, element);
 			}
 			F->Element(element);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	END_LOOP;
@@ -586,7 +586,7 @@ bool SelectedOperation(ObjectFunctionTypePtr F, bool Reset, int type)
 				CLEAR_FLAG(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element));
 			}
 			F->ElementName(element);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	END_LOOP;
@@ -602,7 +602,7 @@ bool SelectedOperation(ObjectFunctionTypePtr F, bool Reset, int type)
 					CLEAR_FLAG(PCB_FLAG_SELECTED, pin);
 				}
 				F->Pin(element, pin);
-				changed = true;
+				changed = pcb_true;
 			}
 		}
 		END_LOOP;
@@ -620,7 +620,7 @@ bool SelectedOperation(ObjectFunctionTypePtr F, bool Reset, int type)
 					CLEAR_FLAG(PCB_FLAG_SELECTED, pad);
 				}
 				F->Pad(element, pad);
-				changed = true;
+				changed = pcb_true;
 			}
 		}
 		END_LOOP;
@@ -637,7 +637,7 @@ bool SelectedOperation(ObjectFunctionTypePtr F, bool Reset, int type)
 				CLEAR_FLAG(PCB_FLAG_SELECTED, via);
 			}
 			F->Via(via);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	END_LOOP;
@@ -651,7 +651,7 @@ bool SelectedOperation(ObjectFunctionTypePtr F, bool Reset, int type)
 				CLEAR_FLAG(PCB_FLAG_SELECTED, line);
 			}
 			F->Rat(line);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	END_LOOP;
@@ -663,13 +663,13 @@ bool SelectedOperation(ObjectFunctionTypePtr F, bool Reset, int type)
 /* ----------------------------------------------------------------------
  * selects/unselects all objects which were found during a connection scan
  * Flag determines if they are to be selected or unselected
- * returns true if the state of any object has changed
+ * returns pcb_true if the state of any object has changed
  *
  * text objects and elements cannot be selected by this routine
  */
-bool SelectConnection(bool Flag)
+pcb_bool SelectConnection(pcb_bool Flag)
 {
-	bool changed = false;
+	pcb_bool changed = pcb_false;
 
 	if (PCB->RatOn)
 		RAT_LOOP(PCB->Data);
@@ -678,7 +678,7 @@ bool SelectConnection(bool Flag)
 			AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
 			ASSIGN_FLAG(PCB_FLAG_SELECTED, Flag, line);
 			DrawRat(line);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	END_LOOP;
@@ -689,7 +689,7 @@ bool SelectConnection(bool Flag)
 			AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);
 			ASSIGN_FLAG(PCB_FLAG_SELECTED, Flag, line);
 			DrawLine(layer, line);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -699,7 +699,7 @@ bool SelectConnection(bool Flag)
 			AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);
 			ASSIGN_FLAG(PCB_FLAG_SELECTED, Flag, arc);
 			DrawArc(layer, arc);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -709,7 +709,7 @@ bool SelectConnection(bool Flag)
 			AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
 			ASSIGN_FLAG(PCB_FLAG_SELECTED, Flag, polygon);
 			DrawPolygon(layer, polygon);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -721,7 +721,7 @@ bool SelectConnection(bool Flag)
 				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
 				ASSIGN_FLAG(PCB_FLAG_SELECTED, Flag, pin);
 				DrawPin(pin);
-				changed = true;
+				changed = pcb_true;
 			}
 		}
 		ENDALL_LOOP;
@@ -731,7 +731,7 @@ bool SelectConnection(bool Flag)
 				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
 				ASSIGN_FLAG(PCB_FLAG_SELECTED, Flag, pad);
 				DrawPad(pad);
-				changed = true;
+				changed = pcb_true;
 			}
 		}
 		ENDALL_LOOP;
@@ -744,7 +744,7 @@ bool SelectConnection(bool Flag)
 			AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
 			ASSIGN_FLAG(PCB_FLAG_SELECTED, Flag, via);
 			DrawVia(via);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	END_LOOP;
@@ -754,7 +754,7 @@ bool SelectConnection(bool Flag)
 /* ---------------------------------------------------------------------------
  * selects objects as defined by Type by name;
  * it's a case insensitive match
- * returns true if any object has been selected
+ * returns pcb_true if any object has been selected
  */
 #define REGEXEC(arg) \
 	(method == SM_REGEX ? regexec_match_all(regex, (arg)) : strlst_match(pat, (arg)))
@@ -774,9 +774,9 @@ static int strlst_match(const char **pat, const char *name)
 	return 0;
 }
 
-bool SelectObjectByName(int Type, const char *name_pattern, bool Flag, search_method_t method)
+pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, search_method_t method)
 {
-	bool changed = false;
+	pcb_bool changed = pcb_false;
 	const char **pat = NULL;
 	char *pattern_copy = NULL;
 	re_sei_t *regex;
@@ -787,7 +787,7 @@ bool SelectObjectByName(int Type, const char *name_pattern, bool Flag, search_me
 		if (re_sei_errno(regex) != 0) {
 			Message(PCB_MSG_DEFAULT, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 			re_sei_free(regex);
-			return (false);
+			return (pcb_false);
 		}
 	}
 	else {
@@ -838,7 +838,7 @@ bool SelectObjectByName(int Type, const char *name_pattern, bool Flag, search_me
 			AddObjectToFlagUndoList(PCB_TYPE_TEXT, layer, text, text);
 			ASSIGN_FLAG(PCB_FLAG_SELECTED, Flag, text);
 			DrawText(layer, text);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -873,7 +873,7 @@ bool SelectObjectByName(int Type, const char *name_pattern, bool Flag, search_me
 				END_LOOP;
 				DrawElementName(element);
 				DrawElement(element);
-				changed = true;
+				changed = pcb_true;
 			}
 		}
 	}
@@ -887,7 +887,7 @@ bool SelectObjectByName(int Type, const char *name_pattern, bool Flag, search_me
 			AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
 			ASSIGN_FLAG(PCB_FLAG_SELECTED, Flag, pin);
 			DrawPin(pin);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	ENDALL_LOOP;
@@ -901,7 +901,7 @@ bool SelectObjectByName(int Type, const char *name_pattern, bool Flag, search_me
 				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
 				ASSIGN_FLAG(PCB_FLAG_SELECTED, Flag, pad);
 				DrawPad(pad);
-				changed = true;
+				changed = pcb_true;
 			}
 	}
 	ENDALL_LOOP;
@@ -913,13 +913,13 @@ bool SelectObjectByName(int Type, const char *name_pattern, bool Flag, search_me
 			AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
 			ASSIGN_FLAG(PCB_FLAG_SELECTED, Flag, via);
 			DrawVia(via);
-			changed = true;
+			changed = pcb_true;
 		}
 	}
 	END_LOOP;
 	if (Type & PCB_TYPE_NET) {
 		InitConnectionLookup();
-		changed = ResetConnections(true) || changed;
+		changed = ResetConnections(pcb_true) || changed;
 
 		MENU_LOOP(&(PCB->NetlistLib[NETLIST_EDITED]));
 		{
@@ -930,14 +930,14 @@ bool SelectObjectByName(int Type, const char *name_pattern, bool Flag, search_me
 			/* Name[0] and Name[1] are special purpose, not the actual name */
 			if (menu->Name && menu->Name[0] != '\0' && menu->Name[1] != '\0' && REGEXEC(menu->Name + 2)) {
 				for (i = menu->EntryN, entry = menu->Entry; i; i--, entry++)
-					if (SeekPad(entry, &conn, false))
-						RatFindHook(conn.type, conn.ptr1, conn.ptr2, conn.ptr2, true, true);
+					if (SeekPad(entry, &conn, pcb_false))
+						RatFindHook(conn.type, conn.ptr1, conn.ptr2, conn.ptr2, pcb_true, pcb_true);
 			}
 		}
 		END_LOOP;
 
 		changed = SelectConnection(Flag) || changed;
-		changed = ResetConnections(false) || changed;
+		changed = ResetConnections(pcb_false) || changed;
 		FreeConnectionLookupMemory();
 	}
 

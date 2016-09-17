@@ -115,7 +115,7 @@ static int ActionPolygon(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *function = ACTION_ARG(0);
 	if (function && conf_core.editor.mode == PCB_MODE_POLYGON) {
-		notify_crosshair_change(false);
+		notify_crosshair_change(pcb_false);
 		switch (funchash_get(function, NULL)) {
 			/* close open polygon if possible */
 		case F_Close:
@@ -127,7 +127,7 @@ static int ActionPolygon(int argc, const char **argv, Coord x, Coord y)
 			GoToPreviousPoint();
 			break;
 		}
-		notify_crosshair_change(true);
+		notify_crosshair_change(pcb_true);
 	}
 	return 0;
 }

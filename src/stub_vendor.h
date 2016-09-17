@@ -27,6 +27,6 @@
 #include "global.h"
 
 extern int (*stub_vendorDrillMap)(int);
-extern bool (*stub_vendorIsElementMappable)(ElementTypePtr);
+extern pcb_bool (*stub_vendorIsElementMappable)(ElementTypePtr);
 
 #endif /* __VENDOR_H__ */

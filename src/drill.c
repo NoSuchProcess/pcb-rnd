@@ -99,14 +99,14 @@ DrillInfoTypePtr GetDrillInfo(DataTypePtr top)
 	DrillInfoTypePtr AllDrills;
 	DrillTypePtr Drill = NULL;
 	DrillType savedrill, swapdrill;
-	bool DrillFound = false;
-	bool NewDrill;
+	pcb_bool DrillFound = pcb_false;
+	pcb_bool NewDrill;
 
 	AllDrills = (DrillInfoTypePtr) calloc(1, sizeof(DrillInfoType));
 	ALLPIN_LOOP(top);
 	{
 		if (!DrillFound) {
-			DrillFound = true;
+			DrillFound = pcb_true;
 			Drill = GetDrillInfoDrillMemory(AllDrills);
 			InitializeDrill(Drill, pin, element);
 		}
@@ -114,7 +114,7 @@ DrillInfoTypePtr GetDrillInfo(DataTypePtr top)
 			if (Drill->DrillSize == pin->DrillingHole)
 				FillDrill(Drill, element, pin);
 			else {
-				NewDrill = false;
+				NewDrill = pcb_false;
 				DRILL_LOOP(AllDrills);
 				{
 					if (drill->DrillSize == pin->DrillingHole) {
@@ -124,7 +124,7 @@ DrillInfoTypePtr GetDrillInfo(DataTypePtr top)
 					}
 					else if (drill->DrillSize > pin->DrillingHole) {
 						if (!NewDrill) {
-							NewDrill = true;
+							NewDrill = pcb_true;
 							InitializeDrill(&swapdrill, pin, element);
 							Drill = GetDrillInfoDrillMemory(AllDrills);
 							Drill->DrillSize = pin->DrillingHole + 1;
@@ -147,7 +147,7 @@ DrillInfoTypePtr GetDrillInfo(DataTypePtr top)
 	VIA_LOOP(top);
 	{
 		if (!DrillFound) {
-			DrillFound = true;
+			DrillFound = pcb_true;
 			Drill = GetDrillInfoDrillMemory(AllDrills);
 			Drill->DrillSize = via->DrillingHole;
 			FillDrill(Drill, NULL, via);

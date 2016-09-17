@@ -55,7 +55,7 @@ static void PrintConnectionElementName(ElementTypePtr Element, FILE * FP)
 /* ---------------------------------------------------------------------------
  * prints one {pin,pad,via}/element entry of connection lists
  */
-static void PrintConnectionListEntry(char *ObjName, ElementTypePtr Element, bool FirstOne, FILE * FP)
+static void PrintConnectionListEntry(char *ObjName, ElementTypePtr Element, pcb_bool FirstOne, FILE * FP)
 {
 	if (FirstOne) {
 		fputc('\t', FP);
@@ -77,7 +77,7 @@ static void PrintConnectionListEntry(char *ObjName, ElementTypePtr Element, bool
  * prints all found connections of a pads to file FP
  * the connections are stacked in 'PadList'
  */
-static void PrintPadConnections(Cardinal Layer, FILE * FP, bool IsFirst)
+static void PrintPadConnections(Cardinal Layer, FILE * FP, pcb_bool IsFirst)
 {
 	Cardinal i;
 	PadTypePtr ptr;
@@ -89,7 +89,7 @@ static void PrintPadConnections(Cardinal Layer, FILE * FP, bool IsFirst)
 	if (IsFirst) {
 		ptr = PADLIST_ENTRY(Layer, 0);
 		if (ptr != NULL)
-			PrintConnectionListEntry((char *) UNKNOWN(ptr->Name), NULL, true, FP);
+			PrintConnectionListEntry((char *) UNKNOWN(ptr->Name), NULL, pcb_true, FP);
 		else
 			printf("Skipping NULL ptr in 1st part of PrintPadConnections\n");
 	}
@@ -100,7 +100,7 @@ static void PrintPadConnections(Cardinal Layer, FILE * FP, bool IsFirst)
 	for (i = IsFirst ? 1 : 0; i < PadList[Layer].Number; i++) {
 		ptr = PADLIST_ENTRY(Layer, i);
 		if (ptr != NULL)
-			PrintConnectionListEntry((char *) EMPTY(ptr->Name), (ElementTypePtr) ptr->Element, false, FP);
+			PrintConnectionListEntry((char *) EMPTY(ptr->Name), (ElementTypePtr) ptr->Element, pcb_false, FP);
 		else
 			printf("Skipping NULL ptr in 2nd part of PrintPadConnections\n");
 	}
@@ -110,7 +110,7 @@ static void PrintPadConnections(Cardinal Layer, FILE * FP, bool IsFirst)
  * prints all found connections of a pin to file FP
  * the connections are stacked in 'PVList'
  */
-static void PrintPinConnections(FILE * FP, bool IsFirst)
+static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 {
 	Cardinal i;
 	PinTypePtr pv;
@@ -121,7 +121,7 @@ static void PrintPinConnections(FILE * FP, bool IsFirst)
 	if (IsFirst) {
 		/* the starting pin */
 		pv = PVLIST_ENTRY(0);
-		PrintConnectionListEntry((char *) EMPTY(pv->Name), NULL, true, FP);
+		PrintConnectionListEntry((char *) EMPTY(pv->Name), NULL, pcb_true, FP);
 	}
 
 	/* we maybe have to start with i=1 if we are handling the
@@ -130,6 +130,6 @@ static void PrintPinConnections(FILE * FP, bool IsFirst)
 	for (i = IsFirst ? 1 : 0; i < PVList.Number; i++) {
 		/* get the elements name or assume that its a via */
 		pv = PVLIST_ENTRY(i);
-		PrintConnectionListEntry((char *) EMPTY(pv->Name), (ElementTypePtr) pv->Element, false, FP);
+		PrintConnectionListEntry((char *) EMPTY(pv->Name), (ElementTypePtr) pv->Element, pcb_false, FP);
 	}
 }

@@ -41,7 +41,7 @@ void AdjustAttachedObjects(void);
 void warpNoWhere(void);
 
 /* In gui-misc.c */
-bool ActionGetLocation(char *);
+pcb_bool ActionGetLocation(char *);
 void ActionGetXY(char *);
 
 #define ACTION_ARG(n) (argc > (n) ? argv[n] : NULL)
@@ -60,8 +60,8 @@ void ClearWarnings(void);
 typedef struct {
 	Coord X, Y;
 	Cardinal Buffer;
-	bool Click;
-	bool Moving;									/* selected type clicked on */
+	pcb_bool Click;
+	pcb_bool Moving;									/* selected type clicked on */
 	int Hit;											/* move type clicked on */
 	void *ptr1;
 	void *ptr2;
@@ -69,7 +69,7 @@ typedef struct {
 } action_note_t;
 
 extern action_note_t Note;
-extern bool saved_mode;
+extern pcb_bool saved_mode;
 
 void ReleaseMode(void);
 

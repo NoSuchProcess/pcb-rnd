@@ -45,25 +45,25 @@ typedef enum r_dir_e {
 	R_DIR_CANCEL                 /* cancel the search and return immediately */
 } r_dir_t;
 
-/* create an rtree from the list of boxes.  if 'manage' is true, then
+/* create an rtree from the list of boxes.  if 'manage' is pcb_true, then
  * the tree will take ownership of 'boxlist' and free it when the tree
  * is destroyed. */
 rtree_t *r_create_tree(const BoxType * boxlist[], int N, int manage);
 /* destroy an rtree */
 void r_destroy_tree(rtree_t ** rtree);
 
-bool r_delete_entry(rtree_t * rtree, const BoxType * which);
+pcb_bool r_delete_entry(rtree_t * rtree, const BoxType * which);
 void r_insert_entry(rtree_t * rtree, const BoxType * which, int manage);
 
 /* generic search routine */
-/* region_in_search should return true if "what you're looking for" is
+/* region_in_search should return pcb_true if "what you're looking for" is
  * within the specified region; regions, like rectangles, are closed on
  * top and left and open on bottom and right.
- * rectangle_in_region should return true if the given rectangle is
+ * rectangle_in_region should return pcb_true if the given rectangle is
  * "what you're looking for".
  * The search will find all rectangles matching the criteria given
  * by region_in_search and rectangle_in_region and return a count of
- * how many things rectangle_in_region returned true for. closure is
+ * how many things rectangle_in_region returned pcb_true for. closure is
  * used to abort the search if desired from within rectangel_in_region
  * Look at the implementation of r_region_is_empty for how to
  * abort the search if that is the desired behavior.

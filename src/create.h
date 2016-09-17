@@ -34,11 +34,11 @@
 /* TRUE during file loads, for example to allow overlapping vias.
    FALSE otherwise, to stop the user from doing normally dangerous
    things.  */
-void CreateBeLenient(bool);
+void CreateBeLenient(pcb_bool);
 
 DataTypePtr CreateNewBuffer(void);
 void pcb_colors_from_settings(PCBTypePtr);
-PCBTypePtr CreateNewPCB_(bool);
+PCBTypePtr CreateNewPCB_(pcb_bool);
 PCBTypePtr CreateNewPCB();
 /* Called after PCB->Data->LayerN is set.  Returns zero if no errors,
    else nonzero.  */
@@ -54,7 +54,7 @@ PolygonTypePtr CreateNewPolygon(LayerTypePtr, FlagType);
 PointTypePtr CreateNewPointInPolygon(PolygonTypePtr, Coord, Coord);
 PolygonType *CreateNewHoleInPolygon(PolygonType * polygon);
 ElementTypePtr CreateNewElement(DataTypePtr, ElementTypePtr,
-																FontTypePtr, FlagType, char *, char *, char *, Coord, Coord, BYTE, int, FlagType, bool);
+																FontTypePtr, FlagType, char *, char *, char *, Coord, Coord, BYTE, int, FlagType, pcb_bool);
 LineTypePtr CreateNewLineInElement(ElementTypePtr, Coord, Coord, Coord, Coord, Coord);
 ArcTypePtr CreateNewArcInElement(ElementTypePtr, Coord, Coord, Coord, Coord, Angle, Angle, Coord);
 PinTypePtr CreateNewPin(ElementTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, char *, char *, FlagType);

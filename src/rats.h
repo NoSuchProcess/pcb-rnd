@@ -40,10 +40,10 @@ LibraryMenuTypePtr netname_to_netname(const char *netname);
 RatTypePtr AddNet(void);
 char *ConnectionName(int, void *, void *);
 
-bool AddAllRats(bool, void (*)(register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr));
-bool SeekPad(LibraryEntryTypePtr, ConnectionTypePtr, bool);
+pcb_bool AddAllRats(pcb_bool, void (*)(register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr));
+pcb_bool SeekPad(LibraryEntryTypePtr, ConnectionTypePtr, pcb_bool);
 
 NetListTypePtr ProcNetlist(LibraryTypePtr);
-NetListListType CollectSubnets(bool);
+NetListListType CollectSubnets(pcb_bool);
 
 #endif

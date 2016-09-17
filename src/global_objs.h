@@ -1,7 +1,6 @@
 #ifndef GLOBAL_OBJS_H
 #define GLOBAL_OBJS_H
 #include <genlist/gendlist.h>
-#include <stdbool.h>
 #include "config.h"
 #include "globalconst.h"
 #include "global_typedefs.h"
@@ -156,7 +155,7 @@ struct pin_st {
  */
 typedef struct symbol_st {								/* a single symbol */
 	LineTypePtr Line;
-	bool Valid;
+	pcb_bool Valid;
 	Cardinal LineN,								/* number of lines */
 	  LineMax;
 	Coord Width, Height,					/* size of cell */
@@ -168,7 +167,7 @@ typedef struct font_st {								/* complete set of symbols */
 	  MaxWidth;
 	BoxType DefaultSymbol;				/* the default symbol is a filled box */
 	SymbolType Symbol[MAX_FONTPOSITION + 1];
-	bool Valid;
+	pcb_bool Valid;
 } FontType, *FontTypePtr;
 
 

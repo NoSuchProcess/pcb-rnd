@@ -58,7 +58,7 @@ extern char *InputTranslations;
 extern int addedLines;
 extern int LayerStack[MAX_LAYER];
 
-extern bool Bumped;
+extern pcb_bool Bumped;
 
 extern FlagType no_flags;
 

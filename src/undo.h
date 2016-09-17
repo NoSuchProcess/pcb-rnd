@@ -36,12 +36,12 @@
 
 											/* different layers */
 
-int Undo(bool);
-int Redo(bool);
+int Undo(pcb_bool);
+int Redo(pcb_bool);
 void IncrementUndoSerialNumber(void);
 void SaveUndoSerialNumber(void);
 void RestoreUndoSerialNumber(void);
-void ClearUndoList(bool);
+void ClearUndoList(pcb_bool);
 void MoveObjectToRemoveUndoList(int, void *, void *, void *);
 void AddObjectToRemovePointUndoList(int, void *, void *, Cardinal);
 void AddObjectToInsertPointUndoList(int, void *, void *, void *);
@@ -60,12 +60,12 @@ void AddObjectTo2ndSizeUndoList(int, void *, void *, void *);
 void AddObjectToClearSizeUndoList(int, void *, void *, void *);
 void AddObjectToMaskSizeUndoList(int, void *, void *, void *);
 void AddObjectToChangeAnglesUndoList(int, void *, void *, void *);
-void AddObjectToClearPolyUndoList(int, void *, void *, void *, bool);
+void AddObjectToClearPolyUndoList(int, void *, void *, void *, pcb_bool);
 void AddLayerChangeToUndoList(int, int);
 void AddNetlistLibToUndoList(LibraryTypePtr);
 void LockUndo(void);
 void UnlockUndo(void);
-bool Undoing(void);
+pcb_bool Undoing(void);
 
 /* Publish actions - these may be useful for other actions */
 int ActionUndo(int argc, const char **argv, Coord x, Coord y);

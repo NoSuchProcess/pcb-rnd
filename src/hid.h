@@ -2,7 +2,6 @@
 #define PCB_HID_H
 
 #include <stdarg.h>
-#include <stdbool.h>
 
 #include "config.h"
 #include "error.h"
@@ -206,13 +205,13 @@ struct hid_st {
 	/* This may be called to ask the GUI to force a redraw of a given area */
 	void (*invalidate_lr) (int left_, int right_, int top_, int bottom_);
 	void (*invalidate_all) (void);
-	void (*notify_crosshair_change) (bool changes_complete);
-	void (*notify_mark_change) (bool changes_complete);
+	void (*notify_crosshair_change) (pcb_bool changes_complete);
+	void (*notify_mark_change) (pcb_bool changes_complete);
 
 	/* During redraw or print/export cycles, this is called once per
 	   layer (or layer group, for copper layers).  If it returns false
 	   (zero), the HID does not want that layer, and none of the drawing
-	   functions should be called.  If it returns true (nonzero), the
+	   functions should be called.  If it returns pcb_true (nonzero), the
 	   items in that layer [group] should be drawn using the various
 	   drawing functions.  In addition to the MAX_LAYERS copper layer
 	   groups, you may select layers indicated by the macros SL_*
@@ -281,10 +280,10 @@ struct hid_st {
 	void (*fill_polygon) (hidGC gc_, int n_coords_, Coord * x_, Coord * y_);
 	void (*fill_pcb_polygon) (hidGC gc_, PolygonType * poly, const BoxType * clip_box);
 	void (*thindraw_pcb_polygon) (hidGC gc_, PolygonType * poly, const BoxType * clip_box);
-	void (*fill_pcb_pad) (hidGC gc_, PadType * pad, bool clip, bool mask);
-	void (*thindraw_pcb_pad) (hidGC gc_, PadType * pad, bool clip, bool mask);
-	void (*fill_pcb_pv) (hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHole, bool mask);
-	void (*thindraw_pcb_pv) (hidGC fg_gc, hidGC bg_gc, PinType * pv, bool drawHole, bool mask);
+	void (*fill_pcb_pad) (hidGC gc_, PadType * pad, pcb_bool clip, pcb_bool mask);
+	void (*thindraw_pcb_pad) (hidGC gc_, PadType * pad, pcb_bool clip, pcb_bool mask);
+	void (*fill_pcb_pv) (hidGC fg_gc, hidGC bg_gc, PinType * pv, pcb_bool drawHole, pcb_bool mask);
+	void (*thindraw_pcb_pv) (hidGC fg_gc, hidGC bg_gc, PinType * pv, pcb_bool drawHole, pcb_bool mask);
 	void (*fill_rect) (hidGC gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
 
 
@@ -475,12 +474,12 @@ struct hid_st {
 	/* Notification to the GUI around saving the PCB file.
 	 *
 	 * Called with a false parameter before the save, called again
-	 * with true after the save.
+	 * with pcb_true after the save.
 	 *
 	 * Allows GUIs which watch for file-changes on disk to ignore
 	 * our deliberate changes.
 	 */
-	void (*notify_save_pcb) (const char *filename, bool done);
+	void (*notify_save_pcb) (const char *filename, pcb_bool done);
 
 	/* Notification to the GUI that the PCB file has been renamed. */
 	void (*notify_filename_changed) (void);
