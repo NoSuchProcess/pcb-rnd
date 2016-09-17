@@ -95,7 +95,7 @@ int	yyparse(void);
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static int Parse(FILE *Pipe, const const char *Executable, const char *Path, const char *Filename, const char *Parameter);
+static int Parse(FILE *Pipe, const const char *Executable, const char *Path, const char *Filename, const char *Parse_parameter);
 
 %}
 
@@ -213,7 +213,7 @@ in	{ return T_IN; }
 /* ---------------------------------------------------------------------------
  * sets up the preprocessor command
  */
-static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename, const char *Parameter)
+static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename, const char *Parse_parameter)
 {
 	static	char	*command = NULL;
 	int		returncode;
@@ -259,7 +259,7 @@ printf("OPENING: %s -> %p\n", tmps, (void *)yyin);
 	  {
 	    used_popen = 1;
 
-	    command = EvaluateFilename(Executable, Path, Filename, Parameter);
+	    command = EvaluateFilename(Executable, Path, Filename, Parse_parameter);
 
 	    /* open pipe to stdout of command */
 	    if (*command == '\0' || (yyin = popen(command, "r")) == NULL)
