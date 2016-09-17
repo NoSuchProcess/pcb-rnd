@@ -1,8 +1,7 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include "misc_util.h"
 #include "pcb-printf.h"
-
+#include "pcb_bool.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +12,7 @@ int main(int argc, char *argv[])
 	pcb_printf_slot[0] = "%mr";
 
 	for(n = 2; n < argc; n++) {
-		bool success;
+		pcb_bool success;
 		double val = GetValueEx(argv[n], NULL, NULL, NULL, "", &success);
 		if (!success) {
 			fprintf(stderr, "Unable to convert '%s' to coord\n", argv[n]);
