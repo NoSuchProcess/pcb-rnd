@@ -220,6 +220,8 @@ int hook_detect_host()
 	if (istrue(get("/local/pcb/debug")))
 		require("cc/argstd/*", 0, 0);
 
+	require("cc/inline", 0, 0);
+
 	return 0;
 }
 
@@ -233,7 +235,7 @@ int safe_atoi(const char *s)
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int want_glib = 0, want_gtk, want_gd, want_stroke;
+	int want_glib = 0, want_gtk, want_gd, want_stroke, need_inl = 0;
 
 	want_gtk    = plug_is_enabled("hid_gtk");
 	want_gd     = plug_is_enabled("export_png") ||  plug_is_enabled("export_nelma") ||  plug_is_enabled("export_gcode");
@@ -506,7 +508,6 @@ int hook_detect_target()
 	if (istrue(get("/local/pcb/debug"))) {
 		const char *ansi = get("/host/cc/argstd/ansi");
 		const char *ped = get("/host/cc/argstd/pedantic");
-		int need_inl = 0;
 
 		if ((ansi != NULL) && (*ansi != '\0')) {
 			append("/local/pcb/c89flags", " ");
@@ -518,12 +519,14 @@ int hook_detect_target()
 			append("/local/pcb/c89flags", ped);
 			need_inl = 1;
 		}
-		if (need_inl) {
-			/* disable inline for C89 */
-			append("/local/pcb/c89flags", " ");
-			append("/local/pcb/c89flags", "-Dinline= ");
-		}
 	}
+
+	if (need_inl) {
+		/* disable inline for C89 */
+		append("/local/pcb/c89flags", " ");
+		append("/local/pcb/c89flags", "-Dinline= ");
+	}
+
 	return 0;
 }
 
