@@ -19,3 +19,4 @@ Known issues:
     that can not be worked around from the application
   - slow rendering and error messages about invalid numerics on the console
 
+Considerations listed in ../INSTALL apply.
