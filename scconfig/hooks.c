@@ -214,6 +214,9 @@ int hook_detect_host()
 	require("fstools/ln",  0, 1);
 	require("fstools/mkdir",  0, 1);
 
+/* until we rewrite the generators in C */
+	require("fstools/awk",  0, 1);
+
 	if (istrue(get("/local/pcb/debug")))
 		require("cc/argstd/*", 0, 0);
 
