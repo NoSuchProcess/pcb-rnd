@@ -112,7 +112,7 @@ void RotateLineLowLevel(LineTypePtr Line, Coord X, Coord Y, unsigned Number)
 }
 
 /* ---------------------------------------------------------------------------
- * rotates a text in 90 degree steps 
+ * rotates a text in 90 degree steps
  * only the bounding box is rotated, text rotation itself
  * is done by the drawing routines
  */
@@ -303,7 +303,7 @@ static void *RotateElementName(ElementTypePtr Element)
 }
 
 /* ---------------------------------------------------------------------------
- * rotates a box in 90 degree steps 
+ * rotates a box in 90 degree steps
  */
 void RotateBoxLowLevel(BoxTypePtr Box, Coord X, Coord Y, unsigned Number)
 {
