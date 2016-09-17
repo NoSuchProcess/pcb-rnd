@@ -8,7 +8,7 @@ LDFLAGS=-lm
 CC=@cc/cc@
 
 HASHOBJ=../../src_3rd/liblihata/genht/hash.o ../../src_3rd/liblihata/genht/htsp.o ../../src_3rd/liblihata/genht/htpp.o
-VECTOBJ=../../src_3rd/genvector/genvector.a
+VECTOBJ=../../src_3rd/genvector/gds_char.o ../../src_3rd/genvector/vtp0.o ../../src_3rd/genvector/vts0.o
 LISTOBJ=../../src_3rd/genlist/genlist.a
 SCCFOBJ=../../scconfig/src/default/str.o
 QPARSE=../../src_3rd/qparse/qparse.o
@@ -64,14 +64,22 @@ gsch2pcb.o: gsch2pcb.c ../../config.h
 $(HASHOBJ):
 	cd ../../src_3rd/liblihata/genht && make
 
-$(VECTOBJ):
-	cd ../../src_3rd/genvector && make
-
 $(LISTOBJ):
 	cd ../../src_3rd/genlist && make
 
 $(QPARSE):
 	cd ../../src_3rd/qparse && make
+
+../../src_3rd/genvector/gds_char.o:
+	$(CC) -c $(CFLAGS) ../../src_3rd/genvector/gds_char.c -o ../../src_3rd/genvector/gds_char.o
+
+../../src_3rd/genvector/vtp0.o:
+	$(CC) -c $(CFLAGS) ../../src_3rd/genvector/vtp0.c -o ../../src_3rd/genvector/vtp0.o
+
+../../src_3rd/genvector/vts0.o:
+	$(CC) -c $(CFLAGS) ../../src_3rd/genvector/vts0.c -o ../../src_3rd/genvector/vts0.o
+
+
 
 ##### module rules begin #####
 @/local/pcb/RULES@
