@@ -12,7 +12,6 @@
 	-  Display(cycleclip) [or line_refraction] while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	- c89: separate -Dinline -ansi -pedantic from CFLAGS
 		- utilities (gsch2pcb-rnd) should use the C89 flags
-		- parse_l.l Parse() shouldn't call it's argument Parameter (collides with a type)
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
