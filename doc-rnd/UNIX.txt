@@ -20,5 +20,6 @@ Requirements:
 
 3. make
 
+Considerations listed in ../INSTALL apply.
 
 (This procedure has been tested on IRIX 5.3 on IP22.)
