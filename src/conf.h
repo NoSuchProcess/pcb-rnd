@@ -35,7 +35,7 @@ typedef struct conf_listitem_s conf_listitem_t;
 
 #include "list_conf.h"
 
-int conf_rev; /* increased by one each time there's a change in any of the config binaries */
+extern int conf_rev; /* increased by one each time there's a change in any of the config binaries */
 
 typedef enum {
 	POL_PREPEND,
