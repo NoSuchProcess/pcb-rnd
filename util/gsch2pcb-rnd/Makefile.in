@@ -3,7 +3,7 @@ include {../scconfig/template/debug.tmpasm}
 
 print [@
 PLUGDIR=../../src_plugins
-CFLAGS=@/local/pcb/CFLAGS@
+CFLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
 LDFLAGS=-lm
 CC=@cc/cc@
 

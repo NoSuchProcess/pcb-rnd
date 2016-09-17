@@ -25,6 +25,10 @@
   - use pcb-rnd's conf system
   - use popen() instead of glib's spawn (stderr is always printed to stderr)
  */
+/* for popen() */
+#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
+
 #include "config.h"
 
 #include <stdarg.h>
@@ -32,6 +36,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include "../src/plug_footprint.h"
@@ -71,12 +76,12 @@ typedef struct {
 
 	gdl_elem_t all_elems;
 
-	unsigned char still_exists:1;
-	unsigned char new_format:1;
-	unsigned char hi_res_format:1;
-	unsigned char quoted_flags:1;
-	unsigned char omit_PKG:1;
-	unsigned char nonetlist:1;
+	unsigned still_exists:1;
+	unsigned new_format:1;
+	unsigned hi_res_format:1;
+	unsigned quoted_flags:1;
+	unsigned omit_PKG:1;
+	unsigned nonetlist:1;
 
 } PcbElement;
 
@@ -663,9 +668,11 @@ fprintf(stderr, "   val: %s\n", value);*/
 	el->refdes = refdes;
 	el->value = value;
 
+/*
 // wtf?
 //  if ((s = strchr (el->value, (int) ')')) != NULL)
 //    *s = '\0';
+*/
 
 	if (conf_g2pr.utils.gsch2pcb_rnd.empty_footprint_name && !strcmp(el->description, conf_g2pr.utils.gsch2pcb_rnd.empty_footprint_name)) {
 		if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
@@ -1191,7 +1198,7 @@ int main(int argc, char ** argv)
 	conf_update(NULL);
 
 	{
-		pcb_uninit_t uninit_func;
+/*		pcb_uninit_t uninit_func;*/
 #		include "fp_init.c"
 	}
 
