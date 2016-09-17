@@ -1311,8 +1311,9 @@ static BoxType bloat_routebox(routebox_t * rb)
 
 #ifdef ROUTE_DEBUG							/* only for debugging expansion areas */
 
+ typedef short pcb_dimension_t;
 /* makes a line on the solder layer silk surrounding the box */
-void showbox(BoxType b, dimension_t thickness, int group)
+static void showbox(BoxType b, pcb_dimension_t thickness, int group)
 {
 	LineTypePtr line;
 	LayerTypePtr SLayer = LAYER_PTR(group);

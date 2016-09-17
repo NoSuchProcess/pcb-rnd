@@ -38,7 +38,6 @@ typedef unsigned int pcb_cardinal_t;
 #ifndef XtSpecificationRelease
 /*typedef unsigned int	Pixel;*/
 typedef char *String;
-typedef short dimension_t;
 #endif
 typedef unsigned char BYTE;
 
