@@ -1,5 +1,7 @@
 /* 15 Oct 2008 Ineiev: add different crosshair shapes */
 
+#include "xincludes.h"
+
 #include "config.h"
 #include "conf_core.h"
 
@@ -15,8 +17,6 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
-#include "xincludes.h"
 
 #include "global.h"
 #include "data.h"

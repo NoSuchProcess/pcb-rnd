@@ -34,10 +34,12 @@ typedef struct AttributeListType AttributeListType, *AttributeListTypePtr;
 typedef struct rats_patch_line_s rats_patch_line_t;
 
 #ifndef XtSpecificationRelease
+#ifndef _XtIntrinsic_h
 typedef unsigned int Cardinal;
+typedef short Position;
+#endif
 /*typedef unsigned int	Pixel;*/
 typedef char *String;
-typedef short Position;
 typedef short dimension_t;
 #endif
 typedef unsigned char BYTE;

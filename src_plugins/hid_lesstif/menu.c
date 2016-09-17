@@ -1,3 +1,5 @@
+#include "xincludes.h"
+
 #include "config.h"
 #include "conf_core.h"
 
@@ -6,8 +8,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
-
-#include "xincludes.h"
 
 #include "global.h"
 #include "data.h"
