@@ -12,9 +12,22 @@ append /local/comp/CFLAGS {}
 foreach /local/o in /local/comp/OBJS
 put /local/c /local/o
 sub /local/c {.o$} {.c}
+switch /local/c
+	case {.*_y.c}
+		put /local/extinc [@ -I@/local/c@@]
+		sub /local/extinc {/[^/]*$} {}
+		end
+	case {.*_l.c}
+		put /local/extinc [@ -I@/local/c@@]
+		sub /local/extinc {/[^/]*$} {}
+		end
+	default
+		put /local/extinc {}
+		end
+end
 print [@
 @/local/o@: @/local/c@
-	$(CC) -c $(C89FLAGS) @/local/comp/CFLAGS@ -o @/local/o@ $<
+	$(CC) -c $(C89FLAGS) @/local/comp/CFLAGS@@/local/extinc@ -o @/local/o@ $<
 @]
 end
 
@@ -22,9 +35,22 @@ append /local/comp/OBJS_C99 {}
 foreach /local/o in /local/comp/OBJS_C99
 put /local/c /local/o
 sub /local/c {.o$} {.c}
+switch /local/c
+	case {.*_y.c}
+		put /local/extinc [@ -I@/local/c@@]
+		sub /local/extinc {/[^/]*$} {}
+		end
+	case {.*_l.c}
+		put /local/extinc [@ -I@/local/c@@]
+		sub /local/extinc {/[^/]*$} {}
+		end
+	default
+		put /local/extinc {}
+		end
+end
 print [@
 @/local/o@: @/local/c@
-	$(CC) -c $(CFLAGS) @/local/comp/CFLAGS@ -o @/local/o@ $<
+	$(CC) -c $(CFLAGS) @/local/comp/CFLAGS@@/local/extinc@ -o @/local/o@ $<
 @]
 end
 
