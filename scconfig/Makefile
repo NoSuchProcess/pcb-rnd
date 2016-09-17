@@ -86,6 +86,10 @@ menucfg.o: menucfg.c
 
 hooks.o: plugin_3state.h plugins.h Rev.h
 
+src/util/arg_auto_set.o: src/util/arg_auto_set.c src/util/arg_auto_set.h
+	$(CC) -c $(CFLAGS) -o src/util/arg_auto_set.o src/util/arg_auto_set.c
+
+
 cquote: cquote.c
 
 clean:
