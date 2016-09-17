@@ -74,7 +74,7 @@ static r_dir_t rubber_callback(const BoxType * b, void *cl)
 		return R_DIR_NOT_FOUND;
 	if (line == i->line)
 		return R_DIR_NOT_FOUND;
-	/* 
+	/*
 	 * Check to see if the line touches a rectangular region.
 	 * To do this we need to look for the intersection of a circular
 	 * region and a rectangular region.
@@ -86,7 +86,7 @@ static r_dir_t rubber_callback(const BoxType * b, void *cl)
 				&& line->Point1.Y + t >= i->box.Y1 && line->Point1.Y - t <= i->box.Y2) {
 			if (((i->box.X1 <= line->Point1.X) &&
 					 (line->Point1.X <= i->box.X2)) || ((i->box.Y1 <= line->Point1.Y) && (line->Point1.Y <= i->box.Y2))) {
-				/* 
+				/*
 				 * The circle is positioned such that the closest point
 				 * on the rectangular region boundary is not at a corner
 				 * of the rectangle.  i.e. the shortest line from circle
@@ -96,7 +96,7 @@ static r_dir_t rubber_callback(const BoxType * b, void *cl)
 				touches = 1;
 			}
 			else {
-				/* 
+				/*
 				 * Now we must check the distance from the center of the
 				 * circle to the corners of the rectangle since the
 				 * closest part of the rectangular region is the corner.

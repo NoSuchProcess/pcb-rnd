@@ -118,7 +118,7 @@ static void *DestroyVia(PinTypePtr Via)
 }
 
 /* ---------------------------------------------------------------------------
- * destroys a line from a layer 
+ * destroys a line from a layer
  */
 static void *DestroyLine(LayerTypePtr Layer, LineTypePtr Line)
 {
@@ -130,7 +130,7 @@ static void *DestroyLine(LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /* ---------------------------------------------------------------------------
- * destroys an arc from a layer 
+ * destroys an arc from a layer
  */
 static void *DestroyArc(LayerTypePtr Layer, ArcTypePtr Arc)
 {
@@ -329,7 +329,7 @@ static void *RemoveLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr 
 }
 
 /* ---------------------------------------------------------------------------
- * removes a line from a layer 
+ * removes a line from a layer
  */
 void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line)
 {
@@ -344,7 +344,7 @@ void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /* ---------------------------------------------------------------------------
- * removes an arc from a layer 
+ * removes an arc from a layer
  */
 void *RemoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
 {

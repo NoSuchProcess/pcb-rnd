@@ -286,4 +286,3 @@ void LookupConnectionsToAllElements(FILE * FP)
 	FreeConnectionLookupMemory();
 	Redraw();
 }
-

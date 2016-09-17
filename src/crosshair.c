@@ -821,7 +821,7 @@ static void onpoint_work(CrosshairType * crosshair, Coord X, Coord Y)
 	pcb_bool redraw = pcb_false;
 
 	op_swap(crosshair);
-	
+
 	/* Do not truncate to 0 because that may free the array */
 	vtop_truncate(&crosshair->onpoint_objs, 1);
 	crosshair->onpoint_objs.used = 0;

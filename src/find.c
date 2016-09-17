@@ -32,7 +32,7 @@
  *   Every object that has to be checked is added to its list.
  *   Coarse searching is accomplished with the data rtrees.
  * - there's no 'speed-up' mechanism for polygons because they are not used
- *   as often as other objects 
+ *   as often as other objects
  * - the maximum distance between line and pin ... would depend on the angle
  *   between them. To speed up computation the limit is set to one half
  *   of the thickness of the objects (cause of square pins).

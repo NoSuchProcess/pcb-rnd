@@ -184,4 +184,3 @@ int layout_search_free(const char *search_ID)
 	}
 	return 2;
 }
-

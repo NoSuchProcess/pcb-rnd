@@ -88,7 +88,7 @@ static int parse_coord(Coord *res, lht_node_t *nd)
 
 	if ((nd == NULL) || (nd->type != LHT_TEXT))
 		return -1;
-	
+
 	tmp = GetValueEx(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
 	if (!success)
 		return -1;
@@ -105,7 +105,7 @@ static int parse_angle(Angle *res, lht_node_t *nd)
 
 	if ((nd == NULL) || (nd->type != LHT_TEXT))
 		return -1;
-	
+
 	tmp = GetValueEx(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
 	if (!success)
 		return -1;
@@ -143,7 +143,7 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 
 	if (nd == NULL)
 		return -1;
-	
+
 	tmp = strtol(nd->name + prefix_len, &end, 10);
 	if (*end != '\0')
 		return -1;
@@ -636,4 +636,3 @@ int io_lihata_parse_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, co
 	lht_dom_uninit(doc);
 	return res;
 }
-

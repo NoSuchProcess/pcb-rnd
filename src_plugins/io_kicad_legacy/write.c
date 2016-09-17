@@ -431,12 +431,12 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 				/*
 				   as far as can be determined from the Kicad documentation,
 				   http://en.wikibooks.org/wiki/Kicad/file_formats#Drawings
-				
+
 				   the origin for rotation is the positive x direction, and going CW
-				
+
 				   whereas in gEDA, the gEDA origin for rotation is the negative x axis,
 				   with rotation CCW, so we need to reverse delta angle
-				
+
 				   deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in gEDA
 				   NB it is in degrees in the newer s-file kicad module/footprint format
 				*/

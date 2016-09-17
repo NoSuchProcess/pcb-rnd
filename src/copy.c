@@ -99,7 +99,7 @@ PolygonTypePtr CopyPolygonLowLevel(PolygonTypePtr Dest, PolygonTypePtr Src)
 }
 
 /* ---------------------------------------------------------------------------
- * copies data from one element to another and creates the destination 
+ * copies data from one element to another and creates the destination
  * if necessary
  */
 ElementTypePtr
@@ -159,7 +159,7 @@ CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, ElementTypePtr Src, p
 }
 
 /* ---------------------------------------------------------------------------
- * copies a via 
+ * copies a via
  */
 static void *CopyVia(PinTypePtr Via)
 {
@@ -175,7 +175,7 @@ static void *CopyVia(PinTypePtr Via)
 }
 
 /* ---------------------------------------------------------------------------
- * copies a line 
+ * copies a line
  */
 static void *CopyLine(LayerTypePtr Layer, LineTypePtr Line)
 {
@@ -212,7 +212,7 @@ static void *CopyArc(LayerTypePtr Layer, ArcTypePtr Arc)
 }
 
 /* ---------------------------------------------------------------------------
- * copies a text 
+ * copies a text
  */
 static void *CopyText(LayerTypePtr Layer, TextTypePtr Text)
 {
@@ -226,7 +226,7 @@ static void *CopyText(LayerTypePtr Layer, TextTypePtr Text)
 }
 
 /* ---------------------------------------------------------------------------
- * copies a polygon 
+ * copies a polygon
  */
 static void *CopyPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
@@ -245,7 +245,7 @@ static void *CopyPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 }
 
 /* ---------------------------------------------------------------------------
- * copies an element onto the PCB.  Then does a draw. 
+ * copies an element onto the PCB.  Then does a draw.
  */
 static void *CopyElement(ElementTypePtr Element)
 {
