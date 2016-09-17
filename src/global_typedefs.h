@@ -36,9 +36,6 @@ typedef struct rats_patch_line_s rats_patch_line_t;
 typedef unsigned int pcb_cardinal_t;
 
 #ifndef XtSpecificationRelease
-#ifndef _XtIntrinsic_h
-typedef short Position;
-#endif
 /*typedef unsigned int	Pixel;*/
 typedef char *String;
 typedef short dimension_t;
