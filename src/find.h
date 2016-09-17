@@ -48,7 +48,7 @@ typedef void (*find_callback_t) (int current_type, void *current_ptr, int from_t
    (in LookupConnections for example). The caller should save the original
    value and set that back around the call, if the callback needs to be changed.
    */
-find_callback_t find_callback;
+extern find_callback_t find_callback;
 
 /* ---------------------------------------------------------------------------
  * some local defines

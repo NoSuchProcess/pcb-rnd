@@ -20,6 +20,6 @@
  *
  */
 
-void (*stub_rat_found_short)(PinType * pin, PadType * pad, const char *with_net);
-void (*stub_rat_proc_shorts)(void);
+extern void (*stub_rat_found_short)(PinType * pin, PadType * pad, const char *with_net);
+extern void (*stub_rat_proc_shorts)(void);
 
