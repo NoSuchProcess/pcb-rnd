@@ -22,4 +22,10 @@ Requirements:
 
 Considerations listed in ../INSTALL apply.
 
-(This procedure has been tested on IRIX 5.3 on IP22.)
+The above procedure has been tested on IRIX 5.3 on IP22.
+
+Expected compilation times [minute:second]:
+
+./configure       compile, -O0     compile -O3   system
+-------------------------------------------------------------------------------
+1:55              7:40             14:27         IRIX 5.3, IP22 @ 100 MHz
