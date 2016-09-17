@@ -163,7 +163,7 @@ void deleteSegment(SegmentTree * st, int n, Coord Y1, Coord Y2)
  */
 double ComputeIntersectionArea(BoxListTypePtr boxlist)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 	double area = 0.0;
 	/* first get the aggregate area. */
 	for (i = 0; i < boxlist->BoxN; i++)
@@ -179,7 +179,7 @@ double ComputeIntersectionArea(BoxListTypePtr boxlist)
 double ComputeUnionArea(BoxListTypePtr boxlist)
 {
 	BoxTypePtr *rectLeft, *rectRight;
-	Cardinal i, j;
+	pcb_cardinal_t i, j;
 	LocationList yCoords;
 	SegmentTree segtree;
 	Coord lastX;

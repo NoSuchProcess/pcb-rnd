@@ -80,9 +80,9 @@ static pcb_bool PVTouchesLine(LineTypePtr line)
 	return (pcb_false);
 }
 
-static pcb_bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup)
+static pcb_bool LOTouchesLine(LineTypePtr Line, pcb_cardinal_t LayerGroup)
 {
-	Cardinal entry;
+	pcb_cardinal_t entry;
 	struct lo_info info;
 
 
@@ -93,7 +93,7 @@ static pcb_bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup)
 
 	/* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-		Cardinal layer = PCB->LayerGroups.Entries[LayerGroup][entry];
+		pcb_cardinal_t layer = PCB->LayerGroups.Entries[LayerGroup][entry];
 
 		/* handle normal layers */
 		if (layer < max_copper_layer) {
@@ -135,7 +135,7 @@ static pcb_bool LOTouchesLine(LineTypePtr Line, Cardinal LayerGroup)
  * doesn't include rat-lines in the search
  */
 
-pcb_bool lineClear(LineTypePtr line, Cardinal group)
+pcb_bool lineClear(LineTypePtr line, pcb_cardinal_t group)
 {
 	if (LOTouchesLine(line, group))
 		return (pcb_false);

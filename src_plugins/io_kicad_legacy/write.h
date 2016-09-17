@@ -35,6 +35,5 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP);
 int write_kicad_legacy_module_header(FILE * FP);
 int write_kicad_legacy_layout_header(FILE * FP);
 int write_kicad_legacy_layout_vias(FILE * FP, DataTypePtr Data, Coord MaxWidth, Coord MaxHeight);
-int write_kicad_legacy_layout_tracks(FILE * FP, Cardinal number, LayerTypePtr layer,
+int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,
 						Coord MaxWidth, Coord MaxHeight);
-

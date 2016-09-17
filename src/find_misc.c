@@ -56,7 +56,7 @@ static void reassign_no_drc_flags(void)
 
 
 /* ---------------------------------------------------------------------------
- * loops till no more connections are found 
+ * loops till no more connections are found
  */
 static pcb_bool DoIt(pcb_bool AndRats, pcb_bool AndDraw)
 {
@@ -84,11 +84,11 @@ static pcb_bool DoIt(pcb_bool AndRats, pcb_bool AndDraw)
 static void DrawNewConnections(void)
 {
 	int i;
-	Cardinal position;
+	pcb_cardinal_t position;
 
 	/* decrement 'i' to keep layerstack order */
 	for (i = max_copper_layer - 1; i != -1; i--) {
-		Cardinal layer = LayerStack[i];
+		pcb_cardinal_t layer = LayerStack[i];
 
 		if (PCB->Data->Layer[layer].On) {
 			/* draw all new lines */
@@ -407,7 +407,7 @@ pcb_bool ResetConnections(pcb_bool AndDraw)
  */
 static void DumpList(void)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 
 	for (i = 0; i < 2; i++) {
 		PadList[i].Number = 0;

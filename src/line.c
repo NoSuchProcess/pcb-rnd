@@ -258,7 +258,7 @@ static double drc_lines(PointTypePtr end, pcb_bool way)
 	Coord dx, dy, temp, last, length;
 	Coord temp2, last2, length2;
 	LineType line1, line2;
-	Cardinal group, comp;
+	pcb_cardinal_t group, comp;
 	struct drc_info info;
 	pcb_bool two_lines, x_is_long, blocker;
 	PointType ans;
@@ -418,7 +418,7 @@ void EnforceLineDRC(void)
 	PointType r45, rs;
 	pcb_bool shift;
 	double r1, r2;
-	int refraction = conf_core.editor.line_refraction; 
+	int refraction = conf_core.editor.line_refraction;
 
 	/* Silence a bogus compiler warning by storing this in a variable */
 	int layer_idx = INDEXOFCURRENT;

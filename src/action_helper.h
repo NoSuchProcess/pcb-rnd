@@ -59,7 +59,7 @@ void ClearWarnings(void);
 
 typedef struct {
 	Coord X, Y;
-	Cardinal Buffer;
+	pcb_cardinal_t Buffer;
 	pcb_bool Click;
 	pcb_bool Moving;									/* selected type clicked on */
 	int Hit;											/* move type clicked on */

@@ -163,28 +163,28 @@ extern int mem_any_set(unsigned char *, int);
   pinlist_foreach(&(top)->Via, &__it__, via) {
 
 #define DRILL_LOOP(top) do             {               \
-        Cardinal        n;                                      \
+        pcb_cardinal_t        n;                                      \
         DrillTypePtr    drill;                                  \
         for (n = 0; (top)->DrillN > 0 && n < (top)->DrillN; n++)                        \
         {                                                       \
                 drill = &(top)->Drill[n]
 
 #define NETLIST_LOOP(top) do   {                         \
-        Cardinal        n;                                      \
+        pcb_cardinal_t        n;                                      \
         NetListTypePtr   netlist;                               \
         for (n = (top)->NetListN-1; n != -1; n--)               \
         {                                                       \
                 netlist = &(top)->NetList[n]
 
 #define NET_LOOP(top) do   {                             \
-        Cardinal        n;                                      \
+        pcb_cardinal_t        n;                                      \
         NetTypePtr   net;                                       \
         for (n = (top)->NetN-1; n != -1; n--)                   \
         {                                                       \
                 net = &(top)->Net[n]
 
 #define CONNECTION_LOOP(net) do {                         \
-        Cardinal        n;                                      \
+        pcb_cardinal_t        n;                                      \
         ConnectionTypePtr       connection;                     \
         for (n = (net)->ConnectionN-1; n != -1; n--)            \
         {                                                       \
@@ -201,14 +201,14 @@ extern int mem_any_set(unsigned char *, int);
   ratlist_foreach(&(top)->Rat, &__it__, line) {
 
 #define	ELEMENTTEXT_LOOP(element) do { 	\
-	Cardinal	n;				\
+	pcb_cardinal_t	n;				\
 	TextTypePtr	text;				\
 	for (n = MAX_ELEMENTNAMES-1; n != -1; n--)	\
 	{						\
 		text = &(element)->Name[n]
 
 #define	ELEMENTNAME_LOOP(element) do	{ 			\
-	Cardinal	n;					\
+	pcb_cardinal_t	n;					\
 	char		*textstring;				\
 	for (n = MAX_ELEMENTNAMES-1; n != -1; n--)		\
 	{							\
@@ -255,7 +255,7 @@ extern int mem_any_set(unsigned char *, int);
   linelist_foreach(&(layer)->Polygon, &__it__, polygon) {
 
 #define	POLYGONPOINT_LOOP(polygon) do	{	\
-	Cardinal			n;		\
+	pcb_cardinal_t			n;		\
 	PointTypePtr	point;				\
 	for (n = (polygon)->PointN-1; n != -1; n--)	\
 	{						\
@@ -272,49 +272,49 @@ extern int mem_any_set(unsigned char *, int);
 	  PAD_LOOP(element)
 
 #define	ALLLINE_LOOP(top) do	{		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
 		LINE_LOOP(layer)
 
 #define ALLARC_LOOP(top) do {		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	for (l =0; l < max_copper_layer + 2; l++, layer++)		\
 	{ \
 		ARC_LOOP(layer)
 
 #define	ALLPOLYGON_LOOP(top)	do {		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
 		POLYGON_LOOP(layer)
 
 #define	COPPERLINE_LOOP(top) do	{		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer; l++, layer++)	\
 	{ \
 		LINE_LOOP(layer)
 
 #define COPPERARC_LOOP(top) do	{		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	for (l =0; l < max_copper_layer; l++, layer++)		\
 	{ \
 		ARC_LOOP(layer)
 
 #define	COPPERPOLYGON_LOOP(top) do	{		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer; l++, layer++)	\
 	{ \
 		POLYGON_LOOP(layer)
 
 #define	SILKLINE_LOOP(top) do	{		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	layer += max_copper_layer;			\
 	for (l = 0; l < 2; l++, layer++)		\
@@ -322,7 +322,7 @@ extern int mem_any_set(unsigned char *, int);
 		LINE_LOOP(layer)
 
 #define SILKARC_LOOP(top) do	{		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	layer += max_copper_layer;			\
 	for (l = 0; l < 2; l++, layer++)		\
@@ -330,7 +330,7 @@ extern int mem_any_set(unsigned char *, int);
 		ARC_LOOP(layer)
 
 #define	SILKPOLYGON_LOOP(top) do	{		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	layer += max_copper_layer;			\
 	for (l = 0; l < 2; l++, layer++)		\
@@ -338,14 +338,14 @@ extern int mem_any_set(unsigned char *, int);
 		POLYGON_LOOP(layer)
 
 #define	ALLTEXT_LOOP(top)	do {		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
 		TEXT_LOOP(layer)
 
 #define	VISIBLELINE_LOOP(top) do	{		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
@@ -353,7 +353,7 @@ extern int mem_any_set(unsigned char *, int);
 			LINE_LOOP(layer)
 
 #define	VISIBLEARC_LOOP(top) do	{		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
@@ -361,7 +361,7 @@ extern int mem_any_set(unsigned char *, int);
 			ARC_LOOP(layer)
 
 #define	VISIBLETEXT_LOOP(board) do	{		\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (board)->Data->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
@@ -369,7 +369,7 @@ extern int mem_any_set(unsigned char *, int);
                   if (TEXT_IS_VISIBLE((board), layer, text))
 
 #define	VISIBLEPOLYGON_LOOP(top) do	{	\
-	Cardinal		l;			\
+	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
@@ -377,39 +377,39 @@ extern int mem_any_set(unsigned char *, int);
 			POLYGON_LOOP(layer)
 
 #define POINTER_LOOP(top) do	{	\
-	Cardinal	n;			\
+	pcb_cardinal_t	n;			\
 	void	**ptr;				\
 	for (n = (top)->PtrN-1; n != -1; n--)	\
 	{					\
 		ptr = &(top)->Ptr[n]
 
 #define MENU_LOOP(top)	do {	\
-	Cardinal	l;			\
+	pcb_cardinal_t	l;			\
 	LibraryMenuTypePtr menu;		\
 	for (l = (top)->MenuN-1; l != -1; l--)	\
 	{					\
 		menu = &(top)->Menu[l]
 
 #define ENTRY_LOOP(top) do	{	\
-	Cardinal	n;			\
+	pcb_cardinal_t	n;			\
 	LibraryEntryTypePtr entry;		\
 	for (n = (top)->EntryN-1; n != -1; n--)	\
 	{					\
 		entry = &(top)->Entry[n]
 
 #define GROUP_LOOP(data, group) do { 	\
-	Cardinal entry; \
+	pcb_cardinal_t entry; \
         for (entry = 0; entry < ((PCBTypePtr)(data->pcb))->LayerGroups.Number[(group)]; entry++) \
         { \
 		LayerTypePtr layer;		\
-		Cardinal number; 		\
+		pcb_cardinal_t number; 		\
 		number = ((PCBTypePtr)(data->pcb))->LayerGroups.Entries[(group)][entry]; \
 		if (number >= max_copper_layer)	\
 		  continue;			\
 		layer = &data->Layer[number];
 
 #define LAYER_LOOP(data, ml) do { \
-        Cardinal n; \
+        pcb_cardinal_t n; \
 	for (n = 0; n < ml; n++) \
 	{ \
 	   LayerTypePtr layer = (&data->Layer[(n)]);

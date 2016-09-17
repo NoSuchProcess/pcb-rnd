@@ -61,7 +61,7 @@ static pcb_bool ADD_PV_TO_LIST(PinTypePtr Pin, int from_type, void *from_ptr, fo
 	return pcb_false;
 }
 
-static pcb_bool ADD_PAD_TO_LIST(Cardinal L, PadTypePtr Pad, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_PAD_TO_LIST(pcb_cardinal_t L, PadTypePtr Pad, int from_type, void *from_ptr, found_conn_type_t type)
 {
 /*fprintf(stderr, "ADD_PAD_TO_LIST cardinal %d %p %d\n", L, Pad, from_type);*/
 	if (User)
@@ -79,7 +79,7 @@ static pcb_bool ADD_PAD_TO_LIST(Cardinal L, PadTypePtr Pad, int from_type, void 
 	return pcb_false;
 }
 
-static pcb_bool ADD_LINE_TO_LIST(Cardinal L, LineTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_LINE_TO_LIST(pcb_cardinal_t L, LineTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_LINE, LAYER_PTR(L), (Ptr), (Ptr));
@@ -96,7 +96,7 @@ static pcb_bool ADD_LINE_TO_LIST(Cardinal L, LineTypePtr Ptr, int from_type, voi
 	return pcb_false;
 }
 
-static pcb_bool ADD_ARC_TO_LIST(Cardinal L, ArcTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_ARC_TO_LIST(pcb_cardinal_t L, ArcTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_ARC, LAYER_PTR(L), (Ptr), (Ptr));
@@ -130,7 +130,7 @@ static pcb_bool ADD_RAT_TO_LIST(RatTypePtr Ptr, int from_type, void *from_ptr, f
 	return pcb_false;
 }
 
-static pcb_bool ADD_POLYGON_TO_LIST(Cardinal L, PolygonTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, PolygonTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_POLYGON, LAYER_PTR(L), (Ptr), (Ptr));
@@ -165,7 +165,7 @@ pcb_bool SetThing(int type, void *ptr1, void *ptr2, void *ptr3)
  */
 void FreeLayoutLookupMemory(void)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 
 	for (i = 0; i < max_copper_layer; i++) {
 		free(LineList[i].Data);
@@ -196,7 +196,7 @@ void FreeComponentLookupMemory(void)
  */
 void InitComponentLookup(void)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 
 	/* initialize pad data; start by counting the total number
 	 * on each of the two possible layers
@@ -230,7 +230,7 @@ void InitComponentLookup(void)
  */
 void InitLayoutLookup(void)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 
 	/* initialize line arc and polygon data */
 	for (i = 0; i < max_copper_layer; i++) {
@@ -284,7 +284,7 @@ void InitLayoutLookup(void)
 }
 
 struct pv_info {
-	Cardinal layer;
+	pcb_cardinal_t layer;
 	PinType pv;
 	jmp_buf env;
 };
@@ -378,7 +378,7 @@ static r_dir_t LOCtoPVpoly_callback(const BoxType * b, void *cl)
  */
 static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 {
-	Cardinal layer;
+	pcb_cardinal_t layer;
 	struct pv_info info;
 
 	/* loop over all PVs currently on list */
@@ -432,7 +432,7 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 {
 	pcb_bool done;
-	Cardinal i, group, layer, ratposition,
+	pcb_cardinal_t i, group, layer, ratposition,
 		lineposition[MAX_LAYER], polyposition[MAX_LAYER], arcposition[MAX_LAYER], padposition[2];
 
 	/* copy the current LO list positions; the original data is changed
@@ -452,7 +452,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 	 * more new connections in the layergroup were found
 	 */
 	do {
-		Cardinal *position;
+		pcb_cardinal_t *position;
 
 		if (AndRats) {
 			position = &ratposition;
@@ -467,7 +467,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 		}
 		/* loop over all layergroups */
 		for (group = 0; group < max_group; group++) {
-			Cardinal entry;
+			pcb_cardinal_t entry;
 
 			for (entry = 0; entry < PCB->LayerGroups.Number[group]; entry++) {
 				layer = PCB->LayerGroups.Entries[group][entry];
@@ -551,7 +551,7 @@ static r_dir_t pv_pv_callback(const BoxType * b, void *cl)
  */
 static pcb_bool LookupPVConnectionsToPVList(void)
 {
-	Cardinal save_place;
+	pcb_cardinal_t save_place;
 	struct pv_info info;
 
 
@@ -596,7 +596,7 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 }
 
 struct lo_info {
-	Cardinal layer;
+	pcb_cardinal_t layer;
 	LineType line;
 	PadType pad;
 	ArcType arc;
@@ -705,7 +705,7 @@ static r_dir_t pv_rat_callback(const BoxType * b, void *cl)
  */
 static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 {
-	Cardinal layer;
+	pcb_cardinal_t layer;
 	struct lo_info info;
 
 	/* loop over all layers */
@@ -866,16 +866,16 @@ static r_dir_t LOCtoArcPad_callback(const BoxType * b, void *cl)
  * the notation that is used is:
  * Xij means Xj at arc i
  */
-static pcb_bool LookupLOConnectionsToArc(ArcTypePtr Arc, Cardinal LayerGroup)
+static pcb_bool LookupLOConnectionsToArc(ArcTypePtr Arc, pcb_cardinal_t LayerGroup)
 {
-	Cardinal entry;
+	pcb_cardinal_t entry;
 	struct lo_info info;
 
 	info.arc = *Arc;
 	EXPAND_BOUNDS(&info.arc);
 	/* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-		Cardinal layer;
+		pcb_cardinal_t layer;
 
 		layer = PCB->LayerGroups.Entries[LayerGroup][entry];
 
@@ -978,9 +978,9 @@ static r_dir_t LOCtoLinePad_callback(const BoxType * b, void *cl)
  * the notation that is used is:
  * Xij means Xj at line i
  */
-static pcb_bool LookupLOConnectionsToLine(LineTypePtr Line, Cardinal LayerGroup, pcb_bool PolysTo)
+static pcb_bool LookupLOConnectionsToLine(LineTypePtr Line, pcb_cardinal_t LayerGroup, pcb_bool PolysTo)
 {
-	Cardinal entry;
+	pcb_cardinal_t entry;
 	struct lo_info info;
 
 	info.line = *Line;
@@ -994,7 +994,7 @@ static pcb_bool LookupLOConnectionsToLine(LineTypePtr Line, Cardinal LayerGroup,
 
 	/* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-		Cardinal layer;
+		pcb_cardinal_t layer;
 
 		layer = PCB->LayerGroups.Entries[LayerGroup][entry];
 
@@ -1037,7 +1037,7 @@ static pcb_bool LookupLOConnectionsToLine(LineTypePtr Line, Cardinal LayerGroup,
 
 
 struct rat_info {
-	Cardinal layer;
+	pcb_cardinal_t layer;
 	PointTypePtr Point;
 	jmp_buf env;
 };
@@ -1093,18 +1093,18 @@ static r_dir_t LOCtoPad_callback(const BoxType * b, void *cl)
  * the notation that is used is:
  * Xij means Xj at line i
  */
-static pcb_bool LookupLOConnectionsToRatEnd(PointTypePtr Point, Cardinal LayerGroup)
+static pcb_bool LookupLOConnectionsToRatEnd(PointTypePtr Point, pcb_cardinal_t LayerGroup)
 {
-	Cardinal entry;
+	pcb_cardinal_t entry;
 	struct rat_info info;
 
 	info.Point = Point;
 	/* loop over all layers of this group */
 	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-		Cardinal layer;
+		pcb_cardinal_t layer;
 
 		layer = PCB->LayerGroups.Entries[LayerGroup][entry];
-		/* handle normal layers 
+		/* handle normal layers
 		   rats don't ever touch
 		   arcs by definition
 		 */
@@ -1210,9 +1210,9 @@ static r_dir_t LOCtoPadPad_callback(const BoxType * b, void *cl)
  * searches all LOs that are connected to the given pad on the given
  * layergroup. All found connections are added to the list
  */
-static pcb_bool LookupLOConnectionsToPad(PadTypePtr Pad, Cardinal LayerGroup)
+static pcb_bool LookupLOConnectionsToPad(PadTypePtr Pad, pcb_cardinal_t LayerGroup)
 {
-	Cardinal entry;
+	pcb_cardinal_t entry;
 	struct lo_info info;
 	int ic;
 	pcb_bool retv = pcb_false;
@@ -1227,7 +1227,7 @@ static pcb_bool LookupLOConnectionsToPad(PadTypePtr Pad, Cardinal LayerGroup)
 
 /*fprintf(stderr, "lg===\n");*/
 		for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-			Cardinal layer;
+			pcb_cardinal_t layer;
 			layer = PCB->LayerGroups.Entries[LayerGroup][entry];
 /*fprintf(stderr, "lg: %d\n", layer);*/
 			if (layer == COMPONENT_LAYER)
@@ -1271,7 +1271,7 @@ static pcb_bool LookupLOConnectionsToPad(PadTypePtr Pad, Cardinal LayerGroup)
 
 	/* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-		Cardinal layer;
+		pcb_cardinal_t layer;
 
 		layer = PCB->LayerGroups.Entries[LayerGroup][entry];
 		/* handle normal layers */
@@ -1367,9 +1367,9 @@ static r_dir_t LOCtoPolyRat_callback(const BoxType * b, void *cl)
  * looks up LOs that are connected to the given polygon
  * on the given layergroup. All found connections are added to the list
  */
-static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, Cardinal LayerGroup)
+static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, pcb_cardinal_t LayerGroup)
 {
-	Cardinal entry;
+	pcb_cardinal_t entry;
 	struct lo_info info;
 
 	if (!Polygon->Clipped)
@@ -1384,7 +1384,7 @@ static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, Cardinal La
 		return pcb_true;
 /* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-		Cardinal layer;
+		pcb_cardinal_t layer;
 
 		layer = PCB->LayerGroups.Entries[LayerGroup][entry];
 

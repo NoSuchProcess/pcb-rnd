@@ -64,7 +64,7 @@ conf_report_t conf_report;
 static int ReportDrills(int argc, const char **argv, Coord x, Coord y)
 {
 	DrillInfoTypePtr AllDrills;
-	Cardinal n;
+	pcb_cardinal_t n;
 	char *stringlist, *thestring;
 	int total_drills = 0;
 

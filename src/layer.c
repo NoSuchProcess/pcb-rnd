@@ -351,7 +351,7 @@ int GetLayerGroupNumberByPointer(LayerTypePtr Layer)
 /* ---------------------------------------------------------------------------
  * returns the layergroup number for the passed layernumber
  */
-int GetLayerGroupNumberByNumber(Cardinal Layer)
+int GetLayerGroupNumberByNumber(pcb_cardinal_t Layer)
 {
 	int group, entry;
 
@@ -373,7 +373,7 @@ int GetLayerGroupNumberByNumber(Cardinal Layer)
 void ResetStackAndVisibility(void)
 {
 	int comp_group;
-	Cardinal i;
+	pcb_cardinal_t i;
 
 	for (i = 0; i < max_copper_layer + 2; i++) {
 		if (i < max_copper_layer)
@@ -396,7 +396,7 @@ void ResetStackAndVisibility(void)
  */
 void SaveStackAndVisibility(void)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 	static pcb_bool run = pcb_false;
 
 	if (run == pcb_false) {
@@ -427,7 +427,7 @@ void SaveStackAndVisibility(void)
  */
 void RestoreStackAndVisibility(void)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 
 	if (SavedStack.cnt == 0) {
 		fprintf(stderr, "RestoreStackAndVisibility()  layerstack has not" " been saved.  cnt = %d\n", SavedStack.cnt);

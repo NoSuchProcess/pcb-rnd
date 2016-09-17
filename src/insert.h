@@ -36,7 +36,7 @@
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-void *InsertPointIntoObject(int, void *, void *, Cardinal *, Coord, Coord, pcb_bool, pcb_bool);
+void *InsertPointIntoObject(int, void *, void *, pcb_cardinal_t *, Coord, Coord, pcb_bool, pcb_bool);
 PointTypePtr AdjustInsertPoint(void);
 
 #endif

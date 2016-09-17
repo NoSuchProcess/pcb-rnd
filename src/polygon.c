@@ -114,7 +114,7 @@ void polygon_init(void)
 	rotate_circle_seg[3] = cos_ang;
 }
 
-Cardinal polygon_point_idx(PolygonTypePtr polygon, PointTypePtr point)
+pcb_cardinal_t polygon_point_idx(PolygonTypePtr polygon, PointTypePtr point)
 {
 	assert(point >= polygon->Points);
 	assert(point <= polygon->Points + polygon->PointN);
@@ -122,10 +122,10 @@ Cardinal polygon_point_idx(PolygonTypePtr polygon, PointTypePtr point)
 }
 
 /* Find contour number: 0 for outer, 1 for first hole etc.. */
-Cardinal polygon_point_contour(PolygonTypePtr polygon, Cardinal point)
+pcb_cardinal_t polygon_point_contour(PolygonTypePtr polygon, pcb_cardinal_t point)
 {
-	Cardinal i;
-	Cardinal contour = 0;
+	pcb_cardinal_t i;
+	pcb_cardinal_t contour = 0;
 
 	for (i = 0; i < polygon->HoleIndexN; i++)
 		if (point >= polygon->HoleIndex[i])
@@ -133,11 +133,11 @@ Cardinal polygon_point_contour(PolygonTypePtr polygon, Cardinal point)
 	return contour;
 }
 
-Cardinal next_contour_point(PolygonTypePtr polygon, Cardinal point)
+pcb_cardinal_t next_contour_point(PolygonTypePtr polygon, pcb_cardinal_t point)
 {
-	Cardinal contour;
-	Cardinal this_contour_start;
-	Cardinal next_contour_start;
+	pcb_cardinal_t contour;
+	pcb_cardinal_t this_contour_start;
+	pcb_cardinal_t next_contour_start;
 
 	contour = polygon_point_contour(polygon, point);
 
@@ -151,11 +151,11 @@ Cardinal next_contour_point(PolygonTypePtr polygon, Cardinal point)
 	return point;
 }
 
-Cardinal prev_contour_point(PolygonTypePtr polygon, Cardinal point)
+pcb_cardinal_t prev_contour_point(PolygonTypePtr polygon, pcb_cardinal_t point)
 {
-	Cardinal contour;
-	Cardinal prev_contour_end;
-	Cardinal this_contour_end;
+	pcb_cardinal_t contour;
+	pcb_cardinal_t prev_contour_end;
+	pcb_cardinal_t this_contour_end;
 
 	contour = polygon_point_contour(polygon, point);
 
@@ -251,7 +251,7 @@ static POLYAREA *original_poly(PolygonType * p)
 {
 	PLINE *contour = NULL;
 	POLYAREA *np = NULL;
-	Cardinal n;
+	pcb_cardinal_t n;
 	Vector v;
 	int hole = 0;
 
@@ -763,7 +763,7 @@ POLYAREA *BoxPolyBloated(BoxType * box, Coord bloat)
 }
 
 /* return the clearance polygon for a pin */
-static POLYAREA *pin_clearance_poly(Cardinal layernum, PCBTypePtr pcb, PinType * pin)
+static POLYAREA *pin_clearance_poly(pcb_cardinal_t layernum, PCBTypePtr pcb, PinType * pin)
 {
 	POLYAREA *np;
 	if (TEST_THERM(layernum, pin))
@@ -777,7 +777,7 @@ static POLYAREA *pin_clearance_poly(Cardinal layernum, PCBTypePtr pcb, PinType *
 static int SubtractPin(DataType * d, PinType * pin, LayerType * l, PolygonType * p)
 {
 	POLYAREA *np;
-	Cardinal i;
+	pcb_cardinal_t i;
 
 	if (pin->Clearance == 0)
 		return 0;
@@ -874,7 +874,7 @@ static r_dir_t pin_sub_callback(const BoxType * b, void *cl)
 	PolygonTypePtr polygon;
 	POLYAREA *np;
 	POLYAREA *merged;
-	Cardinal i;
+	pcb_cardinal_t i;
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
@@ -988,9 +988,9 @@ static r_dir_t text_sub_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static int Group(DataTypePtr Data, Cardinal layer)
+static int Group(DataTypePtr Data, pcb_cardinal_t layer)
 {
-	Cardinal i, j;
+	pcb_cardinal_t i, j;
 	for (i = 0; i < max_group; i++)
 		for (j = 0; j < ((PCBType *) (Data->pcb))->LayerGroups.Number[i]; j++)
 			if (layer == ((PCBType *) (Data->pcb))->LayerGroups.Entries[i][j])
@@ -1003,7 +1003,7 @@ static int clearPoly(DataTypePtr Data, LayerTypePtr Layer, PolygonType * polygon
 	int r = 0, seen;
 	BoxType region;
 	struct cpInfo info;
-	Cardinal group;
+	pcb_cardinal_t group;
 
 	if (!TEST_FLAG(PCB_FLAG_CLEARPOLY, polygon)
 			|| GetLayerNumber(Data, Layer) >= max_copper_layer)
@@ -1197,7 +1197,7 @@ int InitClip(DataTypePtr Data, LayerTypePtr layer, PolygonType * p)
 pcb_bool RemoveExcessPolygonPoints(LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
 	PointTypePtr p;
-	Cardinal n, prev, next;
+	pcb_cardinal_t n, prev, next;
 	LineType line;
 	pcb_bool changed = pcb_false;
 
@@ -1225,11 +1225,11 @@ pcb_bool RemoveExcessPolygonPoints(LayerTypePtr Layer, PolygonTypePtr Polygon)
  * point of the segment with the lowest distance to the passed
  * coordinates
  */
-Cardinal GetLowestDistancePolygonPoint(PolygonTypePtr Polygon, Coord X, Coord Y)
+pcb_cardinal_t GetLowestDistancePolygonPoint(PolygonTypePtr Polygon, Coord X, Coord Y)
 {
 	double mindistance = (double) MAX_COORD * MAX_COORD;
 	PointTypePtr ptr1, ptr2;
-	Cardinal n, result = 0;
+	pcb_cardinal_t n, result = 0;
 
 	/* we calculate the distance to each segment and choose the
 	 * shortest distance. If the closest approach between the
@@ -1288,7 +1288,7 @@ void GoToPreviousPoint(void)
 	default:
 		{
 			PointTypePtr points = Crosshair.AttachedPolygon.Points;
-			Cardinal n = Crosshair.AttachedPolygon.PointN - 2;
+			pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN - 2;
 
 			Crosshair.AttachedPolygon.PointN--;
 			Crosshair.AttachedLine.Point1.X = points[n].X;
@@ -1303,7 +1303,7 @@ void GoToPreviousPoint(void)
  */
 void ClosePolygon(void)
 {
-	Cardinal n = Crosshair.AttachedPolygon.PointN;
+	pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN;
 
 	/* check number of points */
 	if (n >= 3) {
@@ -1510,7 +1510,7 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 		break;
 	case PCB_TYPE_PAD:
 		{
-			Cardinal group = GetLayerGroupNumberByNumber(TEST_FLAG(PCB_FLAG_ONSOLDER, (PadType *) ptr2) ?
+			pcb_cardinal_t group = GetLayerGroupNumberByNumber(TEST_FLAG(PCB_FLAG_ONSOLDER, (PadType *) ptr2) ?
 																									 solder_silk_layer : component_silk_layer);
 			GROUP_LOOP(Data, group);
 			{
@@ -1764,7 +1764,7 @@ void debug_polyarea(POLYAREA * p)
 
 void debug_polygon(PolygonType * p)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 	POLYAREA *pa;
 	fprintf(stderr, "POLYGON %p  %d pts\n", (void *)p, p->PointN);
 	for (i = 0; i < p->PointN; i++)

@@ -181,7 +181,7 @@ static r_dir_t rubber_callback(const BoxType * b, void *cl)
 static void CheckPadForRubberbandConnection(PadTypePtr Pad)
 {
 	Coord half = Pad->Thickness / 2;
-	Cardinal i, group;
+	pcb_cardinal_t i, group;
 	struct rubber_info info;
 
 	info.box.X1 = MIN(Pad->Point1.X, Pad->Point2.X) - half;
@@ -207,7 +207,7 @@ static void CheckPadForRubberbandConnection(PadTypePtr Pad)
 
 struct rinfo {
 	int type;
-	Cardinal group;
+	pcb_cardinal_t group;
 	PinTypePtr pin;
 	PadTypePtr pad;
 	PointTypePtr point;
@@ -258,7 +258,7 @@ static r_dir_t rat_callback(const BoxType * box, void *cl)
 static void CheckPadForRat(PadTypePtr Pad)
 {
 	struct rinfo info;
-	Cardinal i;
+	pcb_cardinal_t i;
 
 	i = TEST_FLAG(PCB_FLAG_ONSOLDER, Pad) ? solder_silk_layer : component_silk_layer;
 	info.group = GetLayerGroupNumberByNumber(i);
@@ -298,7 +298,7 @@ static void CheckLinePointForRat(LayerTypePtr Layer, PointTypePtr Point)
 static void CheckPinForRubberbandConnection(PinTypePtr Pin)
 {
 	struct rubber_info info;
-	Cardinal n;
+	pcb_cardinal_t n;
 	Coord t = Pin->Thickness / 2;
 
 	info.box.X1 = Pin->X - t;
@@ -327,7 +327,7 @@ static void CheckPinForRubberbandConnection(PinTypePtr Pin)
  */
 static void CheckLinePointForRubberbandConnection(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr LinePoint, pcb_bool Exact)
 {
-	Cardinal group;
+	pcb_cardinal_t group;
 	struct rubber_info info;
 	Coord t = Line->Thickness / 2;
 
@@ -359,7 +359,7 @@ static void CheckLinePointForRubberbandConnection(LayerTypePtr Layer, LineTypePt
  */
 static void CheckPolygonForRubberbandConnection(LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
-	Cardinal group;
+	pcb_cardinal_t group;
 
 	/* lookup layergroup and check all visible lines in this group */
 	group = GetLayerGroupNumberByPointer(Layer);

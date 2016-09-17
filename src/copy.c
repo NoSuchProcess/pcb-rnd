@@ -82,8 +82,8 @@ static ObjectFunctionType CopyFunctions = {
  */
 PolygonTypePtr CopyPolygonLowLevel(PolygonTypePtr Dest, PolygonTypePtr Src)
 {
-	Cardinal hole = 0;
-	Cardinal n;
+	pcb_cardinal_t hole = 0;
+	pcb_cardinal_t n;
 
 	for (n = 0; n < Src->PointN; n++) {
 		if (hole < Src->HoleIndexN && n == Src->HoleIndex[hole]) {
@@ -280,7 +280,7 @@ static void *CopyElement(ElementTypePtr Element)
  */
 pcb_bool CopyPastebufferToLayout(Coord X, Coord Y)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 	pcb_bool changed = pcb_false;
 
 #ifdef DEBUG

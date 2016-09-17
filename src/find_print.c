@@ -35,7 +35,7 @@ static pcb_bool PrepareNextLoop(FILE * FP);
 static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FILE * FP)
 {
 	pcb_bool first = pcb_true;
-	Cardinal number;
+	pcb_cardinal_t number;
 
 	/* check all pins in element */
 
@@ -132,7 +132,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element,
  */
 static pcb_bool PrepareNextLoop(FILE * FP)
 {
-	Cardinal layer;
+	pcb_cardinal_t layer;
 
 	/* reset found LOs for the next pin */
 	for (layer = 0; layer < max_copper_layer; layer++) {
@@ -186,7 +186,7 @@ static pcb_bool PrintElementConnections(ElementTypePtr Element, FILE * FP, pcb_b
 	/* check all pads in element */
 	PAD_LOOP(Element);
 	{
-		Cardinal layer;
+		pcb_cardinal_t layer;
 		/* pad might have been checked before, add to list if not */
 		if (TEST_FLAG(TheFlag, pad)) {
 			PrintConnectionListEntry((char *) EMPTY(pad->Name), NULL, pcb_true, FP);

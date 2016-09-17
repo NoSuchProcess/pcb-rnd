@@ -65,7 +65,7 @@ RatTypePtr GetRatMemory(DataTypePtr);
 TextTypePtr GetTextMemory(LayerTypePtr);
 PolygonTypePtr GetPolygonMemory(LayerTypePtr);
 PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr);
-Cardinal *GetHoleIndexMemoryInPolygon(PolygonTypePtr);
+pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr);
 ElementTypePtr GetElementMemory(DataTypePtr);
 BoxTypePtr GetBoxMemory(BoxListTypePtr);
 ConnectionTypePtr GetConnectionMemory(NetTypePtr);

@@ -529,7 +529,7 @@ int LoadFootprint(int argc, const char **argv, Coord x, Coord y)
 pcb_bool SmashBufferElement(BufferTypePtr Buffer)
 {
 	ElementTypePtr element;
-	Cardinal group;
+	pcb_cardinal_t group;
 	LayerTypePtr clayer, slayer;
 
 	if (elementlist_length(&Buffer->Data->Element) != 1) {
@@ -631,8 +631,8 @@ static int polygon_is_rectangle(PolygonTypePtr poly)
 pcb_bool ConvertBufferToElement(BufferTypePtr Buffer)
 {
 	ElementTypePtr Element;
-	Cardinal group;
-	Cardinal pin_n = 1;
+	pcb_cardinal_t group;
+	pcb_cardinal_t pin_n = 1;
 	pcb_bool hasParts = pcb_false, crooked = pcb_false;
 	int onsolder;
 	pcb_bool warned = pcb_false;
@@ -1104,7 +1104,7 @@ void MirrorBuffer(BufferTypePtr Buffer)
 static void SwapBuffer(BufferTypePtr Buffer)
 {
 	int j, k;
-	Cardinal sgroup, cgroup;
+	pcb_cardinal_t sgroup, cgroup;
 	LayerType swap;
 
 	ELEMENT_LOOP(Buffer->Data);
@@ -1182,8 +1182,8 @@ static void SwapBuffer(BufferTypePtr Buffer)
 	if (PCB->LayerGroups.Number[cgroup] == PCB->LayerGroups.Number[sgroup]) {
 		for (j = k = 0; j < PCB->LayerGroups.Number[sgroup]; j++) {
 			int t1, t2;
-			Cardinal cnumber = PCB->LayerGroups.Entries[cgroup][k];
-			Cardinal snumber = PCB->LayerGroups.Entries[sgroup][j];
+			pcb_cardinal_t cnumber = PCB->LayerGroups.Entries[cgroup][k];
+			pcb_cardinal_t snumber = PCB->LayerGroups.Entries[sgroup][j];
 
 			if (snumber >= max_copper_layer)
 				continue;

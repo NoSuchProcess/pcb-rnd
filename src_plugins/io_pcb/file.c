@@ -76,7 +76,7 @@ static void WritePCBDataHeader(FILE *);
 static void WritePCBFontData(FILE *);
 static void WriteViaData(FILE *, DataTypePtr);
 static void WritePCBRatData(FILE *);
-static void WriteLayerData(FILE *, Cardinal, LayerTypePtr);
+static void WriteLayerData(FILE *, pcb_cardinal_t, LayerTypePtr);
 
 /* ---------------------------------------------------------------------------
  * Flag helper functions
@@ -271,7 +271,7 @@ static void WritePCBDataHeader(FILE * FP)
  */
 static void WritePCBFontData(FILE * FP)
 {
-	Cardinal i, j;
+	pcb_cardinal_t i, j;
 	LineTypePtr line;
 	FontTypePtr font;
 
@@ -439,7 +439,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 /* ---------------------------------------------------------------------------
  * writes layer data
  */
-static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
+static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, LayerTypePtr layer)
 {
 	gdl_iterator_t it;
 	LineType *line;
@@ -471,7 +471,7 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
 		}
 		textlist_foreach(&layer->Polygon, &it, polygon) {
 			int p, i = 0;
-			Cardinal hole = 0;
+			pcb_cardinal_t hole = 0;
 			fprintf(FP, "\tPolygon(%s)\n\t(", F2S(polygon, PCB_TYPE_POLYGON));
 			for (p = 0; p < polygon->PointN; p++) {
 				PointTypePtr point = &polygon->Points[p];
@@ -504,7 +504,7 @@ static void WriteLayerData(FILE * FP, Cardinal Number, LayerTypePtr layer)
  */
 int io_pcb_WriteBuffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	WriteViaData(FP, buff->Data);
@@ -519,7 +519,7 @@ int io_pcb_WriteBuffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
  */
 int io_pcb_WritePCB(plug_io_t *ctx, FILE * FP)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	WritePCBInfoHeader(FP);

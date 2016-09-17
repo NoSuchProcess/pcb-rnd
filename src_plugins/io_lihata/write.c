@@ -236,7 +236,7 @@ static lht_node_t *build_polygon(PolygonType *poly)
 {
 	char buff[128];
 	lht_node_t *obj, *tbl, *geo;
-	Cardinal n, hole = 0;
+	pcb_cardinal_t n, hole = 0;
 
 	sprintf(buff, "polygon.%ld", poly->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);

@@ -77,8 +77,8 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	/*fputs("io_kicad_legacy_write_pcb()", FP);*/
 
-	Cardinal i;
-	Cardinal j;
+	pcb_cardinal_t i;
+	pcb_cardinal_t j;
 
 	Coord LayoutXOffset;
 	Coord LayoutYOffset;
@@ -236,7 +236,7 @@ static int write_kicad_legacy_layout_via_drill_size(FILE * FP)
 	return 0;
 }
 
-int write_kicad_legacy_layout_tracks(FILE * FP, Cardinal number,
+int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
 																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
 {
 	gdl_iterator_t it;

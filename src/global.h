@@ -144,7 +144,7 @@ typedef struct {								/* holds information about output window */
  * on/off together.
  */
 typedef struct {
-	Cardinal Number[MAX_LAYER],		/* number of entries per groups */
+	pcb_cardinal_t Number[MAX_LAYER],		/* number of entries per groups */
 	  Entries[MAX_LAYER][MAX_LAYER + 2];
 } LayerGroupType, *LayerGroupTypePtr;
 
@@ -194,7 +194,7 @@ typedef struct {								/* holds all objects */
 
 typedef struct {								/* holds drill information */
 	Coord DrillSize;							/* this drill's diameter */
-	Cardinal ElementN,						/* the number of elements using this drill size */
+	pcb_cardinal_t ElementN,						/* the number of elements using this drill size */
 	  ElementMax,									/* max number of elements from malloc() */
 	  PinCount,										/* number of pins drilled this size */
 	  ViaCount,										/* number of vias drilled this size */
@@ -206,7 +206,7 @@ typedef struct {								/* holds drill information */
 } DrillType, *DrillTypePtr;
 
 typedef struct {								/* holds a range of Drill Infos */
-	Cardinal DrillN,							/* number of drill sizes */
+	pcb_cardinal_t DrillN,							/* number of drill sizes */
 	  DrillMax;										/* max number from malloc() */
 	DrillTypePtr Drill;						/* plated holes */
 } DrillInfoType, *DrillInfoTypePtr;
@@ -243,7 +243,7 @@ struct LibraryMenuType_s {
 	char *Name,										/* name of the menu entry */
 	 *directory,									/* Directory name library elements are from */
 	 *Style;											/* routing style */
-	Cardinal EntryN,							/* number of objects */
+	pcb_cardinal_t EntryN,							/* number of objects */
 	  EntryMax;										/* number of reserved memory locations */
 	LibraryEntryTypePtr Entry;		/* the entries */
 	char flag;										/* used by the netlist window to enable/disable nets */
@@ -252,8 +252,8 @@ struct LibraryMenuType_s {
 };
 
 typedef struct {
-	Cardinal MenuN;								/* number of objects */
-	Cardinal MenuMax;							/* number of reserved memory locations */
+	pcb_cardinal_t MenuN;								/* number of objects */
+	pcb_cardinal_t MenuMax;							/* number of reserved memory locations */
 	LibraryMenuTypePtr Menu;			/* the entries */
 } LibraryType, *LibraryTypePtr;
 
@@ -353,7 +353,7 @@ typedef struct {								/* currently attached object */
 	void *Ptr1,										/* three pointers to data, see */
 	 *Ptr2,												/* search.c */
 	 *Ptr3;
-	Cardinal RubberbandN,					/* number of lines in array */
+	pcb_cardinal_t RubberbandN,					/* number of lines in array */
 	  RubberbandMax;
 	RubberbandTypePtr Rubberband;
 } AttachedObjectType, *AttachedObjectTypePtr;
@@ -416,37 +416,37 @@ typedef struct {								/* holds a connection */
 	Coord X, Y;										/* coordinate of connection */
 	long int type;								/* type of object in ptr1 - 3 */
 	void *ptr1, *ptr2;						/* the object of the connection */
-	Cardinal group;								/* the layer group of the connection */
+	pcb_cardinal_t group;								/* the layer group of the connection */
 	LibraryMenuType *menu;				/* the netmenu this *SHOULD* belong too */
 } ConnectionType, *ConnectionTypePtr;
 
 typedef struct {								/* holds a net of connections */
-	Cardinal ConnectionN,					/* the number of connections contained */
+	pcb_cardinal_t ConnectionN,					/* the number of connections contained */
 	  ConnectionMax;							/* max connections from malloc */
 	ConnectionTypePtr Connection;
 	RouteStyleTypePtr Style;
 } NetType, *NetTypePtr;
 
 typedef struct {								/* holds a list of nets */
-	Cardinal NetN,								/* the number of subnets contained */
+	pcb_cardinal_t NetN,								/* the number of subnets contained */
 	  NetMax;											/* max subnets from malloc */
 	NetTypePtr Net;
 } NetListType, *NetListTypePtr;
 
 typedef struct {								/* holds a list of net lists */
-	Cardinal NetListN,						/* the number of net lists contained */
+	pcb_cardinal_t NetListN,						/* the number of net lists contained */
 	  NetListMax;									/* max net lists from malloc */
 	NetListTypePtr NetList;
 } NetListListType, *NetListListTypePtr;
 
 typedef struct {								/* holds a generic list of pointers */
-	Cardinal PtrN,								/* the number of pointers contained */
+	pcb_cardinal_t PtrN,								/* the number of pointers contained */
 	  PtrMax;											/* max subnets from malloc */
 	void **Ptr;
 } PointerListType, *PointerListTypePtr;
 
 typedef struct {
-	Cardinal BoxN,								/* the number of boxes contained */
+	pcb_cardinal_t BoxN,								/* the number of boxes contained */
 	  BoxMax;											/* max boxes from malloc */
 	BoxTypePtr Box;
 

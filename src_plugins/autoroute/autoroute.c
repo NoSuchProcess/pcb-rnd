@@ -375,7 +375,7 @@ struct routeone_state {
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static routebox_t *CreateExpansionArea(const BoxType * area, Cardinal group,
+static routebox_t *CreateExpansionArea(const BoxType * area, pcb_cardinal_t group,
 																			 routebox_t * parent, pcb_bool relax_edge_requirements, edge_t * edge);
 
 static cost_t edge_cost(const edge_t * e, const cost_t too_big);
@@ -386,7 +386,7 @@ static BoxType edge_to_box(const routebox_t * rb, direction_t expand_dir);
 static void add_or_destroy_edge(struct routeone_state *s, edge_t * e);
 
 static void
-RD_DrawThermal(routedata_t * rd, Coord X, Coord Y, Cardinal group, Cardinal layer, routebox_t * subnet, pcb_bool is_bad);
+RD_DrawThermal(routedata_t * rd, Coord X, Coord Y, pcb_cardinal_t group, pcb_cardinal_t layer, routebox_t * subnet, pcb_bool is_bad);
 static void ResetSubnet(routebox_t * net);
 #ifdef ROUTE_DEBUG
 static int showboxen = -2;
@@ -398,7 +398,7 @@ static void showroutebox(routebox_t * rb);
  * some local identifiers
  */
 /* group number of groups that hold surface mount pads */
-static Cardinal front, back;
+static pcb_cardinal_t front, back;
 static pcb_bool usedGroup[MAX_LAYER];
 static int x_cost[MAX_LAYER], y_cost[MAX_LAYER];
 static pcb_bool is_layer_group_active[MAX_LAYER];
@@ -700,7 +700,7 @@ static routebox_t *AddLine(PointerListType layergroupboxes[], int layergroup, Li
 
 static routebox_t *AddIrregularObstacle(PointerListType layergroupboxes[],
 																				Coord X1, Coord Y1,
-																				Coord X2, Coord Y2, Cardinal layergroup, void *parent, RouteStyleType * style)
+																				Coord X2, Coord Y2, pcb_cardinal_t layergroup, void *parent, RouteStyleType * style)
 {
 	routebox_t **rbpp;
 	Coord keep = style->Clearance;
@@ -724,7 +724,7 @@ static routebox_t *AddIrregularObstacle(PointerListType layergroupboxes[],
 	return *rbpp;
 }
 
-static routebox_t *AddPolygon(PointerListType layergroupboxes[], Cardinal layer, PolygonTypePtr polygon, RouteStyleType * style)
+static routebox_t *AddPolygon(PointerListType layergroupboxes[], pcb_cardinal_t layer, PolygonTypePtr polygon, RouteStyleType * style)
 {
 	int is_not_rectangle = 1;
 	int layergroup = GetLayerGroupNumberByNumber(layer);
@@ -755,14 +755,14 @@ static routebox_t *AddPolygon(PointerListType layergroupboxes[], Cardinal layer,
 	return rb;
 }
 
-static void AddText(PointerListType layergroupboxes[], Cardinal layergroup, TextTypePtr text, RouteStyleType * style)
+static void AddText(PointerListType layergroupboxes[], pcb_cardinal_t layergroup, TextTypePtr text, RouteStyleType * style)
 {
 	AddIrregularObstacle(layergroupboxes,
 											 text->BoundingBox.X1, text->BoundingBox.Y1,
 											 text->BoundingBox.X2, text->BoundingBox.Y2, layergroup, text, style);
 }
 
-static routebox_t *AddArc(PointerListType layergroupboxes[], Cardinal layergroup, ArcTypePtr arc, RouteStyleType * style)
+static routebox_t *AddArc(PointerListType layergroupboxes[], pcb_cardinal_t layergroup, ArcTypePtr arc, RouteStyleType * style)
 {
 	return AddIrregularObstacle(layergroupboxes,
 															arc->BoundingBox.X1, arc->BoundingBox.Y1,
@@ -793,7 +793,7 @@ static r_dir_t __found_one_on_lg(const BoxType * box, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static routebox_t *FindRouteBoxOnLayerGroup(routedata_t * rd, Coord X, Coord Y, Cardinal layergroup)
+static routebox_t *FindRouteBoxOnLayerGroup(routedata_t * rd, Coord X, Coord Y, pcb_cardinal_t layergroup)
 {
 	struct rb_info info;
 	info.winner = NULL;
@@ -1201,7 +1201,7 @@ static void ResetSubnet(routebox_t * net)
 	END_LOOP;
 }
 
-static inline cost_t cost_to_point_on_layer(const CheapPointType * p1, const CheapPointType * p2, Cardinal point_layer)
+static inline cost_t cost_to_point_on_layer(const CheapPointType * p1, const CheapPointType * p2, pcb_cardinal_t point_layer)
 {
 	cost_t x_dist = p1->X - p2->X, y_dist = p1->Y - p2->Y, r;
 	x_dist *= x_cost[point_layer];
@@ -1213,7 +1213,7 @@ static inline cost_t cost_to_point_on_layer(const CheapPointType * p1, const Che
 	return r;
 }
 
-static cost_t cost_to_point(const CheapPointType * p1, Cardinal point_layer1, const CheapPointType * p2, Cardinal point_layer2)
+static cost_t cost_to_point(const CheapPointType * p1, pcb_cardinal_t point_layer1, const CheapPointType * p2, pcb_cardinal_t point_layer2)
 {
 	cost_t r = cost_to_point_on_layer(p1, p2, point_layer1);
 	/* apply via cost penalty if layers differ */
@@ -1225,7 +1225,7 @@ static cost_t cost_to_point(const CheapPointType * p1, Cardinal point_layer1, co
 /* return the minimum *cost* from a point to a box on any layer.
  * It's safe to return a smaller than minimum cost
  */
-static cost_t cost_to_layerless_box(const CheapPointType * p, Cardinal point_layer, const BoxType * b)
+static cost_t cost_to_layerless_box(const CheapPointType * p, pcb_cardinal_t point_layer, const BoxType * b)
 {
 	CheapPointType p2 = closest_point_in_box(p, b);
 	register cost_t c1, c2;
@@ -1271,7 +1271,7 @@ pcb_bool TargetPoint(CheapPointType * nextpoint, const routebox_t * target)
  * via costs if the route box is on a different layer.
  * assume routbox is bloated unless it is an expansion area
  */
-static cost_t cost_to_routebox(const CheapPointType * p, Cardinal point_layer, const routebox_t * rb)
+static cost_t cost_to_routebox(const CheapPointType * p, pcb_cardinal_t point_layer, const routebox_t * rb)
 {
 	register cost_t trial = 0;
 	CheapPointType p2 = closest_point_in_routebox(p, rb);
@@ -1465,7 +1465,7 @@ static routebox_t *nonhomeless_parent(routebox_t * rb)
  * a target (any target) */
 struct mincost_target_closure {
 	const CheapPointType *CostPoint;
-	Cardinal CostPointLayer;
+	pcb_cardinal_t CostPointLayer;
 	routebox_t *nearest;
 	cost_t nearest_cost;
 };
@@ -1502,7 +1502,7 @@ static r_dir_t __found_new_guess(const BoxType * box, void *cl)
 /* target_guess is our guess at what the nearest target is, or NULL if we
  * just plum don't have a clue. */
 static routebox_t *mincost_target_to_point(const CheapPointType * CostPoint,
-																					 Cardinal CostPointLayer, rtree_t * targets, routebox_t * target_guess)
+																					 pcb_cardinal_t CostPointLayer, rtree_t * targets, routebox_t * target_guess)
 {
 	struct mincost_target_closure mtc;
 	assert(target_guess == NULL || target_guess->flags.target);	/* this is a target, right? */
@@ -1586,7 +1586,7 @@ static edge_t *CreateEdge2(routebox_t * rb, direction_t expand_dir,
 }
 
 /* create via edge, using previous edge to fill in defaults. */
-static edge_t *CreateViaEdge(const BoxType * area, Cardinal group,
+static edge_t *CreateViaEdge(const BoxType * area, pcb_cardinal_t group,
 														 routebox_t * parent, edge_t * previous_edge,
 														 conflict_t to_site_conflict, conflict_t through_site_conflict, rtree_t * targets)
 {
@@ -1796,7 +1796,7 @@ static int edge_intersect(const BoxType * child, const BoxType * parent)
  * immediately preceding expansion area, for backtracing. 'lastarea' is
  * the last expansion area created, we string these together in a loop
  * so we can remove them all easily at the end. */
-static routebox_t *CreateExpansionArea(const BoxType * area, Cardinal group,
+static routebox_t *CreateExpansionArea(const BoxType * area, pcb_cardinal_t group,
 																			 routebox_t * parent, pcb_bool relax_edge_requirements, edge_t * src_edge)
 {
 	routebox_t *rb = (routebox_t *) malloc(sizeof(*rb));
@@ -2824,7 +2824,7 @@ routebox_t *FindThermable(rtree_t * rtree, routebox_t * rb)
  * Route-tracing code: once we've got a path of expansion boxes, trace
  * a line through them to actually create the connection.
  */
-static void RD_DrawThermal(routedata_t * rd, Coord X, Coord Y, Cardinal group, Cardinal layer, routebox_t * subnet, pcb_bool is_bad)
+static void RD_DrawThermal(routedata_t * rd, Coord X, Coord Y, pcb_cardinal_t group, pcb_cardinal_t layer, routebox_t * subnet, pcb_bool is_bad)
 {
 	routebox_t *rb;
 	rb = (routebox_t *) malloc(sizeof(*rb));
@@ -2903,7 +2903,7 @@ static void RD_DrawVia(routedata_t * rd, Coord X, Coord Y, Coord radius, routebo
 static void
 RD_DrawLine(routedata_t * rd,
 						Coord X1, Coord Y1, Coord X2,
-						Coord Y2, Coord halfthick, Cardinal group, routebox_t * subnet, pcb_bool is_bad, pcb_bool is_45)
+						Coord Y2, Coord halfthick, pcb_cardinal_t group, routebox_t * subnet, pcb_bool is_bad, pcb_bool is_45)
 {
 	/* we hold the line in a queue to concatenate segments that
 	 * ajoin one another. That reduces the number of things in
@@ -2912,7 +2912,7 @@ RD_DrawLine(routedata_t * rd,
 	 */
 	static Coord qX1 = -1, qY1, qX2, qY2;
 	static Coord qhthick;
-	static Cardinal qgroup;
+	static pcb_cardinal_t qgroup;
 	static pcb_bool qis_45, qis_bad;
 	static routebox_t *qsn;
 
@@ -3009,7 +3009,7 @@ static pcb_bool
 RD_DrawManhattanLine(routedata_t * rd,
 										 const BoxType * box1, const BoxType * box2,
 										 CheapPointType start, CheapPointType end,
-										 Coord halfthick, Cardinal group, routebox_t * subnet, pcb_bool is_bad, pcb_bool last_was_x)
+										 Coord halfthick, pcb_cardinal_t group, routebox_t * subnet, pcb_bool is_bad, pcb_bool last_was_x)
 {
 	CheapPointType knee = start;
 	if (end.X == start.X) {

@@ -116,7 +116,7 @@ const struct {
 
 typedef struct {
 	ElementTypePtr *element;
-	Cardinal elementN;
+	pcb_cardinal_t elementN;
 } ElementPtrListType;
 
 enum ewhich { SHIFT, ROTATE, EXCHANGE };
@@ -139,8 +139,8 @@ typedef struct {
  */
 static void UpdateXY(NetListTypePtr Nets)
 {
-	Cardinal SLayer, CLayer;
-	Cardinal i, j;
+	pcb_cardinal_t SLayer, CLayer;
+	pcb_cardinal_t i, j;
 	/* find layer groups of the component side and solder side */
 	SLayer = GetLayerGroupNumberByNumber(solder_silk_layer);
 	CLayer = GetLayerGroupNumberByNumber(component_silk_layer);
@@ -190,7 +190,7 @@ static PointerListType collectSelectedElements()
 /* makes a line on the solder layer surrounding all boxes in blist */
 static void showboxes(BoxListTypePtr blist)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 	LayerTypePtr SLayer = &(PCB->Data->Layer[solder_silk_layer]);
 	for (i = 0; i < blist->BoxN; i++) {
 		CreateNewLineOnLayer(SLayer, blist->Box[i].X1, blist->Box[i].Y1, blist->Box[i].X2, blist->Box[i].Y1, 1, 1, 0);
@@ -298,10 +298,10 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 	double delta3 = 0;						/* out of bounds penalty */
 	double delta4 = 0;						/* alignment bonus */
 	double delta5 = 0;						/* total area penalty */
-	Cardinal i, j;
+	pcb_cardinal_t i, j;
 	Coord minx, maxx, miny, maxy;
 	pcb_bool allpads, allsameside;
-	Cardinal thegroup;
+	pcb_cardinal_t thegroup;
 	BoxListType bounds = { 0, 0, NULL };	/* save bounding rectangles here */
 	BoxListType solderside = { 0, 0, NULL };	/* solder side component bounds */
 	BoxListType componentside = { 0, 0, NULL };	/* component side bounds */

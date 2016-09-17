@@ -46,7 +46,7 @@ int CreateNewPCBPost(PCBTypePtr, int /* set defaults */ );
 PinTypePtr CreateNewVia(DataTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, const char *, FlagType);
 LineTypePtr CreateDrawnLineOnLayer(LayerTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, FlagType);
 LineTypePtr CreateNewLineOnLayer(LayerTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, FlagType);
-RatTypePtr CreateNewRat(DataTypePtr, Coord, Coord, Coord, Coord, Cardinal, Cardinal, Coord, FlagType);
+RatTypePtr CreateNewRat(DataTypePtr, Coord, Coord, Coord, Coord, pcb_cardinal_t, pcb_cardinal_t, Coord, FlagType);
 ArcTypePtr CreateNewArcOnLayer(LayerTypePtr, Coord, Coord, Coord, Coord, Angle, Angle, Coord, Coord, FlagType);
 PolygonTypePtr CreateNewPolygonFromRectangle(LayerTypePtr, Coord, Coord, Coord, Coord, FlagType);
 TextTypePtr CreateNewText(LayerTypePtr, FontTypePtr, Coord, Coord, unsigned, int, char *, FlagType);

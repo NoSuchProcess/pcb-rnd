@@ -77,9 +77,9 @@ static void PrintConnectionListEntry(char *ObjName, ElementTypePtr Element, pcb_
  * prints all found connections of a pads to file FP
  * the connections are stacked in 'PadList'
  */
-static void PrintPadConnections(Cardinal Layer, FILE * FP, pcb_bool IsFirst)
+static void PrintPadConnections(pcb_cardinal_t Layer, FILE * FP, pcb_bool IsFirst)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 	PadTypePtr ptr;
 
 	if (!PadList[Layer].Number)
@@ -112,7 +112,7 @@ static void PrintPadConnections(Cardinal Layer, FILE * FP, pcb_bool IsFirst)
  */
 static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 	PinTypePtr pv;
 
 	if (!PVList.Number)

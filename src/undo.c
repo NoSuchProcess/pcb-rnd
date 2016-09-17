@@ -84,17 +84,17 @@ typedef struct {								/* information about a move command */
 typedef struct {								/* information about removed polygon points */
 	Coord X, Y;										/* data */
 	int ID;
-	Cardinal Index;								/* index in a polygons array of points */
+	pcb_cardinal_t Index;								/* index in a polygons array of points */
 	pcb_bool last_in_contour;					/* Whether the point was the last in its contour */
 } RemovedPointType, *RemovedPointTypePtr;
 
 typedef struct {								/* information about rotation */
 	Coord CenterX, CenterY;				/* center of rotation */
-	Cardinal Steps;								/* number of steps */
+	pcb_cardinal_t Steps;								/* number of steps */
 } RotateType, *RotateTypePtr;
 
 typedef struct {								/* information about moves between layers */
-	Cardinal OriginalLayer;				/* the index of the original layer */
+	pcb_cardinal_t OriginalLayer;				/* the index of the original layer */
 } MoveToLayerType, *MoveToLayerTypePtr;
 
 typedef struct {								/* information about layer changes */
@@ -665,8 +665,8 @@ static pcb_bool UndoInsertPoint(UndoListTypePtr Entry)
 	PolygonTypePtr polygon;
 	PointTypePtr pnt;
 	int type;
-	Cardinal point_idx;
-	Cardinal hole;
+	pcb_cardinal_t point_idx;
+	pcb_cardinal_t hole;
 	pcb_bool last_in_contour = pcb_false;
 
 	assert(Entry->Kind == PCB_TYPE_POLYGON_POINT);
@@ -1190,11 +1190,11 @@ void MoveObjectToRemoveUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 /* ---------------------------------------------------------------------------
  * adds an object to the list of removed polygon/... points
  */
-void AddObjectToRemovePointUndoList(int Type, void *Ptr1, void *Ptr2, Cardinal index)
+void AddObjectToRemovePointUndoList(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t index)
 {
 	UndoListTypePtr undo;
 	PolygonTypePtr polygon = (PolygonTypePtr) Ptr2;
-	Cardinal hole;
+	pcb_cardinal_t hole;
 	pcb_bool last_in_contour = pcb_false;
 
 	if (!Locked) {

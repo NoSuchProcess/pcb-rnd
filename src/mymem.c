@@ -328,14 +328,14 @@ PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr Polygon)
  * gets the next slot for a point in a polygon struct, allocates memory
  * if necessary
  */
-Cardinal *GetHoleIndexMemoryInPolygon(PolygonTypePtr Polygon)
+pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr Polygon)
 {
-	Cardinal *holeindex = Polygon->HoleIndex;
+	pcb_cardinal_t *holeindex = Polygon->HoleIndex;
 
 	/* realloc new memory if necessary and clear it */
 	if (Polygon->HoleIndexN >= Polygon->HoleIndexMax) {
 		Polygon->HoleIndexMax += STEP_POLYGONHOLEINDEX;
-		holeindex = (Cardinal *) realloc(holeindex, Polygon->HoleIndexMax * sizeof(int));
+		holeindex = (pcb_cardinal_t *) realloc(holeindex, Polygon->HoleIndexMax * sizeof(int));
 		Polygon->HoleIndex = holeindex;
 		memset(holeindex + Polygon->HoleIndexN, 0, STEP_POLYGONHOLEINDEX * sizeof(int));
 	}

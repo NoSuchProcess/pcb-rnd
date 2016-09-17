@@ -98,15 +98,15 @@ typedef struct text_st {
 
 struct polygon_st {							/* holds information about a polygon */
 	ANYOBJECTFIELDS;
-	Cardinal PointN,							/* number of points in polygon */
+	pcb_cardinal_t PointN,							/* number of points in polygon */
 	  PointMax;										/* max number from malloc() */
 	POLYAREA *Clipped;						/* the clipped region of this polygon */
 	PLINE *NoHoles;								/* the polygon broken into hole-less regions */
 	int NoHolesValid;							/* Is the NoHoles polygon up to date? */
 	PointTypePtr Points;					/* data */
-	Cardinal *HoleIndex;					/* Index of hole data within the Points array */
-	Cardinal HoleIndexN;					/* number of holes in polygon */
-	Cardinal HoleIndexMax;				/* max number from malloc() */
+	pcb_cardinal_t *HoleIndex;					/* Index of hole data within the Points array */
+	pcb_cardinal_t HoleIndexN;					/* number of holes in polygon */
+	pcb_cardinal_t HoleIndexMax;				/* max number from malloc() */
 	gdl_elem_t link;              /* a text is in a list of a layer */
 };
 
@@ -121,7 +121,7 @@ typedef struct arc_st {								/* holds information about arcs */
 
 typedef struct rat_st {								/* a rat-line */
 	ANYLINEFIELDS;
-	Cardinal group1, group2;			/* the layer group each point is on */
+	pcb_cardinal_t group1, group2;			/* the layer group each point is on */
 	gdl_elem_t link;              /* an arc is in a list on a design */
 } RatType, *RatTypePtr;
 
@@ -156,7 +156,7 @@ struct pin_st {
 typedef struct symbol_st {								/* a single symbol */
 	LineTypePtr Line;
 	pcb_bool Valid;
-	Cardinal LineN,								/* number of lines */
+	pcb_cardinal_t LineN,								/* number of lines */
 	  LineMax;
 	Coord Width, Height,					/* size of cell */
 	  Delta;											/* distance to next symbol */

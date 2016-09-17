@@ -1154,7 +1154,7 @@ polygon_format
 		  polygonpoints
 		  polygonholes ')'
 			{
-				Cardinal contour, contour_start, contour_end;
+				pcb_cardinal_t contour, contour_start, contour_end;
 				pcb_bool bad_contour_found = pcb_false;
 				/* ignore junk */
 				for (contour = 0; contour <= Polygon->HoleIndexN; contour++)

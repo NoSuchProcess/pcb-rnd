@@ -435,7 +435,7 @@ void pcb_add_line_on_layer(LayerType *Layer, LineType *Line)
  */
 RatTypePtr
 CreateNewRat(DataTypePtr Data, Coord X1, Coord Y1,
-						 Coord X2, Coord Y2, Cardinal group1, Cardinal group2, Coord Thickness, FlagType Flags)
+						 Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, FlagType Flags)
 {
 	RatTypePtr Line = GetRatMemory(Data);
 
@@ -608,7 +608,7 @@ PointTypePtr CreateNewPointInPolygon(PolygonTypePtr Polygon, Coord X, Coord Y)
  */
 PolygonType *CreateNewHoleInPolygon(PolygonType * Polygon)
 {
-	Cardinal *holeindex = GetHoleIndexMemoryInPolygon(Polygon);
+	pcb_cardinal_t *holeindex = GetHoleIndexMemoryInPolygon(Polygon);
 	*holeindex = Polygon->PointN;
 	return Polygon;
 }

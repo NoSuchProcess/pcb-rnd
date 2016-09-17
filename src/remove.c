@@ -55,7 +55,7 @@ static void *DestroyElement(ElementTypePtr);
 static void *RemoveVia(PinTypePtr);
 static void *RemoveRat(RatTypePtr);
 static void *DestroyPolygonPoint(LayerTypePtr, PolygonTypePtr, PointTypePtr);
-static void *RemovePolygonContour(LayerTypePtr, PolygonTypePtr, Cardinal);
+static void *RemovePolygonContour(LayerTypePtr, PolygonTypePtr, pcb_cardinal_t);
 static void *RemovePolygonPoint(LayerTypePtr, PolygonTypePtr, PointTypePtr);
 static void *RemoveLinePoint(LayerTypePtr, LineTypePtr, PointTypePtr);
 
@@ -159,10 +159,10 @@ static void *DestroyPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
  */
 static void *DestroyPolygonPoint(LayerTypePtr Layer, PolygonTypePtr Polygon, PointTypePtr Point)
 {
-	Cardinal point_idx;
-	Cardinal i;
-	Cardinal contour;
-	Cardinal contour_start, contour_end, contour_points;
+	pcb_cardinal_t point_idx;
+	pcb_cardinal_t i;
+	pcb_cardinal_t contour;
+	pcb_cardinal_t contour_start, contour_end, contour_points;
 
 	point_idx = polygon_point_idx(Polygon, Point);
 	contour = polygon_point_contour(Polygon, point_idx);
@@ -392,10 +392,10 @@ void *RemovePolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
  * removes a contour from a polygon.
  * If removing the outer contour, it removes the whole polygon.
  */
-static void *RemovePolygonContour(LayerTypePtr Layer, PolygonTypePtr Polygon, Cardinal contour)
+static void *RemovePolygonContour(LayerTypePtr Layer, PolygonTypePtr Polygon, pcb_cardinal_t contour)
 {
-	Cardinal contour_start, contour_end, contour_points;
-	Cardinal i;
+	pcb_cardinal_t contour_start, contour_end, contour_points;
+	pcb_cardinal_t i;
 
 	if (contour == 0)
 		return RemovePolygon(Layer, Polygon);
@@ -438,10 +438,10 @@ static void *RemovePolygonContour(LayerTypePtr Layer, PolygonTypePtr Polygon, Ca
  */
 static void *RemovePolygonPoint(LayerTypePtr Layer, PolygonTypePtr Polygon, PointTypePtr Point)
 {
-	Cardinal point_idx;
-	Cardinal i;
-	Cardinal contour;
-	Cardinal contour_start, contour_end, contour_points;
+	pcb_cardinal_t point_idx;
+	pcb_cardinal_t i;
+	pcb_cardinal_t contour;
+	pcb_cardinal_t contour_start, contour_end, contour_points;
 
 	point_idx = polygon_point_idx(Polygon, Point);
 	contour = polygon_point_contour(Polygon, point_idx);

@@ -107,9 +107,9 @@ static void draw_dashed_line(hidGC GC, Coord x1, Coord y1, Coord x2, Coord y2)
  */
 static void XORPolygon(PolygonTypePtr polygon, Coord dx, Coord dy, int dash_last)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 	for (i = 0; i < polygon->PointN; i++) {
-		Cardinal next = next_contour_point(polygon, i);
+		pcb_cardinal_t next = next_contour_point(polygon, i);
 
 		if (next == 0) { /* last line: sometimes the implicit closing line */
 			if (i == 1) /* corner case: don't draw two lines on top of each other - with XOR it looks bad */
@@ -279,7 +279,7 @@ static void XORDrawElement(ElementTypePtr Element, Coord DX, Coord DY)
  */
 static void XORDrawBuffer(BufferTypePtr Buffer)
 {
-	Cardinal i;
+	pcb_cardinal_t i;
 	Coord x, y;
 
 	/* set offset */
@@ -360,7 +360,7 @@ static void XORDrawInsertPointObject(void)
 static void XORDrawMoveOrCopyObject(void)
 {
 	RubberbandTypePtr ptr;
-	Cardinal i;
+	pcb_cardinal_t i;
 	Coord dx = Crosshair.X - Crosshair.AttachedObject.X, dy = Crosshair.Y - Crosshair.AttachedObject.Y;
 
 	switch (Crosshair.AttachedObject.Type) {
@@ -416,7 +416,7 @@ static void XORDrawMoveOrCopyObject(void)
 		{
 			PolygonTypePtr polygon;
 			PointTypePtr point;
-			Cardinal point_idx, prev, next;
+			pcb_cardinal_t point_idx, prev, next;
 
 			polygon = (PolygonTypePtr) Crosshair.AttachedObject.Ptr2;
 			point = (PointTypePtr) Crosshair.AttachedObject.Ptr3;
@@ -1048,8 +1048,8 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 			(conf_core.editor.mode == PCB_MODE_LINE || (conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))) {
 		PadTypePtr pad = (PadTypePtr) ptr2;
 		LayerType *desired_layer;
-		Cardinal desired_group;
-		Cardinal SLayer, CLayer;
+		pcb_cardinal_t desired_group;
+		pcb_cardinal_t SLayer, CLayer;
 		int found_our_layer = pcb_false;
 
 		desired_layer = CURRENT;

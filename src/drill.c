@@ -38,7 +38,7 @@ static void InitializeDrill(DrillTypePtr, PinTypePtr, ElementTypePtr);
 
 static void FillDrill(DrillTypePtr Drill, ElementTypePtr Element, PinTypePtr Pin)
 {
-	Cardinal n;
+	pcb_cardinal_t n;
 	ElementTypeHandle ptr;
 	PinTypeHandle pin;
 

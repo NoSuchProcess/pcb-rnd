@@ -447,7 +447,7 @@ void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text)
 pcb_bool IsDataEmpty(DataTypePtr Data)
 {
 	pcb_bool hasNoObjects;
-	Cardinal i;
+	pcb_cardinal_t i;
 
 	hasNoObjects = (pinlist_length(&Data->Via) == 0);
 	hasNoObjects &= (elementlist_length(&Data->Element) == 0);
@@ -611,7 +611,7 @@ void CenterDisplay(Coord X, Coord Y)
  */
 void SetFontInfo(FontTypePtr Ptr)
 {
-	Cardinal i, j;
+	pcb_cardinal_t i, j;
 	SymbolTypePtr symbol;
 	LineTypePtr line;
 	Coord totalminy = MAX_COORD;

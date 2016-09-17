@@ -317,7 +317,7 @@ static int parse_polygon(LayerType *ly, ElementType *el, lht_node_t *obj)
 {
 	PolygonType *poly = GetPolygonMemory(ly);
 	lht_node_t *geo;
-	Cardinal n, c;
+	pcb_cardinal_t n, c;
 
 	parse_id(&poly->ID, obj, 8);
 	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
@@ -338,11 +338,11 @@ static int parse_polygon(LayerType *ly, ElementType *el, lht_node_t *obj)
 		poly->PointMax = poly->PointN;
 		poly->Points = malloc(sizeof(PointType) * poly->PointMax);
 		poly->HoleIndexMax = poly->HoleIndexN = c-1;
-		poly->HoleIndex = malloc(sizeof(Cardinal) * poly->HoleIndexMax);
+		poly->HoleIndex = malloc(sizeof(pcb_cardinal_t) * poly->HoleIndexMax);
 
 		/* convert points and build hole index */
 		for(c = 0, cnt = lht_dom_first(&it, geo); cnt != NULL; c++, cnt = lht_dom_next(&it)) {
-			Cardinal r;
+			pcb_cardinal_t r;
 			if (cnt->type != LHT_TABLE)
 				continue;
 			if (c > 0)

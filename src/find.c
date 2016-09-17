@@ -118,7 +118,7 @@
  */
 typedef struct {
 	void **Data;									/* pointer to index data */
-	Cardinal Location,						/* currently used position */
+	pcb_cardinal_t Location,						/* currently used position */
 	  DrawLocation, Number,				/* number of objects in list */
 	  Size;
 } ListType, *ListTypePtr;
@@ -141,8 +141,8 @@ find_callback_t find_callback = NULL;
 static pcb_bool User = pcb_false;				/* user action causing this */
 static pcb_bool drc = pcb_false;				/* whether to stop if finding something not found */
 static pcb_bool IsBad = pcb_false;
-static Cardinal drcerr_count;		/* count of drc errors */
-static Cardinal TotalP, TotalV, NumberOfPads[2];
+static pcb_cardinal_t drcerr_count;		/* count of drc errors */
+static pcb_cardinal_t TotalP, TotalV, NumberOfPads[2];
 static ListType LineList[MAX_LAYER],	/* list of objects to */
   PolygonList[MAX_LAYER], ArcList[MAX_LAYER], PadList[2], RatList, PVList;
 
@@ -153,11 +153,11 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool);
 static pcb_bool LookupLOConnectionsToLOList(pcb_bool);
 static pcb_bool LookupPVConnectionsToLOList(pcb_bool);
 static pcb_bool LookupPVConnectionsToPVList(void);
-static pcb_bool LookupLOConnectionsToLine(LineTypePtr, Cardinal, pcb_bool);
-static pcb_bool LookupLOConnectionsToPad(PadTypePtr, Cardinal);
-static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr, Cardinal);
-static pcb_bool LookupLOConnectionsToArc(ArcTypePtr, Cardinal);
-static pcb_bool LookupLOConnectionsToRatEnd(PointTypePtr, Cardinal);
+static pcb_bool LookupLOConnectionsToLine(LineTypePtr, pcb_cardinal_t, pcb_bool);
+static pcb_bool LookupLOConnectionsToPad(PadTypePtr, pcb_cardinal_t);
+static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr, pcb_cardinal_t);
+static pcb_bool LookupLOConnectionsToArc(ArcTypePtr, pcb_cardinal_t);
+static pcb_bool LookupLOConnectionsToRatEnd(PointTypePtr, pcb_cardinal_t);
 static pcb_bool IsRatPointOnLineEnd(PointTypePtr, LineTypePtr);
 static pcb_bool ArcArcIntersect(ArcTypePtr, ArcTypePtr);
 static pcb_bool PrintElementConnections(ElementTypePtr, FILE *, pcb_bool);
@@ -166,7 +166,7 @@ static pcb_bool DoIt(pcb_bool, pcb_bool);
 static void PrintElementNameList(ElementTypePtr, FILE *);
 static void PrintConnectionElementName(ElementTypePtr, FILE *);
 static void PrintConnectionListEntry(char *, ElementTypePtr, pcb_bool, FILE *);
-static void PrintPadConnections(Cardinal, FILE *, pcb_bool);
+static void PrintPadConnections(pcb_cardinal_t, FILE *, pcb_bool);
 static void PrintPinConnections(FILE *, pcb_bool);
 static void DumpList(void);
 static pcb_bool ListStart(int, void *, void *, void *);

@@ -43,7 +43,7 @@ void SaveUndoSerialNumber(void);
 void RestoreUndoSerialNumber(void);
 void ClearUndoList(pcb_bool);
 void MoveObjectToRemoveUndoList(int, void *, void *, void *);
-void AddObjectToRemovePointUndoList(int, void *, void *, Cardinal);
+void AddObjectToRemovePointUndoList(int, void *, void *, pcb_cardinal_t);
 void AddObjectToInsertPointUndoList(int, void *, void *, void *);
 void AddObjectToRemoveContourUndoList(int, LayerType *, PolygonType *);
 void AddObjectToInsertContourUndoList(int, LayerType *, PolygonType *);

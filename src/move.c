@@ -624,7 +624,7 @@ static void *MovePolygonToLayerLowLevel(LayerType * Source, PolygonType * polygo
 }
 
 struct mptlc {
-	Cardinal snum, dnum;
+	pcb_cardinal_t snum, dnum;
 	int type;
 	PolygonTypePtr polygon;
 } mptlc;

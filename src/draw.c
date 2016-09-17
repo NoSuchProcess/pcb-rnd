@@ -1094,7 +1094,7 @@ static void DrawLayerGroup(int group, const BoxType * drawn_area)
 	int layernum;
 	LayerTypePtr Layer;
 	int n_entries = PCB->LayerGroups.Number[group];
-	Cardinal *layers = PCB->LayerGroups.Entries[group];
+	pcb_cardinal_t *layers = PCB->LayerGroups.Entries[group];
 
 	for (i = n_entries - 1; i >= 0; i--) {
 		layernum = layers[i];
@@ -1172,7 +1172,7 @@ void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width)
 {
 	Coord x = 0;
 	unsigned char *string = (unsigned char *) Text->TextString;
-	Cardinal n;
+	pcb_cardinal_t n;
 	FontTypePtr font = &PCB->Font;
 
 	while (string && *string) {

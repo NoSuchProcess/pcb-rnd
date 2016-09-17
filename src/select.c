@@ -923,7 +923,7 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, s
 
 		MENU_LOOP(&(PCB->NetlistLib[NETLIST_EDITED]));
 		{
-			Cardinal i;
+			pcb_cardinal_t i;
 			LibraryEntryType *entry;
 			ConnectionType conn;
 

@@ -49,11 +49,11 @@
 /* Prototypes */
 
 void polygon_init(void);
-Cardinal polygon_point_idx(PolygonTypePtr polygon, PointTypePtr point);
-Cardinal polygon_point_contour(PolygonTypePtr polygon, Cardinal point);
-Cardinal prev_contour_point(PolygonTypePtr polygon, Cardinal point);
-Cardinal next_contour_point(PolygonTypePtr polygon, Cardinal point);
-Cardinal GetLowestDistancePolygonPoint(PolygonTypePtr, Coord, Coord);
+pcb_cardinal_t polygon_point_idx(PolygonTypePtr polygon, PointTypePtr point);
+pcb_cardinal_t polygon_point_contour(PolygonTypePtr polygon, pcb_cardinal_t point);
+pcb_cardinal_t prev_contour_point(PolygonTypePtr polygon, pcb_cardinal_t point);
+pcb_cardinal_t next_contour_point(PolygonTypePtr polygon, pcb_cardinal_t point);
+pcb_cardinal_t GetLowestDistancePolygonPoint(PolygonTypePtr, Coord, Coord);
 pcb_bool RemoveExcessPolygonPoints(LayerTypePtr, PolygonTypePtr);
 void GoToPreviousPoint(void);
 void ClosePolygon(void);

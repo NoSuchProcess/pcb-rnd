@@ -41,7 +41,7 @@ int ParseGroupString(const char *, LayerGroupTypePtr, int /* LayerN */ );
 
 int GetLayerNumber(DataTypePtr, LayerTypePtr);
 int GetLayerGroupNumberByPointer(LayerTypePtr);
-int GetLayerGroupNumberByNumber(Cardinal);
+int GetLayerGroupNumberByNumber(pcb_cardinal_t);
 int GetGroupOfLayer(int);
 int ChangeGroupVisibility(int, pcb_bool, pcb_bool);
 void LayerStringToLayerStack(const char *);

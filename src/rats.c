@@ -65,7 +65,7 @@ static void TransferNet(NetListTypePtr, NetTypePtr, NetTypePtr);
  * some local identifiers
  */
 static pcb_bool badnet = pcb_false;
-static Cardinal SLayer, CLayer;	/* layer group holding solder/component side */
+static pcb_cardinal_t SLayer, CLayer;	/* layer group holding solder/component side */
 
 /* ---------------------------------------------------------------------------
  * parse a connection description from a string
@@ -391,7 +391,7 @@ static pcb_bool GatherSubnets(NetListTypePtr Netl, pcb_bool NoWarn, pcb_bool And
 {
 	NetTypePtr a, b;
 	ConnectionTypePtr conn;
-	Cardinal m, n;
+	pcb_cardinal_t m, n;
 	pcb_bool Warned = pcb_false;
 
 	for (m = 0; Netl->NetN > 0 && m < Netl->NetN; m++) {
@@ -494,7 +494,7 @@ DrawShortestRats(NetListTypePtr Netl,
 	PolygonTypePtr polygon;
 	pcb_bool changed = pcb_false;
 	pcb_bool havepoints;
-	Cardinal n, m, j;
+	pcb_cardinal_t n, m, j;
 	NetTypePtr next, subnet, theSubnet = NULL;
 
 	/* This is just a sanity check, to make sure we're passed
@@ -805,7 +805,7 @@ RatTypePtr AddNet(void)
 {
 	static int ratDrawn = 0;
 	char name1[256], *name2;
-	Cardinal group1, group2;
+	pcb_cardinal_t group1, group2;
 	char ratname[20];
 	int found;
 	void *ptr1, *ptr2, *ptr3;

@@ -150,7 +150,7 @@ int defer_updates = 0;
 int defer_needs_update = 0;
 
 
-static Cardinal polyIndex = 0;
+static pcb_cardinal_t polyIndex = 0;
 pcb_bool saved_mode = pcb_false;
 
 /* ---------------------------------------------------------------------------
@@ -862,7 +862,7 @@ void NotifyMode(void)
 	case PCB_MODE_POLYGON:
 		{
 			PointTypePtr points = Crosshair.AttachedPolygon.Points;
-			Cardinal n = Crosshair.AttachedPolygon.PointN;
+			pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN;
 
 			/* do update of position; use the 'PCB_MODE_LINE' mechanism */
 			NotifyLine();
@@ -928,7 +928,7 @@ void NotifyMode(void)
 			case STATE_SECOND:
 				{
 					PointTypePtr points = Crosshair.AttachedPolygon.Points;
-					Cardinal n = Crosshair.AttachedPolygon.PointN;
+					pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN;
 					POLYAREA *original, *new_hole, *result;
 					FlagType Flags;
 

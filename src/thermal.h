@@ -40,6 +40,6 @@
 #include "global.h"
 #include "mymem.h"
 
-POLYAREA *ThermPoly(PCBTypePtr, PinTypePtr, Cardinal);
+POLYAREA *ThermPoly(PCBTypePtr, PinTypePtr, pcb_cardinal_t);
 
 #endif
