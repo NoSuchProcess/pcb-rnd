@@ -3,7 +3,7 @@ State on MacOSX
 
 Source releases starting from 1.1.0 should compile and run out-of-the-box.
 
-Requirements:  x11 and gtk+
+Requirements for GUI:  x11 and gtk+
   - X11 server and client libraries for OS X are available from the XQuartz 
      download and install
   - gtk+ is available from brew
@@ -17,6 +17,5 @@ Requirements:  x11 and gtk+
 Known issues:
   - application window opens behind other windows; it seems to be a gtk bug
     that can not be worked around from the application
-  - element sometimes duplicated on move
   - slow rendering and error messages about invalid numerics on the console
 
