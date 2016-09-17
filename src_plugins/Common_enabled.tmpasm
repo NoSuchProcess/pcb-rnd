@@ -80,7 +80,7 @@ switch /local/pcb/mod/CONF
 		append /local/pcb/RULES [@
 # conf generation for @/local/pcb/mod@ '@/local/pcb/mod/CONF@'
 @/local/pcb/mod/CONFOUT@: @/local/pcb/mod/CONF@
-	../scconfig/gen_conf.sh < @/local/pcb/mod/CONF@ > @/local/pcb/mod/CONFOUT@
+	AWK=@/host/fstools/awk@ ../scconfig/gen_conf.sh < @/local/pcb/mod/CONF@ > @/local/pcb/mod/CONFOUT@
 @]
 		end
 end

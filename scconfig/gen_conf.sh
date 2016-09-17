@@ -2,7 +2,12 @@
 
 # TODO: rewrite this in C for better portability
 
-awk -v "docdir=$1" '
+if test -z "$AWK"
+then
+	AWK="awk"
+fi
+
+$AWK -v "docdir=$1" '
 	BEGIN {
 		level = -1
 		q = "\""
