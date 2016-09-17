@@ -42,17 +42,17 @@ typedef struct {
 
 static htpi_t *funchash;
 
-static int keyeq(void *a_, void *b_)
+static int keyeq(const void *a_, const void *b_)
 {
-	fh_key_t *a = a_, *b = b_;
+	const fh_key_t *a = a_, *b = b_;
 	if (a->cookie != b->cookie)
 		return 1;
 	return !strcasecmp(a->key, b->key);
 }
 
-static unsigned fh_hash(void *key)
+static unsigned fh_hash(const void *key)
 {
-	fh_key_t *k = key;
+	const fh_key_t *k = key;
 	return strhash_case((char *)k->key) ^ ptrhash((void *)k->cookie);
 }
 

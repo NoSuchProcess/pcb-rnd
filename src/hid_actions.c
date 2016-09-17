@@ -14,16 +14,6 @@
 #include "hid_actions.h"
 #include "compat_misc.h"
 
-/*
- * Ideally, we would like to look up values from the hash-table with the
- * corresponding const-type of the key. We can't do this right now,
- * (hzeller: can't write to genht repository), so this is an easy grep-able
- * type that we have to type-cast to in look-ups. Can be removed after htsp
- * can look up const char*'s.
- */
-
-typedef char *htsp_key_cast;
-
 /* do not throw "unknown action" warning for these: they are known
    actions, the GUI HID may register them, but nothing bad happens if
    they are not registered or not handled by the GUI. */
@@ -69,7 +59,7 @@ void hid_register_actions(const HID_Action * a, int n, const char *cookie, int c
 			Message(PCB_MSG_DEFAULT, _("ERROR! Invalid action name, " "action \"%s\" not registered.\n"), a[i].name);
 			continue;
 		}
-		if (htsp_get(all_actions, (htsp_key_cast)a[i].name) != NULL) {
+		if (htsp_get(all_actions, a[i].name) != NULL) {
 			Message(PCB_MSG_DEFAULT, _("ERROR! Invalid action name, " "action \"%s\" is already registered.\n"), a[i].name);
 			continue;
 		}
@@ -94,7 +84,7 @@ void hid_remove_actions(const HID_Action * a, int n)
 
 	for (i = 0; i < n; i++) {
 		htsp_entry_t *e;
-		e = htsp_popentry(all_actions, (htsp_key_cast)a[i].name);
+		e = htsp_popentry(all_actions, a[i].name);
 		free(e->key);
 		free(e->value);
 	}
@@ -125,7 +115,7 @@ void hid_remove_action(const HID_Action * a)
 	if (all_actions == NULL)
 		return;
 
-	e = htsp_popentry(all_actions, (htsp_key_cast)a->name);
+	e = htsp_popentry(all_actions, a->name);
 	if (e != NULL) {
 		free(e->key);
 		free(e->value);

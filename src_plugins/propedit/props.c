@@ -66,7 +66,7 @@ void pcb_props_uninit(htsp_t *props)
 /* Retrieve values for a prop */
 pcb_props_t *pcb_props_get(htsp_t *props, const char *propname)
 {
-	return htsp_get(props, (char *)propname);
+	return htsp_get(props, propname);
 }
 
 /* Store a new value */
@@ -79,7 +79,7 @@ pcb_props_t *pcb_props_add(htsp_t *props, const char *propname, pcb_prop_type_t 
 		return NULL;
 
 	/* look up or create the value list (p) associated with the property name */
-	p = htsp_get(props, (char *)propname);
+	p = htsp_get(props, propname);
 	if (p == NULL) {
 		p = malloc(sizeof(pcb_props_t));
 		p->type = type;
@@ -125,7 +125,7 @@ pcb_props_t *pcb_props_stat(htsp_t *props, const char *propname, pcb_propval_t *
 	unsigned long best = 0, num_vals = 0;
 
 
-	p = htsp_get(props, (char *)propname);
+	p = htsp_get(props, propname);
 	if (p == NULL)
 		return NULL;
 
@@ -206,7 +206,7 @@ const char *propedit_query(void *pe, const char *cmd, const char *key, const cha
 	const char *s;
 
 	if (memcmp(cmd, "v1st", 4) == 0) {
-		ctx->qprop = htsp_get(ctx->core_props, (char *)key);
+		ctx->qprop = htsp_get(ctx->core_props, key);
 		if (ctx->qprop == NULL)
 			return NULL;
 

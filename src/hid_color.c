@@ -6,7 +6,9 @@
 
 static hidval invalid_color = { 0 };
 
+#define HT_HAS_CONST_KEY
 typedef char *htsh_key_t;
+typedef const char *htsh_const_key_t;
 typedef hidval htsh_value_t;
 #define HT_INVALID_VALUE invalid_color
 #define HT(x) htsh_ ## x

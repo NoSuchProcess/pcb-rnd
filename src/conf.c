@@ -887,7 +887,7 @@ void conf_reg_field_(void *value, int array_size, conf_native_type_t type, const
 	}
 	assert(array_size >= 1);
 
-	assert(htsp_get(conf_fields, (char *)path) == NULL);
+	assert(htsp_get(conf_fields, path) == NULL);
 
 	node = calloc(sizeof(conf_native_t), 1);
 	node->array_size  = array_size;
@@ -934,7 +934,7 @@ void conf_unreg_fields(const char *prefix)
 
 conf_native_t *conf_get_field(const char *path)
 {
-	return htsp_get(conf_fields, (char *)path);
+	return htsp_get(conf_fields, path);
 }
 
 int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char *new_val, conf_policy_t pol)

@@ -71,11 +71,11 @@ const void *fp_tag(const char *tag, int alloc)
 
 	if (fp_tags == NULL)
 		fp_tags = htsp_alloc(strhash, strkeyeq);
-	e = htsp_getentry(fp_tags, (char *) tag);
+	e = htsp_getentry(fp_tags, tag);
 	if ((e == NULL) && alloc) {
 		htsp_set(fp_tags, pcb_strdup(tag), (void *) counter);
 		counter++;
-		e = htsp_getentry(fp_tags, (char *) tag);
+		e = htsp_getentry(fp_tags, tag);
 	}
 	return e == NULL ? NULL : e->key;
 }
