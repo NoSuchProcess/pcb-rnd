@@ -213,16 +213,28 @@ static void set_line_cb(void *ctx, PCBType *pcb, LayerType *layer, LineType *lin
 	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
 	    ChangeObject1stSize(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
 
-/*	set_add_prop(ctx, "p/trace/thickness", Coord, line->Thickness);
-	set_add_prop(ctx, "p/trace/clearance", Coord, line->Clearance);
+	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
+	    ChangeObjectClearSize(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
+
+/*
 	set_attr(ctx, &line->Attributes);*/
 }
 
 static void set_arc_cb(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc)
 {
+	set_ctx_t *st = (set_ctx_t *)ctx;
+	const char *pn = st->name + 8;
 
-/*	set_add_prop(ctx, "p/trace/thickness", Coord, arc->Thickness);
-	set_add_prop(ctx, "p/trace/clearance", Coord, arc->Clearance);
+	set_chk_skip(st, arc);
+
+	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
+	    ChangeObject1stSize(PCB_TYPE_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
+
+	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
+	    ChangeObjectClearSize(PCB_TYPE_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
+
+	pn = st->name + 6;
+/*
 	set_add_prop(ctx, "p/arc/width",       Coord, arc->Width);
 	set_add_prop(ctx, "p/arc/height",      Coord, arc->Height);
 	set_add_prop(ctx, "p/arc/angle/start", Angle, arc->StartAngle);
