@@ -30,6 +30,10 @@
 /* lexical definitions to parse ASCII input of PCB and Element description
  */
 
+/* for popen() */
+#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
+
 #include "config.h"
 #include "conf_core.h"
 
