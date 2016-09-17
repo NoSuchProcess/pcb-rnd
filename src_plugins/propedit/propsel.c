@@ -23,6 +23,9 @@
 #include "data.h"
 #include "props.h"
 #include "propsel.h"
+#include "change.h"
+#include "misc_util.h"
+#include "undo.h"
 
 /*********** map ***********/
 typedef struct {
@@ -178,7 +181,164 @@ void pcb_propsel_map_core(htsp_t *props)
 	);
 }
 
+/*******************/
 
-/*
-int pcb_propsel_apply();
-*/
+typedef struct set_ctx_s {
+	const char *name;
+	const char *value;
+	Coord c;
+	double d;
+	int is_trace;
+	pcb_bool c_absolute, d_absolute, c_valid, d_valid;
+
+	int set_cnt;
+} set_ctx_t;
+
+static void set_attr(void *ctx, const AttributeListType *list)
+{
+}
+
+#define set_chk_skip(ctx, obj) \
+	if (!TEST_FLAG(PCB_FLAG_SELECTED, obj)) return;
+
+#define DONE { st->set_cnt++; RestoreUndoSerialNumber(); return; }
+
+static void set_line_cb(void *ctx, PCBType *pcb, LayerType *layer, LineType *line)
+{
+	set_ctx_t *st = (set_ctx_t *)ctx;
+	const char *pn = st->name + 8;
+
+	set_chk_skip(st, line);
+
+	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
+	    ChangeObject1stSize(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
+
+/*	set_add_prop(ctx, "p/trace/thickness", Coord, line->Thickness);
+	set_add_prop(ctx, "p/trace/clearance", Coord, line->Clearance);
+	set_attr(ctx, &line->Attributes);*/
+}
+
+static void set_arc_cb(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc)
+{
+
+/*	set_add_prop(ctx, "p/trace/thickness", Coord, arc->Thickness);
+	set_add_prop(ctx, "p/trace/clearance", Coord, arc->Clearance);
+	set_add_prop(ctx, "p/arc/width",       Coord, arc->Width);
+	set_add_prop(ctx, "p/arc/height",      Coord, arc->Height);
+	set_add_prop(ctx, "p/arc/angle/start", Angle, arc->StartAngle);
+	set_add_prop(ctx, "p/arc/angle/delta", Angle, arc->Delta);
+	set_attr(ctx, &arc->Attributes);*/
+}
+
+static void set_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *text)
+{
+
+/*	set_add_prop(ctx, "p/text/scale", int, text->Scale);
+	set_add_prop(ctx, "p/text/rotation", int, text->Direction);
+	set_attr(ctx, &text->Attributes);*/
+}
+
+static void set_poly_cb(void *ctx, PCBType *pcb, LayerType *layer, PolygonType *poly)
+{
+
+/*	set_attr(ctx, &poly->Attributes);*/
+}
+
+static void set_eline_cb(void *ctx, PCBType *pcb, ElementType *element, LineType *line)
+{
+
+/*	set_line_cb(ctx, pcb, NULL, line);
+	set_attr(ctx, &line->Attributes);*/
+}
+
+static void set_earc_cb(void *ctx, PCBType *pcb, ElementType *element, ArcType *arc)
+{
+
+/*	set_arc_cb(ctx, pcb, NULL, arc);
+	set_attr(ctx, &arc->Attributes);*/
+}
+
+static void set_etext_cb(void *ctx, PCBType *pcb, ElementType *element, TextType *text)
+{
+
+/*	set_text_cb(ctx, pcb, NULL, text);
+	set_attr(ctx, &text->Attributes);*/
+}
+
+static void set_epin_cb(void *ctx, PCBType *pcb, ElementType *element, PinType *pin)
+{
+
+/*	set_add_prop(ctx, "p/pin/thickness", Coord, pin->Thickness);
+	set_add_prop(ctx, "p/pin/clearance", Coord, pin->Clearance);
+	set_add_prop(ctx, "p/pin/mask",      Coord, pin->Mask);
+	set_add_prop(ctx, "p/pin/hole",      Coord, pin->DrillingHole);
+	set_attr(ctx, &pin->Attributes);*/
+}
+
+static void set_epad_cb(void *ctx, PCBType *pcb, ElementType *element, PadType *pad)
+{
+
+/*	set_add_prop(ctx, "p/pad/mask",      Coord, pad->Mask);
+	set_attr(ctx, &pad->Attributes);*/
+}
+
+static void set_via_cb(void *ctx, PCBType *pcb, PinType *via)
+{
+
+/*	set_add_prop(ctx, "p/via/thickness", Coord, via->Thickness);
+	set_add_prop(ctx, "p/via/clearance", Coord, via->Clearance);
+	set_add_prop(ctx, "p/via/mask",      Coord, via->Mask);
+	set_add_prop(ctx, "p/via/hole",      Coord, via->DrillingHole);
+	set_attr(ctx, &via->Attributes);*/
+}
+
+/* use the callback if trc is true or prop matches a prefix or we are setting attributes, else NULL */
+#define MAYBE_PROP(trc, prefix, cb) \
+	(((trc) || (strncmp(prop, (prefix), sizeof(prefix)-1) == 0) || (prop[0] == 'a')) ? (cb) : NULL)
+
+#define MAYBE_ATTR(cb) \
+	((prop[0] == 'a') ? (cb) : NULL)
+
+
+int pcb_propsel_set(const char *prop, const char *value)
+{
+	set_ctx_t ctx;
+	char *end;
+	const char *start;
+
+	/* sanity checks for invalid props */
+	if (prop[1] != '/')
+		return 0;
+	if ((prop[0] != 'a') && (prop[0] != 'p'))
+		return 0;
+
+	ctx.is_trace = (strncmp(prop, "p/trace/", 8) == 0);
+	ctx.name = prop;
+	ctx.value = value;
+	ctx.c = GetValueEx(value, NULL, &ctx.c_absolute, NULL, NULL, &ctx.c_valid);
+	ctx.d = strtod(value, &end);
+	ctx.d_valid = (*end == '\0');
+	start = value;
+	while(isspace(*start)) start++;
+	ctx.d_absolute = ((*start != '-') && (*start != '+'));
+	ctx.set_cnt = 0;
+
+	SaveUndoSerialNumber();
+
+	pcb_loop_all(&ctx,
+		NULL,
+		MAYBE_PROP(ctx.is_trace, "p/line/", set_line_cb),
+		MAYBE_PROP(ctx.is_trace, "p/arc/", set_arc_cb),
+		MAYBE_PROP(0, "p/text/", set_text_cb),
+		MAYBE_ATTR(set_poly_cb),
+		NULL,
+		MAYBE_ATTR(set_eline_cb),
+		MAYBE_ATTR(set_earc_cb),
+		MAYBE_ATTR(set_etext_cb),
+		MAYBE_PROP(0, "p/pin/", set_epin_cb),
+		MAYBE_PROP(0, "p/pad/", set_epad_cb),
+		MAYBE_PROP(0, "p/via/", set_via_cb)
+	);
+	IncrementUndoSerialNumber();
+	return ctx.set_cnt;
+}

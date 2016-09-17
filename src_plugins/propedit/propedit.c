@@ -32,14 +32,7 @@
 
 #warning TODO
 static const char propedit_syntax[] = "propedit()";
-
 static const char propedit_help[] = "Run the property editor";
-
-/* %start-doc actions propedit
-
-TODO
-%end-doc */
-
 int propedit_action(int argc, const char **argv, Coord x, Coord y)
 {
 	pe_ctx_t ctx;
@@ -84,12 +77,27 @@ int propedit_action(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
+static const char propset_syntax[] = "propset(name, value)";
+static const char propset_help[] = "Change the named property of all selected objects to/by value";
+int propset_action(int argc, const char **argv, Coord x, Coord y)
+{
+	int res;
+/*
+	if (argc != 2)
+*/
+	printf("argc=%d '%s'\n", argc, argv[0]);
+	res = pcb_propsel_set(argv[0], argv[1]);
+	printf("res=%d\n", res);
+	return 0;
+}
 
 static const char *propedit_cookie = "propedit";
 
 HID_Action propedit_action_list[] = {
 	{"propedit", 0, propedit_action,
 	 propedit_help, propedit_syntax},
+	{"propset", 0, propset_action,
+	 propset_help, propset_syntax},
 };
 
 REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
