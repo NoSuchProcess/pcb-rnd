@@ -46,9 +46,11 @@ static void val_combo_add(ghid_propedit_dialog_t *dlg, const char *val)
 	gtk_list_store_insert_with_values(dlg->vals, NULL, -1, 0, val, -1);
 }
 
+#define NO0(s) pcb_strdup((s) == NULL ? "" : (s))
 void ghid_propedit_prop_add(ghid_propedit_dialog_t *dlg, const char *name, const char *common, const char *min, const char *max, const char *avg)
 {
-	gtk_list_store_insert_with_values(dlg->props, &dlg->last_add_iter, -1,  0,name,  1,common,  2,min,  3,max,  4,avg,  -1);
+	gtk_list_store_insert_with_values(dlg->props, &dlg->last_add_iter, -1,  0,pcb_strdup(name),  1,NO0(common),  2,NO0(min),  3,NO0(max),  4,NO0(avg),  -1);
+	dlg->last_add_iter_valid = 1;
 }
 
 static void hdr_add(ghid_propedit_dialog_t *dlg, const char *name, int col)
@@ -100,7 +102,25 @@ static void do_remove_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 
 static void do_addattr_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 {
-	printf("Addattr!\n");
+	char *name;
+	name = ghid_prompt_for("Name of the new attribute:", NULL);
+	if (name != NULL) {
+		char *path;
+		if ((name[0] == 'a') && (name[1] == '/')) {
+			path = name;
+			name = NULL;
+		}
+		else {
+			int len = strlen(name);
+			path = malloc(len+3);
+			path[0] = 'a';
+			path[1] = '/';
+			strcpy(path+2, name);
+		}
+		ghidgui->propedit_query(ghidgui->propedit_pe, "vset", path, "", 0);
+		free(path);
+	}
+	free(name);
 }
 
 static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
@@ -125,7 +145,10 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	if (ghidgui->propedit_query(ghidgui->propedit_pe, "vset", prop, val, 0) != NULL) {
 		/* could change values update the table - the new row is already added, remove the old */
 		gtk_list_store_remove(GTK_LIST_STORE(tm), &iter);
-		gtk_tree_selection_select_iter(tsel, &dlg->last_add_iter);
+		if (dlg->last_add_iter_valid) {
+			gtk_tree_selection_select_iter(tsel, &dlg->last_add_iter);
+			dlg->last_add_iter_valid = 0;
+		}
 		/* get the combo box updated */
 		list_cursor_changed_cb(dlg->tree, dlg);
 		if ((*val == '+') || (*val == '-'))
@@ -275,6 +298,8 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 	GtkCellRenderer *renderer ;
 	GtkWidget *content_area, *top_window = gport->top_window;
 
+	dlg->last_add_iter_valid = 0;
+
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	window = gtk_dialog_new_with_buttons(_("Edit Properties"),
 																			 GTK_WINDOW(top_window),
@@ -325,11 +350,11 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 
 	dlg->remove = gtk_button_new_with_label("Remove");
 	gtk_box_pack_start(GTK_BOX(hbx), dlg->remove, FALSE, TRUE, 4);
-	g_signal_connect(G_OBJECT(dlg->apply), "clicked", G_CALLBACK(do_remove_cb), dlg);
+	g_signal_connect(G_OBJECT(dlg->remove), "clicked", G_CALLBACK(do_remove_cb), dlg);
 
 	dlg->addattr = gtk_button_new_with_label("Add attribute");
 	gtk_box_pack_start(GTK_BOX(hbx), dlg->addattr, FALSE, TRUE, 4);
-	g_signal_connect(G_OBJECT(dlg->apply), "clicked", G_CALLBACK(do_addattr_cb), dlg);
+	g_signal_connect(G_OBJECT(dlg->addattr), "clicked", G_CALLBACK(do_addattr_cb), dlg);
 
 
 /***** RIGHT *****/

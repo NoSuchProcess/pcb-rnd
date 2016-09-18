@@ -9,6 +9,7 @@ typedef struct {
 	GtkListStore *vals;     /* model of the combo box */
 	int stock_val;          /* 1 if the value in the entry box is being edited from the combo */
 	GtkTreeIter last_add_iter; /* the iterator of the last added row (sometimes it needs to be selected) */
+	int last_add_iter_valid;
 
 	/* buttons */
 	GtkWidget *apply, *remove, *addattr;
