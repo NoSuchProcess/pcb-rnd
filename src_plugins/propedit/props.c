@@ -263,7 +263,6 @@ const char *propedit_query(void *pe, const char *cmd, const char *key, const cha
 		return s;
 	}
 
-
 	else if (memcmp(cmd, "vset", 4) == 0) { /* set value */
 		if (pcb_propsel_set(key, val) > 0) {
 			htsp_entry_t *pe;
@@ -276,6 +275,12 @@ const char *propedit_query(void *pe, const char *cmd, const char *key, const cha
 				return ok;
 			}
 		}
+		return NULL;
+	}
+
+	else if (memcmp(cmd, "vdel", 4) == 0) { /* remove an attribute value */
+		if (pcb_propsel_del(key) > 0)
+			return ok;
 		return NULL;
 	}
 
