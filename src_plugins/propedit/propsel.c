@@ -325,29 +325,68 @@ static void set_etext_cb(void *ctx, PCBType *pcb, ElementType *element, TextType
 
 static void set_epin_cb(void *ctx, PCBType *pcb, ElementType *element, PinType *pin)
 {
+	set_ctx_t *st = (set_ctx_t *)ctx;
+	const char *pn = st->name + 6;
 
-/*	set_add_prop(ctx, "p/pin/thickness", Coord, pin->Thickness);
-	set_add_prop(ctx, "p/pin/clearance", Coord, pin->Clearance);
-	set_add_prop(ctx, "p/pin/mask",      Coord, pin->Mask);
-	set_add_prop(ctx, "p/pin/hole",      Coord, pin->DrillingHole);
-	set_attr(ctx, &pin->Attributes);*/
+	set_chk_skip(st, pin);
+
+	if (st->is_attr) {
+		set_attr(st, &pin->Attributes);
+		return;
+	}
+
+	if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
+	    ChangeObject2ndSize(PCB_TYPE_PIN, pin, pin, NULL, st->c, st->c_absolute, pcb_false)) DONE;
+
+	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
+	    ChangeObjectClearSize(PCB_TYPE_PIN, pin, pin, NULL, st->c, st->c_absolute)) DONE;
+
+	if (st->c_valid && (strcmp(pn, "mask") == 0) &&
+	    ChangeObjectMaskSize(PCB_TYPE_PIN, pin, pin, NULL, st->c, st->c_absolute)) DONE;
+
+	if (st->c_valid && (strcmp(pn, "hole") == 0) &&
+	    ChangeObject1stSize(PCB_TYPE_PIN, pin, pin, NULL, st->c, st->c_absolute)) DONE;
 }
 
 static void set_epad_cb(void *ctx, PCBType *pcb, ElementType *element, PadType *pad)
 {
+	set_ctx_t *st = (set_ctx_t *)ctx;
+	const char *pn = st->name + 6;
 
-/*	set_add_prop(ctx, "p/pad/mask",      Coord, pad->Mask);
-	set_attr(ctx, &pad->Attributes);*/
+	set_chk_skip(st, pad);
+
+	if (st->is_attr) {
+		set_attr(st, &pad->Attributes);
+		return;
+	}
+
+	if (st->c_valid && (strcmp(pn, "mask") == 0) &&
+	    ChangeObjectMaskSize(PCB_TYPE_PAD, pad, pad, NULL, st->c, st->c_absolute)) DONE;
 }
 
 static void set_via_cb(void *ctx, PCBType *pcb, PinType *via)
 {
+	set_ctx_t *st = (set_ctx_t *)ctx;
+	const char *pn = st->name + 6;
 
-/*	set_add_prop(ctx, "p/via/thickness", Coord, via->Thickness);
-	set_add_prop(ctx, "p/via/clearance", Coord, via->Clearance);
-	set_add_prop(ctx, "p/via/mask",      Coord, via->Mask);
-	set_add_prop(ctx, "p/via/hole",      Coord, via->DrillingHole);
-	set_attr(ctx, &via->Attributes);*/
+	set_chk_skip(st, via);
+
+	if (st->is_attr) {
+		set_attr(st, &via->Attributes);
+		return;
+	}
+
+	if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
+	    ChangeObject2ndSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute, pcb_false)) DONE;
+
+	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
+	    ChangeObjectClearSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
+
+	if (st->c_valid && (strcmp(pn, "mask") == 0) &&
+	    ChangeObjectMaskSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
+
+	if (st->c_valid && (strcmp(pn, "hole") == 0) &&
+	    ChangeObject1stSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
 }
 
 /* use the callback if trc is true or prop matches a prefix or we are setting attributes, else NULL */
@@ -356,7 +395,6 @@ static void set_via_cb(void *ctx, PCBType *pcb, PinType *via)
 
 #define MAYBE_ATTR(cb) \
 	((prop[0] == 'a') ? (cb) : NULL)
-
 
 int pcb_propsel_set(const char *prop, const char *value)
 {
