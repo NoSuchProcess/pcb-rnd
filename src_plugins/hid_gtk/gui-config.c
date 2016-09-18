@@ -943,7 +943,7 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
 
 	if (!config_increments_vbox)
-		gtk_widget_destroy(GTK_BOX(config_increments_vbox));
+		gtk_widget_destroy(GTK_WIDGET(config_increments_vbox));
 
 	/* the actual content */
 	vbox = gtk_vbox_new(FALSE, 0);
