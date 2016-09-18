@@ -380,7 +380,7 @@ static void set_epad_cb(void *ctx, PCBType *pcb, ElementType *element, PadType *
 	}
 
 	if (st->c_valid && (strcmp(pn, "mask") == 0) &&
-	    ChangeObjectMaskSize(PCB_TYPE_PAD, pad, pad, NULL, st->c, st->c_absolute)) DONE;
+	    ChangeObjectMaskSize(PCB_TYPE_PAD, pad->Element, pad, NULL, st->c, st->c_absolute)) DONE;
 }
 
 static void set_via_cb(void *ctx, PCBType *pcb, PinType *via)
