@@ -256,37 +256,71 @@ static void set_arc_cb(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc)
 
 static void set_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *text)
 {
+	set_ctx_t *st = (set_ctx_t *)ctx;
+	const char *pn = st->name + 7;
 
-/*	set_add_prop(ctx, "p/text/scale", int, text->Scale);
+	set_chk_skip(st, text);
+
+	if (st->is_attr) {
+		set_attr(st, &text->Attributes);
+		return;
+	}
+
+	if (st->d_valid && (strcmp(pn, "scale") == 0) &&
+	    ChangeObjectSize(PCB_TYPE_TEXT, layer, text, NULL, PCB_MIL_TO_COORD(st->d), st->d_absolute)) DONE;
+
+#warning TODO: 
+/*
 	set_add_prop(ctx, "p/text/rotation", int, text->Direction);
-	set_attr(ctx, &text->Attributes);*/
+*/
 }
 
 static void set_poly_cb(void *ctx, PCBType *pcb, LayerType *layer, PolygonType *poly)
 {
+	set_ctx_t *st = (set_ctx_t *)ctx;
 
-/*	set_attr(ctx, &poly->Attributes);*/
+	set_chk_skip(st, poly);
+
+	if (st->is_attr) {
+		set_attr(st, &poly->Attributes);
+		return;
+	}
 }
 
 static void set_eline_cb(void *ctx, PCBType *pcb, ElementType *element, LineType *line)
 {
+	set_ctx_t *st = (set_ctx_t *)ctx;
 
-/*	set_line_cb(ctx, pcb, NULL, line);
-	set_attr(ctx, &line->Attributes);*/
+	set_chk_skip(st, line);
+
+	if (st->is_attr) {
+		set_attr(st, &line->Attributes);
+		return;
+	}
 }
 
 static void set_earc_cb(void *ctx, PCBType *pcb, ElementType *element, ArcType *arc)
 {
+	set_ctx_t *st = (set_ctx_t *)ctx;
 
-/*	set_arc_cb(ctx, pcb, NULL, arc);
-	set_attr(ctx, &arc->Attributes);*/
+	set_chk_skip(st, arc);
+
+	if (st->is_attr) {
+		set_attr(st, &arc->Attributes);
+		return;
+	}
 }
 
 static void set_etext_cb(void *ctx, PCBType *pcb, ElementType *element, TextType *text)
 {
+	set_ctx_t *st = (set_ctx_t *)ctx;
 
-/*	set_text_cb(ctx, pcb, NULL, text);
-	set_attr(ctx, &text->Attributes);*/
+	set_chk_skip(st, text);
+
+	if (st->is_attr) {
+		set_attr(st, &text->Attributes);
+		return;
+	}
 }
 
 static void set_epin_cb(void *ctx, PCBType *pcb, ElementType *element, PinType *pin)
