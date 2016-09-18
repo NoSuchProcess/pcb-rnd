@@ -98,7 +98,25 @@ static void list_cursor_changed_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 
 static void do_remove_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 {
-	printf("Remove!\n");
+	GtkTreeSelection *tsel;
+	GtkTreeModel *tm;
+	GtkTreeIter iter;
+	char *prop;
+
+	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dlg->tree));
+	if (tsel == NULL)
+		return;
+
+	gtk_tree_selection_get_selected(tsel, &tm, &iter);
+	if (iter.stamp == 0)
+		return;
+
+	gtk_tree_model_get(tm, &iter, 0, &prop, -1);
+
+	if (ghidgui->propedit_query(ghidgui->propedit_pe, "vdel", prop, NULL, 0) != NULL)
+		gtk_list_store_remove(GTK_LIST_STORE(tm), &iter);
+
+	free(prop);
 }
 
 static int keyval_input(char **key, char **val)
@@ -405,7 +423,7 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 	hbx = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_tree), hbx, FALSE, TRUE, 4);
 
-	dlg->remove = gtk_button_new_with_label("Remove");
+	dlg->remove = gtk_button_new_with_label("Remove attribute");
 	gtk_box_pack_start(GTK_BOX(hbx), dlg->remove, FALSE, TRUE, 4);
 	g_signal_connect(G_OBJECT(dlg->remove), "clicked", G_CALLBACK(do_remove_cb), dlg);
 
