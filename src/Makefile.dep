@@ -1615,7 +1615,7 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_plugins/propedit/propsel.h \
- pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ compat_misc.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/genht/ht.c
 ../src_plugins/propedit/propsel.o: ../src_plugins/propedit/propsel.c \
  data.h global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h \
