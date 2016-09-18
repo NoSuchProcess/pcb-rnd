@@ -257,10 +257,10 @@ static void set_arc_cb(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc)
 	if (!st->is_trace && st->c_valid && (strcmp(pn, "height") == 0) &&
 	    ChangeObjectRadius(PCB_TYPE_ARC, layer, arc, NULL, 1, st->c, st->c_absolute)) DONE;
 
-	if (!st->is_trace && st->d_valid && (strcmp(pn, "start") == 0) &&
+	if (!st->is_trace && st->d_valid && (strcmp(pn, "angle/start") == 0) &&
 	    ChangeObjectAngle(PCB_TYPE_ARC, layer, arc, NULL, 0, st->d, st->d_absolute)) DONE;
 
-	if (!st->is_trace && st->d_valid && (strcmp(pn, "delta") == 0) &&
+	if (!st->is_trace && st->d_valid && (strcmp(pn, "angle/delta") == 0) &&
 	    ChangeObjectAngle(PCB_TYPE_ARC, layer, arc, NULL, 1, st->d, st->d_absolute)) DONE;
 }
 
