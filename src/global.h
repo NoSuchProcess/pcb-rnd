@@ -510,6 +510,7 @@ struct rats_patch_line_s {
 #define	UNDO_CLEAR		       0x40000	/* clear/restore to polygons */
 #define	UNDO_NETLISTCHANGE	       0x80000	/* netlist change */
 #define	UNDO_CHANGEPINNUM			0x100000	/* change of pin number */
+#define	UNDO_CHANGERADII	    0x200000	/* change arc radii */
 
 
 

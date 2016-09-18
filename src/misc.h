@@ -66,6 +66,7 @@ void SaveStackAndVisibility(void);
 void RestoreStackAndVisibility(void);
 BoxTypePtr GetArcEnds(ArcTypePtr);
 void ChangeArcAngles(LayerTypePtr, ArcTypePtr, Angle, Angle);
+void ChangeArcRadii(LayerTypePtr, ArcTypePtr, Coord, Coord);
 char *UniqueElementName(DataTypePtr, char *);
 void AttachForCopy(Coord, Coord);
 

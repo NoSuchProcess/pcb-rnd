@@ -853,7 +853,7 @@ BoxTypePtr GetArcEnds(ArcTypePtr Arc)
 }
 
 
-/* doesn't this belong in change.c ?? */
+/* doesn't these belong in change.c ?? */
 void ChangeArcAngles(LayerTypePtr Layer, ArcTypePtr a, Angle new_sa, Angle new_da)
 {
 	if (new_da >= 360) {
@@ -865,6 +865,19 @@ void ChangeArcAngles(LayerTypePtr Layer, ArcTypePtr a, Angle new_sa, Angle new_d
 	AddObjectToChangeAnglesUndoList(PCB_TYPE_ARC, a, a, a);
 	a->StartAngle = new_sa;
 	a->Delta = new_da;
+	SetArcBoundingBox(a);
+	r_insert_entry(Layer->arc_tree, (BoxTypePtr) a, 0);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
+}
+
+
+void ChangeArcRadii(LayerTypePtr Layer, ArcTypePtr a, Coord new_width, Coord new_height)
+{
+	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
+	r_delete_entry(Layer->arc_tree, (BoxTypePtr) a);
+	AddObjectToChangeRadiiUndoList(PCB_TYPE_ARC, a, a, a);
+	a->Width = new_width;
+	a->Height = new_height;
 	SetArcBoundingBox(a);
 	r_insert_entry(Layer->arc_tree, (BoxTypePtr) a, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);

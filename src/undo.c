@@ -171,6 +171,7 @@ static pcb_bool UndoMirror(UndoListTypePtr);
 static pcb_bool UndoChangeSize(UndoListTypePtr);
 static pcb_bool UndoChange2ndSize(UndoListTypePtr);
 static pcb_bool UndoChangeAngles(UndoListTypePtr);
+static pcb_bool UndoChangeRadii(UndoListTypePtr);
 static pcb_bool UndoChangeClearSize(UndoListTypePtr);
 static pcb_bool UndoChangeMaskSize(UndoListTypePtr);
 static pcb_bool UndoClearPoly(UndoListTypePtr);
@@ -376,8 +377,39 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 		a->Delta = Entry->Data.AngleChange.angle[1];
 		SetArcBoundingBox(a);
 		r_insert_entry(Layer->arc_tree, (BoxTypePtr) a, 0);
-		Entry->Data.Move.DX = old_sa;
-		Entry->Data.Move.DY = old_da;
+		Entry->Data.AngleChange.angle[0] = old_sa;
+		Entry->Data.AngleChange.angle[1] = old_da;
+		DrawObject(type, ptr1, a);
+		return (pcb_true);
+	}
+	return (pcb_false);
+}
+
+/* ---------------------------------------------------------------------------
+ * recovers an object from a ChangeRadii change operation
+ */
+static pcb_bool UndoChangeRadii(UndoListTypePtr Entry)
+{
+	void *ptr1, *ptr2, *ptr3;
+	int type;
+	Coord old_w, old_h;
+
+	/* lookup entry by ID */
+	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
+	if (type == PCB_TYPE_ARC) {
+		LayerTypePtr Layer = (LayerTypePtr) ptr1;
+		ArcTypePtr a = (ArcTypePtr) ptr2;
+		r_delete_entry(Layer->arc_tree, (BoxTypePtr) a);
+		old_w = a->Width;
+		old_h = a->Height;
+		if (andDraw)
+			EraseObject(type, Layer, a);
+		a->Width = Entry->Data.Move.DX;
+		a->Height = Entry->Data.Move.DY;
+		SetArcBoundingBox(a);
+		r_insert_entry(Layer->arc_tree, (BoxTypePtr) a, 0);
+		Entry->Data.Move.DX = old_w;
+		Entry->Data.Move.DY = old_h;
 		DrawObject(type, ptr1, a);
 		return (pcb_true);
 	}
@@ -988,6 +1020,11 @@ static int PerformUndo(UndoListTypePtr ptr)
 			return (UNDO_CHANGEANGLES);
 		break;
 
+	case UNDO_CHANGERADII:
+		if (UndoChangeRadii(ptr))
+			return (UNDO_CHANGERADII);
+		break;
+
 	case UNDO_LAYERCHANGE:
 		if (UndoLayerChange(ptr))
 			return (UNDO_LAYERCHANGE);
@@ -1462,6 +1499,22 @@ void AddObjectToChangeAnglesUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr
 }
 
 /* ---------------------------------------------------------------------------
+ * adds an object to the list of changed radii.  Note that you must
+ * call this before changing the radii, passing the new width/height.
+ */
+void AddObjectToChangeRadiiUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+{
+	UndoListTypePtr undo;
+	ArcTypePtr a = (ArcTypePtr) Ptr3;
+
+	if (!Locked) {
+		undo = GetUndoSlot(UNDO_CHANGERADII, OBJECT_ID(Ptr3), Type);
+		undo->Data.Move.DX = a->Width;
+		undo->Data.Move.DY = a->Height;
+	}
+}
+
+/* ---------------------------------------------------------------------------
  * adds a layer change (new, delete, move) to the undo list.
  */
 void AddLayerChangeToUndoList(int old_index, int new_index)
@@ -1584,6 +1637,7 @@ static const char *undo_type2str(int type)
 		case UNDO_CHANGECLEARSIZE: return "chngeclearsize";
 		case UNDO_CHANGEMASKSIZE: return "changemasksize";
 		case UNDO_CHANGEANGLES: return "changeangles";
+		case UNDO_CHANGERADII: return "changeradii";
 		case UNDO_LAYERCHANGE: return "layerchange";
 		case UNDO_CLEAR: return "clear";
 		case UNDO_NETLISTCHANGE: return "netlistchange";

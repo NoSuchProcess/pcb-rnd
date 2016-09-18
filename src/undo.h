@@ -60,6 +60,7 @@ void AddObjectTo2ndSizeUndoList(int, void *, void *, void *);
 void AddObjectToClearSizeUndoList(int, void *, void *, void *);
 void AddObjectToMaskSizeUndoList(int, void *, void *, void *);
 void AddObjectToChangeAnglesUndoList(int, void *, void *, void *);
+void AddObjectToChangeRadiiUndoList(int, void *, void *, void *);
 void AddObjectToClearPolyUndoList(int, void *, void *, void *, pcb_bool);
 void AddLayerChangeToUndoList(int, int);
 void AddNetlistLibToUndoList(LibraryTypePtr);

@@ -114,13 +114,19 @@ static void *ChangeTextJoin(LayerTypePtr, TextTypePtr);
 static void *SetTextJoin(LayerTypePtr, TextTypePtr);
 static void *ClrTextJoin(LayerTypePtr, TextTypePtr);
 static void *ChangePolyClear(LayerTypePtr, PolygonTypePtr);
+static void *ChangeArcRadius(LayerTypePtr, ArcTypePtr);
+static void *ChangeArcAngle(LayerTypePtr, ArcTypePtr);
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
 static Coord Delta;							/* change of size */
 static Coord Absolute;					/* Absolute size */
+static int is_primary;					/* whether the primary parameter should be changed */
 static char *NewName;						/* new name */
+
+static Angle ADelta, AAbsolute;				/* same as above, but for angles */
+
 static ObjectFunctionType ChangeSizeFunctions = {
 	ChangeLineSize,
 	ChangeTextSize,
@@ -394,6 +400,37 @@ static ObjectFunctionType ClrOctagonFunctions = {
 	NULL,
 	NULL
 };
+
+static ObjectFunctionType ChangeRadiusFunctions = {
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	ChangeArcRadius,
+	NULL
+};
+
+static ObjectFunctionType ChangeAngleFunctions = {
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	ChangeArcAngle,
+	NULL
+};
+
 
 /* ---------------------------------------------------------------------------
  * changes the thermal on a via
@@ -928,6 +965,63 @@ static void *ChangeArcClearSize(LayerTypePtr Layer, ArcTypePtr Arc)
 	}
 	return (NULL);
 }
+
+/* ---------------------------------------------------------------------------
+ * changes the radius of an arc (is_primary 0=width or 1=height or 2=both)
+ * returns TRUE if changed
+ */
+static void *ChangeArcRadius(LayerTypePtr Layer, ArcTypePtr Arc)
+{
+	Coord value, *dst;
+	void *a0, *a1;
+
+	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
+		return (NULL);
+
+	switch(is_primary) {
+		case 0: dst = &Arc->Width; break;
+		case 1: dst = &Arc->Height; break;
+		case 2:
+			is_primary = 0; a0 = ChangeArcRadius(Layer, Arc);
+			is_primary = 1; a1 = ChangeArcRadius(Layer, Arc);
+			if ((a0 != NULL) || (a1 != NULL))
+				return Arc;
+			return NULL;
+	}
+
+	value = (Absolute) ? Absolute : (*dst) + Delta;
+#warning TODO: check arc radius bounds?
+/*	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));*/
+	if (value != *dst) {
+#warning TODO:
+/*		AddObjectToRadiusUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);*/
+		EraseArc(Arc);
+		r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
+		*dst = value;
+/*		if (*dst == 0) {
+			CLEAR_FLAG(PCB_FLAG_CLEARLINE, Arc);
+			*dst = PCB_MIL_TO_COORD(10);
+		}*/
+		SetArcBoundingBox(Arc);
+		r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
+		DrawArc(Layer, Arc);
+		return (Arc);
+	}
+	return (NULL);
+
+}
+
+/* ---------------------------------------------------------------------------
+ * changes the angle of an arc (is_primary 0=start or 1=end)
+ * returns TRUE if changed
+ */
+static void *ChangeArcAngle(LayerTypePtr Layer, ArcTypePtr Arc)
+{
+
+}
+
 
 /* ---------------------------------------------------------------------------
  * changes the scaling factor of a text object
@@ -2117,6 +2211,47 @@ pcb_bool ChangeObject1stSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord
 	}
 	return (change);
 }
+
+/* ---------------------------------------------------------------------------
+ * changes the radius of the passed object (e.g. arc width/height)
+ * Returns pcb_true if anything is changed
+ */
+pcb_bool ChangeObjectRadius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, Coord r, pcb_bool fixIt)
+{
+	pcb_bool change;
+
+	/* setup identifier */
+	Absolute = (fixIt) ? r : 0;
+	Delta = r;
+	is_primary = is_x;
+	change = (ObjectOperation(&ChangeRadiusFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
+	if (change) {
+		Draw();
+		IncrementUndoSerialNumber();
+	}
+	return (change);
+}
+
+/* ---------------------------------------------------------------------------
+ * changes the angles of the passed object (e.g. arc start/delta)
+ * Returns pcb_true if anything is changed
+ */
+pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, Angle a, pcb_bool fixIt)
+{
+	pcb_bool change;
+
+	/* setup identifier */
+	AAbsolute = (fixIt) ? a : 0;
+	ADelta = a;
+	is_primary = is_start;
+	change = (ObjectOperation(&ChangeAngleFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
+	if (change) {
+		Draw();
+		IncrementUndoSerialNumber();
+	}
+	return (change);
+}
+
 
 /* ---------------------------------------------------------------------------
  * changes the clearance size of the passed object
