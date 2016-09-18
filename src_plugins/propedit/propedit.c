@@ -37,40 +37,18 @@ int propedit_action(int argc, const char **argv, Coord x, Coord y)
 {
 	pe_ctx_t ctx;
 	htsp_entry_t *pe;
-	ctx.core_props = pcb_props_init();
 
 	if ((gui == NULL) || (gui->propedit_start == NULL)) {
 		Message(PCB_MSG_DEFAULT, "Error: there's no GUI or the active GUI can't edit properties.\n");
 		return 1;
 	}
 
+	ctx.core_props = pcb_props_init();
 	pcb_propsel_map_core(ctx.core_props);
 
 	gui->propedit_start(&ctx, ctx.core_props->fill, propedit_query);
-	for (pe = htsp_first(ctx.core_props); pe; pe = htsp_next(ctx.core_props, pe)) {
-		htprop_entry_t *e;
-		void *rowid;
-		pcb_props_t *p = pe->value;
-		pcb_propval_t common, min, max, avg;
-
-		if (gui->propedit_add_prop != NULL)
-			rowid = gui->propedit_add_prop(&ctx, pe->key, 1, p->values.fill);
-
-		if (gui->propedit_add_stat != NULL) {
-			if (p->type == PCB_PROPT_STRING) {
-				pcb_props_stat(ctx.core_props, pe->key, &common, NULL, NULL, NULL);
-				gui->propedit_add_stat(&ctx, pe->key, rowid, propedit_sprint_val(p->type, common), NULL, NULL, NULL);
-			}
-			else {
-				pcb_props_stat(ctx.core_props, pe->key, &common, &min, &max, &avg);
-				gui->propedit_add_stat(&ctx, pe->key, rowid, propedit_sprint_val(p->type, common), propedit_sprint_val(p->type, min), propedit_sprint_val(p->type, max), propedit_sprint_val(p->type, avg));
-			}
-		}
-
-		if (gui->propedit_add_value != NULL)
-			for (e = htprop_first(&p->values); e; e = htprop_next(&p->values, e))
-				gui->propedit_add_value(&ctx, pe->key, rowid, propedit_sprint_val(p->type, e->key), e->value);
-	}
+	for (pe = htsp_first(ctx.core_props); pe; pe = htsp_next(ctx.core_props, pe))
+		propedit_ins_prop(&ctx, pe);
 
 	gui->propedit_end(&ctx);
 	pcb_props_uninit(ctx.core_props);

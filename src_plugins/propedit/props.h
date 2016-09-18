@@ -107,3 +107,6 @@ typedef struct {
 	pcb_props_t *qprop;
 	htprop_entry_t *qprope;
 } pe_ctx_t;
+
+/* add a row in the gui propedit table */
+void propedit_ins_prop(pe_ctx_t *ctx, htsp_entry_t *pe);

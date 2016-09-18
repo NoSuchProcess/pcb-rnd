@@ -201,10 +201,40 @@ const char *propedit_sprint_val(pcb_prop_type_t type, pcb_propval_t val)
 	return b;
 }
 
+/*****************************************************************************/
+
+void propedit_ins_prop(pe_ctx_t *ctx, htsp_entry_t *pe)
+{
+	htprop_entry_t *e;
+	void *rowid;
+	pcb_props_t *p = pe->value;
+	pcb_propval_t common, min, max, avg;
+
+	if (gui->propedit_add_prop != NULL)
+		rowid = gui->propedit_add_prop(ctx, pe->key, 1, p->values.fill);
+
+	if (gui->propedit_add_stat != NULL) {
+		if (p->type == PCB_PROPT_STRING) {
+			pcb_props_stat(ctx->core_props, pe->key, &common, NULL, NULL, NULL);
+			gui->propedit_add_stat(ctx, pe->key, rowid, propedit_sprint_val(p->type, common), NULL, NULL, NULL);
+		}
+		else {
+			pcb_props_stat(ctx->core_props, pe->key, &common, &min, &max, &avg);
+			gui->propedit_add_stat(ctx, pe->key, rowid, propedit_sprint_val(p->type, common), propedit_sprint_val(p->type, min), propedit_sprint_val(p->type, max), propedit_sprint_val(p->type, avg));
+		}
+	}
+
+	if (gui->propedit_add_value != NULL)
+		for (e = htprop_first(&p->values); e; e = htprop_next(&p->values, e))
+			gui->propedit_add_value(ctx, pe->key, rowid, propedit_sprint_val(p->type, e->key), e->value);
+}
+
+
 const char *propedit_query(void *pe, const char *cmd, const char *key, const char *val, int idx)
 {
 	pe_ctx_t *ctx = pe;
 	const char *s;
+	static const char *ok = "ok";
 
 	if (memcmp(cmd, "v1st", 4) == 0) { /* get the first value */
 		ctx->qprop = htsp_get(ctx->core_props, key);
@@ -226,7 +256,18 @@ const char *propedit_query(void *pe, const char *cmd, const char *key, const cha
 
 
 	else if (memcmp(cmd, "vset", 4) == 0) { /* set value */
-		pcb_propsel_set(key, val);
+		if (pcb_propsel_set(key, val) > 0) {
+			htsp_entry_t *pe;
+			pcb_props_uninit(ctx->core_props);
+			ctx->core_props = pcb_props_init();
+			pcb_propsel_map_core(ctx->core_props);
+			pe = htsp_getentry(ctx->core_props, key);
+			if (pe != NULL) {
+				propedit_ins_prop(ctx, pe);
+				return ok;
+			}
+		}
+		return NULL;
 	}
 
 	return NULL;
