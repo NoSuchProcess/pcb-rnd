@@ -107,6 +107,10 @@ typedef struct {								/* information about poly clear/restore */
 	LayerTypePtr Layer;
 } ClearPolyType, *ClearPolyTypePtr;
 
+typedef struct {
+	Angle angle[2];
+} AngleChangeType;
+
 typedef struct {								/* information about netlist lib changes */
 	LibraryTypePtr old;
 	LibraryTypePtr lib;
@@ -129,6 +133,7 @@ typedef struct {								/* holds information about an operation */
 		ClearPolyType ClearPoly;
 		NetlistChangeType NetlistChange;
 		long int CopyID;
+		AngleChangeType AngleChange;
 	} Data;
 } UndoListType, *UndoListTypePtr;
 
@@ -355,7 +360,7 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
-	long int old_sa, old_da;
+	double old_sa, old_da;
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
@@ -367,12 +372,12 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 		old_da = a->Delta;
 		if (andDraw)
 			EraseObject(type, Layer, a);
-		a->StartAngle = Entry->Data.Move.DX;
-		a->Delta = Entry->Data.Move.DY;
+		a->StartAngle = Entry->Data.AngleChange.angle[0];
+		a->Delta = Entry->Data.AngleChange.angle[1];
 		SetArcBoundingBox(a);
 		r_insert_entry(Layer->arc_tree, (BoxTypePtr) a, 0);
 		Entry->Data.Move.DX = old_sa;
-		Entry->Data.Move.DY = old_da;;
+		Entry->Data.Move.DY = old_da;
 		DrawObject(type, ptr1, a);
 		return (pcb_true);
 	}
@@ -1451,8 +1456,8 @@ void AddObjectToChangeAnglesUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr
 
 	if (!Locked) {
 		undo = GetUndoSlot(UNDO_CHANGEANGLES, OBJECT_ID(Ptr3), Type);
-		undo->Data.Move.DX = a->StartAngle;
-		undo->Data.Move.DY = a->Delta;
+		undo->Data.AngleChange.angle[0] = a->StartAngle;
+		undo->Data.AngleChange.angle[1] = a->Delta;
 	}
 }
 
