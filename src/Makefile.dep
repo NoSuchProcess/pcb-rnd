@@ -1628,7 +1628,8 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h ../src_plugins/propedit/props.h \
  global.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_plugins/propedit/propsel.h
+ ../src_3rd/liblihata/genht/ht.h ../src_plugins/propedit/propsel.h \
+ change.h misc_util.h undo.h
 ../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
  ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
