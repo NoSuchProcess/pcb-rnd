@@ -240,12 +240,18 @@ static void set_arc_cb(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc)
 	    ChangeObjectClearSize(PCB_TYPE_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
 
 	pn = st->name + 6;
-/*
-	set_add_prop(ctx, "p/arc/width",       Coord, arc->Width);
-	set_add_prop(ctx, "p/arc/height",      Coord, arc->Height);
-	set_add_prop(ctx, "p/arc/angle/start", Angle, arc->StartAngle);
-	set_add_prop(ctx, "p/arc/angle/delta", Angle, arc->Delta);
-	set_attr(ctx, &arc->Attributes);*/
+
+	if (!st->is_trace && st->c_valid && (strcmp(pn, "width") == 0) &&
+	    ChangeObjectRadius(PCB_TYPE_ARC, layer, arc, NULL, 0, st->c, st->c_absolute)) DONE;
+
+	if (!st->is_trace && st->c_valid && (strcmp(pn, "height") == 0) &&
+	    ChangeObjectRadius(PCB_TYPE_ARC, layer, arc, NULL, 1, st->c, st->c_absolute)) DONE;
+
+	if (!st->is_trace && st->d_valid && (strcmp(pn, "start") == 0) &&
+	    ChangeObjectAngle(PCB_TYPE_ARC, layer, arc, NULL, 0, st->d, st->d_absolute)) DONE;
+
+	if (!st->is_trace && st->d_valid && (strcmp(pn, "delta") == 0) &&
+	    ChangeObjectAngle(PCB_TYPE_ARC, layer, arc, NULL, 1, st->d, st->d_absolute)) DONE;
 }
 
 static void set_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *text)
