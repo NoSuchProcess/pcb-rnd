@@ -5,12 +5,12 @@
 	- if hid_gtk is compiled as buildin but is also available as a plugin the code tries to load it twice and segfaults
 	- genht config bug in gpmi
 	- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
-	- gui window quit queues and doesn't work when action command is active [report:miloh]
+	- gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
 	- File->Revert, or re-loading after external change of .pcb file leads to corruption of routing styles. [report:Chris]
 	- render:
 		- visible grid slowing down rendering [Erich]
 		- drawing a lot of rats is slow - does it redraw/flush after each rat? [report:Chris]
-	- gui doesn't show lookahead mode change ( _/ \_ and whitespace) when toggling using / key or --listen and display(cycleclip) on stdin
+	+[test] gui doesn't show lookahead mode change ( _/ \_ and whitespace) when toggling using / key or --listen and display(cycleclip) on stdin
 	-  Display(cycleclip) [or line_refraction] while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 
 - replace settings with lihata (conf_*)
