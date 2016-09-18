@@ -355,16 +355,16 @@ static void set_epin_cb(void *ctx, PCBType *pcb, ElementType *element, PinType *
 	}
 
 	if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
-	    ChangeObject2ndSize(PCB_TYPE_PIN, pin, pin, NULL, st->c, st->c_absolute, pcb_false)) DONE;
+	    ChangeObject1stSize(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    ChangeObjectClearSize(PCB_TYPE_PIN, pin, pin, NULL, st->c, st->c_absolute)) DONE;
+	    ChangeObjectClearSize(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "mask") == 0) &&
-	    ChangeObjectMaskSize(PCB_TYPE_PIN, pin, pin, NULL, st->c, st->c_absolute)) DONE;
+	    ChangeObjectMaskSize(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "hole") == 0) &&
-	    ChangeObject1stSize(PCB_TYPE_PIN, pin, pin, NULL, st->c, st->c_absolute)) DONE;
+	    ChangeObject2ndSize(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute, pcb_false)) DONE;
 }
 
 static void set_epad_cb(void *ctx, PCBType *pcb, ElementType *element, PadType *pad)
@@ -396,7 +396,7 @@ static void set_via_cb(void *ctx, PCBType *pcb, PinType *via)
 	}
 
 	if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
-	    ChangeObject2ndSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute, pcb_false)) DONE;
+	    ChangeObject1stSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
 	    ChangeObjectClearSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
@@ -405,7 +405,7 @@ static void set_via_cb(void *ctx, PCBType *pcb, PinType *via)
 	    ChangeObjectMaskSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "hole") == 0) &&
-	    ChangeObject1stSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
+	    ChangeObject2ndSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute, pcb_false)) DONE;
 }
 
 /* use the callback if trc is true or prop matches a prefix or we are setting attributes, else NULL */
