@@ -100,11 +100,63 @@ static void do_remove_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	printf("Remove!\n");
 }
 
+static int keyval_input(char **key, char **val)
+{
+	GtkWidget *dialog;
+	GtkWidget *content_area;
+	GtkWidget *vbox, *label, *kentry, *ventry;
+	gboolean response;
+	GHidPort *out = &ghid_port;
+
+	dialog = gtk_dialog_new_with_buttons("New attribute",
+																			 GTK_WINDOW(out->top_window),
+																			 GTK_DIALOG_MODAL,
+																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+
+	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
+	vbox = gtk_vbox_new(FALSE, 4);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
+
+	label = gtk_label_new("");
+	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_label_set_markup(GTK_LABEL(label), "Attribute key:");
+
+	kentry = gtk_entry_new();
+	gtk_entry_set_activates_default(GTK_ENTRY(kentry), TRUE);
+	gtk_box_pack_start(GTK_BOX(vbox), kentry, TRUE, TRUE, 0);
+
+	label = gtk_label_new("");
+	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_label_set_markup(GTK_LABEL(label), "Attribute value:");
+
+	ventry = gtk_entry_new();
+	gtk_entry_set_activates_default(GTK_ENTRY(ventry), TRUE);
+	gtk_box_pack_start(GTK_BOX(vbox), ventry, TRUE, TRUE, 0);
+
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+	gtk_container_add(GTK_CONTAINER(content_area), vbox);
+	gtk_widget_show_all(dialog);
+
+	response = gtk_dialog_run(GTK_DIALOG(dialog));
+	if (response == GTK_RESPONSE_OK) {
+		*key = gtk_editable_get_chars(GTK_EDITABLE(kentry), 0, -1);
+		*val = gtk_editable_get_chars(GTK_EDITABLE(ventry), 0, -1);
+		gtk_widget_destroy(dialog);
+		return 1;
+	}
+
+	gtk_widget_destroy(dialog);
+	return 0;
+}
+
+
 static void do_addattr_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 {
-	char *name;
-	name = ghid_prompt_for("Name of the new attribute:", NULL);
-	if (name != NULL) {
+	char *name, *value;
+
+	if (keyval_input(&name, &value)) {
 		char *path;
 		if ((name[0] == 'a') && (name[1] == '/')) {
 			path = name;
@@ -117,10 +169,10 @@ static void do_addattr_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 			path[1] = '/';
 			strcpy(path+2, name);
 		}
-		ghidgui->propedit_query(ghidgui->propedit_pe, "vset", path, "", 0);
+		ghidgui->propedit_query(ghidgui->propedit_pe, "vset", path, value, 0);
 		free(path);
+		free(name);
 	}
-	free(name);
 }
 
 static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
