@@ -1973,15 +1973,23 @@ HID ghid_hid;
 
 static void ghid_conf_regs()
 {
-	static conf_hid_callbacks_t cbs;
+	static conf_hid_callbacks_t cbs_refraction;
+	static conf_hid_callbacks_t cbs_direction;
 	conf_native_t *n;
+	conf_native_t *m;
 
-	memset(&cbs, 0, sizeof(cbs));
+	memset(&cbs_refraction, 0, sizeof(cbs_refraction));
+	memset(&cbs_direction, 0, sizeof(cbs_direction));
 
+        m = conf_get_field("editor/all_direction_lines");
 	n = conf_get_field("editor/line_refraction");
+	if (m != NULL) {
+		cbs_direction.val_change_post = ghid_confchg_all_direction_lines;
+		conf_hid_set_cb(m, ghid_conf_id, &cbs_direction);
+	}
 	if (n != NULL) {
-		cbs.val_change_post = ghid_confchg_line_refraction;
-		conf_hid_set_cb(n, ghid_conf_id, &cbs);
+		cbs_refraction.val_change_post = ghid_confchg_line_refraction;
+		conf_hid_set_cb(n, ghid_conf_id, &cbs_refraction);
 	}
 }
 

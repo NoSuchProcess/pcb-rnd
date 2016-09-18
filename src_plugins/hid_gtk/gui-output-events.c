@@ -522,3 +522,14 @@ void ghid_confchg_line_refraction(conf_native_t *cfg)
 	pcb_trace("line_refraction change!\n");
 	ghid_set_status_line_label();
 }
+
+void ghid_confchg_all_direction_lines(conf_native_t *cfg)
+{
+	/* test if PCB struct doesn't exist at startup */
+	if (!PCB){
+		pcb_trace("no PCB struct yet?\n");
+		return 0;
+	}
+	pcb_trace("all direction lines change!\n");
+	ghid_set_status_line_label();
+}
