@@ -325,8 +325,13 @@ static gint sort_name_cmp(GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, g
 		ret = -1;
 	else if (name2 == NULL)
 		ret = 1;
+	else if ((*name1 == 'a') && (*name2 == 'p')) /* force attributes to the bottom */
+		return 1;
+	else if ((*name1 == 'p') && (*name2 == 'a'))
+		return -1;
 	else
 		ret = strcmp(name1, name2);
+
 
 	g_free(name1);
 	g_free(name2);
