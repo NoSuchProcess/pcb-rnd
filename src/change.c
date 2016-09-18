@@ -990,19 +990,13 @@ static void *ChangeArcRadius(LayerTypePtr Layer, ArcTypePtr Arc)
 	}
 
 	value = (Absolute) ? Absolute : (*dst) + Delta;
-#warning TODO: check arc radius bounds?
-/*	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));*/
+	value = MIN(MAX_ARCSIZE, MAX(value, MIN_ARCSIZE));
 	if (value != *dst) {
-#warning TODO:
-/*		AddObjectToRadiusUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);*/
+		AddObjectToChangeRadiiUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
 		EraseArc(Arc);
 		r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		*dst = value;
-/*		if (*dst == 0) {
-			CLEAR_FLAG(PCB_FLAG_CLEARLINE, Arc);
-			*dst = PCB_MIL_TO_COORD(10);
-		}*/
 		SetArcBoundingBox(Arc);
 		r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
@@ -1010,7 +1004,6 @@ static void *ChangeArcRadius(LayerTypePtr Layer, ArcTypePtr Arc)
 		return (Arc);
 	}
 	return (NULL);
-
 }
 
 /* ---------------------------------------------------------------------------
@@ -1019,7 +1012,41 @@ static void *ChangeArcRadius(LayerTypePtr Layer, ArcTypePtr Arc)
  */
 static void *ChangeArcAngle(LayerTypePtr Layer, ArcTypePtr Arc)
 {
+	Angle value, *dst;
+	void *a0, *a1;
 
+	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
+		return (NULL);
+
+	switch(is_primary) {
+		case 0: dst = &Arc->StartAngle; break;
+		case 1: dst = &Arc->Delta; break;
+		case 2:
+			is_primary = 0; a0 = ChangeArcAngle(Layer, Arc);
+			is_primary = 1; a1 = ChangeArcAngle(Layer, Arc);
+			if ((a0 != NULL) || (a1 != NULL))
+				return Arc;
+			return NULL;
+	}
+
+	value = (Absolute) ? Absolute : (*dst) + Delta;
+	value = fmod(value, 360.0);
+	if (value < 0)
+		value += 360;
+
+	if (value != *dst) {
+		AddObjectToChangeAnglesUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
+		EraseArc(Arc);
+		r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
+		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
+		*dst = value;
+		SetArcBoundingBox(Arc);
+		r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
+		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
+		DrawArc(Layer, Arc);
+		return (Arc);
+	}
+	return (NULL);
 }
 
 

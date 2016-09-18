@@ -50,6 +50,8 @@
 					/* code for more changes, a *lot* more changes */
 #define	MIN_LINESIZE		PCB_MIL_TO_COORD(0.01)	/* thickness of lines */
 #define	MAX_LINESIZE		LARGE_VALUE
+#define MIN_ARCSIZE		PCB_MIL_TO_COORD(0.01)
+#define MAX_ARCSIZE		LARGE_VALUE
 #define	MIN_TEXTSCALE		10	/* scaling of text objects in percent */
 #define	MAX_TEXTSCALE		10000
 #define	MIN_PINORVIASIZE	PCB_MIL_TO_COORD(20)	/* size of a pin or via */
