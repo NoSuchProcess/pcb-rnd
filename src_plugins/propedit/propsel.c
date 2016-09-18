@@ -24,8 +24,10 @@
 #include "props.h"
 #include "propsel.h"
 #include "change.h"
+#include "misc.h"
 #include "misc_util.h"
 #include "undo.h"
+#include "rotate.h"
 
 /*********** map ***********/
 typedef struct {
@@ -193,7 +195,7 @@ typedef struct set_ctx_s {
 	int set_cnt;
 } set_ctx_t;
 
-static void set_attr(set_ctx_t *st, const AttributeListType *list)
+static void set_attr(set_ctx_t *st, AttributeListType *list)
 {
 	const char *key = st->name+2;
 	const char *orig = AttributeGetFromList(list, key);
@@ -277,10 +279,19 @@ static void set_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *tex
 	if (st->d_valid && (strcmp(pn, "scale") == 0) &&
 	    ChangeObjectSize(PCB_TYPE_TEXT, layer, text, NULL, PCB_MIL_TO_COORD(st->d), st->d_absolute)) DONE;
 
-#warning TODO: 
-/*
-	set_add_prop(ctx, "p/text/rotation", int, text->Direction);
-*/
+	if (st->d_valid && (strcmp(pn, "rotation") == 0)) {
+		int delta;
+		if (st->d_absolute) {
+			delta = (st->d - text->Direction);
+			if (delta < 0)
+				delta += 4;
+			delta = (unsigned int)delta & 3;
+		}
+		else
+			delta = st->d;
+		if (RotateObject(PCB_TYPE_TEXT, layer, text, text, text->X, text->Y, delta) != NULL)
+			DONE;
+	}
 }
 
 static void set_poly_cb(void *ctx, PCBType *pcb, LayerType *layer, PolygonType *poly)
