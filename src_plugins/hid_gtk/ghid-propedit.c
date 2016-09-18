@@ -108,8 +108,8 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	GtkTreeSelection *tsel;
 	GtkTreeModel *tm;
 	GtkTreeIter iter;
-	const char *prop, *comm, *val;
-	char *tmp;
+	const char *val;
+	char *prop;
 
 	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dlg->tree));
 	if (tsel == NULL)
@@ -119,16 +119,17 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	if (iter.stamp == 0)
 		return;
 
-	gtk_tree_model_get(tm, &iter, 0, &prop, 1, &comm, -1);
+	gtk_tree_model_get(tm, &iter, 0, &prop, -1);
 
 	val = gtk_entry_get_text(GTK_ENTRY(dlg->entry_val));
 	if (ghidgui->propedit_query(ghidgui->propedit_pe, "vset", prop, val, 0) != NULL) {
 		/* could change values update the table - the new row is already added, remove the old */
-		gtk_list_store_remove(tm, &iter);
+		gtk_list_store_remove(GTK_LIST_STORE(tm), &iter);
 		gtk_tree_selection_select_iter(tsel, &dlg->last_add_iter);
 		/* get the combo box updated */
 		list_cursor_changed_cb(dlg->tree, dlg);
 	}
+	g_free(prop);
 }
 
 static GdkPixmap *pm;
@@ -149,8 +150,6 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	GtkWidget *area = gtk_drawing_area_new();
 	PCBType *old_pcb;
 	int n, zoom1;
-
-
 
 /*
 	void *v;
@@ -202,7 +201,6 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 		CreateNewText(preview_pcb.Data->Layer+0, &PCB->Font,
 							PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", MakeFlags(PCB_FLAG_CLEARLINE));
 
-
 	{
 		PolygonType *v = CreateNewPolygonFromRectangle(preview_pcb.Data->Layer,
 			PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),
@@ -222,6 +220,50 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 
 	g_signal_connect(G_OBJECT(area), "expose-event", G_CALLBACK(preview_expose_event), pm);
 	return area;
+}
+
+/*static void sort_by_name(GtkTreeModel *liststore)
+{
+	GtkTreeSortable *sortable = GTK_TREE_SORTABLE(liststore);
+	gtk_tree_sortable_set_sort_column_id(sortable, 0, GTK_SORT_ASCENDING);
+}*/
+
+static gint sort_name_cmp(GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
+{
+	gint sortcol = GPOINTER_TO_INT(userdata);
+	gint ret = 0;
+  gchar *name1, *name2;
+
+	if (sortcol != 0)
+		return 0;
+
+	gtk_tree_model_get(model, a, 0, &name1, -1);
+	gtk_tree_model_get(model, b, 0, &name2, -1);
+
+	if ((name1 == NULL) && (name2 == NULL))
+		return 0;
+
+	if (name1 == NULL)
+		ret = -1;
+	else if (name2 == NULL)
+		ret = 1;
+	else
+		ret = strcmp(name1, name2);
+
+	g_free(name1);
+	g_free(name2);
+
+	return ret;
+}
+
+static void make_sortable(GtkTreeModel *liststore)
+{
+	GtkTreeSortable *sortable;
+
+	sortable = GTK_TREE_SORTABLE(liststore);
+	gtk_tree_sortable_set_sort_func(sortable, 0, sort_name_cmp, GINT_TO_POINTER(0), NULL);
+
+	gtk_tree_sortable_set_sort_column_id(sortable, 0, GTK_SORT_ASCENDING);
 }
 
 GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
@@ -261,6 +303,7 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 	for(n = 0; n < 5; n++)
 		ty[n] = G_TYPE_STRING;
 	dlg->props = gtk_list_store_newv(5, ty);
+	make_sortable(dlg->props);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(dlg->tree), GTK_TREE_MODEL(dlg->props));
 
 	hdr_add(dlg, "property", 0);
