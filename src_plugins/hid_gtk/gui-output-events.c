@@ -515,4 +515,14 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget * widget, GdkEventScroll * ev, G
 void ghid_confchg_line_refraction(conf_native_t *cfg)
 {
 	pcb_trace("line_refraction change!\n");
+        /* put a breakpoint on above line and stepped through with gdb 
+        The PCB struct isn't created the first (few?) times that
+        ghid_confchng_line_refraction() is called. Putting in a test here keeps
+        the program from segfaulting when ghid_set_status_line_label tries to
+        printf nonexistant values*/
+	if (!PCB){
+		pcb_trace("no PCB struct yet?\n");
+		return 0;
+	}
+	ghid_set_status_line_label();
 }
