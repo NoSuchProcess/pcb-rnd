@@ -20,6 +20,7 @@
  *
  */
 #include "props.h"
+#include "propsel.h"
 #include "pcb-printf.h"
 /*#define HT_INVALID_VALUE ((pcb_propval_t){PCB_PROPT_invalid, {0}})*/
 #define HT(x) htprop_ ## x
@@ -205,7 +206,7 @@ const char *propedit_query(void *pe, const char *cmd, const char *key, const cha
 	pe_ctx_t *ctx = pe;
 	const char *s;
 
-	if (memcmp(cmd, "v1st", 4) == 0) {
+	if (memcmp(cmd, "v1st", 4) == 0) { /* get the first value */
 		ctx->qprop = htsp_get(ctx->core_props, key);
 		if (ctx->qprop == NULL)
 			return NULL;
@@ -213,13 +214,19 @@ const char *propedit_query(void *pe, const char *cmd, const char *key, const cha
 		ctx->qprope = htprop_first(&ctx->qprop->values);
 		goto vnxt;
 	}
-	if (memcmp(cmd, "vnxt", 4) == 0) {
+
+	else if (memcmp(cmd, "vnxt", 4) == 0) { /* get the next value */
 		vnxt:;
 		if (ctx->qprope == NULL)
 			return NULL;
 		s = propedit_sprint_val(ctx->qprop->type, ctx->qprope->key);
 		ctx->qprope = htprop_next(&ctx->qprop->values, ctx->qprope);
 		return s;
+	}
+
+
+	else if (memcmp(cmd, "vset", 4) == 0) { /* set value */
+		pcb_propsel_set(key, val);
 	}
 
 	return NULL;
