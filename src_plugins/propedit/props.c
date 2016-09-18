@@ -21,6 +21,7 @@
  */
 #include "props.h"
 #include "propsel.h"
+#include "compat_misc.h"
 #include "pcb-printf.h"
 /*#define HT_INVALID_VALUE ((pcb_propval_t){PCB_PROPT_invalid, {0}})*/
 #define HT(x) htprop_ ## x
@@ -85,7 +86,7 @@ pcb_props_t *pcb_props_add(htsp_t *props, const char *propname, pcb_prop_type_t 
 		p = malloc(sizeof(pcb_props_t));
 		p->type = type;
 		htprop_init(&p->values, prophash[type], propkeyeq[type]);
-		htsp_set(props, (char *)propname, p);
+		htsp_set(props, pcb_strdup(propname), p);
 	}
 	else {
 		if (type != p->type)
@@ -125,6 +126,14 @@ pcb_props_t *pcb_props_stat(htsp_t *props, const char *propname, pcb_propval_t *
 	pcb_propval_t bestp, minp, maxp, avgp;
 	unsigned long best = 0, num_vals = 0;
 
+	if (most_common != NULL)
+		most_common->string = NULL;
+	if (min != NULL)
+		min->string = NULL;
+	if (max != NULL)
+		max->string = NULL;
+	if (avg != NULL)
+		avg->string = NULL;
 
 	p = htsp_get(props, propname);
 	if (p == NULL)

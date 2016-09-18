@@ -80,7 +80,7 @@ static void map_attr(void *ctx, const AttributeListType *list)
 		}
 		else
 			nm = small;
-
+		strcpy(nm+2, list->List[i].name);
 		map_add_prop(ctx, nm, String, list->List[i].value);
 	}
 	if (big != NULL)
@@ -419,10 +419,10 @@ static void set_via_cb(void *ctx, PCBType *pcb, PinType *via)
 
 /* use the callback if trc is true or prop matches a prefix or we are setting attributes, else NULL */
 #define MAYBE_PROP(trc, prefix, cb) \
-	(((trc) || (strncmp(prop, (prefix), sizeof(prefix)-1) == 0) || (prop[0] == 'a')) ? (cb) : NULL)
+	(((ctx.is_attr) || (trc) || (strncmp(prop, (prefix), sizeof(prefix)-1) == 0) || (prop[0] == 'a')) ? (cb) : NULL)
 
 #define MAYBE_ATTR(cb) \
-	((prop[0] == 'a') ? (cb) : NULL)
+	((ctx.is_attr) ? (cb) : NULL)
 
 int pcb_propsel_set(const char *prop, const char *value)
 {
