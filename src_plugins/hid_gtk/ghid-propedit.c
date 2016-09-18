@@ -123,7 +123,10 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	gtk_tree_model_get(tm, &iter, 0, &prop, 1, &comm, -1);
 
 	val = gtk_entry_get_text(GTK_ENTRY(dlg->entry_val));
-	ghidgui->propedit_query(ghidgui->propedit_pe, "vset", prop, val, 0);
+	if (ghidgui->propedit_query(ghidgui->propedit_pe, "vset", prop, val, 0) != NULL) {
+		/* could change values update the table - the new row is already added, remove the old */
+		gtk_list_store_remove(tm, &iter);
+	}
 }
 
 static GdkPixmap *pm;
