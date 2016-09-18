@@ -2078,7 +2078,7 @@ pcb_bool ChangeSelectedSquare(int types)
 }
 
 /* ----------------------------------------------------------------------
- * changes the size of all selected and visible object types
+ * changes the angle of all selected and visible object types
  * returns pcb_true if anything has changed
  */
 pcb_bool ChangeSelectedAngle(int types, int is_start, Angle Difference, pcb_bool fixIt)
@@ -2091,6 +2091,27 @@ pcb_bool ChangeSelectedAngle(int types, int is_start, Angle Difference, pcb_bool
 	is_primary = is_start;
 
 	change = SelectedOperation(&ChangeAngleFunctions, pcb_false, types);
+	if (change) {
+		Draw();
+		IncrementUndoSerialNumber();
+	}
+	return (change);
+}
+
+/* ----------------------------------------------------------------------
+ * changes the radius of all selected and visible object types
+ * returns pcb_true if anything has changed
+ */
+pcb_bool ChangeSelectedRadius(int types, int is_start, Angle Difference, pcb_bool fixIt)
+{
+	pcb_bool change = pcb_false;
+
+	/* setup identifiers */
+	Absolute = (fixIt) ? Difference : 0;
+	Delta = Difference;
+	is_primary = is_start;
+
+	change = SelectedOperation(&ChangeRadiusFunctions, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();

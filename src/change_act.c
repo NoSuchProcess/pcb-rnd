@@ -1374,9 +1374,9 @@ static int ActionSetValue(int argc, const char **argv, Coord x, Coord y)
 /* --------------------------------------------------------------------------- */
 
 static const char changeangle_syntax[] =
-	"ChangeAngle(Object, start|delta|both, delta|style)\n"
-	"ChangeAngle(SelectedObjects|Selected, start|delta|both, delta|style)\n"
-	"ChangeAngle(SelectedArcs, start|delta|both, delta|style)\n";
+	"ChangeAngle(Object, start|delta|both, delta)\n"
+	"ChangeAngle(SelectedObjects|Selected, start|delta|both, delta)\n"
+	"ChangeAngle(SelectedArcs, start|delta|both, delta)\n";
 static const char changeangle_help[] = "Changes the start angle, delta angle or both angles of an arc.";
 static int ActionChangeAngle(int argc, const char **argv, Coord x, Coord y)
 {
@@ -1402,8 +1402,7 @@ static int ActionChangeAngle(int argc, const char **argv, Coord x, Coord y)
 		if (funcid == F_Object)
 			type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 
-/*		value = GetValue(delta, units, &absolute, NULL);*/
-		{
+		{ /* convert angle from string */
 			char *end;
 			while(isspace(*delta)) delta++;
 			value = strtod(delta, &end);
@@ -1443,6 +1442,69 @@ static int ActionChangeAngle(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
+/* --------------------------------------------------------------------------- */
+
+static const char changeradius_syntax[] =
+	"ChangeRadius(Object, width|x|height|y|both, delta)\n"
+	"ChangeRadius(SelectedObjects|Selected, width|x|height|y|both, delta)\n"
+	"ChangeRadius(SelectedArcs, width|x|height|y|both, delta)\n";
+static const char changeradius_help[] = "Changes the width or height (radius) of an arc.";
+static int ActionChangeRadius(int argc, const char **argv, Coord x, Coord y)
+{
+	const char *function = ACTION_ARG(0);
+	const char *prim  = ACTION_ARG(1);
+	const char *delta = ACTION_ARG(2);
+	const char *units = ACTION_ARG(3);
+	pcb_bool absolute;								/* indicates if absolute size is given */
+	double value;
+	int type = PCB_TYPE_NONE, which;
+	void *ptr1, *ptr2, *ptr3;
+
+	if ((strcasecmp(prim, "width") == 0) || (strcasecmp(prim, "x") == 0)) which = 0;
+	else if ((strcasecmp(prim, "height") == 0) || (strcasecmp(prim, "y") == 0)) which = 1;
+	else if (strcasecmp(prim, "both") == 0) which = 2;
+	else {
+		Message(PCB_MSG_ERROR, "Second argument of ChangeRadius must be width, x, height, y or both\n");
+		return -1;
+	}
+
+	if (function && delta) {
+		int funcid = funchash_get(function, NULL);
+
+		if (funcid == F_Object)
+			type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+
+		value = GetValue(delta, units, &absolute, NULL);
+
+		switch (funcid) {
+		case F_Object:
+			{
+				if (type != PCB_TYPE_NONE) {
+					if (TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2))
+						Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+					else {
+						if (ChangeObjectRadius(type, ptr1, ptr2, ptr3, which, value, absolute))
+							SetChangedFlag(pcb_true);
+					}
+				}
+				break;
+			}
+
+		case F_SelectedArcs:
+			if (ChangeSelectedRadius(PCB_TYPE_ARC, which, value, absolute))
+				SetChangedFlag(pcb_true);
+			break;
+
+		case F_Selected:
+		case F_SelectedObjects:
+			if (ChangeSelectedRadius(CHANGESIZE_TYPES, which, value, absolute))
+				SetChangedFlag(pcb_true);
+			break;
+		}
+	}
+	return 0;
+}
+
 
 /* --------------------------------------------------------------------------- */
 
@@ -1470,6 +1532,9 @@ HID_Action change_action_list[] = {
 	,
 	{"ChangePinName", 0, ActionChangePinName,
 	 changepinname_help, changepinname_syntax}
+	,
+	{"ChangeRadius", 0, ActionChangeRadius,
+	 changeradius_help, changeradius_syntax}
 	,
 	{"ChangeSize", 0, ActionChangeSize,
 	 changesize_help, changesize_syntax}
