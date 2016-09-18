@@ -106,7 +106,24 @@ static void do_addattr_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 
 static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 {
-	printf("Apply!\n");
+	GtkTreeSelection *tsel;
+	GtkTreeModel *tm;
+	GtkTreeIter iter;
+	const char *prop, *comm, *val;
+	char *tmp;
+
+	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dlg->tree));
+	if (tsel == NULL)
+		return;
+
+	gtk_tree_selection_get_selected(tsel, &tm, &iter);
+	if (iter.stamp == 0)
+		return;
+
+	gtk_tree_model_get(tm, &iter, 0, &prop, 1, &comm, -1);
+
+	val = gtk_entry_get_text(GTK_ENTRY(dlg->entry_val));
+	ghidgui->propedit_query(ghidgui->propedit_pe, "vset", prop, val, 0);
 }
 
 static GdkPixmap *pm;
