@@ -362,7 +362,7 @@ void ghid_get_pointer(int *x, int *y)
 void ghid_set_status_line_label(void)
 {
 	const gchar *flag = conf_core.editor.all_direction_lines
-	    ? "all" : (conf_core.editor.line_refraction == 0 ? "45" : (conf_core.editor.line_refraction == 1 ? "45_/" : "45\\_"));
+	    ? "*" : (conf_core.editor.line_refraction == 0 ? "X" : (conf_core.editor.line_refraction == 1 ? "_/" : "\\_"));
 	    char *text = pcb_strdup_printf(_("%m+<b>view</b>=%s  "
 	        "<b>grid</b>=%$mS  "
 	        "%s%s  "
