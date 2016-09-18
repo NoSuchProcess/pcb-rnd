@@ -26,6 +26,7 @@
 #include "change.h"
 #include "misc.h"
 #include "misc_util.h"
+#include "compat_misc.h"
 #include "undo.h"
 #include "rotate.h"
 
@@ -111,6 +112,7 @@ static void map_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *tex
 	map_chk_skip(ctx, text);
 	map_add_prop(ctx, "p/text/scale", int, text->Scale);
 	map_add_prop(ctx, "p/text/rotation", int, text->Direction);
+	map_add_prop(ctx, "p/text/string", String, text->TextString);
 	map_attr(ctx, &text->Attributes);
 }
 
@@ -268,6 +270,7 @@ static void set_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *tex
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 7;
+	char *old;
 
 	set_chk_skip(st, text);
 
@@ -278,6 +281,12 @@ static void set_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *tex
 
 	if (st->d_valid && (strcmp(pn, "scale") == 0) &&
 	    ChangeObjectSize(PCB_TYPE_TEXT, layer, text, NULL, PCB_MIL_TO_COORD(st->d), st->d_absolute)) DONE;
+
+	if ((strcmp(pn, "string") == 0) &&
+	    (old = ChangeObjectName(PCB_TYPE_TEXT, layer, text, NULL, pcb_strdup(st->value)))) {
+		free(old);
+		DONE;
+	}
 
 	if (st->d_valid && (strcmp(pn, "rotation") == 0)) {
 		int delta;
