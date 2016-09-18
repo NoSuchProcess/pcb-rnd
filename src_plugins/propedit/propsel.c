@@ -195,6 +195,14 @@ typedef struct set_ctx_s {
 
 static void set_attr(set_ctx_t *st, const AttributeListType *list)
 {
+	const char *key = st->name+2;
+	const char *orig = AttributeGetFromList(list, key);
+
+	if ((orig != NULL) && (strcmp(orig, st->value) == 0))
+		return;
+
+	AttributePutToList(list, key, st->value, 1);
+	st->set_cnt++;
 }
 
 #define set_chk_skip(ctx, obj) \
