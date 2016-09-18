@@ -185,7 +185,7 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 		++i;
 
 	if (printf_spec[i] == '.') {
-		if ((printf_spec[i+1] == '0') && (isdigit(printf_spec[i+2] == '0')))
+		if ((printf_spec[i+1] == '0') && (isdigit(printf_spec[i+2])))
 			trunc0 = 1;
 		sprintf(printf_spec_new, ", %sf", printf_spec);
 	}
