@@ -4,6 +4,7 @@
 #include "gui.h"
 #include "create.h"
 #include "compat_misc.h"
+#include "polygon.h"
 
 static char *str_sub(const char *val, char sepi, char sepo)
 {
@@ -180,8 +181,7 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	GtkTreeSelection *tsel;
 	GtkTreeModel *tm;
 	GtkTreeIter iter;
-	const char *val;
-	char *prop;
+	char *prop, *val;
 
 	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dlg->tree));
 	if (tsel == NULL)
@@ -383,7 +383,7 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 	for(n = 0; n < 5; n++)
 		ty[n] = G_TYPE_STRING;
 	dlg->props = gtk_list_store_newv(5, ty);
-	make_sortable(dlg->props);
+	make_sortable((GtkTreeModel *)dlg->props);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(dlg->tree), GTK_TREE_MODEL(dlg->props));
 
 	hdr_add(dlg, "property", 0);
