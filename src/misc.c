@@ -1098,17 +1098,19 @@ int AttributePutToList(AttributeListType * list, const char *name, const char *v
 	return 0;
 }
 
-void AttributeRemoveFromList(AttributeListType * list, const char *name)
+int AttributeRemoveFromList(AttributeListType * list, const char *name)
 {
-	int i, j;
+	int i, j, found = 0;
 	for (i = 0; i < list->Number; i++)
 		if (strcmp(name, list->List[i].name) == 0) {
 			free(list->List[i].name);
 			free(list->List[i].value);
+			found++;
 			for (j = i; j < list->Number - i; j++)
 				list->List[j] = list->List[j + 1];
 			list->Number--;
 		}
+	return found;
 }
 
 void r_delete_element(DataType * data, ElementType * element)
