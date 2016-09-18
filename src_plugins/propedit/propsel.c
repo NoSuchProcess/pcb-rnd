@@ -467,3 +467,100 @@ int pcb_propsel_set(const char *prop, const char *value)
 	IncrementUndoSerialNumber();
 	return ctx.set_cnt;
 }
+
+#undef MAYBE_PROP
+#undef MAYBE_ATTR
+
+/*******************/
+
+typedef struct del_ctx_s {
+	const char *key;
+	int del_cnt;
+} del_ctx_t;
+
+static void del_attr(void *ctx, AttributeListType *list)
+{
+	del_ctx_t *st = (del_ctx_t *)ctx;
+	if (AttributeRemoveFromList(list, st->key+2))
+		st->del_cnt++;
+}
+
+static void del_line_cb(void *ctx, PCBType *pcb, LayerType *layer, LineType *line)
+{
+	map_chk_skip(ctx, line);
+	del_attr(ctx, &line->Attributes);
+}
+
+static void del_arc_cb(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc)
+{
+	map_chk_skip(ctx, arc);
+	del_attr(ctx, &arc->Attributes);
+}
+
+static void del_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *text)
+{
+	map_chk_skip(ctx, text);
+	del_attr(ctx, &text->Attributes);
+}
+
+static void del_poly_cb(void *ctx, PCBType *pcb, LayerType *layer, PolygonType *poly)
+{
+	map_chk_skip(ctx, poly);
+	del_attr(ctx, &poly->Attributes);
+}
+
+static void del_eline_cb(void *ctx, PCBType *pcb, ElementType *element, LineType *line)
+{
+	map_chk_skip(ctx, line);
+	del_attr(ctx, &line->Attributes);
+}
+
+static void del_earc_cb(void *ctx, PCBType *pcb, ElementType *element, ArcType *arc)
+{
+	map_chk_skip(ctx, arc);
+	del_attr(ctx, &arc->Attributes);
+}
+
+static void del_etext_cb(void *ctx, PCBType *pcb, ElementType *element, TextType *text)
+{
+	map_chk_skip(ctx, text);
+	del_attr(ctx, &text->Attributes);
+}
+
+static void del_epin_cb(void *ctx, PCBType *pcb, ElementType *element, PinType *pin)
+{
+	map_chk_skip(ctx, pin);
+	del_attr(ctx, &pin->Attributes);
+}
+
+static void del_epad_cb(void *ctx, PCBType *pcb, ElementType *element, PadType *pad)
+{
+	map_chk_skip(ctx, pad);
+	del_attr(ctx, &pad->Attributes);
+}
+
+static void del_via_cb(void *ctx, PCBType *pcb, PinType *via)
+{
+	map_chk_skip(ctx, via);
+	del_attr(ctx, &via->Attributes);
+}
+
+int pcb_propsel_del(const char *key)
+{
+	del_ctx_t st;
+
+	if ((key[0] != 'a') || (key[1] != '/')) /* do not attempt to remove anything but attributes */
+		return 0;
+
+	st.key = key;
+	st.del_cnt = 0;
+
+	pcb_loop_all(&st,
+		NULL, del_line_cb, del_arc_cb, del_text_cb, del_poly_cb,
+		NULL, del_eline_cb, del_earc_cb, del_etext_cb, del_epin_cb, del_epad_cb,
+		del_via_cb
+	);
+	return st.del_cnt;
+}
+
+
