@@ -1029,7 +1029,7 @@ static void *ChangeArcAngle(LayerTypePtr Layer, ArcTypePtr Arc)
 			return NULL;
 	}
 
-	value = (Absolute) ? Absolute : (*dst) + Delta;
+	value = (AAbsolute) ? AAbsolute : (*dst) + ADelta;
 	value = fmod(value, 360.0);
 	if (value < 0)
 		value += 360;
@@ -2086,8 +2086,8 @@ pcb_bool ChangeSelectedAngle(int types, int is_start, Angle Difference, pcb_bool
 	pcb_bool change = pcb_false;
 
 	/* setup identifiers */
-	Absolute = (fixIt) ? Difference : 0;
-	Delta = Difference;
+	AAbsolute = (fixIt) ? Difference : 0;
+	ADelta = Difference;
 	is_primary = is_start;
 
 	change = SelectedOperation(&ChangeAngleFunctions, pcb_false, types);
