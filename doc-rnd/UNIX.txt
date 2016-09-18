@@ -16,7 +16,7 @@ Requirements:
 
    This will take a while and will modify a lot of .c files.
 
-2. ./configre
+2. ./configure
 
 3. make
 
