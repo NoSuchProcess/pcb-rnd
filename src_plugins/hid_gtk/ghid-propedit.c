@@ -394,7 +394,7 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 
 /***** LEFT *****/
 
-	label = gtk_label_new("Properies");
+	label = gtk_label_new("Properties");
 	gtk_box_pack_start(GTK_BOX(vbox_tree), label, FALSE, FALSE, 4);
 
 	dlg->tree = gtk_tree_view_new();
