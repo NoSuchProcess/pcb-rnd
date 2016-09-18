@@ -53,7 +53,6 @@
 		- route style vs. autorouter
 
 CLEANUP #5
-- scconfig: check if it picks up settings from env vars (for a gentoo build)
 - Erich's select undo bug: place an element, select, save & load, unselect, undo 2 times: bad serial
 - Erich's gtk lag report: press 's' a lot then move the mouse - 's' ends up in the new loc!
 - conf: throw an error if user config can not be written
@@ -129,6 +128,7 @@ FEATURES
 - dynstyle: remove existing style (gtk hid, maybe key 'del'?)
 
 Low prio:
+- scconfig: check if it picks up settings from env vars (for a gentoo build)
 - replace mkdtemp() with something safer
 - display net names on pins, vias (and maybe tracks?) when zoomed in enough
 - DRC should warn for thin poly hair
