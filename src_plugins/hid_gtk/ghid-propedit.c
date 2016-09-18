@@ -48,8 +48,7 @@ static void val_combo_add(ghid_propedit_dialog_t *dlg, const char *val)
 
 void ghid_propedit_prop_add(ghid_propedit_dialog_t *dlg, const char *name, const char *common, const char *min, const char *max, const char *avg)
 {
-	GtkTreeIter i;
-	gtk_list_store_insert_with_values(dlg->props, &i, -1,  0,name,  1,common,  2,min,  3,max,  4,avg,  -1);
+	gtk_list_store_insert_with_values(dlg->props, &dlg->last_add_iter, -1,  0,name,  1,common,  2,min,  3,max,  4,avg,  -1);
 }
 
 static void hdr_add(ghid_propedit_dialog_t *dlg, const char *name, int col)
@@ -126,6 +125,9 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	if (ghidgui->propedit_query(ghidgui->propedit_pe, "vset", prop, val, 0) != NULL) {
 		/* could change values update the table - the new row is already added, remove the old */
 		gtk_list_store_remove(tm, &iter);
+		gtk_tree_selection_select_iter(tsel, &dlg->last_add_iter);
+		/* get the combo box updated */
+		list_cursor_changed_cb(dlg->tree, dlg);
 	}
 }
 
