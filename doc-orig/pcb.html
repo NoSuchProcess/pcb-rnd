@@ -63,10 +63,9 @@ layouts.
 <li><a accesskey="3" href="#Overview">Overview</a>:                An overview of <code>pcb-rnd</code>. 
 <li><a accesskey="4" href="#Intro">Intro</a>:                   A short description of the basic objects. 
 <li><a accesskey="5" href="#Getting-Started">Getting Started</a>:         Introduction to <code>pcb-rnd</code>. 
-<li><a accesskey="6" href="#Autorouter">Autorouter</a>:              Using the autorouter. 
-<li><a accesskey="7" href="#User-Commands">User Commands</a>:           User commands of <code>pcb-rnd</code>. 
-<li><a accesskey="8" href="#Command_002dLine-Options">Command-Line Options</a>:    Calling <code>pcb-rnd</code> from a shell. 
-<li><a accesskey="9" href="#X11-Interface">X11 Interface</a>:           Action routines, resources and default translation. 
+<li><a accesskey="6" href="#User-Commands">User Commands</a>:           User commands of <code>pcb-rnd</code>. 
+<li><a accesskey="7" href="#Command_002dLine-Options">Command-Line Options</a>:    Calling <code>pcb-rnd</code> from a shell. 
+<li><a accesskey="8" href="#X11-Interface">X11 Interface</a>:           Action routines, resources and default translation. 
 <li><a href="#File-Formats">File Formats</a>:            Description of <code>ASCII</code> files used by <code>pcb-rnd</code>. 
 <li><a href="#Library-Creation">Library Creation</a>:        Detailed description of symbol library creation. 
 <li><a href="#Schematic-Frontends">Schematic Frontends</a>:     Schematic capture programs that work with PCB. 
@@ -673,7 +672,7 @@ necessarily show the shortest paths until you optimize them again.
 <div class="node">
 <a name="Getting-Started"></a>
 <p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#Autorouter">Autorouter</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#User-Commands">User Commands</a>,
 Previous:&nbsp;<a rel="previous" accesskey="p" href="#Intro">Intro</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
@@ -2484,102 +2483,17 @@ with vendor drill mapping.
 expressions.  See <a href="#Regular-Expressions">Regular Expressions</a> for an introduction to
 regular expressions.
 
-<!--  Autorouter Chapter - -->
-<div class="node">
-<a name="Autorouter"></a>
-<p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#User-Commands">User Commands</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Getting-Started">Getting Started</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
-
-</div>
-
-<h2 class="chapter">4 Autorouter</h2>
-
-<p><a name="index-autorouter-178"></a>
-<code>pcb-rnd</code> includes an autorouter which can greatly speed up the
-layout of a circuit board.  The autorouter is a rectangle-expansion
-type of autorouter based on
-&ldquo;A Method for Gridless Routing of Printed Circuit Boards&rdquo; by
-A. C. Finch, K. J. Mackenzie, G. J. Balsdon, and G. Symonds in the
-1985 Proceedings of the 22nd ACM/IEEE Design Automation Conference. 
-This reference is available from the ACM Digital Library at
-<a href="http://www.acm.org/dl">http://www.acm.org/dl</a> for those with institutional or personal
-access to it.  It's also available from your local engineering
-library.  The reference paper is not needed for using the autorouter.
-
-   <p>Before using the autorouter, all elements need to be loaded into the
-layout and placed and the connectivity netlist must be loaded.  Once
-the elements have been placed and the netlist loaded, the following
-steps will autoroute your design.
-
-     <ol type=1 start=1>
-<li>Turn off visibility of any layers that you don't want the router
-to use.
-
-     <li>Turn of via visibility if you don't want the router to use any
-new vias.
-
-     <li>Use only plain rectangles for power/ground planes that you want
-   the router to use [use the rectangle tool!]
-
-     <li>Make at least one connection from any plane you want the router to
-   use to the net you want it to connect to.
-
-     <li>Draw continuous lines (on all routing layers) to outline keep-out
-   zones if desired.
-
-     <li>Use routing styles in the netlist to have per-net routing styles. 
-  Note that the routing style will be used for an entire net.  This means
-  if you have a wide metal setting for a power net you will need to manually
-  route breakouts from any fine pitch parts on their power pins because
-  the router will not be able to change to a narrow trace to connect
-  to the part.
-
-     <li>Set the current routing style to whatever you'd like the router to
-   use for any nets not having a defined route style in the netlist.
-
-     <li>Disable any nets that you don't want the autorouter to route
-   (double-click them in the  netlist window to add/remove the *)
-
-     <p>NOTE: If you will be manually routing these later not using
-   planes, it is usually better to let the autorouter route them then rip
-   them up yourself afterwards. If you plan to use a ground/power plane
-   manually, consider making it from one or more pure rectangles and
-   letting the autorouter have a go at it.
-
-     <li>Create a fresh rat's nest. ('E' the 'W')
-
-     <li>Select &ldquo;show autorouter trials&rdquo; in the settings menu if you want
-   to watch what's happening
-
-     <li>Choose &ldquo;autoroute all rats&rdquo; in the connection menu.
-
-     <li>If you really want to muck with the router because you have a
-   special design, e.g. all through-hole components you can mess with
-   layer directional costs by editing the autoroute.c source file and
-   changing the directional costs in lines 929-940. and try again. Even
-   more mucking about with costs is possible in lines 4540-4569, but it's
-   probably not such a good idea unless you really just want to
-   experiment.
-
-        </ol>
-
-   <p>After the design has been autorouted, you may want to run the trace
-optimizer.  See section <a href="#Trace-Optimizer">Trace Optimizer</a> for more information on
-the trace optimizer.
-
 <!--  User Commands chapter - -->
 <div class="node">
 <a name="User-Commands"></a>
 <p><hr>
 Next:&nbsp;<a rel="next" accesskey="n" href="#Command_002dLine-Options">Command-Line Options</a>,
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#Autorouter">Autorouter</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Getting-Started">Getting Started</a>,
 Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 </div>
 
-<h2 class="chapter">5 User Commands</h2>
+<h2 class="chapter">4 User Commands</h2>
 
 <p><a name="index-user-commands-179"></a><a name="index-entering-user-commands-180"></a>The entering of user-commands is initiated by the action routine
 <em>Command()</em> (normally bound to the <code>(":")</code> character) which
@@ -2676,7 +2590,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 </div>
 
-<h2 class="chapter">6 Command-Line Options</h2>
+<h2 class="chapter">5 Command-Line Options</h2>
 
 <p><a name="index-starting-_0040pcb_007b_007d-207"></a><a name="index-command_002dline-options-208"></a>
 The synopsis of the pcb command is:
@@ -3611,7 +3525,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 </div>
 
-<h2 class="chapter">7 X11 Interface</h2>
+<h2 class="chapter">6 X11 Interface</h2>
 
 <p><a name="index-X11-368"></a>
 This chapter gives an overview about the additional <code>X11</code> resources which
@@ -4478,7 +4392,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 </div>
 
-<h2 class="chapter">8 File Formats</h2>
+<h2 class="chapter">7 File Formats</h2>
 
 <p><a name="index-file-formats-787"></a><a name="index-ASCII-files_002c-format-of-788"></a>
 All files used by <code>pcb-rnd</code> are read from the standard output of a command
@@ -5812,7 +5726,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 </div>
 
-<h2 class="chapter">9 Library Creation</h2>
+<h2 class="chapter">8 Library Creation</h2>
 
 <p><a name="index-library-creation-816"></a>
 This chapter provides a detailed look at how footprint libraries are
@@ -6228,7 +6142,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 
 </div>
 
-<h2 class="chapter">10 Schematic Capture for PCB</h2>
+<h2 class="chapter">9 Schematic Capture for PCB</h2>
 
 <p><a name="index-schematic-capture-817"></a><a name="index-schematic-frontend-818"></a>
 When designing a circuit board of any complexity, a schematic capture
