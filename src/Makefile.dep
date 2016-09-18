@@ -1614,8 +1614,9 @@
  global_element.h list_element.h ht_element.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/genht/ht.c
+ ../src_3rd/liblihata/genht/ht.h ../src_plugins/propedit/propsel.h \
+ pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/liblihata/genht/ht.c
 ../src_plugins/propedit/propsel.o: ../src_plugins/propedit/propsel.c \
  data.h global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h \
@@ -1629,7 +1630,8 @@
  ../src_3rd/liblihata/genht/hash.h ../src_plugins/propedit/props.h \
  global.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_plugins/propedit/propsel.h \
- change.h misc_util.h undo.h
+ change.h misc.h ../src_3rd/genvector/gds_char.h mymem.h misc_util.h \
+ compat_misc.h undo.h rotate.h
 ../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
  ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
