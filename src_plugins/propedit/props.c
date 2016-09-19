@@ -244,6 +244,7 @@ const char *propedit_query(void *pe, const char *cmd, const char *key, const cha
 	pe_ctx_t *ctx = pe;
 	const char *s;
 	static const char *ok = "ok";
+	static char typ[2];
 
 	if (memcmp(cmd, "v1st", 4) == 0) { /* get the first value */
 		ctx->qprop = htsp_get(ctx->core_props, key);
@@ -284,6 +285,27 @@ const char *propedit_query(void *pe, const char *cmd, const char *key, const cha
 		return NULL;
 	}
 
+	else if (memcmp(cmd, "type", 4) == 0) { /* return type char */
+		htsp_entry_t *pe;
+		pcb_props_t *p;
+
+		pe = htsp_getentry(ctx->core_props, key);
+		if (pe == NULL)
+			return NULL;
+
+		typ[1] = '\0';
+		p = pe->value;
+		switch(p->type) {
+			case PCB_PROPT_invalid: return NULL;
+			case PCB_PROPT_STRING: typ[0] = 's'; return typ;
+			case PCB_PROPT_COORD:  typ[0] = 'c'; return typ;
+			case PCB_PROPT_ANGLE:  typ[0] = 'a'; return typ;
+			case PCB_PROPT_INT:    typ[0] = 'i'; return typ;
+		}
+		return NULL;
+	}
+
+	/* invalid query */
 	return NULL;
 }
 
