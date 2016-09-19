@@ -1,5 +1,5 @@
 List and edit properties of a group of objects.
 
-#state: WIP
-#default: disabled
+#state: works
+#default: buildin
 #implements: (feature)
