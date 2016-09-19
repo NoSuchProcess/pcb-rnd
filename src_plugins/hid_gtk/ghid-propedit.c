@@ -200,6 +200,7 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	GtkTreeModel *tm;
 	GtkTreeIter iter;
 	char *prop, *val;
+	const char *typ;
 
 	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dlg->tree));
 	if (tsel == NULL)
@@ -212,20 +213,42 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	gtk_tree_model_get(tm, &iter, 0, &prop, -1);
 
 	val = pcb_strdup(gtk_entry_get_text(GTK_ENTRY(dlg->entry_val)));
-	if (ghidgui->propedit_query(ghidgui->propedit_pe, "vset", prop, val, 0) != NULL) {
-		/* could change values update the table - the new row is already added, remove the old */
-		gtk_list_store_remove(GTK_LIST_STORE(tm), &iter);
-		if (dlg->last_add_iter_valid) {
-			gtk_tree_selection_select_iter(tsel, &dlg->last_add_iter);
-			dlg->last_add_iter_valid = 0;
+
+	typ = ghidgui->propedit_query(ghidgui->propedit_pe, "type", prop, NULL, 0);
+	if (typ != NULL) {
+		if (*typ == 'c') { /* if type of the field if coords, we may need to fix missing units */
+			char *end;
+			strtod(val, &end);
+			while(isspace(*end)) end++;
+			if (*end == '\0') { /* no unit - automatically append current default */
+				int len = strlen(val);
+				char *new_val;
+				new_val = malloc(len+32);
+				strcpy(new_val, val);
+				sprintf(new_val+len, " %s", conf_core.editor.grid_unit->suffix);
+				free(val);
+				val = new_val;
+			}
 		}
-		/* get the combo box updated */
-		list_cursor_changed_cb(dlg->tree, dlg);
-		if ((*val == '+') || (*val == '-'))
-			gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), val); /* keep relative values intact for a reapply */
+
+		if (ghidgui->propedit_query(ghidgui->propedit_pe, "vset", prop, val, 0) != NULL) {
+			/* could change values update the table - the new row is already added, remove the old */
+			gtk_list_store_remove(GTK_LIST_STORE(tm), &iter);
+			if (dlg->last_add_iter_valid) {
+				gtk_tree_selection_select_iter(tsel, &dlg->last_add_iter);
+				dlg->last_add_iter_valid = 0;
+			}
+			/* get the combo box updated */
+			list_cursor_changed_cb(dlg->tree, dlg);
+			if ((*val == '+') || (*val == '-'))
+				gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), val); /* keep relative values intact for a reapply */
+		}
+		else
+			Message(PCB_MSG_WARNING, "Failed to change any object - %s is possibly invalid value for %s\n", val, prop);
 	}
 	else
-		Message(PCB_MSG_WARNING, "Failed to change any object - %s is possibly invalid value for %s\n", val, prop);
+		Message(PCB_MSG_ERROR, "Internal error: no type for proeprty %s\n", prop);
+
 	free(val);
 	g_free(prop);
 }
