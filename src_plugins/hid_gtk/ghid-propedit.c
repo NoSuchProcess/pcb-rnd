@@ -270,7 +270,8 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 {
 	GtkWidget *area = gtk_drawing_area_new();
 	PCBType *old_pcb;
-	int n, zoom1;
+	int n, zoom1, fx, fy;
+	Coord cx, cy;
 
 /*
 	void *v;
@@ -330,14 +331,39 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 		InitClip(preview_pcb.Data, preview_pcb.Data->Layer, v);
 	}
 
-	
 	old_pcb = PCB;
 	PCB = &preview_pcb;
 
 	zoom1 = 1;
-	pm = ghid_render_pixmap(PCB_MIL_TO_COORD(1000+(300/2*zoom1)), PCB_MIL_TO_COORD(1000+(400/2*zoom1)),
+	cx = PCB_MIL_TO_COORD(1000+300/2*zoom1);
+	cy = PCB_MIL_TO_COORD(1000+400/2*zoom1);
+	fx = conf_core.editor.view.flip_x;
+	fy = conf_core.editor.view.flip_y;
+	conf_set(CFR_DESIGN, "editor/view/flip_x", -1, "0", POL_OVERWRITE);
+	conf_set(CFR_DESIGN, "editor/view/flip_y", -1, "0", POL_OVERWRITE);
+	pm = ghid_render_pixmap(cx, cy,
 	40000 * zoom1, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(gport->top_window->window)));
+	conf_setf(CFR_DESIGN, "editor/view/flip_x", -1, "%d", fx, POL_OVERWRITE);
+	conf_setf(CFR_DESIGN, "editor/view/flip_y", -1, "%d", fy, POL_OVERWRITE);
+
+	{
+		GdkGC *gc = gdk_gc_new(GDK_DRAWABLE(gport->top_window->window));
+		GdkColor clr = {0, 0, 0, 0};
+		int x, y;
+		double zm = 40000 * zoom1;
+
+		gdk_gc_set_rgb_fg_color(gc, &clr);
+
+		x = (PCB_MIL_TO_COORD(1000) - cx) / zm + 0.5 + 200;
+		y = (PCB_MIL_TO_COORD(1000) - cy) / zm + 0.5 + 150;
+/*		gdk_draw_line(pm, gc, x, y, 0, 0);
+		gdk_draw_line(pm, gc, x+1, y+1, 1, 1);
+		gdk_draw_line(pm, gc, x-1, y-1, -1, -1);*/
+	}
+
+
 	PCB = old_pcb;
+
 
 	g_signal_connect(G_OBJECT(area), "expose-event", G_CALLBACK(preview_expose_event), pm);
 	return area;
