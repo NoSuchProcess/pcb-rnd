@@ -224,6 +224,8 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 		if ((*val == '+') || (*val == '-'))
 			gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), val); /* keep relative values intact for a reapply */
 	}
+	else
+		Message(PCB_MSG_WARNING, "Failed to change any object - %s is possibly invalid value for %s\n", val, prop);
 	free(val);
 	g_free(prop);
 }
