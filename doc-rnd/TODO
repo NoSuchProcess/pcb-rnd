@@ -1,6 +1,4 @@
 - BUGS
-	- propedit: unitless coords should be interpreted as mm or mil, depending on the unit selector, followed by a warning
-	- propedit: if 0 objects had change, issue a warning
 	- ChangeSize(selected, *) or Change*(selected, *) causes undo panic if nothing is selected
 	- if hid_gtk is compiled as buildin but is also available as a plugin the code tries to load it twice and segfaults
 	- genht config bug in gpmi
