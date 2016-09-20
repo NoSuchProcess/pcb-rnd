@@ -1971,6 +1971,7 @@ REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 
 HID ghid_hid;
 
+
 static void ghid_conf_regs()
 {
 	static conf_hid_callbacks_t cbs_refraction;
@@ -1981,7 +1982,7 @@ static void ghid_conf_regs()
 	memset(&cbs_refraction, 0, sizeof(cbs_refraction));
 	memset(&cbs_direction, 0, sizeof(cbs_direction));
 
-        m = conf_get_field("editor/all_direction_lines");
+	m = conf_get_field("editor/all_direction_lines");
 	n = conf_get_field("editor/line_refraction");
 	if (m != NULL) {
 		cbs_direction.val_change_post = ghid_confchg_all_direction_lines;
