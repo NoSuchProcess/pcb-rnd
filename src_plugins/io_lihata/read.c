@@ -42,6 +42,7 @@
 #include "create.h"
 #include "vtptr.h"
 #include "common.h"
+#include "polygon.h"
 
 #warning TODO: put these in a gloal load-context-struct
 vtptr_t post_ids;
@@ -578,6 +579,14 @@ static DataType *parse_data(PCBType *pcb, lht_node_t *nd)
 		parse_data_objects(pcb, dt, grp);
 
 	dt->pcb = pcb;
+
+	/* Run poly clipping at the end so we can announce it later (it's slow) */
+	ALLPOLYGON_LOOP (dt);
+	{
+		InitClip(dt, layer, polygon);
+	}
+	ENDALL_LOOP;
+
 
 	return dt;
 }
