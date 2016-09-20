@@ -156,8 +156,7 @@ static int ActionSelect(int argc, const char **argv, Coord x, Coord y)
 		commonByName:
 			{
 				const char *pattern = ACTION_ARG(1);
-#warning "TODO: this should have a default value in case gui_get_pat() is not called"
-				search_method_t method;
+				search_method_t method = SM_REGEX;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
 					if (SelectObjectByName(type, pattern, pcb_true, method))
