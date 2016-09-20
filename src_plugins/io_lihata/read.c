@@ -339,7 +339,10 @@ static int parse_polygon(LayerType *ly, ElementType *el, lht_node_t *obj)
 		poly->PointMax = poly->PointN;
 		poly->Points = malloc(sizeof(PointType) * poly->PointMax);
 		poly->HoleIndexMax = poly->HoleIndexN = c-1;
-		poly->HoleIndex = malloc(sizeof(pcb_cardinal_t) * poly->HoleIndexMax);
+		if (poly->HoleIndexN > 0)
+			poly->HoleIndex = malloc(sizeof(pcb_cardinal_t) * poly->HoleIndexMax);
+		else
+			poly->HoleIndex = NULL;
 
 		/* convert points and build hole index */
 		for(c = 0, cnt = lht_dom_first(&it, geo); cnt != NULL; c++, cnt = lht_dom_next(&it)) {
@@ -580,13 +583,6 @@ static DataType *parse_data(PCBType *pcb, lht_node_t *nd)
 
 	dt->pcb = pcb;
 
-	/* Run poly clipping at the end so we can announce it later (it's slow) */
-	ALLPOLYGON_LOOP (dt);
-	{
-		InitClip(dt, layer, polygon);
-	}
-	ENDALL_LOOP;
-
 
 	return dt;
 }
@@ -626,6 +622,15 @@ static int parse_board(PCBType *pcb, lht_node_t *nd)
 		return -1;
 
 	post_ids_assign(&post_ids);
+
+	/* Run poly clipping at the end so we have all IDs and we can
+	   announce the clipping (it's slow, we may need a progress bar) */
+	ALLPOLYGON_LOOP(pcb->Data);
+	{
+		printf("clip!\n");
+		InitClip(pcb->Data, layer, polygon);
+	}
+	ENDALL_LOOP;
 
 	return 0;
 }
