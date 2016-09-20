@@ -1166,12 +1166,38 @@ static int ActionSwitchHID(int argc, const char **argv, Coord x, Coord y)
 }
 
 
+/* --------------------------------------------------------------------------- */
+
+/* This action is provided for CLI convience */
+static const char fullscreen_syntax[] = "FullScreen(on|off|toggle)\n";
+
+static const char fullscreen_help[] = "Hide widgets to get edit area full screen";
+
+static int FullScreen(int argc, const char **argv, Coord x, Coord y)
+{
+	const char *op = argv == NULL ? NULL : argv[0];
+
+	if ((op == NULL) || (strcmp(op, "toggle") == 0))
+		conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !conf_core.editor.fullscreen, POL_OVERWRITE);
+	else if (strcmp(op, "on") == 0)
+		conf_set(CFR_DESIGN, "editor/fullscreen", -1, "1", POL_OVERWRITE);
+	else if (strcmp(op, "off") == 0)
+		conf_set(CFR_DESIGN, "editor/fullscreen", -1, "0", POL_OVERWRITE);
+
+
+	return 0;
+}
+
+
+
 HID_Action gui_action_list[] = {
 	{"Display", 0, ActionDisplay,
 	 display_help, display_syntax}
 	,
 	{"CycleDrag", 0, ActionCycleDrag,
 	 cycledrag_help, cycledrag_syntax}
+	,
+	{"FullScreen", 0, FullScreen, fullscreen_help, fullscreen_syntax}
 	,
 	{"MarkCrosshair", 0, ActionMarkCrosshair,
 	 markcrosshair_help, markcrosshair_syntax}
