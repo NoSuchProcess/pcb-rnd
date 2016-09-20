@@ -242,7 +242,7 @@ static lht_node_t *build_polygon(PolygonType *poly)
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&poly->Attributes));
-	lht_dom_hash_put(obj, build_flags(&poly->Flags, PCB_TYPE_VIA));
+	lht_dom_hash_put(obj, build_flags(&poly->Flags, PCB_TYPE_POLYGON));
 
 	geo = lht_dom_node_alloc(LHT_LIST, "geometry");
 	lht_dom_hash_put(obj, geo);
