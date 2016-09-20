@@ -1971,27 +1971,22 @@ REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 
 HID ghid_hid;
 
+static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(conf_native_t *))
+{
+	conf_native_t *n = conf_get_field(path);
+	if (n != NULL) {
+		memset(cbs, 0, sizeof(conf_hid_callbacks_t));
+		cbs->val_change_post = func;
+		conf_hid_set_cb(n, ghid_conf_id, cbs);
+	}
+}
 
 static void ghid_conf_regs()
 {
-	static conf_hid_callbacks_t cbs_refraction;
-	static conf_hid_callbacks_t cbs_direction;
-	conf_native_t *n;
-	conf_native_t *m;
+	static conf_hid_callbacks_t cbs_refraction, cbs_direction;
 
-	memset(&cbs_refraction, 0, sizeof(cbs_refraction));
-	memset(&cbs_direction, 0, sizeof(cbs_direction));
-
-	m = conf_get_field("editor/all_direction_lines");
-	n = conf_get_field("editor/line_refraction");
-	if (m != NULL) {
-		cbs_direction.val_change_post = ghid_confchg_all_direction_lines;
-		conf_hid_set_cb(m, ghid_conf_id, &cbs_direction);
-	}
-	if (n != NULL) {
-		cbs_refraction.val_change_post = ghid_confchg_line_refraction;
-		conf_hid_set_cb(n, ghid_conf_id, &cbs_refraction);
-	}
+	init_conf_watch(&cbs_direction,   "editor/all_direction_lines",  ghid_confchg_all_direction_lines);
+	init_conf_watch(&cbs_refraction,  "editor/line_refraction",      ghid_confchg_line_refraction);
 }
 
 void hid_hid_gtk_uninit()
