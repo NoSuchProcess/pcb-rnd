@@ -348,8 +348,8 @@ static int parse_polygon(LayerType *ly, ElementType *el, lht_node_t *obj)
 			if (c > 0)
 				poly->HoleIndex[c-1] = n;
 			for(r = 0; r < cnt->data.table.rows; r++) {
-				parse_coord(&poly->Points[n].X, cnt->data.table.r[r][0]);
-				parse_coord(&poly->Points[n].Y, cnt->data.table.r[r][1]);
+				parse_coord(&poly->Points[r].X, cnt->data.table.r[r][0]);
+				parse_coord(&poly->Points[r].Y, cnt->data.table.r[r][1]);
 				n++;
 			}
 		}
