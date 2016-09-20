@@ -236,9 +236,7 @@ static void click_cb(hidval hv)
 
 			SaveMode();
 			saved_mode = pcb_true;
-			pcb_trace("click_cb() SetMode, pre %d\n", conf_core.editor.mode);
 			SetMode(gui->control_is_pressed()? PCB_MODE_COPY : PCB_MODE_MOVE);
-			pcb_trace("click_cb() SetMode, post %d\n", conf_core.editor.mode);
 			Crosshair.AttachedObject.Ptr1 = Note.ptr1;
 			Crosshair.AttachedObject.Ptr2 = Note.ptr2;
 			Crosshair.AttachedObject.Ptr3 = Note.ptr3;
@@ -1073,7 +1071,6 @@ void NotifyMode(void)
 		/* both are almost the same */
 	case PCB_MODE_COPY:
 	case PCB_MODE_MOVE:
-pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.AttachedObject.State);
 		switch (Crosshair.AttachedObject.State) {
 			/* first notify, lookup object */
 		case STATE_FIRST:
@@ -1117,7 +1114,6 @@ pcb_trace("Move/copy: mode=%d state=%d {\n", conf_core.editor.mode, Crosshair.At
 			Crosshair.AttachedObject.State = STATE_FIRST;
 			break;
 		}
-		pcb_trace("}\n");
 		break;
 
 		/* insert a point into a polygon/line/... */

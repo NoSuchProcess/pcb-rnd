@@ -120,8 +120,6 @@ ButtonState ghid_button_state(GdkModifierType * state)
 
 	extern GdkModifierType ghid_glob_mask;
 	ghid_glob_mask = mask;
-	pcb_trace("GLOB2 %x\n", ghid_glob_mask);
-
 
 	button1 = (mask & GDK_BUTTON1_MASK);
 	button2 = (mask & GDK_BUTTON2_MASK);

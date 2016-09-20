@@ -142,8 +142,6 @@ static lht_node_t *find_best_action(hid_cfg_mouse_t *mouse, hid_cfg_mod_t button
 {
 	lht_node_t *n;
 
-	pcb_trace("find_best_action(): %x\n", button_and_mask);
-
 	if (mouse->mouse_mask == NULL)
 		return NULL;
 

@@ -172,9 +172,6 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 
 		extern GdkModifierType ghid_glob_mask;
 		ghid_glob_mask = state;
-		pcb_trace("GLOB1 %x\n", ghid_glob_mask);
-
-		pcb_trace("ghid_port_key_press_cb alt=%d ctrl=%d\n", (state & GDK_MOD1_MASK), (state & GDK_CONTROL_MASK));
 
 		if (state & GDK_MOD1_MASK)    mods |= M_Alt;
 		if (state & GDK_CONTROL_MASK) mods |= M_Ctrl;
@@ -223,12 +220,8 @@ GdkModifierType mask;
 
 	extern GdkModifierType ghid_glob_mask;
 	ghid_glob_mask = state;
-	pcb_trace("GLOB3 %x\n", ghid_glob_mask);
-
 
 	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
-	pcb_trace("ghid_port_button_press_cb mk=%x state=%x mask=%x\n", mk, state, mask);
-
 
 	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk);
 

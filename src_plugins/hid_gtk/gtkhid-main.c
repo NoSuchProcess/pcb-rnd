@@ -268,8 +268,6 @@ int ghid_control_is_pressed()
 
 	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
 
-	pcb_trace("ghid_control_is_pressed() d3 %x %x %x %s\n", mask, GDK_CONTROL_MASK, ghid_glob_mask, (ghid_glob_mask & GDK_CONTROL_MASK) ? "ctrl pressed" : "ctrl not pressed");
-
 #ifdef PCB_WORKAROUND_GTK_CTRL
 	/* On some systems the above query fails and we need to return the last known state instead */
 	return ghid_glob_mask & GDK_CONTROL_MASK;
@@ -372,7 +370,6 @@ typedef struct {
 	 */
 static gboolean ghid_timer(GuiTimer * timer)
 {
-pcb_trace("ghid_timer\n");
 	(*timer->func) (timer->user_data);
 	ghid_mode_cursor(conf_core.editor.mode);
 	return FALSE;									/* Turns timer off */
