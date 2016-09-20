@@ -1983,10 +1983,11 @@ static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*
 
 static void ghid_conf_regs()
 {
-	static conf_hid_callbacks_t cbs_refraction, cbs_direction;
+	static conf_hid_callbacks_t cbs_refraction, cbs_direction, cbs_fullscreen;
 
 	init_conf_watch(&cbs_direction,   "editor/all_direction_lines",  ghid_confchg_all_direction_lines);
 	init_conf_watch(&cbs_refraction,  "editor/line_refraction",      ghid_confchg_line_refraction);
+	init_conf_watch(&cbs_fullscreen,  "editor/fullscreen",           ghid_confchg_fullscreen);
 }
 
 void hid_hid_gtk_uninit()

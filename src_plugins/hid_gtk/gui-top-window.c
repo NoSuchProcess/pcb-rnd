@@ -1188,6 +1188,8 @@ static void ghid_build_pcb_top_window(void)
 	gtk_widget_show_all(gport->top_window);
 	ghid_pack_mode_buttons();
 	gdk_window_set_back_pixmap(gtk_widget_get_window(gport->drawing_area), NULL, FALSE);
+
+	ghid_fullscreen_apply();
 }
 
 
@@ -1491,6 +1493,20 @@ void ghid_do_export(HID_Attr_Val * options)
 void ghid_do_exit(HID *hid)
 {
 	gtk_main_quit();
+}
+
+void ghid_fullscreen_apply(void)
+{
+	if (conf_core.editor.fullscreen) {
+		gtk_widget_hide(ghidgui->left_toolbar);
+		gtk_widget_hide(ghidgui->top_hbox);
+		gtk_widget_hide(ghidgui->status_line_hbox);
+	}
+	else {
+		gtk_widget_show(ghidgui->left_toolbar);
+		gtk_widget_show(ghidgui->top_hbox);
+		gtk_widget_show(ghidgui->status_line_hbox);
+	}
 }
 
 /*! \brief callback for */

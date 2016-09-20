@@ -515,5 +515,8 @@ void config_color_button_update(conf_native_t *cfg, int idx);
 
 void ghid_confchg_line_refraction(conf_native_t *cfg);
 void ghid_confchg_all_direction_lines(conf_native_t *cfg);
+void ghid_confchg_fullscreen(conf_native_t *cfg);
+
+void ghid_fullscreen_apply(void);
 
 #endif /* PCB_HID_GTK_GHID_GUI_H */

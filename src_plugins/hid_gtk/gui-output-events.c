@@ -533,3 +533,9 @@ void ghid_confchg_all_direction_lines(conf_native_t *cfg)
 	pcb_trace("all direction lines change!\n");
 	ghid_set_status_line_label();
 }
+
+void ghid_confchg_fullscreen(conf_native_t *cfg)
+{
+	if (gtkhid_active)
+		ghid_fullscreen_apply();
+}
