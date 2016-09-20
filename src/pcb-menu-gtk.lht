@@ -213,6 +213,7 @@ ha:{
 						ha:Move current layer down= { action=MoveLayer(c,down) }
 					}
 				}
+				ha:Full screen                = { checked=editor/fullscreen; a=<Key>\\;  action=fullscreen(toggle) }
 			}
 		} # View
 
