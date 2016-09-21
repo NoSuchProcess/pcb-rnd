@@ -497,6 +497,11 @@ static void fp_fs_fclose(plug_fp_t *ctx, FILE * f, fp_fopen_ctx_t *fctx)
 
 static plug_fp_t fp_fs;
 
+void hid_fp_fs_uninit(void)
+{
+	HOOK_UNREGISTER(plug_fp_t, plug_fp_chain, &fp_fs);
+}
+
 pcb_uninit_t hid_fp_fs_init(void)
 {
 	fp_fs.plugin_data = NULL;
@@ -504,6 +509,5 @@ pcb_uninit_t hid_fp_fs_init(void)
 	fp_fs.fopen = fp_fs_fopen;
 	fp_fs.fclose = fp_fs_fclose;
 	HOOK_REGISTER(plug_fp_t, plug_fp_chain, &fp_fs);
-#warning TODO: make an uninit that calls HOOK_UNREGISTER
-	return NULL;
+	return hid_fp_fs_uninit;
 }
