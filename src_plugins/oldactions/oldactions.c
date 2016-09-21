@@ -34,6 +34,7 @@
 #include "undo.h"
 #include "plugins.h"
 #include "hid_actions.h"
+#include "plug_footprint.h"
 
 
 static void conf_toggle(conf_role_t role, const char *path)
@@ -61,30 +62,56 @@ static const char dumplibrary_help[] = "Display the entire contents of the libra
 
 
 %end-doc */
+static void ind(int level)
+{
+	static char inds[] = "                                                                               ";
+
+	if (level > sizeof(inds)-1)
+		return;
+	inds[level] = '\0';
+	printf("%s", inds);
+	inds[level] = ' ';
+}
+
+static void dump_lib_any(int level, library_t *l);
+
+static void dump_lib_dir(int level, library_t *l)
+{
+	pcb_cardinal_t n;
+
+	ind(level);
+	printf("%s/\n", l->name);
+	for(n = 0; n < vtlib_len(&l->data.dir.children); n++)
+		dump_lib_any(level+1, l->data.dir.children.array+n);
+}
+
+static void dump_lib_fp(int level, library_t *l)
+{
+	ind(level);
+	printf("%s", l->name);
+	switch(l->data.fp.type) {
+		case PCB_FP_INVALID:      printf(" type(??)"); break;
+		case PCB_FP_DIR:          printf(" type(DIR)"); break;
+		case PCB_FP_FILE:         printf(" type(file)"); break;
+		case PCB_FP_PARAMETRIC:   printf(" type(parametric)"); break;
+	}
+	printf(" loc_info(%s)\n", l->data.fp.loc_info);
+}
+
+static void dump_lib_any(int level, library_t *l)
+{
+	switch(l->type) {
+		case LIB_INVALID:     printf("??\n"); break;
+		case LIB_DIR:         dump_lib_dir(level, l); break;
+		case LIB_FOOTPRINT:   dump_lib_fp(level, l); break;
+	}
+}
+
 
 static int ActionDumpLibrary(int argc, const char **argv, Coord x, Coord y)
 {
-#warning TODO: rewrite this code for the plug_footprint library_t
-/*	int i, j;
+	dump_lib_any(0, &library);
 
-	printf("**** Do not count on this format.  It will change ****\n\n");
-	printf("MenuN   = %d\n", Library.MenuN);
-	printf("MenuMax = %d\n", Library.MenuMax);
-	for (i = 0; i < Library.MenuN; i++) {
-		printf("Library #%d:\n", i);
-		printf("    EntryN    = %d\n", Library.Menu[i].EntryN);
-		printf("    EntryMax  = %d\n", Library.Menu[i].EntryMax);
-		printf("    Name      = \"%s\"\n", UNKNOWN(Library.Menu[i].Name));
-		printf("    directory = \"%s\"\n", UNKNOWN(Library.Menu[i].directory));
-		printf("    Style     = \"%s\"\n", UNKNOWN(Library.Menu[i].Style));
-		printf("    flag      = %d\n", Library.Menu[i].flag);
-
-		for (j = 0; j < Library.Menu[i].EntryN; j++) {
-			printf("    #%4d: ", j);
-			printf("newlib: \"%s\"\n", UNKNOWN(Library.Menu[i].Entry[j].ListEntry));
-		}
-	}
-*/
 	return 0;
 }
 
