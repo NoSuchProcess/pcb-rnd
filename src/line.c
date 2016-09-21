@@ -418,7 +418,6 @@ void EnforceLineDRC(void)
 	PointType r45, rs;
 	pcb_bool shift;
 	double r1, r2;
-	int refraction = conf_core.editor.line_refraction;
 
 	/* Silence a bogus compiler warning by storing this in a variable */
 	int layer_idx = INDEXOFCURRENT;
