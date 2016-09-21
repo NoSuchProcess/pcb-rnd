@@ -252,7 +252,7 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 }
 
 
-static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj)
+static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj, int no_id)
 {
 	LineType *line;
 
@@ -263,7 +263,10 @@ static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj)
 	else
 		return -1;
 
-	parse_id(&line->ID, obj, 5);
+	if (no_id)
+		line->ID = 0;
+	else
+		parse_id(&line->ID, obj, 5);
 	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&line->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_LINE);
 
@@ -274,8 +277,10 @@ static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj)
 	parse_coord(&line->Point2.X, lht_dom_hash_get(obj, "x2"));
 	parse_coord(&line->Point2.Y, lht_dom_hash_get(obj, "y2"));
 
-	post_id_req(&line->Point1);
-	post_id_req(&line->Point2);
+	if (!no_id) {
+		post_id_req(&line->Point1);
+		post_id_req(&line->Point2);
+	}
 
 	if (ly != NULL)
 		pcb_add_line_on_layer(ly, line);
@@ -426,7 +431,7 @@ static int parse_data_layer(PCBType *pcb, DataType *dt, lht_node_t *grp, int lay
 
 	for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 		if (strncmp(n->name, "line.", 5) == 0)
-			parse_line(ly, NULL, n);
+			parse_line(ly, NULL, n, 0);
 		if (strncmp(n->name, "arc.", 4) == 0)
 			parse_arc(ly, NULL, n);
 		if (strncmp(n->name, "polygon.", 8) == 0)
@@ -525,7 +530,7 @@ static int parse_element(PCBType *pcb, DataType *dt, lht_node_t *obj)
 	if (lst->type == LHT_LIST) {
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 			if (strncmp(n->name, "line.", 5) == 0)
-				parse_line(NULL, elem, n);
+				parse_line(NULL, elem, n, 0);
 			if (strncmp(n->name, "arc.", 4) == 0)
 				parse_arc(NULL, elem, n);
 /*		if (strncmp(n->name, "polygon.", 8) == 0)
@@ -587,9 +592,21 @@ static DataType *parse_data(PCBType *pcb, lht_node_t *nd)
 	return dt;
 }
 
-static int parse_symbol(FontType *font, lht_node_t *nd)
+static int parse_symbol(SymbolType *sym, lht_node_t *nd)
 {
+	lht_node_t *grp, *obj;
+	lht_dom_iterator_t it;
 
+	parse_coord(&sym->Width, lht_dom_hash_get(nd, "width"));
+	parse_coord(&sym->Height, lht_dom_hash_get(nd, "height"));
+	parse_coord(&sym->Delta, lht_dom_hash_get(nd, "delta"));
+
+	grp = lht_dom_hash_get(nd, "objects");
+	for(obj = lht_dom_first(&it, grp); obj != NULL; obj = lht_dom_next(&it)) {
+/*		parse_line(NULL, NULL, obj, 0);*/
+	}
+
+	sym->Valid = 1;
 	return 0;
 }
 
@@ -609,8 +626,23 @@ static int parse_font(FontType *font, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "symbols");
 
-	for(sym = lht_dom_first(&it, grp); sym != NULL; sym = lht_dom_next(&it))
-		parse_symbol(font, sym);
+	for(sym = lht_dom_first(&it, grp); sym != NULL; sym = lht_dom_next(&it)) {
+		int chr;
+		if (sym->type != LHT_HASH)
+			continue;
+		if (*sym->name == '&') {
+			char *end;
+			chr = strtol(sym->name+1, &end, 16);
+			if (*end != '\0') {
+				Message(PCB_MSG_ERROR, "Ignoring invalid symbol name '%s'.\n", sym->name);
+				continue;
+			}
+		}
+		else
+			chr = sym->name;
+		if ((chr >= 0) && (chr < sizeof(font->Symbol) / sizeof(font->Symbol[0])))
+			parse_symbol(font->Symbol+chr, sym);
+	}
 
 	return 0;
 }
