@@ -150,12 +150,12 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 	return hsh;
 }
 
-static lht_node_t *build_line(LineType *line)
+static lht_node_t *build_line(LineType *line, int local_id)
 {
 	char buff[128];
 	lht_node_t *obj;
 
-	sprintf(buff, "line.%ld", line->ID);
+	sprintf(buff, "line.%ld", (local_id >= 0 ? local_id : line->ID));
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&line->Attributes));
@@ -316,7 +316,7 @@ static lht_node_t *build_element(ElementType *elem)
 
 
 	for(li = linelist_first(&elem->Line); li != NULL; li = linelist_next(li))
-		lht_dom_list_append(lst, build_line(li));
+		lht_dom_list_append(lst, build_line(li, -1));
 
 	for(ar = arclist_first(&elem->Arc); ar != NULL; ar = arclist_next(ar))
 		lht_dom_list_append(lst, build_arc(ar));
@@ -351,7 +351,7 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer, int layer_
 	lht_dom_hash_put(obj, grp);
 
 	for(li = linelist_first(&layer->Line); li != NULL; li = linelist_next(li))
-		lht_dom_list_append(grp, build_line(li));
+		lht_dom_list_append(grp, build_line(li, -1));
 
 	for(ar = arclist_first(&layer->Arc); ar != NULL; ar = arclist_next(ar))
 		lht_dom_list_append(grp, build_arc(ar));
@@ -418,7 +418,7 @@ static lht_node_t *build_symbol(SymbolType *sym, const char *name)
 	lst = lht_dom_node_alloc(LHT_LIST, "objects");
 	lht_dom_hash_put(ndt, lst);
 	for(n = 0, li = sym->Line; n < sym->LineN; n++, li++)
-		lht_dom_list_append(lst, build_line(li));
+		lht_dom_list_append(lst, build_line(li, n));
 
 
 	return ndt;
