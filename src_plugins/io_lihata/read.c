@@ -587,6 +587,30 @@ static DataType *parse_data(PCBType *pcb, lht_node_t *nd)
 	return dt;
 }
 
+static int parse_symbol(FontType *font, lht_node_t *nd)
+{
+
+	return 0;
+}
+
+static int parse_font(FontType *font, lht_node_t *nd)
+{
+	lht_node_t *grp, *sym;
+	lht_dom_iterator_t it;
+
+	if (nd->type != LHT_HASH)
+		return -1;
+
+	parse_coord(&font->MaxHeight, lht_dom_hash_get(nd, "cell_height"));
+	parse_coord(&font->MaxWidth, lht_dom_hash_get(nd, "cell_width"));
+	grp = lht_dom_hash_get(nd, "symbols");
+
+	for(sym = lht_dom_first(&it, grp); sym != NULL; sym = lht_dom_next(&it))
+		parse_symbol(font, sym);
+
+	return 0;
+}
+
 static void post_ids_assign(vtptr_t *ids)
 {
 	int n;
@@ -621,13 +645,16 @@ static int parse_board(PCBType *pcb, lht_node_t *nd)
 	if ((sub != NULL) && ((pcb->Data = parse_data(pcb, sub)) == NULL))
 		return -1;
 
+	sub = lht_dom_hash_get(nd, "font");
+	if ((sub != NULL) && (parse_font(&pcb->Font, sub) != 0))
+		return -1;
+
 	post_ids_assign(&post_ids);
 
 	/* Run poly clipping at the end so we have all IDs and we can
 	   announce the clipping (it's slow, we may need a progress bar) */
 	ALLPOLYGON_LOOP(pcb->Data);
 	{
-		printf("clip!\n");
 		InitClip(pcb->Data, layer, polygon);
 	}
 	ENDALL_LOOP;
