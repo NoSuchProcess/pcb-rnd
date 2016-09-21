@@ -603,7 +603,13 @@ static int parse_symbol(SymbolType *sym, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "objects");
 	for(obj = lht_dom_first(&it, grp); obj != NULL; obj = lht_dom_next(&it)) {
-/*		parse_line(NULL, NULL, obj, 0);*/
+		Coord x1, y1, x2, y2, th;
+		parse_coord(&x1, lht_dom_hash_get(obj, "x1"));
+		parse_coord(&y1, lht_dom_hash_get(obj, "y1"));
+		parse_coord(&x2, lht_dom_hash_get(obj, "x2"));
+		parse_coord(&y2, lht_dom_hash_get(obj, "y2"));
+		parse_coord(&th, lht_dom_hash_get(obj, "thickness"));
+		CreateNewLineInSymbol(sym, x1, y1, x2, y2, th);
 	}
 
 	sym->Valid = 1;
