@@ -620,6 +620,7 @@ static int parse_font(FontType *font, lht_node_t *nd)
 {
 	lht_node_t *grp, *sym;
 	lht_dom_iterator_t it;
+	int n;
 
 	if (nd->type != LHT_HASH)
 		return -1;
@@ -631,6 +632,11 @@ static int parse_font(FontType *font, lht_node_t *nd)
 	parse_coord(&font->MaxWidth, lht_dom_hash_get(nd, "cell_width"));
 
 	grp = lht_dom_hash_get(nd, "symbols");
+
+	for(n = 0; n < sizeof(font->Symbol) / sizeof(font->Symbol[0]); n++) {
+		font->Symbol[n].LineN = 0;
+		font->Symbol[n].Valid = 0;
+	}
 
 	for(sym = lht_dom_first(&it, grp); sym != NULL; sym = lht_dom_next(&it)) {
 		int chr;
@@ -645,11 +651,14 @@ static int parse_font(FontType *font, lht_node_t *nd)
 			}
 		}
 		else
-			chr = sym->name;
-		if ((chr >= 0) && (chr < sizeof(font->Symbol) / sizeof(font->Symbol[0])))
+			chr = *sym->name;
+		if ((chr >= 0) && (chr < sizeof(font->Symbol) / sizeof(font->Symbol[0]))) {
+			printf("load sym %d\n", chr);
 			parse_symbol(font->Symbol+chr, sym);
+		}
 	}
 
+	font->Valid = 1;
 	return 0;
 }
 
