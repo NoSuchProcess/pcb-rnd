@@ -601,8 +601,12 @@ static int parse_font(FontType *font, lht_node_t *nd)
 	if (nd->type != LHT_HASH)
 		return -1;
 
+	/* TODO: support only one, hard-wired font for now */
+	nd = lht_dom_hash_get(nd, "geda_pcb");
+
 	parse_coord(&font->MaxHeight, lht_dom_hash_get(nd, "cell_height"));
 	parse_coord(&font->MaxWidth, lht_dom_hash_get(nd, "cell_width"));
+
 	grp = lht_dom_hash_get(nd, "symbols");
 
 	for(sym = lht_dom_first(&it, grp); sym != NULL; sym = lht_dom_next(&it))

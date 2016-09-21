@@ -427,10 +427,14 @@ static lht_node_t *build_symbol(SymbolType *sym, const char *name)
 
 static lht_node_t *build_font(FontType *font)
 {
-	lht_node_t *syms, *ndt;
+	lht_node_t *syms, *ndt, *frt;
 	int n;
 
-	ndt = lht_dom_node_alloc(LHT_HASH, "font");
+	frt = lht_dom_node_alloc(LHT_HASH, "font");
+
+	/* TODO: support only one, hard-wired font for now but make room for extensions */
+	ndt = lht_dom_node_alloc(LHT_HASH, "geda_pcb");
+	lht_dom_hash_put(frt, ndt);
 
 	lht_dom_hash_put(ndt, build_textf("cell_height", CFMT, font->MaxHeight));
 	lht_dom_hash_put(ndt, build_textf("cell_width", CFMT, font->MaxWidth));
@@ -452,7 +456,7 @@ static lht_node_t *build_font(FontType *font)
 		}
 		lht_dom_hash_put(syms, build_symbol(&font->Symbol[n], sname));
 	}
-	return ndt;
+	return frt;
 }
 
 
