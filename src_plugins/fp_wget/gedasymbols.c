@@ -181,6 +181,11 @@ void fp_gedasymbols_fclose(plug_fp_t *ctx, FILE * f, fp_fopen_ctx_t *fctx)
 
 static plug_fp_t fp_gedasymbols;
 
+void fp_gedasymbols_uninit(void)
+{
+	HOOK_UNREGISTER(plug_fp_t, plug_fp_chain, &fp_gedasymbols);
+}
+
 void fp_gedasymbols_init(void)
 {
 	fp_gedasymbols.plugin_data = NULL;
@@ -189,5 +194,4 @@ void fp_gedasymbols_init(void)
 	fp_gedasymbols.fclose = fp_gedasymbols_fclose;
 
 	HOOK_REGISTER(plug_fp_t, plug_fp_chain, &fp_gedasymbols);
-#warning TODO: make an uninit that calls HOOK_UNREGISTER
 }
