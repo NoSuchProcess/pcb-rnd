@@ -1,7 +1,7 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
  * 
  *  This module, io_kicad_legacy, was written and is Copyright (C) 2016 by Tibor Palinkas

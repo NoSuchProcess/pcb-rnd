@@ -1,7 +1,7 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2013..2015 Tibor 'Igor2' Palinkas
  * 
  *  This module, rats.c, was written and is Copyright (C) 1997 by harry eaton

@@ -1,7 +1,7 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
  * 
  *  This program is free software; you can redistribute it and/or modify
