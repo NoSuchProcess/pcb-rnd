@@ -1,0 +1,8 @@
+Actions for pcb-rnd core diagnostics, intended for developers. These are
+not in core because end users normally don't need these. As a plugin, due
+to dynamic loading, it can be dropped on an existing pcb-rnd installation
+with minimal risk of scaring away a reproducible bug.
+
+#state: works
+#default: disabled
+#implements: (feature)

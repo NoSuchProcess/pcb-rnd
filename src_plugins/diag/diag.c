@@ -27,7 +27,7 @@
 #include "global.h"
 #include "data.h"
 #include "layer.h"
-#include "debug_conf.h"
+#include "diag_conf.h"
 #include "action_helper.h"
 #include "hid_actions.h"
 #include "plugins.h"
@@ -124,25 +124,25 @@ static int ActionDumpLayers(int argc, const char **argv, Coord x, Coord y)
 }
 
 
-HID_Action debug_action_list[] = {
+HID_Action diag_action_list[] = {
 	{"dumpconf", 0, ActionDumpConf,
 	 conf_help, conf_syntax},
 	{"dumplayers", 0, ActionDumpLayers,
 	 dump_layers_help, dump_layers_syntax}
 };
 
-static const char *debug_cookie = "debug plugin";
+static const char *diag_cookie = "debug plugin";
 
-REGISTER_ACTIONS(debug_action_list, debug_cookie)
+REGISTER_ACTIONS(diag_action_list, diag_cookie)
 
-static void hid_debug_uninit(void)
+static void hid_diag_uninit(void)
 {
-	hid_remove_actions_by_cookie(debug_cookie);
+	hid_remove_actions_by_cookie(diag_cookie);
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_debug_init(void)
+pcb_uninit_t hid_diag_init(void)
 {
-	REGISTER_ACTIONS(debug_action_list, debug_cookie)
-	return hid_debug_uninit;
+	REGISTER_ACTIONS(diag_action_list, diag_cookie)
+	return hid_diag_uninit;
 }

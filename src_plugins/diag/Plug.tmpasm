@@ -1,7 +1,7 @@
-put /local/pcb/mod {debug}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/debug/debug.o $(PLUGDIR)/debug/debug_conf.o @]
+put /local/pcb/mod {diag}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/diag/diag.o $(PLUGDIR)/diag/diag_conf.o @]
 
-switch /local/pcb/debug/controls
+switch /local/pcb/diag/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

@@ -109,7 +109,7 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h global.h plugins.h \
  hid_actions.h event.h compat_misc.h compat_lrealpath.h dolists.h
-../src_plugins/debug/debug.o: ../src_plugins/debug/debug.c ../config.h \
+../src_plugins/diag/diag.o: ../src_plugins/diag/diag.c ../config.h \
  global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
  list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -120,16 +120,16 @@
  global_element.h list_element.h ht_element.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h global.h layer.h \
- ../src_plugins/debug/debug_conf.h action_helper.h hid_actions.h \
- plugins.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_plugins/diag/diag_conf.h action_helper.h hid_actions.h plugins.h \
+ conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h error.h dolists.h
-../src_plugins/debug/debug_conf.o: ../src_plugins/debug/debug_conf.c \
- conf.h global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h \
- unit.h global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h \
- polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+../src_plugins/diag/diag_conf.o: ../src_plugins/diag/diag_conf.c conf.h \
+ global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
+ global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
+ list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \

@@ -1,6 +1,6 @@
 plugin_header("\nFeature plugins:\n")
 plugin_def("gpmi",            "GPMI scripting",            sbuildin)
-plugin_def("debug",           "debug actions for devs",    sdisable)
+plugin_def("diag",            "diagnostic acts. for devs", sdisable)
 plugin_def("autoroute",       "the original autorouter",   sbuildin)
 plugin_def("toporouter",      "topological autorouter",    sdisable)
 plugin_def("autoplace",       "auto place components",     sbuildin)

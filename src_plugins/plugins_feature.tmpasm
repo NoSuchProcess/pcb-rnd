@@ -17,5 +17,5 @@ include {../src_plugins/stroke/Plug.tmpasm}
 include {../src_plugins/report/Plug.tmpasm}
 include {../src_plugins/dbus/Plug.tmpasm}
 include {../src_plugins/propedit/Plug.tmpasm}
-include {../src_plugins/debug/Plug.tmpasm}
+include {../src_plugins/diag/Plug.tmpasm}
 include {../src_plugins/loghid/Plug.tmpasm}
