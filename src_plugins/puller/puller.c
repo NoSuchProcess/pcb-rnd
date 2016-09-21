@@ -548,11 +548,11 @@ typedef struct End {
 	/* These point to "multi_next" if there are more than one.  */
 	struct Extra *next;
 	void *pin;
-	unsigned char in_pin:1;
-	unsigned char at_pin:1;
-	unsigned char is_pad:1;
-	unsigned char pending:1;			/* set if this may be moved later */
-	int x, y;											/* arc endpoint */
+	unsigned in_pin:1;
+	unsigned at_pin:1;
+	unsigned is_pad:1;
+	unsigned pending:1; /* set if this may be moved later */
+	int x, y;           /* arc endpoint */
 	/* If not NULL, points to End with pending==1 we're blocked on. */
 	struct End *waiting_for;
 } End;
@@ -560,8 +560,8 @@ typedef struct End {
 typedef struct Extra {
 	End start;
 	End end;
-	unsigned char found:1;
-	unsigned char deleted:1;
+	unsigned found:1;
+	unsigned deleted:1;
 	int type;
 	union {
 		LineType *line;
