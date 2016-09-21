@@ -1,0 +1,47 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> what's missing for: opengl </H2>
+<p>
+Why we don't have it:
+<ul>
+	<li> I don't have a hardware+driver combination where opengl rendering is faster than software rendering
+	<li> I have no experience with opengl programming
+	<li> I am not much interested in changing any of the above two
+</ul>
+<p>
+What's needed:
+<ul>
+	<li> 1. split the gtk hid into:
+		<ul>
+			<li> a generic gtk UI feature plugin (menu, widgets, controls, no drawing)
+			<li> a gtk-gdk (software render) HID plugin that depends on the gtk feature plugin
+			<li> an gtk-opengl HID plugin that depends on the gtk feature plugin and on the opengl utility plugin
+		</ul>
+	<li> 2. get scconfig to detect opengl headers/libs
+	<li> 3. resurrect the opengl utility plugin
+	<li> 4. resurrect the opengl drawing code
+</ul>
+<p>
+How we could have it, gtk+gl:
+<ul>
+	<li> A. contribute: I can do 1. and 2. so you need to concentrate only on the opengl part (3. and 4.);
+	<li> B. or donation/sponsoration:
+		<ul>
+			<li> buy the time of a random developer for point 3. and 4.; I can still do 1. and 2. in free time, scheduled with the other pcb-rnd duties
+			<li> buy my time so I don't need to sit in my regular job but have a few days off to do all four points
+		</ul>
+</ul>
+<p>
+How we could have it, long term:
+<ul>
+	<li> I plan to write an SDL2 based HID
+	<li> SDL2 has trasparent render support for both software and accelerated drawing, the latter probably means 2d hardrware acceleration which is probably as good as direct opengl drawing would be
+</ul>
+<p>
+What we can't do:
+<ul>
+	<li> make transparent layers with gtk/gdk (too much effort)
+	<li> make transparent layers with lesstif (too much effort)
+</ul>
