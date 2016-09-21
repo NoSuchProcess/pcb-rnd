@@ -20,6 +20,7 @@
 #define GRAPH_H
 #include <stdio.h>
 #include <assert.h>
+#include "../../../config.h"
 
 typedef struct gr_s {
 	int n;     /* number of nodes */
@@ -37,27 +38,27 @@ gr_t *gr_clone(gr_t *g);
 void gr_free(gr_t *g);
 
 
-static inline void gr_bound_chk(gr_t *g, int n1, int n2)
+static inline PCB_FUNC_UNUSED void gr_bound_chk(gr_t *g, int n1, int n2)
 {
 	assert((n1 >= 0) && (n1 < g->n));
 	assert((n2 >= 0) && (n2 < g->n));
 }
 
 /* return number of edges between nodes n1 and n2 - without checks */
-static inline int gr_get_(gr_t *g, int n1, int n2)
+static inline PCB_FUNC_UNUSED int gr_get_(gr_t *g, int n1, int n2)
 {
 	return g->adj[n1 * g->n + n2];
 }
 
 /* return number of edges between nodes n1 and n2 - with checks */
-static inline int gr_get(gr_t *g, int n1, int n2)
+static inline PCB_FUNC_UNUSED int gr_get(gr_t *g, int n1, int n2)
 {
 	gr_bound_chk(g, n1, n2);
 	return gr_get_(g, n1, n2);
 }
 
 /* return old number of edges between nodes n1 and n2 and change it to newnum - no check*/
-static inline int gr_set_(gr_t *g, int n1, int n2, int newnum)
+static inline PCB_FUNC_UNUSED int gr_set_(gr_t *g, int n1, int n2, int newnum)
 {
 	int old;
 	old = g->adj[n1 * g->n + n2];
@@ -67,7 +68,7 @@ static inline int gr_set_(gr_t *g, int n1, int n2, int newnum)
 }
 
 /* return old number of edges between nodes n1 and n2 and increase it by newnum - no check*/
-static inline int gr_add_(gr_t *g, int n1, int n2, int newnum)
+static inline PCB_FUNC_UNUSED int gr_add_(gr_t *g, int n1, int n2, int newnum)
 {
 	int old;
 	old = g->adj[n1 * g->n + n2];
@@ -77,7 +78,7 @@ static inline int gr_add_(gr_t *g, int n1, int n2, int newnum)
 }
 
 /* return old number of edges between nodes n1 and n2 and change it to newnum - check*/
-static inline int gr_set(gr_t *g, int n1, int n2, int newnum)
+static inline PCB_FUNC_UNUSED int gr_set(gr_t *g, int n1, int n2, int newnum)
 {
 	gr_bound_chk(g, n1, n2);
 	return gr_set_(g, n1, n2, newnum);

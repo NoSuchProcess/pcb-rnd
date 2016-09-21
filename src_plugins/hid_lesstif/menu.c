@@ -552,6 +552,9 @@ REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
 }
 #endif
 
+static int need_xy = 0, have_xy = 0, action_x, action_y;
+
+#if 0
 typedef struct ToggleItem {
 	struct ToggleItem *next;
 	Widget w;
@@ -560,8 +563,6 @@ typedef struct ToggleItem {
 	lht_node_t *node;
 } ToggleItem;
 static ToggleItem *toggle_items = 0;
-
-static int need_xy = 0, have_xy = 0, action_x, action_y;
 
 static void radio_callback(Widget toggle, ToggleItem * me, XmToggleButtonCallbackStruct * cbs)
 {
@@ -579,6 +580,7 @@ static void radio_callback(Widget toggle, ToggleItem * me, XmToggleButtonCallbac
 		me->callback(toggle, me->node, cbs);
 	}
 }
+#endif
 
 int lesstif_button_event(Widget w, XEvent * e)
 {

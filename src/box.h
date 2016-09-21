@@ -92,27 +92,27 @@ typedef struct cheap_point {
 /* note that boxes are closed on top and left and open on bottom and right. */
 /* this means that top-left corner is in box, *but bottom-right corner is
  * not*.  */
-static inline pcb_bool point_in_box(const BoxType * box, Coord X, Coord Y)
+static inline PCB_FUNC_UNUSED pcb_bool point_in_box(const BoxType * box, Coord X, Coord Y) 
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X < box->X2) && (Y < box->Y2);
 }
 
-static inline pcb_bool point_in_closed_box(const BoxType * box, Coord X, Coord Y)
+static inline PCB_FUNC_UNUSED pcb_bool point_in_closed_box(const BoxType * box, Coord X, Coord Y)
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X <= box->X2) && (Y <= box->Y2);
 }
 
-static inline pcb_bool box_is_good(const BoxType * b)
+static inline PCB_FUNC_UNUSED pcb_bool box_is_good(const BoxType * b)
 {
 	return (b->X1 < b->X2) && (b->Y1 < b->Y2);
 }
 
-static inline pcb_bool box_intersect(const BoxType * a, const BoxType * b)
+static inline PCB_FUNC_UNUSED pcb_bool box_intersect(const BoxType * a, const BoxType * b)
 {
 	return (a->X1 < b->X2) && (b->X1 < a->X2) && (a->Y1 < b->Y2) && (b->Y1 < a->Y2);
 }
 
-static inline CheapPointType closest_point_in_box(const CheapPointType * from, const BoxType * box)
+static inline PCB_FUNC_UNUSED CheapPointType closest_point_in_box(const CheapPointType * from, const BoxType * box)
 {
 	CheapPointType r;
 	assert(box->X1 < box->X2 && box->Y1 < box->Y2);
@@ -122,12 +122,12 @@ static inline CheapPointType closest_point_in_box(const CheapPointType * from, c
 	return r;
 }
 
-static inline pcb_bool box_in_box(const BoxType * outer, const BoxType * inner)
+static inline PCB_FUNC_UNUSED pcb_bool box_in_box(const BoxType * outer, const BoxType * inner)
 {
 	return (outer->X1 <= inner->X1) && (inner->X2 <= outer->X2) && (outer->Y1 <= inner->Y1) && (inner->Y2 <= outer->Y2);
 }
 
-static inline BoxType clip_box(const BoxType * box, const BoxType * clipbox)
+static inline PCB_FUNC_UNUSED BoxType clip_box(const BoxType * box, const BoxType * clipbox)
 {
 	BoxType r;
 	assert(box_intersect(box, clipbox));
@@ -139,7 +139,7 @@ static inline BoxType clip_box(const BoxType * box, const BoxType * clipbox)
 	return r;
 }
 
-static inline BoxType shrink_box(const BoxType * box, Coord amount)
+static inline PCB_FUNC_UNUSED BoxType shrink_box(const BoxType * box, Coord amount)
 {
 	BoxType r = *box;
 	r.X1 += amount;
@@ -149,13 +149,13 @@ static inline BoxType shrink_box(const BoxType * box, Coord amount)
 	return r;
 }
 
-static inline BoxType bloat_box(const BoxType * box, Coord amount)
+static inline PCB_FUNC_UNUSED BoxType bloat_box(const BoxType * box, Coord amount)
 {
 	return shrink_box(box, -amount);
 }
 
 /* construct a minimum box that touches the input box at the center */
-static inline BoxType box_center(const BoxType * box)
+static inline PCB_FUNC_UNUSED BoxType box_center(const BoxType * box)
 {
 	BoxType r;
 	r.X1 = box->X1 + (box->X2 - box->X1) / 2;
@@ -166,7 +166,7 @@ static inline BoxType box_center(const BoxType * box)
 }
 
 /* construct a minimum box that touches the input box at the corner */
-static inline BoxType box_corner(const BoxType * box)
+static inline PCB_FUNC_UNUSED BoxType box_corner(const BoxType * box)
 {
 	BoxType r;
 	r.X1 = box->X1;
@@ -177,7 +177,7 @@ static inline BoxType box_corner(const BoxType * box)
 }
 
 /* construct a box that holds a single point */
-static inline BoxType point_box(Coord X, Coord Y)
+static inline PCB_FUNC_UNUSED BoxType point_box(Coord X, Coord Y)
 {
 	BoxType r;
 	r.X1 = X;
@@ -188,7 +188,7 @@ static inline BoxType point_box(Coord X, Coord Y)
 }
 
 /* close a bounding box by pushing its upper right corner */
-static inline void close_box(BoxType * r)
+static inline PCB_FUNC_UNUSED void close_box(BoxType * r)
 {
 	r->X2++;
 	r->Y2++;
@@ -197,7 +197,7 @@ static inline void close_box(BoxType * r)
 /* return the square of the minimum distance from a point to some point
  * inside a box.  The box is half-closed!  That is, the top-left corner
  * is considered in the box, but the bottom-right corner is not. */
-static inline double dist2_to_box(const CheapPointType * p, const BoxType * b)
+static inline PCB_FUNC_UNUSED double dist2_to_box(const CheapPointType * p, const BoxType * b)
 {
 	CheapPointType r = closest_point_in_box(p, b);
 	return Distance(r.X, r.Y, p->X, p->Y);

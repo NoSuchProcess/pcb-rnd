@@ -220,6 +220,7 @@ int hook_detect_host()
 	if (istrue(get("/local/pcb/debug")))
 		require("cc/argstd/*", 0, 0);
 
+	require("cc/func_attr/unused/*", 0, 0);
 	require("cc/inline", 0, 0);
 
 	return 0;
