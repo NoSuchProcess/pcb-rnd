@@ -1,3 +1,4 @@
+3509	configure	solve non-c89-compliant function pointer <-> data pointer casts
 3361	configure	cleanup: layer.c is compiled into layer.o now
 3339	configure	C89: round() is detected by scconfig
 3183	distclean,configure	C89 switchover

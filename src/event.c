@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include "event.h"
 #include "error.h"
+#include "fptr_cast.h"
 
 typedef struct event_s event_t;
 
@@ -143,7 +144,7 @@ void events_uninit(void)
 		event_t *e, *next;
 		for(e = events[ev]; e != NULL; e = next) {
 			next = e->next;
-			fprintf(stderr, "WARNING: events_uninit: event %d still has %p registered for cookie %p\n", ev, (void *)e->handler, (void *)e->cookie);
+			fprintf(stderr, "WARNING: events_uninit: event %d still has %p registered for cookie %p\n", ev, pcb_cast_f2d(e->handler), (void *)e->cookie);
 			free(e);
 		}
 	}

@@ -566,7 +566,7 @@
  ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  event.h compat_misc.h ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h \
- create.h
+ create.h polygon.h rtree.h
 ../src_plugins/hid_gtk/ghid-route-style-selector.o: \
  ../src_plugins/hid_gtk/ghid-route-style-selector.c global.h ../config.h \
  const.h macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -1390,7 +1390,7 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h strflags.h compat_misc.h macro.h \
  error.h misc.h mymem.h misc_util.h layer.h create.h vtptr.h \
- ../src_plugins/io_lihata/common.h
+ ../src_plugins/io_lihata/common.h polygon.h rtree.h
 ../src_plugins/io_lihata/write.o: ../src_plugins/io_lihata/write.c \
  ../src_3rd/liblihata/tree.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -1586,7 +1586,7 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h data.h action_helper.h change.h error.h undo.h plugins.h \
- hid_actions.h dolists.h
+ hid_actions.h plug_footprint.h vtlibrary.h dolists.h
 ../src_plugins/propedit/propedit.o: ../src_plugins/propedit/propedit.c \
  plugins.h ../src_plugins/propedit/props.h global.h ../config.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -2170,7 +2170,7 @@ error.o: error.c ../config.h global.h const.h macro.h global_typedefs.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  compat_misc.h
-event.o: event.c event.h error.h
+event.o: event.c event.h error.h fptr_cast.h
 file_act.o: file_act.c ../config.h conf_core.h conf.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h list_common.h \
@@ -2224,6 +2224,7 @@ find_act.o: find_act.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  data.h find.h
+fptr_cast.o: fptr_cast.c fptr_cast.h
 free_atexit.o: free_atexit.c
 funchash.o: funchash.c ../src_3rd/liblihata/genht/htpi.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
@@ -2412,7 +2413,7 @@ hid_init.o: hid_init.c ../config.h global.h const.h macro.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h
+ ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h fptr_cast.h
 hid_nogui.o: hid_nogui.c ../config.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h list_common.h \

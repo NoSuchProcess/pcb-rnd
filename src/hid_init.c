@@ -22,6 +22,7 @@
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "compat_inc.h"
+#include "fptr_cast.h"
 
 HID **hid_list = 0;
 int hid_num_hids = 0;
@@ -73,11 +74,11 @@ static void hid_load_dir(char *dirname)
 			else {
 				symname = Concat("hid_", basename, "_init", NULL);
 				if ((sym = dlsym(so, symname)) != NULL) {
-					symv = (pcb_uninit_t (*)()) sym;
+					symv = (pcb_uninit_t (*)())pcb_cast_d2f(sym);
 					uninit = symv();
 				}
 				else if ((sym = dlsym(so, "pcb_plugin_init")) != NULL) {
-					symv = (pcb_uninit_t (*)()) sym;
+					symv = (pcb_uninit_t (*)()) pcb_cast_d2f(sym);
 					uninit = symv();
 				}
 				else

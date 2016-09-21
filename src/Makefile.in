@@ -9,6 +9,13 @@ put /local/pcb/DEPCFLAGS {}
 include {../scconfig/template/debug.tmpasm}
 
 # main: objects
+# These have constructs that are not c89 strictly speaking but are
+# effectively c89; typical example is casting a function pointer to a
+# data pointer for dlsym().
+put /local/pcb/OBJS_C99 [@
+	fptr_cast.o
+@]
+
 put /local/pcb/OBJS [@
 	action_helper.o
 	action_act.o
