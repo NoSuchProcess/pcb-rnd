@@ -313,7 +313,12 @@ static int ActionImport(int argc, const char **argv, Coord x, Coord y)
 		int i;
 
 		if (tmpfile == NULL) {
-			Message(PCB_MSG_DEFAULT, _("Could not create temp file"));
+			Message(PCB_MSG_ERROR, _("Could not create temp file"));
+			return 1;
+		}
+
+		if ((conf_import_sch.plugins.import_sch.gnetlist_program == NULL) || (*conf_import_sch.plugins.import_sch.gnetlist_program == '\0')) {
+			Message(PCB_MSG_ERROR, _("No gnetlist program configured, can not import. Please fill in configuration setting plugins/import_sch/gnetlist_program\n"));
 			return 1;
 		}
 
@@ -367,12 +372,17 @@ static int ActionImport(int argc, const char **argv, Coord x, Coord y)
 		if (user_outfile && !user_target)
 			user_target = user_outfile;
 
+		if ((conf_import_sch.plugins.import_sch.make_program == NULL) || (*conf_import_sch.plugins.import_sch.make_program == '\0')) {
+			Message(PCB_MSG_ERROR, _("No make program configured, can not import. Please fill in configuration setting plugins/import_sch/make_program\n"));
+			return 1;
+		}
+
 		if (user_outfile)
 			tmpfile = user_outfile;
 		else {
 			tmpfile = tempfile_name_new("gnetlist_output");
 			if (tmpfile == NULL) {
-				Message(PCB_MSG_DEFAULT, _("Could not create temp file"));
+				Message(PCB_MSG_ERROR, _("Could not create temp file"));
 				return 1;
 			}
 			must_free_tmpfile = 1;
