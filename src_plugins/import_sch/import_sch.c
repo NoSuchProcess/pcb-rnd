@@ -117,12 +117,9 @@ If a temporary file is needed the @code{TMPDIR} environment variable
 is used to select its location.
 */
 
-#warning TODO: update this para
 /*
-Note that the programs @code{gnetlist} and @code{make} may be
-overridden by the user via the @code{make-program} and @code{gnetlist}
-@code{pcb} settings (i.e. in @code{~/.pcb/settings} or on the command
-line).
+Note that the programs @code{gnetlist} and @code{make} must be
+configured.
 
 If @pcb{} cannot determine which schematic(s) to import from, the GUI
 is called to let user choose (see @code{ImportGUI()}).
