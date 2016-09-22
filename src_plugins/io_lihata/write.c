@@ -463,11 +463,11 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 	lht_node_t *stl, *sn;
 	int n;
 
-	stl = lht_dom_node_alloc(LHT_HASH, "styles");
+	stl = lht_dom_node_alloc(LHT_LIST, "styles");
 	for(n = 0; n < vtroutestyle_len(styles); n++) {
 		RouteStyleType *s = styles->array + n;
 		sn = lht_dom_node_alloc(LHT_HASH, s->name);
-		lht_dom_hash_put(stl, sn);
+		lht_dom_list_append(stl, sn);
 		lht_dom_hash_put(sn, build_textf("thickness", CFMT, s->Thick));
 		lht_dom_hash_put(sn, build_textf("diameter", CFMT, s->Diameter));
 		lht_dom_hash_put(sn, build_textf("hole", CFMT, s->Hole));

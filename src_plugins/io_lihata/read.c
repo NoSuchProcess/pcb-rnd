@@ -676,7 +676,7 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 	lht_node_t *stn;
 	lht_dom_iterator_t it;
 
-	if (nd->type != LHT_HASH)
+	if (nd->type != LHT_LIST)
 		return -1;
 
 	for(stn = lht_dom_first(&it, nd); stn != NULL; stn = lht_dom_next(&it)) {
@@ -692,10 +692,10 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 		else
 			memcpy(s->name, stn->name, name_len+1);
 
-		parse_coord(&s->Thick, lht_dom_hash_get(nd, "thickness"));
-		parse_coord(&s->Diameter, lht_dom_hash_get(nd, "diameter"));
-		parse_coord(&s->Hole, lht_dom_hash_get(nd, "hole"));
-		parse_coord(&s->Clearance, lht_dom_hash_get(nd, "clearance"));
+		parse_coord(&s->Thick, lht_dom_hash_get(stn, "thickness"));
+		parse_coord(&s->Diameter, lht_dom_hash_get(stn, "diameter"));
+		parse_coord(&s->Hole, lht_dom_hash_get(stn, "hole"));
+		parse_coord(&s->Clearance, lht_dom_hash_get(stn, "clearance"));
 	}
 }
 
