@@ -209,6 +209,12 @@ static int parse_meta(PCBType *pcb, lht_node_t *nd)
 		parse_coord(&pcb->minRing, lht_dom_hash_get(grp, "min_ring"));
 	}
 
+	grp = lht_dom_hash_get(nd, "cursor");
+	if ((grp != NULL) && (grp->type == LHT_HASH)) {
+		parse_coord(&pcb->CursorX, lht_dom_hash_get(grp, "x"));
+		parse_coord(&pcb->CursorY, lht_dom_hash_get(grp, "y"));
+	}
+
 	return 0;
 }
 

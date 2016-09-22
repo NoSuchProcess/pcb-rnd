@@ -87,6 +87,11 @@ static lht_node_t *build_board_meta(PCBType *pcb)
 	lht_dom_hash_put(grp, build_textf("min_drill", CFMT, pcb->minDrill));
 	lht_dom_hash_put(grp, build_textf("min_ring",  CFMT, pcb->minRing));
 
+	grp = lht_dom_node_alloc(LHT_HASH, "cursor");
+	lht_dom_hash_put(meta, grp);
+	lht_dom_hash_put(grp, build_textf("x", CFMT, pcb->CursorX));
+	lht_dom_hash_put(grp, build_textf("y", CFMT, pcb->CursorY));
+
 	return meta;
 }
 
