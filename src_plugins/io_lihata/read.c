@@ -671,6 +671,34 @@ static void post_ids_assign(vtptr_t *ids)
 	vtptr_uninit(ids);
 }
 
+static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
+{
+	lht_node_t *stn;
+	lht_dom_iterator_t it;
+
+	if (nd->type != LHT_HASH)
+		return -1;
+
+	for(stn = lht_dom_first(&it, nd); stn != NULL; stn = lht_dom_next(&it)) {
+		RouteStyleType *s = vtroutestyle_alloc_append(styles, 1);
+		int name_len = strlen(stn->name);
+
+		/* safe copy the name */
+		if (name_len > sizeof(s->name)-1) {
+			Message(PCB_MSG_WARNING, "Route style name too long: '%s' (should be less than %d characters)\n", stn->name, sizeof(s->name)-1);
+			memcpy(s->name, stn->name, sizeof(s->name)-2);
+			s->name[sizeof(s->name)-1] = '\0';
+		}
+		else
+			memcpy(s->name, stn->name, name_len+1);
+
+		parse_coord(&s->Thick, lht_dom_hash_get(nd, "thickness"));
+		parse_coord(&s->Diameter, lht_dom_hash_get(nd, "diameter"));
+		parse_coord(&s->Hole, lht_dom_hash_get(nd, "hole"));
+		parse_coord(&s->Clearance, lht_dom_hash_get(nd, "clearance"));
+	}
+}
+
 static int parse_board(PCBType *pcb, lht_node_t *nd)
 {
 	lht_node_t *sub;
@@ -697,6 +725,10 @@ static int parse_board(PCBType *pcb, lht_node_t *nd)
 
 	sub = lht_dom_hash_get(nd, "font");
 	if ((sub != NULL) && (parse_font(&pcb->Font, sub) != 0))
+		return -1;
+
+	sub = lht_dom_hash_get(nd, "styles");
+	if ((sub != NULL) && (parse_styles(&pcb->RouteStyle, sub) != 0))
 		return -1;
 
 	post_ids_assign(&post_ids);
