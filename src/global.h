@@ -291,7 +291,7 @@ typedef struct PCBType {
 		*RatColor,
 		*InvisibleObjectsColor,
 		*InvisibleMarkColor, *ElementSelectedColor, *RatSelectedColor, *ConnectedColor, *WarnColor, *MaskColor;
-	long CursorX,									/* cursor position as saved with layout */
+	Coord CursorX,									/* cursor position as saved with layout */
 	  CursorY;
 	Coord Bloat,									/* drc sizes saved with layout */
 	  Shrink, minWid, minSlk, minDrill, minRing;
