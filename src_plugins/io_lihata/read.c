@@ -653,7 +653,6 @@ static int parse_font(FontType *font, lht_node_t *nd)
 		else
 			chr = *sym->name;
 		if ((chr >= 0) && (chr < sizeof(font->Symbol) / sizeof(font->Symbol[0]))) {
-			printf("load sym %d\n", chr);
 			parse_symbol(font->Symbol+chr, sym);
 		}
 	}
