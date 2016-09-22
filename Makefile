@@ -1,14 +1,14 @@
-all:
+all: FORCE
 	cd src && make
 	cd util && make
 	cd pcblib && make
 
-clean:
+clean: FORCE
 	cd src && make clean
 	cd util && make clean
 	cd pcblib && make clean
 
-distclean:
+distclean: FORCE
 	make clean ; true
 	cd scconfig && make clean ; true
 	cd src_3rd/genlist && make clean ; true
@@ -19,24 +19,26 @@ distclean:
 	cd src_3rd/liblihata/genht && make clean ; true
 	cd src_3rd/qparse && make clean ; true
 
-install:
+install: FORCE
 	cd src && make install
 	cd util && make install
 	cd pcblib && make install
 
-linstall:
+linstall: FORCE
 	cd src && make linstall
 	cd util && make linstall
 	cd pcblib && make linstall
 
-uninstall:
+uninstall: FORCE
 	cd src && make uninstall
 	cd util && make uninstall
 	cd pcblib && make uninstall
 
-deb:
+deb: FORCE
 	fakeroot debian/rules clean
 	fakeroot debian/rules binary
 
-debclean:
+debclean: FORCE
 	fakeroot debian/rules clean
+
+FORCE:
