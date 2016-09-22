@@ -424,7 +424,6 @@ static lht_node_t *build_symbol(SymbolType *sym, const char *name)
 	return ndt;
 }
 
-
 static lht_node_t *build_font(FontType *font)
 {
 	lht_node_t *syms, *ndt, *frt;
@@ -459,7 +458,23 @@ static lht_node_t *build_font(FontType *font)
 	return frt;
 }
 
+static lht_node_t *build_styles(vtroutestyle_t *styles)
+{
+	lht_node_t *stl, *sn;
+	int n;
 
+	stl = lht_dom_node_alloc(LHT_HASH, "styles");
+	for(n = 0; n < vtroutestyle_len(styles); n++) {
+		RouteStyleType *s = styles->array + n;
+		sn = lht_dom_node_alloc(LHT_HASH, s->name);
+		lht_dom_hash_put(stl, sn);
+		lht_dom_hash_put(sn, build_textf("thickness", CFMT, s->Thick));
+		lht_dom_hash_put(sn, build_textf("diameter", CFMT, s->Diameter));
+		lht_dom_hash_put(sn, build_textf("hole", CFMT, s->Hole));
+		lht_dom_hash_put(sn, build_textf("clearance", CFMT, s->Clearance));
+	}
+	return stl;
+}
 
 static lht_doc_t *build_board(PCBType *pcb)
 {
@@ -470,6 +485,7 @@ static lht_doc_t *build_board(PCBType *pcb)
 	lht_dom_hash_put(brd->root, build_data(pcb->Data));
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
 	lht_dom_hash_put(brd->root, build_font(&pcb->Font));
+	lht_dom_hash_put(brd->root, build_styles(&pcb->RouteStyle));
 	return brd;
 }
 
