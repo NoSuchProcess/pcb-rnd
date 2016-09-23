@@ -66,21 +66,21 @@
 
 /* Internationalization support. */
 #ifdef ENABLE_NLS
-#include <libintl.h>
-#define _(S) gettext(S)
-#if defined(gettext_noop)
-#define N_(S) gettext_noop(S)
+#	include <libintl.h>
+#	define _(S) gettext(S)
+#	if defined(gettext_noop)
+#		define N_(S) gettext_noop(S)
+#	else
+#		define N_(S) (S)
+#	endif
 #else
-#define N_(S) (S)
-#endif
-#else
-#define _(S) (S)
-#define N_(S) (S)
-#define textdomain(S) (S)
-#define gettext(S) (S)
-#define dgettext(D, S) (S)
-#define dcgettext(D, S, T) (S)
-#define bindtextdomain(D, Dir) (D)
+#	define _(S) (S)
+#	define N_(S) (S)
+#	define textdomain(S) (S)
+#	define gettext(S) (S)
+#	define dgettext(D, S) (S)
+#	define dcgettext(D, S, T) (S)
+#	define bindtextdomain(D, Dir) (D)
 #endif /* ENABLE_NLS */
 
 /* This is used by the lexer/parser */
@@ -105,7 +105,7 @@ typedef struct {
  * putting assignments inside the test.
  */
 #if defined(__GNUC__) && (__GNUC__ > 2) && defined(__OPTIMIZE__)
-#define PCB_BOOLEAN_EXPR(expr)                   \
+#	define PCB_BOOLEAN_EXPR(expr)                   \
  __extension__ ({                             \
    int _boolean_var_;                         \
    if (expr)                                  \
@@ -114,11 +114,11 @@ typedef struct {
       _boolean_var_ = 0;                      \
    _boolean_var_;                             \
 })
-#define LIKELY(expr) (__builtin_expect (PCB_BOOLEAN_EXPR(expr), 1))
-#define UNLIKELY(expr) (__builtin_expect (PCB_BOOLEAN_EXPR(expr), 0))
+#	define LIKELY(expr) (__builtin_expect (PCB_BOOLEAN_EXPR(expr), 1))
+#	define UNLIKELY(expr) (__builtin_expect (PCB_BOOLEAN_EXPR(expr), 0))
 #else
-#define LIKELY(expr) (expr)
-#define UNLIKELY(expr) (expr)
+#	define LIKELY(expr) (expr)
+#	define UNLIKELY(expr) (expr)
 #endif
 
 /* ---------------------------------------------------------------------------
@@ -520,13 +520,13 @@ struct rats_patch_line_s {
  */
 
 #ifndef GCC_VERSION
-#define GCC_VERSION (__GNUC__ * 1000 + __GNUC_MINOR__)
+#	define GCC_VERSION (__GNUC__ * 1000 + __GNUC_MINOR__)
 #endif /* GCC_VERSION */
 
 #if GCC_VERSION > 2007
-#define ATTRIBUTE_UNUSED __attribute__((unused))
+#	define ATTRIBUTE_UNUSED __attribute__((unused))
 #else
-#define ATTRIBUTE_UNUSED
+#	define ATTRIBUTE_UNUSED
 #endif
 
 /* ---------------------------------------------------------------------------
