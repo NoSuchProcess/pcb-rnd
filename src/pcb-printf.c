@@ -95,6 +95,21 @@ static inline void make_printf_spec(char *printf_spec_new, const char *printf_sp
 }
 
 
+/* sprintf a value */
+#define sprintf_lc_safe(is_file_mode, out, fmt, val) \
+do { \
+	if (is_file_mode) { \
+		setlocale(LC_ALL, "C"); \
+		sprintf(out, fmt, val); \
+		setlocale(LC_ALL, ""); \
+	} \
+	else \
+		sprintf(out, fmt, val); \
+	if (trunc0) \
+		do_trunc0(filemode_buff); \
+} while(0)
+
+
 /* \brief Internal coord-to-string converter for pcb-printf
  * \par Function Description
  * Converts a (group of) measurement(s) to a comma-delimited
@@ -204,31 +219,19 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 	if (n_coords > 1)
 		if (gds_append(dest,  '(') != 0)
 			goto err;
-	if (suffix_type == FILE_MODE) {
-		setlocale(LC_ALL, "C"); /* ascii decimal */
-		sprintf(filemode_buff, printf_spec_new + 2, value[0]);
-		setlocale(LC_ALL, "");
-	}
-	else
-		sprintf(filemode_buff, printf_spec_new + 2, value[0]);
-	if (trunc0)
-		do_trunc0(filemode_buff);
-	if (gds_append_str(dest, filemode_buff) != 0) goto err;
+
+	sprintf_lc_safe((suffix_type == FILE_MODE), filemode_buff, printf_spec_new + 2, value[0]);
+	if (gds_append_str(dest, filemode_buff) != 0)
+		goto err;
+
 	for (i = 1; i < n_coords; ++i) {
-		if (suffix_type == FILE_MODE) {
-			setlocale(LC_ALL, "C");  /* ascii decimal */
-			sprintf(filemode_buff, printf_spec_new, value[i]);
-			setlocale(LC_ALL, "");
-		}
-		else
-			sprintf(filemode_buff, printf_spec_new, value[i]);
+		sprintf_lc_safe((suffix_type == FILE_MODE), filemode_buff, printf_spec_new, value[i]);
 		if (gds_append_str(dest, filemode_buff) != 0)
 			goto err;
 	}
-	if (trunc0)
-		do_trunc0(filemode_buff);
 	if (n_coords > 1)
 		if (gds_append(dest, ')') != 0) goto err;
+
 	/* Append suffix */
 	if (value[0] != 0 || n_coords > 1) {
 		switch (suffix_type) {
