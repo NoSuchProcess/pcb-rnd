@@ -47,17 +47,16 @@ as nonetlist, with both pins set intconn(1) - this will result in a 2
 pad element, pads internally connected, that can be part of any one network
 without causing short.
 <h2> Example </h2>
-The first image depicts crossing traces, a common problem when rats nesting a
-new layout from a netlist. One method to resolve such issues is to use a zero ohm jumper resistor that allows
-one signal trace to 'jump' across another. 
+The first image depicts crossing traces, a common problem encountered when rats
+nesting a new layout from a netlist. One method to resolve such issues is to
+use a zero ohm jumper resistor that allows one signal trace to 'jump' across
+another.
 <p>
-The second image shows the layout
-routing the nonconflicting rats and a open unrouted point where the rat would
-require one trace to cross another. 
+The second image shows the layout routing the nonconflicting rats and a open
+unrouted point where the rat would require one trace to cross another.
 <p>
-In the third image a 1206 SMD footprint for a 0 Ohm 1206 resistor called J1
-is placed with an intconn between the two pads which resolves the
-final rat line.
+In the third image a 1206 SMD footprint for a 0 Ohm 1206 resistor called J1 is
+placed with an intconn between the two pads which resolves the final rat line.
 <p>
 <img src="intconn1.png">
 <p>
