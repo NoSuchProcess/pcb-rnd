@@ -109,6 +109,22 @@ do { \
 		do_trunc0(filemode_buff); \
 } while(0)
 
+/* append a suffix, with or without space */
+static int inline append_suffix(gds_t *dest, enum e_suffix suffix_type, const char *suffix)
+{
+	switch (suffix_type) {
+	case NO_SUFFIX:
+		break;
+	case SUFFIX:
+		if (gds_append(dest, ' ') != 0) return -1;
+		/* deliberate fall-thru */
+	case FILE_MODE:
+		if (gds_append_str(dest, suffix) != 0) return -1;
+		break;
+	}
+	return 0;
+}
+
 
 /* \brief Internal coord-to-string converter for pcb-printf
  * \par Function Description
@@ -232,19 +248,11 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 	if (n_coords > 1)
 		if (gds_append(dest, ')') != 0) goto err;
 
+
 	/* Append suffix */
-	if (value[0] != 0 || n_coords > 1) {
-		switch (suffix_type) {
-		case NO_SUFFIX:
-			break;
-		case SUFFIX:
-			if (gds_append(dest, ' ') != 0) goto err;
-			/* deliberate fall-thru */
-		case FILE_MODE:
-			if (gds_append_str(dest, suffix) != 0) goto err;
-			break;
-		}
-	}
+	if (value[0] != 0 || n_coords > 1)
+		if (append_suffix(dest, suffix_type, suffix) != 0)
+			goto err;
 
 	retval = 0;
 err:;
@@ -253,6 +261,39 @@ err:;
 
 	if (value != value_local)
 		free(value);
+	return retval;
+}
+
+/* Same as CoordsToString but take only one coord and print it in human readable format */
+static int CoordsToHumanString(gds_t *dest, Coord coord, const gds_t *printf_spec_, enum e_allow allow, enum e_suffix suffix_type)
+{
+	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
+	char printf_spec_new_local[256];
+	char *printf_spec_new;
+	int i, retval = -1, trunc0;
+	const char *printf_spec = printf_spec_->array;
+	const char *suffix;
+	double value;
+
+	i = printf_spec_->used + 64;
+	if (i > sizeof(printf_spec_new_local))
+		printf_spec_new = malloc(i);
+	else
+		printf_spec_new = printf_spec_new_local;
+
+	make_printf_spec(printf_spec_new, printf_spec, 8, &trunc0);
+	sprintf_lc_safe((suffix_type == FILE_MODE), filemode_buff, printf_spec_new + 2, value);
+	if (gds_append_str(dest, filemode_buff) != 0)
+		goto err;
+
+	if (value != 0)
+		if (append_suffix(dest, suffix_type, suffix) != 0)
+			goto err;
+
+
+	err:;
+	if (printf_spec_new != printf_spec_new_local)
+		free(printf_spec_new);
 	return retval;
 }
 
@@ -437,6 +478,9 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 					break;
 				case 'S':
 					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_NATURAL, suffix) != 0) goto err;
+					break;
+				case 'H':
+					if (CoordsToHumanString(string, value, &spec, mask & ALLOW_NATURAL, suffix) != 0) goto err;
 					break;
 				case 'M':
 					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_METRIC, suffix) != 0) goto err;
