@@ -2544,7 +2544,7 @@ The filename and the searchpath (<em>filePath</em>) are passed to the
 command defined by <em>fileCommand</em>. 
 If no filename is specified a file select box will popup.
 
-     <p><a name="index-g_t_003aq-192"></a><a name="index-exit-193"></a><a name="index-quit-194"></a><br><dt>&lsquo;<samp><span class="samp">q[!]</span></samp>&rsquo;<dd>Quits the program without saving any data (after confirmation). 
+     <p><a name="index-g_t_003aq-192"></a><a name="index-exit-193"></a><a name="index-quit-194"></a><br><dt>&lsquo;<samp><span class="samp">q[!]</span></samp>&rsquo;<dd>Quits the program. Uses confirmation dialog if any unsaved data will be lost by quitting.
 q! doesn't ask for confirmation, it just quits.
 
      <p><a name="index-g_t_003as-195"></a><a name="index-saving-layouts-196"></a><a name="index-layout-files_002c-saving-of-197"></a><br><dt>&lsquo;<samp><span class="samp">s [filename]</span></samp>&rsquo;<dd>Data and the filename are passed to the command defined by the resource
@@ -2673,7 +2673,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Command_002dLine-Options">Command-Line
 </dl>
    <!-- ./../src/main.c 453 -->
      <dl>
-<dt><code>--show-defaults</code><a name="index-g_t_002d_002dshow_002ddefaults-213"></a><dd>Show option defaults. 
+<dt><u style="color:red;"><code>--show-defaults</code><a name="index-g_t_002d_002dshow_002ddefaults-213"></a><dd>Show option defaults. 
 </dl>
    <!-- ./../src/main.c 458 -->
      <dl>
@@ -2740,7 +2740,7 @@ names, layer numbers and layer groups.
    <!-- ./../src/main.c 906 -->
      <dl>
 <dt><code>--ring-bell-finished</code><a name="index-g_t_002d_002dring_002dbell_002dfinished-228"></a><dd>Execute the bell command when all rats are routed. 
-</dl>
+</dl></u>
    <!-- options General GUI Options -->
 <div class="node">
 <a name="General-GUI-Options"></a>
@@ -2752,7 +2752,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Command_002dLine-Options">Command-Line
 </div>
 
 <h3 class="section">6.2 General GUI Options</h3>
-
+<u style="color:red;">
 <!-- ./../src/main.c 842 -->
      <dl>
 <dt><code>--pinout-offset-x &lt;num&gt;</code><a name="index-g_t_002d_002dpinout_002doffset_002dx-_003cnum_003e-229"></a><dd>Horizontal offset of the pin number display. Defaults to <code>100mil</code>. 
@@ -2798,7 +2798,7 @@ that the cursor can snap to.
    <!-- ./../src/main.c 897 -->
      <dl>
 <dt><code>--show-number</code><a name="index-g_t_002d_002dshow_002dnumber-239"></a><dd>Pinout shows number. 
-</dl>
+</dl></u>
    <!-- options GTK+ GUI Options -->
 <div class="node">
 <a name="GTK+-GUI-Options"></a>
@@ -2824,8 +2824,8 @@ automatically scaled to fit the canvas.
 </dl>
    <!-- ./../src/hid/gtk/gui-top-window.c 1627 -->
      <dl>
-<dt><code>--pcb-menu &lt;string&gt;</code><a name="index-g_t_002d_002dpcb_002dmenu-_003cstring_003e-242"></a><dd>Location of the <samp><span class="file">gpcb-menu.res</span></samp> file which defines the menu for the GTK+ GUI. 
-</dl>
+<u style="color:red;"><dt><code>--pcb-menu &lt;string&gt;</code><a name="index-g_t_002d_002dpcb_002dmenu-_003cstring_003e-242"></a><dd>Location of the <samp><span class="file">gpcb-menu.res</span></samp> file which defines the menu for the GTK+ GUI. 
+</dl></u>
    <!-- options lesstif GUI Options -->
 <div class="node">
 <a name="lesstif-GUI-Options"></a>
@@ -2850,8 +2850,8 @@ automatically scaled to fit the canvas.
 </dl>
    <!-- ./../src/hid/lesstif/main.c 213 -->
      <dl>
-<dt><code>--pcb-menu &lt;string&gt;</code><a name="index-g_t_002d_002dpcb_002dmenu-_003cstring_003e-245"></a><dd>Location of the <samp><span class="file">pcb-menu.res</span></samp> file which defines the menu for the lesstif GUI. 
-</dl>
+<u style="color:red;"><dt><code>--pcb-menu &lt;string&gt;</code><a name="index-g_t_002d_002dpcb_002dmenu-_003cstring_003e-245"></a><dd>Location of the <samp><span class="file">pcb-menu.res</span></samp> file which defines the menu for the lesstif GUI. 
+</dl></u>
    <!-- options Colors -->
 <div class="node">
 <a name="Colors"></a>
