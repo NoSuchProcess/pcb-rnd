@@ -264,8 +264,70 @@ err:;
 	return retval;
 }
 
+typedef struct {
+	int           score_factor;
+
+	enum e_allow  base;
+	double        down_limit;
+	enum e_allow  down;
+	double        up_limit;
+	enum e_allow  up;
+
+	/* persistent, calculated once */
+	const Unit    *base_unit, *down_unit, *up_unit;
+} human_coord_t;
+
+/* Conversion preference table */
+static human_coord_t human_coord[] = {
+	{2, ALLOW_MM,  0.001, ALLOW_UM, 1000.0, ALLOW_M     ,NULL,NULL,NULL},
+	{1, ALLOW_MIL, 0,     0,        1000.0, ALLOW_IN    ,NULL,NULL,NULL}
+};
+#define NUM_HUMAN_COORD (sizeof(human_coord) / sizeof(human_coord[0]))
+
+static inline int try_human_coord(Coord coord, const Unit *unit, double down_limit, double up_limit, int score_factor, double *value, unsigned int *best, const char **suffix)
+{
+	double v, frac;
+	long int digs, zeros;
+	unsigned int score;
+
+	/* convert the value to the proposed unit */
+	if (unit->family == METRIC)
+		v = PCB_COORD_TO_MM(coord);
+	else
+		v = PCB_COORD_TO_MIL(coord);
+	v = v * unit->scale_factor;
+
+	/* Check if neighbour units are better */
+	if ((down_limit > 0) && (v < down_limit))
+		return -1;
+	if ((up_limit > 0) && (v > up_limit))
+		return +1;
+
+	/* count trailing zeros after the decimal point up to 8 digits */
+	frac = v - floor(v);
+	digs = frac * 100000000.0;
+	if (digs != 0)
+		for(zeros = 0; (digs % 10) == 0; zeros++, digs /= 10);
+	else
+		zeros = 8;
+
+	/* score is higher for more zeroes */
+	score = score_factor + 8 * zeros;
+
+	printf("try: %s '%.8f' -> %.8f %d score=%d\n", unit->suffix, v, frac, zeros, score);
+
+	/* update the best score */
+	if (score > *best) {
+		*value = v;
+		*best = score;
+		*suffix = unit->suffix;
+	}
+
+	return 0;
+}
+
 /* Same as CoordsToString but take only one coord and print it in human readable format */
-static int CoordsToHumanString(gds_t *dest, Coord coord, const gds_t *printf_spec_, enum e_allow allow, enum e_suffix suffix_type)
+static int CoordsToHumanString(gds_t *dest, Coord coord, const gds_t *printf_spec_, enum e_suffix suffix_type)
 {
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
 	char printf_spec_new_local[256];
@@ -274,6 +336,7 @@ static int CoordsToHumanString(gds_t *dest, Coord coord, const gds_t *printf_spe
 	const char *printf_spec = printf_spec_->array;
 	const char *suffix;
 	double value;
+	unsigned int best_score = 0;
 
 	i = printf_spec_->used + 64;
 	if (i > sizeof(printf_spec_new_local))
@@ -281,15 +344,36 @@ static int CoordsToHumanString(gds_t *dest, Coord coord, const gds_t *printf_spe
 	else
 		printf_spec_new = printf_spec_new_local;
 
+	/* cache unit lookup */
+	if (human_coord[0].base_unit == NULL) {
+		for(i = 0; i < NUM_HUMAN_COORD; i++) {
+			human_coord[i].base_unit = get_unit_struct_by_allow(human_coord[i].base);
+			human_coord[i].down_unit = get_unit_struct_by_allow(human_coord[i].down);
+			human_coord[i].up_unit = get_unit_struct_by_allow(human_coord[i].up);
+		}
+	}
+
+	for(i = 0; i < NUM_HUMAN_COORD; i++) {
+		int res;
+		/* try the base units first */
+		res = try_human_coord(coord, human_coord[i].base_unit, human_coord[i].down_limit, human_coord[i].up_limit, human_coord[i].score_factor,&value, &best_score, &suffix);
+		if (res < 0)
+			try_human_coord(coord, human_coord[i].down_unit, 0, 0, human_coord[i].score_factor, &value, &best_score, &suffix);
+		else if (res > 0)
+			try_human_coord(coord, human_coord[i].up_unit, 0, 0, human_coord[i].score_factor,&value, &best_score, &suffix);
+	}
+
 	make_printf_spec(printf_spec_new, printf_spec, 8, &trunc0);
 	sprintf_lc_safe((suffix_type == FILE_MODE), filemode_buff, printf_spec_new + 2, value);
 	if (gds_append_str(dest, filemode_buff) != 0)
 		goto err;
 
-	if (value != 0)
+	if (value != 0) {
+		if (suffix_type == NO_SUFFIX)
+			suffix_type = SUFFIX;
 		if (append_suffix(dest, suffix_type, suffix) != 0)
 			goto err;
-
+	}
 
 	err:;
 	if (printf_spec_new != printf_spec_new_local)
@@ -480,7 +564,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_NATURAL, suffix) != 0) goto err;
 					break;
 				case 'H':
-					if (CoordsToHumanString(string, value, &spec, mask & ALLOW_NATURAL, suffix) != 0) goto err;
+					if (CoordsToHumanString(string, value[0], &spec, suffix) != 0) goto err;
 					break;
 				case 'M':
 					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_METRIC, suffix) != 0) goto err;
