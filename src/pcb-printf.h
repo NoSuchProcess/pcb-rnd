@@ -43,6 +43,7 @@
  *   %mL    output a measure in scaled (mil/in) imperial
  *   %ms    output a measure in most natural mm/mil units
  *   %mS    output a measure in most natural scaled units
+ *   %mH    output a measure in most human readable scaled units
  *   %md    output a pair of measures in most natural mm/mil units
  *   %mD    output a pair of measures in most natural scaled units
  *   %m3    output 3 measures in most natural scaled units
