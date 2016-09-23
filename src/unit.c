@@ -184,6 +184,16 @@ const Unit *get_unit_struct(const char *suffix)
 	return NULL;
 }
 
+const Unit *get_unit_struct_by_allow(enum e_allow allow)
+{
+	int i;
+	for (i = 0; i < N_UNITS; ++i)
+		if (Units[i].allow == allow)
+			return &Units[i];
+
+	return NULL;
+}
+
 /* ACCESSORS */
 /* \brief Returns the master unit list. This may not be modified. */
 const Unit *get_unit_list(void)

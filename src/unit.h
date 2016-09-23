@@ -111,6 +111,7 @@ extern Unit Units[];
 extern Increments increments[];
 
 const Unit *get_unit_struct(const char *suffix);
+const Unit *get_unit_struct_by_allow(enum e_allow allow);
 const Unit *get_unit_list(void);
 const Unit *get_unit_by_idx(int idx);
 int get_n_units(void);
