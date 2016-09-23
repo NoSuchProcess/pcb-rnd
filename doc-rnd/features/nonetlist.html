@@ -28,18 +28,18 @@ in the source; default value #777777, grey).
 <p>
 Uses of the nonetlist feature:
 <ul>
-	<li> smd jumper: Combined with <a href="intconn.html">the [intconn]</a> patch, this
+	<li> smd jumper: Combined with the [<a href="intconn.html">intconn</a>] patch, this
 	     solves the "0-ohm 1206 jumper" problem: the element should be marked
 	     as nonetlist, with both pins set intconn(1) - this will result in a 2
 	     pad element, pads internally connected, that can be part of any one network
-	     without causing short.
+	     without causing short and passing the DRC.
 	<li> mechanical parts that should not show up on the schematics:
 		<ul>
 			<li> mounting hole elements: single pin holes with silk marking the head of the screw
 			<li> chassis (often with mounting holes or keep-out areas)
 			<li> logos in footprints (no poly support in footprint - yet?)
 			<li> mechanical parts which do not have solderable pins (plastic spacers, extra connector shields)
-			<li> "spare parts", e.g. unused/disconnected DIP sockets or pin grids or connectors in a corner of the PCB for prototyping (dev-board style)
+			<li> "spare connectors", e.g. unused/disconnected DIP sockets, pin grids, or connectors in the corner of the PCB for prototyping (dev-board style)
 		</ul>
 </ul>
 <p>
