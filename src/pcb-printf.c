@@ -314,7 +314,7 @@ static inline int try_human_coord(Coord coord, const Unit *unit, double down_lim
 	/* score is higher for more zeroes */
 	score = score_factor + 8 * zeros;
 
-	printf("try: %s '%.8f' -> %.8f %d score=%d\n", unit->suffix, v, frac, zeros, score);
+/*	printf("try: %s '%.8f' -> %.8f %d score=%d\n", unit->suffix, v, frac, zeros, score);*/
 
 	/* update the best score */
 	if (score > *best) {
