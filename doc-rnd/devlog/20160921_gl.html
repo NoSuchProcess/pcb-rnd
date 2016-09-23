@@ -4,9 +4,16 @@
 
 <H2> what's missing for: opengl </H2>
 <p>
+What we don't have:
+<ul>
+	<li> rendering with opengl
+	<li> utilizing the 2d or 3d hardware acceleration of the GPU in drawing
+	<li> transparent copper layers
+	<li> on some CPU+GPU combination the current software rendering is slower than mainline's opengl rendering
+<p>
 Why we don't have it:
 <ul>
-	<li> I don't have a hardware+driver combination where opengl rendering is faster than software rendering
+	<li> I don't have a hardware+driver combination where opengl rendering works at acceptable speed
 	<li> I have no experience with opengl programming
 	<li> I am not much interested in changing any of the above two
 </ul>
@@ -37,7 +44,7 @@ How we could have it, gtk+gl:
 How we could have it, long term:
 <ul>
 	<li> I plan to write an SDL2 based HID
-	<li> SDL2 has trasparent render support for both software and accelerated drawing, the latter probably means 2d hardrware acceleration which is probably as good as direct opengl drawing would be
+	<li> SDL2 has transparent render support for both software and accelerated drawing, the latter probably means 2d hardware acceleration which is probably as good as direct opengl drawing would be
 </ul>
 <p>
 What we can't do:
