@@ -76,6 +76,25 @@ static void do_trunc0(char *str)
 }
 
 
+/* Create sprintf specifier, using default_prec no precision is given */
+static inline void make_printf_spec(char *printf_spec_new, const char *printf_spec, int precision, int *trunc0)
+{
+	int i = 0;
+
+	while (printf_spec[i] == '%' || isdigit(printf_spec[i]) ||
+				 printf_spec[i] == '-' || printf_spec[i] == '+' || printf_spec[i] == '#' || printf_spec[i] == '0')
+		++i;
+
+	if (printf_spec[i] == '.') {
+		if ((printf_spec[i+1] == '0') && (isdigit(printf_spec[i+2])))
+			*trunc0 = 1;
+		sprintf(printf_spec_new, ", %sf", printf_spec);
+	}
+	else
+		sprintf(printf_spec_new, ", %s.%df", printf_spec, precision);
+}
+
+
 /* \brief Internal coord-to-string converter for pcb-printf
  * \par Function Description
  * Converts a (group of) measurement(s) to a comma-delimited
@@ -178,19 +197,7 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 	for (i = 0; i < n_coords; ++i)
 		value[i] = value[i] * Units[n].scale_factor;
 
-	/* Create sprintf specifier, using default_prec no precision is given */
-	i = 0;
-	while (printf_spec[i] == '%' || isdigit(printf_spec[i]) ||
-				 printf_spec[i] == '-' || printf_spec[i] == '+' || printf_spec[i] == '#' || printf_spec[i] == '0')
-		++i;
-
-	if (printf_spec[i] == '.') {
-		if ((printf_spec[i+1] == '0') && (isdigit(printf_spec[i+2])))
-			trunc0 = 1;
-		sprintf(printf_spec_new, ", %sf", printf_spec);
-	}
-	else
-		sprintf(printf_spec_new, ", %s.%df", printf_spec, Units[n].default_prec);
+	make_printf_spec(printf_spec_new, printf_spec, Units[n].default_prec, &trunc0);
 
 	/* Actually sprintf the values in place
 	 *  (+ 2 skips the ", " for first value) */
