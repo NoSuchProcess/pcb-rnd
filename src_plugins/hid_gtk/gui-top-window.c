@@ -734,6 +734,10 @@ static void route_style_changed_cb(GHidRouteStyleSelector * rss, RouteStyleType 
 void make_route_style_buttons(GHidRouteStyleSelector * rss)
 {
 	int i;
+
+	/* Make sure the <custom> item is added */
+	ghid_route_style_selector_add_route_style(rss, NULL);
+
 	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); ++i)
 		ghid_route_style_selector_add_route_style(rss, &PCB->RouteStyle.array[i]);
 	g_signal_connect(G_OBJECT(rss), "select_style", G_CALLBACK(route_style_changed_cb), NULL);

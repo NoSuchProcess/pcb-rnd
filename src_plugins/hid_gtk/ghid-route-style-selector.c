@@ -470,7 +470,8 @@ void ghid_route_style_selector_add_route_style(GHidRouteStyleSelector * rss, Rou
 		ghid_route_style_selector_real_add_route_style(rss, &pcb_custom_route_style, 1);
 		rss->hidden_button = 1;
 	}
-	ghid_route_style_selector_real_add_route_style(rss, data, 0);
+	if (data != NULL)
+		ghid_route_style_selector_real_add_route_style(rss, data, 0);
 }
 
 
