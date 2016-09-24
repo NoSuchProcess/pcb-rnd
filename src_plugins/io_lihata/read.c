@@ -494,6 +494,7 @@ static int parse_pin(DataType *dt, ElementType *el, lht_node_t *obj, Coord dx, C
 	parse_coord(&via->X, lht_dom_hash_get(obj, "x"));
 	parse_coord(&via->Y, lht_dom_hash_get(obj, "y"));
 	parse_text(&via->Name, lht_dom_hash_get(obj, "name"));
+	parse_text(&via->Number, lht_dom_hash_get(obj, "number"));
 
 	via->X += dx;
 	via->Y += dy;
@@ -524,6 +525,7 @@ static int parse_pad(ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 	parse_coord(&pad->Point2.X, lht_dom_hash_get(obj, "x2"));
 	parse_coord(&pad->Point2.Y, lht_dom_hash_get(obj, "y2"));
 	parse_text(&pad->Name, lht_dom_hash_get(obj, "name"));
+	parse_text(&pad->Number, lht_dom_hash_get(obj, "number"));
 
 	pad->Point1.X += dx;
 	pad->Point2.X += dx;

@@ -216,6 +216,7 @@ static lht_node_t *build_pin(PinType *pin, int is_via, Coord dx, Coord dy)
 	lht_dom_hash_put(obj, build_textf("x", CFMT, pin->X+dx));
 	lht_dom_hash_put(obj, build_textf("y", CFMT, pin->Y+dy));
 	lht_dom_hash_put(obj, build_text("name", pin->Name));
+	lht_dom_hash_put(obj, build_text("number", pin->Number));
 	return obj;
 }
 
@@ -236,6 +237,7 @@ static lht_node_t *build_pad(PadType *pad, Coord dx, Coord dy)
 	lht_dom_hash_put(obj, build_textf("x2", CFMT, pad->Point2.X+dx));
 	lht_dom_hash_put(obj, build_textf("y2", CFMT, pad->Point2.Y+dy));
 	lht_dom_hash_put(obj, build_text("name", pad->Name));
+	lht_dom_hash_put(obj, build_text("number", pad->Number));
 	return obj;
 }
 
