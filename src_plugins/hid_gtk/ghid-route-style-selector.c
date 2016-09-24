@@ -22,6 +22,7 @@
 struct _route_style;
 struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteStyleSelector *, RouteStyleType *, int);
 static void ghid_route_style_selector_finalize(GObject * object);
+static void add_new_iter(GHidRouteStyleSelector * rss);
 
 /*! \brief Global action creation counter */
 static gint action_count;
@@ -58,6 +59,8 @@ struct _GHidRouteStyleSelector {
 
 	GtkListStore *model;
 	struct _route_style *active_style;
+
+	GtkTreeIter new_iter;     /* iter for the <new> item */
 };
 
 struct _GHidRouteStyleSelectorClass {
@@ -140,19 +143,18 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 /*  Callback for Delete route style button */
 static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 {
-	GtkTreeIter iter;
-
-	printf("Style increment %d currently selected \n", dialog->rss->selected);
 	if (dialog->rss->selected < 0)
 		return;
 
-	vtroutestyle_remove(&PCB->RouteStyle, dialog->rss->selected, 1);
 	dialog->inhibit_style_change = 1;
-	gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(dialog->rss->model),&iter,NULL,dialog->rss->selected+1);
-	gtk_list_store_remove(dialog->rss->model , &iter );
+	ghid_route_style_selector_empty(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
+	vtroutestyle_remove(&PCB->RouteStyle, dialog->rss->selected, 1);
+	dialog->rss->active_style = NULL;
+	make_route_style_buttons(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
+	pcb_trace("Style: %d deleted\n", dialog->rss->selected);
+	add_new_iter(dialog->rss);
 	dialog->inhibit_style_change = 0;
-	dialog->rss->selected = -1;
-	printf("Style: %d deleted\n", dialog->rss->selected);
+	ghid_route_style_selector_select_style(dialog->rss, &PCB->RouteStyle.array[0]);
 }
 
 /* \brief Helper for edit_button_cb */
@@ -166,11 +168,18 @@ static void _table_attach(GtkWidget * table, gint row, const gchar * label, GtkW
 	gtk_table_attach(GTK_TABLE(table), *entry, 1, 2, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
 }
 
+static void add_new_iter(GHidRouteStyleSelector * rss)
+{
+	/* Add "new style" option to list */
+	gtk_list_store_append(rss->model, &rss->new_iter);
+	gtk_list_store_set(rss->model, &rss->new_iter, TEXT_COL, _("<New>"), DATA_COL, NULL, -1);
+}
+
 /* \brief Builds and runs the "edit route styles" dialog */
 void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 {
 	GtkTreePath *path;
-	GtkTreeIter iter, tmp_iter;
+	GtkTreeIter iter;
 	struct _dialog dialog_data;
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 	GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(rss));
@@ -233,9 +242,8 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	check_box = gtk_check_button_new_with_label(_("Save route style settings as default"));
 	gtk_box_pack_start(GTK_BOX(sub_vbox), check_box, TRUE, TRUE, 0);
 
-	/* Add "new style" option to list */
-	gtk_list_store_append(rss->model, &tmp_iter);
-	gtk_list_store_set(rss->model, &tmp_iter, TEXT_COL, _("<New>"), DATA_COL, NULL, -1);
+
+	add_new_iter(rss);
 
 	/* Display dialog */
 	dialog_data.rss = rss;
@@ -250,7 +258,8 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 		RouteStyleType *rst;
 		struct _route_style *style;
 		gboolean save;
-		gtk_combo_box_get_active_iter(GTK_COMBO_BOX(select_box), &iter);
+		if (!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(select_box), &iter))
+			goto cancel;
 		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &style, -1);
 		if (style == NULL) {
 			int n = vtroutestyle_len(&PCB->RouteStyle);
@@ -281,14 +290,15 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 
 		/* Cleanup */
 		gtk_widget_destroy(dialog);
-		gtk_list_store_remove(rss->model, &tmp_iter);
+		gtk_list_store_remove(rss->model, &rss->new_iter);
 		/* Emit change signals */
 		ghid_route_style_selector_select_style(rss, rst);
 		g_signal_emit(rss, ghid_route_style_selector_signals[STYLE_EDITED_SIGNAL], 0, save);
 	}
 	else {
+		cancel:;
 		gtk_widget_destroy(dialog);
-		gtk_list_store_remove(rss->model, &tmp_iter);
+		gtk_list_store_remove(rss->model, &rss->new_iter);
 	}
 }
 
@@ -508,10 +518,11 @@ gboolean ghid_route_style_selector_select_style(GHidRouteStyleSelector * rss, Ro
 {
 	GtkTreeIter iter;
 	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter);
+
 	do {
 		struct _route_style *style;
 		gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &style, -1);
-		if (style->rst == rst) {
+		if ((style != NULL) && (style->rst == rst)) {
 			g_signal_handler_block(G_OBJECT(style->action), style->sig_id);
 			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(style->action), TRUE);
 			g_signal_handler_unblock(G_OBJECT(style->action), style->sig_id);
@@ -602,15 +613,17 @@ void ghid_route_style_selector_empty(GHidRouteStyleSelector * rss)
 		do {
 			struct _route_style *rsdata;
 			gtk_tree_model_get(GTK_TREE_MODEL(rss->model), &iter, DATA_COL, &rsdata, -1);
-			if (rsdata->action) {
-				gtk_action_disconnect_accelerator(GTK_ACTION(rsdata->action));
-				gtk_action_group_remove_action(rss->action_group, GTK_ACTION(rsdata->action));
-				g_object_unref(G_OBJECT(rsdata->action));
+			if (rsdata != NULL) {
+				if (rsdata->action) {
+					gtk_action_disconnect_accelerator(GTK_ACTION(rsdata->action));
+					gtk_action_group_remove_action(rss->action_group, GTK_ACTION(rsdata->action));
+					g_object_unref(G_OBJECT(rsdata->action));
+				}
+				if (rsdata->button)
+					gtk_widget_destroy(GTK_WIDGET(rsdata->button));;
+				gtk_tree_row_reference_free(rsdata->rref);
+				free(rsdata);
 			}
-			if (rsdata->button)
-				gtk_widget_destroy(GTK_WIDGET(rsdata->button));;
-			gtk_tree_row_reference_free(rsdata->rref);
-			free(rsdata);
 		} while (gtk_list_store_remove(rss->model, &iter));
 	}
 	rss->action_radio_group = NULL;
