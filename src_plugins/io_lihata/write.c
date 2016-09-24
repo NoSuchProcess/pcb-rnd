@@ -232,6 +232,7 @@ static lht_node_t *build_pad(PadType *pad, Coord dx, Coord dy)
 	lht_dom_hash_put(obj, build_flags(&pad->Flags, PCB_TYPE_PAD));
 	lht_dom_hash_put(obj, build_textf("thickness", CFMT, pad->Thickness));
 	lht_dom_hash_put(obj, build_textf("clearance", CFMT, pad->Clearance));
+	lht_dom_hash_put(obj, build_textf("mask", CFMT, pad->Mask));
 	lht_dom_hash_put(obj, build_textf("x1", CFMT, pad->Point1.X+dx));
 	lht_dom_hash_put(obj, build_textf("y1", CFMT, pad->Point1.Y+dy));
 	lht_dom_hash_put(obj, build_textf("x2", CFMT, pad->Point2.X+dx));
