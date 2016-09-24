@@ -36,7 +36,9 @@
 #include "layer.h"
 #include "common.h"
 
-#define CFMT "%[9]"
+/*#define CFMT "%[9]"*/
+/*#define CFMT "%.08mH"*/
+#define CFMT "%$$mn"
 
 static lht_node_t *build_text(const char *key, const char *value)
 {
@@ -155,7 +157,7 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 	return hsh;
 }
 
-static lht_node_t *build_line(LineType *line, int local_id)
+static lht_node_t *build_line(LineType *line, int local_id, Coord dx, Coord dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -167,15 +169,15 @@ static lht_node_t *build_line(LineType *line, int local_id)
 	lht_dom_hash_put(obj, build_flags(&line->Flags, PCB_TYPE_LINE));
 	lht_dom_hash_put(obj, build_textf("thickness", CFMT, line->Thickness));
 	lht_dom_hash_put(obj, build_textf("clearance", CFMT, line->Clearance));
-	lht_dom_hash_put(obj, build_textf("x1", CFMT, line->Point1.X));
-	lht_dom_hash_put(obj, build_textf("y1", CFMT, line->Point1.Y));
-	lht_dom_hash_put(obj, build_textf("x2", CFMT, line->Point2.X));
-	lht_dom_hash_put(obj, build_textf("y2", CFMT, line->Point2.Y));
+	lht_dom_hash_put(obj, build_textf("x1", CFMT, line->Point1.X+dx));
+	lht_dom_hash_put(obj, build_textf("y1", CFMT, line->Point1.Y+dy));
+	lht_dom_hash_put(obj, build_textf("x2", CFMT, line->Point2.X+dx));
+	lht_dom_hash_put(obj, build_textf("y2", CFMT, line->Point2.Y+dy));
 
 	return obj;
 }
 
-static lht_node_t *build_arc(ArcType *arc)
+static lht_node_t *build_arc(ArcType *arc, Coord dx, Coord dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -187,8 +189,8 @@ static lht_node_t *build_arc(ArcType *arc)
 	lht_dom_hash_put(obj, build_flags(&arc->Flags, PCB_TYPE_ARC));
 	lht_dom_hash_put(obj, build_textf("thickness", CFMT, arc->Thickness));
 	lht_dom_hash_put(obj, build_textf("clearance", CFMT, arc->Clearance));
-	lht_dom_hash_put(obj, build_textf("x", CFMT, arc->X));
-	lht_dom_hash_put(obj, build_textf("y", CFMT, arc->Y));
+	lht_dom_hash_put(obj, build_textf("x", CFMT, arc->X+dx));
+	lht_dom_hash_put(obj, build_textf("y", CFMT, arc->Y+dy));
 	lht_dom_hash_put(obj, build_textf("width", CFMT, arc->Width));
 	lht_dom_hash_put(obj, build_textf("height", CFMT, arc->Height));
 	lht_dom_hash_put(obj, build_textf("astart", "%ma", arc->StartAngle));
@@ -197,7 +199,7 @@ static lht_node_t *build_arc(ArcType *arc)
 	return obj;
 }
 
-static lht_node_t *build_pin(PinType *pin, int is_via)
+static lht_node_t *build_pin(PinType *pin, int is_via, Coord dx, Coord dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -211,13 +213,13 @@ static lht_node_t *build_pin(PinType *pin, int is_via)
 	lht_dom_hash_put(obj, build_textf("clearance", CFMT, pin->Clearance));
 	lht_dom_hash_put(obj, build_textf("mask", CFMT, pin->Mask));
 	lht_dom_hash_put(obj, build_textf("hole", CFMT, pin->DrillingHole));
-	lht_dom_hash_put(obj, build_textf("x", CFMT, pin->X));
-	lht_dom_hash_put(obj, build_textf("y", CFMT, pin->Y));
+	lht_dom_hash_put(obj, build_textf("x", CFMT, pin->X+dx));
+	lht_dom_hash_put(obj, build_textf("y", CFMT, pin->Y+dy));
 	lht_dom_hash_put(obj, build_text("name", pin->Name));
 	return obj;
 }
 
-static lht_node_t *build_pad(PadType *pad)
+static lht_node_t *build_pad(PadType *pad, Coord dx, Coord dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -229,10 +231,10 @@ static lht_node_t *build_pad(PadType *pad)
 	lht_dom_hash_put(obj, build_flags(&pad->Flags, PCB_TYPE_PAD));
 	lht_dom_hash_put(obj, build_textf("thickness", CFMT, pad->Thickness));
 	lht_dom_hash_put(obj, build_textf("clearance", CFMT, pad->Clearance));
-	lht_dom_hash_put(obj, build_textf("x1", CFMT, pad->Point1.X));
-	lht_dom_hash_put(obj, build_textf("y1", CFMT, pad->Point1.Y));
-	lht_dom_hash_put(obj, build_textf("x2", CFMT, pad->Point2.X));
-	lht_dom_hash_put(obj, build_textf("y2", CFMT, pad->Point2.Y));
+	lht_dom_hash_put(obj, build_textf("x1", CFMT, pad->Point1.X+dx));
+	lht_dom_hash_put(obj, build_textf("y1", CFMT, pad->Point1.Y+dy));
+	lht_dom_hash_put(obj, build_textf("x2", CFMT, pad->Point2.X+dx));
+	lht_dom_hash_put(obj, build_textf("y2", CFMT, pad->Point2.Y+dy));
 	lht_dom_hash_put(obj, build_text("name", pad->Name));
 	return obj;
 }
@@ -318,19 +320,21 @@ static lht_node_t *build_element(ElementType *elem)
 	lht_dom_list_append(lst, build_pcb_text("desc", &elem->Name[DESCRIPTION_INDEX]));
 	lht_dom_list_append(lst, build_pcb_text("name", &elem->Name[NAMEONPCB_INDEX]));
 	lht_dom_list_append(lst, build_pcb_text("value", &elem->Name[VALUE_INDEX]));
+	lht_dom_hash_put(obj, build_textf("x", CFMT, elem->MarkX));
+	lht_dom_hash_put(obj, build_textf("y", CFMT, elem->MarkY));
 
 
 	for(li = linelist_first(&elem->Line); li != NULL; li = linelist_next(li))
-		lht_dom_list_append(lst, build_line(li, -1));
+		lht_dom_list_append(lst, build_line(li, -1, -elem->MarkX, -elem->MarkY));
 
 	for(ar = arclist_first(&elem->Arc); ar != NULL; ar = arclist_next(ar))
-		lht_dom_list_append(lst, build_arc(ar));
+		lht_dom_list_append(lst, build_arc(ar, -elem->MarkX, -elem->MarkY));
 
 	for(pi = pinlist_first(&elem->Pin); pi != NULL; pi = pinlist_next(pi))
-		lht_dom_list_append(lst, build_pin(pi, 0));
+		lht_dom_list_append(lst, build_pin(pi, 0, -elem->MarkX, -elem->MarkY));
 
 	for(pa = padlist_first(&elem->Pad); pi != NULL; pa = padlist_next(pa))
-		lht_dom_list_append(lst, build_pad(pa));
+		lht_dom_list_append(lst, build_pad(pa, -elem->MarkX, -elem->MarkY));
 
 	return obj;
 }
@@ -356,10 +360,10 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer, int layer_
 	lht_dom_hash_put(obj, grp);
 
 	for(li = linelist_first(&layer->Line); li != NULL; li = linelist_next(li))
-		lht_dom_list_append(grp, build_line(li, -1));
+		lht_dom_list_append(grp, build_line(li, -1, 0, 0));
 
 	for(ar = arclist_first(&layer->Arc); ar != NULL; ar = arclist_next(ar))
-		lht_dom_list_append(grp, build_arc(ar));
+		lht_dom_list_append(grp, build_arc(ar, 0, 0));
 
 	for(po = polylist_first(&layer->Polygon); po != NULL; po = polylist_next(po))
 		lht_dom_list_append(grp, build_polygon(po));
@@ -401,7 +405,7 @@ static lht_node_t *build_data(DataType *data)
 	lht_dom_hash_put(ndt, grp);
 
 	for(pi = pinlist_first(&data->Via); pi != NULL; pi = pinlist_next(pi))
-		lht_dom_list_append(grp, build_pin(pi, 1));
+		lht_dom_list_append(grp, build_pin(pi, 1, 0, 0));
 
 	for(el = elementlist_first(&data->Element); el != NULL; el = elementlist_next(el))
 		lht_dom_list_append(grp, build_element(el));
@@ -423,7 +427,7 @@ static lht_node_t *build_symbol(SymbolType *sym, const char *name)
 	lst = lht_dom_node_alloc(LHT_LIST, "objects");
 	lht_dom_hash_put(ndt, lst);
 	for(n = 0, li = sym->Line; n < sym->LineN; n++, li++)
-		lht_dom_list_append(lst, build_line(li, n));
+		lht_dom_list_append(lst, build_line(li, n, 0, 0));
 
 
 	return ndt;

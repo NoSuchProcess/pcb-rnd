@@ -258,7 +258,7 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 }
 
 
-static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj, int no_id)
+static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj, int no_id, Coord dx, Coord dy)
 {
 	LineType *line;
 
@@ -283,6 +283,11 @@ static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj, int no_id
 	parse_coord(&line->Point2.X, lht_dom_hash_get(obj, "x2"));
 	parse_coord(&line->Point2.Y, lht_dom_hash_get(obj, "y2"));
 
+	line->Point1.X += dx;
+	line->Point2.X += dx;
+	line->Point1.Y += dy;
+	line->Point2.Y += dy;
+
 	if (!no_id) {
 		post_id_req(&line->Point1);
 		post_id_req(&line->Point2);
@@ -294,7 +299,7 @@ static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj, int no_id
 	return 0;
 }
 
-static int parse_arc(LayerType *ly, ElementType *el, lht_node_t *obj)
+static int parse_arc(LayerType *ly, ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 {
 	ArcType *arc;
 
@@ -317,6 +322,9 @@ static int parse_arc(LayerType *ly, ElementType *el, lht_node_t *obj)
 	parse_coord(&arc->Height, lht_dom_hash_get(obj, "height"));
 	parse_angle(&arc->StartAngle, lht_dom_hash_get(obj, "astart"));
 	parse_angle(&arc->Delta, lht_dom_hash_get(obj, "adelta"));
+
+	arc->X += dx;
+	arc->Y += dy;
 
 	if (ly != NULL)
 		pcb_add_arc_on_layer(ly, arc);
@@ -437,9 +445,9 @@ static int parse_data_layer(PCBType *pcb, DataType *dt, lht_node_t *grp, int lay
 
 	for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 		if (strncmp(n->name, "line.", 5) == 0)
-			parse_line(ly, NULL, n, 0);
+			parse_line(ly, NULL, n, 0, 0, 0);
 		if (strncmp(n->name, "arc.", 4) == 0)
-			parse_arc(ly, NULL, n);
+			parse_arc(ly, NULL, n, 0, 0);
 		if (strncmp(n->name, "polygon.", 8) == 0)
 			parse_polygon(ly, NULL, n);
 		if (strncmp(n->name, "text.", 5) == 0)
@@ -464,7 +472,7 @@ static int parse_data_layers(PCBType *pcb, DataType *dt, lht_node_t *grp)
 }
 
 /* If el == NULL and dt != NULL it is a via (for now). */
-static int parse_pin(DataType *dt, ElementType *el, lht_node_t *obj)
+static int parse_pin(DataType *dt, ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 {
 	PinType *via;
 
@@ -487,6 +495,9 @@ static int parse_pin(DataType *dt, ElementType *el, lht_node_t *obj)
 	parse_coord(&via->Y, lht_dom_hash_get(obj, "y"));
 	parse_text(&via->Name, lht_dom_hash_get(obj, "name"));
 
+	via->X += dx;
+	via->Y += dy;
+
 	if (dt != NULL)
 		pcb_add_via(dt, via);
 	if (el != NULL)
@@ -495,7 +506,7 @@ static int parse_pin(DataType *dt, ElementType *el, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_pad(ElementType *el, lht_node_t *obj)
+static int parse_pad(ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 {
 	PadType *pad;
 
@@ -514,6 +525,11 @@ static int parse_pad(ElementType *el, lht_node_t *obj)
 	parse_coord(&pad->Point2.Y, lht_dom_hash_get(obj, "y2"));
 	parse_text(&pad->Name, lht_dom_hash_get(obj, "name"));
 
+	pad->Point1.X += dx;
+	pad->Point2.X += dx;
+	pad->Point1.Y += dy;
+	pad->Point2.Y += dy;
+
 	post_id_req(&pad->Point1);
 	post_id_req(&pad->Point2);
 	pad->Element = el;
@@ -531,22 +547,24 @@ static int parse_element(PCBType *pcb, DataType *dt, lht_node_t *obj)
 	parse_id(&elem->ID, obj, 4);
 	parse_attributes(&elem->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&elem->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_VIA);
+	parse_coord(&elem->MarkX, lht_dom_hash_get(obj, "x"));
+	parse_coord(&elem->MarkY, lht_dom_hash_get(obj, "y"));
 
 	lst = lht_dom_hash_get(obj, "objects");
 	if (lst->type == LHT_LIST) {
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 			if (strncmp(n->name, "line.", 5) == 0)
-				parse_line(NULL, elem, n, 0);
+				parse_line(NULL, elem, n, 0, elem->MarkX, elem->MarkY);
 			if (strncmp(n->name, "arc.", 4) == 0)
-				parse_arc(NULL, elem, n);
+				parse_arc(NULL, elem, n, elem->MarkX, elem->MarkY);
 /*		if (strncmp(n->name, "polygon.", 8) == 0)
 			parse_polygon(ly, elem, n);*/
 			if (strncmp(n->name, "text.", 5) == 0)
 				parse_pcb_text(NULL, elem, n);
 			if (strncmp(n->name, "pin.", 4) == 0)
-				parse_pin(NULL, elem, n);
+				parse_pin(NULL, elem, n, elem->MarkX, elem->MarkY);
 			if (strncmp(n->name, "pad.", 4) == 0)
-				parse_pad(elem, n);
+				parse_pad(elem, n, elem->MarkX, elem->MarkY);
 		}
 	}
 
@@ -567,7 +585,7 @@ static int parse_data_objects(PCBType *pcb_for_font, DataType *dt, lht_node_t *g
 
 	for(n = lht_dom_first(&it, grp); n != NULL; n = lht_dom_next(&it)) {
 		if (strncmp(n->name, "via.", 4) == 0)
-			parse_pin(dt, NULL, n);
+			parse_pin(dt, NULL, n, 0, 0);
 		else if (strncmp(n->name, "element.", 8) == 0)
 			parse_element(pcb_for_font, dt, n);
 	}
