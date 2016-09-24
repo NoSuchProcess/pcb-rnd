@@ -98,6 +98,8 @@ struct _dialog {
 	GtkWidget *via_size_entry;
 	GtkWidget *clearance_entry;
 
+	GtkWidget *select_box;
+
 	int inhibit_style_change; /* when 1, do not do anything when style changes */
 };
 
@@ -154,7 +156,8 @@ static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 	pcb_trace("Style: %d deleted\n", dialog->rss->selected);
 	add_new_iter(dialog->rss);
 	dialog->inhibit_style_change = 0;
-	ghid_route_style_selector_select_style(dialog->rss, &PCB->RouteStyle.array[0]);
+	ghid_route_style_selector_select_style(dialog->rss, &pcb_custom_route_style);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(dialog->select_box), 0);
 }
 
 /* \brief Helper for edit_button_cb */
@@ -247,6 +250,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 
 	/* Display dialog */
 	dialog_data.rss = rss;
+	dialog_data.select_box = select_box;
 	if (rss->active_style != NULL) {
 		path = gtk_tree_row_reference_get_path(rss->active_style->rref);
 		gtk_tree_model_get_iter(GTK_TREE_MODEL(rss->model), &iter, path);
