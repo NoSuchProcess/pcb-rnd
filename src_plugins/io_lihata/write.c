@@ -335,7 +335,7 @@ static lht_node_t *build_element(ElementType *elem)
 	for(pi = pinlist_first(&elem->Pin); pi != NULL; pi = pinlist_next(pi))
 		lht_dom_list_append(lst, build_pin(pi, 0, -elem->MarkX, -elem->MarkY));
 
-	for(pa = padlist_first(&elem->Pad); pi != NULL; pa = padlist_next(pa))
+	for(pa = padlist_first(&elem->Pad); pa != NULL; pa = padlist_next(pa))
 		lht_dom_list_append(lst, build_pad(pa, -elem->MarkX, -elem->MarkY));
 
 	return obj;
