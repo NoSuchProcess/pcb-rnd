@@ -301,6 +301,8 @@ void ghid_set_crosshair(int x, int y, int action)
 	int pointer_x, pointer_y;
 	Coord pcb_x, pcb_y;
 
+	ghid_draw_grid_local(x, y);
+
 	if (gport->crosshair_x != x || gport->crosshair_y != y) {
 		ghid_set_cursor_position_labels();
 		gport->crosshair_x = x;

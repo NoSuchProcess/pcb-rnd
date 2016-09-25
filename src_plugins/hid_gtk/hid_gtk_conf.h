@@ -15,6 +15,11 @@ typedef struct {
 			CFT_INTEGER history_size;
 			CFT_INTEGER n_mode_button_columns;
 
+			const struct local_grid {
+				CFT_BOOLEAN enable;                       /* enable local grid to draw grid points only in a small radius around the crosshair - speeds up software rendering on large screens */
+				CFT_INTEGER radius;                       /* radius, in number of grid points, around the local grid */
+			} local_grid;
+
 			const struct auto_save_window_geometry {
 				CFT_BOOLEAN to_design;
 				CFT_BOOLEAN to_project;

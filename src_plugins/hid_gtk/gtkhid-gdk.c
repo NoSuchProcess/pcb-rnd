@@ -133,7 +133,7 @@ static inline void ghid_draw_grid_global(Coord x1, Coord y1, Coord x2, Coord y2)
 	render_priv *priv = gport->render_priv;
 	Coord x, y;
 	int n, i;
-	static GdkPoint *points = 0;
+	static GdkPoint *points = NULL;
 	static int npoints = 0;
 
 	n = (x2 - x1) / PCB->Grid + 1;
@@ -155,14 +155,90 @@ static inline void ghid_draw_grid_global(Coord x1, Coord y1, Coord x2, Coord y2)
 	}
 }
 
+static void ghid_draw_grid_local_(Coord cx, Coord cy, int radius)
+{
+	render_priv *priv = gport->render_priv;
+	static GdkPoint *points_base = NULL;
+	static GdkPoint *points_abs = NULL;
+	static int apoints = 0, npoints = 0;
+	static Coord last_grid = 0;
+	int recalc = 0, n, r2;
+	Coord x, y;
+
+	/* PI is approximated with 3.25 here - allows a minimal overallocation, speeds up calculations */
+	r2 = radius * radius;
+	n = r2 * 3 + r2 / 4 + 1;
+	if (n > apoints) {
+		apoints = n;
+		points_base = (GdkPoint *) realloc(points_base, apoints * sizeof(GdkPoint));
+		points_abs  = (GdkPoint *) realloc(points_abs,  apoints * sizeof(GdkPoint));
+	}
+	if (last_grid != PCB->Grid) {
+		last_grid = PCB->Grid;
+		recalc = 1;
+	}
+
+	/* reclaculate the 'filled circle' mask (base relative coords) if grid or radius changed */
+	if (recalc) {
+
+		npoints = 0;
+		for(y = -radius; y <= radius; y++) {
+			int y2 = y*y;
+			for(x = -radius; x <= radius; x++) {
+				if (x*x + y2 < r2) {
+					points_base[npoints].x = x*PCB->Grid;
+					points_base[npoints].y = y*PCB->Grid;
+					npoints++;
+				}
+			}
+		}
+	}
+
+	/* calculate absolute positions */
+	for(n = 0; n < npoints; n++) {
+		points_abs[n].x = Vx(points_base[n].x + cx);
+		points_abs[n].y = Vy(points_base[n].y + cy);
+	}
+
+	gdk_draw_points(gport->drawable, priv->grid_gc, points_abs, npoints);
+}
+
+
+static int grid_local_have_old = 0, grid_local_old_r = 0;
+static Coord grid_local_old_x, grid_local_old_y;
+
+void ghid_draw_grid_local(Coord cx, Coord cy)
+{
+	if (grid_local_have_old) {
+		ghid_draw_grid_local_(grid_local_old_x, grid_local_old_y, grid_local_old_r);
+		grid_local_have_old = 0;
+	}
+
+	if (!conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
+		return;
+
+	if ((Vz(PCB->Grid) < MIN_GRID_DISTANCE))
+		return;
+
+	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
+	cx = (cx / PCB->Grid) * PCB->Grid + PCB->GridOffsetX;
+	cy = (cy / PCB->Grid) * PCB->Grid + PCB->GridOffsetY;
+
+	grid_local_have_old = 1;
+	ghid_draw_grid_local_(cx, cy, conf_hid_gtk.plugins.hid_gtk.local_grid.radius);
+	grid_local_old_x = cx;
+	grid_local_old_y = cy;
+	grid_local_old_r = conf_hid_gtk.plugins.hid_gtk.local_grid.radius;
+}
+
 static void ghid_draw_grid(void)
 {
 	render_priv *priv = gport->render_priv;
 	Coord x1, y1, x2, y2;
 
+	grid_local_have_old = 0;
+
 	if (!conf_core.editor.draw_grid)
-		return;
-	if (Vz(PCB->Grid) < MIN_GRID_DISTANCE)
 		return;
 	if (!priv->grid_gc) {
 		if (gdk_color_parse(conf_core.appearance.color.grid, &gport->grid_color)) {
@@ -177,6 +253,15 @@ static void ghid_draw_grid(void)
 		gdk_gc_set_clip_origin(priv->grid_gc, 0, 0);
 		set_clip(priv, priv->grid_gc);
 	}
+
+	if (conf_hid_gtk.plugins.hid_gtk.local_grid.enable) {
+		ghid_draw_grid_local(grid_local_old_x, grid_local_old_y);
+		return;
+	}
+
+	if (Vz(PCB->Grid) < MIN_GRID_DISTANCE)
+		return;
+
 	x1 = GridFit(SIDE_X(gport->view.x0), PCB->Grid, PCB->GridOffsetX);
 	y1 = GridFit(SIDE_Y(gport->view.y0), PCB->Grid, PCB->GridOffsetY);
 	x2 = GridFit(SIDE_X(gport->view.x0 + gport->view.width - 1), PCB->Grid, PCB->GridOffsetX);

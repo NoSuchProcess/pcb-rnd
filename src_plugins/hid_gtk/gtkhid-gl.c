@@ -188,6 +188,7 @@ static void ghid_draw_grid(BoxTypePtr drawn_area)
 
 	glColor3f(gport->grid_color.red / 65535., gport->grid_color.green / 65535., gport->grid_color.blue / 65535.);
 
+#error this does not draw the local grid and ignores other new grid options
 	hidgl_draw_grid(drawn_area);
 
 	glDisable(GL_COLOR_LOGIC_OP);
