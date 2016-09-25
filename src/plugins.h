@@ -50,6 +50,8 @@ void plugins_uninit(void);
 /* Register a new plugin (or buildin) */
 void plugin_register(const char *name, const char *path, void *handle, int dynamic, pcb_uninit_t uninit);
 
+/* Find a plugin by name */
+plugin_info_t *plugin_find(const char *name);
 
 /* Hook based plugin generics; plugins that implement a common API should use
    HOOK_REGISTER with an api struct. The core should run the plugins using

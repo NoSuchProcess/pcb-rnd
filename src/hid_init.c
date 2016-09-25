@@ -72,20 +72,24 @@ static void hid_load_dir(char *dirname)
 				fprintf(stderr, "dl_error: %s\n", dlerror());
 			}
 			else {
-				symname = Concat("hid_", basename, "_init", NULL);
-				if ((sym = dlsym(so, symname)) != NULL) {
-					symv = (pcb_uninit_t (*)())pcb_cast_d2f(sym);
-					uninit = symv();
-				}
-				else if ((sym = dlsym(so, "pcb_plugin_init")) != NULL) {
-					symv = (pcb_uninit_t (*)()) pcb_cast_d2f(sym);
-					uninit = symv();
+				plugin_info_t *inf = plugin_find(basename);
+				if (inf == NULL) {
+					symname = Concat("hid_", basename, "_init", NULL);
+					if ((sym = dlsym(so, symname)) != NULL) {
+						symv = (pcb_uninit_t (*)())pcb_cast_d2f(sym);
+						uninit = symv();
+					}
+					else if ((sym = dlsym(so, "pcb_plugin_init")) != NULL) {
+						symv = (pcb_uninit_t (*)()) pcb_cast_d2f(sym);
+						uninit = symv();
+					}
+					else
+						uninit = NULL;
+					plugin_register(basename, path, so, 1, uninit);
+					free(symname);
 				}
 				else
-					uninit = NULL;
-
-				plugin_register(basename, path, so, 1, uninit);
-				free(symname);
+					Message(PCB_MSG_ERROR, "Can't load %s because it'd provide plugin %s that is already loaded from %s\n", path, basename, (*inf->path == '<' ? "<buildin>" : inf->path));
 			}
 		}
 		free(basename);

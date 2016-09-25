@@ -35,6 +35,15 @@
 
 plugin_info_t *plugins = NULL;
 
+plugin_info_t *plugin_find(const char *name)
+{
+	plugin_info_t *i;
+	for(i = plugins; i != NULL; i = i->next)
+		if (strcmp(i->name, name) == 0)
+			return i;
+	return NULL;
+}
+
 void plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
 {
 	plugin_info_t *i = malloc(sizeof(plugin_info_t));
