@@ -11,8 +11,6 @@
 	-  Display(cycleclip) [or line_refraction] while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	+ Menu Edit->Route_Styles doesn't always update radio button route styles in GTK main window, sometimes segfaults (needs more testing)
 		+ possibly related to unfinished work with route styles dialog? 
-	- Segfault: Edit object properties.  open pcb-rnd default layout, import footprint from the builtin library, selecting footprint, menu: Select> 'edit 
-		object properties', causes segfaut
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
