@@ -22,8 +22,8 @@ int hid_get_flag(const char *name)
 	if (name == NULL)
 		return -1;
 
-	cp = strchr(name, '/');
-	if (cp) {
+	cp = strchr(name, '(');
+	if (cp == NULL) {
 		conf_native_t *n = conf_get_field(name);
 		if (n == NULL)
 			return -1;
@@ -32,13 +32,12 @@ int hid_get_flag(const char *name)
 		return n->val.boolean[0];
 	}
 	else {
-		char *end;
+		char *end, *s;
 		const char *argv[2];
-		cp = strchr(name, '(');
 		if (cp != NULL) {
 			const HID_Action *a;
 			char buff[256];
-			int len;
+			int len, multiarg;
 			len = cp - name;
 			if (len > sizeof(buff)-1) {
 				Message(PCB_MSG_DEFAULT, "hid_get_flag: action name too long: %s()\n", name);
@@ -53,17 +52,33 @@ int hid_get_flag(const char *name)
 			}
 			cp++;
 			len = strlen(cp);
-			end = strchr(cp, ')');
-			if ((len > sizeof(buff)-1) || (end == NULL)) {
-				Message(PCB_MSG_DEFAULT, "hid_get_flag: action arg too long or unterminated: %s\n", name);
-				return -1;
+			end = NULL;
+			multiarg = 0;
+			for(s = cp; *s != '\0'; s++) {
+				if (*s == ')') {
+					end = s;
+					break;
+				}
+				if (*s == ',')
+					multiarg = 1;
 			}
-			len = end - cp;
-			memcpy(buff, cp, len);
-			buff[len] = '\0';
-			argv[0] = buff;
-			argv[1] = NULL;
-			return hid_actionv_(a, len > 0, argv);
+			if (!multiarg) {
+				/* faster but limited way for a single arg */
+				if ((len > sizeof(buff)-1) || (end == NULL)) {
+					Message(PCB_MSG_DEFAULT, "hid_get_flag: action arg too long or unterminated: %s\n", name);
+					return -1;
+				}
+				len = end - cp;
+				memcpy(buff, cp, len);
+				buff[len] = '\0';
+				argv[0] = buff;
+				argv[1] = NULL;
+				return hid_actionv_(a, len > 0, argv);
+			}
+			else {
+				/* slower but more generic way */
+				return hid_parse_command(name);
+			}
 		}
 		else {
 			fprintf(stderr, "ERROR: hid_get_flag(%s) - not a path or an action\n", name);
