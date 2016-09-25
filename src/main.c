@@ -357,7 +357,6 @@ int main(int argc, char *argv[])
 	funchash_init();
 	initialize_units();
 	polygon_init();
-	hid_init();
 
 	/* This must be called before any other atexit functions
 	 * are registered, as it configures an atexit function to
@@ -377,6 +376,7 @@ int main(int argc, char *argv[])
 	events_init();
 
 	buildin_init();
+	hid_init();
 	plugins_init();
 
 
