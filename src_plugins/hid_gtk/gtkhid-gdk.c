@@ -128,13 +128,37 @@ static void set_clip(render_priv * priv, GdkGC * gc)
 		gdk_gc_set_clip_mask(gc, NULL);
 }
 
-static void ghid_draw_grid(void)
+static inline void ghid_draw_grid_global(Coord x1, Coord y1, Coord x2, Coord y2)
 {
+	render_priv *priv = gport->render_priv;
+	Coord x, y;
+	int n, i;
 	static GdkPoint *points = 0;
 	static int npoints = 0;
-	Coord x1, y1, x2, y2, x, y;
-	int n, i;
+
+	n = (x2 - x1) / PCB->Grid + 1;
+	if (n > npoints) {
+		npoints = n + 10;
+		points = (GdkPoint *) realloc(points, npoints * sizeof(GdkPoint));
+	}
+	n = 0;
+	for (x = x1; x <= x2; x += PCB->Grid) {
+		points[n].x = Vx(x);
+		n++;
+	}
+	if (n == 0)
+		return;
+	for (y = y1; y <= y2; y += PCB->Grid) {
+		for (i = 0; i < n; i++)
+			points[i].y = Vy(y);
+		gdk_draw_points(gport->drawable, priv->grid_gc, points, n);
+	}
+}
+
+static void ghid_draw_grid(void)
+{
 	render_priv *priv = gport->render_priv;
+	Coord x1, y1, x2, y2;
 
 	if (!conf_core.editor.draw_grid)
 		return;
@@ -175,23 +199,8 @@ static void ghid_draw_grid(void)
 		x2 -= PCB->Grid;
 	if (Vy(y2) >= gport->height)
 		y2 -= PCB->Grid;
-	n = (x2 - x1) / PCB->Grid + 1;
-	if (n > npoints) {
-		npoints = n + 10;
-		points = (GdkPoint *) realloc(points, npoints * sizeof(GdkPoint));
-	}
-	n = 0;
-	for (x = x1; x <= x2; x += PCB->Grid) {
-		points[n].x = Vx(x);
-		n++;
-	}
-	if (n == 0)
-		return;
-	for (y = y1; y <= y2; y += PCB->Grid) {
-		for (i = 0; i < n; i++)
-			points[i].y = Vy(y);
-		gdk_draw_points(gport->drawable, priv->grid_gc, points, n);
-	}
+
+	ghid_draw_grid_global(x1, y1, x2, y2);
 }
 
 /* ------------------------------------------------------------ */
