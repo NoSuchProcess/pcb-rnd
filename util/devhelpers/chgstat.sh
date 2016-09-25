@@ -42,7 +42,7 @@ do
 done| awk -v import=$import '
 		{
 			rev=int($1)
-			if ((rev <= import) || (rev == 1022))
+			if ((rev <= import) || (rev == 1022) || (rev == 3539))
 				old++
 			else
 				new++
