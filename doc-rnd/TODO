@@ -1,6 +1,5 @@
 - BUGS
 	- ChangeSize(selected, *) or Change*(selected, *) causes undo panic if nothing is selected
-	- if hid_gtk is compiled as buildin but is also available as a plugin the code tries to load it twice and segfaults
 	- genht config bug in gpmi
 	- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
 	- gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
