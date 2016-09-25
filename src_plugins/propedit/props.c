@@ -32,10 +32,10 @@
 static const char *type_names[] = { "invalid", "string", "coord", "angle", "int" };
 
 /* A hash function for each known type */
-static unsigned int prophash_string(pcb_propval_t key) { return strhash((char *)key.string); }
 static unsigned int prophash_coord(pcb_propval_t key)  { return longhash(key.coord); }
 static unsigned int prophash_angle(pcb_propval_t key)  { return longhash(key.angle); }
 static unsigned int prophash_int(pcb_propval_t key)    { return longhash(key.i); }
+static unsigned int prophash_string(pcb_propval_t key) { return key.string == NULL ? 0 : strhash(key.string); }
 
 typedef unsigned int (*prophash_ft)(pcb_propval_t key);
 static prophash_ft prophash[PCB_PROPT_max] = {
@@ -43,10 +43,18 @@ static prophash_ft prophash[PCB_PROPT_max] = {
 };
 
 /* A keyeq function for each known type */
-static int propkeyeq_string(pcb_propval_t a, pcb_propval_t b) { return (strcmp(a.string, b.string) == 0); }
 static int propkeyeq_coord(pcb_propval_t a, pcb_propval_t b)  { return a.coord == b.coord; }
 static int propkeyeq_angle(pcb_propval_t a, pcb_propval_t b)  { return a.angle == b.angle; }
 static int propkeyeq_int(pcb_propval_t a, pcb_propval_t b)    { return a.i == b.i; }
+static int propkeyeq_string(pcb_propval_t a, pcb_propval_t b)
+{
+	if ((b.string == NULL) && (a.string == NULL))
+		return 1;
+	if ((b.string == NULL) || (a.string == NULL))
+		return 0;
+	return (strcmp(a.string, b.string) == 0);
+}
+
 
 typedef int (*propkeyeq_ft)(pcb_propval_t a, pcb_propval_t b);
 static propkeyeq_ft propkeyeq[PCB_PROPT_max] = {
