@@ -131,7 +131,7 @@ static void set_clip(render_priv * priv, GdkGC * gc)
 static inline void ghid_draw_grid_global(void)
 {
 	render_priv *priv = gport->render_priv;
-	Coord x, y, x1, y1, x2, y2;
+	Coord x, y, x1, y1, x2, y2, grd;
 	int n, i;
 	static GdkPoint *points = NULL;
 	static int npoints = 0;
@@ -140,6 +140,14 @@ static inline void ghid_draw_grid_global(void)
 	y1 = GridFit(MAX(0, SIDE_Y(gport->view.y0)), PCB->Grid, PCB->GridOffsetY);
 	x2 = GridFit(MIN(PCB->MaxWidth,  SIDE_X(gport->view.x0 + gport->view.width - 1)), PCB->Grid, PCB->GridOffsetX);
 	y2 = GridFit(MIN(PCB->MaxHeight, SIDE_Y(gport->view.y0 + gport->view.height - 1)), PCB->Grid, PCB->GridOffsetY);
+
+	grd = PCB->Grid;
+	
+	if (Vz(grd) < conf_hid_gtk.plugins.hid_gtk.global_grid.min_dist_px) {
+		if (!conf_hid_gtk.plugins.hid_gtk.global_grid.sparse)
+			return;
+		grd *= (conf_hid_gtk.plugins.hid_gtk.global_grid.min_dist_px / Vz(grd));
+	}
 
 	if (x1 > x2) {
 		Coord tmp = x1;
@@ -152,28 +160,28 @@ static inline void ghid_draw_grid_global(void)
 		y2 = tmp;
 	}
 	if (Vx(x1) < 0)
-		x1 += PCB->Grid;
+		x1 += grd;
 	if (Vy(y1) < 0)
-		y1 += PCB->Grid;
+		y1 += grd;
 	if (Vx(x2) >= gport->width)
-		x2 -= PCB->Grid;
+		x2 -= grd;
 	if (Vy(y2) >= gport->height)
-		y2 -= PCB->Grid;
+		y2 -= grd;
 
 
-	n = (x2 - x1) / PCB->Grid + 1;
+	n = (x2 - x1) / grd + 1;
 	if (n > npoints) {
 		npoints = n + 10;
 		points = (GdkPoint *) realloc(points, npoints * sizeof(GdkPoint));
 	}
 	n = 0;
-	for (x = x1; x <= x2; x += PCB->Grid) {
+	for (x = x1; x <= x2; x += grd) {
 		points[n].x = Vx(x);
 		n++;
 	}
 	if (n == 0)
 		return;
-	for (y = y1; y <= y2; y += PCB->Grid) {
+	for (y = y1; y <= y2; y += grd) {
 		for (i = 0; i < n; i++)
 			points[i].y = Vy(y);
 		gdk_draw_points(gport->drawable, priv->grid_gc, points, n);
@@ -289,8 +297,6 @@ static void ghid_draw_grid(void)
 		return;
 	}
 
-	if (Vz(PCB->Grid) < MIN_GRID_DISTANCE)
-		return;
 
 	ghid_draw_grid_global();
 }
