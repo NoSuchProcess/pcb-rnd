@@ -128,13 +128,37 @@ static void set_clip(render_priv * priv, GdkGC * gc)
 		gdk_gc_set_clip_mask(gc, NULL);
 }
 
-static inline void ghid_draw_grid_global(Coord x1, Coord y1, Coord x2, Coord y2)
+static inline void ghid_draw_grid_global(void)
 {
 	render_priv *priv = gport->render_priv;
-	Coord x, y;
+	Coord x, y, x1, y1, x2, y2;
 	int n, i;
 	static GdkPoint *points = NULL;
 	static int npoints = 0;
+
+	x1 = GridFit(SIDE_X(gport->view.x0), PCB->Grid, PCB->GridOffsetX);
+	y1 = GridFit(SIDE_Y(gport->view.y0), PCB->Grid, PCB->GridOffsetY);
+	x2 = GridFit(SIDE_X(gport->view.x0 + gport->view.width - 1), PCB->Grid, PCB->GridOffsetX);
+	y2 = GridFit(SIDE_Y(gport->view.y0 + gport->view.height - 1), PCB->Grid, PCB->GridOffsetY);
+	if (x1 > x2) {
+		Coord tmp = x1;
+		x1 = x2;
+		x2 = tmp;
+	}
+	if (y1 > y2) {
+		Coord tmp = y1;
+		y1 = y2;
+		y2 = tmp;
+	}
+	if (Vx(x1) < 0)
+		x1 += PCB->Grid;
+	if (Vy(y1) < 0)
+		y1 += PCB->Grid;
+	if (Vx(x2) >= gport->width)
+		x2 -= PCB->Grid;
+	if (Vy(y2) >= gport->height)
+		y2 -= PCB->Grid;
+
 
 	n = (x2 - x1) / PCB->Grid + 1;
 	if (n > npoints) {
@@ -240,7 +264,6 @@ void ghid_draw_grid_local(Coord cx, Coord cy)
 static void ghid_draw_grid(void)
 {
 	render_priv *priv = gport->render_priv;
-	Coord x1, y1, x2, y2;
 
 	grid_local_have_old = 0;
 
@@ -268,30 +291,7 @@ static void ghid_draw_grid(void)
 	if (Vz(PCB->Grid) < MIN_GRID_DISTANCE)
 		return;
 
-	x1 = GridFit(SIDE_X(gport->view.x0), PCB->Grid, PCB->GridOffsetX);
-	y1 = GridFit(SIDE_Y(gport->view.y0), PCB->Grid, PCB->GridOffsetY);
-	x2 = GridFit(SIDE_X(gport->view.x0 + gport->view.width - 1), PCB->Grid, PCB->GridOffsetX);
-	y2 = GridFit(SIDE_Y(gport->view.y0 + gport->view.height - 1), PCB->Grid, PCB->GridOffsetY);
-	if (x1 > x2) {
-		Coord tmp = x1;
-		x1 = x2;
-		x2 = tmp;
-	}
-	if (y1 > y2) {
-		Coord tmp = y1;
-		y1 = y2;
-		y2 = tmp;
-	}
-	if (Vx(x1) < 0)
-		x1 += PCB->Grid;
-	if (Vy(y1) < 0)
-		y1 += PCB->Grid;
-	if (Vx(x2) >= gport->width)
-		x2 -= PCB->Grid;
-	if (Vy(y2) >= gport->height)
-		y2 -= PCB->Grid;
-
-	ghid_draw_grid_global(x1, y1, x2, y2);
+	ghid_draw_grid_global();
 }
 
 /* ------------------------------------------------------------ */
