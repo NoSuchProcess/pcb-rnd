@@ -136,10 +136,11 @@ static inline void ghid_draw_grid_global(void)
 	static GdkPoint *points = NULL;
 	static int npoints = 0;
 
-	x1 = GridFit(SIDE_X(gport->view.x0), PCB->Grid, PCB->GridOffsetX);
-	y1 = GridFit(SIDE_Y(gport->view.y0), PCB->Grid, PCB->GridOffsetY);
-	x2 = GridFit(SIDE_X(gport->view.x0 + gport->view.width - 1), PCB->Grid, PCB->GridOffsetX);
-	y2 = GridFit(SIDE_Y(gport->view.y0 + gport->view.height - 1), PCB->Grid, PCB->GridOffsetY);
+	x1 = GridFit(MAX(0, SIDE_X(gport->view.x0)), PCB->Grid, PCB->GridOffsetX);
+	y1 = GridFit(MAX(0, SIDE_Y(gport->view.y0)), PCB->Grid, PCB->GridOffsetY);
+	x2 = GridFit(MIN(PCB->MaxWidth,  SIDE_X(gport->view.x0 + gport->view.width - 1)), PCB->Grid, PCB->GridOffsetX);
+	y2 = GridFit(MIN(PCB->MaxHeight, SIDE_Y(gport->view.y0 + gport->view.height - 1)), PCB->Grid, PCB->GridOffsetY);
+
 	if (x1 > x2) {
 		Coord tmp = x1;
 		x1 = x2;
