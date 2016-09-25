@@ -203,6 +203,9 @@ void conf_parse_arguments(const char *prefix, int *argc, char ***argv);
 /* convert a policy text to policy value - return POL_invalid on error */
 conf_policy_t conf_policy_parse(const char *s);
 
+/* Return the name of the policy - always a static string, even for invalid roles */
+const char *conf_policy_name(conf_policy_t p);
+
 /* convert a role text to role value - return CFR_invalid on error */
 conf_role_t conf_role_parse(const char *s);
 

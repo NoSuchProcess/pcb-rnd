@@ -133,11 +133,23 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 
 conf_policy_t conf_policy_parse(const char *s)
 {
-	if (strcasecmp(s, "overwrite") == 0)  return POL_OVERWRITE;
+	if (strcasecmp(s, "overwrite") == 0)  return  POL_OVERWRITE;
 	if (strcasecmp(s, "prepend") == 0)    return  POL_PREPEND;
 	if (strcasecmp(s, "append") == 0)     return  POL_APPEND;
 	if (strcasecmp(s, "disable") == 0)    return  POL_DISABLE;
 	return POL_invalid;
+}
+
+const char *conf_policy_name(conf_policy_t p)
+{
+	switch(p) {
+		case POL_OVERWRITE: return "overwrite";
+		case POL_PREPEND:   return "prepend";
+		case POL_APPEND:    return "append";
+		case POL_DISABLE:   return "disable";
+		case POL_invalid:   return "(invalid)";
+	}
+	return "(unknown)";
 }
 
 conf_role_t conf_role_parse(const char *s)
