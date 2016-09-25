@@ -217,7 +217,7 @@ void ghid_draw_grid_local(Coord cx, Coord cy)
 	if (!conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
 		return;
 
-	if ((Vz(PCB->Grid) < MIN_GRID_DISTANCE))
+	if ((Vz(PCB->Grid) < MIN_GRID_DISTANCE) || (!conf_core.editor.draw_grid))
 		return;
 
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
