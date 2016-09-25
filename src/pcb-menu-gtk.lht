@@ -164,6 +164,8 @@ ha:{
 				}
 				ha:Grid properties = {
 					li:submenu {
+						ha:Enable local grid          = { checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
+						-
 						ha:local grid radius 4   =  { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 4)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
 						ha:local grid radius 8    = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 8)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 8, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
 						ha:local grid radius 16   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 16)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
