@@ -1,0 +1,95 @@
+<html>
+<head>
+	<title> pcb-rnd - gtk grid fixes </title>
+<!--AUTO head begin-->
+	<link rel="icon" href="http://repo.hu/projects/pcb-rnd/logo16.png">
+<!--AUTO head end-->
+</head>
+<body>
+
+<!--AUTO navbar begin-->
+<table border=0 cellspacing=2 cellpadding=10  bgcolor=#eeeeee width=100%>
+<tr>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/projects/pcb-rnd/"> Main </a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/projects/pcb-rnd/news.html"> News </a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi">People</a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=events">Events</a>
+<td align=right width=60%> <font size=+2><i>pcb-rnd</i></font> <img src="http://repo.hu/projects/pcb-rnd/logo32.png">
+</table>
+<!--AUTO navbar end-->
+
+<h1> pcb-rnd - gtk grid fixes </h1>
+
+<h2> Problem with the original gtk grid </h2>
+
+The original code draws every grid point on screen, even the ones that are
+off the board. When the user zooms out with a dense grid, it can become too
+dense - the original code turns the grid off in this case.
+<p>
+If the grid is very dense, on a large screen the software render may slow down.
+This is noticeable in pan and zoom mostly. The bottleneck is the gtk call
+that draws the grid points: if there are too many of them, it's slow.
+
+
+<h2> New grid </h2>
+
+To overcome this problem, pcb-rnd offers configuration settings to limit
+the number of dots to be drawn. There are mainly two parallel approaches:
+using a <i>local grid</i> or draw less dots in a <i>global grid</i>. The
+old code defined only a global grid and did not have runtime settings for
+the properties of the grid.
+
+<h3> Global grid improvements </h3>
+
+The most trivial optimization is that grid points off the board are simply
+not drawn:
+<p>
+<img src="grid_edge.png">
+<p>
+Next, the compile-time configurable "minimum distance between grid points
+before it is too dense" setting is user configurable now. The default value
+can be changed in any of the usual
+<a href="../conf/sources.html">configuration sources</a>. However,
+when the configured density is reached while zooming out, there are two options.
+<p>
+The first, default option is to do the same that the original code did: just
+hide the grid:
+<p>
+<img src="grid_global_nosparse.png">
+<p>
+An alternative is to use <i>sparse global grid</i> which means only
+every 2nd, 3rd, 4th, ... Nth grid point is drawn. The cursor still snaps
+to every real grid point, so the grid got sparse only on the display. Note
+how the line is drawn on invisible grid points:
+<p>
+<img src="grid_global_sparse.png">
+
+<h3> Introduction of the local grid </h3>
+Another approach is to use a local grid. The grid helps finding whether
+existing objects are aligned or where the next move/click would end up.
+These are usually interesting only in a small range around the crosshair and
+less interesting on the other end of the board. Local grid draws the grid
+points only near the crosshair. Such local grid follows the crosshair
+everywhere:
+<p>
+<img src="grid_local_4.png">
+<p>
+The user can configure or interactively set the radius in which the grid
+points are drawn:
+<p>
+<img src="grid_local_16.png">
+<p>
+The radius is given in "number of grid points", thus the local grid yields
+a constant number of points that is independent of the actual grid size. When
+a local grid gets too dense, it is hidden - there's no sparse option, since
+local grids usually have too few points to make reasonable skips.
+
+<h2> save/load and compatibility </h2>
+Not affected.
+
+<h2> plans </h2>
+This feature is gtk-specific and is complete. There are no plans to
+implement this in the lesstif HID at the moment.
+
+</body>
+</html>
