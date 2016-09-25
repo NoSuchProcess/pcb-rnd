@@ -37,11 +37,21 @@ static const char conf_syntax[] =
 	"conf(set, path, value, [role], [policy]) - change a config setting\n"
 	"conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config\n"
 	"conf(reset, role) - reset the in-memory lihata of a role\n"
+	"conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)\n"
 	;
-
 static const char conf_help[] = "Perform various operations on the configuration tree.";
 
 extern lht_doc_t *conf_root[];
+static inline int conf_iseq_pf(void *ctx, const char *fmt, ...)
+{
+	int res;
+	va_list ap;
+	va_start(ap, fmt);
+	res = pcb_append_vprintf((gds_t *)ctx, fmt, ap);
+	va_end(ap);
+	return res;
+}
+
 static int ActionConf(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *cmd = argc > 0 ? argv[0] : 0;
@@ -73,7 +83,6 @@ static int ActionConf(int argc, const char **argv, Coord x, Coord y)
 		path = argv[1];
 		val = argv[2];
 
-
 		if (role == CFR_invalid) {
 			conf_native_t *n = conf_get_field(argv[1]);
 			if (n == NULL) {
@@ -88,6 +97,34 @@ static int ActionConf(int argc, const char **argv, Coord x, Coord y)
 			Message(PCB_MSG_DEFAULT, "conf(set) failed.\n");
 			return 1;
 		}
+	}
+
+	else if (NSTRCMP(cmd, "iseq") == 0) {
+		const char *path, *val;
+		int res;
+		gds_t nval;
+		conf_native_t *n;
+
+		if (argc != 3) {
+			Message(PCB_MSG_ERROR, "conf(iseq) needs two arguments");
+			return -1;
+		}
+		path = argv[1];
+		val = argv[2];
+
+		n = conf_get_field(argv[1]);
+		if (n == NULL) {
+			Message(PCB_MSG_ERROR, "Invalid conf field '%s' in iseq: no such path\n", path);
+			return -1;
+		}
+
+		gds_init(&nval);
+		conf_print_native_field(conf_iseq_pf, &nval, 0, &n->val, n->type, NULL, 0);
+		res = !strcmp(nval.array, val);
+		printf("iseq: %s %s==%s %d\n", path, nval.array, val, res);
+		gds_uninit(&nval);
+
+		return res;
 	}
 
 	else if (NSTRCMP(cmd, "toggle") == 0) {
