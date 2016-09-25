@@ -160,7 +160,7 @@ static void ghid_draw_grid_local_(Coord cx, Coord cy, int radius)
 	render_priv *priv = gport->render_priv;
 	static GdkPoint *points_base = NULL;
 	static GdkPoint *points_abs = NULL;
-	static int apoints = 0, npoints = 0;
+	static int apoints = 0, npoints = 0, old_radius = 0;
 	static Coord last_grid = 0;
 	int recalc = 0, n, r2;
 	Coord x, y;
@@ -173,6 +173,12 @@ static void ghid_draw_grid_local_(Coord cx, Coord cy, int radius)
 		points_base = (GdkPoint *) realloc(points_base, apoints * sizeof(GdkPoint));
 		points_abs  = (GdkPoint *) realloc(points_abs,  apoints * sizeof(GdkPoint));
 	}
+
+	if (radius != old_radius) {
+		old_radius = radius;
+		recalc = 1;
+	}
+
 	if (last_grid != PCB->Grid) {
 		last_grid = PCB->Grid;
 		recalc = 1;
