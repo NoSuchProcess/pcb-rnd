@@ -34,12 +34,13 @@
 #include "conf.h"
 #include "error.h"
 
-static const char conf_syntax[] =
+static const char dump_conf_syntax[] =
 	"dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout\n"
 	"dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree\n"
+
 	;
 
-static const char conf_help[] = "Perform various operations on the configuration tree.";
+static const char dump_conf_help[] = "Perform various operations on the configuration tree.";
 
 extern lht_doc_t *conf_root[];
 static int ActionDumpConf(int argc, const char **argv, Coord x, Coord y)
@@ -77,9 +78,62 @@ static int ActionDumpConf(int argc, const char **argv, Coord x, Coord y)
 	}
 
 	else {
-		Message(PCB_MSG_DEFAULT, "Invalid conf command '%s'\n", argv[0]);
+		Message(PCB_MSG_ERROR, "Invalid conf command '%s'\n", argv[0]);
 		return 1;
 	}
+	return 0;
+}
+
+static const char eval_conf_syntax[] =
+	"EvalConf(path) - evaluate a config path in different config sources to figure how it ended up in the native database\n"
+	;
+
+static const char eval_conf_help[] = "Perform various operations on the configuration tree.";
+
+static int ActionEvalConf(int argc, const char **argv, Coord x, Coord y)
+{
+	const char *path = argc > 0 ? argv[0] : NULL;
+	conf_native_t *nat;
+	int role;
+
+	if (path == NULL) {
+		Message(PCB_MSG_ERROR, "EvalConf needs a path\n");
+		return 1;
+	}
+
+	nat = conf_get_field(path);
+	if (nat == NULL) {
+		Message(PCB_MSG_ERROR, "EvalConf: invalid path %s - no such config setting\n", path);
+		return 1;
+	}
+
+	printf("Conf node %s\n", path);
+	for(role = 0; role < CFR_max_real; role++) {
+		lht_node_t *n;
+		printf(" Role: %s\n", conf_role_name(role));
+		n = conf_lht_get_at(role, path, 0);
+		if (n != NULL) {
+			conf_policy_t pol = -1;
+			long prio = conf_default_prio[role];
+
+
+			if (conf_get_policy_prio(n, &pol, &prio) == 0)
+				printf("  * policy=%s\n  * prio=%ld\n", conf_policy_name(pol), prio);
+
+			if (n->file_name != NULL)
+				printf("  * from=%s:%d.%d\n", n->file_name, n->line, n->col);
+			else
+				printf("  * from=(unknown)\n");
+
+			lht_dom_export(n, stdout, "  ");
+		}
+		else
+			printf("  * not present\n");
+	}
+
+	printf(" Native:\n");
+	conf_print_native((conf_pfn)pcb_fprintf, stdout, "  ", 1, nat);
+
 	return 0;
 }
 
@@ -126,9 +180,11 @@ static int ActionDumpLayers(int argc, const char **argv, Coord x, Coord y)
 
 HID_Action diag_action_list[] = {
 	{"dumpconf", 0, ActionDumpConf,
-	 conf_help, conf_syntax},
+	 dump_conf_help, dump_conf_syntax},
 	{"dumplayers", 0, ActionDumpLayers,
-	 dump_layers_help, dump_layers_syntax}
+	 dump_layers_help, dump_layers_syntax},
+	{"EvalConf", 0, ActionEvalConf,
+	 eval_conf_help, eval_conf_syntax}
 };
 
 static const char *diag_cookie = "debug plugin";
