@@ -204,6 +204,9 @@ conf_policy_t conf_policy_parse(const char *s);
 /* convert a role text to role value - return CFR_invalid on error */
 conf_role_t conf_role_parse(const char *s);
 
+/* Return the name of the role - always a static string, even for invalid roles */
+const char *conf_role_name(conf_role_t r);
+
 /* Lock/unlock the structure of a role. In a locked role value of existing
    fields may be modified but the structure of the tree is static (can't
    create or remove nodes). This is useful when an io_ file format supports

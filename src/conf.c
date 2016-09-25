@@ -151,6 +151,27 @@ conf_role_t conf_role_parse(const char *s)
 	return CFR_invalid;
 }
 
+const char *conf_role_name(conf_role_t r)
+{
+	switch(r) {
+		case CFR_INTERNAL:    return "internal";
+		case CFR_SYSTEM:      return "system";
+		case CFR_DEFAULTPCB:  return "defaultpcb";
+		case CFR_USER:        return "user";
+		case CFR_PROJECT:     return "project";
+		case CFR_DESIGN:      return "design";
+		case CFR_CLI:         return "cli";
+		case CFR_file:        return "(file)";
+		case CFR_binary:      return "(binary)";
+
+		case CFR_max_alloc:
+		case CFR_max_real:
+		case CFR_invalid:     return "(invalid role)";
+	}
+	return "(unknown role)";
+}
+
+
 void extract_poliprio(lht_node_t *root, conf_policy_t *gpolicy, long *gprio)
 {
 	long len = strlen(root->name), p = -1;
