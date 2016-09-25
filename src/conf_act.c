@@ -121,7 +121,7 @@ static int ActionConf(int argc, const char **argv, Coord x, Coord y)
 		gds_init(&nval);
 		conf_print_native_field(conf_iseq_pf, &nval, 0, &n->val, n->type, NULL, 0);
 		res = !strcmp(nval.array, val);
-		printf("iseq: %s %s==%s %d\n", path, nval.array, val, res);
+/*		printf("iseq: %s %s==%s %d\n", path, nval.array, val, res);*/
 		gds_uninit(&nval);
 
 		return res;
