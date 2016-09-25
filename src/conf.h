@@ -141,6 +141,8 @@ typedef enum {
 	CFR_invalid
 } conf_role_t;
 
+extern const int conf_default_prio[];
+
 void conf_init(void);
 void conf_uninit(void);
 
@@ -332,5 +334,10 @@ lht_node_t *conf_lht_get_at(conf_role_t target, const char *path, int create);
 
 /* Write an existing conf subtree to a file */
 int conf_export_to_file(const char *fn, conf_role_t role, const char *conf_path);
+
+/* Determine the policy and priority of a config lihata node;
+   returns 0 on success but may not fill in both values, caller is
+   responsible for initializing them before the call. */
+int conf_get_policy_prio(lht_node_t *node, conf_policy_t *gpolicy, long *gprio);
 
 #endif

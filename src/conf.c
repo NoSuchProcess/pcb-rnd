@@ -45,7 +45,7 @@ int conf_root_lock[CFR_max_alloc];
 int conf_lht_dirty[CFR_max_alloc];
 
 htsp_t *conf_fields = NULL;
-static const int conf_default_prio[] = {
+const int conf_default_prio[] = {
 /*	CFR_INTERNAL */   100,
 /*	CFR_SYSTEM */     200,
 /*	CFR_DEFAULTPCB */ 300,
@@ -53,7 +53,8 @@ static const int conf_default_prio[] = {
 /*	CFR_ENV */        500,
 /*	CFR_PROJECT */    600,
 /*	CFR_DESIGN */     700,
-/*	CFR_CLI */        800
+/*	CFR_CLI */        800,
+0, 0, 0, 0, 0, 0, 0, 0, 0 /* make sure the array is addressable until CFR_max_alloc */
 };
 
 extern const char *conf_internal;
@@ -172,7 +173,7 @@ const char *conf_role_name(conf_role_t r)
 }
 
 
-void extract_poliprio(lht_node_t *root, conf_policy_t *gpolicy, long *gprio)
+void conf_extract_poliprio(lht_node_t *root, conf_policy_t *gpolicy, long *gprio)
 {
 	long len = strlen(root->name), p = -1;
 	char tmp[128];
@@ -211,6 +212,18 @@ void extract_poliprio(lht_node_t *root, conf_policy_t *gpolicy, long *gprio)
 		*gprio = p;
 }
 
+
+int conf_get_policy_prio(lht_node_t *node, conf_policy_t *gpolicy, long *gprio)
+{
+	for(;;node = node->parent) {
+		if (node->parent == node->doc->root) {
+			conf_extract_poliprio(node, gpolicy, gprio);
+			return 0;
+		}
+		if (node->parent == NULL)
+			return -1;
+	}
+}
 
 static int conf_parse_increments(Increments *inc, lht_node_t *node)
 {
@@ -597,7 +610,7 @@ int conf_merge_patch(lht_node_t *root, long gprio)
 		return -1;
 	}
 
-	extract_poliprio(root, &gpolicy, &gprio);
+	conf_extract_poliprio(root, &gpolicy, &gprio);
 
 	/* iterate over all hashes and insert them recursively */
 	for(n = lht_dom_first(&it, root); n != NULL; n = lht_dom_next(&it))
@@ -634,7 +647,7 @@ static void add_subtree(int role, lht_node_t *subtree_parent_root, lht_node_t *s
 	m = vmst_alloc_append(&merge_subtree, 1);
 	m->prio = conf_default_prio[role];
 
-	extract_poliprio(subtree_parent_root, &m->policy, &m->prio);
+	conf_extract_poliprio(subtree_parent_root, &m->policy, &m->prio);
 	m->subtree = subtree_root;
 }
 
