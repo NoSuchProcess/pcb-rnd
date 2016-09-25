@@ -223,6 +223,10 @@ li:pcb-rnd-conf-v1 {
 					enable = 0
 					radius = 16
 				}
+				ha:global_grid {
+					sparse = 0
+					min_dist_px = 4
+				}
 			}
 			ha:report {
 				columns = 8

@@ -168,6 +168,11 @@ ha:{
 						ha:local grid radius 8    = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 8)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 8, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
 						ha:local grid radius 16   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 16)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
 						ha:local grid radius 32   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 32)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 32, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
+						-
+						ha:sparse global grid     = { checked=plugins/hid_gtk/global_grid/sparse; action=conf(toggle, plugins/hid_gtk/global_grid/sparse, design) }
+						ha:global grid density 4  = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 4)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) } }
+						ha:global grid density 8  = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 8)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 8, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) } }
+						ha:global grid density 16 = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 16)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) } }
 					}
 				}
 				ha:Realign grid               = { li:action={GetXY(Click to set the grid origin); Display(ToggleGrid) } }
