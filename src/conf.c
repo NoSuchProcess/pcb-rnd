@@ -146,6 +146,7 @@ conf_role_t conf_role_parse(const char *s)
 	if (strcasecmp(s, "system") == 0)     return CFR_SYSTEM;
 	if (strcasecmp(s, "defaultpcb") == 0) return CFR_DEFAULTPCB;
 	if (strcasecmp(s, "user") == 0)       return CFR_USER;
+	if (strcasecmp(s, "env") == 0)        return CFR_ENV;
 	if (strcasecmp(s, "project") == 0)    return CFR_PROJECT;
 	if (strcasecmp(s, "design") == 0)     return CFR_DESIGN;
 	if (strcasecmp(s, "cli") == 0)        return CFR_CLI;
@@ -159,6 +160,7 @@ const char *conf_role_name(conf_role_t r)
 		case CFR_SYSTEM:      return "system";
 		case CFR_DEFAULTPCB:  return "defaultpcb";
 		case CFR_USER:        return "user";
+		case CFR_ENV:         return "env";
 		case CFR_PROJECT:     return "project";
 		case CFR_DESIGN:      return "design";
 		case CFR_CLI:         return "cli";
