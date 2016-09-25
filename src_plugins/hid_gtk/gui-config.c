@@ -681,7 +681,6 @@ static void config_window_row(GtkWidget *parent, const char *desc, int load, con
 
 	lab = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), lab, TRUE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 1.0);
 
 	lab = gtk_label_new(desc);
 	gtk_box_pack_start(GTK_BOX(hbox), lab, FALSE, FALSE, 4);
@@ -752,7 +751,7 @@ static void config_window_tab_create(GtkWidget *tab_vbox)
 	 */
 GtkWidget *config_increments_tbl[4][4]; /* [col][row] */
 
-static GtkWidget *config_increments_vbox, *config_increments_tab_vbox;
+static GtkWidget *config_increments_vbox = NULL, *config_increments_tab_vbox = NULL;
 
 static void increment_tbl_update_cell(GtkLabel *lab, Coord val, const char *fmt)
 {
@@ -943,8 +942,10 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 	gtk_box_pack_start(GTK_BOX(tab_vbox), content_vbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
 
-	if (!config_increments_vbox)
+	if (config_increments_vbox != NULL) {
 		gtk_widget_destroy(GTK_WIDGET(config_increments_vbox));
+		config_increments_vbox = NULL;
+	}
 
 	/* the actual content */
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -1876,17 +1877,24 @@ static GtkWidget *config_tree_leaf(GtkTreeStore *model, GtkTreeIter *parent, con
 /***** auto *****/
 static struct {
 	GtkWidget *name, *desc;
+	GtkWidget *edit_string;
+	GtkWidget *edit_coord;
+	GtkWidget *edit_int;
+	GtkWidget *edit_real;
+	GtkWidget *edit_boolean;
+
+	GtkAdjustment *edit_int_adj;
+	GtkAdjustment *edit_real_adj;
 } auto_tab_widgets;
 
 static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 {
-	GtkWidget *vbox;
-	GtkWidget *w;
-	GtkObject *o;
+	GtkWidget *vbox, *src, *src_left, *src_right;
 
 	gtk_container_set_border_width(GTK_CONTAINER(tab_vbox), 6);
 	vbox = ghid_category_vbox(tab_vbox, "Configuration node", 4, 2, TRUE, TRUE);
 
+	/* header */
 	auto_tab_widgets.name = gtk_label_new("setting name");
 	gtk_label_set_use_markup(GTK_LABEL(auto_tab_widgets.name), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.name, FALSE, FALSE, 0);
@@ -1894,44 +1902,52 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	auto_tab_widgets.desc = gtk_label_new("setting desc");
 	gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.desc, FALSE, FALSE, 0);
 
+	/* Edit data */
+	src = gtk_hbox_new(TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), src, FALSE, FALSE, 4);
+
+	src_left = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(src), src_left, FALSE, FALSE, 4);
+	src_right = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(src), src_right, FALSE, FALSE, 4);
+
+	gtk_box_pack_start(GTK_BOX(src_right), gtk_label_new("Edit value of the selected source"), FALSE, FALSE, 0);
+
+
+	auto_tab_widgets.edit_string = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_string, FALSE, FALSE, 4);
+
+	auto_tab_widgets.edit_coord = ghid_coord_entry_new(10, 10, 2000000, conf_core.editor.grid_unit, CE_TINY);
+	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_coord, FALSE, FALSE, 4);
+
+	auto_tab_widgets.edit_int_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10,
+	                                                                  0, /* min */
+	                                                                  20000,
+	                                                                  1, 10, /* steps */
+	                                                                  0.0));
+	auto_tab_widgets.edit_int = gtk_spin_button_new(auto_tab_widgets.edit_int_adj, 1, 4);
+	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_int, FALSE, FALSE, 4);
+
+	auto_tab_widgets.edit_real_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10,
+	                                                                   0, /* min */
+	                                                                   20000,
+	                                                                   1, 10, /* steps */
+	                                                                   0.0));
+	auto_tab_widgets.edit_real = gtk_spin_button_new(auto_tab_widgets.edit_real_adj, 1, 4);
+	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_real, FALSE, FALSE, 4);
+
+	ghid_check_button_connected(src_right, &auto_tab_widgets.edit_boolean, 0,
+	                            TRUE, FALSE, FALSE, 2,
+	                            config_command_window_toggle_cb, NULL, "");
+
+
 #if 0
 	free(tmp);
 	switch(item->type) {
-		case CFN_STRING:
-			w = gtk_entry_new();
-			gtk_entry_set_text(GTK_ENTRY(w), *item->val.string);
-			gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 4);
-			break;
-		case CFN_COORD:
-			w = ghid_coord_entry_new(10, 15000, 2000000, conf_core.editor.grid_unit, CE_TINY);
-			gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 4);
-			break;
-		case CFN_INTEGER:
-			o = gtk_adjustment_new(15,
-																							10, /* min */
-																							20,
-																							1, 10, /* steps */
-																							0.0);
-			gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(o), FALSE, FALSE, 4);
-			break;
-		case CFN_REAL:
-			o = gtk_adjustment_new(15.5,
-																							10, /* min */
-																							20,
-																							1, 10, /* steps */
-																							0.0);
-			gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(o), FALSE, FALSE, 4);
-			break;
-		case CFN_BOOLEAN:
-			ghid_check_button_connected(vbox, NULL, *item->val.boolean,
-															TRUE, FALSE, FALSE, 2,
-															config_command_window_toggle_cb, NULL, _("todo81"));
-			break;
 		case CFN_UNIT:
 		case CFN_COLOR:
 		case CFN_LIST:
 		case CFN_INCREMENTS:
-
 /*			gtk_entry_set_text(GTK_ENTRY(entry), *item->val.string);
 			gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 4);*/
 			break;
@@ -1948,7 +1964,7 @@ static void config_page_update_auto(void *data)
 	conf_native_t *nat = data;
 
 	/* set name */
-	gtk_label_set(auto_tab_widgets.name, nat->hash_path);
+	gtk_label_set(GTK_LABEL(auto_tab_widgets.name), nat->hash_path);
 
 	/* split long description strings at whitepsace to make the preferences window narrower */
 	tmp = malloc(strlen(nat->description) * 2);
@@ -1962,10 +1978,38 @@ static void config_page_update_auto(void *data)
 			l = 0;
 	}
 	*so = '\0';
-	gtk_label_set(auto_tab_widgets.desc, tmp);
+	gtk_label_set(GTK_LABEL(auto_tab_widgets.desc), tmp);
 	free(tmp);
 
+	/* hide all edits */
+	gtk_widget_hide(auto_tab_widgets.edit_string);
+	gtk_widget_hide(auto_tab_widgets.edit_coord);
+	gtk_widget_hide(auto_tab_widgets.edit_int);
+	gtk_widget_hide(auto_tab_widgets.edit_real);
+	gtk_widget_hide(auto_tab_widgets.edit_boolean);
 
+	switch(nat->type) {
+		case CFN_STRING:
+			gtk_entry_set_text(GTK_ENTRY(auto_tab_widgets.edit_string), *nat->val.string == NULL ? "" : *nat->val.string);
+			gtk_widget_show(auto_tab_widgets.edit_string);
+			break;
+		case CFN_COORD:
+			ghid_coord_entry_set_value(GHID_COORD_ENTRY(auto_tab_widgets.edit_coord), *nat->val.coord);
+			gtk_widget_show(auto_tab_widgets.edit_coord);
+			break;
+		case CFN_INTEGER:
+			gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj), *nat->val.integer);
+			gtk_widget_show(auto_tab_widgets.edit_int);
+			break;
+		case CFN_REAL:
+			gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_real_adj), *nat->val.real);
+			gtk_widget_show(auto_tab_widgets.edit_real);
+			break;
+		case CFN_BOOLEAN:
+#warning TODO: set val
+			gtk_widget_show(auto_tab_widgets.edit_boolean);
+			break;
+	}
 }
 
 static GtkTreeIter *config_tree_auto_mkdirp(GtkTreeStore *model, GtkTreeIter *main_parent, htsp_t *dirs, char *path)
@@ -2009,7 +2053,6 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 	htsp_entry_t *e;
 	char path[1024];
 	GtkTreeIter *parent;
-	GtkWidget *tab;
 	htsp_entry_t **sorted;
 	int num_paths, n;
 	gint auto_page;
@@ -2050,7 +2093,7 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 		*basename = '\0';
 		basename++;
 		parent = config_tree_auto_mkdirp(model, main_parent, dirs, path);
-		tab = config_tree_leaf_(model, parent, basename, NULL, &iter);
+		config_tree_leaf_(model, parent, basename, NULL, &iter);
 		gtk_tree_store_set(model, &iter, CONFIG_PAGE_COLUMN, auto_page, CONFIG_PAGE_UPDATE_CB, config_page_update_auto, CONFIG_PAGE_DATA, e->value, -1);
 	}
 	htsp_free(dirs);
