@@ -1,0 +1,63 @@
+<html>
+<head>
+	<title> pcb-rnd - [propedit] </title>
+<!--AUTO head begin-->
+	<link rel="icon" href="http://repo.hu/projects/pcb-rnd/logo16.png">
+<!--AUTO head end-->
+</head>
+<body>
+
+<!--AUTO navbar begin-->
+<table border=0 cellspacing=2 cellpadding=10  bgcolor=#eeeeee width=100%>
+<tr>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/projects/pcb-rnd/"> Main </a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/projects/pcb-rnd/news.html"> News </a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi">People</a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=events">Events</a>
+<td align=right width=60%> <font size=+2><i>pcb-rnd</i></font> <img src="http://repo.hu/projects/pcb-rnd/logo32.png">
+</table>
+<!--AUTO navbar end-->
+
+<h1> pcb-rnd - [propedit] </h1>
+Since 1.1.2, pcb-rnd core is able to attach user defined <i>attributes</i>
+(arbitrary textual key=value pairs) to any object. The original mainline
+pcb-rnd was forked from already supported attributes on some objects (e.g.
+board attributes, net attributes) but not on all. However, the user had
+very little access to the attributes - no GUI or action would handle them.
+<p>
+Propedit introduces a property editor window in gtk that is able to
+edit attributes and core properties of all selected objects. Core properties
+include all hardwired properties of objects, such as geometry (e.g.
+trace width, hole diameter, clearance) or textual data (e.g. string of
+a text).
+<p>
+Properties and attributes of the selected objects are collected in a
+sorted list - each row of the list is a property (starting with p/) or
+an attribute (starting with a/). For each row all values seen in the selection
+are also collected so that the following values can be presented on the list,
+per row:
+<ul>
+	<li> the most common value
+	<li> minimum value (for numeric value types)
+	<li> maximum value (for numeric value types)
+	<li> average value (for numeric value types)
+</ul>
+<p>
+When the user clicks on a row, an edit box is activated and the value can
+be changed. A combo box lists all existing values for the given row, so
+it is easy to unify the value of a property or attribute among all selected
+objects to one of the existing values, but the user is also free to enter
+a new value.
+<p>
+It is also possible to remove existing attributes or to add new attributes.
+
+<h2> save/load and compatibility </h2>
+Attributes of most objects can not be saved in the original .pcb format.
+The propedit feature is most useful when used with the lihata board format.
+
+<h2> plans </h2>
+Various improvements. Currently there's no plan to make this function available
+in the lesstif HID.
+
+</body>
+</html>

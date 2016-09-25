@@ -1,4 +1,5 @@
 - BUGS
+	- there's no screenshot in features/propedit.html
 	- ChangeSize(selected, *) or Change*(selected, *) causes undo panic if nothing is selected
 	- genht config bug in gpmi
 	- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
