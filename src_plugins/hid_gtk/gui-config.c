@@ -51,6 +51,7 @@
 #include "paths.h"
 #include "plug_footprint.h"
 #include "compat_misc.h"
+#include "fptr_cast.h"
 #include <liblihata/tree.h>
 
 #if 0
@@ -1754,6 +1755,8 @@ static void config_colors_tab_create(GtkWidget * tab_vbox)
 enum {
 	CONFIG_NAME_COLUMN,
 	CONFIG_PAGE_COLUMN,
+	CONFIG_PAGE_UPDATE_CB,
+	CONFIG_PAGE_DATA,
 	N_CONFIG_COLUMNS
 };
 
@@ -1766,7 +1769,7 @@ static GtkWidget *config_page_create(GtkTreeStore * tree, GtkTreeIter * iter, Gt
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_notebook_append_page(notebook, vbox, NULL);
 	page = gtk_notebook_get_n_pages(notebook) - 1;
-	gtk_tree_store_set(tree, iter, CONFIG_PAGE_COLUMN, page, -1);
+	gtk_tree_store_set(tree, iter, CONFIG_PAGE_COLUMN, page, CONFIG_PAGE_UPDATE_CB, NULL, CONFIG_PAGE_DATA, NULL, -1);
 	return vbox;
 }
 
@@ -1825,10 +1828,15 @@ static void config_selection_changed_cb(GtkTreeSelection * selection, gpointer d
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	gint page;
+	void *cb, *page_data;
 
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
 		return;
-	gtk_tree_model_get(model, &iter, CONFIG_PAGE_COLUMN, &page, -1);
+	gtk_tree_model_get(model, &iter, CONFIG_PAGE_COLUMN, &page, CONFIG_PAGE_UPDATE_CB, &cb, CONFIG_PAGE_DATA, &page_data, -1);
+	if (cb != NULL) {
+		void (*fnc)(void *data) = pcb_cast_d2f(cb);
+		fnc(page_data);
+	}
 	gtk_notebook_set_current_page(config_notebook, page);
 }
 
@@ -1846,49 +1854,48 @@ static void config_tree_sect(GtkTreeStore *model, GtkTreeIter *parent, GtkTreeIt
 }
 
 /* Create a leaf node with a custom tab */
-static GtkWidget *config_tree_leaf(GtkTreeStore *model, GtkTreeIter *parent, const char *name, void (*tab_create)(GtkWidget *tab_vbox))
+static GtkWidget *config_tree_leaf_(GtkTreeStore *model, GtkTreeIter *parent, const char *name, void (*tab_create)(GtkWidget *tab_vbox), GtkTreeIter *iter)
 {
-	GtkTreeIter iter;
-	GtkWidget *vbox;
+	GtkWidget *vbox = NULL;
 
-	gtk_tree_store_append(model, &iter, parent);
-	gtk_tree_store_set(model, &iter, CONFIG_NAME_COLUMN, name, -1);
-	vbox = config_page_create(model, &iter, config_notebook);
-	if (tab_create != NULL)
+	gtk_tree_store_append(model, iter, parent);
+	gtk_tree_store_set(model, iter, CONFIG_NAME_COLUMN, name, -1);
+	if (tab_create != NULL) {
+		vbox = config_page_create(model, iter, config_notebook);
 		tab_create(vbox);
+	}
 	return vbox;
 }
 
-/***** auto *****/
-static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename, conf_native_t *item)
+static GtkWidget *config_tree_leaf(GtkTreeStore *model, GtkTreeIter *parent, const char *name, void (*tab_create)(GtkWidget *tab_vbox))
 {
-	GtkWidget *vbox, *label;
+	GtkTreeIter iter;
+	return config_tree_leaf_(model, parent, name, tab_create, &iter);
+}
+
+/***** auto *****/
+static struct {
+	GtkWidget *name, *desc;
+} auto_tab_widgets;
+
+static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
+{
+	GtkWidget *vbox;
 	GtkWidget *w;
 	GtkObject *o;
-	char *tmp, *so;
-	const char *si;
-	int l;
 
 	gtk_container_set_border_width(GTK_CONTAINER(tab_vbox), 6);
-	vbox = ghid_category_vbox(tab_vbox, basename, 4, 2, TRUE, TRUE);
+	vbox = ghid_category_vbox(tab_vbox, "Configuration node", 4, 2, TRUE, TRUE);
 
-	/* split long description strings at whitepsace to make the preferences window narrower */
-	tmp = malloc(strlen(item->description) * 2);
-	for(si = item->description, so = tmp, l = 0; *si != '\0'; si++,so++,l++) {
-		if (isspace(*si) && (l > 64))
-			*so = '\n';
-		else
-			*so = *si;
+	auto_tab_widgets.name = gtk_label_new("setting name");
+	gtk_label_set_use_markup(GTK_LABEL(auto_tab_widgets.name), TRUE);
+	gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.name, FALSE, FALSE, 0);
 
-		if (*so == '\n')
-			l = 0;
-	}
-	*so = '\0';
+	auto_tab_widgets.desc = gtk_label_new("setting desc");
+	gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.desc, FALSE, FALSE, 0);
 
-	label = gtk_label_new(tmp);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+#if 0
 	free(tmp);
-
 	switch(item->type) {
 		case CFN_STRING:
 			w = gtk_entry_new();
@@ -1929,6 +1936,36 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename, c
 			gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 4);*/
 			break;
 	}
+#endif
+}
+
+/* Update the config tab for a given entry */
+static void config_page_update_auto(void *data)
+{
+	char *tmp, *so;
+	const char *si;
+	int l;
+	conf_native_t *nat = data;
+
+	/* set name */
+	gtk_label_set(auto_tab_widgets.name, nat->hash_path);
+
+	/* split long description strings at whitepsace to make the preferences window narrower */
+	tmp = malloc(strlen(nat->description) * 2);
+	for(si = nat->description, so = tmp, l = 0; *si != '\0'; si++,so++,l++) {
+		if (isspace(*si) && (l > 64))
+			*so = '\n';
+		else
+			*so = *si;
+
+		if (*so == '\n')
+			l = 0;
+	}
+	*so = '\0';
+	gtk_label_set(auto_tab_widgets.desc, tmp);
+	free(tmp);
+
+
 }
 
 static GtkTreeIter *config_tree_auto_mkdirp(GtkTreeStore *model, GtkTreeIter *main_parent, htsp_t *dirs, char *path)
@@ -1964,6 +2001,7 @@ static int config_tree_auto_cmp(const void *v1, const void *v2)
 	return strcmp((*e1)->key, (*e2)->key);
 }
 
+
 /* Automatically create a subtree using the central config field hash */
 static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 {
@@ -1974,6 +2012,15 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 	GtkWidget *tab;
 	htsp_entry_t **sorted;
 	int num_paths, n;
+	gint auto_page;
+
+	{
+		GtkWidget *vbox;
+		vbox = gtk_vbox_new(FALSE, 0);
+		gtk_notebook_append_page(config_notebook, vbox, NULL);
+		auto_page = gtk_notebook_get_n_pages(config_notebook) - 1;
+		config_auto_tab_create(vbox, "auto");
+	}
 
 	/* remember the parent for each dir */
 	dirs = htsp_alloc(strhash, strkeyeq);
@@ -1987,6 +2034,7 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 	qsort(sorted, num_paths, sizeof(htsp_entry_t *), config_tree_auto_cmp);
 
 	for (n = 0; n < num_paths; n++) {
+		GtkTreeIter iter;
 		char *basename;
 		e = sorted[n];
 		if (strlen(e->key) > sizeof(path)-1) {
@@ -2002,8 +2050,8 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 		*basename = '\0';
 		basename++;
 		parent = config_tree_auto_mkdirp(model, main_parent, dirs, path);
-		tab = config_tree_leaf(model, parent, basename, NULL);
-		config_auto_tab_create(tab, basename, e->value);
+		tab = config_tree_leaf_(model, parent, basename, NULL, &iter);
+		gtk_tree_store_set(model, &iter, CONFIG_PAGE_COLUMN, auto_page, CONFIG_PAGE_UPDATE_CB, config_page_update_auto, CONFIG_PAGE_DATA, e->value, -1);
 	}
 	htsp_free(dirs);
 	free(sorted);
@@ -2050,7 +2098,7 @@ void ghid_config_window_show(void)
 	gtk_notebook_set_show_tabs(config_notebook, FALSE);
 
 	/* build the tree */
-	model = gtk_tree_store_new(N_CONFIG_COLUMNS, G_TYPE_STRING, G_TYPE_INT);
+	model = gtk_tree_store_new(N_CONFIG_COLUMNS, G_TYPE_STRING, G_TYPE_INT, G_TYPE_POINTER, G_TYPE_POINTER);
 
 	config_tree_sect(model, NULL, &user_pov,   _("User PoV"),   _("\n<b>User PoV</b>\nA subset of configuration settings regroupped,\npresented in the User's Point of View."));
 	config_tree_sect(model, NULL, &config_pov, _("Config PoV"), _("\n<b>Config PoV</b>\nAccess all configuration fields presented in\na tree that matches the configuration\nfile (lht) structure."));
