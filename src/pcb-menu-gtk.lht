@@ -130,6 +130,7 @@ ha:{
 			m=V
 			li:submenu {
 				ha:Enable visible grid        = { checked=editor/draw_grid; action=conf(toggle, editor/draw_grid, design) }
+				ha:Enable local grid          = { checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
 				ha:Grid units {
 					li:submenu {
 						ha:mil                    = { checked=ChkGridUnits(mil); action=SetUnits(mil) }

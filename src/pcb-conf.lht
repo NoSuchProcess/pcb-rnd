@@ -219,6 +219,10 @@ li:pcb-rnd-conf-v1 {
 				compact_vertical = 1
 				use_command_window = 0
 				history_size = 16
+				ha:local_grid {
+					enable = 1
+					radius = 16
+				}
 			}
 			ha:report {
 				columns = 8
