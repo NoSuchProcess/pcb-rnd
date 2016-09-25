@@ -220,7 +220,7 @@ li:pcb-rnd-conf-v1 {
 				use_command_window = 0
 				history_size = 16
 				ha:local_grid {
-					enable = 1
+					enable = 0
 					radius = 16
 				}
 			}

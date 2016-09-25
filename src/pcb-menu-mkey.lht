@@ -162,6 +162,14 @@ ha:{
 						ha:Grid +0.05mm           = { a=Ctrl<Key>g; action=SetValue(Grid,+0.05,mm) }
 					}
 				}
+				ha:Grid properties = {
+					li:submenu {
+						ha:local grid radius 4   =  { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 4)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
+						ha:local grid radius 8    = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 8)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 8, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
+						ha:local grid radius 16   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 16)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
+						ha:local grid radius 32   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 32)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 32, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
+					}
+				}
 				ha:Realign grid               = { li:action={GetXY(Click to set the grid origin); Display(ToggleGrid) } }
 				-
 				ha:Displayed element name {
