@@ -132,8 +132,8 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 			gchar *name = g_strdup_printf("MainMenuAction%d", action_counter++);
 			action = GTK_ACTION(gtk_toggle_action_new(name, menu_label, tip, NULL));
 			/* checked=foo       is a binary flag (checkbox)
-			 * checked=foo,bar   is a flag compared to a value (radio) */
-			gtk_toggle_action_set_draw_as_radio(GTK_TOGGLE_ACTION(action), ! !strchr(checked, ','));
+			 * checked=foo=bar   is a flag compared to a value (radio) */
+			gtk_toggle_action_set_draw_as_radio(GTK_TOGGLE_ACTION(action), ! !strchr(checked, '='));
 		}
 		else if (label && strcmp(label, "false") == 0) {
 			/* INSENSITIVE ITEM */

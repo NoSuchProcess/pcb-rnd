@@ -855,7 +855,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 #endif
 		act = hid_cfg_menu_field(node, MF_ACTION, NULL);
 		if (checked) {
-			if (strchr(checked, ','))
+			if (strchr(checked, '='))
 				stdarg(XmNindicatorType, XmONE_OF_MANY);
 			else
 				stdarg(XmNindicatorType, XmN_OF_MANY);
