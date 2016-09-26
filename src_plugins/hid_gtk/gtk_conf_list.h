@@ -28,6 +28,8 @@ struct gtk_conf_list_s {
 	GtkListStore *l;
 	GtkWidget *t;
 	int editing;
+	int inhibit_rebuild;
 };
 
 GtkWidget *gtk_conf_list_widget(gtk_conf_list_t *cl);
+int gtk_conf_list_set_list(gtk_conf_list_t *cl, lht_node_t *lst);

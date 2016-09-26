@@ -32,6 +32,9 @@ static void rebuild(gtk_conf_list_t *cl)
 	gboolean valid;
 	int n;
 
+	if (cl->inhibit_rebuild)
+		return;
+
 	if (cl->pre_rebuild != NULL)
 		cl->pre_rebuild(cl);
 
@@ -223,17 +226,43 @@ gboolean key_release_cb(GtkWidget *widget, GdkEventKey *event, gtk_conf_list_t *
 	return 0;
 }
 
+int gtk_conf_list_set_list(gtk_conf_list_t *cl, lht_node_t *lst)
+{
+	GtkTreeIter iter;
+	lht_node_t *nd;
+
+	if ((lst == NULL) || (lst->type != LHT_LIST))
+		return -1;
+
+	cl->lst = lst;
+	cl->inhibit_rebuild = 1;
+
+	gtk_list_store_clear(cl->l);
+
+	/* fill in the list with initial data */
+	for(nd = cl->lst->data.list.first; nd != NULL; nd = nd->next) {
+		if (nd->type != LHT_TEXT)
+			continue;
+
+		gtk_list_store_append(cl->l, &iter);
+		gtk_list_store_set(cl->l, &iter, cl->col_data, nd->data.text.value, -1);
+		if (nd->file_name != NULL)
+			gtk_list_store_set(cl->l, &iter, cl->col_src, nd->file_name, -1);
+		fill_misc_cols(cl, cl->num_cols, &iter, nd);
+	}
+
+	cl->inhibit_rebuild = 0;
+
+	return 0;
+}
+
 GtkWidget *gtk_conf_list_widget(gtk_conf_list_t *cl)
 {
 	GtkWidget *vbox, *hbox, *bins, *bdel, *bsel;
-	GtkTreeIter iter;
 	int n;
 	GType *ty;
-	lht_node_t *nd;
 
 	cl->editing = 0;
-	assert(cl->lst != NULL);
-	assert(cl->lst->type == LHT_LIST);
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	cl->t = gtk_tree_view_new();
@@ -245,16 +274,10 @@ GtkWidget *gtk_conf_list_widget(gtk_conf_list_t *cl)
 	cl->l = gtk_list_store_newv(cl->num_cols, ty);
 	free(ty);
 
-	/* fill in the list with initial data */
-	for(nd = cl->lst->data.list.first; nd != NULL; nd = nd->next) {
-		if (nd->type != LHT_TEXT)
-			continue;
-
-		gtk_list_store_append(cl->l, &iter);
-		gtk_list_store_set(cl->l, &iter, cl->col_data, nd->data.text.value, -1);
-		if (nd->file_name != NULL)
-			gtk_list_store_set(cl->l, &iter, cl->col_src, nd->file_name, -1);
-		fill_misc_cols(cl, n, &iter, nd);
+	if (cl->lst != NULL) {
+		lht_node_t *lst = cl->lst;
+		cl->lst = NULL;
+		gtk_conf_list_set_list(cl, lst);
 	}
 
 	/* add all columns */
