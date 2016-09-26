@@ -1876,7 +1876,7 @@ static GtkWidget *config_tree_leaf(GtkTreeStore *model, GtkTreeIter *parent, con
 
 /***** auto *****/
 static struct {
-	GtkWidget *name, *desc;
+	GtkWidget *name, *desc, *src;
 	GtkWidget *edit_string;
 	GtkWidget *edit_coord;
 	GtkWidget *edit_int;
@@ -1910,6 +1910,8 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	auto_tab_widgets.desc = gtk_label_new("setting desc");
 	gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.desc, FALSE, FALSE, 0);
 
+
+
 	/* upper part */
 	src = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), src, FALSE, FALSE, 4);
@@ -1938,6 +1940,9 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 
 	/* upper-right: edit data */
 	gtk_box_pack_start(GTK_BOX(src_right), gtk_label_new("Edit value of the selected source"), FALSE, FALSE, 0);
+
+	auto_tab_widgets.src = gtk_label_new("source");
+	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.src, FALSE, FALSE, 0);
 
 	auto_tab_widgets.edit_string = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_string, FALSE, FALSE, 4);
@@ -1996,6 +2001,7 @@ static void config_page_update_auto(void *data)
 	const char *si;
 	int l, n;
 	conf_native_t *nat = data;
+	lht_node_t *nd;
 
 	/* set name */
 	gtk_label_set(GTK_LABEL(auto_tab_widgets.name), nat->hash_path);
@@ -2024,14 +2030,15 @@ static void config_page_update_auto(void *data)
 	gtk_widget_hide(auto_tab_widgets.edit_color);
 	gtk_widget_hide(auto_tab_widgets.edit_unit);
 	gtk_widget_hide(auto_tab_widgets.edit_list);
+	gtk_widget_hide(auto_tab_widgets.src);
 
 	gtk_list_store_clear(auto_tab_widgets.src_l);
 	for(n = 0; n < CFR_max_real; n++) {
 		GtkTreeIter iter;
-		lht_node_t *nd = conf_lht_get_at(n, nat->hash_path, 0);
 		long prio = conf_default_prio[n];
 		conf_policy_t pol = POL_OVERWRITE;
 
+		nd = conf_lht_get_at(n, nat->hash_path, 0);
 		if (nd != NULL)
 			conf_get_policy_prio(nd, &pol, &prio);
 
@@ -2046,6 +2053,7 @@ static void config_page_update_auto(void *data)
 				case LHT_HASH: val = "<hash>"; break;
 				case LHT_TABLE: val = "<table>"; break;
 				case LHT_SYMLINK: val = "<symlink>"; break;
+				case LHT_INVALID_TYPE: val = "<invalid>"; break;
 			}
 			sprintf(sprio, "%ld", prio);
 			gtk_list_store_set(auto_tab_widgets.src_l, &iter,
@@ -2061,6 +2069,17 @@ static void config_page_update_auto(void *data)
 				-1);
 		}
 	}
+
+/*****/
+	nd = nat->prop[0].src;
+	if (nd != NULL) {
+		tmp = pcb_strdup_printf("%s:%d.%d", nd->file_name, nd->line, nd->col);
+		gtk_label_set(GTK_LABEL(auto_tab_widgets.src), tmp);
+		free(tmp);
+		gtk_widget_show(auto_tab_widgets.src);
+	}
+	else
+		gtk_widget_hide(auto_tab_widgets.src);
 
 	switch(nat->type) {
 		case CFN_STRING:
