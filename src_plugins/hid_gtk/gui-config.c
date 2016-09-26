@@ -1887,6 +1887,7 @@ static struct {
 
 	GtkAdjustment *edit_int_adj;
 	GtkAdjustment *edit_real_adj;
+	GdkColor color;
 } auto_tab_widgets;
 
 static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
@@ -1946,8 +1947,8 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_color, FALSE, FALSE, 4);
 
 	auto_tab_widgets.edit_unit = gtk_combo_box_new_text();
-	gtk_combo_box_append_text(auto_tab_widgets.edit_unit, "mm");
-	gtk_combo_box_append_text(auto_tab_widgets.edit_unit, "mil");
+	gtk_combo_box_append_text(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), "mm");
+	gtk_combo_box_append_text(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), "mil");
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_unit, FALSE, FALSE, 4);
 
 #if 0
@@ -2015,11 +2016,12 @@ static void config_page_update_auto(void *data)
 			gtk_widget_show(auto_tab_widgets.edit_real);
 			break;
 		case CFN_BOOLEAN:
-#warning TODO: set val
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(auto_tab_widgets.edit_boolean), *nat->val.boolean);
 			gtk_widget_show(auto_tab_widgets.edit_boolean);
 			break;
 		case CFN_COLOR:
-#warning TODO: set val
+			ghid_map_color_string(*nat->val.color, &auto_tab_widgets.color);
+			gtk_color_button_set_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &auto_tab_widgets.color);
 			gtk_widget_show(auto_tab_widgets.edit_color);
 			break;
 		case CFN_UNIT:
