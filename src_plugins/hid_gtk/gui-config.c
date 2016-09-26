@@ -1882,6 +1882,8 @@ static struct {
 	GtkWidget *edit_int;
 	GtkWidget *edit_real;
 	GtkWidget *edit_boolean;
+	GtkWidget *edit_color;
+	GtkWidget *edit_unit;
 
 	GtkAdjustment *edit_int_adj;
 	GtkAdjustment *edit_real_adj;
@@ -1940,12 +1942,17 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	                            TRUE, FALSE, FALSE, 2,
 	                            config_command_window_toggle_cb, NULL, NULL);
 
+	auto_tab_widgets.edit_color = gtk_color_button_new();
+	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_color, FALSE, FALSE, 4);
+
+	auto_tab_widgets.edit_unit = gtk_combo_box_new_text();
+	gtk_combo_box_append_text(auto_tab_widgets.edit_unit, "mm");
+	gtk_combo_box_append_text(auto_tab_widgets.edit_unit, "mil");
+	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_unit, FALSE, FALSE, 4);
 
 #if 0
 	free(tmp);
 	switch(item->type) {
-		case CFN_UNIT:
-		case CFN_COLOR:
 		case CFN_LIST:
 		case CFN_INCREMENTS:
 /*			gtk_entry_set_text(GTK_ENTRY(entry), *item->val.string);
@@ -1987,6 +1994,8 @@ static void config_page_update_auto(void *data)
 	gtk_widget_hide(auto_tab_widgets.edit_int);
 	gtk_widget_hide(auto_tab_widgets.edit_real);
 	gtk_widget_hide(auto_tab_widgets.edit_boolean);
+	gtk_widget_hide(auto_tab_widgets.edit_color);
+	gtk_widget_hide(auto_tab_widgets.edit_unit);
 
 	switch(nat->type) {
 		case CFN_STRING:
@@ -2008,6 +2017,22 @@ static void config_page_update_auto(void *data)
 		case CFN_BOOLEAN:
 #warning TODO: set val
 			gtk_widget_show(auto_tab_widgets.edit_boolean);
+			break;
+		case CFN_COLOR:
+#warning TODO: set val
+			gtk_widget_show(auto_tab_widgets.edit_color);
+			break;
+		case CFN_UNIT:
+			if (nat->val.unit[0] == NULL)
+				l = -1;
+			else if (strcmp(nat->val.unit[0]->suffix, "mm") == 0)
+				l = 0;
+			else if (strcmp(nat->val.unit[0]->suffix, "mil") == 0)
+				l = 1;
+			else
+				l = -1;
+			gtk_combo_box_set_active(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), l);
+			gtk_widget_show(auto_tab_widgets.edit_unit);
 			break;
 	}
 }
