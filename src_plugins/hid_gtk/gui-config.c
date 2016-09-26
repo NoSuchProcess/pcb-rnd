@@ -1938,7 +1938,7 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 
 	ghid_check_button_connected(src_right, &auto_tab_widgets.edit_boolean, 0,
 	                            TRUE, FALSE, FALSE, 2,
-	                            config_command_window_toggle_cb, NULL, "");
+	                            config_command_window_toggle_cb, NULL, NULL);
 
 
 #if 0
