@@ -194,9 +194,10 @@ ghid_check_button_connected(GtkWidget * box,
 {
 	GtkWidget *b;
 
-	if (!string)
-		return;
-	b = gtk_check_button_new_with_label(string);
+	if (string != NULL)
+		b = gtk_check_button_new_with_label(string);
+	else
+		b = gtk_check_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(b), active);
 	if (box && pack_start)
 		gtk_box_pack_start(GTK_BOX(box), b, expand, fill, pad);
