@@ -1886,13 +1886,15 @@ static struct {
 	GtkWidget *edit_unit;
 	GtkWidget *edit_list;
 
+	GtkWidget *result;
+
 	GtkAdjustment *edit_int_adj;
 	GtkAdjustment *edit_real_adj;
 	GdkColor color;
 	gtk_conf_list_t cl;
 
-	GtkListStore *src_l;
-	GtkWidget *src_t;
+	GtkListStore *src_l, *res_l;
+	GtkWidget *src_t, *res_t;
 	conf_native_t *nat;
 } auto_tab_widgets;
 
@@ -1900,7 +1902,7 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data);
 
 static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 {
-	GtkWidget *vbox, *src, *src_left, *src_right;
+	GtkWidget *vbox, *src, *src_left, *src_right, *w;
 
 	gtk_container_set_border_width(GTK_CONTAINER(tab_vbox), 6);
 	vbox = ghid_category_vbox(tab_vbox, "Configuration node", 4, 2, TRUE, TRUE);
@@ -1909,13 +1911,15 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	auto_tab_widgets.name = gtk_label_new("setting name");
 	gtk_label_set_use_markup(GTK_LABEL(auto_tab_widgets.name), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.name, FALSE, FALSE, 0);
+	gtk_misc_set_alignment(GTK_MISC(auto_tab_widgets.name), 0., 0.);
 
 	auto_tab_widgets.desc = gtk_label_new("setting desc");
 	gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.desc, FALSE, FALSE, 0);
+	gtk_misc_set_alignment(GTK_MISC(auto_tab_widgets.desc), 0., 0.);
 
 
-
-	/* upper part */
+	/* upper hbox */
+	gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, FALSE, 4);
 	src = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), src, FALSE, FALSE, 4);
 
@@ -1995,6 +1999,30 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 		auto_tab_widgets.cl.file_chooser_title = NULL;
 		auto_tab_widgets.edit_list = gtk_conf_list_widget(&auto_tab_widgets.cl);
 		gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_list, FALSE, FALSE, 4);
+	}
+
+	/* lower hbox for displaying the rendered value */
+	gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, FALSE, 4);
+	src = gtk_hbox_new(FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox), src, FALSE, FALSE, 4);
+
+	w = gtk_label_new("Resulting native configuration value, after merging all sources above:");
+	gtk_box_pack_start(GTK_BOX(vbox), w, FALSE, FALSE, 0);
+	gtk_misc_set_alignment(GTK_MISC(w), 0., 0.);
+
+	{
+		static const char *col_names[] = {"role & prio", "value"};
+		static GType ty[] = {G_TYPE_STRING,G_TYPE_STRING};
+		const char **s;
+		int n, num_cols = sizeof(col_names)/sizeof(col_names[0]);
+		auto_tab_widgets.res_t = gtk_tree_view_new();
+		auto_tab_widgets.res_l = gtk_list_store_newv(num_cols, ty);
+		for(n = 0, s = col_names; n < num_cols; n++,s++) {
+			GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+			gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(auto_tab_widgets.res_t), -1, *s, renderer, "text", n, NULL);
+		}
+		gtk_tree_view_set_model(GTK_TREE_VIEW(auto_tab_widgets.res_t), GTK_TREE_MODEL(auto_tab_widgets.res_l));
+		gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.res_t, FALSE, FALSE, 4);
 	}
 }
 
@@ -2132,6 +2160,7 @@ static void config_page_update_auto(void *data)
 
 	config_auto_src_hide();
 
+	/* build the source table */
 	gtk_list_store_clear(auto_tab_widgets.src_l);
 	for(n = 0; n < CFR_max_real; n++) {
 		GtkTreeIter iter;
