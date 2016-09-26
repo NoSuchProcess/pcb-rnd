@@ -1884,10 +1884,12 @@ static struct {
 	GtkWidget *edit_boolean;
 	GtkWidget *edit_color;
 	GtkWidget *edit_unit;
+	GtkWidget *edit_list;
 
 	GtkAdjustment *edit_int_adj;
 	GtkAdjustment *edit_real_adj;
 	GdkColor color;
+	gtk_conf_list_t cl;
 } auto_tab_widgets;
 
 static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
@@ -1951,6 +1953,21 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	gtk_combo_box_append_text(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), "mil");
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_unit, FALSE, FALSE, 4);
 
+	{ /* list */
+		static const char *col_names[] = {"list items"};
+		auto_tab_widgets.cl.num_cols = 1;
+		auto_tab_widgets.cl.col_names = col_names;
+		auto_tab_widgets.cl.col_data = 0;
+		auto_tab_widgets.cl.col_src = -1;
+		auto_tab_widgets.cl.reorder = 1;
+		auto_tab_widgets.cl.lst = NULL;
+		auto_tab_widgets.cl.pre_rebuild = auto_tab_widgets.cl.post_rebuild = NULL;
+		auto_tab_widgets.cl.get_misc_col_data = NULL;
+		auto_tab_widgets.cl.file_chooser_title = NULL;
+		auto_tab_widgets.edit_list = gtk_conf_list_widget(&auto_tab_widgets.cl);
+		gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_list, FALSE, FALSE, 4);
+	}
+
 #if 0
 	free(tmp);
 	switch(item->type) {
@@ -1997,6 +2014,7 @@ static void config_page_update_auto(void *data)
 	gtk_widget_hide(auto_tab_widgets.edit_boolean);
 	gtk_widget_hide(auto_tab_widgets.edit_color);
 	gtk_widget_hide(auto_tab_widgets.edit_unit);
+	gtk_widget_hide(auto_tab_widgets.edit_list);
 
 	switch(nat->type) {
 		case CFN_STRING:
@@ -2035,6 +2053,13 @@ static void config_page_update_auto(void *data)
 				l = -1;
 			gtk_combo_box_set_active(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), l);
 			gtk_widget_show(auto_tab_widgets.edit_unit);
+			break;
+		case CFN_LIST:
+			{
+				lht_node_t *nd = conf_lht_get_at(CFR_SYSTEM, "rc/library_search_paths", 0);
+				gtk_conf_list_set_list(&auto_tab_widgets.cl, nd);
+				gtk_widget_show(auto_tab_widgets.edit_list);
+			}
 			break;
 	}
 }
