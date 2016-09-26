@@ -1890,6 +1890,9 @@ static struct {
 	GtkAdjustment *edit_real_adj;
 	GdkColor color;
 	gtk_conf_list_t cl;
+
+	GtkListStore *src_l;
+	GtkWidget *src_t;
 } auto_tab_widgets;
 
 static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
@@ -1907,8 +1910,8 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	auto_tab_widgets.desc = gtk_label_new("setting desc");
 	gtk_box_pack_start(GTK_BOX(vbox), auto_tab_widgets.desc, FALSE, FALSE, 0);
 
-	/* Edit data */
-	src = gtk_hbox_new(TRUE, 0);
+	/* upper part */
+	src = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), src, FALSE, FALSE, 4);
 
 	src_left = gtk_vbox_new(FALSE, 0);
@@ -1916,8 +1919,25 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	src_right = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(src), src_right, FALSE, FALSE, 4);
 
-	gtk_box_pack_start(GTK_BOX(src_right), gtk_label_new("Edit value of the selected source"), FALSE, FALSE, 0);
+	/* upper-left: sources */
+	{
+		static const char *col_names[] = {"role", "prio", "policy", "value"};
+		static GType ty[] = {G_TYPE_STRING,G_TYPE_STRING,G_TYPE_STRING,G_TYPE_STRING};
+		const char **s;
+		int n, num_cols = sizeof(col_names)/sizeof(col_names[0]);
+		auto_tab_widgets.src_t = gtk_tree_view_new();
+		auto_tab_widgets.src_l = gtk_list_store_newv(num_cols, ty);
+		for(n = 0, s = col_names; n < num_cols; n++,s++) {
+			GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+			gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(auto_tab_widgets.src_t), -1, *s, renderer, "text", n, NULL);
+		}
+		gtk_tree_view_set_model(GTK_TREE_VIEW(auto_tab_widgets.src_t), GTK_TREE_MODEL(auto_tab_widgets.src_l));
+		gtk_box_pack_start(GTK_BOX(src_left), auto_tab_widgets.src_t, FALSE, FALSE, 4);
+	}
 
+
+	/* upper-right: edit data */
+	gtk_box_pack_start(GTK_BOX(src_right), gtk_label_new("Edit value of the selected source"), FALSE, FALSE, 0);
 
 	auto_tab_widgets.edit_string = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_string, FALSE, FALSE, 4);
@@ -1967,17 +1987,6 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 		auto_tab_widgets.edit_list = gtk_conf_list_widget(&auto_tab_widgets.cl);
 		gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_list, FALSE, FALSE, 4);
 	}
-
-#if 0
-	free(tmp);
-	switch(item->type) {
-		case CFN_LIST:
-		case CFN_INCREMENTS:
-/*			gtk_entry_set_text(GTK_ENTRY(entry), *item->val.string);
-			gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 4);*/
-			break;
-	}
-#endif
 }
 
 /* Update the config tab for a given entry */
@@ -1985,7 +1994,7 @@ static void config_page_update_auto(void *data)
 {
 	char *tmp, *so;
 	const char *si;
-	int l;
+	int l, n;
 	conf_native_t *nat = data;
 
 	/* set name */
@@ -2015,6 +2024,43 @@ static void config_page_update_auto(void *data)
 	gtk_widget_hide(auto_tab_widgets.edit_color);
 	gtk_widget_hide(auto_tab_widgets.edit_unit);
 	gtk_widget_hide(auto_tab_widgets.edit_list);
+
+	gtk_list_store_clear(auto_tab_widgets.src_l);
+	for(n = 0; n < CFR_max_real; n++) {
+		GtkTreeIter iter;
+		lht_node_t *nd = conf_lht_get_at(n, nat->hash_path, 0);
+		long prio = conf_default_prio[n];
+		conf_policy_t pol = POL_OVERWRITE;
+
+		if (nd != NULL)
+			conf_get_policy_prio(nd, &pol, &prio);
+
+		gtk_list_store_append(auto_tab_widgets.src_l, &iter);
+		if (nd != NULL) {
+			char sprio[32];
+			const char *val;
+
+			switch(nd->type) {
+				case LHT_TEXT: val = nd->data.text.value; break;
+				case LHT_LIST: val = "<list>"; break;
+				case LHT_HASH: val = "<hash>"; break;
+				case LHT_TABLE: val = "<table>"; break;
+				case LHT_SYMLINK: val = "<symlink>"; break;
+			}
+			sprintf(sprio, "%ld", prio);
+			gtk_list_store_set(auto_tab_widgets.src_l, &iter,
+				0, conf_role_name(n),
+				1, sprio,
+				2, conf_policy_name(pol),
+				3, val,
+				-1);
+		}
+		else {
+			gtk_list_store_set(auto_tab_widgets.src_l, &iter,
+				0, conf_role_name(n),
+				-1);
+		}
+	}
 
 	switch(nat->type) {
 		case CFN_STRING:
