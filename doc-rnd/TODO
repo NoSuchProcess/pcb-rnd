@@ -60,6 +60,7 @@ CLEANUP #5
 	- revise the bison/flex rule templates; rather use bison/flex output name
 	  feature instead of the mkdir hack.
 - conf:
+	- gtk preferences: check what takes 131 megs of VIRT ram (on top); destroy the dialog structures when closed
 	- gtk preferences: poly isle area widget missing from the sizes tab
 	- debug why default layer names from the user config are ignored
 	- fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
@@ -102,7 +103,6 @@ CLEANUP #6:
 	- png exports selection (even in not-as-shown), others don't
 	- extend png hid attribs with a flag for this, maybe do the same for others
 	- document the decision in "hacking"
-
 - reduce
 		- hash in hid_attrib.c?
 		- nelma and gcode both invent .png name locally
