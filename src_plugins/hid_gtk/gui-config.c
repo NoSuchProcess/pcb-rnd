@@ -1893,7 +1893,10 @@ static struct {
 
 	GtkListStore *src_l;
 	GtkWidget *src_t;
+	conf_native_t *nat;
 } auto_tab_widgets;
+
+static void config_auto_src_changed_cb(GtkTreeView *tree, void *data);
 
 static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 {
@@ -1935,6 +1938,7 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 		}
 		gtk_tree_view_set_model(GTK_TREE_VIEW(auto_tab_widgets.src_t), GTK_TREE_MODEL(auto_tab_widgets.src_l));
 		gtk_box_pack_start(GTK_BOX(src_left), auto_tab_widgets.src_t, FALSE, FALSE, 4);
+		g_signal_connect(G_OBJECT(auto_tab_widgets.src_t), "cursor-changed", G_CALLBACK(config_auto_src_changed_cb), NULL);
 	}
 
 
@@ -1994,34 +1998,9 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	}
 }
 
-/* Update the config tab for a given entry */
-static void config_page_update_auto(void *data)
+/* hide all source edit widgets */
+static void config_auto_src_hide(void)
 {
-	char *tmp, *so;
-	const char *si;
-	int l, n;
-	conf_native_t *nat = data;
-	lht_node_t *nd;
-
-	/* set name */
-	gtk_label_set(GTK_LABEL(auto_tab_widgets.name), nat->hash_path);
-
-	/* split long description strings at whitepsace to make the preferences window narrower */
-	tmp = malloc(strlen(nat->description) * 2);
-	for(si = nat->description, so = tmp, l = 0; *si != '\0'; si++,so++,l++) {
-		if (isspace(*si) && (l > 64))
-			*so = '\n';
-		else
-			*so = *si;
-
-		if (*so == '\n')
-			l = 0;
-	}
-	*so = '\0';
-	gtk_label_set(GTK_LABEL(auto_tab_widgets.desc), tmp);
-	free(tmp);
-
-	/* hide all edits */
 	gtk_widget_hide(auto_tab_widgets.edit_string);
 	gtk_widget_hide(auto_tab_widgets.edit_coord);
 	gtk_widget_hide(auto_tab_widgets.edit_int);
@@ -2031,47 +2010,15 @@ static void config_page_update_auto(void *data)
 	gtk_widget_hide(auto_tab_widgets.edit_unit);
 	gtk_widget_hide(auto_tab_widgets.edit_list);
 	gtk_widget_hide(auto_tab_widgets.src);
+}
 
-	gtk_list_store_clear(auto_tab_widgets.src_l);
-	for(n = 0; n < CFR_max_real; n++) {
-		GtkTreeIter iter;
-		long prio = conf_default_prio[n];
-		conf_policy_t pol = POL_OVERWRITE;
+/* set up all source edit widgets for a lihata source node */
+static void config_auto_src_show(lht_node_t *nd)
+{
+	conf_native_t *nat = auto_tab_widgets.nat;
+	char *tmp;
+	int l, n;
 
-		nd = conf_lht_get_at(n, nat->hash_path, 0);
-		if (nd != NULL)
-			conf_get_policy_prio(nd, &pol, &prio);
-
-		gtk_list_store_append(auto_tab_widgets.src_l, &iter);
-		if (nd != NULL) {
-			char sprio[32];
-			const char *val;
-
-			switch(nd->type) {
-				case LHT_TEXT: val = nd->data.text.value; break;
-				case LHT_LIST: val = "<list>"; break;
-				case LHT_HASH: val = "<hash>"; break;
-				case LHT_TABLE: val = "<table>"; break;
-				case LHT_SYMLINK: val = "<symlink>"; break;
-				case LHT_INVALID_TYPE: val = "<invalid>"; break;
-			}
-			sprintf(sprio, "%ld", prio);
-			gtk_list_store_set(auto_tab_widgets.src_l, &iter,
-				0, conf_role_name(n),
-				1, sprio,
-				2, conf_policy_name(pol),
-				3, val,
-				-1);
-		}
-		else {
-			gtk_list_store_set(auto_tab_widgets.src_l, &iter,
-				0, conf_role_name(n),
-				-1);
-		}
-	}
-
-/*****/
-	nd = nat->prop[0].src;
 	if (nd != NULL) {
 		tmp = pcb_strdup_printf("%s:%d.%d", nd->file_name, nd->line, nd->col);
 		gtk_label_set(GTK_LABEL(auto_tab_widgets.src), tmp);
@@ -2126,6 +2073,98 @@ static void config_page_update_auto(void *data)
 				gtk_widget_show(auto_tab_widgets.edit_list);
 			}
 			break;
+	}
+}
+
+
+/* Update the conf item edit section; called when a source is clicked */
+static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
+{
+	GtkTreePath *p;
+	gint *i;
+	int role;
+	lht_node_t *nd;
+
+	gtk_tree_view_get_cursor(tree, &p, NULL);
+	i = gtk_tree_path_get_indices(p);
+	if (i != NULL) {
+		role = i[0];
+		nd = conf_lht_get_at(role, auto_tab_widgets.nat->hash_path, 0);
+		if (nd != NULL)
+			config_auto_src_show(nd);
+		else
+			config_auto_src_hide();
+	}
+	gtk_tree_path_free(p);
+}
+
+/* Update the config tab for a given entry - called when a new config item is selected from the tree */
+static void config_page_update_auto(void *data)
+{
+	char *tmp, *so;
+	const char *si;
+	int l, n;
+	conf_native_t *nat = data;
+	lht_node_t *nd;
+
+	/* set name */
+	gtk_label_set(GTK_LABEL(auto_tab_widgets.name), nat->hash_path);
+
+	auto_tab_widgets.nat = data;
+
+	/* split long description strings at whitepsace to make the preferences window narrower */
+	tmp = malloc(strlen(nat->description) * 2);
+	for(si = nat->description, so = tmp, l = 0; *si != '\0'; si++,so++,l++) {
+		if (isspace(*si) && (l > 64))
+			*so = '\n';
+		else
+			*so = *si;
+
+		if (*so == '\n')
+			l = 0;
+	}
+	*so = '\0';
+	gtk_label_set(GTK_LABEL(auto_tab_widgets.desc), tmp);
+	free(tmp);
+
+	config_auto_src_hide();
+
+	gtk_list_store_clear(auto_tab_widgets.src_l);
+	for(n = 0; n < CFR_max_real; n++) {
+		GtkTreeIter iter;
+		long prio = conf_default_prio[n];
+		conf_policy_t pol = POL_OVERWRITE;
+
+		nd = conf_lht_get_at(n, nat->hash_path, 0);
+		if (nd != NULL)
+			conf_get_policy_prio(nd, &pol, &prio);
+
+		gtk_list_store_append(auto_tab_widgets.src_l, &iter);
+		if (nd != NULL) {
+			char sprio[32];
+			const char *val;
+
+			switch(nd->type) {
+				case LHT_TEXT: val = nd->data.text.value; break;
+				case LHT_LIST: val = "<list>"; break;
+				case LHT_HASH: val = "<hash>"; break;
+				case LHT_TABLE: val = "<table>"; break;
+				case LHT_SYMLINK: val = "<symlink>"; break;
+				case LHT_INVALID_TYPE: val = "<invalid>"; break;
+			}
+			sprintf(sprio, "%ld", prio);
+			gtk_list_store_set(auto_tab_widgets.src_l, &iter,
+				0, conf_role_name(n),
+				1, sprio,
+				2, conf_policy_name(pol),
+				3, val,
+				-1);
+		}
+		else {
+			gtk_list_store_set(auto_tab_widgets.src_l, &iter,
+				0, conf_role_name(n),
+				-1);
+		}
 	}
 }
 
