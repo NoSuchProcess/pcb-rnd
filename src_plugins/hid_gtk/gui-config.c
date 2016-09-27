@@ -2178,16 +2178,6 @@ static void config_auto_res_show(void)
 	}
 }
 
-static config_auto_apply_cb(GtkButton *btn, void *data)
-{
-	printf("conf new apply\n");
-}
-
-static config_auto_reset_cb(GtkButton *btn, void *data)
-{
-	printf("conf new reset\n");
-}
-
 /* Update the conf item edit section; called when a source is clicked */
 static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 {
@@ -2208,6 +2198,17 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 	}
 	gtk_tree_path_free(p);
 }
+
+static config_auto_apply_cb(GtkButton *btn, void *data)
+{
+	printf("conf new apply\n");
+}
+
+static config_auto_reset_cb(GtkButton *btn, void *data)
+{
+	config_auto_src_changed_cb(auto_tab_widgets.src_t, NULL);
+}
+
 
 /* Update the config tab for a given entry - called when a new config item is selected from the tree */
 static void config_page_update_auto(void *data)
