@@ -2,9 +2,9 @@
 
 #@@example acy(300)
 
-#@@purpose Generate axial lead tru-hole component
+#@@purpose Generate axial lead through-hole component
 
-#@@desc Generate axial lead tru-hole component with 2 pins (typical use: resistor)
+#@@desc Generate axial lead through-hole component with 2 pins (typical use: resistor)
 #@@params spacing,type,pol,dia
 
 #@@param:spacing spacing between the two pins

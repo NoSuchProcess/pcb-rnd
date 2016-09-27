@@ -2,9 +2,9 @@
 
 #@@example alf(300, schottky)
 
-#@@purpose Generate ALF: axial lead tru-hole component for diodes
+#@@purpose Generate ALF: axial lead through-hole component for diodes
 
-#@@desc Generate axial lead tru-hole component with 2 pin diodes
+#@@desc Generate axial lead through-hole component with 2 pin diodes
 #@@params spacing,type,dia
 #@@thumbsize 2
 
