@@ -2076,46 +2076,80 @@ static void config_auto_src_show(lht_node_t *nd)
 	else
 		gtk_widget_hide(auto_tab_widgets.src);
 
-	conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
+	/* don't allow arrays atm */
+	if (nat->type == CFN_LIST) {
+		if (nd->type != LHT_LIST)
+			return;
+	}
+	else {
+		if (nd->type != LHT_TEXT)
+			return;
+	}
+
+	memset(&citem, 0, sizeof(citem));
 
 	switch(nat->type) {
 		case CFN_STRING:
-			gtk_entry_set_text(GTK_ENTRY(auto_tab_widgets.edit_string), *citem.string == NULL ? "" : *citem.string);
+			gtk_entry_set_text(GTK_ENTRY(auto_tab_widgets.edit_string), nd->data.text.value);
 			gtk_widget_show(auto_tab_widgets.edit_string);
 			break;
 		case CFN_COORD:
-
-			ghid_coord_entry_set_value(GHID_COORD_ENTRY(auto_tab_widgets.edit_coord), *citem.coord);
-			gtk_widget_show(auto_tab_widgets.edit_coord);
+			{
+				Coord coord = 0;
+				citem.coord = &coord;
+				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
+				ghid_coord_entry_set_value(GHID_COORD_ENTRY(auto_tab_widgets.edit_coord), coord);
+				gtk_widget_show(auto_tab_widgets.edit_coord);
+			}
 			break;
 		case CFN_INTEGER:
-			gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj), *citem.integer);
-			gtk_widget_show(auto_tab_widgets.edit_int);
+			{
+				long i = 0;
+				citem.integer = &i;
+				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
+				gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj), i);
+				gtk_widget_show(auto_tab_widgets.edit_int);
+			}
 			break;
 		case CFN_REAL:
-			gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_real_adj), *citem.real);
-			gtk_widget_show(auto_tab_widgets.edit_real);
+			{
+				double d = 0;
+				citem.real = &d;
+				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
+				gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_real_adj), d);
+				gtk_widget_show(auto_tab_widgets.edit_real);
+			}
 			break;
 		case CFN_BOOLEAN:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(auto_tab_widgets.edit_boolean), *citem.boolean);
-			gtk_widget_show(auto_tab_widgets.edit_boolean);
+			{
+				int b = 0;
+				citem.boolean = &b;
+				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(auto_tab_widgets.edit_boolean), b);
+				gtk_widget_show(auto_tab_widgets.edit_boolean);
+			}
 			break;
 		case CFN_COLOR:
-			ghid_map_color_string(*citem.color, &auto_tab_widgets.color);
+			ghid_map_color_string(nd->data.text.value, &auto_tab_widgets.color);
 			gtk_color_button_set_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &auto_tab_widgets.color);
 			gtk_widget_show(auto_tab_widgets.edit_color);
 			break;
 		case CFN_UNIT:
-			if (citem.unit[0] == NULL)
-				l = -1;
-			else if (strcmp(citem.unit[0]->suffix, "mm") == 0)
-				l = 0;
-			else if (strcmp(citem.unit[0]->suffix, "mil") == 0)
-				l = 1;
-			else
-				l = -1;
-			gtk_combo_box_set_active(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), l);
-			gtk_widget_show(auto_tab_widgets.edit_unit);
+			{
+				const Unit u;
+				citem.unit = &u;
+				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
+				if (citem.unit[0] == NULL)
+					l = -1;
+				else if (strcmp(citem.unit[0]->suffix, "mm") == 0)
+					l = 0;
+				else if (strcmp(citem.unit[0]->suffix, "mil") == 0)
+					l = 1;
+				else
+					l = -1;
+				gtk_combo_box_set_active(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), l);
+				gtk_widget_show(auto_tab_widgets.edit_unit);
+			}
 			break;
 		case CFN_LIST:
 			gtk_conf_list_set_list(&auto_tab_widgets.cl, nd);
