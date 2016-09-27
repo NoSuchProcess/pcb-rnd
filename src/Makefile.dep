@@ -724,7 +724,7 @@
  conf_hid.h action_helper.h change.h plug_io.h error.h draw.h \
  pcb-printf.h set.h hid_attrib.h misc_util.h \
  ../src_plugins/hid_gtk/gtk_conf_list.h paths.h plug_footprint.h \
- vtlibrary.h ../src_3rd/liblihata/tree.h
+ vtlibrary.h fptr_cast.h ../src_3rd/liblihata/tree.h
 ../src_plugins/hid_gtk/gui-dialog-print.o: \
  ../src_plugins/hid_gtk/gui-dialog-print.c ../config.h conf_core.h conf.h \
  global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
@@ -1542,11 +1542,14 @@
  hid_init.h hid_attrib.h dolists.h
 ../src_plugins/mincut/pcb-mincut/graph.o: \
  ../src_plugins/mincut/pcb-mincut/graph.c \
- ../src_plugins/mincut/pcb-mincut/graph.h
+ ../src_plugins/mincut/pcb-mincut/graph.h \
+ ../src_plugins/mincut/pcb-mincut/../../../config.h
 ../src_plugins/mincut/pcb-mincut/solve.o: \
  ../src_plugins/mincut/pcb-mincut/solve.c \
  ../src_plugins/mincut/pcb-mincut/solve.h \
- ../src_plugins/mincut/pcb-mincut/graph.h compat_misc.h ../config.h
+ ../src_plugins/mincut/pcb-mincut/graph.h \
+ ../src_plugins/mincut/pcb-mincut/../../../config.h compat_misc.h \
+ ../config.h
 ../src_plugins/mincut/rats_mincut.o: ../src_plugins/mincut/rats_mincut.c \
  ../config.h global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
@@ -1565,6 +1568,7 @@
  ../src_3rd/genvector/vtp0.h list_conf.h find.h misc.h mymem.h mymem.h \
  polygon.h rtree.h rats.h search.h misc_util.h set.h undo.h plugins.h \
  compat_misc.h ../src_plugins/mincut/pcb-mincut/graph.h \
+ ../src_plugins/mincut/pcb-mincut/../../../config.h \
  ../src_plugins/mincut/pcb-mincut/solve.h \
  ../src_plugins/mincut/pcb-mincut/graph.h conf.h \
  ../src_plugins/mincut/rats_mincut_conf.h stub_mincut.h \
