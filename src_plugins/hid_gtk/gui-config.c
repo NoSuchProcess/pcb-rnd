@@ -2178,30 +2178,91 @@ static void config_auto_res_show(void)
 	}
 }
 
-/* Update the conf item edit section; called when a source is clicked */
-static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
+/* return the role we are currently editing */
+static conf_role_t config_auto_get_edited_role(void)
 {
 	GtkTreePath *p;
 	gint *i;
-	int role;
+	int role = CFR_invalid;
+
+	gtk_tree_view_get_cursor(auto_tab_widgets.src_t, &p, NULL);
+	i = gtk_tree_path_get_indices(p);
+	if (i != NULL)
+		role = i[0];
+	gtk_tree_path_free(p);
+	return role;
+}
+
+/* Update the conf item edit section; called when a source is clicked */
+static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
+{
+	int role = config_auto_get_edited_role();
 	lht_node_t *nd;
 
-	gtk_tree_view_get_cursor(tree, &p, NULL);
-	i = gtk_tree_path_get_indices(p);
-	if (i != NULL) {
-		role = i[0];
+	if (role != CFR_invalid) {
 		nd = conf_lht_get_at(role, auto_tab_widgets.nat->hash_path, 0);
 		if (nd != NULL)
 			config_auto_src_show(nd);
 		else
 			config_auto_src_hide();
 	}
-	gtk_tree_path_free(p);
 }
 
 static config_auto_apply_cb(GtkButton *btn, void *data)
 {
-	printf("conf new apply\n");
+	conf_native_t *nat = auto_tab_widgets.nat;
+	conf_role_t role = config_auto_get_edited_role();
+	int arr_idx = -1;
+
+	switch(nat->type) {
+		case CFN_STRING:
+			{
+				const char *tmp = gtk_entry_get_text(GTK_ENTRY(auto_tab_widgets.edit_string));
+				conf_set(role, nat->hash_path, arr_idx, tmp, POL_OVERWRITE);
+			}
+			break;
+#if 0
+		case CFN_COORD:
+			ghid_coord_entry_set_value(GHID_COORD_ENTRY(auto_tab_widgets.edit_coord), *citem.coord);
+			gtk_widget_show(auto_tab_widgets.edit_coord);
+			break;
+		case CFN_INTEGER:
+			gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj), *citem.integer);
+			gtk_widget_show(auto_tab_widgets.edit_int);
+			break;
+		case CFN_REAL:
+			gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_real_adj), *citem.real);
+			gtk_widget_show(auto_tab_widgets.edit_real);
+			break;
+		case CFN_BOOLEAN:
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(auto_tab_widgets.edit_boolean), *citem.boolean);
+			gtk_widget_show(auto_tab_widgets.edit_boolean);
+			break;
+		case CFN_COLOR:
+			ghid_map_color_string(*citem.color, &auto_tab_widgets.color);
+			gtk_color_button_set_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &auto_tab_widgets.color);
+			gtk_widget_show(auto_tab_widgets.edit_color);
+			break;
+		case CFN_UNIT:
+			if (citem.unit[0] == NULL)
+				l = -1;
+			else if (strcmp(citem.unit[0]->suffix, "mm") == 0)
+				l = 0;
+			else if (strcmp(citem.unit[0]->suffix, "mil") == 0)
+				l = 1;
+			else
+				l = -1;
+			gtk_combo_box_set_active(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), l);
+			gtk_widget_show(auto_tab_widgets.edit_unit);
+			break;
+		case CFN_LIST:
+			gtk_conf_list_set_list(&auto_tab_widgets.cl, nd);
+			gtk_widget_show(auto_tab_widgets.edit_list);
+			break;
+#endif
+	}
+
+
 }
 
 static config_auto_reset_cb(GtkButton *btn, void *data)
