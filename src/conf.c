@@ -685,19 +685,26 @@ static int mst_prio_cmp(const void *a, const void *b)
 int conf_merge_all(const char *path)
 {
 	int n, ret = 0;
-pcb_trace("---merge all---\n");
+pcb_trace("---merge all %s ---\n", path);
 	vmst_truncate(&merge_subtree, 0);
 
 	for(n = 0; n < CFR_max_real; n++) {
 		lht_node_t *cr, *r, *r2;
-		if (conf_root[n] == NULL)
+		if (conf_root[n] == NULL) {
+			pcb_trace(" role %s - no root\n", conf_role_name(n));
 			continue;
+		}
 		cr = conf_lht_get_confroot(conf_root[n]->root);
-		if (cr == NULL)
+
+		if (cr == NULL) {
+			pcb_trace(" role %s - no cr\n", conf_role_name(n));
 			continue;
+		}
+
 		for(r = cr->data.list.first; r != NULL; r = r->next) {
 			if (path != NULL) {
 				r2 = lht_tree_path_(r->doc, r, path, 1, 0, NULL);
+				pcb_trace(" role %s - r2=%p\n", conf_role_name(n), r2);
 				if (r2 != NULL)
 					add_subtree(n, r, r2);
 			}
