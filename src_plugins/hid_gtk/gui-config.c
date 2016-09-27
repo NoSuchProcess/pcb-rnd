@@ -2130,7 +2130,10 @@ static void config_auto_res_show_add(const char *s_idx, const confprop_t *prop, 
 	GtkTreeIter iter;
 	char s_pol_prio[256];
 
-	sprintf(s_pol_prio, "%s-%d", conf_role_name(conf_lookup_role(prop->src)), prop->prio);
+	if (prop->src != NULL)
+		sprintf(s_pol_prio, "%s-%d", conf_role_name(conf_lookup_role(prop->src)), prop->prio);
+	else
+		sprintf(s_pol_prio, "%d", prop->prio);
 
 	gtk_list_store_append(auto_tab_widgets.res_l, &iter);
 	gtk_list_store_set(auto_tab_widgets.res_l, &iter,
