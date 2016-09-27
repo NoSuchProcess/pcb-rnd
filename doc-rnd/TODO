@@ -6,6 +6,8 @@
 	- render:
 		- drawing a lot of rats is slow - does it redraw/flush after each rat? [report:Chris]
 	- Display(cycleclip) [or line_refraction] while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
+	- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
+	- gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
@@ -47,6 +49,7 @@
 		- route style vs. autorouter
 
 CLEANUP #5
+- grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value [miloh]
 - Erich's select undo bug: place an element, select, save & load, unselect, undo 2 times: bad serial
 - Erich's gtk lag report: press 's' a lot then move the mouse - 's' ends up in the new loc!
 - conf: throw an error if user config can not be written
@@ -152,6 +155,3 @@ Low prio:
 - push&shove
 	- keep 45-deg knee when grabbing a point for drag&drop in non-all-dir
 - examine current handling of long options
-- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
-- gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
-- grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value
