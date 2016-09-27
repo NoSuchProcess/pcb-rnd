@@ -26,6 +26,7 @@ GtkWidget *ghid_coord_entry_new(Coord min_val, Coord max_val, Coord value, const
 void ghid_coord_entry_add_entry(GHidCoordEntry * ce, const gchar * name, const gchar * desc);
 gchar *ghid_coord_entry_get_last_command(GHidCoordEntry * ce);
 
+int ghid_coord_entry_get_value_str(GHidCoordEntry * ce, char *out, int out_len);
 Coord ghid_coord_entry_get_value(GHidCoordEntry * ce);
 void ghid_coord_entry_set_value(GHidCoordEntry * ce, Coord val);
 

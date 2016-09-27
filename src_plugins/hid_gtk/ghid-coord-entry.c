@@ -274,6 +274,14 @@ Coord ghid_coord_entry_get_value(GHidCoordEntry * ce)
 	return ce->value;
 }
 
+/*! \brief Gets a GHidCoordEntry's value as text */
+int ghid_coord_entry_get_value_str(GHidCoordEntry * ce, char *out, int out_len)
+{
+	GtkAdjustment *adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(ce));
+	double value = gtk_adjustment_get_value(adj);
+	return pcb_snprintf(out, out_len, "%.*f %s", ce->unit->default_prec, value, ce->unit->suffix);
+}
+
 /*! \brief Sets a GHidCoordEntry's value, in pcb coords */
 void ghid_coord_entry_set_value(GHidCoordEntry * ce, Coord val)
 {
