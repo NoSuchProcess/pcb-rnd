@@ -163,6 +163,17 @@ void Message(enum pcb_message_level level, const char *fmt, ...)
 	fprintf(stderr, "\n");
 }
 
+void pcb_trace(const char *Format, ...)
+{
+#ifndef NDEBUG
+	va_list args;
+	va_start(args, Format);
+	vfprintf(stderr, Format, args);
+	va_end(args);
+#endif
+}
+
+
 /**
  * Build and run a command. No redirection or error handling is
  * done.  Format string is split on whitespace. Specifiers %l and %s
