@@ -1902,6 +1902,7 @@ static struct {
 static void config_auto_src_changed_cb(GtkTreeView *tree, void *data);
 static config_auto_apply_cb(GtkButton *btn, void *data);
 static config_auto_reset_cb(GtkButton *btn, void *data);
+static void config_page_update_auto(void *data);
 
 static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 {
@@ -2295,8 +2296,7 @@ static config_auto_apply_cb(GtkButton *btn, void *data)
 			break;
 #endif
 	}
-
-
+	config_page_update_auto(nat);
 }
 
 static config_auto_reset_cb(GtkButton *btn, void *data)
