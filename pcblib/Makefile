@@ -8,7 +8,7 @@ install_:
 	$(CPC) "`pwd`/connector" "$(DATADIR)/pcblib/connector"
 	$(CPC) "`pwd`/parametric" "$(DATADIR)/pcblib/parametric"
 	$(CPC) "`pwd`/smd" "$(DATADIR)/pcblib/smd"
-	$(CPC) "`pwd`/tru-hole" "$(DATADIR)/pcblib/tru-hole"
+	$(CPC) "`pwd`/through-hole" "$(DATADIR)/pcblib/through-hole"
 
 install:
 	make install_ CPC="$(CP)"
