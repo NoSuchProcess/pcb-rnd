@@ -2247,20 +2247,20 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 {
 	conf_native_t *nat = auto_tab_widgets.nat;
 	conf_role_t role = config_auto_get_edited_role();
+	char buff[128];
+	const char *new_val = NULL;
 	int arr_idx = -1;
+
 
 	switch(nat->type) {
 		case CFN_STRING:
-			{
-				const char *tmp = gtk_entry_get_text(GTK_ENTRY(auto_tab_widgets.edit_string));
-				conf_set(role, nat->hash_path, arr_idx, tmp, POL_OVERWRITE);
-			}
+			new_val = gtk_entry_get_text(GTK_ENTRY(auto_tab_widgets.edit_string));
+			break;
+		case CFN_COORD:
+			ghid_coord_entry_get_value_str(auto_tab_widgets.edit_coord, buff, sizeof(buff));
+			new_val = buff;
 			break;
 #if 0
-		case CFN_COORD:
-			ghid_coord_entry_set_value(GHID_COORD_ENTRY(auto_tab_widgets.edit_coord), *citem.coord);
-			gtk_widget_show(auto_tab_widgets.edit_coord);
-			break;
 		case CFN_INTEGER:
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj), *citem.integer);
 			gtk_widget_show(auto_tab_widgets.edit_int);
@@ -2295,6 +2295,10 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 			gtk_widget_show(auto_tab_widgets.edit_list);
 			break;
 #endif
+	}
+	if (new_val != NULL) {
+		conf_set(role, nat->hash_path, arr_idx, new_val, POL_OVERWRITE);
+#warning TODO: also save
 	}
 	config_page_update_auto(nat);
 }
