@@ -506,10 +506,16 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 	int res = 0;
 	conf_listitem_t *i;
 
-	if ((pol == POL_DISABLE) || (pol == POL_invalid))
+	pcb_trace("conf_merge_patch_list {\n");
+	pcb_trace(" path=%s\n", dest->hash_path);
+
+	if ((pol == POL_DISABLE) || (pol == POL_invalid)) {
+		pcb_trace(" disabled/invalid %d\n}\n", pol);
 		return 0;
+	}
 
 	if (pol == POL_OVERWRITE) {
+		pcb_trace(" overwrite: clear list\n");
 		/* overwrite the whole list: make it empty then append new elements */
 		while((i = conflist_first(dest->val.list)) != NULL)
 			conflist_remove(i);
@@ -523,15 +529,19 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 			i->prop.src  = s;
 			if (conf_parse_text(&i->val, 0, CFN_STRING, s->data.text.value, s) != 0) {
 				free(i);
+				pcb_trace(" (parse text fail:)\n");
 				continue;
 			}
+			pcb_trace(" text: %s prio=%d from=%s\n", *i->val.string, prio, s->file_name);
 			switch(pol) {
 				case POL_PREPEND:
+					pcb_trace("  pol insert\n");
 					conflist_insert(dest->val.list, i);
 					dest->used |= 1;
 					break;
 				case POL_APPEND:
 				case POL_OVERWRITE:
+					pcb_trace("  pol overwrite\n");
 					conflist_append(dest->val.list, i);
 					dest->used |= 1;
 					break;
@@ -543,7 +553,7 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 			res = -1;
 		}
 	}
-
+	pcb_trace(" return %d\n}\n", res);
 	return res;
 }
 
@@ -674,7 +684,7 @@ static int mst_prio_cmp(const void *a, const void *b)
 int conf_merge_all(const char *path)
 {
 	int n, ret = 0;
-
+pcb_trace("---merge all---\n");
 	vmst_truncate(&merge_subtree, 0);
 
 	for(n = 0; n < CFR_max_real; n++) {
