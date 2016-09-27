@@ -1887,6 +1887,7 @@ static struct {
 	GtkWidget *edit_list;
 
 	GtkWidget *result;
+	GtkWidget *finalize; /* finalzie hbox */
 
 	GtkAdjustment *edit_int_adj;
 	GtkAdjustment *edit_real_adj;
@@ -2001,6 +2002,21 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 		gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_list, FALSE, FALSE, 4);
 	}
 
+	/* Apply/cancel buttons */
+	{
+		auto_tab_widgets.finalize = gtk_hbox_new(FALSE, 0);
+
+		w = gtk_button_new_with_label("Apply");
+		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
+//		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(save_cb), &ctx_all2project);
+
+		w = gtk_button_new_with_label("Reset");
+		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
+//		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(save_cb), &ctx_all2project);
+
+		gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.finalize, FALSE, FALSE, 0);
+	}
+
 	/* lower hbox for displaying the rendered value */
 	gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, FALSE, 4);
 	src = gtk_hbox_new(FALSE, 4);
@@ -2038,6 +2054,7 @@ static void config_auto_src_hide(void)
 	gtk_widget_hide(auto_tab_widgets.edit_unit);
 	gtk_widget_hide(auto_tab_widgets.edit_list);
 	gtk_widget_hide(auto_tab_widgets.src);
+	gtk_widget_hide(auto_tab_widgets.finalize);
 }
 
 /* set up all source edit widgets for a lihata source node */
@@ -2103,6 +2120,7 @@ static void config_auto_src_show(lht_node_t *nd)
 			gtk_widget_show(auto_tab_widgets.edit_list);
 			break;
 	}
+	gtk_widget_show(auto_tab_widgets.finalize);
 }
 
 static void config_auto_res_show_add(const char *s_idx, const confprop_t *prop, const char *val)
