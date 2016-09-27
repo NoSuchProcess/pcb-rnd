@@ -1900,8 +1900,8 @@ static struct {
 } auto_tab_widgets;
 
 static void config_auto_src_changed_cb(GtkTreeView *tree, void *data);
-static config_auto_apply_cb(GtkButton *btn, void *data);
-static config_auto_reset_cb(GtkButton *btn, void *data);
+static void config_auto_apply_cb(GtkButton *btn, void *data);
+static void config_auto_reset_cb(GtkButton *btn, void *data);
 static void config_page_update_auto(void *data);
 
 static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
@@ -2065,7 +2065,7 @@ static void config_auto_src_show(lht_node_t *nd)
 {
 	conf_native_t *nat = auto_tab_widgets.nat;
 	char *tmp;
-	int l, n;
+	int l;
 	confitem_t citem;
 
 	if (nd != NULL) {
@@ -2137,7 +2137,7 @@ static void config_auto_src_show(lht_node_t *nd)
 			break;
 		case CFN_UNIT:
 			{
-				const Unit u;
+				const Unit *u = NULL;
 				citem.unit = &u;
 				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
 				if (citem.unit[0] == NULL)
@@ -2193,7 +2193,7 @@ static void config_auto_res_show(void)
 		conf_listitem_t *n;
 		for(n = conflist_first(nat->val.list); n != NULL; n = conflist_next(n)) {
 			gds_init(&buff);
-			conf_print_native_field(pcb_append_printf, &buff, 0, &n->val, n->type, &n->prop, 0);
+			conf_print_native_field((conf_pfn)pcb_append_printf, &buff, 0, &n->val, n->type, &n->prop, 0);
 			config_auto_res_show_add("0", &n->prop, buff.array);
 			gds_uninit(&buff);
 		}
@@ -2206,7 +2206,7 @@ static void config_auto_res_show(void)
 			else
 				*s_idx = '\0';
 			gds_init(&buff);
-			conf_print_native_field(pcb_append_printf, &buff, 0, &nat->val, nat->type, nat->prop, n);
+			conf_print_native_field((conf_pfn)pcb_append_printf, &buff, 0, &nat->val, nat->type, nat->prop, n);
 			config_auto_res_show_add(s_idx, &nat->prop[n], buff.array);
 			gds_uninit(&buff);
 		}
@@ -2220,7 +2220,7 @@ static conf_role_t config_auto_get_edited_role(void)
 	gint *i;
 	int role = CFR_invalid;
 
-	gtk_tree_view_get_cursor(auto_tab_widgets.src_t, &p, NULL);
+	gtk_tree_view_get_cursor(GTK_TREE_VIEW(auto_tab_widgets.src_t), &p, NULL);
 	i = gtk_tree_path_get_indices(p);
 	if (i != NULL)
 		role = i[0];
@@ -2243,7 +2243,7 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 	}
 }
 
-static config_auto_apply_cb(GtkButton *btn, void *data)
+static void config_auto_apply_cb(GtkButton *btn, void *data)
 {
 	conf_native_t *nat = auto_tab_widgets.nat;
 	conf_role_t role = config_auto_get_edited_role();
@@ -2299,9 +2299,9 @@ static config_auto_apply_cb(GtkButton *btn, void *data)
 	config_page_update_auto(nat);
 }
 
-static config_auto_reset_cb(GtkButton *btn, void *data)
+static void config_auto_reset_cb(GtkButton *btn, void *data)
 {
-	config_auto_src_changed_cb(auto_tab_widgets.src_t, NULL);
+	config_auto_src_changed_cb(GTK_TREE_VIEW(auto_tab_widgets.src_t), NULL);
 }
 
 
