@@ -2,13 +2,10 @@
 	- there's no screenshot in features/propedit.html
 	- ChangeSize(selected, *) or Change*(selected, *) causes undo panic if nothing is selected
 	- genht config bug in gpmi
-	- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
-	- gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
 	- File->Revert, or re-loading after external change of .pcb file leads to corruption of routing styles. [report:Chris]
 	- render:
 		- drawing a lot of rats is slow - does it redraw/flush after each rat? [report:Chris]
 	- Display(cycleclip) [or line_refraction] while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
-	- grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
@@ -155,3 +152,6 @@ Low prio:
 - push&shove
 	- keep 45-deg knee when grabbing a point for drag&drop in non-all-dir
 - examine current handling of long options
+- xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
+- gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
+- grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value
