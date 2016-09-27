@@ -343,4 +343,8 @@ int conf_export_to_file(const char *fn, conf_role_t role, const char *conf_path)
    responsible for initializing them before the call. */
 int conf_get_policy_prio(lht_node_t *node, conf_policy_t *gpolicy, long *gprio);
 
+/* Parse text and convert the value into native form and store in one of dst
+   fields depending on type */
+int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const char *text, lht_node_t *err_node);
+
 #endif
