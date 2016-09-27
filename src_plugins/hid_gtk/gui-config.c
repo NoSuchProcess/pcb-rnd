@@ -2011,7 +2011,7 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	gtk_misc_set_alignment(GTK_MISC(w), 0., 0.);
 
 	{
-		static const char *col_names[] = {"array idx", "role & prio", "value"};
+		static const char *col_names[] = {"index", "role & prio", "value"};
 		static GType ty[] = {G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING};
 		const char **s;
 		int n, num_cols = sizeof(col_names)/sizeof(col_names[0]);
@@ -2105,82 +2105,53 @@ static void config_auto_src_show(lht_node_t *nd)
 	}
 }
 
+static void config_auto_res_show_add(const char *s_idx, const confprop_t *prop, const char *val)
+{
+	GtkTreeIter iter;
+	char s_pol_prio[256];
+
+	sprintf(s_pol_prio, "%s-%d", conf_role_name(conf_lookup_role(prop->src)), prop->prio);
+
+	gtk_list_store_append(auto_tab_widgets.res_l, &iter);
+	gtk_list_store_set(auto_tab_widgets.res_l, &iter,
+		0, s_idx,
+		1, s_pol_prio,
+		2, val,
+		-1);
+}
+
+/* Fill in the result table on the bottom using the native value */
 static void config_auto_res_show(void)
 {
+	char s_idx[16];
 	conf_native_t *nat = auto_tab_widgets.nat;
-	pcb_cardinal_t n;
+	gds_t buff;
+
 	gtk_list_store_clear(auto_tab_widgets.res_l);
-	for(n = 0; n < nat->array_size; n++) {
-		GtkTreeIter iter;
-		const char *val = "n/a";
-		char s_pol_prio[128], s_idx[16];
-		lht_node_t *nd = nat->prop[n].src;
 
-		if (nd != NULL) {
-			long prio = conf_default_prio[n];
-			conf_policy_t pol = POL_OVERWRITE;
-			conf_get_policy_prio(nd, &pol, &prio);
-			sprintf(s_pol_prio, "%s-%d", conf_policy_name(pol), prio);
+	/* This code addmitedly does not handle array of lists - for now; once the
+	   list-loop below is moved to config_auto_res_show_add, it will work */
+	if(nat->type == CFN_LIST) {
+		conf_listitem_t *n;
+		for(n = conflist_first(nat->val.list); n != NULL; n = conflist_next(n)) {
+			gds_init(&buff);
+			conf_print_native_field(pcb_append_printf, &buff, 0, &n->val, n->type, &n->prop, 0);
+			config_auto_res_show_add("0", &n->prop, buff.array);
+			gds_uninit(&buff);
 		}
-		else
-			strcpy(s_pol_prio, "n/a");
-
-		if (nat->array_size >= 2)
-			sprintf(s_idx, "%d", n);
-		else
-			*s_idx = '\0';
-
-#if 0
-		switch(nat->type) {
-			case CFN_STRING:
-				gtk_entry_set_text(GTK_ENTRY(auto_tab_widgets.edit_string), *citem.string == NULL ? "" : *citem.string);
-				gtk_widget_show(auto_tab_widgets.edit_string);
-				break;
-			case CFN_COORD:
-				ghid_coord_entry_set_value(GHID_COORD_ENTRY(auto_tab_widgets.edit_coord), *citem.coord);
-				gtk_widget_show(auto_tab_widgets.edit_coord);
-				break;
-			case CFN_INTEGER:
-				gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj), *citem.integer);
-				gtk_widget_show(auto_tab_widgets.edit_int);
-				break;
-			case CFN_REAL:
-				gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_real_adj), *citem.real);
-				gtk_widget_show(auto_tab_widgets.edit_real);
-				break;
-			case CFN_BOOLEAN:
-				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(auto_tab_widgets.edit_boolean), *citem.boolean);
-				gtk_widget_show(auto_tab_widgets.edit_boolean);
-				break;
-			case CFN_COLOR:
-				ghid_map_color_string(*citem.color, &auto_tab_widgets.color);
-				gtk_color_button_set_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &auto_tab_widgets.color);
-				gtk_widget_show(auto_tab_widgets.edit_color);
-				break;
-			case CFN_UNIT:
-				if (citem.unit[0] == NULL)
-					l = -1;
-				else if (strcmp(citem.unit[0]->suffix, "mm") == 0)
-					l = 0;
-				else if (strcmp(citem.unit[0]->suffix, "mil") == 0)
-					l = 1;
-				else
-					l = -1;
-				gtk_combo_box_set_active(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), l);
-				gtk_widget_show(auto_tab_widgets.edit_unit);
-				break;
-			case CFN_LIST:
-				gtk_conf_list_set_list(&auto_tab_widgets.cl, nd);
-				gtk_widget_show(auto_tab_widgets.edit_list);
-				break;
+	}
+	else {
+		pcb_cardinal_t n;
+		for(n = 0; n < nat->used; n++) {
+			if (nat->array_size >= 2)
+				sprintf(s_idx, "%d", n);
+			else
+				*s_idx = '\0';
+			gds_init(&buff);
+			conf_print_native_field(pcb_append_printf, &buff, 0, &nat->val, nat->type, nat->prop, n);
+			config_auto_res_show_add(s_idx, &nat->prop[n], buff.array);
+			gds_uninit(&buff);
 		}
-#endif
-		gtk_list_store_append(auto_tab_widgets.res_l, &iter);
-		gtk_list_store_set(auto_tab_widgets.res_l, &iter,
-			0, s_idx,
-			1, s_pol_prio,
-			2, val,
-			-1);
 	}
 }
 
