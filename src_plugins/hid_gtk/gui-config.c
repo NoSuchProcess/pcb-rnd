@@ -1900,6 +1900,8 @@ static struct {
 } auto_tab_widgets;
 
 static void config_auto_src_changed_cb(GtkTreeView *tree, void *data);
+static config_auto_apply_cb(GtkButton *btn, void *data);
+static config_auto_reset_cb(GtkButton *btn, void *data);
 
 static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 {
@@ -2008,11 +2010,11 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 
 		w = gtk_button_new_with_label("Apply");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
-//		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(save_cb), &ctx_all2project);
+		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_apply_cb), NULL);
 
 		w = gtk_button_new_with_label("Reset");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
-//		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(save_cb), &ctx_all2project);
+		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_reset_cb), NULL);
 
 		gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.finalize, FALSE, FALSE, 0);
 	}
@@ -2171,6 +2173,16 @@ static void config_auto_res_show(void)
 			gds_uninit(&buff);
 		}
 	}
+}
+
+static config_auto_apply_cb(GtkButton *btn, void *data)
+{
+	printf("conf new apply\n");
+}
+
+static config_auto_reset_cb(GtkButton *btn, void *data)
+{
+	printf("conf new reset\n");
 }
 
 /* Update the conf item edit section; called when a source is clicked */
