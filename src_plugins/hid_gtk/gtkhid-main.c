@@ -1606,9 +1606,9 @@ static int CursorAction(int argc, const char **argv, Coord x, Coord y)
 
 /* ------------------------------------------------------------ */
 
-static const char dowindows_syntax[] = "DoWindows(1|2|3|4|5|6)\n" "DoWindows(Layout|Library|Log|Netlist|Preferences|DRC)";
+static const char dowindows_syntax[] = "DoWindows(1|2|3|4|5|6,[false])\n" "DoWindows(Layout|Library|Log|Netlist|Preferences|DRC,[false])";
 
-static const char dowindows_help[] = N_("Open various GUI windows.");
+static const char dowindows_help[] = N_("Open various GUI windows. With false, do not raise the window (no focus stealing).");
 
 /* %start-doc actions DoWindows
 
@@ -1645,24 +1645,31 @@ Open the DRC violations window.
 
 static int DoWindows(int argc, const char **argv, Coord x, Coord y)
 {
-	const char *a = argc == 1 ? argv[0] : "";
+	const char *a = argc >= 1 ? argv[0] : "";
+	gboolean raise = TRUE;
+
+	if (argc >= 2) {
+		char c = tolower((argv[1])[0]);
+		if ((c == 'n') || (c == 'f') || (c == '0'))
+			raise = FALSE;
+	}
 
 	if (strcmp(a, "1") == 0 || strcasecmp(a, "Layout") == 0) {
 	}
 	else if (strcmp(a, "2") == 0 || strcasecmp(a, "Library") == 0) {
-		ghid_library_window_show(gport, TRUE);
+		ghid_library_window_show(gport, raise);
 	}
 	else if (strcmp(a, "3") == 0 || strcasecmp(a, "Log") == 0) {
-		ghid_log_window_show(TRUE);
+		ghid_log_window_show(raise);
 	}
 	else if (strcmp(a, "4") == 0 || strcasecmp(a, "Netlist") == 0) {
-		ghid_netlist_window_show(gport, TRUE);
+		ghid_netlist_window_show(gport, raise);
 	}
 	else if (strcmp(a, "5") == 0 || strcasecmp(a, "Preferences") == 0) {
 		ghid_config_window_show();
 	}
 	else if (strcmp(a, "6") == 0 || strcasecmp(a, "DRC") == 0) {
-		ghid_drc_window_show(TRUE);
+		ghid_drc_window_show(raise);
 	}
 	else {
 		AFAIL(dowindows);
