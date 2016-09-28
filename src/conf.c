@@ -679,6 +679,7 @@ static void add_subtree(int role, lht_node_t *subtree_parent_root, lht_node_t *s
 static int mst_prio_cmp(const void *a, const void *b)
 {
 	const merge_subtree_t *s1 = a, *s2 = b;
+	pcb_trace("  prio_cmp %d > %d (%s > %s)\n", s1->prio, s2->prio, s1->subtree->file_name, s2->subtree->file_name);
 	return s1->prio > s2->prio;
 }
 
@@ -715,9 +716,13 @@ pcb_trace("---merge all %s ---\n", path);
 		}
 	}
 
+	pcb_trace(" QSORT %d\n", vmst_len(&merge_subtree));
 	qsort(merge_subtree.array, vmst_len(&merge_subtree), sizeof(merge_subtree_t), mst_prio_cmp);
+	for(n = 0; n < vmst_len(&merge_subtree); n++)
+		pcb_trace(" sorted: %s %d\n", merge_subtree.array[n].subtree->file_name, merge_subtree.array[n].prio);
+
 	for(n = 0; n < vmst_len(&merge_subtree); n++) {
-		pcb_trace(" -- sorted %s\n", merge_subtree.array[n].subtree->file_name);
+		pcb_trace(" (sorted %s)\n", merge_subtree.array[n].subtree->file_name);
 		if (path != NULL)
 			ret |= conf_merge_patch_item(path, merge_subtree.array[n].subtree, merge_subtree.array[n].prio, merge_subtree.array[n].policy);
 		else
