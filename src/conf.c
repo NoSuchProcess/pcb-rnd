@@ -708,13 +708,16 @@ pcb_trace("---merge all %s ---\n", path);
 				if (r2 != NULL)
 					add_subtree(n, r, r2);
 			}
-			else
+			else {
+				pcb_trace(" role %s - r=%p\n", conf_role_name(n), r2);
 				add_subtree(n, r, r);
+			}
 		}
 	}
 
 	qsort(merge_subtree.array, vmst_len(&merge_subtree), sizeof(merge_subtree_t), mst_prio_cmp);
 	for(n = 0; n < vmst_len(&merge_subtree); n++) {
+		pcb_trace(" -- sorted %s\n", merge_subtree.array[n].subtree->file_name);
 		if (path != NULL)
 			ret |= conf_merge_patch_item(path, merge_subtree.array[n].subtree, merge_subtree.array[n].prio, merge_subtree.array[n].policy);
 		else
