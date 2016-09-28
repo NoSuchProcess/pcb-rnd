@@ -1,0 +1,5 @@
+Export XY centroid element data for pick & place.
+
+#state: works
+#default: buildin
+#implements: export

@@ -33,6 +33,7 @@ plugin_def("export_gcode",    "gcode exporter",            sbuildin)
 plugin_def("export_nelma",    "nelma exporter",            sbuildin)
 plugin_def("export_png",      "png/gif/jpg exporter",      sbuildin)
 plugin_def("export_bom",      "bom exporter",              sbuildin)
+plugin_def("export_xy",       "xy (centroid) exporter",    sbuildin)
 plugin_def("export_gerber",   "gerber exporter",           sbuildin)
 plugin_def("export_lpr",      "lpr exporter (printer)",    sbuildin)
 plugin_def("export_ps",       "postscript exporter",       sbuildin)
@@ -50,3 +51,4 @@ plugin_def("hid_lesstif",     "the lesstif gui",           sbuildin)
 
 
 plugin_dep("export_lpr", "export_ps")
+plugin_dep("export_xy", "export_bom")
