@@ -507,16 +507,10 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 	int res = 0;
 	conf_listitem_t *i;
 
-	pcb_trace("conf_merge_patch_list {\n");
-	pcb_trace(" path=%s\n", dest->hash_path);
-
-	if ((pol == POL_DISABLE) || (pol == POL_invalid)) {
-		pcb_trace(" disabled/invalid %d\n}\n", pol);
+	if ((pol == POL_DISABLE) || (pol == POL_invalid))
 		return 0;
-	}
 
 	if (pol == POL_OVERWRITE) {
-		pcb_trace(" overwrite: clear list\n");
 		/* overwrite the whole list: make it empty then append new elements */
 		while((i = conflist_first(dest->val.list)) != NULL)
 			conflist_remove(i);
@@ -530,19 +524,16 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 			i->prop.src  = s;
 			if (conf_parse_text(&i->val, 0, CFN_STRING, s->data.text.value, s) != 0) {
 				free(i);
-				pcb_trace(" (parse text fail:)\n");
 				continue;
 			}
-			pcb_trace(" text: %s prio=%d from=%s\n", *i->val.string, prio, s->file_name);
+
 			switch(pol) {
 				case POL_PREPEND:
-					pcb_trace("  pol insert\n");
 					conflist_insert(dest->val.list, i);
 					dest->used |= 1;
 					break;
 				case POL_APPEND:
 				case POL_OVERWRITE:
-					pcb_trace("  pol overwrite\n");
 					conflist_append(dest->val.list, i);
 					dest->used |= 1;
 					break;
@@ -554,7 +545,6 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 			res = -1;
 		}
 	}
-	pcb_trace(" return %d\n}\n", res);
 	return res;
 }
 
@@ -675,13 +665,11 @@ static void add_subtree(int role, lht_node_t *subtree_parent_root, lht_node_t *s
 
 	conf_extract_poliprio(subtree_parent_root, &m->policy, &m->prio);
 	m->subtree = subtree_root;
-	pcb_trace(" sort setup: %s %s %d\n", subtree_parent_root->file_name, subtree_root->file_name, m->prio);
 }
 
 static int mst_prio_cmp(const void *a, const void *b)
 {
 	const merge_subtree_t *s1 = a, *s2 = b;
-	pcb_trace("  prio_cmp %d > %d (%s > %s)\n", s1->prio, s2->prio, s1->subtree->file_name, s2->subtree->file_name);
 	if (s1->prio > s2->prio)
 		return 1;
 	return -1;
@@ -690,43 +678,30 @@ static int mst_prio_cmp(const void *a, const void *b)
 int conf_merge_all(const char *path)
 {
 	int n, ret = 0;
-pcb_trace("---merge all %s ---\n", path);
 	vmst_truncate(&merge_subtree, 0);
 
 	for(n = 0; n < CFR_max_real; n++) {
 		lht_node_t *cr, *r, *r2;
-		if (conf_root[n] == NULL) {
-			pcb_trace(" role %s - no root\n", conf_role_name(n));
+		if (conf_root[n] == NULL)
 			continue;
-		}
-		cr = conf_lht_get_confroot(conf_root[n]->root);
 
-		if (cr == NULL) {
-			pcb_trace(" role %s - no cr\n", conf_role_name(n));
+		cr = conf_lht_get_confroot(conf_root[n]->root);
+		if (cr == NULL)
 			continue;
-		}
 
 		for(r = cr->data.list.first; r != NULL; r = r->next) {
 			if (path != NULL) {
 				r2 = lht_tree_path_(r->doc, r, path, 1, 0, NULL);
-				pcb_trace(" role %s - r2=%p\n", conf_role_name(n), r2);
 				if (r2 != NULL)
 					add_subtree(n, r, r2);
 			}
-			else {
-				pcb_trace(" role %s - r=%p\n", conf_role_name(n), r2);
+			else
 				add_subtree(n, r, r);
-			}
 		}
 	}
 
-	pcb_trace(" QSORT %d\n", vmst_len(&merge_subtree));
 	qsort(merge_subtree.array, vmst_len(&merge_subtree), sizeof(merge_subtree_t), mst_prio_cmp);
-	for(n = 0; n < vmst_len(&merge_subtree); n++)
-		pcb_trace(" sorted: %s %d\n", merge_subtree.array[n].subtree->file_name, merge_subtree.array[n].prio);
-
 	for(n = 0; n < vmst_len(&merge_subtree); n++) {
-		pcb_trace(" (sorted %s)\n", merge_subtree.array[n].subtree->file_name);
 		if (path != NULL)
 			ret |= conf_merge_patch_item(path, merge_subtree.array[n].subtree, merge_subtree.array[n].prio, merge_subtree.array[n].policy);
 		else
