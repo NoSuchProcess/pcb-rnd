@@ -162,7 +162,9 @@ int ParseFont(FontTypePtr Ptr, char *Filename)
 static int find_prio_cmp(const void *p1, const void *p2)
 {
 	const find_t *f1 = p1, *f2 = p2;
-	return f1->prio < f2->prio;
+	if (f1->prio < f2->prio)
+		return 1;
+	return -1;
 }
 
 /* Find all plugins that can handle typ/is_wr and build an ordered list in available[],
