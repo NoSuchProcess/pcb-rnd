@@ -50,6 +50,7 @@
 		- route style vs. autorouter
 
 CLEANUP #5
+- figure why mainline changed xy rotation - maybe find someone with access to xy device?
 - grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value [miloh]
 - Erich's select undo bug: place an element, select, save & load, unselect, undo 2 times: bad serial
 - Erich's gtk lag report: press 's' a lot then move the mouse - 's' ends up in the new loc!
