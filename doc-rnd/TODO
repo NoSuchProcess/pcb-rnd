@@ -104,6 +104,7 @@ CLEANUP #6:
 	- extend png hid attribs with a flag for this, maybe do the same for others
 	- document the decision in "hacking"
 - reduce
+		- export_bom: rewrite the string list code using htsp and/or lists
 		- hash in hid_attrib.c?
 		- nelma and gcode both invent .png name locally
 		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
