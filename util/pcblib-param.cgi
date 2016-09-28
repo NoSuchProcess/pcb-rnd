@@ -65,7 +65,7 @@ function proc_line()
 		}
 		else
 			thumbsize=$1
-		retrun
+		return
 	}
 
 	if (/@@thumbnum/) {
@@ -74,7 +74,7 @@ function proc_line()
 			sub("^:", "", $1)
 			PDATA[$1,"thumbnum"] = $2
 		}
-		retrun
+		return
 	}
 
 	if (/@@param:/) {
