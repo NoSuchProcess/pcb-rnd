@@ -682,7 +682,9 @@ static int mst_prio_cmp(const void *a, const void *b)
 {
 	const merge_subtree_t *s1 = a, *s2 = b;
 	pcb_trace("  prio_cmp %d > %d (%s > %s)\n", s1->prio, s2->prio, s1->subtree->file_name, s2->subtree->file_name);
-	return s1->prio > s2->prio;
+	if (s1->prio > s2->prio)
+		return 1;
+	return -1;
 }
 
 int conf_merge_all(const char *path)
