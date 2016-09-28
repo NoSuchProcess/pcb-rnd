@@ -1,5 +1,4 @@
 - BUGS
-	- there's no screenshot in features/propedit.html
 	- ChangeSize(selected, *) or Change*(selected, *) causes undo panic if nothing is selected
 	- genht config bug in gpmi
 	- File->Revert, or re-loading after external change of .pcb file leads to corruption of routing styles. [report:Chris]
