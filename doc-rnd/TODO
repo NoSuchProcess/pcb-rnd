@@ -7,7 +7,6 @@
 	- Display(cycleclip) [or line_refraction] while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	+ xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
 	+ gtk: gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
-	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
@@ -49,6 +48,7 @@
 		- route style vs. autorouter
 
 CLEANUP #5
+- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - figure why mainline changed xy rotation - maybe find someone with access to xy device?
 - grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value [miloh]
 - Erich's select undo bug: place an element, select, save & load, unselect, undo 2 times: bad serial
