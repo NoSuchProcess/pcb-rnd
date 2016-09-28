@@ -339,7 +339,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		if (hid_get_flag("GetStyle()") < 0)
 			pcb_use_route_style_idx(&PCB->RouteStyle, 0);
 
-		if (how == 0) {
+		if ((how == 0) || (revert)) {
 			if (revert)
 				hid_actionl("PCBChanged", "revert", NULL);
 			else
