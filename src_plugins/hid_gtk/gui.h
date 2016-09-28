@@ -520,4 +520,6 @@ void ghid_draw_grid_local(Coord cx, Coord cy);
 
 void ghid_fullscreen_apply(void);
 
+GMainLoop *ghid_entry_loop;
+
 #endif /* PCB_HID_GTK_GHID_GUI_H */

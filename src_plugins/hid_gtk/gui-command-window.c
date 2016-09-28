@@ -40,7 +40,7 @@ static GtkWidget *command_window;
 static GtkWidget *combo_vbox;
 static GList *history_list;
 static gchar *command_entered;
-static GMainLoop *loop;
+GMainLoop *ghid_entry_loop;
 
 
 /* gui-command-window.c provides two interfaces for getting user input
@@ -196,8 +196,8 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 		g_free(command);
 	}
 	else {
-		if (loop && g_main_loop_is_running(loop))	/* should always be */
-			g_main_loop_quit(loop);
+		if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop))	/* should always be */
+			g_main_loop_quit(ghid_entry_loop);
 		command_entered = command;	/* Caller will free it */
 	}
 }
@@ -327,8 +327,8 @@ static gboolean command_escape_cb(GtkWidget * widget, GdkEventKey * kev, gpointe
 	if (ksym != GDK_Escape)
 		return FALSE;
 
-	if (loop && g_main_loop_is_running(loop))	/* should always be */
-		g_main_loop_quit(loop);
+	if (ghid_entry_loop && g_main_loop_is_running(ghid_entry_loop))	/* should always be */
+		g_main_loop_quit(ghid_entry_loop);
 	command_entered = NULL;				/* We are aborting */
 
 	return TRUE;
@@ -380,11 +380,11 @@ gchar *ghid_command_entry_get(const gchar * prompt, const gchar * command)
 	gtk_widget_grab_focus(GTK_WIDGET(ghidgui->command_entry));
 	escape_sig_id = g_signal_connect(G_OBJECT(ghidgui->command_entry), "key_press_event", G_CALLBACK(command_escape_cb), NULL);
 
-	loop = g_main_loop_new(NULL, FALSE);
-	g_main_loop_run(loop);
+	ghid_entry_loop = g_main_loop_new(NULL, FALSE);
+	g_main_loop_run(ghid_entry_loop);
 
-	g_main_loop_unref(loop);
-	loop = NULL;
+	g_main_loop_unref(ghid_entry_loop);
+	ghid_entry_loop = NULL;
 
 	ghidgui->command_entry_status_line_active = FALSE;
 

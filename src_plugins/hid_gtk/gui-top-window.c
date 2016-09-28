@@ -934,6 +934,9 @@ static void make_mode_buttons_and_toolbar(GtkWidget ** mode_frame, GtkWidget ** 
 
 static gint delete_chart_cb(GtkWidget * widget, GdkEvent * event, GHidPort * port)
 {
+	if (ghid_entry_loop != NULL)
+		g_main_loop_quit(ghid_entry_loop);
+
 	hid_action("Quit");
 
 	/*
