@@ -671,9 +671,11 @@ static void add_subtree(int role, lht_node_t *subtree_parent_root, lht_node_t *s
 
 	m = vmst_alloc_append(&merge_subtree, 1);
 	m->prio = conf_default_prio[role];
+	m->policy = POL_invalid;
 
 	conf_extract_poliprio(subtree_parent_root, &m->policy, &m->prio);
 	m->subtree = subtree_root;
+	pcb_trace(" sort setup: %s %s %d\n", subtree_parent_root->file_name, subtree_root->file_name, m->prio);
 }
 
 static int mst_prio_cmp(const void *a, const void *b)
