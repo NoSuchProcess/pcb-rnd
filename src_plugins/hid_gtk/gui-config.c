@@ -1891,6 +1891,7 @@ static struct {
 
 	GtkWidget *btn_apply;
 	GtkWidget *btn_reset;
+	GtkWidget *btn_remove;
 	GtkWidget *txt_apply;
 
 	GtkWidget *btn_create;
@@ -1908,6 +1909,7 @@ static struct {
 static void config_auto_src_changed_cb(GtkTreeView *tree, void *data);
 static void config_auto_apply_cb(GtkButton *btn, void *data);
 static void config_auto_reset_cb(GtkButton *btn, void *data);
+static void config_auto_remove_cb(GtkButton *btn, void *data);
 static void config_auto_create_cb(GtkButton *btn, void *data);
 static void config_page_update_auto(void *data);
 
@@ -2027,6 +2029,10 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 		auto_tab_widgets.btn_reset = w = gtk_button_new_with_label("Reset");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
 		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_reset_cb), NULL);
+
+		auto_tab_widgets.btn_remove = w = gtk_button_new_with_label("Remove");
+		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
+		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_remove_cb), NULL);
 
 		gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.finalize, FALSE, FALSE, 0);
 	}
@@ -2374,6 +2380,18 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 static void config_auto_reset_cb(GtkButton *btn, void *data)
 {
 	config_auto_src_changed_cb(GTK_TREE_VIEW(auto_tab_widgets.src_t), NULL);
+}
+
+static void config_auto_remove_cb(GtkButton *btn, void *data)
+{
+	conf_native_t *nat = auto_tab_widgets.nat;
+	conf_role_t role = config_auto_get_edited_role();
+
+/*	conf_del(role, nat->hash_path, -1);*/
+
+	config_page_update_auto(nat);
+	conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
+	conf_auto_set_edited_role(role);
 }
 
 static void config_auto_create_cb(GtkButton *btn, void *data)
