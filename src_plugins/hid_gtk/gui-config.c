@@ -1893,6 +1893,8 @@ static struct {
 	GtkWidget *btn_reset;
 	GtkWidget *txt_apply;
 
+	GtkWidget *btn_create;
+
 	GtkAdjustment *edit_int_adj;
 	GtkAdjustment *edit_real_adj;
 	GdkColor color;
@@ -1906,7 +1908,11 @@ static struct {
 static void config_auto_src_changed_cb(GtkTreeView *tree, void *data);
 static void config_auto_apply_cb(GtkButton *btn, void *data);
 static void config_auto_reset_cb(GtkButton *btn, void *data);
+static void config_auto_create_cb(GtkButton *btn, void *data);
 static void config_page_update_auto(void *data);
+
+/* Evaluates to 1 if the user canedit the config for this role */
+#define EDITABLE_ROLE(role) ((role == CFR_USER) || (role == CFR_PROJECT) || (role == CFR_DESIGN) || (role == CFR_CLI))
 
 static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 {
@@ -2029,6 +2035,10 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.txt_apply, FALSE, FALSE, 0);
 	gtk_misc_set_alignment(GTK_MISC(auto_tab_widgets.txt_apply), 0., 0.);
 
+	auto_tab_widgets.btn_create = w = gtk_button_new_with_label("Create item in selected source");
+	gtk_box_pack_start(GTK_BOX(src_right), w, FALSE, FALSE, 0);
+	g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_create_cb), NULL);
+
 
 	/* lower hbox for displaying the rendered value */
 	gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, FALSE, 4);
@@ -2068,6 +2078,7 @@ static void config_auto_src_hide(void)
 	gtk_widget_hide(auto_tab_widgets.edit_list);
 	gtk_widget_hide(auto_tab_widgets.src);
 	gtk_widget_hide(auto_tab_widgets.finalize);
+
 }
 
 /* set up all source edit widgets for a lihata source node */
@@ -2246,13 +2257,20 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 
 	if (role != CFR_invalid) {
 		nd = conf_lht_get_at(role, auto_tab_widgets.nat->hash_path, 0);
-		if (nd != NULL)
+		if (nd != NULL) {
 			config_auto_src_show(nd);
-		else
+			gtk_widget_hide(auto_tab_widgets.btn_create);
+		}
+		else {
 			config_auto_src_hide();
+			if (EDITABLE_ROLE(role))
+				gtk_widget_show(auto_tab_widgets.btn_create);
+			else
+				gtk_widget_hide(auto_tab_widgets.btn_create);
+		}
 	}
 
-	if ((role == CFR_USER) || (role == CFR_PROJECT) || (role == CFR_DESIGN) || (role == CFR_CLI)) {
+	if (EDITABLE_ROLE(role)) {
 		gtk_widget_set_sensitive(auto_tab_widgets.btn_apply, 1);
 		gtk_widget_set_sensitive(auto_tab_widgets.btn_reset, 1);
 		gtk_label_set_text(GTK_LABEL(auto_tab_widgets.txt_apply), "");
@@ -2350,6 +2368,11 @@ static void config_auto_reset_cb(GtkButton *btn, void *data)
 	config_auto_src_changed_cb(GTK_TREE_VIEW(auto_tab_widgets.src_t), NULL);
 }
 
+static void config_auto_create_cb(GtkButton *btn, void *data)
+{
+	printf("create!\n");
+}
+
 
 /* Update the config tab for a given entry - called when a new config item is selected from the tree */
 static void config_page_update_auto(void *data)
@@ -2421,6 +2444,7 @@ static void config_page_update_auto(void *data)
 		}
 	}
 	gtk_label_set_text(GTK_LABEL(auto_tab_widgets.txt_apply), "");
+	gtk_widget_hide(auto_tab_widgets.btn_create);
 	config_auto_res_show();
 }
 
