@@ -11,6 +11,9 @@
 	- delete button to remove a node from a source
 	- create project file
 	- do not conf_save if role is CLI
+	- long term:
+		- change prio
+		- array support (e.g. colors)
 
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
