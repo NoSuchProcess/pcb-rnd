@@ -2249,6 +2249,13 @@ static conf_role_t config_auto_get_edited_role(void)
 	return role;
 }
 
+static conf_auto_set_edited_role(conf_role_t r)
+{
+	GtkTreePath *p = gtk_tree_path_new_from_indices(r, -1);
+	gtk_tree_view_set_cursor(GTK_TREE_VIEW(auto_tab_widgets.src_t), p, NULL, 0);
+	gtk_tree_path_free(p);
+}
+
 /* Update the conf item edit section; called when a source is clicked */
 static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 {
@@ -2383,6 +2390,7 @@ static void config_auto_create_cb(GtkButton *btn, void *data)
 
 	config_page_update_auto(nat);
 	conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
+	conf_auto_set_edited_role(role);
 }
 
 
