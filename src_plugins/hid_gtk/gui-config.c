@@ -2250,7 +2250,7 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 	char buff[128];
 	const char *new_val = NULL;
 	int arr_idx = -1;
-
+	int update_clr = 0;
 
 	switch(nat->type) {
 		case CFN_STRING:
@@ -2260,24 +2260,30 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 			ghid_coord_entry_get_value_str(auto_tab_widgets.edit_coord, buff, sizeof(buff));
 			new_val = buff;
 			break;
-#if 0
 		case CFN_INTEGER:
-			gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj), *citem.integer);
-			gtk_widget_show(auto_tab_widgets.edit_int);
+			sprintf(buff, "%.0f", gtk_adjustment_get_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj)));
+			new_val = buff;
 			break;
 		case CFN_REAL:
-			gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_real_adj), *citem.real);
-			gtk_widget_show(auto_tab_widgets.edit_real);
+			sprintf(buff, "%.16f", gtk_adjustment_get_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj)));
+			new_val = buff;
 			break;
 		case CFN_BOOLEAN:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(auto_tab_widgets.edit_boolean), *citem.boolean);
-			gtk_widget_show(auto_tab_widgets.edit_boolean);
+			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(auto_tab_widgets.edit_boolean)))
+				new_val = "1";
+			else
+				new_val = "0";
 			break;
 		case CFN_COLOR:
-			ghid_map_color_string(*citem.color, &auto_tab_widgets.color);
-			gtk_color_button_set_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &auto_tab_widgets.color);
-			gtk_widget_show(auto_tab_widgets.edit_color);
+			{
+				GdkColor clr;
+				gtk_color_button_get_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &clr);
+				sprintf(buff, "#%02x%02x%02x", (clr.red >> 8) & 0xFF, (clr.green >> 8) & 0xFF, (clr.blue >> 8) & 0xFF);
+				new_val = buff;
+				update_clr = 1;
+			}
 			break;
+#if 0
 		case CFN_UNIT:
 			if (citem.unit[0] == NULL)
 				l = -1;
@@ -2300,7 +2306,14 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 		conf_set(role, nat->hash_path, arr_idx, new_val, POL_OVERWRITE);
 #warning TODO: also save
 	}
+
 	config_page_update_auto(nat);
+	if (update_clr) {
+#warning TODO: conf hooks should solve these
+		ghid_set_special_colors(nat);
+		ghid_layer_buttons_color_update();
+		ghid_invalidate_all();
+	}
 }
 
 static void config_auto_reset_cb(GtkButton *btn, void *data)
