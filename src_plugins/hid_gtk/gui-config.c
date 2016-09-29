@@ -2344,6 +2344,7 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 					g_free(s);
 				}
 				conf_update(nat->hash_path);
+				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
 			}
 			new_val = NULL; /* do not run conf_set, but run the rest of the updates */
 			break;
@@ -2351,7 +2352,7 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 
 	if (new_val != NULL) {
 		conf_set(role, nat->hash_path, arr_idx, new_val, POL_OVERWRITE);
-#warning TODO: also save
+		conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
 	}
 
 	config_page_update_auto(nat);
@@ -2381,7 +2382,7 @@ static void config_auto_create_cb(GtkButton *btn, void *data)
 	gds_uninit(&s);
 
 	config_page_update_auto(nat);
-#warning also save
+	conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
 }
 
 
