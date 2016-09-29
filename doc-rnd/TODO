@@ -7,6 +7,11 @@
 	+ xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
 	+ gtk: gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
 
+- config pov:
+	- delete button to remove a node from a source
+	- create project file
+	- do not conf_save if role is CLI
+
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
 	- TEST:
@@ -69,7 +74,6 @@ CLEANUP #5
 	- if font file is not found:
 		- embedded version?
 		- warn when try to write text on pcb?
-	- finish gtk hid preferences config pov
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
 - next_gui: keep them open, hide
 - look for #warnings
