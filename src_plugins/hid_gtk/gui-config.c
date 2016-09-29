@@ -1997,6 +1997,7 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 		auto_tab_widgets.cl.col_data = 0;
 		auto_tab_widgets.cl.col_src = -1;
 		auto_tab_widgets.cl.reorder = 1;
+		auto_tab_widgets.cl.inhibit_rebuild = 1;
 		auto_tab_widgets.cl.lst = NULL;
 		auto_tab_widgets.cl.pre_rebuild = auto_tab_widgets.cl.post_rebuild = NULL;
 		auto_tab_widgets.cl.get_misc_col_data = NULL;
@@ -2291,13 +2292,27 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 				g_free(s);
 			}
 			break;
-#if 0
 		case CFN_LIST:
-			gtk_conf_list_set_list(&auto_tab_widgets.cl, nd);
-			gtk_widget_show(auto_tab_widgets.edit_list);
+			{
+				GtkTreeModel *tm = gtk_tree_view_get_model(GTK_TREE_VIEW(auto_tab_widgets.cl.t));
+				GtkTreeIter it;
+				gboolean valid;
+				int n;
+
+				for(valid = gtk_tree_model_get_iter_first(tm, &it), n = 0; valid; valid = gtk_tree_model_iter_next(tm, &it), n++) {
+					gchar *s;
+					lht_node_t *nd;
+
+					gtk_tree_model_get(tm, &it, auto_tab_widgets.cl.col_data, &s, -1);
+					conf_set_dry(role, nat->hash_path, -1, pcb_strdup(s), (n == 0) ? POL_OVERWRITE : POL_APPEND);
+					g_free(s);
+				}
+				conf_update(nat->hash_path);
+			}
+			new_val = NULL; /* do not run conf_set, but run the rest of the updates */
 			break;
-#endif
 	}
+
 	if (new_val != NULL) {
 		conf_set(role, nat->hash_path, arr_idx, new_val, POL_OVERWRITE);
 #warning TODO: also save
