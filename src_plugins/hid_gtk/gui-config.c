@@ -2283,19 +2283,15 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 				update_clr = 1;
 			}
 			break;
-#if 0
 		case CFN_UNIT:
-			if (citem.unit[0] == NULL)
-				l = -1;
-			else if (strcmp(citem.unit[0]->suffix, "mm") == 0)
-				l = 0;
-			else if (strcmp(citem.unit[0]->suffix, "mil") == 0)
-				l = 1;
-			else
-				l = -1;
-			gtk_combo_box_set_active(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), l);
-			gtk_widget_show(auto_tab_widgets.edit_unit);
+			{
+				char *s = gtk_combo_box_get_active_text(GTK_COMBO_BOX(auto_tab_widgets.edit_unit));
+				strcpy(buff, s);
+				new_val = buff;
+				g_free(s);
+			}
 			break;
+#if 0
 		case CFN_LIST:
 			gtk_conf_list_set_list(&auto_tab_widgets.cl, nd);
 			gtk_widget_show(auto_tab_widgets.edit_list);
