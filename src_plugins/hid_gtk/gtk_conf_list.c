@@ -20,7 +20,7 @@ static void fill_misc_cols(gtk_conf_list_t *cl, int row_idx, GtkTreeIter *iter, 
 	}
 }
 
-/* Rebuild the list from the GUI. There would be a cheaper altnerative for most
+/* Rebuild the list from the GUI. There would be a cheaper alternative for most
    operations, but our lists are short (less than 10 items usually) and
    edited rarely - optimize for code size instead of speed. This also solves
    a higher level problem: sometimes the input list is a composite from multiple
