@@ -1889,6 +1889,10 @@ static struct {
 	GtkWidget *result;
 	GtkWidget *finalize; /* finalzie hbox */
 
+	GtkWidget *btn_apply;
+	GtkWidget *btn_reset;
+	GtkWidget *txt_apply;
+
 	GtkAdjustment *edit_int_adj;
 	GtkAdjustment *edit_real_adj;
 	GdkColor color;
@@ -2010,16 +2014,21 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	{
 		auto_tab_widgets.finalize = gtk_hbox_new(FALSE, 0);
 
-		w = gtk_button_new_with_label("Apply");
+		auto_tab_widgets.btn_apply = w = gtk_button_new_with_label("Apply");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
 		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_apply_cb), NULL);
 
-		w = gtk_button_new_with_label("Reset");
+		auto_tab_widgets.btn_reset = w = gtk_button_new_with_label("Reset");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
 		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_reset_cb), NULL);
 
 		gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.finalize, FALSE, FALSE, 0);
 	}
+	
+	auto_tab_widgets.txt_apply = gtk_label_new("");
+	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.txt_apply, FALSE, FALSE, 0);
+	gtk_misc_set_alignment(GTK_MISC(auto_tab_widgets.txt_apply), 0., 0.);
+
 
 	/* lower hbox for displaying the rendered value */
 	gtk_box_pack_start(GTK_BOX(vbox), gtk_hseparator_new(), FALSE, FALSE, 4);
@@ -2242,6 +2251,17 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 		else
 			config_auto_src_hide();
 	}
+
+	if ((role == CFR_USER) || (role == CFR_PROJECT) || (role == CFR_DESIGN) || (role == CFR_CLI)) {
+		gtk_widget_set_sensitive(auto_tab_widgets.btn_apply, 1);
+		gtk_widget_set_sensitive(auto_tab_widgets.btn_reset, 1);
+		gtk_label_set_text(GTK_LABEL(auto_tab_widgets.txt_apply), "");
+	}
+	else {
+		gtk_widget_set_sensitive(auto_tab_widgets.btn_apply, 0);
+		gtk_widget_set_sensitive(auto_tab_widgets.btn_reset, 0);
+		gtk_label_set_text(GTK_LABEL(auto_tab_widgets.txt_apply), "(Can't write config source)");
+	}
 }
 
 static void config_auto_apply_cb(GtkButton *btn, void *data)
@@ -2301,8 +2321,6 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 
 				for(valid = gtk_tree_model_get_iter_first(tm, &it), n = 0; valid; valid = gtk_tree_model_iter_next(tm, &it), n++) {
 					gchar *s;
-					lht_node_t *nd;
-
 					gtk_tree_model_get(tm, &it, auto_tab_widgets.cl.col_data, &s, -1);
 					conf_set_dry(role, nat->hash_path, -1, pcb_strdup(s), (n == 0) ? POL_OVERWRITE : POL_APPEND);
 					g_free(s);
@@ -2402,6 +2420,7 @@ static void config_page_update_auto(void *data)
 				-1);
 		}
 	}
+	gtk_label_set_text(GTK_LABEL(auto_tab_widgets.txt_apply), "");
 	config_auto_res_show();
 }
 
