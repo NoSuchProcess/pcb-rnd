@@ -1914,7 +1914,7 @@ static void config_auto_create_cb(GtkButton *btn, void *data);
 static void config_page_update_auto(void *data);
 
 /* Evaluates to 1 if the user canedit the config for this role */
-#define EDITABLE_ROLE(role) ((role == CFR_USER) || (role == CFR_PROJECT) || (role == CFR_DESIGN) || (role == CFR_CLI))
+#define EDITABLE_ROLE(role) ((role == CFR_USER)  || (role == CFR_DESIGN) || (role == CFR_CLI) || ((role == CFR_PROJECT) && (PCB != NULL) && (PCB->Filename != NULL)))
 
 static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 {
