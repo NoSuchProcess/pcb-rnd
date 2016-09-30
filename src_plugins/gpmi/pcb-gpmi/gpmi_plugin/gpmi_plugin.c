@@ -219,11 +219,16 @@ static void plugin_gpmi_uninit(void)
 	gpmi_uninit();
 }
 
-pcb_uninit_t PLUGIN_INIT_NAME ()
+pcb_uninit_t hid_gpmi_init(void)
 {
-
 	printf("pcb-gpmi hid is loaded.\n");
 	gpmi_init();
 	load_base_and_cfg();
 	return plugin_gpmi_uninit;
+}
+
+/* Workaround: can't call it gpmi.so so basename is gpmi_plugin thus init name must be that too for the loader */
+pcb_uninit_t hid_gpmi_plugin_init(void)
+{
+	return hid_gpmi_init();
 }
