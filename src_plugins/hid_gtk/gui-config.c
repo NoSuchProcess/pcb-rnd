@@ -2387,7 +2387,7 @@ static void config_auto_remove_cb(GtkButton *btn, void *data)
 	conf_native_t *nat = auto_tab_widgets.nat;
 	conf_role_t role = config_auto_get_edited_role();
 
-/*	conf_del(role, nat->hash_path, -1);*/
+	conf_del(role, nat->hash_path, -1);
 
 	config_page_update_auto(nat);
 	conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);

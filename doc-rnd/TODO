@@ -8,7 +8,6 @@
 	+ gtk: gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
 
 - config pov:
-	- delete button to remove a node from a source
 	- create project file
 	- do not conf_save if role is CLI
 	- long term:
