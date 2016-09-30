@@ -7,13 +7,6 @@
 	+ xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
 	+ gtk: gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
 
-- config pov:
-	- create project file
-	- do not conf_save if role is CLI
-	- long term:
-		- change prio
-		- array support (e.g. colors)
-
 - replace settings with lihata (conf_*)
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
 	- TEST:
@@ -66,6 +59,9 @@ CLEANUP #5
 	- revise the bison/flex rule templates; rather use bison/flex output name
 	  feature instead of the mkdir hack.
 - conf:
+	- config pov:
+			- change prio
+			- array support (e.g. colors)
 	- gtk preferences: check what takes 131 megs of VIRT ram (on top); destroy the dialog structures when closed
 	- gtk preferences: poly isle area widget missing from the sizes tab
 	- debug why default layer names from the user config are ignored
