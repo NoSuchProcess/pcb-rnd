@@ -279,7 +279,7 @@ static int conf_parse_increments(Increments *inc, lht_node_t *node)
 	return 0;
 }
 
-static const char *get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **try)
+const char *conf_get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **try)
 {
 	static char res[MAXPATHLEN];
 	static const char *project_name = "project.lht";
@@ -903,7 +903,7 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 	/* load config files */
 	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht", 0);
 	conf_load_as(CFR_USER, conf_user_fn, 0);
-	pc = get_project_conf_name(project_fn, pcb_fn, &try);
+	pc = conf_get_project_conf_name(project_fn, pcb_fn, &try);
 	if (pc != NULL)
 		conf_load_as(CFR_PROJECT, pc, 0);
 	conf_merge_all(NULL);
@@ -921,7 +921,7 @@ void conf_load_project(const char *project_fn, const char *pcb_fn)
 
 	assert((project_fn != NULL) || (pcb_fn != NULL));
 
-	pc = get_project_conf_name(project_fn, pcb_fn, &try);
+	pc = conf_get_project_conf_name(project_fn, pcb_fn, &try);
 	if (pc != NULL)
 		if (conf_load_as(CFR_PROJECT, pc, 0) != 0)
 			pc = NULL;
@@ -1484,7 +1484,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 				fn = conf_user_fn;
 				break;
 			case CFR_PROJECT:
-				fn = get_project_conf_name(project_fn, pcb_fn, &try);
+				fn = conf_get_project_conf_name(project_fn, pcb_fn, &try);
 				if (fn == NULL) {
 					Message(PCB_MSG_DEFAULT, "Error: can not save config to project file: %s does not exist - please create an empty file there first\n", try);
 					return -1;
