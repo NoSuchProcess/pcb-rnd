@@ -1,5 +1,4 @@
 - BUGS
-	- ChangeSize(selected, *) or Change*(selected, *) causes undo panic if nothing is selected
 	- genht config bug in gpmi
 	- render:
 		- drawing a lot of rats is slow - does it redraw/flush after each rat? [report:Chris]
