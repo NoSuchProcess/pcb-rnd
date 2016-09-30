@@ -1,12 +1,10 @@
 - BUGS
-	- render:
-		- drawing a lot of rats is slow - does it redraw/flush after each rat? [report:Chris]
+	- render: drawing a lot of rats is slow - does it redraw/flush after each rat? [report:Chris]
 	- Display(cycleclip) [or line_refraction] while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	+ xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
 	+ gtk: gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
 
 - replace settings with lihata (conf_*)
-	- remove CFN_INCREMENTS, test if saving increments from preferences works
 	- TEST:
 		- png export: bloat settings in pixel (scale changed)
 		- whether polygon rendering breaks if pcb_long64_t is double
@@ -58,6 +56,7 @@ CLEANUP #5
 	- revise the bison/flex rule templates; rather use bison/flex output name
 	  feature instead of the mkdir hack.
 - conf:
+	- remove CFN_INCREMENTS, test if saving increments from preferences works
 	- config pov:
 			- change prio
 			- array support (e.g. colors)
