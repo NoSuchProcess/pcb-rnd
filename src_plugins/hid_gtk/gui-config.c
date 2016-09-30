@@ -2297,6 +2297,10 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 
 static void config_auto_save(conf_role_t role)
 {
+	/* Can't save the CLI */
+	if (role == CFR_CLI)
+		return;
+
 	conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
 }
 
