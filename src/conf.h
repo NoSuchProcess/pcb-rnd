@@ -168,8 +168,13 @@ void conf_unreg_fields(const char *prefix);
 
 /* Set the value of path[arr_idx] in memory-lht role target to new_val using
    policy pol. Only lists should be indexed. Indexing can be a [n] suffix on
-   path or a non-negative arr_idx. Updates the in-memory binary as well. */
+   path or a non-negative arr_idx. Updates the in-memory binary as well. If
+   new_val is NULL, the selected subtree is removed from the lihata document. */
 int conf_set(conf_role_t target, const char *path, int arr_idx, const char *new_val, conf_policy_t pol);
+
+/* Remove the subtree of path[arr_idx] in memory-lht role target. Same
+   considerations as in conf_set. */
+int conf_del(conf_role_t target, const char *path, int arr_idx);
 
 /* Same as conf_set, but without updating the binary - useful for multiple
    conf_set_dry calls and a single all-tree conf_udpate(NULL) for transactions. */

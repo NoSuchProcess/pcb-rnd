@@ -998,6 +998,10 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 	lht_node_type_t ty;
 	int idx = -1;
 
+	/* Remove in overwrite only */
+	if ((new_val == NULL) && (pol != POL_OVERWRITE))
+		return -1;
+
 	path = pcb_strdup(path_);
 	sidx = strrchr(path, '[');
 	if (sidx != NULL) {
@@ -1078,6 +1082,10 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 
 		nn = lht_tree_path_(conf_root[target], cwd, last, 1, 0, NULL);
 		if (nn == NULL) {
+			if (new_val == NULL) {
+				free(path);
+				return 0;
+			}
 			if (conf_root_lock[target]) {
 				Message(PCB_MSG_DEFAULT, "WARNING: can't set config item %s because target in-memory lihata does not have the node and is tree-locked\n", path_);
 				free(path);
@@ -1120,19 +1128,30 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 	/* set value */
 	if (ty == LHT_LIST) {
 		lht_err_t err = 0;
-		nn = lht_dom_node_alloc(LHT_TEXT, "");
+
+		if (new_val != NULL)
+			nn = lht_dom_node_alloc(LHT_TEXT, "");
+
 		if (pol == POL_OVERWRITE) {
 			if (idx == -1) {
 				/* empty the list so that we insert to an empty list which is overwriting the list */
 				while(cwd->data.list.first != NULL)
 					lht_tree_del(cwd->data.list.first);
-				lht_dom_list_append(cwd, nn);
+				if (new_val != NULL)
+					lht_dom_list_append(cwd, nn);
 			}
 			else {
 				lht_node_t *old = lht_tree_list_nth(cwd, idx);
 				if (old != NULL) {
 					/* the list is large enough already: overwrite the element at idx */
-					err = lht_tree_list_replace_child(cwd, old, nn);
+					if (new_val != NULL)
+						err = lht_tree_list_replace_child(cwd, old, nn);
+					else
+						err = lht_tree_del(old);
+				}
+				else if (new_val == NULL) {
+					free(path);
+					return 0;
 				}
 				else {
 					int n;
@@ -1176,11 +1195,15 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 		return -1;
 	}
 
-	if (cwd->data.text.value != NULL)
-		free(cwd->data.text.value);
+	if (new_val != NULL) {
+		if (cwd->data.text.value != NULL)
+			free(cwd->data.text.value);
 
-	cwd->data.text.value = pcb_strdup(new_val);
-	cwd->file_name = conf_root[target]->active_file;
+		cwd->data.text.value = pcb_strdup(new_val);
+		cwd->file_name = conf_root[target]->active_file;
+	}
+	else
+		lht_tree_del(cwd);
 
 	conf_lht_dirty[target]++;
 
@@ -1197,6 +1220,17 @@ int conf_set(conf_role_t target, const char *path, int arr_idx, const char *new_
 	conf_update(path);
 	return 0;
 }
+
+int conf_del(conf_role_t target, const char *path, int arr_idx)
+{
+	int res;
+	res = conf_set_dry(target, path, arr_idx, NULL, POL_OVERWRITE);
+	if (res < 0)
+		return res;
+	conf_update(path);
+	return 0;
+}
+
 
 int conf_set_native(conf_native_t *field, int arr_idx, const char *new_val)
 {
