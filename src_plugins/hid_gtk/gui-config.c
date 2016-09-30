@@ -2295,6 +2295,11 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 	}
 }
 
+static void config_auto_save(conf_role_t role)
+{
+	conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
+}
+
 static void config_auto_apply_cb(GtkButton *btn, void *data)
 {
 	conf_native_t *nat = auto_tab_widgets.nat;
@@ -2357,7 +2362,7 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 					g_free(s);
 				}
 				conf_update(nat->hash_path);
-				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
+				config_auto_save(role);
 			}
 			new_val = NULL; /* do not run conf_set, but run the rest of the updates */
 			break;
@@ -2365,7 +2370,7 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 
 	if (new_val != NULL) {
 		conf_set(role, nat->hash_path, arr_idx, new_val, POL_OVERWRITE);
-		conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
+		config_auto_save(role);
 	}
 
 	config_page_update_auto(nat);
@@ -2390,7 +2395,7 @@ static void config_auto_remove_cb(GtkButton *btn, void *data)
 	conf_del(role, nat->hash_path, -1);
 
 	config_page_update_auto(nat);
-	conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
+	config_auto_save(role);
 	conf_auto_set_edited_role(role);
 }
 
@@ -2407,7 +2412,7 @@ static void config_auto_create_cb(GtkButton *btn, void *data)
 	gds_uninit(&s);
 
 	config_page_update_auto(nat);
-	conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
+	config_auto_save(role);
 	conf_auto_set_edited_role(role);
 }
 
