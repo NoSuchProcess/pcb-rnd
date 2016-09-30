@@ -2297,11 +2297,26 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 
 static void config_auto_save(conf_role_t role)
 {
+	const char *pcbfn = (PCB == NULL ? NULL : PCB->Filename);
 	/* Can't save the CLI */
 	if (role == CFR_CLI)
 		return;
 
-	conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
+	if (role == CFR_PROJECT) {
+		const char *try;
+		const char *fn = conf_get_project_conf_name(NULL, pcbfn, &try);
+		if (fn == NULL) {
+			FILE *f;
+			f = fopen(try, "w");
+			if (f == NULL) {
+				Message(PCB_MSG_ERROR, "can not create config to project file: %s\n", try);
+				return;
+			}
+			fclose(f);
+		}
+	}
+
+	conf_save_file(NULL, pcbfn, role, NULL);
 }
 
 static void config_auto_apply_cb(GtkButton *btn, void *data)
