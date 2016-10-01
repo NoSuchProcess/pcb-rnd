@@ -601,11 +601,11 @@ void PrintQuotedString(FILE * FP, const char *S)
  */
 void SaveInTMP(void)
 {
-	char filename[80];
+	char filename[256];
 
 	/* memory might have been released before this function is called */
 	if (PCB && PCB->Changed) {
-		sprintf(filename, conf_core.rc.emergency_name, pcb_getpid());
+		sprintf(filename, conf_core.rc.emergency_name, (long int)pcb_getpid());
 		Message(PCB_MSG_DEFAULT, _("Trying to save your layout in '%s'\n"), filename);
 		WritePCBFile(filename, DEFAULT_FMT);
 	}

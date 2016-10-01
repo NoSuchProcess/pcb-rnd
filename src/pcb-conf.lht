@@ -84,7 +84,7 @@ li:pcb-rnd-conf-v1 {
 #			file_path = {}
 			library_shell = {}
 
-			emergency_name = {PCB.%P.save}
+			emergency_name = {PCB.%ld.save}
 			backup_name = {PCB.%P.backup}
 
 			li:library_search_paths = {
