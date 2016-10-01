@@ -12,7 +12,6 @@
 		- vendor drill mapping (all functionality, including regex based refdes ignore)
 		- gsch2pcb
 		- test lesstif
-		- test if all plugins work from .so
 		- route style in gtk and lesstif, save, load, 0, 1 or a lot of styles
 		- route style vs. autorouter
 
