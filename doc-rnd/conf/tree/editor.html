@@ -17,9 +17,9 @@
 <tr><td> snap_offgrid_line <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> Snap to certain off-grid points along a line.
 <tr><td> highlight_on_point <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> Highlight if crosshair is on endpoints.
 <tr><td> show_solder_side <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> mirror output
-<tr><td> save_last_command <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> save the last command entered by user
+<tr><td> save_last_command <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> the command entry editline always starts with the last command entered by user in the current session
 <tr><td> line_refraction <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> value for line lookahead setting
-<tr><td> save_in_tmp <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> always save data in /tmp
+<tr><td> save_in_tmp <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> emergency save unsaved PCB data (despite the user clicks don't save) when: user starts a new PCB; user quits pcb-rnd. Does not affect the on-crash emergency save.
 <tr><td> draw_grid <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> draw grid points
 <tr><td> all_direction_lines <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> enable lines to all directions
 <tr><td> rubber_band_mode <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> move, rotate use rubberband connections
@@ -28,7 +28,7 @@
 <tr><td> auto_drc <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> when set, PCB doesn't let you place copper that violates DRC.
 <tr><td> show_number <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> pinout shows number
 <tr><td> orthogonal_moves <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> move items orthogonally.
-<tr><td> reset_after_element <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> reset connections after each element
+<tr><td> reset_after_element <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> reset connections after each element while saving all connections
 <tr><td> auto_place <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> flag which says we should force placement of the windows on startup
 <tr><td> lock_names <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> lock down text so they can not be moved or selected
 <tr><td> only_names <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> lock down everything else but text so only text objects can be moved or selected
