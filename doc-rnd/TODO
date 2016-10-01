@@ -14,7 +14,6 @@
 		- vendor drill mapping (all functionality, including regex based refdes ignore)
 		- gsch2pcb
 		- test lesstif
-		- test with all plugins enabled (maybe add an scconfig cli arg for this?)
 		- change style in both GUIs
 		- test if all plugins work from .so
 		- test clearance + drc clearance
