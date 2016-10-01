@@ -159,8 +159,11 @@ static void AddPart(void *b)
 /*
  * initiate the actual redrawing of the updated area
  */
+pcb_cardinal_t pcb_draw_inhibit = 0;
 void Draw(void)
 {
+	if (pcb_draw_inhibit)
+		return;
 	if (Block.X1 <= Block.X2 && Block.Y1 <= Block.Y2)
 		gui->invalidate_lr(Block.X1, Block.X2, Block.Y1, Block.Y2);
 

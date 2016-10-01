@@ -694,6 +694,8 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coor
 	RubberbandTypePtr ptr;
 	void *ptr2;
 
+	pcb_draw_inhibit_inc();
+
 	/* setup offset */
 	DeltaX = DX;
 	DeltaY = DY;
@@ -714,6 +716,10 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coor
 	AddObjectToMoveUndoList(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 	ptr2 = ObjectOperation(&MoveFunctions, Type, Ptr1, Ptr2, Ptr3);
 	IncrementUndoSerialNumber();
+
+	pcb_draw_inhibit_dec();
+	Draw();
+
 	return (ptr2);
 }
 

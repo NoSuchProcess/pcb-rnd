@@ -31,6 +31,19 @@
 
 #include "global.h"
 
+/* Temporarily inhibid drawing if this is non-zero. A function that calls a
+   lot of other functions that would call Draw() a lot in turn may increase
+   this value before the calls, then decrease it at the end and call Draw().
+   This makes sure the whole block is redrawn only once at the end. */
+extern pcb_cardinal_t pcb_draw_inhibit;
+
+#define pcb_draw_inhibit_inc() pcb_draw_inhibit++
+#define pcb_draw_inhibit_dec() \
+do { \
+	if (pcb_draw_inhibit > 0) \
+		pcb_draw_inhibit--; \
+} while(0) \
+
 void Draw(void);
 void Redraw(void);
 void DrawVia(PinTypePtr);
