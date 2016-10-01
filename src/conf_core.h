@@ -29,7 +29,7 @@ typedef struct {
 		CFT_BOOLEAN snap_offgrid_line;     /* Snap to certain off-grid points along a line. */
 		CFT_BOOLEAN highlight_on_point;    /* Highlight if crosshair is on endpoints. */
 		CFT_BOOLEAN show_solder_side;      /* mirror output */
-		CFT_BOOLEAN save_last_command;     /* save the last command entered by user */
+		CFT_BOOLEAN save_last_command;     /* the command entry editline always starts with the last command entered by user in the current session */
 		CFT_INTEGER line_refraction;       /* value for line lookahead setting */
 		CFT_BOOLEAN save_in_tmp;           /* always save data in /tmp */
 		CFT_BOOLEAN draw_grid;             /* draw grid points */
