@@ -30,7 +30,7 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_) plugin3_args(name, desc)
+#define plugin_def(name, desc, default_, all_) plugin3_args(name, desc)
 #define plugin_header(sect)
 #define plugin_dep(plg, on)
 #include "plugins.h"
@@ -50,6 +50,9 @@ static void help1(void)
 	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
 	printf(" --dot_pcb_pcb=path         .pcb-rnd config path under $HOME/\n");
 	printf(" --workaround-gtk-ctrl      enable GTK control key query workaround\n");
+	printf(" --all=plugin               enable all working plugins for dynamic load\n");
+	printf(" --all=buildin              enable all working plugins for static link\n");
+	printf(" --all=disable              disable all plugins (compile core only)\n");
 }
 
 static void help2(void)
@@ -72,6 +75,7 @@ do { \
 		repeat = strclone(msg); \
 } while(0)
 
+static void all_plugin_select(const char *state);
 
 /* Runs when a custom command line argument is found
  returns true if no further argument processing should be done */
@@ -95,6 +99,14 @@ int hook_custom_arg(const char *key, const char *value)
 		put("/local/pcb/coord_bits", value);
 		want_coord_bits = v;
 		return 1;
+	}
+	if (strcmp(key, "all") == 0) {
+		if ((strcmp(value, sbuildin) == 0) || (strcmp(value, splugin) == 0) || (strcmp(value, sdisable) == 0)) {
+			all_plugin_select(value);
+			return 1;
+		}
+		report("Error: unknown --all argument: %s\n", value);
+		exit(1);
 	}
 	if (strcmp(key, "coord") == 0)
 		put("/local/pcb/dot_pcb_rnd", value);
@@ -152,12 +164,29 @@ void plugin_dep1(int require, const char *plugin, const char *deps_on)
 	}
 }
 
+static void all_plugin_select(const char *state)
+{
+	char buff[1024];
+
+#undef plugin_def
+#undef plugin_header
+#undef plugin_dep
+#define plugin_def(name, desc, default_, all_) \
+	if (all_) { \
+		sprintf(buff, "/local/pcb/%s/controls", name); \
+		put(buff, state); \
+	}
+#define plugin_header(sect)
+#define plugin_dep(plg, on)
+#include "plugins.h"
+}
+
 void plugin_deps(int require)
 {
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_)
+#define plugin_def(name, desc, default_, all_)
 #define plugin_header(sect)
 #define plugin_dep(plg, on) plugin_dep1(require, plg, on);
 #include "plugins.h"
@@ -182,7 +211,7 @@ int hook_postinit()
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_) plugin3_default(name, default_)
+#define plugin_def(name, desc, default_, all_) plugin3_default(name, default_)
 #define plugin_header(sect)
 #define plugin_dep(plg, on)
 #include "plugins.h"
@@ -648,12 +677,10 @@ int hook_generate()
 	print_sum_cfg_val("/local/pcb/coord_bits",     "Coordinate type bits");
 	print_sum_cfg_val("/local/pcb/dot_pcb_rnd",    ".pcb_rnd config dir under $HOME");
 
-
-
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_) plugin3_stat(name, desc)
+#define plugin_def(name, desc, default_, all_) plugin3_stat(name, desc)
 #define plugin_header(sect) printf(sect);
 #define plugin_dep(plg, on)
 #include "plugins.h"
