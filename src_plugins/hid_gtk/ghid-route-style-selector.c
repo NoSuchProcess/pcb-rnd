@@ -15,6 +15,7 @@
 #include "gui.h"
 #include "pcb-printf.h"
 #include "route_style.h"
+#include "set.h"
 
 #include "ghid-route-style-selector.h"
 
@@ -154,6 +155,7 @@ static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 	dialog->rss->active_style = NULL;
 	make_route_style_buttons(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
 	pcb_trace("Style: %d deleted\n", dialog->rss->selected);
+	SetChangedFlag(pcb_true);
 	add_new_iter(dialog->rss);
 	dialog->inhibit_style_change = 0;
 	ghid_route_style_selector_select_style(dialog->rss, &pcb_custom_route_style);
@@ -259,6 +261,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	}
 	gtk_widget_show_all(dialog);
 	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
+		int changed = 0;
 		RouteStyleType *rst;
 		struct _route_style *style;
 		gboolean save;
@@ -277,13 +280,26 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 		new_name = gtk_entry_get_text(GTK_ENTRY(dialog_data.name_entry));
 
 		while(isspace(*new_name)) new_name++;
-		strncpy(rst->name, new_name, sizeof(rst->name)-1);
-		rst->name[sizeof(rst->name)-1] = '0';
+		if (strcmp(rst->name, new_name) != 0) {
+			strncpy(rst->name, new_name, sizeof(rst->name)-1);
+			rst->name[sizeof(rst->name)-1] = '0';
+			changed = 1;
+		}
 
-		rst->Thick = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.line_entry));
-		rst->Hole = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_hole_entry));
-		rst->Diameter = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_size_entry));
-		rst->Clearance = ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry));
+/* Modify the route style only if there's significant difference (beyond rouding errors) */
+#define rst_modify(changed, dst, src) \
+	do { \
+		Coord __tmp__ = src; \
+		if (abs(dst - __tmp__) > 10) { \
+			changed = 1; \
+			dst = __tmp__; \
+		} \
+	} while(0)
+		rst_modify(changed, rst->Thick, ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.line_entry)));
+		rst_modify(changed, rst->Hole, ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_hole_entry)));
+		rst_modify(changed, rst->Diameter, ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_size_entry)));
+		rst_modify(changed, rst->Clearance, ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry)));
+#undef rst_modify
 		save = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_box));
 		if (style == NULL)
 			style = ghid_route_style_selector_real_add_route_style(rss, rst, 0);
@@ -298,6 +314,9 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 		/* Emit change signals */
 		ghid_route_style_selector_select_style(rss, rst);
 		g_signal_emit(rss, ghid_route_style_selector_signals[STYLE_EDITED_SIGNAL], 0, save);
+
+		if (changed)
+			SetChangedFlag(pcb_true);
 	}
 	else {
 		cancel:;
