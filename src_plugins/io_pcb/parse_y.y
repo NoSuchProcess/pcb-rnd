@@ -675,7 +675,7 @@ pcbstyles
 			}
 		| T_STYLES '[' STRING ']'
 			{
-				if (ParseRouteString($3, &yyPCB->RouteStyle, "cmil"))
+				if (ParseRouteString(($3 == NULL ? "" : $3), &yyPCB->RouteStyle, "cmil"))
 				{
 					Message(PCB_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;

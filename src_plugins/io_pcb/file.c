@@ -264,6 +264,8 @@ static void WritePCBDataHeader(FILE * FP)
 								PCB->RouteStyle.array[group].Thick,
 								PCB->RouteStyle.array[group].Diameter, PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
 	}
+	else
+		fprintf(FP, "\"]\n\n");
 }
 
 /* ---------------------------------------------------------------------------
