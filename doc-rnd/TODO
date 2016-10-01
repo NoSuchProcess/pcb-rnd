@@ -16,9 +16,6 @@
 		- test lesstif
 		- test with all plugins enabled (maybe add an scconfig cli arg for this?)
 		- change style in both GUIs
-		- import schematics:
-			- gnetlist_program, make_program from conf
-			- gnetlist_program, make_program from env var
 		- test if all plugins work from .so
 		- test clearance + drc clearance
 		- route style in gtk and lesstif, save, load, 0, 1 or a lot of styles
