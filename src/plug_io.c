@@ -604,7 +604,7 @@ void SaveInTMP(void)
 	char filename[256];
 
 	/* memory might have been released before this function is called */
-	if (PCB && PCB->Changed) {
+	if (PCB && PCB->Changed && (conf_core.rc.emergency_name != NULL) && (*conf_core.rc.emergency_name != '\0')) {
 		sprintf(filename, conf_core.rc.emergency_name, (long int)pcb_getpid());
 		Message(PCB_MSG_DEFAULT, _("Trying to save your layout in '%s'\n"), filename);
 		WritePCBFile(filename, DEFAULT_FMT);

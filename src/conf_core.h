@@ -83,7 +83,7 @@ typedef struct {
 		CFT_STRING library_shell;
 		CFT_LIST library_search_paths;
 
-		CFT_STRING emergency_name;         /* file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional field: %ld --> pid; must be shorter than 240 characters. */
+		CFT_STRING emergency_name;         /* file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional field: %ld --> pid; must be shorter than 240 characters. Don't do emergency save if this item is empty. */
 		CFT_STRING backup_name;            /* file name template for periodic backup anonymous .pcb files; optional fields: %P --> pid */
 
 		CFT_STRING save_command;
