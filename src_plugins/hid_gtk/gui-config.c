@@ -1992,7 +1992,7 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 
 	ghid_check_button_connected(src_right, &auto_tab_widgets.edit_boolean, 0,
 	                            TRUE, FALSE, FALSE, 2,
-	                            config_command_window_toggle_cb, NULL, NULL);
+	                            NULL, NULL, NULL);
 
 	auto_tab_widgets.edit_color = gtk_color_button_new();
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_color, FALSE, FALSE, 4);
