@@ -16,8 +16,6 @@
 		- CFR_DESIGN; check changing:
 			- layer groups
 			- pcb size
-		- ps export vs. thin draw poly, check_planes
-		- png and gerber export vs. forced sets
 		- test lesstif
 		- test with all plugins enabled (maybe add an scconfig cli arg for this?)
 		- fontmode
