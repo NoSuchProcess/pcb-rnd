@@ -433,6 +433,23 @@ void EnforceLineDRC(void)
 	r2 = drc_lines(&r45, pcb_true);
 	/* shift<Key> forces the line lookahead path to refract the alternate way */
 	shift = gui->shift_is_pressed();
+
+	if ((conf_core.editor.line_refraction == 0) && (fabs(r1-r2) > 10.0)) {
+
+		/* In non-refraction mode if there are two different good looking
+		   solution, the longer is always broken because it somehow found
+		   its way through. Accept the shorter to make sure it won't cross
+		   another net. */
+		if (r1 < r2) {
+			r2 = r1;
+			r45 = rs;
+		}
+		else {
+			r1 = r2;
+			rs = r45;
+		}
+	}
+
 	if (XOR(r1 > r2, shift)) {
 		if (conf_core.editor.line_refraction != 0) {
 			if (shift) {
