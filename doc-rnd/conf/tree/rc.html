@@ -10,7 +10,7 @@
 <tr><td> file_path <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <file_path>
 <tr><td> library_shell <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <library_shell>
 <tr><td> library_search_paths <td><a href="CFN_LIST.html"> list </a><td> 0 <td> <library_search_paths>
-<tr><td> emergency_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional fields: %P --> pid
+<tr><td> emergency_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional field: %ld --> pid; must be shorter than 240 characters. Don't do emergency save if this item is empty.
 <tr><td> backup_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for periodic backup anonymous .pcb files; optional fields: %P --> pid
 <tr><td> save_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <save_command>
 <tr><td> default_font_file <td><a href="CFN_LIST.html"> list </a><td> 0 <td> name of default font file (list of names to search)
