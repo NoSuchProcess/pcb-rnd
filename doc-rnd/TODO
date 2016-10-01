@@ -3,6 +3,7 @@
 	+ xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
 	+ gtk: gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
 	- changes to route style doesn't always trigger 'save changes' dialog. reproduce: open layout with test.pcb, delete a route style, then close file. route style deletion is lost.
+	- deleting all route styles wth gtk gui in a given .pcb creates an unreadable .pcb file
 
 - replace settings with lihata (conf_*)
 	- TEST:
