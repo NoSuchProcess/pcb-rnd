@@ -156,6 +156,7 @@ static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 	make_route_style_buttons(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
 	pcb_trace("Style: %d deleted\n", dialog->rss->selected);
 	SetChangedFlag(pcb_true);
+	ghid_window_set_name_label(PCB->Name);
 	add_new_iter(dialog->rss);
 	dialog->inhibit_style_change = 0;
 	ghid_route_style_selector_select_style(dialog->rss, &pcb_custom_route_style);
@@ -315,8 +316,10 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 		ghid_route_style_selector_select_style(rss, rst);
 		g_signal_emit(rss, ghid_route_style_selector_signals[STYLE_EDITED_SIGNAL], 0, save);
 
-		if (changed)
+		if (changed) {
 			SetChangedFlag(pcb_true);
+			ghid_window_set_name_label(PCB->Name);
+		}
 	}
 	else {
 		cancel:;
