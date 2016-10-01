@@ -11,7 +11,6 @@
 			- save only if changed, when the project is saved
 			- save project conf properly (needs lihata smart save long term, test with plain save now)
 		- vendor drill mapping (all functionality, including regex based refdes ignore)
-		- djopt, auto_only flag
 		- gsch2pcb
 		- CFR_DESIGN; check changing:
 			- layer groups
