@@ -1577,6 +1577,16 @@ pcb_bool IsPointInPolygon(Coord X, Coord Y, Coord r, PolygonTypePtr p)
 	v[1] = Y;
 	if (poly_CheckInside(p->Clipped, v))
 		return pcb_true;
+
+	if (TEST_FLAG(PCB_FLAG_FULLPOLY, p)) {
+		PolygonType tmp = *p;
+
+		/* Check all clipped-away regions that are now drawn because of full-poly */
+		for (tmp.Clipped = p->Clipped->f; tmp.Clipped != p->Clipped; tmp.Clipped = tmp.Clipped->f)
+			if (poly_CheckInside(tmp.Clipped, v))
+				return pcb_true;
+	}
+
 	if (r < 1)
 		return pcb_false;
 	if (!(c = CirclePoly(X, Y, r)))
