@@ -4,7 +4,6 @@
 
 - replace settings with lihata (conf_*)
 	- TEST:
-		- whether polygon rendering breaks if pcb_long64_t is double
 		- import netlist and import EDIF (File/Load Netlist in gtk - file format should be autodetected using file content)
 		- project files:
 			- save only if changed, when the project is saved
