@@ -1971,7 +1971,7 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	auto_tab_widgets.edit_string = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_string, FALSE, FALSE, 4);
 
-	auto_tab_widgets.edit_coord = ghid_coord_entry_new(10, 10, 2000000, conf_core.editor.grid_unit, CE_TINY);
+	auto_tab_widgets.edit_coord = ghid_coord_entry_new(10, PCB_MM_TO_COORD(1000), 0, conf_core.editor.grid_unit, CE_TINY);
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_coord, FALSE, FALSE, 4);
 
 	auto_tab_widgets.edit_int_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10,
