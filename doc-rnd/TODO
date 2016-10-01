@@ -1,7 +1,5 @@
 - BUGS
 	- in the 45-deg line mode, while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
-	+ changes to route style doesn't always trigger 'save changes' dialog. reproduce: open layout with test.pcb, delete a route style, then close file. route style deletion is lost.
-	- with a .pcb file with 0 styles, lesstif segfaults when opening 'edit styles' from menu
 
 - replace settings with lihata (conf_*)
 	- TEST:
