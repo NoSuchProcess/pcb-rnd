@@ -620,8 +620,8 @@ void EmergencySave(void)
 {
 
 	if (!dont_save_any_more) {
-		SaveInTMP();
 		dont_save_any_more = pcb_true;
+		SaveInTMP();
 	}
 }
 
