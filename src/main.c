@@ -79,17 +79,21 @@ static void InitHandler(void)
 #ifdef PCB_HAVE_SIGQUIT
 	signal(SIGQUIT, CatchSignal);
 #endif
-#ifdef PCB_HAVE_SIGABRT
-	signal(SIGABRT, CatchSignal);
-#endif
-#ifdef PCB_HAVE_SIGSEGV
-	signal(SIGSEGV, CatchSignal);
-#endif
 #ifdef PCB_HAVE_SIGTERM
 	signal(SIGTERM, CatchSignal);
 #endif
 #ifdef PCB_HAVE_SIGINT
 	signal(SIGINT, CatchSignal);
+#endif
+
+#ifdef NDEBUG
+/* so that we get a core dump on segfault in debug mode */
+#	ifdef PCB_HAVE_SIGABRT
+		signal(SIGABRT, CatchSignal);
+#	endif
+#	ifdef PCB_HAVE_SIGSEGV
+		signal(SIGSEGV, CatchSignal);
+#	endif
 #endif
 
 	/* calling external program by popen() may cause a PIPE signal,
