@@ -55,11 +55,9 @@
    should search the grid for the gridlines and use them to figure out
    where the symbols are. */
 
-#define CELL_SIZE	PCB_MIL_TO_COORD (100)
-#define CELL_OFFSET	PCB_MIL_TO_COORD (10)
+#define CELL_SIZE   ((Coord)(PCB_MIL_TO_COORD (100)))
 
-#define XYtoSym(x,y) ((x1 + CELL_OFFSET) / CELL_SIZE - 1 \
-		      + 16 * ((y1 + CELL_OFFSET) / CELL_SIZE - 1))
+#define XYtoSym(x,y) (((x1) / CELL_SIZE - 1)  +  (16 * ((y1) / CELL_SIZE - 1)))
 
 static const char fontedit_syntax[] = "FontEdit()";
 
