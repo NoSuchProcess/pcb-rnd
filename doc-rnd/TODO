@@ -2,6 +2,7 @@
 	- Display(cycleclip) [or line_refraction] while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	+ xy format export is under 'bom' in export menu, but is of use in of itself [gtk, core]
 	+ gtk: gui window quit (destroy) queues and doesn't work whenever action command mode is active [report:miloh]
+	- changes to route style doesn't always trigger 'save changes' dialog. reproduce: open layout with test.pcb, delete a route style, then close file. route style deletion is lost.
 
 - replace settings with lihata (conf_*)
 	- TEST:
