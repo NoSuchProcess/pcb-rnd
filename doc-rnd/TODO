@@ -2,6 +2,7 @@
 	- Display(cycleclip) [or line_refraction] while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	+ changes to route style doesn't always trigger 'save changes' dialog. reproduce: open layout with test.pcb, delete a route style, then close file. route style deletion is lost.
 	- poly bug (affects mainline): set full poly to 1, draw a poly cut in ~half, smaller part won't be on rtree, can't be moved by that
+	- lesstif: change route style unit bug (/100)
 
 - replace settings with lihata (conf_*)
 	- TEST:
@@ -13,7 +14,6 @@
 		- vendor drill mapping (all functionality, including regex based refdes ignore)
 		- gsch2pcb
 		- test lesstif
-		- change style in both GUIs
 		- test if all plugins work from .so
 		- test clearance + drc clearance
 		- route style in gtk and lesstif, save, load, 0, 1 or a lot of styles
