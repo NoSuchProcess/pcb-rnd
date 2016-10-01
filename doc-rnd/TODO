@@ -13,7 +13,6 @@
 		- gsch2pcb
 		- test lesstif
 		- test if all plugins work from .so
-		- test clearance + drc clearance
 		- route style in gtk and lesstif, save, load, 0, 1 or a lot of styles
 		- route style vs. autorouter
 
