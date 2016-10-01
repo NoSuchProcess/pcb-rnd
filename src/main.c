@@ -73,14 +73,24 @@
  */
 static void InitHandler(void)
 {
-/*
+#ifdef PCB_HAVE_SIGHUP
 	signal(SIGHUP, CatchSignal);
+#endif
+#ifdef PCB_HAVE_SIGQUIT
 	signal(SIGQUIT, CatchSignal);
+#endif
+#ifdef PCB_HAVE_SIGABRT
 	signal(SIGABRT, CatchSignal);
+#endif
+#ifdef PCB_HAVE_SIGSEGV
 	signal(SIGSEGV, CatchSignal);
+#endif
+#ifdef PCB_HAVE_SIGTERM
 	signal(SIGTERM, CatchSignal);
+#endif
+#ifdef PCB_HAVE_SIGINT
 	signal(SIGINT, CatchSignal);
-*/
+#endif
 
 	/* calling external program by popen() may cause a PIPE signal,
 	 * so we ignore it
