@@ -31,7 +31,7 @@ typedef struct {
 		CFT_BOOLEAN show_solder_side;      /* mirror output */
 		CFT_BOOLEAN save_last_command;     /* the command entry editline always starts with the last command entered by user in the current session */
 		CFT_INTEGER line_refraction;       /* value for line lookahead setting */
-		CFT_BOOLEAN save_in_tmp;           /* always save data in /tmp */
+		CFT_BOOLEAN save_in_tmp;           /* emergency save unsaved PCB data (despite the user clicks don't save) when: user starts a new PCB; user quits pcb-rnd. Does not affect the on-crash emergency save. */
 		CFT_BOOLEAN draw_grid;             /* draw grid points */
 		CFT_BOOLEAN all_direction_lines;   /* enable lines to all directions */
 		CFT_BOOLEAN rubber_band_mode;      /* move, rotate use rubberband connections */
@@ -40,7 +40,7 @@ typedef struct {
 		CFT_BOOLEAN auto_drc;              /* when set, PCB doesn't let you place copper that violates DRC. */
 		CFT_BOOLEAN show_number;           /* pinout shows number */
 		CFT_BOOLEAN orthogonal_moves;      /* move items orthogonally. */
-		CFT_BOOLEAN reset_after_element;   /* reset connections after each element */
+		CFT_BOOLEAN reset_after_element;   /* reset connections after each element while saving all connections */
 		CFT_BOOLEAN auto_place;            /* flag which says we should force placement of the windows on startup */
 		CFT_BOOLEAN lock_names;            /* lock down text so they can not be moved or selected */
 		CFT_BOOLEAN only_names;            /* lock down everything else but text so only text objects can be moved or selected */
