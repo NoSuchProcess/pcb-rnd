@@ -1,3 +1,4 @@
+3695	configure	bind signals to emergency save so that a copy of the in-memory PCB is saved on most crashes
 3513	configure	rename detect gcc attribute "unused" and use it for static inline local functions
 3510	configure	rename the debug plugin to diag plugin to avoid confusion with --debug in ./configure
 3509	configure	solve non-c89-compliant function pointer <-> data pointer casts
