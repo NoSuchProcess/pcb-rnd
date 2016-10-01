@@ -243,6 +243,7 @@ int hook_detect_target()
 	want_stroke = plug_is_enabled("stroke");
 
 	require("cc/fpic",  0, 1);
+	require("signal/names/*",  0, 0);
 	require("libs/fs/mkdtemp/*",  0, 0);
 	require("libs/fs/realpath/*",  0, 0);
 	require("libs/fs/readdir/*",  0, 1);
