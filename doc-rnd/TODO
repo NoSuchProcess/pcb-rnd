@@ -64,7 +64,6 @@ CLEANUP #5
 
 CLEANUP #6:
 - layer groups from config (e.g. CLI) is ignored
-- fontmode: FontSave breaks existing font (affects mainline): FontEdit(), change the font, FontSave(), write a text right there
 - res:
 	- search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
 	- re-add dynamic menus after a gui change:
