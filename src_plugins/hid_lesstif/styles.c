@@ -149,16 +149,16 @@ static void style_value_cb(Widget w, int i, void *cbs)
 	GetValueEx(s, NULL, NULL, NULL, unit->suffix, NULL);
 	switch (i) {
 	case SSthick:
-		conf_set_design("design/line_thickness", "%s", s);
+		conf_setf(CFR_DESIGN, "design/line_thickness", -1, "%s %s", s, unit->suffix);
 		break;
 	case SSdiam:
-		conf_set_design("design/via_thickness", "%s", s);
+		conf_setf(CFR_DESIGN, "design/via_thickness", -1, "%s %s", s, unit->suffix);
 		break;
 	case SShole:
-		conf_set_design("design/via_drilling_hole", "%s", s);;
+		conf_setf(CFR_DESIGN, "design/via_drilling_hole", -1, "%s %s", s, unit->suffix);
 		break;
 	case SSkeep:
-		conf_set_design("design/clearance", "%s", s);;
+		conf_setf(CFR_DESIGN, "design/clearance", -1, "%s %s", s, unit->suffix);
 		break;
 	}
 	update_style_buttons();
