@@ -1,6 +1,6 @@
 - BUGS
 	- Display(cycleclip) [or line_refraction] while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
-	- changes to route style doesn't always trigger 'save changes' dialog. reproduce: open layout with test.pcb, delete a route style, then close file. route style deletion is lost.
+	+ changes to route style doesn't always trigger 'save changes' dialog. reproduce: open layout with test.pcb, delete a route style, then close file. route style deletion is lost.
 	- poly bug (affects mainline): set full poly to 1, draw a poly cut in ~half, smaller part won't be on rtree, can't be moved by that
 
 - replace settings with lihata (conf_*)
