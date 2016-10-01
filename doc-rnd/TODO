@@ -5,7 +5,6 @@
 
 - replace settings with lihata (conf_*)
 	- TEST:
-		- png export: bloat settings in pixel (scale changed)
 		- whether polygon rendering breaks if pcb_long64_t is double
 		- import netlist and import EDIF (File/Load Netlist in gtk - file format should be autodetected using file content)
 		- project files:
