@@ -22,9 +22,7 @@ CLEANUP #5
 	  feature instead of the mkdir hack.
 - conf:
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
-	- config pov:
-			- change prio
-			- array support (e.g. colors)
+	- config pov: change prio
 	- gtk preferences: check what takes 131 megs of VIRT ram (on top); destroy the dialog structures when closed
 	- gtk preferences: poly isle area widget missing from the sizes tab
 	- debug why default layer names from the user config are ignored
