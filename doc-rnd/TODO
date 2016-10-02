@@ -3,7 +3,6 @@
 
 - replace settings with lihata (conf_*)
 	- TEST:
-		- import netlist and import EDIF (File/Load Netlist in gtk - file format should be autodetected using file content)
 		- vendor drill mapping (all functionality, including regex based refdes ignore)
 		- route style in gtk and lesstif, save, load, 0, 1 or a lot of styles
 		- route style vs. autorouter
