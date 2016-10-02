@@ -1036,8 +1036,14 @@ static int parse_config(char * config, char * arg)
 	}
 	if (!strcmp(config, "elements-shell") || !strcmp(config, "s"))
 		conf_set(CFR_CLI, "rc/library_shell", -1, arg, POL_OVERWRITE);
-	else if (!strcmp(config, "elements-dir") || !strcmp(config, "d"))
+	else if (!strcmp(config, "elements-dir") || !strcmp(config, "d")) {
+		static int warned = 0;
+		if (!warned) {
+			fprintf(stderr, "WARNING: using elements-dir from %s - this overrides the normal pcb-rnd configured library search paths\n", config);
+			warned = 1;
+		}
 		conf_set(CFR_CLI, "rc/library_search_paths", -1, arg, POL_PREPEND);
+	}
 	else if (!strcmp(config, "output-name") || !strcmp(config, "o"))
 		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/sch_base", -1, arg, POL_OVERWRITE);
 	else if (!strcmp(config, "default-pcb") || !strcmp(config, "P"))
