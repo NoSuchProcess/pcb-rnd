@@ -2260,7 +2260,7 @@ static void mark_delta_to_widget(Coord dx, Coord dy, Widget w)
 		Angle angle = atan2(dy, -dx) * 180 / M_PI;
 		Coord dist = Distance(0, 0, dx, dy);
 
-		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS (%.*mS, %d\260)", UUNIT, prec, dx, prec, dy, prec, dist, angle);
+		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS (%.*mS, %.2f\260)", UUNIT, prec, dx, prec, dy, prec, dist, angle);
 	}
 
 	ms = XmStringCreatePCB(buf);
