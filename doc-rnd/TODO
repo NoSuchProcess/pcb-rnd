@@ -4,9 +4,6 @@
 - replace settings with lihata (conf_*)
 	- TEST:
 		- import netlist and import EDIF (File/Load Netlist in gtk - file format should be autodetected using file content)
-		- project files:
-			- save only if changed, when the project is saved
-			- save project conf properly (needs lihata smart save long term, test with plain save now)
 		- vendor drill mapping (all functionality, including regex based refdes ignore)
 		- gsch2pcb
 		- test lesstif
