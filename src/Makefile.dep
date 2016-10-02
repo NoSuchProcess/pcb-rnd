@@ -353,6 +353,23 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  global.h data.h error.h misc.h mymem.h pcb-printf.h plugins.h hid.h \
  hid_nogui.h hid_attrib.h hid_helper.h hid_init.h
+../src_plugins/export_xy/xy.o: ../src_plugins/export_xy/xy.c ../config.h \
+ conf_core.h conf.h global.h const.h macro.h global_typedefs.h pcb_bool.h \
+ unit.h global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h \
+ polyarea.h list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
+ vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h error.h vtroutestyle.h \
+ global_element.h list_element.h ht_element.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/liblihata/genht/hash.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ global.h data.h error.h misc.h mymem.h pcb-printf.h plugins.h \
+ compat_misc.h hid.h hid_nogui.h hid_attrib.h hid_helper.h hid_init.h
 ../src_plugins/fontmode/fontmode.o: ../src_plugins/fontmode/fontmode.c \
  ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -592,7 +609,8 @@
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
- ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h pcb-printf.h route_style.h
+ ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h pcb-printf.h route_style.h \
+ set.h
 ../src_plugins/hid_gtk/gschem_accel_label.o: \
  ../src_plugins/hid_gtk/gschem_accel_label.c \
  ../src_plugins/hid_gtk/gschem_accel_label.h
