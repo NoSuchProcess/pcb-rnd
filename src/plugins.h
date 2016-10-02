@@ -73,9 +73,11 @@ do { \
 do { \
 	chain_type *self; \
 	for(self = (chain); self != NULL; self = self->next) { \
+		int res; \
 		if (self->func == NULL) \
 			continue; \
-		cb(self, self->func funcargs); \
+		res = self->func funcargs; \
+		cb(self, res); \
 	} \
 } while(0)
 
