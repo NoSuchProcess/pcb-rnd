@@ -426,6 +426,8 @@ static void drc_line(PointTypePtr end)
 		goto auto_good;
 	}
 
+	memset(&line, 0, sizeof(line));
+
 	/* check where the line wants to end */
 	aline.Point1.X = Crosshair.AttachedLine.Point1.X;
 	aline.Point1.Y = Crosshair.AttachedLine.Point1.Y;
