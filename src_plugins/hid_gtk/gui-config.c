@@ -1877,6 +1877,10 @@ static GtkWidget *config_tree_leaf(GtkTreeStore *model, GtkTreeIter *parent, con
 /***** auto *****/
 static struct {
 	GtkWidget *name, *desc, *src;
+
+	GtkWidget *edit_idx_box;
+	GtkWidget *edit_idx;
+
 	GtkWidget *edit_string;
 	GtkWidget *edit_coord;
 	GtkWidget *edit_int;
@@ -1896,6 +1900,7 @@ static struct {
 
 	GtkWidget *btn_create;
 
+	GtkAdjustment *edit_idx_adj;
 	GtkAdjustment *edit_int_adj;
 	GtkAdjustment *edit_real_adj;
 	GdkColor color;
@@ -1967,6 +1972,22 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 
 	auto_tab_widgets.src = gtk_label_new("source");
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.src, FALSE, FALSE, 0);
+
+	{ /* array index bar */
+		auto_tab_widgets.edit_idx_box = gtk_hbox_new(FALSE, 4);
+		gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_idx_box, FALSE, FALSE, 4);
+
+		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), gtk_label_new("Array index:"), FALSE, FALSE, 4);
+
+		auto_tab_widgets.edit_idx_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10,
+		                                                                  0, /* min */
+		                                                                  4,
+		                                                                  1, 1, /* steps */
+		                                                                  0.0));
+		auto_tab_widgets.edit_idx = gtk_spin_button_new(auto_tab_widgets.edit_idx_adj, 1, 4);
+		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), auto_tab_widgets.edit_idx, FALSE, FALSE, 4);
+	}
+
 
 	auto_tab_widgets.edit_string = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_string, FALSE, FALSE, 4);
@@ -2265,7 +2286,7 @@ static conf_auto_set_edited_role(conf_role_t r)
 /* Update the conf item edit section; called when a source is clicked */
 static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 {
-	int role = config_auto_get_edited_role();
+	int role = config_auto_get_edited_role(), idx, len = 0;
 	lht_node_t *nd;
 
 	if (role != CFR_invalid) {
@@ -2273,6 +2294,11 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 		if (nd != NULL) {
 			config_auto_src_show(nd);
 			gtk_widget_hide(auto_tab_widgets.btn_create);
+			if (nd->type == LHT_LIST) {
+				lht_node_t *n;
+				for(n = nd->data.list.first; n != NULL; n = n->next)
+					len++;
+			}
 		}
 		else {
 			config_auto_src_hide();
@@ -2293,6 +2319,13 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 		gtk_widget_set_sensitive(auto_tab_widgets.btn_reset, 0);
 		gtk_label_set_text(GTK_LABEL(auto_tab_widgets.txt_apply), "(Can't write config source)");
 	}
+
+	/* adjust array index widget state and max according to our actual array size */
+	idx = gtk_adjustment_get_value(auto_tab_widgets.edit_idx_adj);
+	if (idx >= len)
+		gtk_adjustment_set_value(auto_tab_widgets.edit_idx_adj, len-1);
+
+	gtk_adjustment_set_upper(auto_tab_widgets.edit_idx_adj, len-1);
 }
 
 static void config_auto_save(conf_role_t role)
@@ -2508,6 +2541,11 @@ static void config_page_update_auto(void *data)
 	gtk_label_set_text(GTK_LABEL(auto_tab_widgets.txt_apply), "");
 	gtk_widget_hide(auto_tab_widgets.btn_create);
 	config_auto_res_show();
+
+	if (nat->array_size > 1)
+		gtk_widget_show(auto_tab_widgets.edit_idx_box);
+	else
+		gtk_widget_hide(auto_tab_widgets.edit_idx_box);
 }
 
 static GtkTreeIter *config_tree_auto_mkdirp(GtkTreeStore *model, GtkTreeIter *main_parent, htsp_t *dirs, char *path)
