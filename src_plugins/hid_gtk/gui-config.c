@@ -2482,13 +2482,25 @@ static void config_auto_remove_cb(GtkButton *btn, void *data)
 static void config_auto_create_cb(GtkButton *btn, void *data)
 {
 	gds_t s;
+	char *val;
 	conf_native_t *nat = auto_tab_widgets.nat;
 	conf_role_t role = config_auto_get_edited_role();
 
 	/* create the config node in the source lht */
 	gds_init(&s);
 	conf_print_native_field((conf_pfn)pcb_append_printf, &s, 0, &nat->val, nat->type, &nat->prop[0], 0);
-	conf_set(role, nat->hash_path, -1, s.array, POL_OVERWRITE);
+	val = s.array;
+
+	/* strip {} from arrays */
+	if (nat->array_size > 1) {
+		int end;
+		while(*val == '{') val++;
+		end = gds_len(&s) - (val - s.array);
+		if (end > 0)
+			s.array[end] = '\0';
+	}
+
+	conf_set(role, nat->hash_path, -1, val, POL_OVERWRITE);
 	gds_uninit(&s);
 
 	config_page_update_auto(nat);
