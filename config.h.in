@@ -117,6 +117,20 @@ print [@
 #define MKDIR_NUM_ARGS 0@?/target/libs/fs/_mkdir/num_args@@?/target/libs/fs/mkdir/num_args@
 @]
 
+print {\n\n/* Define whether we have specific signals. */\n}
+print_ternary ?signal/names/SIGSEGV/presents    {#define PCB_HAVE_SIGSEGV 1} {/* #undef PCB_HAVE_SIGSEGV */}
+print {\n}
+print_ternary ?signal/names/SIGABRT/presents    {#define PCB_HAVE_SIGABRT 1} {/* #undef PCB_HAVE_SIGABRT */}
+print {\n}
+print_ternary ?signal/names/SIGINT/presents     {#define PCB_HAVE_SIGINT 1}  {/* #undef PCB_HAVE_SIGINT */}
+print {\n}
+print_ternary ?signal/names/SIGHUP/presents     {#define PCB_HAVE_SIGHUP 1}  {/* #undef PCB_HAVE_SIGHUP */}
+print {\n}
+print_ternary ?signal/names/SIGTERM/presents    {#define PCB_HAVE_SIGTERM 1} {/* #undef PCB_HAVE_SIGTERM */}
+print {\n}
+print_ternary ?signal/names/SIGQUIT/presents    {#define PCB_HAVE_SIGQUIT 1} {/* #undef PCB_HAVE_SIGQUIT */}
+print {\n}
+
 print [@
 
 /* The host "triplet" - it's really a pair now: machine-os */
