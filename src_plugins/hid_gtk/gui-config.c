@@ -2329,12 +2329,16 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 {
 	int role = config_auto_get_edited_role(), idx, len = 0;
 	lht_node_t *nd;
+	int allow_idx = 0;
+
+	gtk_widget_hide(auto_tab_widgets.edit_idx_box);
 
 	if (role != CFR_invalid) {
 		nd = conf_lht_get_at(role, auto_tab_widgets.nat->hash_path, 0);
 		if (nd != NULL) {
 			config_auto_src_show(nd);
 			gtk_widget_hide(auto_tab_widgets.btn_create);
+			allow_idx = 0;
 			if (nd->type == LHT_LIST) {
 				lht_node_t *n;
 				for(n = nd->data.list.first; n != NULL; n = n->next)
@@ -2354,6 +2358,8 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 		gtk_widget_set_sensitive(auto_tab_widgets.btn_apply, 1);
 		gtk_widget_set_sensitive(auto_tab_widgets.btn_reset, 1);
 		gtk_label_set_text(GTK_LABEL(auto_tab_widgets.txt_apply), "");
+		if (conf_lht_get_at(role, auto_tab_widgets.nat->hash_path, 0) != NULL)
+			allow_idx = 1;
 	}
 	else {
 		gtk_widget_set_sensitive(auto_tab_widgets.btn_apply, 0);
@@ -2367,6 +2373,9 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 		gtk_adjustment_set_value(auto_tab_widgets.edit_idx_adj, len-1);
 
 	gtk_adjustment_set_upper(auto_tab_widgets.edit_idx_adj, len-1);
+
+	if ((allow_idx) && (auto_tab_widgets.nat->array_size > 1))
+		gtk_widget_show(auto_tab_widgets.edit_idx_box);
 }
 
 static void config_auto_idx_changed_cb(GtkTreeView *tree, void *data)
@@ -2565,7 +2574,7 @@ static void config_auto_create_cb(GtkButton *btn, void *data)
 }
 
 
-/* Update the config tab for a given entry - called when a new config item is selected from the tree */
+/* Update the config tab for a given entry - called when a new config item is clicked/selected from the tree */
 static void config_page_update_auto(void *data)
 {
 	char *tmp, *so;
@@ -2634,14 +2643,10 @@ static void config_page_update_auto(void *data)
 				-1);
 		}
 	}
+	gtk_widget_hide(auto_tab_widgets.edit_idx_box);
 	gtk_label_set_text(GTK_LABEL(auto_tab_widgets.txt_apply), "");
 	gtk_widget_hide(auto_tab_widgets.btn_create);
 	config_auto_res_show();
-
-	if (nat->array_size > 1)
-		gtk_widget_show(auto_tab_widgets.edit_idx_box);
-	else
-		gtk_widget_hide(auto_tab_widgets.edit_idx_box);
 }
 
 static GtkTreeIter *config_tree_auto_mkdirp(GtkTreeStore *model, GtkTreeIter *main_parent, htsp_t *dirs, char *path)
