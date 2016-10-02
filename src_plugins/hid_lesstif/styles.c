@@ -314,7 +314,7 @@ static const char adjuststyle_help[] = "Displays the route style adjustment wind
 
 static int AdjustStyle(int argc, const char **argv, Coord x, Coord y)
 {
-	if (!mainwind)
+	if ((!mainwind) || (PCB->RouteStyle.array == NULL))
 		return 1;
 	if (style_dialog == 0) {
 		int i;
