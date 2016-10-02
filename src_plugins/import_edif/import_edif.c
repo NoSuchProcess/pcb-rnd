@@ -25,6 +25,7 @@
 
 #include "config.h"
 #include "global.h"
+#include "data.h"
 #include "plugins.h"
 #include "plug_import.h"
 
@@ -59,7 +60,12 @@ int edif_support_prio(plug_import_t *ctx, unsigned int aspects, FILE *fp, const 
 extern int ReadEdifNetlist(char *filename);
 static int edif_import(plug_import_t *ctx, unsigned int aspects, const char *fn)
 {
-	return ReadEdifNetlist((char *)fn);
+	int ret = ReadEdifNetlist((char *)fn);
+	if (ret == 0) {
+		sort_netlist();
+		rats_patch_make_edited(PCB);
+	}
+	return ret;
 }
 
 static void hid_import_edif_uninit(void)

@@ -104,7 +104,7 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
      char* buf;
      char* p;
      LibraryEntryTypePtr entry;
-     LibraryMenuTypePtr menu = GetLibraryMenuMemory (PCB->NetlistLib, NULL);
+     LibraryMenuTypePtr menu = GetLibraryMenuMemory(&PCB->NetlistLib[NETLIST_INPUT], NULL);
 
      if ( !name->str1 )
      {
