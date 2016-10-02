@@ -1,7 +1,26 @@
 Packaging pcb-rnd for a distribution
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. program, libs, desktop integration
 
-1. options, plugins, dependencies
+Pcb-rnd is an interactive printed circuit board editor program. A typical
+user is an electric engineer. This sort of programs are often called EDA,
+Electronics Design Automation.
+
+Pcb-rnd has different frontends: graphical and stdio/text based batch
+processing. There are different graphical frontends - pcb-rnd does not
+depend on gtk or motif, the specific frontend modules may depend on them.
+
+Pcb-rnd is scriptable if libgpmi is available. Since libgpmi is not
+a mainstream library for the scripting feature it should also be packaged.
+
+Pcb-rnd is intended for UNIX-fans. It is heavily keyboard-oriented and it
+doesn't assume its users don't want to understand or learn how it works.
+Many typical user workflows include Makefiles and it's a common thing to
+start pcb-rnd from a shell. Thus desktop integration is not in focus
+at the moment. If you fixed things for this while packaging, please let
+us know, we may merge your patches (see below).
+
+2. options, plugins, dependencies
 
 Pcb-rnd is a modular software with a lot of options. Majority of these options
 are selected by the state of a module. A module has three states:
@@ -27,7 +46,7 @@ over the configuration.
 If non-critical dependencies are not met, modules are automatically disabled
 by ./configure. 
 
-2. typical ./configure options - scconfig vs. auto*
+3. typical ./configure options - scconfig vs. auto*
 
 ./configurfe --prefix works as expected. DESTDIR is called install_root.
 
@@ -40,7 +59,7 @@ Typical commands for configuring pcb-rnd for packaging would be:
 We are happy with scconfig. Please don't write about how much better
 autoconf or cmake would be, we won't switch.
 
-3. release cycles, tarballs, svn trunk - what to package
+4. release cycles, tarballs, svn trunk - what to package
 
 Development happens in svn trunk/, there are usually no branches. While
 we try to keep trunk/ compilable any time, it's not guaranteed that it
@@ -58,7 +77,7 @@ There's no automated release notification at the moment; if you want to
 get notified about new releases, please contact me (email
 pcb-rnd (at) igor2.repo.hu)
 
-4. bug reporting and fixes for packaging
+5. bug reporting and fixes for packaging
 
 There's no special method for reporting packaging related bugs and
 feature requests, please follow the normal bug report instructions or just
