@@ -1881,6 +1881,8 @@ static struct {
 	GtkWidget *edit_idx_box;
 	GtkWidget *edit_idx;
 
+	GtkWidget *edit_idx_new;
+
 	GtkWidget *edit_string;
 	GtkWidget *edit_coord;
 	GtkWidget *edit_int;
@@ -1913,6 +1915,7 @@ static struct {
 
 static void config_auto_src_changed_cb(GtkTreeView *tree, void *data);
 static void config_auto_idx_changed_cb(GtkTreeView *tree, void *data);
+static void config_auto_idx_create_cb(GtkButton *btn, void *data);
 static void config_auto_apply_cb(GtkButton *btn, void *data);
 static void config_auto_reset_cb(GtkButton *btn, void *data);
 static void config_auto_remove_cb(GtkButton *btn, void *data);
@@ -1988,6 +1991,12 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 		g_signal_connect(G_OBJECT(auto_tab_widgets.edit_idx_adj), "value-changed", G_CALLBACK(config_auto_idx_changed_cb), NULL);
 		auto_tab_widgets.edit_idx = gtk_spin_button_new(auto_tab_widgets.edit_idx_adj, 1, 4);
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), auto_tab_widgets.edit_idx, FALSE, FALSE, 4);
+
+
+		w = gtk_button_new_with_label("Append");
+		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), w, FALSE, FALSE, 0);
+		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_idx_create_cb), NULL);
+
 	}
 
 
@@ -2110,6 +2119,23 @@ static void config_auto_src_hide(void)
 
 }
 
+/* Return the nth child of a list - only if it's really a list; if idx < 0,
+   use the index adjustment value */
+static lht_node_t *config_auto_get_nth(const lht_node_t *list, int idx)
+{
+	const lht_node_t *nd;
+
+	if (list->type != LHT_LIST)
+		return NULL;
+
+	if (idx < 0)
+		idx = gtk_adjustment_get_value(auto_tab_widgets.edit_idx_adj);
+
+	for(nd = list->data.list.first; (idx > 0) && (nd != NULL); nd = nd->next, idx--) ;
+
+	return (lht_node_t *)nd;
+}
+
 /* set up all source edit widgets for a lihata source node */
 static void config_auto_src_show(lht_node_t *nd)
 {
@@ -2133,11 +2159,7 @@ static void config_auto_src_show(lht_node_t *nd)
 			return;
 	}
 	if (nat->array_size > 1) {
-		int idx;
-		if (nd->type != LHT_LIST)
-			return;
-		idx = gtk_adjustment_get_value(auto_tab_widgets.edit_idx_adj);
-		for(nd = nd->data.list.first; (idx > 0) && (nd != NULL); nd = nd->next, idx--) ;
+		nd = config_auto_get_nth(nd, -1);
 		if (nd == NULL)
 			return;
 		if (nd->type != LHT_TEXT)
@@ -2296,6 +2318,7 @@ static conf_auto_set_edited_role(conf_role_t r)
 	gtk_tree_path_free(p);
 }
 
+
 /* Update the conf item edit section; called when a source is clicked */
 static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 {
@@ -2348,6 +2371,16 @@ static void config_auto_idx_changed_cb(GtkTreeView *tree, void *data)
 		lht_node_t *nd = conf_lht_get_at(role, auto_tab_widgets.nat->hash_path, 0);
 		if (nd != NULL)
 			config_auto_src_show(nd);
+	}
+}
+
+static void config_auto_idx_create_cb(GtkButton *btn, void *data)
+{
+	int role = config_auto_get_edited_role();
+	if (role != CFR_invalid) {
+		conf_set(role, auto_tab_widgets.nat->hash_path, -1, "", POL_APPEND);
+		config_auto_src_changed_cb(GTK_TREE_VIEW(auto_tab_widgets.src_t), NULL);
+		config_auto_res_show();
 	}
 }
 
@@ -2442,6 +2475,9 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 			new_val = NULL; /* do not run conf_set, but run the rest of the updates */
 			break;
 	}
+
+	if (nat->array_size > 1)
+		arr_idx = gtk_adjustment_get_value(auto_tab_widgets.edit_idx_adj);
 
 	if (new_val != NULL) {
 		conf_set(role, nat->hash_path, arr_idx, new_val, POL_OVERWRITE);
