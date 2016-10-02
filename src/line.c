@@ -251,7 +251,6 @@ static r_dir_t drcArc_callback(const BoxType * b, void *cl)
  * It returns the straight-line length of the best answer, and
  * changes the position of the input end point to the best answer.
  */
-
 static double drc_lines(PointTypePtr end, pcb_bool way)
 {
 	double f, s, f2, s2, len, best;
@@ -413,6 +412,64 @@ static double drc_lines(PointTypePtr end, pcb_bool way)
 	return best;
 }
 
+static void drc_line(PointTypePtr end)
+{
+	struct drc_info info;
+	pcb_cardinal_t group, comp;
+	LineType line;
+	AttachedLineType aline;
+	static PointType last_good; /* internal state of last good endpoint - we cna do thsi cheat, because... */
+
+	/* ... we hardwire the assumption on how a line is drawn: it starts out as a 0 long segment, which is valid: */
+	if ((Crosshair.AttachedLine.Point1.X == Crosshair.X) && (Crosshair.AttachedLine.Point1.Y == Crosshair.Y)) {
+		line.Point1 = line.Point2 = Crosshair.AttachedLine.Point1;
+		goto auto_good;
+	}
+
+	/* check where the line wants to end */
+	aline.Point1.X = Crosshair.AttachedLine.Point1.X;
+	aline.Point1.Y = Crosshair.AttachedLine.Point1.Y;
+	FortyFiveLine(&aline);
+	line.Point1 = aline.Point1;
+	line.Point2 = aline.Point2;
+
+	/* prepare for the intersection search */
+	group = GetGroupOfLayer(INDEXOFCURRENT);
+	comp = max_group + 10;  /* this out-of-range group might save a call */
+	if (GetLayerGroupNumberByNumber(solder_silk_layer) == group)
+		info.solder = pcb_true;
+	else {
+		info.solder = pcb_false;
+		comp = GetLayerGroupNumberByNumber(component_silk_layer);
+	}
+
+	/* search for intersection */
+	SetLineBoundingBox(&line);
+	if (setjmp(info.env) == 0) {
+		info.line = &line;
+		r_search(PCB->Data->via_tree, &line.BoundingBox, NULL, drcVia_callback, &info, NULL);
+		r_search(PCB->Data->pin_tree, &line.BoundingBox, NULL, drcVia_callback, &info, NULL);
+		if (info.solder || comp == group)
+			r_search(PCB->Data->pad_tree, &line.BoundingBox, NULL, drcPad_callback, &info, NULL);
+		GROUP_LOOP(PCB->Data, group);
+		{
+			info.line = &line;
+			r_search(layer->line_tree, &line.BoundingBox, NULL, drcLine_callback, &info, NULL);
+			r_search(layer->arc_tree, &line.BoundingBox, NULL, drcArc_callback, &info, NULL);
+		}
+		END_LOOP;
+		/* no intersector! */
+		auto_good:;
+		last_good.X = end->X = line.Point2.X;
+		last_good.Y = end->Y = line.Point2.Y;
+		return;
+	}
+
+	/* bumped into ans */
+	end->X = last_good.X;
+	end->Y = last_good.Y;
+}
+
 void EnforceLineDRC(void)
 {
 	PointType r45, rs;
@@ -427,28 +484,22 @@ void EnforceLineDRC(void)
 
 	rs.X = r45.X = Crosshair.X;
 	rs.Y = r45.Y = Crosshair.Y;
-	/* first try starting straight */
-	r1 = drc_lines(&rs, pcb_false);
-	/* then try starting at 45 */
-	r2 = drc_lines(&r45, pcb_true);
+
+	if (conf_core.editor.line_refraction != 0) {
+		/* first try starting straight */
+		r1 = drc_lines(&rs, pcb_false);
+		/* then try starting at 45 */
+		r2 = drc_lines(&r45, pcb_true);
+	}
+	else {
+		drc_line(&rs);
+		r45 = rs;
+#define sqr(a) ((a) * (a))
+		r1 = r2 = sqrt(sqr(rs.X - Crosshair.AttachedLine.Point1.X) + sqr(rs.Y - Crosshair.AttachedLine.Point1.Y));
+#undef sqr
+	}
 	/* shift<Key> forces the line lookahead path to refract the alternate way */
 	shift = gui->shift_is_pressed();
-
-	if ((conf_core.editor.line_refraction == 0) && (fabs(r1-r2) > 10.0)) {
-
-		/* In non-refraction mode if there are two different good looking
-		   solution, the longer is always broken because it somehow found
-		   its way through. Accept the shorter to make sure it won't cross
-		   another net. */
-		if (r1 < r2) {
-			r2 = r1;
-			r45 = rs;
-		}
-		else {
-			r1 = r2;
-			rs = r45;
-		}
-	}
 
 	if (XOR(r1 > r2, shift)) {
 		if (conf_core.editor.line_refraction != 0) {
