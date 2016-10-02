@@ -34,6 +34,7 @@ by ./configure.
 Typical commands for configuring pcb-rnd for packaging would be:
 
   ./configure --all=plugin --prefix=/usr
+  make all
   install_root=/tmp/pkg_tmp make install
 
 We are happy with scconfig. Please don't write about how much better
