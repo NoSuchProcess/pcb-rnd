@@ -1,5 +1,7 @@
 # plain old hand crafted Makefile
 
+SCMDIR=$(DATADIR)/../gEDA/scheme
+
 all:
 	cd gsch2pcb-rnd && make all
 
@@ -9,8 +11,9 @@ clean:
 	cd gsch2pcb-rnd && make clean
 
 install_:
-	$(MKDIR) "$(BINDIR)" "$(LIBDIR)"
+	$(MKDIR) "$(BINDIR)" "$(LIBDIR)" "$(SCMDIR)"
 	$(CPC) "`pwd`/fp2anim" "$(BINDIR)/fp2anim"
+	$(CPC) "`pwd`/gnet-pcbfwd.scm" "$(SCMDIR)/gnet-pcbfwd.scm"
 	cd gsch2pcb-rnd && make install_ CPC="$(CPC)"
 
 install:
