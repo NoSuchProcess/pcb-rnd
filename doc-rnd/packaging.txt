@@ -1,0 +1,70 @@
+Packaging pcb-rnd for a distribution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. options, plugins, dependencies
+
+Pcb-rnd is a modular software with a lot of options. Majority of these options
+are selected by the state of a module. A module has three states:
+ - disable: (not compiled at all)
+ - buildin: enabled and static linked
+ - plugin: enabled and dynamic loaded (from a .so)
+
+The configure script takes --disable-*, --building-* and --plugin-*
+arguments with * substituted with the name of the module. The configure
+script also determines the dependencies according to the selection. Special
+arguments --all=plugin and --all=buildin are provided in configure to select
+all working modules to be plugins or buildins.
+
+For binary distributions it's strongly recommended to have most of the
+modules compiled as plugins and have them in separate packages. This
+would let the user to install a core pcb-rnd package and then the GTK
+or the lesstif plugin (or both) from separate packages. This also reduces
+package dependencies.
+
+This is less relevant for source distributions, if the user has full control
+over the configuration.
+
+If non-critical dependencies are not met, modules are automatically disabled
+by ./configure. 
+
+2. typical ./configure options - scconfig vs. auto*
+
+./configurfe --prefix works as expected. DESTDIR is called install_root.
+
+Typical commands for configuring pcb-rnd for packaging would be:
+
+  ./configure --all=plugin --prefix=/usr
+  install_root=/tmp/pkg_tmp make install
+
+We are happy with scconfig. Please don't write about how much better
+autoconf or cmake would be, we won't switch.
+
+3. release cycles, tarballs, svn trunk - what to package
+
+Development happens in svn trunk/, there are usually no branches. While
+we try to keep trunk/ compilable any time, it's not guaranteed that it
+would work out-of-the-box between releases. It is not recommended to
+package trunk/ - please package stable releases instead.
+
+We follow the "release early, release often" rule. Source release tarballs
+are always considered stable. Beside the project web page, releases are
+also accessible as svn tags: svn://repo.hu/pcb-rnd/tags .
+
+Sometimes we have minor releases with 1..2 month period, sometimes a
+longer period passes between releases.
+
+There's no automated release notification at the moment; if you want to
+get notified about new releases, please contact me (email
+pcb-rnd (at) igor2.repo.hu)
+
+4. bug reporting and fixes for packaging
+
+There's no special method for reporting packaging related bugs and
+feature requests, please follow the normal bug report instructions or just
+drop me a mail. Please mention that the issue is related to packaging, this
+usually gives it a higher priority.
+
+We are willing to make minor changes to make packaging easier - if you bump
+into something you'd need to work around while packaging, please let us know,
+we may just fix it "upstream".
+
