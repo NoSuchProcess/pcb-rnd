@@ -36,7 +36,8 @@ put /local/pcb/RULES {}
 put /local/pcb/OBJS {}
 put /local/pcb/LDFLAGS {}
 put /local/pcb/CFLAGS {}
-put /local/pcb/buildin_init {}
+put /local/pcb/buildin_init_code {}
+put /local/pcb/buildin_init_extern {}
 
 include {../src_plugins/plugins_fp.tmpasm}
 
@@ -120,7 +121,13 @@ include ../../Makefile.conf
 
 @]
 
-
 redir {gsch2pcb-rnd/fp_init.c}
-print /local/pcb/buildin_init
+print [@
+@?/local/pcb/buildin_init_code@
+@]
+
+redir {gsch2pcb-rnd/fp_init.h}
+print [@
+@/local/pcb/buildin_init_extern@
+@]
 

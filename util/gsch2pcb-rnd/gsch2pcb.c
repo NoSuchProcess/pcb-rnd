@@ -1185,6 +1185,8 @@ void free_strlist(gadl_list_t *lst)
 	}
 }
 
+#include "fp_init.h"
+
 /************************ main ***********************/
 char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name, *net_file_name;
 int main(int argc, char ** argv)
@@ -1215,7 +1217,7 @@ int main(int argc, char ** argv)
 	conf_update(NULL);
 
 	{
-/*		pcb_uninit_t uninit_func;*/
+		pcb_uninit_t uninit_func;
 #		include "fp_init.c"
 	}
 
