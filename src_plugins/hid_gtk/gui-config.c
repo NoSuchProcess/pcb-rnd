@@ -1912,6 +1912,7 @@ static struct {
 } auto_tab_widgets;
 
 static void config_auto_src_changed_cb(GtkTreeView *tree, void *data);
+static void config_auto_idx_changed_cb(GtkTreeView *tree, void *data);
 static void config_auto_apply_cb(GtkButton *btn, void *data);
 static void config_auto_reset_cb(GtkButton *btn, void *data);
 static void config_auto_remove_cb(GtkButton *btn, void *data);
@@ -1984,6 +1985,7 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 		                                                                  4,
 		                                                                  1, 1, /* steps */
 		                                                                  0.0));
+		g_signal_connect(G_OBJECT(auto_tab_widgets.edit_idx_adj), "value-changed", G_CALLBACK(config_auto_idx_changed_cb), NULL);
 		auto_tab_widgets.edit_idx = gtk_spin_button_new(auto_tab_widgets.edit_idx_adj, 1, 4);
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), auto_tab_widgets.edit_idx, FALSE, FALSE, 4);
 	}
@@ -2125,9 +2127,20 @@ static void config_auto_src_show(lht_node_t *nd)
 	else
 		gtk_widget_hide(auto_tab_widgets.src);
 
-	/* don't allow arrays atm */
+	/* don't allow arrays of lists atm */
 	if (nat->type == CFN_LIST) {
 		if (nd->type != LHT_LIST)
+			return;
+	}
+	if (nat->array_size > 1) {
+		int idx;
+		if (nd->type != LHT_LIST)
+			return;
+		idx = gtk_adjustment_get_value(auto_tab_widgets.edit_idx_adj);
+		for(nd = nd->data.list.first; (idx > 0) && (nd != NULL); nd = nd->next, idx--) ;
+		if (nd == NULL)
+			return;
+		if (nd->type != LHT_TEXT)
 			return;
 	}
 	else {
@@ -2326,6 +2339,16 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 		gtk_adjustment_set_value(auto_tab_widgets.edit_idx_adj, len-1);
 
 	gtk_adjustment_set_upper(auto_tab_widgets.edit_idx_adj, len-1);
+}
+
+static void config_auto_idx_changed_cb(GtkTreeView *tree, void *data)
+{
+	int role = config_auto_get_edited_role();
+	if (role != CFR_invalid) {
+		lht_node_t *nd = conf_lht_get_at(role, auto_tab_widgets.nat->hash_path, 0);
+		if (nd != NULL)
+			config_auto_src_show(nd);
+	}
 }
 
 static void config_auto_save(conf_role_t role)
