@@ -2467,6 +2467,11 @@ static void config_auto_remove_cb(GtkButton *btn, void *data)
 	conf_native_t *nat = auto_tab_widgets.nat;
 	conf_role_t role = config_auto_get_edited_role();
 
+	if (nat->array_size > 1) {
+		Message(PCB_MSG_ERROR, "Can't create remove array %s\n", nat->hash_path);
+		return;
+	}
+
 	conf_del(role, nat->hash_path, -1);
 
 	config_page_update_auto(nat);
