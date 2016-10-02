@@ -1144,10 +1144,13 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 				lht_node_t *old = lht_tree_list_nth(cwd, idx);
 				if (old != NULL) {
 					/* the list is large enough already: overwrite the element at idx */
-					if (new_val != NULL)
-						err = lht_tree_list_replace_child(cwd, old, nn);
-					else
+					if (new_val == NULL) {
 						err = lht_tree_del(old);
+						free(path);
+						return 0;
+					}
+					else
+						err = lht_tree_list_replace_child(cwd, old, nn);
 				}
 				else if (new_val == NULL) {
 					free(path);
