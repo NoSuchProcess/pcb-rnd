@@ -139,7 +139,7 @@ static void batch_do_export(HID_Attr_Val * options)
 
 	if (interactive) {
 		printf("Entering %s version %s batch mode.\n", PACKAGE, VERSION);
-		printf("See http://pcb.gpleda.org for project information\n");
+		printf("See http://repo.hu/projects/pcb-rnd for project information\n");
 	}
 
 	batch_stay = 1;
