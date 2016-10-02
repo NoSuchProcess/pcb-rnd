@@ -1916,6 +1916,7 @@ static struct {
 static void config_auto_src_changed_cb(GtkTreeView *tree, void *data);
 static void config_auto_idx_changed_cb(GtkTreeView *tree, void *data);
 static void config_auto_idx_create_cb(GtkButton *btn, void *data);
+static void config_auto_idx_remove_cb(GtkButton *btn, void *data);
 static void config_auto_apply_cb(GtkButton *btn, void *data);
 static void config_auto_reset_cb(GtkButton *btn, void *data);
 static void config_auto_remove_cb(GtkButton *btn, void *data);
@@ -1993,9 +1994,13 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), auto_tab_widgets.edit_idx, FALSE, FALSE, 4);
 
 
-		w = gtk_button_new_with_label("Append");
+		w = gtk_button_new_with_label("Append item");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), w, FALSE, FALSE, 0);
 		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_idx_create_cb), NULL);
+
+		w = gtk_button_new_with_label("Remove item");
+		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), w, FALSE, FALSE, 0);
+		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_idx_remove_cb), NULL);
 
 	}
 
@@ -2374,14 +2379,29 @@ static void config_auto_idx_changed_cb(GtkTreeView *tree, void *data)
 	}
 }
 
-static void config_auto_idx_create_cb(GtkButton *btn, void *data)
+static void config_auto_idx_deladd_cb(int del)
 {
 	int role = config_auto_get_edited_role();
 	if (role != CFR_invalid) {
-		conf_set(role, auto_tab_widgets.nat->hash_path, -1, "", POL_APPEND);
+		if (del) {
+			int idx = gtk_adjustment_get_value(auto_tab_widgets.edit_idx_adj);
+			conf_set(role, auto_tab_widgets.nat->hash_path, idx, NULL, POL_OVERWRITE);
+		}
+		else
+			conf_set(role, auto_tab_widgets.nat->hash_path, -1, "", POL_APPEND);
 		config_auto_src_changed_cb(GTK_TREE_VIEW(auto_tab_widgets.src_t), NULL);
 		config_auto_res_show();
 	}
+}
+
+static void config_auto_idx_create_cb(GtkButton *btn, void *data)
+{
+	config_auto_idx_deladd_cb(0);
+}
+
+static void config_auto_idx_remove_cb(GtkButton *btn, void *data)
+{
+	config_auto_idx_deladd_cb(1);
 }
 
 static void config_auto_save(conf_role_t role)
