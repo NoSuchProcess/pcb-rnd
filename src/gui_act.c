@@ -266,10 +266,10 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 			if (conf_core.editor.all_direction_lines) {
 				conf_toggle_editor(all_direction_lines);
 				conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",0);
-				}
+			}
 			else {
 				conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
-				}
+			}
 			AdjustAttachedObjects();
 			notify_crosshair_change(pcb_true);
 			break;
