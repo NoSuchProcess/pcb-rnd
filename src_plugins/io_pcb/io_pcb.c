@@ -26,7 +26,7 @@
 #include "config.h"
 #include "global.h"
 #include "plugins.h"
-#include "parse_l.h"
+#include "parse_common.h"
 #include "file.h"
 
 static plug_io_t io_pcb[3];
@@ -43,11 +43,11 @@ int io_pcb_fmt(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
 	return 100; /* read-write */
 }
 
-extern void yylex_destroy(void);
+extern void pcb_lex_destroy(void);
 static void hid_io_pcb_uninit(void)
 {
 	int n;
-	yylex_destroy();
+	pcb_lex_destroy();
 
 	for(n = 0; n < 3; n++)
 		HOOK_UNREGISTER(plug_io_t, plug_io_chain, &(io_pcb[n]));

@@ -77,7 +77,7 @@ extern	PCBTypePtr		yyPCB;
 extern	DataTypePtr		yyData;
 extern	ElementTypePtr	yyElement;
 extern	FontTypePtr		yyFont;
-extern	int				yylineno;		/* linenumber */
+extern	int				pcb_lineno;		/* linenumber */
 extern	char			*yyfilename;	/* in this file */
 extern	conf_role_t yy_settings_dest;
 extern FlagType yy_pcb_flags;
@@ -109,6 +109,8 @@ static Coord new_units (PLMeasure m);
 #include "parse_y.h"
 
 %}
+
+%name-prefix "pcb_"
 
 %verbose
 
@@ -1173,7 +1175,7 @@ polygon_format
 				    Message(PCB_MSG_WARNING, "WARNING parsing file '%s'\n"
 					    "    line:        %i\n"
 					    "    description: 'ignored polygon (< 3 points in a contour)'\n",
-					    yyfilename, yylineno);
+					    yyfilename, pcb_lineno);
 				    DestroyObject(yyData, PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 				  }
 				else
@@ -2020,11 +2022,11 @@ int yyerror(const char * s)
 	Message(PCB_MSG_ERROR, "ERROR parsing file '%s'\n"
 		"    line:        %i\n"
 		"    description: '%s'\n",
-		yyfilename, yylineno, s);
+		yyfilename, pcb_lineno, s);
 	return(0);
 }
 
-int yywrap()
+int pcb_wrap()
 {
   return 1;
 }

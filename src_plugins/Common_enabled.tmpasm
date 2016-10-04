@@ -5,26 +5,17 @@ switch /local/pcb/mod/YACC
 	case {^$} end
 	default
 		foreach /local/n in /local/pcb/mod/YACC
-			put /local/tmp /local/n
-			sub {/local/tmp} {^[^/]*/} {}
-			gsub {/local/tmp} {/} {_}
-			put /local/tmp [@tmp.@/local/tmp@.l@]
-
 			put /local/bn /local/n
 			sub {/local/bn} {^.*/} {}
+			put /local/dn /local/n
+			sub {/local/dn} {/[^/]*$} {}
 
 			if /local/pcb/want_parsgen
 			then
 				append /local/pcb/RULES [@
 # yacc for @/local/pcb/mod@
 @/local/n@.c @/local/n@.h: @/local/n@.y
-	$(MKDIR) @/local/tmp@ ; true
-	cp @/local/n@.y @/local/tmp@/
-	cd @/local/tmp@ && bison -d ../@/local/n@.y
-	mv @/local/tmp@/@/local/bn@.tab.h @/local/n@.h
-	mv @/local/tmp@/@/local/bn@.tab.c @/local/n@.c
-	-mv @/local/tmp@/@/local/bn@.output @/local/n@.output
-	rm -rf @/local/tmp@
+	cd @/local/dn@ && bison --defines=@/local/bn@.h --output=@/local/bn@.c --report-file=@/local/bn@.output -d @/local/bn@.y
 @]
 			else
 				append /local/pcb/RULES [@
@@ -44,21 +35,17 @@ switch /local/pcb/mod/LEX
 	case {^$} end
 	default
 		foreach /local/n in /local/pcb/mod/LEX
-			put /local/tmp /local/n
-			sub {/local/tmp} {^[^/]*/} {}
-			gsub {/local/tmp} {/} {_}
-			put /local/tmp [@tmp.@/local/tmp@.l@]
-
 			if /local/pcb/want_parsgen
 			then
+				put /local/bn /local/n
+				sub {/local/bn} {^.*/} {}
+				put /local/dn /local/n
+				sub {/local/dn} {/[^/]*$} {}
+
 				append /local/pcb/RULES [@
 # lex for @/local/pcb/mod@
-@/local/n@.c: @/local/n@.l
-	$(MKDIR) @/local/tmp@ ; true
-	cp @/local/n@.l @/local/tmp@/
-	cd @/local/tmp@ && flex ../@/local/n@.l
-	mv @/local/tmp@/lex.yy.c @/local/n@.c
-	rm -rf @/local/tmp@
+@/local/n@.c @/local/n@.h: @/local/n@.l
+	cd @/local/dn@ && flex --outfile=@/local/bn@.c --header-file=@/local/bn@.h @/local/bn@.l
 @]
 			else
 				append /local/pcb/RULES [@

@@ -30,14 +30,14 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_PARSE_Y_TAB_H_INCLUDED
-# define YY_YY_PARSE_Y_TAB_H_INCLUDED
+#ifndef YY_PCB_PARSE_Y_H_INCLUDED
+# define YY_PCB_PARSE_Y_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
 #if YYDEBUG
-extern int yydebug;
+extern int pcb_debug;
 #endif
 
 /* Token type.  */
@@ -101,7 +101,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 116 "../../src_plugins/io_pcb/parse_y.y" /* yacc.c:1909  */
+#line 118 "parse_y.y" /* yacc.c:1909  */
 
 	int		integer;
 	double		number;
@@ -109,15 +109,15 @@ union YYSTYPE
 	FlagType	flagtype;
 	PLMeasure	measure;
 
-#line 113 "parse_y.tab.h" /* yacc.c:1909  */
+#line 113 "parse_y.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
 
-extern YYSTYPE yylval;
+extern YYSTYPE pcb_lval;
 
-int yyparse (void);
+int pcb_parse (void);
 
-#endif /* !YY_YY_PARSE_Y_TAB_H_INCLUDED  */
+#endif /* !YY_PCB_PARSE_Y_H_INCLUDED  */

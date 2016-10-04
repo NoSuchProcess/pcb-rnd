@@ -18,9 +18,6 @@ CLEANUP #5
 - conf: throw an error if user config can not be written
 - the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 - mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
-- scconfig:
-	- revise the bison/flex rule templates; rather use bison/flex output name
-	  feature instead of the mkdir hack.
 - conf:
 	- remove CFN_INCREMENTS, test if saving increments from preferences works
 	- config pov: change prio

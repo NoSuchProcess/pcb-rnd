@@ -64,7 +64,7 @@
 #include "mymem.h"
 #include "misc.h"
 #include "strflags.h"
-#include "parse_l.h"
+#include "parse_common.h"
 #include "parse_y.h"
 #include "create.h"
 #include "plug_footprint.h"
@@ -102,6 +102,9 @@ int	yyparse(void);
 static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename, const char *Parse_parameter);
 
 %}
+
+%option prefix="pcb_"
+
 
 HEX				0x[0-9a-fA-F]+
 INTEGER                 [+-]?([1-9][0-9]*|0)
@@ -159,15 +162,15 @@ mil	{ return T_MIL; }
 in	{ return T_IN; }
 
 \'.\'				{
-						yylval.integer = (unsigned) *(yytext+1);
+						pcb_lval.integer = (unsigned) *(yytext+1);
 						return(CHAR_CONST);
 					}
 {FLOATING}		{	return parse_number(); }
-{INTEGER}		{	yylval.integer = pcb_round (strtod (yytext, NULL)); return INTEGER; }
+{INTEGER}		{	pcb_lval.integer = pcb_round (strtod (yytext, NULL)); return INTEGER; }
 
 {HEX}			{	unsigned n;
 				sscanf((char *) yytext, "%x", &n);
-				yylval.integer = n;
+				pcb_lval.integer = n;
 				return INTEGER;
 					}
 \"{STRINGCHAR}*\"	{
@@ -176,7 +179,7 @@ in	{ return T_IN; }
 							/* return NULL on empty string */
 						if (yyleng == 2)
 						{
-							yylval.string = NULL;
+							pcb_lval.string = NULL;
 							return(STRING);
 						}
 
@@ -185,9 +188,9 @@ in	{ return T_IN; }
 							 * leading and trailing '"'
 							 */
 						yyleng -= 2;
-						yylval.string = (char *)calloc (yyleng+1, sizeof (char));
+						pcb_lval.string = (char *)calloc (yyleng+1, sizeof (char));
 						p1 = (char *) (yytext +1);
-						p2 = yylval.string;
+						p2 = pcb_lval.string;
 						while(yyleng--)
 						{
 								/* check for special character */
@@ -301,10 +304,10 @@ printf("OPENING: %s -> %p\n", tmps, (void *)yyin);
 #if !defined(HAS_ATEXIT)
 	if (PCB && PCB->Data)
 	  SaveTMPData();
-	returncode = yyparse();
+	returncode = pcb_parse();
 	RemoveTMPData();
 #else
-	returncode = yyparse();
+	returncode = pcb_parse();
 #endif
 	/* clean up parse buffer */
 	yy_delete_buffer(YY_CURRENT_BUFFER);
@@ -447,6 +450,6 @@ int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr Ptr, const char *Filename)
 static int
 parse_number ()
 {
-  yylval.number = strtod ((char *) yytext, NULL);
+  pcb_lval.number = strtod ((char *) yytext, NULL);
   return FLOATING;
 }
