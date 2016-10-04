@@ -1,7 +1,7 @@
 release check list
 
 0. test compile and test run a clean checkout on a clean system
-   use -ansi -pedantic if it works
+   configure with --debug --all=buildin, then without
 1. check next version number and previous revision in tags/
 2. update the changelog
 3. rewrite the release notes
