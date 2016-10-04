@@ -15,5 +15,5 @@ with the code cleanup. Highlights:
   - route style deletion
   - fixed all known bugs (shift-tab, mac related issues)
  - fontmode (the font editor plugin) is usable again
- - separate bom and xy expoters
+ - separate bom and xy exporters
  - close polygon on double click
