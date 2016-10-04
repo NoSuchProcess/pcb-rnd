@@ -22,6 +22,11 @@
 %token <c> T_INT
 %token <d> T_DBL
 
+%left T_AND T_OR
+%left '<' '>' T_EQ T_NEQ T_GTEQ T_LTEQ
+%left '+' '-'
+%left '*' '/'
+
 %%
 
 program:
