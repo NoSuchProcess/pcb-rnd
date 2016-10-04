@@ -1,3 +1,85 @@
+pcb-rnd 1.1.2 (r3767)
+~~~~~~~~~~~~~~~~~~~~~
+	[cleanup]
+		- ANSI/C89 compliance
+		- char * const correctness
+
+	[mods]
+		-Fix: io_pcb: do not convert measure through int (Chris' mm grid bug)
+		-Fix: import_sch: generate proper error messages if there's no make or gnetlist program configured
+		-Fix: io: qsort cmp function API bug - wrong format preference
+		-Fix: io: make sure the PCBChanged action is ran on revert so that route styles and other properties are updated
+		-Fix: fontmode broken coord-to-cell conversion rendered the font editor useless
+		-Cleanup: export_bom and export_xy are separate plugins; export_xy depends on export_bom because of the name escaping function
+		-Add: diag: layer dump action
+		-Add: diag: evalconf() action to evaluate the configuration situation of a path
+		-Add: io_kicad_legacy: first steps for PCB layout implemented. Mildly broken module exported.
+		-Add: propedit: object property editor (with gtk support)
+		-Add: io_lihata: initial implementation without object ordering
+		-Add: io_pcb: 3 different flavors of the original format (using different numeric formats)
+		-Add: import_sch: make and gnetlist programs configured in the default config
+		-Rename: debug plugin to diag plugin to avoid confision with --debug in ./configure command line
+
+	[lesstif]
+		-Fix: compile and link even if xrender is not found
+		-Fix: print angle as %f in the status line as it's a floating point value
+
+	[gtk]
+		-Fix: library selection window switches to arrow mode before replacing the buffer, so that the outline drawing code doesn't get confused
+		-Fix: library path file chooser should be a "folder chooser" not a "file chooser"
+		-Fix: display the correct $(path) syntax in the library window help
+		-Fix: when file name changes, update window title
+		-Fix: do not allow to zoom out so much that Coord can't handle it anymore and overflows
+		-Fix: work around the control bug on some mac systems
+		-Fix: do not draw global grid beyond board edges
+		-Fix: shift+tab: translate left-tab back to tab, shift is handled by the core
+		-Fix: when popping up the log window for a Message(), don't raise it so focus is not stolen (especially if it's already up)
+		-Fix: when the main window is closed while the command entry main loop is running, quit the CLI main loop first, so the Quit action can execute and break the outer main loop of the GUI
+		-Fix: mark the PCB changed when the route style changes so it's saved
+		-Add: a delete option to the route style selector
+		-Add: explicit <current> route style (pen style) for sizes diverged from any known style
+		-Add: finish gtk preferences dialog's "Config PoV" subtree
+		-Add: "save as" dialog with file format widget
+		-Add: remember preferences tree expansion and other states when the dialog box needs to be rebooted
+		-Add: implement fullscreen mode
+		-Add: local grid implementation: optionally draw grid only in a small radius around the crosshair instead of on the whole screen (speeds up sw rendering on large screen)
+		-Add: global grid can be sparse (drawing every Nth grid point only); min distance is a configuration item
+		-Change: match gtk status line style with elegant lesstif status line
+
+	[scconfig]
+		-Fix: use generic code for plugin vs. plugin dependencies, deps are coded as data
+		-Fix: various portability fixes for a working IRIX port
+		-Add: revtest and revision stamps - this tool will let Makefile automatically request the user to reconfigure
+		-Add: central distclean cleans src_3rd/
+		-Add: --workaround-* system, with a gtk-ctrl workaround
+		-Add: new cli arg for mass-enabling/disabling all plugins: --all=*
+
+	[core] 
+		-Fix: hid input mouse scroll mixup: up and down were for scroll but left and right were for buttons. Prefix all scroll names with "scroll" (fixes macos pan-zoom-select bug)
+		-Fix: cancel on "new pcb" makes sure PCB never ends up NULL; worst case it tries to create an empty PCB to fall back on or exits with a fatal error if even that fails
+		-Fix: funchash should be case-insensitive (case insensitive actions and params)
+		-Fix: introduce pcb_cardinal_t instead of redeclaring X's Cardinal
+		-Fix: cursor position is Coord, not long - long won't work on 64 bit coords
+		-Fix: initialize builtins before loading plugins so later buildin <-> plugin collision can be resolved by not loading the plugin
+		-Fix: full-polygons are sensitive when clicked on the "clipped away" part
+		-Fix: non-refactored line drc enforcement
+		-Fix: qsort cmp function return value bug - wrong ordering of sources for the merge
+		-Add: RouteStyle() action accepts style name, not only index
+		-Add: action, change and undo code for chaning arc radii (width and height really) and start/delta angles
+		-Add: new, future-proof layer API, phasing out the old API
+		-Add: close polygon if the user clicks twice on the same point ('doubleclick'; like with the line tool; thanks to hzeller)
+		-Add: message log entries have severity levels; user can configure color and whether the message log should pop up for each severity
+		-Add: pcb-printf %mH prints human readable metric or imperial coords
+		-Add: inhibit draw counter: when moving an element with all rubber bands (e.g. netlists) attached, inhibit redraw them individually, redraw only once, at the end
+		-Add: reenable signals as detected by scconfig so that emergency save can run on crash
+		-Change: attribute list in all object types
+		-Split: layer.[ch] from misc.[ch]; the layer code is large and complex enough to get an own module; it's also in-line with the module-per-object-type idea
+
+	[util]
+		-Add: workaround script to comment out #warnings in a source file (for real C89 targets)
+		-Add: gsch2pcb-rnd: warn for old config overriding pcb-rnd search paths
+		-Add: install gnet pcb forward backend so that import_sch works out of the box
+
 pcb-rnd 1.1.1 (r2683)
 ~~~~~~~~~~~~~
 	[io_kicad_legacy]
