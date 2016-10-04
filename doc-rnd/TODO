@@ -1,5 +1,5 @@
 - BUGS
-	- all route styles deleted when using 'File>load layout data to paste buffer' 
+	? all route styles deleted when using 'File>load layout data to paste buffer' 
 	+ in the 45-deg line mode, while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 
 - replace settings with lihata (conf_*)
