@@ -59,6 +59,7 @@ exprs:
 expr:
 	  fcall
 	| T_STR
+	| number
 	| '!' expr
 	| '(' expr ')'
 	| expr T_AND expr
@@ -74,6 +75,18 @@ expr:
 	| expr '*' expr
 	| expr '/' expr
 	| expr '.' T_STR
+	;
+
+number:
+	  T_INT maybe_unit
+	| T_DBL maybe_unit
+	| '-' T_INT maybe_unit
+	| '-' T_DBL maybe_unit
+	;
+
+maybe_unit:
+	  /* empty */
+	| T_UNIT
 	;
 
 fcall:
