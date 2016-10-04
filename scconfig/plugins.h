@@ -18,7 +18,7 @@ plugin_def("dbus",            "DBUS interface",            sdisable, 1)
 plugin_def("shand_cmd",       "command shorthands",        sbuildin, 1)
 plugin_def("propedit",        "object property editor",    sbuildin, 1)
 plugin_def("loghid",          "diagnostics: log HID calls",sdisable, 1)
-plugin_def("query",           "query language",            sdisable, 0)
+plugin_def("query",           "query language",            sdisable, 1)
 
 plugin_header("\nFootprint backends:\n")
 plugin_def("fp_fs",           "filesystem footprints",     sbuildin, 1)

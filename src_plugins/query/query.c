@@ -17,6 +17,11 @@ void qry_error(const char *err)
 	pcb_trace("qry_error: %s\n", err);
 }
 
+int qry_wrap()
+{
+	return 1;
+}
+
 /*
 static void hid_query_uninit(void)
 {
