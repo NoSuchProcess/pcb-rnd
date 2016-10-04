@@ -1,14 +1,19 @@
-pcb-rnd 1.1.1
+pcb-rnd 1.1.2
 ~~~~~~~~~~~~~~
-Sixth phase of the large scale cleanup. Major features:
- - a semi-working windows version (testers needed)
- - resurrected the dbus plugin (testers needed)
- - proper route style handling with explicit "pen style" and a real working
-   SetSame() action
- - various gtk bugs fixed
- - added the first working features in the Kicad legacy format I/O plugin
- - scconfig improvements:
-  - no more config.manual.h, everything is detected by ./configure and the
-    user should use command line arguments to change settings
-  - only C89 is assumed
-  - proper cross-compilation (tested in GNU/Linux -> Windows relation)
+This release lays the foundations of a new native file format and a more
+flexible, attribute based object model development, while also proceeding
+with the code cleanup. Highlights:
+ - cleanup:
+  - the code is now compilable with ANSI/C89 - compiles on IRIX 5.3
+  - char * const correctness
+ - experimental native lihata file format (not the default yet)
+ - property editor dialog in gtk
+ - gtk:
+  - full screen mode toggle for maximal editor space
+  - new grid options that speed up rendering
+  - finished preferences window (config's PoV)
+  - route style deletion
+  - fixed all known bugs (shift-tab, mac related issues)
+ - fontmode (the font editor plugin) is usable again
+ - separate bom and xy expoters
+ - close polygon on double click
