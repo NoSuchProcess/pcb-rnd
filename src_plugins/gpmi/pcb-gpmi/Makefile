@@ -24,3 +24,5 @@ linstall:
 	-if test -f gpmi_plugin/gpmi_plugin.so; then ln -sf "`pwd`/gpmi_plugin/gpmi_plugin.so" "$(PLUGIN_DIR)/gpmi_plugin.so"; fi
 	-for n in `ls gpmi_plugin/gpmi_pkg/*.h gpmi_plugin/gpmi_pkg/*.so`; do ln -sf "`pwd`/$$n"  "$(PLUGIN_DIR)/pcb-rnd-gpmi/`basename $$n`"; done
 
+uninstall:
+	rm -rf $(PLUGIN_DIR)/pcb-rnd-gpmi
