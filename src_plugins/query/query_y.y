@@ -22,12 +22,19 @@
 %token <c> T_INT
 %token <d> T_DBL
 
-%left T_AND T_OR
-%left '!'
-%left '<' '>' T_EQ T_NEQ T_GTEQ T_LTEQ
+/* the usual binary operators */
+%left T_OR
+%left T_AND
+%left T_EQ T_NEQ
+%left '<' '>' T_GTEQ T_LTEQ
 %left '+' '-'
 %left '*' '/'
 %left '.'
+
+/* Unary operators */
+%right '!'
+
+%left '('
 
 %%
 
