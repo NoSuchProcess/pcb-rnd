@@ -1,0 +1,6 @@
+pcb-rnd query language: execute expressions on objects and rules for the
+programmed drc.
+
+#state: WIP
+#default: disable
+#implements: (feature)

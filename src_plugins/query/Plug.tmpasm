@@ -1,0 +1,10 @@
+put /local/pcb/mod {query}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/query/query.o $(PLUGDIR)/query/query_l.o $(PLUGDIR)/query/query_y.o @]
+put /local/pcb/mod/YACC {$(PLUGDIR)/query/query_y}
+put /local/pcb/mod/LEX  {$(PLUGDIR)/query/query_l}
+
+switch /local/pcb/query/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
