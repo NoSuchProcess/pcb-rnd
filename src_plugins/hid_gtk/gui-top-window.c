@@ -1029,6 +1029,11 @@ static void fix_topbar_theming(void)
 	g_signal_connect(settings, "notify::gtk-font-name", G_CALLBACK(do_fix_topbar_theming), NULL);
 }
 
+static void fullscreen_cb(GtkButton *btn, void *data)
+{
+	conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !conf_core.editor.fullscreen, POL_OVERWRITE);
+}
+
 /*
  * Create the top_window contents.  The config settings should be loaded
  * before this is called.
@@ -1037,7 +1042,7 @@ static void ghid_build_pcb_top_window(void)
 {
 	GtkWidget *window;
 	GtkWidget *vbox_main, *hbox_middle, *hbox;
-	GtkWidget *vbox, *frame;
+	GtkWidget *vbox, *frame, *hbox_scroll, *fullscreen_btn;
 	GtkWidget *label;
 	GHidPort *port = &ghid_port;
 	GtkWidget *scrolled;
@@ -1144,11 +1149,20 @@ static void ghid_build_pcb_top_window(void)
 
 	gtk_box_pack_start(GTK_BOX(hbox), ghidgui->v_range, FALSE, FALSE, 0);
 
+
+
 	g_signal_connect(G_OBJECT(ghidgui->v_adjustment), "value_changed", G_CALLBACK(v_adjustment_changed_cb), ghidgui);
 
 	ghidgui->h_adjustment = gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0);
+
+	hbox_scroll = gtk_hbox_new(FALSE, 0);
 	ghidgui->h_range = gtk_hscrollbar_new(GTK_ADJUSTMENT(ghidgui->h_adjustment));
-	gtk_box_pack_start(GTK_BOX(ghidgui->vbox_middle), ghidgui->h_range, FALSE, FALSE, 0);
+	fullscreen_btn = gtk_button_new_with_label("FS");
+	g_signal_connect(GTK_OBJECT(fullscreen_btn), "clicked", G_CALLBACK(fullscreen_cb), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_scroll), ghidgui->h_range, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_scroll), fullscreen_btn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(ghidgui->vbox_middle), hbox_scroll, FALSE, FALSE, 0);
+
 
 	g_signal_connect(G_OBJECT(ghidgui->h_adjustment), "value_changed", G_CALLBACK(h_adjustment_changed_cb), ghidgui);
 
