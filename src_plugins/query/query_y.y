@@ -23,6 +23,7 @@
 %token <d> T_DBL
 
 %left T_AND T_OR
+%left '!'
 %left '<' '>' T_EQ T_NEQ T_GTEQ T_LTEQ
 %left '+' '-'
 %left '*' '/'
@@ -58,6 +59,7 @@ exprs:
 expr:
 	  fcall
 	| T_STR
+	| '!' expr
 	| '(' expr ')'
 	| expr T_AND expr
 	| expr T_OR expr
