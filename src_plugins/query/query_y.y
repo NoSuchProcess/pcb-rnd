@@ -56,7 +56,7 @@ exprs:
 
 expr:
 	  property
-/*	| fcall*/
+	| fcall
 	| '(' expr ')'
 	| expr T_AND expr
 	| expr T_OR expr
@@ -70,6 +70,16 @@ expr:
 	| expr '-' expr
 	| expr '*' expr
 	| expr '/' expr
+	;
+
+fcall:
+	  T_STR '(' fargs ')'
+	| T_STR '(' ')'
+	;
+
+fargs:
+	  expr
+	| fargs ',' expr
 	;
 
 property:
