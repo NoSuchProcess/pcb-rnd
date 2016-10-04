@@ -26,6 +26,7 @@
 %left '<' '>' T_EQ T_NEQ T_GTEQ T_LTEQ
 %left '+' '-'
 %left '*' '/'
+%left '.'
 
 %%
 
@@ -55,8 +56,8 @@ exprs:
 	;
 
 expr:
-	  property
-	| fcall
+	  fcall
+	| T_STR
 	| '(' expr ')'
 	| expr T_AND expr
 	| expr T_OR expr
@@ -70,6 +71,7 @@ expr:
 	| expr '-' expr
 	| expr '*' expr
 	| expr '/' expr
+	| expr '.' T_STR
 	;
 
 fcall:
@@ -80,15 +82,6 @@ fcall:
 fargs:
 	  expr
 	| fargs ',' expr
-	;
-
-property:
-	T_STR '.' field
-	;
-
-field:
-	  T_STR
-	| field '.' T_STR
 	;
 
 words:
