@@ -11,6 +11,7 @@ pcb-rnd 1.1.2 (r3767)
 		-Fix: io: make sure the PCBChanged action is ran on revert so that route styles and other properties are updated
 		-Fix: fontmode broken coord-to-cell conversion rendered the font editor useless
 		-Cleanup: export_bom and export_xy are separate plugins; export_xy depends on export_bom because of the name escaping function
+		-Rename: debug plugin to diag plugin to avoid confision with --debug in ./configure command line
 		-Add: diag: layer dump action
 		-Add: diag: evalconf() action to evaluate the configuration situation of a path
 		-Add: io_kicad_legacy: first steps for PCB layout implemented. Mildly broken module exported.
@@ -18,7 +19,6 @@ pcb-rnd 1.1.2 (r3767)
 		-Add: io_lihata: initial implementation without object ordering
 		-Add: io_pcb: 3 different flavors of the original format (using different numeric formats)
 		-Add: import_sch: make and gnetlist programs configured in the default config
-		-Rename: debug plugin to diag plugin to avoid confision with --debug in ./configure command line
 
 	[lesstif]
 		-Fix: compile and link even if xrender is not found
