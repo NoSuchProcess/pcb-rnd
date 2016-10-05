@@ -27,6 +27,7 @@ const char *type_name[PCBQ_nodetype_max] = {
 	"PCBQ_OP_SUB",
 	"PCBQ_OP_MUL",
 	"PCBQ_OP_DIV",
+	"PCBQ_OP_NOT",
 	"PCBQ_DATA_COORD",
 	"PCBQ_DATA_DOUBLE",
 	"PCBQ_DATA_STRING"

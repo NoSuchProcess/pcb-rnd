@@ -16,13 +16,20 @@ do { \
 	} \
 } while(0)
 
-#define BINOP(dst, op1, operand, op2) \
+#define BINOP(dst, op1, operator, op2) \
 do { \
 	assert(op1->next = NULL); \
 	assert(op2->next = NULL); \
-	dst = pcb_qry_n_alloc(operand); \
+	dst = pcb_qry_n_alloc(operator); \
 	pcb_qry_n_insert(dst, op2); \
 	pcb_qry_n_insert(dst, op1); \
+} while(0)
+
+#define UNOP(dst, operator, op) \
+do { \
+	assert(op->next = NULL); \
+	dst = pcb_qry_n_alloc(operator); \
+	pcb_qry_n_insert(dst, op); \
 } while(0)
 
 %}
@@ -95,7 +102,7 @@ expr:
 	  fcall
 	| T_STR
 	| number                 { $$ = $1; }
-	| '!' expr
+	| '!' expr               { UNOP($$, PCBQ_OP_NOT, $2); }
 	| '(' expr ')'           { $$ = $2; }
 	| expr T_AND expr        { BINOP($$, $1, PCBQ_OP_AND, $3); }
 	| expr T_OR expr         { BINOP($$, $1, PCBQ_OP_OR, $3); }

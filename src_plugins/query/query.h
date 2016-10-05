@@ -1,6 +1,7 @@
 typedef struct pcb_qry_node_s pcb_qry_node_t;
 typedef enum {
 	PCBQ_EXPR,
+
 	PCBQ_OP_AND,
 	PCBQ_OP_OR,
 	PCBQ_OP_EQ,
@@ -13,6 +14,9 @@ typedef enum {
 	PCBQ_OP_SUB,
 	PCBQ_OP_MUL,
 	PCBQ_OP_DIV,
+
+	PCBQ_OP_NOT,
+
 	PCBQ_DATA_COORD,   /* leaf */
 	PCBQ_DATA_DOUBLE,  /* leaf */
 	PCBQ_DATA_STRING,  /* leaf */
