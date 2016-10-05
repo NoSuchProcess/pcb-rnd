@@ -1,6 +1,30 @@
 %{
+#include <assert.h>
 #include "global.h"
 #include "unit.h"
+#include "query.h"
+
+#define UNIT_CONV(dst, negative, val, unit) \
+do { \
+	dst = val; \
+	if (negative) \
+		dst = -dst; \
+	if (unit != NULL) { \
+		if (unit->family == IMPERIAL) \
+			dst = PCB_MIL_TO_COORD(dst); \
+		dst *= unit->scale_factor; \
+	} \
+} while(0)
+
+#define BINOP(dst, op1, operand, op2) \
+do { \
+	assert(op1->next = NULL); \
+	assert(op2->next = NULL); \
+	dst = pcb_qry_n_alloc(operand); \
+	pcb_qry_n_insert(dst, op2); \
+	pcb_qry_n_insert(dst, op1); \
+} while(0)
+
 %}
 
 %name-prefix "qry_"
@@ -12,6 +36,7 @@
 	Coord c;
 	double d;
 	const Unit *u;
+	pcb_qry_node_t *n;
 }
 
 %token     T_LET T_ASSERT T_RULE
@@ -35,6 +60,9 @@
 %right '!'
 
 %left '('
+
+%type <n> expr number
+%type <u> maybe_unit
 
 %%
 
@@ -66,34 +94,34 @@ exprs:
 expr:
 	  fcall
 	| T_STR
-	| number
+	| number                 { $$ = $1; }
 	| '!' expr
-	| '(' expr ')'
-	| expr T_AND expr
-	| expr T_OR expr
-	| expr T_EQ expr
-	| expr T_NEQ expr
-	| expr T_GTEQ expr
-	| expr T_LTEQ expr
-	| expr '>' expr
-	| expr '<' expr
-	| expr '+' expr
-	| expr '-' expr
-	| expr '*' expr
-	| expr '/' expr
+	| '(' expr ')'           { $$ = $2; }
+	| expr T_AND expr        { BINOP($$, $1, PCBQ_OP_AND, $3); }
+	| expr T_OR expr         { BINOP($$, $1, PCBQ_OP_OR, $3); }
+	| expr T_EQ expr         { BINOP($$, $1, PCBQ_OP_EQ, $3); }
+	| expr T_NEQ expr        { BINOP($$, $1, PCBQ_OP_NEQ, $3); }
+	| expr T_GTEQ expr       { BINOP($$, $1, PCBQ_OP_GTEQ, $3); }
+	| expr T_LTEQ expr       { BINOP($$, $1, PCBQ_OP_LTEQ, $3); }
+	| expr '>' expr          { BINOP($$, $1, PCBQ_OP_GT, $3); }
+	| expr '<' expr          { BINOP($$, $1, PCBQ_OP_LT, $3); }
+	| expr '+' expr          { BINOP($$, $1, PCBQ_OP_ADD, $3); }
+	| expr '-' expr          { BINOP($$, $1, PCBQ_OP_SUB, $3); }
+	| expr '*' expr          { BINOP($$, $1, PCBQ_OP_MUL, $3); }
+	| expr '/' expr          { BINOP($$, $1, PCBQ_OP_DIV, $3); }
 	| expr '.' T_STR
 	;
 
 number:
-	  T_INT maybe_unit
-	| T_DBL maybe_unit
-	| '-' T_INT maybe_unit
-	| '-' T_DBL maybe_unit
+	  T_INT maybe_unit       { $$ = pcb_qry_n_alloc(PCBQ_DATA_COORD);  UNIT_CONV($$->crd, 0, $1, $2); }
+	| T_DBL maybe_unit       { $$ = pcb_qry_n_alloc(PCBQ_DATA_DOUBLE); UNIT_CONV($$->dbl, 0, $1, $2); }
+	| '-' T_INT maybe_unit   { $$ = pcb_qry_n_alloc(PCBQ_DATA_COORD);  UNIT_CONV($$->crd, 1, $2, $3); }
+	| '-' T_DBL maybe_unit   { $$ = pcb_qry_n_alloc(PCBQ_DATA_DOUBLE); UNIT_CONV($$->dbl, 1, $2, $3); }
 	;
 
 maybe_unit:
-	  /* empty */
-	| T_UNIT
+	  /* empty */            { $$ = NULL; }
+	| T_UNIT                 { $$ = $1; }
 	;
 
 fcall:
