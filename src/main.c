@@ -448,7 +448,7 @@ int main(int argc, char *argv[])
 	PCB = CreateNewPCB();
 
 	if (PCB == NULL) {
-		Message(PCB_MSG_DEFAULT, "Can't load the default pcb for creating an empty layout\n");
+		Message(PCB_MSG_ERROR, "Can't load the default pcb for creating an empty layout\n");
 		exit(1);
 	}
 

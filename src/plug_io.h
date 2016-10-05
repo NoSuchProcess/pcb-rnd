@@ -136,4 +136,13 @@ typedef struct {
 int pcb_io_list(pcb_io_formats_t *out, plug_iot_t typ, int wr, int do_digest);
 void pcb_io_list_free(pcb_io_formats_t *out);
 
+extern int pcb_io_err_inhibit;
+#define pcb_io_err_inhibit_inc() pcb_io_err_inhibit++
+#define pcb_io_err_inhibit_dec() \
+do { \
+	if (pcb_io_err_inhibit > 0) \
+		pcb_io_err_inhibit--; \
+} while(0)
+
+
 #endif

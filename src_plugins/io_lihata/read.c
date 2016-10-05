@@ -777,7 +777,7 @@ int io_lihata_parse_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, co
 	lht_doc_t *doc = lht_dom_load(Filename, &errmsg);
 
 	if (doc == NULL) {
-		Message(PCB_MSG_DEFAULT, "Error loading '%s': %s\n", Filename, errmsg);
+/*		Message(PCB_MSG_DEFAULT, "Error loading '%s': %s\n", Filename, errmsg);*/
 		return -1;
 	}
 

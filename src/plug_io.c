@@ -80,9 +80,12 @@ typedef struct {
 static int find_io(find_t *available, int avail_len, plug_iot_t typ, int is_wr, const char *fmt);
 
 plug_io_t *plug_io_chain = NULL;
+int pcb_io_err_inhibit = 0;
 
 static void plug_io_err(int res, const char *what, const char *filename)
 {
+	if (pcb_io_err_inhibit)
+		return;
 	if (res != 0) {
 		const char *reason = "", *comment = "";
 		if (plug_io_chain != NULL) {

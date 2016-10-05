@@ -177,7 +177,9 @@ PCBTypePtr CreateNewPCB()
 	PCB = NULL;
 
 	dpcb = -1;
+	pcb_io_err_inhibit_inc();
 	conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, LoadPCB(__path__, NULL, pcb_false, 1));
+	pcb_io_err_inhibit_dec();
 
 	if (dpcb == 0) {
 		nw = PCB;
@@ -187,8 +189,9 @@ PCBTypePtr CreateNewPCB()
 			nw->Filename = NULL;
 		}
 	}
-	else
+	else {
 		nw = NULL;
+	}
 
 	PCB = old;
 	return nw;
@@ -855,13 +858,15 @@ LineTypePtr CreateNewLineInSymbol(SymbolTypePtr Symbol, Coord X1, Coord Y1, Coor
 void CreateDefaultFont(PCBTypePtr pcb)
 {
 	int res = -1;
+	pcb_io_err_inhibit_inc();
 	conf_list_foreach_path_first(res, &conf_core.rc.default_font_file, ParseFont(&pcb->Font, __path__));
+	pcb_io_err_inhibit_dec();
 
 	if (res != 0) {
 		const char *s;
 		gds_t buff;
 		s = conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
-		Message(PCB_MSG_DEFAULT, _("Can't find font-symbol-file '%s'\n"), s);
+		Message(PCB_MSG_ERROR, _("Can't find font-symbol-file - there won't be font in this design. Searched: '%s'\n"), s);
 		gds_uninit(&buff);
 	}
 }
