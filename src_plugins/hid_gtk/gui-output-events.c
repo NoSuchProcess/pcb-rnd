@@ -137,8 +137,6 @@ static gboolean ghid_idle_cb(gpointer data)
 		ghid_mode_buttons_update();
 	}
 	ghidgui->settings_mode = conf_core.editor.mode;
-
-	ghid_update_toggle_flags();
 	return FALSE;
 }
 
@@ -532,4 +530,13 @@ void ghid_confchg_fullscreen(conf_native_t *cfg)
 {
 	if (gtkhid_active)
 		ghid_fullscreen_apply();
+}
+
+
+void ghid_confchg_checkbox(conf_native_t *cfg)
+{
+	if (gtkhid_active) {
+		pcb_trace("chk!\n");
+		ghid_update_toggle_flags();
+	}
 }

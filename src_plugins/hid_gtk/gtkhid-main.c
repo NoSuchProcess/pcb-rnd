@@ -28,6 +28,7 @@
 #include "gtkhid.h"
 
 conf_hid_id_t ghid_conf_id = -1;
+conf_hid_id_t ghid_menuconf_id = -1;
 GdkModifierType ghid_glob_mask;
 
 static void pan_common(GHidPort * port)
@@ -2000,6 +2001,7 @@ void hid_hid_gtk_uninit()
 {
 	event_unbind_allcookie(ghid_cookie);
 	conf_hid_unreg(ghid_cookie);
+	conf_hid_unreg(ghid_menu_cookie);
 }
 
 pcb_uninit_t hid_hid_gtk_init()
@@ -2105,6 +2107,7 @@ pcb_uninit_t hid_hid_gtk_init()
 
 
 	ghid_conf_id = conf_hid_reg(ghid_cookie, NULL);
+	ghid_menuconf_id = conf_hid_reg(ghid_menu_cookie, NULL);
 	ghid_conf_regs();
 
 	ghid_hid.create_menu = ghid_create_menu;

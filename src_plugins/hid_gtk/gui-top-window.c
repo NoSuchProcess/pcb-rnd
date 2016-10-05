@@ -284,7 +284,6 @@ static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
 	hid_cfg_action(node);
 
 	/* Sync gui widgets with pcb state */
-	ghid_update_toggle_flags();
 	ghid_mode_buttons_update();
 
 	/* Sync gui status display with pcb state */

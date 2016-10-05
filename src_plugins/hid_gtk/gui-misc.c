@@ -38,6 +38,7 @@
 #include <gdk/gdkkeysyms.h>
 
 const char *ghid_cookie = "gtk hid";
+const char *ghid_menu_cookie = "gtk hid menu";
 
 #define CUSTOM_CURSOR_CLOCKWISE		(GDK_LAST_CURSOR + 10)
 #define CUSTOM_CURSOR_DRAG			(GDK_LAST_CURSOR + 11)

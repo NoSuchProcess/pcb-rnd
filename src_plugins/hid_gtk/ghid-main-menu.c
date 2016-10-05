@@ -14,6 +14,7 @@
 #include "pcb-printf.h"
 #include "misc_util.h"
 #include "error.h"
+#include "conf.h"
 #include "ghid-main-menu.h"
 #include "ghid-layer-selector.h"
 #include "ghid-route-style-selector.h"
@@ -56,6 +57,7 @@ struct _GHidMainMenuClass {
 
 void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t *base);
 
+extern conf_hid_id_t ghid_menuconf_id;
 static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t * sub_res)
 {
 	const char *tmp_val;
@@ -129,11 +131,22 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 		const char *tip = hid_cfg_menu_field_str(sub_res, MF_TIP);
 		if (checked) {
 			/* TOGGLE ITEM */
+			conf_native_t *nat = conf_get_field(checked);
 			gchar *name = g_strdup_printf("MainMenuAction%d", action_counter++);
 			action = GTK_ACTION(gtk_toggle_action_new(name, menu_label, tip, NULL));
 			/* checked=foo       is a binary flag (checkbox)
 			 * checked=foo=bar   is a flag compared to a value (radio) */
 			gtk_toggle_action_set_draw_as_radio(GTK_TOGGLE_ACTION(action), ! !strchr(checked, '='));
+			if (nat != NULL) {
+				static conf_hid_callbacks_t cbs;
+				static int cbs_inited = 0;
+				if (!cbs_inited) {
+					memset(&cbs, 0, sizeof(conf_hid_callbacks_t));
+					cbs.val_change_post = ghid_confchg_checkbox;
+					cbs_inited = 1;
+				}
+				conf_hid_set_cb(nat, ghid_menuconf_id, &cbs);
+			}
 		}
 		else if (label && strcmp(label, "false") == 0) {
 			/* INSENSITIVE ITEM */

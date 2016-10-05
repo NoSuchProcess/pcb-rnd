@@ -505,6 +505,7 @@ static inline Coord Pz(int z)
 }
 
 extern const char *ghid_cookie;
+extern const char *ghid_menu_cookie;
 extern hid_cfg_mouse_t ghid_mouse;
 extern hid_cfg_keys_t ghid_keymap;
 extern int ghid_wheel_zoom;
@@ -516,6 +517,7 @@ void config_color_button_update(conf_native_t *cfg, int idx);
 void ghid_confchg_line_refraction(conf_native_t *cfg);
 void ghid_confchg_all_direction_lines(conf_native_t *cfg);
 void ghid_confchg_fullscreen(conf_native_t *cfg);
+void ghid_confchg_checkbox(conf_native_t *cfg);
 void ghid_draw_grid_local(Coord cx, Coord cy);
 
 void ghid_fullscreen_apply(void);
