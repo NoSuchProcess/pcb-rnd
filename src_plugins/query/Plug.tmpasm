@@ -1,5 +1,5 @@
 put /local/pcb/mod {query}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/query/query.o $(PLUGDIR)/query/query_l.o $(PLUGDIR)/query/query_y.o @]
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/query/query.o $(PLUGDIR)/query/query_act.o $(PLUGDIR)/query/query_l.o $(PLUGDIR)/query/query_y.o @]
 put /local/pcb/mod/YACC {$(PLUGDIR)/query/query_y}
 put /local/pcb/mod/LEX  {$(PLUGDIR)/query/query_l}
 

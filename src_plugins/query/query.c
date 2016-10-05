@@ -90,16 +90,17 @@ int qry_wrap()
 }
 
 /******** plugin helper ********/
+void query_action_reg(const char *cookie);
+
 static const char *query_cookie = "query plugin";
 
-/*
 static void hid_query_uninit(void)
 {
+	hid_remove_actions_by_cookie(query_cookie);
 }
-*/
 
 pcb_uninit_t hid_query_init(void)
 {
-/*	return hid_query_uninit;*/
-	return NULL;
+	query_action_reg(query_cookie);
+	return hid_query_uninit;
 }
