@@ -62,8 +62,8 @@ do { \
 %}
 
 %name-prefix "qry_"
-
 %define parse.error verbose
+%parse-param {pcb_qry_node_t **prg_out}
 
 %union {
 	char *s;
@@ -95,19 +95,19 @@ do { \
 
 %left '('
 
-%type <n> expr number fields var fname fcall fargs
+%type <n> expr number fields var fname fcall fargs program_expr
 %type <u> maybe_unit
 
 %%
 
 program:
 	  program_rules
-	| program_expr
+	| program_expr     { *prg_out = $1; }
 	;
 
 /* The program is a single expression - useful for search */
 program_expr:
-	expr             { printf("program_expr:\n"); pcb_qry_dump_tree(" ", $1); }
+	expr               { $$ = $1; }
 	;
 
 /* The program is a collection of rules - useful for the DRC */
