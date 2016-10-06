@@ -33,11 +33,11 @@ inch            { qry_lval.u = get_unit_struct_by_allow(ALLOW_IN); return T_UNIT
 
 
 [0-9]+                    { qry_lval.c = strtol(yytext, NULL, 10); return T_INT; }
-[0-9]*.[0-9]+             { qry_lval.d = strtod(yytext, NULL); return T_DBL; }
-[0-9]+.[0-9]*             { qry_lval.d = strtod(yytext, NULL); return T_DBL; }
+[.][0-9]+                 { qry_lval.d = strtod(yytext, NULL); return T_DBL; }
+[0-9]+[.][0-9]*           { qry_lval.d = strtod(yytext, NULL); return T_DBL; }
 [A-Za-z_][0-9A-Za-z_]*    { qry_lval.s = pcb_strdup(yytext); return T_STR; }
 
-[.(),<>!*+/-]   { return *yytext; }
+[().,<>!*+/-]   { return *yytext; }
 
 [;\r\n]         { return T_NL; }
 [ \t]           { continue; }
@@ -48,7 +48,7 @@ static int qry_yy_input(char *buf, int buflen)
 {
 	int len;
 	for(len = 0; (*pcb_qry_program_ptr != '\0') && (buflen > 0); len++,buflen--) {
-		printf("IN: '%c'\n",  *pcb_qry_program_ptr);
+/*		printf("IN: '%c'\n",  *pcb_qry_program_ptr);*/
 		*buf = *pcb_qry_program_ptr;
 		buf++;
 		pcb_qry_program_ptr++;
