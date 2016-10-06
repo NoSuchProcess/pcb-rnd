@@ -15,6 +15,8 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 
 	if (strcmp(cmd, "dump") == 0) {
 		printf("Script: '%s'\n", argv[1]);
+		pcb_qry_set_input(argv[1]);
+		qry_parse();
 		return 0;
 	}
 

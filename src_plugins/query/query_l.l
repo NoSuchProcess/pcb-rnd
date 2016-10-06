@@ -3,6 +3,10 @@
 #include "unit.h"
 #include "query.h"
 #include "query_y.h"
+
+static const char *pcb_qry_program, *pcb_qry_program_ptr;
+static int qry_yy_input(char *buf, int buflen);
+#define YY_INPUT(buf, res, buflen) (res = qry_yy_input(buf, buflen))
 %}
 
 %option prefix="qry_"
@@ -37,3 +41,22 @@ inch            { qry_lval.u = get_unit_struct_by_allow(ALLOW_IN); return T_UNIT
 
 [;\r\n]         { return T_NL; }
 [ \t]           { continue; }
+
+%%
+
+static int qry_yy_input(char *buf, int buflen)
+{
+	int len;
+	for(len = 0; (*pcb_qry_program_ptr != '\0') && (buflen > 0); len++,buflen--) {
+		printf("IN: '%c'\n",  *pcb_qry_program_ptr);
+		*buf = *pcb_qry_program_ptr;
+		buf++;
+		pcb_qry_program_ptr++;
+	}
+	return len;
+}
+
+void pcb_qry_set_input(const char *script)
+{
+	pcb_qry_program = pcb_qry_program_ptr = script;
+}
