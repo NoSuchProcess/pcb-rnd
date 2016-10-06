@@ -30,6 +30,7 @@ const char *type_name[PCBQ_nodetype_max] = {
 	"PCBQ_OP_NOT",
 	"PCBQ_FIELD",
 	"PCBQ_OBJ",
+	"PCBQ_VAR",
 	"PCBQ_DATA_COORD",
 	"PCBQ_DATA_DOUBLE",
 	"PCBQ_DATA_STRING"
@@ -67,6 +68,7 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd)
 		case PCBQ_DATA_COORD:  pcb_printf("%s%s %mI (%$mm)\n", prefix, ind, nd->crd, nd->crd); break;
 		case PCBQ_DATA_DOUBLE: pcb_printf("%s%s %f\n", prefix, ind, nd->dbl); break;
 		case PCBQ_FIELD:
+		case PCBQ_VAR:
 		case PCBQ_DATA_STRING: pcb_printf("%s%s '%s'\n", prefix, ind, nd->str); break;
 		default:
 			printf("\n");

@@ -70,7 +70,7 @@ do { \
 
 %left '('
 
-%type <n> expr number fields
+%type <n> expr number fields var
 %type <u> maybe_unit
 
 %%
@@ -102,7 +102,7 @@ exprs:
 
 expr:
 	  fcall
-	| T_STR
+	| var                    { $$ = $1; }
 	| number                 { $$ = $1; }
 	| '!' expr               { UNOP($$, PCBQ_OP_NOT, $2); }
 	| '(' expr ')'           { $$ = $2; }
@@ -137,6 +137,10 @@ maybe_unit:
 fields:
 	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->str = $1; }
 	| T_STR '.' fields       { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->str = $1; $$->next = $3; }
+	;
+
+var:
+	T_STR                    { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->str = $1; }
 	;
 
 fcall:
