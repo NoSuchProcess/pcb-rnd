@@ -23,6 +23,8 @@
 #ifndef PCB_QUERY_H
 #define PCB_QUERY_H
 
+#include "obj_any.h"
+
 /* value of an expression */
 typedef enum pcb_qry_valtype_e {
 	PCBQ_VT_VOID,
@@ -36,8 +38,8 @@ typedef enum pcb_qry_valtype_e {
 typedef struct pcb_qry_val_s {
 	pcb_qry_valtype_t type;
 	union {
-/*		pcb_obj_t obj;
-		pcb_list_t lst;*/
+		pcb_obj_t obj;
+		pcb_objlist_t lst;
 		Coord crd;
 		double dbl;
 		const char *str;
