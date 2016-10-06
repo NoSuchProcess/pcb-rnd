@@ -38,6 +38,8 @@ struct pcb_qry_node_s {
 pcb_qry_node_t *pcb_qry_n_alloc(pcb_qry_nodetype_t ntype);
 pcb_qry_node_t *pcb_qry_n_insert(pcb_qry_node_t *parent, pcb_qry_node_t *ch);
 
+void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top);
+
 void pcb_qry_set_input(const char *script);
 
 

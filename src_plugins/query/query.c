@@ -56,27 +56,29 @@ pcb_qry_node_t *pcb_qry_n_insert(pcb_qry_node_t *parent, pcb_qry_node_t *ch)
 }
 
 static char ind[] = "                                                                                ";
-void pcb_qry_dump_tree_(int level, pcb_qry_node_t *nd)
+void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd)
 {
 	pcb_qry_node_t *n;
 	if (level < sizeof(ind))  ind[level] = '\0';
-	printf("%s%s\n", ind,  pcb_qry_nodetype_name(nd->type));
+	printf("%s%s%s    ", prefix, ind, pcb_qry_nodetype_name(nd->type));
 	switch(nd->type) {
-		case PCBQ_DATA_COORD:  pcb_printf("%s %mI (%$mm)\n", ind, nd->crd, nd->crd); break;
-		case PCBQ_DATA_DOUBLE: pcb_printf("%s %f\n", ind, nd->dbl); break;
-		case PCBQ_DATA_STRING: pcb_printf("%s '%s'\n", ind, nd->str); break;
+		case PCBQ_DATA_COORD:  pcb_printf("%s%s %mI (%$mm)\n", prefix, ind, nd->crd, nd->crd); break;
+		case PCBQ_DATA_DOUBLE: pcb_printf("%s%s %f\n", prefix, ind, nd->dbl); break;
+		case PCBQ_DATA_STRING: pcb_printf("%s%s '%s'\n", prefix, ind, nd->str); break;
 		default:
+			printf("\n");
 			if (level < sizeof(ind))  ind[level] = ' ';
 			for(n = nd->children; n != NULL; n = n->next)
-				pcb_qry_dump_tree_(level+1, n);
+				pcb_qry_dump_tree_(prefix, level+1, n);
 			return;
 	}
 	if (level < sizeof(ind))  ind[level] = ' ';
 }
 
-pcb_qry_dump_tree(pcb_qry_node_t *top)
+void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top)
 {
-	pcb_qry_dump_tree_(0, top);
+	for(; top != NULL; top = top->next)
+		pcb_qry_dump_tree_(prefix, 0, top);
 }
 
 /******** parser helper ********/
