@@ -18,8 +18,8 @@ do { \
 
 #define BINOP(dst, op1, operator, op2) \
 do { \
-	assert(op1->next = NULL); \
-	assert(op2->next = NULL); \
+	assert(op2->next == NULL); \
+	assert(op2->next == NULL); \
 	dst = pcb_qry_n_alloc(operator); \
 	pcb_qry_n_insert(dst, op2); \
 	pcb_qry_n_insert(dst, op1); \
@@ -80,7 +80,7 @@ program:
 
 /* The program is a single expression - useful for search */
 program_expr:
-	expr
+	expr             { printf("program_expr:\n"); pcb_qry_dump_tree(" ", $1); }
 	;
 
 /* The program is a collection of rules - useful for the DRC */
@@ -103,7 +103,7 @@ expr:
 	| T_STR
 	| number                 { $$ = $1; }
 	| '!' expr               { UNOP($$, PCBQ_OP_NOT, $2); }
-	| '(' expr ')'           { $$ = $2; }
+	| '(' expr ')'           { UNOP($$, PCBQ_EXPR, $2); }
 	| expr T_AND expr        { BINOP($$, $1, PCBQ_OP_AND, $3); }
 	| expr T_OR expr         { BINOP($$, $1, PCBQ_OP_OR, $3); }
 	| expr T_EQ expr         { BINOP($$, $1, PCBQ_OP_EQ, $3); }
