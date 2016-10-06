@@ -37,7 +37,7 @@ struct pcb_qry_node_s {
 		double dbl;
 		const char *str;
 		pcb_qry_node_t *children;   /* first child (NULL for a leaf node) */
-	};
+	} data;
 };
 
 pcb_qry_node_t *pcb_qry_n_alloc(pcb_qry_nodetype_t ntype);

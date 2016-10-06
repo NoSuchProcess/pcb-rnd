@@ -1,4 +1,6 @@
 #include "global.h"
+#include "query.h"
+#include "query_y.h"
 
 static const char query_action_syntax[] =
 	"query(dump, expr) - dry run: compile and dump an expression\n"

@@ -3,6 +3,7 @@
 #include "global.h"
 #include "unit.h"
 #include "query.h"
+#include "query_l.h"
 
 #define UNIT_CONV(dst, negative, val, unit) \
 do { \
@@ -119,14 +120,14 @@ expr:
 	| expr '*' expr          { BINOP($$, $1, PCBQ_OP_MUL, $3); }
 	| expr '/' expr          { BINOP($$, $1, PCBQ_OP_DIV, $3); }
 	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_OBJ); }
-	| '@' '.' fields         { $$ = pcb_qry_n_alloc(PCBQ_OBJ); $$->children = $3; }
+	| '@' '.' fields         { $$ = pcb_qry_n_alloc(PCBQ_OBJ); $$->data.children = $3; }
 	;
 
 number:
-	  T_INT maybe_unit       { $$ = pcb_qry_n_alloc(PCBQ_DATA_COORD);  UNIT_CONV($$->crd, 0, $1, $2); }
-	| T_DBL maybe_unit       { $$ = pcb_qry_n_alloc(PCBQ_DATA_DOUBLE); UNIT_CONV($$->dbl, 0, $1, $2); }
-	| '-' T_INT maybe_unit   { $$ = pcb_qry_n_alloc(PCBQ_DATA_COORD);  UNIT_CONV($$->crd, 1, $2, $3); }
-	| '-' T_DBL maybe_unit   { $$ = pcb_qry_n_alloc(PCBQ_DATA_DOUBLE); UNIT_CONV($$->dbl, 1, $2, $3); }
+	  T_INT maybe_unit       { $$ = pcb_qry_n_alloc(PCBQ_DATA_COORD);  UNIT_CONV($$->data.crd, 0, $1, $2); }
+	| T_DBL maybe_unit       { $$ = pcb_qry_n_alloc(PCBQ_DATA_DOUBLE); UNIT_CONV($$->data.dbl, 0, $1, $2); }
+	| '-' T_INT maybe_unit   { $$ = pcb_qry_n_alloc(PCBQ_DATA_COORD);  UNIT_CONV($$->data.crd, 1, $2, $3); }
+	| '-' T_DBL maybe_unit   { $$ = pcb_qry_n_alloc(PCBQ_DATA_DOUBLE); UNIT_CONV($$->data.dbl, 1, $2, $3); }
 	;
 
 maybe_unit:
@@ -135,21 +136,21 @@ maybe_unit:
 	;
 
 fields:
-	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->str = $1; }
-	| T_STR '.' fields       { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->str = $1; $$->next = $3; }
+	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; }
+	| T_STR '.' fields       { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; $$->next = $3; }
 	;
 
 var:
-	T_STR                    { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->str = $1; }
+	T_STR                    { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.str = $1; }
 	;
 
 fcall:
-	  fname '(' fargs ')'    { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->children = $1; $$->children->next = $3; }
-	| fname '(' ')'          { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->children = $1; }
+	  fname '(' fargs ')'    { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->data.children = $1; $$->data.children->next = $3; }
+	| fname '(' ')'          { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->data.children = $1; }
 	;
 
 fname:
-	T_STR                    { $$ = pcb_qry_n_alloc(PCBQ_FNAME); $$->str = $1; }
+	T_STR                    { $$ = pcb_qry_n_alloc(PCBQ_FNAME); $$->data.str = $1; }
 	;
 
 

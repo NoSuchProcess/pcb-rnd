@@ -8,7 +8,7 @@
 #include "undo.h"
 #include "plugins.h"
 #include "hid_init.h"
-#include "hid_attrib.h"
+#include "hid_actions.h"
 #include "query.h"
 
 /******** tree helper ********/
@@ -55,8 +55,8 @@ pcb_qry_node_t *pcb_qry_n_alloc(pcb_qry_nodetype_t ntype)
 
 pcb_qry_node_t *pcb_qry_n_insert(pcb_qry_node_t *parent, pcb_qry_node_t *ch)
 {
-	ch->next = parent->children;
-	parent->children = ch;
+	ch->next = parent->data.children;
+	parent->data.children = ch;
 	return parent;
 }
 
@@ -67,16 +67,16 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd)
 	if (level < sizeof(ind))  ind[level] = '\0';
 	printf("%s%s%s    ", prefix, ind, pcb_qry_nodetype_name(nd->type));
 	switch(nd->type) {
-		case PCBQ_DATA_COORD:  pcb_printf("%s%s %mI (%$mm)\n", prefix, ind, nd->crd, nd->crd); break;
-		case PCBQ_DATA_DOUBLE: pcb_printf("%s%s %f\n", prefix, ind, nd->dbl); break;
+		case PCBQ_DATA_COORD:  pcb_printf("%s%s %mI (%$mm)\n", prefix, ind, nd->data.crd, nd->data.crd); break;
+		case PCBQ_DATA_DOUBLE: pcb_printf("%s%s %f\n", prefix, ind, nd->data.dbl); break;
 		case PCBQ_FIELD:
 		case PCBQ_VAR:
 		case PCBQ_FNAME:
-		case PCBQ_DATA_STRING: pcb_printf("%s%s '%s'\n", prefix, ind, nd->str); break;
+		case PCBQ_DATA_STRING: pcb_printf("%s%s '%s'\n", prefix, ind, nd->data.str); break;
 		default:
 			printf("\n");
 			if (level < sizeof(ind))  ind[level] = ' ';
-			for(n = nd->children; n != NULL; n = n->next)
+			for(n = nd->data.children; n != NULL; n = n->next)
 				pcb_qry_dump_tree_(prefix, level+1, n);
 			return;
 	}
