@@ -164,7 +164,7 @@ struct rtree {
 	int size;											/* number of entries in tree */
 };
 
-typedef struct {								/* holds information about one layer */
+struct layer_st {								/* holds information about one layer */
 	const char *Name;		   				/* layer name */
 	linelist_t Line;
 	textlist_t Text;
@@ -176,7 +176,7 @@ typedef struct {								/* holds information about one layer */
 	const char *SelectedColor;
 	AttributeListType Attributes;
 	int no_drc;										/* whether to ignore the layer when checking the design rules */
-} LayerType, *LayerTypePtr;
+};
 
 typedef struct plug_io_s plug_io_t;
 
@@ -420,12 +420,12 @@ typedef struct {								/* holds a connection */
 	LibraryMenuType *menu;				/* the netmenu this *SHOULD* belong too */
 } ConnectionType, *ConnectionTypePtr;
 
-typedef struct {								/* holds a net of connections */
+struct net_st {								/* holds a net of connections */
 	pcb_cardinal_t ConnectionN,					/* the number of connections contained */
 	  ConnectionMax;							/* max connections from malloc */
 	ConnectionTypePtr Connection;
 	RouteStyleTypePtr Style;
-} NetType, *NetTypePtr;
+};
 
 typedef struct {								/* holds a list of nets */
 	pcb_cardinal_t NetN,								/* the number of subnets contained */

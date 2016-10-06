@@ -83,6 +83,7 @@ put /local/pcb/OBJS [@
 	mymem.o
 	netlist.o
 	object_act.o
+	obj_any.o
 	paths.o
 	pcb-printf.o
 	plugins.o

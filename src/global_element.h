@@ -1,4 +1,4 @@
-typedef struct element_st {
+struct element_st {
 	ANYOBJECTFIELDS;
 	TextType Name[MAX_ELEMENTNAMES];	/* the elements names; */
 	/* description text */
@@ -12,6 +12,6 @@ typedef struct element_st {
 	arclist_t Arc;
 	BoxType VBox;
 	gdl_elem_t link;
-} ElementType, *ElementTypePtr, **ElementTypeHandle;
+};
 
 #include "list_element.h"

@@ -32,6 +32,10 @@ typedef struct drc_violation_st DrcViolationType, *DrcViolationTypePtr;
 typedef struct rtree rtree_t;
 typedef struct AttributeListType AttributeListType, *AttributeListTypePtr;
 typedef struct rats_patch_line_s rats_patch_line_t;
+typedef struct element_st ElementType, *ElementTypePtr, **ElementTypeHandle;
+typedef struct net_st NetType, *NetTypePtr;
+typedef struct layer_st LayerType, *LayerTypePtr;
+
 
 typedef unsigned int pcb_cardinal_t;
 typedef unsigned char pcb_uint8_t;   /* Don't use in new code. */
