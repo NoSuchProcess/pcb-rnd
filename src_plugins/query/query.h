@@ -20,6 +20,9 @@
  *
  */
 
+#ifndef PCB_QUERY_H
+#define PCB_QUERY_H
+
 typedef struct pcb_qry_node_s pcb_qry_node_t;
 typedef enum {
 	PCBQ_EXPR,
@@ -69,6 +72,4 @@ void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top);
 
 void pcb_qry_set_input(const char *script);
 
-
-
-
+#endif
