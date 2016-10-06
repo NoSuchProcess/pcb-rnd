@@ -19,6 +19,8 @@ typedef enum {
 	PCBQ_FIELD,
 	PCBQ_OBJ,
 	PCBQ_VAR,
+	PCBQ_FNAME,
+	PCBQ_FCALL,
 
 	PCBQ_DATA_COORD,   /* leaf */
 	PCBQ_DATA_DOUBLE,  /* leaf */

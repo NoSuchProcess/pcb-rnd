@@ -70,7 +70,7 @@ do { \
 
 %left '('
 
-%type <n> expr number fields var
+%type <n> expr number fields var fname fcall fargs
 %type <u> maybe_unit
 
 %%
@@ -101,7 +101,7 @@ exprs:
 	;
 
 expr:
-	  fcall
+	  fcall                  { $$ = $1; }
 	| var                    { $$ = $1; }
 	| number                 { $$ = $1; }
 	| '!' expr               { UNOP($$, PCBQ_OP_NOT, $2); }
@@ -144,13 +144,18 @@ var:
 	;
 
 fcall:
-	  T_STR '(' fargs ')'
-	| T_STR '(' ')'
+	  fname '(' fargs ')'    { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->children = $1; $$->children->next = $3; }
+	| fname '(' ')'          { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->children = $1; }
 	;
 
+fname:
+	T_STR                    { $$ = pcb_qry_n_alloc(PCBQ_FNAME); $$->str = $1; }
+	;
+
+
 fargs:
-	  expr
-	| expr ',' fargs
+	  expr                   { $$ = $1; }
+	| expr ',' fargs         { $$ = $1; $$->next = $3; }
 	;
 
 words:
