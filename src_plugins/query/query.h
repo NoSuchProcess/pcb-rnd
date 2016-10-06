@@ -23,6 +23,28 @@
 #ifndef PCB_QUERY_H
 #define PCB_QUERY_H
 
+/* value of an expression */
+typedef enum pcb_qry_valtype_e {
+	PCBQ_VT_VOID,
+	PCBQ_VT_OBJ,
+	PCBQ_VT_LST,
+	PCBQ_VT_COORD,
+	PCBQ_VT_DOUBLE,
+	PCBQ_VT_STRING
+} pcb_qry_valtype_t;
+
+typedef struct pcb_qry_val_s {
+	pcb_qry_valtype_t type;
+	union {
+/*		pcb_obj_t obj;
+		pcb_list_t lst;*/
+		Coord crd;
+		double dbl;
+		const char *str;
+	} data;
+} pcb_qry_val_t;
+
+/* Script parsed into a tree */
 typedef struct pcb_qry_node_s pcb_qry_node_t;
 typedef enum {
 	PCBQ_EXPR,
@@ -54,6 +76,7 @@ typedef enum {
 	PCBQ_nodetype_max
 } pcb_qry_nodetype_t;
 
+
 struct pcb_qry_node_s {
 	pcb_qry_nodetype_t type;
 	pcb_qry_node_t *next;       /* sibling on this level of the tree (or NULL) */
@@ -63,6 +86,7 @@ struct pcb_qry_node_s {
 		const char *str;
 		pcb_qry_node_t *children;   /* first child (NULL for a leaf node) */
 	} data;
+	pcb_qry_val_t result;
 };
 
 pcb_qry_node_t *pcb_qry_n_alloc(pcb_qry_nodetype_t ntype);
