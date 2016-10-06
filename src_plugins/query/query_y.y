@@ -70,7 +70,7 @@ do { \
 
 %left '('
 
-%type <n> expr number
+%type <n> expr number fields
 %type <u> maybe_unit
 
 %%
@@ -118,7 +118,8 @@ expr:
 	| expr '-' expr          { BINOP($$, $1, PCBQ_OP_SUB, $3); }
 	| expr '*' expr          { BINOP($$, $1, PCBQ_OP_MUL, $3); }
 	| expr '/' expr          { BINOP($$, $1, PCBQ_OP_DIV, $3); }
-	| expr '.' T_STR
+	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_OBJ); }
+	| '@' '.' fields         { $$ = pcb_qry_n_alloc(PCBQ_OBJ); $$->children = $3; }
 	;
 
 number:
@@ -133,6 +134,11 @@ maybe_unit:
 	| T_UNIT                 { $$ = $1; }
 	;
 
+fields:
+	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->str = $1; }
+	| T_STR '.' fields       { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->str = $1; $$->next = $3; }
+	;
+
 fcall:
 	  T_STR '(' fargs ')'
 	| T_STR '(' ')'
@@ -140,10 +146,10 @@ fcall:
 
 fargs:
 	  expr
-	| fargs ',' expr
+	| expr ',' fargs
 	;
 
 words:
 	  /* empty */
-	| words T_STR
+	| T_STR words
 	;
