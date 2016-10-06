@@ -27,7 +27,7 @@ do { \
 
 #define UNOP(dst, operator, op) \
 do { \
-	assert(op->next = NULL); \
+	assert(op->next == NULL); \
 	dst = pcb_qry_n_alloc(operator); \
 	pcb_qry_n_insert(dst, op); \
 } while(0)
@@ -36,7 +36,7 @@ do { \
 
 %name-prefix "qry_"
 
-%verbose
+%define parse.error verbose
 
 %union {
 	char *s;
@@ -103,7 +103,7 @@ expr:
 	| T_STR
 	| number                 { $$ = $1; }
 	| '!' expr               { UNOP($$, PCBQ_OP_NOT, $2); }
-	| '(' expr ')'           { UNOP($$, PCBQ_EXPR, $2); }
+	| '(' expr ')'           { $$ = $2; }
 	| expr T_AND expr        { BINOP($$, $1, PCBQ_OP_AND, $3); }
 	| expr T_OR expr         { BINOP($$, $1, PCBQ_OP_OR, $3); }
 	| expr T_EQ expr         { BINOP($$, $1, PCBQ_OP_EQ, $3); }
