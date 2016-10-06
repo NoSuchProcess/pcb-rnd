@@ -12,7 +12,9 @@ do { \
 	if (unit != NULL) { \
 		if (unit->family == IMPERIAL) \
 			dst = PCB_MIL_TO_COORD(dst); \
-		dst *= unit->scale_factor; \
+		else if (unit->family == METRIC) \
+			dst = PCB_MM_TO_COORD(dst); \
+		dst /= unit->scale_factor; \
 	} \
 } while(0)
 
