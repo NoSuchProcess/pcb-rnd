@@ -475,19 +475,24 @@ static pcb_bool UndoChangeMaskSize(UndoListTypePtr Entry)
  */
 static pcb_bool UndoChangeSize(UndoListTypePtr Entry)
 {
-	void *ptr1, *ptr2, *ptr3;
+	void *ptr1, *ptr2, *ptr3, *ptr1e;
 	int type;
 	Coord swap;
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
+		if (type == PCB_TYPE_ELEMENT_NAME)
+			ptr1e = NULL;
+		else
+			ptr1e = ptr1;
+
 	if (type != PCB_TYPE_NONE) {
 		/* Wow! can any object be treated as a pin type for size change?? */
 		/* pins, vias, lines, and arcs can. Text can't but it has it's own mechanism */
 		swap = ((PinTypePtr) ptr2)->Thickness;
 		RestoreToPolygon(PCB->Data, type, ptr1, ptr2);
-		if (andDraw)
-			EraseObject(type, ptr1, ptr2);
+		if ((andDraw) && (ptr1e != NULL))
+			EraseObject(type, ptr1e, ptr2);
 		((PinTypePtr) ptr2)->Thickness = Entry->Data.Size;
 		Entry->Data.Size = swap;
 		ClearFromPolygon(PCB->Data, type, ptr1, ptr2);
