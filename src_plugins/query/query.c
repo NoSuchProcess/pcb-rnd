@@ -22,9 +22,10 @@
 
 /* Query language - common code for the compiled tree and plugin administration */
 
-#include <genht/hash.h>
 #include "config.h"
 #include "global.h"
+#include <genht/hash.h>
+#include <genht/htsi.h>
 #include "conf.h"
 #include "data.h"
 #include "action_helper.h"
@@ -90,7 +91,7 @@ pcb_qry_node_t *pcb_qry_n_insert(pcb_qry_node_t *parent, pcb_qry_node_t *ch)
 }
 
 static char ind[] = "                                                                                ";
-void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd)
+void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_query_iter_t *it_ctx)
 {
 	pcb_qry_node_t *n;
 	if (level < sizeof(ind))  ind[level] = '\0';
@@ -98,24 +99,33 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd)
 	switch(nd->type) {
 		case PCBQ_DATA_COORD:  pcb_printf("%s%s %mI (%$mm)\n", prefix, ind, nd->data.crd, nd->data.crd); break;
 		case PCBQ_DATA_DOUBLE: pcb_printf("%s%s %f\n", prefix, ind, nd->data.dbl); break;
-		case PCBQ_FIELD:
 		case PCBQ_VAR:
+			pcb_printf("%s%s ", prefix, ind);
+			if ((it_ctx != NULL) && (nd->data.crd > it_ctx->num_vars)) {
+				if (it_ctx->it == NULL)
+					pcb_qry_iter_init(it_ctx);
+				printf("%s\n", it_ctx->vn[nd->data.crd]);
+			}
+			else
+				printf("<invalid:%d>\n", nd->data.crd);
+
+		case PCBQ_FIELD:
 		case PCBQ_FNAME:
 		case PCBQ_DATA_STRING: pcb_printf("%s%s '%s'\n", prefix, ind, nd->data.str); break;
 		default:
 			printf("\n");
 			if (level < sizeof(ind))  ind[level] = ' ';
 			for(n = nd->data.children; n != NULL; n = n->next)
-				pcb_qry_dump_tree_(prefix, level+1, n);
+				pcb_qry_dump_tree_(prefix, level+1, n, it_ctx);
 			return;
 	}
 	if (level < sizeof(ind))  ind[level] = ' ';
 }
 
-void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top)
+void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top, pcb_query_iter_t *it_ctx)
 {
 	for(; top != NULL; top = top->next)
-		pcb_qry_dump_tree_(prefix, 0, top);
+		pcb_qry_dump_tree_(prefix, 0, top, it_ctx);
 }
 
 /******** iter admin ********/
@@ -136,6 +146,19 @@ int pcb_qry_iter_var(pcb_query_iter_t *it, const char *varname)
 
 	htsi_set(&it->names, pcb_strdup(varname), it->num_vars);
 	return it->num_vars++;
+}
+
+void pcb_qry_iter_init(pcb_query_iter_t *it)
+{
+	htsi_entry_t *e;
+
+	if (it->vn != NULL)
+		return;
+	it->it = calloc(sizeof(pcb_qry_val_t *), it->num_vars);
+
+	it->vn = malloc(sizeof(char *) * it->num_vars);
+	for (e = htsi_first(&it->names); e; e = htsi_next(&it->names, e))
+		it->vn[e->value] = e->key;
 }
 
 /******** parser helper ********/

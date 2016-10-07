@@ -26,6 +26,8 @@
 #include "obj_any.h"
 #include <genht/htsi.h>
 
+typedef struct pcb_query_iter_s  pcb_query_iter_t;
+
 /* value of an expression */
 typedef enum pcb_qry_valtype_e {
 	PCBQ_VT_VOID,
@@ -99,18 +101,22 @@ struct pcb_qry_node_s {
 pcb_qry_node_t *pcb_qry_n_alloc(pcb_qry_nodetype_t ntype);
 pcb_qry_node_t *pcb_qry_n_insert(pcb_qry_node_t *parent, pcb_qry_node_t *ch);
 
-void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top);
+void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top, pcb_query_iter_t *it_ctx);
 
 void pcb_qry_set_input(const char *script);
 
 
-typedef struct pcb_query_iter_s {
+struct pcb_query_iter_s {
 	htsi_t names;         /* name->index hash */
-	pcb_qry_val_t **it;
 	int num_vars;
-} pcb_query_iter_t;
+
+	const char **vn;      /* pointers to the hash names so they can be indexed */
+	pcb_qry_val_t **it;   /* iterator state for each variable */
+};
 
 pcb_query_iter_t *pcb_qry_iter_alloc(void);
 int pcb_qry_iter_var(pcb_query_iter_t *it, const char *varname);
+void pcb_qry_iter_init(pcb_query_iter_t *it);
+
 
 #endif

@@ -169,7 +169,7 @@ fields:
 	;
 
 var:
-	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.str = $1; }
+	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1); }
 	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_OBJ); }
 	;
 
