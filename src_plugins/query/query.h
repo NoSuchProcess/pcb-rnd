@@ -95,10 +95,6 @@ struct pcb_qry_node_s {
 	pcb_qry_val_t result;
 };
 
-/*typedef struct pcb_query_prog_s {
-	htsi var_n2i;
-	
-} pcb_query_prog_t;*/
 
 pcb_qry_node_t *pcb_qry_n_alloc(pcb_qry_nodetype_t ntype);
 pcb_qry_node_t *pcb_qry_n_insert(pcb_qry_node_t *parent, pcb_qry_node_t *ch);
@@ -106,5 +102,15 @@ pcb_qry_node_t *pcb_qry_n_insert(pcb_qry_node_t *parent, pcb_qry_node_t *ch);
 void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top);
 
 void pcb_qry_set_input(const char *script);
+
+
+typedef struct pcb_query_iter_s {
+	htsi_t names;         /* name->index hash */
+	pcb_qry_val_t **it;
+	int num_vars;
+} pcb_query_iter_t;
+
+pcb_query_iter_t *pcb_qry_iter_alloc(void);
+int pcb_qry_iter_var(pcb_query_iter_t *it, const char *varname);
 
 #endif

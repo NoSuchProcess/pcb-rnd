@@ -22,6 +22,7 @@
 
 /* Query language - common code for the compiled tree and plugin administration */
 
+#include <genht/hash.h>
 #include "config.h"
 #include "global.h"
 #include "conf.h"
@@ -33,6 +34,7 @@
 #include "plugins.h"
 #include "hid_init.h"
 #include "hid_actions.h"
+#include "compat_misc.h"
 #include "query.h"
 
 /******** tree helper ********/
@@ -114,6 +116,26 @@ void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top)
 {
 	for(; top != NULL; top = top->next)
 		pcb_qry_dump_tree_(prefix, 0, top);
+}
+
+/******** iter admin ********/
+pcb_query_iter_t *pcb_qry_iter_alloc(void)
+{
+	pcb_query_iter_t *it = calloc(1, sizeof(pcb_query_iter_t));
+	htsi_init(&it->names, strhash, strkeyeq);
+	return it;
+}
+
+
+int pcb_qry_iter_var(pcb_query_iter_t *it, const char *varname)
+{
+	htsi_entry_t *e = htsi_getentry(&it->names, varname);
+
+	if (e != NULL)
+		return e->value;
+
+	htsi_set(&it->names, pcb_strdup(varname), it->num_vars);
+	return it->num_vars++;
 }
 
 /******** parser helper ********/

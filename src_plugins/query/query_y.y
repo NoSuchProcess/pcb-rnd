@@ -60,6 +60,8 @@ do { \
 	pcb_qry_n_insert(dst, op); \
 } while(0)
 
+static pcb_query_iter_t *iter_ctx;
+
 %}
 
 %name-prefix "qry_"
@@ -109,7 +111,8 @@ program:
 
 /* The program is a single expression - useful for search */
 program_expr:
-	expr               { $$ = $1; }
+	{ iter_ctx = pcb_qry_iter_alloc(); }
+	expr               { $$ = $2; }
 	;
 
 /* The program is a collection of rules - useful for the DRC */
