@@ -75,6 +75,13 @@ do { \
 	return 0; \
 } while(0)
 
+#define RET_STR(o, value) \
+do { \
+	o->type = PCBQ_VT_STRING; \
+	o->data.str = value; \
+	return 0; \
+} while(0)
+
 static int promote(pcb_qry_val_t *a, pcb_qry_val_t *b)
 {
 	if ((a->type == PCBQ_VT_VOID) || (b->type == PCBQ_VT_VOID))
@@ -167,9 +174,9 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 		case PCBQ_FNAME:
 		case PCBQ_FCALL:
 
-		case PCBQ_DATA_COORD:
-		case PCBQ_DATA_DOUBLE:
-		case PCBQ_DATA_STRING:
+		case PCBQ_DATA_COORD:       RET_INT(res, node->data.crd);
+		case PCBQ_DATA_DOUBLE:      RET_DBL(res, node->data.dbl);
+		case PCBQ_DATA_STRING:      RET_STR(res, node->data.str);
 
 		case PCBQ_nodetype_max:
 			return -1;
