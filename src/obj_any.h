@@ -50,8 +50,13 @@ typedef enum pcb_objtype_e {
 	/* temporary, for backward compatibility */
 	PCB_OBJ_ELINE     = 0x200001,
 	PCB_OBJ_EARC      = 0x200002,
-	PCB_OBJ_ETEXT     = 0x200004
+	PCB_OBJ_ETEXT     = 0x200004,
+
+	/* combinations, groups, masks */
+	PCB_OBJ_ANY       = 0xFFFFFF
 } pcb_objtype_t;
+
+
 
 typedef struct pcb_obj_s pcb_obj_t;
 
