@@ -30,7 +30,7 @@ typedef enum pcb_qry_valtype_e {
 	PCBQ_VT_VOID,
 	PCBQ_VT_OBJ,
 	PCBQ_VT_LST,
-	PCBQ_VT_COORD,
+	PCBQ_VT_COORD,   /* considered int */
 	PCBQ_VT_DOUBLE,
 	PCBQ_VT_STRING
 } pcb_qry_valtype_t;

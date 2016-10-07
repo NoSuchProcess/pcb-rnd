@@ -131,3 +131,9 @@ void pcb_qry_list_free(pcb_qry_val_t *lst_)
 		free(n);
 	}
 }
+
+int pcb_qry_list_cmp(pcb_qry_val_t *lst1, pcb_qry_val_t *lst2)
+{
+	abort();
+}
+

@@ -33,6 +33,8 @@ typedef struct pcb_qry_exec_s {
 void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root);
 void pcb_qry_uninit(pcb_qry_exec_t *ctx);
 
-int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node);
+int pcb_qry_is_true(pcb_qry_val_t *val);
+
+int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res);
 
 #endif

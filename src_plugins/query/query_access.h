@@ -31,6 +31,8 @@
 /* Append objects with matching type to lst */
 void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask);
 
+int pcb_qry_list_cmp(pcb_qry_val_t *lst1, pcb_qry_val_t *lst2);
+
 void pcb_qry_list_free(pcb_qry_val_t *lst_);
 
 #endif
