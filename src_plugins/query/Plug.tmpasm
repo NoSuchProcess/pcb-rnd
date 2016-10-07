@@ -1,6 +1,7 @@
 put /local/pcb/mod {query}
 put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/query/query.o
+ $(PLUGDIR)/query/query_access.o
  $(PLUGDIR)/query/query_act.o
  $(PLUGDIR)/query/query_exec.o
  $(PLUGDIR)/query/query_l.o
