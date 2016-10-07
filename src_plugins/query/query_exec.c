@@ -278,7 +278,8 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			UNOP();
 			RET_INT(res, !pcb_qry_is_true(&o1));
 
-		case PCBQ_FIELD:
+		case PCBQ_FIELD_OF:
+		
 		case PCBQ_OBJ:
 		case PCBQ_VAR:
 		case PCBQ_FNAME:
@@ -290,6 +291,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 		case PCBQ_DATA_STRING:      RET_STR(res, node->data.str);
 
 		case PCBQ_nodetype_max:
+		case PCBQ_FIELD:
 			return -1;
 	}
 	return -1;

@@ -53,6 +53,7 @@ const char *type_name[PCBQ_nodetype_max] = {
 	"PCBQ_OP_DIV",
 	"PCBQ_OP_NOT",
 	"PCBQ_FIELD",
+	"PCBQ_FIELD_OF",
 	"PCBQ_OBJ",
 	"PCBQ_VAR",
 	"PCBQ_FNAME",

@@ -127,7 +127,6 @@ exprs:
 
 expr:
 	  fcall                  { $$ = $1; }
-	| var                    { $$ = $1; }
 	| number                 { $$ = $1; }
 	| '!' expr               { UNOP($$, PCBQ_OP_NOT, $2); }
 	| '(' expr ')'           { $$ = $2; }
@@ -143,8 +142,8 @@ expr:
 	| expr '-' expr          { BINOP($$, $1, PCBQ_OP_SUB, $3); }
 	| expr '*' expr          { BINOP($$, $1, PCBQ_OP_MUL, $3); }
 	| expr '/' expr          { BINOP($$, $1, PCBQ_OP_DIV, $3); }
-	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_OBJ); }
-	| '@' '.' fields         { $$ = pcb_qry_n_alloc(PCBQ_OBJ); $$->data.children = $3; }
+	| var                    { $$ = $1; }
+	| var '.' fields         { $$ = pcb_qry_n_alloc(PCBQ_FIELD_OF); $$->data.children = $1; $1->next = $3;}
 	;
 
 number:
@@ -165,7 +164,8 @@ fields:
 	;
 
 var:
-	T_STR                    { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.str = $1; }
+	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.str = $1; }
+	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_OBJ); }
 	;
 
 fcall:
