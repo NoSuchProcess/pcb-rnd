@@ -38,65 +38,65 @@ do { \
 static int list_layer_cb(void *ctx, PCBType *pcb, LayerType *layer, int enter)
 {
 	if (enter)
-		APPEND(lst, PCB_OBJ_LAYER, layer);
+		APPEND(ctx, PCB_OBJ_LAYER, layer);
 	return 0;
 }
 
 static void list_line_cb(void *ctx, PCBType *pcb, LayerType *layer, LineType *line)
 {
-	APPEND(lst, PCB_OBJ_LINE, line);
+	APPEND(ctx, PCB_OBJ_LINE, line);
 }
 
 static void list_arc_cb(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc)
 {
-	APPEND(lst, PCB_OBJ_ARC, arc);
+	APPEND(ctx, PCB_OBJ_ARC, arc);
 }
 
 static void list_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *text)
 {
-	APPEND(lst, PCB_OBJ_TEXT, text);
+	APPEND(ctx, PCB_OBJ_TEXT, text);
 }
 
 static void list_poly_cb(void *ctx, PCBType *pcb, LayerType *layer, PolygonType *poly)
 {
-	APPEND(lst, PCB_OBJ_POLYGON, poly);
+	APPEND(ctx, PCB_OBJ_POLYGON, poly);
 }
 
 static int list_element_cb(void *ctx, PCBType *pcb, ElementType *element, int enter)
 {
 	if (enter)
-		APPEND(lst, PCB_OBJ_ELEMENT, element);
+		APPEND(ctx, PCB_OBJ_ELEMENT, element);
 	return 0;
 }
 
 static void list_eline_cb(void *ctx, PCBType *pcb, ElementType *element, LineType *line)
 {
-	APPEND(lst, PCB_OBJ_ELINE, line);
+	APPEND(ctx, PCB_OBJ_ELINE, line);
 }
 
 static void list_earc_cb(void *ctx, PCBType *pcb, ElementType *element, ArcType *arc)
 {
-	APPEND(lst, PCB_OBJ_EARC, arc);
+	APPEND(ctx, PCB_OBJ_EARC, arc);
 }
 
 static void list_etext_cb(void *ctx, PCBType *pcb, ElementType *element, TextType *text)
 {
-	APPEND(lst, PCB_OBJ_ETEXT, text);
+	APPEND(ctx, PCB_OBJ_ETEXT, text);
 }
 
 static void list_epin_cb(void *ctx, PCBType *pcb, ElementType *element, PinType *pin)
 {
-	APPEND(lst, PCB_OBJ_PIN, pin);
+	APPEND(ctx, PCB_OBJ_PIN, pin);
 }
 
 static void list_epad_cb(void *ctx, PCBType *pcb, ElementType *element, PadType *pad)
 {
-	APPEND(lst, PCB_OBJ_PAD, pad);
+	APPEND(ctx, PCB_OBJ_PAD, pad);
 }
 
 static void list_via_cb(void *ctx, PCBType *pcb, PinType *via)
 {
-	APPEND(lst, PCB_OBJ_VIA, via);
+	APPEND(ctx, PCB_OBJ_VIA, via);
 }
 
 void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
