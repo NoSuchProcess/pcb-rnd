@@ -117,3 +117,17 @@ void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
 		(mask & PCB_OBJ_VIA) ? list_via_cb : NULL
 	);
 }
+
+void pcb_qry_list_free(pcb_qry_val_t *lst_)
+{
+	pcb_objlist_t *lst = &lst_->data.lst;
+
+	assert(lst_->type == PCBQ_VT_LST);
+
+	for(;;) {
+		pcb_obj_t *n = pcb_objlist_first(lst);
+		if (n == NULL)
+			break;
+		free(n);
+	}
+}

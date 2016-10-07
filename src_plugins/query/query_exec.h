@@ -25,4 +25,14 @@
 #ifndef PCB_QUERY_EXEC_H
 #define PCB_QUERY_EXEC_H
 
+typedef struct pcb_qry_exec_s {
+	pcb_qry_node_t *root;
+	pcb_qry_val_t all;
+} pcb_qry_exec_t;
+
+void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root);
+void pcb_qry_uninit(pcb_qry_exec_t *ctx);
+
+int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node);
+
 #endif
