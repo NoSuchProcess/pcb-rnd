@@ -30,21 +30,27 @@
 
 /* Can be used as a bitfield */
 typedef enum pcb_objtype_e {
-	PCB_OBJ_VOID      = 0x0000,
+	PCB_OBJ_VOID      = 0x000000,
 
-	PCB_OBJ_POINT     = 0x0001,
-	PCB_OBJ_LINE      = 0x0002,
-	PCB_OBJ_TEXT      = 0x0004,
-	PCB_OBJ_POLYGON   = 0x0008,
-	PCB_OBJ_ARC       = 0x0010,
-	PCB_OBJ_RAT       = 0x0020,
-	PCB_OBJ_PAD       = 0x0040,
-	PCB_OBJ_PIN       = 0x0080,
-	PCB_OBJ_VIA       = 0x0100,
-	PCB_OBJ_ELEMENT   = 0x0200,
+	PCB_OBJ_POINT     = 0x000001,
+	PCB_OBJ_LINE      = 0x000002,
+	PCB_OBJ_TEXT      = 0x000004,
+	PCB_OBJ_POLYGON   = 0x000008,
+	PCB_OBJ_ARC       = 0x000010,
+	PCB_OBJ_RAT       = 0x000020,
+	PCB_OBJ_PAD       = 0x000040,
+	PCB_OBJ_PIN       = 0x000080,
+	PCB_OBJ_VIA       = 0x000100,
+	PCB_OBJ_ELEMENT   = 0x000200,
 
-	PCB_OBJ_NET       = 0x0400,
-	PCB_OBJ_LAYER     = 0x0800
+	/* more abstract objects */
+	PCB_OBJ_NET       = 0x100001,
+	PCB_OBJ_LAYER     = 0x100002,
+
+	/* temporary, for backward compatibility */
+	PCB_OBJ_ELINE     = 0x200001,
+	PCB_OBJ_EARC      = 0x200002,
+	PCB_OBJ_ETEXT     = 0x200004
 } pcb_objtype_t;
 
 typedef struct pcb_obj_s pcb_obj_t;
@@ -52,6 +58,7 @@ typedef struct pcb_obj_s pcb_obj_t;
 struct pcb_obj_s {
 	pcb_objtype_t type;
 	union {
+		void         *any;
 		PointType    *point;
 		LineType     *line;
 		TextType     *text;
