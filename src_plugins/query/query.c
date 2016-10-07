@@ -38,6 +38,8 @@
 /******** tree helper ********/
 
 const char *type_name[PCBQ_nodetype_max] = {
+	"PCBQ_RULE",
+	"PCBQ_RNAME",
 	"PCBQ_EXPR",
 	"PCBQ_OP_AND",
 	"PCBQ_OP_OR",

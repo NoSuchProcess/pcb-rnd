@@ -24,6 +24,7 @@
 #define PCB_QUERY_H
 
 #include "obj_any.h"
+#include <genht/htsi.h>
 
 /* value of an expression */
 typedef enum pcb_qry_valtype_e {
@@ -49,6 +50,8 @@ typedef struct pcb_qry_val_s {
 /* Script parsed into a tree */
 typedef struct pcb_qry_node_s pcb_qry_node_t;
 typedef enum {
+	PCBQ_RULE,
+	PCBQ_RNAME,
 	PCBQ_EXPR,
 
 	PCBQ_OP_AND,
@@ -91,6 +94,11 @@ struct pcb_qry_node_s {
 	} data;
 	pcb_qry_val_t result;
 };
+
+/*typedef struct pcb_query_prog_s {
+	htsi var_n2i;
+	
+} pcb_query_prog_t;*/
 
 pcb_qry_node_t *pcb_qry_n_alloc(pcb_qry_nodetype_t ntype);
 pcb_qry_node_t *pcb_qry_n_insert(pcb_qry_node_t *parent, pcb_qry_node_t *ch);

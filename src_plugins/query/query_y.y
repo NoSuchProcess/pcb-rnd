@@ -28,6 +28,7 @@
 #include "unit.h"
 #include "query.h"
 #include "query_l.h"
+#include "compat_misc.h"
 
 #define UNIT_CONV(dst, negative, val, unit) \
 do { \
@@ -95,13 +96,14 @@ do { \
 
 %left '('
 
-%type <n> expr number fields var fname fcall fargs program_expr
+%type <n> number fields var fname fcall fargs words
+%type <n> expr exprs program_expr program_rules rule
 %type <u> maybe_unit
 
 %%
 
 program:
-	  program_rules
+	  program_rules    { *prg_out = $1; }
 	| program_expr     { *prg_out = $1; }
 	;
 
@@ -112,17 +114,17 @@ program_expr:
 
 /* The program is a collection of rules - useful for the DRC */
 program_rules:
-	  /* empty */
-	| program rule
+	  /* empty */            { $$ = NULL; }
+	| rule program_rules     { $$ = $1; $1->next = $2; }
 	;
 
 rule:
-	T_RULE words T_NL exprs
+	T_RULE words T_NL exprs  { $$ = pcb_qry_n_alloc(PCBQ_RULE); $$->data.children = $2; $$->data.children->next = $4; }
 	;
 
 exprs:
-	  /* empty */
-	| exprs expr T_NL
+	  /* empty */            { $$ = NULL; }
+	| exprs expr T_NL        { $$ = $1; $1->next = $2; }
 	;
 
 expr:
@@ -184,6 +186,12 @@ fargs:
 	;
 
 words:
-	  /* empty */
-	| T_STR words
+	  /* empty */            { $$ = pcb_qry_n_alloc(PCBQ_RNAME); $$->data.str = (const char *)pcb_strdup(""); }
+	| T_STR words            {
+			int l1 = strlen($2->data.str), l2 = strlen($1);
+			
+			$2->data.str = (const char *)realloc((void *)$2->data.str, l1+l2+2);
+			memcpy((char *)$2->data.str+l1, $1, l2+1);
+			free($1);
+		}
 	;

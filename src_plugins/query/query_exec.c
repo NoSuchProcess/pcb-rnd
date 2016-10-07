@@ -279,7 +279,9 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			RET_INT(res, !pcb_qry_is_true(&o1));
 
 		case PCBQ_FIELD_OF:
-		
+			BINOPS1();
+/*			return get_field(&o1, node->data.children->next, res);*/
+
 		case PCBQ_OBJ:
 		case PCBQ_VAR:
 		case PCBQ_FNAME:

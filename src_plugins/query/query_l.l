@@ -27,6 +27,7 @@
 #include "unit.h"
 #include "query.h"
 #include "query_y.h"
+#include "compat_misc.h"
 
 static const char *pcb_qry_program, *pcb_qry_program_ptr;
 static int qry_yy_input(char *buf, int buflen);
