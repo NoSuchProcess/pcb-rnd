@@ -83,9 +83,7 @@ static HID_Attribute *xy_get_export_options(int *n)
 /* ---------------------------------------------------------------------------
  * prints a centroid file in a format which includes data needed by a
  * pick and place machine.  Further formatting for a particular factory setup
- * can easily be generated with awk or perl.  In addition, a bill of materials
- * file is generated which can be used for checking stock and purchasing needed
- * materials.
+ * can easily be generated with awk or perl.
  * returns != zero on error
  */
 
