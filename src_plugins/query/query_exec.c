@@ -174,6 +174,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 		case PCBQ_FNAME:
 		case PCBQ_FCALL:
 
+			return -1;
 		case PCBQ_DATA_COORD:       RET_INT(res, node->data.crd);
 		case PCBQ_DATA_DOUBLE:      RET_DBL(res, node->data.dbl);
 		case PCBQ_DATA_STRING:      RET_STR(res, node->data.str);
@@ -181,6 +182,6 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 		case PCBQ_nodetype_max:
 			return -1;
 	}
-	return 0;
+	return -1;
 }
 
