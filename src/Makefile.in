@@ -135,6 +135,7 @@ put /local/pcb/OBJS [@
 	../src_3rd/liblihata/tree_path.o
 	../src_3rd/liblihata/genht/hash.o
 	../src_3rd/liblihata/genht/htsp.o
+	../src_3rd/liblihata/genht/htsi.o
 	../src_3rd/liblihata/genht/htpi.o
 	../src_3rd/liblihata/genht/htip.o
 	../src_3rd/liblihata/genht/htpp.o

@@ -1,3 +1,4 @@
+3841	configure	link string->int hash table (for the query language)
 3822	configure	new global struct: obj_any_t that will allow a query to list objects
 3745	configure	gsch2pcb-rnd footprint lib initialization bug fixed
 3695	configure	bind signals to emergency save so that a copy of the in-memory PCB is saved on most crashes
