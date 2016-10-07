@@ -41,6 +41,16 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 	pcb_qry_list_free(&ctx->all);
 }
 
+/* load unary operand to o1 */
+#define UNOP() \
+do { \
+	if ((node->data.children == NULL) || (node->data.children->next != NULL)) \
+		return -1; \
+	if (pcb_qry_eval(ctx, node->data.children, &o1) < 0) \
+		return -1; \
+} while(0)
+
+/* load 1st binary operand to o1 */
 #define BINOPS1() \
 do { \
 	if ((node->data.children == NULL) || (node->data.children->next == NULL) || (node->data.children->next->next != NULL)) \
@@ -49,12 +59,14 @@ do { \
 		return -1; \
 } while(0)
 
+/* load 2nd binary operand to o2 */
 #define BINOPS2() \
 do { \
 	if (pcb_qry_eval(ctx, node->data.children->next, &o2) < 0) \
 		return -1; \
 } while(0)
 
+/* load binary operands to o1 and o2 */
 #define BINOPS() \
 do { \
 	BINOPS1(); \
@@ -263,6 +275,9 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			return -1;
 
 		case PCBQ_OP_NOT:
+			UNOP();
+			RET_INT(res, !pcb_qry_is_true(&o1));
+
 		case PCBQ_FIELD:
 		case PCBQ_OBJ:
 		case PCBQ_VAR:
