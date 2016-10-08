@@ -8,6 +8,8 @@
  * \copyright Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ *
  * http://www.delorie.com/pcb/boardflip.c
  *
  * Compile like this:
@@ -39,6 +41,9 @@ gcc -I$HOME/geda/pcb-cvs/src -I$HOME/geda/pcb-cvs -O2 -shared boardflip.c -o boa
 #include "create.h"
 #include "rtree.h"
 #include "undo.h"
+#include "plugins.h"
+#include "hid_actions.h"
+
 
 /* Things that need to be flipped:
 
@@ -58,14 +63,14 @@ gcc -I$HOME/geda/pcb-cvs/src -I$HOME/geda/pcb-cvs -O2 -shared boardflip.c -o boa
 #define FLIP(y) (y) = h - (y)
 #define NEG(y) (y) = - (y)
 
-static int boardflip(int argc, char **argv, Coord x, Coord y)
+static int boardflip(int argc, const char **argv, Coord x, Coord y)
 {
 	int h = PCB->MaxHeight;
 	int sides = 0;
 
 	if (argc > 0 && strcasecmp(argv[0], "sides") == 0)
 		sides = 1;
-	printf("argc %d argv %s sides %d\n", argc, argv[0], sides);
+	printf("argc %d argv %s sides %d\n", argc, argc > 0 ? argv[0] : "", sides);
 	LAYER_LOOP(PCB->Data, max_copper_layer + 2);
 	{
 		LINE_LOOP(layer);
@@ -77,7 +82,7 @@ static int boardflip(int argc, char **argv, Coord x, Coord y)
 		TEXT_LOOP(layer);
 		{
 			FLIP(text->Y);
-			TOGGLE_FLAG(ONSOLDERFLAG, text);
+			TOGGLE_FLAG(PCB_FLAG_ONSOLDER, text);
 		}
 		END_LOOP;
 		POLYGON_LOOP(layer);
@@ -117,11 +122,11 @@ static int boardflip(int argc, char **argv, Coord x, Coord y)
 	{
 		FLIP(element->MarkY);
 		if (sides)
-			TOGGLE_FLAG(ONSOLDERFLAG, element);
+			TOGGLE_FLAG(PCB_FLAG_ONSOLDER, element);
 		ELEMENTTEXT_LOOP(element);
 		{
 			FLIP(text->Y);
-			TOGGLE_FLAG(ONSOLDERFLAG, text);
+			TOGGLE_FLAG(PCB_FLAG_ONSOLDER, text);
 		}
 		END_LOOP;
 		ELEMENTLINE_LOOP(element);
@@ -147,7 +152,7 @@ static int boardflip(int argc, char **argv, Coord x, Coord y)
 			FLIP(pad->Point1.Y);
 			FLIP(pad->Point2.Y);
 			if (sides)
-				TOGGLE_FLAG(ONSOLDERFLAG, pad);
+				TOGGLE_FLAG(PCB_FLAG_ONSOLDER, pad);
 		}
 		END_LOOP;
 	}
@@ -165,9 +170,19 @@ static HID_Action boardflip_action_list[] = {
 	{"BoardFlip", NULL, boardflip, NULL, NULL}
 };
 
-REGISTER_ACTIONS(boardflip_action_list)
+char *boardflip_cookie = "boardflip plugin";
 
-void pcb_plugin_init()
+REGISTER_ACTIONS(boardflip_action_list, boardflip_cookie)
+
+static void hid_boardflip_uninit(void)
 {
-	register_boardflip_action_list();
+	hid_remove_actions_by_cookie(boardflip_cookie);
 }
+
+#include "dolists.h"
+pcb_uninit_t hid_boardflip_init()
+{
+	REGISTER_ACTIONS(boardflip_action_list, boardflip_cookie);
+	return hid_boardflip_uninit;
+}
+
