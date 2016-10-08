@@ -4,6 +4,7 @@ include {../src_plugins/autocrop/Plug.tmpasm}
 include {../src_plugins/autoplace/Plug.tmpasm}
 include {../src_plugins/autoroute/Plug.tmpasm}
 include {../src_plugins/boardflip/Plug.tmpasm}
+include {../src_plugins/distalign/Plug.tmpasm}
 include {../src_plugins/vendordrill/Plug.tmpasm}
 include {../src_plugins/puller/Plug.tmpasm}
 include {../src_plugins/djopt/Plug.tmpasm}
