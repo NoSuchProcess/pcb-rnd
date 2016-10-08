@@ -343,7 +343,6 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 		if (strcmp(s2, "value") == 0)  PCB_QRY_RET_STR(res, p->Name[VALUE_INDEX].TextString);
 	}
 	PCB_QRY_RET_INV(res);
-	PCB_QRY_RET_INV(res);
 }
 
 static int field_net(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
