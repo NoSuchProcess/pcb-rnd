@@ -143,6 +143,56 @@ int pcb_qry_list_cmp(pcb_qry_val_t *lst1, pcb_qry_val_t *lst2)
 
 /***********************/
 
+static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
+{
+	LayerType *l = obj->data.layer;
+
+	if ((s1[0] == 'a') && (s1[1] == '\0'))
+		PCB_QRY_RET_STR(res, AttributeGetFromList(&l->Attributes, s2));
+
+	if (s2 != NULL)
+		PCB_QRY_RET_INV(res);
+
+	if (strcmp(s1, "name") == 0)
+		PCB_QRY_RET_STR(res, l->Name);
+	if (strcmp(s1, "visible") == 0)
+		PCB_QRY_RET_INT(res, l->On);
+
+	PCB_QRY_RET_INV(res);
+}
+
+/* process from .layer */
+static int layer_of_obj(pcb_qry_node_t *fld, const char *s2, pcb_qry_val_t *res, pcb_layer_type_t mask)
+{
+	int id;
+	pcb_obj_t tmp;
+	const char *s3;
+
+	if (pcb_layer_list(mask, &id, 1) != 1)
+		PCB_QRY_RET_INV(res);
+
+	if (s2 == NULL) {
+		res->type = PCBQ_VT_OBJ;
+		res->data.obj.type = PCB_OBJ_LAYER;
+		res->data.obj.data.layer = PCB->Data->Layer+id;
+		return 0;
+	}
+
+	tmp.type = PCB_OBJ_LAYER;
+	tmp.data.layer = PCB->Data->Layer+id;
+
+	if (fld->next != NULL) {
+		if (fld->next->type != PCBQ_FIELD)
+			return -1;
+		s3 = fld->next->data.str;
+	}
+	else
+		s3 = NULL;
+
+	return field_layer(&tmp, fld, res, s2, s3);
+}
+
+
 static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
 {
 	PCB_QRY_RET_INV(res);
@@ -191,55 +241,6 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 static int field_net(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
 {
 	PCB_QRY_RET_INV(res);
-}
-
-static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
-{
-	LayerType *l = obj->data.layer;
-
-	if ((s1[0] == 'a') && (s1[1] == '\0'))
-		PCB_QRY_RET_STR(res, AttributeGetFromList(&l->Attributes, s2));
-
-	if (s2 != NULL)
-		PCB_QRY_RET_INV(res);
-
-	if (strcmp(s1, "name") == 0)
-		PCB_QRY_RET_STR(res, l->Name);
-	if (strcmp(s1, "visible") == 0)
-		PCB_QRY_RET_INT(res, l->On);
-
-	PCB_QRY_RET_INV(res);
-}
-
-
-static int layer_of_obj(pcb_qry_node_t *fld, const char *s2, pcb_qry_val_t *res, pcb_layer_type_t mask)
-{
-	int id;
-	pcb_obj_t tmp;
-	const char *s3;
-
-	if (pcb_layer_list(mask, &id, 1) != 1)
-		PCB_QRY_RET_INV(res);
-
-	if (s2 == NULL) {
-		res->type = PCBQ_VT_OBJ;
-		res->data.obj.type = PCB_OBJ_LAYER;
-		res->data.obj.data.layer = PCB->Data->Layer+id;
-		return 0;
-	}
-
-	tmp.type = PCB_OBJ_LAYER;
-	tmp.data.layer = PCB->Data->Layer+id;
-
-	if (fld->next != NULL) {
-		if (fld->next->type != PCBQ_FIELD)
-			return -1;
-		s3 = fld->next->data.str;
-	}
-	else
-		s3 = NULL;
-
-	return field_layer(&tmp, fld, res, s2, s3);
 }
 
 
