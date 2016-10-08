@@ -102,6 +102,7 @@ static int boardflip(int argc, const char **argv, Coord x, Coord y)
 				i++;
 				j--;
 			}
+			InitClip(PCB->Data, layer, polygon);
 		}
 		END_LOOP;
 		ARC_LOOP(layer);
