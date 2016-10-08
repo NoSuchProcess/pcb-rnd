@@ -38,4 +38,26 @@ int pcb_qry_is_true(pcb_qry_val_t *val);
 
 int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res);
 
+/* Helper macros: load value o and return 0 */
+#define PCB_QRY_RET_INT(o, value) \
+do { \
+	o->type = PCBQ_VT_COORD; \
+	o->data.crd = value; \
+	return 0; \
+} while(0)
+
+#define PCB_QRY_RET_DBL(o, value) \
+do { \
+	o->type = PCBQ_VT_DOUBLE; \
+	o->data.dbl = value; \
+	return 0; \
+} while(0)
+
+#define PCB_QRY_RET_STR(o, value) \
+do { \
+	o->type = PCBQ_VT_STRING; \
+	o->data.str = value; \
+	return 0; \
+} while(0)
+
 #endif
