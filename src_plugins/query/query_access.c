@@ -269,18 +269,64 @@ static int field_rat(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, co
 
 static int field_pad(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
 {
-	PCB_QRY_RET_INV(res);
-}
+	PadType *p = obj->data.pad;
 
-static int field_pin(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
-{
+	if ((s1[0] == 'a') && (s1[1] == '\0'))
+		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
+
+	if ((s1[0] == 'p') && (s1[1] == '\0')) {
+		if (strcmp(s2, "x1") == 0)  PCB_QRY_RET_INT(res, p->Point1.X);
+		if (strcmp(s2, "y1") == 0)  PCB_QRY_RET_INT(res, p->Point1.Y);
+		if (strcmp(s2, "x2") == 0)  PCB_QRY_RET_INT(res, p->Point1.X);
+		if (strcmp(s2, "y2") == 0)  PCB_QRY_RET_INT(res, p->Point1.Y);
+		if (strcmp(s2, "thickness") == 0)  PCB_QRY_RET_INT(res, p->Thickness);
+		if (strcmp(s2, "clearance") == 0)  PCB_QRY_RET_INT(res, p->Clearance);
+		if (strcmp(s2, "mask") == 0)  PCB_QRY_RET_INT(res, p->Mask);
+		if (strcmp(s2, "name") == 0)  PCB_QRY_RET_STR(res, p->Name);
+		if (strcmp(s2, "number") == 0)  PCB_QRY_RET_STR(res, p->Number);
+	}
+
+	if (s2 != NULL)
+		PCB_QRY_RET_INV(res);
+
+	if (strcmp(s1, "element") != 0) {
+#warning TODO: call the element
+	}
+
 	PCB_QRY_RET_INV(res);
 }
 
 static int field_via(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
 {
+	PinType *p = obj->data.via;
+
+	if ((s1[0] == 'a') && (s1[1] == '\0'))
+		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
+
+	if ((s1[0] == 'p') && (s1[1] == '\0')) {
+		if (strcmp(s2, "x") == 0)  PCB_QRY_RET_INT(res, p->X);
+		if (strcmp(s2, "y") == 0)  PCB_QRY_RET_INT(res, p->Y);
+		if (strcmp(s2, "thickness") == 0)  PCB_QRY_RET_INT(res, p->Thickness);
+		if (strcmp(s2, "clearance") == 0)  PCB_QRY_RET_INT(res, p->Clearance);
+		if (strcmp(s2, "hole") == 0)  PCB_QRY_RET_INT(res, p->DrillingHole);
+		if (strcmp(s2, "mask") == 0)  PCB_QRY_RET_INT(res, p->Mask);
+		if (strcmp(s2, "name") == 0)  PCB_QRY_RET_STR(res, p->Name);
+		if (strcmp(s2, "number") == 0)  PCB_QRY_RET_STR(res, p->Number);
+	}
 	PCB_QRY_RET_INV(res);
 }
+
+static int field_pin(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
+{
+	if (strcmp(s1, "element") == 0) {
+		if (s2 != NULL)
+			PCB_QRY_RET_INV(res);
+#warning TODO: call the element
+		PCB_QRY_RET_INV(res);
+	}
+	return field_via(obj, fld, res, s1, s2);
+}
+
 
 static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
 {
