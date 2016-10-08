@@ -74,7 +74,7 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 				printf("result: %d\n", pcb_qry_is_true(&res));
 		} while(pcb_qry_it_next(&ec));
 
-/*		pcb_qry_uninit(&ec);*/
+		pcb_qry_uninit(&ec);
 
 		return 0;
 	}

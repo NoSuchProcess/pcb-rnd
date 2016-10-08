@@ -130,6 +130,7 @@ void pcb_qry_list_free(pcb_qry_val_t *lst_)
 		pcb_obj_t *n = pcb_objlist_first(lst);
 		if (n == NULL)
 			break;
+		pcb_objlist_remove(n);
 		free(n);
 	}
 }

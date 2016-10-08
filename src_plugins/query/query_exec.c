@@ -40,6 +40,7 @@ void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root)
 void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 {
 	pcb_qry_list_free(&ctx->all);
+#warning TODO: free the iterator
 }
 
 /* load unary operand to o1 */
