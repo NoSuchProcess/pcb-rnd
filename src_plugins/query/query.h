@@ -90,6 +90,7 @@ typedef enum {
 struct pcb_qry_node_s {
 	pcb_qry_nodetype_t type;
 	pcb_qry_node_t *next;       /* sibling on this level of the tree (or NULL) */
+	pcb_qry_node_t *parent;
 	union {
 		Coord crd;
 		double dbl;

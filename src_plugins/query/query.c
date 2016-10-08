@@ -89,6 +89,7 @@ pcb_qry_node_t *pcb_qry_n_insert(pcb_qry_node_t *parent, pcb_qry_node_t *ch)
 {
 	ch->next = parent->data.children;
 	parent->data.children = ch;
+	ch->parent = parent;
 	return parent;
 }
 
@@ -104,7 +105,7 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 		case PCBQ_ITER_CTX:    pcb_printf("%s%s vars=%d\n", prefix, ind, nd->data.iter_ctx->num_vars); break;
 		case PCBQ_VAR:
 			pcb_printf("%s%s ", prefix, ind);
-			if ((it_ctx != NULL) && (nd->data.crd > it_ctx->num_vars)) {
+			if ((it_ctx != NULL) && (nd->data.crd < it_ctx->num_vars)) {
 				if (it_ctx->it == NULL)
 					pcb_qry_iter_init(it_ctx);
 				printf("%s\n", it_ctx->vn[nd->data.crd]);
@@ -118,8 +119,11 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 		default:
 			printf("\n");
 			if (level < sizeof(ind))  ind[level] = ' ';
-			for(n = nd->data.children; n != NULL; n = n->next)
+			for(n = nd->data.children; n != NULL; n = n->next) {
+				if (n->parent != nd)
+					printf("#parent# ");
 				pcb_qry_dump_tree_(prefix, level+1, n, it_ctx);
+			}
 			return;
 	}
 	if (level < sizeof(ind))  ind[level] = ' ';
@@ -128,24 +132,26 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 
 pcb_query_iter_t *pcb_qry_find_iter(pcb_qry_node_t *node)
 {
-/*
 	for(; node != NULL;node = node->parent) {
 		if (node->type == PCBQ_EXPR_PROG) {
-			if (node->children->type == PCBQ_ITER_CTX)
-				return node->chidren->data.iter_ctx;
+			if (node->data.children->type == PCBQ_ITER_CTX)
+				return node->data.children->data.iter_ctx;
 		}
 		if (node->type == PCBQ_EXPR_PROG) {
-			if (node->children->type == PCBQ_ITER_CTX)
-				return node->chidren->data.iter_ctx;
+			if (node->data.children->type == PCBQ_ITER_CTX)
+				return node->data.children->data.iter_ctx;
 		}
 	}
-*/
+
 	return NULL;
 }
 
 void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top)
 {
 	pcb_query_iter_t *iter_ctx = pcb_qry_find_iter(top);
+
+	if (iter_ctx == NULL)
+		printf("<can't find iter context>\n");
 
 	for(; top != NULL; top = top->next)
 		pcb_qry_dump_tree_(prefix, 0, top, iter_ctx);

@@ -115,8 +115,10 @@ program_expr:
 	expr               {
 		$$ = pcb_qry_n_alloc(PCBQ_EXPR_PROG);
 		$$->data.children = pcb_qry_n_alloc(PCBQ_ITER_CTX);
+		$$->data.children->parent = $$;
 		$$->data.children->data.iter_ctx = iter_ctx;
 		$$->data.children->next = $2;
+		$2->parent = $$;
 	}
 	;
 
@@ -130,9 +132,11 @@ rule:
 	T_RULE words T_NL exprs  {
 		$$ = pcb_qry_n_alloc(PCBQ_RULE);
 		$$->data.children = $2;
+		$2->parent = $$;
 		$$->data.children->next = pcb_qry_n_alloc(PCBQ_ITER_CTX);
 		$$->data.children->next->data.iter_ctx = iter_ctx;
 		$$->data.children->next->next = $4;
+		$4->parent = $$;
 		}
 	;
 
@@ -159,7 +163,7 @@ expr:
 	| expr '*' expr          { BINOP($$, $1, PCBQ_OP_MUL, $3); }
 	| expr '/' expr          { BINOP($$, $1, PCBQ_OP_DIV, $3); }
 	| var                    { $$ = $1; }
-	| var '.' fields         { $$ = pcb_qry_n_alloc(PCBQ_FIELD_OF); $$->data.children = $1; $1->next = $3;}
+	| var '.' fields         { $$ = pcb_qry_n_alloc(PCBQ_FIELD_OF); $$->data.children = $1; $1->next = $3; $1->parent = $3->parent = $$; }
 	;
 
 number:
@@ -185,8 +189,8 @@ var:
 	;
 
 fcall:
-	  fname '(' fargs ')'    { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->data.children = $1; $$->data.children->next = $3; }
-	| fname '(' ')'          { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->data.children = $1; }
+	  fname '(' fargs ')'    { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->data.children = $1; $$->data.children->next = $3; $1->parent = $3->parent = $$; }
+	| fname '(' ')'          { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->data.children = $1; $1->parent = $$; }
 	;
 
 fname:
