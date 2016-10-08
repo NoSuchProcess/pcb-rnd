@@ -195,26 +195,75 @@ static int layer_of_obj(pcb_qry_node_t *fld, const char *s2, pcb_qry_val_t *res,
 
 static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
 {
+	LineType *l = obj->data.line;
+
+	if ((s1[0] == 'a') && (s1[1] == '\0'))
+		PCB_QRY_RET_STR(res, AttributeGetFromList(&l->Attributes, s2));
+
+	if ((s1[0] == 'p') && (s1[1] == '\0')) {
+		if (strcmp(s2, "x1") == 0)  PCB_QRY_RET_INT(res, l->Point1.X);
+		if (strcmp(s2, "y1") == 0)  PCB_QRY_RET_INT(res, l->Point1.Y);
+		if (strcmp(s2, "x2") == 0)  PCB_QRY_RET_INT(res, l->Point1.X);
+		if (strcmp(s2, "y2") == 0)  PCB_QRY_RET_INT(res, l->Point1.Y);
+		if (strcmp(s2, "thickness") == 0)  PCB_QRY_RET_INT(res, l->Thickness);
+		if (strcmp(s2, "clearance") == 0)  PCB_QRY_RET_INT(res, l->Clearance);
+	}
+
 	PCB_QRY_RET_INV(res);
 }
 
 static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
 {
+	ArcType *a = obj->data.arc;
+
+	if ((s1[0] == 'p') && (s1[1] == '\0')) {
+		if (strcmp(s2, "x") == 0)  PCB_QRY_RET_INT(res, a->X);
+		if (strcmp(s2, "y") == 0)  PCB_QRY_RET_INT(res, a->Y);
+		if (strcmp(s2, "thickness") == 0)  PCB_QRY_RET_INT(res, a->Thickness);
+		if (strcmp(s2, "clearance") == 0)  PCB_QRY_RET_INT(res, a->Clearance);
+#warning TODO: this is really angle.start and angle.delta
+		if (strcmp(s2, "start") == 0)  PCB_QRY_RET_INT(res, a->StartAngle);
+		if (strcmp(s2, "delta") == 0)  PCB_QRY_RET_INT(res, a->Delta);
+	}
+
 	PCB_QRY_RET_INV(res);
 }
 
 static int field_text(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
 {
+	TextType *t = obj->data.text;
+
+	if ((s1[0] == 'a') && (s1[1] == '\0'))
+		PCB_QRY_RET_STR(res, AttributeGetFromList(&t->Attributes, s2));
+
+	if ((s1[0] == 'p') && (s1[1] == '\0')) {
+		if (strcmp(s2, "x") == 0)  PCB_QRY_RET_INT(res, t->X);
+		if (strcmp(s2, "y") == 0)  PCB_QRY_RET_INT(res, t->Y);
+		if (strcmp(s2, "scale") == 0)  PCB_QRY_RET_INT(res, t->Scale);
+		if (strcmp(s2, "rotation") == 0)  PCB_QRY_RET_INT(res, t->Direction);
+		if (strcmp(s2, "string") == 0)  PCB_QRY_RET_STR(res, t->TextString);
+	}
+
 	PCB_QRY_RET_INV(res);
 }
 
 static int field_polygon(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
 {
+	PolygonType *p = obj->data.polygon;
+
+	if ((s1[0] == 'a') && (s1[1] == '\0'))
+		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
+
+	if ((s1[0] == 'p') && (s1[1] == '\0')) {
+		if (strcmp(s2, "points") == 0)  PCB_QRY_RET_INT(res, p->PointN);
+	}
+
 	PCB_QRY_RET_INV(res);
 }
 
 static int field_rat(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
 {
+#warning TODO
 	PCB_QRY_RET_INV(res);
 }
 
