@@ -330,6 +330,19 @@ static int field_pin(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, co
 
 static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
 {
+	ElementType *p = obj->data.element;
+
+	if ((s1[0] == 'a') && (s1[1] == '\0'))
+		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
+
+	if ((s1[0] == 'p') && (s1[1] == '\0')) {
+		if (strcmp(s2, "x") == 0)  PCB_QRY_RET_INT(res, p->MarkX);
+		if (strcmp(s2, "y") == 0)  PCB_QRY_RET_INT(res, p->MarkY);
+		if (strcmp(s2, "name") == 0)  PCB_QRY_RET_STR(res, p->Name[NAMEONPCB_INDEX].TextString);
+		if (strcmp(s2, "description") == 0)  PCB_QRY_RET_STR(res, p->Name[DESCRIPTION_INDEX].TextString);
+		if (strcmp(s2, "value") == 0)  PCB_QRY_RET_STR(res, p->Name[VALUE_INDEX].TextString);
+	}
+	PCB_QRY_RET_INV(res);
 	PCB_QRY_RET_INV(res);
 }
 
