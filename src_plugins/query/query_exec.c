@@ -43,7 +43,7 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 #warning TODO: free the iterator
 }
 
-int pcb_qry_run(pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *res), void *user_ctx)
+int pcb_qry_run(pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current), void *user_ctx)
 {
 	pcb_qry_exec_t ec;
 	pcb_qry_val_t res;
@@ -54,8 +54,12 @@ int pcb_qry_run(pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *r
 		return -1;
 
 	do {
-		if (pcb_qry_eval(&ec, prg, &res) == 0)
-			cb(user_ctx, &res);
+		if (pcb_qry_eval(&ec, prg, &res) == 0) {
+			pcb_obj_t *current = NULL;
+			if (ec.iter->all_idx >= 0)
+				current = ec.iter->it[ec.iter->all_idx];
+			cb(user_ctx, &res, current);
+		}
 		else
 			errs++;
 	} while(pcb_qry_it_next(&ec));
@@ -149,9 +153,13 @@ int pcb_qry_it_reset(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 
 	pcb_qry_iter_init(ctx->iter);
 
-	for(n = 0; n < ctx->iter->num_vars; n++)
-		if (strcmp(ctx->iter->vn[n], "@") == 0)
+	for(n = 0; n < ctx->iter->num_vars; n++) {
+		if (strcmp(ctx->iter->vn[n], "@") == 0) {
 			setup_iter_list(ctx, n, &ctx->all);
+			ctx->iter->all_idx = n;
+			break;
+		}
+	}
 
 	return 0;
 }

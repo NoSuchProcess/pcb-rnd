@@ -200,6 +200,7 @@ void pcb_qry_iter_init(pcb_query_iter_t *it)
 	it->vn = malloc(sizeof(char *) * it->num_vars);
 	for (e = htsi_first(&it->names); e; e = htsi_next(&it->names, e))
 		it->vn[e->value] = e->key;
+	it->all_idx = -1;
 }
 
 /******** parser helper ********/

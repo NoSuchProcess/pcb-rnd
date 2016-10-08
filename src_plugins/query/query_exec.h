@@ -34,7 +34,7 @@ typedef struct pcb_qry_exec_s {
 void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root);
 void pcb_qry_uninit(pcb_qry_exec_t *ctx);
 
-int pcb_qry_run(pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *res), void *user_ctx);
+int pcb_qry_run(pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current), void *user_ctx);
 
 int pcb_qry_is_true(pcb_qry_val_t *val);
 

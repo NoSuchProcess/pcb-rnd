@@ -36,7 +36,7 @@ typedef struct {
 	int trues, falses;
 } eval_stat_t;
 
-static void eval_cb(void *user_ctx, pcb_qry_val_t *res)
+static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 {
 	eval_stat_t *st = (eval_stat_t *)user_ctx;
 	int t = pcb_qry_is_true(res);
@@ -53,6 +53,31 @@ static void eval_cb(void *user_ctx, pcb_qry_val_t *res)
 		printf("\n");
 		st->falses++;
 	}
+}
+
+static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
+{
+	if (!pcb_qry_is_true(res))
+		return;
+	printf("select %p\n", current);
+	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ))
+		SET_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
+}
+
+
+static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current), void *user_ctx)
+{
+	pcb_qry_node_t *prg = NULL;
+
+	pcb_qry_set_input(script);
+	qry_parse(&prg);
+
+	if (prg == NULL) {
+		Message(PCB_MSG_ERROR, "Compilation error.\n");
+		return -1;
+	}
+
+	return pcb_qry_run(prg, cb, user_ctx);
 }
 
 static int query_action(int argc, const char **argv, Coord x, Coord y)
@@ -75,24 +100,21 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 	if (strcmp(cmd, "eval") == 0) {
 		int errs;
 		eval_stat_t st;
-		pcb_qry_node_t *prg = NULL;
-		printf("Script eval: '%s'\n", argv[1]);
-
-		printf("Script eval: '%s'\n", argv[1]);
-		pcb_qry_set_input(argv[1]);
-		qry_parse(&prg);
-
-		if (prg == NULL) {
-			printf("Compilation error.\n");
-			return -1;
-		}
 
 		memset(&st, 0, sizeof(st));
-		errs = pcb_qry_run(prg, eval_cb, &st);
+		printf("Script eval: '%s'\n", argv[1]);
+		errs = run_script(argv[1], eval_cb, &st);
+
 		if (errs < 0)
 			printf("Failed to run the query\n");
 		else
 			printf("eval statistics: true=%d false=%d errors=%d\n", st.trues, st.falses, errs);
+		return 0;
+	}
+
+	if (strcmp(cmd, "select") == 0) {
+		if (run_script(argv[1], select_cb, NULL) < 0)
+			printf("Failed to run the query\n");
 		return 0;
 	}
 
