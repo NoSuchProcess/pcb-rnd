@@ -351,7 +351,10 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			PCB_QRY_RET_INT(res, !pcb_qry_is_true(&o1));
 
 		case PCBQ_FIELD_OF:
-			BINOPS1();
+			if ((node->data.children == NULL) || (node->data.children->next == NULL))
+				return -1;
+			if (pcb_qry_eval(ctx, node->data.children, &o1) < 0)
+				return -1;
 			return pcb_qry_obj_field(&o1, node->data.children->next, res);
 
 		case PCBQ_VAR:
