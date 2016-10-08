@@ -34,6 +34,7 @@ void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root)
 	ctx->all.type = PCBQ_VT_LST;
 	pcb_qry_list_all(&ctx->all, PCB_OBJ_ANY);
 	ctx->root = root;
+	ctx->iter = NULL;
 }
 
 void pcb_qry_uninit(pcb_qry_exec_t *ctx)
@@ -129,6 +130,15 @@ int pcb_qry_is_true(pcb_qry_val_t *val)
 	return 0;
 }
 
+static int get_field(pcb_qry_exec_t *ctx, pcb_qry_val_t *o1, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	if (o1->type != PCBQ_VAR)
+		return -1;
+
+/*	ctx->iter_ctx;*/
+	return 0;
+}
+
 int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 {
 	pcb_qry_val_t o1, o2;
@@ -136,6 +146,21 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 	switch(node->type) {
 		case PCBQ_EXPR:
 			return pcb_qry_eval(ctx, node->data.children, res);
+
+		case PCBQ_EXPR_PROG: {
+			pcb_qry_node_t *itn, *exprn;
+			itn = node->data.children;
+			if (itn == NULL)
+				return -1;
+			exprn = itn->next;
+			if (exprn == NULL)
+				return -1;
+			if (itn->type != PCBQ_ITER_CTX)
+				return -1;
+			ctx->iter = itn->data.iter_ctx;
+			return pcb_qry_eval(ctx, exprn, res);
+		}
+
 
 		case PCBQ_OP_AND: /* lazy */
 			BINOPS1();
@@ -280,9 +305,8 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 
 		case PCBQ_FIELD_OF:
 			BINOPS1();
-/*			return get_field(&o1, node->data.children->next, res);*/
+			return get_field(ctx, &o1, node->data.children->next, res);
 
-		case PCBQ_OBJ:
 		case PCBQ_VAR:
 		case PCBQ_FNAME:
 		case PCBQ_FCALL:

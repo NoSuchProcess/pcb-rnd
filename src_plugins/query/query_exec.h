@@ -27,7 +27,8 @@
 
 typedef struct pcb_qry_exec_s {
 	pcb_qry_node_t *root;
-	pcb_qry_val_t all;
+	pcb_qry_val_t all;       /* a list of all objects */
+	pcb_query_iter_t *iter;  /* current iterator */
 } pcb_qry_exec_t;
 
 void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root);

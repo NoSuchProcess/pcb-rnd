@@ -185,7 +185,7 @@ fields:
 
 var:
 	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1); free($1); }
-	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_OBJ); }
+	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, "@"); }
 	;
 
 fcall:
