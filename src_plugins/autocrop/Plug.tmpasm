@@ -1,0 +1,8 @@
+put /local/pcb/mod {autocrop}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/autocrop/autocrop.o @]
+
+switch /local/pcb/autocrop/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

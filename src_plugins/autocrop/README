@@ -1,0 +1,5 @@
+Reduce the board dimensions to just enclose the elements.
+
+#state: works
+#default: buildin
+#implements: (feature)
