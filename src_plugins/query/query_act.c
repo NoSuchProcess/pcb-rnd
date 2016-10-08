@@ -32,6 +32,29 @@ static const char query_action_syntax[] =
 	;
 static const char query_action_help[] = "Perform various queries on PCB data.";
 
+typedef struct {
+	int trues, falses;
+} eval_stat_t;
+
+static void eval_cb(void *user_ctx, pcb_qry_val_t *res)
+{
+	eval_stat_t *st = (eval_stat_t *)user_ctx;
+	int t = pcb_qry_is_true(res);
+
+	printf(" %s", t ? "true" : "false");
+	if (t) {
+		char *resv;
+		resv = pcb_query_sprint_val(res);
+		printf(" (%s)\n", resv);
+		free(resv);
+		st->trues++;
+	}
+	else {
+		printf("\n");
+		st->falses++;
+	}
+}
+
 static int query_action(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *cmd = argc > 0 ? argv[0] : 0;
@@ -50,10 +73,10 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 	}
 
 	if (strcmp(cmd, "eval") == 0) {
-		int tr = 0, fa = 0, inv = 0;
+		int errs;
+		eval_stat_t st;
 		pcb_qry_node_t *prg = NULL;
-		pcb_qry_exec_t ec;
-		pcb_qry_val_t res;
+		printf("Script eval: '%s'\n", argv[1]);
 
 		printf("Script eval: '%s'\n", argv[1]);
 		pcb_qry_set_input(argv[1]);
@@ -64,34 +87,12 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 			return -1;
 		}
 
-		pcb_qry_init(&ec, prg);
-		if (pcb_qry_it_reset(&ec, prg) != 0) {
-			printf("Error setting up the iterator.\n");
-			return -1;
-		}
-
-		do {
-			if (pcb_qry_eval(&ec, prg, &res) == 0) {
-				int t = pcb_qry_is_true(&res);
-				printf(" %s", t ? "true" : "false");
-				if (t) {
-					char *resv;
-					resv = pcb_query_sprint_val(&res);
-					printf(" (%s)\n", resv);
-					free(resv);
-					tr++;
-				}
-				else {
-					printf("\n");
-					fa++;
-				}
-			}
-			else
-				inv++;
-		} while(pcb_qry_it_next(&ec));
-		printf("eval statistics: true=%d false=%d invalid=%d\n", tr, fa, inv);
-		pcb_qry_uninit(&ec);
-
+		memset(&st, 0, sizeof(st));
+		errs = pcb_qry_run(prg, eval_cb, &st);
+		if (errs < 0)
+			printf("Failed to run the query\n");
+		else
+			printf("eval statistics: true=%d false=%d errors=%d\n", st.trues, st.falses, errs);
 		return 0;
 	}
 

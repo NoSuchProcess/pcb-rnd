@@ -43,6 +43,27 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 #warning TODO: free the iterator
 }
 
+int pcb_qry_run(pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *res), void *user_ctx)
+{
+	pcb_qry_exec_t ec;
+	pcb_qry_val_t res;
+	int errs = 0;
+
+	pcb_qry_init(&ec, prg);
+	if (pcb_qry_it_reset(&ec, prg) != 0)
+		return -1;
+
+	do {
+		if (pcb_qry_eval(&ec, prg, &res) == 0)
+			cb(user_ctx, &res);
+		else
+			errs++;
+	} while(pcb_qry_it_next(&ec));
+	pcb_qry_uninit(&ec);
+	return errs;
+}
+
+
 /* load unary operand to o1 */
 #define UNOP() \
 do { \
@@ -345,4 +366,3 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 	}
 	return -1;
 }
-
