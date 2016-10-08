@@ -1,0 +1,8 @@
+Introducing Align() and Distribute(), which work much like the similarly
+named functions in Visio. Given that PCB does not have the concept of
+"first selected object" to draw on, the reference points can be selected
+by arguments.
+
+#state: works
+#default: buildin
+#implements: (feature)

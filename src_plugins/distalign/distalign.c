@@ -9,6 +9,8 @@
  * \copyright Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ *
  * From: Ben Jackson <bjj@saturn.home.ben.com>
  * To: geda-user@moria.seul.org
  * Date: Sat, 24 Feb 2007 22:13:51 -0800
@@ -113,6 +115,8 @@
 #include "move.h"
 #include "draw.h"
 #include "set.h"
+#include "plugins.h"
+#include "hid_actions.h"
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
@@ -143,20 +147,20 @@ enum {
 };
 
 static const char *keywords[] = {
-	[K_X] "X",
-	[K_Y] "Y",
-	[K_Lefts] "Lefts",
-	[K_Rights] "Rights",
-	[K_Tops] "Tops",
-	[K_Bottoms] "Bottoms",
-	[K_Centers] "Centers",
-	[K_Marks] "Marks",
-	[K_Gaps] "Gaps",
-	[K_First] "First",
-	[K_Last] "Last",
-	[K_Average] "Average",
-	[K_Crosshair] "Crosshair",
-	[K_Gridless] "Gridless",
+	/*[K_X] */ "X",
+	/*[K_Y] */ "Y",
+	/*[K_Lefts] */ "Lefts",
+	/*[K_Rights] */ "Rights",
+	/*[K_Tops] */ "Tops",
+	/*[K_Bottoms] */ "Bottoms",
+	/*[K_Centers] */ "Centers",
+	/*[K_Marks] */ "Marks",
+	/*[K_Gaps] */ "Gaps",
+	/*[K_First] */ "First",
+	/*[K_Last] */ "Last",
+	/*[K_Average] */ "Average",
+	/*[K_Crosshair] */ "Crosshair",
+	/*[K_Gridless] */ "Gridless",
 };
 
 static int keyword(const char *s)
@@ -245,7 +249,7 @@ static int sort_elements_by_pos(int op, int dir, int point)
 		dir = dir == K_X ? K_Y : K_X;	/* see above */
 	ELEMENT_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(SELECTEDFLAG, element))
+		if (!TEST_FLAG(PCB_FLAG_SELECTED, element))
 			continue;
 		nsel++;
 	}
@@ -257,7 +261,7 @@ static int sort_elements_by_pos(int op, int dir, int point)
 	nsel = 0;
 	ELEMENT_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(SELECTEDFLAG, element))
+		if (!TEST_FLAG(PCB_FLAG_SELECTED, element))
 			continue;
 		elements_by_pos[nsel].element = element;
 		elements_by_pos[nsel++].pos = coord(element, dir, point);
@@ -298,7 +302,7 @@ static Coord reference_coord(int op, int x, int y, int dir, int point, int refer
 		q = 0;
 		ELEMENT_LOOP(PCB->Data);
 		{
-			if (!TEST_FLAG(SELECTEDFLAG, element))
+			if (!TEST_FLAG(PCB_FLAG_SELECTED, element))
 				continue;
 			q += coord(element, dir, point);
 			nsel++;
@@ -340,7 +344,7 @@ static Coord reference_coord(int op, int x, int y, int dir, int point, int refer
  *
  * Defaults are Marks, First.
  */
-static int align(int argc, char **argv, Coord x, Coord y)
+static int align(int argc, const char **argv, Coord x, Coord y)
 {
 	int dir;
 	int point;
@@ -414,7 +418,7 @@ static int align(int argc, char **argv, Coord x, Coord y)
 	{
 		Coord p, dp, dx, dy;
 
-		if (!TEST_FLAG(SELECTEDFLAG, element))
+		if (!TEST_FLAG(PCB_FLAG_SELECTED, element))
 			continue;
 		/* find delta from reference point to reference point */
 		p = coord(element, dir, point);
@@ -431,7 +435,7 @@ static int align(int argc, char **argv, Coord x, Coord y)
 			else
 				dx = 0;
 			MoveElementLowLevel(PCB->Data, element, dx, dy);
-			AddObjectToMoveUndoList(ELEMENT_TYPE, NULL, NULL, element, dx, dy);
+			AddObjectToMoveUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
 			changed = 1;
 		}
 	}
@@ -461,7 +465,7 @@ static int align(int argc, char **argv, Coord x, Coord y)
  * Distributed elements always retain the same relative order they had
  * before they were distributed. \n
  */
-static int distribute(int argc, char **argv, Coord x, Coord y)
+static int distribute(int argc, const char **argv, Coord x, Coord y)
 {
 	int dir;
 	int point;
@@ -596,7 +600,7 @@ static int distribute(int argc, char **argv, Coord x, Coord y)
 			else
 				dx = 0;
 			MoveElementLowLevel(PCB->Data, element, dx, dy);
-			AddObjectToMoveUndoList(ELEMENT_TYPE, NULL, NULL, element, dx, dy);
+			AddObjectToMoveUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
 			changed = 1;
 		}
 		/* in gaps mode, accumulate part widths */
@@ -622,9 +626,20 @@ static HID_Action distalign_action_list[] = {
 	{"align", NULL, align, "Align Elements", align_syntax}
 };
 
-REGISTER_ACTIONS(distalign_action_list)
+static char *distalign_cookie = "distalign plugin";
 
-void hid_distalign_init()
+REGISTER_ACTIONS(distalign_action_list, distalign_cookie)
+
+static void hid_distalign_uninit(void)
 {
-	register_distalign_action_list();
+	hid_remove_actions_by_cookie(distalign_cookie);
 }
+
+#include "dolists.h"
+pcb_uninit_t hid_distalign_init()
+{
+	REGISTER_ACTIONS(distalign_action_list, distalign_cookie);
+	return hid_distalign_uninit;
+}
+
+

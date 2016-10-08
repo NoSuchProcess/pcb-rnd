@@ -1,0 +1,8 @@
+put /local/pcb/mod {distalign}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/distalign/distalign.o @]
+
+switch /local/pcb/distalign/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
