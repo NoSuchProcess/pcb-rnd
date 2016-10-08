@@ -12,6 +12,9 @@
  * Substantially from distalign.c
  * Copyright (C) 2007 Ben Jackson <ben@ben.com>
  *
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ *
+ *
  * Modifications and internal differences are significant enough warrant
  * a new related plugin.
  */
@@ -32,6 +35,9 @@
 #include "move.h"
 #include "draw.h"
 #include "set.h"
+#include "plugins.h"
+#include "hid_actions.h"
+#include "conf_core.h"
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
@@ -61,19 +67,19 @@ enum {
 };
 
 static const char *keywords[] = {
-	[K_X] "X",
-	[K_Y] "Y",
-	[K_Lefts] "Lefts",
-	[K_Rights] "Rights",
-	[K_Tops] "Tops",
-	[K_Bottoms] "Bottoms",
-	[K_Centers] "Centers",
-	[K_Gaps] "Gaps",
-	[K_First] "First",
-	[K_Last] "Last",
-	[K_Average] "Average",
-	[K_Crosshair] "Crosshair",
-	[K_Gridless] "Gridless",
+	/* [K_X] */ "X",
+	/* [K_Y] */ "Y",
+	/* [K_Lefts] */ "Lefts",
+	/* [K_Rights] */ "Rights",
+	/* [K_Tops] */ "Tops",
+	/* [K_Bottoms] */ "Bottoms",
+	/* [K_Centers] */ "Centers",
+	/* [K_Gaps] */ "Gaps",
+	/* [K_First] */ "First",
+	/* [K_Last] */ "Last",
+	/* [K_Average] */ "Average",
+	/* [K_Crosshair] */ "Crosshair",
+	/* [K_Gridless] */ "Gridless",
 };
 
 static int keyword(const char *s)
@@ -164,15 +170,15 @@ static int sort_texts_by_pos(int op, int dir, int point)
 	ELEMENT_LOOP(PCB->Data);
 	{
 		TextType *text;
-		text = &(element)->Name[NAME_INDEX(PCB)];
-		if (!TEST_FLAG(SELECTEDFLAG, text))
+		text = &(element)->Name[NAME_INDEX()];
+		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
 			continue;
 		nsel++;
 	}
 	END_LOOP;
 	ALLTEXT_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(SELECTEDFLAG, text))
+		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
 			continue;
 		nsel++;
 	}
@@ -185,20 +191,20 @@ static int sort_texts_by_pos(int op, int dir, int point)
 	ELEMENT_LOOP(PCB->Data);
 	{
 		TextType *text;
-		text = &(element)->Name[NAME_INDEX(PCB)];
-		if (!TEST_FLAG(SELECTEDFLAG, text))
+		text = &(element)->Name[NAME_INDEX()];
+		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
 			continue;
 		texts_by_pos[nsel].text = text;
-		texts_by_pos[nsel].type = ELEMENTNAME_TYPE;
+		texts_by_pos[nsel].type = PCB_TYPE_ELEMENT_NAME;
 		texts_by_pos[nsel++].pos = coord(text, dir, point);
 	}
 	END_LOOP;
 	ALLTEXT_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(SELECTEDFLAG, text))
+		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
 			continue;
 		texts_by_pos[nsel].text = text;
-		texts_by_pos[nsel].type = TEXT_TYPE;
+		texts_by_pos[nsel].type = PCB_TYPE_TEXT;
 		texts_by_pos[nsel++].pos = coord(text, dir, point);
 	}
 	ENDALL_LOOP;
@@ -276,7 +282,7 @@ static Coord reference_coord(int op, int x, int y, int dir, int point, int refer
  *
  * Defaults are Lefts/Tops, First
  */
-static int aligntext(int argc, char **argv, Coord x, Coord y)
+static int aligntext(int argc, const char **argv, Coord x, Coord y)
 {
 	int dir;
 	int point;
@@ -356,8 +362,8 @@ static int aligntext(int argc, char **argv, Coord x, Coord y)
 	ELEMENT_LOOP(PCB->Data);
 	{
 		TextType *text;
-		text = &(element)->Name[NAME_INDEX(PCB)];
-		if (!TEST_FLAG(SELECTEDFLAG, text))
+		text = &(element)->Name[NAME_INDEX()];
+		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
 			continue;
 		/* find delta from reference point to reference point */
 		p = coord(text, dir, point);
@@ -376,7 +382,7 @@ static int aligntext(int argc, char **argv, Coord x, Coord y)
 				dy = 0;
 			else
 				dx = 0;
-			MoveObject(ELEMENTNAME_TYPE, element, text, text, dx, dy);
+			MoveObject(PCB_TYPE_ELEMENT_NAME, element, text, text, dx, dy);
 			changed = 1;
 		}
 	}
@@ -384,7 +390,7 @@ static int aligntext(int argc, char **argv, Coord x, Coord y)
 	/* Selected bare text objects */
 	ALLTEXT_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(SELECTEDFLAG, text)) {
+		if (TEST_FLAG(PCB_FLAG_SELECTED, text)) {
 			/* find delta from reference point to reference point */
 			p = coord(text, dir, point);
 			dp = q - p;
@@ -402,7 +408,7 @@ static int aligntext(int argc, char **argv, Coord x, Coord y)
 					dy = 0;
 				else
 					dx = 0;
-				MoveObject(TEXT_TYPE, layer, text, text, dx, dy);
+				MoveObject(PCB_TYPE_TEXT, layer, text, text, dx, dy);
 				changed = 1;
 			}
 		}
@@ -412,7 +418,7 @@ static int aligntext(int argc, char **argv, Coord x, Coord y)
 		RestoreUndoSerialNumber();
 		IncrementUndoSerialNumber();
 		Redraw();
-		SetChangedFlag(true);
+		SetChangedFlag(pcb_true);
 	}
 	free_texts_by_pos();
 	return 0;
@@ -434,7 +440,7 @@ static int aligntext(int argc, char **argv, Coord x, Coord y)
  * Distributed texts always retain the same relative order they had
  * before they were distributed. \n
  */
-static int distributetext(int argc, char **argv, Coord x, Coord y)
+static int distributetext(int argc, const char **argv, Coord x, Coord y)
 {
 	int dir;
 	int point;
@@ -579,8 +585,8 @@ static int distributetext(int argc, char **argv, Coord x, Coord y)
 			else
 				dx = 0;
 			/* need to know if the text is part of an element,
-			 * all are TEXT_TYPE, but text associated with an
-			 * element is also ELEMENTNAME_TYPE.  For undo, this is
+			 * all are PCB_TYPE_TEXT, but text associated with an
+			 * element is also PCB_TYPE_ELEMENT_NAME.  For undo, this is
 			 * significant in search.c: SearchObjectByID.
 			 *
 			 * MoveObject() is better as in aligntext(), but we
@@ -603,7 +609,7 @@ static int distributetext(int argc, char **argv, Coord x, Coord y)
 		RestoreUndoSerialNumber();
 		IncrementUndoSerialNumber();
 		Redraw();
-		SetChangedFlag(true);
+		SetChangedFlag(pcb_true);
 	}
 	free_texts_by_pos();
 	return 0;
@@ -614,9 +620,18 @@ static HID_Action distaligntext_action_list[] = {
 	{"aligntext", NULL, aligntext, "Align Text Elements", aligntext_syntax}
 };
 
-REGISTER_ACTIONS(distaligntext_action_list)
+char *distaligntext_cookie = "distaligntext plugin";
 
-void hid_distaligntext_init()
+REGISTER_ACTIONS(distaligntext_action_list, distaligntext_cookie)
+
+static void hid_distaligntext_uninit(void)
 {
-	register_distaligntext_action_list();
+	hid_remove_actions_by_cookie(distaligntext_cookie);
+}
+
+#include "dolists.h"
+pcb_uninit_t hid_distaligntext_init()
+{
+	REGISTER_ACTIONS(distaligntext_action_list, distaligntext_cookie);
+	return hid_distaligntext_uninit;
 }
