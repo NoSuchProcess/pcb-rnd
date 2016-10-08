@@ -67,4 +67,12 @@ do { \
 	return 0; \
 } while(0)
 
+/* The case when the operation couldn't be carried out, sort of NaN */
+#define PCB_QRY_RET_INV(o) \
+do { \
+	o->type = PCBQ_VT_VOID; \
+	return 0; \
+} while(0)
+
+
 #endif

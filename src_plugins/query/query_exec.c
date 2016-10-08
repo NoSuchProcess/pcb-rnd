@@ -77,8 +77,10 @@ do { \
 
 static int promote(pcb_qry_val_t *a, pcb_qry_val_t *b)
 {
-	if ((a->type == PCBQ_VT_VOID) || (b->type == PCBQ_VT_VOID))
-		return -1;
+	if ((a->type == PCBQ_VT_VOID) || (b->type == PCBQ_VT_VOID)) {
+		a->type = b->type = PCBQ_VT_VOID;
+		return 0;
+	}
 	if (a->type == b->type)
 		return 0;
 	switch(a->type) {
@@ -193,12 +195,12 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (promote(&o1, &o2) != 0)
 				return -1;
 			switch(o1.type) {
+				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_OBJ:      PCB_QRY_RET_INT(res, ((o1.data.obj.type) == (o2.data.obj.type)) && ((o1.data.obj.data.any) == (o2.data.obj.data.any)));
 				case PCBQ_VT_LST:      PCB_QRY_RET_INT(res, pcb_qry_list_cmp(&o1, &o2));
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd == o2.data.crd);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl == o2.data.dbl);
 				case PCBQ_VT_STRING:   PCB_QRY_RET_INT(res, strcmp(o1.data.str, o2.data.str) == 0);
-				case PCBQ_VT_VOID:     return -1;
 			}
 			return -1;
 
@@ -207,12 +209,12 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (promote(&o1, &o2) != 0)
 				return -1;
 			switch(o1.type) {
+				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_OBJ:      PCB_QRY_RET_INT(res, ((o1.data.obj.type) != (o2.data.obj.type)) || ((o1.data.obj.data.any) != (o2.data.obj.data.any)));
 				case PCBQ_VT_LST:      PCB_QRY_RET_INT(res, !pcb_qry_list_cmp(&o1, &o2));
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd != o2.data.crd);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl != o2.data.dbl);
 				case PCBQ_VT_STRING:   PCB_QRY_RET_INT(res, strcmp(o1.data.str, o2.data.str) != 0);
-				case PCBQ_VT_VOID:     return -1;
 			}
 			return -1;
 
@@ -221,6 +223,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (promote(&o1, &o2) != 0)
 				return -1;
 			switch(o1.type) {
+				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd >= o2.data.crd);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl >= o2.data.dbl);
 				case PCBQ_VT_STRING:   PCB_QRY_RET_INT(res, strcmp(o1.data.str, o2.data.str) >= 0);
@@ -233,6 +236,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (promote(&o1, &o2) != 0)
 				return -1;
 			switch(o1.type) {
+				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd <= o2.data.crd);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl <= o2.data.dbl);
 				case PCBQ_VT_STRING:   PCB_QRY_RET_INT(res, strcmp(o1.data.str, o2.data.str) <= 0);
@@ -245,6 +249,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (promote(&o1, &o2) != 0)
 				return -1;
 			switch(o1.type) {
+				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd > o2.data.crd);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl > o2.data.dbl);
 				case PCBQ_VT_STRING:   PCB_QRY_RET_INT(res, strcmp(o1.data.str, o2.data.str) > 0);
@@ -256,6 +261,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (promote(&o1, &o2) != 0)
 				return -1;
 			switch(o1.type) {
+				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd < o2.data.crd);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl < o2.data.dbl);
 				case PCBQ_VT_STRING:   PCB_QRY_RET_INT(res, strcmp(o1.data.str, o2.data.str) < 0);
@@ -268,6 +274,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (promote(&o1, &o2) != 0)
 				return -1;
 			switch(o1.type) {
+				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd + o2.data.crd);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_DBL(res, o1.data.dbl + o2.data.dbl);
 				default:               return -1;
@@ -279,6 +286,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (promote(&o1, &o2) != 0)
 				return -1;
 			switch(o1.type) {
+				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd - o2.data.crd);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_DBL(res, o1.data.dbl - o2.data.dbl);
 				default:               return -1;
@@ -290,6 +298,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (promote(&o1, &o2) != 0)
 				return -1;
 			switch(o1.type) {
+				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd * o2.data.crd);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_DBL(res, o1.data.dbl * o2.data.dbl);
 				default:               return -1;
@@ -301,6 +310,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (promote(&o1, &o2) != 0)
 				return -1;
 			switch(o1.type) {
+				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd / o2.data.crd);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_DBL(res, o1.data.dbl / o2.data.dbl);
 				default:               return -1;

@@ -73,7 +73,7 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 		do {
 			if (pcb_qry_eval(&ec, prg, &res) == 0) {
 				int t = pcb_qry_is_true(&res);
-				printf("result: %s", t ? "true" : "false");
+				printf(" %s", t ? "true" : "false");
 				if (t) {
 					char *resv;
 					resv = pcb_query_sprint_val(&res);
