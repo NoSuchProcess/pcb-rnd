@@ -35,4 +35,7 @@ int pcb_qry_list_cmp(pcb_qry_val_t *lst1, pcb_qry_val_t *lst2);
 
 void pcb_qry_list_free(pcb_qry_val_t *lst_);
 
+int pcb_qry_obj_field(pcb_qry_val_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res);
+
+
 #endif

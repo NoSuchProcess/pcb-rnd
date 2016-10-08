@@ -132,11 +132,11 @@ int pcb_qry_is_true(pcb_qry_val_t *val)
 
 static int get_field(pcb_qry_exec_t *ctx, pcb_qry_val_t *o1, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
+	pcb_qry_val_t *v;
 	if (o1->type != PCBQ_VAR)
 		return -1;
-
-/*	ctx->iter_ctx;*/
-	return 0;
+	v = ctx->iter->it[o1->data.crd];
+	return pcb_qry_obj_field(v, fld, res);
 }
 
 int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)

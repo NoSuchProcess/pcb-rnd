@@ -137,3 +137,18 @@ int pcb_qry_list_cmp(pcb_qry_val_t *lst1, pcb_qry_val_t *lst2)
 	abort();
 }
 
+int pcb_qry_obj_field(pcb_qry_val_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	const char *s1;
+	if (fld->type != PCBQ_FIELD)
+		return -1;
+	s1 = fld->data.str;
+
+	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+		
+	}
+
+	return -1;
+}
+
+
