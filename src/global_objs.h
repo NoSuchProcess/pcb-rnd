@@ -197,6 +197,7 @@ typedef struct font_st {								/* complete set of symbols */
 } FontType, *FontTypePtr;
 
 
+/* TODO: this could be replaced with pcb_obj_t */
 typedef struct onpoint_st {
 	int type;
 	union {
