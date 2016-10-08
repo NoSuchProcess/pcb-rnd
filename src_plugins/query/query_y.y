@@ -112,7 +112,12 @@ program:
 /* The program is a single expression - useful for search */
 program_expr:
 	{ iter_ctx = pcb_qry_iter_alloc(); }
-	expr               { $$ = $2; }
+	expr               {
+		$$ = pcb_qry_n_alloc(PCBQ_EXPR_PROG);
+		$$->data.children = pcb_qry_n_alloc(PCBQ_ITER_CTX);
+		$$->data.children->data.iter_ctx = iter_ctx;
+		$$->data.children->next = $2;
+	}
 	;
 
 /* The program is a collection of rules - useful for the DRC */
@@ -122,7 +127,13 @@ program_rules:
 	;
 
 rule:
-	T_RULE words T_NL exprs  { $$ = pcb_qry_n_alloc(PCBQ_RULE); $$->data.children = $2; $$->data.children->next = $4; }
+	T_RULE words T_NL exprs  {
+		$$ = pcb_qry_n_alloc(PCBQ_RULE);
+		$$->data.children = $2;
+		$$->data.children->next = pcb_qry_n_alloc(PCBQ_ITER_CTX);
+		$$->data.children->next->data.iter_ctx = iter_ctx;
+		$$->data.children->next->next = $4;
+		}
 	;
 
 exprs:
@@ -169,7 +180,7 @@ fields:
 	;
 
 var:
-	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1); }
+	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1); free($1); }
 	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_OBJ); }
 	;
 

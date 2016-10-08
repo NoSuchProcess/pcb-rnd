@@ -45,7 +45,7 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 		printf("Script dump: '%s'\n", argv[1]);
 		pcb_qry_set_input(argv[1]);
 		qry_parse(&prg);
-		pcb_qry_dump_tree(" ", prg, NULL);
+		pcb_qry_dump_tree(" ", prg);
 		return 0;
 	}
 

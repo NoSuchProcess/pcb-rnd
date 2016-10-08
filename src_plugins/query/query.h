@@ -54,7 +54,9 @@ typedef struct pcb_qry_node_s pcb_qry_node_t;
 typedef enum {
 	PCBQ_RULE,
 	PCBQ_RNAME,
+	PCBQ_EXPR_PROG,
 	PCBQ_EXPR,
+	PCBQ_ITER_CTX,
 
 	PCBQ_OP_AND,
 	PCBQ_OP_OR,
@@ -92,6 +94,7 @@ struct pcb_qry_node_s {
 		Coord crd;
 		double dbl;
 		const char *str;
+		pcb_query_iter_t *iter_ctx;
 		pcb_qry_node_t *children;   /* first child (NULL for a leaf node) */
 	} data;
 	pcb_qry_val_t result;
@@ -101,7 +104,7 @@ struct pcb_qry_node_s {
 pcb_qry_node_t *pcb_qry_n_alloc(pcb_qry_nodetype_t ntype);
 pcb_qry_node_t *pcb_qry_n_insert(pcb_qry_node_t *parent, pcb_qry_node_t *ch);
 
-void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top, pcb_query_iter_t *it_ctx);
+void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top);
 
 void pcb_qry_set_input(const char *script);
 

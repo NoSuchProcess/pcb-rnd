@@ -43,7 +43,9 @@
 const char *type_name[PCBQ_nodetype_max] = {
 	"PCBQ_RULE",
 	"PCBQ_RNAME",
+	"PCBQ_EXPR_PROG",
 	"PCBQ_EXPR",
+	"PCBQ_ITER_CTX",
 	"PCBQ_OP_AND",
 	"PCBQ_OP_OR",
 	"PCBQ_OP_EQ",
@@ -99,6 +101,7 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 	switch(nd->type) {
 		case PCBQ_DATA_COORD:  pcb_printf("%s%s %mI (%$mm)\n", prefix, ind, nd->data.crd, nd->data.crd); break;
 		case PCBQ_DATA_DOUBLE: pcb_printf("%s%s %f\n", prefix, ind, nd->data.dbl); break;
+		case PCBQ_ITER_CTX:    pcb_printf("%s%s vars=%d\n", prefix, ind, nd->data.iter_ctx->num_vars); break;
 		case PCBQ_VAR:
 			pcb_printf("%s%s ", prefix, ind);
 			if ((it_ctx != NULL) && (nd->data.crd > it_ctx->num_vars)) {
@@ -108,7 +111,7 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 			}
 			else
 				printf("<invalid:%d>\n", nd->data.crd);
-
+			break;
 		case PCBQ_FIELD:
 		case PCBQ_FNAME:
 		case PCBQ_DATA_STRING: pcb_printf("%s%s '%s'\n", prefix, ind, nd->data.str); break;
@@ -122,10 +125,30 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 	if (level < sizeof(ind))  ind[level] = ' ';
 }
 
-void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top, pcb_query_iter_t *it_ctx)
+
+pcb_query_iter_t *pcb_qry_find_iter(pcb_qry_node_t *node)
 {
+/*
+	for(; node != NULL;node = node->parent) {
+		if (node->type == PCBQ_EXPR_PROG) {
+			if (node->children->type == PCBQ_ITER_CTX)
+				return node->chidren->data.iter_ctx;
+		}
+		if (node->type == PCBQ_EXPR_PROG) {
+			if (node->children->type == PCBQ_ITER_CTX)
+				return node->chidren->data.iter_ctx;
+		}
+	}
+*/
+	return NULL;
+}
+
+void pcb_qry_dump_tree(const char *prefix, pcb_qry_node_t *top)
+{
+	pcb_query_iter_t *iter_ctx = pcb_qry_find_iter(top);
+
 	for(; top != NULL; top = top->next)
-		pcb_qry_dump_tree_(prefix, 0, top, it_ctx);
+		pcb_qry_dump_tree_(prefix, 0, top, iter_ctx);
 }
 
 /******** iter admin ********/
