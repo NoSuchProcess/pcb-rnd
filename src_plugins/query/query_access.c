@@ -25,6 +25,8 @@
 #include "global.h"
 #include "data.h"
 #include "query_access.h"
+#include "query_exec.h"
+#include "misc.h"
 
 #define APPEND(_ctx_, _type_, _obj_) \
 do { \
@@ -137,16 +139,63 @@ int pcb_qry_list_cmp(pcb_qry_val_t *lst1, pcb_qry_val_t *lst2)
 	abort();
 }
 
-int pcb_qry_obj_field(pcb_qry_val_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	const char *s1;
+	const char *s1, *s2;
+	pcb_obj_t *obj;
+
+	if (objval->type != PCBQ_VT_OBJ)
+		return -1;
+	obj = &objval->data.obj;
+
 	if (fld->type != PCBQ_FIELD)
 		return -1;
 	s1 = fld->data.str;
+	fld = fld->next;
+	if (fld != NULL) {
+		if (fld->type != PCBQ_FIELD)
+			return -1;
+		s2 = fld->data.str;
+	}
+	else
+		s2 = NULL;
 
 	if ((s1[0] == 'a') && (s1[1] == '\0')) {
-		
+		if (s2 == NULL)
+			return -1;
+		PCB_QRY_RET_STR(res, AttributeGetFromList(&obj->data.anyobj->Attributes, s2));
 	}
+
+	if ((s1[0] == 'I') && (s1[1] == 'D') && (s1[2] == '\0'))
+		PCB_QRY_RET_INT(res, obj->data.anyobj->ID);
+
+	if (strcmp(s1, "bbox") == 0) {
+		if (s2 == NULL)
+			return -1;
+		if (s2[0] == 'x') {
+			if (s2[1] == '1')
+				PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X1);
+			if (s2[1] == '2')
+				PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X2);
+			return -1;
+		}
+		if (s2[0] == 'y') {
+			if (s2[1] == '1')
+				PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y1);
+			if (s2[1] == '2')
+				PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y2);
+			return -1;
+		}
+		if (s2[0] == 'w') /* width */
+			PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X2 - obj->data.anyobj->BoundingBox.X1);
+		if (s2[0] == 'h') /* height */
+			PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y2 - obj->data.anyobj->BoundingBox.Y1);
+		if (s2[0] == 'a') /* area */
+			PCB_QRY_RET_INT(res, (obj->data.anyobj->BoundingBox.Y2 - obj->data.anyobj->BoundingBox.Y1) * (obj->data.anyobj->BoundingBox.X2 - obj->data.anyobj->BoundingBox.X1));
+	}
+
+	if (strcmp(s1, "type") == 0)
+		PCB_QRY_RET_INT(res, obj->type);
 
 	return -1;
 }
