@@ -8,6 +8,9 @@
  * \copyright Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ *
+ *
  * Pushes lines out of the way.
  */
 
@@ -21,7 +24,6 @@
 #include "global.h"
 #include "data.h"
 #include "hid.h"
-#include "hid_draw.h"
 #include "misc.h"
 #include "create.h"
 #include "rtree.h"
@@ -32,8 +34,13 @@
 #include "error.h"
 #include "set.h"
 #include "pcb-printf.h"
+#include "plugins.h"
+#include "hid_actions.h"
+#include "layer.h"
+#include "conf_core.h"
+#include "misc_util.h"
 
-//#define DEBUG_POLYAREA
+/*#define DEBUG_POLYAREA*/
 
 double vect_dist2(Vector v1, Vector v2);
 #define Vcpy2(r,a)              {(r)[0] = (a)[0]; (r)[1] = (a)[1];}
@@ -42,7 +49,7 @@ double vect_dist2(Vector v1, Vector v2);
         t = (a)[1], (a)[1] = (b)[1], (b)[1] = t; \
 }
 
-//{if (!Marked.status && side==NORTHWEST) { DrawMark(True); Marked.status = True; Marked.X = p[0]; Marked.Y = p[1]; DrawMark(False);} }
+/*{if (!Marked.status && side==NORTHWEST) { DrawMark(pcb_true); Marked.status = True; Marked.X = p[0]; Marked.Y = p[1]; DrawMark(False);} }*/
 
 enum {
 	NORTH,
@@ -92,13 +99,13 @@ static void DebugPOLYAREA(POLYAREA * s, char *color)
 				y[i++] = v->point[1];
 			}
 			if (1) {
-				gui->graphics->set_color(Output.fgGC, color ? color : PCB->ConnectedColor);
-				gui->graphics->set_line_width(Output.fgGC, 1);
+				gui->set_color(Output.fgGC, color ? color : PCB->ConnectedColor);
+				gui->set_line_width(Output.fgGC, 1);
 				for (i = 0; i < n - 1; i++) {
-					gui->graphics->draw_line(Output.fgGC, x[i], y[i], x[i + 1], y[i + 1]);
-					//  gui->fill_circle (Output.fgGC, x[i], y[i], 30);
+					gui->draw_line(Output.fgGC, x[i], y[i], x[i + 1], y[i + 1]);
+					/*  gui->fill_circle (Output.fgGC, x[i], y[i], 30);*/
 				}
-				gui->graphics->draw_line(Output.fgGC, x[n - 1], y[n - 1], x[0], y[0]);
+				gui->draw_line(Output.fgGC, x[n - 1], y[n - 1], x[0], y[0]);
 			}
 			free(x);
 			free(y);
@@ -204,9 +211,10 @@ static BoxType POLYAREA_boundingBox(POLYAREA * a)
  */
 static void POLYAREA_findXmostLine(POLYAREA * a, int side, Vector p, Vector q, int clearance)
 {
+	int extra;
 	p[0] = p[1] = 0;
 	q[0] = q[1] = 0;
-	int extra = a->contours->xmax - a->contours->xmin + a->contours->ymax - a->contours->ymin;
+	extra = a->contours->xmax - a->contours->xmin + a->contours->ymax - a->contours->ymin;
 	switch (side) {
 	case NORTH:
 		p[1] = q[1] = a->contours->ymin - clearance;
@@ -266,7 +274,7 @@ static void POLYAREA_findXmostLine(POLYAREA * a, int side, Vector p, Vector q, i
 				minmax = 1;
 				break;
 			default:
-				Message("bjj: aiee, what side?");
+				Message(PCB_MSG_ERROR, "jostle: aiee, what side?");
 				return;
 			}
 			v = &a->contours->head;
@@ -315,7 +323,7 @@ static LineType *CreateVectorLineOnLayer(LayerType * layer, Vector a, Vector b, 
 
 	line = CreateNewLineOnLayer(layer, a[0], a[1], b[0], b[1], thickness, clearance, flags);
 	if (line) {
-		AddObjectToCreateUndoList(LINE_TYPE, layer, line, line);
+		AddObjectToCreateUndoList(PCB_TYPE_LINE, layer, line, line);
 	}
 	return line;
 }
@@ -358,7 +366,7 @@ static int MakeBypassingLines(POLYAREA * brush, LayerType * layer, LineType * li
 	Vector a, b, c, d, junk;
 	int hits;
 
-	SET_FLAG(DRCFLAG, line);			/* will cause sublines to inherit */
+	SET_FLAG(PCB_FLAG_DRC, line);			/* will cause sublines to inherit */
 	lA[0] = line->Point1.X;
 	lA[1] = line->Point1.Y;
 	lB[0] = line->Point2.X;
@@ -406,7 +414,7 @@ struct info {
 /*!
  * Process lines that intersect our 'brush'.
  */
-static int jostle_callback(const BoxType * targ, void *private)
+static r_dir_t jostle_callback(const BoxType * targ, void *private)
 {
 	LineType *line = (LineType *) targ;
 	struct info *info = private;
@@ -416,10 +424,10 @@ static int jostle_callback(const BoxType * targ, void *private)
 	double small, big;
 	int nocentroid = 0;
 
-	if (TEST_FLAG(DRCFLAG, line)) {
+	if (TEST_FLAG(PCB_FLAG_DRC, line)) {
 		return 0;
 	}
-	fprintf(stderr, "hit! %p\n", line);
+	fprintf(stderr, "hit! %p\n", (void *)line);
 	p[0] = line->Point1.X;
 	p[1] = line->Point1.Y;
 	if (poly_InsideContour(info->brush->contours, p)) {
@@ -439,10 +447,10 @@ static int jostle_callback(const BoxType * targ, void *private)
 	}
 	poly_Free(&lp);
 	if (inside) {
-		// XXX not done!
-		// XXX if this is part of a series of lines passing
-		// XXX through, need to process as a group.
-		// XXX if it just ends in here, shorten it??
+		/* XXX not done!
+		   XXX if this is part of a series of lines passing
+		   XXX through, need to process as a group.
+		   XXX if it just ends in here, shorten it?? */
 		return 0;
 	}
 	/*
@@ -533,19 +541,24 @@ static int jostle_callback(const BoxType * targ, void *private)
 	return 0;
 }
 
-static int jostle(int argc, char **argv, Coord x, Coord y)
+static int jostle(int argc, const char **argv, Coord x, Coord y)
 {
-	bool rel;
+	pcb_bool rel;
 	POLYAREA *expand;
 	float value;
 	struct info info;
 	int found;
 
 	if (argc == 2) {
-		value = GetValue(ARG(0), ARG(1), &rel);
+		pcb_bool succ;
+		value = GetValue(ARG(0), ARG(1), &rel, &succ);
+		if (!succ) {
+			Message(PCB_MSG_ERROR, "Failed to convert size\n");
+			return -1;
+		}
 	}
 	else {
-		value = Settings.ViaThickness + (PCB->Bloat + 1) * 2 + 50;
+		value = conf_core.design.via_thickness + (PCB->Bloat + 1) * 2 + 50;
 	}
 	x = Crosshair.X;
 	y = Crosshair.Y;
@@ -554,7 +567,7 @@ static int jostle(int argc, char **argv, Coord x, Coord y)
 	info.layer = CURRENT;
 	LINE_LOOP(info.layer);
 	{
-		CLEAR_FLAG(DRCFLAG, line);
+		CLEAR_FLAG(PCB_FLAG_DRC, line);
 	}
 	END_LOOP;
 	do {
@@ -563,7 +576,7 @@ static int jostle(int argc, char **argv, Coord x, Coord y)
 		pcb_fprintf(stderr, "search (%ms,%ms)->(%ms,%ms):\n", info.box.X1, info.box.Y1, info.box.X2, info.box.Y2);
 		info.line = NULL;
 		info.smallest = NULL;
-		found = r_search(info.layer->line_tree, &info.box, NULL, jostle_callback, &info);
+		r_search(info.layer->line_tree, &info.box, NULL, jostle_callback, &info, &found);
 		if (found) {
 			expand = NULL;
 			MakeBypassingLines(info.smallest, info.layer, info.line, info.side, &expand);
@@ -571,7 +584,7 @@ static int jostle(int argc, char **argv, Coord x, Coord y)
 			poly_Boolean_free(info.brush, expand, &info.brush, PBO_UNITE);
 		}
 	} while (found);
-	SetChangedFlag(true);
+	SetChangedFlag(pcb_true);
 	IncrementUndoSerialNumber();
 	return 0;
 }
@@ -580,9 +593,18 @@ static HID_Action jostle_action_list[] = {
 	{"jostle", NULL, jostle, "Move lines out of the way", jostle_syntax},
 };
 
-REGISTER_ACTIONS(jostle_action_list)
+char *jostle_cookie = "jostle plugin";
 
-void hid_jostle_init()
+REGISTER_ACTIONS(jostle_action_list, jostle_cookie)
+
+static void hid_jostle_uninit(void)
 {
-	register_jostle_action_list();
+	hid_remove_actions_by_cookie(jostle_cookie);
+}
+
+#include "dolists.h"
+pcb_uninit_t hid_jostle_init()
+{
+	REGISTER_ACTIONS(jostle_action_list, jostle_cookie);
+	return hid_jostle_uninit;
 }
