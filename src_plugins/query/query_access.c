@@ -163,13 +163,20 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 	if ((s1[0] == 'a') && (s1[1] == '\0')) {
 		if (s2 == NULL)
 			return -1;
+		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ))
+			PCB_QRY_RET_INT(res, 0);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&obj->data.anyobj->Attributes, s2));
 	}
 
-	if ((s1[0] == 'I') && (s1[1] == 'D') && (s1[2] == '\0'))
+	if ((s1[0] == 'I') && (s1[1] == 'D') && (s1[2] == '\0')) {
+		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ))
+			PCB_QRY_RET_INT(res, 0);
 		PCB_QRY_RET_INT(res, obj->data.anyobj->ID);
+	}
 
 	if (strcmp(s1, "bbox") == 0) {
+		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ))
+			PCB_QRY_RET_INT(res, 0);
 		if (s2 == NULL)
 			return -1;
 		if (s2[0] == 'x') {
