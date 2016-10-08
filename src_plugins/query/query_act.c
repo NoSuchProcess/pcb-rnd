@@ -50,6 +50,7 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 	}
 
 	if (strcmp(cmd, "eval") == 0) {
+		int tr = 0, fa = 0, inv = 0;
 		pcb_qry_node_t *prg = NULL;
 		pcb_qry_exec_t ec;
 		pcb_qry_val_t res;
@@ -70,10 +71,25 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 		}
 
 		do {
-			if (pcb_qry_eval(&ec, prg, &res) == 0)
-				printf("result: %d\n", pcb_qry_is_true(&res));
+			if (pcb_qry_eval(&ec, prg, &res) == 0) {
+				int t = pcb_qry_is_true(&res);
+				printf("result: %s", t ? "true" : "false");
+				if (t) {
+					char *resv;
+					resv = pcb_query_sprint_val(&res);
+					printf(" (%s)\n", resv);
+					free(resv);
+					tr++;
+				}
+				else {
+					printf("\n");
+					fa++;
+				}
+			}
+			else
+				inv++;
 		} while(pcb_qry_it_next(&ec));
-
+		printf("eval statistics: true=%d false=%d invalid=%d\n", tr, fa, inv);
 		pcb_qry_uninit(&ec);
 
 		return 0;

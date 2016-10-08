@@ -69,6 +69,19 @@ const char *type_name[PCBQ_nodetype_max] = {
 	"PCBQ_DATA_STRING"
 };
 
+char *pcb_query_sprint_val(pcb_qry_val_t *val)
+{
+	switch(val->type) {
+		case PCBQ_VT_VOID:   return pcb_strdup("<void>");
+		case PCBQ_VT_COORD:  return pcb_strdup_printf("%mI=%$mH", val->data.crd, val->data.crd);
+		case PCBQ_VT_DOUBLE: return pcb_strdup_printf("%f", val->data.dbl);
+		case PCBQ_VT_STRING: return pcb_strdup_printf("\"%s\"", val->data.str);
+		case PCBQ_VT_OBJ:    return pcb_strdup("<obj>");
+		case PCBQ_VT_LST:    return pcb_strdup("<lst>");
+	}
+	return pcb_strdup("<invalid>");
+}
+
 const char *pcb_qry_nodetype_name(pcb_qry_nodetype_t ntype)
 {
 	int type = ntype;
@@ -127,7 +140,6 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 	}
 	if (level < sizeof(ind))  ind[level] = ' ';
 }
-
 
 pcb_query_iter_t *pcb_qry_find_iter(pcb_qry_node_t *node)
 {
