@@ -11,7 +11,6 @@
 CLEANUP #5
 - rework the gpmi plugin to make it more standard in regard of the build system and to remove a few directories
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
-- figure why mainline changed xy rotation - maybe find someone with access to xy device?
 - grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value [miloh]
 - Erich's select undo bug: place an element, select, save & load, unselect, undo 2 times: bad serial
 - Erich's gtk lag report: press 's' a lot then move the mouse - 's' ends up in the new loc!
@@ -82,6 +81,11 @@ CLEANUP #6:
 	- project specific menus from extra lihata files - maybe from project.lht
 - main.c:
 	- SIGPIPE - detect it (needed for popen)
+
+CLEANUP #7: the big object split
+- remove pcb_obj_type_t from const.h - use obj_any.h instead
+
+
 
 FEATURES
 - BUILD: menuconfig and a config file for scconfig
