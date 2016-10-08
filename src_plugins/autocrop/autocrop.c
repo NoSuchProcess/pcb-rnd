@@ -64,83 +64,70 @@ cp autocrop.so ~/.pcb/plugins
 #include "set.h"
 #include "polygon.h"
 
-static void *
-MyMoveViaLowLevel (DataType *Data, PinType *Via, Coord dx, Coord dy)
+static void *MyMoveViaLowLevel(DataType * Data, PinType * Via, Coord dx, Coord dy)
 {
-  if (Data)
-  {
-    RestoreToPolygon (Data, VIA_TYPE, Via, Via);
-    r_delete_entry (Data->via_tree, (BoxType *) Via);
-  }
-  MOVE_VIA_LOWLEVEL (Via, dx, dy);
-  if (Data)
-  {
-    r_insert_entry (Data->via_tree, (BoxType *) Via, 0);
-    ClearFromPolygon (Data, VIA_TYPE, Via, Via);
-  }
-  return Via;
+	if (Data) {
+		RestoreToPolygon(Data, VIA_TYPE, Via, Via);
+		r_delete_entry(Data->via_tree, (BoxType *) Via);
+	}
+	MOVE_VIA_LOWLEVEL(Via, dx, dy);
+	if (Data) {
+		r_insert_entry(Data->via_tree, (BoxType *) Via, 0);
+		ClearFromPolygon(Data, VIA_TYPE, Via, Via);
+	}
+	return Via;
 }
 
-static void *
-MyMoveLineLowLevel (DataType *Data, LayerType *Layer, LineType *Line, Coord dx, Coord dy)
+static void *MyMoveLineLowLevel(DataType * Data, LayerType * Layer, LineType * Line, Coord dx, Coord dy)
 {
-  if (Data)
-  {
-    RestoreToPolygon (Data, LINE_TYPE, Layer, Line);
-    r_delete_entry (Layer->line_tree, (BoxType *) Line);
-  }
-  MOVE_LINE_LOWLEVEL (Line, dx, dy);
-  if (Data)
-  {
-    r_insert_entry (Layer->line_tree, (BoxType *) Line, 0);
-    ClearFromPolygon (Data, LINE_TYPE, Layer, Line);
-  }
-  return Line;
+	if (Data) {
+		RestoreToPolygon(Data, LINE_TYPE, Layer, Line);
+		r_delete_entry(Layer->line_tree, (BoxType *) Line);
+	}
+	MOVE_LINE_LOWLEVEL(Line, dx, dy);
+	if (Data) {
+		r_insert_entry(Layer->line_tree, (BoxType *) Line, 0);
+		ClearFromPolygon(Data, LINE_TYPE, Layer, Line);
+	}
+	return Line;
 }
 
-static void *
-MyMoveArcLowLevel (DataType *Data, LayerType *Layer, ArcType *Arc, Coord dx, Coord dy)
+static void *MyMoveArcLowLevel(DataType * Data, LayerType * Layer, ArcType * Arc, Coord dx, Coord dy)
 {
-  if (Data)
-  {
-    RestoreToPolygon (Data, ARC_TYPE, Layer, Arc);
-    r_delete_entry(Layer->arc_tree, (BoxType *) Arc);
-  }
-  MOVE_ARC_LOWLEVEL (Arc, dx, dy);
-  if (Data)
-  {
-    r_insert_entry (Layer->arc_tree, (BoxType *) Arc, 0);
-    ClearFromPolygon (Data, ARC_TYPE, Layer, Arc);
-  }
-  return Arc;
+	if (Data) {
+		RestoreToPolygon(Data, ARC_TYPE, Layer, Arc);
+		r_delete_entry(Layer->arc_tree, (BoxType *) Arc);
+	}
+	MOVE_ARC_LOWLEVEL(Arc, dx, dy);
+	if (Data) {
+		r_insert_entry(Layer->arc_tree, (BoxType *) Arc, 0);
+		ClearFromPolygon(Data, ARC_TYPE, Layer, Arc);
+	}
+	return Arc;
 }
 
-static void *
-MyMovePolygonLowLevel (DataType *Data, LayerType *Layer, PolygonType *Polygon, Coord dx, Coord dy)
+static void *MyMovePolygonLowLevel(DataType * Data, LayerType * Layer, PolygonType * Polygon, Coord dx, Coord dy)
 {
-  if (Data)
-  {
-    r_delete_entry (Layer->polygon_tree, (BoxType *) Polygon);
-  }
-  /* move.c actually only moves points, note no Data/Layer args */
-  MovePolygonLowLevel (Polygon, dx, dy);
-  if (Data)
-  {
-    r_insert_entry (Layer->polygon_tree, (BoxType *) Polygon, 0);
-    InitClip(Data, Layer, Polygon);
-  }
-  return Polygon;
+	if (Data) {
+		r_delete_entry(Layer->polygon_tree, (BoxType *) Polygon);
+	}
+	/* move.c actually only moves points, note no Data/Layer args */
+	MovePolygonLowLevel(Polygon, dx, dy);
+	if (Data) {
+		r_insert_entry(Layer->polygon_tree, (BoxType *) Polygon, 0);
+		InitClip(Data, Layer, Polygon);
+	}
+	return Polygon;
 }
 
-static void *
-MyMoveTextLowLevel (LayerType *Layer, TextType *Text, Coord dx, Coord dy)
+static void *MyMoveTextLowLevel(LayerType * Layer, TextType * Text, Coord dx, Coord dy)
 {
-  if (Layer)
-    r_delete_entry (Layer->text_tree, (BoxType *) Text);
-  MOVE_TEXT_LOWLEVEL (Text, dx, dy);
-  if (Layer)
-    r_insert_entry (Layer->text_tree, (BoxType *) Text, 0);
-  return Text;
+	if (Layer)
+		r_delete_entry(Layer->text_tree, (BoxType *) Text);
+	MOVE_TEXT_LOWLEVEL(Text, dx, dy);
+	if (Layer)
+		r_insert_entry(Layer->text_tree, (BoxType *) Text, 0);
+	return Text;
 }
 
 /*!
@@ -151,112 +138,106 @@ MyMoveTextLowLevel (LayerType *Layer, TextType *Text, Coord dx, Coord dy)
  * element move re-clears the poly, followed by the polys moving and
  * re-clearing everything again.
  */
-static void
-MoveAll(Coord dx, Coord dy)
+static void MoveAll(Coord dx, Coord dy)
 {
-  ELEMENT_LOOP (PCB->Data);
-  {
-    MoveElementLowLevel (PCB->Data, element, dx, dy);
-    AddObjectToMoveUndoList (ELEMENT_TYPE, NULL, NULL, element, dx, dy);
-  }
-  END_LOOP;
-  VIA_LOOP (PCB->Data);
-  {
-    MyMoveViaLowLevel (PCB->Data, via, dx, dy);
-    AddObjectToMoveUndoList (VIA_TYPE, NULL, NULL, via, dx, dy);
-  }
-  END_LOOP;
-  ALLLINE_LOOP (PCB->Data);
-  {
-    MyMoveLineLowLevel (PCB->Data, layer, line, dx, dy);
-    AddObjectToMoveUndoList (LINE_TYPE, NULL, NULL, line, dx, dy);
-  }
-  ENDALL_LOOP;
-  ALLARC_LOOP (PCB->Data);
-  {
-    MyMoveArcLowLevel (PCB->Data, layer, arc, dx, dy);
-    AddObjectToMoveUndoList (ARC_TYPE, NULL, NULL, arc, dx, dy);
-  }
-  ENDALL_LOOP;
-  ALLTEXT_LOOP (PCB->Data);
-  {
-    MyMoveTextLowLevel (layer, text, dx, dy);
-    AddObjectToMoveUndoList (TEXT_TYPE, NULL, NULL, text, dx, dy);
-  }
-  ENDALL_LOOP;
-  ALLPOLYGON_LOOP (PCB->Data);
-  {
-    /*
-     * XXX MovePolygonLowLevel does not mean "no gui" like
-     * XXX MoveElementLowLevel, it doesn't even handle layer
-     * XXX tree activity.
-     */
-    MyMovePolygonLowLevel (PCB->Data, layer, polygon, dx, dy);
-    AddObjectToMoveUndoList (POLYGON_TYPE, NULL, NULL, polygon, dx, dy);
-  }
-  ENDALL_LOOP;
+	ELEMENT_LOOP(PCB->Data);
+	{
+		MoveElementLowLevel(PCB->Data, element, dx, dy);
+		AddObjectToMoveUndoList(ELEMENT_TYPE, NULL, NULL, element, dx, dy);
+	}
+	END_LOOP;
+	VIA_LOOP(PCB->Data);
+	{
+		MyMoveViaLowLevel(PCB->Data, via, dx, dy);
+		AddObjectToMoveUndoList(VIA_TYPE, NULL, NULL, via, dx, dy);
+	}
+	END_LOOP;
+	ALLLINE_LOOP(PCB->Data);
+	{
+		MyMoveLineLowLevel(PCB->Data, layer, line, dx, dy);
+		AddObjectToMoveUndoList(LINE_TYPE, NULL, NULL, line, dx, dy);
+	}
+	ENDALL_LOOP;
+	ALLARC_LOOP(PCB->Data);
+	{
+		MyMoveArcLowLevel(PCB->Data, layer, arc, dx, dy);
+		AddObjectToMoveUndoList(ARC_TYPE, NULL, NULL, arc, dx, dy);
+	}
+	ENDALL_LOOP;
+	ALLTEXT_LOOP(PCB->Data);
+	{
+		MyMoveTextLowLevel(layer, text, dx, dy);
+		AddObjectToMoveUndoList(TEXT_TYPE, NULL, NULL, text, dx, dy);
+	}
+	ENDALL_LOOP;
+	ALLPOLYGON_LOOP(PCB->Data);
+	{
+		/*
+		 * XXX MovePolygonLowLevel does not mean "no gui" like
+		 * XXX MoveElementLowLevel, it doesn't even handle layer
+		 * XXX tree activity.
+		 */
+		MyMovePolygonLowLevel(PCB->Data, layer, polygon, dx, dy);
+		AddObjectToMoveUndoList(POLYGON_TYPE, NULL, NULL, polygon, dx, dy);
+	}
+	ENDALL_LOOP;
 }
 
-static int
-autocrop (int argc, char **argv, Coord x, Coord y)
+static int autocrop(int argc, char **argv, Coord x, Coord y)
 {
 //  int changed = 0;
-  Coord dx, dy, pad;
-  BoxType *box;
+	Coord dx, dy, pad;
+	BoxType *box;
 
-  box = GetDataBoundingBox (PCB->Data); /* handy! */
-  if (!box || (box->X1 == box->X2 || box->Y1 == box->Y2))
-  {
-    /* board would become degenerate */
-    return 0;
-  }
-  /*
-   * Now X1/Y1 are the distance to move the left/top edge
-   * (actually moving all components to the left/up) such that
-   * the exact edge of the leftmost/topmost component would touch
-   * the edge.  Reduce the move by the edge relief requirement XXX
-   * and expand the board by the same amount.
-   */
-  pad = PCB->minWid * 5; /* XXX real edge clearance */
-  dx = -box->X1 + pad;
-  dy = -box->Y1 + pad;
-  box->X2 += pad;
-  box->Y2 += pad;
-  /*
-   * Round move to keep components grid-aligned, then translate the
-   * upper coordinates into the new space.
-   */
-  dx -= dx % (long) PCB->Grid;
-  dy -= dy % (long) PCB->Grid;
-  box->X2 += dx;
-  box->Y2 += dy;
-  /*
-   * Avoid touching any data if there's nothing to do.
-   */
-  if (dx == 0 && dy == 0 && PCB->MaxWidth == box->X2
-    && PCB->MaxHeight == box->Y2)
-  {
-    return 0;
-  }
-  /* Resize -- XXX cannot be undone */
-  PCB->MaxWidth = box->X2;
-  PCB->MaxHeight = box->Y2;
-  MoveAll (dx, dy);
-  IncrementUndoSerialNumber ();
-  Redraw ();
-  SetChangedFlag (1);
-  return 0;
+	box = GetDataBoundingBox(PCB->Data);	/* handy! */
+	if (!box || (box->X1 == box->X2 || box->Y1 == box->Y2)) {
+		/* board would become degenerate */
+		return 0;
+	}
+	/*
+	 * Now X1/Y1 are the distance to move the left/top edge
+	 * (actually moving all components to the left/up) such that
+	 * the exact edge of the leftmost/topmost component would touch
+	 * the edge.  Reduce the move by the edge relief requirement XXX
+	 * and expand the board by the same amount.
+	 */
+	pad = PCB->minWid * 5;				/* XXX real edge clearance */
+	dx = -box->X1 + pad;
+	dy = -box->Y1 + pad;
+	box->X2 += pad;
+	box->Y2 += pad;
+	/*
+	 * Round move to keep components grid-aligned, then translate the
+	 * upper coordinates into the new space.
+	 */
+	dx -= dx % (long) PCB->Grid;
+	dy -= dy % (long) PCB->Grid;
+	box->X2 += dx;
+	box->Y2 += dy;
+	/*
+	 * Avoid touching any data if there's nothing to do.
+	 */
+	if (dx == 0 && dy == 0 && PCB->MaxWidth == box->X2 && PCB->MaxHeight == box->Y2) {
+		return 0;
+	}
+	/* Resize -- XXX cannot be undone */
+	PCB->MaxWidth = box->X2;
+	PCB->MaxHeight = box->Y2;
+	MoveAll(dx, dy);
+	IncrementUndoSerialNumber();
+	Redraw();
+	SetChangedFlag(1);
+	return 0;
 }
 
-static HID_Action autocrop_action_list[] =
-{
-  {"autocrop", NULL, autocrop, NULL, NULL}
+static HID_Action autocrop_action_list[] = {
+	{"autocrop", NULL, autocrop, NULL, NULL}
 };
 
-REGISTER_ACTIONS (autocrop_action_list)
+REGISTER_ACTIONS(autocrop_action_list)
 
-void
-hid_autocrop_init ()
+		 void
+		   hid_autocrop_init()
 {
-  register_autocrop_action_list ();
+	register_autocrop_action_list();
 }
