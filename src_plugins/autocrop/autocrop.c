@@ -10,6 +10,8 @@
  * \copyright Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ *
  * From: Ben Jackson <bjj@saturn.home.ben.com>
  * To: geda-user@moria.seul.org
  * Date: Mon, 19 Feb 2007 13:30:58 -0800
@@ -63,17 +65,19 @@ cp autocrop.so ~/.pcb/plugins
 #include "draw.h"
 #include "set.h"
 #include "polygon.h"
+#include "plugins.h"
+#include "hid_actions.h"
 
 static void *MyMoveViaLowLevel(DataType * Data, PinType * Via, Coord dx, Coord dy)
 {
 	if (Data) {
-		RestoreToPolygon(Data, VIA_TYPE, Via, Via);
+		RestoreToPolygon(Data, PCB_TYPE_VIA, Via, Via);
 		r_delete_entry(Data->via_tree, (BoxType *) Via);
 	}
 	MOVE_VIA_LOWLEVEL(Via, dx, dy);
 	if (Data) {
 		r_insert_entry(Data->via_tree, (BoxType *) Via, 0);
-		ClearFromPolygon(Data, VIA_TYPE, Via, Via);
+		ClearFromPolygon(Data, PCB_TYPE_VIA, Via, Via);
 	}
 	return Via;
 }
@@ -81,13 +85,13 @@ static void *MyMoveViaLowLevel(DataType * Data, PinType * Via, Coord dx, Coord d
 static void *MyMoveLineLowLevel(DataType * Data, LayerType * Layer, LineType * Line, Coord dx, Coord dy)
 {
 	if (Data) {
-		RestoreToPolygon(Data, LINE_TYPE, Layer, Line);
+		RestoreToPolygon(Data, PCB_TYPE_LINE, Layer, Line);
 		r_delete_entry(Layer->line_tree, (BoxType *) Line);
 	}
 	MOVE_LINE_LOWLEVEL(Line, dx, dy);
 	if (Data) {
 		r_insert_entry(Layer->line_tree, (BoxType *) Line, 0);
-		ClearFromPolygon(Data, LINE_TYPE, Layer, Line);
+		ClearFromPolygon(Data, PCB_TYPE_LINE, Layer, Line);
 	}
 	return Line;
 }
@@ -95,13 +99,13 @@ static void *MyMoveLineLowLevel(DataType * Data, LayerType * Layer, LineType * L
 static void *MyMoveArcLowLevel(DataType * Data, LayerType * Layer, ArcType * Arc, Coord dx, Coord dy)
 {
 	if (Data) {
-		RestoreToPolygon(Data, ARC_TYPE, Layer, Arc);
+		RestoreToPolygon(Data, PCB_TYPE_ARC, Layer, Arc);
 		r_delete_entry(Layer->arc_tree, (BoxType *) Arc);
 	}
 	MOVE_ARC_LOWLEVEL(Arc, dx, dy);
 	if (Data) {
 		r_insert_entry(Layer->arc_tree, (BoxType *) Arc, 0);
-		ClearFromPolygon(Data, ARC_TYPE, Layer, Arc);
+		ClearFromPolygon(Data, PCB_TYPE_ARC, Layer, Arc);
 	}
 	return Arc;
 }
@@ -143,31 +147,31 @@ static void MoveAll(Coord dx, Coord dy)
 	ELEMENT_LOOP(PCB->Data);
 	{
 		MoveElementLowLevel(PCB->Data, element, dx, dy);
-		AddObjectToMoveUndoList(ELEMENT_TYPE, NULL, NULL, element, dx, dy);
+		AddObjectToMoveUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
 	}
 	END_LOOP;
 	VIA_LOOP(PCB->Data);
 	{
 		MyMoveViaLowLevel(PCB->Data, via, dx, dy);
-		AddObjectToMoveUndoList(VIA_TYPE, NULL, NULL, via, dx, dy);
+		AddObjectToMoveUndoList(PCB_TYPE_VIA, NULL, NULL, via, dx, dy);
 	}
 	END_LOOP;
 	ALLLINE_LOOP(PCB->Data);
 	{
 		MyMoveLineLowLevel(PCB->Data, layer, line, dx, dy);
-		AddObjectToMoveUndoList(LINE_TYPE, NULL, NULL, line, dx, dy);
+		AddObjectToMoveUndoList(PCB_TYPE_LINE, NULL, NULL, line, dx, dy);
 	}
 	ENDALL_LOOP;
 	ALLARC_LOOP(PCB->Data);
 	{
 		MyMoveArcLowLevel(PCB->Data, layer, arc, dx, dy);
-		AddObjectToMoveUndoList(ARC_TYPE, NULL, NULL, arc, dx, dy);
+		AddObjectToMoveUndoList(PCB_TYPE_ARC, NULL, NULL, arc, dx, dy);
 	}
 	ENDALL_LOOP;
 	ALLTEXT_LOOP(PCB->Data);
 	{
 		MyMoveTextLowLevel(layer, text, dx, dy);
-		AddObjectToMoveUndoList(TEXT_TYPE, NULL, NULL, text, dx, dy);
+		AddObjectToMoveUndoList(PCB_TYPE_TEXT, NULL, NULL, text, dx, dy);
 	}
 	ENDALL_LOOP;
 	ALLPOLYGON_LOOP(PCB->Data);
@@ -178,14 +182,13 @@ static void MoveAll(Coord dx, Coord dy)
 		 * XXX tree activity.
 		 */
 		MyMovePolygonLowLevel(PCB->Data, layer, polygon, dx, dy);
-		AddObjectToMoveUndoList(POLYGON_TYPE, NULL, NULL, polygon, dx, dy);
+		AddObjectToMoveUndoList(PCB_TYPE_POLYGON, NULL, NULL, polygon, dx, dy);
 	}
 	ENDALL_LOOP;
 }
 
-static int autocrop(int argc, char **argv, Coord x, Coord y)
+static int autocrop(int argc, const char **argv, Coord x, Coord y)
 {
-//  int changed = 0;
 	Coord dx, dy, pad;
 	BoxType *box;
 
@@ -234,10 +237,18 @@ static HID_Action autocrop_action_list[] = {
 	{"autocrop", NULL, autocrop, NULL, NULL}
 };
 
-REGISTER_ACTIONS(autocrop_action_list)
+char *autocrop_cookie = "autocrop plugin";
 
-		 void
-		   hid_autocrop_init()
+REGISTER_ACTIONS(autocrop_action_list, autocrop_cookie)
+
+static void hid_autocrop_uninit(void)
 {
-	register_autocrop_action_list();
+	hid_remove_actions_by_cookie(autocrop_cookie);
+}
+
+#include "dolists.h"
+pcb_uninit_t hid_autocrop_init()
+{
+	REGISTER_ACTIONS(autocrop_action_list, autocrop_cookie);
+	return hid_autocrop_uninit;
 }
