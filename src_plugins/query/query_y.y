@@ -163,7 +163,15 @@ expr:
 	| expr '*' expr          { BINOP($$, $1, PCBQ_OP_MUL, $3); }
 	| expr '/' expr          { BINOP($$, $1, PCBQ_OP_DIV, $3); }
 	| var                    { $$ = $1; }
-	| var '.' fields         { $$ = pcb_qry_n_alloc(PCBQ_FIELD_OF); $$->data.children = $1; $1->next = $3; $1->parent = $3->parent = $$; }
+	| var '.' fields         {
+		pcb_qry_node_t *n;
+		$$ = pcb_qry_n_alloc(PCBQ_FIELD_OF);
+		$$->data.children = $1;
+		$1->next = $3;
+		$1->parent = $$;
+		for(n = $3; n != NULL; n = n->next)
+			n->parent = $$;
+		}
 	;
 
 number:
