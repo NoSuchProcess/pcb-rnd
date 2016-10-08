@@ -38,6 +38,13 @@ int pcb_qry_is_true(pcb_qry_val_t *val);
 
 int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res);
 
+int pcb_qry_it_reset(pcb_qry_exec_t *ctx, pcb_qry_node_t *node);
+
+/* Returns 1 if context iterator is valid, 0 if the loop is over */
+int pcb_qry_it_next(pcb_qry_exec_t *ctx);
+
+
+
 /* Helper macros: load value o and return 0 */
 #define PCB_QRY_RET_INT(o, value) \
 do { \

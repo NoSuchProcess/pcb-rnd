@@ -182,7 +182,8 @@ void pcb_qry_iter_init(pcb_query_iter_t *it)
 
 	if (it->vn != NULL)
 		return;
-	it->it = calloc(sizeof(pcb_qry_val_t *), it->num_vars);
+	it->it  = calloc(sizeof(pcb_obj_t *), it->num_vars);
+	it->lst = calloc(sizeof(pcb_qry_val_t), it->num_vars);
 
 	it->vn = malloc(sizeof(char *) * it->num_vars);
 	for (e = htsi_first(&it->names); e; e = htsi_next(&it->names, e))

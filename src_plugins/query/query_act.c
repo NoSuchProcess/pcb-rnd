@@ -64,6 +64,10 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 		}
 
 		pcb_qry_init(&ec, prg);
+		if (pcb_qry_it_reset(&ec, prg) != 0) {
+			printf("Error setting up the iterator.\n");
+			return -1;
+		}
 		if (pcb_qry_eval(&ec, prg, &res) == 0) {
 			printf("result: %d\n", pcb_qry_is_true(&res));
 		}

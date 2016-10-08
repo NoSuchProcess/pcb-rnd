@@ -114,12 +114,14 @@ struct pcb_query_iter_s {
 	int num_vars;
 
 	const char **vn;      /* pointers to the hash names so they can be indexed */
-	pcb_qry_val_t **it;   /* iterator state for each variable */
+	pcb_qry_val_t *lst;
+	pcb_obj_t **it;       /* iterator state for each variable - point into the correspoinding lst[] */
 };
 
 pcb_query_iter_t *pcb_qry_iter_alloc(void);
 int pcb_qry_iter_var(pcb_query_iter_t *it, const char *varname);
 void pcb_qry_iter_init(pcb_query_iter_t *it);
 
+pcb_query_iter_t *pcb_qry_find_iter(pcb_qry_node_t *node);
 
 #endif

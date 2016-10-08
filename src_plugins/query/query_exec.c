@@ -109,14 +109,41 @@ int pcb_qry_is_true(pcb_qry_val_t *val)
 	return 0;
 }
 
-static int get_field(pcb_qry_exec_t *ctx, pcb_qry_val_t *o1, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static void setup_iter_list(pcb_qry_exec_t *ctx, int var_id, pcb_qry_val_t *listval)
 {
-	pcb_qry_val_t *v;
-	if (o1->type != PCBQ_VAR)
-		return -1;
-	v = ctx->iter->it[o1->data.crd];
-	return pcb_qry_obj_field(v, fld, res);
+	ctx->iter->lst[var_id] = *listval;
+	assert(listval->type == PCBQ_VT_LST);
+	ctx->iter->it[var_id] = pcb_objlist_first(&listval->data.lst);
 }
+
+int pcb_qry_it_reset(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
+{
+	int n;
+	ctx->iter = pcb_qry_find_iter(node);
+	if (ctx->iter == NULL)
+		return -1;
+
+	pcb_qry_iter_init(ctx->iter);
+
+	for(n = 0; n < ctx->iter->num_vars; n++)
+		if (strcmp(ctx->iter->vn[n], "@") == 0)
+			setup_iter_list(ctx, n, &ctx->all);
+
+	return 0;
+}
+
+int pcb_qry_it_next(pcb_qry_exec_t *ctx)
+{
+	int i;
+	for(i = 0; i < ctx->iter->num_vars; i++) {
+		ctx->iter->it[i] = pcb_objlist_next(ctx->iter->it[i]);
+		if (ctx->iter->it[i] != NULL)
+			return 1;
+		ctx->iter->it[i] = pcb_objlist_first(&ctx->iter->lst[i].data.lst);
+	}
+	return 0;
+}
+
 
 int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 {
@@ -136,7 +163,8 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				return -1;
 			if (itn->type != PCBQ_ITER_CTX)
 				return -1;
-			ctx->iter = itn->data.iter_ctx;
+			if (ctx->iter != itn->data.iter_ctx)
+				return -1;
 			return pcb_qry_eval(ctx, exprn, res);
 		}
 
@@ -284,9 +312,14 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 
 		case PCBQ_FIELD_OF:
 			BINOPS1();
-			return get_field(ctx, &o1, node->data.children->next, res);
+			return pcb_qry_obj_field(&o1, node->data.children->next, res);
 
 		case PCBQ_VAR:
+			assert((node->data.crd >= 0) && (node->data.crd < ctx->iter->num_vars));
+			res->type = PCBQ_VT_OBJ;
+			res->data.obj = *ctx->iter->it[node->data.crd];
+			return 0;
+
 		case PCBQ_FNAME:
 		case PCBQ_FCALL:
 			return -1;
