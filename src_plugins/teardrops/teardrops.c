@@ -8,7 +8,9 @@
  * \copyright Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
- * http://www.delorie.com/pcb/teardrops/
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ *
+ * Original source: http://www.delorie.com/pcb/teardrops/
 */
 
 #include <stdio.h>
@@ -22,6 +24,8 @@
 #include "create.h"
 #include "rtree.h"
 #include "undo.h"
+#include "plugins.h"
+#include "hid_actions.h"
 
 #define MIN_LINE_LENGTH 700
 #define MAX_DISTANCE 700
@@ -36,7 +40,6 @@ static PinType *pin;
 static PadType *pad;
 static int layer;
 static int px, py;
-static LayerType *silk;
 static Coord thickness;
 static ElementType *element;
 
@@ -53,7 +56,7 @@ int distance_between_points(int x1, int y1, int x2, int y2)
 	return distance;
 }
 
-static int check_line_callback(const BoxType * box, void *cl)
+static r_dir_t check_line_callback(const BoxType * box, void *cl)
 {
 	LayerType *lay = &PCB->Data->Layer[layer];
 	LineType *l = (LineType *) box;
@@ -67,7 +70,7 @@ static int check_line_callback(const BoxType * box, void *cl)
 	ArcType *arc;
 
 	fprintf(stderr, "...Line ((%.6f, %.6f), (%.6f, %.6f)): ",
-					COORD_TO_MM(l->Point1.X), COORD_TO_MM(l->Point1.Y), COORD_TO_MM(l->Point2.X), COORD_TO_MM(l->Point2.Y));
+					PCB_COORD_TO_MM(l->Point1.X), PCB_COORD_TO_MM(l->Point1.Y), PCB_COORD_TO_MM(l->Point2.X), PCB_COORD_TO_MM(l->Point2.Y));
 
 	/* if our line is to short ignore it */
 	if (distance_between_points(l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y) < MIN_LINE_LENGTH) {
@@ -75,7 +78,7 @@ static int check_line_callback(const BoxType * box, void *cl)
 		return 1;
 	}
 
-	fprintf(stderr, "......Point (%.6f, %.6f): ", COORD_TO_MM(px), COORD_TO_MM(py));
+	fprintf(stderr, "......Point (%.6f, %.6f): ", PCB_COORD_TO_MM(px), PCB_COORD_TO_MM(py));
 
 	if (distance_between_points(l->Point1.X, l->Point1.Y, px, py) < MAX_DISTANCE) {
 		x1 = l->Point1.X;
@@ -99,7 +102,7 @@ static int check_line_callback(const BoxType * box, void *cl)
 	t = l->Thickness / 2.0;
 
 	if (t > r) {
-		fprintf(stderr, "t > r: t = %3.6f, r = %3.6f\n", COORD_TO_MM(t), COORD_TO_MM(r));
+		fprintf(stderr, "t > r: t = %3.6f, r = %3.6f\n", PCB_COORD_TO_MM(t), PCB_COORD_TO_MM(r));
 		return 1;
 	}
 
@@ -119,7 +122,7 @@ static int check_line_callback(const BoxType * box, void *cl)
 		if (radius < r || radius < t) {
 			fprintf(stderr,
 							"(radius < r || radius < t): radius = %3.6f, r = %3.6f, t = %3.6f\n",
-							COORD_TO_MM(radius), COORD_TO_MM(r), COORD_TO_MM(t));
+							PCB_COORD_TO_MM(radius), PCB_COORD_TO_MM(r), PCB_COORD_TO_MM(t));
 			return 1;
 		}
 	}
@@ -169,7 +172,7 @@ static int check_line_callback(const BoxType * box, void *cl)
 		arc = CreateNewArcOnLayer(lay, (int) ax, (int) ay, (int) radius,
 															(int) radius, (int) theta + 90 + aoffset, delta - aoffset, l->Thickness, l->Clearance, l->Flags);
 		if (arc)
-			AddObjectToCreateUndoList(ARC_TYPE, lay, arc, arc);
+			AddObjectToCreateUndoList(PCB_TYPE_ARC, lay, arc, arc);
 
 		ax = lx + dy * (x + t);
 		ay = ly - dx * (x + t);
@@ -177,7 +180,7 @@ static int check_line_callback(const BoxType * box, void *cl)
 		arc = CreateNewArcOnLayer(lay, (int) ax, (int) ay, (int) radius,
 															(int) radius, (int) theta - 90 - aoffset, -delta + aoffset, l->Thickness, l->Clearance, l->Flags);
 		if (arc)
-			AddObjectToCreateUndoList(ARC_TYPE, lay, arc, arc);
+			AddObjectToCreateUndoList(PCB_TYPE_ARC, lay, arc, arc);
 
 		radius += t * 1.9;
 		aoffset = acos((double) adist / radius) * 180.0 / M_PI;
@@ -208,12 +211,12 @@ static void check_pin(PinType * _pin)
 
 	fprintf(stderr, "Pin %s (%s) at %.6f, %.6f (element %s, %s, %s)\n", EMPTY(pin->Number), EMPTY(pin->Name),
 					/* 0.01 * pin->X, 0.01 * pin->Y, */
-					COORD_TO_MM(pin->X), COORD_TO_MM(pin->Y),
+					PCB_COORD_TO_MM(pin->X), PCB_COORD_TO_MM(pin->Y),
 					EMPTY(NAMEONPCB_NAME(element)), EMPTY(VALUE_NAME(element)), EMPTY(DESCRIPTION_NAME(element)));
 
 	for (layer = 0; layer < max_copper_layer; layer++) {
 		LayerType *l = &(PCB->Data->Layer[layer]);
-		r_search(l->line_tree, &spot, NULL, check_line_callback, l);
+		r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
 	}
 }
 
@@ -231,11 +234,11 @@ static void check_via(PinType * _pin)
 	spot.X2 = px + 10;
 	spot.Y2 = py + 10;
 
-	fprintf(stderr, "Via at %.6f, %.6f\n", COORD_TO_MM(pin->X), COORD_TO_MM(pin->Y));
+	fprintf(stderr, "Via at %.6f, %.6f\n", PCB_COORD_TO_MM(pin->X), PCB_COORD_TO_MM(pin->Y));
 
 	for (layer = 0; layer < max_copper_layer; layer++) {
 		LayerType *l = &(PCB->Data->Layer[layer]);
-		r_search(l->line_tree, &spot, NULL, check_line_callback, l);
+		r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
 	}
 }
 
@@ -254,31 +257,29 @@ static void check_pad(PadType * _pad)
 	fprintf(stderr,
 					"Pad %s (%s) at %.6f, %.6f (element %s, %s, %s) \n",
 					EMPTY(pad->Number), EMPTY(pad->Name),
-					COORD_TO_MM((pad->BoundingBox.X1 + pad->BoundingBox.X2) / 2),
-					COORD_TO_MM((pad->BoundingBox.Y1 + pad->BoundingBox.Y2) / 2),
+					PCB_COORD_TO_MM((pad->BoundingBox.X1 + pad->BoundingBox.X2) / 2),
+					PCB_COORD_TO_MM((pad->BoundingBox.Y1 + pad->BoundingBox.Y2) / 2),
 					EMPTY(NAMEONPCB_NAME(element)), EMPTY(VALUE_NAME(element)), EMPTY(DESCRIPTION_NAME(element)));
 
 	/* fprintf(stderr, */
 	/*   "Pad %s (%s) at ((%.6f, %.6f), (%.6f, %.6f)) (element %s, %s, %s) \n", */
 	/*           EMPTY (pad->Number), EMPTY (pad->Name), */
-	/*           COORD_TO_MM(pad->BoundingBox.X1), */
-	/*           COORD_TO_MM(pad->BoundingBox.Y1), */
-	/*           COORD_TO_MM(pad->BoundingBox.X2), */
-	/*           COORD_TO_MM(pad->BoundingBox.Y2), */
+	/*           PCB_COORD_TO_MM(pad->BoundingBox.X1), */
+	/*           PCB_COORD_TO_MM(pad->BoundingBox.Y1), */
+	/*           PCB_COORD_TO_MM(pad->BoundingBox.X2), */
+	/*           PCB_COORD_TO_MM(pad->BoundingBox.Y2), */
 	/*           EMPTY (NAMEONPCB_NAME (element)), */
 	/*           EMPTY (VALUE_NAME (element)), */
 	/*           EMPTY (DESCRIPTION_NAME (element))); */
 
 	for (layer = 0; layer < max_copper_layer; layer++) {
 		LayerType *l = &(PCB->Data->Layer[layer]);
-		r_search(l->line_tree, &(pad->BoundingBox), NULL, check_line_callback, l);
+		r_search(l->line_tree, &(pad->BoundingBox), NULL, check_line_callback, l, NULL);
 	}
 }
 
-static int teardrops(int argc, char **argv, Coord x, Coord y)
+static int teardrops(int argc, const char **argv, Coord x, Coord y)
 {
-	silk = &PCB->Data->SILKLAYER;
-
 	new_arcs = 0;
 
 	VIA_LOOP(PCB->Data);
@@ -311,9 +312,18 @@ static HID_Action teardrops_action_list[] = {
 	{"Teardrops", NULL, teardrops, NULL, NULL}
 };
 
-REGISTER_ACTIONS(teardrops_action_list)
+char *teardrops_cookie = "teardrops plugin";
 
-void hid_teardrops_init()
+REGISTER_ACTIONS(teardrops_action_list, teardrops_cookie)
+
+static void hid_teardrops_uninit(void)
 {
-	register_teardrops_action_list();
+	hid_remove_actions_by_cookie(teardrops_cookie);
+}
+
+#include "dolists.h"
+pcb_uninit_t hid_teardrops_init()
+{
+	REGISTER_ACTIONS(teardrops_action_list, teardrops_cookie);
+	return hid_teardrops_uninit;
 }
