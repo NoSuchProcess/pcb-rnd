@@ -10,13 +10,7 @@
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
  *
- * http://www.delorie.com/pcb/boardflip.c
- *
- * Compile like this:
- * <pre>
-gcc -I$HOME/geda/pcb-cvs/src -I$HOME/geda/pcb-cvs -O2 -shared boardflip.c -o boardflip.so
- * </pre>
- * The resulting boardflip.so goes in $HOME/.pcb/plugins/boardflip.so.
+ * Original source was: http://www.delorie.com/pcb/boardflip.c
  *
  * Usage: Boardflip()
  *

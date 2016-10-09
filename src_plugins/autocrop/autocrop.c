@@ -33,15 +33,8 @@
  * one redraw at the end).
  * </ol>
  *
- * The source is: http://ad7gd.net/geda/autocrop.c
+ * Original source was: http://ad7gd.net/geda/autocrop.c
  *
- * And you compile/install with:
- * <pre>
-# set PCB to your PCB source directory
-PCB=$(HOME)/cvs/pcb
-gcc -I$(PCB) -I$(PCB)/src -O2 -shared autocrop.c -o autocrop.so
-cp autocrop.so ~/.pcb/plugins
- * </pre>
  * Run it by typing `:Autocrop()' in the gui, or by binding Autocrop() to a key.
  *
  * --

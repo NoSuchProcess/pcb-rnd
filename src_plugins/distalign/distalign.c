@@ -86,9 +86,7 @@
  * Now you can select an object and hit your key and the object will
  * warp to the same X coordinate as your cursor.
  *
- * Source:  http://ad7gd.net/geda/distalign.c
- *
- * Same compile instructions as before.  Feedback is appreciated!
+ * Original source was:  http://ad7gd.net/geda/distalign.c
  *
  * [*] If it has any flaws, it is that you can't operate non-element
  * objects, though some melding of autocrop (which knows how to do such
