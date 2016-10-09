@@ -35,14 +35,17 @@
 typedef struct {
 	GtkWidget *window;
 	GtkWidget *expr;      /* manual expression entry */
+	GtkWidget *action;    /* what-to-do combo box */
 } ghid_search_dialog_t;
 
 static ghid_search_dialog_t sdlg;
 
 static void ghid_search_window_create()
 {
-	GtkWidget *vbox_win;
+	GtkWidget *vbox_win, *hbox, *lab;
 	GtkWidget *content_area, *top_window = gport->top_window;
+	const char *actions[] = { "select", "unselect", NULL };
+	const char **s;
 
 	sdlg.window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	sdlg.window = gtk_dialog_new_with_buttons(_("Advanced search"),
@@ -55,7 +58,25 @@ static void ghid_search_window_create()
 	vbox_win = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(content_area), vbox_win);
 
-/* */
+	lab = gtk_label_new("Query expression:");
+	gtk_box_pack_start(GTK_BOX(vbox_win), lab, TRUE, TRUE, 0);
+	gtk_misc_set_alignment(GTK_MISC(lab), -1, 0.);
+
+
+/* expr entry */
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_win), hbox, TRUE, TRUE, 0);
+
+
+	sdlg.expr = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(hbox), sdlg.expr, TRUE, TRUE, 0);
+
+	sdlg.action = gtk_combo_box_new_text();
+	gtk_widget_set_tooltip_text(sdlg.action, "Do this with any object matching the query expression");
+/*	g_signal_connect(G_OBJECT(sdlg.action), "changed", G_CALLBACK(action_changed_cb), NULL);*/
+	for(s = actions; *s != NULL; s++)
+		gtk_combo_box_append_text(GTK_COMBO_BOX(sdlg.action), *s);
+	gtk_box_pack_start(GTK_BOX(hbox), sdlg.action, TRUE, TRUE, 0);
 
 /* */
 
