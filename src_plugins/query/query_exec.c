@@ -363,6 +363,16 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			res->data.obj = *ctx->iter->it[node->data.crd];
 			return 0;
 
+		case PCBQ_LISTVAR: {
+			int vi = pcb_qry_iter_var(ctx->iter, node->data.str, 0);
+			if (vi >= 0) {
+				res->type = PCBQ_VT_LST;
+				res->data.lst = ctx->iter->lst[vi].data.lst;
+				return 0;
+			}
+		}
+		return -1;
+
 		case PCBQ_FNAME:
 			return -1; /* shall not eval such a node */
 

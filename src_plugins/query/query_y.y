@@ -76,7 +76,7 @@ static pcb_query_iter_t *iter_ctx;
 	pcb_qry_node_t *n;
 }
 
-%token     T_LET T_ASSERT T_RULE
+%token     T_LET T_ASSERT T_RULE T_LIST
 %token     T_OR T_AND T_EQ T_NEQ T_GTEQ T_LTEQ
 %token     T_NL
 %token <u> T_UNIT
@@ -192,8 +192,9 @@ fields:
 	;
 
 var:
-	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1); free($1); }
-	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, "@"); }
+	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1, 1); free($1); }
+	| T_LIST '(' '@' ')'     { $$ = pcb_qry_n_alloc(PCBQ_LISTVAR); $$->data.str = pcb_strdup("@"); }
+	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, "@", 1); }
 	;
 
 fcall:

@@ -61,6 +61,7 @@ const char *type_name[PCBQ_nodetype_max] = {
 	"PCBQ_OP_NOT",
 	"PCBQ_FIELD",
 	"PCBQ_FIELD_OF",
+	"PCBQ_LISTVAR",
 	"PCBQ_VAR",
 	"PCBQ_FNAME",
 	"PCBQ_FCALL",
@@ -135,6 +136,7 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 			}
 			break;
 		case PCBQ_FIELD:
+		case PCBQ_LISTVAR:
 		case PCBQ_DATA_STRING: pcb_printf("%s%s '%s'\n", prefix, ind, nd->data.str); break;
 		default:
 			printf("\n");
@@ -185,12 +187,15 @@ pcb_query_iter_t *pcb_qry_iter_alloc(void)
 }
 
 
-int pcb_qry_iter_var(pcb_query_iter_t *it, const char *varname)
+int pcb_qry_iter_var(pcb_query_iter_t *it, const char *varname, int alloc)
 {
 	htsi_entry_t *e = htsi_getentry(&it->names, varname);
 
 	if (e != NULL)
 		return e->value;
+
+	if (!alloc)
+		return -1;
 
 	htsi_set(&it->names, pcb_strdup(varname), it->num_vars);
 	return it->num_vars++;

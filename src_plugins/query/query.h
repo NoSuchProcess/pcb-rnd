@@ -45,7 +45,7 @@ struct pcb_qry_val_s {
 	pcb_qry_valtype_t type;
 	union {
 		pcb_obj_t obj;
-		pcb_objlist_t lst;
+		pcb_objlist_t *lst;
 		Coord crd;
 		double dbl;
 		const char *str;
@@ -77,6 +77,7 @@ typedef enum {
 	PCBQ_OP_NOT,
 	PCBQ_FIELD,
 	PCBQ_FIELD_OF,
+	PCBQ_LISTVAR,
 	PCBQ_VAR,
 	PCBQ_FNAME,
 	PCBQ_FCALL,
@@ -125,7 +126,7 @@ struct pcb_query_iter_s {
 };
 
 pcb_query_iter_t *pcb_qry_iter_alloc(void);
-int pcb_qry_iter_var(pcb_query_iter_t *it, const char *varname);
+int pcb_qry_iter_var(pcb_query_iter_t *it, const char *varname, int alloc);
 void pcb_qry_iter_init(pcb_query_iter_t *it);
 
 pcb_query_iter_t *pcb_qry_find_iter(pcb_qry_node_t *node);
