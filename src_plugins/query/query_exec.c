@@ -364,8 +364,18 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			return 0;
 
 		case PCBQ_FNAME:
-		case PCBQ_FCALL:
-			return -1;
+			return -1; /* shall not eval such a node */
+
+		case PCBQ_FCALL: {
+			pcb_qry_node_t *fargs, *fname = node->data.children;
+			if (fname == NULL)
+				return -1;
+			fargs = fname->next;
+			if ((fname->type !=  PCBQ_FNAME) || (fname->data.fnc == NULL))
+				return -1;
+			printf("CALL\n");
+			PCB_QRY_RET_INV(res);
+		}
 
 		case PCBQ_DATA_COORD:       PCB_QRY_RET_INT(res, node->data.crd);
 		case PCBQ_DATA_DOUBLE:      PCB_QRY_RET_DBL(res, node->data.dbl);
