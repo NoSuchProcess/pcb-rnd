@@ -30,6 +30,7 @@
 #include "create.h"
 #include "compat_misc.h"
 #include "ghid-search.h"
+#include "win_place.h"
 
 typedef struct {
 	GtkWidget *window;
@@ -65,6 +66,7 @@ void ghid_search_window_show(gboolean raise)
 {
 	ghid_search_window_create();
 	gtk_widget_show_all(sdlg.window);
+	wplc_place(WPLC_SEARCH, sdlg.window);
 	if (raise)
 		gtk_window_present(GTK_WINDOW(sdlg.window));
 }

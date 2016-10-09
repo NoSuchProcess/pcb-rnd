@@ -178,6 +178,7 @@ void ghid_conf_load_post_wgeo(void *user_data, int argc, event_arg_t * argv[])
 	did_just_load_geo(netlist, WPLC_NETLIST);
 	did_just_load_geo(keyref, WPLC_KEYREF);
 	did_just_load_geo(pinout, WPLC_PINOUT);
+	did_just_load_geo(pinout, WPLC_SEARCH);
 }
 
 #undef path_prefix

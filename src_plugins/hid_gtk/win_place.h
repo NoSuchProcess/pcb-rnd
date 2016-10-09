@@ -10,6 +10,7 @@ typedef enum {
 	WPLC_NETLIST,
 	WPLC_KEYREF,
 	WPLC_PINOUT,
+	WPLC_SEARCH,
 	WPLC_max
 } wplc_win_t;
 
