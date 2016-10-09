@@ -1,0 +1,10 @@
+Improve the initial dispersion of elements by choosing an order based
+on the netlist, rather than the arbitrary element order.  This isn't
+the same as a global autoplace, it's more of a linear autoplace.  It
+might make some useful local groupings.  For example, you should not
+have to chase all over the board to find the resistor that goes with
+a given LED.
+
+#state: works
+#default: buildin
+#implements: (feature)

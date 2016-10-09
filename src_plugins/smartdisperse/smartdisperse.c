@@ -10,6 +10,8 @@
  * \copyright Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ *
  * Improve the initial dispersion of elements by choosing an order based
  * on the netlist, rather than the arbitrary element order.  This isn't
  * the same as a global autoplace, it's more of a linear autoplace.  It
@@ -20,6 +22,8 @@
 
 #include <stdio.h>
 #include <math.h>
+
+#include <genht/htpi.h>
 
 #include "config.h"
 #include "global.h"
@@ -34,6 +38,8 @@
 #include "move.h"
 #include "draw.h"
 #include "set.h"
+#include "plugins.h"
+#include "hid_actions.h"
 
 #define GAP 10000
 static Coord minx;
@@ -80,7 +86,7 @@ static void place(ElementType * element)
 	MoveElementLowLevel(PCB->Data, element, dx, dy);
 
 	/* and add to the undo list so we can undo this operation */
-	AddObjectToMoveUndoList(ELEMENT_TYPE, NULL, NULL, element, dx, dy);
+	AddObjectToMoveUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
 
 	/* keep track of how tall this row is */
 	minx += element->BoundingBox.X2 - element->BoundingBox.X1 + GAP;
@@ -120,21 +126,25 @@ static int padorder(ConnectionType * conna, ConnectionType * connb)
 /* ewww, these are actually arrays */
 #define ELEMENT_N(DATA,ELT)	((ELT) - (DATA)->Element)
 #define VISITED(ELT)		(visited[ELEMENT_N(PCB->Data, (ELT))])
-#define IS_ELEMENT(CONN)	((CONN)->type == PAD_TYPE || (CONN)->type == PIN_TYPE)
+#define IS_ELEMENT(CONN)	((CONN)->type == PCB_TYPE_PAD || (CONN)->type == PCB_TYPE_PIN)
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
 static const char smartdisperse_syntax[] = "SmartDisperse([All|Selected])";
 
-static int smartdisperse(int argc, char **argv, Coord x, Coord y)
+#define set_visited(element) htpi_set(&visited, ((void *)(element)), 1)
+#define is_visited(element)  htpi_has(&visited, ((void *)(element)))
+
+
+static int smartdisperse(int argc, const char **argv, Coord x, Coord y)
 {
-	char *function = ARG(0);
+	const char *function = ARG(0);
 	NetListType *Nets;
-	char *visited;
-//  PointerListType stack = { 0, 0, NULL };
+	htpi_t visited;
+/*  PointerListType stack = { 0, 0, NULL };*/
 	int all;
-//  int changed = 0;
-//  int i;
+/*  int changed = 0;
+  int i;*/
 
 	if (!function) {
 		all = 1;
@@ -149,20 +159,20 @@ static int smartdisperse(int argc, char **argv, Coord x, Coord y)
 		AFAIL(smartdisperse);
 	}
 
-	Nets = ProcNetlist(&PCB->NetlistLib);
+	Nets = ProcNetlist(&PCB->NetlistLib[0]);
 	if (!Nets) {
-		Message(_("Can't use SmartDisperse because no netlist is loaded.\n"));
+		Message(PCB_MSG_ERROR, _("Can't use SmartDisperse because no netlist is loaded.\n"));
 		return 0;
 	}
 
 	/* remember which elements we finish with */
-	visited = calloc(PCB->Data->ElementN, sizeof(*visited));
+	htpi_init(&visited, ptrhash, ptrkeyeq);
 
 	/* if we're not doing all, mark the unselected elements as "visited" */
 	ELEMENT_LOOP(PCB->Data);
 	{
-		if (!(all || TEST_FLAG(SELECTEDFLAG, element))) {
-			visited[n] = 1;
+		if (!(all || TEST_FLAG(PCB_FLAG_SELECTED, element))) {
+			set_visited(element);
 		}
 	}
 	END_LOOP;
@@ -182,7 +192,7 @@ static int smartdisperse(int argc, char **argv, Coord x, Coord y)
 	{
 		ConnectionType *conna, *connb;
 		ElementType *ea, *eb;
-//    ElementType *epp;
+/*    ElementType *epp;*/
 
 		if (net->ConnectionN != 2)
 			continue;
@@ -196,15 +206,15 @@ static int smartdisperse(int argc, char **argv, Coord x, Coord y)
 		eb = (ElementType *) connb->ptr1;
 
 		/* place this pair if possible */
-		if (VISITED((GList *) ea) || VISITED((GList *) eb))
+		if (is_visited(ea) || is_visited(eb))
 			continue;
-		VISITED((GList *) ea) = 1;
-		VISITED((GList *) eb) = 1;
+		set_visited(ea);
+		set_visited(eb);
 
 		/* a weak attempt to get the linked pads side-by-side */
 		if (padorder(conna, connb)) {
-			place((ElementType *) ea);
-			place((ElementType *) eb);
+			place(ea);
+			place(eb);
 		}
 		else {
 			place(eb);
@@ -226,9 +236,9 @@ static int smartdisperse(int argc, char **argv, Coord x, Coord y)
 			element = (ElementType *) connection->ptr1;
 
 			/* place this one if needed */
-			if (VISITED((GList *) element))
+			if (is_visited(element))
 				continue;
-			VISITED((GList *) element) = 1;
+			set_visited(element);
 			place(element);
 		}
 		END_LOOP;
@@ -238,13 +248,13 @@ static int smartdisperse(int argc, char **argv, Coord x, Coord y)
 	/* Place up anything else */
 	ELEMENT_LOOP(PCB->Data);
 	{
-		if (!visited[n]) {
+		if (!is_visited(element)) {
 			place(element);
 		}
 	}
 	END_LOOP;
 
-	free(visited);
+	htpi_uninit(&visited);
 
 	IncrementUndoSerialNumber();
 	Redraw();
@@ -257,9 +267,18 @@ static HID_Action smartdisperse_action_list[] = {
 	{"smartdisperse", NULL, smartdisperse, NULL, NULL}
 };
 
-REGISTER_ACTIONS(smartdisperse_action_list)
+char *smartdisperse_cookie = "smartdisperse plugin";
 
-void hid_smartdisperse_init()
+REGISTER_ACTIONS(smartdisperse_action_list, smartdisperse_cookie)
+
+static void hid_smartdisperse_uninit(void)
 {
-	register_smartdisperse_action_list();
+	hid_remove_actions_by_cookie(smartdisperse_cookie);
+}
+
+#include "dolists.h"
+pcb_uninit_t hid_smartdisperse_init()
+{
+	REGISTER_ACTIONS(smartdisperse_action_list, smartdisperse_cookie);
+	return hid_smartdisperse_uninit;
 }

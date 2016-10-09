@@ -10,6 +10,7 @@ include {../src_plugins/jostle/Plug.tmpasm}
 include {../src_plugins/polycombine/Plug.tmpasm}
 include {../src_plugins/polystitch/Plug.tmpasm}
 include {../src_plugins/teardrops/Plug.tmpasm}
+include {../src_plugins/smartdisperse/Plug.tmpasm}
 include {../src_plugins/vendordrill/Plug.tmpasm}
 include {../src_plugins/puller/Plug.tmpasm}
 include {../src_plugins/djopt/Plug.tmpasm}
