@@ -26,24 +26,28 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include <genlist/gendlist.h>
 #include "gui.h"
 #include "create.h"
 #include "compat_misc.h"
 #include "ghid-search.h"
 #include "win_place.h"
 
-typedef struct expr1_s expr1_t;
+typedef struct expr1_s {
+	GtkWidget *and;        /* only if not the first row */
+
+	GtkWidget *hbox;       /* only if first in row*/
+	GtkWidget *remove_row; /* only if first in row*/
 
 
-struct expr1_s {
-	GtkWidget *and;
 	GtkWidget *remove;
 	GtkWidget *left, *operator, *right;
-	GtkWidget *or;
+	GtkWidget *or;         /* only if not the first in the row */
 
-	expr1_t *next_or;
-	expr1_t *next_and;
-};
+	gdl_elem_t next_or;   /* --> */
+	gdl_elem_t next_and;  /* v */
+	gdl_list_t ors;       /* only in the first; the row-first is not on this list, so it collects the subseqent siblings only */
+} expr1_t;
 
 typedef struct {
 	GtkWidget *window;
@@ -53,10 +57,59 @@ typedef struct {
 	GtkWidget *wizard_vbox;
 	GtkWidget *new_row;
 
-	expr1_t *wizard;
+	gdl_list_t wizard;       /* of expr1_t */
 } ghid_search_dialog_t;
 
 static ghid_search_dialog_t sdlg;
+
+static void build_expr1(expr1_t *e, GtkWidget *parent_box)
+{
+	const char **s, *ops[] = {"==", "!=", ">=", "<=", ">", "<", NULL};
+
+	e->left = gtk_button_new_with_label("<pick>");
+	gtk_box_pack_start(GTK_BOX(parent_box), e->left, FALSE, FALSE, 0);
+
+	e->operator = gtk_combo_box_new_text();
+	for(s = ops; *s != NULL; s++)
+		gtk_combo_box_append_text(GTK_COMBO_BOX(e->operator), *s);
+	gtk_box_pack_start(GTK_BOX(parent_box), e->operator, FALSE, FALSE, 0);
+
+	e->right = gtk_button_new_with_label("<pick>");
+	gtk_box_pack_start(GTK_BOX(parent_box), e->right, FALSE, FALSE, 0);
+}
+
+static expr1_t *append_row()
+{
+	expr1_t *e = calloc(sizeof(expr1_t), 1);
+
+	if (gdl_first(&sdlg.wizard) != NULL) {
+		e->and = gtk_label_new("AND");
+		gtk_misc_set_alignment(GTK_MISC(e->and), -1, 0.);
+		gtk_box_pack_start(GTK_BOX(sdlg.wizard_vbox), e->and, FALSE, FALSE, 0);
+	}
+
+	e->hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(sdlg.wizard_vbox), e->hbox, FALSE, FALSE, 0);
+
+	build_expr1(e, e->hbox);
+
+	gdl_append(&sdlg.wizard, e, next_and);
+	return e;
+}
+
+static expr1_t *append_col(expr1_t *row)
+{
+	expr1_t *e = calloc(sizeof(expr1_t), 1);
+
+	e->or = gtk_label_new(" OR ");
+	gtk_misc_set_alignment(GTK_MISC(e->or), -1, 1);
+	gtk_box_pack_start(GTK_BOX(row->hbox), e->or, FALSE, FALSE, 0);
+
+	build_expr1(e, row->hbox);
+
+	gdl_append(&row->ors, e, next_or);
+	return e;
+}
 
 static void ghid_search_window_create()
 {
@@ -64,6 +117,9 @@ static void ghid_search_window_create()
 	GtkWidget *content_area, *top_window = gport->top_window;
 	const char *actions[] = { "select", "unselect", NULL };
 	const char **s;
+
+	/* make sure the list is empty */
+	memset(&sdlg.wizard, 0, sizeof(sdlg.wizard));
 
 	sdlg.window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	sdlg.window = gtk_dialog_new_with_buttons(_("Advanced search"),
@@ -79,7 +135,6 @@ static void ghid_search_window_create()
 	lab = gtk_label_new("Query expression:");
 	gtk_box_pack_start(GTK_BOX(vbox_win), lab, TRUE, TRUE, 0);
 	gtk_misc_set_alignment(GTK_MISC(lab), -1, 0.);
-
 
 /* expr entry */
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -101,11 +156,19 @@ static void ghid_search_window_create()
 	sdlg.wizard_enable = gtk_check_button_new_with_label("Enable wizard");
 	gtk_box_pack_start(GTK_BOX(vbox), sdlg.wizard_enable, TRUE, TRUE, 0);
 
-	sdlg.wizard_vbox = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), sdlg.wizard_vbox, TRUE, TRUE, 0);
+	sdlg.wizard_vbox = gtk_vbox_new(FALSE, 6);
+	gtk_box_pack_start(GTK_BOX(vbox), sdlg.wizard_vbox, TRUE, TRUE, 4);
 
 	sdlg.new_row = gtk_button_new_with_label("Add new row");
 	gtk_box_pack_start(GTK_BOX(vbox), sdlg.new_row, TRUE, TRUE, 0);
+
+/* */
+	{
+		expr1_t *r1;
+		r1 = append_row();
+		append_col(r1);
+		append_row();
+	}
 
 	gtk_widget_realize(sdlg.window);
 }
