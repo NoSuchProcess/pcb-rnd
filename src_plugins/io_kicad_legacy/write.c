@@ -81,6 +81,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	pcb_cardinal_t i;
 	pcb_cardinal_t j; /* may not need this now */
 	int physicalLayerCount = 0;
+	int silkLayerCount= 0;
 
 	Coord LayoutXOffset;
 	Coord LayoutYOffset;
@@ -150,7 +151,8 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	fputs("InternalUnit 0.000100 INCH\n",FP); /* decimil is the default v1 kicad legacy unit */
 	fputs("Layers ",FP);
 	physicalLayerCount = pcb_layer_group_list(PCB_LYT_COPPER, NULL, 0);
-	fprintf(FP, "%d\n", physicalLayerCount);
+	silkLayerCount = pcb_layer_group_list(PCB_LYT_SILK, NULL, 0);
+	/* fprintf(FP, "%d\n", physicalLayerCount); */
 	int layer = 0;
 	if (physicalLayerCount >= 1) {
 		fprintf(FP, "Layer[%d] Cuivre signal\n", layer);
@@ -189,6 +191,16 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	int topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
 	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, physicalLayerCount);
 
+	/* figure out which pcb layers are bottom silk and make a list */
+	int bottomSilk[silkLayerCount];
+	int bottomSilkCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
+	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, bottomSilk, silkLayerCount);
+
+	/* figure out which pcb layers are top silk and make a list */
+	int topSilk[silkLayerCount];
+	int topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
+	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, topSilk, silkLayerCount);
+
 	/* we now proceed to write the bottom copper tracks to the kicad legacy file, layer by layer */
 	for (i = 0; i < bottomCount; i++) /* write bottom copper tracks, if any */
 		{
@@ -220,6 +232,22 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < topCount; i++) /* write top copper tracks, if any */
 		{
 			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}
+
+	/* we now proceed to write the bottom silk lines to the kicad legacy file, using layer 20 */
+	currentKicadLayer = 20; /* 20 is the bottom silk layer in kicad */
+	for (i = 0; i < bottomSilkCount; i++) /* write bottom silk lines, if any */
+		{
+			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}
+
+	/* we now proceed to write the top silk lines to the kicad legacy file, using layer 21 */
+	currentKicadLayer = 21; /* 21 is the top silk layer in kicad */
+	for (i = 0; i < topSilkCount; i++) /* write top silk lines, if any */
+		{
+			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
 									LayoutXOffset, LayoutYOffset);
 		}
 
@@ -317,14 +345,18 @@ int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
 		*/
 		int localFlag = 0;
 		linelist_foreach(&layer->Line, &it, line) {
-			pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n",
-									line->Point1.X + xOffset, line->Point1.Y + yOffset,
-									line->Point2.X + xOffset, line->Point2.Y + yOffset,
-									line->Thickness);
-			if (number > (pcb_layer_group_list(PCB_LYT_COPPER, NULL, 0) - 1)) {
-				currentLayer = 15; /* can't have more than 16 layers, and top is 15 */
-			} /* need a cleverer way to determine group of non-empty layer */
-			pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* omitting net info */
+			if (currentLayer < 16) { /* a copper line i.e. track */
+				pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n",
+										line->Point1.X + xOffset, line->Point1.Y + yOffset,
+										line->Point2.X + xOffset, line->Point2.Y + yOffset,
+										line->Thickness);
+				pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* omitting net info */
+			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk line */
+				pcb_fprintf(FP, "DS %.0mk %.0mk %.0mk %.0mk %.0mk %d\n",
+										line->Point1.X + xOffset, line->Point1.Y + yOffset,
+										line->Point2.X + xOffset, line->Point2.Y + yOffset,
+										line->Thickness, currentLayer);
+			}
 			localFlag |= 1;
 		}
 		return localFlag;
