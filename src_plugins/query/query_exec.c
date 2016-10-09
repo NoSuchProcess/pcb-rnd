@@ -409,6 +409,9 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 
 		case PCBQ_nodetype_max:
 		case PCBQ_FIELD:
+		case PCBQ_RNAME:
+		case PCBQ_ITER_CTX:
+		case PCBQ_RULE:
 			return -1;
 	}
 	return -1;
