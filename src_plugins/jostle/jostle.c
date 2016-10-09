@@ -84,10 +84,15 @@ static void DebugPOLYAREA(POLYAREA * s, char *color)
 	PLINE *pl;
 	VNODE *v;
 	POLYAREA *p;
+	HID *ddraw;
+	hidGC ddgc;
 
 #ifndef DEBUG_POLYAREA
 	return;
 #endif
+	ddraw = gui->request_debug_draw();
+	ddgc = ddraw->make_gc();
+
 	p = s;
 	do {
 		for (pl = p->contours; pl; pl = pl->next) {
@@ -99,20 +104,22 @@ static void DebugPOLYAREA(POLYAREA * s, char *color)
 				y[i++] = v->point[1];
 			}
 			if (1) {
-				gui->set_color(Output.fgGC, color ? color : PCB->ConnectedColor);
-				gui->set_line_width(Output.fgGC, 1);
+				gui->set_color(ddgc, color ? color : PCB->ConnectedColor);
+				gui->set_line_width(ddgc, 1);
 				for (i = 0; i < n - 1; i++) {
-					gui->draw_line(Output.fgGC, x[i], y[i], x[i + 1], y[i + 1]);
-					/*  gui->fill_circle (Output.fgGC, x[i], y[i], 30);*/
+					gui->draw_line(ddgc, x[i], y[i], x[i + 1], y[i + 1]);
+					/*  gui->fill_circle (ddgc, x[i], y[i], 30);*/
 				}
-				gui->draw_line(Output.fgGC, x[n - 1], y[n - 1], x[0], y[0]);
+				gui->draw_line(ddgc, x[n - 1], y[n - 1], x[0], y[0]);
 			}
 			free(x);
 			free(y);
 		}
 	} while ((p = p->f) != s);
+	ddraw->flush_debug_draw();
 	hid_action("Busy");
 	sleep(3);
+	ddraw->finish_debug_draw();
 }
 
 /*!
