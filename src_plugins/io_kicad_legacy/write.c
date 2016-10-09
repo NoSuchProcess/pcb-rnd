@@ -149,21 +149,25 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	fputs("$SETUP\n",FP);
 	fputs("InternalUnit 0.000100 INCH\n",FP); /* decimil is the default v1 kicad legacy unit */
-	fputs("Layers ",FP);
+
+	/* here we define the copper layers in the exported kicad file */
 	physicalLayerCount = pcb_layer_group_list(PCB_LYT_COPPER, NULL, 0);
-	silkLayerCount = pcb_layer_group_list(PCB_LYT_SILK, NULL, 0);
-	/* fprintf(FP, "%d\n", physicalLayerCount); */
+
+	fputs("Layers ",FP);
+	fprintf(FP, "%d\n", physicalLayerCount); 
 	int layer = 0;
 	if (physicalLayerCount >= 1) {
-		fprintf(FP, "Layer[%d] Cuivre signal\n", layer);
+		fprintf(FP, "Layer[%d] COPPER_LAYER_0 signal\n", layer);
 	}
 	if (physicalLayerCount > 1) { /* seems we need to ignore layers > 16 due to kicad limitation */
 		for (layer = 1; (layer < (physicalLayerCount - 1)) && (layer < 15); layer++ ) {
-			fprintf(FP, "Layer[%d] signal%d\n", layer, layer);
+			fprintf(FP, "Layer[%d] Inner%d.Cu signal\n", layer, layer);
 		} 
-		fputs("Layer[15] Composant signal\n",FP);	
+		fputs("Layer[15] COPPER_LAYER_15 signal\n",FP);	
 	}
+
 	write_kicad_legacy_layout_via_drill_size(FP);
+
 	fputs("$EndSETUP\n",FP);
 
 	/* module description stuff would go here */
@@ -188,6 +192,8 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	int topLayers[physicalLayerCount];
 	int topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
 	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, physicalLayerCount);
+
+	silkLayerCount = pcb_layer_group_list(PCB_LYT_SILK, NULL, 0);
 
 	/* figure out which pcb layers are bottom silk and make a list */
 	int bottomSilk[silkLayerCount];
