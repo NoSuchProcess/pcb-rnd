@@ -143,6 +143,12 @@ P49. Comments are lines starting with #
 
      BUILTIN FUNCTIONS
 
+P70 list(LISTNAME)
+    Within an expression, a reference to a list may become an iterator and
+    refer to a single object. In case the expression needs the listm the
+    list() function protects LISTNAME from becoming an iterator. For
+    example llen(list(@)) is the number of all objects the design consists.
+
 P50 llen(EXPR)
     Returns to the number of items of a list (an integer number >= 0).
 
