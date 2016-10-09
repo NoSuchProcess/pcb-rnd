@@ -59,7 +59,7 @@ static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 {
 	if (!pcb_qry_is_true(res))
 		return;
-	printf("select %p\n", current);
+	printf("select %p\n", (void *)current);
 	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ))
 		SET_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
 }

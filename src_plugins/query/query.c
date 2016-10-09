@@ -37,6 +37,7 @@
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "query.h"
+#include "fptr_cast.h"
 
 /******** tree helper ********/
 
@@ -227,7 +228,7 @@ int pcb_qry_fnc_reg(const char *name, pcb_qry_fnc_t fnc)
 	if (htsp_get(qfnc, name) != NULL)
 		return -1;
 
-	htsp_set(qfnc, pcb_strdup(name), fnc);
+	htsp_set(qfnc, pcb_strdup(name), pcb_cast_f2d((pcb_fptr_t)fnc));
 
 	return 0;
 }
@@ -237,19 +238,20 @@ pcb_qry_fnc_t pcb_qry_fnc_lookup(const char *name)
 	if (qfnc == NULL)
 		return NULL;
 
-	return htsp_get(qfnc, name);
+	return (pcb_qry_fnc_t)pcb_cast_d2f(htsp_get(qfnc, name));
 }
 
 /* slow linear search: it's only for the dump */
 const char *pcb_qry_fnc_name(pcb_qry_fnc_t fnc)
 {
 	htsp_entry_t *e;
+	void *target = pcb_cast_f2d((pcb_fptr_t)fnc);
 
 	if (qfnc == NULL)
 		return NULL;
 
 	for(e = htsp_first(qfnc); e != NULL; e = htsp_next(qfnc, e))
-		if (e->value == fnc)
+		if (e->value == target)
 			return e->key;
 	return NULL;
 }
