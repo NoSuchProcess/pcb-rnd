@@ -168,8 +168,6 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	/* module description stuff would go here */
 
-	fputs("$TRACK\n",FP);
-	write_kicad_legacy_layout_vias(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
 	int currentKicadLayer = 0;
@@ -200,6 +198,27 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	int topSilk[silkLayerCount];
 	int topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
 	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, topSilk, silkLayerCount);
+
+	/* we now proceed to write the bottom silk lines to the kicad legacy file, using layer 20 */
+	currentKicadLayer = 20; /* 20 is the bottom silk layer in kicad */
+	for (i = 0; i < bottomSilkCount; i++) /* write bottom silk lines, if any */
+		{
+			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}
+
+	/* we now proceed to write the top silk lines to the kicad legacy file, using layer 21 */
+	currentKicadLayer = 21; /* 21 is the top silk layer in kicad */
+	for (i = 0; i < topSilkCount; i++) /* write top silk lines, if any */
+		{
+			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}
+
+	/* having done the graphical elements, we move onto tracks and vias */ 
+
+	fputs("$TRACK\n",FP);
+	write_kicad_legacy_layout_vias(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now proceed to write the bottom copper tracks to the kicad legacy file, layer by layer */
 	for (i = 0; i < bottomCount; i++) /* write bottom copper tracks, if any */
@@ -232,22 +251,6 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < topCount; i++) /* write top copper tracks, if any */
 		{
 			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
-		}
-
-	/* we now proceed to write the bottom silk lines to the kicad legacy file, using layer 20 */
-	currentKicadLayer = 20; /* 20 is the bottom silk layer in kicad */
-	for (i = 0; i < bottomSilkCount; i++) /* write bottom silk lines, if any */
-		{
-			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
-		}
-
-	/* we now proceed to write the top silk lines to the kicad legacy file, using layer 21 */
-	currentKicadLayer = 21; /* 21 is the top silk layer in kicad */
-	for (i = 0; i < topSilkCount; i++) /* write top silk lines, if any */
-		{
-			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
 									LayoutXOffset, LayoutYOffset);
 		}
 
@@ -352,10 +355,13 @@ int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
 										line->Thickness);
 				pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* omitting net info */
 			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk line */
-				pcb_fprintf(FP, "DS %.0mk %.0mk %.0mk %.0mk %.0mk %d\n",
+				fputs("$DRAWSEGMENT\n", FP);
+				pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n",
 										line->Point1.X + xOffset, line->Point1.Y + yOffset,
 										line->Point2.X + xOffset, line->Point2.Y + yOffset,
-										line->Thickness, currentLayer);
+										line->Thickness);
+				pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* omitting net info */
+				fputs("$EndDRAWSEGMENT\n", FP);
 			}
 			localFlag |= 1;
 		}
