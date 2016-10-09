@@ -1,0 +1,6 @@
+The selected polygons are combined together according to the ordering
+of their points.
+
+#state: works
+#default: buildin
+#implements: (feature)
