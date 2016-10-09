@@ -32,17 +32,35 @@
 #include "ghid-search.h"
 #include "win_place.h"
 
+typedef struct expr1_s expr1_t;
+
+
+struct expr1_s {
+	GtkWidget *and;
+	GtkWidget *remove;
+	GtkWidget *left, *operator, *right;
+	GtkWidget *or;
+
+	expr1_t *next_or;
+	expr1_t *next_and;
+};
+
 typedef struct {
 	GtkWidget *window;
-	GtkWidget *expr;      /* manual expression entry */
-	GtkWidget *action;    /* what-to-do combo box */
+	GtkWidget *expr;          /* manual expression entry */
+	GtkWidget *action;        /* what-to-do combo box */
+	GtkWidget *wizard_enable; /* checkbox */
+	GtkWidget *wizard_vbox;
+	GtkWidget *new_row;
+
+	expr1_t *wizard;
 } ghid_search_dialog_t;
 
 static ghid_search_dialog_t sdlg;
 
 static void ghid_search_window_create()
 {
-	GtkWidget *vbox_win, *hbox, *lab;
+	GtkWidget *vbox_win, *hbox, *lab, *vbox;
 	GtkWidget *content_area, *top_window = gport->top_window;
 	const char *actions[] = { "select", "unselect", NULL };
 	const char **s;
@@ -79,6 +97,15 @@ static void ghid_search_window_create()
 	gtk_box_pack_start(GTK_BOX(hbox), sdlg.action, TRUE, TRUE, 0);
 
 /* */
+	vbox = ghid_framed_vbox(vbox_win, "wizard", 1, TRUE, 4, 1);
+	sdlg.wizard_enable = gtk_check_button_new_with_label("Enable wizard");
+	gtk_box_pack_start(GTK_BOX(vbox), sdlg.wizard_enable, TRUE, TRUE, 0);
+
+	sdlg.wizard_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), sdlg.wizard_vbox, TRUE, TRUE, 0);
+
+	sdlg.new_row = gtk_button_new_with_label("Add new row");
+	gtk_box_pack_start(GTK_BOX(vbox), sdlg.new_row, TRUE, TRUE, 0);
 
 	gtk_widget_realize(sdlg.window);
 }
