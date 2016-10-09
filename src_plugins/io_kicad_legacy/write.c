@@ -221,6 +221,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	write_kicad_legacy_layout_vias(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now proceed to write the bottom copper tracks to the kicad legacy file, layer by layer */
+	currentKicadLayer = 0; /* 0 is the bottom copper layer in kicad */
 	for (i = 0; i < bottomCount; i++) /* write bottom copper tracks, if any */
 		{
 			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[bottomLayers[i]]),
