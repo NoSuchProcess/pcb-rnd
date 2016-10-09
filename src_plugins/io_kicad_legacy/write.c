@@ -29,6 +29,7 @@
 #include "uniq_name.h"
 #include "data.h"
 #include "write.h"
+#include "layer.h"
 
 #define F2S(OBJ, TYPE) flags_to_string ((OBJ)->Flags, TYPE)
 
@@ -78,7 +79,8 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	/*fputs("io_kicad_legacy_write_pcb()", FP);*/
 
 	pcb_cardinal_t i;
-	pcb_cardinal_t j;
+	pcb_cardinal_t j; /* may not need this now */
+	int physicalLayerCount = 0;
 
 	Coord LayoutXOffset;
 	Coord LayoutYOffset;
@@ -146,9 +148,19 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	fputs("$SETUP\n",FP);
 	fputs("InternalUnit 0.000100 INCH\n",FP); /* decimil is the default v1 kicad legacy unit */
-	fputs("Layers 2\n",FP);
-	fputs("Layer[0] Cuivre signal\n",FP);
-	fputs("Layer[15] Composant signal\n",FP);
+	fputs("Layers ",FP);
+	physicalLayerCount = pcb_layer_group_list(PCB_LYT_COPPER, NULL, 0);
+	fprintf(FP, "%d\n", physicalLayerCount);
+	int layer = 0;
+	if (physicalLayerCount >= 1) {
+		fprintf(FP, "Layer[%d] Cuivre signal\n", layer);
+	}
+	if (physicalLayerCount > 1) { /* seems we need to ignore layers > 16 due to kicad limitation */
+		for (layer = 1; (layer < (physicalLayerCount - 1)) && (layer < 15); layer++ ) {
+			fprintf(FP, "Layer[%d] signal%d\n", layer, layer);
+		} 
+		fputs("Layer[15] Composant signal\n",FP);	
+	}
 	write_kicad_legacy_layout_via_drill_size(FP);
 	fputs("$EndSETUP\n",FP);
 
@@ -157,11 +169,60 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	fputs("$TRACK\n",FP);
 	write_kicad_legacy_layout_vias(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
 
-	for (i = 0, j = 0; i < max_copper_layer + 2; i++)
+	/* we now need to map pcb's layer groups onto the kicad layer numbers */
+	int currentKicadLayer = 0;
+	int currentGroup = 0;
+	int lastGroup = 0;
+
+	/* figure out which pcb layers are bottom copper and make a list */
+	int bottomLayers[physicalLayerCount];
+	int bottomCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
+	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, physicalLayerCount);
+
+	/* figure out which pcb layers are internal copper layers and make a list */
+	int innerLayers[physicalLayerCount];
+	int innerCount = pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
+	pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, physicalLayerCount);
+
+	/* figure out which pcb layers are top copper and make a list */
+	int topLayers[physicalLayerCount];
+	int topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
+	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, physicalLayerCount);
+
+	/* we now proceed to write the bottom copper tracks to the kicad legacy file, layer by layer */
+	for (i = 0; i < bottomCount; i++) /* write bottom copper tracks, if any */
 		{
-			j += write_kicad_legacy_layout_tracks(FP, j, &(PCB->Data->Layer[i]),
-																						LayoutXOffset, LayoutYOffset);
+			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[bottomLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}	/* 0 is the bottom most track in kicad */
+
+	/* we now proceed to write the internal copper tracks to the kicad file, layer by layer */
+	if (innerCount != 0) {
+		currentGroup = pcb_layer_lookup_group(innerLayers[0]);
+		lastGroup = currentGroup;
+	}
+	for (i = 0, currentKicadLayer = 1; i < innerCount; i++) /* write inner copper tracks, group by group */
+		{
+			if (currentGroup != pcb_layer_lookup_group(innerLayers[i])) {
+				lastGroup = currentGroup;
+				currentGroup = pcb_layer_lookup_group(innerLayers[i]);
+				currentKicadLayer++;
+				if (currentKicadLayer > 14) {
+					currentKicadLayer = 14; /* kicad 16 layers in total, 0...15 */
+				}
+			}
+			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[innerLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
 		}
+
+	/* we now proceed to write the top copper tracks to the kicad legacy file, layer by layer */
+	currentKicadLayer = 15; /* 15 is the top most track in kicad */
+	for (i = 0; i < topCount; i++) /* write top copper tracks, if any */
+		{
+			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}
+
 	fputs("$EndTRACK\n",FP);
 	fputs("$EndBOARD\n",FP);
 	/*WriteElementData(FP, PCB->Data, "kicadl");*/	/* this may be needed in a different file */
@@ -241,6 +302,7 @@ int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
 {
 	gdl_iterator_t it;
 	LineType *line;
+	pcb_cardinal_t currentLayer = number;
 	/*ArcType *arc;
 		TextType *text;
 		PolygonType *polygon;
@@ -259,7 +321,10 @@ int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
 									line->Point1.X + xOffset, line->Point1.Y + yOffset,
 									line->Point2.X + xOffset, line->Point2.Y + yOffset,
 									line->Thickness);
-			pcb_fprintf(FP, "De %d 0 0 0 0\n", number); /* omitting net info */
+			if (number > (pcb_layer_group_list(PCB_LYT_COPPER, NULL, 0) - 1)) {
+				currentLayer = 15; /* can't have more than 16 layers, and top is 15 */
+			} /* need a cleverer way to determine group of non-empty layer */
+			pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* omitting net info */
 			localFlag |= 1;
 		}
 		return localFlag;
