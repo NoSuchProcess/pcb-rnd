@@ -365,6 +365,11 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 
 		case PCBQ_LISTVAR: {
 			int vi = pcb_qry_iter_var(ctx->iter, node->data.str, 0);
+			if ((vi < 0) && (strcmp(node->data.str, "@") == 0)) {
+				res->type = PCBQ_VT_LST;
+				res->data.lst = ctx->all.data.lst;
+				return 0;
+			}
 			if (vi >= 0) {
 				res->type = PCBQ_VT_LST;
 				res->data.lst = ctx->iter->lst[vi].data.lst;
@@ -377,13 +382,23 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			return -1; /* shall not eval such a node */
 
 		case PCBQ_FCALL: {
-			pcb_qry_node_t *fargs, *fname = node->data.children;
+			pcb_qry_val_t args[64];
+			int n;
+			pcb_qry_node_t *farg, *fname = node->data.children;
 			if (fname == NULL)
 				return -1;
-			fargs = fname->next;
+			farg = fname->next;
 			if ((fname->type !=  PCBQ_FNAME) || (fname->data.fnc == NULL))
 				return -1;
-			printf("CALL\n");
+			for(n = 0; (n < 64) && (farg != NULL); n++, farg = farg->next)
+				if (pcb_qry_eval(ctx, farg, &args[n]) < 0)
+					return -1;
+
+			if (farg != NULL) {
+				Message(PCB_MSG_ERROR, "too many function arguments\n");
+				return -1;
+			}
+			printf("CALL n=%d\n", n);
 			PCB_QRY_RET_INV(res);
 		}
 
