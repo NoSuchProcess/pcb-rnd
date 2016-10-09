@@ -125,8 +125,16 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 			else
 				printf("<invalid:%d>\n", nd->data.crd);
 			break;
-		case PCBQ_FIELD:
 		case PCBQ_FNAME:
+			{
+				const char *name = pcb_qry_fnc_name(nd->data.fnc);
+				if (name == NULL)
+					pcb_printf("%s%s <unknown>\n", prefix, ind);
+				else
+					pcb_printf("%s%s %s()\n", prefix, ind, name);
+			}
+			break;
+		case PCBQ_FIELD:
 		case PCBQ_DATA_STRING: pcb_printf("%s%s '%s'\n", prefix, ind, nd->data.str); break;
 		default:
 			printf("\n");
@@ -227,6 +235,19 @@ pcb_qry_fnc_t pcb_qry_fnc_lookup(const char *name)
 	return htsp_get(qfnc, name);
 }
 
+/* slow linear search: it's only for the dump */
+const char *pcb_qry_fnc_name(pcb_qry_fnc_t fnc)
+{
+	htsp_entry_t *e;
+
+	if (qfnc == NULL)
+		return NULL;
+
+	for(e = htsp_first(qfnc); e != NULL; e = htsp_next(qfnc, e))
+		if (e->value == fnc)
+			return e->key;
+	return NULL;
+}
 
 /******** parser helper ********/
 void qry_error(const char *err)

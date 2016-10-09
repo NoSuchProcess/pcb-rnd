@@ -202,7 +202,16 @@ fcall:
 	;
 
 fname:
-	T_STR                    { $$ = pcb_qry_n_alloc(PCBQ_FNAME); $$->data.str = $1; }
+	T_STR   {
+		$$ = pcb_qry_n_alloc(PCBQ_FNAME);
+		$$->data.fnc = pcb_qry_fnc_lookup($1);
+		if ($$->data.fnc == NULL) {
+			yyerror("Unknown function");
+			free($1);
+			return -1;
+		}
+		free($1);
+	}
 	;
 
 

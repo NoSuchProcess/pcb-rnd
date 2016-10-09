@@ -26,7 +26,10 @@
 #include "obj_any.h"
 #include <genht/htsi.h>
 
+typedef struct pcb_qry_val_s pcb_qry_val_t;
 typedef struct pcb_query_iter_s  pcb_query_iter_t;
+
+typedef int (*pcb_qry_fnc_t)(int argc, pcb_qry_val_t *argv[], pcb_qry_val_t *res);
 
 /* value of an expression */
 typedef enum pcb_qry_valtype_e {
@@ -38,7 +41,7 @@ typedef enum pcb_qry_valtype_e {
 	PCBQ_VT_STRING
 } pcb_qry_valtype_t;
 
-typedef struct pcb_qry_val_s {
+struct pcb_qry_val_s {
 	pcb_qry_valtype_t type;
 	union {
 		pcb_obj_t obj;
@@ -47,7 +50,7 @@ typedef struct pcb_qry_val_s {
 		double dbl;
 		const char *str;
 	} data;
-} pcb_qry_val_t;
+};
 
 /* Script parsed into a tree */
 typedef struct pcb_qry_node_s pcb_qry_node_t;
@@ -96,6 +99,7 @@ struct pcb_qry_node_s {
 		const char *str;
 		pcb_query_iter_t *iter_ctx;
 		pcb_qry_node_t *children;   /* first child (NULL for a leaf node) */
+		pcb_qry_fnc_t fnc;
 	} data;
 	pcb_qry_val_t result;
 };
@@ -129,8 +133,8 @@ pcb_query_iter_t *pcb_qry_find_iter(pcb_qry_node_t *node);
 char *pcb_query_sprint_val(pcb_qry_val_t *val);
 
 /* functions */
-typedef int (*pcb_qry_fnc_t)(int argc, pcb_qry_val_t *argv[], pcb_qry_val_t *res);
 int pcb_qry_fnc_reg(const char *name, pcb_qry_fnc_t fnc);
 pcb_qry_fnc_t pcb_qry_fnc_lookup(const char *name);
+const char *pcb_qry_fnc_name(pcb_qry_fnc_t fnc);
 
 #endif
