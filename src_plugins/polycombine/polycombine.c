@@ -8,11 +8,7 @@
  * \copyright Licensed under the terms of the GNU General Public
  * License, version 2.
  *
- * Compile like this:
- *
- * gcc -I$HOME/pcbsrc/git/src -I$HOME/pcbsrc/git -O2 -shared polycombine.c -o polycombine.so
- *
- * The resulting polycombine.so goes in $HOME/.pcb/plugins/polycombine.so.
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
  *
  * Usage: PolyCombine()
  *
@@ -40,16 +36,18 @@
 #include "misc.h"
 #include "draw.h"
 #include "undo.h"
+#include "plugins.h"
+#include "hid_actions.h"
 
-static POLYAREA *original_poly(PolygonType * p, bool * forward)
+static POLYAREA *original_poly(PolygonType *p, pcb_bool *forward)
 {
 	PLINE *contour = NULL;
 	POLYAREA *np = NULL;
-	Cardinal n;
+	pcb_cardinal_t n;
 	Vector v;
 	int hole = 0;
 
-	*forward = true;
+	*forward = pcb_true;
 
 	if ((np = poly_Create()) == NULL)
 		return NULL;
@@ -71,7 +69,7 @@ static POLYAREA *original_poly(PolygonType * p, bool * forward)
 
 		/* Is current point last in contour? If so process it. */
 		if (n == p->PointN - 1 || (hole < p->HoleIndexN && n == p->HoleIndex[hole] - 1)) {
-			poly_PreContour(contour, TRUE);
+			poly_PreContour(contour, pcb_true);
 
 			/* Log the direction in which the outer contour was specified */
 			if (hole == 0)
@@ -96,7 +94,7 @@ typedef struct poly_tree poly_tree;
 
 struct poly_tree {
 	PolygonType *polygon;
-	bool forward;
+	pcb_bool forward;
 	POLYAREA *polyarea;
 	poly_tree *parent;
 	poly_tree *child;
@@ -130,14 +128,14 @@ struct poly_tree {
  * contours can be assumed not to overlap, we can drill down in this
  * order: P1, P2, P3, P4, P5, P6.
  */
-static bool PolygonContainsPolygon(POLYAREA * outer, POLYAREA * inner)
+static pcb_bool PolygonContainsPolygon(POLYAREA *outer, POLYAREA *inner)
 {
-//  int contours_isect;
+/*  int contours_isect;*/
 	/* Should check outer contours don't intersect? */
-//  contours_isect = Touching (outer, inner);
+/*  contours_isect = Touching (outer, inner);*/
 	/* Cheat and assume simple single contour polygons for now */
-//  return contours_isect ?
-//           0 : poly_ContourInContour (outer->contours, inner->contours);
+/*  return contours_isect ?
+           0 : poly_ContourInContour (outer->contours, inner->contours);*/
 	return poly_ContourInContour(outer->contours, inner->contours);
 }
 
@@ -145,16 +143,16 @@ static bool PolygonContainsPolygon(POLYAREA * outer, POLYAREA * inner)
 static poly_tree *insert_node_recursive(poly_tree * start_point, poly_tree * to_insert)
 {
 	poly_tree *cur_node, *next = NULL;
-//  bool to_insert_isects_cur_node;   /* Intersection */
-	bool to_insert_contains_cur_node;	/* Containment */
-	bool cur_node_contains_to_insert;	/* Containment */
-	bool placed_to_insert = false;
+/*  bool to_insert_isects_cur_node;    Intersection */
+	pcb_bool to_insert_contains_cur_node;	/* Containment */
+	pcb_bool cur_node_contains_to_insert;	/* Containment */
+	pcb_bool placed_to_insert = pcb_false;
 
 	poly_tree *return_root = start_point;
 
 	if (start_point == NULL) {
-//      printf ("start_point is NULL, so returning to_insert\n");
-		//to_insert->parent = !!; UNDEFINED
+/*      printf ("start_point is NULL, so returning to_insert\n");
+		to_insert->parent = !!; UNDEFINED*/
 		return to_insert;
 	}
 
@@ -162,7 +160,7 @@ static poly_tree *insert_node_recursive(poly_tree * start_point, poly_tree * to_
 	for (cur_node = start_point; cur_node != NULL; cur_node = next) {
 		next = cur_node->next;
 
-//      to_insert_isects_cur_node = IsPolygonInPolygon (to_insert->polygon, cur_node->polygon);
+/*      to_insert_isects_cur_node = IsPolygonInPolygon (to_insert->polygon, cur_node->polygon);*/
 		to_insert_contains_cur_node = PolygonContainsPolygon(to_insert->polyarea, cur_node->polyarea);
 
 #if 0
@@ -191,7 +189,7 @@ static poly_tree *insert_node_recursive(poly_tree * start_point, poly_tree * to_
 					to_insert->prev->next = to_insert;
 				if (to_insert->next)
 					to_insert->next->prev = to_insert;
-				placed_to_insert = true;
+				placed_to_insert = pcb_true;
 
 				if (cur_node == start_point)
 					return_root = to_insert;
@@ -210,15 +208,15 @@ static poly_tree *insert_node_recursive(poly_tree * start_point, poly_tree * to_
 	}
 
 	if (placed_to_insert) {
-//      printf ("Returning new root %ld\n", return_root->polygon->ID);
+/*      printf ("Returning new root %ld\n", return_root->polygon->ID);*/
 		return return_root;
 	}
-//    return (to_insert->parent == NULL) ? to_insert : to_insert->parent;
+/*    return (to_insert->parent == NULL) ? to_insert : to_insert->parent;*/
 
 	/* Ok, so we still didn't find anywhere which the to_insert contour contained,
 	 * we need to start looking at the children of the start_point and its peers.
 	 */
-//  printf ("Looking at child nodes of the start_point\n");
+/*  printf ("Looking at child nodes of the start_point\n");*/
 
 	/* Investigate the start point and its peers first */
 	for (cur_node = start_point; cur_node != NULL; cur_node = next) {
@@ -237,13 +235,13 @@ static poly_tree *insert_node_recursive(poly_tree * start_point, poly_tree * to_
 			to_insert->parent = cur_node;
 			cur_node->child = insert_node_recursive(cur_node->child, to_insert);
 			return start_point;
-			//return cur_node->parent;
+			/*return cur_node->parent;*/
 		}
 	}
 
-//  if (!placed_to_insert)
+/*  if (!placed_to_insert)*/
 	/* prepend to_insert polygon to peer of start_point ? */
-//  printf ("Prepending as peer to start_poly\n");
+/*  printf ("Prepending as peer to start_poly\n");*/
 	to_insert->parent = start_point->parent;
 	to_insert->prev = NULL;
 	to_insert->next = start_point;
@@ -258,29 +256,29 @@ static POLYAREA *compute_polygon_recursive(poly_tree * root, POLYAREA * accumula
 	poly_tree *cur_node;
 	for (cur_node = root; cur_node != NULL; cur_node = cur_node->next) {
 		/* Process this element */
-//      printf ("Processing node %ld %s\n", cur_node->polygon->ID, cur_node->forward ? "FWD" : "BWD");
+/*      printf ("Processing node %ld %s\n", cur_node->polygon->ID, cur_node->forward ? "FWD" : "BWD");*/
 		poly_Boolean_free(accumulate, cur_node->polyarea, &res, cur_node->forward ? PBO_UNITE : PBO_SUB);
 		accumulate = res;
 
 		/* And its children if it has them */
 		if (cur_node->child) {
-//          printf ("Processing children\n");
+/*          printf ("Processing children\n");*/
 			accumulate = compute_polygon_recursive(cur_node->child, accumulate);
 		}
 	}
 	return accumulate;
 }
 
-static int polycombine(int argc, char **argv, Coord x, Coord y)
+static int polycombine(int argc, const char **argv, Coord x, Coord y)
 {
 	POLYAREA *res;
-	bool forward;
-//  bool outer;
+	pcb_bool forward;
 	POLYAREA *np;
-//  POLYAREA *pa;
-//  PLINE *pline;
-//  VNODE *node;
-//  PolygonType *Polygon;
+/*  bool outer;
+    POLYAREA *pa;
+    PLINE *pline;
+    VNODE *node;
+    PolygonType *Polygon;*/
 	LayerType *Layer = NULL;
 	poly_tree *root = NULL;
 	poly_tree *this_node;
@@ -288,7 +286,7 @@ static int polycombine(int argc, char **argv, Coord x, Coord y)
 	/* First pass to combine the forward and backward contours */
 	VISIBLEPOLYGON_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(SELECTEDFLAG, polygon))
+		if (!TEST_FLAG(PCB_FLAG_SELECTED, polygon))
 			continue;
 
 		/* Pick the layer of the first polygon we find selected */
@@ -310,7 +308,7 @@ static int polycombine(int argc, char **argv, Coord x, Coord y)
 		/* Check where we should place the node in the tree */
 		root = insert_node_recursive(root, this_node);
 
-		//RemovePolygon (layer, polygon);
+		/*RemovePolygon (layer, polygon);*/
 	}
 	ENDALL_LOOP;
 
@@ -322,7 +320,7 @@ static int polycombine(int argc, char **argv, Coord x, Coord y)
 	/* Second pass to remove the input polygons */
 	VISIBLEPOLYGON_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(SELECTEDFLAG, polygon))
+		if (!TEST_FLAG(PCB_FLAG_SELECTED, polygon))
 			continue;
 
 		/* Only combine polygons on the same layer */
@@ -347,9 +345,18 @@ static HID_Action polycombine_action_list[] = {
 	 NULL, NULL}
 };
 
-REGISTER_ACTIONS(polycombine_action_list)
+char *polycombine_cookie = "polycombine plugin";
 
-void pcb_plugin_init()
+REGISTER_ACTIONS(polycombine_action_list, polycombine_cookie)
+
+static void hid_polycombine_uninit(void)
 {
-	register_polycombine_action_list();
+	hid_remove_actions_by_cookie(polycombine_cookie);
+}
+
+#include "dolists.h"
+pcb_uninit_t hid_polycombine_init()
+{
+	REGISTER_ACTIONS(polycombine_action_list, polycombine_cookie);
+	return hid_polycombine_uninit;
 }
