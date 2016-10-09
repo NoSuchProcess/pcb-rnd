@@ -293,6 +293,8 @@ ha:{
 						ha:Vias                  = { active=rc/have_regex; action=Select(ViaByName) }
 					}
 				}
+#TODO: this is gtk-specific
+				ha:Advanced search and select= { action=DoWindows(search) }
 				-
 				ha:Auto-place selected elements          = { a=Ctrl<Key>p; action=AutoPlaceSelected() }
 				ha:Disperse all elements                 = { action=DisperseElements(All) }

@@ -24,6 +24,7 @@
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "layer.h"
+#include "ghid-search.h"
 
 #include "gtkhid.h"
 
@@ -1607,7 +1608,7 @@ static int CursorAction(int argc, const char **argv, Coord x, Coord y)
 
 /* ------------------------------------------------------------ */
 
-static const char dowindows_syntax[] = "DoWindows(1|2|3|4|5|6,[false])\n" "DoWindows(Layout|Library|Log|Netlist|Preferences|DRC,[false])";
+static const char dowindows_syntax[] = "DoWindows(1|2|3|4|5|6|7,[false])\n" "DoWindows(Layout|Library|Log|Netlist|Preferences|DRC,[false])";
 
 static const char dowindows_help[] = N_("Open various GUI windows. With false, do not raise the window (no focus stealing).");
 
@@ -1640,6 +1641,10 @@ Open the preferences window.
 @itemx DRC
 Open the DRC violations window.
 
+@item 7
+@itemx Search
+Open the advanced search window.
+
 @end table
 
 %end-doc */
@@ -1671,6 +1676,9 @@ static int DoWindows(int argc, const char **argv, Coord x, Coord y)
 	}
 	else if (strcmp(a, "6") == 0 || strcasecmp(a, "DRC") == 0) {
 		ghid_drc_window_show(raise);
+	}
+	else if (strcmp(a, "7") == 0 || strcasecmp(a, "search") == 0) {
+		ghid_search_window_show(raise);
 	}
 	else {
 		AFAIL(dowindows);

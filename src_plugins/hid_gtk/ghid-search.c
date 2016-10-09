@@ -31,18 +31,25 @@
 #include "compat_misc.h"
 #include "ghid-search.h"
 
-GtkWidget *ghid_search_dialog_create(ghid_search_dialog_t *dlg)
+typedef struct {
+	GtkWidget *window;
+	GtkWidget *expr;      /* manual expression entry */
+} ghid_search_dialog_t;
+
+static ghid_search_dialog_t sdlg;
+
+static void ghid_search_window_create()
 {
-	GtkWidget *window, *vbox_win;
+	GtkWidget *vbox_win;
 	GtkWidget *content_area, *top_window = gport->top_window;
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	window = gtk_dialog_new_with_buttons(_("Advanced search"),
+	sdlg.window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	sdlg.window = gtk_dialog_new_with_buttons(_("Advanced search"),
 																			 GTK_WINDOW(top_window),
 																			 GTK_DIALOG_DESTROY_WITH_PARENT,
-																			 GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+																			 GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, GTK_STOCK_APPLY, GTK_RESPONSE_APPLY, NULL);
 
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(window));
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(sdlg.window));
 
 	vbox_win = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(content_area), vbox_win);
@@ -51,7 +58,13 @@ GtkWidget *ghid_search_dialog_create(ghid_search_dialog_t *dlg)
 
 /* */
 
-	gtk_widget_show_all(window);
+	gtk_widget_realize(sdlg.window);
+}
 
-	return window;
+void ghid_search_window_show(gboolean raise)
+{
+	ghid_search_window_create();
+	gtk_widget_show_all(sdlg.window);
+	if (raise)
+		gtk_window_present(GTK_WINDOW(sdlg.window));
 }
