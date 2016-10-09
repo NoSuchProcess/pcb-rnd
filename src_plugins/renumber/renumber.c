@@ -352,11 +352,19 @@ static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
+int action_renumber_block(int argc, const char **argv, Coord x, Coord y);
+int action_renumber_buffer(int argc, const char **argv, Coord x, Coord y);
+
+
 static const char *renumber_cookie = "renumber plugin";
 
 HID_Action renumber_action_list[] = {
 	{"Renumber", 0, ActionRenumber,
-	 renumber_help, renumber_syntax}
+	 renumber_help, renumber_syntax},
+	{"RenumberBlock", NULL, action_renumber_block,
+		NULL, NULL},
+	{"RenumberBuffer", NULL, action_renumber_buffer,
+		NULL, NULL}
 };
 
 static void hid_renumber_uninit(void)

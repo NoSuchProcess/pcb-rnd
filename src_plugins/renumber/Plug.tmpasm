@@ -1,5 +1,5 @@
 put /local/pcb/mod {renumber}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/renumber/renumber.o @]
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/renumber/renumber.o $(PLUGDIR)/renumber/renumberblock.o @]
 
 switch /local/pcb/renumber/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
