@@ -115,60 +115,6 @@ static void DebugPOLYAREA(POLYAREA * s, char *color)
 	sleep(3);
 }
 
-
-#if 0
-enum {
-	K_X,
-	K_Y,
-	K_Lefts,
-	K_Rights,
-	K_Tops,
-	K_Bottoms,
-	K_Centers,
-	K_Marks,
-	K_Gaps,
-	K_First,
-	K_Last,
-	K_Average,
-	K_Crosshair,
-	K_Gridless,
-	K_none,
-	K_align,
-	K_distribute
-};
-
-static const char *keywords[] = {
-	[K_X] "X",
-	[K_Y] "Y",
-	[K_Lefts] "Lefts",
-	[K_Rights] "Rights",
-	[K_Tops] "Tops",
-	[K_Bottoms] "Bottoms",
-	[K_Centers] "Centers",
-	[K_Marks] "Marks",
-	[K_Gaps] "Gaps",
-	[K_First] "First",
-	[K_Last] "Last",
-	[K_Average] "Average",
-	[K_Crosshair] "Crosshair",
-	[K_Gridless] "Gridless",
-};
-
-static int keyword(const char *s)
-{
-	int i;
-
-	if (!s) {
-		return K_none;
-	}
-	for (i = 0; i < ENTRIES(keywords); ++i) {
-		if (keywords[i] && strcasecmp(s, keywords[i]) == 0)
-			return i;
-	}
-	return -1;
-}
-#endif
-
 /*!
  * \brief Find the bounding box of a POLYAREA.
  *
