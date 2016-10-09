@@ -390,6 +390,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			farg = fname->next;
 			if ((fname->type !=  PCBQ_FNAME) || (fname->data.fnc == NULL))
 				return -1;
+			memset(args, 0, sizeof(args));
 			for(n = 0; (n < 64) && (farg != NULL); n++, farg = farg->next)
 				if (pcb_qry_eval(ctx, farg, &args[n]) < 0)
 					return -1;
@@ -399,7 +400,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				return -1;
 			}
 			printf("CALL n=%d\n", n);
-			PCB_QRY_RET_INV(res);
+			return fname->data.fnc(n, args, res);
 		}
 
 		case PCBQ_DATA_COORD:       PCB_QRY_RET_INT(res, node->data.crd);

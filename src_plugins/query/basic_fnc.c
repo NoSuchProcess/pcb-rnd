@@ -25,13 +25,13 @@
 #include "query_exec.h"
 
 /* Query language - basic functions */
-static int fnc_llen(int argc, pcb_qry_val_t *argv[], pcb_qry_val_t *res)
+static int fnc_llen(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	if (argc != 1)
 		return -1;
-	if (argv[0]->type != PCBQ_VT_LST)
+	if (argv[0].type != PCBQ_VT_LST)
 		PCB_QRY_RET_INV(res);
-	PCB_QRY_RET_INT(res, pcb_objlist_length(&argv[0]->data.lst));
+	PCB_QRY_RET_INT(res, pcb_objlist_length(&argv[0].data.lst));
 }
 
 

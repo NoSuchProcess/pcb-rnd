@@ -29,7 +29,7 @@
 typedef struct pcb_qry_val_s pcb_qry_val_t;
 typedef struct pcb_query_iter_s  pcb_query_iter_t;
 
-typedef int (*pcb_qry_fnc_t)(int argc, pcb_qry_val_t *argv[], pcb_qry_val_t *res);
+typedef int (*pcb_qry_fnc_t)(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res);
 
 /* value of an expression */
 typedef enum pcb_qry_valtype_e {
@@ -45,7 +45,7 @@ struct pcb_qry_val_s {
 	pcb_qry_valtype_t type;
 	union {
 		pcb_obj_t obj;
-		pcb_objlist_t *lst;
+		pcb_objlist_t lst;
 		Coord crd;
 		double dbl;
 		const char *str;
