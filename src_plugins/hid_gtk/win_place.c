@@ -30,7 +30,8 @@ static const char *conf_prefix[WPLC_max] = { /* order DOES matter */
 	"library_",
 	"netlist_",
 	"keyref_",
-	"pinout_"
+	"pinout_",
+	"search_"
 };
 
 static GtkWidget *wplc_windows[WPLC_max];
