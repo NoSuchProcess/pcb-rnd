@@ -203,6 +203,31 @@ void pcb_qry_iter_init(pcb_query_iter_t *it)
 	it->all_idx = -1;
 }
 
+/******** functions ********/
+static htsp_t *qfnc = NULL;
+
+
+int pcb_qry_fnc_reg(const char *name, pcb_qry_fnc_t fnc)
+{
+	if (qfnc == NULL)
+		qfnc = htsp_alloc(strhash, strkeyeq);
+	if (htsp_get(qfnc, name) != NULL)
+		return -1;
+
+	htsp_set(qfnc, pcb_strdup(name), fnc);
+
+	return 0;
+}
+
+pcb_qry_fnc_t pcb_qry_fnc_lookup(const char *name)
+{
+	if (qfnc == NULL)
+		return NULL;
+
+	return htsp_get(qfnc, name);
+}
+
+
 /******** parser helper ********/
 void qry_error(const char *err)
 {
@@ -224,8 +249,11 @@ static void hid_query_uninit(void)
 	hid_remove_actions_by_cookie(query_cookie);
 }
 
+void pcb_qry_basic_fnc_init(void);
+
 pcb_uninit_t hid_query_init(void)
 {
+	pcb_qry_basic_fnc_init();
 	query_action_reg(query_cookie);
 	return hid_query_uninit;
 }

@@ -128,4 +128,9 @@ pcb_query_iter_t *pcb_qry_find_iter(pcb_qry_node_t *node);
 
 char *pcb_query_sprint_val(pcb_qry_val_t *val);
 
+/* functions */
+typedef int (*pcb_qry_fnc_t)(int argc, pcb_qry_val_t *argv[], pcb_qry_val_t *res);
+int pcb_qry_fnc_reg(const char *name, pcb_qry_fnc_t fnc);
+pcb_qry_fnc_t pcb_qry_fnc_lookup(const char *name);
+
 #endif

@@ -31,7 +31,12 @@ static int fnc_llen(int argc, pcb_qry_val_t *argv[], pcb_qry_val_t *res)
 		return -1;
 	if (argv[0]->type != PCBQ_VT_LST)
 		PCB_QRY_RET_INV(res);
-/*	PCB_QRY_RET_INT(res, pcb_objlst_length(argv[0]->data.lst));*/
+	PCB_QRY_RET_INT(res, pcb_objlist_length(&argv[0]->data.lst));
 }
 
 
+
+void pcb_qry_basic_fnc_init(void)
+{
+	pcb_qry_fnc_reg("llen", fnc_llen);
+}
