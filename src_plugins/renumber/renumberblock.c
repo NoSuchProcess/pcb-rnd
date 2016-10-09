@@ -34,91 +34,88 @@
 #include "undo.h"
 #include "error.h"
 #include "change.h"
+#include "conf_core.h"
 
-static int
-renumber_block (int argc, char **argv, Coord x, Coord y)
+int action_renumber_block(int argc, const char **argv, Coord x, Coord y)
 {
-  char num_buf[15];
-  int old_base, new_base;
+	char num_buf[15];
+	int old_base, new_base;
 
-  if (argc < 2) {
-    Message("Usage: RenumberBlock oldnum newnum");
-    return 1;
-  }
+	if (argc < 2) {
+		Message(PCB_MSG_ERROR, "Usage: RenumberBlock oldnum newnum");
+		return 1;
+	}
 
-  old_base = atoi (argv[0]);
-  new_base = atoi (argv[1]);
+	old_base = atoi(argv[0]);
+	new_base = atoi(argv[1]);
 
-  SET_FLAG (NAMEONPCBFLAG, PCB);
+	conf_set_editor(name_on_pcb, 1);
 
-  ELEMENT_LOOP (PCB->Data);
-  {
-    char *refdes_split, *cp;
-    char *old_ref, *new_ref;
-    int num;
+	ELEMENT_LOOP(PCB->Data);
+	{
+		char *refdes_split, *cp;
+		char *old_ref, *new_ref;
+		int num;
 
-    if (!TEST_FLAG (SELECTEDFLAG, element))
-      continue;
+		if (!TEST_FLAG(PCB_FLAG_SELECTED, element))
+			continue;
 
-    old_ref = element->Name[1].TextString;
-    for (refdes_split=cp=old_ref; *cp; cp++)
-      if (!isdigit(*cp))
-        refdes_split = cp+1;
+		old_ref = element->Name[1].TextString;
+		for (refdes_split = cp = old_ref; *cp; cp++)
+			if (!isdigit(*cp))
+				refdes_split = cp + 1;
 
-    num = atoi (refdes_split);
-    num += (new_base - old_base);
-    sprintf(num_buf, "%d" ,num);
-    new_ref = (char *) malloc (refdes_split - old_ref + strlen(num_buf) + 1);
-    memcpy (new_ref, old_ref, refdes_split - old_ref);
-    strcpy (new_ref + (refdes_split - old_ref), num_buf);
+		num = atoi(refdes_split);
+		num += (new_base - old_base);
+		sprintf(num_buf, "%d", num);
+		new_ref = (char *) malloc(refdes_split - old_ref + strlen(num_buf) + 1);
+		memcpy(new_ref, old_ref, refdes_split - old_ref);
+		strcpy(new_ref + (refdes_split - old_ref), num_buf);
 
-    AddObjectToChangeNameUndoList (ELEMENT_TYPE, NULL, NULL,
-                                   element,
-                                   NAMEONPCB_NAME (element));
+		AddObjectToChangeNameUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element, NAMEONPCB_NAME(element));
 
-    ChangeObjectName (ELEMENT_TYPE, element, NULL, NULL, new_ref);
-  }
-  END_LOOP;
-  IncrementUndoSerialNumber ();
-  return 0;
+		ChangeObjectName(PCB_TYPE_ELEMENT, element, NULL, NULL, new_ref);
+	}
+	END_LOOP;
+	IncrementUndoSerialNumber();
+	return 0;
 }
 
-static int
-renumber_buffer (int argc, char **argv, Coord x, Coord y)
+int action_renumber_buffer(int argc, const char **argv, Coord x, Coord y)
 {
-  char num_buf[15];
-  int old_base, new_base;
+	char num_buf[15];
+	int old_base, new_base;
 
-  if (argc < 2) {
-    Message("Usage: RenumberBuffer oldnum newnum");
-    return 1;
-  }
+	if (argc < 2) {
+		Message(PCB_MSG_ERROR, "Usage: RenumberBuffer oldnum newnum");
+		return 1;
+	}
 
-  old_base = atoi (argv[0]);
-  new_base = atoi (argv[1]);
+	old_base = atoi(argv[0]);
+	new_base = atoi(argv[1]);
 
-  SET_FLAG (NAMEONPCBFLAG, PCB);
+	conf_set_editor(name_on_pcb, 1);
 
-  ELEMENT_LOOP (PASTEBUFFER->Data);
-  {
-    char *refdes_split, *cp;
-    char *old_ref, *new_ref;
-    int num;
+	ELEMENT_LOOP(PASTEBUFFER->Data);
+	{
+		char *refdes_split, *cp;
+		char *old_ref, *new_ref;
+		int num;
 
-    old_ref = element->Name[1].TextString;
-    for (refdes_split=cp=old_ref; *cp; cp++)
-      if (!isdigit(*cp))
-        refdes_split = cp+1;
+		old_ref = element->Name[1].TextString;
+		for (refdes_split = cp = old_ref; *cp; cp++)
+			if (!isdigit(*cp))
+				refdes_split = cp + 1;
 
-    num = atoi (refdes_split);
-    num += (new_base - old_base);
-    sprintf(num_buf, "%d" ,num);
-    new_ref = (char *) malloc (refdes_split - old_ref + strlen(num_buf) + 1);
-    memcpy (new_ref, old_ref, refdes_split - old_ref);
-    strcpy (new_ref + (refdes_split - old_ref), num_buf);
+		num = atoi(refdes_split);
+		num += (new_base - old_base);
+		sprintf(num_buf, "%d", num);
+		new_ref = (char *) malloc(refdes_split - old_ref + strlen(num_buf) + 1);
+		memcpy(new_ref, old_ref, refdes_split - old_ref);
+		strcpy(new_ref + (refdes_split - old_ref), num_buf);
 
-    ChangeObjectName (ELEMENT_TYPE, element, NULL, NULL, new_ref);
-  }
-  END_LOOP;
-  return 0;
+		ChangeObjectName(PCB_TYPE_ELEMENT, element, NULL, NULL, new_ref);
+	}
+	END_LOOP;
+	return 0;
 }
