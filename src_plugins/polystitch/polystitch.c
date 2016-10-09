@@ -8,13 +8,9 @@
  * \copyright Licensed under the terms of the GNU General Public 
  * License, version 2 or later.
  *
- * http://www.delorie.com/pcb/polystitch.c
+ * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
  *
- * Compile like this:
- *
- * gcc -I$HOME/geda/pcb-cvs/src -I$HOME/geda/pcb-cvs -O2 -shared polystitch.c -o polystitch.so
- *
- * The resulting polystitch.so goes in $HOME/.pcb/plugins/polystitch.so.
+ * Original source: http://www.delorie.com/pcb/polystitch.c
  *
  * Usage: PolyStitch()
  *
@@ -40,6 +36,8 @@
 #include "set.h"
 #include "polygon.h"
 #include "misc.h"
+#include "plugins.h"
+#include "hid_actions.h"
 
 static PolygonType *inner_poly, *outer_poly;
 static LayerType *poly_layer;
@@ -104,7 +102,7 @@ static void find_crosshair_poly(int x, int y)
 	}
 	ENDALL_LOOP;
 	if (!inner_poly) {
-		Message("Cannot find any polygons");
+		Message(PCB_MSG_ERROR, "Cannot find any polygons");
 		return;
 	}
 }
@@ -129,7 +127,7 @@ static void find_enclosing_poly()
 		}
 	}
 	END_LOOP;
-	Message("Cannot find a polygon enclosing the one you selected");
+	Message(PCB_MSG_ERROR, "Cannot find a polygon enclosing the one you selected");
 }
 
 static void check_windings()
@@ -216,7 +214,7 @@ static void stitch_them()
 	for (i = 0; i < inner_poly->PointN; i++)
 		CreateNewPointInPolygon(outer_poly, inner_poly->Points[i].X, inner_poly->Points[i].Y);
 
-	SetChangedFlag(true);
+	SetChangedFlag(pcb_true);
 
 	outer_poly->NoHolesValid = 0;
 	SetPolygonBoundingBox(outer_poly);
@@ -229,7 +227,7 @@ static void stitch_them()
 	RemovePolygon(poly_layer, inner_poly);
 }
 
-static int polystitch(int argc, char **argv, Coord x, Coord y)
+static int polystitch(int argc, const char **argv, Coord x, Coord y)
 {
 	find_crosshair_poly(x, y);
 	if (inner_poly) {
@@ -247,10 +245,18 @@ static HID_Action polystitch_action_list[] = {
 	 NULL, NULL}
 };
 
-REGISTER_ACTIONS(polystitch_action_list)
+char *polystitch_cookie = "polystitch plugin";
 
-		 void
-		   pcb_plugin_init()
+REGISTER_ACTIONS(polystitch_action_list, polystitch_cookie)
+
+static void hid_polystitch_uninit(void)
 {
-	register_polystitch_action_list();
+	hid_remove_actions_by_cookie(polystitch_cookie);
+}
+
+#include "dolists.h"
+pcb_uninit_t hid_polystitch_init()
+{
+	REGISTER_ACTIONS(polystitch_action_list, polystitch_cookie);
+	return hid_polystitch_uninit;
 }
