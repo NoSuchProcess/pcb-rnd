@@ -297,6 +297,24 @@ static void expr_wizard_init_model()
 		gtk_list_store_insert_with_values(expr_wizard_dlg.md_left, NULL, -1,  0, w->left_desc,  1,w,  -1);
 }
 
+static void left_chg_cb(GtkTreeView *t, gpointer *data)
+{
+	GtkTreeSelection *tsel;
+	GtkTreeModel *tm;
+	GtkTreeIter iter;
+	const expr_wizard_t *w;
+
+	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(t));
+	if (tsel == NULL)
+		return;
+
+	gtk_tree_selection_get_selected(tsel, &tm, &iter);
+	if (iter.stamp == 0)
+		return;
+
+	gtk_tree_model_get(tm, &iter, 1, &w, -1);
+	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_op), GTK_TREE_MODEL(w->ops->model));
+}
 
 static void expr_wizard_dialog(expr1_t *e)
 {
@@ -321,7 +339,10 @@ static void expr_wizard_dialog(expr1_t *e)
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), -1, "variable", renderer, "text", 0, NULL);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), GTK_TREE_MODEL(expr_wizard_dlg.md_left));
+	g_signal_connect(G_OBJECT(expr_wizard_dlg.tr_left), "cursor-changed", G_CALLBACK(left_chg_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.tr_left, FALSE, TRUE, 4);
+
+
 
 	expr_wizard_dlg.entry_left = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.entry_left, FALSE, TRUE, 4);
