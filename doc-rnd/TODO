@@ -49,6 +49,8 @@ CLEANUP #5
 - gsch2pcb: generalize plugin/buildin loading for external tools, check if gsch2pcb can work from plugins
 
 CLEANUP #6:
+- lihata board format:
+	- pads should be polygons (0 long line can't be rotated!)
 - layer groups from config (e.g. CLI) is ignored
 - res:
 	- search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
@@ -85,6 +87,7 @@ CLEANUP #6:
 
 CLEANUP #7: the big object split
 - remove pcb_obj_type_t from const.h - use obj_any.h instead
+
 
 
 
