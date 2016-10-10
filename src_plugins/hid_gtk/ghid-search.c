@@ -165,6 +165,13 @@ static void remove_row(expr1_t *row)
 	for(o = gdl_first(&row->ors); o != NULL; o = gdl_next(&row->ors, o))
 		destroy_expr1(o);
 	destroy_expr1(row);
+
+	/* the new first widget must not have an AND "preface" */
+	o = gdl_first(&sdlg.wizard);
+	if (o->and != NULL) {
+		gtk_widget_destroy(o->and);
+		o->and = NULL;
+	}
 }
 
 static void remove_expr(expr1_t *e)
