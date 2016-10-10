@@ -70,7 +70,8 @@ static ghid_search_dialog_t sdlg;
 static void new_col_cb(GtkWidget *button, void *data);
 static void remove_row_cb(GtkWidget *button, void *data);
 static void remove_expr_cb(GtkWidget *button, void *data);
-
+static void edit_expr_cb(GtkWidget *button, void *data);
+static void expr_wizard_dialog(expr1_t *e);
 
 static void build_expr1(expr1_t *e, GtkWidget *parent_box)
 {
@@ -80,6 +81,7 @@ static void build_expr1(expr1_t *e, GtkWidget *parent_box)
 	gtk_button_set_image(GTK_BUTTON(e->content), gtk_image_new_from_icon_name("gtk-new", GTK_ICON_SIZE_MENU));
 	gtk_box_pack_start(GTK_BOX(parent_box), e->content, FALSE, FALSE, 0);
 	gtk_widget_set_tooltip_text(e->content, "Edit search expression");
+	g_signal_connect(e->content, "clicked", G_CALLBACK(edit_expr_cb), e);
 
 	e->remove = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(parent_box), e->remove, FALSE, FALSE, 0);
@@ -193,6 +195,7 @@ static void remove_expr(expr1_t *e)
 	destroy_expr1(e);
 }
 
+
 /* button callbacks */
 static void new_row_cb(GtkWidget *button, void *data)
 {
@@ -213,6 +216,11 @@ static void remove_expr_cb(GtkWidget *button, void *data)
 	gtk_widget_show_all(sdlg.window);
 }
 
+static void edit_expr_cb(GtkWidget *button, void *data)
+{
+	expr_wizard_dialog((expr1_t *)data);
+}
+
 static void new_col_cb(GtkWidget *button, void *data)
 {
 	expr1_t *row = (expr1_t *)data;
@@ -220,7 +228,38 @@ static void new_col_cb(GtkWidget *button, void *data)
 	gtk_widget_show_all(sdlg.window);
 }
 
-/* Window creation and administration */
+/* Run the expression wizard dialog box */
+static void expr_wizard_dialog(expr1_t *e)
+{
+	GtkWidget *dialog, *hbox, *tr_left, *tr_op, *tr_right;
+	gboolean response;
+
+	/* Create the dialog */
+	dialog = gtk_dialog_new_with_buttons("Expression wizard",
+	                                     GTK_WINDOW(gport->top_window),
+	                                     GTK_DIALOG_MODAL,
+	                                     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
+	hbox = gtk_hbox_new(FALSE, 4);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 4);
+
+	tr_left = gtk_tree_view_new();
+	gtk_box_pack_start(GTK_BOX(hbox), tr_left, FALSE, TRUE, 4);
+
+	tr_op = gtk_tree_view_new();
+	gtk_box_pack_start(GTK_BOX(hbox), tr_op, FALSE, TRUE, 4);
+
+	tr_right = gtk_tree_view_new();
+	gtk_box_pack_start(GTK_BOX(hbox), tr_right, FALSE, TRUE, 4);
+
+	/* Run the dialog */
+	response = gtk_dialog_run(GTK_DIALOG(dialog));
+	if (response == GTK_RESPONSE_OK) {
+	}
+	gtk_widget_destroy(dialog);
+}
+
+/* Advanced search window creation and administration */
 static void ghid_search_window_create()
 {
 	GtkWidget *vbox_win, *hbox, *lab, *vbox;
