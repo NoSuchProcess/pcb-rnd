@@ -76,7 +76,6 @@ static void expr_wizard_dialog(expr1_t *e);
 static void build_expr1(expr1_t *e, GtkWidget *parent_box)
 {
 	GtkWidget *w;
-/*	const char **s, *ops[] = {"==", "!=", ">=", "<=", ">", "<", NULL};*/
 	e->content = gtk_button_new_with_label("<expr>");
 	gtk_button_set_image(GTK_BUTTON(e->content), gtk_image_new_from_icon_name("gtk-new", GTK_ICON_SIZE_MENU));
 	gtk_box_pack_start(GTK_BOX(parent_box), e->content, FALSE, FALSE, 0);
@@ -228,11 +227,79 @@ static void new_col_cb(GtkWidget *button, void *data)
 	gtk_widget_show_all(sdlg.window);
 }
 
+
 /* Run the expression wizard dialog box */
+static GType model_op[2] = { G_TYPE_STRING, G_TYPE_POINTER };
+static GtkListStore *md_left = NULL;
+
+typedef struct expr_wizard_op_s expr_wizard_op_t;
+struct expr_wizard_op_s {
+	const char **ops;
+	GtkListStore *model;
+};
+
+typedef struct expr_wizard_s expr_wizard_t;
+struct expr_wizard_s {
+	const char *left_var;
+	const char *left_desc;
+	const expr_wizard_op_t *ops;
+};
+
+enum {
+	OPS_ANY,
+	OPS_EQ,
+};
+
+const char *ops_any[] = {"==", "!=", ">=", "<=", ">", "<", NULL};
+const char *ops_eq[]  = {"==", "!=", NULL};
+
+expr_wizard_op_t op_tab[] = {
+	{ops_any, NULL},
+	{ops_eq, NULL},
+	{NULL, NULL}
+};
+
+static const expr_wizard_t expr_tab[] = {
+	{"@.id",        "object ID",             &op_tab[OPS_ANY]},
+	{"@.type",      "object type",           &op_tab[OPS_EQ]},
+	{"@.bbox.x1",   "bounding box X1",       &op_tab[OPS_ANY]},
+	{"@.bbox.y1",   "bounding box Y1",       &op_tab[OPS_ANY]},
+	{"@.bbox.x2",   "bounding box X2",       &op_tab[OPS_ANY]},
+	{"@.bbox.y2",   "bounding box Y2",       &op_tab[OPS_ANY]},
+	{"@.bbox.w",    "bounding box width",    &op_tab[OPS_ANY]},
+	{"@.bbox.h",    "bounding box height",   &op_tab[OPS_ANY]},
+	{NULL, NULL}
+};
+
+static void expr_wizard_init_model()
+{
+	const expr_wizard_t *w;
+	expr_wizard_op_t *o;
+
+	if (md_left != NULL)
+		return;
+
+	for(o = op_tab; o->ops != NULL; o++) {
+		const char **s;
+		o->model = gtk_list_store_newv(1, model_op);
+		for(s = o->ops; *s != NULL; s++)
+			gtk_list_store_insert_with_values(o->model, NULL, -1,  0, *s,  -1);
+	}
+
+	md_left = gtk_list_store_newv(2, model_op);
+	for(w = expr_tab; w->left_var != NULL; w++)
+		gtk_list_store_insert_with_values(md_left, NULL, -1,  0, w->left_desc,  1,w,  -1);
+}
+
+GtkWidget *expr_wizard_entry_left, *expr_wizard_entry_right;
+
 static void expr_wizard_dialog(expr1_t *e)
 {
-	GtkWidget *dialog, *hbox, *tr_left, *tr_op, *tr_right;
+	GtkWidget *dialog, *vbox, *hbox, *tr_left, *tr_op, *tr_right;
+	GtkCellRenderer *renderer;
 	gboolean response;
+
+	expr_wizard_init_model();
 
 	/* Create the dialog */
 	dialog = gtk_dialog_new_with_buttons("Expression wizard",
@@ -243,14 +310,47 @@ static void expr_wizard_dialog(expr1_t *e)
 	hbox = gtk_hbox_new(FALSE, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 4);
 
+	/* left */
+	vbox = gtk_vbox_new(FALSE, 4);
 	tr_left = gtk_tree_view_new();
-	gtk_box_pack_start(GTK_BOX(hbox), tr_left, FALSE, TRUE, 4);
+	renderer = gtk_cell_renderer_text_new();
+	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(tr_left), -1, "variable", renderer, "text", 0, NULL);
+	gtk_tree_view_set_model(GTK_TREE_VIEW(tr_left), GTK_TREE_MODEL(md_left));
+	gtk_box_pack_start(GTK_BOX(vbox), tr_left, FALSE, TRUE, 4);
+
+	expr_wizard_entry_left = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_entry_left, FALSE, TRUE, 4);
+
+	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 4);
+
+	/* operator */
+	vbox = gtk_vbox_new(FALSE, 4);
 
 	tr_op = gtk_tree_view_new();
-	gtk_box_pack_start(GTK_BOX(hbox), tr_op, FALSE, TRUE, 4);
+	renderer = gtk_cell_renderer_text_new();
+	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(tr_op), -1, "op", renderer, "text", 0, NULL);
+	gtk_tree_view_set_model(GTK_TREE_VIEW(tr_op), GTK_TREE_MODEL(op_tab[OPS_ANY].model));
+	gtk_box_pack_start(GTK_BOX(vbox), tr_op, FALSE, FALSE, 4);
+
+	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 4);
+
+	/* right */
+	vbox = gtk_vbox_new(FALSE, 4);
 
 	tr_right = gtk_tree_view_new();
-	gtk_box_pack_start(GTK_BOX(hbox), tr_right, FALSE, TRUE, 4);
+	renderer = gtk_cell_renderer_text_new();
+	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(tr_right), -1, "constant", renderer, "text", 0, NULL);
+	gtk_tree_view_set_model(GTK_TREE_VIEW(tr_right), GTK_TREE_MODEL(md_left));
+	gtk_box_pack_start(GTK_BOX(vbox), tr_right, FALSE, TRUE, 4);
+
+	expr_wizard_entry_right = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_entry_right, FALSE, TRUE, 4);
+
+	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 4);
+
+	/* pack content */
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), hbox);
+	gtk_widget_show_all(dialog);
 
 	/* Run the dialog */
 	response = gtk_dialog_run(GTK_DIALOG(dialog));
