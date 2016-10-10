@@ -177,10 +177,11 @@ static void remove_row(expr1_t *row)
 static void remove_expr(expr1_t *e)
 {
 	if (e->row == NULL) {
-		/* first item in a row */
-		expr1_t *o2 = gdl_first(&e->ors);
+		/* first item in a rBow */
+		expr1_t *o, *o2 = gdl_first(&e->ors);
 		if (o2 != NULL) {
 			/* there are subsequent items in the row - have to make the first of them the new head */
+			gdl_remove(&e->ors, o2, next_or);
 			gdl_insert_before(&sdlg.wizard, e, o2, next_and);
 			gdl_remove(&sdlg.wizard, e, next_and);
 #			define inherit(dst, src, fld)  dst->fld = src->fld; src->fld = NULL;
@@ -190,6 +191,13 @@ static void remove_expr(expr1_t *e)
 			inherit(o2, e, append_col);
 			inherit(o2, e, spc);
 #			undef inherit
+			/* move the list, reparenting it */
+			memcpy(&o2->ors, &e->ors, sizeof(e->ors));
+			for(o = gdl_first(&o2->ors); o != NULL; o = gdl_next(&o2->ors, o))
+				o->next_or.parent = &o2->ors;
+
+			o2->row = NULL;
+			memset(&e->ors, 0, sizeof(e->ors));
 		}
 		else {
 			/* only item of the row */
