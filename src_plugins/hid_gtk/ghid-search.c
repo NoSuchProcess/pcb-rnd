@@ -38,10 +38,10 @@ typedef struct expr1_s {
 
 	GtkWidget *hbox;       /* only if first in row*/
 	GtkWidget *remove_row; /* only if first in row*/
-
+	GtkWidget *append_col; /* only if first in row*/
 
 	GtkWidget *remove;
-	GtkWidget *left, *operator, *right;
+	GtkWidget *content;    /* the actual expression */
 	GtkWidget *or;         /* only if not the first in the row */
 
 	gdl_elem_t next_or;   /* --> */
@@ -62,20 +62,31 @@ typedef struct {
 
 static ghid_search_dialog_t sdlg;
 
+static void new_col_cb(GtkWidget *button, void *data);
+static void remove_row_cb(GtkWidget *button, void *data);
+
+
+
 static void build_expr1(expr1_t *e, GtkWidget *parent_box)
 {
-	const char **s, *ops[] = {"==", "!=", ">=", "<=", ">", "<", NULL};
+/*	const char **s, *ops[] = {"==", "!=", ">=", "<=", ">", "<", NULL};*/
+	e->content = gtk_button_new_with_label("<choose>");
+	gtk_box_pack_start(GTK_BOX(parent_box), e->content, FALSE, FALSE, 0);
+}
 
-	e->left = gtk_button_new_with_label("<pick>");
-	gtk_box_pack_start(GTK_BOX(parent_box), e->left, FALSE, FALSE, 0);
-
-	e->operator = gtk_combo_box_new_text();
-	for(s = ops; *s != NULL; s++)
-		gtk_combo_box_append_text(GTK_COMBO_BOX(e->operator), *s);
-	gtk_box_pack_start(GTK_BOX(parent_box), e->operator, FALSE, FALSE, 0);
-
-	e->right = gtk_button_new_with_label("<pick>");
-	gtk_box_pack_start(GTK_BOX(parent_box), e->right, FALSE, FALSE, 0);
+/* e is not part of any list by the time of the call */
+static void destroy_expr1(expr1_t *e)
+{
+#	define destroy(w) if (w != NULL) gtk_widget_destroy(w)
+	destroy(e->and);
+	destroy(e->remove_row);
+	destroy(e->append_col);
+	destroy(e->remove);
+	destroy(e->content);
+	destroy(e->or);
+	destroy(e->hbox);
+	free(e);
+#	undef destroy
 }
 
 static expr1_t *append_row()
@@ -90,6 +101,14 @@ static expr1_t *append_row()
 
 	e->hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(sdlg.wizard_vbox), e->hbox, FALSE, FALSE, 0);
+
+	e->remove_row = gtk_button_new_with_label("del row");
+	gtk_box_pack_start(GTK_BOX(e->hbox), e->remove_row, FALSE, FALSE, 0);
+	g_signal_connect(e->remove_row, "clicked", G_CALLBACK(remove_row_cb), e);
+
+	e->append_col = gtk_button_new_with_label("+");
+	gtk_box_pack_start(GTK_BOX(e->hbox), e->append_col, FALSE, FALSE, 0);
+	g_signal_connect(e->append_col, "clicked", G_CALLBACK(new_col_cb), e);
 
 	build_expr1(e, e->hbox);
 
@@ -111,6 +130,37 @@ static expr1_t *append_col(expr1_t *row)
 	return e;
 }
 
+static void remove_row(expr1_t *row)
+{
+	expr1_t *o;
+	gdl_remove(&sdlg.wizard, row, next_and);
+	for(o = gdl_first(&row->ors); o != NULL; o = gdl_next(&row->ors, o))
+		destroy_expr1(o);
+	destroy_expr1(row);
+}
+
+/**/
+static void new_row_cb(GtkWidget *button, void *data)
+{
+	append_row();
+	gtk_widget_show_all(sdlg.window);
+}
+
+static void remove_row_cb(GtkWidget *button, void *data)
+{
+	expr1_t *row = (expr1_t *)data;
+	remove_row(row);
+	gtk_widget_show_all(sdlg.window);
+}
+
+static void new_col_cb(GtkWidget *button, void *data)
+{
+	expr1_t *row = (expr1_t *)data;
+	append_col(row);
+	gtk_widget_show_all(sdlg.window);
+}
+
+/**/
 static void ghid_search_window_create()
 {
 	GtkWidget *vbox_win, *hbox, *lab, *vbox;
@@ -160,15 +210,13 @@ static void ghid_search_window_create()
 	gtk_box_pack_start(GTK_BOX(vbox), sdlg.wizard_vbox, TRUE, TRUE, 4);
 
 	sdlg.new_row = gtk_button_new_with_label("Add new row");
+	g_signal_connect(sdlg.new_row, "clicked", G_CALLBACK(new_row_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(vbox), sdlg.new_row, TRUE, TRUE, 0);
 
-/* */
-	{
-		expr1_t *r1;
-		r1 = append_row();
-		append_col(r1);
-		append_row();
-	}
+
+
+/* Add one row of wizard to save a click in the most common case */
+	append_row();
 
 	gtk_widget_realize(sdlg.window);
 }
