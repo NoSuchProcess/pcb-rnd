@@ -39,6 +39,7 @@ typedef struct expr1_s {
 	GtkWidget *hbox;       /* only if first in row*/
 	GtkWidget *remove_row; /* only if first in row*/
 	GtkWidget *append_col; /* only if first in row*/
+	GtkWidget *spc;        /* only if first in row*/
 
 	GtkWidget *remove;
 	GtkWidget *content;    /* the actual expression */
@@ -69,9 +70,20 @@ static void remove_row_cb(GtkWidget *button, void *data);
 
 static void build_expr1(expr1_t *e, GtkWidget *parent_box)
 {
+	GtkWidget *w;
 /*	const char **s, *ops[] = {"==", "!=", ">=", "<=", ">", "<", NULL};*/
-	e->content = gtk_button_new_with_label("<choose>");
+	e->content = gtk_button_new_with_label("<expr>");
+	gtk_button_set_image(GTK_BUTTON(e->content), gtk_image_new_from_icon_name("gtk-new", GTK_ICON_SIZE_MENU));
 	gtk_box_pack_start(GTK_BOX(parent_box), e->content, FALSE, FALSE, 0);
+	gtk_widget_set_tooltip_text(e->content, "Edit search expression");
+
+	e->remove = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(parent_box), e->remove, FALSE, FALSE, 0);
+
+	w = gtk_button_new_with_label("");
+	gtk_button_set_image(GTK_BUTTON(w), gtk_image_new_from_icon_name("gtk-delete", GTK_ICON_SIZE_MENU));
+	gtk_box_pack_start(GTK_BOX(e->remove), w, FALSE, FALSE, 0);
+	gtk_widget_set_tooltip_text(w, "Remove this expression");
 }
 
 /* e is not part of any list by the time of the call */
@@ -79,6 +91,7 @@ static void destroy_expr1(expr1_t *e)
 {
 #	define destroy(w) if (w != NULL) gtk_widget_destroy(w)
 	destroy(e->and);
+	destroy(e->spc);
 	destroy(e->remove_row);
 	destroy(e->append_col);
 	destroy(e->remove);
@@ -102,13 +115,21 @@ static expr1_t *append_row()
 	e->hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(sdlg.wizard_vbox), e->hbox, FALSE, FALSE, 0);
 
-	e->remove_row = gtk_button_new_with_label("del row");
+	e->remove_row = gtk_button_new_with_label("");
+	gtk_button_set_image(GTK_BUTTON(e->remove_row), gtk_image_new_from_icon_name("gtk-delete", GTK_ICON_SIZE_SMALL_TOOLBAR));
 	gtk_box_pack_start(GTK_BOX(e->hbox), e->remove_row, FALSE, FALSE, 0);
 	g_signal_connect(e->remove_row, "clicked", G_CALLBACK(remove_row_cb), e);
+	gtk_widget_set_tooltip_text(e->remove_row, "Remove this row of expressions");
 
-	e->append_col = gtk_button_new_with_label("+");
+
+	e->append_col = gtk_button_new_with_label("");
+	gtk_button_set_image(GTK_BUTTON(e->append_col), gtk_image_new_from_icon_name("gtk-add", GTK_ICON_SIZE_SMALL_TOOLBAR));
 	gtk_box_pack_start(GTK_BOX(e->hbox), e->append_col, FALSE, FALSE, 0);
 	g_signal_connect(e->append_col, "clicked", G_CALLBACK(new_col_cb), e);
+	gtk_widget_set_tooltip_text(e->append_col, "Append an expression to this row with OR");
+
+	e->spc = gtk_vbox_new(FALSE, 10);
+	gtk_box_pack_start(GTK_BOX(e->hbox), e->spc, FALSE, FALSE, 10);
 
 	build_expr1(e, e->hbox);
 
@@ -212,7 +233,8 @@ static void ghid_search_window_create()
 	sdlg.new_row = gtk_button_new_with_label("Add new row");
 	g_signal_connect(sdlg.new_row, "clicked", G_CALLBACK(new_row_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(vbox), sdlg.new_row, TRUE, TRUE, 0);
-
+	gtk_button_set_image(GTK_BUTTON(sdlg.new_row), gtk_image_new_from_icon_name("gtk-new", GTK_ICON_SIZE_MENU));
+	gtk_widget_set_tooltip_text(sdlg.new_row, "Append a row of expressions to the query with AND");
 
 
 /* Add one row of wizard to save a click in the most common case */
