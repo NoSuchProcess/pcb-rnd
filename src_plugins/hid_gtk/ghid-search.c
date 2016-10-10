@@ -229,8 +229,14 @@ static void new_col_cb(GtkWidget *button, void *data)
 
 
 /* Run the expression wizard dialog box */
+
+static struct {
+	GtkWidget *entry_left, *entry_right;
+	GtkWidget *tr_left, *tr_op, *tr_right;
+	GtkListStore *md_left;
+} expr_wizard_dlg;
+
 static GType model_op[2] = { G_TYPE_STRING, G_TYPE_POINTER };
-static GtkListStore *md_left = NULL;
 
 typedef struct expr_wizard_op_s expr_wizard_op_t;
 struct expr_wizard_op_s {
@@ -276,7 +282,7 @@ static void expr_wizard_init_model()
 	const expr_wizard_t *w;
 	expr_wizard_op_t *o;
 
-	if (md_left != NULL)
+	if (expr_wizard_dlg.md_left != NULL)
 		return;
 
 	for(o = op_tab; o->ops != NULL; o++) {
@@ -286,16 +292,15 @@ static void expr_wizard_init_model()
 			gtk_list_store_insert_with_values(o->model, NULL, -1,  0, *s,  -1);
 	}
 
-	md_left = gtk_list_store_newv(2, model_op);
+	expr_wizard_dlg.md_left = gtk_list_store_newv(2, model_op);
 	for(w = expr_tab; w->left_var != NULL; w++)
-		gtk_list_store_insert_with_values(md_left, NULL, -1,  0, w->left_desc,  1,w,  -1);
+		gtk_list_store_insert_with_values(expr_wizard_dlg.md_left, NULL, -1,  0, w->left_desc,  1,w,  -1);
 }
 
-GtkWidget *expr_wizard_entry_left, *expr_wizard_entry_right;
 
 static void expr_wizard_dialog(expr1_t *e)
 {
-	GtkWidget *dialog, *vbox, *hbox, *tr_left, *tr_op, *tr_right;
+	GtkWidget *dialog, *vbox, *hbox;
 	GtkCellRenderer *renderer;
 	gboolean response;
 
@@ -312,39 +317,39 @@ static void expr_wizard_dialog(expr1_t *e)
 
 	/* left */
 	vbox = gtk_vbox_new(FALSE, 4);
-	tr_left = gtk_tree_view_new();
+	expr_wizard_dlg.tr_left = gtk_tree_view_new();
 	renderer = gtk_cell_renderer_text_new();
-	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(tr_left), -1, "variable", renderer, "text", 0, NULL);
-	gtk_tree_view_set_model(GTK_TREE_VIEW(tr_left), GTK_TREE_MODEL(md_left));
-	gtk_box_pack_start(GTK_BOX(vbox), tr_left, FALSE, TRUE, 4);
+	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), -1, "variable", renderer, "text", 0, NULL);
+	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), GTK_TREE_MODEL(expr_wizard_dlg.md_left));
+	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.tr_left, FALSE, TRUE, 4);
 
-	expr_wizard_entry_left = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_entry_left, FALSE, TRUE, 4);
+	expr_wizard_dlg.entry_left = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.entry_left, FALSE, TRUE, 4);
 
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 4);
 
 	/* operator */
 	vbox = gtk_vbox_new(FALSE, 4);
 
-	tr_op = gtk_tree_view_new();
+	expr_wizard_dlg.tr_op = gtk_tree_view_new();
 	renderer = gtk_cell_renderer_text_new();
-	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(tr_op), -1, "op", renderer, "text", 0, NULL);
-	gtk_tree_view_set_model(GTK_TREE_VIEW(tr_op), GTK_TREE_MODEL(op_tab[OPS_ANY].model));
-	gtk_box_pack_start(GTK_BOX(vbox), tr_op, FALSE, FALSE, 4);
+	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_op), -1, "op", renderer, "text", 0, NULL);
+	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_op), GTK_TREE_MODEL(op_tab[OPS_ANY].model));
+	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.tr_op, FALSE, FALSE, 4);
 
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 4);
 
 	/* right */
 	vbox = gtk_vbox_new(FALSE, 4);
 
-	tr_right = gtk_tree_view_new();
+	expr_wizard_dlg.tr_right = gtk_tree_view_new();
 	renderer = gtk_cell_renderer_text_new();
-	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(tr_right), -1, "constant", renderer, "text", 0, NULL);
-	gtk_tree_view_set_model(GTK_TREE_VIEW(tr_right), GTK_TREE_MODEL(md_left));
-	gtk_box_pack_start(GTK_BOX(vbox), tr_right, FALSE, TRUE, 4);
+	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), -1, "constant", renderer, "text", 0, NULL);
+	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), GTK_TREE_MODEL(expr_wizard_dlg.md_left));
+	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.tr_right, FALSE, TRUE, 4);
 
-	expr_wizard_entry_right = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_entry_right, FALSE, TRUE, 4);
+	expr_wizard_dlg.entry_right = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.entry_right, FALSE, TRUE, 4);
 
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 4);
 
