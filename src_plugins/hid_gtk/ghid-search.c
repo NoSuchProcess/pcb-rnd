@@ -177,7 +177,7 @@ static void remove_row(expr1_t *row)
 static void remove_expr(expr1_t *e)
 {
 	if (e->row == NULL) {
-		/* first item in a rBow */
+		/* first item in a row */
 		expr1_t *o, *o2 = gdl_first(&e->ors);
 		if (o2 != NULL) {
 			/* there are subsequent items in the row - have to make the first of them the new head */
@@ -198,6 +198,10 @@ static void remove_expr(expr1_t *e)
 
 			o2->row = NULL;
 			memset(&e->ors, 0, sizeof(e->ors));
+			if (o2->or != NULL) {
+				gtk_widget_destroy(o2->or);
+				o2->or = NULL;
+			}
 		}
 		else {
 			/* only item of the row */
