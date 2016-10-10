@@ -33,7 +33,9 @@
 #include "ghid-search.h"
 #include "win_place.h"
 
-typedef struct expr1_s {
+typedef struct expr1_s expr1_t;
+
+struct expr1_s {
 	GtkWidget *and;        /* only if not the first row */
 
 	GtkWidget *hbox;       /* only if first in row*/
@@ -48,7 +50,9 @@ typedef struct expr1_s {
 	gdl_elem_t next_or;   /* --> */
 	gdl_elem_t next_and;  /* v */
 	gdl_list_t ors;       /* only in the first; the row-first is not on this list, so it collects the subseqent siblings only */
-} expr1_t;
+
+	expr1_t *row;         /* only if not the first */
+};
 
 typedef struct {
 	GtkWidget *window;
@@ -65,7 +69,7 @@ static ghid_search_dialog_t sdlg;
 
 static void new_col_cb(GtkWidget *button, void *data);
 static void remove_row_cb(GtkWidget *button, void *data);
-
+static void remove_expr_cb(GtkWidget *button, void *data);
 
 
 static void build_expr1(expr1_t *e, GtkWidget *parent_box)
@@ -84,6 +88,7 @@ static void build_expr1(expr1_t *e, GtkWidget *parent_box)
 	gtk_button_set_image(GTK_BUTTON(w), gtk_image_new_from_icon_name("gtk-delete", GTK_ICON_SIZE_MENU));
 	gtk_box_pack_start(GTK_BOX(e->remove), w, FALSE, FALSE, 0);
 	gtk_widget_set_tooltip_text(w, "Remove this expression");
+	g_signal_connect(w, "clicked", G_CALLBACK(remove_expr_cb), e);
 }
 
 /* e is not part of any list by the time of the call */
@@ -148,6 +153,7 @@ static expr1_t *append_col(expr1_t *row)
 	build_expr1(e, row->hbox);
 
 	gdl_append(&row->ors, e, next_or);
+	e->row = row;
 	return e;
 }
 
@@ -160,7 +166,34 @@ static void remove_row(expr1_t *row)
 	destroy_expr1(row);
 }
 
-/**/
+static void remove_expr(expr1_t *e)
+{
+	if (e->row == NULL) {
+		/* first item in a row */
+		expr1_t *o2 = gdl_first(&e->ors);
+		if (o2 != NULL) {
+			/* there are subsequent items in the row - have to make the first of them the new head */
+			gdl_insert_before(&sdlg.wizard, e, o2, next_and);
+			gdl_remove(&sdlg.wizard, e, next_and);
+#			define inherit(dst, src, fld)  dst->fld = src->fld; src->fld = NULL;
+			inherit(o2, e, and);
+			inherit(o2, e, hbox);
+			inherit(o2, e, remove_row);
+			inherit(o2, e, append_col);
+			inherit(o2, e, spc);
+#			undef inherit
+		}
+		else {
+			/* only item of the row */
+			remove_row(e);
+		}
+	}
+	else
+		gdl_remove(&e->row->ors, e, next_or);
+	destroy_expr1(e);
+}
+
+/* button callbacks */
 static void new_row_cb(GtkWidget *button, void *data)
 {
 	append_row();
@@ -174,6 +207,12 @@ static void remove_row_cb(GtkWidget *button, void *data)
 	gtk_widget_show_all(sdlg.window);
 }
 
+static void remove_expr_cb(GtkWidget *button, void *data)
+{
+	remove_expr((expr1_t *)data);
+	gtk_widget_show_all(sdlg.window);
+}
+
 static void new_col_cb(GtkWidget *button, void *data)
 {
 	expr1_t *row = (expr1_t *)data;
@@ -181,7 +220,7 @@ static void new_col_cb(GtkWidget *button, void *data)
 	gtk_widget_show_all(sdlg.window);
 }
 
-/**/
+/* Window creation and administration */
 static void ghid_search_window_create()
 {
 	GtkWidget *vbox_win, *hbox, *lab, *vbox;
