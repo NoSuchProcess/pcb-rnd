@@ -398,6 +398,9 @@ static int field_pad(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 		if (strcmp(s2, "number") == 0)  PCB_QRY_RET_STR(res, p->Number);
 	}
 
+	if (strcmp(s1, "layer") == 0)
+		return layer_of_obj(fld->next, res, PCB_LYT_COPPER | (TEST_FLAG(PCB_FLAG_ONSOLDER, p) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
+
 	if (s2 != NULL)
 		PCB_QRY_RET_INV(res);
 
