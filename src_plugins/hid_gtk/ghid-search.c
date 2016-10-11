@@ -313,6 +313,21 @@ static void new_col_cb(GtkWidget *button, void *data)
 	gtk_widget_show_all(sdlg.window);
 }
 
+static void wizard_toggle_cb(GtkCheckButton *button, void *data)
+{
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
+		gtk_widget_show(sdlg.wizard_vbox);
+		gtk_widget_set_sensitive(sdlg.new_row, 1);
+		gtk_widget_set_sensitive(sdlg.expr, 0);
+
+	}
+	else {
+		gtk_widget_hide(sdlg.wizard_vbox);
+		gtk_widget_set_sensitive(sdlg.new_row, 0);
+		gtk_widget_set_sensitive(sdlg.expr, 1);
+	}
+}
+
 
 /* Run the expression wizard dialog box */
 #include "ghid-search-tab.h"
@@ -589,6 +604,7 @@ static void ghid_search_window_create()
 	gtk_box_pack_start(GTK_BOX(vbox_win), sdlg.action, TRUE, TRUE, 0);
 
 	sdlg.wizard_enable = gtk_check_button_new_with_label("Enable wizard");
+	g_signal_connect(sdlg.wizard_enable, "toggled", G_CALLBACK(wizard_toggle_cb), NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(sdlg.wizard_enable), 1);
 	gtk_box_pack_start(GTK_BOX(vbox_win), sdlg.wizard_enable, TRUE, TRUE, 0);
 
@@ -600,7 +616,7 @@ static void ghid_search_window_create()
 
 	sdlg.new_row = gtk_button_new_with_label("Add new row");
 	g_signal_connect(sdlg.new_row, "clicked", G_CALLBACK(new_row_cb), NULL);
-	gtk_box_pack_start(GTK_BOX(vbox), sdlg.new_row, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), sdlg.new_row, FALSE, FALSE, 0);
 	gtk_button_set_image(GTK_BUTTON(sdlg.new_row), gtk_image_new_from_icon_name("gtk-new", GTK_ICON_SIZE_MENU));
 	gtk_widget_set_tooltip_text(sdlg.new_row, "Append a row of expressions to the query with AND");
 
