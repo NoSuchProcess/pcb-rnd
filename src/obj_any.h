@@ -94,6 +94,7 @@ struct pcb_obj_s {
 
 	pcb_parenttype_t parent_type;
 	union {
+		void         *any;
 		LayerType    *layer;
 		DataType     *data;
 		ElementType  *element;
