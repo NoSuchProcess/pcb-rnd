@@ -180,7 +180,7 @@ struct layer_st {								/* holds information about one layer */
 
 typedef struct plug_io_s plug_io_t;
 
-typedef struct {								/* holds all objects */
+struct data_st {								/* holds all objects */
 	int LayerN;										/* number of layers in this board */
 	pinlist_t Via;
 	elementlist_t Element;
@@ -190,7 +190,7 @@ typedef struct {								/* holds all objects */
 	struct PCBType *pcb;
 	LayerType Layer[MAX_LAYER + 2];	/* add 2 silkscreen layers */
 	plug_io_t *loader;
-} DataType, *DataTypePtr;
+};
 
 typedef struct {								/* holds drill information */
 	Coord DrillSize;							/* this drill's diameter */
