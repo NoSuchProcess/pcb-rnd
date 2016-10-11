@@ -473,6 +473,17 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 	PCB_QRY_RET_INV(res);
 }
 
+static int field_element_from_ptr(ElementType *e, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	pcb_obj_t tmp;
+	tmp.type = PCB_OBJ_ELEMENT;
+	tmp.data.layer = e;
+	tmp.parent_type = PCB_PARENT_DATA;
+	tmp.parent.data = PCB->Data;
+	return field_element(&tmp, fld, res);
+}
+
+
 static int field_net(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 /*	const char *s1, *s2;
@@ -493,6 +504,21 @@ static int field_eline(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 	if (strcmp(s1, "layer") == 0)
 		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, l) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
+
+	if (strcmp(s1, "element") == 0) {
+		const char *s2;
+		fld2str_req(s2, fld, 1);
+		if (s2 != NULL) {
+			if (obj->parent_type == PCB_PARENT_ELEMENT)
+				return field_element_from_ptr(obj->parent.element, fld->next, res);
+			else
+				PCB_QRY_RET_INV(res);
+		}
+		else {
+#warning TODO: return the element
+			PCB_QRY_RET_INV(res);
+		}
+	}
 
 	return field_line(obj, fld, res);
 }
