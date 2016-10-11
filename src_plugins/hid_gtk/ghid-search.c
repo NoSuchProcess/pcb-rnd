@@ -225,6 +225,59 @@ static void remove_expr(expr1_t *e)
 	destroy_expr1(e);
 }
 
+static int num_ors(expr1_t *head)
+{
+	int count = 0;
+	expr1_t *o;
+	if (head->code != NULL)
+		count++;
+	for(o = gdl_first(&head->ors); o != NULL; o = gdl_next(&head->ors, o))
+		if (o->code != NULL)
+			count++;
+	return count;
+}
+
+static void rebuild(void)
+{
+	int and_first = 1;
+	gds_t s;
+	expr1_t *a, *o;
+	gds_init(&s);
+
+	for(a = gdl_first(&sdlg.wizard); a != NULL; a = gdl_next(&sdlg.wizard, a)) {
+		int or_first = 1;
+		int ors = num_ors(a);
+		if (ors == 0)
+			continue;
+
+		/* add the && if needed */
+		if (!and_first)
+			gds_append_str(&s, " && ");
+		and_first = 0;
+
+		if (ors > 1)
+			gds_append_str(&s, "(");
+
+		if (a->code != NULL) {
+			gds_append_str(&s, a->code);
+			or_first = 0;
+		}
+
+		for(o = gdl_first(&a->ors); o != NULL; o = gdl_next(&a->ors, o)) {
+			if (o->code != NULL) {
+				if (!or_first)
+					gds_append_str(&s, " || ");
+				or_first = 0;
+			}
+			gds_append_str(&s, o->code);
+		}
+
+		if (ors > 1)
+			gds_append_str(&s, ")");
+	}
+	gtk_entry_set_text(GTK_ENTRY(sdlg.expr), s.array);
+	gds_uninit(&s);
+}
 
 /* button callbacks */
 static void new_row_cb(GtkWidget *button, void *data)
@@ -237,12 +290,14 @@ static void remove_row_cb(GtkWidget *button, void *data)
 {
 	expr1_t *row = (expr1_t *)data;
 	remove_row(row);
+	rebuild();
 	gtk_widget_show_all(sdlg.window);
 }
 
 static void remove_expr_cb(GtkWidget *button, void *data)
 {
 	remove_expr((expr1_t *)data);
+	rebuild();
 	gtk_widget_show_all(sdlg.window);
 }
 
@@ -491,6 +546,7 @@ static void expr_wizard_dialog(expr1_t *e)
 			free(e->code);
 		e->code = expr_wizard_result(0);
 		gtk_button_set_image(GTK_BUTTON(e->content), gtk_image_new_from_icon_name("gtk-refresh", GTK_ICON_SIZE_MENU));
+		rebuild();
 	}
 	gtk_widget_destroy(dialog);
 }
