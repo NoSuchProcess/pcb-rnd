@@ -145,6 +145,54 @@ int pcb_qry_list_cmp(pcb_qry_val_t *lst1, pcb_qry_val_t *lst2)
 
 /***********************/
 
+/* set dst to point to the idxth field assuming field 0 is fld. Returns -1
+   if there are not enough fields */
+#define fld_nth_req(dst, fld, idx) \
+do { \
+	int __i__ = idx; \
+	pcb_qry_node_t *__f__; \
+	for(__f__ = (fld); __i__ > 0; __i__--, __f__ = __f__->next) { \
+		if (__f__ == NULL) \
+			return -1; \
+	} \
+	(dst) = __f__; \
+} while(0)
+
+#define fld_nth_opt(dst, fld, idx) \
+do { \
+	int __i__ = idx; \
+	pcb_qry_node_t *__f__; \
+	for(__f__ = (fld); (__i__ > 0) && (__f__ != NULL); __i__--, __f__ = __f__->next) ; \
+	(dst) = __f__; \
+} while(0)
+
+/* sets const char *s to point to the string data of the idxth field. Returns
+   -1 if tere are not enooung fields */
+#define fld2str_req(s, fld, idx) \
+do { \
+	pcb_qry_node_t *_f_; \
+	fld_nth_req(_f_, fld, idx); \
+	if (_f_->type != PCBQ_FIELD) \
+		return -1; \
+	(s) = _f_->data.str; \
+} while(0)
+
+/* Same, but doesn't return -1 on missing field but sets s to NULL */
+#define fld2str_opt(s, fld, idx) \
+do { \
+	pcb_qry_node_t *_f_; \
+	const char *__res__; \
+	fld_nth_opt(_f_, fld, idx); \
+	if (_f_ != NULL) { \
+		if (_f_->type != PCBQ_FIELD) \
+			return -1; \
+		__res__ = _f_->data.str; \
+	} \
+	else \
+		__res__ = NULL; \
+	(s) = __res__; \
+} while(0)
+
 static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, const char *s1, const char *s2)
 {
 	LayerType *l = obj->data.layer;
@@ -218,6 +266,9 @@ static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, c
 	}
 
 	if (strcmp(s1, "layer") == 0) {
+		if (obj->parent_type == PCB_PARENT_LAYER) {
+/*		layer_of_obj(pcb_qry_node_t *fld, const char *s2, pcb_qry_val_t *res, pcb_layer_type_t mask)*/
+		}
 	}
 
 	PCB_QRY_RET_INV(res);
@@ -393,23 +444,13 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 {
 	const char *s1, *s2;
 	pcb_obj_t *obj;
-	pcb_qry_node_t *fld2;
 
 	if (objval->type != PCBQ_VT_OBJ)
 		return -1;
 	obj = &objval->data.obj;
 
-	if (fld->type != PCBQ_FIELD)
-		return -1;
-	s1 = fld->data.str;
-	fld2 = fld->next;
-	if (fld2 != NULL) {
-		if (fld2->type != PCBQ_FIELD)
-			return -1;
-		s2 = fld2->data.str;
-	}
-	else
-		s2 = NULL;
+	fld2str_req(s1, fld, 0);
+	fld2str_opt(s2, fld, 1);
 
 	if ((s1[0] == 'a') && (s1[1] == '\0')) {
 		if (s2 == NULL)
