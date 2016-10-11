@@ -55,6 +55,8 @@ struct expr1_s {
 
 	gulong sig_remove_row;
 	gulong sig_append_col;
+
+	char *code;          /* ... to use in the query script */
 };
 
 typedef struct {
@@ -352,7 +354,7 @@ static void left_chg_cb(GtkTreeView *t, gpointer *data)
 	}
 }
 
-static char *expr_wizard_result()
+static char *expr_wizard_result(int desc)
 {
 	gds_t s;
 	char tmp[128];
@@ -363,27 +365,38 @@ static char *expr_wizard_result()
 		return NULL;
 
 	gds_init(&s);
-	pcb_append_printf(&s, "(%s", w->left_var);
+	if (desc)
+		pcb_append_printf(&s, "%s", w->left_desc);
+	else
+		pcb_append_printf(&s, "(%s", w->left_var);
 
 	cs = wiz_get_tree_str(expr_wizard_dlg.tr_op);
 	if (cs == NULL)
 		goto err;
-	pcb_append_printf(&s, " %s ", cs);
+
+	if (desc)
+		pcb_append_printf(&s, "\n%s\n", cs);
+	else
+		pcb_append_printf(&s, " %s ", cs);
 
 	switch(w->rtype) {
-		case RIGHT_INT: pcb_append_printf(&s, "%.0f)", gtk_adjustment_get_value(expr_wizard_dlg.right_adj)); break;
-		case RIGHT_STR: pcb_append_printf(&s, "%s)", gtk_entry_get_text(GTK_ENTRY(expr_wizard_dlg.right_str))); break;
+		case RIGHT_INT: pcb_append_printf(&s, "%.0f", gtk_adjustment_get_value(expr_wizard_dlg.right_adj)); break;
+		case RIGHT_STR: pcb_append_printf(&s, "%s", gtk_entry_get_text(GTK_ENTRY(expr_wizard_dlg.right_str))); break;
 		case RIGHT_COORD:
 			ghid_coord_entry_get_value_str(GHID_COORD_ENTRY(expr_wizard_dlg.right_coord), tmp, sizeof(tmp));
-			pcb_append_printf(&s, "%s)", tmp);
+			pcb_append_printf(&s, "%s", tmp);
 			break;
 		case RIGHT_OBJTYPE:
 			cs = wiz_get_tree_str(expr_wizard_dlg.tr_right);
 			if (cs == NULL)
 				goto err;
-			pcb_append_printf(&s, "%s)", cs);
+			pcb_append_printf(&s, "%s", cs);
 			break;
 	}
+
+	if (!desc)
+		gds_append_str(&s, ")");
+
 	return s.array;
 
 	err:;
@@ -469,11 +482,15 @@ static void expr_wizard_dialog(expr1_t *e)
 	/* Run the dialog */
 	response = gtk_dialog_run(GTK_DIALOG(dialog));
 	if (response == GTK_RESPONSE_OK) {
-		char *res = expr_wizard_result();
+		char *res = expr_wizard_result(1);
 		if (res != NULL) {
 			gtk_button_set_label(GTK_BUTTON(e->content), res);
 			free(res);
 		}
+		if (e->code != NULL)
+			free(e->code);
+		e->code = expr_wizard_result(0);
+		gtk_button_set_image(GTK_BUTTON(e->content), gtk_image_new_from_icon_name("gtk-refresh", GTK_ICON_SIZE_MENU));
 	}
 	gtk_widget_destroy(dialog);
 }
