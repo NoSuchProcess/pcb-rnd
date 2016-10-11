@@ -211,6 +211,8 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 		{
 			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]),
 									LayoutXOffset, LayoutYOffset);
+			write_kicad_legacy_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]),
+									LayoutXOffset, LayoutYOffset);
 		}
 
 	/* we now proceed to write the top silk lines to the kicad legacy file, using layer 21 */
@@ -218,6 +220,8 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < topSilkCount; i++) /* write top silk lines, if any */
 		{
 			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
+									LayoutXOffset, LayoutYOffset);
+			write_kicad_legacy_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
 									LayoutXOffset, LayoutYOffset);
 		}
 
@@ -231,6 +235,8 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < bottomCount; i++) /* write bottom copper tracks, if any */
 		{
 			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[bottomLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
+			write_kicad_legacy_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[bottomLayers[i]]),
 									LayoutXOffset, LayoutYOffset);
 		}	/* 0 is the bottom most track in kicad */
 
@@ -251,6 +257,8 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 			}
 			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[innerLayers[i]]),
 									LayoutXOffset, LayoutYOffset);
+			write_kicad_legacy_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[innerLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
 		}
 
 	/* we now proceed to write the top copper tracks to the kicad legacy file, layer by layer */
@@ -258,6 +266,8 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < topCount; i++) /* write top copper tracks, if any */
 		{
 			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
+			write_kicad_legacy_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
 									LayoutXOffset, LayoutYOffset);
 		}
 
@@ -368,6 +378,77 @@ int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
 										line->Point2.X + xOffset, line->Point2.Y + yOffset,
 										line->Thickness);
 				pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* omitting net info */
+				fputs("$EndDRAWSEGMENT\n", FP);
+			}
+			localFlag |= 1;
+		}
+		return localFlag;
+	} else {
+		return 0;
+	}
+}
+
+int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
+																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
+{
+	gdl_iterator_t it;
+	ArcType *arc;
+	ArcType localArc; /* for converting ellipses to circular arcs */
+
+	pcb_cardinal_t currentLayer = number;
+	Coord radius, xStart, yStart, xEnd, yEnd;
+
+	/*ArcType *arc;
+		TextType *text;
+		PolygonType *polygon;
+	*/
+	/* write information about non empty layers */
+	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
+		/*
+			fprintf(FP, "Layer(%i ", (int) Number + 1);
+			PrintQuotedString(FP, (char *) EMPTY(layer->Name));
+			fputs(")\n(\n", FP);
+			WriteAttributeList(FP, &layer->Attributes, "\t");
+		*/
+		int localFlag = 0;
+		int kicadArcShape = 2; /* 1 = circle, and 2 = arc */ 
+		linelist_foreach(&layer->Arc, &it, arc) {
+			localArc = *arc;
+			if (arc->Width > arc->Height) {
+				radius = arc->Height;
+				localArc.Width = radius;
+			} else {
+				radius = arc->Width;
+				localArc.Height = radius;
+			}
+		BoxType *boxResult = GetArcEnds(&localArc);
+			if (arc->Delta == 360.0 || arc->Delta == -360.0 ) { /* it's a circle */
+				kicadArcShape = 1;
+				xStart = localArc.X + xOffset;
+				yStart = localArc.Y + yOffset;
+				xEnd = radius;
+				yEnd = 0; 
+/*				xEnd = boxResult->X2 + xOffset; 
+				yEnd = boxResult->Y2 + yOffset; */
+			} else { /* it's an arc */
+				kicadArcShape = 2;
+				xStart = boxResult->X1 + xOffset;
+				yStart = boxResult->Y1 + yOffset;
+				xEnd = boxResult->X2 + xOffset;
+				yEnd = boxResult->Y2 + yOffset;
+			}
+
+			if (currentLayer < 16) { /* a copper arc, i.e. track, is unsupported by kicad, and will be exported as a line */
+				pcb_fprintf(FP, "Po %d %.0mk %.0mk %.0mk %.0mk %.0mk\n",
+										kicadArcShape, xStart, yStart, xEnd, yEnd,
+										arc->Thickness);
+				pcb_fprintf(FP, "De %d 0 %mA 0 0\n", currentLayer, -(arc->Delta)); /* in theory, decidegrees != 900 unsupported by older kicad*/
+			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk arc */
+				fputs("$DRAWSEGMENT\n", FP);
+				pcb_fprintf(FP, "Po %d %.0mk %.0mk %.0mk %.0mk %.0mk\n",
+										kicadArcShape, xStart, yStart, xEnd, yEnd,
+										arc->Thickness);
+				pcb_fprintf(FP, "De %d 0 %mA 0 0\n", currentLayer, -(arc->Delta)); /* in theory, decidegrees != 900 unsupported by older kicad*/
 				fputs("$EndDRAWSEGMENT\n", FP);
 			}
 			localFlag |= 1;
