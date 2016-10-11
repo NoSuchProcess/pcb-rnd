@@ -292,22 +292,52 @@ static void right_hide(void)
 	gtk_widget_hide(expr_wizard_dlg.tr_right);
 }
 
-static void left_chg_cb(GtkTreeView *t, gpointer *data)
+static const expr_wizard_t *left_get_wiz(void)
 {
+	const expr_wizard_t *w;
 	GtkTreeSelection *tsel;
 	GtkTreeModel *tm;
 	GtkTreeIter iter;
-	const expr_wizard_t *w;
 
-	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(t));
+	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(expr_wizard_dlg.tr_left));
 	if (tsel == NULL)
-		return;
+		return NULL;
 
 	gtk_tree_selection_get_selected(tsel, &tm, &iter);
 	if (iter.stamp == 0)
-		return;
+		return NULL;
 
 	gtk_tree_model_get(tm, &iter, 1, &w, -1);
+	return w;
+}
+
+/* Returns the string current value of a single-column-string-tree */
+static const char *wiz_get_tree_str(GtkWidget *tr)
+{
+	const char *s;
+	GtkTreeSelection *tsel;
+	GtkTreeModel *tm;
+	GtkTreeIter iter;
+
+	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tr));
+	if (tsel == NULL)
+		return NULL;
+
+	gtk_tree_selection_get_selected(tsel, &tm, &iter);
+	if (iter.stamp == 0)
+		return NULL;
+
+	gtk_tree_model_get(tm, &iter, 0, &s, -1);
+	return s;
+}
+
+static void left_chg_cb(GtkTreeView *t, gpointer *data)
+{
+	const expr_wizard_t *w = left_get_wiz();
+
+	if (w == NULL)
+		return;
+
 	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_op), GTK_TREE_MODEL(w->ops->model));
 
 	right_hide();
@@ -320,6 +350,45 @@ static void left_chg_cb(GtkTreeView *t, gpointer *data)
 			gtk_widget_show(expr_wizard_dlg.tr_right);
 			break;
 	}
+}
+
+static char *expr_wizard_result()
+{
+	gds_t s;
+	char tmp[128];
+	const char *cs;
+	const expr_wizard_t *w = left_get_wiz();
+
+	if (w == NULL)
+		return NULL;
+
+	gds_init(&s);
+	pcb_append_printf(&s, "(%s", w->left_var);
+
+	cs = wiz_get_tree_str(expr_wizard_dlg.tr_op);
+	if (cs == NULL)
+		goto err;
+	pcb_append_printf(&s, " %s ", cs);
+
+	switch(w->rtype) {
+		case RIGHT_INT: pcb_append_printf(&s, "%.0f)", gtk_adjustment_get_value(expr_wizard_dlg.right_adj)); break;
+		case RIGHT_STR: pcb_append_printf(&s, "%s)", gtk_entry_get_text(GTK_ENTRY(expr_wizard_dlg.right_str))); break;
+		case RIGHT_COORD:
+			ghid_coord_entry_get_value_str(GHID_COORD_ENTRY(expr_wizard_dlg.right_coord), tmp, sizeof(tmp));
+			pcb_append_printf(&s, "%s)", tmp);
+			break;
+		case RIGHT_OBJTYPE:
+			cs = wiz_get_tree_str(expr_wizard_dlg.tr_right);
+			if (cs == NULL)
+				goto err;
+			pcb_append_printf(&s, "%s)", cs);
+			break;
+	}
+	return s.array;
+
+	err:;
+	free(s.array);
+	return NULL;
 }
 
 static void expr_wizard_dialog(expr1_t *e)
@@ -400,6 +469,11 @@ static void expr_wizard_dialog(expr1_t *e)
 	/* Run the dialog */
 	response = gtk_dialog_run(GTK_DIALOG(dialog));
 	if (response == GTK_RESPONSE_OK) {
+		char *res = expr_wizard_result();
+		if (res != NULL) {
+			gtk_button_set_label(GTK_BUTTON(e->content), res);
+			free(res);
+		}
 	}
 	gtk_widget_destroy(dialog);
 }
