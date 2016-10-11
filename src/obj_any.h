@@ -58,6 +58,15 @@ typedef enum pcb_objtype_e {
 	PCB_OBJ_ANY       = 0xFFFFFF
 } pcb_objtype_t;
 
+/* which elem of the parent union is active */
+typedef enum pcb_parenttype_e {
+	PCB_PARENT_INVALID = 0,  /* invalid or unknown */
+	PCB_PARENT_LAYER,        /* object is on a layer */
+	PCB_PARENT_ELEMENT,      /* object is part of an element */
+	PCB_PARENT_DATA          /* global objects like via */
+} pcb_parenttype_t;
+
+
 /* class is e.g. PCB_OBJ_CLASS_OBJ */
 #define PCB_OBJ_IS_CLASS(type, class)  (((type) & PCB_OBJ_CLASS_MASK) == (class))
 
@@ -82,10 +91,18 @@ struct pcb_obj_s {
 		NetType      *net;
 		LayerType    *layer;
 	} data;
+
+	pcb_parenttype_t parent_type;
+	union {
+		LayerType    *layer;
+		DataType     *data;
+		ElementType  *element;
+	} parent;
 	gdl_elem_t link;
 };
 
-/* List of Arcs */
+
+/* List of objects */
 #define TDL(x)      pcb_objlist_ ## x
 #define TDL_LIST_T  pcb_objlist_t
 #define TDL_ITEM_T  pcb_obj_t
