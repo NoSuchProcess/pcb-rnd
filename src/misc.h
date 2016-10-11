@@ -65,7 +65,6 @@ void ResetStackAndVisibility(void);
 void SaveStackAndVisibility(void);
 void RestoreStackAndVisibility(void);
 BoxTypePtr GetArcEnds(ArcTypePtr);
-BoxTypePtr GetArcEndsForKicad(ArcTypePtr); /* kicad legacy doesn;t support ellipses */
 void ChangeArcAngles(LayerTypePtr, ArcTypePtr, Angle, Angle);
 void ChangeArcRadii(LayerTypePtr, ArcTypePtr, Coord, Coord);
 char *UniqueElementName(DataTypePtr, char *);
