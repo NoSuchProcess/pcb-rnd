@@ -258,53 +258,7 @@ static void new_col_cb(GtkWidget *button, void *data)
 
 
 /* Run the expression wizard dialog box */
-
-static struct {
-	GtkWidget *entry_left, *entry_right;
-	GtkWidget *tr_left, *tr_op, *tr_right;
-	GtkListStore *md_left;
-} expr_wizard_dlg;
-
-static GType model_op[2] = { G_TYPE_STRING, G_TYPE_POINTER };
-
-typedef struct expr_wizard_op_s expr_wizard_op_t;
-struct expr_wizard_op_s {
-	const char **ops;
-	GtkListStore *model;
-};
-
-typedef struct expr_wizard_s expr_wizard_t;
-struct expr_wizard_s {
-	const char *left_var;
-	const char *left_desc;
-	const expr_wizard_op_t *ops;
-};
-
-enum {
-	OPS_ANY,
-	OPS_EQ,
-};
-
-const char *ops_any[] = {"==", "!=", ">=", "<=", ">", "<", NULL};
-const char *ops_eq[]  = {"==", "!=", NULL};
-
-expr_wizard_op_t op_tab[] = {
-	{ops_any, NULL},
-	{ops_eq, NULL},
-	{NULL, NULL}
-};
-
-static const expr_wizard_t expr_tab[] = {
-	{"@.id",        "object ID",             &op_tab[OPS_ANY]},
-	{"@.type",      "object type",           &op_tab[OPS_EQ]},
-	{"@.bbox.x1",   "bounding box X1",       &op_tab[OPS_ANY]},
-	{"@.bbox.y1",   "bounding box Y1",       &op_tab[OPS_ANY]},
-	{"@.bbox.x2",   "bounding box X2",       &op_tab[OPS_ANY]},
-	{"@.bbox.y2",   "bounding box Y2",       &op_tab[OPS_ANY]},
-	{"@.bbox.w",    "bounding box width",    &op_tab[OPS_ANY]},
-	{"@.bbox.h",    "bounding box height",   &op_tab[OPS_ANY]},
-	{NULL, NULL}
-};
+#include "ghid-search-tab.h"
 
 static void expr_wizard_init_model()
 {
