@@ -554,7 +554,7 @@ static void expr_wizard_dialog(expr1_t *e)
 /* Advanced search window creation and administration */
 static void ghid_search_window_create()
 {
-	GtkWidget *vbox_win, *hbox, *lab, *vbox;
+	GtkWidget *vbox_win, *lab, *vbox;
 	GtkWidget *content_area, *top_window = gport->top_window;
 	const char *actions[] = { "select", "unselect", NULL };
 	const char **s;
@@ -570,7 +570,7 @@ static void ghid_search_window_create()
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(sdlg.window));
 
-	vbox_win = gtk_vbox_new(FALSE, 0);
+	vbox_win = gtk_vbox_new(FALSE, 4);
 	gtk_container_add(GTK_CONTAINER(content_area), vbox_win);
 
 	lab = gtk_label_new("Query expression:");
@@ -578,24 +578,22 @@ static void ghid_search_window_create()
 	gtk_misc_set_alignment(GTK_MISC(lab), -1, 0.);
 
 /* expr entry */
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_win), hbox, TRUE, TRUE, 0);
-
-
 	sdlg.expr = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(hbox), sdlg.expr, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_win), sdlg.expr, TRUE, TRUE, 0);
 
 	sdlg.action = gtk_combo_box_new_text();
 	gtk_widget_set_tooltip_text(sdlg.action, "Do this with any object matching the query expression");
 /*	g_signal_connect(G_OBJECT(sdlg.action), "changed", G_CALLBACK(action_changed_cb), NULL);*/
 	for(s = actions; *s != NULL; s++)
 		gtk_combo_box_append_text(GTK_COMBO_BOX(sdlg.action), *s);
-	gtk_box_pack_start(GTK_BOX(hbox), sdlg.action, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_win), sdlg.action, TRUE, TRUE, 0);
+
+	sdlg.wizard_enable = gtk_check_button_new_with_label("Enable wizard");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(sdlg.wizard_enable), 1);
+	gtk_box_pack_start(GTK_BOX(vbox_win), sdlg.wizard_enable, TRUE, TRUE, 0);
 
 /* */
-	vbox = ghid_framed_vbox(vbox_win, "wizard", 1, TRUE, 4, 1);
-	sdlg.wizard_enable = gtk_check_button_new_with_label("Enable wizard");
-	gtk_box_pack_start(GTK_BOX(vbox), sdlg.wizard_enable, TRUE, TRUE, 0);
+	vbox = ghid_framed_vbox(vbox_win, "wizard", 1, TRUE, 4, 10);
 
 	sdlg.wizard_vbox = gtk_vbox_new(FALSE, 6);
 	gtk_box_pack_start(GTK_BOX(vbox), sdlg.wizard_vbox, TRUE, TRUE, 4);
