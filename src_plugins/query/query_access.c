@@ -221,17 +221,26 @@ static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	PCB_QRY_RET_INV(res);
 }
 
+static int field_layer_from_ptr(LayerType *l, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	pcb_obj_t tmp;
+	tmp.type = PCB_OBJ_LAYER;
+	tmp.data.layer = l;
+	tmp.parent_type = PCB_PARENT_DATA;
+	tmp.parent.data = PCB->Data;
+	return field_layer(&tmp, fld, res);
+}
+
 /* process from .layer */
 static int layer_of_obj(pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_t mask)
 {
 	int id;
-	pcb_obj_t tmp;
 	const char *s1;
-
-	fld2str_req(s1, fld, 0);
 
 	if (pcb_layer_list(mask, &id, 1) != 1)
 		PCB_QRY_RET_INV(res);
+
+	fld2str_req(s1, fld, 0);
 
 	if (s1 == NULL) {
 		res->type = PCBQ_VT_OBJ;
@@ -240,10 +249,7 @@ static int layer_of_obj(pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_
 		return 0;
 	}
 
-	tmp.type = PCB_OBJ_LAYER;
-	tmp.data.layer = PCB->Data->Layer+id;
-
-	return field_layer(&tmp, fld, res);
+	return field_layer_from_ptr(PCB->Data->Layer+id, fld, res);
 }
 
 
@@ -268,9 +274,10 @@ static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	}
 
 	if (strcmp(s1, "layer") == 0) {
-		if (obj->parent_type == PCB_PARENT_LAYER) {
-/*		layer_of_obj(pcb_qry_node_t *fld, const char *s2, pcb_qry_val_t *res, pcb_layer_type_t mask)*/
-		}
+		if (obj->parent_type == PCB_PARENT_LAYER)
+			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
+		else
+			PCB_QRY_RET_INV(res);
 	}
 
 	PCB_QRY_RET_INV(res);
@@ -292,6 +299,13 @@ static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 #warning TODO: this is really angle.start and angle.delta
 		if (strcmp(s2, "start") == 0)  PCB_QRY_RET_INT(res, a->StartAngle);
 		if (strcmp(s2, "delta") == 0)  PCB_QRY_RET_INT(res, a->Delta);
+	}
+
+	if (strcmp(s1, "layer") == 0) {
+		if (obj->parent_type == PCB_PARENT_LAYER)
+			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
+		else
+			PCB_QRY_RET_INV(res);
 	}
 
 	PCB_QRY_RET_INV(res);
@@ -316,6 +330,13 @@ static int field_text(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 		if (strcmp(s2, "string") == 0)  PCB_QRY_RET_STR(res, t->TextString);
 	}
 
+	if (strcmp(s1, "layer") == 0) {
+		if (obj->parent_type == PCB_PARENT_LAYER)
+			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
+		else
+			PCB_QRY_RET_INV(res);
+	}
+
 	PCB_QRY_RET_INV(res);
 }
 
@@ -332,6 +353,13 @@ static int field_polygon(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 
 	if ((s1[0] == 'p') && (s1[1] == '\0')) {
 		if (strcmp(s2, "points") == 0)  PCB_QRY_RET_INT(res, p->PointN);
+	}
+
+	if (strcmp(s1, "layer") == 0) {
+		if (obj->parent_type == PCB_PARENT_LAYER)
+			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
+		else
+			PCB_QRY_RET_INV(res);
 	}
 
 	PCB_QRY_RET_INV(res);
