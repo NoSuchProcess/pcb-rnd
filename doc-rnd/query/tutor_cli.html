@@ -1,0 +1,168 @@
+<html>
+<body>
+
+<H1> advanced searc, command line tutorial: query language </H1>
+
+<h2> scope </h2>
+
+pcb-rnd from version 1.1.3 features a flexible advnced search that helps
+the user selecting/unselecting objects that match a given logical expression.
+The core of the feature is the pcb-rnd query language. The same language
+is used in the programmable DRC (see also: <a href="../ddrc/proposal1.txt">
+a more formal description of the language</a>).
+<p>
+The current document is a walk through of the practical aspects of the
+language. It starts with the simplest examples while working towards more
+complex cases.
+<p>
+A limited version of the functionality is accessible through a GUI
+wizard when using the GTK HID. A  <a href="tutor_gtk.html">separate
+tutorial</a> is dealing with that feature.
+
+<h2> Actions </h2>
+The query(act, expr) action creates the list called "@", which contains all
+objects of the design. Then it iterates over this list (if needed) and
+evaluates the query expression on each object. For each evaluation "act"
+is performed; "act" is one of:
+<ul>
+	<li> select - add the matching object to the selections if expr evaluated to true
+	<li> unselect - remove the matching object from the selections if expr evaluated to true
+	<li> eval - print the result of the expression to stdout
+	<li> dump - this inhibits evaluating; it compiles the expression and dumps the parse tree (useful for debugging)
+</ul>
+<p>
+The symbol @ in the query represents the iterator, or in other words,
+the <i>current object</i> we are checking. The engine iterates over all
+copper objects, silk objects, pins, holes, layers and nets. A simple query
+that selects all objects looks like this:
+<pre>
+query(select, "@")
+</pre>
+The actual query experssion was a single @ in this case. This made
+the iteration happen, got the expression evaluated one each object. The
+result of each evaluation was the given object. Since these objects
+were all existing, valid objects, they were taken as logical value TRUE,
+thus for each the add-to-selection was performed.
+<p>
+Note: it's usually a good idea to write the expression in quotes, because
+it may contain commas and parenthesis that pcb-rnd's action parser may
+take as action syntax. 
+<p>
+The same expression can ran with eval would print the result of each
+evaluation:
+<pre>
+query(eval, "@")
+</pre>
+This is visible on the terminal pcb-rnd was started from - on X, it's a good
+idea to start a terminal and run pcb-rnd from that instead from a menu or
+icon. The rest of this tutorial will use the eval query because it's easier
+to include the result of an eval than of a selection. Most examples will
+specify the query expression only, without quotes - the reader should
+add the <i>query(eval, "")</i> part.
+
+<H2> iteration vs. evaluate once </h2>
+If an expression does not reference the @ object, no iteration is performed
+and the expression is ran only once:
+<pre>
+query(eval, "1")
+</pre>
+This will calculate the value of 1 and prints it to the standard output. Since
+theres no iteration, this can not result in changes in selection. However,
+it makes it easy to demonstrate some basic concepts of the query language.
+<p>
+Note: if @ is present multiple times in the expression, it's still only
+one loop over all objects. When evaluating the expression for a given object,
+all instances of @ are substituted with the same object in that iteration.
+
+
+<H2> grammar: arithmetics and logics </h2>
+For example the integer and floating point numbers and the usual
+arithmetic and logical operators work as expected:
+
+<table border=1>
+	<tr><th>expression <th> result <th> explanation
+	<tr><td>42         <td> 42     <td> the integer value 42
+	<tr><td>3.14       <td> 3.14   <td> the floating point value 3.14
+	<tr><td>10 mil     <td> 254000 <td> a number with a unit suffix is converted to pcb-rnd's internal coordinate unit (nanometers)
+	<tr><td>1+2        <td> 3      <td> sum of 1 and 2
+	<tr><td>2*4        <td> 8      <td> multiplication
+	<tr><td>47/4       <td> 11     <td> <i>integer</i> division (because both operands were integers)
+	<tr><td>47/4.0     <td> 11.75  <td> <i>floating point</i> division (because at least one of the operands was a float)
+	<tr><td>(1+2)*5    <td> 15     <td> parenthesis works as usual
+	<tr><td>1 &amp;&amp; 0<td> 0   <td> logical AND - the result is 1 if both operands were TRUE, 0 else
+	<tr><td>1 || 0     <td> 1      <td> logical OR  - the result is 1 if either operand was TRUE, 0 else
+	<tr><td>!2         <td> 0      <td> logical NOT - 2 is non-zero, so it is TRUE, negate this to get the result (FALSE, which is 0)
+	<tr><td>4 > 2      <td> 1      <td> because four is greater than two; all the usual relational operats work: == is equal, != is not-equal, &lt;, &lt=,  &gt; and &gt=.
+</table>
+
+<H2> grammar: object properties </h2>
+Object have named properties, e.g. the thickness of a line (or arc, or
+trace in general) is called <i>".thickness"</i>, so the thickness of
+the current object is:
+<pre>
+	@.thickness
+</pre>
+<p>
+Next, we can already select all traces thicker than 10 mil:
+<pre>
+	query(select, "@.thickness &gt; 10 mil")
+</pre>
+<p>
+Because logical expressions are available, it's easy to select all medium-thick
+lines:
+<pre>
+	(@.thickness &gt;= 10 mil) &amp;&amp; (@.thickness &lt;= 30 mil)
+</pre>
+<p>
+or any trace that's too thin or too thick:
+<pre>
+	(@.thickness &lt; 10 mil) || (@.thickness &gt; 30 mil)
+</pre>
+<p>
+or traces that don't match our preferred 8, 10 and 15 mil thicnkess values:
+<pre>
+	(@.thickness != 8 mil) &amp;&amp; (@.thickness != 10 mil) &amp;&amp; (@.thickness != 15 mil)
+</pre>
+
+<H2> grammar: invalid value </h2>
+But how comes an expression like "@.thickness &gt; 10 mil" works while
+@ iterates over non-trace objects, like layers, nets or elements that
+clearly have no thickness?
+<p>
+The answer is the <i>invalid value</i>, which is neither true nor false. If
+a property does not exist in a given object, the result is the <i>invalid value</i>
+or <i>invalid</i> for short. The invalid is treated specially:
+<ul>
+	<li> in arithmetic operations it propagates: if either operand is invalid, the result is invalid, e.g.  1+invalid = invalid; this affects +, -, *, / and all the relational operators
+	<li> in binary logic operations (&amp;&amp; and ||), it is ignored: it is assumed to be true in a && and false in a || so the outcome depends on the other operand
+	<li> in logical NOT (!), TODO
+</ul>
+When @ refers to a non-trace object, @.thickness is invalid and
+"@.thickness &gt; 10 mil" is evaluated t invalid. If the result is not TRUE,
+the requested action is not performed.
+<p>
+The invalid value is generated only when the expression is valid but the
+actual object doesn't have the feature needed. If the expression is wrong,
+an error is generated and the expression stops evaluating immediately.
+
+<H2> grammar: more properties </h2>
+Some properties are a single numeric value, like thickness, or the
+<i>.name</i> of a layer (which is a string) but others are objects. For
+example the <i>.layer</i> property of a line or arc refers to the layer
+object the given line or arc is drawn on. These in turn can be combined,
+and the "name of the layer the current object is on":
+<pre>
+	@.layer.name
+</pre>
+<p>
+Referencing non-existing properties yields an error, e.g. @.thickness.layer
+is an error - in contrast with @.layer, which may evaluate to the
+<i>invalid value</i> (e.g. for vias or nets, because they don't have layers).
+The difference is that tickness can not have a layer ever (thus is an error)
+while @.layer is either applicable or not, but potentially could work, this
+when it doesn't, it's only an invalid value.
+<p>
+Further useful property combinatons:
+TODO
+<p>
+There is a <a href="props.html">full list of all properties</a>.
