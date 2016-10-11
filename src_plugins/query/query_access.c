@@ -158,6 +158,12 @@ static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res, 
 	if (strcmp(s1, "visible") == 0)
 		PCB_QRY_RET_INT(res, l->On);
 
+	if (strcmp(s1, "position") == 0)
+		PCB_QRY_RET_INT(res, pcb_layer_flags(GetLayerNumber(PCB->Data, l)) & PCB_LYT_ANYWHERE);
+
+	if (strcmp(s1, "type") == 0)
+		PCB_QRY_RET_INT(res, pcb_layer_flags(GetLayerNumber(PCB->Data, l)) & PCB_LYT_ANYTHING);
+
 	PCB_QRY_RET_INV(res);
 }
 
