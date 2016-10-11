@@ -589,24 +589,31 @@ static void ghid_search_window_create()
 	gtk_container_add(GTK_CONTAINER(content_area), vbox_win);
 
 	lab = gtk_label_new("Query expression:");
-	gtk_box_pack_start(GTK_BOX(vbox_win), lab, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_win), lab, FALSE, FALSE, 0);
 	gtk_misc_set_alignment(GTK_MISC(lab), -1, 0.);
 
 /* expr entry */
 	sdlg.expr = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(vbox_win), sdlg.expr, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_win), sdlg.expr, FALSE, FALSE, 0);
 
-	sdlg.action = gtk_combo_box_new_text();
-	gtk_widget_set_tooltip_text(sdlg.action, "Do this with any object matching the query expression");
-/*	g_signal_connect(G_OBJECT(sdlg.action), "changed", G_CALLBACK(action_changed_cb), NULL);*/
-	for(s = actions; *s != NULL; s++)
-		gtk_combo_box_append_text(GTK_COMBO_BOX(sdlg.action), *s);
-	gtk_box_pack_start(GTK_BOX(vbox_win), sdlg.action, TRUE, TRUE, 0);
+	{
+		GtkWidget *hbox = gtk_hbox_new(FALSE, 4);
+
+		sdlg.action = gtk_combo_box_new_text();
+		gtk_widget_set_tooltip_text(sdlg.action, "Do this with any object matching the query expression");
+		for(s = actions; *s != NULL; s++)
+			gtk_combo_box_append_text(GTK_COMBO_BOX(sdlg.action), *s);
+		gtk_box_pack_start(GTK_BOX(hbox), sdlg.action, FALSE, FALSE, 0);
+
+		gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("matching items"), FALSE, FALSE, 0);
+
+		gtk_box_pack_start(GTK_BOX(vbox_win), hbox, FALSE, FALSE, 0);
+	}
 
 	sdlg.wizard_enable = gtk_check_button_new_with_label("Enable wizard");
 	g_signal_connect(sdlg.wizard_enable, "toggled", G_CALLBACK(wizard_toggle_cb), NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(sdlg.wizard_enable), 1);
-	gtk_box_pack_start(GTK_BOX(vbox_win), sdlg.wizard_enable, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_win), sdlg.wizard_enable, FALSE, FALSE, 0);
 
 /* */
 	vbox = ghid_framed_vbox(vbox_win, "wizard", 1, TRUE, 4, 10);
