@@ -264,12 +264,12 @@ static void expr_wizard_init_model()
 {
 	const expr_wizard_t *w;
 	expr_wizard_op_t *o;
+	const char **s;
 
 	if (expr_wizard_dlg.md_left != NULL)
 		return;
 
 	for(o = op_tab; o->ops != NULL; o++) {
-		const char **s;
 		o->model = gtk_list_store_newv(1, model_op);
 		for(s = o->ops; *s != NULL; s++)
 			gtk_list_store_insert_with_values(o->model, NULL, -1,  0, *s,  -1);
@@ -278,6 +278,18 @@ static void expr_wizard_init_model()
 	expr_wizard_dlg.md_left = gtk_list_store_newv(2, model_op);
 	for(w = expr_tab; w->left_var != NULL; w++)
 		gtk_list_store_insert_with_values(expr_wizard_dlg.md_left, NULL, -1,  0, w->left_desc,  1,w,  -1);
+
+	expr_wizard_dlg.md_objtype = gtk_list_store_newv(1, model_op);
+	for(s = right_objtype; *s != NULL; s++)
+		gtk_list_store_insert_with_values(expr_wizard_dlg.md_objtype, NULL, -1,  0, *s,  -1);
+}
+
+static void right_hide(void)
+{
+	gtk_widget_hide(expr_wizard_dlg.right_str);
+	gtk_widget_hide(expr_wizard_dlg.right_int);
+	gtk_widget_hide(expr_wizard_dlg.right_coord);
+	gtk_widget_hide(expr_wizard_dlg.tr_right);
 }
 
 static void left_chg_cb(GtkTreeView *t, gpointer *data)
@@ -297,6 +309,17 @@ static void left_chg_cb(GtkTreeView *t, gpointer *data)
 
 	gtk_tree_model_get(tm, &iter, 1, &w, -1);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_op), GTK_TREE_MODEL(w->ops->model));
+
+	right_hide();
+	switch(w->rtype) {
+		case RIGHT_INT: gtk_widget_show(expr_wizard_dlg.right_int); break;
+		case RIGHT_STR: gtk_widget_show(expr_wizard_dlg.right_str); break;
+		case RIGHT_COORD: gtk_widget_show(expr_wizard_dlg.right_coord); break;
+		case RIGHT_OBJTYPE:
+			gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), GTK_TREE_MODEL(expr_wizard_dlg.md_objtype));
+			gtk_widget_show(expr_wizard_dlg.tr_right);
+			break;
+	}
 }
 
 static void expr_wizard_dialog(expr1_t *e)
@@ -349,17 +372,30 @@ static void expr_wizard_dialog(expr1_t *e)
 	expr_wizard_dlg.tr_right = gtk_tree_view_new();
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), -1, "constant", renderer, "text", 0, NULL);
-	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), GTK_TREE_MODEL(expr_wizard_dlg.md_left));
+	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), GTK_TREE_MODEL(expr_wizard_dlg.md_objtype));
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.tr_right, FALSE, TRUE, 4);
 
-	expr_wizard_dlg.entry_right = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.entry_right, FALSE, TRUE, 4);
+	expr_wizard_dlg.right_str = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.right_str, FALSE, TRUE, 4);
+
+	expr_wizard_dlg.right_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10,
+	                                                              0, /* min */
+	                                                              8,
+	                                                              1, 1, /* steps */
+	                                                              0.0));
+/*	g_signal_connect(G_OBJECT(expr_wizard_dlg.right_adj), "value-changed", G_CALLBACK(config_auto_idx_changed_cb), NULL); */
+	expr_wizard_dlg.right_int = gtk_spin_button_new(expr_wizard_dlg.right_adj, 1, 8);
+	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.right_int, FALSE, TRUE, 4);
+
+	expr_wizard_dlg.right_coord = ghid_coord_entry_new(0, PCB_MM_TO_COORD(2100), 0, conf_core.editor.grid_unit, CE_MEDIUM);
+	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.right_coord, FALSE, TRUE, 4);
 
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 4);
 
 	/* pack content */
 	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), hbox);
 	gtk_widget_show_all(dialog);
+	right_hide();
 
 	/* Run the dialog */
 	response = gtk_dialog_run(GTK_DIALOG(dialog));
