@@ -37,3 +37,5 @@ int write_kicad_legacy_layout_header(FILE * FP);
 int write_kicad_legacy_layout_vias(FILE * FP, DataTypePtr Data, Coord MaxWidth, Coord MaxHeight);
 int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,
 						Coord MaxWidth, Coord MaxHeight);
+int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,
+						Coord xOffset, Coord yOffset);
