@@ -604,6 +604,7 @@ static void ghid_search_window_create()
 		for(s = actions; *s != NULL; s++)
 			gtk_combo_box_append_text(GTK_COMBO_BOX(sdlg.action), *s);
 		gtk_box_pack_start(GTK_BOX(hbox), sdlg.action, FALSE, FALSE, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(sdlg.action), 0);
 
 		gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("matching items"), FALSE, FALSE, 0);
 
