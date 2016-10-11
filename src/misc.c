@@ -852,6 +852,22 @@ BoxTypePtr GetArcEnds(ArcTypePtr Arc)
 	return &box;
 }
 
+BoxTypePtr GetArcEndsForKicad(ArcTypePtr Arc) /* kicad legacy doesn;t support ellipses */
+{
+	static BoxType box;
+	Coord radius;
+	if (Arc->Width > Arc->Height) {
+		radius = Arc->Height;
+	} else {
+		radius = Arc->Width;
+	}
+	box.X1 = Arc->X - radius * cos(Arc->StartAngle * PCB_M180);
+	box.Y1 = Arc->Y + radius * sin(Arc->StartAngle * PCB_M180);
+	box.X2 = Arc->X - radius * cos((Arc->StartAngle + Arc->Delta) * PCB_M180);
+	box.Y2 = Arc->Y + radius * sin((Arc->StartAngle + Arc->Delta) * PCB_M180);
+	return &box;
+}
+
 
 /* doesn't these belong in change.c ?? */
 void ChangeArcAngles(LayerTypePtr Layer, ArcTypePtr a, Angle new_sa, Angle new_da)
