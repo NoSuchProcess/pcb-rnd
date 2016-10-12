@@ -442,14 +442,24 @@ static char *expr_wizard_result(int desc)
 	gds_t s;
 	char tmp[128];
 	const char *cs;
-	const expr_wizard_t *w = left_get_wiz();
+	const expr_wizard_t *parent, *w = left_get_wiz();
 
 	if ((w == NULL) || (w->left_var == NULL))
 		return NULL;
 
+
 	gds_init(&s);
-	if (desc)
-		pcb_append_printf(&s, "%s", w->left_desc);
+	if (desc) {
+		/* search the parent */
+		for(parent = w; parent >= expr_tab; parent--)
+			if (parent->left_var == NULL)
+				break;
+
+		if (parent->left_var != NULL)
+			pcb_append_printf(&s, "%s %s", parent->left_desc, w->left_desc);
+		else
+			pcb_append_printf(&s, "%s", w->left_desc);
+	}
 	else
 		pcb_append_printf(&s, "(%s", w->left_var);
 
