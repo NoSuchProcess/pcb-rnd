@@ -81,12 +81,6 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.bbox.w",          "width",            &op_tab[OPS_ANY], RIGHT_COORD},
 	{"@.bbox.h",          "height",           &op_tab[OPS_ANY], RIGHT_COORD},
 
-	{NULL,                "host layer's",     NULL,             0},
-	{"@.layer.name",      "name",             &op_tab[OPS_EQ],  RIGHT_STR},
-	{"@.layer.visible",   "visible",          &op_tab[OPS_EQ],  RIGHT_INT},
-#warning TODO
-/*	{"@.layer.position",  "stack position",  &op_tab[OPS_EQ],  RIGHT_INT},*/
-/*	{"@.layer.type",      "type",            &op_tab[OPS_EQ],  RIGHT_INT},*/
 
 	{NULL,                "trace",            NULL,             0},
 	{"@.thickness",       "thickness",        &op_tab[OPS_ANY], RIGHT_COORD},
@@ -115,11 +109,35 @@ static const expr_wizard_t expr_tab[] = {
 	{NULL,                "polygon",          NULL,             0},
 	{"@.points",          "points",           &op_tab[OPS_ANY], RIGHT_INT},
 
-#warning TODO
-	{NULL,                "via",              NULL,             0},
-	{NULL,                "pin",              NULL,             0},
-	{NULL,                "host element's",   NULL,             0},
+	{NULL,                "pin or via",       NULL,             0},
+	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.hole",            "drilling hole dia",&op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.mask",            "mask",             &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.name",            "name",             &op_tab[OPS_EQ],  RIGHT_STR},
+	{"@.number",          "number",           &op_tab[OPS_EQ],  RIGHT_STR},
+
 	{NULL,                "element",          NULL,             0},
+	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.name",            "name",             &op_tab[OPS_EQ],  RIGHT_STR},
+	{"@.description",     "description",      &op_tab[OPS_EQ],  RIGHT_STR},
+	{"@.value",           "value",            &op_tab[OPS_EQ],  RIGHT_STR},
+
+	{NULL,                "host layer's",     NULL,             0},
+	{"@.layer.name",      "name",             &op_tab[OPS_EQ],  RIGHT_STR},
+	{"@.layer.visible",   "visible",          &op_tab[OPS_EQ],  RIGHT_INT},
+#warning TODO
+/*	{"@.layer.position",  "stack position",  &op_tab[OPS_EQ],  RIGHT_INT},*/
+/*	{"@.layer.type",      "type",            &op_tab[OPS_EQ],  RIGHT_INT},*/
+
+	{NULL,                "host element's",   NULL,             0},
+	{"@.element.x",       "X",                &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.element.y",       "Y",                &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.element.name",    "name",             &op_tab[OPS_EQ],  RIGHT_STR},
+	{"@.element.description","description",   &op_tab[OPS_EQ],  RIGHT_STR},
+	{"@.element.value",   "value",            &op_tab[OPS_EQ],  RIGHT_STR},
+
 
 	{NULL, NULL, NULL, 0}
 };
