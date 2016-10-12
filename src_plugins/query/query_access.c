@@ -515,17 +515,13 @@ static int field_etext(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 static int field_pin(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	const char *s1, *s2;
+	const char *s1;
 
 	fld2str_req(s1, fld, 0);
-	fld2str_opt(s2, fld, 1);
 
-	if (strcmp(s1, "element") == 0) {
-		if (s2 != NULL)
-			PCB_QRY_RET_INV(res);
-#warning TODO: call the element
-		PCB_QRY_RET_INV(res);
-	}
+	if (strcmp(s1, "element") == 0)
+		return field_element_obj(obj, fld->next, res);
+
 	return field_via(obj, fld, res);
 }
 
@@ -555,12 +551,12 @@ static int field_pad(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	if (strcmp(s1, "layer") == 0)
 		return layer_of_obj(fld->next, res, PCB_LYT_COPPER | (TEST_FLAG(PCB_FLAG_ONSOLDER, p) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
 
+	if (strcmp(s1, "element") == 0)
+		return field_element_obj(obj, fld->next, res);
+
 	if (s2 != NULL)
 		PCB_QRY_RET_INV(res);
 
-	if (strcmp(s1, "element") != 0) {
-#warning TODO: call the element
-	}
 
 	PCB_QRY_RET_INV(res);
 }
