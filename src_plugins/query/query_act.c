@@ -66,6 +66,15 @@ static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 }
 
 
+static void unselect_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
+{
+	if (!pcb_qry_is_true(res))
+		return;
+	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ))
+		CLEAR_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
+}
+
+
 static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current), void *user_ctx)
 {
 	pcb_qry_node_t *prg = NULL;
@@ -115,6 +124,14 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 
 	if (strcmp(cmd, "select") == 0) {
 		if (run_script(argv[1], select_cb, NULL) < 0)
+			printf("Failed to run the query\n");
+		SetChangedFlag(pcb_true);
+		Redraw();
+		return 0;
+	}
+
+	if (strcmp(cmd, "unselect") == 0) {
+		if (run_script(argv[1], unselect_cb, NULL) < 0)
 			printf("Failed to run the query\n");
 		SetChangedFlag(pcb_true);
 		Redraw();
