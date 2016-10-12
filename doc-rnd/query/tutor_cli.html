@@ -36,7 +36,7 @@ the <i>current object</i> we are checking. The engine iterates over all
 copper objects, silk objects, pins, holes, layers and nets. A simple query
 that selects all objects looks like this:
 <pre>
-query(select, "@")
+query(select, '@')
 </pre>
 The actual query experssion was a single @ in this case. This made
 the iteration happen, got the expression evaluated one each object. The
@@ -44,27 +44,27 @@ result of each evaluation was the given object. Since these objects
 were all existing, valid objects, they were taken as logical value TRUE,
 thus for each the add-to-selection was performed.
 <p>
-Note: it's usually a good idea to write the expression in quotes, because
-it may contain commas and parenthesis that pcb-rnd's action parser may
-take as action syntax. 
+Note: it's usually a good idea to write the expression in single quotes, because
+it may contain commas, double quotes and parenthesis that pcb-rnd's action parser may
+take as action syntax.
 <p>
 The same expression can ran with eval would print the result of each
 evaluation:
 <pre>
-query(eval, "@")
+query(eval, '@')
 </pre>
 This is visible on the terminal pcb-rnd was started from - on X, it's a good
 idea to start a terminal and run pcb-rnd from that instead from a menu or
 icon. The rest of this tutorial will use the eval query because it's easier
 to include the result of an eval than of a selection. Most examples will
 specify the query expression only, without quotes - the reader should
-add the <i>query(eval, "")</i> part.
+add the <i>query(eval, ' ')</i> part.
 
 <H2> iteration vs. evaluate once </h2>
 If an expression does not reference the @ object, no iteration is performed
 and the expression is ran only once:
 <pre>
-query(eval, "1")
+query(eval, '1')
 </pre>
 This will calculate the value of 1 and prints it to the standard output. Since
 theres no iteration, this can not result in changes in selection. However,
@@ -105,7 +105,7 @@ the current object is:
 <p>
 Next, we can already select all traces thicker than 10 mil:
 <pre>
-	query(select, "@.thickness &gt; 10 mil")
+	query(select, '@.thickness &gt; 10 mil')
 </pre>
 <p>
 Because logical expressions are available, it's easy to select all medium-thick
@@ -125,7 +125,7 @@ or traces that don't match our preferred 8, 10 and 15 mil thicnkess values:
 </pre>
 
 <H2> grammar: invalid value </h2>
-But how comes an expression like "@.thickness &gt; 10 mil" works while
+But how comes an expression like '@.thickness &gt; 10 mil' works while
 @ iterates over non-trace objects, like layers, nets or elements that
 clearly have no thickness?
 <p>
@@ -138,7 +138,7 @@ or <i>invalid</i> for short. The invalid is treated specially:
 	<li> in logical NOT (!), TODO
 </ul>
 When @ refers to a non-trace object, @.thickness is invalid and
-"@.thickness &gt; 10 mil" is evaluated t invalid. If the result is not TRUE,
+'@.thickness &gt; 10 mil' is evaluated t invalid. If the result is not TRUE,
 the requested action is not performed.
 <p>
 The invalid value is generated only when the expression is valid but the
