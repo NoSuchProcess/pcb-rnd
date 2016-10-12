@@ -696,7 +696,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  event.h compat_misc.h ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h \
  create.h ../src_plugins/hid_gtk/ghid-search.h \
- ../src_plugins/hid_gtk/win_place.h \
+ ../src_plugins/hid_gtk/win_place.h hid_actions.h \
  ../src_plugins/hid_gtk/ghid-search-tab.h
 ../src_plugins/hid_gtk/gschem_accel_label.o: \
  ../src_plugins/hid_gtk/gschem_accel_label.c \
@@ -1868,8 +1868,8 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h ../src_plugins/query/query.h obj_any.h \
  ../src_3rd/liblihata/genht/htsi.h ../src_3rd/liblihata/genht/ht.h \
- ../src_plugins/query/query_y.h ../src_plugins/query/query_exec.h \
- dolists.h
+ ../src_plugins/query/query_y.h ../src_plugins/query/query_exec.h set.h \
+ global.h draw.h dolists.h
 ../src_plugins/query/query_exec.o: ../src_plugins/query/query_exec.c \
  global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
