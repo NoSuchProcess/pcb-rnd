@@ -37,6 +37,9 @@ static int qry_yy_input(char *buf, int buflen);
 %option prefix="qry_"
 
 %%
+["][^"]*["]     { qry_lval.s = pcb_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; /*"*/ }
+['][^']*[']     { qry_lval.s = pcb_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; }
+
 let             { return T_LET; }
 assert          { return T_ASSERT; }
 rule            { return T_RULE; }
@@ -56,7 +59,6 @@ inch            { qry_lval.u = get_unit_struct_by_allow(ALLOW_IN); return T_UNIT
 [!][=]          { return T_NEQ; }
 [>][=]          { return T_GTEQ; }
 [<][=]          { return T_LTEQ; }
-
 
 [0-9]+                    { qry_lval.c = strtol(yytext, NULL, 10); return T_INT; }
 [.][0-9]+                 { qry_lval.d = strtod(yytext, NULL); return T_DBL; }

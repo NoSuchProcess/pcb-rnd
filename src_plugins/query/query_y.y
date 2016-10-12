@@ -80,7 +80,7 @@ static pcb_query_iter_t *iter_ctx;
 %token     T_OR T_AND T_EQ T_NEQ T_GTEQ T_LTEQ
 %token     T_NL
 %token <u> T_UNIT
-%token <s> T_STR
+%token <s> T_STR T_QSTR
 %token <c> T_INT
 %token <d> T_DBL
 
@@ -98,7 +98,7 @@ static pcb_query_iter_t *iter_ctx;
 
 %left '('
 
-%type <n> number fields var fname fcall fargs words
+%type <n> number fields var fname fcall fargs words string_literal
 %type <n> expr exprs program_expr program_rules rule
 %type <u> maybe_unit
 
@@ -148,6 +148,7 @@ exprs:
 expr:
 	  fcall                  { $$ = $1; }
 	| number                 { $$ = $1; }
+	| string_literal         { $$ = $1; }
 	| '!' expr               { UNOP($$, PCBQ_OP_NOT, $2); }
 	| '(' expr ')'           { $$ = $2; }
 	| expr T_AND expr        { BINOP($$, $1, PCBQ_OP_AND, $3); }
@@ -179,6 +180,10 @@ number:
 	| T_DBL maybe_unit       { $$ = pcb_qry_n_alloc(PCBQ_DATA_DOUBLE); UNIT_CONV($$->data.dbl, 0, $1, $2); }
 	| '-' T_INT maybe_unit   { $$ = pcb_qry_n_alloc(PCBQ_DATA_COORD);  UNIT_CONV($$->data.crd, 1, $2, $3); }
 	| '-' T_DBL maybe_unit   { $$ = pcb_qry_n_alloc(PCBQ_DATA_DOUBLE); UNIT_CONV($$->data.dbl, 1, $2, $3); }
+	;
+
+string_literal:
+	T_QSTR                   { $$ = pcb_qry_n_alloc(PCBQ_DATA_STRING);  $$->data.str = $1; }
 	;
 
 maybe_unit:
