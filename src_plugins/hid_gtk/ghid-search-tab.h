@@ -27,7 +27,8 @@ static struct {
 	GtkWidget *entry_left;
 	GtkWidget *tr_left, *tr_op;
 	GtkWidget *right_str, *right_coord, *tr_right, *right_int;
-	GtkListStore *md_left, *md_objtype;
+	GtkTreeStore *md_left;
+	GtkListStore *md_objtype;
 	GtkAdjustment *right_adj;
 } expr_wizard_dlg;
 
@@ -69,14 +70,15 @@ expr_wizard_op_t op_tab[] = {
 };
 
 static const expr_wizard_t expr_tab[] = {
-	{"@.id",        "object ID",             &op_tab[OPS_ANY], RIGHT_INT},
-	{"@.type",      "object type",           &op_tab[OPS_EQ],  RIGHT_OBJTYPE},
-	{"@.bbox.x1",   "bounding box X1",       &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.y1",   "bounding box Y1",       &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.x2",   "bounding box X2",       &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.y2",   "bounding box Y2",       &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.w",    "bounding box width",    &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.h",    "bounding box height",   &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.id",        "object ID",        &op_tab[OPS_ANY], RIGHT_INT},
+	{"@.type",      "object type",      &op_tab[OPS_EQ],  RIGHT_OBJTYPE},
+	{NULL,          "bounding box",     NULL,             0},
+	{"@.bbox.x1",   "X1",               &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.bbox.y1",   "Y1",               &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.bbox.x2",   "X2",               &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.bbox.y2",   "Y2",               &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.bbox.w",    "width",            &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.bbox.h",    "height",           &op_tab[OPS_ANY], RIGHT_COORD},
 	{NULL, NULL}
 };
 

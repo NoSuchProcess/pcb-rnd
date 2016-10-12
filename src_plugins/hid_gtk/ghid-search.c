@@ -347,9 +347,19 @@ static void expr_wizard_init_model()
 			gtk_list_store_insert_with_values(o->model, NULL, -1,  0, *s,  -1);
 	}
 
-	expr_wizard_dlg.md_left = gtk_list_store_newv(2, model_op);
-	for(w = expr_tab; w->left_var != NULL; w++)
-		gtk_list_store_insert_with_values(expr_wizard_dlg.md_left, NULL, -1,  0, w->left_desc,  1,w,  -1);
+	{ /* create the left tree model */
+		GtkTreeIter *parent = NULL, iter, iparent;
+		expr_wizard_dlg.md_left = gtk_tree_store_newv(2, model_op);
+		for(w = expr_tab; w->left_desc != NULL; w++) {
+			gtk_tree_store_append(expr_wizard_dlg.md_left, &iter, parent);
+			gtk_tree_store_set(expr_wizard_dlg.md_left, &iter, 0,w->left_desc, 1,w, -1);
+			if (w->left_var == NULL) {
+				/* new section */
+				iparent = iter;
+				parent = &iparent;
+			}
+		}
+	}
 
 	expr_wizard_dlg.md_objtype = gtk_list_store_newv(1, model_op);
 	for(s = right_objtype; *s != NULL; s++)
@@ -407,12 +417,13 @@ static void left_chg_cb(GtkTreeView *t, gpointer *data)
 {
 	const expr_wizard_t *w = left_get_wiz();
 
-	if (w == NULL)
+	right_hide();
+
+	if ((w == NULL) || (w->left_var == NULL))
 		return;
 
 	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_op), GTK_TREE_MODEL(w->ops->model));
 
-	right_hide();
 	switch(w->rtype) {
 		case RIGHT_INT: gtk_widget_show(expr_wizard_dlg.right_int); break;
 		case RIGHT_STR: gtk_widget_show(expr_wizard_dlg.right_str); break;
@@ -431,7 +442,7 @@ static char *expr_wizard_result(int desc)
 	const char *cs;
 	const expr_wizard_t *w = left_get_wiz();
 
-	if (w == NULL)
+	if ((w == NULL) || (w->left_var == NULL))
 		return NULL;
 
 	gds_init(&s);
@@ -495,7 +506,7 @@ static void expr_wizard_dialog(expr1_t *e)
 	vbox = gtk_vbox_new(FALSE, 4);
 	expr_wizard_dlg.tr_left = gtk_tree_view_new();
 	renderer = gtk_cell_renderer_text_new();
-	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), -1, "variable", renderer, "text", 0, NULL);
+	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), -1, "variable", renderer, "text",0,  NULL);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), GTK_TREE_MODEL(expr_wizard_dlg.md_left));
 	g_signal_connect(G_OBJECT(expr_wizard_dlg.tr_left), "cursor-changed", G_CALLBACK(left_chg_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.tr_left, FALSE, TRUE, 4);
