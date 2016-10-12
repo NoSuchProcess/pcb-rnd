@@ -59,19 +59,29 @@ static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 
 static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 {
+	pcb_cardinal_t *cnt = (pcb_cardinal_t *)user_ctx;
 	if (!pcb_qry_is_true(res))
 		return;
-	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ))
-		SET_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
+	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ)) {
+		if (!TEST_FLAG(PCB_FLAG_SELECTED, current->data.anyobj)) {
+			SET_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
+			(*cnt)++;
+		}
+	}
 }
 
 
 static void unselect_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 {
+	pcb_cardinal_t *cnt = (pcb_cardinal_t *)user_ctx;
 	if (!pcb_qry_is_true(res))
 		return;
-	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ))
-		CLEAR_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
+	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ)) {
+		if (TEST_FLAG(PCB_FLAG_SELECTED, current->data.anyobj)) {
+			CLEAR_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
+			(*cnt)++;
+		}
+	}
 }
 
 
@@ -93,6 +103,7 @@ static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val
 static int query_action(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *cmd = argc > 0 ? argv[0] : 0;
+	pcb_cardinal_t cnt = 0;
 
 	if (cmd == NULL) {
 		return -1;
@@ -123,18 +134,22 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 	}
 
 	if (strcmp(cmd, "select") == 0) {
-		if (run_script(argv[1], select_cb, NULL) < 0)
+		if (run_script(argv[1], select_cb, &cnt) < 0)
 			printf("Failed to run the query\n");
-		SetChangedFlag(pcb_true);
-		Redraw();
+		if (cnt > 0) {
+			SetChangedFlag(pcb_true);
+			Redraw();
+		}
 		return 0;
 	}
 
 	if (strcmp(cmd, "unselect") == 0) {
-		if (run_script(argv[1], unselect_cb, NULL) < 0)
+		if (run_script(argv[1], unselect_cb, &cnt) < 0)
 			printf("Failed to run the query\n");
-		SetChangedFlag(pcb_true);
-		Redraw();
+		if (cnt > 0) {
+			SetChangedFlag(pcb_true);
+			Redraw();
+		}
 		return 0;
 	}
 
