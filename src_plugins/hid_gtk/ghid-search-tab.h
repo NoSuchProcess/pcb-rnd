@@ -70,16 +70,58 @@ expr_wizard_op_t op_tab[] = {
 };
 
 static const expr_wizard_t expr_tab[] = {
-	{"@.id",        "object ID",        &op_tab[OPS_ANY], RIGHT_INT},
-	{"@.type",      "object type",      &op_tab[OPS_EQ],  RIGHT_OBJTYPE},
-	{NULL,          "bounding box",     NULL,             0},
-	{"@.bbox.x1",   "X1",               &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.y1",   "Y1",               &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.x2",   "X2",               &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.y2",   "Y2",               &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.w",    "width",            &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.h",    "height",           &op_tab[OPS_ANY], RIGHT_COORD},
-	{NULL, NULL}
+	{"@.id",              "object ID",        &op_tab[OPS_ANY], RIGHT_INT},
+	{"@.type",            "object type",      &op_tab[OPS_EQ],  RIGHT_OBJTYPE},
+
+	{NULL,                "bounding box",     NULL,             0},
+	{"@.bbox.x1",         "X1",               &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.bbox.y1",         "Y1",               &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.bbox.x2",         "X2",               &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.bbox.y2",         "Y2",               &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.bbox.w",          "width",            &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.bbox.h",          "height",           &op_tab[OPS_ANY], RIGHT_COORD},
+
+	{NULL,                "host layer's",     NULL,             0},
+	{"@.layer.name",      "name",             &op_tab[OPS_EQ],  RIGHT_STR},
+	{"@.layer.visible",   "visible",          &op_tab[OPS_EQ],  RIGHT_INT},
+#warning TODO
+/*	{"@.layer.position",  "stack position",  &op_tab[OPS_EQ],  RIGHT_INT},*/
+/*	{"@.layer.type",      "type",            &op_tab[OPS_EQ],  RIGHT_INT},*/
+
+	{NULL,                "trace",            NULL,             0},
+	{"@.thickness",       "thickness",        &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.clearance",       "clearance",        &op_tab[OPS_ANY], RIGHT_COORD},
+
+	{NULL,                "line",             NULL,             0},
+	{"@.x1",              "X1",               &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.y1",              "Y1",               &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.x2",              "X2",               &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.y2",              "Y2",               &op_tab[OPS_ANY], RIGHT_COORD},
+
+	{NULL,                "arc",              NULL,             0},
+	{"@.x",               "center X",         &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.y",               "center Y",         &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.angle.start",     "start angle",      &op_tab[OPS_ANY], RIGHT_INT},
+	{"@.angle.delta",     "delta angle",      &op_tab[OPS_ANY], RIGHT_INT},
+
+	{NULL,                "text",             NULL,             0},
+	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD},
+	{"@.scale",           "scale",            &op_tab[OPS_ANY], RIGHT_INT},
+	{"@.string",          "string",           &op_tab[OPS_ANY], RIGHT_STR},
+#warning TODO
+/*	{"@.rotation",           "rotation",            &op_tab[OPS_ANY], RIGHT_INT},*/
+
+	{NULL,                "polygon",          NULL,             0},
+	{"@.points",          "points",           &op_tab[OPS_ANY], RIGHT_INT},
+
+#warning TODO
+	{NULL,                "via",              NULL,             0},
+	{NULL,                "pin",              NULL,             0},
+	{NULL,                "host element's",   NULL,             0},
+	{NULL,                "element",          NULL,             0},
+
+	{NULL, NULL, NULL, 0}
 };
 
 const char *right_objtype[] = {
