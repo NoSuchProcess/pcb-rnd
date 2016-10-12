@@ -211,7 +211,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	int topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
 	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, topSilk, silkLayerCount);
 
-	/* we now proceed to write the bottom silk lines to the kicad legacy file, using layer 20 */
+	/* we now proceed to write the bottom silk lines, arcs, text to the kicad legacy file, using layer 20 */
 	currentKicadLayer = 20; /* 20 is the bottom silk layer in kicad */
 	for (i = 0; i < bottomSilkCount; i++) /* write bottom silk lines, if any */
 		{
@@ -219,15 +219,54 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 									LayoutXOffset, LayoutYOffset);
 			write_kicad_legacy_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]),
 									LayoutXOffset, LayoutYOffset);
+			write_kicad_legacy_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]),
+									LayoutXOffset, LayoutYOffset);
 		}
 
-	/* we now proceed to write the top silk lines to the kicad legacy file, using layer 21 */
+	/* we now proceed to write the bottom copper text to the kicad legacy file, layer by layer */
+	currentKicadLayer = 0; /* 0 is the bottom copper layer in kicad */
+	for (i = 0; i < bottomCount; i++) /* write bottom copper tracks, if any */
+		{
+			write_kicad_legacy_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[bottomLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}	/* 0 is the bottom most track in kicad */
+
+	/* we now proceed to write the internal copper text to the kicad file, layer by layer */
+	if (innerCount != 0) {
+		currentGroup = pcb_layer_lookup_group(innerLayers[0]);
+		lastGroup = currentGroup;
+	}
+	for (i = 0, currentKicadLayer = 1; i < innerCount; i++) /* write inner copper text, group by group */
+		{
+			if (currentGroup != pcb_layer_lookup_group(innerLayers[i])) {
+				lastGroup = currentGroup;
+				currentGroup = pcb_layer_lookup_group(innerLayers[i]);
+				currentKicadLayer++;
+				if (currentKicadLayer > 14) {
+					currentKicadLayer = 14; /* kicad 16 layers in total, 0...15 */
+				}
+			}
+			write_kicad_legacy_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[innerLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}
+
+	/* we now proceed to write the top copper text to the kicad legacy file, layer by layer */
+	currentKicadLayer = 15; /* 15 is the top most copper layer in kicad */
+	for (i = 0; i < topCount; i++) /* write top copper tracks, if any */
+		{
+			write_kicad_legacy_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}
+
+	/* we now proceed to write the top silk lines, arcs, text to the kicad legacy file, using layer 21 */
 	currentKicadLayer = 21; /* 21 is the top silk layer in kicad */
 	for (i = 0; i < topSilkCount; i++) /* write top silk lines, if any */
 		{
 			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
 									LayoutXOffset, LayoutYOffset);
 			write_kicad_legacy_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
+									LayoutXOffset, LayoutYOffset);
+			write_kicad_legacy_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
 									LayoutXOffset, LayoutYOffset);
 		}
 
@@ -461,6 +500,74 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 	}
 }
 
+int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
+																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
+{
+	gdl_iterator_t it;
+	LineType *line;
+	TextType *text;
+	pcb_cardinal_t currentLayer = number;
+	/*ArcType *arc;
+		TextType *text;
+		PolygonType *polygon;
+	*/
+	/* write information about non empty layers */
+	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
+		/*
+			fprintf(FP, "Layer(%i ", (int) Number + 1);
+			PrintQuotedString(FP, (char *) EMPTY(layer->Name));
+			fputs(")\n(\n", FP);
+			WriteAttributeList(FP, &layer->Attributes, "\t");
+		*/
+		int localFlag = 0;
+		linelist_foreach(&layer->Text, &it, text) {
+			if ((currentLayer < 16) || (currentLayer == 20) || (currentLayer == 21) ) { /* copper or silk layer text */
+				fputs("$TEXTPCB\nTe \"", FP);
+				fputs(text->TextString,FP);
+				fputs("\"\n", FP);
+				int defaultXSize = 500; /* IIRC kicad treats this as kerned width of lower case m */
+				int defaultYSize = 500;
+				int defaultThickness = 100;
+				int rotation = 0;	
+				int i;
+				Coord offset = 0;
+				Coord textOffsetX = 0;
+				Coord textOffsetY = 0;
+				for (i = 2; text->TextString[i] != 0; i++) {
+					offset += defaultXSize;
+				}
+				offset = offset* 2540 /2; /* turn decimils into nanometres, ugly, must be better way */
+				if (text->Direction == 3) { /*vertical down*/
+					rotation = 2700;
+					textOffsetY = offset;
+					textOffsetX -= defaultYSize*2540/2;
+				} else if (text->Direction == 2) {
+					rotation = 1800;
+					textOffsetX = -offset;
+					textOffsetY -= defaultYSize*2540;
+				} else if (text->Direction == 1) { /*vertical up*/
+					rotation = 900; /* final result in decidegrees, CW +ve */
+					textOffsetY = -offset;
+					textOffsetX += defaultYSize*2540/2;
+				} else if (text->Direction == 0) {
+					textOffsetX = offset;
+					textOffsetY += defaultYSize*2540;
+				}
+				printf("\"%s\" direction field: %d\n", text->TextString, text->Direction);
+				printf("textOffsetX: %d,  textOffsetY: %d\n", textOffsetX, textOffsetY);
+				pcb_fprintf(FP, "Po %.0mk %.0mk %d %d %d %d\n",
+										text->X + xOffset + textOffsetX, text->Y + yOffset + textOffsetY,
+										defaultXSize, defaultYSize, defaultThickness, rotation);
+				pcb_fprintf(FP, "De %d 1 B98C Normal\n", currentLayer); /* timestamp made up B98C  */
+				fputs("$EndTEXTPCB\n", FP);
+			}
+			localFlag |= 1;
+		}
+		return localFlag;
+	} else {
+		return 0;
+	}
+}
 
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format
