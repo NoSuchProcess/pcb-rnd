@@ -351,6 +351,8 @@ static void expr_wizard_init_model()
 		GtkTreeIter *parent = NULL, iter, iparent;
 		expr_wizard_dlg.md_left = gtk_tree_store_newv(2, model_op);
 		for(w = expr_tab; w->left_desc != NULL; w++) {
+			if (w->left_var == NULL)
+				parent = NULL;
 			gtk_tree_store_append(expr_wizard_dlg.md_left, &iter, parent);
 			gtk_tree_store_set(expr_wizard_dlg.md_left, &iter, 0,w->left_desc, 1,w, -1);
 			if (w->left_var == NULL) {
