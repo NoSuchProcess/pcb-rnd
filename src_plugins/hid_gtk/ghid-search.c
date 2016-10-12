@@ -32,6 +32,7 @@
 #include "compat_misc.h"
 #include "ghid-search.h"
 #include "win_place.h"
+#include "hid_actions.h"
 
 typedef struct expr1_s expr1_t;
 
@@ -589,7 +590,24 @@ static void expr_wizard_dialog(expr1_t *e)
 	gtk_widget_destroy(dialog);
 }
 
-/* Advanced search window creation and administration */
+
+/******** Advanced search window creation and administration ********/
+static void dialog_cb(GtkDialog *dlg, gint response_id, gpointer *data)
+{
+	const char *act, *script;
+
+	switch(response_id) {
+		case GTK_RESPONSE_APPLY:
+			script = gtk_entry_get_text(GTK_ENTRY(sdlg.expr));
+			act = gtk_combo_box_get_active_text(GTK_COMBO_BOX(sdlg.action));
+			hid_actionl("query", act, script, NULL);
+			break;
+		case GTK_RESPONSE_CLOSE:
+			gtk_widget_destroy(GTK_WIDGET(dlg));
+			break;
+	}
+}
+
 static void ghid_search_window_create()
 {
 	GtkWidget *vbox_win, *lab, *vbox;
@@ -605,6 +623,8 @@ static void ghid_search_window_create()
 																			 GTK_WINDOW(top_window),
 																			 GTK_DIALOG_DESTROY_WITH_PARENT,
 																			 GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, GTK_STOCK_APPLY, GTK_RESPONSE_APPLY, NULL);
+
+	g_signal_connect(sdlg.window, "response", G_CALLBACK(dialog_cb), NULL);
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(sdlg.window));
 
