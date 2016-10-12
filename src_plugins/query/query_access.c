@@ -256,22 +256,24 @@ static int layer_of_obj(pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_
 static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	LineType *l = obj->data.line;
-	const char *s1, *s2;
+	const char *s1;
 
 	fld2str_req(s1, fld, 0);
-	fld2str_opt(s2, fld, 1);
-
-	if ((s1[0] == 'a') && (s1[1] == '\0'))
+/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&l->Attributes, s2));
-
+	}*/
 	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		if (strcmp(s2, "x1") == 0)  PCB_QRY_RET_INT(res, l->Point1.X);
-		if (strcmp(s2, "y1") == 0)  PCB_QRY_RET_INT(res, l->Point1.Y);
-		if (strcmp(s2, "x2") == 0)  PCB_QRY_RET_INT(res, l->Point1.X);
-		if (strcmp(s2, "y2") == 0)  PCB_QRY_RET_INT(res, l->Point1.Y);
-		if (strcmp(s2, "thickness") == 0)  PCB_QRY_RET_INT(res, l->Thickness);
-		if (strcmp(s2, "clearance") == 0)  PCB_QRY_RET_INT(res, l->Clearance);
+		fld = fld->next;
+		fld2str_req(s1, fld, 0);
 	}
+
+	if (strcmp(s1, "x1") == 0)  PCB_QRY_RET_INT(res, l->Point1.X);
+	if (strcmp(s1, "y1") == 0)  PCB_QRY_RET_INT(res, l->Point1.Y);
+	if (strcmp(s1, "x2") == 0)  PCB_QRY_RET_INT(res, l->Point1.X);
+	if (strcmp(s1, "y2") == 0)  PCB_QRY_RET_INT(res, l->Point1.Y);
+	if (strcmp(s1, "thickness") == 0)  PCB_QRY_RET_INT(res, l->Thickness);
+	if (strcmp(s1, "clearance") == 0)  PCB_QRY_RET_INT(res, l->Clearance);
 
 	if (strcmp(s1, "layer") == 0) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
@@ -289,16 +291,24 @@ static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	const char *s1, *s2;
 
 	fld2str_req(s1, fld, 0);
-	fld2str_opt(s2, fld, 1);
-
+/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+		fld2str_req(s2, fld, 1);
+		PCB_QRY_RET_STR(res, AttributeGetFromList(&a->Attributes, s2));
+	}*/
 	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		if (strcmp(s2, "x") == 0)  PCB_QRY_RET_INT(res, a->X);
-		if (strcmp(s2, "y") == 0)  PCB_QRY_RET_INT(res, a->Y);
-		if (strcmp(s2, "thickness") == 0)  PCB_QRY_RET_INT(res, a->Thickness);
-		if (strcmp(s2, "clearance") == 0)  PCB_QRY_RET_INT(res, a->Clearance);
-#warning TODO: this is really angle.start and angle.delta
+		fld = fld->next;
+		fld2str_req(s1, fld, 0);
+	}
+
+	if (strcmp(s1, "x") == 0)  PCB_QRY_RET_INT(res, a->X);
+	if (strcmp(s1, "y") == 0)  PCB_QRY_RET_INT(res, a->Y);
+	if (strcmp(s1, "thickness") == 0)  PCB_QRY_RET_INT(res, a->Thickness);
+	if (strcmp(s1, "clearance") == 0)  PCB_QRY_RET_INT(res, a->Clearance);
+	if (strcmp(s1, "angle") == 0) {
+		fld2str_req(s2, fld, 1);
 		if (strcmp(s2, "start") == 0)  PCB_QRY_RET_INT(res, a->StartAngle);
 		if (strcmp(s2, "delta") == 0)  PCB_QRY_RET_INT(res, a->Delta);
+		PCB_QRY_RET_INV(res);
 	}
 
 	if (strcmp(s1, "layer") == 0) {
@@ -314,21 +324,24 @@ static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_text(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	TextType *t = obj->data.text;
-	const char *s1, *s2;
+	const char *s1;
 
 	fld2str_req(s1, fld, 0);
-	fld2str_opt(s2, fld, 1);
-
-	if ((s1[0] == 'a') && (s1[1] == '\0'))
+/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&t->Attributes, s2));
-
+	}*/
 	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		if (strcmp(s2, "x") == 0)  PCB_QRY_RET_INT(res, t->X);
-		if (strcmp(s2, "y") == 0)  PCB_QRY_RET_INT(res, t->Y);
-		if (strcmp(s2, "scale") == 0)  PCB_QRY_RET_INT(res, t->Scale);
-		if (strcmp(s2, "rotation") == 0)  PCB_QRY_RET_INT(res, t->Direction);
-		if (strcmp(s2, "string") == 0)  PCB_QRY_RET_STR(res, t->TextString);
+		fld = fld->next;
+		fld2str_req(s1, fld, 0);
 	}
+
+	if (strcmp(s1, "x") == 0)  PCB_QRY_RET_INT(res, t->X);
+	if (strcmp(s1, "y") == 0)  PCB_QRY_RET_INT(res, t->Y);
+	if (strcmp(s1, "scale") == 0)  PCB_QRY_RET_INT(res, t->Scale);
+	if (strcmp(s1, "rotation") == 0)  PCB_QRY_RET_INT(res, t->Direction);
+	if (strcmp(s1, "string") == 0)  PCB_QRY_RET_STR(res, t->TextString);
+
 
 	if (strcmp(s1, "layer") == 0) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
@@ -343,18 +356,19 @@ static int field_text(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_polygon(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	PolygonType *p = obj->data.polygon;
-	const char *s1, *s2;
+	const char *s1;
 
 	fld2str_req(s1, fld, 0);
-	fld2str_opt(s2, fld, 1);
-
-	if ((s1[0] == 'a') && (s1[1] == '\0'))
+/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
-
+	}*/
 	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		if (strcmp(s2, "points") == 0)  PCB_QRY_RET_INT(res, p->PointN);
+		fld = fld->next;
+		fld2str_req(s1, fld, 0);
 	}
 
+	if (strcmp(s1, "points") == 0)  PCB_QRY_RET_INT(res, p->PointN);
 	if (strcmp(s1, "layer") == 0) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
 			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
@@ -378,24 +392,27 @@ static int field_rat(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_via(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	PinType *p = obj->data.via;
-	const char *s1, *s2;
+	const char *s1;
 
 	fld2str_req(s1, fld, 0);
-	fld2str_opt(s2, fld, 1);
-
-	if ((s1[0] == 'a') && (s1[1] == '\0'))
+/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
-
+	}*/
 	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		if (strcmp(s2, "x") == 0)  PCB_QRY_RET_INT(res, p->X);
-		if (strcmp(s2, "y") == 0)  PCB_QRY_RET_INT(res, p->Y);
-		if (strcmp(s2, "thickness") == 0)  PCB_QRY_RET_INT(res, p->Thickness);
-		if (strcmp(s2, "clearance") == 0)  PCB_QRY_RET_INT(res, p->Clearance);
-		if (strcmp(s2, "hole") == 0)  PCB_QRY_RET_INT(res, p->DrillingHole);
-		if (strcmp(s2, "mask") == 0)  PCB_QRY_RET_INT(res, p->Mask);
-		if (strcmp(s2, "name") == 0)  PCB_QRY_RET_STR(res, p->Name);
-		if (strcmp(s2, "number") == 0)  PCB_QRY_RET_STR(res, p->Number);
+		fld = fld->next;
+		fld2str_req(s1, fld, 0);
 	}
+
+	if (strcmp(s1, "x") == 0)  PCB_QRY_RET_INT(res, p->X);
+	if (strcmp(s1, "y") == 0)  PCB_QRY_RET_INT(res, p->Y);
+	if (strcmp(s1, "thickness") == 0)  PCB_QRY_RET_INT(res, p->Thickness);
+	if (strcmp(s1, "clearance") == 0)  PCB_QRY_RET_INT(res, p->Clearance);
+	if (strcmp(s1, "hole") == 0)  PCB_QRY_RET_INT(res, p->DrillingHole);
+	if (strcmp(s1, "mask") == 0)  PCB_QRY_RET_INT(res, p->Mask);
+	if (strcmp(s1, "name") == 0)  PCB_QRY_RET_STR(res, p->Name);
+	if (strcmp(s1, "number") == 0)  PCB_QRY_RET_STR(res, p->Number);
+
 	PCB_QRY_RET_INV(res);
 }
 
@@ -404,21 +421,24 @@ static int field_via(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	ElementType *p = obj->data.element;
-	const char *s1, *s2;
+	const char *s1;
 
 	fld2str_req(s1, fld, 0);
-	fld2str_opt(s2, fld, 1);
-
-	if ((s1[0] == 'a') && (s1[1] == '\0'))
+/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
-
+	}*/
 	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		if (strcmp(s2, "x") == 0)  PCB_QRY_RET_INT(res, p->MarkX);
-		if (strcmp(s2, "y") == 0)  PCB_QRY_RET_INT(res, p->MarkY);
-		if (strcmp(s2, "name") == 0)  PCB_QRY_RET_STR(res, p->Name[NAMEONPCB_INDEX].TextString);
-		if (strcmp(s2, "description") == 0)  PCB_QRY_RET_STR(res, p->Name[DESCRIPTION_INDEX].TextString);
-		if (strcmp(s2, "value") == 0)  PCB_QRY_RET_STR(res, p->Name[VALUE_INDEX].TextString);
+		fld = fld->next;
+		fld2str_req(s1, fld, 0);
 	}
+
+	if (strcmp(s1, "x") == 0)  PCB_QRY_RET_INT(res, p->MarkX);
+	if (strcmp(s1, "y") == 0)  PCB_QRY_RET_INT(res, p->MarkY);
+	if (strcmp(s1, "name") == 0)  PCB_QRY_RET_STR(res, p->Name[NAMEONPCB_INDEX].TextString);
+	if (strcmp(s1, "description") == 0)  PCB_QRY_RET_STR(res, p->Name[DESCRIPTION_INDEX].TextString);
+	if (strcmp(s1, "value") == 0)  PCB_QRY_RET_STR(res, p->Name[VALUE_INDEX].TextString);
+
 	PCB_QRY_RET_INV(res);
 }
 
@@ -471,6 +491,10 @@ static int field_eline(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	const char *s1;
 
 	fld2str_req(s1, fld, 0);
+	if ((s1[0] == 'p') && (s1[1] == '\0')) {
+		fld=fld->next;
+		fld2str_req(s1, fld, 0);
+	}
 
 	if (strcmp(s1, "layer") == 0)
 		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, l) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
@@ -487,6 +511,10 @@ static int field_earc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	const char *s1;
 
 	fld2str_req(s1, fld, 0);
+	if ((s1[0] == 'p') && (s1[1] == '\0')) {
+		fld=fld->next;
+		fld2str_req(s1, fld, 0);
+	}
 
 	if (strcmp(s1, "layer") == 0)
 		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, a) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
@@ -503,6 +531,10 @@ static int field_etext(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	const char *s1;
 
 	fld2str_req(s1, fld, 0);
+	if ((s1[0] == 'p') && (s1[1] == '\0')) {
+		fld=fld->next;
+		fld2str_req(s1, fld, 0);
+	}
 
 	if (strcmp(s1, "layer") == 0)
 		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, t) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
@@ -518,6 +550,10 @@ static int field_pin(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	const char *s1;
 
 	fld2str_req(s1, fld, 0);
+	if ((s1[0] == 'p') && (s1[1] == '\0')) {
+		fld=fld->next;
+		fld2str_req(s1, fld, 0);
+	}
 
 	if (strcmp(s1, "element") == 0)
 		return field_element_obj(obj, fld->next, res);
@@ -528,35 +564,32 @@ static int field_pin(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_pad(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	PadType *p = obj->data.pad;
-	const char *s1, *s2;
+	const char *s1;
 
 	fld2str_req(s1, fld, 0);
-	fld2str_opt(s2, fld, 1);
-
-	if ((s1[0] == 'a') && (s1[1] == '\0'))
+/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
-
+	}*/
 	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		if (strcmp(s2, "x1") == 0)  PCB_QRY_RET_INT(res, p->Point1.X);
-		if (strcmp(s2, "y1") == 0)  PCB_QRY_RET_INT(res, p->Point1.Y);
-		if (strcmp(s2, "x2") == 0)  PCB_QRY_RET_INT(res, p->Point1.X);
-		if (strcmp(s2, "y2") == 0)  PCB_QRY_RET_INT(res, p->Point1.Y);
-		if (strcmp(s2, "thickness") == 0)  PCB_QRY_RET_INT(res, p->Thickness);
-		if (strcmp(s2, "clearance") == 0)  PCB_QRY_RET_INT(res, p->Clearance);
-		if (strcmp(s2, "mask") == 0)  PCB_QRY_RET_INT(res, p->Mask);
-		if (strcmp(s2, "name") == 0)  PCB_QRY_RET_STR(res, p->Name);
-		if (strcmp(s2, "number") == 0)  PCB_QRY_RET_STR(res, p->Number);
+		fld = fld->next;
+		fld2str_req(s1, fld, 0);
 	}
 
+	if (strcmp(s1, "x1") == 0)  PCB_QRY_RET_INT(res, p->Point1.X);
+	if (strcmp(s1, "y1") == 0)  PCB_QRY_RET_INT(res, p->Point1.Y);
+	if (strcmp(s1, "x2") == 0)  PCB_QRY_RET_INT(res, p->Point1.X);
+	if (strcmp(s1, "y2") == 0)  PCB_QRY_RET_INT(res, p->Point1.Y);
+	if (strcmp(s1, "thickness") == 0)  PCB_QRY_RET_INT(res, p->Thickness);
+	if (strcmp(s1, "clearance") == 0)  PCB_QRY_RET_INT(res, p->Clearance);
+	if (strcmp(s1, "mask") == 0)  PCB_QRY_RET_INT(res, p->Mask);
+	if (strcmp(s1, "name") == 0)  PCB_QRY_RET_STR(res, p->Name);
+	if (strcmp(s1, "number") == 0)  PCB_QRY_RET_STR(res, p->Number);
 	if (strcmp(s1, "layer") == 0)
 		return layer_of_obj(fld->next, res, PCB_LYT_COPPER | (TEST_FLAG(PCB_FLAG_ONSOLDER, p) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
 
 	if (strcmp(s1, "element") == 0)
 		return field_element_obj(obj, fld->next, res);
-
-	if (s2 != NULL)
-		PCB_QRY_RET_INV(res);
-
 
 	PCB_QRY_RET_INV(res);
 }
