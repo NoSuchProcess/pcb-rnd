@@ -81,6 +81,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	pcb_cardinal_t i;
 	pcb_cardinal_t j; /* may not need this now */
 	int physicalLayerCount = 0;
+	int kicadLayerCount = 0;
 	int silkLayerCount= 0;
 
 	Coord LayoutXOffset;
@@ -154,13 +155,18 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	physicalLayerCount = pcb_layer_group_list(PCB_LYT_COPPER, NULL, 0);
 
 	fputs("Layers ",FP);
-	fprintf(FP, "%d\n", physicalLayerCount); 
+	kicadLayerCount = physicalLayerCount;
+	if (kicadLayerCount%2 == 1) {
+		kicadLayerCount++; /* kicad doesn't like odd numbers of layers, has been deprecated for some time apparently */
+	}
+	
+	fprintf(FP, "%d\n", kicadLayerCount); 
 	int layer = 0;
 	if (physicalLayerCount >= 1) {
 		fprintf(FP, "Layer[%d] COPPER_LAYER_0 signal\n", layer);
 	}
 	if (physicalLayerCount > 1) { /* seems we need to ignore layers > 16 due to kicad limitation */
-		for (layer = 1; (layer < (physicalLayerCount - 1)) && (layer < 15); layer++ ) {
+		for (layer = 1; (layer < (kicadLayerCount - 1)) && (layer < 15); layer++ ) {
 			fprintf(FP, "Layer[%d] Inner%d.Cu signal\n", layer, layer);
 		} 
 		fputs("Layer[15] COPPER_LAYER_15 signal\n",FP);	
@@ -431,11 +437,12 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 			yStart = localArc.Y + yOffset;
 			xEnd = boxResult->X2 + xOffset; 
 			yEnd = boxResult->Y2 + yOffset; 
-
+			int copperStartX = boxResult->X1 + xOffset;
+			int copperStartY = boxResult->Y1 + yOffset; 
 			if (currentLayer < 16) { /* a copper arc, i.e. track, is unsupported by kicad, and will be exported as a line */
 				kicadArcShape = 0; /* make it a line for copper layers - kicad doesn't do arcs on copper */ 
 				pcb_fprintf(FP, "Po %d %.0mk %.0mk %.0mk %.0mk %.0mk\n",
-										kicadArcShape, xStart, yStart, xEnd, yEnd,
+										kicadArcShape, copperStartX, copperStartY, xEnd, yEnd,
 										arc->Thickness);
 				pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* in theory, copper arcs unsupported by kicad, make angle = 0 */
 			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk arc */
