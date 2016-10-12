@@ -172,7 +172,7 @@ do { \
 do { \
 	pcb_qry_node_t *_f_; \
 	fld_nth_req(_f_, fld, idx); \
-	if (_f_->type != PCBQ_FIELD) \
+	if ((_f_ == NULL) || (_f_->type != PCBQ_FIELD)) \
 		return -1; \
 	(s) = _f_->data.str; \
 } while(0)
@@ -477,12 +477,33 @@ static int field_element_from_ptr(ElementType *e, pcb_qry_node_t *fld, pcb_qry_v
 {
 	pcb_obj_t tmp;
 	tmp.type = PCB_OBJ_ELEMENT;
-	tmp.data.layer = e;
+	tmp.data.element = e;
 	tmp.parent_type = PCB_PARENT_DATA;
 	tmp.parent.data = PCB->Data;
 	return field_element(&tmp, fld, res);
 }
 
+static int field_element_obj(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	const char *s1;
+
+	/* if parent is not an element (or not available) evaluate to invalid */
+	if (obj->parent_type != PCB_PARENT_ELEMENT)
+		PCB_QRY_RET_INV(res);
+
+	/* check subfield, if there's none, return the element object */
+	fld2str_opt(s1, fld, 0);
+	if (s1 == NULL) {
+		res->type = PCBQ_VT_OBJ;
+		res->data.obj.data.element = obj->parent.element;
+		res->data.obj.parent_type = PCB_PARENT_DATA;
+		res->data.obj.parent.data = PCB->Data;
+		return 0;
+	}
+
+	/* return subfields of the element */
+	return field_element_from_ptr(obj->parent.element, fld, res);
+}
 
 static int field_net(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
@@ -505,20 +526,8 @@ static int field_eline(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	if (strcmp(s1, "layer") == 0)
 		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, l) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
 
-	if (strcmp(s1, "element") == 0) {
-		const char *s2;
-		fld2str_req(s2, fld, 1);
-		if (s2 != NULL) {
-			if (obj->parent_type == PCB_PARENT_ELEMENT)
-				return field_element_from_ptr(obj->parent.element, fld->next, res);
-			else
-				PCB_QRY_RET_INV(res);
-		}
-		else {
-#warning TODO: return the element
-			PCB_QRY_RET_INV(res);
-		}
-	}
+	if (strcmp(s1, "element") == 0)
+		return field_element_obj(obj, fld->next, res);
 
 	return field_line(obj, fld, res);
 }
@@ -532,6 +541,10 @@ static int field_earc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 	if (strcmp(s1, "layer") == 0)
 		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, a) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
+
+	if (strcmp(s1, "element") == 0)
+		return field_element_obj(obj, fld->next, res);
+
 	return field_arc(obj, fld, res);
 }
 
@@ -544,6 +557,10 @@ static int field_etext(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 	if (strcmp(s1, "layer") == 0)
 		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, t) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
+
+	if (strcmp(s1, "element") == 0)
+		return field_element_obj(obj, fld->next, res);
+
 	return field_text(obj, fld, res);
 }
 
