@@ -76,7 +76,7 @@ static pcb_query_iter_t *iter_ctx;
 	pcb_qry_node_t *n;
 }
 
-%token     T_LET T_ASSERT T_RULE T_LIST
+%token     T_LET T_ASSERT T_RULE T_LIST T_INVALID
 %token     T_OR T_AND T_EQ T_NEQ T_GTEQ T_LTEQ
 %token     T_NL
 %token <u> T_UNIT
@@ -149,6 +149,7 @@ expr:
 	  fcall                  { $$ = $1; }
 	| number                 { $$ = $1; }
 	| string_literal         { $$ = $1; }
+	| T_INVALID              { $$ = pcb_qry_n_alloc(PCBQ_DATA_INVALID); }
 	| '!' expr               { UNOP($$, PCBQ_OP_NOT, $2); }
 	| '(' expr ')'           { $$ = $2; }
 	| expr T_AND expr        { BINOP($$, $1, PCBQ_OP_AND, $3); }

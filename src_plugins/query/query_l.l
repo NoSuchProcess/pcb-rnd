@@ -44,6 +44,7 @@ let             { return T_LET; }
 assert          { return T_ASSERT; }
 rule            { return T_RULE; }
 list            { return T_LIST; }
+invalid         { return T_INVALID; }
 
 mm              { qry_lval.u = get_unit_struct_by_allow(ALLOW_MM); return T_UNIT; }
 m               { qry_lval.u = get_unit_struct_by_allow(ALLOW_M); return T_UNIT; }

@@ -85,6 +85,7 @@ typedef enum {
 	PCBQ_DATA_COORD,   /* leaf */
 	PCBQ_DATA_DOUBLE,  /* leaf */
 	PCBQ_DATA_STRING,  /* leaf */
+	PCBQ_DATA_INVALID, /* leaf */
 
 	PCBQ_nodetype_max
 } pcb_qry_nodetype_t;
