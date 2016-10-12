@@ -411,7 +411,7 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 			WriteAttributeList(FP, &layer->Attributes, "\t");
 		*/
 		int localFlag = 0;
-		int kicadArcShape = 2; /* 1 = circle, and 2 = arc */ 
+		int kicadArcShape = 2; /* 3 = circle, and 2 = arc, 1= rectangle used in eeschema only */ 
 		linelist_foreach(&layer->Arc, &it, arc) {
 			localArc = *arc;
 			if (arc->Width > arc->Height) {
@@ -423,32 +423,27 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 			}
 		BoxType *boxResult = GetArcEnds(&localArc);
 			if (arc->Delta == 360.0 || arc->Delta == -360.0 ) { /* it's a circle */
-				kicadArcShape = 1;
-				xStart = localArc.X + xOffset;
-				yStart = localArc.Y + yOffset;
-				xEnd = radius;
-				yEnd = 0; 
-/*				xEnd = boxResult->X2 + xOffset; 
-				yEnd = boxResult->Y2 + yOffset; */
+				kicadArcShape = 3;
 			} else { /* it's an arc */
 				kicadArcShape = 2;
-				xStart = boxResult->X1 + xOffset;
-				yStart = boxResult->Y1 + yOffset;
-				xEnd = boxResult->X2 + xOffset;
-				yEnd = boxResult->Y2 + yOffset;
 			}
+			xStart = localArc.X + xOffset;
+			yStart = localArc.Y + yOffset;
+			xEnd = boxResult->X2 + xOffset; 
+			yEnd = boxResult->Y2 + yOffset; 
 
 			if (currentLayer < 16) { /* a copper arc, i.e. track, is unsupported by kicad, and will be exported as a line */
+				kicadArcShape = 0; /* make it a line for copper layers - kicad doesn't do arcs on copper */ 
 				pcb_fprintf(FP, "Po %d %.0mk %.0mk %.0mk %.0mk %.0mk\n",
 										kicadArcShape, xStart, yStart, xEnd, yEnd,
 										arc->Thickness);
-				pcb_fprintf(FP, "De %d 0 %mA 0 0\n", currentLayer, -(arc->Delta)); /* in theory, decidegrees != 900 unsupported by older kicad*/
+				pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* in theory, copper arcs unsupported by kicad, make angle = 0 */
 			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk arc */
 				fputs("$DRAWSEGMENT\n", FP);
 				pcb_fprintf(FP, "Po %d %.0mk %.0mk %.0mk %.0mk %.0mk\n",
 										kicadArcShape, xStart, yStart, xEnd, yEnd,
 										arc->Thickness);
-				pcb_fprintf(FP, "De %d 0 %mA 0 0\n", currentLayer, -(arc->Delta)); /* in theory, decidegrees != 900 unsupported by older kicad*/
+				pcb_fprintf(FP, "De %d 0 %mA 0 0\n", currentLayer, arc->Delta); /* in theory, decidegrees != 900 unsupported by older kicad*/
 				fputs("$EndDRAWSEGMENT\n", FP);
 			}
 			localFlag |= 1;
