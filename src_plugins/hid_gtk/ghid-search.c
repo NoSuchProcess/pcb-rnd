@@ -614,6 +614,14 @@ static void ghid_search_window_create()
 	GtkWidget *content_area, *top_window = gport->top_window;
 	const char *actions[] = { "select", "unselect", NULL };
 	const char **s;
+	int ver;
+
+	ver = hid_actionl("query", "version", NULL);
+	if (ver < 0100) {
+		sdlg.window = NULL;
+		Message(PCB_MSG_ERROR, "The query plugin is not avaialble, can not do advanced search.\n");
+		return;
+	}
 
 	/* make sure the list is empty */
 	memset(&sdlg.wizard, 0, sizeof(sdlg.wizard));
@@ -681,6 +689,8 @@ static void ghid_search_window_create()
 void ghid_search_window_show(gboolean raise)
 {
 	ghid_search_window_create();
+	if (sdlg.window == NULL)
+		return;
 	gtk_widget_show_all(sdlg.window);
 	wplc_place(WPLC_SEARCH, sdlg.window);
 	if (raise)
