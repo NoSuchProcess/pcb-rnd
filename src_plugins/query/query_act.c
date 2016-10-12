@@ -109,6 +109,9 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 		return -1;
 	}
 
+	if (strcmp(cmd, "version") == 0)
+		return 0100; /* 1.0 */
+
 	if (strcmp(cmd, "dump") == 0) {
 		pcb_qry_node_t *prg = NULL;
 		printf("Script dump: '%s'\n", argv[1]);
