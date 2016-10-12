@@ -1,3 +1,4 @@
+4002	configure	auto-enable the query plugin
 3926	configure	advanced search in gtk, imported 10 old plugins
 3841	configure	link string->int hash table (for the query language)
 3822	configure	new global struct: obj_any_t that will allow a query to list objects
