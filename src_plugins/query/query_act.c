@@ -26,6 +26,8 @@
 #include "query.h"
 #include "query_y.h"
 #include "query_exec.h"
+#include "set.h"
+#include "draw.h"
 
 static const char query_action_syntax[] =
 	"query(dump, expr) - dry run: compile and dump an expression\n"
@@ -59,7 +61,6 @@ static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 {
 	if (!pcb_qry_is_true(res))
 		return;
-	printf("select %p\n", (void *)current);
 	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ))
 		SET_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
 }
@@ -115,6 +116,8 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 	if (strcmp(cmd, "select") == 0) {
 		if (run_script(argv[1], select_cb, NULL) < 0)
 			printf("Failed to run the query\n");
+		SetChangedFlag(pcb_true);
+		Redraw();
 		return 0;
 	}
 
