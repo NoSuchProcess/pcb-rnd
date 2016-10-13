@@ -75,6 +75,17 @@ static char *attrib_prepend_free(char *orig, char *prep, char sep)
 	return res;
 }
 
+static pcb_qry_node_t *make_regex_free(char *str)
+{
+	pcb_qry_node_t *res = pcb_qry_n_alloc(PCBQ_DATA_REGEX);
+	res->data.str = str;
+	res->precomp.regex = re_se_comp(str);
+	if (res->precomp.regex == NULL)
+		yyerror(NULL, "Invalid regex\n");
+	return res;
+}
+
+
 %}
 
 %name-prefix "qry_"
@@ -177,6 +188,8 @@ expr:
 	| expr '-' expr          { BINOP($$, $1, PCBQ_OP_SUB, $3); }
 	| expr '*' expr          { BINOP($$, $1, PCBQ_OP_MUL, $3); }
 	| expr '/' expr          { BINOP($$, $1, PCBQ_OP_DIV, $3); }
+	| expr '~' T_STR         { BINOP($$, $1, PCBQ_OP_MATCH, make_regex_free($3)); }
+	| expr '~' T_QSTR        { BINOP($$, $1, PCBQ_OP_MATCH, make_regex_free($3)); }
 	| var                    { $$ = $1; }
 	| var '.' fields         {
 		pcb_qry_node_t *n;

@@ -25,6 +25,7 @@
 
 #include "obj_any.h"
 #include <genht/htsi.h>
+#include <genregex/regex_se.h>
 #include "fields_sphash.h"
 
 typedef struct pcb_qry_val_s pcb_qry_val_t;
@@ -74,7 +75,8 @@ typedef enum {
 	PCBQ_OP_SUB,
 	PCBQ_OP_MUL,
 	PCBQ_OP_DIV,
-
+	PCBQ_OP_MATCH,
+	
 	PCBQ_OP_NOT,
 	PCBQ_FIELD,
 	PCBQ_FIELD_OF,
@@ -86,6 +88,7 @@ typedef enum {
 	PCBQ_DATA_COORD,   /* leaf */
 	PCBQ_DATA_DOUBLE,  /* leaf */
 	PCBQ_DATA_STRING,  /* leaf */
+	PCBQ_DATA_REGEX,   /* leaf */
 	PCBQ_DATA_INVALID, /* leaf */
 
 	PCBQ_nodetype_max
@@ -107,6 +110,7 @@ struct pcb_qry_node_s {
 	union {                       /* field selection depends on ->type */
 		query_fields_keys_t fld;    /* field_sphash value from str */
 		pcb_qry_val_t result;       /* of pure functions and subtrees */
+		re_se_t *regex;
 	} precomp;
 };
 
