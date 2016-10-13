@@ -462,6 +462,9 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 		fld2str_req(s1, fld, 0);
 	}
 
+	if (fld->next != NULL)
+		PCB_QRY_RET_INV(res);
+
 	fld2hash_req(fh1, fld, 0);
 	switch(fh1) {
 		case query_fields_x:            PCB_QRY_RET_INT(res, p->MarkX);
