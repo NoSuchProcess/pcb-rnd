@@ -187,8 +187,11 @@
 #include "misc.h"
 #include "error.h"
 #include "draw.h"
+#include "hid_draw_helpers.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
+#include "layer.h"
+#include "hid_attrib.h"
 
 #include "hid.h"
 #include "draw.h"
@@ -537,11 +540,6 @@ static int dxf_id_code = 0;
  * \brief Record with all values of the DXF HID.
  */
 static HID dxf_hid;
-
-/*!
- * \brief Record with all graphics values of the DXF HID.
- */
-static HID_DRAW dxf_graphics;
 
 /*!
  * \brief Drill (hole) properties.
@@ -4115,22 +4113,22 @@ static int dxf_export_xref_file(void)
 			dxf_block_name = pcb_strdup(dxf_clean_string(UNKNOWN(DESCRIPTION_NAME(element))));
 			if (dxf_metric) {
 				/* convert mils to mm */
-				dxf_x0 = COORD_TO_MM(x);
+				dxf_x0 = PCB_COORD_TO_MM(x);
 				/* convert mils to mm and a right handed
 				 * Cartesian Coordinate System */
-				dxf_y0 = COORD_TO_MM(PCB->MaxHeight - y);
+				dxf_y0 = PCB_COORD_TO_MM(PCB->MaxHeight - y);
 			}
 			else {
 				/*
 				 * no need to convert, some things remain the
 				 * same.
 				 */
-				dxf_x0 = COORD_TO_MIL(x);
+				dxf_x0 = PCB_COORD_TO_MIL(x);
 				/*
 				 * only convert to a right handed Cartesian
 				 * Coordinate System.
 				 */
-				dxf_y0 = COORD_TO_MIL(PCB->MaxHeight - y);
+				dxf_y0 = PCB_COORD_TO_MIL(PCB->MaxHeight - y);
 			}
 #if 0
 			/*
@@ -5068,12 +5066,12 @@ static void dxf_draw_line(hidGC gc,
 	dxf_use_gc(gc, 0);
 	/* determine the polyline widths */
 	if (dxf_metric) {
-		dxf_start_width = (double) COORD_TO_MM(gc->width);
-		dxf_end_width = (double) COORD_TO_MM(gc->width);
+		dxf_start_width = (double) PCB_COORD_TO_MM(gc->width);
+		dxf_end_width = (double) PCB_COORD_TO_MM(gc->width);
 	}
 	else {
-		dxf_start_width = (double) COORD_TO_MIL(gc->width);
-		dxf_end_width = (double) COORD_TO_MIL(gc->width);
+		dxf_start_width = (double) PCB_COORD_TO_MIL(gc->width);
+		dxf_end_width = (double) PCB_COORD_TO_MIL(gc->width);
 	}
 	/* determine polyline color */
 	if (dxf_color_is_byblock) {
@@ -5085,16 +5083,16 @@ static void dxf_draw_line(hidGC gc,
 	 * determine start and end point X,Y-values w.r.t. metric or imperial.
 	 */
 	if (dxf_metric) {
-		dxf_x0 = COORD_TO_MM(DXF_X(PCB, x1));
-		dxf_y0 = COORD_TO_MM(DXF_Y(PCB, y1));
-		dxf_x1 = COORD_TO_MM(DXF_X(PCB, x2));
-		dxf_y1 = COORD_TO_MM(DXF_Y(PCB, y2));
+		dxf_x0 = PCB_COORD_TO_MM(DXF_X(PCB, x1));
+		dxf_y0 = PCB_COORD_TO_MM(DXF_Y(PCB, y1));
+		dxf_x1 = PCB_COORD_TO_MM(DXF_X(PCB, x2));
+		dxf_y1 = PCB_COORD_TO_MM(DXF_Y(PCB, y2));
 	}
 	else {
-		dxf_x0 = COORD_TO_MIL(DXF_X(PCB, x1));
-		dxf_y0 = COORD_TO_MIL(DXF_Y(PCB, y1));
-		dxf_x1 = COORD_TO_MIL(DXF_X(PCB, x2));
-		dxf_y1 = COORD_TO_MIL(DXF_Y(PCB, y2));
+		dxf_x0 = PCB_COORD_TO_MIL(DXF_X(PCB, x1));
+		dxf_y0 = PCB_COORD_TO_MIL(DXF_Y(PCB, y1));
+		dxf_x1 = PCB_COORD_TO_MIL(DXF_X(PCB, x2));
+		dxf_y1 = PCB_COORD_TO_MIL(DXF_Y(PCB, y2));
 	}
 	/*!
 	 * \todo Someday we have to do something here with multiple trace
@@ -5377,19 +5375,19 @@ static void dxf_draw_arc(hidGC gc,
 	arcStopY = cy + height * sin(TO_RADIANS(start_angle + delta_angle));
 	if (dxf_metric) {
 		/* use metric (mm) */
-		dxf_x0 = COORD_TO_MM(DXF_X(PCB, cx));
-		dxf_y0 = COORD_TO_MM(DXF_Y(PCB, cy));
-		dxf_start_width = COORD_TO_MM(DXF_X(PCB, width));
-		dxf_end_width = COORD_TO_MM(DXF_X(PCB, width));
-		dxf_height = COORD_TO_MM(DXF_X(PCB, height));
-		dxf_width = COORD_TO_MM(DXF_X(PCB, width));
+		dxf_x0 = PCB_COORD_TO_MM(DXF_X(PCB, cx));
+		dxf_y0 = PCB_COORD_TO_MM(DXF_Y(PCB, cy));
+		dxf_start_width = PCB_COORD_TO_MM(DXF_X(PCB, width));
+		dxf_end_width = PCB_COORD_TO_MM(DXF_X(PCB, width));
+		dxf_height = PCB_COORD_TO_MM(DXF_X(PCB, height));
+		dxf_width = PCB_COORD_TO_MM(DXF_X(PCB, width));
 		if (dxf_width > dxf_height) {
 			/*
 			 * the major axis of the ellipse coincides with the
 			 * X-axis.
 			 */
-			dxf_x1 = COORD_TO_MM(DXF_X(PCB, (cx + width)));
-			dxf_y1 = COORD_TO_MM(DXF_Y(PCB, cy));
+			dxf_x1 = PCB_COORD_TO_MM(DXF_X(PCB, (cx + width)));
+			dxf_y1 = PCB_COORD_TO_MM(DXF_Y(PCB, cy));
 			/*
 			 * the dxf_ratio is the minor axis length over major
 			 * axis length, and is always <= 1.0
@@ -5401,8 +5399,8 @@ static void dxf_draw_arc(hidGC gc,
 			 * the major axis of the ellipse coincides with the
 			 * Y-axis.
 			 */
-			dxf_x1 = COORD_TO_MM(DXF_X(PCB, cx));
-			dxf_y1 = COORD_TO_MM(DXF_Y(PCB, (cy + height)));
+			dxf_x1 = PCB_COORD_TO_MM(DXF_X(PCB, cx));
+			dxf_y1 = PCB_COORD_TO_MM(DXF_Y(PCB, (cy + height)));
 			/*
 			 * the dxf_ratio is the minor axis length over major
 			 * axis length, and is always <= 1.0
@@ -5412,12 +5410,12 @@ static void dxf_draw_arc(hidGC gc,
 	}
 	else {
 		/* use imperial (mil) */
-		dxf_x0 = COORD_TO_MIL(DXF_X(PCB, cx));
-		dxf_y0 = COORD_TO_MIL(DXF_Y(PCB, cy));
-		dxf_start_width = COORD_TO_MIL(DXF_X(PCB, width));
-		dxf_end_width = COORD_TO_MIL(DXF_X(PCB, width));
-		dxf_height = COORD_TO_MIL(DXF_Y(PCB, height));
-		dxf_width = COORD_TO_MIL(DXF_Y(PCB, width));
+		dxf_x0 = PCB_COORD_TO_MIL(DXF_X(PCB, cx));
+		dxf_y0 = PCB_COORD_TO_MIL(DXF_Y(PCB, cy));
+		dxf_start_width = PCB_COORD_TO_MIL(DXF_X(PCB, width));
+		dxf_end_width = PCB_COORD_TO_MIL(DXF_X(PCB, width));
+		dxf_height = PCB_COORD_TO_MIL(DXF_Y(PCB, height));
+		dxf_width = PCB_COORD_TO_MIL(DXF_Y(PCB, width));
 		if (dxf_width > dxf_height) {
 			/*
 			 * the major axis of the ellipse coincides with the
@@ -5656,15 +5654,15 @@ static void dxf_fill_circle(hidGC gc,
 	else if (gc->drill)
 		return;
 	if (dxf_metric) {							/* use metric mm */
-		dxf_x0 = COORD_TO_MM(DXF_X(PCB, cx));
-		dxf_y0 = COORD_TO_MM(DXF_Y(PCB, cy));
-		dxf_radius = COORD_TO_MM(DXF_X(PCB, radius));
+		dxf_x0 = PCB_COORD_TO_MM(DXF_X(PCB, cx));
+		dxf_y0 = PCB_COORD_TO_MM(DXF_Y(PCB, cy));
+		dxf_radius = PCB_COORD_TO_MM(DXF_X(PCB, radius));
 	}
 	else {												/* use imperial mil */
 
-		dxf_x0 = COORD_TO_MIL(DXF_X(PCB, cx));
-		dxf_y0 = COORD_TO_MIL(DXF_Y(PCB, cy));
-		dxf_radius = COORD_TO_MIL(DXF_X(PCB, radius));
+		dxf_x0 = PCB_COORD_TO_MIL(DXF_X(PCB, cx));
+		dxf_y0 = PCB_COORD_TO_MIL(DXF_Y(PCB, cy));
+		dxf_radius = PCB_COORD_TO_MIL(DXF_X(PCB, radius));
 	}
 	if (dxf_color_is_byblock) {
 		dxf_color = DXF_COLOR_BYBLOCK;
@@ -5953,7 +5951,6 @@ static void dxf_progress(int dxf_so_far, int dxf_total, const char *dxf_message)
 void hid_dxf_init()
 {
 	memset(&dxf_hid, 0, sizeof(HID));
-	memset(&dxf_graphics, 0, sizeof(dxf_graphics));
 
 	common_nogui_init(&dxf_hid);
 	common_draw_helpers_init(&dxf_hid);
@@ -5973,21 +5970,19 @@ void hid_dxf_init()
 	dxf_hid.beep = dxf_beep;
 	dxf_hid.progress = dxf_progress;
 
-	dxf_hid.graphics = &dxf_graphics;
-
-	dxf_graphics.make_gc = dxf_make_gc;
-	dxf_graphics.destroy_gc = dxf_destroy_gc;
-	dxf_graphics.use_mask = dxf_use_mask;
-	dxf_graphics.set_color = dxf_set_color;
-	dxf_graphics.set_line_cap = dxf_set_line_cap;
-	dxf_graphics.set_line_width = dxf_set_line_width;
-	dxf_graphics.set_draw_xor = dxf_set_draw_xor;
-	dxf_graphics.draw_line = dxf_draw_line;
-	dxf_graphics.draw_arc = dxf_draw_arc;
-	dxf_graphics.draw_rect = dxf_draw_rect;
-	dxf_graphics.fill_circle = dxf_fill_circle;
-	dxf_graphics.fill_polygon = dxf_fill_polygon;
-	dxf_graphics.fill_rect = dxf_fill_rect;
+	dxf_hid.make_gc = dxf_make_gc;
+	dxf_hid.destroy_gc = dxf_destroy_gc;
+	dxf_hid.use_mask = dxf_use_mask;
+	dxf_hid.set_color = dxf_set_color;
+	dxf_hid.set_line_cap = dxf_set_line_cap;
+	dxf_hid.set_line_width = dxf_set_line_width;
+	dxf_hid.set_draw_xor = dxf_set_draw_xor;
+	dxf_hid.draw_line = dxf_draw_line;
+	dxf_hid.draw_arc = dxf_draw_arc;
+	dxf_hid.draw_rect = dxf_draw_rect;
+	dxf_hid.fill_circle = dxf_fill_circle;
+	dxf_hid.fill_polygon = dxf_fill_polygon;
+	dxf_hid.fill_rect = dxf_fill_rect;
 
 	hid_register_hid(&dxf_hid);
 }
