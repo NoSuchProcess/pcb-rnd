@@ -2,6 +2,8 @@ a
 p
 x
 y
+cx
+cy
 x1
 y1
 x2
@@ -32,3 +34,4 @@ ID
 bbox
 type
 area
+refdes

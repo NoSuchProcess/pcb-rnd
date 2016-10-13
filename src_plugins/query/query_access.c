@@ -350,7 +350,9 @@ static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 		PCB_QRY_RET_INV(res);
 
 	switch(fh1) {
+		case query_fields_cx:
 		case query_fields_x:         PCB_QRY_RET_INT(res, a->X);
+		case query_fields_cy:
 		case query_fields_y:         PCB_QRY_RET_INT(res, a->Y);
 		case query_fields_thickness: PCB_QRY_RET_INT(res, a->Thickness);
 		case query_fields_clearance: PCB_QRY_RET_INT(res, a->Clearance);
@@ -485,6 +487,7 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 	switch(fh1) {
 		case query_fields_x:            PCB_QRY_RET_INT(res, p->MarkX);
 		case query_fields_y:            PCB_QRY_RET_INT(res, p->MarkY);
+		case query_fields_refdes:       /* alias of: */
 		case query_fields_name:         PCB_QRY_RET_STR(res, p->Name[NAMEONPCB_INDEX].TextString);
 		case query_fields_description:  PCB_QRY_RET_STR(res, p->Name[DESCRIPTION_INDEX].TextString);
 		case query_fields_value:        PCB_QRY_RET_STR(res, p->Name[VALUE_INDEX].TextString);
