@@ -124,6 +124,23 @@ static int promote(pcb_qry_val_t *a, pcb_qry_val_t *b)
 	return -1;
 }
 
+static const char *op2str(char *buff, int buff_size, pcb_qry_val_t *val)
+{
+	switch(val->type) {
+		case PCBQ_VT_COORD:
+			pcb_snprintf(buff, buff_size, "%mI", val->data.crd);
+			return buff;
+		case PCBQ_VT_DOUBLE:
+			pcb_snprintf(buff, buff_size, "%f", val->data.crd);
+			return buff;
+		case PCBQ_VT_STRING:
+			return val->data.str;
+		case PCBQ_VT_VOID:
+		case PCBQ_VT_OBJ:
+		case PCBQ_VT_LST:   return NULL;
+	}
+}
+
 int pcb_qry_is_true(pcb_qry_val_t *val)
 {
 	switch(val->type) {
@@ -357,7 +374,18 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			return -1;
 
 		case PCBQ_OP_MATCH:
-			return -1;
+			BINOPS1();
+			{
+				pcb_qry_node_t *o2n =node->data.children->next;
+				char buff[128];
+				const char *s;
+				if (o2n->type != PCBQ_DATA_REGEX)
+					return -1;
+				s = op2str(buff, sizeof(buff), &o1);
+				if (s != NULL)
+					PCB_QRY_RET_INT(res, re_se_exec(o2n->precomp.regex, s));
+			}
+			PCB_QRY_RET_INV(res);
 
 		case PCBQ_OP_NOT:
 			UNOP();
