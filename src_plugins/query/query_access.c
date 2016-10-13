@@ -642,62 +642,54 @@ static int field_pad(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	const char *s1, *s2;
 	pcb_obj_t *obj;
+	query_fields_keys_t fh1;
 
 	if (objval->type != PCBQ_VT_OBJ)
 		return -1;
 	obj = &objval->data.obj;
 
-	fld2str_req(s1, fld, 0);
-	fld2str_opt(s2, fld, 1);
+	fld2hash_req(fh1, fld, 0);
 
-	if ((s1[0] == 'a') && (s1[1] == '\0')) {
-		if (s2 == NULL)
-			return -1;
+	if (fh1 == query_fields_a) {
+		const char *s2;
+		fld2str_req(s2, fld, 0);
 		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ))
 			PCB_QRY_RET_INV(res);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&obj->data.anyobj->Attributes, s2));
 	}
 
-	if ((s1[0] == 'I') && (s1[1] == 'D') && (s1[2] == '\0')) {
+	if (fh1 == query_fields_ID) {
 		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ))
 			PCB_QRY_RET_INV(res);
 		PCB_QRY_RET_INT(res, obj->data.anyobj->ID);
 	}
 
-	if (strcmp(s1, "bbox") == 0) {
+	if (fh1 == query_fields_bbox) {
+		query_fields_keys_t fh2;
+
 		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ))
 			PCB_QRY_RET_INV(res);
-		if (s2 == NULL)
-			return -1;
-		if (s2[0] == 'x') {
-			if (s2[1] == '1')
-				PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X1);
-			if (s2[1] == '2')
-				PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X2);
-			return -1;
+
+		fld2hash_req(fh2, fld, 1);
+		switch(fh2) {
+			case query_fields_x1:     PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X1);
+			case query_fields_y1:     PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y1);
+			case query_fields_x2:     PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X2);
+			case query_fields_y2:     PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y2);
+			case query_fields_width:  PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X2 - obj->data.anyobj->BoundingBox.X1);
+			case query_fields_height: PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y2 - obj->data.anyobj->BoundingBox.Y1);
+			case query_fields_area:   PCB_QRY_RET_INT(res, (obj->data.anyobj->BoundingBox.Y2 - obj->data.anyobj->BoundingBox.Y1) * (obj->data.anyobj->BoundingBox.X2 - obj->data.anyobj->BoundingBox.X1));
+			default:;
 		}
-		if (s2[0] == 'y') {
-			if (s2[1] == '1')
-				PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y1);
-			if (s2[1] == '2')
-				PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y2);
-			return -1;
-		}
-		if (s2[0] == 'w') /* width */
-			PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X2 - obj->data.anyobj->BoundingBox.X1);
-		if (s2[0] == 'h') /* height */
-			PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y2 - obj->data.anyobj->BoundingBox.Y1);
-		if (s2[0] == 'a') /* area */
-			PCB_QRY_RET_INT(res, (obj->data.anyobj->BoundingBox.Y2 - obj->data.anyobj->BoundingBox.Y1) * (obj->data.anyobj->BoundingBox.X2 - obj->data.anyobj->BoundingBox.X1));
+		PCB_QRY_RET_INV(res);
 	}
 
-	if (strcmp(s1, "type") == 0)
+	if (fh1 == query_fields_type)
 		PCB_QRY_RET_INT(res, obj->type);
 
 	switch(obj->type) {
-/*		case PCB_OBJ_POINT:    return field_point(obj, fld, res, s1, s2);*/
+/*		case PCB_OBJ_POINT:    return field_point(obj, fld, res);*/
 		case PCB_OBJ_LINE:     return field_line(obj, fld, res);
 		case PCB_OBJ_TEXT:     return field_text(obj, fld, res);
 		case PCB_OBJ_POLYGON:  return field_polygon(obj, fld, res);
@@ -719,5 +711,4 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 
 	return -1;
 }
-
 
