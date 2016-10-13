@@ -4325,7 +4325,7 @@ static void dxf_do_export(HID_Attr_Val * options)
 	region.X2 = PCB->MaxWidth;
 	region.Y2 = PCB->MaxHeight;
 	pagecount = 1;
-//  dxf_init_apertures ();
+/*  dxf_init_apertures ();*/
 	lastgroup = -1;
 	c_layerapps = 0;
 	dxf_finding_apertures = 1;
@@ -4475,8 +4475,8 @@ static int dxf_set_layer(const char *name, int group) {
 					 * \todo this output should go to file in
 					 * whatever form instead of being put on stderr.
 					 */
-//          fprintf (stderr,
-//            "DXF: T%02d\015\012", ap);
+/*          fprintf (stderr,
+            "DXF: T%02d\015\012", ap);*/
 				}
 			}
 			if (dxf_verbose) {
@@ -4507,15 +4507,15 @@ static int dxf_set_layer(const char *name, int group) {
 		lastcolor = 0;
 		linewidth = -1;
 		lastcap = -1;
-//    dxf_set_app_layer (c_layerapps);
+/*    dxf_set_app_layer (c_layerapps);*/
 		c_layerapps++;
 		if (dxf_finding_apertures) {
 			return 1;
 		}
-//    if (!curapp->nextAperture)
-//    {
-//      return 0;
-//    }
+/*    if (!curapp->nextAperture)
+      {
+        return 0;
+      }*/
 		dxf_maybe_close_file();
 		pagecount++;
 		switch (idx) {
@@ -4597,7 +4597,7 @@ static int dxf_set_layer(const char *name, int group) {
 		lncount = 1;
 		if (dxf_verbose) {
 			fprintf(stderr, "DXF: Setting Layer %s.\n", dxf_layername);
-//      fprintf (stderr, "DXF: Aperture Data %s.\n", curapp->appList.Data);
+/*      fprintf (stderr, "DXF: Aperture Data %s.\n", curapp->appList.Data);*/
 		}
 	}
 #if DEBUG
@@ -4761,7 +4761,7 @@ static void dxf_use_gc(hidGC gc, int radius) {
 	if (radius) {
 		radius *= 2;
 		if (radius != linewidth || lastcap != Round_Cap) {
-//      c = dxf_find_aperture_code (radius, ROUND);
+/*      c = dxf_find_aperture_code (radius, ROUND);*/
 			if (c <= 0) {
 				fprintf(stderr, "DXF: Error, aperture for radius %d type ROUND is %d\n", radius, c);
 			}
@@ -4786,7 +4786,7 @@ static void dxf_use_gc(hidGC gc, int radius) {
 			break;
 		}
 		if (fp) {
-//      fprintf (stderr, "DXF: aperture %d.\n ", ap);
+/*      fprintf (stderr, "DXF: aperture %d.\n ", ap); */
 		}
 	}
 #if 0
