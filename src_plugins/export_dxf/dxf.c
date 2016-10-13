@@ -4497,9 +4497,6 @@ static int dxf_set_layer(const char *name, int group) {
 	if (group < 0 || group != lastgroup) {
 		time_t currenttime;
 		char utcTime[64];
-#ifdef HAVE_GETPWUID
-		struct passwd *pwentry;
-#endif
 		char *sext = "_layer.dxf";
 		lastgroup = group;
 		dxf_lastX = -1;
@@ -4554,14 +4551,6 @@ static int dxf_set_layer(const char *name, int group) {
 			fmt = pcb_strdup("%c UTC");
 			strftime(utcTime, sizeof utcTime, fmt, gmtime(&currenttime));
 		}
-#ifdef HAVE_GETPWUID
-		/* ID the user */
-		pwentry = getpwuid(getuid());
-		/*!
-		 * \todo fprintf (stderr, "For: %s \n", pwentry->pw_name);
-		 * doesn't behave properly !
-		 */
-#endif
 		if (dxf_verbose) {
 			/* report at the beginning of each file */
 			fprintf(stderr, "DXF: Board Name: %s, %s \n", UNKNOWN(PCB->Name), UNKNOWN(name));
