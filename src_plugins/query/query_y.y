@@ -63,6 +63,18 @@ do { \
 
 static pcb_query_iter_t *iter_ctx;
 
+static char *attrib_prepend_free(char *orig, char *prep, char sep)
+{
+	int l1 = strlen(orig), l2 = strlen(prep);
+	char *res = malloc(l1+l2+2);
+	memcpy(res, prep, l2);
+	res[l2] = sep;
+	memcpy(res+l2+1, orig, l1+1);
+	free(orig);
+	free(prep);
+	return res;
+}
+
 %}
 
 %name-prefix "qry_"
@@ -77,7 +89,7 @@ static pcb_query_iter_t *iter_ctx;
 	pcb_qry_node_t *n;
 }
 
-%token     T_LET T_ASSERT T_RULE T_LIST T_INVALID
+%token     T_LET T_ASSERT T_RULE T_LIST T_INVALID T_FLD_P T_FLD_A
 %token     T_OR T_AND T_EQ T_NEQ T_GTEQ T_LTEQ
 %token     T_NL
 %token <u> T_UNIT
@@ -99,7 +111,7 @@ static pcb_query_iter_t *iter_ctx;
 
 %left '('
 
-%type <n> number fields var fname fcall fargs words string_literal
+%type <n> number fields attribs var fname fcall fargs words string_literal
 %type <n> expr exprs program_expr program_rules rule
 %type <u> maybe_unit
 
@@ -196,6 +208,14 @@ maybe_unit:
 fields:
 	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; $$->precomp.fld = query_fields_sphash($1); }
 	| T_STR '.' fields       { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; $$->precomp.fld = query_fields_sphash($1); $$->next = $3; }
+	| T_FLD_P fields         { $$ = $2; /* just ignore .p. */ }
+	| T_FLD_A attribs        { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = pcb_strdup("a"); $$->precomp.fld = query_fields_sphash("a"); $$->next = $2; }
+	;
+
+attribs:
+	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; }
+	| T_STR '.' attribs      { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = attrib_prepend_free($3->data.str, $1, '.'); }
+	| T_QSTR                 { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; }
 	;
 
 var:

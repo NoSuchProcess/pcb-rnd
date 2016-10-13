@@ -259,7 +259,7 @@ const char *pcb_qry_fnc_name(pcb_qry_fnc_t fnc)
 }
 
 /******** parser helper ********/
-void qry_error(const char *err)
+void qry_error(void *prog, const char *err)
 {
 	pcb_trace("qry_error: %s\n", err);
 }

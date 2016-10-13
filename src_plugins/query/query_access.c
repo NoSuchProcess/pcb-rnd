@@ -457,10 +457,6 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
 	}*/
-	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		fld = fld->next;
-		fld2str_req(s1, fld, 0);
-	}
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
