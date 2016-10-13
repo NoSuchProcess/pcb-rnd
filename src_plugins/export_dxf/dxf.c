@@ -4303,7 +4303,7 @@ static void dxf_do_export(HID_Attr_Val * options)
 	hid_save_and_show_layer_ons(save_ons);
 	for (i = 0; i < max_copper_layer; i++) {
 		LayerType *layer = PCB->Data->Layer + i;
-		if (layer->LineN || layer->TextN || layer->ArcN || layer->PolygonN) {
+		if (!IsLayerEmpty(layer)) {
 			print_group[GetLayerGroupNumberByNumber(i)] = 1;
 		}
 	}
