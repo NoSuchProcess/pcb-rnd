@@ -679,7 +679,7 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 			case query_fields_y2:     PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y2);
 			case query_fields_width:  PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.X2 - obj->data.anyobj->BoundingBox.X1);
 			case query_fields_height: PCB_QRY_RET_INT(res, obj->data.anyobj->BoundingBox.Y2 - obj->data.anyobj->BoundingBox.Y1);
-			case query_fields_area:   PCB_QRY_RET_INT(res, (obj->data.anyobj->BoundingBox.Y2 - obj->data.anyobj->BoundingBox.Y1) * (obj->data.anyobj->BoundingBox.X2 - obj->data.anyobj->BoundingBox.X1));
+			case query_fields_area:   PCB_QRY_RET_DBL(res, (double)(obj->data.anyobj->BoundingBox.Y2 - obj->data.anyobj->BoundingBox.Y1) * (double)(obj->data.anyobj->BoundingBox.X2 - obj->data.anyobj->BoundingBox.X1));
 			default:;
 		}
 		PCB_QRY_RET_INV(res);
