@@ -1,0 +1,8 @@
+put /local/pcb/mod {export_dxf}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_dxf/dxf.o @]
+
+switch /local/pcb/export_dxf/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

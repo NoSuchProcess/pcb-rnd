@@ -47,6 +47,7 @@ plugin_def("export_xy",       "xy (centroid) exporter",    sbuildin, 1)
 plugin_def("export_gerber",   "gerber exporter",           sbuildin, 1)
 plugin_def("export_lpr",      "lpr exporter (printer)",    sbuildin, 1)
 plugin_def("export_ps",       "postscript exporter",       sbuildin, 1)
+plugin_def("export_dxf",      "DXF exporter",              sdisable, 0)
 plugin_def("export_test",     "dummy test exporter",       sdisable, 1)
 
 plugin_header("\nIO plugins (file formats):\n")
