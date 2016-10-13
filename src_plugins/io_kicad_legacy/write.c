@@ -30,6 +30,7 @@
 #include "data.h"
 #include "write.h"
 #include "layer.h"
+#include "const.h"
 
 #define F2S(OBJ, TYPE) flags_to_string ((OBJ)->Flags, TYPE)
 
@@ -503,6 +504,10 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
 {
+	FontType *myfont = &PCB->Font;
+	Coord mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
+	Coord defaultStrokeThickness = 100*2540; /* use 100 mil as default 100% stroked font line thickness */
+
 	gdl_iterator_t it;
 	LineType *line;
 	TextType *text;
@@ -525,39 +530,48 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 				fputs("$TEXTPCB\nTe \"", FP);
 				fputs(text->TextString,FP);
 				fputs("\"\n", FP);
-				int defaultXSize = 500; /* IIRC kicad treats this as kerned width of lower case m */
-				int defaultYSize = 500;
-				int defaultThickness = 100;
+				Coord defaultXSize = PCB_SCALE_TEXT(mWidth, text->Scale); /* IIRC kicad treats this as kerned width of lower case m */
+				Coord defaultYSize = defaultXSize;
+				Coord strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale /2);
 				int rotation = 0;	
 				int i;
 				Coord offset = 0;
 				Coord textOffsetX = 0;
 				Coord textOffsetY = 0;
-				for (i = 2; text->TextString[i] != 0; i++) {
-					offset += defaultXSize;
+				Coord halfStringWidth = (text->BoundingBox.X2 - text->BoundingBox.X1)/2;
+				if (halfStringWidth < 0) {
+					halfStringWidth = -halfStringWidth;
 				}
-				offset = offset* 2540 /2; /* turn decimils into nanometres, ugly, must be better way */
+				Coord halfStringHeight = (text->BoundingBox.Y2 - text->BoundingBox.Y1)/2;
+				if (halfStringHeight < 0) {
+					halfStringHeight = -halfStringHeight;
+				}
+
+/* 				for (i = 0; text->TextString[i] != 0; i++) {
+					offset += defaultXSize/2;
+				} */
 				if (text->Direction == 3) { /*vertical down*/
 					rotation = 2700;
-					textOffsetY = offset;
-					textOffsetX -= defaultYSize*2540/2;
-				} else if (text->Direction == 2) {
+					textOffsetY = halfStringHeight;
+					textOffsetX -= halfStringWidth;
+				} else if (text->Direction == 2)  { /*upside down*/
 					rotation = 1800;
-					textOffsetX = -offset;
-					textOffsetY -= defaultYSize*2540;
+					textOffsetX = -halfStringWidth;
+					textOffsetY -= halfStringHeight;
 				} else if (text->Direction == 1) { /*vertical up*/
 					rotation = 900; /* final result in decidegrees, CW +ve */
-					textOffsetY = -offset;
-					textOffsetX += defaultYSize*2540/2;
-				} else if (text->Direction == 0) {
-					textOffsetX = offset;
-					textOffsetY += defaultYSize*2540;
+					textOffsetY = -halfStringHeight;
+					textOffsetX -= halfStringWidth;
+				} else if (text->Direction == 0)  { /*normal text*/
+					rotation = 0;
+					textOffsetX = halfStringWidth;
+					textOffsetY += halfStringHeight*2;
 				}
 				printf("\"%s\" direction field: %d\n", text->TextString, text->Direction);
 				printf("textOffsetX: %d,  textOffsetY: %d\n", textOffsetX, textOffsetY);
-				pcb_fprintf(FP, "Po %.0mk %.0mk %d %d %d %d\n",
+				pcb_fprintf(FP, "Po %.0mk %.0mk %.0mk %.0mk %.0mk %d\n",
 										text->X + xOffset + textOffsetX, text->Y + yOffset + textOffsetY,
-										defaultXSize, defaultYSize, defaultThickness, rotation);
+										defaultXSize, defaultYSize, strokeThickness, rotation);
 				pcb_fprintf(FP, "De %d 1 B98C Normal\n", currentLayer); /* timestamp made up B98C  */
 				fputs("$EndTEXTPCB\n", FP);
 			}
