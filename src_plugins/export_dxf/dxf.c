@@ -188,6 +188,7 @@
 #include "error.h"
 #include "draw.h"
 #include "pcb-printf.h"
+#include "compat_misc.h"
 
 #include "hid.h"
 #include "draw.h"
@@ -855,7 +856,7 @@ static StringList *dxf_string_insert(char *str, StringList * list) {
 		exit(1);
 	}
 	new->next = NULL;
-	new->str = strdup(str);
+	new->str = pcb_strdup(str);
 	if (list == NULL) {
 		return (new);
 	}
@@ -970,7 +971,7 @@ static void dxf_write_block(FILE * fp,
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_write_block () function.\n", __FILE__, __LINE__);
 	fprintf(stderr, "[DXF entity with code %x]\n", id_code);
 #endif
-	dxf_entity_name = strdup("BLOCK");
+	dxf_entity_name = pcb_strdup("BLOCK");
 	if (strcmp(block_name, "") == 0) {
 		if (dxf_verbose) {
 			fprintf(stderr, "DXF Warning: empty block name string for the %s entity with id-code: %x\n", dxf_entity_name, id_code);
@@ -990,7 +991,7 @@ static void dxf_write_block(FILE * fp,
 			fprintf(stderr, "DXF Warning: empty layer string for the %s entity with id-code: %x\n", dxf_entity_name, id_code);
 			fprintf(stderr, "\t%s entity is relocated to layer 0.\n", dxf_entity_name);
 		}
-		layer = strdup(DXF_DEFAULT_LAYER);
+		layer = pcb_strdup(DXF_DEFAULT_LAYER);
 	}
 	fprintf(fp, "  0\n%s\n", dxf_entity_name);
 	if (id_code != -1) {
@@ -1106,7 +1107,7 @@ static void dxf_write_circle(FILE * fp,
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_write_circle () function.\n", __FILE__, __LINE__);
 	fprintf(stderr, "[DXF entity with code %x]\n", id_code);
 #endif
-	dxf_entity_name = strdup("CIRCLE");
+	dxf_entity_name = pcb_strdup("CIRCLE");
 	if (radius == 0.0) {
 		if (dxf_verbose) {
 			fprintf(stderr, "Error: radius value equals 0.0 for the %s entity with id-code: %x\n", dxf_entity_name, id_code);
@@ -1114,7 +1115,7 @@ static void dxf_write_circle(FILE * fp,
 		}
 	}
 	if (strcmp(layer, "") == 0) {
-		layer = strdup(DXF_DEFAULT_LAYER);
+		layer = pcb_strdup(DXF_DEFAULT_LAYER);
 		if (dxf_verbose) {
 			fprintf(stderr, "Warning: empty layer string for the %s entity with id-code: %x\n", dxf_entity_name, id_code);
 			fprintf(stderr, "    %s entity is relocated to layer 0", dxf_entity_name);
@@ -1259,7 +1260,7 @@ static void dxf_write_ellipse(FILE * fp,
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_write_ellipse () function.\n", __FILE__, __LINE__);
 #endif
-	dxf_entity_name = strdup("ELLIPSE");
+	dxf_entity_name = pcb_strdup("ELLIPSE");
 	if (ratio == 0.0) {
 		if (dxf_verbose) {
 			fprintf(stderr, "Error: ratio value equals 0.0 for the %s entity with id-code: %x\n", dxf_entity_name, id_code);
@@ -1267,7 +1268,7 @@ static void dxf_write_ellipse(FILE * fp,
 		return;
 	}
 	if (strcmp(layer, "") == 0) {
-		layer = strdup(DXF_DEFAULT_LAYER);
+		layer = pcb_strdup(DXF_DEFAULT_LAYER);
 		if (dxf_verbose) {
 			fprintf(stderr, "Warning: empty layer string for the %s entity with id-code: %x\n", dxf_entity_name, id_code);
 			fprintf(stderr, "    %s entity is relocated to layer 0", dxf_entity_name);
@@ -1470,11 +1471,11 @@ static void dxf_write_hatch(FILE * fp,
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_write_hatch () function.\n", __FILE__, __LINE__);
 	fprintf(stderr, "[DXF entity with code %x]\n", id_code);
 #endif
-	dxf_entity_name = strdup("HATCH");
+	dxf_entity_name = pcb_strdup("HATCH");
 	if (strcmp(layer, "") == 0) {
 		fprintf(stderr, "Warning: empty layer string for the %s entity with id-code: %x\n", dxf_entity_name, id_code);
 		fprintf(stderr, "    %s entity is relocated to layer 0", dxf_entity_name);
-		layer = strdup(DXF_DEFAULT_LAYER);
+		layer = pcb_strdup(DXF_DEFAULT_LAYER);
 	}
 	fprintf(fp, "  0\n%s\n", dxf_entity_name);
 	fprintf(fp, "100\nAcDbHatch\n");
@@ -2588,10 +2589,10 @@ static void dxf_write_header()
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_write_header () function.\n", __FILE__, __LINE__);
 #endif
 	if (dxf_metric) {
-		dxf_header_filename = strdup("hid/dxf/template/metric_header.dxf");
+		dxf_header_filename = pcb_strdup("hid/dxf/template/metric_header.dxf");
 	}
 	else {
-		dxf_header_filename = strdup("hid/dxf/template/imperial_header.dxf");
+		dxf_header_filename = pcb_strdup("hid/dxf/template/imperial_header.dxf");
 	}
 	/* check if template metric header file exists and open file
 	 * read-only  */
@@ -3196,10 +3197,10 @@ static void dxf_write_footer()
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_write_footer () function.\n", __FILE__, __LINE__);
 #endif
 	if (dxf_metric) {
-		dxf_footer_filename = strdup("hid/dxf/template/metric_footer.dxf");
+		dxf_footer_filename = pcb_strdup("hid/dxf/template/metric_footer.dxf");
 	}
 	else {
-		dxf_footer_filename = strdup("hid/dxf/template/imperial_footer.dxf");
+		dxf_footer_filename = pcb_strdup("hid/dxf/template/imperial_footer.dxf");
 	}
 	/* check if template metric footer file exists and open file
 	 * read-only  */
@@ -3296,7 +3297,7 @@ static void dxf_write_insert(FILE * fp,
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_write_insert () function.\n", __FILE__, __LINE__);
 	fprintf(stderr, "[DXF entity with ID code %x]\n", id_code);
 #endif
-	dxf_entity_name = strdup("INSERT");
+	dxf_entity_name = pcb_strdup("INSERT");
 	if (strcmp(block_name, "") == 0) {
 		fprintf(stderr, "Warning: empty block name string for the %s entity with id-code: %x\n", dxf_entity_name, id_code);
 		fprintf(stderr, "   %s entity is discarded from output.\n", dxf_entity_name);
@@ -3305,7 +3306,7 @@ static void dxf_write_insert(FILE * fp,
 	if (strcmp(layer, "") == 0) {
 		fprintf(stderr, "Warning: empty layer string for the %s entity with id-code: %x\n", dxf_entity_name, id_code);
 		fprintf(stderr, "    %s entity is relocated to layer 0.\n", dxf_entity_name);
-		layer = strdup(DXF_DEFAULT_LAYER);
+		layer = pcb_strdup(DXF_DEFAULT_LAYER);
 	}
 	if (rel_x_scale == 0.0) {
 		fprintf(stderr, "Warning: relative X-scale factor has a value of 0.0 for the %s entity with id-code: %x\n", dxf_entity_name,
@@ -3471,7 +3472,7 @@ static void dxf_write_polyline(FILE * fp,
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_write_polyline () function.\n", __FILE__, __LINE__);
 	fprintf(stderr, "[DXF entity with code %x]\n", id_code);
 #endif
-	dxf_entity_name = strdup("POLYLINE");
+	dxf_entity_name = pcb_strdup("POLYLINE");
 	if (x0 != 0.0) {
 		fprintf(stderr, "Warning: start point has an invalid X-value for the %s entity with id-code: %x\n", dxf_entity_name,
 						id_code);
@@ -3493,7 +3494,7 @@ static void dxf_write_polyline(FILE * fp,
 	if (strcmp(layer, "") == 0) {
 		fprintf(stderr, "Warning: empty layer string for the %s entity with id-code: %x\n", dxf_entity_name, id_code);
 		fprintf(stderr, "   %s entity is relocated to layer 0\n", dxf_entity_name);
-		layer = strdup(DXF_DEFAULT_LAYER);
+		layer = pcb_strdup(DXF_DEFAULT_LAYER);
 	}
 	fprintf(fp, "  0\n%s\n", dxf_entity_name);
 	fprintf(fp, "100\nAcDb3dPolyline\n");
@@ -3608,11 +3609,11 @@ static void dxf_write_solid(FILE * fp,
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_write_solid () function.\n", __FILE__, __LINE__);
 	fprintf(stderr, "[DXF entity with code %x]\n", id_code);
 #endif
-	dxf_entity_name = strdup("SOLID");
+	dxf_entity_name = pcb_strdup("SOLID");
 	if (strcmp(layer, "") == 0) {
 		fprintf(stderr, "Warning: empty layer string for the %s entity with id-code: %x\n", dxf_entity_name, id_code);
 		fprintf(stderr, "    %s entity is relocated to layer 0", dxf_entity_name);
-		layer = strdup(DXF_DEFAULT_LAYER);
+		layer = pcb_strdup(DXF_DEFAULT_LAYER);
 	}
 	fprintf(fp, "  0\n%s\n", dxf_entity_name);
 	if (id_code != -1) {
@@ -3709,11 +3710,11 @@ static void dxf_write_vertex(FILE * fp,
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_write_vertex () function.\n", __FILE__, __LINE__);
 	fprintf(stderr, "[DXF entity with code %x]\n", id_code);
 #endif
-	dxf_entity_name = strdup("VERTEX");
+	dxf_entity_name = pcb_strdup("VERTEX");
 	if (strcmp(layer, "") == 0) {
 		fprintf(stderr, "Warning: empty layer string for the %s entity with id-code: %x\n", dxf_entity_name, id_code);
 		fprintf(stderr, "    %s entity is relocated to layer 0", dxf_entity_name);
-		layer = strdup(DXF_DEFAULT_LAYER);
+		layer = pcb_strdup(DXF_DEFAULT_LAYER);
 	}
 
 	fprintf(fp, "  0\n%s\n", dxf_entity_name);
@@ -3818,8 +3819,8 @@ static DxfList *dxf_insert(char *refdes,
 			exit(1);
 		}
 		new->next = NULL;
-		new->descr = strdup(descr);
-		new->value = strdup(value);
+		new->descr = pcb_strdup(descr);
+		new->value = pcb_strdup(value);
 		new->num = 1;
 		new->refdes = dxf_string_insert(refdes, NULL);
 		return (new);
@@ -3844,8 +3845,8 @@ static DxfList *dxf_insert(char *refdes,
 		}
 		prev->next = new;
 		new->next = NULL;
-		new->descr = strdup(descr);
-		new->value = strdup(value);
+		new->descr = pcb_strdup(descr);
+		new->value = pcb_strdup(value);
 		new->num = 1;
 		new->refdes = dxf_string_insert(refdes, NULL);
 	}
@@ -3979,7 +3980,7 @@ static int dxf_export_xref_file(void)
 	 * write a section BLOCKS marker to the DXF file.
 	 */
 	while (dxf != NULL) {
-		dxf_block_name = strdup(dxf_clean_string(dxf->descr));
+		dxf_block_name = pcb_strdup(dxf_clean_string(dxf->descr));
 		dxf_xref_name = DXF_DEFAULT_XREF_PATH_NAME;
 		dxf_write_block(fp, dxf_id_code, dxf_xref_name, dxf_block_name, DXF_DEFAULT_LINETYPE,	/* linetype, */
 										DXF_DEFAULT_LAYER,	/* layer, */
@@ -4111,7 +4112,7 @@ static int dxf_export_xref_file(void)
 								"     not find pin #1 of element %s.\n"
 								"     Setting to %g degrees.\n", UNKNOWN(NAMEONPCB_NAME(element)), theta);
 			}
-			dxf_block_name = strdup(dxf_clean_string(UNKNOWN(DESCRIPTION_NAME(element))));
+			dxf_block_name = pcb_strdup(dxf_clean_string(UNKNOWN(DESCRIPTION_NAME(element))));
 			if (dxf_metric) {
 				/* convert mils to mm */
 				dxf_x0 = COORD_TO_MM(x);
@@ -4550,7 +4551,7 @@ static int dxf_set_layer(const char *name, int group) {
 			/* create a portable timestamp */
 			currenttime = time(NULL);
 			/* avoid gcc complaints */
-			fmt = strdup("%c UTC");
+			fmt = pcb_strdup("%c UTC");
 			strftime(utcTime, sizeof utcTime, fmt, gmtime(&currenttime));
 		}
 #ifdef HAVE_GETPWUID
@@ -4582,7 +4583,7 @@ static int dxf_set_layer(const char *name, int group) {
 		if (dxf_layername) {
 			free(dxf_layername);
 		}
-		dxf_layername = strdup(dxf_filesuffix);
+		dxf_layername = pcb_strdup(dxf_filesuffix);
 		dxf_layername[strlen(dxf_layername) - strlen(sext)] = 0;
 		/* remove all non-alpha-nummerical characters and change all to upper characters */
 		for (cp = dxf_layername; *cp; cp++) {
