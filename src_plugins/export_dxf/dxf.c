@@ -190,16 +190,8 @@
 #include "pcb-printf.h"
 
 #include "hid.h"
-#include "hid_draw.h"
-#include "../hidint.h"
-#include "hid/common/hidnogui.h"
-#include "hid/common/draw_helpers.h"
-#include "hid/common/hidinit.h"
-
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
-
+#include "draw.h"
+#include "hid_init.h"
 
 /*!
  * \brief List with string data.
