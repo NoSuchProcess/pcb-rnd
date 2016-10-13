@@ -9,6 +9,18 @@
 		- route style in gtk and lesstif, save, load, 0, 1 or a lot of styles
 		- route style vs. autorouter
 
+- query & advanced search
+	- search expr wizard should pick up the expression from the button when clicked
+	- field accessors:
+		- pad area
+		- pin area
+		- line (and pad) length and length^2
+	- make a run on alarge board, speed test, with -O0 and -O3:
+		- iteration speed (a simple @)
+		- eval speed (a simple @ with a lot of constants in an expr)
+		- geo speed
+		- regex and string cmp match speed vs. select by name
+
 CLEANUP #5
 - rework the gpmi plugin to make it more standard in regard of the build system and to remove a few directories
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
