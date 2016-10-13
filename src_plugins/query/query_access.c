@@ -194,6 +194,33 @@ do { \
 	(s) = __res__; \
 } while(0)
 
+/* sets query_fields_keys_t h to point to the precomp field of the idxth field.
+   Returns -1 if tere are not enooung fields */
+#define fld2hash_req(h, fld, idx) \
+do { \
+	pcb_qry_node_t *_f_; \
+	fld_nth_req(_f_, fld, idx); \
+	if ((_f_ == NULL) || (_f_->type != PCBQ_FIELD)) \
+		return -1; \
+	(h) = _f_->precomp.fld; \
+} while(0)
+
+/* Same, but doesn't return -1 on missing field but sets s to query_fields_SPHASH_INVALID */
+#define fld2hash_opt(h, fld, idx) \
+do { \
+	pcb_qry_node_t *_f_; \
+	query_fields_keys_t *__res__; \
+	fld_nth_opt(_f_, fld, idx); \
+	if (_f_ != NULL) { \
+		if (_f_->type != PCBQ_FIELD) \
+			return -1; \
+		__res__ = _f_->precomp.fld; \
+	} \
+	else \
+		__res__ = query_fields_SPHASH_INVALID; \
+	(s) = __res__; \
+} while(0)
+
 static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	LayerType *l = obj->data.layer;
@@ -423,6 +450,7 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 {
 	ElementType *p = obj->data.element;
 	const char *s1;
+	query_fields_keys_t fh1;
 
 	fld2str_req(s1, fld, 0);
 /*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
@@ -434,12 +462,15 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 		fld2str_req(s1, fld, 0);
 	}
 
-	if (strcmp(s1, "x") == 0)  PCB_QRY_RET_INT(res, p->MarkX);
-	if (strcmp(s1, "y") == 0)  PCB_QRY_RET_INT(res, p->MarkY);
-	if (strcmp(s1, "name") == 0)  PCB_QRY_RET_STR(res, p->Name[NAMEONPCB_INDEX].TextString);
-	if (strcmp(s1, "description") == 0)  PCB_QRY_RET_STR(res, p->Name[DESCRIPTION_INDEX].TextString);
-	if (strcmp(s1, "value") == 0)  PCB_QRY_RET_STR(res, p->Name[VALUE_INDEX].TextString);
-
+	fld2hash_req(fh1, fld, 0);
+	switch(fh1) {
+		case query_fields_x:            PCB_QRY_RET_INT(res, p->MarkX);
+		case query_fields_y:            PCB_QRY_RET_INT(res, p->MarkY);
+		case query_fields_name:         PCB_QRY_RET_STR(res, p->Name[NAMEONPCB_INDEX].TextString);
+		case query_fields_description:  PCB_QRY_RET_STR(res, p->Name[DESCRIPTION_INDEX].TextString);
+		case query_fields_value:        PCB_QRY_RET_STR(res, p->Name[VALUE_INDEX].TextString);
+		default:;
+	}
 	PCB_QRY_RET_INV(res);
 }
 
