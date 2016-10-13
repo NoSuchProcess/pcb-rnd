@@ -30,7 +30,7 @@ do
 	do
 		echo "blame: $f"
 		case "$f" in
-			*parse_y.c|*parse_y.h|*parse_l.c|*parse_l.h) ;;
+			*parse_y.c|*parse_y.h|*parse_l.c|*parse_l.h|*_sphash*) ;;
 			*) svn blame $f > $f.blm;;
 		esac
 	done
@@ -42,8 +42,8 @@ do
 done| awk -v import=$import '
 		{
 			rev=int($1)
-			if (((rev >=  3871) && (rev <= 3914)) || (rev == 4023)) {
-# old plugins import
+			if (((rev >=  3871) && (rev <= 3914)) || (rev == 4023) || (rev == 4033)) {
+# old plugins and export plugin import
 				old++
 			}
 			if ((rev <= import) || (rev == 1022) || (rev == 3539))
