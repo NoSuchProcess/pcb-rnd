@@ -848,7 +848,7 @@ int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset
 			 PrintQuotedString(FP, (char *) EMPTY(NAMEONPCB_NAME(element)));
 			 fputc(' ', FP);
 			 PrintQuotedString(FP, (char *) EMPTY(VALUE_NAME(element)));
-			 pcb_fprintf(FP, " %mm %mm %mm %mm %d %d %s]\n(\n",
+			 pcb_fprintf(FP, " %mk %mk %mk %mk %d %d %s]\n(\n",
 			 element->MarkX, element->MarkY,
 			 DESCRIPTION_TEXT(element).X - element->MarkX,
 			 DESCRIPTION_TEXT(element).Y - element->MarkY,
@@ -876,18 +876,18 @@ int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset
 		pinlist_foreach(&element->Pin, &it, pin) {
 			fputs("$PAD\n",FP);	 /* start pad descriptor for a pin */
 
-			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
+			pcb_fprintf(FP, "Po %mk %mk\n", /* positions of pad */
 									pin->X - element->MarkX,
 									pin->Y - element->MarkY);
 
 			fputs("Sh ",FP); /* pin shape descriptor */
 			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
 			fputs(" C ",FP); /* circular */
-			pcb_fprintf(FP, "%.3mm %.3mm ", pin->Thickness, pin->Thickness); /* height = width */
+			pcb_fprintf(FP, "%mk %mk ", pin->Thickness, pin->Thickness); /* height = width */
 			fputs("0 0 0\n",FP); /* deltaX deltaY Orientation as float in decidegrees */
 
 			fputs("Dr ",FP); /* drill details; size and x,y pos relative to pad location */
-			pcb_fprintf(FP, "%mm 0 0\n", pin->DrillingHole);
+			pcb_fprintf(FP, "%mk 0 0\n", pin->DrillingHole);
 
 			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
 
@@ -901,7 +901,7 @@ int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset
 		pinlist_foreach(&element->Pad, &it, pad) {
 			fputs("$PAD\n",FP);	 /* start pad descriptor for an smd pad */
 
-			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
+			pcb_fprintf(FP, "Po %mk %mk\n", /* positions of pad */
 									(pad->Point1.X + pad->Point2.X)/2- element->MarkX,
 									(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
 
@@ -916,17 +916,17 @@ int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset
 										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) <= 0
 								 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
-				pcb_fprintf(FP, "%.3mm %.3mm ",
+				pcb_fprintf(FP, "%mk %mk ",
 										pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
 										pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 								 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
-				pcb_fprintf(FP, "%.3mm %.3mm ",
+				pcb_fprintf(FP, "%mk %mk ",
 										pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
 										pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 								 && (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
-				pcb_fprintf(FP, "%.3mm %.3mm ",
+				pcb_fprintf(FP, "%mk %mk ",
 										pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
 										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			}
@@ -942,7 +942,7 @@ int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset
 
 		}
 		linelist_foreach(&element->Line, &it, line) {
-			pcb_fprintf(FP, "DS %.3mm %.3mm %.3mm %.3mm %.3mm ",
+			pcb_fprintf(FP, "DS %mk %mk %mk %mk %mk ",
 									line->Point1.X - element->MarkX,
 									line->Point1.Y - element->MarkY,
 									line->Point2.X - element->MarkX,
@@ -953,7 +953,7 @@ int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset
 
 		linelist_foreach(&element->Arc, &it, arc) {
 			if ((arc->Delta == 360) || (arc->Delta == -360)) { /* it's a circle */
-				pcb_fprintf(FP, "DC %.3mm %.3mm %.3mm %.3mm %.3mm ",
+				pcb_fprintf(FP, "DC %mk %mk %mk %mk %mk ",
 										arc->X - element->MarkX, /* x_1 centre */
 										arc->Y - element->MarkY, /* y_2 centre */
 										(arc->X - element->MarkX + arc->Thickness/2), /* x_2 on circle */
@@ -972,7 +972,7 @@ int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset
 				   deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in gEDA
 				   NB it is in degrees in the newer s-file kicad module/footprint format
 				*/
-				pcb_fprintf(FP, "DA %.3mm %.3mm %.3mm %.3mm %.3ma %.3mm ",
+				pcb_fprintf(FP, "DA %mk %mk %mk %mk %mA %.3mk ",
 										arc->X - element->MarkX, /* x_1 centre */
 										arc->Y - element->MarkY, /* y_2 centre */
 										arc->X - element->MarkX + (arc->Thickness/2)*cos(M_PI*(arc->StartAngle+180)/360), /* x_2 on circle */
