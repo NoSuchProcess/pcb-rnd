@@ -78,6 +78,7 @@ P32 EXPR * EXPR                 multiply or ... (number only)
 P32 EXPR / EXPR                 multiply or ... (number only)
 P32 EXPR == EXPR                the two values are equal
 P33 EXPR != EXPR                the two values are not equal
+P71 EXPR ~ string               regex match left EXPR using pattern right string
 P34 EXPR > EXPR                 left EXPR is greater than right EXPR (number only)
 P35 EXPR >= EXPR                left EXPR is greater than or equal to right EXPR (number only)
 P36 EXPR < EXPR                 left EXPR is less than right EXPR (number only)
