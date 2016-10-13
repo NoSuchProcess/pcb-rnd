@@ -4231,7 +4231,7 @@ static void dxf_maybe_close_file()
  */
 static void dxf_do_export(HID_Attr_Val * options)
 {
-	char *dxf_fnbase;
+	const char *dxf_fnbase;
 	int i;
 	static int saved_layer_stack[MAX_LAYER];
 	BoxType region;
@@ -4270,15 +4270,16 @@ static void dxf_do_export(HID_Attr_Val * options)
 	 */
 	dxf_xrefs = options[HA_xrefs].int_value;
 	if (dxf_xrefs) {
+		const char *xreff;
 		/*
 		 * determine a file name for the xref file.
 		 */
-		dxf_xref_filename = options[HA_xreffile].str_value;
-		if (!dxf_xref_filename) {
-			strcat(dxf_xref_filename, "pcb-out_xrefs");
-		}
-		i = strlen(dxf_xref_filename);
+		xreff = options[HA_xreffile].str_value;
+		if (xreff == NULL)
+			xreff = "pcb-out_xrefs";
+		i = strlen(xreff);
 		dxf_xref_filename = (char *) realloc(dxf_xref_filename, i + 40);
+		memcpy(dxf_xref_filename, xreff, i+1);
 		strcat(dxf_xref_filename, "_xrefs.dxf");
 		dxf_filesuffix = dxf_xref_filename + strlen(dxf_xref_filename);
 		dxf_export_xref_file();
