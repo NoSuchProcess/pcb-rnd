@@ -192,6 +192,8 @@
 #include "compat_misc.h"
 #include "layer.h"
 #include "hid_attrib.h"
+#include "hid_flags.h"
+#include "hid_helper.h"
 
 #include "hid.h"
 #include "draw.h"
@@ -5033,7 +5035,7 @@ static void dxf_draw_line(hidGC gc,
 													int y2
 													/*!< Y-value end point  */
 	) {
-	bool m;
+	pcb_bool m;
 	double dxf_x0;								/* start point */
 	double dxf_y0;								/* start point */
 	double dxf_x1;								/* end point */
@@ -5045,7 +5047,7 @@ static void dxf_draw_line(hidGC gc,
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_draw_line () function.\n", __FILE__, __LINE__);
 #endif
-	m = false;
+	m = pcb_false;
 	if (!fp) {
 		/* return if no valid file pointer exists */
 		fprintf(stderr, "Warning: no valid file pointer exists.\n");
@@ -5100,7 +5102,7 @@ static void dxf_draw_line(hidGC gc,
 	 * last trace segment was passed.
 	 */
 	if ((dxf_x0 == dxf_lastX) && (dxf_y0 == dxf_lastY)) {
-		m = true;
+		m = pcb_true;
 	}
 	/*
 	 * This is just a dirty hack for AutoCAD doesn't have endcap styles.
@@ -5210,7 +5212,7 @@ static void dxf_draw_line(hidGC gc,
 		dxf_write_endseq(fp);
 	}
 	/* if the end cap style is an OCTAGON: ?? */
-	if (gc->cap == OCTAGON) {
+	if (gc->cap == SHP_OCTAGON) {
 		/*!
 		 * \todo This end cap style has yet to be implemented at the
 		 * start and end point of a trace.
@@ -5221,7 +5223,7 @@ static void dxf_draw_line(hidGC gc,
 	 * if the end cap style is SQUARE: recompute the start and end
 	 * coordinates, that is, elongate the trace with half of the width.
 	 */
-	if (gc->cap == SQUARE) {
+	if (gc->cap == SHP_SQUARE) {
 		double length;							/* trace length */
 		double dxf_x0_1;						/* extended start point */
 		double dxf_y0_1;						/* extended start point */
@@ -5355,7 +5357,7 @@ static void dxf_draw_arc(hidGC gc,
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_draw_arc () function.\n", __FILE__, __LINE__);
 #endif
 #if 0
-	bool m = False;
+	pcb_bool m = pcb_false;
 #endif
 	if (!fp) {
 		/* return if no valid file pointer exists */
@@ -5710,7 +5712,7 @@ static void dxf_fill_polygon(hidGC gc,
 														 int *y
 														 /*!< pointer to array of Y-values of coordinates. */
 	) {
-	bool m;
+	pcb_bool m;
 	int i;
 	double dxf_x0;
 	double dxf_y0;
@@ -5723,7 +5725,7 @@ static void dxf_fill_polygon(hidGC gc,
 	dxf_y0 = 0.0;
 	dxf_color = DXF_COLOR_BYLAYER;
 
-	m = false;
+	m = pcb_false;
 	if (is_mask && current_mask == HID_MASK_BEFORE) {
 		return;
 	}
