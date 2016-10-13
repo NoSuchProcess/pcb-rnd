@@ -507,6 +507,7 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 	FontType *myfont = &PCB->Font;
 	Coord mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
 	Coord defaultStrokeThickness = 100*2540; /* use 100 mil as default 100% stroked font line thickness */
+	int kicadMirrored = 1; /* 1 is not mirrored, 0  is mirrored */ 
 
 	gdl_iterator_t it;
 	LineType *line;
@@ -530,7 +531,7 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 				fputs("$TEXTPCB\nTe \"", FP);
 				fputs(text->TextString,FP);
 				fputs("\"\n", FP);
-				Coord defaultXSize = PCB_SCALE_TEXT(mWidth, text->Scale); /* IIRC kicad treats this as kerned width of lower case m */
+				Coord defaultXSize = 5*PCB_SCALE_TEXT(mWidth, text->Scale)/6; /* IIRC kicad treats this as kerned width of lower case m */
 				Coord defaultYSize = defaultXSize;
 				Coord strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale /2);
 				int rotation = 0;	
@@ -546,33 +547,59 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 				if (halfStringHeight < 0) {
 					halfStringHeight = -halfStringHeight;
 				}
-
-/* 				for (i = 0; text->TextString[i] != 0; i++) {
-					offset += defaultXSize/2;
-				} */
 				if (text->Direction == 3) { /*vertical down*/
-					rotation = 2700;
-					textOffsetY = halfStringHeight;
-					textOffsetX -= halfStringWidth;
+					if (currentLayer == 0 || currentLayer == 20) {  /* back copper or silk */ 
+						rotation = 2700;
+						kicadMirrored = 0; /* mirrored */
+						textOffsetY -= halfStringHeight;
+						textOffsetX -= 2*halfStringWidth; /* was 1*hsw */
+					} else {    /* front copper or silk */
+						rotation = 2700;
+						kicadMirrored = 1; /* not mirrored */
+						textOffsetY = halfStringHeight;
+						textOffsetX -= halfStringWidth;
+					}
 				} else if (text->Direction == 2)  { /*upside down*/
-					rotation = 1800;
+					if (currentLayer == 0 || currentLayer == 20) {  /* back copper or silk */ 
+						rotation = 0;
+						kicadMirrored = 0; /* mirrored */
+						textOffsetY += halfStringHeight;
+					} else {    /* front copper or silk */
+						rotation = 1800;
+						kicadMirrored = 1; /* not mirrored */
+						textOffsetY -= halfStringHeight;
+					}
 					textOffsetX = -halfStringWidth;
-					textOffsetY -= halfStringHeight;
 				} else if (text->Direction == 1) { /*vertical up*/
-					rotation = 900; /* final result in decidegrees, CW +ve */
-					textOffsetY = -halfStringHeight;
-					textOffsetX -= halfStringWidth;
+					if (currentLayer == 0 || currentLayer == 20) {  /* back copper or silk */ 
+						rotation = 900;
+						kicadMirrored = 0; /* mirrored */
+						textOffsetY = halfStringHeight;
+						textOffsetX += halfStringWidth; 
+					} else {    /* front copper or silk */
+						rotation = 900;
+						kicadMirrored = 1; /* not mirrored */
+						textOffsetY = -halfStringHeight;
+						textOffsetX = 0; /* += halfStringWidth; */
+					}
 				} else if (text->Direction == 0)  { /*normal text*/
-					rotation = 0;
+					if (currentLayer == 0 || currentLayer == 20) {  /* back copper or silk */
+						rotation = 1800;
+						kicadMirrored = 0; /* mirrored */
+						textOffsetY -= halfStringHeight;
+					} else {    /* front copper or silk */
+						rotation = 0;
+						kicadMirrored = 1; /* not mirrored */
+						textOffsetY += halfStringHeight;
+					}
 					textOffsetX = halfStringWidth;
-					textOffsetY += halfStringHeight*2;
 				}
-				printf("\"%s\" direction field: %d\n", text->TextString, text->Direction);
-				printf("textOffsetX: %d,  textOffsetY: %d\n", textOffsetX, textOffsetY);
+/*				printf("\"%s\" direction field: %d\n", text->TextString, text->Direction);
+				printf("textOffsetX: %d,  textOffsetY: %d\n", textOffsetX, textOffsetY); */
 				pcb_fprintf(FP, "Po %.0mk %.0mk %.0mk %.0mk %.0mk %d\n",
 										text->X + xOffset + textOffsetX, text->Y + yOffset + textOffsetY,
 										defaultXSize, defaultYSize, strokeThickness, rotation);
-				pcb_fprintf(FP, "De %d 1 B98C Normal\n", currentLayer); /* timestamp made up B98C  */
+				pcb_fprintf(FP, "De %d %d B98C Normal\n", currentLayer, kicadMirrored); /* timestamp made up B98C  */
 				fputs("$EndTEXTPCB\n", FP);
 			}
 			localFlag |= 1;
