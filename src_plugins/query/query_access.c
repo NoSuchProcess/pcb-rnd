@@ -224,27 +224,26 @@ do { \
 static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	LayerType *l = obj->data.layer;
-	const char *s1, *s2;
+	query_fields_keys_t fh1;
 
-	fld2str_req(s1, fld, 0);
-	fld2str_opt(s2, fld, 1);
+	fld2hash_req(fh1, fld, 0);
 
-	if ((s1[0] == 'a') && (s1[1] == '\0'))
+	if (fh1 == query_fields_a) {
+		const char *s2;
+		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&l->Attributes, s2));
+	}
 
-	if (s2 != NULL)
+	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
 
-	if (strcmp(s1, "name") == 0)
-		PCB_QRY_RET_STR(res, l->Name);
-	if (strcmp(s1, "visible") == 0)
-		PCB_QRY_RET_INT(res, l->On);
-
-	if (strcmp(s1, "position") == 0)
-		PCB_QRY_RET_INT(res, pcb_layer_flags(GetLayerNumber(PCB->Data, l)) & PCB_LYT_ANYWHERE);
-
-	if (strcmp(s1, "type") == 0)
-		PCB_QRY_RET_INT(res, pcb_layer_flags(GetLayerNumber(PCB->Data, l)) & PCB_LYT_ANYTHING);
+	switch(fh1) {
+		case query_fields_name:     PCB_QRY_RET_STR(res, l->Name);
+		case query_fields_visible:  PCB_QRY_RET_INT(res, l->On);
+		case query_fields_position: PCB_QRY_RET_INT(res, pcb_layer_flags(GetLayerNumber(PCB->Data, l)) & PCB_LYT_ANYWHERE);
+		case query_fields_type:     PCB_QRY_RET_INT(res, pcb_layer_flags(GetLayerNumber(PCB->Data, l)) & PCB_LYT_ANYTHING);
+		default:;
+	}
 
 	PCB_QRY_RET_INV(res);
 }
@@ -284,30 +283,34 @@ static int layer_of_obj(pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_
 static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	LineType *l = obj->data.line;
-	const char *s1;
+	query_fields_keys_t fh1;
 
-	fld2str_req(s1, fld, 0);
-/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+	fld2hash_req(fh1, fld, 0);
+
+	if (fh1 == query_fields_a) {
+		const char *s2;
 		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&l->Attributes, s2));
-	}*/
-	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		fld = fld->next;
-		fld2str_req(s1, fld, 0);
 	}
 
-	if (strcmp(s1, "x1") == 0)  PCB_QRY_RET_INT(res, l->Point1.X);
-	if (strcmp(s1, "y1") == 0)  PCB_QRY_RET_INT(res, l->Point1.Y);
-	if (strcmp(s1, "x2") == 0)  PCB_QRY_RET_INT(res, l->Point1.X);
-	if (strcmp(s1, "y2") == 0)  PCB_QRY_RET_INT(res, l->Point1.Y);
-	if (strcmp(s1, "thickness") == 0)  PCB_QRY_RET_INT(res, l->Thickness);
-	if (strcmp(s1, "clearance") == 0)  PCB_QRY_RET_INT(res, l->Clearance);
-
-	if (strcmp(s1, "layer") == 0) {
+	if (fh1 == query_fields_layer) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
 			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
 		else
 			PCB_QRY_RET_INV(res);
+	}
+
+	if (fld->next != NULL)
+		PCB_QRY_RET_INV(res);
+
+	switch(fh1) {
+		case query_fields_x1:         PCB_QRY_RET_INT(res, l->Point1.X);
+		case query_fields_y1:         PCB_QRY_RET_INT(res, l->Point1.Y);
+		case query_fields_x2:         PCB_QRY_RET_INT(res, l->Point2.X);
+		case query_fields_y2:         PCB_QRY_RET_INT(res, l->Point2.Y);
+		case query_fields_thickness:  PCB_QRY_RET_INT(res, l->Thickness);
+		case query_fields_clearance:  PCB_QRY_RET_INT(res, l->Clearance);
+		default:;
 	}
 
 	PCB_QRY_RET_INV(res);
@@ -316,34 +319,42 @@ static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	ArcType *a = obj->data.arc;
-	const char *s1, *s2;
+	query_fields_keys_t fh1, fh2;
 
-	fld2str_req(s1, fld, 0);
-/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+	fld2hash_req(fh1, fld, 0);
+
+	if (fh1 == query_fields_a) {
+		const char *s2;
 		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&a->Attributes, s2));
-	}*/
-	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		fld = fld->next;
-		fld2str_req(s1, fld, 0);
 	}
 
-	if (strcmp(s1, "x") == 0)  PCB_QRY_RET_INT(res, a->X);
-	if (strcmp(s1, "y") == 0)  PCB_QRY_RET_INT(res, a->Y);
-	if (strcmp(s1, "thickness") == 0)  PCB_QRY_RET_INT(res, a->Thickness);
-	if (strcmp(s1, "clearance") == 0)  PCB_QRY_RET_INT(res, a->Clearance);
-	if (strcmp(s1, "angle") == 0) {
-		fld2str_req(s2, fld, 1);
-		if (strcmp(s2, "start") == 0)  PCB_QRY_RET_INT(res, a->StartAngle);
-		if (strcmp(s2, "delta") == 0)  PCB_QRY_RET_INT(res, a->Delta);
+	if (fh1 == query_fields_angle) {
+		fld2hash_req(fh2, fld, 1);
+		switch(fh2) {
+			case query_fields_start: PCB_QRY_RET_INT(res, a->StartAngle);
+			case query_fields_delta: PCB_QRY_RET_INT(res, a->Delta);
+			default:;
+		}
 		PCB_QRY_RET_INV(res);
 	}
 
-	if (strcmp(s1, "layer") == 0) {
+	if (fh1 == query_fields_layer) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
 			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
 		else
 			PCB_QRY_RET_INV(res);
+	}
+
+	if (fld->next != NULL)
+		PCB_QRY_RET_INV(res);
+
+	switch(fh1) {
+		case query_fields_x:         PCB_QRY_RET_INT(res, a->X);
+		case query_fields_y:         PCB_QRY_RET_INT(res, a->Y);
+		case query_fields_thickness: PCB_QRY_RET_INT(res, a->Thickness);
+		case query_fields_clearance: PCB_QRY_RET_INT(res, a->Clearance);
+		default:;
 	}
 
 	PCB_QRY_RET_INV(res);
@@ -352,30 +363,33 @@ static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_text(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	TextType *t = obj->data.text;
-	const char *s1;
+	query_fields_keys_t fh1;
 
-	fld2str_req(s1, fld, 0);
-/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+	fld2hash_req(fh1, fld, 0);
+
+	if (fh1 == query_fields_a) {
+		const char *s2;
 		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&t->Attributes, s2));
-	}*/
-	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		fld = fld->next;
-		fld2str_req(s1, fld, 0);
 	}
 
-	if (strcmp(s1, "x") == 0)  PCB_QRY_RET_INT(res, t->X);
-	if (strcmp(s1, "y") == 0)  PCB_QRY_RET_INT(res, t->Y);
-	if (strcmp(s1, "scale") == 0)  PCB_QRY_RET_INT(res, t->Scale);
-	if (strcmp(s1, "rotation") == 0)  PCB_QRY_RET_INT(res, t->Direction);
-	if (strcmp(s1, "string") == 0)  PCB_QRY_RET_STR(res, t->TextString);
-
-
-	if (strcmp(s1, "layer") == 0) {
+	if (fh1 == query_fields_layer) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
 			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
 		else
 			PCB_QRY_RET_INV(res);
+	}
+
+	if (fld->next != NULL)
+		PCB_QRY_RET_INV(res);
+
+	switch(fh1) {
+		case query_fields_x:        PCB_QRY_RET_INT(res, t->X);
+		case query_fields_y:        PCB_QRY_RET_INT(res, t->Y);
+		case query_fields_scale:    PCB_QRY_RET_INT(res, t->Scale);
+		case query_fields_rotation: PCB_QRY_RET_INT(res, t->Direction);
+		case query_fields_string:   PCB_QRY_RET_STR(res, t->TextString);
+		default:;
 	}
 
 	PCB_QRY_RET_INV(res);
@@ -384,24 +398,29 @@ static int field_text(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_polygon(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	PolygonType *p = obj->data.polygon;
-	const char *s1;
+	query_fields_keys_t fh1;
 
-	fld2str_req(s1, fld, 0);
-/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+	fld2hash_req(fh1, fld, 0);
+
+	if (fh1 == query_fields_a) {
+		const char *s2;
 		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
-	}*/
-	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		fld = fld->next;
-		fld2str_req(s1, fld, 0);
 	}
 
-	if (strcmp(s1, "points") == 0)  PCB_QRY_RET_INT(res, p->PointN);
-	if (strcmp(s1, "layer") == 0) {
+	if (fh1 == query_fields_layer) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
 			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
 		else
 			PCB_QRY_RET_INV(res);
+	}
+
+	if (fld->next != NULL)
+		PCB_QRY_RET_INV(res);
+
+	switch(fh1) {
+		case query_fields_points: PCB_QRY_RET_INT(res, p->PointN);
+		default:;
 	}
 
 	PCB_QRY_RET_INV(res);
@@ -420,48 +439,49 @@ static int field_rat(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_via(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	PinType *p = obj->data.via;
-	const char *s1;
-
-	fld2str_req(s1, fld, 0);
-/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
-		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
-	}*/
-	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		fld = fld->next;
-		fld2str_req(s1, fld, 0);
-	}
-
-	if (strcmp(s1, "x") == 0)  PCB_QRY_RET_INT(res, p->X);
-	if (strcmp(s1, "y") == 0)  PCB_QRY_RET_INT(res, p->Y);
-	if (strcmp(s1, "thickness") == 0)  PCB_QRY_RET_INT(res, p->Thickness);
-	if (strcmp(s1, "clearance") == 0)  PCB_QRY_RET_INT(res, p->Clearance);
-	if (strcmp(s1, "hole") == 0)  PCB_QRY_RET_INT(res, p->DrillingHole);
-	if (strcmp(s1, "mask") == 0)  PCB_QRY_RET_INT(res, p->Mask);
-	if (strcmp(s1, "name") == 0)  PCB_QRY_RET_STR(res, p->Name);
-	if (strcmp(s1, "number") == 0)  PCB_QRY_RET_STR(res, p->Number);
-
-	PCB_QRY_RET_INV(res);
-}
-
-
-
-static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
-{
-	ElementType *p = obj->data.element;
-	const char *s1;
 	query_fields_keys_t fh1;
 
-	fld2str_req(s1, fld, 0);
-/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
+	fld2hash_req(fh1, fld, 0);
+
+	if (fh1 == query_fields_a) {
+		const char *s2;
 		fld2str_req(s2, fld, 1);
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
-	}*/
+	}
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
 
+	switch(fh1) {
+		case query_fields_x:         PCB_QRY_RET_INT(res, p->X);
+		case query_fields_y:         PCB_QRY_RET_INT(res, p->Y);
+		case query_fields_thickness: PCB_QRY_RET_INT(res, p->Thickness);
+		case query_fields_clearance: PCB_QRY_RET_INT(res, p->Clearance);
+		case query_fields_hole:      PCB_QRY_RET_INT(res, p->DrillingHole);
+		case query_fields_mask:      PCB_QRY_RET_INT(res, p->Mask);
+		case query_fields_name:      PCB_QRY_RET_STR(res, p->Name);
+		case query_fields_number:    PCB_QRY_RET_STR(res, p->Number);
+		default:;
+	}
+
+	PCB_QRY_RET_INV(res);
+}
+
+static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	ElementType *p = obj->data.element;
+	query_fields_keys_t fh1;
+
 	fld2hash_req(fh1, fld, 0);
+	if (fh1 == query_fields_a) {
+		const char *s2;
+		fld2str_req(s2, fld, 1);
+		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
+	}
+
+	if (fld->next != NULL)
+		PCB_QRY_RET_INV(res);
+
 	switch(fh1) {
 		case query_fields_x:            PCB_QRY_RET_INT(res, p->MarkX);
 		case query_fields_y:            PCB_QRY_RET_INT(res, p->MarkY);
@@ -511,7 +531,7 @@ static int field_net(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 	fld2str_req(s1, fld, 0);
 	fld2str_opt(s2, fld, 1);*/
-
+#warning TODO
 	PCB_QRY_RET_INV(res);
 }
 
@@ -519,19 +539,15 @@ static int field_net(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_eline(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	LineType *l = obj->data.line;
-	const char *s1;
+	query_fields_keys_t fh1;
 
-	fld2str_req(s1, fld, 0);
-	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		fld=fld->next;
-		fld2str_req(s1, fld, 0);
+	fld2hash_req(fh1, fld, 0);
+
+	switch(fh1) {
+		case query_fields_layer:   return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, l) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
+		case query_fields_element: return field_element_obj(obj, fld->next, res);
+		default:;
 	}
-
-	if (strcmp(s1, "layer") == 0)
-		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, l) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
-
-	if (strcmp(s1, "element") == 0)
-		return field_element_obj(obj, fld->next, res);
 
 	return field_line(obj, fld, res);
 }
@@ -539,19 +555,15 @@ static int field_eline(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_earc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	ArcType *a = obj->data.arc;
-	const char *s1;
+	query_fields_keys_t fh1;
 
-	fld2str_req(s1, fld, 0);
-	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		fld=fld->next;
-		fld2str_req(s1, fld, 0);
+	fld2hash_req(fh1, fld, 0);
+
+	switch(fh1) {
+		case query_fields_layer:   return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, a) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
+		case query_fields_element: return field_element_obj(obj, fld->next, res);
+		default:;
 	}
-
-	if (strcmp(s1, "layer") == 0)
-		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, a) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
-
-	if (strcmp(s1, "element") == 0)
-		return field_element_obj(obj, fld->next, res);
 
 	return field_arc(obj, fld, res);
 }
@@ -559,35 +571,29 @@ static int field_earc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_etext(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	TextType *t = obj->data.text;
-	const char *s1;
+	query_fields_keys_t fh1;
 
-	fld2str_req(s1, fld, 0);
-	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		fld=fld->next;
-		fld2str_req(s1, fld, 0);
+	fld2hash_req(fh1, fld, 0);
+
+	switch(fh1) {
+		case query_fields_layer:   return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, t) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
+		case query_fields_element: return field_element_obj(obj, fld->next, res);
+		default:;
 	}
-
-	if (strcmp(s1, "layer") == 0)
-		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, t) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
-
-	if (strcmp(s1, "element") == 0)
-		return field_element_obj(obj, fld->next, res);
 
 	return field_text(obj, fld, res);
 }
 
 static int field_pin(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	const char *s1;
+	query_fields_keys_t fh1;
 
-	fld2str_req(s1, fld, 0);
-	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		fld=fld->next;
-		fld2str_req(s1, fld, 0);
+	fld2hash_req(fh1, fld, 0);
+
+	switch(fh1) {
+		case query_fields_element: return field_element_obj(obj, fld->next, res);
+		default:;
 	}
-
-	if (strcmp(s1, "element") == 0)
-		return field_element_obj(obj, fld->next, res);
 
 	return field_via(obj, fld, res);
 }
@@ -595,32 +601,38 @@ static int field_pin(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 static int field_pad(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	PadType *p = obj->data.pad;
-	const char *s1;
+	query_fields_keys_t fh1;
 
-	fld2str_req(s1, fld, 0);
-/*	if ((s1[0] == 'a') && (s1[1] == '\0')) {
-		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
-	}*/
-	if ((s1[0] == 'p') && (s1[1] == '\0')) {
-		fld = fld->next;
-		fld2str_req(s1, fld, 0);
+	fld2hash_req(fh1, fld, 0);
+
+	switch(fh1) {
+		case query_fields_a:
+			{
+				const char *s2;
+				fld2str_req(s2, fld, 1);
+				PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
+			}
+		case query_fields_layer:   return layer_of_obj(fld->next, res, PCB_LYT_COPPER | (TEST_FLAG(PCB_FLAG_ONSOLDER, p) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
+		case query_fields_element: return field_element_obj(obj, fld->next, res);
+		default:;
 	}
 
-	if (strcmp(s1, "x1") == 0)  PCB_QRY_RET_INT(res, p->Point1.X);
-	if (strcmp(s1, "y1") == 0)  PCB_QRY_RET_INT(res, p->Point1.Y);
-	if (strcmp(s1, "x2") == 0)  PCB_QRY_RET_INT(res, p->Point1.X);
-	if (strcmp(s1, "y2") == 0)  PCB_QRY_RET_INT(res, p->Point1.Y);
-	if (strcmp(s1, "thickness") == 0)  PCB_QRY_RET_INT(res, p->Thickness);
-	if (strcmp(s1, "clearance") == 0)  PCB_QRY_RET_INT(res, p->Clearance);
-	if (strcmp(s1, "mask") == 0)  PCB_QRY_RET_INT(res, p->Mask);
-	if (strcmp(s1, "name") == 0)  PCB_QRY_RET_STR(res, p->Name);
-	if (strcmp(s1, "number") == 0)  PCB_QRY_RET_STR(res, p->Number);
-	if (strcmp(s1, "layer") == 0)
-		return layer_of_obj(fld->next, res, PCB_LYT_COPPER | (TEST_FLAG(PCB_FLAG_ONSOLDER, p) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
 
-	if (strcmp(s1, "element") == 0)
-		return field_element_obj(obj, fld->next, res);
+	if (fld->next != NULL)
+		PCB_QRY_RET_INV(res);
+
+	switch(fh1) {
+		case query_fields_x1:        PCB_QRY_RET_INT(res, p->Point1.X);
+		case query_fields_y1:        PCB_QRY_RET_INT(res, p->Point1.Y);
+		case query_fields_x2:        PCB_QRY_RET_INT(res, p->Point2.X);
+		case query_fields_y2:        PCB_QRY_RET_INT(res, p->Point2.Y);
+		case query_fields_thickness: PCB_QRY_RET_INT(res, p->Thickness);
+		case query_fields_clearance: PCB_QRY_RET_INT(res, p->Clearance);
+		case query_fields_mask:      PCB_QRY_RET_INT(res, p->Mask);
+		case query_fields_name:      PCB_QRY_RET_STR(res, p->Name);
+		case query_fields_number:    PCB_QRY_RET_STR(res, p->Number);
+		default:;
+	}
 
 	PCB_QRY_RET_INV(res);
 }
