@@ -7,6 +7,7 @@ put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/query/query_l.o
  $(PLUGDIR)/query/query_y.o
  $(PLUGDIR)/query/basic_fnc.o
+ $(PLUGDIR)/query/fields_sphash.o
 @]
 put /local/pcb/mod/YACC {$(PLUGDIR)/query/query_y}
 put /local/pcb/mod/LEX  {$(PLUGDIR)/query/query_l}

@@ -1607,13 +1607,13 @@ yyreduce:
 
   case 38:
 #line 197 "query_y.y" /* yacc.c:1646  */
-    { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = (yyvsp[0].s); }
+    { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = (yyvsp[0].s); (yyval.n)->precomp.fld = query_fields_sphash((yyvsp[0].s)); }
 #line 1612 "query_y.c" /* yacc.c:1646  */
     break;
 
   case 39:
 #line 198 "query_y.y" /* yacc.c:1646  */
-    { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = (yyvsp[-2].s); (yyval.n)->next = (yyvsp[0].n); }
+    { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = (yyvsp[-2].s); (yyval.n)->precomp.fld = query_fields_sphash((yyvsp[-2].s)); (yyval.n)->next = (yyvsp[0].n); }
 #line 1618 "query_y.c" /* yacc.c:1646  */
     break;
 

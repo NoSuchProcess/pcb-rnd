@@ -94,9 +94,9 @@ typedef enum {
 
 struct pcb_qry_node_s {
 	pcb_qry_nodetype_t type;
-	pcb_qry_node_t *next;       /* sibling on this level of the tree (or NULL) */
+	pcb_qry_node_t *next;         /* sibling on this level of the tree (or NULL) */
 	pcb_qry_node_t *parent;
-	union {
+	union {                       /* field selection depends on ->type */
 		Coord crd;
 		double dbl;
 		const char *str;
@@ -104,7 +104,10 @@ struct pcb_qry_node_s {
 		pcb_qry_node_t *children;   /* first child (NULL for a leaf node) */
 		pcb_qry_fnc_t fnc;
 	} data;
-	pcb_qry_val_t result;
+	union {                       /* field selection depends on ->type */
+		query_fields_keys_t fld;    /* field_sphash value from str */
+		pcb_qry_val_t result;       /* of pure functions and subtrees */
+	} precomp;
 };
 
 
