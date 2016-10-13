@@ -222,12 +222,12 @@ typedef struct _DxfList {
 
 
 #define NOSHAPE 0
-#define ROUND 1									/* shaped like a circle */
-#define OCTAGON 2								/* shape like an octagon */
-#define SQUARE 3								/* shaped like a square */
-#define ROUNDCLEAR 4						/* round clearance in negatives */
-#define SQUARECLEAR 5						/* square clearance in negatives */
-#define THERMAL 6								/* negative thermal relief */
+#define SHP_ROUND 1									/* shaped like a circle */
+#define SHP_OCTAGON 2								/* shape like an octagon */
+#define SHP_SQUARE 3								/* shaped like a square */
+#define SHP_ROUNDCLEAR 4						/* round clearance in negatives */
+#define SHP_SQUARECLEAR 5						/* square clearance in negatives */
+#define SHP_THERMAL 6								/* negative thermal relief */
 
 
 /*
@@ -4777,11 +4777,11 @@ static void dxf_use_gc(hidGC gc, int radius) {
 		switch (gc->cap) {
 		case Round_Cap:
 		case Trace_Cap:
-			c = ROUND;
+			c = SHP_ROUND;
 			break;
 		default:
 		case Square_Cap:
-			c = SQUARE;
+			c = SHP_SQUARE;
 			break;
 		}
 		if (fp) {
@@ -4995,9 +4995,9 @@ static void dxf_draw_rect(hidGC gc,
  * X,Y,Z-coordinates.\n
  * Add layer, linetype, color and width values.\n
  * Write a series of polylines and vertices by calling low level functions.\n
- * If the endcap style is ROUND add a donut at the begin and end coordinates
+ * If the endcap style is SHP_ROUND add a donut at the begin and end coordinates
  * of the line segment.\n
- * If the endcap style is SQUARE elongate the line segment with half its
+ * If the endcap style is SHP_SQUARE elongate the line segment with half its
  * width.\n
  * Remarks:\n
  * <ul>
@@ -5108,7 +5108,7 @@ static void dxf_draw_line(hidGC gc,
 	 * Donuts can not be implementend in the trace polyline since donuts
 	 * are a closed polyline themselves.
 	 */
-	if (gc->cap == ROUND) {
+	if (gc->cap == SHP_ROUND) {
 		/* place a donut at the start of the trace segment */
 		dxf_write_polyline(fp, dxf_id_code, DXF_DEFAULT_LINETYPE,	/* linetype, */
 											 DXF_DEFAULT_LAYER,	/* layer, */
@@ -5215,7 +5215,7 @@ static void dxf_draw_line(hidGC gc,
 		/*!
 		 * \todo This end cap style has yet to be implemented at the
 		 * start and end point of a trace.
-		 * Note: done for ROUND and SQUARE.
+		 * Note: done for SHP_ROUND and SQUARE.
 		 */
 	}
 	/*
@@ -5471,7 +5471,7 @@ static void dxf_draw_arc(hidGC gc,
 	 * Donuts can not be implemented in the trace polyline since donuts
 	 * are a closed polyline themselves.
 	 */
-	if (gc->cap == ROUND) {
+	if (gc->cap == SHP_ROUND) {
 		/* place a donut at the start of the trace segment */
 		dxf_write_polyline(fp, dxf_id_code, DXF_DEFAULT_LINETYPE,	/* linetype, */
 											 DXF_DEFAULT_LAYER,	/* layer, */
