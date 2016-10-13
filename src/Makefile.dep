@@ -1822,7 +1822,8 @@
  ../src_3rd/liblihata/genht/hash.h data.h global.h \
  ../src_plugins/query/query_access.h ../src_plugins/query/query.h \
  obj_any.h ../src_3rd/liblihata/genht/htsi.h \
- ../src_3rd/liblihata/genht/ht.h ../src_plugins/query/query_exec.h
+ ../src_3rd/liblihata/genht/ht.h ../src_plugins/query/fields_sphash.h \
+ ../src_plugins/query/query_exec.h
 ../src_plugins/query/query.o: ../src_plugins/query/query.c ../config.h \
  global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
@@ -1840,7 +1841,8 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h data.h action_helper.h \
  change.h error.h undo.h plugins.h hid_init.h hid_actions.h compat_misc.h \
- ../src_plugins/query/query.h obj_any.h fptr_cast.h
+ ../src_plugins/query/query.h obj_any.h \
+ ../src_plugins/query/fields_sphash.h fptr_cast.h
 ../src_plugins/query/query_access.o: ../src_plugins/query/query_access.c \
  global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
@@ -1854,8 +1856,9 @@
  ../src_3rd/liblihata/genht/hash.h data.h global.h \
  ../src_plugins/query/query_access.h ../src_plugins/query/query.h \
  obj_any.h ../src_3rd/liblihata/genht/htsi.h \
- ../src_3rd/liblihata/genht/ht.h ../src_plugins/query/query_exec.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h layer.h
+ ../src_3rd/liblihata/genht/ht.h ../src_plugins/query/fields_sphash.h \
+ ../src_plugins/query/query_exec.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h layer.h
 ../src_plugins/query/query_act.o: ../src_plugins/query/query_act.c \
  global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
@@ -1868,8 +1871,8 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h ../src_plugins/query/query.h obj_any.h \
  ../src_3rd/liblihata/genht/htsi.h ../src_3rd/liblihata/genht/ht.h \
- ../src_plugins/query/query_y.h ../src_plugins/query/query_exec.h set.h \
- global.h draw.h dolists.h
+ ../src_plugins/query/fields_sphash.h ../src_plugins/query/query_y.h \
+ ../src_plugins/query/query_exec.h set.h global.h draw.h dolists.h
 ../src_plugins/query/query_exec.o: ../src_plugins/query/query_exec.c \
  global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
@@ -1882,8 +1885,8 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h global.h \
  ../src_plugins/query/query.h obj_any.h ../src_3rd/liblihata/genht/htsi.h \
- ../src_3rd/liblihata/genht/ht.h ../src_plugins/query/query_exec.h \
- ../src_plugins/query/query_access.h
+ ../src_3rd/liblihata/genht/ht.h ../src_plugins/query/fields_sphash.h \
+ ../src_plugins/query/query_exec.h ../src_plugins/query/query_access.h
 ../src_plugins/query/query_l.o: ../src_plugins/query/query_l.c global.h \
  ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
@@ -1896,8 +1899,8 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h unit.h ../src_plugins/query/query.h \
  obj_any.h ../src_3rd/liblihata/genht/htsi.h \
- ../src_3rd/liblihata/genht/ht.h ../src_plugins/query/query_y.h \
- compat_misc.h
+ ../src_3rd/liblihata/genht/ht.h ../src_plugins/query/fields_sphash.h \
+ ../src_plugins/query/query_y.h compat_misc.h
 ../src_plugins/query/query_y.o: ../src_plugins/query/query_y.c global.h \
  ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
@@ -1910,8 +1913,8 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h unit.h ../src_plugins/query/query.h \
  obj_any.h ../src_3rd/liblihata/genht/htsi.h \
- ../src_3rd/liblihata/genht/ht.h ../src_plugins/query/query_l.h \
- compat_misc.h
+ ../src_3rd/liblihata/genht/ht.h ../src_plugins/query/fields_sphash.h \
+ ../src_plugins/query/query_l.h compat_misc.h
 ../src_plugins/renumber/renumber.o: ../src_plugins/renumber/renumber.c \
  ../config.h global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \

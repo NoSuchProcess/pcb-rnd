@@ -1,3 +1,4 @@
+4010	configure	sphash available for all plugins (needed by query first)
 4002	configure	auto-enable the query plugin
 3926	configure	advanced search in gtk, imported 10 old plugins
 3841	configure	link string->int hash table (for the query language)

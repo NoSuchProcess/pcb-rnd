@@ -10,6 +10,8 @@ put /local/pcb/mod/OBJS [@
 @]
 put /local/pcb/mod/YACC {$(PLUGDIR)/query/query_y}
 put /local/pcb/mod/LEX  {$(PLUGDIR)/query/query_l}
+put /local/pcb/mod/SPHASH  {$(PLUGDIR)/query/fields.sphash}
+
 
 switch /local/pcb/query/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

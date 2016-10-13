@@ -28,6 +28,7 @@
 #include "query_exec.h"
 #include "misc.h"
 #include "layer.h"
+#include "fields_sphash.h"
 
 #define APPEND(_ctx_, _type_, _obj_, _parenttype_, _parent_) \
 do { \

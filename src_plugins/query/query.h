@@ -25,6 +25,7 @@
 
 #include "obj_any.h"
 #include <genht/htsi.h>
+#include "fields_sphash.h"
 
 typedef struct pcb_qry_val_s pcb_qry_val_t;
 typedef struct pcb_query_iter_s  pcb_query_iter_t;

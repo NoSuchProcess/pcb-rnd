@@ -29,6 +29,7 @@
 #include "query.h"
 #include "query_l.h"
 #include "compat_misc.h"
+#include "fields_sphash.h"
 
 #define UNIT_CONV(dst, negative, val, unit) \
 do { \

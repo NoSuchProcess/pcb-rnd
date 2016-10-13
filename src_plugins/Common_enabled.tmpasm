@@ -72,6 +72,24 @@ switch /local/pcb/mod/CONF
 		end
 end
 
+# explicit rules: .sphash -> .c
+switch ?/local/pcb/mod/SPHASH
+	case {^$} end
+	default
+		foreach /local/n in /local/pcb/mod/SPHASH
+			put /local/bn /local/n
+			sub {/local/bn} {.[^.]*$} {}
+			put /local/pr /local/bn
+			sub {/local/pr} {^.*/} {}
+			append /local/pcb/RULES [@
+# sphash for @/local/pcb/mod@
+@/local/bn@_sphash.c @/local/bn@_sphash.h: $(SPHASH) @/local/n@
+	$(SPHASH) --prefix @/local/pcb/mod@_@/local/pr@ --out @/local/bn@_sphash < @/local/n@
+@]
+		end
+	end
+end
+
 put /local/pcb/mod/OBJS {}
 put /local/pcb/mod/OBJS_C99 {}
 put /local/pcb/mod/CONF {}
@@ -79,5 +97,6 @@ put /local/pcb/mod/LDFLAGS {}
 put /local/pcb/mod/CFLAGS {}
 put /local/pcb/mod/YACC {}
 put /local/pcb/mod/LEX {}
+put /local/pcb/mod/SPHASH {}
 put /local/pcb/mod {}
 

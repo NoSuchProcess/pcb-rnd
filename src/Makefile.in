@@ -224,6 +224,8 @@ CLEANFILES=@/local/pcb/CLEANFILES@
 CLEANRULES=@/local/pcb/CLEANRULES@
 CC=@cc/cc@
 CQUOTE=../scconfig/cquote
+SPHASH_PATH=../src_3rd/sphash
+SPHASH=$(SPHASH_PATH)/sphash
 
 all:
 	make revcheck
@@ -238,6 +240,10 @@ all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
 pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS)
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LDFLAGS) $(LIBS)
+
+
+$(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c
+	$(CC) -o pcb-rnd$(EXE) $(SPHASH_PATH)/sphash.c -o $(SPHASH_PATH)/sphash
 @]
 
 print [@
