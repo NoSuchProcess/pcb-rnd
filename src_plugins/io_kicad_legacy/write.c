@@ -179,6 +179,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	/* module description stuff would go here */
 
+	write_kicad_legacy_layout_element(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
 	int currentKicadLayer = 0;
@@ -611,7 +612,7 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 }
 
 /* ---------------------------------------------------------------------------
- * writes element data in kicad legacy format
+ * writes element data in kicad legacy format for use in a .mod library
  */
 int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 {
@@ -790,6 +791,196 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 										arc->Thickness); /* stroke thickness */
 			}
 			fputs("21\n",FP); /* and now append a suitable Kicad layer, front silk = 21 */
+		}
+
+		fprintf(FP, "$EndMODULE %s\n", currentElementName);
+	}
+	/* Release unique name utility memory */
+	unm_uninit(&group1);
+	/* free the state used for deduplication */
+	elementlist_dedup_free(ededup);
+
+	return 0;
+}
+
+/* ---------------------------------------------------------------------------
+ * writes element data in kicad legacy format for use in a layout .brd file
+ */
+int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset, Coord yOffset)
+{
+
+	gdl_iterator_t eit;
+	LineType *line;
+	ArcType *arc;
+	ElementType *element;
+	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
+	const char * currentElementName;
+
+	int silkLayer = 21;  /* hard coded for now, TODO: sort out bottom layer handling */ 
+	int copperLayer = 15;
+
+	elementlist_dedup_initializer(ededup);
+	/* Now initialize the group with defaults */
+	unm_init(&group1);
+
+	elementlist_foreach(&Data->Element, &eit, element) {
+		gdl_iterator_t it;
+		PinType *pin;
+		PadType *pad;
+
+		elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
+
+		/* TOOD: Footprint name element->Name[0].TextString */
+
+		/* only non empty elements */
+		if (!linelist_length(&element->Line) && !pinlist_length(&element->Pin) && !arclist_length(&element->Arc) && !padlist_length(&element->Pad))
+			continue;
+		/* the coordinates and text-flags are the same for
+		 * both names of an element
+		 */
+		/* the following element summary is not used
+			 in kicad; the module's header contains this
+			 information
+
+			 fprintf(FP, "\nDS %s ", F2S(element, PCB_TYPE_ELEMENT));
+			 PrintQuotedString(FP, (char *) EMPTY(DESCRIPTION_NAME(element)));
+			 fputc(' ', FP);
+			 PrintQuotedString(FP, (char *) EMPTY(NAMEONPCB_NAME(element)));
+			 fputc(' ', FP);
+			 PrintQuotedString(FP, (char *) EMPTY(VALUE_NAME(element)));
+			 pcb_fprintf(FP, " %mm %mm %mm %mm %d %d %s]\n(\n",
+			 element->MarkX, element->MarkY,
+			 DESCRIPTION_TEXT(element).X - element->MarkX,
+			 DESCRIPTION_TEXT(element).Y - element->MarkY,
+			 DESCRIPTION_TEXT(element).Direction,
+			 DESCRIPTION_TEXT(element).Scale, F2S(&(DESCRIPTION_TEXT(element)), PCB_TYPE_ELEMENT_NAME));
+
+		*/
+
+		/*		//WriteAttributeList(FP, &element->Attributes, "\t");
+		 */
+
+		Coord xPos = element->MarkX + xOffset;
+		Coord yPos = element->MarkY + yOffset;
+
+		currentElementName = unm_name(&group1, element->Name[0].TextString, element);
+		fprintf(FP, "$MODULE %s\n", currentElementName);
+		pcb_fprintf(FP, "Po %mk %mk 0 %d 51534DFF 00000000 ~~\n", xPos, yPos, copperLayer);
+		fprintf(FP, "Li %s\n", currentElementName);
+		fprintf(FP, "Cd %s\n", currentElementName);
+		fputs("Sc 0\n",FP);
+		fputs("AR\n",FP);
+		fputs("Op 0 0 0\n",FP);
+		fprintf(FP, "T0 0 -4000 600 600 0 120 N V %d N \"REF\"\n", silkLayer);
+		fprintf(FP, "T1 0 -5000 600 600 0 120 N V %d N \"VAL\"\n", silkLayer);
+		pinlist_foreach(&element->Pin, &it, pin) {
+			fputs("$PAD\n",FP);	 /* start pad descriptor for a pin */
+
+			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
+									pin->X - element->MarkX,
+									pin->Y - element->MarkY);
+
+			fputs("Sh ",FP); /* pin shape descriptor */
+			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
+			fputs(" C ",FP); /* circular */
+			pcb_fprintf(FP, "%.3mm %.3mm ", pin->Thickness, pin->Thickness); /* height = width */
+			fputs("0 0 0\n",FP); /* deltaX deltaY Orientation as float in decidegrees */
+
+			fputs("Dr ",FP); /* drill details; size and x,y pos relative to pad location */
+			pcb_fprintf(FP, "%mm 0 0\n", pin->DrillingHole);
+
+			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
+
+			fputs("Ne 0 \"\"\n",FP); /* library parts have empty net descriptors */
+			/*
+				PrintQuotedString(FP, (char *) EMPTY(pin->Name));
+				fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
+			*/
+			fputs("$EndPAD\n",FP);
+		}
+		pinlist_foreach(&element->Pad, &it, pad) {
+			fputs("$PAD\n",FP);	 /* start pad descriptor for an smd pad */
+
+			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
+									(pad->Point1.X + pad->Point2.X)/2- element->MarkX,
+									(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
+
+			fputs("Sh ",FP); /* pin shape descriptor */
+			PrintQuotedString(FP, (char *) EMPTY(pad->Number));
+			fputs(" R ",FP); /* rectangular, not a pin */
+
+			if ((pad->Point1.X-pad->Point2.X) <= 0
+					&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
+				pcb_fprintf(FP, "%.3mm %.3mm ",
+										pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
+										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
+			} else if ((pad->Point1.X-pad->Point2.X) <= 0
+								 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
+				pcb_fprintf(FP, "%.3mm %.3mm ",
+										pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
+										pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
+			} else if ((pad->Point1.X-pad->Point2.X) > 0
+								 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
+				pcb_fprintf(FP, "%.3mm %.3mm ",
+										pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
+										pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
+			} else if ((pad->Point1.X-pad->Point2.X) > 0
+								 && (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
+				pcb_fprintf(FP, "%.3mm %.3mm ",
+										pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
+										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
+			}
+
+			fputs("0 0 0\n",FP); /* deltaX deltaY Orientation as float in decidegrees */
+
+			fputs("Dr 0 0 0\n",FP); /* drill details; zero size; x,y pos vs pad location */
+
+			fputs("At SMD N 00888000\n", FP); /* SMD pin, need to use right layer mask */
+
+			fputs("Ne 0 \"\"\n",FP); /* library parts have empty net descriptors */
+			fputs("$EndPAD\n",FP);
+
+		}
+		linelist_foreach(&element->Line, &it, line) {
+			pcb_fprintf(FP, "DS %.3mm %.3mm %.3mm %.3mm %.3mm ",
+									line->Point1.X - element->MarkX,
+									line->Point1.Y - element->MarkY,
+									line->Point2.X - element->MarkX,
+									line->Point2.Y - element->MarkY,
+									line->Thickness);
+			fprintf(FP, "%d\n", silkLayer); /* an arbitrary Kicad layer, front silk, need to refine this */
+		}
+
+		linelist_foreach(&element->Arc, &it, arc) {
+			if ((arc->Delta == 360) || (arc->Delta == -360)) { /* it's a circle */
+				pcb_fprintf(FP, "DC %.3mm %.3mm %.3mm %.3mm %.3mm ",
+										arc->X - element->MarkX, /* x_1 centre */
+										arc->Y - element->MarkY, /* y_2 centre */
+										(arc->X - element->MarkX + arc->Thickness/2), /* x_2 on circle */
+										arc->Y - element->MarkY,									/* y_2 on circle */
+										arc->Thickness); /* stroke thickness */
+			} else {
+				/*
+				   as far as can be determined from the Kicad documentation,
+				   http://en.wikibooks.org/wiki/Kicad/file_formats#Drawings
+
+				   the origin for rotation is the positive x direction, and going CW
+
+				   whereas in gEDA, the gEDA origin for rotation is the negative x axis,
+				   with rotation CCW, so we need to reverse delta angle
+
+				   deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in gEDA
+				   NB it is in degrees in the newer s-file kicad module/footprint format
+				*/
+				pcb_fprintf(FP, "DA %.3mm %.3mm %.3mm %.3mm %.3ma %.3mm ",
+										arc->X - element->MarkX, /* x_1 centre */
+										arc->Y - element->MarkY, /* y_2 centre */
+										arc->X - element->MarkX + (arc->Thickness/2)*cos(M_PI*(arc->StartAngle+180)/360), /* x_2 on circle */
+										arc->Y - element->MarkY + (arc->Thickness/2)*sin(M_PI*(arc->StartAngle+180)/360), /* y_2 on circle */
+										-arc->Delta*10,		/* CW delta angle in decidegrees */
+										arc->Thickness); /* stroke thickness */
+			}
+			fprintf(FP, "%d\n", silkLayer); /* and now append a suitable Kicad layer, front silk = 21, back silk 20 */
 		}
 
 		fprintf(FP, "$EndMODULE %s\n", currentElementName);
