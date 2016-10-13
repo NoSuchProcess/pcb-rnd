@@ -828,7 +828,8 @@ int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset
 		PinType *pin;
 		PadType *pad;
 
-		elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
+		/* elementlist_dedup_skip(ededup, element);  */
+		/* let's not skip duplicate elements for layout export*/
 
 		/* TOOD: Footprint name element->Name[0].TextString */
 
