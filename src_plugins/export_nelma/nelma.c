@@ -235,26 +235,6 @@ static char *nelma_get_png_name(const char *basename, const char *suffix)
 	return buf;
 }
 
-/* Retrieves coordinates (in default PCB units) of a pin or pad. */
-/* Copied from netlist.c */
-static int pin_name_to_xy(LibraryEntryType * pin, Coord * x, Coord * y)
-{
-	ConnectionType conn;
-	if (!SeekPad(pin, &conn, pcb_false))
-		return 1;
-	switch (conn.type) {
-	case PCB_TYPE_PIN:
-		*x = ((PinType *) (conn.ptr2))->X;
-		*y = ((PinType *) (conn.ptr2))->Y;
-		return 0;
-	case PCB_TYPE_PAD:
-		*x = ((PadType *) (conn.ptr2))->Point1.X;
-		*y = ((PadType *) (conn.ptr2))->Point1.Y;
-		return 0;
-	}
-	return 1;
-}
-
 /* *** Exporting netlist data and geometry to the nelma config file ******** */
 
 static void nelma_write_space(FILE * out)
@@ -341,7 +321,7 @@ static void nelma_write_nets(FILE * out)
 		for (m = 0; m < net->EntryN; m++) {
 			pin = &net->Entry[m];
 
-			/* pin_name_to_xy(pin, &x, &y); */
+			/* pcb_pin_name_to_xy(pin, &x, &y); */
 
 			for (i = 0; i < MAX_LAYER; i++)
 				if (nelma_export_group[i]) {
@@ -443,7 +423,7 @@ static void nelma_write_object(FILE * out, LibraryEntryTypePtr pin)
 	char *f;
 	const char *ext;
 
-	pin_name_to_xy(pin, &px, &py);
+	pcb_pin_name_to_xy(pin, &px, &py);
 
 	x = pcb_to_nelma(px);
 	y = pcb_to_nelma(py);
