@@ -44,5 +44,5 @@ void pcb_netlist_style(LibraryMenuType *net, const char *style);
 LibraryMenuTypePtr pcb_netlist_find_net4pinname(PCBTypePtr pcb, const char *pinname);
 
 /* Same as pcb_netlist_find_net4pinname but with pin pointer */
-LibraryMenuTypePtr pcb_netlist_find_net4pin(PCBTypePtr pcb, PinType *pin);
-LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, PadType *pad);
+LibraryMenuTypePtr pcb_netlist_find_net4pin(PCBTypePtr pcb, const PinType *pin);
+LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, const PadType *pad);

@@ -227,9 +227,9 @@ static LibraryMenuTypePtr pcb_netlist_find_net4pin_any(PCBTypePtr pcb, const cha
 	return pcb_netlist_find_net4pinname(pcb, pinname);
 }
 
-LibraryMenuTypePtr pcb_netlist_find_net4pin(PCBTypePtr pcb, PinType *pin)
+LibraryMenuTypePtr pcb_netlist_find_net4pin(PCBTypePtr pcb, const PinType *pin)
 {
-	ElementType *e = pin->Element;
+	const ElementType *e = pin->Element;
 
 	if (e == NULL)
 		return NULL;
@@ -238,9 +238,9 @@ LibraryMenuTypePtr pcb_netlist_find_net4pin(PCBTypePtr pcb, PinType *pin)
 }
 
 
-LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, PadType *pad)
+LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, const PadType *pad)
 {
-	ElementType *e = pad->Element;
+	const ElementType *e = pad->Element;
 
 	if (e == NULL)
 		return NULL;
