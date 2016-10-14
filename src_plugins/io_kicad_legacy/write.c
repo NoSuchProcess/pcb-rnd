@@ -814,7 +814,7 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 	gdl_iterator_t eit;
 	LineType *line;
 	ArcType *arc;
-	Coord arcStartX, arcStartY, arcEndX, arcEndY, arcThickness; /* for arc rendering */
+	Coord arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
 
 	ElementType *element;
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
@@ -947,7 +947,13 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 
 			fputs("At SMD N 00888000\n", FP); /* SMD pin, need to use right layer mask */
 
-			fputs("Ne 0 \"\"\n",FP); /* library parts have empty net descriptors */
+			LibraryMenuTypePtr current_pad_menu = pcb_netlist_find_net4pad(Layout, pad);
+			if (current_pad_menu != NULL) {
+				fprintf(FP, "Ne 0 \"%s\"\n", pcb_netlist_name(current_pad_menu)); /* library parts have empty net descriptors, in a .brd they don't */
+			} else {
+				fprintf(FP, "Ne 0 \"\"\n"); /* library parts have empty net descriptors, in a .brd they don't */
+			} 
+
 			fputs("$EndPAD\n",FP);
 
 		}
@@ -969,21 +975,13 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 			arcEndX = boxResult->X2; 
 			arcEndY = boxResult->Y2; 
 
-/*
-		arc->X - element->MarkX + (arc->Thickness/2)*cos(M_PI*(arc->StartAngle+180)/360), 
-		arc->Y - element->MarkY + (arc->Thickness/2)*sin(M_PI*(arc->StartAngle+180)/360), 
-		Coord xPos = element->MarkX + xOffset;
-		Coord yPos = element->MarkY + yOffset;
-*/
-
-			arcThickness = arc->Thickness;
 			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
 				pcb_fprintf(FP, "DC %.0mk %.0mk %.0mk %.0mk %.0mk ",
 										arc->X - element->MarkX, /* x_1 centre */
 										arc->Y - element->MarkY, /* y_2 centre */
 										arcStartX - element->MarkX, /* x on circle */
 										arcStartY - element->MarkY, /* y on circle */
-										arcThickness); /* stroke thickness */
+										arc->Thickness); /* stroke thickness */
 			} else {
 				pcb_fprintf(FP, "DA %.0mk %.0mk %.0mk %.0mk %mA ",
 										arc->X - element->MarkX, /* x_1 centre */
@@ -991,7 +989,7 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 										arcEndX - element->MarkX, /* x on arc */
 										arcEndY - element->MarkY, /* y on arc */
 										arc->Delta);		/* CW delta angle in decidegrees */
-				pcb_fprintf(FP, "%.0mk ", arcThickness); /* stroke thickness */
+				pcb_fprintf(FP, "%.0mk ", arc->Thickness); /* stroke thickness */
 			}
 			fprintf(FP, "%d\n", silkLayer); /* and now append a suitable Kicad layer, front silk = 21, back silk 20 */
 		}
