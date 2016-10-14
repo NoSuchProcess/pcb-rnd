@@ -105,7 +105,7 @@ LibraryMenuTypePtr pcb_netname_to_netname(const char *netname)
 }
 
 #warning do not use int here
-int pcb_pin_name_to_xy(LibraryEntryType * pin, int *x, int *y)
+int pcb_pin_name_to_xy(LibraryEntryType * pin, Coord *x, Coord *y)
 {
 	ConnectionType conn;
 	if (!SeekPad(pin, &conn, pcb_false))
@@ -125,7 +125,7 @@ int pcb_pin_name_to_xy(LibraryEntryType * pin, int *x, int *y)
 
 void pcb_netlist_find(LibraryMenuType * net, LibraryEntryType * pin)
 {
-	int x, y;
+	Coord x, y;
 	if (pcb_pin_name_to_xy(net->Entry, &x, &y))
 		return;
 	LookupConnection(x, y, 1, 1, PCB_FLAG_FOUND);
@@ -133,7 +133,7 @@ void pcb_netlist_find(LibraryMenuType * net, LibraryEntryType * pin)
 
 void pcb_netlist_select(LibraryMenuType * net, LibraryEntryType * pin)
 {
-	int x, y;
+	Coord x, y;
 	if (pcb_pin_name_to_xy(net->Entry, &x, &y))
 		return;
 	LookupConnection(x, y, 1, 1, PCB_FLAG_SELECTED);
