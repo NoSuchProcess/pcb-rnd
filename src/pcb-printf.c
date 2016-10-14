@@ -550,7 +550,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				++fmt;
 				if (*fmt == '*')
 					ext_unit = va_arg(args, const char *);
-				if (*fmt != '+' && *fmt != 'a')
+				if (*fmt != '+' && *fmt != 'a' && *fmt != 'A')
 					value[0] = va_arg(args, Coord);
 				count = 1;
 				switch (*fmt) {
