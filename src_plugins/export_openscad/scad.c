@@ -22,10 +22,7 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
-
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -49,15 +46,11 @@
 #include "create.h"
 
 #include "hid.h"
-#include "hid_draw.h"
-#include "../hidint.h"
-#include "hid/common/hidnogui.h"
-#include "hid/common/draw_helpers.h"
-#include "hid/common/hidinit.h"
-
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
+#include "hid_draw_helpers.h"
+#include "hid_nogui.h"
+#include "hid_init.h"
+#include "hid_attrib.h"
+#include "hid_helper.h"
 
 #include "scad.h"
 
@@ -258,10 +251,10 @@ Minimal drill to be exported. Default: @samp{1mm}.
 %end-doc
 */
 	{
-	 "min_drill", "Minimal drill to export", HID_Coord, MM_TO_COORD(0),
-	 MM_TO_COORD(10),
+	 "min_drill", "Minimal drill to export", HID_Coord, PCB_MM_TO_COORD(0),
+	 PCB_MM_TO_COORD(10),
 	 {
-		0, 0, 0, MM_TO_COORD(1)}, 0, 0},
+		0, 0, 0, PCB_MM_TO_COORD(1)}, 0, 0},
 /*
 %start-doc options "Advanced OpenSCAD Export"
 @ftable @code
@@ -346,7 +339,7 @@ static HID_Attribute *scad_get_export_options(int *n)
 	if (PCB)
 		derive_default_filename(PCB->Filename, &scad_options[HA_scadfile], ".scad", &last_made_filename);
 
-//    scad_options[HA_minimal_drill].coord_value = scad_options[HA_minimal_drill].
+/*    scad_options[HA_minimal_drill].coord_value = scad_options[HA_minimal_drill].*/
 	if (n)
 		*n = NUM_OPTIONS;
 	return scad_options;
@@ -377,7 +370,7 @@ static void add_outline_segment(Coord x1, Coord y1, Coord x2, Coord y2)
 		outline_segments = (t_outline_segment *) malloc(sizeof(t_outline_segment) * 50);
 		n_alloc_outline_segments = 50;
 		if (!outline_segments) {
-			Message(" Error: Cannot allocate memory for board outline. Board outline cannot be created.\n");
+			Message(PCB_MSG_ERROR, "openscad: cannot allocate memory for board outline. Board outline cannot be created.\n");
 			return;
 		}
 	}
@@ -391,7 +384,7 @@ static void add_outline_segment(Coord x1, Coord y1, Coord x2, Coord y2)
 				n_alloc_outline_segments = n_alloc_outline_segments + 50;
 			}
 			else {
-				Message(" Error: Cannot allocate more memory for board outline. Board outline will be incomplete.\n");
+				Message(PCB_MSG_ERROR, "openscad: cannot allocate more memory for board outline. Board outline will be incomplete.\n");
 				return;
 			}
 		}
@@ -483,18 +476,18 @@ void scad_process_outline()
 
 			fprintf(scad_output, "\t\t[");
 			for (i = 0; i < n; i++) {
-//            if (!(i % 10) && i)
-//              fprintf (scad_output, "\n\t\t");
+/*            if (!(i % 10) && i)
+                fprintf (scad_output, "\n\t\t");*/
 				if (i > 0 && op[i].marker)
 					fprintf(scad_output, "],\n\t\t[");
-//            fprintf (scad_output, "%d%s", i, (i < (n - 1)) ? ", " : "");
+/*            fprintf (scad_output, "%d%s", i, (i < (n - 1)) ? ", " : "");*/
 				fprintf(scad_output, "%d%s", i, ((i < (n - 1)) && op[i + 1].marker == 0) ? ", " : "");
 			}
 			fprintf(scad_output, "\t]]);\n");
 			fprintf(scad_output, "}\n\n");
 		}
 		else {
-			Message(" Error: Cannot allocate more memory for board outline. Board outline will be incomplete.\n");
+			Message(PCB_MSG_ERROR, "openscad: cannot allocate more memory for board outline. Board outline will be incomplete.\n");
 		}
 		if (op)
 			free(op);
@@ -512,8 +505,8 @@ static void scad_do_export(HID_Attr_Val * options)
 	LayerType *layer;
 
 	save_thindraw = PCB->Flags;
-	CLEAR_FLAG(THINDRAWFLAG, PCB);
-	CLEAR_FLAG(THINDRAWPOLYFLAG, PCB);
+	CLEAR_FLAG(PCB_FLAG_THINDRAW, PCB);
+	CLEAR_FLAG(PCB_FLAG_THINDRAWPOLY, PCB);
 
 	if (!options) {
 		scad_get_export_options(0);
@@ -537,7 +530,7 @@ static void scad_do_export(HID_Attr_Val * options)
 
 	scad_output = fopen(scad_filename, "w");
 	if (scad_output == NULL) {
-		Message(" Error: Could not open %s for writing.\n", scad_filename);
+		Message(PCB_MSG_ERROR, "openscad: could not open %s for writing.\n", scad_filename);
 		return;
 	}
 
@@ -588,7 +581,7 @@ static void scad_do_export(HID_Attr_Val * options)
 
 	hid_expose_callback(&scad_hid, &region, 0);
 
-// And now .... Board outlines
+/* And now .... Board outlines */
 
 	if (opt_outline_type == SCAD_OUTLINE_SIZE) {
 		fprintf(scad_output, "module board_outline () {\n\tpolygon(");
@@ -644,7 +637,7 @@ static void scad_do_export(HID_Attr_Val * options)
 	if (opt_exp_copper) {
 		for (i = 0; i < max_group; i++) {
 			if (group_data[i].exp) {
-//        printf("%d\n",i);
+/*        printf("%d\n",i); */
 
 				if (group_data[i].component || group_data[i].solder || opt_exp_inner_layers) {
 					fprintf(scad_output, "\t\tcolor (%s)\n", finish_color_table[opt_copper_color]);
@@ -747,7 +740,7 @@ static int scad_set_layer(const char *name, int group, int empty)
 	if (name == 0)
 		name = PCB->Data->Layer[idx].Name;
 
-//  printf("%s\n",name);
+/*  printf("%s\n",name); */
 
 	silk_layer = 0;
 	drill_layer = 0;
@@ -861,14 +854,13 @@ static void scad_destroy_gc(hidGC gc)
 	free(gc);
 }
 
-static void scad_use_mask(enum mask_mode use_it)
+static void scad_use_mask(int use_it)
 {
 	current_mask = use_it;
 }
 
 static void scad_set_color(hidGC gc, const char *name)
 {
-
 	if (strcmp(name, "erase") == 0) {
 		gc->erase = 1;
 		gc->drill = 0;
@@ -879,7 +871,12 @@ static void scad_set_color(hidGC gc, const char *name)
 	}
 	else {
 		if (name[0] == '#') {
-			sscanf(name + 1, "%02x%02x%02x", &(gc->r), &(gc->g), &(gc->b));
+			unsigned int r, g, b;
+			if (sscanf(name + 1, "%02x%02x%02x", &r, &g, &b) != 3)
+				Message(PCB_MSG_ERROR, "Invalid color format: %s\n", name);
+			gc->r = r;
+			gc->g = g;
+			gc->b = b;
 		}
 		else {
 			gc->r = 1;
@@ -1030,7 +1027,7 @@ static void scad_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord heigh
 */
 static void scad_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 {
-//  int i;
+/*  int i; */
 	if (outline_layer)
 		return;
 
@@ -1065,7 +1062,7 @@ static void scad_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 static void scad_emit_polygon(hidGC gc, int n_coords, Coord * x, Coord * y, float thickness)
 {
 	int i, n;
-//  int cw, cx;
+/*  int cw, cx; */
 
 
 	fprintf(scad_output, "\ttranslate ([0, 0, %f]) linear_extrude(height=%f) polygon ([", -thickness / 2., thickness);
@@ -1136,23 +1133,18 @@ static void scad_set_crosshair(int x, int y, int action)
 }
 
 static HID scad_hid;
-static HID_DRAW scad_graphics;
 
 void hid_scad_init()
 {
 	memset(&scad_hid, 0, sizeof(scad_hid));
-	memset(&scad_graphics, 0, sizeof(scad_graphics));
 
 	common_nogui_init(&scad_hid);
 	common_draw_helpers_init(&scad_graphics);
-
 
 	scad_hid.struct_size = sizeof(scad_hid);
 	scad_hid.name = "scad";
 	scad_hid.description = "OpenSCAD script export";
 	scad_hid.exporter = 1;
-
-	scad_hid.graphics = &scad_graphics;
 
 	scad_hid.get_export_options = scad_get_export_options;
 	scad_hid.do_export = scad_do_export;
@@ -1161,20 +1153,20 @@ void hid_scad_init()
 	scad_hid.calibrate = scad_calibrate;
 	scad_hid.set_crosshair = scad_set_crosshair;
 
-	scad_graphics.make_gc = scad_make_gc;
-	scad_graphics.destroy_gc = scad_destroy_gc;
-	scad_graphics.use_mask = scad_use_mask;
-	scad_graphics.set_color = scad_set_color;
-	scad_graphics.set_line_cap = scad_set_line_cap;
-	scad_graphics.set_line_width = scad_set_line_width;
-	scad_graphics.set_draw_xor = scad_set_draw_xor;
+	scad_hid.make_gc = scad_make_gc;
+	scad_hid.destroy_gc = scad_destroy_gc;
+	scad_hid.use_mask = scad_use_mask;
+	scad_hid.set_color = scad_set_color;
+	scad_hid.set_line_cap = scad_set_line_cap;
+	scad_hid.set_line_width = scad_set_line_width;
+	scad_hid.set_draw_xor = scad_set_draw_xor;
 
-	scad_graphics.draw_line = scad_draw_line;
-	scad_graphics.draw_arc = scad_draw_arc;
-	scad_graphics.draw_rect = scad_draw_rect;
-	scad_graphics.fill_circle = scad_fill_circle;
-	scad_graphics.fill_polygon = scad_fill_polygon;
-	scad_graphics.fill_rect = scad_fill_rect;
+	scad_hid.draw_line = scad_draw_line;
+	scad_hid.draw_arc = scad_draw_arc;
+	scad_hid.draw_rect = scad_draw_rect;
+	scad_hid.fill_circle = scad_fill_circle;
+	scad_hid.fill_polygon = scad_fill_polygon;
+	scad_hid.fill_rect = scad_fill_rect;
 
 	hid_register_hid(&scad_hid);
 }

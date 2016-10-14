@@ -25,15 +25,27 @@
 #ifndef __SCAD_H
 #define __SCAD_H
 
-//extern int LoadFootprintByName (BufferType * Buffer, char *Footprint);
+/* extern int LoadFootprintByName (BufferType * Buffer, char *Footprint); */
 
-#define CRASH fprintf(stderr, "HID error: pcb called unimplemented FreeCAD function %s.\n", __FUNCTION__); abort()
-#define CRASH2 fprintf(stderr, "HID error: Internal error in %s.\n", __FUNCTION__); abort()
+#define CRASH \
+do { \
+ fprintf(stderr, "HID error: pcb called unimplemented FreeCAD function %s.\n", __FUNCTION__); \
+ abort(); \
+} while(0)
+
+#define CRASH2 \
+do { \
+	fprintf(stderr, "HID error: Internal error in %s.\n", __FUNCTION__); \
+	abort(); \
+} while(0)
 
 #define SCAD_EXT ".scad"
 #define SCAD_STL_EXT ".stl"
-//#define SCAD_MAP_EXT ".3dm"
-//#define SCAD_FPMAP_EXT ".fp.3dm"
+
+/*
+#define SCAD_MAP_EXT ".3dm"
+#define SCAD_FPMAP_EXT ".fp.3dm"
+*/
 
 #define MODELBASE "models"
 #define SCADBASE "scad"

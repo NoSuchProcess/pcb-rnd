@@ -22,9 +22,7 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -49,15 +47,9 @@
 #include "create.h"
 
 #include "hid.h"
-#include "hid_draw.h"
-#include "../hidint.h"
-#include "hid/common/hidnogui.h"
-#include "hid/common/draw_helpers.h"
-#include "hid/common/hidinit.h"
-
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
+#include "hid_nogui.h"
+#include "hid_draw_helpers.h"
+#include "hid_init.h"
 
 #include "scad.h"
 

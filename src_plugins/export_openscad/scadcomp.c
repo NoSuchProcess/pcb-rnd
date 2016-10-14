@@ -22,9 +22,7 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -48,16 +46,12 @@
 #include "buffer.h"
 #include "mirror.h"
 #include "create.h"
+#include "misc_util.h"
 
 #include "hid.h"
-#include "../hidint.h"
-#include "hid/common/hidnogui.h"
-#include "hid/common/draw_helpers.h"
-#include "hid/common/hidinit.h"
-
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
+#include "hid_nogui.h"
+#include "hid_draw_helpers.h"
+#include "hid_init.h"
 
 #include "scad.h"
 
@@ -100,7 +94,7 @@ static void scad_add_include_file(char *include_file)
 			include_files_bufsize = 2048;
 		}
 		else {
-			Message(" Error: Cannot allocate memory for component included files.\n");
+			Message(PCB_MSG_ERROR, "openscad: cannot allocate memory for component included files.\n");
 		}
 	}
 
@@ -133,7 +127,7 @@ static void scad_export_include_files(void)
 
 	l = strlen(pcblibdir) + 1 + strlen(MODELBASE) + 1 + strlen(SCADBASE) + 1 + include_file_maxlength + 1;
 	if ((fullname = (char *) malloc(l * sizeof(char))) == NULL) {
-		Message(" Error: Cannot allocate memory for component included files.\n");
+		Message(PCB_MSG_ERROR, "openscad: cannot allocate memory for component included files.\n");
 		return;
 	}
 	sprintf(fullname, "%s%s%s%s%s%s", pcblibdir, PCB_DIR_SEPARATOR_S,
@@ -174,7 +168,7 @@ static void scad_export_include_files(void)
 * Export of the components
 *
 ***********************************************************************/
-static void scad_imported_model_name(char *model, char *name, int size, bool simple)
+static void scad_imported_model_name(char *model, char *name, int size, pcb_bool simple)
 {
 
 	sprintf(name, "%s%s%s%s", model, (simple) ? "-" : "", (simple) ? SCADSIMPLEMODELS : "", SCAD_STL_EXT);
@@ -187,7 +181,7 @@ static void scad_close_model(FILE * f)
 	}
 }
 
-static FILE *scad_open_model(char *model, char *first_line, int size, bool simple)
+static FILE *scad_open_model(char *model, char *first_line, int size, pcb_bool simple)
 {
 	int l;
 	FILE *f = NULL;
@@ -249,13 +243,13 @@ static int scad_parse_coord_triplet(char *s, Coord * ox, Coord * oy, Coord * oz)
 	while (sscanf(s, "%30s%n", val, &ln) >= 1) {
 		switch (n) {
 		case 0:
-			xx = GetValueEx(val, NULL, NULL, NULL, "mm");
+			xx = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 1:
-			yy = GetValueEx(val, NULL, NULL, NULL, "mm");
+			yy = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 2:
-			zz = GetValueEx(val, NULL, NULL, NULL, "mm");
+			zz = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		}
 		s = s + ln;
@@ -265,10 +259,10 @@ static int scad_parse_coord_triplet(char *s, Coord * ox, Coord * oy, Coord * oz)
 		*ox = xx;
 		*oy = yy;
 		*oz = zz;
-		return true;
+		return pcb_true;
 	}
 	else {
-		return false;
+		return pcb_false;
 	}
 }
 
@@ -280,10 +274,10 @@ static int scad_parse_float_triplet(char *s, float *ox, float *oy, float *oz)
 		*ox = xx;
 		*oy = yy;
 		*oz = zz;
-		return true;
+		return pcb_true;
 	}
 	else {
-		return false;
+		return pcb_false;
 	}
 }
 
@@ -292,7 +286,7 @@ static int scad_parse_float_triplet(char *s, float *ox, float *oy, float *oz)
 * - adjusts the model position, rotation, scale
 * - processes the model line-by-line and perfoprms variable expansion
 ************************************************************/
-static void scad_export_model(int model_type, ElementType * element, bool imported, FILE * f, char *line, int size)
+static void scad_export_model(int model_type, ElementType * element, pcb_bool imported, FILE * f, char *line, int size)
 {
 	char *model_rotation, *model_translate, *model_scale, *model_angle;
 	Angle tmp_angle = (Angle) 0;
@@ -320,13 +314,13 @@ static void scad_export_model(int model_type, ElementType * element, bool import
 
 	fprintf(scad_output, "translate ([%f, %f, %f]) ",
 					scad_scale_coord((float) x), -scad_scale_coord((float) y),
-					((TEST_FLAG(ONSOLDERFLAG, (element))) ? -1. : 1.) * (BOARD_THICKNESS / 2. + OUTER_COPPER_THICKNESS));
+					((TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) ? -1. : 1.) * (BOARD_THICKNESS / 2. + OUTER_COPPER_THICKNESS));
 
 	/* rotate order: angle onsolder user-defined */
 	if (tmp_angle != 0.)
-		fprintf(scad_output, "rotate ([0, 0, %lf]) ", (TEST_FLAG(ONSOLDERFLAG, (element))) ? -tmp_angle : tmp_angle);
+		fprintf(scad_output, "rotate ([0, 0, %f]) ", (TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) ? -tmp_angle : tmp_angle);
 
-	if (TEST_FLAG(ONSOLDERFLAG, (element)))
+	if (TEST_FLAG(PCB_FLAG_ONSOLDER, (element)))
 		fprintf(scad_output, "rotate([180.,0,0]) ");
 
 	if (model_rotation && scad_parse_float_triplet(model_rotation, &fx, &fy, &fz))
@@ -404,19 +398,19 @@ static void scad_export_bbox(ElementType * element)
 	while (sscanf(s, "%30s%n", val, &ln) >= 1) {
 		switch (n) {
 		case 0:
-			w = GetValueEx(val, NULL, NULL, NULL, "mm");
+			w = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 1:
-			h = GetValueEx(val, NULL, NULL, NULL, "mm");
+			h = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 2:
-			t = GetValueEx(val, NULL, NULL, NULL, "mm");
+			t = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 3:
-			ox = GetValueEx(val, NULL, NULL, NULL, "mm");
+			ox = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 4:
-			oy = GetValueEx(val, NULL, NULL, NULL, "mm");
+			oy = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		}
 		s = s + ln;
@@ -438,11 +432,11 @@ static void scad_export_bbox(ElementType * element)
 
 	fprintf(scad_output, "translate ([%f, %f, %f]) ",
 					scad_scale_coord((float) x), -scad_scale_coord((float) y),
-					((TEST_FLAG(ONSOLDERFLAG, (element))) ? -1. : 1.) * (BOARD_THICKNESS / 2. + OUTER_COPPER_THICKNESS));
+					((TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) ? -1. : 1.) * (BOARD_THICKNESS / 2. + OUTER_COPPER_THICKNESS));
 
 	if (tmp_angle != 0.)
-		fprintf(scad_output, "rotate ([0, 0, %lf]) ", (TEST_FLAG(ONSOLDERFLAG, (element))) ? -tmp_angle : tmp_angle);
-	if (TEST_FLAG(ONSOLDERFLAG, (element)))
+		fprintf(scad_output, "rotate ([0, 0, %f]) ", (TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) ? -tmp_angle : tmp_angle);
+	if (TEST_FLAG(PCB_FLAG_ONSOLDER, (element)))
 		fprintf(scad_output, "rotate([180.,0,0]) ");
 
 	fprintf(scad_output, "{\n");
@@ -457,7 +451,7 @@ static void scad_export_bbox(ElementType * element)
 
 }
 
-static void scad_writeout_element(ElementType * element, char *name, int model_type, bool imported, bool simple)
+static void scad_writeout_element(ElementType * element, char *name, int model_type, pcb_bool imported, pcb_bool simple)
 {
 	FILE *f = NULL;
 	char line[2048];
@@ -482,10 +476,10 @@ static void scad_writeout_element(ElementType * element, char *name, int model_t
 * - identifies the model for the component - primary and overlay
 * - exports both models
 ************************************************************/
-static void scad_export_element(ElementType * element, bool simple)
+static void scad_export_element(ElementType * element, pcb_bool simple)
 {
 	char *model_name, *s;
-	bool imported_model;
+	pcb_bool imported_model;
 
 	s = AttributeGetFromList(&(element->Attributes), "OpenSCAD::Model:type");
 	imported_model = s && (strcmp(s, "STL") == 0);
