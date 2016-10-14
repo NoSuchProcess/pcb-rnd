@@ -46,6 +46,7 @@
 #include "stub_mincut.h"
 #include "route_style.h"
 #include "compat_misc.h"
+#include "netlist.h"
 
 #define TRIEDFIRST 0x1
 #define BESTFOUND 0x2

@@ -28,6 +28,11 @@
 #include "data.h"
 #include "plugins.h"
 #include "plug_import.h"
+#include "netlist.h"
+#include "rats_patch.h"
+
+/* for pcb_sort_library only */
+#include "plug_io.h"
 
 
 static plug_import_t import_edif;

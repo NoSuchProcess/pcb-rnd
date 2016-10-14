@@ -1381,7 +1381,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/genvector/vtp0.h list_conf.h
+ ../src_3rd/genvector/vtp0.h list_conf.h netlist.h rats_patch.h plug_io.h
 ../src_plugins/import_netlist/import_netlist.o: \
  ../src_plugins/import_netlist/import_netlist.c ../config.h global.h \
  const.h macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -3223,7 +3223,7 @@ rats.o: rats.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  create.h data.h draw.h find.h misc.h mymem.h layer.h polygon.h rtree.h \
  rats.h search.h misc_util.h undo.h stub_mincut.h route_style.h \
- compat_misc.h
+ compat_misc.h netlist.h
 rats_act.o: rats_act.c ../config.h conf_core.h conf.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h list_common.h \
@@ -3472,7 +3472,7 @@ undo.o: undo.c ../config.h buffer.h global.h const.h macro.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h
+ ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h netlist.h
 undo_act.o: undo_act.c ../config.h conf_core.h conf.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h list_common.h \
