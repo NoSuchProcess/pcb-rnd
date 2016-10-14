@@ -39,5 +39,10 @@ void pcb_netlist_norats(LibraryMenuType *net, LibraryEntryType *pin);
 void pcb_netlist_clear(LibraryMenuType *net, LibraryEntryType *pin);
 void pcb_netlist_style(LibraryMenuType *net, const char *style);
 
-/* find the net entry for a pin (slow) */
-LibraryMenuTypePtr pcb_netlist_find_net4pinname(PCBTypePtr pcb, const char *pin);
+/* Return the net entry for a pin name (slow search). The pin name is
+   like "U101-5", so element's refdes, dash, pin number */
+LibraryMenuTypePtr pcb_netlist_find_net4pinname(PCBTypePtr pcb, const char *pinname);
+
+/* Same as pcb_netlist_find_net4pinname but with pin pointer */
+LibraryMenuTypePtr pcb_netlist_find_net4pin(PCBTypePtr pcb, PinType *pin);
+LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, PadType *pad);

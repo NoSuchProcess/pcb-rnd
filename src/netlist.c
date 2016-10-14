@@ -211,3 +211,40 @@ LibraryMenuTypePtr pcb_netlist_find_net4pinname(PCBTypePtr pcb, const char *pin)
 	}
 	return NULL;
 }
+
+static LibraryMenuTypePtr pcb_netlist_find_net4pin_any(PCBTypePtr pcb, const char *ename, const char *pname)
+{
+	char pinname[256];
+	int len;
+
+	if ((ename == NULL) || (pname == NULL))
+		return NULL;
+
+	len = pcb_snprintf(pinname, sizeof(pinname), "%s-%s", ename, pname);
+	if (len >= sizeof(pinname))
+		return NULL;
+
+	return pcb_netlist_find_net4pinname(pcb, pinname);
+}
+
+LibraryMenuTypePtr pcb_netlist_find_net4pin(PCBTypePtr pcb, PinType *pin)
+{
+	ElementType *e = pin->Element;
+
+	if (e == NULL)
+		return NULL;
+
+	return pcb_netlist_find_net4pin_any(pcb, e->Name[NAMEONPCB_INDEX].TextString, pin->Number);
+}
+
+
+LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, PadType *pad)
+{
+	ElementType *e = pad->Element;
+
+	if (e == NULL)
+		return NULL;
+
+	return pcb_netlist_find_net4pin_any(pcb, e->Name[NAMEONPCB_INDEX].TextString, pad->Number);
+}
+
