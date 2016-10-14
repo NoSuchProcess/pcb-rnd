@@ -308,7 +308,7 @@ static int ActionNetlist(int argc, const char **argv, Coord x, Coord y)
 		net_found = 1;
 
 		pin = 0;
-		if (func == (void *) pcb_netlist_style) {
+		if (func == (NFunc) pcb_netlist_style) {
 			pcb_netlist_style(net, ACTION_ARG(2));
 		}
 		else if (argc > 2) {
