@@ -993,13 +993,13 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 										arcStartY - element->MarkY, /* y on circle */
 										arc->Thickness); /* stroke thickness */
 			} else {
-				pcb_fprintf(FP, "DA %.0mk %.0mk %.0mk %.0mk %mA ",
+				pcb_fprintf(FP, "DA %.0mk %.0mk %.0mk %.0mk %mA %.0mk ",
 										arc->X - element->MarkX, /* x_1 centre */
 										arc->Y - element->MarkY, /* y_2 centre */
 										arcEndX - element->MarkX, /* x on arc */
 										arcEndY - element->MarkY, /* y on arc */
-										arc->Delta);		/* CW delta angle in decidegrees */
-				pcb_fprintf(FP, "%.0mk ", arc->Thickness); /* stroke thickness */
+										arc->Delta, /* CW delta angle in decidegrees */
+										arc->Thickness); /* stroke thickness */
 			}
 			fprintf(FP, "%d\n", silkLayer); /* and now append a suitable Kicad layer, front silk = 21, back silk 20 */
 		}
