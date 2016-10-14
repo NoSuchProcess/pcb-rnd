@@ -822,6 +822,7 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 
 	int silkLayer = 21;  /* hard coded for now, TODO: sort out bottom layer handling */ 
 	int copperLayer = 15;
+	int mirrored = 1;	 /* used to flip x coords about y-axis for bottom side elements */
 
 	elementlist_dedup_initializer(ededup);
 	/* Now initialize the group with defaults */
@@ -867,6 +868,15 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 
 		Coord xPos = element->MarkX + xOffset;
 		Coord yPos = element->MarkY + yOffset;
+		if (TEST_FLAG(PCB_FLAG_ONSOLDER, element)) {
+			silkLayer = 20;
+			mirrored = -1; /* not needed for mirroring of coords, it seems */
+			copperLayer = 0;
+		} else {
+			silkLayer = 21;
+			mirrored = 1; /* not needed for mirroring of coords, it seems */
+			copperLayer = 15;
+		}
 
 		currentElementName = unm_name(&group1, element->Name[0].TextString, element);
 		fprintf(FP, "$MODULE %s\n", currentElementName);
