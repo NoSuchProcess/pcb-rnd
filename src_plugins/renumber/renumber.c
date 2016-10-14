@@ -341,7 +341,7 @@ static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 			free(is[k]);
 		}
 
-		NetlistChanged(0);
+		pcb_netlist_changed(0);
 		IncrementUndoSerialNumber();
 		SetChangedFlag(pcb_true);
 	}

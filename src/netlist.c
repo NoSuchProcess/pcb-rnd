@@ -61,7 +61,7 @@
 int netlist_frozen = 0;
 int netlist_needs_update = 0;
 
-void NetlistChanged(int force_unfreeze)
+void pcb_netlist_changed(int force_unfreeze)
 {
 	if (force_unfreeze)
 		netlist_frozen = 0;
@@ -73,7 +73,7 @@ void NetlistChanged(int force_unfreeze)
 	}
 }
 
-LibraryMenuTypePtr netnode_to_netname(const char *nodename)
+LibraryMenuTypePtr pcb_netnode_to_netname(const char *nodename)
 {
 	int i, j;
 	/*printf("nodename [%s]\n", nodename); */
@@ -88,7 +88,7 @@ LibraryMenuTypePtr netnode_to_netname(const char *nodename)
 	return 0;
 }
 
-LibraryMenuTypePtr netname_to_netname(const char *netname)
+LibraryMenuTypePtr pcb_netname_to_netname(const char *netname)
 {
 	int i;
 
@@ -105,7 +105,7 @@ LibraryMenuTypePtr netname_to_netname(const char *netname)
 }
 
 #warning do not use int here
-int pin_name_to_xy(LibraryEntryType * pin, int *x, int *y)
+int pcb_pin_name_to_xy(LibraryEntryType * pin, int *x, int *y)
 {
 	ConnectionType conn;
 	if (!SeekPad(pin, &conn, pcb_false))
@@ -123,40 +123,40 @@ int pin_name_to_xy(LibraryEntryType * pin, int *x, int *y)
 	return 1;
 }
 
-void netlist_find(LibraryMenuType * net, LibraryEntryType * pin)
+void pcb_netlist_find(LibraryMenuType * net, LibraryEntryType * pin)
 {
 	int x, y;
-	if (pin_name_to_xy(net->Entry, &x, &y))
+	if (pcb_pin_name_to_xy(net->Entry, &x, &y))
 		return;
 	LookupConnection(x, y, 1, 1, PCB_FLAG_FOUND);
 }
 
-void netlist_select(LibraryMenuType * net, LibraryEntryType * pin)
+void pcb_netlist_select(LibraryMenuType * net, LibraryEntryType * pin)
 {
 	int x, y;
-	if (pin_name_to_xy(net->Entry, &x, &y))
+	if (pcb_pin_name_to_xy(net->Entry, &x, &y))
 		return;
 	LookupConnection(x, y, 1, 1, PCB_FLAG_SELECTED);
 }
 
-void netlist_rats(LibraryMenuType * net, LibraryEntryType * pin)
+void pcb_netlist_rats(LibraryMenuType * net, LibraryEntryType * pin)
 {
 	net->Name[0] = ' ';
 	net->flag = 1;
-	NetlistChanged(0);
+	pcb_netlist_changed(0);
 }
 
-void netlist_norats(LibraryMenuType * net, LibraryEntryType * pin)
+void pcb_netlist_norats(LibraryMenuType * net, LibraryEntryType * pin)
 {
 	net->Name[0] = '*';
 	net->flag = 0;
-	NetlistChanged(0);
+	pcb_netlist_changed(0);
 }
 
 /* The primary purpose of this action is to remove the netlist
    completely so that a new one can be loaded, usually via a gsch2pcb
    style script.  */
-void netlist_clear(LibraryMenuType * net, LibraryEntryType * pin)
+void pcb_netlist_clear(LibraryMenuType * net, LibraryEntryType * pin)
 {
 	LibraryType *netlist = (LibraryType *) & PCB->NetlistLib;
 	int ni, pi;
@@ -188,10 +188,10 @@ void netlist_clear(LibraryMenuType * net, LibraryEntryType * pin)
 			net->EntryN--;
 		}
 	}
-	NetlistChanged(0);
+	pcb_netlist_changed(0);
 }
 
-void netlist_style(LibraryMenuType * net, const char *style)
+void pcb_netlist_style(LibraryMenuType * net, const char *style)
 {
 	free(net->Style);
 	net->Style = pcb_strdup_null((char *) style);

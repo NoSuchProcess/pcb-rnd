@@ -845,25 +845,25 @@ RatTypePtr AddNet(void)
 						GetLayerGroupNumberByNumber(solder_silk_layer) : GetLayerGroupNumberByNumber(component_silk_layer));
 	name2 = ConnectionName(found, ptr1, ptr2);
 
-	menu = netnode_to_netname(name1);
+	menu = pcb_netnode_to_netname(name1);
 	if (menu) {
-		if (netnode_to_netname(name2)) {
+		if (pcb_netnode_to_netname(name2)) {
 			Message(PCB_MSG_DEFAULT, _("Both connections already in netlist - cannot merge nets\n"));
 			return (NULL);
 		}
 		entry = GetLibraryEntryMemory(menu);
 		entry->ListEntry = pcb_strdup(name2);
 		entry->ListEntry_dontfree = 0;
-		netnode_to_netname(name2);
+		pcb_netnode_to_netname(name2);
 		goto ratIt;
 	}
 	/* ok, the first name did not belong to a net */
-	menu = netnode_to_netname(name2);
+	menu = pcb_netnode_to_netname(name2);
 	if (menu) {
 		entry = GetLibraryEntryMemory(menu);
 		entry->ListEntry = pcb_strdup(name1);
 		entry->ListEntry_dontfree = 0;
-		netnode_to_netname(name1);
+		pcb_netnode_to_netname(name1);
 		goto ratIt;
 	}
 
@@ -890,7 +890,7 @@ RatTypePtr AddNet(void)
 	menu->flag = 1;
 
 ratIt:
-	NetlistChanged(0);
+	pcb_netlist_changed(0);
 	return (CreateNewRat(PCB->Data, Crosshair.AttachedLine.Point1.X,
 											 Crosshair.AttachedLine.Point1.Y,
 											 Crosshair.AttachedLine.Point2.X,

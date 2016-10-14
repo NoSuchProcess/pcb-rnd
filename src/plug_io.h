@@ -105,7 +105,7 @@ void EmergencySave(void);
 void DisableEmergencySave(void);
 int RevertPCB(void);
 int SaveBufferElements(const char *, const char *fmt);
-void sort_netlist(void);
+void pcb_sort_netlist(void);
 void PrintQuotedString(FILE *, const char *);
 void sort_library(LibraryTypePtr lib);
 void set_some_route_style();

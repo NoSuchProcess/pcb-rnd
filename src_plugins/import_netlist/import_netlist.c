@@ -148,7 +148,7 @@ static int ReadNetlist(const char *filename)
 		pclose(fp);
 	else
 		fclose(fp);
-	sort_netlist();
+	pcb_sort_netlist();
 	rats_patch_make_edited(PCB);
 	return (0);
 }

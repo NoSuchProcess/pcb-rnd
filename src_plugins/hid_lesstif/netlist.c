@@ -380,7 +380,7 @@ static int LesstifNetlistShow(int argc, const char **argv, Coord x, Coord y)
 	if (argc == 1) {
 		LibraryMenuTypePtr net;
 
-		net = netnode_to_netname(argv[0]);
+		net = pcb_netnode_to_netname(argv[0]);
 		if (net) {
 			XmString item;
 			int vis = 0;
@@ -411,7 +411,7 @@ static int LesstifNetlistShow(int argc, const char **argv, Coord x, Coord y)
 		}
 		else {
 			/* Try the argument as a netname */
-			net = netname_to_netname(argv[0]);
+			net = pcb_netname_to_netname(argv[0]);
 			if (net) {
 				XmString item;
 

@@ -33,10 +33,6 @@
 
 #include "global.h"
 
-/* This one is actually in netlist.cc, but it's used by rats.c */
-LibraryMenuTypePtr netnode_to_netname(const char *nodename);
-LibraryMenuTypePtr netname_to_netname(const char *netname);
-
 RatTypePtr AddNet(void);
 char *ConnectionName(int, void *, void *);
 

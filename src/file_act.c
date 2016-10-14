@@ -149,7 +149,7 @@ static int ActionLoadFrom(int argc, const char **argv, Coord x, Coord y)
 				FreeLibraryMemory(&(PCB->NetlistLib[i]));
 		}
 		if (!ImportNetlist(PCB->Netlistname))
-			NetlistChanged(1);
+			pcb_netlist_changed(1);
 	}
 	else if (strcasecmp(function, "Revert") == 0 && PCB->Filename
 					 && (!PCB->Changed || gui->confirm_dialog(_("OK to override changes?"), 0))) {

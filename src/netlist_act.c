@@ -49,7 +49,7 @@
 
 extern int netlist_needs_update;
 
-static int netlist_swap()
+static int pcb_netlist_swap()
 {
 	char *pins[3] = { NULL, NULL, NULL };
 	int next = 0, n;
@@ -116,7 +116,7 @@ quit:;
 
 /* The primary purpose of this action is to rebuild a netlist from a
    script, in conjunction with the clear action above.  */
-static int netlist_add(const char *netname, const char *pinname)
+static int pcb_netlist_add(const char *netname, const char *pinname)
 {
 	int ni, pi;
 	LibraryType *netlist = &PCB->NetlistLib[NETLIST_EDITED];
@@ -142,7 +142,7 @@ static int netlist_add(const char *netname, const char *pinname)
 		rats_patch_append_optimize(PCB, RATP_ADD_CONN, pin->ListEntry, net->Name + 2, NULL);
 	}
 
-	NetlistChanged(0);
+	pcb_netlist_changed(0);
 	return 0;
 }
 
@@ -226,30 +226,30 @@ static int ActionNetlist(int argc, const char **argv, Coord x, Coord y)
 		return 1;
 	}
 	if (strcasecmp(argv[0], "find") == 0)
-		func = netlist_find;
+		func = pcb_netlist_find;
 	else if (strcasecmp(argv[0], "select") == 0)
-		func = netlist_select;
+		func = pcb_netlist_select;
 	else if (strcasecmp(argv[0], "rats") == 0)
-		func = netlist_rats;
+		func = pcb_netlist_rats;
 	else if (strcasecmp(argv[0], "norats") == 0)
-		func = netlist_norats;
+		func = pcb_netlist_norats;
 	else if (strcasecmp(argv[0], "clear") == 0) {
-		func = netlist_clear;
+		func = pcb_netlist_clear;
 		if (argc == 1) {
-			netlist_clear(NULL, NULL);
+			pcb_netlist_clear(NULL, NULL);
 			return 0;
 		}
 	}
 	else if (strcasecmp(argv[0], "style") == 0)
-		func = (NFunc) netlist_style;
+		func = (NFunc) pcb_netlist_style;
 	else if (strcasecmp(argv[0], "swap") == 0)
-		return netlist_swap();
+		return pcb_netlist_swap();
 	else if (strcasecmp(argv[0], "add") == 0) {
 		/* Add is different, because the net/pin won't already exist.  */
-		return netlist_add(ACTION_ARG(1), ACTION_ARG(2));
+		return pcb_netlist_add(ACTION_ARG(1), ACTION_ARG(2));
 	}
 	else if (strcasecmp(argv[0], "sort") == 0) {
-		sort_netlist();
+		pcb_sort_netlist();
 		return 0;
 	}
 	else if (strcasecmp(argv[0], "freeze") == 0) {
@@ -260,14 +260,14 @@ static int ActionNetlist(int argc, const char **argv, Coord x, Coord y)
 		if (netlist_frozen > 0) {
 			netlist_frozen--;
 			if (netlist_needs_update)
-				NetlistChanged(0);
+				pcb_netlist_changed(0);
 		}
 		return 0;
 	}
 	else if (strcasecmp(argv[0], "forcethaw") == 0) {
 		netlist_frozen = 0;
 		if (netlist_needs_update)
-			NetlistChanged(0);
+			pcb_netlist_changed(0);
 		return 0;
 	}
 	else {
@@ -308,8 +308,8 @@ static int ActionNetlist(int argc, const char **argv, Coord x, Coord y)
 		net_found = 1;
 
 		pin = 0;
-		if (func == (void *) netlist_style) {
-			netlist_style(net, ACTION_ARG(2));
+		if (func == (void *) pcb_netlist_style) {
+			pcb_netlist_style(net, ACTION_ARG(2));
 		}
 		else if (argc > 2) {
 			int l = strlen(argv[2]);

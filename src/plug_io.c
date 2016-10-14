@@ -334,7 +334,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		}
 		AttributePut(PCB, "PCB::grid::unit", conf_core.editor.grid_unit->suffix);
 
-		sort_netlist();
+		pcb_sort_netlist();
 		rats_patch_make_edited(PCB);
 
 /* set route style to the first one, if the current one doesn't
@@ -448,7 +448,7 @@ void sort_library(LibraryTypePtr lib)
 		qsort(lib->Menu[i].Entry, lib->Menu[i].EntryN, sizeof(lib->Menu[i].Entry[0]), netnode_sort);
 }
 
-void sort_netlist()
+void pcb_sort_netlist()
 {
 	netlist_sort_offset = 2;
 	sort_library(&(PCB->NetlistLib[NETLIST_INPUT]));

@@ -858,7 +858,7 @@ static pcb_bool UndoNetlistChange(UndoListTypePtr Entry)
 
 	*lib = *saved;
 
-	NetlistChanged(0);
+	pcb_netlist_changed(0);
 	return pcb_true;
 }
 
