@@ -31,6 +31,8 @@
 #include "write.h"
 #include "layer.h"
 #include "const.h"
+#include "netlist.h"
+#include "misc.h"
 
 #define F2S(OBJ, TYPE) flags_to_string ((OBJ)->Flags, TYPE)
 
@@ -179,7 +181,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	/* module description stuff would go here */
 
-	write_kicad_legacy_layout_element(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
+	write_kicad_legacy_layout_element(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
 	int currentKicadLayer = 0;
@@ -762,7 +764,7 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 		}
 
 		linelist_foreach(&element->Arc, &it, arc) {
-			if ((arc->Delta == 360) || (arc->Delta == -360)) { /* it's a circle */
+			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
 				pcb_fprintf(FP, "DC %.3mm %.3mm %.3mm %.3mm %.3mm ",
 										arc->X - element->MarkX, /* x_1 centre */
 										arc->Y - element->MarkY, /* y_2 centre */
@@ -806,12 +808,14 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a layout .brd file
  */
-int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset, Coord yOffset)
+int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, Coord xOffset, Coord yOffset)
 {
 
 	gdl_iterator_t eit;
 	LineType *line;
 	ArcType *arc;
+	Coord arcStartX, arcStartY, arcEndX, arcEndY, arcRadius; /* for arc rendering */
+
 	ElementType *element;
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 	const char * currentElementName;
@@ -892,7 +896,12 @@ int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset
 
 			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
 
-			fputs("Ne 0 \"\"\n",FP); /* library parts have empty net descriptors */
+			LibraryMenuTypePtr current_pin_menu = pcb_netlist_find_net4pin(Layout, pin);
+			if (current_pin_menu != NULL) {
+				fprintf(FP, "Ne 0 \"%s\"\n", pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
+			} else {
+				fprintf(FP, "Ne 0 \"\"\n"); /* library parts have empty net descriptors, in a .brd they don't */
+			} 
 			/*
 				PrintQuotedString(FP, (char *) EMPTY(pin->Name));
 				fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
@@ -912,22 +921,22 @@ int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset
 
 			if ((pad->Point1.X-pad->Point2.X) <= 0
 					&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
-				pcb_fprintf(FP, "%.3mm %.3mm ",
+				pcb_fprintf(FP, "%.0mk %.0mk ",
 										pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
 										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) <= 0
 								 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
-				pcb_fprintf(FP, "%mk %mk ",
+				pcb_fprintf(FP, "%.0mk %.0mk ",
 										pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
 										pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 								 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
-				pcb_fprintf(FP, "%mk %mk ",
+				pcb_fprintf(FP, "%.0mk %.0mk ",
 										pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
 										pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 								 && (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
-				pcb_fprintf(FP, "%mk %mk ",
+				pcb_fprintf(FP, "%.0mk %.0mk ",
 										pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
 										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			}
@@ -943,7 +952,7 @@ int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset
 
 		}
 		linelist_foreach(&element->Line, &it, line) {
-			pcb_fprintf(FP, "DS %mk %mk %mk %mk %mk ",
+			pcb_fprintf(FP, "DS %.0mk %.0mk %.0mk %.0mk %.0mk ",
 									line->Point1.X - element->MarkX,
 									line->Point1.Y - element->MarkY,
 									line->Point2.X - element->MarkX,
@@ -953,32 +962,33 @@ int write_kicad_legacy_layout_element(FILE * FP, DataTypePtr Data, Coord xOffset
 		}
 
 		linelist_foreach(&element->Arc, &it, arc) {
-			if ((arc->Delta == 360) || (arc->Delta == -360)) { /* it's a circle */
-				pcb_fprintf(FP, "DC %mk %mk %mk %mk %mk ",
+
+			BoxType *boxResult = GetArcEnds(arc);
+			arcStartX = boxResult->X1;
+			arcStartY = boxResult->Y1;
+			arcEndX = boxResult->X2; 
+			arcEndY = boxResult->Y2; 
+
+/*
+		arc->X - element->MarkX + (arc->Thickness/2)*cos(M_PI*(arc->StartAngle+180)/360), 
+		arc->Y - element->MarkY + (arc->Thickness/2)*sin(M_PI*(arc->StartAngle+180)/360), 
+		Coord xPos = element->MarkX + xOffset;
+		Coord yPos = element->MarkY + yOffset;
+*/
+			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
+				pcb_fprintf(FP, "DC %.0mk %.0mk %.0mk %.0mk %.0mk ",
 										arc->X - element->MarkX, /* x_1 centre */
 										arc->Y - element->MarkY, /* y_2 centre */
-										(arc->X - element->MarkX + arc->Thickness/2), /* x_2 on circle */
-										arc->Y - element->MarkY,									/* y_2 on circle */
+										arcStartX - element->MarkX, /* x on circle */
+										arcStartY - element->MarkY, /* y on circle */
 										arc->Thickness); /* stroke thickness */
 			} else {
-				/*
-				   as far as can be determined from the Kicad documentation,
-				   http://en.wikibooks.org/wiki/Kicad/file_formats#Drawings
-
-				   the origin for rotation is the positive x direction, and going CW
-
-				   whereas in gEDA, the gEDA origin for rotation is the negative x axis,
-				   with rotation CCW, so we need to reverse delta angle
-
-				   deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in gEDA
-				   NB it is in degrees in the newer s-file kicad module/footprint format
-				*/
-				pcb_fprintf(FP, "DA %mk %mk %mk %mk %mA %.3mk ",
+				pcb_fprintf(FP, "DA %.0mk %.0mk %.0mk %.0mk %mA %.0mk ",
 										arc->X - element->MarkX, /* x_1 centre */
 										arc->Y - element->MarkY, /* y_2 centre */
-										arc->X - element->MarkX + (arc->Thickness/2)*cos(M_PI*(arc->StartAngle+180)/360), /* x_2 on circle */
-										arc->Y - element->MarkY + (arc->Thickness/2)*sin(M_PI*(arc->StartAngle+180)/360), /* y_2 on circle */
-										-arc->Delta*10,		/* CW delta angle in decidegrees */
+										arcEndX - element->MarkX, /* x on arc */
+										arcEndY - element->MarkY, /* y on arc */
+										arc->Delta,		/* CW delta angle in decidegrees */
 										arc->Thickness); /* stroke thickness */
 			}
 			fprintf(FP, "%d\n", silkLayer); /* and now append a suitable Kicad layer, front silk = 21, back silk 20 */
