@@ -1,0 +1,12 @@
+put /local/pcb/mod {export_openscad}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/export_openscad/scad.o
+	$(PLUGDIR)/export_openscad/scadproto.o
+	$(PLUGDIR)/export_openscad/scadcomp.o
+@]
+
+switch /local/pcb/export_openscad/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

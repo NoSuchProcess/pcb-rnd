@@ -13,6 +13,8 @@ include {../src_plugins/export_bom/Plug.tmpasm}
 include {../src_plugins/export_xy/Plug.tmpasm}
 include {../src_plugins/export_dxf/Plug.tmpasm}
 include {../src_plugins/export_test/Plug.tmpasm}
+include {../src_plugins/export_bboard/Plug.tmpasm}
+include {../src_plugins/export_openscad/Plug.tmpasm}
 include {../src_plugins/hid_batch/Plug.tmpasm}
 include {../src_plugins/hid_gtk/Plug.tmpasm}
 include {../src_plugins/hid_lesstif/Plug.tmpasm}
