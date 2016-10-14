@@ -196,7 +196,7 @@ void pcb_netlist_style(LibraryMenuType * net, const char *style)
 	net->Style = pcb_strdup_null((char *) style);
 }
 
-LibraryMenuTypePtr pcb_rats_patch_find_net4pin(PCBTypePtr pcb, const char *pin)
+LibraryMenuTypePtr pcb_netlist_find_net4pinname(PCBTypePtr pcb, const char *pin)
 {
 	int n;
 

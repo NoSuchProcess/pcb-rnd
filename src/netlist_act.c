@@ -85,8 +85,8 @@ static int pcb_netlist_swap()
 	}
 
 
-	nets[0] = pcb_rats_patch_find_net4pin(PCB, pins[0]);
-	nets[1] = pcb_rats_patch_find_net4pin(PCB, pins[1]);
+	nets[0] = pcb_netlist_find_net4pinname(PCB, pins[0]);
+	nets[1] = pcb_netlist_find_net4pinname(PCB, pins[1]);
 	if ((nets[0] == NULL) || (nets[1] == NULL)) {
 		Message(PCB_MSG_DEFAULT, "That pin is not on a net.\n");
 		goto quit;
