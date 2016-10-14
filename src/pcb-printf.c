@@ -623,6 +623,13 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 					tmplen = sprintf(tmp, spec.array, (double) va_arg(args, Angle));
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
+				case 'A':
+					if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
+					/* if (suffix == SUFFIX)
+						if (gds_append_len(&spec, " deg", 4) != 0) goto err;*/
+					tmplen = sprintf(tmp, spec.array, 10*((double) va_arg(args, Angle))); /* kicad legacy needs decidegrees */
+					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
+					break;
 				case '+':
 					mask = va_arg(args, enum e_allow);
 					break;
