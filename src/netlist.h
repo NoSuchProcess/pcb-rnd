@@ -40,4 +40,4 @@ void pcb_netlist_clear(LibraryMenuType *net, LibraryEntryType *pin);
 void pcb_netlist_style(LibraryMenuType *net, const char *style);
 
 /* find the net entry for a pin (slow) */
-LibraryMenuTypePtr rats_patch_find_net4pin(PCBTypePtr pcb, const char *pin);
+LibraryMenuTypePtr pcb_rats_patch_find_net4pin(PCBTypePtr pcb, const char *pin);
