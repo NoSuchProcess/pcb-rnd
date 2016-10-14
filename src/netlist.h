@@ -46,3 +46,10 @@ LibraryMenuTypePtr pcb_netlist_find_net4pinname(PCBTypePtr pcb, const char *pinn
 /* Same as pcb_netlist_find_net4pinname but with pin pointer */
 LibraryMenuTypePtr pcb_netlist_find_net4pin(PCBTypePtr pcb, const PinType *pin);
 LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, const PadType *pad);
+
+
+/* Evaluate to const char * name of the network; lmt is (LibraryMenuType *) */
+#define pcb_netlist_name(lmt) ((const char *)((lmt)->Name+2))
+
+/* Evaluate to 0 or 1 depending on whether the net is marked with *; lmt is (LibraryMenuType *) */
+#define pcb_netlist_is_bad(lmt) (((lmt)->Name[0]) == '*')
