@@ -194,10 +194,10 @@
 #include "hid_attrib.h"
 #include "hid_flags.h"
 #include "hid_helper.h"
-
 #include "hid.h"
 #include "draw.h"
 #include "hid_init.h"
+#include "plugins.h"
 
 /*!
  * \brief List with string data.
@@ -320,8 +320,6 @@ static void dxf_write_vertex(FILE * fp, int id_code, char *linetype,
 														 double start_width, double end_width, double bulge,
 														 double curve_fit_tangent_direction, int color, int paperspace, int flag);
 static double dxf_xy_to_angle(double x, double y);
-void hid_dxf_init();
-
 
 /*!
  * \brief Debugging on/off switch.
@@ -4236,6 +4234,7 @@ static void dxf_do_export(HID_Attr_Val * options)
 	static int saved_layer_stack[MAX_LAYER];
 	BoxType region;
 	int save_ons[MAX_LAYER + 2];
+	int tmp[128], len;
 
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_do_export () function.\n", __FILE__, __LINE__);
@@ -4302,19 +4301,18 @@ static void dxf_do_export(HID_Attr_Val * options)
 	 * use this to temporarily enable all layers.
 	 */
 	hid_save_and_show_layer_ons(save_ons);
+#warning TODO: do we need this loop if we select them all in the next?
 	for (i = 0; i < max_copper_layer; i++) {
 		LayerType *layer = PCB->Data->Layer + i;
 		if (!IsLayerEmpty(layer)) {
 			print_group[GetLayerGroupNumberByNumber(i)] = 1;
 		}
 	}
-	print_group[GetLayerGroupNumberByNumber(bottom_silk_layer)] = 1;
-	print_group[GetLayerGroupNumberByNumber(top_silk_layer)] = 1;
-	for (i = 0; i < max_copper_layer; i++) {
-		if (print_group[GetLayerGroupNumberByNumber(i)]) {
-			print_layer[i] = 1;
-		}
-	}
+
+	len = pcb_layer_list(PCB_LYT_SILK | PCB_LYT_COPPER, tmp, sizeof(tmp));
+	for(i = 0; i < len; i++)
+		print_group[GetLayerGroupNumberByNumber(tmp[i])] = 1;
+
 	memcpy(saved_layer_stack, LayerStack, sizeof(LayerStack));
 	qsort(LayerStack, max_copper_layer, sizeof(LayerStack[0]), dxf_layer_sort);
 	linewidth = -1;
@@ -4357,7 +4355,6 @@ static void dxf_parse_arguments(int *argc, char ***argv)
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_parse_arguments () function.\n", __FILE__, __LINE__);
 #endif
-	hid_register_attributes(dxf_options, sizeof(dxf_options) / sizeof(dxf_options[0]));
 	hid_parse_command_line(argc, argv);
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Leaving dxf_parse_arguments () function.\n", __FILE__, __LINE__);
@@ -5933,6 +5930,8 @@ static void dxf_progress(int dxf_so_far, int dxf_total, const char *dxf_message)
 {
 }
 
+const char *dxf_cookie = "dxf exporter";
+
 
 /*!
  * \brief Call this as soon as possible from main().
@@ -5940,7 +5939,7 @@ static void dxf_progress(int dxf_so_far, int dxf_total, const char *dxf_message)
  * Initialise and register the DXF HID.
  * No other HID calls are valid until this is called.
  */
-void hid_dxf_init()
+pcb_uninit_t hid_export_dxf_init()
 {
 	memset(&dxf_hid, 0, sizeof(HID));
 
@@ -5977,6 +5976,11 @@ void hid_dxf_init()
 	dxf_hid.fill_rect = dxf_fill_rect;
 
 	hid_register_hid(&dxf_hid);
+
+	hid_register_attributes(dxf_options, sizeof(dxf_options) / sizeof(dxf_options[0]), dxf_cookie, 0);
+
+/*	return hid_dxf_uninit();*/
+	return NULL;
 }
 
 
