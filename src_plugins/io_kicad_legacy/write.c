@@ -814,7 +814,7 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 	gdl_iterator_t eit;
 	LineType *line;
 	ArcType *arc;
-	Coord arcStartX, arcStartY, arcEndX, arcEndY, arcRadius; /* for arc rendering */
+	Coord arcStartX, arcStartY, arcEndX, arcEndY, arcThickness; /* for arc rendering */
 
 	ElementType *element;
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
@@ -975,21 +975,23 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 		Coord xPos = element->MarkX + xOffset;
 		Coord yPos = element->MarkY + yOffset;
 */
+
+			arcThickness = arc->Thickness;
 			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
 				pcb_fprintf(FP, "DC %.0mk %.0mk %.0mk %.0mk %.0mk ",
 										arc->X - element->MarkX, /* x_1 centre */
 										arc->Y - element->MarkY, /* y_2 centre */
 										arcStartX - element->MarkX, /* x on circle */
 										arcStartY - element->MarkY, /* y on circle */
-										arc->Thickness); /* stroke thickness */
+										arcThickness); /* stroke thickness */
 			} else {
-				pcb_fprintf(FP, "DA %.0mk %.0mk %.0mk %.0mk %mA %.0mk ",
+				pcb_fprintf(FP, "DA %.0mk %.0mk %.0mk %.0mk %mA ",
 										arc->X - element->MarkX, /* x_1 centre */
 										arc->Y - element->MarkY, /* y_2 centre */
 										arcEndX - element->MarkX, /* x on arc */
 										arcEndY - element->MarkY, /* y on arc */
-										arc->Delta,		/* CW delta angle in decidegrees */
-										arc->Thickness); /* stroke thickness */
+										arc->Delta);		/* CW delta angle in decidegrees */
+				pcb_fprintf(FP, "%.0mk ", arcThickness); /* stroke thickness */
 			}
 			fprintf(FP, "%d\n", silkLayer); /* and now append a suitable Kicad layer, front silk = 21, back silk 20 */
 		}
