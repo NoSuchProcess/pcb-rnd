@@ -22,10 +22,7 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
-
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -47,19 +44,19 @@
 #include "error.h"
 #include "buffer.h"
 #include "create.h"
+#include "layer.h"
+#include "plugins.h"
+#include "compat_misc.h"
+#include "misc_util.h"
 
 #include "hid.h"
-#include "hid_draw.h"
-#include "../hidint.h"
-#include "hid/common/hidnogui.h"
-#include "hid/common/draw_helpers.h"
-#include "hid/common/hidinit.h"
+#include "hid_attrib.h"
+#include "hid_nogui.h"
+#include "hid_draw_helpers.h"
+#include "hid_init.h"
+#include "hid_helper.h"
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
-
-#include <cairo.h>
+/*#include <cairo.h>*/
 
 #define CRASH fprintf(stderr, "HID error: pcb called unimplemented FreeCAD function %s.\n", __FUNCTION__); abort()
 #define CRASH2 fprintf(stderr, "HID error: Internal error in %s.\n", __FUNCTION__); abort()
@@ -76,7 +73,7 @@ static cairo_t *bboard_cairo_ctx;
 #define BBOARDBASE	"bboard"
 
 /****************************************************************************************************
-* Breakboard export filter parameters and options
+* Breadboard export filter parameters and options
 ****************************************************************************************************/
 
 static HID bboard_hid;
@@ -170,7 +167,7 @@ static HID_Attribute *bboard_get_export_options(int *n)
 	if (PCB)
 		derive_default_filename(PCB->Filename, &bboard_options[HA_bboardfile], ".png", &last_made_filename);
 
-	bboard_options[HA_bgcolor].default_val.str_value = strdup("#FFFFFF");
+	bboard_options[HA_bgcolor].default_val.str_value = pcb_strdup("#FFFFFF");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -213,7 +210,7 @@ static int bboard_validate_layer(const char *name, int group, int skipsolder)
 static void bboard_get_layer_color(LayerType * layer, int *clr_r, int *clr_g, int *clr_b)
 {
 	char *clr;
-	int r, g, b;
+	unsigned int r, g, b;
 
 	if ((clr = AttributeGetFromList(&(layer->Attributes), "BBoard::LayerColor")) != NULL) {
 		if (clr[0] == '#') {
@@ -262,8 +259,9 @@ static void bboard_draw_line_cairo(Coord x1, Coord y1, Coord x2, Coord y2, Coord
 	cairo_stroke(bboard_cairo_ctx);
 }
 
+#warning TODO: remove x1;y1;x2;y2
 static void
-bboard_draw_arc_cairo(Coord x1, Coord y1, Coord x2, Coord y2, Coord x,
+bboard_draw_arc_cairo(/*Coord x1, Coord y1, Coord x2, Coord y2,*/ Coord x,
 											Coord y, Coord w, Coord h, Angle sa, Angle a, Coord thickness)
 {
 	ASSERT_CAIRO;
@@ -285,9 +283,9 @@ bboard_draw_arc_cairo(Coord x1, Coord y1, Coord x2, Coord y2, Coord x,
 	cairo_stroke(bboard_cairo_ctx);
 }
 
-static bool bboard_init_board_cairo(Coord x1, Coord y1, const char *color, int antialias)
+static pcb_bool bboard_init_board_cairo(Coord x1, Coord y1, const char *color, int antialias)
 {
-	int r, g, b;
+	unsigned int r, g, b;
 	float tr = 1.;								/* background transparency */
 
 	if (color) {
@@ -298,7 +296,7 @@ static bool bboard_init_board_cairo(Coord x1, Coord y1, const char *color, int a
 		else {
 			if ((color[0] != '#')
 					|| sscanf(&(color[1]), "%02x%02x%02x", &r, &g, &b) != 3) {
-				Message("BBExport: Invalid background color \"%s\"", color);
+				Message(PCB_MSG_ERROR, "BBExport: Invalid background color \"%s\"", color);
 				r = g = b = 0xff;
 			}
 
@@ -338,16 +336,18 @@ static void bboard_finish_board_cairo(void)
 	cairo_surface_destroy(bboard_cairo_sfc);
 }
 
-static char *bboard_get_model_filename(char *basename, char *value, bool nested)
+static char *bboard_get_model_filename(char *basename, char *value, pcb_bool nested)
 {
 	char *s;
 
-	s =
-		Concat(pcblibdir, PCB_DIR_SEPARATOR_S, MODELBASE, PCB_DIR_SEPARATOR_S,
+/*
+	s = Concat(pcblibdir, PCB_DIR_SEPARATOR_S, MODELBASE, PCB_DIR_SEPARATOR_S,
 					 BBOARDBASE, PCB_DIR_SEPARATOR_S, basename, (value
 																											 && nested) ?
 					 PCB_DIR_SEPARATOR_S : "", (value && nested) ? basename : "", (value) ? "-" : "", (value) ? value : "", BBEXT, NULL);
-	if (s) {
+*/
+	s = pcb_strdup("TODO_fn1");
+	if (s != NULL) {
 		if (!FileExists(s)) {
 			free(s);
 			s = NULL;
@@ -366,10 +366,10 @@ static int bboard_parse_offset(char *s, Coord * ox, Coord * oy)
 	while (sscanf(s, "%30s%n", val, &ln) >= 1) {
 		switch (n) {
 		case 0:
-			xx = GetValueEx(val, NULL, NULL, NULL, "mm");
+			xx = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 1:
-			yy = GetValueEx(val, NULL, NULL, NULL, "mm");
+			yy = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		}
 		s = s + ln;
@@ -378,16 +378,16 @@ static int bboard_parse_offset(char *s, Coord * ox, Coord * oy)
 	if (n == 2) {
 		*ox = xx;
 		*oy = yy;
-		return true;
+		return pcb_true;
 	}
 	else {
-		return false;
+		return pcb_false;
 	}
 
 }
 
 
-static void bboard_export_element_cairo(ElementType * element, bool onsolder)
+static void bboard_export_element_cairo(ElementType * element, pcb_bool onsolder)
 {
 	cairo_surface_t *sfc;
 	Coord ex, ey;
@@ -395,13 +395,13 @@ static void bboard_export_element_cairo(ElementType * element, bool onsolder)
 	int w, h;
 	Angle tmp_angle = 0.0;
 	char *model_angle, *s = 0, *s1, *s2, *fname = NULL;
-	bool offset_in_model = false;
+	pcb_bool offset_in_model = pcb_false;
 
 	ASSERT_CAIRO;
 
 	s1 = AttributeGetFromList(&(element->Attributes), "BBoard::Model");
 	if (s1) {
-		s = strdup(s1);
+		s = pcb_strdup(s1);
 		if (!s)
 			return;
 
@@ -410,42 +410,42 @@ static void bboard_export_element_cairo(ElementType * element, bool onsolder)
 			offset_in_model = bboard_parse_offset(s2 + 1, &ox, &oy);
 		}
 		if (!EMPTY_STRING_P(VALUE_NAME(element))) {
-			fname = bboard_get_model_filename(s, VALUE_NAME(element), true);
+			fname = bboard_get_model_filename(s, VALUE_NAME(element), pcb_true);
 			if (!fname)
-				fname = bboard_get_model_filename(s, VALUE_NAME(element), false);
+				fname = bboard_get_model_filename(s, VALUE_NAME(element), pcb_false);
 		}
 		if (!fname)
-			fname = bboard_get_model_filename(s, NULL, false);
+			fname = bboard_get_model_filename(s, NULL, pcb_false);
 
 		if (s)
 			free(s);
 	}
 	if (!fname) {
 		/* invalidate offset from BBoard::Model, if such model does not exist */
-		offset_in_model = false;
+		offset_in_model = pcb_false;
 
 		s = AttributeGetFromList(&(element->Attributes), "Footprint::File");
 		if (s) {
 			if (!EMPTY_STRING_P(VALUE_NAME(element))) {
-				fname = bboard_get_model_filename(s, VALUE_NAME(element), true);
+				fname = bboard_get_model_filename(s, VALUE_NAME(element), pcb_true);
 				if (!fname)
-					fname = bboard_get_model_filename(s, VALUE_NAME(element), false);
+					fname = bboard_get_model_filename(s, VALUE_NAME(element), pcb_false);
 			}
 			if (!fname)
-				fname = bboard_get_model_filename(s, NULL, false);
+				fname = bboard_get_model_filename(s, NULL, pcb_false);
 		}
 	}
 	if (!fname) {
 		s = DESCRIPTION_NAME(element);
 		if (!EMPTY_STRING_P(DESCRIPTION_NAME(element))) {
 			if (!EMPTY_STRING_P(VALUE_NAME(element))) {
-				fname = bboard_get_model_filename(DESCRIPTION_NAME(element), VALUE_NAME(element), true);
+				fname = bboard_get_model_filename(DESCRIPTION_NAME(element), VALUE_NAME(element), pcb_true);
 				if (!fname)
-					fname = bboard_get_model_filename(DESCRIPTION_NAME(element), VALUE_NAME(element), false);
+					fname = bboard_get_model_filename(DESCRIPTION_NAME(element), VALUE_NAME(element), pcb_false);
 
 			}
 			if (!fname)
-				fname = bboard_get_model_filename(DESCRIPTION_NAME(element), NULL, false);
+				fname = bboard_get_model_filename(DESCRIPTION_NAME(element), NULL, pcb_false);
 		}
 	}
 
@@ -460,7 +460,7 @@ static void bboard_export_element_cairo(ElementType * element, bool onsolder)
 		w = cairo_image_surface_get_width(sfc);
 		h = cairo_image_surface_get_height(sfc);
 
-		// read offest from attribute
+		/* read offest from attribute */
 		if (!offset_in_model) {
 			s = AttributeGetFromList(&(element->Attributes), "BBoard::Offset");
 
@@ -480,7 +480,7 @@ static void bboard_export_element_cairo(ElementType * element, bool onsolder)
 
 
 		cairo_translate(bboard_cairo_ctx, ex, ey);
-		if (TEST_FLAG(ONSOLDERFLAG, (element))) {
+		if (TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) {
 			cairo_scale(bboard_cairo_ctx, 1, -1);
 		}
 		cairo_rotate(bboard_cairo_ctx, -tmp_angle * M_PI / 180.);
@@ -527,7 +527,7 @@ static void bboard_do_export(HID_Attr_Val * options)
 
 	for (i = 0; i < max_copper_layer; i++) {
 		layer = PCB->Data->Layer + i;
-		if (layer->LineN)
+		if (linelist_length(&layer->Line) > 0)
 			group_data[GetLayerGroupNumberByNumber(i)].draw = 1;
 	}
 
@@ -535,14 +535,14 @@ static void bboard_do_export(HID_Attr_Val * options)
 
 	/* write out components on solder side */
 	ELEMENT_LOOP(PCB->Data);
-	if (TEST_FLAG(ONSOLDERFLAG, (element))) {
+	if (TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) {
 		bboard_export_element_cairo(element, 1);
 	}
 	END_LOOP;
 
 	/* write out components on component side */
 	ELEMENT_LOOP(PCB->Data);
-	if (!TEST_FLAG(ONSOLDERFLAG, (element))) {
+	if (!TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) {
 		bboard_export_element_cairo(element, 0);
 	}
 	END_LOOP;
@@ -559,8 +559,9 @@ static void bboard_do_export(HID_Attr_Val * options)
 			END_LOOP;
 			ARC_LOOP(&(PCB->Data->Layer[i]));
 			{
-				bboard_draw_arc_cairo(arc->Point1.X, arc->Point1.Y,
-															arc->Point2.X, arc->Point2.Y,
+#warning TODO: remove x1;y1;x2;y2
+				bboard_draw_arc_cairo(/*arc->Point1.X, arc->Point1.Y,
+															arc->Point2.X, arc->Point2.Y,*/
 															arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
 			}
 			END_LOOP;
