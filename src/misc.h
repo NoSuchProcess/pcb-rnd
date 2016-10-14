@@ -100,8 +100,4 @@ char *GetInfoString(void);
    comparing two similar footprints.  */
 int ElementOrientation(ElementType * e);
 
-/* These are in netlist.c */
-
-void NetlistChanged(int force_unfreeze);
-
 #endif /* PCB_MISC_H */

@@ -47,8 +47,6 @@
 #include "compat_misc.h"
 #include "netlist.h"
 
-extern int netlist_needs_update;
-
 static int pcb_netlist_swap()
 {
 	char *pins[3] = { NULL, NULL, NULL };
@@ -253,20 +251,20 @@ static int ActionNetlist(int argc, const char **argv, Coord x, Coord y)
 		return 0;
 	}
 	else if (strcasecmp(argv[0], "freeze") == 0) {
-		netlist_frozen++;
+		PCB->netlist_frozen++;
 		return 0;
 	}
 	else if (strcasecmp(argv[0], "thaw") == 0) {
-		if (netlist_frozen > 0) {
-			netlist_frozen--;
-			if (netlist_needs_update)
+		if (PCB->netlist_frozen > 0) {
+			PCB->netlist_frozen--;
+			if (PCB->netlist_needs_update)
 				pcb_netlist_changed(0);
 		}
 		return 0;
 	}
 	else if (strcasecmp(argv[0], "forcethaw") == 0) {
-		netlist_frozen = 0;
-		if (netlist_needs_update)
+		PCB->netlist_frozen = 0;
+		if (PCB->netlist_needs_update)
 			pcb_netlist_changed(0);
 		return 0;
 	}

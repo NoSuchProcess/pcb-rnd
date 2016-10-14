@@ -57,18 +57,14 @@
   char * PCB->NetlistLib[n].Menu[i].Entry[j].ListEntry
 */
 
-#warning TODO: move these in PCB
-int netlist_frozen = 0;
-int netlist_needs_update = 0;
-
 void pcb_netlist_changed(int force_unfreeze)
 {
 	if (force_unfreeze)
-		netlist_frozen = 0;
-	if (netlist_frozen)
-		netlist_needs_update = 1;
+		PCB->netlist_frozen = 0;
+	if (PCB->netlist_frozen)
+		PCB->netlist_needs_update = 1;
 	else {
-		netlist_needs_update = 0;
+		PCB->netlist_needs_update = 0;
 		hid_action("NetlistChanged");
 	}
 }

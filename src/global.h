@@ -312,6 +312,11 @@ typedef struct PCBType {
 	DataTypePtr Data;							/* entire database */
 
 	pcb_bool is_footprint;						/* If set, the user has loaded a footprint, not a pcb. */
+
+/* netlist states */
+	int netlist_frozen;                /* counter */
+	unsigned netlist_needs_update:1;
+
 } PCBType, *PCBTypePtr;
 
 typedef struct {								/* information about the paste buffer */
