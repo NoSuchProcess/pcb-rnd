@@ -1,0 +1,34 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> The way forward on cleanup </H2>
+Plan:
+<ul>
+	<li> phase 0: port the rest
+		<ul>
+			<li> import the remaining plugins and exporters before the big cleanup because it's cheaper to port them now
+		</ul>
+	<li> phase 1: reorg
+		<ul>
+			<li> reorganize the code: from action-oriented (e.g. change.c, remove.c, mirror.c) into object-type-oriented code (e.g. obj_line.c, obj_arc.c)
+			<li> global*.h must be dissolved/removed
+			<li> macro.h should be dissolved/removed
+			<li> const.h should be reduced to 1/3
+		</ul>
+	<li> phase 2: clean the namespace
+		<ul>
+			<li> pcb_ prefixes
+			<li> unify convention: underscores instead of CamelCase, prefer shorter names
+			<li> better connection between file name and function name prefixes (don't invent 3 different names for the same thing)
+		</ul>
+	<li> phase 3: split & pack
+		<ul>
+			<li> move out generic, non-pcb-specific code to "external libs" (e.g. polygon, heap, the conf system)
+			<li> determine layering of the new lib system (e.g. a generic unit, printf, etc. util lib on layer 0, then a lib about the basic object types on layer 1, then footprint libraries and other plugins on layer 2)
+			<li> compile one .a file per layer, link the final executable using those .a files
+			<li> make the libs installable, together with the headers
+			<li> fix gsch2pcb-rnd to use the new lib(s)
+		</ul>
+</ul>
+
