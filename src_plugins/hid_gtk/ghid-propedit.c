@@ -370,6 +370,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	conf_setf(CFR_DESIGN, "editor/view/flip_x", -1, "%d", fx, POL_OVERWRITE);
 	conf_setf(CFR_DESIGN, "editor/view/flip_y", -1, "%d", fy, POL_OVERWRITE);
 
+/*
 	{
 		GdkGC *gc = gdk_gc_new(GDK_DRAWABLE(gport->top_window->window));
 		GdkColor clr = {0, 0, 0, 0};
@@ -380,10 +381,11 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 
 		x = (PCB_MIL_TO_COORD(1000) - cx) / zm + 0.5 + 200;
 		y = (PCB_MIL_TO_COORD(1000) - cy) / zm + 0.5 + 150;
-/*		gdk_draw_line(pm, gc, x, y, 0, 0);
+		gdk_draw_line(pm, gc, x, y, 0, 0);
 		gdk_draw_line(pm, gc, x+1, y+1, 1, 1);
-		gdk_draw_line(pm, gc, x-1, y-1, -1, -1);*/
+		gdk_draw_line(pm, gc, x-1, y-1, -1, -1);
 	}
+*/
 
 
 	PCB = old_pcb;
