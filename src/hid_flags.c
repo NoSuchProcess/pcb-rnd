@@ -32,7 +32,7 @@ int hid_get_flag(const char *name)
 		return n->val.boolean[0];
 	}
 	else {
-		char *end, *s;
+		const char *end, *s;
 		const char *argv[2];
 		if (cp != NULL) {
 			const HID_Action *a;
