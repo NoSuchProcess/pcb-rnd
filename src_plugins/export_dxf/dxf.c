@@ -730,8 +730,6 @@ static int lastcap = -1;
 
 static int lastcolor = -1;
 
-static int print_group[MAX_LAYER];
-
 static int print_layer[MAX_LAYER];
 
 /*!
@@ -4295,23 +4293,16 @@ static void dxf_do_export(HID_Attr_Val * options)
 	strcpy(dxf_filename, dxf_fnbase);
 	strcat(dxf_filename, "_");
 	dxf_filesuffix = dxf_filename + strlen(dxf_filename);
-	memset(print_group, 0, sizeof(print_group));
 	memset(print_layer, 0, sizeof(print_layer));
 	/*
 	 * use this to temporarily enable all layers.
 	 */
 	hid_save_and_show_layer_ons(save_ons);
-#warning TODO: do we need this loop if we select them all in the next?
-	for (i = 0; i < max_copper_layer; i++) {
-		LayerType *layer = PCB->Data->Layer + i;
-		if (!IsLayerEmpty(layer)) {
-			print_group[GetLayerGroupNumberByNumber(i)] = 1;
-		}
-	}
 
 	len = pcb_layer_list(PCB_LYT_SILK | PCB_LYT_COPPER, tmp, sizeof(tmp));
 	for(i = 0; i < len; i++)
-		print_group[GetLayerGroupNumberByNumber(tmp[i])] = 1;
+		if (!IsLayerNumEmpty(tmp[i]))
+			print_layer[tmp[i]] = 1;
 
 	memcpy(saved_layer_stack, LayerStack, sizeof(LayerStack));
 	qsort(LayerStack, max_copper_layer, sizeof(LayerStack[0]), dxf_layer_sort);
