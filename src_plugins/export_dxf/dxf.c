@@ -324,7 +324,7 @@ static double dxf_xy_to_angle(double x, double y);
 /*!
  * \brief Debugging on/off switch.
  */
-#define DEBUG 1
+#define DEBUG 0
 
 /*!
  * \brief Error handling of not yet implemented functions.
