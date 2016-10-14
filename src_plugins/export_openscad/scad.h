@@ -107,36 +107,33 @@
 #define SCAD_EL_POLY		1
 #define SCAD_EL_LASTPOLY	2
 
-typedef struct color_table_struct
-{
-  int r, g, b;
+typedef struct color_table_struct {
+	int r, g, b;
 } color_table_struct;
 
-typedef struct hid_gc_struct
-{
-  EndCapStyle cap;
-  int width;
-  int erase;
-  int drill;
-  int r, g, b;
-  int seq;
+typedef struct hid_gc_struct {
+	EndCapStyle cap;
+	int width;
+	int erase;
+	int drill;
+	int r, g, b;
+	int seq;
 } hid_gc_struct;
 
-typedef struct
-{
-  int processed;
-  Coord x1, y1, x2, y2;
+typedef struct {
+	int processed;
+	Coord x1, y1, x2, y2;
 } t_outline_segment;
 
 extern FILE *scad_output;
 
-extern void scad_write_prologue ();
-extern void scad_generate_holes ();
-extern void scad_generate_plating ();
-extern void scad_generate_board ();
-extern void scad_generate_mask ();
-extern float scad_scale_coord (float x);
+extern void scad_write_prologue();
+extern void scad_generate_holes();
+extern void scad_generate_plating();
+extern void scad_generate_board();
+extern void scad_generate_mask();
+extern float scad_scale_coord(float x);
 
-void scad_process_components (int mode);
+void scad_process_components(int mode);
 
 #endif

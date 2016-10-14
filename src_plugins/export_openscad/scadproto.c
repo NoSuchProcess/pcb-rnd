@@ -62,82 +62,65 @@
 #include "scad.h"
 
 
-void
-scad_write_prologue ()
+void scad_write_prologue()
 {
-  fputs ("//SCAD\n\n", scad_output);
+	fputs("//SCAD\n\n", scad_output);
 
-  fputs
-    ("module line_segment_r(length, width, thickness, x, y, a, bd, c1, c2) {\n"
-     "\ttranslate([x,y,0]) rotate ([0,0,a]) union() {\n"
-     "\t\tif (bd) {cube ([length, width,thickness],true);}\n"
-     "\t\tif (c2) {translate([length/2.,0,0]) cylinder(h=thickness, r=width/2,center=true,$fn=30);}\n"
-     "\t\tif (c1) { translate([-length/2.,0,0]) cylinder(h=thickness, r=width/2,center=true,$fn=30);}\n"
-     "\t}\n" "}\n\n", scad_output);
+	fputs
+		("module line_segment_r(length, width, thickness, x, y, a, bd, c1, c2) {\n"
+		 "\ttranslate([x,y,0]) rotate ([0,0,a]) union() {\n"
+		 "\t\tif (bd) {cube ([length, width,thickness],true);}\n"
+		 "\t\tif (c2) {translate([length/2.,0,0]) cylinder(h=thickness, r=width/2,center=true,$fn=30);}\n"
+		 "\t\tif (c1) { translate([-length/2.,0,0]) cylinder(h=thickness, r=width/2,center=true,$fn=30);}\n"
+		 "\t}\n" "}\n\n", scad_output);
 
-  fputs ("module line_segment(length, width, thickness, x, y, a) {\n"
-	 "\ttranslate([x,y,0]) rotate ([0,0,a]) {\n"
-	 "\t\tcube ([length, width,thickness],true);\n" "\t}\n" "}\n\n",
-	 scad_output);
+	fputs("module line_segment(length, width, thickness, x, y, a) {\n"
+				"\ttranslate([x,y,0]) rotate ([0,0,a]) {\n"
+				"\t\tcube ([length, width,thickness],true);\n" "\t}\n" "}\n\n", scad_output);
 }
 
-void
-scad_generate_holes ()
+void scad_generate_holes()
 {
-  fprintf (scad_output, "module all_holes() {\n\tplating=%f;\n",
-	   HOLE_PLATING);
-  fprintf (scad_output, "\tunion () {\n");
-  fprintf (scad_output, "\t\tfor (i = layer_pdrill_list) {\n");
-  fprintf (scad_output,
-	   "\t\t\ttranslate([i[1][0],i[1][1],0]) cylinder(r=i[0]+2*plating, h=%f, center=true, $fn=30);\n",
-	   HOLE_THICKNESS);
-  fprintf (scad_output, "\t\t}\n");
-  fprintf (scad_output, "\t\tfor (i = layer_udrill_list) {\n");
-  fprintf (scad_output,
-	   "\t\t\ttranslate([i[1][0],i[1][1],0]) cylinder(r=i[0], h=%f, center=true, $fn=30);\n",
-	   HOLE_THICKNESS);
-  fprintf (scad_output, "\t\t}\n");
-  fprintf (scad_output, "\t}\n");
-  fprintf (scad_output, "}\n\n");
+	fprintf(scad_output, "module all_holes() {\n\tplating=%f;\n", HOLE_PLATING);
+	fprintf(scad_output, "\tunion () {\n");
+	fprintf(scad_output, "\t\tfor (i = layer_pdrill_list) {\n");
+	fprintf(scad_output,
+					"\t\t\ttranslate([i[1][0],i[1][1],0]) cylinder(r=i[0]+2*plating, h=%f, center=true, $fn=30);\n", HOLE_THICKNESS);
+	fprintf(scad_output, "\t\t}\n");
+	fprintf(scad_output, "\t\tfor (i = layer_udrill_list) {\n");
+	fprintf(scad_output, "\t\t\ttranslate([i[1][0],i[1][1],0]) cylinder(r=i[0], h=%f, center=true, $fn=30);\n", HOLE_THICKNESS);
+	fprintf(scad_output, "\t\t}\n");
+	fprintf(scad_output, "\t}\n");
+	fprintf(scad_output, "}\n\n");
 }
 
-void
-scad_generate_plating ()
+void scad_generate_plating()
 {
-  fprintf (scad_output, "module all_plating() {\n");
-  fprintf (scad_output, "\tplating=%f;\n", HOLE_PLATING + 0.02);
-  fprintf (scad_output, "\tunion () {\n");
-  fprintf (scad_output, "\t\tfor (i = layer_pdrill_list) {\n");
-  fprintf (scad_output,
-	   "\t\t\ttranslate([i[1][0],i[1][1],0]) difference () {\n");
-  fprintf (scad_output,
-	   "\t\t\t\tcylinder(r=i[0]+2*plating, h=%f, center=true, $fn=30);\n",
-	   PLATING_THICKNESS + 0.01);
-  fprintf (scad_output,
-	   "\t\t\t\tcylinder(r=i[0]-0.01, h=%f, center=true, $fn=30);\n",
-	   PLATING_THICKNESS + 0.2);
-  fprintf (scad_output, "\t\t\t}\n");
-  fprintf (scad_output, "\t\t}\n");
-  fprintf (scad_output, "\t}\n");
-  fprintf (scad_output, "}\n\n");
+	fprintf(scad_output, "module all_plating() {\n");
+	fprintf(scad_output, "\tplating=%f;\n", HOLE_PLATING + 0.02);
+	fprintf(scad_output, "\tunion () {\n");
+	fprintf(scad_output, "\t\tfor (i = layer_pdrill_list) {\n");
+	fprintf(scad_output, "\t\t\ttranslate([i[1][0],i[1][1],0]) difference () {\n");
+	fprintf(scad_output, "\t\t\t\tcylinder(r=i[0]+2*plating, h=%f, center=true, $fn=30);\n", PLATING_THICKNESS + 0.01);
+	fprintf(scad_output, "\t\t\t\tcylinder(r=i[0]-0.01, h=%f, center=true, $fn=30);\n", PLATING_THICKNESS + 0.2);
+	fprintf(scad_output, "\t\t\t}\n");
+	fprintf(scad_output, "\t\t}\n");
+	fprintf(scad_output, "\t}\n");
+	fprintf(scad_output, "}\n\n");
 }
 
-void
-scad_generate_board ()
+void scad_generate_board()
 {
-  fprintf (scad_output, "module board_body() {\n");
-  fprintf (scad_output,
-	   "\ttranslate ([0, 0, %f]) linear_extrude(height=%f) board_outline();",
-	   -BOARD_THICKNESS / 2., BOARD_THICKNESS);
-  fprintf (scad_output, "}\n\n");
+	fprintf(scad_output, "module board_body() {\n");
+	fprintf(scad_output,
+					"\ttranslate ([0, 0, %f]) linear_extrude(height=%f) board_outline();", -BOARD_THICKNESS / 2., BOARD_THICKNESS);
+	fprintf(scad_output, "}\n\n");
 }
 
-void
-scad_generate_mask ()
+void scad_generate_mask()
 {
-  fprintf (scad_output, "module mask_surface() {\n");
-  fprintf (scad_output,
-	   "\ttranslate ([0, 0, %f]) linear_extrude(height=%f) board_outline();",
-	   -MASK_THICKNESS / 2., MASK_THICKNESS);
-  fprintf (scad_output, "}\n\n");
+	fprintf(scad_output, "module mask_surface() {\n");
+	fprintf(scad_output,
+					"\ttranslate ([0, 0, %f]) linear_extrude(height=%f) board_outline();", -MASK_THICKNESS / 2., MASK_THICKNESS);
+	fprintf(scad_output, "}\n\n");
 }
