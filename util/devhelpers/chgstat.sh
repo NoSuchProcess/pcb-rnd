@@ -42,7 +42,7 @@ do
 done| awk -v import=$import '
 		{
 			rev=int($1)
-			if (((rev >=  3871) && (rev <= 3914)) || (rev == 4023) || (rev == 4033)) {
+			if (((rev >= 3871) && (rev <= 3914)) || ((rev >= 4065) && (rev <= 4068)) || (rev == 4023) || (rev == 4033)) {
 # old plugins and export plugin import
 				old++
 			}
