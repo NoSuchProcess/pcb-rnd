@@ -1,3 +1,4 @@
+4048	configure	netlist.c split and cleanup
 4019	configure	case sensitive string regex for query
 4011	configure	sphash available for all plugins (needed by query first)
 4002	configure	auto-enable the query plugin
