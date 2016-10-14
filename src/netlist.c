@@ -104,7 +104,6 @@ LibraryMenuTypePtr pcb_netname_to_netname(const char *netname)
 	return 0;
 }
 
-#warning do not use int here
 int pcb_pin_name_to_xy(LibraryEntryType * pin, Coord *x, Coord *y)
 {
 	ConnectionType conn;
@@ -195,4 +194,20 @@ void pcb_netlist_style(LibraryMenuType * net, const char *style)
 {
 	free(net->Style);
 	net->Style = pcb_strdup_null((char *) style);
+}
+
+LibraryMenuTypePtr rats_patch_find_net4pin(PCBTypePtr pcb, const char *pin)
+{
+	int n;
+
+	for (n = 0; n < pcb->NetlistLib[NETLIST_EDITED].MenuN; n++) {
+		LibraryMenuTypePtr menu = &pcb->NetlistLib[NETLIST_EDITED].Menu[n];
+		int p;
+		for (p = 0; p < menu->EntryN; p++) {
+			LibraryEntryTypePtr entry = &menu->Entry[p];
+			if (strcmp(entry->ListEntry, pin) == 0)
+				return menu;
+		}
+	}
+	return NULL;
 }

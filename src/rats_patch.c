@@ -263,23 +263,6 @@ void rats_patch_make_edited(PCBTypePtr pcb)
 		rats_patch_apply(pcb, n);
 }
 
-
-LibraryMenuTypePtr rats_patch_find_net4pin(PCBTypePtr pcb, const char *pin)
-{
-	int n;
-
-	for (n = 0; n < pcb->NetlistLib[NETLIST_EDITED].MenuN; n++) {
-		LibraryMenuTypePtr menu = &pcb->NetlistLib[NETLIST_EDITED].Menu[n];
-		int p;
-		for (p = 0; p < menu->EntryN; p++) {
-			LibraryEntryTypePtr entry = &menu->Entry[p];
-			if (strcmp(entry->ListEntry, pin) == 0)
-				return menu;
-		}
-	}
-	return NULL;
-}
-
 static LibraryMenuTypePtr rats_patch_find_net(PCBTypePtr pcb, const char *netname, int listidx)
 {
 	int n;
