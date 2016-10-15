@@ -945,9 +945,9 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 
 			LibraryMenuTypePtr current_pin_menu = pcb_netlist_find_net4pin(Layout, pin);
 			if (current_pin_menu != NULL) {
-				fprintf(FP, "Ne 0 \"%s\"\n", pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
+				fprintf(FP, "Ne %d \"%s\"\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
 			} else {
-				fprintf(FP, "Ne 0 \"\"\n"); /* library parts have empty net descriptors, in a .brd they don't */
+				fprintf(FP, "Ne 0 \"\"\n"); /* unconnected pads have zero for net */
 			} 
 			/*
 				PrintQuotedString(FP, (char *) EMPTY(pin->Name));
@@ -996,9 +996,9 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 
 			LibraryMenuTypePtr current_pad_menu = pcb_netlist_find_net4pad(Layout, pad);
 			if (current_pad_menu != NULL) {
-				fprintf(FP, "Ne 0 \"%s\"\n", pcb_netlist_name(current_pad_menu)); /* library parts have empty net descriptors, in a .brd they don't */
+				fprintf(FP, "Ne %d \"%s\"\n", (1 + pcb_netlist_net_idx(Layout, current_pad_menu)), pcb_netlist_name(current_pad_menu)); /* library parts have empty net descriptors, in a .brd they don't */
 			} else {
-				fprintf(FP, "Ne 0 \"\"\n"); /* an net number of 0 indicates an unconnected pad in pcbnew */
+				fprintf(FP, "Ne 0 \"\"\n"); /* a net number of 0 indicates an unconnected pad in pcbnew */
 			} 
 
 			fputs("$EndPAD\n",FP);
