@@ -120,10 +120,11 @@ static void scad_export_include_files(void)
 	char line[2048];
 	int l;
 	FILE *f;
+#warning TODO: no libdir
+	char *pcblibdir = "TODO_libdir63";
 
 	if (!include_files_list)
 		return;
-
 
 	l = strlen(pcblibdir) + 1 + strlen(MODELBASE) + 1 + strlen(SCADBASE) + 1 + include_file_maxlength + 1;
 	if ((fullname = (char *) malloc(l * sizeof(char))) == NULL) {
@@ -186,6 +187,8 @@ static FILE *scad_open_model(char *model, char *first_line, int size, pcb_bool s
 	int l;
 	FILE *f = NULL;
 	char *cmd;
+#warning TODO: no libdir
+	char *pcblibdir = "TODO_libdir63";
 
 	l =
 		strlen(pcblibdir) + 1 + strlen(MODELBASE) + 1 + strlen(SCADBASE) + 1 +

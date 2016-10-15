@@ -44,6 +44,9 @@
 #include "error.h"
 #include "buffer.h"
 #include "create.h"
+#include "conf_core.h"
+#include "layer.h"
+#include "plugins.h"
 
 #include "hid.h"
 #include "hid_draw_helpers.h"
@@ -501,12 +504,10 @@ static void scad_do_export(HID_Attr_Val * options)
 	int inner_layers;
 	float layer_spacing, layer_offset, cut_offset = 0.;
 	BoxType region;
-	FlagType save_thindraw;
 	LayerType *layer;
 
-	save_thindraw = PCB->Flags;
-	CLEAR_FLAG(PCB_FLAG_THINDRAW, PCB);
-	CLEAR_FLAG(PCB_FLAG_THINDRAWPOLY, PCB);
+	conf_force_set_bool(conf_core.editor.thin_draw, 0);
+	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 
 	if (!options) {
 		scad_get_export_options(0);
@@ -531,7 +532,7 @@ static void scad_do_export(HID_Attr_Val * options)
 	scad_output = fopen(scad_filename, "w");
 	if (scad_output == NULL) {
 		Message(PCB_MSG_ERROR, "openscad: could not open %s for writing.\n", scad_filename);
-		return;
+		goto quit;
 	}
 
 	scad_write_prologue(PCB->Filename);
@@ -546,7 +547,7 @@ static void scad_do_export(HID_Attr_Val * options)
 #endif
 	for (i = 0; i < max_copper_layer; i++) {
 		layer = PCB->Data->Layer + i;
-		if (layer->LineN || layer->TextN || layer->ArcN || layer->PolygonN)
+		if (!IsLayerEmpty(layer))
 			group_data[GetLayerGroupNumberByNumber(i)].draw = 1;
 	}
 
@@ -717,12 +718,12 @@ static void scad_do_export(HID_Attr_Val * options)
 
 	fprintf(scad_output, "// END_OF_BOARD\n");
 	fclose(scad_output);
-	PCB->Flags = save_thindraw;
+	quit:;
+	conf_update(NULL); /* restore forced sets */
 }
 
 static void scad_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(scad_options, sizeof(scad_options) / sizeof(scad_options[0]));
 	hid_parse_command_line(argc, argv);
 }
 
@@ -1121,9 +1122,8 @@ static void scad_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 
 static void scad_calibrate(double xval, double yval)
 {
-	if (scad_output)
-		fprintf(scad_output, "// Calibrate\n");
-	CRASH;
+ fprintf(stderr, "HID error: pcb called unimplemented openscad function scad_calibrate.\n");
+ abort();
 }
 
 static void scad_set_crosshair(int x, int y, int action)
@@ -1132,17 +1132,18 @@ static void scad_set_crosshair(int x, int y, int action)
 		fprintf(scad_output, "// Set CrossHair\n");
 }
 
+static const char *openscad_cookie = "openscad exporter";
+
 static HID scad_hid;
 
-void hid_scad_init()
+pcb_uninit_t hid_export_openscad_init()
 {
 	memset(&scad_hid, 0, sizeof(scad_hid));
 
 	common_nogui_init(&scad_hid);
-	common_draw_helpers_init(&scad_graphics);
 
 	scad_hid.struct_size = sizeof(scad_hid);
-	scad_hid.name = "scad";
+	scad_hid.name = "openscad";
 	scad_hid.description = "OpenSCAD script export";
 	scad_hid.exporter = 1;
 
@@ -1169,4 +1170,7 @@ void hid_scad_init()
 	scad_hid.fill_rect = scad_fill_rect;
 
 	hid_register_hid(&scad_hid);
+
+	hid_register_attributes(scad_options, sizeof(scad_options) / sizeof(scad_options[0]), openscad_cookie, 0);
+	return NULL;
 }
