@@ -36,11 +36,12 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include <string.h>
 #include <time.h>
 
+#include <glib.h>
+
 #include "global.h"
 #include "data.h"
 #include "error.h"
 #include "misc.h"
-#include "gts.h"
 #include "rats.h"
 #include "buffer.h"
 #include "change.h"
