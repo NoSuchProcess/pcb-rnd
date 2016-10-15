@@ -82,10 +82,23 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	/*fputs("io_kicad_legacy_write_pcb()", FP);*/
 
 	pcb_cardinal_t i;
-	pcb_cardinal_t j; /* may not need this now */
 	int physicalLayerCount = 0;
 	int kicadLayerCount = 0;
 	int silkLayerCount= 0;
+	int layer = 0;
+	int currentKicadLayer = 0;
+	int currentGroup = 0;
+
+	int bottomCount;
+	int *bottomLayers;
+	int innerCount;
+	int *innerLayers;
+	int topCount;
+	int *topLayers;
+	int bottomSilkCount;
+	int *bottomSilk;
+	int topSilkCount;
+	int *topSilk;
 
 	Coord LayoutXOffset;
 	Coord LayoutYOffset;
@@ -164,7 +177,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	}
 	
 	fprintf(FP, "%d\n", kicadLayerCount); 
-	int layer = 0;
+	layer = 0;
 	if (physicalLayerCount >= 1) {
 		fprintf(FP, "Layer[%d] COPPER_LAYER_0 signal\n", layer);
 	}
@@ -188,35 +201,39 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	write_kicad_legacy_layout_element(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
-	int currentKicadLayer = 0;
-	int currentGroup = 0;
-	int lastGroup = 0;
+	currentKicadLayer = 0;
+	currentGroup = 0;
 
 	/* figure out which pcb layers are bottom copper and make a list */
-	int bottomLayers[physicalLayerCount];
-	int bottomCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
+	bottomLayers = malloc(sizeof(int) * physicalLayerCount);
+	/*int bottomLayers[physicalLayerCount];*/
+	bottomCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
 	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, physicalLayerCount);
 
 	/* figure out which pcb layers are internal copper layers and make a list */
-	int innerLayers[physicalLayerCount];
-	int innerCount = pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
+	innerLayers = malloc(sizeof(int) * physicalLayerCount);
+	/*int innerLayers[physicalLayerCount];*/
+	innerCount = pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
 	pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, physicalLayerCount);
 
 	/* figure out which pcb layers are top copper and make a list */
-	int topLayers[physicalLayerCount];
-	int topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
+	topLayers = malloc(sizeof(int) * physicalLayerCount);
+	/*int topLayers[physicalLayerCount];*/
+	topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
 	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, physicalLayerCount);
 
 	silkLayerCount = pcb_layer_group_list(PCB_LYT_SILK, NULL, 0);
 
 	/* figure out which pcb layers are bottom silk and make a list */
-	int bottomSilk[silkLayerCount];
-	int bottomSilkCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
+	bottomSilk = malloc(sizeof(int) * silkLayerCount);
+	/*int bottomSilk[silkLayerCount];*/
+	bottomSilkCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
 	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, bottomSilk, silkLayerCount);
 
 	/* figure out which pcb layers are top silk and make a list */
-	int topSilk[silkLayerCount];
-	int topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
+	topSilk = malloc(sizeof(int) * silkLayerCount);
+	/*int topSilk[silkLayerCount];*/
+	topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
 	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, topSilk, silkLayerCount);
 
 	/* we now proceed to write the bottom silk lines, arcs, text to the kicad legacy file, using layer 20 */
@@ -242,12 +259,10 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	/* we now proceed to write the internal copper text to the kicad file, layer by layer */
 	if (innerCount != 0) {
 		currentGroup = pcb_layer_lookup_group(innerLayers[0]);
-		lastGroup = currentGroup;
 	}
 	for (i = 0, currentKicadLayer = 1; i < innerCount; i++) /* write inner copper text, group by group */
 		{
 			if (currentGroup != pcb_layer_lookup_group(innerLayers[i])) {
-				lastGroup = currentGroup;
 				currentGroup = pcb_layer_lookup_group(innerLayers[i]);
 				currentKicadLayer++;
 				if (currentKicadLayer > 14) {
@@ -296,12 +311,10 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	/* we now proceed to write the internal copper tracks to the kicad file, layer by layer */
 	if (innerCount != 0) {
 		currentGroup = pcb_layer_lookup_group(innerLayers[0]);
-		lastGroup = currentGroup;
 	}
 	for (i = 0, currentKicadLayer = 1; i < innerCount; i++) /* write inner copper tracks, group by group */
 		{
 			if (currentGroup != pcb_layer_lookup_group(innerLayers[i])) {
-				lastGroup = currentGroup;
 				currentGroup = pcb_layer_lookup_group(innerLayers[i]);
 				currentKicadLayer++;
 				if (currentKicadLayer > 14) {
@@ -327,6 +340,11 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	fputs("$EndTRACK\n",FP);
 	fputs("$EndBOARD\n",FP);
 	/*WriteElementData(FP, PCB->Data, "kicadl");*/	/* this may be needed in a different file */
+	free(bottomLayers);
+	free(innerLayers);
+	free(topLayers);
+	free(topSilk);
+	free(bottomSilk);
 	return (STATUS_OK);
 }
 
@@ -447,9 +465,11 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 	gdl_iterator_t it;
 	ArcType *arc;
 	ArcType localArc; /* for converting ellipses to circular arcs */
-
+	BoxType *boxResult; /* for figuring out arc ends */
 	pcb_cardinal_t currentLayer = number;
 	Coord radius, xStart, yStart, xEnd, yEnd;
+	int copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
+	int copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
 
 	/*ArcType *arc;
 		TextType *text;
@@ -474,7 +494,7 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 				radius = arc->Width;
 				localArc.Height = radius;
 			}
-		BoxType *boxResult = GetArcEnds(&localArc);
+		boxResult = GetArcEnds(&localArc);
 			if (arc->Delta == 360.0 || arc->Delta == -360.0 ) { /* it's a circle */
 				kicadArcShape = 3;
 			} else { /* it's an arc */
@@ -484,8 +504,8 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 			yStart = localArc.Y + yOffset;
 			xEnd = boxResult->X2 + xOffset; 
 			yEnd = boxResult->Y2 + yOffset; 
-			int copperStartX = boxResult->X1 + xOffset;
-			int copperStartY = boxResult->Y1 + yOffset; 
+			copperStartX = boxResult->X1 + xOffset;
+			copperStartY = boxResult->Y1 + yOffset; 
 			if (currentLayer < 16) { /* a copper arc, i.e. track, is unsupported by kicad, and will be exported as a line */
 				kicadArcShape = 0; /* make it a line for copper layers - kicad doesn't do arcs on copper */ 
 				pcb_fprintf(FP, "Po %d %.0mk %.0mk %.0mk %.0mk %.0mk\n",
@@ -516,8 +536,17 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 	Coord defaultStrokeThickness = 100*2540; /* use 100 mil as default 100% stroked font line thickness */
 	int kicadMirrored = 1; /* 1 is not mirrored, 0  is mirrored */ 
 
+	Coord defaultXSize;
+	Coord defaultYSize;
+	Coord strokeThickness;
+	int rotation;	
+	Coord textOffsetX;
+	Coord textOffsetY;
+	Coord halfStringWidth;
+	Coord halfStringHeight;
+	int localFlag;
+
 	gdl_iterator_t it;
-	LineType *line;
 	TextType *text;
 	pcb_cardinal_t currentLayer = number;
 	/*ArcType *arc;
@@ -532,25 +561,23 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 			fputs(")\n(\n", FP);
 			WriteAttributeList(FP, &layer->Attributes, "\t");
 		*/
-		int localFlag = 0;
+		localFlag = 0;
 		linelist_foreach(&layer->Text, &it, text) {
 			if ((currentLayer < 16) || (currentLayer == 20) || (currentLayer == 21) ) { /* copper or silk layer text */
 				fputs("$TEXTPCB\nTe \"", FP);
 				fputs(text->TextString,FP);
 				fputs("\"\n", FP);
-				Coord defaultXSize = 5*PCB_SCALE_TEXT(mWidth, text->Scale)/6; /* IIRC kicad treats this as kerned width of lower case m */
-				Coord defaultYSize = defaultXSize;
-				Coord strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale /2);
-				int rotation = 0;	
-				int i;
-				Coord offset = 0;
-				Coord textOffsetX = 0;
-				Coord textOffsetY = 0;
-				Coord halfStringWidth = (text->BoundingBox.X2 - text->BoundingBox.X1)/2;
+				defaultXSize = 5*PCB_SCALE_TEXT(mWidth, text->Scale)/6; /* IIRC kicad treats this as kerned width of lower case m */
+				defaultYSize = defaultXSize;
+				strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale /2);
+				rotation = 0;	
+				textOffsetX = 0;
+				textOffsetY = 0;
+				halfStringWidth = (text->BoundingBox.X2 - text->BoundingBox.X1)/2;
 				if (halfStringWidth < 0) {
 					halfStringWidth = -halfStringWidth;
 				}
-				Coord halfStringHeight = (text->BoundingBox.Y2 - text->BoundingBox.Y1)/2;
+				halfStringHeight = (text->BoundingBox.Y2 - text->BoundingBox.Y1)/2;
 				if (halfStringHeight < 0) {
 					halfStringHeight = -halfStringHeight;
 				}
@@ -852,14 +879,16 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 	LineType *line;
 	ArcType *arc;
 	Coord arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
+	Coord xPos, yPos;
 
 	ElementType *element;
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 	const char * currentElementName;
+	LibraryMenuTypePtr current_pin_menu;
+	LibraryMenuTypePtr current_pad_menu;
 
-	int silkLayer = 21;  /* hard coded for now, TODO: sort out bottom layer handling */ 
-	int copperLayer = 15;
-	int mirrored = 1;	 /* used to flip x coords about y-axis for bottom side elements */
+	int silkLayer = 21;  /* hard coded default, 20 is bottom silk */ 
+	int copperLayer = 15; /* hard coded default, 0 is bottom copper */
 
 	elementlist_dedup_initializer(ededup);
 	/* Now initialize the group with defaults */
@@ -881,37 +910,14 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 		/* the coordinates and text-flags are the same for
 		 * both names of an element
 		 */
-		/* the following element summary is not used
-			 in kicad; the module's header contains this
-			 information
 
-			 fprintf(FP, "\nDS %s ", F2S(element, PCB_TYPE_ELEMENT));
-			 PrintQuotedString(FP, (char *) EMPTY(DESCRIPTION_NAME(element)));
-			 fputc(' ', FP);
-			 PrintQuotedString(FP, (char *) EMPTY(NAMEONPCB_NAME(element)));
-			 fputc(' ', FP);
-			 PrintQuotedString(FP, (char *) EMPTY(VALUE_NAME(element)));
-			 pcb_fprintf(FP, " %mk %mk %mk %mk %d %d %s]\n(\n",
-			 element->MarkX, element->MarkY,
-			 DESCRIPTION_TEXT(element).X - element->MarkX,
-			 DESCRIPTION_TEXT(element).Y - element->MarkY,
-			 DESCRIPTION_TEXT(element).Direction,
-			 DESCRIPTION_TEXT(element).Scale, F2S(&(DESCRIPTION_TEXT(element)), PCB_TYPE_ELEMENT_NAME));
-
-		*/
-
-		/*		//WriteAttributeList(FP, &element->Attributes, "\t");
-		 */
-
-		Coord xPos = element->MarkX + xOffset;
-		Coord yPos = element->MarkY + yOffset;
+		xPos = element->MarkX + xOffset;
+		yPos = element->MarkY + yOffset;
 		if (TEST_FLAG(PCB_FLAG_ONSOLDER, element)) {
 			silkLayer = 20;
-			mirrored = -1; /* not needed for mirroring of coords, it seems */
 			copperLayer = 0;
 		} else {
 			silkLayer = 21;
-			mirrored = 1; /* not needed for mirroring of coords, it seems */
 			copperLayer = 15;
 		}
 
@@ -943,7 +949,7 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 
 			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
 
-			LibraryMenuTypePtr current_pin_menu = pcb_netlist_find_net4pin(Layout, pin);
+			current_pin_menu = pcb_netlist_find_net4pin(Layout, pin);
 			if ((current_pin_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pin_menu) != PCB_NETLIST_INVALID_INDEX)) {
 				fprintf(FP, "Ne %d \"%s\"\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
 			} else {
@@ -994,7 +1000,7 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 
 			fputs("At SMD N 00888000\n", FP); /* SMD pin, need to use right layer mask */
 
-			LibraryMenuTypePtr current_pad_menu = pcb_netlist_find_net4pad(Layout, pad);
+			current_pad_menu = pcb_netlist_find_net4pad(Layout, pad);
 			if ((current_pad_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pad_menu) != PCB_NETLIST_INVALID_INDEX)) {
 				fprintf(FP, "Ne %d \"%s\"\n", (1 + pcb_netlist_net_idx(Layout, current_pad_menu)), pcb_netlist_name(current_pad_menu)); /* library parts have empty net descriptors, in a .brd they don't */
 			} else {
