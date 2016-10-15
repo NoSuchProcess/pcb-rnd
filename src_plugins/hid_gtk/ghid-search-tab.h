@@ -28,7 +28,6 @@ static struct {
 	GtkWidget *tr_left, *tr_op;
 	GtkWidget *right_str, *right_coord, *tr_right, *right_int;
 	GtkTreeStore *md_left;
-	GtkListStore *md_objtype;
 	GtkAdjustment *right_adj;
 } expr_wizard_dlg;
 
@@ -44,7 +43,7 @@ typedef enum {
 	RIGHT_STR,
 	RIGHT_INT,
 	RIGHT_COORD,
-	RIGHT_OBJTYPE
+	RIGHT_CONST
 } right_type;
 
 typedef struct expr_wizard_s expr_wizard_t;
@@ -53,6 +52,7 @@ struct expr_wizard_s {
 	const char *left_desc;
 	const expr_wizard_op_t *ops;
 	right_type rtype;
+	const expr_wizard_op_t *right_const;
 };
 
 enum {
@@ -61,93 +61,103 @@ enum {
 	OPS_STR
 };
 
-const char *ops_any[] = {"==", "!=", ">=", "<=", ">", "<", NULL};
-const char *ops_eq[]  = {"==", "!=", NULL};
-const char *ops_str[] = {"==", "!=", "~", NULL};
+static const char *ops_any[] = {"==", "!=", ">=", "<=", ">", "<", NULL};
+static const char *ops_eq[]  = {"==", "!=", NULL};
+static const char *ops_str[] = {"==", "!=", "~", NULL};
 
-expr_wizard_op_t op_tab[] = {
+static expr_wizard_op_t op_tab[] = {
 	{ops_any, NULL},
 	{ops_eq, NULL},
 	{ops_str, NULL},
 	{NULL, NULL}
 };
 
-static const expr_wizard_t expr_tab[] = {
-	{"@.id",              "object ID",        &op_tab[OPS_ANY], RIGHT_INT},
-	{"@.type",            "object type",      &op_tab[OPS_EQ],  RIGHT_OBJTYPE},
-
-	{NULL,                "bounding box",     NULL,             0},
-	{"@.bbox.x1",         "X1",               &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.y1",         "Y1",               &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.x2",         "X2",               &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.y2",         "Y2",               &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.w",          "width",            &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.bbox.h",          "height",           &op_tab[OPS_ANY], RIGHT_COORD},
-
-
-	{NULL,                "trace",            NULL,             0},
-	{"@.thickness",       "thickness",        &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.clearance",       "clearance",        &op_tab[OPS_ANY], RIGHT_COORD},
-
-	{NULL,                "line",             NULL,             0},
-	{"@.x1",              "X1",               &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.y1",              "Y1",               &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.x2",              "X2",               &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.y2",              "Y2",               &op_tab[OPS_ANY], RIGHT_COORD},
-
-	{NULL,                "arc",              NULL,             0},
-	{"@.x",               "center X",         &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.y",               "center Y",         &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.angle.start",     "start angle",      &op_tab[OPS_ANY], RIGHT_INT},
-	{"@.angle.delta",     "delta angle",      &op_tab[OPS_ANY], RIGHT_INT},
-
-	{NULL,                "text",             NULL,             0},
-	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.scale",           "scale",            &op_tab[OPS_ANY], RIGHT_INT},
-	{"@.string",          "string",           &op_tab[OPS_ANY], RIGHT_STR},
-#warning TODO
-/*	{"@.rotation",           "rotation",            &op_tab[OPS_ANY], RIGHT_INT},*/
-
-	{NULL,                "polygon",          NULL,             0},
-	{"@.points",          "points",           &op_tab[OPS_ANY], RIGHT_INT},
-
-	{NULL,                "pin or via",       NULL,             0},
-	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.hole",            "drilling hole dia",&op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.mask",            "mask",             &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.name",            "name",             &op_tab[OPS_STR], RIGHT_STR},
-	{"@.number",          "number",           &op_tab[OPS_STR], RIGHT_STR},
-
-	{NULL,                "element",          NULL,             0},
-	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.name",            "name",             &op_tab[OPS_STR], RIGHT_STR},
-	{"@.refdes",          "refdes",           &op_tab[OPS_STR], RIGHT_STR},
-	{"@.description",     "description",      &op_tab[OPS_STR], RIGHT_STR},
-	{"@.value",           "value",            &op_tab[OPS_STR], RIGHT_STR},
-
-	{NULL,                "host layer's",     NULL,             0},
-	{"@.layer.name",      "name",             &op_tab[OPS_STR], RIGHT_STR},
-	{"@.layer.visible",   "visible",          &op_tab[OPS_EQ],  RIGHT_INT},
-#warning TODO
-/*	{"@.layer.position",  "stack position",  &op_tab[OPS_EQ],  RIGHT_INT},*/
-/*	{"@.layer.type",      "type",            &op_tab[OPS_EQ],  RIGHT_INT},*/
-
-	{NULL,                "host element's",   NULL,             0},
-	{"@.element.x",       "X",                &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.element.y",       "Y",                &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.element.refdes",  "refdes",           &op_tab[OPS_STR], RIGHT_STR},
-	{"@.element.name",    "name",             &op_tab[OPS_STR], RIGHT_STR},
-	{"@.element.description","description",   &op_tab[OPS_STR], RIGHT_STR},
-	{"@.element.value",   "value",            &op_tab[OPS_STR], RIGHT_STR},
-
-	{NULL, NULL, NULL, 0}
-};
-
-const char *right_objtype[] = {
+static const char *right_const_objtype[] = {
 	"POINT", "LINE", "TEXT", "POLYGON", "ARC", "RAT", "PAD", "PIN", "VIA",
 	"ELEMENT", "NET", "LAYER", "ELINE", "EARC", "ETEXT",
 	NULL
 };
+
+enum {
+	RC_OBJTYPE
+};
+
+static expr_wizard_op_t right_const_tab[] = {
+	{right_const_objtype, NULL},
+	{NULL, NULL}
+};
+
+static const expr_wizard_t expr_tab[] = {
+	{"@.id",              "object ID",        &op_tab[OPS_ANY], RIGHT_INT, NULL},
+	{"@.type",            "object type",      &op_tab[OPS_EQ],  RIGHT_CONST, &right_const_tab[RC_OBJTYPE]},
+
+	{NULL,                "bounding box",     NULL,             0, NULL},
+	{"@.bbox.x1",         "X1",               &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.bbox.y1",         "Y1",               &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.bbox.x2",         "X2",               &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.bbox.y2",         "Y2",               &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.bbox.w",          "width",            &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.bbox.h",          "height",           &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+
+
+	{NULL,                "trace",            NULL,             0, NULL},
+	{"@.thickness",       "thickness",        &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.clearance",       "clearance",        &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+
+	{NULL,                "line",             NULL,             0, NULL},
+	{"@.x1",              "X1",               &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.y1",              "Y1",               &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.x2",              "X2",               &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.y2",              "Y2",               &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+
+	{NULL,                "arc",              NULL,             0, NULL},
+	{"@.x",               "center X",         &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.y",               "center Y",         &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.angle.start",     "start angle",      &op_tab[OPS_ANY], RIGHT_INT, NULL},
+	{"@.angle.delta",     "delta angle",      &op_tab[OPS_ANY], RIGHT_INT, NULL},
+
+	{NULL,                "text",             NULL,             0, NULL},
+	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.scale",           "scale",            &op_tab[OPS_ANY], RIGHT_INT, NULL},
+	{"@.string",          "string",           &op_tab[OPS_ANY], RIGHT_STR, NULL},
+#warning TODO
+/*	{"@.rotation",           "rotation",            &op_tab[OPS_ANY], RIGHT_INT, NULL},*/
+
+	{NULL,                "polygon",          NULL,             0, NULL},
+	{"@.points",          "points",           &op_tab[OPS_ANY], RIGHT_INT, NULL},
+
+	{NULL,                "pin or via",       NULL,             0, NULL},
+	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.hole",            "drilling hole dia",&op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.mask",            "mask",             &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.name",            "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.number",          "number",           &op_tab[OPS_STR], RIGHT_STR, NULL},
+
+	{NULL,                "element",          NULL,             0, NULL},
+	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.name",            "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.refdes",          "refdes",           &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.description",     "description",      &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.value",           "value",            &op_tab[OPS_STR], RIGHT_STR, NULL},
+
+	{NULL,                "host layer's",     NULL,             0, NULL},
+	{"@.layer.name",      "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.layer.visible",   "visible",          &op_tab[OPS_EQ],  RIGHT_INT, NULL},
+#warning TODO
+/*	{"@.layer.position",  "stack position",  &op_tab[OPS_EQ],  RIGHT_INT, NULL},*/
+/*	{"@.layer.type",      "type",            &op_tab[OPS_EQ],  RIGHT_INT, NULL},*/
+
+	{NULL,                "host element's",   NULL,             0, NULL},
+	{"@.element.x",       "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.element.y",       "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.element.refdes",  "refdes",           &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.element.name",    "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.element.description","description",   &op_tab[OPS_STR], RIGHT_STR, NULL},
+	{"@.element.value",   "value",            &op_tab[OPS_STR], RIGHT_STR, NULL},
+
+	{NULL, NULL, NULL, 0, NULL}
+};
+

@@ -343,7 +343,15 @@ static void expr_wizard_init_model()
 	if (expr_wizard_dlg.md_left != NULL)
 		return;
 
+	/* render operator models */
 	for(o = op_tab; o->ops != NULL; o++) {
+		o->model = gtk_list_store_newv(1, model_op);
+		for(s = o->ops; *s != NULL; s++)
+			gtk_list_store_insert_with_values(o->model, NULL, -1,  0, *s,  -1);
+	}
+
+	/* render right constant models */
+	for(o = right_const_tab; o->ops != NULL; o++) {
 		o->model = gtk_list_store_newv(1, model_op);
 		for(s = o->ops; *s != NULL; s++)
 			gtk_list_store_insert_with_values(o->model, NULL, -1,  0, *s,  -1);
@@ -364,10 +372,6 @@ static void expr_wizard_init_model()
 			}
 		}
 	}
-
-	expr_wizard_dlg.md_objtype = gtk_list_store_newv(1, model_op);
-	for(s = right_objtype; *s != NULL; s++)
-		gtk_list_store_insert_with_values(expr_wizard_dlg.md_objtype, NULL, -1,  0, *s,  -1);
 }
 
 static void right_hide(void)
@@ -432,8 +436,8 @@ static void left_chg_cb(GtkTreeView *t, gpointer *data)
 		case RIGHT_INT: gtk_widget_show(expr_wizard_dlg.right_int); break;
 		case RIGHT_STR: gtk_widget_show(expr_wizard_dlg.right_str); break;
 		case RIGHT_COORD: gtk_widget_show(expr_wizard_dlg.right_coord); break;
-		case RIGHT_OBJTYPE:
-			gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), GTK_TREE_MODEL(expr_wizard_dlg.md_objtype));
+		case RIGHT_CONST:
+			gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), GTK_TREE_MODEL(w->right_const->model));
 			gtk_widget_show(expr_wizard_dlg.tr_right);
 			break;
 	}
@@ -487,7 +491,7 @@ static char *expr_wizard_result(int desc)
 			ghid_coord_entry_get_value_str(GHID_COORD_ENTRY(expr_wizard_dlg.right_coord), tmp, sizeof(tmp));
 			pcb_append_printf(&s, "%s", tmp);
 			break;
-		case RIGHT_OBJTYPE:
+		case RIGHT_CONST:
 			cs = wiz_get_tree_str(expr_wizard_dlg.tr_right);
 			if (cs == NULL)
 				goto err;
@@ -642,8 +646,8 @@ void expr_wizard_import(const char *desc_)
 					ghid_coord_entry_set_value(GHID_COORD_ENTRY(expr_wizard_dlg.right_coord), d);
 				break;
 			}
-			case RIGHT_OBJTYPE:
-				set_tree_from_enum(expr_wizard_dlg.tr_right, right_objtype, right);
+			case RIGHT_CONST:
+				set_tree_from_enum(expr_wizard_dlg.tr_right, w->right_const->ops, right);
 				break;
 		}
 	}
@@ -701,7 +705,7 @@ static void expr_wizard_dialog(expr1_t *e)
 	expr_wizard_dlg.tr_right = gtk_tree_view_new();
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), -1, "constant", renderer, "text", 0, NULL);
-	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), GTK_TREE_MODEL(expr_wizard_dlg.md_objtype));
+/*	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), GTK_TREE_MODEL(expr_wizard_dlg.md_objtype));*/
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.tr_right, FALSE, TRUE, 4);
 
 	expr_wizard_dlg.right_str = gtk_entry_new();
