@@ -846,7 +846,7 @@ int write_kicad_legacy_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
 		LibraryEntryTypePtr netlist = &menu->Entry[0];
 		if (netlist != NULL) {
 			fputs("$EQUIPOT\n",FP);
-			fprintf(FP, "Na %d \"goes here\"\n", netNumber ); /*, '!'pcb_netlist_name(netlist));  netlist 0 is used for unconnected pads  */
+			fprintf(FP, "Na %d \"%s\"\n", netNumber, pcb_netlist_name(menu));  /* netlist 0 was used for unconnected pads  */
 			fputs("St ~\n", FP);
 			fputs("$EndEQUIPOT\n",FP);
                 }
