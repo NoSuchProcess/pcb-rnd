@@ -1141,6 +1141,7 @@ pcb_uninit_t hid_export_openscad_init()
 	memset(&scad_hid, 0, sizeof(scad_hid));
 
 	common_nogui_init(&scad_hid);
+	common_draw_helpers_init(&scad_hid);
 
 	scad_hid.struct_size = sizeof(scad_hid);
 	scad_hid.name = "openscad";
