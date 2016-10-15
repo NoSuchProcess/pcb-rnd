@@ -832,6 +832,7 @@ LibraryMenuTypePtr pcb_netlist_find_net4pinname(PCBTypePtr pcb, const char *pin)
 int write_kicad_legacy_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
 {
         int n; /* code mostly lifted from netlist.c */ 
+	int netNumber;
 
 	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
 	fputs("$EQUIPOT\n",FP);
@@ -840,14 +841,14 @@ int write_kicad_legacy_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
 	fputs("$EndEQUIPOT\n",FP);
 
 	/* now we step through any available netlists and generate descriptors */
-        for (n = 0; n < Layout->NetlistLib[NETLIST_EDITED].MenuN; n++) {
+        for (n = 0, netNumber = 1; n < Layout->NetlistLib[NETLIST_EDITED].MenuN; n++) {
                 LibraryMenuTypePtr menu = &Layout->NetlistLib[NETLIST_EDITED].Menu[n];
                 int p;
-                for (p = 0; p < menu->EntryN; p++) {
+                for (p = 0; p < menu->EntryN; p++, netNumber ++) {
                         LibraryEntryTypePtr netlist = &menu->Entry[p];
 			if (netlist != NULL) {
 				fputs("$EQUIPOT\n",FP);
-				fprintf(FP, "Na %d \"goes here\"\n", (p+1) ); /*, '!'pcb_netlist_name(netlist));  netlist 0 is used for unconnected pads  */
+				fprintf(FP, "Na %d \"goes here\"\n", netNumber ); /*, '!'pcb_netlist_name(netlist));  netlist 0 is used for unconnected pads  */
 				fputs("St ~\n", FP);
 				fputs("$EndEQUIPOT\n",FP);
 			} 
