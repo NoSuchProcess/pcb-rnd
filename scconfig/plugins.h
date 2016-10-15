@@ -55,7 +55,7 @@ plugin_def("export_openscad", "openscad exporter",         sdisable, 0)
 plugin_header("\nIO plugins (file formats):\n")
 plugin_def("io_lihata",       "lihata board format",       sbuildin, 1)
 plugin_def("io_pcb",          "the original pcb format",   sbuildin, 1)
-plugin_def("io_kicad_legacy", "Kicad's legacy format ",    sdisable, 1)
+plugin_def("io_kicad_legacy", "Kicad's legacy format ",    sbuildin, 1)
 
 plugin_header("\nHID plugins:\n")
 plugin_def("hid_batch",       "batch process (no-gui HID)",sbuildin, 1)
