@@ -33,6 +33,7 @@
 #include "ghid-search.h"
 #include "win_place.h"
 #include "hid_actions.h"
+#include "misc_util.h"
 
 typedef struct expr1_s expr1_t;
 
@@ -605,6 +606,33 @@ void expr_wizard_import(const char *desc_)
 			GtkTreePath *path = gtk_tree_path_new_from_indices(n, -1);
 			gtk_tree_view_set_cursor(GTK_TREE_VIEW(expr_wizard_dlg.tr_op), path, NULL, FALSE);
 			gtk_tree_path_free(path);
+		}
+	}
+
+	/* set value field */
+	{
+		switch(w->rtype) {
+			case RIGHT_STR:
+				gtk_entry_set_text(GTK_ENTRY(expr_wizard_dlg.right_str), right);
+				break;
+			case RIGHT_INT:
+			{
+				char *end;
+				double d = strtod(right, &end);
+				if (*end == '\0')
+					gtk_spin_button_set_value(GTK_SPIN_BUTTON(expr_wizard_dlg.right_int), d);
+				break;
+			}
+			case RIGHT_COORD:
+			{
+				pcb_bool succ;
+				double d = GetValueEx(right, NULL, NULL, NULL, "mm", &succ);
+				if (succ)
+					ghid_coord_entry_set_value(GHID_COORD_ENTRY(expr_wizard_dlg.right_coord), d);
+				break;
+			}
+			case RIGHT_OBJTYPE:
+printf("TODO85\n");
 		}
 	}
 
