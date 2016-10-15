@@ -365,6 +365,14 @@ static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 		case query_fields_y:         PCB_QRY_RET_INT(res, a->Y);
 		case query_fields_thickness: PCB_QRY_RET_INT(res, a->Thickness);
 		case query_fields_clearance: PCB_QRY_RET_INT(res, a->Clearance);
+		case query_fields_length:
+			{
+#warning TODO: this breaks for elliptics; see http://tutorial.math.lamar.edu/Classes/CalcII/ArcLength.aspx
+				double r = (a->Width + a->Height)/2;
+				double len = r * M_PI / 180.0 * a->Delta;
+				PCB_QRY_RET_INT(res, ((Coord)len));
+			}
+			break;
 		default:;
 	}
 
