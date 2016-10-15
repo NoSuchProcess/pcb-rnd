@@ -944,7 +944,7 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
 
 			LibraryMenuTypePtr current_pin_menu = pcb_netlist_find_net4pin(Layout, pin);
-			if (current_pin_menu != NULL) {
+			if ((current_pin_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pin_menu) != PCB_NETLIST_INVALID_INDEX)) {
 				fprintf(FP, "Ne %d \"%s\"\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
 			} else {
 				fprintf(FP, "Ne 0 \"\"\n"); /* unconnected pads have zero for net */
@@ -995,7 +995,7 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 			fputs("At SMD N 00888000\n", FP); /* SMD pin, need to use right layer mask */
 
 			LibraryMenuTypePtr current_pad_menu = pcb_netlist_find_net4pad(Layout, pad);
-			if (current_pad_menu != NULL) {
+			if ((current_pad_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pad_menu) != PCB_NETLIST_INVALID_INDEX)) {
 				fprintf(FP, "Ne %d \"%s\"\n", (1 + pcb_netlist_net_idx(Layout, current_pad_menu)), pcb_netlist_name(current_pad_menu)); /* library parts have empty net descriptors, in a .brd they don't */
 			} else {
 				fprintf(FP, "Ne 0 \"\"\n"); /* a net number of 0 indicates an unconnected pad in pcbnew */
