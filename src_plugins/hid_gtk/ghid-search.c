@@ -476,7 +476,13 @@ static char *expr_wizard_result(int desc)
 
 	switch(w->rtype) {
 		case RIGHT_INT: pcb_append_printf(&s, "%.0f", gtk_adjustment_get_value(expr_wizard_dlg.right_adj)); break;
-		case RIGHT_STR: pcb_append_printf(&s, "%s", gtk_entry_get_text(GTK_ENTRY(expr_wizard_dlg.right_str))); break;
+		case RIGHT_STR:
+			if (!desc)
+				gds_append_str(&s, "\"");
+			pcb_append_printf(&s, "%s", gtk_entry_get_text(GTK_ENTRY(expr_wizard_dlg.right_str)));
+			if (!desc)
+				gds_append_str(&s, "\"");
+			break;
 		case RIGHT_COORD:
 			ghid_coord_entry_get_value_str(GHID_COORD_ENTRY(expr_wizard_dlg.right_coord), tmp, sizeof(tmp));
 			pcb_append_printf(&s, "%s", tmp);
