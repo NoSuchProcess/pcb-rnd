@@ -58,14 +58,17 @@ struct expr_wizard_s {
 enum {
 	OPS_ANY,
 	OPS_EQ,
+	OPS_STR
 };
 
 const char *ops_any[] = {"==", "!=", ">=", "<=", ">", "<", NULL};
 const char *ops_eq[]  = {"==", "!=", NULL};
+const char *ops_str[] = {"==", "!=", "~", NULL};
 
 expr_wizard_op_t op_tab[] = {
 	{ops_any, NULL},
 	{ops_eq, NULL},
+	{ops_str, NULL},
 	{NULL, NULL}
 };
 
@@ -114,18 +117,19 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD},
 	{"@.hole",            "drilling hole dia",&op_tab[OPS_ANY], RIGHT_COORD},
 	{"@.mask",            "mask",             &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.name",            "name",             &op_tab[OPS_EQ],  RIGHT_STR},
-	{"@.number",          "number",           &op_tab[OPS_EQ],  RIGHT_STR},
+	{"@.name",            "name",             &op_tab[OPS_STR], RIGHT_STR},
+	{"@.number",          "number",           &op_tab[OPS_STR], RIGHT_STR},
 
 	{NULL,                "element",          NULL,             0},
 	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD},
 	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.name",            "name",             &op_tab[OPS_EQ],  RIGHT_STR},
-	{"@.description",     "description",      &op_tab[OPS_EQ],  RIGHT_STR},
-	{"@.value",           "value",            &op_tab[OPS_EQ],  RIGHT_STR},
+	{"@.name",            "name",             &op_tab[OPS_STR], RIGHT_STR},
+	{"@.refdes",          "refdes",           &op_tab[OPS_STR], RIGHT_STR},
+	{"@.description",     "description",      &op_tab[OPS_STR], RIGHT_STR},
+	{"@.value",           "value",            &op_tab[OPS_STR], RIGHT_STR},
 
 	{NULL,                "host layer's",     NULL,             0},
-	{"@.layer.name",      "name",             &op_tab[OPS_EQ],  RIGHT_STR},
+	{"@.layer.name",      "name",             &op_tab[OPS_STR], RIGHT_STR},
 	{"@.layer.visible",   "visible",          &op_tab[OPS_EQ],  RIGHT_INT},
 #warning TODO
 /*	{"@.layer.position",  "stack position",  &op_tab[OPS_EQ],  RIGHT_INT},*/
@@ -134,10 +138,10 @@ static const expr_wizard_t expr_tab[] = {
 	{NULL,                "host element's",   NULL,             0},
 	{"@.element.x",       "X",                &op_tab[OPS_ANY], RIGHT_COORD},
 	{"@.element.y",       "Y",                &op_tab[OPS_ANY], RIGHT_COORD},
-	{"@.element.name",    "name",             &op_tab[OPS_EQ],  RIGHT_STR},
-	{"@.element.description","description",   &op_tab[OPS_EQ],  RIGHT_STR},
-	{"@.element.value",   "value",            &op_tab[OPS_EQ],  RIGHT_STR},
-
+	{"@.element.refdes",  "refdes",           &op_tab[OPS_STR], RIGHT_STR},
+	{"@.element.name",    "name",             &op_tab[OPS_STR], RIGHT_STR},
+	{"@.element.description","description",   &op_tab[OPS_STR], RIGHT_STR},
+	{"@.element.value",   "value",            &op_tab[OPS_STR], RIGHT_STR},
 
 	{NULL, NULL, NULL, 0}
 };
