@@ -109,9 +109,10 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.bbox.h",          "height",           &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 
 
-	{NULL,                "trace",            NULL,             0, NULL},
+	{NULL,                "trace object's",   NULL,             0, NULL},
 	{"@.thickness",       "thickness",        &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.clearance",       "clearance",        &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.length",          "length",           &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 
 	{NULL,                "line",             NULL,             0, NULL},
 	{"@.x1",              "X1",               &op_tab[OPS_ANY], RIGHT_COORD, NULL},
