@@ -69,6 +69,7 @@ pcb_bool IsPolygonInPolygon(PolygonTypePtr, PolygonTypePtr);
 void LookupElementConnections(ElementTypePtr, FILE *);
 void LookupConnectionsToAllElements(FILE *);
 void LookupConnection(Coord, Coord, pcb_bool, Coord, int);
+void LookupConnectionByPin(int type, void *ptr1);
 void LookupUnusedPins(FILE *);
 pcb_bool ResetFoundLinesAndPolygons(pcb_bool);
 pcb_bool ResetFoundPinsViasAndPads(pcb_bool);

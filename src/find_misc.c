@@ -264,6 +264,18 @@ void LookupConnection(Coord X, Coord Y, pcb_bool AndDraw, Coord Range, int which
 	FreeConnectionLookupMemory();
 }
 
+void LookupConnectionByPin(int type, void *ptr1)
+{
+	User = 0;
+	InitConnectionLookup();
+	ListStart(type, NULL, ptr1, NULL);
+
+	DoIt(pcb_true, pcb_false);
+
+	FreeConnectionLookupMemory();
+}
+
+
 /* ---------------------------------------------------------------------------
  * find connections for rats nesting
  * assumes InitConnectionLookup() has already been done
