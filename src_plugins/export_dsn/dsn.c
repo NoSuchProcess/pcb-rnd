@@ -52,6 +52,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "create.h"
 #include "polygon.h"
 #include "compat_misc.h"
+#include "layer.h"
 
 #include "hid.h"
 #include "hid_draw_helpers.h"
@@ -148,12 +149,14 @@ static GList *layerlist = NULL;  /* contain routing layers */
 
 static void print_structure(FILE * fp)
 {
-	int group;
-	int top_group = GetLayerGroupNumberByNumber(top_silk_layer);
-	int bot_group = GetLayerGroupNumberByNumber(bottom_silk_layer);
+	int group, top_group, bot_group, top_layer, bot_layer;
 
-	int top_layer = PCB->LayerGroups.Entries[top_group][0];
-	int bot_layer = PCB->LayerGroups.Entries[bot_group][0];
+	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_SILK, &top_group, 1);
+	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &bot_group, 1);
+
+	top_layer = PCB->LayerGroups.Entries[top_group][0];
+	bot_layer = PCB->LayerGroups.Entries[bot_group][0];
+
 
 	g_list_free(layerlist);				/* might be around from the last export */
 
