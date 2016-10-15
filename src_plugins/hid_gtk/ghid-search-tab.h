@@ -143,7 +143,7 @@ static const expr_wizard_t expr_tab[] = {
 };
 
 const char *right_objtype[] = {
-	"point", "line", "text", "polygon", "arc", "rat", "pad", "pin", "via",
-	"element", "net", "layer", "element_line", "element_arc", "element_text",
+	"POINT", "LINE", "TEXT", "POLYGON", "ARC", "RAT", "PAD", "PIN", "VIA",
+	"ELEMENT", "NET", "LAYER", "ELINE", "EARC", "ETEXT",
 	NULL
 };
