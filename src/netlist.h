@@ -53,3 +53,11 @@ LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, const PadType *pad);
 
 /* Evaluate to 0 or 1 depending on whether the net is marked with *; lmt is (LibraryMenuType *) */
 #define pcb_netlist_is_bad(lmt) (((lmt)->Name[0]) == '*')
+
+
+/* Return the index of the net or PCB_NETLIST_INVALID_INDEX if the net is not
+   on the netlist. NOTE: indices returned are valid only until the first
+   netlist change! */
+pcb_cardinal_t pcb_netlist_net_idx(PCBTypePtr pcb, LibraryMenuType *net);
+
+#define PCB_NETLIST_INVALID_INDEX ((pcb_cardinal_t)(-1))

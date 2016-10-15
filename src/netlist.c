@@ -45,6 +45,7 @@
 #include "rats_patch.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
+#include "netlist.h"
 
 /*
   int    PCB->NetlistLib[n].MenuN
@@ -244,3 +245,13 @@ LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, const PadType *pad)
 	return pcb_netlist_find_net4pin_any(pcb, e->Name[NAMEONPCB_INDEX].TextString, pad->Number);
 }
 
+pcb_cardinal_t pcb_netlist_net_idx(PCBTypePtr pcb, LibraryMenuType *net)
+{
+	LibraryMenuType *first = &pcb->NetlistLib[NETLIST_EDITED].Menu[0];
+	LibraryMenuType *last  = &pcb->NetlistLib[NETLIST_EDITED].Menu[pcb->NetlistLib[NETLIST_EDITED].MenuN-1];
+	
+	if ((net < first) || (net > last))
+		return PCB_NETLIST_INVALID_INDEX;
+
+	return net - first;
+}
