@@ -87,4 +87,9 @@ pcb_bool IsLineInPolygon(LineTypePtr, PolygonTypePtr);
 pcb_bool IsArcInPolygon(ArcTypePtr, PolygonTypePtr);
 pcb_bool IsPadInPolygon(PadTypePtr, PolygonTypePtr);
 
+/* find_clear.c */
+pcb_bool ClearFlagOnPinsViasAndPads(pcb_bool AndDraw, int flag);
+pcb_bool ClearFlagOnLinesAndPolygons(pcb_bool AndDraw, int flag);
+pcb_bool ClearFlagOnAllObjects(pcb_bool AndDraw, int flag);
+
 #endif

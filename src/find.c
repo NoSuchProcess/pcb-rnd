@@ -177,6 +177,7 @@ static pcb_bool SetThing(int, void *, void *, void *);
 #include "find_lookup.c"
 #include "find_drc.c"
 #include "find_misc.c"
+#include "find_clear.c"
 
 #include "find_debug.c"
 #include "find_print.c"
