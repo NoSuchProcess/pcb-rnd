@@ -578,6 +578,7 @@ void expr_wizard_import(const char *desc_)
 	w = find_tab_entry(w, left_desc, 0, &l2idx);
 	if (w == NULL) goto fail;
 
+	/* set left tree widget cursor */
 	{
 		GtkTreePath *path;
 		if (left_parent != NULL)
@@ -588,6 +589,23 @@ void expr_wizard_import(const char *desc_)
 		gtk_tree_view_expand_to_path(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), path);
 		gtk_tree_view_set_cursor(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), path, NULL, FALSE);
 		gtk_tree_path_free(path);
+	}
+
+	/* set op cursor */
+	{
+		int n, found;
+		const char **s;
+		for(n = 0, found = 0, s = w->ops->ops; *s != NULL; s++, n++) {
+			if (strcmp(*s, op) == 0) {
+				found = 1;
+				break;
+			}
+		}
+		if (found) {
+			GtkTreePath *path = gtk_tree_path_new_from_indices(n, -1);
+			gtk_tree_view_set_cursor(GTK_TREE_VIEW(expr_wizard_dlg.tr_op), path, NULL, FALSE);
+			gtk_tree_path_free(path);
+		}
 	}
 
 //expr_wizard_dlg.
