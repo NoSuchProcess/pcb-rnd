@@ -812,28 +812,15 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 
 /* ---------------------------------------------------------------------------
  * writes netlist data in kicad legacy format for use in a layout .brd file
-
-some example code:
-LibraryMenuTypePtr pcb_netlist_find_net4pinname(PCBTypePtr pcb, const char *pin)
-{
-        int n;
-        for (n = 0; n < pcb->NetlistLib[NETLIST_EDITED].MenuN; n++) {
-                LibraryMenuTypePtr menu = &pcb->NetlistLib[NETLIST_EDITED].Menu[n];
-                int p;
-                for (p = 0; p < menu->EntryN; p++) {
-                        LibraryEntryTypePtr entry = &menu->Entry[p];
-                        if (strcmp(entry->ListEntry, pin) == 0)
-                                return menu;
-                }
-        }
-        return NULL;
  */
 
 int write_kicad_legacy_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
 {
         int n; /* code mostly lifted from netlist.c */ 
 	int netNumber;
-
+	LibraryMenuTypePtr menu;
+	LibraryEntryTypePtr netlist;
+	
 	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
 	fputs("$EQUIPOT\n",FP);
 	fputs("Na 0 \"\"\n", FP);
@@ -842,8 +829,8 @@ int write_kicad_legacy_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
 
 	/* now we step through any available netlists and generate descriptors */
         for (n = 0, netNumber = 1; n < Layout->NetlistLib[NETLIST_EDITED].MenuN; n++, netNumber ++) {
-                LibraryMenuTypePtr menu = &Layout->NetlistLib[NETLIST_EDITED].Menu[n];
-		LibraryEntryTypePtr netlist = &menu->Entry[0];
+                menu = &Layout->NetlistLib[NETLIST_EDITED].Menu[n];
+		netlist = &menu->Entry[0];
 		if (netlist != NULL) {
 			fputs("$EQUIPOT\n",FP);
 			fprintf(FP, "Na %d \"%s\"\n", netNumber, pcb_netlist_name(menu));  /* netlist 0 was used for unconnected pads  */
