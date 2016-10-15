@@ -31,6 +31,7 @@
 
 static const char *pcb_qry_program, *pcb_qry_program_ptr;
 static int qry_yy_input(char *buf, int buflen);
+static pcb_qry_node_t *make_constant(char *str, long val);
 #define YY_INPUT(buf, res, buflen) (res = qry_yy_input(buf, buflen))
 %}
 
@@ -47,6 +48,22 @@ list            { return T_LIST; }
 invalid         { return T_INVALID; }
 p[.]            { return T_FLD_P; }
 a[.]            { return T_FLD_A; }
+
+"POINT"         { qry_lval.n = make_constant(yytext, PCB_OBJ_POINT); return T_CONST; }
+"LINE"          { qry_lval.n = make_constant(yytext, PCB_OBJ_LINE); return T_CONST; }
+"TEXT"          { qry_lval.n = make_constant(yytext, PCB_OBJ_TEXT); return T_CONST; }
+"POLYGON"       { qry_lval.n = make_constant(yytext, PCB_OBJ_POLYGON); return T_CONST; }
+"ARC"           { qry_lval.n = make_constant(yytext, PCB_OBJ_ARC); return T_CONST; }
+"RAT"           { qry_lval.n = make_constant(yytext, PCB_OBJ_RAT); return T_CONST; }
+"PAD"           { qry_lval.n = make_constant(yytext, PCB_OBJ_PAD); return T_CONST; }
+"PIN"           { qry_lval.n = make_constant(yytext, PCB_OBJ_PIN); return T_CONST; }
+"VIA"           { qry_lval.n = make_constant(yytext, PCB_OBJ_VIA); return T_CONST; }
+"ELEMENT"       { qry_lval.n = make_constant(yytext, PCB_OBJ_ELEMENT); return T_CONST; }
+"NET"           { qry_lval.n = make_constant(yytext, PCB_OBJ_NET); return T_CONST; }
+"LAYER"         { qry_lval.n = make_constant(yytext, PCB_OBJ_LAYER); return T_CONST; }
+"ELINE"         { qry_lval.n = make_constant(yytext, PCB_OBJ_ELINE); return T_CONST; }
+"EARC"          { qry_lval.n = make_constant(yytext, PCB_OBJ_EARC); return T_CONST; }
+"ETEXT"         { qry_lval.n = make_constant(yytext, PCB_OBJ_ETEXT); return T_CONST; }
 
 mm              { qry_lval.u = get_unit_struct_by_allow(ALLOW_MM); return T_UNIT; }
 m               { qry_lval.u = get_unit_struct_by_allow(ALLOW_M); return T_UNIT; }
@@ -90,4 +107,12 @@ static int qry_yy_input(char *buf, int buflen)
 void pcb_qry_set_input(const char *script)
 {
 	pcb_qry_program = pcb_qry_program_ptr = script;
+}
+
+static pcb_qry_node_t *make_constant(char *str, long val)
+{
+	pcb_qry_node_t *res = pcb_qry_n_alloc(PCBQ_DATA_CONST);
+	res->data.str = pcb_strdup(str);
+	res->precomp.cnst = val;
+	return res;
 }

@@ -63,7 +63,8 @@ extern int qry_debug;
     T_STR = 273,
     T_QSTR = 274,
     T_INT = 275,
-    T_DBL = 276
+    T_DBL = 276,
+    T_CONST = 277
   };
 #endif
 
@@ -80,7 +81,7 @@ union YYSTYPE
 	const Unit *u;
 	pcb_qry_node_t *n;
 
-#line 84 "query_y.h" /* yacc.c:1909  */
+#line 85 "query_y.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

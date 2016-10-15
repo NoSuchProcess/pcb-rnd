@@ -107,6 +107,7 @@ static pcb_qry_node_t *make_regex_free(char *str)
 %token <s> T_STR T_QSTR
 %token <c> T_INT
 %token <d> T_DBL
+%token <n> T_CONST
 
 /* the usual binary operators */
 %left T_OR
@@ -190,6 +191,7 @@ expr:
 	| expr '/' expr          { BINOP($$, $1, PCBQ_OP_DIV, $3); }
 	| expr '~' T_STR         { BINOP($$, $1, PCBQ_OP_MATCH, make_regex_free($3)); }
 	| expr '~' T_QSTR        { BINOP($$, $1, PCBQ_OP_MATCH, make_regex_free($3)); }
+	| T_CONST                { $$ = $1; }
 	| var                    { $$ = $1; }
 	| var '.' fields         {
 		pcb_qry_node_t *n;

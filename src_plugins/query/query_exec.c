@@ -447,6 +447,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 		case PCBQ_DATA_COORD:       PCB_QRY_RET_INT(res, node->data.crd);
 		case PCBQ_DATA_DOUBLE:      PCB_QRY_RET_DBL(res, node->data.dbl);
 		case PCBQ_DATA_STRING:      PCB_QRY_RET_STR(res, node->data.str);
+		case PCBQ_DATA_CONST:       PCB_QRY_RET_INT(res, node->precomp.cnst);
 		case PCBQ_DATA_INVALID:     PCB_QRY_RET_INV(res);
 
 		/* not yet implemented: */

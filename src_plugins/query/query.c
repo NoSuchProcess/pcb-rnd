@@ -71,6 +71,7 @@ const char *type_name[PCBQ_nodetype_max] = {
 	"PCBQ_DATA_DOUBLE",
 	"PCBQ_DATA_STRING",
 	"PCBQ_DATA_REGEX",
+	"PCBQ_DATA_CONST",
 	"PCBQ_DATA_INVALID"
 };
 
@@ -120,6 +121,7 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 		case PCBQ_DATA_INVALID:pcb_printf("%s%s invalid (literal)\n", prefix, ind); break;
 		case PCBQ_DATA_COORD:  pcb_printf("%s%s %mI (%$mm)\n", prefix, ind, nd->data.crd, nd->data.crd); break;
 		case PCBQ_DATA_DOUBLE: pcb_printf("%s%s %f\n", prefix, ind, nd->data.dbl); break;
+		case PCBQ_DATA_CONST:  pcb_printf("%s%s %s\n", prefix, ind, nd->data.str); break;
 		case PCBQ_ITER_CTX:    pcb_printf("%s%s vars=%d\n", prefix, ind, nd->data.iter_ctx->num_vars); break;
 		case PCBQ_VAR:
 			pcb_printf("%s%s ", prefix, ind);

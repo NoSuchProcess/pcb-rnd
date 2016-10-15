@@ -89,6 +89,7 @@ typedef enum {
 	PCBQ_DATA_DOUBLE,  /* leaf */
 	PCBQ_DATA_STRING,  /* leaf */
 	PCBQ_DATA_REGEX,   /* leaf */
+	PCBQ_DATA_CONST,   /* leaf */
 	PCBQ_DATA_INVALID, /* leaf */
 
 	PCBQ_nodetype_max
@@ -111,6 +112,7 @@ struct pcb_qry_node_s {
 		query_fields_keys_t fld;    /* field_sphash value from str */
 		pcb_qry_val_t result;       /* of pure functions and subtrees */
 		re_se_t *regex;
+		long cnst;                  /* named constant */
 	} precomp;
 };
 
