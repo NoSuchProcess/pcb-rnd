@@ -48,6 +48,7 @@
 #include "misc.h"
 #include "pcb-printf.h"
 #include "netlist.h"
+#include "conf_core.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -141,7 +142,7 @@ void IPCD356_WriteHeader(FILE * fd)
 		fprintf(fd, "P  JOB   %s\n", PCB->Name);
 	}
 	fprintf(fd, "P  CODE  00\n");
-	if (strcmp(Settings.grid_unit->suffix, "mil") == 0) {	/* Use whatever unit is currently in use (mil or mm). */
+	if (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0) {	/* Use whatever unit is currently in use (mil or mm). */
 		fprintf(fd, "P  UNITS CUST 0\n");
 	}
 	else {
@@ -192,7 +193,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		padx = (pad->Point1.X + pad->Point2.X) / 2;	/* X location in PCB units. */
 		pady = (PCB->MaxHeight - ((pad->Point1.Y + pad->Point2.Y) / 2));	/* Y location in PCB units. */
 
-		if (strcmp(Settings.grid_unit->suffix, "mil") == 0) {
+		if (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0) {
 			padx = padx / 2540;				/* X location in 0.0001". */
 			pady = pady / 2540;				/* Y location in 0.0001". */
 		}
@@ -206,7 +207,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		padx = (pad->Thickness + (pad->Point2.X - pad->Point1.X));	/* Pad dimension X in PCB units. */
 		pady = (pad->Thickness + (pad->Point2.Y - pad->Point1.Y));	/* Pad dimension Y in PCB units. */
 
-		if (strcmp(Settings.grid_unit->suffix, "mil") == 0) {
+		if (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0) {
 			padx = padx / 2540;				/* X location in 0.0001". */
 			pady = pady / 2540;				/* Y location in 0.0001". */
 		}
@@ -248,7 +249,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		fprintf(fd, "-%-4.4s", pin->Number);	/* Pin number. */
 		fprintf(fd, " ");						/*! \todo Midpoint indicator (M). */
 		tmp = pin->DrillingHole;
-		if (strcmp(Settings.grid_unit->suffix, "mil") == 0) {
+		if (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0) {
 			tmp = tmp / 2540;					/* 0.0001". */
 		}
 		else {
@@ -265,7 +266,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		padx = pin->X;							/* X location in PCB units. */
 		pady = (PCB->MaxHeight - pin->Y);	/* Y location in PCB units. */
 
-		if (strcmp(Settings.grid_unit->suffix, "mil") == 0) {
+		if (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0) {
 			padx = padx / 2540;				/* X location in 0.0001". */
 			pady = pady / 2540;				/* Y location in 0.0001". */
 		}
@@ -279,7 +280,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 
 		padx = pin->Thickness;
 
-		if (strcmp(Settings.grid_unit->suffix, "mil") == 0) {
+		if (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0) {
 			padx = padx / 2540;				/* X location in 0.0001". */
 		}
 		else {
@@ -324,7 +325,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		fprintf(fd, "-    ");				/* Pin number. */
 		fprintf(fd, " ");						/*! \todo Midpoint indicator (M). */
 		tmp = via->DrillingHole;
-		if (strcmp(Settings.grid_unit->suffix, "mil") == 0) {
+		if (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0) {
 			tmp = tmp / 2540;					/* 0.0001". */
 		}
 		else {
@@ -341,7 +342,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		padx = via->X;							/* X location in PCB units. */
 		pady = (PCB->MaxHeight - via->Y);	/* Y location in PCB units. */
 
-		if (strcmp(Settings.grid_unit->suffix, "mil") == 0) {
+		if (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0) {
 			padx = padx / 2540;				/* X location in 0.0001". */
 			pady = pady / 2540;				/* Y location in 0.0001". */
 		}
@@ -355,7 +356,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 
 		padx = via->Thickness;
 
-		if (strcmp(Settings.grid_unit->suffix, "mil") == 0) {
+		if (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0) {
 			padx = padx / 2540;				/* X location in 0.0001". */
 		}
 		else {
@@ -603,7 +604,7 @@ static void IPCD356_parse_arguments(int *argc, char ***argv)
 
 HID IPCD356_hid;
 
-void hid_ipcd356_init()
+pcb_uninit_t *hid_export_ipcd356_init()
 {
 	memset(&IPCD356_hid, 0, sizeof(HID));
 
@@ -621,5 +622,6 @@ void hid_ipcd356_init()
 	hid_register_hid(&IPCD356_hid);
 
 	hid_register_attributes(IPCD356_options, sizeof(IPCD356_options) / sizeof(IPCD356_options[0]), ipcd356_cookie, 0);
+	return NULL;
 }
 
