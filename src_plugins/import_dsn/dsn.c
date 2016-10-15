@@ -3,7 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *
- *  Specctra .dsn export HID
+ *  Specctra .dsn import HID
  *  Copyright (C) 2008, 2011 Josh Jordan, Dan McMahill, and Jared Casper
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -23,7 +23,7 @@
  */
 
 /*
-This program exports specctra .dsn files from geda .pcb files.
+This program imports specctra .dsn files to geda .pcb files.
 By Josh Jordan and Dan McMahill, modified from bom.c
   -- Updated to use Coord and other fixes by Jared Casper 16 Sep 2011
 */
@@ -40,7 +40,6 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "data.h"
 #include "error.h"
 #include "misc.h"
-#include "gts.h"
 #include "rats.h"
 #include "buffer.h"
 #include "change.h"
@@ -62,13 +61,6 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "plugins.h"
 
 static const char *dsn_cookie = "dsn importer";
-
-static Coord trackwidth = 8;  /* user options defined in export dialog */
-static Coord clearance = 8;
-static Coord viawidth = 45;
-static Coord viadrill = 25;
-
-static HID dsn_hid;
 
 /* dsn name */
 #define FREE(x) if((x) != NULL) { free (x); (x) = NULL; }
@@ -92,7 +84,7 @@ be prompted to enter one.
 
 int ActionLoadDsnFrom(int argc, const char **argv, Coord x, Coord y)
 {
-	char *fname = NULL;
+	const char *fname = NULL;
 	static char *default_file = NULL;
 	char str[200];
 	FILE *fp;
@@ -175,7 +167,7 @@ static void hid_dsn_uninit()
 }
 
 #include "dolists.h"
-pcb_uninit_t hid_export_dsn_init()
+pcb_uninit_t hid_import_dsn_init()
 {
 	REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
 	return hid_dsn_uninit;
