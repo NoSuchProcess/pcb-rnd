@@ -77,13 +77,22 @@ static const char *right_const_objtype[] = {
 	"ELEMENT", "NET", "LAYER", "ELINE", "EARC", "ETEXT",
 	NULL
 };
+static const char *right_const_yesno[] = {"YES", "NO", NULL};
+static const char *right_const_layerpos[] = {"TOP", "BOTTOM", "INTERNAL", NULL};
+static const char *right_const_layertype[] = {"COPPER", "SILK", "MASK", "PASTE", "OUTLINE" , NULL};
 
 enum {
-	RC_OBJTYPE
+	RC_OBJTYPE,
+	RC_YESNO,
+	RC_LAYERPOS,
+	RC_LAYERTYPE
 };
 
 static expr_wizard_op_t right_const_tab[] = {
 	{right_const_objtype, NULL},
+	{right_const_yesno, NULL},
+	{right_const_layerpos, NULL},
+	{right_const_layertype, NULL},
 	{NULL, NULL}
 };
 
@@ -121,8 +130,7 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.scale",           "scale",            &op_tab[OPS_ANY], RIGHT_INT, NULL},
 	{"@.string",          "string",           &op_tab[OPS_ANY], RIGHT_STR, NULL},
-#warning TODO
-/*	{"@.rotation",           "rotation",            &op_tab[OPS_ANY], RIGHT_INT, NULL},*/
+	{"@.rotation",        "rotation",         &op_tab[OPS_ANY], RIGHT_INT, NULL},
 
 	{NULL,                "polygon",          NULL,             0, NULL},
 	{"@.points",          "points",           &op_tab[OPS_ANY], RIGHT_INT, NULL},
@@ -145,10 +153,9 @@ static const expr_wizard_t expr_tab[] = {
 
 	{NULL,                "host layer's",     NULL,             0, NULL},
 	{"@.layer.name",      "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
-	{"@.layer.visible",   "visible",          &op_tab[OPS_EQ],  RIGHT_INT, NULL},
-#warning TODO
-/*	{"@.layer.position",  "stack position",  &op_tab[OPS_EQ],  RIGHT_INT, NULL},*/
-/*	{"@.layer.type",      "type",            &op_tab[OPS_EQ],  RIGHT_INT, NULL},*/
+	{"@.layer.visible",   "visible",          &op_tab[OPS_EQ],  RIGHT_CONST, &right_const_tab[RC_YESNO]},
+	{"@.layer.position",  "stack position",   &op_tab[OPS_EQ],  RIGHT_CONST, &right_const_tab[RC_LAYERPOS]},
+	{"@.layer.type",      "type",             &op_tab[OPS_EQ],  RIGHT_CONST, &right_const_tab[RC_LAYERTYPE]},
 
 	{NULL,                "host element's",   NULL,             0, NULL},
 	{"@.element.x",       "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
