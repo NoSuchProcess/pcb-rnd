@@ -529,6 +529,25 @@ static const expr_wizard_t *find_tab_entry(const expr_wizard_t *start_at, const 
 	return NULL;
 }
 
+/* Set enum-like tree cursor from a string; returns 0 if not found, 1 if found. */
+static int set_tree_from_enum(GtkWidget *tree, const char **vals, const char *target)
+{
+	int n, found;
+	const char **s;
+	for(n = 0, found = 0, s = vals; *s != NULL; s++, n++) {
+		if (strcmp(*s, target) == 0) {
+			found = 1;
+			break;
+		}
+	}
+	if (found) {
+		GtkTreePath *path = gtk_tree_path_new_from_indices(n, -1);
+		gtk_tree_view_set_cursor(GTK_TREE_VIEW(tree), path, NULL, FALSE);
+		gtk_tree_path_free(path);
+	}
+	return found;
+}
+
 /* Set the value of expr wizard widgets to match the button text from the previous set */
 void expr_wizard_import(const char *desc_)
 {
@@ -593,21 +612,7 @@ void expr_wizard_import(const char *desc_)
 	}
 
 	/* set op cursor */
-	{
-		int n, found;
-		const char **s;
-		for(n = 0, found = 0, s = w->ops->ops; *s != NULL; s++, n++) {
-			if (strcmp(*s, op) == 0) {
-				found = 1;
-				break;
-			}
-		}
-		if (found) {
-			GtkTreePath *path = gtk_tree_path_new_from_indices(n, -1);
-			gtk_tree_view_set_cursor(GTK_TREE_VIEW(expr_wizard_dlg.tr_op), path, NULL, FALSE);
-			gtk_tree_path_free(path);
-		}
-	}
+	set_tree_from_enum(expr_wizard_dlg.tr_op, w->ops->ops, op);
 
 	/* set value field */
 	{
@@ -632,11 +637,11 @@ void expr_wizard_import(const char *desc_)
 				break;
 			}
 			case RIGHT_OBJTYPE:
-printf("TODO85\n");
+				set_tree_from_enum(expr_wizard_dlg.tr_right, right_objtype, right);
+				break;
 		}
 	}
 
-//expr_wizard_dlg.
 	fail:;
 	free(desc);
 }
