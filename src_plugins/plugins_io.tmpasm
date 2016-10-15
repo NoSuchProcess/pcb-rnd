@@ -18,6 +18,7 @@ include {../src_plugins/export_test/Plug.tmpasm}
 include {../src_plugins/export_bboard/Plug.tmpasm}
 include {../src_plugins/export_openscad/Plug.tmpasm}
 include {../src_plugins/export_dsn/Plug.tmpasm}
+include {../src_plugins/export_ipcd356/Plug.tmpasm}
 
 include {../src_plugins/hid_batch/Plug.tmpasm}
 include {../src_plugins/hid_gtk/Plug.tmpasm}

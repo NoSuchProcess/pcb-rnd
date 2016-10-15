@@ -1,5 +1,4 @@
 /*!
- * \file src/hid/ipcd356/ipcd356.c
  *
  * \brief IPC-D-356 Netlist export.
  *
@@ -32,9 +31,7 @@
  * Thomas.Nau@rz.uni-ulm.de
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -52,12 +49,7 @@
 #include "pcb-printf.h"
 
 #include "hid.h"
-#include "hid/common/hidnogui.h"
-#include "../hidint.h"
-
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
+#include "hid_nogui.h"
 
 static HID_Attribute IPCD356_options[] = {
 /* %start-doc options "8 IPC-D-356 Netlist Export"
@@ -599,7 +591,6 @@ static void IPCD356_do_export(HID_Attr_Val * options)
 
 static void IPCD356_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(IPCD356_options, sizeof(IPCD356_options) / sizeof(IPCD356_options[0]));
 	hid_parse_command_line(argc, argv);
 }
 
@@ -622,6 +613,6 @@ void hid_ipcd356_init()
 
 	hid_register_hid(&IPCD356_hid);
 
+	hid_register_attributes(IPCD356_options, sizeof(IPCD356_options) / sizeof(IPCD356_options[0]));
 }
 
-/* EOF */

@@ -1,0 +1,8 @@
+put /local/pcb/mod {export_ipcd356}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_ipcd356/ipcd356.o @]
+
+switch /local/pcb/export_ipcd356/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
