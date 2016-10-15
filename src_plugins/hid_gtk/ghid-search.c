@@ -499,21 +499,32 @@ static char *expr_wizard_result(int desc)
 }
 
 /* look up a tab entry with a slow linear search */
-static const expr_wizard_t *find_tab_entry(const expr_wizard_t *start_at, const char *desc, int need_hdr)
+static const expr_wizard_t *find_tab_entry(const expr_wizard_t *start_at, const char *desc, int need_hdr, int *idx)
 {
 	const expr_wizard_t *w;
+	int i = 0, initial = 1;
+
 	for(w = start_at; w->left_desc != NULL; w++) {
 		if (need_hdr) {
-			if (w->left_var != NULL)
+			if (w->left_var != NULL) {
+				if (initial)
+					i++;
 				continue;
+			}
+			else
+				initial = 0;
 		}
 		else {
 			if (w->left_var == NULL)
-				continue;
+				return NULL;
 		}
-		if (strcmp(w->left_desc, desc) == 0)
+		if (strcmp(w->left_desc, desc) == 0) {
+			*idx = i;
 			return w;
+		}
+		i++;
 	}
+
 	return NULL;
 }
 
@@ -522,6 +533,7 @@ void expr_wizard_import(const char *desc_)
 {
 	char *desc, *left, *left_parent, *left_desc, *op, *right, *sep;
 	const expr_wizard_t *w;
+	int l1idx = -1, l2idx = -1;
 
 	if (desc_ == NULL)
 		return;
@@ -553,22 +565,30 @@ void expr_wizard_import(const char *desc_)
 		left_desc = left;
 	}
 
-	printf("lp='%s' ld='%s' op='%s' r='%s'\n", left_parent, left_desc, op, right);
+/*	printf("lp='%s' ld='%s' op='%s' r='%s'\n", left_parent, left_desc, op, right);*/
 	/* Find the tab entry */
 	
 	if (left_parent != NULL) {
-		w = find_tab_entry(expr_tab, left_parent, 1);
+		w = find_tab_entry(expr_tab, left_parent, 1, &l1idx);
 		if (w == NULL) goto fail;
+		w++;
 	}
 	else
 		w = expr_tab;
-
-	printf("w1=%p\n", w);
-
-	w = find_tab_entry(w, left_desc, 0);
+	w = find_tab_entry(w, left_desc, 0, &l2idx);
 	if (w == NULL) goto fail;
 
-	printf("w2=%p\n", w);
+	{
+		GtkTreePath *path;
+		if (left_parent != NULL)
+			path = gtk_tree_path_new_from_indices(l1idx, l2idx, -1);
+		else
+			path = gtk_tree_path_new_from_indices(l2idx, -1);
+
+		gtk_tree_view_expand_to_path(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), path);
+		gtk_tree_view_set_cursor(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), path, NULL, FALSE);
+		gtk_tree_path_free(path);
+	}
 
 //expr_wizard_dlg.
 	fail:;
