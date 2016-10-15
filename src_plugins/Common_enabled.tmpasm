@@ -73,18 +73,34 @@ switch /local/pcb/mod/CONF
 end
 
 # explicit rules: .sphash -> .c
+# Space separated list of .sphash input files
+# Optional: aux data fileds:   $(PLUGDIR)/query/consts.sphash::long:int:val;
 switch ?/local/pcb/mod/SPHASH
 	case {^$} end
 	default
-		foreach /local/n in /local/pcb/mod/SPHASH
+		foreach /local/nn in /local/pcb/mod/SPHASH
+			put /local/n  /local/nn
+			sub {/local/n} {::.*$} {}
 			put /local/bn /local/n
 			sub {/local/bn} {.[^.]*$} {}
 			put /local/pr /local/bn
 			sub {/local/pr} {^.*/} {}
+			switch /local/nn
+				case {::}
+					put /local/aux /local/nn
+					sub {/local/aux} {^.*::} {}
+					gsub {/local/aux} {:} { }
+					sub {/local/aux} {^} {--aux "}
+					append {/local/aux} {"}
+					end
+				default
+					put /local/aux {}
+					end
+			end
 			append /local/pcb/RULES [@
 # sphash for @/local/pcb/mod@
 @/local/bn@_sphash.c @/local/bn@_sphash.h: $(SPHASH) @/local/n@
-	$(SPHASH) --prefix @/local/pcb/mod@_@/local/pr@ --out @/local/bn@_sphash < @/local/n@
+	$(SPHASH) @/local/aux@ --prefix @/local/pcb/mod@_@/local/pr@ --out @/local/bn@_sphash < @/local/n@
 @]
 		end
 	end
