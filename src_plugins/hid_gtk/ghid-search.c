@@ -456,8 +456,8 @@ static char *expr_wizard_result(int desc)
 			if (parent->left_var == NULL)
 				break;
 
-		if (parent->left_var != NULL)
-			pcb_append_printf(&s, "%s %s", parent->left_desc, w->left_desc);
+		if (parent->left_desc != NULL)
+			pcb_append_printf(&s, "%s\t%s", parent->left_desc, w->left_desc);
 		else
 			pcb_append_printf(&s, "%s", w->left_desc);
 	}
@@ -498,6 +498,83 @@ static char *expr_wizard_result(int desc)
 	return NULL;
 }
 
+/* look up a tab entry with a slow linear search */
+static const expr_wizard_t *find_tab_entry(const expr_wizard_t *start_at, const char *desc, int need_hdr)
+{
+	const expr_wizard_t *w;
+	for(w = start_at; w->left_desc != NULL; w++) {
+		if (need_hdr) {
+			if (w->left_var != NULL)
+				continue;
+		}
+		else {
+			if (w->left_var == NULL)
+				continue;
+		}
+		if (strcmp(w->left_desc, desc) == 0)
+			return w;
+	}
+	return NULL;
+}
+
+/* Set the value of expr wizard widgets to match the button text from the previous set */
+void expr_wizard_import(const char *desc_)
+{
+	char *desc, *left, *left_parent, *left_desc, *op, *right, *sep;
+	const expr_wizard_t *w;
+
+	if (desc_ == NULL)
+		return;
+
+	/* split the string into left, op and right */
+	desc = pcb_strdup(desc_);
+	left = desc;
+
+	op = strchr(left, '\n');
+	if (op == NULL) goto fail;
+	*op = '\0';
+	op++;
+
+	right = strchr(op, '\n');
+	if (right == NULL) goto fail;
+	*right = '\0';
+	right++;
+
+	/* split left */
+	sep = strchr(left, '\t');
+	if (sep != NULL) {
+		*sep = '\0';
+		sep++;
+		left_parent = left;
+		left_desc = sep;
+	}
+	else {
+		left_parent = NULL;
+		left_desc = left;
+	}
+
+	printf("lp='%s' ld='%s' op='%s' r='%s'\n", left_parent, left_desc, op, right);
+	/* Find the tab entry */
+	
+	if (left_parent != NULL) {
+		w = find_tab_entry(expr_tab, left_parent, 1);
+		if (w == NULL) goto fail;
+	}
+	else
+		w = expr_tab;
+
+	printf("w1=%p\n", w);
+
+	w = find_tab_entry(w, left_desc, 0);
+	if (w == NULL) goto fail;
+
+	printf("w2=%p\n", w);
+
+//expr_wizard_dlg.
+	fail:;
+	free(desc);
+}
+
 static void expr_wizard_dialog(expr1_t *e)
 {
 	GtkWidget *dialog, *vbox, *hbox;
@@ -523,7 +600,6 @@ static void expr_wizard_dialog(expr1_t *e)
 	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), GTK_TREE_MODEL(expr_wizard_dlg.md_left));
 	g_signal_connect(G_OBJECT(expr_wizard_dlg.tr_left), "cursor-changed", G_CALLBACK(left_chg_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.tr_left, FALSE, TRUE, 4);
-
 
 
 	expr_wizard_dlg.entry_left = gtk_entry_new();
@@ -574,6 +650,7 @@ static void expr_wizard_dialog(expr1_t *e)
 	right_hide();
 
 	/* Run the dialog */
+	expr_wizard_import(gtk_button_get_label(GTK_BUTTON(e->content)));
 	response = gtk_dialog_run(GTK_DIALOG(dialog));
 	if (response == GTK_RESPONSE_OK) {
 		char *res = expr_wizard_result(1);
