@@ -198,7 +198,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	/* module descriptions come next */
 
-	write_kicad_legacy_layout_element(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset);
+	write_kicad_legacy_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
 	currentKicadLayer = 0;
@@ -725,7 +725,13 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 
 			fputs("Sh ",FP); /* pin shape descriptor */
 			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
-			fputs(" C ",FP); /* circular */
+
+			if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
+				fputs(" R ",FP); /* square */
+			} else {
+				fputs(" C ",FP); /* circular */
+			}
+
 			pcb_fprintf(FP, "%.3mm %.3mm ", pin->Thickness, pin->Thickness); /* height = width */
 			fputs("0 0 0\n",FP); /* deltaX deltaY Orientation as float in decidegrees */
 
@@ -872,7 +878,7 @@ int write_kicad_legacy_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a layout .brd file
  */
-int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, Coord xOffset, Coord yOffset)
+int write_kicad_legacy_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, Coord xOffset, Coord yOffset)
 {
 
 	gdl_iterator_t eit;
@@ -923,7 +929,7 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 
 		currentElementName = unm_name(&group1, element->Name[0].TextString, element);
 		fprintf(FP, "$MODULE %s\n", currentElementName);
-		pcb_fprintf(FP, "Po %mk %mk 0 %d 51534DFF 00000000 ~~\n", xPos, yPos, copperLayer);
+		pcb_fprintf(FP, "Po %.0mk %.0mk 0 %d 51534DFF 00000000 ~~\n", xPos, yPos, copperLayer);
 		fprintf(FP, "Li %s\n", currentElementName);
 		fprintf(FP, "Cd %s\n", currentElementName);
 		fputs("Sc 0\n",FP);
@@ -934,18 +940,24 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 		pinlist_foreach(&element->Pin, &it, pin) {
 			fputs("$PAD\n",FP);	 /* start pad descriptor for a pin */
 
-			pcb_fprintf(FP, "Po %mk %mk\n", /* positions of pad */
+			pcb_fprintf(FP, "Po %.0mk %.0mk\n", /* positions of pad */
 									pin->X - element->MarkX,
 									pin->Y - element->MarkY);
 
 			fputs("Sh ",FP); /* pin shape descriptor */
 			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
-			fputs(" C ",FP); /* circular */
-			pcb_fprintf(FP, "%mk %mk ", pin->Thickness, pin->Thickness); /* height = width */
+
+			if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
+				fputs(" R ",FP); /* square */
+			} else {
+				fputs(" C ",FP); /* circular */
+			}
+
+			pcb_fprintf(FP, "%.0mk %.0mk ", pin->Thickness, pin->Thickness); /* height = width */
 			fputs("0 0 0\n",FP); /* deltaX deltaY Orientation as float in decidegrees */
 
 			fputs("Dr ",FP); /* drill details; size and x,y pos relative to pad location */
-			pcb_fprintf(FP, "%mk 0 0\n", pin->DrillingHole);
+			pcb_fprintf(FP, "%.0mk 0 0\n", pin->DrillingHole);
 
 			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
 
@@ -964,7 +976,7 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 		pinlist_foreach(&element->Pad, &it, pad) {
 			fputs("$PAD\n",FP);	 /* start pad descriptor for an smd pad */
 
-			pcb_fprintf(FP, "Po %mk %mk\n", /* positions of pad */
+			pcb_fprintf(FP, "Po %.0mk %.0mk\n", /* positions of pad */
 									(pad->Point1.X + pad->Point2.X)/2- element->MarkX,
 									(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
 
