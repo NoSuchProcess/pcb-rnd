@@ -30,7 +30,6 @@
 #include "data.h"
 
 int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data);
-int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, Coord xOffset, Coord yOffset);
 int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff);
 int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP);
 int write_kicad_legacy_module_header(FILE * FP);
@@ -43,3 +42,4 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number, LayerTypePt
 int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,
 						Coord xOffset, Coord yOffset);
 int write_kicad_legacy_equipotential_netlists(FILE * FP, PCBTypePtr Layout);
+int write_kicad_legacy_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, Coord xOffset, Coord yOffset);
