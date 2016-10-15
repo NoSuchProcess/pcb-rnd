@@ -47,9 +47,16 @@
 #include "find.h"
 #include "misc.h"
 #include "pcb-printf.h"
+#include "netlist.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
+#include "hid_helper.h"
+#include "hid_attrib.h"
+#include "hid_init.h"
+#include "plugins.h"
+
+static const char *ipcd356_cookie = "ipcd356 exporter";
 
 static HID_Attribute IPCD356_options[] = {
 /* %start-doc options "8 IPC-D-356 Netlist Export"
@@ -152,8 +159,8 @@ void IPCD356_WriteHeader(FILE * fd)
  * The net name is passed through the "net" and should be 14 characters
  * max.\n
  * The function scans through pads, pins and vias  and looks for the
- * \c FOUNDFLAG.\n
- * Once the object has been added to the net list the \c VISITFLAG is
+ * \c PCB_FLAG_FOUND.\n
+ * Once the object has been added to the net list the \c PCB_FLAG_VISIT is
  * set on that object.
  *
  * \todo 1) The bottom layer is always written as layer #2 (A02).\n
@@ -170,13 +177,13 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 
 	ELEMENT_LOOP(PCB->Data);
 	PAD_LOOP(element);
-	if (TEST_FLAG(FOUNDFLAG, pad)) {
+	if (TEST_FLAG(PCB_FLAG_FOUND, pad)) {
 		fprintf(fd, "327%-17.14s", net);	/* Net Name. */
 		fprintf(fd, "%-6.6s", element->Name[1].TextString);	/* Refdes. */
 		fprintf(fd, "-%-4.4s", pad->Number);	/* pin number. */
 		fprintf(fd, " ");						/*! \todo Midpoint indicator (M). */
 		fprintf(fd, "      ");			/* Drilled hole Id (blank for pads). */
-		if (TEST_FLAG(ONSOLDERFLAG, pad) == true) {
+		if (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) == pcb_true) {
 			fprintf(fd, "A02");				/*! \todo Put actual layer # for bottom side. */
 		}
 		else {
@@ -204,8 +211,8 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 			pady = pady / 2540;				/* Y location in 0.0001". */
 		}
 		else {
-			padx = padx / 1000;				// X location in 0.001mm
-			pady = pady / 1000;				// Y location in 0.001mm
+			padx = padx / 1000;				/* X location in 0.001mm */
+			pady = pady / 1000;				/* Y location in 0.001mm */
 		}
 
 		fprintf(fd, "X%4.4d", padx);
@@ -213,7 +220,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		fprintf(fd, "R000");				/* Rotation (0 degrees). */
 		fprintf(fd, " ");						/* Column 72 should be left blank. */
 		if (pad->Mask > 0) {
-			if (TEST_FLAG(ONSOLDERFLAG, pad) == true) {
+			if (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) == pcb_true) {
 				fprintf(fd, "S2");			/* Soldermask on bottom side. */
 			}
 			else {
@@ -225,13 +232,13 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		}
 		fprintf(fd, "      ");			/* Padding. */
 		fprintf(fd, "\n");
-		SET_FLAG(VISITFLAG, pad);
+		SET_FLAG(PCB_FLAG_VISIT, pad);
 	}
 
 	END_LOOP;											/* Pad. */
 	PIN_LOOP(element);
-	if (TEST_FLAG(FOUNDFLAG, pin)) {
-		if (TEST_FLAG(HOLEFLAG, pin)) {	/* Non plated? */
+	if (TEST_FLAG(PCB_FLAG_FOUND, pin)) {
+		if (TEST_FLAG(PCB_FLAG_HOLE, pin)) {	/* Non plated? */
 			fprintf(fd, "367%-17.14s", net);	/* Net Name. */
 		}
 		else {
@@ -248,7 +255,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 			tmp = tmp / 1000;					/* 0.001 mm. */
 		}
 
-		if (TEST_FLAG(HOLEFLAG, pin)) {
+		if (TEST_FLAG(PCB_FLAG_HOLE, pin)) {
 			fprintf(fd, "D%-4.4dU", tmp);	/* Unplated Drilled hole Id. */
 		}
 		else {
@@ -280,7 +287,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		}
 
 		fprintf(fd, "X%4.4d", padx);	/* Pad dimension X. */
-		if (TEST_FLAG(SQUAREFLAG, pin)) {
+		if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
 			fprintf(fd, "Y%4.4d", padx);	/* Pad dimension Y. */
 		}
 		else {
@@ -298,7 +305,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 
 		fprintf(fd, "\n");
 
-		SET_FLAG(VISITFLAG, pin);
+		SET_FLAG(PCB_FLAG_VISIT, pin);
 
 	}
 
@@ -306,8 +313,8 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 	END_LOOP;											/* Element */
 
 	VIA_LOOP(PCB->Data);
-	if (TEST_FLAG(FOUNDFLAG, via)) {
-		if (TEST_FLAG(HOLEFLAG, via)) {	/* Non plated ? */
+	if (TEST_FLAG(PCB_FLAG_FOUND, via)) {
+		if (TEST_FLAG(PCB_FLAG_HOLE, via)) {	/* Non plated ? */
 			fprintf(fd, "367%-17.14s", net);	/* Net Name. */
 		}
 		else {
@@ -324,7 +331,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 			tmp = tmp / 1000;					/* 0.001 mm. */
 		}
 
-		if (TEST_FLAG(HOLEFLAG, via)) {
+		if (TEST_FLAG(PCB_FLAG_HOLE, via)) {
 			fprintf(fd, "D%-4.4dU", tmp);	/* Unplated Drilled hole Id. */
 		}
 		else {
@@ -367,7 +374,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		}
 		fprintf(fd, "      ");			/* Padding. */
 		fprintf(fd, "\n");
-		SET_FLAG(VISITFLAG, via);
+		SET_FLAG(PCB_FLAG_VISIT, via);
 	}
 
 	END_LOOP;											/* Via. */
@@ -388,7 +395,7 @@ int IPCD356_Netlist(void)
 	IPCD356_AliasList *aliaslist;
 
 	if (IPCD356_SanityCheck()) {	/* Check for invalid names + numbers. */
-		Message("Aborting.\n");
+		Message(PCB_MSG_ERROR, "IPCD356: aborting on the sanity check.\n");
 		return (1);
 	}
 
@@ -398,7 +405,7 @@ int IPCD356_Netlist(void)
 
 	fp = fopen(IPCD356_filename, "w+");
 	if (fp == NULL) {
-		Message("error opening %s\n", IPCD356_filename);
+		Message(PCB_MSG_ERROR, "error opening %s\n", IPCD356_filename);
 		return 1;
 	}
 /*   free (IPCD356_filename); */
@@ -408,25 +415,25 @@ int IPCD356_Netlist(void)
 
 	aliaslist = CreateAliasList();
 	if (aliaslist == NULL) {
-		Message("Error Aloccating memory for IPC-D-356 AliasList\n");
+		Message(PCB_MSG_ERROR, "Error Aloccating memory for IPC-D-356 AliasList\n");
 		return 1;
 	}
 
 	if (IPCD356_WriteAliases(fp, aliaslist)) {
-		Message("Error Writing IPC-D-356 AliasList\n");
+		Message(PCB_MSG_ERROR, "Error Writing IPC-D-356 AliasList\n");
 		return 1;
 	}
 
 
 	ELEMENT_LOOP(PCB->Data);
 	PIN_LOOP(element);
-	if (!TEST_FLAG(VISITFLAG, pin)) {
-		ClearFlagOnLinesAndPolygons(true, FOUNDFLAG);
-		ClearFlagOnPinsViasAndPads(true, FOUNDFLAG);
-		LookupConnectionByPin(PIN_TYPE, pin);
+	if (!TEST_FLAG(PCB_FLAG_VISIT, pin)) {
+		ClearFlagOnLinesAndPolygons(pcb_true, PCB_FLAG_FOUND);
+		ClearFlagOnPinsViasAndPads(pcb_true, PCB_FLAG_FOUND);
+		LookupConnectionByPin(PCB_TYPE_PIN, pin);
 		sprintf(nodename, "%s-%s", element->Name[1].TextString, pin->Number);
-		netname = netnode_to_netname(nodename);
-/*      Message("Netname: %s\n", netname->Name +2); */
+		netname = pcb_netnode_to_netname(nodename);
+/*      Message(PCB_MSG_INFO, "Netname: %s\n", netname->Name +2); */
 		if (netname) {
 			strcpy(net, &netname->Name[2]);
 			CheckNetLength(net, aliaslist);
@@ -438,13 +445,13 @@ int IPCD356_Netlist(void)
 	}
 	END_LOOP;											/* Pin. */
 	PAD_LOOP(element);
-	if (!TEST_FLAG(VISITFLAG, pad)) {
-		ClearFlagOnLinesAndPolygons(true, FOUNDFLAG);
-		ClearFlagOnPinsViasAndPads(true, FOUNDFLAG);
-		LookupConnectionByPin(PAD_TYPE, pad);
+	if (!TEST_FLAG(PCB_FLAG_VISIT, pad)) {
+		ClearFlagOnLinesAndPolygons(pcb_true, PCB_FLAG_FOUND);
+		ClearFlagOnPinsViasAndPads(pcb_true, PCB_FLAG_FOUND);
+		LookupConnectionByPin(PCB_TYPE_PAD, pad);
 		sprintf(nodename, "%s-%s", element->Name[1].TextString, pad->Number);
-		netname = netnode_to_netname(nodename);
-/*      Message("Netname: %s\n", netname->Name +2); */
+		netname = pcb_netnode_to_netname(nodename);
+/*      Message(PCB_MSG_INFO, "Netname: %s\n", netname->Name +2); */
 		if (netname) {
 			strcpy(net, &netname->Name[2]);
 			CheckNetLength(net, aliaslist);
@@ -459,10 +466,10 @@ int IPCD356_Netlist(void)
 	END_LOOP;											/* Element. */
 
 	VIA_LOOP(PCB->Data);
-	if (!TEST_FLAG(VISITFLAG, via)) {
-		ClearFlagOnLinesAndPolygons(true, FOUNDFLAG);
-		ClearFlagOnPinsViasAndPads(true, FOUNDFLAG);
-		LookupConnectionByPin(PIN_TYPE, via);
+	if (!TEST_FLAG(PCB_FLAG_VISIT, via)) {
+		ClearFlagOnLinesAndPolygons(pcb_true, PCB_FLAG_FOUND);
+		ClearFlagOnPinsViasAndPads(pcb_true, PCB_FLAG_FOUND);
+		LookupConnectionByPin(PCB_TYPE_PIN, via);
 		strcpy(net, "N/C");
 		IPCD356_WriteNet(fp, net);
 	}
@@ -472,8 +479,8 @@ int IPCD356_Netlist(void)
 	fclose(fp);
 	free(aliaslist);
 	ResetVisitPinsViasAndPads();
-	ClearFlagOnLinesAndPolygons(true, FOUNDFLAG);
-	ClearFlagOnPinsViasAndPads(true, FOUNDFLAG);
+	ClearFlagOnLinesAndPolygons(pcb_true, PCB_FLAG_FOUND);
+	ClearFlagOnPinsViasAndPads(pcb_true, PCB_FLAG_FOUND);
 	return 0;
 }
 
@@ -485,14 +492,14 @@ void IPCD356_End(FILE * fd)
 void ResetVisitPinsViasAndPads()
 {
 	VIA_LOOP(PCB->Data);
-	CLEAR_FLAG(VISITFLAG, via);
+	CLEAR_FLAG(PCB_FLAG_VISIT, via);
 	END_LOOP;											/* Via. */
 	ELEMENT_LOOP(PCB->Data);
 	PIN_LOOP(element);
-	CLEAR_FLAG(VISITFLAG, pin);
+	CLEAR_FLAG(PCB_FLAG_VISIT, pin);
 	END_LOOP;											/* Pin. */
 	PAD_LOOP(element);
-	CLEAR_FLAG(VISITFLAG, pad);
+	CLEAR_FLAG(PCB_FLAG_VISIT, pad);
 	END_LOOP;											/* Pad. */
 	END_LOOP;											/* Element. */
 }
@@ -504,8 +511,8 @@ int IPCD356_WriteAliases(FILE * fd, IPCD356_AliasList * aliaslist)
 
 	index = 1;
 
-	for (i = 0; i < PCB->NetlistLib.MenuN; i++) {
-		if (strlen(PCB->NetlistLib.Menu[i].Name + 2) > 14) {
+	for (i = 0; i < PCB->NetlistLib[NETLIST_EDITED].MenuN; i++) {
+		if (strlen(PCB->NetlistLib[NETLIST_EDITED].Menu[i].Name + 2) > 14) {
 			if (index == 1) {
 				fprintf(fd, "C  Netname Aliases Section\n");
 			}
@@ -514,7 +521,7 @@ int IPCD356_WriteAliases(FILE * fd, IPCD356_AliasList * aliaslist)
 				return 1;
 			}
 			sprintf(aliaslist->Alias[index].NName, "NNAME%-5.5d", index);
-			strcpy(aliaslist->Alias[index].NetName, PCB->NetlistLib.Menu[i].Name + 2);
+			strcpy(aliaslist->Alias[index].NetName, PCB->NetlistLib[NETLIST_EDITED].Menu[i].Name + 2);
 
 			fprintf(fd, "P  %s  %-58.58s\n", aliaslist->Alias[index].NName, aliaslist->Alias[index].NetName);
 			index++;
@@ -562,7 +569,7 @@ int IPCD356_SanityCheck()
 {
 	ELEMENT_LOOP(PCB->Data);
 	if (element->Name[1].TextString == '\0') {
-		Message("Error: Found unnamed element. All elements need to be named to create an IPC-D-356 netlist.\n");
+		Message(PCB_MSG_ERROR, "Error: Found unnamed element. All elements need to be named to create an IPC-D-356 netlist.\n");
 		return (1);
 	}
 	END_LOOP;											/* Element. */
@@ -613,6 +620,6 @@ void hid_ipcd356_init()
 
 	hid_register_hid(&IPCD356_hid);
 
-	hid_register_attributes(IPCD356_options, sizeof(IPCD356_options) / sizeof(IPCD356_options[0]));
+	hid_register_attributes(IPCD356_options, sizeof(IPCD356_options) / sizeof(IPCD356_options[0]), ipcd356_cookie, 0);
 }
 
