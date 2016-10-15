@@ -22,6 +22,7 @@
 
 /* Query language - access to / extract core data */
 
+#include <math.h>
 #include "global.h"
 #include "data.h"
 #include "query_access.h"
@@ -310,6 +311,14 @@ static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 		case query_fields_y2:         PCB_QRY_RET_INT(res, l->Point2.Y);
 		case query_fields_thickness:  PCB_QRY_RET_INT(res, l->Thickness);
 		case query_fields_clearance:  PCB_QRY_RET_INT(res, l->Clearance);
+		case query_fields_length:
+			{
+				double x = l->Point1.X - l->Point2.X;
+				double y = l->Point1.Y - l->Point2.Y;
+				double len = sqrt(x*x + y*y);
+				PCB_QRY_RET_INT(res, ((Coord)len));
+			}
+			break;
 		default:;
 	}
 
