@@ -179,7 +179,11 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	fputs("$EndSETUP\n",FP);
 
-	/* module description stuff would go here */
+	/* now come the netlist "equipotential" descriptors */
+
+	write_kicad_legacy_equipotential_netlists(FP, PCB);
+
+	/* module descriptions come next */
 
 	write_kicad_legacy_layout_element(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset);
 
@@ -805,6 +809,54 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 	return 0;
 }
 
+
+/* ---------------------------------------------------------------------------
+ * writes netlist data in kicad legacy format for use in a layout .brd file
+
+some example code:
+LibraryMenuTypePtr pcb_netlist_find_net4pinname(PCBTypePtr pcb, const char *pin)
+{
+        int n;
+        for (n = 0; n < pcb->NetlistLib[NETLIST_EDITED].MenuN; n++) {
+                LibraryMenuTypePtr menu = &pcb->NetlistLib[NETLIST_EDITED].Menu[n];
+                int p;
+                for (p = 0; p < menu->EntryN; p++) {
+                        LibraryEntryTypePtr entry = &menu->Entry[p];
+                        if (strcmp(entry->ListEntry, pin) == 0)
+                                return menu;
+                }
+        }
+        return NULL;
+ */
+
+int write_kicad_legacy_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
+{
+        int n; /* code mostly lifted from netlist.c */ 
+
+	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
+	fputs("$EQUIPOT\n",FP);
+	fputs("Na 0 \"\"\n", FP);
+	fputs("St ~\n", FP);
+	fputs("$EndEQUIPOT\n",FP);
+
+	/* now we step through any available netlists and generate descriptors */
+        for (n = 0; n < Layout->NetlistLib[NETLIST_EDITED].MenuN; n++) {
+                LibraryMenuTypePtr menu = &Layout->NetlistLib[NETLIST_EDITED].Menu[n];
+                int p;
+                for (p = 0; p < menu->EntryN; p++) {
+                        LibraryEntryTypePtr netlist = &menu->Entry[p];
+			if (netlist != NULL) {
+				fputs("$EQUIPOT\n",FP);
+				fprintf(FP, "Na %d \"goes here\"\n", (p+1) ); /*, '!'pcb_netlist_name(netlist));  netlist 0 is used for unconnected pads  */
+				fputs("St ~\n", FP);
+				fputs("$EndEQUIPOT\n",FP);
+			} 
+                }
+        }
+	return 0;
+}
+
+
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a layout .brd file
  */
@@ -961,7 +1013,7 @@ int write_kicad_legacy_layout_element(FILE * FP, PCBTypePtr Layout, DataTypePtr 
 			if (current_pad_menu != NULL) {
 				fprintf(FP, "Ne 0 \"%s\"\n", pcb_netlist_name(current_pad_menu)); /* library parts have empty net descriptors, in a .brd they don't */
 			} else {
-				fprintf(FP, "Ne 0 \"\"\n"); /* library parts have empty net descriptors, in a .brd they don't */
+				fprintf(FP, "Ne 0 \"\"\n"); /* an net number of 0 indicates an unconnected pad in pcbnew */
 			} 
 
 			fputs("$EndPAD\n",FP);

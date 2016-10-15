@@ -42,3 +42,4 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number, LayerTypePt
 						Coord xOffset, Coord yOffset);
 int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,
 						Coord xOffset, Coord yOffset);
+int write_kicad_legacy_equipotential_netlists(FILE * FP, PCBTypePtr Layout);
