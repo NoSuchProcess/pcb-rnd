@@ -28,6 +28,7 @@
 #include "query.h"
 #include "query_y.h"
 #include "compat_misc.h"
+#include "layer.h"
 
 static const char *pcb_qry_program, *pcb_qry_program_ptr;
 static int qry_yy_input(char *buf, int buflen);
@@ -64,6 +65,28 @@ a[.]            { return T_FLD_A; }
 "ELINE"         { qry_lval.n = make_constant(yytext, PCB_OBJ_ELINE); return T_CONST; }
 "EARC"          { qry_lval.n = make_constant(yytext, PCB_OBJ_EARC); return T_CONST; }
 "ETEXT"         { qry_lval.n = make_constant(yytext, PCB_OBJ_ETEXT); return T_CONST; }
+
+"TRUE"          { qry_lval.n = make_constant(yytext, 1); return T_CONST; }
+"VISIBLE"       { qry_lval.n = make_constant(yytext, 1); return T_CONST; }
+"ON"            { qry_lval.n = make_constant(yytext, 1); return T_CONST; }
+"YES"           { qry_lval.n = make_constant(yytext, 1); return T_CONST; }
+
+"FALSE"         { qry_lval.n = make_constant(yytext, 0); return T_CONST; }
+"INVISIBLE"     { qry_lval.n = make_constant(yytext, 0); return T_CONST; }
+"OFF"           { qry_lval.n = make_constant(yytext, 0); return T_CONST; }
+"NO"            { qry_lval.n = make_constant(yytext, 0); return T_CONST; }
+
+"TOP"           { qry_lval.n = make_constant(yytext, PCB_LYT_TOP); return T_CONST; }
+"BOTTOM"        { qry_lval.n = make_constant(yytext, PCB_LYT_BOTTOM); return T_CONST; }
+"INTERN"        { qry_lval.n = make_constant(yytext, PCB_LYT_INTERN); return T_CONST; }
+"INTERNAL"      { qry_lval.n = make_constant(yytext, PCB_LYT_INTERN); return T_CONST; }
+"COPPER"        { qry_lval.n = make_constant(yytext, PCB_LYT_COPPER); return T_CONST; }
+"SILK"          { qry_lval.n = make_constant(yytext, PCB_LYT_SILK); return T_CONST; }
+"MASK"          { qry_lval.n = make_constant(yytext, PCB_LYT_MASK); return T_CONST; }
+"PASTE"         { qry_lval.n = make_constant(yytext, PCB_LYT_PASTE); return T_CONST; }
+"OUTLINE"       { qry_lval.n = make_constant(yytext, PCB_LYT_OUTLINE); return T_CONST; }
+
+
 
 mm              { qry_lval.u = get_unit_struct_by_allow(ALLOW_MM); return T_UNIT; }
 m               { qry_lval.u = get_unit_struct_by_allow(ALLOW_M); return T_UNIT; }
