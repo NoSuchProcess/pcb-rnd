@@ -498,6 +498,9 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
 	}
 
+	if (fh1 == query_fields_layer)
+		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (TEST_FLAG(PCB_FLAG_ONSOLDER, p) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
+
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
 
@@ -508,6 +511,7 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 		case query_fields_name:         PCB_QRY_RET_STR(res, p->Name[NAMEONPCB_INDEX].TextString);
 		case query_fields_description:  PCB_QRY_RET_STR(res, p->Name[DESCRIPTION_INDEX].TextString);
 		case query_fields_value:        PCB_QRY_RET_STR(res, p->Name[VALUE_INDEX].TextString);
+
 		default:;
 	}
 	PCB_QRY_RET_INV(res);
