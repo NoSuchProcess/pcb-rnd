@@ -56,10 +56,9 @@
 #include "hid_init.h"
 #include "hid_helper.h"
 
-/*#include <cairo.h>*/
+#include <cairo.h>
 
-#define CRASH fprintf(stderr, "HID error: pcb called unimplemented FreeCAD function %s.\n", __FUNCTION__); abort()
-#define CRASH2 fprintf(stderr, "HID error: Internal error in %s.\n", __FUNCTION__); abort()
+static const char *bboard_cookie = "bboard exporter";
 
 static cairo_surface_t *bboard_cairo_sfc;
 static cairo_t *bboard_cairo_ctx;
@@ -574,14 +573,14 @@ static void bboard_do_export(HID_Attr_Val * options)
 
 static void bboard_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(bboard_options, sizeof(bboard_options) / sizeof(bboard_options[0]));
 	hid_parse_command_line(argc, argv);
 }
 
 
 static void bboard_calibrate(double xval, double yval)
 {
-	CRASH;
+	fprintf(stderr, "HID error: pcb called unimplemented breaboard function bboard_calibrate.\n");
+	abort();
 }
 
 static void bboard_set_crosshair(int x, int y, int action)
@@ -590,7 +589,8 @@ static void bboard_set_crosshair(int x, int y, int action)
 
 static HID bboard_hid;
 
-void hid_bboard_init()
+
+pcb_uninit_t hid_export_bboard_init()
 {
 	memset(&bboard_hid, 0, sizeof(bboard_hid));
 
@@ -607,4 +607,8 @@ void hid_bboard_init()
 	bboard_hid.calibrate = bboard_calibrate;
 	bboard_hid.set_crosshair = bboard_set_crosshair;
 	hid_register_hid(&bboard_hid);
+
+	hid_register_attributes(bboard_options, sizeof(bboard_options) / sizeof(bboard_options[0]), bboard_cookie, 0);
+	return NULL;
 }
+
