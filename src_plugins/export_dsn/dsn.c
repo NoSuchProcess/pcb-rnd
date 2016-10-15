@@ -28,9 +28,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
   -- Updated to use Coord and other fixes by Jared Casper 16 Sep 2011
 */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -45,33 +43,30 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "gts.h"
 #include "rats.h"
 #include "buffer.h"
-#include "parse_l.h"
 #include "change.h"
 #include "draw.h"
-#include "resource.h"
 #include "set.h"
 #include "undo.h"
 #include "pcb-printf.h"
 #include "create.h"
 #include "polygon.h"
+#include "compat_misc.h"
 
 #include "hid.h"
-#include "hid_draw.h"
-#include "../hidint.h"
+#include "hid_draw_helpers.h"
+#include "hid_nogui.h"
+#include "hid_actions.h"
+#include "hid_init.h"
+#include "hid_attrib.h"
+#include "hid_helper.h"
+#include "plugins.h"
 
-#include "hid/common/draw_helpers.h"
-#include "hid/common/hidnogui.h"
-#include "hid/common/actions.h"
-#include "hid/common/hidinit.h"
+static const char *dsn_cookie = "dsn exporter";
 
-#ifdef HAVE_LIBDMALLOC
-#include <dmalloc.h>
-#endif
-
-Coord trackwidth = 8;						//user options defined in export dialog
-Coord clearance = 8;
-Coord viawidth = 45;
-Coord viadrill = 25;
+static Coord trackwidth = 8;  /* user options defined in export dialog */
+static Coord clearance = 8;
+static Coord viawidth = 45;
+static Coord viadrill = 25;
 
 static HID dsn_hid;
 
@@ -80,29 +75,29 @@ static HID_Attribute dsn_options[] = {
 	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_dsnfile 0
 	{"trackwidth", "track width in mils",
-	 HID_Coord, MIL_TO_COORD(0), MIL_TO_COORD(100), {0, 0, 0, MIL_TO_COORD(8)}, 0, 0},
+	 HID_Coord, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(8)}, 0, 0},
 #define HA_trackwidth 1
 	{"clearance", "clearance in mils",
-	 HID_Coord, MIL_TO_COORD(0), MIL_TO_COORD(100), {0, 0, 0, MIL_TO_COORD(8)}, 0, 0},
+	 HID_Coord, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(8)}, 0, 0},
 #define HA_clearance 2
 	{"viawidth", "via width in mils",
-	 HID_Coord, MIL_TO_COORD(0), MIL_TO_COORD(100), {0, 0, 0, MIL_TO_COORD(27)}, 0,
+	 HID_Coord, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(27)}, 0,
 	 0},
 #define HA_viawidth 3
 	{"viadrill", "via drill diameter in mils",
-	 HID_Coord, MIL_TO_COORD(0), MIL_TO_COORD(100), {0, 0, 0, MIL_TO_COORD(15)}, 0,
+	 HID_Coord, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(15)}, 0,
 	 0},
 #define HA_viadrill 4
 };
 
 #define NUM_OPTIONS (sizeof(dsn_options)/sizeof(dsn_options[0]))
-REGISTER_ATTRIBUTES(dsn_options)
+REGISTER_ATTRIBUTES(dsn_options, dsn_cookie)
 
-		 static HID_Attr_Val dsn_values[NUM_OPTIONS];
+static HID_Attr_Val dsn_values[NUM_OPTIONS];
 
-		 static const char *dsn_filename;
+static const char *dsn_filename;
 
-		 static HID_Attribute *dsn_get_export_options(int *n)
+static HID_Attribute *dsn_get_export_options(int *n)
 {
 	static char *last_dsn_filename = 0;
 	if (PCB) {
@@ -148,7 +143,7 @@ static PointType get_centroid(ElementType * element)
 	return centroid;
 }
 
-GList *layerlist = NULL;				// contain routing layers
+static GList *layerlist = NULL;  /* contain routing layers */
 
 static void print_structure(FILE * fp)
 {
@@ -159,7 +154,7 @@ static void print_structure(FILE * fp)
 	int top_layer = PCB->LayerGroups.Entries[top_group][0];
 	int bot_layer = PCB->LayerGroups.Entries[bot_group][0];
 
-	g_list_free(layerlist);				// might be around from the last export
+	g_list_free(layerlist);				/* might be around from the last export */
 
 	if (PCB->Data->Layer[top_layer].On) {
 		layerlist = g_list_append(layerlist, &PCB->Data->Layer[top_layer]);
@@ -215,15 +210,15 @@ static void print_structure(FILE * fp)
 
 	for (GList * iter = layerlist; iter; iter = g_list_next(iter)) {
 		LayerType *layer = iter->data;
-		char *layeropts = g_strdup_printf("(type signal)");
+		char *layeropts = pcb_strdup("(type signal)");
 		/* see if layer has same name as a net and make it a power layer */
-		//loop thru all nets
-		for (int ni = 0; ni < PCB->NetlistLib.MenuN; ni++) {
+		/* loop thru all nets */
+		for (int ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++) {
 			char *nname;
-			nname = PCB->NetlistLib.Menu[ni].Name + 2;
+			nname = PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Name + 2;
 			if (!strcmp(layer->Name, nname)) {
 				g_free(layeropts);
-				layeropts = g_strdup_printf("(type power) (use_net \"%s\")", layer->Name);
+				layeropts = pcb_strdup_printf("(type power) (use_net \"%s\")", layer->Name);
 			}
 		}
 		fprintf(fp, "    (layer \"%s\"\n", layer->Name);
@@ -256,10 +251,10 @@ static void print_placement(FILE * fp)
 	{
 		char *ename;
 		PointType ecentroid = get_centroid(element);
-		char *side = TEST_FLAG(ONSOLDERFLAG, element) ? "back" : "front";
-		ename = g_strdup(NAMEONPCB_NAME(element));
+		char *side = TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? "back" : "front";
+		ename = pcb_strdup(NAMEONPCB_NAME(element));
 		if (!ename)
-			ename = g_strdup_printf("null");
+			ename = pcb_strdup("null");
 		pcb_fprintf(fp, "    (component %d\n", element->ID);
 		pcb_fprintf(fp, "      (place \"%s\" %.6mm %.6mm %s 0 (PN 0))\n", ename, ecentroid.X, ecentroid.Y, side);
 		pcb_fprintf(fp, "    )\n");
@@ -268,7 +263,7 @@ static void print_placement(FILE * fp)
 	END_LOOP;
 
 	VIA_LOOP(PCB->Data);
-	{															//add mounting holes
+	{ /* add mounting holes */
 		pcb_fprintf(fp, "    (component %d\n", via->ID);
 		pcb_fprintf(fp, "      (place %d %.6mm %.6mm %s 0 (PN 0))\n", via->ID, via->X, (PCB->MaxHeight - via->Y), "front");
 		pcb_fprintf(fp, "    )\n");
@@ -279,31 +274,31 @@ static void print_placement(FILE * fp)
 
 static void print_library(FILE * fp)
 {
-	GList *pads = NULL, *iter;		//contain unique pad names
+	GList *pads = NULL, *iter; /* contain unique pad names */
 	gchar *padstack;
 	fprintf(fp, "  (library\n");
 	ELEMENT_LOOP(PCB->Data);
 	{
-		int partside = TEST_FLAG(ONSOLDERFLAG, element) ? g_list_length(layerlist) - 1 : 0;
-		int partsidesign = TEST_FLAG(ONSOLDERFLAG, element) ? -1 : 1;
+		int partside = TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? g_list_length(layerlist) - 1 : 0;
+		int partsidesign = TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? -1 : 1;
 		PointType centroid = get_centroid(element);
-		fprintf(fp, "    (image %ld\n", element->ID);	//map every element by ID
+		fprintf(fp, "    (image %ld\n", element->ID); /* map every element by ID */
 		/* loop thru pins and pads to add to image */
 		PIN_LOOP(element);
 		{
 			Coord ty;
 			Coord pinthickness;
-			Coord lx, ly;							//hold local pin coordinates
+			Coord lx, ly;  /* hold local pin coordinates */
 			ty = PCB->MaxHeight - pin->Y;
 			pinthickness = pin->Thickness;
-			if (TEST_FLAG(SQUAREFLAG, pin))
-				padstack = g_strdup_printf("Th_square_%ld", pinthickness);
+			if (TEST_FLAG(PCB_FLAG_SQUARE, pin))
+				padstack = pcb_strdup_printf("Th_square_%mI", pinthickness);
 			else
-				padstack = g_strdup_printf("Th_round_%ld", pinthickness);
+				padstack = pcb_strdup_printf("Th_round_%mI", pinthickness);
 			lx = (pin->X - centroid.X) * partsidesign;
 			ly = (centroid.Y - ty) * -1;
 
-			if (!pin->Number) {				//if pin is null just make it a keepout
+			if (!pin->Number) { /* if pin is null just make it a keepout */
 				for (GList * iter = layerlist; iter; iter = g_list_next(iter)) {
 					LayerType *lay = iter->data;
 					pcb_fprintf(fp, "      (keepout \"\" (circle \"%s\" %.6mm %.6mm %.6mm))\n", lay->Name, pinthickness, lx, ly);
@@ -323,7 +318,7 @@ static void print_library(FILE * fp)
 		PAD_LOOP(element);
 		{
 			Coord xlen, ylen, xc, yc, p1y, p2y;
-			Coord lx, ly;							//store local coordinates for pins
+			Coord lx, ly;  /* store local coordinates for pins */
 			p1y = PCB->MaxHeight - pad->Point1.Y;
 			p2y = PCB->MaxHeight - pad->Point2.Y;
 			/* pad dimensions are unusual-
@@ -341,9 +336,9 @@ static void print_library(FILE * fp)
 			yc = (p1y + p2y) / 2;
 			lx = (xc - centroid.X) * partsidesign;
 			ly = (centroid.Y - yc) * -1;
-			padstack = g_strdup_printf("Smd_rect_%ldx%ld", xlen, ylen);
+			padstack = pcb_strdup_printf("Smd_rect_%mIx%mI", xlen, ylen);
 
-			if (!pad->Number) {				//if pad is null just make it a keepout
+			if (!pad->Number) {				/* if pad is null just make it a keepout */
 				LayerType *lay;
 				lay = g_list_nth_data(layerlist, partside);
 				pcb_fprintf(fp, "      (keepout \"\" (rect \"%s\" %.6mm %.6mm %.6mm %.6mm))\n",
@@ -363,11 +358,11 @@ static void print_library(FILE * fp)
 	END_LOOP;
 
 	VIA_LOOP(PCB->Data);
-	{															//add mounting holes and vias
-		fprintf(fp, "    (image %ld\n", via->ID);	//map every via by ID
+	{ /* add mounting holes and vias */
+		fprintf(fp, "    (image %ld\n", via->ID); /* map every via by ID */
 		/* for mounting holes, clearance is added to thickness for higher total clearance */
-		padstack = g_strdup_printf("Th_round_%ld", via->Thickness + via->Clearance);
-		fprintf(fp, "      (pin %s 1 0 0)\n", padstack);	//only 1 pin, 0,0 puts it right on component placement spot
+		padstack = pcb_strdup_printf("Th_round_%mI", via->Thickness + via->Clearance);
+		fprintf(fp, "      (pin %s 1 0 0)\n", padstack);	/* only 1 pin, 0,0 puts it right on component placement spot */
 		fprintf(fp, "    )\n");
 		if (!g_list_find_custom(pads, padstack, (GCompareFunc) strcmp))
 			pads = g_list_append(pads, padstack);
@@ -383,7 +378,7 @@ static void print_library(FILE * fp)
 		fprintf(fp, "    (padstack %s\n", padstack);
 
 		/* print info about pad here */
-		if (sscanf(padstack, "Smd_rect_%ldx%ld", &dim1, &dim2) == 2) {	//then pad is smd
+		if (sscanf(padstack, "Smd_rect_%ldx%ld", &dim1, &dim2) == 2) {	/* then pad is smd */
 			pcb_fprintf(fp,
 									"      (shape (rect \"%s\" %.6mm %.6mm %.6mm %.6mm))\n",
 									((LayerType *) (g_list_first(layerlist)->data))->Name, dim1 / -2, dim2 / -2, dim1 / 2, dim2 / 2);
@@ -429,18 +424,18 @@ static void print_network(FILE * fp)
 {
 	int ni, nei;
 	fprintf(fp, "  (network\n");
-	for (ni = 0; ni < PCB->NetlistLib.MenuN; ni++) {
-		fprintf(fp, "    (net \"%s\"\n", PCB->NetlistLib.Menu[ni].Name + 2);
+	for (ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++) {
+		fprintf(fp, "    (net \"%s\"\n", PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Name + 2);
 		fprintf(fp, "      (pins");
-		for (nei = 0; nei < PCB->NetlistLib.Menu[ni].EntryN; nei++)
-			print_quoted_pin(fp, PCB->NetlistLib.Menu[ni].Entry[nei].ListEntry);
+		for (nei = 0; nei < PCB->NetlistLib[NETLIST_EDITED].Menu[ni].EntryN; nei++)
+			print_quoted_pin(fp, PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Entry[nei].ListEntry);
 		fprintf(fp, ")\n");
 		fprintf(fp, "    )\n");
 	}
 
 	fprintf(fp, "    (class geda_default");
-	for (ni = 0; ni < PCB->NetlistLib.MenuN; ni++) {
-		fprintf(fp, " \"%s\"", PCB->NetlistLib.Menu[ni].Name + 2);
+	for (ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++) {
+		fprintf(fp, " \"%s\"", PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Name + 2);
 	}
 	pcb_fprintf(fp, "\n");
 	pcb_fprintf(fp, "      (circuit\n");
@@ -467,7 +462,7 @@ static void print_wires(FILE * fp)
 		}
 		END_LOOP;
 	}
-	fprintf(fp, "\n    )\n)\n");	//close all braces
+	fprintf(fp, "\n    )\n)\n"); /* close all braces */
 }
 
 static int PrintSPECCTRA(void)
@@ -559,7 +554,6 @@ static void dsn_do_export(HID_Attr_Val * options)
 
 static void dsn_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]));
 	hid_parse_command_line(argc, argv);
 }
 
@@ -584,7 +578,7 @@ be prompted to enter one.
 
 %end-doc */
 
-int ActionLoadDsnFrom(int argc, char **argv, Coord x, Coord y)
+int ActionLoadDsnFrom(int argc, const char **argv, Coord x, Coord y)
 {
 	char *fname = NULL;
 	static char *default_file = NULL;
@@ -612,15 +606,15 @@ int ActionLoadDsnFrom(int argc, char **argv, Coord x, Coord y)
 		}
 
 		if (fname && *fname)
-			default_file = strdup(fname);
+			default_file = pcb_strdup(fname);
 	}
 
-	lineclear = PCB->RouteStyle[0].Keepaway * 2;
+	lineclear = PCB->RouteStyle.array[0].Clearance * 2;
 	fp = fopen(fname, "r");
 	if (!fp)
-		return 1;										// bail out if file not found
+		return 1;  /* bail out if file not found */
 	while (fgets(str, sizeof(str), fp) != NULL) {
-		// strip trailing '\n' if it exists
+		/* strip trailing '\n' if it exists */
 		int len = strlen(str) - 1;
 		if (str[len] == '\n')
 			str[len] = 0;
@@ -642,15 +636,15 @@ int ActionLoadDsnFrom(int argc, char **argv, Coord x, Coord y)
 			y1 = dim2;
 			if (x0 != 0 || y0 != 0) {
 				line = CreateDrawnLineOnLayer(rlayer, x0, PCB->MaxHeight - y0,
-																			x1, PCB->MaxHeight - y1, linethick, lineclear, MakeFlags(AUTOFLAG | CLEARLINEFLAG));
-				ClearFromPolygon(PCB->Data, LINE_TYPE, rlayer, line);
+																			x1, PCB->MaxHeight - y1, linethick, lineclear, MakeFlags(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
+				ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, rlayer, line);
 			}
 			x0 = x1;
 			y0 = y1;
 		}
 		ret = sscanf(str, "        (via via_%ld_%ld %ld %ld", &viadiam, &viadrill, &dim1, &dim2);
 		if (ret == 4) {
-			CreateNewVia(PCB->Data, dim1, PCB->MaxHeight - dim2, viadiam, lineclear, 0, viadrill, 0, MakeFlags(AUTOFLAG));
+			CreateNewVia(PCB->Data, dim1, PCB->MaxHeight - dim2, viadiam, lineclear, 0, viadrill, 0, MakeFlags(PCB_FLAG_AUTO));
 		}
 	}
 	fclose(fp);
@@ -661,9 +655,15 @@ HID_Action dsn_action_list[] = {
 	{"LoadDsnFrom", 0, ActionLoadDsnFrom, load_dsn_help, load_dsn_syntax}
 };
 
-REGISTER_ACTIONS(dsn_action_list)
+REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
+
+static void hid_dsn_uninit()
+{
+
+}
+
 #include "dolists.h"
-		 void hid_dsn_init()
+pcb_uninit_t hid_export_dsn_init()
 {
 	memset(&dsn_hid, 0, sizeof(HID));
 	common_nogui_init(&dsn_hid);
@@ -676,5 +676,8 @@ REGISTER_ACTIONS(dsn_action_list)
 	dsn_hid.do_export = dsn_do_export;
 	dsn_hid.parse_arguments = dsn_parse_arguments;
 	hid_register_hid(&dsn_hid);
-#include "dsn_lists.h"
+
+	hid_register_attributes(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
+	return hid_dsn_uninit;
 }
+

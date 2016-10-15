@@ -51,6 +51,7 @@ plugin_def("export_dxf",      "DXF exporter",              sdisable, 0)
 plugin_def("export_test",     "dummy test exporter",       sdisable, 1)
 plugin_def("export_bboard",   "breadboard exporter",       sdisable, 0)
 plugin_def("export_openscad", "openscad exporter",         sdisable, 0)
+plugin_def("export_dsn",      " specctra .dsn exporter",   sdisable, 0)
 
 plugin_header("\nIO plugins (file formats):\n")
 plugin_def("io_lihata",       "lihata board format",       sbuildin, 1)

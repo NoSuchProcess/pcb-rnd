@@ -360,6 +360,9 @@ int hook_detect_target()
 	if (plug_is_enabled("toporouter"))
 		want_glib = 1;
 
+	if (plug_is_enabled("export_dsn"))
+		want_glib = 1;
+
 	if (plug_is_enabled("puller"))
 		want_glib = 1;
 
@@ -377,6 +380,10 @@ int hook_detect_target()
 			if (plug_is_enabled("puller")) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
 				hook_custom_arg("disable-puller", NULL);
+			}
+			if (plug_is_enabled("export_dsn")) {
+				report_repeat("WARNING: Since GLIB is not found, disabling the dsn exporter...\n");
+				hook_custom_arg("disable-export_dsn", NULL);
 			}
 		}
 	}

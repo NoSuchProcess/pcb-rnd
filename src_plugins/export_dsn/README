@@ -1,0 +1,5 @@
+Export specctra .dsn files
+
+#state: Work-in-progress
+#default: disable
+#implements: export
