@@ -329,7 +329,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 		}
 
 	/* we now proceed to write the top copper tracks to the kicad legacy file, layer by layer */
-	currentKicadLayer = 15; /* 15 is the top most track in kicad */
+	currentKicadLayer = 15; /* 15 is the top most copper layer in kicad */
 	for (i = 0; i < topCount; i++) /* write top copper tracks, if any */
 		{
 			write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
@@ -337,10 +337,65 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 			write_kicad_legacy_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
 									LayoutXOffset, LayoutYOffset);
 		}
-
 	fputs("$EndTRACK\n",FP);
+
+	/*
+	  * now we proceed to write polygons for each layer, and iterate much like we did for tracks
+         */
+
+	/* we now proceed to write the bottom silk polygons  to the kicad legacy file, using layer 20 */
+	currentKicadLayer = 20; /* 20 is the bottom silk layer in kicad */
+	for (i = 0; i < bottomSilkCount; i++) /* write bottom silk polygons, if any */
+		{
+			write_kicad_legacy_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}
+
+	/* we now proceed to write the bottom copper polygons to the kicad legacy file, layer by layer */
+	currentKicadLayer = 0; /* 0 is the bottom copper layer in kicad */
+	for (i = 0; i < bottomCount; i++) /* write bottom copper polygons, if any */
+		{
+			write_kicad_legacy_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[bottomLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}	/* 0 is the bottom most track in kicad */
+
+	/* we now proceed to write the internal copper polygons to the kicad file, layer by layer */
+	if (innerCount != 0) {
+		currentGroup = pcb_layer_lookup_group(innerLayers[0]);
+	}
+	for (i = 0, currentKicadLayer = 1; i < innerCount; i++) /* write inner copper polygons, group by group */
+		{
+			if (currentGroup != pcb_layer_lookup_group(innerLayers[i])) {
+				currentGroup = pcb_layer_lookup_group(innerLayers[i]);
+				currentKicadLayer++;
+				if (currentKicadLayer > 14) {
+					currentKicadLayer = 14; /* kicad 16 layers in total, 0...15 */
+				}
+			}
+			write_kicad_legacy_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[innerLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}
+
+	/* we now proceed to write the top copper polygons to the kicad legacy file, layer by layer */
+	currentKicadLayer = 15; /* 15 is the top most copper layer in kicad */
+	for (i = 0; i < topCount; i++) /* write top copper polygons, if any */
+		{
+			write_kicad_legacy_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}
+
+	/* we now proceed to write the top silk polygons to the kicad legacy file, using layer 21 */
+	currentKicadLayer = 21; /* 21 is the top silk layer in kicad */
+	for (i = 0; i < topSilkCount; i++) /* write top silk polygons, if any */
+		{
+			write_kicad_legacy_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
+									LayoutXOffset, LayoutYOffset);
+		}
+
+
 	fputs("$EndBOARD\n",FP);
-	/*WriteElementData(FP, PCB->Data, "kicadl");*/	/* this may be needed in a different file */
+
+	/* now free memory from arrays that were used */
 	free(bottomLayers);
 	free(innerLayers);
 	free(topLayers);
@@ -550,10 +605,7 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 	gdl_iterator_t it;
 	TextType *text;
 	pcb_cardinal_t currentLayer = number;
-	/*ArcType *arc;
-		TextType *text;
-		PolygonType *polygon;
-	*/
+
 	/* write information about non empty layers */
 	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
@@ -568,7 +620,7 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 				fputs("$TEXTPCB\nTe \"", FP);
 				fputs(text->TextString,FP);
 				fputs("\"\n", FP);
-				defaultXSize = 5*PCB_SCALE_TEXT(mWidth, text->Scale)/6; /* IIRC kicad treats this as kerned width of lower case m */
+				defaultXSize = 5*PCB_SCALE_TEXT(mWidth, text->Scale)/6; /* IIRC kicad treats this as kerned width of upper case m */
 				defaultYSize = defaultXSize;
 				strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale /2);
 				rotation = 0;	
@@ -1068,4 +1120,57 @@ int write_kicad_legacy_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr
 	elementlist_dedup_free(ededup);
 
 	return 0;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * writes polygon data in kicad legacy format for use in a layout .brd file
+ */
+
+int write_kicad_legacy_layout_polygons(FILE * FP, pcb_cardinal_t number,
+																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
+{
+	int i, j;
+	gdl_iterator_t it;
+	PolygonType *polygon;
+	pcb_cardinal_t currentLayer = number;
+
+	/* write information about non empty layers */
+	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
+		int localFlag = 0;
+		linelist_foreach(&layer->Polygon, &it, polygon) {
+			if (polygon->HoleIndexN == 0) { /* no holes defined within polygon, which we implement support for first */
+
+				/* preliminaries for zone settings */
+				fputs("$CZONE_OUTLINE\n", FP);
+				fputs("ZInfo 478E3FC8 0 \"\"\n", FP); /* use default empty netname, net 0, not connected */
+				fprintf(FP,"ZLayer %d\n", currentLayer); 
+				fprintf(FP,"ZAux %d E\n", polygon->PointN); /* corner count, use edge hatching for displaying the zone in pcbnew */
+				fputs("ZClearance 200 X\n", FP); /* set pads/pins to not be connected to pours in the zone by default */
+				fputs("ZMinThickness 190\n", FP); /* minimum copper thickness in zone, default setting */
+				fputs("ZOptions 0 32 F 200 200\n", FP); /* solid fill, 32 segments per arc, antipad thickness, thermal stubs width(s) */
+
+				/* now the zone outline is defined */
+
+				for (i = 0, j=0; i < polygon->PointN; i++) {
+					if (i == (polygon->PointN - 1) ) {
+						j = 1; /* flags that this is the last vertex of the outline */
+					}
+					pcb_fprintf(FP, "ZCorner %.0mk %.0mk %d\n",
+											polygon->Points[i].X + xOffset, polygon->Points[i].Y + yOffset, j);
+				}
+
+				/*
+				  *   in here could go additional plolygon descriptors for holes removed from  the previously defined outer polygon
+				  */ 
+
+				fputs("$endCZONE_OUTLINE\n",  FP);
+
+			} 
+			localFlag |= 1;
+		}
+		return localFlag;
+	} else {
+		return 0;
+	}
 }
