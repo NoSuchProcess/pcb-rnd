@@ -488,7 +488,7 @@ static int PrintSPECCTRA(void)
 	fprintf(fp, "  (parser\n");
 	fprintf(fp, "    (string_quote \")\n");
 	fprintf(fp, "    (space_in_quoted_tokens on)\n");
-	fprintf(fp, "    (host_cad \"gEDA PCB\")\n");
+	fprintf(fp, "    (host_cad \"gEDA pcb-rnd\")\n");
 	fprintf(fp, "    (host_version \"%s\")\n", VERSION);
 	fprintf(fp, "  )\n");
 
