@@ -115,8 +115,10 @@ int ActionLoadDsnFrom(int argc, const char **argv, Coord x, Coord y)
 
 	lineclear = PCB->RouteStyle.array[0].Clearance * 2;
 	fp = fopen(fname, "r");
-	if (!fp)
-		return 1;  /* bail out if file not found */
+	if (!fp) {
+		Message(PCB_MSG_ERROR, "Can't load dsn file %s for read\n", fname);
+		return 1;
+	}
 	while (fgets(str, sizeof(str), fp) != NULL) {
 		/* strip trailing '\n' if it exists */
 		int len = strlen(str) - 1;
