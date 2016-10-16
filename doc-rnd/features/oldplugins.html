@@ -22,7 +22,7 @@
 
 In this effort I imported a set of old PCB plugins to be core plugins of
 pcb-rnd. This will make it easier to keep them up to date, to defeat
-the bitrot effect. The plugins that got imported so far:
+the bitrot effect. The feature plugins that got imported so far:
 <ul>
 	<li> autocrop
 	<li> boardflip
@@ -36,6 +36,17 @@ the bitrot effect. The plugins that got imported so far:
 	<li> smaprtdisperse
 </ul>
 <p>
+The import/export plugins improted over the default set of the last official
+mainline release:
+<ul>
+	<li> import_dsn - specctra importer - compiles
+	<li> export_dsn - specctra exporter - compiles
+	<li> export_bboard - breadboard exporter - compiles
+	<li> export_dxf - mechanical cad export - compiles, missing header data
+	<li> export_ipcd356 - electrical test output - compiles
+	<li> export_openscad - 3d modeling - compiles, output sort of works, models not yet imported
+</ul>
+
 Plugins that won't be imported:
 <ul>
 	<li> findelement - <a href="query.html">[query]</a> takes care of that
