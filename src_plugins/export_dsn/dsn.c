@@ -256,8 +256,10 @@ static void print_placement(FILE * fp)
 		char *ename;
 		PointType ecentroid = get_centroid(element);
 		char *side = TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? "back" : "front";
-		ename = pcb_strdup(NAMEONPCB_NAME(element));
-		if (!ename)
+		ename = NAMEONPCB_NAME(element);
+		if (ename != NULL)
+			ename = pcb_strdup(ename);
+		else
 			ename = pcb_strdup("null");
 		pcb_fprintf(fp, "    (component %d\n", element->ID);
 		pcb_fprintf(fp, "      (place \"%s\" %.6mm %.6mm %s 0 (PN 0))\n", ename, ecentroid.X, ecentroid.Y, side);
