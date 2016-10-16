@@ -541,7 +541,7 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 		*/
 		int localFlag = 0;
 		int kicadArcShape = 2; /* 3 = circle, and 2 = arc, 1= rectangle used in eeschema only */ 
-		linelist_foreach(&layer->Arc, &it, arc) {
+		arclist_foreach(&layer->Arc, &it, arc) {
 			localArc = *arc;
 			if (arc->Width > arc->Height) {
 				radius = arc->Height;
@@ -615,7 +615,7 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 			WriteAttributeList(FP, &layer->Attributes, "\t");
 		*/
 		localFlag = 0;
-		linelist_foreach(&layer->Text, &it, text) {
+		textlist_foreach(&layer->Text, &it, text) {
 			if ((currentLayer < 16) || (currentLayer == 20) || (currentLayer == 21) ) { /* copper or silk layer text */
 				fputs("$TEXTPCB\nTe \"", FP);
 				fputs(text->TextString,FP);
@@ -800,7 +800,7 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 			*/
 			fputs("$EndPAD\n",FP);
 		}
-		pinlist_foreach(&element->Pad, &it, pad) {
+		padlist_foreach(&element->Pad, &it, pad) {
 			fputs("$PAD\n",FP);	 /* start pad descriptor for an smd pad */
 
 			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
@@ -853,7 +853,7 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 			fputs("21\n",FP); /* an arbitrary Kicad layer, front silk, need to refine this */
 		}
 
-		linelist_foreach(&element->Arc, &it, arc) {
+		arclist_foreach(&element->Arc, &it, arc) {
 			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
 				pcb_fprintf(FP, "DC %.3mm %.3mm %.3mm %.3mm %.3mm ",
 										arc->X - element->MarkX, /* x_1 centre */
@@ -1026,7 +1026,7 @@ int write_kicad_legacy_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr
 			*/
 			fputs("$EndPAD\n",FP);
 		}
-		pinlist_foreach(&element->Pad, &it, pad) {
+		padlist_foreach(&element->Pad, &it, pad) {
 			fputs("$PAD\n",FP);	 /* start pad descriptor for an smd pad */
 
 			pcb_fprintf(FP, "Po %.0mk %.0mk\n", /* positions of pad */
@@ -1085,7 +1085,7 @@ int write_kicad_legacy_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr
 			fprintf(FP, "%d\n", silkLayer); /* an arbitrary Kicad layer, front silk, need to refine this */
 		}
 
-		linelist_foreach(&element->Arc, &it, arc) {
+		arclist_foreach(&element->Arc, &it, arc) {
 
 			BoxType *boxResult = GetArcEnds(arc);
 			arcStartX = boxResult->X1;
@@ -1138,7 +1138,7 @@ int write_kicad_legacy_layout_polygons(FILE * FP, pcb_cardinal_t number,
 	/* write information about non empty layers */
 	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		int localFlag = 0;
-		linelist_foreach(&layer->Polygon, &it, polygon) {
+		polylist_foreach(&layer->Polygon, &it, polygon) {
 			if (polygon->HoleIndexN == 0) { /* no holes defined within polygon, which we implement support for first */
 
 				/* preliminaries for zone settings */
