@@ -84,6 +84,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	pcb_cardinal_t i;
 	int physicalLayerCount = 0;
+	int logicalLayerCount = 0;
 	int kicadLayerCount = 0;
 	int silkLayerCount= 0;
 	int layer = 0;
@@ -169,7 +170,8 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	fputs("InternalUnit 0.000100 INCH\n",FP); /* decimil is the default v1 kicad legacy unit */
 
 	/* here we define the copper layers in the exported kicad file */
-	physicalLayerCount = pcb_layer_list(PCB_LYT_COPPER, NULL, 0);
+	physicalLayerCount = pcb_layer_group_list(PCB_LYT_COPPER, NULL, 0);
+	logicalLayerCount = pcb_layer_list(PCB_LYT_COPPER, NULL, 0);
 
 	fputs("Layers ",FP);
 	kicadLayerCount = physicalLayerCount;
@@ -206,34 +208,29 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	currentGroup = 0;
 
 	/* figure out which pcb layers are bottom copper and make a list */
-	bottomLayers = malloc(sizeof(int) * physicalLayerCount);
-	/*int bottomLayers[physicalLayerCount];*/
+	bottomLayers = malloc(sizeof(int) * logicalLayerCount);
 	bottomCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
-	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, physicalLayerCount);
+	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, logicalLayerCount);
 
 	/* figure out which pcb layers are internal copper layers and make a list */
-	innerLayers = malloc(sizeof(int) * physicalLayerCount);
-	/*int innerLayers[physicalLayerCount];*/
+	innerLayers = malloc(sizeof(int) * logicalLayerCount);
 	innerCount = pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
-	pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, physicalLayerCount);
+	pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, logicalLayerCount);
 
 	/* figure out which pcb layers are top copper and make a list */
-	topLayers = malloc(sizeof(int) * physicalLayerCount);
-	/*int topLayers[physicalLayerCount];*/
+	topLayers = malloc(sizeof(int) * logicalLayerCount);
 	topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
-	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, physicalLayerCount);
+	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, logicalLayerCount);
 
-	silkLayerCount = pcb_layer_group_list(PCB_LYT_SILK, NULL, 0);
+	silkLayerCount = pcb_layer_list(PCB_LYT_SILK, NULL, 0);
 
 	/* figure out which pcb layers are bottom silk and make a list */
 	bottomSilk = malloc(sizeof(int) * silkLayerCount);
-	/*int bottomSilk[silkLayerCount];*/
 	bottomSilkCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
 	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, bottomSilk, silkLayerCount);
 
 	/* figure out which pcb layers are top silk and make a list */
 	topSilk = malloc(sizeof(int) * silkLayerCount);
-	/*int topSilk[silkLayerCount];*/
 	topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
 	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, topSilk, silkLayerCount);
 
