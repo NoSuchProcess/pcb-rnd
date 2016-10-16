@@ -169,7 +169,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	fputs("InternalUnit 0.000100 INCH\n",FP); /* decimil is the default v1 kicad legacy unit */
 
 	/* here we define the copper layers in the exported kicad file */
-	physicalLayerCount = pcb_layer_group_list(PCB_LYT_COPPER, NULL, 0);
+	physicalLayerCount = pcb_layer_list(PCB_LYT_COPPER, NULL, 0);
 
 	fputs("Layers ",FP);
 	kicadLayerCount = physicalLayerCount;
