@@ -39,12 +39,12 @@ the bitrot effect. The feature plugins that got imported so far:
 The import/export plugins improted over the default set of the last official
 mainline release:
 <ul>
-	<li> import_dsn - specctra importer - compiles
-	<li> export_dsn - specctra exporter - compiles
-	<li> export_bboard - breadboard exporter - compiles
-	<li> export_dxf - mechanical cad export - compiles, missing header data
-	<li> export_ipcd356 - electrical test output - compiles
-	<li> export_openscad - 3d modeling - compiles, output sort of works, models not yet imported
+	<li> import_dsn - specctra importer - compiles, parser needs a full rewrite, it tries to read an s-expression line by line with fgets()
+	<li> export_dsn - specctra exporter - compiles, produces valid-looking output - <b>need tester</b> to validate the output
+	<li> export_bboard - breadboard exporter - compiles, produces valid-looking output - <b>need tester</b>
+	<li> export_dxf - mechanical cad export - compiles, missing header data renders exported files unusable
+	<li> export_ipcd356 - electrical test output - compiles, produces valid-looking output - <b>need tester</b>
+	<li> export_openscad - 3d modeling - compiles, output sort of works, models not yet imported, <b>need tester</b>
 </ul>
 
 Plugins that won't be imported:
