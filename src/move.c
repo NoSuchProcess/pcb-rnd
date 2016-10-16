@@ -699,8 +699,15 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coor
 	/* setup offset */
 	DeltaX = DX;
 	DeltaY = DY;
-	if (DX == 0 && DY == 0)
+	if (DX == 0 && DY == 0) {
+		int n;
+
+		/* first clear any marks that we made in the line flags */
+		for(n = 0, ptr = Crosshair.AttachedObject.Rubberband; n < Crosshair.AttachedObject.RubberbandN; n++, ptr++)
+			CLEAR_FLAG(PCB_FLAG_RUBBEREND, ptr->Line);
+
 		return (NULL);
+	}
 
 	/* move all the lines... and reset the counter */
 	ptr = Crosshair.AttachedObject.Rubberband;
