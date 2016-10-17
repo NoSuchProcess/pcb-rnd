@@ -57,7 +57,7 @@
 
 #define CELL_SIZE   ((Coord)(PCB_MIL_TO_COORD (100)))
 
-#define XYtoSym(x,y) (((x1) / CELL_SIZE - 1)  +  (16 * ((y1) / CELL_SIZE - 1)))
+#define XYtoSym(x,y) (((x) / CELL_SIZE - 1)  +  (16 * ((y) / CELL_SIZE - 1)))
 
 static const char fontedit_syntax[] = "FontEdit()";
 
