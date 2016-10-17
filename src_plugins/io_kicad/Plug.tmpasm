@@ -1,0 +1,10 @@
+put /local/pcb/mod {io_kicad}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/io_kicad/io_kicad.o @]
+#put /local/pcb/mod/YACC {$(PLUGDIR)/io_kicad/parse_y}
+#put /local/pcb/mod/LEX  {$(PLUGDIR)/io_kicad/parse_l}
+
+switch /local/pcb/io_kicad/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
