@@ -84,7 +84,6 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	pcb_cardinal_t i;
 	int physicalLayerCount = 0;
-	int logicalLayerCount = 0;
 	int kicadLayerCount = 0;
 	int silkLayerCount= 0;
 	int layer = 0;
@@ -171,7 +170,6 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	/* here we define the copper layers in the exported kicad file */
 	physicalLayerCount = pcb_layer_group_list(PCB_LYT_COPPER, NULL, 0);
-	logicalLayerCount = pcb_layer_list(PCB_LYT_COPPER, NULL, 0);
 
 	fputs("Layers ",FP);
 	kicadLayerCount = physicalLayerCount;
@@ -208,29 +206,34 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	currentGroup = 0;
 
 	/* figure out which pcb layers are bottom copper and make a list */
-	bottomLayers = malloc(sizeof(int) * logicalLayerCount);
+	bottomLayers = malloc(sizeof(int) * physicalLayerCount);
+	/*int bottomLayers[physicalLayerCount];*/
 	bottomCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
-	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, logicalLayerCount);
+	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, physicalLayerCount);
 
 	/* figure out which pcb layers are internal copper layers and make a list */
-	innerLayers = malloc(sizeof(int) * logicalLayerCount);
+	innerLayers = malloc(sizeof(int) * physicalLayerCount);
+	/*int innerLayers[physicalLayerCount];*/
 	innerCount = pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
-	pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, logicalLayerCount);
+	pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, physicalLayerCount);
 
 	/* figure out which pcb layers are top copper and make a list */
-	topLayers = malloc(sizeof(int) * logicalLayerCount);
+	topLayers = malloc(sizeof(int) * physicalLayerCount);
+	/*int topLayers[physicalLayerCount];*/
 	topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
-	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, logicalLayerCount);
+	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, physicalLayerCount);
 
-	silkLayerCount = pcb_layer_list(PCB_LYT_SILK, NULL, 0);
+	silkLayerCount = pcb_layer_group_list(PCB_LYT_SILK, NULL, 0);
 
 	/* figure out which pcb layers are bottom silk and make a list */
 	bottomSilk = malloc(sizeof(int) * silkLayerCount);
+	/*int bottomSilk[silkLayerCount];*/
 	bottomSilkCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
 	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, bottomSilk, silkLayerCount);
 
 	/* figure out which pcb layers are top silk and make a list */
 	topSilk = malloc(sizeof(int) * silkLayerCount);
+	/*int topSilk[silkLayerCount];*/
 	topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
 	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, topSilk, silkLayerCount);
 
@@ -712,6 +715,10 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 	LineType *line;
 	ArcType *arc;
 	ElementType *element;
+	BoxType *boxResult;
+
+	Coord arcStartX, arcStartY, arcEndX, arcEndY; /* for arc exporting */
+
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 	const char * currentElementName;
 
@@ -764,7 +771,54 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 		fputs("Sc 0\n",FP);
 		fputs("AR\n",FP);
 		fputs("Op 0 0 0\n",FP);
-		fputs("T0 0 -4134 600 600 0 120 N V 21 N \"S***\"\n",FP);
+		fputs("T0 0 -6.000 1.524 1.524 0 0.305 N V 21 N \"S***\"\n",FP); /*1.524 is basically 600 decimil, 0.305 is ~= 120 decimil */
+
+		linelist_foreach(&element->Line, &it, line) {
+			pcb_fprintf(FP, "DS %.3mm %.3mm %.3mm %.3mm %.3mm ",
+									line->Point1.X - element->MarkX,
+									line->Point1.Y - element->MarkY,
+									line->Point2.X - element->MarkX,
+									line->Point2.Y - element->MarkY,
+									line->Thickness);
+			fputs("21\n",FP); /* an arbitrary Kicad layer, front silk, need to refine this */
+		}
+
+		arclist_foreach(&element->Arc, &it, arc) {
+			boxResult = GetArcEnds(arc);
+			arcStartX = boxResult->X1;
+			arcStartY = boxResult->Y1;
+			arcEndX = boxResult->X2; 
+			arcEndY = boxResult->Y2; 
+			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
+				pcb_fprintf(FP, "DC %.3mm %.3mm %.3mm %.3mm %.3mm ",
+										arc->X - element->MarkX, /* x_1 centre */
+										arc->Y - element->MarkY, /* y_2 centre */
+										arcStartX - element->MarkX, /* x on circle */
+										arcStartY - element->MarkY, /* y on circle */
+										arc->Thickness); /* stroke thickness */
+			} else {
+				/*
+				   as far as can be determined from the Kicad documentation,
+				   http://en.wikibooks.org/wiki/Kicad/file_formats#Drawings
+
+				   the origin for rotation is the positive x direction, and going CW
+
+				   whereas in gEDA, the gEDA origin for rotation is the negative x axis,
+				   with rotation CCW, so we need to reverse delta angle
+
+				   deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in gEDA
+				   NB it is in degrees in the newer s-file kicad module/footprint format
+				*/
+				pcb_fprintf(FP, "DA %.3mm %.3mm %.3mm %.3mm %mA %.3mm ",
+										arc->X - element->MarkX, /* x_1 centre */
+										arc->Y - element->MarkY, /* y_2 centre */
+										arcEndX - element->MarkX, /* x on arc */
+										arcEndY - element->MarkY, /* y on arc */
+										arc->Delta, /* CW delta angle in decidegrees */
+										arc->Thickness); /* stroke thickness */
+			}
+			fputs("21\n",FP); /* and now append a suitable Kicad layer, front silk = 21 */
+		}
 
 		pinlist_foreach(&element->Pin, &it, pin) {
 			fputs("$PAD\n",FP);	 /* start pad descriptor for a pin */
@@ -838,51 +892,8 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
 
 			fputs("Ne 0 \"\"\n",FP); /* library parts have empty net descriptors */
 			fputs("$EndPAD\n",FP);
-
 		}
-		linelist_foreach(&element->Line, &it, line) {
-			pcb_fprintf(FP, "DS %.3mm %.3mm %.3mm %.3mm %.3mm ",
-									line->Point1.X - element->MarkX,
-									line->Point1.Y - element->MarkY,
-									line->Point2.X - element->MarkX,
-									line->Point2.Y - element->MarkY,
-									line->Thickness);
-			fputs("21\n",FP); /* an arbitrary Kicad layer, front silk, need to refine this */
-		}
-
-		arclist_foreach(&element->Arc, &it, arc) {
-			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
-				pcb_fprintf(FP, "DC %.3mm %.3mm %.3mm %.3mm %.3mm ",
-										arc->X - element->MarkX, /* x_1 centre */
-										arc->Y - element->MarkY, /* y_2 centre */
-										(arc->X - element->MarkX + arc->Thickness/2), /* x_2 on circle */
-										arc->Y - element->MarkY,									/* y_2 on circle */
-										arc->Thickness); /* stroke thickness */
-			} else {
-				/*
-				   as far as can be determined from the Kicad documentation,
-				   http://en.wikibooks.org/wiki/Kicad/file_formats#Drawings
-
-				   the origin for rotation is the positive x direction, and going CW
-
-				   whereas in gEDA, the gEDA origin for rotation is the negative x axis,
-				   with rotation CCW, so we need to reverse delta angle
-
-				   deltaAngle is CW in Kicad in deci-degrees, and CCW in degrees in gEDA
-				   NB it is in degrees in the newer s-file kicad module/footprint format
-				*/
-				pcb_fprintf(FP, "DA %.3mm %.3mm %.3mm %.3mm %.3ma %.3mm ",
-										arc->X - element->MarkX, /* x_1 centre */
-										arc->Y - element->MarkY, /* y_2 centre */
-										arc->X - element->MarkX + (arc->Thickness/2)*cos(M_PI*(arc->StartAngle+180)/360), /* x_2 on circle */
-										arc->Y - element->MarkY + (arc->Thickness/2)*sin(M_PI*(arc->StartAngle+180)/360), /* y_2 on circle */
-										-arc->Delta*10,		/* CW delta angle in decidegrees */
-										arc->Thickness); /* stroke thickness */
-			}
-			fputs("21\n",FP); /* and now append a suitable Kicad layer, front silk = 21 */
-		}
-
-		fprintf(FP, "$EndMODULE %s\n", currentElementName);
+		fprintf(FP, "$EndMODULE %s\n", currentElementName);		
 	}
 	/* Release unique name utility memory */
 	unm_uninit(&group1);
