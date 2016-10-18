@@ -27,7 +27,7 @@
 #include <math.h>
 #include "plug_io.h"
 #include "error.h"
-#include "uniq_name.h"
+#include "../io_kicad_legacy/uniq_name.h"
 #include "data.h"
 #include "write.h"
 #include "layer.h"
@@ -113,12 +113,8 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	fputs("PCBNEW-BOARD Version 1 jan 01 jan 2016 00:00:01 CET\n",FP);
 
-	fputs("$GENERAL\n",FP);
-	fputs("Ly 1FFF8001\n",FP); /* obsolete, needed for old pcbnew */
-	/*puts("Units mm\n",FP);*/ /*decimils most universal legacy format */
-	fputs("$EndGENERAL\n",FP);
-
-	fputs("$SHEETDESCR\n",FP);
+	fputs("(general\n",FP);
+	fputs(")\n",FP);
 
 
 	/* we sort out the needed kicad sheet size here, using A4, A3, A2, A1 or A0 size as needed */
@@ -146,52 +142,51 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 		sheetWidth = 4*A4WidthMil; /* 46.8"	 */
 		paperSize = 0; /* this is A0 size; where would you get it made ?!?! */
 	}
-	fprintf(FP, "Sheet A%d ", paperSize);
+	fprintf(FP, "(page A%d)\n", paperSize);
+
+
 	/* we now sort out the offsets for centring the layout in the chosen sheet size here */
 	if (sheetWidth > PCB_COORD_TO_MIL(PCB->MaxWidth)) {	 /* usually A4, bigger if needed */
-		fprintf(FP, "%d ", sheetWidth); /* legacy kicad: elements decimils, sheet size mils*/
+		/* fprintf(FP, "%d ", sheetWidth);  legacy kicad: elements decimils, sheet size mils */
 		LayoutXOffset = PCB_MIL_TO_COORD(sheetWidth)/2 - PCB->MaxWidth/2;
 	} else { /* the layout is bigger than A0; most unlikely, but... */
-		pcb_fprintf(FP, "%.0ml ", PCB->MaxWidth);
+		/* pcb_fprintf(FP, "%.0ml ", PCB->MaxWidth); */
 		LayoutXOffset = 0;
 	}
 	if (sheetHeight > PCB_COORD_TO_MIL(PCB->MaxHeight)) {
-		fprintf(FP, "%d", sheetHeight);
+		/* fprintf(FP, "%d", sheetHeight); */
 		LayoutYOffset = PCB_MIL_TO_COORD(sheetHeight)/2 - PCB->MaxHeight/2;
 	} else { /* the layout is bigger than A0; most unlikely, but... */
-		pcb_fprintf(FP, "%.0ml", PCB->MaxHeight);
+		/* pcb_fprintf(FP, "%.0ml", PCB->MaxHeight); */
 		LayoutYOffset = 0;
 	}
-	fputs("\n", FP);
-	fputs("$EndSHEETDESCR\n",FP);
-
-	fputs("$SETUP\n",FP);
-	fputs("InternalUnit 0.000100 INCH\n",FP); /* decimil is the default v1 kicad legacy unit */
 
 	/* here we define the copper layers in the exported kicad file */
 	physicalLayerCount = pcb_layer_group_list(PCB_LYT_COPPER, NULL, 0);
 
-	fputs("Layers ",FP);
+	fputs("(layers\n",FP);
 	kicadLayerCount = physicalLayerCount;
 	if (kicadLayerCount%2 == 1) {
 		kicadLayerCount++; /* kicad doesn't like odd numbers of layers, has been deprecated for some time apparently */
 	}
 	
-	fprintf(FP, "%d\n", kicadLayerCount); 
 	layer = 0;
 	if (physicalLayerCount >= 1) {
-		fprintf(FP, "Layer[%d] COPPER_LAYER_0 signal\n", layer);
+		fprintf(FP, "  (%d bottom_side.Cu signal)\n", layer);
 	}
 	if (physicalLayerCount > 1) { /* seems we need to ignore layers > 16 due to kicad limitation */
 		for (layer = 1; (layer < (kicadLayerCount - 1)) && (layer < 15); layer++ ) {
-			fprintf(FP, "Layer[%d] Inner%d.Cu signal\n", layer, layer);
-		} 
-		fputs("Layer[15] COPPER_LAYER_15 signal\n",FP);	
+			fprintf(FP, "  (%d Inner%d.Cu signal)\n", layer, layer);
+		}
+		fputs("  (15 top_side.Cu signal)\n",FP);	
 	}
+	fputs("  (20 B.SilkS user)\n",FP);
+	fputs("  (21 F.SilkS user)\n)\n",FP);
 
+	/* setup section */
+	fputs("(setup\n",FP);
 	write_kicad_layout_via_drill_size(FP);
-
-	fputs("$EndSETUP\n",FP);
+	fputs(")\n",FP);
 
 	/* now come the netlist "equipotential" descriptors */
 
@@ -469,7 +464,7 @@ int write_kicad_layout_vias(FILE * FP, DataTypePtr Data, Coord xOffset, Coord yO
 
 static int write_kicad_layout_via_drill_size(FILE * FP)
 {
-	pcb_fprintf(FP, "ViaDrill 250\n"); /* decimil format, default for now, ~= 0.635mm */
+	pcb_fprintf(FP, "  (via_drill 0.635)\n"); /* mm format, default for now, ~= 0.635mm */
 	return 0;
 }
 
