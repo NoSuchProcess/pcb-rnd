@@ -332,6 +332,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	currentKicadLayer = 15; /* 15 is the top most copper layer in kicad */
 	for (i = 0; i < topCount; i++) /* write top copper tracks, if any */
 		
+		{
 			write_kicad_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
 									LayoutXOffset, LayoutYOffset);
 			write_kicad_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
@@ -466,7 +467,7 @@ int write_kicad_layout_vias(FILE * FP, DataTypePtr Data, Coord xOffset, Coord yO
 	return 0;
 }
 
-static int write_layout_via_drill_size(FILE * FP)
+static int write_kicad_layout_via_drill_size(FILE * FP)
 {
 	pcb_fprintf(FP, "ViaDrill 250\n"); /* decimil format, default for now, ~= 0.635mm */
 	return 0;
