@@ -27,7 +27,7 @@
 #include "global.h"
 #include "plugins.h"
 #include "plug_io.h"
-/*#include "write.h"*/
+#include "write.h"
 
 static plug_io_t io_kicad;
 
