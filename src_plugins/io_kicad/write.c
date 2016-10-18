@@ -111,9 +111,9 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	int sheetWidth = A4WidthMil;
 	int paperSize = 4; /* default paper size is A4 */
 
-	fputs("PCBNEW-BOARD Version 1 jan 01 jan 2016 00:00:01 CET\n",FP);
+	fputs("(kicad_pcb (version 3) (host pcbnew \"(2013-02-20 BZR 3963)-testing\")",FP);
 
-	fputs("(general\n",FP);
+	fputs("\n(general\n",FP);
 	fputs(")\n",FP);
 
 
@@ -142,7 +142,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 		sheetWidth = 4*A4WidthMil; /* 46.8"	 */
 		paperSize = 0; /* this is A0 size; where would you get it made ?!?! */
 	}
-	fprintf(FP, "(page A%d)\n", paperSize);
+	fprintf(FP, "\n(page A%d)\n", paperSize);
 
 
 	/* we now sort out the offsets for centring the layout in the chosen sheet size here */
@@ -164,7 +164,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	/* here we define the copper layers in the exported kicad file */
 	physicalLayerCount = pcb_layer_group_list(PCB_LYT_COPPER, NULL, 0);
 
-	fputs("(layers\n",FP);
+	fputs("\n(layers\n",FP);
 	kicadLayerCount = physicalLayerCount;
 	if (kicadLayerCount%2 == 1) {
 		kicadLayerCount++; /* kicad doesn't like odd numbers of layers, has been deprecated for some time apparently */
@@ -183,8 +183,9 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	fputs("  (20 B.SilkS user)\n",FP);
 	fputs("  (21 F.SilkS user)\n)\n",FP);
 
+
 	/* setup section */
-	fputs("(setup\n",FP);
+	fputs("\n(setup\n",FP);
 	write_kicad_layout_via_drill_size(FP);
 	fputs(")\n",FP);
 
@@ -912,24 +913,29 @@ int write_kicad_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
 	LibraryEntryTypePtr netlist;
 	
 	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
-	fputs("$EQUIPOT\n",FP);
-	fputs("Na 0 \"\"\n", FP);
-	fputs("St ~\n", FP);
-	fputs("$EndEQUIPOT\n",FP);
+	fputs("\n(net 0 \"\")\n",FP);
 
 	/* now we step through any available netlists and generate descriptors */
         for (n = 0, netNumber = 1; n < Layout->NetlistLib[NETLIST_EDITED].MenuN; n++, netNumber ++) {
                 menu = &Layout->NetlistLib[NETLIST_EDITED].Menu[n];
 		netlist = &menu->Entry[0];
 		if (netlist != NULL) {
-			fputs("$EQUIPOT\n",FP);
-			fprintf(FP, "Na %d \"%s\"\n", netNumber, pcb_netlist_name(menu));  /* netlist 0 was used for unconnected pads  */
-			fputs("St ~\n", FP);
-			fputs("$EndEQUIPOT\n",FP);
+			fprintf(FP, "(net %d %s)\n", netNumber, pcb_netlist_name(menu));  /* netlist 0 was used for unconnected pads  */
                 }
         }
 	return 0;
 }
+
+/* may need to export a netclass or two 
+(net_class Default "Ceci est la Netclass par dÃ©faut"
+(clearance 0.254)
+(trace_width 0.254)
+(via_dia 0.889)
+(via_drill 0.635)
+(uvia_dia 0.508)
+(uvia_drill 0.127)
+(add_net "")
+*/
 
 
 /* ---------------------------------------------------------------------------
