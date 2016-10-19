@@ -201,6 +201,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	/* module descriptions come next */
 
+	fputs("\n", FP);
 	write_kicad_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
@@ -542,7 +543,7 @@ int write_kicad_layout_tracks(FILE * FP, pcb_cardinal_t number,
 										line->Point1.X + xOffset, line->Point1.Y + yOffset,
 										line->Point2.X + xOffset, line->Point2.Y + yOffset,
 										kicad_sexpr_layer_to_text(currentLayer), line->Thickness); /* neglect (net ___ ) for now */
-			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk line */
+			} else if ((currentLayer == 20) || (currentLayer == 21)  || (currentLayer == 28)) { /* a silk line or outline line */
 				fprintf(FP, "%*s", indentation, "");
 				pcb_fprintf(FP, "(gr-line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 										line->Point1.X + xOffset, line->Point1.Y + yOffset,
@@ -569,10 +570,6 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
 	int copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
 	int copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
 
-	/*ArcType *arc;
-		TextType *text;
-		PolygonType *polygon;
-	*/
 	/* write information about non empty layers */
 	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
@@ -605,16 +602,14 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
 			copperStartX = boxResult->X1 + xOffset;
 			copperStartY = boxResult->Y1 + yOffset; 
 			if (currentLayer < 16) { /* a copper arc, i.e. track, is unsupported by kicad, and will be exported as a line */
-				kicadArcShape = 0; /* make it a line for copper layers - kicad doesn't do arcs on copper */ 
-				pcb_fprintf(FP, "Po %d %.0mk %.0mk %.0mk %.0mk %.0mk\n",
-										kicadArcShape, copperStartX, copperStartY, xEnd, yEnd,
-										arc->Thickness);
-				pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* in theory, copper arcs unsupported by kicad, make angle = 0 */
-			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk arc */
-
 				fprintf(FP, "%*s", indentation, "");
-				pcb_fprintf(FP, "(gr-arc (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
-										xStart, yStart, xEnd, yEnd,
+				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+										copperStartX, copperStartY, xEnd, yEnd,
+										kicad_sexpr_layer_to_text(currentLayer), arc->Thickness); /* neglect (net ___ ) for now */
+			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk arc, or outline */
+				fprintf(FP, "%*s", indentation, "");
+				pcb_fprintf(FP, "(gr_arc (start %.3mm %.3mm) (end %.3mm %.3mm) (angle %ma) (layer %s) (width %.3mm))\n",
+										xStart, yStart, xEnd, yEnd, arc->Delta,
 										kicad_sexpr_layer_to_text(currentLayer), arc->Thickness);
 			}
 			localFlag |= 1;
@@ -995,6 +990,9 @@ int write_kicad_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, 
 	ElementType *element;
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 	const char * currentElementName;
+	const char * currentElementRef;
+	const char * currentElementVal;
+
 	LibraryMenuTypePtr current_pin_menu;
 	LibraryMenuTypePtr current_pad_menu;
 
@@ -1033,55 +1031,113 @@ int write_kicad_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, 
 		}
 
 		currentElementName = unm_name(&group1, element->Name[0].TextString, element);
-		fprintf(FP, "$MODULE %s\n", currentElementName);
-		pcb_fprintf(FP, "Po %.0mk %.0mk 0 %d 51534DFF 00000000 ~~\n", xPos, yPos, copperLayer);
-		fprintf(FP, "Li %s\n", currentElementName);
-		fprintf(FP, "Cd %s\n", currentElementName);
-		fputs("Sc 0\n",FP);
-		fputs("AR\n",FP);
-		fputs("Op 0 0 0\n",FP);
-		fprintf(FP, "T0 0 -4000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, element->Name[NAMEONPCB_INDEX].TextString);
-		fprintf(FP, "T1 0 -5000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, element->Name[VALUE_INDEX].TextString);
-		pinlist_foreach(&element->Pin, &it, pin) {
-			fputs("$PAD\n",FP);	 /* start pad descriptor for a pin */
+		if (currentElementName == NULL) {
+			currentElementName = "unknown";
+		}
+		currentElementRef = element->Name[NAMEONPCB_INDEX].TextString;
+		if (currentElementRef == NULL) {
+			currentElementRef = "unknown";
+		}
+		currentElementVal = element->Name[VALUE_INDEX].TextString;
+		if (currentElementVal == NULL) {
+			currentElementVal = "unknown";
+		}
 
-			pcb_fprintf(FP, "Po %.0mk %.0mk\n", /* positions of pad */
+		fprintf(FP, "%*s", indentation, "");
+		fprintf(FP,  "(module %s (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n",
+								currentElementName, kicad_sexpr_layer_to_text(copperLayer));
+		fprintf(FP, "%*s", indentation + 2, "");
+		pcb_fprintf(FP, "(at %.3mm %.3mm)\n", xPos, yPos);
+
+		fprintf(FP, "%*s", indentation + 2, "");
+		pcb_fprintf(FP, "(fp_text reference %s (at 0 0.127) (layer %s)\n",
+								currentElementRef, kicad_sexpr_layer_to_text(silkLayer));
+		fprintf(FP, "%*s", indentation + 4, "");
+		fprintf(FP, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
+		fprintf(FP, "%*s)\n", indentation + 2, "");
+
+		fprintf(FP, "%*s", indentation + 2, "");
+		pcb_fprintf(FP, "(fp_text value %s (at 0 0.127) (layer %s)\n",
+								currentElementVal, kicad_sexpr_layer_to_text(silkLayer));
+		fprintf(FP, "%*s", indentation + 4, "");
+		fprintf(FP, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
+		fprintf(FP, "%*s)\n", indentation + 2, "");
+
+		linelist_foreach(&element->Line, &it, line) {
+			fprintf(FP, "%*s", indentation + 2, "");
+			pcb_fprintf(FP, "(fp_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+									line->Point1.X - element->MarkX,
+									line->Point1.Y - element->MarkY,
+									line->Point2.X - element->MarkX,
+									line->Point2.Y - element->MarkY,
+									kicad_sexpr_layer_to_text(silkLayer),
+									line->Thickness);
+		}
+
+		arclist_foreach(&element->Arc, &it, arc) {
+
+			BoxType *boxResult = GetArcEnds(arc);
+			arcStartX = boxResult->X1;
+			arcStartY = boxResult->Y1;
+			arcEndX = boxResult->X2; 
+			arcEndY = boxResult->Y2; 
+
+			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
+				fprintf(FP, "%*s", indentation +2, "");
+				pcb_fprintf(FP, "(fp_circle (center %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+										arc->X - element->MarkX, /* x_1 centre */
+										arc->Y - element->MarkY, /* y_2 centre */
+										arcStartX - element->MarkX, /* x on circle */
+										arcStartY - element->MarkY, /* y on circle */
+										kicad_sexpr_layer_to_text(silkLayer), arc->Thickness);  /* stroke thickness */
+			} else {
+				fprintf(FP, "%*s", indentation +2, "");
+				pcb_fprintf(FP, "(fp_arc (start %.3mm %.3mm) (end %.3mm %.3mm) (angle %ma) (layer %s) (width %.3mm))\n",
+										arc->X - element->MarkX, /* x_1 centre */
+										arc->Y - element->MarkY, /* y_2 centre */
+										arcEndX - element->MarkX, /* x on arc */
+										arcEndY - element->MarkY, /* y on arc */
+										arc->Delta, /* CW delta angle in decidegrees */
+										kicad_sexpr_layer_to_text(silkLayer), arc->Thickness);  /* stroke thickness */
+			}
+		}
+
+
+		pinlist_foreach(&element->Pin, &it, pin) {
+			fprintf(FP, "%*s", indentation + 2, "");
+			fputs("(pad ", FP);
+			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
+			if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
+				fputs(" thru_hole rect ",FP); /* square */
+			} else {
+				fputs(" thru_hole circle ",FP); /* circular */
+			}
+			pcb_fprintf(FP, "(at %.3mm %.3mm)", /* positions of pad */
 									pin->X - element->MarkX,
 									pin->Y - element->MarkY);
-
-			fputs("Sh ",FP); /* pin shape descriptor */
-			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
-
-			if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
-				fputs(" R ",FP); /* square */
-			} else {
-				fputs(" C ",FP); /* circular */
-			}
-
-			pcb_fprintf(FP, "%.0mk %.0mk ", pin->Thickness, pin->Thickness); /* height = width */
-			fputs("0 0 0\n",FP); /* deltaX deltaY Orientation as float in decidegrees */
-
-			fputs("Dr ",FP); /* drill details; size and x,y pos relative to pad location */
-			pcb_fprintf(FP, "%.0mk 0 0\n", pin->DrillingHole);
-
-			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
-
+			/* PrintQuotedString(FP, (char *) EMPTY(pin->Number)); */
+			pcb_fprintf(FP, " (size %.3mm %.3mm)", pin->Thickness, pin->Thickness); /* height = width */
+			/* drill details; size */
+			pcb_fprintf(FP, " (drill %.3mm)\n", pin->DrillingHole);
+			fprintf(FP, "%*s", indentation + 4, "");
+			fprintf(FP, "(layers *.Cu *.Mask)\n"); /* define included layers for pin */
 			current_pin_menu = pcb_netlist_find_net4pin(Layout, pin);
+			fprintf(FP, "%*s", indentation + 4, "");
 			if ((current_pin_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pin_menu) != PCB_NETLIST_INVALID_INDEX)) {
-				fprintf(FP, "Ne %d \"%s\"\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
+				fprintf(FP, "(net %d \"%s\")\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
 			} else {
-				fprintf(FP, "Ne 0 \"\"\n"); /* unconnected pads have zero for net */
-			} 
+				fprintf(FP, "(net 0 \"\")\n"); /* unconnected pads have zero for net */
+			}
+			fprintf(FP, "%*s)\n", indentation + 2, "");
 			/*
 				PrintQuotedString(FP, (char *) EMPTY(pin->Name));
 				fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
 			*/
-			fputs("$EndPAD\n",FP);
 		}
 		padlist_foreach(&element->Pad, &it, pad) {
 			fputs("$PAD\n",FP);	 /* start pad descriptor for an smd pad */
 
-			pcb_fprintf(FP, "Po %.0mk %.0mk\n", /* positions of pad */
+			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
 									(pad->Point1.X + pad->Point2.X)/2- element->MarkX,
 									(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
 
@@ -1124,47 +1180,11 @@ int write_kicad_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, 
 				fprintf(FP, "Ne 0 \"\"\n"); /* a net number of 0 indicates an unconnected pad in pcbnew */
 			} 
 
-			fputs("$EndPAD\n",FP);
+			fprintf(FP, "%*s)\n", indentation + 2, "");
 
 		}
-		linelist_foreach(&element->Line, &it, line) {
-			pcb_fprintf(FP, "DS %.0mk %.0mk %.0mk %.0mk %.0mk ",
-									line->Point1.X - element->MarkX,
-									line->Point1.Y - element->MarkY,
-									line->Point2.X - element->MarkX,
-									line->Point2.Y - element->MarkY,
-									line->Thickness);
-			fprintf(FP, "%d\n", silkLayer); /* an arbitrary Kicad layer, front silk, need to refine this */
-		}
 
-		arclist_foreach(&element->Arc, &it, arc) {
-
-			BoxType *boxResult = GetArcEnds(arc);
-			arcStartX = boxResult->X1;
-			arcStartY = boxResult->Y1;
-			arcEndX = boxResult->X2; 
-			arcEndY = boxResult->Y2; 
-
-			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
-				pcb_fprintf(FP, "DC %.0mk %.0mk %.0mk %.0mk %.0mk ",
-										arc->X - element->MarkX, /* x_1 centre */
-										arc->Y - element->MarkY, /* y_2 centre */
-										arcStartX - element->MarkX, /* x on circle */
-										arcStartY - element->MarkY, /* y on circle */
-										arc->Thickness); /* stroke thickness */
-			} else {
-				pcb_fprintf(FP, "DA %.0mk %.0mk %.0mk %.0mk %mA %.0mk ",
-										arc->X - element->MarkX, /* x_1 centre */
-										arc->Y - element->MarkY, /* y_2 centre */
-										arcEndX - element->MarkX, /* x on arc */
-										arcEndY - element->MarkY, /* y on arc */
-										arc->Delta, /* CW delta angle in decidegrees */
-										arc->Thickness); /* stroke thickness */
-			}
-			fprintf(FP, "%d\n", silkLayer); /* and now append a suitable Kicad layer, front silk = 21, back silk 20 */
-		}
-
-		fprintf(FP, "$EndMODULE %s\n", currentElementName);
+		fprintf(FP, "%*s)\n\n", indentation, ""); /*  finish off module */
 	}
 	/* Release unique name utility memory */
 	unm_uninit(&group1);
