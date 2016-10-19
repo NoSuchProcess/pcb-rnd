@@ -46,8 +46,11 @@
 /* generates a line by line listing of the elements being saved */
 static int io_kicad_write_element_index(FILE * FP, DataTypePtr Data);
 
+/* generates text for the kicad layer provided  */
+static char * kicad_sexpr_layer_to_text(int layer);
+
 /* generates a default via drill size for the layout */
-static int write_kicad_layout_via_drill_size(FILE * FP);
+static int write_kicad_layout_via_drill_size(FILE * FP, pcb_cardinal_t indentation);
 
 /* writes the buffer to file */
 int io_kicad_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
@@ -77,10 +80,12 @@ int io_kicad_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
 int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 {
 	/* this is the first step in exporting a layout;
-	 * creating a kicd module containing the elements used in the layout
+	 * creating a kicad module containing the elements used in the layout
 	 */
 
 	/*fputs("io_kicad_legacy_write_pcb()", FP);*/
+
+	int baseSExprIndent = 2;
 
 	pcb_cardinal_t i;
 	int physicalLayerCount = 0;
@@ -113,8 +118,8 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 
 	fputs("(kicad_pcb (version 3) (host pcbnew \"(2013-02-20 BZR 3963)-testing\")",FP);
 
-	fputs("\n(general\n",FP);
-	fputs(")\n",FP);
+	fprintf(FP, "\n%*s(general\n", baseSExprIndent, "");
+	fprintf(FP, "%*s)\n", baseSExprIndent, "");
 
 
 	/* we sort out the needed kicad sheet size here, using A4, A3, A2, A1 or A0 size as needed */
@@ -142,7 +147,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 		sheetWidth = 4*A4WidthMil; /* 46.8"	 */
 		paperSize = 0; /* this is A0 size; where would you get it made ?!?! */
 	}
-	fprintf(FP, "\n(page A%d)\n", paperSize);
+	fprintf(FP, "\n%*s(page A%d)\n", baseSExprIndent, "", paperSize);
 
 
 	/* we now sort out the offsets for centring the layout in the chosen sheet size here */
@@ -164,7 +169,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	/* here we define the copper layers in the exported kicad file */
 	physicalLayerCount = pcb_layer_group_list(PCB_LYT_COPPER, NULL, 0);
 
-	fputs("\n(layers\n",FP);
+	fprintf(FP, "\n%*s(layers\n", baseSExprIndent, "");
 	kicadLayerCount = physicalLayerCount;
 	if (kicadLayerCount%2 == 1) {
 		kicadLayerCount++; /* kicad doesn't like odd numbers of layers, has been deprecated for some time apparently */
@@ -172,30 +177,31 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	
 	layer = 0;
 	if (physicalLayerCount >= 1) {
-		fprintf(FP, "  (%d bottom_side.Cu signal)\n", layer);
+		fprintf(FP, "%*s(%d bottom_side.Cu signal)\n", baseSExprIndent + 2, "", layer);
 	}
 	if (physicalLayerCount > 1) { /* seems we need to ignore layers > 16 due to kicad limitation */
 		for (layer = 1; (layer < (kicadLayerCount - 1)) && (layer < 15); layer++ ) {
-			fprintf(FP, "  (%d Inner%d.Cu signal)\n", layer, layer);
+			fprintf(FP, "%*s(%d Inner%d.Cu signal)\n", baseSExprIndent + 2, "", layer, layer);
 		}
-		fputs("  (15 top_side.Cu signal)\n",FP);	
+		fprintf(FP, "%*s(15 top_side.Cu signal)\n", baseSExprIndent + 2, "");	
 	}
-	fputs("  (20 B.SilkS user)\n",FP);
-	fputs("  (21 F.SilkS user)\n)\n",FP);
-
+	fprintf(FP, "%*s(20 B.SilkS user)\n", baseSExprIndent + 2, "");
+	fprintf(FP, "%*s(21 F.SilkS user)\n", baseSExprIndent + 2, "");
+	fprintf(FP, "%*s(28 Edge.Cuts user)\n", baseSExprIndent + 2, "");
+	fprintf(FP, "%*s)\n", baseSExprIndent, "");
 
 	/* setup section */
-	fputs("\n(setup\n",FP);
-	write_kicad_layout_via_drill_size(FP);
-	fputs(")\n",FP);
+	fprintf(FP, "\n%*s(setup\n", baseSExprIndent, "");
+	write_kicad_layout_via_drill_size(FP, baseSExprIndent + 2);
+	fprintf(FP, "%*s)\n", baseSExprIndent, "");
 
 	/* now come the netlist "equipotential" descriptors */
 
-	write_kicad_equipotential_netlists(FP, PCB);
+	write_kicad_equipotential_netlists(FP, PCB, baseSExprIndent);
 
 	/* module descriptions come next */
 
-	write_kicad_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset);
+	write_kicad_layout_elements(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
 	currentKicadLayer = 0;
@@ -238,11 +244,11 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < bottomSilkCount; i++) /* write bottom silk lines, if any */
 		{
 			write_kicad_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 			write_kicad_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 			write_kicad_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}
 
 	/* we now proceed to write the bottom copper text to the kicad legacy file, layer by layer */
@@ -250,7 +256,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < bottomCount; i++) /* write bottom copper tracks, if any */
 		{
 			write_kicad_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[bottomLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}	/* 0 is the bottom most track in kicad */
 
 	/* we now proceed to write the internal copper text to the kicad file, layer by layer */
@@ -267,7 +273,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 				}
 			}
 			write_kicad_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[innerLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}
 
 	/* we now proceed to write the top copper text to the kicad legacy file, layer by layer */
@@ -275,7 +281,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < topCount; i++) /* write top copper tracks, if any */
 		{
 			write_kicad_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}
 
 	/* we now proceed to write the top silk lines, arcs, text to the kicad legacy file, using layer 21 */
@@ -283,26 +289,26 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < topSilkCount; i++) /* write top silk lines, if any */
 		{
 			write_kicad_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 			write_kicad_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 			write_kicad_layout_text(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}
 
 	/* having done the graphical elements, we move onto tracks and vias */ 
 
-	fputs("$TRACK\n",FP);
-	write_kicad_layout_vias(FP, PCB->Data, LayoutXOffset, LayoutYOffset);
+	fputs("\n",FP); /* move onto tracks and vias */
+	write_kicad_layout_vias(FP, PCB->Data, LayoutXOffset, LayoutYOffset, baseSExprIndent);
 
 	/* we now proceed to write the bottom copper tracks to the kicad legacy file, layer by layer */
 	currentKicadLayer = 0; /* 0 is the bottom copper layer in kicad */
 	for (i = 0; i < bottomCount; i++) /* write bottom copper tracks, if any */
 		{
 			write_kicad_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[bottomLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 			write_kicad_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[bottomLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}	/* 0 is the bottom most track in kicad */
 
 	/* we now proceed to write the internal copper tracks to the kicad file, layer by layer */
@@ -319,9 +325,9 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 				}
 			}
 			write_kicad_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[innerLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 			write_kicad_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[innerLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}
 
 	/* we now proceed to write the top copper tracks to the kicad legacy file, layer by layer */
@@ -330,11 +336,12 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 		
 		{
 			write_kicad_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 			write_kicad_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}
-	fputs("$EndTRACK\n",FP);
+
+	fputs("\n",FP); /* finished  tracks and vias */
 
 	/*
 	  * now we proceed to write polygons for each layer, and iterate much like we did for tracks
@@ -345,7 +352,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < bottomSilkCount; i++) /* write bottom silk polygons, if any */
 		{
 			write_kicad_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[bottomSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}
 
 	/* we now proceed to write the bottom copper polygons to the kicad legacy file, layer by layer */
@@ -353,7 +360,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < bottomCount; i++) /* write bottom copper polygons, if any */
 		{
 			write_kicad_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[bottomLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}	/* 0 is the bottom most track in kicad */
 
 	/* we now proceed to write the internal copper polygons to the kicad file, layer by layer */
@@ -370,7 +377,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 				}
 			}
 			write_kicad_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[innerLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}
 
 	/* we now proceed to write the top copper polygons to the kicad legacy file, layer by layer */
@@ -378,7 +385,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < topCount; i++) /* write top copper polygons, if any */
 		{
 			write_kicad_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}
 
 	/* we now proceed to write the top silk polygons to the kicad legacy file, using layer 21 */
@@ -386,11 +393,10 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	for (i = 0; i < topSilkCount; i++) /* write top silk polygons, if any */
 		{
 			write_kicad_layout_polygons(FP, currentKicadLayer, &(PCB->Data->Layer[topSilk[i]]),
-									LayoutXOffset, LayoutYOffset);
+									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}
 
-
-	fputs("$EndBOARD\n",FP);
+	fputs(")\n",FP); /* finish off the board */
 
 	/* now free memory from arrays that were used */
 	free(bottomLayers);
@@ -446,39 +452,80 @@ static int io_kicad_write_element_index(FILE * FP, DataTypePtr Data)
 */
 
 
-int write_kicad_layout_vias(FILE * FP, DataTypePtr Data, Coord xOffset, Coord yOffset)
+int write_kicad_layout_vias(FILE * FP, DataTypePtr Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 	gdl_iterator_t it;
 	PinType *via;
 	/* write information about vias */
 	pinlist_foreach(&Data->Via, &it, via) {
-		/*		pcb_fprintf(FP, "Po 3 %.3mm %.3mm %.3mm %.3mm %.3mm\n",
-					via->X, via->Y, via->X, via->Y, via->Thickness);
-					pcb_fprintf(FP, "De F0 1 0 0 0\n"); */
-		pcb_fprintf(FP, "Po 3 %.0mk %.0mk %.0mk %.0mk %.0mk\n", /* testing kicad printf */
-								via->X + xOffset, via->Y + yOffset,
-								via->X + xOffset, via->Y + yOffset, via->Thickness);
-		pcb_fprintf(FP, "De 15 1 0 0 0\n"); /* this is equivalent to 0F, via from 15 -> 0 */
+		fprintf(FP, "%*s", indentation,"");
+		pcb_fprintf(FP, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n", 
+								via->X + xOffset, via->Y + yOffset, via->Thickness,
+								kicad_sexpr_layer_to_text(0), kicad_sexpr_layer_to_text(15)); /* skip (net 0) for now */
 	}
 	return 0;
 }
 
-static int write_kicad_layout_via_drill_size(FILE * FP)
+static char * kicad_sexpr_layer_to_text(int layer)
 {
-	pcb_fprintf(FP, "  (via_drill 0.635)\n"); /* mm format, default for now, ~= 0.635mm */
+	switch (layer) {
+		case 0:
+			return "bottom_side.Cu";
+		case 1:
+			return "Inner1.Cu";
+		case 2:
+			return "Inner2.Cu";
+		case 3:
+			return "Inner3.Cu";
+		case 4:
+			return "Inner4.Cu";
+		case 5:
+			return "Inner5.Cu";
+		case 6:
+			return "Inner6.Cu";
+		case 7:
+			return "Inner7.Cu";
+		case 8:
+			return "Inner8.Cu";
+		case 9:
+			return "Inner9.Cu";
+		case 10:
+			return "Inner10.Cu";
+		case 11:
+			return "Inner11.Cu";
+		case 12:
+			return "Inner12.Cu";
+		case 13:
+			return "Inner13.Cu";
+		case 14:
+			return "Inner14.Cu";
+		case 15:
+			return "top_side.Cu";
+		case 20:
+			return "B.SilkS";
+		case 21:
+			return "F.SilkS";
+		case 28:
+			return "Edge.Cuts"; /* kicad's outline layer */
+		default:
+			return "";
+	}
+}
+
+static int write_kicad_layout_via_drill_size(FILE * FP, pcb_cardinal_t indentation)
+{
+	fprintf(FP, "%*s", indentation,"");
+	pcb_fprintf(FP, "(via_drill 0.635)\n"); /* mm format, default for now, ~= 0.635mm */
 	return 0;
 }
 
 int write_kicad_layout_tracks(FILE * FP, pcb_cardinal_t number,
-																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
+																		 LayerTypePtr layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 	gdl_iterator_t it;
 	LineType *line;
 	pcb_cardinal_t currentLayer = number;
-	/*ArcType *arc;
-		TextType *text;
-		PolygonType *polygon;
-	*/
+
 	/* write information about non empty layers */
 	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
@@ -490,19 +537,17 @@ int write_kicad_layout_tracks(FILE * FP, pcb_cardinal_t number,
 		int localFlag = 0;
 		linelist_foreach(&layer->Line, &it, line) {
 			if (currentLayer < 16) { /* a copper line i.e. track */
-				pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n",
+				fprintf(FP, "%*s", indentation, "");
+				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 										line->Point1.X + xOffset, line->Point1.Y + yOffset,
 										line->Point2.X + xOffset, line->Point2.Y + yOffset,
-										line->Thickness);
-				pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* omitting net info */
+										kicad_sexpr_layer_to_text(currentLayer), line->Thickness); /* neglect (net ___ ) for now */
 			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk line */
-				fputs("$DRAWSEGMENT\n", FP);
-				pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n",
+				fprintf(FP, "%*s", indentation, "");
+				pcb_fprintf(FP, "(gr-line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 										line->Point1.X + xOffset, line->Point1.Y + yOffset,
 										line->Point2.X + xOffset, line->Point2.Y + yOffset,
-										line->Thickness);
-				pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* omitting net info */
-				fputs("$EndDRAWSEGMENT\n", FP);
+										kicad_sexpr_layer_to_text(currentLayer), line->Thickness);
 			}
 			localFlag |= 1;
 		}
@@ -513,7 +558,7 @@ int write_kicad_layout_tracks(FILE * FP, pcb_cardinal_t number,
 }
 
 int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
-																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
+																		 LayerTypePtr layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 	gdl_iterator_t it;
 	ArcType *arc;
@@ -566,12 +611,11 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
 										arc->Thickness);
 				pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* in theory, copper arcs unsupported by kicad, make angle = 0 */
 			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk arc */
-				fputs("$DRAWSEGMENT\n", FP);
-				pcb_fprintf(FP, "Po %d %.0mk %.0mk %.0mk %.0mk %.0mk\n",
-										kicadArcShape, xStart, yStart, xEnd, yEnd,
-										arc->Thickness);
-				pcb_fprintf(FP, "De %d 0 %mA 0 0\n", currentLayer, arc->Delta); /* in theory, decidegrees != 900 unsupported by older kicad*/
-				fputs("$EndDRAWSEGMENT\n", FP);
+
+				fprintf(FP, "%*s", indentation, "");
+				pcb_fprintf(FP, "(gr-arc (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+										xStart, yStart, xEnd, yEnd,
+										kicad_sexpr_layer_to_text(currentLayer), arc->Thickness);
 			}
 			localFlag |= 1;
 		}
@@ -582,7 +626,7 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
 }
 
 int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number,
-																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
+																		 LayerTypePtr layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 	FontType *myfont = &PCB->Font;
 	Coord mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
@@ -614,9 +658,7 @@ int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number,
 		localFlag = 0;
 		textlist_foreach(&layer->Text, &it, text) {
 			if ((currentLayer < 16) || (currentLayer == 20) || (currentLayer == 21) ) { /* copper or silk layer text */
-				fputs("$TEXTPCB\nTe \"", FP);
-				fputs(text->TextString,FP);
-				fputs("\"\n", FP);
+				fprintf(FP, "%*s(gr_text \"%s\" ", indentation, "", text->TextString);
 				defaultXSize = 5*PCB_SCALE_TEXT(mWidth, text->Scale)/6; /* IIRC kicad treats this as kerned width of upper case m */
 				defaultYSize = defaultXSize;
 				strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale /2);
@@ -679,12 +721,12 @@ int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number,
 					textOffsetX = halfStringWidth;
 				}
 /*				printf("\"%s\" direction field: %d\n", text->TextString, text->Direction);
-				printf("textOffsetX: %d,  textOffsetY: %d\n", textOffsetX, textOffsetY); */
-				pcb_fprintf(FP, "Po %.0mk %.0mk %.0mk %.0mk %.0mk %d\n",
-										text->X + xOffset + textOffsetX, text->Y + yOffset + textOffsetY,
-										defaultXSize, defaultYSize, strokeThickness, rotation);
-				pcb_fprintf(FP, "De %d %d B98C Normal\n", currentLayer, kicadMirrored); /* timestamp made up B98C  */
-				fputs("$EndTEXTPCB\n", FP);
+				printf("textOffsetX: %d,  textOffsetY: %d\n", textOffsetX, textOffsetY);     TODO need to sort out rotation */
+				pcb_fprintf(FP, "(at %.3mm %.3mm) (layer %s)\n", text->X + xOffset + textOffsetX, text->Y + yOffset + textOffsetY,
+										kicad_sexpr_layer_to_text(currentLayer));
+				fprintf(FP, "%*s", indentation +2,"");
+				pcb_fprintf(FP, "(effects (font (size %.3mm %.3mm) (thickness %.3mm)))\n", defaultXSize, defaultYSize, strokeThickness); /* , rotation */
+				fprintf(FP, "%*s)\n", indentation,"");
 			}
 			localFlag |= 1;
 		}
@@ -905,7 +947,7 @@ int io_kicad_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
  * writes netlist data in kicad legacy format for use in a layout .brd file
  */
 
-int write_kicad_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
+int write_kicad_equipotential_netlists(FILE * FP, PCBTypePtr Layout, pcb_cardinal_t indentation)
 {
         int n; /* code mostly lifted from netlist.c */ 
 	int netNumber;
@@ -913,14 +955,14 @@ int write_kicad_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
 	LibraryEntryTypePtr netlist;
 	
 	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
-	fputs("\n(net 0 \"\")\n",FP);
+	fprintf(FP, "\n%*s(net 0 \"\")\n", indentation, "");
 
 	/* now we step through any available netlists and generate descriptors */
         for (n = 0, netNumber = 1; n < Layout->NetlistLib[NETLIST_EDITED].MenuN; n++, netNumber ++) {
                 menu = &Layout->NetlistLib[NETLIST_EDITED].Menu[n];
 		netlist = &menu->Entry[0];
 		if (netlist != NULL) {
-			fprintf(FP, "(net %d %s)\n", netNumber, pcb_netlist_name(menu));  /* netlist 0 was used for unconnected pads  */
+			fprintf(FP, "%*s(net %d %s)\n", indentation, "", netNumber, pcb_netlist_name(menu));  /* netlist 0 was used for unconnected pads  */
                 }
         }
 	return 0;
@@ -941,7 +983,7 @@ int write_kicad_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a layout .brd file
  */
-int write_kicad_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, Coord xOffset, Coord yOffset)
+int write_kicad_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 
 	gdl_iterator_t eit;
@@ -1138,7 +1180,7 @@ int write_kicad_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, 
  */
 
 int write_kicad_layout_polygons(FILE * FP, pcb_cardinal_t number,
-																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
+																		 LayerTypePtr layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 	int i, j;
 	gdl_iterator_t it;
@@ -1152,29 +1194,32 @@ int write_kicad_layout_polygons(FILE * FP, pcb_cardinal_t number,
 			if (polygon->HoleIndexN == 0) { /* no holes defined within polygon, which we implement support for first */
 
 				/* preliminaries for zone settings */
-				fputs("$CZONE_OUTLINE\n", FP);
-				fputs("ZInfo 478E3FC8 0 \"\"\n", FP); /* use default empty netname, net 0, not connected */
-				fprintf(FP,"ZLayer %d\n", currentLayer); 
-				fprintf(FP,"ZAux %d E\n", polygon->PointN); /* corner count, use edge hatching for displaying the zone in pcbnew */
-				fputs("ZClearance 200 X\n", FP); /* set pads/pins to not be connected to pours in the zone by default */
-				fputs("ZMinThickness 190\n", FP); /* minimum copper thickness in zone, default setting */
-				fputs("ZOptions 0 32 F 200 200\n", FP); /* solid fill, 32 segments per arc, antipad thickness, thermal stubs width(s) */
+
+				fprintf(FP, "%*s(zone (net 0) (net_name \"\") (layer %s) (tstamp 478E3FC8) (hatch edge 0.508)\n", indentation, "", kicad_sexpr_layer_to_text(currentLayer));
+				fprintf(FP, "%*s(connect_pads no (clearance 0.508))\n", indentation+2, "");
+				fprintf(FP, "%*s(min_thickness 0.4826)\n", indentation+2, "");
+				fprintf(FP, "%*s(fill (arc_segments 32) (thermal_gap 0.508) (thermal_bridge_width 0.508))\n", indentation+2, "");
+				fprintf(FP, "%*s(polygon\n", indentation+2, "");
+				fprintf(FP, "%*s(pts\n", indentation+4, "");
 
 				/* now the zone outline is defined */
 
-				for (i = 0, j=0; i < polygon->PointN; i++) {
-					if (i == (polygon->PointN - 1) ) {
-						j = 1; /* flags that this is the last vertex of the outline */
+				for (i = 0; i < polygon->PointN; i = i + 5) { /* kicad exports five coords per line in s-expr files */
+					fprintf(FP, "%*s", indentation + 6, ""); /* pcb_fprintf does not support %*s   */
+					for (j = 0; (j < polygon->PointN) && (j < 5); j++) { 
+						pcb_fprintf(FP, "(xy %.3mm %.3mm)", polygon->Points[i + j].X + xOffset, polygon->Points[i+ j].Y + yOffset);
+						if ((j < 4) && ((i + j) < (polygon->PointN - 1))) {
+							fputs(" ", FP);
+						}
 					}
-					pcb_fprintf(FP, "ZCorner %.0mk %.0mk %d\n",
-											polygon->Points[i].X + xOffset, polygon->Points[i].Y + yOffset, j);
+					fputs("\n", FP);
 				}
-
+				fprintf(FP, "%*s)\n", indentation+4, "");
+				fprintf(FP, "%*s)\n", indentation+2, "");
+				fprintf(FP, "%*s)\n", indentation, ""); /* end zone */
 				/*
-				  *   in here could go additional plolygon descriptors for holes removed from  the previously defined outer polygon
+				  *   in here could go additional polygon descriptors for holes removed from  the previously defined outer polygon
 				  */ 
-
-				fputs("$endCZONE_OUTLINE\n",  FP);
 
 			} 
 			localFlag |= 1;
