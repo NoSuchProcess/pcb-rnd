@@ -1484,11 +1484,13 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h ../src_plugins/io_kicad/write.h \
- data.h
-../src_plugins/io_kicad/read.o: ../src_plugins/io_kicad/read.c plug_io.h \
- global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
- global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
- list_common.h list_line.h ../src_3rd/genlist/gentdlist_impl.h \
+ data.h ../src_plugins/io_kicad/read.h
+../src_plugins/io_kicad/read.o: ../src_plugins/io_kicad/read.c \
+ ../src_3rd/gensexpr/gsxl.h ../src_3rd/gensexpr/gensexpr_impl.h \
+ ../src_3rd/gensexpr/gsx_parse.h plug_io.h global.h ../config.h const.h \
+ macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h list_common.h \
+ list_line.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
  list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
