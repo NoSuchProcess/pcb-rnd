@@ -607,6 +607,9 @@ static void plugin_stat(const char *header, const char *path, const char *name)
 {
 	const char *val = get(path);
 
+	if (*header == '#') /* don't print hidden plugins */
+		return;
+
 	printf(" %-32s", header);
 
 	if (val == NULL)
