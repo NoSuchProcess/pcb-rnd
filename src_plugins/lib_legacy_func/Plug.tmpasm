@@ -1,7 +1,7 @@
-put /local/pcb/mod {legacy_func}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/legacy_func/legacy_func.o @]
+put /local/pcb/mod {lib_legacy_func}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/lib_legacy_func/lib_legacy_func.o @]
 
-switch /local/pcb/legacy_func/controls
+switch /local/pcb/lib_legacy_func/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

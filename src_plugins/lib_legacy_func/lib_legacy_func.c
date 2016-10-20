@@ -107,7 +107,7 @@ int FileExists(const char *name)
 }
 
 
-pcb_uninit_t hid_legacy_func_init(void)
+pcb_uninit_t hid_lib_legacy_func_init(void)
 {
 	return NULL;
 }
