@@ -1,5 +1,5 @@
 S-expression parser lib
 
-#state: WIP
+#state: works
 #default: disabled
-#implements: (library)
+#implements: (lib)
