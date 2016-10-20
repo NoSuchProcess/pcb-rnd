@@ -764,11 +764,17 @@ int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number,
 				}
 /*				printf("\"%s\" direction field: %d\n", text->TextString, text->Direction);
 				printf("textOffsetX: %d,  textOffsetY: %d\n", textOffsetX, textOffsetY);     TODO need to sort out rotation */
-				pcb_fprintf(FP, "(at %.3mm %.3mm) (layer %s)\n", text->X + xOffset + textOffsetX, text->Y + yOffset + textOffsetY,
-										kicad_sexpr_layer_to_text(currentLayer));
+				pcb_fprintf(FP, "(at %.3mm %.3mm", text->X + xOffset + textOffsetX, text->Y + yOffset + textOffsetY);
+				if (rotation != 0) {
+					fprintf(FP, " %d", rotation/10); /* convert decidegrees to degrees */
+				}
+				pcb_fprintf(FP, ") (layer %s)\n", kicad_sexpr_layer_to_text(currentLayer));
 				fprintf(FP, "%*s", indentation +2,"");
-				pcb_fprintf(FP, "(effects (font (size %.3mm %.3mm) (thickness %.3mm)))\n", defaultXSize, defaultYSize, strokeThickness); /* , rotation */
-				fprintf(FP, "%*s)\n", indentation,"");
+				pcb_fprintf(FP, "(effects (font (size %.3mm %.3mm) (thickness %.3mm))", defaultXSize, defaultYSize, strokeThickness); /* , rotation */
+				if (kicadMirrored  == 0) {
+					fprintf(FP, " (justify mirror)");
+				}
+				fprintf(FP, ")\n%*s)\n", indentation,"");
 			}
 			localFlag |= 1;
 		}
