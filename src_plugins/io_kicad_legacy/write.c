@@ -532,10 +532,7 @@ int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
 	gdl_iterator_t it;
 	LineType *line;
 	pcb_cardinal_t currentLayer = number;
-	/*ArcType *arc;
-		TextType *text;
-		PolygonType *polygon;
-	*/
+
 	/* write information about non empty layers */
 	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
@@ -581,10 +578,6 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 	int copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
 	int copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
 
-	/*ArcType *arc;
-		TextType *text;
-		PolygonType *polygon;
-	*/
 	/* write information about non empty layers */
 	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
