@@ -60,6 +60,7 @@ static int kicad_dispatch(read_state_t *st, gsxl_node_t *subtree, const dispatch
 		if (strcmp(d->node_name, subtree->str) == 0)
 			return d->parser(st, subtree->children);
 
+	printf("Unknown node: '%s'\n", subtree->str);
 	/* node name not found in the dispatcher table */
 	return -1;
 }
@@ -75,6 +76,7 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 {
 	if (subtree->str != NULL) {
 		int ver = atoi(subtree->str);
+		printf("kicad version: '%s' == %d\n", subtree->str, ver);
 		if (ver == 3) /* accept version 3 */
 			return 0;
 	}
@@ -116,6 +118,11 @@ int io_kicad_read_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf
 	int c, readres = 0;
 	read_state_t st;
 	gsx_parse_res_t res;
+	FILE *FP;
+
+	FP = fopen(Filename, "r");
+	if (FP == NULL)
+		return -1;
 
 	/* set up the parse context */
 	st.PCB = Ptr;
@@ -125,8 +132,9 @@ int io_kicad_read_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf
 	/* load the file into the dom */
 	gsxl_init(&st.dom, gsxl_node_t);
 	do {
-		c = getchar();
+		c = fgetc(FP);
 	} while((res = gsxl_parse_char(&st.dom, c)) == GSX_RES_NEXT);
+	fclose(FP);
 
 	if (res == GSX_RES_EOE) {
 		/* compact and simplify the tree */
