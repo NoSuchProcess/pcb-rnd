@@ -58,6 +58,11 @@ Below is a table with the summary of core plugins.
 <tr><th>module <th>size [sloc] <th> status <th> configure<br>default <th> class <th> description
 
 
+<tr><th align=left>autocrop<td>158
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> (feature)
+<td> Reduce the board dimensions to just enclose the elements. 
 <tr><th align=left>autoplace<td>614
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -68,6 +73,12 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Automatically route selected or all rats. This is the original autorouter. 
+<tr><th align=left>boardflip<td>131
+<td  > WIP
+<br> (doesn't update rtrees)
+<td bgcolor="red"> disabled
+<td> (feature)
+<td> All objects on the board are up-down flipped. 
 <tr><th align=left>dbus<td>483
 <td  > WIP
 <br> (needs to install the xml?)
@@ -79,16 +90,41 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disabled
 <td> (feature)
 <td> Actions for pcb-rnd core diagnostics, intended for developers. These are not in core because end users normally don't need these. As a plugin, due to dynamic loading, it can be dropped on an existing pcb-rnd installation with minimal risk of scaring away a reproducible bug. 
+<tr><th align=left>distalign<td>428
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> (feature)
+<td> Introducing Align() and Distribute(), which work much like the similarly named functions in Visio. Given that PCB does not have the concept of "first selected object" to draw on, the reference points can be selected by arguments. 
+<tr><th align=left>distaligntext<td>466
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> (feature)
+<td> Same as distalign, operates on text objects. 
 <tr><th align=left>djopt<td>2320
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Various board optimization algorithms. 
+<tr><th align=left>export_bboard<td>426
+<td  > WIP
+<td bgcolor="red"> disabled
+<td> export
+<td> Export breadboard 
 <tr><th align=left>export_bom<td>230
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export bom (Bill of Materials) 
+<tr><th align=left>export_dsn<td>443
+<td  > Work-in-progress
+<td bgcolor="red"> disable
+<td> export
+<td> Export specctra .dsn files 
+<tr><th align=left>export_dxf<td>3992
+<td  > WIP
+<td bgcolor="red"> disabled
+<td> export
+<td> Export dxf 
 <tr><th align=left>export_gcode<td>2466
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -99,16 +135,26 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to gerber 
+<tr><th align=left>export_ipcd356<td>468
+<td  > Work-in-progress
+<td bgcolor="red"> disable
+<td> export
+<td> IPC-D-356 Netlist export. 
 <tr><th align=left>export_lpr<td>106
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to lpr (using export_ps to generate postscript) 
-<tr><th align=left>export_nelma<td>696
+<tr><th align=left>export_nelma<td>679
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to nelma (Numerical capacitance calculator) 
+<tr><th align=left>export_openscad<td>1394
+<td  > WIP
+<td bgcolor="red"> disabled
+<td> export
+<td> Export openscad 
 <tr><th align=left>export_png<td>1120
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -125,12 +171,12 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> A thin layer of code to dump exporter calls for testing the HID exporter API. 
-<tr><th align=left>export_xy<td>243
+<tr><th align=left>export_xy<td>270
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export XY centroid element data for pick & place. 
-<tr><th align=left>fontmode<td>167
+<tr><th align=left>fontmode<td>165
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
@@ -151,7 +197,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disabled
 <td> (feature)
 <td> Common gl functions for hids. 
-<tr><th align=left>gpmi<td>3042
+<tr><th align=left>gpmi<td>3046
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <br> (if gpmi is installed)
@@ -162,7 +208,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> HID without GUI; read actions from stdin. 
-<tr><th align=left>hid_gtk<td>14933
+<tr><th align=left>hid_gtk<td>15972
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
@@ -172,7 +218,12 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> GUI: the lesstif HID. 
-<tr><th align=left>import_edif<td>3612
+<tr><th align=left>import_dsn<td>114
+<td  > Work-in-progress
+<td bgcolor="red"> disable
+<td> import
+<td> Import specctra .dsn files 
+<tr><th align=left>import_edif<td>3621
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
@@ -187,22 +238,37 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Imports element and netlist data from the schematics (or some other source). 
-<tr><th align=left>io_kicad_legacy<td>383
+<tr><th align=left>io_kicad<td>998
 <td  > work-in-progress
 <td bgcolor="red"> disabled
 <td> io
+<td> Load and save the design and elements in Kicad's s-expression format - this is the new, currently preferred format in Kicad. 
+<tr><th align=left>io_kicad_legacy<td>941
+<td  > work-in-progress
+<td bgcolor="lightgreen"> buildin
+<td> io
 <td> Load and save the design and elements in Kicad's legacy format. 
-<tr><th align=left>io_lihata<td>1043
+<tr><th align=left>io_lihata<td>1042
 <td  > WIP
 <td bgcolor="red"> disabled
 <td> io
 <td> Load and save the design and elements in the lihata board format. 
-<tr><th align=left>io_pcb<td>2172
+<tr><th align=left>io_pcb<td>2174
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Load and save the design and elements in the original pcb text format. 
-<tr><th align=left>legacy_func<td>74
+<tr><th align=left>jostle<td>446
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> (feature)
+<td> Pushes lines out of the way. 
+<tr><th align=left>lib_gensexpr<td>6
+<td bgcolor="lightgreen" > works
+<td bgcolor="red"> disabled
+<td> (lib)
+<td> S-expression parser lib 
+<tr><th align=left>lib_legacy_func<td>74
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (lib)
@@ -222,6 +288,16 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disabled
 <td> (feature)
 <td> Random collection of old/obsolete actions. Bell(): audible feedback; DumpLibrary(): print footprint library on stdout; a set of debug actions useful for writing pcb scripts: Debug(), DebugXY(), Return(). Old plugin actions to toggle or set settings that are now accessible via the unified config system (vendordrill, djopt) 
+<tr><th align=left>polycombine<td>208
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> (feature)
+<td> The selected polygons are combined together according to the ordering of their points. 
+<tr><th align=left>polystitch<td>185
+<td  > segfaults
+<td bgcolor="red"> disable
+<td> (feature)
+<td> The polygon under the cursor (based on closest-corner) is stitched together with the polygon surrounding it on the same layer. Use with pstoedit conversions where there's a "hole" in the shape - select the hole. 
 <tr><th align=left>propedit<td>766
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -232,7 +308,12 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Pull traces to minimize their length. 
-<tr><th align=left>renumber<td>225
+<tr><th align=left>query<td>1823
+<td  > WIP
+<td bgcolor="red"> disable
+<td> (feature)
+<td> pcb-rnd query language: execute expressions on objects and rules for the programmed drc. 
+<tr><th align=left>renumber<td>310
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
@@ -247,11 +328,21 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> vi-like command shorthands (1..3 character long commands) 
+<tr><th align=left>smartdisperse<td>173
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> (feature)
+<td> Improve the initial dispersion of elements by choosing an order based on the netlist, rather than the arbitrary element order.  This isn't the same as a global autoplace, it's more of a linear autoplace.  It might make some useful local groupings.  For example, you should not have to chase all over the board to find the resistor that goes with a given LED. 
 <tr><th align=left>stroke<td>135
 <td bgcolor="yellow" > partially works (doesn't work with lesstif; works with the gtk hid, but there's no zoom bindings)
 <td bgcolor="red"> disabled
 <td> (feature)
 <td> Gesture recognition with libstroke. 
+<tr><th align=left>teardrops<td>226
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> (feature)
+<td> Draw teardrops on pins. 
 <tr><th align=left>toporouter<td>6162
 <td bgcolor="red" > fails
 <br> (infinite loop in gts)
@@ -270,7 +361,7 @@ Each plugin implements a class (rarely a set of classes). Classes are:
 <table border=1 cellspacing=0>
 	<tr><th>name         <th> description
 	<tr><td>(feature)    <td> random features directly accessible for the user, usually actions
-	<tr><td>(lib)        <td> code library; functionality not directly accessible for the user but other plugins may depend on it
+	<tr><td>(lib)        <td> support code library for other plugins (core doesn't depend on these); functionality not directly accessible for the user but other plugins may depend on it
 	<tr><td>hid          <td> Human Interface Device: interactive user interface, usually GUI
 	<tr><td>import       <td> load alien formats into the design space
 	<tr><td>export       <td> save (parts of) the design space in alien formats

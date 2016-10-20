@@ -5,12 +5,12 @@ Each plugin implements a class (rarely a set of classes). Classes are:
 <table border=1 cellspacing=0>
 	<tr><th>name         <th> description
 	<tr><td>(feature)    <td> random features directly accessible for the user, usually actions
+	<tr><td>(lib)        <td> support code library for other plugins (core doesn't depend on these); functionality not directly accessible for the user but other plugins may depend on it
 	<tr><td>hid          <td> Human Interface Device: interactive user interface, usually GUI
 	<tr><td>import       <td> load alien formats into the design space
 	<tr><td>export       <td> save (parts of) the design space in alien formats
 	<tr><td>fp           <td> footprint (element) library implementation
 	<tr><td>io           <td> native file format (save & load) implementation
-	<tr><td>lib          <td> support code library for other plugins (core doesn't depend on these); functionality not directly accessible for the user but other plugins may depend on it
 </table>
 
 </body>
