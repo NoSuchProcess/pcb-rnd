@@ -86,9 +86,11 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	int physicalLayerCount = 0;
 	int kicadLayerCount = 0;
 	int silkLayerCount= 0;
+	int outlineLayerCount = 0;
 	int layer = 0;
 	int currentKicadLayer = 0;
 	int currentGroup = 0;
+	Coord outlineThickness = PCB_MIL_TO_COORD(10); 
 
 	int bottomCount;
 	int *bottomLayers;
@@ -100,6 +102,8 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	int *bottomSilk;
 	int topSilkCount;
 	int *topSilk;
+	int outlineCount;
+	int *outlineLayers;
 
 	Coord LayoutXOffset;
 	Coord LayoutYOffset;
@@ -236,6 +240,55 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	/*int topSilk[silkLayerCount];*/
 	topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
 	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, topSilk, silkLayerCount);
+
+	outlineLayerCount = pcb_layer_group_list(PCB_LYT_OUTLINE, NULL, 0);
+
+	/* figure out which pcb layers are outlines and make a list */
+	outlineLayers = malloc(sizeof(int) * outlineLayerCount);
+	outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
+	pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
+
+	/* we now proceed to write the outline tracks to the kicad file, layer by layer */
+	currentKicadLayer = 28; /* 28 is the edge cuts layer in kicad */
+	if (outlineCount != 0) {
+		for (i = 0; i < outlineCount; i++) /* write top copper tracks, if any */
+			{
+				write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[outlineLayers[i]]),
+										LayoutXOffset, LayoutYOffset);
+				write_kicad_legacy_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[outlineLayers[i]]),
+										LayoutXOffset, LayoutYOffset);
+			}
+	} else { /* no outline layer per se, export the board margins instead  - obviously some scope to reduce redundant code...*/
+				fputs("$DRAWSEGMENT\n", FP);
+				pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n",
+										PCB->MaxWidth/2 - LayoutXOffset, PCB->MaxHeight/2 - LayoutYOffset,
+										PCB->MaxWidth/2 + LayoutXOffset, PCB->MaxHeight/2 - LayoutYOffset,
+										outlineThickness);
+										pcb_fprintf(FP, "De %d 0 0 0 0\n", currentKicadLayer);
+				fputs("$EndDRAWSEGMENT\n", FP);
+				fputs("$DRAWSEGMENT\n", FP);
+				pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n",
+										PCB->MaxWidth/2 + LayoutXOffset, PCB->MaxHeight/2 - LayoutYOffset,
+										PCB->MaxWidth/2 + LayoutXOffset, PCB->MaxHeight/2 + LayoutYOffset,
+										outlineThickness);
+										pcb_fprintf(FP, "De %d 0 0 0 0\n", currentKicadLayer);
+				fputs("$EndDRAWSEGMENT\n", FP);
+				fputs("$DRAWSEGMENT\n", FP);
+				pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n",
+										PCB->MaxWidth/2 + LayoutXOffset, PCB->MaxHeight/2 + LayoutYOffset,
+										PCB->MaxWidth/2 - LayoutXOffset, PCB->MaxHeight/2 + LayoutYOffset,
+										outlineThickness);
+										pcb_fprintf(FP, "De %d 0 0 0 0\n", currentKicadLayer);
+				fputs("$EndDRAWSEGMENT\n", FP);
+				fputs("$DRAWSEGMENT\n", FP);
+				pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n",
+										PCB->MaxWidth/2 - LayoutXOffset, PCB->MaxHeight/2 + LayoutYOffset,
+										PCB->MaxWidth/2 - LayoutXOffset, PCB->MaxHeight/2 - LayoutYOffset,
+										outlineThickness);
+										pcb_fprintf(FP, "De %d 0 0 0 0\n", currentKicadLayer);
+				fputs("$EndDRAWSEGMENT\n", FP);
+	}
+
 
 	/* we now proceed to write the bottom silk lines, arcs, text to the kicad legacy file, using layer 20 */
 	currentKicadLayer = 20; /* 20 is the bottom silk layer in kicad */
@@ -401,6 +454,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP)
 	free(topLayers);
 	free(topSilk);
 	free(bottomSilk);
+	free(outlineLayers);
 	return (STATUS_OK);
 }
 
@@ -498,7 +552,7 @@ int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
 										line->Point2.X + xOffset, line->Point2.Y + yOffset,
 										line->Thickness);
 				pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* omitting net info */
-			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk line */
+			} else if ((currentLayer == 20) || (currentLayer == 21) || (currentLayer == 28) ) { /* a silk line or outline */
 				fputs("$DRAWSEGMENT\n", FP);
 				pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n",
 										line->Point1.X + xOffset, line->Point1.Y + yOffset,
@@ -568,7 +622,7 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 										kicadArcShape, copperStartX, copperStartY, xEnd, yEnd,
 										arc->Thickness);
 				pcb_fprintf(FP, "De %d 0 0 0 0\n", currentLayer); /* in theory, copper arcs unsupported by kicad, make angle = 0 */
-			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk arc */
+			} else if ((currentLayer == 20) || (currentLayer == 21) || (currentLayer == 28) ) { /* a silk arc or outline */
 				fputs("$DRAWSEGMENT\n", FP);
 				pcb_fprintf(FP, "Po %d %.0mk %.0mk %.0mk %.0mk %.0mk\n",
 										kicadArcShape, xStart, yStart, xEnd, yEnd,
