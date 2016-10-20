@@ -1,5 +1,9 @@
 put /local/pcb/mod {io_kicad}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/io_kicad/io_kicad.o $(PLUGDIR)/io_kicad/write.o @]
+put /local/pcb/mod/OBJS [@
+ $(PLUGDIR)/io_kicad/io_kicad.o
+ $(PLUGDIR)/io_kicad/write.o
+ $(PLUGDIR)/io_kicad/read.o
+@]
 #put /local/pcb/mod/YACC {$(PLUGDIR)/io_kicad/parse_y}
 #put /local/pcb/mod/LEX  {$(PLUGDIR)/io_kicad/parse_l}
 
