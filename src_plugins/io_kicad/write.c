@@ -91,6 +91,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	int physicalLayerCount = 0;
 	int kicadLayerCount = 0;
 	int silkLayerCount= 0;
+	int outlineLayerCount = 0;
 	int layer = 0;
 	int currentKicadLayer = 0;
 	int currentGroup = 0;
@@ -105,6 +106,8 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	int *bottomSilk;
 	int topSilkCount;
 	int *topSilk;
+	int outlineCount;
+	int *outlineLayers;
 
 	Coord LayoutXOffset;
 	Coord LayoutYOffset;
@@ -240,6 +243,15 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
 	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, topSilk, silkLayerCount);
 
+	/* here we count outline layers */
+	outlineLayerCount = pcb_layer_group_list(PCB_LYT_OUTLINE, NULL, 0);
+
+	/* figure out which pcb layers are outlines and make a list */
+	outlineLayers = malloc(sizeof(int) * outlineLayerCount);
+	outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
+	pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
+
+
 	/* we now proceed to write the bottom silk lines, arcs, text to the kicad legacy file, using layer 20 */
 	currentKicadLayer = 20; /* 20 is the bottom silk layer in kicad */
 	for (i = 0; i < bottomSilkCount; i++) /* write bottom silk lines, if any */
@@ -341,6 +353,39 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 			write_kicad_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[topLayers[i]]),
 									LayoutXOffset, LayoutYOffset, baseSExprIndent);
 		}
+
+	/* we now proceed to write the outline tracks to the kicad file, layer by layer */
+	currentKicadLayer = 28; /* 28 is the edge cuts layer in kicad */
+	if (outlineCount != 0) {
+		for (i = 0; i < outlineCount; i++) /* write top copper tracks, if any */
+			{
+				write_kicad_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[outlineLayers[i]]),
+										LayoutXOffset, LayoutYOffset, baseSExprIndent);
+				write_kicad_layout_arcs(FP, currentKicadLayer, &(PCB->Data->Layer[outlineLayers[i]]),
+										LayoutXOffset, LayoutYOffset, baseSExprIndent);
+			}
+	} else { /* no outline layer per se, export the board margins instead  - obviously some scope to reduce redundant code...*/
+				fprintf(FP, "%*s", baseSExprIndent, "");
+				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width 0.200mm))\n",
+										PCB->MaxWidth/2 - LayoutXOffset, PCB->MaxHeight/2 - LayoutYOffset,
+										PCB->MaxWidth/2 + LayoutXOffset, PCB->MaxHeight/2 - LayoutYOffset,
+										kicad_sexpr_layer_to_text(currentKicadLayer));
+				fprintf(FP, "%*s", baseSExprIndent, "");
+				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width 0.200mm))\n",
+										PCB->MaxWidth/2 + LayoutXOffset, PCB->MaxHeight/2 - LayoutYOffset,
+										PCB->MaxWidth/2 + LayoutXOffset, PCB->MaxHeight/2 + LayoutYOffset,
+										kicad_sexpr_layer_to_text(currentKicadLayer));
+				fprintf(FP, "%*s", baseSExprIndent, "");
+				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width 0.200mm))\n",
+										PCB->MaxWidth/2 + LayoutXOffset, PCB->MaxHeight/2 + LayoutYOffset,
+										PCB->MaxWidth/2 - LayoutXOffset, PCB->MaxHeight/2 + LayoutYOffset,
+										kicad_sexpr_layer_to_text(currentKicadLayer));
+				fprintf(FP, "%*s", baseSExprIndent, "");
+				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width 0.200mm))\n",
+										PCB->MaxWidth/2 - LayoutXOffset, PCB->MaxHeight/2 + LayoutYOffset,
+										PCB->MaxWidth/2 - LayoutXOffset, PCB->MaxHeight/2 - LayoutYOffset,
+										kicad_sexpr_layer_to_text(currentKicadLayer));
+	}
 
 	fputs("\n",FP); /* finished  tracks and vias */
 
@@ -537,7 +582,7 @@ int write_kicad_layout_tracks(FILE * FP, pcb_cardinal_t number,
 		*/
 		int localFlag = 0;
 		linelist_foreach(&layer->Line, &it, line) {
-			if (currentLayer < 16) { /* a copper line i.e. track */
+			if ((currentLayer < 16) || (currentLayer == 28)) { /* a copper line i.e. track, or an outline edge cut */
 				fprintf(FP, "%*s", indentation, "");
 				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 										line->Point1.X + xOffset, line->Point1.Y + yOffset,
@@ -601,7 +646,7 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
 			yEnd = boxResult->Y2 + yOffset; 
 			copperStartX = boxResult->X1 + xOffset;
 			copperStartY = boxResult->Y1 + yOffset; 
-			if (currentLayer < 16) { /* a copper arc, i.e. track, is unsupported by kicad, and will be exported as a line */
+			if ((currentLayer < 16) || (currentLayer == 28)) { /* a copper arc, i.e. track, or edge cut, is unsupported by kicad, and will be exported as a line */
 				fprintf(FP, "%*s", indentation, "");
 				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 										copperStartX, copperStartY, xEnd, yEnd,
