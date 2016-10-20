@@ -29,3 +29,5 @@
 #include <stdio.h>
 #include "global.h"
 #include "data.h"
+
+int io_kicad_read_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf_role_t settings_dest);

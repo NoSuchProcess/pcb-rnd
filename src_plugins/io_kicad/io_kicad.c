@@ -28,6 +28,7 @@
 #include "plugins.h"
 #include "plug_io.h"
 #include "write.h"
+#include "read.h"
 
 static plug_io_t io_kicad;
 
@@ -55,7 +56,7 @@ pcb_uninit_t hid_io_kicad_init(void)
 	/* register the IO hook */
 	io_kicad.plugin_data = NULL;
 	io_kicad.fmt_support_prio = io_kicad_fmt;
-	io_kicad.parse_pcb = NULL;
+	io_kicad.parse_pcb = io_kicad_read_pcb;
 	io_kicad.parse_element = NULL;
 	io_kicad.parse_font = NULL;
 	io_kicad.write_buffer = io_kicad_write_buffer;
