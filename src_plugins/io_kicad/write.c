@@ -95,6 +95,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	int layer = 0;
 	int currentKicadLayer = 0;
 	int currentGroup = 0;
+	Coord outlineThickness = PCB_MIL_TO_COORD(10); 
 
 	int bottomCount;
 	int *bottomLayers;
@@ -357,7 +358,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	/* we now proceed to write the outline tracks to the kicad file, layer by layer */
 	currentKicadLayer = 28; /* 28 is the edge cuts layer in kicad */
 	if (outlineCount != 0) {
-		for (i = 0; i < outlineCount; i++) /* write top copper tracks, if any */
+		for (i = 0; i < outlineCount; i++) /* write outline tracks, if any */
 			{
 				write_kicad_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[outlineLayers[i]]),
 										LayoutXOffset, LayoutYOffset, baseSExprIndent);
@@ -366,25 +367,25 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 			}
 	} else { /* no outline layer per se, export the board margins instead  - obviously some scope to reduce redundant code...*/
 				fprintf(FP, "%*s", baseSExprIndent, "");
-				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width 0.200mm))\n",
+				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 										PCB->MaxWidth/2 - LayoutXOffset, PCB->MaxHeight/2 - LayoutYOffset,
 										PCB->MaxWidth/2 + LayoutXOffset, PCB->MaxHeight/2 - LayoutYOffset,
-										kicad_sexpr_layer_to_text(currentKicadLayer));
+										kicad_sexpr_layer_to_text(currentKicadLayer), outlineThickness);
 				fprintf(FP, "%*s", baseSExprIndent, "");
-				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width 0.200mm))\n",
+				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 										PCB->MaxWidth/2 + LayoutXOffset, PCB->MaxHeight/2 - LayoutYOffset,
 										PCB->MaxWidth/2 + LayoutXOffset, PCB->MaxHeight/2 + LayoutYOffset,
-										kicad_sexpr_layer_to_text(currentKicadLayer));
+										kicad_sexpr_layer_to_text(currentKicadLayer), outlineThickness);
 				fprintf(FP, "%*s", baseSExprIndent, "");
-				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width 0.200mm))\n",
+				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 										PCB->MaxWidth/2 + LayoutXOffset, PCB->MaxHeight/2 + LayoutYOffset,
 										PCB->MaxWidth/2 - LayoutXOffset, PCB->MaxHeight/2 + LayoutYOffset,
-										kicad_sexpr_layer_to_text(currentKicadLayer));
+										kicad_sexpr_layer_to_text(currentKicadLayer), outlineThickness);
 				fprintf(FP, "%*s", baseSExprIndent, "");
-				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width 0.200mm))\n",
+				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 										PCB->MaxWidth/2 - LayoutXOffset, PCB->MaxHeight/2 + LayoutYOffset,
 										PCB->MaxWidth/2 - LayoutXOffset, PCB->MaxHeight/2 - LayoutYOffset,
-										kicad_sexpr_layer_to_text(currentKicadLayer));
+										kicad_sexpr_layer_to_text(currentKicadLayer), outlineThickness);
 	}
 
 	fputs("\n",FP); /* finished  tracks and vias */
@@ -450,6 +451,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP)
 	free(topLayers);
 	free(topSilk);
 	free(bottomSilk);
+	free(outlineLayers);
 	return (STATUS_OK);
 }
 
