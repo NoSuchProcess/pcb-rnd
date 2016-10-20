@@ -1,0 +1,12 @@
+put /local/pcb/mod {lib_gensexpr}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/lib_gensexpr/lib_gensexpr.o
+	$(SRC_3RD_DIR)/gensexpr/gsxl.o
+	$(SRC_3RD_DIR)/gensexpr/gsx_parse.o
+@]
+
+switch /local/pcb/lib_gensexpr/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

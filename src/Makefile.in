@@ -213,6 +213,9 @@ PLUGDIR=../src_plugins
 # plugin source install - so that pcb-rnd runs from source properly
 PLUGIDIR=plugins
 
+# src_3rd dir for the lib_ wrapper plugins
+SRC_3RD_DIR=../src_3rd
+
 @/local/pcb/TOPVARS@
 OBJS=@/local/pcb/OBJS@
 OBJS_C99=@/local/pcb/OBJS_C99@

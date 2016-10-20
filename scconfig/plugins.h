@@ -1,3 +1,5 @@
+plugin_def("lib_gensexpr",    "#s-expression library",     sdisable, 0)
+
 plugin_header("\nFeature plugins:\n")
 plugin_def("gpmi",            "GPMI scripting",            sbuildin, 1)
 plugin_def("diag",            "diagnostic acts. for devs", sdisable, 1)
