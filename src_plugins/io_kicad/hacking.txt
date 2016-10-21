@@ -51,6 +51,10 @@ node pointer to the  0th argument of the command:
 
 static int kicad_parse_something(read_state_t *st, gsxl_node_t *args)
 
+If a subtree processor returns non-zero, the parsing shall stop and the
+caller function shall return non-zero immediately. This way we can undo
+the recursion and cancel parsing.
+
 There are two kind of subtree processors: static and dynamic. A static
 subtree processor expects a specific subtree of arguments. This means both
 the number and the exact order(!) of the subtrees are fixed. The processor
