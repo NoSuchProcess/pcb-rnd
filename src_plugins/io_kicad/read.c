@@ -355,23 +355,12 @@ static int kicad_parse_layer(read_state_t *st, gsxl_node_t *subtree)
 
 /* kicad_pcb  parse (layers  )  - either board layer defintions, or module pad/via layer defs */
 static int kicad_parse_layers(read_state_t *st, gsxl_node_t *subtree)
-{                                            /*  we assume no more than 4 layers described for an element, could be more elegant with iterator */
+{
+	gsxl_node_t *n;
+	int i;
 		if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) { /* test if deeper in tree than layer definitions for entire board */  
-			if (subtree != NULL && subtree->str != NULL) {
-				pcb_printf("layers arg: '%s'\n", subtree->str);
-				if (subtree->children != NULL && subtree->children->str != NULL) {
-					pcb_printf("layer1: '%s'\n", (subtree->children->str));
-					if (subtree->children->next != NULL && subtree->children->next->str != NULL) {
-						pcb_printf("layer2: '%s'\n", (subtree->children->next->str));
-						if (subtree->children->next->next != NULL && subtree->children->next->next->str != NULL) {
-							pcb_printf("layer3: '%s'\n", (subtree->children->next->next->str));
-							if (subtree->children->next->next->next != NULL && subtree->children->next->next->next->str != NULL) {
-								pcb_printf("layer4: '%s'\n", (subtree->children->next->next->next->str));
-							}
-						}
-					}
-				}
-			}
+			for(n = subtree,i = 0; n != NULL; n = n->next, i++)
+				pcb_printf("layer %d: '%s'\n", i, n->str);
 			return 0;
 		} else { /* we are just below the top level or root of the tree, so this must be a layer definitions section */
 			printf("Probably in the layer definition block, need an iterator...\n"); /* need to assemble the layer list here*/
