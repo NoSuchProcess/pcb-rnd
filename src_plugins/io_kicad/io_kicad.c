@@ -40,9 +40,8 @@ int io_kicad_fmt(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
 	if ((strcmp(fmt, "kicad") != 0) ||
 		((typ & (~(PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER | PCB_IOT_PCB))) != 0))
 		return 0;
-	if (wr)
-		return 100;
-	return 0; /* no read support yet */
+
+	return 100;
 }
 
 static void hid_io_kicad_uninit(void)
