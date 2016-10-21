@@ -97,6 +97,17 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 	return -1;
 }
 
+/* kicad_pcb/gr_text */
+static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
+{
+	if (subtree->str != NULL) {
+		int ver = atoi(subtree->str);
+		printf("gr_text: '%s'\n", subtree->str);
+		return 0;
+	}
+	return -1;
+}
+
 /* Parse a board from &st->dom into st->PCB */
 static int kicad_parse_pcb(read_state_t *st)
 {
@@ -111,7 +122,12 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"net",        kicad_parse_nop},
 		{"net_class",  kicad_parse_nop},
 		{"module",     kicad_parse_nop},
-		{"gr_text",    kicad_parse_nop},
+		{"via",     kicad_parse_nop},
+		{"segment",     kicad_parse_nop},
+		{"zone",     kicad_parse_nop},
+		{"gr_line",     kicad_parse_nop},
+		{"gr_arc",     kicad_parse_nop},
+		{"gr_text",    kicad_parse_gr_text},
 		{NULL, NULL}
 	};
 
