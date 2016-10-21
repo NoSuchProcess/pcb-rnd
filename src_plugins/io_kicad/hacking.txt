@@ -79,4 +79,5 @@ links, no_connects and area. Those functions will get links' ->children,
 no_connects' ->children and area's ->children as args respectively.
 
 
-
+How to batch-test the loader:
+echo 'LoadFrom(Layout, foo.kicad_pcb, kicad)'  | ./pcb-rnd --gui batch
