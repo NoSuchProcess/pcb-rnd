@@ -247,11 +247,10 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 		if (subtree->next->next->next->next != NULL) {
 			kicad_parse_layer(st, subtree->next->next->next->next);
 		}
-/*		if (subtree->next->next->next->next->next != NULL) {
- *			kicad_parse_net(st, subtree->next->next->next->next->next);
- *		}
- *   we don't really care about nets for trackwork, unlike kicad
- */
+		if (subtree->next->next->next->next->next != NULL) {
+			kicad_parse_net(st, subtree->next->next->next->next->next);
+		}
+/*   although we don't really care about nets for trackwork, unlike kicad */
 		return 0;
 	}
 	return -1;
@@ -444,13 +443,23 @@ static int kicad_parse_tstamp(read_state_t *st, gsxl_node_t *subtree)
 /* kicad_pcb  parse (net  ) ;   */
 static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 {
-		if (subtree != NULL && subtree->str != NULL) {
-			pcb_printf("arg: '%s'\n", subtree->str);
+		if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) { /* test if deeper in tree than net definitions for entire board */		
+			if (subtree != NULL && subtree->str != NULL) {
+				pcb_printf("arg: '%s'\n", subtree->str);
+			}
+			if (subtree->children != NULL && subtree->children->str != NULL) {
+				pcb_printf("net: '%s'\n", (subtree->children->str));
+			}
+			return 0;
+		} else {
+			if (subtree != NULL && subtree->str != NULL) {
+				pcb_printf("net definition: '%s'\n", subtree->str);
+			}
+			if (subtree->children != NULL && subtree->children->str != NULL) {
+				pcb_printf("and the net is: '%s'\n", (subtree->children->str));
+			}
+			return 0;
 		}
-		if (subtree->children != NULL && subtree->children->str != NULL) {
-			pcb_printf("net: '%s'\n", (subtree->children->str));
-		}
-		return 0;
 }
 
 
@@ -465,7 +474,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"page",       kicad_parse_nop},
 		{"layers",     kicad_parse_layers}, /* board layer defs, or, module pad/pin layers, or via layers*/
 		{"setup",      kicad_parse_nop},
-		{"net",        kicad_parse_nop}, /* net labels if child of root, otherwise net attribute of element */
+		{"net",        kicad_parse_net}, /* net labels if child of root, otherwise net attribute of element */
 		{"net_class",  kicad_parse_nop},
 		{"module",     kicad_parse_nop}, /* footprints */
 		{"gr_line",     kicad_parse_gr_line},
@@ -485,11 +494,11 @@ static int kicad_parse_pcb(read_state_t *st)
 
 		{"font",    kicad_parse_nop}, /* for font attr lists */
 		{"size",    kicad_parse_nop}, /* used for font char size */
+		{"effects",    kicad_parse_effects}, /* mostly for fonts in modules*/
+		{"justify",    kicad_parse_justify}, /* mostly for mirrored text on the bottom layer */
 
 		{"at",    kicad_parse_at},
-		{"effects",    kicad_parse_effects}, /* mpstly for fonts in modules*/
 		{"layer",    kicad_parse_layer},
-		{"justify",    kicad_parse_justify},
 		{"xy",    kicad_parse_nop}, /* for polygonal zone vertices*/
 		{"hatch",    kicad_parse_nop},  /* a polygonal zone fill type*/
 		{"descr",    kicad_parse_nop}, /* for modules, i.e. TO220 */
