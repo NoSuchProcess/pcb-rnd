@@ -79,6 +79,7 @@ static int kicad_foreach_dispatch(read_state_t *st, gsxl_node_t *tree, const dis
 	return 0; /* success */
 }
 
+
 /* No-op: ignore the subtree */
 static int kicad_parse_nop(read_state_t *st, gsxl_node_t *subtree)
 {
@@ -97,11 +98,11 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 	return -1;
 }
 
+static int kicad_parse_pcb_element(read_state_t *st);
 static int kicad_parse_at(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_start(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_end(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_thickness(read_state_t *st, gsxl_node_t *subtree);
-static int kicad_parse_layer(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_layers(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_width(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_angle(read_state_t *st, gsxl_node_t *subtree);
@@ -110,11 +111,16 @@ static int kicad_parse_size(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_drill(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_tstamp(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_layer(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_effects(read_state_t *st, gsxl_node_t *subtree);
 
 /* kicad_pcb/gr_text */
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
 	if (subtree->str != NULL) {
+
+		printf("gr_text element being parsed: '%s'\n", subtree->str);
+		/*kicad_parse_pcb_element(subtree);*/
 
 		printf("gr_text: '%s'\n", subtree->str);
 
@@ -324,6 +330,18 @@ static int kicad_parse_width(read_state_t *st, gsxl_node_t *subtree)
 		return 0;
 }
 
+/* kicad_pcb  parse (effects  ) */
+static int kicad_parse_effects(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("effects: '%s'\n", (subtree->children->str));
+		}
+		return 0;
+}
+
 /* kicad_pcb  parse (layer  ) */
 static int kicad_parse_layer(read_state_t *st, gsxl_node_t *subtree)
 {
@@ -336,25 +354,30 @@ static int kicad_parse_layer(read_state_t *st, gsxl_node_t *subtree)
 		return 0;
 }
 
-/* kicad_pcb  parse (layers  )  - we assume no more than 4 layers described for now, could be more elegant  */
+/* kicad_pcb  parse (layers  )  - either board layer defintions, or module pad/via layer defs */
 static int kicad_parse_layers(read_state_t *st, gsxl_node_t *subtree)
-{
-		if (subtree != NULL && subtree->str != NULL) {
-			pcb_printf("arg: '%s'\n", subtree->str);
-			if (subtree->children != NULL && subtree->children->str != NULL) {
-				pcb_printf("layer1: '%s'\n", (subtree->children->str));
-				if (subtree->children->next != NULL && subtree->children->next->str != NULL) {
-					pcb_printf("layer2: '%s'\n", (subtree->children->next->str));
-					if (subtree->children->next->next != NULL && subtree->children->next->next->str != NULL) {
-						pcb_printf("layer3: '%s'\n", (subtree->children->next->next->str));
-						if (subtree->children->next->next->next != NULL && subtree->children->next->next->next->str != NULL) {
-							pcb_printf("layer4: '%s'\n", (subtree->children->next->next->next->str));
+{                                            /*  we assume no more than 4 layers described for an element, could be more elegant with iterator */
+		if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) { /* test if deeper in tree than layer definitions for entire board */  
+			if (subtree != NULL && subtree->str != NULL) {
+				pcb_printf("layers arg: '%s'\n", subtree->str);
+				if (subtree->children != NULL && subtree->children->str != NULL) {
+					pcb_printf("layer1: '%s'\n", (subtree->children->str));
+					if (subtree->children->next != NULL && subtree->children->next->str != NULL) {
+						pcb_printf("layer2: '%s'\n", (subtree->children->next->str));
+						if (subtree->children->next->next != NULL && subtree->children->next->next->str != NULL) {
+							pcb_printf("layer3: '%s'\n", (subtree->children->next->next->str));
+							if (subtree->children->next->next->next != NULL && subtree->children->next->next->next->str != NULL) {
+								pcb_printf("layer4: '%s'\n", (subtree->children->next->next->next->str));
+							}
 						}
 					}
 				}
 			}
+			return 0;
+		} else { /* we are just below the top level or root of the tree, so this must be a layer definitions section */
+			printf("Probably in the layer definition block, need an iterator...\n"); /* need to assemble the layer list here*/
+			return 0;
 		}
-		return 0;
 }
 
 
@@ -430,6 +453,7 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 		return 0;
 }
 
+
 /* Parse a board from &st->dom into st->PCB */
 static int kicad_parse_pcb(read_state_t *st)
 {
@@ -439,23 +463,38 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"host",       kicad_parse_nop},
 		{"general",    kicad_parse_nop},
 		{"page",       kicad_parse_nop},
-		{"layers",     kicad_parse_nop},
+		{"layers",     kicad_parse_layers}, /* board layer defs, or, module pad/pin layers, or via layers*/
 		{"setup",      kicad_parse_nop},
-		{"net",        kicad_parse_nop},
+		{"net",        kicad_parse_nop}, /* net labels if child of root, otherwise net attribute of element */
 		{"net_class",  kicad_parse_nop},
-		{"module",     kicad_parse_nop},
-		{"via",     kicad_parse_via},
-		{"segment",     kicad_parse_segment},
-		{"zone",     kicad_parse_nop},
+		{"module",     kicad_parse_nop}, /* footprints */
 		{"gr_line",     kicad_parse_gr_line},
 		{"gr_arc",     kicad_parse_gr_arc},
-		/* text related parsing */
 		{"gr_text",    kicad_parse_gr_text},
-		/*{"at",    kicad_parse_at},
-		{"effects",    kicad_parse_effects},
+		{"via",     kicad_parse_via},
+		{"segment",     kicad_parse_segment},
+		{"zone",     kicad_parse_nop}, /* polygonal zones*/
+
+	/* not children of root */
+		{"fp_line",     kicad_parse_nop},
+		{"fp_arc",     kicad_parse_nop},
+		{"fp_circle",     kicad_parse_nop},
+		{"fp_text",    kicad_parse_nop},
+
+		{"pad",    kicad_parse_nop}, /* for modules, encompasses pad, pin  */
+
+		{"font",    kicad_parse_nop}, /* for font attr lists */
+		{"size",    kicad_parse_nop}, /* used for font char size */
+
+		{"at",    kicad_parse_at},
+		{"effects",    kicad_parse_effects}, /* mpstly for fonts in modules*/
 		{"layer",    kicad_parse_layer},
 		{"justify",    kicad_parse_justify},
-		{"tstamp",    kicad_parse_tstamp},*/
+		{"xy",    kicad_parse_nop}, /* for polygonal zone vertices*/
+		{"hatch",    kicad_parse_nop},  /* a polygonal zone fill type*/
+		{"descr",    kicad_parse_nop}, /* for modules, i.e. TO220 */
+		{"tedit",    kicad_parse_nop}, /* not really used, time stamp related */
+		{"tstamp",    kicad_parse_tstamp}, /* not really used */
 		{NULL, NULL}
 	};
 
