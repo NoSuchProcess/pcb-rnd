@@ -65,7 +65,21 @@ static int kicad_dispatch(read_state_t *st, gsxl_node_t *subtree, const dispatch
 	return -1;
 }
 
-/* Ignore the subtree */
+/* Take each children of tree and execute them using kicad_dispatch
+   Useful for procssing nodes that may host various subtrees of different
+   nodes ina  flexible way. Return non-zero if any subtree processor failed. */
+static int kicad_foreach_dispatch(read_state_t *st, gsxl_node_t *tree, const dispatch_t *disp_table)
+{
+	gsxl_node_t *n;
+
+	for(n = tree; n != NULL; n = n->next)
+		if (kicad_dispatch(st, n, disp_table) != 0)
+			return -1;
+
+	return 0; /* success */
+}
+
+/* No-op: ignore the subtree */
 static int kicad_parse_nop(read_state_t *st, gsxl_node_t *subtree)
 {
 	return 0;
@@ -97,6 +111,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"net",        kicad_parse_nop},
 		{"net_class",  kicad_parse_nop},
 		{"module",     kicad_parse_nop},
+		{"gr_text",    kicad_parse_nop},
 		{NULL, NULL}
 	};
 
@@ -104,13 +119,9 @@ static int kicad_parse_pcb(read_state_t *st)
 	if ((st->dom.root->str == NULL) || (strcmp(st->dom.root->str, "kicad_pcb") != 0))
 		return -1; 
 
-	/* Call the corresponding subtree parser for each child node; if any of them
-	   fail, parse fails */
-	for(n = st->dom.root->children; n != NULL; n = n->next)
-		if (kicad_dispatch(st, n, disp) != 0)
-			return -1;
-
-	return 0; /* success */
+	/* Call the corresponding subtree parser for each child node of the root
+	   node; if any of them fail, parse fails */
+	return kicad_foreach_dispatch(st, st->dom.root->children, disp);
 }
 
 int io_kicad_read_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf_role_t settings_dest)
