@@ -97,15 +97,337 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 	return -1;
 }
 
+static int kicad_parse_at(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_start(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_end(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_thickness(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_layer(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_layers(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_width(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_angle(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_justify(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_size(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_drill(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_tstamp(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree);
+
 /* kicad_pcb/gr_text */
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
 	if (subtree->str != NULL) {
-		int ver = atoi(subtree->str);
+
 		printf("gr_text: '%s'\n", subtree->str);
+
+		if (subtree->next != NULL) {
+			kicad_parse_at(st, subtree->next);
+		}
+		if (subtree->next->next != NULL) {
+			kicad_parse_layer(st, subtree->next->next);
+		}
+		if (subtree->next->next->next != NULL) {
+			kicad_parse_tstamp(st, subtree->next->next->next);
+		}
 		return 0;
 	}
 	return -1;
+}
+
+/* kicad_pcb/gr_line */
+static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
+{
+	if (subtree->str != NULL) {
+
+		printf("gr_line: '%s'\n", subtree->str);
+
+		if (subtree != NULL) {
+			kicad_parse_start(st, subtree);
+		}
+		if (subtree->next != NULL) {
+			kicad_parse_end(st, subtree->next);
+		}
+		if (subtree->next->next->next->next == NULL) {
+			if (subtree->next->next != NULL) {
+				kicad_parse_layer(st, subtree->next->next);
+			}
+			if (subtree->next->next->next != NULL) {
+				kicad_parse_width(st, subtree->next->next->next);
+			}
+		} else {
+			if (subtree->next->next != NULL) {
+				kicad_parse_angle(st, subtree->next->next);
+			}
+			if (subtree->next->next->next != NULL) {
+				kicad_parse_layer(st, subtree->next->next->next);
+			}
+			if (subtree->next->next->next->next != NULL) {
+				kicad_parse_width(st, subtree->next->next->next->next);
+			}
+		}
+		return 0;
+	}
+	return -1;
+}
+
+/* kicad_pcb/gr_arc */
+static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
+{
+	if (subtree->str != NULL) {
+
+		printf("gr_arc: '%s'\n", subtree->str);
+
+		if (subtree != NULL) {
+			kicad_parse_start(st, subtree);
+		}
+		if (subtree->next != NULL) {
+			kicad_parse_end(st, subtree->next);
+		}
+		if (subtree->next->next != NULL) {
+			kicad_parse_angle(st, subtree->next->next);
+		}
+		if (subtree->next->next->next != NULL) {
+			kicad_parse_layer(st, subtree->next->next->next);
+		}
+		if (subtree->next->next->next->next != NULL) {
+			kicad_parse_width(st, subtree->next->next->next->next);
+		}
+
+		return 0;
+	}
+	return -1;
+}
+
+/* kicad_pcb/via */
+static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
+{
+	if (subtree->str != NULL) {
+
+		printf("via: '%s'\n", subtree->str);
+
+		if (subtree != NULL) {
+			kicad_parse_at(st, subtree);
+		}
+		if (subtree->next != NULL) {
+			kicad_parse_size(st, subtree->next);
+		}
+		if (subtree->next->next != NULL) {
+			kicad_parse_layers(st, subtree->next->next);
+		}
+/*		if (subtree->next->next->next->next != NULL) {
+ *			kicad_parse_net(st, subtree->next->next->next->next);
+ *		}
+ *  we don't need net info for a via
+ */
+		return 0;
+	}
+	return -1;
+}
+
+/* kicad_pcb/segment */
+static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
+{
+	if (subtree->str != NULL) {
+
+		printf("segment: '%s'\n", subtree->str);
+
+		if (subtree->next != NULL) {
+			kicad_parse_start(st, subtree->next);
+		}
+		if (subtree->next->next != NULL) {
+			kicad_parse_end(st, subtree->next->next);
+		}
+		if (subtree->next->next->next != NULL) {
+			kicad_parse_width(st, subtree->next->next->next);
+		}
+		if (subtree->next->next->next->next != NULL) {
+			kicad_parse_layer(st, subtree->next->next->next->next);
+		}
+/*		if (subtree->next->next->next->next->next != NULL) {
+ *			kicad_parse_net(st, subtree->next->next->next->next->next);
+ *		}
+ *   we don't really care about nets for trackwork, unlike kicad
+ */
+		return 0;
+	}
+	return -1;
+}
+
+
+/* kicad_pcb  parse (at  ) */
+static int kicad_parse_at(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("at   x: '%s'\n", (subtree->children->str));
+		}
+		if (subtree->children->next != NULL && subtree->children->next->str != NULL) {
+			pcb_printf("at   y: '%s'\n", (subtree->children->next->str));
+		}
+		if (subtree->children->next->next != NULL && subtree->children->next->next->str != NULL) {
+			pcb_printf("rotation: '%s'\n", (subtree->children->next->next->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (start  ) */
+static int kicad_parse_start(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("start at   x1: '%s'\n", (subtree->children->str));
+		}
+		if (subtree->children->next != NULL && subtree->children->next->str != NULL) {
+			pcb_printf("start at   y1: '%s'\n", (subtree->children->next->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (end  ) */
+static int kicad_parse_end(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("end at   x2: '%s'\n", (subtree->children->str));
+		}
+		if (subtree->children->next != NULL && subtree->children->next->str != NULL) {
+			pcb_printf("end at   y2 '%s'\n", (subtree->children->next->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (thickness  ) */
+static int kicad_parse_thickness(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("thickness: '%s'\n", (subtree->children->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (width  ) */
+static int kicad_parse_width(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("width: '%s'\n", (subtree->children->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (layer  ) */
+static int kicad_parse_layer(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("layer: '%s'\n", (subtree->children->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (layers  )  - we assume no more than 4 layers described for now, could be more elegant  */
+static int kicad_parse_layers(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+			if (subtree->children != NULL && subtree->children->str != NULL) {
+				pcb_printf("layer1: '%s'\n", (subtree->children->str));
+				if (subtree->children->next != NULL && subtree->children->next->str != NULL) {
+					pcb_printf("layer2: '%s'\n", (subtree->children->next->str));
+					if (subtree->children->next->next != NULL && subtree->children->next->next->str != NULL) {
+						pcb_printf("layer3: '%s'\n", (subtree->children->next->next->str));
+						if (subtree->children->next->next->next != NULL && subtree->children->next->next->next->str != NULL) {
+							pcb_printf("layer4: '%s'\n", (subtree->children->next->next->next->str));
+						}
+					}
+				}
+			}
+		}
+		return 0;
+}
+
+
+/* kicad_pcb  parse (angle  ) */
+static int kicad_parse_angle(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("angle: '%s'\n", (subtree->children->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (justify  ) */
+static int kicad_parse_justify(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("justification: '%s'\n", (subtree->children->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (size  ) */
+static int kicad_parse_size(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("size: '%s'\n", (subtree->children->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (drill  ) */
+static int kicad_parse_drill(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("drill: '%s'\n", (subtree->children->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (tstamp  ) ;   not really used*/
+static int kicad_parse_tstamp(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("tstamp: '%s'\n", (subtree->children->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (net  ) ;   */
+static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("net: '%s'\n", (subtree->children->str));
+		}
+		return 0;
 }
 
 /* Parse a board from &st->dom into st->PCB */
@@ -122,12 +444,18 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"net",        kicad_parse_nop},
 		{"net_class",  kicad_parse_nop},
 		{"module",     kicad_parse_nop},
-		{"via",     kicad_parse_nop},
-		{"segment",     kicad_parse_nop},
+		{"via",     kicad_parse_via},
+		{"segment",     kicad_parse_segment},
 		{"zone",     kicad_parse_nop},
-		{"gr_line",     kicad_parse_nop},
-		{"gr_arc",     kicad_parse_nop},
+		{"gr_line",     kicad_parse_gr_line},
+		{"gr_arc",     kicad_parse_gr_arc},
+		/* text related parsing */
 		{"gr_text",    kicad_parse_gr_text},
+		/*{"at",    kicad_parse_at},
+		{"effects",    kicad_parse_effects},
+		{"layer",    kicad_parse_layer},
+		{"justify",    kicad_parse_justify},
+		{"tstamp",    kicad_parse_tstamp},*/
 		{NULL, NULL}
 	};
 
