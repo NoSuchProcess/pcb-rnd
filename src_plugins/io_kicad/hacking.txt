@@ -1,0 +1,82 @@
+Parser
+~~~~~~
+io_kicad_read_pcb() is the main entry point for parsing a board. It loads
+the s-expression from the file and using gensexpr it parses it into a
+DOM (Document Object Model). Each node of the DOM is a gsxl_node_t, which
+has an ->str field for the text data of the node, a ->parent field pointing
+to the parent node, a ->children field pointing to the first child node and
+a ->next field pointing to the next sibling node (with the same parent).
+
+An expression like this:
+  (general
+    (links 0)
+    (no_connects 0)
+    (area 1 2 3 4)
+  ...
+  )
+
+becomes a subtree like this (levels of the tree is represented by
+indentation):
+
+ general
+  links
+   0
+  no_connects
+   0
+  area
+   1
+   2
+   3
+   4
+  ...
+
+So that general's ->children is links; links' ->next is no_connects;
+no_connects' ->next is area; area's ->next is NULL. In the kicad
+parser the terminology is that the root of a subtree is the _command_
+and its children are its _arguments_. E.g. when processing the
+area node, the command is "area" it's arguments are "1", "2", "3" and "4";
+when processing the "general" subtree, "area" is the 2nd argument (arguments
+are counted from 0).
+
+Once the tree is built in memory, a recursive tree walk is started by
+calling kicad_parse_pcb() on the root of the tree. This function should
+evaluate the children of the root node and call the corresponding subtree
+processor on each. All parser function should be passed the context:
+read_state_t *st. The context holds all relevant information about the
+session so we can avoid global variables (or static local variables) and
+can keep the code reentrant.
+
+Subtree processors have unified prototype: they get the context and the
+node pointer to the  0th argument of the command:
+
+static int kicad_parse_something(read_state_t *st, gsxl_node_t *args)
+
+There are two kind of subtree processors: static and dynamic. A static
+subtree processor expects a specific subtree of arguments. This means both
+the number and the exact order(!) of the subtrees are fixed. The processor
+for the "links" node in the above example has a static subtree processor
+because "links" will always have only one argument. Since there is a
+fixed amount of arguments, a static subtree processor uses the args->next
+or args->next->next or args->next->next->next, etc for accessing the 0th,
+1st or 2nd, etc arguments, respectively.
+
+A dynamic subtree processor has an unknown amount of arguments but the
+set of possible arguments are known - just their order and number are
+not. For example a "module" is a dynamic subtree because it may have 0 or
+more fp_line, pad, etc. children. A dynamic subtree processor needs to
+iterate through all its arguments using a loop; for each argument it needs
+to look at the ->str field of the argument to decide how to process
+that subtree (e.g. if it's an "fp_line" or a "pad").
+
+To ease this, function kicad_foreach_dispatch() is provided. It iterates
+over all the ->next fields of its "tree" argument and calls a function
+for them according to a dispatcher table passed. The dispatcher table has
+2 columns, node-name and function-to-call. kicad_parse_pcb() demonstrates
+how to set up a table. If the node "general" in the above example
+is to be processed this way, general's ->children is passed as tree to
+the kicad_foreach_dispatch, with a table that has a function for at least
+links, no_connects and area. Those functions will get links' ->children,
+no_connects' ->children and area's ->children as args respectively.
+
+
+
