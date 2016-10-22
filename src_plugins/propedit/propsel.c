@@ -266,7 +266,7 @@ static void set_arc_cb(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc)
 	    ChangeObjectAngle(PCB_TYPE_ARC, layer, arc, NULL, 1, st->d, st->d_absolute)) DONE;
 }
 
-static void set_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *text)
+static void set_text_cb_any(void *ctx, PCBType *pcb, int type, void *layer_or_element, TextType *text)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 7;
@@ -280,10 +280,10 @@ static void set_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *tex
 	}
 
 	if (st->d_valid && (strcmp(pn, "scale") == 0) &&
-	    ChangeObjectSize(PCB_TYPE_TEXT, layer, text, NULL, PCB_MIL_TO_COORD(st->d), st->d_absolute)) DONE;
+	    ChangeObjectSize(type, layer_or_element, text, text, PCB_MIL_TO_COORD(st->d), st->d_absolute)) DONE;
 
 	if ((strcmp(pn, "string") == 0) &&
-	    (old = ChangeObjectName(PCB_TYPE_TEXT, layer, text, NULL, pcb_strdup(st->value)))) {
+	    (old = ChangeObjectName(type, layer_or_element, text, NULL, pcb_strdup(st->value)))) {
 		free(old);
 		DONE;
 	}
@@ -298,10 +298,16 @@ static void set_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *tex
 		}
 		else
 			delta = st->d;
-		if (RotateObject(PCB_TYPE_TEXT, layer, text, text, text->X, text->Y, delta) != NULL)
+		if (RotateObject(type, layer_or_element, text, text, text->X, text->Y, delta) != NULL)
 			DONE;
 	}
 }
+
+static void set_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *text)
+{
+	set_text_cb_any(ctx, pcb, PCB_TYPE_TEXT, layer, text);
+}
+
 
 static void set_poly_cb(void *ctx, PCBType *pcb, LayerType *layer, PolygonType *poly)
 {
@@ -341,14 +347,7 @@ static void set_earc_cb(void *ctx, PCBType *pcb, ElementType *element, ArcType *
 
 static void set_etext_cb(void *ctx, PCBType *pcb, ElementType *element, TextType *text)
 {
-	set_ctx_t *st = (set_ctx_t *)ctx;
-
-	set_chk_skip(st, text);
-
-	if (st->is_attr) {
-		set_attr(st, &text->Attributes);
-		return;
-	}
+	set_text_cb_any(ctx, pcb, PCB_TYPE_ELEMENT_NAME, element, text);
 }
 
 static void set_epin_cb(void *ctx, PCBType *pcb, ElementType *element, PinType *pin)
@@ -459,7 +458,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 		NULL,
 		MAYBE_ATTR(set_eline_cb),
 		MAYBE_ATTR(set_earc_cb),
-		MAYBE_ATTR(set_etext_cb),
+		MAYBE_PROP(0, "p/text/", set_etext_cb),
 		MAYBE_PROP(0, "p/pin/", set_epin_cb),
 		MAYBE_PROP(0, "p/pad/", set_epad_cb),
 		MAYBE_PROP(0, "p/via/", set_via_cb)
