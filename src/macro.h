@@ -89,6 +89,21 @@
 #define	ASSIGN_FLAG(F,V,P)	((P)->Flags.f = ((P)->Flags.f & (~(F))) | ((V) ? (F) : 0))
 #define TEST_FLAGS(F,P)         (((P)->Flags.f & (F)) == (F) ? 1 : 0)
 
+typedef enum {
+	PCB_CHGFLG_CLEAR,
+	PCB_CHGFLG_SET,
+	PCB_CHGFLG_TOGGLE
+} pcb_change_flag_t;
+
+#define CHANGE_FLAG(how, F, P) \
+do { \
+	switch(how) { \
+		case PCB_CHGFLG_CLEAR:  CLEAR_FLAG(F, P); break; \
+		case PCB_CHGFLG_SET:    SET_FLAG(F, P); break; \
+		case PCB_CHGFLG_TOGGLE: TOGGLE_FLAG(F, P); break; \
+	} \
+} while(0)
+
 #define FLAGS_EQUAL(F1,F2)	(memcmp (&F1, &F2, sizeof(FlagType)) == 0)
 
 #define THERMFLAG(L)		(0xf << (4 *((L) % 2)))
