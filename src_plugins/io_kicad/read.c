@@ -473,6 +473,18 @@ static int kicad_parse_element_net(read_state_t *st, gsxl_node_t *subtree)
 		return -1;
 }
 
+static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
+{
+	static const dispatch_t disp[] = { /* possible children of a module node */
+		{"fp_line",    kicad_parse_nop},
+		{"fp_arc",     kicad_parse_nop},
+		{"fp_circle",  kicad_parse_nop},
+		{"fp_text",    kicad_parse_nop},
+		{NULL, NULL}
+	};
+
+	return kicad_foreach_dispatch(st, subtree, disp);
+}
 
 /* Parse a board from &st->dom into st->PCB */
 static int kicad_parse_pcb(read_state_t *st)
@@ -487,19 +499,13 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"setup",      kicad_parse_nop},
 		{"net",        kicad_parse_net}, /* net labels if child of root, otherwise net attribute of element */
 		{"net_class",  kicad_parse_nop},
-		{"module",     kicad_parse_nop}, /* footprints */
+		{"module",     kicad_parse_module}, /* footprints */
 		{"gr_line",     kicad_parse_gr_line},
 		{"gr_arc",     kicad_parse_gr_arc},
 		{"gr_text",    kicad_parse_gr_text},
 		{"via",     kicad_parse_via},
 		{"segment",     kicad_parse_segment},
 		{"zone",     kicad_parse_nop}, /* polygonal zones*/
-
-	/* not children of root */
-		{"fp_line",     kicad_parse_nop},
-		{"fp_arc",     kicad_parse_nop},
-		{"fp_circle",     kicad_parse_nop},
-		{"fp_text",    kicad_parse_nop},
 
 		{"pad",    kicad_parse_nop}, /* for modules, encompasses pad, pin  */
 
