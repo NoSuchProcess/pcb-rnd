@@ -117,6 +117,20 @@ static int kicad_parse_element_layer(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_font(read_state_t *st, gsxl_node_t *subtree);
 /* static int kicad_parse_effects(read_state_t *st, gsxl_node_t *subtree); */
 
+#define SEEN_NO_DUP(bucket, bit) \
+do { \
+	int __mask__ = (1<<(bit)); \
+	if ((bucket) & __mask__) \
+		return -1; \
+	bucket |= __mask__; \
+} while(0)
+
+#define SEEN(bucket, bit) \
+do { \
+	int __mask__ = (1<<(bit)); \
+	bucket |= __mask__; \
+} while(0)
+
 /* kicad_pcb/gr_text */
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
@@ -132,7 +146,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 			if (strcmp("at", n->str) == 0) {
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("at   x: '%s'\n", (n->children->str));
-						tally ^= 1;
+						SEEN_NO_DUP(tally, 0); /* same as ^= 1 was */
 					} else {
 						retval = -1;
 					}
