@@ -45,6 +45,43 @@
 
 #include <genregex/regex_sei.h>
 
+void pcb_select_element(ElementType *element, pcb_change_flag_t how, int redraw)
+{
+			/* select all pins and names of the element */
+			PIN_LOOP(element);
+			{
+				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
+				CHANGE_FLAG(how, PCB_FLAG_SELECTED, pin);
+			}
+			END_LOOP;
+			PAD_LOOP(element);
+			{
+				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
+				CHANGE_FLAG(how, PCB_FLAG_SELECTED, pad);
+			}
+			END_LOOP;
+			ELEMENTTEXT_LOOP(element);
+			{
+				AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
+				CHANGE_FLAG(how, PCB_FLAG_SELECTED, text);
+			}
+			END_LOOP;
+			AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
+			CHANGE_FLAG(how, PCB_FLAG_SELECTED, element);
+
+	if (redraw) {
+			if (PCB->ElementOn && ((TEST_FLAG(PCB_FLAG_ONSOLDER, element) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn))
+				if (PCB->ElementOn) {
+					DrawElementName(element);
+					DrawElementPackage(element);
+				}
+			if (PCB->PinOn)
+				DrawElementPinsAndPads(element);
+			if (PCB->PinOn)
+				DrawElementPinsAndPads(element);
+	}
+}
+
 /* ---------------------------------------------------------------------------
  * toggles the selection of any kind of object
  * the different types are defined by search.h
@@ -150,39 +187,8 @@ pcb_bool SelectObject(void)
 		}
 
 	case PCB_TYPE_ELEMENT:
-		{
-			ElementTypePtr element = (ElementTypePtr) ptr1;
-
-			/* select all pins and names of the element */
-			PIN_LOOP(element);
-			{
-				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
-				TOGGLE_FLAG(PCB_FLAG_SELECTED, pin);
-			}
-			END_LOOP;
-			PAD_LOOP(element);
-			{
-				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
-				TOGGLE_FLAG(PCB_FLAG_SELECTED, pad);
-			}
-			END_LOOP;
-			ELEMENTTEXT_LOOP(element);
-			{
-				AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
-				TOGGLE_FLAG(PCB_FLAG_SELECTED, text);
-			}
-			END_LOOP;
-			AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
-			TOGGLE_FLAG(PCB_FLAG_SELECTED, element);
-			if (PCB->ElementOn && ((TEST_FLAG(PCB_FLAG_ONSOLDER, element) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn))
-				if (PCB->ElementOn) {
-					DrawElementName(element);
-					DrawElementPackage(element);
-				}
-			if (PCB->PinOn)
-				DrawElementPinsAndPads(element);
-			break;
-		}
+		pcb_select_element((ElementType *) ptr1, PCB_CHGFLG_TOGGLE, 1);
+		break;
 	}
 	Draw();
 	IncrementUndoSerialNumber();

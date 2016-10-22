@@ -49,4 +49,9 @@ typedef enum {
 
 pcb_bool SelectObjectByName(int, const char *, pcb_bool, search_method_t);
 
+/* New API */
+
+/* Toggle the selection of an element */
+void pcb_select_element(ElementType *element, pcb_change_flag_t how, int redraw);
+
 #endif
