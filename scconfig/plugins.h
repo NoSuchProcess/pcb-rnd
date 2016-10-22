@@ -57,6 +57,7 @@ plugin_def("export_bboard",   "breadboard exporter",       sdisable, 0)
 plugin_def("export_openscad", "openscad exporter",         sdisable, 0)
 plugin_def("export_dsn",      "specctra .dsn exporter",    sdisable, 0)
 plugin_def("export_ipcd356",  "IPC-D-356 Netlist exporter",sdisable, 0)
+plugin_def("export_svg",      "SVG exporter",              sdisable, 0)
 
 plugin_header("\nIO plugins (file formats):\n")
 plugin_def("io_lihata",       "lihata board format",       sbuildin, 1)
