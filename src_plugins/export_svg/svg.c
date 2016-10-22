@@ -83,6 +83,7 @@ static const char *CAPS(EndCapStyle cap)
 
 static FILE *f = 0;
 static int group_open = 0;
+static int opacity = 100;
 
 HID_Attribute svg_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -109,6 +110,18 @@ Export a photo realistic image of the layout.
 	{"photo-mode", "Photo-realistic export mode",
 	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_photo_mode 1
+
+/* %start-doc options "93 PNG Options"
+@ftable @code
+@cindex photo-mode
+@item --photo-mode
+Export a photo realistic image of the layout.
+@end ftable
+%end-doc
+*/
+	{"opacity", "Layer opacity",
+	 HID_Integer, 0, 100, {100, 0, 0}, 0, 0},
+#define HA_opacity 2
 
 };
 
@@ -156,6 +169,8 @@ void svg_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 			conf_force_set_bool(conf_core.editor.show_mask, 1);
 		}
 	}
+
+	opacity = options[HA_opacity].int_value;
 
 	hid_expose_callback(&svg_hid, &region, 0);
 
@@ -237,7 +252,10 @@ static int svg_set_layer(const char *name, int group, int empty)
 	}
 	if (name == NULL)
 		name = "copper";
-	fprintf(f, "<g id=\"layer_%d_%s\">\n", group, name);
+	fprintf(f, "<g id=\"layer_%d_%s\"", group, name);
+	if (opacity != 100)
+		fprintf(f, " opacity=\"%.2f\"\n", ((float)opacity) / 100.0);
+	fprintf(f, ">\n");
 	group_open = 1;
 	return 1;
 }
