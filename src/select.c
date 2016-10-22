@@ -47,51 +47,51 @@
 
 void pcb_select_element(ElementType *element, pcb_change_flag_t how, int redraw)
 {
-			/* select all pins and names of the element */
-			PIN_LOOP(element);
-			{
-				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
-				CHANGE_FLAG(how, PCB_FLAG_SELECTED, pin);
-			}
-			END_LOOP;
-			PAD_LOOP(element);
-			{
-				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
-				CHANGE_FLAG(how, PCB_FLAG_SELECTED, pad);
-			}
-			END_LOOP;
-			ELEMENTTEXT_LOOP(element);
-			{
-				AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
-				CHANGE_FLAG(how, PCB_FLAG_SELECTED, text);
-			}
-			END_LOOP;
-			AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
-			CHANGE_FLAG(how, PCB_FLAG_SELECTED, element);
+	/* select all pins and names of the element */
+	PIN_LOOP(element);
+	{
+		AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
+		CHANGE_FLAG(how, PCB_FLAG_SELECTED, pin);
+	}
+	END_LOOP;
+	PAD_LOOP(element);
+	{
+		AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
+		CHANGE_FLAG(how, PCB_FLAG_SELECTED, pad);
+	}
+	END_LOOP;
+	ELEMENTTEXT_LOOP(element);
+	{
+		AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
+		CHANGE_FLAG(how, PCB_FLAG_SELECTED, text);
+	}
+	END_LOOP;
+	AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
+	CHANGE_FLAG(how, PCB_FLAG_SELECTED, element);
 
 	if (redraw) {
-			if (PCB->ElementOn && ((TEST_FLAG(PCB_FLAG_ONSOLDER, element) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn))
-				if (PCB->ElementOn) {
-					DrawElementName(element);
-					DrawElementPackage(element);
-				}
-			if (PCB->PinOn)
-				DrawElementPinsAndPads(element);
+		if (PCB->ElementOn && ((TEST_FLAG(PCB_FLAG_ONSOLDER, element) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn))
+			if (PCB->ElementOn) {
+				DrawElementName(element);
+				DrawElementPackage(element);
+			}
+		if (PCB->PinOn)
+			DrawElementPinsAndPads(element);
 	}
 }
 
 void pcb_select_element_name(ElementType *element, pcb_change_flag_t how, int redraw)
 {
-			/* select all names of the element */
-			ELEMENTTEXT_LOOP(element);
-			{
-				AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
-				CHANGE_FLAG(how, PCB_FLAG_SELECTED, text);
-			}
-			END_LOOP;
+	/* select all names of the element */
+	ELEMENTTEXT_LOOP(element);
+	{
+		AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
+		CHANGE_FLAG(how, PCB_FLAG_SELECTED, text);
+	}
+	END_LOOP;
 
 	if (redraw)
-			DrawElementName(element);
+		DrawElementName(element);
 }
 
 
