@@ -121,7 +121,7 @@ static int kicad_parse_font(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
 
-	gsxl_node_t *n, *m;
+	gsxl_node_t *l, *n, *m;
 	int i;
 	int tally = 0;
 	int retval = 0;
@@ -130,26 +130,58 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 		printf("gr_text element being parsed: '%s'\n", subtree->str);		
 		for(n = subtree,i = 0; n != NULL; n = n->next, i++) {
 			if (strcmp("at", n->str) == 0) {
-				retval += kicad_parse_at(st, n);
-				tally += 1;
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("at   x: '%s'\n", (n->children->str));
+						tally ^= 1;
+					} else {
+						retval = -1;
+					}
+					if (n->children->next != NULL && n->children->next->str != NULL) {
+						pcb_printf("at   y: '%s'\n", (n->children->next->str));
+						tally ^= 2;
+					} else {
+						retval = -1;
+					}
+					if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
+						pcb_printf("rotation: '%s'\n", (n->children->next->next->str));
+					} 
+				/* retval += kicad_parse_at(st, n); 
+				tally ^= 1; */
 			} else if (strcmp("layer", n->str) == 0) {
 				retval += kicad_parse_element_layer(st, n);
-				tally += 2;
+				tally ^= 4;
 			} else if (strcmp("effects", n->str) == 0) {
 				for(m = n->children; m != NULL; m = m->next) {
 					/*printf("stepping through effects def, looking at %s\n", m->str); */
 					if (strcmp("font", m->str) == 0) {
-						retval += kicad_parse_font(st, m);
-						tally += 4;
+						for(l = m->children; l != NULL; l = l->next) {
+							if (strcmp("size", l->str) == 0) {
+								if (l->children != NULL && l->children->str != NULL) {
+									pcb_printf("sizeX: '%s'\n", (l->children->str));
+									tally ^= 8;
+								}
+								if (l->children->next != NULL && l->children->next->str != NULL) {
+									pcb_printf("sizeY: '%s'\n", (l->children->next->str));
+									tally ^= 16;
+								}
+								/*retval += kicad_parse_size(st, l);
+								tally ^= 8; */
+							} else if (strcmp("thickness", l->str) == 0) {
+								retval += kicad_parse_thickness(st, l);
+								tally ^= 32;
+							}
+						}
+						/*retval += kicad_parse_font(st, m); 
+						tally ^= 4; */
 					} else if (strcmp("justify", m->str) == 0) {
 						retval += kicad_parse_justify(st, m);
-						tally += 8;
+						tally ^= 64;
 					}
 				}
 			}
 		}
 	}
-	if ((tally > 2) && (retval == 0)) { /* has location, layer and stroke thickness at a minimum */
+	if ((tally > 62) && (retval == 0)) { /* has location, layer, size and stroke thickness at a minimum */
 		return 0;
 	}
 	return -1;
