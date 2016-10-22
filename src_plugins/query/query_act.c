@@ -28,6 +28,8 @@
 #include "query_exec.h"
 #include "set.h"
 #include "draw.h"
+#include "select.h"
+#include "macro.h"
 
 static const char query_action_syntax[] =
 	"query(dump, expr) - dry run: compile and dump an expression\n"
@@ -64,7 +66,12 @@ static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 		return;
 	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ)) {
 		if (!TEST_FLAG(PCB_FLAG_SELECTED, current->data.anyobj)) {
-			SET_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
+			if (current->type == PCB_OBJ_ELEMENT)
+				pcb_select_element(current->data.element, PCB_CHGFLG_SET, 0);
+			else if (current->type == PCB_OBJ_ETEXT)
+				pcb_select_element_name(current->data.element, PCB_CHGFLG_SET, 0);
+			else
+				SET_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
 			(*cnt)++;
 		}
 	}
@@ -78,7 +85,12 @@ static void unselect_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 		return;
 	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ)) {
 		if (TEST_FLAG(PCB_FLAG_SELECTED, current->data.anyobj)) {
-			CLEAR_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
+			if (current->type == PCB_OBJ_ELEMENT)
+				pcb_select_element(current->data.element, PCB_CHGFLG_CLEAR, 0);
+			else if (current->type == PCB_OBJ_ETEXT)
+				pcb_select_element_name(current->data.element, PCB_CHGFLG_CLEAR, 0);
+			else
+				CLEAR_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
 			(*cnt)++;
 		}
 	}
