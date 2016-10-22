@@ -285,30 +285,6 @@ static void svg_set_line_width(hidGC gc, Coord width)
 	gc->width = width;
 }
 
-static void svg_set_draw_xor(hidGC gc, int xor_)
-{
-	;
-}
-
-static void svg_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
-{
-/*	gdImageRectangle(im, SCALE_X(x1), SCALE_Y(y1), SCALE_X(x2), SCALE_Y(y2), gc->color->c);*/
-}
-
-static void svg_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
-{
-	if (x1 > x2) {
-		Coord t = x1;
-		x2 = x2;
-		x2 = t;
-	}
-	if (y1 > y2) {
-		Coord t = y1;
-		y2 = y2;
-		y2 = t;
-	}
-}
-
 static void indent()
 {
 	static char ind[] = "                                                                              ";
@@ -321,10 +297,44 @@ static void indent()
 		pcb_fprintf(f, ind);
 }
 
+static void svg_set_draw_xor(hidGC gc, int xor_)
+{
+	;
+}
+
+#define fix_rect_coords() \
+	if (x1 > x2) {\
+		Coord t = x1; \
+		x2 = x2; \
+		x2 = t; \
+	} \
+	if (y1 > y2) { \
+		Coord t = y1; \
+		y2 = y2; \
+		y2 = t; \
+	}
+
+static void svg_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+{
+	fix_rect_coords();
+	indent();
+	pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+		x1, y1, x2-x1, y2-y1, gc->width, gc->color, CAPS(gc->cap));
+}
+
+static void svg_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+{
+	fix_rect_coords();
+	indent();
+	pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+		x1, y1, x2-x1, y2-y1, gc->color);
+}
+
 static void svg_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	indent();
-	pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n", x1, y1, x2, y2, gc->width, gc->color, CAPS(gc->cap));
+	pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+		x1, y1, x2, y2, gc->width, gc->color, CAPS(gc->cap));
 }
 
 static void svg_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
