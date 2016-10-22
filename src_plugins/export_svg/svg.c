@@ -67,9 +67,22 @@ typedef struct hid_gc_struct {
 	char *color;
 } hid_gc_struct;
 
+static const char *CAPS(EndCapStyle cap)
+{
+	switch (cap) {
+		case Trace_Cap:
+		case Round_Cap:
+			return "round";
+		case Square_Cap:
+			return "square";
+		case Beveled_Cap:
+			return "butt";
+	}
+	return "";
+}
 
 static FILE *f = 0;
-
+static int group_open = 0;
 
 HID_Attribute svg_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -155,6 +168,7 @@ static void svg_do_export(HID_Attr_Val * options)
 	const char *filename;
 	int save_ons[MAX_LAYER + 2];
 	int i;
+	Coord w, h;
 
 	if (!options) {
 		svg_get_export_options(0);
@@ -178,12 +192,27 @@ static void svg_do_export(HID_Attr_Val * options)
 		return;
 	}
 
+	fprintf(f, "<?xml version=\"1.0\"?>\n");
+	w = PCB->MaxWidth;
+	h = PCB->MaxHeight;
+	while((w < PCB_MM_TO_COORD(1024)) && (h < PCB_MM_TO_COORD(1024))) {
+		w *= 2;
+		h *= 2;
+	}
+	pcb_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"0 0 %mm %mm\">\n", w, h, PCB->MaxWidth, PCB->MaxHeight);
+/*	fprintf(f, "<desc>Layer 0</desc>"*/
+/*	fprintf(f, "<g stroke=\"black\" fill=\"black\">"*/
+
+
 	hid_save_and_show_layer_ons(save_ons);
 
 	svg_hid_export_to_file(f, options);
 
 	hid_restore_layer_ons(save_ons);
 
+	if (group_open)
+		fprintf(f, "</g>\n");
+	fprintf(f, "</svg>\n");
 	fclose(f);
 }
 
@@ -196,7 +225,17 @@ static void svg_parse_arguments(int *argc, char ***argv)
 
 static int svg_set_layer(const char *name, int group, int empty)
 {
-	return 0;
+	if ((group < 0) && (group != SL(SILK, TOP)) && (group != SL(UDRILL, 0)) && (group != SL(PDRILL, 0)))
+		return 0;
+	while(group_open) {
+		fprintf(f, "</g>\n");
+		group_open--;
+	}
+	if (name == NULL)
+		name = "copper";
+	fprintf(f, "<g id=\"layer_%d_%s\">\n", group, name);
+	group_open = 1;
+	return 1;
 }
 
 
@@ -228,7 +267,7 @@ static void svg_set_color(hidGC gc, const char *name)
 {
 	if (name == NULL)
 		name = "#ff0000";
-	if (strcmp(gc->color, name) == 0)
+	if ((gc->color != NULL) && (strcmp(gc->color, name) == 0))
 		return;
 	free(gc->color);
 	gc->color = pcb_strdup(name);
@@ -268,18 +307,22 @@ static void svg_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	}
 }
 
+static void indent()
+{
+	static char ind[] = "                                                                              ";
+	if (group_open < sizeof(ind)-1) {
+		ind[group_open] = '\0';
+		pcb_fprintf(f, ind);
+		ind[group_open] = ' ';
+	}
+	else
+		pcb_fprintf(f, ind);
+}
+
 static void svg_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
-
-/*	if (x1 == x2 && y1 == y2) {
-		Coord w = gc->width / 2;
-		if (gc->cap != Square_Cap)
-			svg_fill_circle(gc, x1, y1, w);
-		else
-			svg_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
-		return;
-	}*/
-
+	indent();
+	pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n", x1, y1, x2, y2, gc->width, gc->color, CAPS(gc->cap));
 /*		gdImageLine(im, SCALE_X(x1), SCALE_Y(y1), SCALE_X(x2), SCALE_Y(y2), gdBrushed);*/
 }
 
@@ -397,7 +440,7 @@ pcb_uninit_t hid_export_svg_init()
 	svg_hid.name = "svg";
 	svg_hid.description = "Scalable Vector Graphics export";
 	svg_hid.exporter = 1;
-	svg_hid.poly_before = 1;
+	svg_hid.poly_before = 0;
 
 	svg_hid.get_export_options = svg_get_export_options;
 	svg_hid.do_export = svg_do_export;
@@ -421,9 +464,7 @@ pcb_uninit_t hid_export_svg_init()
 
 	svg_hid.usage = svg_usage;
 
-#ifdef HAVE_SOME_FORMAT
 	hid_register_hid(&svg_hid);
 
-#endif
 	return NULL;
 }
