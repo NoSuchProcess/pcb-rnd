@@ -77,10 +77,23 @@ void pcb_select_element(ElementType *element, pcb_change_flag_t how, int redraw)
 				}
 			if (PCB->PinOn)
 				DrawElementPinsAndPads(element);
-			if (PCB->PinOn)
-				DrawElementPinsAndPads(element);
 	}
 }
+
+void pcb_select_element_name(ElementType *element, pcb_change_flag_t how, int redraw)
+{
+			/* select all names of the element */
+			ELEMENTTEXT_LOOP(element);
+			{
+				AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
+				CHANGE_FLAG(how, PCB_FLAG_SELECTED, text);
+			}
+			END_LOOP;
+
+	if (redraw)
+			DrawElementName(element);
+}
+
 
 /* ---------------------------------------------------------------------------
  * toggles the selection of any kind of object
@@ -172,19 +185,8 @@ pcb_bool SelectObject(void)
 		break;
 
 	case PCB_TYPE_ELEMENT_NAME:
-		{
-			ElementTypePtr element = (ElementTypePtr) ptr1;
-
-			/* select all names of the element */
-			ELEMENTTEXT_LOOP(element);
-			{
-				AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
-				TOGGLE_FLAG(PCB_FLAG_SELECTED, text);
-			}
-			END_LOOP;
-			DrawElementName(element);
-			break;
-		}
+		pcb_select_element_name((ElementType *) ptr1, PCB_CHGFLG_TOGGLE, 1);
+		break;
 
 	case PCB_TYPE_ELEMENT:
 		pcb_select_element((ElementType *) ptr1, PCB_CHGFLG_TOGGLE, 1);

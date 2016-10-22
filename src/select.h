@@ -51,7 +51,8 @@ pcb_bool SelectObjectByName(int, const char *, pcb_bool, search_method_t);
 
 /* New API */
 
-/* Toggle the selection of an element */
+/* Change the selection of an element or element name (these have side effects) */
 void pcb_select_element(ElementType *element, pcb_change_flag_t how, int redraw);
+void pcb_select_element_name(ElementType *element, pcb_change_flag_t how, int redraw);
 
 #endif
