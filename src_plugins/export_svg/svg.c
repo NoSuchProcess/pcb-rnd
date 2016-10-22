@@ -168,7 +168,7 @@ static void svg_do_export(HID_Attr_Val * options)
 	const char *filename;
 	int save_ons[MAX_LAYER + 2];
 	int i;
-	Coord w, h;
+	Coord w, h, x1, y1, x2, y2;
 
 	if (!options) {
 		svg_get_export_options(0);
@@ -199,10 +199,14 @@ static void svg_do_export(HID_Attr_Val * options)
 		w *= 2;
 		h *= 2;
 	}
-	pcb_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"0 0 %mm %mm\">\n", w, h, PCB->MaxWidth, PCB->MaxHeight);
-/*	fprintf(f, "<desc>Layer 0</desc>"*/
-/*	fprintf(f, "<g stroke=\"black\" fill=\"black\">"*/
 
+	x1 = PCB_MM_TO_COORD(2);
+	y1 = PCB_MM_TO_COORD(2);
+	x2 = PCB->MaxWidth;
+	y2 = PCB->MaxHeight;
+	x2 += PCB_MM_TO_COORD(5);
+	y2 += PCB_MM_TO_COORD(5);
+	pcb_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
 
 	hid_save_and_show_layer_ons(save_ons);
 
