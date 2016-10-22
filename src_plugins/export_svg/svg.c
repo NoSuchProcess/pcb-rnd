@@ -366,12 +366,13 @@ static void svg_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 static void svg_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 {
 	int i;
+	float poly_bloat = 0.075;
 
 	indent();
 	fprintf(f, "<polygon points=\"");
 	for (i = 0; i < n_coords; i++)
 		pcb_fprintf(f, "%mm,%mm ", x[i], y[i]);
-	fprintf(f, "\" stroke=\"none\" fill=\"%s\"/>\n", gc->color);
+	fprintf(f, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, gc->color, gc->color);
 }
 
 static void svg_calibrate(double xval, double yval)
