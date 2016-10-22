@@ -59,9 +59,13 @@ static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 	}
 }
 
+typedef struct {
+	pcb_cardinal_t cnt;
+} select_t;
+
 static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 {
-	pcb_cardinal_t *cnt = (pcb_cardinal_t *)user_ctx;
+	select_t *sel = (select_t *)user_ctx;
 	if (!pcb_qry_is_true(res))
 		return;
 	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ)) {
@@ -72,7 +76,7 @@ static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 				pcb_select_element_name(current->data.element, PCB_CHGFLG_SET, 0);
 			else
 				SET_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
-			(*cnt)++;
+			sel->cnt++;
 		}
 	}
 }
@@ -80,7 +84,7 @@ static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 
 static void unselect_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 {
-	pcb_cardinal_t *cnt = (pcb_cardinal_t *)user_ctx;
+	select_t *sel = (select_t *)user_ctx;
 	if (!pcb_qry_is_true(res))
 		return;
 	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ)) {
@@ -91,7 +95,7 @@ static void unselect_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 				pcb_select_element_name(current->data.element, PCB_CHGFLG_CLEAR, 0);
 			else
 				CLEAR_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
-			(*cnt)++;
+			sel->cnt++;
 		}
 	}
 }
@@ -115,7 +119,9 @@ static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val
 static int query_action(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *cmd = argc > 0 ? argv[0] : 0;
-	pcb_cardinal_t cnt = 0;
+	select_t sel;
+
+	sel.cnt = 0;
 
 	if (cmd == NULL) {
 		return -1;
@@ -149,9 +155,9 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 	}
 
 	if (strcmp(cmd, "select") == 0) {
-		if (run_script(argv[1], select_cb, &cnt) < 0)
+		if (run_script(argv[1], select_cb, &sel) < 0)
 			printf("Failed to run the query\n");
-		if (cnt > 0) {
+		if (sel.cnt > 0) {
 			SetChangedFlag(pcb_true);
 			Redraw();
 		}
@@ -159,9 +165,9 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 	}
 
 	if (strcmp(cmd, "unselect") == 0) {
-		if (run_script(argv[1], unselect_cb, &cnt) < 0)
+		if (run_script(argv[1], unselect_cb, &sel) < 0)
 			printf("Failed to run the query\n");
-		if (cnt > 0) {
+		if (sel.cnt > 0) {
 			SetChangedFlag(pcb_true);
 			Redraw();
 		}
