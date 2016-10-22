@@ -61,6 +61,7 @@ static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 
 typedef struct {
 	pcb_cardinal_t cnt;
+	pcb_change_flag_t how;
 } select_t;
 
 static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
@@ -69,37 +70,19 @@ static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 	if (!pcb_qry_is_true(res))
 		return;
 	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ)) {
-		if (!TEST_FLAG(PCB_FLAG_SELECTED, current->data.anyobj)) {
+		int state_wanted = (sel->how == PCB_CHGFLG_SET);
+		int state_is     = TEST_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
+		if (state_wanted != state_is) {
 			if (current->type == PCB_OBJ_ELEMENT)
-				pcb_select_element(current->data.element, PCB_CHGFLG_SET, 0);
+				pcb_select_element(current->data.element, sel->how, 0);
 			else if (current->type == PCB_OBJ_ETEXT)
-				pcb_select_element_name(current->data.element, PCB_CHGFLG_SET, 0);
+				pcb_select_element_name(current->data.element, sel->how, 0);
 			else
-				SET_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
+				CHANGE_FLAG(sel->how, PCB_FLAG_SELECTED, current->data.anyobj);
 			sel->cnt++;
 		}
 	}
 }
-
-
-static void unselect_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
-{
-	select_t *sel = (select_t *)user_ctx;
-	if (!pcb_qry_is_true(res))
-		return;
-	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ)) {
-		if (TEST_FLAG(PCB_FLAG_SELECTED, current->data.anyobj)) {
-			if (current->type == PCB_OBJ_ELEMENT)
-				pcb_select_element(current->data.element, PCB_CHGFLG_CLEAR, 0);
-			else if (current->type == PCB_OBJ_ETEXT)
-				pcb_select_element_name(current->data.element, PCB_CHGFLG_CLEAR, 0);
-			else
-				CLEAR_FLAG(PCB_FLAG_SELECTED, current->data.anyobj);
-			sel->cnt++;
-		}
-	}
-}
-
 
 static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current), void *user_ctx)
 {
@@ -155,6 +138,7 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 	}
 
 	if (strcmp(cmd, "select") == 0) {
+		sel.how = PCB_CHGFLG_SET;
 		if (run_script(argv[1], select_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
@@ -165,7 +149,8 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 	}
 
 	if (strcmp(cmd, "unselect") == 0) {
-		if (run_script(argv[1], unselect_cb, &sel) < 0)
+		sel.how = PCB_CHGFLG_CLEAR;
+		if (run_script(argv[1], select_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			SetChangedFlag(pcb_true);
