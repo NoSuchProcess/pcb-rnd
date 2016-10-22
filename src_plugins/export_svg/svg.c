@@ -267,6 +267,8 @@ static void svg_set_color(hidGC gc, const char *name)
 {
 	if (name == NULL)
 		name = "#ff0000";
+	if (strcmp(name, "drill") == 0)
+		name = "#ffffff";
 	if ((gc->color != NULL) && (strcmp(gc->color, name) == 0))
 		return;
 	free(gc->color);
@@ -323,73 +325,27 @@ static void svg_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	indent();
 	pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n", x1, y1, x2, y2, gc->width, gc->color, CAPS(gc->cap));
-/*		gdImageLine(im, SCALE_X(x1), SCALE_Y(y1), SCALE_X(x2), SCALE_Y(y2), gdBrushed);*/
 }
 
 static void svg_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
 {
-#if 0
-	Angle sa, ea;
+	Coord x1, y1, x2, y2;
 
-	/*
-	 * zero angle arcs need special handling as gd will output either
-	 * nothing at all or a full circle when passed delta angle of 0 or 360.
-	 */
-	if (delta_angle == 0) {
-		Coord x = (width * cos(start_angle * M_PI / 180));
-		Coord y = (width * sin(start_angle * M_PI / 180));
-		x = cx - x;
-		y = cy + y;
-		svg_fill_circle(gc, x, y, gc->width / 2);
-		return;
-	}
+	/* calculate the endpoints */
+	x1 = cx - (width * cos(start_angle * M_PI / 180));
+	y1 = cy + (width * sin(start_angle * M_PI / 180));
+	x2 = cx - (width * cos((start_angle + delta_angle) * M_PI / 180));
+	y2 = cy + (width * sin((start_angle + delta_angle) * M_PI / 180));
 
-	/* 
-	 * in gdImageArc, 0 degrees is to the right and +90 degrees is down
-	 * in pcb, 0 degrees is to the left and +90 degrees is down
-	 */
-	start_angle = 180 - start_angle;
-	delta_angle = -delta_angle;
-	if (show_solder_side) {
-		start_angle = -start_angle;
-		delta_angle = -delta_angle;
-	}
-	if (delta_angle > 0) {
-		sa = start_angle;
-		ea = start_angle + delta_angle;
-	}
-	else {
-		sa = start_angle + delta_angle;
-		ea = start_angle;
-	}
-
-	/* 
-	 * make sure we start between 0 and 360 otherwise gd does
-	 * strange things
-	 */
-	sa = NormalizeAngle(sa);
-	ea = NormalizeAngle(ea);
-
-	have_outline |= doing_outline;
-
-#if 0
-	printf("draw_arc %d,%d %dx%d %d..%d %d..%d\n", cx, cy, width, height, start_angle, delta_angle, sa, ea);
-	printf("gdImageArc (%p, %d, %d, %d, %d, %d, %d, %d)\n",
-				 (void *)im, SCALE_X(cx), SCALE_Y(cy), SCALE(width), SCALE(height), sa, ea, gc->color->c);
-#endif
-	gdImageSetThickness(im, 0);
-	linewidth = 0;
-	gdImageArc(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * width), SCALE(2 * height), sa, ea, gdBrushed);
-#endif
+	indent();
+	pcb_fprintf(f, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+		x1, y1, width, width, x2, y2, gc->width, gc->color, CAPS(gc->cap));
 }
 
 static void svg_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 {
-/*
-	gdImageSetThickness(im, 0);
-	linewidth = 0;
-	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), gc->color->c);
-*/
+	indent();
+	pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n", cx, cy, radius, gc->width, gc->color);
 }
 
 static void svg_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
