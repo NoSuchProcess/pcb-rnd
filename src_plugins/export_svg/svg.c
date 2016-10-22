@@ -83,7 +83,10 @@ static const char *CAPS(EndCapStyle cap)
 
 static FILE *f = 0;
 static int group_open = 0;
-static int opacity = 100;
+static int opacity = 100, drawing_mask;
+
+char *mask_color = "#00ff00";
+float mask_opacity_factor = 0.5;
 
 HID_Attribute svg_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -244,7 +247,8 @@ static void svg_parse_arguments(int *argc, char ***argv)
 
 static int svg_set_layer(const char *name, int group, int empty)
 {
-	if ((group < 0) && (group != SL(SILK, TOP)) && (group != SL(UDRILL, 0)) && (group != SL(PDRILL, 0)))
+	int opa;
+	if ((group < 0) && (group != SL(SILK, TOP)) && (group != SL(MASK, TOP)) && (group != SL(UDRILL, 0)) && (group != SL(PDRILL, 0)))
 		return 0;
 	while(group_open) {
 		fprintf(f, "</g>\n");
@@ -253,8 +257,12 @@ static int svg_set_layer(const char *name, int group, int empty)
 	if (name == NULL)
 		name = "copper";
 	fprintf(f, "<g id=\"layer_%d_%s\"", group, name);
-	if (opacity != 100)
-		fprintf(f, " opacity=\"%.2f\"\n", ((float)opacity) / 100.0);
+	drawing_mask = group == SL(MASK, TOP);
+	opa = opacity;
+	if (drawing_mask)
+		opa *= mask_opacity_factor;
+	if (opa != 100)
+		fprintf(f, " opacity=\"%.2f\"", ((float)opa) / 100.0);
 	fprintf(f, ">\n");
 	group_open = 1;
 	return 1;
@@ -291,6 +299,10 @@ static void svg_set_color(hidGC gc, const char *name)
 		name = "#ff0000";
 	if (strcmp(name, "drill") == 0)
 		name = "#ffffff";
+	else if (strcmp(name, "erase") == 0)
+		name = "#ffffff";
+	else if (drawing_mask)
+		name = mask_color;
 	if ((gc->color != NULL) && (strcmp(gc->color, name) == 0))
 		return;
 	free(gc->color);
