@@ -359,24 +359,19 @@ static void svg_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height
 static void svg_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 {
 	indent();
-	pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n", cx, cy, radius, gc->width, gc->color);
+	pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+		cx, cy, radius, gc->width, gc->color);
 }
 
 static void svg_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 {
-#if 0
 	int i;
-	for (i = 0; i < n_coords; i++) {
-		if (NOT_EDGE(x[i], y[i]))
-			have_outline |= doing_outline;
-		points[i].x = SCALE_X(x[i]);
-		points[i].y = SCALE_Y(y[i]);
-	}
-	gdImageSetThickness(im, 0);
-	linewidth = 0;
-	gdImageFilledPolygon(im, points, n_coords, gc->color->c);
-	free(points);
-#endif
+
+	indent();
+	fprintf(f, "<polygon points=\"");
+	for (i = 0; i < n_coords; i++)
+		pcb_fprintf(f, "%mm,%mm ", x[i], y[i]);
+	fprintf(f, "\" stroke=\"none\" fill=\"%s\"/>\n", gc->color);
 }
 
 static void svg_calibrate(double xval, double yval)
@@ -410,7 +405,7 @@ pcb_uninit_t hid_export_svg_init()
 	svg_hid.name = "svg";
 	svg_hid.description = "Scalable Vector Graphics export";
 	svg_hid.exporter = 1;
-	svg_hid.poly_before = 0;
+	svg_hid.poly_before = 1;
 
 	svg_hid.get_export_options = svg_get_export_options;
 	svg_hid.do_export = svg_do_export;
