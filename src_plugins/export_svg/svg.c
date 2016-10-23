@@ -34,6 +34,7 @@
 #include <string.h>
 #include <assert.h>
 #include <math.h>
+#include <genvector/gds_char.h>
 
 #include "global.h"
 #include "data.h"
@@ -86,6 +87,7 @@ static FILE *f = 0;
 static int group_open = 0;
 static int opacity = 100, drawing_mask, drawing_hole, photo_mode, flip;
 
+gds_t sbright, sdark, snormal;
 
 /* Photo mode colors and hacks */
 const char *board_color = "#464646";
@@ -228,11 +230,38 @@ void svg_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 
 	opacity = options[HA_opacity].int_value;
 
+	gds_init(&sbright);
+	gds_init(&sdark);
+	gds_init(&snormal);
 	hid_expose_callback(&svg_hid, &region, 0);
 
 	conf_update(NULL); /* restore forced sets */
 }
 
+static void group_close()
+{
+	if (group_open == 1) {
+		if (gds_len(&sdark) > 0) {
+			fprintf(f, "<!--dark-->\n");
+			fprintf(f, "%s", sdark.array);
+			gds_truncate(&sdark, 0);
+		}
+
+		if (gds_len(&sbright) > 0) {
+			fprintf(f, "<!--bright-->\n");
+			fprintf(f, "%s", sbright.array);
+			gds_truncate(&sbright, 0);
+		}
+
+		if (gds_len(&snormal) > 0) {
+			fprintf(f, "<!--normal-->\n");
+			fprintf(f, "%s", snormal.array);
+			gds_truncate(&snormal, 0);
+		}
+
+	}
+	fprintf(f, "</g>\n");
+}
 
 static void svg_do_export(HID_Attr_Val * options)
 {
@@ -281,7 +310,8 @@ static void svg_do_export(HID_Attr_Val * options)
 	hid_restore_layer_ons(save_ons);
 
 	if (group_open)
-		fprintf(f, "</g>\n");
+		group_close();
+
 	fprintf(f, "</svg>\n");
 	fclose(f);
 }
@@ -315,7 +345,7 @@ static int svg_set_layer(const char *name, int group, int empty)
 	if ((group < 0) && (group != our_silk) && (group != our_mask) && (group != SL(UDRILL, 0)) && (group != SL(PDRILL, 0)))
 		return 0;
 	while(group_open) {
-		fprintf(f, "</g>\n");
+		group_close();
 		group_open--;
 	}
 	if (name == NULL)
@@ -407,16 +437,23 @@ static void svg_set_line_width(hidGC gc, Coord width)
 	gc->width = width;
 }
 
-static void indent()
+static void indent(gds_t *s)
 {
 	static char ind[] = "                                                                              ";
 	if (group_open < sizeof(ind)-1) {
 		ind[group_open] = '\0';
-		pcb_fprintf(f, ind);
+		if (s == NULL)
+			pcb_fprintf(f, ind);
+		else
+			pcb_append_printf(s, ind);
 		ind[group_open] = ' ';
+		return;
 	}
-	else
+
+	if (s == NULL)
 		pcb_fprintf(f, ind);
+	else
+		pcb_append_printf(s, ind);
 }
 
 static void svg_set_draw_xor(hidGC gc, int xor_)
@@ -438,8 +475,8 @@ static void svg_set_draw_xor(hidGC gc, int xor_)
 
 static void draw_rect(hidGC gc, Coord x1, Coord y1, Coord w, Coord h, Coord stroke)
 {
-	indent();
-	pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+	indent(&snormal);
+	pcb_append_printf(&snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 		x1, y1, w, h, stroke, gc->color, CAPS(gc->cap));
 }
 
@@ -454,20 +491,20 @@ static void draw_fill_rect(hidGC gc, Coord x1, Coord y1, Coord w, Coord h)
 	if ((photo_mode) && (!gc->erase)) {
 		Coord photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
-			indent();
-			pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			indent(&sdark);
+			pcb_append_printf(&sdark, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				x1+photo_offs, y1+photo_offs, w, h, photo_palette[photo_color].dark);
-			indent();
-			pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			indent(&sbright);
+			pcb_append_printf(&sbright, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				x1-photo_offs, y1-photo_offs, w, h, photo_palette[photo_color].bright);
 		}
-		indent();
-		pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+		indent(&snormal);
+		pcb_append_printf(&snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			x1, y1, w, h, photo_palette[photo_color].normal);
 	}
 	else {
-		indent();
-		pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+		indent(&snormal);
+		pcb_append_printf(&snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			x1, y1, w, h, gc->color);
 	}
 }
@@ -484,20 +521,20 @@ static void draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	if ((photo_mode) && (!gc->erase)) {
 		Coord photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
-			indent();
-			pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+			indent(&sbright);
+			pcb_append_printf(&sbright, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 				x1-photo_offs, y1-photo_offs, x2-photo_offs, y2-photo_offs, gc->width, photo_palette[photo_color].bright, CAPS(gc->cap));
-			indent();
-			pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+			indent(&sdark);
+			pcb_append_printf(&sdark, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 				x1+photo_offs, y1+photo_offs, x2+photo_offs, y2+photo_offs, gc->width, photo_palette[photo_color].dark, CAPS(gc->cap));
 		}
-		indent();
-		pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+		indent(&snormal);
+		pcb_append_printf(&snormal, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 			x1, y1, x2, y2, gc->width, photo_palette[photo_color].normal, CAPS(gc->cap));
 	}
 	else {
-		indent();
-		pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+		indent(&snormal);
+		pcb_append_printf(&snormal, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 			x1, y1, x2, y2, gc->width, gc->color, CAPS(gc->cap));
 	}
 }
@@ -513,20 +550,20 @@ static void draw_arc(hidGC gc, Coord x1, Coord y1, Coord r, Coord x2, Coord y2, 
 	if ((photo_mode) && (!gc->erase)) {
 		Coord photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
-			indent();
-			pcb_fprintf(f, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+			indent(&sbright);
+			pcb_append_printf(&sbright, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 				x1-photo_offs, y1-photo_offs, r, r, x2-photo_offs, y2-photo_offs, gc->width, photo_palette[photo_color].bright, CAPS(gc->cap));
-			indent();
-			pcb_fprintf(f, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+			indent(&sdark);
+			pcb_append_printf(&sdark, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 				x1+photo_offs, y1+photo_offs, r, r, x2+photo_offs, y2+photo_offs, gc->width, photo_palette[photo_color].dark, CAPS(gc->cap));
 		}
-		indent();
-		pcb_fprintf(f, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+		indent(&snormal);
+		pcb_append_printf(&snormal, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 			x1, y1, r, r, x2, y2, gc->width, photo_palette[photo_color].normal, CAPS(gc->cap));
 	}
 	else {
-		indent();
-		pcb_fprintf(f, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+		indent(&snormal);
+		pcb_append_printf(&snormal, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 			x1, y1, r, r, x2, y2, gc->width, gc->color, CAPS(gc->cap));
 	}
 }
@@ -569,27 +606,27 @@ static void draw_fill_circle(hidGC gc, Coord cx, Coord cy, Coord r, Coord stroke
 		if (!drawing_hole) {
 			Coord photo_offs = photo_palette[photo_color].offs;
 			if ((!gc->drill) && (photo_offs != 0)) {
-				indent();
-				pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+				indent(&sbright);
+				pcb_append_printf(&sbright, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 					cx-photo_offs, cy-photo_offs, r, stroke, photo_palette[photo_color].bright);
 
-				indent();
-				pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+				indent(&sdark);
+				pcb_append_printf(&sdark, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 					cx+photo_offs, cy+photo_offs, r, stroke, photo_palette[photo_color].dark);
 			}
-			indent();
-			pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			indent(&snormal);
+			pcb_append_printf(&snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				cx, cy, r, stroke, photo_palette[photo_color].normal);
 		}
 		else {
-			indent();
-			pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			indent(&snormal);
+			pcb_append_printf(&snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				cx, cy, r, stroke, "#000000");
 		}
 	}
 	else{
-		indent();
-		pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+		indent(&snormal);
+		pcb_append_printf(&snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			cx, cy, r, stroke, gc->color);
 	}
 }
@@ -600,19 +637,19 @@ static void svg_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 	draw_fill_circle(gc, cx, cy, radius, gc->width);
 }
 
-static void draw_poly(hidGC gc, int n_coords, Coord * x, Coord * y, Coord offs, const char *clr)
+static void draw_poly(gds_t *s, hidGC gc, int n_coords, Coord * x, Coord * y, Coord offs, const char *clr)
 {
 	int i;
 	float poly_bloat = 0.075;
 
-	indent();
-	fprintf(f, "<polygon points=\"");
+	indent(s);
+	gds_append_str(s, "<polygon points=\"");
 	for (i = 0; i < n_coords; i++) {
 		Coord px = x[i], py = y[i];
 		TRX(px); TRY(py);
-		pcb_fprintf(f, "%mm,%mm ", px+offs, py+offs);
+		pcb_append_printf(s, "%mm,%mm ", px+offs, py+offs);
 	}
-	fprintf(f, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, clr, clr);
+	pcb_append_printf(s, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, clr, clr);
 }
 
 static void svg_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
@@ -620,13 +657,13 @@ static void svg_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 	if ((photo_mode) && (!gc->erase)) {
 		Coord photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
-			draw_poly(gc, n_coords, x, y, -photo_offs, photo_palette[photo_color].bright);
-			draw_poly(gc, n_coords, x, y, +photo_offs, photo_palette[photo_color].dark);
+			draw_poly(&sbright, gc, n_coords, x, y, -photo_offs, photo_palette[photo_color].bright);
+			draw_poly(&sdark, gc, n_coords, x, y, +photo_offs, photo_palette[photo_color].dark);
 		}
-		draw_poly(gc, n_coords, x, y, 0, photo_palette[photo_color].normal);
+		draw_poly(&snormal, gc, n_coords, x, y, 0, photo_palette[photo_color].normal);
 	}
 	else
-		draw_poly(gc, n_coords, x, y, 0, gc->color);
+		draw_poly(&snormal, gc, n_coords, x, y, 0, gc->color);
 }
 
 static void svg_calibrate(double xval, double yval)
