@@ -83,7 +83,7 @@ static const char *CAPS(EndCapStyle cap)
 	return "";
 }
 
-static FILE *f = 0;
+static FILE *f = NULL;
 static int group_open = 0;
 static int opacity = 100, drawing_mask, drawing_hole, photo_mode, flip;
 
@@ -216,11 +216,15 @@ void svg_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 			photo_mode = 1;
 			conf_force_set_bool(conf_core.editor.show_mask, 1);
 		}
+		else
+			photo_mode = 0;
 
 		if (options[HA_flip].int_value) {
 			flip = 1;
 			conf_force_set_bool(conf_core.editor.show_solder_side, 1);
 		}
+		else
+			flip = 0;
 	}
 
 	if (photo_mode) {
@@ -309,11 +313,14 @@ static void svg_do_export(HID_Attr_Val * options)
 
 	hid_restore_layer_ons(save_ons);
 
-	if (group_open)
+	while(group_open) {
 		group_close();
+		group_open--;
+	}
 
 	fprintf(f, "</svg>\n");
 	fclose(f);
+	f = NULL;
 }
 
 static void svg_parse_arguments(int *argc, char ***argv)
