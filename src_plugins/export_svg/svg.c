@@ -141,6 +141,14 @@ Flip board, look at it from the bottom side
 
 #define NUM_OPTIONS (sizeof(svg_attribute_list)/sizeof(svg_attribute_list[0]))
 
+#define TRX(x)
+#define TRY(y) \
+do { \
+	if (flip) \
+		y = PCB->MaxHeight - y; \
+} while(0)
+
+
 REGISTER_ATTRIBUTES(svg_attribute_list, svg_cookie)
 
 static HID_Attr_Val svg_values[NUM_OPTIONS];
@@ -364,12 +372,12 @@ static void svg_set_draw_xor(hidGC gc, int xor_)
 #define fix_rect_coords() \
 	if (x1 > x2) {\
 		Coord t = x1; \
-		x2 = x2; \
+		x1 = x2; \
 		x2 = t; \
 	} \
 	if (y1 > y2) { \
 		Coord t = y1; \
-		y2 = y2; \
+		y1 = y2; \
 		y2 = t; \
 	}
 
@@ -383,6 +391,7 @@ static void svg_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 
 static void svg_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
+	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
 	fix_rect_coords();
 	indent();
 	pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
@@ -391,6 +400,7 @@ static void svg_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 
 static void svg_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
+	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
 	indent();
 	pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 		x1, y1, x2, y2, gc->width, gc->color, CAPS(gc->cap));
@@ -399,12 +409,31 @@ static void svg_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 static void svg_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
 {
 	Coord x1, y1, x2, y2;
+	Angle sa, ea;
+
+	TRX(cx); TRY(cy);
+
+	/* calculate start and end angles considering flip */
+	start_angle = 180 - start_angle;
+	delta_angle = -delta_angle;
+	if (flip) {
+		start_angle = -start_angle;
+		delta_angle = -delta_angle;
+	}
+	if (delta_angle > 0) {
+		sa = start_angle;
+		ea = start_angle + delta_angle;
+	}
+	else {
+		sa = start_angle + delta_angle;
+		ea = start_angle;
+	}
 
 	/* calculate the endpoints */
-	x1 = cx - (width * cos(start_angle * M_PI / 180));
-	y1 = cy + (width * sin(start_angle * M_PI / 180));
-	x2 = cx - (width * cos((start_angle + delta_angle) * M_PI / 180));
-	y2 = cy + (width * sin((start_angle + delta_angle) * M_PI / 180));
+	x2 = cx + (width * cos(sa * M_PI / 180));
+	y2 = cy + (width * sin(sa * M_PI / 180));
+	x1 = cx + (width * cos(ea * M_PI / 180));
+	y1 = cy + (width * sin(ea * M_PI / 180));
 
 	indent();
 	pcb_fprintf(f, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
@@ -413,6 +442,7 @@ static void svg_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height
 
 static void svg_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 {
+	TRX(cx); TRY(cy);
 	indent();
 	pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 		cx, cy, radius, gc->width, gc->color);
@@ -425,8 +455,11 @@ static void svg_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 
 	indent();
 	fprintf(f, "<polygon points=\"");
-	for (i = 0; i < n_coords; i++)
-		pcb_fprintf(f, "%mm,%mm ", x[i], y[i]);
+	for (i = 0; i < n_coords; i++) {
+		Coord px = x[i], py = y[i];
+		TRX(px); TRY(py);
+		pcb_fprintf(f, "%mm,%mm ", px, py);
+	}
 	fprintf(f, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, gc->color, gc->color);
 }
 
