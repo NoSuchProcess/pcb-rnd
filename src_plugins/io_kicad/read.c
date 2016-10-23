@@ -99,7 +99,6 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 }
 
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree);
-static int kicad_parse_element_layers(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_drill(read_state_t *st, gsxl_node_t *subtree);
 static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree);
 
@@ -526,7 +525,7 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *m, *n;
 	int i;
 		if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) { /* test if deeper in tree than layer definitions for entire board */  
-			pcb_printf("layer definitions encountered in unexpected place\n");
+			pcb_printf("layer definitions encountered in unexpected place in kicad layout\n");
 			return -1;
 		} else { /* we are just below the top level or root of the tree, so this must be a layer definitions section */
 			pcb_printf("Board layer descriptions:");
@@ -544,19 +543,6 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 		}
 }
 
-/* kicad_pcb  parse (layers  )  - module pad/via layer defs */
-static int kicad_parse_element_layers(read_state_t *st, gsxl_node_t *subtree)
-{
-	gsxl_node_t *n;
-	int i;
-		if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) { /* test if deeper in tree than layer definitions for entire board */  
-			for(n = subtree,i = 0; n != NULL; n = n->next, i++)
-				pcb_printf("element on layers %d: '%s'\n", i, n->str);
-			return 0;
-		} 
-	return -1;
-}
-
 /* kicad_pcb  parse (drill  ) */
 static int kicad_parse_drill(read_state_t *st, gsxl_node_t *subtree)
 {
@@ -569,7 +555,7 @@ static int kicad_parse_drill(read_state_t *st, gsxl_node_t *subtree)
 		return 0;
 }
 
-/* kicad_pcb  parse (net  ) ;   */
+/* kicad_pcb  parse (net  ) ;   used for net descriptions for the entire layout */
 static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 {
 		if (subtree != NULL && subtree->str != NULL) {
@@ -603,7 +589,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"host",       kicad_parse_nop},
 		{"general",    kicad_parse_nop},
 		{"page",       kicad_parse_nop},
-		{"layers",     kicad_parse_layer_definitions}, /* board layer defs, or, module pad/pin layers, or via layers*/
+		{"layers",     kicad_parse_layer_definitions}, /* board layer defs */
 		{"setup",      kicad_parse_nop},
 		{"net",        kicad_parse_net}, /* net labels if child of root, otherwise net attribute of element */
 		{"net_class",  kicad_parse_nop},
