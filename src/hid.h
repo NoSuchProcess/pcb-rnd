@@ -177,6 +177,10 @@ struct hid_st {
 	   polygons will be drawn twice.  */
 	unsigned poly_after:1;
 
+	/* If set, draw holes after copper, silk and mask, to make sure it
+	   punches through everything. */
+	unsigned holes_after:1;
+
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
 	   set up the selectable options.  In command line mode, these are

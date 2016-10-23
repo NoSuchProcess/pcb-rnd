@@ -649,6 +649,22 @@ static void PrintAssembly(int side, const BoxType * drawn_area)
 	doing_assy = pcb_false;
 }
 
+static void DrawEverything_holes(const BoxType * drawn_area)
+{
+	int plated, unplated;
+	CountHoles(&plated, &unplated, drawn_area);
+
+	if (plated && gui->set_layer("plated-drill", SL(PDRILL, 0), 0)) {
+		DrawHoles(pcb_true, pcb_false, drawn_area);
+		gui->end_layer();
+	}
+
+	if (unplated && gui->set_layer("unplated-drill", SL(UDRILL, 0), 0)) {
+		DrawHoles(pcb_false, pcb_true, drawn_area);
+		gui->end_layer();
+	}
+}
+
 /* ---------------------------------------------------------------------------
  * initializes some identifiers for a new zoom factor and redraws whole screen
  */
@@ -660,7 +676,7 @@ static void DrawEverything(const BoxType * drawn_area)
 	int do_group[MAX_LAYER];
 	/* This is the reverse of the order in which we draw them.  */
 	int drawn_groups[MAX_LAYER];
-	int plated, unplated;
+
 	pcb_bool paste_empty;
 
 	PCB->Data->SILKLAYER.Color = PCB->ElementColor;
@@ -710,19 +726,8 @@ static void DrawEverything(const BoxType * drawn_area)
 	/* Draw pins, pads, vias below silk */
 	if (gui->gui)
 		DrawPPV(SWAP_IDENT ? solder : component, drawn_area);
-	else {
-		CountHoles(&plated, &unplated, drawn_area);
-
-		if (plated && gui->set_layer("plated-drill", SL(PDRILL, 0), 0)) {
-			DrawHoles(pcb_true, pcb_false, drawn_area);
-			gui->end_layer();
-		}
-
-		if (unplated && gui->set_layer("unplated-drill", SL(UDRILL, 0), 0)) {
-			DrawHoles(pcb_false, pcb_true, drawn_area);
-			gui->end_layer();
-		}
-	}
+	else if (!gui->holes_after)
+		DrawEverything_holes(drawn_area);
 
 	/* Draw the solder mask if turned on */
 	if (gui->set_layer("componentmask", SL(MASK, TOP), 0)) {
@@ -744,6 +749,9 @@ static void DrawEverything(const BoxType * drawn_area)
 		DrawSilk(SOLDER_LAYER, drawn_area);
 		gui->end_layer();
 	}
+
+	if (gui->holes_after)
+		DrawEverything_holes(drawn_area);
 
 	if (gui->gui) {
 		/* Draw element Marks */
