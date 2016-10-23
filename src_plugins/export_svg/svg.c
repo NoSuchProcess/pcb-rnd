@@ -86,14 +86,17 @@ static FILE *f = 0;
 static int group_open = 0;
 static int opacity = 100, drawing_mask, drawing_hole, photo_mode, flip;
 
-char *mask_color = "#00ff00";
-float mask_opacity_factor = 0.5;
 
 /* Photo mode colors and hacks */
+const char *board_color = "#464646";
+const char *mask_color = "#00ff00";
+float mask_opacity_factor = 0.5;
+
 enum {
 	PHOTO_MASK,
 	PHOTO_SILK,
-	PHOTO_COPPER
+	PHOTO_COPPER,
+	PHOTO_INNER
 } photo_color;
 
 struct {
@@ -103,8 +106,9 @@ struct {
 	Coord offs;
 } photo_palette[] = {
 	/* MASK */   { "#00ff00", "#00ff00", "#00ff00", PCB_MM_TO_COORD(0) },
-	/* SILK */   { "#222222", "#111111", "#000000", PCB_MM_TO_COORD(0) },
-	/* COPPER */ { "#eeeeee", "#aaaaaa", "#999999", PCB_MM_TO_COORD(0.05) }
+	/* SILK */   { "#ffffff", "#eeeeee", "#aaaaaa", PCB_MM_TO_COORD(0) },
+	/* COPPER */ { "#eeeeee", "#aaaaaa", "#999999", PCB_MM_TO_COORD(0.05) },
+	/* INNER */  { "#222222", "#111111", "#000000", PCB_MM_TO_COORD(0.05) }
 };
 
 HID_Attribute svg_attribute_list[] = {
@@ -217,6 +221,11 @@ void svg_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 		}
 	}
 
+	if (photo_mode) {
+		pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			0, 0, PCB->MaxWidth, PCB->MaxHeight, board_color);
+	}
+
 	opacity = options[HA_opacity].int_value;
 
 	hid_expose_callback(&svg_hid, &region, 0);
@@ -286,14 +295,17 @@ static void svg_parse_arguments(int *argc, char ***argv)
 static int svg_set_layer(const char *name, int group, int empty)
 {
 	int opa, our_mask, our_silk;
+	unsigned int our_side;
 
 	if (flip) {
 		our_mask = SL(MASK, BOTTOM);
 		our_silk = SL(SILK, BOTTOM);
+		our_side = PCB_LYT_BOTTOM;
 	}
 	else {
 		our_mask = SL(MASK, TOP);
 		our_silk = SL(SILK, TOP);
+		our_side = PCB_LYT_TOP;
 	}
 
 	/* don't draw the mask if we are not in the photo mode */
@@ -325,8 +337,16 @@ static int svg_set_layer(const char *name, int group, int empty)
 			photo_color = PHOTO_SILK;
 		if (group == our_mask)
 			photo_color = PHOTO_MASK;
-		else if (group >= 0)
-			photo_color = PHOTO_COPPER;
+		else if (group >= 0) {
+			int ly = PCB->LayerGroups.Entries[group][0];
+			unsigned int fl;
+			fl = pcb_layer_flags(ly) & PCB_LYT_ANYWHERE;
+			printf("side: %d %d\n", fl, our_side);
+			if (fl == our_side)
+				photo_color = PHOTO_COPPER;
+			else
+				photo_color = PHOTO_INNER;
+		}
 	}
 
 	drawing_hole = (group == SL(UDRILL, 0)) || (group == SL(PDRILL, 0));
@@ -644,6 +664,7 @@ pcb_uninit_t hid_export_svg_init()
 	svg_hid.description = "Scalable Vector Graphics export";
 	svg_hid.exporter = 1;
 	svg_hid.poly_before = 1;
+	svg_hid.holes_after = 1;
 
 	svg_hid.get_export_options = svg_get_export_options;
 	svg_hid.do_export = svg_do_export;
