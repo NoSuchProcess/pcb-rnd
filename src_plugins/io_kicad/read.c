@@ -232,7 +232,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	unsigned long tally = 0;
 
 	if (subtree->str != NULL) {
-		printf("gr_line being parsed: '%s'\n", subtree->str);		
+		printf("gr_line being parsed: '%s'\n", subtree->str);
 		for(n = subtree; n != NULL; n = n->next) {
 			if (n->str != NULL && strcmp("start", n->str) == 0) {
 					SEEN_NO_DUP(tally, 0);
@@ -380,6 +380,81 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			} else {
 				if (n->str != NULL) {
 					printf("Unknown gr_arc argument %s:", n->str);
+				}
+				return -1;
+			}
+		}
+	}
+	if (tally >= 0) { /* need start, end, layer, thickness at a minimum */
+		return 0;
+	}
+	return -1;
+}
+
+/* kicad_pcb/fp_circle */
+static int kicad_parse_fp_circle(read_state_t *st, gsxl_node_t *subtree)
+{
+	gsxl_node_t *n;
+	unsigned long tally = 0;
+
+	if (subtree->str != NULL) {
+		printf("fp_circle being parsed: '%s'\n", subtree->str);		
+		for(n = subtree; n != NULL; n = n->next) {
+			if (n->str != NULL && strcmp("center", n->str) == 0) {
+					SEEN_NO_DUP(tally, 0);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("fp_circle centre at x: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
+					} else {
+						return -1;
+					}
+					if (n->children->next != NULL && n->children->next->str != NULL) {
+						pcb_printf("fp_circle centre at y: '%s'\n", (n->children->next->str));
+						SEEN_NO_DUP(tally, 2);	
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("end", n->str) == 0) {
+					SEEN_NO_DUP(tally, 3);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("gr_arc end at x: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 4);
+					} else {
+						return -1;
+					}
+					if (n->children->next != NULL && n->children->next->str != NULL) {
+						pcb_printf("gr_arc end at y: '%s'\n", (n->children->next->str));
+						SEEN_NO_DUP(tally, 5);	
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
+					SEEN_NO_DUP(tally, 6);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("gr_arc layer: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 7);
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("width", n->str) == 0) {
+					SEEN_NO_DUP(tally, 8);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("gr_arc width: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 9);
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("net", n->str) == 0) { /* unlikely to be used or seen */
+					SEEN_NO_DUP(tally, 12);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("gr_arc net: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 13);
+					} else {
+						return -1;
+					}
+			} else {
+				if (n->str != NULL) {
+					printf("Unknown fp_circle argument %s:", n->str);
 				}
 				return -1;
 			}
@@ -596,7 +671,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 
 	if (subtree->str != NULL) {
 		printf("Name of module element being parsed: '%s'\n", subtree->str);		
-		for(n = subtree,i = 0; n != NULL; n = n->next, i++) {
+		for(n = subtree->next,i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("tedit", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
 				if (n->children != NULL && n->children->str != NULL) {
@@ -738,12 +813,15 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 			} else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
 					pcb_printf("fp_line found\n");
+					kicad_parse_gr_line(st, n->children);
 			} else if (n->str != NULL && strcmp("fp_arc", n->str) == 0) {
 					pcb_printf("fp_arc found\n");
+					kicad_parse_gr_arc(st, n->children);
 			} else if (n->str != NULL && strcmp("fp_circle", n->str) == 0) {
 					pcb_printf("fp_circle found\n");
 			} else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
 					pcb_printf("fp_text found\n");
+					kicad_parse_gr_text(st, n->children);
 			} else {
 				if (n->str != NULL) {
 					printf("Unknown pad argument %s:", n->str);
