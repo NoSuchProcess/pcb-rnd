@@ -203,9 +203,14 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 						} else {
 							return -1;
 						}
+					} else {
+						if (m->str != NULL) {
+							printf("Unknown effects argument %s:", m->str);
+						}
+						return -1;
 					}
 				}
-			}
+			} 				
 		}
 	}
 	if (tally >= 0) { /* has location, layer, size and stroke thickness at a minimum */
@@ -284,6 +289,9 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 			} else {
+				if (n->str != NULL) {
+					printf("Unknown gr_line argument %s:", n->str);
+				}
 				return -1;
 			}
 		}
@@ -364,6 +372,9 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 			} else {
+				if (n->str != NULL) {
+					printf("Unknown gr_arc argument %s:", n->str);
+				}
 				return -1;
 			}
 		}
@@ -423,6 +434,9 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 			} else {
+				if (n->str != NULL) {
+					printf("Unknown via argument %s:", n->str);
+				}
 				return -1;
 			}
 		}
@@ -495,7 +509,18 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 					} else {
 						return -1;
 					}
+			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) { /* not likely to be used */
+					SEEN_NO_DUP(tally, 12);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("segment timestamp: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 13);
+					} else {
+						return -1;
+					}
 			} else {
+				if (n->str != NULL) {
+					printf("Unknown segment argument %s:", n->str);
+				}
 				return -1;
 			}
 		}
