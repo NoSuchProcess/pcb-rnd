@@ -201,7 +201,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 			} 				
 		}
 	}
-	required = BV(2) | BV(3) | BV(4) | BV(7) | BV(8);
+	required = 1; /*BV(2) | BV(3) | BV(4) | BV(7) | BV(8); */
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
 		return 0;
 	}
@@ -520,21 +520,26 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 	return -1;
 }
 
-
-
-	
-
 /* kicad_pcb  parse (layers  )  - either board layer defintions, or module pad/via layer defs */
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 {
-	gsxl_node_t *n;
+	gsxl_node_t *m, *n;
 	int i;
 		if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) { /* test if deeper in tree than layer definitions for entire board */  
-			for(n = subtree,i = 0; n != NULL; n = n->next, i++)
-				pcb_printf("element on layers %d: '%s'\n", i, n->str);
-			return 0;
+			pcb_printf("layer definitions encountered in unexpected place\n");
+			return -1;
 		} else { /* we are just below the top level or root of the tree, so this must be a layer definitions section */
-			printf("Probably in the layer definition block, need an iterator...\n"); /* need to assemble the layer list here*/
+			pcb_printf("Board layer descriptions:");
+			for(n = subtree,i = 0; n != NULL; n = n->next, i++) {
+				if ((n->str != NULL) && (n->children->str != NULL) && (n->children->next != NULL) && (n->children->next->str != NULL) ) {
+					pcb_printf("layer #%d LAYERNUM found:\t%s\n", i, n->str);
+					pcb_printf("layer #%d layer label found:\t%s\n", i, n->children->str);
+					pcb_printf("layer #%d layer description/type found:\t%s\n", i, n->children->next->str);
+				} else {
+					printf("unexpected board layer definition(s) encountered.\n");
+					return -1;
+				}
+			}
 			return 0;
 		}
 }
