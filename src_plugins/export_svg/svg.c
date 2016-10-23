@@ -65,6 +65,7 @@ typedef struct hid_gc_struct {
 	EndCapStyle cap;
 	int width;
 	char *color;
+	int erase, drill;
 } hid_gc_struct;
 
 static const char *CAPS(EndCapStyle cap)
@@ -83,10 +84,28 @@ static const char *CAPS(EndCapStyle cap)
 
 static FILE *f = 0;
 static int group_open = 0;
-static int opacity = 100, drawing_mask, photo_mode, flip;
+static int opacity = 100, drawing_mask, drawing_hole, photo_mode, flip;
 
 char *mask_color = "#00ff00";
 float mask_opacity_factor = 0.5;
+
+/* Photo mode colors and hacks */
+enum {
+	PHOTO_MASK,
+	PHOTO_SILK,
+	PHOTO_COPPER
+} photo_color;
+
+struct {
+	const char *bright;
+	const char *normal;
+	const char *dark;
+	Coord offs;
+} photo_palette[] = {
+	/* MASK */   { "#00ff00", "#00ff00", "#00ff00", PCB_MM_TO_COORD(0) },
+	/* SILK */   { "#222222", "#111111", "#000000", PCB_MM_TO_COORD(0) },
+	/* COPPER */ { "#eeeeee", "#aaaaaa", "#999999", PCB_MM_TO_COORD(0.05) }
+};
 
 HID_Attribute svg_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -281,6 +300,8 @@ static int svg_set_layer(const char *name, int group, int empty)
 	if (!photo_mode && ((group == SL(MASK, TOP)) || (group == SL(MASK, BOTTOM))))
 		return 0;
 
+/*if(group == SL(MASK, TOP)) return 0;*/
+
 	if ((group < 0) && (group != our_silk) && (group != our_mask) && (group != SL(UDRILL, 0)) && (group != SL(PDRILL, 0)))
 		return 0;
 	while(group_open) {
@@ -298,6 +319,18 @@ static int svg_set_layer(const char *name, int group, int empty)
 		fprintf(f, " opacity=\"%.2f\"", ((float)opa) / 100.0);
 	fprintf(f, ">\n");
 	group_open = 1;
+
+	if (photo_mode) {
+		if (group == our_silk)
+			photo_color = PHOTO_SILK;
+		if (group == our_mask)
+			photo_color = PHOTO_MASK;
+		else if (group >= 0)
+			photo_color = PHOTO_COPPER;
+	}
+
+	drawing_hole = (group == SL(UDRILL, 0)) || (group == SL(PDRILL, 0));
+
 	return 1;
 }
 
@@ -328,12 +361,17 @@ static void svg_use_mask(int use_it)
 
 static void svg_set_color(hidGC gc, const char *name)
 {
+	gc->drill = gc->erase = 0;
 	if (name == NULL)
 		name = "#ff0000";
-	if (strcmp(name, "drill") == 0)
+	if (strcmp(name, "drill") == 0) {
 		name = "#ffffff";
-	else if (strcmp(name, "erase") == 0)
+		gc->drill = 1;
+	}
+	else if (strcmp(name, "erase") == 0) {
 		name = "#ffffff";
+		gc->erase = 1;
+	}
 	else if (drawing_mask)
 		name = mask_color;
 	if ((gc->color != NULL) && (strcmp(gc->color, name) == 0))
@@ -381,29 +419,99 @@ static void svg_set_draw_xor(hidGC gc, int xor_)
 		y2 = t; \
 	}
 
+static void draw_rect(hidGC gc, Coord x1, Coord y1, Coord w, Coord h, Coord stroke)
+{
+	indent();
+	pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+		x1, y1, w, h, stroke, gc->color, CAPS(gc->cap));
+}
+
 static void svg_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	fix_rect_coords();
-	indent();
-	pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
-		x1, y1, x2-x1, y2-y1, gc->width, gc->color, CAPS(gc->cap));
+	draw_rect(gc, x1, y1, x2-x1, y2-y1, gc->width);
+}
+
+static void draw_fill_rect(hidGC gc, Coord x1, Coord y1, Coord w, Coord h)
+{
+	if ((photo_mode) && (!gc->erase)) {
+		Coord photo_offs = photo_palette[photo_color].offs;
+		if (photo_offs != 0) {
+			indent();
+			pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+				x1+photo_offs, y1+photo_offs, w, h, photo_palette[photo_color].dark);
+			indent();
+			pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+				x1-photo_offs, y1-photo_offs, w, h, photo_palette[photo_color].bright);
+		}
+		indent();
+		pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			x1, y1, w, h, photo_palette[photo_color].normal);
+	}
+	else {
+		indent();
+		pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			x1, y1, w, h, gc->color);
+	}
 }
 
 static void svg_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
 	fix_rect_coords();
-	indent();
-	pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
-		x1, y1, x2-x1, y2-y1, gc->color);
+	draw_fill_rect(gc, x1, y1, x2-x1, y2-y1);
+}
+
+static void draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+{
+	if ((photo_mode) && (!gc->erase)) {
+		Coord photo_offs = photo_palette[photo_color].offs;
+		if (photo_offs != 0) {
+			indent();
+			pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+				x1-photo_offs, y1-photo_offs, x2-photo_offs, y2-photo_offs, gc->width, photo_palette[photo_color].bright, CAPS(gc->cap));
+			indent();
+			pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+				x1+photo_offs, y1+photo_offs, x2+photo_offs, y2+photo_offs, gc->width, photo_palette[photo_color].dark, CAPS(gc->cap));
+		}
+		indent();
+		pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+			x1, y1, x2, y2, gc->width, photo_palette[photo_color].normal, CAPS(gc->cap));
+	}
+	else {
+		indent();
+		pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+			x1, y1, x2, y2, gc->width, gc->color, CAPS(gc->cap));
+	}
 }
 
 static void svg_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
-	indent();
-	pcb_fprintf(f, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
-		x1, y1, x2, y2, gc->width, gc->color, CAPS(gc->cap));
+	draw_line(gc, x1, y1, x2, y2);
+}
+
+static void draw_arc(hidGC gc, Coord x1, Coord y1, Coord r, Coord x2, Coord y2, Coord stroke)
+{
+	if ((photo_mode) && (!gc->erase)) {
+		Coord photo_offs = photo_palette[photo_color].offs;
+		if (photo_offs != 0) {
+			indent();
+			pcb_fprintf(f, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+				x1-photo_offs, y1-photo_offs, r, r, x2-photo_offs, y2-photo_offs, gc->width, photo_palette[photo_color].bright, CAPS(gc->cap));
+			indent();
+			pcb_fprintf(f, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+				x1+photo_offs, y1+photo_offs, r, r, x2+photo_offs, y2+photo_offs, gc->width, photo_palette[photo_color].dark, CAPS(gc->cap));
+		}
+		indent();
+		pcb_fprintf(f, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+			x1, y1, r, r, x2, y2, gc->width, photo_palette[photo_color].normal, CAPS(gc->cap));
+	}
+	else {
+		indent();
+		pcb_fprintf(f, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+			x1, y1, r, r, x2, y2, gc->width, gc->color, CAPS(gc->cap));
+	}
 }
 
 static void svg_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
@@ -435,20 +543,47 @@ static void svg_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height
 	x1 = cx + (width * cos(ea * M_PI / 180));
 	y1 = cy + (width * sin(ea * M_PI / 180));
 
-	indent();
-	pcb_fprintf(f, "<path d=\"M %mm %mm A %mm %mm 0 0 0 %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
-		x1, y1, width, width, x2, y2, gc->width, gc->color, CAPS(gc->cap));
+	draw_arc(gc, x1, y1, width, x2, y2, gc->width);
+}
+
+static void draw_fill_circle(hidGC gc, Coord cx, Coord cy, Coord r, Coord stroke)
+{
+	if ((photo_mode) && (!gc->erase)) {
+		if (!drawing_hole) {
+			Coord photo_offs = photo_palette[photo_color].offs;
+			if ((!gc->drill) && (photo_offs != 0)) {
+				indent();
+				pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+					cx-photo_offs, cy-photo_offs, r, stroke, photo_palette[photo_color].bright);
+
+				indent();
+				pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+					cx+photo_offs, cy+photo_offs, r, stroke, photo_palette[photo_color].dark);
+			}
+			indent();
+			pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+				cx, cy, r, stroke, photo_palette[photo_color].normal);
+		}
+		else {
+			indent();
+			pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+				cx, cy, r, stroke, "#000000");
+		}
+	}
+	else{
+		indent();
+		pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			cx, cy, r, stroke, gc->color);
+	}
 }
 
 static void svg_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 {
 	TRX(cx); TRY(cy);
-	indent();
-	pcb_fprintf(f, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
-		cx, cy, radius, gc->width, gc->color);
+	draw_fill_circle(gc, cx, cy, radius, gc->width);
 }
 
-static void svg_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
+static void draw_poly(hidGC gc, int n_coords, Coord * x, Coord * y, Coord offs, const char *clr)
 {
 	int i;
 	float poly_bloat = 0.075;
@@ -458,9 +593,23 @@ static void svg_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 	for (i = 0; i < n_coords; i++) {
 		Coord px = x[i], py = y[i];
 		TRX(px); TRY(py);
-		pcb_fprintf(f, "%mm,%mm ", px, py);
+		pcb_fprintf(f, "%mm,%mm ", px+offs, py+offs);
 	}
-	fprintf(f, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, gc->color, gc->color);
+	fprintf(f, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, clr, clr);
+}
+
+static void svg_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
+{
+	if ((photo_mode) && (!gc->erase)) {
+		Coord photo_offs = photo_palette[photo_color].offs;
+		if (photo_offs != 0) {
+			draw_poly(gc, n_coords, x, y, -photo_offs, photo_palette[photo_color].bright);
+			draw_poly(gc, n_coords, x, y, +photo_offs, photo_palette[photo_color].dark);
+		}
+		draw_poly(gc, n_coords, x, y, 0, photo_palette[photo_color].normal);
+	}
+	else
+		draw_poly(gc, n_coords, x, y, 0, gc->color);
 }
 
 static void svg_calibrate(double xval, double yval)
