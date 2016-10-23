@@ -80,6 +80,24 @@ static int kicad_foreach_dispatch(read_state_t *st, gsxl_node_t *tree, const dis
 }
 
 
+/* Take each children of tree and execute them using kicad_dispatch
+   Useful for procssing nodes that may host various subtrees of different
+   nodes ina  flexible way. Return non-zero if any subtree processor failed. */
+static int kicad_foreach_module_el_dispatch(read_state_t *st, gsxl_node_t *tree, const dispatch_t *disp_table)
+{
+	gsxl_node_t *n;
+	if (tree->str != NULL) {
+		printf("Module name:\t%s\n", tree->str);
+	} else {
+		/* return -1;   consider having a default name, or hash if unnamed, albeit unlikely to happen */
+	}
+	for(n = tree->next; n != NULL; n = n->next)
+		if (kicad_dispatch(st, n, disp_table) != 0)
+			return -1;
+	return 0; /* success */
+}
+
+
 /* No-op: ignore the subtree */
 static int kicad_parse_nop(read_state_t *st, gsxl_node_t *subtree)
 {
@@ -569,15 +587,99 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
-	static const dispatch_t disp[] = { /* possible children of a module node */
-		{"fp_line",    kicad_parse_nop},
+
+	gsxl_node_t *l, *n, *m;
+	int i;
+	unsigned long tally = 0, required;
+	int retval = 0;
+
+	if (subtree->str != NULL) {
+		printf("Name of module element being parsed: '%s'\n", subtree->str);		
+		for(n = subtree,i = 0; n != NULL; n = n->next, i++) {
+			if (n->str != NULL && strcmp("tedit", n->str) == 0) {
+				SEEN_NO_DUP(tally, 0);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("module tedit: '%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
+				SEEN_NO_DUP(tally, 1);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("module tstamp: '%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("at", n->str) == 0) {
+					SEEN_NO_DUP(tally, 2);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("text at x: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 3); /* same as ^= 1 was */
+					} else {
+						return -1;
+					}
+					if (n->children->next != NULL && n->children->next->str != NULL) {
+						pcb_printf("text at y: '%s'\n", (n->children->next->str));
+						SEEN_NO_DUP(tally, 4);	
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
+				SEEN_NO_DUP(tally, 5);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("text layer: '%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("descr", n->str) == 0) {
+				SEEN_NO_DUP(tally, 6);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("module descr: '%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("tags", n->str) == 0) {
+				SEEN_NO_DUP(tally, 7);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("module tags: '%s'\n", (n->children->str)); /* maye be more than one? */
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("path", n->str) == 0) {
+				SEEN_NO_DUP(tally, 8);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("module path: '%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("model", n->str) == 0) {
+				SEEN_NO_DUP(tally, 9);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("module model provided: '%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} 				
+		}
+	}
+	required = 1; /*BV(2) | BV(3) | BV(4) | BV(7) | BV(8); */
+	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
+		return 0;
+	}
+	return -1;
+
+/*
+	static const dispatch_t disp[] = {  */   /*possible children of a module node */
+/*			{"fp_line",    kicad_parse_nop},
 		{"fp_arc",     kicad_parse_nop},
 		{"fp_circle",  kicad_parse_nop},
 		{"fp_text",    kicad_parse_nop},
+		{"model"},    kicad_parse_nop}, 
 		{NULL, NULL}
 	};
 
-	return kicad_foreach_dispatch(st, subtree, disp);
+	return kicad_foreach_module_el_dispatch(st, subtree, disp);
+*/
 }
 
 /* Parse a board from &st->dom into st->PCB */
@@ -593,7 +695,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"setup",      kicad_parse_nop},
 		{"net",        kicad_parse_net}, /* net labels if child of root, otherwise net attribute of element */
 		{"net_class",  kicad_parse_nop},
-		{"module",     kicad_parse_nop}, /* module},  for footprints */
+		{"module",     kicad_parse_module},  /* for footprints */
 		{"gr_line",     kicad_parse_gr_line},
 		{"gr_arc",     kicad_parse_gr_arc},
 		{"gr_text",    kicad_parse_gr_text},
@@ -601,9 +703,9 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"segment",     kicad_parse_segment},
 		{"zone",     kicad_parse_nop}, /* polygonal zones*/
 
-		{"pad",    kicad_parse_nop}, /* for modules, encompasses pad, pin  */
-
-/*		{"font",    kicad_parse_nop}, for font attr lists
+/*		{"pad",    kicad_parse_nop},  for modules, encompasses pad, pin 
+ *
+ *		{"font",    kicad_parse_nop}, for font attr lists
  *		{"size",    kicad_parse_nop},  used for font char size
  *		{"effects",    kicad_parse_effects}, /* mostly for fonts in modules 
  *		{"justify",    kicad_parse_justify},  mostly for mirrored text on the bottom layer
