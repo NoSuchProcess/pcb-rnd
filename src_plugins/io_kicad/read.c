@@ -117,13 +117,15 @@ do { \
 	bucket |= __mask__; \
 } while(0)
 
+#define BV(bit) (1<<(bit))
+
 /* kicad_pcb/gr_text */
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
 
 	gsxl_node_t *l, *n, *m;
 	int i;
-	unsigned long tally = 0;
+	unsigned long tally = 0, required;
 	int retval = 0;
 
 	if (subtree->str != NULL) {
@@ -199,7 +201,8 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 			} 				
 		}
 	}
-	if (tally >= 0) { /* has location, layer, size and stroke thickness at a minimum */
+	required = BV(2) | BV(3) | BV(4) | BV(7) | BV(8);
+	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
 		return 0;
 	}
 	return -1;
