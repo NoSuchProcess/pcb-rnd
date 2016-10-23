@@ -912,19 +912,29 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("polygon", n->str) == 0) {
 				printf("Processing polygon [%d] points:\n", polycount);
 				polycount++; /*keep track of number of polygons in zone */
-				for (m = n->children->children, j =0; m != NULL; m = m->next, j++) {
-					if (m->str != NULL && strcmp("xy", m->str) == 0) {
-						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("vertex X[%d]:\t'%s'\n", j, (m->children->str));
-							if (m->children->next != NULL && m->children->next->str != NULL) {
-								pcb_printf("vertex Y[%d]:\t'%s'\n", j, (m->children->next->str));
-							} else {
-								return -1;
+				if (n->children != NULL && n->children->str != NULL) {
+					if (strcmp("pts", n->children->str) == 0) {
+						for (m = n->children->children, j =0; m != NULL; m = m->next, j++) {
+							if (m->str != NULL && strcmp("xy", m->str) == 0) {
+								if (m->children != NULL && m->children->str != NULL) {
+									pcb_printf("vertex X[%d]:\t'%s'\n", j, (m->children->str));
+									if (m->children->next != NULL && m->children->next->str != NULL) {
+										pcb_printf("vertex Y[%d]:\t'%s'\n", j, (m->children->next->str));
+									} else {
+										return -1;
+									}
+								} else {
+									return -1;
+								}
 							}
-						} else {
-							return -1;
 						}
+					} else {
+						printf("pts section not found in polygon.\n");
+						return -1;
 					}
+				} else {
+					printf("Empty polygon!\n");
+					return -1;
 				}
 			} else if (n->str != NULL && strcmp("fill", n->str) == 0) {
 				SEEN_NO_DUP(tally, 10);
@@ -952,6 +962,22 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 						printf("Unknown zone fill argument:\t%s\n", m->str);
 					}
 				}
+			} else if (n->str != NULL && strcmp("min_thickness", n->str) == 0) {
+				SEEN_NO_DUP(tally, 11);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("zone min_thickness:\t'%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("min_thickness", n->str) == 0) {
+				SEEN_NO_DUP(tally, 11);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("zone min_thickness:\t'%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("filled_polygon", n->str) == 0) {
+				pcb_printf("Ignoring filled_polygon definition.");
 			} else {
 				if (n->str != NULL) {
 					printf("Unknown polygon argument:\t%s\n", n->str);
