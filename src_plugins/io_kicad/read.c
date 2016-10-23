@@ -213,70 +213,6 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	}
 	return -1;
 }
-	
-/* kicad_pcb  parse (font  ) */
-static int kicad_parse_font(read_state_t *st, gsxl_node_t *subtree)
-{
-	gsxl_node_t *n;
-	int tally = 0;
-	int retval = 0;
-
-	if (subtree->str != NULL) {
-		printf("gr_text (font ) element being parsed: '%s'\n", subtree->str);		
-		for(n = subtree->children; n != NULL; n = n->next) {
-			if (strcmp("size", n->str) == 0) {
-				retval += kicad_parse_size(st, n);
-				tally += 1;
-			} else if (strcmp("thickness", n->str) == 0) {
-				retval += kicad_parse_thickness(st, n);
-				tally += 2;
-			}
-		}
-	}
-	if ((tally > 2) && (retval == 0)) { /* has location, layer and stroke thickness at a minimum */
-		return 0;
-	}
-	return -1;
-}
-
-/* kicad_pcb  parse (size  ) */
-static int kicad_parse_size(read_state_t *st, gsxl_node_t *subtree)
-{
-		if (subtree != NULL && subtree->str != NULL) {
-			pcb_printf("arg: '%s'\n", subtree->str);
-		}
-		if (subtree->children != NULL && subtree->children->str != NULL) {
-			pcb_printf("sizeX: '%s'\n", (subtree->children->str));
-		}
-		if (subtree->children->next != NULL && subtree->children->next->str != NULL) {
-			pcb_printf("sizeY: '%s'\n", (subtree->children->next->str));
-		}
-		return 0;
-}
-
-/* kicad_pcb  parse (thickness  ) */
-static int kicad_parse_thickness(read_state_t *st, gsxl_node_t *subtree)
-{
-		if (subtree != NULL && subtree->str != NULL) {
-			pcb_printf("arg: '%s'\n", subtree->str);
-		}
-		if (subtree->children != NULL && subtree->children->str != NULL) {
-			pcb_printf("thickness: '%s'\n", (subtree->children->str));
-		}
-		return 0;
-}
-
-/* kicad_pcb  parse (justify  ) */
-static int kicad_parse_justify(read_state_t *st, gsxl_node_t *subtree)
-{
-		if (subtree != NULL && subtree->str != NULL) {
-			pcb_printf("arg: '%s'\n", subtree->str);
-		}
-		if (subtree->children != NULL && subtree->children->str != NULL) {
-			pcb_printf("justification: '%s'\n", (subtree->children->str));
-		}
-		return 0;
-}
 
 /* kicad_pcb/gr_line */
 static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
@@ -345,24 +281,57 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 /* kicad_pcb/via */
 static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 {
+	gsxl_node_t *m, *n;
+	unsigned long tally = 0;
+
 	if (subtree->str != NULL) {
-
-		printf("via: '%s'\n", subtree->str);
-
-		if (subtree != NULL) {
-			kicad_parse_at(st, subtree);
+		printf("via being parsed: '%s'\n", subtree->str);		
+		for(n = subtree; n != NULL; n = n->next) {
+			if (n->str != NULL && strcmp("at", n->str) == 0) {
+					SEEN_NO_DUP(tally, 0);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("via at x: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
+					} else {
+						return -1;
+					}
+					if (n->children->next != NULL && n->children->next->str != NULL) {
+						pcb_printf("via at y: '%s'\n", (n->children->next->str));
+						SEEN_NO_DUP(tally, 2);	
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("size", n->str) == 0) {
+					SEEN_NO_DUP(tally, 3);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("via size: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 4);
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("layers", n->str) == 0) {
+					SEEN_NO_DUP(tally, 5);
+					for(m = n->children; m != NULL; m = m->next) {
+						if (m->str != NULL) {
+							pcb_printf("via layer: '%s'\n", (m->str));
+						} else {
+							return -1;
+						}
+					}
+			} else if (n->str != NULL && strcmp("net", n->str) == 0) {
+					SEEN_NO_DUP(tally, 6);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("segment net: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 7);
+					} else {
+						return -1;
+					}
+			} else {
+				return -1;
+			}
 		}
-		if (subtree->next != NULL) {
-			kicad_parse_size(st, subtree->next);
-		}
-		if (subtree->next->next != NULL) {
-			kicad_parse_element_layers(st, subtree->next->next);
-		}
-/*		if (subtree->next->next->next->next != NULL) {
- *			kicad_parse_net(st, subtree->next->next->next->next);
- *		}
- *  we don't need net info for a via
- */
+	}
+	if (tally >= 0) { /* need start, end, layer, thickness at a minimum */
 		return 0;
 	}
 	return -1;
@@ -371,29 +340,141 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 /* kicad_pcb/segment */
 static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 {
+
+	gsxl_node_t *n;
+	unsigned long tally = 0;
+
 	if (subtree->str != NULL) {
-
-		printf("segment: '%s'\n", subtree->str);
-
-		if (subtree != NULL) {
-			kicad_parse_start(st, subtree);
+		printf("segment being parsed: '%s'\n", subtree->str);		
+		for(n = subtree; n != NULL; n = n->next) {
+			if (n->str != NULL && strcmp("start", n->str) == 0) {
+					SEEN_NO_DUP(tally, 0);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("segment start at x: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
+					} else {
+						return -1;
+					}
+					if (n->children->next != NULL && n->children->next->str != NULL) {
+						pcb_printf("segment start at y: '%s'\n", (n->children->next->str));
+						SEEN_NO_DUP(tally, 2);	
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("end", n->str) == 0) {
+					SEEN_NO_DUP(tally, 3);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("segment end at x: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 4);
+					} else {
+						return -1;
+					}
+					if (n->children->next != NULL && n->children->next->str != NULL) {
+						pcb_printf("segment end at y: '%s'\n", (n->children->next->str));
+						SEEN_NO_DUP(tally, 5);	
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
+					SEEN_NO_DUP(tally, 6);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("segment layer: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 7);
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("width", n->str) == 0) {
+					SEEN_NO_DUP(tally, 8);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("segment width: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 9);
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("net", n->str) == 0) {
+					SEEN_NO_DUP(tally, 10);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("segment net: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 11);
+					} else {
+						return -1;
+					}
+			} else {
+				return -1;
+			}
 		}
-		if (subtree->next != NULL) {
-			kicad_parse_end(st, subtree->next);
-		}
-		if (subtree->next->next != NULL) {
-			kicad_parse_element_layer(st, subtree->next->next);
-		}
-		if (subtree->next->next->next != NULL) {
-			kicad_parse_width(st, subtree->next->next->next);
-		}
-		if (subtree->next->next->next->next != NULL) {
-			kicad_parse_net(st, subtree->next->next->next->next);
-		}
-/*   although we don't really care about nets for trackwork, unlike kicad */
+	}
+	if (tally >= 0) { /* need start, end, layer, thickness at a minimum */
 		return 0;
 	}
 	return -1;
+}
+
+
+
+	
+/* kicad_pcb  parse (font  ) */
+static int kicad_parse_font(read_state_t *st, gsxl_node_t *subtree)
+{
+	gsxl_node_t *n;
+	int tally = 0;
+	int retval = 0;
+
+	if (subtree->str != NULL) {
+		printf("gr_text (font ) element being parsed: '%s'\n", subtree->str);		
+		for(n = subtree->children; n != NULL; n = n->next) {
+			if (strcmp("size", n->str) == 0) {
+				retval += kicad_parse_size(st, n);
+				tally += 1;
+			} else if (strcmp("thickness", n->str) == 0) {
+				retval += kicad_parse_thickness(st, n);
+				tally += 2;
+			}
+		}
+	}
+	if ((tally > 2) && (retval == 0)) { /* has location, layer and stroke thickness at a minimum */
+		return 0;
+	}
+	return -1;
+}
+
+/* kicad_pcb  parse (size  ) */
+static int kicad_parse_size(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("sizeX: '%s'\n", (subtree->children->str));
+		}
+		if (subtree->children->next != NULL && subtree->children->next->str != NULL) {
+			pcb_printf("sizeY: '%s'\n", (subtree->children->next->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (thickness  ) */
+static int kicad_parse_thickness(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("thickness: '%s'\n", (subtree->children->str));
+		}
+		return 0;
+}
+
+/* kicad_pcb  parse (justify  ) */
+static int kicad_parse_justify(read_state_t *st, gsxl_node_t *subtree)
+{
+		if (subtree != NULL && subtree->str != NULL) {
+			pcb_printf("arg: '%s'\n", subtree->str);
+		}
+		if (subtree->children != NULL && subtree->children->str != NULL) {
+			pcb_printf("justification: '%s'\n", (subtree->children->str));
+		}
+		return 0;
 }
 
 
