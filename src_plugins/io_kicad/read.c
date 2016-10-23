@@ -137,65 +137,78 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 
 	gsxl_node_t *l, *n, *m;
 	int i;
-	int tally = 0;
+	unsigned long tally = 0;
 	int retval = 0;
 
 	if (subtree->str != NULL) {
 		printf("gr_text element being parsed: '%s'\n", subtree->str);		
 		for(n = subtree,i = 0; n != NULL; n = n->next, i++) {
-			if (strcmp("at", n->str) == 0) {
+			if (n->str != NULL && strcmp("at", n->str) == 0) {
+					SEEN_NO_DUP(tally, 0);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("at   x: '%s'\n", (n->children->str));
-						SEEN_NO_DUP(tally, 0); /* same as ^= 1 was */
+						pcb_printf("text at x: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
 					} else {
-						retval = -1;
+						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("at   y: '%s'\n", (n->children->next->str));
-						tally ^= 2;
+						pcb_printf("text at y: '%s'\n", (n->children->next->str));
+						SEEN_NO_DUP(tally, 2);	
+						if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
+							pcb_printf("text rotation: '%s'\n", (n->children->next->next->str));
+							SEEN_NO_DUP(tally, 3);
+						} 
 					} else {
-						retval = -1;
+						return -1;
 					}
-					if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
-						pcb_printf("rotation: '%s'\n", (n->children->next->next->str));
-					} 
-				/* retval += kicad_parse_at(st, n); 
-				tally ^= 1; */
-			} else if (strcmp("layer", n->str) == 0) {
-				retval += kicad_parse_element_layer(st, n);
-				tally ^= 4;
-			} else if (strcmp("effects", n->str) == 0) {
+			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
+				SEEN_NO_DUP(tally, 4);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("text layer: '%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("effects", n->str) == 0) {
+				SEEN_NO_DUP(tally, 5);
 				for(m = n->children; m != NULL; m = m->next) {
-					/*printf("stepping through effects def, looking at %s\n", m->str); */
-					if (strcmp("font", m->str) == 0) {
+					/*printf("stepping through effects def, looking at %s\n", m->str);*/ 
+					if (m->str != NULL && strcmp("font", m->str) == 0) {
+						SEEN_NO_DUP(tally, 6);
 						for(l = m->children; l != NULL; l = l->next) {
-							if (strcmp("size", l->str) == 0) {
+							if (m->str != NULL && strcmp("size", l->str) == 0) {
+								SEEN_NO_DUP(tally, 7);
 								if (l->children != NULL && l->children->str != NULL) {
-									pcb_printf("sizeX: '%s'\n", (l->children->str));
-									tally ^= 8;
+									pcb_printf("font sizeX: '%s'\n", (l->children->str));
+								} else {
+									return -1;
 								}
 								if (l->children->next != NULL && l->children->next->str != NULL) {
-									pcb_printf("sizeY: '%s'\n", (l->children->next->str));
-									tally ^= 16;
+									pcb_printf("font sizeY: '%s'\n", (l->children->next->str));
+								} else {
+									return -1;
 								}
-								/*retval += kicad_parse_size(st, l);
-								tally ^= 8; */
 							} else if (strcmp("thickness", l->str) == 0) {
-								retval += kicad_parse_thickness(st, l);
-								tally ^= 32;
+								SEEN_NO_DUP(tally, 8);
+								if (l->children != NULL && l->children->str != NULL) {
+									pcb_printf("font thickness: '%s'\n", (l->children->str));
+								} else {
+									return -1;
+								}
 							}
 						}
-						/*retval += kicad_parse_font(st, m); 
-						tally ^= 4; */
-					} else if (strcmp("justify", m->str) == 0) {
-						retval += kicad_parse_justify(st, m);
-						tally ^= 64;
+					} else if (m->str != NULL && strcmp("justify", m->str) == 0) {
+						SEEN_NO_DUP(tally, 9);
+						if (m->children != NULL && m->children->str != NULL) {
+							pcb_printf("text justification: '%s'\n", (m->children->str));
+						} else {
+							return -1;
+						}
 					}
 				}
 			}
 		}
 	}
-	if ((tally > 62) && (retval == 0)) { /* has location, layer, size and stroke thickness at a minimum */
+	if (tally >= 0) { /* has location, layer, size and stroke thickness at a minimum */
 		return 0;
 	}
 	return -1;
