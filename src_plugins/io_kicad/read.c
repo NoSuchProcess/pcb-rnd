@@ -591,6 +591,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *l, *n, *m;
 	int i;
 	unsigned long tally = 0, required;
+	unsigned long padTally = 0;
 	int retval = 0;
 
 	if (subtree->str != NULL) {
@@ -611,19 +612,19 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("at", n->str) == 0) {
-					SEEN_NO_DUP(tally, 2);
-					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("text at x: '%s'\n", (n->children->str));
-						SEEN_NO_DUP(tally, 3); /* same as ^= 1 was */
-					} else {
-						return -1;
-					}
-					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("text at y: '%s'\n", (n->children->next->str));
-						SEEN_NO_DUP(tally, 4);	
-					} else {
-						return -1;
-					}
+				SEEN_NO_DUP(tally, 2);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("text at x: '%s'\n", (n->children->str));
+					SEEN_NO_DUP(tally, 3); /* same as ^= 1 was */
+				} else {
+					return -1;
+				}
+				if (n->children->next != NULL && n->children->next->str != NULL) {
+					pcb_printf("text at y: '%s'\n", (n->children->next->str));
+					SEEN_NO_DUP(tally, 4);	
+				} else {
+					return -1;
+				}
 			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 				SEEN_NO_DUP(tally, 5);
 				if (n->children != NULL && n->children->str != NULL) {
@@ -659,14 +660,102 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				} else {
 					return -1;
 				}
-			} 				
+			} else if (n->str != NULL && strcmp("pad", n->str) == 0) {
+				if (n->children != 0 && n->children->str != NULL) {
+					printf("pad name : %s\n", n->str);
+				} else {
+					return -1;
+				}
+				if (n->children->next != NULL && n->children->next->str != NULL) {
+					pcb_printf("pad type: '%s'\n", (n->children->next->str));
+					if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
+						pcb_printf("pad shape: '%s'\n", (n->children->next->next->str));
+					} else {
+						return -1;
+					}
+				} else {
+					return -1;
+				}
+				for (m = n->children->next->next->next; m != NULL; m = m->next) {
+					printf("stepping through module pad defs, looking at: %s\n", m->str);
+					if (m->str != NULL && strcmp("at", m->str) == 0) {
+						/*SEEN_NO_DUP(padTally, 1); */
+						if (m->children != NULL && m->children->str != NULL) {
+							pcb_printf("pad X position:\t'%s'\n", (m->children->str));
+							if (m->children->next != NULL && m->children->next->str != NULL) {
+								pcb_printf("pad Y position:\t'%s'\n", (m->children->next->str));
+							} else {
+								return -1;
+							}
+						} else {
+							return -1;
+						}
+					} else if (m->str != NULL && strcmp("layers", m->str) == 0) {
+						/*SEEN_NO_DUP(padTally, 2);*/
+						for(l = m->children; l != NULL; l = l->next) {
+							if (l->str != NULL) {
+								pcb_printf("layer: '%s'\n", (l->str));
+							} else {
+								return -1;
+							}
+						}
+					} else if (m->str != NULL && strcmp("drill", m->str) == 0) {
+						/*SEEN_NO_DUP(padTally, 3);*/
+						if (m->children != NULL && m->children->str != NULL) {
+							pcb_printf("drill size: '%s'\n", (m->children->str));
+						} else {
+							return -1;
+						}
+					} else if (m->str != NULL && strcmp("net", m->str) == 0) {
+						/*SEEN_NO_DUP(padTally, 4);*/
+						if (m->children != NULL && m->children->str != NULL) {
+							pcb_printf("pad's net number:\t'%s'\n", (m->children->str));
+							if (m->children->next != NULL && m->children->next->str != NULL) {
+								pcb_printf("pad's net name:\t'%s'\n", (m->children->next->str));
+							} else {
+								return -1;
+							}
+						} else {
+							return -1;
+						}
+					} else if (m->str != NULL && strcmp("size", m->str) == 0) {
+						/*SEEN_NO_DUP(padTally, 5);*/
+						if (m->children != NULL && m->children->str != NULL) {
+							pcb_printf("pad X size:\t'%s'\n", (m->children->str));
+							if (m->children->next != NULL && m->children->next->str != NULL) {
+								pcb_printf("pad Y size:\t'%s'\n", (m->children->next->str));
+							} else {
+								return -1;
+							}
+						} else {
+							return -1;
+						}
+					} else {
+						if (m->str != NULL) {
+							printf("Unknown pad argument %s:", m->str);
+						}
+					} 
+				}
+			} else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
+					pcb_printf("fp_line found\n");
+			} else if (n->str != NULL && strcmp("fp_arc", n->str) == 0) {
+					pcb_printf("fp_arc found\n");
+			} else if (n->str != NULL && strcmp("fp_circle", n->str) == 0) {
+					pcb_printf("fp_circle found\n");
+			} else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
+					pcb_printf("fp_text found\n");
+			} else {
+				if (n->str != NULL) {
+					printf("Unknown pad argument %s:", n->str);
+				}
+			} 
 		}
-	}
-	required = 1; /*BV(2) | BV(3) | BV(4) | BV(7) | BV(8); */
-	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
+	} 
+	/* required = 1; /*BV(2) | BV(3) | BV(4) | BV(7) | BV(8);
+	if ((tally & required) == required) {  */ /* has location, layer, size and stroke thickness at a minimum */
 		return 0;
-	}
-	return -1;
+/*	}
+	return -1; */
 
 /*
 	static const dispatch_t disp[] = {  */   /*possible children of a module node */
