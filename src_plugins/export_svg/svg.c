@@ -107,7 +107,7 @@ struct {
 } photo_palette[] = {
 	/* MASK */   { "#00ff00", "#00ff00", "#00ff00", PCB_MM_TO_COORD(0) },
 	/* SILK */   { "#ffffff", "#eeeeee", "#aaaaaa", PCB_MM_TO_COORD(0) },
-	/* COPPER */ { "#eeeeee", "#aaaaaa", "#999999", PCB_MM_TO_COORD(0.05) },
+	/* COPPER */ { "#bbbbbb", "#707090", "#555555", PCB_MM_TO_COORD(0.05) },
 	/* INNER */  { "#222222", "#111111", "#000000", PCB_MM_TO_COORD(0.05) }
 };
 
@@ -312,8 +312,6 @@ static int svg_set_layer(const char *name, int group, int empty)
 	if (!photo_mode && ((group == SL(MASK, TOP)) || (group == SL(MASK, BOTTOM))))
 		return 0;
 
-/*if(group == SL(MASK, TOP)) return 0;*/
-
 	if ((group < 0) && (group != our_silk) && (group != our_mask) && (group != SL(UDRILL, 0)) && (group != SL(PDRILL, 0)))
 		return 0;
 	while(group_open) {
@@ -341,7 +339,6 @@ static int svg_set_layer(const char *name, int group, int empty)
 			int ly = PCB->LayerGroups.Entries[group][0];
 			unsigned int fl;
 			fl = pcb_layer_flags(ly) & PCB_LYT_ANYWHERE;
-			printf("side: %d %d\n", fl, our_side);
 			if (fl == our_side)
 				photo_color = PHOTO_COPPER;
 			else
