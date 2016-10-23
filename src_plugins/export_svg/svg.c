@@ -83,7 +83,7 @@ static const char *CAPS(EndCapStyle cap)
 
 static FILE *f = 0;
 static int group_open = 0;
-static int opacity = 100, drawing_mask, photo_mode;
+static int opacity = 100, drawing_mask, photo_mode, flip;
 
 char *mask_color = "#00ff00";
 float mask_opacity_factor = 0.5;
@@ -91,7 +91,7 @@ float mask_opacity_factor = 0.5;
 HID_Attribute svg_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
-/* %start-doc options "93 svg Options"
+/* %start-doc options "93 SVG Options"
 @ftable @code
 @item --outfile <string>
 Name of the file to be exported to. Can contain a path.
@@ -102,7 +102,7 @@ Name of the file to be exported to. Can contain a path.
 	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_svgfile 0
 
-/* %start-doc options "93 PNG Options"
+/* %start-doc options "93 SVG Options"
 @ftable @code
 @cindex photo-mode
 @item --photo-mode
@@ -114,7 +114,7 @@ Export a photo realistic image of the layout.
 	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_photo_mode 1
 
-/* %start-doc options "93 PNG Options"
+/* %start-doc options "93 SVG Options"
 @ftable @code
 @cindex opacity
 @item --opacity
@@ -126,6 +126,17 @@ Layer opacity
 	 HID_Integer, 0, 100, {100, 0, 0}, 0, 0},
 #define HA_opacity 2
 
+/* %start-doc options "93 SVG Options"
+@ftable @code
+@cindex flip
+@item --flip
+Flip board, look at it from the bottom side
+@end ftable
+%end-doc
+*/
+	{"flip", "Flip board",
+	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0}
+#define HA_flip 3
 };
 
 #define NUM_OPTIONS (sizeof(svg_attribute_list)/sizeof(svg_attribute_list[0]))
@@ -171,6 +182,11 @@ void svg_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 		if (options[HA_photo_mode].int_value) {
 			photo_mode = 1;
 			conf_force_set_bool(conf_core.editor.show_mask, 1);
+		}
+
+		if (options[HA_flip].int_value) {
+			flip = 1;
+			conf_force_set_bool(conf_core.editor.show_solder_side, 1);
 		}
 	}
 
@@ -242,13 +258,22 @@ static void svg_parse_arguments(int *argc, char ***argv)
 
 static int svg_set_layer(const char *name, int group, int empty)
 {
-	int opa;
+	int opa, our_mask, our_silk;
+
+	if (flip) {
+		our_mask = SL(MASK, BOTTOM);
+		our_silk = SL(SILK, BOTTOM);
+	}
+	else {
+		our_mask = SL(MASK, TOP);
+		our_silk = SL(SILK, TOP);
+	}
 
 	/* don't draw the mask if we are not in the photo mode */
 	if (!photo_mode && ((group == SL(MASK, TOP)) || (group == SL(MASK, BOTTOM))))
 		return 0;
 
-	if ((group < 0) && (group != SL(SILK, TOP)) && (group != SL(MASK, TOP)) && (group != SL(UDRILL, 0)) && (group != SL(PDRILL, 0)))
+	if ((group < 0) && (group != our_silk) && (group != our_mask) && (group != SL(UDRILL, 0)) && (group != SL(PDRILL, 0)))
 		return 0;
 	while(group_open) {
 		fprintf(f, "</g>\n");
@@ -257,7 +282,7 @@ static int svg_set_layer(const char *name, int group, int empty)
 	if (name == NULL)
 		name = "copper";
 	fprintf(f, "<g id=\"layer_%d_%s\"", group, name);
-	drawing_mask = group == SL(MASK, TOP);
+	drawing_mask = (group == our_mask);
 	opa = opacity;
 	if (drawing_mask)
 		opa *= mask_opacity_factor;
