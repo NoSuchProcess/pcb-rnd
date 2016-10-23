@@ -829,25 +829,143 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} 
 		}
 	} 
+	/* required = 1; BV(2) | BV(3) | BV(4) | BV(7) | BV(8);
+	if ((tally & required) == required) {  */ /* has location, layer, size and stroke thickness at a minimum */
+		return 0;
+/*	}
+	return -1; */
+}
+
+static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
+{
+
+	gsxl_node_t *l, *n, *m;
+	int i;
+	int polycount = 0;
+	long j  = 0;
+	unsigned long tally = 0, required;
+	int retval = 0;
+
+	if (subtree->str != NULL) {
+		printf("Zone element found:\t'%s'\n", subtree->str);		
+		for(n = subtree->next,i = 0; n != NULL; n = n->next, i++) {
+			if (n->str != NULL && strcmp("net", n->str) == 0) {
+				SEEN_NO_DUP(tally, 0);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("zone net number:\t'%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("net_name", n->str) == 0) {
+				SEEN_NO_DUP(tally, 1);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("zone net_name:\t'%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
+				SEEN_NO_DUP(tally, 2);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("zone tstamp:\t'%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("hatch", n->str) == 0) {
+				SEEN_NO_DUP(tally, 3);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("zone hatch_edge:\t'%s'\n", (n->children->str));
+					SEEN_NO_DUP(tally, 4); /* same as ^= 1 was */
+				} else {
+					return -1;
+				}
+				if (n->children->next != NULL && n->children->next->str != NULL) {
+					pcb_printf("zone hatching size:\t'%s'\n", (n->children->next->str));
+					SEEN_NO_DUP(tally, 5);	
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("connect_pads", n->str) == 0) {
+				SEEN_NO_DUP(tally, 6);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("zone connect_pads:\t'%s'\n", (n->children->str));
+					SEEN_NO_DUP(tally, 7); /* same as ^= 1 was */
+				} else {
+					return -1;
+				}
+				if (n->children->next != NULL && n->children->next->str != NULL) {
+					if (strcmp("clearance", n->children->next->str) == 0) {
+						SEEN_NO_DUP(tally, 8);
+						pcb_printf("zone connect_pads clearance: '%s'\n", (n->children->next->str));
+					} else {
+						printf("Unrecognised zone connect_pads option %s\n", n->children->next->str);
+					}
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
+				SEEN_NO_DUP(tally, 9);
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("zone layer:\t'%s'\n", (n->children->str));
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("polygon", n->str) == 0) {
+				printf("Processing polygon [%d] points:\n", polycount);
+				polycount++; /*keep track of number of polygons in zone */
+				for (m = n->children->children, j =0; m != NULL; m = m->next, j++) {
+					if (m->str != NULL && strcmp("xy", m->str) == 0) {
+						if (m->children != NULL && m->children->str != NULL) {
+							pcb_printf("vertex X[%d]:\t'%s'\n", j, (m->children->str));
+							if (m->children->next != NULL && m->children->next->str != NULL) {
+								pcb_printf("vertex Y[%d]:\t'%s'\n", j, (m->children->next->str));
+							} else {
+								return -1;
+							}
+						} else {
+							return -1;
+						}
+					}
+				}
+			} else if (n->str != NULL && strcmp("fill", n->str) == 0) {
+				SEEN_NO_DUP(tally, 10);
+				printf("Reading fill settings:\n");
+				for (m = n->children; m != NULL; m = m->next) {
+					if (m->str != NULL && strcmp("arc_segments", m->str) == 0) {
+						if (m->children != NULL && m->children->str != NULL) {
+							pcb_printf("zone arc_segments:\t'%s'\n", (m->children->str));
+						} else {
+							return -1;
+						}
+					} else if (m->str != NULL && strcmp("thermal_gap", m->str) == 0) {
+						if (m->children != NULL && m->children->str != NULL) {
+							pcb_printf("zone thermal_gap:\t'%s'\n", (m->children->str));
+						} else {
+							return -1;
+						}
+					} else if (m->str != NULL && strcmp("thermal_bridge_width", m->str) == 0) {
+						if (m->children != NULL && m->children->str != NULL) {
+							pcb_printf("zone thermal_bridge_width:\t'%s'\n", (m->children->str));
+						} else {
+							return -1;
+						}
+					} else if (m->str != NULL) {
+						printf("Unknown zone fill argument:\t%s\n", m->str);
+					}
+				}
+			} else {
+				if (n->str != NULL) {
+					printf("Unknown polygon argument:\t%s\n", n->str);
+				}
+			} 
+		}
+	} 
 	/* required = 1; /*BV(2) | BV(3) | BV(4) | BV(7) | BV(8);
 	if ((tally & required) == required) {  */ /* has location, layer, size and stroke thickness at a minimum */
 		return 0;
 /*	}
 	return -1; */
-
-/*
-	static const dispatch_t disp[] = {  */   /*possible children of a module node */
-/*			{"fp_line",    kicad_parse_nop},
-		{"fp_arc",     kicad_parse_nop},
-		{"fp_circle",  kicad_parse_nop},
-		{"fp_text",    kicad_parse_nop},
-		{"model"},    kicad_parse_nop}, 
-		{NULL, NULL}
-	};
-
-	return kicad_foreach_module_el_dispatch(st, subtree, disp);
-*/
 }
+
 
 /* Parse a board from &st->dom into st->PCB */
 static int kicad_parse_pcb(read_state_t *st)
@@ -868,22 +986,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"gr_text",    kicad_parse_gr_text},
 		{"via",     kicad_parse_via},
 		{"segment",     kicad_parse_segment},
-		{"zone",     kicad_parse_nop}, /* polygonal zones*/
-
-/*		{"pad",    kicad_parse_nop},  for modules, encompasses pad, pin 
- *
- *		{"font",    kicad_parse_nop}, for font attr lists
- *		{"size",    kicad_parse_nop},  used for font char size
- *		{"effects",    kicad_parse_effects}, /* mostly for fonts in modules 
- *		{"justify",    kicad_parse_justify},  mostly for mirrored text on the bottom layer
- *
- *		{"at",    kicad_parse_at},
- *		{"layer",    kicad_parse_element_layer},
- *		{"xy",    kicad_parse_nop}, for polygonal zone vertices
- *		{"hatch",    kicad_parse_nop},   a polygonal zone fill type
- *		{"descr",    kicad_parse_nop},  for modules, i.e. TO220 
- *		{"tedit",    kicad_parse_nop}, not really used, time stamp related
- *		{"tstamp",    kicad_parse_tstamp},  not really used */
+		{"zone",     kicad_parse_zone}, /* polygonal zones*/
 		{NULL, NULL}
 	};
 
