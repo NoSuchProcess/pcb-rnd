@@ -1,5 +1,5 @@
 Scalable Vector Graphics (SVG) exporter
 
-#state: Work-in-progress
-#default: disable
+#state: works
+#default: buildin
 #implements: export
