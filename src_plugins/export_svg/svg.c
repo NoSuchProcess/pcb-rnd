@@ -83,7 +83,7 @@ static const char *CAPS(EndCapStyle cap)
 
 static FILE *f = 0;
 static int group_open = 0;
-static int opacity = 100, drawing_mask;
+static int opacity = 100, drawing_mask, photo_mode;
 
 char *mask_color = "#00ff00";
 float mask_opacity_factor = 0.5;
@@ -116,9 +116,9 @@ Export a photo realistic image of the layout.
 
 /* %start-doc options "93 PNG Options"
 @ftable @code
-@cindex photo-mode
-@item --photo-mode
-Export a photo realistic image of the layout.
+@cindex opacity
+@item --opacity
+Layer opacity
 @end ftable
 %end-doc
 */
@@ -169,6 +169,7 @@ void svg_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 		conf_force_set_bool(conf_core.editor.show_mask, 0);
 
 		if (options[HA_photo_mode].int_value) {
+			photo_mode = 1;
 			conf_force_set_bool(conf_core.editor.show_mask, 1);
 		}
 	}
@@ -194,11 +195,6 @@ static void svg_do_export(HID_Attr_Val * options)
 			svg_values[i] = svg_attribute_list[i].default_val;
 		options = svg_values;
 	}
-
-/*
-	if (options[HA_photo_mode].int_value) {
-	}
-*/
 
 	filename = options[HA_svgfile].str_value;
 	if (!filename)
@@ -244,10 +240,14 @@ static void svg_parse_arguments(int *argc, char ***argv)
 	hid_parse_command_line(argc, argv);
 }
 
-
 static int svg_set_layer(const char *name, int group, int empty)
 {
 	int opa;
+
+	/* don't draw the mask if we are not in the photo mode */
+	if (!photo_mode && ((group == SL(MASK, TOP)) || (group == SL(MASK, BOTTOM))))
+		return 0;
+
 	if ((group < 0) && (group != SL(SILK, TOP)) && (group != SL(MASK, TOP)) && (group != SL(UDRILL, 0)) && (group != SL(PDRILL, 0)))
 		return 0;
 	while(group_open) {
