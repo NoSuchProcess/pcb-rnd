@@ -39,6 +39,10 @@ typedef struct hid_cfg_s {
 typedef int (*create_menu_widget_t)(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item);
 int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie, create_menu_widget_t cb, void *cb_ctx);
 
+/* Remove a path recursively; call gui_remove() on leaf paths until the subtree
+   is consumed (should return 0 on success) */
+int hid_cfg_remove_menu(hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, const char *path),void *ctx);
+
 /* Search and load the menu res for hidname; if not found, and embedded_fallback
    is not NULL, parse that string instead. Returns NULL on error */
 hid_cfg_t *hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallback);
