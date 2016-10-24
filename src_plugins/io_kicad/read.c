@@ -857,21 +857,20 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 				}
 			} else if (n->str != NULL && strcmp("connect_pads", n->str) == 0) {
 				SEEN_NO_DUP(tally, 6);
-				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("zone connect_pads:\t'%s'\n", (n->children->str));
+				if (n->children != NULL && n->children->str != NULL && (strcmp("clearance", n->children->str) == 0) && (n->children->children->str != NULL)) {
+					pcb_printf("zone clearance:\t'%s'\n", (n->children->children->str));  /* this is if yes/no flag for connected pads is absent */
 					SEEN_NO_DUP(tally, 7); /* same as ^= 1 was */
-				} else {
-					return -1;
-				}
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					if (strcmp("clearance", n->children->next->str) == 0) {
-						SEEN_NO_DUP(tally, 8);
-						pcb_printf("zone connect_pads clearance: '%s'\n", (n->children->next->str));
-					} else {
-						printf("Unrecognised zone connect_pads option %s\n", n->children->next->str);
+				} else if (n->children != NULL && n->children->str != NULL && n->children->next->str != NULL) {
+					pcb_printf("zone connect_pads:\t'%s'\n", (n->children->str));  /* this is if the optional(!) yes or no flag for connected pads is present */
+					SEEN_NO_DUP(tally, 7); /* same as ^= 1 was */
+					if (n->children->next != NULL && n->children->next->str != NULL && n->children->next->children != NULL && n->children->next->children->str != NULL) {
+						if (strcmp("clearance", n->children->next->str) == 0) {
+							SEEN_NO_DUP(tally, 8);
+							pcb_printf("zone connect_pads clearance: '%s'\n", (n->children->next->children->str));
+						} else {
+							printf("Unrecognised zone connect_pads option %s\n", n->children->next->str);
+						}
 					}
-				} else {
-					return -1;
 				}
 			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 				SEEN_NO_DUP(tally, 9);
@@ -932,13 +931,6 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					} else if (m->str != NULL) {
 						printf("Unknown zone fill argument:\t%s\n", m->str);
 					}
-				}
-			} else if (n->str != NULL && strcmp("min_thickness", n->str) == 0) {
-				SEEN_NO_DUP(tally, 11);
-				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("zone min_thickness:\t'%s'\n", (n->children->str));
-				} else {
-					return -1;
 				}
 			} else if (n->str != NULL && strcmp("min_thickness", n->str) == 0) {
 				SEEN_NO_DUP(tally, 11);
