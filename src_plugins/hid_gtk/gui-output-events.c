@@ -529,8 +529,6 @@ void ghid_confchg_fullscreen(conf_native_t *cfg)
 
 void ghid_confchg_checkbox(conf_native_t *cfg)
 {
-	if (gtkhid_active) {
-		pcb_trace("chk!\n");
+	if (gtkhid_active)
 		ghid_update_toggle_flags();
-	}
 }
