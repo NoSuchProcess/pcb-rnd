@@ -127,16 +127,23 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 	else {
 		/* NON-SUBMENU: MENU ITEM */
 		const char *checked = hid_cfg_menu_field_str(sub_res, MF_CHECKED);
+		const char *update_on = hid_cfg_menu_field_str(sub_res, MF_UPDATE_ON);
 		const char *label = hid_cfg_menu_field_str(sub_res, MF_SENSITIVE);
 		const char *tip = hid_cfg_menu_field_str(sub_res, MF_TIP);
 		if (checked) {
 			/* TOGGLE ITEM */
-			conf_native_t *nat = conf_get_field(checked);
+			conf_native_t *nat = NULL;
 			gchar *name = g_strdup_printf("MainMenuAction%d", action_counter++);
 			action = GTK_ACTION(gtk_toggle_action_new(name, menu_label, tip, NULL));
 			/* checked=foo       is a binary flag (checkbox)
 			 * checked=foo=bar   is a flag compared to a value (radio) */
 			gtk_toggle_action_set_draw_as_radio(GTK_TOGGLE_ACTION(action), ! !strchr(checked, '='));
+
+			if (update_on != NULL)
+				nat = conf_get_field(update_on);
+			else
+				nat = conf_get_field(checked);
+
 			if (nat != NULL) {
 				static conf_hid_callbacks_t cbs;
 				static int cbs_inited = 0;
@@ -145,7 +152,12 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 					cbs.val_change_post = ghid_confchg_checkbox;
 					cbs_inited = 1;
 				}
+/*				pcb_trace("conf_hid_set for %s -> %s\n", checked, nat->hash_path);*/
 				conf_hid_set_cb(nat, ghid_menuconf_id, &cbs);
+			}
+			else {
+				if ((update_on == NULL) || (*update_on != '\0')) /* warn if update_on is not explicitly empty */
+					Message(PCB_MSG_WARNING, "Checkbox menu item not %s updated on any conf change - try to use the update_on field\n", checked);
 			}
 		}
 		else if (label && strcmp(label, "false") == 0) {
