@@ -24,6 +24,7 @@
  *	Thomas.Nau@rz.uni-ulm.de
  *
  */
+#include <assert.h>
 #include <math.h>
 #include <gensexpr/gsxl.h>
 #include "plug_io.h"
@@ -591,6 +592,39 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 	return -1;
 }
 
+/* Parse a layer definition and do all the administration needed for the layer */
+static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, const char *ltype)
+{
+	int id = -1;
+	switch(lnum) {
+		case 0:   id = SOLDER_LAYER; break;
+		case 15:  id = SOLDER_LAYER; break;
+		default:
+			if (strcmp(lname, "Edge.Cuts") == 0) {
+				/* Edge must be the outline */
+				id = pcb_layer_create(PCB_LYT_OUTLINE, 0, 0, "outline");
+			}
+			else if ((strcmp(ltype, "signal") == 0) || (strncmp(lname, "Dwgs.", 4) == 0) || (strncmp(lname, "Cmts.", 4) == 0) || (strncmp(lname, "Eco", 3) == 0)) {
+				/* Create a new inner layer for signals and for emulating misc layers */
+				id = pcb_layer_create(PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0, lname);
+			}
+			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) {
+				/* F. or B. layers */
+				if (strcmp(lname+2, "SilkS") == 0) return 0; /* silk layers are implicit */
+				if (strcmp(lname+2, "Adhes") == 0) return 0; /* pcb-rnd has no adhesive support */
+				if (strcmp(lname+2, "Paste") == 0) return 0; /* pcb-rnd has no custom paste support */
+				if (strcmp(lname+2, "Mask") == 0)  return 0; /* pcb-rnd has no custom mask support */
+				return -1; /* unknown F. or B. layer -> error */
+			}
+			else
+				return -1; /* unknown field */
+	}
+
+/* valid layer, save it in the hash */
+	assert(id >= 0);
+	/*TODO*/
+}
+
 /* kicad_pcb  parse (layers  )  - either board layer defintions, or module pad/via layer defs */
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 {
@@ -600,17 +634,25 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 			pcb_printf("layer definitions encountered in unexpected place in kicad layout\n");
 			return -1;
 		} else { /* we are just below the top level or root of the tree, so this must be a layer definitions section */
+			pcb_layers_reset();
 			pcb_printf("Board layer descriptions:\n");
 			for(n = subtree,i = 0; n != NULL; n = n->next, i++) {
 				if ((n->str != NULL) && (n->children->str != NULL) && (n->children->next != NULL) && (n->children->next->str != NULL) ) {
+					int lnum = atoi(n->str);
+					const char *lname = n->children->str, *ltype = n->children->next->str;
 					pcb_printf("layer #%d LAYERNUM found:\t%s\n", i, n->str);
-					pcb_printf("layer #%d layer label found:\t%s\n", i, n->children->str);
-					pcb_printf("layer #%d layer description/type found:\t%s\n", i, n->children->next->str);
+					pcb_printf("layer #%d layer label found:\t%s\n", i, lname);
+					pcb_printf("layer #%d layer description/type found:\t%s\n", i, ltype);
+					if (kicad_create_layer(st, lnum, lname, ltype) < 0) {
+						Message(PCB_MSG_ERROR, "Unrecognized layer: %d, %s, %s\n", lnum, lname, ltype);
+						return -1;
+					}
 				} else {
 					printf("unexpected board layer definition(s) encountered.\n");
 					return -1;
 				}
 			}
+			pcb_layers_finalize();
 			return 0;
 		}
 }
