@@ -940,7 +940,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("filled_polygon", n->str) == 0) {
-				pcb_printf("Ignoring filled_polygon definition.");
+				pcb_printf("Ignoring filled_polygon definition.\n");
 			} else {
 				if (n->str != NULL) {
 					printf("Unknown polygon argument:\t%s\n", n->str);
@@ -1024,6 +1024,6 @@ int io_kicad_read_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf
 	/* clean up */
 	gsxl_uninit(&st.dom);
 
-
+printf("readres=%d\n", readres);
 	return readres;
 }
