@@ -79,25 +79,6 @@ static int kicad_foreach_dispatch(read_state_t *st, gsxl_node_t *tree, const dis
 	return 0; /* success */
 }
 
-
-/* Take each children of tree and execute them using kicad_dispatch
-   Useful for procssing nodes that may host various subtrees of different
-   nodes ina  flexible way. Return non-zero if any subtree processor failed. */
-static int kicad_foreach_module_el_dispatch(read_state_t *st, gsxl_node_t *tree, const dispatch_t *disp_table)
-{
-	gsxl_node_t *n;
-	if (tree->str != NULL) {
-		printf("Module name:\t%s\n", tree->str);
-	} else {
-		/* return -1;   consider having a default name, or hash if unnamed, albeit unlikely to happen */
-	}
-	for(n = tree->next; n != NULL; n = n->next)
-		if (kicad_dispatch(st, n, disp_table) != 0)
-			return -1;
-	return 0; /* success */
-}
-
-
 /* No-op: ignore the subtree */
 static int kicad_parse_nop(read_state_t *st, gsxl_node_t *subtree)
 {
@@ -116,9 +97,8 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 	return -1;
 }
 
-static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree);
-static int kicad_parse_drill(read_state_t *st, gsxl_node_t *subtree);
-static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree);
+static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree); /* for layout layer definitions */
+static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree); /* describes netlists for the layout */
 
 #define SEEN_NO_DUP(bucket, bit) \
 do { \
@@ -143,7 +123,6 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *l, *n, *m;
 	int i;
 	unsigned long tally = 0, required;
-	int retval = 0;
 
 	if (subtree->str != NULL) {
 		printf("gr_text element being parsed: '%s'\n", subtree->str);		
@@ -636,26 +615,20 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 		}
 }
 
-/* kicad_pcb  parse (drill  ) */
-static int kicad_parse_drill(read_state_t *st, gsxl_node_t *subtree)
-{
-		if (subtree != NULL && subtree->str != NULL) {
-			pcb_printf("arg: '%s'\n", subtree->str);
-		}
-		if (subtree->children != NULL && subtree->children->str != NULL) {
-			pcb_printf("drill: '%s'\n", (subtree->children->str));
-		}
-		return 0;
-}
-
 /* kicad_pcb  parse (net  ) ;   used for net descriptions for the entire layout */
 static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 {
 		if (subtree != NULL && subtree->str != NULL) {
 			pcb_printf("net number: '%s'\n", subtree->str);
+		} else {
+			pcb_printf("missing net number in net descriptors");
+			return -1;
 		}
 		if (subtree->next != NULL && subtree->next->str != NULL) {
 			pcb_printf("and the net label is: '%s'\n", (subtree->next->str));
+		} else {
+			pcb_printf("missing net label in net descriptors");
+			return -1;
 		}
 		return 0;
 }
@@ -666,8 +639,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *l, *n, *m;
 	int i;
 	unsigned long tally = 0, required;
-	unsigned long padTally = 0;
-	int retval = 0;
 
 	if (subtree->str != NULL) {
 		printf("Name of module element being parsed: '%s'\n", subtree->str);		
@@ -819,6 +790,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					kicad_parse_gr_arc(st, n->children);
 			} else if (n->str != NULL && strcmp("fp_circle", n->str) == 0) {
 					pcb_printf("fp_circle found\n");
+					kicad_parse_fp_circle(st, n->children);
 			} else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
 					pcb_printf("fp_text found\n");
 					kicad_parse_gr_text(st, n->children);
@@ -839,12 +811,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 {
 
-	gsxl_node_t *l, *n, *m;
+	gsxl_node_t *n, *m;
 	int i;
 	int polycount = 0;
 	long j  = 0;
 	unsigned long tally = 0, required;
-	int retval = 0;
 
 	if (subtree->str != NULL) {
 		printf("Zone element found:\t'%s'\n", subtree->str);		
@@ -985,7 +956,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			} 
 		}
 	} 
-	/* required = 1; /*BV(2) | BV(3) | BV(4) | BV(7) | BV(8);
+	/* required = 1; BV(2) | BV(3) | BV(4) | BV(7) | BV(8);
 	if ((tally & required) == required) {  */ /* has location, layer, size and stroke thickness at a minimum */
 		return 0;
 /*	}
@@ -1032,7 +1003,7 @@ int io_kicad_read_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf
 	gsx_parse_res_t res;
 	FILE *FP;
 
-	FP = fopen(Filename, "r");
+		FP = fopen(Filename, "r");
 	if (FP == NULL)
 		return -1;
 
