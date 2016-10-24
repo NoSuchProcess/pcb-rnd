@@ -638,6 +638,15 @@ static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, un
 	return 0;
 }
 
+/* Returns the pcb-rnd layer index for a kicad_name, or -1 if not found */
+static int kicad_get_layeridx(read_state_t *st, const char *kicad_name)
+{
+	htsi_entry_t *e;
+	e = htsi_getentry(&st->layer_k2i, kicad_name);
+	if (e == NULL)
+		return -1;
+	return e->value;
+}
 
 /* kicad_pcb  parse (layers  )  - either board layer defintions, or module pad/via layer defs */
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
