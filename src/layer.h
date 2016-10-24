@@ -131,3 +131,22 @@ int pcb_layer_lookup_group(int layer_id);
 
 /* Put a layer in a group (the layer should not be in any other group) */
 void pcb_layer_add_in_group(int layer_id, int group_id);
+
+
+/**** layer creation (for load/import code) ****/
+
+/* Reset layers to the bare minimum (double sided board) */
+void pcb_layers_reset();
+
+/* If reuse_layer is false, create a new layer of the given type; if
+   reuse_group is true, try to put the new layer on an existing group.
+   If reuse_layer is 1, first try to return an already exiting layer that
+   matches type and create a new one if that fails.
+   Upon creating a new layer, name it according to lname if it is not NULL
+   Returns a layer index (or -1 on error)
+   Do not create: mask, silk, paste; they are special layers.
+   */
+int pcb_layer_create(pcb_layer_type_t type, pcb_bool_t reuse_layer, pcb_bool_t reuse_group, const char *lname);
+
+/* Needs to be called once at the end, when all layers has been added */
+void pcb_layers_finalize();

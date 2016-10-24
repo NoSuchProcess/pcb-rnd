@@ -619,4 +619,197 @@ void pcb_layer_add_in_group(int layer_id, int group_id)
 	PCB->LayerGroups.Number[group_id]++;
 }
 
+
+void pcb_layers_reset()
+{
+	int n;
+
+	/* reset layer names */
+	for(n = 2; n < MAX_LAYER; n++) {
+		if (PCB->Data->Layer[n].Name != NULL)
+			free((char *)PCB->Data->Layer[n].Name);
+		PCB->Data->Layer[n].Name = pcb_strdup("<pcb_layers_reset>");
+	}
+
+	/* reset layer groups */
+	for(n = 0; n < MAX_LAYER; n++)
+		PCB->LayerGroups.Number[n] = 0;
+
+	/* set up one copper layer on top and one on bottom */
+	PCB->Data->LayerN = 2;
+	PCB->LayerGroups.Number[SOLDER_LAYER] = 1;
+	PCB->LayerGroups.Number[COMPONENT_LAYER] = 1;
+	PCB->LayerGroups.Entries[SOLDER_LAYER][0] = SOLDER_LAYER;
+	PCB->LayerGroups.Entries[COMPONENT_LAYER][0] = COMPONENT_LAYER;
+
+	/* Name top and bottom layers */
+	if (PCB->Data->Layer[COMPONENT_LAYER].Name != NULL)
+		free((char *)PCB->Data->Layer[COMPONENT_LAYER].Name);
+	PCB->Data->Layer[COMPONENT_LAYER].Name = pcb_strdup("<top>");
+
+	if (PCB->Data->Layer[SOLDER_LAYER].Name != NULL)
+		free((char *)PCB->Data->Layer[SOLDER_LAYER].Name);
+	PCB->Data->Layer[SOLDER_LAYER].Name = pcb_strdup("<bottom>");
+}
+
+int pcb_layer_create(pcb_layer_type_t type, pcb_bool_t reuse_layer, pcb_bool_t reuse_group, const char *lname)
+{
+	int id, grp = -1, found;
+	unsigned int loc  = type & PCB_LYT_ANYWHERE;
+	unsigned int role = type & PCB_LYT_ANYTHING;
+
+	/* look for an existing layer if reuse is enabled */
+	if (reuse_layer) {
+		switch(role) {
+			case PCB_LYT_MASK:
+			case PCB_LYT_PASTE:
+			case PCB_LYT_SILK:
+				return -1; /* do not create silk, paste or mask layers, they are special */
+
+			case PCB_LYT_COPPER:
+				switch(loc) {
+					case PCB_LYT_TOP:    return COMPONENT_LAYER;
+					case PCB_LYT_BOTTOM: return SOLDER_LAYER;
+					case PCB_LYT_INTERN:
+						for(grp = 2; grp < MAX_LAYER; grp++) {
+							if (PCB->LayerGroups.Number[grp] > 0) {
+								id = PCB->LayerGroups.Entries[grp][0];
+								if (strcmp(PCB->Data->Layer[id].Name, "outline") != 0)
+									return id;
+							}
+						}
+						return -1;
+				}
+				break;
+
+			case PCB_LYT_OUTLINE:
+				for(grp = 2; grp < MAX_LAYER; grp++) {
+					if (PCB->LayerGroups.Number[grp] > 0) {
+						id = PCB->LayerGroups.Entries[grp][0];
+						if (strcmp(PCB->Data->Layer[id].Name, "outline") == 0)
+							return id;
+					}
+				}
+				return -1;
+		}
+		return -1;
+	}
+
+	/* Need to create a new layers, look for an existing group first */
+	if (role == PCB_LYT_OUTLINE) {
+		lname = "outline";
+
+		for(id = 0; id < PCB->Data->LayerN; id++)
+			if (strcmp(PCB->Data->Layer[id].Name, lname) == 0)
+				return id; /* force reuse outline */
+
+		/* not found: create a new layer for outline */
+		grp = -1;
+		reuse_group = pcb_false;
+	}
+
+	/* there's only one top and bottom group, always reuse them */
+	if (role == PCB_LYT_COPPER) {
+		switch(loc) {
+			case PCB_LYT_TOP:    grp = COMPONENT_LAYER; reuse_group = 0; break;
+			case PCB_LYT_BOTTOM: grp = SOLDER_LAYER; reuse_group = 0; break;
+		}
+	}
+
+	if (reuse_group) { /* can't use group find here, it depends on existing silks! */
+		switch(role) {
+			case PCB_LYT_MASK:
+			case PCB_LYT_PASTE:
+			case PCB_LYT_SILK:
+				return -1; /* do not create silk, paste or mask layers, they are special */
+
+			case PCB_LYT_COPPER:
+				switch(loc) {
+					case PCB_LYT_TOP:
+					case PCB_LYT_BOTTOM:
+						abort(); /* can't get here */
+					case PCB_LYT_INTERN:
+						/* find the first internal layer */
+						for(found = 0, grp = 2; grp < MAX_LAYER; grp++) {
+							if (PCB->LayerGroups.Number[grp] > 0) {
+								id = PCB->LayerGroups.Entries[grp][0];
+								if (strcmp(PCB->Data->Layer[id].Name, "outline") != 0) {
+									found = 1;
+									break;
+								}
+							}
+						}
+						if (!found)
+							return -1;
+						id = -1;
+				}
+				break;
+			case PCB_LYT_OUTLINE:
+				abort(); /* can't get here */
+		}
+	}
+printf("[%s] GRP=%d loc=%x role=%x\n", lname, grp, loc, role);
+	if (grp < 0) {
+		/* Also need to create a group */
+		for(grp = 0; grp < MAX_LAYER; grp++)
+			if (PCB->LayerGroups.Number[grp] == 0)
+				break;
+		if (grp >= MAX_LAYER)
+			return -2;
+	}
+
+	id = PCB->Data->LayerN++;
+
+	if (lname != NULL) {
+		if (PCB->Data->Layer[id].Name != NULL)
+			free((char *)PCB->Data->Layer[id].Name);
+		PCB->Data->Layer[id].Name = pcb_strdup(lname);
+	}
+
+	/* add layer to group */
+	PCB->LayerGroups.Entries[grp][PCB->LayerGroups.Number[grp]] = id;
+	PCB->LayerGroups.Number[grp]++;
+
+	return id;
+}
+
+/* Temporary hack: silk layers have to be added as the last entry in the top and bottom layer groups, if they are not already in */
+static void hack_in_silks()
+{
+	int sl, cl, found, n;
+
+	sl = SOLDER_LAYER + PCB->Data->LayerN;
+	for(found = 0, n = 0; n < PCB->LayerGroups.Number[SOLDER_LAYER]; n++)
+		if (PCB->LayerGroups.Entries[SOLDER_LAYER][n] == sl)
+			found = 1;
+
+	if (!found) {
+		PCB->LayerGroups.Entries[SOLDER_LAYER][PCB->LayerGroups.Number[SOLDER_LAYER]] = sl;
+		PCB->LayerGroups.Number[SOLDER_LAYER]++;
+		if (PCB->Data->Layer[sl].Name != NULL)
+			free((char *)PCB->Data->Layer[sl].Name);
+		PCB->Data->Layer[sl].Name = pcb_strdup("silk");
+	}
+
+
+	cl = COMPONENT_LAYER + PCB->Data->LayerN;
+	for(found = 0, n = 0; n < PCB->LayerGroups.Number[COMPONENT_LAYER]; n++)
+		if (PCB->LayerGroups.Entries[COMPONENT_LAYER][n] == cl)
+			found = 1;
+
+	if (!found) {
+		PCB->LayerGroups.Entries[COMPONENT_LAYER][PCB->LayerGroups.Number[COMPONENT_LAYER]] = cl;
+		PCB->LayerGroups.Number[COMPONENT_LAYER]++;
+		if (PCB->Data->Layer[cl].Name != NULL)
+			free((char *)PCB->Data->Layer[cl].Name);
+		PCB->Data->Layer[cl].Name = pcb_strdup("silk");
+	}
+}
+
+
+void pcb_layers_finalize()
+{
+	hack_in_silks();
+}
+
 #undef APPEND
