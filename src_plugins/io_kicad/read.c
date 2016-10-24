@@ -27,6 +27,8 @@
 #include <assert.h>
 #include <math.h>
 #include <gensexpr/gsxl.h>
+#include <genht/htsi.h>
+#include "compat_misc.h"
 #include "plug_io.h"
 #include "error.h"
 #include "data.h"
@@ -40,6 +42,7 @@ typedef struct {
 	const char *Filename;
 	conf_role_t settings_dest;
 	gsxl_dom_t dom;
+	htsi_t layer_k2i; /* layer name-to-index hash; name is the kicad name, index is the pcb-rnd layer index */
 } read_state_t;
 
 typedef struct {
@@ -622,14 +625,27 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 
 /* valid layer, save it in the hash */
 	assert(id >= 0);
-	/*TODO*/
+	htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
 }
+
+/* Register a kicad layer in the layer hash after looking up the pcb-rnd equivalent */
+static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, unsigned int mask)
+{
+	int id;
+	if (pcb_layer_list(mask, &id, 1) != 1)
+		return 1;
+	htsi_set(&st->layer_k2i, pcb_strdup(kicad_name), id);
+	return 0;
+}
+
 
 /* kicad_pcb  parse (layers  )  - either board layer defintions, or module pad/via layer defs */
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *m, *n;
 	int i;
+	unsigned int res;
+
 		if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) { /* test if deeper in tree than layer definitions for entire board */  
 			pcb_printf("layer definitions encountered in unexpected place in kicad layout\n");
 			return -1;
@@ -653,6 +669,19 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 				}
 			}
 			pcb_layers_finalize();
+
+			/* set up the hash for implicit layers */
+			res = 0;
+			res |= kicad_reg_layer(st, "F.SilkS", PCB_LYT_SILK | PCB_LYT_TOP);
+			res |= kicad_reg_layer(st, "B.SilkS", PCB_LYT_SILK | PCB_LYT_BOTTOM);
+			res |= kicad_reg_layer(st, "F.Mask",  PCB_LYT_MASK | PCB_LYT_TOP);
+			res |= kicad_reg_layer(st, "B.Mask",  PCB_LYT_MASK | PCB_LYT_BOTTOM);
+
+			if (res != 0) {
+				Message(PCB_MSG_ERROR, "Internal error: can't find a silk or mask layer\n");
+				return -1;
+			}
+
 			return 0;
 		}
 }
@@ -1042,9 +1071,11 @@ int io_kicad_read_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf
 		return -1;
 
 	/* set up the parse context */
+	memset(&st, 0, sizeof(st));
 	st.PCB = Ptr;
 	st.Filename = Filename;
 	st.settings_dest = settings_dest;
+	htsi_init(&st.layer_k2i, strhash, strkeyeq);
 
 	/* load the file into the dom */
 	gsxl_init(&st.dom, gsxl_node_t);
@@ -1065,6 +1096,8 @@ int io_kicad_read_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf
 
 	/* clean up */
 	gsxl_uninit(&st.dom);
+
+#warning TODO: free the layer hash
 
 printf("readres=%d\n", readres);
 	return readres;
