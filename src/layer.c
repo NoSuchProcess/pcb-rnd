@@ -748,7 +748,7 @@ int pcb_layer_create(pcb_layer_type_t type, pcb_bool_t reuse_layer, pcb_bool_t r
 				abort(); /* can't get here */
 		}
 	}
-printf("[%s] GRP=%d loc=%x role=%x\n", lname, grp, loc, role);
+
 	if (grp < 0) {
 		/* Also need to create a group */
 		for(grp = 0; grp < MAX_LAYER; grp++)
