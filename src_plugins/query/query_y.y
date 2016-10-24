@@ -89,7 +89,7 @@ static pcb_qry_node_t *make_regex_free(char *str)
 %}
 
 %name-prefix "qry_"
-%define parse.error verbose
+%error-verbose
 %parse-param {pcb_qry_node_t **prg_out}
 
 %union {
