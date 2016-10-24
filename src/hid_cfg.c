@@ -341,6 +341,7 @@ lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, hid_cfg_menufield_t fi
 		case MF_MNEMONIC:     fieldstr = "m"; break;
 		case MF_SUBMENU:      fieldstr = "submenu"; break;
 		case MF_CHECKED:      fieldstr = "checked"; break;
+		case MF_UPDATE_ON:    fieldstr = "update_on"; break;
 		case MF_SENSITIVE:    fieldstr = "sensitive"; break;
 		case MF_TIP:          fieldstr = "tip"; break;
 		case MF_ACTIVE:       fieldstr = "active"; break;
