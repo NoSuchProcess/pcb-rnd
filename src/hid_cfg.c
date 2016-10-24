@@ -133,51 +133,51 @@ int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, con
 		}
 
 		/* descend and visit each level, create missing levels */
+
 		hid_cfg_get_menu_at(hr, NULL, path, create_menu_cb, &cmc);
 	}
 
 	return cmc.err;
 }
 
-static int hid_cfg_remove_item(hid_cfg_t *hr, lht_node_t *item, int (*gui_remove)(void *ctx, const char *path), void *ctx)
+static int hid_cfg_remove_item(hid_cfg_t *hr, lht_node_t *item, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
-	char *path = lht_tree_path_build(item->doc->root, item, NULL);
-	if (path == NULL)
+	if (gui_remove(ctx, item) != 0)
 		return -1;
-	if (gui_remove(ctx, path) != 0) {
-		free(path);
-		return -1;
-	}
-	free(path);
 	lht_tree_del(item);
 	return 0;
 }
 
 
-static int hid_cfg_remove_menu_(hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, const char *path), void *ctx)
+static int hid_cfg_remove_menu_(hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
-	lht_node_t *psub, *n;
-
-	if ((root == NULL) || (root->type != LHT_HASH))
+	if (root == NULL)
 		return -1;
 
-	psub = hid_cfg_menu_field(root, MF_SUBMENU, NULL);
-	if (psub != NULL) { /* remove a whole submenu with all children */
-		int res = 0;
-		for(n = psub->data.list.first; n != NULL; n = n->next) {
-			if (hid_cfg_remove_menu_(hr, psub, gui_remove, ctx) != 0)
-				res = -1;
+	if (root->type == LHT_HASH) {
+		lht_node_t *psub, *n, *next;
+		psub = hid_cfg_menu_field(root, MF_SUBMENU, NULL);
+		if (psub != NULL) { /* remove a whole submenu with all children */
+			int res = 0;
+			for(n = psub->data.list.first; n != NULL; n = next) {
+				next = n->next;
+				if (hid_cfg_remove_menu_(hr, n, gui_remove, ctx) != 0)
+					res = -1;
+			}
+			if (res == 0)
+				res = hid_cfg_remove_item(hr, root, gui_remove, ctx);
+			return res;
 		}
-		if (res == 0)
-			res = hid_cfg_remove_item(hr, root, gui_remove, ctx);
-		return res;
 	}
+
+	if ((root->type != LHT_TEXT) && (root->type != LHT_HASH)) /* allow text for the sep */
+		return -1;
 
 	/* remove a simple menu item */
 	return hid_cfg_remove_item(hr, root, gui_remove, ctx);
 }
 
-int hid_cfg_remove_menu(hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, const char *path), void *ctx)
+int hid_cfg_remove_menu(hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
 	return hid_cfg_remove_menu_(hr, hid_cfg_get_menu_at(hr, NULL, path, NULL, NULL), gui_remove, ctx);
 }
