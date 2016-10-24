@@ -137,4 +137,4 @@ Low prio:
 - while drawing a line, the temporary outline should reflect the layer color
 - push&shove
 	- keep 45-deg knee when grabbing a point for drag&drop in non-all-dir
-- examine current handling of long options
+- examine current handling of long options [miloh]
