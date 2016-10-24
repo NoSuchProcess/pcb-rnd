@@ -235,16 +235,30 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 				EraseElementName(element);
 			}
 			END_LOOP;
-			conf_set_editor(description, 0);
-			conf_set_editor(name_on_pcb, 0);
 			switch (id) {
 			case F_Value:
+				if (conf_core.editor.description || conf_core.editor.name_on_pcb) {
+					conf_set_editor(description, 0);
+					conf_set_editor(name_on_pcb, 0);
+				}
+				else
+					conf_set_editor(name_on_pcb, 0); /* need to write once so the event is triggered */
 				break;
 			case F_NameOnPCB:
-				conf_set_editor(name_on_pcb, 1);
+				if (conf_core.editor.description || !conf_core.editor.name_on_pcb) {
+					conf_set_editor(description, 0);
+					conf_set_editor(name_on_pcb, 1);
+				}
+				else
+					conf_set_editor(name_on_pcb, 1); /* need to write once so the event is triggered */
 				break;
 			case F_Description:
-				conf_set_editor(description, 1);
+				if (!conf_core.editor.description || conf_core.editor.name_on_pcb) {
+					conf_set_editor(description, 1);
+					conf_set_editor(name_on_pcb, 0);
+				}
+				else
+					conf_set_editor(name_on_pcb, 0); /* need to write once so the event is triggered */
 				break;
 			}
 			ELEMENT_LOOP(PCB->Data);
