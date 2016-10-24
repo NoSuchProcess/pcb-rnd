@@ -63,6 +63,7 @@ void SetGrid(Coord Grid, pcb_bool align)
 			PCB->GridOffsetY = Crosshair.Y % Grid;
 		}
 		PCB->Grid = Grid;
+		conf_set_design("editor/grid", "%$mS", Grid);
 		if (conf_core.editor.draw_grid)
 			Redraw();
 	}
