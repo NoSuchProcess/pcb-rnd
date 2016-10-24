@@ -36,6 +36,8 @@
 #include "layer.h"
 #include "const.h"
 #include "netlist.h"
+#include "create.h"
+#include "misc.h" /* for flag setting */
 
 typedef struct {
 	PCBTypePtr PCB;
@@ -103,6 +105,7 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree); /* for layout layer definitions */
 static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree); /* describes netlists for the layout */
+static int kicad_get_layeridx(read_state_t *st, const char *kicad_name);
 
 #define SEEN_NO_DUP(bucket, bit) \
 do { \
@@ -119,6 +122,41 @@ do { \
 } while(0)
 
 #define BV(bit) (1<<(bit))
+
+
+/* kicad_pcb/parse_page */
+static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
+{
+
+	gsxl_node_t *n;
+	unsigned long tally = 0, required;
+
+	if (subtree != NULL && subtree->str != NULL) {
+		printf("page setting being parsed: '%s'\n", subtree->str);		
+			if (strcmp("A4", subtree->str) == 0) {
+				st->PCB->MaxWidth = PCB_MM_TO_COORD(297.0);
+				st->PCB->MaxHeight = PCB_MM_TO_COORD(210.0);
+			} else if (strcmp("A3", subtree->str) == 0) {
+				st->PCB->MaxWidth = PCB_MM_TO_COORD(420.0);
+				st->PCB->MaxHeight = PCB_MM_TO_COORD(297.0);
+			} else if (strcmp("A2", subtree->str) == 0) {
+				st->PCB->MaxWidth = PCB_MM_TO_COORD(594.0);
+				st->PCB->MaxHeight = PCB_MM_TO_COORD(420.0);
+			} else if (strcmp("A1", subtree->str) == 0) {
+				st->PCB->MaxWidth = PCB_MM_TO_COORD(841.0);
+				st->PCB->MaxHeight = PCB_MM_TO_COORD(594.0);
+			} else if (strcmp("A0", subtree->str) == 0) {
+				st->PCB->MaxWidth = PCB_MM_TO_COORD(1189.0);
+				st->PCB->MaxHeight = PCB_MM_TO_COORD(841.0);
+			} else { /* default to A0 */
+				st->PCB->MaxWidth = PCB_MM_TO_COORD(1189.0);
+				st->PCB->MaxHeight = PCB_MM_TO_COORD(841.0);
+			}
+			return 0;
+	}
+	return -1;
+}
+
 
 /* kicad_pcb/gr_text */
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
@@ -455,6 +493,16 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *m, *n;
 	unsigned long tally = 0;
 
+	char *end, *name; /* not using via name for now */
+	double val;
+	Coord X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
+	FlagType Flags = MakeFlags(0); /* start with something bland here */
+	int PCBLayer; /* not used for now */
+
+	Clearance = Mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
+	name = "";
+
 	if (subtree->str != NULL) {
 		printf("via being parsed: '%s'\n", subtree->str);		
 		for(n = subtree; n != NULL; n = n->next) {
@@ -463,12 +511,24 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("via at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							X = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("via at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 2);	
+						val = strtod(n->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Y = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
@@ -477,6 +537,12 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("via size: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 4);
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Thickness = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
@@ -485,6 +551,11 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 					for(m = n->children; m != NULL; m = m->next) {
 						if (m->str != NULL) {
 							pcb_printf("via layer: '%s'\n", (m->str));
+/*							PCBLayer = kicad_get_layeridx(st, n->children->str);
+ *							if (PCBLayer == -1) {
+ *								return -1;
+ *							}   via layers not currently used in PCB
+ */   
 						} else {
 							return -1;
 						}
@@ -506,6 +577,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 		}
 	}
 	if (tally >= 0) { /* need start, end, layer, thickness at a minimum */
+		CreateNewVia( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
 		return 0;
 	}
 	return -1;
@@ -518,6 +590,14 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *n;
 	unsigned long tally = 0;
 
+	char *end;
+	double val;
+	Coord X1, Y1, X2, Y2, Thickness, Clearance;
+	FlagType Flags = MakeFlags(0); /* start with something bland here */
+	int PCBLayer;
+
+	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+
 	if (subtree->str != NULL) {
 		printf("segment being parsed: '%s'\n", subtree->str);		
 		for(n = subtree; n != NULL; n = n->next) {
@@ -526,12 +606,28 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("segment start at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
+						val = strtod(n->children->str, &end);
+						printf("The number (double) is %lf\n", val);
+						printf("The leftover (string) is %s\n", end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							X1 = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("segment start at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 2);	
+						val = strtod(n->children->next->str, &end);
+						printf("The number (double) is %lf\n", val);
+						printf("The leftover (string) is %s\n", end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Y1 = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
@@ -540,12 +636,24 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("segment end at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 4);
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							X2 = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("segment end at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 5);	
+						val = strtod(n->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Y2 = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
@@ -554,6 +662,10 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("segment layer: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 7);
+						PCBLayer = kicad_get_layeridx(st, n->children->str);
+						if (PCBLayer == -1) {
+							return -1;
+						}
 					} else {
 						return -1;
 					}
@@ -562,6 +674,12 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("segment width: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 9);
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Thickness = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
@@ -590,6 +708,8 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 		}
 	}
 	if (tally >= 0) { /* need start, end, layer, thickness at a minimum */
+		CreateNewLineOnLayer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+		pcb_printf("***new line on layer created [ %mm %mm %mm %mm %mm %mm flags]", X1, Y1, X2, Y2, Thickness, Clearance);
 		return 0;
 	}
 	return -1;
@@ -1048,7 +1168,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"version",    kicad_parse_version},
 		{"host",       kicad_parse_nop},
 		{"general",    kicad_parse_nop},
-		{"page",       kicad_parse_nop},
+		{"page",       kicad_parse_page_size},
 		{"layers",     kicad_parse_layer_definitions}, /* board layer defs */
 		{"setup",      kicad_parse_nop},
 		{"net",        kicad_parse_net}, /* net labels if child of root, otherwise net attribute of element */
@@ -1071,7 +1191,7 @@ static int kicad_parse_pcb(read_state_t *st)
 	   node; if any of them fail, parse fails */
 	return kicad_foreach_dispatch(st, st->dom.root->children, disp);
 }
-
+	
 int io_kicad_read_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf_role_t settings_dest)
 {
 	int c, readres = 0;
