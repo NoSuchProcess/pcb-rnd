@@ -2119,6 +2119,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghid_conf_regs();
 
 	ghid_hid.create_menu = ghid_create_menu;
+	ghid_hid.remove_menu = ghid_remove_menu;
 
 	ghid_hid.usage = ghid_usage;
 

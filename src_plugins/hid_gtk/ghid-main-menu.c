@@ -22,6 +22,19 @@
 
 static int action_counter;
 
+typedef struct {
+	GtkWidget *widget;  /* for most uses */
+	GtkWidget *destroy; /* destroy this */
+} menu_handle_t;
+
+static menu_handle_t *handle_alloc(GtkWidget *widget, GtkWidget *destroy)
+{
+	menu_handle_t *m = malloc(sizeof(menu_handle_t));
+	m->widget = widget;
+	m->destroy = destroy;
+	return m;
+}
+
 struct _GHidMainMenu {
 	GtkMenuBar parent;
 
@@ -109,7 +122,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 		GtkWidget *tearoff = gtk_tearoff_menu_item_new();
 		lht_node_t *n;
 
-		sub_res->user_data = submenu;
+		sub_res->user_data = handle_alloc(submenu, item);
 
 		gtk_menu_shell_append(shell, item);
 		gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), submenu);
@@ -165,14 +178,14 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 			GtkWidget *item = gtk_menu_item_new_with_label(menu_label);
 			gtk_widget_set_sensitive(item, FALSE);
 			gtk_menu_shell_append(shell, item);
-			sub_res->user_data = item;
+			sub_res->user_data = handle_alloc(item, item);
 		}
 		else {
 			/* NORMAL ITEM */
 			GtkWidget *item = gtk_menu_item_new_gschem(menu_label, accel);
 			accel = NULL;
 			gtk_menu_shell_append(shell, item);
-			sub_res->user_data = item;
+			sub_res->user_data = handle_alloc(item, item);
 			g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu->action_cb), (gpointer)n_action);
 			if ((tip != NULL) || (n_keydesc != NULL)) {
 				char *acc = NULL, *s;
@@ -197,7 +210,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 		item = gtk_action_create_menu_item(action);
 		gtk_menu_shell_append(shell, item);
 		menu->actions = g_list_append(menu->actions, action);
-		sub_res->user_data = item;
+		sub_res->user_data = handle_alloc(item, item);
 	}
 
 	/* unused accel key - generated, but never stored, time to free it */
@@ -211,7 +224,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
  *
  *  \param [in] menu    The GHidMainMenu widget to be acted on
  *  \param [in] shall   The base menu shell (a menu bar or popup menu)
- *  \param [in] res     The base of the menu item subtree
+ *  \param [in] base    The base of the menu item subtree
  * */
 void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t *base)
 {
@@ -245,6 +258,7 @@ void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, lht
 				if ((strcmp(base->data.text.value, "sep") == 0) || (strcmp(base->data.text.value, "-") == 0)) {
 					GtkWidget *item = gtk_separator_menu_item_new();
 					gtk_menu_shell_append(shell, item);
+					base->user_data = handle_alloc(item, item);
 				}
 				else if (strcmp(base->data.text.value, "@layerview") == 0) {
 					menu->layer_view_shell = shell;
@@ -355,7 +369,7 @@ void ghid_main_menu_add_popup_node(GHidMainMenu * menu, lht_node_t *base)
 
 	new_menu = gtk_menu_new();
 	g_object_ref_sink(new_menu);
-	base->user_data = new_menu;
+	base->user_data = handle_alloc(new_menu, new_menu);
 
 	for(i = submenu->data.list.first; i != NULL; i = i->next)
 		ghid_main_menu_real_add_node(menu, GTK_MENU_SHELL(new_menu), i);
@@ -457,7 +471,7 @@ static GtkWidget *new_popup(lht_node_t *menu_item)
 /*	GHidMainMenu *menu  = GHID_MAIN_MENU(ghidgui->menu_bar);*/
 
 	g_object_ref_sink(new_menu);
-	menu_item->user_data = new_menu;
+	menu_item->user_data = handle_alloc(new_menu, new_menu);
 
 	return new_menu;
 }
@@ -466,7 +480,8 @@ static GtkWidget *new_popup(lht_node_t *menu_item)
 static int ghid_create_menu_widget(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item)
 {
 	int is_popup = (strncmp(path, "/popups", 7) == 0);
-	GtkWidget *w = (is_main) ? (is_popup ? new_popup(menu_item) : ghidgui->menu_bar) : parent->user_data;
+	menu_handle_t *ph = parent->user_data;
+	GtkWidget *w = (is_main) ? (is_popup ? new_popup(menu_item) : ghidgui->menu_bar) : ph->widget;
 
 	ghid_main_menu_real_add_node(GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w), menu_item);
 
@@ -475,8 +490,32 @@ static int ghid_create_menu_widget(void *ctx, const char *path, const char *name
 	return 0;
 }
 
+static int ghid_remove_menu_widget(void *ctx, lht_node_t *nd)
+{
+	menu_handle_t *h = nd->user_data;
+	if (h != NULL) {
+/*		printf("GUI remove '%s' %p %p\n", nd->name, h->widget, h->destroy);*/
+		gtk_widget_destroy(h->destroy);
+		free(h);
+		nd->user_data = NULL;
+	}
+#if 0
+	else {
+		/* @layer pick and friends */
+		printf("GUI remove NULL '%s'\n", nd->name);
+	}
+#endif
+	return 0;
+}
+
 /* Create a new menu by path */
 void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
 {
 	hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, NULL);
 }
+
+void ghid_remove_menu(const char *menu_path)
+{
+	hid_cfg_remove_menu(ghid_cfg, menu_path, ghid_remove_menu_widget, NULL);
+}
+
