@@ -514,8 +514,8 @@ void ghid_create_menu(const char *menu_path, const char *action, const char *mne
 	hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, NULL);
 }
 
-void ghid_remove_menu(const char *menu_path)
+int ghid_remove_menu(const char *menu_path)
 {
-	hid_cfg_remove_menu(ghid_cfg, menu_path, ghid_remove_menu_widget, NULL);
+	return hid_cfg_remove_menu(ghid_cfg, menu_path, ghid_remove_menu_widget, NULL);
 }
 

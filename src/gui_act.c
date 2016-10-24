@@ -1070,6 +1070,36 @@ static int ActionCreateMenu(int argc, const char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
+static const char removemenu_syntax[] = "RemoveMenu(path|cookie)";
+static const char removemenu_help[] = "Recursively removes a new menu, popup (only path specified) or submenu. ";
+
+/* %start-doc actions RouteStyle
+
+%end-doc */
+
+static int ActionRemoveMenu(int argc, const char **argv, Coord x, Coord y)
+{
+	if (gui == NULL) {
+		Message(PCB_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
+		return 1;
+	}
+
+	if (gui->remove_menu == NULL) {
+		Message(PCB_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
+		return 1;
+	}
+
+	if (argc > 0) {
+		if (gui->remove_menu(argv[0]) != 0)
+			Message(PCB_MSG_ERROR, "failed to remove some of the menu items\n");
+			return 0;
+	}
+
+	AFAIL(message);
+}
+
+/* --------------------------------------------------------------------------- */
+
 static const char setsame_syntax[] = "SetSame()";
 
 static const char setsame_help[] = "Sets current layer and sizes to match indicated item.";
@@ -1232,6 +1262,9 @@ HID_Action gui_action_list[] = {
 	,
 	{"CreateMenu", 0, ActionCreateMenu,
 	 createmenu_help, createmenu_syntax}
+	,
+	{"RemoveMenu", 0, ActionRemoveMenu,
+	 removemenu_help, removemenu_syntax}
 	,
 	{"SwitchHID", 0, ActionSwitchHID,
 	 switchhid_help, switchhid_syntax}

@@ -499,7 +499,7 @@ struct hid_st {
 	void (*create_menu) (const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
 
 	/* Remove a menu recursively */
-	void (*remove_menu) (const char *menu_path);
+	int (*remove_menu) (const char *menu_path);
 
 	/* Optional: print usage string (if accepts command line arguments)
 	   Subtopic:
