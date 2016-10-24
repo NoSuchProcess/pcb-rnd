@@ -489,14 +489,17 @@ struct hid_st {
 	void (*notify_filename_changed) (void);
 
 	/* Create a new menu and/or submenus
-	 * menu is a / separated path to the new menu (parents are silently created).
+	 * menu_path is a / separated path to the new menu (parents are silently created).
 	 * The last non-NULL item is the new menu item.
 	 * action, mnemonic, accel and tip affect the new menu item.
 	 * Cookie is strdup()'d into the lihata tree and can be used later to search
 	 * and remove menu items that are no longer needed.
 	 * If action is NULL, the menu may get submenus.
 	 */
-	void (*create_menu) (const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
+	void (*create_menu) (const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
+
+	/* Remove a menu recursively */
+	void (*remove_menu) (const char *menu_path);
 
 	/* Optional: print usage string (if accepts command line arguments)
 	   Subtopic:
