@@ -133,28 +133,28 @@ ha:{
 				ha:Enable local grid          = { checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
 				ha:Grid units {
 					li:submenu {
-						ha:mil                    = { checked=ChkGridUnits(mil); action=SetUnits(mil) }
-						ha:mm                     = { checked=ChkGridUnits(mm); action=SetUnits(mm) }
+						ha:mil                    = { checked=ChkGridUnits(mil); action=SetUnits(mil); update_on={editor/grid_unit} }
+						ha:mm                     = { checked=ChkGridUnits(mm); action=SetUnits(mm); update_on={editor/grid_unit} }
 					}
 				}
 				ha:Grid size = {
 					li:submenu {
-						ha:No Grid                = { checked=ChkGridSize(none); action=SetValue(Grid,1) }
+						ha:No Grid                = { checked=ChkGridSize(none); action=SetValue(Grid,1); update_on={editor/grid} }
 						-
-						ha:0.1 mil                = { checked=ChkGridSize(0.1mil); li:action={SetUnits(mil); SetValue(Grid,0.1mil)} }
-						ha:1 mil                  = { checked=ChkGridSize(1mil); li:action={SetUnits(mil); SetValue(Grid,1mil)} }
-						ha:5 mil                  = { checked=ChkGridSize(5mil); li:action={SetUnits(mil); SetValue(Grid,5mil)} }
-						ha:10 mil                 = { checked=ChkGridSize(10mil); li:action={SetUnits(mil); SetValue(Grid,10mil)} }
-						ha:25 mil                 = { checked=ChkGridSize(25mil); li:action={SetUnits(mil); SetValue(Grid,25mil)} }
-						ha:50 mil                 = { checked=ChkGridSize(50mil); li:action={SetUnits(mil); SetValue(Grid,50mil)} }
-						ha:100 mil                = { checked=ChkGridSize(100mil); li:action={SetUnits(mil); SetValue(Grid,100mil)} }
+						ha:0.1 mil                = { checked=ChkGridSize(0.1mil); li:action={SetUnits(mil); SetValue(Grid,0.1mil)}; update_on={editor/grid}}
+						ha:1 mil                  = { checked=ChkGridSize(1mil); li:action={SetUnits(mil); SetValue(Grid,1mil)}; update_on={editor/grid} }
+						ha:5 mil                  = { checked=ChkGridSize(5mil); li:action={SetUnits(mil); SetValue(Grid,5mil)}; update_on={editor/grid} }
+						ha:10 mil                 = { checked=ChkGridSize(10mil); li:action={SetUnits(mil); SetValue(Grid,10mil)}; update_on={editor/grid} }
+						ha:25 mil                 = { checked=ChkGridSize(25mil); li:action={SetUnits(mil); SetValue(Grid,25mil)}; update_on={editor/grid} }
+						ha:50 mil                 = { checked=ChkGridSize(50mil); li:action={SetUnits(mil); SetValue(Grid,50mil)}; update_on={editor/grid} }
+						ha:100 mil                = { checked=ChkGridSize(100mil); li:action={SetUnits(mil); SetValue(Grid,100mil)}; update_on={editor/grid} }
 						-
-						ha:0.01 mm                = { checked=ChkGridSize(0.01mm); li:action={SetUnits(mm); SetValue(Grid,0.01mm)} }
-						ha:0.05 mm                = { checked=ChkGridSize(0.05mm); li:action={SetUnits(mm); SetValue(Grid,0.05mm)} }
-						ha:0.1 mm                 = { checked=ChkGridSize(0.10mm); li:action={SetUnits(mm); SetValue(Grid,0.1mm)} }
-						ha:0.25 mm                = { checked=ChkGridSize(0.25mm); li:action={SetUnits(mm); SetValue(Grid,0.25mm)} }
-						ha:0.5 mm                 = { checked=ChkGridSize(0.50mm); li:action={SetUnits(mm); SetValue(Grid,0.5mm)} }
-						ha:1 mm                   = { checked=ChkGridSize(1mm); li:action={SetUnits(mm); SetValue(Grid,1mm)} }
+						ha:0.01 mm                = { checked=ChkGridSize(0.01mm); li:action={SetUnits(mm); SetValue(Grid,0.01mm)}; update_on={editor/grid} }
+						ha:0.05 mm                = { checked=ChkGridSize(0.05mm); li:action={SetUnits(mm); SetValue(Grid,0.05mm)}; update_on={editor/grid} }
+						ha:0.1 mm                 = { checked=ChkGridSize(0.10mm); li:action={SetUnits(mm); SetValue(Grid,0.1mm)}; update_on={editor/grid} }
+						ha:0.25 mm                = { checked=ChkGridSize(0.25mm); li:action={SetUnits(mm); SetValue(Grid,0.25mm)}; update_on={editor/grid} }
+						ha:0.5 mm                 = { checked=ChkGridSize(0.50mm); li:action={SetUnits(mm); SetValue(Grid,0.5mm)}; update_on={editor/grid} }
+						ha:1 mm                   = { checked=ChkGridSize(1mm); li:action={SetUnits(mm); SetValue(Grid,1mm)}; update_on={editor/grid} }
 						-
 						ha:Grid -5mil             = { a=Shift<Key>g; action=SetValue(Grid,-5,mil) }
 						ha:Grid +5mil             = { a=<Key>g;  action=SetValue(Grid,+5,mil) }
@@ -166,24 +166,24 @@ ha:{
 					li:submenu {
 						ha:Enable local grid          = { checked=plugins/hid_gtk/local_grid/enable; action=conf(toggle, plugins/hid_gtk/local_grid/enable, design) }
 						-
-						ha:local grid radius 4   =  { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 4)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
-						ha:local grid radius 8    = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 8)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 8, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
-						ha:local grid radius 16   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 16)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
-						ha:local grid radius 32   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 32)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 32, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) } }
+						ha:local grid radius 4   =  { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 4)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) }; update_on={} }
+						ha:local grid radius 8    = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 8)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 8, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) }; update_on={} }
+						ha:local grid radius 16   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 16)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) }; update_on={} }
+						ha:local grid radius 32   = { checked={conf(iseq, plugins/hid_gtk/local_grid/radius, 32)}; li:action={conf(set, plugins/hid_gtk/local_grid/radius, 32, design); conf(set, plugins/hid_gtk/local_grid/enable, 1, design) }; update_on={} }
 						-
-						ha:sparse global grid     = { checked=plugins/hid_gtk/global_grid/sparse; action=conf(toggle, plugins/hid_gtk/global_grid/sparse, design) }
-						ha:global grid density 4  = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 4)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) } }
-						ha:global grid density 8  = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 8)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 8, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) } }
-						ha:global grid density 16 = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 16)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) } }
+						ha:sparse global grid     = { checked=plugins/hid_gtk/global_grid/sparse; action=conf(toggle, plugins/hid_gtk/global_grid/sparse, design); update_on={} }
+						ha:global grid density 4  = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 4)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 4, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) }; update_on={} }
+						ha:global grid density 8  = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 8)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 8, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) }; update_on={} }
+						ha:global grid density 16 = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 16)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) }; update_on={} }
 					}
 				}
 				ha:Realign grid               = { li:action={GetXY(Click to set the grid origin); Display(ToggleGrid) } }
 				-
 				ha:Displayed element name {
 					li:submenu {
-						ha:Description            = { checked=ChkElementName(1); action=Display(Description) }
-						ha:Reference Designator   = { checked=ChkElementName(2); action=Display(NameOnPCB) }
-						ha:Value                  = { checked=ChkElementName(3); action=Display(Value) }
+						ha:Description            = { checked=ChkElementName(1); action=Display(Description); update_on={editor/description} }
+						ha:Reference Designator   = { checked=ChkElementName(2); action=Display(NameOnPCB); update_on={editor/name_on_pcb} }
+						ha:Value                  = { checked=ChkElementName(3); action=Display(Value); update_on={editor/name_on_pcb} }
 					}
 				}
 				ha:Enable Pinout shows number = { checked=editor/show_number; action=conf(toggle, editor/show_number, design) }
@@ -361,11 +361,11 @@ ha:{
 				ha:Break buffer elements to pieces = { action=PasteBuffer(Restore) }
 				ha:Save buffer elements to file    = { action=Save(PasteBuffer) }
 				-
-				ha:Select Buffer \#1 = { checked=ChkBuffer(1); m=1; a=Shift<Key>1; action=PasteBuffer(1) }
-				ha:Select Buffer \#2 = { checked=ChkBuffer(2); m=2; a=Shift<Key>2; action=PasteBuffer(2) }
-				ha:Select Buffer \#3 = { checked=ChkBuffer(3); m=3; a=Shift<Key>3; action=PasteBuffer(3) }
-				ha:Select Buffer \#4 = { checked=ChkBuffer(4); m=4; a=Shift<Key>4; action=PasteBuffer(4) }
-				ha:Select Buffer \#5 = { checked=ChkBuffer(5); m=5; a=Shift<Key>5; action=PasteBuffer(5) }
+				ha:Select Buffer \#1 = { checked=ChkBuffer(1); m=1; a=Shift<Key>1; action=PasteBuffer(1); update_on={editor/buffer_number} }
+				ha:Select Buffer \#2 = { checked=ChkBuffer(2); m=2; a=Shift<Key>2; action=PasteBuffer(2); update_on={editor/buffer_number} }
+				ha:Select Buffer \#3 = { checked=ChkBuffer(3); m=3; a=Shift<Key>3; action=PasteBuffer(3); update_on={editor/buffer_number} }
+				ha:Select Buffer \#4 = { checked=ChkBuffer(4); m=4; a=Shift<Key>4; action=PasteBuffer(4); update_on={editor/buffer_number} }
+				ha:Select Buffer \#5 = { checked=ChkBuffer(5); m=5; a=Shift<Key>5; action=PasteBuffer(5); update_on={editor/buffer_number} }
 			}
 		} # Buffer
 
@@ -476,7 +476,7 @@ ha:{
 						ha:AddRats Selected             = { a=Shift<Key>w; action=AddRats(SelectedRats) }
 						ha:Add All Rats                 = { a=<Key>w; action=AddRats(AllRats) }
 						ha:Cycle Clip                   = { a=<Key>/; action=Display(CycleClip) }
-						ha:Arrow Mode                   = { a=<Key>space; checked=ChkMode(arrow); action=Mode(Arrow) }
+						ha:Arrow Mode                   = { a=<Key>space; checked=ChkMode(arrow); action=Mode(Arrow); update_on={editor/mode} }
 						ha:Temp Arrow ON                = { a=<Key>[; li:action={Mode(Save); Mode(Arrow); Mode(Notify)} }
 						ha:Temp Arrow OFF               = { a=<Key>]; li:action={Mode(Release); Mode(Restore)} }
 						-
@@ -581,23 +581,23 @@ ha:{
 				-
 				ha:Tools {
 					li:submenu {
-						ha:None           = { checked=ChkMode(none); action=Mode(None) }
-						ha:Via            = { checked=ChkMode(via); a=<Key>F1; action=Mode(Via) }
-						ha:Line           = { checked=ChkMode(line); a=<Key>F2; action=Mode(Line) }
-						ha:Arc            = { checked=ChkMode(arc); a=<Key>F3; action=Mode(Arc) }
-						ha:Text           = { checked=ChkMode(text); a=<Key>F4; action=Mode(Text) }
-						ha:Rectangle      = { checked=ChkMode(rectangle); a=<Key>F5; action=Mode(Rectangle) }
-						ha:Polygon        = { checked=ChkMode(polygon); a=<Key>F6; action=Mode(Polygon) }
-						ha:Polygon Hole   = { checked=ChkMode(polygonhole); action=Mode(PolygonHole) }
-						ha:Buffer         = { checked=ChkMode(pastebuffer); a=<Key>F7; action=Mode(PasteBuffer) }
-						ha:Remove         = { checked=ChkMode(remove); a=<Key>F8; action=Mode(Remove) }
-						ha:Rotate         = { checked=ChkMode(rotate); a=<Key>F9; action=Mode(Rotate) }
-						ha:Thermal        = { checked=ChkMode(thermal); a=<Key>F10; action=Mode(Thermal) }
-						ha:Arrow          = { checked=ChkMode(arrow); a=<Key>F11; action=Mode(Arrow) }
-						ha:Insert Point   = { checked=ChkMode(insertpoint); a=<Key>Insert; action=Mode(InsertPoint) }
-						ha:Move           = { checked=ChkMode(move); action=Mode(Move) }
-						ha:Copy           = { checked=ChkMode(copy); action=Mode(Copy) }
-						ha:Lock           = { checked=ChkMode(lock); a=<Key>F12; action=Mode(Lock) }
+						ha:None           = { checked=ChkMode(none); action=Mode(None); update_on={editor/mode} }
+						ha:Via            = { checked=ChkMode(via); a=<Key>F1; action=Mode(Via); update_on={editor/mode} }
+						ha:Line           = { checked=ChkMode(line); a=<Key>F2; action=Mode(Line); update_on={editor/mode} }
+						ha:Arc            = { checked=ChkMode(arc); a=<Key>F3; action=Mode(Arc); update_on={editor/mode} }
+						ha:Text           = { checked=ChkMode(text); a=<Key>F4; action=Mode(Text); update_on={editor/mode} }
+						ha:Rectangle      = { checked=ChkMode(rectangle); a=<Key>F5; action=Mode(Rectangle); update_on={editor/mode} }
+						ha:Polygon        = { checked=ChkMode(polygon); a=<Key>F6; action=Mode(Polygon); update_on={editor/mode} }
+						ha:Polygon Hole   = { checked=ChkMode(polygonhole); action=Mode(PolygonHole); update_on={editor/mode} }
+						ha:Buffer         = { checked=ChkMode(pastebuffer); a=<Key>F7; action=Mode(PasteBuffer); update_on={editor/mode} }
+						ha:Remove         = { checked=ChkMode(remove); a=<Key>F8; action=Mode(Remove); update_on={editor/mode} }
+						ha:Rotate         = { checked=ChkMode(rotate); a=<Key>F9; action=Mode(Rotate); update_on={editor/mode} }
+						ha:Thermal        = { checked=ChkMode(thermal); a=<Key>F10; action=Mode(Thermal); update_on={editor/mode} }
+						ha:Arrow          = { checked=ChkMode(arrow); a=<Key>F11; action=Mode(Arrow); update_on={editor/mode} }
+						ha:Insert Point   = { checked=ChkMode(insertpoint); a=<Key>Insert; action=Mode(InsertPoint); update_on={editor/mode} }
+						ha:Move           = { checked=ChkMode(move); action=Mode(Move); update_on={editor/mode} }
+						ha:Copy           = { checked=ChkMode(copy); action=Mode(Copy); update_on={editor/mode} }
+						ha:Lock           = { checked=ChkMode(lock); a=<Key>F12; action=Mode(Lock); update_on={editor/mode} }
 						ha:Cancel         = { a=<Key>Escape; action=Mode(Escape) }
 					}
 				}
