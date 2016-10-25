@@ -38,6 +38,7 @@
 #include "netlist.h"
 #include "create.h"
 #include "misc.h" /* for flag setting */
+#include "misc_util.h" /* for distance calculations */
 
 typedef struct {
 	PCBTypePtr PCB;
@@ -165,6 +166,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *l, *n, *m;
 	int i;
 	unsigned long tally = 0, required;
+	
 
 	if (subtree->str != NULL) {
 		printf("gr_text element being parsed: '%s'\n", subtree->str);		
@@ -252,6 +254,14 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *n;
 	unsigned long tally = 0;
 
+	char *end;
+	double val;
+	Coord X1, Y1, X2, Y2, Thickness, Clearance; /* not sure what to do with mask */
+	FlagType Flags = MakeFlags(0); /* start with something bland here */
+	int PCBLayer;
+
+	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+
 	if (subtree->str != NULL) {
 		printf("gr_line being parsed: '%s'\n", subtree->str);
 		for(n = subtree; n != NULL; n = n->next) {
@@ -260,12 +270,26 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("gr_line start at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
+						val = strtod(n->children->str, &end);
+						printf("The number (double) is %lf\n", val);
+						printf("The leftover (string) is %s\n", end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							X1 = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("gr_line start at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 2);	
+						val = strtod(n->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Y1 = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
@@ -274,12 +298,24 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("gr_line end at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 4);
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							X2 = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("gr_line end at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 5);	
+						val = strtod(n->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Y2 = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
@@ -288,6 +324,10 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("gr_line layer: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 7);
+						PCBLayer = kicad_get_layeridx(st, n->children->str);
+						if (PCBLayer == -1) {
+							return -1;
+						}
 					} else {
 						return -1;
 					}
@@ -296,6 +336,12 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("gr_line width: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 9);
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Thickness = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
@@ -324,6 +370,8 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 		}
 	}
 	if (tally >= 0) { /* need start, end, layer, thickness at a minimum */
+		CreateNewLineOnLayer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+		pcb_printf("***new gr_line on layer created [ %mm %mm %mm %mm %mm %mm flags]", X1, Y1, X2, Y2, Thickness, Clearance);
 		return 0;
 	}
 	return -1;
@@ -335,6 +383,15 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *n;
 	unsigned long tally = 0;
 
+	char *end;
+	double val;
+	Coord centreX, centreY, endX, endY, width, height, Thickness, Clearance;
+	Angle startAngle, delta;
+	FlagType Flags = MakeFlags(0); /* start with something bland here */
+	int PCBLayer;
+
+	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+
 	if (subtree->str != NULL) {
 		printf("gr_arc being parsed: '%s'\n", subtree->str);		
 		for(n = subtree; n != NULL; n = n->next) {
@@ -343,12 +400,24 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("gr_arc centre at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							centreX = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("gr_arc centre at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 2);	
+						val = strtod(n->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							centreY = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
@@ -357,12 +426,24 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("gr_arc end at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 4);
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							endX = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("gr_arc end at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 5);	
+						val = strtod(n->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							endY = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
@@ -371,6 +452,10 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("gr_arc layer: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 7);
+						PCBLayer = kicad_get_layeridx(st, n->children->str);
+						if (PCBLayer == -1) {
+							return -1;
+						}
 					} else {
 						return -1;
 					}
@@ -379,6 +464,12 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("gr_arc width: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 9);
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Thickness = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
@@ -387,6 +478,12 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("gr_arc angle CW rotation: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 11);
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							delta = val;
+						}
 					} else {
 						return -1;
 					}
@@ -407,6 +504,13 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 		}
 	}
 	if (tally >= 0) { /* need start, end, layer, thickness at a minimum */
+		width = height = Distance(centreX, centreY, endX, endY); /* calculate radius of arc */
+		if (width < 1) { /* degenerate case */
+			startAngle = 0;
+		} else {
+			startAngle = 180*atan2(endX - centreX, endY - centreY)/M_PI; /* avoid using atan2 with zero parameters */
+		}
+		CreateNewArcOnLayer( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags);
 		return 0;
 	}
 	return -1;
@@ -417,6 +521,15 @@ static int kicad_parse_fp_circle(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n;
 	unsigned long tally = 0;
+
+	char *end;
+	double val;
+	Coord centreX, centreY, endX, endY, width, height, Thickness, Clearance;
+	Angle startAngle, delta;
+	FlagType Flags = MakeFlags(0); /* start with something bland here */
+	int PCBLayer;
+
+	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
 	if (subtree->str != NULL) {
 		printf("fp_circle being parsed: '%s'\n", subtree->str);		
@@ -482,6 +595,8 @@ static int kicad_parse_fp_circle(read_state_t *st, gsxl_node_t *subtree)
 		}
 	}
 	if (tally >= 0) { /* need start, end, layer, thickness at a minimum */
+		width = height = Distance(centreX, centreY, endX, endY); /* calculate radius of arc */
+		CreateNewArcOnLayer( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, 0, 360, Thickness, Clearance, Flags);
 		return 0;
 	}
 	return -1;
