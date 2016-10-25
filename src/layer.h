@@ -148,5 +148,8 @@ void pcb_layers_reset();
    */
 int pcb_layer_create(pcb_layer_type_t type, pcb_bool_t reuse_layer, pcb_bool_t reuse_group, const char *lname);
 
+/* Rename an existing layer */
+int pcb_layer_rename(int layer, const char *lname);
+
 /* Needs to be called once at the end, when all layers has been added */
 void pcb_layers_finalize();

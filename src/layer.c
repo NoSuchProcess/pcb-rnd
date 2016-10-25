@@ -806,6 +806,12 @@ static void hack_in_silks()
 	}
 }
 
+int pcb_layer_rename(int layer, const char *lname)
+{
+	if (PCB->Data->Layer[layer].Name != NULL)
+		free((char *)PCB->Data->Layer[layer].Name);
+	PCB->Data->Layer[layer].Name = pcb_strdup(lname);
+}
 
 void pcb_layers_finalize()
 {
