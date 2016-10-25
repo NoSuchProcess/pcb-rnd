@@ -386,7 +386,8 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 	char *end;
 	double val;
 	Coord centreX, centreY, endX, endY, width, height, Thickness, Clearance;
-	Angle startAngle, delta;
+	Angle startAngle = 0.0;
+	Angle delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
 	FlagType Flags = MakeFlags(0); /* start with something bland here */
 	int PCBLayer;
 
@@ -396,6 +397,32 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 		printf("gr_arc being parsed: '%s'\n", subtree->str);		
 		for(n = subtree; n != NULL; n = n->next) {
 			if (n->str != NULL && strcmp("start", n->str) == 0) {
+					SEEN_NO_DUP(tally, 0);
+					if (n->children != NULL && n->children->str != NULL) {
+						pcb_printf("gr_arc centre at x: '%s'\n", (n->children->str));
+						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							centreX = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
+					if (n->children->next != NULL && n->children->next->str != NULL) {
+						pcb_printf("gr_arc centre at y: '%s'\n", (n->children->next->str));
+						SEEN_NO_DUP(tally, 2);	
+						val = strtod(n->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							centreY = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
+			} else if (n->str != NULL && strcmp("center", n->str) == 0) { /* this lets us parse a circle too */
 					SEEN_NO_DUP(tally, 0);
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("gr_arc centre at x: '%s'\n", (n->children->str));
@@ -1297,6 +1324,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"module",     kicad_parse_module},  /* for footprints */
 		{"gr_line",     kicad_parse_gr_line},
 		{"gr_arc",     kicad_parse_gr_arc},
+		{"gr_circle",     kicad_parse_gr_arc},
 		{"gr_text",    kicad_parse_gr_text},
 		{"via",     kicad_parse_via},
 		{"segment",     kicad_parse_segment},
