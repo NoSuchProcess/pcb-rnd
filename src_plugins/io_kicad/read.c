@@ -129,9 +129,6 @@ do { \
 static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
 {
 
-	gsxl_node_t *n;
-	unsigned long tally = 0, required;
-
 	if (subtree != NULL && subtree->str != NULL) {
 		printf("page setting being parsed: '%s'\n", subtree->str);		
 			if (strcmp("A4", subtree->str) == 0) {
@@ -258,9 +255,9 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	double val;
 	Coord X1, Y1, X2, Y2, Thickness, Clearance; /* not sure what to do with mask */
 	FlagType Flags = MakeFlags(0); /* start with something bland here */
-	int PCBLayer;
+	int PCBLayer = 0; /* sane default value */
 
-	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
 
 	if (subtree->str != NULL) {
 		printf("gr_line being parsed: '%s'\n", subtree->str);
@@ -389,9 +386,9 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 	Angle startAngle = 0.0;
 	Angle delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
 	FlagType Flags = MakeFlags(0); /* start with something bland here */
-	int PCBLayer;
+	int PCBLayer = 0; /* sane default value */
 
-	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
 
 	if (subtree->str != NULL) {
 		printf("gr_arc being parsed: '%s'\n", subtree->str);		
@@ -554,9 +551,10 @@ static int kicad_parse_fp_circle(read_state_t *st, gsxl_node_t *subtree)
 	Coord centreX, centreY, endX, endY, width, height, Thickness, Clearance;
 	Angle startAngle, delta;
 	FlagType Flags = MakeFlags(0); /* start with something bland here */
-	int PCBLayer;
+	int PCBLayer = 0; /* sane default value */
 
-	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
+	centreX = centreY = endX = endY = 0;
 
 	if (subtree->str != NULL) {
 		printf("fp_circle being parsed: '%s'\n", subtree->str);		
@@ -639,7 +637,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	double val;
 	Coord X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
 	FlagType Flags = MakeFlags(0); /* start with something bland here */
-	int PCBLayer; /* not used for now */
+/*	int PCBLayer = 0;   not used for now; no blind or buried vias currently in pcb-rnd */
 
 	Clearance = Mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
@@ -736,7 +734,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 	double val;
 	Coord X1, Y1, X2, Y2, Thickness, Clearance;
 	FlagType Flags = MakeFlags(0); /* start with something bland here */
-	int PCBLayer;
+	int PCBLayer = 0; /* sane default value */
 
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
@@ -919,7 +917,7 @@ static int kicad_get_layeridx(read_state_t *st, const char *kicad_name)
 /* kicad_pcb  parse (layers  )  - either board layer defintions, or module pad/via layer defs */
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 {
-	gsxl_node_t *m, *n;
+	gsxl_node_t *n;
 	int i;
 	unsigned int res;
 
@@ -1311,7 +1309,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 /* Parse a board from &st->dom into st->PCB */
 static int kicad_parse_pcb(read_state_t *st)
 {
-	gsxl_node_t *n;
+	/* gsxl_node_t *n;  not used */
 	static const dispatch_t disp[] = { /* possible children of root */
 		{"version",    kicad_parse_version},
 		{"host",       kicad_parse_nop},
