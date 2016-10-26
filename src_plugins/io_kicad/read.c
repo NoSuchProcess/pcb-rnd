@@ -1172,12 +1172,11 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	FlagType flags = MakeFlags(PCB_FLAG_CLEARPOLY);
 	char *end, *name; /* not using via name for now */
 	double val;
-	Coord X, Y, Thickness, Clearance;
+	Coord X, Y, Clearance;
 	int PCBLayer = 0;
 
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 	name = "";
-
 
 	if (subtree->str != NULL) {
 		printf("Zone element found:\t'%s'\n", subtree->str);
@@ -1333,10 +1332,11 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	/* required = 1; BV(2) | BV(3) | BV(4) | BV(7) | BV(8);
 	if ((tally & required) == required) {  */ /* has location, layer, size and stroke thickness at a minimum */
 		if (polygon != NULL) {
+			pcb_add_polygon_on_layer(&st->PCB->Data->Layer[PCBLayer], polygon);
 			InitClip(st->PCB->Data, &st->PCB->Data->Layer[PCBLayer], polygon);
 		}
 		return 0;
-/*	}
+/*}
 	return -1; */
 }
 
