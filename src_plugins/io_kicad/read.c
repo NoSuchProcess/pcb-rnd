@@ -1161,7 +1161,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					pcb_printf("pad type: '%s'\n", (n->children->next->str));
 					if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
 						pcb_printf("pad shape: '%s'\n", (n->children->next->next->str));
-					} else {
+					} else { /* will be "roundrect, circle, oval, trapezoidal or rect" */
 						return -1;
 					}
 				} else {
