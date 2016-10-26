@@ -37,6 +37,7 @@
 #include "const.h"
 #include "netlist.h"
 #include "create.h"
+#include "polygon.h"
 #include "misc.h" /* for flag setting */
 #include "misc_util.h" /* for distance calculations */
 
@@ -1167,8 +1168,19 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	long j  = 0;
 	unsigned long tally = 0, required;
 
+	PolygonTypePtr polygon = NULL;
+	FlagType flags = MakeFlags(PCB_FLAG_CLEARPOLY);
+	char *end, *name; /* not using via name for now */
+	double val;
+	Coord X, Y, Thickness, Clearance;
+	int PCBLayer = 0;
+
+	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+	name = "";
+
+
 	if (subtree->str != NULL) {
-		printf("Zone element found:\t'%s'\n", subtree->str);		
+		printf("Zone element found:\t'%s'\n", subtree->str);
 		for(n = subtree->next,i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("net", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
@@ -1204,7 +1216,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					SEEN_NO_DUP(tally, 5);	
 				} else {
 					return -1;
-				}
+			}
 			} else if (n->str != NULL && strcmp("connect_pads", n->str) == 0) {
 				SEEN_NO_DUP(tally, 6);
 				if (n->children != NULL && n->children->str != NULL && (strcmp("clearance", n->children->str) == 0) && (n->children->children->str != NULL)) {
@@ -1226,6 +1238,11 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 				SEEN_NO_DUP(tally, 9);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("zone layer:\t'%s'\n", (n->children->str));
+					PCBLayer = kicad_get_layeridx(st, n->children->str);
+					if (PCBLayer == -1) {
+						return -1;
+					}
+					polygon = CreateNewPolygon(&st->PCB->Data->Layer[PCBLayer], flags);
 				} else {
 					return -1;
 				}
@@ -1238,8 +1255,23 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 							if (m->str != NULL && strcmp("xy", m->str) == 0) {
 								if (m->children != NULL && m->children->str != NULL) {
 									pcb_printf("vertex X[%d]:\t'%s'\n", j, (m->children->str));
+									val = strtod(m->children->str, &end);
+									if (*end != 0) {
+										return -1;
+									} else {
+										X = PCB_MM_TO_COORD(val);
+									}
 									if (m->children->next != NULL && m->children->next->str != NULL) {
 										pcb_printf("vertex Y[%d]:\t'%s'\n", j, (m->children->next->str));
+										val = strtod(m->children->next->str, &end);
+										if (*end != 0) {
+											return -1;
+										} else {
+											Y = PCB_MM_TO_COORD(val);
+										}
+										if (polygon != NULL) {
+											CreateNewPointInPolygon(polygon, X, Y);
+										}
 									} else {
 										return -1;
 									}
@@ -1300,6 +1332,9 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	} 
 	/* required = 1; BV(2) | BV(3) | BV(4) | BV(7) | BV(8);
 	if ((tally & required) == required) {  */ /* has location, layer, size and stroke thickness at a minimum */
+		if (polygon != NULL) {
+			InitClip(st->PCB->Data, &st->PCB->Data->Layer[PCBLayer], polygon);
+		}
 		return 0;
 /*	}
 	return -1; */
