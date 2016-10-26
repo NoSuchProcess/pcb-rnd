@@ -164,24 +164,65 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *l, *n, *m;
 	int i;
 	unsigned long tally = 0, required;
-	
+
+	char *end, *text;
+	double val;
+	Coord X, Y;
+	int scaling = 100;
+	int textLength = 0;
+	int mirrored = 0;
+	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
+	unsigned direction = 0; /* default is horizontal */
+	FlagType Flags = MakeFlags(0); /* start with something bland here */
+	int PCBLayer = 0; /* sane default value */
 
 	if (subtree->str != NULL) {
-		printf("gr_text element being parsed: '%s'\n", subtree->str);		
+		printf("gr_text element being parsed: '%s'\n", subtree->str);
+		text = subtree->str;
+		for (i = 0; text[i] != 0; i++) {
+			textLength++;
+		}
+		printf("gr_text element length: '%d'\n", textLength);
 		for(n = subtree,i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("at", n->str) == 0) {
 					SEEN_NO_DUP(tally, 0);
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("text at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							X = PCB_MM_TO_COORD(val);
+						}
 					} else {
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("text at y: '%s'\n", (n->children->next->str));
-						SEEN_NO_DUP(tally, 2);	
+						SEEN_NO_DUP(tally, 2);
+						val = strtod(n->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Y = PCB_MM_TO_COORD(val);
+						}	
 						if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
 							pcb_printf("text rotation: '%s'\n", (n->children->next->next->str));
+							val = strtod(n->children->next->next->str, &end);
+							if (*end != 0) {
+								return -1;
+							} else {
+								direction = 0;  /* default */
+								if (val > 45.0 && val <= 135.0) {
+									direction = 1;
+								} else if (val > 135.0 && val <= 225.0) {
+									direction = 2;
+								} else if (val > 225.0 && val <= 315.0) {
+									direction = 3;
+								}
+								printf("kicad angle: %f,   Direction %d\n", val, direction);
+							}
 							SEEN_NO_DUP(tally, 3);
 						} 
 					} else {
@@ -191,6 +232,13 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 				SEEN_NO_DUP(tally, 4);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("text layer: '%s'\n", (n->children->str));
+					if ((strcmp("B.Cu", n->children->str) == 0) || (strcmp("B.SilkS", n->children->str) == 0 )) {
+						Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+					}
+					PCBLayer = kicad_get_layeridx(st, n->children->str);
+					if (PCBLayer == -1) {
+						return -1;
+					}
 				} else {
 					return -1;
 				}
@@ -205,6 +253,12 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 								SEEN_NO_DUP(tally, 7);
 								if (l->children != NULL && l->children->str != NULL) {
 									pcb_printf("font sizeX: '%s'\n", (l->children->str));
+									val = strtod(l->children->str, &end);
+									if (*end != 0) {
+										return -1;
+									} else {
+										scaling = (int) (100*val/1.27); /* standard glyph width ~= 1.27mm */
+									}
 								} else {
 									return -1;
 								}
@@ -226,6 +280,9 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 						SEEN_NO_DUP(tally, 9);
 						if (m->children != NULL && m->children->str != NULL) {
 							pcb_printf("text justification: '%s'\n", (m->children->str));
+							if (strcmp("mirror", m->children->str) == 0) {
+								mirrored = 1;
+							}
 						} else {
 							return -1;
 						}
@@ -241,7 +298,46 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	}
 	required = 1; /*BV(2) | BV(3) | BV(4) | BV(7) | BV(8); */
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
-		return 0;
+		if (&st->PCB->Font == NULL) {
+			CreateDefaultFont(&st->PCB);
+		}
+
+		if (mirrored != 0) {
+			if (direction%2 == 0) {
+				direction += 2;
+				direction = direction%4;
+			}
+			if (direction == 0 ) {
+				X -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				Y += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			} else if (direction == 1 ) {
+				Y -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				X -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			} else if (direction == 2 ) {
+				X += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				Y -= PCB_MM_TO_COORD(glyphWidth/2.0);  /* centre it vertically */
+			} else if (direction == 3 ) {
+				Y += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				X += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			}
+		} else { /* not back of board text */
+			if (direction == 0 ) {
+				X -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				Y -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			} else if (direction == 1 ) {
+				Y += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				X -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			} else if (direction == 2 ) {
+				X += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				Y += PCB_MM_TO_COORD(glyphWidth/2.0);  /* centre it vertically */
+			} else if (direction == 3 ) {
+				Y -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				X += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			}
+		}
+
+		CreateNewText( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X, Y, direction, scaling, text, Flags);
+		return 0; /* create new font */
 	}
 	return -1;
 }
@@ -269,8 +365,6 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("gr_line start at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
 						val = strtod(n->children->str, &end);
-						printf("The number (double) is %lf\n", val);
-						printf("The leftover (string) is %s\n", end);
 						if (*end != 0) {
 							return -1;
 						} else {
