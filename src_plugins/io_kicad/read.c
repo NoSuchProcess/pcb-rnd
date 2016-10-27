@@ -627,9 +627,9 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 		if (width < 1) { /* degenerate case */
 			startAngle = 0;
 		} else {
-			startAngle = 180*atan2(endX - centreX, endY - centreY)/M_PI; /* avoid using atan2 with zero parameters */
+			startAngle = 180*atan2(endY - centreY, endX - centreX)/M_PI; /* avoid using atan2 with zero parameters */
 		}
-		CreateNewArcOnLayer( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags);
+		CreateNewArcOnLayer( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, -delta, Thickness, Clearance, Flags);
 		return 0;
 	}
 	return -1;
@@ -1081,9 +1081,25 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
 
-	gsxl_node_t *l, *n, *m;
+	gsxl_node_t *l, *n, *m, *p;
 	int i;
+	int PCBLayer = 0;
 	unsigned long tally = 0, required;
+	Coord moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance;
+	Angle startAngle = 0.0;
+	Angle endAngle = 0.0;
+	Angle delta = 360.0; /* these defaults allow a fp_circle to be parsed, which does not specify (angle XXX) */
+	double val;
+	char * end, * text;
+
+	FlagType Flags = MakeFlags(0); /* start with something bland here */
+	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+
+	int scaling = 100;
+	int textLength = 0;
+	int mirrored = 0;
+	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
+	unsigned direction = 0; /* default is horizontal */
 
 	if (subtree->str != NULL) {
 		printf("Name of module element being parsed: '%s'\n", subtree->str);		
@@ -1105,14 +1121,26 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("at", n->str) == 0) {
 				SEEN_NO_DUP(tally, 2);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("text at x: '%s'\n", (n->children->str));
+					pcb_printf("module at x: '%s'\n", (n->children->str));
 					SEEN_NO_DUP(tally, 3); /* same as ^= 1 was */
+						val = strtod(n->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							moduleX = PCB_MM_TO_COORD(val);
+						}
 				} else {
 					return -1;
 				}
 				if (n->children->next != NULL && n->children->next->str != NULL) {
-					pcb_printf("text at y: '%s'\n", (n->children->next->str));
+					pcb_printf("module at y: '%s'\n", (n->children->next->str));
 					SEEN_NO_DUP(tally, 4);	
+						val = strtod(n->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							moduleY = PCB_MM_TO_COORD(val);
+						}
 				} else {
 					return -1;
 				}
@@ -1229,16 +1257,475 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 			} else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
 					pcb_printf("fp_line found\n");
-					kicad_parse_gr_line(st, n->children);
-			} else if (n->str != NULL && strcmp("fp_arc", n->str) == 0) {
-					pcb_printf("fp_arc found\n");
+/*					kicad_parse_gr_line(st, n->children);  */
+
+/* ********************************************************** */
+
+	if (n->children->str != NULL) {
+		printf("fp_line being parsed: '%s'\n", n->children->str);
+		for(l = n->children; l != NULL; l = l->next) {
+			printf("now looking at fp_line text: '%s'\n", l->str);
+			if (l->str != NULL && strcmp("start", l->str) == 0) {
+/*					SEEN_NO_DUP(tally, 0); */
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("fp_line start at x: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 1); */  /* same as ^= 1 was */ 
+						val = strtod(l->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							X1 = PCB_MM_TO_COORD(val) + moduleX;
+						}
+					} else {
+						return -1;
+					}
+					if (l->children->next != NULL && l->children->next->str != NULL) {
+						pcb_printf("gr_line start at y: '%s'\n", (l->children->next->str));
+/*						SEEN_NO_DUP(tally, 2);	 */
+						val = strtod(l->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Y1 = PCB_MM_TO_COORD(val) + moduleY;
+						}
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("end", l->str) == 0) {
+/*					SEEN_NO_DUP(tally, 3); */
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("gr_line end at x: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 4); */
+						val = strtod(l->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							X2 = PCB_MM_TO_COORD(val) + moduleX;
+						}
+					} else {
+						return -1;
+					}
+					if (l->children->next != NULL && l->children->next->str != NULL) {
+						pcb_printf("fp_line end at y: '%s'\n", (l->children->next->str));
+/*						SEEN_NO_DUP(tally, 5);	 */
+						val = strtod(l->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Y2 = PCB_MM_TO_COORD(val) + moduleY;
+						}
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("layer", l->str) == 0) {
+/*					SEEN_NO_DUP(tally, 6); */
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("fp_line layer: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 7); */
+						PCBLayer = kicad_get_layeridx(st, l->children->str);
+						if (PCBLayer == -1) {
+							return -1;
+						}
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("width", l->str) == 0) {
+/*					SEEN_NO_DUP(tally, 8); */
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("fp_line width: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 9); */
+						val = strtod(l->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Thickness = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("angle", l->str) == 0) { /* unlikely to be used or seen */
+/*					SEEN_NO_DUP(tally, 10); */
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("fp_line angle: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 11); */
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("net", l->str) == 0) { /* unlikely to be used or seen */
+/*					SEEN_NO_DUP(tally, 12); */
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("fp_line net: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 13); */
+					} else {
+						return -1;
+					}
+			} else {
+				if (l->str != NULL) {
+					printf("Unknown fp_line argument %s:", l->str);
+				}
+				return -1;
+			}
+		}
+	}
+	if (tally >= 0) { /* need start, end, layer, thickness at a minimum */
+		CreateNewLineOnLayer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+		pcb_printf("***new fp_line on layer created [ %mm %mm %mm %mm %mm %mm flags]", X1, Y1, X2, Y2, Thickness, Clearance);
+/*		return 0;*/
+	}
+
+
+
+
+
+/* ********************************************************** */
+
+			} else if ((n->str != NULL && strcmp("fp_arc", n->str) == 0) || (n->str != NULL && strcmp("fp_circle", n->str) == 0)) {
+					pcb_printf("fp_arc or fp_circle found\n");
 					kicad_parse_gr_arc(st, n->children);
-			} else if (n->str != NULL && strcmp("fp_circle", n->str) == 0) {
+
+/* ********************************************************** */
+
+	if (subtree->str != NULL) {
+		printf("fp_arc being parsed: '%s'\n", subtree->str);		
+		for(l = n->children; l != NULL; l = l->next) {
+			if (l->str != NULL && strcmp("start", l->str) == 0) {
+/*					SEEN_NO_DUP(tally, 0);*/
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("fp_arc centre at x: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 1); */  /* same as ^= 1 was */
+						val = strtod(l->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							centreX = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
+					if (l->children->next != NULL && l->children->next->str != NULL) {
+						pcb_printf("fp_arc centre at y: '%s'\n", (l->children->next->str));
+/*						SEEN_NO_DUP(tally, 2);	*/
+						val = strtod(l->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							centreY = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("center", l->str) == 0) { /* this lets us parse a circle too */
+/*					SEEN_NO_DUP(tally, 0);*/
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("fp_arc centre at x: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 1); */ /* same as ^= 1 was */
+						val = strtod(l->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							centreX = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
+					if (l->children->next != NULL && l->children->next->str != NULL) {
+						pcb_printf("fp_arc centre at y: '%s'\n", (l->children->next->str));
+/*						SEEN_NO_DUP(tally, 2);	*/
+						val = strtod(l->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							centreY = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("end", l->str) == 0) {
+/*					SEEN_NO_DUP(tally, 3);*/
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("fp_arc end at x: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 4);*/
+						val = strtod(l->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							endX = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
+					if (l->children->next != NULL && l->children->next->str != NULL) {
+						pcb_printf("fp_arc end at y: '%s'\n", (l->children->next->str));
+/*						SEEN_NO_DUP(tally, 5);	*/
+						val = strtod(l->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							endY = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("layer", l->str) == 0) {
+/*					SEEN_NO_DUP(tally, 6);*/
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("fp_arc layer: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 7);*/
+						PCBLayer = kicad_get_layeridx(st, l->children->str);
+						if (PCBLayer == -1) {
+							return -1;
+						}
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("width", l->str) == 0) {
+/*					SEEN_NO_DUP(tally, 8);*/
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("fp_arc width: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 9);*/
+						val = strtod(l->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Thickness = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("angle", l->str) == 0) {
+/*					SEEN_NO_DUP(tally, 10);*/
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("fp_arc angle CW rotation: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 11);*/
+						val = strtod(l->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							delta = val;
+						}
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("net", l->str) == 0) { /* unlikely to be used or seen */
+/*					SEEN_NO_DUP(tally, 12);*/
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("fp_arc net: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 13);*/
+					} else {
+						return -1;
+					}
+			} else {
+				if (n->str != NULL) {
+					printf("Unknown gr_arc argument %s:", l->str);
+				}
+				return -1;
+			}
+		}
+	}
+	if (tally >= 0) { /* need start, end, layer, thickness at a minimum */
+		width = height = Distance(centreX, centreY, endX, endY); /* calculate radius of arc */
+		if (width < 1) { /* degenerate case */
+			startAngle = 0;
+		} else {
+			endAngle = 180*atan2(-(endY - centreY), endX - centreX)/M_PI; /* avoid using atan2 with zero parameters */
+			if (endAngle < 0.0) {
+				endAngle += 360.0; /*make it 0...360 */
+			}
+			startAngle = endAngle + delta; /* geda is 180 degrees out of phase with kicad, and opposite direction rotation */
+			if (startAngle > 360.0) {
+				startAngle -= 360.0;
+			}
+			if (startAngle < 0.0) {
+				startAngle += 360.0;
+			}
+
+		}
+		CreateNewArcOnLayer( &st->PCB->Data->Layer[PCBLayer], moduleX + centreX, moduleY + centreY, width, height, endAngle, delta, Thickness, Clearance, Flags);
+/*		return 0;*/
+	}
+/*	return -1;*/
+
+
+/* ********************************************************** */
+
+/*			} else if (n->str != NULL && strcmp("fp_circle", n->str) == 0) {
 					pcb_printf("fp_circle found\n");
-					kicad_parse_fp_circle(st, n->children);
+					kicad_parse_fp_circle(st, n->children); */ /* using arc parser for circles too */
+
 			} else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
 					pcb_printf("fp_text found\n");
-					kicad_parse_gr_text(st, n->children);
+/*					kicad_parse_gr_text(st, n->children);*/
+
+/* ********************************************************** */
+
+
+	if (n->children->str != NULL) {
+		printf("fp_text element being parsed: '%s'\n", n->children->str);
+		text = n->children->str;
+		for (i = 0, textLength = 0; text[i] != 0; i++) {
+			textLength++;
+		}
+		printf("fp_text element length: '%d'\n", textLength);
+		for(l = subtree,i = 0; l != NULL; l = l->next, i++) {
+			if (l->str != NULL && strcmp("at", l->str) == 0) {
+/*					SEEN_NO_DUP(tally, 0);*/
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("text at x: '%s'\n", (l->children->str));
+/*						SEEN_NO_DUP(tally, 1);*/ /* same as ^= 1 was */
+						val = strtod(l->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							X = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
+					if (l->children->next != NULL && l->children->next->str != NULL) {
+						pcb_printf("text at y: '%s'\n", (l->children->next->str));
+/*						SEEN_NO_DUP(tally, 2);*/
+						val = strtod(l->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Y = PCB_MM_TO_COORD(val);
+						}	
+						if (l->children->next->next != NULL && l->children->next->next->str != NULL) {
+							pcb_printf("text rotation: '%s'\n", (l->children->next->next->str));
+							val = strtod(l->children->next->next->str, &end);
+							if (*end != 0) {
+								return -1;
+							} else {
+								direction = 0;  /* default */
+								if (val > 45.0 && val <= 135.0) {
+									direction = 1;
+								} else if (val > 135.0 && val <= 225.0) {
+									direction = 2;
+								} else if (val > 225.0 && val <= 315.0) {
+									direction = 3;
+								}
+								printf("kicad angle: %f,   Direction %d\n", val, direction);
+							}
+/*							SEEN_NO_DUP(tally, 3);*/
+						} 
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("layer", l->str) == 0) {
+/*				SEEN_NO_DUP(tally, 4);*/
+				if (l->children != NULL && l->children->str != NULL) {
+					pcb_printf("text layer: '%s'\n", (l->children->str));
+					if ((strcmp("B.Cu", l->children->str) == 0) || (strcmp("B.SilkS", l->children->str) == 0 )) {
+						Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+					}
+					PCBLayer = kicad_get_layeridx(st, l->children->str);
+					if (PCBLayer == -1) {
+						return -1;
+					}
+				} else {
+					return -1;
+				}
+			} else if (l->str != NULL && strcmp("effects", l->str) == 0) {
+/*				SEEN_NO_DUP(tally, 5);*/
+				for(m = l->children; m != NULL; m = m->next) {
+					/*printf("stepping through effects def, looking at %s\n", m->str);*/ 
+					if (m->str != NULL && strcmp("font", m->str) == 0) {
+/*						SEEN_NO_DUP(tally, 6);*/
+						for(p = m->children; p != NULL; p = p->next) {
+							if (m->str != NULL && strcmp("size", p->str) == 0) {
+/*								SEEN_NO_DUP(tally, 7);*/
+								if (p->children != NULL && p->children->str != NULL) {
+									pcb_printf("font sizeX: '%s'\n", (p->children->str));
+									val = strtod(p->children->str, &end);
+									if (*end != 0) {
+										return -1;
+									} else {
+										scaling = (int) (100*val/1.27); /* standard glyph width ~= 1.27mm */
+									}
+								} else {
+									return -1;
+								}
+								if (p->children->next != NULL && p->children->next->str != NULL) {
+									pcb_printf("font sizeY: '%s'\n", (p->children->next->str));
+								} else {
+									return -1;
+								}
+							} else if (strcmp("thickness", p->str) == 0) {
+/*								SEEN_NO_DUP(tally, 8);*/
+								if (p->children != NULL && p->children->str != NULL) {
+									pcb_printf("font thickness: '%s'\n", (p->children->str));
+								} else {
+									return -1;
+								}
+							}
+						}
+					} else if (m->str != NULL && strcmp("justify", m->str) == 0) {
+/*						SEEN_NO_DUP(tally, 9);*/
+						if (m->children != NULL && m->children->str != NULL) {
+							pcb_printf("text justification: '%s'\n", (m->children->str));
+							if (strcmp("mirror", m->children->str) == 0) {
+								mirrored = 1;
+							}
+						} else {
+							return -1;
+						}
+					} else {
+						if (m->str != NULL) {
+							printf("Unknown effects argument %s:", m->str);
+						}
+						return -1;	
+					}
+				}
+			} 				
+		}
+	}
+	required = 1; /*BV(2) | BV(3) | BV(4) | BV(7) | BV(8); */
+	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
+		if (&st->PCB->Font == NULL) {
+			CreateDefaultFont(&st->PCB);
+		}
+
+		if (mirrored != 0) {
+			if (direction%2 == 0) {
+				direction += 2;
+				direction = direction%4;
+			}
+			if (direction == 0 ) {
+				X -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				Y += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			} else if (direction == 1 ) {
+				Y -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				X -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			} else if (direction == 2 ) {
+				X += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				Y -= PCB_MM_TO_COORD(glyphWidth/2.0);  /* centre it vertically */
+			} else if (direction == 3 ) {
+				Y += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				X += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			}
+		} else { /* not back of board text */
+			if (direction == 0 ) {
+				X -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				Y -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			} else if (direction == 1 ) {
+				Y += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				X -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			} else if (direction == 2 ) {
+				X += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				Y += PCB_MM_TO_COORD(glyphWidth/2.0);  /* centre it vertically */
+			} else if (direction == 3 ) {
+				Y -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				X += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			}
+		}
+
+		CreateNewText( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X, Y, direction, scaling, text, Flags);
+/*		return 0; */ /* create new font */
+	}
+
+
+/* ********************************************************** */
+
 			} else {
 				if (n->str != NULL) {
 					printf("Unknown pad argument %s:", n->str);
