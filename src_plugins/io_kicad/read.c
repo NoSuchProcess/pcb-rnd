@@ -1381,7 +1381,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 
 			} else if ((n->str != NULL && strcmp("fp_arc", n->str) == 0) || (n->str != NULL && strcmp("fp_circle", n->str) == 0)) {
 					pcb_printf("fp_arc or fp_circle found\n");
-					kicad_parse_gr_arc(st, n->children);
+/*					kicad_parse_gr_arc(st, n->children); */
 
 /* ********************************************************** */
 
