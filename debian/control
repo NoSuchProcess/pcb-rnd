@@ -89,4 +89,115 @@ Description: printed circuit board (pcb) design program - diagnostic actions
  This package provides actions for debugging/diagnostic purposes. This
  feature may be needed for reporting bugs.
 
+Package: pcb-rnd-distalign
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - distalign feature
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides actions for arranging elements in an array.
 
+Package: pcb-rnd-distaligntext
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - distaligntext feature
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides actions for arranging text objects in an array.
+
+Package: pcb-rnd-djopt
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - djopt feature
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides actions to cleane up (optimize) tracks.
+ It is especially useful after autorouting.
+
+Package: pcb-rnd-gcode
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - gcode export
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package allows exporting the design to gcode, useful for CNC
+ milling.
+
+Package: pcb-rnd-gerber
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - gerber export
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package allows exporting the design to gerber, accepted
+ by most PCB fab houses.
+
+Package: pcb-rnd-lpr
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - lpr export
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package allows printing directly from the GUI, using lpr.
+
+Package: pcb-rnd-nelma
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - nelma export
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package allows exporting the design to nelma, for numerical
+ capacitance calculation (via external tool)
+
+Package: pcb-rnd-png
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - bitmap export
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package allows exporting the design in various bitmap formats,
+ including png and jpeg.
+
+Package: pcb-rnd-svg
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - SVG export
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package allows exporting the design in SVG, the Scalable Vector
+ Graphics format. It is useful for publishing the design on the web.
+
+Package: pcb-rnd-xy
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - XY export
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package allows exporting the design in XY, suitable for
+ pick&place machines.
+
+Package: pcb-rnd-fontmode
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - font editor
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package lets the user to turn the GUI into a PCB font editor.
+
+Package: pcb-rnd-fp-wget
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - web footprints
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides a wget based footprint accessor, which allows
+ integrating web directories of footprints in the library. The
+ only currently supported site is gedasymbols.org.
+
+Package: pcb-rnd-edif
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - EDIF netlist import
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package allows pcb-rnd to import netlists in the EDIF format.
