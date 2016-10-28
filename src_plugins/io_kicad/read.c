@@ -1651,7 +1651,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 
 	PolygonTypePtr polygon = NULL;
 	FlagType flags = MakeFlags(PCB_FLAG_CLEARPOLY);
-	char *end, *name; /* not using via name for now */
+	char *end;
 	double val;
 	Coord X, Y;
 	int PCBLayer = 0;
