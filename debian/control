@@ -14,7 +14,7 @@ Description: printed circuit board (pcb) design program - meta-package
  system. pcb-rnd includes a rats nest feature, design rule checking, and can 
  provide industry standard RS-274-X (Gerber), NC drill, and centroid data 
  (X-Y data) output for use in the board fabrication and assembly process. 
-.
+ .
  pcb-rnd is load/save compatible with geda/PCB and kicad and offers various
  auxiliary import/export formats.
 
@@ -28,7 +28,7 @@ Description: printed circuit board (pcb) design program - core executable
  system. pcb-rnd includes a rats nest feature, design rule checking, and can 
  provide industry standard RS-274-X (Gerber), NC drill, and centroid data 
  (X-Y data) output for use in the board fabrication and assembly process. 
-.
+ .
  This package contains the core program. Most functionality, including the
  GUI frontend, is in the corresponding plugin package.
 
