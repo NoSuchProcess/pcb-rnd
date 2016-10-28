@@ -53,3 +53,13 @@ Description: printed circuit board (pcb) design program - lesstif/motif interfac
  (X-Y data) output for use in the board fabrication and assembly process. 
  .
  This package contains the Lesstif/Motif user-interface for pcb-rnd.
+
+Package: pcb-rnd-autocrop
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - autocrop feature
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides the autocrop feature that will can resize the
+ board to minimum around all the existing objects.
+
