@@ -28,19 +28,15 @@ override_dh_auto_clean:
 
 override_dh_install:
 	dh_install
-#	 -Xusr/bin -Xusr/share/pcb-rnd- -Xusr/share/doc -Xexamples -Xtutorial -Xusr/share/info
 
 	# Set executable bit for pcb tools:
-#	-[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb-rnd/tools/MergePCBPS
-#	-[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb-rnd/tools/Merge_dimPCBPS
-#	-[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb-rnd/tools/tgo2pcb.tcl
-#	-[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb-rnd/tools/PCB2HPGL
+#	-[ ! -d debian/$(package)-gtk ] || chmod a+x debian/$(package)-gtk/usr/lib/pcb-rnd/plugins/hid_gtk.so
 
 	# Remove empty dirs:
 #	[ ! -d debian/$(package)-common ] || find debian/$(package)-common -type d -empty -delete
 
 override_dh_fixperms:
-	dh_fixperms
+	dh_fixperms -X usr/lib/pcb-rnd/plugins/
 	# Fix permissions of a couple of example files:
 #	-[ ! -d debian/$(package)-common ] || chmod -x debian/$(package)-common/usr/share/doc/$(package)-common/examples/LED.pcb
 #	-[ ! -d debian/$(package)-common ] || chmod -x debian/$(package)-common/usr/share/doc/$(package)-common/examples/LED.net
