@@ -201,3 +201,125 @@ Description: printed circuit board (pcb) design program - EDIF netlist import
  pcb-rnd is a modular, interactive printed circuit board editor.
  .
  This package allows pcb-rnd to import netlists in the EDIF format.
+
+Package: pcb-rnd-mincut
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - mincut shorts
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package upgrades the indication of short circuits: instead of
+ highlighting two random pins/pads, it tries to determine the minimal-cut
+ that would resolve the short. In practice this means it makes a suggestion
+ where to cut the networks to remove the short circuit.
+
+Package: pcb-rnd-oldactions
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - old actions
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides some old user actions. These are not used
+ daily anymore, but some old actions scripts may still depend on them.
+
+Package: pcb-rnd-polycombine
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - combine polygons
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides actions to combine (merge) multiple polygons
+ into a single, more complex polygon.
+
+Package: pcb-rnd-propedit
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - property editor
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides the property editor function for the GUI. The
+ property editor collects all properties and attributes of all selected
+ objects in a table and allows the user to change them.
+
+Package: pcb-rnd-puller
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - track puller
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides actions to "pull" tracks, minimizing their length.
+
+Package: pcb-rnd-query
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - query language
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides the query language used in the advanced search on
+ the GUI.
+
+Package: pcb-rnd-renumber
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - element renumber
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides various actions to automatically renumber elements
+ on the design. These actions change the refdes of some (or all) elements.
+
+Package: pcb-rnd-report
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - object report
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides the report action that displays basic information
+ about design objects. Unlike propedit, report does not allow the user
+ to manipulate any of the data reported.
+
+Package: pcb-rnd-shand-cmd
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - command shorthands
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides 1..2 character long shorthands for the most
+ commonly used core commands.
+
+Package: pcb-rnd-smartdisperse
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - smart dispenser
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package implements a smart algorithm to disperse elements. It is
+ useful after importing a new design from the schematics. It is an
+ alternative to autplace.
+
+Package: pcb-rnd-stroke
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core, pcb-rnd-gtk
+Description: printed circuit board (pcb) design program - gestures
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package implements mouse gestures using libstroke.
+
+Package: pcb-rnd-teardrops
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core, pcb-rnd-gtk
+Description: printed circuit board (pcb) design program - teardrop pins
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package embeds each pin in a teardrop drawn from multiple arcs.
+ May be useful for toner-transfer boards.
+
+Package: pcb-rnd-vendordrill
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core, pcb-rnd-gtk
+Description: printed circuit board (pcb) design program - vendor maps
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides vendor drill mapping and vendor specific design
+ rule application.
+
+
