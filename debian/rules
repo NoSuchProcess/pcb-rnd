@@ -37,7 +37,7 @@ override_dh_install:
 #	-[ ! -d debian/$(package)-common ] || chmod a+x debian/$(package)-common/usr/share/pcb-rnd/tools/PCB2HPGL
 
 	# Remove empty dirs:
-	[ ! -d debian/$(package)-common ] || find debian/$(package)-common -type d -empty -delete
+#	[ ! -d debian/$(package)-common ] || find debian/$(package)-common -type d -empty -delete
 
 override_dh_fixperms:
 	dh_fixperms
@@ -49,7 +49,7 @@ override_dh_installexamples:
 	dh_installexamples -XMakefile
 
 override_dh_installchangelogs:
-	dh_installchangelogs -p$(package)-common
+	dh_installchangelogs -p$(package)-core
 
 override_dh_installdocs:
 	# Only install docs in $(package)-core & link other packages' docs to
