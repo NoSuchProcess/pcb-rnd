@@ -1,7 +1,7 @@
 Source: pcb-rnd
 Section: electronics
 Priority: optional
-Maintainer: Tibor Palinkas <pcb-rnd[removethis]@repo.hu>
+Maintainer: Tibor Palinkas <pcb-rnd[removethis]@igor2.repo.hu>
 Build-Depends: debhelper (>= 9), bison, flex, libgtkglext1-dev, tk8.5, libgd-dev, libdbus-1-dev, libmotif-dev, libxmu-dev, libxml-parser-perl, intltool, imagemagick, gerbv
 Homepage: http://repo.hu/projects/pcb-rnd
 Vcs-Svn: svn://repo.hu/pcb-rnd/trunk
@@ -15,7 +15,7 @@ Description: printed circuit board (pcb) design program - meta-package
  provide industry standard RS-274-X (Gerber), NC drill, and centroid data 
  (X-Y data) output for use in the board fabrication and assembly process. 
  .
- pcb-rnd is load/save compatible with geda/PCB and kicad and offers various
+ pcb-rnd is load/save compatible with gEDA/PCB and kicad and offers various
  auxiliary import/export formats.
 
 Package: pcb-rnd-core
@@ -60,6 +60,33 @@ Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
 Description: printed circuit board (pcb) design program - autocrop feature
  pcb-rnd is a modular, interactive printed circuit board editor.
  .
- This package provides the autocrop feature that will can resize the
+ This package provides the autocrop feature that can resize the
  board to minimum around all the existing objects.
+
+Package: pcb-rnd-autoplace
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - autoplace feature
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides the autoplace feature used to place elements
+ automatically and offers two different algorithms to do so.
+
+Package: pcb-rnd-autoroute
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - autoroute feature
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides the classic gEDA/pcb autorouter.
+
+Package: pcb-rnd-diag
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - diagnostic actions
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides actions for debugging/diagnostic purposes. This
+ feature may be needed for reporting bugs.
+
 
