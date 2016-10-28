@@ -7,40 +7,49 @@ Homepage: http://repo.hu/projects/pcb-rnd
 Vcs-Svn: svn://repo.hu/pcb-rnd/trunk
 
 Package: pcb-rnd
-Architecture: all
-Depends: ${misc:Depends}, pcb-rnd-gtk, pcb-rnd-common
+Architecture: any
+Depends: ${misc:Depends}, pcb-rnd-core
 Description: printed circuit board (pcb) design program - meta-package
- PCB is an interactive printed circuit board editor for the X11 window 
- system. PCB includes a rats nest feature, design rule checking, and can 
+ pcb-rnd is an interactive printed circuit board editor for the X11 window 
+ system. pcb-rnd includes a rats nest feature, design rule checking, and can 
  provide industry standard RS-274-X (Gerber), NC drill, and centroid data 
  (X-Y data) output for use in the board fabrication and assembly process. 
- PCB offers high end features such as an autorouter and trace optimizer 
- which can tremendously reduce layout time.
+.
+ pcb-rnd is load/save compatible with geda/PCB and kicad and offers various
+ auxiliary import/export formats.
 
-Package: pcb-rnd-common
+Package: pcb-rnd-core
 Architecture: all
 Replaces: pcb
-Depends: ${misc:Depends}, m4, tk8.5 | wish, tcl8.5 | tclsh, pcb-rnd-gtk
-Recommends: extra-xdg-menus
-Description: printed circuit board (pcb) design program - common files
- PCB is an interactive printed circuit board editor for the X11 window 
- system. PCB includes a rats nest feature, design rule checking, and can 
+Depends: ${misc:Depends}
+Recommends: pcb-rnd-gtk
+Description: printed circuit board (pcb) design program - core executable
+ pcb-rnd is an interactive printed circuit board editor for the X11 window 
+ system. pcb-rnd includes a rats nest feature, design rule checking, and can 
  provide industry standard RS-274-X (Gerber), NC drill, and centroid data 
  (X-Y data) output for use in the board fabrication and assembly process. 
- PCB offers high end features such as an autorouter and trace optimizer 
- which can tremendously reduce layout time.
- .
- This package contains the common files.
+.
+ This package contains the core program. Most functionality, including the
+ GUI frontend, is in the corresponding plugin package.
 
 Package: pcb-rnd-gtk
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-common
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
 Description: printed circuit board (pcb) design program - GTK+ interface
- PCB is an interactive printed circuit board editor for the X11 window 
- system. PCB includes a rats nest feature, design rule checking, and can 
+ pcb-rnd is an interactive printed circuit board editor for the X11 window 
+ system. pcb-rnd includes a rats nest feature, design rule checking, and can 
  provide industry standard RS-274-X (Gerber), NC drill, and centroid data 
  (X-Y data) output for use in the board fabrication and assembly process. 
- PCB offers high end features such as an autorouter and trace optimizer 
- which can tremendously reduce layout time.
  .
- This package contains the GTK+ user-interface for pcb.
+ This package contains the GTK+ user-interface for pcb-rnd.
+
+Package: pcb-rnd-lesstif
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - lesstif/motif interface
+ pcb-rnd is an interactive printed circuit board editor for the X11 window 
+ system. pcb-rnd includes a rats nest feature, design rule checking, and can 
+ provide industry standard RS-274-X (Gerber), NC drill, and centroid data 
+ (X-Y data) output for use in the board fabrication and assembly process. 
+ .
+ This package contains the Lesstif/Motif user-interface for pcb-rnd.

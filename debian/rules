@@ -5,22 +5,19 @@
 
 package = pcb-rnd
 
-CONFIGURE_OPTS=--disable-doc --disable-gl --disable-rpath --disable-dbus --disable-update-desktop-database --disable-update-mime-database --enable-dependency-tracking --disable-coord64 LDFLAGS="$(LDFLAGS) -Wl,--as-needed"
+CONFIGURE_OPTS=--all=plugin --prefix=/usr 
 
 %:
 	dh $@
 
 override_dh_auto_configure:
-	./configure --prefix=/usr
+	./configure $(CONFIGURE_OPTS)
 
 override_dh_auto_build:
 	make
-#	dh_auto_build --builddirectory build_gtk
-#	dh_auto_build --builddirectory build_lesstif
 
 override_dh_auto_test:
 	dh_auto_test --builddirectory build_gtk
-#	dh_auto_test --builddirectory build_lesstif
 
 override_dh_auto_install:
 	make install install_root=`pwd`/debian/tmp
