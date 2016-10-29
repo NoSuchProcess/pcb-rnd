@@ -562,7 +562,7 @@ static int parse_element(PCBType *pcb, DataType *dt, lht_node_t *obj)
 	lht_node_t *lst, *n;
 	lht_dom_iterator_t it;
 
-	parse_id(&elem->ID, obj, 4);
+	parse_id(&elem->ID, obj, 8);
 	parse_attributes(&elem->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&elem->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_VIA);
 	parse_coord(&elem->MarkX, lht_dom_hash_get(obj, "x"));
