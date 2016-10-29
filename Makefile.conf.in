@@ -5,6 +5,7 @@ LIBDIR=$(install_root)@/local/prefix@/lib/pcb-rnd
 BINDIR=$(install_root)@/local/prefix@/bin
 ETCDIR=$(install_root)/etc
 DATADIR=$(install_root)@/local/prefix@/share/pcb-rnd
+MAN1DIR=$(install_root)@/local/prefix@/share/man/man1
 RM=@/host/fstools/rm@
 CP=@/host/fstools/cp@
 LN=@/host/fstools/ln@
