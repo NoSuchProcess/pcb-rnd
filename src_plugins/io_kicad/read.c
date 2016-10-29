@@ -1073,8 +1073,16 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 /* ********************************************************** */
 
 
-	if (n->children->str != NULL) {
+	if (n->children != NULL && n->children->str != NULL) {
 		printf("fp_text element being parsed - label: '%s'\n", n->children->str);
+
+		text = n->children->str;
+		for (i = 0; text[i] != 0; i++) {
+			textLength++;
+		}
+		printf("gr_text element length: '%d'\n", textLength);
+
+/* ******
 		textLabel = n->children->str;
 		if (n->children->next != NULL && n->children->next->str != NULL) {
 			text = n->children->next->str;
@@ -1096,12 +1104,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			for (i = 0, textLength = 0; textLabel[i] != 0; i++) {
 				textLength++;
 			}
-			text = textLabel; /* just a single string, no reference or value */
+			text = textLabel;*/ /* just a single string, no reference or value */ /*
 		}
 		if (moduleDefined == 0 && nameDefined && refdesDefined && valueDefined) {
 			moduleDefined = 1;
 			printf("now have RefDes %s and Value %s, can now define module/element %s\n", moduleRefdes, moduleValue, moduleName);
 		}
+
+*/
 		printf("fp_text element length: '%d'\n", textLength);
 		for(l = subtree,i = 0; l != NULL; l = l->next, i++) {
 			if (l->str != NULL && strcmp("at", l->str) == 0) {
@@ -1256,7 +1266,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 
-		CreateNewText( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X, Y, direction, scaling, text, Flags);
+/*		CreateNewText( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X, Y, direction, scaling, text, Flags); */
 	}
 
 
@@ -1298,7 +1308,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					return -1;
 				}
 			/* pads next */ 
-			} else if (n->str != NULL && strcmp("pad", n->str) == 0) {
+			} else if (n->str != NULL && strcmp("padD", n->str) == 0) {
 				if (n->children != 0 && n->children->str != NULL) {
 					printf("pad name : %s\n", n->str);
 					if (n->children->next != NULL && n->children->next->str != NULL) {
@@ -1351,7 +1361,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						} else {
 							return -1;
 						}
-					} else if (m->str != NULL && strcmp("net", m->str) == 0) {
+					} else if (m->str != NULL && strcmp("net", m->str) == 0) { 
 						/*SEEN_NO_DUP(padTally, 4);*/
 						if (m->children != NULL && m->children->str != NULL) {
 							pcb_printf("pad's net number:\t'%s'\n", (m->children->str));
@@ -1672,7 +1682,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 
 			} else {
 				if (n->str != NULL) {
-					printf("Unknown pad argument %s:", n->str);
+					printf("Unknown pad argument : %s\n", n->str);
 				}
 			} 
 		}
