@@ -7,7 +7,7 @@ Homepage: http://repo.hu/projects/pcb-rnd
 Vcs-Svn: svn://repo.hu/pcb-rnd/trunk
 
 Package: pcb-rnd
-Architecture: any
+Architecture: all
 Depends: ${misc:Depends}, pcb-rnd-core
 Description: printed circuit board (pcb) design program - meta-package
  pcb-rnd is an interactive printed circuit board editor for the X11 window 
@@ -19,7 +19,7 @@ Description: printed circuit board (pcb) design program - meta-package
  auxiliary import/export formats.
 
 Package: pcb-rnd-core
-Architecture: all
+Architecture: any
 Replaces: pcb
 Depends: ${misc:Depends}
 Recommends: pcb-rnd-gtk
