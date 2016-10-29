@@ -308,7 +308,7 @@ Description: printed circuit board (pcb) design program - gestures
 
 Package: pcb-rnd-teardrops
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core, pcb-rnd-gtk
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
 Description: printed circuit board (pcb) design program - teardrop pins
  pcb-rnd is a modular, interactive printed circuit board editor.
  .
@@ -317,11 +317,21 @@ Description: printed circuit board (pcb) design program - teardrop pins
 
 Package: pcb-rnd-vendordrill
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core, pcb-rnd-gtk
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
 Description: printed circuit board (pcb) design program - vendor maps
  pcb-rnd is a modular, interactive printed circuit board editor.
  .
  This package provides vendor drill mapping and vendor specific design
  rule application.
+
+Package: pcb-rnd-gsch2pcb
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: printed circuit board (pcb) design program - vendor maps
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package provides the external tool gsch2pcb-rnd that can convert
+ a gschem schematics to files that can be imported in pcb-rnd.
+
 
 
