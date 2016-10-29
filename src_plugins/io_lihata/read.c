@@ -91,8 +91,10 @@ static int parse_coord(Coord *res, lht_node_t *nd)
 		return -1;
 
 	tmp = GetValueEx(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
-	if (!success)
+	if (!success) {
+		Message(PCB_MSG_ERROR, "#LHT1 Invalid coord value: '%s'\n", nd->data.text.value);
 		return -1;
+	}
 
 	*res = tmp;
 	return 0;
@@ -104,12 +106,16 @@ static int parse_angle(Angle *res, lht_node_t *nd)
 	double tmp;
 	pcb_bool success;
 
-	if ((nd == NULL) || (nd->type != LHT_TEXT))
+	if ((nd == NULL) || (nd->type != LHT_TEXT)) {
+		Message(PCB_MSG_ERROR, "#LHT2 Invalid angle type: '%d'\n", nd->type);
 		return -1;
+	}
 
 	tmp = GetValueEx(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
-	if (!success)
+	if (!success) {
+		Message(PCB_MSG_ERROR, "#LHT3 Invalid angle value: '%s'\n", nd->data.text.value);
 		return -1;
+	}
 
 	*res = tmp;
 	return 0;
@@ -122,14 +128,21 @@ static int parse_int(int *res, lht_node_t *nd)
 	int base = 10;
 	char *end;
 
-	if ((nd == NULL) || (nd->type != LHT_TEXT))
+	if (nd == NULL)
 		return -1;
+
+	if (nd->type != LHT_TEXT) {
+		Message(PCB_MSG_ERROR, "#LHT4 Invalid int type: '%d'\n", nd->type);
+		return -1;
+	}
 
 	if ((nd->data.text.value[0] == '0') && (nd->data.text.value[1] == 'x'))
 		base = 16;
 	tmp = strtol(nd->data.text.value, &end, base);
-	if (*end != '\0')
+	if (*end != '\0') {
+		Message(PCB_MSG_ERROR, "#LHT5 Invalid int value: '%s'\n", nd->data.text.value);
 		return -1;
+	}
 
 	*res = tmp;
 	return 0;
@@ -146,8 +159,10 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 		return -1;
 
 	tmp = strtol(nd->name + prefix_len, &end, 10);
-	if (*end != '\0')
+	if (*end != '\0') {
+		Message(PCB_MSG_ERROR, "#LHT6 Invalid id value: '%s' in line %d\n", nd->data.text.value, nd->line);
 		return -1;
+	}
 
 	CreateIDBump(tmp+1);
 
@@ -174,6 +189,7 @@ static int parse_bool(pcb_bool *res, lht_node_t *nd)
 		return 0;
 	}
 
+	Message(PCB_MSG_ERROR, "#LHT7 Invalid bool value: '%s'\n", nd->data.text.value);
 	return -1;
 }
 
