@@ -2,7 +2,7 @@ all: FORCE
 	cd src && make
 	cd util && make
 	cd pcblib && make
-	cd doc-rnd && make
+#	cd doc-rnd && make
 
 clean: FORCE
 	cd src && make clean
