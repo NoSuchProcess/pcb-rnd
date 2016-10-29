@@ -8,7 +8,7 @@ Vcs-Svn: svn://repo.hu/pcb-rnd/trunk
 
 Package: pcb-rnd
 Architecture: all
-Depends: ${misc:Depends}, pcb-rnd-core
+Depends: ${misc:Depends}, pcb-rnd-core, pcb-rnd-gtk, pcb-rnd-gerber, pcb-rnd-lpr, pcb-rnd-png, pcb-rnd-propedit, pcb-rnd-query, pcb-rnd-report, pcb-rnd-svg, pcb-rnd-xy
 Description: printed circuit board (pcb) design program - meta-package
  pcb-rnd is an interactive printed circuit board editor for the X11 window 
  system. pcb-rnd includes a rats nest feature, design rule checking, and can 
@@ -17,11 +17,13 @@ Description: printed circuit board (pcb) design program - meta-package
  .
  pcb-rnd is load/save compatible with gEDA/PCB and kicad and offers various
  auxiliary import/export formats.
+ .
+ This metapackage attempts to install the most commonly used set of plugins.
 
 Package: pcb-rnd-core
 Architecture: any
 Replaces: pcb
-Depends: ${misc:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Recommends: pcb-rnd-gtk
 Description: printed circuit board (pcb) design program - core executable
  pcb-rnd is an interactive printed circuit board editor for the X11 window 
