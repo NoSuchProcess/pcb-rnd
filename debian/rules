@@ -16,7 +16,7 @@ PCB_RND_BUILTINS = \
  --buildin-io_pcb \
  --buildin-io_lihata
 
-CONFIGURE_OPTS=--all=plugin $(PCB_RND_BUILTINS)  --prefix=/usr --debug
+CONFIGURE_OPTS=--debug --all=plugin $(PCB_RND_BUILTINS) --prefix=/usr --LDFLAGS=-Wl,-z,relro
 
 %:
 	dh $@
