@@ -39,6 +39,8 @@ override_dh_auto_clean:
 
 override_dh_install:
 	dh_install
+	mkdir -p debian/$(package)-core/usr/share/pixmaps
+	cp debian/pcb-rnd.xpm debian/$(package)-core/usr/share/pixmaps/pcb-rnd.xpm
 
 	# Set executable bit for pcb tools:
 #	-[ ! -d debian/$(package)-gtk ] || chmod a+x debian/$(package)-gtk/usr/lib/pcb-rnd/plugins/hid_gtk.so
