@@ -140,6 +140,7 @@ put /local/pcb/OBJS [@
 	../src_3rd/liblihata/genht/htpi.o
 	../src_3rd/liblihata/genht/htip.o
 	../src_3rd/liblihata/genht/htpp.o
+	../src_3rd/liblhtpers/lhtpers.o
 	../src_3rd/genvector/gds_char.o
 	../src_3rd/genvector/vtp0.o
 	../src_3rd/genregex/regex_sei.o
