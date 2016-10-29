@@ -9,7 +9,7 @@ CC=@cc/cc@
 
 HASHOBJ=../../src_3rd/liblihata/genht/hash.o ../../src_3rd/liblihata/genht/htsp.o ../../src_3rd/liblihata/genht/htpp.o
 VECTOBJ=../../src_3rd/genvector/gds_char.o ../../src_3rd/genvector/vtp0.o ../../src_3rd/genvector/vts0.o
-LISTOBJ=../../src_3rd/genlist/genlist.a
+LISTOBJ=../../src_3rd/genlist/genadlist.o ../../src_3rd/genlist/genlistalloc.o
 SCCFOBJ=../../scconfig/src/default/str.o
 QPARSE=../../src_3rd/qparse/qparse.o
 LHTOBJ= \
@@ -62,14 +62,12 @@ gsch2pcb-rnd$(EXE): $(OBJS)  $(CONF_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(SCC
 gsch2pcb.o: gsch2pcb.c ../../config.h
 	$(CC) -c $(CFLAGS) $(FP_CFLAGS) gsch2pcb.c -o gsch2pcb.o
 
-$(HASHOBJ):
-	cd ../../src_3rd/liblihata/genht && make
+../../src/pcb-rnd:
+	cd ../../src && make
 
-$(LISTOBJ):
-	cd ../../src_3rd/genlist && make
+$(HASHOBJ): ../../src/pcb-rnd
 
-$(QPARSE):
-	cd ../../src_3rd/qparse && make
+$(QPARSE): ../../src/pcb-rnd
 
 ../../src_3rd/genvector/gds_char.o:
 	$(CC) -c $(CFLAGS) ../../src_3rd/genvector/gds_char.c -o ../../src_3rd/genvector/gds_char.o
@@ -79,6 +77,13 @@ $(QPARSE):
 
 ../../src_3rd/genvector/vts0.o:
 	$(CC) -c $(CFLAGS) ../../src_3rd/genvector/vts0.c -o ../../src_3rd/genvector/vts0.o
+
+../../src_3rd/genadlist/genadlist.o:
+	$(CC) -c $(CFLAGS) ../../src_3rd/genlist/genadlist.c -o ../../src_3rd/genlist/genadlist.o
+
+../../src_3rd/genadlist/genlistalloc.o:
+	$(CC) -c $(CFLAGS) ../../src_3rd/genlist/genlistalloc.c -o ../../src_3rd/genlist/genlistalloc.o
+
 
 
 
