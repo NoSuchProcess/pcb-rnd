@@ -32,6 +32,8 @@ index.html:
 clean:
 
 distclean:
+
+genclean:
 	rm $(OUTPUT) 2>/dev/null ; true
 
 .mml.lint:
