@@ -1,7 +1,7 @@
 Source: pcb-rnd
 Section: electronics
 Priority: optional
-Maintainer: Tibor Palinkas <pcb-rnd[removethis]@igor2.repo.hu>
+Maintainer: Tibor Palinkas <pcb-rnd.removethis@igor2.repo.hu>
 Build-Depends: debhelper (>= 9), bison, flex, libgtkglext1-dev, tk8.5, libgd-dev, libdbus-1-dev, libmotif-dev, libxmu-dev, libxml-parser-perl, intltool, imagemagick, gerbv, libstroke0-dev
 Homepage: http://repo.hu/projects/pcb-rnd
 Vcs-Svn: svn://repo.hu/pcb-rnd/trunk

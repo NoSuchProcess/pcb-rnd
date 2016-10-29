@@ -1,6 +1,6 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0
 Upstream-Name: pcb-rnd
-Upstream-Contact: Tibor Palinkas <pcb-rnd@repo.hu>
+Upstream-Contact: Tibor Palinkas <pcb-rnd.removethis@repo.hu>
 Source: http://repo.hu/projects/pcb-rnd
 
 
@@ -14,7 +14,7 @@ Copyright: 1994-1997,2010 Thomas Nau <Thomas.Nau@rz.uni-ulm.de>
            2011 Andrew Poelstra <apoelstra@wpsoftware.net>
            2010 Alberto Maccioni <alberto.maccioni@gmail.com>
            2003-2010 Dan McMahill <danmc@users.sourceforge.net>
-           2013-2016 Tibor Palinkas <pcb-rnd@igor2.repo.hu>
+           2013-2016 Tibor Palinkas <pcb-rnd.removethis@igor2.repo.hu>
 License: GPL-2+
 
 Files: debian/*
@@ -22,7 +22,7 @@ Copyright: 2003-2008 Hamish Moffatt <hamish@debian.org>
            1996 Michael Mattice <mattice@mattice.reslife.okstate.edu>
            1997-1999 Hartmut Koptein <koptein@debian.org>
            2009-2013 أحمد المحمودي (Ahmed El-Mahmoudy) <aelmahmoudy@sabily.org>
-           2016 Tibor Palinkas <pcb-rnd@igor2.repo.hu>
+           2016 Tibor Palinkas <pcb-rnd.removethis@igor2.repo.hu>
 License: GPL-2+
 
 License: GPL-2+

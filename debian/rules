@@ -2,7 +2,7 @@
 #                                          -*- makefile -*-
 # debian/rules file for the Debian/GNU Linux pcb package
 # Copyright 1997-99 by Hartmut Koptein <koptein@debian.org>
-# Copyright 2016 by Tibor 'Igor2' Palinkas <pcb-rnd@igor2.repo.hu>
+# Copyright 2016 by Tibor 'Igor2' Palinkas <pcb-rnd[removethis]@igor2.repo.hu>
 
 package = pcb-rnd
 
