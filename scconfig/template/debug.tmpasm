@@ -3,5 +3,8 @@
 if /local/pcb/debug then
 	append /local/pcb/CFLAGS [@ -g -O0 @cc/argstd/Wall@ @]
 else
+	if /local/pcb/symbols then
+		append /local/pcb/CFLAGS [@ -g @]
+	end
 	append /local/pcb/CFLAGS { -O3 -DNDEBUG }
 end

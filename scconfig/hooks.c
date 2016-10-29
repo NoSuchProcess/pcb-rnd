@@ -46,7 +46,8 @@ static void help1(void)
 	printf("\n");
 	printf("options are:\n");
 	printf(" --prefix=path              change installation prefix from /usr to path\n");
-	printf(" --debug                    configure for building a debug version (-g -O0)\n");
+	printf(" --debug                    build full debug version (-g -O0, extra asserts)\n");
+	printf(" --symbols                  include symbols (add -g, but no -O0 or extra asserts)\n");
 	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
 	printf(" --dot_pcb_pcb=path         .pcb-rnd config path under $HOME/\n");
 	printf(" --workaround-gtk-ctrl      enable GTK control key query workaround\n");
@@ -88,6 +89,10 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 	if (strcmp(key, "debug") == 0) {
 		put("/local/pcb/debug", strue);
+		return 1;
+	}
+	if (strcmp(key, "symbols") == 0) {
+		put("/local/pcb/symbols", strue);
 		return 1;
 	}
 	if (strcmp(key, "coord") == 0) {
@@ -217,6 +222,7 @@ int hook_postinit()
 #include "plugins.h"
 
 	put("/local/pcb/debug", sfalse);
+	put("/local/pcb/symbols", sfalse);
 	put("/local/pcb/coord_bits", "32");
 	want_coord_bits = 32;
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
@@ -683,6 +689,7 @@ int hook_generate()
 	print_sum_setting("/local/pcb/want_parsgen",   "Regenerating languages with bison & flex");
 	print_sum_setting("/local/pcb/want_nls",       "Internationalization with gettext");
 	print_sum_setting("/local/pcb/debug",          "Compilation for debugging");
+	print_sum_setting("/local/pcb/symbols",        "Include debug symbols");
 	print_sum_setting("libs/sul/dmalloc/presents", "Compile with dmalloc");
 	print_sum_cfg_val("/local/pcb/coord_bits",     "Coordinate type bits");
 	print_sum_cfg_val("/local/pcb/dot_pcb_rnd",    ".pcb_rnd config dir under $HOME");
