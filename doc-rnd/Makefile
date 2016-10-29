@@ -11,3 +11,18 @@ keys.html: $(MENU_RES) $(KEYLIST)
 keys_mkey.html: $(MENU_RES_MKEY) $(KEYLIST)
 	$(KEYLIST) $(MENU_RES_MKEY) > keys_mkey.html
 
+
+install:
+	cd man && make install
+
+linstall:
+	cd man && make linstall
+
+uninstall:
+	cd man && make uninstall
+
+clean:
+	cd man && make clean
+
+distclean:
+	cd man && make distclean
