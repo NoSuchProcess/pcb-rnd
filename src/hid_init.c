@@ -106,10 +106,11 @@ void hid_init()
 	/* Setup a "nogui" default HID */
 	gui = hid_nogui_get_hid();
 
+#warning TODO: make this configurable
 	hid_load_dir(Concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
-											PCB_DIR_SEPARATOR_S, "pcb", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
+											PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
 	hid_load_dir(Concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
-											PCB_DIR_SEPARATOR_S, "pcb", PCB_DIR_SEPARATOR_S, "plugins", NULL));
+											PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", NULL));
 
 	/* conf_core.rc.path.home is set by the conf_core immediately on startup */
 	if (conf_core.rc.path.home != NULL) {
