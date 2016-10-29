@@ -322,7 +322,7 @@ static int ActionImport(int argc, const char **argv, Coord x, Coord y)
 		cmd = (const char **) malloc((7 + nsources) * sizeof(char *));
 		cmd[0] = conf_import_sch.plugins.import_sch.gnetlist_program;
 		cmd[1] = "-g";
-		cmd[2] = "pcbfwd";
+		cmd[2] = "pcbrndfwd";
 		cmd[3] = "-o";
 		cmd[4] = tmpfile;
 		cmd[5] = "--";

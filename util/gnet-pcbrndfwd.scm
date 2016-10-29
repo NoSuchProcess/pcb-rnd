@@ -25,7 +25,7 @@
 ;; This is a list of attributes which are propogated to the pcb
 ;; elements.  Note that refdes, value, and footprint need not be
 ;; listed here.
-(define pcbfwd:element-attrs
+(define pcbrndfwd:element-attrs
   '("device"
     "manufacturer"
     "manufacturer_part_number"
@@ -33,39 +33,39 @@
     "vendor_part_number"
     ))
 
-(define (pcbfwd:quote-string s)
+(define (pcbrndfwd:quote-string s)
   (string-append "\""
 		 (regexp-substitute/global #f "\"" s 'pre "\\\"" 'post)
 		 "\"")
   )
 
-(define (pcbfwd:pinfmt pin)
+(define (pcbrndfwd:pinfmt pin)
   (format #f "~a-~a" (car pin) (car (cdr pin)))
   )
 
-(define (pcbfwd:each-pin net pins port)
+(define (pcbrndfwd:each-pin net pins port)
   (if (not (null? pins))
       (let ((pin (car pins)))
-	(format port "Netlist(Add,~a,~a)~%" net (pcbfwd:pinfmt pin))
-	(pcbfwd:each-pin net (cdr pins) port))))
+	(format port "Netlist(Add,~a,~a)~%" net (pcbrndfwd:pinfmt pin))
+	(pcbrndfwd:each-pin net (cdr pins) port))))
 
-(define (pcbfwd:each-net netnames port)
+(define (pcbrndfwd:each-net netnames port)
   (if (not (null? netnames))
       (let ((netname (car netnames)))
-	(pcbfwd:each-pin netname (gnetlist:get-all-connections netname) port)
-	(pcbfwd:each-net (cdr netnames) port))))
+	(pcbrndfwd:each-pin netname (gnetlist:get-all-connections netname) port)
+	(pcbrndfwd:each-net (cdr netnames) port))))
 
-(define (pcbfwd:each-attr refdes attrs port)
+(define (pcbrndfwd:each-attr refdes attrs port)
   (if (not (null? attrs))
       (let ((attr (car attrs)))
 	(format port "ElementSetAttr(~a,~a,~a)~%"
-		(pcbfwd:quote-string refdes)
-		(pcbfwd:quote-string attr)
-		(pcbfwd:quote-string (gnetlist:get-package-attribute refdes attr)))
-	(pcbfwd:each-attr refdes (cdr attrs) port))))
+		(pcbrndfwd:quote-string refdes)
+		(pcbrndfwd:quote-string attr)
+		(pcbrndfwd:quote-string (gnetlist:get-package-attribute refdes attr)))
+	(pcbrndfwd:each-attr refdes (cdr attrs) port))))
 
 ;; write out the pins for a particular component
-(define pcbfwd:component_pins
+(define pcbrndfwd:component_pins
   (lambda (port package pins)
     (if (and (not (null? package)) (not (null? pins)))
 	(begin
@@ -75,7 +75,7 @@
 		(pinnum #f)
 		)
 	    (display "ChangePinName(" port)
-	    (display (pcbfwd:quote-string package) port)
+	    (display (pcbrndfwd:quote-string package) port)
 	    (display ", " port)
 
 	    (set! pinnum (gnetlist:get-attribute-by-pinnumber package pin "pinnumber"))
@@ -87,16 +87,16 @@
 	    (if (string=? label "unknown") 
 		(set! label pinnum)
 		)
-	    (display (pcbfwd:quote-string label) port)
+	    (display (pcbrndfwd:quote-string label) port)
 	    (display ")\n" port)
 	    )
-	  (pcbfwd:component_pins port package (cdr pins))
+	  (pcbrndfwd:component_pins port package (cdr pins))
 	  )
 	)
     )
   )
 
-(define (pcbfwd:each-element elements port)
+(define (pcbrndfwd:each-element elements port)
   (if (not (null? elements))
       (let* ((refdes (car elements))
 	     (value (gnetlist:get-package-attribute refdes "value"))
@@ -104,22 +104,22 @@
 	     )
 
 	(format port "ElementList(Need,~a,~a,~a)~%"
-		(pcbfwd:quote-string refdes)
-		(pcbfwd:quote-string footprint)
-		(pcbfwd:quote-string value))
-	(pcbfwd:each-attr refdes pcbfwd:element-attrs port)
-	(pcbfwd:component_pins port refdes (gnetlist:get-pins refdes))
+		(pcbrndfwd:quote-string refdes)
+		(pcbrndfwd:quote-string footprint)
+		(pcbrndfwd:quote-string value))
+	(pcbrndfwd:each-attr refdes pcbrndfwd:element-attrs port)
+	(pcbrndfwd:component_pins port refdes (gnetlist:get-pins refdes))
 
-	(pcbfwd:each-element (cdr elements) port))))
+	(pcbrndfwd:each-element (cdr elements) port))))
 
-(define (pcbfwd output-filename)
+(define (pcbrndfwd output-filename)
   (let ((port (open-output-file output-filename)))
     (format port "Netlist(Freeze)\n")
     (format port "Netlist(Clear)\n")
-    (pcbfwd:each-net (gnetlist:get-all-unique-nets "dummy") port)
+    (pcbrndfwd:each-net (gnetlist:get-all-unique-nets "dummy") port)
     (format port "Netlist(Sort)\n")
     (format port "Netlist(Thaw)\n")
     (format port "ElementList(Start)\n")
-    (pcbfwd:each-element packages port)
+    (pcbrndfwd:each-element packages port)
     (format port "ElementList(Done)\n")
     (close-output-port port)))

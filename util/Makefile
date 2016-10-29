@@ -13,7 +13,7 @@ clean:
 install_:
 	$(MKDIR) "$(BINDIR)" "$(LIBDIR)" "$(SCMDIR)"
 	$(CPC) "`pwd`/fp2anim" "$(BINDIR)/fp2anim"
-	$(CPC) "`pwd`/gnet-pcbfwd.scm" "$(SCMDIR)/gnet-pcbfwd.scm"
+	$(CPC) "`pwd`/gnet-pcbrndfwd.scm" "$(SCMDIR)/gnet-pcbrndfwd.scm"
 	cd gsch2pcb-rnd && make install_ CPC="$(CPC)"
 
 install:
