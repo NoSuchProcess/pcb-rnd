@@ -1016,6 +1016,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	unsigned direction = 0; /* default is horizontal */
 	char * end, * textLabel, * text;
 	char * moduleName, * moduleRefdes, * moduleValue;
+	moduleName = moduleRefdes = moduleValue = NULL;
 
 	FlagType Flags = MakeFlags(0); /* start with something bland here */
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
@@ -1023,7 +1024,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	if (subtree->str != NULL) {
 		printf("Name of module element being parsed: '%s'\n", subtree->str);
 		moduleName = subtree->str;
-		nameDefined = 1;
 		for(n = subtree->next, i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("tedit", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
@@ -1074,44 +1074,27 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 
 
 	if (n->children != NULL && n->children->str != NULL) {
-		printf("fp_text element being parsed - label: '%s'\n", n->children->str);
-
-		text = n->children->str;
-		for (i = 0; text[i] != 0; i++) {
-			textLength++;
-		}
-		printf("gr_text element length: '%d'\n", textLength);
-
-/* ******
 		textLabel = n->children->str;
+		printf("fp_text element being parsed for %s - label: '%s'\n", moduleName, textLabel);
 		if (n->children->next != NULL && n->children->next->str != NULL) {
 			text = n->children->next->str;
-			for (i = 0, textLength = 0; text[i] != 0; i++) {
-				textLength++;
-			}
 			if (strcmp("reference", textLabel) == 0) {
-				printf("fp_text reference found: '%s'\n", text);
-				strcpy(moduleRefdes, text);
+				printf("fp_text reference found: '%s'\n", textLabel);
+				moduleRefdes = text;
 				printf("moduleRefdes now: '%s'\n", moduleRefdes);
-				refdesDefined = 1;
 			} else if (strcmp("value", textLabel) == 0) {
-				printf("fp_text value found: '%s'\n", text);
-				strcpy(moduleValue, text);
+				printf("fp_text value found: '%s'\n", textLabel);
+				moduleValue = text;
 				printf("moduleValue now: '%s'\n", moduleValue);
-				valueDefined = 1;
 			}
 		} else {
-			for (i = 0, textLength = 0; textLabel[i] != 0; i++) {
-				textLength++;
-			}
-			text = textLabel;*/ /* just a single string, no reference or value */ /*
+			text = textLabel; /* just a single string, no reference or value */ 
 		}
-		if (moduleDefined == 0 && nameDefined && refdesDefined && valueDefined) {
+		if (moduleValue != NULL && moduleRefdes != NULL && moduleName != NULL) {
 			moduleDefined = 1;
 			printf("now have RefDes %s and Value %s, can now define module/element %s\n", moduleRefdes, moduleValue, moduleName);
 		}
 
-*/
 		printf("fp_text element length: '%d'\n", textLength);
 		for(l = subtree,i = 0; l != NULL; l = l->next, i++) {
 			if (l->str != NULL && strcmp("at", l->str) == 0) {
