@@ -42,9 +42,11 @@ genclean:
 install_:
 	$(MKDIR) "$(MAN1DIR)"
 	$(CPC) "`pwd`/pcb-rnd.1" "$(MAN1DIR)/pcb-rnd.1"
+	$(CPC) "`pwd`/gsch2pcb-rnd.1" "$(MAN1DIR)/pcb-rnd.1"
 
 uninstall:
 	$(RM) "$(MAN1DIR)/pcb-rnd.1"
+	$(RM) "$(MAN1DIR)/gsch2pcb-rnd.1"
 
 install:
 	make install_ CPC="$(CP)"
