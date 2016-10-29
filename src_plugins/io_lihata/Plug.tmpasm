@@ -1,5 +1,11 @@
 put /local/pcb/mod {io_lihata}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/io_lihata/io_lihata.o $(PLUGDIR)/io_lihata/write.o $(PLUGDIR)/io_lihata/read.o $(PLUGDIR)/io_lihata/common.o @]
+put /local/pcb/mod/OBJS [@
+ $(PLUGDIR)/io_lihata/io_lihata.o
+ $(PLUGDIR)/io_lihata/write.o
+ $(PLUGDIR)/io_lihata/write_style.o
+ $(PLUGDIR)/io_lihata/read.o
+ $(PLUGDIR)/io_lihata/common.o
+@]
 
 switch /local/pcb/io_lihata/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
