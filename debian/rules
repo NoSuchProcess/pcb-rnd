@@ -45,14 +45,8 @@ override_dh_install:
 	# Set executable bit for pcb tools:
 #	-[ ! -d debian/$(package)-gtk ] || chmod a+x debian/$(package)-gtk/usr/lib/pcb-rnd/plugins/hid_gtk.so
 
-	# Remove empty dirs:
-#	[ ! -d debian/$(package)-common ] || find debian/$(package)-common -type d -empty -delete
-
 override_dh_fixperms:
 	dh_fixperms -X usr/lib/pcb-rnd/plugins/
-	# Fix permissions of a couple of example files:
-#	-[ ! -d debian/$(package)-common ] || chmod -x debian/$(package)-common/usr/share/doc/$(package)-common/examples/LED.pcb
-#	-[ ! -d debian/$(package)-common ] || chmod -x debian/$(package)-common/usr/share/doc/$(package)-common/examples/LED.net
 
 override_dh_installexamples:
 	dh_installexamples -XMakefile
@@ -67,4 +61,4 @@ override_dh_installdocs:
 
 override_dh_compress:
 	# exclude example files from compression
-	dh_compress -X.pcb -XLED
+	dh_compress -X.pcb
