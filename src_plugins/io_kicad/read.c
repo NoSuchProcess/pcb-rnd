@@ -356,6 +356,8 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 
 	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
 
+	printf("gr_line parsing about to commence:");
+
 	if (subtree->str != NULL) {
 		printf("gr_line being parsed: '%s'\n", subtree->str);
 		for(n = subtree; n != NULL; n = n->next) {
@@ -999,6 +1001,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int scaling = 100;
 	int textLength = 0;
 	int mirrored = 0;
+	int moduleDefined = 0;
+	int nameDefined = 0;
+	int refdesDefined = 0;
+	int valueDefined = 0;
 	int PCBLayer = 0;
 	unsigned long tally = 0, featureTally, required;
 	Coord moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance;
@@ -1008,14 +1014,17 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	double val;
 	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
 	unsigned direction = 0; /* default is horizontal */
-	char * end, * text;
+	char * end, * textLabel, * text;
+	char * moduleName, * moduleRefdes, * moduleValue;
 
 	FlagType Flags = MakeFlags(0); /* start with something bland here */
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
 	if (subtree->str != NULL) {
-		printf("Name of module element being parsed: '%s'\n", subtree->str);		
-		for(n = subtree->next,i = 0; n != NULL; n = n->next, i++) {
+		printf("Name of module element being parsed: '%s'\n", subtree->str);
+		moduleName = subtree->str;
+		nameDefined = 1;
+		for(n = subtree->next, i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("tedit", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
 				if (n->children != NULL && n->children->str != NULL) {
@@ -1056,6 +1065,203 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				} else {
 					return -1;
 				}
+
+			} else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
+					pcb_printf("fp_text found\n");
+					featureTally = 0;
+
+/* ********************************************************** */
+
+
+	if (n->children->str != NULL) {
+		printf("fp_text element being parsed - label: '%s'\n", n->children->str);
+		textLabel = n->children->str;
+		if (n->children->next != NULL && n->children->next->str != NULL) {
+			text = n->children->next->str;
+			for (i = 0, textLength = 0; text[i] != 0; i++) {
+				textLength++;
+			}
+			if (strcmp("reference", textLabel) == 0) {
+				printf("fp_text reference found: '%s'\n", text);
+				strcpy(moduleRefdes, text);
+				printf("moduleRefdes now: '%s'\n", moduleRefdes);
+				refdesDefined = 1;
+			} else if (strcmp("value", textLabel) == 0) {
+				printf("fp_text value found: '%s'\n", text);
+				strcpy(moduleValue, text);
+				printf("moduleValue now: '%s'\n", moduleValue);
+				valueDefined = 1;
+			}
+		} else {
+			for (i = 0, textLength = 0; textLabel[i] != 0; i++) {
+				textLength++;
+			}
+			text = textLabel; /* just a single string, no reference or value */
+		}
+		if (moduleDefined == 0 && nameDefined && refdesDefined && valueDefined) {
+			moduleDefined = 1;
+			printf("now have RefDes %s and Value %s, can now define module/element %s\n", moduleRefdes, moduleValue, moduleName);
+		}
+		printf("fp_text element length: '%d'\n", textLength);
+		for(l = subtree,i = 0; l != NULL; l = l->next, i++) {
+			if (l->str != NULL && strcmp("at", l->str) == 0) {
+					SEEN_NO_DUP(featureTally, 0);
+					if (l->children != NULL && l->children->str != NULL) {
+						pcb_printf("text at x: '%s'\n", (l->children->str));
+						SEEN_NO_DUP(featureTally, 1);
+						val = strtod(l->children->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							X = PCB_MM_TO_COORD(val);
+						}
+					} else {
+						return -1;
+					}
+					if (l->children->next != NULL && l->children->next->str != NULL) {
+						pcb_printf("text at y: '%s'\n", (l->children->next->str));
+						SEEN_NO_DUP(featureTally, 2);
+						val = strtod(l->children->next->str, &end);
+						if (*end != 0) {
+							return -1;
+						} else {
+							Y = PCB_MM_TO_COORD(val);
+						}	
+						if (l->children->next->next != NULL && l->children->next->next->str != NULL) {
+							pcb_printf("text rotation: '%s'\n", (l->children->next->next->str));
+							val = strtod(l->children->next->next->str, &end);
+							if (*end != 0) {
+								return -1;
+							} else {
+								direction = 0;  /* default */
+								if (val > 45.0 && val <= 135.0) {
+									direction = 1;
+								} else if (val > 135.0 && val <= 225.0) {
+									direction = 2;
+								} else if (val > 225.0 && val <= 315.0) {
+									direction = 3;
+								}
+								printf("kicad angle: %f,   Direction %d\n", val, direction);
+							}
+							SEEN_NO_DUP(featureTally, 3);
+						} 
+					} else {
+						return -1;
+					}
+			} else if (l->str != NULL && strcmp("layer", l->str) == 0) {
+				SEEN_NO_DUP(featureTally, 4);
+				if (l->children != NULL && l->children->str != NULL) {
+					pcb_printf("text layer: '%s'\n", (l->children->str));
+					if ((strcmp("B.Cu", l->children->str) == 0) || (strcmp("B.SilkS", l->children->str) == 0 )) {
+						Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+					}
+					PCBLayer = kicad_get_layeridx(st, l->children->str);
+					if (PCBLayer == -1) {
+						return -1;
+					}
+				} else {
+					return -1;
+				}
+			} else if (l->str != NULL && strcmp("effects", l->str) == 0) {
+				SEEN_NO_DUP(featureTally, 5);
+				for(m = l->children; m != NULL; m = m->next) {
+					/*printf("stepping through effects def, looking at %s\n", m->str);*/ 
+					if (m->str != NULL && strcmp("font", m->str) == 0) {
+						SEEN_NO_DUP(featureTally, 6);
+						for(p = m->children; p != NULL; p = p->next) {
+							if (m->str != NULL && strcmp("size", p->str) == 0) {
+								SEEN_NO_DUP(featureTally, 7);
+								if (p->children != NULL && p->children->str != NULL) {
+									pcb_printf("font sizeX: '%s'\n", (p->children->str));
+									val = strtod(p->children->str, &end);
+									if (*end != 0) {
+										return -1;
+									} else {
+										scaling = (int) (100*val/1.27); /* standard glyph width ~= 1.27mm */
+									}
+								} else {
+									return -1;
+								}
+								if (p->children->next != NULL && p->children->next->str != NULL) {
+									pcb_printf("font sizeY: '%s'\n", (p->children->next->str));
+								} else {
+									return -1;
+								}
+							} else if (strcmp("thickness", p->str) == 0) {
+								SEEN_NO_DUP(featureTally, 8);
+								if (p->children != NULL && p->children->str != NULL) {
+									pcb_printf("font thickness: '%s'\n", (p->children->str));
+								} else {
+									return -1;
+								}
+							}
+						}
+					} else if (m->str != NULL && strcmp("justify", m->str) == 0) {
+						SEEN_NO_DUP(featureTally, 9);
+						if (m->children != NULL && m->children->str != NULL) {
+							pcb_printf("text justification: '%s'\n", (m->children->str));
+							if (strcmp("mirror", m->children->str) == 0) {
+								mirrored = 1;
+							}
+						} else {
+							return -1;
+						}
+					} else {
+						if (m->str != NULL) {
+							printf("Unknown effects argument %s:", m->str);
+						}
+						return -1;	
+					}
+				}
+			} 				
+		}
+	}
+	required = 1; /*BV(2) | BV(3) | BV(4) | BV(7) | BV(8); */
+	if ((featureTally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
+		if (&st->PCB->Font == NULL) {
+			CreateDefaultFont(st->PCB);
+		}
+
+		if (mirrored != 0) {
+			if (direction%2 == 0) {
+				direction += 2;
+				direction = direction%4;
+			}
+			if (direction == 0 ) {
+				X -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				Y += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			} else if (direction == 1 ) {
+				Y -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				X -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			} else if (direction == 2 ) {
+				X += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				Y -= PCB_MM_TO_COORD(glyphWidth/2.0);  /* centre it vertically */
+			} else if (direction == 3 ) {
+				Y += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				X += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			}
+		} else { /* not back of board text */
+			if (direction == 0 ) {
+				X -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				Y -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			} else if (direction == 1 ) {
+				Y += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				X -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			} else if (direction == 2 ) {
+				X += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				Y += PCB_MM_TO_COORD(glyphWidth/2.0);  /* centre it vertically */
+			} else if (direction == 3 ) {
+				Y -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
+				X += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
+			}
+		}
+
+		CreateNewText( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X, Y, direction, scaling, text, Flags);
+	}
+
+
+/* ********************************************************** */
+
 			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 				SEEN_NO_DUP(tally, 5);
 				if (n->children != NULL && n->children->str != NULL) {
@@ -1091,24 +1297,32 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				} else {
 					return -1;
 				}
+			/* pads next */ 
 			} else if (n->str != NULL && strcmp("pad", n->str) == 0) {
 				if (n->children != 0 && n->children->str != NULL) {
 					printf("pad name : %s\n", n->str);
-				} else {
-					return -1;
-				}
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					pcb_printf("pad type: '%s'\n", (n->children->next->str));
-					if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
-						pcb_printf("pad shape: '%s'\n", (n->children->next->next->str));
-					} else { /* will be "roundrect, circle, oval, trapezoidal or rect" */
+					if (n->children->next != NULL && n->children->next->str != NULL) {
+						pcb_printf("pad type: '%s'\n", (n->children->next->str));
+						if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
+							pcb_printf("pad shape: '%s'\n", (n->children->next->next->str));
+						} else { /* will be "roundrect, circle, oval, trapezoidal or rect" */
+							return -1;
+						}
+					} else {
 						return -1;
 					}
 				} else {
 					return -1;
 				}
+				if (n->children->next->next->next == NULL || n->children->next->next->next->str == NULL) {
+					return -1;
+				}
 				for (m = n->children->next->next->next; m != NULL; m = m->next) {
-					printf("stepping through module pad defs, looking at: %s\n", m->str);
+					if (m != NULL) {
+						printf("stepping through module pad defs, looking at: %s\n", m->str);
+					} else {
+						printf("error in pad def\n", m->str);
+					}
 					if (m->str != NULL && strcmp("at", m->str) == 0) {
 						/*SEEN_NO_DUP(padTally, 1); */
 						if (m->children != NULL && m->children->str != NULL) {
@@ -1166,7 +1380,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							printf("Unknown pad argument %s:", m->str);
 						}
 					} 
+					printf("Finished stepping through pad args\n");
 				}
+				printf("finshed pad parse:", m->str);
 			} else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
 					pcb_printf("fp_line found\n");
 					featureTally = 0;
@@ -1281,7 +1497,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	}
 	if (featureTally >= 0) { /* need start, end, layer, thickness at a minimum */
 		CreateNewLineOnLayer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
-		pcb_printf("***new fp_line on layer created [ %mm %mm %mm %mm %mm %mm flags]", X1, Y1, X2, Y2, Thickness, Clearance);
+		pcb_printf("***new fp_line on layer created [ %mm %mm %mm %mm %mm %mm flags]\n", X1, Y1, X2, Y2, Thickness, Clearance);
 /*		return 0;*/
 	}
 
@@ -1453,178 +1669,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 
 /* ********************************************************** */
 
-			} else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
-					pcb_printf("fp_text found\n");
-					featureTally = 0;
-
-/* ********************************************************** */
-
-
-	if (n->children->str != NULL) {
-		printf("fp_text element being parsed: '%s'\n", n->children->str);
-		text = n->children->str;
-		for (i = 0, textLength = 0; text[i] != 0; i++) {
-			textLength++;
-		}
-		printf("fp_text element length: '%d'\n", textLength);
-		for(l = subtree,i = 0; l != NULL; l = l->next, i++) {
-			if (l->str != NULL && strcmp("at", l->str) == 0) {
-					SEEN_NO_DUP(featureTally, 0);
-					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("text at x: '%s'\n", (l->children->str));
-						SEEN_NO_DUP(featureTally, 1);
-						val = strtod(l->children->str, &end);
-						if (*end != 0) {
-							return -1;
-						} else {
-							X = PCB_MM_TO_COORD(val);
-						}
-					} else {
-						return -1;
-					}
-					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("text at y: '%s'\n", (l->children->next->str));
-						SEEN_NO_DUP(featureTally, 2);
-						val = strtod(l->children->next->str, &end);
-						if (*end != 0) {
-							return -1;
-						} else {
-							Y = PCB_MM_TO_COORD(val);
-						}	
-						if (l->children->next->next != NULL && l->children->next->next->str != NULL) {
-							pcb_printf("text rotation: '%s'\n", (l->children->next->next->str));
-							val = strtod(l->children->next->next->str, &end);
-							if (*end != 0) {
-								return -1;
-							} else {
-								direction = 0;  /* default */
-								if (val > 45.0 && val <= 135.0) {
-									direction = 1;
-								} else if (val > 135.0 && val <= 225.0) {
-									direction = 2;
-								} else if (val > 225.0 && val <= 315.0) {
-									direction = 3;
-								}
-								printf("kicad angle: %f,   Direction %d\n", val, direction);
-							}
-							SEEN_NO_DUP(featureTally, 3);
-						} 
-					} else {
-						return -1;
-					}
-			} else if (l->str != NULL && strcmp("layer", l->str) == 0) {
-				SEEN_NO_DUP(featureTally, 4);
-				if (l->children != NULL && l->children->str != NULL) {
-					pcb_printf("text layer: '%s'\n", (l->children->str));
-					if ((strcmp("B.Cu", l->children->str) == 0) || (strcmp("B.SilkS", l->children->str) == 0 )) {
-						Flags = MakeFlags(PCB_FLAG_ONSOLDER);
-					}
-					PCBLayer = kicad_get_layeridx(st, l->children->str);
-					if (PCBLayer == -1) {
-						return -1;
-					}
-				} else {
-					return -1;
-				}
-			} else if (l->str != NULL && strcmp("effects", l->str) == 0) {
-				SEEN_NO_DUP(featureTally, 5);
-				for(m = l->children; m != NULL; m = m->next) {
-					/*printf("stepping through effects def, looking at %s\n", m->str);*/ 
-					if (m->str != NULL && strcmp("font", m->str) == 0) {
-						SEEN_NO_DUP(featureTally, 6);
-						for(p = m->children; p != NULL; p = p->next) {
-							if (m->str != NULL && strcmp("size", p->str) == 0) {
-								SEEN_NO_DUP(featureTally, 7);
-								if (p->children != NULL && p->children->str != NULL) {
-									pcb_printf("font sizeX: '%s'\n", (p->children->str));
-									val = strtod(p->children->str, &end);
-									if (*end != 0) {
-										return -1;
-									} else {
-										scaling = (int) (100*val/1.27); /* standard glyph width ~= 1.27mm */
-									}
-								} else {
-									return -1;
-								}
-								if (p->children->next != NULL && p->children->next->str != NULL) {
-									pcb_printf("font sizeY: '%s'\n", (p->children->next->str));
-								} else {
-									return -1;
-								}
-							} else if (strcmp("thickness", p->str) == 0) {
-								SEEN_NO_DUP(featureTally, 8);
-								if (p->children != NULL && p->children->str != NULL) {
-									pcb_printf("font thickness: '%s'\n", (p->children->str));
-								} else {
-									return -1;
-								}
-							}
-						}
-					} else if (m->str != NULL && strcmp("justify", m->str) == 0) {
-						SEEN_NO_DUP(featureTally, 9);
-						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("text justification: '%s'\n", (m->children->str));
-							if (strcmp("mirror", m->children->str) == 0) {
-								mirrored = 1;
-							}
-						} else {
-							return -1;
-						}
-					} else {
-						if (m->str != NULL) {
-							printf("Unknown effects argument %s:", m->str);
-						}
-						return -1;	
-					}
-				}
-			} 				
-		}
-	}
-	required = 1; /*BV(2) | BV(3) | BV(4) | BV(7) | BV(8); */
-	if ((featureTally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
-		if (&st->PCB->Font == NULL) {
-			CreateDefaultFont(st->PCB);
-		}
-
-		if (mirrored != 0) {
-			if (direction%2 == 0) {
-				direction += 2;
-				direction = direction%4;
-			}
-			if (direction == 0 ) {
-				X -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				Y += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
-			} else if (direction == 1 ) {
-				Y -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				X -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
-			} else if (direction == 2 ) {
-				X += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				Y -= PCB_MM_TO_COORD(glyphWidth/2.0);  /* centre it vertically */
-			} else if (direction == 3 ) {
-				Y += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				X += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
-			}
-		} else { /* not back of board text */
-			if (direction == 0 ) {
-				X -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				Y -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
-			} else if (direction == 1 ) {
-				Y += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				X -= PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
-			} else if (direction == 2 ) {
-				X += PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				Y += PCB_MM_TO_COORD(glyphWidth/2.0);  /* centre it vertically */
-			} else if (direction == 3 ) {
-				Y -= PCB_MM_TO_COORD((glyphWidth * textLength)/2.0);
-				X += PCB_MM_TO_COORD(glyphWidth/2.0); /* centre it vertically */
-			}
-		}
-
-		CreateNewText( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X, Y, direction, scaling, text, Flags);
-	}
-
-
-/* ********************************************************** */
 
 			} else {
 				if (n->str != NULL) {
@@ -1632,12 +1676,13 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 			} 
 		}
-	} 
+		return 0; 
+
 	/* required = 1; BV(2) | BV(3) | BV(4) | BV(7) | BV(8);
 	if ((tally & required) == required) {  */ /* has location, layer, size and stroke thickness at a minimum */
-		return 0;
-/*	}
-	return -1; */
+	} else {
+		return -1;
+	}
 }
 
 static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
@@ -1655,8 +1700,6 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	double val;
 	Coord X, Y;
 	int PCBLayer = 0;
-
-	name = "";
 
 	if (subtree->str != NULL) {
 		printf("Zone element found:\t'%s'\n", subtree->str);

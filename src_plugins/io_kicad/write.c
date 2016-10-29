@@ -592,7 +592,7 @@ int write_kicad_layout_tracks(FILE * FP, pcb_cardinal_t number,
 										kicad_sexpr_layer_to_text(currentLayer), line->Thickness); /* neglect (net ___ ) for now */
 			} else if ((currentLayer == 20) || (currentLayer == 21)  || (currentLayer == 28)) { /* a silk line or outline line */
 				fprintf(FP, "%*s", indentation, "");
-				pcb_fprintf(FP, "(gr-line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+				pcb_fprintf(FP, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 										line->Point1.X + xOffset, line->Point1.Y + yOffset,
 										line->Point2.X + xOffset, line->Point2.Y + yOffset,
 										kicad_sexpr_layer_to_text(currentLayer), line->Thickness);
