@@ -1,0 +1,79 @@
+<HTML><BODY>
+<!--
+pcb-rnd - manual
+Copyright (C) 2016 Tibor 'Igor2' Palinkas
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Contact: pcb-rnd[removethis]@igor2.repo.hu
+-->
+<table width=100%>
+<TR>
+		<TH align=left>   pcb-rnd 1
+		<TH align=middle> 2016-10-29
+		<TH align=right>  pcb-rnd manual
+</table>
+
+
+
+<H3>NAME</H3>
+<blockquote>
+pcb-rnd - Printed Circuit Board editor
+</blockquote>
+
+<H3>SYNPOSIS</H3>
+<blockquote>
+<P>
+<tt><B>pcb-rnd</B> [<I>options</I>] [<I>inputfile</I>]</tt>
+
+
+
+</blockquote>
+
+<H3>DESCRIPTION</H3>
+<blockquote>
+<B>pcb-rnd</B> is a modular PCB editor. The main use is interactive editing. If no <I>-x</I> is specified on the command line, the graphical editor mode is initiated. Automated, headless processing is also possible with <I>-x</I> or <I>--gui batch</I>.
+</blockquote>
+
+
+<H3>OPTIONS</H3>
+<blockquote>
+
+<table border=1>
+
+	<TR>
+
+		<TD> -x <I>exporter</I> [<I>exportflags] <I>inputfile</I></I> 
+		<TD> Instead of interactive editing, export the design (loaded from <I>inputfile</I>) to a file using the specified <I>exporter</I> plugin. A list of exporter-specific parameters may follow to control the details of the process. 
+	<TR>
+
+		<TD> --gui <I>hid</I> 
+		<TD> Use the <I>hid</I> plugin for the "gui" frontend. Common choices are "gtk" or "lesstif" for graphical user intrfaces and "batch" for a headless command-line interface (or automated batch processing). 
+	<TR>
+
+		<TD> -c <I>path=val</I> 
+		<TD> Set a config node in role CFR_CLI. The path of the node is <I>path</I> (e.g. editor/grid) and the new value is <I>val</I> (e.g. 5mm).
+</table>
+</blockquote>
+<P>
+<table width=100%>
+<TR>
+		<TH align=left>   pcb-rnd 1
+		<TH align=middle> 2016-10-29
+		<TH align=right>  pcb-rnd manual
+</table>
+
+
+</BODY></HTML>
