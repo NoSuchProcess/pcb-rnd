@@ -1,5 +1,5 @@
-?package(pcb-gtk):needs="x11" section="Applications/Science/Electronics" \
-	title="pcb-rnd (GTK+ interface)"                                       \
+?package(pcb-rnd-core):needs="x11" section="Applications/Science/Electronics" \
+	title="pcb-rnd"                                       \
 	longtitle="Printed Circuit Board Design Program"      \
-	hotkey="P" icon="/usr/share/pixmaps/pcb-rnd.xpm"          \
-	command="/usr/bin/pcb-rnd-gtk"
+	hotkey="P" icon="/usr/share/pixmaps/pcb-rnd.xpm"      \
+	command="/usr/bin/pcb-rnd"
