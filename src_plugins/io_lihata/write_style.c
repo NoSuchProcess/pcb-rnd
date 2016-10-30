@@ -242,6 +242,21 @@ static lhtpers_rule_t r_element[] = {
 	{NULL, NULL, NULL}
 };
 
+static const char *pat_visible[] = {"te:visible", "*", NULL};
+static const char *pat_group[]   = {"te:group", "*", NULL};
+static lhtpers_rule_t r_layer[] = {
+	{pat_visible,          &style_newline, NULL},
+	{pat_group,            &style_newline, NULL},
+	{pat_attributes,       &style_nlstruct, NULL},
+	{pat_objects,          &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
+
+static lhtpers_rule_t r_data[] = {
+	{pat_objects,          &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
+
 
 static const char *pat_line[] = {"ha:line.*", "*", NULL};
 static const char *pat_arc[]  = {"ha:arc.*", "*", NULL};
@@ -251,7 +266,9 @@ static const char *pat_pad[]  = {"ha:pad.*", "*", NULL};
 static const char *pat_poly[] = {"ha:polygon.*", "*", NULL};
 static const char *pat_elem[] = {"ha:element.*", "*", NULL};
 static const char *pat_text[] = {"ha:text.*", "*", NULL};
+static const char *pat_data[] = {"ha:data", "*", NULL};
 static const char *pat_objs[] = {"li:objects", "*", NULL};
+static const char *pat_layer[] = {"ha:*", "li:layers", "*", NULL};
 static lhtpers_rule_t r_istructs[] = {
 	{pat_line,    &style_structi, r_line, NULL},
 	{pat_arc,     &style_structi, r_arc, NULL},
@@ -261,6 +278,8 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_poly,    &style_structi, r_polygon, NULL},
 	{pat_elem,    &style_structi, r_element, NULL},
 	{pat_text,    &style_structi, r_text, NULL},
+	{pat_data,    &style_structi, r_data, NULL},
+	{pat_layer,   &style_nlstruct, r_layer, NULL},
 	{pat_objs,    &style_structi, NULL, NULL},
 	{NULL, NULL, NULL}
 };
