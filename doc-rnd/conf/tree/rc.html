@@ -12,7 +12,8 @@
 <tr><td> library_search_paths <td><a href="CFN_LIST.html"> list </a><td> 0 <td> <library_search_paths>
 <tr><td> emergency_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional field: %ld --> pid; must be shorter than 240 characters. Don't do emergency save if this item is empty.
 <tr><td> backup_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for periodic backup anonymous .pcb files; optional fields: %P --> pid
-<tr><td> save_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <save_command>
+<tr><td> save_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> command to pipe the pcb, footprint or buffer file into, when saving (makes lihata persist impossible)
+<tr><td> keep_save_backups <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> a copy is made before a save operation overwrites an existing file; if this setting is true, keep the copy even after a successful save
 <tr><td> default_font_file <td><a href="CFN_LIST.html"> list </a><td> 0 <td> name of default font file (list of names to search)
 <tr><td> default_pcb_file <td><a href="CFN_LIST.html"> list </a><td> 0 <td> <default_pcb_file>
 <tr><td> script_filename <td><a href="CFN_STRING.html"> string </a><td> 0 <td> PCB Actions script to execute on startup
