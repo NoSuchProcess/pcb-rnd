@@ -32,13 +32,16 @@
 #define PB_SPACE     {" ", 2, 2}
 #define PB_LBRACE    {"{", 2, 2}
 #define PB_LBRACENL  {"{\n", 3, 3}
+#define PB_LBRACENLI {"{\n*", 4, 4}
 #define PB_RBRACE    {"}", 2, 2}
 #define PB_RBRACENL  {"}\n", 3, 3}
+#define PB_RBRACENLI {"}\n*", 4, 4}
 #define PB_RBRACESC  {"};", 3, 3}
 #define PB_NEWLINE   {"\n", 2, 2}
 #define PB_DEFAULT   {NULL, 0, 0}
 
-static const lht_perstyle_t style_inline = {
+/* Space spearated key=val; pairs */
+static lht_perstyle_t style_inline = {
 	/* buff */        {PB_SPACE, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_SEMICOLON},
 	/* has_eq */      1,
 	/* val_brace */   0,
@@ -47,7 +50,17 @@ static const lht_perstyle_t style_inline = {
 	/* name_braced */ 0
 };
 
-static const lht_perstyle_t style_newline = {
+/* tightly packed key=val; pairs */
+static lht_perstyle_t style_inline_tight = {
+	/* buff */        {PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_SEMICOLON},
+	/* has_eq */      1,
+	/* val_brace */   0,
+	/* etype */       0,
+	/* ename */       1,
+	/* name_braced */ 0
+};
+
+static lht_perstyle_t style_newline = {
 	/* buff */        {PB_BEGIN, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_NEWLINE},
 	/* has_eq */      1,
 	/* val_brace */   0,
@@ -56,7 +69,7 @@ static const lht_perstyle_t style_newline = {
 	/* name_braced */ 0
 };
 
-static const lht_perstyle_t style_istruct = {
+static lht_perstyle_t style_istruct = {
 	/* buff */        {PB_SPACE, PB_SPACE, PB_LBRACE, PB_EMPTY, PB_EMPTY, PB_RBRACESC},
 	/* has_eq */      1,
 	/* val_brace */   1,
@@ -65,8 +78,8 @@ static const lht_perstyle_t style_istruct = {
 	/* name_braced */ 0
 };
 
-static const lht_perstyle_t style_struct = {
-	/* buff */        {PB_BEGIN, PB_SPACE, PB_LBRACE, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
+static lht_perstyle_t style_struct = {
+	/* buff */        {PB_BEGIN, PB_SPACE, PB_LBRACENL, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
 	/* has_eq */      0,
 	/* val_brace */   0,
 	/* etype */       0,
@@ -74,7 +87,25 @@ static const lht_perstyle_t style_struct = {
 	/* name_braced */ 0
 };
 
-static const lht_perstyle_t style_nlstruct = {
+static lht_perstyle_t style_structi = {
+	/* buff */        {PB_BEGIN, PB_SPACE, PB_LBRACENLI, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
+	/* has_eq */      0,
+	/* val_brace */   0,
+	/* etype */       0,
+	/* ename */       1,
+	/* name_braced */ 0
+};
+
+static lht_perstyle_t style_struct_therm = {
+	/* buff */        {PB_BEGIN, PB_SPACE, PB_LBRACE, PB_EMPTY, PB_EMPTY, PB_RBRACENLI},
+	/* has_eq */      0,
+	/* val_brace */   0,
+	/* etype */       0,
+	/* ename */       1,
+	/* name_braced */ 0
+};
+
+static lht_perstyle_t style_nlstruct = {
 	/* buff */        {PB_BEGINNL, PB_SPACE, PB_LBRACENL, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
 	/* has_eq */      0,
 	/* val_brace */   0,
@@ -83,11 +114,23 @@ static const lht_perstyle_t style_nlstruct = {
 	/* name_braced */ 0
 };
 
-static const char *pat_te_flags[]   = {"te:*", "ha:flags", "*", NULL};
-static const char *pat_te_attr[] = {"te:*", "ha:attributes", "*", NULL};
-static lhtpers_rule_t r_ilists[] = {
-	{pat_te_flags,  &style_inline, NULL},
+static const char *pat_te_flags[]  = {"te:*", "ha:flags", "*", NULL};
+static const char *pat_te_attr[]   = {"te:*", "ha:attributes", "*", NULL};
+static lhtpers_rule_t r_ilists[]   = {
+	{pat_te_flags,  &style_inline_tight, NULL},
 	{pat_te_attr,   &style_newline, NULL},
+	{NULL, NULL, NULL}
+};
+
+static const char *pat_thermal[] = {"ha:thermal", "ha:flags", "*", NULL};
+static lhtpers_rule_t r_thermal[]   = {
+	{pat_thermal,  &style_struct_therm, NULL},
+	{NULL, NULL, NULL}
+};
+
+static const char *pat_flags[] = {"ha:flags", "*", NULL};
+static lhtpers_rule_t r_flags[]   = {
+	{pat_flags,  &style_istruct, r_thermal},
 	{NULL, NULL, NULL}
 };
 
@@ -106,18 +149,18 @@ static lhtpers_rule_t r_line[] = {
 	{pat_y2_line,         &style_inline, NULL},
 	{pat_thickness_line,  &style_inline, NULL},
 	{pat_clearance_line,  &style_inline, NULL},
-	{pat_flags_line,      &style_istruct, NULL},
+	{pat_flags_line,      &style_nlstruct, r_thermal},
 	{pat_attributes_line, &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
 };
 
-static const char *pat_data_line[] = {"ha:line.*", "*", NULL};
+static const char *pat_line[] = {"ha:line.*", "*", NULL};
 
-static lhtpers_rule_t r_data[] = {
-	{pat_data_line, &style_struct, r_line, NULL},
+static lhtpers_rule_t r_istructs[] = {
+	{pat_line,    &style_structi, r_line, NULL},
 	{NULL, NULL, NULL}
 };
 
 lhtpers_rule_t *io_lihata_out_rules[] = {
-	r_data, r_ilists, r_line, NULL
+	r_istructs, r_ilists, r_ilists, r_flags, NULL
 };
