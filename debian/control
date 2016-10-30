@@ -18,7 +18,7 @@ Description: printed circuit board (pcb) design program - meta-package
  pcb-rnd is load/save compatible with gEDA/PCB and kicad and offers various
  auxiliary import/export formats.
  .
- This metapackage attempts to install the most commonly used set of plugins.
+ This metapackage installs the core and the most commonly used set of plugins.
 
 Package: pcb-rnd-core
 Architecture: any
@@ -113,7 +113,7 @@ Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
 Description: printed circuit board (pcb) design program - djopt feature
  pcb-rnd is a modular, interactive printed circuit board editor.
  .
- This package provides actions to cleane up (optimize) tracks.
+ This package provides actions to clean up (optimize) tracks.
  It is especially useful after autorouting.
 
 Package: pcb-rnd-gcode
