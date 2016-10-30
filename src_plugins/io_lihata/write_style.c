@@ -128,36 +128,57 @@ static lhtpers_rule_t r_thermal[]   = {
 	{NULL, NULL, NULL}
 };
 
-static const char *pat_flags[] = {"ha:flags", "*", NULL};
+static const char *pat_ha_flags[] = {"ha:flags", "*", NULL};
 static lhtpers_rule_t r_flags[]   = {
-	{pat_flags,  &style_istruct, r_thermal},
+	{pat_ha_flags,  &style_istruct, r_thermal},
 	{NULL, NULL, NULL}
 };
 
-static const char *pat_x1_line[]         = {"te:x1", "ha:line.*", "*", NULL};
-static const char *pat_y1_line[]         = {"te:y1", "ha:line.*", "*", NULL};
-static const char *pat_x2_line[]         = {"te:x2", "ha:line.*", "*", NULL};
-static const char *pat_y2_line[]         = {"te:y2", "ha:line.*", "*", NULL};
-static const char *pat_thickness_line[]  = {"te:thickness", "ha:line.*", "*", NULL};
-static const char *pat_clearance_line[]  = {"te:clearance", "ha:line.*", "*", NULL};
-static const char *pat_flags_line[]      = {"ha:flags", "*", "ha:line.*", NULL};
-static const char *pat_attributes_line[] = {"ha:attributes", "ha:line.*", "*", NULL};
+static const char *pat_x1_line[]    = {"te:x1", "*", NULL};
+static const char *pat_y1_line[]    = {"te:y1", "*", NULL};
+static const char *pat_x2_line[]    = {"te:x2", "*", NULL};
+static const char *pat_y2_line[]    = {"te:y2", "*", NULL};
+static const char *pat_thickness[]  = {"te:thickness", "*", NULL};
+static const char *pat_clearance[]  = {"te:clearance", "*", NULL};
+static const char *pat_flags[]      = {"ha:flags", "*", NULL};
+static const char *pat_attributes[] = {"ha:attributes", "*", NULL};
 static lhtpers_rule_t r_line[] = {
-	{pat_x1_line,         &style_inline, NULL},
-	{pat_y1_line,         &style_inline, NULL},
-	{pat_x2_line,         &style_inline, NULL},
-	{pat_y2_line,         &style_inline, NULL},
-	{pat_thickness_line,  &style_inline, NULL},
-	{pat_clearance_line,  &style_inline, NULL},
-	{pat_flags_line,      &style_nlstruct, r_thermal},
-	{pat_attributes_line, &style_nlstruct, NULL},
+	{pat_x1_line,    &style_inline, NULL},
+	{pat_y1_line,    &style_inline, NULL},
+	{pat_x2_line,    &style_inline, NULL},
+	{pat_y2_line,    &style_inline, NULL},
+	{pat_thickness,  &style_inline, NULL},
+	{pat_clearance,  &style_inline, NULL},
+	{pat_flags,      &style_nlstruct, r_thermal},
+	{pat_attributes, &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
+
+static const char *pat_x_arc[]         = {"te:x", "*", NULL};
+static const char *pat_y_arc[]         = {"te:y", "*", NULL};
+static const char *pat_width_arc[]     = {"te:width", "*", NULL};
+static const char *pat_height_arc[]    = {"te:height", "*", NULL};
+static const char *pat_astart_arc[]    = {"te:astart", "*", NULL};
+static const char *pat_adelta_arc[]    = {"te:adelta", "*", NULL};
+static lhtpers_rule_t r_arc[] = {
+	{pat_x_arc,      &style_inline, NULL},
+	{pat_y_arc,      &style_inline, NULL},
+	{pat_width_arc,  &style_inline, NULL},
+	{pat_height_arc, &style_inline, NULL},
+	{pat_astart_arc, &style_inline, NULL},
+	{pat_adelta_arc, &style_inline, NULL},
+	{pat_thickness,  &style_inline, NULL},
+	{pat_clearance,  &style_inline, NULL},
+	{pat_flags,      &style_nlstruct, r_thermal},
+	{pat_attributes, &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
 };
 
 static const char *pat_line[] = {"ha:line.*", "*", NULL};
-
+static const char *pat_arc[]  = {"ha:arc.*", "*", NULL};
 static lhtpers_rule_t r_istructs[] = {
 	{pat_line,    &style_structi, r_line, NULL},
+	{pat_arc,     &style_structi, r_arc, NULL},
 	{NULL, NULL, NULL}
 };
 
