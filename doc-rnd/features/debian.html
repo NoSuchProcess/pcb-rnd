@@ -20,15 +20,29 @@
 
 <h1> pcb-rnd - the [debian] patch </h1>
 
-The name of the package has been changed to pcb-rnd; a conflict with the
-mainline pcb is set.
+The current debian packaging reflkects the modularity of pcb-rnd: it has
+most plugins in a separate package. The main package is called
+<b>pcb-rnd-core</b>: this provides the executable and the footprint library
+and the batch HID. The GUI HIDs are in <b>pcb-rnd-gtk</b> and
+<b>pcb-rnd-lesstif</b> - it's possible to isntall neither, either or both;
+when there are multiple HIDs installed, the user can select one by the
+--gui command line parameter or by changing the GUI preference in the
+configuration.
 <p>
-The lesstif variant and pcb documentation are not compiled or packaged
-- I don't need them. The possibility is still there to compile them, tho.
+The rest of the packages are features, importers and exporters, e.g.
+<b>pcb-rnd-svg</b> is the SVG exporter, <b>pcb-rnd-query</b> is the object
+query language needed for the advanced search.
 <p>
-The gtk variant (pcb-rnd-gtk) has both dbus and gl disabled.
+A metapackage called <b>pcb-rnd</b> is provided for convenience: it installs
+the packages for the most common, yet small setup, with the GTK HID.
 <p>
-Versioning scheme changed to match svn revisions and tags of pcb-rnd.
+How to get the packages:
+<ul>
+	<li> decide which packages you need; this <a href="debian_list.html"> package list </a> may help
+	<li> use <i>apt-get install</i> after configuring <a href="http://repo.hu/debian"> repo.hu's debian repository </a> as source
+	<li> use <i>dpkg -i</i> after manually donwloading the packages from repo.hu's <a href="http://repo.hu/debian/list.html"> flat package list </a> or from <a href="http://repo.hu/debian/pool/main/p/pcb-rnd"> the package pool </a>
+	<li> build them on your Debian box: use svn trunk, install debhelper and all the build dependencies of pcb-rnd and run "fakeroot debian/rules binary" in trunk (shorthand: "make deb")
+</ul>
 
 <h2> plans </h2>
 No plans - this feature is fully implemented.
