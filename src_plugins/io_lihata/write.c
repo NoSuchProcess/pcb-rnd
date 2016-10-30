@@ -396,6 +396,7 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer, int layer_
 	PolygonType *po;
 	TextType *tx;
 	char tmp[16];
+	int added = 0;
 
 	obj = lht_dom_node_alloc(LHT_HASH, layer->Name);
 
@@ -405,20 +406,33 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer, int layer_
 	lht_dom_hash_put(obj, build_text("group", tmp));
 
 	grp = lht_dom_node_alloc(LHT_LIST, "objects");
-	lht_dom_hash_put(obj, grp);
 
-	for(li = linelist_first(&layer->Line); li != NULL; li = linelist_next(li))
+	for(li = linelist_first(&layer->Line); li != NULL; li = linelist_next(li)) {
 		lht_dom_list_append(grp, build_line(li, -1, 0, 0));
+		added++;
+	}
 
-	for(ar = arclist_first(&layer->Arc); ar != NULL; ar = arclist_next(ar))
+	for(ar = arclist_first(&layer->Arc); ar != NULL; ar = arclist_next(ar)) {
 		lht_dom_list_append(grp, build_arc(ar, 0, 0));
+		added++;
+	}
 
-	for(po = polylist_first(&layer->Polygon); po != NULL; po = polylist_next(po))
+	for(po = polylist_first(&layer->Polygon); po != NULL; po = polylist_next(po)) {
 		lht_dom_list_append(grp, build_polygon(po));
+		added++;
+	}
 
-	for(tx = textlist_first(&layer->Text); tx != NULL; tx = textlist_next(tx))
+	for(tx = textlist_first(&layer->Text); tx != NULL; tx = textlist_next(tx)) {
 		lht_dom_list_append(grp, build_pcb_text(NULL, tx));
+		added++;
+	}
 
+	if ((added == 0) && (!io_lihata_full_tree)) {
+		lht_dom_node_free(grp);
+		grp = dummy_node("objects");
+	}
+
+	lht_dom_hash_put(obj, grp);
 
 	return obj;
 }
