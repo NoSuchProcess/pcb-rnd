@@ -279,6 +279,19 @@ static lhtpers_rule_t r_font1[] = {
 	{NULL, NULL, NULL}
 };
 
+static const char *pat_li_styles[]   = {"li:styles", "*", NULL};
+static const char *pat_ha_meta[]     = {"ha:meta", "*", NULL};
+static const char *pat_ha_data[]     = {"ha:data", "*", NULL};
+static const char *pat_ha_font[]     = {"ha:font", "*", NULL};
+static lhtpers_rule_t r_root[] = {
+	{pat_attributes,      &style_nlstruct, NULL},
+	{pat_li_styles,       &style_nlstruct, NULL},
+	{pat_ha_meta,         &style_nlstruct, NULL},
+	{pat_ha_data,         &style_nlstruct, NULL},
+	{pat_ha_font,         &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
+
 static const char *pat_line[] = {"ha:line.*", "*", NULL};
 static const char *pat_arc[]  = {"ha:arc.*", "*", NULL};
 static const char *pat_via[]  = {"ha:via.*", "*", NULL};
@@ -292,7 +305,12 @@ static const char *pat_objs[] = {"li:objects", "*", NULL};
 static const char *pat_font1[] = {"ha:geda_pcb", "ha:font", "*", NULL};
 static const char *pat_layer[] = {"ha:*", "li:layers", "*", NULL};
 static const char *pat_symbol[] = {"ha:*", "ha:symbols", "*", NULL};
+/*static const char *pat_root[] = {"ha:pcb-rnd-board-v*", "*", NULL};*/
+static const char *pat_root[] = {"^", NULL};
+
 static lhtpers_rule_t r_istructs[] = {
+	{pat_root,    &style_struct, r_root, NULL},
+
 	{pat_layer,   &style_nlstruct, r_layer, NULL},
 	{pat_symbol,  &style_structi, r_symbol, NULL},
 
