@@ -299,7 +299,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	required = 1; /*BV(2) | BV(3) | BV(4) | BV(7) | BV(8); */
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
 		if (&st->PCB->Font == NULL) {
-			CreateDefaultFont(&st->PCB);
+			CreateDefaultFont(st->PCB);
 		}
 
 		if (mirrored != 0) {
@@ -1002,9 +1002,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int textLength = 0;
 	int mirrored = 0;
 	int moduleDefined = 0;
-	int nameDefined = 0;
-	int refdesDefined = 0;
-	int valueDefined = 0;
 	int PCBLayer = 0;
 	unsigned long tally = 0, featureTally, required;
 	Coord moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance;
@@ -1016,10 +1013,13 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	unsigned direction = 0; /* default is horizontal */
 	char * end, * textLabel, * text;
 	char * moduleName, * moduleRefdes, * moduleValue;
-	moduleName = moduleRefdes = moduleValue = NULL;
+	ElementTypePtr newModule;
 
 	FlagType Flags = MakeFlags(0); /* start with something bland here */
+	FlagType TextFlags = MakeFlags(0); /* start with something bland here */
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+
+	moduleName = moduleRefdes = moduleValue = NULL;
 
 	if (subtree->str != NULL) {
 		printf("Name of module element being parsed: '%s'\n", subtree->str);
@@ -1089,10 +1089,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 		} else {
 			text = textLabel; /* just a single string, no reference or value */ 
-		}
-		if (moduleValue != NULL && moduleRefdes != NULL && moduleName != NULL) {
-			moduleDefined = 1;
-			printf("now have RefDes %s and Value %s, can now define module/element %s\n", moduleRefdes, moduleValue, moduleName);
 		}
 
 		printf("fp_text element length: '%d'\n", textLength);
@@ -1249,6 +1245,16 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 
+		if (moduleValue != NULL && moduleRefdes != NULL && moduleName != NULL && moduleDefined == 0) {
+			moduleDefined = 1;
+			printf("now have RefDes %s and Value %s, can now define module/element %s\n", moduleRefdes, moduleValue, moduleName);
+			newModule = CreateNewElement(st->PCB->Data, NULL,
+								 &st->PCB->Font, Flags,
+								 moduleName, moduleRefdes, moduleValue,
+								 moduleX, moduleY, direction,
+								 scaling, TextFlags,  pcb_false); /*FlagType TextFlags, pcb_bool uniqueName) */
+		}
+
 /*		CreateNewText( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X, Y, direction, scaling, text, Flags); */
 	}
 
@@ -1291,7 +1297,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					return -1;
 				}
 			/* pads next */ 
-			} else if (n->str != NULL && strcmp("padD", n->str) == 0) {
+			} else if (n->str != NULL && strcmp("pad", n->str) == 0) {
 				if (n->children != 0 && n->children->str != NULL) {
 					printf("pad name : %s\n", n->str);
 					if (n->children->next != NULL && n->children->next->str != NULL) {
@@ -1314,7 +1320,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					if (m != NULL) {
 						printf("stepping through module pad defs, looking at: %s\n", m->str);
 					} else {
-						printf("error in pad def\n", m->str);
+						printf("error in pad def\n");
 					}
 					if (m->str != NULL && strcmp("at", m->str) == 0) {
 						/*SEEN_NO_DUP(padTally, 1); */
@@ -1375,7 +1381,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					} 
 					printf("Finished stepping through pad args\n");
 				}
-				printf("finshed pad parse:", m->str);
+				printf("finished pad parse:");
+/*
+				PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance,
+								Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags)
+				PadTypePtr CreateNewPad(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance,
+								Coord Mask, char *Name, char *Number, FlagType Flags)
+*/
+
 			} else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
 					pcb_printf("fp_line found\n");
 					featureTally = 0;
@@ -1488,8 +1501,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 	}
-	if (featureTally >= 0) { /* need start, end, layer, thickness at a minimum */
-		CreateNewLineOnLayer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+	if (featureTally >= 0 && newModule != NULL) { /* need start, end, layer, thickness at a minimum */
+
+		CreateNewLineInElement(newModule, X1, Y1, X2, Y2, Thickness);
+/*		CreateNewLineOnLayer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags); */
+
 		pcb_printf("***new fp_line on layer created [ %mm %mm %mm %mm %mm %mm flags]\n", X1, Y1, X2, Y2, Thickness, Clearance);
 /*		return 0;*/
 	}
@@ -1657,7 +1673,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 
 		}
-		CreateNewArcOnLayer( &st->PCB->Data->Layer[PCBLayer], moduleX + centreX, moduleY + centreY, width, height, endAngle, delta, Thickness, Clearance, Flags);
+
+		if (featureTally >= 0 && newModule != NULL) { /* need start, end, layer, thickness at a minimum */
+			CreateNewArcInElement(newModule, moduleX + centreX, moduleY + centreY, width, height, endAngle, delta, Thickness);
+			/* ArcTypePtr CreateNewArcInElement(ElementTypePtr Element,
+				Coord X, Coord Y, Coord Width, Coord Height, Angle angle, Angle delta, Coord Thickness)  */
+		}
+
+		/*CreateNewArcOnLayer( &st->PCB->Data->Layer[PCBLayer], moduleX + centreX, moduleY + centreY, width, height, endAngle, delta, Thickness, Clearance, Flags);*/
 	}
 
 /* ********************************************************** */
