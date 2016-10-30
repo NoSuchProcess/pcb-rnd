@@ -107,7 +107,7 @@ void pcb_sort_netlist(void);
 void PrintQuotedString(FILE *, const char *);
 void sort_library(LibraryTypePtr lib);
 void set_some_route_style();
-int WritePCBFile(const char *Filename, pcb_bool thePcb, const char *fmt);
+int WritePCBFile(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency);
 int WritePipe(const char *, pcb_bool, const char *fmt);
 
 #ifndef HAS_ATEXIT
