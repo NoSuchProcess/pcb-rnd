@@ -35,6 +35,7 @@
 #include "macro.h"
 #include "layer.h"
 #include "common.h"
+#include "write_style.h"
 
 /*#define CFMT "%[9]"*/
 /*#define CFMT "%.08mH"*/
@@ -505,8 +506,29 @@ int io_lihata_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filename, con
 {
 	int res;
 	lht_doc_t *brd = build_board(PCB);
-	res = lht_dom_export(brd->root, FP, "");
-/*	res = lhtpers_save_as(&events, brd, on_disk_fn, out_fn, NULL);*/
+	if ((emergency) || ((old_filename == NULL) && (new_filename == NULL))) {
+		/* emergency or pipe save: use the canonical form */
+		res = lht_dom_export(brd->root, FP, "");
+	}
+	else {
+		FILE *inf = NULL;
+		char *errmsg;
+		lhtpers_ev_t events;
+
+		if (old_filename != NULL)
+			inf = fopen(old_filename, "r");
+
+		memset(&events, 0, sizeof(events));
+/*		events.text = check_text;
+		events.list_empty = check_list_empty;
+		events.list_elem_removed = check_list_elem_removed;*/
+		events.output_rules = io_lihata_out_rules;
+
+		res = lhtpers_fsave_as(&events, brd, inf, FP, old_filename, &errmsg);
+		if (inf != NULL)
+			fclose(inf);
+	}
+
 	lht_dom_uninit(brd);
 	return res;
 }
