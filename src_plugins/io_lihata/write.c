@@ -41,9 +41,33 @@
 /*#define CFMT "%.08mH"*/
 #define CFMT "%$$mn"
 
+static int io_lihata_full_tree = 0;
+
+/* An invalid node will kill any existing node on an overwrite-save-merge */
+static lht_node_t *dummy_node(const char *name)
+{
+	lht_node_t *n;
+	n = lht_dom_node_alloc(LHT_TEXT, "attributes");
+	n->type = LHT_INVALID_TYPE;
+	return n;
+}
+
+static lht_node_t *dummy_text_node(const char *name)
+{
+	if (io_lihata_full_tree) {
+		lht_node_t *n = lht_dom_node_alloc(LHT_TEXT, name);
+		n->data.text.value = pcb_strdup("");
+		return n;
+	}
+	return dummy_node(name);
+}
+
 static lht_node_t *build_text(const char *key, const char *value)
 {
 	lht_node_t *field;
+
+	if (value == NULL)
+		return dummy_text_node(key);
 
 	field = lht_dom_node_alloc(LHT_TEXT, key);
 	if (value != NULL)
@@ -103,6 +127,9 @@ static lht_node_t *build_attributes(AttributeListType *lst)
 	int n;
 	lht_node_t *ln;
 
+	if ((lst->Number == 0) && (!io_lihata_full_tree))
+		return dummy_node("attributes");
+
 	ln = lht_dom_node_alloc(LHT_HASH, "attributes");
 
 	for (n = 0; n < lst->Number; n++)
@@ -113,9 +140,10 @@ static lht_node_t *build_attributes(AttributeListType *lst)
 
 static lht_node_t *build_flags(FlagType *f, int object_type)
 {
-	int n, layer;
+	int n, layer, added = 0, thrm = 0;
 	lht_node_t *hsh, *txt, *lst;
 	io_lihata_flag_holder fh;
+
 
 	fh.Flags = *f;
 
@@ -126,12 +154,12 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 		if ((pcb_object_flagbits[n].object_types & object_type) && (TEST_FLAG(pcb_object_flagbits[n].mask, &fh))) {
 			lht_dom_hash_put(hsh, build_text(pcb_object_flagbits[n].name, "1"));
 			CLEAR_FLAG(pcb_object_flagbits[n].mask, &fh);
+			added++;
 		}
 	}
 
 	/* thermal flags per layer */
 	lst = lht_dom_node_alloc(LHT_HASH, "thermal");
-	lht_dom_hash_put(hsh, lst);
 
 	for(layer = 0; layer < max_copper_layer; layer++) {
 		if (TEST_ANY_THERMS(&fh)) {
@@ -145,15 +173,31 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 				else
 					txt->data.text.value = pcb_strdup_printf("%d", t);
 				lht_dom_hash_put(lst, txt);
+				added++;
+				thrm++;
 			}
 		}
 	}
 
-	if (f->q > 0)
-		lht_dom_hash_put(hsh, build_textf("shape", "%d", f->q));
+	if (thrm > 0)
+		lht_dom_hash_put(hsh, lst);
+	else
+		lht_dom_node_free(lst);
 
-	if (f->int_conn_grp > 0)
+	if (f->q > 0) {
+		lht_dom_hash_put(hsh, build_textf("shape", "%d", f->q));
+		added++;
+	}
+
+	if (f->int_conn_grp > 0) {
 		lht_dom_hash_put(hsh, build_textf("intconn", "%d", f->int_conn_grp));
+		added++;
+	}
+
+	if ((added == 0) && (!io_lihata_full_tree)) {
+		lht_dom_node_free(hsh);
+		return dummy_node("flags");
+	}
 
 	return hsh;
 }
