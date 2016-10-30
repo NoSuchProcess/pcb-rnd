@@ -1003,8 +1003,12 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int mirrored = 0;
 	int moduleDefined = 0;
 	int PCBLayer = 0;
+	int SMD = 0;
+	int square = 0;
+	int throughHole = 0;
+	int padNum = 0;
 	unsigned long tally = 0, featureTally, required;
-	Coord moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance;
+	Coord moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill;
 	Angle startAngle = 0.0;
 	Angle endAngle = 0.0;
 	Angle delta = 360.0; /* these defaults allow a fp_circle to be parsed, which does not specify (angle XXX) */
@@ -1012,7 +1016,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
 	unsigned direction = 0; /* default is horizontal */
 	char * end, * textLabel, * text;
-	char * moduleName, * moduleRefdes, * moduleValue;
+	char * moduleName, * moduleRefdes, * moduleValue, * pinName;
 	ElementTypePtr newModule;
 
 	FlagType Flags = MakeFlags(0); /* start with something bland here */
@@ -1299,11 +1303,24 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			/* pads next */ 
 			} else if (n->str != NULL && strcmp("pad", n->str) == 0) {
 				if (n->children != 0 && n->children->str != NULL) {
-					printf("pad name : %s\n", n->str);
+					printf("pad name : %s\n", n->children->str);
+					pinName = n->children->str;
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("pad type: '%s'\n", (n->children->next->str));
+						if (strcmp("thru_hole", n->children->next->str) == 0) {
+							SMD = 0;
+							throughHole = 1;
+						} else {
+							SMD = 1;
+							throughHole = 0;
+						}
 						if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
 							pcb_printf("pad shape: '%s'\n", (n->children->next->next->str));
+							if (strcmp("circle", n->children->next->next->str) == 0) {
+								square = 0;
+							} else {
+								square = 1;
+							}
 						} else { /* will be "roundrect, circle, oval, trapezoidal or rect" */
 							return -1;
 						}
@@ -1326,8 +1343,20 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						/*SEEN_NO_DUP(padTally, 1); */
 						if (m->children != NULL && m->children->str != NULL) {
 							pcb_printf("pad X position:\t'%s'\n", (m->children->str));
+							val = strtod(m->children->str, &end);
+							if (*end != 0) {
+								return -1;
+							} else {
+								X = PCB_MM_TO_COORD(val);
+							}
 							if (m->children->next != NULL && m->children->next->str != NULL) {
 								pcb_printf("pad Y position:\t'%s'\n", (m->children->next->str));
+								val = strtod(m->children->next->str, &end);
+								if (*end != 0) {
+									return -1;
+								} else {
+									Y = PCB_MM_TO_COORD(val);
+								}
 							} else {
 								return -1;
 							}
@@ -1347,6 +1376,13 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						/*SEEN_NO_DUP(padTally, 3);*/
 						if (m->children != NULL && m->children->str != NULL) {
 							pcb_printf("drill size: '%s'\n", (m->children->str));
+							val = strtod(m->children->str, &end);
+							if (*end != 0) {
+								return -1;
+							} else {
+								drill = PCB_MM_TO_COORD(val);
+							}
+
 						} else {
 							return -1;
 						}
@@ -1366,8 +1402,20 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						/*SEEN_NO_DUP(padTally, 5);*/
 						if (m->children != NULL && m->children->str != NULL) {
 							pcb_printf("pad X size:\t'%s'\n", (m->children->str));
+							val = strtod(m->children->str, &end);
+							if (*end != 0) {
+								return -1;
+							} else {
+								padXsize = PCB_MM_TO_COORD(val);
+							}
 							if (m->children->next != NULL && m->children->next->str != NULL) {
 								pcb_printf("pad Y size:\t'%s'\n", (m->children->next->str));
+								val = strtod(m->children->next->str, &end);
+								if (*end != 0) {
+									return -1;
+								} else {
+									padYsize = PCB_MM_TO_COORD(val);
+								}
 							} else {
 								return -1;
 							}
@@ -1381,7 +1429,16 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					} 
 					printf("Finished stepping through pad args\n");
 				}
-				printf("finished pad parse:");
+				printf("finished pad parse\n");
+				if (throughHole == 1) {
+					printf("creating new pin %s in element\n", pinName);				
+					CreateNewPin(newModule, X + moduleX, Y + moduleY, padXsize, Clearance,
+								Clearance, drill, pinName, pinName, Flags);
+				} else {
+					printf("creating new pad %s in element\n", pinName);				
+/*					CreateNewPad(newModule, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance,
+								Coord Mask, pinName, pinName, FlagType Flags);*/
+				}
 /*
 				PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance,
 								Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags)
