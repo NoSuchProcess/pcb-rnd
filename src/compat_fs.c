@@ -88,6 +88,17 @@ int pcb_mkdir(const char *path, int mode)
 }
 #undef MKDIR
 
+int pcb_file_readable(const char *path)
+{
+	FILE *f;
+	f = fopen(path, "r");
+	if (f != NULL) {
+		fclose(f);
+		return 1;
+	}
+	return 0;
+}
+
 int pcb_spawnvp(const char **argv)
 {
 #if defined(USE_SPAWNVP)
