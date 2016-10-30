@@ -23,7 +23,7 @@
 /* Specify default output formatting style to be more compact than 
    the canonical lihata export style */
 
-#include <liblhtpers/lhtpers.h>
+#include "write_style.h"
 
 #define PB_BEGIN     {"*", 2, 2}
 #define PB_BEGINNL   {"\n *", 4, 4}
@@ -38,7 +38,7 @@
 #define PB_NEWLINE   {"\n", 2, 2}
 #define PB_DEFAULT   {NULL, 0, 0}
 
-const lht_perstyle_t style_inline = {
+static const lht_perstyle_t style_inline = {
 	/* buff */        {PB_SPACE, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_SEMICOLON},
 	/* has_eq */      1,
 	/* val_brace */   0,
@@ -47,7 +47,7 @@ const lht_perstyle_t style_inline = {
 	/* name_braced */ 0
 };
 
-const lht_perstyle_t style_newline = {
+static const lht_perstyle_t style_newline = {
 	/* buff */        {PB_BEGIN, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_NEWLINE},
 	/* has_eq */      1,
 	/* val_brace */   0,
@@ -56,7 +56,7 @@ const lht_perstyle_t style_newline = {
 	/* name_braced */ 0
 };
 
-const lht_perstyle_t style_istruct = {
+static const lht_perstyle_t style_istruct = {
 	/* buff */        {PB_SPACE, PB_SPACE, PB_LBRACE, PB_EMPTY, PB_EMPTY, PB_RBRACESC},
 	/* has_eq */      1,
 	/* val_brace */   1,
@@ -65,7 +65,7 @@ const lht_perstyle_t style_istruct = {
 	/* name_braced */ 0
 };
 
-const lht_perstyle_t style_struct = {
+static const lht_perstyle_t style_struct = {
 	/* buff */        {PB_BEGIN, PB_SPACE, PB_LBRACE, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
 	/* has_eq */      0,
 	/* val_brace */   0,
@@ -74,7 +74,7 @@ const lht_perstyle_t style_struct = {
 	/* name_braced */ 0
 };
 
-const lht_perstyle_t style_nlstruct = {
+static const lht_perstyle_t style_nlstruct = {
 	/* buff */        {PB_BEGINNL, PB_SPACE, PB_LBRACENL, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
 	/* has_eq */      0,
 	/* val_brace */   0,
@@ -85,7 +85,7 @@ const lht_perstyle_t style_nlstruct = {
 
 static const char *pat_te_flags[]   = {"te:*", "ha:flags", "*", NULL};
 static const char *pat_te_attr[] = {"te:*", "ha:attributes", "*", NULL};
-lhtpers_rule_t r_ilists[] = {
+static lhtpers_rule_t r_ilists[] = {
 	{pat_te_flags,  &style_inline, NULL},
 	{pat_te_attr,   &style_newline, NULL},
 	{NULL, NULL, NULL}
@@ -99,8 +99,7 @@ static const char *pat_thickness_line[]  = {"te:thickness", "ha:line.*", "*", NU
 static const char *pat_clearance_line[]  = {"te:clearance", "ha:line.*", "*", NULL};
 static const char *pat_flags_line[]      = {"ha:flags", "*", "ha:line.*", NULL};
 static const char *pat_attributes_line[] = {"ha:attributes", "ha:line.*", "*", NULL};
-
-lhtpers_rule_t r_line[] = {
+static lhtpers_rule_t r_line[] = {
 	{pat_x1_line,         &style_inline, NULL},
 	{pat_y1_line,         &style_inline, NULL},
 	{pat_x2_line,         &style_inline, NULL},
@@ -114,11 +113,11 @@ lhtpers_rule_t r_line[] = {
 
 static const char *pat_data_line[] = {"ha:line.*", "*", NULL};
 
-lhtpers_rule_t r_data[] = {
+static lhtpers_rule_t r_data[] = {
 	{pat_data_line, &style_struct, r_line, NULL},
 	{NULL, NULL, NULL}
 };
 
-lhtpers_rule_t *rules[] = {
+lhtpers_rule_t *io_lihata_out_rules[] = {
 	r_data, r_ilists, r_line, NULL
 };
