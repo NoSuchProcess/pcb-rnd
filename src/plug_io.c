@@ -790,8 +790,15 @@ int WritePCBFile(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_boo
 		memcpy(fn_tmp, Filename, len);
 		strcpy(fn_tmp+len, ".old");
 		if (rename(Filename, fn_tmp) != 0) {
-			Message(PCB_MSG_ERROR, "Can't rename %s to %s before save\n", Filename, fn_tmp);
-			return -1;
+			if (emergency) {
+				/* Try an alternative emergency file */
+				strcpy(fn_tmp+len, ".emr");
+				Filename = fn_tmp;
+			}
+			else {
+				Message(PCB_MSG_ERROR, "Can't rename %s to %s before save\n", Filename, fn_tmp);
+				return -1;
+			}
 		}
 	}
 
