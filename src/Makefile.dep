@@ -1654,7 +1654,14 @@
  global.h plugins.h plug_io.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h strflags.h compat_misc.h macro.h \
- layer.h ../src_plugins/io_lihata/common.h
+ layer.h ../src_plugins/io_lihata/common.h \
+ ../src_plugins/io_lihata/write_style.h ../src_3rd/liblhtpers/lhtpers.h
+../src_plugins/io_lihata/write_style.o: \
+ ../src_plugins/io_lihata/write_style.c \
+ ../src_plugins/io_lihata/write_style.h ../src_3rd/liblhtpers/lhtpers.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h
 ../src_plugins/io_pcb/attribs.o: ../src_plugins/io_pcb/attribs.c conf.h \
  global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \
@@ -3288,7 +3295,7 @@ plug_io.o: plug_io.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  buffer.h change.h create.h data.h plug_io.h misc.h mymem.h remove.h \
  set.h paths.h rats_patch.h hid_actions.h hid_flags.h plugins.h event.h \
- compat_misc.h route_style.h compat_inc.h
+ compat_misc.h route_style.h compat_fs.h compat_inc.h
 plugins.o: plugins.c plugins.h global.h ../config.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h list_common.h \
