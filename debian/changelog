@@ -1,3 +1,9 @@
+pcb-rnd (1.1.2-r4330) unstable; urgency=low
+
+  * Redo the packaging for the new, modular setup
+
+ -- Tibor Palinkas <pcb-rnd[removethis]@repo.hu>  Sun, 30 Oct 2016 04:16:18 +0100
+
 pcb-rnd (1.1.1-r2696) unstable; urgency=low
 
   * New upstream release (1.1.1)
