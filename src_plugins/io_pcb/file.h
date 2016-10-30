@@ -40,7 +40,7 @@ typedef struct {
 
 int io_pcb_WriteBuffer(plug_io_t *ctx, FILE *f, BufferType *buff);
 int io_pcb_WriteElementData(plug_io_t *ctx, FILE *f, DataTypePtr);
-int io_pcb_WritePCB(plug_io_t *ctx, FILE *f);
+int io_pcb_WritePCB(plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency);
 
 void PreLoadElementPCB(void);
 void PostLoadElementPCB(void);

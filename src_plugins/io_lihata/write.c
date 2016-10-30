@@ -501,11 +501,12 @@ static lht_doc_t *build_board(PCBType *pcb)
 	return brd;
 }
 
-int io_lihata_write_pcb(plug_io_t *ctx, FILE * FP)
+int io_lihata_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	int res;
 	lht_doc_t *brd = build_board(PCB);
 	res = lht_dom_export(brd->root, FP, "");
+/*	res = lhtpers_save_as(&events, brd, on_disk_fn, out_fn, NULL);*/
 	lht_dom_uninit(brd);
 	return res;
 }

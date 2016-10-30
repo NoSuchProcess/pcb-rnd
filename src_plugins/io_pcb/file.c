@@ -519,7 +519,7 @@ int io_pcb_WriteBuffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
 /* ---------------------------------------------------------------------------
  * writes PCB to file
  */
-int io_pcb_WritePCB(plug_io_t *ctx, FILE * FP)
+int io_pcb_WritePCB(plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	pcb_cardinal_t i;
 

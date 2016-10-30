@@ -73,8 +73,13 @@ struct plug_io_s {
 	/* Write element data to a file. Return 0 on success. */
 	int (*write_element)(plug_io_t *ctx, FILE *f, DataTypePtr e);
 
-	/* Writes PCB to a file. Return 0 on success. */
-	int (*write_pcb)(plug_io_t *ctx, FILE *f);
+	/* Write PCB to f; there's a copy of the file we are going to
+	   "overwrite", named in old_filename and the new file name we are
+	   using is new_filename. The file names are NULL if we are saving
+	   into a pipe. If emergency is true, do the safest save possible,
+	   don't mind formatting and extras.
+	   Return 0 on success. */
+	int (*write_pcb)(plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency);
 
 	const char *default_fmt;
 	const char *description;

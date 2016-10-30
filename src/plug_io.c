@@ -247,10 +247,6 @@ int WriteElementData(FILE *f, DataTypePtr e, const char *fmt)
 	return res;
 }
 
-/* Save pcb to f; there's a copy of the file we are going to "overwrite", named
-   in old_filename and the new file name we are using is new_filename. The file
-   names are NULL if we are saving into a pipe. If emergency is true, do the
-   safest save possible, don't mind formatting and extras. */
 static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_filename, const char *fmt, pcb_bool emergency)
 {
 	int res;
@@ -258,7 +254,7 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
 
 	if (p != NULL) {
 		event(EVENT_SAVE_PRE, "s", fmt);
-		res = p->write_pcb(p, f);
+		res = p->write_pcb(p, f, old_filename, new_filename, emergency);
 		event(EVENT_SAVE_POST, "si", fmt, res);
 	}
 	plug_io_err(res, "write pcb", NULL);
