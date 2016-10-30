@@ -803,7 +803,8 @@ int WritePCBFile(const char *Filename, pcb_bool thePcb, const char *fmt)
 
 	fclose(fp);
 	if (fn_tmp != NULL) {
-/*		unlink(fn_tmp);*/
+		if (!conf_core.rc.keep_save_backups)
+			unlink(fn_tmp);
 		free(fn_tmp);
 	}
 	return (result);

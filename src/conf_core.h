@@ -86,7 +86,8 @@ typedef struct {
 		CFT_STRING emergency_name;         /* file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional field: %ld --> pid; must be shorter than 240 characters. Don't do emergency save if this item is empty. */
 		CFT_STRING backup_name;            /* file name template for periodic backup anonymous .pcb files; optional fields: %P --> pid */
 
-		CFT_STRING save_command;
+		CFT_STRING save_command;           /* command to pipe the pcb, footprint or buffer file into, when saving (makes lihata persist impossible) */
+		CFT_BOOLEAN keep_save_backups;     /* a copy is made before a save operation overwrites an existing file; if this setting is true, keep the copy even after a successful save */
 		CFT_LIST default_font_file;        /* name of default font file (list of names to search) */
 		CFT_LIST default_pcb_file;
 

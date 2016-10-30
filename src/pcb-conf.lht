@@ -93,7 +93,9 @@ li:pcb-rnd-conf-v1 {
 				$(rc.path.share)/pcblib
 			}
 
+			keep_save_backups = false
 			save_command = {}
+
 			li:default_font_file = {
 				{./default_font}
 				{$(rc.path.share)/default_font}
