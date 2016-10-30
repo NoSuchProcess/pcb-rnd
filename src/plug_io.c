@@ -68,9 +68,11 @@
 #include "event.h"
 #include "compat_misc.h"
 #include "route_style.h"
+#include "compat_fs.h"
 
 /* for opendir */
 #include "compat_inc.h"
+
 
 typedef struct {
 	plug_io_t *plug;
@@ -245,7 +247,10 @@ int WriteElementData(FILE *f, DataTypePtr e, const char *fmt)
 	return res;
 }
 
-int WritePCB(FILE *f, const char *fmt)
+/* Save pcb to f; there's a copy of the file we are going to "overwrite", named
+   in old_filename and the new file name we are using is new_filename. The file
+   names are NULL if we are saving into a pipe */
+static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_filename, const char *fmt)
 {
 	int res;
 	plug_io_t *p = find_writer(PCB_IOT_PCB, fmt);
@@ -258,7 +263,6 @@ int WritePCB(FILE *f, const char *fmt)
 	plug_io_err(res, "write pcb", NULL);
 	return res;
 }
-
 
 /* ---------------------------------------------------------------------------
  * load PCB
@@ -610,7 +614,7 @@ void SaveInTMP(void)
 	if (PCB && PCB->Changed && (conf_core.rc.emergency_name != NULL) && (*conf_core.rc.emergency_name != '\0')) {
 		sprintf(filename, conf_core.rc.emergency_name, (long int)pcb_getpid());
 		Message(PCB_MSG_DEFAULT, _("Trying to save your layout in '%s'\n"), filename);
-		WritePCBFile(filename, DEFAULT_FMT);
+		WritePCBFile(filename, pcb_true, DEFAULT_FMT);
 	}
 }
 
@@ -728,7 +732,7 @@ void Backup(void)
 		}
 	}
 
-	WritePCBFile(filename, DEFAULT_FMT);
+	WritePCBFile(filename, pcb_true, DEFAULT_FMT);
 	free(filename);
 }
 
@@ -742,7 +746,7 @@ void Backup(void)
 void SaveTMPData(void)
 {
 	char *fn = build_fn(conf_core.rc.emergency_name);
-	WritePCBFile(fn, DEFAULT_FMT);
+	WritePCBFile(fn, pcb_true, DEFAULT_FMT);
 	if (TMPFilename != NULL)
 		free(TMPFilename);
 	TMPFilename = fn;
@@ -758,20 +762,50 @@ void RemoveTMPData(void)
 }
 #endif
 
+/* Write the pcb file, a footprint or a buffer */
+static int pcb_write_file(FILE *fp, pcb_bool thePcb, const char *old_path, const char *new_path, const char *fmt)
+{
+	if (thePcb) {
+		if (PCB->is_footprint)
+			return WriteElementData(fp, PCB->Data, fmt);
+		return pcb_write_pcb(fp, old_path, new_path, fmt);
+	}
+	return WriteBuffer(fp, PASTEBUFFER, fmt);
+}
+
 /* ---------------------------------------------------------------------------
  * writes PCB to file
  */
-int WritePCBFile(const char *Filename, const char *fmt)
+int WritePCBFile(const char *Filename, pcb_bool thePcb, const char *fmt)
 {
 	FILE *fp;
-	int result;
+	int result, overwrite;
+	char *fn_tmp = NULL;
+
+	overwrite = pcb_file_readable(Filename);
+	if (overwrite) {
+		int len = strlen(Filename);
+		fn_tmp = malloc(len+8);
+		memcpy(fn_tmp, Filename, len);
+		strcpy(fn_tmp+len, ".old");
+		if (rename(Filename, fn_tmp) != 0) {
+			Message(PCB_MSG_ERROR, "Can't rename %s to %s before save\n", Filename, fn_tmp);
+			return -1;
+		}
+	}
 
 	if ((fp = fopen(Filename, "w")) == NULL) {
 		OpenErrorMessage(Filename);
 		return (STATUS_ERROR);
 	}
-	result = WritePCB(fp, fmt);
+
+	result = pcb_write_file(fp, thePcb, fn_tmp, Filename, fmt);
+
 	fclose(fp);
+	if (fn_tmp != NULL) {
+/*		unlink(fn_tmp);*/
+		free(fn_tmp);
+	}
 	return (result);
 }
 
@@ -786,50 +820,32 @@ int WritePipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 	int result;
 	const char *p;
 	static gds_t command;
-	int used_popen = 0;
 
-	if (EMPTY_STRING_P(conf_core.rc.save_command)) {
-		fp = fopen(Filename, "w");
-		if (fp == 0) {
-			Message(PCB_MSG_DEFAULT, "Unable to write to file %s\n", Filename);
-			return STATUS_ERROR;
+	if (EMPTY_STRING_P(conf_core.rc.save_command))
+		return WritePCBFile(Filename, thePcb, fmt);
+
+	/* setup commandline */
+	gds_truncate(&command,0);
+	for (p = conf_core.rc.save_command; *p; p++) {
+		/* copy character if not special or add string to command */
+		if (!(p[0] == '%' && p[1] == 'f'))
+			gds_append(&command, *p);
+		else {
+			gds_append_str(&command, Filename);
+
+			/* skip the character */
+			p++;
 		}
 	}
-	else {
-		used_popen = 1;
-		/* setup commandline */
-		gds_truncate(&command,0);
-		for (p = conf_core.rc.save_command; *p; p++) {
-			/* copy character if not special or add string to command */
-			if (!(*p == '%' && *(p + 1) == 'f'))
-				gds_append(&command, *p);
-			else {
-				gds_append_str(&command, Filename);
-
-				/* skip the character */
-				p++;
-			}
-		}
-		printf("write to pipe \"%s\"\n", command.array);
-		if ((fp = popen(command.array, "w")) == NULL) {
-			PopenErrorMessage(command.array);
-			return (STATUS_ERROR);
-		}
+	printf("write to pipe \"%s\"\n", command.array);
+	if ((fp = popen(command.array, "w")) == NULL) {
+		PopenErrorMessage(command.array);
+		return (STATUS_ERROR);
 	}
-	if (thePcb) {
-		if (PCB->is_footprint) {
-			WriteElementData(fp, PCB->Data, fmt);
-			result = 0;
-		}
-		else
-			result = WritePCB(fp, fmt);
-	}
-	else
-		result = WriteBuffer(fp, PASTEBUFFER, fmt);
 
-	if (used_popen)
-		return (pclose(fp) ? STATUS_ERROR : result);
-	return (fclose(fp) ? STATUS_ERROR : result);
+	result = pcb_write_file(fp, thePcb, NULL, NULL, fmt);
+
+	return (pclose(fp) ? STATUS_ERROR : result);
 }
 
 

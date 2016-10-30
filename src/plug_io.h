@@ -90,8 +90,6 @@ int ParseElement(DataTypePtr Ptr, const char *name);
 int ParseFont(FontTypePtr Ptr, char *Filename);
 int WriteBuffer(FILE *f, BufferType *buff, const char *fmt);
 int WriteElementData(FILE *f, DataTypePtr e, const char *fmt);
-int WritePCB(FILE *f, const char *fmt);
-
 
 /********** common function used to be part of file.[ch] and friends **********/
 FILE *CheckAndOpenFile(const char *, pcb_bool, pcb_bool, pcb_bool *, pcb_bool *);
@@ -109,7 +107,7 @@ void pcb_sort_netlist(void);
 void PrintQuotedString(FILE *, const char *);
 void sort_library(LibraryTypePtr lib);
 void set_some_route_style();
-int WritePCBFile(const char *, const char *fmt);
+int WritePCBFile(const char *Filename, pcb_bool thePcb, const char *fmt);
 int WritePipe(const char *, pcb_bool, const char *fmt);
 
 #ifndef HAS_ATEXIT
