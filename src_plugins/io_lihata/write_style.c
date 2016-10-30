@@ -215,6 +215,23 @@ static lhtpers_rule_t r_polygon[] = {
 	{NULL, NULL, NULL}
 };
 
+static const char *pat_string[] = {"te:string", "*", NULL};
+static const char *pat_role[]   = {"te:role", "*", NULL};
+static const char *pat_scale[]  = {"te:scale", "*", NULL};
+static const char *pat_direct[] = {"te:direction", "*", NULL};
+static lhtpers_rule_t r_text[] = {
+	{pat_string,     &style_inline, NULL},
+	{pat_x,          &style_inline, NULL},
+	{pat_y,          &style_inline, NULL},
+	{pat_scale,      &style_inline, NULL},
+	{pat_direct,     &style_inline, NULL},
+	{pat_role,       &style_inline, NULL},
+/*	{pat_flags,      &style_nlstruct, r_thermal},*/
+	{pat_attributes, &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
+
+
 static const char *pat_objects[] = {"li:objects", "*", NULL};
 static lhtpers_rule_t r_element[] = {
 	{pat_x,          &style_inline, NULL},
@@ -233,6 +250,7 @@ static const char *pat_pin[]  = {"ha:pin.*", "*", NULL};
 static const char *pat_pad[]  = {"ha:pad.*", "*", NULL};
 static const char *pat_poly[] = {"ha:polygon.*", "*", NULL};
 static const char *pat_elem[] = {"ha:element.*", "*", NULL};
+static const char *pat_text[] = {"ha:text.*", "*", NULL};
 static const char *pat_objs[] = {"li:objects", "*", NULL};
 static lhtpers_rule_t r_istructs[] = {
 	{pat_line,    &style_structi, r_line, NULL},
@@ -242,6 +260,7 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_pad,     &style_structi, r_pad, NULL},
 	{pat_poly,    &style_structi, r_polygon, NULL},
 	{pat_elem,    &style_structi, r_element, NULL},
+	{pat_text,    &style_structi, r_text, NULL},
 	{pat_objs,    &style_structi, NULL, NULL},
 	{NULL, NULL, NULL}
 };
