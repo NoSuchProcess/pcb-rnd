@@ -154,15 +154,15 @@ static lhtpers_rule_t r_line[] = {
 	{NULL, NULL, NULL}
 };
 
-static const char *pat_x_arc[]         = {"te:x", "*", NULL};
-static const char *pat_y_arc[]         = {"te:y", "*", NULL};
+static const char *pat_x[]             = {"te:x", "*", NULL};
+static const char *pat_y[]             = {"te:y", "*", NULL};
 static const char *pat_width_arc[]     = {"te:width", "*", NULL};
 static const char *pat_height_arc[]    = {"te:height", "*", NULL};
 static const char *pat_astart_arc[]    = {"te:astart", "*", NULL};
 static const char *pat_adelta_arc[]    = {"te:adelta", "*", NULL};
 static lhtpers_rule_t r_arc[] = {
-	{pat_x_arc,      &style_inline, NULL},
-	{pat_y_arc,      &style_inline, NULL},
+	{pat_x,          &style_inline, NULL},
+	{pat_y,          &style_inline, NULL},
 	{pat_width_arc,  &style_inline, NULL},
 	{pat_height_arc, &style_inline, NULL},
 	{pat_astart_arc, &style_inline, NULL},
@@ -174,11 +174,34 @@ static lhtpers_rule_t r_arc[] = {
 	{NULL, NULL, NULL}
 };
 
+static const char *pat_name[] = {"te:name", "*", NULL};
+static const char *pat_numb[] = {"te:number", "*", NULL};
+static const char *pat_hole[] = {"te:hole", "*", NULL};
+static const char *pat_mask[] = {"te:mask", "*", NULL};
+static lhtpers_rule_t r_pinvia[] = {
+	{pat_name,       &style_inline, NULL},
+	{pat_numb,       &style_inline, NULL},
+	{pat_x,          &style_inline, NULL},
+	{pat_y,          &style_inline, NULL},
+	{pat_hole,       &style_inline, NULL},
+	{pat_mask,       &style_inline, NULL},
+	{pat_thickness,  &style_inline, NULL},
+	{pat_clearance,  &style_inline, NULL},
+	{pat_flags,      &style_nlstruct, r_thermal},
+	{pat_attributes, &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
+
+
 static const char *pat_line[] = {"ha:line.*", "*", NULL};
 static const char *pat_arc[]  = {"ha:arc.*", "*", NULL};
+static const char *pat_via[]  = {"ha:via.*", "*", NULL};
+static const char *pat_pin[]  = {"ha:pin.*", "*", NULL};
 static lhtpers_rule_t r_istructs[] = {
 	{pat_line,    &style_structi, r_line, NULL},
 	{pat_arc,     &style_structi, r_arc, NULL},
+	{pat_via,     &style_structi, r_pinvia, NULL},
+	{pat_pin,     &style_structi, r_pinvia, NULL},
 	{NULL, NULL, NULL}
 };
 
