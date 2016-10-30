@@ -207,18 +207,28 @@ static lhtpers_rule_t r_pad[] = {
 	{NULL, NULL, NULL}
 };
 
+static const char *pat_geometry[] = {"te:geometry", "*", NULL};
+static lhtpers_rule_t r_polygon[] = {
+	{pat_geometry,   &style_nlstruct, NULL},
+	{pat_flags,      &style_nlstruct, r_thermal},
+	{pat_attributes, &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
+
 
 static const char *pat_line[] = {"ha:line.*", "*", NULL};
 static const char *pat_arc[]  = {"ha:arc.*", "*", NULL};
 static const char *pat_via[]  = {"ha:via.*", "*", NULL};
 static const char *pat_pin[]  = {"ha:pin.*", "*", NULL};
 static const char *pat_pad[]  = {"ha:pad.*", "*", NULL};
+static const char *pat_poly[] = {"ha:polygon.*", "*", NULL};
 static lhtpers_rule_t r_istructs[] = {
 	{pat_line,    &style_structi, r_line, NULL},
 	{pat_arc,     &style_structi, r_arc, NULL},
 	{pat_via,     &style_structi, r_pinvia, NULL},
 	{pat_pin,     &style_structi, r_pinvia, NULL},
 	{pat_pad,     &style_structi, r_pad, NULL},
+	{pat_poly,    &style_structi, r_polygon, NULL},
 	{NULL, NULL, NULL}
 };
 
