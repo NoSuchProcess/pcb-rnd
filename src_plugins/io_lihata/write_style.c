@@ -257,6 +257,27 @@ static lhtpers_rule_t r_data[] = {
 	{NULL, NULL, NULL}
 };
 
+static const char *pat_width[]   = {"te:width", "*", NULL};
+static const char *pat_delta[]   = {"te:delta", "*", NULL};
+static lhtpers_rule_t r_symbol[] = {
+	{pat_width,      &style_inline, NULL},
+	{pat_delta,      &style_inline, NULL},
+	{pat_objects,    &style_nlstruct, NULL},
+	{pat_attributes,       &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
+
+
+static const char *pat_cell_width[]   = {"te:cell_width", "*", NULL};
+static const char *pat_cell_height[]  = {"te:cell_height", "*", NULL};
+static const char *pat_ha_symbols[]   = {"ha:symbols", "*", NULL};
+static lhtpers_rule_t r_font1[] = {
+	{pat_cell_width,      &style_inline, NULL},
+	{pat_cell_height,     &style_inline, NULL},
+	{pat_attributes,      &style_nlstruct, NULL},
+	{pat_ha_symbols,      &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
 
 static const char *pat_line[] = {"ha:line.*", "*", NULL};
 static const char *pat_arc[]  = {"ha:arc.*", "*", NULL};
@@ -268,8 +289,13 @@ static const char *pat_elem[] = {"ha:element.*", "*", NULL};
 static const char *pat_text[] = {"ha:text.*", "*", NULL};
 static const char *pat_data[] = {"ha:data", "*", NULL};
 static const char *pat_objs[] = {"li:objects", "*", NULL};
+static const char *pat_font1[] = {"ha:geda_pcb", "ha:font", "*", NULL};
 static const char *pat_layer[] = {"ha:*", "li:layers", "*", NULL};
+static const char *pat_symbol[] = {"ha:*", "ha:symbols", "*", NULL};
 static lhtpers_rule_t r_istructs[] = {
+	{pat_layer,   &style_nlstruct, r_layer, NULL},
+	{pat_symbol,  &style_structi, r_symbol, NULL},
+
 	{pat_line,    &style_structi, r_line, NULL},
 	{pat_arc,     &style_structi, r_arc, NULL},
 	{pat_via,     &style_structi, r_pinvia, NULL},
@@ -279,7 +305,7 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_elem,    &style_structi, r_element, NULL},
 	{pat_text,    &style_structi, r_text, NULL},
 	{pat_data,    &style_structi, r_data, NULL},
-	{pat_layer,   &style_nlstruct, r_layer, NULL},
+	{pat_font1,   &style_structi, r_font1, NULL},
 	{pat_objs,    &style_structi, NULL, NULL},
 	{NULL, NULL, NULL}
 };
