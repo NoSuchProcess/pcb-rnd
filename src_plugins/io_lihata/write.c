@@ -37,9 +37,9 @@
 #include "common.h"
 #include "write_style.h"
 
-/*#define CFMT "%[9]"*/
+#define CFMT "%[9]"
 /*#define CFMT "%.08mH"*/
-#define CFMT "%$$mn"
+/*#define CFMT "%$$mn"*/
 
 static int io_lihata_full_tree = 0;
 
