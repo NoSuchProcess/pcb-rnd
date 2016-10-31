@@ -1003,7 +1003,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int mirrored = 0;
 	int moduleDefined = 0;
 	int PCBLayer = 0;
-	int kicadLayer = 15;
+	int kicadLayer = 15; /* default = top side */
+	int moduleLayer = 15; /* default = top side */
 	int SMD = 0;
 	int square = 0;
 	int throughHole = 0;
@@ -1030,7 +1031,19 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		printf("Name of module element being parsed: '%s'\n", subtree->str);
 		moduleName = subtree->str;
 		for(n = subtree->next, i = 0; n != NULL; n = n->next, i++) {
-			if (n->str != NULL && strcmp("tedit", n->str) == 0) {
+			if (n->str != NULL && strcmp("layer", n->str) == 0) { /* need this to sort out ONSOLDER flags etc... */
+/*				SEEN_NO_DUP(tally, 0); */
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("module layer: '%s'\n", (n->children->str));
+					if(kicad_get_layeridx(st, n->children->str) == 0) {
+						moduleLayer = 0;
+						TextFlags = MakeFlags(PCB_FLAG_ONSOLDER);
+						Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+					}
+				} else {
+					return -1;
+				}
+			} else if (n->str != NULL && strcmp("tedit", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("module tedit: '%s'\n", (n->children->str));
@@ -1367,9 +1380,16 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						}
 					} else if (m->str != NULL && strcmp("layers", m->str) == 0) {
 						/*SEEN_NO_DUP(padTally, 2);*/
+						kicadLayer = 15;
 						for(l = m->children; l != NULL; l = l->next) {
 							if (l->str != NULL) {
-								pcb_printf("layer: '%s'\n", (l->str));
+								if (kicad_get_layeridx(st, l->str) == 0) {
+									kicadLayer = 0;
+								}
+								pcb_printf("pad layer: '%s',  PCB layer number %d\n", (l->str), kicad_get_layeridx(st, l->str));
+								if (strcmp("B.Cu", l->str) == 0) {  /* */
+									kicadLayer = 0;
+								}
 							} else {
 								return -1;
 							}
@@ -1449,10 +1469,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						Y2 = Y + (padYsize - padXsize)/2;
 						Thickness = padXsize;
 					}
-					if (square) {
-						Flags = MakeFlags(PCB_FLAG_SQUARE); /* need to think about ONSOLDER too */
+					if (square && kicadLayer) {
+						Flags = MakeFlags(PCB_FLAG_SQUARE);
+					} else if (kicadLayer) {
+						Flags = MakeFlags(0);
+					} else if (square && !kicadLayer) {
+						Flags = MakeFlags(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
 					} else {
-						Flags = MakeFlags(0); /* need to think about ONSOLDER too */
+						Flags = MakeFlags(PCB_FLAG_ONSOLDER);
 					}
 					CreateNewPad(newModule, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, 
 								Clearance, pinName, pinName, Flags); /* using clearance value for arg 7 = mask too */
