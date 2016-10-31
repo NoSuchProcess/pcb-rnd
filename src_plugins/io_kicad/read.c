@@ -1767,6 +1767,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 			} 
 		}
+		SetElementBoundingBox(PCB->Data, newModule, &PCB->Font);
 		return 0; 
 
 	/* required = 1; BV(2) | BV(3) | BV(4) | BV(7) | BV(8);
