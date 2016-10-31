@@ -887,6 +887,7 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 				/* Create a new inner layer for signals and for emulating misc layers */
 				id = pcb_layer_create(PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0, lname);
 			}
+#if 0
 			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) {
 				/* F. or B. layers */
 				if (strcmp(lname+2, "SilkS") == 0) return 0; /* silk layers are implicit */
@@ -894,6 +895,11 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 				if (strcmp(lname+2, "Paste") == 0) return 0; /* pcb-rnd has no custom paste support */
 				if (strcmp(lname+2, "Mask") == 0)  return 0; /* pcb-rnd has no custom mask support */
 				return -1; /* unknown F. or B. layer -> error */
+			}
+#endif
+			else if (lnum > 15) {
+				/* HACK/WORKAROUND: remember kicad layers for those that are unsupported */
+				htsi_set(&st->layer_k2i, pcb_strdup(lname), -lnum);
 			}
 			else
 				return -1; /* unknown field */
