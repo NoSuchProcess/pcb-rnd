@@ -701,7 +701,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 					for(m = n->children; m != NULL; m = m->next) {
 						if (m->str != NULL) {
 							pcb_printf("via layer: '%s'\n", (m->str));
-/*							PCBLayer = kicad_get_layeridx(st, n->children->str);
+/*							PCBLayer = kicad_get_layeridx(st, m->str);
  *							if (PCBLayer == -1) {
  *								return -1;
  *							}   via layers not currently used in PCB
@@ -1032,36 +1032,39 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		moduleName = subtree->str;
 		for(n = subtree->next, i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("layer", n->str) == 0) { /* need this to sort out ONSOLDER flags etc... */
-/*				SEEN_NO_DUP(tally, 0); */
+				SEEN_NO_DUP(tally, 0);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("module layer: '%s'\n", (n->children->str));
-					if(kicad_get_layeridx(st, n->children->str) == 0) {
-						moduleLayer = 0;
-						TextFlags = MakeFlags(PCB_FLAG_ONSOLDER);
-						Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+					PCBLayer = kicad_get_layeridx(st, n->children->str);
+					if (PCBLayer == -1) {
+						return -1;
+					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
+							moduleLayer = 0;
+							Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+							TextFlags = MakeFlags(PCB_FLAG_ONSOLDER);
 					}
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("tedit", n->str) == 0) {
-				SEEN_NO_DUP(tally, 0);
+				SEEN_NO_DUP(tally, 1);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("module tedit: '%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
-				SEEN_NO_DUP(tally, 1);
+				SEEN_NO_DUP(tally, 2);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("module tstamp: '%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("at", n->str) == 0) {
-				SEEN_NO_DUP(tally, 2);
+				SEEN_NO_DUP(tally, 3);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("module at x: '%s'\n", (n->children->str));
-					SEEN_NO_DUP(tally, 3); /* same as ^= 1 was */
+					SEEN_NO_DUP(tally, 4); /* same as ^= 1 was */
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
 							return -1;
@@ -1073,7 +1076,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 				if (n->children->next != NULL && n->children->next->str != NULL) {
 					pcb_printf("module at y: '%s'\n", (n->children->next->str));
-					SEEN_NO_DUP(tally, 4);	
+					SEEN_NO_DUP(tally, 5);	
 						val = strtod(n->children->next->str, &end);
 						if (*end != 0) {
 							return -1;
@@ -1159,12 +1162,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				SEEN_NO_DUP(featureTally, 4);
 				if (l->children != NULL && l->children->str != NULL) {
 					pcb_printf("text layer: '%s'\n", (l->children->str));
-					if ((strcmp("B.Cu", l->children->str) == 0) || (strcmp("B.SilkS", l->children->str) == 0 )) {
-						Flags = MakeFlags(PCB_FLAG_ONSOLDER);
-					}
 					PCBLayer = kicad_get_layeridx(st, l->children->str);
 					if (PCBLayer == -1) {
 						return -1;
+					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
+							Flags = MakeFlags(PCB_FLAG_ONSOLDER);
 					}
 				} else {
 					return -1;
@@ -1279,14 +1281,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 
 /* ********************************************************** */
 
-			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
-				SEEN_NO_DUP(tally, 5);
-				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("text layer: '%s'\n", (n->children->str));
-					/* int kicadLayer = 15; */
-				} else {
-					return -1;
-				}
 			} else if (n->str != NULL && strcmp("descr", n->str) == 0) {
 				SEEN_NO_DUP(tally, 6);
 				if (n->children != NULL && n->children->str != NULL) {
@@ -1383,13 +1377,15 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						kicadLayer = 15;
 						for(l = m->children; l != NULL; l = l->next) {
 							if (l->str != NULL) {
-								if (kicad_get_layeridx(st, l->str) == 0) {
+								PCBLayer = kicad_get_layeridx(st, l->str);
+								if (PCBLayer == -1) {
+									printf("Unknown or unimplemented layer definition: %s", l->str);
+									/* return -1; */
+								} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
+									Flags = MakeFlags(PCB_FLAG_ONSOLDER);
 									kicadLayer = 0;
 								}
 								pcb_printf("pad layer: '%s',  PCB layer number %d\n", (l->str), kicad_get_layeridx(st, l->str));
-								if (strcmp("B.Cu", l->str) == 0) {  /* */
-									kicadLayer = 0;
-								}
 							} else {
 								return -1;
 							}
