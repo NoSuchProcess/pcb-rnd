@@ -204,7 +204,8 @@ static int ActionNew(int argc, const char **argv, Coord x, Coord y)
 		CenterDisplay(PCB->MaxWidth / 2, PCB->MaxHeight / 2);
 		Redraw();
 
-		hid_action("PCBChanged");
+		if (gui != NULL)
+			hid_action("PCBChanged");
 		notify_crosshair_change(pcb_true);
 		return 0;
 	}

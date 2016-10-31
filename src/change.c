@@ -1327,7 +1327,8 @@ pcb_bool ChangeLayoutName(char *Name)
 {
 	free(PCB->Name);
 	PCB->Name = Name;
-	hid_action("PCBChanged");
+	if (gui != NULL)
+		hid_action("PCBChanged");
 	return (pcb_true);
 }
 
@@ -2670,7 +2671,9 @@ void ChangePCBSize(Coord Width, Coord Height)
 																	 PASTEBUFFER->X)), MAX(0, Height - (PASTEBUFFER->BoundingBox.Y2 - PASTEBUFFER->Y)));
 	else
 		SetCrosshairRange(0, 0, Width, Height);
-	hid_action("PCBChanged");
+
+	if (gui != NULL)
+		hid_action("PCBChanged");
 }
 
 /* ---------------------------------------------------------------------------
