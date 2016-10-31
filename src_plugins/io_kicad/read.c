@@ -900,6 +900,7 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 			else if (lnum > 15) {
 				/* HACK/WORKAROUND: remember kicad layers for those that are unsupported */
 				htsi_set(&st->layer_k2i, pcb_strdup(lname), -lnum);
+				return 0;
 			}
 			else
 				return -1; /* unknown field */
