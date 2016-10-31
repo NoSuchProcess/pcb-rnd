@@ -1,0 +1,62 @@
+#!/bin/sh
+#   pcb-strip - remove sections of a .pcb file
+#   Copyright (C) 2016 Tibor 'Igor2' Palinkas
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc.,
+#   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+#   http://repo.hu/projects/pcb-rnd
+
+pcb_strip()
+{
+	awk -v "strip_sym=$strip_sym" -v "strip_attr=$strip_attr" '
+		BEGIN {
+			symst = 0
+		}
+
+		strip_attr && /^[ \t]*Attribute/ { next }
+
+		strip_sym && (symst == 0) && /^[ \t]*Symbol/ { symst = 1 }
+		strip_sym && (symst == 1) && /^[ \t]*[(]/ { symst = 2 }
+		strip_sym && (symst == 2) && /^[ \t]*[)]/ { symst = 0; next }
+
+		(symst == 0) { print $0 }
+	'
+}
+
+help()
+{
+	echo "pcb-strip - remove sections of a pcb file"
+	echo "Invocation: $0 [-a] [-s] <foo.pcb >bar.pcb"
+	echo "Switches:"
+	echo " -a       remove Attributes"
+	echo " -s       remove symbols"
+	echo ""
+}
+
+strip_sym=0
+strip_attr=0
+while test $# -gt 0
+do
+	case "$1"
+	in
+		--help) help "$0"; exit 0;;
+		-s) strip_sym=1;;
+		-a) strip_attr=1;;
+		-*) echo "unknown switch $1; try --help" >&2; exit 1;;
+	esac
+	shift 1
+done
+
+pcb_strip

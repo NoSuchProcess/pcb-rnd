@@ -13,6 +13,7 @@ clean:
 install_:
 	$(MKDIR) "$(BINDIR)" "$(LIBDIR)" "$(SCMDIR)"
 	$(CPC) "`pwd`/fp2anim" "$(BINDIR)/fp2anim"
+	$(CPC) "`pwd`/pcb-strip" "$(BINDIR)/pcb-strip"
 	$(CPC) "`pwd`/gnet-pcbrndfwd.scm" "$(SCMDIR)/gnet-pcbrndfwd.scm"
 	cd gsch2pcb-rnd && make install_ CPC="$(CPC)"
 
@@ -24,4 +25,6 @@ linstall:
 
 uninstall:
 	$(RM) "$(BINDIR)/fp2anim"
+	$(RM) "$(BINDIR)/pcb-strip"
+	$(RM) "$(SCMDIR)/gnet-pcbrndfwd.scm"
 	cd gsch2pcb-rnd && make uninstall
