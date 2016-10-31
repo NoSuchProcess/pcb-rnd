@@ -148,6 +148,30 @@ static int parse_int(int *res, lht_node_t *nd)
 	return 0;
 }
 
+/* Load the duble value of a text node into res. Return 0 on success */
+static int parse_double(double *res, lht_node_t *nd)
+{
+	long int tmp;
+	char *end;
+
+	if (nd == NULL)
+		return -1;
+
+	if (nd->type != LHT_TEXT) {
+		Message(PCB_MSG_ERROR, "#LHT8 Invalid double type: '%d'\n", nd->type);
+		return -1;
+	}
+
+	tmp = strtod(nd->data.text.value, &end);
+	if (*end != '\0') {
+		Message(PCB_MSG_ERROR, "#LHT9 Invalid double value: '%s'\n", nd->data.text.value);
+		return -1;
+	}
+
+	*res = tmp;
+	return 0;
+}
+
 /* Load the id name of a text node (with a prefixed name) into res.
    Return 0 on success */
 static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
@@ -229,6 +253,7 @@ static int parse_meta(PCBType *pcb, lht_node_t *nd)
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
 		parse_coord(&pcb->CursorX, lht_dom_hash_get(grp, "x"));
 		parse_coord(&pcb->CursorY, lht_dom_hash_get(grp, "y"));
+		parse_double(&pcb->Zoom, lht_dom_hash_get(grp, "zoom"));
 	}
 
 	return 0;
