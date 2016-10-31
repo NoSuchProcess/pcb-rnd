@@ -226,6 +226,8 @@ static int parse_meta(PCBType *pcb, lht_node_t *nd)
 
 	parse_text(&pcb->Name, lht_dom_hash_get(nd, "meta"));
 
+	parse_text(&pcb->Name, lht_dom_hash_get(nd, "board_name"));
+
 	grp = lht_dom_hash_get(nd, "grid");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
 		parse_coord(&pcb->GridOffsetX, lht_dom_hash_get(grp, "offs_x"));
