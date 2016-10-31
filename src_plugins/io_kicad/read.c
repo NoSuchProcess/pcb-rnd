@@ -40,6 +40,11 @@
 #include "polygon.h"
 #include "misc.h" /* for flag setting */
 #include "misc_util.h" /* for distance calculations */
+#include "conf_core.h"
+#include "move.h"
+#include "macro.h"
+
+
 
 typedef struct {
 	PCBTypePtr PCB;
@@ -1019,8 +1024,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int square = 0;
 	int throughHole = 0;
 	int padNum = 0;
+	int foundRefdes = 0;
+	int refdesScaling  = 100;
 	unsigned long tally = 0, featureTally, required;
-	Coord moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill;
+	Coord moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill, refdesX, refdesY;
 	Angle startAngle = 0.0;
 	Angle endAngle = 0.0;
 	Angle delta = 360.0; /* these defaults allow a fp_circle to be parsed, which does not specify (angle XXX) */
@@ -1109,21 +1116,29 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		printf("fp_text element being parsed for %s - label: '%s'\n", moduleName, textLabel);
 		if (n->children->next != NULL && n->children->next->str != NULL) {
 			text = n->children->next->str;
+			foundRefdes = 0;
 			if (strcmp("reference", textLabel) == 0) {
 				printf("fp_text reference found: '%s'\n", textLabel);
 				moduleRefdes = text;
+				foundRefdes = 1;
+				for (i = 0; text[i] != 0; i++) {
+					textLength++;
+				}
 				printf("moduleRefdes now: '%s'\n", moduleRefdes);
 			} else if (strcmp("value", textLabel) == 0) {
 				printf("fp_text value found: '%s'\n", textLabel);
 				moduleValue = text;
+				foundRefdes = 0;
 				printf("moduleValue now: '%s'\n", moduleValue);
+			} else {
+				foundRefdes = 0;
 			}
 		} else {
 			text = textLabel; /* just a single string, no reference or value */ 
 		}
 
 		printf("fp_text element length: '%d'\n", textLength);
-		for(l = subtree,i = 0; l != NULL; l = l->next, i++) {
+		for(l = n->children->next->next, i = 0; l != NULL; l = l->next, i++) { /*fixed this */
 			if (l->str != NULL && strcmp("at", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 0);
 					if (l->children != NULL && l->children->str != NULL) {
@@ -1134,6 +1149,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							return -1;
 						} else {
 							X = PCB_MM_TO_COORD(val);
+							if (foundRefdes) {
+								refdesX = X;
+								pcb_printf("RefdesX = %mm", refdesX);
+
+							}
 						}
 					} else {
 						return -1;
@@ -1146,6 +1166,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							return -1;
 						} else {
 							Y = PCB_MM_TO_COORD(val);
+							if (foundRefdes) {
+								refdesY = Y;
+								pcb_printf("RefdesX = %mm", refdesY);
+							}
 						}	
 						if (l->children->next->next != NULL && l->children->next->next->str != NULL) {
 							pcb_printf("text rotation: '%s'\n", (l->children->next->next->str));
@@ -1197,6 +1221,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 										return -1;
 									} else {
 										scaling = (int) (100*val/1.27); /* standard glyph width ~= 1.27mm */
+										if (foundRefdes) {
+											refdesScaling = scaling;
+											foundRefdes = 0;
+										}
 									}
 								} else {
 									return -1;
@@ -1241,6 +1269,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			CreateDefaultFont(st->PCB);
 		}
 
+		X = refdesX;
+		Y = refdesY;
+		glyphWidth = 1.27;
+		glyphWidth = glyphWidth * refdesScaling/100.0;
+
 		if (mirrored != 0) {
 			if (direction%2 == 0) {
 				direction += 2;
@@ -1282,10 +1315,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								 &st->PCB->Font, Flags,
 								 moduleName, moduleRefdes, moduleValue,
 								 moduleX, moduleY, direction,
-								 scaling, TextFlags,  pcb_false); /*FlagType TextFlags, pcb_bool uniqueName) */
+								 refdesScaling, TextFlags,  pcb_false); /*FlagType TextFlags, pcb_bool uniqueName) */
+			MoveObject(PCB_TYPE_ELEMENT_NAME, newModule,  &newModule->Name[NAME_INDEX()],  &newModule->Name[NAME_INDEX()], X, Y);
 		}
 
-/*		CreateNewText( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X, Y, direction, scaling, text, Flags); */
+/*		CreateNewText( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X , Y, direction, scaling, text, Flags); */
 	}
 
 
