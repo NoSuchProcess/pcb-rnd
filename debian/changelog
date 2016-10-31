@@ -1,3 +1,10 @@
+pcb-rnd (1.1.2-r4392) unstable; urgency=low
+
+  * Remove stale symlink to pcb-gtk manual page
+  * Enable the kicad plugin
+
+ -- Tibor Palinkas <pcb-rnd[removethis]@repo.hu>  Mon, 31 Oct 2016 19:18:50 +0100
+
 pcb-rnd (1.1.2-r4330) unstable; urgency=low
 
   * Redo the packaging for the new, modular setup
