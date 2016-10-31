@@ -241,7 +241,12 @@ double coord_to_unit(const Unit * unit, Coord x)
  */
 Coord unit_to_coord(const Unit * unit, double x)
 {
-	return x / coord_to_unit(unit, 1);
+	double base;
+	if (unit == NULL)
+		return -1;
+	base = unit->family == METRIC ? PCB_MM_TO_COORD(x)
+		: PCB_MIL_TO_COORD(x);
+	return base/unit->scale_factor;
 }
 
 /* \brief Return how many PCB-internal-Coord-unit a unit translates to
