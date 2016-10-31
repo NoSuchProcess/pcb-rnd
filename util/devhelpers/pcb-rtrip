@@ -1,0 +1,111 @@
+#!/bin/sh
+#   pcb-rtrip - load-save-load round trip tester
+#   Copyright (C) 2016 Tibor 'Igor2' Palinkas
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc.,
+#   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+#   http://repo.hu/projects/pcb-rnd
+
+pcb_rtrip()
+{
+	rm "$fn.new.pcb"
+
+	if test ! -z "$remtgt"
+	then
+		rm "$fn.trgt.$ext"
+	fi
+
+echo '
+SaveTo(LayoutAs, '$fn'.orig.pcb, pcb)
+LoadFrom(Layout, '$fn'.orig.pcb)
+SaveTo(LayoutAs, '$fn'.trgt.'$ext', '$fmt')
+LoadFrom(Layout, '$fn'.trgt.'$ext', '$fmt')
+SaveTo(LayoutAs, '$fn'.new.pcb, pcb)
+' | pcb-rnd --gui batch "$fn"
+
+	if test -f "$fn.orig.pcb" -a -f "$fn.new.pcb"
+	then
+		diff -u "$fn.orig.pcb" "$fn.new.pcb"
+	else
+		if test ! -f "$fn.orig.pcb"
+		then
+			echo "Failed to load $fn"
+		else
+			echo "Failed to load $fn.trgt.$ext"
+		fi
+	fi
+}
+
+set_ext()
+{
+	case "$fmt"
+	in
+		lihata) ext="lht";;
+		*) ext="$fmt";;
+	esac
+}
+
+help()
+{
+	echo "pcb-rtrip - load-save-load round trip tester"
+	echo ""
+	echo "Load a board, save it (*.orig.pcb), load it, save it in the target"
+	echo "format (*.trgt.*), load it again and save it (*.new.pcb). Calculate"
+	echo "the diff between *.orig.pcb and *.new.pcb; if load-save-load round trip"
+	echo "of a target format is lossles, the diff is empty."
+	echo ""
+	echo "Invocation: $0 [-f fmt] [input.pcb]"
+	echo "Switches:"
+	echo " -f fmt   format (e.g. lihata)"
+	echo " -r       remove target before overwrite"
+	echo ""
+}
+
+
+
+fmt="lihata"
+fn=""
+remtgt=""
+while test $# -gt 0
+do
+	case "$1"
+	in
+		--help) help "$0"; exit 0;;
+		-f) fmt=$2; shift 1;;
+		-r) remtgt=1;;
+		*)
+			if test -z "$fn"
+			then
+				fn="$1"
+			else
+				echo "unknown switch $1; try --help" >&2
+				exit 1
+			fi
+			;;
+		-*) echo "unknown switch $1; try --help" >&2; exit 1;;
+	esac
+	shift 1
+done
+
+if test -z "$fn"
+then
+	echo "no fn"
+	exit 1
+	fn="pcb-rtrip.pcb"
+	cat >$fn
+fi
+
+set_ext
+pcb_rtrip
