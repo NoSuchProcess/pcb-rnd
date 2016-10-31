@@ -1387,7 +1387,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								if (PCBLayer == -1) {
 									printf("Unknown layer definition: %s", l->str);
 									return -1;
-								else if (PCBLayer < -1) {
+								} else if (PCBLayer < -1) {
 									printf("Unimplemented layer definition: %s", l->str);
 								} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
 									Flags = MakeFlags(PCB_FLAG_ONSOLDER);
