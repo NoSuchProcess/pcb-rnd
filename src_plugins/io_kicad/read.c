@@ -907,8 +907,11 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 	}
 
 /* valid layer, save it in the hash */
-	assert(id >= 0);
+	if (id >= 0) {
 	htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
+	} else {
+		assert(id < -1);
+	}
 }
 
 /* Register a kicad layer in the layer hash after looking up the pcb-rnd equivalent */
@@ -1379,7 +1382,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						} else {
 							return -1;
 						}
-					} else if (m->str != NULL && strcmp("layers", m->str) == 0) {
+					} else if (m->str != NULL && strcmp("layers", m->str) == 0 && SMD) { /* skip testing for pins */
 						/*SEEN_NO_DUP(padTally, 2);*/
 						kicadLayer = 15;
 						for(l = m->children; l != NULL; l = l->next) {
