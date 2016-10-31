@@ -33,7 +33,7 @@ LoadFrom(Layout, '$fn'.orig.pcb)
 SaveTo(LayoutAs, '$fn'.trgt.'$ext', '$fmt')
 LoadFrom(Layout, '$fn'.trgt.'$ext', '$fmt')
 SaveTo(LayoutAs, '$fn'.new.pcb, pcb)
-' | pcb-rnd --gui batch "$fn"
+' | $bin --gui batch "$fn"
 
 	if test -f "$fn.orig.pcb" -a -f "$fn.new.pcb"
 	then
@@ -70,20 +70,24 @@ help()
 	echo "Switches:"
 	echo " -f fmt   format (e.g. lihata)"
 	echo " -r       remove target before overwrite"
+	echo " -b bin   run bin instead of \"pcb-rnd\""
 	echo ""
 }
 
 
-
+# defaults
 fmt="lihata"
 fn=""
 remtgt=""
+bin="pcb-rnd"
+
 while test $# -gt 0
 do
 	case "$1"
 	in
 		--help) help "$0"; exit 0;;
 		-f) fmt=$2; shift 1;;
+		-b) bin=$2; shift 1;;
 		-r) remtgt=1;;
 		*)
 			if test -z "$fn"
