@@ -114,6 +114,11 @@ static lht_perstyle_t style_nlstruct = {
 	/* name_braced */ 0
 };
 
+static lht_perstyle_t early_nl = {
+	/* buff */        {PB_NEWLINE, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY},
+};
+
+
 static const char *pat_te_flags[]  = {"te:*", "ha:flags", "*", NULL};
 static const char *pat_te_attr[]   = {"te:*", "ha:attributes", "*", NULL};
 static lhtpers_rule_t r_ilists[]   = {
@@ -149,6 +154,7 @@ static lhtpers_rule_t r_line[] = {
 	{pat_y2_line,    &style_inline, NULL},
 	{pat_thickness,  &style_inline, NULL},
 	{pat_clearance,  &style_inline, NULL},
+	{lhtpers_early_end, &early_nl, NULL},
 	{pat_flags,      &style_nlstruct, r_thermal},
 	{pat_attributes, &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
@@ -169,6 +175,7 @@ static lhtpers_rule_t r_arc[] = {
 	{pat_adelta_arc, &style_inline, NULL},
 	{pat_thickness,  &style_inline, NULL},
 	{pat_clearance,  &style_inline, NULL},
+	{lhtpers_early_end, &early_nl, NULL},
 	{pat_flags,      &style_nlstruct, r_thermal},
 	{pat_attributes, &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
@@ -187,6 +194,7 @@ static lhtpers_rule_t r_pinvia[] = {
 	{pat_mask,       &style_inline, NULL},
 	{pat_thickness,  &style_inline, NULL},
 	{pat_clearance,  &style_inline, NULL},
+	{lhtpers_early_end, &early_nl, NULL},
 	{pat_flags,      &style_nlstruct, r_thermal},
 	{pat_attributes, &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
@@ -202,6 +210,7 @@ static lhtpers_rule_t r_pad[] = {
 	{pat_mask,       &style_inline, NULL},
 	{pat_thickness,  &style_inline, NULL},
 	{pat_clearance,  &style_inline, NULL},
+	{lhtpers_early_end, &early_nl, NULL},
 	{pat_flags,      &style_nlstruct, r_thermal},
 	{pat_attributes, &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
@@ -226,6 +235,7 @@ static lhtpers_rule_t r_text[] = {
 	{pat_scale,      &style_inline, NULL},
 	{pat_direct,     &style_inline, NULL},
 	{pat_role,       &style_inline, NULL},
+	{lhtpers_early_end, &early_nl, NULL},
 /*	{pat_flags,      &style_nlstruct, r_thermal},*/
 	{pat_attributes, &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
