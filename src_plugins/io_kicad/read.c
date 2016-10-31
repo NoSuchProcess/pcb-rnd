@@ -1003,6 +1003,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int mirrored = 0;
 	int moduleDefined = 0;
 	int PCBLayer = 0;
+	int kicadLayer = 15;
 	int SMD = 0;
 	int square = 0;
 	int throughHole = 0;
@@ -1269,6 +1270,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				SEEN_NO_DUP(tally, 5);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("text layer: '%s'\n", (n->children->str));
+					/* int kicadLayer = 15; */
 				} else {
 					return -1;
 				}
@@ -1300,7 +1302,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				} else {
 					return -1;
 				}
-			/* pads next */ 
+			/* pads next  - have thru_hole, circle, rect, roundrect, to think about*/ 
 			} else if (n->str != NULL && strcmp("pad", n->str) == 0) {
 				if (n->children != 0 && n->children->str != NULL) {
 					printf("pad name : %s\n", n->children->str);
@@ -1319,9 +1321,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							if (strcmp("circle", n->children->next->next->str) == 0) {
 								square = 0;
 							} else {
-								square = 1;
+								square = 1; /* this will catch obround, roundrect, trapezoidal as well. Kicad does not do octagonal pads */
 							}
-						} else { /* will be "roundrect, circle, oval, trapezoidal or rect" */
+						} else {
 							return -1;
 						}
 					} else {
@@ -1433,11 +1435,27 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				if (throughHole == 1) {
 					printf("creating new pin %s in element\n", pinName);				
 					CreateNewPin(newModule, X + moduleX, Y + moduleY, padXsize, Clearance,
-								Clearance, drill, pinName, pinName, Flags);
+								Clearance, drill, pinName, pinName, Flags); /* using clearance value for arg 5 = mask too */
 				} else {
 					printf("creating new pad %s in element\n", pinName);				
-/*					CreateNewPad(newModule, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance,
-								Coord Mask, pinName, pinName, FlagType Flags);*/
+					if (padXsize >= padYsize) { /* square pad or rectangular pad, wider than tall */
+						Y1 = Y2 = Y;
+						X1 = X - (padXsize - padYsize)/2;
+						X2 = X + (padXsize - padYsize)/2;
+						Thickness = padYsize;
+					} else { /* rectangular pad, taller than wide */
+						X1 = X2 = X;
+						Y1 = Y - (padYsize - padXsize)/2;
+						Y2 = Y + (padYsize - padXsize)/2;
+						Thickness = padXsize;
+					}
+					if (square) {
+						Flags = MakeFlags(PCB_FLAG_SQUARE); /* need to think about ONSOLDER too */
+					} else {
+						Flags = MakeFlags(0); /* need to think about ONSOLDER too */
+					}
+					CreateNewPad(newModule, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, 
+								Clearance, pinName, pinName, Flags); /* using clearance value for arg 7 = mask too */
 				}
 /*
 				PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance,
