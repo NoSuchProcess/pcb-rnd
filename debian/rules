@@ -14,7 +14,8 @@ PCB_RND_BUILTINS = \
  --buildin-import_netlist \
  --buildin-import_sch \
  --buildin-io_pcb \
- --buildin-io_lihata
+ --buildin-io_lihata \
+ --plugin-io-kicad
 
 CONFIGURE_OPTS=--symbols --all=plugin $(PCB_RND_BUILTINS) --prefix=/usr --LDFLAGS=-Wl,-z,relro --disable-bison
 
