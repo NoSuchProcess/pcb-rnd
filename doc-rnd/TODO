@@ -22,6 +22,7 @@
 		- regex and string cmp match speed vs. select by name
 
 CLEANUP #5
+- convert PCBChanged into an event (and provide a core action for compatibility)
 - rework the gpmi plugin to make it more standard in regard of the build system and to remove a few directories
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value [miloh]
