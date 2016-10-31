@@ -237,12 +237,11 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 				SEEN_NO_DUP(tally, 4);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("text layer: '%s'\n", (n->children->str));
-					if ((strcmp("B.Cu", n->children->str) == 0) || (strcmp("B.SilkS", n->children->str) == 0 )) {
-						Flags = MakeFlags(PCB_FLAG_ONSOLDER);
-					}
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
 					if (PCBLayer == -1) {
 						return -1;
+					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
+							Flags = MakeFlags(PCB_FLAG_ONSOLDER);
 					}
 				} else {
 					return -1;
