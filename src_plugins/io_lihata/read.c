@@ -456,18 +456,20 @@ static int parse_data_layer(PCBType *pcb, DataType *dt, lht_node_t *grp, int lay
 	}
 
 	lst = lht_dom_hash_get(grp, "objects");
-	if (lst->type != LHT_LIST)
-		return -1;
+	if (lst != NULL) {
+		if (lst->type != LHT_LIST)
+			return -1;
 
-	for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
-		if (strncmp(n->name, "line.", 5) == 0)
-			parse_line(ly, NULL, n, 0, 0, 0);
-		if (strncmp(n->name, "arc.", 4) == 0)
-			parse_arc(ly, NULL, n, 0, 0);
-		if (strncmp(n->name, "polygon.", 8) == 0)
-			parse_polygon(ly, NULL, n);
-		if (strncmp(n->name, "text.", 5) == 0)
-			parse_pcb_text(ly, NULL, n);
+		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
+			if (strncmp(n->name, "line.", 5) == 0)
+				parse_line(ly, NULL, n, 0, 0, 0);
+			if (strncmp(n->name, "arc.", 4) == 0)
+				parse_arc(ly, NULL, n, 0, 0);
+			if (strncmp(n->name, "polygon.", 8) == 0)
+				parse_polygon(ly, NULL, n);
+			if (strncmp(n->name, "text.", 5) == 0)
+				parse_pcb_text(ly, NULL, n);
+		}
 	}
 
 	return 0;
