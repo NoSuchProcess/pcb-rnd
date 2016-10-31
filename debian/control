@@ -324,6 +324,15 @@ Description: printed circuit board (pcb) design program - vendor maps
  This package provides vendor drill mapping and vendor specific design
  rule application.
 
+Package: pcb-rnd-kicad
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
+Description: printed circuit board (pcb) design program - kicad file format
+ pcb-rnd is a modular, interactive printed circuit board editor.
+ .
+ This package allows pcb-rnd to load and save in kicad's s-expression based
+ (new) file format.
+
 Package: pcb-rnd-gsch2pcb
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
