@@ -96,6 +96,15 @@ static lht_perstyle_t style_structi = {
 	/* name_braced */ 0
 };
 
+static lht_perstyle_t style_structs = {
+	/* buff */        {PB_BEGIN, PB_SPACE, PB_LBRACE, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
+	/* has_eq */      0,
+	/* val_brace */   0,
+	/* etype */       0,
+	/* ename */       1,
+	/* name_braced */ 0
+};
+
 static lht_perstyle_t style_struct_therm = {
 	/* buff */        {PB_BEGIN, PB_SPACE, PB_LBRACE, PB_EMPTY, PB_EMPTY, PB_RBRACENLI},
 	/* has_eq */      0,
@@ -216,9 +225,17 @@ static lhtpers_rule_t r_pad[] = {
 	{NULL, NULL, NULL}
 };
 
-static const char *pat_geometry[] = {"te:geometry", "*", NULL};
+static const char *pat_ta_contour[] = {"ta:contour", "*", NULL};
+static const char *pat_ta_hole[]    = {"ta:hole", "*", NULL};
+static lhtpers_rule_t r_geometry[] = {
+	{pat_ta_contour,       &style_istruct, NULL},
+	{pat_ta_hole,          &style_istruct, NULL},
+	{NULL, NULL, NULL}
+};
+
+static const char *pat_geometry[] = {"li:geometry", "*", NULL};
 static lhtpers_rule_t r_polygon[] = {
-	{pat_geometry,   &style_nlstruct, NULL},
+	{pat_geometry,   &style_nlstruct, r_geometry},
 	{pat_flags,      &style_nlstruct, r_thermal},
 	{pat_attributes, &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
@@ -329,7 +346,7 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_via,     &style_structi, r_pinvia, NULL},
 	{pat_pin,     &style_structi, r_pinvia, NULL},
 	{pat_pad,     &style_structi, r_pad, NULL},
-	{pat_poly,    &style_structi, r_polygon, NULL},
+	{pat_poly,    &style_structs, r_polygon, NULL},
 	{pat_elem,    &style_structi, r_element, NULL},
 	{pat_text,    &style_structi, r_text, NULL},
 	{pat_data,    &style_structi, r_data, NULL},
