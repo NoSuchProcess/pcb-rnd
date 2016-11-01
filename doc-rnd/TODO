@@ -3,6 +3,14 @@
 	+ in the 45-deg line mode, while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	- save as: change format, save as again: it sets back the format to default but the file name is wrong [report:Erich]
 
+- Lihata persistent save:
+	- composite pcb+lht save
+	- save+load rat lines
+	- indentation bug in via and netlists
+	- indentation bug in inline struct therm: closing } is preceded by indentation whitespace for some reason
+	- keep numeric format
+	- keep unknown subtrees
+
 - replace settings with lihata (conf_*)
 	- TEST:
 		- vendor drill mapping (all functionality, including regex based refdes ignore)
