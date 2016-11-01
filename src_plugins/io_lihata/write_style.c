@@ -253,7 +253,7 @@ static lhtpers_rule_t r_text[] = {
 	{pat_direct,     &style_inline, NULL},
 	{pat_role,       &style_inline, NULL},
 	{lhtpers_early_end, &early_nl, NULL},
-/*	{pat_flags,      &style_nlstruct, r_thermal},*/
+	{pat_flags,      &style_nlstruct, r_thermal},
 	{pat_attributes, &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
 };
