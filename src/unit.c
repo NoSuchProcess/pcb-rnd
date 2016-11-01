@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include "global.h"
+#include "compat_misc.h"
 #include "unit.h"
 
 /* Helper macros for tables */
@@ -246,7 +247,7 @@ Coord unit_to_coord(const Unit * unit, double x)
 		return -1;
 	base = unit->family == METRIC ? PCB_MM_TO_COORD(x)
 		: PCB_MIL_TO_COORD(x);
-	return base/unit->scale_factor;
+	return pcb_round(base/unit->scale_factor);
 }
 
 /* \brief Return how many PCB-internal-Coord-unit a unit translates to
