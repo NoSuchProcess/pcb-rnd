@@ -281,7 +281,6 @@ static int post_thermal_assign(vtptr_t *pt)
 		for(n = lht_dom_first(&it, thr); n != NULL; n = lht_dom_next(&it)) {
 			if (n->type == LHT_TEXT) {
 				int layer = pcb_layer_by_name(n->name);
-printf("Lookup: %s -> %d\n", n->name, layer);
 				if (layer < 0) {
 					Message(PCB_MSG_ERROR, "#LHT10 Invalid layer name in thermal: '%s'\n", n->name);
 					return -1;
@@ -813,6 +812,61 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 	return 0;
 }
 
+static int parse_netlists_input(LibraryType *lib, lht_node_t *netlist)
+{
+	lht_node_t *nnet;
+	if (netlist->type != LHT_LIST)
+		return -1;
+
+	for(nnet = netlist->data.list.first; nnet != NULL; nnet = nnet->next) {
+		lht_node_t *nconn, *nstyle, *nt;
+		LibraryMenuType *net;
+		const char *style = NULL;
+
+		if (nnet->type != LHT_HASH)
+			return -1;
+		nconn  = lht_dom_hash_get(nnet, "conn");
+		nstyle = lht_dom_hash_get(nnet, "style");
+
+		if ((nconn != NULL) && (nconn->type != LHT_LIST))
+			return -1;
+
+		if (nstyle != NULL) {
+			if (nstyle->type != LHT_TEXT)
+				return -1;
+			style = nstyle->data.text.value;
+		}
+
+		net = CreateNewNet(lib, nnet->name, style);
+		if (nconn != NULL) {
+			for(nt = nconn->data.list.first; nt != NULL; nt = nt->next) {
+				if ((nt->type != LHT_TEXT) || (*nt->data.text.value == '\0'))
+					return -1;
+				CreateNewConnection(net, nt->data.text.value);
+			}
+		}
+	}
+	return 0;
+}
+
+static int parse_netlists(PCBType *pcb, lht_node_t *netlists)
+{
+	lht_node_t *sub;
+
+	if (netlists->type != LHT_HASH)
+		return -1;
+
+	sub = lht_dom_hash_get(netlists, "input");
+	if ((sub != NULL) && parse_netlists_input(pcb->NetlistLib+NETLIST_INPUT, sub) != 0)
+		return -1;
+
+/*	sub = lht_dom_hash_get(netlists, "netlist_patch");
+	if ((sub != NULL) && parse_netlists_patch(NULL, sub) != 0)
+		return -1;*/
+
+	return 0;
+}
+
 static int parse_board(PCBType *pcb, lht_node_t *nd)
 {
 	lht_node_t *sub;
@@ -844,6 +898,10 @@ static int parse_board(PCBType *pcb, lht_node_t *nd)
 
 	sub = lht_dom_hash_get(nd, "styles");
 	if ((sub != NULL) && (parse_styles(&pcb->RouteStyle, sub) != 0))
+		return -1;
+
+	sub = lht_dom_hash_get(nd, "netlists");
+	if ((sub != NULL) && (parse_netlists(pcb, sub) != 0))
 		return -1;
 
 	post_ids_assign(&post_ids);
