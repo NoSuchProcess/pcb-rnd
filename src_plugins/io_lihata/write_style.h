@@ -25,4 +25,5 @@
 
 #include <liblhtpers/lhtpers.h>
 
-lhtpers_rule_t *io_lihata_out_rules[];
+extern lhtpers_rule_t *io_lihata_out_rules[];
+extern lhtpers_rule_t io_lihata_out_coords[];

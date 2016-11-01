@@ -404,3 +404,27 @@ static lhtpers_rule_t r_istructs[] = {
 lhtpers_rule_t *io_lihata_out_rules[] = {
 	r_istructs, r_ilists, r_ilists, r_flags, NULL
 };
+
+
+/*****************************************************************************/
+static const char *cpat_rat_x1[]   = {"te:x1", "ha:rat.*", "*", NULL};
+static const char *cpat_rat_y1[]   = {"te:y1", "ha:rat.*", "*", NULL};
+static const char *cpat_rat_x2[]   = {"te:x2", "ha:rat.*", "*", NULL};
+static const char *cpat_rat_y2[]   = {"te:y2", "ha:rat.*", "*", NULL};
+static const char *cpat_line_x1[]  = {"te:x1", "ha:line.*", "*", NULL};
+static const char *cpat_line_y1[]  = {"te:y1", "ha:line.*", "*", NULL};
+static const char *cpat_line_x2[]  = {"te:x2", "ha:line.*", "*", NULL};
+static const char *cpat_line_y2[]  = {"te:y2", "ha:line.*", "*", NULL};
+lhtpers_rule_t io_lihata_out_coords[] = {
+	{cpat_rat_x1,   NULL, NULL, NULL},
+	{cpat_rat_y1,   NULL, NULL, NULL},
+	{cpat_rat_x2,   NULL, NULL, NULL},
+	{cpat_rat_y2,   NULL, NULL, NULL},
+	{cpat_line_x1,  NULL, NULL, NULL},
+	{cpat_line_y1,  NULL, NULL, NULL},
+	{cpat_line_x2,  NULL, NULL, NULL},
+	{cpat_line_y2,  NULL, NULL, NULL},
+
+	{NULL, NULL, NULL, NULL}
+};
+

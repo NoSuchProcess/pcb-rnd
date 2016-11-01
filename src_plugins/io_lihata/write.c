@@ -33,6 +33,7 @@
 #include "strflags.h"
 #include "compat_misc.h"
 #include "rats_patch.h"
+#include "misc_util.h"
 #include "macro.h"
 #include "layer.h"
 #include "common.h"
@@ -716,6 +717,36 @@ static lht_doc_t *build_board(PCBType *pcb)
 	return brd;
 }
 
+static lhtpers_ev_res_t check_text(void *ev_ctx, lht_perstyle_t *style, lht_node_t *inmem_node, const char *ondisk_value)
+{
+	/* for coords, preserve formatting as long as values match */
+	if (lhtpers_rule_find(io_lihata_out_coords, inmem_node) != NULL) {
+		Coord v1, v2;
+		pcb_bool success1, success2;
+
+/*		fprintf(stderr, "SMART d='%s' m='%s'\n", ondisk_value, inmem_node->data.text.value);*/
+
+		v1 = GetValueEx(ondisk_value, NULL, NULL, NULL, NULL, &success1);
+		v2 = GetValueEx(inmem_node->data.text.value, NULL, NULL, NULL, NULL, &success2);
+/*		pcb_fprintf(stderr, " %d %d | %mm %mm\n", success1, success2, v1, v2);*/
+		if (success1 && success2) {
+			/* smart: if values are the same, keep the on-disk version */
+			if (v1 == v2)
+				return LHTPERS_DISK;
+			else
+				return LHTPERS_MEM;
+		}
+		/* else fall back to the string compare below */
+	}
+
+	/* classic method: string mismatch => overwrite from mem */
+	if (strcmp(inmem_node->data.text.value, ondisk_value) != 0)
+		return LHTPERS_MEM;
+
+	return LHTPERS_DISK;
+}
+
+
 int io_lihata_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	int res;
@@ -733,8 +764,8 @@ int io_lihata_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filename, con
 			inf = fopen(old_filename, "r");
 
 		memset(&events, 0, sizeof(events));
-/*		events.text = check_text;
-		events.list_empty = check_list_empty;
+		events.text = check_text;
+/*		events.list_empty = check_list_empty;
 		events.list_elem_removed = check_list_elem_removed;*/
 		events.output_rules = io_lihata_out_rules;
 
