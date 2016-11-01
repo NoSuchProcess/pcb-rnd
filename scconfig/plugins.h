@@ -63,7 +63,7 @@ plugin_header("\nIO plugins (file formats):\n")
 plugin_def("io_lihata",       "lihata board format",       sbuildin, 1)
 plugin_def("io_pcb",          "the original pcb format",   sbuildin, 1)
 plugin_def("io_kicad_legacy", "Kicad's legacy format",     sbuildin, 1)
-plugin_def("io_kicad",        "Kicad's s-expr format",     sdisable, 0)
+plugin_def("io_kicad",        "Kicad's s-expr format",     sbuildin, 1)
 
 plugin_header("\nHID plugins:\n")
 plugin_def("hid_batch",       "batch process (no-gui HID)",sbuildin, 1)
@@ -75,3 +75,5 @@ plugin_dep("export_lpr", "export_ps")
 plugin_dep("export_xy", "export_bom")
 plugin_dep("io_kicad", "lib_gensexpr")
 
+/* for the uniq name lib: */
+plugin_dep("io_kicad_legacy", "io_kicad")

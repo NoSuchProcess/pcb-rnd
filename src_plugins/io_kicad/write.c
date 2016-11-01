@@ -27,7 +27,7 @@
 #include <math.h>
 #include "plug_io.h"
 #include "error.h"
-#include "../io_kicad_legacy/uniq_name.h"
+#include "uniq_name.h"
 #include "data.h"
 #include "write.h"
 #include "layer.h"

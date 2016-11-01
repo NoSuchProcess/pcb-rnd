@@ -1524,7 +1524,11 @@
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genvector/vtp0.h \
  list_conf.h error.h data.h ../src_plugins/io_kicad/read.h global.h \
  layer.h const.h netlist.h create.h polygon.h rtree.h misc.h mymem.h \
- misc_util.h
+ misc_util.h conf_core.h move.h macro.h
+../src_plugins/io_kicad/uniq_name.o: ../src_plugins/io_kicad/uniq_name.c \
+ ../src_3rd/liblihata/genht/hash.h ../src_plugins/io_kicad/uniq_name.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h compat_misc.h ../config.h
 ../src_plugins/io_kicad/write.o: ../src_plugins/io_kicad/write.c \
  plug_io.h global.h ../config.h const.h macro.h global_typedefs.h \
  pcb_bool.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h \
@@ -1541,53 +1545,9 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- error.h ../src_plugins/io_kicad/../io_kicad_legacy/uniq_name.h \
+ error.h ../src_plugins/io_kicad/uniq_name.h \
  ../src_3rd/liblihata/genht/htsp.h data.h ../src_plugins/io_kicad/write.h \
  global.h layer.h const.h netlist.h misc.h mymem.h
-../src_plugins/io_kicad_legacy/io_kicad_legacy.o: \
- ../src_plugins/io_kicad_legacy/io_kicad_legacy.c ../config.h global.h \
- const.h macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
- ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h error.h vtroutestyle.h \
- global_element.h list_element.h ht_element.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- ../src_3rd/liblihata/genht/hash.h plugins.h plug_io.h global.h conf.h \
- pcb-printf.h ../src_3rd/genvector/gds_char.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/genvector/vtp0.h list_conf.h \
- ../src_plugins/io_kicad_legacy/write.h data.h
-../src_plugins/io_kicad_legacy/uniq_name.o: \
- ../src_plugins/io_kicad_legacy/uniq_name.c \
- ../src_3rd/liblihata/genht/hash.h \
- ../src_plugins/io_kicad_legacy/uniq_name.h \
- ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/liblihata/genht/ht_inlines.h compat_misc.h ../config.h
-../src_plugins/io_kicad_legacy/write.o: \
- ../src_plugins/io_kicad_legacy/write.c plug_io.h global.h ../config.h \
- const.h macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
- ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h list_common.h \
- list_line.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- list_arc.h list_text.h list_poly.h list_pad.h list_pin.h list_rat.h \
- vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid.h error.h vtroutestyle.h \
- global_element.h list_element.h ht_element.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- ../src_3rd/liblihata/genht/hash.h conf.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- error.h ../src_plugins/io_kicad_legacy/uniq_name.h \
- ../src_3rd/liblihata/genht/htsp.h data.h \
- ../src_plugins/io_kicad_legacy/write.h global.h layer.h const.h \
- netlist.h misc.h mymem.h
 ../src_plugins/io_lihata/common.o: ../src_plugins/io_lihata/common.c \
  global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h globalconst.h polyarea.h \

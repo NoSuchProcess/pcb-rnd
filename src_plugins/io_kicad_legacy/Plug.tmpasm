@@ -1,7 +1,8 @@
 put /local/pcb/mod {io_kicad_legacy}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/io_kicad_legacy/io_kicad_legacy.o $(PLUGDIR)/io_kicad_legacy/write.o  $(PLUGDIR)/io_kicad_legacy/uniq_name.o @]
-#put /local/pcb/mod/YACC {$(PLUGDIR)/io_kicad_legacy/parse_y}
-#put /local/pcb/mod/LEX  {$(PLUGDIR)/io_kicad_legacy/parse_l}
+put /local/pcb/mod/OBJS [@
+ $(PLUGDIR)/io_kicad_legacy/io_kicad_legacy.o
+ $(PLUGDIR)/io_kicad_legacy/write.o
+@]
 
 switch /local/pcb/io_kicad_legacy/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
