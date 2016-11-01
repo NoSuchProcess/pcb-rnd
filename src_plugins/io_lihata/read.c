@@ -43,6 +43,7 @@
 #include "vtptr.h"
 #include "common.h"
 #include "polygon.h"
+#include "conf_core.h"
 
 #warning TODO: put these in a gloal load-context-struct
 vtptr_t post_ids, post_thermal;
@@ -373,6 +374,31 @@ static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj, int no_id
 	return 0;
 }
 
+static int parse_rat(DataType *dt, lht_node_t *obj)
+{
+	RatType rat;
+
+	parse_id(&rat.ID, obj, 4);
+	parse_attributes(&rat.Attributes, lht_dom_hash_get(obj, "attributes"));
+	parse_flags(&rat.Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_LINE);
+
+	parse_coord(&rat.Point1.X, lht_dom_hash_get(obj, "x1"));
+	parse_coord(&rat.Point1.Y, lht_dom_hash_get(obj, "y1"));
+	parse_coord(&rat.Point2.X, lht_dom_hash_get(obj, "x2"));
+	parse_coord(&rat.Point2.Y, lht_dom_hash_get(obj, "y2"));
+
+	parse_int(&rat.group1, lht_dom_hash_get(obj, "lgrp1"));
+	parse_int(&rat.group2, lht_dom_hash_get(obj, "lgrp2"));
+
+	post_id_req(&rat.Point1);
+	post_id_req(&rat.Point2);
+
+	CreateNewRat(dt, rat.Point1.X, rat.Point1.Y, rat.Point2.X, rat.Point2.Y, rat.group1, rat.group2,
+		conf_core.appearance.rat_thickness, rat.Flags);
+
+	return 0;
+}
+
 static int parse_arc(LayerType *ly, ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 {
 	ArcType *arc;
@@ -674,6 +700,8 @@ static int parse_data_objects(PCBType *pcb_for_font, DataType *dt, lht_node_t *g
 	for(n = lht_dom_first(&it, grp); n != NULL; n = lht_dom_next(&it)) {
 		if (strncmp(n->name, "via.", 4) == 0)
 			parse_pin(dt, NULL, n, 0, 0);
+		if (strncmp(n->name, "rat.", 4) == 0)
+			parse_rat(dt, n);
 		else if (strncmp(n->name, "element.", 8) == 0)
 			parse_element(pcb_for_font, dt, n);
 	}
@@ -886,6 +914,7 @@ static int parse_netlist_patch(PCBType *pcb, lht_node_t *patches)
 			rats_patch_append(pcb, RATP_CHANGE_ATTRIB, nnet->data.text.value, nkey->data.text.value, nval->data.text.value);
 		}
 	}
+	return 0;
 }
 
 static int parse_netlists(PCBType *pcb, lht_node_t *netlists)
