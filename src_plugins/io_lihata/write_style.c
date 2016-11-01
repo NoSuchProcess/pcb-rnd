@@ -415,6 +415,52 @@ static const char *cpat_line_x1[]  = {"te:x1", "ha:line.*", "*", NULL};
 static const char *cpat_line_y1[]  = {"te:y1", "ha:line.*", "*", NULL};
 static const char *cpat_line_x2[]  = {"te:x2", "ha:line.*", "*", NULL};
 static const char *cpat_line_y2[]  = {"te:y2", "ha:line.*", "*", NULL};
+static const char *cpat_line_th[]  = {"te:thickness", "ha:line.*", "*", NULL};
+static const char *cpat_line_cl[]  = {"te:clearance", "ha:line.*", "*", NULL};
+static const char *cpat_size_x[]   = {"te:x", "ha:size", "ha:meta", "*", NULL};
+static const char *cpat_size_y[]   = {"te:y", "ha:size", "ha:meta", "*", NULL};
+static const char *cpat_curs_x[]   = {"te:x", "ha:cursor", "ha:meta", "*", NULL};
+static const char *cpat_curs_y[]   = {"te:y", "ha:cursor", "ha:meta", "*", NULL};
+static const char *cpat_curs_z[]   = {"te:zoom", "ha:cursor", "ha:meta", "*", NULL};
+static const char *cpat_drc_min[]  = {"te:min_*", "ha:drc", "ha:meta", "*", NULL};
+static const char *cpat_drc_blt[]  = {"te:bloat", "ha:drc", "ha:meta", "*", NULL};
+static const char *cpat_drc_shr[]  = {"te:shrink", "ha:drc", "ha:meta", "*", NULL};
+static const char *cpat_grido[]    = {"te:offs_*", "ha:grid", "ha:meta", "*", NULL};
+static const char *cpat_grids[]    = {"te:spacing", "ha:grid", "ha:meta", "*", NULL};
+
+static const char *cpat_arc_x[]    = {"te:x", "ha:arc.*", "*", NULL};
+static const char *cpat_arc_y[]    = {"te:y", "ha:arc.*", "*", NULL};
+static const char *cpat_arc_w[]    = {"te:width", "ha:arc.*", "*", NULL};
+static const char *cpat_arc_h[]    = {"te:height", "ha:arc.*", "*", NULL};
+static const char *cpat_arc_th[]   = {"te:thickness", "ha:arc.*", "*", NULL};
+static const char *cpat_arc_cl[]   = {"te:clearance", "ha:arc.*", "*", NULL};
+static const char *cpat_geo_ta[]   = {"te:*", "ta:*", "li:geometry", "*", NULL};
+static const char *cpat_text_x[]   = {"te:x", "ha:text.*", "*", NULL};
+static const char *cpat_text_y[]   = {"te:y", "ha:text.*", "*", NULL};
+static const char *cpat_pin_x[]    = {"te:x", "ha:pin.*", "*", NULL};
+static const char *cpat_pin_y[]    = {"te:y", "ha:pin.*", "*", NULL};
+static const char *cpat_pin_hole[] = {"te:hole", "ha:pin.*", "*", NULL};
+static const char *cpat_pin_mask[] = {"te:mask", "ha:pin.*", "*", NULL};
+static const char *cpat_pad_x1[]   = {"te:x1", "ha:pad.*", "*", NULL};
+static const char *cpat_pad_y1[]   = {"te:y1", "ha:pad.*", "*", NULL};
+static const char *cpat_pad_x2[]   = {"te:x2", "ha:pad.*", "*", NULL};
+static const char *cpat_pad_y2[]   = {"te:y2", "ha:pad.*", "*", NULL};
+static const char *cpat_pad_hole[] = {"te:hole", "ha:pad.*", "*", NULL};
+static const char *cpat_pad_mask[] = {"te:mask", "ha:pad.*", "*", NULL};
+static const char *cpat_elem_x[]   = {"te:x", "ha:element.*", "*", NULL};
+static const char *cpat_elem_y[]   = {"te:y", "ha:element.*", "*", NULL};
+
+static const char *cpat_sym_w[]   = {"te:width", "ha:*", "ha:symbols", "*", NULL};
+static const char *cpat_sym_h[]   = {"te:height", "ha:*", "ha:symbols", "*", NULL};
+static const char *cpat_sym_d[]   = {"te:delta", "ha:*", "ha:symbols", "*", NULL};
+static const char *cpat_font_w[]  = {"te:cell_width", "ha:*", "ha:font", "*", NULL};
+static const char *cpat_font_h[]  = {"te:cell_height", "ha:*", "ha:font", "*", NULL};
+static const char *cpat_styl_th[] = {"te:thickness", "ha:*", "li:styles", "*", NULL};
+static const char *cpat_styl_cl[] = {"te:clearance", "ha:*", "li:styles", "*", NULL};
+static const char *cpat_styl_hl[] = {"te:hole", "ha:*", "li:styles", "*", NULL};
+static const char *cpat_styl_da[] = {"te:diameter", "ha:*", "li:styles", "*", NULL};
+
+
 lhtpers_rule_t io_lihata_out_coords[] = {
 	{cpat_rat_x1,   NULL, NULL, NULL},
 	{cpat_rat_y1,   NULL, NULL, NULL},
@@ -424,7 +470,48 @@ lhtpers_rule_t io_lihata_out_coords[] = {
 	{cpat_line_y1,  NULL, NULL, NULL},
 	{cpat_line_x2,  NULL, NULL, NULL},
 	{cpat_line_y2,  NULL, NULL, NULL},
-
+	{cpat_line_th,  NULL, NULL, NULL},
+	{cpat_line_cl,  NULL, NULL, NULL},
+	{cpat_size_x,   NULL, NULL, NULL},
+	{cpat_size_y,   NULL, NULL, NULL},
+	{cpat_curs_x,   NULL, NULL, NULL},
+	{cpat_curs_y,   NULL, NULL, NULL},
+	{cpat_curs_z,   NULL, NULL, NULL},
+	{cpat_drc_min,  NULL, NULL, NULL},
+	{cpat_drc_blt,  NULL, NULL, NULL},
+	{cpat_drc_shr,  NULL, NULL, NULL},
+	{cpat_grido,    NULL, NULL, NULL},
+	{cpat_grids,    NULL, NULL, NULL},
+	{cpat_arc_x,    NULL, NULL, NULL},
+	{cpat_arc_y,    NULL, NULL, NULL},
+	{cpat_arc_w,    NULL, NULL, NULL},
+	{cpat_arc_h,    NULL, NULL, NULL},
+	{cpat_arc_th,   NULL, NULL, NULL},
+	{cpat_arc_cl,   NULL, NULL, NULL},
+	{cpat_geo_ta,   NULL, NULL, NULL},
+	{cpat_text_x,   NULL, NULL, NULL},
+	{cpat_text_y,   NULL, NULL, NULL},
+	{cpat_pin_x,    NULL, NULL, NULL},
+	{cpat_pin_y,    NULL, NULL, NULL},
+	{cpat_pin_hole, NULL, NULL, NULL},
+	{cpat_pin_mask, NULL, NULL, NULL},
+	{cpat_pad_x1,   NULL, NULL, NULL},
+	{cpat_pad_y1,   NULL, NULL, NULL},
+	{cpat_pad_x2,   NULL, NULL, NULL},
+	{cpat_pad_y2,   NULL, NULL, NULL},
+	{cpat_pad_hole, NULL, NULL, NULL},
+	{cpat_pad_mask, NULL, NULL, NULL},
+	{cpat_elem_x,   NULL, NULL, NULL},
+	{cpat_elem_y,   NULL, NULL, NULL},
+	{cpat_sym_w,    NULL, NULL, NULL},
+	{cpat_sym_h,    NULL, NULL, NULL},
+	{cpat_sym_d,    NULL, NULL, NULL},
+	{cpat_font_w,   NULL, NULL, NULL},
+	{cpat_font_h,   NULL, NULL, NULL},
+	{cpat_styl_th,  NULL, NULL, NULL},
+	{cpat_styl_cl,  NULL, NULL, NULL},
+	{cpat_styl_hl,  NULL, NULL, NULL},
+	{cpat_styl_da,  NULL, NULL, NULL},
 	{NULL, NULL, NULL, NULL}
 };
 
