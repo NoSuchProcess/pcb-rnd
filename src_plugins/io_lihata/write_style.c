@@ -169,6 +169,20 @@ static lhtpers_rule_t r_line[] = {
 	{NULL, NULL, NULL}
 };
 
+static const char *pat_lgrp1_line[] = {"te:lgrp1", "*", NULL};
+static const char *pat_lgrp2_line[] = {"te:lgrp2", "*", NULL};
+static lhtpers_rule_t r_rat[] = {
+	{pat_x1_line,    &style_inline, NULL},
+	{pat_y1_line,    &style_inline, NULL},
+	{pat_lgrp1_line, &style_inline, NULL},
+	{pat_x2_line,    &style_inline, NULL},
+	{pat_y2_line,    &style_inline, NULL},
+	{pat_lgrp2_line, &style_inline, NULL},
+	{lhtpers_early_end, &early_nl, NULL},
+	{pat_attributes, &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
+
 static const char *pat_x[]             = {"te:x", "*", NULL};
 static const char *pat_y[]             = {"te:y", "*", NULL};
 static const char *pat_width_arc[]     = {"te:width", "*", NULL};
@@ -329,6 +343,7 @@ static lhtpers_rule_t r_netlists[] = {
 
 
 static const char *pat_line[] = {"ha:line.*", "*", NULL};
+static const char *pat_rat[]  = {"ha:rat.*", "*", NULL};
 static const char *pat_arc[]  = {"ha:arc.*", "*", NULL};
 static const char *pat_via[]  = {"ha:via.*", "*", NULL};
 static const char *pat_pin[]  = {"ha:pin.*", "*", NULL};
@@ -360,6 +375,7 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_symbol,  &style_structi, r_symbol, NULL},
 
 	{pat_line,    &style_structi, r_line, NULL},
+	{pat_rat,     &style_structi, r_rat, NULL},
 	{pat_arc,     &style_structi, r_arc, NULL},
 	{pat_via,     &style_structi, r_pinvia, NULL},
 	{pat_pin,     &style_structi, r_pinvia, NULL},
