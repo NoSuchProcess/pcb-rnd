@@ -591,12 +591,15 @@ static int parse_element(PCBType *pcb, DataType *dt, lht_node_t *obj)
 	ElementType *elem = GetElementMemory(dt);
 	lht_node_t *lst, *n;
 	lht_dom_iterator_t it;
+	int onsld;
 
 	parse_id(&elem->ID, obj, 8);
 	parse_attributes(&elem->Attributes, lht_dom_hash_get(obj, "attributes"));
-	parse_flags(&elem->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_VIA);
+	parse_flags(&elem->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_ELEMENT);
 	parse_coord(&elem->MarkX, lht_dom_hash_get(obj, "x"));
 	parse_coord(&elem->MarkY, lht_dom_hash_get(obj, "y"));
+
+	onsld = TEST_FLAG(PCB_FLAG_ONSOLDER, elem);
 
 	lst = lht_dom_hash_get(obj, "objects");
 	if (lst->type == LHT_LIST) {
@@ -614,6 +617,12 @@ static int parse_element(PCBType *pcb, DataType *dt, lht_node_t *obj)
 			if (strncmp(n->name, "pad.", 4) == 0)
 				parse_pad(elem, n, elem->MarkX, elem->MarkY);
 		}
+	}
+
+	if (onsld) {
+		int n;
+		for(n = 0; n < MAX_ELEMENTNAMES; n++)
+			SET_FLAG(PCB_FLAG_ONSOLDER, &elem->Name[n]);
 	}
 
 	/* Make sure we use some sort of font */
@@ -769,6 +778,7 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 		parse_coord(&s->Hole, lht_dom_hash_get(stn, "hole"));
 		parse_coord(&s->Clearance, lht_dom_hash_get(stn, "clearance"));
 	}
+	return 0;
 }
 
 static int parse_board(PCBType *pcb, lht_node_t *nd)
