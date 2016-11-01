@@ -231,6 +231,8 @@ static lht_node_t *build_rat(RatType *rat)
 	sprintf(buff, "rat.%ld", rat->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
+	lht_dom_hash_put(obj, build_attributes(&rat->Attributes));
+	lht_dom_hash_put(obj, build_flags(&rat->Flags, PCB_TYPE_LINE));
 	lht_dom_hash_put(obj, build_textf("x1", CFMT, rat->Point1.X));
 	lht_dom_hash_put(obj, build_textf("y1", CFMT, rat->Point1.Y));
 	lht_dom_hash_put(obj, build_textf("x2", CFMT, rat->Point2.X));
