@@ -812,7 +812,7 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 	return 0;
 }
 
-static int parse_netlists_input(LibraryType *lib, lht_node_t *netlist)
+static int parse_netlist_input(LibraryType *lib, lht_node_t *netlist)
 {
 	lht_node_t *nnet;
 	if (netlist->type != LHT_LIST)
@@ -849,6 +849,45 @@ static int parse_netlists_input(LibraryType *lib, lht_node_t *netlist)
 	return 0;
 }
 
+static int parse_netlist_patch(PCBType *pcb, lht_node_t *patches)
+{
+	lht_node_t *np;
+
+	if (patches->type != LHT_LIST)
+		return -1;
+
+	for(np = patches->data.list.first; np != NULL; np = np->next) {
+		lht_node_t *nnet, *nkey, *nval;
+		if (np->type != LHT_HASH)
+			return -1;
+		nnet = lht_dom_hash_get(np, "net");
+		if ((nnet == NULL) || (nnet->type != LHT_TEXT) || (*nnet->data.text.value == '\0'))
+			return -1;
+
+		if (strcmp(np->name, "del_conn") == 0) {
+			nval = lht_dom_hash_get(np, "term");
+			if ((nval == NULL) || (nval->type != LHT_TEXT) || (*nval->data.text.value == '\0'))
+				return -1;
+			rats_patch_append(pcb, RATP_ADD_CONN, nval->data.text.value, nnet->data.text.value, NULL);
+		}
+		else if (strcmp(np->name, "add_conn") == 0) {
+			nval = lht_dom_hash_get(np, "term");
+			if ((nval == NULL) || (nval->type != LHT_TEXT) || (*nval->data.text.value == '\0'))
+				return -1;
+			rats_patch_append(pcb, RATP_DEL_CONN, nval->data.text.value, nnet->data.text.value, NULL);
+		}
+		else if (strcmp(np->name, "change_attrib") == 0) {
+			nkey = lht_dom_hash_get(np, "key");
+			if ((nkey == NULL) || (nkey->type != LHT_TEXT) || (*nkey->data.text.value == '\0'))
+				return -1;
+			nval = lht_dom_hash_get(np, "term");
+			if ((nval == NULL) || (nval->type != LHT_TEXT))
+				return -1;
+			rats_patch_append(pcb, RATP_CHANGE_ATTRIB, nnet->data.text.value, nkey->data.text.value, nval->data.text.value);
+		}
+	}
+}
+
 static int parse_netlists(PCBType *pcb, lht_node_t *netlists)
 {
 	lht_node_t *sub;
@@ -857,12 +896,12 @@ static int parse_netlists(PCBType *pcb, lht_node_t *netlists)
 		return -1;
 
 	sub = lht_dom_hash_get(netlists, "input");
-	if ((sub != NULL) && parse_netlists_input(pcb->NetlistLib+NETLIST_INPUT, sub) != 0)
+	if ((sub != NULL) && (parse_netlist_input(pcb->NetlistLib+NETLIST_INPUT, sub) != 0))
 		return -1;
 
-/*	sub = lht_dom_hash_get(netlists, "netlist_patch");
-	if ((sub != NULL) && parse_netlists_patch(NULL, sub) != 0)
-		return -1;*/
+	sub = lht_dom_hash_get(netlists, "netlist_patch");
+	if ((sub != NULL) && (parse_netlist_patch(pcb, sub) != 0))
+		return -1;
 
 	return 0;
 }
