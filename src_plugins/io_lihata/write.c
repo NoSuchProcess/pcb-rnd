@@ -32,6 +32,7 @@
 #include "plug_io.h"
 #include "strflags.h"
 #include "compat_misc.h"
+#include "rats_patch.h"
 #include "macro.h"
 #include "layer.h"
 #include "common.h"
@@ -549,6 +550,135 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 	return stl;
 }
 
+/* Build a plain old netlist */
+static lht_node_t *build_netlist(LibraryType *netlist, const char *name, int *nonempty)
+{
+	lht_node_t *nl, *pl, *pn, *nnet;
+	pcb_cardinal_t n, p;
+
+	if (netlist->MenuN < 0)
+		return dummy_node(name);
+
+	(*nonempty)++;
+
+	nl = lht_dom_node_alloc(LHT_LIST, name);
+	for (n = 0; n < netlist->MenuN; n++) {
+		LibraryMenuTypePtr menu = &netlist->Menu[n];
+		const char *netname = &menu->Name[2];
+		const char *style = menu->Style;
+
+		/* create the net hash */
+		nnet = lht_dom_node_alloc(LHT_HASH, netname);
+		pl = lht_dom_node_alloc(LHT_LIST, "flat_conn");
+		lht_dom_hash_put(nnet, pl);
+		if ((style != NULL) && (*style == '\0')) style = NULL;
+		lht_dom_hash_put(nnet, build_text("style", style));
+
+		/* grow the connection list */
+		for (p = 0; p < menu->EntryN; p++) {
+			LibraryEntryTypePtr entry = &menu->Entry[p];
+			const char *pin = entry->ListEntry;
+			pn = lht_dom_node_alloc(LHT_TEXT, "");
+			pn->data.text.value = pcb_strdup(pin);
+			lht_dom_list_append(pl, pn);
+		}
+		lht_dom_list_append(nl, nnet);
+	}
+	return nl;
+}
+
+typedef struct {
+	lht_node_t *patch, *info;
+} build_net_patch_t;
+
+static void build_net_patch_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val)
+{
+	build_net_patch_t *ctx = ctx_;
+	lht_node_t *n;
+printf(" ev=%d\n", ev);
+	switch(ev) {
+		case PCB_RPE_INFO_BEGIN:
+			ctx->info = lht_dom_node_alloc(LHT_LIST, "net_info");
+			lht_dom_list_append(ctx->info, build_text("net", netn));
+			break;
+		case PCB_RPE_INFO_TERMINAL:
+			lht_dom_list_append(ctx->info, build_text("term", val));
+			break;
+		case PCB_RPE_INFO_END:
+			lht_dom_list_append(ctx->patch, ctx->info);
+			ctx->info = NULL;
+			break;
+		case PCB_RPE_CONN_ADD:
+			n = lht_dom_node_alloc(LHT_HASH, "add_conn");
+			goto append_term;
+
+		case PCB_RPE_CONN_DEL:
+			n = lht_dom_node_alloc(LHT_HASH, "del_conn");
+			append_term:;
+			lht_dom_hash_put(n, build_text("net", netn));
+			lht_dom_hash_put(n, build_text("term", val));
+			lht_dom_list_append(ctx->patch, n);
+			break;
+
+		case PCB_RPE_ATTR_CHG:
+			n = lht_dom_node_alloc(LHT_HASH, "change_attrib");
+			lht_dom_hash_put(n, build_text("net", netn));
+			lht_dom_hash_put(n, build_text("key", key));
+			lht_dom_hash_put(n, build_text("val", val));
+			lht_dom_list_append(ctx->patch, n);
+			break;
+	}
+}
+
+/* Build a netlist patch so that we don't need to export a complete new set of "as built" netlist */
+static lht_node_t *build_net_patch(PCBType *pcb, rats_patch_line_t *pat, int *nonempty)
+{
+	lht_node_t *pn;
+	build_net_patch_t ctx;
+
+	pn = lht_dom_node_alloc(LHT_LIST, "netlist_patch");
+
+	ctx.patch = pn;
+	rats_patch_export(pcb, pat, pcb_true, build_net_patch_cb, &ctx);
+
+	if (pn->data.list.first == NULL) {
+		lht_dom_node_free(pn);
+		return dummy_node("netlist_patch");
+	}
+
+	(*nonempty)++;
+	return pn;
+}
+
+
+static lht_node_t *build_netlists(PCBType *pcb, LibraryType *netlists, rats_patch_line_t *pat, int num_netlists)
+{
+	lht_node_t *nls;
+	int n, nonempty = 0;
+
+	if (num_netlists > NUM_NETLISTS)
+		return dummy_node("netlists");
+
+	nls = lht_dom_node_alloc(LHT_HASH, "netlists");
+
+	for(n = 0; n < num_netlists; n++) {
+		lht_node_t *nl;
+		if (n == NETLIST_EDITED)
+			nl = build_net_patch(pcb, pat, &nonempty);
+		else
+			nl = build_netlist(netlists+n, pcb_netlist_names[n], &nonempty);
+		lht_dom_hash_put(nls, nl);
+	}
+
+	if (!nonempty) {
+		lht_dom_node_free(nls);
+		return dummy_node("netlists");
+	}
+
+	return nls;
+}
+
+
 static lht_doc_t *build_board(PCBType *pcb)
 {
 	lht_doc_t *brd = lht_dom_init();
@@ -559,6 +689,8 @@ static lht_doc_t *build_board(PCBType *pcb)
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
 	lht_dom_hash_put(brd->root, build_font(&pcb->Font));
 	lht_dom_hash_put(brd->root, build_styles(&pcb->RouteStyle));
+printf("PAT************************%p\n", pcb->NetlistPatches);
+	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->NetlistLib, pcb->NetlistPatches, NUM_NETLISTS));
 	return brd;
 }
 

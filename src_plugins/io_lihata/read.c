@@ -281,6 +281,7 @@ static int post_thermal_assign(vtptr_t *pt)
 		for(n = lht_dom_first(&it, thr); n != NULL; n = lht_dom_next(&it)) {
 			if (n->type == LHT_TEXT) {
 				int layer = pcb_layer_by_name(n->name);
+printf("Lookup: %s -> %d\n", n->name, layer);
 				if (layer < 0) {
 					Message(PCB_MSG_ERROR, "#LHT10 Invalid layer name in thermal: '%s'\n", n->name);
 					return -1;
@@ -318,7 +319,6 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 		if (thr != NULL) {
 			thr->user_data = f;
 			vtptr_append(&post_thermal, thr);
-
 		}
 
 		if (parse_int(&n, lht_dom_hash_get(fn, "shape")) == 0)
