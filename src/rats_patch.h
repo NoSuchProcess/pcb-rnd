@@ -51,6 +51,26 @@ void rats_patch_make_edited(PCBTypePtr pcb);
 /* apply a single patch record on [NETLIST_EDITED]; returns non-zero on failure */
 int rats_patch_apply(PCBTypePtr pcb, rats_patch_line_t * patch);
 
-/* save all patch lines as an ordered list of text lines
+/**** exporter ****/
+
+/* Special text exporter:
+   save all patch lines as an ordered list of text lines
    if fmt is non-zero, generate pcb savefile compatible lines, else generate a back annotation patch */
 int rats_patch_fexport(PCBTypePtr pcb, FILE * f, int fmt_pcb);
+
+/* Generic, callback based exporter: */
+
+                          /* EVENT ARGUMENTS */
+typedef enum {            /* netn is always the net name, unless specified otherwise */
+	PCB_RPE_INFO_BEGIN,     /* netn */
+	PCB_RPE_INFO_TERMINAL,  /* netn; val is the terminal pin/pad name */
+	PCB_RPE_INFO_END,       /* netn */
+
+	PCB_RPE_CONN_ADD,       /* netn; val is the terminal pin/pad name */
+	PCB_RPE_CONN_DEL,       /* netn; val is the terminal pin/pad name */
+	PCB_RPE_ATTR_CHG        /* netn; key is the attribute name, val is the new attribute value */
+} pcb_rats_patch_export_ev_t;
+
+/* Call cb() for each item to output; PCB_PTRE_INFO* is calculated/called only
+   if need_info_lines is true */
+int rats_patch_export(PCBTypePtr pcb, pcb_bool_t need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx);

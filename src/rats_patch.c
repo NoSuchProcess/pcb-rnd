@@ -280,25 +280,11 @@ static LibraryMenuTypePtr rats_patch_find_net(PCBTypePtr pcb, const char *netnam
 	return NULL;
 }
 
-int rats_patch_fexport(PCBTypePtr pcb, FILE * f, int fmt_pcb)
+int rats_patch_export(PCBTypePtr pcb, pcb_bool_t need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
 {
 	rats_patch_line_t *n;
-	const char *q, *po, *pc, *line_prefix;
 
-	if (fmt_pcb) {
-		q = "\"";
-		po = "(";
-		pc = ")";
-		line_prefix = "\t";
-	}
-	else {
-		q = "";
-		po = " ";
-		pc = "";
-		line_prefix = "";
-	}
-
-	if (!fmt_pcb) {
+	if (need_info_lines) {
 		htsp_t *seen;
 		seen = htsp_alloc(strhash, strkeyeq);
 
@@ -312,15 +298,16 @@ int rats_patch_fexport(PCBTypePtr pcb, FILE * f, int fmt_pcb)
 					int p;
 
 					net = rats_patch_find_net(pcb, n->arg1.net_name, NETLIST_INPUT);
-					printf("net: '%s' %p\n", n->arg1.net_name, (void *)net);
+/*					printf("net: '%s' %p\n", n->arg1.net_name, (void *)net);*/
 					if (net != NULL) {
 						htsp_set(seen, n->arg1.net_name, net);
-						fprintf(f, "%snet_info%s%s%s%s", line_prefix, po, q, n->arg1.net_name, q);
+						cb(ctx, PCB_RPE_INFO_BEGIN, n->arg1.net_name, NULL, NULL);
 						for (p = 0; p < net->EntryN; p++) {
 							LibraryEntryTypePtr entry = &net->Entry[p];
-							fprintf(f, " %s%s%s", q, entry->ListEntry, q);
+							cb(ctx, PCB_RPE_INFO_TERMINAL, n->arg1.net_name, NULL, entry->ListEntry);
 						}
-						fprintf(f, "%s\n", pc);
+						cb(ctx, PCB_RPE_INFO_END, n->arg1.net_name, NULL, NULL);
+
 					}
 				}
 			case RATP_CHANGE_ATTRIB:
@@ -330,23 +317,66 @@ int rats_patch_fexport(PCBTypePtr pcb, FILE * f, int fmt_pcb)
 		htsp_free(seen);
 	}
 
-
+	/* action lines */
 	for (n = pcb->NetlistPatches; n != NULL; n = n->next) {
 		switch (n->op) {
 		case RATP_ADD_CONN:
-			fprintf(f, "%sadd_conn%s%s%s%s %s%s%s%s\n", line_prefix, po, q, n->id, q, q, n->arg1.net_name, q, pc);
+			cb(ctx, PCB_RPE_CONN_ADD, n->id, NULL, n->arg1.net_name);
 			break;
 		case RATP_DEL_CONN:
-			fprintf(f, "%sdel_conn%s%s%s%s %s%s%s%s\n", line_prefix, po, q, n->id, q, q, n->arg1.net_name, q, pc);
+			cb(ctx, PCB_RPE_CONN_DEL, n->id, NULL, n->arg1.net_name);
 			break;
 		case RATP_CHANGE_ATTRIB:
-			fprintf(f, "%schange_attrib%s%s%s%s %s%s%s %s%s%s%s\n", line_prefix, po, q, n->id, q, q, n->arg1.attrib_name, q, q,
-							n->arg2.attrib_val, q, pc);
+			cb(ctx, PCB_RPE_ATTR_CHG, n->id, n->arg1.attrib_name, n->arg2.attrib_val);
 			break;
 		}
 	}
 	return 0;
 }
+
+typedef struct {
+	FILE *f;
+	const char *q, *po, *pc, *line_prefix;
+} fexport_t;
+
+static void fexport_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val)
+{
+	fexport_t *ctx = ctx_;
+	switch(ev) {
+		case PCB_RPE_INFO_BEGIN:     fprintf(ctx->f, "%snet_info%s%s%s%s", ctx->line_prefix, ctx->po, ctx->q, netn, ctx->q); break;
+		case PCB_RPE_INFO_TERMINAL:  fprintf(ctx->f, " %s%s%s", ctx->q, val, ctx->q); break;
+		case PCB_RPE_INFO_END:       fprintf(ctx->f, "%s\n", ctx->pc); break;
+		case PCB_RPE_CONN_ADD:       fprintf(ctx->f, "%sadd_conn%s%s%s%s %s%s%s%s\n", ctx->line_prefix, ctx->po, ctx->q, netn, ctx->q, ctx->q, val, ctx->q, ctx->pc); break;
+		case PCB_RPE_CONN_DEL:       fprintf(ctx->f, "%sdel_conn%s%s%s%s %s%s%s%s\n", ctx->line_prefix, ctx->po, ctx->q, netn, ctx->q, ctx->q, val, ctx->q, ctx->pc); break;
+		case PCB_RPE_ATTR_CHG:
+			fprintf(ctx->f, "%schange_attrib%s%s%s%s %s%s%s %s%s%s%s\n",
+				ctx->line_prefix, ctx->po,
+				ctx->q, netn, ctx->q,
+				ctx->q, key, ctx->q,
+				ctx->q, val, ctx->q,
+				ctx->pc);
+	}
+}
+
+int rats_patch_fexport(PCBTypePtr pcb, FILE *f, int fmt_pcb)
+{
+	fexport_t ctx;
+	if (fmt_pcb) {
+		ctx.q = "\"";
+		ctx.po = "(";
+		ctx.pc = ")";
+		ctx.line_prefix = "\t";
+	}
+	else {
+		ctx.q = "";
+		ctx.po = " ";
+		ctx.pc = "";
+		ctx.line_prefix = "";
+	}
+	ctx.f = f;
+	return rats_patch_export(pcb, !fmt_pcb, fexport_cb, &ctx);
+}
+
 
 /* ---------------------------------------------------------------- */
 static const char replacefootprint_syntax[] = "ReplaceFootprint()\n";
