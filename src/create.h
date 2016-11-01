@@ -62,7 +62,7 @@ PadTypePtr CreateNewPad(ElementTypePtr, Coord, Coord, Coord, Coord, Coord, Coord
 LineTypePtr CreateNewLineInSymbol(SymbolTypePtr, Coord, Coord, Coord, Coord, Coord);
 void CreateDefaultFont(PCBTypePtr);
 RubberbandTypePtr CreateNewRubberbandEntry(LayerTypePtr, LineTypePtr, PointTypePtr);
-LibraryMenuTypePtr CreateNewNet(LibraryTypePtr, char *, char *);
+LibraryMenuTypePtr CreateNewNet(LibraryTypePtr, char *, const char *);
 LibraryEntryTypePtr CreateNewConnection(LibraryMenuTypePtr, char *);
 
 AttributeTypePtr CreateNewAttribute(AttributeListTypePtr list, const char *name, const char *value);

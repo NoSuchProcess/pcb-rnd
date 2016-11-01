@@ -891,7 +891,7 @@ RubberbandTypePtr CreateNewRubberbandEntry(LayerTypePtr Layer, LineTypePtr Line,
 /* ---------------------------------------------------------------------------
  * Add a new net to the netlist menu
  */
-LibraryMenuTypePtr CreateNewNet(LibraryTypePtr lib, char *name, char *style)
+LibraryMenuTypePtr CreateNewNet(LibraryTypePtr lib, char *name, const char *style)
 {
 	LibraryMenuTypePtr menu;
 	char temp[64];
