@@ -334,6 +334,7 @@ static lht_node_t *build_pcb_text(const char *role, TextType *text)
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
 	lht_dom_hash_put(obj, build_attributes(&text->Attributes));
+	lht_dom_hash_put(obj, build_flags(&text->Flags, PCB_TYPE_TEXT));
 	lht_dom_hash_put(obj, build_text("string", text->TextString));
 	lht_dom_hash_put(obj, build_textf("scale", "%d", text->Scale));
 	lht_dom_hash_put(obj, build_textf("direction", "%d", text->Direction));
