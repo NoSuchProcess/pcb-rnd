@@ -319,6 +319,15 @@ static lhtpers_rule_t r_root[] = {
 	{NULL, NULL, NULL}
 };
 
+static const char *pat_net_input[] = {"ha:input", "*", NULL};
+static const char *pat_net_patch[] = {"ha:netlist_patch", "*", NULL};
+static lhtpers_rule_t r_netlists[] = {
+	{pat_net_input,         &style_nlstruct, NULL},
+	{pat_net_patch,         &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
+
+
 static const char *pat_line[] = {"ha:line.*", "*", NULL};
 static const char *pat_arc[]  = {"ha:arc.*", "*", NULL};
 static const char *pat_via[]  = {"ha:via.*", "*", NULL};
@@ -328,6 +337,7 @@ static const char *pat_poly[] = {"ha:polygon.*", "*", NULL};
 static const char *pat_elem[] = {"ha:element.*", "*", NULL};
 static const char *pat_text[] = {"ha:text.*", "*", NULL};
 static const char *pat_data[] = {"ha:data", "*", NULL};
+static const char *pat_netlists[] = {"ha:netlists", "*", NULL};
 static const char *pat_objs[] = {"li:objects", "*", NULL};
 static const char *pat_font1[] = {"ha:geda_pcb", "ha:font", "*", NULL};
 static const char *pat_layer[] = {"ha:*", "li:layers", "*", NULL};
@@ -335,6 +345,10 @@ static const char *pat_symbol[] = {"ha:*", "ha:symbols", "*", NULL};
 static const char *pat_thermt[] = {"te:*", "ha:thermal", "*", NULL};
 static const char *pat_flag[] = {"te:*", "ha:flags", "*", NULL};
 static const char *pat_cell[] = {"te:*", "ta:*", "*", NULL};
+static const char *pat_netinft[] = {"te:*", "li:net_info", "li:netlist_patch", "*", NULL};
+static const char *pat_nettxt[] = {"te:*", "ha:*", "li:netlist_patch", "*", NULL};
+static const char *pat_del_add[] = {"ha:*", "li:netlist_patch", "*", NULL};
+static const char *pat_netinfo[] = {"li:net_info", "li:netlist_patch", "*", NULL};
 static const char *pat_root[] = {"^", NULL};
 
 static lhtpers_rule_t r_istructs[] = {
@@ -353,10 +367,16 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_text,    &style_structi, r_text, NULL},
 	{pat_data,    &style_structi, r_data, NULL},
 	{pat_font1,   &style_structi, r_font1, NULL},
+	{pat_netlists,&style_struct, r_netlists, NULL},
 	{pat_objs,    &style_structi, NULL, NULL},
 	{pat_flag,    &style_newline, NULL, NULL},
+
 	{pat_cell,    &style_inline, NULL, NULL},
 	{pat_thermt,  &style_inline, NULL, NULL},
+	{pat_del_add, &style_struct_thermal, NULL, NULL},
+	{pat_netinfo, &style_struct_thermal, NULL, NULL},
+	{pat_netinft, &style_inline, NULL, NULL},
+	{pat_nettxt,  &style_inline, NULL, NULL},
 	{NULL, NULL, NULL}
 };
 

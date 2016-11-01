@@ -689,7 +689,6 @@ static lht_doc_t *build_board(PCBType *pcb)
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
 	lht_dom_hash_put(brd->root, build_font(&pcb->Font));
 	lht_dom_hash_put(brd->root, build_styles(&pcb->RouteStyle));
-printf("PAT************************%p\n", pcb->NetlistPatches);
 	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->NetlistLib, pcb->NetlistPatches, NUM_NETLISTS));
 	return brd;
 }
