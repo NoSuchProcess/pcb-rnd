@@ -125,13 +125,19 @@ int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_set
 
 	if (fmt != NULL) {
 		find_t available[PCB_IO_MAX_FORMATS];
-		int len;
+		int len, n;
 		len = find_io(available, sizeof(available)/sizeof(available[0]), PCB_IOT_PCB, 0, fmt);
 		if (len <= 0) {
 			Message(PCB_MSG_DEFAULT, "Error: can't find a IO_ plugin to load a PCB using format %s\n", fmt);
 			return -1;
 		}
-		res = available[0].plug->parse_pcb(available[0].plug, Ptr, Filename, load_settings);
+		for(n = 0; n < len; n++) {
+			if (available[0].plug->parse_pcb == NULL)
+				continue;
+			res = available[0].plug->parse_pcb(available[0].plug, Ptr, Filename, load_settings);
+			if (res == 0)
+				break;
+		}
 	}
 	else /* try all parsers until we find one that works */
 		HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, (self, Ptr, Filename, load_settings));
