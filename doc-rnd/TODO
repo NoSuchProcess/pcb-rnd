@@ -9,6 +9,7 @@
 	- indentation bug in inline struct therm: closing } is preceded by indentation whitespace for some reason
 	- keep numeric format
 	- keep unknown subtrees
+	- gtk load dialog extension filter should reflect known formats
 
 - replace settings with lihata (conf_*)
 	- TEST:
