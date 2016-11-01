@@ -280,7 +280,7 @@ static LibraryMenuTypePtr rats_patch_find_net(PCBTypePtr pcb, const char *netnam
 	return NULL;
 }
 
-int rats_patch_export(PCBTypePtr pcb, pcb_bool_t need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
+int rats_patch_export(PCBType *pcb, rats_patch_line_t *pat, pcb_bool_t need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
 {
 	rats_patch_line_t *n;
 
@@ -289,7 +289,7 @@ int rats_patch_export(PCBTypePtr pcb, pcb_bool_t need_info_lines, void (*cb)(voi
 		seen = htsp_alloc(strhash, strkeyeq);
 
 		/* have to print net_info lines */
-		for (n = pcb->NetlistPatches; n != NULL; n = n->next) {
+		for (n = pat; n != NULL; n = n->next) {
 			switch (n->op) {
 			case RATP_ADD_CONN:
 			case RATP_DEL_CONN:
@@ -318,7 +318,7 @@ int rats_patch_export(PCBTypePtr pcb, pcb_bool_t need_info_lines, void (*cb)(voi
 	}
 
 	/* action lines */
-	for (n = pcb->NetlistPatches; n != NULL; n = n->next) {
+	for (n = pat; n != NULL; n = n->next) {
 		switch (n->op) {
 		case RATP_ADD_CONN:
 			cb(ctx, PCB_RPE_CONN_ADD, n->id, NULL, n->arg1.net_name);
@@ -374,7 +374,7 @@ int rats_patch_fexport(PCBTypePtr pcb, FILE *f, int fmt_pcb)
 		ctx.line_prefix = "";
 	}
 	ctx.f = f;
-	return rats_patch_export(pcb, !fmt_pcb, fexport_cb, &ctx);
+	return rats_patch_export(pcb, pcb->NetlistPatches, !fmt_pcb, fexport_cb, &ctx);
 }
 
 
