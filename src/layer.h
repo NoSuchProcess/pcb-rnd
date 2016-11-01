@@ -132,6 +132,8 @@ int pcb_layer_lookup_group(int layer_id);
 /* Put a layer in a group (the layer should not be in any other group) */
 void pcb_layer_add_in_group(int layer_id, int group_id);
 
+/* Slow linear search for a layer by name */
+int pcb_layer_by_name(const char *name);
 
 /**** layer creation (for load/import code) ****/
 

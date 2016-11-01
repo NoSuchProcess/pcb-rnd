@@ -599,6 +599,15 @@ int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len)
 	return used;
 }
 
+int pcb_layer_by_name(const char *name)
+{
+	int n;
+	for (n = 0; n < max_copper_layer + 2; n++)
+		if (strcmp(PCB->Data->Layer[n].Name, name) == 0)
+			return n;
+	return -1;
+}
+
 int pcb_layer_lookup_group(int layer_id)
 {
 	int group, layeri;
@@ -811,6 +820,7 @@ int pcb_layer_rename(int layer, const char *lname)
 	if (PCB->Data->Layer[layer].Name != NULL)
 		free((char *)PCB->Data->Layer[layer].Name);
 	PCB->Data->Layer[layer].Name = pcb_strdup(lname);
+	return 0;
 }
 
 void pcb_layers_finalize()
