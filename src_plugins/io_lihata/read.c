@@ -376,7 +376,7 @@ static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj, int no_id
 
 static int parse_rat(DataType *dt, lht_node_t *obj)
 {
-	RatType rat;
+	RatType rat, *new_rat;
 
 	parse_id(&rat.ID, obj, 4);
 	parse_attributes(&rat.Attributes, lht_dom_hash_get(obj, "attributes"));
@@ -393,8 +393,10 @@ static int parse_rat(DataType *dt, lht_node_t *obj)
 	post_id_req(&rat.Point1);
 	post_id_req(&rat.Point2);
 
-	CreateNewRat(dt, rat.Point1.X, rat.Point1.Y, rat.Point2.X, rat.Point2.Y, rat.group1, rat.group2,
+	new_rat = CreateNewRat(dt, rat.Point1.X, rat.Point1.Y, rat.Point2.X, rat.Point2.Y, rat.group1, rat.group2,
 		conf_core.appearance.rat_thickness, rat.Flags);
+
+	new_rat->ID = rat.ID;
 
 	return 0;
 }
