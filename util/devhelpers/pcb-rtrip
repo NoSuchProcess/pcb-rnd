@@ -20,11 +20,11 @@
 
 pcb_rtrip()
 {
-	rm "$fn.new.pcb"
+	rm -f "$fn.new.pcb"
 
 	if test ! -z "$remtgt"
 	then
-		rm "$fn.trgt.$ext"
+		rm -f "$fn.trgt.$ext"
 	fi
 
 echo '
