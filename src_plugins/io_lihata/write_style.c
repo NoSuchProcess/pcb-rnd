@@ -87,6 +87,15 @@ static lht_perstyle_t style_struct = {
 	/* name_braced */ 0
 };
 
+static lht_perstyle_t style_struct_thermal = {
+	/* buff */        {PB_BEGIN, PB_SPACE, PB_LBRACE, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
+	/* has_eq */      0,
+	/* val_brace */   0,
+	/* etype */       0,
+	/* ename */       1,
+	/* name_braced */ 0
+};
+
 static lht_perstyle_t style_structi = {
 	/* buff */        {PB_BEGIN, PB_SPACE, PB_LBRACENLI, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
 	/* has_eq */      0,
@@ -98,15 +107,6 @@ static lht_perstyle_t style_structi = {
 
 static lht_perstyle_t style_structs = {
 	/* buff */        {PB_BEGIN, PB_SPACE, PB_LBRACE, PB_EMPTY, PB_EMPTY, PB_RBRACENL},
-	/* has_eq */      0,
-	/* val_brace */   0,
-	/* etype */       0,
-	/* ename */       1,
-	/* name_braced */ 0
-};
-
-static lht_perstyle_t style_struct_therm = {
-	/* buff */        {PB_BEGIN, PB_SPACE, PB_LBRACE, PB_EMPTY, PB_EMPTY, PB_RBRACENLI},
 	/* has_eq */      0,
 	/* val_brace */   0,
 	/* etype */       0,
@@ -138,7 +138,7 @@ static lhtpers_rule_t r_ilists[]   = {
 
 static const char *pat_thermal[] = {"ha:thermal", "ha:flags", "*", NULL};
 static lhtpers_rule_t r_thermal[]   = {
-	{pat_thermal,  &style_struct_therm, NULL},
+	{pat_thermal,  &style_struct_thermal, NULL},
 	{NULL, NULL, NULL}
 };
 
@@ -332,6 +332,7 @@ static const char *pat_objs[] = {"li:objects", "*", NULL};
 static const char *pat_font1[] = {"ha:geda_pcb", "ha:font", "*", NULL};
 static const char *pat_layer[] = {"ha:*", "li:layers", "*", NULL};
 static const char *pat_symbol[] = {"ha:*", "ha:symbols", "*", NULL};
+static const char *pat_thermt[] = {"te:*", "ha:thermal", "*", NULL};
 static const char *pat_flag[] = {"te:*", "ha:flags", "*", NULL};
 static const char *pat_cell[] = {"te:*", "ta:*", "*", NULL};
 static const char *pat_root[] = {"^", NULL};
@@ -355,6 +356,7 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_objs,    &style_structi, NULL, NULL},
 	{pat_flag,    &style_newline, NULL, NULL},
 	{pat_cell,    &style_inline, NULL, NULL},
+	{pat_thermt,  &style_inline, NULL, NULL},
 	{NULL, NULL, NULL}
 };
 
