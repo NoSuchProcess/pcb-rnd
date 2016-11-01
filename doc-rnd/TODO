@@ -5,7 +5,6 @@
 
 - Lihata persistent save:
 	- composite pcb+lht save
-	- save+load rat lines
 	- indentation bug in via and netlists
 	- indentation bug in inline struct therm: closing } is preceded by indentation whitespace for some reason
 	- keep numeric format
