@@ -333,6 +333,7 @@ static const char *pat_font1[] = {"ha:geda_pcb", "ha:font", "*", NULL};
 static const char *pat_layer[] = {"ha:*", "li:layers", "*", NULL};
 static const char *pat_symbol[] = {"ha:*", "ha:symbols", "*", NULL};
 static const char *pat_flag[] = {"te:*", "ha:flags", "*", NULL};
+static const char *pat_cell[] = {"te:*", "ta:*", "*", NULL};
 static const char *pat_root[] = {"^", NULL};
 
 static lhtpers_rule_t r_istructs[] = {
@@ -353,6 +354,7 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_font1,   &style_structi, r_font1, NULL},
 	{pat_objs,    &style_structi, NULL, NULL},
 	{pat_flag,    &style_newline, NULL, NULL},
+	{pat_cell,    &style_inline, NULL, NULL},
 	{NULL, NULL, NULL}
 };
 
