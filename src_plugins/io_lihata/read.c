@@ -45,7 +45,7 @@
 #include "polygon.h"
 
 #warning TODO: put these in a gloal load-context-struct
-vtptr_t post_ids;
+vtptr_t post_ids, post_thermal;
 
 /* Collect objects that has unknown ID on a list. Once all objects with
    known-IDs are allocated, the unknonw-ID objects are allocated a fresh
@@ -261,6 +261,42 @@ static int parse_meta(PCBType *pcb, lht_node_t *nd)
 	return 0;
 }
 
+/* pt is a list of lihata node pointers to thermal nodes; each has user
+   data set to the flag. Look up layer info and fill in thermal flags. This
+   needs to be done in a separate pass at the end of parsing because
+   vias may precede layers in the lihata input file. */
+static int post_thermal_assign(vtptr_t *pt)
+{
+	int i;
+
+	for(i = 0; i < vtptr_len(pt); i++) {
+		lht_node_t *n;
+		lht_dom_iterator_t it;
+		io_lihata_flag_holder fh;
+		lht_node_t *thr = pt->array[i];
+		FlagType *f = thr->user_data;
+
+		memset(&fh, 0, sizeof(fh));
+		fh.Flags = *f;
+		for(n = lht_dom_first(&it, thr); n != NULL; n = lht_dom_next(&it)) {
+			if (n->type == LHT_TEXT) {
+				int layer = pcb_layer_by_name(n->name);
+				if (layer < 0) {
+					Message(PCB_MSG_ERROR, "#LHT10 Invalid layer name in thermal: '%s'\n", n->name);
+					return -1;
+				}
+				ASSIGN_THERM(layer, io_lihata_resolve_thermal_style(n->data.text.value), &fh);
+			}
+		}
+		*f = fh.Flags;
+	}
+	vtptr_uninit(pt);
+	return 0;
+}
+
+/* NOTE: in case of objects with thermal, f must point to the object's
+   flags because termals will be filled in at the end, in a 2nd pass and
+   we need to store the f pointer. */
 static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 {
 	io_lihata_flag_holder fh;
@@ -280,13 +316,9 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 
 		thr = lht_dom_hash_get(fn, "thermal");
 		if (thr != NULL) {
-			lht_node_t *n;
-			lht_dom_iterator_t it;
-			int layer;
+			thr->user_data = f;
+			vtptr_append(&post_thermal, thr);
 
-			for(layer = 0, n = lht_dom_first(&it, thr); n != NULL; layer++, n = lht_dom_next(&it))
-				if (n->type == LHT_TEXT)
-					ASSIGN_THERM(layer, io_lihata_resolve_thermal_style(n->data.text.value), &fh);
 		}
 
 		if (parse_int(&n, lht_dom_hash_get(fn, "shape")) == 0)
@@ -791,6 +823,7 @@ static int parse_board(PCBType *pcb, lht_node_t *nd)
 	}
 
 	vtptr_init(&post_ids);
+	vtptr_init(&post_thermal);
 
 	memset(&pcb->LayerGroups, 0, sizeof(pcb->LayerGroups));
 
@@ -814,6 +847,8 @@ static int parse_board(PCBType *pcb, lht_node_t *nd)
 		return -1;
 
 	post_ids_assign(&post_ids);
+	if (post_thermal_assign(&post_thermal) != 0)
+		return -1;
 
 	/* Run poly clipping at the end so we have all IDs and we can
 	   announce the clipping (it's slow, we may need a progress bar) */
