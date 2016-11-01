@@ -595,7 +595,6 @@ static void build_net_patch_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const 
 {
 	build_net_patch_t *ctx = ctx_;
 	lht_node_t *n;
-printf(" ev=%d\n", ev);
 	switch(ev) {
 		case PCB_RPE_INFO_BEGIN:
 			ctx->info = lht_dom_node_alloc(LHT_LIST, "net_info");

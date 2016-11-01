@@ -349,6 +349,8 @@ static const char *pat_netinft[] = {"te:*", "li:net_info", "li:netlist_patch", "
 static const char *pat_nettxt[] = {"te:*", "ha:*", "li:netlist_patch", "*", NULL};
 static const char *pat_del_add[] = {"ha:*", "li:netlist_patch", "*", NULL};
 static const char *pat_netinfo[] = {"li:net_info", "li:netlist_patch", "*", NULL};
+static const char *pat_tconn[] = {"te:*", "li:conn", "ha:*", "li:*", "ha:netlists", "*", NULL};
+static const char *pat_lconn[] = {"li:conn", "ha:*", "li:*", "ha:netlists", "*", NULL};
 static const char *pat_root[] = {"^", NULL};
 
 static lhtpers_rule_t r_istructs[] = {
@@ -377,6 +379,8 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_netinfo, &style_struct_thermal, NULL, NULL},
 	{pat_netinft, &style_inline, NULL, NULL},
 	{pat_nettxt,  &style_inline, NULL, NULL},
+	{pat_tconn,   &style_inline, NULL, NULL},
+	{pat_lconn,   &style_struct_thermal, NULL, NULL},
 	{NULL, NULL, NULL}
 };
 
