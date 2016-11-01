@@ -321,10 +321,10 @@ int rats_patch_export(PCBType *pcb, rats_patch_line_t *pat, pcb_bool_t need_info
 	for (n = pat; n != NULL; n = n->next) {
 		switch (n->op) {
 		case RATP_ADD_CONN:
-			cb(ctx, PCB_RPE_CONN_ADD, n->id, NULL, n->arg1.net_name);
+			cb(ctx, PCB_RPE_CONN_ADD, n->arg1.net_name, NULL, n->id);
 			break;
 		case RATP_DEL_CONN:
-			cb(ctx, PCB_RPE_CONN_DEL, n->id, NULL, n->arg1.net_name);
+			cb(ctx, PCB_RPE_CONN_DEL, n->arg1.net_name, NULL, n->id);
 			break;
 		case RATP_CHANGE_ATTRIB:
 			cb(ctx, PCB_RPE_ATTR_CHG, n->id, n->arg1.attrib_name, n->arg2.attrib_val);
@@ -346,8 +346,8 @@ static void fexport_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const char *ne
 		case PCB_RPE_INFO_BEGIN:     fprintf(ctx->f, "%snet_info%s%s%s%s", ctx->line_prefix, ctx->po, ctx->q, netn, ctx->q); break;
 		case PCB_RPE_INFO_TERMINAL:  fprintf(ctx->f, " %s%s%s", ctx->q, val, ctx->q); break;
 		case PCB_RPE_INFO_END:       fprintf(ctx->f, "%s\n", ctx->pc); break;
-		case PCB_RPE_CONN_ADD:       fprintf(ctx->f, "%sadd_conn%s%s%s%s %s%s%s%s\n", ctx->line_prefix, ctx->po, ctx->q, netn, ctx->q, ctx->q, val, ctx->q, ctx->pc); break;
-		case PCB_RPE_CONN_DEL:       fprintf(ctx->f, "%sdel_conn%s%s%s%s %s%s%s%s\n", ctx->line_prefix, ctx->po, ctx->q, netn, ctx->q, ctx->q, val, ctx->q, ctx->pc); break;
+		case PCB_RPE_CONN_ADD:       fprintf(ctx->f, "%sadd_conn%s%s%s%s %s%s%s%s\n", ctx->line_prefix, ctx->po, ctx->q, val, ctx->q, ctx->q, netn, ctx->q, ctx->pc); break;
+		case PCB_RPE_CONN_DEL:       fprintf(ctx->f, "%sdel_conn%s%s%s%s %s%s%s%s\n", ctx->line_prefix, ctx->po, ctx->q, val, ctx->q, ctx->q, netn, ctx->q, ctx->pc); break;
 		case PCB_RPE_ATTR_CHG:
 			fprintf(ctx->f, "%schange_attrib%s%s%s%s %s%s%s %s%s%s%s\n",
 				ctx->line_prefix, ctx->po,
