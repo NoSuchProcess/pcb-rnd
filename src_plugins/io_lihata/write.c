@@ -224,6 +224,23 @@ static lht_node_t *build_line(LineType *line, int local_id, Coord dx, Coord dy)
 	return obj;
 }
 
+static lht_node_t *build_rat(RatType *rat)
+{
+	char buff[128];
+	lht_node_t *obj;
+	sprintf(buff, "rat.%ld", rat->ID);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	lht_dom_hash_put(obj, build_textf("x1", CFMT, rat->Point1.X));
+	lht_dom_hash_put(obj, build_textf("y1", CFMT, rat->Point1.Y));
+	lht_dom_hash_put(obj, build_textf("x2", CFMT, rat->Point2.X));
+	lht_dom_hash_put(obj, build_textf("y2", CFMT, rat->Point2.Y));
+	lht_dom_hash_put(obj, build_textf("lgrp1", "%d", rat->group1));
+	lht_dom_hash_put(obj, build_textf("lgrp2", "%d", rat->group2));
+
+	return obj;
+}
+
 static lht_node_t *build_arc(ArcType *arc, Coord dx, Coord dy)
 {
 	char buff[128];
@@ -459,6 +476,8 @@ static lht_node_t *build_data(DataType *data)
 	lht_node_t *grp, *ndt;
 	PinType *pi;
 	ElementType *el;
+	gdl_iterator_t it;
+	RatType *line;
 
 	ndt = lht_dom_node_alloc(LHT_HASH, "data");
 
@@ -474,6 +493,9 @@ static lht_node_t *build_data(DataType *data)
 
 	for(el = elementlist_first(&data->Element); el != NULL; el = elementlist_next(el))
 		lht_dom_list_append(grp, build_element(el));
+
+	ratlist_foreach(&data->Rat, &it, line)
+		lht_dom_list_append(grp, build_rat(line));
 
 	return ndt;
 }
