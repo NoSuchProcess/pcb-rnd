@@ -32,6 +32,9 @@
 
 #include "global.h"
 
+/* Single-word netlist class names */
+const char *pcb_netlist_names[NUM_NETLISTS];
+
 /* Allocate and append a patch line to the patch list */
 void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2);
 

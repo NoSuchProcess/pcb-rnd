@@ -38,6 +38,11 @@
 
 static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t * n, int do_free);
 
+const char *pcb_netlist_names[NUM_NETLISTS] = {
+	"input",
+	"edited"
+};
+
 void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2)
 {
 	rats_patch_line_t *n;
