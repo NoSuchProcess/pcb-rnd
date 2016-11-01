@@ -569,7 +569,7 @@ static lht_node_t *build_netlist(LibraryType *netlist, const char *name, int *no
 
 		/* create the net hash */
 		nnet = lht_dom_node_alloc(LHT_HASH, netname);
-		pl = lht_dom_node_alloc(LHT_LIST, "flat_conn");
+		pl = lht_dom_node_alloc(LHT_LIST, "conn");
 		lht_dom_hash_put(nnet, pl);
 		if ((style != NULL) && (*style == '\0')) style = NULL;
 		lht_dom_hash_put(nnet, build_text("style", style));
