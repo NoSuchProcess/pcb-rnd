@@ -4,6 +4,7 @@
 	- save as: change format, save as again: it sets back the format to default but the file name is wrong [report:Erich]
 
 - Lihata persistent save:
+	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: space in ha:layer name
 	- ind: symbol height is not in-line on the output
 	- ind: indentation bug in via and netlists
@@ -30,7 +31,10 @@
 		- regex and string cmp match speed vs. select by name
 
 CLEANUP #5
-- gtk load dialog extension filter should reflect known formats
+- save/load bugs:
+	- gtk load dialog extension filter should reflect known formats
+	- when changing format in the save dialog, the file extension is not modified
+	- there should be an "auto" or "guess by extension" option in the save dialog format
 - convert PCBChanged into an event (and provide a core action for compatibility)
 - rework the gpmi plugin to make it more standard in regard of the build system and to remove a few directories
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
