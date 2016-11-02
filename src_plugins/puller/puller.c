@@ -63,7 +63,7 @@
 #include "pcb-printf.h"
 #include "remove.h"
 #include "rtree.h"
-#include "strflags.h"
+#include "flag_str.h"
 #include "undo.h"
 #include "layer.h"
 #include "plugins.h"

@@ -51,7 +51,7 @@
 #include "polygon.h"
 #include "buildin.h"
 #include "paths.h"
-#include "strflags.h"
+#include "flag_str.h"
 #include "plugins.h"
 #include "plug_footprint.h"
 #include "event.h"

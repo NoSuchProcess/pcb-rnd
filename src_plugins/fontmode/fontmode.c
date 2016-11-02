@@ -43,7 +43,7 @@
 #include "move.h"
 #include "remove.h"
 #include "rtree.h"
-#include "strflags.h"
+#include "flag_str.h"
 #include "undo.h"
 #include "pcb-printf.h"
 #include "plugins.h"

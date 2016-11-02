@@ -32,7 +32,7 @@
 #include <string.h>
 
 #include "global.h"
-#include "strflags.h"
+#include "flag_str.h"
 #include "compat_misc.h"
 
 /* Because all the macros expect it, that's why.  */

@@ -58,7 +58,7 @@
 #include "rats.h"
 #include "remove.h"
 #include "set.h"
-#include "strflags.h"
+#include "flag_str.h"
 #include "compat_fs.h"
 #include "paths.h"
 #include "rats_patch.h"

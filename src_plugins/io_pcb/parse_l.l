@@ -63,7 +63,7 @@
 #include "file.h"
 #include "mymem.h"
 #include "misc.h"
-#include "strflags.h"
+#include "flag_str.h"
 #include "parse_common.h"
 #include "parse_y.h"
 #include "create.h"

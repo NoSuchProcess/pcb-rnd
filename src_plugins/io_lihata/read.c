@@ -32,7 +32,7 @@
 #include "data.h"
 #include "plugins.h"
 #include "plug_io.h"
-#include "strflags.h"
+#include "flag_str.h"
 #include "compat_misc.h"
 #include "macro.h"
 #include "error.h"

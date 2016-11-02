@@ -63,7 +63,7 @@
 #include "search.h"
 #include "set.h"
 #include "undo.h"
-#include "strflags.h"
+#include "flag_str.h"
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "netlist.h"

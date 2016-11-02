@@ -31,7 +31,7 @@
 #include "polygon.h"
 #include "polyarea.h"
 #include "assert.h"
-#include "strflags.h"
+#include "flag_str.h"
 #include "find.h"
 #include "misc.h"
 #include "draw.h"

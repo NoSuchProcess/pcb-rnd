@@ -39,7 +39,7 @@
 #include "move.h"
 #include "draw.h"
 #include "undo.h"
-#include "strflags.h"
+#include "flag_str.h"
 #include "find.h"
 #include "layer.h"
 #include "pcb-printf.h"

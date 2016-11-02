@@ -42,7 +42,7 @@
 #include "mymem.h"
 #include "rats.h"
 #include "rtree.h"
-#include "strflags.h"
+#include "flag_str.h"
 #include "macro.h"
 #include "undo.h"
 #include "find.h"

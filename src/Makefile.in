@@ -46,6 +46,7 @@ put /local/pcb/OBJS [@
 	find.o
 	find_act.o
 	flag.o
+	flag_str.o
 	free_atexit.o
 	funchash.o
 	gui_act.o
@@ -110,7 +111,6 @@ put /local/pcb/OBJS [@
 	select.o
 	select_act.o
 	set.o
-	strflags.o
 	stub_mincut.o
 	stub_stroke.o
 	stub_vendor.o

@@ -52,7 +52,7 @@
 #include "polygon.h"
 #include "remove.h"
 #include "rtree.h"
-#include "strflags.h"
+#include "flag_str.h"
 #include "thermal.h"
 #include "rats_patch.h"
 #include "flags.h"
