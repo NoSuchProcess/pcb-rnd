@@ -178,8 +178,6 @@ struct layer_st {								/* holds information about one layer */
 	int no_drc;										/* whether to ignore the layer when checking the design rules */
 };
 
-typedef struct plug_io_s plug_io_t;
-
 struct data_st {								/* holds all objects */
 	int LayerN;										/* number of layers in this board */
 	pinlist_t Via;

@@ -36,6 +36,8 @@ typedef struct element_st ElementType, *ElementTypePtr, **ElementTypeHandle;
 typedef struct net_st NetType, *NetTypePtr;
 typedef struct layer_st LayerType, *LayerTypePtr;
 typedef struct data_st  DataType, *DataTypePtr;
+typedef struct plug_io_s plug_io_t;
+
 
 typedef unsigned int pcb_cardinal_t;
 typedef unsigned char pcb_uint8_t;   /* Don't use in new code. */
