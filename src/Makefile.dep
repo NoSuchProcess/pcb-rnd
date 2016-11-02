@@ -353,7 +353,8 @@
  ../src_plugins/export_gcode/potracelib.h \
  ../src_plugins/export_gcode/curve.h \
  ../src_plugins/export_gcode/auxiliary.h \
- ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/trace.h
+ ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/trace.h \
+ compat_cc.h
 ../src_plugins/export_gerber/gerber.o: \
  ../src_plugins/export_gerber/gerber.c ../config.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -1891,7 +1892,7 @@
  ../src_plugins/io_pcb/file.h plug_io.h mymem.h misc.h mymem.h flag_str.h \
  ../src_plugins/io_pcb/parse_common.h ../src_plugins/io_pcb/parse_y.h \
  create.h plug_footprint.h vtlibrary.h ../src_plugins/io_pcb/attribs.h \
- compat_misc.h
+ compat_misc.h compat_cc.h
 ../src_plugins/io_pcb/parse_y.o: ../src_plugins/io_pcb/parse_y.c \
  ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -3588,7 +3589,7 @@ polygon1.o: polygon1.c rtree.h global.h ../config.h const.h macro.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
  vtroutestyle.h global_element.h list_element.h ht_element.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- ../src_3rd/liblihata/genht/hash.h heap.h pcb-printf.h \
+ ../src_3rd/liblihata/genht/hash.h heap.h compat_cc.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h
 polygon_act.o: polygon_act.c ../config.h conf_core.h conf.h global.h \
  const.h macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -3726,7 +3727,7 @@ route_style.o: route_style.c ../config.h global.h const.h macro.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h
-rtree.o: rtree.c ../config.h rtree.h global.h const.h macro.h \
+rtree.o: rtree.c ../config.h compat_cc.h rtree.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
  rats_patch.h list_common.h list_line.h \

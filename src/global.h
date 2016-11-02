@@ -78,41 +78,6 @@
 #	define bindtextdomain(D, Dir) (D)
 #endif /* ENABLE_NLS */
 
-/* ---------------------------------------------------------------------------
- * Macros to annotate branch-prediction information.
- * Taken from GLib 2.16.3 (LGPL 2).G_ / g_ prefixes have
- * been removed to avoid namespace clashes.
- */
-
-/* The LIKELY and UNLIKELY macros let the programmer give hints to
- * the compiler about the expected result of an expression. Some compilers
- * can use this information for optimizations.
- *
- * The PCB_BOOLEAN_EXPR macro is intended to trigger a gcc warning when
- * putting assignments inside the test.
- */
-#if defined(__GNUC__) && (__GNUC__ > 2) && defined(__OPTIMIZE__)
-#	define PCB_BOOLEAN_EXPR(expr)                   \
- __extension__ ({                             \
-   int _boolean_var_;                         \
-   if (expr)                                  \
-      _boolean_var_ = 1;                      \
-   else                                       \
-      _boolean_var_ = 0;                      \
-   _boolean_var_;                             \
-})
-#	define LIKELY(expr) (__builtin_expect (PCB_BOOLEAN_EXPR(expr), 1))
-#	define UNLIKELY(expr) (__builtin_expect (PCB_BOOLEAN_EXPR(expr), 0))
-#else
-#	define LIKELY(expr) (expr)
-#	define UNLIKELY(expr) (expr)
-#endif
-
-/* ---------------------------------------------------------------------------
- * Macros to annotate branch-prediction information.
- * Taken from GLib 2.42.1 (LGPL 2). PCB_ prefixes have
- * been added to avoid namespace clashes.
- */
 #define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
 
@@ -435,21 +400,6 @@ typedef struct {
 	BoxTypePtr Box;
 
 } BoxListType, *BoxListTypePtr;
-
-/* ---------------------------------------------------------------------------
- * add a macro for wrapping RCS ID's in so that ident will still work
- * but we won't get as many compiler warnings
- */
-
-#ifndef GCC_VERSION
-#	define GCC_VERSION (__GNUC__ * 1000 + __GNUC_MINOR__)
-#endif /* GCC_VERSION */
-
-#if GCC_VERSION > 2007
-#	define ATTRIBUTE_UNUSED __attribute__((unused))
-#else
-#	define ATTRIBUTE_UNUSED
-#endif
 
 /* ---------------------------------------------------------------------------
  * Macros called by various action routines to show usage or to report

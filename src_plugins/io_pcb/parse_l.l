@@ -70,6 +70,7 @@
 #include "plug_footprint.h"
 #include "attribs.h"
 #include "compat_misc.h"
+#include "compat_cc.h"
 
 #define YY_NO_INPUT
 

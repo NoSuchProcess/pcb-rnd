@@ -48,6 +48,7 @@
 
 #include "rtree.h"
 #include "heap.h"
+#include "compat_cc.h"
 #include "pcb-printf.h"
 
 #define ROUND(a) (long)((a) > 0 ? ((a) + 0.5) : ((a) - 0.5))

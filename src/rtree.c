@@ -39,6 +39,7 @@
 #include <assert.h>
 #include <setjmp.h>
 
+#include "compat_cc.h"
 #include "rtree.h"
 
 #define SLOW_ASSERTS

@@ -18,6 +18,7 @@
 #include "lists.h"
 #include "auxiliary.h"
 #include "trace.h"
+#include "compat_cc.h"
 /*#include "progress.h"*/
 
 #define INFTY 10000000					/* it suffices that this is longer than any
