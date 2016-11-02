@@ -31,6 +31,17 @@
 
 #include "global.h"
 
+/* ---------------------------------------------------------------------------
+ * some useful values of our widgets
+ */
+typedef struct {								/* holds information about output window */
+	hidGC bgGC,										/* background and foreground; */
+	  fgGC,												/* changed from some routines */
+	  pmGC;												/* depth 1 pixmap GC to store clip */
+} OutputType, *OutputTypePtr;
+
+extern OutputType Output;
+
 /* Temporarily inhibid drawing if this is non-zero. A function that calls a
    lot of other functions that would call Draw() a lot in turn may increase
    this value before the calls, then decrease it at the end and call Draw().

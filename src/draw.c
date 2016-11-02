@@ -54,6 +54,8 @@
 #define	LARGE_TEXT_SIZE			3
 #define	N_TEXT_SIZES			4
 
+OutputType Output;							/* some widgets ... used for drawing */
+
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */

@@ -61,16 +61,6 @@
 #define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
 
-/* ---------------------------------------------------------------------------
- * some useful values of our widgets
- */
-typedef struct {								/* holds information about output window */
-	hidGC bgGC,										/* background and foreground; */
-	  fgGC,												/* changed from some routines */
-	  pmGC;												/* depth 1 pixmap GC to store clip */
-} OutputType, *OutputTypePtr;
-
-
 /* ----------------------------------------------------------------------
  * layer group. A layer group identifies layers which are always switched
  * on/off together.

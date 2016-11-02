@@ -40,8 +40,6 @@ extern CrosshairType Crosshair;
 
 extern MarkType Marked;
 
-extern OutputType Output;
-
 extern PCBTypePtr PCB;
 
 #define max_group (PCB->Data->LayerN)
