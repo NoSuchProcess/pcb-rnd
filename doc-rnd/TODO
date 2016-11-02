@@ -35,6 +35,7 @@ CLEANUP #5
 	- gtk load dialog extension filter should reflect known formats
 	- when changing format in the save dialog, the file extension is not modified
 	- there should be an "auto" or "guess by extension" option in the save dialog format
+- make uninstall doesn't remove an scm
 - convert PCBChanged into an event (and provide a core action for compatibility)
 - rework the gpmi plugin to make it more standard in regard of the build system and to remove a few directories
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
