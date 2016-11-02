@@ -2555,6 +2555,21 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf_r
 
 		conf_update(NULL);
 	}
+	if (retval == 0) {
+		/* restore loader so the next save will use the same units */
+		const char *loader = AttributeGetFromList(&PCB->Attributes, "PCB::loader");
+		if (loader != NULL) {
+			pcb_find_io_t f;
+			int len;
+
+			len = pcb_find_io(&f, 1, PCB_IOT_PCB, 1, loader);
+/*			printf("PCB::loader: %s -> %d\n", loader, len);*/
+			if (len > 0) {
+/*				printf("   ::loader: '%s'\n", f.plug->description);*/
+				PCB->Data->loader = f.plug;
+			}
+		}
+	}
 	return retval;
 }
 
