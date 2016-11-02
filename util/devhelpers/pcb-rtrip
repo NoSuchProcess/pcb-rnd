@@ -33,7 +33,7 @@ LoadFrom(Layout, '$fn'.orig.pcb)
 SaveTo(LayoutAs, '$fn'.trgt.'$ext', '$fmt')
 LoadFrom(Layout, '$fn'.trgt.'$ext', '$fmt')
 SaveTo(LayoutAs, '$fn'.new.pcb, pcb)
-' | $bin --gui batch "$fn"
+' | $valg $bin --gui batch "$fn"
 
 	if test -f "$fn.orig.pcb" -a -f "$fn.new.pcb"
 	then
@@ -53,6 +53,7 @@ set_ext()
 	case "$fmt"
 	in
 		lihata) ext="lht";;
+		pcb) ext="pcb";;
 		*) ext="$fmt";;
 	esac
 }
@@ -71,6 +72,7 @@ help()
 	echo " -f fmt   format (e.g. lihata)"
 	echo " -r       remove target before overwrite"
 	echo " -b bin   run bin instead of \"pcb-rnd\""
+	echo " -V       wrap the binary in valgrind"
 	echo ""
 }
 
@@ -80,6 +82,7 @@ fmt="lihata"
 fn=""
 remtgt=""
 bin="pcb-rnd"
+valg=""
 
 while test $# -gt 0
 do
@@ -88,6 +91,7 @@ do
 		--help) help "$0"; exit 0;;
 		-f) fmt=$2; shift 1;;
 		-b) bin=$2; shift 1;;
+		-V) valg="valgrind -v";;
 		-r) remtgt=1;;
 		*)
 			if test -z "$fn"
