@@ -24,6 +24,7 @@
  *
  */
 
+#include <stdlib.h>
 #include <string.h>
 #include "flag.h"
 
@@ -72,4 +73,15 @@ int mem_any_set(unsigned char *ptr, int bytes)
 		if (*ptr++)
 			return 1;
 	return 0;
+}
+
+void EraseFlags(FlagType * f)
+{
+	unknown_flag_t *u, *next;
+	for (u = f->unknowns; u != NULL; u = next) {
+		free(u->str);
+		next = u->next;
+		free(u);
+	}
+	f->unknowns = NULL;
 }

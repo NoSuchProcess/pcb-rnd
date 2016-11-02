@@ -56,6 +56,7 @@ FlagType MakeFlags(unsigned int);
 FlagType OldFlags(unsigned int);
 FlagType AddFlags(FlagType, unsigned int);
 FlagType MaskFlags(FlagType, unsigned int);
+void EraseFlags(FlagType *f);
 #define		NoFlags() MakeFlags(0)
 
 /* ---------------------------------------------------------------------------

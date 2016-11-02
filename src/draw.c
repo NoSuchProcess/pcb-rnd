@@ -1417,17 +1417,6 @@ void DrawElementPinsAndPads(ElementTypePtr Element)
 	END_LOOP;
 }
 
-void EraseFlags(FlagType * f)
-{
-	unknown_flag_t *u, *next;
-	for (u = f->unknowns; u != NULL; u = next) {
-		free(u->str);
-		next = u->next;
-		free(u);
-	}
-	f->unknowns = NULL;
-}
-
 /* ---------------------------------------------------------------------------
  * erase a via
  */
