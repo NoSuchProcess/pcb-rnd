@@ -187,12 +187,12 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 		for (i = 0; text[i] != 0; i++) {
 			textLength++;
 		}
-		printf("gr_text element length: '%d'\n", textLength);
+		printf("\tgr_text element length: '%d'\n", textLength);
 		for(n = subtree,i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("at", n->str) == 0) {
 					SEEN_NO_DUP(tally, 0);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("text at x: '%s'\n", (n->children->str));
+						pcb_printf("\ttext at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -204,7 +204,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("text at y: '%s'\n", (n->children->next->str));
+						pcb_printf("\ttext at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 2);
 						val = strtod(n->children->next->str, &end);
 						if (*end != 0) {
@@ -213,7 +213,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 							Y = PCB_MM_TO_COORD(val);
 						}	
 						if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
-							pcb_printf("text rotation: '%s'\n", (n->children->next->next->str));
+							pcb_printf("\ttext rotation: '%s'\n", (n->children->next->next->str));
 							val = strtod(n->children->next->next->str, &end);
 							if (*end != 0) {
 								return -1;
@@ -226,7 +226,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 								} else if (val > 225.0 && val <= 315.0) {
 									direction = 3;
 								}
-								printf("kicad angle: %f,   Direction %d\n", val, direction);
+								printf("\tkicad angle: %f,   Direction %d\n", val, direction);
 							}
 							SEEN_NO_DUP(tally, 3);
 						} 
@@ -236,7 +236,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 				SEEN_NO_DUP(tally, 4);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("text layer: '%s'\n", (n->children->str));
+					pcb_printf("\ttext layer: '%s'\n", (n->children->str));
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
 					if (PCBLayer == -1) {
 						return -1;
@@ -249,14 +249,14 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("effects", n->str) == 0) {
 				SEEN_NO_DUP(tally, 5);
 				for(m = n->children; m != NULL; m = m->next) {
-					/*printf("stepping through effects def, looking at %s\n", m->str);*/ 
+					printf("\tstepping through text effects definitions\n"); 
 					if (m->str != NULL && strcmp("font", m->str) == 0) {
 						SEEN_NO_DUP(tally, 6);
 						for(l = m->children; l != NULL; l = l->next) {
 							if (m->str != NULL && strcmp("size", l->str) == 0) {
 								SEEN_NO_DUP(tally, 7);
 								if (l->children != NULL && l->children->str != NULL) {
-									pcb_printf("font sizeX: '%s'\n", (l->children->str));
+									pcb_printf("\tfont sizeX: '%s'\n", (l->children->str));
 									val = strtod(l->children->str, &end);
 									if (*end != 0) {
 										return -1;
@@ -267,14 +267,14 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 									return -1;
 								}
 								if (l->children->next != NULL && l->children->next->str != NULL) {
-									pcb_printf("font sizeY: '%s'\n", (l->children->next->str));
+									pcb_printf("\tfont sizeY: '%s'\n", (l->children->next->str));
 								} else {
 									return -1;
 								}
 							} else if (strcmp("thickness", l->str) == 0) {
 								SEEN_NO_DUP(tally, 8);
 								if (l->children != NULL && l->children->str != NULL) {
-									pcb_printf("font thickness: '%s'\n", (l->children->str));
+									pcb_printf("\tfont thickness: '%s'\n", (l->children->str));
 								} else {
 									return -1;
 								}
@@ -283,7 +283,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 					} else if (m->str != NULL && strcmp("justify", m->str) == 0) {
 						SEEN_NO_DUP(tally, 9);
 						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("text justification: '%s'\n", (m->children->str));
+							pcb_printf("\ttext justification: '%s'\n", (m->children->str));
 							if (strcmp("mirror", m->children->str) == 0) {
 								mirrored = 1;
 							}
@@ -360,15 +360,14 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 
 	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
 
-	printf("gr_line parsing about to commence:");
+	printf("gr_line parsing about to commence:\n");
 
 	if (subtree->str != NULL) {
-		printf("gr_line being parsed: '%s'\n", subtree->str);
 		for(n = subtree; n != NULL; n = n->next) {
 			if (n->str != NULL && strcmp("start", n->str) == 0) {
 					SEEN_NO_DUP(tally, 0);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_line start at x: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_line start at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -380,7 +379,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("gr_line start at y: '%s'\n", (n->children->next->str));
+						pcb_printf("\tgr_line start at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 2);	
 						val = strtod(n->children->next->str, &end);
 						if (*end != 0) {
@@ -394,7 +393,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("end", n->str) == 0) {
 					SEEN_NO_DUP(tally, 3);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_line end at x: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_line end at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 4);
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -406,7 +405,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("gr_line end at y: '%s'\n", (n->children->next->str));
+						pcb_printf("\tgr_line end at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 5);	
 						val = strtod(n->children->next->str, &end);
 						if (*end != 0) {
@@ -420,7 +419,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 					SEEN_NO_DUP(tally, 6);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_line layer: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_line layer: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 7);
 						PCBLayer = kicad_get_layeridx(st, n->children->str);
 						if (PCBLayer == -1) {
@@ -432,7 +431,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("width", n->str) == 0) {
 					SEEN_NO_DUP(tally, 8);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_line width: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_line width: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 9);
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -446,7 +445,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("angle", n->str) == 0) { /* unlikely to be used or seen */
 					SEEN_NO_DUP(tally, 10);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_line angle: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_line angle: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 11);
 					} else {
 						return -1;
@@ -454,7 +453,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("net", n->str) == 0) { /* unlikely to be used or seen */
 					SEEN_NO_DUP(tally, 12);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_line net: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_line net: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 13);
 					} else {
 						return -1;
@@ -469,7 +468,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	}
 	if (tally >= 0) { /* need start, end, layer, thickness at a minimum */
 		CreateNewLineOnLayer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
-		pcb_printf("***new gr_line on layer created [ %mm %mm %mm %mm %mm %mm flags]", X1, Y1, X2, Y2, Thickness, Clearance);
+		pcb_printf("\tnew gr_line on layer created\n");
 		return 0;
 	}
 	return -1;
@@ -492,12 +491,12 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
 
 	if (subtree->str != NULL) {
-		printf("gr_arc being parsed: '%s'\n", subtree->str);		
+		printf("gr_arc being parsed:\n");		
 		for(n = subtree; n != NULL; n = n->next) {
 			if (n->str != NULL && strcmp("start", n->str) == 0) {
 					SEEN_NO_DUP(tally, 0);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_arc centre at x: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_arc centre at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -509,7 +508,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("gr_arc centre at y: '%s'\n", (n->children->next->str));
+						pcb_printf("\tgr_arc centre at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 2);	
 						val = strtod(n->children->next->str, &end);
 						if (*end != 0) {
@@ -523,7 +522,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("center", n->str) == 0) { /* this lets us parse a circle too */
 					SEEN_NO_DUP(tally, 0);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_arc centre at x: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_arc centre at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -535,7 +534,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("gr_arc centre at y: '%s'\n", (n->children->next->str));
+						pcb_printf("\tgr_arc centre at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 2);	
 						val = strtod(n->children->next->str, &end);
 						if (*end != 0) {
@@ -549,7 +548,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("end", n->str) == 0) {
 					SEEN_NO_DUP(tally, 3);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_arc end at x: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_arc end at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 4);
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -561,7 +560,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("gr_arc end at y: '%s'\n", (n->children->next->str));
+						pcb_printf("\tgr_arc end at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 5);	
 						val = strtod(n->children->next->str, &end);
 						if (*end != 0) {
@@ -575,7 +574,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 					SEEN_NO_DUP(tally, 6);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_arc layer: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_arc layer: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 7);
 						PCBLayer = kicad_get_layeridx(st, n->children->str);
 						if (PCBLayer == -1) {
@@ -587,7 +586,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("width", n->str) == 0) {
 					SEEN_NO_DUP(tally, 8);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_arc width: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_arc width: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 9);
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -601,7 +600,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("angle", n->str) == 0) {
 					SEEN_NO_DUP(tally, 10);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_arc angle CW rotation: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_arc angle CW rotation: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 11);
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -615,7 +614,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("net", n->str) == 0) { /* unlikely to be used or seen */
 					SEEN_NO_DUP(tally, 12);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("gr_arc net: '%s'\n", (n->children->str));
+						pcb_printf("\tgr_arc net: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 13);
 					} else {
 						return -1;
@@ -658,12 +657,12 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	name = "";
 
 	if (subtree->str != NULL) {
-		printf("via being parsed: '%s'\n", subtree->str);		
+		printf("via being parsed:\n");		
 		for(n = subtree; n != NULL; n = n->next) {
 			if (n->str != NULL && strcmp("at", n->str) == 0) {
 					SEEN_NO_DUP(tally, 0);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("via at x: '%s'\n", (n->children->str));
+						pcb_printf("\tvia at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -675,7 +674,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("via at y: '%s'\n", (n->children->next->str));
+						pcb_printf("\tvia at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 2);	
 						val = strtod(n->children->next->str, &end);
 						if (*end != 0) {
@@ -689,7 +688,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("size", n->str) == 0) {
 					SEEN_NO_DUP(tally, 3);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("via size: '%s'\n", (n->children->str));
+						pcb_printf("\tvia size: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 4);
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -704,7 +703,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 					SEEN_NO_DUP(tally, 5);
 					for(m = n->children; m != NULL; m = m->next) {
 						if (m->str != NULL) {
-							pcb_printf("via layer: '%s'\n", (m->str));
+							pcb_printf("\tvia layer: '%s'\n", (m->str));
 /*							PCBLayer = kicad_get_layeridx(st, m->str);
  *							if (PCBLayer == -1) {
  *								return -1;
@@ -717,7 +716,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("net", n->str) == 0) {
 					SEEN_NO_DUP(tally, 6);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("segment net: '%s'\n", (n->children->str));
+						pcb_printf("\tvia segment net: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 7);
 					} else {
 						return -1;
@@ -753,12 +752,12 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
 	if (subtree->str != NULL) {
-		printf("segment being parsed: '%s'\n", subtree->str);		
+		printf("segment being parsed:\n");		
 		for(n = subtree; n != NULL; n = n->next) {
 			if (n->str != NULL && strcmp("start", n->str) == 0) {
 					SEEN_NO_DUP(tally, 0);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("segment start at x: '%s'\n", (n->children->str));
+						pcb_printf("\tsegment start at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -770,7 +769,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("segment start at y: '%s'\n", (n->children->next->str));
+						pcb_printf("\tsegment start at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 2);	
 						val = strtod(n->children->next->str, &end);
 						if (*end != 0) {
@@ -784,7 +783,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("end", n->str) == 0) {
 					SEEN_NO_DUP(tally, 3);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("segment end at x: '%s'\n", (n->children->str));
+						pcb_printf("\tsegment end at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 4);
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -796,7 +795,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("segment end at y: '%s'\n", (n->children->next->str));
+						pcb_printf("\tsegment end at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 5);	
 						val = strtod(n->children->next->str, &end);
 						if (*end != 0) {
@@ -810,7 +809,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 					SEEN_NO_DUP(tally, 6);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("segment layer: '%s'\n", (n->children->str));
+						pcb_printf("\tsegment layer: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 7);
 						PCBLayer = kicad_get_layeridx(st, n->children->str);
 						if (PCBLayer == -1) {
@@ -822,7 +821,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("width", n->str) == 0) {
 					SEEN_NO_DUP(tally, 8);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("segment width: '%s'\n", (n->children->str));
+						pcb_printf("\tsegment width: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 9);
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -836,7 +835,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("net", n->str) == 0) {
 					SEEN_NO_DUP(tally, 10);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("segment net: '%s'\n", (n->children->str));
+						pcb_printf("\tsegment net: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 11);
 					} else {
 						return -1;
@@ -844,7 +843,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) { /* not likely to be used */
 					SEEN_NO_DUP(tally, 12);
 					if (n->children != NULL && n->children->str != NULL) {
-						pcb_printf("segment timestamp: '%s'\n", (n->children->str));
+						pcb_printf("\tsegment timestamp: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 13);
 					} else {
 						return -1;
@@ -859,7 +858,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 	}
 	if (tally >= 0) { /* need start, end, layer, thickness at a minimum */
 		CreateNewLineOnLayer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
-		pcb_printf("***new line on layer created [ %mm %mm %mm %mm %mm %mm flags]", X1, Y1, X2, Y2, Thickness, Clearance);
+		pcb_printf("\tnew segment on layer created\n");
 		return 0;
 	}
 	return -1;
@@ -951,9 +950,9 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 				if ((n->str != NULL) && (n->children->str != NULL) && (n->children->next != NULL) && (n->children->next->str != NULL) ) {
 					int lnum = atoi(n->str);
 					const char *lname = n->children->str, *ltype = n->children->next->str;
-					pcb_printf("layer #%d LAYERNUM found:\t%s\n", i, n->str);
-					pcb_printf("layer #%d layer label found:\t%s\n", i, lname);
-					pcb_printf("layer #%d layer description/type found:\t%s\n", i, ltype);
+					pcb_printf("\tlayer #%d LAYERNUM found:\t%s\n", i, n->str);
+					pcb_printf("\tlayer #%d layer label found:\t%s\n", i, lname);
+					pcb_printf("\tlayer #%d layer description/type found:\t%s\n", i, ltype);
 					if (kicad_create_layer(st, lnum, lname, ltype) < 0) {
 						Message(PCB_MSG_ERROR, "Unrecognized layer: %d, %s, %s\n", lnum, lname, ltype);
 						return -1;
@@ -995,7 +994,7 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 			return -1;
 		}
 		if (subtree->next != NULL && subtree->next->str != NULL) {
-			pcb_printf("and the net label is: '%s'\n", (subtree->next->str));
+			pcb_printf("\tcorresponding net label: '%s'\n", (subtree->next->str));
 		} else {
 			pcb_printf("missing net label in net descriptors");
 			return -1;
@@ -1044,7 +1043,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			if (n->str != NULL && strcmp("layer", n->str) == 0) { /* need this to sort out ONSOLDER flags etc... */
 				SEEN_NO_DUP(tally, 0);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("module layer: '%s'\n", (n->children->str));
+					pcb_printf("\tlayer: '%s'\n", (n->children->str));
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
 					if (PCBLayer == -1) {
 						return -1;
@@ -1058,21 +1057,21 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("tedit", n->str) == 0) {
 				SEEN_NO_DUP(tally, 1);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("module tedit: '%s'\n", (n->children->str));
+					pcb_printf("\ttedit: '%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
 				SEEN_NO_DUP(tally, 2);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("module tstamp: '%s'\n", (n->children->str));
+					pcb_printf("\ttstamp: '%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("at", n->str) == 0) {
 				SEEN_NO_DUP(tally, 3);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("module at x: '%s'\n", (n->children->str));
+					pcb_printf("\tat x: '%s'\n", (n->children->str));
 					SEEN_NO_DUP(tally, 4); /* same as ^= 1 was */
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
@@ -1084,7 +1083,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					return -1;
 				}
 				if (n->children->next != NULL && n->children->next->str != NULL) {
-					pcb_printf("module at y: '%s'\n", (n->children->next->str));
+					pcb_printf("\tat y: '%s'\n", (n->children->next->str));
 					SEEN_NO_DUP(tally, 5);	
 						val = strtod(n->children->next->str, &end);
 						if (*end != 0) {
@@ -1110,18 +1109,18 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			text = n->children->next->str;
 			foundRefdes = 0;
 			if (strcmp("reference", textLabel) == 0) {
-				printf("fp_text reference found: '%s'\n", textLabel);
+				printf("\tfp_text reference found: '%s'\n", textLabel);
 				moduleRefdes = text;
 				foundRefdes = 1;
 				for (i = 0; text[i] != 0; i++) {
 					textLength++;
 				}
-				printf("moduleRefdes now: '%s'\n", moduleRefdes);
+				printf("\tmoduleRefdes now: '%s'\n", moduleRefdes);
 			} else if (strcmp("value", textLabel) == 0) {
-				printf("fp_text value found: '%s'\n", textLabel);
+				printf("\tfp_text value found: '%s'\n", textLabel);
 				moduleValue = text;
 				foundRefdes = 0;
-				printf("moduleValue now: '%s'\n", moduleValue);
+				printf("\tmoduleValue now: '%s'\n", moduleValue);
 			} else {
 				foundRefdes = 0;
 			}
@@ -1129,12 +1128,12 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			text = textLabel; /* just a single string, no reference or value */ 
 		}
 
-		printf("fp_text element length: '%d'\n", textLength);
+		printf("\tfp_text element length: '%d'\n", textLength);
 		for(l = n->children->next->next, i = 0; l != NULL; l = l->next, i++) { /*fixed this */
 			if (l->str != NULL && strcmp("at", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 0);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("text at x: '%s'\n", (l->children->str));
+						pcb_printf("\ttext at x: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 1);
 						val = strtod(l->children->str, &end);
 						if (*end != 0) {
@@ -1143,7 +1142,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							X = PCB_MM_TO_COORD(val);
 							if (foundRefdes) {
 								refdesX = X;
-								pcb_printf("RefdesX = %mm", refdesX);
+								pcb_printf("\tRefdesX = %mm", refdesX);
 
 							}
 						}
@@ -1151,7 +1150,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("text at y: '%s'\n", (l->children->next->str));
+						pcb_printf("\ttext at y: '%s'\n", (l->children->next->str));
 						SEEN_NO_DUP(featureTally, 2);
 						val = strtod(l->children->next->str, &end);
 						if (*end != 0) {
@@ -1160,11 +1159,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							Y = PCB_MM_TO_COORD(val);
 							if (foundRefdes) {
 								refdesY = Y;
-								pcb_printf("RefdesX = %mm", refdesY);
+								pcb_printf("\tRefdesX = %mm", refdesY);
 							}
 						}	
 						if (l->children->next->next != NULL && l->children->next->next->str != NULL) {
-							pcb_printf("text rotation: '%s'\n", (l->children->next->next->str));
+							pcb_printf("\ttext rotation: '%s'\n", (l->children->next->next->str));
 							val = strtod(l->children->next->next->str, &end);
 							if (*end != 0) {
 								return -1;
@@ -1177,7 +1176,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								} else if (val > 225.0 && val <= 315.0) {
 									direction = 3;
 								}
-								printf("kicad angle: %f,   Direction %d\n", val, direction);
+								printf("\tkicad angle: %f,   Direction %d\n", val, direction);
 							}
 							SEEN_NO_DUP(featureTally, 3);
 						} 
@@ -1187,7 +1186,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("layer", l->str) == 0) {
 				SEEN_NO_DUP(featureTally, 4);
 				if (l->children != NULL && l->children->str != NULL) {
-					pcb_printf("text layer: '%s'\n", (l->children->str));
+					pcb_printf("\ttext layer: '%s'\n", (l->children->str));
 					PCBLayer = kicad_get_layeridx(st, l->children->str);
 					if (PCBLayer == -1) {
 						return -1;
@@ -1200,14 +1199,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("effects", l->str) == 0) {
 				SEEN_NO_DUP(featureTally, 5);
 				for(m = l->children; m != NULL; m = m->next) {
-					/*printf("stepping through effects def, looking at %s\n", m->str);*/ 
+					/*printf("\tstepping through effects def, looking at %s\n", m->str);*/ 
 					if (m->str != NULL && strcmp("font", m->str) == 0) {
 						SEEN_NO_DUP(featureTally, 6);
 						for(p = m->children; p != NULL; p = p->next) {
 							if (m->str != NULL && strcmp("size", p->str) == 0) {
 								SEEN_NO_DUP(featureTally, 7);
 								if (p->children != NULL && p->children->str != NULL) {
-									pcb_printf("font sizeX: '%s'\n", (p->children->str));
+									pcb_printf("\tfont sizeX: '%s'\n", (p->children->str));
 									val = strtod(p->children->str, &end);
 									if (*end != 0) {
 										return -1;
@@ -1222,14 +1221,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 									return -1;
 								}
 								if (p->children->next != NULL && p->children->next->str != NULL) {
-									pcb_printf("font sizeY: '%s'\n", (p->children->next->str));
+									pcb_printf("\tfont sizeY: '%s'\n", (p->children->next->str));
 								} else {
 									return -1;
 								}
 							} else if (strcmp("thickness", p->str) == 0) {
 								SEEN_NO_DUP(featureTally, 8);
 								if (p->children != NULL && p->children->str != NULL) {
-									pcb_printf("font thickness: '%s'\n", (p->children->str));
+									pcb_printf("\tfont thickness: '%s'\n", (p->children->str));
 								} else {
 									return -1;
 								}
@@ -1238,7 +1237,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					} else if (m->str != NULL && strcmp("justify", m->str) == 0) {
 						SEEN_NO_DUP(featureTally, 9);
 						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("text justification: '%s'\n", (m->children->str));
+							pcb_printf("\ttext justification: '%s'\n", (m->children->str));
 							if (strcmp("mirror", m->children->str) == 0) {
 								mirrored = 1;
 							}
@@ -1247,7 +1246,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						}
 					} else {
 						if (m->str != NULL) {
-							printf("Unknown effects argument %s:", m->str);
+							printf("Unknown text effects argument %s:", m->str);
 						}
 						return -1;	
 					}
@@ -1310,8 +1309,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								 refdesScaling, TextFlags,  pcb_false); /*FlagType TextFlags, pcb_bool uniqueName) */
 			MoveObject(PCB_TYPE_ELEMENT_NAME, newModule,  &newModule->Name[NAME_INDEX()],  &newModule->Name[NAME_INDEX()], X, Y);
 		}
-
-/*		CreateNewText( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X , Y, direction, scaling, text, Flags); */
 	}
 
 
@@ -1320,38 +1317,38 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("descr", n->str) == 0) {
 				SEEN_NO_DUP(tally, 6);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("module descr: '%s'\n", (n->children->str));
+					pcb_printf("\tmodule descr: '%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("tags", n->str) == 0) {
 				SEEN_NO_DUP(tally, 7);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("module tags: '%s'\n", (n->children->str)); /* maye be more than one? */
+					pcb_printf("\tmodule tags: '%s'\n", (n->children->str)); /* maye be more than one? */
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("path", n->str) == 0) {
 				SEEN_NO_DUP(tally, 8);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("module path: '%s'\n", (n->children->str));
+					pcb_printf("\tmodule path: '%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("model", n->str) == 0) {
 				SEEN_NO_DUP(tally, 9);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("module model provided: '%s'\n", (n->children->str));
+					pcb_printf("\tmodule model provided: '%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			/* pads next  - have thru_hole, circle, rect, roundrect, to think about*/ 
 			} else if (n->str != NULL && strcmp("pad", n->str) == 0) {
 				if (n->children != 0 && n->children->str != NULL) {
-					printf("pad name : %s\n", n->children->str);
+					printf("pad name found: %s\n", n->children->str);
 					pinName = n->children->str;
 					if (n->children->next != NULL && n->children->next->str != NULL) {
-						pcb_printf("pad type: '%s'\n", (n->children->next->str));
+						pcb_printf("\tpad type: '%s'\n", (n->children->next->str));
 						if (strcmp("thru_hole", n->children->next->str) == 0) {
 							SMD = 0;
 							throughHole = 1;
@@ -1360,7 +1357,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							throughHole = 0;
 						}
 						if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
-							pcb_printf("pad shape: '%s'\n", (n->children->next->next->str));
+							pcb_printf("\tpad shape: '%s'\n", (n->children->next->next->str));
 							if (strcmp("circle", n->children->next->next->str) == 0) {
 								square = 0;
 							} else {
@@ -1380,14 +1377,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 				for (m = n->children->next->next->next; m != NULL; m = m->next) {
 					if (m != NULL) {
-						printf("stepping through module pad defs, looking at: %s\n", m->str);
+						printf("\tstepping through module pad defs, looking at: %s\n", m->str);
 					} else {
 						printf("error in pad def\n");
 					}
 					if (m->str != NULL && strcmp("at", m->str) == 0) {
 						/*SEEN_NO_DUP(padTally, 1); */
 						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("pad X position:\t'%s'\n", (m->children->str));
+							pcb_printf("\tpad X position:\t'%s'\n", (m->children->str));
 							val = strtod(m->children->str, &end);
 							if (*end != 0) {
 								return -1;
@@ -1395,7 +1392,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								X = PCB_MM_TO_COORD(val);
 							}
 							if (m->children->next != NULL && m->children->next->str != NULL) {
-								pcb_printf("pad Y position:\t'%s'\n", (m->children->next->str));
+								pcb_printf("\tpad Y position:\t'%s'\n", (m->children->next->str));
 								val = strtod(m->children->next->str, &end);
 								if (*end != 0) {
 									return -1;
@@ -1408,30 +1405,34 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						} else {
 							return -1;
 						}
-					} else if (m->str != NULL && strcmp("layers", m->str) == 0 && SMD) { /* skip testing for pins */
-						/*SEEN_NO_DUP(padTally, 2);*/
-						kicadLayer = 15;
-						for(l = m->children; l != NULL; l = l->next) {
-							if (l->str != NULL) {
-								PCBLayer = kicad_get_layeridx(st, l->str);
-								if (PCBLayer == -1) {
-									printf("Unknown layer definition: %s", l->str);
+					} else if (m->str != NULL && strcmp("layers", m->str) == 0) {
+						if (SMD) { /* skip testing for pins */
+							/*SEEN_NO_DUP(padTally, 2);*/
+							kicadLayer = 15;
+							for(l = m->children; l != NULL; l = l->next) {
+								if (l->str != NULL) {
+									PCBLayer = kicad_get_layeridx(st, l->str);
+									if (PCBLayer == -1) {
+										printf("Unknown layer definition: %s", l->str);
+										return -1;
+									} else if (PCBLayer < -1) {
+										printf("\tUnimplemented layer definition: %s", l->str);
+									} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
+										Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+										kicadLayer = 0;
+									}
+									pcb_printf("\tpad layer: '%s',  PCB layer number %d\n", (l->str), kicad_get_layeridx(st, l->str));
+								} else {
 									return -1;
-								} else if (PCBLayer < -1) {
-									printf("Unimplemented layer definition: %s", l->str);
-								} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
-									Flags = MakeFlags(PCB_FLAG_ONSOLDER);
-									kicadLayer = 0;
 								}
-								pcb_printf("pad layer: '%s',  PCB layer number %d\n", (l->str), kicad_get_layeridx(st, l->str));
-							} else {
-								return -1;
 							}
+						} else {	
+							printf("\tIgnoring layer definitions for through hole pin\n");
 						}
 					} else if (m->str != NULL && strcmp("drill", m->str) == 0) {
 						/*SEEN_NO_DUP(padTally, 3);*/
 						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("drill size: '%s'\n", (m->children->str));
+							pcb_printf("\tdrill size: '%s'\n", (m->children->str));
 							val = strtod(m->children->str, &end);
 							if (*end != 0) {
 								return -1;
@@ -1445,9 +1446,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					} else if (m->str != NULL && strcmp("net", m->str) == 0) { 
 						/*SEEN_NO_DUP(padTally, 4);*/
 						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("pad's net number:\t'%s'\n", (m->children->str));
+							pcb_printf("\tpad's net number:\t'%s'\n", (m->children->str));
 							if (m->children->next != NULL && m->children->next->str != NULL) {
-								pcb_printf("pad's net name:\t'%s'\n", (m->children->next->str));
+								pcb_printf("\tpad's net name:\t'%s'\n", (m->children->next->str));
 							} else {
 								return -1;
 							}
@@ -1457,7 +1458,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					} else if (m->str != NULL && strcmp("size", m->str) == 0) {
 						/*SEEN_NO_DUP(padTally, 5);*/
 						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("pad X size:\t'%s'\n", (m->children->str));
+							pcb_printf("\tpad X size:\t'%s'\n", (m->children->str));
 							val = strtod(m->children->str, &end);
 							if (*end != 0) {
 								return -1;
@@ -1465,7 +1466,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								padXsize = PCB_MM_TO_COORD(val);
 							}
 							if (m->children->next != NULL && m->children->next->str != NULL) {
-								pcb_printf("pad Y size:\t'%s'\n", (m->children->next->str));
+								pcb_printf("\tpad Y size:\t'%s'\n", (m->children->next->str));
 								val = strtod(m->children->next->str, &end);
 								if (*end != 0) {
 									return -1;
@@ -1483,15 +1484,15 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							printf("Unknown pad argument %s:", m->str);
 						}
 					} 
-					printf("Finished stepping through pad args\n");
+					printf("\tFinished stepping through pad args\n");
 				}
-				printf("finished pad parse\n");
+				printf("\tfinished pad parse\n");
 				if (throughHole == 1) {
-					printf("creating new pin %s in element\n", pinName);				
+					printf("\tcreating new pin %s in element\n", pinName);				
 					CreateNewPin(newModule, X + moduleX, Y + moduleY, padXsize, Clearance,
 								Clearance, drill, pinName, pinName, Flags); /* using clearance value for arg 5 = mask too */
 				} else {
-					printf("creating new pad %s in element\n", pinName);				
+					printf("\tcreating new pad %s in element\n", pinName);				
 					if (padXsize >= padYsize) { /* square pad or rectangular pad, wider than tall */
 						Y1 = Y2 = Y;
 						X1 = X - (padXsize - padYsize)/2;
@@ -1515,12 +1516,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					CreateNewPad(newModule, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, 
 								Clearance, pinName, pinName, Flags); /* using clearance value for arg 7 = mask too */
 				}
-/*
-				PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance,
-								Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags)
-				PadTypePtr CreateNewPad(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance,
-								Coord Mask, char *Name, char *Number, FlagType Flags)
-*/
 
 			} else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
 					pcb_printf("fp_line found\n");
@@ -1529,13 +1524,12 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 /* ********************************************************** */
 
 	if (n->children->str != NULL) {
-		printf("fp_line being parsed: '%s'\n", n->children->str);
 		for(l = n->children; l != NULL; l = l->next) {
-			printf("now looking at fp_line text: '%s'\n", l->str);
+			printf("\tnow looking at fp_line text: '%s'\n", l->str);
 			if (l->str != NULL && strcmp("start", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 0);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_line start at x: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_line start at x: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 1); 
 						val = strtod(l->children->str, &end);
 						if (*end != 0) {
@@ -1547,7 +1541,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("fp_line start at y: '%s'\n", (l->children->next->str));
+						pcb_printf("\tfp_line start at y: '%s'\n", (l->children->next->str));
 						SEEN_NO_DUP(featureTally, 2);	
 						val = strtod(l->children->next->str, &end);
 						if (*end != 0) {
@@ -1561,7 +1555,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("end", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 3);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_line end at x: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_line end at x: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 4);
 						val = strtod(l->children->str, &end);
 						if (*end != 0) {
@@ -1573,7 +1567,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("fp_line end at y: '%s'\n", (l->children->next->str));
+						pcb_printf("\tfp_line end at y: '%s'\n", (l->children->next->str));
 						SEEN_NO_DUP(featureTally, 5);	
 						val = strtod(l->children->next->str, &end);
 						if (*end != 0) {
@@ -1587,7 +1581,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("layer", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 6);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_line layer: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_line layer: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 7);
 						PCBLayer = kicad_get_layeridx(st, l->children->str);
 						if (PCBLayer == -1) {
@@ -1599,7 +1593,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("width", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 8);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_line width: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_line width: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 9);
 						val = strtod(l->children->str, &end);
 						if (*end != 0) {
@@ -1613,7 +1607,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("angle", l->str) == 0) { /* unlikely to be used or seen */
 					SEEN_NO_DUP(featureTally, 10);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_line angle: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_line angle: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 11);
 					} else {
 						return -1;
@@ -1621,7 +1615,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("net", l->str) == 0) { /* unlikely to be used or seen */
 					SEEN_NO_DUP(featureTally, 12);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_line net: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_line net: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 13);
 					} else {
 						return -1;
@@ -1637,10 +1631,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	if (featureTally >= 0 && newModule != NULL) { /* need start, end, layer, thickness at a minimum */
 
 		CreateNewLineInElement(newModule, X1, Y1, X2, Y2, Thickness);
-/*		CreateNewLineOnLayer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags); */
-
-		pcb_printf("***new fp_line on layer created [ %mm %mm %mm %mm %mm %mm flags]\n", X1, Y1, X2, Y2, Thickness, Clearance);
-/*		return 0;*/
+		pcb_printf("\tnew fp_line on layer created\n");
 	}
 
 /* ********************************************************** */
@@ -1657,7 +1648,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			if (l->str != NULL && strcmp("start", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 0);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_arc centre at x: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_arc centre at x: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 1);
 						val = strtod(l->children->str, &end);
 						if (*end != 0) {
@@ -1669,7 +1660,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("fp_arc centre at y: '%s'\n", (l->children->next->str));
+						pcb_printf("\tfp_arc centre at y: '%s'\n", (l->children->next->str));
 						SEEN_NO_DUP(featureTally, 2);	
 						val = strtod(l->children->next->str, &end);
 						if (*end != 0) {
@@ -1683,7 +1674,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("center", l->str) == 0) { /* this lets us parse a circle too */
 					SEEN_NO_DUP(featureTally, 0);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_arc centre at x: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_arc centre at x: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 1);
 						val = strtod(l->children->str, &end);
 						if (*end != 0) {
@@ -1695,7 +1686,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("fp_arc centre at y: '%s'\n", (l->children->next->str));
+						pcb_printf("\tfp_arc centre at y: '%s'\n", (l->children->next->str));
 						SEEN_NO_DUP(featureTally, 2);
 						val = strtod(l->children->next->str, &end);
 						if (*end != 0) {
@@ -1709,7 +1700,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("end", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 3);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_arc end at x: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_arc end at x: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 4);
 						val = strtod(l->children->str, &end);
 						if (*end != 0) {
@@ -1721,7 +1712,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("fp_arc end at y: '%s'\n", (l->children->next->str));
+						pcb_printf("\tfp_arc end at y: '%s'\n", (l->children->next->str));
 						SEEN_NO_DUP(featureTally, 5);
 						val = strtod(l->children->next->str, &end);
 						if (*end != 0) {
@@ -1735,7 +1726,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("layer", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 6);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_arc layer: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_arc layer: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 7);
 						PCBLayer = kicad_get_layeridx(st, l->children->str);
 						if (PCBLayer == -1) {
@@ -1747,7 +1738,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("width", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 8);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_arc width: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_arc width: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 9);
 						val = strtod(l->children->str, &end);
 						if (*end != 0) {
@@ -1761,7 +1752,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("angle", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 10);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_arc angle CW rotation: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_arc angle CW rotation: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 11);
 						val = strtod(l->children->str, &end);
 						if (*end != 0) {
@@ -1775,7 +1766,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("net", l->str) == 0) { /* unlikely to be used or seen */
 					SEEN_NO_DUP(featureTally, 12);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("fp_arc net: '%s'\n", (l->children->str));
+						pcb_printf("\tfp_arc net: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 13);
 					} else {
 						return -1;
@@ -1809,11 +1800,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 
 		if (featureTally >= 0 && newModule != NULL) { /* need start, end, layer, thickness at a minimum */
 			CreateNewArcInElement(newModule, moduleX + centreX, moduleY + centreY, width, height, endAngle, delta, Thickness);
-			/* ArcTypePtr CreateNewArcInElement(ElementTypePtr Element,
-				Coord X, Coord Y, Coord Width, Coord Height, Angle angle, Angle delta, Coord Thickness)  */
 		}
-
-		/*CreateNewArcOnLayer( &st->PCB->Data->Layer[PCBLayer], moduleX + centreX, moduleY + centreY, width, height, endAngle, delta, Thickness, Clearance, Flags);*/
 	}
 
 /* ********************************************************** */
@@ -1857,34 +1844,34 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			if (n->str != NULL && strcmp("net", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("zone net number:\t'%s'\n", (n->children->str));
+					pcb_printf("\tzone net number:\t'%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("net_name", n->str) == 0) {
 				SEEN_NO_DUP(tally, 1);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("zone net_name:\t'%s'\n", (n->children->str));
+					pcb_printf("\tzone net_name:\t'%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
 				SEEN_NO_DUP(tally, 2);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("zone tstamp:\t'%s'\n", (n->children->str));
+					pcb_printf("\tzone tstamp:\t'%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("hatch", n->str) == 0) {
 				SEEN_NO_DUP(tally, 3);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("zone hatch_edge:\t'%s'\n", (n->children->str));
+					pcb_printf("\tzone hatch_edge:\t'%s'\n", (n->children->str));
 					SEEN_NO_DUP(tally, 4); /* same as ^= 1 was */
 				} else {
 					return -1;
 				}
 				if (n->children->next != NULL && n->children->next->str != NULL) {
-					pcb_printf("zone hatching size:\t'%s'\n", (n->children->next->str));
+					pcb_printf("\tzone hatching size:\t'%s'\n", (n->children->next->str));
 					SEEN_NO_DUP(tally, 5);	
 				} else {
 					return -1;
@@ -1892,15 +1879,15 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("connect_pads", n->str) == 0) {
 				SEEN_NO_DUP(tally, 6);
 				if (n->children != NULL && n->children->str != NULL && (strcmp("clearance", n->children->str) == 0) && (n->children->children->str != NULL)) {
-					pcb_printf("zone clearance:\t'%s'\n", (n->children->children->str));  /* this is if yes/no flag for connected pads is absent */
+					pcb_printf("\tzone clearance:\t'%s'\n", (n->children->children->str));  /* this is if yes/no flag for connected pads is absent */
 					SEEN_NO_DUP(tally, 7); /* same as ^= 1 was */
 				} else if (n->children != NULL && n->children->str != NULL && n->children->next->str != NULL) {
-					pcb_printf("zone connect_pads:\t'%s'\n", (n->children->str));  /* this is if the optional(!) yes or no flag for connected pads is present */
+					pcb_printf("\tzone connect_pads:\t'%s'\n", (n->children->str));  /* this is if the optional(!) yes or no flag for connected pads is present */
 					SEEN_NO_DUP(tally, 7); /* same as ^= 1 was */
 					if (n->children->next != NULL && n->children->next->str != NULL && n->children->next->children != NULL && n->children->next->children->str != NULL) {
 						if (strcmp("clearance", n->children->next->str) == 0) {
 							SEEN_NO_DUP(tally, 8);
-							pcb_printf("zone connect_pads clearance: '%s'\n", (n->children->next->children->str));
+							pcb_printf("\tzone connect_pads clearance: '%s'\n", (n->children->next->children->str));
 						} else {
 							printf("Unrecognised zone connect_pads option %s\n", n->children->next->str);
 						}
@@ -1909,7 +1896,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 				SEEN_NO_DUP(tally, 9);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("zone layer:\t'%s'\n", (n->children->str));
+					pcb_printf("\tzone layer:\t'%s'\n", (n->children->str));
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
 					if (PCBLayer == -1) {
 						return -1;
@@ -1926,7 +1913,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 						for (m = n->children->children, j =0; m != NULL; m = m->next, j++) {
 							if (m->str != NULL && strcmp("xy", m->str) == 0) {
 								if (m->children != NULL && m->children->str != NULL) {
-									pcb_printf("vertex X[%d]:\t'%s'\n", j, (m->children->str));
+									pcb_printf("\tvertex X[%d]:\t'%s'\n", j, (m->children->str));
 									val = strtod(m->children->str, &end);
 									if (*end != 0) {
 										return -1;
@@ -1934,7 +1921,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 										X = PCB_MM_TO_COORD(val);
 									}
 									if (m->children->next != NULL && m->children->next->str != NULL) {
-										pcb_printf("vertex Y[%d]:\t'%s'\n", j, (m->children->next->str));
+										pcb_printf("\tvertex Y[%d]:\t'%s'\n", j, (m->children->next->str));
 										val = strtod(m->children->next->str, &end);
 										if (*end != 0) {
 											return -1;
@@ -1962,23 +1949,23 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 				}
 			} else if (n->str != NULL && strcmp("fill", n->str) == 0) {
 				SEEN_NO_DUP(tally, 10);
-				printf("Reading fill settings:\n");
+				printf("\tReading fill settings:\n");
 				for (m = n->children; m != NULL; m = m->next) {
 					if (m->str != NULL && strcmp("arc_segments", m->str) == 0) {
 						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("zone arc_segments:\t'%s'\n", (m->children->str));
+							pcb_printf("\tzone arc_segments:\t'%s'\n", (m->children->str));
 						} else {
 							return -1;
 						}
 					} else if (m->str != NULL && strcmp("thermal_gap", m->str) == 0) {
 						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("zone thermal_gap:\t'%s'\n", (m->children->str));
+							pcb_printf("\tzone thermal_gap:\t'%s'\n", (m->children->str));
 						} else {
 							return -1;
 						}
 					} else if (m->str != NULL && strcmp("thermal_bridge_width", m->str) == 0) {
 						if (m->children != NULL && m->children->str != NULL) {
-							pcb_printf("zone thermal_bridge_width:\t'%s'\n", (m->children->str));
+							pcb_printf("\tzone thermal_bridge_width:\t'%s'\n", (m->children->str));
 						} else {
 							return -1;
 						}
@@ -1989,12 +1976,12 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			} else if (n->str != NULL && strcmp("min_thickness", n->str) == 0) {
 				SEEN_NO_DUP(tally, 11);
 				if (n->children != NULL && n->children->str != NULL) {
-					pcb_printf("zone min_thickness:\t'%s'\n", (n->children->str));
+					pcb_printf("\tzone min_thickness:\t'%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("filled_polygon", n->str) == 0) {
-				pcb_printf("Ignoring filled_polygon definition.\n");
+				pcb_printf("\tIgnoring filled_polygon definition.\n");
 			} else {
 				if (n->str != NULL) {
 					printf("Unknown polygon argument:\t%s\n", n->str);
