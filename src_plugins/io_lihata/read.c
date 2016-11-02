@@ -152,7 +152,7 @@ static int parse_int(int *res, lht_node_t *nd)
 /* Load the duble value of a text node into res. Return 0 on success */
 static int parse_double(double *res, lht_node_t *nd)
 {
-	long int tmp;
+	double tmp;
 	char *end;
 
 	if (nd == NULL)
@@ -164,6 +164,7 @@ static int parse_double(double *res, lht_node_t *nd)
 	}
 
 	tmp = strtod(nd->data.text.value, &end);
+
 	if (*end != '\0') {
 		Message(PCB_MSG_ERROR, "#LHT9 Invalid double value: '%s'\n", nd->data.text.value);
 		return -1;
@@ -240,6 +241,8 @@ static int parse_meta(PCBType *pcb, lht_node_t *nd)
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
 		parse_coord(&pcb->MaxWidth, lht_dom_hash_get(grp, "x"));
 		parse_coord(&pcb->MaxHeight, lht_dom_hash_get(grp, "y"));
+		parse_double(&pcb->IsleArea, lht_dom_hash_get(grp, "isle_area_nm2"));
+		parse_double(&pcb->ThermScale, lht_dom_hash_get(grp, "thermal_scale"));
 	}
 
 	grp = lht_dom_hash_get(nd, "drc");

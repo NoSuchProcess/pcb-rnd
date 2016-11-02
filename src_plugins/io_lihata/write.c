@@ -108,6 +108,9 @@ static lht_node_t *build_board_meta(PCBType *pcb)
 	lht_dom_hash_put(meta, grp);
 	lht_dom_hash_put(grp, build_textf("x", CFMT, pcb->MaxWidth));
 	lht_dom_hash_put(grp, build_textf("y", CFMT, pcb->MaxHeight));
+	lht_dom_hash_put(grp, build_textf("isle_area_nm2", "%f", pcb->IsleArea));
+	lht_dom_hash_put(grp, build_textf("thermal_scale", "%f", pcb->ThermScale));
+
 
 	grp = lht_dom_node_alloc(LHT_HASH, "drc");
 	lht_dom_hash_put(meta, grp);
