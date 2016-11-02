@@ -28,19 +28,10 @@
 #define GLOBAL_OBJS_H
 #include <genlist/gendlist.h>
 #include "config.h"
+#include "attrib.h"
 #include "globalconst.h"
 #include "global_typedefs.h"
 #include "polyarea.h"
-
-typedef struct {
-	char *name;
-	char *value;
-} AttributeType, *AttributeTypePtr;
-
-struct AttributeListType {
-	int Number, Max;
-	AttributeType *List;
-};
 
 /* ---------------------------------------------------------------------------
  * Do not change the following definitions even if they're not very

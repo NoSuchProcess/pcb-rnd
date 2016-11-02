@@ -50,6 +50,7 @@
 
 #include "global_typedefs.h"
 #include "global_objs.h"
+#include "attrib.h"
 #include "list_common.h"
 #include "list_line.h"
 #include "list_arc.h"

@@ -19,6 +19,7 @@ put /local/pcb/OBJS_C99 [@
 put /local/pcb/OBJS [@
 	action_helper.o
 	action_act.o
+	attrib.o
 	buffer.o
 	change.o
 	change_act.o

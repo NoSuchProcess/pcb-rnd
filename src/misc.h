@@ -70,22 +70,6 @@ void ChangeArcRadii(LayerTypePtr, ArcTypePtr, Coord, Coord);
 char *UniqueElementName(DataTypePtr, char *);
 void AttachForCopy(Coord, Coord);
 
-/* Returns NULL if the name isn't found, else the value for that named
-   attribute.  */
-char *AttributeGetFromList(AttributeListType * list, const char *name);
-/* Adds an attribute to the list.  If the attribute already exists,
-   whether it's replaced or a second copy added depends on
-   REPLACE.  Returns non-zero if an existing attribute was replaced.  */
-int AttributePutToList(AttributeListType * list, const char *name, const char *value, int replace);
-/* Simplistic version: Takes a pointer to an object, looks up attributes in it.  */
-#define AttributeGet(OBJ,name) AttributeGetFromList (&(OBJ->Attributes), name)
-/* Simplistic version: Takes a pointer to an object, sets attributes in it.  */
-#define AttributePut(OBJ,name,value) AttributePutToList (&(OBJ->Attributes), name, value, 1)
-/* Remove an attribute by name; returns number of items removed  */
-int AttributeRemoveFromList(AttributeListType * list, const char *name);
-/* Simplistic version of Remove.  */
-#define AttributeRemove(OBJ, name) AttributeRemoveFromList (&(OBJ->Attributes), name)
-
 /* For passing modified flags to other functions. */
 FlagType MakeFlags(unsigned int);
 FlagType OldFlags(unsigned int);
