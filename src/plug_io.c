@@ -250,8 +250,10 @@ int WriteBuffer(FILE *f, BufferType *buff, const char *fmt)
 int WriteElementData(FILE *f, DataTypePtr e, const char *fmt)
 {
 	int res;
+	plug_io_t *p = e->loader;
 
-	plug_io_t *p = find_writer(PCB_IOT_FOOTPRINT, fmt);
+	if ((p == NULL) || ((fmt != NULL) && (*fmt != '\0')))
+		p = find_writer(PCB_IOT_FOOTPRINT, fmt);
 
 	if (p != NULL)
 		res = p->write_element(p, f, e);
@@ -263,7 +265,10 @@ int WriteElementData(FILE *f, DataTypePtr e, const char *fmt)
 static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_filename, const char *fmt, pcb_bool emergency)
 {
 	int res;
-	plug_io_t *p = find_writer(PCB_IOT_PCB, fmt);
+	plug_io_t *p = PCB->Data->loader;
+
+	if ((p == NULL) || ((fmt != NULL) && (*fmt != '\0')))
+		p = find_writer(PCB_IOT_PCB, fmt);
 
 	if (p != NULL) {
 		event(EVENT_SAVE_PRE, "s", fmt);
