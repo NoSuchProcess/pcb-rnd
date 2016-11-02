@@ -1019,45 +1019,6 @@ void AttachForCopy(Coord PlaceX, Coord PlaceY)
 									 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 }
 
-/* This just fills in a FlagType with current flags.  */
-FlagType MakeFlags(unsigned int flags)
-{
-	FlagType rv;
-	memset(&rv, 0, sizeof(rv));
-	rv.f = flags;
-	return rv;
-}
-
-/* This converts old flag bits (from saved PCB files) to new format.  */
-FlagType OldFlags(unsigned int flags)
-{
-	FlagType rv;
-	int i, f;
-	memset(&rv, 0, sizeof(rv));
-	/* If we move flag bits around, this is where we map old bits to them.  */
-	rv.f = flags & 0xffff;
-	f = 0x10000;
-	for (i = 0; i < 8; i++) {
-		/* use the closest thing to the old thermal style */
-		if (flags & f)
-			rv.t[i / 2] |= (1 << (4 * (i % 2)));
-		f <<= 1;
-	}
-	return rv;
-}
-
-FlagType AddFlags(FlagType flag, unsigned int flags)
-{
-	flag.f |= flags;
-	return flag;
-}
-
-FlagType MaskFlags(FlagType flag, unsigned int flags)
-{
-	flag.f &= ~flags;
-	return flag;
-}
-
 void r_delete_element(DataType * data, ElementType * element)
 {
 	r_delete_entry(data->element_tree, (BoxType *) element);

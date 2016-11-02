@@ -171,11 +171,3 @@ char *Concat(const char *first, ...)
 	va_end(a);
 	return rv;
 }
-
-int mem_any_set(unsigned char *ptr, int bytes)
-{
-	while (bytes--)
-		if (*ptr++)
-			return 1;
-	return 0;
-}

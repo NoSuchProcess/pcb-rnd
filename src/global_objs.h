@@ -29,6 +29,7 @@
 #include <genlist/gendlist.h>
 #include "config.h"
 #include "attrib.h"
+#include "flag.h"
 #include "globalconst.h"
 #include "global_typedefs.h"
 #include "polyarea.h"
@@ -62,24 +63,6 @@ struct BoxType {								/* a bounding box */
 	Coord X1, Y1;									/* upper left */
 	Coord X2, Y2;									/* and lower right corner */
 };
-
-/* Nobody should know about the internals of this except the macros in
-   macros.h that access it.  This structure must be simple-assignable
-   for now.  */
-typedef struct unknown_flag_s unknown_flag_t;
-struct unknown_flag_s {
-	char *str;
-	unknown_flag_t *next;
-};
-
-typedef struct {
-	unsigned long f;							/* generic flags */
-	unsigned char t[(MAX_LAYER + 1) / 2];	/* thermals */
-	unsigned char q;							/* square geometry flag */
-	unsigned char int_conn_grp;
-	unknown_flag_t *unknowns;
-} FlagType, *FlagTypePtr;
-
 
 /* All on-pcb objects (elements, lines, pads, vias, rats, etc) are
    based on this. */

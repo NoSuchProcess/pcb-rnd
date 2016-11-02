@@ -45,6 +45,7 @@ put /local/pcb/OBJS [@
 	file_act.o
 	find.o
 	find_act.o
+	flag.o
 	free_atexit.o
 	funchash.o
 	gui_act.o

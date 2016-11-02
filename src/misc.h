@@ -70,13 +70,6 @@ void ChangeArcRadii(LayerTypePtr, ArcTypePtr, Coord, Coord);
 char *UniqueElementName(DataTypePtr, char *);
 void AttachForCopy(Coord, Coord);
 
-/* For passing modified flags to other functions. */
-FlagType MakeFlags(unsigned int);
-FlagType OldFlags(unsigned int);
-FlagType AddFlags(FlagType, unsigned int);
-FlagType MaskFlags(FlagType, unsigned int);
-#define		NoFlags() MakeFlags(0)
-
 /* Returns a string with info about this copy of pcb. */
 char *GetInfoString(void);
 

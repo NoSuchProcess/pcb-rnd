@@ -60,8 +60,6 @@ extern int LayerStack[MAX_LAYER];
 
 extern pcb_bool Bumped;
 
-extern FlagType no_flags;
-
 /****** callback based loops *****/
 
 /* The functions returning int are called once when processing of a new layer
