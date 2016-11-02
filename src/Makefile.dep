@@ -1615,7 +1615,9 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h ../src_plugins/io_lihata/read.h \
- ../src_plugins/io_lihata/write.h
+ ../src_plugins/io_lihata/write.h ../src_plugins/io_lihata/io_lihata.h \
+ conf.h ../src_plugins/io_lihata/lht_conf.h \
+ ../src_plugins/io_lihata/lht_conf_fields.h
 ../src_plugins/io_lihata/read.o: ../src_plugins/io_lihata/read.c \
  ../src_3rd/liblihata/tree.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -1654,7 +1656,8 @@
  ../src_3rd/genvector/vtp0.h list_conf.h strflags.h compat_misc.h \
  rats_patch.h misc_util.h macro.h layer.h \
  ../src_plugins/io_lihata/common.h ../src_plugins/io_lihata/write_style.h \
- ../src_3rd/liblhtpers/lhtpers.h
+ ../src_3rd/liblhtpers/lhtpers.h ../src_plugins/io_lihata/io_lihata.h \
+ conf.h ../src_plugins/io_lihata/lht_conf.h
 ../src_plugins/io_lihata/write_style.o: \
  ../src_plugins/io_lihata/write_style.c \
  ../src_plugins/io_lihata/write_style.h ../src_3rd/liblhtpers/lhtpers.h \

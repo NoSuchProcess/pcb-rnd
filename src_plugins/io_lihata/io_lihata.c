@@ -26,8 +26,10 @@
 #include "plug_io.h"
 #include "read.h"
 #include "write.h"
+#include "io_lihata.h"
 
 static plug_io_t io_lihata;
+conf_io_lihata_t conf_io_lihata;
 
 int io_lihata_fmt(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
 {
@@ -63,6 +65,10 @@ pcb_uninit_t hid_io_lihata_init(void)
 	io_lihata.save_preference_prio = 20;
 
 	HOOK_REGISTER(plug_io_t, plug_io_chain, &io_lihata);
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_io_lihata, field,isarray,type_name,cpath,cname,desc,flags);
+#include "lht_conf_fields.h"
 
 	return hid_io_lihata_uninit;
 }

@@ -38,6 +38,7 @@
 #include "layer.h"
 #include "common.h"
 #include "write_style.h"
+#include "io_lihata.h"
 
 /*#define CFMT "%[9]"*/
 #define CFMT "%.08$$mH"

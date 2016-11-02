@@ -6,6 +6,8 @@ put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/io_lihata/read.o
  $(PLUGDIR)/io_lihata/common.o
 @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/io_lihata/lht_conf.h}
+
 
 switch /local/pcb/io_lihata/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

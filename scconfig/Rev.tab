@@ -1,3 +1,4 @@
+4450	configure	io_lihata plugin config and 3rd party lib dependency fix
 4398	configure	io_kicad plugin interdeps and enable io_kicad by default
 4375	configure	custom output style support in io_lihata
 4321	configure	imported lihata persistent save lib in src_3rd as svn extern
