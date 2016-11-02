@@ -38,7 +38,10 @@ pcb_strip()
 help()
 {
 	echo "pcb-strip - remove sections of a pcb file"
-	echo "Invocation: $0 [-a] [-s] <foo.pcb >bar.pcb"
+	echo "Invocation:"
+	echo "     $0 [-a] [-s] <foo.pcb >bar.pcb"
+	echo " or  $0 [-a] [-s] foo.pcb"
+	echo ""
 	echo "Switches:"
 	echo " -a       remove Attributes"
 	echo " -s       remove symbols"
@@ -47,6 +50,7 @@ help()
 
 strip_sym=0
 strip_attr=0
+fn=""
 while test $# -gt 0
 do
 	case "$1"
@@ -55,8 +59,29 @@ do
 		-s) strip_sym=1;;
 		-a) strip_attr=1;;
 		-*) echo "unknown switch $1; try --help" >&2; exit 1;;
+		*)
+			if test -z "$fn"
+			then
+				fn="$1"
+			else
+				echo "unknown switch $1; try --help" >&2
+				exit
+			fi
+			;;
 	esac
 	shift 1
 done
 
-pcb_strip
+if test -z "$fn"
+then
+# operate on stdio
+	pcb_strip
+else
+# use a file by name
+	tmp=`mktemp`
+	if test -z "$tmp"
+	then
+		tmp="$fn.strip"
+	fi
+	mv $fn $tmp && pcb_strip < $tmp > $fn && rm $tmp
+fi
