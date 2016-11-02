@@ -113,4 +113,14 @@ typedef enum {
 } pcb_printf_slot_idx_t;
 extern const char *pcb_printf_slot[PCB_PRINTF_SLOT_max];
 
+/* strdup and return a template; also attempt to replace printf-like formatting
+   directives (e.g. %P) using an user provided callback function. The callback
+   function needs to recognize the directive at **input (pointing to the byte
+   after the %) and append the substitution to s and increase *input to point
+   beyond the format directive. The callback returns 0 on success or -1
+   on unknown directive (whcih will be copied verbatim). %% will always
+   be translated into a single %, without calling cb.
+*/
+char *pcb_strdup_subst(const char *template, int (*cb)(gds_t *s, const char **input));
+
 #endif

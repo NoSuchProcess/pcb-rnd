@@ -64,6 +64,7 @@
 #include "rats_patch.h"
 #include "hid_actions.h"
 #include "hid_flags.h"
+#include "pcb-printf.h"
 #include "plugins.h"
 #include "event.h"
 #include "compat_misc.h"
@@ -677,38 +678,23 @@ void EnableAutosave(void)
 		backup_timer = gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, x);
 }
 
-char *build_fn(const char *template)
+static int build_fn_cb(gds_t *s, const char **input)
 {
-	gds_t s;
 	char buff[16];
-	const char *curr, *next;
 
-	gds_init(&s);
-	for(curr = template;;) {
-		next = strchr(curr, '%');
-		if (next == NULL) {
-			gds_append_str(&s, curr);
-			return s.array;
-		}
-		if (next > curr)
-			gds_append_len(&s, curr, next-curr);
-		next++;
-		switch(*next) {
-			case '%':
-				gds_append(&s, '%');
-				curr = next+1;
-				break;
-			case 'P':
-				sprintf(buff, "%.8i", pcb_getpid());
-				gds_append_str(&s, buff);
-				curr = next+1;
-				break;
-			default:
-				gds_append(&s, '%');
-				curr = next;
-		}
+	switch(**input) {
+		case 'P':
+			sprintf(buff, "%.8i", pcb_getpid());
+			gds_append_str(s, buff);
+			(*input)++;
+			return 0;
 	}
-	abort(); /* can't get here */
+	return -1;
+}
+
+static char *build_fn(const char *template)
+{
+	return pcb_strdup_subst(template, build_fn_cb);
 }
 
 /* ---------------------------------------------------------------------------

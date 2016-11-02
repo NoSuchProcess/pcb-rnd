@@ -841,3 +841,35 @@ int pcb_append_printf(gds_t *str, const char *fmt, ...)
 
 	return retval;
 }
+
+
+char *pcb_strdup_subst(const char *template, int (*cb)(gds_t *s, const char **input))
+{
+	gds_t s;
+	const char *curr, *next;
+
+	gds_init(&s);
+	for(curr = template;;) {
+		next = strchr(curr, '%');
+		if (next == NULL) {
+			gds_append_str(&s, curr);
+			return s.array;
+		}
+		if (next > curr)
+			gds_append_len(&s, curr, next-curr);
+		next++;
+		switch(*next) {
+			case '%':
+				gds_append(&s, '%');
+				curr = next+1;
+				break;
+			default:
+				if (cb(&s, &next) != 0) {
+					/* keep the directive intact */
+					gds_append(&s, '%');
+				}
+				curr = next;
+		}
+	}
+	abort(); /* can't get here */
+}
