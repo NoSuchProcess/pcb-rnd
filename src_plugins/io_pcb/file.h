@@ -34,6 +34,14 @@
 #include "global.h"
 #include "plug_io.h"
 
+/* This is used by the lexer/parser */
+typedef struct {
+	int ival;
+	Coord bval;
+	double dval;
+	char has_units;
+} PLMeasure;
+
 typedef struct {
 	const char *write_coord_fmt;
 } io_pcb_ctx_t;

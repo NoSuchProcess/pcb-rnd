@@ -78,14 +78,6 @@
 #	define bindtextdomain(D, Dir) (D)
 #endif /* ENABLE_NLS */
 
-/* This is used by the lexer/parser */
-typedef struct {
-	int ival;
-	Coord bval;
-	double dval;
-	char has_units;
-} PLMeasure;
-
 /* ---------------------------------------------------------------------------
  * Macros to annotate branch-prediction information.
  * Taken from GLib 2.16.3 (LGPL 2).G_ / g_ prefixes have
