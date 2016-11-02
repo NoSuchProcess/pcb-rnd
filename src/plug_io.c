@@ -678,13 +678,26 @@ void EnableAutosave(void)
 		backup_timer = gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, x);
 }
 
-static int build_fn_cb(gds_t *s, const char **input)
+int pcb_build_fn_cb(gds_t *s, const char **input)
 {
-	char buff[16];
+	char buff[20];
 
 	switch(**input) {
 		case 'P':
 			sprintf(buff, "%.8i", pcb_getpid());
+			gds_append_str(s, buff);
+			(*input)++;
+			return 0;
+		case 'F':
+			gds_append_str(s, (PCB->Filename != NULL) ? PCB->Filename : "no_file_name");
+			(*input)++;
+			return 0;
+		case 'N':
+			gds_append_str(s, (PCB->Name != NULL) ? PCB->Name : "no_name");
+			(*input)++;
+			return 0;
+		case 'T':
+			sprintf(buff, "%lu", (unsigned long int)time(NULL));
 			gds_append_str(s, buff);
 			(*input)++;
 			return 0;
@@ -694,7 +707,7 @@ static int build_fn_cb(gds_t *s, const char **input)
 
 static char *build_fn(const char *template)
 {
-	return pcb_strdup_subst(template, build_fn_cb);
+	return pcb_strdup_subst(template, pcb_build_fn_cb);
 }
 
 /* ---------------------------------------------------------------------------

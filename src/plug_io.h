@@ -147,5 +147,12 @@ do { \
 		pcb_io_err_inhibit--; \
 } while(0)
 
+/* generic file name template substitution callbacks for pcb_strdup_subst:
+    %P    pid
+    %F    load-time file name of the current pcb
+    %N    name of the current pcb
+    %T    wall time (Epoch)
+*/
+int pcb_build_fn_cb(gds_t *s, const char **input);
 
 #endif
