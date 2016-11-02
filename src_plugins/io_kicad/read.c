@@ -911,6 +911,7 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 	} else {
 		assert(id < -1);
 	}
+	return 0;
 }
 
 /* Register a kicad layer in the layer hash after looking up the pcb-rnd equivalent */
@@ -1829,7 +1830,8 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	int i;
 	int polycount = 0;
 	long j  = 0;
-	unsigned long tally = 0, required;
+	unsigned long tally = 0;
+/*	unsigned long required;     yet to be implemented */
 
 	PolygonTypePtr polygon = NULL;
 	FlagType flags = MakeFlags(PCB_FLAG_CLEARPOLY);
