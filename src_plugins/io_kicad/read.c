@@ -761,8 +761,6 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("segment start at x: '%s'\n", (n->children->str));
 						SEEN_NO_DUP(tally, 1); /* same as ^= 1 was */
 						val = strtod(n->children->str, &end);
-						printf("The number (double) is %lf\n", val);
-						printf("The leftover (string) is %s\n", end);
 						if (*end != 0) {
 							return -1;
 						} else {
@@ -775,8 +773,6 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("segment start at y: '%s'\n", (n->children->next->str));
 						SEEN_NO_DUP(tally, 2);	
 						val = strtod(n->children->next->str, &end);
-						printf("The number (double) is %lf\n", val);
-						printf("The leftover (string) is %s\n", end);
 						if (*end != 0) {
 							return -1;
 						} else {
@@ -1018,11 +1014,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int moduleDefined = 0;
 	int PCBLayer = 0;
 	int kicadLayer = 15; /* default = top side */
-	int moduleLayer = 15; /* default = top side */
 	int SMD = 0;
 	int square = 0;
 	int throughHole = 0;
-	int padNum = 0;
 	int foundRefdes = 0;
 	int refdesScaling  = 100;
 	unsigned long tally = 0, featureTally, required;
@@ -1055,7 +1049,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					if (PCBLayer == -1) {
 						return -1;
 					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
-							moduleLayer = 0;
 							Flags = MakeFlags(PCB_FLAG_ONSOLDER);
 							TextFlags = MakeFlags(PCB_FLAG_ONSOLDER);
 					}
@@ -1554,7 +1547,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						return -1;
 					}
 					if (l->children->next != NULL && l->children->next->str != NULL) {
-						pcb_printf("gr_line start at y: '%s'\n", (l->children->next->str));
+						pcb_printf("fp_line start at y: '%s'\n", (l->children->next->str));
 						SEEN_NO_DUP(featureTally, 2);	
 						val = strtod(l->children->next->str, &end);
 						if (*end != 0) {
@@ -1568,7 +1561,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} else if (l->str != NULL && strcmp("end", l->str) == 0) {
 					SEEN_NO_DUP(featureTally, 3);
 					if (l->children != NULL && l->children->str != NULL) {
-						pcb_printf("gr_line end at x: '%s'\n", (l->children->str));
+						pcb_printf("fp_line end at x: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 4);
 						val = strtod(l->children->str, &end);
 						if (*end != 0) {
