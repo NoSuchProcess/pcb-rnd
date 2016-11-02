@@ -451,19 +451,6 @@ typedef struct {
 
 } BoxListType, *BoxListTypePtr;
 
-struct drc_violation_st {
-	char *title;
-	char *explanation;
-	Coord x, y;
-	Angle angle;
-	int have_measured;
-	Coord measured_value;
-	Coord required_value;
-	int object_count;
-	long int *object_id_list;
-	int *object_type_list;
-};
-
 /* ---------------------------------------------------------------------------
  * add a macro for wrapping RCS ID's in so that ident will still work
  * but we won't get as many compiler warnings

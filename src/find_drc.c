@@ -25,6 +25,8 @@
  *
  */
 
+#include "drc.h"
+
 /* DRC related functions */
 
 static void GotoError(void);

@@ -5,6 +5,7 @@
 
 #include "config.h"
 #include "error.h"
+#include "drc.h"
 #include "global_typedefs.h"
 
 typedef struct HID_Attr_Val_s  HID_Attr_Val;
