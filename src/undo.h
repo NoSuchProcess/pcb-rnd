@@ -73,4 +73,31 @@ int ActionUndo(int argc, const char **argv, Coord x, Coord y);
 int ActionRedo(int argc, const char **argv, Coord x, Coord y);
 int ActionAtomic(int argc, const char **argv, Coord x, Coord y);
 
+/* ---------------------------------------------------------------------------
+ * define supported types of undo operations
+ * note these must be separate bits now
+ */
+#define	UNDO_CHANGENAME			0x0001	/* change of names */
+#define	UNDO_MOVE			0x0002		/* moving objects */
+#define	UNDO_REMOVE			0x0004	/* removing objects */
+#define	UNDO_REMOVE_POINT		0x0008	/* removing polygon/... points */
+#define	UNDO_INSERT_POINT		0x0010	/* inserting polygon/... points */
+#define	UNDO_REMOVE_CONTOUR		0x0020	/* removing a contour from a polygon */
+#define	UNDO_INSERT_CONTOUR		0x0040	/* inserting a contour from a polygon */
+#define	UNDO_ROTATE			0x0080	/* rotations */
+#define	UNDO_CREATE			0x0100	/* creation of objects */
+#define	UNDO_MOVETOLAYER		0x0200	/* moving objects to */
+#define	UNDO_FLAG			0x0400		/* toggling SELECTED flag */
+#define	UNDO_CHANGESIZE			0x0800	/* change size of object */
+#define	UNDO_CHANGE2NDSIZE		0x1000	/* change 2ndSize of object */
+#define	UNDO_MIRROR			0x2000	/* change side of board */
+#define	UNDO_CHANGECLEARSIZE		0x4000	/* change clearance size */
+#define	UNDO_CHANGEMASKSIZE		0x8000	/* change mask size */
+#define	UNDO_CHANGEANGLES	       0x10000	/* change arc angles */
+#define	UNDO_LAYERCHANGE	       0x20000	/* layer new/delete/move */
+#define	UNDO_CLEAR		       0x40000	/* clear/restore to polygons */
+#define	UNDO_NETLISTCHANGE	       0x80000	/* netlist change */
+#define	UNDO_CHANGEPINNUM			0x100000	/* change of pin number */
+#define	UNDO_CHANGERADII	    0x200000	/* change arc radii */
+
 #endif
