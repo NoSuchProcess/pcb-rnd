@@ -24,15 +24,7 @@
  *
  */
 
-/* Change History:
- * 10/11/96 11:37 AJF Added support for a Text() driver function.
- * This was done out of a pressing need to force text to be printed on the
- * silkscreen layer. Perhaps the design is not the best.
- */
-
-
-/* printing routines
- */
+/* printing routines */
 #include "config.h"
 
 #include <time.h>
