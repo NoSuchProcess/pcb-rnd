@@ -73,4 +73,4 @@ typedef enum {            /* netn is always the net name, unless specified other
 
 /* Call cb() for each item to output; PCB_PTRE_INFO* is calculated/called only
    if need_info_lines is true; the pcb pointer is used for looking up connections */
-int rats_patch_export(PCBType *pcb, rats_patch_line_t *pat, pcb_bool_t need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx);
+int rats_patch_export(PCBType *pcb, rats_patch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx);

@@ -280,7 +280,7 @@ static LibraryMenuTypePtr rats_patch_find_net(PCBTypePtr pcb, const char *netnam
 	return NULL;
 }
 
-int rats_patch_export(PCBType *pcb, rats_patch_line_t *pat, pcb_bool_t need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
+int rats_patch_export(PCBType *pcb, rats_patch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
 {
 	rats_patch_line_t *n;
 

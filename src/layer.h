@@ -148,7 +148,7 @@ void pcb_layers_reset();
    Returns a layer index (or -1 on error)
    Do not create: mask, silk, paste; they are special layers.
    */
-int pcb_layer_create(pcb_layer_type_t type, pcb_bool_t reuse_layer, pcb_bool_t reuse_group, const char *lname);
+int pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reuse_group, const char *lname);
 
 /* Rename an existing layer */
 int pcb_layer_rename(int layer, const char *lname);

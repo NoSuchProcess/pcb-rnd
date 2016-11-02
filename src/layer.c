@@ -661,7 +661,7 @@ void pcb_layers_reset()
 	PCB->Data->Layer[SOLDER_LAYER].Name = pcb_strdup("<bottom>");
 }
 
-int pcb_layer_create(pcb_layer_type_t type, pcb_bool_t reuse_layer, pcb_bool_t reuse_group, const char *lname)
+int pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reuse_group, const char *lname)
 {
 	int id, grp = -1, found;
 	unsigned int loc  = type & PCB_LYT_ANYWHERE;
