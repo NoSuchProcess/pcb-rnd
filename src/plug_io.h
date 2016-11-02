@@ -147,6 +147,16 @@ do { \
 		pcb_io_err_inhibit--; \
 } while(0)
 
+/* Find all plugins that can handle typ/is_wr and build an ordered list in available[],
+   highest prio first. If fmt is NULL, use the default fmt for each plugin.
+   Return the length of the array. */
+typedef struct {
+	plug_io_t *plug;
+	int prio;
+} pcb_find_io_t;
+int pcb_find_io(pcb_find_io_t *available, int avail_len, plug_iot_t typ, int is_wr, const char *fmt);
+
+
 /* generic file name template substitution callbacks for pcb_strdup_subst:
     %P    pid
     %F    load-time file name of the current pcb

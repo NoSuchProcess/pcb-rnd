@@ -74,14 +74,6 @@
 /* for opendir */
 #include "compat_inc.h"
 
-
-typedef struct {
-	plug_io_t *plug;
-	int prio;
-} find_t;
-
-static int find_io(find_t *available, int avail_len, plug_iot_t typ, int is_wr, const char *fmt);
-
 plug_io_t *plug_io_chain = NULL;
 int pcb_io_err_inhibit = 0;
 
@@ -127,9 +119,9 @@ int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_set
 	Ptr->Data->loader = NULL;
 
 	if (fmt != NULL) {
-		find_t available[PCB_IO_MAX_FORMATS];
+		pcb_find_io_t available[PCB_IO_MAX_FORMATS];
 		int len, n;
-		len = find_io(available, sizeof(available)/sizeof(available[0]), PCB_IOT_PCB, 0, fmt);
+		len = pcb_find_io(available, sizeof(available)/sizeof(available[0]), PCB_IOT_PCB, 0, fmt);
 		if (len <= 0) {
 			Message(PCB_MSG_DEFAULT, "Error: can't find a IO_ plugin to load a PCB using format %s\n", fmt);
 			return -1;
@@ -145,7 +137,7 @@ int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_set
 		}
 	}
 	else /* try all parsers until we find one that works */
-		HOOK_CALL_DO(plug_io_t, plug_io_chain, parse_pcb, res, == 0, (self, Ptr, Filename, load_settings), Ptr->Data->loader = self);
+		HOOK_CALL_DO(plug_io_t, plug_io_chain, parse_pcb, res, == 0, (self, Ptr, Filename, load_settings), if (Ptr->Data->loader == NULL) Ptr->Data->loader = self);
 
 	if ((res == 0) && (load_settings))
 		conf_load_project(NULL, Filename);
@@ -179,16 +171,13 @@ int ParseFont(FontTypePtr Ptr, char *Filename)
 
 static int find_prio_cmp(const void *p1, const void *p2)
 {
-	const find_t *f1 = p1, *f2 = p2;
+	const pcb_find_io_t *f1 = p1, *f2 = p2;
 	if (f1->prio < f2->prio)
 		return 1;
 	return -1;
 }
 
-/* Find all plugins that can handle typ/is_wr and build an ordered list in available[],
-   highest prio first. If fmt is NULL, use the default fmt for each plugin.
-   Return the length of the array. */
-static int find_io(find_t *available, int avail_len, plug_iot_t typ, int is_wr, const char *fmt)
+int pcb_find_io(pcb_find_io_t *available, int avail_len, plug_iot_t typ, int is_wr, const char *fmt)
 {
 	int len = 0;
 
@@ -217,7 +206,7 @@ static int find_io(find_t *available, int avail_len, plug_iot_t typ, int is_wr, 
 /* Find the plugin that offers the highest write prio for the format */
 static plug_io_t *find_writer(plug_iot_t typ, const char *fmt)
 {
-	find_t available[PCB_IO_MAX_FORMATS];
+	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
 	int len;
 
 	if (fmt == NULL) {
@@ -225,7 +214,7 @@ static plug_io_t *find_writer(plug_iot_t typ, const char *fmt)
 		fmt = "pcb";
 	}
 
-	len = find_io(available, sizeof(available)/sizeof(available[0]), typ, 1, fmt);
+	len = pcb_find_io(available, sizeof(available)/sizeof(available[0]), typ, 1, fmt);
 
 	if (len == 0)
 		return NULL;
@@ -914,11 +903,11 @@ int WritePipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 
 int pcb_io_list(pcb_io_formats_t *out, plug_iot_t typ, int wr, int do_digest)
 {
-	find_t available[PCB_IO_MAX_FORMATS];
+	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
 	int n;
 
 	memset(out, 0, sizeof(pcb_io_formats_t));
-	out->len = find_io(available, sizeof(available)/sizeof(available[0]), typ, 1, NULL);
+	out->len = pcb_find_io(available, sizeof(available)/sizeof(available[0]), typ, 1, NULL);
 
 	if (out->len == 0)
 		return 0;
