@@ -23,14 +23,33 @@
  *
  */
 
-/* Change History:
- * Started 6/10/97
- * Added support for minimum length rat lines 6/13/97
- * rat lines to nearest line/via 8/29/98
- * support for netlist window 10/24/98
- */
+#ifndef PCB_RATS_PATCH_H
+#define PCB_RATS_PATCH_H
 
-#include "global.h"
+#include <stdio.h>
+#include "global_typedefs.h"
+
+typedef enum {
+	RATP_ADD_CONN,
+	RATP_DEL_CONN,
+	RATP_CHANGE_ATTRIB
+} rats_patch_op_t;
+
+struct rats_patch_line_s {
+	rats_patch_op_t op;
+	char *id;
+	union {
+		char *net_name;
+		char *attrib_name;
+	} arg1;
+	union {
+		char *attrib_val;
+	} arg2;
+
+	rats_patch_line_t *prev, *next;
+};
+
+
 
 /* Single-word netlist class names */
 const char *pcb_netlist_names[NUM_NETLISTS];
@@ -74,3 +93,5 @@ typedef enum {            /* netn is always the net name, unless specified other
 /* Call cb() for each item to output; PCB_PTRE_INFO* is calculated/called only
    if need_info_lines is true; the pcb pointer is used for looking up connections */
 int rats_patch_export(PCBType *pcb, rats_patch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx);
+
+#endif

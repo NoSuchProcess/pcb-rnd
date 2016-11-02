@@ -51,6 +51,7 @@
 #include "global_typedefs.h"
 #include "global_objs.h"
 #include "attrib.h"
+#include "rats_patch.h"
 #include "list_common.h"
 #include "list_line.h"
 #include "list_arc.h"
@@ -256,12 +257,6 @@ typedef struct {
 	LibraryMenuTypePtr Menu;			/* the entries */
 } LibraryType, *LibraryTypePtr;
 
-enum {
-	NETLIST_INPUT = 0,						/* index of the original netlist as imported */
-	NETLIST_EDITED = 1,						/* index of the netlist produced by applying netlist patches on [NETLIST_INPUT] */
-	NUM_NETLISTS									/* so that we know how many netlists we are dealing with */
-};
-
 
 	/* The PCBType struct holds information about board layout most of which is
 	   |  saved with the layout.  A new PCB layout struct is first initialized
@@ -269,7 +264,7 @@ enum {
 	   |  to the saved layout values when a layout is loaded.
 	   |  This struct is also used for the remove list and for buffer handling
 	 */
-typedef struct PCBType {
+struct pcb_st_t {
 	long ID;											/* see macro.h */
 	char *Name,										/* name of board */
 	 *Filename,										/* name of file (from load) */
@@ -316,7 +311,7 @@ typedef struct PCBType {
 	int netlist_frozen;                /* counter */
 	unsigned netlist_needs_update:1;
 
-} PCBType, *PCBTypePtr;
+};
 
 typedef struct {								/* information about the paste buffer */
 	Coord X, Y;										/* offset */
@@ -467,26 +462,6 @@ struct drc_violation_st {
 	int object_count;
 	long int *object_id_list;
 	int *object_type_list;
-};
-
-typedef enum {
-	RATP_ADD_CONN,
-	RATP_DEL_CONN,
-	RATP_CHANGE_ATTRIB
-} rats_patch_op_t;
-
-struct rats_patch_line_s {
-	rats_patch_op_t op;
-	char *id;
-	union {
-		char *net_name;
-		char *attrib_name;
-	} arg1;
-	union {
-		char *attrib_val;
-	} arg2;
-
-	rats_patch_line_t *prev, *next;
 };
 
 /* ---------------------------------------------------------------------------

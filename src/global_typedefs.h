@@ -24,6 +24,13 @@
 #define GLOBAL_TYPEDEFS_H
 #include "config.h"
 
+enum {
+	NETLIST_INPUT = 0,						/* index of the original netlist as imported */
+	NETLIST_EDITED = 1,						/* index of the netlist produced by applying netlist patches on [NETLIST_INPUT] */
+	NUM_NETLISTS									/* so that we know how many netlists we are dealing with */
+};
+
+typedef struct pcb_st_t PCBType, *PCBTypePtr;
 typedef struct BoxType BoxType, *BoxTypePtr;
 typedef struct polygon_st PolygonType, *PolygonTypePtr;
 typedef struct pad_st PadType, *PadTypePtr;
