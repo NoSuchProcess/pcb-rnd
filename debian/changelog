@@ -1,3 +1,9 @@
+pcb-rnd (1.1.3-r4478) unstable; urgency=low
+
+  * New upstream release
+
+ -- Tibor Palinkas <pcb-rnd[removethis]@repo.hu>  Wed, 02 Nov 2016 15:53:23 +0100
+
 pcb-rnd (1.1.2-r4392) unstable; urgency=low
 
   * Remove stale symlink to pcb-gtk manual page
