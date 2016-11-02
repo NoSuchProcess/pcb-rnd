@@ -33,6 +33,7 @@
 #include "strflags.h"
 #include "compat_misc.h"
 #include "rats_patch.h"
+#include "hid_actions.h"
 #include "misc_util.h"
 #include "macro.h"
 #include "layer.h"
@@ -752,6 +753,14 @@ int io_lihata_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filename, con
 {
 	int res;
 	lht_doc_t *brd = build_board(PCB);
+	const char *fnpat = conf_io_lihata.plugins.io_lihata.aux_pcb_pattern;
+
+	if ((fnpat != NULL) && (*fnpat != '\0')) {
+		char *pcb_fn = pcb_strdup_subst(fnpat, pcb_build_fn_cb);
+		fprintf(stderr, "NOTE: io_lihata_write_pcb also saves in '%s': %d\n", pcb_fn, hid_actionl("SaveTo", "LayoutAs", pcb_fn, "pcb", NULL));
+		free(pcb_fn);
+	}
+
 	if ((emergency) || ((old_filename == NULL) && (new_filename == NULL))) {
 		/* emergency or pipe save: use the canonical form */
 		res = lht_dom_export(brd->root, FP, "");

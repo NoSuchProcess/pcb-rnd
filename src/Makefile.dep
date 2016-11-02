@@ -1654,7 +1654,7 @@
  global.h plugins.h plug_io.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h strflags.h compat_misc.h \
- rats_patch.h misc_util.h macro.h layer.h \
+ rats_patch.h hid_actions.h misc_util.h macro.h layer.h \
  ../src_plugins/io_lihata/common.h ../src_plugins/io_lihata/write_style.h \
  ../src_3rd/liblhtpers/lhtpers.h ../src_plugins/io_lihata/io_lihata.h \
  conf.h ../src_plugins/io_lihata/lht_conf.h

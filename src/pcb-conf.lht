@@ -203,6 +203,9 @@ li:pcb-rnd-conf-v1 {
 		} # appearance;
 
 		ha:plugins {
+			ha:io_lihata {
+				aux_pcb_pattern = {%D.%B.lht.pcb}
+			}
 			ha:mincut {
 				enable = 1
 			}
