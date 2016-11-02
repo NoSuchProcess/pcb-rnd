@@ -692,6 +692,31 @@ int pcb_build_fn_cb(gds_t *s, const char **input)
 			gds_append_str(s, (PCB->Filename != NULL) ? PCB->Filename : "no_file_name");
 			(*input)++;
 			return 0;
+		case 'B':
+			if (PCB->Filename != NULL) {
+				char *bn = strrchr(PCB->Filename, '/');
+				if (bn != NULL)
+					bn++;
+				else
+					bn = PCB->Filename;
+				gds_append_str(s, bn);
+			}
+			else
+				gds_append_str(s, "no_file_name");
+			(*input)++;
+			return 0;
+		case 'D':
+			if (PCB->Filename != NULL) {
+				char *bn = strrchr(PCB->Filename, '/');
+				if (bn != NULL)
+					gds_append_len(s, PCB->Filename, bn-PCB->Filename+1);
+				else
+					gds_append_str(s, "./");
+			}
+			else
+				gds_append_str(s, "./");
+			(*input)++;
+			return 0;
 		case 'N':
 			gds_append_str(s, (PCB->Name != NULL) ? PCB->Name : "no_name");
 			(*input)++;

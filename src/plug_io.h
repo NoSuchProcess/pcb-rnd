@@ -150,6 +150,8 @@ do { \
 /* generic file name template substitution callbacks for pcb_strdup_subst:
     %P    pid
     %F    load-time file name of the current pcb
+    %B    basename (load-time file name of the current pcb without path)
+    %D    dirname (load-time file path of the current pcb, without file name, with trailing slash, might be ./)
     %N    name of the current pcb
     %T    wall time (Epoch)
 */
