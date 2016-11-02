@@ -1,19 +1,17 @@
-pcb-rnd 1.1.2
+pcb-rnd 1.1.3
 ~~~~~~~~~~~~~~
-This release lays the foundations of a new native file format and a more
-flexible, attribute based object model development, while also proceeding
-with the code cleanup. Highlights:
- - cleanup:
-  - the code is now compilable with ANSI/C89 - compiles on IRIX 5.3
-  - char * const correctness
- - experimental native lihata file format (not the default yet)
- - property editor dialog in gtk
- - gtk:
-  - full screen mode toggle for maximal editor space
-  - new grid options that speed up rendering
-  - finished preferences window (config's PoV)
-  - route style deletion
-  - fixed all known bugs (shift-tab, mac related issues)
- - fontmode (the font editor plugin) is usable again
- - separate bom and xy exporters
- - close polygon on double click
+The main features of this release are kicad compatibility, the new
+query/advanced-search, a bunch of mainline and old plugins imported and
+that the lihata board format has reached production quality.
+
+The lihata board format introduces a feature that is rare in this class
+of applications: it can load and save board files preserving comments,
+the original indentation, bracing style, units and even numerical
+formats. This reduces unwanted diffs.
+
+This is the last release before a major cleanup of internal data structures.
+The lihata board format had to be sorted out so that new core features
+can be saved and loaded without breaking the inflexible .pcb format. Since
+the cleanup will break the remaining binary compatibility with mainline,
+this was also the last moment we could import old plugins with reasonable
+effort.
