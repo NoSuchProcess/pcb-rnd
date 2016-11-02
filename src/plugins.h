@@ -57,17 +57,22 @@ plugin_info_t *plugin_find(const char *name);
    HOOK_REGISTER with an api struct. The core should run the plugins using
    HOOK_CALL */
 
-#define HOOK_CALL(chain_type, chain, func, res, accept, funcargs) \
+#define HOOK_CALL_DO(chain_type, chain, func, res, accept, funcargs, do_on_success) \
 do { \
 	chain_type *self; \
 	for(self = (chain); self != NULL; self = self->next) { \
 		if (self->func == NULL) \
 			continue; \
 		res = self->func funcargs; \
-		if (res accept) \
+		if (res accept) {\
+			do_on_success; \
 			break; \
+		} \
 	} \
 } while(0)
+
+#define HOOK_CALL(chain_type, chain, func, res, accept, funcargs) \
+	HOOK_CALL_DO(chain_type, chain, func, res, accept, funcargs, (void)0)
 
 #define HOOK_CALL_ALL(chain_type, chain, func, cb, funcargs) \
 do { \

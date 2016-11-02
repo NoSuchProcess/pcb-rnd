@@ -124,6 +124,8 @@ int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_set
 	if (load_settings)
 		event(EVENT_LOAD_PRE, "s", Filename);
 
+	Ptr->Data->loader = NULL;
+
 	if (fmt != NULL) {
 		find_t available[PCB_IO_MAX_FORMATS];
 		int len, n;
@@ -136,12 +138,14 @@ int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_set
 			if (available[0].plug->parse_pcb == NULL)
 				continue;
 			res = available[0].plug->parse_pcb(available[0].plug, Ptr, Filename, load_settings);
-			if (res == 0)
+			if (res == 0) {
+				Ptr->Data->loader = available[0].plug;
 				break;
+			}
 		}
 	}
 	else /* try all parsers until we find one that works */
-		HOOK_CALL(plug_io_t, plug_io_chain, parse_pcb, res, == 0, (self, Ptr, Filename, load_settings));
+		HOOK_CALL_DO(plug_io_t, plug_io_chain, parse_pcb, res, == 0, (self, Ptr, Filename, load_settings), Ptr->Data->loader = self);
 
 	if ((res == 0) && (load_settings))
 		conf_load_project(NULL, Filename);
@@ -156,7 +160,9 @@ int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_set
 int ParseElement(DataTypePtr Ptr, const char *name)
 {
 	int res = -1;
-	HOOK_CALL(plug_io_t, plug_io_chain, parse_element, res, == 0, (self, Ptr, name));
+
+	Ptr->loader = NULL;
+	HOOK_CALL_DO(plug_io_t, plug_io_chain, parse_element, res, == 0, (self, Ptr, name), Ptr->loader = self);
 
 	plug_io_err(res, "load element", name);
 	return res;
