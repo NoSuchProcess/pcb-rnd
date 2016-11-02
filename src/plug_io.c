@@ -210,7 +210,7 @@ static plug_io_t *find_writer(plug_iot_t typ, const char *fmt)
 	int len;
 
 	if (fmt == NULL) {
-#warning TODO: rather save format information on load
+#warning TODO: make this configurable, default to lihata
 		fmt = "pcb";
 	}
 
@@ -594,7 +594,6 @@ int LoadPCB(const char *file, const char *fmt, pcb_bool require_font, int how)
  */
 int RevertPCB(void)
 {
-#warning TODO: use the format saved with PCB
 	return real_load_pcb(PCB->Filename, NULL, pcb_true, pcb_true, pcb_true);
 }
 
