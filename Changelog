@@ -1,6 +1,7 @@
 pcb-rnd 1.1.3 (r4464)
 ~~~~~~~~~~~~~~~~~~~~~
 	[mods]
+		-Fix: the IO system remembers which format (plugin) a file is loaded or last saved with and uses that on a 'save' instead of the default one, unless a different format is explicitly requested ('save as')
 		-Fix: load plugins from /usr/lib/pcb-rnd/plugins instead of /usr/lib/pcb/plugins
 		-Fix: macro argument bug in fontmode (thanks Chad!)
 		-Fix: import_sch: rename the gschem forward-annotation script so that it doesn't collide with mainline's
