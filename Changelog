@@ -1,3 +1,80 @@
+pcb-rnd 1.1.3 (r4464)
+~~~~~~~~~~~~~~~~~~~~~
+	[mods]
+		-Fix: load plugins from /usr/lib/pcb-rnd/plugins instead of /usr/lib/pcb/plugins
+		-Fix: macro argument bug in fontmode (thanks Chad!)
+		-Fix: import_sch: rename the gschem forward-annotation script so that it doesn't collide with mainline's
+		-Cleanup: rename legacy_func to lib_legacy_func as part of the plugin lib cleanup
+		-Add: io_kicad: load and save kicad s-expression board files
+		-Add: io_kicad_legacy: save boards in the old kicad format
+		-Add: io_lihata: preserve formatting and numeric format on load/save
+		-Add: io_lihata: custom indentation rules for boards (more compact, easier to read)
+		-Add: in export_xy: code from mainline to support IPC-7351 on element rotation guesses
+		-Import: autocrop original code
+		-Import: boardflip
+		-Import: distalign
+		-Import: distaligntext
+		-Import: jostle
+		-Import: polycombine
+		-Import: polystich
+		-Import: renumberblock (as part of the renumber plugin)
+		-Import: smartdisperse
+		-Import: teardrops
+		-Import: bboard exporter from git
+		-Import: dsn exporter from git
+		-Import: dxf exporter
+		-Import: ipcd356 exporter from git
+		-Import: openscad exporter from git
+
+	[query]
+		-Add: query language - select/unselect objects using expressions
+		-Add: advanced search dialog box frontend for the query language in the GTK HID
+
+	[core]
+		-Cleanup: const correctness on net creation: style is read-only
+		-Cleanup: move generic find-net-for-pin function from rats_patch to netlist
+		-Fix: changing grid should not only change it in PCB but also in the conf tree - this will deliver the conf change event that will trigger the update in gtk
+		-Fix: const correctness in hid_flags, pin-to-net lookups
+		-Fix: coord conversion rounding errors
+		-Fix: deselect not incrementing undo serial number (from Charles Parker); caused undo panic upon undoing a deselection
+		-Fix: invalid function ptr to data ptr casts
+		-Fix: move global netlist states from global variables to PCB struct fields (on the way to a proper lib...)
+		-Fix: rubber band: when move didn't happen, flags were left behind
+		-Fix: undo element text size bug
+		-Fix: plug_io file load: when multiple formats matched an explicit load format description, try them all, until one worked
+		-Split: generalize format-string-like variable substitution so it's easier to build custom file names (and other strings) from config templates; supports %F (file name), %N (board name), %T (UNIX time), %B (basename) and %D (dirname)
+		-Add: remove_menu concept in HID API
+		-Add: generic flag change macro that can set, clear or toggle the flag depending on an argument
+		-Add: hid export option to draw holes after all copper, silk and mask layers has been drawn so that holes punch through everything
+		-Add: layer creation and rename helper functions
+		-Add: obj_any - a generic type+union struct (and a list of that) for holding pcb objects of any kind
+		-Import: LookupConnectionByPin from mainline
+		-Import: clear flags by object type from mainline (import and port)
+
+	[debian]
+		-Change: redo the whole script for a modular packaging of plugins
+
+	[util]
+		-Add: devhelper script for testing round trips
+		-Add: pcb-strip (remove attributes and/or symbols from a .pcb)
+
+	[gtk]
+		-Add: full screen button in the scroll-bar corner
+		-Fix: call the checkbox menu update function from conf change callback installed at menus, instead of assuming checkbox states are changed only from within the GUI and calling the updater directly
+
+	[propedit]
+		-Add: text set applies on element texts too
+
+	[res]
+		-Add: RemoveMenu() action
+		-Add: gtk can remove menus
+		-Add: update_on field - bind checkbox updating to a config var
+
+	[scconfig]
+		-Fix: when generating dependency generator rules, use -MT for src_3rd targets or else gcc will ruin the target object names; this means proper dependencies in src_3rd
+		-Cleanup: use bison/flex output file name CLI arguments instead of the tmp/mv hacks - the code depended on bison anyway
+		-Add: --symbols to enable debug symbols without the extra asserts and -O0
+
 pcb-rnd 1.1.2 (r3773)
 ~~~~~~~~~~~~~~~~~~~~~
 	[cleanup]
