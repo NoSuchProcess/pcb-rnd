@@ -4,7 +4,6 @@
 	- save as: change format, save as again: it sets back the format to default but the file name is wrong [report:Erich]
 
 - Lihata persistent save:
-	- composite pcb+lht save
 	- ind: space in ha:layer name
 	- ind: symbol height is not in-line on the output
 	- ind: indentation bug in via and netlists
