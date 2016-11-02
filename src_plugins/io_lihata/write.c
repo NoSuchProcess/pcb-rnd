@@ -780,6 +780,7 @@ int io_lihata_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filename, con
 		events.output_rules = io_lihata_out_rules;
 
 		res = lhtpers_fsave_as(&events, brd, inf, FP, old_filename, &errmsg);
+		fflush(FP);
 		if (inf != NULL)
 			fclose(inf);
 	}
