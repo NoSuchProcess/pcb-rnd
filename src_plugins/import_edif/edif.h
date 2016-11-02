@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_EDIF_EDIF_TAB_H_INCLUDED
-# define YY_EDIF_EDIF_TAB_H_INCLUDED
+#ifndef YY_EDIF_EDIF_H_INCLUDED
+# define YY_EDIF_EDIF_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -345,13 +345,13 @@ extern int edifdebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 198 "../../src_plugins/import_edif/edif.y" /* yacc.c:1909  */
+#line 199 "edif.y" /* yacc.c:1909  */
 
     char* s;
     pair_list* pl;
     str_pair* ps;
 
-#line 355 "edif.tab.h" /* yacc.c:1909  */
+#line 355 "edif.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -362,4 +362,4 @@ extern YYSTYPE ediflval;
 
 int edifparse (void);
 
-#endif /* !YY_EDIF_EDIF_TAB_H_INCLUDED  */
+#endif /* !YY_EDIF_EDIF_H_INCLUDED  */

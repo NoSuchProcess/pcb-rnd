@@ -36,6 +36,7 @@
 #include "find.h"
 #include "remove.h"
 #include "funchash_core.h"
+#include "compat_nls.h"
 
 #include "rats.h"
 #include "draw.h"

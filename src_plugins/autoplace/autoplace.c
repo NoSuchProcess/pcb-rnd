@@ -45,6 +45,7 @@
 #include "autoplace.h"
 #include "box.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"

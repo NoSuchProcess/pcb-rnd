@@ -31,6 +31,7 @@
 #include "error.h"
 #include "plugins.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 /* from mymem.h, not include because of the malloc junk */
 LibraryMenuTypePtr GetLibraryMenuMemory(LibraryTypePtr, int *idx);

@@ -45,6 +45,7 @@
 #include "set.h"
 #include "undo.h"
 #include "conf_core.h"
+#include "compat_nls.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

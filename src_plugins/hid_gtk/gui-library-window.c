@@ -61,6 +61,7 @@
 #include "data.h"
 #include "set.h"
 #include "plug_footprint.h"
+#include "compat_nls.h"
 
 #include <gdk/gdkkeysyms.h>
 

@@ -48,6 +48,7 @@
 #include "hid_actions.h"
 #include "layer.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 typedef struct {
 	int x, y;

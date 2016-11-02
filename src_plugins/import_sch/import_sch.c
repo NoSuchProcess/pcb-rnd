@@ -43,6 +43,7 @@
 #include "hid_actions.h"
 #include "import_sch_conf.h"
 #include "misc_util.h"
+#include "compat_nls.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>

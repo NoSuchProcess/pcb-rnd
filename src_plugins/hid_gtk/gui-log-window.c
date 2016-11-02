@@ -35,6 +35,7 @@
 #include "win_place.h"
 #include "pcb-printf.h"
 #include "hid_actions.h"
+#include "compat_nls.h"
 
 static GtkWidget *log_window, *log_text;
 static gboolean log_show_on_append = FALSE;

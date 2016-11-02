@@ -33,6 +33,7 @@
 #include "ghid-search.h"
 #include "win_place.h"
 #include "hid_actions.h"
+#include "compat_nls.h"
 #include "misc_util.h"
 
 typedef struct expr1_s expr1_t;

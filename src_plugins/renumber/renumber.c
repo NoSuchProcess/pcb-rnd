@@ -37,6 +37,7 @@
 #include "hid_actions.h"
 #include "conf_core.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 #include "pcb-printf.h"
 

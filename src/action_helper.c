@@ -25,8 +25,7 @@
  *
  */
 
-/* action routines for output window
- */
+/* action routines for output window */
 
 #include "config.h"
 
@@ -60,6 +59,7 @@
 #include "funchash_core.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 #include "layer.h"
 
 /* --------------------------------------------------------------------------- */

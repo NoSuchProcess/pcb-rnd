@@ -70,6 +70,7 @@
 #include "compat_misc.h"
 #include "route_style.h"
 #include "compat_fs.h"
+#include "compat_nls.h"
 
 /* for opendir */
 #include "compat_inc.h"

@@ -66,6 +66,7 @@
 #include "flag_str.h"
 #include "conf_core.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 #include "netlist.h"
 
 static pcb_bool between_increment_and_restore = pcb_false;

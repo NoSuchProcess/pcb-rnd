@@ -33,6 +33,7 @@
 #include "hid_actions.h"
 #include "conf_core.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 const char *ps_cookie = "ps HID";
 

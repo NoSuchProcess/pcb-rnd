@@ -47,6 +47,7 @@
 #include "route_style.h"
 #include "compat_misc.h"
 #include "netlist.h"
+#include "compat_nls.h"
 
 #define TRIEDFIRST 0x1
 #define BESTFOUND 0x2

@@ -24,6 +24,7 @@
 #include "hid_init.h"
 #include "stdarg.h"
 #include "misc_util.h"
+#include "compat_nls.h"
 
 static int ok;
 

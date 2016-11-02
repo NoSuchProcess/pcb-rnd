@@ -12,6 +12,7 @@
 
 #include "gtkhid.h"
 #include "gui.h"
+#include "compat_nls.h"
 
 #include "ghid-cell-renderer-visibility.h"
 

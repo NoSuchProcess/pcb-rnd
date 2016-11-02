@@ -47,6 +47,7 @@
 #include "stdarg.h"
 #include "misc_util.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 #include <sys/poll.h>
 

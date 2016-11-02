@@ -31,6 +31,7 @@
 #include "action_helper.h"
 #include "hid_actions.h"
 #include "undo.h"
+#include "compat_nls.h"
 
 /* actions about actions
  */

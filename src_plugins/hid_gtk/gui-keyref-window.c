@@ -30,6 +30,7 @@
 
 #include "gui.h"
 #include "win_place.h"
+#include "compat_nls.h"
 
 static GtkWidget *keyref_window;
 

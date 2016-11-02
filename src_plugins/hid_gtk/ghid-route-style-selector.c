@@ -15,6 +15,7 @@
 #include "gui.h"
 #include "pcb-printf.h"
 #include "route_style.h"
+#include "compat_nls.h"
 #include "set.h"
 
 #include "ghid-route-style-selector.h"

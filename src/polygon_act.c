@@ -36,6 +36,7 @@
 #include "draw.h"
 #include "search.h"
 #include "crosshair.h"
+#include "compat_nls.h"
 
 /* --------------------------------------------------------------------------- */
 

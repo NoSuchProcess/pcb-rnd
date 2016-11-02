@@ -58,26 +58,6 @@
 #include "polyarea.h"
 #include "vtroutestyle.h"
 
-
-/* Internationalization support. */
-#ifdef ENABLE_NLS
-#	include <libintl.h>
-#	define _(S) gettext(S)
-#	if defined(gettext_noop)
-#		define N_(S) gettext_noop(S)
-#	else
-#		define N_(S) (S)
-#	endif
-#else
-#	define _(S) (S)
-#	define N_(S) (S)
-#	define textdomain(S) (S)
-#	define gettext(S) (S)
-#	define dgettext(D, S) (S)
-#	define dcgettext(D, S, T) (S)
-#	define bindtextdomain(D, Dir) (D)
-#endif /* ENABLE_NLS */
-
 #define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
 

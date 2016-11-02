@@ -44,6 +44,7 @@
 #include <assert.h>
 #include "compat_fs.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 #include <genvector/gds_char.h>
 

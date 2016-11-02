@@ -80,6 +80,7 @@
 #include "pcb-printf.h"
 #include "set.h"
 #include "layer.h"
+#include "compat_nls.h"
 
 /* #defines to enable some debugging output */
 /*

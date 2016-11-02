@@ -98,6 +98,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "hid_actions.h"
 #include "hid_flags.h"
 #include "route_style.h"
+#include "compat_nls.h"
 
 static pcb_bool ignore_layer_update;
 

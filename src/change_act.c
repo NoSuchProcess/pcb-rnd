@@ -48,6 +48,7 @@
 #include "rubberband.h"
 #include "misc_util.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 #include "layer.h"
 
 static void ChangeFlag(const char *, const char *, int, const char *);

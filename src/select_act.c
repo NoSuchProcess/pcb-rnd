@@ -42,6 +42,7 @@
 #include "copy.h"
 #include "hid_attrib.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 /* --------------------------------------------------------------------------- */
 /* Ask the user for a search pattern */

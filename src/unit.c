@@ -29,6 +29,7 @@
 #include <locale.h>
 #include "global.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 #include "unit.h"
 
 /* Helper macros for tables */

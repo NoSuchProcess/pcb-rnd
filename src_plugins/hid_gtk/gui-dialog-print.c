@@ -36,6 +36,7 @@
 #include "hid_init.h"
 #include "misc_util.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 static GtkWidget *export_dialog = NULL;
 

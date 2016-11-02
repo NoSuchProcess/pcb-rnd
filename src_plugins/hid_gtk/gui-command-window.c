@@ -35,6 +35,7 @@
 #include "crosshair.h"
 #include "hid_actions.h"
 #include "hid_gtk_conf.h"
+#include "compat_nls.h"
 
 static GtkWidget *command_window;
 static GtkWidget *combo_vbox;

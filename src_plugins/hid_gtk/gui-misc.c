@@ -33,6 +33,7 @@
 #include "set.h"
 #include "pcb-printf.h"
 #include "misc_util.h"
+#include "compat_nls.h"
 
 #include "gui.h"
 #include <gdk/gdkkeysyms.h>

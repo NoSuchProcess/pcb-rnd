@@ -44,6 +44,7 @@
 #include "error.h"
 #include "plug_io.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 #include "pcb-printf.h"
 
 #define utf8_dup_string(a,b) *(a) = pcb_strdup(b)

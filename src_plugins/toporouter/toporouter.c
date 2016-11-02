@@ -55,6 +55,7 @@
 
 #include "toporouter.h"
 #include "pcb-printf.h"
+#include "compat_nls.h"
 
 static void toporouter_edge_init(toporouter_edge_t * edge)
 {

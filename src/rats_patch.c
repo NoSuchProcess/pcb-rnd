@@ -35,6 +35,7 @@
 #include "remove.h"
 #include "copy.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 static void rats_patch_remove(PCBTypePtr pcb, rats_patch_line_t * n, int do_free);
 

@@ -29,6 +29,7 @@
 #include "data.h"
 #include "error.h"
 #include "find.h"
+#include "compat_nls.h"
 
 /* -------------------------------------------------------------------------- */
 

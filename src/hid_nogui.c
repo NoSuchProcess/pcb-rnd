@@ -8,6 +8,7 @@
 #include "global.h"
 #include "hid.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 /* This is the "gui" that is installed at startup, and is used when
    there is no other real GUI to use.  For the most part, it just

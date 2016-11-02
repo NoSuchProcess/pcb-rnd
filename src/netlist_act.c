@@ -45,6 +45,7 @@
 #include "rats_patch.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 #include "netlist.h"
 
 static int pcb_netlist_swap()

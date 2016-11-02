@@ -63,10 +63,7 @@
 #include "hid_attrib.h"
 #include "hid_init.h"
 #include "compat_misc.h"
-
-#if ENABLE_NLS
-#include <libintl.h>
-#endif
+#include "compat_nls.h"
 
 /* ----------------------------------------------------------------------
  * initialize signal and error handlers

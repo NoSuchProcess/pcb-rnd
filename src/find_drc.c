@@ -26,6 +26,7 @@
  */
 
 #include "drc.h"
+#include "compat_nls.h"
 
 /* DRC related functions */
 

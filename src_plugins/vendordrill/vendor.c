@@ -46,6 +46,7 @@
 #include "hid_cfg.h"
 #include "vendor_conf.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 

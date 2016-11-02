@@ -48,6 +48,7 @@
 #include "undo.h"
 #include "hid_actions.h"
 #include "route_style.h"
+#include "compat_nls.h"
 
 static int mode_position = 0;
 static int mode_stack[MAX_MODESTACK_DEPTH];

@@ -50,6 +50,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "create.h"
 #include "polygon.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 #include "hid.h"
 #include "hid_draw_helpers.h"

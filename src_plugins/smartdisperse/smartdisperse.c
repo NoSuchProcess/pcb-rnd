@@ -40,6 +40,7 @@
 #include "set.h"
 #include "plugins.h"
 #include "hid_actions.h"
+#include "compat_nls.h"
 
 #define GAP 10000
 static Coord minx;

@@ -25,6 +25,8 @@
  *
  */
 
+#include "compat_nls.h"
+
 static inline r_dir_t r_search_pt(rtree_t * rtree, const PointType * pt,
 															int radius,
 															r_dir_t (*region_in_search) (const BoxType * region, void *cl),

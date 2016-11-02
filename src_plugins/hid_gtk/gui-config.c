@@ -51,6 +51,7 @@
 #include "paths.h"
 #include "plug_footprint.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 #include "fptr_cast.h"
 #include <liblihata/tree.h>
 

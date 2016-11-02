@@ -44,6 +44,7 @@
 #include "hid_actions.h"
 #include "hid_attrib.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 /* ---------------------------------------------------------------- */
 static const char execcommand_syntax[] = "ExecCommand(command)";

@@ -51,6 +51,7 @@ Modifications:
 #include <glib.h>
 #include <gtk/gtk.h>
 #include "gschem_accel_label.h"
+#include "compat_nls.h"
 
 #define P_(x) (x)
 

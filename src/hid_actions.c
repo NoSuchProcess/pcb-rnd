@@ -13,6 +13,7 @@
 #include "event.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 /* do not throw "unknown action" warning for these: they are known
    actions, the GUI HID may register them, but nothing bad happens if

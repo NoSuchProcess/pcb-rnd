@@ -17,6 +17,7 @@
 #include "gtkhid.h"
 #include "gui.h"
 #include "pcb-printf.h"
+#include "compat_nls.h"
 
 #include "ghid-coord-entry.h"
 

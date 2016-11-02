@@ -36,6 +36,7 @@
 #include "data.h"
 #include "rats_patch.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 static plug_import_t import_netlist;
 

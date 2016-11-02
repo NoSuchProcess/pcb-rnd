@@ -29,6 +29,7 @@
 
 #include "config.h"
 #include "compat_misc.h"
+#include "compat_nls.h"
 
 #include "data.h"
 #include "gui.h"
