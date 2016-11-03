@@ -896,7 +896,7 @@ static r_dir_t count_contours_i_am_inside(const BoxType * b, void *cl)
 
 /* cntr_in_M_POLYAREA
 returns poly is inside outfst ? pcb_true : pcb_false */
-static int cntr_in_M_POLYAREA(PLINE * poly, POLYAREA * outfst, BOOLp test)
+static int cntr_in_M_POLYAREA(PLINE * poly, POLYAREA * outfst, pcb_bool test)
 {
 	POLYAREA *outer = outfst;
 	heap_t *heap;
@@ -985,7 +985,7 @@ label_contour
  (C) 1997 Alexey Nikitin, Michael Leonov
 */
 
-static BOOLp label_contour(PLINE * a)
+static pcb_bool label_contour(PLINE * a)
 {
 	VNODE *cur = &a->head;
 	VNODE *first_labelled = NULL;
@@ -1014,11 +1014,11 @@ static BOOLp label_contour(PLINE * a)
 	return pcb_false;
 }																/* label_contour */
 
-static BOOLp cntr_label_POLYAREA(PLINE * poly, POLYAREA * ppl, BOOLp test)
+static pcb_bool cntr_label_POLYAREA(PLINE * poly, POLYAREA * ppl, pcb_bool test)
 {
 	assert(ppl != NULL && ppl->contours != NULL);
 	if (poly->Flags.status == ISECTED) {
-		label_contour(poly);				/* should never get here when BOOLp is pcb_true */
+		label_contour(poly);				/* should never get here when pcb_bool is pcb_true */
 	}
 	else if (cntr_in_M_POLYAREA(poly, ppl, test)) {
 		if (test)
@@ -1033,7 +1033,7 @@ static BOOLp cntr_label_POLYAREA(PLINE * poly, POLYAREA * ppl, BOOLp test)
 	return pcb_false;
 }																/* cntr_label_POLYAREA */
 
-static BOOLp M_POLYAREA_label_separated(PLINE * afst, POLYAREA * b, BOOLp touch)
+static pcb_bool M_POLYAREA_label_separated(PLINE * afst, POLYAREA * b, pcb_bool touch)
 {
 	PLINE *curc = afst;
 
@@ -1044,7 +1044,7 @@ static BOOLp M_POLYAREA_label_separated(PLINE * afst, POLYAREA * b, BOOLp touch)
 	return pcb_false;
 }
 
-static BOOLp M_POLYAREA_label(POLYAREA * afst, POLYAREA * b, BOOLp touch)
+static pcb_bool M_POLYAREA_label(POLYAREA * afst, POLYAREA * b, pcb_bool touch)
 {
 	POLYAREA *a = afst;
 	PLINE *curc;
@@ -1968,7 +1968,7 @@ static void M_POLYAREA_update_primary(jmp_buf * e, POLYAREA ** pieces, PLINE ** 
 }
 
 static void
-M_POLYAREA_Collect_separated(jmp_buf * e, PLINE * afst, POLYAREA ** contours, PLINE ** holes, int action, BOOLp maybe)
+M_POLYAREA_Collect_separated(jmp_buf * e, PLINE * afst, POLYAREA ** contours, PLINE ** holes, int action, pcb_bool maybe)
 {
 	PLINE **cur, **next;
 
@@ -1980,7 +1980,7 @@ M_POLYAREA_Collect_separated(jmp_buf * e, PLINE * afst, POLYAREA ** contours, PL
 	}
 }
 
-static void M_POLYAREA_Collect(jmp_buf * e, POLYAREA * afst, POLYAREA ** contours, PLINE ** holes, int action, BOOLp maybe)
+static void M_POLYAREA_Collect(jmp_buf * e, POLYAREA * afst, POLYAREA ** contours, PLINE ** holes, int action, pcb_bool maybe)
 {
 	POLYAREA *a = afst;
 	POLYAREA *parent = NULL;			/* Quiet compiler warning */
@@ -2021,7 +2021,7 @@ static void M_POLYAREA_Collect(jmp_buf * e, POLYAREA * afst, POLYAREA ** contour
 }
 
 /* determine if two polygons touch or overlap */
-BOOLp Touching(POLYAREA * a, POLYAREA * b)
+pcb_bool Touching(POLYAREA * a, POLYAREA * b)
 {
 	jmp_buf e;
 	int code;
@@ -2312,7 +2312,7 @@ void poly_DelContour(PLINE ** c)
 	free(*c), *c = NULL;
 }
 
-void poly_PreContour(PLINE * C, BOOLp optimize)
+void poly_PreContour(PLINE * C, pcb_bool optimize)
 {
 	double area = 0;
 	VNODE *p, *c;
@@ -2421,7 +2421,7 @@ void poly_InclVertex(VNODE * after, VNODE * node)
 	}
 }
 
-BOOLp poly_CopyContour(PLINE ** dst, PLINE * src)
+pcb_bool poly_CopyContour(PLINE ** dst, PLINE * src)
 {
 	VNODE *cur, *newnode;
 
@@ -2450,7 +2450,7 @@ BOOLp poly_CopyContour(PLINE ** dst, PLINE * src)
 /**********************************************************************/
 /* polygon routines */
 
-BOOLp poly_Copy0(POLYAREA ** dst, const POLYAREA * src)
+pcb_bool poly_Copy0(POLYAREA ** dst, const POLYAREA * src)
 {
 	*dst = NULL;
 	if (src != NULL)
@@ -2462,7 +2462,7 @@ BOOLp poly_Copy0(POLYAREA ** dst, const POLYAREA * src)
 	return poly_Copy1(*dst, src);
 }
 
-BOOLp poly_Copy1(POLYAREA * dst, const POLYAREA * src)
+pcb_bool poly_Copy1(POLYAREA * dst, const POLYAREA * src)
 {
 	PLINE *cur, **last = &dst->contours;
 
@@ -2489,7 +2489,7 @@ void poly_M_Incl(POLYAREA ** list, POLYAREA * a)
 	}
 }
 
-BOOLp poly_M_Copy0(POLYAREA ** dst, const POLYAREA * srcfst)
+pcb_bool poly_M_Copy0(POLYAREA ** dst, const POLYAREA * srcfst)
 {
 	const POLYAREA *src = srcfst;
 	POLYAREA *di;
@@ -2506,7 +2506,7 @@ BOOLp poly_M_Copy0(POLYAREA ** dst, const POLYAREA * srcfst)
 	return pcb_true;
 }
 
-BOOLp poly_InclContour(POLYAREA * p, PLINE * c)
+pcb_bool poly_InclContour(POLYAREA * p, PLINE * c)
 {
 	PLINE *tmp;
 
@@ -2591,7 +2591,7 @@ int poly_InsideContour(PLINE * c, Vector p)
 	return info.f;
 }
 
-BOOLp poly_CheckInside(POLYAREA * p, Vector v0)
+pcb_bool poly_CheckInside(POLYAREA * p, Vector v0)
 {
 	PLINE *cur;
 
@@ -2607,7 +2607,7 @@ BOOLp poly_CheckInside(POLYAREA * p, Vector v0)
 	return pcb_false;
 }
 
-BOOLp poly_M_CheckInside(POLYAREA * p, Vector v0)
+pcb_bool poly_M_CheckInside(POLYAREA * p, Vector v0)
 {
 	POLYAREA *cur;
 
@@ -2818,7 +2818,7 @@ void poly_Free(POLYAREA ** p)
 	free(*p), *p = NULL;
 }
 
-static BOOLp inside_sector(VNODE * pn, Vector p2)
+static pcb_bool inside_sector(VNODE * pn, Vector p2)
 {
 	Vector cdir, ndir, pdir;
 	int p_c, n_c, p_n;
@@ -2839,7 +2839,7 @@ static BOOLp inside_sector(VNODE * pn, Vector p2)
 }																/* inside_sector */
 
 /* returns pcb_true if bad contour */
-BOOLp poly_ChkContour(PLINE * a)
+pcb_bool poly_ChkContour(PLINE * a)
 {
 	VNODE *a1, *a2, *hit1, *hit2;
 	Vector i1, i2;
@@ -2923,7 +2923,7 @@ void poly_bbox(POLYAREA * p, BoxType * b)
 }
 
 
-BOOLp poly_Valid(POLYAREA * p)
+pcb_bool poly_Valid(POLYAREA * p)
 {
 	PLINE *c;
 

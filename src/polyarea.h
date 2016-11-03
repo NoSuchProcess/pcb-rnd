@@ -25,8 +25,6 @@
 #ifndef	PCB_POLYAREA_H
 #define	PCB_POLYAREA_H
 
-typedef int BOOLp;
-
 #define PLF_DIR 1
 #define PLF_INV 0
 #define PLF_MARK 1
@@ -99,9 +97,9 @@ void poly_IniContour(PLINE * c);
 void poly_ClrContour(PLINE * c);	/* clears list of vertices */
 void poly_DelContour(PLINE ** c);
 
-BOOLp poly_CopyContour(PLINE ** dst, PLINE * src);
+pcb_bool poly_CopyContour(PLINE ** dst, PLINE * src);
 
-void poly_PreContour(PLINE * c, BOOLp optimize);	/* prepare contour */
+void poly_PreContour(PLINE * c, pcb_bool optimize);	/* prepare contour */
 void poly_InvContour(PLINE * c);	/* invert contour */
 
 VNODE *poly_CreateNode(Vector v);
@@ -118,20 +116,20 @@ struct POLYAREA {
 	rtree_t *contour_tree;
 };
 
-BOOLp poly_M_Copy0(POLYAREA ** dst, const POLYAREA * srcfst);
+pcb_bool poly_M_Copy0(POLYAREA ** dst, const POLYAREA * srcfst);
 void poly_M_Incl(POLYAREA ** list, POLYAREA * a);
 
-BOOLp poly_Copy0(POLYAREA ** dst, const POLYAREA * src);
-BOOLp poly_Copy1(POLYAREA * dst, const POLYAREA * src);
+pcb_bool poly_Copy0(POLYAREA ** dst, const POLYAREA * src);
+pcb_bool poly_Copy1(POLYAREA * dst, const POLYAREA * src);
 
-BOOLp poly_InclContour(POLYAREA * p, PLINE * c);
-BOOLp poly_ExclContour(POLYAREA * p, PLINE * c);
+pcb_bool poly_InclContour(POLYAREA * p, PLINE * c);
+pcb_bool poly_ExclContour(POLYAREA * p, PLINE * c);
 
 
-BOOLp poly_ChkContour(PLINE * a);
+pcb_bool poly_ChkContour(PLINE * a);
 
-BOOLp poly_CheckInside(POLYAREA * c, Vector v0);
-BOOLp Touching(POLYAREA * p1, POLYAREA * p2);
+pcb_bool poly_CheckInside(POLYAREA * c, Vector v0);
+pcb_bool Touching(POLYAREA * p1, POLYAREA * p2);
 
 /**********************************************************************/
 
@@ -147,7 +145,7 @@ POLYAREA *poly_Create(void);
 void poly_Free(POLYAREA ** p);
 void poly_Init(POLYAREA * p);
 void poly_FreeContours(PLINE ** pl);
-BOOLp poly_Valid(POLYAREA * p);
+pcb_bool poly_Valid(POLYAREA * p);
 
 enum PolygonBooleanOperation {
 	PBO_UNITE,
