@@ -211,5 +211,20 @@ typedef @/local/pcb/long64@    pcb_long64_t;
 /* ./configure --workaround requests: */
 @?/local/pcb/workaround_defs@
 
+/* Make sure to catch usage of non-portable functions in debug mode
+   This is in here only because config.h should be included from every source
+   file. */
+#ifndef NDEBUG
+#	undef strdup
+#	undef strndup
+#	undef snprintf
+#	undef round
+#	define strdup      never_use_strdup__use_pcb_strdup
+#	define strndup     never_use_strndup__use_pcb_strndup
+#	define snprintf    never_use_snprintf__use_pcb_snprintf
+#	define round       never_use_round__use_pcb_round
+#endif
+
+
 #endif
 @]

@@ -29,9 +29,9 @@
  */
 
 
-/* operations on heaps.
- */
+/* operations on heaps. */
 
+#include <stdlib.h>
 #include <assert.h>
 #include "config.h"
 #include "heap.h"
