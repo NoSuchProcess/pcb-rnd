@@ -28,6 +28,8 @@
 #include "conf_core.h"
 #include "misc_util.h"
 #include "route_style.h"
+#include "error.h"
+#include "hid.h"
 
 static const char conf_syntax[] =
 	"conf(set, path, value, [role], [policy]) - change a config setting\n"

@@ -36,6 +36,7 @@
 #include "mymem.h"
 #include "rtree.h"
 #include "rats_patch.h"
+#include "list_common.h"
 
 /* ---------------------------------------------------------------------------
  * local prototypes

@@ -33,7 +33,6 @@
 #include "global_typedefs.h"
 #include "global_objs.h"
 #include "global_element.h"
-#include "list_common.h"
 #include "list_line.h"
 #include "list_arc.h"
 #include "list_text.h"
