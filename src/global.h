@@ -31,6 +31,4 @@
 
 #include "config.h"
 
-#include "vtroutestyle.h"
-
 #endif /* PCB_GLOBAL_H  */

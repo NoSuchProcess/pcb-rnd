@@ -22,7 +22,7 @@
 
 #ifndef PCB_CONF_H
 #define PCB_CONF_H
-#include "global.h"
+#include "config.h"
 #include "global_typedefs.h"
 #include "pcb-printf.h"
 #include <liblihata/lihata.h>

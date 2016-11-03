@@ -649,7 +649,7 @@ typedef struct {
 #define GVT_SIZE_TYPE size_t
 #define GVT_DOUBLING_THRS 64
 #define GVT_START_SIZE 32
-/*#define GVT_FUNC static*/
+#define GVT_FUNC
 #define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
 #define GVT_FREE(vect, ptr)           free(ptr)
 #include <genvector/genvector_impl.h>
