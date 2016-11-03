@@ -57,4 +57,17 @@ NetListTypePtr ProcNetlist(LibraryTypePtr);
 NetListListType CollectSubnets(pcb_bool);
 ConnectionTypePtr GetConnectionMemory(NetTypePtr);
 
+#define CONNECTION_LOOP(net) do {                         \
+        pcb_cardinal_t        n;                                      \
+        ConnectionTypePtr       connection;                     \
+        for (n = (net)->ConnectionN-1; n != -1; n--)            \
+        {                                                       \
+                connection = & (net)->Connection[n]
+
+#define RAT_LOOP(top) do {                                          \
+  RatType *line;                                                    \
+  gdl_iterator_t __it__;                                            \
+  ratlist_foreach(&(top)->Rat, &__it__, line) {
+
+
 #endif

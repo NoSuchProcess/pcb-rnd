@@ -53,11 +53,6 @@
 #define	OBJECT_ID(p)		(((AnyObjectTypePtr) p)->ID)
 
 /* ---------------------------------------------------------------------------
- * access macro for current buffer
- */
-#define	PASTEBUFFER		(&Buffers[conf_core.editor.buffer_number])
-
-/* ---------------------------------------------------------------------------
  * access macros for elements name structure
  */
 #define	DESCRIPTION_INDEX	0
@@ -117,36 +112,10 @@
         {                                                       \
                 drill = &(top)->Drill[n]
 
-#define NETLIST_LOOP(top) do   {                         \
-        pcb_cardinal_t        n;                                      \
-        NetListTypePtr   netlist;                               \
-        for (n = (top)->NetListN-1; n != -1; n--)               \
-        {                                                       \
-                netlist = &(top)->NetList[n]
-
-#define NET_LOOP(top) do   {                             \
-        pcb_cardinal_t        n;                                      \
-        NetTypePtr   net;                                       \
-        for (n = (top)->NetN-1; n != -1; n--)                   \
-        {                                                       \
-                net = &(top)->Net[n]
-
-#define CONNECTION_LOOP(net) do {                         \
-        pcb_cardinal_t        n;                                      \
-        ConnectionTypePtr       connection;                     \
-        for (n = (net)->ConnectionN-1; n != -1; n--)            \
-        {                                                       \
-                connection = & (net)->Connection[n]
-
 #define ELEMENT_LOOP(top) do {                                      \
   ElementType *element;                                             \
   gdl_iterator_t __it__;                                            \
   pinlist_foreach(&(top)->Element, &__it__, element) {
-
-#define RAT_LOOP(top) do {                                          \
-  RatType *line;                                                    \
-  gdl_iterator_t __it__;                                            \
-  ratlist_foreach(&(top)->Rat, &__it__, line) {
 
 #define	ELEMENTTEXT_LOOP(element) do { 	\
 	pcb_cardinal_t	n;				\
@@ -323,6 +292,5 @@
 	{ \
 		if (layer->On)				\
 			POLYGON_LOOP(layer)
-
 
 #endif

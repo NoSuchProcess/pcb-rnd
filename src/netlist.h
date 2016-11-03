@@ -93,4 +93,19 @@ void FreeNetListListMemory(NetListListTypePtr);
 void FreeNetListMemory(NetListTypePtr);
 void FreeNetMemory(NetTypePtr);
 
+#define NETLIST_LOOP(top) do   {                         \
+        pcb_cardinal_t        n;                                      \
+        NetListTypePtr   netlist;                               \
+        for (n = (top)->NetListN-1; n != -1; n--)               \
+        {                                                       \
+                netlist = &(top)->NetList[n]
+
+#define NET_LOOP(top) do   {                             \
+        pcb_cardinal_t        n;                                      \
+        NetTypePtr   net;                                       \
+        for (n = (top)->NetN-1; n != -1; n--)                   \
+        {                                                       \
+                net = &(top)->Net[n]
+
+
 #endif

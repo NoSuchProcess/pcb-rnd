@@ -60,4 +60,9 @@ void *CopyObjectToBuffer(DataTypePtr, DataTypePtr, int, void *, void *, void *);
 /* This action is called from ActionElementAddIf() */
 int LoadFootprint(int argc, const char **argv, Coord x, Coord y);
 
+/* ---------------------------------------------------------------------------
+ * access macro for current buffer
+ */
+#define	PASTEBUFFER		(&Buffers[conf_core.editor.buffer_number])
+
 #endif

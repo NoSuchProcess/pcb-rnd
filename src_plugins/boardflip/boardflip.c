@@ -30,6 +30,7 @@
 #include "config.h"
 #include "config.h"
 #include "board.h"
+#include "rats.h"
 #include "data.h"
 #include "hid.h"
 #include "misc.h"

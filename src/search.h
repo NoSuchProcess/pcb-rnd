@@ -30,6 +30,7 @@
 #define	PCB_SEARCH_H
 
 #include "global_objs.h"
+#include "rats.h"
 #include "misc_util.h"
 
 int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord by1, Coord bx2, Coord by2);

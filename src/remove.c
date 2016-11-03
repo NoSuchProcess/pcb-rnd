@@ -34,6 +34,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "rats.h"
 #include "draw.h"
 #include "misc.h"
 #include "move.h"
