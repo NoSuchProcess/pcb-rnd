@@ -920,3 +920,20 @@ char *ConnectionName(int type, void *ptr1, void *ptr2)
 	strcat(name, UNKNOWN(num));
 	return (name);
 }
+
+/* ---------------------------------------------------------------------------
+ * get next slot for a connection, allocates memory if necessary
+ */
+ConnectionTypePtr GetConnectionMemory(NetTypePtr Net)
+{
+	ConnectionTypePtr con = Net->Connection;
+
+	/* realloc new memory if necessary and clear it */
+	if (Net->ConnectionN >= Net->ConnectionMax) {
+		Net->ConnectionMax += STEP_POINT;
+		con = (ConnectionTypePtr) realloc(con, Net->ConnectionMax * sizeof(ConnectionType));
+		Net->Connection = con;
+		memset(con + Net->ConnectionN, 0, STEP_POINT * sizeof(ConnectionType));
+	}
+	return (con + Net->ConnectionN++);
+}

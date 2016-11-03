@@ -24,8 +24,31 @@
  *
  */
 
+#ifndef PCB_NETLIST_H
+#define PCB_NETLIST_H
+
 /* generic netlist operations */
 #include "global.h"
+
+struct pcb_net_s {								/* holds a net of connections */
+	pcb_cardinal_t ConnectionN,					/* the number of connections contained */
+	  ConnectionMax;							/* max connections from malloc */
+	ConnectionTypePtr Connection;
+	RouteStyleTypePtr Style;
+};
+
+typedef struct {								/* holds a list of nets */
+	pcb_cardinal_t NetN,								/* the number of subnets contained */
+	  NetMax;											/* max subnets from malloc */
+	NetTypePtr Net;
+} NetListType, *NetListTypePtr;
+
+typedef struct {								/* holds a list of net lists */
+	pcb_cardinal_t NetListN,						/* the number of net lists contained */
+	  NetListMax;									/* max net lists from malloc */
+	NetListTypePtr NetList;
+} NetListListType, *NetListListTypePtr;
+
 
 void pcb_netlist_changed(int force_unfreeze);
 LibraryMenuTypePtr pcb_netnode_to_netname(const char *nodename);
@@ -61,3 +84,11 @@ LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, const PadType *pad);
 pcb_cardinal_t pcb_netlist_net_idx(PCBTypePtr pcb, LibraryMenuType *net);
 
 #define PCB_NETLIST_INVALID_INDEX ((pcb_cardinal_t)(-1))
+
+NetTypePtr GetNetMemory(NetListTypePtr);
+NetListTypePtr GetNetListMemory(NetListListTypePtr);
+void FreeNetListListMemory(NetListListTypePtr);
+void FreeNetListMemory(NetListTypePtr);
+void FreeNetMemory(NetTypePtr);
+
+#endif

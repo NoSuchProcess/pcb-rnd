@@ -255,3 +255,80 @@ pcb_cardinal_t pcb_netlist_net_idx(PCBTypePtr pcb, LibraryMenuType *net)
 
 	return net - first;
 }
+
+/* ---------------------------------------------------------------------------
+ * get next slot for a subnet, allocates memory if necessary
+ */
+NetTypePtr GetNetMemory(NetListTypePtr Netlist)
+{
+	NetTypePtr net = Netlist->Net;
+
+	/* realloc new memory if necessary and clear it */
+	if (Netlist->NetN >= Netlist->NetMax) {
+		Netlist->NetMax += STEP_POINT;
+		net = (NetTypePtr) realloc(net, Netlist->NetMax * sizeof(NetType));
+		Netlist->Net = net;
+		memset(net + Netlist->NetN, 0, STEP_POINT * sizeof(NetType));
+	}
+	return (net + Netlist->NetN++);
+}
+
+/* ---------------------------------------------------------------------------
+ * get next slot for a net list, allocates memory if necessary
+ */
+NetListTypePtr GetNetListMemory(NetListListTypePtr Netlistlist)
+{
+	NetListTypePtr netlist = Netlistlist->NetList;
+
+	/* realloc new memory if necessary and clear it */
+	if (Netlistlist->NetListN >= Netlistlist->NetListMax) {
+		Netlistlist->NetListMax += STEP_POINT;
+		netlist = (NetListTypePtr) realloc(netlist, Netlistlist->NetListMax * sizeof(NetListType));
+		Netlistlist->NetList = netlist;
+		memset(netlist + Netlistlist->NetListN, 0, STEP_POINT * sizeof(NetListType));
+	}
+	return (netlist + Netlistlist->NetListN++);
+}
+
+/* ---------------------------------------------------------------------------
+ * frees memory used by a net
+ */
+void FreeNetListMemory(NetListTypePtr Netlist)
+{
+	if (Netlist) {
+		NET_LOOP(Netlist);
+		{
+			FreeNetMemory(net);
+		}
+		END_LOOP;
+		free(Netlist->Net);
+		memset(Netlist, 0, sizeof(NetListType));
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * frees memory used by a net list
+ */
+void FreeNetListListMemory(NetListListTypePtr Netlistlist)
+{
+	if (Netlistlist) {
+		NETLIST_LOOP(Netlistlist);
+		{
+			FreeNetListMemory(netlist);
+		}
+		END_LOOP;
+		free(Netlistlist->NetList);
+		memset(Netlistlist, 0, sizeof(NetListListType));
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * frees memory used by a subnet
+ */
+void FreeNetMemory(NetTypePtr Net)
+{
+	if (Net) {
+		free(Net->Connection);
+		memset(Net, 0, sizeof(NetType));
+	}
+}

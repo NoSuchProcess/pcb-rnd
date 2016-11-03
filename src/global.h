@@ -88,37 +88,6 @@ typedef struct {
 	void *(*Rat) (RatTypePtr);
 } ObjectFunctionType, *ObjectFunctionTypePtr;
 
-/* ---------------------------------------------------------------------------
- * structure used by device drivers
- */
-
-typedef struct {								/* holds a connection */
-	Coord X, Y;										/* coordinate of connection */
-	long int type;								/* type of object in ptr1 - 3 */
-	void *ptr1, *ptr2;						/* the object of the connection */
-	pcb_cardinal_t group;								/* the layer group of the connection */
-	LibraryMenuType *menu;				/* the netmenu this *SHOULD* belong too */
-} ConnectionType, *ConnectionTypePtr;
-
-struct net_st {								/* holds a net of connections */
-	pcb_cardinal_t ConnectionN,					/* the number of connections contained */
-	  ConnectionMax;							/* max connections from malloc */
-	ConnectionTypePtr Connection;
-	RouteStyleTypePtr Style;
-};
-
-typedef struct {								/* holds a list of nets */
-	pcb_cardinal_t NetN,								/* the number of subnets contained */
-	  NetMax;											/* max subnets from malloc */
-	NetTypePtr Net;
-} NetListType, *NetListTypePtr;
-
-typedef struct {								/* holds a list of net lists */
-	pcb_cardinal_t NetListN,						/* the number of net lists contained */
-	  NetListMax;									/* max net lists from malloc */
-	NetListTypePtr NetList;
-} NetListListType, *NetListListTypePtr;
-
 typedef struct {								/* holds a generic list of pointers */
 	pcb_cardinal_t PtrN,								/* the number of pointers contained */
 	  PtrMax;											/* max subnets from malloc */

@@ -28,10 +28,24 @@
 
 /* prototypes for rats routines */
 
-#ifndef	PCB_RATS_H
-#define	PCB_RATS_H
+#ifndef PCB_RATS_H
+#define PCB_RATS_H
 
 #include "global.h"
+#include "netlist.h"
+
+/* ---------------------------------------------------------------------------
+ * structure used by device drivers
+ */
+
+
+struct pcb_rat_s {								/* holds a connection (rat) */
+	Coord X, Y;										/* coordinate of connection */
+	long int type;								/* type of object in ptr1 - 3 */
+	void *ptr1, *ptr2;						/* the object of the connection */
+	pcb_cardinal_t group;								/* the layer group of the connection */
+	LibraryMenuType *menu;				/* the netmenu this *SHOULD* belong too */
+};
 
 RatTypePtr AddNet(void);
 char *ConnectionName(int, void *, void *);
@@ -41,5 +55,6 @@ pcb_bool SeekPad(LibraryEntryTypePtr, ConnectionTypePtr, pcb_bool);
 
 NetListTypePtr ProcNetlist(LibraryTypePtr);
 NetListListType CollectSubnets(pcb_bool);
+ConnectionTypePtr GetConnectionMemory(NetTypePtr);
 
 #endif
