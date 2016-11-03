@@ -78,6 +78,11 @@ int GetGroupOfLayer(int);
 int ChangeGroupVisibility(int, pcb_bool, pcb_bool);
 void LayerStringToLayerStack(const char *);
 
+
+void ResetStackAndVisibility(void);
+void SaveStackAndVisibility(void);
+void RestoreStackAndVisibility(void);
+
 /* Layer Group Functions */
 
 /* Returns group actually moved to (i.e. either group or previous) */
