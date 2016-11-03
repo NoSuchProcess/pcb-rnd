@@ -42,6 +42,7 @@
 #include "vendor.h"
 #include "stub_vendor.h"
 #include "plugins.h"
+#include "action_helper.h"
 #include "hid_flags.h"
 #include "hid_actions.h"
 #include "hid_cfg.h"

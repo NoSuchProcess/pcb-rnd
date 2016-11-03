@@ -50,6 +50,7 @@
 #include "draw.h"
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "action_helper.h"
 #include "hid_actions.h"
 #include "misc_util.h"
 #include "report_conf.h"
@@ -61,6 +62,7 @@
 
 conf_report_t conf_report;
 
+#define AUSAGE(x) Message (PCB_MSG_INFO, "Usage:\n%s\n", (x##_syntax))
 #define USER_UNITMASK (conf_core.editor.grid_unit->allow)
 
 static int ReportDrills(int argc, const char **argv, Coord x, Coord y)

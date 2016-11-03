@@ -115,6 +115,7 @@
 #include "draw.h"
 #include "set.h"
 #include "plugins.h"
+#include "action_helper.h"
 #include "hid_actions.h"
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)

@@ -196,7 +196,7 @@
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
  rubberband.h buffer.h hid.h misc.h ../src_3rd/genvector/gds_char.h \
  mymem.h create.h rtree.h undo.h rats.h netlist.h error.h move.h draw.h \
- set.h plugins.h hid_actions.h dolists.h
+ set.h plugins.h action_helper.h hid_actions.h dolists.h
 ../src_plugins/distaligntext/distaligntext.o: \
  ../src_plugins/distaligntext/distaligntext.c ../config.h board.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -212,8 +212,8 @@
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
  rubberband.h buffer.h hid.h misc.h ../src_3rd/genvector/gds_char.h \
  mymem.h create.h rtree.h undo.h rats.h netlist.h error.h move.h draw.h \
- set.h plugins.h hid_actions.h conf_core.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ set.h plugins.h action_helper.h hid_actions.h conf_core.h conf.h \
+ pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h dolists.h
@@ -1587,9 +1587,9 @@
  list_poly.h library.h list_rat.h vtonpoint.h data.h crosshair.h global.h \
  rubberband.h buffer.h error.h misc.h ../src_3rd/genvector/gds_char.h \
  mymem.h rats.h netlist.h buffer.h change.h draw.h set.h undo.h \
- pcb-printf.h create.h polygon.h rtree.h compat_misc.h compat_nls.h hid.h \
- hid_draw_helpers.h hid_nogui.h hid_actions.h hid_init.h hid_attrib.h \
- hid_helper.h plugins.h dolists.h
+ pcb-printf.h create.h polygon.h rtree.h compat_misc.h compat_nls.h \
+ action_helper.h hid.h hid_draw_helpers.h hid_nogui.h hid_actions.h \
+ hid_init.h hid_attrib.h hid_helper.h plugins.h dolists.h
 ../src_plugins/import_edif/edif.o: ../src_plugins/import_edif/edif.c \
  global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -2349,9 +2349,9 @@
  vtonpoint.h board.h layer.h list_text.h list_poly.h library.h list_rat.h \
  data.h crosshair.h buffer.h drill.h error.h search.h misc_util.h misc.h \
  mymem.h mymem.h rats.h netlist.h rtree.h flag_str.h macro.h undo.h \
- find.h draw.h pcb-printf.h plugins.h hid_actions.h misc_util.h \
- ../src_plugins/report/report_conf.h conf.h compat_misc.h compat_nls.h \
- layer.h ../src_3rd/genregex/regex_sei.h \
+ find.h draw.h pcb-printf.h plugins.h action_helper.h hid_actions.h \
+ misc_util.h ../src_plugins/report/report_conf.h conf.h compat_misc.h \
+ compat_nls.h layer.h ../src_3rd/genregex/regex_sei.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h dolists.h \
  ../src_plugins/report/report_conf_fields.h
 ../src_plugins/shand_cmd/command.o: ../src_plugins/shand_cmd/command.c \
@@ -2391,8 +2391,8 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/hash.h data.h \
  crosshair.h global.h rubberband.h buffer.h hid.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h create.h rtree.h undo.h rats.h \
- netlist.h error.h move.h draw.h set.h plugins.h hid_actions.h \
- compat_nls.h dolists.h
+ netlist.h error.h move.h draw.h set.h plugins.h action_helper.h \
+ hid_actions.h compat_nls.h dolists.h
 ../src_plugins/stroke/stroke.o: ../src_plugins/stroke/stroke.c \
  ../config.h board.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -2465,9 +2465,10 @@
  ../src_3rd/genregex/regex.h change.h board.h layer.h list_text.h \
  list_poly.h library.h list_rat.h vtonpoint.h data.h crosshair.h \
  rubberband.h buffer.h draw.h error.h global.h set.h undo.h \
- ../src_plugins/vendordrill/vendor.h stub_vendor.h plugins.h hid_flags.h \
- hid_actions.h hid_cfg.h ../src_plugins/vendordrill/vendor_conf.h conf.h \
- compat_misc.h compat_nls.h ../src_3rd/liblihata/tree.h dolists.h \
+ ../src_plugins/vendordrill/vendor.h stub_vendor.h plugins.h \
+ action_helper.h hid_flags.h hid_actions.h hid_cfg.h \
+ ../src_plugins/vendordrill/vendor_conf.h conf.h compat_misc.h \
+ compat_nls.h ../src_3rd/liblihata/tree.h dolists.h \
  ../src_plugins/vendordrill/vendor_conf_fields.h
 ../src_3rd/gensexpr/gsx_parse.o: ../src_3rd/gensexpr/gsx_parse.c \
  ../src_3rd/gensexpr/gsx_parse.h

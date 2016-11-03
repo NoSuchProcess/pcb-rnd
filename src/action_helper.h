@@ -73,4 +73,10 @@ extern pcb_bool saved_mode;
 
 void ReleaseMode(void);
 
+/* ---------------------------------------------------------------------------
+ * Macros called by various action routines to show usage or to report
+ * a syntax error and fail
+ */
+#define AFAIL(x) { Message (PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (x##_syntax)); return 1; }
+
 #endif

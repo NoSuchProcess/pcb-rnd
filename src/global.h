@@ -77,13 +77,6 @@ typedef struct {
 	void *(*Rat) (RatTypePtr);
 } ObjectFunctionType, *ObjectFunctionTypePtr;
 
-/* ---------------------------------------------------------------------------
- * Macros called by various action routines to show usage or to report
- * a syntax error and fail
- */
-#define AUSAGE(x) Message (PCB_MSG_INFO, "Usage:\n%s\n", (x##_syntax))
-#define AFAIL(x) { Message (PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (x##_syntax)); return 1; }
-
 /* Make sure to catch usage of non-portable functions in debug mode */
 #ifndef NDEBUG
 #	undef strdup
