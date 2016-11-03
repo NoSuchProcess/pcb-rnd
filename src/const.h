@@ -71,52 +71,6 @@ typedef enum {
 } pcb_mode_t;
 
 /* ---------------------------------------------------------------------------
- * object flags
- */
-
-/* %start-doc pcbfile ~objectflags
-@node Object Flags
-@section Object Flags
-
-Note that object flags can be given numerically (like @code{0x0147})
-or symbolically (like @code{"found,showname,square"}.  Some numeric
-values are reused for different object types.  The table below lists
-the numeric value followed by the symbolic name.
-%end-doc */
-typedef enum {
-	PCB_FLAG_NO           = 0x00000,
-	PCB_FLAG_PIN          = 0x00001, /*!< If set, this object is a pin.  This flag is for internal use only. */
-	PCB_FLAG_VIA          = 0x00002, /*!< Likewise, for vias. */
-	PCB_FLAG_FOUND        = 0x00004, /*!< If set, this object has been found by @code{FindConnection()}. */
-	PCB_FLAG_HOLE         = 0x00008, /*!< For pins and vias, this flag means that the pin or via is a hole without a copper annulus. */
-	PCB_FLAG_NOPASTE      = 0x00008, /*!< Pad should not receive solderpaste.  This is to support fiducials */
-	PCB_FLAG_RAT          = 0x00010, /*!< If set for a line, indicates that this line is a rat line instead of a copper trace. */
-	PCB_FLAG_PININPOLY    = 0x00010, /*!< For pins and pads, this flag is used internally to indicate that the pin or pad overlaps a polygon on some layer.*/
-	PCB_FLAG_CLEARPOLY    = 0x00010, /*!< For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. */
-	PCB_FLAG_HIDENAME     = 0x00010, /*!< For elements, when set the name of the element is hidden. */
-	PCB_FLAG_DISPLAYNAME  = 0x00020, /*!< For elements, when set the names of pins are shown. */
-	PCB_FLAG_CLEARLINE    = 0x00020, /*!< For lines and arcs, the line/arc will clear polygons instead of connecting to them. */
-	PCB_FLAG_FULLPOLY     = 0x00020, /*!< For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one). */
-	PCB_FLAG_SELECTED     = 0x00040, /*!< Set when the object is selected. */
-	PCB_FLAG_ONSOLDER     = 0x00080, /*!< For elements and pads, indicates that they are on the solder side. */
-	PCB_FLAG_AUTO         = 0x00080, /*!< For lines and vias, indicates that these were created by the autorouter. */
-	PCB_FLAG_SQUARE       = 0x00100, /*!< For pins and pads, indicates a square (vs round) pin/pad. */
-	PCB_FLAG_RUBBEREND    = 0x00200, /*!< For lines, used internally for rubber band moves: indicates one end already rubber banding. */
-	PCB_FLAG_WARN         = 0x00200, /*!< For pins, vias, and pads, set to indicate a warning. */
-	PCB_FLAG_USETHERMAL   = 0x00400, /*!< Obsolete, indicates that pins/vias should be drawn with thermal fingers. */
-	PCB_FLAG_ONSILK       = 0x00400, /*!< Obsolete, old files used this to indicate lines drawn on silk. (Used by io_pcb for compatibility.) */
-	PCB_FLAG_OCTAGON      = 0x00800, /*!< Draw pins and vias as octagons. */
-	PCB_FLAG_DRC          = 0x01000, /*!< Set for objects that fail DRC: flag like FOUND flag for DRC checking. */
-	PCB_FLAG_LOCK         = 0x02000, /*!< Set for locked objects. */
-	PCB_FLAG_EDGE2        = 0x04000, /*!< For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical) */
-	PCB_FLAG_VISIT        = 0x08000, /*!< marker to avoid re-visiting an object */
-	PCB_FLAG_NONETLIST    = 0x10000, /* element is not on the netlist and should not interfere with the netlist */
-	PCB_FLAG_MINCUT       = 0x20000, /* used by the mincut short find code */
-	PCB_FLAG_ONPOINT      = 0x40000  /*!< crosshair is on line point or arc point */
-/*	PCB_FLAG_NOCOPY     = (PCB_FLAG_FOUND | CONNECTEDFLAG | PCB_FLAG_ONPOINT)*/
-} pcb_flag_t;
-
-/* ---------------------------------------------------------------------------
  * object types (bitfield)
  */
 typedef enum {
