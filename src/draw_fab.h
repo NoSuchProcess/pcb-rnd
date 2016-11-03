@@ -29,9 +29,8 @@
 #ifndef	PCB_PRINT_H
 #define	PCB_PRINT_H
 
-#include <stdio.h>
-
 #include "config.h"
+#include "hid.h"
 
 int DrawFab_overhang(void);
 void DrawFab(hidGC gc);

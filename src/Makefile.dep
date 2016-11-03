@@ -2949,9 +2949,9 @@ insert.o: insert.c ../config.h conf_core.h conf.h global_typedefs.h \
  list_rat.h crosshair.h hid.h error.h drc.h buffer.h draw.h line.h misc.h \
  mymem.h polygon.h rtree.h math_helper.h search.h rats.h netlist.h \
  route_style.h misc_util.h select.h operation.h set.h undo.h
-intersect.o: intersect.c ../config.h intersect.h global_objs.h \
- ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h \
- global_typedefs.h pcb_bool.h unit.h polyarea.h box.h math_helper.h \
+intersect.o: intersect.c ../config.h intersect.h global_typedefs.h \
+ pcb_bool.h unit.h box.h math_helper.h global_objs.h \
+ ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
  macro.h misc_util.h
 layer.o: layer.c ../config.h math_helper.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
