@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #include <math.h>
 #include "compat_misc.h"

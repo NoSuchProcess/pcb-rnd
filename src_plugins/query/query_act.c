@@ -23,6 +23,8 @@
 /* Query language - actions */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "config.h"
 #include "query.h"
 #include "query_y.h"

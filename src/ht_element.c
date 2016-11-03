@@ -1,3 +1,4 @@
+#include <string.h>
 #include "config.h"
 #include "global_element.h"
 #include "list_element.h"

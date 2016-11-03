@@ -31,6 +31,7 @@
 #include <setjmp.h>
 
 #include "board.h"
+#include "build_run.h"
 #include "data.h"
 #include "draw.h"
 #include "drill.h"

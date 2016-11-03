@@ -9,6 +9,7 @@
 
 #include "config.h"
 #include "math_helper.h"
+#include "build_run.h"
 #include "board.h"
 #include "data.h"
 #include "error.h"

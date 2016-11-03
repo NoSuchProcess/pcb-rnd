@@ -32,6 +32,7 @@
 #include "genvector/gds_char.h"
 #include "route_style.h"
 #include "misc.h"
+#include "misc_util.h"
 #include "error.h"
 #include "conf.h"
 

@@ -212,7 +212,7 @@ static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t 
 			int n_above_one = 0;
 
 			for (i = 0; i < n_coords; ++i)
-				if (fabs(value[i] * Units[n].scale_factor) > 1)
+				if (abs(value[i] * Units[n].scale_factor) > 1)
 					++n_above_one;
 			if (n_above_one == n_coords)
 				break;

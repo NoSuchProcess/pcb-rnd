@@ -36,6 +36,7 @@
 
 #include "config.h"
 #include "board.h"
+#include "build_run.h"
 #include "action_helper.h"
 #include "buffer.h"
 #include "command.h"

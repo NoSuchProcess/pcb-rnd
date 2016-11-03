@@ -29,6 +29,7 @@
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "config.h"
 #include "dbus-pcbmain.h"

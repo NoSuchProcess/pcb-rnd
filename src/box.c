@@ -27,6 +27,7 @@
 #warning TODO: remove this and use genvect
 
 #define STEP_POINT 100
+#include <string.h>
 #include "box.h"
 
 /* ---------------------------------------------------------------------------
