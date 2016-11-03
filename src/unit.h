@@ -119,6 +119,7 @@ double coord_to_unit(const Unit *, Coord);
 double unit_to_factor(const Unit * unit);
 Coord unit_to_coord(const Unit *, double);
 Increments *get_increments_struct(const char *suffix);
+Angle NormalizeAngle(Angle a);
 
 /* PCB/physical unit conversions */
 #define PCB_COORD_TO_MIL(n)	((n) / 25400.0)

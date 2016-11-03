@@ -171,3 +171,13 @@ char *Concat(const char *first, ...)
 	va_end(a);
 	return rv;
 }
+
+Coord GetNum(char **s, const char *default_unit)
+{
+	/* Read value */
+	Coord ret_val = GetValueEx(*s, NULL, NULL, NULL, default_unit, NULL);
+	/* Advance pointer */
+	while (isalnum(**s) || **s == '.')
+		(*s)++;
+	return ret_val;
+}

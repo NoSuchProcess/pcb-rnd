@@ -282,3 +282,13 @@ Increments *get_increments_struct(const char *suffix)
 			return &increments[i];
 	return NULL;
 }
+
+/* Bring an angle into [0, 360) range */
+Angle NormalizeAngle(Angle a)
+{
+	while (a < 0)
+		a += 360.0;
+	while (a >= 360.0)
+		a -= 360.0;
+	return a;
+}

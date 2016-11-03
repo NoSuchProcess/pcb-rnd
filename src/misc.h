@@ -34,9 +34,6 @@
 #include <genvector/gds_char.h>
 #include "mymem.h"
 
-const char *pcb_author(void);
-
-Angle NormalizeAngle(Angle a);
 
 void r_delete_element(DataTypePtr, ElementTypePtr);
 void SetLineBoundingBox(LineTypePtr);
@@ -46,35 +43,44 @@ void SetPinBoundingBox(PinTypePtr);
 void SetPadBoundingBox(PadTypePtr);
 void SetPolygonBoundingBox(PolygonTypePtr);
 void SetElementBoundingBox(DataTypePtr, ElementTypePtr, FontTypePtr);
-pcb_bool IsDataEmpty(DataTypePtr);
-pcb_bool IsPasteEmpty(int);
 void CountHoles(int *, int *, const BoxType *);
 BoxTypePtr GetDataBoundingBox(DataTypePtr);
-void CenterDisplay(Coord, Coord);
 void SetFontInfo(FontTypePtr);
-Coord GetNum(char **s, const char *default_unit);
 
-void QuitApplication(void);
-char *EvaluateFilename(const char *, const char *, const char *, const char *);
 void SetTextBoundingBox(FontTypePtr, TextTypePtr);
 
-void SaveOutputWindow(void);
-
 BoxTypePtr GetObjectBoundingBox(int, void *, void *, void *);
+
 void ResetStackAndVisibility(void);
 void SaveStackAndVisibility(void);
 void RestoreStackAndVisibility(void);
+
 BoxTypePtr GetArcEnds(ArcTypePtr);
 void ChangeArcAngles(LayerTypePtr, ArcTypePtr, Angle, Angle);
 void ChangeArcRadii(LayerTypePtr, ArcTypePtr, Coord, Coord);
 char *UniqueElementName(DataTypePtr, char *);
 void AttachForCopy(Coord, Coord);
 
-/* Returns a string with info about this copy of pcb. */
-char *GetInfoString(void);
-
 /* Return a relative rotation for an element, useful only for
    comparing two similar footprints.  */
 int ElementOrientation(ElementType * e);
+
+
+
+void QuitApplication(void);
+
+/* Returns a string with info about this copy of pcb. */
+char *GetInfoString(void);
+
+void SaveOutputWindow(void);
+void CenterDisplay(Coord, Coord);
+
+char *EvaluateFilename(const char *, const char *, const char *, const char *);
+
+pcb_bool IsDataEmpty(DataTypePtr);
+pcb_bool IsPasteEmpty(int);
+
+const char *pcb_author(void);
+
 
 #endif /* PCB_MISC_H */

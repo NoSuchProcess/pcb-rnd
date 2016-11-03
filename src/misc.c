@@ -62,16 +62,6 @@ static void GetGridLockCoordinates(int, void *, void *, void *, Coord *, Coord *
 
 /* Local variables */
 
-/* Bring an angle into [0, 360) range */
-Angle NormalizeAngle(Angle a)
-{
-	while (a < 0)
-		a += 360.0;
-	while (a >= 360.0)
-		a -= 360.0;
-	return a;
-}
-
 /* ---------------------------------------------------------------------------
  * sets the bounding box of a point (which is silly)
  */
@@ -669,16 +659,6 @@ void SetFontInfo(FontTypePtr Ptr)
 	Ptr->DefaultSymbol.X1 = Ptr->DefaultSymbol.Y1 = 0;
 	Ptr->DefaultSymbol.X2 = Ptr->DefaultSymbol.X1 + Ptr->MaxWidth;
 	Ptr->DefaultSymbol.Y2 = Ptr->DefaultSymbol.Y1 + Ptr->MaxHeight;
-}
-
-Coord GetNum(char **s, const char *default_unit)
-{
-	/* Read value */
-	Coord ret_val = GetValueEx(*s, NULL, NULL, NULL, default_unit, NULL);
-	/* Advance pointer */
-	while (isalnum(**s) || **s == '.')
-		(*s)++;
-	return ret_val;
 }
 
 /* ---------------------------------------------------------------------------
