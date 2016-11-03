@@ -31,6 +31,7 @@
 
 #include "global.h"
 #include "rubberband.h"
+#include "library.h"
 
 /* TRUE during file loads, for example to allow overlapping vias.
    FALSE otherwise, to stop the user from doing normally dangerous

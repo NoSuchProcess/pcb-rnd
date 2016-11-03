@@ -25,6 +25,7 @@
 
 #include "config.h"
 #include "global.h"
+#include "board.h"
 #include "data.h"
 #include "layer.h"
 #include "diag_conf.h"

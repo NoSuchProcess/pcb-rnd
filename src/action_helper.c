@@ -32,6 +32,7 @@
 #include "conf_core.h"
 
 #include "action_helper.h"
+#include "board.h"
 #include "buffer.h"
 #include "change.h"
 #include "copy.h"

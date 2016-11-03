@@ -35,6 +35,7 @@
 #include <math.h>
 
 #include "global.h"
+#include "board.h"
 #include "data.h"
 #include "error.h"
 #include "misc.h"

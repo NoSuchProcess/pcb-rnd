@@ -35,6 +35,7 @@
 #include <ctype.h>
 
 #include "global.h"
+#include "board.h"
 #include "action_helper.h"
 #include "buffer.h"
 #include "command.h"

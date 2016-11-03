@@ -8,6 +8,7 @@
 #include <assert.h>
 
 #include "global.h"
+#include "board.h"
 #include "data.h"
 #include "layer.h"
 #include "misc.h"

@@ -27,7 +27,9 @@
 #include <ctype.h>
 
 #include "global.h"
+#include "board.h"
 #include "data.h"
+#include "library.h"
 #include "error.h"
 #include "plugins.h"
 #include "compat_misc.h"

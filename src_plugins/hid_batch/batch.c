@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "global.h"
+#include "board.h"
 #include "hid.h"
 #include "data.h"
 #include "misc.h"

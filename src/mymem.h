@@ -48,8 +48,6 @@
 #define	STEP_UNDOLIST		500
 #define	STEP_POLYGONPOINT	10
 #define	STEP_POLYGONHOLEINDEX	10
-#define	STEP_LIBRARYMENU	10
-#define	STEP_LIBRARYENTRY	20
 #define	STEP_RUBBERBAND		100
 
 /* ---------------------------------------------------------------------------
@@ -68,14 +66,9 @@ PolygonTypePtr GetPolygonMemory(LayerTypePtr);
 PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr);
 pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr);
 ElementTypePtr GetElementMemory(DataTypePtr);
-LibraryMenuTypePtr GetLibraryMenuMemory(LibraryTypePtr, int *idx);
-LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
 void FreePolygonMemory(PolygonTypePtr);
 void FreeElementMemory(ElementTypePtr);
-void FreePCBMemory(PCBTypePtr);
 void FreeDataMemory(DataTypePtr);
-void FreeLibraryMemory(LibraryTypePtr);
-void DeleteLibraryMenuMemory(LibraryTypePtr lib, int menuidx);
 char *StripWhiteSpaceAndDup(const char *);
 
 void RemoveFreeArc(ArcType * data);

@@ -45,7 +45,8 @@
 #include <time.h>
 
 #include "global.h"
-#include "error.h"							/* Message(PCB_MSG_DEFAULT, ) */
+#include "board.h"
+#include "error.h"
 #include "data.h"
 #include "misc.h"
 #include "rats.h"

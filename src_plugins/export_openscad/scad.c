@@ -37,6 +37,7 @@
 
 #include <time.h>
 
+#include "board.h"
 #include "config.h"
 #include "global.h"
 #include "data.h"

@@ -28,6 +28,7 @@
 #ifndef PCB_PLUG_IO_H
 #define PCB_PLUG_IO_H
 
+#include "library.h"
 #include "global.h"
 #include "conf.h"
 

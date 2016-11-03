@@ -30,7 +30,7 @@
 #include <time.h>
 #include <setjmp.h>
 
-
+#include "board.h"
 #include "data.h"
 #include "draw.h"
 #include "drill.h"

@@ -36,6 +36,7 @@
 
 #include "action_helper.h"
 #include "data.h"
+#include "board.h"
 #include "error.h"
 #include "plug_io.h"
 #include "find.h"

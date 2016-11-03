@@ -28,6 +28,12 @@
 #ifndef PCB_LAYER_H
 #define PCB_LAYER_H
 
+#include "list_line.h"
+#include "list_arc.h"
+#include "list_text.h"
+#include "list_poly.h"
+
+
 /* ----------------------------------------------------------------------
  * layer group. A layer group identifies layers which are always switched
  * on/off together.

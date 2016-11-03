@@ -26,6 +26,7 @@
 #include <genht/htpi.h>
 
 #include "config.h"
+#include "board.h"
 #include "global.h"
 #include "data.h"
 #include "hid.h"

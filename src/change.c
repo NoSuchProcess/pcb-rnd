@@ -36,6 +36,7 @@
 
 #include "conf_core.h"
 
+#include "board.h"
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"

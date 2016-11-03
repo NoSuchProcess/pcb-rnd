@@ -24,6 +24,7 @@
 
 #include <math.h>
 #include "global.h"
+#include "board.h"
 #include "data.h"
 #include "query_access.h"
 #include "query_exec.h"

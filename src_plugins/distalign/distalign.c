@@ -100,6 +100,7 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "board.h"
 #include "config.h"
 #include "global.h"
 #include "data.h"

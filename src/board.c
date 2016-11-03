@@ -3,10 +3,6 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
- *  Copyright (C) 1998,1999,2000,2001 harry eaton
- *
- *  this file, autoroute.h, was written and is
- *  Copyright (c) 2001 C. Scott Ananian.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,21 +19,38 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Contact addresses for paper mail and Email:
- *  harry eaton, 6697 Buttonhole Ct, Columbia, MD 21044 USA
- *  haceaton@aplcomm.jhuapl.edu
+ *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
+ *  Thomas.Nau@rz.uni-ulm.de
  *
  */
 
-
-/* prototypes for autoroute routines
- */
-
-#ifndef PCB_AUTOROUTE_H
-#define PCB_AUTOROUTE_H
-
-#include "global.h"
 #include "board.h"
+#include "attrib.h"
+#include "library.h"
 
-pcb_bool AutoRoute(pcb_bool);
+/* ---------------------------------------------------------------------------
+ * free memory used by PCB
+ */
+void FreePCBMemory(PCBType * pcb)
+{
+	int i;
 
-#endif
+	if (pcb == NULL)
+		return;
+
+	free(pcb->Name);
+	free(pcb->Filename);
+	free(pcb->PrintFilename);
+	rats_patch_destroy(pcb);
+	FreeDataMemory(pcb->Data);
+	free(pcb->Data);
+	/* release font symbols */
+	for (i = 0; i <= MAX_FONTPOSITION; i++)
+		free(pcb->Font.Symbol[i].Line);
+	for (i = 0; i < NUM_NETLISTS; i++)
+		FreeLibraryMemory(&(pcb->NetlistLib[i]));
+	vtroutestyle_uninit(&pcb->RouteStyle);
+	FreeAttributeListMemory(&pcb->Attributes);
+	/* clear struct */
+	memset(pcb, 0, sizeof(PCBType));
+}

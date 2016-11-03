@@ -32,6 +32,7 @@
 #include <setjmp.h>
 #include <memory.h>
 
+#include "board.h"
 #include "data.h"
 #include "draw.h"
 #include "misc.h"

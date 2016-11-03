@@ -36,6 +36,7 @@
 #include "data.h"
 #include "funchash_core.h"
 
+#include "board.h"
 #include "action_helper.h"
 #include "hid_actions.h"
 #include "crosshair.h"

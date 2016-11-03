@@ -26,6 +26,7 @@
  */
 
 #include "compat_nls.h"
+#include "board.h"
 
 static inline r_dir_t r_search_pt(rtree_t * rtree, const PointType * pt,
 															int radius,

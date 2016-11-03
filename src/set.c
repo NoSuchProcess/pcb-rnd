@@ -38,6 +38,7 @@
 #include <string.h>
 
 #include "action_helper.h"
+#include "board.h"
 #include "buffer.h"
 #include "crosshair.h"
 #include "data.h"

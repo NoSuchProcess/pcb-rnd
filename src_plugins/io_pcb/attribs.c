@@ -21,6 +21,7 @@
  */
 
 #include "conf.h"
+#include "board.h"
 #include "misc.h"
 #include "compat_misc.h"
 

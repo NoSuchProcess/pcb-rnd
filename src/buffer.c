@@ -35,6 +35,7 @@
 
 #include "action_helper.h"
 #include "buffer.h"
+#include "board.h"
 #include "copy.h"
 #include "create.h"
 #include "crosshair.h"

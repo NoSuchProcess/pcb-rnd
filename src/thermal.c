@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "board.h"
 #include "misc.h"
 #include "polygon.h"
 #include "thermal.h"

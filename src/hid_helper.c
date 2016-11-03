@@ -26,6 +26,7 @@
  */
 
 #include "config.h"
+#include "board.h"
 #include "data.h"
 #include "misc.h"
 #include "layer.h"

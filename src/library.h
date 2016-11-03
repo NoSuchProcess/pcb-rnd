@@ -76,4 +76,9 @@ typedef struct {
 	LibraryMenuTypePtr Menu;			/* the entries */
 } LibraryType, *LibraryTypePtr;
 
+LibraryMenuTypePtr GetLibraryMenuMemory(LibraryTypePtr, int *idx);
+LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
+void FreeLibraryMemory(LibraryTypePtr);
+void DeleteLibraryMenuMemory(LibraryTypePtr lib, int menuidx);
+
 #endif

@@ -35,6 +35,7 @@
 #include <genregex/regex_sei.h>
 
 #include "action_helper.h"
+#include "board.h"
 #include "data.h"
 #include "error.h"
 #include "plug_io.h"

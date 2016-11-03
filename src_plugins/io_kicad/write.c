@@ -25,6 +25,7 @@
  *
  */
 #include <math.h>
+#include "board.h"
 #include "plug_io.h"
 #include "error.h"
 #include "uniq_name.h"

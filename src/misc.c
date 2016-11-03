@@ -38,6 +38,7 @@
 #include <signal.h>
 #include <math.h>
 
+#include "board.h"
 #include "box.h"
 #include "crosshair.h"
 #include "data.h"

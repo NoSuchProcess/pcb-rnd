@@ -34,6 +34,7 @@
 
 #include "report.h"
 #include "crosshair.h"
+#include "board.h"
 #include "data.h"
 #include "drill.h"
 #include "error.h"

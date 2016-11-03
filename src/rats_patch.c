@@ -28,6 +28,7 @@
 #include "genht/hash.h"
 #include "create.h"
 
+#include "board.h"
 #include "config.h"
 #include "data.h"
 #include "error.h"

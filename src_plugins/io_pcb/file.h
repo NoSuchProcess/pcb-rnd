@@ -32,6 +32,7 @@
 
 #include <stdio.h>							/* needed to define 'FILE *' */
 #include "global.h"
+#include "board.h"
 #include "plug_io.h"
 
 /* This is used by the lexer/parser */

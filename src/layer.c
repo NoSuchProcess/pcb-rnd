@@ -26,6 +26,7 @@
  */
 
 #include "global.h"
+#include "board.h"
 #include "data.h"
 #include "conf_core.h"
 #include "layer.h"

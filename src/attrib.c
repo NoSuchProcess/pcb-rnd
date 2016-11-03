@@ -83,3 +83,19 @@ int AttributeRemoveFromList(AttributeListType * list, const char *name)
 		}
 	return found;
 }
+
+/* ---------------------------------------------------------------------------
+ * frees memory used by an attribute list
+ */
+void FreeAttributeListMemory(AttributeListTypePtr list)
+{
+	int i;
+
+	for (i = 0; i < list->Number; i++) {
+		free(list->List[i].name);
+		free(list->List[i].value);
+	}
+	free(list->List);
+	list->List = NULL;
+	list->Max = 0;
+}

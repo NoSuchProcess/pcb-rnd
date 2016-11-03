@@ -20,6 +20,7 @@ put /local/pcb/OBJS [@
 	action_helper.o
 	action_act.o
 	attrib.o
+	board.o
 	box.o
 	buffer.o
 	change.o
@@ -68,6 +69,7 @@ put /local/pcb/OBJS [@
 	insert.o
 	intersect.o
 	layer.o
+	library.o
 	line.o
 	list_arc.o
 	list_conf.o

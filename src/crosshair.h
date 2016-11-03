@@ -31,6 +31,7 @@
 
 #include "global.h"
 #include "rubberband.h"
+#include "vtonpoint.h"
 
 typedef struct {								/* current marked line */
 	PointType Point1,							/* start- and end-position */

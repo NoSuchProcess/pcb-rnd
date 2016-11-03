@@ -39,6 +39,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "board.h"
 #include "data.h"
 #include "config.h"
 #include "global.h"

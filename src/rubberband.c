@@ -34,6 +34,7 @@
 #include <memory.h>
 #include <math.h>
 
+#include "board.h"
 #include "create.h"
 #include "data.h"
 #include "error.h"

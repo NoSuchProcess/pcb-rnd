@@ -27,6 +27,7 @@
 #include "config.h"
 #include "conf_core.h"
 
+#include "board.h"
 #include "data.h"
 #include "action_helper.h"
 #include "undo.h"

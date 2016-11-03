@@ -24,6 +24,7 @@
  */
 
 #include "global.h"
+#include "board.h"
 #include "data.h"
 #include "config.h"
 #include "conf.h"

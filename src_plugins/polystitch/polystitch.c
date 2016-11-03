@@ -25,6 +25,7 @@
 
 #include "config.h"
 #include "global.h"
+#include "board.h"
 #include "data.h"
 #include "macro.h"
 #include "create.h"

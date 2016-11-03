@@ -25,6 +25,7 @@
  *
  */
 #include "config.h"
+#include "board.h"
 #include "conf_core.h"
 #include "data.h"
 #include "action_helper.h"
@@ -1093,7 +1094,7 @@ static int ActionRemoveMenu(int argc, const char **argv, Coord x, Coord y)
 	if (argc > 0) {
 		if (gui->remove_menu(argv[0]) != 0)
 			Message(PCB_MSG_ERROR, "failed to remove some of the menu items\n");
-			return 0;
+		return 0;
 	}
 
 	AFAIL(message);

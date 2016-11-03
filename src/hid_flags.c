@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "data.h"
+#include "board.h"
 #include "misc.h"
 #include "conf.h"
 

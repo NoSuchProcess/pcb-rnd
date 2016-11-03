@@ -26,6 +26,7 @@
 #define _BSD_SOURCE
 
 #include "config.h"
+#include "board.h"
 #include "global.h"
 #include "plugins.h"
 #include "plug_io.h"

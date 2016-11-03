@@ -41,6 +41,7 @@
 #include <stdlib.h>
 
 #include "global.h"
+#include "board.h"
 
 #include "autoplace.h"
 #include "box.h"

@@ -11,6 +11,7 @@
 #include <time.h>
 
 #include "config.h"
+#include "board.h"
 #include "global.h"
 #include "data.h"
 #include "misc.h"

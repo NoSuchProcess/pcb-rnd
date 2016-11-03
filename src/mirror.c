@@ -35,6 +35,7 @@
 
 #include <stdlib.h>
 
+#include "board.h"
 #include "data.h"
 #include "mirror.h"
 #include "misc.h"

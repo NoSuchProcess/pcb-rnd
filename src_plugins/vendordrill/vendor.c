@@ -32,6 +32,7 @@
 #include <genregex/regex_sei.h>
 
 #include "change.h"
+#include "board.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"

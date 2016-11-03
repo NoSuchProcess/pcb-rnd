@@ -46,20 +46,9 @@
 #include "attrib.h"
 #include "rats_patch.h"
 #include "list_common.h"
-#include "list_line.h"
-#include "list_arc.h"
-#include "list_text.h"
-#include "list_poly.h"
-#include "list_pad.h"
-#include "list_pin.h"
-#include "list_rat.h"
-#include "vtonpoint.h"
 #include "hid.h"
 #include "polyarea.h"
 #include "vtroutestyle.h"
-
-/* Needs to be gone: */
-#include "board.h"
 
 #define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))

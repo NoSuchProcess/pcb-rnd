@@ -114,4 +114,6 @@ struct pcb_board_s {
 	unsigned netlist_needs_update:1;
 };
 
+void FreePCBMemory(PCBTypePtr);
+
 #endif

@@ -53,7 +53,7 @@ struct data_st {
 	ratlist_t Rat;
 	rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
 	 *rat_tree;
-	struct PCBType *pcb;
+	PCBType *pcb;
 	LayerType Layer[MAX_LAYER + 2];    /* add 2 silkscreen layers */
 	plug_io_t *loader;
 };

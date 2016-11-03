@@ -37,6 +37,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include <time.h>
 
 #include "global.h"
+#include "board.h"
 #include "data.h"
 #include "error.h"
 #include "misc.h"

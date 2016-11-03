@@ -34,6 +34,7 @@
 
 #include <math.h>
 
+#include "board.h"
 #include "box.h"
 #include "data.h"
 #include "error.h"

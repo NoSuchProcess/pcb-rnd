@@ -57,4 +57,6 @@ int AttributeRemoveFromList(AttributeListType * list, const char *name);
 /* Simplistic version of Remove.  */
 #define AttributeRemove(OBJ, name) AttributeRemoveFromList (&(OBJ->Attributes), name)
 
+void FreeAttributeListMemory(AttributeListTypePtr list);
+
 #endif

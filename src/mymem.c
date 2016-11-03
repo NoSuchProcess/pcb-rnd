@@ -273,55 +273,6 @@ void RemoveFreeElement(ElementType * data)
 }
 
 /* ---------------------------------------------------------------------------
- * get next slot for a library menu, allocates memory if necessary
- */
-LibraryMenuTypePtr GetLibraryMenuMemory(LibraryTypePtr lib, int *idx)
-{
-	LibraryMenuTypePtr menu = lib->Menu;
-
-	/* realloc new memory if necessary and clear it */
-	if (lib->MenuN >= lib->MenuMax) {
-		lib->MenuMax += STEP_LIBRARYMENU;
-		menu = (LibraryMenuTypePtr) realloc(menu, lib->MenuMax * sizeof(LibraryMenuType));
-		lib->Menu = menu;
-		memset(menu + lib->MenuN, 0, STEP_LIBRARYMENU * sizeof(LibraryMenuType));
-	}
-	if (idx != NULL)
-		*idx = lib->MenuN;
-	return (menu + lib->MenuN++);
-}
-
-void DeleteLibraryMenuMemory(LibraryTypePtr lib, int menuidx)
-{
-	LibraryMenuTypePtr menu = lib->Menu;
-
-	if (menu[menuidx].Name != NULL)
-		free(menu[menuidx].Name);
-	if (menu[menuidx].directory != NULL)
-		free(menu[menuidx].directory);
-
-	lib->MenuN--;
-	memmove(menu + menuidx, menu + menuidx + 1, sizeof(LibraryMenuType) * (lib->MenuN - menuidx));
-}
-
-/* ---------------------------------------------------------------------------
- * get next slot for a library entry, allocates memory if necessary
- */
-LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr Menu)
-{
-	LibraryEntryTypePtr entry = Menu->Entry;
-
-	/* realloc new memory if necessary and clear it */
-	if (Menu->EntryN >= Menu->EntryMax) {
-		Menu->EntryMax += STEP_LIBRARYENTRY;
-		entry = (LibraryEntryTypePtr) realloc(entry, Menu->EntryMax * sizeof(LibraryEntryType));
-		Menu->Entry = entry;
-		memset(entry + Menu->EntryN, 0, STEP_LIBRARYENTRY * sizeof(LibraryEntryType));
-	}
-	return (entry + Menu->EntryN++);
-}
-
-/* ---------------------------------------------------------------------------
  * frees memory used by a polygon
  */
 void FreePolygonMemory(PolygonType * polygon)
@@ -337,22 +288,6 @@ void FreePolygonMemory(PolygonType * polygon)
 	poly_FreeContours(&polygon->NoHoles);
 
 	reset_obj_mem(PolygonType, polygon);
-}
-
-/* ---------------------------------------------------------------------------
- * frees memory used by an attribute list
- */
-static void FreeAttributeListMemory(AttributeListTypePtr list)
-{
-	int i;
-
-	for (i = 0; i < list->Number; i++) {
-		free(list->List[i].name);
-		free(list->List[i].value);
-	}
-	free(list->List);
-	list->List = NULL;
-	list->Max = 0;
 }
 
 /* ---------------------------------------------------------------------------
@@ -388,33 +323,6 @@ void FreeElementMemory(ElementType * element)
 
 	FreeAttributeListMemory(&element->Attributes);
 	reset_obj_mem(ElementType, element);
-}
-
-/* ---------------------------------------------------------------------------
- * free memory used by PCB
- */
-void FreePCBMemory(PCBType * pcb)
-{
-	int i;
-
-	if (pcb == NULL)
-		return;
-
-	free(pcb->Name);
-	free(pcb->Filename);
-	free(pcb->PrintFilename);
-	rats_patch_destroy(pcb);
-	FreeDataMemory(pcb->Data);
-	free(pcb->Data);
-	/* release font symbols */
-	for (i = 0; i <= MAX_FONTPOSITION; i++)
-		free(pcb->Font.Symbol[i].Line);
-	for (i = 0; i < NUM_NETLISTS; i++)
-		FreeLibraryMemory(&(pcb->NetlistLib[i]));
-	vtroutestyle_uninit(&pcb->RouteStyle);
-	FreeAttributeListMemory(&pcb->Attributes);
-	/* clear struct */
-	memset(pcb, 0, sizeof(PCBType));
 }
 
 /* ---------------------------------------------------------------------------
@@ -492,30 +400,6 @@ void FreeDataMemory(DataType * data)
 		r_destroy_tree(&data->rat_tree);
 	/* clear struct */
 	memset(data, 0, sizeof(DataType));
-}
-
-/* ---------------------------------------------------------------------------
- * releases the memory that's allocated by the library
- */
-void FreeLibraryMemory(LibraryTypePtr lib)
-{
-	MENU_LOOP(lib);
-	{
-		ENTRY_LOOP(menu);
-		{
-			if (!entry->ListEntry_dontfree)
-				free((char*)entry->ListEntry);
-		}
-		END_LOOP;
-		free(menu->Entry);
-		free(menu->Name);
-		free(menu->directory);
-	}
-	END_LOOP;
-	free(lib->Menu);
-
-	/* clear struct */
-	memset(lib, 0, sizeof(LibraryType));
 }
 
 /* ---------------------------------------------------------------------------

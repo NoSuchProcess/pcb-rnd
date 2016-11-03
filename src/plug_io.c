@@ -51,6 +51,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "board.h"
 #include "buffer.h"
 #include "change.h"
 #include "create.h"

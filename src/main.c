@@ -37,6 +37,7 @@
 #include <time.h>								/* Seed for srand() */
 #include <locale.h>
 
+#include "board.h"
 #include "data.h"
 #include "buffer.h"
 #include "create.h"

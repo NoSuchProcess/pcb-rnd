@@ -25,6 +25,7 @@
  *
  */
 #include <math.h>
+#include "board.h"
 #include "plug_io.h"
 #include "error.h"
 #include "../io_kicad/uniq_name.h"

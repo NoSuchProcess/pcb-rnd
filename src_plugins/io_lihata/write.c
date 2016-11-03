@@ -27,6 +27,7 @@
 #include <stdarg.h>
 #include <liblihata/tree.h>
 #include "global.h"
+#include "board.h"
 #include "data.h"
 #include "plugins.h"
 #include "plug_io.h"
