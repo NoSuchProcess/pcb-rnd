@@ -98,6 +98,7 @@ put /local/pcb/OBJS [@
 	polygon.o
 	polygon1.o
 	polygon_act.o
+	ptrlist.o
 	rats.o
 	rats_act.o
 	rats_patch.o

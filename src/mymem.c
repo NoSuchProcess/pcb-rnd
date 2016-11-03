@@ -65,26 +65,6 @@ RubberbandTypePtr GetRubberbandMemory(void)
 	return (ptr + Crosshair.AttachedObject.RubberbandN++);
 }
 
-void **GetPointerMemory(PointerListTypePtr list)
-{
-	void **ptr = list->Ptr;
-
-	/* realloc new memory if necessary and clear it */
-	if (list->PtrN >= list->PtrMax) {
-		list->PtrMax = STEP_POINT + (2 * list->PtrMax);
-		ptr = (void **) realloc(ptr, list->PtrMax * sizeof(void *));
-		list->Ptr = ptr;
-		memset(ptr + list->PtrN, 0, (list->PtrMax - list->PtrN) * sizeof(void *));
-	}
-	return (ptr + list->PtrN++);
-}
-
-void FreePointerListMemory(PointerListTypePtr list)
-{
-	free(list->Ptr);
-	memset(list, 0, sizeof(PointerListType));
-}
-
 /* ---------------------------------------------------------------------------
  * get next slot for a box, allocates memory if necessary
  */

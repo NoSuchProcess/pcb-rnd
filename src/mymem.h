@@ -71,14 +71,12 @@ ElementTypePtr GetElementMemory(DataTypePtr);
 BoxTypePtr GetBoxMemory(BoxListTypePtr);
 LibraryMenuTypePtr GetLibraryMenuMemory(LibraryTypePtr, int *idx);
 LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
-void **GetPointerMemory(PointerListTypePtr);
 void FreePolygonMemory(PolygonTypePtr);
 void FreeElementMemory(ElementTypePtr);
 void FreePCBMemory(PCBTypePtr);
 void FreeBoxListMemory(BoxListTypePtr);
 void FreeDataMemory(DataTypePtr);
 void FreeLibraryMemory(LibraryTypePtr);
-void FreePointerListMemory(PointerListTypePtr);
 void DeleteLibraryMenuMemory(LibraryTypePtr lib, int menuidx);
 char *StripWhiteSpaceAndDup(const char *);
 

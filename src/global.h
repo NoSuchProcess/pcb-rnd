@@ -88,12 +88,6 @@ typedef struct {
 	void *(*Rat) (RatTypePtr);
 } ObjectFunctionType, *ObjectFunctionTypePtr;
 
-typedef struct {								/* holds a generic list of pointers */
-	pcb_cardinal_t PtrN,								/* the number of pointers contained */
-	  PtrMax;											/* max subnets from malloc */
-	void **Ptr;
-} PointerListType, *PointerListTypePtr;
-
 typedef struct {
 	pcb_cardinal_t BoxN,								/* the number of boxes contained */
 	  BoxMax;											/* max boxes from malloc */

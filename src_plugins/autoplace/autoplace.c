@@ -61,6 +61,10 @@
 #include "remove.h"
 #include "rotate.h"
 
+#warning TODO: remove this in favor of vtptr
+#include "ptrlist.h"
+
+
 #define EXPANDRECTXY(r1, x1, y1, x2, y2) { \
   r1->X1=MIN(r1->X1, x1); r1->Y1=MIN(r1->Y1, y1); \
   r1->X2=MAX(r1->X2, x2); r1->Y2=MAX(r1->Y2, y2); \

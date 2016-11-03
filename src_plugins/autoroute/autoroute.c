@@ -82,6 +82,9 @@
 #include "layer.h"
 #include "compat_nls.h"
 
+#warning TODO: remove this in favor of vtptr
+#include "ptrlist.h"
+
 /* #defines to enable some debugging output */
 /*
 #define ROUTE_VERBOSE

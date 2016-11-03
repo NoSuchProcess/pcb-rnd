@@ -49,6 +49,9 @@
 #include "netlist.h"
 #include "compat_nls.h"
 
+#warning TODO: remove this in favor of vtptr
+#include "ptrlist.h"
+
 #define TRIEDFIRST 0x1
 #define BESTFOUND 0x2
 
