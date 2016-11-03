@@ -612,6 +612,7 @@ void SetFontInfo(FontTypePtr Ptr)
  * %f is replaced by the filename
  * %p by the searchpath
  */
+#warning TODO: kill this in favor of pcb_strdup_subst
 char *EvaluateFilename(const char *Template, const char *Path, const char *Filename, const char *Parameter)
 {
 	gds_t command;
