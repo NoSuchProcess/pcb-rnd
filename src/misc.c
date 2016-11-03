@@ -432,35 +432,6 @@ void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text)
 	close_box(&Text->BoundingBox);
 }
 
-/* ---------------------------------------------------------------------------
- * returns pcb_true if data area is empty
- */
-pcb_bool IsDataEmpty(DataTypePtr Data)
-{
-	pcb_bool hasNoObjects;
-	pcb_cardinal_t i;
-
-	hasNoObjects = (pinlist_length(&Data->Via) == 0);
-	hasNoObjects &= (elementlist_length(&Data->Element) == 0);
-	for (i = 0; i < max_copper_layer + 2; i++)
-		hasNoObjects = hasNoObjects && LAYER_IS_EMPTY(&(Data->Layer[i]));
-	return (hasNoObjects);
-}
-pcb_bool IsPasteEmpty(int side)
-{
-	pcb_bool paste_empty = pcb_true;
-	ALLPAD_LOOP(PCB->Data);
-	{
-		if (ON_SIDE(pad, side) && !TEST_FLAG(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
-			paste_empty = pcb_false;
-			break;
-		}
-	}
-	ENDALL_LOOP;
-	return paste_empty;
-}
-
-
 typedef struct {
 	int nplated;
 	int nunplated;

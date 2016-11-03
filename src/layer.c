@@ -455,6 +455,20 @@ void RestoreStackAndVisibility(void)
 	SavedStack.cnt--;
 }
 
+pcb_bool IsPasteEmpty(int side)
+{
+	pcb_bool paste_empty = pcb_true;
+	ALLPAD_LOOP(PCB->Data);
+	{
+		if (ON_SIDE(pad, side) && !TEST_FLAG(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
+			paste_empty = pcb_false;
+			break;
+		}
+	}
+	ENDALL_LOOP;
+	return paste_empty;
+}
+
 /***********************************************************************
  * Layer Group Functions
  */

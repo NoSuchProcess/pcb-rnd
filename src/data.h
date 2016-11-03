@@ -130,5 +130,6 @@ void pcb_loop_all(void *ctx,
 );
 
 void FreeDataMemory(DataTypePtr);
+pcb_bool IsDataEmpty(DataTypePtr);
 
 #endif

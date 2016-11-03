@@ -78,6 +78,7 @@ int GetGroupOfLayer(int);
 int ChangeGroupVisibility(int, pcb_bool, pcb_bool);
 void LayerStringToLayerStack(const char *);
 
+pcb_bool IsPasteEmpty(int side);
 
 void ResetStackAndVisibility(void);
 void SaveStackAndVisibility(void);

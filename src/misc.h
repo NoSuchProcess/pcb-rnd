@@ -73,9 +73,6 @@ void CenterDisplay(Coord, Coord);
 
 char *EvaluateFilename(const char *, const char *, const char *, const char *);
 
-pcb_bool IsDataEmpty(DataTypePtr);
-pcb_bool IsPasteEmpty(int);
-
 const char *pcb_author(void);
 
 
