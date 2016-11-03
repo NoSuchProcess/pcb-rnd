@@ -28,7 +28,6 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include <math.h>
 #include <stdio.h>
 #include <assert.h>
 

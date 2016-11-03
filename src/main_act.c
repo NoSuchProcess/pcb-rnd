@@ -29,12 +29,8 @@
 
 #include "config.h"
 
-#include "action_helper.h"
 #include "hid_actions.h"
-#include "hid_attrib.h"
 #include "hid_init.h"
-#include "hid.h"
-#include "data.h"
 #include "conf_core.h"
 
 

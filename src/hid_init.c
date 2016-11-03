@@ -1,8 +1,4 @@
 #include "config.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <strings.h>
 
 #include "hid.h"
@@ -13,10 +9,8 @@
    includes. */
 #include "compat_dl.h"
 
-#include "misc.h"
 #include "plugins.h"
 #include "hid_attrib.h"
-#include "hid_flags.h"
 #include "misc_util.h"
 #include "conf_core.h"
 #include "compat_misc.h"

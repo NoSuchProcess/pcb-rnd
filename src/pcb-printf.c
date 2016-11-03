@@ -34,9 +34,8 @@
 
 #include <locale.h>
 #include <ctype.h>
-#include "const.h"
+#include <math.h>
 #include "config.h"
-
 #include "pcb-printf.h"
 
 const char *pcb_printf_slot[PCB_PRINTF_SLOT_max] =

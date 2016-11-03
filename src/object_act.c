@@ -48,7 +48,6 @@
 #include "buffer.h"
 #include "remove.h"
 #include "create.h"
-#include "misc_util.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "layer.h"

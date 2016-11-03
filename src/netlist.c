@@ -31,19 +31,14 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <genregex/regex_sei.h>
 
-#include "action_helper.h"
 #include "board.h"
-#include "data.h"
+#include "global_element.h"
 #include "error.h"
 #include "plug_io.h"
 #include "find.h"
 #include "mymem.h"
 #include "rats.h"
-#include "create.h"
-#include "rats_patch.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "netlist.h"

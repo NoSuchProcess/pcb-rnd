@@ -1,15 +1,8 @@
 #include "config.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "data.h"
 #include "board.h"
-#include "misc.h"
 #include "conf.h"
 
-#include "hid.h"
 #include "hid_flags.h"
 #include "genht/hash.h"
 #include "genht/htsp.h"

@@ -1,17 +1,8 @@
 #include "config.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-
 #include "board.h"
 #include "data.h"
-#include "layer.h"
-
-#include "hid.h"
 #include "hid_draw_helpers.h"
-#include "hid_helper.h"
+#include "hid_extents.h"
 
 #ifndef MAXINT
 #define MAXINT (((unsigned int)(~0))>>1)

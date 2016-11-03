@@ -1,10 +1,8 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include "config.h"
 #include "paths.h"
 #include "error.h"
-#include "conf.h"
 #include "conf_core.h"
 
 void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra_room)

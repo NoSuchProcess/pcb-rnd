@@ -28,8 +28,6 @@
 #include "config.h"
 #include "board.h"
 #include "data.h"
-#include "misc.h"
-#include "layer.h"
 #include "hid_helper.h"
 #include "hid_attrib.h"
 #include "compat_misc.h"

@@ -34,12 +34,10 @@
 
 #include "board.h"
 #include "data.h"
-#include "crosshair.h"
 #include "find.h"
 #include "line.h"
 #include "misc.h"
 #include "rtree.h"
-#include "layer.h"
 
 static double drc_lines(PointTypePtr end, pcb_bool way);
 

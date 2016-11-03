@@ -37,15 +37,13 @@
 #include <locale.h>
 
 #include "board.h"
-#include "data.h"
-#include "buffer.h"
 #include "create.h"
-#include "crosshair.h"
 #include "error.h"
 #include "plug_io.h"
 #include "set.h"
 #include "layer.h"
-#include "misc.h"
+#include "buffer.h"
+#include "crosshair.h"
 #include "compat_lrealpath.h"
 #include "free_atexit.h"
 #include "polygon.h"

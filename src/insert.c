@@ -30,23 +30,18 @@
 
 #include "config.h"
 #include "conf_core.h"
-#include "math_helper.h"
 
 #include "create.h"
 #include "board.h"
-#include "crosshair.h"
 #include "data.h"
 #include "draw.h"
 #include "line.h"
 #include "misc.h"
 #include "polygon.h"
-#include "rtree.h"
 #include "search.h"
 #include "select.h"
 #include "set.h"
 #include "undo.h"
-#include "misc_util.h"
-#include "layer.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

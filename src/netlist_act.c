@@ -39,13 +39,9 @@
 #include "board.h"
 #include "error.h"
 #include "plug_io.h"
-#include "find.h"
 #include "mymem.h"
-#include "rats.h"
 #include "create.h"
-#include "rats_patch.h"
 #include "hid_actions.h"
-#include "compat_misc.h"
 #include "compat_nls.h"
 #include "netlist.h"
 
