@@ -446,16 +446,6 @@ pcb_bool IsDataEmpty(DataTypePtr Data)
 		hasNoObjects = hasNoObjects && LAYER_IS_EMPTY(&(Data->Layer[i]));
 	return (hasNoObjects);
 }
-
-int FlagIsDataEmpty(int parm)
-{
-	int i = IsDataEmpty(PCB->Data);
-	return parm ? !i : i;
-}
-
-/* FLAG(DataEmpty,FlagIsDataEmpty,0) */
-/* FLAG(DataNonEmpty,FlagIsDataEmpty,1) */
-
 pcb_bool IsPasteEmpty(int side)
 {
 	pcb_bool paste_empty = pcb_true;
