@@ -1319,9 +1319,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 			/* pads next  - have thru_hole, circle, rect, roundrect, to think about*/ 
 			} else if (n->str != NULL && strcmp("pad", n->str) == 0) {
+				featureTally = 0;
 				if (n->children != 0 && n->children->str != NULL) {
 					printf("pad name found: %s\n", n->children->str);
 					pinName = n->children->str;
+					SEEN_NO_DUP(featureTally, 0);
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						pcb_printf("\tpad type: '%s'\n", (n->children->next->str));
 						if (strcmp("thru_hole", n->children->next->str) == 0) {
@@ -1357,7 +1359,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						printf("error in pad def\n");
 					}
 					if (m->str != NULL && strcmp("at", m->str) == 0) {
-						/*SEEN_NO_DUP(padTally, 1); */
+						SEEN_NO_DUP(featureTally, 1);
 						if (m->children != NULL && m->children->str != NULL) {
 							pcb_printf("\tpad X position:\t'%s'\n", (m->children->str));
 							val = strtod(m->children->str, &end);
@@ -1382,7 +1384,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						}
 					} else if (m->str != NULL && strcmp("layers", m->str) == 0) {
 						if (SMD) { /* skip testing for pins */
-							/*SEEN_NO_DUP(padTally, 2);*/
+							SEEN_NO_DUP(featureTally, 2);
 							kicadLayer = 15;
 							for(l = m->children; l != NULL; l = l->next) {
 								if (l->str != NULL) {
@@ -1405,7 +1407,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							printf("\tIgnoring layer definitions for through hole pin\n");
 						}
 					} else if (m->str != NULL && strcmp("drill", m->str) == 0) {
-						/*SEEN_NO_DUP(padTally, 3);*/
+						SEEN_NO_DUP(featureTally, 3);
 						if (m->children != NULL && m->children->str != NULL) {
 							pcb_printf("\tdrill size: '%s'\n", (m->children->str));
 							val = strtod(m->children->str, &end);
@@ -1419,7 +1421,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							return -1;
 						}
 					} else if (m->str != NULL && strcmp("net", m->str) == 0) { 
-						/*SEEN_NO_DUP(padTally, 4);*/
+						SEEN_NO_DUP(featureTally, 4);
 						if (m->children != NULL && m->children->str != NULL) {
 							pcb_printf("\tpad's net number:\t'%s'\n", (m->children->str));
 							if (m->children->next != NULL && m->children->next->str != NULL) {
@@ -1431,7 +1433,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							return -1;
 						}
 					} else if (m->str != NULL && strcmp("size", m->str) == 0) {
-						/*SEEN_NO_DUP(padTally, 5);*/
+						SEEN_NO_DUP(featureTally, 5);
 						if (m->children != NULL && m->children->str != NULL) {
 							pcb_printf("\tpad X size:\t'%s'\n", (m->children->str));
 							val = strtod(m->children->str, &end);
@@ -1462,34 +1464,46 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					printf("\tFinished stepping through pad args\n");
 				}
 				printf("\tfinished pad parse\n");
-				if (throughHole == 1) {
-					printf("\tcreating new pin %s in element\n", pinName);				
-					CreateNewPin(newModule, X + moduleX, Y + moduleY, padXsize, Clearance,
+				if (throughHole == 1  &&  newModule != NULL) {
+					printf("\tcreating new pin %s in element\n", pinName);
+					required = BV(0) | BV(1) | BV(3) | BV(5);
+        				if ((featureTally & required) == required) {
+						CreateNewPin(newModule, X + moduleX, Y + moduleY, padXsize, Clearance,
 								Clearance, drill, pinName, pinName, Flags); /* using clearance value for arg 5 = mask too */
-				} else {
-					printf("\tcreating new pad %s in element\n", pinName);				
-					if (padXsize >= padYsize) { /* square pad or rectangular pad, wider than tall */
-						Y1 = Y2 = Y;
-						X1 = X - (padXsize - padYsize)/2;
-						X2 = X + (padXsize - padYsize)/2;
-						Thickness = padYsize;
-					} else { /* rectangular pad, taller than wide */
-						X1 = X2 = X;
-						Y1 = Y - (padYsize - padXsize)/2;
-						Y2 = Y + (padYsize - padXsize)/2;
-						Thickness = padXsize;
-					}
-					if (square && kicadLayer) {
-						Flags = MakeFlags(PCB_FLAG_SQUARE);
-					} else if (kicadLayer) {
-						Flags = MakeFlags(0);
-					} else if (square && !kicadLayer) {
-						Flags = MakeFlags(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
 					} else {
-						Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+						return -1;
 					}
-					CreateNewPad(newModule, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, 
+				} else if (newModule != NULL) {
+					printf("\tcreating new pad %s in element\n", pinName);
+                                        required = BV(0) | BV(1) | BV(2) | BV(5);
+                                        if ((featureTally & required) == required) {	
+						if (padXsize >= padYsize) { /* square pad or rectangular pad, wider than tall */
+							Y1 = Y2 = Y;
+							X1 = X - (padXsize - padYsize)/2;
+							X2 = X + (padXsize - padYsize)/2;
+							Thickness = padYsize;
+						} else { /* rectangular pad, taller than wide */
+							X1 = X2 = X;
+							Y1 = Y - (padYsize - padXsize)/2;
+							Y2 = Y + (padYsize - padXsize)/2;
+							Thickness = padXsize;
+						}
+						if (square && kicadLayer) {
+							Flags = MakeFlags(PCB_FLAG_SQUARE);
+						} else if (kicadLayer) {
+							Flags = MakeFlags(0);
+						} else if (square && !kicadLayer) {
+							Flags = MakeFlags(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
+						} else {
+							Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+						}
+						CreateNewPad(newModule, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, 
 								Clearance, pinName, pinName, Flags); /* using clearance value for arg 7 = mask too */
+					} else {
+						return -1;
+					}
+				} else {
+					return -1;
 				}
 
 			} else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
