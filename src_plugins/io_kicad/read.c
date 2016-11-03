@@ -46,7 +46,6 @@
 #include "macro.h"
 
 
-
 typedef struct {
 	PCBTypePtr PCB;
 	const char *Filename;
@@ -1012,9 +1011,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	if (subtree->str != NULL) {
 		printf("Name of module element being parsed: '%s'\n", subtree->str);
 		moduleName = subtree->str;
+		SEEN_NO_DUP(tally, 0);
 		for(n = subtree->next, i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("layer", n->str) == 0) { /* need this to sort out ONSOLDER flags etc... */
-				SEEN_NO_DUP(tally, 0);
+				SEEN_NO_DUP(tally, 1);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("\tlayer: '%s'\n", (n->children->str));
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
@@ -1028,24 +1028,24 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("tedit", n->str) == 0) {
-				SEEN_NO_DUP(tally, 1);
+				SEEN_NO_DUP(tally, 2);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("\ttedit: '%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
-				SEEN_NO_DUP(tally, 2);
+				SEEN_NO_DUP(tally, 3);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("\ttstamp: '%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("at", n->str) == 0) {
-				SEEN_NO_DUP(tally, 3);
+				SEEN_NO_DUP(tally, 4);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("\tat x: '%s'\n", (n->children->str));
-					SEEN_NO_DUP(tally, 4); /* same as ^= 1 was */
+					SEEN_NO_DUP(tally, 5); /* same as ^= 1 was */
 						val = strtod(n->children->str, &end);
 						if (*end != 0) {
 							return -1;
@@ -1057,7 +1057,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 				if (n->children->next != NULL && n->children->next->str != NULL) {
 					pcb_printf("\tat y: '%s'\n", (n->children->next->str));
-					SEEN_NO_DUP(tally, 5);	
+					SEEN_NO_DUP(tally, 6);	
 						val = strtod(n->children->next->str, &end);
 						if (*end != 0) {
 							return -1;
@@ -1082,6 +1082,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			text = n->children->next->str;
 			foundRefdes = 0;
 			if (strcmp("reference", textLabel) == 0) {
+				SEEN_NO_DUP(tally, 7);
 				printf("\tfp_text reference found: '%s'\n", textLabel);
 				moduleRefdes = text;
 				foundRefdes = 1;
@@ -1090,6 +1091,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 				printf("\tmoduleRefdes now: '%s'\n", moduleRefdes);
 			} else if (strcmp("value", textLabel) == 0) {
+				SEEN_NO_DUP(tally, 8);
 				printf("\tfp_text value found: '%s'\n", textLabel);
 				moduleValue = text;
 				foundRefdes = 0;
@@ -1227,8 +1229,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			} 				
 		}
 	}
-	required = 1; /*BV(2) | BV(3) | BV(4) | BV(7) | BV(8); */
-	if ((featureTally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
+	required = BV(0) | BV(1) | BV(4) | BV(7) | BV(8);
+	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
 		if (&st->PCB->Font == NULL) {
 			CreateDefaultFont(st->PCB);
 		}
@@ -1288,28 +1290,28 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 /* ********************************************************** */
 
 			} else if (n->str != NULL && strcmp("descr", n->str) == 0) {
-				SEEN_NO_DUP(tally, 6);
+				SEEN_NO_DUP(tally, 9);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("\tmodule descr: '%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("tags", n->str) == 0) {
-				SEEN_NO_DUP(tally, 7);
+				SEEN_NO_DUP(tally, 10);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("\tmodule tags: '%s'\n", (n->children->str)); /* maye be more than one? */
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("path", n->str) == 0) {
-				SEEN_NO_DUP(tally, 8);
+				SEEN_NO_DUP(tally, 11);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("\tmodule path: '%s'\n", (n->children->str));
 				} else {
 					return -1;
 				}
 			} else if (n->str != NULL && strcmp("model", n->str) == 0) {
-				SEEN_NO_DUP(tally, 9);
+				SEEN_NO_DUP(tally, 12);
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("\tmodule model provided: '%s'\n", (n->children->str));
 				} else {
