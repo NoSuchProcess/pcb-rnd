@@ -28,10 +28,7 @@
 
 #include "config.h"
 
-#include <assert.h>
-#include <memory.h>
 #include <setjmp.h>
-#include <stdlib.h>
 
 #include "conf_core.h"
 
@@ -39,9 +36,7 @@
 #include "math_helper.h"
 #include "create.h"
 #include "data.h"
-#include "error.h"
 #include "misc.h"
-#include "layer.h"
 #include "rtree.h"
 #include "search.h"
 #include "undo.h"
@@ -49,7 +44,6 @@
 #include "stub_vendor.h"
 #include "hid_actions.h"
 #include "paths.h"
-#include "misc_util.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 

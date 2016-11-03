@@ -28,8 +28,6 @@
 /* action routines for output window
  */
 
-#include <assert.h>
-
 #include "config.h"
 #include "conf_core.h"
 
@@ -39,19 +37,14 @@
 #include "board.h"
 #include "action_helper.h"
 #include "hid_actions.h"
-#include "crosshair.h"
 #include "change.h"
 #include "draw.h"
 #include "search.h"
-#include "misc.h"
 #include "set.h"
-#include "error.h"
 #include "undo.h"
-#include "rubberband.h"
-#include "misc_util.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "layer.h"
+
 
 static void ChangeFlag(const char *, const char *, int, const char *);
 static int ActionChangeSize(int argc, const char **argv, Coord x, Coord y);

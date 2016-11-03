@@ -35,13 +35,10 @@
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "error.h"
 #include "misc.h"
 #include "rotate.h"
 #include "rtree.h"
 #include "draw_fab.h"
-#include "hid_helper.h"
-#include "layer.h"
 
 #undef NDEBUG
 #include <assert.h>

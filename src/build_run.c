@@ -27,9 +27,8 @@
 #include "config.h"
 #include <genvector/gds_char.h>
 #include "conf_core.h"
-#include "hid.h"
 #include "board.h"
-#include "hid_actions.h"
+#include "build_run.h"
 #include "hid_init.h"
 #include "plug_io.h"
 #include "compat_misc.h"

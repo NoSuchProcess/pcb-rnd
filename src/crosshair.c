@@ -28,10 +28,6 @@
 /* crosshair stuff */
 
 #include "config.h"
-
-#include <memory.h>
-#include <math.h>
-
 #include "conf_core.h"
 
 #include "board.h"
@@ -39,15 +35,11 @@
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
-#include "error.h"
 #include "line.h"
-#include "rtree.h"
 #include "search.h"
 #include "polygon.h"
 #include "misc.h"
-#include "misc_util.h"
 #include "hid_actions.h"
-#include "layer.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 

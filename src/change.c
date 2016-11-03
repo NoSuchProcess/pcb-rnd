@@ -30,26 +30,19 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <setjmp.h>
-
 #include "conf_core.h"
 
 #include "board.h"
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
-#include "error.h"
 #include "misc.h"
 #include "mirror.h"
 #include "polygon.h"
-#include "rtree.h"
 #include "select.h"
 #include "undo.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
-#include "layer.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

@@ -27,7 +27,6 @@
  */
 #include "config.h"
 
-#include "const.h"
 #include "data.h"
 #include "mymem.h"
 #include "drill.h"

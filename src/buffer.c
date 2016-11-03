@@ -30,16 +30,12 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include <stdlib.h>
-
 #include "action_helper.h"
 #include "buffer.h"
 #include "board.h"
 #include "copy.h"
 #include "create.h"
-#include "crosshair.h"
 #include "data.h"
-#include "error.h"
 #include "plug_io.h"
 #include "mirror.h"
 #include "misc.h"
@@ -47,14 +43,11 @@
 #include "polygon.h"
 #include "rotate.h"
 #include "remove.h"
-#include "rtree.h"
 #include "select.h"
 #include "set.h"
 #include "funchash_core.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "layer.h"
-#include "math_helper.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

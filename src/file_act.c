@@ -30,13 +30,10 @@
 #include "conf_core.h"
 #include "data.h"
 #include "action_helper.h"
-#include "error.h"
 
-#include "crosshair.h"
 #include "set.h"
 #include "plug_io.h"
 #include "plug_import.h"
-#include "buffer.h"
 #include "misc.h"
 #include "remove.h"
 #include "create.h"
@@ -44,7 +41,6 @@
 #include "find.h"
 #include "search.h"
 #include "hid_actions.h"
-#include "hid_attrib.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 

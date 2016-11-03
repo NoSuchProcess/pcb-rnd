@@ -25,11 +25,7 @@
 
 #include "config.h"
 #include "board.h"
-#include "data.h"
-#include "conf.h"
 #include "conf_core.h"
-#include "error.h"
-#include "misc.h"
 #include "misc_util.h"
 #include "route_style.h"
 

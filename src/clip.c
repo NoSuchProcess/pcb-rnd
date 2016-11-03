@@ -27,7 +27,6 @@
 
 #include "config.h"
 #include "clip.h"
-#include <math.h>
 
 /* Clip the line to the clipBox
  * return pcb_true if something to be drawn

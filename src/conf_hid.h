@@ -1,8 +1,8 @@
 #ifndef PCB_CONF_HID_H
 #define PCB_CONF_HID_H
 
-#include "error.h"
 #include "conf.h"
+#include "error.h"
 
 typedef struct conf_hid_callbacks_s {
 	/* Called before/after a value of a config item is updated - this doesn't necessarily mean the value actually changes */

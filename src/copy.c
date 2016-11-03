@@ -32,17 +32,13 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include <stdlib.h>
-
 #include "board.h"
 #include "create.h"
 #include "data.h"
 #include "draw.h"
 #include "misc.h"
-#include "layer.h"
 #include "move.h"
 #include "polygon.h"
-#include "rtree.h"
 #include "select.h"
 #include "undo.h"
 #include "compat_misc.h"

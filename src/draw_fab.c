@@ -28,17 +28,13 @@
 #include "config.h"
 
 #include <time.h>
-#include <setjmp.h>
 
 #include "board.h"
 #include "build_run.h"
 #include "data.h"
 #include "draw.h"
 #include "drill.h"
-#include "misc.h"
 #include "draw_fab.h"
-#include "polygon.h"
-#include "layer.h"
 
 /* ---------------------------------------------------------------------------
  * prints a FAB drawing.

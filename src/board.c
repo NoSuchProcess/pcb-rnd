@@ -25,8 +25,6 @@
  */
 #include "config.h"
 #include "board.h"
-#include "attrib.h"
-#include "library.h"
 #include "data.h"
 
 PCBTypePtr PCB;									/* pointer to layout struct */

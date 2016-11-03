@@ -32,8 +32,6 @@
 #include "conf_core.h"
 #include "conf_hid.h"
 #include "hid_cfg.h"
-#include "hid_init.h"
-#include "hid_attrib.h"
 #include "misc_util.h"
 #include "error.h"
 #include "paths.h"
