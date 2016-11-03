@@ -44,7 +44,7 @@ valid()
 			for(h in SEEN)
 				if (SEEN[h] > 1)
 					print "W " fn ": multiple include of " h
-			if (! ("\"config.h\"" in SEEN))
+			if ((fn ~ "[.]c$") && (! ("\"config.h\"" in SEEN)))
 				print "E " fn ": missing config.h"
 		}
 	' < "$1"
