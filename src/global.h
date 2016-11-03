@@ -33,13 +33,6 @@
 
 #include "const.h"
 #include "macro.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <strings.h>
-#include <stdarg.h>
-#include <math.h>
-#include <ctype.h>
 
 #include "vtroutestyle.h"
 

@@ -26,6 +26,7 @@
 #define PCB_HID_CFG_H
 
 #include <liblihata/dom.h>
+#include <stdarg.h>
 
 typedef struct hid_cfg_s {
 	lht_doc_t *doc;

@@ -33,6 +33,7 @@
  */
 
 #include <locale.h>
+#include <ctype.h>
 #include "config.h"
 #include "global.h"
 

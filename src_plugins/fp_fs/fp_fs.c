@@ -36,6 +36,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "mymem.h"
 #include "data.h"

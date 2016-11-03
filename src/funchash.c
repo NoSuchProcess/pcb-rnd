@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <stdio.h>
 #include <genht/htpi.h>
 #include <genht/hash.h>

@@ -22,11 +22,13 @@
 
 /* Query language - execution */
 
+#include <stdio.h>
 #include "global.h"
 #include "data.h"
 #include "query.h"
 #include "query_exec.h"
 #include "query_access.h"
+#include "pcb-printf.h"
 
 void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root)
 {
@@ -139,6 +141,7 @@ static const char *op2str(char *buff, int buff_size, pcb_qry_val_t *val)
 		case PCBQ_VT_OBJ:
 		case PCBQ_VT_LST:   return NULL;
 	}
+	return NULL;
 }
 
 int pcb_qry_is_true(pcb_qry_val_t *val)

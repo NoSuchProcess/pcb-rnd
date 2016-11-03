@@ -24,6 +24,7 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
+#include <ctype.h>
 #include "config.h"
 #include "global.h"
 #include "pcb-printf.h"

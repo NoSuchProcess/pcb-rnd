@@ -20,6 +20,7 @@
  *
  */
 
+#include <ctype.h>
 #include "data.h"
 #include "props.h"
 #include "propsel.h"

@@ -26,6 +26,7 @@
  */
 #include "config.h"
 #include <stdlib.h>
+#include <ctype.h>
 #include <locale.h>
 #include "global.h"
 #include "compat_misc.h"

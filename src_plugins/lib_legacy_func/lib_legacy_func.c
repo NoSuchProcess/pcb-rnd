@@ -30,6 +30,7 @@
 #define _BSD_SOURCE
 
 #include <genvector/gds_char.h>
+#include <stdio.h>
 #include "config.h"
 #include "global.h"
 #include "data.h"

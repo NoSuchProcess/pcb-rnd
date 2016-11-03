@@ -22,6 +22,7 @@
 
 /* Query language - actions */
 
+#include <stdio.h>
 #include "global.h"
 #include "query.h"
 #include "query_y.h"

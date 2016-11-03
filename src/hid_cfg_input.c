@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
+#include <ctype.h>
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 #include <genht/hash.h>

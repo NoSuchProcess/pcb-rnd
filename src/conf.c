@@ -21,6 +21,9 @@
  */
 
 #include <assert.h>
+#include <string.h>
+#include <strings.h>
+#include <ctype.h>
 #include <genht/hash.h>
 #include <liblihata/tree.h>
 #include <stdarg.h>
