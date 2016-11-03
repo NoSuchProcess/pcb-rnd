@@ -68,9 +68,6 @@ void QuitApplication(void);
 /* Returns a string with info about this copy of pcb. */
 char *GetInfoString(void);
 
-void SaveOutputWindow(void);
-void CenterDisplay(Coord, Coord);
-
 char *EvaluateFilename(const char *, const char *, const char *, const char *);
 
 const char *pcb_author(void);

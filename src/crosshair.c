@@ -1205,6 +1205,19 @@ void SetCrosshairRange(Coord MinX, Coord MinY, Coord MaxX, Coord MaxY)
 }
 
 /* ---------------------------------------------------------------------------
+ * centers the displayed PCB around the specified point (X,Y)
+ */
+void CenterDisplay(Coord X, Coord Y)
+{
+	Coord save_grid = PCB->Grid;
+	PCB->Grid = 1;
+	if (MoveCrosshairAbsolute(X, Y))
+		notify_crosshair_change(pcb_true);
+	gui->set_crosshair(Crosshair.X, Crosshair.Y, HID_SC_WARP_POINTER);
+	PCB->Grid = save_grid;
+}
+
+/* ---------------------------------------------------------------------------
  * initializes crosshair stuff
  * clears the struct, allocates to graphical contexts
  */

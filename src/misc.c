@@ -544,19 +544,6 @@ BoxTypePtr GetDataBoundingBox(DataTypePtr Data)
 }
 
 /* ---------------------------------------------------------------------------
- * centers the displayed PCB around the specified point (X,Y)
- */
-void CenterDisplay(Coord X, Coord Y)
-{
-	Coord save_grid = PCB->Grid;
-	PCB->Grid = 1;
-	if (MoveCrosshairAbsolute(X, Y))
-		notify_crosshair_change(pcb_true);
-	gui->set_crosshair(Crosshair.X, Crosshair.Y, HID_SC_WARP_POINTER);
-	PCB->Grid = save_grid;
-}
-
-/* ---------------------------------------------------------------------------
  * transforms symbol coordinates so that the left edge of each symbol
  * is at the zero position. The y coordinates are moved so that min(y) = 0
  *
