@@ -23,6 +23,7 @@ put /local/pcb/OBJS [@
 	board.o
 	box.o
 	buffer.o
+	build_run.o
 	change.o
 	change_act.o
 	conf.o

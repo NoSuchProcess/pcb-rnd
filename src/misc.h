@@ -31,7 +31,6 @@
 
 #include <stdlib.h>
 #include "config.h"
-#include <genvector/gds_char.h>
 #include "mymem.h"
 
 
@@ -61,16 +60,7 @@ void AttachForCopy(Coord, Coord);
    comparing two similar footprints.  */
 int ElementOrientation(ElementType * e);
 
-
-
-void QuitApplication(void);
-
-/* Returns a string with info about this copy of pcb. */
-char *GetInfoString(void);
-
 char *EvaluateFilename(const char *, const char *, const char *, const char *);
-
-const char *pcb_author(void);
 
 
 #endif /* PCB_MISC_H */

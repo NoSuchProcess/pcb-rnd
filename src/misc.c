@@ -53,8 +53,6 @@
 #include "set.h"
 #include "undo.h"
 #include "compat_misc.h"
-#include "hid_actions.h"
-#include "hid_init.h"
 
 /* forward declarations */
 static char *BumpName(char *);
@@ -610,30 +608,6 @@ void SetFontInfo(FontTypePtr Ptr)
 }
 
 /* ---------------------------------------------------------------------------
- * quits application
- */
-extern void pcb_main_uninit(void);
-void QuitApplication(void)
-{
-	/*
-	 * save data if necessary.  It not needed, then don't trigger EmergencySave
-	 * via our atexit() registering of EmergencySave().  We presumably wanted to
-	 * exit here and thus it is not an emergency.
-	 */
-	if (PCB->Changed && conf_core.editor.save_in_tmp)
-		EmergencySave();
-	else
-		DisableEmergencySave();
-
-	if (gui->do_exit == NULL) {
-		pcb_main_uninit();
-		exit(0);
-	}
-	else
-		gui->do_exit(gui);
-}
-
-/* ---------------------------------------------------------------------------
  * creates a filename from a template
  * %f is replaced by the filename
  * %p by the searchpath
@@ -967,94 +941,6 @@ void r_delete_element(DataType * data, ElementType * element)
 	}
 	END_LOOP;
 }
-
-
-/* ---------------------------------------------------------------------------
- * Returns a string that has a bunch of information about the program.
- * Can be used for things like "about" dialog boxes.
- */
-
-char *GetInfoString(void)
-{
-	HID **hids;
-	int i;
-	static gds_t info;
-	static int first_time = 1;
-
-#define TAB "    "
-
-	if (first_time) {
-		first_time = 0;
-		gds_append_str(&info, "This is PCB-rnd " VERSION " (" REVISION ")" "\n an interactive\n");
-		gds_append_str(&info, "printed circuit board editor\n");
-		gds_append_str(&info, "PCB-rnd forked from PCB version.");
-		gds_append_str(&info, "\n\n" "PCB is by harry eaton and others\n\n");
-		gds_append_str(&info, "\nPCB-rnd adds a collection of\n");
-		gds_append_str(&info, "useful-looking random patches.\n");
-		gds_append_str(&info, "\n");
-		gds_append_str(&info, "Copyright (C) Thomas Nau 1994, 1995, 1996, 1997\n");
-		gds_append_str(&info, "Copyright (C) harry eaton 1998-2007\n");
-		gds_append_str(&info, "Copyright (C) C. Scott Ananian 2001\n");
-		gds_append_str(&info, "Copyright (C) DJ Delorie 2003, 2004, 2005, 2006, 2007, 2008\n");
-		gds_append_str(&info, "Copyright (C) Dan McMahill 2003, 2004, 2005, 2006, 2007, 2008\n\n");
-		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013-2016 (pcb-rnd patches)\n\n");
-		gds_append_str(&info, "It is licensed under the terms of the GNU\n");
-		gds_append_str(&info, "General Public License version 2\n");
-		gds_append_str(&info, "See the LICENSE file for more information\n\n");
-		gds_append_str(&info, "For more information see:\n\n");
-		gds_append_str(&info, "PCB-rnd homepage: http://repo.hu/projects/pcb-rnd\n");
-		gds_append_str(&info, "PCB homepage: http://pcb.geda-project.org\n");
-		gds_append_str(&info, "gEDA homepage: http://www.geda-project.org\n");
-		gds_append_str(&info, "gEDA Wiki: http://wiki.geda-project.org\n\n");
-
-		gds_append_str(&info, "----- Compile Time Options -----\n");
-		hids = hid_enumerate();
-		gds_append_str(&info, "GUI:\n");
-		for (i = 0; hids[i]; i++) {
-			if (hids[i]->gui) {
-				gds_append_str(&info, TAB);
-				gds_append_str(&info, hids[i]->name);
-				gds_append_str(&info, " : ");
-				gds_append_str(&info, hids[i]->description);
-				gds_append_str(&info, "\n");
-			}
-		}
-
-		gds_append_str(&info, "Exporters:\n");
-		for (i = 0; hids[i]; i++) {
-			if (hids[i]->exporter) {
-				gds_append_str(&info, TAB);
-				gds_append_str(&info, hids[i]->name);
-				gds_append_str(&info, " : ");
-				gds_append_str(&info, hids[i]->description);
-				gds_append_str(&info, "\n");
-			}
-		}
-
-		gds_append_str(&info, "Printers:\n");
-		for (i = 0; hids[i]; i++) {
-			if (hids[i]->printer) {
-				gds_append_str(&info, TAB);
-				gds_append_str(&info, hids[i]->name);
-				gds_append_str(&info, " : ");
-				gds_append_str(&info, hids[i]->description);
-				gds_append_str(&info, "\n");
-			}
-		}
-	}
-#undef TAB
-
-	return info.array;
-}
-
-const char *pcb_author(void)
-{
-	if (conf_core.design.fab_author && conf_core.design.fab_author[0])
-		return conf_core.design.fab_author;
-	else
-		return get_user_name();
-}
-
 
 /* ---------------------------------------------------------------------------
  * Returns a best guess about the orientation of an element.  The

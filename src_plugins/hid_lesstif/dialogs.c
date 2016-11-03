@@ -12,6 +12,7 @@
 #include "compat_misc.h"
 #include "config.h"
 #include "data.h"
+#include "build_run.h"
 #include "crosshair.h"
 #include "layer.h"
 #include "misc.h"
