@@ -34,6 +34,7 @@
 #include "global.h"
 #include "flag_str.h"
 #include "compat_misc.h"
+#include "macro.h"
 
 /* Because all the macros expect it, that's why.  */
 typedef struct {

@@ -40,6 +40,8 @@
  * - see the description of 'LineLineIntersect()'
  */
 
+#include "macro.h"
+
 #define EXPAND_BOUNDS(p) if (Bloat > 0) {\
        (p)->BoundingBox.X1 -= Bloat; \
        (p)->BoundingBox.X2 += Bloat; \

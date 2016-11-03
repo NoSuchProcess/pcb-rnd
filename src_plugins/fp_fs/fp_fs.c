@@ -50,6 +50,7 @@
 #include "conf.h"
 #include "conf_core.h"
 #include "compat_nls.h"
+#include "macro.h"
 
 /* opendir, readdir */
 #include "compat_inc.h"

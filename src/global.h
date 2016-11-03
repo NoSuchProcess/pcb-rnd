@@ -32,7 +32,6 @@
 #include "config.h"
 
 #include "const.h"
-#include "macro.h"
 
 #include "vtroutestyle.h"
 

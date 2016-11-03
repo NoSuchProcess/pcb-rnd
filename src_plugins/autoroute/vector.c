@@ -38,6 +38,7 @@
 
 #include "global.h"
 #include "vector.h"
+#include "macro.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

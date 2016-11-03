@@ -1,6 +1,7 @@
 #include "global_objs.h"
 #include "hid.h"
 #include "polygon.h"
+#include "macro.h"
 
 static void fill_contour(hidGC gc, PLINE * pl)
 {

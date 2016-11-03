@@ -38,6 +38,7 @@
 #include "global_typedefs.h"
 #include "global_objs.h"
 #include "global.h"
+#include "macro.h"
 
 struct pcb_boxlist_s {
 	pcb_cardinal_t BoxN,								/* the number of boxes contained */

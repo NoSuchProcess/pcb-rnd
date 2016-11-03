@@ -30,6 +30,7 @@
 #include "data.h"
 #include "mymem.h"
 #include "drill.h"
+#include "macro.h"
 
 /*
  * some local prototypes
