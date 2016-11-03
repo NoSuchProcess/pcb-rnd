@@ -29,9 +29,6 @@
 #ifndef	PCB_CONST_H
 #define	PCB_CONST_H
 
-#include <limits.h>
-#include <math.h>
-
 /* These need to be carefully written to avoid overflows, and return
    a Coord type.  */
 #define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((Coord)((COORD) * ((double)(TEXTSCALE) / 100.0)))
